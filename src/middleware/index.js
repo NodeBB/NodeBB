@@ -53,22 +53,24 @@ middleware.ensureSelfOrGlobalPrivilege = function (req, res, next) {
 		The "self" part of this middleware hinges on you having used
 		middleware.exposeUid prior to invoking this middleware.
 	*/
-	if (req.user) {
-		if (req.user.uid === res.locals.uid) {
-			return next();
-		}
-
-		user.isAdminOrGlobalMod(req.uid, function (err, ok) {
-			if (err) {
-				return next(err);
-			} else if (ok) {
-				return next();
+	async.waterfall([
+		function (next) {
+			if (!req.uid) {
+				return setImmediate(next, null, false);
 			}
-			controllers.helpers.notAllowed(req, res);
-		});
-	} else {
-		controllers.helpers.notAllowed(req, res);
-	}
+
+			if (req.uid === parseInt(res.locals.uid, 10)) {
+				return setImmediate(next, null, true);
+			}
+			user.isAdminOrGlobalMod(req.uid, next);
+		},
+		function (isAdminOrGlobalMod, next) {
+			if (!isAdminOrGlobalMod) {
+				return controllers.helpers.notAllowed(req, res);
+			}
+			next();
+		},
+	], next);
 };
 
 middleware.ensureSelfOrPrivileged = function (req, res, next) {

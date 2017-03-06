@@ -1,5 +1,6 @@
 'use strict';
 
+var async = require('async');
 var validator = require('validator');
 var nconf = require('nconf');
 var winston = require('winston');
@@ -63,6 +64,7 @@ module.exports = function (User) {
 			addField('lastonline');
 		}
 
+<<<<<<< HEAD
 		db.getObjectsFields(keys, fields, function (err, users) {
 			if (err) {
 				return callback(err);
@@ -74,6 +76,16 @@ module.exports = function (User) {
 
 			modifyUserData(users, fieldsToRemove, callback);
 		});
+=======
+		async.waterfall([
+			function (next) {
+				db.getObjectsFields(keys, fields, next);
+			},
+			function (users, next) {
+				modifyUserData(users, fieldsToRemove, next);
+			},
+		], callback);
+>>>>>>> master
 	};
 
 	User.getMultipleUserFields = function (uids, fields, callback) {
@@ -105,6 +117,7 @@ module.exports = function (User) {
 			return 'user:' + uid;
 		});
 
+<<<<<<< HEAD
 		db.getObjects(keys, function (err, users) {
 			if (err) {
 				return callback(err);
@@ -116,6 +129,16 @@ module.exports = function (User) {
 
 			modifyUserData(users, [], callback);
 		});
+=======
+		async.waterfall([
+			function (next) {
+				db.getObjects(keys, next);
+			},
+			function (users, next) {
+				modifyUserData(users, [], next);
+			},
+		], callback);
+>>>>>>> master
 	};
 
 	function modifyUserData(users, fieldsToRemove, callback) {
@@ -178,51 +201,53 @@ module.exports = function (User) {
 
 	User.setUserField = function (uid, field, value, callback) {
 		callback = callback || function () {};
-		db.setObjectField('user:' + uid, field, value, function (err) {
-			if (err) {
-				return callback(err);
-			}
-			plugins.fireHook('action:user.set', { uid: uid, field: field, value: value, type: 'set' });
-			callback();
-		});
+		async.waterfall([
+			function (next) {
+				db.setObjectField('user:' + uid, field, value, next);
+			},
+			function (next) {
+				plugins.fireHook('action:user.set', { uid: uid, field: field, value: value, type: 'set' });
+				next();
+			},
+		], callback);
 	};
 
 	User.setUserFields = function (uid, data, callback) {
 		callback = callback || function () {};
-		db.setObject('user:' + uid, data, function (err) {
-			if (err) {
-				return callback(err);
-			}
-			for (var field in data) {
-				if (data.hasOwnProperty(field)) {
-					plugins.fireHook('action:user.set', { uid: uid, field: field, value: data[field], type: 'set' });
+		async.waterfall([
+			function (next) {
+				db.setObject('user:' + uid, data, next);
+			},
+			function (next) {
+				for (var field in data) {
+					if (data.hasOwnProperty(field)) {
+						plugins.fireHook('action:user.set', { uid: uid, field: field, value: data[field], type: 'set' });
+					}
 				}
-			}
-			callback();
-		});
+				next();
+			},
+		], callback);
 	};
 
 	User.incrementUserFieldBy = function (uid, field, value, callback) {
-		callback = callback || function () {};
-		db.incrObjectFieldBy('user:' + uid, field, value, function (err, value) {
-			if (err) {
-				return callback(err);
-			}
-			plugins.fireHook('action:user.set', { uid: uid, field: field, value: value, type: 'increment' });
-
-			callback(null, value);
-		});
+		incrDecrUserFieldBy(uid, field, value, 'increment', callback);
 	};
 
 	User.decrementUserFieldBy = function (uid, field, value, callback) {
-		callback = callback || function () {};
-		db.incrObjectFieldBy('user:' + uid, field, -value, function (err, value) {
-			if (err) {
-				return callback(err);
-			}
-			plugins.fireHook('action:user.set', { uid: uid, field: field, value: value, type: 'decrement' });
-
-			callback(null, value);
-		});
+		incrDecrUserFieldBy(uid, field, -value, 'decrement', callback);
 	};
+
+	function incrDecrUserFieldBy(uid, field, value, type, callback) {
+		callback = callback || function () {};
+		async.waterfall([
+			function (next) {
+				db.incrObjectFieldBy('user:' + uid, field, value, next);
+			},
+			function (value, next) {
+				plugins.fireHook('action:user.set', { uid: uid, field: field, value: value, type: type });
+
+				next(null, value);
+			},
+		], callback);
+	}
 };

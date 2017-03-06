@@ -16,7 +16,7 @@ module.exports = function (Groups) {
 			async.apply(db.getObjectValues, 'groupslug:groupname'),
 			function (groupNames, next) {
 				// Ephemeral groups and the registered-users groups are searchable
-				groupNames = Groups.getEphemeralGroups().concat(groupNames).concat('registered-users');
+				groupNames = Groups.ephemeralGroups.concat(groupNames).concat('registered-users');
 				groupNames = groupNames.filter(function (name) {
 					return name.toLowerCase().indexOf(query) !== -1 && name !== 'administrators' && !Groups.isPrivilegeGroup(name);
 				});

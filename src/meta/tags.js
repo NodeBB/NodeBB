@@ -131,10 +131,10 @@ module.exports = function (Meta) {
 			}
 		});
 
-		if (!hasDescription) {
+		if (!hasDescription && Meta.config.description) {
 			meta.push({
 				name: 'description',
-				content: validator.escape(String(Meta.config.description || '')),
+				content: validator.escape(String(Meta.config.description)),
 			});
 		}
 	}

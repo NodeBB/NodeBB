@@ -390,6 +390,7 @@ describe('Categories', function () {
 		it('should get all categories', function (done) {
 			socketCategories.getAll({ uid: adminUid }, {}, function (err, data) {
 				assert.ifError(err);
+				assert(data);
 				done();
 			});
 		});
@@ -609,6 +610,72 @@ describe('Categories', function () {
 			}, function (err, data) {
 				assert.ifError(err);
 				assert.equal(data.topicData.tags.length, 2);
+				done();
+			});
+		});
+	});
+
+
+	describe('privileges', function () {
+		var privileges = require('../src/privileges');
+
+		it('should return empty array if uids is empty array', function (done) {
+			privileges.categories.filterUids('find', categoryObj.cid, [], function (err, uids) {
+				assert.ifError(err);
+				assert.equal(uids.length, 0);
+				done();
+			});
+		});
+
+		it('should filter uids by privilege', function (done) {
+			privileges.categories.filterUids('find', categoryObj.cid, [1, 2, 3, 4], function (err, uids) {
+				assert.ifError(err);
+				assert.deepEqual(uids, [1, 2]);
+				done();
+			});
+		});
+
+		it('should load user privileges', function (done) {
+			privileges.categories.userPrivileges(categoryObj.cid, 1, function (err, data) {
+				assert.ifError(err);
+				assert.deepEqual(data, {
+					find: false,
+					mods: false,
+					'posts:delete': false,
+					read: false,
+					'topics:reply': false,
+					'topics:read': false,
+					'topics:create': false,
+					'topics:delete': false,
+					'posts:edit': false,
+				});
+
+				done();
+			});
+		});
+
+		it('should load group privileges', function (done) {
+			privileges.categories.groupPrivileges(categoryObj.cid, 'registered-users', function (err, data) {
+				assert.ifError(err);
+				assert.deepEqual(data, {
+					'groups:find': true,
+					'groups:posts:edit': true,
+					'groups:topics:delete': false,
+					'groups:topics:create': true,
+					'groups:topics:reply': true,
+					'groups:posts:delete': true,
+					'groups:read': true,
+					'groups:topics:read': true,
+				});
+
+				done();
+			});
+		});
+
+		it('should return false if cid is falsy', function (done) {
+			privileges.categories.isUserAllowedTo('find', null, adminUid, function (err, isAllowed) {
+				assert.ifError(err);
+				assert.equal(isAllowed, false);
 				done();
 			});
 		});
