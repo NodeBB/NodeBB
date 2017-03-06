@@ -241,22 +241,29 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 					uploadModal.find('.upload-btn').on('click', function () {
 						var url = uploadModal.find('#uploadFromUrl').val();
 						if (!url) {
-							return;
+							return false;
 						}
-
-						uploadModal.modal('hide');
-
-						pictureCropper.handleImageCrop({
+						socket.emit('user.uploadProfileImageFromUrl', {
+							uid: ajaxify.data.uid,
 							url: url,
-							socketMethod: 'user.uploadCroppedPicture',
-							aspectRatio: '1 / 1',
-							allowSkippingCrop: false,
-							restrictImageDimension: true,
-							imageDimension: ajaxify.data.profileImageDimension,
-							paramName: 'uid',
-							paramValue: ajaxify.data.theirid,
-						}, onUploadComplete);
+						}, function (err, url) {
+							if (err) {
+								return app.alertError(err);
+							}
 
+							uploadModal.modal('hide');
+
+							pictureCropper.handleImageCrop({
+								url: url,
+								socketMethod: 'user.uploadCroppedPicture',
+								aspectRatio: '1 / 1',
+								allowSkippingCrop: false,
+								restrictImageDimension: true,
+								imageDimension: ajaxify.data.profileImageDimension,
+								paramName: 'uid',
+								paramValue: ajaxify.data.theirid,
+							}, onUploadComplete);
+						});
 						return false;
 					});
 				});
