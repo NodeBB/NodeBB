@@ -329,7 +329,7 @@ module.exports = function (Topics) {
 	function check(item, min, max, minError, maxError, callback) {
 		// Trim and remove HTML (latter for composers that send in HTML, like redactor)
 		if (typeof item === 'string') {
-			item = S(item.trim()).stripTags().s;
+			item = S(item).stripTags().s.trim();
 		}
 
 		if (!item || item.length < parseInt(min, 10)) {
