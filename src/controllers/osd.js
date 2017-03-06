@@ -17,7 +17,7 @@ module.exports = function (req, res, next) {
 function generateXML() {
 	return xml([{
 		OpenSearchDescription: [
-			{ _attr: { xmlns: 'http://a9.com/-/spec/opensearch/1.1/' }},
+			{ _attr: { xmlns: 'http://a9.com/-/spec/opensearch/1.1/' } },
 			{ ShortName: String(meta.config.title || meta.config.browserTitle || 'NodeBB') },
 			{ Description: String(meta.config.description || '') },
 			{ Url: [{
@@ -26,7 +26,7 @@ function generateXML() {
 					method: 'get',
 					template: nconf.get('url') + '/search?term={searchTerms}&in=titlesposts',
 				},
-			}]},
+			}] },
 		],
 	}], { declaration: true, indent: '\t' });
 }
