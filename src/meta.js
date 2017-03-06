@@ -21,7 +21,6 @@ var utils = require('../public/src/utils');
 	require('./meta/errors')(Meta);
 	require('./meta/tags')(Meta);
 	require('./meta/dependencies')(Meta);
-	require('./meta/osd')(Meta);
 	Meta.templates = require('./meta/templates');
 	Meta.blacklist = require('./meta/blacklist');
 	Meta.languages = require('./meta/languages');
