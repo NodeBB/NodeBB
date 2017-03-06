@@ -1,15 +1,13 @@
 'use strict';
 
-var path = require('path');
 var xml = require('xml');
-var fs = require('fs');
 var nconf = require('nconf');
 
-var osdFilePath = path.join(__dirname, '../../build/public/osd.xml');
+var plugins = require('../plugins');
 
 module.exports = function (Meta) {
 	Meta.osd = {};
-	Meta.osd.build = function (callback) {
+	function generateXML () {
 		var osdObject = {
 			OpenSearchDescription: [
 				{
@@ -36,6 +34,12 @@ module.exports = function (Meta) {
 				},
 			],
 		};
-		fs.writeFile(osdFilePath, xml([osdObject], { declaration: true, indent: '\t' }), callback);
+		return xml([osdObject], { declaration: true, indent: '\t' });
+	}
+	Meta.osd.handleOSDRequest = function (req, res, next) {
+		if (plugins.hasListeners('filter:search.query')) {
+			res.type('application/xml').send(generateXML());
+		}
+		next();
 	};
 };

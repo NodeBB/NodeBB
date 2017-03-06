@@ -65,7 +65,7 @@ module.exports = function (Meta) {
 					defaultLinks.push({
 						rel: 'search',
 						type: 'application/opensearchdescription+xml',
-						href: nconf.get('relative_path') + '/assets/osd.xml',
+						href: nconf.get('relative_path') + '/osd.xml',
 					});
 				}
 

@@ -5,7 +5,7 @@ var winston = require('winston');
 
 var buildStart;
 
-var valid = ['js', 'clientCSS', 'acpCSS', 'tpl', 'lang', 'sound', 'osd'];
+var valid = ['js', 'clientCSS', 'acpCSS', 'tpl', 'lang', 'sound'];
 
 exports.buildAll = function (callback) {
 	exports.build(valid.join(','), callback);
@@ -115,12 +115,6 @@ exports.buildTargets = function (targets, callback) {
 					winston.info('[build] Linking sound files');
 					startTime = Date.now();
 					meta.sounds.build(step.bind(this, startTime, target, next));
-					break;
-
-				case 'osd':
-					winston.info('[build] Building OpenSearchDocument XML');
-					startTime = Date.now();
-					meta.osd.build(step.bind(this, startTime, target, next));
 					break;
 
 				default:
