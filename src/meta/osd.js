@@ -7,7 +7,7 @@ var plugins = require('../plugins');
 
 module.exports = function (Meta) {
 	Meta.osd = {};
-	function generateXML () {
+	function generateXML() {
 		var osdObject = {
 			OpenSearchDescription: [
 				{
