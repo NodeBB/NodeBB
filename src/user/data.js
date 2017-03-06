@@ -64,28 +64,24 @@ module.exports = function (User) {
 			addField('lastonline');
 		}
 
-<<<<<<< HEAD
-		db.getObjectsFields(keys, fields, function (err, users) {
-			if (err) {
-				return callback(err);
-			}
-
-			users = uids.map(function (uid) {
-				return users[ref[uid]];
-			});
-
-			modifyUserData(users, fieldsToRemove, callback);
-		});
-=======
 		async.waterfall([
 			function (next) {
-				db.getObjectsFields(keys, fields, next);
+				db.getObjectsFields(keys, fields, function (err, users) {
+					if (err) {
+						return callback(err);
+					}
+
+					users = uids.map(function (uid) {
+						return users[ref[uid]];
+					});
+
+					next(null, users);
+				});
 			},
 			function (users, next) {
 				modifyUserData(users, fieldsToRemove, next);
 			},
 		], callback);
->>>>>>> master
 	};
 
 	User.getMultipleUserFields = function (uids, fields, callback) {
@@ -117,28 +113,24 @@ module.exports = function (User) {
 			return 'user:' + uid;
 		});
 
-<<<<<<< HEAD
-		db.getObjects(keys, function (err, users) {
-			if (err) {
-				return callback(err);
-			}
-
-			users = uids.map(function (uid) {
-				return users[ref[uid]];
-			});
-
-			modifyUserData(users, [], callback);
-		});
-=======
 		async.waterfall([
 			function (next) {
-				db.getObjects(keys, next);
+				db.getObjects(keys, function (err, users) {
+					if (err) {
+						return callback(err);
+					}
+
+					users = uids.map(function (uid) {
+						return users[ref[uid]];
+					});
+
+					next(null, users);
+				});
 			},
 			function (users, next) {
 				modifyUserData(users, [], next);
 			},
 		], callback);
->>>>>>> master
 	};
 
 	function modifyUserData(users, fieldsToRemove, callback) {
