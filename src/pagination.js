@@ -1,6 +1,7 @@
 'use strict';
 
 var qs = require('querystring');
+var _ = require('underscore');
 
 var pagination = {};
 
@@ -37,9 +38,9 @@ pagination.create = function (currentPage, pageCount, queryObj) {
 		return a - b;
 	});
 
-	queryObj = queryObj || {};
-
 	delete queryObj._;
+
+	queryObj = _.clone(queryObj || {});
 
 	var pages = pagesToShow.map(function (page) {
 		queryObj.page = page;
