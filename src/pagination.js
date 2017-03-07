@@ -38,9 +38,9 @@ pagination.create = function (currentPage, pageCount, queryObj) {
 		return a - b;
 	});
 
-	delete queryObj._;
-
 	queryObj = _.clone(queryObj || {});
+
+	delete queryObj._;
 
 	var pages = pagesToShow.map(function (page) {
 		queryObj.page = page;
