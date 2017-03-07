@@ -99,7 +99,7 @@ $(document).ready(function () {
 	};
 
 	ajaxify.handleRedirects = function (url) {
-		url = ajaxify.removeRelativePath(url.replace(/\/$/, '')).toLowerCase();
+		url = ajaxify.removeRelativePath(url.replace(/^\/|\/$/g, '')).toLowerCase();
 		var isClientToAdmin = url.startsWith('admin') && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') !== 0;
 		var isAdminToClient = !url.startsWith('admin') && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') === 0;
 		var uploadsOrApi = url.startsWith('assets/uploads') || url.startsWith('uploads') || url.startsWith('api');
