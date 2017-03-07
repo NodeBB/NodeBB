@@ -108,6 +108,7 @@ settingsController.get = function (req, res, callback) {
 
 
 		userData.bootswatchSkinOptions = [
+			{ name: 'No skin', value: 'noskin' },
 			{ name: 'Default', value: 'default' },
 			{ name: 'Cerulean', value: 'cerulean' },
 			{ name: 'Cosmo', value: 'cosmo'	},

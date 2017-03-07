@@ -61,7 +61,8 @@ apiController.getConfig = function (req, res, next) {
 	config.categoryTopicSort = meta.config.categoryTopicSort || 'newest_to_oldest';
 	config.csrf_token = req.csrfToken();
 	config.searchEnabled = plugins.hasListeners('filter:search.query');
-	config.bootswatchSkin = meta.config.bootswatchSkin || 'default';
+	config.bootswatchSkin = meta.config.bootswatchSkin || 'noskin';
+	config.defaultBootswatchSkin = meta.config.bootswatchSkin || 'noskin';
 
 	var timeagoCutoff = meta.config.timeagoCutoff === undefined ? 30 : meta.config.timeagoCutoff;
 	config.timeagoCutoff = timeagoCutoff !== '' ? Math.max(0, parseInt(timeagoCutoff, 10)) : timeagoCutoff;
@@ -90,7 +91,7 @@ apiController.getConfig = function (req, res, next) {
 			config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
 			config.topicSearchEnabled = settings.topicSearchEnabled || false;
 			config.delayImageLoading = settings.delayImageLoading !== undefined ? settings.delayImageLoading : true;
-			config.bootswatchSkin = settings.bootswatchSkin || config.bootswatchSkin;
+			config.bootswatchSkin = (settings.bootswatchSkin && settings.bootswatchSkin !== 'default') ? settings.bootswatchSkin : config.bootswatchSkin;
 			plugins.fireHook('filter:config.get', config, next);
 		},
 	], function (err, config) {

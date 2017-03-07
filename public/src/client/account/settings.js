@@ -49,9 +49,12 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 
 	function changePageSkin(skinName) {
 		var css = $('#bootswatchCSS');
-		if (skinName === 'default') {
+		if (skinName === 'noskin' || (skinName === 'default' && config.defaultBootswatchSkin === 'noskin')) {
 			css.remove();
 		} else {
+			if (skinName === 'default') {
+				skinName = config.defaultBootswatchSkin;
+			}
 			var cssSource = '//maxcdn.bootstrapcdn.com/bootswatch/latest/' + skinName + '/bootstrap.min.css';
 			if (css.length) {
 				css.attr('href', cssSource);
