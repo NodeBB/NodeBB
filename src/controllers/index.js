@@ -30,6 +30,7 @@ Controllers.admin = require('./admin');
 Controllers.globalMods = require('./globalmods');
 Controllers.mods = require('./mods');
 Controllers.sitemap = require('./sitemap');
+Controllers.osd = require('./osd');
 Controllers['404'] = require('./404');
 Controllers.errors = require('./errors');
 
@@ -130,7 +131,7 @@ Controllers.login = function (req, res, next) {
 	if (!data.allowLocalLogin && !data.allowRegistration && data.alternate_logins && data.authentication.length === 1) {
 		if (res.locals.isAPI) {
 			return helpers.redirect(res, {
-				external: data.authentication[0].url,
+				external: nconf.get('relative_path') + data.authentication[0].url,
 			});
 		}
 		return res.redirect(nconf.get('relative_path') + data.authentication[0].url);

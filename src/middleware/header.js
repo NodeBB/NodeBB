@@ -190,12 +190,12 @@ module.exports = function (middleware) {
 	}
 
 	function setBootswatchCSS(obj, config) {
-		if (config && config.bootswatchSkin !== 'default') {
+		if (config && config.bootswatchSkin !== 'noskin') {
 			var skinToUse = '';
 
 			if (parseInt(meta.config.disableCustomUserSkins, 10) !== 1) {
 				skinToUse = config.bootswatchSkin;
-			} else if (meta.config.bootswatchSkin !== 'default') {
+			} else if (meta.config.bootswatchSkin) {
 				skinToUse = meta.config.bootswatchSkin;
 			}
 
