@@ -122,7 +122,7 @@ function resizeImage(fileObj, callback) {
 			var extname = path.extname(fileObj.url);
 			var basename = path.basename(fileObj.url, extname);
 
-			fileObj.url = path.join(dirname, basename + '-resized' + extname);
+			fileObj.url = dirname + '/' + basename + '-resized' + extname;
 
 			next(null, fileObj);
 		},
