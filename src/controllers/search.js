@@ -60,7 +60,7 @@ searchController.search = function (req, res, next) {
 
 		var searchData = results.search;
 		searchData.categories = categoriesData;
-		searchData.categoriesCount = results.categories.length;
+		searchData.categoriesCount = categoriesData.length;
 		searchData.pagination = pagination.create(page, searchData.pageCount, req.query);
 		searchData.showAsPosts = !req.query.showAs || req.query.showAs === 'posts';
 		searchData.showAsTopics = req.query.showAs === 'topics';
