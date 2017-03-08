@@ -3,6 +3,7 @@
 var async = require('async');
 var validator = require('validator');
 var _ = require('underscore');
+var S = require('string');
 
 var posts = require('../../posts');
 var groups = require('../../groups');
@@ -12,6 +13,9 @@ var websockets = require('../index');
 
 module.exports = function (SocketPosts) {
 	SocketPosts.edit = function (socket, data, callback) {
+		// Trim and remove HTML (latter for composers that send in HTML, like redactor)
+		var contentLen = S(data.content.length).stripTags().s.trim().length;
+
 		if (!socket.uid) {
 			return callback(new Error('[[error:not-logged-in]]'));
 		} else if (!data || !data.pid || !data.content) {
@@ -24,9 +28,9 @@ module.exports = function (SocketPosts) {
 			return callback(new Error('[[error:not-enough-tags, ' + meta.config.minimumTagsPerTopic + ']]'));
 		} else if (data.tags && data.tags.length > parseInt(meta.config.maximumTagsPerTopic, 10)) {
 			return callback(new Error('[[error:too-many-tags, ' + meta.config.maximumTagsPerTopic + ']]'));
-		} else if (!data.content || data.content.length < parseInt(meta.config.minimumPostLength, 10)) {
+		} else if (!data.content || contentLen < parseInt(meta.config.minimumPostLength, 10)) {
 			return callback(new Error('[[error:content-too-short, ' + meta.config.minimumPostLength + ']]'));
-		} else if (data.content.length > parseInt(meta.config.maximumPostLength, 10)) {
+		} else if (contentLen > parseInt(meta.config.maximumPostLength, 10)) {
 			return callback(new Error('[[error:content-too-long, ' + meta.config.maximumPostLength + ']]'));
 		}
 
