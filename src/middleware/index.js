@@ -122,7 +122,9 @@ middleware.routeTouchIcon = function (req, res) {
 	if (meta.config['brand:touchIcon'] && validator.isURL(meta.config['brand:touchIcon'])) {
 		return res.redirect(meta.config['brand:touchIcon']);
 	} else {
-		return res.sendFile(path.join(__dirname, '../../public', meta.config['brand:touchIcon'] || '/logo.png'), {
+		var touchIconPath = meta.config['brand:touchIcon'] || 'logo.png';
+		touchIconPath = path.join(nconf.get('base_dir'), 'public', touchIconPath.replace(/assets\/uploads/, 'uploads'));
+		return res.sendFile(touchIconPath, {
 			maxAge: req.app.enabled('cache') ? 5184000000 : 0
 		});
 	}
