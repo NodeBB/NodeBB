@@ -14,7 +14,7 @@ var websockets = require('../index');
 module.exports = function (SocketPosts) {
 	SocketPosts.edit = function (socket, data, callback) {
 		// Trim and remove HTML (latter for composers that send in HTML, like redactor)
-		var contentLen = S(data.content.length).stripTags().s.trim().length;
+		var contentLen = S(data.content).stripTags().s.trim().length;
 
 		if (!socket.uid) {
 			return callback(new Error('[[error:not-logged-in]]'));
