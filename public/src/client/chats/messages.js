@@ -35,7 +35,14 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 					if (err.message === '[[error:email-not-confirmed-chat]]') {
 						return app.showEmailConfirmWarning(err);
 					}
-					return app.alertError(err.message);
+
+					return app.alert({
+						alert_id: 'chat_spam_error',
+						title: '[[global:alert.error]]',
+						message: err.message,
+						type: 'danger',
+						timeout: 10000,
+					});
 				}
 
 				sounds.play('chat-outgoing');
