@@ -315,6 +315,15 @@ describe('Groups', function () {
 				});
 			});
 		});
+
+		it('should fail if system groups is being renamed', function (done) {
+			Groups.update('administrators', {
+				name: 'administrators_fail',
+			}, function (err) {
+				assert.equal(err.message, '[[error:not-allowed-to-rename-system-group]]');
+				done();
+			});
+		});
 	});
 
 	describe('.destroy()', function () {

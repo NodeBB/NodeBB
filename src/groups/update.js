@@ -91,16 +91,18 @@ module.exports = function (Groups) {
 				async.apply(db.sortedSetRemove, 'groups:visible:name', groupName.toLowerCase() + ':' + groupName),
 			], callback);
 		} else {
-			db.getObjectFields('group:' + groupName, ['createtime', 'memberCount'], function (err, groupData) {
-				if (err) {
-					return callback(err);
-				}
-				async.parallel([
-					async.apply(db.sortedSetAdd, 'groups:visible:createtime', groupData.createtime, groupName),
-					async.apply(db.sortedSetAdd, 'groups:visible:memberCount', groupData.memberCount, groupName),
-					async.apply(db.sortedSetAdd, 'groups:visible:name', 0, groupName.toLowerCase() + ':' + groupName),
-				], callback);
-			});
+			async.waterfall([
+				function (next) {
+					db.getObjectFields('group:' + groupName, ['createtime', 'memberCount'], next);
+				},
+				function (groupData, next) {
+					async.parallel([
+						async.apply(db.sortedSetAdd, 'groups:visible:createtime', groupData.createtime, groupName),
+						async.apply(db.sortedSetAdd, 'groups:visible:memberCount', groupData.memberCount, groupName),
+						async.apply(db.sortedSetAdd, 'groups:visible:name', 0, groupName.toLowerCase() + ':' + groupName),
+					], next);
+				},
+			], callback);
 		}
 	}
 
@@ -155,40 +157,48 @@ module.exports = function (Groups) {
 
 	function checkNameChange(currentName, newName, callback) {
 		if (currentName === newName) {
-			return callback();
+			return setImmediate(callback);
 		}
 		var currentSlug = utils.slugify(currentName);
 		var newSlug = utils.slugify(newName);
 		if (currentSlug === newSlug) {
-			return callback();
+			return setImmediate(callback);
 		}
-		Groups.existsBySlug(newSlug, function (err, exists) {
-			if (err || exists) {
-				return callback(err || new Error('[[error:group-already-exists]]'));
-			}
-			callback();
-		});
+		async.waterfall([
+			function (next) {
+				Groups.existsBySlug(newSlug, next);
+			},
+			function (exists, next) {
+				next(!exists ? new Error('[[error:group-already-exists]]') : null);
+			},
+		], callback);
 	}
 
 	function renameGroup(oldName, newName, callback) {
 		if (oldName === newName || !newName || newName.length === 0) {
-			return callback();
+			return setImmediate(callback);
 		}
-
-		db.getObject('group:' + oldName, function (err, group) {
-			if (err || !group) {
-				return callback(err);
-			}
-
-			if (parseInt(group.system, 10) === 1) {
-				return callback();
-			}
-
-			Groups.exists(newName, function (err, exists) {
-				if (err || exists) {
-					return callback(err || new Error('[[error:group-already-exists]]'));
+		var group;
+		async.waterfall([
+			function (next) {
+				db.getObject('group:' + oldName, next);
+			},
+			function (_group, next) {
+				group = _group;
+				if (!group) {
+					return callback();
 				}
 
+				if (parseInt(group.system, 10) === 1) {
+					return callback(new Error('[[error:not-allowed-to-rename-system-group]]'));
+				}
+
+				Groups.exists(newName, next);
+			},
+			function (exists, next) {
+				if (exists) {
+					return callback(new Error('[[error:group-already-exists]]'));
+				}
 				async.series([
 					async.apply(db.setObjectField, 'group:' + oldName, 'name', newName),
 					async.apply(db.setObjectField, 'group:' + oldName, 'slug', utils.slugify(newName)),
@@ -222,29 +232,33 @@ module.exports = function (Groups) {
 
 						next();
 					},
-				], callback);
-			});
+				], next);
+			},
+		], function (err) {
+			callback(err);
 		});
 	}
 
 	function renameGroupMember(group, oldName, newName, callback) {
-		db.isSortedSetMember(group, oldName, function (err, isMember) {
-			if (err || !isMember) {
-				return callback(err);
-			}
-			var score;
-			async.waterfall([
-				function (next) {
-					db.sortedSetScore(group, oldName, next);
-				},
-				function (_score, next) {
-					score = _score;
-					db.sortedSetRemove(group, oldName, next);
-				},
-				function (next) {
-					db.sortedSetAdd(group, score, newName, next);
-				},
-			], callback);
-		});
+		var score;
+		async.waterfall([
+			function (next) {
+				db.isSortedSetMember(group, oldName, next);
+			},
+			function (isMember, next) {
+				if (!isMember) {
+					return callback();
+				}
+
+				db.sortedSetScore(group, oldName, next);
+			},
+			function (_score, next) {
+				score = _score;
+				db.sortedSetRemove(group, oldName, next);
+			},
+			function (next) {
+				db.sortedSetAdd(group, score, newName, next);
+			},
+		], callback);
 	}
 };
