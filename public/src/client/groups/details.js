@@ -75,15 +75,23 @@ define('forum/groups/details', [
 				break;
 
 			case 'kick':
-				socket.emit('groups.kick', {
-					uid: uid,
-					groupName: groupName,
-				}, function (err) {
-					if (!err) {
-						userRow.slideUp().remove();
-					} else {
-						app.alertError(err.message);
-					}
+				translator.translate('[[groups:details.kick_confirm]]', function (translated) {
+					bootbox.confirm(translated, function (confirm) {
+						if (!confirm) {
+							return;
+						}
+
+						socket.emit('groups.kick', {
+							uid: uid,
+							groupName: groupName,
+						}, function (err) {
+							if (!err) {
+								userRow.slideUp().remove();
+							} else {
+								app.alertError(err.message);
+							}
+						});
+					});
 				});
 				break;
 
