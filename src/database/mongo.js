@@ -84,6 +84,9 @@
 		var connOptions = {
 			server: {
 				poolSize: parseInt(nconf.get('mongo:poolSize'), 10) || 10,
+				socketOptions: { autoReconnect: true, keepAlive: nconf.get('mongo:keepAlive') || 0 },
+				reconnectTries : 3600,
+				reconnectInterval : 1000,
 			},
 		};
 
