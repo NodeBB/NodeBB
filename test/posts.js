@@ -743,6 +743,48 @@ describe('Post\'s', function () {
 		});
 	});
 
+	describe('parse', function () {
+		it('should store post content in cache', function (done) {
+			var oldValue = global.env;
+			global.env = 'production';
+			var postData = {
+				pid: 9999,
+				content: 'some post content',
+			};
+			posts.parsePost(postData, function (err) {
+				assert.ifError(err);
+				posts.parsePost(postData, function (err) {
+					assert.ifError(err);
+					global.env = oldValue;
+					done();
+				});
+			});
+		});
+
+		it('should parse signature and remove links and images', function (done) {
+			var meta = require('../src/meta');
+			meta.config['signatures:disableLinks'] = 1;
+			meta.config['signatures:disableImages'] = 1;
+			var userData = {
+				signature: '<img src="boop"/><a href="link">test</a> derp',
+			};
+
+			posts.parseSignature(userData, 1, function (err, data) {
+				assert.ifError(err);
+				assert.equal(data.userData.signature, 'test derp');
+				done();
+			});
+		});
+
+		it('should turn relative links in post body to absolute urls', function (done) {
+			var nconf = require('nconf');
+			var content = '<a href="/users">test</a> <a href="youtube.com">youtube</a>';
+			var parsedContent = posts.relativeToAbsolute(content);
+			assert.equal(parsedContent, '<a href="' + nconf.get('url') + '/users">test</a> <a href="//youtube.com">youtube</a>');
+			done();
+		});
+	});
+
 	describe('socket methods', function () {
 		var pid;
 		before(function (done) {
@@ -809,7 +851,7 @@ describe('Post\'s', function () {
 		});
 
 		it('shold error with invalid data', function (done) {
-			socketPosts.loadMoreBookmarks({ uid: voterUid }, { uid: voterUid, after: null }, function (err, postData) {
+			socketPosts.loadMoreBookmarks({ uid: voterUid }, { uid: voterUid, after: null }, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
