@@ -206,7 +206,7 @@ module.exports = function (Topics) {
 	Topics.markAsRead = function (tids, uid, callback) {
 		callback = callback || function () {};
 		if (!Array.isArray(tids) || !tids.length) {
-			return callback();
+			return setImmediate(callback, null, false);
 		}
 
 		tids = tids.filter(function (tid, index, array) {
@@ -214,7 +214,7 @@ module.exports = function (Topics) {
 		});
 
 		if (!tids.length) {
-			return callback(null, false);
+			return setImmediate(callback, null, false);
 		}
 
 		async.waterfall([

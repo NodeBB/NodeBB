@@ -1181,6 +1181,14 @@ describe('Topic\'s', function () {
 				});
 			});
 		});
+
+		it('should not do anything if tids is empty array', function (done) {
+			socketTopics.markAsRead({ uid: adminUid }, [], function (err, markedRead) {
+				assert.ifError(err);
+				assert(!markedRead);
+				done();
+			});
+		});
 	});
 
 	describe('tags', function () {
