@@ -169,7 +169,7 @@ module.exports = function (Groups) {
 				Groups.existsBySlug(newSlug, next);
 			},
 			function (exists, next) {
-				next(!exists ? new Error('[[error:group-already-exists]]') : null);
+				next(exists ? new Error('[[error:group-already-exists]]') : null);
 			},
 		], callback);
 	}
