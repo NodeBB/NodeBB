@@ -772,6 +772,8 @@ describe('Post\'s', function () {
 			posts.parseSignature(userData, 1, function (err, data) {
 				assert.ifError(err);
 				assert.equal(data.userData.signature, 'test derp');
+				meta.config['signatures:disableLinks'] = 0;
+				meta.config['signatures:disableImages'] = 0;
 				done();
 			});
 		});
