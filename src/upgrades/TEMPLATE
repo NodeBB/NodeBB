@@ -1,4 +1,5 @@
 /* jslint node: true */
+
 'use strict';
 
 var db = require('../database');
@@ -11,5 +12,5 @@ module.exports = {
 	timestamp: Date.UTC(2017, 0, 1),
 	method: function (callback) {
 		// Do stuff here...
-	}
+	},
 };
