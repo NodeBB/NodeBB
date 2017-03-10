@@ -148,6 +148,7 @@ define('admin/settings', ['uploader'], function (uploader) {
 			confirmKeys: [13, 44],
 			trimValue: true,
 		});
+		app.flags._unsaved = false;
 	}
 
 	Settings.remove = function (key) {
