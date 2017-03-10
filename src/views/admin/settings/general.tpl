@@ -123,6 +123,11 @@
 					<span class="mdl-switch__label"><strong>[[admin/settings/general:outgoing-links.warning-page]]</strong></span>
 				</label>
 			</div>
+
+			<div class="form-group">
+				<label for="outgoingLinks:whitelist">[[admin/settings/general:outgoing-links.whitelist]]</label>
+				<input id="outgoingLinks:whitelist" type="text" class="form-control" placeholder="subdomain.domain.com, anotherdomain.com" data-field="outgoingLinks:whitelist" />
+			</div>
 		</form>
 	</div>
 </div>
