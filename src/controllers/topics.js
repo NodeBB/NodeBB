@@ -147,6 +147,24 @@ topicsController.get = function (req, res, callback) {
 			});
 		},
 		function (topicData, next) {
+			if (!topicData.deleterUid) {
+				return next(null, topicData);
+			}
+
+			user.getUserFields(topicData.deleterUid, ['username', 'userslug'], function(err, deleter) {
+				if (err) {
+					return next(err);
+				}
+
+				topicData.deleter = deleter;
+				topicData.deleter.timestampISO = topicData.deletedTimestampISO
+				delete topicData.deleterUid;
+				delete topicData.deletedTimestampISO;
+
+				next(null, topicData);
+			});
+		},
+		function (topicData, next) {
 			function findPost(index) {
 				for (var i = 0; i < topicData.posts.length; i += 1) {
 					if (parseInt(topicData.posts[i].index, 10) === parseInt(index, 10)) {
