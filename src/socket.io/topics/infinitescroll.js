@@ -49,7 +49,7 @@ module.exports = function (SocketTopics) {
 				} else if (reverse) {
 					start = results.topic.postcount - start - infScrollPostsPerPage;
 				} else {
-					start = start - infScrollPostsPerPage;
+					start -= infScrollPostsPerPage;
 				}
 
 				var stop = start + (infScrollPostsPerPage);
