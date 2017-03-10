@@ -18,7 +18,11 @@ module.exports = function (Topics) {
 
 			async.parallel([
 				function (next) {
-					Topics.setTopicField(tid, 'deleted', 1, next);
+					Topics.setTopicFields(tid, {
+						deleted: 1,
+						deleterUid: uid,
+						deletedTimestamp: Date.now(),
+					}, next);
 				},
 				function (next) {
 					db.sortedSetsRemove(['topics:recent', 'topics:posts', 'topics:views'], tid, next);
@@ -46,6 +50,9 @@ module.exports = function (Topics) {
 			async.parallel([
 				function (next) {
 					Topics.setTopicField(tid, 'deleted', 0, next);
+				},
+				function (next) {
+					Topics.deleteTopicFields(tid, ['deleterUid', 'deletedTimestamp'], next);
 				},
 				function (next) {
 					Topics.updateRecent(tid, topicData.lastposttime, next);

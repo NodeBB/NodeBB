@@ -64,6 +64,10 @@ apiController.getConfig = function (req, res, next) {
 	config.bootswatchSkin = meta.config.bootswatchSkin || 'noskin';
 	config.defaultBootswatchSkin = meta.config.bootswatchSkin || 'noskin';
 
+	if (config.useOutgoingLinksPage) {
+		config.outgoingLinksWhitelist = meta.config['outgoingLinks:whitelist'];
+	}
+
 	var timeagoCutoff = meta.config.timeagoCutoff === undefined ? 30 : meta.config.timeagoCutoff;
 	config.timeagoCutoff = timeagoCutoff !== '' ? Math.max(0, parseInt(timeagoCutoff, 10)) : timeagoCutoff;
 

@@ -366,8 +366,13 @@ $(document).ready(function () {
 							window.open(this.href, '_blank');
 							e.preventDefault();
 						} else if (config.useOutgoingLinksPage) {
-							ajaxify.go('outgoing?url=' + encodeURIComponent(this.href));
-							e.preventDefault();
+							var safeUrls = config.outgoingLinksWhitelist.trim().split(/[\s,]+/g);
+							var href = this.href;
+
+							if (!safeUrls.some(function (url) { return href.indexOf(url) !== -1; })) {
+								ajaxify.go('outgoing?url=' + encodeURIComponent(href));
+								e.preventDefault();
+							}
 						}
 					}
 				}

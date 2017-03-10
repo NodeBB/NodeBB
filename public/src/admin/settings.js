@@ -102,6 +102,7 @@ define('admin/settings', ['uploader'], function (uploader) {
 		});
 
 		handleUploads();
+		setupTagsInput();
 
 		$('#clear-sitemap-cache').off('click').on('click', function () {
 			socket.emit('admin.settings.clearSitemapCache', function () {
@@ -140,6 +141,14 @@ define('admin/settings', ['uploader'], function (uploader) {
 				});
 			});
 		});
+	}
+
+	function setupTagsInput() {
+		$('[data-field-type="tagsinput"]').tagsinput({
+			confirmKeys: [13, 44],
+			trimValue: true,
+		});
+		app.flags._unsaved = false;
 	}
 
 	Settings.remove = function (key) {

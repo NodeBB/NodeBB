@@ -180,6 +180,7 @@ var social = require('./social');
 					isIgnoring: async.apply(Topics.isIgnoring, [topicData.tid], uid),
 					bookmark: async.apply(Topics.getUserBookmark, topicData.tid, uid),
 					postSharing: async.apply(social.getActivePostSharing),
+					deleter: async.apply(getDeleter, topicData),
 					related: function (next) {
 						async.waterfall([
 							function (next) {
@@ -202,6 +203,8 @@ var social = require('./social');
 				topicData.isIgnoring = results.isIgnoring[0];
 				topicData.bookmark = results.bookmark;
 				topicData.postSharing = results.postSharing;
+				topicData.deleter = results.deleter;
+				topicData.deletedTimestampISO = utils.toISOString(topicData.deletedTimestamp);
 				topicData.related = results.related || [];
 
 				topicData.unreplied = parseInt(topicData.postcount, 10) === 1;
@@ -256,6 +259,13 @@ var social = require('./social');
 				Topics.addPostData(posts, uid, next);
 			},
 		], callback);
+	}
+
+	function getDeleter(topicData, callback) {
+		if (!topicData.deleterUid) {
+			return setImmediate(callback, null, null);
+		}
+		user.getUserFields(topicData.deleterUid, ['username', 'userslug', 'picture'], callback);
 	}
 
 	Topics.getMainPost = function (tid, uid, callback) {
