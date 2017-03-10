@@ -10,7 +10,7 @@ var social = require('../../social');
 
 module.exports = function (SocketTopics) {
 	SocketTopics.loadMore = function (socket, data, callback) {
-		if (!data || !data.tid || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
+		if (!data || !data.tid || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0 || !utils.isNumber(data.count) || parseInt(data.count, 10) <= 0) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 		var userPrivileges;
@@ -40,7 +40,7 @@ module.exports = function (SocketTopics) {
 				var reverse = data.topicPostSort === 'newest_to_oldest' || data.topicPostSort === 'most_votes';
 				var start = Math.max(0, parseInt(data.after, 10));
 
-				var infScrollPostsPerPage = 10;
+				var infScrollPostsPerPage = parseInt(data.count, 10) - 1;
 
 				if (data.direction > 0) {
 					if (reverse) {
@@ -88,34 +88,34 @@ module.exports = function (SocketTopics) {
 	};
 
 	SocketTopics.loadMoreUnreadTopics = function (socket, data, callback) {
-		if (!data || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
+		if (!data || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0 || !utils.isNumber(data.count) || parseInt(data.count, 10) <= 0) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
 		var start = parseInt(data.after, 10);
-		var stop = start + 9;
+		var stop = start + parseInt(data.count, 10) - 1;
 
 		topics.getUnreadTopics({ cid: data.cid, uid: socket.uid, start: start, stop: stop, filter: data.filter }, callback);
 	};
 
 	SocketTopics.loadMoreRecentTopics = function (socket, data, callback) {
-		if (!data || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
+		if (!data || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0 || !utils.isNumber(data.count) || parseInt(data.count, 10) <= 0) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
 		var start = parseInt(data.after, 10);
-		var stop = start + 9;
+		var stop = start + parseInt(data.count, 10) - 1;
 
 		topics.getRecentTopics(data.cid, socket.uid, start, stop, data.filter, callback);
 	};
 
 	SocketTopics.loadMoreFromSet = function (socket, data, callback) {
-		if (!data || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0 || !data.set) {
+		if (!data || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0 || !utils.isNumber(data.count) || parseInt(data.count, 10) <= 0 || !data.set) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
 		var start = parseInt(data.after, 10);
-		var stop = start + 9;
+		var stop = start + parseInt(data.count, 10) - 1;
 
 		topics.getTopicsFromSet(data.set, socket.uid, start, stop, callback);
 	};

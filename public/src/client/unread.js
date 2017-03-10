@@ -92,6 +92,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 			var cid = params.cid;
 			infinitescroll.loadMore('topics.loadMoreUnreadTopics', {
 				after: $('[component="category"]').attr('data-nextstart'),
+				count: config.topicsPerPage,
 				cid: cid,
 				filter: ajaxify.data.selectedFilter.filter,
 			}, function (data, done) {
