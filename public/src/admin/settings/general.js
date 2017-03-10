@@ -17,11 +17,6 @@ define('admin/settings/general', ['admin/settings'], function () {
 		$('button[data-action="removeOgImage"]').on('click', function () {
 			$('input[data-field="removeOgImage"]').val('');
 		});
-
-		$('[data-field-type="tagsinput"]').tagsinput({
-			confirmKeys: [13, 44],
-			trimValue: true,
-		});
 	};
 
 	return Module;
