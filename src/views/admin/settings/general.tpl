@@ -31,8 +31,8 @@
 			<label>[[admin/settings/general:description]]</label>
 			<input type="text" class="form-control" placeholder="[[admin/settings/general:description.placeholder]]" data-field="description" /><br />
 
-			<label>[[admin/settings/general:keywords]]</label>
-			<input type="text" class="form-control" placeholder="[[admin/settings/general:keywords-placeholder]]" data-field="keywords" /><br />
+			<label>[[admin/settings/general:keywords]]</label><br />
+			<input type="text" class="form-control" placeholder="[[admin/settings/general:keywords-placeholder]]" data-field="keywords" data-field-type="tagsinput" /><br />
 		</form>
 	</div>
 </div>
