@@ -102,7 +102,7 @@ Messaging.isNewSet = function (uid, roomId, timestamp, callback) {
 		},
 		function (messages, next) {
 			if (messages && messages.length) {
-				next(null, parseInt(timestamp, 10) > parseInt(messages[0].score, 10) + (1000 * 60 * 5));
+				next(null, parseInt(timestamp, 10) > parseInt(messages[0].score, 10) + Messaging.newMessageCutoff);
 			} else {
 				next(null, true);
 			}

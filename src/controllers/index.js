@@ -3,34 +3,36 @@
 var async = require('async');
 var nconf = require('nconf');
 var validator = require('validator');
-var winston = require('winston');
 
 var meta = require('../meta');
 var user = require('../user');
 var plugins = require('../plugins');
 var helpers = require('./helpers');
 
-var Controllers = {
-	topics: require('./topics'),
-	posts: require('./posts'),
-	categories: require('./categories'),
-	category: require('./category'),
-	unread: require('./unread'),
-	recent: require('./recent'),
-	popular: require('./popular'),
-	tags: require('./tags'),
-	search: require('./search'),
-	users: require('./users'),
-	groups: require('./groups'),
-	accounts: require('./accounts'),
-	authentication: require('./authentication'),
-	api: require('./api'),
-	admin: require('./admin'),
-	globalMods: require('./globalmods'),
-	mods: require('./mods'),
-	sitemap: require('./sitemap'),
-};
+var Controllers = module.exports;
 
+Controllers.topics = require('./topics');
+Controllers.posts = require('./posts');
+Controllers.categories = require('./categories');
+Controllers.category = require('./category');
+Controllers.unread = require('./unread');
+Controllers.recent = require('./recent');
+Controllers.popular = require('./popular');
+Controllers.tags = require('./tags');
+Controllers.search = require('./search');
+Controllers.user = require('./user');
+Controllers.users = require('./users');
+Controllers.groups = require('./groups');
+Controllers.accounts = require('./accounts');
+Controllers.authentication = require('./authentication');
+Controllers.api = require('./api');
+Controllers.admin = require('./admin');
+Controllers.globalMods = require('./globalmods');
+Controllers.mods = require('./mods');
+Controllers.sitemap = require('./sitemap');
+Controllers.osd = require('./osd');
+Controllers['404'] = require('./404');
+Controllers.errors = require('./errors');
 
 Controllers.home = function (req, res, next) {
 	var route = meta.config.homePageRoute || (meta.config.homePageCustom || '').replace(/^\/+/, '') || 'categories';
@@ -129,7 +131,7 @@ Controllers.login = function (req, res, next) {
 	if (!data.allowLocalLogin && !data.allowRegistration && data.alternate_logins && data.authentication.length === 1) {
 		if (res.locals.isAPI) {
 			return helpers.redirect(res, {
-				external: data.authentication[0].url,
+				external: nconf.get('relative_path') + data.authentication[0].url,
 			});
 		}
 		return res.redirect(nconf.get('relative_path') + data.authentication[0].url);
@@ -321,19 +323,18 @@ Controllers.manifest = function (req, res) {
 	res.status(200).json(manifest);
 };
 
-Controllers.outgoing = function (req, res) {
+Controllers.outgoing = function (req, res, next) {
 	var url = req.query.url || '';
-	var data = {
+
+	if (!url) {
+		return next();
+	}
+
+	res.render('outgoing', {
 		outgoing: validator.escape(String(url)),
 		title: meta.config.title,
 		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[notifications:outgoing_link]]' }]),
-	};
-
-	if (url) {
-		res.render('outgoing', data);
-	} else {
-		res.status(404).redirect(nconf.get('relative_path') + '/404');
-	}
+	});
 };
 
 Controllers.termsOfUse = function (req, res, next) {
@@ -346,102 +347,3 @@ Controllers.termsOfUse = function (req, res, next) {
 Controllers.ping = function (req, res) {
 	res.status(200).send(req.path === '/sping' ? 'healthy' : '200');
 };
-
-Controllers.handle404 = function (req, res) {
-	var relativePath = nconf.get('relative_path');
-	var isClientScript = new RegExp('^' + relativePath + '\\/assets\\/src\\/.+\\.js');
-
-	if (plugins.hasListeners('action:meta.override404')) {
-		return plugins.fireHook('action:meta.override404', {
-			req: req,
-			res: res,
-			error: {},
-		});
-	}
-
-	if (isClientScript.test(req.url)) {
-		res.type('text/javascript').status(200).send('');
-	} else if (req.path.startsWith(relativePath + '/assets/uploads') || (req.get('accept') && req.get('accept').indexOf('text/html') === -1) || req.path === '/favicon.ico') {
-		meta.errors.log404(req.path || '');
-		res.sendStatus(404);
-	} else if (req.accepts('html')) {
-		if (process.env.NODE_ENV === 'development') {
-			winston.warn('Route requested but not found: ' + req.url);
-		}
-
-		meta.errors.log404(req.path.replace(/^\/api/, '') || '');
-		res.status(404);
-
-		var path = String(req.path || '');
-
-		if (res.locals.isAPI) {
-			return res.json({ path: validator.escape(path.replace(/^\/api/, '')), title: '[[global:404.title]]' });
-		}
-		var middleware = require('../middleware');
-		middleware.buildHeader(req, res, function () {
-			res.render('404', { path: validator.escape(path), title: '[[global:404.title]]' });
-		});
-	} else {
-		res.status(404).type('txt').send('Not found');
-	}
-};
-
-Controllers.handleURIErrors = function (err, req, res, next) {
-	// Handle cases where malformed URIs are passed in
-	if (err instanceof URIError) {
-		var tidMatch = req.path.match(/^\/topic\/(\d+)\//);
-		var cidMatch = req.path.match(/^\/category\/(\d+)\//);
-
-		if (tidMatch) {
-			res.redirect(nconf.get('relative_path') + tidMatch[0]);
-		} else if (cidMatch) {
-			res.redirect(nconf.get('relative_path') + cidMatch[0]);
-		} else {
-			winston.warn('[controller] Bad request: ' + req.path);
-			if (res.locals.isAPI) {
-				res.status(400).json({
-					error: '[[global:400.title]]',
-				});
-			} else {
-				var middleware = require('../middleware');
-				middleware.buildHeader(req, res, function () {
-					res.render('400', { error: validator.escape(String(err.message)) });
-				});
-			}
-		}
-	} else {
-		next(err);
-	}
-};
-
-// this needs to have four arguments or express treats it as `(req, res, next)`
-// don't remove `next`!
-Controllers.handleErrors = function (err, req, res, next) { // eslint-disable-line no-unused-vars
-	switch (err.code) {
-	case 'EBADCSRFTOKEN':
-		winston.error(req.path + '\n', err.message);
-		return res.sendStatus(403);
-	case 'blacklisted-ip':
-		return res.status(403).type('text/plain').send(err.message);
-	}
-
-	if (parseInt(err.status, 10) === 302 && err.path) {
-		return res.locals.isAPI ? res.status(302).json(err.path) : res.redirect(err.path);
-	}
-
-	winston.error(req.path + '\n', err.stack);
-
-	res.status(err.status || 500);
-
-	var path = String(req.path || '');
-	if (res.locals.isAPI) {
-		res.json({ path: validator.escape(path), error: err.message });
-	} else {
-		var middleware = require('../middleware');
-		middleware.buildHeader(req, res, function () {
-			res.render('500', { path: validator.escape(path), error: validator.escape(String(err.message)) });
-		});
-	}
-};
-
-module.exports = Controllers;

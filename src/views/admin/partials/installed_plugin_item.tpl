@@ -36,13 +36,7 @@
 					<li data-plugin-id="{installed.id}" class="clearfix">
 						<div class="pull-right">
 							<button class="btn btn-default disabled"><i class="fa fa-exclamation-triangle"></i> [[admin/extend/plugins:plugin-item.unknown]]</button>
-
-<<<<<<< HEAD
-							<button data-action="toggleInstall" data-installed="1" class="btn btn-danger"><i class="fa fa-trash-o"></i> Uninstall</button>
-
-=======
 							<button data-action="toggleInstall" data-installed="1" class="btn btn-danger"><i class="fa fa-trash-o"></i> [[admin/extend/plugins:plugin-item.uninstall]]</button>
->>>>>>> `admin/extend` translations
 						</div>
 
 						<h2><strong>{installed.id}</strong></h2>

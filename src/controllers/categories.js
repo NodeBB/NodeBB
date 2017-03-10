@@ -14,9 +14,6 @@ categoriesController.list = function (req, res, next) {
 		name: 'title',
 		content: String(meta.config.title || 'NodeBB'),
 	}, {
-		name: 'description',
-		content: String(meta.config.description || ''),
-	}, {
 		property: 'og:title',
 		content: '[[pages:categories]]',
 	}, {

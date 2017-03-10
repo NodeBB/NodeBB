@@ -1,11 +1,11 @@
 {
-	"post-cache": "Post Cache",
-	"posts-in-cache": "Posts in Cache",
-	"average-post-size": "Average Post Size",
-	"length-to-max": "Length / Max",
-	"percent-full": "%1% Full",
-	"post-cache-size": "Post Cache Size",
-	"items-in-cache": "Items in Cache",
-	"control-panel": "Control Panel",
-	"update-settings": "Update Cache Settings"
+	"post-cache": "Cache bài viết",
+	"posts-in-cache": "Cache cho bài viết",
+	"average-post-size": "Kích thước bài viết",
+	"length-to-max": "Độ dài / Tối Đa",
+	"percent-full": "%1% Đầy",
+	"post-cache-size": "Kích thước cache bài viết",
+	"items-in-cache": "Thành phần trong Cache",
+	"control-panel": "Bảng điều khiển",
+	"update-settings": "Cập nhật thiết lập Cache"
 }

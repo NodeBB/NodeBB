@@ -1,5 +1,6 @@
 'use strict';
 
+var async = require('async');
 var nconf = require('nconf');
 var url = require('url');
 var winston = require('winston');
@@ -14,31 +15,26 @@ var urlRegex = /href="([^"]+)"/g;
 
 module.exports = function (Posts) {
 	Posts.parsePost = function (postData, callback) {
-		postData.content = postData.content || '';
+		postData.content = String(postData.content || '');
 
 		if (postData.pid && cache.has(String(postData.pid))) {
 			postData.content = cache.get(String(postData.pid));
 			return callback(null, postData);
 		}
 
-		// Casting post content into a string, just in case
-		if (typeof postData.content !== 'string') {
-			postData.content = postData.content.toString();
-		}
+		async.waterfall([
+			function (next) {
+				plugins.fireHook('filter:parse.post', { postData: postData }, next);
+			},
+			function (data, next) {
+				data.postData.content = translator.escape(data.postData.content);
 
-		plugins.fireHook('filter:parse.post', { postData: postData }, function (err, data) {
-			if (err) {
-				return callback(err);
-			}
-
-			data.postData.content = translator.escape(data.postData.content);
-
-			if (global.env === 'production' && data.postData.pid) {
-				cache.set(String(data.postData.pid), data.postData.content);
-			}
-
-			callback(null, data.postData);
-		});
+				if (global.env === 'production' && data.postData.pid) {
+					cache.set(String(data.postData.pid), data.postData.content);
+				}
+				next(null, data.postData);
+			},
+		], callback);
 	};
 
 	Posts.parseSignature = function (userData, uid, callback) {
@@ -51,7 +47,6 @@ module.exports = function (Posts) {
 		var parsed;
 		var current = urlRegex.exec(content);
 		var absolute;
-
 		while (current !== null) {
 			if (current[1]) {
 				try {
@@ -78,7 +73,7 @@ module.exports = function (Posts) {
 	};
 
 	function sanitizeSignature(signature) {
-		var	string = S(signature);
+		var string = S(signature);
 		var tagsToStrip = [];
 
 		if (parseInt(meta.config['signatures:disableLinks'], 10) === 1) {

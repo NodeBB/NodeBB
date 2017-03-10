@@ -50,12 +50,7 @@ module.exports = function (User) {
 				}, next);
 			},
 			function (image, next) {
-				User.setUserFields(uid, {
-					uploadedpicture: image.url,
-					picture: image.url,
-				}, function (err) {
-					next(err, image);
-				});
+				next(null, image);
 			},
 		], callback);
 	};

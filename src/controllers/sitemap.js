@@ -1,68 +1,57 @@
 'use strict';
 
+var async = require('async');
+
 var sitemap = require('../sitemap');
 var meta = require('../meta');
 
-var sitemapController = {};
-sitemapController.render = function (req, res, next) {
-	sitemap.render(function (err, tplData) {
-		if (err) {
-			return next(err);
-		}
+var sitemapController = module.exports;
 
-		req.app.render('sitemap', tplData, function (err, xml) {
-			if (err) {
-				return next(err);
-			}
+sitemapController.render = function (req, res, next) {
+	async.waterfall([
+		function (next) {
+			sitemap.render(next);
+		},
+		function (tplData, next) {
+			req.app.render('sitemap', tplData, next);
+		},
+		function (xml) {
 			res.header('Content-Type', 'application/xml');
 			res.send(xml);
-		});
-	});
+		},
+	], next);
 };
 
 sitemapController.getPages = function (req, res, next) {
-	if (parseInt(meta.config['feeds:disableSitemap'], 10) === 1) {
-		return next();
-	}
-
-	sitemap.getPages(function (err, xml) {
-		if (err) {
-			return next(err);
-		}
-		res.header('Content-Type', 'application/xml');
-		res.send(xml);
-	});
+	sendSitemap(sitemap.getPages, res, next);
 };
 
 sitemapController.getCategories = function (req, res, next) {
-	if (parseInt(meta.config['feeds:disableSitemap'], 10) === 1) {
-		return next();
-	}
-
-	sitemap.getCategories(function (err, xml) {
-		if (err) {
-			return next(err);
-		}
-		res.header('Content-Type', 'application/xml');
-		res.send(xml);
-	});
+	sendSitemap(sitemap.getCategories, res, next);
 };
 
 sitemapController.getTopicPage = function (req, res, next) {
-	if (parseInt(meta.config['feeds:disableSitemap'], 10) === 1) {
-		return next();
-	}
-
-	sitemap.getTopicPage(parseInt(req.params[0], 10), function (err, xml) {
-		if (err) {
-			return next(err);
-		} else if (!xml) {
-			return next();
-		}
-
-		res.header('Content-Type', 'application/xml');
-		res.send(xml);
-	});
+	sendSitemap(function (callback) {
+		sitemap.getTopicPage(parseInt(req.params[0], 10), callback);
+	}, res, next);
 };
 
-module.exports = sitemapController;
+function sendSitemap(method, res, callback) {
+	if (parseInt(meta.config['feeds:disableSitemap'], 10) === 1) {
+		return callback();
+	}
+	async.waterfall([
+		function (next) {
+			method(next);
+		},
+		function (xml) {
+			if (!xml) {
+				return callback();
+			}
+
+			res.header('Content-Type', 'application/xml');
+			res.send(xml);
+		},
+	], callback);
+}
+

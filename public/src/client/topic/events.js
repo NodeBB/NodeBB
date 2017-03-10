@@ -6,9 +6,10 @@ define('forum/topic/events', [
 	'forum/topic/postTools',
 	'forum/topic/threadTools',
 	'forum/topic/posts',
+	'forum/topic/images',
 	'components',
 	'translator',
-], function (postTools, threadTools, posts, components, translator) {
+], function (postTools, threadTools, posts, images, components, translator) {
 	var Events = {};
 
 	var events = {
@@ -128,9 +129,9 @@ define('forum/topic/events', [
 			editedPostEl.html(translator.unescape(data.post.content));
 			editedPostEl.find('img:not(.not-responsive)').addClass('img-responsive');
 			app.replaceSelfLinks(editedPostEl.find('a'));
-			posts.wrapImagesInLinks(editedPostEl.parent());
-			posts.unloadImages(editedPostEl.parent());
-			posts.loadImages();
+			images.wrapImagesInLinks(editedPostEl.parent());
+			images.unloadImages(editedPostEl.parent());
+			images.loadImages();
 			editedPostEl.fadeIn(250);
 
 			var editData = {

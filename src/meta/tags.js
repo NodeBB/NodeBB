@@ -61,6 +61,14 @@ module.exports = function (Meta) {
 					href: nconf.get('relative_path') + '/manifest.json',
 				}];
 
+				if (plugins.hasListeners('filter:search.query')) {
+					defaultLinks.push({
+						rel: 'search',
+						type: 'application/opensearchdescription+xml',
+						href: nconf.get('relative_path') + '/osd.xml',
+					});
+				}
+
 				// Touch icons for mobile-devices
 				if (Meta.config['brand:touchIcon']) {
 					defaultLinks.push({
@@ -131,10 +139,10 @@ module.exports = function (Meta) {
 			}
 		});
 
-		if (!hasDescription) {
+		if (!hasDescription && Meta.config.description) {
 			meta.push({
 				name: 'description',
-				content: validator.escape(String(Meta.config.description || '')),
+				content: validator.escape(String(Meta.config.description)),
 			});
 		}
 	}

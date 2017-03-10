@@ -50,7 +50,7 @@
 
 			<div class="form-group">
 				<label for="allowedFileExtensions">[[admin/settings/uploads:allowed-file-extensions]]</label>
-				<input type="text" class="form-control" value="" data-field="allowedFileExtensions" />
+				<input type="text" class="form-control" value="" data-field="allowedFileExtensions" data-field-type="tagsinput" />
 				<p class="help-block">
 					[[admin/settings/uploads:allowed-file-extensions-help]]
 				</p>
@@ -131,7 +131,7 @@
 			<p class="help-block">
 				[[admin/settings/uploads:default-covers-help]]
 			</p>
-			<input type="text" class="form-control input-lg" id="profile:defaultCovers" data-field="profile:defaultCovers" value="{config.relative_path}/assets/images/cover-default.png" placeholder="https://example.com/group1.png, https://example.com/group2.png" />
+			<input type="text" class="form-control input-lg" id="profile:defaultCovers" data-field="profile:defaultCovers" data-field-type="tagsinput" value="{config.relative_path}/assets/images/cover-default.png" placeholder="https://example.com/group1.png, https://example.com/group2.png" />
 		</form>
 	</div>
 </div>

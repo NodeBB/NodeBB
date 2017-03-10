@@ -11,6 +11,7 @@ var categories = require('../src/categories');
 var privileges = require('../src/privileges');
 var user = require('../src/user');
 var groups = require('../src/groups');
+var socketPosts = require('../src/socket.io/posts');
 
 describe('Post\'s', function () {
 	var voterUid;
@@ -66,7 +67,6 @@ describe('Post\'s', function () {
 	});
 
 	describe('voting', function () {
-		var socketPosts = require('../src/socket.io/posts');
 		it('should upvote a post', function (done) {
 			socketPosts.upvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' }, function (err, result) {
 				assert.ifError(err);
@@ -138,7 +138,7 @@ describe('Post\'s', function () {
 
 	describe('bookmarking', function () {
 		it('should bookmark a post', function (done) {
-			posts.bookmark(postData.pid, voterUid, function (err, data) {
+			socketPosts.bookmark({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_' + postData.tid }, function (err, data) {
 				assert.ifError(err);
 				assert.equal(data.isBookmarked, true);
 				posts.hasBookmarked(postData.pid, voterUid, function (err, hasBookmarked) {
@@ -150,7 +150,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should unbookmark a post', function (done) {
-			posts.unbookmark(postData.pid, voterUid, function (err, data) {
+			socketPosts.unbookmark({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_' + postData.tid }, function (err, data) {
 				assert.ifError(err);
 				assert.equal(data.isBookmarked, false);
 				posts.hasBookmarked([postData.pid], voterUid, function (err, hasBookmarked) {
@@ -163,8 +163,6 @@ describe('Post\'s', function () {
 	});
 
 	describe('post tools', function () {
-		var socketPosts = require('../src/socket.io/posts');
-
 		it('should error if data is invalid', function (done) {
 			socketPosts.loadPostTools({ uid: globalModUid }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
@@ -209,7 +207,6 @@ describe('Post\'s', function () {
 		var mainPid;
 		var replyPid;
 
-		var socketPosts = require('../src/socket.io/posts');
 		before(function (done) {
 			createTopicWithReply(function (topicPostData, replyData) {
 				tid = topicPostData.topicData.tid;
@@ -299,7 +296,6 @@ describe('Post\'s', function () {
 		var pid;
 		var replyPid;
 		var tid;
-		var socketPosts = require('../src/socket.io/posts');
 		var meta = require('../src/meta');
 		before(function (done) {
 			topics.post({
@@ -430,7 +426,6 @@ describe('Post\'s', function () {
 		var replyPid;
 		var tid;
 		var moveTid;
-		var socketPosts = require('../src/socket.io/posts');
 
 		before(function (done) {
 			async.waterfall([
@@ -539,6 +534,50 @@ describe('Post\'s', function () {
 		});
 	});
 
+	describe('parse', function () {
+		it('should store post content in cache', function (done) {
+			var oldValue = global.env;
+			global.env = 'production';
+			var postData = {
+				pid: 9999,
+				content: 'some post content',
+			};
+			posts.parsePost(postData, function (err) {
+				assert.ifError(err);
+				posts.parsePost(postData, function (err) {
+					assert.ifError(err);
+					global.env = oldValue;
+					done();
+				});
+			});
+		});
+
+		it('should parse signature and remove links and images', function (done) {
+			var meta = require('../src/meta');
+			meta.config['signatures:disableLinks'] = 1;
+			meta.config['signatures:disableImages'] = 1;
+			var userData = {
+				signature: '<img src="boop"/><a href="link">test</a> derp',
+			};
+
+			posts.parseSignature(userData, 1, function (err, data) {
+				assert.ifError(err);
+				assert.equal(data.userData.signature, 'test derp');
+				meta.config['signatures:disableLinks'] = 0;
+				meta.config['signatures:disableImages'] = 0;
+				done();
+			});
+		});
+
+		it('should turn relative links in post body to absolute urls', function (done) {
+			var nconf = require('nconf');
+			var content = '<a href="/users">test</a> <a href="youtube.com">youtube</a>';
+			var parsedContent = posts.relativeToAbsolute(content);
+			assert.equal(parsedContent, '<a href="' + nconf.get('url') + '/users">test</a> <a href="//youtube.com">youtube</a>');
+			done();
+		});
+	});
+
 	describe('socket methods', function () {
 		var pid;
 		before(function (done) {
@@ -554,7 +593,6 @@ describe('Post\'s', function () {
 			});
 		});
 
-		var socketPosts = require('../src/socket.io/posts');
 		it('should error with invalid data', function (done) {
 			socketPosts.reply({ uid: 0 }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
@@ -606,7 +644,7 @@ describe('Post\'s', function () {
 		});
 
 		it('shold error with invalid data', function (done) {
-			socketPosts.loadMoreBookmarks({ uid: voterUid }, { uid: voterUid, after: null }, function (err, postData) {
+			socketPosts.loadMoreBookmarks({ uid: voterUid }, { uid: voterUid, after: null }, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});

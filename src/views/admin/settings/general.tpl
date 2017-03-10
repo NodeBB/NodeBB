@@ -31,8 +31,8 @@
 			<label>[[admin/settings/general:description]]</label>
 			<input type="text" class="form-control" placeholder="[[admin/settings/general:description.placeholder]]" data-field="description" /><br />
 
-			<label>[[admin/settings/general:keywords]]</label>
-			<input type="text" class="form-control" placeholder="[[admin/settings/general:keywords-placeholder]]" data-field="keywords" /><br />
+			<label>[[admin/settings/general:keywords]]</label><br />
+			<input type="text" class="form-control" placeholder="[[admin/settings/general:keywords-placeholder]]" data-field="keywords" data-field-type="tagsinput" /><br />
 		</form>
 	</div>
 </div>
@@ -139,6 +139,11 @@
 					<input type="checkbox" class="mdl-switch__input" id="showSiteTitle" data-field="useOutgoingLinksPage">
 					<span class="mdl-switch__label"><strong>[[admin/settings/general:outgoing-links.warning-page]]</strong></span>
 				</label>
+			</div>
+
+			<div class="form-group">
+				<label for="outgoingLinks:whitelist">[[admin/settings/general:outgoing-links.whitelist]]</label><br />
+				<input id="outgoingLinks:whitelist" type="text" class="form-control" placeholder="subdomain.domain.com" data-field="outgoingLinks:whitelist" data-field-type="tagsinput" />
 			</div>
 		</form>
 	</div>

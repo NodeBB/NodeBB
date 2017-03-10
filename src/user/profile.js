@@ -18,6 +18,14 @@ module.exports = function (User) {
 		var updateUid = data.uid;
 		var oldData;
 
+		if (data.aboutme !== undefined && data.aboutme.length > meta.config.maximumAboutMeLength) {
+			return callback(new Error('[[error:about-me-too-long, ' + meta.config.maximumAboutMeLength + ']]'));
+		}
+
+		if (data.signature !== undefined && data.signature.length > meta.config.maximumSignatureLength) {
+			return callback(new Error('[[error:signature-too-long, ' + meta.config.maximumSignatureLength + ']]'));
+		}
+
 		async.waterfall([
 			function (next) {
 				plugins.fireHook('filter:user.updateProfile', { uid: uid, data: data, fields: fields }, next);
@@ -27,8 +35,6 @@ module.exports = function (User) {
 				data = data.data;
 
 				async.series([
-					async.apply(isAboutMeValid, data),
-					async.apply(isSignatureValid, data),
 					async.apply(isEmailAvailable, data, updateUid),
 					async.apply(isUsernameAvailable, data, updateUid),
 					async.apply(isGroupTitleValid, data),
@@ -67,22 +73,6 @@ module.exports = function (User) {
 			},
 		], callback);
 	};
-
-	function isAboutMeValid(data, callback) {
-		if (data.aboutme !== undefined && data.aboutme.length > meta.config.maximumAboutMeLength) {
-			callback(new Error('[[error:about-me-too-long, ' + meta.config.maximumAboutMeLength + ']]'));
-		} else {
-			callback();
-		}
-	}
-
-	function isSignatureValid(data, callback) {
-		if (data.signature !== undefined && data.signature.length > meta.config.maximumSignatureLength) {
-			callback(new Error('[[error:signature-too-long, ' + meta.config.maximumSignatureLength + ']]'));
-		} else {
-			callback();
-		}
-	}
 
 	function isEmailAvailable(data, uid, callback) {
 		if (!data.email) {

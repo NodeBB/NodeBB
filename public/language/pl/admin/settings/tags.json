@@ -1,6 +1,6 @@
 {
     "tag": "Ustawienia Tagów",
-    "min-per-topic": "Minimum Tags per Topic",
+    "min-per-topic": "Minimalna ilość Tagów na Temat",
     "max-per-topic": "Maximum Tags per Topic",
     "min-length": "Minimum Tag Length",
     "max-length": "Maximum Tag Length",

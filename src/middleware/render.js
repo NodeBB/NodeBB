@@ -123,7 +123,7 @@ module.exports = function (middleware) {
 				winston.error(err.message);
 				p = '';
 			}
-
+			p = validator.escape(String(p));
 			parts[index] = index ? parts[0] + '-' + p : 'page-' + (p || 'home');
 		});
 		return parts.join(' ');

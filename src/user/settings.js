@@ -74,7 +74,7 @@ module.exports = function (User) {
 			settings.restrictChat = parseInt(getSetting(settings, 'restrictChat', 0), 10) === 1;
 			settings.topicSearchEnabled = parseInt(getSetting(settings, 'topicSearchEnabled', 0), 10) === 1;
 			settings.delayImageLoading = parseInt(getSetting(settings, 'delayImageLoading', 1), 10) === 1;
-			settings.bootswatchSkin = settings.bootswatchSkin || 'default';
+			settings.bootswatchSkin = settings.bootswatchSkin || meta.config.bootswatchSkin || 'default';
 			settings.scrollToMyPost = parseInt(getSetting(settings, 'scrollToMyPost', 1), 10) === 1;
 
 			callback(null, settings);

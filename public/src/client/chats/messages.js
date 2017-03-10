@@ -35,7 +35,14 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 					if (err.message === '[[error:email-not-confirmed-chat]]') {
 						return app.showEmailConfirmWarning(err);
 					}
-					return app.alertError(err.message);
+
+					return app.alert({
+						alert_id: 'chat_spam_error',
+						title: '[[global:alert.error]]',
+						message: err.message,
+						type: 'danger',
+						timeout: 10000,
+					});
 				}
 
 				sounds.play('chat-outgoing');
@@ -57,8 +64,10 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 
 	messages.appendChatMessage = function (chatContentEl, data) {
 		var lastSpeaker = parseInt(chatContentEl.find('.chat-message').last().attr('data-uid'), 10);
+		var lasttimestamp = parseInt(chatContentEl.find('.chat-message').last().attr('data-timestamp'), 10);
 		if (!Array.isArray(data)) {
-			data.newSet = lastSpeaker !== data.fromuid;
+			data.newSet = lastSpeaker !== parseInt(data.fromuid, 10) ||
+				parseInt(data.timestamp, 10) > parseInt(lasttimestamp, 10) + (1000 * 60 * 3);
 		}
 
 		messages.parseMessage(data, function (html) {

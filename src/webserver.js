@@ -61,21 +61,20 @@ module.exports.listen = function (callback) {
 
 	logger.init(app);
 
-	initializeNodeBB(function (err) {
-		if (err) {
-			return callback(err);
-		}
+	async.waterfall([
+		initializeNodeBB,
+		function (next) {
+			winston.info('NodeBB Ready');
 
-		winston.info('NodeBB Ready');
+			require('./socket.io').server.emit('event:nodebb.ready', {
+				'cache-buster': meta.config['cache-buster'],
+			});
 
-		require('./socket.io').server.emit('event:nodebb.ready', {
-			'cache-buster': meta.config['cache-buster'],
-		});
+			plugins.fireHook('action:nodebb.ready');
 
-		plugins.fireHook('action:nodebb.ready');
-
-		listen(callback);
-	});
+			listen(next);
+		},
+	], callback);
 };
 
 function initializeNodeBB(callback) {
@@ -107,7 +106,9 @@ function initializeNodeBB(callback) {
 				meta.blacklist.load,
 			], next);
 		},
-	], callback);
+	], function (err) {
+		callback(err);
+	});
 }
 
 function setupExpressApp(app) {
