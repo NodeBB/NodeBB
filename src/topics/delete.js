@@ -21,7 +21,7 @@ module.exports = function (Topics) {
 					Topics.setTopicFields(tid, {
 						deleted: 1,
 						deleterUid: uid,
-						deletedTimestampISO: (new Date()).toISOString()
+						deletedTimestamp: Date.now(),
 					}, next);
 				},
 				function (next) {
@@ -52,7 +52,7 @@ module.exports = function (Topics) {
 					Topics.setTopicField(tid, 'deleted', 0, next);
 				},
 				function (next) {
-					Topics.deleteTopicFields(tid, ['deleterUid', 'deletedTimestampISO'], next);
+					Topics.deleteTopicFields(tid, ['deleterUid', 'deletedTimestamp'], next);
 				},
 				function (next) {
 					Topics.updateRecent(tid, topicData.lastposttime, next);
