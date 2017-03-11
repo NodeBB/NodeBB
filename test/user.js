@@ -1152,6 +1152,45 @@ describe('User', function () {
 		});
 	});
 
+	describe('email confirm', function () {
+		it('should error with invalid code', function (done) {
+			User.email.confirm('asdasda', function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should confirm email of user', function (done) {
+			var email = 'confirm@me.com';
+			User.create({
+				username: 'confirme',
+				email: email,
+			}, function (err, uid) {
+				assert.ifError(err);
+				User.email.sendValidationEmail(uid, email, function (err, code) {
+					assert.ifError(err);
+					User.email.confirm(code, function (err) {
+						assert.ifError(err);
+
+						async.parallel({
+							confirmed: function (next) {
+								db.getObjectField('user:' + uid, 'email:confirmed', next);
+							},
+							isMember: function (next) {
+								db.isSortedSetMember('users:notvalidated', uid, next);
+							},
+						}, function (err, results) {
+							assert.ifError(err);
+							assert.equal(results.confirmed, 1);
+							assert.equal(results.isMember, false);
+							done();
+						});
+					});
+				});
+			});
+		});
+	});
+
 
 	after(function (done) {
 		db.emptydb(done);

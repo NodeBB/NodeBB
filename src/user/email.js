@@ -83,6 +83,9 @@ var emailer = require('../emailer');
 					}
 				});
 			},
+			function (next) {
+				next(null, confirm_code);
+			},
 		], callback);
 	};
 
