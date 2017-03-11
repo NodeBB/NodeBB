@@ -2,7 +2,7 @@
 
 'use strict';
 
-var db = require('../database');
+var db = require('../../database');
 
 var async = require('async');
 
@@ -10,9 +10,9 @@ module.exports = {
 	name: 'Migrating flags to new schema',
 	timestamp: Date.UTC(2016, 11, 7),
 	method: function (callback) {
-		var batch = require('../batch');
-		var posts = require('../posts');
-		var flags = require('../flags');
+		var batch = require('../../batch');
+		var posts = require('../../posts');
+		var flags = require('../../flags');
 
 		batch.processSortedSet('posts:pid', function (ids, next) {
 			posts.getPostsByPids(ids, 1, function (err, posts) {

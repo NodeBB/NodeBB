@@ -2,7 +2,7 @@
 
 'use strict';
 
-var db = require('../database');
+var db = require('../../database');
 
 var async = require('async');
 var winston = require('winston');
@@ -11,8 +11,8 @@ module.exports = {
 	name: 'Giving topics:read privs to any group that was previously allowed to Find & Access Category',
 	timestamp: Date.UTC(2016, 4, 28),
 	method: function (callback) {
-		var groupsAPI = require('../groups');
-		var privilegesAPI = require('../privileges');
+		var groupsAPI = require('../../groups');
+		var privilegesAPI = require('../../privileges');
 
 		db.getSortedSetRange('categories:cid', 0, -1, function (err, cids) {
 			if (err) {

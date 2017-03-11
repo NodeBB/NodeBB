@@ -2,7 +2,7 @@
 
 'use strict';
 
-var db = require('../database');
+var db = require('../../database');
 
 var async = require('async');
 var winston = require('winston');
@@ -11,8 +11,8 @@ module.exports = {
 	name: 'Granting edit/delete/delete topic on existing categories',
 	timestamp: Date.UTC(2016, 7, 7),
 	method: function (callback) {
-		var groupsAPI = require('../groups');
-		var privilegesAPI = require('../privileges');
+		var groupsAPI = require('../../groups');
+		var privilegesAPI = require('../../privileges');
 
 		db.getSortedSetRange('categories:cid', 0, -1, function (err, cids) {
 			if (err) {

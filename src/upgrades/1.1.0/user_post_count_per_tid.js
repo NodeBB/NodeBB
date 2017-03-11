@@ -2,7 +2,7 @@
 
 'use strict';
 
-var db = require('../database');
+var db = require('../../database');
 
 var async = require('async');
 var winston = require('winston');
@@ -11,8 +11,8 @@ module.exports = {
 	name: 'Users post count per tid',
 	timestamp: Date.UTC(2016, 3, 19),
 	method: function (callback) {
-		var batch = require('../batch');
-		var topics = require('../topics');
+		var batch = require('../../batch');
+		var topics = require('../../topics');
 		var count = 0;
 		batch.processSortedSet('topics:tid', function (tids, next) {
 			winston.verbose('upgraded ' + count + ' topics');

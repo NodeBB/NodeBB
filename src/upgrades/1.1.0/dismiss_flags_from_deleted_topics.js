@@ -2,7 +2,7 @@
 
 'use strict';
 
-var db = require('../database');
+var db = require('../../database');
 
 var async = require('async');
 var winston = require('winston');
@@ -11,8 +11,8 @@ module.exports = {
 	name: 'Dismiss flags from deleted topics',
 	timestamp: Date.UTC(2016, 3, 29),
 	method: function (callback) {
-		var posts = require('../posts');
-		var topics = require('../topics');
+		var posts = require('../../posts');
+		var topics = require('../../topics');
 
 		var pids;
 		var tids;

@@ -2,7 +2,7 @@
 
 'use strict';
 
-var db = require('../database');
+var db = require('../../database');
 
 var async = require('async');
 
@@ -10,9 +10,9 @@ module.exports = {
 	name: 'Update global and user language keys',
 	timestamp: Date.UTC(2016, 10, 22),
 	method: function (callback) {
-		var user = require('../user');
-		var meta = require('../meta');
-		var batch = require('../batch');
+		var user = require('../../user');
+		var meta = require('../../meta');
+		var batch = require('../../batch');
 		var newLanguage;
 		async.parallel([
 			function (next) {

@@ -2,7 +2,7 @@
 
 'use strict';
 
-var db = require('../database');
+var db = require('../../database');
 
 var async = require('async');
 
@@ -11,7 +11,7 @@ module.exports = {
 	timestamp: Date.UTC(2016, 9, 8),
 	method: function (callback) {
 		function upgradePosts(next) {
-			var batch = require('../batch');
+			var batch = require('../../batch');
 
 			batch.processSortedSet('posts:pid', function (ids, next) {
 				async.each(ids, function (id, next) {
@@ -38,7 +38,7 @@ module.exports = {
 		}
 
 		function upgradeUsers(next) {
-			var batch = require('../batch');
+			var batch = require('../../batch');
 
 			batch.processSortedSet('users:joindate', function (ids, next) {
 				async.each(ids, function (id, next) {

@@ -2,7 +2,7 @@
 
 'use strict';
 
-var db = require('../database');
+var db = require('../../database');
 
 var async = require('async');
 
@@ -10,8 +10,8 @@ module.exports = {
 	name: 'Giving upload privileges',
 	timestamp: Date.UTC(2016, 6, 12),
 	method: function (callback) {
-		var privilegesAPI = require('../privileges');
-		var meta = require('../meta');
+		var privilegesAPI = require('../../privileges');
+		var meta = require('../../meta');
 
 		db.getSortedSetRange('categories:cid', 0, -1, function (err, cids) {
 			if (err) {

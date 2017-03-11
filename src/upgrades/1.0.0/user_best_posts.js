@@ -2,7 +2,7 @@
 
 'use strict';
 
-var db = require('../database');
+var db = require('../../database');
 
 var async = require('async');
 var winston = require('winston');
@@ -11,7 +11,7 @@ module.exports = {
 	name: 'Creating user best post sorted sets',
 	timestamp: Date.UTC(2016, 0, 14),
 	method: function (callback) {
-		var batch = require('../batch');
+		var batch = require('../../batch');
 
 		batch.processSortedSet('posts:pid', function (ids, next) {
 			async.eachSeries(ids, function (id, next) {

@@ -2,7 +2,7 @@
 
 'use strict';
 
-var db = require('../database');
+var db = require('../../database');
 
 var async = require('async');
 
@@ -10,7 +10,7 @@ module.exports = {
 	name: 'New sorted set posts:votes',
 	timestamp: Date.UTC(2017, 1, 27),
 	method: function (callback) {
-		require('../batch').processSortedSet('posts:pid', function (pids, next) {
+		require('../../batch').processSortedSet('posts:pid', function (pids, next) {
 			async.each(pids, function (pid, next) {
 				db.getObjectFields('post:' + pid, ['upvotes', 'downvotes'], function (err, postData) {
 					if (err || !postData) {

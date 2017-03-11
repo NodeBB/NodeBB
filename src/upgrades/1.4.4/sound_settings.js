@@ -2,7 +2,7 @@
 
 'use strict';
 
-var db = require('../database');
+var db = require('../../database');
 
 var async = require('async');
 
@@ -10,8 +10,8 @@ module.exports = {
 	name: 'Update global and user sound settings',
 	timestamp: Date.UTC(2017, 1, 25),
 	method: function (callback) {
-		var meta = require('../meta');
-		var batch = require('../batch');
+		var meta = require('../../meta');
+		var batch = require('../../batch');
 
 		var map = {
 			'notification.mp3': 'Default | Deedle-dum',

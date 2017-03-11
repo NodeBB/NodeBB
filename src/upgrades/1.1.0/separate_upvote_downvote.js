@@ -2,7 +2,7 @@
 
 'use strict';
 
-var db = require('../database');
+var db = require('../../database');
 
 var async = require('async');
 var winston = require('winston');
@@ -11,8 +11,8 @@ module.exports = {
 	name: 'Store upvotes/downvotes separately',
 	timestamp: Date.UTC(2016, 5, 13),
 	method: function (callback) {
-		var batch = require('../batch');
-		var posts = require('../posts');
+		var batch = require('../../batch');
+		var posts = require('../../posts');
 		var count = 0;
 		batch.processSortedSet('posts:pid', function (pids, next) {
 			winston.verbose('upgraded ' + count + ' posts');
