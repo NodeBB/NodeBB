@@ -1,584 +1,181 @@
+/* jslint node: true */
+
 'use strict';
 
+var async = require('async');
+var path = require('path');
+var semver = require('semver');
 
 var db = require('./database');
-var async = require('async');
-var winston = require('winston');
+var utils = require('../public/src/utils');
 
-var Upgrade = {};
+/*
+ * Need to write an upgrade script for NodeBB? Cool.
+ *
+ * 1. Copy TEMPLATE to a file name of your choice. Try to be succinct.
+ * 2. Open up that file and change the user-friendly name (can be longer/more descriptive than the file name)
+ *    and timestamp
+ * 3. Add your script under the "method" property
+ * 4. Append your filename to the array below for the next NodeBB version.
+ */
 
-var minSchemaDate = Date.UTC(2016, 8, 7);		// This value gets updated every new MAJOR version
-var schemaDate;
-var thisSchemaDate;
+var Upgrade = {
+	available: [
+		{
+			version: '1.0.0',
+			upgrades: ['chat_upgrade', 'chat_room_hashes', 'theme_to_active_plugins', 'user_best_posts', 'users_notvalidated', 'global_moderators', 'social_post_sharing'],
+		},
+		{
+			version: '1.1.0',
+			upgrades: ['group_title_update', 'user_post_count_per_tid', 'dismiss_flags_from_deleted_topics', 'assign_topic_read_privilege', 'separate_upvote_downvote'],
+		},
+		{
+			version: '1.1.1',
+			upgrades: ['upload_privileges', 'remove_negative_best_posts'],
+		},
+		{
+			version: '1.2.0',
+			upgrades: ['category_recent_tids', 'edit_delete_deletetopic_privileges'],
+		},
+		{
+			version: '1.3.0',
+			upgrades: ['favourites_to_bookmarks', 'sorted_sets_for_post_replies'],
+		},
+		{
+			version: '1.4.0',
+			upgrades: ['global_and_user_language_keys', 'sorted_set_for_pinned_topics'],
+		},
+		{
+			version: 'master',	// rename this to whenever the next NodeBB version is (non-breaking)
+			upgrades: ['sound_settings', 'config_urls_update'],
+		},
+		{
+			version: 'develop',	// rename this to whatever the next NodeBB version is (breaking)
+			upgrades: ['flags_refactor', 'post_votes_zset'],
+		},
+	],
+};
 
-// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-var latestSchema = Date.UTC(2017, 1, 28);
+Upgrade.getAll = function (callback) {
+	async.waterfall([
+		async.apply(utils.walk, path.join(__dirname, './upgrades')),
+		function (files, next) {
+			// Sort the upgrade scripts based on version
+			var versionA;
+			var versionB;
+			setImmediate(next, null, files.filter(function (file) {
+				return path.basename(file) !== 'TEMPLATE';
+			}).sort(function (a, b) {
+				versionA = path.dirname(a).split('/').pop();
+				versionB = path.dirname(b).split('/').pop();
+
+				return semver.compare(versionA, versionB);
+			}));
+		},
+	], callback);
+};
 
 Upgrade.check = function (callback) {
-	db.get('schemaDate', function (err, value) {
+	// Throw 'schema-out-of-date' if not all upgrade scripts have run
+	async.waterfall([
+		async.apply(Upgrade.getAll),
+		function (files, next) {
+			db.getSortedSetRange('schemaLog', 0, -1, function (err, executed) {
+				if (err) {
+					return callback(err);
+				}
+
+				var remainder = files.filter(function (name) {
+					return executed.indexOf(path.basename(name, '.js')) === -1;
+				});
+
+				next(remainder.length > 1 ? new Error('schema-out-of-date') : null);
+			});
+		},
+	], callback);
+	// var all = Upgrade.available.reduce(function (memo, current) {
+	// 	memo = memo.concat(current.upgrades);
+	// 	return memo;
+	// }, []);
+};
+
+Upgrade.run = function (callback) {
+	process.stdout.write('\nParsing upgrade scripts... ');
+	var queue = [];
+	var skipped = 0;
+
+	async.parallel({
+		// Retrieve list of upgrades that have already been run
+		completed: async.apply(db.getSortedSetRange, 'schemaLog', 0, -1),
+		// ... and those available to be run
+		available: Upgrade.getAll,
+	}, function (err, data) {
 		if (err) {
 			return callback(err);
 		}
 
-		if (!value) {
-			db.set('schemaDate', latestSchema, function (err) {
-				if (err) {
-					return callback(err);
-				}
-				callback(null);
-			});
-			return;
-		}
+		queue = data.available.reduce(function (memo, cur) {
+			if (data.completed.indexOf(path.basename(cur, '.js')) === -1) {
+				memo.push(cur);
+			} else {
+				skipped += 1;
+			}
 
-		var schema_ok = parseInt(value, 10) >= latestSchema;
-		callback(!schema_ok ? new Error('schema-out-of-date') : null);
+			return memo;
+		}, queue);
+
+		Upgrade.process(queue, skipped, callback);
 	});
 };
 
-Upgrade.update = function (schemaDate, callback) {
-	db.set('schemaDate', schemaDate, callback);
+Upgrade.runSingle = function (query, callback) {
+	process.stdout.write('\nParsing upgrade scripts... ');
+
+	async.waterfall([
+		async.apply(utils.walk, path.join(__dirname, './upgrades')),
+		function (files, next) {
+			next(null, files.filter(function (file) {
+				return path.basename(file, '.js') === query;
+			}));
+		},
+	], function (err, files) {
+		if (err) {
+			return callback(err);
+		}
+
+		Upgrade.process(files, 0, callback);
+	});
 };
 
-Upgrade.upgrade = function (callback) {
-	var updatesMade = false;
+Upgrade.process = function (files, skipCount, callback) {
+	process.stdout.write('OK'.green + ' | '.reset + String(files.length).cyan + ' script(s) found'.cyan + (skipCount > 0 ? ', '.cyan + String(skipCount).cyan + ' skipped'.cyan : '') + '\n'.reset);
 
-	winston.info('Beginning database schema update');
+	async.eachSeries(files, function (file, next) {
+		var scriptExport = require(file);
+		var date = new Date(scriptExport.timestamp);
 
-	async.series([
-		function (next) {
-			// Prepare for upgrade & check to make sure the upgrade is possible
-			db.get('schemaDate', function (err, value) {
-				if (err) {
-					return next(err);
-				}
+		process.stdout.write('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '... ');
 
-				if (!value) {
-					db.set('schemaDate', latestSchema, function () {
-						next();
-					});
-					schemaDate = latestSchema;
-				} else {
-					schemaDate = parseInt(value, 10);
-				}
-
-				if (schemaDate >= minSchemaDate) {
-					next();
-				} else {
-					next(new Error('upgrade-not-possible'));
-				}
-			});
-		},
-		function (next) {
-			thisSchemaDate = Date.UTC(2016, 8, 22);
-
-			if (schemaDate < thisSchemaDate) {
-				updatesMade = true;
-				winston.info('[2016/09/22] Setting category recent tids');
-
-
-				db.getSortedSetRange('categories:cid', 0, -1, function (err, cids) {
-					if (err) {
-						return next(err);
-					}
-
-					async.eachSeries(cids, function (cid, next) {
-						db.getSortedSetRevRange('cid:' + cid + ':pids', 0, 0, function (err, pid) {
-							if (err || !pid) {
-								return next(err);
-							}
-							db.getObjectFields('post:' + pid, ['tid', 'timestamp'], function (err, postData) {
-								if (err || !postData || !postData.tid) {
-									return next(err);
-								}
-								db.sortedSetAdd('cid:' + cid + ':recent_tids', postData.timestamp, postData.tid, next);
-							});
-						});
-					}, function (err) {
-						if (err) {
-							return next(err);
-						}
-
-						winston.info('[2016/09/22] Setting category recent tids - done');
-						Upgrade.update(thisSchemaDate, next);
-					});
-				});
-			} else {
-				winston.info('[2016/09/22] Setting category recent tids - skipped!');
-				next();
-			}
-		},
-		function (next) {
-			function upgradePosts(next) {
-				var batch = require('./batch');
-
-				batch.processSortedSet('posts:pid', function (ids, next) {
-					async.each(ids, function (id, next) {
-						console.log('processing pid ' + id);
-						async.waterfall([
-							function (next) {
-								db.rename('pid:' + id + ':users_favourited', 'pid:' + id + ':users_bookmarked', next);
-							},
-							function (next) {
-								db.getObjectField('post:' + id, 'reputation', next);
-							},
-							function (reputation, next) {
-								if (parseInt(reputation, 10)) {
-									db.setObjectField('post:' + id, 'bookmarks', reputation, next);
-								} else {
-									next();
-								}
-							},
-							function (next) {
-								db.deleteObjectField('post:' + id, 'reputation', next);
-							},
-						], next);
-					}, next);
-				}, {}, next);
+		// Do the upgrade...
+		scriptExport.method(function (err) {
+			if (err) {
+				process.stdout.write('error\n'.red);
+				return next(err);
 			}
 
-			function upgradeUsers(next) {
-				var batch = require('./batch');
+			// Record success in schemaLog
+			db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
 
-				batch.processSortedSet('users:joindate', function (ids, next) {
-					async.each(ids, function (id, next) {
-						console.log('processing uid ' + id);
-						db.rename('uid:' + id + ':favourites', 'uid:' + id + ':bookmarks', next);
-					}, next);
-				}, {}, next);
-			}
-
-			thisSchemaDate = Date.UTC(2016, 9, 8);
-
-			if (schemaDate < thisSchemaDate) {
-				updatesMade = true;
-				winston.info('[2016/10/8] favourite -> bookmark refactor');
-				async.series([upgradePosts, upgradeUsers], function (err) {
-					if (err) {
-						return next(err);
-					}
-					winston.info('[2016/08/05] favourite- bookmark refactor done!');
-					Upgrade.update(thisSchemaDate, next);
-				});
-			} else {
-				winston.info('[2016/10/8] favourite -> bookmark refactor - skipped!');
-				next();
-			}
-		},
-		function (next) {
-			thisSchemaDate = Date.UTC(2016, 9, 14);
-
-			if (schemaDate < thisSchemaDate) {
-				updatesMade = true;
-				winston.info('[2016/10/14] Creating sorted sets for post replies');
-
-				var posts = require('./posts');
-				var batch = require('./batch');
-				batch.processSortedSet('posts:pid', function (ids, next) {
-					posts.getPostsFields(ids, ['pid', 'toPid', 'timestamp'], function (err, data) {
-						if (err) {
-							return next(err);
-						}
-
-						async.eachSeries(data, function (postData, next) {
-							if (!parseInt(postData.toPid, 10)) {
-								return next(null);
-							}
-							console.log('processing pid: ' + postData.pid + ' toPid: ' + postData.toPid);
-							async.parallel([
-								async.apply(db.sortedSetAdd, 'pid:' + postData.toPid + ':replies', postData.timestamp, postData.pid),
-								async.apply(db.incrObjectField, 'post:' + postData.toPid, 'replies'),
-							], next);
-						}, next);
-					});
-				}, function (err) {
-					if (err) {
-						return next(err);
-					}
-
-					winston.info('[2016/10/14] Creating sorted sets for post replies - done');
-					Upgrade.update(thisSchemaDate, next);
-				});
-			} else {
-				winston.info('[2016/10/14] Creating sorted sets for post replies - skipped!');
-				next();
-			}
-		},
-		function (next) {
-			thisSchemaDate = Date.UTC(2016, 10, 22);
-
-			if (schemaDate < thisSchemaDate) {
-				updatesMade = true;
-				winston.info('[2016/11/22] Update global and user language keys');
-
-				var user = require('./user');
-				var meta = require('./meta');
-				var batch = require('./batch');
-				var newLanguage;
-				var i = 0;
-				var j = 0;
-				async.parallel([
-					function (next) {
-						meta.configs.get('defaultLang', function (err, defaultLang) {
-							if (err) {
-								return next(err);
-							}
-
-							if (!defaultLang) {
-								return setImmediate(next);
-							}
-
-							newLanguage = defaultLang.replace('_', '-').replace('@', '-x-');
-							if (newLanguage !== defaultLang) {
-								meta.configs.set('defaultLang', newLanguage, next);
-							} else {
-								setImmediate(next);
-							}
-						});
-					},
-					function (next) {
-						batch.processSortedSet('users:joindate', function (ids, next) {
-							async.each(ids, function (uid, next) {
-								async.waterfall([
-									async.apply(db.getObjectField, 'user:' + uid + ':settings', 'userLang'),
-									function (language, next) {
-										i += 1;
-										if (!language) {
-											return setImmediate(next);
-										}
-
-										newLanguage = language.replace('_', '-').replace('@', '-x-');
-										if (newLanguage !== language) {
-											j += 1;
-											user.setSetting(uid, 'userLang', newLanguage, next);
-										} else {
-											setImmediate(next);
-										}
-									},
-								], next);
-							}, next);
-						}, next);
-					},
-				], function (err) {
-					if (err) {
-						return next(err);
-					}
-
-					winston.info('[2016/11/22] Update global and user language keys - done (' + i + ' processed, ' + j + ' updated)');
-					Upgrade.update(thisSchemaDate, next);
-				});
-			} else {
-				winston.info('[2016/11/22] Update global and user language keys - skipped!');
-				next();
-			}
-		},
-		function (next) {
-			thisSchemaDate = Date.UTC(2016, 10, 25);
-
-			if (schemaDate < thisSchemaDate) {
-				updatesMade = true;
-				winston.info('[2016/11/25] Creating sorted sets for pinned topics');
-
-				var topics = require('./topics');
-				var batch = require('./batch');
-				batch.processSortedSet('topics:tid', function (ids, next) {
-					topics.getTopicsFields(ids, ['tid', 'cid', 'pinned', 'lastposttime'], function (err, data) {
-						if (err) {
-							return next(err);
-						}
-
-						data = data.filter(function (topicData) {
-							return parseInt(topicData.pinned, 10) === 1;
-						});
-
-						async.eachSeries(data, function (topicData, next) {
-							console.log('processing tid: ' + topicData.tid);
-
-							async.parallel([
-								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:pinned', Date.now(), topicData.tid),
-								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids', topicData.tid),
-								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:posts', topicData.tid),
-							], next);
-						}, next);
-					});
-				}, function (err) {
-					if (err) {
-						return next(err);
-					}
-
-					winston.info('[2016/11/25] Creating sorted sets for pinned topics - done');
-					Upgrade.update(thisSchemaDate, next);
-				});
-			} else {
-				winston.info('[2016/11/25] Creating sorted sets for pinned topics - skipped!');
-				next();
-			}
-		},
-		function (next) {
-			thisSchemaDate = Date.UTC(2016, 11, 7);
-
-			if (schemaDate < thisSchemaDate) {
-				updatesMade = true;
-				winston.info('[2016/12/07] Migrating flags to new schema (#5232)');
-
-				var batch = require('./batch');
-				var posts = require('./posts');
-				var flags = require('./flags');
-
-				batch.processSortedSet('posts:pid', function (ids, next) {
-					posts.getPostsByPids(ids, 1, function (err, posts) {
-						if (err) {
-							return next(err);
-						}
-
-						posts = posts.filter(function (post) {
-							return post.hasOwnProperty('flags');
-						});
-
-						async.each(posts, function (post, next) {
-							async.parallel({
-								uids: async.apply(db.getSortedSetRangeWithScores, 'pid:' + post.pid + ':flag:uids', 0, -1),
-								reasons: async.apply(db.getSortedSetRange, 'pid:' + post.pid + ':flag:uid:reason', 0, -1),
-							}, function (err, data) {
-								if (err) {
-									return next(err);
-								}
-
-								// Adding in another check here in case a post was improperly dismissed (flag count > 1 but no flags in db)
-								if (!data.uids.length || !data.reasons.length) {
-									return setImmediate(next);
-								}
-
-								// Just take the first entry
-								var datetime = data.uids[0].score;
-								var reason = data.reasons[0].split(':')[1];
-								var flagObj;
-
-								async.waterfall([
-									async.apply(flags.create, 'post', post.pid, data.uids[0].value, reason, datetime),
-									function (_flagObj, next) {
-										flagObj = _flagObj;
-										if (post['flag:state'] || post['flag:assignee']) {
-											flags.update(flagObj.flagId, 1, {
-												state: post['flag:state'],
-												assignee: post['flag:assignee'],
-												datetime: datetime,
-											}, next);
-										} else {
-											setImmediate(next);
-										}
-									},
-									function (next) {
-										if (post.hasOwnProperty('flag:notes') && post['flag:notes'].length) {
-											try {
-												var history = JSON.parse(post['flag:history']);
-												history = history.filter(function (event) {
-													return event.type === 'notes';
-												})[0];
-
-												flags.appendNote(flagObj.flagId, history.uid, post['flag:notes'], history.timestamp, next);
-											} catch (e) {
-												next(e);
-											}
-										} else {
-											setImmediate(next);
-										}
-									},
-								], function (err) {
-									if (err && err.message === '[[error:already-flagged]]') {
-										// Already flagged, no need to parse, but not an error
-										next();
-									} else {
-										next(err);
-									}
-								});
-							});
-						}, next);
-					});
-				}, function (err) {
-					if (err) {
-						return next(err);
-					}
-
-					winston.info('[2016/12/07] Migrating flags to new schema (#5232) - done');
-					Upgrade.update(thisSchemaDate, next);
-				});
-			} else {
-				winston.info('[2016/12/07] Migrating flags to new schema (#5232) - skipped!');
-				next();
-			}
-		},
-		function (next) {
-			thisSchemaDate = Date.UTC(2017, 1, 28);
-			var schemaName = '[2017/2/28] Update urls in config to `/assets`';
-
-			if (schemaDate < thisSchemaDate) {
-				updatesMade = true;
-				winston.info(schemaName);
-				async.waterfall([
-					function (cb) {
-						db.getObject('config', cb);
-					},
-					function (config, cb) {
-						if (!config) {
-							return cb();
-						}
-
-						var keys = ['brand:favicon', 'brand:touchicon', 'og:image', 'brand:logo:url', 'defaultAvatar', 'profile:defaultCovers'];
-
-						keys.forEach(function (key) {
-							var oldValue = config[key];
-
-							if (!oldValue || typeof oldValue !== 'string') {
-								return;
-							}
-
-							config[key] = oldValue.replace(/(?:\/assets)?\/(images|uploads)\//g, '/assets/$1/');
-						});
-
-						db.setObject('config', config, cb);
-					},
-					function (next) {
-						winston.info(schemaName + ' - done');
-						Upgrade.update(thisSchemaDate, next);
-					},
-				], next);
-			} else {
-				winston.info(schemaName + ' - skipped!');
-				next();
-			}
-		},
-		function (next) {
-			thisSchemaDate = Date.UTC(2017, 1, 25);
-			var schemaName = '[2017/2/25] Update global and user sound settings';
-
-			if (schemaDate < thisSchemaDate) {
-				updatesMade = true;
-				winston.verbose(schemaName);
-
-				var meta = require('./meta');
-				var batch = require('./batch');
-
-				var map = {
-					'notification.mp3': 'Default | Deedle-dum',
-					'waterdrop-high.mp3': 'Default | Water drop (high)',
-					'waterdrop-low.mp3': 'Default | Water drop (low)',
-				};
-
-				async.parallel([
-					function (cb) {
-						var keys = ['chat-incoming', 'chat-outgoing', 'notification'];
-
-						db.getObject('settings:sounds', function (err, settings) {
-							if (err || !settings) {
-								return cb(err);
-							}
-
-							keys.forEach(function (key) {
-								if (settings[key] && settings[key].indexOf(' | ') === -1) {
-									settings[key] = map[settings[key]] || '';
-								}
-							});
-
-							meta.configs.setMultiple(settings, cb);
-						});
-					},
-					function (cb) {
-						var keys = ['notificationSound', 'incomingChatSound', 'outgoingChatSound'];
-
-						batch.processSortedSet('users:joindate', function (ids, next) {
-							async.each(ids, function (uid, next) {
-								db.getObject('user:' + uid + ':settings', function (err, settings) {
-									if (err || !settings) {
-										return next(err);
-									}
-									var newSettings = {};
-									keys.forEach(function (key) {
-										if (settings[key] && settings[key].indexOf(' | ') === -1) {
-											newSettings[key] = map[settings[key]] || '';
-										}
-									});
-
-									if (Object.keys(newSettings).length) {
-										db.setObject('user:' + uid + ':settings', newSettings, next);
-									} else {
-										setImmediate(next);
-									}
-								});
-							}, next);
-						}, cb);
-					},
-				], function (err) {
-					if (err) {
-						return next(err);
-					}
-					winston.info(schemaName + ' - done');
-					Upgrade.update(thisSchemaDate, next);
-				});
-			} else {
-				winston.info(schemaName + ' - skipped!');
-				next();
-			}
-		},
-		function (next) {
-			thisSchemaDate = Date.UTC(2017, 1, 27);
-			var schemaName = '[2017/2/27] New sorted set posts:votes';
-
-			if (schemaDate < thisSchemaDate) {
-				updatesMade = true;
-				winston.verbose(schemaName);
-
-				require('./batch').processSortedSet('posts:pid', function (pids, next) {
-					async.each(pids, function (pid, next) {
-						db.getObjectFields('post:' + pid, ['upvotes', 'downvotes'], function (err, postData) {
-							if (err || !postData) {
-								return next(err);
-							}
-
-							var votes = parseInt(postData.upvotes || 0, 10) - parseInt(postData.downvotes || 0, 10);
-							db.sortedSetAdd('posts:votes', votes, pid, next);
-						});
-					}, next);
-				}, {}, function (err) {
-					if (err) {
-						return next(err);
-					}
-
-					winston.info(schemaName + ' - done');
-					Upgrade.update(thisSchemaDate, next);
-				});
-			} else {
-				winston.info(schemaName + ' - skipped!');
-				next();
-			}
-		},
-		// Add new schema updates here
-		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 24!!!
-	], function (err) {
-		if (!err) {
-			if (updatesMade) {
-				winston.info('[upgrade] Schema update complete!');
-			} else {
-				winston.info('[upgrade] Schema already up to date!');
-			}
-		} else {
-			switch (err.message) {
-			case 'upgrade-not-possible':
-				winston.error('[upgrade] NodeBB upgrade could not complete, as your database schema is too far out of date.');
-				winston.error('[upgrade]   Please ensure that you did not skip any minor version upgrades.');
-				winston.error('[upgrade]   (e.g. v0.1.x directly to v0.3.x)');
-				break;
-
-			default:
-				winston.error('[upgrade] Errors were encountered while updating the NodeBB schema: ' + err.message);
-				break;
-			}
+			process.stdout.write('OK\n'.green);
+			next();
+		});
+	}, function (err) {
+		if (err) {
+			return callback(err);
 		}
 
-		if (typeof callback === 'function') {
-			callback(err);
-		} else {
-			process.exit();
-		}
+		process.stdout.write('Upgrade complete!\n\n'.green);
+		callback();
 	});
 };
 

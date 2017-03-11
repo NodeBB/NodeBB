@@ -1,0 +1,16 @@
+/* jslint node: true */
+
+'use strict';
+
+var db = require('../../database');
+
+var async = require('async');
+var winston = require('winston');
+
+module.exports = {
+	name: 'User_friendly_upgrade_script_name',
+	timestamp: Date.UTC(2017, 0, 1),
+	method: function (callback) {
+		// Do stuff here...
+	},
+};
