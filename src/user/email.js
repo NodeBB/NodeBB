@@ -109,7 +109,7 @@ var emailer = require('../emailer');
 						plugins.fireHook('action:user.email.confirmed', { uid: confirmObj.uid, email: confirmObj.email }, next);
 					},
 				], next);
-			}
+			},
 		], function (err) {
 			callback(err);
 		});
