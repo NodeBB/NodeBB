@@ -4,6 +4,7 @@
 
 var async = require('async');
 var path = require('path');
+var semver = require('semver');
 
 var db = require('./database');
 var utils = require('../public/src/utils');
@@ -55,24 +56,47 @@ var Upgrade = {
 	],
 };
 
+Upgrade.getAll = function (callback) {
+	async.waterfall([
+		async.apply(utils.walk, path.join(__dirname, './upgrades')),
+		function (files, next) {
+			// Sort the upgrade scripts based on version
+			var versionA;
+			var versionB;
+			setImmediate(next, null, files.filter(function (file) {
+				return path.basename(file) !== 'TEMPLATE';
+			}).sort(function (a, b) {
+				versionA = path.dirname(a).split('/').pop();
+				versionB = path.dirname(b).split('/').pop();
+
+				return semver.compare(versionA, versionB);
+			}));
+		},
+	], callback);
+};
+
 Upgrade.check = function (callback) {
 	// Throw 'schema-out-of-date' if not all upgrade scripts have run
-	var all = Upgrade.available.reduce(function (memo, current) {
-		memo = memo.concat(current.upgrades);
-		return memo;
-	}, []);
+	async.waterfall([
+		async.apply(Upgrade.getAll),
+		function (files, next) {
+			db.getSortedSetRange('schemaLog', 0, -1, function (err, executed) {
+				if (err) {
+					return callback(err);
+				}
 
-	db.getSortedSetRange('schemaLog', 0, -1, function (err, executed) {
-		if (err) {
-			return callback(err);
-		}
+				var remainder = files.filter(function (name) {
+					return executed.indexOf(path.basename(name, '.js')) === -1;
+				});
 
-		var remainder = all.filter(function (name) {
-			return executed.indexOf(name) === -1;
-		});
-
-		callback(remainder.length > 1 ? new Error('schema-out-of-date') : null);
-	});
+				next(remainder.length > 1 ? new Error('schema-out-of-date') : null);
+			});
+		},
+	], callback);
+	// var all = Upgrade.available.reduce(function (memo, current) {
+	// 	memo = memo.concat(current.upgrades);
+	// 	return memo;
+	// }, []);
 };
 
 Upgrade.run = function (callback) {
@@ -80,20 +104,22 @@ Upgrade.run = function (callback) {
 	var queue = [];
 	var skipped = 0;
 
-	// Retrieve list of upgrades that have already been run
-	db.getSortedSetRange('schemaLog', 0, -1, function (err, completed) {
+	async.parallel({
+		// Retrieve list of upgrades that have already been run
+		completed: async.apply(db.getSortedSetRange, 'schemaLog', 0, -1),
+		// ... and those available to be run
+		available: Upgrade.getAll,
+	}, function (err, data) {
 		if (err) {
 			return callback(err);
 		}
 
-		queue = Upgrade.available.reduce(function (memo, cur) {
-			cur.upgrades.forEach(function (filename) {
-				if (completed.indexOf(filename) === -1) {
-					memo.push(path.join(__dirname, './upgrades', filename));
-				} else {
-					skipped += 1;
-				}
-			});
+		queue = data.available.reduce(function (memo, cur) {
+			if (data.completed.indexOf(path.basename(cur, '.js')) === -1) {
+				memo.push(cur);
+			} else {
+				skipped += 1;
+			}
 
 			return memo;
 		}, queue);
@@ -123,9 +149,6 @@ Upgrade.runSingle = function (query, callback) {
 
 Upgrade.process = function (files, skipCount, callback) {
 	process.stdout.write('OK'.green + ' | '.reset + String(files.length).cyan + ' script(s) found'.cyan + (skipCount > 0 ? ', '.cyan + String(skipCount).cyan + ' skipped'.cyan : '') + '\n'.reset);
-
-	// Do I need to sort the files here? we'll see.
-	// sort();
 
 	async.eachSeries(files, function (file, next) {
 		var scriptExport = require(file);
