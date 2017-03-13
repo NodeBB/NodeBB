@@ -150,33 +150,47 @@ Upgrade.runSingle = function (query, callback) {
 Upgrade.process = function (files, skipCount, callback) {
 	process.stdout.write('OK'.green + ' | '.reset + String(files.length).cyan + ' script(s) found'.cyan + (skipCount > 0 ? ', '.cyan + String(skipCount).cyan + ' skipped'.cyan : '') + '\n'.reset);
 
-	async.eachSeries(files, function (file, next) {
-		var scriptExport = require(file);
-		var date = new Date(scriptExport.timestamp);
+	async.waterfall([
+		async.apply(db.get, 'schemaDate'),
+		function (schemaDate, next) {
+			var schemaTime = new Date(schemaDate);
 
-		process.stdout.write('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '... ');
+			async.eachSeries(files, function (file, next) {
+				var scriptExport = require(file);
+				var date = new Date(scriptExport.timestamp);
 
-		// Do the upgrade...
-		scriptExport.method(function (err) {
-			if (err) {
-				process.stdout.write('error\n'.red);
-				return next(err);
-			}
+				process.stdout.write('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '... ');
 
-			// Record success in schemaLog
-			db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
+				// For backwards compatibility, cross-reference with schemaDate (if found). If a script's date is older, skip it
+				if (scriptExport.timestamp <= schemaTime) {
+					process.stdout.write('skipped\n'.grey);
+					db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
+					return next();
+				}
 
-			process.stdout.write('OK\n'.green);
-			next();
-		});
-	}, function (err) {
-		if (err) {
-			return callback(err);
-		}
+				// Do the upgrade...
+				scriptExport.method(function (err, skipped) {
+					if (err) {
+						process.stdout.write('error\n'.red);
+						return next(err);
+					}
 
-		process.stdout.write('Upgrade complete!\n\n'.green);
-		callback();
-	});
+					// Record success in schemaLog
+					db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
+
+					process.stdout.write('OK\n'.green);
+					next();
+				});
+			}, function (err) {
+				if (err) {
+					return next(err);
+				}
+
+				process.stdout.write('Upgrade complete!\n\n'.green);
+				next();
+			});
+		},
+	], callback);
 };
 
 module.exports = Upgrade;
