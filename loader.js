@@ -223,7 +223,7 @@ fs.open(path.join(__dirname, 'config.json'), 'r', function (err) {
 				stderr: process.stderr,
 			});
 
-			fs.writeFile(pidFilePath, process.pid);
+			fs.writeFileSync(pidFilePath, process.pid);
 		}
 
 		async.series([
