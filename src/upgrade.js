@@ -169,7 +169,7 @@ Upgrade.process = function (files, skipCount, callback) {
 				}
 
 				// Do the upgrade...
-				scriptExport.method(function (err, skipped) {
+				scriptExport.method(function (err) {
 					if (err) {
 						process.stdout.write('error\n'.red);
 						return next(err);
