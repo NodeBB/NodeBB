@@ -141,7 +141,7 @@ var privileges = require('../privileges');
 						notifications.getMultiple(nids, next);
 					},
 					hasRead: function (next) {
-						db.isSortedSetMember('uid:' + uid + ':notifications:read', nids, next);
+						db.isSortedSetMembers('uid:' + uid + ':notifications:read', nids, next);
 					},
 				}, next);
 			},
