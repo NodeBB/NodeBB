@@ -1,6 +1,6 @@
 {
-	"logger-settings": "Logger Settings",
-	"description": "By enabling the check boxes, you will receive logs to your terminal. If you specify a path, logs will then be saved to a file instead. HTTP logging is useful for collecting statistics about who, when, and what people access on your forum. In addition to logging HTTP requests, we can also log socket.io events. Socket.io logging, in combination with redis-cli monitor, can be very helpful for learning NodeBB's internals.",
+	"logger-settings": "Impostazioni del Registratore",
+	"description": "Abilitando le \"check boxes\", riceverai i registri sul tuo terminale. Se vuoi specificare un percorso, i registri verranno invece salvati in un file. Registrare l' HTTP è utile per collezionare statistiche su chi, quando, e a cosa le persone hanno accesso sul tuo forum. In più sul registrare le richieste HTTP, in combinazione con il monitoraggio redis-cli, può essere veramente utile per imparare l'interno di NodeBB",
 	"explanation": "Simply check/uncheck the logging settings to enable or disable logging on the fly. No restart needed.",
 	"enable-http": "Enable HTTP logging",
 	"enable-socket": "Enable socket.io event logging",
