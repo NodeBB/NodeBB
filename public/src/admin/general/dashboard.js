@@ -39,7 +39,6 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 
 	Admin.init = function () {
 		app.enterRoom('admin');
-		socket.emit('admin.rooms.getAll', Admin.updateRoomUsage);
 
 		isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
@@ -82,8 +81,10 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 		$('[data-toggle="tooltip"]').tooltip();
 
 		setupRealtimeButton();
-		setupGraphs();
-		initiateDashboard();
+		setupGraphs(function () {
+			socket.emit('admin.rooms.getAll', Admin.updateRoomUsage);
+			initiateDashboard();
+		});
 	};
 
 	Admin.updateRoomUsage = function (err, data) {
@@ -161,7 +162,8 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 	}
 	/* eslint-enable */
 
-	function setupGraphs() {
+	function setupGraphs(callback) {
+		callback = callback || function () {};
 		var trafficCanvas = document.getElementById('analytics-traffic');
 		var registeredCanvas = document.getElementById('analytics-registered');
 		var presenceCanvas = document.getElementById('analytics-presence');
@@ -302,6 +304,8 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 				}
 				updateTrafficGraph($(this).attr('data-units'), until);
 			});
+
+			callback();
 		});
 	}
 
