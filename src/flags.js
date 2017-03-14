@@ -60,9 +60,6 @@ Flags.list = function (filters, uid, callback) {
 			value.forEach(function (x) {
 				orSets.push(setPrefix + x);
 			});
-		} else {
-			// Empty array, do nothing
-
 		}
 	};
 
@@ -604,6 +601,7 @@ Flags.notify = function (flagObj, uid, callback) {
 			var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 
 			notifications.create({
+				type: 'new-post-flag',
 				bodyShort: '[[notifications:user_flagged_post_in, ' + flagObj.reporter.username + ', ' + titleEscaped + ']]',
 				bodyLong: flagObj.description,
 				pid: flagObj.targetId,

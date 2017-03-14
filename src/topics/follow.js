@@ -224,6 +224,7 @@ module.exports = function (Topics) {
 				postData.content = posts.relativeToAbsolute(postData.content);
 
 				notifications.create({
+					type: 'new-reply',
 					bodyShort: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + titleEscaped + ']]',
 					bodyLong: postData.content,
 					pid: postData.pid,

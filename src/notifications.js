@@ -28,64 +28,66 @@ var utils = require('../public/src/utils');
 	};
 
 	Notifications.getMultiple = function (nids, callback) {
+		if (!nids.length) {
+			return setImmediate(callback, null, []);
+		}
 		var keys = nids.map(function (nid) {
 			return 'notifications:' + nid;
 		});
 
-		db.getObjects(keys, function (err, notifications) {
-			if (err) {
-				return callback(err);
-			}
+		var notifications;
 
-			notifications = notifications.filter(Boolean);
-			if (!notifications.length) {
-				return callback(null, []);
-			}
+		async.waterfall([
+			function (next) {
+				db.getObjects(keys, next);
+			},
+			function (_notifications, next) {
+				notifications = _notifications;
+				var userKeys = notifications.map(function (notification) {
+					return notification && notification.from;
+				});
 
-			var userKeys = notifications.map(function (notification) {
-				return notification.from;
-			});
-
-			User.getUsersFields(userKeys, ['username', 'userslug', 'picture'], function (err, usersData) {
-				if (err) {
-					return callback(err);
-				}
+				User.getUsersFields(userKeys, ['username', 'userslug', 'picture'], next);
+			},
+			function (usersData, next) {
 				notifications.forEach(function (notification, index) {
-					notification.datetimeISO = utils.toISOString(notification.datetime);
+					if (notification) {
+						notification.datetimeISO = utils.toISOString(notification.datetime);
 
-					if (notification.bodyLong) {
-						notification.bodyLong = S(notification.bodyLong).escapeHTML().s;
-					}
-
-					notification.user = usersData[index];
-					if (notification.user) {
-						notification.image = notification.user.picture || null;
-						if (notification.user.username === '[[global:guest]]') {
-							notification.bodyShort = notification.bodyShort.replace(/([\s\S]*?),[\s\S]*?,([\s\S]*?)/, '$1, [[global:guest]], $2');
+						if (notification.bodyLong) {
+							notification.bodyLong = S(notification.bodyLong).escapeHTML().s;
 						}
-					} else if (notification.image === 'brand:logo' || !notification.image) {
-						notification.image = meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png';
+
+						notification.user = usersData[index];
+						if (notification.user) {
+							notification.image = notification.user.picture || null;
+							if (notification.user.username === '[[global:guest]]') {
+								notification.bodyShort = notification.bodyShort.replace(/([\s\S]*?),[\s\S]*?,([\s\S]*?)/, '$1, [[global:guest]], $2');
+							}
+						} else if (notification.image === 'brand:logo' || !notification.image) {
+							notification.image = meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png';
+						}
 					}
 				});
 
-				callback(null, notifications);
-			});
-		});
+				next(null, notifications);
+			},
+		], callback);
 	};
 
 	Notifications.filterExists = function (nids, callback) {
-		// Removes nids that have been pruned
-		db.isSortedSetMembers('notifications', nids, function (err, exists) {
-			if (err) {
-				return callback(err);
-			}
+		async.waterfall([
+			function (next) {
+				db.isSortedSetMembers('notifications', nids, next);
+			},
+			function (exists, next) {
+				nids = nids.filter(function (notifId, idx) {
+					return exists[idx];
+				});
 
-			nids = nids.filter(function (notifId, idx) {
-				return exists[idx];
-			});
-
-			callback(null, nids);
-		});
+				next(null, nids);
+			},
+		], callback);
 	};
 
 	Notifications.findRelated = function (mergeIds, set, callback) {

@@ -12,6 +12,17 @@
 	"new_notification": "New Notification",
 	"you_have_unread_notifications": "You have unread notifications.",
 
+	"all": "All",
+	"topics": "Topics",
+	"replies": "Replies",
+	"chat": "Chats",
+	"follows": "Follows",
+	"upvote": "Upvotes",
+	"new-flags": "New Flags",
+	"my-flags": "Flags assigned to me",
+	"bans": "Bans",
+
+
 	"new_message_from": "New message from <strong>%1</strong>",
 	"upvoted_your_post_in": "<strong>%1</strong> has upvoted your post in <strong>%2</strong>.",
 	"upvoted_your_post_in_dual": "<strong>%1</strong> and <strong>%2</strong> have upvoted your post in <strong>%3</strong>.",

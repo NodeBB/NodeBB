@@ -232,31 +232,6 @@ describe('Notifications', function () {
 		});
 	});
 
-	it('should error with invalid data', function (done) {
-		socketNotifications.loadMore({ uid: uid }, { after: 'test' }, function (err) {
-			assert.equal(err.message, '[[error:invalid-data]]');
-			done();
-		});
-	});
-
-	it('should error if not logged in', function (done) {
-		socketNotifications.loadMore({ uid: 0 }, { after: 10 }, function (err) {
-			assert.equal(err.message, '[[error:no-privileges]]');
-			done();
-		});
-	});
-
-	it('should load more notifications', function (done) {
-		socketNotifications.loadMore({ uid: uid }, { after: 0 }, function (err, data) {
-			assert.ifError(err);
-			assert.equal(data.notifications[0].bodyShort, 'bodyShort');
-			assert.equal(data.notifications[0].nid, 'notification_id');
-			assert.equal(data.notifications[0].path, '/notification/path');
-			done();
-		});
-	});
-
-
 	it('should error if not logged in', function (done) {
 		socketNotifications.deleteAll({ uid: 0 }, null, function (err) {
 			assert.equal(err.message, '[[error:no-privileges]]');
