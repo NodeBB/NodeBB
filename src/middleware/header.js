@@ -82,7 +82,7 @@ module.exports = function (middleware) {
 							picture: meta.config.defaultAvatar,
 							status: 'offline',
 							reputation: 0,
-							'email:confirmed': false,
+							'email:confirmed': 0,
 						};
 						if (req.uid) {
 							user.getUserFields(req.uid, Object.keys(userData), next);

@@ -279,6 +279,7 @@ module.exports = function (User) {
 				async.parallel([
 					async.apply(User.setUserField, data.uid, 'password', hashedPassword),
 					async.apply(User.reset.updateExpiry, data.uid),
+					async.apply(User.auth.revokeAllSessions, data.uid),
 				], function (err) {
 					next(err);
 				});

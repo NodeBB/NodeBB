@@ -79,8 +79,8 @@ define('forum/account/edit/password', ['forum/account/header', 'translator'], fu
 						onPasswordConfirmChanged();
 						return app.alertError(err.message);
 					}
-					ajaxify.go('user/' + ajaxify.data.userslug);
-					app.alertSuccess('[[user:change_password_success]]');
+
+					window.location.href = config.relative_path + '/login';
 				});
 			} else {
 				if (!passwordsmatch) {

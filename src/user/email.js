@@ -83,16 +83,21 @@ var emailer = require('../emailer');
 					}
 				});
 			},
+			function (next) {
+				next(null, confirm_code);
+			},
 		], callback);
 	};
 
 	UserEmail.confirm = function (code, callback) {
-		db.getObject('confirm:' + code, function (err, confirmObj) {
-			if (err) {
-				return callback(new Error('[[error:parse-error]]'));
-			}
-
-			if (confirmObj && confirmObj.uid && confirmObj.email) {
+		async.waterfall([
+			function (next) {
+				db.getObject('confirm:' + code, next);
+			},
+			function (confirmObj, next) {
+				if (!confirmObj || !confirmObj.uid || !confirmObj.email) {
+					return next(new Error('[[error:invalid-data]]'));
+				}
 				async.series([
 					async.apply(user.setUserField, confirmObj.uid, 'email:confirmed', 1),
 					async.apply(db.delete, 'confirm:' + code),
@@ -103,12 +108,10 @@ var emailer = require('../emailer');
 					function (next) {
 						plugins.fireHook('action:user.email.confirmed', { uid: confirmObj.uid, email: confirmObj.email }, next);
 					},
-				], function (err) {
-					callback(err ? new Error('[[error:email-confirm-failed]]') : null);
-				});
-			} else {
-				callback(new Error('[[error:invalid-data]]'));
-			}
+				], next);
+			},
+		], function (err) {
+			callback(err);
 		});
 	};
 }(exports));
