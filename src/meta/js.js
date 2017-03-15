@@ -108,6 +108,12 @@ module.exports = function (Meta) {
 						if (err) {
 							return cb(err);
 						}
+
+						if (filePath.endsWith('.min.js')) {
+							minified = { code: buffer.toString() };
+							return cb();
+						}
+
 						try {
 							minified = uglifyjs.minify(buffer.toString(), {
 								fromString: true,

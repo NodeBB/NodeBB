@@ -174,7 +174,7 @@ function checkMaintenance(socket, callback) {
 function validateSession(socket, callback) {
 	var req = socket.request;
 	if (!req.signedCookies || !req.signedCookies[nconf.get('sessionKey')]) {
-		return callback(new Error('[[error:invalid-session]]'));
+		return callback();
 	}
 	db.sessionStore.get(req.signedCookies[nconf.get('sessionKey')], function (err, sessionData) {
 		if (err || !sessionData) {
