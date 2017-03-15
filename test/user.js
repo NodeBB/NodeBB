@@ -399,19 +399,22 @@ describe('User', function () {
 		});
 
 		it('should change a user\'s password', function (done) {
-			this.timeout(20000);
-			io.emit('user.changePassword', { uid: uid, newPassword: '654321', currentPassword: '123456' }, function (err) {
+			var socketUser = require('../src/socket.io/user');
+			User.create({ username: 'changepassword', password: '123456' }, function (err, uid) {
 				assert.ifError(err);
-				User.isPasswordCorrect(uid, '654321', function (err, correct) {
+				socketUser.changePassword({ uid: uid }, { uid: uid, newPassword: '654321', currentPassword: '123456' }, function (err) {
 					assert.ifError(err);
-					assert(correct);
-					done();
+					User.isPasswordCorrect(uid, '654321', function (err, correct) {
+						assert.ifError(err);
+						assert(correct);
+						done();
+					});
 				});
 			});
 		});
 
 		it('should change username', function (done) {
-			io.emit('user.changeUsernameEmail', { uid: uid, username: 'updatedAgain', password: '654321' }, function (err) {
+			io.emit('user.changeUsernameEmail', { uid: uid, username: 'updatedAgain', password: '123456' }, function (err) {
 				assert.ifError(err);
 				db.getObjectField('user:' + uid, 'username', function (err, username) {
 					assert.ifError(err);
@@ -422,7 +425,7 @@ describe('User', function () {
 		});
 
 		it('should change email', function (done) {
-			io.emit('user.changeUsernameEmail', { uid: uid, email: 'updatedAgain@me.com', password: '654321' }, function (err) {
+			io.emit('user.changeUsernameEmail', { uid: uid, email: 'updatedAgain@me.com', password: '123456' }, function (err) {
 				assert.ifError(err);
 				db.getObjectField('user:' + uid, 'email', function (err, email) {
 					assert.ifError(err);
