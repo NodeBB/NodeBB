@@ -307,12 +307,9 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 				$(this).addClass('active');
 			});
 
-<<<<<<< HEAD
 			socket.emit('admin.rooms.getAll', Admin.updateRoomUsage);
 			initiateDashboard();
-=======
 			callback();
->>>>>>> origin/master
 		});
 	}
 
