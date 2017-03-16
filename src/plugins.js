@@ -127,7 +127,6 @@ var middleware;
 	};
 
 	Plugins.reloadRoutes = function (callback) {
-		callback = callback || function () {};
 		var router = express.Router();
 
 		router.hotswapId = 'plugins';
@@ -138,7 +137,8 @@ var middleware;
 		var controllers = require('./controllers');
 		Plugins.fireHook('static:app.load', { app: app, router: router, middleware: middleware, controllers: controllers }, function (err) {
 			if (err) {
-				return winston.error('[plugins] Encountered error while executing post-router plugins hooks: ' + err.message);
+				winston.error('[plugins] Encountered error while executing post-router plugins hooks: ' + err.message);
+				return callback(err);
 			}
 
 			hotswap.replace('plugins', router);

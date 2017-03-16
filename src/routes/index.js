@@ -86,7 +86,7 @@ function groupRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/groups/:slug/members', middleware, middlewares, controllers.groups.members);
 }
 
-module.exports = function (app, middleware, hotswapIds) {
+module.exports = function (app, middleware, hotswapIds, callback) {
 	var routers = [
 		express.Router(),	// plugin router
 		express.Router(),	// main app router
@@ -210,8 +210,9 @@ module.exports = function (app, middleware, hotswapIds) {
 		async.apply(user.addInterstitials),
 	], function (err) {
 		if (err) {
-			return winston.error(err);
+			return callback(err);
 		}
 		winston.info('Routes added');
+		callback();
 	});
 };
