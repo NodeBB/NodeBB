@@ -96,8 +96,7 @@ function initializeNodeBB(callback) {
 			plugins.fireHook('filter:hotswap.prepare', [], next);
 		},
 		function (hotswapIds, next) {
-			routes(app, middleware, hotswapIds);
-			next();
+			routes(app, middleware, hotswapIds, next);
 		},
 		function (next) {
 			async.series([
