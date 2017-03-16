@@ -5,7 +5,6 @@ var async = require('async');
 var privileges = require('../privileges');
 
 module.exports = function (Topics) {
-
 	Topics.getPopular = function (term, uid, count, callback) {
 		count = parseInt(count, 10) || 20;
 
@@ -19,7 +18,7 @@ module.exports = function (Topics) {
 			},
 			function (tids, next) {
 				getTopics(tids, uid, count, next);
-			}
+			},
 		], callback);
 	};
 
@@ -46,7 +45,7 @@ module.exports = function (Topics) {
 			},
 			function (tids, next) {
 				Topics.getTopicsByTids(tids, uid, next);
-			}
+			},
 		], callback);
 	}
 };

@@ -1,6 +1,5 @@
 'use strict';
 
-/* globals define, socket, app, templates, ajaxify*/
 
 define('forum/categories', ['components', 'translator'], function (components, translator) {
 	var	categories = {};
@@ -18,7 +17,7 @@ define('forum/categories', ['components', 'translator'], function (components, t
 		socket.on('event:new_post', categories.onNewPost);
 
 		$('.category-header').tooltip({
-			placement: 'bottom'
+			placement: 'bottom',
 		});
 	};
 
@@ -36,11 +35,10 @@ define('forum/categories', ['components', 'translator'], function (components, t
 		}
 
 		var recentPosts = category.find('[component="category/posts"]');
-		var insertBefore = recentPosts.first();
 
 		parseAndTranslate([post], function (html) {
 			html.hide();
-			if(recentPosts.length === 0) {
+			if (recentPosts.length === 0) {
 				html.appendTo(category);
 			} else {
 				html.insertBefore(recentPosts.first());
@@ -55,12 +53,12 @@ define('forum/categories', ['components', 'translator'], function (components, t
 				recentPosts.last().remove();
 			}
 
-			$(window).trigger('action:posts.loaded', {posts: [post]});
+			$(window).trigger('action:posts.loaded', { posts: [post] });
 		});
 	}
 
 	function parseAndTranslate(posts, callback) {
-		templates.parse('categories', '(categories.)?posts', {categories: {posts: posts}}, function (html) {
+		templates.parse('categories', '(categories.)?posts', { categories: { posts: posts } }, function (html) {
 			translator.translate(html, function (translatedHTML) {
 				translatedHTML = $(translatedHTML);
 				translatedHTML.find('.post-content img:not(.not-responsive)').addClass('img-responsive');

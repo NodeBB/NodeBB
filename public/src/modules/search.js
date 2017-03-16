@@ -1,10 +1,9 @@
-"use strict";
-/* globals socket, ajaxify, app, define, config */
+'use strict';
+
 
 define('search', ['navigator', 'translator'], function (nav, translator) {
-
 	var Search = {
-		current: {}
+		current: {},
 	};
 
 	Search.query = function (data, callback) {
@@ -18,7 +17,7 @@ define('search', ['navigator', 'translator'], function (nav, translator) {
 
 			try {
 				term = encodeURIComponent(term);
-			} catch(e) {
+			} catch (e) {
 				return app.alertError('[[error:invalid-search-term]]');
 			}
 
@@ -35,11 +34,11 @@ define('search', ['navigator', 'translator'], function (nav, translator) {
 	};
 
 	function createQueryString(data) {
-		var searchIn = data['in'] || 'titlesposts';
+		var searchIn = data.in || 'titlesposts';
 		var postedBy = data.by || '';
 		var query = {
 			term: data.term,
-			'in': searchIn
+			in: searchIn,
 		};
 
 		if (postedBy && (searchIn === 'posts' || searchIn === 'titles' || searchIn === 'titlesposts')) {
@@ -81,15 +80,15 @@ define('search', ['navigator', 'translator'], function (nav, translator) {
 	Search.getSearchPreferences = function () {
 		try {
 			return JSON.parse(localStorage.getItem('search-preferences') || '{}');
-		} catch(e) {
+		} catch (e) {
 			return {};
 		}
 	};
 
-	Search.queryTopic = function (tid, term, callback) {
+	Search.queryTopic = function (tid, term) {
 		socket.emit('topics.search', {
 			tid: tid,
-			term: term
+			term: term,
 		}, function (err, pids) {
 			if (err) {
 				return app.alertError(err.message);
@@ -102,7 +101,7 @@ define('search', ['navigator', 'translator'], function (nav, translator) {
 						return a - b;
 					}),
 					tid: tid,
-					term: term
+					term: term,
 				};
 
 				Search.checkPagePresence(tid, function () {
@@ -121,7 +120,7 @@ define('search', ['navigator', 'translator'], function (nav, translator) {
 	};
 
 	Search.topicDOM = {
-		active: false
+		active: false,
 	};
 
 	Search.topicDOM.prev = function () {
@@ -144,7 +143,7 @@ define('search', ['navigator', 'translator'], function (nav, translator) {
 			var data = {
 				pid: Search.current.results[index],
 				tid: Search.current.tid,
-				topicPostSort: config.topicPostSort
+				topicPostSort: config.topicPostSort,
 			};
 			socket.emit('posts.getPidIndex', data, function (err, postIndex) {
 				if (err) {

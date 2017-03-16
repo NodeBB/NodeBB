@@ -1,12 +1,12 @@
-"use strict";
-/*global config, define, app, socket, ajaxify, bootbox, templates */
+'use strict';
+
 
 define('admin/manage/category', [
 	'uploader',
 	'iconSelect',
 	'admin/modules/colorpicker',
 	'autocomplete',
-	'translator'
+	'translator',
 ], function (uploader, iconSelect, colorpicker, autocomplete, translator) {
 	var	Category = {};
 	var modified_categories = {};
@@ -26,40 +26,14 @@ define('admin/manage/category', [
 			}
 		}
 
-		function save(e) {
-			e.preventDefault();
-
-			if(Object.keys(modified_categories).length) {
-				socket.emit('admin.categories.update', modified_categories, function (err, results) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-
-					if (results && results.length) {
-						app.flags._unsaved = false;
-						app.alert({
-							title: '[[admin/manage/categories:alert.updated]]',
-							message: translator.compile(
-								'admin/manage/categories:alert.updated-success',
-								results.join('&#44; ')
-							),
-							type: 'success',
-							timeout: 2000
-						});
-					}
-				});
-				modified_categories = {};
-			}
-		}
-
 		$('.blockclass, form.category select').each(function () {
 			var $this = $(this);
 			$this.val($this.attr('data-value'));
 		});
 
 		function enableColorPicker(idx, inputEl) {
-			var $inputEl = $(inputEl),
-				previewEl = $inputEl.parents('[data-cid]').find('.category-preview');
+			var $inputEl = $(inputEl);
+			var previewEl = $inputEl.parents('[data-cid]').find('.category-preview');
 
 			colorpicker.enable($inputEl, function (hsb, hex) {
 				if ($inputEl.attr('data-name') === 'bgColor') {
@@ -103,7 +77,7 @@ define('admin/manage/category', [
 							title: 'Updated Categories',
 							message: 'Category IDs ' + result.join(', ') + ' was successfully updated.',
 							type: 'success',
-							timeout: 2000
+							timeout: 2000,
 						});
 					}
 				});
@@ -134,7 +108,7 @@ define('admin/manage/category', [
 
 		$('.copy-settings').on('click', function () {
 			selectCategoryModal(function (cid) {
-				socket.emit('admin.categories.copySettingsFrom', {fromCid: cid, toCid: ajaxify.data.category.cid}, function (err) {
+				socket.emit('admin.categories.copySettingsFrom', { fromCid: cid, toCid: ajaxify.data.category.cid }, function (err) {
 					if (err) {
 						return app.alertError(err.message);
 					}
@@ -152,7 +126,7 @@ define('admin/manage/category', [
 			uploader.show({
 				title: '[[admin/manage/categories:alert.upload-image]]',
 				route: config.relative_path + '/api/admin/category/uploadpicture',
-				params: {cid: cid}
+				params: { cid: cid },
 			}, function (imageUrlOnServer) {
 				$('#category-image').val(imageUrlOnServer);
 				var previewBox = inputEl.parent().parent().siblings('.category-preview');
@@ -186,7 +160,7 @@ define('admin/manage/category', [
 		$('button[data-action="removeParent"]').on('click', function () {
 			var payload = {};
 			payload[ajaxify.data.category.cid] = {
-				parentCid: 0
+				parentCid: 0,
 			};
 
 			socket.emit('admin.categories.update', payload, function (err) {
@@ -220,26 +194,26 @@ define('admin/manage/category', [
 		var tagEl = $('#tag-whitelist');
 		tagEl.tagsinput({
 			confirmKeys: [13, 44],
-			trimValue: true
+			trimValue: true,
 		});
 
 		ajaxify.data.category.tagWhitelist.forEach(function (tag) {
 			tagEl.tagsinput('add', tag);
 		});
-		tagEl.on('itemAdded itemRemoved', function (event) {
+		tagEl.on('itemAdded itemRemoved', function () {
 			modified(tagEl);
 		});
 	}
 
 	Category.setupPrivilegeTable = function () {
 		$('.privilege-table-container').on('change', 'input[type="checkbox"]', function () {
-			var checkboxEl = $(this),
-				privilege = checkboxEl.parent().attr('data-privilege'),
-				state = checkboxEl.prop('checked'),
-				rowEl = checkboxEl.parents('tr'),
-				member = rowEl.attr('data-group-name') || rowEl.attr('data-uid'),
-				isPrivate = parseInt(rowEl.attr('data-private') || 0, 10),
-				isGroup = rowEl.attr('data-group-name') !== undefined;
+			var checkboxEl = $(this);
+			var privilege = checkboxEl.parent().attr('data-privilege');
+			var state = checkboxEl.prop('checked');
+			var rowEl = checkboxEl.parents('tr');
+			var member = rowEl.attr('data-group-name') || rowEl.attr('data-uid');
+			var isPrivate = parseInt(rowEl.attr('data-private') || 0, 10);
+			var isGroup = rowEl.attr('data-group-name') !== undefined;
 
 			if (member) {
 				if (isGroup && privilege === 'groups:moderate' && !isPrivate && state) {
@@ -247,7 +221,7 @@ define('admin/manage/category', [
 						if (confirm) {
 							Category.setPrivilege(member, privilege, state, checkboxEl);
 						} else {
-							checkboxEl.prop('checked', checkboxEl.prop('checked') ^ 1);
+							checkboxEl.prop('checked', !checkboxEl.prop('checked'));
 						}
 					});
 				} else {
@@ -273,7 +247,7 @@ define('admin/manage/category', [
 			}
 
 			templates.parse('admin/partials/categories/privileges', {
-				privileges: privileges
+				privileges: privileges,
 			}, function (html) {
 				translator.translate(html, function (html) {
 					$('.privilege-table-container').html(html);
@@ -295,7 +269,7 @@ define('admin/manage/category', [
 				privs.push(el.getAttribute('data-privilege'));
 			}
 		});
-		for(var x = 0,numPrivs = privs.length; x < numPrivs; x++) {
+		for (var x = 0, numPrivs = privs.length; x < numPrivs; x += 1) {
 			var inputs = $('.privilege-table tr[data-group-name]:not([data-group-name="registered-users"],[data-group-name="guests"]) td[data-privilege="' + privs[x] + '"] input');
 			inputs.each(function (idx, el) {
 				if (!el.checked) {
@@ -310,7 +284,7 @@ define('admin/manage/category', [
 			cid: ajaxify.data.category.cid,
 			privilege: privilege,
 			set: state,
-			member: member
+			member: member,
 		}, function (err) {
 			if (err) {
 				return app.alertError(err.message);
@@ -332,19 +306,19 @@ define('admin/manage/category', [
 			});
 
 			templates.parse('partials/category_list', {
-				categories: categories
+				categories: categories,
 			}, function (html) {
 				var modal = bootbox.dialog({
 					message: html,
-					title: '[[admin/manage/categories:alert.set-parent-category]]'
+					title: '[[admin/manage/categories:alert.set-parent-category]]',
 				});
 
 				modal.find('li[data-cid]').on('click', function () {
-					var parentCid = $(this).attr('data-cid'),
-						payload = {};
+					var parentCid = $(this).attr('data-cid');
+					var payload = {};
 
 					payload[ajaxify.data.category.cid] = {
-						parentCid: parentCid
+						parentCid: parentCid,
 					};
 
 					socket.emit('admin.categories.update', payload, function (err) {
@@ -371,7 +345,7 @@ define('admin/manage/category', [
 		var modal = bootbox.dialog({
 			title: '[[admin/manage/categories:alert.find-user]]',
 			message: '<input class="form-control input-lg" placeholder="[[admin/manage/categories:alert.user-search]]" />',
-			show: true
+			show: true,
 		});
 
 		modal.on('shown.bs.modal', function () {
@@ -382,7 +356,7 @@ define('admin/manage/category', [
 					cid: ajaxify.data.category.cid,
 					privilege: ['find', 'read', 'topics:read'],
 					set: true,
-					member: ui.item.user.uid
+					member: ui.item.user.uid,
 				}, function (err) {
 					if (err) {
 						return app.alertError(err.message);
@@ -399,7 +373,7 @@ define('admin/manage/category', [
 		var modal = bootbox.dialog({
 			title: '[[admin/manage/categories:alert.find-group]]',
 			message: '<input class="form-control input-lg" placeholder="[[admin/manage/categories:alert.group-search]]" />',
-			show: true
+			show: true,
 		});
 
 		modal.on('shown.bs.modal', function () {
@@ -410,7 +384,7 @@ define('admin/manage/category', [
 					cid: ajaxify.data.category.cid,
 					privilege: ['groups:find', 'groups:read', 'groups:topics:read'],
 					set: true,
-					member: ui.item.group.name
+					member: ui.item.group.name,
 				}, function (err) {
 					if (err) {
 						return app.alertError(err.message);
@@ -434,7 +408,7 @@ define('admin/manage/category', [
 
 	Category.copyPrivilegesFromCategory = function () {
 		selectCategoryModal(function (cid) {
-			socket.emit('admin.categories.copyPrivilegesFrom', {toCid: ajaxify.data.category.cid, fromCid: cid}, function (err) {
+			socket.emit('admin.categories.copyPrivilegesFrom', { toCid: ajaxify.data.category.cid, fromCid: cid }, function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
@@ -450,16 +424,9 @@ define('admin/manage/category', [
 			}
 
 			templates.parse('admin/partials/categories/select-category', {
-				categories: categories
+				categories: categories,
 			}, function (html) {
 				translator.translate(html, function (html) {
-					function submit() {
-						var formData = modal.find('form').serializeObject();
-						callback(formData['select-cid']);
-						modal.modal('hide');
-						return false;
-					}
-
 					var modal = bootbox.dialog({
 						title: 'Select a Category',
 						message: html,
@@ -467,10 +434,17 @@ define('admin/manage/category', [
 							save: {
 								label: 'Copy',
 								className: 'btn-primary',
-								callback: submit
-							}
-						}
+								callback: submit,
+							},
+						},
 					});
+
+					function submit() {
+						var formData = modal.find('form').serializeObject();
+						callback(formData['select-cid']);
+						modal.modal('hide');
+						return false;
+					}
 
 					modal.find('form').on('submit', submit);
 				});

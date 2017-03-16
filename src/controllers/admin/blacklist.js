@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var meta = require('../../meta');
 
@@ -11,7 +11,7 @@ blacklistController.get = function (req, res, next) {
 		}
 		res.render('admin/manage/ip-blacklist', {
 			rules: rules,
-			title: '[[pages:ip-blacklist]]'
+			title: '[[pages:ip-blacklist]]',
 		});
 	});
 };

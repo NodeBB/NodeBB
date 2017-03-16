@@ -1,10 +1,7 @@
 'use strict';
 
 var async = require('async');
-var nconf = require('nconf');
-var path = require('path');
 var fs = require('fs');
-var crypto = require('crypto');
 var Jimp = require('jimp');
 var mime = require('mime');
 var winston = require('winston');
@@ -14,7 +11,6 @@ var image = require('../image');
 var uploadsController = require('../controllers/uploads');
 
 module.exports = function (Groups) {
-
 	Groups.updateCoverPosition = function (groupName, position, callback) {
 		if (!groupName) {
 			return callback(new Error('[[error:invalid-data]]'));
@@ -23,7 +19,6 @@ module.exports = function (Groups) {
 	};
 
 	Groups.updateCover = function (uid, data, callback) {
-
 		// Position only? That's fine
 		if (!data.imageData && !data.file && data.position) {
 			return Groups.updateCoverPosition(data.groupName, data.position, callback);
@@ -45,7 +40,7 @@ module.exports = function (Groups) {
 				uploadsController.uploadGroupCover(uid, {
 					name: 'groupCover',
 					path: tempPath,
-					type: type
+					type: type,
 				}, next);
 			},
 			function (uploadData, next) {
@@ -59,7 +54,7 @@ module.exports = function (Groups) {
 				uploadsController.uploadGroupCover(uid, {
 					name: 'groupCoverThumb',
 					path: tempPath,
-					type: type
+					type: type,
 				}, next);
 			},
 			function (uploadData, next) {
@@ -71,13 +66,13 @@ module.exports = function (Groups) {
 				} else {
 					next(null);
 				}
-			}
+			},
 		], function (err) {
 			fs.unlink(tempPath, function (unlinkErr) {
 				if (unlinkErr) {
 					winston.error(unlinkErr);
 				}
-				callback(err, {url: url});
+				callback(err, { url: url });
 			});
 		});
 	};
@@ -92,7 +87,7 @@ module.exports = function (Groups) {
 			},
 			function (image, next) {
 				image.write(path, next);
-			}
+			},
 		], function (err) {
 			callback(err);
 		});
@@ -101,5 +96,4 @@ module.exports = function (Groups) {
 	Groups.removeCover = function (data, callback) {
 		db.deleteObjectFields('group:' + data.groupName, ['cover:url', 'cover:thumb:url', 'cover:position'], callback);
 	};
-
 };

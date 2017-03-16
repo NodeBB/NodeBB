@@ -1,5 +1,5 @@
-"use strict";
-/*global define*/
+'use strict';
+
 
 define('admin/general/languages', ['admin/settings'], function (Settings) {
 	var Languages = {};

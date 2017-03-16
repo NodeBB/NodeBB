@@ -1,6 +1,5 @@
-
-
 'use strict';
+
 var winston = require('winston');
 
 var ratelimit = module.exports;
@@ -13,7 +12,7 @@ ratelimit.isFlooding = function (socket) {
 	socket.elapsedTime = socket.elapsedTime || 0;
 	socket.lastCallTime = socket.lastCallTime || Date.now();
 
-	++socket.callsPerSecond;
+	socket.callsPerSecond += 1;
 
 	var now = Date.now();
 	socket.elapsedTime += now - socket.lastCallTime;

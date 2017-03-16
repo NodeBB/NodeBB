@@ -1,9 +1,9 @@
 {
-	"custom-css": "Custom CSS",
-	"custom-css.description": "Enter your own CSS declarations here, which will be applied after all other styles.",
-	"custom-css.enable": "Enable Custom CSS",
+	"custom-css": "CSS Personalizzato",
+	"custom-css.description": "Inserisci le tue dichiarazioni CSS qui, verranno applicate dopo tutti gli altri stili.",
+	"custom-css.enable": "Abilita CSS Personalizzato",
 
-	"custom-header": "Custom Header",
-	"custom-header.description": "Enter custom HTML here (ex. JavaScript, Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup.",
-	"custom-header.enable": "Enable Custom Header"
+	"custom-header": "Intestazione Personalizzata",
+	"custom-header.description": "Inserisci l' HTML personalizzato qui  (es. JavaScript, Meta Tags, ecc.), verrà attaccato al codice  <code>&lt;head&gt;</code> sezione del markup del tuo forum",
+	"custom-header.enable": "Abilita l'Intestazione Personalizzata"
 }

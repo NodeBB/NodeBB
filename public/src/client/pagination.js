@@ -1,5 +1,5 @@
 'use strict';
-/*global define, utils, ajaxify, bootbox*/
+
 
 define('forum/pagination', function () {
 	var pagination = {};

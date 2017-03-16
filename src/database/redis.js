@@ -1,38 +1,36 @@
 'use strict';
 
 (function (module) {
-
 	var winston = require('winston');
 	var nconf = require('nconf');
 	var semver = require('semver');
 	var session = require('express-session');
 	var redis;
-	var connectRedis;
 	var redisClient;
 
 	module.questions = [
 		{
 			name: 'redis:host',
 			description: 'Host IP or address of your Redis instance',
-			'default': nconf.get('redis:host') || '127.0.0.1'
+			default: nconf.get('redis:host') || '127.0.0.1',
 		},
 		{
 			name: 'redis:port',
 			description: 'Host port of your Redis instance',
-			'default': nconf.get('redis:port') || 6379
+			default: nconf.get('redis:port') || 6379,
 		},
 		{
 			name: 'redis:password',
 			description: 'Password of your Redis database',
 			hidden: true,
 			default: nconf.get('redis:password') || '',
-			before: function (value) { value = value || nconf.get('redis:password') || ''; return value; }
+			before: function (value) { value = value || nconf.get('redis:password') || ''; return value; },
 		},
 		{
-			name: "redis:database",
-			description: "Which database to use (0..n)",
-			'default': nconf.get('redis:database') || 0
-		}
+			name: 'redis:database',
+			description: 'Which database to use (0..n)',
+			default: nconf.get('redis:database') || 0,
+		},
 	];
 
 	module.init = function (callback) {
@@ -68,7 +66,7 @@
 
 		module.sessionStore = new sessionStore({
 			client: module.client,
-			ttl: ttl
+			ttl: ttl,
 		});
 
 		if (typeof callback === 'function') {
@@ -110,7 +108,7 @@
 		if (dbIdx) {
 			cxn.select(dbIdx, function (error) {
 				if (error) {
-					winston.error("NodeBB could not connect to your Redis database. Redis returned the following error: " + error.message);
+					winston.error('NodeBB could not connect to your Redis database. Redis returned the following error: ' + error.message);
 					process.exit();
 				}
 			});
@@ -150,7 +148,7 @@
 				return callback(err);
 			}
 
-			var lines = data.toString().split("\r\n").sort();
+			var lines = data.toString().split('\r\n').sort();
 			var redisData = {};
 			lines.forEach(function (line) {
 				var parts = line.split(':');
@@ -168,5 +166,5 @@
 
 	module.helpers = module.helpers || {};
 	module.helpers.redis = require('./redis/helpers');
-} (exports));
+}(exports));
 

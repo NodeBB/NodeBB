@@ -1,6 +1,5 @@
 'use strict';
 
-/* globals define, ajaxify, socket, app, utils */
 
 define('forum/account/edit/password', ['forum/account/header', 'translator'], function (header, translator) {
 	var AccountEditPassword = {};
@@ -64,9 +63,9 @@ define('forum/account/edit/password', ['forum/account/header', 'translator'], fu
 			if ((passwordvalid && passwordsmatch) || app.user.isAdmin) {
 				btn.addClass('disabled').find('i').removeClass('hide');
 				socket.emit('user.changePassword', {
-					'currentPassword': currentPassword.val(),
-					'newPassword': password.val(),
-					'uid': ajaxify.data.theirid
+					currentPassword: currentPassword.val(),
+					newPassword: password.val(),
+					uid: ajaxify.data.theirid,
 				}, function (err) {
 					btn.removeClass('disabled').find('i').addClass('hide');
 					currentPassword.val('');
@@ -80,8 +79,8 @@ define('forum/account/edit/password', ['forum/account/header', 'translator'], fu
 						onPasswordConfirmChanged();
 						return app.alertError(err.message);
 					}
-					ajaxify.go('user/' + ajaxify.data.userslug);
-					app.alertSuccess('[[user:change_password_success]]');
+
+					window.location.href = config.relative_path + '/login';
 				});
 			} else {
 				if (!passwordsmatch) {

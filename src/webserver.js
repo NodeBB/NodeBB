@@ -33,7 +33,7 @@ var helpers = require('../public/src/modules/helpers');
 if (nconf.get('ssl')) {
 	server = require('https').createServer({
 		key: fs.readFileSync(nconf.get('ssl').key),
-		cert: fs.readFileSync(nconf.get('ssl').cert)
+		cert: fs.readFileSync(nconf.get('ssl').cert),
 	}, app);
 } else {
 	server = require('http').createServer(app);
@@ -61,25 +61,23 @@ module.exports.listen = function (callback) {
 
 	logger.init(app);
 
-	initializeNodeBB(function (err) {
-		if (err) {
-			return callback(err);
-		}
+	async.waterfall([
+		initializeNodeBB,
+		function (next) {
+			winston.info('NodeBB Ready');
 
-		winston.info('NodeBB Ready');
+			require('./socket.io').server.emit('event:nodebb.ready', {
+				'cache-buster': meta.config['cache-buster'],
+			});
 
-		require('./socket.io').server.emit('event:nodebb.ready', {
-			'cache-buster': meta.config['cache-buster']
-		});
+			plugins.fireHook('action:nodebb.ready');
 
-		plugins.fireHook('action:nodebb.ready');
-
-		listen(callback);
-	});
+			listen(next);
+		},
+	], callback);
 };
 
 function initializeNodeBB(callback) {
-	winston.info('initializing NodeBB ...');
 	var middleware = require('./middleware');
 
 	async.waterfall([
@@ -91,15 +89,14 @@ function initializeNodeBB(callback) {
 		function (next) {
 			plugins.fireHook('static:app.preload', {
 				app: app,
-				middleware: middleware
+				middleware: middleware,
 			}, next);
 		},
 		function (next) {
 			plugins.fireHook('filter:hotswap.prepare', [], next);
 		},
 		function (hotswapIds, next) {
-			routes(app, middleware, hotswapIds);
-			next();
+			routes(app, middleware, hotswapIds, next);
 		},
 		function (next) {
 			async.series([
@@ -107,8 +104,10 @@ function initializeNodeBB(callback) {
 				languages.init,
 				meta.blacklist.load,
 			], next);
-		}
-	], callback);
+		},
+	], function (err) {
+		callback(err);
+	});
 }
 
 function setupExpressApp(app) {
@@ -146,7 +145,7 @@ function setupExpressApp(app) {
 		key: nconf.get('sessionKey'),
 		cookie: setupCookie(),
 		resave: true,
-		saveUninitialized: true
+		saveUninitialized: true,
 	}));
 
 	app.use(middleware.addHeaders);
@@ -172,7 +171,7 @@ function setupCookie() {
 	var ttl = ttlSeconds || ttlDays || 1209600000; // Default to 14 days
 
 	var cookie = {
-		maxAge: ttl
+		maxAge: ttl,
 	};
 
 	if (nconf.get('cookieDomain') || meta.config.cookieDomain) {
@@ -221,7 +220,7 @@ function listen(callback) {
 		winston.info('Using ports 80 and 443 is not recommend; use a proxy instead. See README.md');
 	}
 
-	var bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address'));
+	var bind_address = ((nconf.get('bind_address') === '0.0.0.0' || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address'));
 	var args = isSocket ? [socketPath] : [port, bind_address];
 	var oldUmask;
 
@@ -284,5 +283,4 @@ module.exports.testSocket = function (socketPath, callback) {
 		async.apply(fs.unlink, socketPath),	// The socket was stale, kick it out of the way
 	], callback);
 };
-
 

@@ -1,5 +1,5 @@
 'use strict';
-/* globals define, templates */
+
 
 define('alerts', ['translator', 'components'], function (translator, components) {
 	var module = {};
@@ -30,7 +30,7 @@ define('alerts', ['translator', 'components'], function (translator, components)
 
 				components.get('toaster/tray').prepend(alert);
 
-				if(typeof params.closefn === 'function') {
+				if (typeof params.closefn === 'function') {
 					alert.find('button').on('click', function () {
 						params.closefn();
 						fadeOut(alert);
@@ -46,7 +46,7 @@ define('alerts', ['translator', 'components'], function (translator, components)
 					alert
 						.addClass('pointer')
 						.on('click', function (e) {
-							if(!$(e.target).is('.close')) {
+							if (!$(e.target).is('.close')) {
 								params.clickfn();
 							}
 							fadeOut(alert);
@@ -82,7 +82,7 @@ define('alerts', ['translator', 'components'], function (translator, components)
 			alert
 				.addClass('pointer')
 				.on('click', function (e) {
-					if(!$(e.target).is('.close')) {
+					if (!$(e.target).is('.close')) {
 						params.clickfn();
 					}
 					fadeOut(alert);

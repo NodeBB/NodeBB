@@ -15,11 +15,10 @@ var LRU = require('lru-cache');
 
 var cache = LRU({
 	max: 40000,
-	maxAge: 1000 * 60 * 60
+	maxAge: 1000 * 60 * 60,
 });
 
 module.exports = function (Groups) {
-
 	Groups.cache = cache;
 
 	Groups.join = function (groupName, uid, callback) {
@@ -46,7 +45,7 @@ module.exports = function (Groups) {
 				Groups.create({
 					name: groupName,
 					description: '',
-					hidden: 1
+					hidden: 1,
 				}, function (err) {
 					if (err && err.message !== '[[error:group-already-exists]]') {
 						winston.error('[groups.join] Could not create new hidden group: ' + err.message);
@@ -62,13 +61,13 @@ module.exports = function (Groups) {
 					},
 					isHidden: function (next) {
 						Groups.isHidden(groupName, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
 				var tasks = [
 					async.apply(db.sortedSetAdd, 'group:' + groupName + ':members', Date.now(), uid),
-					async.apply(db.incrObjectField, 'group:' + groupName, 'memberCount')
+					async.apply(db.incrObjectField, 'group:' + groupName, 'memberCount'),
 				];
 				if (results.isAdmin) {
 					tasks.push(async.apply(db.setAdd, 'group:' + groupName + ':owners', uid));
@@ -85,10 +84,10 @@ module.exports = function (Groups) {
 			function (next) {
 				plugins.fireHook('action:group.join', {
 					groupName: groupName,
-					uid: uid
+					uid: uid,
 				});
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -120,12 +119,12 @@ module.exports = function (Groups) {
 							bodyLong: '[[groups:request.notification_text, ' + username + ', ' + groupName + ']]',
 							nid: 'group:' + groupName + ':uid:' + uid + ':request',
 							path: '/groups/' + utils.slugify(groupName),
-							from: uid
+							from: uid,
 						}, next);
 					},
 					owners: function (next) {
 						Groups.getOwners(groupName, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -133,7 +132,7 @@ module.exports = function (Groups) {
 					return next();
 				}
 				notifications.push(results.notification, results.owners, next);
-			}
+			},
 		], callback);
 	};
 
@@ -141,14 +140,14 @@ module.exports = function (Groups) {
 		async.waterfall([
 			async.apply(db.setRemove, 'group:' + groupName + ':pending', uid),
 			async.apply(db.setRemove, 'group:' + groupName + ':invited', uid),
-			async.apply(Groups.join, groupName, uid)
+			async.apply(Groups.join, groupName, uid),
 		], callback);
 	};
 
 	Groups.rejectMembership = function (groupName, uid, callback) {
 		async.parallel([
 			async.apply(db.setRemove, 'group:' + groupName + ':pending', uid),
-			async.apply(db.setRemove, 'group:' + groupName + ':invited', uid)
+			async.apply(db.setRemove, 'group:' + groupName + ':invited', uid),
 		], callback);
 	};
 
@@ -159,11 +158,11 @@ module.exports = function (Groups) {
 				bodyShort: '[[groups:invited.notification_title, ' + groupName + ']]',
 				bodyLong: '',
 				nid: 'group:' + groupName + ':uid:' + uid + ':invite',
-				path: '/groups/' + utils.slugify(groupName)
+				path: '/groups/' + utils.slugify(groupName),
 			}),
 			function (notification, next) {
 				notifications.push(notification, [uid], next);
-			}
+			},
 		], callback);
 	};
 
@@ -180,7 +179,7 @@ module.exports = function (Groups) {
 					exists: async.apply(Groups.exists, groupName),
 					isMember: async.apply(Groups.isMember, uid, groupName),
 					isPending: async.apply(Groups.isPending, uid, groupName),
-					isInvited: async.apply(Groups.isInvited, uid, groupName)
+					isInvited: async.apply(Groups.isInvited, uid, groupName),
 				}, next);
 			},
 			function (checks, next) {
@@ -199,10 +198,10 @@ module.exports = function (Groups) {
 			function (next) {
 				plugins.fireHook(hookName, {
 					groupName: groupName,
-					uid: uid
+					uid: uid,
 				});
 				next();
-			}
+			},
 		], callback);
 	}
 
@@ -227,7 +226,7 @@ module.exports = function (Groups) {
 				async.parallel([
 					async.apply(db.sortedSetRemove, 'group:' + groupName + ':members', uid),
 					async.apply(db.setRemove, 'group:' + groupName + ':owners', uid),
-					async.apply(db.decrObjectField, 'group:' + groupName, 'memberCount')
+					async.apply(db.decrObjectField, 'group:' + groupName, 'memberCount'),
 				], next);
 			},
 			function (results, next) {
@@ -240,21 +239,19 @@ module.exports = function (Groups) {
 				}
 				if (Groups.isPrivilegeGroup(groupName) && parseInt(groupData.memberCount, 10) === 0) {
 					Groups.destroy(groupName, next);
+				} else if (parseInt(groupData.hidden, 10) !== 1) {
+					db.sortedSetAdd('groups:visible:memberCount', groupData.memberCount, groupName, next);
 				} else {
-					if (parseInt(groupData.hidden, 10) !== 1) {
-						db.sortedSetAdd('groups:visible:memberCount', groupData.memberCount, groupName, next);
-					} else {
-						next();
-					}
+					next();
 				}
 			},
 			function (next) {
 				plugins.fireHook('action:group.leave', {
 					groupName: groupName,
-					uid: uid
+					uid: uid,
 				});
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -277,10 +274,10 @@ module.exports = function (Groups) {
 						},
 						function (next) {
 							Groups.rejectMembership(groupName, uid, next);
-						}
+						},
 					], next);
 				}, next);
-			}
+			},
 		], callback);
 	};
 
@@ -316,7 +313,7 @@ module.exports = function (Groups) {
 	});
 
 	function clearCache(uid, groupName) {
-		pubsub.publish('group:cache:del', {uid: uid, groupName: groupName});
+		pubsub.publish('group:cache:del', { uid: uid, groupName: groupName });
 		cache.del(uid + ':' + groupName);
 	}
 
@@ -341,7 +338,7 @@ module.exports = function (Groups) {
 			function (isMember, next) {
 				cache.set(cacheKey, isMember);
 				next(null, isMember);
-			}
+			},
 		], callback);
 	};
 
@@ -353,7 +350,7 @@ module.exports = function (Groups) {
 		}
 
 		if (!groupName || !uids.length) {
-			return callback(null, uids.map(function () {return false;}));
+			return callback(null, uids.map(function () { return false; }));
 		}
 
 		var nonCachedUids = uids.filter(function (uid) {
@@ -374,7 +371,7 @@ module.exports = function (Groups) {
 				});
 
 				getFromCache(next);
-			}
+			},
 		], callback);
 	};
 
@@ -386,7 +383,7 @@ module.exports = function (Groups) {
 		}
 
 		if (!uid || parseInt(uid, 10) <= 0 || !groups.length) {
-			return callback(null, groups.map(function () {return false;}));
+			return callback(null, groups.map(function () { return false; }));
 		}
 
 		var nonCachedGroups = groups.filter(function (groupName) {
@@ -411,37 +408,38 @@ module.exports = function (Groups) {
 				});
 
 				getFromCache(next);
-			}
+			},
 		], callback);
 	};
 
 	Groups.getMemberCount = function (groupName, callback) {
-		db.getObjectField('group:' + groupName, 'memberCount', function (err, count) {
-			if (err) {
-				return callback(err);
-			}
-			callback(null, parseInt(count, 10));
-		});
+		async.waterfall([
+			function (next) {
+				db.getObjectField('group:' + groupName, 'memberCount', next);
+			},
+			function (count, next) {
+				next(null, parseInt(count, 10));
+			},
+		], callback);
 	};
 
 	Groups.isMemberOfGroupList = function (uid, groupListKey, callback) {
-		db.getSortedSetRange('group:' + groupListKey + ':members', 0, -1, function (err, groupNames) {
-			if (err) {
-				return callback(err);
-			}
-			groupNames = Groups.internals.removeEphemeralGroups(groupNames);
-			if (groupNames.length === 0) {
-				return callback(null, false);
-			}
-
-			Groups.isMemberOfGroups(uid, groupNames, function (err, isMembers) {
-				if (err) {
-					return callback(err);
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRange('group:' + groupListKey + ':members', 0, -1, next);
+			},
+			function (groupNames, next) {
+				groupNames = Groups.removeEphemeralGroups(groupNames);
+				if (groupNames.length === 0) {
+					return callback(null, false);
 				}
 
-				callback(null, isMembers.indexOf(true) !== -1);
-			});
-		});
+				Groups.isMemberOfGroups(uid, groupNames, next);
+			},
+			function (isMembers, next) {
+				next(null, isMembers.indexOf(true) !== -1);
+			},
+		], callback);
 	};
 
 	Groups.isMemberOfGroupsList = function (uid, groupListKeys, callback) {
@@ -449,19 +447,20 @@ module.exports = function (Groups) {
 			return 'group:' + groupName + ':members';
 		});
 
-		db.getSortedSetsMembers(sets, function (err, members) {
-			if (err) {
-				return callback(err);
-			}
+		var uniqueGroups;
+		var members;
+		async.waterfall([
+			function (next) {
+				db.getSortedSetsMembers(sets, next);
+			},
+			function (_members, next) {
+				members = _members;
+				uniqueGroups = _.unique(_.flatten(members));
+				uniqueGroups = Groups.removeEphemeralGroups(uniqueGroups);
 
-			var uniqueGroups = _.unique(_.flatten(members));
-			uniqueGroups = Groups.internals.removeEphemeralGroups(uniqueGroups);
-
-			Groups.isMemberOfGroups(uid, uniqueGroups, function (err, isMembers) {
-				if (err) {
-					return callback(err);
-				}
-
+				Groups.isMemberOfGroups(uid, uniqueGroups, next);
+			},
+			function (isMembers, next) {
 				var map = {};
 
 				uniqueGroups.forEach(function (groupName, index) {
@@ -469,7 +468,7 @@ module.exports = function (Groups) {
 				});
 
 				var result = members.map(function (groupNames) {
-					for (var i = 0; i < groupNames.length; ++i) {
+					for (var i = 0; i < groupNames.length; i += 1) {
 						if (map[groupNames[i]]) {
 							return true;
 						}
@@ -477,62 +476,63 @@ module.exports = function (Groups) {
 					return false;
 				});
 
-				callback(null, result);
-			});
-		});
+				next(null, result);
+			},
+		], callback);
 	};
 
 	Groups.isMembersOfGroupList = function (uids, groupListKey, callback) {
-		db.getSortedSetRange('group:' + groupListKey + ':members', 0, -1, function (err, groupNames) {
-			if (err) {
-				return callback(err);
-			}
+		var groupNames;
+		var results = [];
+		uids.forEach(function () {
+			results.push(false);
+		});
 
-			var results = [];
-			uids.forEach(function () {
-				results.push(false);
-			});
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRange('group:' + groupListKey + ':members', 0, -1, next);
+			},
+			function (_groupNames, next) {
+				groupNames = Groups.removeEphemeralGroups(_groupNames);
 
-			groupNames = Groups.internals.removeEphemeralGroups(groupNames);
-			if (groupNames.length === 0) {
-				return callback(null, results);
-			}
+				if (groupNames.length === 0) {
+					return callback(null, results);
+				}
 
-			async.each(groupNames, function (groupName, next) {
-				Groups.isMembers(uids, groupName, function (err, isMembers) {
-					if (err) {
-						return next(err);
-					}
+				async.map(groupNames, function (groupName, next) {
+					Groups.isMembers(uids, groupName, next);
+				}, next);
+			},
+			function (isGroupMembers, next) {
+				isGroupMembers.forEach(function (isMembers) {
 					results.forEach(function (isMember, index) {
 						if (!isMember && isMembers[index]) {
 							results[index] = true;
 						}
 					});
-					next();
 				});
-			}, function (err) {
-				callback(err, results);
-			});
-		});
+				next(null, results);
+			},
+		], callback);
 	};
 
 	Groups.isInvited = function (uid, groupName, callback) {
 		if (!uid) {
-			return callback(null, false);
+			return setImmediate(callback, null, false);
 		}
 		db.isSetMember('group:' + groupName + ':invited', uid, callback);
 	};
 
 	Groups.isPending = function (uid, groupName, callback) {
 		if (!uid) {
-			return callback(null, false);
+			return setImmediate(callback, null, false);
 		}
 		db.isSetMember('group:' + groupName + ':pending', uid, callback);
 	};
 
 	Groups.getPending = function (groupName, callback) {
 		if (!groupName) {
-			return callback(null, []);
+			return setImmediate(callback, null, []);
 		}
 		db.getSetMembers('group:' + groupName + ':pending', callback);
 	};
@@ -549,7 +549,7 @@ module.exports = function (Groups) {
 						return next(new Error('[[error:group-needs-owner]]'));
 					}
 					Groups.leave(groupName, uid, next);
-				}
+				},
 			], callback);
 		} else {
 			Groups.leave(groupName, uid, callback);

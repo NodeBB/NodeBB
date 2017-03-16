@@ -105,7 +105,7 @@
 										</div>
 										<small>
 											<span class="pull-right">
-												[[posted-in, <a href="{config.relative_path}/category/{posts.category.slug}" target="_blank"><i class="fa {posts.category.icon}"></i> {posts.category.name}</a>]],
+												[[admin/manage/flags:posted-in]] <a href="{config.relative_path}/category/{posts.category.slug}" target="_blank"><i class="fa {posts.category.icon}"></i> {posts.category.name}</a>
 												<span class="timeago" title="{posts.timestampISO}"></span> &bull;
 												<a href="{config.relative_path}/post/{posts.pid}" target="_blank">[[admin/manage/flags:read-more]]</a>
 											</span>

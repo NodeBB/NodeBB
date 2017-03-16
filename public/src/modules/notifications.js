@@ -1,6 +1,5 @@
 'use strict';
 
-/* globals define, socket, app, ajaxify, templates, Tinycon*/
 
 define('notifications', ['sounds', 'translator', 'components'], function (sounds, translator, components) {
 	var Notifications = {};
@@ -8,10 +7,10 @@ define('notifications', ['sounds', 'translator', 'components'], function (sounds
 	var unreadNotifs = {};
 
 	Notifications.prepareDOM = function () {
-		var notifContainer = components.get('notifications'),
-			notifTrigger = notifContainer.children('a'),
-			notifList = components.get('notifications/list'),
-			notifIcon = components.get('notifications/icon');
+		var notifContainer = components.get('notifications');
+		var notifTrigger = notifContainer.children('a');
+		var notifList = components.get('notifications/list');
+		var notifIcon = components.get('notifications/icon');
 
 		notifTrigger
 			.on('click', function (e) {
@@ -71,7 +70,7 @@ define('notifications', ['sounds', 'translator', 'components'], function (sounds
 			var payload = {
 				alert_id: 'new_notif',
 				title: '[[notifications:new_notification]]',
-				timeout: 2000
+				timeout: 2000,
 			};
 
 			if (notifData.path) {
@@ -126,12 +125,12 @@ define('notifications', ['sounds', 'translator', 'components'], function (sounds
 			});
 
 			translator.toggleTimeagoShorthand();
-			for(var i = 0; i < notifs.length; ++i) {
+			for (var i = 0; i < notifs.length; i += 1) {
 				notifs[i].timeago = $.timeago(new Date(parseInt(notifs[i].datetime, 10)));
 			}
 			translator.toggleTimeagoShorthand();
 
-			templates.parse('partials/notifications_list', {notifications: notifs}, function (html) {
+			templates.parse('partials/notifications_list', { notifications: notifs }, function (html) {
 				notifList.translateHtml(html);
 			});
 		});
@@ -151,7 +150,7 @@ define('notifications', ['sounds', 'translator', 'components'], function (sounds
 
 		var payload = {
 			count: count,
-			updateFavicon: true
+			updateFavicon: true,
 		};
 		$(window).trigger('action:notification.updateCount', payload);
 

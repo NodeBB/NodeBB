@@ -1,12 +1,11 @@
 'use strict';
-/*global require, after, before*/
 
-var	async = require('async'),
-	assert = require('assert'),
-	db = require('../mocks/databasemock');
+
+var	async = require('async');
+var assert = require('assert');
+var db = require('../mocks/databasemock');
 
 describe('List methods', function () {
-
 	describe('listAppend()', function () {
 		it('should append to a list', function (done) {
 			db.listAppend('testList1', 5, function (err) {
@@ -33,7 +32,7 @@ describe('List methods', function () {
 				},
 				function (next) {
 					db.listPrepend('testList2', 1, next);
-				}
+				},
 			], function (err) {
 				assert.equal(err, null);
 				done();
@@ -52,7 +51,7 @@ describe('List methods', function () {
 				},
 				function (next) {
 					db.listAppend('testList4', 5, next);
-				}
+				},
 			], done);
 		});
 
@@ -94,7 +93,7 @@ describe('List methods', function () {
 				},
 				function (next) {
 					db.listPrepend('testList4', 9, next);
-				}
+				},
 			], done);
 		});
 
@@ -115,7 +114,7 @@ describe('List methods', function () {
 				async.apply(db.listAppend, 'testList5', 1),
 				async.apply(db.listAppend, 'testList5', 1),
 				async.apply(db.listAppend, 'testList5', 2),
-				async.apply(db.listAppend, 'testList5', 5)
+				async.apply(db.listAppend, 'testList5', 5),
 			], done);
 		});
 

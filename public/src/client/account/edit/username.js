@@ -1,6 +1,5 @@
 'use strict';
 
-/* globals define, ajaxify, socket, app, utils, config  */
 
 define('forum/account/edit/username', ['forum/account/header'], function (header) {
 	var AccountEditUsername = {};
@@ -12,7 +11,7 @@ define('forum/account/edit/username', ['forum/account/header'], function (header
 			var userData = {
 				uid: $('#inputUID').val(),
 				username: $('#inputNewUsername').val(),
-				password: $('#inputCurrentPassword').val()
+				password: $('#inputCurrentPassword').val(),
 			};
 
 			if (!userData.username) {

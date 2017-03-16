@@ -43,7 +43,7 @@
 			<p class="help-block">
 				[[admin/settings/group:default-cover-help]]
 			</p>
-			<input type="text" class="form-control input-lg" id="groups:defaultCovers" data-field="groups:defaultCovers" value="{config.relative_path}/assets/images/cover-default.png" placeholder="https://example.com/group1.png, https://example.com/group2.png" /><br />
+			<input type="text" class="form-control input-lg" id="groups:defaultCovers" data-field="groups:defaultCovers" data-field-type="tagsinput" value="{config.relative_path}/assets/images/cover-default.png" placeholder="https://example.com/group1.png, https://example.com/group2.png" /><br />
 		</form>
 	</div>
 </div>

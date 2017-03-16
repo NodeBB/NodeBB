@@ -10,9 +10,7 @@ var translator = require('../../public/src/modules/translator');
 var plugins = require('../plugins');
 
 module.exports = function (Categories) {
-
 	Categories.update = function (modified, callback) {
-
 		var cids = Object.keys(modified);
 
 		async.each(cids, function (cid, next) {
@@ -43,7 +41,7 @@ module.exports = function (Categories) {
 				}
 			},
 			function (next) {
-				plugins.fireHook('filter:category.update', {category: modifiedFields}, next);
+				plugins.fireHook('filter:category.update', { category: modifiedFields }, next);
 			},
 			function (categoryData, next) {
 				category = categoryData.category;
@@ -59,9 +57,9 @@ module.exports = function (Categories) {
 				}, next);
 			},
 			function (next) {
-				plugins.fireHook('action:category.update', {cid: cid, modified: category});
+				plugins.fireHook('action:category.update', { cid: cid, modified: category });
 				next();
-			}
+			},
 		], callback);
 	}
 
@@ -84,7 +82,7 @@ module.exports = function (Categories) {
 				} else {
 					next();
 				}
-			}
+			},
 		], callback);
 	}
 
@@ -108,9 +106,9 @@ module.exports = function (Categories) {
 					},
 					function (next) {
 						db.setObjectField('category:' + cid, 'parentCid', newParent, next);
-					}
+					},
 				], next);
-			}
+			},
 		], function (err) {
 			callback(err);
 		});
@@ -131,7 +129,7 @@ module.exports = function (Categories) {
 					return index;
 				});
 				db.sortedSetAdd('cid:' + cid + ':tag:whitelist', scores, tags, next);
-			}
+			},
 		], callback);
 	}
 
@@ -148,9 +146,9 @@ module.exports = function (Categories) {
 					function (next) {
 						parentCid = parseInt(parentCid, 10) || 0;
 						db.sortedSetAdd('cid:' + parentCid + ':children', order, cid, next);
-					}
+					},
 				], next);
-			}
+			},
 		], function (err) {
 			callback(err);
 		});
@@ -163,8 +161,7 @@ module.exports = function (Categories) {
 			},
 			function (parsedDescription, next) {
 				Categories.setCategoryField(cid, 'descriptionParsed', parsedDescription, next);
-			}
+			},
 		], callback);
 	};
-
 };

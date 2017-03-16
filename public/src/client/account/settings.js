@@ -1,9 +1,14 @@
 'use strict';
 
-/*global define, socket, app, ajaxify, config*/
 
 define('forum/account/settings', ['forum/account/header', 'components', 'sounds'], function (header, components, sounds) {
 	var	AccountSettings = {};
+
+	$(window).on('action:ajaxify.start', function () {
+		if (ajaxify.data.template.name === 'account/settings' && $('#bootswatchSkin').val() !== config.bootswatchSkin) {
+			changePageSkin(config.bootswatchSkin);
+		}
+	});
 
 	AccountSettings.init = function () {
 		header.init();
@@ -25,10 +30,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 		});
 
 		$('#bootswatchSkin').on('change', function () {
-			var css = $('#bootswatchCSS');
-			var val = $(this).val() === 'default' ? config['theme:src'] : '//maxcdn.bootstrapcdn.com/bootswatch/latest/' + $(this).val() + '/bootstrap.min.css';
-
-			css.attr('href', val);
+			changePageSkin($(this).val());
 		});
 
 		$('[data-property="homePageRoute"]').on('change', toggleCustomRoute);
@@ -45,6 +47,29 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 		components.get('user/sessions').find('.timeago').timeago();
 	};
 
+	function changePageSkin(skinName) {
+		var css = $('#bootswatchCSS');
+		if (skinName === 'noskin' || (skinName === 'default' && config.defaultBootswatchSkin === 'noskin')) {
+			css.remove();
+		} else {
+			if (skinName === 'default') {
+				skinName = config.defaultBootswatchSkin;
+			}
+			var cssSource = '//maxcdn.bootstrapcdn.com/bootswatch/latest/' + skinName + '/bootstrap.min.css';
+			if (css.length) {
+				css.attr('href', cssSource);
+			} else {
+				css = $('<link id="bootswatchCSS" href="' + cssSource + '" rel="stylesheet" media="screen">');
+				$('head').append(css);
+			}
+		}
+
+		var currentSkinClassName = $('body').attr('class').split(/\s+/).filter(function (className) {
+			return className.startsWith('skin-');
+		});
+		$('body').removeClass(currentSkinClassName.join(' ')).addClass('skin-' + skinName);
+	}
+
 	function loadSettings() {
 		var settings = {};
 
@@ -57,13 +82,13 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 			}
 
 			switch (input.attr('type')) {
-				case 'text':
-				case 'textarea':
-					settings[setting] = input.val();
-					break;
-				case 'checkbox':
-					settings[setting] = input.is(':checked') ? 1 : 0;
-					break;
+			case 'text':
+			case 'textarea':
+				settings[setting] = input.val();
+				break;
+			case 'checkbox':
+				settings[setting] = input.is(':checked') ? 1 : 0;
+				break;
 			}
 		});
 
@@ -71,7 +96,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 	}
 
 	function saveSettings(settings) {
-		socket.emit('user.saveSettings', {uid: ajaxify.data.theirid, settings: settings}, function (err, newSettings) {
+		socket.emit('user.saveSettings', { uid: ajaxify.data.theirid, settings: settings }, function (err, newSettings) {
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -99,7 +124,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 					timeout: 5000,
 					clickfn: function () {
 						ajaxify.refresh();
-					}
+					},
 				});
 			}
 		});

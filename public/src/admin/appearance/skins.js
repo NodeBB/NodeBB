@@ -1,14 +1,14 @@
-"use strict";
-/* global define, app, socket, templates */
+'use strict';
+
 
 define('admin/appearance/skins', ['translator'], function (translator) {
 	var Skins = {};
-	
+
 	Skins.init = function () {
 		// Populate skins from Bootswatch API
 		$.ajax({
 			method: 'get',
-			url: 'https://bootswatch.com/api/3.json'
+			url: 'https://bootswatch.com/api/3.json',
 		}).done(Skins.render);
 
 		$('#skins').on('click', function (e) {
@@ -21,16 +21,16 @@ define('admin/appearance/skins', ['translator'], function (translator) {
 			var action = target.attr('data-action');
 
 			if (action && action === 'use') {
-				var parentEl = target.parents('[data-theme]'),
-					themeType = parentEl.attr('data-type'),
-					cssSrc = parentEl.attr('data-css'),
-					themeId = parentEl.attr('data-theme');
+				var parentEl = target.parents('[data-theme]');
+				var themeType = parentEl.attr('data-type');
+				var cssSrc = parentEl.attr('data-css');
+				var themeId = parentEl.attr('data-theme');
 
 
 				socket.emit('admin.themes.set', {
 					type: themeType,
 					id: themeId,
-					src: cssSrc
+					src: cssSrc,
 				}, function (err) {
 					if (err) {
 						return app.alertError(err.message);
@@ -42,7 +42,7 @@ define('admin/appearance/skins', ['translator'], function (translator) {
 						type: 'info',
 						title: '[[admin/appearance/skins:skin-updated]]',
 						message: themeId ? ('[[admin/appearance/skins:applied-success, ' + themeId + ']]') : '[[admin/appearance/skins:revert-success]]',
-						timeout: 5000
+						timeout: 5000,
 					});
 				});
 			}
@@ -62,10 +62,10 @@ define('admin/appearance/skins', ['translator'], function (translator) {
 					screenshot_url: theme.thumbnail,
 					url: theme.preview,
 					css: theme.cssCdn,
-					skin: true
+					skin: true,
 				};
 			}),
-			showRevert: true
+			showRevert: true,
 		}, function (html) {
 			translator.translate(html, function (html) {
 				themeContainer.html(html);
@@ -73,7 +73,7 @@ define('admin/appearance/skins', ['translator'], function (translator) {
 				if (config['theme:src']) {
 					var skin = config['theme:src']
 					.match(/latest\/(\S+)\/bootstrap.min.css/)[1]
-					.replace(/(^|\s)([a-z])/g , function (m,p1,p2) {return p1 + p2.toUpperCase();});
+					.replace(/(^|\s)([a-z])/g, function (m, p1, p2) { return p1 + p2.toUpperCase(); });
 
 					highlightSelectedTheme(skin);
 				}

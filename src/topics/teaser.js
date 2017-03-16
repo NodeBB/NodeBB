@@ -12,7 +12,6 @@ var plugins = require('../plugins');
 var utils = require('../../public/src/utils');
 
 module.exports = function (Topics) {
-
 	Topics.getTeasers = function (topics, callback) {
 		if (!Array.isArray(topics) || !topics.length) {
 			return callback(null, []);
@@ -30,19 +29,19 @@ module.exports = function (Topics) {
 					delete topic.teaserPid;
 				}
 
-				switch(meta.config.teaserPost) {
-					case 'first':
-						teaserPids.push(topic.mainPid);
-						break;
+				switch (meta.config.teaserPost) {
+				case 'first':
+					teaserPids.push(topic.mainPid);
+					break;
 
-					case 'last-post':
-						teaserPids.push(topic.teaserPid || topic.mainPid);
-						break;
+				case 'last-post':
+					teaserPids.push(topic.teaserPid || topic.mainPid);
+					break;
 
-					case 'last-reply':	// intentional fall-through
-					default:
-						teaserPids.push(topic.teaserPid);
-						break;
+				case 'last-reply':	// intentional fall-through
+				default:
+					teaserPids.push(topic.teaserPid);
+					break;
 				}
 			}
 		});
@@ -95,11 +94,11 @@ module.exports = function (Topics) {
 					return tidToPost[topic.tid];
 				});
 
-				plugins.fireHook('filter:teasers.get', {teasers: teasers}, next);
+				plugins.fireHook('filter:teasers.get', { teasers: teasers }, next);
 			},
 			function (data, next) {
 				next(null, data.teasers);
-			}
+			},
 		], callback);
 	};
 
@@ -113,7 +112,7 @@ module.exports = function (Topics) {
 			},
 			function (topics, next) {
 				Topics.getTeasers(topics, next);
-			}
+			},
 		], callback);
 	};
 

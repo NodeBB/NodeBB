@@ -1,9 +1,7 @@
 'use strict';
 
-/* globals define, socket, app */
 
 define('forum/chats/recent', function () {
-
 	var recent = {};
 
 	recent.init = function () {
@@ -24,7 +22,7 @@ define('forum/chats/recent', function () {
 		recentChats.attr('loading', 1);
 		socket.emit('modules.chats.getRecentChats', {
 			uid: ajaxify.data.uid,
-			after: recentChats.attr('data-nextstart')
+			after: recentChats.attr('data-nextstart'),
 		}, function (err, data) {
 			if (err) {
 				return app.alertError(err.message);

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function (db, module) {
 	var helpers = module.helpers.mongo;
@@ -9,7 +9,7 @@ module.exports = function (db, module) {
 			return callback();
 		}
 
-		db.collection('objects').update({_key: key}, {$set: data}, {upsert: true, w: 1}, function (err) {
+		db.collection('objects').update({ _key: key }, { $set: data }, { upsert: true, w: 1 }, function (err) {
 			callback(err);
 		});
 	};
@@ -29,14 +29,14 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback();
 		}
-		db.collection('objects').findOne({_key: key}, {_id: 0, _key: 0}, callback);
+		db.collection('objects').findOne({ _key: key }, { _id: 0, _key: 0 }, callback);
 	};
 
 	module.getObjects = function (keys, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback(null, []);
 		}
-		db.collection('objects').find({_key: {$in: keys}}, {_id: 0}).toArray(function (err, data) {
+		db.collection('objects').find({ _key: { $in: keys } }, { _id: 0 }).toArray(function (err, data) {
 			if (err) {
 				return callback(err);
 			}
@@ -44,7 +44,7 @@ module.exports = function (db, module) {
 			var map = helpers.toMap(data);
 			var returnData = [];
 
-			for (var i = 0; i < keys.length; ++i) {
+			for (var i = 0; i < keys.length; i += 1) {
 				returnData.push(map[keys[i]]);
 			}
 
@@ -58,10 +58,10 @@ module.exports = function (db, module) {
 		}
 		field = helpers.fieldToString(field);
 		var _fields = {
-			_id: 0
+			_id: 0,
 		};
 		_fields[field] = 1;
-		db.collection('objects').findOne({_key: key}, {fields: _fields}, function (err, item) {
+		db.collection('objects').findOne({ _key: key }, { fields: _fields }, function (err, item) {
 			if (err || !item) {
 				return callback(err, null);
 			}
@@ -75,20 +75,21 @@ module.exports = function (db, module) {
 			return callback();
 		}
 		var _fields = {
-			_id: 0
+			_id: 0,
 		};
+		var i;
 
-		for(var i = 0; i < fields.length; ++i) {
+		for (i = 0; i < fields.length; i += 1) {
 			fields[i] = helpers.fieldToString(fields[i]);
 			_fields[fields[i]] = 1;
 		}
-		db.collection('objects').findOne({_key: key}, {fields: _fields}, function (err, item) {
+		db.collection('objects').findOne({ _key: key }, { fields: _fields }, function (err, item) {
 			if (err) {
 				return callback(err);
 			}
 			item = item || {};
 			var result = {};
-			for(i = 0; i < fields.length; ++i) {
+			for (i = 0; i < fields.length; i += 1) {
 				result[fields[i]] = item[fields[i]] !== undefined ? item[fields[i]] : null;
 			}
 			callback(null, result);
@@ -101,15 +102,15 @@ module.exports = function (db, module) {
 		}
 		var _fields = {
 			_id: 0,
-			_key: 1
+			_key: 1,
 		};
 
-		for(var i = 0; i < fields.length; ++i) {
+		for (var i = 0; i < fields.length; i += 1) {
 			fields[i] = helpers.fieldToString(fields[i]);
 			_fields[fields[i]] = 1;
 		}
 
-		db.collection('objects').find({_key: {$in: keys}}, {fields: _fields}).toArray(function (err, items) {
+		db.collection('objects').find({ _key: { $in: keys } }, { fields: _fields }).toArray(function (err, items) {
 			if (err) {
 				return callback(err);
 			}
@@ -122,10 +123,10 @@ module.exports = function (db, module) {
 			var returnData = [];
 			var item;
 
-			for (var i = 0; i < keys.length; ++i) {
+			for (var i = 0; i < keys.length; i += 1) {
 				item = map[keys[i]] || {};
 
-				for (var k = 0; k < fields.length; ++k) {
+				for (var k = 0; k < fields.length; k += 1) {
 					if (item[fields[k]] === undefined) {
 						item[fields[k]] = null;
 					}
@@ -145,12 +146,12 @@ module.exports = function (db, module) {
 
 	module.getObjectValues = function (key, callback) {
 		module.getObject(key, function (err, data) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
 			var values = [];
-			for(var key in data) {
+			for (var key in data) {
 				if (data && data.hasOwnProperty(key)) {
 					values.push(data[key]);
 				}
@@ -166,7 +167,7 @@ module.exports = function (db, module) {
 		var data = {};
 		field = helpers.fieldToString(field);
 		data[field] = '';
-		db.collection('objects').findOne({_key: key}, {fields: data}, function (err, item) {
+		db.collection('objects').findOne({ _key: key }, { fields: data }, function (err, item) {
 			callback(err, !!item && item[field] !== undefined && item[field] !== null);
 		});
 	};
@@ -182,7 +183,7 @@ module.exports = function (db, module) {
 			data[field] = '';
 		});
 
-		db.collection('objects').findOne({_key: key}, {fields: data}, function (err, item) {
+		db.collection('objects').findOne({ _key: key }, { fields: data }, function (err, item) {
 			if (err) {
 				return callback(err);
 			}
@@ -216,7 +217,7 @@ module.exports = function (db, module) {
 			data[field] = '';
 		});
 
-		db.collection('objects').update({_key: key}, {$unset : data}, function (err) {
+		db.collection('objects').update({ _key: key }, { $unset: data }, function (err) {
 			callback(err);
 		});
 	};
@@ -240,7 +241,7 @@ module.exports = function (db, module) {
 		field = helpers.fieldToString(field);
 		data[field] = value;
 
-		db.collection('objects').findAndModify({_key: key}, {}, {$inc: data}, {new: true, upsert: true}, function (err, result) {
+		db.collection('objects').findAndModify({ _key: key }, {}, { $inc: data }, { new: true, upsert: true }, function (err, result) {
 			callback(err, result && result.value ? result.value[field] : null);
 		});
 	};

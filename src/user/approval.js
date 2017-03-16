@@ -14,7 +14,6 @@ var utils = require('../../public/src/utils');
 var plugins = require('../plugins');
 
 module.exports = function (User) {
-
 	User.addToApprovalQueue = function (userData, callback) {
 		userData.userslug = utils.slugify(userData.username);
 		async.waterfall([
@@ -29,9 +28,9 @@ module.exports = function (User) {
 					username: userData.username,
 					email: userData.email,
 					ip: userData.ip,
-					hashedPassword: hashedPassword
+					hashedPassword: hashedPassword,
 				};
-				plugins.fireHook('filter:user.addToApprovalQueue', {data: data, userData: userData}, next);
+				plugins.fireHook('filter:user.addToApprovalQueue', { data: data, userData: userData }, next);
 			},
 			function (results, next) {
 				db.setObject('registration:queue:name:' + userData.username, results.data, next);
@@ -41,7 +40,7 @@ module.exports = function (User) {
 			},
 			function (next) {
 				sendNotificationToAdmins(userData.username, next);
-			}
+			},
 		], callback);
 	};
 
@@ -52,12 +51,12 @@ module.exports = function (User) {
 					bodyShort: '[[notifications:new_register, ' + username + ']]',
 					nid: 'new_register:' + username,
 					path: '/admin/manage/registration',
-					mergeId: 'new_register'
+					mergeId: 'new_register',
 				}, next);
 			},
 			function (notification, next) {
 				notifications.pushGroup(notification, 'administrators', next);
-			}
+			},
 		], callback);
 	}
 
@@ -93,7 +92,7 @@ module.exports = function (User) {
 						username: username,
 						subject: subject,
 						template: 'registration_accepted',
-						uid: uid
+						uid: uid,
 					};
 
 					emailer.send('registration_accepted', uid, data, next);
@@ -101,7 +100,7 @@ module.exports = function (User) {
 			},
 			function (next) {
 				next(null, uid);
-			}
+			},
 		], callback);
 	};
 
@@ -115,7 +114,7 @@ module.exports = function (User) {
 				async.each(uids, function (uid, next) {
 					notifications.markRead(nid, uid, next);
 				}, next);
-			}
+			},
 		], callback);
 	}
 
@@ -126,14 +125,14 @@ module.exports = function (User) {
 			},
 			function (next) {
 				markNotificationRead(username, next);
-			}
+			},
 		], callback);
 	};
 
 	function removeFromQueue(username, callback) {
 		async.parallel([
 			async.apply(db.sortedSetRemove, 'registration:queue', username),
-			async.apply(db.delete, 'registration:queue:name:' + username)
+			async.apply(db.delete, 'registration:queue:name:' + username),
 		], function (err) {
 			callback(err);
 		});
@@ -191,7 +190,7 @@ module.exports = function (User) {
 									'&email=' + encodeURIComponent(user.email) +
 									'&username=' + encodeURIComponent(user.username) +
 									'&f=json',
-								json: true
+								json: true,
 							}, function (err, response, body) {
 								if (err) {
 									return next();
@@ -205,20 +204,18 @@ module.exports = function (User) {
 
 								next();
 							});
-						}
+						},
 					], function (err) {
 						next(err, user);
 					});
 				}, next);
 			},
 			function (users, next) {
-				plugins.fireHook('filter:user.getRegistrationQueue', {users: users}, next);
+				plugins.fireHook('filter:user.getRegistrationQueue', { users: users }, next);
 			},
 			function (results, next) {
 				next(null, results.users);
-			}
+			},
 		], callback);
 	};
-
-
 };

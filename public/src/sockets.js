@@ -1,7 +1,7 @@
 'use strict';
-/* globals config, io, ajaxify */
 
-var app = app || {};
+
+var app = window.app || {};
 var socket;
 app.isConnected = false;
 
@@ -12,7 +12,7 @@ app.isConnected = false;
 		reconnectionAttempts: config.maxReconnectionAttempts,
 		reconnectionDelay: config.reconnectionDelay,
 		transports: config.socketioTransports,
-		path: config.relative_path + '/socket.io'
+		path: config.relative_path + '/socket.io',
 	};
 
 	socket = io(config.websocketAddress, ioParams);
@@ -71,30 +71,30 @@ app.isConnected = false;
 		var	url_parts = window.location.pathname.slice(config.relative_path.length).split('/').slice(1);
 		var room;
 
-		switch(url_parts[0]) {
-			case 'user':
-				room = 'user/' + (ajaxify.data ? ajaxify.data.theirid : 0);
+		switch (url_parts[0]) {
+		case 'user':
+			room = 'user/' + (ajaxify.data ? ajaxify.data.theirid : 0);
 			break;
-			case 'topic':
-				room = 'topic_' + url_parts[1];
+		case 'topic':
+			room = 'topic_' + url_parts[1];
 			break;
-			case 'category':
-				room = 'category_' + url_parts[1];
+		case 'category':
+			room = 'category_' + url_parts[1];
 			break;
-			case 'recent':
-				room = 'recent_topics';
+		case 'recent':
+			room = 'recent_topics';
 			break;
-			case 'unread':
-				room = 'unread_topics';
+		case 'unread':
+			room = 'unread_topics';
 			break;
-			case 'popular':
-				room = 'popular_topics';
+		case 'popular':
+			room = 'popular_topics';
 			break;
-			case 'admin':
-				room = 'admin';
+		case 'admin':
+			room = 'admin';
 			break;
-			case 'categories':
-				room = 'categories';
+		case 'categories':
+			room = 'categories';
 			break;
 		}
 		app.currentRoom = '';
@@ -112,7 +112,7 @@ app.isConnected = false;
 		}
 
 		reconnectEl.addClass('active').removeClass('hide').tooltip({
-			placement: 'bottom'
+			placement: 'bottom',
 		});
 	}
 
@@ -124,5 +124,4 @@ app.isConnected = false;
 	function onEventBanned() {
 		window.location.href = config.relative_path + '/';
 	}
-
 }());

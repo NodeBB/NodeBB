@@ -30,7 +30,7 @@ module.exports = function (Posts) {
 			function (deleted, next) {
 				if (parseInt(deleted, 10) === 1 && isDelete) {
 					return next(new Error('[[error:post-already-deleted]]'));
-				} else if(parseInt(deleted, 10) !== 1 && !isDelete) {
+				} else if (parseInt(deleted, 10) !== 1 && !isDelete) {
 					return next(new Error('[[error:post-already-restored]]'));
 				}
 
@@ -52,7 +52,7 @@ module.exports = function (Posts) {
 						Posts.parsePost(postData, next);
 					});
 				}
-			}
+			},
 		], callback);
 	}
 
@@ -67,9 +67,8 @@ module.exports = function (Posts) {
 				}
 				cache.del(pid);
 				Posts.purge(pid, uid, next);
-			}
+			},
 		], callback);
 	};
-
 };
 

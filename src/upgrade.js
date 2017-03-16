@@ -1,6 +1,5 @@
-"use strict";
+'use strict';
 
-/* globals console, require */
 
 var db = require('./database');
 var async = require('async');
@@ -13,7 +12,7 @@ var schemaDate;
 var thisSchemaDate;
 
 // IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-var latestSchema = Date.UTC(2016, 10, 22);
+var latestSchema = Date.UTC(2017, 1, 28);
 
 Upgrade.check = function (callback) {
 	db.get('schemaDate', function (err, value) {
@@ -53,7 +52,7 @@ Upgrade.upgrade = function (callback) {
 					return next(err);
 				}
 
-				if(!value) {
+				if (!value) {
 					db.set('schemaDate', latestSchema, function () {
 						next();
 					});
@@ -131,7 +130,7 @@ Upgrade.upgrade = function (callback) {
 							},
 							function (next) {
 								db.deleteObjectField('post:' + id, 'reputation', next);
-							}
+							},
 						], next);
 					}, next);
 				}, {}, next);
@@ -187,7 +186,7 @@ Upgrade.upgrade = function (callback) {
 							console.log('processing pid: ' + postData.pid + ' toPid: ' + postData.toPid);
 							async.parallel([
 								async.apply(db.sortedSetAdd, 'pid:' + postData.toPid + ':replies', postData.timestamp, postData.pid),
-								async.apply(db.incrObjectField, 'post:' + postData.toPid, 'replies')
+								async.apply(db.incrObjectField, 'post:' + postData.toPid, 'replies'),
 							], next);
 						}, next);
 					});
@@ -242,23 +241,23 @@ Upgrade.upgrade = function (callback) {
 								async.waterfall([
 									async.apply(db.getObjectField, 'user:' + uid + ':settings', 'userLang'),
 									function (language, next) {
-										++i;
+										i += 1;
 										if (!language) {
 											return setImmediate(next);
 										}
 
 										newLanguage = language.replace('_', '-').replace('@', '-x-');
 										if (newLanguage !== language) {
-											++j;
+											j += 1;
 											user.setSetting(uid, 'userLang', newLanguage, next);
 										} else {
 											setImmediate(next);
 										}
-									}
+									},
 								], next);
 							}, next);
 						}, next);
-					}
+					},
 				], function (err) {
 					if (err) {
 						return next(err);
@@ -297,7 +296,7 @@ Upgrade.upgrade = function (callback) {
 							async.parallel([
 								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:pinned', Date.now(), topicData.tid),
 								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids', topicData.tid),
-								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:posts', topicData.tid)
+								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:posts', topicData.tid),
 							], next);
 						}, next);
 					});
@@ -314,17 +313,129 @@ Upgrade.upgrade = function (callback) {
 				next();
 			}
 		},
+		function (next) {
+			thisSchemaDate = Date.UTC(2017, 1, 25);
+			var schemaName = '[2017/2/25] Update global and user sound settings';
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.verbose(schemaName);
+
+				var meta = require('./meta');
+				var batch = require('./batch');
+
+				var map = {
+					'notification.mp3': 'Default | Deedle-dum',
+					'waterdrop-high.mp3': 'Default | Water drop (high)',
+					'waterdrop-low.mp3': 'Default | Water drop (low)',
+				};
+
+				async.parallel([
+					function (cb) {
+						var keys = ['chat-incoming', 'chat-outgoing', 'notification'];
+
+						db.getObject('settings:sounds', function (err, settings) {
+							if (err || !settings) {
+								return cb(err);
+							}
+
+							keys.forEach(function (key) {
+								if (settings[key] && settings[key].indexOf(' | ') === -1) {
+									settings[key] = map[settings[key]] || '';
+								}
+							});
+
+							meta.configs.setMultiple(settings, cb);
+						});
+					},
+					function (cb) {
+						var keys = ['notificationSound', 'incomingChatSound', 'outgoingChatSound'];
+
+						batch.processSortedSet('users:joindate', function (ids, next) {
+							async.each(ids, function (uid, next) {
+								db.getObject('user:' + uid + ':settings', function (err, settings) {
+									if (err || !settings) {
+										return next(err);
+									}
+									var newSettings = {};
+									keys.forEach(function (key) {
+										if (settings[key] && settings[key].indexOf(' | ') === -1) {
+											newSettings[key] = map[settings[key]] || '';
+										}
+									});
+
+									if (Object.keys(newSettings).length) {
+										db.setObject('user:' + uid + ':settings', newSettings, next);
+									} else {
+										setImmediate(next);
+									}
+								});
+							}, next);
+						}, cb);
+					},
+				], function (err) {
+					if (err) {
+						return next(err);
+					}
+					winston.info(schemaName + ' - done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info(schemaName + ' - skipped!');
+				next();
+			}
+		},
+		function (next) {
+			thisSchemaDate = Date.UTC(2017, 1, 28);
+			var schemaName = '[2017/2/28] Update urls in config to `/assets`';
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info(schemaName);
+				async.waterfall([
+					function (cb) {
+						db.getObject('config', cb);
+					},
+					function (config, cb) {
+						if (!config) {
+							return cb();
+						}
+
+						var keys = ['brand:favicon', 'brand:touchicon', 'og:image', 'brand:logo:url', 'defaultAvatar', 'profile:defaultCovers'];
+
+						keys.forEach(function (key) {
+							var oldValue = config[key];
+
+							if (!oldValue || typeof oldValue !== 'string') {
+								return;
+							}
+
+							config[key] = oldValue.replace(/(?:\/assets)?\/(images|uploads)\//g, '/assets/$1/');
+						});
+
+						db.setObject('config', config, cb);
+					},
+					function (next) {
+						winston.info(schemaName + ' - done');
+						Upgrade.update(thisSchemaDate, next);
+					},
+				], next);
+			} else {
+				winston.info(schemaName + ' - skipped!');
+				next();
+			}
+		},
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 24!!!
 	], function (err) {
 		if (!err) {
-			if(updatesMade) {
+			if (updatesMade) {
 				winston.info('[upgrade] Schema update complete!');
 			} else {
 				winston.info('[upgrade] Schema already up to date!');
 			}
 		} else {
-			switch(err.message) {
+			switch (err.message) {
 			case 'upgrade-not-possible':
 				winston.error('[upgrade] NodeBB upgrade could not complete, as your database schema is too far out of date.');
 				winston.error('[upgrade]   Please ensure that you did not skip any minor version upgrades.');

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var privileges = module.exports;
 
@@ -14,7 +14,7 @@ privileges.userPrivilegeList = [
 	'upload:post:image',
 	'upload:post:file',
 	'purge',
-	'mods'
+	'mods',
 ];
 
 privileges.groupPrivilegeList = [
@@ -29,7 +29,7 @@ privileges.groupPrivilegeList = [
 	'groups:upload:post:image',
 	'groups:upload:post:file',
 	'groups:purge',
-	'groups:moderate'
+	'groups:moderate',
 ];
 
 privileges.privilegeList = privileges.userPrivilegeList.concat(privileges.groupPrivilegeList);

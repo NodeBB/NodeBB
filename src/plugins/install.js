@@ -13,7 +13,6 @@ var pubsub = require('../pubsub');
 
 
 module.exports = function (Plugins) {
-
 	if (nconf.get('isPrimary') === 'true') {
 		pubsub.on('plugins:toggleInstall', function (data) {
 			if (data.hostname !== os.hostname()) {
@@ -52,18 +51,18 @@ module.exports = function (Plugins) {
 				meta.reloadRequired = true;
 				Plugins.fireHook(isActive ? 'action:plugin.deactivate' : 'action:plugin.activate', id);
 				next();
-			}
+			},
 		], function (err) {
 			if (err) {
 				winston.warn('[plugins] Could not toggle active state on plugin \'' + id + '\'');
 				return callback(err);
 			}
-			callback(null, {id: id, active: !isActive});
+			callback(null, { id: id, active: !isActive });
 		});
 	};
 
 	Plugins.toggleInstall = function (id, version, callback) {
-		pubsub.publish('plugins:toggleInstall', {hostname: os.hostname(), id: id, version: version});
+		pubsub.publish('plugins:toggleInstall', { hostname: os.hostname(), id: id, version: version });
 		toggleInstall(id, version, callback);
 	};
 
@@ -81,7 +80,7 @@ module.exports = function (Plugins) {
 			},
 			function (active, next) {
 				if (active) {
-					Plugins.toggleActive(id, function (err, status) {
+					Plugins.toggleActive(id, function (err) {
 						next(err);
 					});
 					return;
@@ -97,7 +96,7 @@ module.exports = function (Plugins) {
 			function (pluginData, next) {
 				Plugins.fireHook('action:plugin.' + type, id);
 				next(null, pluginData);
-			}
+			},
 		], callback);
 	}
 
@@ -113,7 +112,7 @@ module.exports = function (Plugins) {
 	}
 
 	Plugins.upgrade = function (id, version, callback) {
-		pubsub.publish('plugins:upgrade', {hostname: os.hostname(), id: id, version: version});
+		pubsub.publish('plugins:upgrade', { hostname: os.hostname(), id: id, version: version });
 		upgrade(id, version, callback);
 	};
 
@@ -126,7 +125,7 @@ module.exports = function (Plugins) {
 			function (isActive, next) {
 				meta.reloadRequired = isActive;
 				next(null, isActive);
-			}
+			},
 		], callback);
 	}
 

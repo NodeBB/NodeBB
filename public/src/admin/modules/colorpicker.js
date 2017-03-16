@@ -1,6 +1,5 @@
-"use strict";
+'use strict';
 
-/*globals define*/
 
 define('admin/modules/colorpicker', function () {
 	var colorpicker = {};
@@ -19,7 +18,7 @@ define('admin/modules/colorpicker', function () {
 				},
 				onShow: function (colpkr) {
 					$(colpkr).css('z-index', 1051);
-				}
+				},
 			});
 		});
 	};

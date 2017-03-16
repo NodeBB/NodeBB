@@ -2,7 +2,6 @@
 
 var async = require('async');
 var fs = require('fs');
-var nconf = require('nconf');
 var winston = require('winston');
 
 var db = require('../../database');
@@ -25,7 +24,7 @@ editController.get = function (req, res, callback) {
 		userData.maximumSignatureLength = parseInt(meta.config.maximumSignatureLength, 10) || 255;
 		userData.maximumAboutMeLength = parseInt(meta.config.maximumAboutMeLength, 10) || 1000;
 		userData.maximumProfileImageSize = parseInt(meta.config.maximumProfileImageSize, 10);
-		userData.allowProfileImageUploads = parseInt(meta.config.allowProfileImageUploads) === 1;
+		userData.allowProfileImageUploads = parseInt(meta.config.allowProfileImageUploads, 10) === 1;
 		userData.allowAccountDelete = parseInt(meta.config.allowAccountDelete, 10) === 1;
 		userData.profileImageDimension = parseInt(meta.config.profileImageDimension, 10) || 128;
 
@@ -37,12 +36,15 @@ editController.get = function (req, res, callback) {
 		});
 
 		userData.title = '[[pages:account/edit, ' + userData.username + ']]';
-		userData.breadcrumbs = helpers.buildBreadcrumbs([{
-			text: userData.username,
-			url: '/user/' + userData.userslug
-		}, {
-			text: '[[user:edit]]'
-		}]);
+		userData.breadcrumbs = helpers.buildBreadcrumbs([
+			{
+				text: userData.username,
+				url: '/user/' + userData.userslug,
+			},
+			{
+				text: '[[user:edit]]',
+			},
+		]);
 		userData.editButtons = [];
 
 		plugins.fireHook('filter:user.account.edit', userData, function (err, userData) {
@@ -81,15 +83,19 @@ function renderRoute(name, req, res, next) {
 		}
 
 		userData.title = '[[pages:account/edit/' + name + ', ' + userData.username + ']]';
-		userData.breadcrumbs = helpers.buildBreadcrumbs([{
-			text: userData.username,
-			url: '/user/' + userData.userslug
-		}, {
-			text: '[[user:edit]]',
-			url: '/user/' + userData.userslug + '/edit'
-		}, {
-			text: '[[user:' + name + ']]'
-		}]);
+		userData.breadcrumbs = helpers.buildBreadcrumbs([
+			{
+				text: userData.username,
+				url: '/user/' + userData.userslug,
+			},
+			{
+				text: '[[user:edit]]',
+				url: '/user/' + userData.userslug + '/edit',
+			},
+			{
+				text: '[[user:' + name + ']]',
+			},
+		]);
 
 		res.render('account/edit/' + name, userData);
 	});
@@ -107,7 +113,7 @@ function getUserData(req, next, callback) {
 				return callback();
 			}
 			db.getObjectField('user:' + userData.uid, 'password', next);
-		}
+		},
 	], function (err, password) {
 		if (err) {
 			return callback(err);
@@ -138,7 +144,7 @@ editController.uploadPicture = function (req, res, next) {
 			}
 
 			user.uploadPicture(updateUid, userPhoto, next);
-		}
+		},
 	], function (err, image) {
 		fs.unlink(userPhoto.path, function (err) {
 			if (err) {
@@ -151,7 +157,7 @@ editController.uploadPicture = function (req, res, next) {
 
 		res.json([{
 			name: userPhoto.name,
-			url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url
+			url: image.url,
 		}]);
 	});
 };
@@ -161,14 +167,14 @@ editController.uploadCoverPicture = function (req, res, next) {
 
 	user.updateCoverPicture({
 		file: req.files.files[0],
-		uid: params.uid
+		uid: params.uid,
 	}, function (err, image) {
 		if (err) {
 			return next(err);
 		}
 
 		res.json([{
-			url: image.url
+			url: image.url,
 		}]);
 	});
 };

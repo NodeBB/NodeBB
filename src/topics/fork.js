@@ -2,9 +2,8 @@
 'use strict';
 
 var async = require('async');
-var winston = require('winston');
+
 var db = require('../database');
-var user = require('../user');
 var posts = require('../posts');
 var privileges = require('../privileges');
 var plugins = require('../plugins');
@@ -12,7 +11,6 @@ var meta = require('../meta');
 
 
 module.exports = function (Topics) {
-
 	Topics.createTopicFromPosts = function (uid, title, pids, fromTid, callback) {
 		if (title) {
 			title = title.trim();
@@ -46,17 +44,17 @@ module.exports = function (Topics) {
 					},
 					isAdminOrMod: function (next) {
 						privileges.categories.isAdminOrMod(cid, uid, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
 				if (!results.isAdminOrMod) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
-				Topics.create({uid: results.postData.uid, title: title, cid: cid}, next);
+				Topics.create({ uid: results.postData.uid, title: title, cid: cid }, next);
 			},
 			function (results, next) {
-				Topics.updateTopicBookmarks(fromTid, pids, function () { next( null, results );} );
+				Topics.updateTopicBookmarks(fromTid, pids, function () { next(null, results); });
 			},
 			function (_tid, next) {
 				function move(pid, next) {
@@ -76,7 +74,7 @@ module.exports = function (Topics) {
 			},
 			function (next) {
 				Topics.getTopicData(tid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -122,20 +120,20 @@ module.exports = function (Topics) {
 					},
 					function (next) {
 						Topics.addPostToTopic(tid, postData, next);
-					}
+					},
 				], next);
 			},
 			function (results, next) {
 				async.parallel([
 					async.apply(updateRecentTopic, tid),
-					async.apply(updateRecentTopic, postData.tid)
+					async.apply(updateRecentTopic, postData.tid),
 				], next);
-			}
+			},
 		], function (err) {
 			if (err) {
 				return callback(err);
 			}
-			plugins.fireHook('action:post.move', {post: postData, tid: tid});
+			plugins.fireHook('action:post.move', { post: postData, tid: tid });
 			callback();
 		});
 	};
@@ -153,7 +151,7 @@ module.exports = function (Topics) {
 			}
 			async.parallel([
 				async.apply(db.incrObjectFieldBy, 'category:' + topicData[0].cid, 'post_count', -1),
-				async.apply(db.incrObjectFieldBy, 'category:' + topicData[1].cid, 'post_count', 1)
+				async.apply(db.incrObjectFieldBy, 'category:' + topicData[1].cid, 'post_count', 1),
 			], callback);
 		});
 	}
@@ -171,9 +169,7 @@ module.exports = function (Topics) {
 			},
 			function (timestamp, next) {
 				Topics.updateTimestamp(tid, timestamp, next);
-			}
+			},
 		], callback);
 	}
-
-
 };

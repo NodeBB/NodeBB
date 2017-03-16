@@ -1,5 +1,5 @@
-"use strict";
-/* global define, socket, app */
+'use strict';
+
 
 define('admin/advanced/logs', function () {
 	var	Logs = {};
@@ -10,30 +10,30 @@ define('admin/advanced/logs', function () {
 		// Affix menu
 		$('.affix').affix();
 
-		$('.logs').find('button[data-action]').on('click', function (event) {
-			var btnEl = $(this),
-				action = btnEl.attr('data-action');
+		$('.logs').find('button[data-action]').on('click', function () {
+			var btnEl = $(this);
+			var action = btnEl.attr('data-action');
 
-			switch(action) {
-				case 'reload':
-					socket.emit('admin.logs.get', function (err, logs) {
-						if (!err) {
-							logsEl.text(logs);
-							logsEl.scrollTop(logsEl.prop('scrollHeight'));
-						} else {
-							app.alertError(err.message);
-						}
-					});
-					break;
+			switch (action) {
+			case 'reload':
+				socket.emit('admin.logs.get', function (err, logs) {
+					if (!err) {
+						logsEl.text(logs);
+						logsEl.scrollTop(logsEl.prop('scrollHeight'));
+					} else {
+						app.alertError(err.message);
+					}
+				});
+				break;
 
-				case 'clear':
-					socket.emit('admin.logs.clear', function (err) {
-						if (!err) {
-							app.alertSuccess('[[admin/advanced/logs:clear-success]]');
-							btnEl.prev().click();
-						}
-					});
-					break;
+			case 'clear':
+				socket.emit('admin.logs.clear', function (err) {
+					if (!err) {
+						app.alertSuccess('[[admin/advanced/logs:clear-success]]');
+						btnEl.prev().click();
+					}
+				});
+				break;
 			}
 		});
 	};

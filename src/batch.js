@@ -95,7 +95,7 @@ exports.processArray = function (array, process, options, callback) {
 				if (err) {
 					return next(err);
 				}
-				start = start + batch;
+				start += batch;
 				if (options.interval) {
 					setTimeout(next, options.interval);
 				} else {

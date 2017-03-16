@@ -82,15 +82,15 @@ function resetSettings(callback) {
 function resetTheme(themeId, callback) {
 	var meta = require('./meta');
 	var fs = require('fs');
-	
-	fs.access('node_modules/' + themeId + '/package.json', function (err, fd) {
+
+	fs.access('node_modules/' + themeId + '/package.json', function (err) {
 		if (err) {
 			winston.warn('[reset] Theme `%s` is not installed on this forum', themeId);
 			callback(new Error('theme-not-found'));
 		} else {
 			meta.themes.set({
 				type: 'local',
-				id: themeId
+				id: themeId,
 			}, function (err) {
 				if (err) {
 					winston.warn('[reset] Failed to reset theme to ' + themeId);
@@ -99,7 +99,7 @@ function resetTheme(themeId, callback) {
 				}
 
 				callback();
-			});		
+			});
 		}
 	});
 }
@@ -109,7 +109,7 @@ function resetThemes(callback) {
 
 	meta.themes.set({
 		type: 'local',
-		id: 'nodebb-theme-persona'
+		id: 'nodebb-theme-persona',
 	}, function (err) {
 		winston.info('[reset] Theme reset to Persona');
 		callback(err);
@@ -129,18 +129,16 @@ function resetPlugin(pluginId, callback) {
 			} else {
 				next();
 			}
-		}
+		},
 	], function (err) {
 		if (err) {
 			winston.error('[reset] Could not disable plugin: %s encountered error %s', pluginId, err.message);
+		} else if (active) {
+			winston.info('[reset] Plugin `%s` disabled', pluginId);
 		} else {
-			if (active) {
-				winston.info('[reset] Plugin `%s` disabled', pluginId);
-			} else {
-				winston.warn('[reset] Plugin `%s` was not active on this forum', pluginId);
-				winston.info('[reset] No action taken.');
-				err = new Error('plugin-not-active');
-			}
+			winston.warn('[reset] Plugin `%s` was not active on this forum', pluginId);
+			winston.info('[reset] No action taken.');
+			err = new Error('plugin-not-active');
 		}
 
 		callback(err);

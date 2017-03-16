@@ -1,6 +1,5 @@
 'use strict';
 
-/* globals define, socket, app, templates */
 
 define('pictureCropper', ['translator', 'cropper'], function (translator, cropper) {
 	var module = {};
@@ -13,7 +12,7 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 			title: data.title || '[[global:upload_file]]',
 			description: data.description || '',
 			button: data.button || '[[global:upload]]',
-			accept: data.accept ? data.accept.replace(/,/g, '&#44; ') : ''
+			accept: data.accept ? data.accept.replace(/,/g, '&#44; ') : '',
 		}, function (uploadModal) {
 			uploadModal = $(uploadModal);
 
@@ -34,7 +33,7 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 	module.handleImageCrop = function (data, callback) {
 		$('#crop-picture-modal').remove();
 		templates.parse('modals/crop_picture', {
-			url: data.url
+			url: data.url,
 		}, function (cropperHtml) {
 			translator.translate(cropperHtml, function (translated) {
 				var cropperModal = $(translated);
@@ -43,17 +42,18 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 				var img = document.getElementById('cropped-image');
 				var cropperTool = new cropper.default(img, {
 					aspectRatio: data.aspectRatio,
+					autoCropArea: 1,
 					viewMode: 1,
 					cropmove: function () {
 						if (data.restrictImageDimension) {
 							if (cropperTool.cropBoxData.width > data.imageDimension) {
 								cropperTool.setCropBoxData({
-									width: data.imageDimension
+									width: data.imageDimension,
 								});
 							}
 							if (cropperTool.cropBoxData.height > data.imageDimension) {
 								cropperTool.setCropBoxData({
-									height: data.imageDimension
+									height: data.imageDimension,
 								});
 							}
 						}
@@ -64,20 +64,24 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 							var dimension = (origDimension > data.imageDimension) ? data.imageDimension : origDimension;
 							cropperTool.setCropBoxData({
 								width: dimension,
-								height: dimension
+								height: dimension,
 							});
 						}
 
 						cropperModal.find('.rotate').on('click', function () {
-							var degrees = this.getAttribute("data-degrees");
+							var degrees = this.getAttribute('data-degrees');
 							cropperTool.rotate(degrees);
 						});
 
 						cropperModal.find('.flip').on('click', function () {
-							var option = this.getAttribute("data-option");
-							var method = this.getAttribute("data-method");
-							method === 'scaleX' ? cropperTool.scaleX(option) : cropperTool.scaleY(option);
-							this.setAttribute("data-option", option * -1);
+							var option = this.getAttribute('data-option');
+							var method = this.getAttribute('data-method');
+							if (method === 'scaleX') {
+								cropperTool.scaleX(option);
+							} else {
+								cropperTool.scaleY(option);
+							}
+							this.setAttribute('data-option', option * -1);
 						});
 
 						cropperModal.find('.reset').on('click', function () {
@@ -93,7 +97,7 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 
 							var socketData = {};
 							socketData[data.paramName] = data.paramValue;
-							socketData['imageData'] = imageData;
+							socketData.imageData = imageData;
 
 							socket.emit(data.socketMethod, socketData, function (err, imageData) {
 								if (err) {
@@ -117,10 +121,10 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 								autoCropArea: 1,
 								ready: function () {
 									cropperModal.find('.crop-btn').trigger('click');
-								}
+								},
 							});
 						});
-					}
+					},
 				});
 			});
 		});
@@ -145,7 +149,7 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 		var imageUrl;
 		var imageType = file.type;
 
-		reader.addEventListener("load", function () {
+		reader.addEventListener('load', function () {
 			imageUrl = reader.result;
 
 			data.uploadModal.modal('hide');
@@ -159,7 +163,7 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 				restrictImageDimension: data.restrictImageDimension,
 				imageDimension: data.imageDimension,
 				paramName: data.paramName,
-				paramValue: data.paramValue
+				paramValue: data.paramValue,
 			}, callback);
 		}, false);
 

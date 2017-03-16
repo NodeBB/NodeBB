@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var user = require('../user');
 var adminBlacklistController = require('./admin/blacklist');

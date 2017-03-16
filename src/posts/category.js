@@ -8,7 +8,6 @@ var db = require('../database');
 var topics = require('../topics');
 
 module.exports = function (Posts) {
-
 	Posts.getCidByPid = function (pid, callback) {
 		async.waterfall([
 			function (next) {
@@ -16,7 +15,7 @@ module.exports = function (Posts) {
 			},
 			function (tid, next) {
 				topics.getTopicField(tid, 'cid', next);
-			}
+			},
 		], callback);
 	};
 
@@ -49,7 +48,7 @@ module.exports = function (Posts) {
 					return map[post.tid];
 				});
 				next(null, cids);
-			}
+			},
 		], callback);
 	};
 

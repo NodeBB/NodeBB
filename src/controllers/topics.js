@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 var async = require('async');
@@ -39,7 +39,7 @@ topicsController.get = function (req, res, callback) {
 				},
 				topic: function (next) {
 					topics.getTopicData(tid, next);
-				}
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -113,7 +113,7 @@ topicsController.get = function (req, res, callback) {
 				currentPage = Math.max(1, Math.ceil(index / settings.postsPerPage));
 			}
 
-			var start = (currentPage - 1) * settings.postsPerPage + postIndex;
+			var start = ((currentPage - 1) * settings.postsPerPage) + postIndex;
 			var stop = start + settings.postsPerPage - 1;
 
 			topics.getTopicWithPosts(results.topic, set, req.uid, start, stop, reverse, next);
@@ -125,18 +125,17 @@ topicsController.get = function (req, res, callback) {
 
 			topics.modifyPostsByPrivilege(topicData, userPrivileges);
 
-			plugins.fireHook('filter:controllers.topic.get', {topicData: topicData, uid: req.uid}, next);
+			plugins.fireHook('filter:controllers.topic.get', { topicData: topicData, uid: req.uid }, next);
 		},
 		function (data, next) {
-
 			var breadcrumbs = [
 				{
 					text: data.topicData.category.name,
-					url: nconf.get('relative_path') + '/category/' + data.topicData.category.slug
+					url: nconf.get('relative_path') + '/category/' + data.topicData.category.slug,
 				},
 				{
-					text: data.topicData.title
-				}
+					text: data.topicData.title,
+				},
 			];
 
 			helpers.buildCategoryBreadcrumbs(data.topicData.category.parentCid, function (err, crumbs) {
@@ -149,7 +148,7 @@ topicsController.get = function (req, res, callback) {
 		},
 		function (topicData, next) {
 			function findPost(index) {
-				for(var i = 0; i < topicData.posts.length; ++i) {
+				for (var i = 0; i < topicData.posts.length; i += 1) {
 					if (parseInt(topicData.posts[i].index, 10) === parseInt(index, 10)) {
 						return topicData.posts[i];
 					}
@@ -187,71 +186,71 @@ topicsController.get = function (req, res, callback) {
 
 			res.locals.metaTags = [
 				{
-					name: "title",
-					content: topicData.titleRaw
+					name: 'title',
+					content: topicData.titleRaw,
 				},
 				{
-					name: "description",
-					content: description
+					name: 'description',
+					content: description,
 				},
 				{
 					property: 'og:title',
-					content: topicData.titleRaw
+					content: topicData.titleRaw,
 				},
 				{
 					property: 'og:description',
-					content: description
+					content: description,
 				},
 				{
-					property: "og:type",
-					content: 'article'
+					property: 'og:type',
+					content: 'article',
 				},
 				{
-					property: "og:url",
+					property: 'og:url',
 					content: nconf.get('url') + '/topic/' + topicData.slug + (req.params.post_index ? ('/' + req.params.post_index) : ''),
-					noEscape: true
+					noEscape: true,
 				},
 				{
 					property: 'og:image',
 					content: ogImageUrl,
-					noEscape: true
+					noEscape: true,
 				},
 				{
-					property: "og:image:url",
+					property: 'og:image:url',
 					content: ogImageUrl,
-					noEscape: true
+					noEscape: true,
 				},
 				{
-					property: "article:published_time",
-					content: utils.toISOString(topicData.timestamp)
+					property: 'article:published_time',
+					content: utils.toISOString(topicData.timestamp),
 				},
 				{
 					property: 'article:modified_time',
-					content: utils.toISOString(topicData.lastposttime)
+					content: utils.toISOString(topicData.lastposttime),
 				},
 				{
 					property: 'article:section',
-					content: topicData.category ? topicData.category.name : ''
-				}
+					content: topicData.category ? topicData.category.name : '',
+				},
 			];
 
 			res.locals.linkTags = [
 				{
 					rel: 'alternate',
 					type: 'application/rss+xml',
-					href: nconf.get('url') + '/topic/' + tid + '.rss'
-				}
+					href: nconf.get('url') + '/topic/' + tid + '.rss',
+				},
 			];
 
 			if (topicData.category) {
 				res.locals.linkTags.push({
 					rel: 'up',
-					href: nconf.get('url') + '/category/' + topicData.category.slug
+					href: nconf.get('url') + '/category/' + topicData.category.slug,
 				});
 			}
 
 			next(null, topicData);
-		}
+		},
 	], function (err, data) {
 		if (err) {
 			return callback(err);
@@ -316,8 +315,8 @@ topicsController.teaser = function (req, res, next) {
 			if (!pid) {
 				return res.status(404).json('not-found');
 			}
-			posts.getPostSummaryByPids([pid], req.uid, {stripTags: false}, next);
-		}
+			posts.getPostSummaryByPids([pid], req.uid, { stripTags: false }, next);
+		},
 	], function (err, posts) {
 		if (err) {
 			return next(err);
@@ -341,7 +340,7 @@ topicsController.pagination = function (req, res, callback) {
 	async.parallel({
 		privileges: async.apply(privileges.topics.get, tid, req.uid),
 		settings: async.apply(user.getSettings, req.uid),
-		topic: async.apply(topics.getTopicData, tid)
+		topic: async.apply(topics.getTopicData, tid),
 	}, function (err, results) {
 		if (err || !results.topic) {
 			return callback(err);

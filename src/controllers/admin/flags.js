@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var async = require('async');
 var validator = require('validator');
@@ -29,7 +29,7 @@ flagsController.get = function (req, res, next) {
 		analytics: function (next) {
 			analytics.getDailyStatsForSet('analytics:flags', Date.now(), 30, next);
 		},
-		assignees: async.apply(user.getAdminsandGlobalModsandModerators)
+		assignees: async.apply(user.getAdminsandGlobalModsandModerators),
 	}, function (err, results) {
 		if (err) {
 			return next(err);
@@ -39,7 +39,7 @@ flagsController.get = function (req, res, next) {
 		results.assignees = results.assignees.map(function (userObj) {
 			return {
 				uid: userObj.uid,
-				username: userObj.username
+				username: userObj.username,
 			};
 		});
 
@@ -94,7 +94,7 @@ function getFlagData(req, res, callback) {
 			}
 
 			posts.getFlags(sets, cid, req.uid, start, stop, next);
-		}
+		},
 	], callback);
 }
 

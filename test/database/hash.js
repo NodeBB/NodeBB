@@ -1,15 +1,15 @@
 'use strict';
-/*global require, after, before*/
 
-var	async = require('async'),
-	assert = require('assert'),
-	db = require('../mocks/databasemock');
+
+var	async = require('async');
+var assert = require('assert');
+var db = require('../mocks/databasemock');
 
 describe('Hash methods', function () {
 	var testData = {
 		name: 'baris',
 		lastname: 'usakli',
-		age: 99
+		age: 99,
 	};
 
 	beforeEach(function (done) {
@@ -18,7 +18,7 @@ describe('Hash methods', function () {
 
 	describe('setObject()', function () {
 		it('should create a object', function (done) {
-			db.setObject('testObject1', {foo: 'baris', bar: 99}, function (err) {
+			db.setObject('testObject1', { foo: 'baris', bar: 99 }, function (err) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 1);
 				done();
@@ -26,7 +26,7 @@ describe('Hash methods', function () {
 		});
 
 		it('should do nothing if key is falsy', function (done) {
-			db.setObject('', {foo: 1, derp: 2}, function (err) {
+			db.setObject('', { foo: 1, derp: 2 }, function (err) {
 				assert.ifError(err);
 				done();
 			});
@@ -86,8 +86,8 @@ describe('Hash methods', function () {
 	describe('getObjects()', function () {
 		before(function (done) {
 			async.parallel([
-				async.apply(db.setObject, 'testObject4', {name: 'baris'}),
-				async.apply(db.setObjectField, 'testObject5', 'name', 'ginger')
+				async.apply(db.setObject, 'testObject4', { name: 'baris' }),
+				async.apply(db.setObjectField, 'testObject5', 'name', 'ginger'),
 			], done);
 		});
 
@@ -161,8 +161,8 @@ describe('Hash methods', function () {
 	describe('getObjectsFields()', function () {
 		before(function (done) {
 			async.parallel([
-				async.apply(db.setObject, 'testObject8', {name: 'baris', age:99}),
-				async.apply(db.setObject, 'testObject9', {name: 'ginger', age: 3})
+				async.apply(db.setObject, 'testObject8', { name: 'baris', age: 99 }),
+				async.apply(db.setObject, 'testObject9', { name: 'ginger', age: 3 }),
 			], done);
 		});
 
@@ -278,7 +278,7 @@ describe('Hash methods', function () {
 
 	describe('deleteObjectField()', function () {
 		before(function (done) {
-			db.setObject('testObject10', {foo: 'bar', delete: 'this', delete1: 'this', delete2: 'this'}, done);
+			db.setObject('testObject10', { foo: 'bar', delete: 'this', delete1: 'this', delete2: 'this' }, done);
 		});
 
 		it('should delete an objects field', function (done) {
@@ -299,7 +299,7 @@ describe('Hash methods', function () {
 				assert.equal(arguments.length, 1);
 				async.parallel({
 					delete1: async.apply(db.isObjectField, 'testObject10', 'delete1'),
-					delete2: async.apply(db.isObjectField, 'testObject10', 'delete2')
+					delete2: async.apply(db.isObjectField, 'testObject10', 'delete2'),
 				}, function (err, results) {
 					assert.ifError(err);
 					assert.equal(results.delete1, false);
@@ -312,7 +312,7 @@ describe('Hash methods', function () {
 
 	describe('incrObjectField()', function () {
 		before(function (done) {
-			db.setObject('testObject11', {age: 99}, done);
+			db.setObject('testObject11', { age: 99 }, done);
 		});
 
 		it('should set an objects field to 1 if object does not exist', function (done) {
@@ -336,7 +336,7 @@ describe('Hash methods', function () {
 
 	describe('decrObjectField()', function () {
 		before(function (done) {
-			db.setObject('testObject13', {age: 99}, done);
+			db.setObject('testObject13', { age: 99 }, done);
 		});
 
 		it('should set an objects field to -1 if object does not exist', function (done) {
@@ -360,7 +360,7 @@ describe('Hash methods', function () {
 
 	describe('incrObjectFieldBy()', function () {
 		before(function (done) {
-			db.setObject('testObject15', {age: 100}, done);
+			db.setObject('testObject15', { age: 100 }, done);
 		});
 
 		it('should set an objects field to 5 if object does not exist', function (done) {
@@ -389,7 +389,6 @@ describe('Hash methods', function () {
 			});
 		});
 	});
-
 
 
 	after(function (done) {

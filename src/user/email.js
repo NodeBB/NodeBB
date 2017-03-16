@@ -13,7 +13,6 @@ var meta = require('../meta');
 var emailer = require('../emailer');
 
 (function (UserEmail) {
-
 	UserEmail.exists = function (email, callback) {
 		user.getUidByEmail(email.toLowerCase(), function (err, exists) {
 			callback(err, !!exists);
@@ -53,11 +52,11 @@ var emailer = require('../emailer');
 				confirm_code = _confirm_code;
 				db.setObject('confirm:' + confirm_code, {
 					email: email.toLowerCase(),
-					uid: uid
+					uid: uid,
 				}, next);
 			},
 			function (next) {
-				db.expireAt('confirm:' + confirm_code, Math.floor(Date.now() / 1000 + 60 * 60 * 24), next);
+				db.expireAt('confirm:' + confirm_code, Math.floor((Date.now() / 1000) + (60 * 60 * 24)), next);
 			},
 			function (next) {
 				user.getUserField(uid, 'username', next);
@@ -73,27 +72,32 @@ var emailer = require('../emailer');
 
 						subject: subject,
 						template: 'welcome',
-						uid: uid
+						uid: uid,
 					};
 
 					if (plugins.hasListeners('action:user.verify')) {
-						plugins.fireHook('action:user.verify', {uid: uid, data: data});
+						plugins.fireHook('action:user.verify', { uid: uid, data: data });
 						next();
 					} else {
 						emailer.send('welcome', uid, data, next);
 					}
 				});
-			}
+			},
+			function (next) {
+				next(null, confirm_code);
+			},
 		], callback);
 	};
 
 	UserEmail.confirm = function (code, callback) {
-		db.getObject('confirm:' + code, function (err, confirmObj) {
-			if (err) {
-				return callback(new Error('[[error:parse-error]]'));
-			}
-
-			if (confirmObj && confirmObj.uid && confirmObj.email) {
+		async.waterfall([
+			function (next) {
+				db.getObject('confirm:' + code, next);
+			},
+			function (confirmObj, next) {
+				if (!confirmObj || !confirmObj.uid || !confirmObj.email) {
+					return next(new Error('[[error:invalid-data]]'));
+				}
 				async.series([
 					async.apply(user.setUserField, confirmObj.uid, 'email:confirmed', 1),
 					async.apply(db.delete, 'confirm:' + code),
@@ -102,15 +106,12 @@ var emailer = require('../emailer');
 						db.sortedSetRemove('users:notvalidated', confirmObj.uid, next);
 					},
 					function (next) {
-						plugins.fireHook('action:user.email.confirmed', {uid: confirmObj.uid, email: confirmObj.email}, next);
-					}
-				], function (err) {
-					callback(err ? new Error('[[error:email-confirm-failed]]') : null);
-				});
-			} else {
-				callback(new Error('[[error:invalid-data]]'));
-			}
+						plugins.fireHook('action:user.email.confirmed', { uid: confirmObj.uid, email: confirmObj.email }, next);
+					},
+				], next);
+			},
+		], function (err) {
+			callback(err);
 		});
 	};
-
 }(exports));

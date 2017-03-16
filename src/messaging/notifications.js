@@ -11,7 +11,6 @@ var meta = require('../meta');
 var sockets = require('../socket.io');
 
 module.exports = function (Messaging) {
-
 	Messaging.notifyQueue = {};	// Only used to notify a user of a new chat message, see Messaging.notifyUser
 
 	Messaging.notificationSendDelay = 1000 * 60;
@@ -25,11 +24,11 @@ module.exports = function (Messaging) {
 				var data = {
 					roomId: roomId,
 					fromUid: fromUid,
-					message: messageObj
+					message: messageObj,
 				};
 
 				uids.forEach(function (uid) {
-					data.self = parseInt(uid, 10) === parseInt(fromUid) ? 1 : 0;
+					data.self = parseInt(uid, 10) === parseInt(fromUid, 10) ? 1 : 0;
 					Messaging.pushUnreadCount(uid);
 					sockets.in('uid_' + uid).emit('event:chats.receive', data);
 				});
@@ -40,16 +39,17 @@ module.exports = function (Messaging) {
 					queueObj.message.content += '\n' + messageObj.content;
 					clearTimeout(queueObj.timeout);
 				} else {
-					queueObj = Messaging.notifyQueue[fromUid + ':' + roomId] = {
-						message: messageObj
+					queueObj = {
+						message: messageObj,
 					};
+					Messaging.notifyQueue[fromUid + ':' + roomId] = queueObj;
 				}
 
 				queueObj.timeout = setTimeout(function () {
 					sendNotifications(fromUid, uids, roomId, queueObj.message);
 				}, Messaging.notificationSendDelay);
 				next();
-			}
+			},
 		]);
 	};
 
@@ -72,9 +72,9 @@ module.exports = function (Messaging) {
 					bodyLong: messageObj.content,
 					nid: 'chat_' + fromuid + '_' + roomId,
 					from: fromuid,
-					path: '/chats/' + messageObj.roomId
+					path: '/chats/' + messageObj.roomId,
 				}, next);
-			}
+			},
 		], function (err, notification) {
 			if (!err) {
 				delete Messaging.notifyQueue[fromuid + ':' + roomId];
@@ -99,9 +99,10 @@ module.exports = function (Messaging) {
 					},
 					userSettings: function (next) {
 						user.getMultipleUserSettings(uids, next);
-					}
+					},
 				}, next);
 			},
+
 			function (results, next) {
 				results.userData = results.userData.filter(function (userData, index) {
 					return userData && results.userSettings[index] && results.userSettings[index].sendChatNotifications;
@@ -115,10 +116,10 @@ module.exports = function (Messaging) {
 						url: nconf.get('url'),
 						roomId: messageObj.roomId,
 						username: userData.username,
-						userslug: userData.userslug
+						userslug: userData.userslug,
 					}, next);
 				}, next);
-			}
+			},
 		], function (err) {
 			if (err) {
 				return winston.error(err);

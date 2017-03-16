@@ -1,5 +1,4 @@
 node_modules/
-public/src/nodebb.min.js
 *.sublime-project
 *.sublime-workspace
 .project
@@ -10,8 +9,6 @@ logs/
 /public/uploads
 /public/sounds
 /public/vendor
-/public/nodebb.min.js
-/public/acp.min.js
 /public/src/modules/string.js
 .idea/
 .vscode/
@@ -19,3 +16,4 @@ logs/
 *.iws
 /coverage
 /build
+.eslintrc

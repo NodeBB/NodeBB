@@ -8,7 +8,6 @@ var events = require('../../events');
 var privileges = require('../../privileges');
 
 module.exports = function (SocketUser) {
-
 	SocketUser.changeUsernameEmail = function (socket, data, callback) {
 		if (!data || !data.uid || !socket.uid) {
 			return callback(new Error('[[error:invalid-data]]'));
@@ -20,7 +19,7 @@ module.exports = function (SocketUser) {
 			},
 			function (next) {
 				SocketUser.updateProfile(socket, data, next);
-			}
+			},
 		], callback);
 	};
 
@@ -34,10 +33,10 @@ module.exports = function (SocketUser) {
 			},
 			function (next) {
 				user.updateCoverPicture(data, next);
-			}
+			},
 		], callback);
 	};
-	
+
 	SocketUser.uploadCroppedPicture = function (socket, data, callback) {
 		if (!socket.uid) {
 			return callback(new Error('[[error:no-privileges]]'));
@@ -48,7 +47,7 @@ module.exports = function (SocketUser) {
 			},
 			function (next) {
 				user.uploadCroppedPicture(data, next);
-			}
+			},
 		], callback);
 	};
 
@@ -63,7 +62,7 @@ module.exports = function (SocketUser) {
 			},
 			function (next) {
 				user.removeCoverPicture(data, next);
-			}
+			},
 		], callback);
 	};
 
@@ -77,7 +76,7 @@ module.exports = function (SocketUser) {
 				} else {
 					next(null, false);
 				}
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -114,7 +113,7 @@ module.exports = function (SocketUser) {
 				type: 'password-change',
 				uid: socket.uid,
 				targetUid: data.uid,
-				ip: socket.ip
+				ip: socket.ip,
 			});
 			callback();
 		});
@@ -146,7 +145,7 @@ module.exports = function (SocketUser) {
 					},
 					canEdit: function (next) {
 						privileges.users.canEdit(socket.uid, data.uid, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -175,17 +174,15 @@ module.exports = function (SocketUser) {
 				}
 
 				if (userData.email !== oldUserData.email) {
-					log('email-change', {oldEmail: oldUserData.email, newEmail: userData.email});
+					log('email-change', { oldEmail: oldUserData.email, newEmail: userData.email });
 				}
 
 				if (userData.username !== oldUserData.username) {
-					log('username-change', {oldUsername: oldUserData.username, newUsername: userData.username});
+					log('username-change', { oldUsername: oldUserData.username, newUsername: userData.username });
 				}
 
 				next(null, userData);
-			}
+			},
 		], callback);
 	};
-
-
 };

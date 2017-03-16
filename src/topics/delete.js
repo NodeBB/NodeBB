@@ -10,79 +10,91 @@ var batch = require('../batch');
 
 
 module.exports = function (Topics) {
-
 	Topics.delete = function (tid, uid, callback) {
-		Topics.getTopicFields(tid, ['cid'], function (err, topicData) {
-			if (err) {
-				return callback(err);
-			}
-
-			async.parallel([
-				function (next) {
-					Topics.setTopicField(tid, 'deleted', 1, next);
-				},
-				function (next) {
-					db.sortedSetsRemove(['topics:recent', 'topics:posts', 'topics:views'], tid, next);
-				},
-				function (next) {
-					Topics.getPids(tid, function (err, pids) {
-						if (err) {
-							return next(err);
-						}
-						db.sortedSetRemove('cid:' + topicData.cid + ':pids', pids, next);
-					});
-				}
-			], function (err) {
-				callback(err);
-			});
+		async.parallel([
+			function (next) {
+				Topics.setTopicFields(tid, {
+					deleted: 1,
+					deleterUid: uid,
+					deletedTimestamp: Date.now(),
+				}, next);
+			},
+			function (next) {
+				db.sortedSetsRemove(['topics:recent', 'topics:posts', 'topics:views'], tid, next);
+			},
+			function (next) {
+				async.waterfall([
+					function (next) {
+						async.parallel({
+							cid: function (next) {
+								Topics.getTopicField(tid, 'cid', next);
+							},
+							pids: function (next) {
+								Topics.getPids(tid, next);
+							},
+						}, next);
+					},
+					function (results, next) {
+						db.sortedSetRemove('cid:' + results.cid + ':pids', results.pids, next);
+					},
+				], next);
+			},
+		], function (err) {
+			callback(err);
 		});
 	};
 
 	Topics.restore = function (tid, uid, callback) {
-		Topics.getTopicFields(tid, ['cid', 'lastposttime', 'postcount', 'viewcount'], function (err, topicData) {
-			if (err) {
-				return callback(err);
-			}
-
-			async.parallel([
-				function (next) {
-					Topics.setTopicField(tid, 'deleted', 0, next);
-				},
-				function (next) {
-					Topics.updateRecent(tid, topicData.lastposttime, next);
-				},
-				function (next) {
-					db.sortedSetAdd('topics:posts', topicData.postcount, tid, next);
-				},
-				function (next) {
-					db.sortedSetAdd('topics:views', topicData.viewcount, tid, next);
-				},
-				function (next) {
-					Topics.getPids(tid, function (err, pids) {
-						if (err) {
-							return callback(err);
-						}
-
-						posts.getPostsFields(pids, ['pid', 'timestamp', 'deleted'], function (err, postData) {
-							if (err) {
-								return next(err);
-							}
-							postData = postData.filter(function (post) {
-								return post && parseInt(post.deleted, 10) !== 1;
-							});
-							var pidsToAdd = [], scores = [];
-							postData.forEach(function (post) {
-								pidsToAdd.push(post.pid);
-								scores.push(post.timestamp);
-							});
-							db.sortedSetAdd('cid:' + topicData.cid + ':pids', scores, pidsToAdd, next);
-						});
-					});
-				}
-			], function (err) {
-				callback(err);
-			});
-		});
+		var topicData;
+		async.waterfall([
+			function (next) {
+				Topics.getTopicFields(tid, ['cid', 'lastposttime', 'postcount', 'viewcount'], next);
+			},
+			function (_topicData, next) {
+				topicData = _topicData;
+				async.parallel([
+					function (next) {
+						Topics.setTopicField(tid, 'deleted', 0, next);
+					},
+					function (next) {
+						Topics.deleteTopicFields(tid, ['deleterUid', 'deletedTimestamp'], next);
+					},
+					function (next) {
+						Topics.updateRecent(tid, topicData.lastposttime, next);
+					},
+					function (next) {
+						db.sortedSetAdd('topics:posts', topicData.postcount, tid, next);
+					},
+					function (next) {
+						db.sortedSetAdd('topics:views', topicData.viewcount, tid, next);
+					},
+					function (next) {
+						async.waterfall([
+							function (next) {
+								Topics.getPids(tid, next);
+							},
+							function (pids, next) {
+								posts.getPostsFields(pids, ['pid', 'timestamp', 'deleted'], next);
+							},
+							function (postData, next) {
+								postData = postData.filter(function (post) {
+									return post && parseInt(post.deleted, 10) !== 1;
+								});
+								var pidsToAdd = [];
+								var scores = [];
+								postData.forEach(function (post) {
+									pidsToAdd.push(post.pid);
+									scores.push(post.timestamp);
+								});
+								db.sortedSetAdd('cid:' + topicData.cid + ':pids', scores, pidsToAdd, next);
+							},
+						], next);
+					},
+				], function (err) {
+					next(err);
+				});
+			},
+		], callback);
 	};
 
 	Topics.purgePostsAndTopic = function (tid, uid, callback) {
@@ -97,14 +109,14 @@ module.exports = function (Topics) {
 					async.eachLimit(pids, 10, function (pid, next) {
 						posts.purge(pid, uid, next);
 					}, next);
-				}, {alwaysStartAt: 0}, next);
+				}, { alwaysStartAt: 0 }, next);
 			},
 			function (next) {
 				posts.purge(mainPid, uid, next);
 			},
 			function (next) {
 				Topics.purge(tid, uid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -122,7 +134,7 @@ module.exports = function (Topics) {
 							'tid:' + tid + ':posts',
 							'tid:' + tid + ':posts:votes',
 							'tid:' + tid + ':bookmarks',
-							'tid:' + tid + ':posters'
+							'tid:' + tid + ':posters',
 						], next);
 					},
 					function (next) {
@@ -136,16 +148,16 @@ module.exports = function (Topics) {
 					},
 					function (next) {
 						reduceCounters(tid, next);
-					}
-				], next);
-			}
-		], function (err) {
-			if (err) {
-				return callback(err);
-			}
-			plugins.fireHook('action:topic.purge', tid);
-			db.delete('topic:' + tid, callback);
-		});
+					},
+				], function (err) {
+					next(err);
+				});
+			},
+			function (next) {
+				plugins.fireHook('action:topic.purge', tid);
+				db.delete('topic:' + tid, next);
+			},
+		], callback);
 	};
 
 	function deleteFromFollowersIgnorers(tid, callback) {
@@ -153,7 +165,7 @@ module.exports = function (Topics) {
 			function (next) {
 				async.parallel({
 					followers: async.apply(db.getSetMembers, 'tid:' + tid + ':followers'),
-					ignorers: async.apply(db.getSetMembers, 'tid:' + tid + ':ignorers')
+					ignorers: async.apply(db.getSetMembers, 'tid:' + tid + ':ignorers'),
 				}, next);
 			},
 			function (results, next) {
@@ -164,29 +176,33 @@ module.exports = function (Topics) {
 					return 'uid:' + uid + 'ignored_tids';
 				});
 				db.sortedSetsRemove(followerKeys.concat(ignorerKeys), tid, next);
-			}
+			},
 		], callback);
 	}
 
 	function deleteTopicFromCategoryAndUser(tid, callback) {
-		Topics.getTopicFields(tid, ['cid', 'uid'], function (err, topicData) {
-			if (err) {
-				return callback(err);
-			}
-			async.parallel([
-				function (next) {
-					db.sortedSetsRemove([
-						'cid:' + topicData.cid + ':tids',
-						'cid:' + topicData.cid + ':tids:pinned',
-						'cid:' + topicData.cid + ':tids:posts',
-						'cid:' + topicData.cid + ':uid:' + topicData.uid + ':tids',
-						'uid:' + topicData.uid + ':topics'
-					], tid, next);
-				},
-				function (next) {
-					user.decrementUserFieldBy(topicData.uid, 'topiccount', 1, next);
-				}
-			], callback);
+		async.waterfall([
+			function (next) {
+				Topics.getTopicFields(tid, ['cid', 'uid'], next);
+			},
+			function (topicData, next) {
+				async.parallel([
+					function (next) {
+						db.sortedSetsRemove([
+							'cid:' + topicData.cid + ':tids',
+							'cid:' + topicData.cid + ':tids:pinned',
+							'cid:' + topicData.cid + ':tids:posts',
+							'cid:' + topicData.cid + ':uid:' + topicData.uid + ':tids',
+							'uid:' + topicData.uid + ':topics',
+						], tid, next);
+					},
+					function (next) {
+						user.decrementUserFieldBy(topicData.uid, 'topiccount', 1, next);
+					},
+				], next);
+			},
+		], function (err) {
+			callback(err);
 		});
 	}
 
@@ -197,27 +213,29 @@ module.exports = function (Topics) {
 				db.incrObjectFieldBy('global', 'topicCount', incr, next);
 			},
 			function (next) {
-				Topics.getTopicFields(tid, ['cid', 'postcount'], function (err, topicData) {
-					if (err) {
-						return next(err);
-					}
-					topicData.postcount = parseInt(topicData.postcount, 10);
-					topicData.postcount = topicData.postcount || 0;
-					var postCountChange = incr * topicData.postcount;
+				async.waterfall([
+					function (next) {
+						Topics.getTopicFields(tid, ['cid', 'postcount'], next);
+					},
+					function (topicData, next) {
+						topicData.postcount = parseInt(topicData.postcount, 10);
+						topicData.postcount = topicData.postcount || 0;
+						var postCountChange = incr * topicData.postcount;
 
-					async.parallel([
-						function (next) {
-							db.incrObjectFieldBy('global', 'postCount', postCountChange, next);
-						},
-						function (next) {
-							db.incrObjectFieldBy('category:' + topicData.cid, 'post_count', postCountChange, next);
-						},
-						function (next) {
-							db.incrObjectFieldBy('category:' + topicData.cid, 'topic_count', incr, next);
-						}
-					], next);
-				});
-			}
+						async.parallel([
+							function (next) {
+								db.incrObjectFieldBy('global', 'postCount', postCountChange, next);
+							},
+							function (next) {
+								db.incrObjectFieldBy('category:' + topicData.cid, 'post_count', postCountChange, next);
+							},
+							function (next) {
+								db.incrObjectFieldBy('category:' + topicData.cid, 'topic_count', incr, next);
+							},
+						], next);
+					},
+				], next);
+			},
 		], callback);
 	}
 };

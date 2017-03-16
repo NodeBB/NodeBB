@@ -1,7 +1,7 @@
-"use strict";
-/*global config, define, app, socket, ajaxify, bootbox, templates, Chart, utils */
+'use strict';
 
-define('admin/advanced/errors', ['Chart', 'translator'], function (Chart, translator) {
+
+define('admin/advanced/errors', ['Chart'], function (Chart) {
 	var Errors = {};
 
 	Errors.init = function () {
@@ -26,9 +26,9 @@ define('admin/advanced/errors', ['Chart', 'translator'], function (Chart, transl
 	};
 
 	Errors.setupCharts = function () {
-		var notFoundCanvas = document.getElementById('not-found'),
-			tooBusyCanvas = document.getElementById('toobusy'),
-			dailyLabels = utils.getDaysArray();
+		var notFoundCanvas = document.getElementById('not-found');
+		var tooBusyCanvas = document.getElementById('toobusy');
+		var dailyLabels = utils.getDaysArray();
 
 		dailyLabels = dailyLabels.slice(-7);
 
@@ -41,71 +41,71 @@ define('admin/advanced/errors', ['Chart', 'translator'], function (Chart, transl
 				labels: dailyLabels,
 				datasets: [
 					{
-						label: "",
-						backgroundColor: "rgba(186,139,175,0.2)",
-						borderColor: "rgba(186,139,175,1)",
-						pointBackgroundColor: "rgba(186,139,175,1)",
-						pointHoverBackgroundColor: "#fff",
-						pointBorderColor: "#fff",
-						pointHoverBorderColor: "rgba(186,139,175,1)",
-						data: ajaxify.data.analytics['not-found']
-					}
-				]
+						label: '',
+						backgroundColor: 'rgba(186,139,175,0.2)',
+						borderColor: 'rgba(186,139,175,1)',
+						pointBackgroundColor: 'rgba(186,139,175,1)',
+						pointHoverBackgroundColor: '#fff',
+						pointBorderColor: '#fff',
+						pointHoverBorderColor: 'rgba(186,139,175,1)',
+						data: ajaxify.data.analytics['not-found'],
+					},
+				],
 			},
-			'toobusy': {
+			toobusy: {
 				labels: dailyLabels,
 				datasets: [
 					{
-						label: "",
-						backgroundColor: "rgba(151,187,205,0.2)",
-						borderColor: "rgba(151,187,205,1)",
-						pointBackgroundColor: "rgba(151,187,205,1)",
-						pointHoverBackgroundColor: "#fff",
-						pointBorderColor: "#fff",
-						pointHoverBorderColor: "rgba(151,187,205,1)",
-						data: ajaxify.data.analytics['toobusy']
-					}
-				]
-			}
+						label: '',
+						backgroundColor: 'rgba(151,187,205,0.2)',
+						borderColor: 'rgba(151,187,205,1)',
+						pointBackgroundColor: 'rgba(151,187,205,1)',
+						pointHoverBackgroundColor: '#fff',
+						pointBorderColor: '#fff',
+						pointHoverBorderColor: 'rgba(151,187,205,1)',
+						data: ajaxify.data.analytics.toobusy,
+					},
+				],
+			},
 		};
 
 		notFoundCanvas.width = $(notFoundCanvas).parent().width();
 		tooBusyCanvas.width = $(tooBusyCanvas).parent().width();
-		
+
 		new Chart(notFoundCanvas.getContext('2d'), {
 			type: 'line',
 			data: data['not-found'],
 			options: {
 				responsive: true,
 				legend: {
-					display: false
+					display: false,
 				},
 				scales: {
 					yAxes: [{
 						ticks: {
-							beginAtZero: true
-						}
-					}]
-				}
-			}
+							beginAtZero: true,
+						},
+					}],
+				},
+			},
 		});
-		
+
 		new Chart(tooBusyCanvas.getContext('2d'), {
 			type: 'line',
-			data: data['toobusy'],
+			data: data.toobusy,
 			options: {
 				responsive: true,
 				legend: {
-					display: false
+					display: false,
 				},
 				scales: {
 					yAxes: [{
 						ticks: {
-							beginAtZero: true
-						}
-					}]
-				}
-			}
+							beginAtZero: true,
+						},
+					}],
+				},
+			},
 		});
 	};
 

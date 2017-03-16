@@ -1,6 +1,5 @@
 'use strict';
 
-/* globals define, socket, app */
 
 define('forum/notifications', ['components', 'notifications', 'forum/infinitescroll'], function (components, notifs, infinitescroll) {
 	var Notifications = {};
@@ -46,7 +45,7 @@ define('forum/notifications', ['components', 'notifications', 'forum/infinitescr
 		}
 		var notifList = $('.notifications-list');
 		infinitescroll.loadMore('notifications.loadMore', {
-			after: notifList.attr('data-nextstart')
+			after: notifList.attr('data-nextstart'),
 		}, function (data, done) {
 			if (!data) {
 				return done();
@@ -55,7 +54,7 @@ define('forum/notifications', ['components', 'notifications', 'forum/infinitescr
 			if (!data.notifications || !data.notifications.length) {
 				return done();
 			}
-			app.parseAndTranslate('notifications', 'notifications', {notifications: data.notifications}, function (html) {
+			app.parseAndTranslate('notifications', 'notifications', { notifications: data.notifications }, function (html) {
 				notifList.append(html);
 				html.find('.timeago').timeago();
 				done();

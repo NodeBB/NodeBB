@@ -4,7 +4,7 @@
 var async = require('async');
 var validator = require('validator');
 
-var db =  require('./database');
+var db = require('./database');
 var batch = require('./batch');
 var user = require('./user');
 var utils = require('../public/src/utils');
@@ -27,10 +27,10 @@ var utils = require('../public/src/utils');
 					},
 					function (next) {
 						db.setObject('event:' + eid, data, next);
-					}
+					},
 				], next);
-			}
-		], function (err, result) {
+			},
+		], function (err) {
 			callback(err);
 		});
 	};
@@ -61,12 +61,16 @@ var utils = require('../public/src/utils');
 						}
 					});
 					var e = utils.merge(event);
-					e.eid = e.uid = e.type = e.ip = e.user = undefined;
+					e.eid = undefined;
+					e.uid = undefined;
+					e.type = undefined;
+					e.ip = undefined;
+					e.user = undefined;
 					event.jsonString = JSON.stringify(e, null, 4);
 					event.timestampISO = new Date(parseInt(event.timestamp, 10)).toUTCString();
 				});
 				next(null, eventsData);
-			}
+			},
 		], callback);
 	};
 
@@ -87,7 +91,7 @@ var utils = require('../public/src/utils');
 			},
 			userData: function (next) {
 				user.getUsersFields(uids, ['username', 'userslug', 'picture'], next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -121,7 +125,7 @@ var utils = require('../public/src/utils');
 			},
 			function (next) {
 				db.sortedSetRemove('events:time', eids, next);
-			}
+			},
 		], callback);
 	};
 
@@ -130,8 +134,6 @@ var utils = require('../public/src/utils');
 
 		batch.processSortedSet('events:time', function (eids, next) {
 			events.deleteEvents(eids, next);
-		}, {alwaysStartAt: 0}, callback);
+		}, { alwaysStartAt: 0 }, callback);
 	};
-
-
 }(module.exports));

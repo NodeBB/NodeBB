@@ -13,7 +13,6 @@ var meta = require('../src/meta');
 
 
 describe('Controllers', function () {
-
 	var tid;
 	var cid;
 	var pid;
@@ -24,18 +23,18 @@ describe('Controllers', function () {
 			category: function (next) {
 				categories.create({
 					name: 'Test Category',
-					description: 'Test category created by testing script'
+					description: 'Test category created by testing script',
 				}, next);
 			},
 			user: function (next) {
-				user.create({username: 'foo', password: 'barbar'}, next);
+				user.create({ username: 'foo', password: 'barbar', email: 'foo@test.com' }, next);
 			},
 			navigation: function (next) {
 				var navigation = require('../src/navigation/admin');
 				var data = require('../install/data/navigation.json');
 
 				navigation.save(data, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return done(err);
@@ -43,14 +42,13 @@ describe('Controllers', function () {
 			cid = results.category.cid;
 			fooUid = results.user;
 
-			topics.post({uid: results.user, title: 'test topic title', content: 'test topic content', cid: results.category.cid}, function (err, result) {
+			topics.post({ uid: results.user, title: 'test topic title', content: 'test topic content', cid: results.category.cid }, function (err, result) {
 				tid = result.topicData.tid;
 				pid = result.postData.pid;
 				done(err);
 			});
 		});
 	});
-
 
 
 	it('should load default home route', function (done) {
@@ -135,6 +133,59 @@ describe('Controllers', function () {
 			assert.equal(res.statusCode, 200);
 			assert(body);
 			done();
+		});
+	});
+
+	it('should load /register/complete', function (done) {
+		var plugins = require('../src/plugins');
+		function hookMethod(data, next) {
+			data.interstitials.push({ template: 'topic.tpl', data: {} });
+			next(null, data);
+		}
+
+		plugins.registerHook('myTestPlugin', {
+			hook: 'filter:register.interstitial',
+			method: hookMethod,
+		});
+
+		var data = {
+			username: 'interstitial',
+			password: '123456',
+			email: 'test@me.com',
+		};
+
+		var jar = request.jar();
+		request({
+			url: nconf.get('url') + '/api/config',
+			json: true,
+			jar: jar,
+		}, function (err, response, body) {
+			assert.ifError(err);
+
+			request.post(nconf.get('url') + '/register', {
+				form: data,
+				json: true,
+				jar: jar,
+				headers: {
+					'x-csrf-token': body.csrf_token,
+				},
+			}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert.equal(body.referrer, nconf.get('relative_path') + '/register/complete');
+				request(nconf.get('url') + '/api/register/complete', {
+					jar: jar,
+					json: true,
+				}, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body.sections);
+					assert(body.errors);
+					assert(body.title);
+					plugins.unregisterHook('myTestPlugin', 'filter:register.interstitial', hookMethod);
+					done();
+				});
+			});
 		});
 	});
 
@@ -444,14 +495,26 @@ describe('Controllers', function () {
 		groups.create({
 			name: 'group-details',
 			description: 'Foobar!',
-			hidden: 0
+			hidden: 0,
 		}, function (err) {
 			assert.ifError(err);
-			request(nconf.get('url') + '/groups/group-details', function (err, res, body) {
+			groups.join('group-details', fooUid, function (err) {
 				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				assert(body);
-				done();
+				topics.post({
+					uid: fooUid,
+					title: 'topic title',
+					content: 'test topic content',
+					cid: cid,
+				}, function (err) {
+					assert.ifError(err);
+					request(nconf.get('url') + '/api/groups/group-details', { json: true }, function (err, res, body) {
+						assert.ifError(err);
+						assert.equal(res.statusCode, 200);
+						assert(body);
+						assert.equal(body.posts[0].content, 'test topic content');
+						done();
+					});
+				});
 			});
 		});
 	});
@@ -470,14 +533,23 @@ describe('Controllers', function () {
 		groups.create({
 			name: 'hidden-group',
 			description: 'Foobar!',
-			hidden: 1
+			hidden: 1,
 		}, function (err) {
 			assert.ifError(err);
-			request(nconf.get('url') + '/groups/hidden-group/members', function (err, res, body) {
+			request(nconf.get('url') + '/groups/hidden-group/members', function (err, res) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				done();
 			});
+		});
+	});
+
+	it('should get recent posts', function (done) {
+		request(nconf.get('url') + '/api/recent/posts/month', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
 		});
 	});
 
@@ -515,7 +587,7 @@ describe('Controllers', function () {
 		var csrf_token;
 		var helpers = require('./helpers');
 		before(function (done) {
-			user.create({username: 'revokeme', password: 'barbar'}, function (err, _uid) {
+			user.create({ username: 'revokeme', password: 'barbar' }, function (err, _uid) {
 				assert.ifError(err);
 				uid = _uid;
 				helpers.loginUser('revokeme', 'barbar', function (err, _jar, io, _csrf_token) {
@@ -531,9 +603,9 @@ describe('Controllers', function () {
 			request.del(nconf.get('url') + '/api/user/revokeme/session', {
 				jar: jar,
 				headers: {
-					'x-csrf-token': csrf_token
-				}
-			}, function (err, res, body) {
+					'x-csrf-token': csrf_token,
+				},
+			}, function (err, res) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				done();
@@ -544,8 +616,8 @@ describe('Controllers', function () {
 			request.del(nconf.get('url') + '/api/user/doesnotexist/session/1112233', {
 				jar: jar,
 				headers: {
-					'x-csrf-token': csrf_token
-				}
+					'x-csrf-token': csrf_token,
+				},
 			}, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 403);
@@ -564,8 +636,8 @@ describe('Controllers', function () {
 					request.del(nconf.get('url') + '/api/user/revokeme/session/' + sessionObj.meta.uuid, {
 						jar: jar,
 						headers: {
-							'x-csrf-token': csrf_token
-						}
+							'x-csrf-token': csrf_token,
+						},
 					}, function (err, res, body) {
 						assert.ifError(err);
 						assert.equal(res.statusCode, 200);
@@ -592,25 +664,25 @@ describe('Controllers', function () {
 						widgets: [
 							{
 								widget: 'html',
-								data: [ {
+								data: [{
 									widget: 'html',
 									data: {
 										html: 'test',
 										title: '',
-										container: ''
-									}
-								} ]
-							}
-						]
+										container: '',
+									},
+								}],
+							},
+						],
 					};
 
 					widgets.setArea(data, next);
-				}
+				},
 			], done);
 		});
 
 		it('should return {} if there is no template or locations', function (done) {
-			request(nconf.get('url') + '/api/widgets/render', {json: true}, function (err, res, body) {
+			request(nconf.get('url') + '/api/widgets/render', { json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -621,7 +693,7 @@ describe('Controllers', function () {
 
 		it('should render templates', function (done) {
 			var url = nconf.get('url') + '/api/widgets/render?template=categories.tpl&url=&isMobile=false&locations%5B%5D=sidebar&locations%5B%5D=footer&locations%5B%5D=header';
-			request(url, {json: true}, function (err, res, body) {
+			request(url, { json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -638,7 +710,7 @@ describe('Controllers', function () {
 				title: 'topic title',
 				content: 'test topic content',
 				cid: cid,
-				tags: ['nodebb', 'bug', 'test']
+				tags: ['nodebb', 'bug', 'test'],
 			}, function (err, result) {
 				assert.ifError(err);
 				tid = result.topicData.tid;
@@ -647,7 +719,7 @@ describe('Controllers', function () {
 		});
 
 		it('should render tags page', function (done) {
-			request(nconf.get('url') + '/api/tags', {json: true}, function (err, res, body) {
+			request(nconf.get('url') + '/api/tags', { json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -657,7 +729,7 @@ describe('Controllers', function () {
 		});
 
 		it('should render tag page with no topics', function (done) {
-			request(nconf.get('url') + '/api/tags/notag', {json: true}, function (err, res, body) {
+			request(nconf.get('url') + '/api/tags/notag', { json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -668,7 +740,7 @@ describe('Controllers', function () {
 		});
 
 		it('should render tag page with 1 topic', function (done) {
-			request(nconf.get('url') + '/api/tags/nodebb', {json: true}, function (err, res, body) {
+			request(nconf.get('url') + '/api/tags/nodebb', { json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -681,7 +753,6 @@ describe('Controllers', function () {
 
 
 	describe('maintenance mode', function () {
-
 		before(function (done) {
 			meta.config.maintenanceMode = 1;
 			done();
@@ -692,7 +763,7 @@ describe('Controllers', function () {
 		});
 
 		it('should return 503 in maintenance mode', function (done) {
-			request(nconf.get('url') + '/recent', {json: true}, function (err, res, body) {
+			request(nconf.get('url') + '/recent', { json: true }, function (err, res) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 503);
 				done();
@@ -700,7 +771,7 @@ describe('Controllers', function () {
 		});
 
 		it('should return 503 in maintenance mode', function (done) {
-			request(nconf.get('url') + '/api/recent', {json: true}, function (err, res, body) {
+			request(nconf.get('url') + '/api/recent', { json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 503);
 				assert(body);
@@ -709,7 +780,7 @@ describe('Controllers', function () {
 		});
 
 		it('should return 200 in maintenance mode', function (done) {
-			request(nconf.get('url') + '/api/login', {json: true}, function (err, res, body) {
+			request(nconf.get('url') + '/api/login', { json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -748,7 +819,7 @@ describe('Controllers', function () {
 		});
 
 		it('should load /user/foo/bookmarks', function (done) {
-			request(nconf.get('url') + '/api/user/foo/bookmarks', {jar: jar}, function (err, res, body) {
+			request(nconf.get('url') + '/api/user/foo/bookmarks', { jar: jar }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -757,7 +828,7 @@ describe('Controllers', function () {
 		});
 
 		it('should load /user/foo/upvoted', function (done) {
-			request(nconf.get('url') + '/api/user/foo/upvoted', {jar: jar}, function (err, res, body) {
+			request(nconf.get('url') + '/api/user/foo/upvoted', { jar: jar }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -766,7 +837,7 @@ describe('Controllers', function () {
 		});
 
 		it('should load /user/foo/downvoted', function (done) {
-			request(nconf.get('url') + '/api/user/foo/downvoted', {jar: jar}, function (err, res, body) {
+			request(nconf.get('url') + '/api/user/foo/downvoted', { jar: jar }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -784,7 +855,7 @@ describe('Controllers', function () {
 		});
 
 		it('should load /user/foo/watched', function (done) {
-			request(nconf.get('url') + '/api/user/foo/watched', {jar: jar}, function (err, res, body) {
+			request(nconf.get('url') + '/api/user/foo/watched', { jar: jar }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -812,7 +883,7 @@ describe('Controllers', function () {
 				tid: 1,
 				from: fooUid,
 				mergeId: 'notifications:user_posted_to|' + 1,
-				topicTitle: 'topic title'
+				topicTitle: 'topic title',
 			};
 			async.waterfall([
 				function (next) {
@@ -825,7 +896,7 @@ describe('Controllers', function () {
 					setTimeout(next, 2500);
 				},
 				function (next) {
-					request(nconf.get('url') + '/api/notifications', {jar: jar, json: true}, next);
+					request(nconf.get('url') + '/api/notifications', { jar: jar, json: true }, next);
 				},
 				function (res, body, next) {
 					assert.equal(res.statusCode, 200);
@@ -837,8 +908,44 @@ describe('Controllers', function () {
 					assert.equal(notif.path, notifData.path);
 					assert.equal(notif.nid, notifData.nid);
 					next();
-				}
+				},
 			], done);
+		});
+
+		it('should 404 if user does not exist', function (done) {
+			request(nconf.get('url') + '/api/user/email/doesnotexist', function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 404);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load user by uid', function (done) {
+			request(nconf.get('url') + '/api/user/uid/' + fooUid, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load user by username', function (done) {
+			request(nconf.get('url') + '/api/user/username/foo', function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load user by email', function (done) {
+			request(nconf.get('url') + '/api/user/email/foo@test.com', function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
 		});
 	});
 
@@ -846,12 +953,12 @@ describe('Controllers', function () {
 		var socketUser = require('../src/socket.io/user');
 		var uid;
 		before(function (done) {
-			user.create({username: 'follower'}, function (err, _uid) {
+			user.create({ username: 'follower' }, function (err, _uid) {
 				assert.ifError(err);
 				uid = _uid;
-				socketUser.follow({uid: uid}, {uid: fooUid}, function (err) {
+				socketUser.follow({ uid: uid }, { uid: fooUid }, function (err) {
 					assert.ifError(err);
-					socketUser.isFollowing({uid: uid}, {uid: fooUid}, function (err, isFollowing) {
+					socketUser.isFollowing({ uid: uid }, { uid: fooUid }, function (err, isFollowing) {
 						assert.ifError(err);
 						assert(isFollowing);
 						done();
@@ -861,7 +968,7 @@ describe('Controllers', function () {
 		});
 
 		it('should get followers page', function (done) {
-			request(nconf.get('url') + '/api/user/foo/followers', {json: true}, function (err, res, body) {
+			request(nconf.get('url') + '/api/user/foo/followers', { json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert.equal(body.users[0].username, 'follower');
@@ -870,7 +977,7 @@ describe('Controllers', function () {
 		});
 
 		it('should get following page', function (done) {
-			request(nconf.get('url') + '/api/user/follower/following', {json: true}, function (err, res, body) {
+			request(nconf.get('url') + '/api/user/follower/following', { json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert.equal(body.users[0].username, 'foo');
@@ -878,10 +985,10 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should return empty after unfollow', function (done ) {
-			socketUser.unfollow({uid: uid}, {uid: fooUid}, function (err) {
+		it('should return empty after unfollow', function (done) {
+			socketUser.unfollow({ uid: uid }, { uid: fooUid }, function (err) {
 				assert.ifError(err);
-				request(nconf.get('url') + '/api/user/foo/followers', {json: true}, function (err, res, body) {
+				request(nconf.get('url') + '/api/user/foo/followers', { json: true }, function (err, res, body) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					assert.equal(body.users.length, 0);
@@ -893,7 +1000,7 @@ describe('Controllers', function () {
 
 	describe('post redirect', function () {
 		it('should 404 for invalid pid', function (done) {
-			request(nconf.get('url') + '/post/fail', function (err, res) {
+			request(nconf.get('url') + '/api/post/fail', function (err, res) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				done();

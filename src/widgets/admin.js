@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var fs = require('fs');
 var path = require('path');
@@ -16,8 +16,8 @@ admin.get = function (callback) {
 				{ name: 'Global Header', template: 'global', location: 'header' },
 				{ name: 'Global Footer', template: 'global', location: 'footer' },
 
-				{ name: 'Group Page (Left)', template: 'groups/details.tpl', location: 'left'},
-				{ name: 'Group Page (Right)', template: 'groups/details.tpl', location: 'right'}
+				{ name: 'Group Page (Left)', template: 'groups/details.tpl', location: 'left' },
+				{ name: 'Group Page (Right)', template: 'groups/details.tpl', location: 'right' },
 			];
 
 			plugins.fireHook('filter:widgets.getAreas', defaultAreas, next);
@@ -27,7 +27,7 @@ admin.get = function (callback) {
 		},
 		adminTemplate: function (next) {
 			fs.readFile(path.resolve(nconf.get('views_dir'), 'admin/partials/widget-settings.tpl'), 'utf8', next);
-		}
+		},
 	}, function (err, widgetData) {
 		if (err) {
 			return callback(err);
@@ -48,30 +48,31 @@ admin.get = function (callback) {
 				w.content += widgetData.adminTemplate;
 			});
 
-			var templates = [],
-				list = {}, index = 0;
+			var templates = [];
+			var list = {};
+			var index = 0;
 
 			widgetData.areas.forEach(function (area) {
 				if (typeof list[area.template] === 'undefined') {
 					list[area.template] = index;
 					templates.push({
 						template: area.template,
-						areas: []
+						areas: [],
 					});
 
-					index++;
+					index += 1;
 				}
 
 				templates[list[area.template]].areas.push({
 					name: area.name,
-					location: area.location
+					location: area.location,
 				});
 			});
 
 			callback(false, {
 				templates: templates,
 				areas: widgetData.areas,
-				widgets: widgetData.widgets
+				widgets: widgetData.widgets,
 			});
 		});
 	});

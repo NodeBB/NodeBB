@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function (redisClient, module) {
 	var helpers = module.helpers.redis;
@@ -11,28 +11,28 @@ module.exports = function (redisClient, module) {
 		if (!value.length) {
 			return callback();
 		}
-		redisClient.sadd(key, value, function (err, res) {
+		redisClient.sadd(key, value, function (err) {
 			callback(err);
 		});
 	};
 
 	module.setsAdd = function (keys, value, callback) {
 		callback = callback || function () {};
-		helpers.multiKeysValue(redisClient, 'sadd', keys, value, function (err, res) {
+		helpers.multiKeysValue(redisClient, 'sadd', keys, value, function (err) {
 			callback(err);
 		});
 	};
 
 	module.setRemove = function (key, value, callback) {
 		callback = callback || function () {};
-		redisClient.srem(key, value, function (err, res) {
+		redisClient.srem(key, value, function (err) {
 			callback(err);
 		});
 	};
 
 	module.setsRemove = function (keys, value, callback) {
 		callback = callback || function () {};
-		helpers.multiKeysValue(redisClient, 'srem', keys, value, function (err, res) {
+		helpers.multiKeysValue(redisClient, 'srem', keys, value, function (err) {
 			callback(err);
 		});
 	};

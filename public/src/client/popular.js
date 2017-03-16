@@ -1,6 +1,5 @@
 'use strict';
 
-/* globals define, app, socket*/
 
 define('forum/popular', ['components'], function (components) {
 	var Popular = {};

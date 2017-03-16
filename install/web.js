@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var winston = require('winston');
 var express = require('express');
@@ -17,9 +17,9 @@ winston.add(winston.transports.File, {
 	colorize: true,
 	timestamp: function () {
 		var date = new Date();
-		return date.getDate() + '/' + (date.getMonth() + 1) + ' ' + date.toTimeString().substr(0,5) + ' [' + global.process.pid + ']';
+		return date.getDate() + '/' + (date.getMonth() + 1) + ' ' + date.toTimeString().substr(0, 5) + ' [' + global.process.pid + ']';
 	},
-	level: 'verbose'
+	level: 'verbose',
 });
 
 var web = {};
@@ -27,7 +27,7 @@ var scripts = [
 	'public/vendor/xregexp/xregexp.js',
 	'public/vendor/xregexp/unicode/unicode-base.js',
 	'public/src/utils.js',
-	'public/src/installer/install.js'
+	'public/src/installer/install.js',
 ];
 
 web.install = function (port) {
@@ -39,7 +39,7 @@ web.install = function (port) {
 	app.set('view engine', 'tpl');
 	app.set('views', path.join(__dirname, '../src/views'));
 	app.use(bodyParser.urlencoded({
-		extended: true
+		extended: true,
 	}));
 
 	async.parallel([compileLess, compileJS], function () {
@@ -66,7 +66,7 @@ function welcome(req, res) {
 	var databases = dbs.map(function (el) {
 		return {
 			name: el,
-			questions: require('../src/database/' + el).questions
+			questions: require('../src/database/' + el).questions,
 		};
 	});
 
@@ -75,10 +75,10 @@ function welcome(req, res) {
 	res.render('install/index', {
 		databases: databases,
 		skipDatabaseSetup: !!nconf.get('database'),
-		error: res.locals.error ? true : false,
-		success: res.locals.success ? true : false,
+		error: !!res.locals.error,
+		success: !!res.locals.success,
 		values: req.body,
-		minimumPasswordLength: defaults.minimumPasswordLength
+		minimumPasswordLength: defaults.minimumPasswordLength,
 	});
 }
 
@@ -90,7 +90,7 @@ function install(req, res) {
 	}
 
 	var child = require('child_process').fork('app', ['--setup'], {
-		env: process.env
+		env: process.env,
 	});
 
 	child.on('close', function (data) {
@@ -110,7 +110,7 @@ function launch(req, res) {
 
 	var child = require('child_process').spawn('node', ['loader.js'], {
 		detached: true,
-		stdio: ['ignore', 'ignore', 'ignore']
+		stdio: ['ignore', 'ignore', 'ignore'],
 	});
 
 	process.stdout.write('\nStarting NodeBB\n');
@@ -120,7 +120,7 @@ function launch(req, res) {
 
 	async.parallel([
 		async.apply(fs.unlink(path.join(__dirname, '../public/installer.css'))),
-		async.apply(fs.unlink(path.join(__dirname, '../public/installer.min.js')))	
+		async.apply(fs.unlink(path.join(__dirname, '../public/installer.min.js'))),
 	], function (err) {
 		if (err) {
 			winston.warn('Unable to remove installer files');
@@ -138,7 +138,7 @@ function compileLess(callback) {
 		}
 
 		less.render(style.toString(), function (err, css) {
-			if(err) {
+			if (err) {
 				return winston.error('Unable to compile LESS: ', err);
 			}
 

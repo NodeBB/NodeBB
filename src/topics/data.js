@@ -7,7 +7,6 @@ var categories = require('../categories');
 var utils = require('../../public/src/utils');
 
 module.exports = function (Topics) {
-
 	Topics.getTopicField = function (tid, field, callback) {
 		db.getObjectField('topic:' + tid, field, callback);
 	};
@@ -40,7 +39,7 @@ module.exports = function (Topics) {
 	Topics.getTopicsData = function (tids, callback) {
 		var keys = [];
 
-		for (var i = 0; i < tids.length; ++i) {
+		for (var i = 0; i < tids.length; i += 1) {
 			keys.push('topic:' + tids[i]);
 		}
 
@@ -88,4 +87,7 @@ module.exports = function (Topics) {
 		db.deleteObjectField('topic:' + tid, field, callback);
 	};
 
+	Topics.deleteTopicFields = function (tid, fields, callback) {
+		db.deleteObjectFields('topic:' + tid, fields, callback);
+	};
 };

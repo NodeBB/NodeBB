@@ -16,7 +16,6 @@ var file = require('../file');
 var utils = require('../../public/src/utils');
 
 module.exports = function (Meta) {
-
 	Meta.css = {};
 
 	var buildImports = {
@@ -65,7 +64,7 @@ module.exports = function (Meta) {
 			var paths = [
 				baseThemePath,
 				path.join(__dirname, '../../node_modules'),
-				path.join(__dirname, '../../public/vendor/fontawesome/less')
+				path.join(__dirname, '../../public/vendor/fontawesome/less'),
 			];
 			var source = '';
 
@@ -83,7 +82,7 @@ module.exports = function (Meta) {
 				function (src, next) {
 					source += src;
 					next();
-				}
+				},
 			], function (err) {
 				if (err) {
 					return callback(err);
@@ -95,8 +94,8 @@ module.exports = function (Meta) {
 	};
 
 	function getStyleSource(files, prefix, extension, callback) {
-		var pluginDirectories = [],
-			source = '';
+		var	pluginDirectories = [];
+		var source = '';
 
 		files.forEach(function (styleFile) {
 			if (styleFile.endsWith(extension)) {
@@ -141,7 +140,7 @@ module.exports = function (Meta) {
 	function minify(source, paths, target, callback) {
 		callback = callback || function () {};
 		less.render(source, {
-			paths: paths
+			paths: paths,
 		}, function (err, lessOutput) {
 			if (err) {
 				winston.error('[meta/css] Could not minify LESS/CSS: ' + err.message);
@@ -151,7 +150,7 @@ module.exports = function (Meta) {
 			postcss(global.env === 'development' ? [autoprefixer] : [
 				autoprefixer,
 				clean({
-					processImportFrom: ['local']
+					processImportFrom: ['local'],
 				}),
 			]).process(lessOutput.css).then(function (result) {
 				result.warnings().forEach(function (warn) {

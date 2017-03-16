@@ -1,6 +1,5 @@
-"use strict";
+'use strict';
 
-/* global config, socket, define, templates, bootbox, app, ajaxify  */
 
 define('admin/manage/users', ['translator'], function (translator) {
 	var Users = {};
@@ -91,7 +90,7 @@ define('admin/manage/users', ['translator'], function (translator) {
 					buttons: {
 						close: {
 							label: '[[global:close]]',
-							className: 'btn-link'
+							className: 'btn-link',
 						},
 						submit: {
 							label: '[[admin/manage/users:alerts.button-ban-x, ' + uids.length + ']]',
@@ -100,11 +99,11 @@ define('admin/manage/users', ['translator'], function (translator) {
 									data[cur.name] = cur.value;
 									return data;
 								}, {});
-								var until = formData.length ? (Date.now() + formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1)) : 0;
+								var until = formData.length ? (Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))) : 0;
 								socket.emit('user.banUsers', { uids: uids, until: until, reason: formData.reason }, done('[[admin/manage/users:alerts.ban-success]]', '.ban', true));
-							}
-						}
-					}
+							},
+						},
+					},
 				});
 			});
 		});
@@ -266,7 +265,7 @@ define('admin/manage/users', ['translator'], function (translator) {
 						buttons: {
 							cancel: {
 								label: '[[admin/manage/users:alerts.button-cancel]]',
-								className: 'btn-link'
+								className: 'btn-link',
 							},
 							create: {
 								label: '[[admin/manage/users:alerts.button-create]]',
@@ -274,9 +273,9 @@ define('admin/manage/users', ['translator'], function (translator) {
 								callback: function () {
 									createUser.call(this);
 									return false;
-								}
-							}
-						}
+								},
+							},
+						},
 					});
 				});
 			});
@@ -298,11 +297,11 @@ define('admin/manage/users', ['translator'], function (translator) {
 			var user = {
 				username: username,
 				email: email,
-				password: password
+				password: password,
 			};
 
 			socket.emit('admin.user.createUser', user, function (err) {
-				if(err) {
+				if (err) {
 					return errorEl.translateHtml('[[admin/manage/users:alerts.error-x, ' + err.message + ']]').removeClass('hide');
 				}
 
@@ -323,12 +322,12 @@ define('admin/manage/users', ['translator'], function (translator) {
 			}
 
 			var $this = $(this);
-			var type =  $this.attr('data-search-type');
+			var type = $this.attr('data-search-type');
 
 			timeoutId = setTimeout(function () {
 				$('.fa-spinner').removeClass('hidden');
 
-				socket.emit('admin.user.search', {searchBy: type, query: $this.val()}, function (err, data) {
+				socket.emit('admin.user.search', { searchBy: type, query: $this.val() }, function (err, data) {
 					if (err) {
 						return app.alertError(err.message);
 					}
@@ -361,7 +360,6 @@ define('admin/manage/users', ['translator'], function (translator) {
 		handleUserCreate();
 
 		handleInvite();
-
 	};
 
 	function handleInvite() {

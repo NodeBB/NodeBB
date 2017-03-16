@@ -13,7 +13,7 @@ var stats = {};
 var totals = {};
 var SocketRooms = {
 	stats: stats,
-	totals: totals
+	totals: totals,
 };
 
 
@@ -22,7 +22,7 @@ pubsub.on('sync:stats:start', function () {
 		if (err) {
 			return winston.error(err);
 		}
-		pubsub.publish('sync:stats:end', {stats: stats, id: os.hostname() + ':' + nconf.get('port')});
+		pubsub.publish('sync:stats:end', { stats: stats, id: os.hostname() + ':' + nconf.get('port') });
 	});
 });
 
@@ -66,7 +66,7 @@ SocketRooms.getAll = function (socket, data, callback) {
 		recent: 0,
 		unread: 0,
 		topics: 0,
-		category: 0
+		category: 0,
 	};
 
 	for (var instance in stats) {
@@ -81,7 +81,7 @@ SocketRooms.getAll = function (socket, data, callback) {
 			totals.users.category += stats[instance].users.category;
 
 			stats[instance].topics.forEach(function (topic) {
-				totals.topics[topic.tid] = totals.topics[topic.tid] || {count: 0, tid: topic.tid};
+				totals.topics[topic.tid] = totals.topics[topic.tid] || { count: 0, tid: topic.tid };
 				totals.topics[topic.tid].count += topic.count;
 			});
 		}
@@ -89,7 +89,7 @@ SocketRooms.getAll = function (socket, data, callback) {
 
 	var topTenTopics = [];
 	Object.keys(totals.topics).forEach(function (tid) {
-		topTenTopics.push({tid: tid, count: totals.topics[tid].count});
+		topTenTopics.push({ tid: tid, count: totals.topics[tid].count });
 	});
 
 	topTenTopics = topTenTopics.sort(function (a, b) {
@@ -109,11 +109,11 @@ SocketRooms.getAll = function (socket, data, callback) {
 			topTenTopics.forEach(function (topic, index) {
 				totals.topics[topic.tid] = {
 					value: topic.count || 0,
-					title: validator.escape(String(titles[index].title))
+					title: validator.escape(String(titles[index].title)),
 				};
 			});
 			next(null, totals);
-		}
+		},
 	], callback);
 };
 
@@ -123,7 +123,7 @@ SocketRooms.getOnlineUserCount = function (io) {
 	if (io) {
 		for (var key in io.sockets.adapter.rooms) {
 			if (io.sockets.adapter.rooms.hasOwnProperty(key) && key.startsWith('uid_')) {
-				++ count;
+				count += 1;
 			}
 		}
 	}
@@ -143,9 +143,9 @@ SocketRooms.getLocalStats = function (callback) {
 			recent: 0,
 			unread: 0,
 			topics: 0,
-			category: 0
+			category: 0,
 		},
-		topics: {}
+		topics: {},
 	};
 
 	if (io) {
@@ -165,7 +165,7 @@ SocketRooms.getLocalStats = function (callback) {
 				tid = room.match(/^topic_(\d+)/);
 				if (tid) {
 					socketData.users.topics += roomClients[room].length;
-					topTenTopics.push({tid: tid[1], count: roomClients[room].length});
+					topTenTopics.push({ tid: tid[1], count: roomClients[room].length });
 				} else if (room.match(/^category/)) {
 					socketData.users.category += roomClients[room].length;
 				}

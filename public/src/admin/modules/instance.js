@@ -1,6 +1,5 @@
-"use strict";
+'use strict';
 
-/*globals define, app, socket*/
 
 define('admin/modules/instance', function () {
 	var instance = {};
@@ -11,7 +10,7 @@ define('admin/modules/instance', function () {
 			type: 'info',
 			title: 'Reloading... <i class="fa fa-spin fa-refresh"></i>',
 			message: 'NodeBB is reloading.',
-			timeout: 5000
+			timeout: 5000,
 		});
 
 		$(window).one('action:reconnected', function () {
@@ -20,7 +19,7 @@ define('admin/modules/instance', function () {
 				type: 'success',
 				title: '<i class="fa fa-check"></i> Success',
 				message: 'NodeBB has reloaded successfully.',
-				timeout: 5000
+				timeout: 5000,
 			});
 
 			if (typeof callback === 'function') {
@@ -37,7 +36,7 @@ define('admin/modules/instance', function () {
 			type: 'info',
 			title: 'Rebuilding... <i class="fa fa-spin fa-refresh"></i>',
 			message: 'NodeBB is rebuilding front-end assets (css, javascript, etc).',
-			timeout: 10000
+			timeout: 10000,
 		});
 
 		$(window).one('action:reconnected', function () {
@@ -46,7 +45,7 @@ define('admin/modules/instance', function () {
 				type: 'success',
 				title: '<i class="fa fa-check"></i> Success',
 				message: 'NodeBB has successfully restarted.',
-				timeout: 10000
+				timeout: 10000,
 			});
 
 			if (typeof callback === 'function') {
@@ -60,7 +59,7 @@ define('admin/modules/instance', function () {
 				type: 'info',
 				title: 'Build Complete!... <i class="fa fa-spin fa-refresh"></i>',
 				message: 'NodeBB is reloading.',
-				timeout: 10000
+				timeout: 10000,
 			});
 		});
 	};

@@ -1,13 +1,12 @@
-"use strict";
-/*global define, socket, app, utils, bootbox, ajaxify*/
+'use strict';
+
 
 define('admin/manage/flags', [
 	'autocomplete',
 	'Chart',
 	'components',
-	'translator'
+	'translator',
 ], function (autocomplete, Chart, components, translator) {
-
 	var	Flags = {};
 
 	Flags.init = function () {
@@ -38,7 +37,7 @@ define('admin/manage/flags', [
 			socket.emit('posts.dismissFlag', pid, function (err) {
 				done(err, btn);
 			});
- 		});
+		});
 	}
 
 	function handleDismissAll() {
@@ -63,7 +62,7 @@ define('admin/manage/flags', [
 				}
 				var pid = btn.parents('[data-pid]').attr('data-pid');
 				var tid = btn.parents('[data-pid]').attr('data-tid');
-				socket.emit('posts.delete', {pid: pid, tid: tid}, function (err) {
+				socket.emit('posts.delete', { pid: pid, tid: tid }, function (err) {
 					done(err, btn);
 				});
 			});
@@ -98,17 +97,17 @@ define('admin/manage/flags', [
 				labels: dailyLabels,
 				datasets: [
 					{
-						label: "",
-						backgroundColor: "rgba(151,187,205,0.2)",
-						borderColor: "rgba(151,187,205,1)",
-						pointBackgroundColor: "rgba(151,187,205,1)",
-						pointHoverBackgroundColor: "#fff",
-						pointBorderColor: "#fff",
-						pointHoverBorderColor: "rgba(151,187,205,1)",
-						data: ajaxify.data.analytics
-					}
-				]
-			}
+						label: '',
+						backgroundColor: 'rgba(151,187,205,0.2)',
+						borderColor: 'rgba(151,187,205,1)',
+						pointBackgroundColor: 'rgba(151,187,205,1)',
+						pointHoverBackgroundColor: '#fff',
+						pointBorderColor: '#fff',
+						pointHoverBorderColor: 'rgba(151,187,205,1)',
+						data: ajaxify.data.analytics,
+					},
+				],
+			},
 		};
 
 		dailyCanvas.width = $(dailyCanvas).parent().width();
@@ -119,21 +118,21 @@ define('admin/manage/flags', [
 				responsive: true,
 				animation: false,
 				legend: {
-					display: false
+					display: false,
 				},
 				scales: {
 					yAxes: [{
 						ticks: {
-							beginAtZero: true
-						}
-					}]
-				}
-			}
+							beginAtZero: true,
+						},
+					}],
+				},
+			},
 		});
 	}
 
 	function updateFlagDetails(source) {
-		// As the flag details are returned in the API, 
+		// As the flag details are returned in the API,
 		// update the form controls to show the correct data
 
 		// Create reference hash for use in this method
@@ -147,7 +146,7 @@ define('admin/manage/flags', [
 			el = $(el);
 
 			if (source[pid]) {
-				for(var prop in source[pid]) {
+				for (var prop in source[pid]) {
 					if (source[pid].hasOwnProperty(prop)) {
 						el.find('[name="' + prop + '"]').val(source[pid][prop]);
 					}
@@ -162,13 +161,12 @@ define('admin/manage/flags', [
 
 		socket.emit('posts.updateFlag', {
 			pid: pid,
-			data: formData
+			data: formData,
 		}, function (err) {
 			if (err) {
 				return app.alertError(err.message);
-			} else {
-				app.alertSuccess('[[topic:flag_manage_saved]]');
 			}
+			app.alertSuccess('[[topic:flag_manage_saved]]');
 		});
 	}
 

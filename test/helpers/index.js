@@ -14,7 +14,7 @@ helpers.loginUser = function (username, password, callback) {
 	request({
 		url: nconf.get('url') + '/api/config',
 		json: true,
-		jar: jar
+		jar: jar,
 	}, function (err, res, body) {
 		if (err || res.statusCode !== 200) {
 			return callback(err || new Error('[[error:invalid-response]]'));
@@ -28,33 +28,43 @@ helpers.loginUser = function (username, password, callback) {
 			json: true,
 			jar: jar,
 			headers: {
-				'x-csrf-token': body.csrf_token
-			}
+				'x-csrf-token': body.csrf_token,
+			},
 		}, function (err, res) {
 			if (err || res.statusCode !== 200) {
 				return callback(err || new Error('[[error:invalid-response]]'));
 			}
-			myXhr.callbacks.test2 = function () {
-				this.setDisableHeaderCheck(true);
-				var stdOpen = this.open;
-				this.open = function () {
-					stdOpen.apply(this, arguments);
-					this.setRequestHeader('Cookie', res.headers['set-cookie'][0].split(';')[0]);
-					this.setRequestHeader('Origin', nconf.get('url'));
-				};
-			};
-
-			var socketClient = require('socket.io-client');
-
-			var io = socketClient.connect(nconf.get('url'), {forceNew: true, multiplex: false});
-			io.on('connect', function () {
-				callback(null, jar, io, body.csrf_token);
-			});
-
-			io.on('error', function (err) {
-				callback(err);
+			helpers.connectSocketIO(res, function (err, io) {
+				callback(err, jar, io, body.csrf_token);
 			});
 		});
+	});
+};
+
+helpers.connectSocketIO = function (res, callback) {
+	myXhr.callbacks.headerCallback = function () {
+		this.setDisableHeaderCheck(true);
+		var stdOpen = this.open;
+		this.open = function () {
+			stdOpen.apply(this, arguments);
+			this.setRequestHeader('Cookie', res.headers['set-cookie'][0].split(';')[0]);
+			this.setRequestHeader('Origin', nconf.get('url'));
+		};
+	};
+
+	var socketClient = require('socket.io-client');
+
+	var io = socketClient.connect(nconf.get('base_url'), {
+		path: nconf.get('relative_path') + '/socket.io',
+		forceNew: true,
+		multiplex: false,
+	});
+	io.on('connect', function () {
+		callback(null, io);
+	});
+
+	io.on('error', function (err) {
+		callback(err);
 	});
 };
 
@@ -63,41 +73,23 @@ helpers.initSocketIO = function (callback) {
 	request.get({
 		url: nconf.get('url') + '/api/config',
 		jar: jar,
-		json: true
-	}, function (err, res, body) {
+		json: true,
+	}, function (err, res) {
 		if (err) {
 			return callback(err);
 		}
-
-		myXhr.callbacks.test2 = function () {
-			this.setDisableHeaderCheck(true);
-			var stdOpen = this.open;
-			this.open = function () {
-				stdOpen.apply(this, arguments);
-				this.setRequestHeader('Cookie', res.headers['set-cookie'][0].split(';')[0]);
-				this.setRequestHeader('Origin', nconf.get('url'));
-			};
-		};
-
-		var io = require('socket.io-client')(nconf.get('url'), {forceNew: true});
-
-		io.on('connect', function () {
-			callback(null, jar, io);
-		});
-
-		io.on('error', function (err) {
-			callback(err);
+		helpers.connectSocketIO(res, function (err, io) {
+			callback(err, jar, io);
 		});
 	});
 };
-
 
 helpers.uploadFile = function (uploadEndPoint, filePath, body, jar, csrf_token, callback) {
 	var formData = {
 		files: [
 			fs.createReadStream(filePath),
-			fs.createReadStream(filePath) // see https://github.com/request/request/issues/2445
-		]
+			fs.createReadStream(filePath), // see https://github.com/request/request/issues/2445
+		],
 	};
 	formData = utils.merge(formData, body);
 	request.post({
@@ -106,8 +98,8 @@ helpers.uploadFile = function (uploadEndPoint, filePath, body, jar, csrf_token, 
 		json: true,
 		jar: jar,
 		headers: {
-			'x-csrf-token': csrf_token
-		}
+			'x-csrf-token': csrf_token,
+		},
 	}, function (err, res, body) {
 		if (err) {
 			return callback(err);
@@ -121,7 +113,7 @@ helpers.registerUser = function (data, callback) {
 	request({
 		url: nconf.get('url') + '/api/config',
 		json: true,
-		jar: jar
+		jar: jar,
 	}, function (err, response, body) {
 		if (err) {
 			return callback(err);
@@ -132,32 +124,27 @@ helpers.registerUser = function (data, callback) {
 			json: true,
 			jar: jar,
 			headers: {
-				'x-csrf-token': body.csrf_token
-			}
-		}, function (err, res, body) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, jar);
+				'x-csrf-token': body.csrf_token,
+			},
+		}, function (err) {
+			callback(err, jar);
 		});
 	});
 };
 
-//http://stackoverflow.com/a/14387791/583363
+// http://stackoverflow.com/a/14387791/583363
 helpers.copyFile = function (source, target, callback) {
-
 	var cbCalled = false;
 
 	var rd = fs.createReadStream(source);
-	rd.on("error", function (err) {
+	rd.on('error', function (err) {
 		done(err);
 	});
 	var wr = fs.createWriteStream(target);
-	wr.on("error", function (err) {
+	wr.on('error', function (err) {
 		done(err);
 	});
-	wr.on("close", function () {
+	wr.on('close', function () {
 		done();
 	});
 	rd.pipe(wr);

@@ -1,18 +1,16 @@
 'use strict';
 
-/* globals define, app, socket, templates */
 
 define('forum/topic/flag', [], function () {
-
-	var Flag = {},
-		flagModal,
-		flagCommit;
+	var Flag = {};
+	var flagModal;
+	var flagCommit;
 
 	Flag.showFlagModal = function (pid, username, userslug) {
 		parseModal({
 			pid: pid,
 			username: username,
-			userslug: userslug
+			userslug: userslug,
 		}, function (html) {
 			flagModal = $(html);
 
@@ -48,7 +46,7 @@ define('forum/topic/flag', [], function () {
 		if (!pid || !reason) {
 			return;
 		}
-		socket.emit('posts.flag', {pid: pid, reason: reason}, function (err) {
+		socket.emit('posts.flag', { pid: pid, reason: reason }, function (err) {
 			if (err) {
 				return app.alertError(err.message);
 			}

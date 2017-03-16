@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var rewardsAdmin = require('../../rewards/admin');
 var SocketRewards = module.exports;

@@ -1,24 +1,24 @@
-"use strict";
-/* global define, app, socket, bootbox, templates, config */
+'use strict';
+
 
 define('admin/appearance/themes', ['translator'], function (translator) {
 	var Themes = {};
 
 	Themes.init = function () {
 		$('#installed_themes').on('click', function (e) {
-			var target = $(e.target),
-				action = target.attr('data-action');
+			var target = $(e.target);
+			var action = target.attr('data-action');
 
 			if (action && action === 'use') {
-				var parentEl = target.parents('[data-theme]'),
-					themeType = parentEl.attr('data-type'),
-					cssSrc = parentEl.attr('data-css'),
-					themeId = parentEl.attr('data-theme');
+				var parentEl = target.parents('[data-theme]');
+				var themeType = parentEl.attr('data-type');
+				var cssSrc = parentEl.attr('data-css');
+				var themeId = parentEl.attr('data-theme');
 
 				socket.emit('admin.themes.set', {
 					type: themeType,
 					id: themeId,
-					src: cssSrc
+					src: cssSrc,
 				}, function (err) {
 					if (err) {
 						return app.alertError(err.message);
@@ -34,18 +34,18 @@ define('admin/appearance/themes', ['translator'], function (translator) {
 						timeout: 5000,
 						clickfn: function () {
 							socket.emit('admin.restart');
-						}
+						},
 					});
 				});
 			}
 		});
-		
+
 		$('#revert_theme').on('click', function () {
 			bootbox.confirm('[[admin/appearance/themes:revert-confirm]]', function (confirm) {
 				if (confirm) {
 					socket.emit('admin.themes.set', {
 						type: 'local',
-						id: 'nodebb-theme-persona'
+						id: 'nodebb-theme-persona',
 					}, function (err) {
 						if (err) {
 							return app.alertError(err.message);
@@ -56,7 +56,7 @@ define('admin/appearance/themes', ['translator'], function (translator) {
 							type: 'success',
 							title: '[[admin/appearance/themes:theme-changed]]',
 							message: '[[admin/appearance/themes:revert-success]]',
-							timeout: 3500
+							timeout: 3500,
 						});
 					});
 				}
@@ -64,7 +64,7 @@ define('admin/appearance/themes', ['translator'], function (translator) {
 		});
 
 		socket.emit('admin.themes.getInstalled', function (err, themes) {
-			if(err) {
+			if (err) {
 				return app.alertError(err.message);
 			}
 
@@ -72,10 +72,9 @@ define('admin/appearance/themes', ['translator'], function (translator) {
 
 			if (!themes.length) {
 				instListEl.append($('<li/ >').addClass('no-themes').translateHtml('[[admin/appearance/themes:no-themes]]'));
-				return;
 			} else {
 				templates.parse('admin/partials/theme_list', {
-					themes: themes
+					themes: themes,
 				}, function (html) {
 					translator.translate(html, function (html) {
 						instListEl.html(html);

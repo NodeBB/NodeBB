@@ -17,8 +17,8 @@ helpers.notAllowed = function (req, res, error) {
 	plugins.fireHook('filter:helpers.notAllowed', {
 		req: req,
 		res: res,
-		error: error
-	}, function (err, data) {
+		error: error,
+	}, function (err) {
 		if (err) {
 			return winston.error(err);
 		}
@@ -28,24 +28,22 @@ helpers.notAllowed = function (req, res, error) {
 					path: req.path.replace(/^\/api/, ''),
 					loggedIn: !!req.uid,
 					error: error,
-					title: '[[global:403.title]]'
+					title: '[[global:403.title]]',
 				});
 			} else {
 				res.status(403).render('403', {
 					path: req.path,
 					loggedIn: !!req.uid,
 					error: error,
-					title: '[[global:403.title]]'
+					title: '[[global:403.title]]',
 				});
 			}
+		} else if (res.locals.isAPI) {
+			req.session.returnTo = nconf.get('relative_path') + req.url.replace(/^\/api/, '');
+			res.status(401).json('not-authorized');
 		} else {
-			if (res.locals.isAPI) {
-				req.session.returnTo = nconf.get('relative_path') + req.url.replace(/^\/api/, '');
-				res.status(401).json('not-authorized');
-			} else {
-				req.session.returnTo = nconf.get('relative_path') + req.url;
-				res.redirect(nconf.get('relative_path') + '/login');
-			}
+			req.session.returnTo = nconf.get('relative_path') + req.url;
+			res.redirect(nconf.get('relative_path') + '/login');
 		}
 	});
 };
@@ -72,7 +70,7 @@ helpers.buildCategoryBreadcrumbs = function (cid, callback) {
 			if (!parseInt(data.disabled, 10)) {
 				breadcrumbs.unshift({
 					text: validator.escape(String(data.name)),
-					url: nconf.get('relative_path') + '/category/' + data.slug
+					url: nconf.get('relative_path') + '/category/' + data.slug,
 				});
 			}
 
@@ -87,13 +85,13 @@ helpers.buildCategoryBreadcrumbs = function (cid, callback) {
 		if (!meta.config.homePageRoute && meta.config.homePageCustom) {
 			breadcrumbs.unshift({
 				text: '[[global:header.categories]]',
-				url: nconf.get('relative_path') + '/categories'
+				url: nconf.get('relative_path') + '/categories',
 			});
 		}
 
 		breadcrumbs.unshift({
 			text: '[[global:home]]',
-			url: nconf.get('relative_path') + '/'
+			url: nconf.get('relative_path') + '/',
 		});
 
 		callback(null, breadcrumbs);
@@ -104,8 +102,8 @@ helpers.buildBreadcrumbs = function (crumbs) {
 	var breadcrumbs = [
 		{
 			text: '[[global:home]]',
-			url: nconf.get('relative_path') + '/'
-		}
+			url: nconf.get('relative_path') + '/',
+		},
 	];
 
 	crumbs.forEach(function (crumb) {
@@ -164,8 +162,8 @@ helpers.getWatchedCategories = function (uid, selectedCid, callback) {
 				recursive(category, categoriesData, '');
 			});
 
-			next(null, {categories: categoriesData, selectedCategory: selectedCategory});
-		}
+			next(null, { categories: categoriesData, selectedCategory: selectedCategory });
+		},
 	], callback);
 };
 

@@ -10,15 +10,14 @@ var notifications = require('../notifications');
 var plugins = require('../plugins');
 
 module.exports = function (Posts) {
-
 	Posts.delete = function (pid, uid, callback) {
 		var postData;
 		async.waterfall([
 			function (next) {
-				plugins.fireHook('filter:post.delete', {pid: pid, uid: uid}, next);
+				plugins.fireHook('filter:post.delete', { pid: pid, uid: uid }, next);
 			},
 			function (data, next) {
-				Posts.setPostFields(pid, {deleted: 1, deleterUid: uid}, next);
+				Posts.setPostFields(pid, { deleted: 1, deleterUid: uid }, next);
 			},
 			function (next) {
 				Posts.getPostFields(pid, ['pid', 'tid', 'uid', 'timestamp'], next);
@@ -37,13 +36,13 @@ module.exports = function (Posts) {
 					},
 					function (next) {
 						topics.updateTeaser(postData.tid, next);
-					}
+					},
 				], next);
 			},
 			function (results, next) {
 				plugins.fireHook('action:post.delete', pid);
 				next(null, postData);
-			}
+			},
 		], callback);
 	};
 
@@ -51,10 +50,10 @@ module.exports = function (Posts) {
 		var postData;
 		async.waterfall([
 			function (next) {
-				plugins.fireHook('filter:post.restore', {pid: pid, uid: uid}, next);
+				plugins.fireHook('filter:post.restore', { pid: pid, uid: uid }, next);
 			},
 			function (data, next) {
-				Posts.setPostFields(pid, {deleted: 0, deleterUid: 0}, next);
+				Posts.setPostFields(pid, { deleted: 0, deleterUid: 0 }, next);
 			},
 			function (next) {
 				Posts.getPostFields(pid, ['pid', 'tid', 'uid', 'content', 'timestamp'], next);
@@ -74,13 +73,13 @@ module.exports = function (Posts) {
 					},
 					function (next) {
 						topics.updateTeaser(postData.tid, next);
-					}
+					},
 				], next);
 			},
 			function (results, next) {
 				plugins.fireHook('action:post.restore', _.clone(postData));
 				next(null, postData);
-			}
+			},
 		], callback);
 	};
 
@@ -109,7 +108,7 @@ module.exports = function (Posts) {
 				} else {
 					next();
 				}
-			}
+			},
 		], callback);
 	}
 
@@ -122,7 +121,7 @@ module.exports = function (Posts) {
 				if (!exists) {
 					return callback();
 				}
-				plugins.fireHook('filter:post.purge', {pid: pid, uid: uid}, next);
+				plugins.fireHook('filter:post.purge', { pid: pid, uid: uid }, next);
 			},
 			function (data, next) {
 				async.parallel([
@@ -146,7 +145,7 @@ module.exports = function (Posts) {
 					},
 					function (next) {
 						Posts.dismissFlag(pid, next);
-					}
+					},
 				], function (err) {
 					if (err) {
 						return next(err);
@@ -154,7 +153,7 @@ module.exports = function (Posts) {
 					plugins.fireHook('action:post.purge', pid);
 					db.delete('post:' + pid, next);
 				});
-			}
+			},
 		], callback);
 	};
 
@@ -169,7 +168,7 @@ module.exports = function (Posts) {
 				db.sortedSetsRemove([
 					'tid:' + postData.tid + ':posts',
 					'tid:' + postData.tid + ':posts:votes',
-					'uid:' + postData.uid + ':posts'
+					'uid:' + postData.uid + ':posts',
 				], pid, next);
 			},
 			function (next) {
@@ -203,9 +202,9 @@ module.exports = function (Posts) {
 					},
 					function (next) {
 						notifications.rescind('new_post:tid:' + postData.tid + ':pid:' + pid + ':uid:' + postData.uid, next);
-					}
+					},
 				], next);
-			}
+			},
 		], function (err) {
 			callback(err);
 		});
@@ -252,7 +251,7 @@ module.exports = function (Posts) {
 			},
 			downvoters: function (next) {
 				db.getSetMembers('pid:' + pid + ':downvote', next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -275,7 +274,7 @@ module.exports = function (Posts) {
 				},
 				function (next) {
 					db.deleteAll(['pid:' + pid + ':upvote', 'pid:' + pid + ':downvote'], next);
-				}
+				},
 			], callback);
 		});
 	}
@@ -290,10 +289,8 @@ module.exports = function (Posts) {
 			}
 			async.parallel([
 				async.apply(db.sortedSetRemove, 'pid:' + toPid + ':replies', pid),
-				async.apply(db.decrObjectField, 'post:' + toPid, 'replies')
+				async.apply(db.decrObjectField, 'post:' + toPid, 'replies'),
 			], callback);
 		});
 	}
-
-
 };
