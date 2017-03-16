@@ -188,7 +188,7 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 
 	function handleImageUpload(modal) {
 		function onUploadComplete(urlOnServer) {
-			urlOnServer = urlOnServer + '?' + Date.now();
+			urlOnServer = config.relative_path + urlOnServer + '?' + Date.now();
 
 			updateHeader(urlOnServer);
 

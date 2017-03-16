@@ -223,7 +223,7 @@ module.exports = function (User) {
 			},
 			function (upload, next) {
 				next(null, {
-					url: nconf.get('relative_path') + upload.url,
+					url: upload.url,
 					path: upload.path,
 					name: image.name,
 				});
