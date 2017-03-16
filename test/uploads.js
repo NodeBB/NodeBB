@@ -71,7 +71,7 @@ describe('Upload Controllers', function () {
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
 				assert.equal(body.length, 1);
-				assert.equal(body[0].url, nconf.get('relative_path') + '/assets/uploads/profile/' + regularUid + '-profileavatar.png');
+				assert.equal(body[0].url, '/assets/uploads/profile/' + regularUid + '-profileavatar.png');
 				done();
 			});
 		});

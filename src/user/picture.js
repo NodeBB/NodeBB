@@ -2,7 +2,6 @@
 
 var async = require('async');
 var fs = require('fs');
-var nconf = require('nconf');
 var winston = require('winston');
 var request = require('request');
 var mime = require('mime');
