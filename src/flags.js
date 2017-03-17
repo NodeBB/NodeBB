@@ -439,6 +439,27 @@ Flags.update = function (flagId, uid, changeset, callback) {
 	var fields = ['state', 'assignee'];
 	var tasks = [];
 	var now = changeset.datetime || Date.now();
+	var notifyAssignee = function (assigneeId, next) {
+		if (assigneeId === '') {
+			// Do nothing
+			return next();
+		}
+		// Notify assignee of this update
+		notifications.create({
+			type: 'my-flags',
+			bodyShort: '[[notifications:flag_assigned_to_you, ' + flagId + ']]',
+			bodyLong: '',
+			path: '/flags/' + flagId,
+			nid: 'flags:assign:' + flagId + ':uid:' + assigneeId,
+			from: uid,
+		}, function (err, notification) {
+			if (err) {
+				return next(err);
+			}
+
+			notifications.push(notification, [assigneeId], next);
+		});
+	};
 
 	async.waterfall([
 		async.apply(db.getObjectFields.bind(db), 'flag:' + flagId, fields),
@@ -457,6 +478,7 @@ Flags.update = function (flagId, uid, changeset, callback) {
 
 						case 'assignee':
 							tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byAssignee:' + changeset[prop], now, flagId));
+							tasks.push(async.apply(notifyAssignee, changeset[prop]));
 							break;
 						}
 					}
