@@ -105,7 +105,7 @@ module.exports = function (Topics) {
 						Topics.addParentPosts(postData, next);
 					},
 					replies: function (next) {
-						+getPostReplies(pids, uid, next);
+						getPostReplies(pids, uid, next);
 					},
 				}, next);
 			},
@@ -393,8 +393,12 @@ module.exports = function (Topics) {
 	function getPostReplies(pids, callerUid, callback) {
 		async.map(pids, function (pid, next) {
 			db.getSortedSetRange('pid:' + pid + ':replies', 0, -1, function (err, replyPids) {
-				var uids = [], 
-count = 0;
+				if (err) {
+					return next(err);
+				}
+
+				var uids = [];
+				var count = 0;
 
 				async.until(function () {
 					return count === replyPids.length || uids.length === 6;
@@ -404,15 +408,19 @@ count = 0;
 						if (uids.indexOf(uid) === -1) {
 							uids.push(uid);
 						}
-						count++;
+						count += 1;
 						next(err);
 					});
 				}, function (err) {
+					if (err) {
+						return next(err);
+					}
+
 					async.parallel({
-						'users': function (next) {
+						users: function (next) {
 							user.getUsersWithFields(uids, ['uid', 'username', 'userslug', 'picture'], callerUid, next);
 						},
-						'timestampISO': function (next) {
+						timestampISO: function (next) {
 							posts.getPostField(replyPids[0], 'timestamp', function (err, timestamp) {
 								next(err, utils.toISOString(timestamp));
 							});
