@@ -7,8 +7,8 @@ var db = require('../../database');
 var async = require('async');
 
 module.exports = {
-	name: 'User_friendly_upgrade_script_name',
-	timestamp: Date.UTC(2017, 0, 1),
+	name: 'Upgrading config urls to use assets route',
+	timestamp: Date.UTC(2017, 1, 28),
 	method: function (callback) {
 		async.waterfall([
 			function (cb) {
