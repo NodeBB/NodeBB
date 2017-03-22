@@ -153,16 +153,15 @@ Upgrade.process = function (files, skipCount, callback) {
 	async.waterfall([
 		async.apply(db.get, 'schemaDate'),
 		function (schemaDate, next) {
-			var schemaTime = new Date(schemaDate);
-
 			async.eachSeries(files, function (file, next) {
 				var scriptExport = require(file);
 				var date = new Date(scriptExport.timestamp);
+				var version = path.dirname(file).split('/').pop();
 
 				process.stdout.write('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '... ');
 
 				// For backwards compatibility, cross-reference with schemaDate (if found). If a script's date is older, skip it
-				if (scriptExport.timestamp <= schemaTime) {
+				if (scriptExport.timestamp <= schemaDate && semver.lt(version, '1.5.0')) {
 					process.stdout.write('skipped\n'.grey);
 					db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
 					return next();
