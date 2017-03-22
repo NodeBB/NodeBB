@@ -14,7 +14,13 @@
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input type="checkbox" class="mdl-switch__input" data-field="downvote:disabled">
-					<span class="mdl-switch__label"><strong>[[admin/settings/reputation:disable-down-voting]]</trong></strong>
+					<span class="mdl-switch__label"><strong>[[admin/settings/reputation:disable-down-voting]]</strong></span>
+				</label>
+			</div>
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input type="checkbox" class="mdl-switch__input" data-field="votesArePublic">
+					<span class="mdl-switch__label"><strong>[[admin/settings/reputation:votes-are-public]]</strong></span>
 				</label>
 			</div>
 		</form>

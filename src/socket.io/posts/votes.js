@@ -6,6 +6,7 @@ var db = require('../../database');
 var user = require('../../user');
 var posts = require('../../posts');
 var privileges = require('../../privileges');
+var meta = require('../../meta');
 var helpers = require('./helpers');
 
 module.exports = function (SocketPosts) {
@@ -16,6 +17,9 @@ module.exports = function (SocketPosts) {
 
 		async.waterfall([
 			function (next) {
+				if (parseInt(meta.config.votesArePublic, 10) !== 0) {
+					return next(null, true);
+				}
 				privileges.categories.isAdminOrMod(data.cid, socket.uid, next);
 			},
 			function (isAdminOrMod, next) {
