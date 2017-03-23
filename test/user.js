@@ -925,8 +925,10 @@ describe('User', function () {
 					socketUser.setModerationNote({ uid: adminUid }, { uid: testUid, note: 'this is a test user' }, function (err) {
 						assert.ifError(err);
 						db.getSortedSetRevRange('uid:' + testUid + ':moderation:notes', 0, 0, function (err, notes) {
-							notes = JSON.parse(notes);
 							assert.ifError(err);
+							notes = notes.map(function (noteData) {
+								return JSON.parse(noteData);
+							});
 							assert.equal(notes[0].note, 'this is a test user');
 							assert.equal(notes[0].uid, adminUid);
 							assert(notes[0].timestamp);
