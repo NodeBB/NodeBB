@@ -7,6 +7,7 @@ var validator = require('validator');
 var db = require('../database');
 var posts = require('../posts');
 var topics = require('../topics');
+var utils = require('../../public/src/utils');
 
 module.exports = function (User) {
 	User.getLatestBanInfo = function (uid, callback) {
@@ -74,7 +75,7 @@ module.exports = function (User) {
 			}
 			callback(null, data.map(function (set) {
 				set.timestamp = set.score;
-				set.timestampISO = new Date(set.score).toISOString();
+				set.timestampISO = utils.toISOString(set.score);
 				set.value = validator.escape(String(set.value.split(':')[0]));
 				delete set.score;
 				return set;
@@ -138,4 +139,36 @@ module.exports = function (User) {
 			return banObj;
 		});
 	}
+
+	User.getModerationNotes = function (uid, start, stop, callback) {
+		var noteData;
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRevRange('uid:' + uid + ':moderation:notes', start, stop, next);
+			},
+			function (notes, next) {
+				var uids = [];
+				noteData = notes.map(function (note) {
+					try {
+						var data = JSON.parse(note);
+						uids.push(data.uid);
+						data.timestampISO = utils.toISOString(data.timestamp);
+						return data;
+					} catch (err) {
+						return next(err);
+					}
+				});
+
+				User.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
+			},
+			function (userData, next) {
+				noteData.forEach(function (note, index) {
+					if (note) {
+						note.user = userData[index];
+					}
+				});
+				next(null, noteData);
+			},
+		], callback);
+	};
 };

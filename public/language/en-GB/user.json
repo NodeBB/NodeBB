@@ -149,5 +149,6 @@
 	"info.username-history": "Username History",
 	"info.email-history": "Email History",
 	"info.moderation-note": "Moderation Note",
-	"info.moderation-note.success": "Moderation note saved"
+	"info.moderation-note.success": "Moderation note saved",
+	"info.moderation-note.add": "Add note"
 }
