@@ -453,7 +453,7 @@ Flags.update = function (flagId, uid, changeset, callback) {
 			nid: 'flags:assign:' + flagId + ':uid:' + assigneeId,
 			from: uid,
 		}, function (err, notification) {
-			if (err) {
+			if (err || !notification) {
 				return next(err);
 			}
 
