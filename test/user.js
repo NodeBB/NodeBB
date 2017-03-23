@@ -928,6 +928,7 @@ describe('User', function () {
 							notes = JSON.parse(notes);
 							assert.ifError(err);
 							assert.equal(notes[0].note, 'this is a test user');
+							assert.equal(notes[0].uid, adminUid);
 							assert(notes[0].timestamp);
 							done();
 						});
