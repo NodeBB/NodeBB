@@ -104,7 +104,7 @@ define('forum/topic/images', [
 			if (src === 'about:blank') {
 				return;
 			}
-			
+
 			if (utils.isRelativeUrl(src) && suffixRegex.test(src)) {
 				src = src.replace(suffixRegex, '$1');
 			}
@@ -114,8 +114,8 @@ define('forum/topic/images', [
 
 			if (!$this.parent().is('a')) {
 				$this.wrap('<a href="' + src + '" '
-					   + (!srcExt && altExt ? ' download="' + altFilename + '" ' : '') 
-					   + ' target="_blank" >');
+					+ (!srcExt && altExt ? ' download="' + altFilename + '" ' : '')
+					+ ' target="_blank" >');
 			}
 		});
 	};
