@@ -70,6 +70,38 @@ describe('User', function () {
 		});
 	});
 
+	describe('.uniqueUsername()', function () {
+		it('should deal with collisions', function (done) {
+			var users = [];
+			for (var i = 0; i < 10; i += 1) {
+				users.push({
+					username: 'Jane Doe',
+					password: 'abcdefghi',
+					email: 'jane.doe' + i + '@example.com',
+				});
+			}
+
+			async.series([
+				function (next) {
+					async.eachSeries(users, function (user, next) {
+						User.create(user, next);
+					}, next);
+				},
+				function (next) {
+					User.uniqueUsername({
+						username: 'Jane Doe',
+						userslug: 'jane-doe',
+					}, function (err, username) {
+						assert.ifError(err);
+
+						assert.strictEqual(username, 'Jane Doe 9');
+						done();
+					});
+				},
+			], done);
+		});
+	});
+
 	describe('.isModerator()', function () {
 		it('should return false', function (done) {
 			User.isModerator(testUid, testCid, function (err, isModerator) {
