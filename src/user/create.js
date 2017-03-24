@@ -46,7 +46,7 @@ module.exports = function (User) {
 
 			async.parallel({
 				renamedUsername: function (next) {
-					renameUsername(userData, next);
+					User.uniqueUsername(userData, next);
 				},
 				userData: function (next) {
 					plugins.fireHook('filter:user.create', { user: userData, data: data }, next);
@@ -200,28 +200,28 @@ module.exports = function (User) {
 		callback();
 	};
 
-	function renameUsername(userData, callback) {
+	User.uniqueUsername = function (userData, callback) {
 		meta.userOrGroupExists(userData.userslug, function (err, exists) {
 			if (err || !exists) {
 				return callback(err);
 			}
 
-			var	newUsername = '';
-			async.forever(function (next) {
-				newUsername = userData.username + (Math.floor(Math.random() * 255) + 1);
-				User.existsBySlug(newUsername, function (err, exists) {
-					if (err) {
-						return callback(err);
+			var num = 0;
+
+			function go() {
+				var username = userData.username + ' ' + num.toString(32);
+				var userslug = utils.slugify(username);
+				meta.userOrGroupExists(userslug, function (err, exists) {
+					if (err || !exists) {
+						return callback(err, username);
 					}
-					if (!exists) {
-						next(newUsername);
-					} else {
-						next();
-					}
+
+					num += 1;
+					go();
 				});
-			}, function (username) {
-				callback(null, username);
-			});
+			}
+
+			go();
 		});
-	}
+	};
 };
