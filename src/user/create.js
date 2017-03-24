@@ -210,8 +210,7 @@ module.exports = function (User) {
 
 			function go() {
 				var username = userData.username + ' ' + num.toString(32);
-				var userslug = utils.slugify(username);
-				meta.userOrGroupExists(userslug, function (err, exists) {
+				meta.userOrGroupExists(username, function (err, exists) {
 					if (err || !exists) {
 						return callback(err, username);
 					}
