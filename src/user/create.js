@@ -46,7 +46,7 @@ module.exports = function (User) {
 
 			async.parallel({
 				renamedUsername: function (next) {
-					User.renameUsername(userData, next);
+					User.uniqueUsername(userData, next);
 				},
 				userData: function (next) {
 					plugins.fireHook('filter:user.create', { user: userData, data: data }, next);
@@ -200,7 +200,7 @@ module.exports = function (User) {
 		callback();
 	};
 
-	User.renameUsername = function (userData, callback) {
+	User.uniqueUsername = function (userData, callback) {
 		meta.userOrGroupExists(userData.userslug, function (err, exists) {
 			if (err || !exists) {
 				return callback(err);

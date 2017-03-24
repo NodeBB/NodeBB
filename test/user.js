@@ -70,7 +70,7 @@ describe('User', function () {
 		});
 	});
 
-	describe('.renameUsername()', function () {
+	describe('.uniqueUsername()', function () {
 		it('should deal with collisions', function (done) {
 			var users = [];
 			for (var i = 0; i < 10; i += 1) {
@@ -88,7 +88,7 @@ describe('User', function () {
 					}, next);
 				},
 				function (next) {
-					User.renameUsername({
+					User.uniqueUsername({
 						username: 'Jane Doe',
 						userslug: 'jane-doe',
 					}, function (err, username) {
