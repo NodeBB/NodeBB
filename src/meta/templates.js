@@ -109,6 +109,34 @@ function compile(callback) {
 	var baseTemplatesPaths = themeConfig.baseTheme ? getBaseTemplates(themeConfig.baseTheme) : [nconf.get('base_templates_path')];
 	var viewsPath = nconf.get('views_dir');
 
+	function processImports(paths, relativePath, source, callback) {
+		var regex = /<!-- IMPORT (.+?) -->/;
+
+		var matches = source.match(regex);
+
+		if (!matches) {
+			return callback(null, source);
+		}
+
+		var partial = '/' + matches[1];
+		if (paths[partial] && relativePath !== partial) {
+			fs.readFile(paths[partial], function (err, file) {
+				if (err) {
+					return callback(err);
+				}
+
+				var partialSource = file.toString();
+				source = source.replace(regex, partialSource);
+
+				processImports(paths, relativePath, source, callback);
+			});
+		} else {
+			winston.warn('[meta/templates] Partial not loaded: ' + matches[1]);
+			source = source.replace(regex, '');
+
+			processImports(paths, relativePath, source, callback);
+		}
+	}
 
 	preparePaths(baseTemplatesPaths, function (err, paths) {
 		if (err) {
@@ -116,24 +144,23 @@ function compile(callback) {
 		}
 
 		async.each(Object.keys(paths), function (relativePath, next) {
-			var file = fs.readFileSync(paths[relativePath]).toString();
-			var regex = /[ \t]*<!-- IMPORT ([\s\S]*?)? -->[ \t]*/;
-			var matches = file.match(regex);
-
-			while (matches !== null) {
-				var partial = '/' + matches[1];
-
-				if (paths[partial] && relativePath !== partial) {
-					file = file.replace(regex, fs.readFileSync(paths[partial]).toString());
-				} else {
-					winston.warn('[meta/templates] Partial not loaded: ' + matches[1]);
-					file = file.replace(regex, '');
-				}
-				matches = file.match(regex);
-			}
-
-			mkdirp.sync(path.join(viewsPath, relativePath.split('/').slice(0, -1).join('/')));
-			fs.writeFile(path.join(viewsPath, relativePath), file, next);
+			async.waterfall([
+				function (next) {
+					fs.readFile(paths[relativePath], next);
+				},
+				function (file, next) {
+					var source = file.toString();
+					processImports(paths, relativePath, source, next);
+				},
+				function (compiled, next) {
+					mkdirp(path.join(viewsPath, path.dirname(relativePath)), function (err) {
+						next(err, compiled);
+					});
+				},
+				function (compiled, next) {
+					fs.writeFile(path.join(viewsPath, relativePath), compiled, next);
+				},
+			], next);
 		}, function (err) {
 			if (err) {
 				winston.error('[meta/templates] ' + err.stack);
