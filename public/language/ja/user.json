@@ -130,5 +130,6 @@
     "info.username-history": "ユーザー名の履歴",
     "info.email-history": "Eメール履歴",
     "info.moderation-note": "モデレーションノート",
-    "info.moderation-note.success": "モデレーションは保存されませんでした"
+    "info.moderation-note.success": "モデレーションは保存されませんでした",
+    "info.moderation-note.add": "Add note"
 }

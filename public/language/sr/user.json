@@ -130,5 +130,6 @@
     "info.username-history": "Историја корисничког имена",
     "info.email-history": "Историја е-поште",
     "info.moderation-note": "Белешка модерације",
-    "info.moderation-note.success": "Сачувана белешка модерације"
+    "info.moderation-note.success": "Сачувана белешка модерације",
+    "info.moderation-note.add": "Add note"
 }

@@ -27,6 +27,7 @@
     "details.disableJoinRequests": "Искључи захтеве за придруживање",
     "details.grant": "Одобри/Поништи власништво",
     "details.kick": "Избаци",
+    "details.kick_confirm": "Are you sure you want to remove this member from the group?",
     "details.owner_options": "Администрација групе",
     "details.group_name": "Име групе",
     "details.member_count": "Број чланова",

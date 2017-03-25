@@ -27,6 +27,7 @@
     "details.disableJoinRequests": "Vypnúť požiadavky o prijatie",
     "details.grant": "Povoliť/Zamietnuť vlastníctvo",
     "details.kick": "Vykopnúť",
+    "details.kick_confirm": "Are you sure you want to remove this member from the group?",
     "details.owner_options": "Správca skupiny",
     "details.group_name": "Názov skupiny",
     "details.member_count": "Počet členov",

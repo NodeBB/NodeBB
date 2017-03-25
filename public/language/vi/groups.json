@@ -27,6 +27,7 @@
     "details.disableJoinRequests": "Vô hiệu hóa yêu cầu tham gia",
     "details.grant": "Cấp/Huỷ quyền trưởng nhóm",
     "details.kick": "Đá ra",
+    "details.kick_confirm": "Are you sure you want to remove this member from the group?",
     "details.owner_options": "Quản trị nhóm",
     "details.group_name": "Tên nhóm",
     "details.member_count": "Số thành viên",

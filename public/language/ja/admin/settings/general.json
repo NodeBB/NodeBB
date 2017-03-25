@@ -27,5 +27,6 @@
 	"touch-icon.help": "推奨サイズとフォーマット：192x192、PNG形式のみ。タッチアイコンが指定されていない場合、NodeBBはファビコンを使用します。",
 	"outgoing-links": "外部サイトへのリンク",
 	"outgoing-links.warning-page": "送信リンクの警告ページを使用",
-	"search-default-sort-by": "デフォルトのソートを検索"
+	"search-default-sort-by": "デフォルトのソートを検索",
+	"outgoing-links.whitelist": "Domains to whitelist for bypassing the warning page"
 }

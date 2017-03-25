@@ -130,5 +130,6 @@
     "info.username-history": "Lịch sử tên người d",
     "info.email-history": "Lịch sử email",
     "info.moderation-note": "Ghi chú quản lí",
-    "info.moderation-note.success": "Đã lưu ghi chú quản l"
+    "info.moderation-note.success": "Đã lưu ghi chú quản l",
+    "info.moderation-note.add": "Add note"
 }

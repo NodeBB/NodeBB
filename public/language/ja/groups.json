@@ -27,6 +27,7 @@
     "details.disableJoinRequests": "参加申請を無効にする",
     "details.grant": "寄贈/取り消す管理権限",
     "details.kick": "キック",
+    "details.kick_confirm": "Are you sure you want to remove this member from the group?",
     "details.owner_options": "グループの管理",
     "details.group_name": "グループ名",
     "details.member_count": "メンバー数",

@@ -27,5 +27,6 @@
 	"touch-icon.help": "Рекомендовані розмір та формат: 192x192, PNG. Якщо сенсорна іконка не задана, буде використано фавіконку NodeBB.",
 	"outgoing-links": "Зовнішні посилання",
 	"outgoing-links.warning-page": "Використовувати сторінку попередження про зовнішній перехід",
-	"search-default-sort-by": "Типовий порядок результатів пошуку"
+	"search-default-sort-by": "Типовий порядок результатів пошуку",
+	"outgoing-links.whitelist": "Domains to whitelist for bypassing the warning page"
 }
