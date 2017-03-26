@@ -4,7 +4,7 @@
 	"none-installed": "ウィジェットがありません!必須のウィジェットプラグインを<a href=\"%1\">プラグイン</a>のコントロールパネルで有効にしてください。",
 	"containers.available": "利用可能なコンテナ",
 	"containers.explanation": "アクティブなウィジェットの上にドラッグアンドドロップしてください",
-	"containers.none": "無い",
+	"containers.none": "なし",
 	"container.well": "十分",
 	"container.jumbotron": "ジャンボトロン",
 	"container.panel": "パネル",

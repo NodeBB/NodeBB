@@ -28,5 +28,5 @@
 	"outgoing-links": "Изходящи връзки",
 	"outgoing-links.warning-page": "Показване на предупредителна страница при щракване върху външни връзки",
 	"search-default-sort-by": "Подредба по подразбиране при търсене",
-	"outgoing-links.whitelist": "Domains to whitelist for bypassing the warning page"
+	"outgoing-links.whitelist": "Домейни, за които да не се показва предупредителната страница"
 }
