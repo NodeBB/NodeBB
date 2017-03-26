@@ -77,13 +77,10 @@
 		var connString = 'mongodb://' + usernamePassword + servers.join() + '/' + nconf.get('mongo:database');
 
 		var connOptions = {
-			server: {
-				poolSize: parseInt(nconf.get('mongo:poolSize'), 10) || 10,
-				socketOptions: { keepAlive: nconf.get('mongo:keepAlive') || 0 },
-				reconnectTries: 3600,
-				reconnectInterval: 1000,
-				auto_reconnect: true,
-			},
+			poolSize: 10,
+			reconnectTries: 3600,
+			reconnectInterval: 1000,
+			autoReconnect: true,
 		};
 
 		connOptions = _.deepExtend(connOptions, nconf.get('mongo:options') || {});
