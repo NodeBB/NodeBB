@@ -4,7 +4,7 @@
 	"by-user-search": "根据用户名搜索被举报帖子",
 	"category": "版块",
 	"sort-by": "排序",
-	"sort-by.most-flags": "最多举报",
+	"sort-by.most-flags": "举报最多",
 	"sort-by.most-recent": "最近",
 	"search": "搜索",
 	"dismiss-all": "全部忽略",
