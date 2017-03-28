@@ -130,5 +130,6 @@
     "info.username-history": "Kullanıcı Adı Geçmişi",
     "info.email-history": "Email Geçmişi",
     "info.moderation-note": "Moderasyon Notu",
-    "info.moderation-note.success": "Moderasyon notu kaydedildi"
+    "info.moderation-note.success": "Moderasyon notu kaydedildi",
+    "info.moderation-note.add": "Add note"
 }

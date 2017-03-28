@@ -130,5 +130,6 @@
     "info.username-history": "Gebruikersnaam geschiedenis",
     "info.email-history": "Email geschiedenis",
     "info.moderation-note": "Moderatie notitie",
-    "info.moderation-note.success": "Moderatie notitie opgeslagen"
+    "info.moderation-note.success": "Moderatie notitie opgeslagen",
+    "info.moderation-note.add": "Add note"
 }

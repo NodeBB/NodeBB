@@ -21,6 +21,7 @@
 	"upgrade-available": "<p>新しいバージョン (v%1) がリリースされました。<a href=\"https://docs.nodebb.org/en/latest/upgrading/index.html\">NodeBBのアップグレード</a>を検討してください。</p>",
 	"prerelease-upgrade-available": "<p>これはNodeBBの旧リリースのバージョンです。新しいバージョン(v％1)がリリースされました。<a href=\"https://docs.nodebb.org/en/latest/upgrading/index.html\"> NodeBBのアップグレード</a>を検討してください。</ p>",
 	"prerelease-warning": "<p>これはNodeBBの<strong>プレリリース版</ strong>です。意図しないバグが発生することがあります。<i class=\"fa fa-exclamation-triangle\"></i></p>",
+	"running-in-development": "<span>Forum is running in development mode. The forum may be open to potential vulnerabilities; please contact your system administrator.</span>",
 
 	"notices": "通知",
 	"restart-not-required": "再起動は必要ありません",

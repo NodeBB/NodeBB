@@ -130,5 +130,6 @@
     "info.username-history": "تاریخچه نام کاربری",
     "info.email-history": "تاریخچه رایانامه",
     "info.moderation-note": "یادداشت مدیر",
-    "info.moderation-note.success": "یادداشت مدیر ذخیره شد"
+    "info.moderation-note.success": "یادداشت مدیر ذخیره شد",
+    "info.moderation-note.add": "Add note"
 }

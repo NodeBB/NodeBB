@@ -2,6 +2,7 @@
 	"reputation": "Ansehenseinstellungen",
 	"disable": "Ansehenssystem deaktivieren",
 	"disable-down-voting": "Negative Bewertungen deaktivieren",
+	"votes-are-public": "All Votes Are Public",
 	"thresholds": "Aktivitätsschwelle",
 	"min-rep-downvote": "Minimales Ansehen um Beiträge negativ zu bewerten",
 	"min-rep-flag": "Minimales Ansehen und Beiträge zu melden"

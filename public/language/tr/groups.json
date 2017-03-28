@@ -27,6 +27,7 @@
     "details.disableJoinRequests": "Katılma isteklerini devre dışı bırak",
     "details.grant": "Gurup sahibi yap/yapma",
     "details.kick": "Dışarı at",
+    "details.kick_confirm": "Are you sure you want to remove this member from the group?",
     "details.owner_options": "Grup Yöneticisi",
     "details.group_name": "Grup ismi",
     "details.member_count": "Üye Sayısı",

@@ -130,5 +130,6 @@
     "info.username-history": "История на потребителските имена",
     "info.email-history": "Историята на е-пощите",
     "info.moderation-note": "Модераторска бележка",
-    "info.moderation-note.success": "Модераторската бележка е запазена"
+    "info.moderation-note.success": "Модераторската бележка е запазена",
+    "info.moderation-note.add": "Добавяне на бележка"
 }

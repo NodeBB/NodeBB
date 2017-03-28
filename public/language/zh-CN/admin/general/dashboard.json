@@ -21,6 +21,7 @@
 	"upgrade-available": "<p>新的版本已经发布 (v%1). 请考虑<a href=\"https://docs.nodebb.org/en/latest/upgrading/index.html\">更新你的 NodeBB</a>。</p>",
 	"prerelease-upgrade-available": "<p>你正在使用NodeBB过期的测试版。新的版本已经发布 (v%1). 请考虑<a href=\"https://docs.nodebb.org/en/latest/upgrading/index.html\">更新你的 NodeBB</a>。</p>",
 	"prerelease-warning": "<p>正在使用<strong>测试版</strong> NodeBB。可能会出现意外的 Bug。<i class=\"fa fa-exclamation-triangle\"></i></p>",
+	"running-in-development": "<span>论坛正处于开发模式，这可能使其暴露于潜在的危险之中；请联系您的系统管理员。</span>",
 
 	"notices": "提醒",
 	"restart-not-required": "不需要重启",
