@@ -3,7 +3,7 @@
 	"description": "用户组描述",
 	"system": "系统用户组",
 	"edit": "编辑",
-	"search-placeholder": "索索",
+	"search-placeholder": "搜索",
 	"create": "创建用户组",
 	"description-placeholder": "一个关于你的用户组的简短描述",
 	"create-button": "创建",
