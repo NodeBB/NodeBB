@@ -51,7 +51,7 @@ module.exports = function (User) {
 		async.waterfall([
 			function (next) {
 				async.parallel({
-					flags: async.apply(db.getSortedSetRevRangeWithScores, 'uid:' + uid + ':flag:pids', 0, 19),
+					flags: async.apply(db.getSortedSetRevRangeWithScores, 'flags:byTargetUid:' + uid, 0, 19),
 					bans: async.apply(db.getSortedSetRevRangeWithScores, 'uid:' + uid + ':bans', 0, 19),
 					reasons: async.apply(db.getSortedSetRevRangeWithScores, 'banned:' + uid + ':reasons', 0, 19),
 				}, next);
