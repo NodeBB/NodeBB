@@ -27,6 +27,7 @@
     "details.disableJoinRequests": "Disable join requests",
     "details.grant": "Gi/Opphev Eierskap",
     "details.kick": "Kast ut",
+    "details.kick_confirm": "Are you sure you want to remove this member from the group?",
     "details.owner_options": "Gruppeadministrasjon",
     "details.group_name": "Gruppenavn",
     "details.member_count": "Antall medlemmer",

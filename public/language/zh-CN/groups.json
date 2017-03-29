@@ -27,6 +27,7 @@
     "details.disableJoinRequests": "禁止申请加入用户组",
     "details.grant": "授予/取消管理权",
     "details.kick": "踢出用户组",
+    "details.kick_confirm": "您确定要将此成员从用户组中移除吗？",
     "details.owner_options": "用户组管理",
     "details.group_name": "用户组名",
     "details.member_count": "用户组成员数",

@@ -27,6 +27,7 @@
     "details.disableJoinRequests": "Disable join requests",
     "details.grant": "Duoti/Atšaukti Nuosavybę",
     "details.kick": "Išmesti",
+    "details.kick_confirm": "Are you sure you want to remove this member from the group?",
     "details.owner_options": "Grupės Administratorius",
     "details.group_name": "Grupės pavadinimas",
     "details.member_count": "Narių skaičiuotuvas",

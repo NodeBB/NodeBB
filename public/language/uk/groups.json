@@ -27,6 +27,7 @@
     "details.disableJoinRequests": "Вимкнути запити на приєднання",
     "details.grant": "Надати/забрати права адміністратора",
     "details.kick": "Вигнати",
+    "details.kick_confirm": "Are you sure you want to remove this member from the group?",
     "details.owner_options": "Адміністрація групи",
     "details.group_name": "Назва групи",
     "details.member_count": "Кількість учасників",

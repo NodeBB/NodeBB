@@ -66,7 +66,7 @@
 
 	"search.placeholder": "検索...",
 	"search.no-results": "結果がありません...",
-	"search.search-forum": "フォーラムで<strong></ strong>を検索",
+	"search.search-forum": "フォーラムで<strong></strong>を検索",
 	"search.keep-typing": "結果を見るにはもっと入力してください...",
 	"search.start-typing": "結果を見るために入力を開始...",
 

@@ -27,5 +27,6 @@
 	"touch-icon.help": "Empfohlene Größe und Format: 192x192, ausschließlich PNG Format. Wenn kein Icon angegeben wird, wird NodeBB das Favicon verwenden.",
 	"outgoing-links": "Ausgehende Links",
 	"outgoing-links.warning-page": "Warnseite für ausgehende links verwenden",
-	"search-default-sort-by": "Standardmäßige Such-Sortierung"
+	"search-default-sort-by": "Standardmäßige Such-Sortierung",
+	"outgoing-links.whitelist": "Domains, für die keine Warnseite angezeigt werden soll"
 }

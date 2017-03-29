@@ -15,7 +15,7 @@
 	"category-image": "カテゴリ画像",
 	"parent-category": "親カテゴリ",
 	"optional-parent-category": "(任意)親カテゴリ",
-	"parent-category-none": "(無い)",
+	"parent-category-none": "(なし)",
 	"copy-settings": "設定をコピー",
 	"optional-clone-settings": "カテゴリからのクローン設定(任意)",
 	"purge": "カテゴリを切り離す",

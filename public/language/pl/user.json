@@ -130,5 +130,6 @@
     "info.username-history": "Historia nazwy użytkownika",
     "info.email-history": "Historia adresu e-mail",
     "info.moderation-note": "Notka moderatora",
-    "info.moderation-note.success": "Notka nie została zapisana"
+    "info.moderation-note.success": "Notka nie została zapisana",
+    "info.moderation-note.add": "Add note"
 }

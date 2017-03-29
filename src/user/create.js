@@ -28,10 +28,10 @@ module.exports = function (User) {
 				email: data.email || '',
 				joindate: timestamp,
 				lastonline: timestamp,
-				picture: '',
+				picture: data.picture || '',
 				fullname: data.fullname || '',
-				location: '',
-				birthday: '',
+				location: data.location || '',
+				birthday: data.birthday || '',
 				website: '',
 				signature: '',
 				uploadedpicture: '',
@@ -210,8 +210,7 @@ module.exports = function (User) {
 
 			function go() {
 				var username = userData.username + ' ' + num.toString(32);
-				var userslug = utils.slugify(username);
-				meta.userOrGroupExists(userslug, function (err, exists) {
+				meta.userOrGroupExists(username, function (err, exists) {
 					if (err || !exists) {
 						return callback(err, username);
 					}

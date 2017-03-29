@@ -27,6 +27,7 @@
     "details.disableJoinRequests": "Disabilita le richieste d'adesione",
     "details.grant": "Concedi / Rimuovi la Proprietà",
     "details.kick": "Espelli",
+    "details.kick_confirm": "Are you sure you want to remove this member from the group?",
     "details.owner_options": "Amministratore del Grupo",
     "details.group_name": "Nome Gruppo",
     "details.member_count": "Totale Membri",

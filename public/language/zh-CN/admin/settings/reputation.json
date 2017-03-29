@@ -2,7 +2,8 @@
 	"reputation": "声望设置",
 	"disable": "禁用声望系统",
 	"disable-down-voting": "禁用 踩",
+	"votes-are-public": "所有投票是公开的",
 	"thresholds": "活动阈值",
 	"min-rep-downvote": "踩帖子所需要声望的最小值",
-	"min-rep-flag": "举报帖子所需要声望的最小值"
+	"min-rep-flag": "举报帖子需要的最小声望"
 }

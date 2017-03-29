@@ -27,6 +27,7 @@
     "details.disableJoinRequests": "Groepsverzoeken uitschakelen",
     "details.grant": "Toekennen/herroepen van eigendom",
     "details.kick": "Kick",
+    "details.kick_confirm": "Are you sure you want to remove this member from the group?",
     "details.owner_options": "Groepsadministratie",
     "details.group_name": "Groepsnaam",
     "details.member_count": "Ledentelling",

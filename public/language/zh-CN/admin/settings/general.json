@@ -27,5 +27,6 @@
 	"touch-icon.help": "推荐的尺寸和格式：192x192，仅限PNG格式。 如果没有指定触摸图标，NodeBB将回退到使用站点图标。",
 	"outgoing-links": "站外链接",
 	"outgoing-links.warning-page": "使用站外链接警告页",
-	"search-default-sort-by": "默认搜索排序"
+	"search-default-sort-by": "默认搜索排序",
+	"outgoing-links.whitelist": "添加域名到白名单以绕过警告页面"
 }

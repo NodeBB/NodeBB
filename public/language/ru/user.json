@@ -130,5 +130,6 @@
     "info.username-history": "История изменения имён",
     "info.email-history": "История изменения электронной почты",
     "info.moderation-note": "Примечание модератора",
-    "info.moderation-note.success": "Примечание модератора сохранено"
+    "info.moderation-note.success": "Примечание модератора сохранено",
+    "info.moderation-note.add": "Add note"
 }

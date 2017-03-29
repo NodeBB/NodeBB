@@ -2,6 +2,7 @@
 	"reputation": "評価の設定",
 	"disable": "レピュテーションシステムを無効にする",
 	"disable-down-voting": "低評価を無効にする",
+	"votes-are-public": "All Votes Are Public",
 	"thresholds": "アクティビティのしきい値",
 	"min-rep-downvote": "投稿をdownvoteするための最低評価",
 	"min-rep-flag": "フラグの投稿に低評価"
