@@ -27,7 +27,7 @@
     "details.disableJoinRequests": "Deaktiviere Beitrittsanfragen",
     "details.grant": "Gewähre/widerrufe Besitz",
     "details.kick": "Kick",
-    "details.kick_confirm": "Are you sure you want to remove this member from the group?",
+    "details.kick_confirm": "Sind Sie sicher, dass Sie dieses Mitglied aus der Gruppe entfernen möchten?",
     "details.owner_options": "Gruppenadministration",
     "details.group_name": "Gruppenname",
     "details.member_count": "Mitgliederanzahl",

@@ -28,5 +28,5 @@
 	"outgoing-links": "Ausgehende Links",
 	"outgoing-links.warning-page": "Warnseite für ausgehende links verwenden",
 	"search-default-sort-by": "Standardmäßige Such-Sortierung",
-	"outgoing-links.whitelist": "Domains to whitelist for bypassing the warning page"
+	"outgoing-links.whitelist": "Domains, für die keine Warnseite angezeigt werden soll"
 }
