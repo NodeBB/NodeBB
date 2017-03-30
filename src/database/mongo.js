@@ -166,7 +166,7 @@
 	};
 
 	module.checkCompatibility = function (callback) {
-		var mongoPkg = require.main.require('./node_modules/mongodb/package.json');
+		var mongoPkg = require('mongodb/package.json');
 
 		if (semver.lt(mongoPkg.version, '2.0.0')) {
 			return callback(new Error('The `mongodb` package is out-of-date, please run `./nodebb setup` again.'));
