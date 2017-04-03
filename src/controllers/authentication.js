@@ -264,12 +264,17 @@ function continueLogin(req, res, next) {
 					return res.status(403).send(err.message);
 				}
 
+				var next = undefined;
 				if (!req.session.returnTo) {
-					res.status(200).send(nconf.get('relative_path') + '/');
+					next = nconf.get('relative_path') + '/';
 				} else {
-					var next = req.session.returnTo;
+					next = req.session.returnTo;
 					delete req.session.returnTo;
+				}
 
+				if (req.body.noscript === 'true') {
+					res.redirect(next + '?loggedin');
+				} else {
 					res.status(200).send(next);
 				}
 			});
@@ -426,7 +431,11 @@ authenticationController.logout = function (req, res, next) {
 			user.setUserField(uid, 'lastonline', Date.now() - 300000);
 
 			plugins.fireHook('static:user.loggedOut', { req: req, res: res, uid: uid }, function () {
-				res.status(200).send('');
+				if (req.body.noscript === 'true') {
+					res.redirect(nconf.get('relative_path') + '/');
+				} else {
+					res.status(200).send('');
+				}
 
 				// Force session check for all connected socket.io clients with the same session id
 				sockets.in('sess_' + sessionID).emit('checkSession', 0);

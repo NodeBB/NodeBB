@@ -7,6 +7,7 @@ var validator = require('validator');
 var meta = require('../meta');
 var user = require('../user');
 var plugins = require('../plugins');
+var topics = require('../topics');
 var helpers = require('./helpers');
 
 var Controllers = module.exports;
@@ -254,6 +255,67 @@ Controllers.compose = function (req, res, next) {
 			res.render('compose', data.templateData);
 		}
 	});
+};
+
+Controllers.composePost = function (req, res, next) {
+	var body = req.body;
+	var data = {
+		uid: req.uid,
+		req: req,
+		timestamp: Date.now(),
+		content: body.content,
+	}
+
+	if (!data.content) {
+		return res.status(200).send('[[error:invalid-data]]');
+	}
+
+	if (body.tid) {
+		data.tid = body.tid;
+
+		async.waterfall([
+			function (next) {
+				topics.reply(data, next);
+			},
+			function (postData, next) {
+				var result = {
+					posts: [postData],
+					'reputation:disabled': parseInt(meta.config['reputation:disabled'], 10) === 1,
+					'downvote:disabled': parseInt(meta.config['downvote:disabled'], 10) === 1,
+				};
+
+				next(null, postData);
+
+				user.updateOnlineUsers(postData.uid);
+
+				res.redirect(nconf.get('relative_path') + '/post/' + postData.pid);
+			},
+		], function (err) {
+			if (err) {
+				return next(err);
+			}
+		});
+	} else if (body.cid) {
+		data.cid = body.cid;
+		data.title = body.title;
+		data.tags = [];
+		data.thumb = "";
+
+		async.waterfall([
+			function (next) {
+				topics.post(data, next);
+			},
+			function (result, next) {
+				next(null, result.topicData);
+
+				res.redirect(nconf.get('relative_path') + '/topic/' + result.topicData.slug);
+			},
+		], function (err) {
+			if (err) {
+				return next(err);
+			}
+		});
+	}
 };
 
 Controllers.confirmEmail = function (req, res) {

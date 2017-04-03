@@ -37,6 +37,7 @@ function mainRoutes(app, middleware, controllers) {
 
 	app.get('/ping', controllers.ping);
 	app.get('/sping', controllers.ping);
+	app.post('/compose', middleware.applyCSRF, controllers.composePost);
 }
 
 function modRoutes(app, middleware, controllers) {
