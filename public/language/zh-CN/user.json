@@ -129,7 +129,7 @@
     "info.banned-no-reason": "没有原因",
     "info.username-history": "历史用户名",
     "info.email-history": "历史邮箱",
-    "info.moderation-note": "版主留言",
-    "info.moderation-note.success": "修改未保存",
-    "info.moderation-note.add": "添加留言"
+    "info.moderation-note": "版主备注",
+    "info.moderation-note.success": "版主备注已保存",
+    "info.moderation-note.add": "添加备注"
 }
