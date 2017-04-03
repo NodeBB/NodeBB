@@ -126,7 +126,7 @@ var social = require('./social');
 						Topics.getUserBookmarks(tids, uid, next);
 					},
 					teasers: function (next) {
-						Topics.getTeasers(topics, next);
+						Topics.getTeasers(topics, uid, next);
 					},
 					tags: function (next) {
 						Topics.getTopicsTagsObjects(tids, next);
