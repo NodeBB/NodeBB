@@ -264,7 +264,7 @@ Controllers.composePost = function (req, res, next) {
 		req: req,
 		timestamp: Date.now(),
 		content: body.content,
-	}
+	};
 
 	if (!data.content) {
 		return res.status(200).send('[[error:invalid-data]]');
@@ -278,12 +278,6 @@ Controllers.composePost = function (req, res, next) {
 				topics.reply(data, next);
 			},
 			function (postData, next) {
-				var result = {
-					posts: [postData],
-					'reputation:disabled': parseInt(meta.config['reputation:disabled'], 10) === 1,
-					'downvote:disabled': parseInt(meta.config['downvote:disabled'], 10) === 1,
-				};
-
 				next(null, postData);
 
 				user.updateOnlineUsers(postData.uid);
@@ -299,7 +293,7 @@ Controllers.composePost = function (req, res, next) {
 		data.cid = body.cid;
 		data.title = body.title;
 		data.tags = [];
-		data.thumb = "";
+		data.thumb = '';
 
 		async.waterfall([
 			function (next) {

@@ -264,7 +264,7 @@ function continueLogin(req, res, next) {
 					return res.status(403).send(err.message);
 				}
 
-				var next = undefined;
+				var next;
 				if (!req.session.returnTo) {
 					next = nconf.get('relative_path') + '/';
 				} else {
