@@ -2,7 +2,7 @@
     "topic": "主题",
     "topic_id": "主题 ID",
     "topic_id_placeholder": "输入主题 ID",
-    "no_topics_found": "没有找到主题！",
+    "no_topics_found": "没有找到话题！",
     "no_posts_found": "没有找到帖子！",
     "post_is_deleted": "此回复已被删除！",
     "topic_is_deleted": "此主题已被删除！",

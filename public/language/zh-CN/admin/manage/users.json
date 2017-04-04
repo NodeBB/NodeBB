@@ -30,9 +30,9 @@
 	"search.username": "通过用户名",
 	"search.username-placeholder": "输入你想找的用户名",
 	"search.email": "通过邮箱",
-	"search.email-placeholder": "输入你想找的邮箱地址",
+	"search.email-placeholder": "输入你想查询的邮箱地址",
 	"search.ip": "通过IP地址",
-	"search.ip-placeholder": "输入你想找的IP",
+	"search.ip-placeholder": "输入你想查询的IP",
 	"search.not-found": "未找到用户！",
 
 	"inactive.3-months": "3个月",

@@ -20,7 +20,7 @@
     "chat.three_months": "3个月",
     "chat.delete_message_confirm": "确认删除此消息吗？",
     "chat.add-users-to-room": "向此聊天室中添加成员",
-    "composer.compose": "编写",
+    "composer.compose": "编写帮助",
     "composer.show_preview": "显示预览",
     "composer.hide_preview": "隐藏预览",
     "composer.user_said_in": "%1 在 %2 中说：",

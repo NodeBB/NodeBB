@@ -34,7 +34,7 @@
 	"privileges.section-moderation": "审核权限",
 	"privileges.section-user": "用户",
 	"privileges.search-user": "添加用户",
-	"privileges.no-users": "此类别中没有用户特定的权限。",
+	"privileges.no-users": "此板块中没有用户特定的权限。",
 	"privileges.section-group": "用户组",
 	"privileges.group-private": "这个用户组是私密的",
 	"privileges.search-group": "添加用户组",

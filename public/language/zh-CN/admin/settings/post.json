@@ -35,7 +35,7 @@
 	"signature.no-images": "禁用签名中的图片",
 	"signature.max-length": "签名最大长度",
 	"composer": "编辑器设置",
-	"composer-help": "以下设置控制所示后期编辑器的功能和/或外观\n\\t\\t\\t\\t当用户创建新主题或回复现有主题时。",
+	"composer-help": "以下设置控制所示后期编辑器的功能和/或外观\n\t\t\t\t当用户创建新主题或回复现有主题时。",
 	"composer.show-help": "显示“帮助”选项卡",
 	"composer.enable-plugin-help": "允许插件将内容添加到帮助选项卡",
 	"composer.custom-help": "自定义帮助文本",

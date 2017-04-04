@@ -1,5 +1,5 @@
 {
-    "banned": "封禁",
+    "banned": "已封禁",
     "offline": "离线",
     "username": "用户名",
     "joindate": "注册日期",
@@ -8,7 +8,7 @@
     "confirm_email": "确认电子邮箱",
     "account_info": "账户信息",
     "ban_account": "封禁账户",
-    "ban_account_confirm": "您确定封禁这位用户吗？",
+    "ban_account_confirm": "您确定要封禁这位用户吗？",
     "unban_account": "解禁账户",
     "delete_account": "删除帐号",
     "delete_account_confirm": "确认要删除您的帐户吗？<br /><strong>此操作是不可逆转的，您将无法恢复您的任何数据</strong><br /><br />请输入您的用户名，确认您想要删除此帐户。",
