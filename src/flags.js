@@ -337,6 +337,9 @@ Flags.create = function (type, id, uid, reason, timestamp, callback) {
 			}
 			if (type === 'post') {
 				tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byPid:' + id, timestamp, flagId));	// by target pid
+				if (targetUid) {
+					tasks.push(async.apply(db.sortedSetIncrBy, 'users:flags', 1, targetUid));
+				}
 			}
 
 			async.parallel(tasks, function (err) {
