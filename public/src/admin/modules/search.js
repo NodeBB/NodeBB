@@ -1,6 +1,5 @@
 'use strict';
 
-
 define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 	var search = {};
 
@@ -11,16 +10,17 @@ define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 			var namespace = params.namespace;
 			var translations = params.translations;
 			var title = params.title;
+			var escaped = utils.escapeRegexChars(term);
 
 			var results = translations
 				// remove all lines without a match
-				.replace(new RegExp('^(?:(?!' + term + ').)*$', 'gmi'), '')
+				.replace(new RegExp('^(?:(?!' + escaped + ').)*$', 'gmi'), '')
 				// remove lines that only match the title
 				.replace(new RegExp('(^|\\n).*?' + title + '.*?(\\n|$)', 'g'), '')
 				// get up to 25 characters of context on both sides of the match
 				// and wrap the match in a `.search-match` element
 				.replace(
-					new RegExp('^[\\s\\S]*?(.{0,25})(' + term + ')(.{0,25})[\\s\\S]*?$', 'gmi'),
+					new RegExp('^[\\s\\S]*?(.{0,25})(' + escaped + ')(.{0,25})[\\s\\S]*?$', 'gmi'),
 					'...$1<span class="search-match">$2</span>$3...<br>'
 				)
 				// collapse whitespace
@@ -28,7 +28,7 @@ define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 				.trim();
 
 			title = title.replace(
-				new RegExp('(^.*?)(' + term + ')(.*?$)', 'gi'),
+				new RegExp('(^.*?)(' + escaped + ')(.*?$)', 'gi'),
 				'$1<span class="search-match">$2</span>$3'
 			);
 
@@ -123,7 +123,7 @@ define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 
 			menu.children('.result').remove();
 
-			var len = value.length;
+			var len = /\W/.test(value) ? 3 : value.length;
 			var results;
 
 			menu.toggleClass('state-start-typing', len === 0);
