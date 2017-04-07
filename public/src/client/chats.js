@@ -101,7 +101,7 @@ define('forum/chats', [
 			socket.emit('modules.chats.getMessages', {
 				roomId: roomId,
 				uid: uid,
-				start: start
+				start: start,
 			}, function (err, data) {
 				if (err) {
 					return app.alertError(err.message);
@@ -176,7 +176,7 @@ define('forum/chats', [
 			}
 			socket.emit('modules.chats.renameRoom', {
 				roomId: roomId,
-				newName: newName
+				newName: newName,
 			}, function (err) {
 				if (err) {
 					return app.alertError(err.message);
@@ -244,12 +244,12 @@ define('forum/chats', [
 			}
 			socket.emit('modules.chats.addUserToRoom', {
 				roomId: data.roomId,
-				username: event.item
+				username: event.item,
 			}, function (err) {
 				if (err) {
 					app.alertError(err.message);
 					tagEl.tagsinput('remove', event.item, {
-						nouser: true
+						nouser: true,
 					});
 				}
 			});
@@ -276,7 +276,7 @@ define('forum/chats', [
 			}
 			socket.emit('modules.chats.removeUserFromRoom', {
 				roomId: data.roomId,
-				username: event.item
+				username: event.item,
 			}, function (err) {
 				if (err) {
 					return app.alertError(err.message);
@@ -338,7 +338,7 @@ define('forum/chats', [
 							roomId: data.roomId,
 							lastUser: data.message.fromUser,
 							usernames: data.message.fromUser.username,
-							unread: true
+							unread: true,
 						},
 					}, function (html) {
 						translator.translate(html, function (translated) {
