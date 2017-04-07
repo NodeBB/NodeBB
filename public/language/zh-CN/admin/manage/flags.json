@@ -1,11 +1,11 @@
 {
-	"daily": "每日举报数",
+	"daily": "日举报",
 	"by-user": "用户举报",
 	"by-user-search": "根据用户名搜索被举报帖子",
 	"category": "版块",
 	"sort-by": "排序",
-	"sort-by.most-flags": "举报最多",
-	"sort-by.most-recent": "最近",
+	"sort-by.most-flags": "次数最多",
+	"sort-by.most-recent": "提交时间",
 	"search": "搜索",
 	"dismiss-all": "全部忽略",
 	"none-flagged": "没有被举报的帖子!",
@@ -13,7 +13,7 @@
 	"read-more": "阅读更多",
 	"flagged-x-times": "该贴已被举报 %1 次：",
 	"dismiss": "忽略该举报",
-	"delete-post": "删除该贴",
+	"delete-post": "删除此贴",
 
-	"alerts.confirm-delete-post": "确认删除该贴？"
+	"alerts.confirm-delete-post": "确定删除此贴吗？"
 }

@@ -24,7 +24,7 @@
     "upvoted_your_post_in_dual": "<strong>%1</strong> 和 <strong>%2</strong> 在 <strong>%3</strong> 赞了您的帖子。",
     "upvoted_your_post_in_multiple": "<strong>%1</strong> 和 %2 个其他人在 <strong>%3</strong> 赞了您的帖子。",
     "moved_your_post": "您的帖子已被 <strong>%1</strong> 移动到了 <strong>%2</strong>",
-    "moved_your_topic": "<strong>%1</strong> 移动到了 <strong>%2</strong>",
+    "moved_your_topic": "<strong>%1</strong> 移动了 <strong>%2</strong>",
     "user_flagged_post_in": "<strong>%1</strong> 在 <strong>%2</strong> 标记了一个帖子",
     "user_flagged_post_in_dual": "<strong>%1</strong> 和 <strong>%2</strong> 在 <strong>%3</strong> 举报了一个帖子",
     "user_flagged_post_in_multiple": "<strong>%1</strong> 和 %2 个其他人在 <strong>%3</strong> 举报了一个帖子",
