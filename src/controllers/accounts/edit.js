@@ -36,15 +36,12 @@ editController.get = function (req, res, callback) {
 		});
 
 		userData.title = '[[pages:account/edit, ' + userData.username + ']]';
-		userData.breadcrumbs = helpers.buildBreadcrumbs([
-			{
-				text: userData.username,
-				url: '/user/' + userData.userslug,
-			},
-			{
-				text: '[[user:edit]]',
-			},
-		]);
+		userData.breadcrumbs = helpers.buildBreadcrumbs([{
+			text: userData.username,
+			url: '/user/' + userData.userslug,
+		}, {
+			text: '[[user:edit]]',
+		}]);
 		userData.editButtons = [];
 
 		plugins.fireHook('filter:user.account.edit', userData, function (err, userData) {
@@ -80,22 +77,19 @@ function renderRoute(name, req, res, next) {
 
 		if (name === 'password') {
 			userData.minimumPasswordLength = parseInt(meta.config.minimumPasswordLength, 10);
+			userData.minimumPasswordStrength = parseInt(meta.config.minimumPasswordStrength || 0, 10);
 		}
 
 		userData.title = '[[pages:account/edit/' + name + ', ' + userData.username + ']]';
-		userData.breadcrumbs = helpers.buildBreadcrumbs([
-			{
-				text: userData.username,
-				url: '/user/' + userData.userslug,
-			},
-			{
-				text: '[[user:edit]]',
-				url: '/user/' + userData.userslug + '/edit',
-			},
-			{
-				text: '[[user:' + name + ']]',
-			},
-		]);
+		userData.breadcrumbs = helpers.buildBreadcrumbs([{
+			text: userData.username,
+			url: '/user/' + userData.userslug,
+		}, {
+			text: '[[user:edit]]',
+			url: '/user/' + userData.userslug + '/edit',
+		}, {
+			text: '[[user:' + name + ']]',
+		}]);
 
 		res.render('account/edit/' + name, userData);
 	});
