@@ -22,6 +22,7 @@
     "autoprefixer": "^6.2.3",
     "bcryptjs": "~2.3.0",
     "body-parser": "^1.9.0",
+    "bootstrap": "^3.3.7",
     "chart.js": "^2.4.0",
     "colors": "^1.1.0",
     "compression": "^1.1.0",
