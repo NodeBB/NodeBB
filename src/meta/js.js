@@ -88,7 +88,6 @@ module.exports = function (Meta) {
 				'mousetrap.js': './node_modules/mousetrap/mousetrap.min.js',
 				'cropper.js': './node_modules/cropperjs/dist/cropper.min.js',
 				'jqueryui.js': 'public/vendor/jquery/js/jquery-ui.js',
-				'buzz.js': 'public/vendor/buzz/buzz.js',
 				ace: './node_modules/ace-builds/src-min',
 			},
 		},
