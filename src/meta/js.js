@@ -86,16 +86,16 @@ module.exports = function (Meta) {
 			modules: {
 				'Chart.js': './node_modules/chart.js/dist/Chart.min.js',
 				'mousetrap.js': './node_modules/mousetrap/mousetrap.min.js',
+				'cropper.js': './node_modules/cropperjs/dist/cropper.min.js',
 				'jqueryui.js': 'public/vendor/jquery/js/jquery-ui.js',
 				'buzz.js': 'public/vendor/buzz/buzz.js',
-				'cropper.js': './node_modules/cropperjs/dist/cropper.min.js',
 			},
 		},
 	};
 
 	function minifyModules(modules, callback) {
 		async.eachLimit(modules, 500, function (mod, next) {
-			var filePath = mod.filePath;
+			var srcPath = mod.srcPath;
 			var destPath = mod.destPath;
 			var minified;
 
@@ -104,12 +104,12 @@ module.exports = function (Meta) {
 					mkdirp(path.dirname(destPath), cb);
 				},
 				function (cb) {
-					fs.readFile(filePath, function (err, buffer) {
+					fs.readFile(srcPath, function (err, buffer) {
 						if (err) {
 							return cb(err);
 						}
 
-						if (filePath.endsWith('.min.js')) {
+						if (srcPath.endsWith('.min.js') || path.dirname(srcPath).endsWith('min')) {
 							minified = { code: buffer.toString() };
 							return cb();
 						}
@@ -140,15 +140,27 @@ module.exports = function (Meta) {
 		var modules = Meta.js.scripts.modules;
 
 		async.eachLimit(Object.keys(modules), 1000, function (relPath, next) {
-			var filePath = path.join(__dirname, '../../', modules[relPath]);
+			var srcPath = path.join(__dirname, '../../', modules[relPath]);
 			var destPath = path.join(__dirname, '../../build/public/src/modules', relPath);
 
-			mkdirp(path.dirname(destPath), function (err) {
+			async.parallel({
+				dir: function (cb) {
+					mkdirp(path.dirname(destPath), function (err) {
+						cb(err);
+					});
+				},
+				stats: function (cb) {
+					fs.stat(srcPath, cb);
+				},
+			}, function (err, res) {
 				if (err) {
 					return next(err);
 				}
+				if (res.stats.isDirectory()) {
+					return file.linkDirs(srcPath, destPath, next);
+				}
 
-				file.link(filePath, destPath, next);
+				file.link(srcPath, destPath, next);
 			});
 		}, callback);
 	}
@@ -158,36 +170,55 @@ module.exports = function (Meta) {
 	function getModuleList(callback) {
 		var modules = Object.keys(Meta.js.scripts.modules).map(function (relPath) {
 			return {
-				filePath: path.join(__dirname, '../../', Meta.js.scripts.modules[relPath]),
+				srcPath: path.join(__dirname, '../../', Meta.js.scripts.modules[relPath]),
 				destPath: path.join(__dirname, '../../build/public/src/modules', relPath),
 			};
 		});
 
-		var dirs = moduleDirs.map(function (dir) {
-			return path.join(__dirname, '../../public/src', dir);
+		var coreDirs = moduleDirs.map(function (dir) {
+			return {
+				srcPath: path.join(__dirname, '../../public/src', dir),
+				destPath: path.join(__dirname, '../../build/public/src', dir),
+			};
 		});
 
-		async.each(dirs, function (dir, next) {
-			utils.walk(dir, function (err, files) {
+		modules = modules.concat(coreDirs);
+
+		var moduleFiles = [];
+		async.eachLimit(modules, 1000, function (module, next) {
+			var srcPath = module.srcPath;
+			var destPath = module.destPath;
+
+			fs.stat(srcPath, function (err, stats) {
 				if (err) {
 					return next(err);
 				}
+				if (!stats.isDirectory()) {
+					moduleFiles.push(module);
+					return next();
+				}
 
-				var mods = files.filter(function (filePath) {
-					return path.extname(filePath) === '.js';
-				}).map(function (filePath) {
-					return {
-						filePath: filePath,
-						destPath: path.join(__dirname, '../../build/public/src', path.relative(path.dirname(dir), filePath)),
-					};
+				utils.walk(srcPath, function (err, files) {
+					if (err) {
+						return next(err);
+					}
+
+					var mods = files.filter(function (filePath) {
+						return path.extname(filePath) === '.js';
+					}).map(function (filePath) {
+						return {
+							srcPath: path.normalize(filePath),
+							destPath: path.join(destPath, path.relative(srcPath, filePath)),
+						};
+					});
+
+					moduleFiles = moduleFiles.concat(mods);
+
+					next();
 				});
-
-				modules = modules.concat(mods);
-
-				next();
 			});
 		}, function (err) {
-			callback(err, modules);
+			callback(err, moduleFiles);
 		});
 	}
 
