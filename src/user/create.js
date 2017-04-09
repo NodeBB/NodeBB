@@ -2,7 +2,7 @@
 
 var async = require('async');
 var db = require('../database');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 var validator = require('validator');
 var plugins = require('../plugins');
 var groups = require('../groups');

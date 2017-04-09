@@ -1,7 +1,7 @@
 'use strict';
 
 var async = require('async');
-var utils = require('../../../public/src/utils');
+var utils = require('../../utils');
 
 module.exports = function (db, module) {
 	var helpers = module.helpers.mongo;

@@ -9,7 +9,6 @@ var express = require('express');
 var nconf = require('nconf');
 
 var db = require('./database');
-var utils = require('../public/src/utils');
 var hotswap = require('./hotswap');
 var file = require('./file');
 var languages = require('./languages');
@@ -176,7 +175,7 @@ var middleware;
 				if (plugin.templates || plugin.id.startsWith('nodebb-theme-')) {
 					winston.verbose('[plugins] Loading templates (' + plugin.id + ')');
 					var templatesPath = path.join(__dirname, '../node_modules', plugin.id, plugin.templates || 'templates');
-					utils.walk(templatesPath, function (err, pluginTemplates) {
+					file.walk(templatesPath, function (err, pluginTemplates) {
 						if (pluginTemplates) {
 							pluginTemplates.forEach(function (pluginTemplate) {
 								if (pluginTemplate.endsWith('.tpl')) {

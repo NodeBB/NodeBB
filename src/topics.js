@@ -5,7 +5,7 @@ var _ = require('underscore');
 
 var db = require('./database');
 var posts = require('./posts');
-var utils = require('../public/src/utils');
+var utils = require('./utils');
 var plugins = require('./plugins');
 var user = require('./user');
 var categories = require('./categories');

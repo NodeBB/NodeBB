@@ -7,7 +7,7 @@ var meta = require('../meta');
 var notifications = require('../notifications');
 var plugins = require('../plugins');
 var Messaging = require('../messaging');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 var server = require('./');
 var user = require('../user');
 

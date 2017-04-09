@@ -2,7 +2,7 @@
 
 var nconf = require('nconf');
 var admin = require('./admin');
-var translator = require('../../public/src/modules/translator');
+var translator = require('../translator');
 
 var navigation = {};
 

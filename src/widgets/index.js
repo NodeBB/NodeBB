@@ -5,7 +5,7 @@ var winston = require('winston');
 var templates = require('templates.js');
 
 var plugins = require('../plugins');
-var translator = require('../../public/src/modules/translator');
+var translator = require('../translator');
 var db = require('../database');
 
 var widgets = {};

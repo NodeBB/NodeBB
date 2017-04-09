@@ -8,7 +8,6 @@ var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
 
 var file = require('../file');
-var utils = require('../../public/src/utils');
 var Plugins = require('../plugins');
 var db = require('../database');
 
@@ -67,7 +66,7 @@ function getTranslationTree(callback) {
 			async.parallel([
 				// get core languages and namespaces
 				function (nxt) {
-					utils.walk(coreLanguagesPath, function (err, paths) {
+					file.walk(coreLanguagesPath, function (err, paths) {
 						if (err) {
 							return nxt(err);
 						}
@@ -80,7 +79,7 @@ function getTranslationTree(callback) {
 				function (nxt) {
 					async.each(plugins, function (pluginData, cb) {
 						var pathToFolder = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
-						utils.walk(pathToFolder, function (err, paths) {
+						file.walk(pathToFolder, function (err, paths) {
 							if (err) {
 								return cb(err);
 							}

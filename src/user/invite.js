@@ -7,8 +7,8 @@ var nconf = require('nconf');
 var db = require('./../database');
 var meta = require('../meta');
 var emailer = require('../emailer');
-var translator = require('../../public/src/modules/translator');
-var utils = require('../../public/src/utils');
+var translator = require('../translator');
+var utils = require('../utils');
 
 
 module.exports = function (User) {
