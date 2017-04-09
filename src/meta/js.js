@@ -89,6 +89,7 @@ module.exports = function (Meta) {
 				'jqueryui.js': 'public/vendor/jquery/js/jquery-ui.js',
 				'buzz.js': 'public/vendor/buzz/buzz.js',
 				'cropper.js': './node_modules/cropperjs/dist/cropper.min.js',
+				'zxcvbn.js': './node_modules/zxcvbn/dist/zxcvbn.js',
 			},
 		},
 	};
@@ -110,7 +111,9 @@ module.exports = function (Meta) {
 						}
 
 						if (filePath.endsWith('.min.js')) {
-							minified = { code: buffer.toString() };
+							minified = {
+								code: buffer.toString(),
+							};
 							return cb();
 						}
 
@@ -345,7 +348,9 @@ module.exports = function (Meta) {
 			/**
 			 * otherwise, just clean up --debug/--debug-brk options which are set up by default from the parent one
 			 */
-			forkProcessParams = { execArgv: [] };
+			forkProcessParams = {
+				execArgv: [],
+			};
 		}
 
 		return forkProcessParams;
