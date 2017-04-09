@@ -2,9 +2,13 @@
 
 (function (factory) {
 	if (typeof module === 'object' && module.exports) {
+		var winston = require('winston');
+
 		var file = require('../../src/file');
 		module.exports = factory(require('xregexp'));
 		module.exports.walk = function (dir, done) {
+			// DEPRECATED
+			winston.warn('[deprecated] `utils.walk` is deprecated. Use `file.walk` instead.');
 			file.walk(dir, done);
 		};
 
@@ -421,12 +425,6 @@
 				return true;
 			}
 			return this.slice(-suffix.length) === suffix;
-		};
-	}
-
-	if (typeof String.prototype.rtrim !== 'function') {
-		String.prototype.rtrim = function () {
-			return this.replace(/\s+$/g, '');
 		};
 	}
 

@@ -87,6 +87,10 @@ module.exports = function (Topics) {
 		], callback);
 	};
 
+	function rtrim(str) {
+		return str.replace(/\s+$/g, '');
+	}
+
 	Topics.post = function (data, callback) {
 		var uid = data.uid;
 		data.title = String(data.title).trim();
@@ -101,7 +105,7 @@ module.exports = function (Topics) {
 			},
 			function (next) {
 				if (data.content) {
-					data.content = data.content.rtrim();
+					data.content = rtrim(data.content);
 				}
 				check(data.content, meta.config.minimumPostLength, meta.config.maximumPostLength, 'content-too-short', 'content-too-long', next);
 			},
@@ -234,7 +238,7 @@ module.exports = function (Topics) {
 			function (filteredData, next) {
 				content = filteredData.content || data.content;
 				if (content) {
-					content = content.rtrim();
+					content = rtrim(content);
 				}
 
 				check(content, meta.config.minimumPostLength, meta.config.maximumPostLength, 'content-too-short', 'content-too-long', next);
