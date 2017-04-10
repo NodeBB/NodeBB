@@ -1,6 +1,6 @@
 {
-	"queue": "队列",
-	"description": "注册队列里面没有用户。<br>要开启这项功能，请去<a href=\"%1\">设置 &rarr; 用户 &rarr; 用户注册</a> 并设置<strong>注册类型</strong>为“管理员批准”。",
+	"queue": "申请",
+	"description": "注册申请队列里面还没有用户申请。<br>要开启这项功能，请去<a href=\"%1\">设置 &rarr; 用户 &rarr; 用户注册</a> 并设置<strong>注册类型</strong>为“管理员批准”。",
 
 	"list.name": "姓名",
 	"list.email": "邮件",

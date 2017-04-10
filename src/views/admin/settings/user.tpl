@@ -168,6 +168,16 @@
 				<input type="text" class="form-control" value="6" data-field="minimumPasswordLength">
 			</div>
 			<div class="form-group">
+				<label>[[admin/settings/user:min-password-strength]]</label>
+				<select class="form-control" data-field="minimumPasswordStrength">
+					<option value="0">0 - too guessable: risky password</option>
+					<option value="1">1 - very guessable</option>
+					<option value="2">2 - somewhat guessable</option>
+					<option value="3">3 - safely unguessable</option>
+					<option value="4">4 - very unguessable</option>
+				</select>
+			</div>
+			<div class="form-group">
 				<label>[[admin/settings/user:max-about-me-length]]</label>
 				<input type="text" class="form-control" value="500" data-field="maximumAboutMeLength">
 			</div>

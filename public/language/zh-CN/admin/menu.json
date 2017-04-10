@@ -12,7 +12,7 @@
 	"manage/tags": "话题",
 	"manage/users": "用户",
 	"manage/registration": "注册申请",
-	"manage/groups": "用户组",
+	"manage/groups": "群组",
 	"manage/ip-blacklist": "IP 黑名单",
 
 	"section-settings": "设置",
@@ -20,7 +20,7 @@
 	"settings/reputation": "声望",
 	"settings/email": "邮件",
 	"settings/user": "用户",
-	"settings/group": "用户组",
+	"settings/group": "群组",
 	"settings/guest": "游客",
 	"settings/uploads": "上传",
 	"settings/post": "发帖",

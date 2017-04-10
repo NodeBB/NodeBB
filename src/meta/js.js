@@ -88,6 +88,7 @@ module.exports = function (Meta) {
 				'mousetrap.js': './node_modules/mousetrap/mousetrap.min.js',
 				'cropper.js': './node_modules/cropperjs/dist/cropper.min.js',
 				'jqueryui.js': 'public/vendor/jquery/js/jquery-ui.js',
+				'zxcvbn.js': './node_modules/zxcvbn/dist/zxcvbn.js',
 				ace: './node_modules/ace-builds/src-min',
 			},
 		},
@@ -376,7 +377,9 @@ module.exports = function (Meta) {
 			/**
 			 * otherwise, just clean up --debug/--debug-brk options which are set up by default from the parent one
 			 */
-			forkProcessParams = { execArgv: [] };
+			forkProcessParams = {
+				execArgv: [],
+			};
 		}
 
 		return forkProcessParams;

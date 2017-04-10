@@ -10,7 +10,7 @@
 	"headers.acam": "Access-Control-Allow-Methods",
 	"headers.acah": "Access-Control-Allow-Headers",
 	"traffic-management": "流量管理",
-	"traffic.help": "NodeBB 拥有在高流量情况下自动拒绝请求的模块。 您可以在这里调整这些设置，虽然默认值就很棒。",
+	"traffic.help": "NodeBB 拥有在高流量情况下自动拒绝请求的模块。尽管默认值就很棒，但您可以在这里调整这些设置。",
 	"traffic.enable": "启用流量管理",
 	"traffic.event-lag": "事件循环滞后阈值（毫秒）",
 	"traffic.event-lag-help": "降低此值会减少页面加载的等待时间，但也会向更多用户显示“过载”消息。(需要重新启动)",

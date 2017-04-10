@@ -35,12 +35,12 @@
 	"privileges.section-user": "用户",
 	"privileges.search-user": "添加用户",
 	"privileges.no-users": "此板块中没有用户特定的权限。",
-	"privileges.section-group": "用户组",
-	"privileges.group-private": "这个用户组是私密的",
-	"privileges.search-group": "添加用户组",
+	"privileges.section-group": "群组",
+	"privileges.group-private": "这个群组是私密的",
+	"privileges.search-group": "添加群组",
 	"privileges.copy-to-children": "复制到子版块",
 	"privileges.copy-from-category": "从板块复制",
-	"privileges.inherit": "如果 <code>registered-users</code> 组被授予特定权限，所有其他组都会收到<strong>隐式权限</strong>，即使它们未被明确定义/检查。 将显示此隐式权限，因为所有用户都是 <code>registered-users</code> 用户组的一部分，因此无需显式授予其他组的权限。",
+	"privileges.inherit": "如果 <code>registered-users</code> 组被授予特定权限，所有其他组都会收到<strong>隐式权限</strong>，即使它们未被明确定义/检查。 将显示此隐式权限，因为所有用户都是 <code>registered-users</code> 群组的一部分，因此无需显式授予其他组的权限。",
 
 	"analytics.back": "返回板块列表",
 	"analytics.title": "“%1”板块的统计",
@@ -53,7 +53,7 @@
 	"alert.create-success": "板块创建成功！",
 	"alert.none-active": "您没有有效的板块。",
 	"alert.create": "创建一个板块",
-	"alert.confirm-moderate": "<strong>您确定要将审核权限授予此用户组吗？</strong>此用户组是公开的，任何用户都可以随意加入。",
+	"alert.confirm-moderate": "<strong>您确定要将审核权限授予此群组吗？</strong>此群组是公开的，任何用户都可以随意加入。",
 	"alert.confirm-purge": "<p class =“lead”>您确定要清除此板块“%1”吗？</p> <h5> <strong class =“text-danger”>警告！</strong> 板块将被清除！</h5> <p class =“help-block”>清除板块将删除所有主题和帖子，并从数据库中删除板块。 如果您想<em>暂时</em>移除板块，请使用停用板块。</p>",
 	"alert.purge-success": "板块已删除！",
 	"alert.copy-success": "设置已复制！",
@@ -63,6 +63,6 @@
 	"alert.upload-image": "上传板块图片",
 	"alert.find-user": "查找用户",
 	"alert.user-search": "在这里查找用户…",
-	"alert.find-group": "查找用户组",
-	"alert.group-search": "在此处搜索用户组..."
+	"alert.find-group": "查找群组",
+	"alert.group-search": "在此处搜索群组..."
 }
