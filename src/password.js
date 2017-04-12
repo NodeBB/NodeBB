@@ -2,6 +2,7 @@
 
 (function (module) {
 	var fork = require('child_process').fork;
+	var path = require('path');
 
 	module.hash = function (rounds, password, callback) {
 		forkChild({ type: 'hash', rounds: rounds, password: password }, callback);
@@ -16,7 +17,7 @@
 		if (global.v8debug || parseInt(process.execArgv.indexOf('--debug'), 10) !== -1) {
 			forkProcessParams = { execArgv: ['--debug=' + (5859), '--nolazy'] };
 		}
-		var child = fork('./bcrypt', [], forkProcessParams);
+		var child = fork(path.join(__dirname, 'bcrypt'), [], forkProcessParams);
 
 		child.on('message', function (msg) {
 			if (msg.err) {
