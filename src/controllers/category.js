@@ -12,6 +12,7 @@ var meta = require('../meta');
 var pagination = require('../pagination');
 var helpers = require('./helpers');
 var utils = require('../../public/src/utils');
+var plugins = require('../plugins');
 
 var categoryController = {};
 
@@ -146,6 +147,10 @@ categoryController.get = function (req, res, callback) {
 			});
 		},
 		function (categoryData, next) {
+			plugins.fireHook('filter:controllers.category.get', {categoryData: categoryData, uid: req.uid}, next);	
+		},
+		function (data, next) {
+			var categoryData = data.categoryData;
 			if (!categoryData.children.length) {
 				return next(null, categoryData);
 			}
