@@ -20,8 +20,8 @@ module.exports = function (Meta) {
 		target: {},
 		scripts: {
 			base: [
-				'./node_modules/jquery/dist/jquery.js',
-				'./node_modules/socket.io-client/dist/socket.io.js',
+				'node_modules/jquery/dist/jquery.js',
+				'node_modules/socket.io-client/dist/socket.io.js',
 				'public/vendor/jquery/timeago/jquery.timeago.js',
 				'public/vendor/jquery/js/jquery.form.min.js',
 				'public/vendor/visibility/visibility.min.js',
@@ -35,14 +35,14 @@ module.exports = function (Meta) {
 				'public/vendor/tinycon/tinycon.js',
 				'public/vendor/xregexp/xregexp.js',
 				'public/vendor/xregexp/unicode/unicode-base.js',
-				'./node_modules/templates.js/lib/templates.js',
+				'node_modules/templates.js/lib/templates.js',
 				'public/src/utils.js',
 				'public/src/sockets.js',
 				'public/src/app.js',
 				'public/src/ajaxify.js',
 				'public/src/overrides.js',
 				'public/src/widgets.js',
-				'./node_modules/promise-polyfill/promise.js',
+				'node_modules/promise-polyfill/promise.js',
 			],
 
 			// files listed below are only available client-side, or are bundled in to reduce # of network requests on cold load
@@ -84,12 +84,12 @@ module.exports = function (Meta) {
 
 			// modules listed below are built (/src/modules) so they can be defined anonymously
 			modules: {
-				'Chart.js': './node_modules/chart.js/dist/Chart.min.js',
-				'mousetrap.js': './node_modules/mousetrap/mousetrap.min.js',
+				'Chart.js': 'node_modules/chart.js/dist/Chart.min.js',
+				'mousetrap.js': 'node_modules/mousetrap/mousetrap.min.js',
 				'jqueryui.js': 'public/vendor/jquery/js/jquery-ui.js',
 				'buzz.js': 'public/vendor/buzz/buzz.js',
-				'cropper.js': './node_modules/cropperjs/dist/cropper.min.js',
-				'zxcvbn.js': './node_modules/zxcvbn/dist/zxcvbn.js',
+				'cropper.js': 'node_modules/cropperjs/dist/cropper.min.js',
+				'zxcvbn.js': 'node_modules/zxcvbn/dist/zxcvbn.js',
 			},
 		},
 	};
@@ -196,10 +196,10 @@ module.exports = function (Meta) {
 
 	function clearModules(callback) {
 		var builtPaths = moduleDirs.map(function (p) {
-			return '../../build/public/src/' + p;
+			return path.join(__dirname, '../../build/public/src', p);
 		});
 		async.each(builtPaths, function (builtPath, next) {
-			rimraf(path.join(__dirname, builtPath), next);
+			rimraf(builtPath, next);
 		}, function (err) {
 			callback(err);
 		});
@@ -314,7 +314,7 @@ module.exports = function (Meta) {
 			}
 
 			Meta.js.target[target].scripts = Meta.js.target[target].scripts.map(function (script) {
-				return path.relative(basePath, script).replace(/\\/g, '/');
+				return path.resolve(basePath, script).replace(/\\/g, '/');
 			});
 
 			callback();
@@ -328,7 +328,7 @@ module.exports = function (Meta) {
 	};
 
 	Meta.js.commitToFile = function (target, callback) {
-		fs.writeFile(path.join(__dirname, '../../build/public/' + target), Meta.js.target[target].cache, function (err) {
+		fs.writeFile(path.join(__dirname, '../../build/public', target), Meta.js.target[target].cache, function (err) {
 			callback(err);
 		});
 	};
