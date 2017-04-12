@@ -157,6 +157,13 @@ Upgrade.process = function (files, skipCount, callback) {
 				var scriptExport = require(file);
 				var date = new Date(scriptExport.timestamp);
 				var version = path.dirname(file).split('/').pop();
+				var progress = {
+					current: 0,
+					total: 0,
+					incr: Upgrade.incrementProgress,
+					script: scriptExport,
+					date: date,
+				};
 
 				process.stdout.write('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '... ');
 
@@ -168,7 +175,9 @@ Upgrade.process = function (files, skipCount, callback) {
 				}
 
 				// Do the upgrade...
-				scriptExport.method(function (err) {
+				scriptExport.method.bind({
+					progress: progress,
+				})(function (err) {
 					if (err) {
 						process.stdout.write('error\n'.red);
 						return next(err);
@@ -176,6 +185,12 @@ Upgrade.process = function (files, skipCount, callback) {
 
 					// Record success in schemaLog
 					db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
+
+					if (progress.total > 0) {
+						process.stdout.clearLine();
+						process.stdout.cursorTo(0);
+						process.stdout.write('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '... ');
+					}
 
 					process.stdout.write('OK\n'.green);
 					next();
@@ -190,6 +205,20 @@ Upgrade.process = function (files, skipCount, callback) {
 			});
 		},
 	], callback);
+};
+
+Upgrade.incrementProgress = function () {
+	this.current += 1;
+
+	// Redraw the progress bar
+	var percentage = Math.floor((this.current / this.total) * 100) + '%';
+	var filled = Math.floor((this.current / this.total) * 15);
+	var unfilled = 15 - filled;
+	process.stdout.clearLine();
+	process.stdout.cursorTo(0);
+
+	process.stdout.write('  → '.white + String('[' + [this.date.getUTCFullYear(), this.date.getUTCMonth() + 1, this.date.getUTCDate()].join('/') + '] ').gray + String(this.script.name).reset + '... ');
+	process.stdout.write('[' + (filled ? new Array(filled).join('#') : '') + new Array(unfilled).join(' ') + '] (' + this.current + '/' + this.total + ') ' + percentage);
 };
 
 module.exports = Upgrade;
