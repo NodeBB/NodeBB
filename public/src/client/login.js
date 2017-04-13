@@ -68,9 +68,7 @@ define('forum/login', [], function () {
 		} else {
 			$('#content #username').focus();
 		}
-		if ($('#content #noscript').val() === 'true') {
-			$('#content #noscript').val('false');
-		}
+		$('#content #noscript').val('false');
 	};
 
 	return Login;

@@ -13,6 +13,7 @@ var user = require('../user');
 var plugins = require('../plugins');
 var utils = require('../../public/src/utils');
 var Password = require('../password');
+var helpers = require('./helpers');
 
 var sockets = require('../socket.io');
 
@@ -42,16 +43,30 @@ authenticationController.register = function (req, res) {
 			}
 		},
 		function (next) {
+			var err;
+
 			if (!userData.email) {
-				return next(new Error('[[error:invalid-email]]'));
+				err = '[[error:invalid-email]]';
 			}
 
-			if (!userData.username || userData.username.length < meta.config.minimumUsernameLength) {
-				return next(new Error('[[error:username-too-short]]'));
+			if (!err && (!userData.username || userData.username.length < meta.config.minimumUsernameLength)) {
+				err = '[[error:username-too-short]]';
 			}
 
-			if (userData.username.length > meta.config.maximumUsernameLength) {
-				return next(new Error('[[error:username-too-long'));
+			if (!err && userData.username.length > meta.config.maximumUsernameLength) {
+				err = '[[error:username-too-long';
+			}
+			var pass = userData["password-confirm"];
+			if (!err && userData.password !== userData["password-confirm"]) {
+				err = '[[user:change_password_error_match]]';
+			}
+
+			if (err) {
+				if (req.body.noscript === 'true') {
+					return helpers.noScriptErrors(req, res, err, 400);
+				} else {
+					return next(new Error(err));
+				}
 			}
 
 			user.isPasswordValid(userData.password, next);
@@ -84,7 +99,11 @@ authenticationController.register = function (req, res) {
 		},
 	], function (err, data) {
 		if (err) {
-			return res.status(400).send(err.message);
+			if (req.body.noscript === 'true') {
+				return helpers.noScriptErrors(req, res, err.message, 400);
+			} else {
+				return res.status(400).send(err.message);
+			}
 		}
 
 		if (req.body.userLang) {
@@ -115,7 +134,12 @@ function registerAndLoginUser(req, res, userData, callback) {
 				}
 				userData.register = true;
 				req.session.registration = userData;
-				return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
+
+				if (req.body.noscript === 'true') {
+					return res.redirect(nconf.get('relative_path') + '/register/complete');
+				} else {
+					return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
+				}
 			});
 		},
 		function (next) {
