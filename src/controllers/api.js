@@ -12,7 +12,7 @@ var categories = require('../categories');
 var privileges = require('../privileges');
 var plugins = require('../plugins');
 var widgets = require('../widgets');
-var translator = require('../../public/src/modules/translator');
+var translator = require('../translator');
 
 var apiController = module.exports;
 

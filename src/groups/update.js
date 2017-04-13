@@ -4,7 +4,7 @@ var async = require('async');
 var winston = require('winston');
 
 var plugins = require('../plugins');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 var db = require('../database');
 
 

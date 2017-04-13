@@ -9,7 +9,7 @@ var db = require('../database');
 var user = require('../user');
 var plugins = require('../plugins');
 var categories = require('../categories');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 
 
 module.exports = function (Posts) {

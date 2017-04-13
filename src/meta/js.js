@@ -11,7 +11,6 @@ var uglifyjs = require('uglify-js');
 
 var file = require('../file');
 var plugins = require('../plugins');
-var utils = require('../../public/src/utils');
 
 var minifierPath = path.join(__dirname, 'minifier.js');
 
@@ -171,7 +170,7 @@ module.exports = function (Meta) {
 		});
 
 		async.each(dirs, function (dir, next) {
-			utils.walk(dir, function (err, files) {
+			file.walk(dir, function (err, files) {
 				if (err) {
 					return next(err);
 				}
@@ -296,7 +295,7 @@ module.exports = function (Meta) {
 		});
 
 		async.each(pluginDirectories, function (directory, next) {
-			utils.walk(directory, function (err, scripts) {
+			file.walk(directory, function (err, scripts) {
 				pluginsScripts = pluginsScripts.concat(scripts);
 				next(err);
 			});
