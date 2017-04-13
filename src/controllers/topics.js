@@ -14,6 +14,7 @@ var plugins = require('../plugins');
 var helpers = require('./helpers');
 var pagination = require('../pagination');
 var utils = require('../utils');
+var translator = require('../translator');
 
 var topicsController = {};
 
@@ -129,13 +130,14 @@ topicsController.get = function (req, res, callback) {
 			plugins.fireHook('filter:controllers.topic.get', { topicData: topicData, uid: req.uid }, next);
 		},
 		function (data, next) {
+			data.topicData.title = translator.escape(data.topicData.title);
 			var breadcrumbs = [
 				{
 					text: data.topicData.category.name,
 					url: nconf.get('relative_path') + '/category/' + data.topicData.category.slug,
 				},
 				{
-					text: data.topicData.title,
+					text: translator.escape(data.topicData.title),
 				},
 			];
 

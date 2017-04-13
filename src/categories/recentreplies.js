@@ -11,7 +11,7 @@ var posts = require('../posts');
 var topics = require('../topics');
 var privileges = require('../privileges');
 var batch = require('../batch');
-
+var translator = require('../translator');
 
 module.exports = function (Categories) {
 	Categories.getRecentReplies = function (cid, uid, count, callback) {
@@ -136,7 +136,7 @@ module.exports = function (Categories) {
 						teaser.user.uid = undefined;
 						teaser.topic = {
 							slug: topicData[index].slug,
-							title: validator.escape(String(topicData[index].title)),
+							title: translator.escape(validator.escape(String(topicData[index].title))),
 						};
 					}
 				});

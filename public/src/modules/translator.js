@@ -207,7 +207,7 @@
 								// if there are arguments to the token
 								var backup = '';
 								if (args && args.length) {
-									backup = this.translate('&lsqb;&lsqb;' + currentSlice + '&lsqb;&lsqb;');
+									backup = this.translate(currentSlice);
 								}
 								// add the translation promise to the array
 								toTranslate.push(this.translateKey(name, args, backup));
@@ -414,7 +414,7 @@
 		 * @returns {string}
 		 */
 		Translator.escape = function escape(text) {
-			return typeof text === 'string' ? text.replace(/\[\[([\S]*?)\]\]/g, '\\[\\[$1\\]\\]') : text;
+			return typeof text === 'string' ? text.replace(/\[/g, '&lsqb;').replace(/\]/g, '&rsqb;') : text;
 		};
 
 		/**
@@ -423,7 +423,7 @@
 		 * @returns {string}
 		 */
 		Translator.unescape = function unescape(text) {
-			return typeof text === 'string' ? text.replace(/\\\[\\\[([\S]*?)\\\]\\\]/g, '[[$1]]') : text;
+			return typeof text === 'string' ? text.replace(/&lsqb;|\\\[/g, '[').replace(/&rsqb;|\\\]/g, ']') : text;
 		};
 
 		/**
