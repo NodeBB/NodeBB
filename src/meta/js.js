@@ -1,18 +1,15 @@
 'use strict';
 
 var winston = require('winston');
-var fork = require('child_process').fork;
 var path = require('path');
 var async = require('async');
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
-var uglifyjs = require('uglify-js');
 
 var file = require('../file');
 var plugins = require('../plugins');
-
-var minifierPath = path.join(__dirname, 'minifier.js');
+var minifier = require('./minifier');
 
 module.exports = function (Meta) {
 	Meta.js = {
@@ -93,11 +90,14 @@ module.exports = function (Meta) {
 		},
 	};
 
-	function minifyModules(modules, callback) {
+	function minifyModules(modules, fork, callback) {
+		var cargo = async.cargo(function (files, next) {
+			minifier.js.minify(files, fork, next);
+		}, 500);
+
 		async.eachLimit(modules, 500, function (mod, next) {
 			var srcPath = mod.srcPath;
 			var destPath = mod.destPath;
-			var minified;
 
 			async.parallel([
 				function (cb) {
@@ -110,30 +110,24 @@ module.exports = function (Meta) {
 						}
 
 						if (srcPath.endsWith('.min.js') || path.dirname(srcPath).endsWith('min')) {
-							minified = { code: buffer.toString() };
-							return cb();
+							return cb(null, { code: buffer.toString() });
 						}
 
-						try {
-							minified = uglifyjs.minify(buffer.toString(), {
-								fromString: true,
-								compress: false,
-							});
-						} catch (e) {
-							return cb(e);
-						}
-
-						cb();
+						cargo.push(buffer.toString(), cb);
 					});
 				},
-			], function (err) {
+			], function (err, results) {
 				if (err) {
 					return next(err);
 				}
 
+				var minified = results[1];
 				fs.writeFile(destPath, minified.code, next);
 			});
-		}, callback);
+		}, function (err) {
+			cargo.kill();
+			callback(err);
+		});
 	}
 
 	function linkModules(callback) {
@@ -233,7 +227,7 @@ module.exports = function (Meta) {
 		});
 	}
 
-	Meta.js.buildModules = function (callback) {
+	Meta.js.buildModules = function (fork, callback) {
 		async.waterfall([
 			clearModules,
 			function (next) {
@@ -244,7 +238,7 @@ module.exports = function (Meta) {
 				getModuleList(next);
 			},
 			function (modules, next) {
-				minifyModules(modules, next);
+				minifyModules(modules, fork, next);
 			},
 		], callback);
 	};
@@ -269,52 +263,13 @@ module.exports = function (Meta) {
 		});
 	};
 
-	Meta.js.minify = function (target, callback) {
-		winston.verbose('[meta/js] Minifying ' + target);
-
-		var forkProcessParams = setupDebugging();
-		var minifier = fork(minifierPath, [], forkProcessParams);
-		Meta.js.minifierProc = minifier;
-
-		Meta.js.target[target] = {};
-
-		Meta.js.prepare(target, function (err) {
-			if (err) {
-				return callback(err);
-			}
-			minifier.send({
-				action: 'js',
-				minify: global.env !== 'development',
-				scripts: Meta.js.target[target].scripts,
-			});
-		});
-
-		minifier.on('message', function (message) {
-			switch (message.type) {
-			case 'end':
-				Meta.js.target[target].cache = message.minified;
-				Meta.js.target[target].map = message.sourceMap;
-				winston.verbose('[meta/js] ' + target + ' minification complete');
-				minifier.kill();
-
-				Meta.js.commitToFile(target, callback);
-				break;
-			case 'error':
-				winston.error('[meta/js] Could not compile ' + target + ': ' + message.message);
-				minifier.kill();
-
-				callback(new Error(message.message));
-				break;
-			}
-		});
-	};
-
-	Meta.js.prepare = function (target, callback) {
-		var pluginsScripts = [];
-
+	function getBundleScriptList(target, callback) {
 		var pluginDirectories = [];
 
-		pluginsScripts = plugins[target === 'nodebb.min.js' ? 'clientScripts' : 'acpScripts'].filter(function (path) {
+		if (target === 'admin') {
+			target = 'acp';
+		}
+		var pluginScripts = plugins[target + 'Scripts'].filter(function (path) {
 			if (path.endsWith('.js')) {
 				return true;
 			}
@@ -325,8 +280,12 @@ module.exports = function (Meta) {
 
 		async.each(pluginDirectories, function (directory, next) {
 			file.walk(directory, function (err, scripts) {
-				pluginsScripts = pluginsScripts.concat(scripts);
-				next(err);
+				if (err) {
+					return next(err);
+				}
+
+				pluginScripts = pluginScripts.concat(scripts);
+				next();
 			});
 		}, function (err) {
 			if (err) {
@@ -335,52 +294,45 @@ module.exports = function (Meta) {
 
 			var basePath = path.resolve(__dirname, '../..');
 
-			Meta.js.target[target].scripts = Meta.js.scripts.base.concat(pluginsScripts);
+			var scripts = Meta.js.scripts.base.concat(pluginScripts);
 
-			if (target === 'nodebb.min.js') {
-				Meta.js.target[target].scripts = Meta.js.target[target].scripts.concat(Meta.js.scripts.rjs);
+			if (target === 'client') {
+				scripts = scripts.concat(Meta.js.scripts.rjs);
 			}
 
-			Meta.js.target[target].scripts = Meta.js.target[target].scripts.map(function (script) {
+			scripts = scripts.map(function (script) {
 				return path.resolve(basePath, script).replace(/\\/g, '/');
 			});
 
-			callback();
+			callback(null, scripts);
 		});
+	}
+
+	Meta.js.buildBundle = function (target, fork, callback) {
+		winston.verbose('[meta/js] Building ' + target);
+
+		var fileNames = {
+			client: 'nodebb.min.js',
+			admin: 'acp.min.js',
+		};
+
+		async.waterfall([
+			function (next) {
+				getBundleScriptList(target, next);
+			},
+			function (files, next) {
+				var minify = global.env === 'development';
+
+				minifier.js.bundle(files, minify, fork, next);
+			},
+			function (bundle, next) {
+				var filePath = path.join(__dirname, '../../build/public', fileNames[target]);
+				fs.writeFile(filePath, bundle.code, next);
+			},
+		], callback);
 	};
 
 	Meta.js.killMinifier = function () {
-		if (Meta.js.minifierProc) {
-			Meta.js.minifierProc.kill('SIGTERM');
-		}
+		minifier.killAll();
 	};
-
-	Meta.js.commitToFile = function (target, callback) {
-		fs.writeFile(path.join(__dirname, '../../build/public', target), Meta.js.target[target].cache, function (err) {
-			callback(err);
-		});
-	};
-
-	function setupDebugging() {
-		/**
-		 * Check if the parent process is running with the debug option --debug (or --debug-brk)
-		 */
-		var forkProcessParams = {};
-		if (global.v8debug || parseInt(process.execArgv.indexOf('--debug'), 10) !== -1) {
-			/**
-			 * use the line below if you want to debug minifier.js script too (or even --debug-brk option, but
-			 * you'll have to setup your debugger and connect to the forked process)
-			 */
-			// forkProcessParams = {execArgv: ['--debug=' + (global.process.debugPort + 1), '--nolazy']};
-
-			/**
-			 * otherwise, just clean up --debug/--debug-brk options which are set up by default from the parent one
-			 */
-			forkProcessParams = {
-				execArgv: [],
-			};
-		}
-
-		return forkProcessParams;
-	}
 };
