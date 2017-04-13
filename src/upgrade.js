@@ -181,7 +181,7 @@ Upgrade.process = function (files, skipCount, callback) {
 		function (next) {
 			process.stdout.write('Upgrade complete!\n\n'.green);
 			setImmediate(next);
-		}
+		},
 	], callback);
 };
 
