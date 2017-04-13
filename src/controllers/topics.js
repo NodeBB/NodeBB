@@ -67,6 +67,7 @@ topicsController.get = function (req, res, callback) {
 			settings = results.settings;
 			var postCount = parseInt(results.topic.postcount, 10);
 			pageCount = Math.max(1, Math.ceil(postCount / settings.postsPerPage));
+			results.topic.postcount = postCount;
 
 			if (utils.isNumber(req.params.post_index) && (req.params.post_index < 1 || req.params.post_index > postCount)) {
 				return helpers.redirect(res, '/topic/' + req.params.topic_id + '/' + req.params.slug + (req.params.post_index > postCount ? '/' + postCount : ''));

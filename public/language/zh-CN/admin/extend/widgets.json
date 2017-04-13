@@ -13,7 +13,7 @@
 	"container.alert": "警报",
 
 	"alert.confirm-delete": "确认删除此窗口部件？",
-	"alert.updated": "窗口部件升级",
-	"alert.update-success": "已成功升级窗口部件"
+	"alert.updated": "窗口部件更新",
+	"alert.update-success": "已成功更新窗口部件"
 
 }

@@ -19,6 +19,12 @@
 
 'use strict';
 
+if (require.main !== module) {
+	require.main.require = function (path) {
+		return require(path);
+	};
+}
+
 var nconf = require('nconf');
 nconf.argv().env('__');
 

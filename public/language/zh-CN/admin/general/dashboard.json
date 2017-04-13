@@ -33,7 +33,7 @@
 	"control-panel": "系统控制",
 	"reload": "重载",
 	"restart": "重启",
-	"restart-warning": "重新载入或重启 NodeBB 会丢弃数秒内所有的连接。",
+	"restart-warning": "重载或重启 NodeBB 会丢失数秒内所有的连接。",
 	"maintenance-mode": "维护模式",
 	"maintenance-mode-title": "点击此处设置 NodeBB 的维护模式",
 	"realtime-chart-updates": "实时图表更新",

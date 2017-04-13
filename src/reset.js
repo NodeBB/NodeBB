@@ -1,5 +1,6 @@
 'use strict';
 
+var path = require('path');
 var winston = require('winston');
 var nconf = require('nconf');
 var async = require('async');
@@ -83,7 +84,7 @@ function resetTheme(themeId, callback) {
 	var meta = require('./meta');
 	var fs = require('fs');
 
-	fs.access('node_modules/' + themeId + '/package.json', function (err) {
+	fs.access(path.join(__dirname, '../node_modules', themeId, 'package.json'), function (err) {
 		if (err) {
 			winston.warn('[reset] Theme `%s` is not installed on this forum', themeId);
 			callback(new Error('theme-not-found'));

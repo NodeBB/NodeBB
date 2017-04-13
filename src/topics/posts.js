@@ -63,7 +63,7 @@ module.exports = function (Topics) {
 			var uids = [];
 
 			postData.forEach(function (postData) {
-				if (postData && postData[field] && uids.indexOf(postData[field]) === -1) {
+				if (postData && parseInt(postData[field], 10) >= 0 && uids.indexOf(postData[field]) === -1) {
 					uids.push(postData[field]);
 				}
 			});

@@ -2,16 +2,25 @@
 
 'use strict';
 
+var cproc;
+var args;
+var fs;
+var path;
+var request;
+var semver;
+var prompt;
+var async;
+
 try {
 	require('colors');
-	var cproc = require('child_process');
-	var args = require('minimist')(process.argv.slice(2));
-	var fs = require('fs');
-	var path = require('path');
-	var request = require('request');
-	var semver = require('semver');
-	var prompt = require('prompt');
-	var async = require('async');
+	cproc = require('child_process');
+	args = require('minimist')(process.argv.slice(2));
+	fs = require('fs');
+	path = require('path');
+	request = require('request');
+	semver = require('semver');
+	prompt = require('prompt');
+	async = require('async');
 } catch (e) {
 	if (e.code === 'MODULE_NOT_FOUND') {
 		process.stdout.write('NodeBB could not be started because it\'s dependencies have not been installed.\n');
@@ -23,12 +32,15 @@ try {
 	}
 }
 
+var loaderPath = path.join(__dirname, 'loader.js');
+var appPath = path.join(__dirname, 'app.js');
+
 if (args.dev) {
 	process.env.NODE_ENV = 'development';
 }
 
 function getRunningPid(callback) {
-	fs.readFile(__dirname + '/pidfile', {
+	fs.readFile(path.join(__dirname, 'pidfile'), {
 		encoding: 'utf-8',
 	}, function (err, pid) {
 		if (err) {
@@ -58,7 +70,7 @@ function getCurrentVersion(callback) {
 	});
 }
 function fork(args) {
-	return cproc.fork('app.js', args, {
+	return cproc.fork(appPath, args, {
 		cwd: __dirname,
 		silent: false,
 	});
@@ -72,7 +84,7 @@ function getInstalledPlugins(callback) {
 			return callback(err);
 		}
 
-		var isNbbModule = /^nodebb-(?:plugin|theme|widget|rewards)-[\w\-]+$/;
+		var isNbbModule = /^nodebb-(?:plugin|theme|widget|rewards)-[\w-]+$/;
 		var moduleName;
 		var isGitRepo;
 
@@ -170,21 +182,21 @@ function checkPlugins(standalone, callback) {
 					body = [body];
 				}
 
-				var current,
-					suggested,
-					upgradable = body.map(function (suggestObj) {
-						current = payload.plugins[suggestObj.package];
-						suggested = suggestObj.version;
+				var current;
+				var suggested;
+				var upgradable = body.map(function (suggestObj) {
+					current = payload.plugins[suggestObj.package];
+					suggested = suggestObj.version;
 
-						if (suggestObj.code === 'match-found' && semver.gt(suggested, current)) {
-							return {
-								name: suggestObj.package,
-								current: current,
-								suggested: suggested,
-							};
-						}
-						return null;
-					}).filter(Boolean);
+					if (suggestObj.code === 'match-found' && semver.gt(suggested, current)) {
+						return {
+							name: suggestObj.package,
+							current: current,
+							suggested: suggested,
+						};
+					}
+					return null;
+				}).filter(Boolean);
 
 				next(null, upgradable);
 			});
@@ -200,7 +212,7 @@ function upgradePlugins(callback) {
 
 	checkPlugins(standalone, function (err, found) {
 		if (err) {
-			process.stdout.write('\Warning'.yellow + ': An unexpected error occured when attempting to verify plugin upgradability\n'.reset);
+			process.stdout.write('Warning'.yellow + ': An unexpected error occured when attempting to verify plugin upgradability\n'.reset);
 			return callback(err);
 		}
 
@@ -280,7 +292,7 @@ var commands = {
 			process.stdout.write('  "' + './nodebb restart'.yellow + '" to restart NodeBB\n\n'.reset);
 
 			// Spawn a new NodeBB process
-			cproc.fork(__dirname + '/loader.js', {
+			cproc.fork(loaderPath, {
 				env: process.env,
 			});
 		},
@@ -334,7 +346,7 @@ var commands = {
 			process.stdout.write('\n\n'.reset);
 
 			// Spawn a new NodeBB process
-			cproc.fork(__dirname + '/loader.js', {
+			cproc.fork(loaderPath, {
 				env: process.env,
 			});
 			cproc.spawn('tail', ['-F', './logs/output.log'], {
@@ -348,7 +360,7 @@ var commands = {
 		usage: 'Usage: ' + './nodebb dev'.yellow,
 		handler: function () {
 			process.env.NODE_ENV = 'development';
-			cproc.fork(__dirname + '/loader.js', ['--no-daemon', '--no-silent'], {
+			cproc.fork(loaderPath, ['--no-daemon', '--no-silent'], {
 				env: process.env,
 			});
 		},
