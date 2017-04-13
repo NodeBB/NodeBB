@@ -56,17 +56,16 @@ authenticationController.register = function (req, res) {
 			if (!err && userData.username.length > meta.config.maximumUsernameLength) {
 				err = '[[error:username-too-long';
 			}
-			var pass = userData["password-confirm"];
-			if (!err && userData.password !== userData["password-confirm"]) {
+
+			if (!err && userData.password !== userData['password-confirm']) {
 				err = '[[user:change_password_error_match]]';
 			}
 
 			if (err) {
 				if (req.body.noscript === 'true') {
 					return helpers.noScriptErrors(req, res, err, 400);
-				} else {
-					return next(new Error(err));
 				}
+				return next(new Error(err));
 			}
 
 			user.isPasswordValid(userData.password, next);
@@ -101,9 +100,8 @@ authenticationController.register = function (req, res) {
 		if (err) {
 			if (req.body.noscript === 'true') {
 				return helpers.noScriptErrors(req, res, err.message, 400);
-			} else {
-				return res.status(400).send(err.message);
 			}
+			return res.status(400).send(err.message);
 		}
 
 		if (req.body.userLang) {
@@ -137,9 +135,8 @@ function registerAndLoginUser(req, res, userData, callback) {
 
 				if (req.body.noscript === 'true') {
 					return res.redirect(nconf.get('relative_path') + '/register/complete');
-				} else {
-					return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
 				}
+				return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
 			});
 		},
 		function (next) {
@@ -246,9 +243,8 @@ authenticationController.login = function (req, res, next) {
 
 		if (req.body.noscript === 'true') {
 			return helpers.noScriptErrors(req, res, err, 500);
-		} else {
-			res.status(500).send(err);
 		}
+		res.status(500).send(err);
 	}
 };
 
@@ -257,9 +253,8 @@ function continueLogin(req, res, next) {
 		if (err) {
 			if (req.body.noscript === 'true') {
 				return helpers.noScriptErrors(req, res, err.message, 403);
-			} else {
-				return res.status(403).send(err.message);
 			}
+			return res.status(403).send(err.message);
 		}
 
 		if (!userData) {
@@ -269,9 +264,8 @@ function continueLogin(req, res, next) {
 
 			if (req.body.noscript === 'true') {
 				return helpers.noScriptErrors(req, res, info, 403);
-			} else {
-				return res.status(403).send(info);
 			}
+			return res.status(403).send(info);
 		}
 
 		var passwordExpiry = userData.passwordExpiry !== undefined ? parseInt(userData.passwordExpiry, 10) : null;
@@ -293,9 +287,8 @@ function continueLogin(req, res, next) {
 				if (err) {
 					if (req.body.noscript === 'true') {
 						return helpers.noScriptErrors(req, res, err.message, 403);
-					} else {
-						return res.status(403).send(err.message);
 					}
+					return res.status(403).send(err.message);
 				}
 
 				res.status(200).send(nconf.get('relative_path') + '/reset/' + code);
@@ -305,9 +298,8 @@ function continueLogin(req, res, next) {
 				if (err) {
 					if (req.body.noscript === 'true') {
 						return helpers.noScriptErrors(req, res, err.message, 403);
-					} else {
-						return res.status(403).send(err.message);
 					}
+					return res.status(403).send(err.message);
 				}
 
 				var next;

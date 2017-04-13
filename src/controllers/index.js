@@ -288,6 +288,7 @@ Controllers.composePost = function (req, res, next) {
 			if (err) {
 				return helpers.noScriptErrors(req, res, err.message, 400);
 			}
+			next(err);
 		});
 	} else if (body.cid) {
 		data.cid = body.cid;
@@ -308,6 +309,7 @@ Controllers.composePost = function (req, res, next) {
 			if (err) {
 				return helpers.noScriptErrors(req, res, err.message, 400);
 			}
+			next(err);
 		});
 	}
 };

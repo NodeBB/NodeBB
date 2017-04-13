@@ -25,7 +25,7 @@ helpers.noScriptErrors = function (req, res, error, httpStatus) {
 			title: '[[global:' + httpStatusString + '.title]]',
 		});
 	});
-}
+};
 
 helpers.notAllowed = function (req, res, error) {
 	plugins.fireHook('filter:helpers.notAllowed', {
