@@ -267,7 +267,7 @@ Controllers.composePost = function (req, res, next) {
 	};
 
 	if (!data.content) {
-		return res.status(200).send('[[error:invalid-data]]');
+		return helpers.noScriptErrors(req, res, '[[error:invalid-data]]', 400);
 	}
 
 	if (body.tid) {
@@ -286,7 +286,7 @@ Controllers.composePost = function (req, res, next) {
 			},
 		], function (err) {
 			if (err) {
-				return next(err);
+				return helpers.noScriptErrors(req, res, err.message, 400);
 			}
 		});
 	} else if (body.cid) {
@@ -306,7 +306,7 @@ Controllers.composePost = function (req, res, next) {
 			},
 		], function (err) {
 			if (err) {
-				return next(err);
+				return helpers.noScriptErrors(req, res, err.message, 400);
 			}
 		});
 	}
