@@ -241,7 +241,7 @@ module.exports = function (db, module) {
 
 	module.sortedSetScore = function (key, value, callback) {
 		if (!key) {
-			return callback();
+			return callback(null, null);
 		}
 		value = helpers.valueToString(value);
 		db.collection('objects').findOne({ _key: key, value: value }, { fields: { _id: 0, score: 1 } }, function (err, result) {
@@ -274,7 +274,7 @@ module.exports = function (db, module) {
 
 	module.sortedSetScores = function (key, values, callback) {
 		if (!key) {
-			return callback();
+			return callback(null, null);
 		}
 		values = values.map(helpers.valueToString);
 		db.collection('objects').find({ _key: key, value: { $in: values } }, { _id: 0, value: 1, score: 1 }).toArray(function (err, result) {

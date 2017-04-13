@@ -54,9 +54,9 @@
 		"no-restricted-syntax": "off",
 		"no-script-url": "off",
 		"default-case": "off",
+		"linebreak-style": "off",
 
 		// "no-multi-assign": "off",
-		// "linebreak-style": "off",
 		// "one-var": "off",
 		// "no-undef": "off",
 		// "max-nested-callbacks": "off",

@@ -324,6 +324,22 @@ describe('Sorted Set methods', function () {
 				done();
 			});
 		});
+
+		it('should not error if key is undefined', function (done) {
+			db.sortedSetScore(undefined, 1, function (err, score) {
+				assert.ifError(err);
+				assert.strictEqual(score, null);
+				done();
+			});
+		});
+
+		it('should not error if value is undefined', function (done) {
+			db.sortedSetScore('sortedSetTest1', undefined, function (err, score) {
+				assert.ifError(err);
+				assert.strictEqual(score, null);
+				done();
+			});
+		});
 	});
 
 	describe('sortedSetsScore()', function () {
@@ -332,6 +348,15 @@ describe('Sorted Set methods', function () {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.deepEqual(scores, [1.1, 1, null]);
+				done();
+			});
+		});
+
+		it('should return scores even if some keys are undefined', function (done) {
+			db.sortedSetsScore(['sortedSetTest1', undefined, 'doesnotexist'], 'value1', function (err, scores) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.deepEqual(scores, [1.1, null, null]);
 				done();
 			});
 		});
@@ -355,6 +380,15 @@ describe('Sorted Set methods', function () {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.deepEqual(scores, [1.2, 1.1, null]);
+				done();
+			});
+		});
+
+		it('should return scores even if some values are undefined', function (done) {
+			db.sortedSetScores('sortedSetTest1', ['value2', undefined, 'doesnotexist'], function (err, scores) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.deepEqual(scores, [1.2, null, null]);
 				done();
 			});
 		});
