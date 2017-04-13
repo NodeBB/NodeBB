@@ -130,7 +130,7 @@ describe('authentication', function () {
 		});
 	});
 
-	it('should logout a user', function (done) {
+	it('should logout a user with noscript', function (done) {
 		request({
 			url: nconf.get('url') + '/api/config',
 			json: true,
@@ -139,7 +139,9 @@ describe('authentication', function () {
 			assert.ifError(err);
 
 			request.post(nconf.get('url') + '/logout', {
-				form: {},
+				form: {
+					noscript: 'true',
+				},
 				json: true,
 				jar: jar,
 				headers: {
@@ -183,7 +185,7 @@ describe('authentication', function () {
 				},
 			}, function (err, response, body) {
 				assert.ifError(err);
-				assert(body);
+				assert.equal(response.statusCode, 302);
 
 				request({
 					url: nconf.get('url') + '/api/me',
