@@ -84,7 +84,7 @@ Upgrade.check = function (callback) {
 				if (err) {
 					return callback(err);
 				}
-
+				console.log('available vs executed', files.length, executed.length);
 				var remainder = files.filter(function (name) {
 					return executed.indexOf(path.basename(name, '.js')) === -1;
 				});
