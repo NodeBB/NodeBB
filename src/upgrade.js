@@ -147,8 +147,13 @@ Upgrade.process = function (files, skipCount, callback) {
 	process.stdout.write('OK'.green + ' | '.reset + String(files.length).cyan + ' script(s) found'.cyan + (skipCount > 0 ? ', '.cyan + String(skipCount).cyan + ' skipped'.cyan : '') + '\n'.reset);
 
 	async.waterfall([
-		async.apply(db.get, 'schemaDate'),
-		function (schemaDate, next) {
+		function (next) {
+			async.parallel({
+				schemaDate: async.apply(db.get, 'schemaDate'),
+				schemaLogCount: async.apply(db.sortedSetCard, 'schemaLog'),
+			}, next);
+		},
+		function (results, next) {
 			async.eachSeries(files, function (file, next) {
 				var scriptExport = require(file);
 				var date = new Date(scriptExport.timestamp);
@@ -157,7 +162,7 @@ Upgrade.process = function (files, skipCount, callback) {
 				process.stdout.write('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '... ');
 
 				// For backwards compatibility, cross-reference with schemaDate (if found). If a script's date is older, skip it
-				if (!schemaDate || (scriptExport.timestamp <= schemaDate && semver.lt(version, '1.5.0'))) {
+				if ((!results.schemaDate && !results.schemaLogCount) || (scriptExport.timestamp <= results.schemaDate && semver.lt(version, '1.5.0'))) {
 					process.stdout.write('skipped\n'.grey);
 					db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'), next);
 					return;
@@ -174,9 +179,6 @@ Upgrade.process = function (files, skipCount, callback) {
 					db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'), next);
 				});
 			}, next);
-		},
-		function (next) {
-			db.set('schemaDate', Date.now(), next);
 		},
 		function (next) {
 			process.stdout.write('Upgrade complete!\n\n'.green);
