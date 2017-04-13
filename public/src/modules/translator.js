@@ -239,7 +239,7 @@
 
 			// if we were mid-token, treat it as invalid
 			if (inToken) {
-				last = this.translate('&lsqb;&lsqb;' + last);
+				last = this.translate(last);
 			}
 
 			// add the remaining text after the last translation string
