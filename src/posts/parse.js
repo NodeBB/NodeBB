@@ -73,6 +73,7 @@ module.exports = function (Posts) {
 	};
 
 	function sanitizeSignature(signature) {
+		signature = translator.escape(signature);
 		var string = S(signature);
 		var tagsToStrip = [];
 
