@@ -164,6 +164,7 @@ Upgrade.process = function (files, skipCount, callback) {
 				if (scriptExport.timestamp <= schemaDate && semver.lt(version, '1.5.0')) {
 					process.stdout.write('skipped\n'.grey);
 					db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'), next);
+					return;
 				}
 
 				// Do the upgrade...
