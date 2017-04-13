@@ -10,7 +10,7 @@ var categories = require('./categories');
 var user = require('./user');
 var plugins = require('./plugins');
 var privileges = require('./privileges');
-var utils = require('../public/src/utils');
+var utils = require('./utils');
 
 var search = {};
 

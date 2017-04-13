@@ -5,8 +5,8 @@ var async = require('async');
 var nconf = require('nconf');
 
 var user = require('../user');
-var utils = require('../../public/src/utils');
-var translator = require('../../public/src/modules/translator');
+var utils = require('../utils');
+var translator = require('../translator');
 var plugins = require('../plugins');
 var db = require('../database');
 var meta = require('../meta');

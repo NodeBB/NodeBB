@@ -6,8 +6,8 @@ var async = require('async');
 var sanitizeHTML = require('sanitize-html');
 var nconf = require('nconf');
 
-var utils = require('../../public/src/utils');
-var Translator = require('../../public/src/modules/translator').Translator;
+var file = require('../file');
+var Translator = require('../translator').Translator;
 
 function filterDirectories(directories) {
 	return directories.map(function (dir) {
@@ -24,7 +24,7 @@ function filterDirectories(directories) {
 }
 
 function getAdminNamespaces(callback) {
-	utils.walk(path.resolve(nconf.get('views_dir'), 'admin'), function (err, directories) {
+	file.walk(path.resolve(nconf.get('views_dir'), 'admin'), function (err, directories) {
 		if (err) {
 			return callback(err);
 		}

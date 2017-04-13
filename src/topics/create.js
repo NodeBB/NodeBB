@@ -6,7 +6,7 @@ var _ = require('underscore');
 var validator = require('validator');
 var S = require('string');
 var db = require('../database');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 var plugins = require('../plugins');
 var analytics = require('../analytics');
 var user = require('../user');
@@ -88,6 +88,10 @@ module.exports = function (Topics) {
 		], callback);
 	};
 
+	function rtrim(str) {
+		return str.replace(/\s+$/g, '');
+	}
+
 	Topics.post = function (data, callback) {
 		var uid = data.uid;
 		data.title = String(data.title).trim();
@@ -102,7 +106,7 @@ module.exports = function (Topics) {
 			},
 			function (next) {
 				if (data.content) {
-					data.content = data.content.rtrim();
+					data.content = rtrim(data.content);
 				}
 				check(data.content, meta.config.minimumPostLength, meta.config.maximumPostLength, 'content-too-short', 'content-too-long', next);
 			},
@@ -235,7 +239,7 @@ module.exports = function (Topics) {
 			function (filteredData, next) {
 				content = filteredData.content || data.content;
 				if (content) {
-					content = content.rtrim();
+					content = rtrim(content);
 				}
 
 				check(content, meta.config.minimumPostLength, meta.config.maximumPostLength, 'content-too-short', 'content-too-long', next);

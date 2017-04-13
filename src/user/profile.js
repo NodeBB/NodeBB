@@ -4,7 +4,7 @@
 var async = require('async');
 var S = require('string');
 
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 var meta = require('../meta');
 var db = require('../database');
 var groups = require('../groups');

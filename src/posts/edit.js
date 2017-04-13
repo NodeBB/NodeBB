@@ -11,7 +11,7 @@ var privileges = require('../privileges');
 var plugins = require('../plugins');
 var cache = require('./cache');
 var pubsub = require('../pubsub');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 
 module.exports = function (Posts) {
 	pubsub.on('post:edit', function (pid) {

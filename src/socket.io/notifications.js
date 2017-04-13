@@ -2,7 +2,6 @@
 
 var user = require('../user');
 var notifications = require('../notifications');
-
 var SocketNotifs = module.exports;
 
 SocketNotifs.get = function (socket, data, callback) {

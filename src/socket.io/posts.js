@@ -9,7 +9,7 @@ var topics = require('../topics');
 var user = require('../user');
 var websockets = require('./index');
 var socketHelpers = require('./helpers');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 
 var apiController = require('../controllers/api');
 

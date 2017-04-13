@@ -11,7 +11,7 @@ var db = require('../database');
 var meta = require('../meta');
 var user = require('../user');
 var plugins = require('../plugins');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 var Password = require('../password');
 
 var sockets = require('../socket.io');

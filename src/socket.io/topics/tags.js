@@ -3,7 +3,7 @@
 var async = require('async');
 var db = require('../../database');
 var topics = require('../../topics');
-var utils = require('../../../public/src/utils');
+var utils = require('../../utils');
 
 module.exports = function (SocketTopics) {
 	SocketTopics.isTagAllowed = function (socket, data, callback) {

@@ -5,8 +5,8 @@ var nconf = require('nconf');
 var winston = require('winston');
 
 var user = require('../user');
-var utils = require('../../public/src/utils');
-var translator = require('../../public/src/modules/translator');
+var utils = require('../utils');
+var translator = require('../translator');
 
 var db = require('../database');
 var meta = require('../meta');

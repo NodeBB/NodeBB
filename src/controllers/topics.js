@@ -13,7 +13,7 @@ var privileges = require('../privileges');
 var plugins = require('../plugins');
 var helpers = require('./helpers');
 var pagination = require('../pagination');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 
 var topicsController = {};
 

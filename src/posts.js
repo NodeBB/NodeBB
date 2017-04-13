@@ -4,7 +4,7 @@ var async = require('async');
 var _ = require('underscore');
 
 var db = require('./database');
-var utils = require('../public/src/utils');
+var utils = require('./utils');
 var user = require('./user');
 var topics = require('./topics');
 var privileges = require('./privileges');

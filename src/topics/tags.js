@@ -7,7 +7,7 @@ var db = require('../database');
 var meta = require('../meta');
 var _ = require('underscore');
 var plugins = require('../plugins');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 
 
 module.exports = function (Topics) {

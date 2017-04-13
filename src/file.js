@@ -8,9 +8,9 @@ var jimp = require('jimp');
 var mkdirp = require('mkdirp');
 var mime = require('mime');
 
-var utils = require('../public/src/utils');
+var utils = require('./utils');
 
-var file = {};
+var file = module.exports;
 
 file.saveFileToLocal = function (filename, folder, tempPath, callback) {
 	/*
@@ -135,6 +135,49 @@ file.typeToExtension = function (type) {
 		extension = '.' + mime.extension(type);
 	}
 	return extension;
+};
+
+// Adapted from http://stackoverflow.com/questions/5827612/node-js-fs-readdir-recursive-directory-search
+file.walk = function (dir, done) {
+	var results = [];
+
+	fs.readdir(dir, function (err, list) {
+		if (err) {
+			return done(err);
+		}
+		var pending = list.length;
+		if (!pending) {
+			return done(null, results);
+		}
+		list.forEach(function (filename) {
+			filename = dir + '/' + filename;
+			fs.stat(filename, function (err, stat) {
+				if (err) {
+					return done(err);
+				}
+
+				if (stat && stat.isDirectory()) {
+					file.walk(filename, function (err, res) {
+						if (err) {
+							return done(err);
+						}
+
+						results = results.concat(res);
+						pending -= 1;
+						if (!pending) {
+							done(null, results);
+						}
+					});
+				} else {
+					results.push(filename);
+					pending -= 1;
+					if (!pending) {
+						done(null, results);
+					}
+				}
+			});
+		});
+	});
 };
 
 module.exports = file;
