@@ -5,24 +5,22 @@ var nconf = require('nconf');
 var fs = require('fs');
 var winston = require('winston');
 
-module.exports = function (Meta) {
-	Meta.logs = {
-		path: path.join(nconf.get('base_dir'), 'logs', 'output.log'),
-	};
+var logs = module.exports;
 
-	Meta.logs.get = function (callback) {
-		fs.readFile(Meta.logs.path, {
-			encoding: 'utf-8',
-		}, function (err, logs) {
-			if (err) {
-				winston.error('[meta/logs] Could not retrieve logs: ' + err.message);
-			}
+logs.path = path.join(nconf.get('base_dir'), 'logs', 'output.log');
 
-			callback(undefined, logs || '');
-		});
-	};
+logs.get = function (callback) {
+	fs.readFile(logs.path, {
+		encoding: 'utf-8',
+	}, function (err, logs) {
+		if (err) {
+			winston.error('[meta/logs] Could not retrieve logs: ' + err.message);
+		}
 
-	Meta.logs.clear = function (callback) {
-		fs.truncate(Meta.logs.path, 0, callback);
-	};
+		callback(undefined, logs || '');
+	});
+};
+
+logs.clear = function (callback) {
+	fs.truncate(logs.path, 0, callback);
 };
