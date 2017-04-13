@@ -4,7 +4,7 @@ var validator = require('validator');
 
 var db = require('../database');
 var categories = require('../categories');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 
 module.exports = function (Topics) {
 	Topics.getTopicField = function (tid, field, callback) {

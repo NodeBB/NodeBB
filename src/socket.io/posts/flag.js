@@ -11,7 +11,7 @@ var privileges = require('../../privileges');
 var notifications = require('../../notifications');
 var plugins = require('../../plugins');
 var meta = require('../../meta');
-var utils = require('../../../public/src/utils');
+var utils = require('../../utils');
 
 module.exports = function (SocketPosts) {
 	SocketPosts.flag = function (socket, data, callback) {

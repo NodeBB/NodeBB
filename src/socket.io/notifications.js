@@ -3,7 +3,7 @@
 var async = require('async');
 var user = require('../user');
 var notifications = require('../notifications');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 
 var SocketNotifs = {};
 

@@ -11,7 +11,6 @@ var uglifyjs = require('uglify-js');
 
 var file = require('../file');
 var plugins = require('../plugins');
-var utils = require('../../public/src/utils');
 
 var minifierPath = path.join(__dirname, 'minifier.js');
 
@@ -20,12 +19,12 @@ module.exports = function (Meta) {
 		target: {},
 		scripts: {
 			base: [
-				'./node_modules/jquery/dist/jquery.js',
-				'./node_modules/socket.io-client/dist/socket.io.js',
+				'node_modules/jquery/dist/jquery.js',
+				'node_modules/socket.io-client/dist/socket.io.js',
 				'public/vendor/jquery/timeago/jquery.timeago.js',
 				'public/vendor/jquery/js/jquery.form.min.js',
 				'public/vendor/visibility/visibility.min.js',
-				'./node_modules/bootstrap/dist/js/bootstrap.js',
+				'node_modules/bootstrap/dist/js/bootstrap.js',
 				'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.min.js',
 				'public/vendor/jquery/textcomplete/jquery.textcomplete.js',
 				'public/vendor/requirejs/require.js',
@@ -35,14 +34,14 @@ module.exports = function (Meta) {
 				'public/vendor/tinycon/tinycon.js',
 				'public/vendor/xregexp/xregexp.js',
 				'public/vendor/xregexp/unicode/unicode-base.js',
-				'./node_modules/templates.js/lib/templates.js',
+				'node_modules/templates.js/lib/templates.js',
 				'public/src/utils.js',
 				'public/src/sockets.js',
 				'public/src/app.js',
 				'public/src/ajaxify.js',
 				'public/src/overrides.js',
 				'public/src/widgets.js',
-				'./node_modules/promise-polyfill/promise.js',
+				'node_modules/promise-polyfill/promise.js',
 			],
 
 			// files listed below are only available client-side, or are bundled in to reduce # of network requests on cold load
@@ -84,12 +83,12 @@ module.exports = function (Meta) {
 
 			// modules listed below are built (/src/modules) so they can be defined anonymously
 			modules: {
-				'Chart.js': './node_modules/chart.js/dist/Chart.min.js',
-				'mousetrap.js': './node_modules/mousetrap/mousetrap.min.js',
-				'cropper.js': './node_modules/cropperjs/dist/cropper.min.js',
+				'Chart.js': 'node_modules/chart.js/dist/Chart.min.js',
+				'mousetrap.js': 'node_modules/mousetrap/mousetrap.min.js',
+				'cropper.js': 'node_modules/cropperjs/dist/cropper.min.js',
 				'jqueryui.js': 'public/vendor/jquery/js/jquery-ui.js',
-				'zxcvbn.js': './node_modules/zxcvbn/dist/zxcvbn.js',
-				ace: './node_modules/ace-builds/src-min',
+				'zxcvbn.js': 'node_modules/zxcvbn/dist/zxcvbn.js',
+				ace: 'node_modules/ace-builds/src-min',
 			},
 		},
 	};
@@ -199,7 +198,7 @@ module.exports = function (Meta) {
 					return next();
 				}
 
-				utils.walk(srcPath, function (err, files) {
+				file.walk(srcPath, function (err, files) {
 					if (err) {
 						return next(err);
 					}
@@ -225,10 +224,10 @@ module.exports = function (Meta) {
 
 	function clearModules(callback) {
 		var builtPaths = moduleDirs.map(function (p) {
-			return '../../build/public/src/' + p;
+			return path.join(__dirname, '../../build/public/src', p);
 		});
 		async.each(builtPaths, function (builtPath, next) {
-			rimraf(path.join(__dirname, builtPath), next);
+			rimraf(builtPath, next);
 		}, function (err) {
 			callback(err);
 		});
@@ -325,7 +324,7 @@ module.exports = function (Meta) {
 		});
 
 		async.each(pluginDirectories, function (directory, next) {
-			utils.walk(directory, function (err, scripts) {
+			file.walk(directory, function (err, scripts) {
 				pluginsScripts = pluginsScripts.concat(scripts);
 				next(err);
 			});
@@ -343,7 +342,7 @@ module.exports = function (Meta) {
 			}
 
 			Meta.js.target[target].scripts = Meta.js.target[target].scripts.map(function (script) {
-				return path.relative(basePath, script).replace(/\\/g, '/');
+				return path.resolve(basePath, script).replace(/\\/g, '/');
 			});
 
 			callback();
@@ -357,7 +356,7 @@ module.exports = function (Meta) {
 	};
 
 	Meta.js.commitToFile = function (target, callback) {
-		fs.writeFile(path.join(__dirname, '../../build/public/' + target), Meta.js.target[target].cache, function (err) {
+		fs.writeFile(path.join(__dirname, '../../build/public', target), Meta.js.target[target].cache, function (err) {
 			callback(err);
 		});
 	};

@@ -6,7 +6,7 @@ var validator = require('validator');
 var winston = require('winston');
 
 var plugins = require('../plugins');
-var translator = require('../../public/src/modules/translator');
+var translator = require('../translator');
 
 module.exports = function (middleware) {
 	middleware.processRender = function (req, res, next) {

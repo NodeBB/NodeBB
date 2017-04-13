@@ -11,7 +11,7 @@ var categories = require('../categories');
 var meta = require('../meta');
 var pagination = require('../pagination');
 var helpers = require('./helpers');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 
 var categoryController = {};
 

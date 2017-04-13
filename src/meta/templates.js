@@ -9,7 +9,7 @@ var fs = require('fs');
 var nconf = require('nconf');
 
 var plugins = require('../plugins');
-var utils = require('../../public/src/utils');
+var file = require('../file');
 
 var Templates = {};
 
@@ -62,11 +62,11 @@ function preparePaths(baseTemplatesPaths, callback) {
 
 		async.parallel({
 			coreTpls: function (next) {
-				utils.walk(coreTemplatesPath, next);
+				file.walk(coreTemplatesPath, next);
 			},
 			baseThemes: function (next) {
 				async.map(baseTemplatesPaths, function (baseTemplatePath, next) {
-					utils.walk(baseTemplatePath, function (err, paths) {
+					file.walk(baseTemplatePath, function (err, paths) {
 						paths = paths.map(function (tpl) {
 							return {
 								base: baseTemplatePath,

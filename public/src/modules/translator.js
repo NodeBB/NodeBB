@@ -97,6 +97,9 @@
 			// and the strings of untranslated text in between
 			var toTranslate = [];
 
+			// to store the state of if we're currently in a top-level token for later
+			var inToken = false;
+
 			// split a translator string into an array of tokens
 			// but don't split by commas inside other translator strings
 			function split(text) {
@@ -141,6 +144,8 @@
 					// set the last break to our current
 					// spot since we just broke the string
 					lastBreak = cursor;
+					// we're in a token now
+					inToken = true;
 
 					// the current level of nesting of the translation strings
 					var level = 0;
@@ -176,6 +181,8 @@
 								invalidTextRegex.test(sliced[0])) {
 							cursor += 1;
 							lastBreak -= 2;
+							// no longer in a token
+							inToken = false;
 							if (level > 0) {
 								level -= 1;
 							} else {
@@ -191,18 +198,26 @@
 							// if we're at the base level, then this is the end
 							if (level === 0) {
 								// so grab the name and args
-								var result = split(str.slice(lastBreak, cursor));
+								var currentSlice = str.slice(lastBreak, cursor);
+								var result = split(currentSlice);
 								var name = result[0];
 								var args = result.slice(1);
 
+								// make a backup based on the raw string of the token
+								// if there are arguments to the token
+								var backup = '';
+								if (args && args.length) {
+									backup = this.translate('&lsqb;&lsqb;' + currentSlice + '&lsqb;&lsqb;');
+								}
 								// add the translation promise to the array
-								toTranslate.push(this.translateKey(name, args));
+								toTranslate.push(this.translateKey(name, args, backup));
 								// skip past the ending brackets
 								cursor += 2;
 								// set this as our last break
 								lastBreak = cursor;
 								// and we're no longer in a translation string,
 								// so continue with the main loop
+								inToken = false;
 								break;
 							}
 							// otherwise we lower the level
@@ -219,8 +234,16 @@
 				cursor += 1;
 			}
 
+			// ending string of source
+			var last = str.slice(lastBreak);
+
+			// if we were mid-token, treat it as invalid
+			if (inToken) {
+				last = this.translate('&lsqb;&lsqb;' + last);
+			}
+
 			// add the remaining text after the last translation string
-			toTranslate.push(str.slice(lastBreak, cursor + 2));
+			toTranslate.push(last);
 
 			// and return a promise for the concatenated translated string
 			return Promise.all(toTranslate).then(function (translated) {
@@ -232,9 +255,10 @@
 		 * Translates a specific key and array of arguments
 		 * @param {string} name - Translation key (ex. 'global:home')
 		 * @param {string[]} args - Arguments for `%1`, `%2`, etc
+		 * @param {string|Promise<string>} backup - Text to use in case the key can't be found
 		 * @returns {Promise<string>}
 		 */
-		Translator.prototype.translateKey = function translateKey(name, args) {
+		Translator.prototype.translateKey = function translateKey(name, args, backup) {
 			var self = this;
 
 			var result = name.split(':', 2);
@@ -251,29 +275,27 @@
 			}
 
 			var translation = this.getTranslation(namespace, key);
-			var argsToTranslate = args.map(function (arg) {
-				return string(arg).collapseWhitespace().decodeHTMLEntities().escapeHTML().s;
-			}).map(function (arg) {
-				return self.translate(arg);
-			});
-
-			// so we can await all promises at once
-			argsToTranslate.unshift(translation);
-
-			return Promise.all(argsToTranslate).then(function (result) {
-				var translated = result[0];
-				var translatedArgs = result.slice(1);
-
+			return translation.then(function (translated) {
+				// check if the translation is missing first
 				if (!translated) {
 					warn('Missing translation "' + name + '"');
-					return key;
+					return backup || key;
 				}
-				var out = translated;
-				translatedArgs.forEach(function (arg, i) {
-					var escaped = arg.replace(/%/g, '&#37;').replace(/\\,/g, '&#44;');
-					out = out.replace(new RegExp('%' + (i + 1), 'g'), escaped);
+
+				var argsToTranslate = args.map(function (arg) {
+					return string(arg).collapseWhitespace().decodeHTMLEntities().escapeHTML().s;
+				}).map(function (arg) {
+					return self.translate(arg);
 				});
-				return out;
+
+				return Promise.all(argsToTranslate).then(function (translatedArgs) {
+					var out = translated;
+					translatedArgs.forEach(function (arg, i) {
+						var escaped = arg.replace(/%/g, '&#37;').replace(/\\,/g, '&#44;');
+						out = out.replace(new RegExp('%' + (i + 1), 'g'), escaped);
+					});
+					return out;
+				});
 			});
 		};
 
@@ -281,7 +303,7 @@
 		 * Load translation file (or use a cached version), and optionally return the translation of a certain key
 		 * @param {string} namespace - The file name of the translation namespace
 		 * @param {string} [key] - The key of the specific translation to getJSON
-		 * @returns {Promise<Object|string>}
+		 * @returns {Promise<Object>|Promise<string>}
 		 */
 		Translator.prototype.getTranslation = function getTranslation(namespace, key) {
 			var translation;

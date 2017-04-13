@@ -13,7 +13,6 @@ var clean = require('postcss-clean');
 var plugins = require('../plugins');
 var db = require('../database');
 var file = require('../file');
-var utils = require('../../public/src/utils');
 
 module.exports = function (Meta) {
 	Meta.css = {};
@@ -106,7 +105,7 @@ module.exports = function (Meta) {
 		});
 
 		async.each(pluginDirectories, function (directory, next) {
-			utils.walk(directory, function (err, styleFiles) {
+			file.walk(directory, function (err, styleFiles) {
 				if (err) {
 					return next(err);
 				}

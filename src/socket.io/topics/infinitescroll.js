@@ -5,7 +5,7 @@ var async = require('async');
 var topics = require('../../topics');
 var privileges = require('../../privileges');
 var meta = require('../../meta');
-var utils = require('../../../public/src/utils');
+var utils = require('../../utils');
 var social = require('../../social');
 
 module.exports = function (SocketTopics) {

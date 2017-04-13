@@ -5,7 +5,7 @@ var winston = require('winston');
 var _ = require('underscore');
 
 var user = require('../user');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 var plugins = require('../plugins');
 var notifications = require('../notifications');
 var db = require('../database');

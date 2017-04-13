@@ -13,7 +13,7 @@ var groups = require('./groups');
 var meta = require('./meta');
 var batch = require('./batch');
 var plugins = require('./plugins');
-var utils = require('../public/src/utils');
+var utils = require('./utils');
 
 (function (Notifications) {
 	Notifications.init = function () {

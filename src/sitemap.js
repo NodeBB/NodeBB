@@ -10,7 +10,7 @@ var topics = require('./topics');
 var privileges = require('./privileges');
 var meta = require('./meta');
 var plugins = require('./plugins');
-var utils = require('../public/src/utils');
+var utils = require('./utils');
 
 var sitemap = {
 	maps: {
