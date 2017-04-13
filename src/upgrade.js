@@ -163,8 +163,7 @@ Upgrade.process = function (files, skipCount, callback) {
 				// For backwards compatibility, cross-reference with schemaDate (if found). If a script's date is older, skip it
 				if (scriptExport.timestamp <= schemaDate && semver.lt(version, '1.5.0')) {
 					process.stdout.write('skipped\n'.grey);
-					db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
-					return next();
+					db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'), next);
 				}
 
 				// Do the upgrade...
@@ -173,12 +172,9 @@ Upgrade.process = function (files, skipCount, callback) {
 						process.stdout.write('error\n'.red);
 						return next(err);
 					}
-
-					// Record success in schemaLog
-					db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
-
 					process.stdout.write('OK\n'.green);
-					next();
+					// Record success in schemaLog
+					db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'), next);
 				});
 			}, function (err) {
 				if (err) {
