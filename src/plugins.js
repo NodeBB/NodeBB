@@ -20,18 +20,19 @@ var Plugins = module.exports;
 
 require('./plugins/install')(Plugins);
 require('./plugins/load')(Plugins);
+require('./plugins/data')(Plugins);
 require('./plugins/hooks')(Plugins);
 
 Plugins.libraries = {};
 Plugins.loadedHooks = {};
+Plugins.libraryPaths = [];
+Plugins.versionWarning = [];
+Plugins.languageCodes = [];
 Plugins.staticDirs = {};
 Plugins.cssFiles = [];
 Plugins.lessFiles = [];
 Plugins.clientScripts = [];
 Plugins.acpScripts = [];
-Plugins.libraryPaths = [];
-Plugins.versionWarning = [];
-Plugins.languageCodes = [];
 Plugins.soundpacks = [];
 
 Plugins.initialized = false;
@@ -76,13 +77,14 @@ Plugins.reload = function (callback) {
 	// Resetting all local plugin data
 	Plugins.libraries = {};
 	Plugins.loadedHooks = {};
-	Plugins.staticDirs = {};
 	Plugins.versionWarning = [];
+	Plugins.libraryPaths.length = 0;
+	Plugins.staticDirs = {};
 	Plugins.cssFiles.length = 0;
 	Plugins.lessFiles.length = 0;
 	Plugins.clientScripts.length = 0;
 	Plugins.acpScripts.length = 0;
-	Plugins.libraryPaths.length = 0;
+	Plugins.soundpacks.length = 0;
 
 	async.waterfall([
 		function (next) {

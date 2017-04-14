@@ -87,9 +87,12 @@ js.scripts.modules = {
 };
 
 function minifyModules(modules, fork, callback) {
-	var cargo = async.cargo(function (files, next) {
-		minifier.js.minify(files, fork, next);
-	}, 500);
+	// for it to never fork
+	// otherwise it spawns way too many processes
+	// maybe eventually we can pool modules
+	// and pass the pools to the minifer
+	// to reduce the total number of threads
+	fork = false;
 
 	async.eachLimit(modules, 500, function (mod, next) {
 		var srcPath = mod.srcPath;
@@ -109,7 +112,7 @@ function minifyModules(modules, fork, callback) {
 						return cb(null, { code: buffer.toString() });
 					}
 
-					cargo.push(buffer.toString(), cb);
+					minifier.js.minify(buffer.toString(), fork, cb);
 				});
 			},
 		], function (err, results) {
@@ -120,10 +123,7 @@ function minifyModules(modules, fork, callback) {
 			var minified = results[1];
 			fs.writeFile(destPath, minified.code, next);
 		});
-	}, function (err) {
-		cargo.kill();
-		callback(err);
-	});
+	}, callback);
 }
 
 function linkModules(callback) {
@@ -317,7 +317,7 @@ js.buildBundle = function (target, fork, callback) {
 			getBundleScriptList(target, next);
 		},
 		function (files, next) {
-			var minify = global.env === 'development';
+			var minify = global.env !== 'development';
 
 			minifier.js.bundle(files, minify, fork, next);
 		},

@@ -189,7 +189,7 @@ function minifyJS(data, callback) {
 				return callback(e);
 			}
 
-			return callback(null, minified);
+			callback(null, minified);
 		});
 
 		return;
