@@ -1,8 +1,10 @@
 'use strict';
 
-
 define('admin/appearance/customise', ['admin/settings', 'ace/ace'], function (Settings, ace) {
 	var Customise = {};
+
+	ace.config.set('packaged', true);
+	ace.config.set('basePath', require.toUrl('ace').replace(/\?v=[a-z1-9]{11}/, ''));
 
 	Customise.init = function () {
 		Settings.prepare(function () {
