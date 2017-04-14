@@ -4,10 +4,11 @@
 	if (typeof module === 'object' && module.exports) {
 		var winston = require('winston');
 
-		var file = require('../../src/file');
+
 		module.exports = factory(require('xregexp'));
 		module.exports.walk = function (dir, done) {
 			// DEPRECATED
+			var file = require('../../src/file');
 			winston.warn('[deprecated] `utils.walk` is deprecated. Use `file.walk` instead.');
 			file.walk(dir, done);
 		};
