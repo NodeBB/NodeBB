@@ -44,7 +44,7 @@ describe('Hash methods', function () {
 		});
 
 		it('should not error if a key is empty string', function (done) {
-			db.setObject('emptyField', {'': '', b: 1}, function (err) {
+			db.setObject('emptyField', { '': '', b: 1 }, function (err) {
 				assert.ifError(err);
 				db.getObject('emptyField', function (err, data) {
 					assert.ifError(err);
