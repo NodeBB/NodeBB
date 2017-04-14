@@ -8,11 +8,17 @@ module.exports = function (redisClient, module) {
 		if (!key || !data) {
 			return callback();
 		}
+
+		if (data.hasOwnProperty('')) {
+			delete data[''];
+		}
+
 		Object.keys(data).forEach(function (key) {
 			if (data[key] === undefined) {
 				delete data[key];
 			}
 		});
+
 		redisClient.hmset(key, data, function (err) {
 			callback(err);
 		});
