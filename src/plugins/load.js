@@ -56,7 +56,6 @@ module.exports = function (Plugins) {
 	}
 
 	Plugins.prepareForBuild = function (callback) {
-		Plugins.staticDirs = {};
 		Plugins.cssFiles.length = 0;
 		Plugins.lessFiles.length = 0;
 		Plugins.clientScripts.length = 0;
