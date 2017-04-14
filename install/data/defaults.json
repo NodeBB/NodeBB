@@ -17,6 +17,7 @@
     "allowLocalLogin": 1,
     "allowAccountDelete": 1,
     "allowFileUploads": 0,
+    "allowedFileExtensions": "png,jpg,bmp",
     "allowUserHomePage": 1,
     "maximumFileSize": 2048,
     "minimumTitleLength": 3,

@@ -51,7 +51,7 @@ var Upgrade = {
 		},
 		{
 			version: 'develop',	// rename this to whatever the next NodeBB version is (breaking)
-			upgrades: ['flags_refactor', 'post_votes_zset', 'moderation_history_refactor'],
+			upgrades: ['flags_refactor', 'post_votes_zset', 'moderation_history_refactor', 'allowed_file_extensions'],
 		},
 	],
 };
