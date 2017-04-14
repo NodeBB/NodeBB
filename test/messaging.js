@@ -187,6 +187,17 @@ describe('Messaging Library', function () {
 				done();
 			});
 		});
+
+		it('should return true if user is dnd', function (done) {
+			db.setObjectField('user:' + herpUid, 'status', 'dnd', function (err) {
+				assert.ifError(err);
+				socketModules.chats.isDnD({ uid: fooUid }, herpUid, function (err, isDnD) {
+					assert.ifError(err);
+					assert(isDnD);
+					done();
+				});
+			});
+		});
 	});
 
 	describe('edit/delete', function () {
@@ -302,7 +313,6 @@ describe('Messaging Library', function () {
 			});
 		});
 	});
-
 
 	after(function (done) {
 		db.emptydb(done);

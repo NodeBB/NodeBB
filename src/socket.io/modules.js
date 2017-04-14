@@ -3,6 +3,7 @@
 var async = require('async');
 var validator = require('validator');
 
+var db = require('../database');
 var meta = require('../meta');
 var notifications = require('../notifications');
 var plugins = require('../plugins');
@@ -32,6 +33,17 @@ SocketModules.chats.getRaw = function (socket, data, callback) {
 				return next(new Error('[[error:not-allowed]]'));
 			}
 			Messaging.getMessageField(data.mid, 'content', next);
+		},
+	], callback);
+};
+
+SocketModules.chats.isDnD = function (socket, uid, callback) {
+	async.waterfall([
+		function (next) {
+			db.getObjectField('user:' + uid, 'status', next);
+		},
+		function (status, next) {
+			next(null, status === 'dnd');
 		},
 	], callback);
 };
