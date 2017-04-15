@@ -145,7 +145,6 @@ function setup() {
 	winston.info('NodeBB Setup Triggered via Command Line');
 
 	var install = require('./src/install');
-	var build = require('./src/meta/build');
 
 	process.stdout.write('\nWelcome to NodeBB!\n');
 	process.stdout.write('\nThis looks like a new installation, so you\'ll have to answer a few questions about your environment before we can proceed.\n');
@@ -154,7 +153,10 @@ function setup() {
 	async.series([
 		async.apply(install.setup),
 		async.apply(loadConfig),
-		async.apply(build.buildAll),
+		function (next) {
+			var build = require('./src/meta/build');
+			build.buildAll(next);
+		},
 	], function (err, data) {
 		// Disregard build step data
 		data = data[0];
