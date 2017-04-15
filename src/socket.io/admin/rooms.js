@@ -5,7 +5,7 @@ var async = require('async');
 var os = require('os');
 var nconf = require('nconf');
 var winston = require('winston');
-var validator = require('validator');
+
 var topics = require('../../topics');
 var pubsub = require('../../pubsub');
 

@@ -12,7 +12,7 @@ function escapeTitle(topicData) {
 		return;
 	}
 	if (topicData.title) {
-		topicData.title = translator.escape(validator.escape(topicData.title));
+		topicData.title = translator.escape(validator.escape(topicData.title.toString()));
 	}
 	if (topicData.titleRaw) {
 		topicData.titleRaw = translator.escape(topicData.titleRaw);
@@ -27,7 +27,7 @@ module.exports = function (Topics) {
 			}
 
 			if (field === 'title') {
-				value = translator.escape(validator.escape(value));
+				value = translator.escape(validator.escape(String(value)));
 			}
 			callback(null, value);
 		});

@@ -1,7 +1,6 @@
 'use strict';
 
 var async = require('async');
-var validator = require('validator');
 
 var topics = require('../../topics');
 var events = require('../../events');
