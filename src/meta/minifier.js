@@ -67,7 +67,7 @@ function forkAction(action, callback) {
 	proc.on('message', function (message) {
 		if (message.type === 'error') {
 			proc.kill();
-			return callback(new Error(message.error));
+			return callback(new Error(message.message));
 		}
 
 		if (message.type === 'end') {
