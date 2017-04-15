@@ -50,6 +50,7 @@
 		/**
 		 * Construct a new Translator object
 		 * @param {string} language - Language code for this translator instance
+		 * @exports translator.Translator
 		 */
 		function Translator(language) {
 			var self = this;
@@ -283,7 +284,7 @@
 				}
 
 				var argsToTranslate = args.map(function (arg) {
-					return string(arg).collapseWhitespace().decodeHTMLEntities().escapeHTML().s;
+					return string(arg).collapseWhitespace().decodeHTMLEntities().escapeHTML().s.replace(/&amp;/g, '&');
 				}).map(function (arg) {
 					return self.translate(arg);
 				});
@@ -443,6 +444,9 @@
 		return Translator;
 	}());
 
+	/**
+	 * @exports translator
+	 */
 	var adaptor = {
 		/**
 		 * The Translator class
