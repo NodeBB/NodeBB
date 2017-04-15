@@ -5,12 +5,11 @@ var async = require('async');
 var validator = require('validator');
 var S = require('string');
 
-var db = require('../database');
+var topics = require('../topics');
 var user = require('../user');
 var plugins = require('../plugins');
 var categories = require('../categories');
 var utils = require('../utils');
-var translator = require('../translator');
 
 module.exports = function (Posts) {
 	Posts.getPostSummaryByPids = function (pids, uid, options, callback) {
@@ -39,8 +38,8 @@ module.exports = function (Posts) {
 					if (uids.indexOf(posts[i].uid) === -1) {
 						uids.push(posts[i].uid);
 					}
-					if (topicKeys.indexOf('topic:' + posts[i].tid) === -1) {
-						topicKeys.push('topic:' + posts[i].tid);
+					if (topicKeys.indexOf(posts[i].tid) === -1) {
+						topicKeys.push(posts[i].tid);
 					}
 				});
 				async.parallel({
@@ -111,15 +110,15 @@ module.exports = function (Posts) {
 		}, callback);
 	}
 
-	function getTopicAndCategories(topicKeys, callback) {
-		db.getObjectsFields(topicKeys, ['uid', 'tid', 'title', 'cid', 'slug', 'deleted', 'postcount', 'mainPid'], function (err, topics) {
+	function getTopicAndCategories(tids, callback) {
+		topics.getTopicsFields(tids, ['uid', 'tid', 'title', 'cid', 'slug', 'deleted', 'postcount', 'mainPid'], function (err, topics) {
 			if (err) {
 				return callback(err);
 			}
 
 			var cids = topics.map(function (topic) {
 				if (topic) {
-					topic.title = translator.escape(validator.escape(String(topic.title)));
+					topic.title = String(topic.title);
 					topic.deleted = parseInt(topic.deleted, 10) === 1;
 				}
 				return topic && topic.cid;

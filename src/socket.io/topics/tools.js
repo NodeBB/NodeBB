@@ -114,7 +114,7 @@ module.exports = function (SocketTopics) {
 					uid: socket.uid,
 					ip: socket.ip,
 					tid: tid,
-					title: validator.escape(String(title)),
+					title: String(title),
 				}, next);
 			},
 		], callback);

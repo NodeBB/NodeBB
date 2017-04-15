@@ -169,7 +169,7 @@ module.exports = function (SocketPosts) {
 					uid: socket.uid,
 					pid: data.pid,
 					ip: socket.ip,
-					title: validator.escape(String(title)),
+					title: String(title),
 				}, next);
 			},
 		], callback);

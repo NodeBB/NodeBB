@@ -161,9 +161,6 @@ categoryController.get = function (req, res, callback) {
 			return callback(err);
 		}
 
-		categoryData.topics.forEach(function (topic) {
-			topic.title = translator.escape(topic.title);
-		});
 		categoryData.description = translator.escape(categoryData.description);
 		categoryData.privileges = userPrivileges;
 		categoryData.showSelect = categoryData.privileges.editable;
