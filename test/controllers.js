@@ -10,7 +10,7 @@ var categories = require('../src/categories');
 var topics = require('../src/topics');
 var user = require('../src/user');
 var meta = require('../src/meta');
-
+var translator = require('../src/translator');
 
 describe('Controllers', function () {
 	var tid;
@@ -1031,9 +1031,9 @@ describe('Controllers', function () {
 				}
 
 				assert.ok(parsed.cookies);
-				assert.equal('\\\\[\\\\[global:cookies.message\\\\]\\\\]', parsed.cookies.message);
-				assert.equal('\\\\[\\\\[global:cookies.accept\\\\]\\\\]', parsed.cookies.dismiss);
-				assert.equal('\\\\[\\\\[global:cookies.learn_more\\\\]\\\\]', parsed.cookies.link);
+				assert.equal(translator.escape('[[global:cookies.message]]'), parsed.cookies.message);
+				assert.equal(translator.escape('[[global:cookies.accept]]'), parsed.cookies.dismiss);
+				assert.equal(translator.escape('[[global:cookies.learn_more]]'), parsed.cookies.link);
 
 				done();
 			});

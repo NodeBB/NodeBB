@@ -323,7 +323,7 @@ module.exports = function (Topics) {
 				postData.display_move_tools = true;
 				postData.selfPost = false;
 				postData.timestampISO = utils.toISOString(postData.timestamp);
-				postData.topic.title = validator.escape(String(postData.topic.title));
+				postData.topic.title = String(postData.topic.title);
 
 				next(null, postData);
 			},

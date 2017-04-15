@@ -50,6 +50,7 @@
 		/**
 		 * Construct a new Translator object
 		 * @param {string} language - Language code for this translator instance
+		 * @exports translator.Translator
 		 */
 		function Translator(language) {
 			var self = this;
@@ -207,7 +208,7 @@
 								// if there are arguments to the token
 								var backup = '';
 								if (args && args.length) {
-									backup = this.translate('&lsqb;&lsqb;' + currentSlice + '&lsqb;&lsqb;');
+									backup = this.translate(currentSlice);
 								}
 								// add the translation promise to the array
 								toTranslate.push(this.translateKey(name, args, backup));
@@ -239,7 +240,7 @@
 
 			// if we were mid-token, treat it as invalid
 			if (inToken) {
-				last = this.translate('&lsqb;&lsqb;' + last);
+				last = this.translate(last);
 			}
 
 			// add the remaining text after the last translation string
@@ -283,7 +284,7 @@
 				}
 
 				var argsToTranslate = args.map(function (arg) {
-					return string(arg).collapseWhitespace().decodeHTMLEntities().escapeHTML().s;
+					return string(arg).collapseWhitespace().decodeHTMLEntities().escapeHTML().s.replace(/&amp;/g, '&');
 				}).map(function (arg) {
 					return self.translate(arg);
 				});
@@ -414,7 +415,7 @@
 		 * @returns {string}
 		 */
 		Translator.escape = function escape(text) {
-			return typeof text === 'string' ? text.replace(/\[\[([\S]*?)\]\]/g, '\\[\\[$1\\]\\]') : text;
+			return typeof text === 'string' ? text.replace(/\[/g, '&lsqb;').replace(/\]/g, '&rsqb;') : text;
 		};
 
 		/**
@@ -423,7 +424,7 @@
 		 * @returns {string}
 		 */
 		Translator.unescape = function unescape(text) {
-			return typeof text === 'string' ? text.replace(/\\\[\\\[([\S]*?)\\\]\\\]/g, '[[$1]]') : text;
+			return typeof text === 'string' ? text.replace(/&lsqb;|\\\[/g, '[').replace(/&rsqb;|\\\]/g, ']') : text;
 		};
 
 		/**
@@ -443,6 +444,9 @@
 		return Translator;
 	}());
 
+	/**
+	 * @exports translator
+	 */
 	var adaptor = {
 		/**
 		 * The Translator class
