@@ -1,71 +1,71 @@
 [
 	{
 		"route": "/categories",
-		"title": "\\[\\[global:header.categories\\]\\]",
+		"title": "[[global:header.categories]]",
 		"enabled": true,
 		"iconClass": "fa-list",
 		"textClass": "visible-xs-inline",
-		"text": "\\[\\[global:header.categories\\]\\]"
+		"text": "[[global:header.categories]]"
 	},
 	{
 		"id": "unread-count",
 		"route": "/unread",
-		"title": "\\[\\[global:header.unread\\]\\]",
+		"title": "[[global:header.unread]]",
 		"enabled": true,
 		"iconClass": "fa-inbox",
 		"textClass": "visible-xs-inline",
-		"text": "\\[\\[global:header.unread\\]\\]",
+		"text": "[[global:header.unread]]",
 		"properties": {
 			"loggedIn": true
 		}
 	},
 	{
 		"route": "/recent",
-		"title": "\\[\\[global:header.recent\\]\\]",
+		"title": "[[global:header.recent]]",
 		"enabled": true,
 		"iconClass": "fa-clock-o",
 		"textClass": "visible-xs-inline",
-		"text": "\\[\\[global:header.recent\\]\\]"
+		"text": "[[global:header.recent]]"
 	},
 	{
 		"route": "/tags",
-		"title": "\\[\\[global:header.tags\\]\\]",
+		"title": "[[global:header.tags]]",
 		"enabled": true,
 		"iconClass": "fa-tags",
 		"textClass": "visible-xs-inline",
-		"text": "\\[\\[global:header.tags\\]\\]"
+		"text": "[[global:header.tags]]"
 	},
 	{
 		"route": "/popular",
-		"title": "\\[\\[global:header.popular\\]\\]",
+		"title": "[[global:header.popular]]",
 		"enabled": true,
 		"iconClass": "fa-fire",
 		"textClass": "visible-xs-inline",
-		"text": "\\[\\[global:header.popular\\]\\]"
+		"text": "[[global:header.popular]]"
 	},
 	{
 		"route": "/users",
-		"title": "\\[\\[global:header.users\\]\\]",
+		"title": "[[global:header.users]]",
 		"enabled": true,
 		"iconClass": "fa-user",
 		"textClass": "visible-xs-inline",
-		"text": "\\[\\[global:header.users\\]\\]"
+		"text": "[[global:header.users]]"
 	},
 	{
 		"route": "/groups",
-		"title": "\\[\\[global:header.groups\\]\\]",
+		"title": "[[global:header.groups]]",
 		"enabled": true,
 		"iconClass": "fa-group",
 		"textClass": "visible-xs-inline",
-		"text": "\\[\\[global:header.groups\\]\\]"
+		"text": "[[global:header.groups]]"
 	},
 	{
 		"route": "/admin",
-		"title": "\\[\\[global:header.admin\\]\\]",
+		"title": "[[global:header.admin]]",
 		"enabled": true,
 		"iconClass": "fa-cogs",
 		"textClass": "visible-xs-inline",
-		"text": "\\[\\[global:header.admin\\]\\]",
+		"text": "[[global:header.admin]]",
 		"properties": {
 			"targetBlank": false,
 			"adminOnly": true
@@ -73,11 +73,11 @@
 	},
 	{
 		"route": "/search",
-		"title": "\\[\\[global:header.search\\]\\]",
+		"title": "[[global:header.search]]",
 		"enabled": true,
 		"iconClass": "fa-search",
 		"textClass": "visible-xs-inline",
-		"text": "\\[\\[global:header.search\\]\\]",
+		"text": "[[global:header.search]]",
 		"properties": {
 			"searchInstalled": true
 		}
