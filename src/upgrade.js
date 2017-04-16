@@ -12,7 +12,7 @@ var schemaDate;
 var thisSchemaDate;
 
 // IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-var latestSchema = Date.UTC(2017, 1, 28);
+var latestSchema = Date.UTC(2017, 3, 16);
 
 Upgrade.check = function (callback) {
 	db.get('schemaDate', function (err, value) {
@@ -414,6 +414,50 @@ Upgrade.upgrade = function (callback) {
 						});
 
 						db.setObject('config', config, cb);
+					},
+					function (next) {
+						winston.info(schemaName + ' - done');
+						Upgrade.update(thisSchemaDate, next);
+					},
+				], next);
+			} else {
+				winston.info(schemaName + ' - skipped!');
+				next();
+			}
+		},
+		function (next) {
+			thisSchemaDate = Date.UTC(2017, 3, 16);
+			var schemaName = '[2017/4/16] Delete sessions';
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info(schemaName);
+
+				var configJSON = require('../config.json');
+				var isRedisSessionStore = configJSON.hasOwnProperty('redis');
+
+				async.waterfall([
+					function (next) {
+						if (isRedisSessionStore) {
+							var rdb = require('./database/redis');
+							var client = rdb.connect();
+							async.waterfall([
+								function (next) {
+									client.keys('sess:*', next);
+								},
+								function (sessionKeys, next) {
+									async.eachSeries(sessionKeys, function (key, next) {
+										client.del(key, next);
+									}, next);
+								},
+							], function (err) {
+								next(err);
+							});
+						} else {
+							db.client.collection('sessions').drop({}, function (err) {
+								next(err);
+							});
+						}
 					},
 					function (next) {
 						winston.info(schemaName + ' - done');
