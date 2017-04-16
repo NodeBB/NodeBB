@@ -5,7 +5,7 @@ var validator = require('validator');
 
 var db = require('../database');
 var plugins = require('../plugins');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 
 module.exports = function (Groups) {
 	Groups.getGroupsData = function (groupNames, callback) {

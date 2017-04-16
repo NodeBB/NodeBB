@@ -11,7 +11,7 @@ var posts = require('../posts');
 var topics = require('../topics');
 var privileges = require('../privileges');
 var batch = require('../batch');
-
+var translator = require('../translator');
 
 module.exports = function (Categories) {
 	Categories.getRecentReplies = function (cid, uid, count, callback) {
@@ -86,7 +86,7 @@ module.exports = function (Categories) {
 				privileges.topics.filterTids('read', tids, uid, next);
 			},
 			function (tids, next) {
-				getTopics(tids, next);
+				getTopics(tids, uid, next);
 			},
 			function (topics, next) {
 				assignTopicsToCategories(categoryData, topics);
@@ -98,7 +98,7 @@ module.exports = function (Categories) {
 		], callback);
 	};
 
-	function getTopics(tids, callback) {
+	function getTopics(tids, uid, callback) {
 		var topicData;
 		async.waterfall([
 			function (next) {
@@ -119,7 +119,7 @@ module.exports = function (Categories) {
 
 				async.parallel({
 					categoryData: async.apply(Categories.getCategoriesFields, cids, ['cid', 'parentCid']),
-					teasers: async.apply(topics.getTeasers, _topicData),
+					teasers: async.apply(topics.getTeasers, _topicData, uid),
 				}, next);
 			},
 			function (results, next) {
@@ -136,7 +136,7 @@ module.exports = function (Categories) {
 						teaser.user.uid = undefined;
 						teaser.topic = {
 							slug: topicData[index].slug,
-							title: validator.escape(String(topicData[index].title)),
+							title: translator.escape(validator.escape(String(topicData[index].title))),
 						};
 					}
 				});

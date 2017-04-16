@@ -6,7 +6,7 @@ var path = require('path');
 var prompt = require('prompt');
 var winston = require('winston');
 var nconf = require('nconf');
-var utils = require('../public/src/utils.js');
+var utils = require('./utils.js');
 
 var install = {};
 var questions = {};

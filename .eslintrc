@@ -32,6 +32,7 @@
 		"no-prototype-builtins": "off",
 		"new-cap": "off",
 		"no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
+		"import/no-unresolved": "error",
 
 		// ES6
 		"prefer-rest-params": "off",
@@ -43,7 +44,6 @@
 		"vars-on-top": "off",
 
 		// TODO
-		"import/no-unresolved": "off",
 		"import/no-extraneous-dependencies": "off",
 		"import/no-dynamic-require": "off",
 		"import/newline-after-import": "off",
@@ -54,9 +54,9 @@
 		"no-restricted-syntax": "off",
 		"no-script-url": "off",
 		"default-case": "off",
+		"linebreak-style": "off",
 
 		// "no-multi-assign": "off",
-		// "linebreak-style": "off",
 		// "one-var": "off",
 		// "no-undef": "off",
 		// "max-nested-callbacks": "off",

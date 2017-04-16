@@ -24,7 +24,6 @@
 		<script type="text/javascript" src="{relative_path}/assets/acp.min.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/assets/vendor/colorpicker/colorpicker.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/assets/src/admin/admin.js?{cache-buster}"></script>
-		<script type="text/javascript" src="{relative_path}/assets/vendor/ace/ace.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/assets/vendor/semver/semver.browser.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/assets/vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/assets/vendor/jquery/deserialize/jquery.deserialize.min.js?{cache-buster}"></script>

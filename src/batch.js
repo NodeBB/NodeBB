@@ -4,7 +4,7 @@
 
 var async = require('async');
 var db = require('./database');
-var utils = require('../public/src/utils');
+var utils = require('./utils');
 
 var DEFAULT_BATCH_SIZE = 100;
 

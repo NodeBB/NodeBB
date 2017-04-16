@@ -1,13 +1,17 @@
 'use strict';
 
-(function (module) {
-	var utils;
-	var fs;
-	var XRegExp;
+(function (factory) {
+	if (typeof module === 'object' && module.exports) {
+		var winston = require('winston');
 
-	if (typeof window === 'undefined') {
-		fs = require('fs');
-		XRegExp = require('xregexp');
+
+		module.exports = factory(require('xregexp'));
+		module.exports.walk = function (dir, done) {
+			// DEPRECATED
+			var file = require('../../src/file');
+			winston.warn('[deprecated] `utils.walk` is deprecated. Use `file.walk` instead.');
+			file.walk(dir, done);
+		};
 
 		process.profile = function (operation, start) {
 			console.log('%s took %d milliseconds', operation, process.elapsedTimeSince(start));
@@ -18,59 +22,15 @@
 			return (diff[0] * 1e3) + (diff[1] / 1e6);
 		};
 	} else {
-		XRegExp = window.XRegExp;
+		window.utils = factory(window.XRegExp);
 	}
-
-
-	utils = {
+}(function (XRegExp) {
+	var utils = {
 		generateUUID: function () {
 			return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
 				var r = Math.random() * 16 | 0;
 				var v = c === 'x' ? r : ((r & 0x3) | 0x8);
 				return v.toString(16);
-			});
-		},
-
-		// Adapted from http://stackoverflow.com/questions/5827612/node-js-fs-readdir-recursive-directory-search
-		walk: function (dir, done) {
-			var results = [];
-
-			fs.readdir(dir, function (err, list) {
-				if (err) {
-					return done(err);
-				}
-				var pending = list.length;
-				if (!pending) {
-					return done(null, results);
-				}
-				list.forEach(function (file) {
-					file = dir + '/' + file;
-					fs.stat(file, function (err, stat) {
-						if (err) {
-							return done(err);
-						}
-
-						if (stat && stat.isDirectory()) {
-							utils.walk(file, function (err, res) {
-								if (err) {
-									return done(err);
-								}
-
-								results = results.concat(res);
-								pending -= 1;
-								if (!pending) {
-									done(null, results);
-								}
-							});
-						} else {
-							results.push(file);
-							pending -= 1;
-							if (!pending) {
-								done(null, results);
-							}
-						}
-					});
-				});
 			});
 		},
 
@@ -447,11 +407,6 @@
 		},
 	};
 
-	module.exports = utils;
-	if (typeof window !== 'undefined') {
-		window.utils = module.exports;
-	}
-
 		/* eslint "no-extend-native": "off" */
 	if (typeof String.prototype.startsWith !== 'function') {
 		String.prototype.startsWith = function (prefix) {
@@ -474,13 +429,5 @@
 		};
 	}
 
-	if (typeof String.prototype.rtrim !== 'function') {
-		String.prototype.rtrim = function () {
-			return this.replace(/\s+$/g, '');
-		};
-	}
-}(typeof module === 'undefined' ? {
-	module: {
-		exports: {},
-	},
-} : module));
+	return utils;
+}));

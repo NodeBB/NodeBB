@@ -9,10 +9,14 @@ var meta = require('../meta');
 var user = require('../user');
 var posts = require('../posts');
 var plugins = require('../plugins');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 
 module.exports = function (Topics) {
-	Topics.getTeasers = function (topics, callback) {
+	Topics.getTeasers = function (topics, uid, callback) {
+		if (typeof uid === 'function') {
+			callback = uid;
+			uid = 0;
+		}
 		if (!Array.isArray(topics) || !topics.length) {
 			return callback(null, []);
 		}
@@ -94,7 +98,7 @@ module.exports = function (Topics) {
 					return tidToPost[topic.tid];
 				});
 
-				plugins.fireHook('filter:teasers.get', { teasers: teasers }, next);
+				plugins.fireHook('filter:teasers.get', { teasers: teasers, uid: uid }, next);
 			},
 			function (data, next) {
 				next(null, data.teasers);
@@ -102,7 +106,11 @@ module.exports = function (Topics) {
 		], callback);
 	};
 
-	Topics.getTeasersByTids = function (tids, callback) {
+	Topics.getTeasersByTids = function (tids, uid, callback) {
+		if (typeof uid === 'function') {
+			callback = uid;
+			uid = 0;
+		}
 		if (!Array.isArray(tids) || !tids.length) {
 			return callback(null, []);
 		}
@@ -111,13 +119,17 @@ module.exports = function (Topics) {
 				Topics.getTopicsFields(tids, ['tid', 'postcount', 'teaserPid'], next);
 			},
 			function (topics, next) {
-				Topics.getTeasers(topics, next);
+				Topics.getTeasers(topics, uid, next);
 			},
 		], callback);
 	};
 
-	Topics.getTeaser = function (tid, callback) {
-		Topics.getTeasersByTids([tid], function (err, teasers) {
+	Topics.getTeaser = function (tid, uid, callback) {
+		if (typeof uid === 'function') {
+			callback = uid;
+			uid = 0;
+		}
+		Topics.getTeasersByTids([tid], uid, function (err, teasers) {
 			callback(err, Array.isArray(teasers) && teasers.length ? teasers[0] : null);
 		});
 	};

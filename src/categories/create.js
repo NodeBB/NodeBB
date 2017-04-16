@@ -6,7 +6,7 @@ var db = require('../database');
 var groups = require('../groups');
 var plugins = require('../plugins');
 var privileges = require('../privileges');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 
 module.exports = function (Categories) {
 	Categories.create = function (data, callback) {

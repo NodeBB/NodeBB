@@ -11,7 +11,8 @@ var categories = require('../categories');
 var meta = require('../meta');
 var pagination = require('../pagination');
 var helpers = require('./helpers');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
+var translator = require('../translator');
 
 var categoryController = {};
 
@@ -160,6 +161,10 @@ categoryController.get = function (req, res, callback) {
 			return callback(err);
 		}
 
+		categoryData.topics.forEach(function (topic) {
+			topic.title = translator.escape(topic.title);
+		});
+		categoryData.description = translator.escape(categoryData.description);
 		categoryData.privileges = userPrivileges;
 		categoryData.showSelect = categoryData.privileges.editable;
 
@@ -207,7 +212,7 @@ categoryController.get = function (req, res, callback) {
 
 		categoryData['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 		categoryData.rssFeedUrl = nconf.get('relative_path') + '/category/' + categoryData.cid + '.rss';
-		categoryData.title = categoryData.name;
+		categoryData.title = translator.escape(categoryData.name);
 		pageCount = Math.max(1, Math.ceil(categoryData.topic_count / settings.topicsPerPage));
 		categoryData.pagination = pagination.create(currentPage, pageCount, req.query);
 		categoryData.pagination.rel.forEach(function (rel) {

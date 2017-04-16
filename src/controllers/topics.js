@@ -13,7 +13,8 @@ var privileges = require('../privileges');
 var plugins = require('../plugins');
 var helpers = require('./helpers');
 var pagination = require('../pagination');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
+var translator = require('../translator');
 
 var topicsController = {};
 
@@ -67,6 +68,7 @@ topicsController.get = function (req, res, callback) {
 			settings = results.settings;
 			var postCount = parseInt(results.topic.postcount, 10);
 			pageCount = Math.max(1, Math.ceil(postCount / settings.postsPerPage));
+			results.topic.postcount = postCount;
 
 			if (utils.isNumber(req.params.post_index) && (req.params.post_index < 1 || req.params.post_index > postCount)) {
 				return helpers.redirect(res, '/topic/' + req.params.topic_id + '/' + req.params.slug + (req.params.post_index > postCount ? '/' + postCount : ''));
@@ -128,13 +130,14 @@ topicsController.get = function (req, res, callback) {
 			plugins.fireHook('filter:controllers.topic.get', { topicData: topicData, uid: req.uid }, next);
 		},
 		function (data, next) {
+			data.topicData.title = translator.escape(data.topicData.title);
 			var breadcrumbs = [
 				{
 					text: data.topicData.category.name,
 					url: nconf.get('relative_path') + '/category/' + data.topicData.category.slug,
 				},
 				{
-					text: data.topicData.title,
+					text: translator.escape(data.topicData.title),
 				},
 			];
 

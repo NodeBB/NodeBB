@@ -104,7 +104,10 @@ describe('Upload Controllers', function () {
 
 		it('should upload a file to a post', function (done) {
 			meta.config.allowFileUploads = 1;
+			var oldValue = meta.config.allowedFileExtensions;
+			meta.config.allowedFileExtensions = 'png,jpg,bmp,html';
 			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/503.html'), { cid: cid }, jar, csrf_token, function (err, res, body) {
+				meta.config.allowedFileExtensions = oldValue;
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));

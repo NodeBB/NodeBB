@@ -5,7 +5,7 @@ var _ = require('underscore');
 
 var db = require('./database');
 var posts = require('./posts');
-var utils = require('../public/src/utils');
+var utils = require('./utils');
 var plugins = require('./plugins');
 var user = require('./user');
 var categories = require('./categories');
@@ -126,7 +126,7 @@ var social = require('./social');
 						Topics.getUserBookmarks(tids, uid, next);
 					},
 					teasers: function (next) {
-						Topics.getTeasers(topics, next);
+						Topics.getTeasers(topics, uid, next);
 					},
 					tags: function (next) {
 						Topics.getTopicsTagsObjects(tids, next);

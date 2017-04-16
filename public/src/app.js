@@ -340,6 +340,22 @@ app.cacheBuster = null;
 	};
 
 	app.newChat = function (touid, callback) {
+		function createChat() {
+			socket.emit('modules.chats.newRoom', { touid: touid }, function (err, roomId) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
+				if (!ajaxify.data.template.chats) {
+					app.openChat(roomId);
+				} else {
+					ajaxify.go('chats/' + roomId);
+				}
+
+				callback(false, roomId);
+			});
+		}
+
 		callback = callback || function () {};
 		if (!app.user.uid) {
 			return app.alertError('[[error:not-logged-in]]');
@@ -348,19 +364,18 @@ app.cacheBuster = null;
 		if (parseInt(touid, 10) === parseInt(app.user.uid, 10)) {
 			return app.alertError('[[error:cant-chat-with-yourself]]');
 		}
-
-		socket.emit('modules.chats.newRoom', { touid: touid }, function (err, roomId) {
+		socket.emit('modules.chats.isDnD', touid, function (err, isDnD) {
 			if (err) {
 				return app.alertError(err.message);
 			}
-
-			if (!ajaxify.data.template.chats) {
-				app.openChat(roomId);
-			} else {
-				ajaxify.go('chats/' + roomId);
+			if (!isDnD) {
+				return createChat();
 			}
-
-			callback(false, roomId);
+			bootbox.confirm('[[modules:chat.confirm-chat-with-dnd-user]]', function (ok) {
+				if (ok) {
+					createChat();
+				}
+			});
 		});
 	};
 

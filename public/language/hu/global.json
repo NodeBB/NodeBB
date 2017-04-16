@@ -61,7 +61,7 @@
     "reputation": "Hírnév",
     "read_more": "tovább olvas",
     "more": "Több",
-    "posted_ago_by_guest": "Vendég hozzászólás %1",
+    "posted_ago_by_guest": "%1 vendég hozzászólás",
     "posted_ago_by": "%2 hozzászólás %1",
     "posted_ago": "%1 hozzászólás",
     "posted_in": "hozzászólt itt: %1",
@@ -103,5 +103,5 @@
     "cookies.message": "A weboldal sütiket használ, a legjobb weboldalas élmény érdekében.",
     "cookies.accept": "Értem!",
     "cookies.learn_more": "Tudnivalók",
-    "edited": "Edited"
+    "edited": "Szerkesztett"
 }

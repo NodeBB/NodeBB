@@ -7,6 +7,7 @@ var path = require('path');
 var fork = require('child_process').fork;
 var async = require('async');
 var logrotate = require('logrotate-stream');
+
 var file = require('./src/file');
 var pkg = require('./package.json');
 
@@ -23,6 +24,7 @@ var workers = [];
 var Loader = {
 	timesStarted: 0,
 };
+var appPath = path.join(__dirname, 'app.js');
 
 Loader.init = function (callback) {
 	if (silent) {
@@ -114,7 +116,7 @@ function forkWorker(index, isPrimary) {
 	process.env.isCluster = ports.length > 1;
 	process.env.port = ports[index];
 
-	var worker = fork('app.js', args, {
+	var worker = fork(appPath, args, {
 		silent: silent,
 		env: process.env,
 	});

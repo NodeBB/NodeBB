@@ -6,7 +6,7 @@ var os = require('os');
 var nconf = require('nconf');
 
 var pubsub = require('./pubsub');
-var utils = require('../public/src/utils');
+var utils = require('./utils');
 
 (function (Meta) {
 	Meta.reloadRequired = false;

@@ -51,7 +51,7 @@ var Upgrade = {
 		},
 		{
 			version: 'develop',	// rename this to whatever the next NodeBB version is (breaking)
-			upgrades: ['flags_refactor', 'post_votes_zset', 'moderation_history_refactor'],
+			upgrades: ['flags_refactor', 'post_votes_zset', 'moderation_history_refactor', 'allowed_file_extensions'],
 		},
 	],
 };
@@ -89,14 +89,10 @@ Upgrade.check = function (callback) {
 					return executed.indexOf(path.basename(name, '.js')) === -1;
 				});
 
-				next(remainder.length > 1 ? new Error('schema-out-of-date') : null);
+				next(remainder.length > 0 ? new Error('schema-out-of-date') : null);
 			});
 		},
 	], callback);
-	// var all = Upgrade.available.reduce(function (memo, current) {
-	// 	memo = memo.concat(current.upgrades);
-	// 	return memo;
-	// }, []);
 };
 
 Upgrade.run = function (callback) {
@@ -151,8 +147,13 @@ Upgrade.process = function (files, skipCount, callback) {
 	process.stdout.write('OK'.green + ' | '.reset + String(files.length).cyan + ' script(s) found'.cyan + (skipCount > 0 ? ', '.cyan + String(skipCount).cyan + ' skipped'.cyan : '') + '\n'.reset);
 
 	async.waterfall([
-		async.apply(db.get, 'schemaDate'),
-		function (schemaDate, next) {
+		function (next) {
+			async.parallel({
+				schemaDate: async.apply(db.get, 'schemaDate'),
+				schemaLogCount: async.apply(db.sortedSetCard, 'schemaLog'),
+			}, next);
+		},
+		function (results, next) {
 			async.eachSeries(files, function (file, next) {
 				var scriptExport = require(file);
 				var date = new Date(scriptExport.timestamp);
@@ -168,10 +169,10 @@ Upgrade.process = function (files, skipCount, callback) {
 				process.stdout.write('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '... ');
 
 				// For backwards compatibility, cross-reference with schemaDate (if found). If a script's date is older, skip it
-				if (scriptExport.timestamp <= schemaDate && semver.lt(version, '1.5.0')) {
+				if ((!results.schemaDate && !results.schemaLogCount) || (scriptExport.timestamp <= results.schemaDate && semver.lt(version, '1.5.0'))) {
 					process.stdout.write('skipped\n'.grey);
-					db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
-					return next();
+					db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'), next);
+					return;
 				}
 
 				// Do the upgrade...
@@ -183,9 +184,6 @@ Upgrade.process = function (files, skipCount, callback) {
 						return next(err);
 					}
 
-					// Record success in schemaLog
-					db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'));
-
 					if (progress.total > 0) {
 						process.stdout.clearLine();
 						process.stdout.cursorTo(0);
@@ -193,16 +191,14 @@ Upgrade.process = function (files, skipCount, callback) {
 					}
 
 					process.stdout.write('OK\n'.green);
-					next();
+					// Record success in schemaLog
+					db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'), next);
 				});
-			}, function (err) {
-				if (err) {
-					return next(err);
-				}
-
-				process.stdout.write('Upgrade complete!\n\n'.green);
-				next();
-			});
+			}, next);
+		},
+		function (next) {
+			process.stdout.write('Upgrade complete!\n\n'.green);
+			setImmediate(next);
 		},
 	], callback);
 };

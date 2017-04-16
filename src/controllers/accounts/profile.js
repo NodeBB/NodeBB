@@ -12,6 +12,7 @@ var accountHelpers = require('./helpers');
 var helpers = require('../helpers');
 var pagination = require('../../pagination');
 var messaging = require('../../messaging');
+var translator = require('../../translator');
 
 var profileController = {};
 
@@ -74,7 +75,7 @@ profileController.get = function (req, res, callback) {
 				return p && parseInt(p.deleted, 10) !== 1;
 			});
 			userData.hasPrivateChat = results.hasPrivateChat;
-			userData.aboutme = results.aboutme;
+			userData.aboutme = translator.escape(results.aboutme);
 			userData.nextStart = results.posts.nextStart;
 			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username }]);
 			userData.title = userData.username;

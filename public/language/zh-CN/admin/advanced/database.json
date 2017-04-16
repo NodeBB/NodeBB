@@ -26,7 +26,7 @@
 	"redis.blocked-clients": "阻止的客户端",
 	"redis.used-memory": "已使用内存",
 	"redis.memory-frag-ratio": "内存碎片比率",
-	"redis.total-connections-recieved": "已接收连接总数",
+	"redis.total-connections-recieved": "已接收的连接总数",
 	"redis.total-commands-processed": "已执行命令总数",
 	"redis.iops": "每秒实时操作数",
 	"redis.keyspace-hits": "Keyspace 命中",

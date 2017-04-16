@@ -9,7 +9,7 @@ var user = require('../../user');
 var groups = require('../../groups');
 var plugins = require('../../plugins');
 var meta = require('../../meta');
-var utils = require('../../../public/src/utils');
+var utils = require('../../utils');
 
 var helpers = {};
 

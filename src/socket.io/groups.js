@@ -5,7 +5,7 @@ var async = require('async');
 var groups = require('../groups');
 var meta = require('../meta');
 var user = require('../user');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 var groupsController = require('../controllers/groups');
 
 var SocketGroups = {};

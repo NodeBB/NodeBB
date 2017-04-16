@@ -3,7 +3,7 @@
 var async = require('async');
 var plugins = require('../plugins');
 var db = require('../database');
-var translator = require('../../public/src/modules/translator');
+var translator = require('../translator');
 var pubsub = require('../pubsub');
 
 var admin = module.exports;

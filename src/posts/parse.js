@@ -9,7 +9,7 @@ var S = require('string');
 var meta = require('../meta');
 var cache = require('./cache');
 var plugins = require('../plugins');
-var translator = require('../../public/src/modules/translator');
+var translator = require('../translator');
 
 var urlRegex = /href="([^"]+)"/g;
 
@@ -73,6 +73,7 @@ module.exports = function (Posts) {
 	};
 
 	function sanitizeSignature(signature) {
+		signature = translator.escape(signature);
 		var string = S(signature);
 		var tagsToStrip = [];
 

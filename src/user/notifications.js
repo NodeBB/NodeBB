@@ -199,20 +199,21 @@ var privileges = require('../privileges');
 
 				db.getObjectsFields(keys, ['mergeId'], next);
 			},
-		], function (err, mergeIds) {
-			// A missing (null) mergeId means that notification is counted separately.
-			mergeIds = mergeIds.map(function (set) {
-				return set.mergeId;
-			});
+			function (mergeIds, next) {
+				mergeIds = mergeIds.map(function (set) {
+					return set.mergeId;
+				});
 
-			callback(err, mergeIds.reduce(function (count, cur, idx, arr) {
-				if (cur === null || idx === arr.indexOf(cur)) {
-					count += 1;
-				}
+				next(null, mergeIds.reduce(function (count, mergeId, idx, arr) {
+					// A missing (null) mergeId means that notification is counted separately.
+					if (mergeId === null || idx === arr.indexOf(mergeId)) {
+						count += 1;
+					}
 
-				return count;
-			}, 0));
-		});
+					return count;
+				}, 0));
+			},
+		], callback);
 	};
 
 	UserNotifications.getUnreadByField = function (uid, field, values, callback) {

@@ -9,8 +9,8 @@ var db = require('../database');
 var user = require('../user');
 var plugins = require('../plugins');
 var categories = require('../categories');
-var utils = require('../../public/src/utils');
-
+var utils = require('../utils');
+var translator = require('../translator');
 
 module.exports = function (Posts) {
 	Posts.getPostSummaryByPids = function (pids, uid, options, callback) {
@@ -119,7 +119,7 @@ module.exports = function (Posts) {
 
 			var cids = topics.map(function (topic) {
 				if (topic) {
-					topic.title = validator.escape(String(topic.title));
+					topic.title = translator.escape(validator.escape(String(topic.title)));
 					topic.deleted = parseInt(topic.deleted, 10) === 1;
 				}
 				return topic && topic.cid;

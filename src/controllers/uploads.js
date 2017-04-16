@@ -33,7 +33,7 @@ uploadsController.upload = function (req, res, filesIterator) {
 			return res.status(500).json({ path: req.path, error: err.message });
 		}
 
-		res.status(200).send(images);
+		res.status(200).json(images);
 	});
 };
 
@@ -208,20 +208,18 @@ uploadsController.uploadFile = function (uid, uploadedFile, callback) {
 		return callback(new Error('[[error:file-too-big, ' + meta.config.maximumFileSize + ']]'));
 	}
 
-	if (meta.config.hasOwnProperty('allowedFileExtensions')) {
-		var allowed = file.allowedExtensions();
-		var extension = file.typeToExtension(uploadedFile.type);
-		if (!extension || (allowed.length > 0 && allowed.indexOf(extension) === -1)) {
-			return callback(new Error('[[error:invalid-file-type, ' + allowed.join('&#44; ') + ']]'));
-		}
+	var allowed = file.allowedExtensions();
+	var extension = path.extname(uploadedFile.name);
+	if (!extension || extension === '.' || (allowed.length > 0 && allowed.indexOf(extension) === -1)) {
+		return callback(new Error('[[error:invalid-file-type, ' + allowed.join('&#44; ') + ']]'));
 	}
 
 	saveFileToLocal(uploadedFile, callback);
 };
 
 function saveFileToLocal(uploadedFile, callback) {
-	var extension = file.typeToExtension(uploadedFile.type);
-	if (!extension) {
+	var extension = path.extname(uploadedFile.name);
+	if (!extension || extension === '.') {
 		return callback(new Error('[[error:invalid-extension]]'));
 	}
 	var filename = uploadedFile.name || 'upload';

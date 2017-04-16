@@ -156,6 +156,27 @@ describe('new Translator(language)', function () {
 				assert.strictEqual(translated, 'Latest Users');
 			});
 		});
+
+		it('should use key for unknown keys without arguments', function () {
+			var translator = Translator.create('en-GB');
+			return translator.translate('[[unknown:key.without.args]]').then(function (translated) {
+				assert.strictEqual(translated, 'key.without.args');
+			});
+		});
+
+		it('should use backup for unknown keys with arguments', function () {
+			var translator = Translator.create('en-GB');
+			return translator.translate('[[unknown:key.with.args, arguments are here, derpity, derp]]').then(function (translated) {
+				assert.strictEqual(translated, 'unknown:key.with.args, arguments are here, derpity, derp');
+			});
+		});
+
+		it('should ignore unclosed tokens', function () {
+			var translator = Translator.create('en-GB');
+			return translator.translate('here is some stuff and other things [[abc:xyz, other random stuff should be fine here [[global:home]] and more things [[pages:users/latest]]').then(function (translated) {
+				assert.strictEqual(translated, 'here is some stuff and other things abc:xyz, other random stuff should be fine here Home and more things Latest Users');
+			});
+		});
 	});
 });
 
@@ -238,7 +259,7 @@ describe('Translator static methods', function () {
 		it('should escape translation patterns within text', function (done) {
 			assert.strictEqual(
 				Translator.escape('some nice text [[global:home]] here'),
-				'some nice text \\[\\[global:home\\]\\] here'
+				'some nice text &lsqb;&lsqb;global:home&rsqb;&rsqb; here'
 			);
 			done();
 		});
@@ -248,6 +269,10 @@ describe('Translator static methods', function () {
 		it('should unescape escaped translation patterns within text', function (done) {
 			assert.strictEqual(
 				Translator.unescape('some nice text \\[\\[global:home\\]\\] here'),
+				'some nice text [[global:home]] here'
+			);
+			assert.strictEqual(
+				Translator.unescape('some nice text &lsqb;&lsqb;global:home&rsqb;&rsqb; here'),
 				'some nice text [[global:home]] here'
 			);
 			done();
