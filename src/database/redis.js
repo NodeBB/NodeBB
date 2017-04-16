@@ -60,13 +60,9 @@
 		var meta = require('../meta');
 		var sessionStore = require('connect-redis')(session);
 
-		var ttlDays = 60 * 60 * 24 * (parseInt(meta.config.loginDays, 10) || 0);
-		var ttlSeconds = (parseInt(meta.config.loginSeconds, 10) || 0);
-		var ttl = ttlSeconds || ttlDays || 1209600; // Default to 14 days
-
 		module.sessionStore = new sessionStore({
 			client: module.client,
-			ttl: ttl,
+			ttl: meta.getSessionTTLSeconds(),
 		});
 
 		if (typeof callback === 'function') {

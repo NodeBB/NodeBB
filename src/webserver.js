@@ -166,9 +166,7 @@ function setupFavicon(app) {
 }
 
 function setupCookie() {
-	var ttlDays = 1000 * 60 * 60 * 24 * (parseInt(meta.config.loginDays, 10) || 0);
-	var ttlSeconds = 1000 * (parseInt(meta.config.loginSeconds, 10) || 0);
-	var ttl = ttlSeconds || ttlDays || 1209600000; // Default to 14 days
+	var ttl = meta.getSessionTTLSeconds() * 1000;
 
 	var cookie = {
 		maxAge: ttl,
