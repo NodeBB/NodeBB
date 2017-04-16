@@ -13,7 +13,7 @@ module.exports = {
 		var progress = this.progress;
 
 		require('../../batch').processSortedSet('posts:pid', function (pids, next) {
-			async.eachSeries(pids, function (pid, next) {
+			async.each(pids, function (pid, next) {
 				db.getObjectFields('post:' + pid, ['upvotes', 'downvotes'], function (err, postData) {
 					if (err || !postData) {
 						return next(err);
