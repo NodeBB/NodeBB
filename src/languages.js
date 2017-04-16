@@ -31,6 +31,9 @@ Languages.list = function (callback) {
 	var languages = [];
 
 	fs.readdir(languagesPath, function (err, files) {
+		if (err && err.code === 'ENOENT') {
+			return callback(null, []);
+		}
 		if (err) {
 			return callback(err);
 		}

@@ -1,7 +1,6 @@
 'use strict';
 
 var async = require('async');
-var validator = require('validator');
 
 var posts = require('../../posts');
 var topics = require('../../topics');
@@ -169,7 +168,7 @@ module.exports = function (SocketPosts) {
 					uid: socket.uid,
 					pid: data.pid,
 					ip: socket.ip,
-					title: validator.escape(String(title)),
+					title: String(title),
 				}, next);
 			},
 		], callback);
