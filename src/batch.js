@@ -21,6 +21,17 @@ exports.processSortedSet = function (setKey, process, options, callback) {
 		return callback(new Error('[[error:process-not-a-function]]'));
 	}
 
+	// Progress bar handling (upgrade scripts)
+	if (options.progress) {
+		db.sortedSetCard(setKey, function (err, total) {
+			if (err) {
+				// Unable to get total, do nothing.
+			} else {
+				options.progress.total = total;
+			}
+		});
+	}
+
 	// use the fast path if possible
 	if (db.processSortedSet && typeof options.doneIf !== 'function' && !utils.isNumber(options.alwaysStartAt)) {
 		return db.processSortedSet(setKey, process, options.batch || DEFAULT_BATCH_SIZE, callback);
@@ -53,6 +64,7 @@ exports.processSortedSet = function (setKey, process, options, callback) {
 					}
 					start += utils.isNumber(options.alwaysStartAt) ? options.alwaysStartAt : batch + 1;
 					stop = start + batch;
+
 					next();
 				});
 			});

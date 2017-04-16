@@ -13,30 +13,24 @@ module.exports = {
 	method: function (callback) {
 		var progress = this.progress;
 
-		db.sortedSetCard('users:joindate', function (err, numPosts) {
-			if (err) {
-				return callback(err);
-			}
+		batch.processSortedSet('users:joindate', function (ids, next) {
+			async.each(ids, function (uid, next) {
+				db.getObjectField('user:' + uid, 'moderationNote', function (err, moderationNote) {
+					if (err || !moderationNote) {
+						return next(err);
+					}
+					var note = {
+						uid: 1,
+						note: moderationNote,
+						timestamp: Date.now(),
+					};
 
-			progress.total = numPosts;
-
-			batch.processSortedSet('users:joindate', function (ids, next) {
-				async.each(ids, function (uid, next) {
-					db.getObjectField('user:' + uid, 'moderationNote', function (err, moderationNote) {
-						if (err || !moderationNote) {
-							return next(err);
-						}
-						var note = {
-							uid: 1,
-							note: moderationNote,
-							timestamp: Date.now(),
-						};
-
-						progress.incr();
-						db.sortedSetAdd('uid:' + uid + ':moderation:notes', note.timestamp, JSON.stringify(note), next);
-					});
-				}, next);
-			}, callback);
-		});
+					progress.incr();
+					db.sortedSetAdd('uid:' + uid + ':moderation:notes', note.timestamp, JSON.stringify(note), next);
+				});
+			}, next);
+		}, {
+			progress: this.progress,
+		}, callback);
 	},
 };
