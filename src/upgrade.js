@@ -454,7 +454,7 @@ Upgrade.upgrade = function (callback) {
 								next(err);
 							});
 						} else {
-							db.client.collection('sessions').drop({}, function (err) {
+							db.client.collection('sessions').deleteMany({}, {}, function (err) {
 								next(err);
 							});
 						}
