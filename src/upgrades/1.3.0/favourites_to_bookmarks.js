@@ -12,9 +12,12 @@ module.exports = {
 	method: function (callback) {
 		function upgradePosts(next) {
 			var batch = require('../../batch');
+			var progress = this.progress;
 
 			batch.processSortedSet('posts:pid', function (ids, next) {
 				async.each(ids, function (id, next) {
+					progress.incr();
+
 					async.waterfall([
 						function (next) {
 							db.rename('pid:' + id + ':users_favourited', 'pid:' + id + ':users_bookmarked', next);
@@ -34,7 +37,9 @@ module.exports = {
 						},
 					], next);
 				}, next);
-			}, {}, next);
+			}, {
+				progress: progress,
+			}, next);
 		}
 
 		function upgradeUsers(next) {
