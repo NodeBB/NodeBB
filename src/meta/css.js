@@ -155,7 +155,7 @@ css.buildBundle = function (target, fork, callback) {
 			getBundleMetadata(target, next);
 		},
 		function (data, next) {
-			var minify = global.env === 'development';
+			var minify = global.env !== 'development';
 			minifier.css.bundle(data.imports, data.paths, minify, fork, next);
 		},
 		function (bundle, next) {

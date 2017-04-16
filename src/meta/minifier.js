@@ -224,12 +224,12 @@ function buildCSS(data, callback) {
 			return callback(err);
 		}
 
-		postcss(data.minify ? [autoprefixer] : [
+		postcss(data.minify ? [
 			autoprefixer,
 			clean({
 				processImportFrom: ['local'],
 			}),
-		]).process(lessOutput.css).then(function (result) {
+		] : [autoprefixer]).process(lessOutput.css).then(function (result) {
 			callback(null, { code: result.css });
 		}, function (err) {
 			callback(err);

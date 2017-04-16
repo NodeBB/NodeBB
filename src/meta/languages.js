@@ -61,7 +61,7 @@ function getTranslationTree(callback) {
 				// get plugin languages and namespaces
 				function (nxt) {
 					async.each(plugins, function (pluginData, cb) {
-						var pathToFolder = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
+						var pathToFolder = path.join(pluginData.path, pluginData.languages);
 						file.walk(pathToFolder, function (err, paths) {
 							if (err) {
 								return cb(err);

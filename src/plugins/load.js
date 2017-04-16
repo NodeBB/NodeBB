@@ -63,12 +63,7 @@ module.exports = function (Plugins) {
 		Plugins.soundpacks.length = 0;
 
 		async.waterfall([
-			async.apply(Plugins.getPluginPaths),
-			function (paths, next) {
-				async.map(paths, function (path, next) {
-					Plugins.loadPluginInfo(path, next);
-				}, next);
-			},
+			Plugins.data.getAll,
 			function (plugins, next) {
 				async.each(plugins, function (pluginData, next) {
 					registerPluginAssets(pluginData, next);

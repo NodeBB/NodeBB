@@ -166,7 +166,7 @@ function resolveModulePath(basePath, modulePath, callback) {
 }
 
 function getScripts(pluginData, target, callback) {
-	target += 'Scripts';
+	target = (target === 'client') ? 'scripts' : 'acpScripts';
 
 	var input = pluginData[target];
 	if (!Array.isArray(input) || !input.length) {

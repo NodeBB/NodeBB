@@ -29,37 +29,34 @@ function step(target, callback) {
 }
 
 var targetHandlers = {
-	javascript: function (parallel, callback) {
-		var all = parallel ? async.parallel : async.series;
-
-		all([
-			function (next) {
-				meta.js.linkStatics(next);
-			},
-			function (next) {
-				meta.js.buildModules(parallel, next);
-			},
-			function (next) {
-				meta.js.buildBundle('client', parallel, next);
-			},
-			function (next) {
-				meta.js.buildBundle('admin', parallel, next);
-			},
-		], callback);
+	'plugin static dirs': function (parallel, callback) {
+		meta.js.linkStatics(callback);
 	},
+	'requirejs modules': function (parallel, callback) {
+		meta.js.buildModules(parallel, callback);
+	},
+	'client js bundle': function (parallel, callback) {
+		meta.js.buildBundle('client', parallel, callback);
+	},
+	'admin js bundle': function (parallel, callback) {
+		meta.js.buildBundle('admin', parallel, callback);
+	},
+	javascript: [
+		'plugin static dirs',
+		'requirejs modules',
+		'client js bundle',
+		'admin js bundle',
+	],
 	'client side styles': function (parallel, callback) {
 		meta.css.buildBundle('client', parallel, callback);
 	},
 	'admin control panel styles': function (parallel, callback) {
 		meta.css.buildBundle('admin', parallel, callback);
 	},
-	styles: function (parallel, callback) {
-		var all = parallel ? async.each : async.eachSeries;
-
-		all(['client', 'admin'], function (target, next) {
-			meta.css.buildBundle(target, parallel, step(target, next));
-		}, callback);
-	},
+	styles: [
+		'client side styles',
+		'admin control panel styles',
+	],
 	templates: function (parallel, callback) {
 		meta.templates.compile(callback);
 	},
@@ -72,6 +69,10 @@ var targetHandlers = {
 };
 
 var aliases = {
+	'plugin static dirs': ['staticdirs'],
+	'requirejs modules': ['rjs', 'modules'],
+	'client js bundle': ['clientjs', 'clientscript', 'clientscripts'],
+	'admin js bundle': ['adminjs', 'adminscript', 'adminscripts'],
 	javascript: ['js'],
 	'client side styles': [
 		'clientcss', 'clientless', 'clientstyles', 'clientstyle',
@@ -96,9 +97,9 @@ aliases = Object.keys(aliases).reduce(function (prev, key) {
 
 function beforeBuild(callback) {
 	async.series([
-		async.apply(db.init),
-		async.apply(meta.themes.setupPaths),
-		async.apply(plugins.prepareForBuild),
+		db.init,
+		meta.themes.setupPaths,
+		plugins.prepareForBuild,
 	], function (err) {
 		if (err) {
 			winston.error('[build] Encountered error preparing for build: ' + err.message);
@@ -109,39 +110,53 @@ function beforeBuild(callback) {
 	});
 }
 
-var all = Object.keys(targetHandlers).filter(function (name) {
-	return name !== 'styles';
+var allTargets = Object.keys(targetHandlers).filter(function (name) {
+	return typeof targetHandlers[name] === 'function';
 });
 function buildTargets(targets, parallel, callback) {
-	var all = parallel ? async.parallel : async.series;
+	var all = parallel ? async.each : async.eachSeries;
 
 	var length = Math.max.apply(Math, targets.map(function (name) {
 		return name.length;
 	}));
 
-	all(targets.map(function (target) {
-		return function (next) {
-			targetHandlers[target](parallel, step(padstart(target, length) + ' ', next));
-		};
-	}), callback);
+	all(targets, function (target, next) {
+		targetHandlers[target](parallel, step(padstart(target, length) + ' ', next));
+	}, callback);
 }
 
 function build(targets, callback) {
 	if (targets === true) {
-		targets = all;
+		targets = allTargets;
 	} else if (!Array.isArray(targets)) {
 		targets = targets.split(',');
 	}
 
-	targets = targets.map(function (target) {
-		target = target.toLowerCase().replace(/-/g, '');
-		if (!aliases[target]) {
-			winston.warn('[build] Unknown target: ' + target);
-			return false;
-		}
+	targets = targets
+		// get full target name
+		.map(function (target) {
+			target = target.toLowerCase().replace(/-/g, '');
+			if (!aliases[target]) {
+				winston.warn('[build] Unknown target: ' + target);
+				return false;
+			}
 
-		return aliases[target];
-	}).filter(Boolean);
+			return aliases[target];
+		})
+		// filter nonexistent targets
+		.filter(Boolean)
+		// map multitargets to their sets
+		.reduce(function (prev, target) {
+			if (Array.isArray(targetHandlers[target])) {
+				return prev.concat(targetHandlers[target]);
+			}
+
+			return prev.concat(target);
+		}, [])
+		// unique
+		.filter(function (target, i, arr) {
+			return arr.indexOf(target) === i;
+		});
 
 	if (typeof callback !== 'function') {
 		callback = function (err) {
@@ -193,5 +208,5 @@ function build(targets, callback) {
 exports.build = build;
 
 exports.buildAll = function (callback) {
-	build(all, callback);
+	build(allTargets, callback);
 };
