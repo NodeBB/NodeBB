@@ -19,42 +19,7 @@ var utils = require('../public/src/utils');
  * 4. Append your filename to the array below for the next NodeBB version.
  */
 
-var Upgrade = {
-	available: [
-		{
-			version: '1.0.0',
-			upgrades: ['chat_upgrade', 'chat_room_hashes', 'theme_to_active_plugins', 'user_best_posts', 'users_notvalidated', 'global_moderators', 'social_post_sharing'],
-		},
-		{
-			version: '1.1.0',
-			upgrades: ['group_title_update', 'user_post_count_per_tid', 'dismiss_flags_from_deleted_topics', 'assign_topic_read_privilege', 'separate_upvote_downvote'],
-		},
-		{
-			version: '1.1.1',
-			upgrades: ['upload_privileges', 'remove_negative_best_posts'],
-		},
-		{
-			version: '1.2.0',
-			upgrades: ['category_recent_tids', 'edit_delete_deletetopic_privileges'],
-		},
-		{
-			version: '1.3.0',
-			upgrades: ['favourites_to_bookmarks', 'sorted_sets_for_post_replies'],
-		},
-		{
-			version: '1.4.0',
-			upgrades: ['global_and_user_language_keys', 'sorted_set_for_pinned_topics'],
-		},
-		{
-			version: 'master',	// rename this to whenever the next NodeBB version is (non-breaking)
-			upgrades: ['sound_settings', 'config_urls_update'],
-		},
-		{
-			version: 'develop',	// rename this to whatever the next NodeBB version is (breaking)
-			upgrades: ['flags_refactor', 'post_votes_zset', 'moderation_history_refactor', 'allowed_file_extensions'],
-		},
-	],
-};
+var Upgrade = {};
 
 Upgrade.getAll = function (callback) {
 	async.waterfall([
