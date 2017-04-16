@@ -116,9 +116,7 @@
 		var meta = require('../meta');
 		var sessionStore;
 
-		var ttlDays = 60 * 60 * 24 * (parseInt(meta.config.loginDays, 10) || 0);
-		var ttlSeconds = (parseInt(meta.config.loginSeconds, 10) || 0);
-		var ttl = ttlSeconds || ttlDays || 1209600; // Default to 14 days in seconds
+		var ttl = meta.getSessionTTLSeconds();
 
 		if (nconf.get('redis')) {
 			sessionStore = require('connect-redis')(session);

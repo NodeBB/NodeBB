@@ -51,6 +51,13 @@ var utils = require('./utils');
 		restart();
 	};
 
+	Meta.getSessionTTLSeconds = function () {
+		var ttlDays = 60 * 60 * 24 * (parseInt(Meta.config.loginDays, 10) || 0);
+		var ttlSeconds = (parseInt(Meta.config.loginSeconds, 10) || 0);
+		var ttl = ttlSeconds || ttlDays || 1209600; // Default to 14 days
+		return ttl;
+	};
+
 	if (nconf.get('isPrimary') === 'true') {
 		pubsub.on('meta:restart', function (data) {
 			if (data.hostname !== os.hostname()) {
