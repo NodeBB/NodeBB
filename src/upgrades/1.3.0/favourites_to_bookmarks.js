@@ -10,9 +10,10 @@ module.exports = {
 	name: 'Favourites to Bookmarks',
 	timestamp: Date.UTC(2016, 9, 8),
 	method: function (callback) {
+		var progress = this.progress;
+
 		function upgradePosts(next) {
 			var batch = require('../../batch');
-			var progress = this.progress;
 
 			batch.processSortedSet('posts:pid', function (ids, next) {
 				async.each(ids, function (id, next) {
