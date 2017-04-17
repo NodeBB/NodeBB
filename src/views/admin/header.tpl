@@ -41,9 +41,7 @@
 
     <span id="admin" style="display:none;"><!-- IMPORT admin/partials/menu.tpl --></span>
 		<span id="moderator" style="display:none;"><!-- IMPORT admin/partials/menu-moderator.tpl --></span>
-
-		<div class="container" id="content">
-			<script type="text/javascript">
+		<script type="text/javascript">
 			function getParameterByName(name, url) {
 					if (!url) {
 						url = window.location.href;
@@ -66,3 +64,4 @@
 					document.getElementById("admin").style.display = 'none';
 				}
 			</script>
+		<div class="container" id="content">
