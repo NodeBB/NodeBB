@@ -39,8 +39,8 @@
 
 	<body class="admin {bodyClass}">
 
-    <span id="admin" style="display:none;"><!-- IMPORT admin/partials/menu.tpl --></span>
-		<span id="moderator" style="display:none;"><!-- IMPORT admin/partials/menu-moderator.tpl --></span>
+    <div id="admin" style="display:none;"><!-- IMPORT admin/partials/menu.tpl --></div>
+		<div id="moderator" style="display:none;"><!-- IMPORT admin/partials/menu-moderator.tpl --></div>
 		<script type="text/javascript">
 			function getParameterByName(name, url) {
 					if (!url) {
