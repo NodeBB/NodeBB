@@ -9,7 +9,6 @@ var rimraf = require('rimraf');
 
 var file = require('../file');
 var Plugins = require('../plugins');
-var db = require('../database');
 
 var buildLanguagesPath = path.join(__dirname, '../../build/public/language');
 var	coreLanguagesPath = path.join(__dirname, '../../public/language');
@@ -17,23 +16,7 @@ var	coreLanguagesPath = path.join(__dirname, '../../public/language');
 function getTranslationTree(callback) {
 	async.waterfall([
 		// get plugin data
-		function (next) {
-			db.getSortedSetRange('plugins:active', 0, -1, next);
-		},
-		function (plugins, next) {
-			var pluginBasePath = path.join(__dirname, '../../node_modules');
-			var paths = plugins.map(function (plugin) {
-				return path.join(pluginBasePath, plugin);
-			});
-
-			// Filter out plugins with invalid paths
-			async.filter(paths, file.exists, function (paths) {
-				next(null, paths);
-			});
-		},
-		function (paths, next) {
-			async.map(paths, Plugins.loadPluginInfo, next);
-		},
+		Plugins.data.getAll,
 
 		// generate list of languages and namespaces
 		function (plugins, next) {
@@ -78,7 +61,7 @@ function getTranslationTree(callback) {
 				// get plugin languages and namespaces
 				function (nxt) {
 					async.each(plugins, function (pluginData, cb) {
-						var pathToFolder = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
+						var pathToFolder = path.join(pluginData.path, pluginData.languages);
 						file.walk(pathToFolder, function (err, paths) {
 							if (err) {
 								return cb(err);

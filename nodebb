@@ -2,35 +2,33 @@
 
 'use strict';
 
-var cproc;
-var args;
-var fs;
-var path;
-var request;
-var semver;
-var prompt;
-var async;
+var fs = require('fs');
+var path = require('path');
+var cproc = require('child_process');
 
+// check to make sure dependencies are installed
 try {
-	require('colors');
-	cproc = require('child_process');
-	args = require('minimist')(process.argv.slice(2));
-	fs = require('fs');
-	path = require('path');
-	request = require('request');
-	semver = require('semver');
-	prompt = require('prompt');
-	async = require('async');
+	fs.readFileSync(path.join(__dirname, 'node_modules/async/package.json'));
 } catch (e) {
-	if (e.code === 'MODULE_NOT_FOUND') {
-		process.stdout.write('NodeBB could not be started because it\'s dependencies have not been installed.\n');
-		process.stdout.write('Please ensure that you have executed "npm install --production" prior to running NodeBB.\n\n');
-		process.stdout.write('For more information, please see: https://docs.nodebb.org/en/latest/installing/os.html\n\n');
-		process.stdout.write('Could not start: ' + e.code + '\n');
+	if (e.code === 'ENOENT') {
+		process.stdout.write('Dependencies not yet installed.\n');
+		process.stdout.write('Installing them now...\n\n');
 
-		process.exit(1);
+		cproc.execSync('npm i --production', {
+			cwd: __dirname,
+			stdio: [0, 1, 2],
+		});
+	} else {
+		throw e;
 	}
 }
+
+require('colors');
+var args = require('minimist')(process.argv.slice(2));
+var request = require('request');
+var semver = require('semver');
+var prompt = require('prompt');
+var async = require('async');
 
 var loaderPath = path.join(__dirname, 'loader.js');
 var appPath = path.join(__dirname, 'app.js');
