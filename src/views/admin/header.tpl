@@ -40,7 +40,7 @@
 	<body class="admin {bodyClass}">
 
     <div id="admin"><!-- IMPORT admin/partials/menu.tpl --></div>
-		<div id="moderator"><!-- IMPORT admin/partials/menu.tpl --></div>
+		<div id="moderator"><!-- IMPORT admin/partials/menu-moderator.tpl --></div>
 
 		<script type="text/javascript">
 		function getParameterByName(name, url) {
