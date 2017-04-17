@@ -192,6 +192,26 @@ describe('meta', function () {
 	});
 
 
+	describe('session TTL', function () {
+		it('should return 14 days in seconds', function (done) {
+			assert(meta.getSessionTTLSeconds(), 1209600);
+			done();
+		});
+
+		it('should return 7 days in seconds', function (done) {
+			meta.config.loginDays = 7;
+			assert(meta.getSessionTTLSeconds(), 604800);
+			done();
+		});
+
+		it('should return 2 days in seconds', function (done) {
+			meta.config.loginSeconds = 172800;
+			assert(meta.getSessionTTLSeconds(), 172800);
+			done();
+		});
+	});
+
+
 	after(function (done) {
 		db.emptydb(done);
 	});

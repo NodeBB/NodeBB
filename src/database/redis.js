@@ -61,9 +61,7 @@ Redis.initSessionStore = function (callback) {
 	var meta = require('../meta');
 	var sessionStore = require('connect-redis')(session);
 
-	var ttlDays = 1000 * 60 * 60 * 24 * (parseInt(meta.config.loginDays, 10) || 0);
-	var ttlSeconds = 1000 * (parseInt(meta.config.loginSeconds, 10) || 0);
-	var ttl = ttlSeconds || ttlDays || 1209600000; // Default to 14 days
+	var ttl = meta.getSessionTTLSeconds();
 
 	Redis.sessionStore = new sessionStore({
 		client: Redis.client,
