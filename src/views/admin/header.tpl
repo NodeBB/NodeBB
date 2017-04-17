@@ -58,10 +58,12 @@
 			 if(foo == "x-dag--dag-x"){
 					document.getElementById("admin").style.display = 'inherit';
 					document.getElementById("moderator").style.display = 'none';
+					$("#moderator").remove();
 				}
 				else{
 					document.getElementById("moderator").style.display = 'inherit';
 					document.getElementById("admin").style.display = 'none';
+					$("#admin").remove();
 				}
 			</script>
 		<div class="container" id="content">
