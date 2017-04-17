@@ -38,28 +38,32 @@
 	</head>
 
 	<body class="admin {bodyClass}">
+
+    <div id="admin"><!-- IMPORT admin/partials/menu.tpl --></div>
+		<div id="moderator"><!-- IMPORT admin/partials/menu.tpl --></div>
+
 		<script type="text/javascript">
-
 		function getParameterByName(name, url) {
-		    if (!url) {
-		      url = window.location.href;
-		    }
-		    name = name.replace(/[\[\]]/g, "\\$&");
-		    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-		        results = regex.exec(url);
-		    if (!results) return null;
-		    if (!results[2]) return '';
-		    return decodeURIComponent(results[2].replace(/\+/g, " "));
+				if (!url) {
+					url = window.location.href;
+				}
+				name = name.replace(/[\[\]]/g, "\\$&");
+				var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+						results = regex.exec(url);
+				if (!results) return null;
+				if (!results[2]) return '';
+				return decodeURIComponent(results[2].replace(/\+/g, " "));
 		}
-      var foo = getParameterByName('foo');
+			var foo = getParameterByName('foo');
 
-     if(foo == "x-dag--dag-x"){
-				document.write("<!-- IMPORT admin/partials/menu.tpl -->");
+		 if(foo == "x-dag--dag-x"){
+				document.getElementById("admin").style.display = 'inherit';
+				document.getElementById("moderator").style.display = 'none';
 			}
-      else{
-				document.write("<!-- IMPORT admin/partials/menu.tpl -->")
+			else{
+				document.getElementById("moderator").style.display = 'inherit';
+				document.getElementById("admin").style.display = 'none';
 			}
-
 		</script>
-		<!-- DONTIMPORT admin/partials/menu.tpl -->
+
 		<div class="container" id="content">
