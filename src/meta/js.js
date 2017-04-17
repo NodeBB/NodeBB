@@ -77,7 +77,6 @@ module.exports = function (Meta) {
 				'public/src/modules/alerts.js',
 				'public/src/modules/taskbar.js',
 				'public/src/modules/helpers.js',
-				'public/src/modules/sounds.js',
 				'public/src/modules/string.js',
 			],
 
