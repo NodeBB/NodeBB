@@ -64,7 +64,7 @@
 	</head>
 
 	<body class="admin {bodyClass}">
-    <div id="admin" style="display:none;"><!-- IMPORT admin/partials/menu.tpl --></div>
-		<div id="moderator" style="display:none;"><!-- IMPORT admin/partials/menu-moderator.tpl --></div>
+    <span id="admin" style="display:none;"><!-- IMPORT admin/partials/menu.tpl --></span>
+		<span id="moderator" style="display:none;"><!-- IMPORT admin/partials/menu-moderator.tpl --></span>
 
 		<div class="container" id="content">
