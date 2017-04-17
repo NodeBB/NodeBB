@@ -34,37 +34,35 @@
 
 		<!-- BEGIN scripts -->
 		<script type="text/javascript" src="{scripts.src}"></script>
-		<script type="text/javascript">
-		function getParameterByName(name, url) {
-				if (!url) {
-					url = window.location.href;
-				}
-				name = name.replace(/[\[\]]/g, "\\$&");
-				var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-						results = regex.exec(url);
-				if (!results) return null;
-				if (!results[2]) return '';
-				return decodeURIComponent(results[2].replace(/\+/g, " "));
-		}
-
-		$(document).ready(function(){
-			var foo = getParameterByName('foo');
-
-		 if(foo == "x-dag--dag-x"){
-				document.getElementById("admin").style.display = 'inherit';
-				document.getElementById("moderator").style.display = 'none';
-			}
-			else{
-				document.getElementById("moderator").style.display = 'inherit';
-				document.getElementById("admin").style.display = 'none';
-			}
-		});
-		</script>
 		<!-- END scripts -->
 	</head>
 
 	<body class="admin {bodyClass}">
+
     <span id="admin" style="display:none;"><!-- IMPORT admin/partials/menu.tpl --></span>
 		<span id="moderator" style="display:none;"><!-- IMPORT admin/partials/menu-moderator.tpl --></span>
 
 		<div class="container" id="content">
+			<script type="text/javascript">
+			function getParameterByName(name, url) {
+					if (!url) {
+						url = window.location.href;
+					}
+					name = name.replace(/[\[\]]/g, "\\$&");
+					var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+							results = regex.exec(url);
+					if (!results) return null;
+					if (!results[2]) return '';
+					return decodeURIComponent(results[2].replace(/\+/g, " "));
+			}
+				var foo = getParameterByName('foo');
+
+			 if(foo == "x-dag--dag-x"){
+					document.getElementById("admin").style.display = 'inherit';
+					document.getElementById("moderator").style.display = 'none';
+				}
+				else{
+					document.getElementById("moderator").style.display = 'inherit';
+					document.getElementById("admin").style.display = 'none';
+				}
+			</script>
