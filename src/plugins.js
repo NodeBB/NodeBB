@@ -11,7 +11,6 @@ var nconf = require('nconf');
 var db = require('./database');
 var hotswap = require('./hotswap');
 var file = require('./file');
-var languages = require('./languages');
 
 var app;
 var middleware;
@@ -27,7 +26,7 @@ Plugins.libraries = {};
 Plugins.loadedHooks = {};
 Plugins.libraryPaths = [];
 Plugins.versionWarning = [];
-Plugins.languageCodes = [];
+
 Plugins.staticDirs = {};
 Plugins.cssFiles = [];
 Plugins.lessFiles = [];
@@ -87,20 +86,6 @@ Plugins.reload = function (callback) {
 	Plugins.soundpacks.length = 0;
 
 	async.waterfall([
-		function (next) {
-			// Build language code list
-			languages.list(function (err, languages) {
-				if (err) {
-					return next(err);
-				}
-
-				Plugins.languageCodes = languages.map(function (data) {
-					return data.code;
-				});
-
-				next();
-			});
-		},
 		async.apply(Plugins.getPluginPaths),
 		function (paths, next) {
 			async.eachSeries(paths, Plugins.loadPlugin, next);
