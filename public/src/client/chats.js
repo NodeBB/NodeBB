@@ -83,6 +83,7 @@ define('forum/chats', [
 
 		Chats.addRenameHandler(ajaxify.data.roomId, $('[component="chat/room/name"]'));
 		Chats.addScrollHandler(ajaxify.data.roomId, ajaxify.data.uid, $('.chat-content'));
+		Chats.addCharactersLeftHandler(components.get('chat/input'));
 	};
 
 	Chats.addScrollHandler = function (roomId, uid, el) {
@@ -120,6 +121,12 @@ define('forum/chats', [
 					loading = false;
 				});
 			});
+		});
+	};
+
+	Chats.addCharactersLeftHandler = function (element) {
+		element.on('keyup', function () {
+			$('[component="chat/message/length"]').text(element.val().length);
 		});
 	};
 
