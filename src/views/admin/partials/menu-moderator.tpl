@@ -1,8 +1,18 @@
 <nav id="menu" class="hidden-md hidden-lg">
+
+	<section class="menu-section">
+		<h3 class="menu-section-title">[[admin/menu:section-general]]</h3>
+		<ul class="menu-section-list">
+			<a href="{relative_path}/admin/general/dashboard">[[admin/menu:general/dashboard]]</a>
+			<li><a href="{relative_path}/admin/general/homepage">[[admin/menu:general/homepage]]</a></li>
+		</ul>
+	</section>
+
 	<section class="menu-section">
 		<h3 class="menu-section-title">[[admin/menu:section-manage]]</h3>
 		<ul class="menu-section-list">
 			<li><a href="{relative_path}/admin/manage/categories">[[admin/menu:manage/categories]]</a></li>
+			<li><a href="{relative_path}/admin/manage/tags">[[admin/menu:manage/tags]]</a></li>
 		</ul>
 	</section>
 </nav>
