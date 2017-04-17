@@ -21,7 +21,7 @@
 	"upgrade-available": "Була випущена нова версія (v%1). Подумайте про <a href=\"https://docs.nodebb.org/en/latest/upgrading/index.html\">оновлення свого NodeBB</a>.</p>",
 	"prerelease-upgrade-available": "У вас встановлено застарілу пре-релізну версію NodeBB. Була випущена нова версія (v%1). Подумайте про <a href=\"https://docs.nodebb.org/en/latest/upgrading/index.html\">оновлення свого NodeBB</a>.</p>",
 	"prerelease-warning": "<p>Це <strong>пре-релізна</strong> версія NodeBB. Можуть виникати неочікувані помилки. <i class=\"fa fa-exclamation-triangle\"></i></p>",
-	"running-in-development": "<span>Forum is running in development mode. The forum may be open to potential vulnerabilities; please contact your system administrator.</span>",
+	"running-in-development": "Форум працює в режимі розробки. Форум потенційно може бути незахищеним, будь-ласка повідомте вашого системного адміністратора.",
 
 	"notices": "Сповіщення",
 	"restart-not-required": "Перезавантаження не потрібне",

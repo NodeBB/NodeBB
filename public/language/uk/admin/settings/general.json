@@ -28,5 +28,5 @@
 	"outgoing-links": "Зовнішні посилання",
 	"outgoing-links.warning-page": "Використовувати сторінку попередження про зовнішній перехід",
 	"search-default-sort-by": "Типовий порядок результатів пошуку",
-	"outgoing-links.whitelist": "Domains to whitelist for bypassing the warning page"
+	"outgoing-links.whitelist": "Безпечні домени для пропуску сторінки попередження"
 }
