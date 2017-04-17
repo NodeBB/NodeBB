@@ -1,0 +1,12 @@
+{
+    "username-email": "نام کاربری / ایمیل",
+    "username": "نام کاربری",
+    "email": "ایمیل",
+    "remember_me": "مرا به یاد بسپار؟",
+    "forgot_password": "رمز عبور را فراموش کرده‌اید؟",
+    "alternative_logins": "روش‌های ثبت نام جایگزین",
+    "failed_login_attempt": "ورود ناموفق",
+    "login_successful": "شما با موفقیت وارد شده‌اید!",
+    "dont_have_account": "حساب کاربری ندارید؟",
+    "logged-out-due-to-inactivity": "شما به علت عدم فعالیت از کنترل پنل مدیر کل خارج شده اید "
+}

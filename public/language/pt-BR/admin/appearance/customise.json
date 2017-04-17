@@ -1,0 +1,9 @@
+{
+	"custom-css": "CSS Personalizado",
+	"custom-css.description": "Entre com as suas próprias declarações de CSS aqui, as quais serão aplicadas após todos os outros estilos.",
+	"custom-css.enable": "Habilitar CSS Personalizado",
+
+	"custom-header": "Cabeçalho Personalizado",
+	"custom-header.description": "Adicione HTML pessoal aqui (ex. JavaScript, Meta Tags, Tags, etc), os quais serão acrescentados ao final da seção <code>&lt;head&gt;</code> do markup do seu fórum.",
+	"custom-header.enable": "Ligar o Cabeçalho Personalizado"
+}

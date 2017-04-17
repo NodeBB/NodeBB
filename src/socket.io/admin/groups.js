@@ -1,11 +1,11 @@
-"use strict";
+'use strict';
 
 var async = require('async');
 var groups = require('../../groups');
 
 var Groups = {};
 
-Groups.create = function(socket, data, callback) {
+Groups.create = function (socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	} else if (groups.isPrivilegeGroup(data.name)) {
@@ -15,11 +15,11 @@ Groups.create = function(socket, data, callback) {
 	groups.create({
 		name: data.name,
 		description: data.description,
-		ownerUid: socket.uid
+		ownerUid: socket.uid,
 	}, callback);
 };
 
-Groups.join = function(socket, data, callback) {
+Groups.join = function (socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -33,11 +33,11 @@ Groups.join = function(socket, data, callback) {
 				return next(new Error('[[error:group-already-member]]'));
 			}
 			groups.join(data.groupName, data.uid, next);
-		}
+		},
 	], callback);
 };
 
-Groups.leave = function(socket, data, callback) {
+Groups.leave = function (socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -55,11 +55,11 @@ Groups.leave = function(socket, data, callback) {
 				return next(new Error('[[error:group-not-member]]'));
 			}
 			groups.leave(data.groupName, data.uid, next);
-		}
+		},
 	], callback);
 };
 
-Groups.update = function(socket, data, callback) {
+Groups.update = function (socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}

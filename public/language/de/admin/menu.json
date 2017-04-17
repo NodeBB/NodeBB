@@ -1,0 +1,74 @@
+{
+	"section-general": "Allgemein",
+	"general/dashboard": "Übersicht",
+	"general/homepage": "Startseite",
+	"general/navigation": "Navigation",
+	"general/languages": "Sprachen",
+	"general/sounds": "Töne",
+	"general/social": "Soziale Medien",
+
+	"section-manage": "Verwalten",
+	"manage/categories": "Kategorien",
+	"manage/tags": "Tags",
+	"manage/users": "Benutzer",
+	"manage/registration": "Warteliste",
+	"manage/groups": "Gruppen",
+	"manage/ip-blacklist": "IP Blacklist",
+
+	"section-settings": "Einstellungen",
+	"settings/general": "Allgemein",
+	"settings/reputation": "Reputation",
+	"settings/email": "E-Mail",
+	"settings/user": "Benutzer",
+	"settings/group": "Gruppe",
+	"settings/guest": "Gäste",
+	"settings/uploads": "Uploads",
+	"settings/post": "Beiträge",
+	"settings/chat": "Chat",
+	"settings/pagination": "Seitennummerierung",
+	"settings/tags": "Tags",
+	"settings/notifications": "Benachrichtigungen",
+	"settings/cookies": "Cookies",
+	"settings/web-crawler": "Web Crawler",
+	"settings/sockets": "Sockets",
+	"settings/advanced": "Erweitert",
+
+	"settings.page-title": "%1 Einstellungen",
+
+	"section-appearance": "Aussehen",
+	"appearance/themes": "Themes",
+	"appearance/skins": "Skins",
+	"appearance/customise": "Benutzerdefiniertes HTML & CSS",
+
+	"section-extend": "Erweitert",
+	"extend/plugins": "Plugins",
+	"extend/widgets": "Widgets",
+	"extend/rewards": "Belohnungen",
+
+	"section-social-auth": "Soziale Authentifizierung",
+
+	"section-plugins": "Plugins",
+	"extend/plugins.install": "Plugins installieren",
+
+	"section-advanced": "System",
+	"advanced/database": "Datenbank",
+	"advanced/events": "Ereignisse",
+	"advanced/logs": "Protokoll",
+	"advanced/errors": "Fehler",
+	"advanced/cache": "Cache",
+	"development/logger": "Logger",
+	"development/info": "Info",
+
+	"reload-forum": "Forum neu laden",
+	"restart-forum": "Forum neu starten",
+	"logout": "Abmelden",
+	"view-forum": "Forum anzeigen",
+
+	"search.placeholder": "Suchen...",
+	"search.no-results": "Keine Ergebnisse...",
+	"search.search-forum": "Suche im Forum nach <strong></strong>",
+	"search.keep-typing": "Gib mehr ein, um die Ergebnisse zu sehen...",
+	"search.start-typing": "Starte die Eingabe, um die Ergebnisse zu sehen...",
+
+	"connection-lost": "Verbindung zu %1 verloren, wird wieder hergestellt..."
+}

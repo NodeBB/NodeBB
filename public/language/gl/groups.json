@@ -27,6 +27,7 @@
     "details.disableJoinRequests": "Desactivar as peticións de unión",
     "details.grant": "Outorgar/Rescindir propiedade",
     "details.kick": "Expulsar",
+    "details.kick_confirm": "Are you sure you want to remove this member from the group?",
     "details.owner_options": "Administración do Grupo",
     "details.group_name": "Nome do Grupo",
     "details.member_count": "Conta de Membros",
@@ -50,5 +51,8 @@
     "membership.leave-group": "Marchar do grupo",
     "membership.reject": "Rexeitar",
     "new-group.group_name": "Nome do grupo:",
-    "upload-group-cover": "Cargar foto para o grupo"
+    "upload-group-cover": "Cargar foto para o grupo",
+    "bulk-invite-instructions": "Escribe unha lista de nomes de usuario a convidar a este grupo separados por comas",
+    "bulk-invite": "Convite múltiple",
+    "remove_group_cover_confirm": "Are you sure you want to remove the cover picture?"
 }

@@ -1,0 +1,9 @@
+{
+	"custom-css": "CSS personalizado",
+	"custom-css.description": "Introduce tus propias declaraciones CSS aquí, las cuales serán aplicadas después de otros estilos.",
+	"custom-css.enable": "Activar CSS personalizado",
+
+	"custom-header": "Cabezera personalizada",
+	"custom-header.description": "Introduce HTML personalizado aquí (ej. JavaScript, Meta Etiquetas, etc.), el cual se adjuntará a la sección <code>&lt;head&gt;</code> del código de su foro.",
+	"custom-header.enable": "Activar cabecera personalizada"
+}

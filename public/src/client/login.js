@@ -1,15 +1,15 @@
-"use strict";
-/* global define, app, config, RELATIVE_PATH */
+'use strict';
 
-define('forum/login', ['translator'], function(translator) {
+
+define('forum/login', [], function () {
 	var	Login = {};
 
-	Login.init = function() {
-		var errorEl = $('#login-error-notify'),
-			submitEl = $('#login'),
-			formEl = $('#login-form');
+	Login.init = function () {
+		var errorEl = $('#login-error-notify');
+		var submitEl = $('#login');
+		var formEl = $('#login-form');
 
-		submitEl.on('click', function(e) {
+		submitEl.on('click', function (e) {
 			e.preventDefault();
 
 			if (!$('#username').val() || !$('#password').val()) {
@@ -23,32 +23,41 @@ define('forum/login', ['translator'], function(translator) {
 				}
 
 				submitEl.addClass('disabled');
+
+				/*
+					Set session refresh flag (otherwise the session check will trip and throw invalid session modal)
+					We know the session is/will be invalid (uid mismatch) because the user is attempting a login
+				*/
+				app.flags = app.flags || {};
+				app.flags._sessionRefresh = true;
+
 				formEl.ajaxSubmit({
 					headers: {
-						'x-csrf-token': config.csrf_token
+						'x-csrf-token': config.csrf_token,
 					},
-					success: function(data, status) {
+					success: function (data) {
 						window.location.href = data + '?loggedin';
 					},
-					error: function(data, status) {
+					error: function (data) {
 						if (data.status === 403 && data.responseText === 'Forbidden') {
 							window.location.href = config.relative_path + '/login?error=csrf-invalid';
 						} else {
 							errorEl.find('p').translateText(data.responseText);
 							errorEl.show();
 							submitEl.removeClass('disabled');
+							app.flags._sessionRefresh = false;
 
 							// Select the entire password if that field has focus
 							if ($('#password:focus').size()) {
 								$('#password').select();
 							}
 						}
-					}
+					},
 				});
 			}
 		});
 
-		$('#login-error-notify button').on('click', function(e) {
+		$('#login-error-notify button').on('click', function (e) {
 			e.preventDefault();
 			errorEl.hide();
 			return false;
@@ -58,17 +67,6 @@ define('forum/login', ['translator'], function(translator) {
 			$('#content #password').val('').focus();
 		} else {
 			$('#content #username').focus();
-		}
-
-
-		// Add "returnTo" data if present
-		if (app.previousUrl && $('#returnTo').length === 0) {
-			var returnToEl = document.createElement('input');
-			returnToEl.type = 'hidden';
-			returnToEl.name = 'returnTo';
-			returnToEl.id = 'returnTo';
-			returnToEl.value = app.previousUrl;
-			$(returnToEl).appendTo(formEl);
 		}
 	};
 

@@ -1,0 +1,11 @@
+{
+	"eu-consent": "Consentement de l'Union européenne",
+	"consent.enabled": "Activé",
+	"consent.message": "Message de notification",
+	"consent.acceptance": "Message d'acceptation",
+	"consent.link-text": "Texte du lien vers la politique de confidentialité",
+	"consent.blank-localised-default": "Laisser vide pour utiliser les textes localisés par défaut de NodeBB",
+	"settings": "Réglages",
+	"cookie-domain": "Domaine de session du cookie",
+	"blank-default": "Laissez vide pour utiliser les réglages par défaut"
+}

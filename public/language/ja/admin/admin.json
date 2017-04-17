@@ -1,0 +1,7 @@
+{
+	"alert.confirm-reload": "NodeBBを本当に更新しますか？",
+	"alert.confirm-restart": "NodeBBを本当に再起動しますか？",
+
+	"acp-title": "%1| NodeBB管理画面",
+	"settings-header-contents": "コンテンツ"
+}

@@ -1,8 +1,9 @@
-"use strict";
+'use strict';
 
 var async = require('async');
 var rss = require('rss');
 var nconf = require('nconf');
+var validator = require('validator');
 
 var posts = require('../posts');
 var topics = require('../topics');
@@ -11,6 +12,18 @@ var categories = require('../categories');
 var meta = require('../meta');
 var helpers = require('../controllers/helpers');
 var privileges = require('../privileges');
+
+module.exports = function (app, middleware) {
+	app.get('/topic/:topic_id.rss', middleware.maintenanceMode, generateForTopic);
+	app.get('/category/:category_id.rss', middleware.maintenanceMode, generateForCategory);
+	app.get('/recent.rss', middleware.maintenanceMode, generateForRecent);
+	app.get('/popular.rss', middleware.maintenanceMode, generateForPopular);
+	app.get('/popular/:term.rss', middleware.maintenanceMode, generateForPopular);
+	app.get('/recentposts.rss', middleware.maintenanceMode, generateForRecentPosts);
+	app.get('/category/:category_id/recentposts.rss', middleware.maintenanceMode, generateForCategoryRecentPosts);
+	app.get('/user/:userslug/topics.rss', middleware.maintenanceMode, generateForUserTopics);
+	app.get('/tags/:tag.rss', middleware.maintenanceMode, generateForTag);
+};
 
 
 function generateForTopic(req, res, callback) {
@@ -23,12 +36,12 @@ function generateForTopic(req, res, callback) {
 	async.waterfall([
 		function (next) {
 			async.parallel({
-				privileges: function(next) {
+				privileges: function (next) {
 					privileges.topics.get(tid, req.uid, next);
 				},
-				topic: function(next) {
+				topic: function (next) {
 					topics.getTopicData(tid, next);
-				}
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -43,8 +56,8 @@ function generateForTopic(req, res, callback) {
 			}
 			userPrivileges = results.privileges;
 			topics.getTopicWithPosts(results.topic, 'tid:' + tid + ':posts', req.uid, 0, 25, false, next);
-		}
-	], function(err, topicData) {
+		},
+	], function (err, topicData) {
 		if (err) {
 			return callback(err);
 		}
@@ -56,30 +69,30 @@ function generateForTopic(req, res, callback) {
 		var author = topicData.posts.length ? topicData.posts[0].username : '';
 
 		var feed = new rss({
-				title: topicData.title,
-				description: description,
-				feed_url: nconf.get('url') + '/topic/' + tid + '.rss',
-				site_url: nconf.get('url') + '/topic/' + topicData.slug,
-				image_url: image_url,
-				author: author,
-				ttl: 60
-			}),
-			dateStamp;
+			title: topicData.title,
+			description: description,
+			feed_url: nconf.get('url') + '/topic/' + tid + '.rss',
+			site_url: nconf.get('url') + '/topic/' + topicData.slug,
+			image_url: image_url,
+			author: author,
+			ttl: 60,
+		});
+		var dateStamp;
 
 		if (topicData.posts.length > 0) {
 			feed.pubDate = new Date(parseInt(topicData.posts[0].timestamp, 10)).toUTCString();
 		}
 
-		topicData.posts.forEach(function(postData) {
+		topicData.posts.forEach(function (postData) {
 			if (!postData.deleted) {
 				dateStamp = new Date(parseInt(parseInt(postData.edited, 10) === 0 ? postData.timestamp : postData.edited, 10)).toUTCString();
 
 				feed.item({
 					title: 'Reply to ' + topicData.title + ' on ' + dateStamp,
 					description: postData.content,
-					url: nconf.get('url') + '/topic/' + topicData.slug + (postData.index ? '/' + (postData.index + 1) : ''),
+					url: nconf.get('url') + '/post/' + postData.pid,
 					author: postData.user ? postData.user.username : '',
-					date: dateStamp
+					date: dateStamp,
 				});
 			}
 		});
@@ -104,8 +117,8 @@ function generateForUserTopics(req, res, callback) {
 				return callback();
 			}
 			user.getUserFields(uid, ['uid', 'username'], next);
-		}
-	], function(err, userData) {
+		},
+	], function (err, userData) {
 		if (err) {
 			return callback(err);
 		}
@@ -115,7 +128,7 @@ function generateForUserTopics(req, res, callback) {
 			title: 'Topics by ' + userData.username,
 			description: 'A list of topics that are posted by ' + userData.username,
 			feed_url: '/user/' + userslug + '/topics.rss',
-			site_url: '/user/' + userslug + '/topics'
+			site_url: '/user/' + userslug + '/topics',
 		}, 'uid:' + userData.uid + ':topics', req, res, callback);
 	});
 }
@@ -129,19 +142,19 @@ function generateForCategory(req, res, next) {
 	async.waterfall([
 		function (next) {
 			async.parallel({
-				privileges: function(next) {
+				privileges: function (next) {
 					privileges.categories.get(cid, req.uid, next);
 				},
-				category: function(next) {
+				category: function (next) {
 					categories.getCategoryById({
 						cid: cid,
 						set: 'cid:' + cid + ':tids',
 						reverse: true,
 						start: 0,
 						stop: 25,
-						uid: req.uid
+						uid: req.uid,
 					}, next);
-				}
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -155,8 +168,8 @@ function generateForCategory(req, res, next) {
 				feed_url: '/category/' + cid + '.rss',
 				site_url: '/category/' + results.category.cid,
 			}, results.category.topics, next);
-		}
-	], function(err, feed) {
+		},
+	], function (err, feed) {
 		if (err) {
 			return next(err);
 		}
@@ -173,7 +186,7 @@ function generateForRecent(req, res, next) {
 		title: 'Recently Active Topics',
 		description: 'A list of topics that have been active within the past 24 hours',
 		feed_url: '/recent.rss',
-		site_url: '/recent'
+		site_url: '/recent',
 	}, 'topics:recent', req, res, next);
 }
 
@@ -185,47 +198,50 @@ function generateForPopular(req, res, next) {
 		daily: 'day',
 		weekly: 'week',
 		monthly: 'month',
-		alltime: 'alltime'
+		alltime: 'alltime',
 	};
 	var term = terms[req.params.term] || 'day';
 
-	topics.getPopular(term, req.uid, 19, function(err, topics) {
+	async.waterfall([
+		function (next) {
+			topics.getPopular(term, req.uid, 19, next);
+		},
+		function (topics, next) {
+			generateTopicsFeed({
+				uid: req.uid,
+				title: 'Popular Topics',
+				description: 'A list of topics that are sorted by post count',
+				feed_url: '/popular/' + (req.params.term || 'daily') + '.rss',
+				site_url: '/popular/' + (req.params.term || 'daily'),
+			}, topics, next);
+		},
+	], function (err, feed) {
 		if (err) {
 			return next(err);
 		}
-
-		generateTopicsFeed({
-			uid: req.uid,
-			title: 'Popular Topics',
-			description: 'A list of topics that are sorted by post count',
-			feed_url: '/popular/' + (req.params.term || 'daily') + '.rss',
-			site_url: '/popular/' + (req.params.term || 'daily')
-		}, topics, function(err, feed) {
-			if (err) {
-				return next(err);
-			}
-			sendFeed(feed, res);
-		});
+		sendFeed(feed, res);
 	});
 }
 
 function generateForTopics(options, set, req, res, next) {
-	topics.getTopicsFromSet(set, req.uid, 0, 19, function (err, data) {
+	var start = options.hasOwnProperty('start') ? options.start : 0;
+	var stop = options.hasOwnProperty('stop') ? options.stop : 19;
+	async.waterfall([
+		function (next) {
+			topics.getTopicsFromSet(set, req.uid, start, stop, next);
+		},
+		function (data, next) {
+			generateTopicsFeed(options, data.topics, next);
+		},
+	], function (err, feed) {
 		if (err) {
 			return next(err);
 		}
-
-		generateTopicsFeed(options, data.topics, function(err, feed) {
-			if (err) {
-				return next(err);
-			}
-			sendFeed(feed, res);
-		});
+		sendFeed(feed, res);
 	});
 }
 
 function generateTopicsFeed(feedOptions, feedTopics, callback) {
-
 	feedOptions.ttl = 60;
 	feedOptions.feed_url = nconf.get('url') + feedOptions.feed_url;
 	feedOptions.site_url = nconf.get('url') + feedOptions.site_url;
@@ -238,11 +254,11 @@ function generateTopicsFeed(feedOptions, feedTopics, callback) {
 		feed.pubDate = new Date(parseInt(feedTopics[0].lastposttime, 10)).toUTCString();
 	}
 
-	async.map(feedTopics, function(topicData, next) {
+	async.map(feedTopics, function (topicData, next) {
 		var feedItem = {
 			title: topicData.title,
 			url: nconf.get('url') + '/topic/' + topicData.slug,
-			date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString()
+			date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString(),
 		};
 
 		if (topicData.teaser && topicData.teaser.user) {
@@ -251,7 +267,7 @@ function generateTopicsFeed(feedOptions, feedTopics, callback) {
 			return next(null, feedItem);
 		}
 
-		topics.getMainPost(topicData.tid, feedOptions.uid, function(err, mainPost) {
+		topics.getMainPost(topicData.tid, feedOptions.uid, function (err, mainPost) {
 			if (err) {
 				return next(err);
 			}
@@ -262,11 +278,11 @@ function generateTopicsFeed(feedOptions, feedTopics, callback) {
 			feedItem.author = mainPost.user.username;
 			next(null, feedItem);
 		});
-	}, function(err, feedItems) {
+	}, function (err, feedItems) {
 		if (err) {
 			return callback(err);
 		}
-		feedItems.forEach(function(feedItem) {
+		feedItems.forEach(function (feedItem) {
 			if (feedItem) {
 				feed.item(feedItem);
 			}
@@ -280,7 +296,7 @@ function generateForRecentPosts(req, res, next) {
 		return next();
 	}
 
-	posts.getRecentPosts(req.uid, 0, 19, 'month', function(err, posts) {
+	posts.getRecentPosts(req.uid, 0, 19, 'month', function (err, posts) {
 		if (err) {
 			return next(err);
 		}
@@ -289,7 +305,7 @@ function generateForRecentPosts(req, res, next) {
 			title: 'Recent Posts',
 			description: 'A list of recent posts',
 			feed_url: '/recentposts.rss',
-			site_url: '/recentposts'
+			site_url: '/recentposts',
 		}, posts);
 
 		sendFeed(feed, res);
@@ -303,16 +319,16 @@ function generateForCategoryRecentPosts(req, res, next) {
 	var cid = req.params.category_id;
 
 	async.parallel({
-		privileges: function(next) {
+		privileges: function (next) {
 			privileges.categories.get(cid, req.uid, next);
 		},
-		category: function(next) {
+		category: function (next) {
 			categories.getCategoryData(cid, next);
 		},
-		posts: function(next) {
+		posts: function (next) {
 			categories.getRecentReplies(cid, req.uid, 20, next);
-		}
-	}, function(err, results) {
+		},
+	}, function (err, results) {
 		if (err) {
 			return next(err);
 		}
@@ -328,7 +344,7 @@ function generateForCategoryRecentPosts(req, res, next) {
 			title: results.category.name + ' Recent Posts',
 			description: 'A list of recent posts from ' + results.category.name,
 			feed_url: '/category/' + cid + '/recentposts.rss',
-			site_url: '/category/' + cid + '/recentposts'
+			site_url: '/category/' + cid + '/recentposts',
 		}, results.posts);
 
 		sendFeed(feed, res);
@@ -346,17 +362,37 @@ function generateForPostsFeed(feedOptions, posts) {
 		feed.pubDate = new Date(parseInt(posts[0].timestamp, 10)).toUTCString();
 	}
 
-	posts.forEach(function(postData) {
+	posts.forEach(function (postData) {
 		feed.item({
 			title: postData.topic ? postData.topic.title : '',
 			description: postData.content,
-			url: nconf.get('url') + '/topic/' + (postData.topic ? postData.topic.slug : '#') + '/'+postData.index,
+			url: nconf.get('url') + '/post/' + postData.pid,
 			author: postData.user ? postData.user.username : '',
-			date: new Date(parseInt(postData.timestamp, 10)).toUTCString()
+			date: new Date(parseInt(postData.timestamp, 10)).toUTCString(),
 		});
 	});
 
 	return feed;
+}
+
+function generateForTag(req, res, next) {
+	if (parseInt(meta.config['feeds:disableRSS'], 10) === 1) {
+		return next();
+	}
+	var tag = validator.escape(String(req.params.tag));
+	var page = parseInt(req.query.page, 10) || 1;
+	var topicsPerPage = meta.config.topicsPerPage || 20;
+	var start = Math.max(0, (page - 1) * topicsPerPage);
+	var stop = start + topicsPerPage - 1;
+	generateForTopics({
+		uid: req.uid,
+		title: 'Topics tagged with ' + tag,
+		description: 'A list of topics that have been tagged with ' + tag,
+		feed_url: '/tags/' + tag + '.rss',
+		site_url: '/tags/' + tag,
+		start: start,
+		stop: stop,
+	}, 'tag:' + tag + ':topics', req, res, next);
 }
 
 function sendFeed(feed, res) {
@@ -364,13 +400,3 @@ function sendFeed(feed, res) {
 	res.type('xml').set('Content-Length', Buffer.byteLength(xml)).send(xml);
 }
 
-module.exports = function(app, middleware, controllers){
-	app.get('/topic/:topic_id.rss', generateForTopic);
-	app.get('/category/:category_id.rss', generateForCategory);
-	app.get('/recent.rss', generateForRecent);
-	app.get('/popular.rss', generateForPopular);
-	app.get('/popular/:term.rss', generateForPopular);
-	app.get('/recentposts.rss', generateForRecentPosts);
-	app.get('/category/:category_id/recentposts.rss', generateForCategoryRecentPosts);
-	app.get('/user/:userslug/topics.rss', generateForUserTopics);
-};

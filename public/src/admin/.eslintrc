@@ -1,0 +1,7 @@
+{
+	"globals": {
+		"Sortable": true,
+		"Slideout": true,
+		"NProgress": true
+	}
+}

@@ -1,0 +1,74 @@
+{
+	"section-general": "Общи",
+	"general/dashboard": "Табло",
+	"general/homepage": "Начало",
+	"general/navigation": "Навигация",
+	"general/languages": "Езици",
+	"general/sounds": "Звуци",
+	"general/social": "Обществени",
+
+	"section-manage": "Управление",
+	"manage/categories": "Категории",
+	"manage/tags": "Етикети",
+	"manage/users": "Потребители",
+	"manage/registration": "Регистрационна опашка",
+	"manage/groups": "Групи",
+	"manage/ip-blacklist": "Черен списък за IP адреси",
+
+	"section-settings": "Настройки",
+	"settings/general": "Общи",
+	"settings/reputation": "Репутация",
+	"settings/email": "Е-поща",
+	"settings/user": "Потребител",
+	"settings/group": "Група",
+	"settings/guest": "Гости",
+	"settings/uploads": "Качвания",
+	"settings/post": "Публикация",
+	"settings/chat": "Разговор",
+	"settings/pagination": "Странициране",
+	"settings/tags": "Етикети",
+	"settings/notifications": "Известия",
+	"settings/cookies": "Бисквитки",
+	"settings/web-crawler": "Обхождач на уеб страници",
+	"settings/sockets": "Сокети",
+	"settings/advanced": "Разширени",
+
+	"settings.page-title": "Настройки на %1",
+
+	"section-appearance": "Външен вид",
+	"appearance/themes": "Теми",
+	"appearance/skins": "Облици",
+	"appearance/customise": "Персонализиран HTML и CSS",
+
+	"section-extend": "Разширяване",
+	"extend/plugins": "Добавки",
+	"extend/widgets": "Джаджи",
+	"extend/rewards": "Награди",
+
+	"section-social-auth": "Обществено удостоверяване",
+
+	"section-plugins": "Добавки",
+	"extend/plugins.install": "Инсталиране на добавки",
+
+	"section-advanced": "Разширени",
+	"advanced/database": "База данни",
+	"advanced/events": "Събития",
+	"advanced/logs": "Журнали",
+	"advanced/errors": "Грешки",
+	"advanced/cache": "Кеш",
+	"development/logger": "Система на журнала",
+	"development/info": "Информация",
+
+	"reload-forum": "Презареждане на форума",
+	"restart-forum": "Рестартиране на форума",
+	"logout": "Изход",
+	"view-forum": "Преглед на форума",
+
+	"search.placeholder": "Търсене…",
+	"search.no-results": "Няма резултати…",
+	"search.search-forum": "Търсене във форума за <strong></strong>",
+	"search.keep-typing": "Продължете да пишете, за да видите още резултати…",
+	"search.start-typing": "Започнете да пишете, за да получите резултати…",
+
+	"connection-lost": "Връзката към %1 беше прекъсната. опитваме се да Ви свържем отново…"
+}

@@ -1,0 +1,9 @@
+{
+	"custom-css": "CSS Personalizzato",
+	"custom-css.description": "Inserisci le tue dichiarazioni CSS qui, verranno applicate dopo tutti gli altri stili.",
+	"custom-css.enable": "Abilita CSS Personalizzato",
+
+	"custom-header": "Intestazione Personalizzata",
+	"custom-header.description": "Inserisci l' HTML personalizzato qui  (es. JavaScript, Meta Tags, ecc.), verrà attaccato al codice  <code>&lt;head&gt;</code> sezione del markup del tuo forum",
+	"custom-header.enable": "Abilita l'Intestazione Personalizzata"
+}

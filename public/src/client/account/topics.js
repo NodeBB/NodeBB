@@ -1,19 +1,17 @@
 'use strict';
 
-/* globals define, app, socket, utils, config, ajaxify */
 
-define('forum/account/topics', ['forum/account/header', 'forum/infinitescroll'], function(header, infinitescroll) {
+define('forum/account/topics', ['forum/account/header', 'forum/infinitescroll'], function (header, infinitescroll) {
 	var AccountTopics = {};
-	var template, set;
+	var set;
 
-	AccountTopics.init = function() {
+	AccountTopics.init = function () {
 		header.init();
 
 		AccountTopics.handleInfiniteScroll('account/topics', 'uid:' + ajaxify.data.theirid + ':topics');
 	};
 
-	AccountTopics.handleInfiniteScroll = function(_template, _set) {
-		template = _template;
+	AccountTopics.handleInfiniteScroll = function (_template, _set) {
 		set = _set;
 
 		if (!config.usePagination) {
@@ -28,8 +26,8 @@ define('forum/account/topics', ['forum/account/header', 'forum/infinitescroll'],
 
 		infinitescroll.loadMore('topics.loadMoreFromSet', {
 			set: set,
-			after: $('[component="category"]').attr('data-nextstart')
-		}, function(data, done) {
+			after: $('[component="category"]').attr('data-nextstart'),
+		}, function (data, done) {
 			if (data.topics && data.topics.length) {
 				onTopicsLoaded(data.topics, done);
 			} else {
@@ -41,12 +39,12 @@ define('forum/account/topics', ['forum/account/header', 'forum/infinitescroll'],
 	}
 
 	function onTopicsLoaded(topics, callback) {
-		app.parseAndTranslate('account/topics', 'topics', {topics: topics}, function(html) {
+		app.parseAndTranslate('account/topics', 'topics', { topics: topics }, function (html) {
 			$('[component="category"]').append(html);
 			html.find('.timeago').timeago();
 			app.createUserTooltips();
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
-			$(window).trigger('action:topics.loaded', {topics: topics});
+			$(window).trigger('action:topics.loaded', { topics: topics });
 			callback();
 		});
 	}

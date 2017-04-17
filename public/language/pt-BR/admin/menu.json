@@ -1,0 +1,74 @@
+{
+	"section-general": "Geral",
+	"general/dashboard": "Painel",
+	"general/homepage": "Página Inicial",
+	"general/navigation": "Navegação",
+	"general/languages": "Idiomas",
+	"general/sounds": "Sons",
+	"general/social": "Social",
+
+	"section-manage": "Administrar",
+	"manage/categories": "Categorias",
+	"manage/tags": "Tags",
+	"manage/users": "Usuários",
+	"manage/registration": "Fila de Registro",
+	"manage/groups": "Grupos",
+	"manage/ip-blacklist": "Lista Negra de IPs",
+
+	"section-settings": "Configurações",
+	"settings/general": "Geral",
+	"settings/reputation": "Reputação",
+	"settings/email": "Email",
+	"settings/user": "Usuário",
+	"settings/group": "Grupo",
+	"settings/guest": "Visitantes",
+	"settings/uploads": "Uploads",
+	"settings/post": "Post",
+	"settings/chat": "Chat",
+	"settings/pagination": "Paginação",
+	"settings/tags": "Tags",
+	"settings/notifications": "Notificações",
+	"settings/cookies": "Cookies",
+	"settings/web-crawler": "Motores de Busca",
+	"settings/sockets": "Sockets",
+	"settings/advanced": "Avançado",
+
+	"settings.page-title": "Configurações %1",
+
+	"section-appearance": "Aparência",
+	"appearance/themes": "Temas",
+	"appearance/skins": "Skins",
+	"appearance/customise": "HTML & CSS Personalizados",
+
+	"section-extend": "Extenda",
+	"extend/plugins": "Plugins",
+	"extend/widgets": "Widgets",
+	"extend/rewards": "Prêmios",
+
+	"section-social-auth": "Autenticação Social",
+
+	"section-plugins": "Plugins",
+	"extend/plugins.install": "Instalar Plugins",
+
+	"section-advanced": "Avançado",
+	"advanced/database": "Banco de Dados",
+	"advanced/events": "Eventos",
+	"advanced/logs": "Logs",
+	"advanced/errors": "Erros",
+	"advanced/cache": "Cache",
+	"development/logger": "Logger",
+	"development/info": "Informação",
+
+	"reload-forum": "Recarregar Fórum",
+	"restart-forum": "Reiniciar o Fórum",
+	"logout": "Sair da Conta",
+	"view-forum": "Ver Fórum",
+
+	"search.placeholder": "Pesquisar...",
+	"search.no-results": "Sem resultados...",
+	"search.search-forum": "Pesquisar o fórum por <strong></strong>",
+	"search.keep-typing": "Digite para ver mais resultados...",
+	"search.start-typing": "Comece a digitar para ver resultados...",
+
+	"connection-lost": "A conexão com %1 foi perdida, tentando reconectar..."
+}

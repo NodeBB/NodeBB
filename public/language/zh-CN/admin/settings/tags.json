@@ -1,0 +1,12 @@
+{
+    "tag": "话题设置",
+    "min-per-topic": "每个主题的最少话题数",
+    "max-per-topic": "每话题的最大话题数",
+    "min-length": "最短话题长度",
+    "max-length": "最大话题长度",
+    "goto-manage": "点击这里访问话题管理页面。",
+    "privacy": "隐私",
+    "list-private": "使话题列表私有化",
+    "related-topics": "相关主题",
+    "max-related-topics": "最大相关主题显示量(如果主题支持)"
+}

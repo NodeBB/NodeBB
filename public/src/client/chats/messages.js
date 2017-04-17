@@ -1,12 +1,10 @@
 'use strict';
 
-/* globals define, socket, app, ajaxify, templates, bootbox */
 
-define('forum/chats/messages', ['components', 'sounds', 'translator'], function(components, sounds, translator) {
-
+define('forum/chats/messages', ['components', 'sounds', 'translator'], function (components, sounds, translator) {
 	var messages = {};
 
-	messages.sendMessage = function(roomId, inputEl) {
+	messages.sendMessage = function (roomId, inputEl) {
 		var msg = inputEl.val();
 		var mid = inputEl.attr('data-mid');
 
@@ -21,12 +19,19 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function(
 		inputEl.val('');
 		inputEl.removeAttr('data-mid');
 
+		$(window).trigger('action:chat.sent', {
+			roomId: roomId,
+			message: msg,
+			mid: mid,
+		});
+
 		if (!mid) {
 			socket.emit('modules.chats.send', {
 				roomId: roomId,
-				message: msg
-			}, function(err) {
+				message: msg,
+			}, function (err) {
 				if (err) {
+					inputEl.val(msg);
 					if (err.message === '[[error:email-not-confirmed-chat]]') {
 						return app.showEmailConfirmWarning(err);
 					}
@@ -39,23 +44,24 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function(
 			socket.emit('modules.chats.edit', {
 				roomId: roomId,
 				mid: mid,
-				message: msg
-			}, function(err) {
+				message: msg,
+			}, function (err) {
 				if (err) {
+					inputEl.val(msg);
+					inputEl.attr('data-mid', mid);
 					return app.alertError(err.message);
 				}
 			});
 		}
 	};
 
-	messages.appendChatMessage = function(chatContentEl, data) {
-
+	messages.appendChatMessage = function (chatContentEl, data) {
 		var lastSpeaker = parseInt(chatContentEl.find('.chat-message').last().attr('data-uid'), 10);
 		if (!Array.isArray(data)) {
 			data.newSet = lastSpeaker !== data.fromuid;
 		}
 
-		messages.parseMessage(data, function(html) {
+		messages.parseMessage(data, function (html) {
 			onMessagesParsed(chatContentEl, html);
 		});
 	};
@@ -70,16 +76,16 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function(
 	}
 
 
-	messages.parseMessage = function(data, callback) {
-		templates.parse('partials/chat_message' + (Array.isArray(data) ? 's' : ''), {
-			messages: data
-		}, function(html) {
+	messages.parseMessage = function (data, callback) {
+		templates.parse('partials/chats/message' + (Array.isArray(data) ? 's' : ''), {
+			messages: data,
+		}, function (html) {
 			translator.translate(html, callback);
 		});
 	};
 
 
-	messages.scrollToBottom = function(containerEl) {
+	messages.scrollToBottom = function (containerEl) {
 		if (containerEl.length) {
 			containerEl.scrollTop(
 				containerEl[0].scrollHeight - containerEl.height()
@@ -87,8 +93,8 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function(
 		}
 	};
 
-	messages.prepEdit = function(inputEl, messageId, roomId) {
-		socket.emit('modules.chats.getRaw', { mid: messageId, roomId: roomId }, function(err, raw) {
+	messages.prepEdit = function (inputEl, messageId, roomId) {
+		socket.emit('modules.chats.getRaw', { mid: messageId, roomId: roomId }, function (err, raw) {
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -102,13 +108,13 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function(
 		});
 	};
 
-	messages.onChatMessageEdit = function() {
-		socket.on('event:chats.edit', function(data) {
-			data.messages.forEach(function(message) {
-				var self = parseInt(message.fromuid, 10) === parseInt(app.user.uid);
+	messages.onChatMessageEdit = function () {
+		socket.on('event:chats.edit', function (data) {
+			data.messages.forEach(function (message) {
+				var self = parseInt(message.fromuid, 10) === parseInt(app.user.uid, 10);
 				message.self = self ? 1 : 0;
-				messages.parseMessage(message, function(html) {
-				    var body = components.get('chat/message', message.messageId);
+				messages.parseMessage(message, function (html) {
+					var body = components.get('chat/message', message.messageId);
 					if (body.length) {
 						body.replaceWith(html);
 						components.get('chat/message', message.messageId).find('.timeago').timeago();
@@ -118,22 +124,22 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function(
 		});
 	};
 
-	messages.delete = function(messageId, roomId) {
-		translator.translate('[[modules:chat.delete_message_confirm]]', function(translated) {
-			bootbox.confirm(translated, function(ok) {
+	messages.delete = function (messageId, roomId) {
+		translator.translate('[[modules:chat.delete_message_confirm]]', function (translated) {
+			bootbox.confirm(translated, function (ok) {
 				if (!ok) {
 					return;
 				}
 
 				socket.emit('modules.chats.delete', {
 					messageId: messageId,
-					roomId: roomId
-				}, function(err) {
+					roomId: roomId,
+				}, function (err) {
 					if (err) {
 						return app.alertError(err.message);
 					}
 
-					components.get('chat/message', messageId).slideUp('slow', function() {
+					components.get('chat/message', messageId).slideUp('slow', function () {
 						$(this).remove();
 					});
 				});

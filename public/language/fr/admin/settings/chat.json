@@ -1,0 +1,9 @@
+{
+	"chat-settings": "Paramètres des discussions",
+	"disable": "Désactiver les discussions",
+	"disable-editing": "Désactiver l'édition/la suppression des messages des discussions",
+	"disable-editing-help": "Les administrateurs et modérateurs globaux sont dispensés de cette restriction",
+	"max-length": "Longueur maximales des messages de discussion",
+	"max-room-size": "Nombre maximum d'utilisateurs dans une même discussion",
+	"delay": "Temps entre chaque message de discussion (en millisecondes)"
+}

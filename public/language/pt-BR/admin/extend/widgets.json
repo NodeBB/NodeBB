@@ -1,0 +1,19 @@
+{
+	"available": "Widgets Disponíveis",
+	"explanation": "Escolha um widget do menu de dropdown e então arraste e solte numa área de widget do template à esquerda.",
+	"none-installed": "Nenhum widget encontrado! Ative o plugin de widgets padrão no painel de controle de <a href=\"%1\">plugins</a>. ",
+	"containers.available": "Contâineres Disponíveis",
+	"containers.explanation": "Arrastar e soltar em cima de qualquer widget ativo",
+	"containers.none": "Nenhum",
+	"container.well": "Bem",
+	"container.jumbotron": "Jumbotron",
+	"container.panel": "Painel",
+	"container.panel-header": "Cabeçalho de Painel",
+	"container.panel-body": "Corpo do Painel",
+	"container.alert": "Alerta",
+
+	"alert.confirm-delete": "Tem certeza que deseja excluir este widget?",
+	"alert.updated": "Widgets Atualizados",
+	"alert.update-success": "Widgets atualizados com sucesso"
+
+}

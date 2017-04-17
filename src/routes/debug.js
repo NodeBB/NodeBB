@@ -1,14 +1,14 @@
-"use strict";
+'use strict';
 
 var express = require('express');
 var nconf = require('nconf');
 var winston = require('winston');
-var user = require('./../user');
-var categories = require('./../categories');
-var topics = require('./../topics');
-var posts = require('./../posts');
+var user = require('../user');
+var categories = require('../categories');
+var topics = require('../topics');
+var posts = require('../posts');
 
-module.exports = function(app, middleware, controllers) {
+module.exports = function (app) {
 	var router = express.Router();
 
 	router.get('/uid/:uid', function (req, res) {
@@ -25,7 +25,7 @@ module.exports = function(app, middleware, controllers) {
 				res.send(data);
 			} else {
 				res.status(404).json({
-					error: "User doesn't exist!"
+					error: "User doesn't exist!",
 				});
 			}
 		});
@@ -73,7 +73,7 @@ module.exports = function(app, middleware, controllers) {
 		});
 	});
 
-	router.get('/test', function(req, res) {
+	router.get('/test', function (req, res) {
 		res.redirect(404);
 	});
 

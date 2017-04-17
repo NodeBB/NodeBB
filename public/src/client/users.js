@@ -1,20 +1,19 @@
 'use strict';
 
-/* globals define, socket, app, templates, bootbox, utils */
 
-define('forum/users', ['translator'], function(translator) {
+define('forum/users', ['translator'], function (translator) {
 	var	Users = {};
 
 	var searchTimeoutID = 0;
 
-	$(window).on('action:ajaxify.start', function() {
+	$(window).on('action:ajaxify.start', function () {
 		if (searchTimeoutID) {
 			clearTimeout(searchTimeoutID);
 			searchTimeoutID = 0;
 		}
 	});
 
-	Users.init = function() {
+	Users.init = function () {
 		app.enterRoom('user_list');
 
 		var section = utils.params().section ? ('?section=' + utils.params().section) : '';
@@ -31,7 +30,7 @@ define('forum/users', ['translator'], function(translator) {
 	function handleSearch() {
 		searchTimeoutID = 0;
 
-		$('#search-user').on('keyup', function() {
+		$('#search-user').on('keyup', function () {
 			if (searchTimeoutID) {
 				clearTimeout(searchTimeoutID);
 				searchTimeoutID = 0;
@@ -40,7 +39,7 @@ define('forum/users', ['translator'], function(translator) {
 			searchTimeoutID = setTimeout(doSearch, 150);
 		});
 
-		$('.search select, .search input[type="checkbox"]').on('change', function() {
+		$('.search select, .search input[type="checkbox"]').on('change', function () {
 			doSearch();
 		});
 	}
@@ -52,7 +51,7 @@ define('forum/users', ['translator'], function(translator) {
 
 		var query = {
 			section: activeSection,
-			page: 1
+			page: 1,
 		};
 
 		if (!username) {
@@ -66,7 +65,7 @@ define('forum/users', ['translator'], function(translator) {
 			query.onlineOnly = true;
 		}
 		if (activeSection === 'banned') {
-			query.bannedOnly =  true;
+			query.bannedOnly = true;
 		}
 		if (activeSection === 'flagged') {
 			query.flaggedOnly = true;
@@ -91,7 +90,7 @@ define('forum/users', ['translator'], function(translator) {
 
 	function loadPage(query) {
 		var qs = decodeURIComponent($.param(query));
-		$.get('/api/users?' + qs, renderSearchResults).fail(function(xhrErr) {
+		$.get(config.relative_path + '/api/users?' + qs, renderSearchResults).fail(function (xhrErr) {
 			if (xhrErr && xhrErr.responseJSON && xhrErr.responseJSON.error) {
 				app.alertError(xhrErr.responseJSON.error);
 			}
@@ -99,12 +98,12 @@ define('forum/users', ['translator'], function(translator) {
 	}
 
 	function renderSearchResults(data) {
-		templates.parse('partials/paginator', {pagination: data.pagination}, function(html) {
+		templates.parse('partials/paginator', { pagination: data.pagination }, function (html) {
 			$('.pagination-container').replaceWith(html);
 		});
 
-		templates.parse('users', 'users', data, function(html) {
-			translator.translate(html, function(translated) {
+		templates.parse('users', 'users', data, function (html) {
+			translator.translate(html, function (translated) {
 				translated = $(translated);
 				$('#users-container').html(translated);
 				translated.find('span.timeago').timeago();
@@ -122,7 +121,7 @@ define('forum/users', ['translator'], function(translator) {
 	}
 
 	function updateUser(data) {
-		app.updateUserStatus($('#users-container [data-uid="' + data.uid +'"] [component="user/status"]'), data.status);
+		app.updateUserStatus($('#users-container [data-uid="' + data.uid + '"] [component="user/status"]'), data.status);
 	}
 
 	function getActiveSection() {
@@ -130,13 +129,13 @@ define('forum/users', ['translator'], function(translator) {
 	}
 
 	function handleInvite() {
-		$('[component="user/invite"]').on('click', function() {
-			bootbox.prompt('Email: ', function(email) {
+		$('[component="user/invite"]').on('click', function () {
+			bootbox.prompt('Email: ', function (email) {
 				if (!email) {
 					return;
 				}
 
-				socket.emit('user.invite', email, function(err) {
+				socket.emit('user.invite', email, function (err) {
 					if (err) {
 						return app.alertError(err.message);
 					}

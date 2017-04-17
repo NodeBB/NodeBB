@@ -27,6 +27,7 @@
     "details.disableJoinRequests": "Disable join requests",
     "details.grant": "منح/سحب المِلكية",
     "details.kick": "طرد",
+    "details.kick_confirm": "Are you sure you want to remove this member from the group?",
     "details.owner_options": "إدارة المجموعة",
     "details.group_name": "اسم المجموعة",
     "details.member_count": "عدد اﻷعضاء",
@@ -50,5 +51,8 @@
     "membership.leave-group": "غادر المجموعة",
     "membership.reject": "رفض",
     "new-group.group_name": "اسم المجموعة",
-    "upload-group-cover": "Upload group cover"
+    "upload-group-cover": "Upload group cover",
+    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
+    "bulk-invite": "Bulk Invite",
+    "remove_group_cover_confirm": "Are you sure you want to remove the cover picture?"
 }

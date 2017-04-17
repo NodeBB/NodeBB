@@ -1,0 +1,7 @@
+{
+	"logs": "Journaux",
+	"control-panel": "Panneau de contrôle des journaux",
+	"reload": "Recharger les journaux",
+	"clear": "Effacer les journaux",
+	"clear-success": "Journaux effacés !"
+}

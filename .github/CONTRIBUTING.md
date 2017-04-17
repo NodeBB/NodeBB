@@ -1,6 +1,10 @@
 # Submitting a Pull Request to NodeBB?
 
-First of all, thank you! Please consider this [style guide](https://docs.nodebb.org/en/latest/contributing/style-guide.html) when submitting your changes. Also, please join our [community](https://community.nodebb.org) to meet other NodeBB developers and designers :) 
+First of all, thank you! Before submission, please run `npm test` to lint and run the automated NodeBB tests. If everything passes, you're good to go. If you have any errors, please fix them and re-run `npm test` to make sure there aren't any others.
+
+## Styleguide and linting
+
+NodeBB mostly conforms to the [AirBnB Javascript style guide](https://github.com/airbnb/javascript#readme). If you're running into a lot of ESlint errors, you may want to install an editor plugin to display them in real time.
 
 ## Contributor License Agreement
 
@@ -34,11 +38,9 @@ There is a chance that the issue you are experiencing may have already been fixe
 You can find the NodeBB version number in the Admin Control Panel (ACP), as well as the first line output to the shell when running NodeBB
 
 ``` plaintext
-info: NodeBB v0.5.2-dev Copyright (C) 2013-2014 NodeBB Inc.
-info: This program comes with ABSOLUTELY NO WARRANTY.
-info: This is free software, and you are welcome to redistribute it under certain conditions.
-info: 
-info: Time: Tue Oct 07 2014 20:25:20 GMT-0400 (EDT)
+3/4 12:38:57 [10752] - info: NodeBB v1.4.5 Copyright (C) 2013-2017 NodeBB Inc.
+3/4 12:38:57 [10752] - info: This program comes with ABSOLUTELY NO WARRANTY.
+3/4 12:38:57 [10752] - info: This is free software, and you are welcome to redistribute it under certain conditions.
 ```
 
 If you are running NodeBB via git, it is also helpful to let the maintainers know what commit hash you are on. To find the commit hash, execute the following command:
@@ -51,12 +53,13 @@ $ git rev-parse HEAD
 If you have downloaded the `.zip` or `.tar.gz` packages from GitHub (or elsewhere), please let us know.
 
 ## Provide theme versions if issue is related to the theme/display
+Use `npm ls` to list the versions of the theme you're using. In this example, we're running the Persona theme, which depends on the Vanilla theme.
 
 ``` bash
-$ npm ls nodebb-theme-vanilla nodebb-theme-lavender
-nodebb@0.7.0-dev /home/julian/Projects/nodebb/forum
-├── nodebb-theme-lavender@0.2.13
-└── nodebb-theme-vanilla@0.2.35
+$ npm ls nodebb-theme-vanilla nodebb-theme-persona
+nodebb@1.4.3 /path/to/nodebb
++-- nodebb-theme-persona@4.2.4
+`-- nodebb-theme-vanilla@5.2.0
 ```
 
 ## Attempt to use `git bisect`

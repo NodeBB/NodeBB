@@ -19,6 +19,7 @@
     "welcome_back": "مرحبًا بعودتك",
     "you_have_successfully_logged_in": "تم سجيل الدخول بنجاح",
     "save_changes": "حفظ التغييرات",
+    "save": "Save",
     "close": "أغلق",
     "pagination": "الصفحات",
     "pagination.out_of": "%1 من %2",
@@ -74,6 +75,7 @@
     "norecenttopics": "لاوجود لمواضيع جديدة",
     "recentposts": "آخر المشاركات",
     "recentips": "آخر عناوين ال IP التي سجلت الدخول",
+    "moderator_tools": "Moderator Tools",
     "away": "غير متواجد",
     "dnd": "عدم الإزعاج",
     "invisible": "مخفي",
@@ -96,5 +98,10 @@
     "upload": "ارفع",
     "allowed-file-types": "صيغ الملفات المدعومة هي 1%",
     "unsaved-changes": "لديك تغييرات لم تحفظ. هل أنت متأكد من تغيير الصفحة؟",
-    "reconnecting-message": "يبدو أن اتصالك لـ %1 قد فقد. رجاءًا أنتظر ثم حاول الإتصال مرة اخرى."
+    "reconnecting-message": "يبدو أن اتصالك لـ %1 قد فقد. رجاءًا أنتظر ثم حاول الإتصال مرة اخرى.",
+    "play": "Play",
+    "cookies.message": "This website uses cookies to ensure you get the best experience on our website.",
+    "cookies.accept": "Got it!",
+    "cookies.learn_more": "Learn More",
+    "edited": "Edited"
 }

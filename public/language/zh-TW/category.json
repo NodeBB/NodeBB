@@ -1,0 +1,20 @@
+{
+    "category": "類別",
+    "subcategories": "子類別",
+    "new_topic_button": "新主題",
+    "guest-login-post": "登入後才能張貼文章",
+    "no_topics": "<strong>這個類別目前沒有任何主題。</strong><br />你要不要來張貼個新主題呢？",
+    "browsing": "正在瀏覽",
+    "no_replies": "還沒有回覆",
+    "no_new_posts": "沒有新的張貼",
+    "share_this_category": "分享這類別",
+    "watch": "關注",
+    "ignore": "忽略",
+    "watching": "關注",
+    "ignoring": "忽略",
+    "watching.description": "顯示未讀的主題",
+    "ignoring.description": "不要顯示未讀的主題",
+    "watch.message": "You are now watching updates from this category and all subcategories",
+    "ignore.message": "You are now ignoring updates from this category and all subcategories",
+    "watched-categories": "關注的類別"
+}

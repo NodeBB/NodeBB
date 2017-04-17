@@ -1,0 +1,11 @@
+{
+    "checking-for-installed": "Prüfe auf installierte Designs...",
+    "homepage": "Homepage",
+    "select-theme": "Wähle Design",
+    "current-theme": "Aktuelles Design",
+    "no-themes": "Keine installierten Designs gefunden.",
+    "revert-confirm": "Bist du dir sicher, dass du das standard NodeBB Design wieder herstellen willst?",
+    "theme-changed": "Design geändert",
+    "revert-success": "Du hast dein NodeBB erfolgreich wieder auf das Standarddesign zurückgesetzt.",
+    "restart-to-activate": "Bitte starte dein NodeBB neu um das Design voll zu aktivieren."
+}

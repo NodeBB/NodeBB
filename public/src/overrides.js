@@ -1,19 +1,17 @@
 'use strict';
 
-/* global bootbox */
 
-var overrides = overrides || {};
+var overrides = window.overrides || {};
 
-if ('undefined' !== typeof window) {
-
-	(function ($, undefined) {
-		require(['translator'], function(translator) {
-			$.fn.getCursorPosition = function() {
+if (typeof window !== 'undefined') {
+	(function ($) {
+		require(['translator'], function (translator) {
+			$.fn.getCursorPosition = function () {
 				var el = $(this).get(0);
 				var pos = 0;
-				if('selectionStart' in el) {
+				if ('selectionStart' in el) {
 					pos = el.selectionStart;
-				} else if('selection' in document) {
+				} else if ('selection' in document) {
 					el.focus();
 					var Sel = document.selection.createRange();
 					var SelLength = document.selection.createRange().text.length;
@@ -23,11 +21,11 @@ if ('undefined' !== typeof window) {
 				return pos;
 			};
 
-			$.fn.selectRange = function(start, end) {
-				if(!end) {
+			$.fn.selectRange = function (start, end) {
+				if (!end) {
 					end = start;
 				}
-				return this.each(function() {
+				return this.each(function () {
 					if (this.setSelectionRange) {
 						this.focus();
 						this.setSelectionRange(start, end);
@@ -41,9 +39,9 @@ if ('undefined' !== typeof window) {
 				});
 			};
 
-			//http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element
-			$.fn.putCursorAtEnd = function() {
-				return this.each(function() {
+			// http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element
+			$.fn.putCursorAtEnd = function () {
+				return this.each(function () {
 					$(this).focus();
 
 					if (this.setSelectionRange) {
@@ -56,47 +54,47 @@ if ('undefined' !== typeof window) {
 				});
 			};
 
-			$.fn.translateHtml = function(str) {
+			$.fn.translateHtml = function (str) {
 				return translate(this, 'html', str);
 			};
 
-			$.fn.translateText = function(str) {
+			$.fn.translateText = function (str) {
 				return translate(this, 'text', str);
 			};
 
-			$.fn.translateVal = function(str) {
+			$.fn.translateVal = function (str) {
 				return translate(this, 'val', str);
 			};
 
-			$.fn.translateAttr = function(attr, str) {
-				return this.each(function() {
+			$.fn.translateAttr = function (attr, str) {
+				return this.each(function () {
 					var el = $(this);
-					translator.translate(str, function(translated) {
+					translator.translate(str, function (translated) {
 						el.attr(attr, translated);
 					});
 				});
 			};
 
 			function translate(elements, type, str) {
-				return elements.each(function() {
+				return elements.each(function () {
 					var el = $(this);
-					translator.translate(str, function(translated) {
+					translator.translate(str, function (translated) {
 						el[type](translated);
 					});
 				});
 			}
 		});
-	})(jQuery || {fn:{}});
+	}(jQuery || { fn: {} }));
 
-	(function(){
+	(function () {
 		// FIX FOR #1245 - https://github.com/NodeBB/NodeBB/issues/1245
 		// from http://stackoverflow.com/questions/15931962/bootstrap-dropdown-disappear-with-right-click-on-firefox
 		// obtain a reference to the original handler
-		var _clearMenus = $._data(document, "events").click.filter(function (el) {
+		var _clearMenus = $._data(document, 'events').click.filter(function (el) {
 			return el.namespace === 'bs.data-api.dropdown' && el.selector === undefined;
 		});
 
-		if(_clearMenus.length) {
+		if (_clearMenus.length) {
 			_clearMenus = _clearMenus[0].handler;
 		}
 
@@ -109,56 +107,31 @@ if ('undefined' !== typeof window) {
 					_clearMenus();
 				}
 			});
-	})();
+	}());
 
-	overrides.overrideBootbox = function () {
-		require(['translator'], function(translator) {
-			var dialog = bootbox.dialog,
-				prompt = bootbox.prompt,
-				confirm = bootbox.confirm;
-
-			function translate(modal) {
-				var header = modal.find('.modal-header'),
-					footer = modal.find('.modal-footer');
-				translator.translate(header.html(), function(html) {
-					header.html(html);
-				});
-				translator.translate(footer.html(), function(html) {
-					footer.html(html);
-				});
-			}
-
-			bootbox.dialog = function() {
-				var modal = $(dialog.apply(this, arguments)[0]);
-				translate(modal);
-				return modal;
-			};
-
-			bootbox.prompt = function() {
-				var modal = $(prompt.apply(this, arguments)[0]);
-				translate(modal);
-				return modal;
-			};
-
-			bootbox.confirm = function() {
-				var modal = $(confirm.apply(this, arguments)[0]);
-				translate(modal);
-				return modal;
-			};
-		});
-	};
-
-	overrides.overrideTimeago = function() {
+	overrides.overrideTimeago = function () {
 		var timeagoFn = $.fn.timeago;
-		$.fn.timeago = function() {
-			var els = timeagoFn.apply(this, arguments);
+		if (parseInt(config.timeagoCutoff, 10) === 0) {
+			$.timeago.settings.cutoff = 1;
+		} else if (parseInt(config.timeagoCutoff, 10) > 0) {
+			$.timeago.settings.cutoff = 1000 * 60 * 60 * 24 * (parseInt(config.timeagoCutoff, 10) || 30);
+		}
 
-			if (els) {
-				els.each(function() {
-					$(this).attr('title', (new Date($(this).attr('title'))).toString());
-				});
-			}
+		$.timeago.settings.allowFuture = true;
+
+		$.fn.timeago = function () {
+			var els = $(this);
+
+			// Convert "old" format to new format (#5108)
+			var options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+			var iso;
+			els.each(function () {
+				iso = this.getAttribute('title');
+				this.setAttribute('datetime', iso);
+				$(this).text(new Date(iso).toLocaleString(config.userLang.replace('_', '-'), options));
+			});
+
+			timeagoFn.apply(this, arguments);
 		};
 	};
-
 }

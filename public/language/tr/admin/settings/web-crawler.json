@@ -1,0 +1,10 @@
+{
+	"crawlability-settings": "Taranabilirlik Ayarları",
+	"robots-txt": "Custom Robots.txt <small>Leave blank for default</small>",
+	"sitemap-feed-settings": "Sitemap & Feed Settings",
+	"disable-rss-feeds": "Disable RSS Feeds",
+	"disable-sitemap-xml": "sitemap.xml devredışı bırak",
+	"sitemap-topics": "Number of Topics to display in the Sitemap",
+	"clear-sitemap-cache": "Site haritası çerezlerini temizle",
+	"view-sitemap": "Site haritasını gör"
+}

@@ -1,0 +1,11 @@
+{
+    "checking-for-installed": "Kontrola nainštalovaných motívov...",
+    "homepage": "Domovská stránka",
+    "select-theme": "Vybrať motív",
+    "current-theme": "Aktuálny motív",
+    "no-themes": "Žiadne nainštalované motívy neboli nájdené",
+    "revert-confirm": "Ste si istý, že chcete obnoviť predvolený NodeBB motív?",
+    "theme-changed": "Motív zmenený",
+    "revert-success": "Úspešne sa Vám podarilo obnoviť Váš NodeBB do predvoleného motívu.",
+    "restart-to-activate": "Prosím, reštartujte Váš NodeBB pre úplne aktivovanie tohto motívu."
+}

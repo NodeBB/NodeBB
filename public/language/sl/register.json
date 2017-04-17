@@ -1,11 +1,11 @@
 {
     "register": "Registracija",
-    "cancel_registration": "Cancel Registration",
-    "help.email": "Tvoj e-poštni naslov bo skrit po privzetih nastavitvah.",
-    "help.username_restrictions": "Unikatno uporabniško ime med %1 in %2 znakov. Drugi vas lahko omenijo v objavi z @<span id='yourUsername'>Uporabnik</span>.",
-    "help.minimum_password_length": "Tvoje geslo mora vsebovati najmanj %1 znakov.",
+    "cancel_registration": "Preklic registracije",
+    "help.email": "Vaš e-poštni naslov bo privzeto skrit za javnost.",
+    "help.username_restrictions": "Enkratno uporabniško ime s številom znakov: med %1 in %2. Drugi vas lahko v objavi omenijo z @<span id='yourUsername'>uporabnik</span>.",
+    "help.minimum_password_length": "Vaše geslo mora vsebovati najmanjše število znakov: %1.",
     "email_address": "E-poštni naslov",
-    "email_address_placeholder": "Vnesi e-mail naslov",
+    "email_address_placeholder": "Vnesi e-poštni naslov",
     "username": "Uporabniško ime",
     "username_placeholder": "Vnesi uporabniško ime",
     "password": "Geslo",
@@ -15,9 +15,9 @@
     "register_now_button": "Registriraj se",
     "alternative_registration": "Alternativna registracija",
     "terms_of_use": "Pogoji uporabe",
-    "agree_to_terms_of_use": "Strinjam se s pogoji uporabe",
-    "terms_of_use_error": "You must agree to the Terms of Use",
-    "registration-added-to-queue": "Registracija uporabniškega profila je v postopku. Ob potrditvi s strani administratorja boste prejeli sporočilo v vaš e-poštni predal.",
-    "interstitial.intro": "We require some additional information before we can create your account.",
-    "interstitial.errors-found": "We could not complete your registration:"
+    "agree_to_terms_of_use": "Strinjam se s pogoji uporabe.",
+    "terms_of_use_error": "S pogoji uporabe se morate strinjati.",
+    "registration-added-to-queue": "Registracija uporabniškega profila poteka. Ob potrditvi skrbnika boste v svoj e-poštni predal prejeli sporočilo.",
+    "interstitial.intro": "Preden ustvarimo vaš račun, potrebujemo nekaj dodatnih informacij.",
+    "interstitial.errors-found": "Vaše registracije ne moremo dokončati:"
 }

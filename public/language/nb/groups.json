@@ -27,6 +27,7 @@
     "details.disableJoinRequests": "Disable join requests",
     "details.grant": "Gi/Opphev Eierskap",
     "details.kick": "Kast ut",
+    "details.kick_confirm": "Are you sure you want to remove this member from the group?",
     "details.owner_options": "Gruppeadministrasjon",
     "details.group_name": "Gruppenavn",
     "details.member_count": "Antall medlemmer",
@@ -50,5 +51,8 @@
     "membership.leave-group": "Forlat gruppe",
     "membership.reject": "Avslå",
     "new-group.group_name": "Gruppenavn:",
-    "upload-group-cover": "Upload group cover"
+    "upload-group-cover": "Upload group cover",
+    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
+    "bulk-invite": "Bulk Invite",
+    "remove_group_cover_confirm": "Are you sure you want to remove the cover picture?"
 }

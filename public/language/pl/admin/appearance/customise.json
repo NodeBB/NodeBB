@@ -1,0 +1,9 @@
+{
+	"custom-css": "Własny CSS",
+	"custom-css.description": "Wpisz własne deklaracje CSS tutaj, będą one zastosowane do wszystkich styli.",
+	"custom-css.enable": "Włącz własne style CSS",
+
+	"custom-header": "Własny nagłówek",
+	"custom-header.description": "Wpisz tutaj kod HTML (JavaScript, tagi <code>&lt;meta&gt;</code>) który ma być dołączony do sekcji <code>&lt;head&gt;</code> w szablonie forum.",
+	"custom-header.enable": "Włącz własny nagłówek"
+}

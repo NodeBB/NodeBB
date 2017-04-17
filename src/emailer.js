@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var async = require('async');
 var winston = require('winston');
@@ -13,31 +13,32 @@ var url = require('url');
 var User = require('./user');
 var Plugins = require('./plugins');
 var meta = require('./meta');
-var translator = require('../public/src/modules/translator');
+var translator = require('./translator');
 
 var transports = {
 	sendmail: nodemailer.createTransport(sendmailTransport()),
-	gmail: undefined
+	gmail: undefined,
 };
 
 var app;
 var fallbackTransport;
 
-(function(Emailer) {
-	Emailer.registerApp = function(expressApp) {
+(function (Emailer) {
+	Emailer.registerApp = function (expressApp) {
 		app = expressApp;
 
 		// Enable Gmail transport if enabled in ACP
 		if (parseInt(meta.config['email:GmailTransport:enabled'], 10) === 1) {
-			fallbackTransport = transports.gmail = nodemailer.createTransport(smtpTransport({
+			transports.gmail = nodemailer.createTransport(smtpTransport({
 				host: 'smtp.gmail.com',
 				port: 465,
 				secure: true,
 				auth: {
 					user: meta.config['email:GmailTransport:user'],
-					pass: meta.config['email:GmailTransport:pass']
-				}
+					pass: meta.config['email:GmailTransport:pass'],
+				},
 			}));
+			fallbackTransport = transports.gmail;
 		} else {
 			fallbackTransport = transports.sendmail;
 		}
@@ -45,47 +46,47 @@ var fallbackTransport;
 		return Emailer;
 	};
 
-	Emailer.send = function(template, uid, params, callback) {
-		callback = callback || function() {};
+	Emailer.send = function (template, uid, params, callback) {
+		callback = callback || function () {};
 		if (!app) {
 			winston.warn('[emailer] App not ready!');
 			return callback();
 		}
 
 		async.waterfall([
-			function(next) {
+			function (next) {
 				async.parallel({
 					email: async.apply(User.getUserField, uid, 'email'),
-					settings: async.apply(User.getSettings, uid)
+					settings: async.apply(User.getSettings, uid),
 				}, next);
 			},
-			function(results, next) {
+			function (results, next) {
 				if (!results.email) {
 					winston.warn('uid : ' + uid + ' has no email, not sending.');
 					return next();
 				}
 				params.uid = uid;
 				Emailer.sendToEmail(template, results.email, results.settings.userLang, params, next);
-			}
+			},
 		], callback);
 	};
 
-	Emailer.sendToEmail = function(template, email, language, params, callback) {
-		callback = callback || function() {};
+	Emailer.sendToEmail = function (template, email, language, params, callback) {
+		callback = callback || function () {};
 
-		var lang = language || meta.config.defaultLang || 'en_GB';
+		var lang = language || meta.config.defaultLang || 'en-GB';
 
 		async.waterfall([
 			function (next) {
 				async.parallel({
-					html: function(next) {
+					html: function (next) {
 						renderAndTranslate('emails/' + template, params, lang, next);
 					},
-					subject: function(next) {
-						translator.translate(params.subject, lang, function(translated) {
+					subject: function (next) {
+						translator.translate(params.subject, lang, function (translated) {
 							next(null, translated);
 						});
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -97,12 +98,12 @@ var fallbackTransport;
 					subject: results.subject,
 					html: results.html,
 					plaintext: htmlToText.fromString(results.html, {
-						ignoreImage: true
+						ignoreImage: true,
 					}),
 					template: template,
 					uid: params.uid,
 					pid: params.pid,
-					fromUid: params.fromUid
+					fromUid: params.fromUid,
 				};
 				Plugins.fireHook('filter:email.modify', data, next);
 			},
@@ -112,7 +113,7 @@ var fallbackTransport;
 				} else {
 					Emailer.sendViaFallback(data, next);
 				}
-			}
+			},
 		], function (err) {
 			if (err && err.code === 'ENOENT') {
 				callback(new Error('[[error:sendmail-not-found]]'));
@@ -122,7 +123,7 @@ var fallbackTransport;
 		});
 	};
 
-	Emailer.sendViaFallback = function(data, callback) {
+	Emailer.sendViaFallback = function (data, callback) {
 		// Some minor alterations to the data to conform to nodemailer standard
 		data.text = data.plaintext;
 		delete data.plaintext;
@@ -131,8 +132,13 @@ var fallbackTransport;
 		data.from = data.from_name + '<' + data.from + '>';
 		delete data.from_name;
 
-		winston.verbose('[emailer] Sending email to uid ' + data.uid);
-		fallbackTransport.sendMail(data, callback);
+		winston.verbose('[emailer] Sending email to uid ' + data.uid + ' (' + data.to + ')');
+		fallbackTransport.sendMail(data, function (err) {
+			if (err) {
+				winston.error(err);
+			}
+			callback();
+		});
 	};
 
 	function render(tpl, params, next) {
@@ -145,8 +151,8 @@ var fallbackTransport;
 	}
 
 	function renderAndTranslate(tpl, params, lang, callback) {
-		render(tpl, params, function(err, html) {
-			translator.translate(html, lang, function(translated) {
+		render(tpl, params, function (err, html) {
+			translator.translate(html, lang, function (translated) {
 				callback(err, translated);
 			});
 		});
@@ -158,6 +164,5 @@ var fallbackTransport;
 
 		return parsed.hostname;
 	}
-
 }(module.exports));
 

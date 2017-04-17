@@ -1,0 +1,19 @@
+{
+	"available": "利用可能なウィジェット",
+	"explanation": "ドロップダウンメニューからウィジェットを選択し、左のテンプレートのウィジェットエリアにドラッグ&ドロップします。",
+	"none-installed": "ウィジェットがありません!必須のウィジェットプラグインを<a href=\"%1\">プラグイン</a>のコントロールパネルで有効にしてください。",
+	"containers.available": "利用可能なコンテナ",
+	"containers.explanation": "アクティブなウィジェットの上にドラッグアンドドロップしてください",
+	"containers.none": "なし",
+	"container.well": "十分",
+	"container.jumbotron": "ジャンボトロン",
+	"container.panel": "パネル",
+	"container.panel-header": "パネルヘッダー",
+	"container.panel-body": "パネル本体",
+	"container.alert": "警告",
+
+	"alert.confirm-delete": "このウィジェットを削除してもよろしいですか？",
+	"alert.updated": "ウィジェットが更新されました。",
+	"alert.update-success": "ウィジェットを保存しました"
+
+}

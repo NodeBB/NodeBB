@@ -1,19 +1,18 @@
-"use strict";
-/*global define*/
+'use strict';
 
-define('admin/general/homepage', ['admin/settings'], function(Settings) {
 
+define('admin/general/homepage', ['admin/settings'], function () {
 	function toggleCustomRoute() {
 		if ($('[data-field="homePageRoute"]').val()) {
 			$('#homePageCustom').hide();
-		}else{
+		} else {
 			$('#homePageCustom').show();
 		}
 	}
 
 	var Homepage = {};
 
-	Homepage.init = function() {
+	Homepage.init = function () {
 		$('[data-field="homePageRoute"]').on('change', toggleCustomRoute);
 
 		toggleCustomRoute();

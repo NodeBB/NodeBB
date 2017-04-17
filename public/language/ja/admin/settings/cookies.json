@@ -1,0 +1,11 @@
+{
+	"eu-consent": "EU承諾",
+	"consent.enabled": "有効",
+	"consent.message": "通知メッセージ",
+	"consent.acceptance": "メッセージを受け取る",
+	"consent.link-text": "ポリシーリンクテキスト",
+	"consent.blank-localised-default": "空白のままにして、NodeBBのローカライズされたデフォルトを使用する",
+	"settings": "設定",
+	"cookie-domain": "セッションCookieドメイン",
+	"blank-default": "デフォルトの場合は空白のまま"
+}

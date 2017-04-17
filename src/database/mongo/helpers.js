@@ -1,22 +1,22 @@
-"use strict";
+'use strict';
 
 var helpers = {};
 
-helpers.toMap = function(data) {
+helpers.toMap = function (data) {
 	var map = {};
-	for (var i = 0; i<data.length; ++i) {
+	for (var i = 0; i < data.length; i += 1) {
 		map[data[i]._key] = data[i];
 		data[i]._key = undefined;
 	}
 	return map;
 };
 
-helpers.fieldToString = function(field) {
-	if(field === null || field === undefined) {
+helpers.fieldToString = function (field) {
+	if (field === null || field === undefined) {
 		return field;
 	}
 
-	if(typeof field !== 'string') {
+	if (typeof field !== 'string') {
 		field = field.toString();
 	}
 	// if there is a '.' in the field name it inserts subdocument in mongo, replace '.'s with \uff0E
@@ -24,14 +24,14 @@ helpers.fieldToString = function(field) {
 	return field;
 };
 
-helpers.valueToString = function(value) {
-	if(value === null || value === undefined) {
+helpers.valueToString = function (value) {
+	if (value === null || value === undefined) {
 		return value;
 	}
 
 	return value.toString();
 };
 
-helpers.noop = function() {};
+helpers.noop = function () {};
 
 module.exports = helpers;

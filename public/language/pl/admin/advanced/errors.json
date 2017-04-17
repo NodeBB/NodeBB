@@ -1,0 +1,14 @@
+{
+	"figure-x": "Błąd %1",
+	"error-events-per-day": "<code>%1</code> wydarzeń dziennie",
+	"error.404": "404 Nie znaleziono",
+	"error.503": "503 Usługa niedostępna",
+	"manage-error-log": "Zarządzaj dziennikiem błędów",
+	"export-error-log": "Eksportuj dziennik błędów (CSV)",
+	"clear-error-log": "Wyczyść dziennik błędów",
+	"route": "Scieżka",
+	"count": "Licznik",
+	"no-routes-not-found": "Hura! Żadnych błędów 404!",
+	"clear404-confirm": "Czy chcesz wyczyścić dziennik błędów 404?",
+	"clear404-success": "Wyczyszczono błędy \"404 Nie znaleziono\""
+}

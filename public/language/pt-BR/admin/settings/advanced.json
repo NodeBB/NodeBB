@@ -1,0 +1,19 @@
+{
+	"maintenance-mode": "Modo de Manutenção",
+	"maintenance-mode.help": "Quando o fórum está em modo de manutenção, todas as solicitações serão redirecionadas para uma página estática. Administradores são isentos deste redirecionamento, e podem acessar o site normalmente.",
+	"maintenance-mode.message": "Mensagem de Manutenção",
+	"headers": "Cabeçalhos",
+	"headers.allow-from": "Defina ALLOW-FROM para Colocar o NodeBB em um iFrame",
+	"headers.powered-by": "Personalizar o cabeçalho de \"Powered By\" enviado pelo NodeBB",
+	"headers.acao": "Access-Control-Allow-Origin",
+	"headers.acao-help": "Para impedir acesso à todos os sites, deixe em branco ou define como <code>null</code>",
+	"headers.acam": "Access-Control-Allow-Methods",
+	"headers.acah": "Access-Control-Allow-Headers",
+	"traffic-management": "Administração de Tráfego",
+	"traffic.help": "O NodeBB é instalado equipado com um módulo que automaticamente nega solicitações em situações de alto tráfego. Você pode ajustar estas configurações aqui, apesar de que os padrões são um bom começo.",
+	"traffic.enable": "Ligar a Administração de Tráfego",
+	"traffic.event-lag": "Limite do Lag do Loop de Eventos (em milisegundos)",
+	"traffic.event-lag-help": "Abaixar este valor diminui o tempo de espera para o carregamentos de página, mas irá também mostrar a mensagem de \"carga excessiva\" para mais usuários. (É necessário reiniciar)",
+	"traffic.lag-check-interval": "Intervalo de Checagem (em milisegundos)",
+	"traffic.lag-check-interval-help": "Diminuir este valor causa o NodeBB de ficar mais sensível à spikes no carregamente, mas também pode causar a checagem de se tornar muito sensível. (É necessário reiniciar)"
+}

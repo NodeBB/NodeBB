@@ -1,0 +1,8 @@
+{
+	"handles": "Gestion des invités",
+	"handles.enabled": "Autoriser les invités à poster",
+	"handles.enabled-help": "Cette option affiche un nouveau champ qui permet aux invités de choisir un nom qui sera associé à chaque message qu'ils rédigent. Si désactivé, il seront simplement nommés \"Invité\".",
+	"privileges": "Privilèges des invités",
+	"privileges.can-search": "Autoriser les invités à faire des recherches sans se connecter.",
+	"privileges.can-search-users": "Autoriser les invités à rechercher un utilisateur sans se connecter."
+}

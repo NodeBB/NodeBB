@@ -1,0 +1,14 @@
+{
+	"figure-x": "Figura %1",
+	"error-events-per-day": "<code>%1</code> eventos por dia",
+	"error.404": "404 No Encontrado",
+	"error.503": "503 Servicio no disponible",
+	"manage-error-log": "Administrar registro de errores",
+	"export-error-log": "Exportar registro de errores (CSV)",
+	"clear-error-log": "Cerrar Log de Error",
+	"route": "Ruta",
+	"count": "Contar",
+	"no-routes-not-found": "¡Hurra! ¡No hay errores 404!",
+	"clear404-confirm": "¿Estas seguro que desea borrar los registros de errores 404?",
+	"clear404-success": "\"404 no encontrado\" Errores borrados"
+}

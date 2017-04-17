@@ -1,0 +1,10 @@
+{
+	"crawlability-settings": "クロール性の設定",
+	"robots-txt": "カスタムRobots.txt<small>デフォルトの場合は空白のままにしてください</small>",
+	"sitemap-feed-settings": "サイトマップとフィードの設定",
+	"disable-rss-feeds": "RSSフィードを無効にする",
+	"disable-sitemap-xml": "Sitemap.xmlを無効にする",
+	"sitemap-topics": "サイトマップに表示するスレッドの数",
+	"clear-sitemap-cache": "サイトマップのキャッシュをクリア",
+	"view-sitemap": "サイトマップを表示"
+}

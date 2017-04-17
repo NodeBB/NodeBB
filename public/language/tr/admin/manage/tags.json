@@ -1,0 +1,18 @@
+{
+	"none": "Forumda henüz etiketli herhangi bir başlık yok.",
+	"bg-color": "Arkaplan Rengi",
+	"text-color": "Yazı Rengi",
+	"create-modify": "Create & Modify Tags",
+	"description": "Select tags via clicking and/or dragging, use shift to select multiple.",
+	"create": "Etiket Oluştur",
+	"modify": "Etiketleri Düzenle",
+	"delete": "Delete Selected Tags",
+	"search": "Search for tags...",
+	"settings": "Click <a href=\"%1\">here</a> to visit the tag settings page.",
+	"name": "Tag Name",
+
+	"alerts.editing-multiple": "Editing multiple tags",
+	"alerts.editing-x": "Editing \"%1\" tag",
+	"alerts.confirm-delete": "Do you want to delete the selected tags?",
+	"alerts.update-success": "Tag Updated!"
+}

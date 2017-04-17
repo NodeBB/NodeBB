@@ -1,0 +1,7 @@
+{
+	"alert.confirm-reload": "Ste si naozaj istý, že chcete znovu načítať NodeBB?",
+	"alert.confirm-restart": "Ste si naozaj istý, že chcete reštartovať NodeBB?",
+
+	"acp-title": "%1 | NodeBB Ovládací panel administrátora",
+	"settings-header-contents": "Obsah"
+}

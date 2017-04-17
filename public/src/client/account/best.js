@@ -1,11 +1,10 @@
 'use strict';
 
-/* globals define */
 
-define('forum/account/best', ['forum/account/header', 'forum/account/posts'], function(header, posts) {
+define('forum/account/best', ['forum/account/header', 'forum/account/posts'], function (header, posts) {
 	var Best = {};
 
-	Best.init = function() {
+	Best.init = function () {
 		header.init();
 
 		$('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');

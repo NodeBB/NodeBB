@@ -14,7 +14,7 @@
     "ignoring": "Ignoring",
     "watching.description": "Show topics in unread",
     "ignoring.description": "Do not show topics in unread",
-    "watch.message": "Uzajya ubu ukurikirana ibishya byongewe muri iki cyiciro",
-    "ignore.message": "Ubu urekeye aho kuzajya ubona ibishya byongewe muri iki cyiciro",
+    "watch.message": "You are now watching updates from this category and all subcategories",
+    "ignore.message": "You are now ignoring updates from this category and all subcategories",
     "watched-categories": "Ibyiciro Bikurikirwa"
 }

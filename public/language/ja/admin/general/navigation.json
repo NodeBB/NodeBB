@@ -1,0 +1,27 @@
+{
+	"icon": "アイコン:",
+	"change-icon": "変更",
+	"route": "ルート:",
+	"tooltip": "ツールチップ:",
+	"text": "テキスト:",
+	"text-class": " テキストのClass:<small>任意</small>",
+	"id": "ID: <small>任意</small>",
+
+	"properties": "プロパティ:",
+	"only-admins": "管理者にのみ表示する",
+	"only-global-mods-and-admins": "グローバルモデレーターおよび管理者のみに表示",
+	"only-logged-in": "ログインしたユーザーのみに表示",
+	"open-new-window": "新しいウィンドウで開く",
+
+	"installed-plugins-required": "インストール済みのプラグインが必要です:",
+	"search-plugin": "検索プラグイン",
+
+	"btn.delete": "削除",
+	"btn.disable": "無効",
+	"btn.enable": "有効",
+
+	"available-menu-items": "利用可能なメニューアイテム",
+	"custom-route": "カスタムルート",
+	"core": "コア",
+	"plugin": "プラグイン"
+}

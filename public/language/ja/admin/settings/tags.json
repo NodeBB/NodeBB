@@ -1,0 +1,12 @@
+{
+    "tag": "タグ設定",
+    "min-per-topic": "スレッドごとの最小タグ数",
+    "max-per-topic": "スレッドごとの最大タグ数",
+    "min-length": "タグの最小文字数",
+    "max-length": "タグの最大文字数",
+    "goto-manage": "タグ管理ページにアクセスするには、ここをクリックしてください。",
+    "privacy": "プライバシー",
+    "list-private": "タグリストを非公開にする",
+    "related-topics": "関連スレッド",
+    "max-related-topics": "表示する関連スレッドの最大数(テーマでサポートされている場合)"
+}

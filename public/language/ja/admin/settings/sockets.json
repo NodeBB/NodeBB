@@ -1,0 +1,6 @@
+{
+    "reconnection": "再接続の設定",
+    "max-attempts": "最大再接続数の試行",
+    "default-placeholder": "デフォルト: %1",
+    "delay": "再接続遅延"
+}

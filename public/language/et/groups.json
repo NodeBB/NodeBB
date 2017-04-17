@@ -27,6 +27,7 @@
     "details.disableJoinRequests": "Keela ühinemis taotlused",
     "details.grant": "Anna/võta omanikuõigused",
     "details.kick": "Viska välja",
+    "details.kick_confirm": "Are you sure you want to remove this member from the group?",
     "details.owner_options": "Grupi haldamine",
     "details.group_name": "Grupi nimi",
     "details.member_count": "Liikmete arv",
@@ -50,5 +51,8 @@
     "membership.leave-group": "Lahku grupist",
     "membership.reject": "Lükka tagasi",
     "new-group.group_name": "Grupi nimi:",
-    "upload-group-cover": "Lae gruppi pilt üles"
+    "upload-group-cover": "Lae gruppi pilt üles",
+    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
+    "bulk-invite": "Bulk Invite",
+    "remove_group_cover_confirm": "Are you sure you want to remove the cover picture?"
 }

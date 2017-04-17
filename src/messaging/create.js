@@ -7,9 +7,8 @@ var plugins = require('../plugins');
 var db = require('../database');
 
 
-module.exports = function(Messaging) {
-
-	Messaging.sendMessage = function(uid, roomId, content, timestamp, callback) {
+module.exports = function (Messaging) {
+	Messaging.sendMessage = function (uid, roomId, content, timestamp, callback) {
 		async.waterfall([
 			function (next) {
 				Messaging.checkContent(content, next);
@@ -23,11 +22,11 @@ module.exports = function(Messaging) {
 				}
 
 				Messaging.addMessage(uid, roomId, content, timestamp, next);
-			}
+			},
 		], callback);
 	};
 
-	Messaging.checkContent = function(content, callback) {
+	Messaging.checkContent = function (content, callback) {
 		if (!content) {
 			return callback(new Error('[[error:invalid-chat-message]]'));
 		}
@@ -38,7 +37,7 @@ module.exports = function(Messaging) {
 		callback();
 	};
 
-	Messaging.addMessage = function(fromuid, roomId, content, timestamp, callback) {
+	Messaging.addMessage = function (fromuid, roomId, content, timestamp, callback) {
 		var mid;
 		var message;
 		var isNewSet;
@@ -56,7 +55,7 @@ module.exports = function(Messaging) {
 					content: content,
 					timestamp: timestamp,
 					fromuid: fromuid,
-					roomId: roomId
+					roomId: roomId,
 				};
 
 				plugins.fireHook('filter:messaging.save', message, next);
@@ -76,13 +75,13 @@ module.exports = function(Messaging) {
 					async.apply(Messaging.addRoomToUsers, roomId, uids, timestamp),
 					async.apply(Messaging.addMessageToUsers, roomId, uids, mid, timestamp),
 					async.apply(Messaging.markUnread, uids, roomId),
-					async.apply(Messaging.addUsersToRoom, fromuid, [fromuid], roomId)
+					async.apply(Messaging.addUsersToRoom, fromuid, [fromuid], roomId),
 				], next);
 			},
 			function (results, next) {
 				async.parallel({
 					markRead: async.apply(Messaging.markRead, fromuid, roomId),
-					messages: async.apply(Messaging.getMessagesData, [mid], fromuid, roomId, true)
+					messages: async.apply(Messaging.getMessagesData, [mid], fromuid, roomId, true),
 				}, next);
 			},
 			function (results, next) {
@@ -94,25 +93,25 @@ module.exports = function(Messaging) {
 				results.messages[0].mid = mid;
 				results.messages[0].roomId = roomId;
 				next(null, results.messages[0]);
-			}
+			},
 		], callback);
 	};
 
-	Messaging.addRoomToUsers = function(roomId, uids, timestamp, callback) {
+	Messaging.addRoomToUsers = function (roomId, uids, timestamp, callback) {
 		if (!uids.length) {
 			return callback();
 		}
-		var keys = uids.map(function(uid) {
+		var keys = uids.map(function (uid) {
 			return 'uid:' + uid + ':chat:rooms';
 		});
 		db.sortedSetsAdd(keys, timestamp, roomId, callback);
 	};
 
-	Messaging.addMessageToUsers = function(roomId, uids, mid, timestamp, callback) {
+	Messaging.addMessageToUsers = function (roomId, uids, mid, timestamp, callback) {
 		if (!uids.length) {
 			return callback();
 		}
-		var keys = uids.map(function(uid) {
+		var keys = uids.map(function (uid) {
 			return 'uid:' + uid + ':chat:room:' + roomId + ':mids';
 		});
 		db.sortedSetsAdd(keys, timestamp, mid, callback);

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var winston = require('winston');
 var express = require('express');
@@ -15,11 +15,11 @@ var server;
 winston.add(winston.transports.File, {
 	filename: 'logs/webinstall.log',
 	colorize: true,
-	timestamp: function() {
+	timestamp: function () {
 		var date = new Date();
-		return date.getDate() + '/' + (date.getMonth() + 1) + ' ' + date.toTimeString().substr(0,5) + ' [' + global.process.pid + ']';
+		return date.getDate() + '/' + (date.getMonth() + 1) + ' ' + date.toTimeString().substr(0, 5) + ' [' + global.process.pid + ']';
 	},
-	level: 'verbose'
+	level: 'verbose',
 });
 
 var web = {};
@@ -27,10 +27,10 @@ var scripts = [
 	'public/vendor/xregexp/xregexp.js',
 	'public/vendor/xregexp/unicode/unicode-base.js',
 	'public/src/utils.js',
-	'public/src/installer/install.js'
+	'public/src/installer/install.js',
 ];
 
-web.install = function(port) {
+web.install = function (port) {
 	port = port || 4567;
 	winston.info('Launching web installer on port', port);
 
@@ -39,10 +39,10 @@ web.install = function(port) {
 	app.set('view engine', 'tpl');
 	app.set('views', path.join(__dirname, '../src/views'));
 	app.use(bodyParser.urlencoded({
-		extended: true
+		extended: true,
 	}));
 
-	async.parallel([compileLess, compileJS], function() {
+	async.parallel([compileLess, compileJS], function () {
 		setupRoutes();
 		launchExpress(port);
 	});
@@ -50,7 +50,7 @@ web.install = function(port) {
 
 
 function launchExpress(port) {
-	server = app.listen(port, function() {
+	server = app.listen(port, function () {
 		winston.info('Web installer listening on http://%s:%s', '0.0.0.0', port);
 	});
 }
@@ -63,10 +63,10 @@ function setupRoutes() {
 
 function welcome(req, res) {
 	var dbs = ['redis', 'mongo'];
-	var databases = dbs.map(function(el) {
+	var databases = dbs.map(function (el) {
 		return {
 			name: el,
-			questions: require('../src/database/' + el).questions
+			questions: require('../src/database/' + el).questions,
 		};
 	});
 
@@ -75,10 +75,10 @@ function welcome(req, res) {
 	res.render('install/index', {
 		databases: databases,
 		skipDatabaseSetup: !!nconf.get('database'),
-		error: res.locals.error ? true : false,
-		success: res.locals.success ? true : false,
+		error: !!res.locals.error,
+		success: !!res.locals.success,
 		values: req.body,
-		minimumPasswordLength: defaults.minimumPasswordLength
+		minimumPasswordLength: defaults.minimumPasswordLength,
 	});
 }
 
@@ -90,10 +90,10 @@ function install(req, res) {
 	}
 
 	var child = require('child_process').fork('app', ['--setup'], {
-		env: process.env
+		env: process.env,
 	});
 
-	child.on('close', function(data) {
+	child.on('close', function (data) {
 		if (data === 0) {
 			res.locals.success = true;
 		} else {
@@ -110,7 +110,7 @@ function launch(req, res) {
 
 	var child = require('child_process').spawn('node', ['loader.js'], {
 		detached: true,
-		stdio: ['ignore', 'ignore', 'ignore']
+		stdio: ['ignore', 'ignore', 'ignore'],
 	});
 
 	process.stdout.write('\nStarting NodeBB\n');
@@ -118,45 +118,43 @@ function launch(req, res) {
 	process.stdout.write('    "./nodebb log" to view server output\n');
 	process.stdout.write('    "./nodebb restart" to restart NodeBB\n');
 
-	child.unref();
-	process.exit(0);
+	async.parallel([
+		async.apply(fs.unlink(path.join(__dirname, '../public/installer.css'))),
+		async.apply(fs.unlink(path.join(__dirname, '../public/installer.min.js'))),
+	], function (err) {
+		if (err) {
+			winston.warn('Unable to remove installer files');
+		}
 
+		child.unref();
+		process.exit(0);
+	});
 }
 
 function compileLess(callback) {
-	if ((nconf.get('from-file') || '').indexOf('less') !== -1) {
-		winston.info('LESS compilation skipped');
-		return callback(false);
-	}
-
-	fs.readFile(path.join(__dirname, '../public/less/install.less'), function(err, style) {
+	fs.readFile(path.join(__dirname, '../public/less/install.less'), function (err, style) {
 		if (err) {
 			return winston.error('Unable to read LESS install file: ', err);
 		}
 
-		less.render(style.toString(), function(err, css) {
-			if(err) {
+		less.render(style.toString(), function (err, css) {
+			if (err) {
 				return winston.error('Unable to compile LESS: ', err);
 			}
 
-			fs.writeFile(path.join(__dirname, '../public/stylesheet.css'), css.css, callback);
+			fs.writeFile(path.join(__dirname, '../public/installer.css'), css.css, callback);
 		});
 	});
 }
 
 function compileJS(callback) {
-	if ((nconf.get('from-file') || '').indexOf('js') !== -1) {
-		winston.info('Client-side JS compilation skipped');
-		return callback(false);
-	}
-
 	var scriptPath = path.join(__dirname, '..');
-	var result = uglify.minify(scripts.map(function(script) {
+	var result = uglify.minify(scripts.map(function (script) {
 		return path.join(scriptPath, script);
 	}));
 
 
-	fs.writeFile(path.join(__dirname, '../public/nodebb.min.js'), result.code, callback);
+	fs.writeFile(path.join(__dirname, '../public/installer.min.js'), result.code, callback);
 }
 
 module.exports = web;

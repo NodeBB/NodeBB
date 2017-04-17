@@ -7,20 +7,23 @@ var user = require('../../user');
 
 var sessionController = {};
 
-sessionController.revoke = function(req, res, next) {
+sessionController.revoke = function (req, res, next) {
 	if (!req.params.hasOwnProperty('uuid')) {
 		return next();
 	}
 
 	var _id;
-
+	var uid = res.locals.uid;
 	async.waterfall([
 		function (next) {
-			db.getSortedSetRange('uid:' + res.locals.uid + ':sessions', 0, -1, next);
+			if (!uid) {
+				return next(new Error('[[error:no-session-found]]'));
+			}
+			db.getSortedSetRange('uid:' + uid + ':sessions', 0, -1, next);
 		},
 		function (sids, done) {
-			async.eachSeries(sids, function(sid, next) {
-				db.sessionStore.get(sid, function(err, sessionObj) {
+			async.eachSeries(sids, function (sid, next) {
+				db.sessionStore.get(sid, function (err, sessionObj) {
 					if (err) {
 						return next(err);
 					}
@@ -38,14 +41,13 @@ sessionController.revoke = function(req, res, next) {
 				return next(new Error('[[error:no-session-found]]'));
 			}
 
-			user.auth.revokeSession(_id, res.locals.uid, next);
-		}
-	], function(err) {
+			user.auth.revokeSession(_id, uid, next);
+		},
+	], function (err) {
 		if (err) {
 			return res.status(500).send(err.message);
-		} else {
-			return res.sendStatus(200);
 		}
+		return res.sendStatus(200);
 	});
 };
 

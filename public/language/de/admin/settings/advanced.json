@@ -1,0 +1,19 @@
+{
+	"maintenance-mode": "Wartungsmodus",
+	"maintenance-mode.help": "Während das Forum im Wartungsmodus ist werden alle Anfragen zu einer statischen Seite weitergeleitet. Administratoren sind von dieser Weiterleitung ausgenommen und können die Seite normal aufrufen.",
+	"maintenance-mode.message": "Wartungsnachricht",
+	"headers": "Headers",
+	"headers.allow-from": "ALLOW-FROM setzen um NodeBB in einem iFrame zu platzieren",
+	"headers.powered-by": "Anpassen des \"Powered By\" Headers von NodeBB",
+	"headers.acao": "Access-Control-Allow-Origin",
+	"headers.acao-help": "Um den Zugriff auf alle Seiten zu blockieren, leer lassen oder auf <code>null</code> setzen",
+	"headers.acam": "Access-Control-Allow-Methods",
+	"headers.acah": "Access-Control-Allow-Headers",
+	"traffic-management": "Traffic Management",
+	"traffic.help": "NodeBB wird mit einem module geliefert, welches automatisch anfragen in \"High-Traffic\" situationen blockiert. Sie können diese Einstellungen hier Fine-Tunen, auch wenn die Standardeinstellungen einen guten Anfang darstellen sollten",
+	"traffic.enable": "Traffic Management aktivieren",
+	"traffic.event-lag": "Eventschleifenverzögerungsschwelle (in Millisekunden)",
+	"traffic.event-lag-help": "Das Heruntersetzen dieses Werts reduziert die Ladezeiten, aber wird auch dafür sorgen, dass die \"Übermäßige Belastung\" nachricht öfter angezeigt wird. (Neustart erforderlich)",
+	"traffic.lag-check-interval": "Prüfungsintervall (in Millisekunden)",
+	"traffic.lag-check-interval-help": "Das Heruntersetzen dieses Werts sorgt dafür, dass NodeBB empfindlicher auf Auslastungs-Spikes reagiert, aber könnte auch dafür sorgen, dass der Test zu empfindlich werden könnte. (Neustart erforderlich)"
+}

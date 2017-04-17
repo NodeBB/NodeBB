@@ -1,0 +1,9 @@
+{
+	"loading": "Carregando Skins...",
+	"homepage": "Homepage",
+	"select-skin": "Escolher Skin",
+	"current-skin": "Skin Atual",
+	"skin-updated": "Skin Atualizada",
+	"applied-success": "A skin %1 foi aplicada com sucesso",
+	"revert-success": "Skin revertida para cores base"
+}

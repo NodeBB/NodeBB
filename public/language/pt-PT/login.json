@@ -1,0 +1,12 @@
+{
+    "username-email": "Nome de utilizador / E-mail",
+    "username": "Nome de utilizador",
+    "email": "E-mail",
+    "remember_me": "Lembras-te de mim?",
+    "forgot_password": "Esqueceste-te da palavra-passe?",
+    "alternative_logins": "Logins alternativos",
+    "failed_login_attempt": "Login sem sucesso",
+    "login_successful": "Fizeste o login com sucesso!",
+    "dont_have_account": "Não tens uma conta?",
+    "logged-out-due-to-inactivity": "Foste desligado do Painel de Controlo de Administrador devido a inatividade"
+}

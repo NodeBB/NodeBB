@@ -2,8 +2,8 @@
 
 var rewardsController = {};
 
-rewardsController.get = function(req, res, next) {
-	require('../../rewards/admin').get(function(err, data) {
+rewardsController.get = function (req, res, next) {
+	require('../../rewards/admin').get(function (err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -11,7 +11,6 @@ rewardsController.get = function(req, res, next) {
 		res.render('admin/extend/rewards', data);
 	});
 };
-
 
 
 module.exports = rewardsController;

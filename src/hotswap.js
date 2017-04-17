@@ -1,16 +1,16 @@
-"use strict";
+'use strict';
 
-var HotSwap = {},
-	winston = require('winston'),
-	stack;
+var HotSwap = {};
+var winston = require('winston');
+var stack;
 
-HotSwap.prepare = function(app) {
+HotSwap.prepare = function (app) {
 	stack = app._router.stack;
 };
 
-HotSwap.find = function(id) {
+HotSwap.find = function (id) {
 	if (stack) {
-		for(var x=0,numEntries=stack.length;x<numEntries;x++) {
+		for (var x = 0, numEntries = stack.length; x < numEntries; x += 1) {
 			if (stack[x].handle.hotswapId === id) {
 				return x;
 			}
@@ -20,7 +20,7 @@ HotSwap.find = function(id) {
 	}
 };
 
-HotSwap.replace = function(id, router) {
+HotSwap.replace = function (id, router) {
 	var idx = HotSwap.find(id);
 	if (idx) {
 		delete stack[idx].handle;	// Destroy the old router

@@ -1,7 +1,7 @@
-"use strict";
-/*global templates, ajaxify, utils, bootbox, overrides, socket, config, Visibility*/
+'use strict';
 
-var app = app || {};
+
+var app = window.app || {};
 
 app.isFocused = true;
 app.currentRoom = null;
@@ -10,17 +10,20 @@ app.cacheBuster = null;
 
 (function () {
 	var showWelcomeMessage = !!utils.params().loggedin;
+	var showBannedMessage = !!utils.params().banned && app.user && app.user.uid === 0;
 
 	templates.setGlobal('config', config);
 
 	app.cacheBuster = config['cache-buster'];
 
 	bootbox.setDefaults({
-		locale: config.userLang
+		locale: config.userLang,
 	});
 
-	app.load = function() {
+	app.load = function () {
 		app.loadProgressiveStylesheet();
+
+		overrides.overrideTimeago();
 
 		var url = ajaxify.start(window.location.pathname.slice(1) + window.location.search + window.location.hash);
 		ajaxify.updateHistory(url, true);
@@ -33,15 +36,15 @@ app.cacheBuster = null;
 			app.handleSearch();
 		}
 
-		$('body').on('click', '#new_topic', function(){
+		$('body').on('click', '#new_topic', function () {
 			app.newTopic();
 		});
 
-		require(['components'], function(components) {
+		require(['components'], function (components) {
 			components.get('user/logout').on('click', app.logout);
 		});
 
-		Visibility.change(function(event, state){
+		Visibility.change(function (event, state) {
 			if (state === 'visible') {
 				app.isFocused = true;
 				app.alternatingTitle('');
@@ -50,13 +53,12 @@ app.cacheBuster = null;
 			}
 		});
 
-		overrides.overrideBootbox();
-		overrides.overrideTimeago();
 		createHeaderTooltips();
 		app.showEmailConfirmWarning();
+		app.showCookieWarning();
 
 		socket.removeAllListeners('event:nodebb.ready');
-		socket.on('event:nodebb.ready', function(data) {
+		socket.on('event:nodebb.ready', function (data) {
 			if (!app.cacheBuster || app.cacheBuster !== data['cache-buster']) {
 				app.cacheBuster = data['cache-buster'];
 
@@ -64,18 +66,17 @@ app.cacheBuster = null;
 					alert_id: 'forum_updated',
 					title: '[[global:updated.title]]',
 					message: '[[global:updated.message]]',
-					clickfn: function() {
+					clickfn: function () {
 						window.location.reload();
 					},
-					type: 'warning'
+					type: 'warning',
 				});
 			}
 		});
 
-		require(['taskbar', 'helpers', 'forum/pagination'], function(taskbar, helpers, pagination) {
+		require(['taskbar', 'helpers', 'forum/pagination'], function (taskbar, helpers, pagination) {
 			taskbar.init();
 
-			// templates.js helpers
 			helpers.register();
 
 			pagination.init();
@@ -84,26 +85,40 @@ app.cacheBuster = null;
 		});
 	};
 
-	app.logout = function() {
+	app.logout = function () {
+		$(window).trigger('action:app.logout');
+
+		/*
+			Set session refresh flag (otherwise the session check will trip and throw invalid session modal)
+			We know the session is/will be invalid (uid mismatch) because the user is logging out
+		*/
+		app.flags = app.flags || {};
+		app.flags._sessionRefresh = true;
+
 		$.ajax(config.relative_path + '/logout', {
 			type: 'POST',
 			headers: {
-				'x-csrf-token': config.csrf_token
+				'x-csrf-token': config.csrf_token,
 			},
-			success: function() {
-				window.location.href = config.relative_path + '/';
-			}
+			success: function () {
+				var payload = {
+					next: config.relative_path + '/',
+				};
+
+				$(window).trigger('action:app.loggedOut', payload);
+				window.location.href = payload.next;
+			},
 		});
 	};
 
 	app.alert = function (params) {
-		require(['alerts'], function(alerts) {
+		require(['alerts'], function (alerts) {
 			alerts.alert(params);
 		});
 	};
 
-	app.removeAlert = function(id) {
-		require(['alerts'], function(alerts) {
+	app.removeAlert = function (id) {
+		require(['alerts'], function (alerts) {
 			alerts.remove(id);
 		});
 	};
@@ -113,11 +128,13 @@ app.cacheBuster = null;
 			title: '[[global:alert.success]]',
 			message: message,
 			type: 'success',
-			timeout: timeout ? timeout : 5000
+			timeout: timeout || 5000,
 		});
 	};
 
 	app.alertError = function (message, timeout) {
+		message = message.message || message;
+
 		if (message === '[[error:invalid-session]]') {
 			return app.handleInvalidSession();
 		}
@@ -126,11 +143,11 @@ app.cacheBuster = null;
 			title: '[[global:alert.error]]',
 			message: message,
 			type: 'danger',
-			timeout: timeout ? timeout : 10000
+			timeout: timeout || 10000,
 		});
 	};
 
-	app.handleInvalidSession = function() {
+	app.handleInvalidSession = function () {
 		if (app.flags && app.flags._sessionRefresh) {
 			return;
 		}
@@ -138,28 +155,28 @@ app.cacheBuster = null;
 		app.flags = app.flags || {};
 		app.flags._sessionRefresh = true;
 
-		require(['translator'], function(translator) {
-			translator.translate('[[error:invalid-session-text]]', function(translated) {
+		require(['translator'], function (translator) {
+			translator.translate('[[error:invalid-session-text]]', function (translated) {
 				bootbox.alert({
 					title: '[[error:invalid-session]]',
 					message: translated,
 					closeButton: false,
-					callback: function() {
+					callback: function () {
 						window.location.reload();
-					}
+					},
 				});
 			});
 		});
 	};
 
 	app.enterRoom = function (room, callback) {
-		callback = callback || function() {};
+		callback = callback || function () {};
 		if (socket && app.user.uid && app.currentRoom !== room) {
 			var previousRoom = app.currentRoom;
 			app.currentRoom = room;
 			socket.emit('meta.rooms.enter', {
-				enter: room
-			}, function(err) {
+				enter: room,
+			}, function (err) {
 				if (err) {
 					app.currentRoom = previousRoom;
 					return app.alertError(err.message);
@@ -170,11 +187,11 @@ app.cacheBuster = null;
 		}
 	};
 
-	app.leaveCurrentRoom = function() {
+	app.leaveCurrentRoom = function () {
 		if (!socket) {
 			return;
 		}
-		socket.emit('meta.rooms.leaveCurrent', function(err) {
+		socket.emit('meta.rooms.leaveCurrent', function (err) {
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -190,30 +207,30 @@ app.cacheBuster = null;
 		}
 	}
 
-	app.createUserTooltips = function(els, placement) {
+	app.createUserTooltips = function (els, placement) {
 		els = els || $('body');
-		els.find('.avatar,img[title].teaser-pic,img[title].user-img,div.user-icon,span.user-icon').each(function() {
+		els.find('.avatar,img[title].teaser-pic,img[title].user-img,div.user-icon,span.user-icon').each(function () {
 			if (!utils.isTouchDevice()) {
 				$(this).tooltip({
 					placement: placement || $(this).attr('title-placement') || 'top',
-					title: $(this).attr('title')
+					title: $(this).attr('title'),
 				});
 			}
 		});
 	};
 
-	app.createStatusTooltips = function() {
+	app.createStatusTooltips = function () {
 		if (!utils.isTouchDevice()) {
 			$('body').tooltip({
-				selector:'.fa-circle.status',
-				placement: 'top'
+				selector: '.fa-circle.status',
+				placement: 'top',
 			});
 		}
 	};
 
-	app.replaceSelfLinks = function(selector) {
+	app.replaceSelfLinks = function (selector) {
 		selector = selector || $('a');
-		selector.each(function() {
+		selector.each(function () {
 			var href = $(this).attr('href');
 			if (href && app.user.userslug && href.indexOf('user/_self_') !== -1) {
 				$(this).attr('href', href.replace(/user\/_self_/g, 'user/' + app.user.userslug));
@@ -240,27 +257,60 @@ app.cacheBuster = null;
 		window.scrollTo(0, 0);
 	};
 
-	app.showLoginMessage = function () {
-		function showAlert() {
-			app.alert({
-				type: 'success',
+	app.showMessages = function () {
+		var messages = {
+			login: {
+				format: 'alert',
 				title: '[[global:welcome_back]] ' + app.user.username + '!',
 				message: '[[global:you_have_successfully_logged_in]]',
-				timeout: 5000
-			});
+			},
+			banned: {
+				format: 'modal',
+				title: '[[error:user-banned]]',
+				message: '[[error:user-banned-reason, ' + utils.params().banned + ']]',
+			},
+		};
+
+		function showAlert(type) {
+			switch (messages[type].format) {
+			case 'alert':
+				app.alert({
+					type: 'success',
+					title: messages[type].title,
+					message: messages[type].message,
+					timeout: 5000,
+				});
+				break;
+
+			case 'modal':
+				require(['translator'], function (translator) {
+					translator.translate(messages[type].message, function (translated) {
+						bootbox.alert({
+							title: messages[type].title,
+							message: translated,
+						});
+					});
+				});
+				break;
+			}
 		}
 
 		if (showWelcomeMessage) {
 			showWelcomeMessage = false;
-			if (document.readyState !== 'complete') {
-				$(document).ready(showAlert);
-			} else {
-				showAlert();
-			}
+			$(document).ready(function () {
+				showAlert('login');
+			});
+		}
+
+		if (showBannedMessage) {
+			showBannedMessage = false;
+			$(document).ready(function () {
+				showAlert('banned');
+			});
 		}
 	};
 
-	app.openChat = function (roomId) {
+	app.openChat = function (roomId, uid) {
 		if (!app.user.uid) {
 			return app.alertError('[[error:not-logged-in]]');
 		}
@@ -275,13 +325,14 @@ app.cacheBuster = null;
 			if (chat.modalExists(roomId)) {
 				loadAndCenter(chat.getModal(roomId));
 			} else {
-				socket.emit('modules.chats.loadRoom', {roomId: roomId}, function(err, roomData) {
+				socket.emit('modules.chats.loadRoom', { roomId: roomId, uid: uid || app.user.uid }, function (err, roomData) {
 					if (err) {
 						return app.alertError(err.message);
 					}
-					roomData.users = roomData.users.filter(function(user) {
+					roomData.users = roomData.users.filter(function (user) {
 						return user && parseInt(user.uid, 10) !== parseInt(app.user.uid, 10);
 					});
+					roomData.uid = uid || app.user.uid;
 					chat.createModal(roomData, loadAndCenter);
 				});
 			}
@@ -289,17 +340,21 @@ app.cacheBuster = null;
 	};
 
 	app.newChat = function (touid, callback) {
-		callback = callback || function() {};
+		callback = callback || function () {};
 		if (!app.user.uid) {
 			return app.alertError('[[error:not-logged-in]]');
 		}
 
-		socket.emit('modules.chats.newRoom', {touid: touid}, function(err, roomId) {
+		if (parseInt(touid, 10) === parseInt(app.user.uid, 10)) {
+			return app.alertError('[[error:cant-chat-with-yourself]]');
+		}
+
+		socket.emit('modules.chats.newRoom', { touid: touid }, function (err, roomId) {
 			if (err) {
 				return app.alertError(err.message);
 			}
 
-			if (!ajaxify.currentPage.startsWith('chats')) {
+			if (!ajaxify.data.template.chats) {
 				app.openChat(roomId);
 			} else {
 				ajaxify.go('chats/' + roomId);
@@ -310,10 +365,10 @@ app.cacheBuster = null;
 	};
 
 	var	titleObj = {
-			active: false,
-			interval: undefined,
-			titles: []
-		};
+		active: false,
+		interval: undefined,
+		titles: [],
+	};
 
 	app.alternatingTitle = function (title) {
 		if (typeof title !== 'string') {
@@ -325,14 +380,14 @@ app.cacheBuster = null;
 				titleObj.titles[0] = window.document.title;
 			}
 
-			require(['translator'], function(translator) {
-				translator.translate(title, function(translated) {
+			require(['translator'], function (translator) {
+				translator.translate(title, function (translated) {
 					titleObj.titles[1] = translated;
 					if (titleObj.interval) {
 						clearInterval(titleObj.interval);
 					}
 
-					titleObj.interval = setInterval(function() {
+					titleObj.interval = setInterval(function () {
 						var title = titleObj.titles[titleObj.titles.indexOf(window.document.title) ^ 1];
 						if (title) {
 							window.document.title = $('<div/>').html(title).text();
@@ -350,26 +405,26 @@ app.cacheBuster = null;
 		}
 	};
 
-	app.refreshTitle = function(title) {
+	app.refreshTitle = function (title) {
 		if (!title) {
 			return;
 		}
-		require(['translator'], function(translator) {
+		require(['translator'], function (translator) {
 			title = config.titleLayout.replace(/&#123;/g, '{').replace(/&#125;/g, '}')
-				.replace('{pageTitle}', function() { return title; })
-				.replace('{browserTitle}', function() { return config.browserTitle; });
+				.replace('{pageTitle}', function () { return title; })
+				.replace('{browserTitle}', function () { return config.browserTitle; });
 
-			translator.translate(title, function(translated) {
+			translator.translate(title, function (translated) {
 				titleObj.titles[0] = translated;
 				app.alternatingTitle('');
 			});
 		});
 	};
 
-	app.toggleNavbar = function(state) {
+	app.toggleNavbar = function (state) {
 		var navbarEl = $('.navbar');
 		if (navbarEl) {
-			navbarEl.toggleClass('hidden', !!!state);
+			navbarEl.toggleClass('hidden', !state);
 		}
 	};
 
@@ -378,12 +433,12 @@ app.cacheBuster = null;
 		if (env === 'xs' || env === 'sm') {
 			return;
 		}
-		$('#header-menu li a[title]').each(function() {
+		$('#header-menu li a[title]').each(function () {
 			if (!utils.isTouchDevice()) {
 				$(this).tooltip({
 					placement: 'bottom',
 					trigger: 'hover',
-					title: $(this).attr('title')
+					title: $(this).attr('title'),
 				});
 			}
 		});
@@ -392,7 +447,7 @@ app.cacheBuster = null;
 			$('#search-form').parent().tooltip({
 				placement: 'bottom',
 				trigger: 'hover',
-				title: $('#search-button i').attr('title')
+				title: $('#search-button i').attr('title'),
 			});
 		}
 
@@ -400,33 +455,33 @@ app.cacheBuster = null;
 			$('#user_dropdown').tooltip({
 				placement: 'bottom',
 				trigger: 'hover',
-				title: $('#user_dropdown').attr('title')
+				title: $('#user_dropdown').attr('title'),
 			});
 		}
 	}
 
 	app.handleSearch = function () {
-		var searchButton = $("#search-button"),
-			searchFields = $("#search-fields"),
-			searchInput = $('#search-fields input');
+		var searchButton = $('#search-button');
+		var searchFields = $('#search-fields');
+		var searchInput = $('#search-fields input');
 
-		$('#search-form .advanced-search-link').on('mousedown', function() {
+		$('#search-form .advanced-search-link').on('mousedown', function () {
 			ajaxify.go('/search');
 		});
 
 		$('#search-form').on('submit', dismissSearch);
 		searchInput.on('blur', dismissSearch);
 
-		function dismissSearch(){
+		function dismissSearch() {
 			searchFields.addClass('hidden');
 			searchButton.removeClass('hidden');
 		}
 
-		searchButton.on('click', function(e) {
+		searchButton.on('click', function (e) {
 			if (!config.loggedIn && !config.allowGuestSearching) {
 				app.alert({
-					message:'[[error:search-requires-login]]',
-					timeout: 3000
+					message: '[[error:search-requires-login]]',
+					timeout: 3000,
 				});
 				ajaxify.go('login');
 				return false;
@@ -439,10 +494,10 @@ app.cacheBuster = null;
 
 		$('#search-form').on('submit', function () {
 			var input = $(this).find('input');
-			require(['search'], function(search) {
+			require(['search'], function (search) {
 				var data = search.getSearchPreferences();
 				data.term = input.val();
-				search.query(data, function() {
+				search.query(data, function () {
 					input.val('');
 				});
 			});
@@ -450,17 +505,17 @@ app.cacheBuster = null;
 		});
 	};
 
-	app.prepareSearch = function() {
-		$("#search-fields").removeClass('hidden');
-		$("#search-button").addClass('hidden');
+	app.prepareSearch = function () {
+		$('#search-fields').removeClass('hidden');
+		$('#search-button').addClass('hidden');
 		$('#search-fields input').focus();
 	};
 
 	function handleStatusChange() {
-		$('[component="header/usercontrol"] [data-status]').off('click').on('click', function(e) {
+		$('[component="header/usercontrol"] [data-status]').off('click').on('click', function (e) {
 			var status = $(this).attr('data-status');
-			socket.emit('user.setStatus', status, function(err) {
-				if(err) {
+			socket.emit('user.setStatus', status, function (err) {
+				if (err) {
 					return app.alertError(err.message);
 				}
 				$('[data-uid="' + app.user.uid + '"] [component="user/status"], [component="header/profilelink"] [component="user/status"]')
@@ -473,13 +528,13 @@ app.cacheBuster = null;
 		});
 	}
 
-	app.updateUserStatus = function(el, status) {
+	app.updateUserStatus = function (el, status) {
 		if (!el.length) {
 			return;
 		}
 
-		require(['translator'], function(translator) {
-			translator.translate('[[global:' + status + ']]', function(translated) {
+		require(['translator'], function (translator) {
+			translator.translate('[[global:' + status + ']]', function (translated) {
 				el.removeClass('online offline dnd away')
 					.addClass(status)
 					.attr('title', translated)
@@ -491,44 +546,44 @@ app.cacheBuster = null;
 	app.newTopic = function (cid, tags) {
 		$(window).trigger('action:composer.topic.new', {
 			cid: cid || ajaxify.data.cid || 0,
-			tags: tags || (ajaxify.data.tag ? [ajaxify.data.tag] : [])
+			tags: tags || (ajaxify.data.tag ? [ajaxify.data.tag] : []),
 		});
 	};
 
-	app.loadJQueryUI = function(callback) {
+	app.loadJQueryUI = function (callback) {
 		if (typeof $().autocomplete === 'function') {
 			return callback();
 		}
 
 		var scriptEl = document.createElement('script');
 		scriptEl.type = 'text/javascript';
-		scriptEl.src = config.relative_path + '/vendor/jquery/js/jquery-ui.js' + (app.cacheBuster ? '?v=' + app.cacheBuster : '');
+		scriptEl.src = config.relative_path + '/assets/vendor/jquery/js/jquery-ui.js?' + config['cache-buster'];
 		scriptEl.onload = callback;
 		document.head.appendChild(scriptEl);
 	};
 
-	app.showEmailConfirmWarning = function(err) {
+	app.showEmailConfirmWarning = function (err) {
 		if (!config.requireEmailConfirmation || !app.user.uid) {
 			return;
 		}
 		var msg = {
 			alert_id: 'email_confirm',
 			type: 'warning',
-			timeout: 0
+			timeout: 0,
 		};
 
 		if (!app.user.email) {
 			msg.message = '[[error:no-email-to-confirm]]';
-			msg.clickfn = function() {
+			msg.clickfn = function () {
 				app.removeAlert('email_confirm');
 				ajaxify.go('user/' + app.user.userslug + '/edit');
 			};
 			app.alert(msg);
 		} else if (!app.user['email:confirmed'] && !app.user.isEmailConfirmSent) {
 			msg.message = err ? err.message : '[[error:email-not-confirmed]]';
-			msg.clickfn = function() {
+			msg.clickfn = function () {
 				app.removeAlert('email_confirm');
-				socket.emit('user.emailConfirm', {}, function(err) {
+				socket.emit('user.emailConfirm', {}, function (err) {
 					if (err) {
 						return app.alertError(err.message);
 					}
@@ -543,34 +598,63 @@ app.cacheBuster = null;
 		}
 	};
 
-	app.parseAndTranslate = function(template, blockName, data, callback) {
-		require(['translator'], function(translator) {
+	app.parseAndTranslate = function (template, blockName, data, callback) {
+		require(['translator'], function (translator) {
 			function translate(html, callback) {
-				translator.translate(html, function(translatedHTML) {
+				translator.translate(html, function (translatedHTML) {
 					translatedHTML = translator.unescape(translatedHTML);
 					callback($(translatedHTML));
 				});
 			}
 
 			if (typeof blockName === 'string') {
-				templates.parse(template, blockName, data, function(html) {
+				templates.parse(template, blockName, data, function (html) {
 					translate(html, callback);
 				});
 			} else {
 				callback = data;
 				data = blockName;
-				templates.parse(template, data, function(html) {
+				templates.parse(template, data, function (html) {
 					translate(html, callback);
 				});
 			}
 		});
 	};
 
-	app.loadProgressiveStylesheet = function() {
+	app.loadProgressiveStylesheet = function () {
 		var linkEl = document.createElement('link');
 		linkEl.rel = 'stylesheet';
-		linkEl.href = config.relative_path + '/js-enabled.css';
+		linkEl.href = config.relative_path + '/assets/js-enabled.css';
 
 		document.head.appendChild(linkEl);
+	};
+
+	app.showCookieWarning = function () {
+		if (!config.cookies.enabled || !navigator.cookieEnabled) {
+			// Skip warning if cookie consent subsystem disabled (obviously), or cookies not in use
+			return;
+		} else if (window.location.pathname.startsWith(config.relative_path + '/admin')) {
+			// No need to show cookie consent warning in ACP
+			return;
+		} else if (window.localStorage.getItem('cookieconsent') === '1') {
+			return;
+		}
+		require(['translator'], function (translator) {
+			config.cookies.message = translator.unescape(config.cookies.message);
+			config.cookies.dismiss = translator.unescape(config.cookies.dismiss);
+			config.cookies.link = translator.unescape(config.cookies.link);
+
+			app.parseAndTranslate('partials/cookie-consent', config.cookies, function (html) {
+				$(document.body).append(html);
+
+				var warningEl = $('.cookie-consent');
+				var dismissEl = warningEl.find('button');
+				dismissEl.on('click', function () {
+					// Save consent cookie and remove warning element
+					window.localStorage.setItem('cookieconsent', '1');
+					warningEl.remove();
+				});
+			});
+		});
 	};
 }());

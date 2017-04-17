@@ -19,6 +19,7 @@
     "welcome_back": "ברוכים השבים",
     "you_have_successfully_logged_in": "התחברת בהצלחה",
     "save_changes": "שמור שינויים",
+    "save": "Save",
     "close": "סגור",
     "pagination": "עימוד",
     "pagination.out_of": "%1 מתוך %2",
@@ -74,6 +75,7 @@
     "norecenttopics": "אין נושאים מהזמן החרון",
     "recentposts": "פוסטים אחרונים",
     "recentips": "כתובות IP שנכנסו למערכת לאחרונה",
+    "moderator_tools": "Moderator Tools",
     "away": "לא נמצא",
     "dnd": "נא לא להפריע",
     "invisible": "מוסתר",
@@ -96,5 +98,10 @@
     "upload": "העלה",
     "allowed-file-types": "פורמטי הקבצים המורשים הם %1",
     "unsaved-changes": "יש לך שינויים שאינם נשמרו. האם הנך בטוח שברצונך להמשיך?",
-    "reconnecting-message": "נראה שההתחברות שלך אל %1 אבדה, אנא המתן בזמן שהמערכת מנסה לחבר אותך מחדש"
+    "reconnecting-message": "נראה שההתחברות שלך אל %1 אבדה, אנא המתן בזמן שהמערכת מנסה לחבר אותך מחדש",
+    "play": "Play",
+    "cookies.message": "This website uses cookies to ensure you get the best experience on our website.",
+    "cookies.accept": "Got it!",
+    "cookies.learn_more": "Learn More",
+    "edited": "Edited"
 }

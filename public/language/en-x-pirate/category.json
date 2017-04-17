@@ -1,0 +1,20 @@
+{
+    "category": "Category",
+    "subcategories": "Subcategories",
+    "new_topic_button": "New Topic",
+    "guest-login-post": "Log in to post",
+    "no_topics": "<strong>Thar be no topics in 'tis category.</strong><br />Why don't ye give a go' postin' one?",
+    "browsing": "browsin'",
+    "no_replies": "No one has replied to ye message",
+    "no_new_posts": "Thar be no new posts.",
+    "share_this_category": "Share 'tis category",
+    "watch": "Be watchin'",
+    "ignore": "Be ignorin'",
+    "watching": "Watching",
+    "ignoring": "Ignoring",
+    "watching.description": "Show topics in unread",
+    "ignoring.description": "Do not show topics in unread",
+    "watch.message": "You are now watching updates from this category and all subcategories",
+    "ignore.message": "You are now ignoring updates from this category and all subcategories",
+    "watched-categories": "Categories ye be watchin'"
+}

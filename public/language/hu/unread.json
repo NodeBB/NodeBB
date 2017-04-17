@@ -2,12 +2,12 @@
     "title": "Olvasatlan",
     "no_unread_topics": "Nincs olvasatlan témakör.",
     "load_more": "Több betöltése",
-    "mark_as_read": "Olvasottnak jelölés",
+    "mark_as_read": "Megjelölés olvasottként",
     "selected": "Kiválasztva",
-    "all": "Összes",
-    "all_categories": "All categories",
+    "all": "Mind",
+    "all_categories": "Minden kategória",
     "topics_marked_as_read.success": "Témakör olvasottnak jelölve!",
-    "all-topics": "All Topics",
-    "new-topics": "New Topics",
-    "watched-topics": "Watched Topics"
+    "all-topics": "Minden témakör",
+    "new-topics": "Új témakör",
+    "watched-topics": "Figyelt témakör"
 }

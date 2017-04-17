@@ -26,7 +26,6 @@ var logger = require('./logger');
 var plugins = require('./plugins');
 var routes = require('./routes');
 var auth = require('./routes/authentication');
-var emitter = require('./emitter');
 var templates = require('templates.js');
 
 var helpers = require('../public/src/modules/helpers');
@@ -34,7 +33,7 @@ var helpers = require('../public/src/modules/helpers');
 if (nconf.get('ssl')) {
 	server = require('https').createServer({
 		key: fs.readFileSync(nconf.get('ssl').key),
-		cert: fs.readFileSync(nconf.get('ssl').cert)
+		cert: fs.readFileSync(nconf.get('ssl').cert),
 	}, app);
 } else {
 	server = require('http').createServer(app);
@@ -42,18 +41,18 @@ if (nconf.get('ssl')) {
 
 module.exports.server = server;
 
-server.on('error', function(err) {
+server.on('error', function (err) {
 	winston.error(err);
 	if (err.code === 'EADDRINUSE') {
 		winston.error('NodeBB address in use, exiting...');
-		process.exit(0);
+		process.exit(1);
 	} else {
 		throw err;
 	}
 });
 
-
-module.exports.listen = function() {
+module.exports.listen = function (callback) {
+	callback = callback || function () { };
 	emailer.registerApp(app);
 
 	setupExpressApp(app);
@@ -62,24 +61,54 @@ module.exports.listen = function() {
 
 	logger.init(app);
 
-	emitter.all(['templates:compiled', 'meta:js.compiled', 'meta:css.compiled'], function() {
-		winston.info('NodeBB Ready');
-		emitter.emit('nodebb:ready');
-		listen();
-	});
+	async.waterfall([
+		initializeNodeBB,
+		function (next) {
+			winston.info('NodeBB Ready');
 
-	initializeNodeBB(function(err) {
-		if (err) {
-			winston.error(err);
-			process.exit();
-		}
-		if (process.send) {
-			process.send({
-				action: 'ready'
+			require('./socket.io').server.emit('event:nodebb.ready', {
+				'cache-buster': meta.config['cache-buster'],
 			});
-		}
-	});
+
+			plugins.fireHook('action:nodebb.ready');
+
+			listen(next);
+		},
+	], callback);
 };
+
+function initializeNodeBB(callback) {
+	var middleware = require('./middleware');
+
+	async.waterfall([
+		async.apply(meta.themes.setupPaths),
+		function (next) {
+			plugins.init(app, middleware, next);
+		},
+		async.apply(plugins.fireHook, 'static:assets.prepare', {}),
+		function (next) {
+			plugins.fireHook('static:app.preload', {
+				app: app,
+				middleware: middleware,
+			}, next);
+		},
+		function (next) {
+			plugins.fireHook('filter:hotswap.prepare', [], next);
+		},
+		function (hotswapIds, next) {
+			routes(app, middleware, hotswapIds, next);
+		},
+		function (next) {
+			async.series([
+				meta.sounds.addUploads,
+				languages.init,
+				meta.blacklist.load,
+			], next);
+		},
+	], function (err) {
+		callback(err);
+	});
+}
 
 function setupExpressApp(app) {
 	var middleware = require('./middleware');
@@ -94,13 +123,18 @@ function setupExpressApp(app) {
 
 	app.enable('view cache');
 
+	if (global.env !== 'development') {
+		app.enable('cache');
+		app.enable('minification');
+	}
+
 	app.use(compression());
 
 	setupFavicon(app);
 
 	app.use(relativePath + '/apple-touch-icon', middleware.routeTouchIcon);
 
-	app.use(bodyParser.urlencoded({extended: true}));
+	app.use(bodyParser.urlencoded({ extended: true }));
 	app.use(bodyParser.json());
 	app.use(cookieParser());
 	app.use(useragent.express());
@@ -111,7 +145,7 @@ function setupExpressApp(app) {
 		key: nconf.get('sessionKey'),
 		cookie: setupCookie(),
 		resave: true,
-		saveUninitialized: true
+		saveUninitialized: true,
 	}));
 
 	app.use(middleware.addHeaders);
@@ -124,20 +158,22 @@ function setupExpressApp(app) {
 }
 
 function setupFavicon(app) {
-	var faviconPath = path.join(__dirname, '../../', 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico');
+	var faviconPath = meta.config['brand:favicon'] || 'favicon.ico';
+	faviconPath = path.join(nconf.get('base_dir'), 'public', faviconPath.replace(/assets\/uploads/, 'uploads'));
 	if (file.existsSync(faviconPath)) {
 		app.use(nconf.get('relative_path'), favicon(faviconPath));
 	}
 }
 
-
 function setupCookie() {
+	var ttl = meta.getSessionTTLSeconds() * 1000;
+
 	var cookie = {
-		maxAge: 1000 * 60 * 60 * 24 * (parseInt(meta.config.loginDays, 10) || 14)
+		maxAge: ttl,
 	};
 
-	if (meta.config.cookieDomain) {
-		cookie.domain = meta.config.cookieDomain;
+	if (nconf.get('cookieDomain') || meta.config.cookieDomain) {
+		cookie.domain = nconf.get('cookieDomain') || meta.config.cookieDomain;
 	}
 
 	if (nconf.get('secure')) {
@@ -152,59 +188,11 @@ function setupCookie() {
 	return cookie;
 }
 
-function cacheStaticFiles() {
-	if (global.env === 'development') {
-		return;
-	}
-
-	app.enable('cache');
-	app.enable('minification');
-}
-
-function initializeNodeBB(callback) {
-	var skipJS;
-	var fromFile = nconf.get('from-file') || '';
-	var middleware = require('./middleware');
-
-	if (fromFile.match('js')) {
-		winston.info('[minifier] Minifying client-side JS skipped');
-		skipJS = true;
-	}
-
-	async.waterfall([
-		async.apply(meta.themes.setupPaths),
-		function(next) {
-			plugins.init(app, middleware, next);
-		},
-		async.apply(plugins.fireHook, 'static:assets.prepare', {}),
-		async.apply(meta.js.bridgeModules, app),
-		function(next) {
-			async.series([
-				async.apply(meta.templates.compile),
-				async.apply(!skipJS ? meta.js.minify : meta.js.getFromFile, 'nodebb.min.js'),
-				async.apply(!skipJS ? meta.js.minify : meta.js.getFromFile, 'acp.min.js'),
-				async.apply(meta.css.minify),
-				async.apply(meta.sounds.init),
-				async.apply(languages.init),
-				async.apply(meta.blacklist.load)
-			], next);
-		},
-		function(results, next) {
-			plugins.fireHook('static:app.preload', {
-				app: app,
-				middleware: middleware
-			}, next);
-		},
-		async.apply(plugins.fireHook, 'filter:hotswap.prepare', []),
-		function(hotswapIds, next) {
-			routes(app, middleware, hotswapIds);
-			next();
-		}
-	], callback);
-}
-
-function listen() {
+function listen(callback) {
+	callback = callback || function () { };
 	var port = parseInt(nconf.get('port'), 10);
+	var isSocket = isNaN(port);
+	var socketPath = isSocket ? nconf.get('port') : '';
 
 	if (Array.isArray(port)) {
 		if (!port.length) {
@@ -230,31 +218,31 @@ function listen() {
 		winston.info('Using ports 80 and 443 is not recommend; use a proxy instead. See README.md');
 	}
 
-	var isSocket = isNaN(port),
-		args = isSocket ? [port] : [port, nconf.get('bind_address')],
-		bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port,
-		oldUmask;
+	var bind_address = ((nconf.get('bind_address') === '0.0.0.0' || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address'));
+	var args = isSocket ? [socketPath] : [port, bind_address];
+	var oldUmask;
 
-	args.push(function(err) {
+	args.push(function (err) {
 		if (err) {
-			winston.info('[startup] NodeBB was unable to listen on: ' + bind_address);
+			winston.info('[startup] NodeBB was unable to listen on: ' + bind_address + ':' + port);
 			process.exit();
 		}
 
-		winston.info('NodeBB is now listening on: ' + (isSocket ? port : bind_address));
+		winston.info('NodeBB is now listening on: ' + (isSocket ? socketPath : bind_address + ':' + port));
 		if (oldUmask) {
 			process.umask(oldUmask);
 		}
+		callback();
 	});
 
 	// Alter umask if necessary
 	if (isSocket) {
 		oldUmask = process.umask('0000');
-		module.exports.testSocket(port, function(err) {
+		module.exports.testSocket(socketPath, function (err) {
 			if (!err) {
 				server.listen.apply(server, args);
 			} else {
-				winston.error('[startup] NodeBB was unable to secure domain socket access (' + port + ')');
+				winston.error('[startup] NodeBB was unable to secure domain socket access (' + socketPath + ')');
 				winston.error('[startup] ' + err.message);
 				process.exit();
 			}
@@ -264,15 +252,15 @@ function listen() {
 	}
 }
 
-module.exports.testSocket = function(socketPath, callback) {
+module.exports.testSocket = function (socketPath, callback) {
 	if (typeof socketPath !== 'string') {
 		return callback(new Error('invalid socket path : ' + socketPath));
 	}
 	var net = require('net');
 	var file = require('./file');
 	async.series([
-		function(next) {
-			file.exists(socketPath, function(exists) {
+		function (next) {
+			file.exists(socketPath, function (exists) {
 				if (exists) {
 					next();
 				} else {
@@ -280,12 +268,12 @@ module.exports.testSocket = function(socketPath, callback) {
 				}
 			});
 		},
-		function(next) {
+		function (next) {
 			var testSocket = new net.Socket();
-			testSocket.on('error', function(err) {
+			testSocket.on('error', function (err) {
 				next(err.code !== 'ECONNREFUSED' ? err : null);
 			});
-			testSocket.connect({ path: socketPath }, function() {
+			testSocket.connect({ path: socketPath }, function () {
 				// Something's listening here, abort
 				callback(new Error('port-in-use'));
 			});
@@ -293,5 +281,4 @@ module.exports.testSocket = function(socketPath, callback) {
 		async.apply(fs.unlink, socketPath),	// The socket was stale, kick it out of the way
 	], callback);
 };
-
 

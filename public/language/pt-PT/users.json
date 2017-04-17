@@ -1,0 +1,21 @@
+{
+    "latest_users": "Últimos utilizadores",
+    "top_posters": "Top de publicadores",
+    "most_reputation": "Maior reputação",
+    "most_flags": "Mais assinalados",
+    "search": "Procurar",
+    "enter_username": "Insere um nome de utilizador para pesquisar",
+    "load_more": "Carregar mais",
+    "users-found-search-took": "%1 utilizador(es) encontrados! A pesquisa demorou %2 segundos.",
+    "filter-by": "Filtrar por",
+    "online-only": "Só online",
+    "invite": "Convidar",
+    "invitation-email-sent": "Foi enviado um e-mail de convite para %1",
+    "user_list": "Lista de utilizadores",
+    "recent_topics": "Tópicos recentes",
+    "popular_topics": "Tópicos populares",
+    "unread_topics": "Tópicos por ler",
+    "categories": "Categorias",
+    "tags": "Marcadores",
+    "no-users-found": "Não foram encontrados utilizadores!"
+}

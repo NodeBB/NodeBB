@@ -1,51 +1,52 @@
-"use strict";
-/* global define, app, socket, bootbox, templates, config */
+'use strict';
 
-define('admin/appearance/themes', function() {
+
+define('admin/appearance/themes', ['translator'], function (translator) {
 	var Themes = {};
-	
-	Themes.init = function() {
-		$('#installed_themes').on('click', function(e){
-			var target = $(e.target),
-				action = target.attr('data-action');
+
+	Themes.init = function () {
+		$('#installed_themes').on('click', function (e) {
+			var target = $(e.target);
+			var action = target.attr('data-action');
 
 			if (action && action === 'use') {
-				var parentEl = target.parents('[data-theme]'),
-					themeType = parentEl.attr('data-type'),
-					cssSrc = parentEl.attr('data-css'),
-					themeId = parentEl.attr('data-theme');
+				var parentEl = target.parents('[data-theme]');
+				var themeType = parentEl.attr('data-type');
+				var cssSrc = parentEl.attr('data-css');
+				var themeId = parentEl.attr('data-theme');
 
 				socket.emit('admin.themes.set', {
 					type: themeType,
 					id: themeId,
-					src: cssSrc
-				}, function(err) {
+					src: cssSrc,
+				}, function (err) {
 					if (err) {
 						return app.alertError(err.message);
 					}
+					config['theme:id'] = themeId;
 					highlightSelectedTheme(themeId);
 
 					app.alert({
 						alert_id: 'admin:theme',
 						type: 'info',
-						title: 'Theme Changed',
-						message: 'Please restart your NodeBB to fully activate this theme',
+						title: '[[admin/appearance/themes:theme-changed]]',
+						message: '[[admin/appearance/themes:restart-to-activate]]',
 						timeout: 5000,
-						clickfn: function() {
+						clickfn: function () {
 							socket.emit('admin.restart');
-						}
+						},
 					});
 				});
 			}
 		});
 
-		$('#revert_theme').on('click', function() {
-			bootbox.confirm('Are you sure you wish to restore the default NodeBB theme?', function(confirm) {
+		$('#revert_theme').on('click', function () {
+			bootbox.confirm('[[admin/appearance/themes:revert-confirm]]', function (confirm) {
 				if (confirm) {
 					socket.emit('admin.themes.set', {
 						type: 'local',
-						id: 'nodebb-theme-persona'
-					}, function(err) {
+						id: 'nodebb-theme-persona',
+					}, function (err) {
 						if (err) {
 							return app.alertError(err.message);
 						}
@@ -53,30 +54,29 @@ define('admin/appearance/themes', function() {
 						app.alert({
 							alert_id: 'admin:theme',
 							type: 'success',
-							title: 'Theme Changed',
-							message: 'You have successfully reverted your NodeBB back to it\'s default theme.',
-							timeout: 3500
+							title: '[[admin/appearance/themes:theme-changed]]',
+							message: '[[admin/appearance/themes:revert-success]]',
+							timeout: 3500,
 						});
 					});
 				}
 			});
 		});
 
-		socket.emit('admin.themes.getInstalled', function(err, themes) {
-			if(err) {
+		socket.emit('admin.themes.getInstalled', function (err, themes) {
+			if (err) {
 				return app.alertError(err.message);
 			}
 
 			var instListEl = $('#installed_themes');
 
 			if (!themes.length) {
-				instListEl.append($('<li/ >').addClass('no-themes').html('No installed themes found'));
-				return;
+				instListEl.append($('<li/ >').addClass('no-themes').translateHtml('[[admin/appearance/themes:no-themes]]'));
 			} else {
 				templates.parse('admin/partials/theme_list', {
-					themes: themes
-				}, function(html) {
-					translator.translate(html, function(html) {
+					themes: themes,
+				}, function (html) {
+					translator.translate(html, function (html) {
 						instListEl.html(html);
 						highlightSelectedTheme(config['theme:id']);
 					});
@@ -86,19 +86,25 @@ define('admin/appearance/themes', function() {
 	};
 
 	function highlightSelectedTheme(themeId) {
-		$('[data-theme]')
-			.removeClass('selected')
-			.find('[data-action="use"]')
-				.html('Select Theme')
-				.removeClass('btn-success')
-				.addClass('btn-primary');
+		translator.translate('[[admin/appearance/themes:select-theme]]  ||  [[admin/appearance/themes:current-theme]]', function (text) {
+			text = text.split('  ||  ');
+			var select = text[0];
+			var current = text[1];
 
-		$('[data-theme="' + themeId + '"]')
-			.addClass('selected')
-			.find('[data-action="use"]')
-				.html('Current Theme')
-				.removeClass('btn-primary')
-				.addClass('btn-success');
+			$('[data-theme]')
+				.removeClass('selected')
+				.find('[data-action="use"]')
+					.html(select)
+					.removeClass('btn-success')
+					.addClass('btn-primary');
+
+			$('[data-theme="' + themeId + '"]')
+				.addClass('selected')
+				.find('[data-action="use"]')
+					.html(current)
+					.removeClass('btn-primary')
+					.addClass('btn-success');
+		});
 	}
 
 	return Themes;

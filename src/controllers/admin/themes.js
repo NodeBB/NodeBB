@@ -5,15 +5,15 @@ var file = require('../../file');
 
 var themesController = {};
 
-themesController.get = function(req, res, next) {
+themesController.get = function (req, res, next) {
 	var themeDir = path.join(__dirname, '../../../node_modules/' + req.params.theme);
-	file.exists(themeDir, function(exists) {
+	file.exists(themeDir, function (exists) {
 		if (!exists) {
 			return next();
 		}
 
-		var themeConfig = require(path.join(themeDir, 'theme.json')),
-			screenshotPath = path.join(themeDir, themeConfig.screenshot);
+		var themeConfig = require(path.join(themeDir, 'theme.json'));
+		var screenshotPath = path.join(themeDir, themeConfig.screenshot);
 		if (themeConfig.screenshot && file.existsSync(screenshotPath)) {
 			res.sendFile(screenshotPath);
 		} else {

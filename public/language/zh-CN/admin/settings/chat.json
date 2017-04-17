@@ -1,0 +1,9 @@
+{
+	"chat-settings": "聊天设置",
+	"disable": "禁用聊天",
+	"disable-editing": "禁止编辑/删除聊天消息",
+	"disable-editing-help": "管理员和超级管理员不受此限制",
+	"max-length": "聊天信息的最大长度",
+	"max-room-size": "聊天室的最多用户数",
+	"delay": "聊天信息间的毫秒数"
+}

@@ -1,0 +1,12 @@
+{
+    "tag": "Configurações de Tag",
+    "min-per-topic": "Mínimo de Tags por Tópico",
+    "max-per-topic": "Máximo de Tags por Tópico",
+    "min-length": "Tamanho Mínimo das Tags",
+    "max-length": "Tamanho Máximo das Tags",
+    "goto-manage": "Clique aqui para visitar a página de administração da tag.",
+    "privacy": "Privacidade",
+    "list-private": "Tornar a lista de tags privada",
+    "related-topics": "Tópicos Relacionados",
+    "max-related-topics": "Máximo de tópicos relacionados para exibir (se suportado pelo tema)"
+}

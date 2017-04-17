@@ -1,0 +1,14 @@
+{
+	"figure-x": "表 %1",
+	"error-events-per-day": "<code>%1</code> 事件/天",
+	"error.404": "404 伺服器無法回應",
+	"error.503": "503 伺服器忙碌中",
+	"manage-error-log": "管理錯誤日誌",
+	"export-error-log": "匯出錯誤日誌 (CSV)",
+	"clear-error-log": "清除錯誤日誌",
+	"route": "路由",
+	"count": "計數",
+	"no-routes-not-found": "Hooray! No 404 errors!",
+	"clear404-confirm": "您確定要清除404錯誤日誌嗎?",
+	"clear404-success": "\"404 Not Found\" 錯誤已清除"
+}

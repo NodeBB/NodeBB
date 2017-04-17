@@ -1,0 +1,20 @@
+{
+	"queue": "Fila",
+	"description": "Não existem usuários na fila de registro. <br> Para habilitar esta função, acesse <a href=\"%1\">Configurações &rarr; Usuário &rarr; Registro de Usuário</a> e defina <strong>Tipo de Registro</strong> para \"Aprovação do Administrador\".",
+
+	"list.name": "Nome",
+	"list.email": "Email",
+	"list.ip": "IP",
+	"list.time": "Tempo",
+	"list.username-spam": "Frequência: %1 Aparece: %2 Confiança: %3",
+	"list.email-spam": "Frequência: %1 Aparece: %2",
+	"list.ip-spam": "Frequência: %1 Aparece: %2",
+
+	"invitations": "Convites",
+	"invitations.description": "Abaixo está uma lista completa dos convites enviados. Use ctrl-f para procurar pela lista por email ou nome se usuário. <br><br>O nome de usuário será exibido à direita dos emails para usuários que aceitaram seus convites.",
+	"invitations.inviter-username": "Nome de Usuário do Convidante",
+	"invitations.invitee-email": "Email do Convidado",
+	"invitations.invitee-username": "Nome do Usuário do Convidado (se registrado)",
+
+	"invitations.confirm-delete": "Tem certeza que deseja excluir este convite?"
+} 

@@ -1,34 +1,34 @@
-"use strict";
-/* global define, app, ajaxify, socket, templates */
+'use strict';
 
-define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], function(translator, iconSelect, jqueryui) {
-	var navigation = {},
-		available;
 
-	navigation.init = function() {
+define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], function (translator, iconSelect) {
+	var navigation = {};
+	var available;
+
+	navigation.init = function () {
 		available = ajaxify.data.available;
 
-		$('#enabled .unescape').each(function() {
+		$('#enabled .unescape').each(function () {
 			$(this).val(translator.unescape($(this).val()));
 		});
 
-		translator.translate(translator.unescape($('#available').html()), function(html) {
-			$('#available').html(html)
+		translator.translate($('#available').html(), function (html) {
+			$('#available').html(translator.unescape(html))
 				.find('li .drag-item').draggable({
 					connectToSortable: '#active-navigation',
 					helper: 'clone',
 					distance: 10,
-					stop: drop
+					stop: drop,
 				});
 		});
-		
+
 		$('#active-navigation').sortable().droppable({
-			accept: $('#available li .drag-item')
+			accept: $('#available li .drag-item'),
 		});
 
-		$('#enabled').on('click', '.iconPicker', function() {
+		$('#enabled').on('click', '.iconPicker', function () {
 			var iconEl = $(this).find('i');
-			iconSelect.init(iconEl, function(el) {
+			iconSelect.init(iconEl, function (el) {
 				var newIconClass = el.attr('value');
 				var index = iconEl.parents('[data-index]').attr('data-index');
 				$('#active-navigation [data-index="' + index + '"] i').attr('class', 'fa fa-fw ' + newIconClass);
@@ -40,8 +40,8 @@ define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], fun
 		$('#active-navigation').on('click', 'li', onSelect);
 
 		$('#enabled')
-		 	.on('click', '.delete', remove)
-		 	.on('click', '.toggle', toggle);
+			.on('click', '.delete', remove)
+			.on('click', '.toggle', toggle);
 
 		$('#save').on('click', save);
 	};
@@ -61,23 +61,27 @@ define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], fun
 	}
 
 	function drop(ev, ui) {
-		var id = ui.helper.attr('data-id'),
-			el = $('#active-navigation [data-id="' + id + '"]'),
-			data = id === 'custom' ? {iconClass: 'fa-navicon'} : available[id];
+		var id = ui.helper.attr('data-id');
+		var el = $('#active-navigation [data-id="' + id + '"]');
+		var data = id === 'custom' ? { iconClass: 'fa-navicon' } : available[id];
 
 		data.enabled = false;
 		data.index = (parseInt($('#enabled').children().last().attr('data-index'), 10) || 0) + 1;
 
-		templates.parse('admin/general/navigation', 'navigation', {navigation: [data]}, function(li) {
-			li = $(translator.unescape(li));
-			el.after(li);
-			el.remove();
+		templates.parse('admin/general/navigation', 'navigation', { navigation: [data] }, function (li) {
+			translator.translate(li, function (li) {
+				li = $(translator.unescape(li));
+				el.after(li);
+				el.remove();
+			});
 		});
 
-		templates.parse('admin/general/navigation', 'enabled', {enabled: [data]}, function(li) {
-			li = $(translator.unescape(li));
-			$('#enabled').append(li);
-			componentHandler.upgradeDom()
+		templates.parse('admin/general/navigation', 'enabled', { enabled: [data] }, function (li) {
+			translator.translate(li, function (li) {
+				li = $(translator.unescape(li));
+				$('#enabled').append(li);
+				componentHandler.upgradeDom();
+			});
 		});
 	}
 
@@ -85,17 +89,17 @@ define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], fun
 		var nav = [];
 
 		var indices = [];
-		$('#active-navigation li').each(function() {
+		$('#active-navigation li').each(function () {
 			indices.push($(this).attr('data-index'));
 		});
 
-		indices.forEach(function(index) {
+		indices.forEach(function (index) {
 			var el = $('#enabled').children('[data-index="' + index + '"]');
-			var form = el.find('form').serializeArray(),
-				data = {},
-				properties = {};
+			var form = el.find('form').serializeArray();
+			var data = {};
+			var properties = {};
 
-			form.forEach(function(input) {
+			form.forEach(function (input) {
 				if (input.name.slice(0, 9) === 'property:' && input.value === 'on') {
 					properties[input.name.slice(9)] = true;
 				} else {
@@ -114,7 +118,7 @@ define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], fun
 			nav.push(data);
 		});
 
-		socket.emit('admin.navigation.save', nav, function(err) {
+		socket.emit('admin.navigation.save', nav, function (err) {
 			if (err) {
 				app.alertError(err.message);
 			} else {
@@ -131,11 +135,12 @@ define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], fun
 	}
 
 	function toggle() {
-		var btn = $(this),
-			disabled = btn.hasClass('btn-success');
-
-		btn.toggleClass('btn-warning').toggleClass('btn-success').html(!disabled ? 'Enable' : 'Disable');
-		btn.parents('li').find('[name="enabled"]').val(!disabled ? '' : 'on');
+		var btn = $(this);
+		var disabled = btn.hasClass('btn-success');
+		translator.translate(disabled ? '[[admin/general/navigation:btn.disable]]' : '[[admin/general/navigation:btn.enable]]', function (html) {
+			btn.toggleClass('btn-warning').toggleClass('btn-success').html(html);
+			btn.parents('li').find('[name="enabled"]').val(disabled ? 'on' : '');
+		});
 		return false;
 	}
 

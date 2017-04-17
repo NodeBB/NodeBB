@@ -1,0 +1,12 @@
+{
+    "tag": "Paramètres des mots-clés",
+    "min-per-topic": "Nombre minimum de mots-clés par sujet",
+    "max-per-topic": "Nombre maximum de mots-clés par sujet",
+    "min-length": "Longueur minimum des mots-clés",
+    "max-length": "Longueur maximum des mots-clés",
+    "goto-manage": "Cliquez ici pour visiter la page de gestion des mots-clés",
+    "privacy": "Politique de confidentialité",
+    "list-private": "Rendre privée la liste des mots-clés",
+    "related-topics": "Sujets connexes",
+    "max-related-topics": "Nombre maximum de sujets connexes à afficher (si supporté par le thème)"
+}

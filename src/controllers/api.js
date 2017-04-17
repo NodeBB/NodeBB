@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var async = require('async');
 var validator = require('validator');
@@ -12,11 +12,11 @@ var categories = require('../categories');
 var privileges = require('../privileges');
 var plugins = require('../plugins');
 var widgets = require('../widgets');
-var accountHelpers = require('../controllers/accounts/helpers');
+var translator = require('../translator');
 
-var apiController = {};
+var apiController = module.exports;
 
-apiController.getConfig = function(req, res, next) {
+apiController.getConfig = function (req, res, next) {
 	var config = {};
 	config.environment = process.env.NODE_ENV;
 	config.relative_path = nconf.get('relative_path');
@@ -42,6 +42,7 @@ apiController.getConfig = function(req, res, next) {
 	config.allowTopicsThumbnail = parseInt(meta.config.allowTopicsThumbnail, 10) === 1;
 	config.usePagination = parseInt(meta.config.usePagination, 10) === 1;
 	config.disableChat = parseInt(meta.config.disableChat, 10) === 1;
+	config.disableChatMessageEditing = parseInt(meta.config.disableChatMessageEditing, 10) === 1;
 	config.socketioTransports = nconf.get('socket.io:transports') || ['polling', 'websocket'];
 	config.websocketAddress = nconf.get('socket.io:address') || '';
 	config.maxReconnectionAttempts = meta.config.maxReconnectionAttempts || 5;
@@ -51,7 +52,7 @@ apiController.getConfig = function(req, res, next) {
 	config.maximumFileSize = meta.config.maximumFileSize;
 	config['theme:id'] = meta.config['theme:id'];
 	config['theme:src'] = meta.config['theme:src'];
-	config.defaultLang = meta.config.defaultLang || 'en_GB';
+	config.defaultLang = meta.config.defaultLang || 'en-GB';
 	config.userLang = req.query.lang ? validator.escape(String(req.query.lang)) : config.defaultLang;
 	config.loggedIn = !!req.user;
 	config['cache-buster'] = meta.config['cache-buster'] || '';
@@ -60,7 +61,22 @@ apiController.getConfig = function(req, res, next) {
 	config.categoryTopicSort = meta.config.categoryTopicSort || 'newest_to_oldest';
 	config.csrf_token = req.csrfToken();
 	config.searchEnabled = plugins.hasListeners('filter:search.query');
-	config.bootswatchSkin = 'default';
+	config.bootswatchSkin = meta.config.bootswatchSkin || 'noskin';
+	config.defaultBootswatchSkin = meta.config.bootswatchSkin || 'noskin';
+
+	if (config.useOutgoingLinksPage) {
+		config.outgoingLinksWhitelist = meta.config['outgoingLinks:whitelist'];
+	}
+
+	var timeagoCutoff = meta.config.timeagoCutoff === undefined ? 30 : meta.config.timeagoCutoff;
+	config.timeagoCutoff = timeagoCutoff !== '' ? Math.max(0, parseInt(timeagoCutoff, 10)) : timeagoCutoff;
+
+	config.cookies = {
+		enabled: parseInt(meta.config.cookieConsentEnabled, 10) === 1,
+		message: translator.escape(validator.escape(meta.config.cookieConsentMessage || '[[global:cookies.message]]')).replace(/\\/g, '\\\\'),
+		dismiss: translator.escape(validator.escape(meta.config.cookieConsentDismiss || '[[global:cookies.accept]]')).replace(/\\/g, '\\\\'),
+		link: translator.escape(validator.escape(meta.config.cookieConsentLink || '[[global:cookies.learn_more]]')).replace(/\\/g, '\\\\'),
+	};
 
 	async.waterfall([
 		function (next) {
@@ -79,10 +95,10 @@ apiController.getConfig = function(req, res, next) {
 			config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
 			config.topicSearchEnabled = settings.topicSearchEnabled || false;
 			config.delayImageLoading = settings.delayImageLoading !== undefined ? settings.delayImageLoading : true;
-			config.bootswatchSkin = settings.bootswatchSkin || config.bootswatchSkin;
+			config.bootswatchSkin = (settings.bootswatchSkin && settings.bootswatchSkin !== 'default') ? settings.bootswatchSkin : config.bootswatchSkin;
 			plugins.fireHook('filter:config.get', config, next);
-		}
-	], function(err, config) {
+		},
+	], function (err, config) {
 		if (err) {
 			return next(err);
 		}
@@ -96,43 +112,38 @@ apiController.getConfig = function(req, res, next) {
 };
 
 
-apiController.renderWidgets = function(req, res, next) {
-	var areas = {
-		template: req.query.template,
-		locations: req.query.locations,
-		url: req.query.url
-	};
-
-	if (!areas.template || !areas.locations) {
+apiController.renderWidgets = function (req, res, next) {
+	if (!req.query.template || !req.query.locations) {
 		return res.status(200).json({});
 	}
 
 	widgets.render(req.uid,
 		{
-			template: areas.template,
-			url: areas.url,
-			locations: areas.locations,
-			isMobile: req.query.isMobile === 'true'
+			template: req.query.template,
+			url: req.query.url,
+			locations: req.query.locations,
+			isMobile: req.query.isMobile === 'true',
+			cid: req.query.cid,
 		},
 		req,
 		res,
-		function(err, widgets) {
-		if (err) {
-			return next(err);
-		}
-		res.status(200).json(widgets);
-	});
+		function (err, widgets) {
+			if (err) {
+				return next(err);
+			}
+			res.status(200).json(widgets);
+		});
 };
 
-apiController.getPostData = function(pid, uid, callback) {
+apiController.getPostData = function (pid, uid, callback) {
 	async.parallel({
-		privileges: function(next) {
+		privileges: function (next) {
 			privileges.posts.get([pid], uid, next);
 		},
-		post: function(next) {
+		post: function (next) {
 			posts.getPostData(pid, next);
-		}
-	}, function(err, results) {
+		},
+	}, function (err, results) {
 		if (err || !results.post) {
 			return callback(err);
 		}
@@ -153,15 +164,15 @@ apiController.getPostData = function(pid, uid, callback) {
 	});
 };
 
-apiController.getTopicData = function(tid, uid, callback) {
+apiController.getTopicData = function (tid, uid, callback) {
 	async.parallel({
-		privileges: function(next) {
+		privileges: function (next) {
 			privileges.topics.get(tid, uid, next);
 		},
-		topic: function(next) {
+		topic: function (next) {
 			topics.getTopicData(tid, next);
-		}
-	}, function(err, results) {
+		},
+	}, function (err, results) {
 		if (err || !results.topic) {
 			return callback(err);
 		}
@@ -173,15 +184,15 @@ apiController.getTopicData = function(tid, uid, callback) {
 	});
 };
 
-apiController.getCategoryData = function(cid, uid, callback) {
+apiController.getCategoryData = function (cid, uid, callback) {
 	async.parallel({
-		privileges: function(next) {
+		privileges: function (next) {
 			privileges.categories.get(cid, uid, next);
 		},
-		category: function(next) {
+		category: function (next) {
 			categories.getCategoryData(cid, next);
-		}
-	}, function(err, results) {
+		},
+	}, function (err, results) {
 		if (err || !results.category) {
 			return callback(err);
 		}
@@ -194,17 +205,17 @@ apiController.getCategoryData = function(cid, uid, callback) {
 };
 
 
-apiController.getObject = function(req, res, next) {
+apiController.getObject = function (req, res, next) {
 	var methods = {
 		post: apiController.getPostData,
 		topic: apiController.getTopicData,
-		category: apiController.getCategoryData
+		category: apiController.getCategoryData,
 	};
 	var method = methods[req.params.type];
 	if (!method) {
 		return next();
 	}
-	method(req.params.id, req.uid, function(err, result) {
+	method(req.params.id, req.uid, function (err, result) {
 		if (err || !result) {
 			return next(err);
 		}
@@ -213,110 +224,11 @@ apiController.getObject = function(req, res, next) {
 	});
 };
 
-apiController.getCurrentUser = function(req, res, next) {
-	if (!req.uid) {
-		return res.status(401).json('not-authorized');
-	}
-	async.waterfall([
-		function(next) {
-			user.getUserField(req.uid, 'userslug', next);
-		},
-		function(userslug, next) {
-			accountHelpers.getUserDataByUserSlug(userslug, req.uid, next);
-		}
-	], function(err, userData) {
+apiController.getModerators = function (req, res, next) {
+	categories.getModerators(req.params.cid, function (err, moderators) {
 		if (err) {
 			return next(err);
 		}
-		res.json(userData);
+		res.json({ moderators: moderators });
 	});
 };
-
-apiController.getUserByUID = function(req, res, next) {
-	byType('uid', req, res, next);
-};
-
-apiController.getUserByUsername = function(req, res, next) {
-	byType('username', req, res, next);
-};
-
-apiController.getUserByEmail = function(req, res, next) {
-	byType('email', req, res, next);
-};
-
-function byType(type, req, res, next) {
-	apiController.getUserDataByField(req.uid, type, req.params[type], function(err, data) {
-		if (err || !data) {
-			return next(err);
-		}
-		res.json(data);
-	});
-}
-
-apiController.getUserDataByField = function(callerUid, field, fieldValue, callback) {
-	async.waterfall([
-		function (next) {
-			if (field === 'uid') {
-				next(null, fieldValue);
-			} else if (field === 'username') {
-				user.getUidByUsername(fieldValue, next);
-			} else if (field === 'email') {
-				user.getUidByEmail(fieldValue, next);
-			} else {
-				next();
-			}
-		},
-		function (uid, next) {
-			if (!uid) {
-				return next();
-			}
-			apiController.getUserDataByUID(callerUid, uid, next);
-		}
-	], callback);
-};
-
-apiController.getUserDataByUID = function(callerUid, uid, callback) {
-	if (!parseInt(callerUid, 10) && parseInt(meta.config.privateUserInfo, 10) === 1) {
-		return callback(new Error('[[error:no-privileges]]'));
-	}
-
-	if (!parseInt(uid, 10)) {
-		return callback(new Error('[[error:no-user]]'));
-	}
-
-	async.parallel({
-		userData: async.apply(user.getUserData, uid),
-		settings: async.apply(user.getSettings, uid)
-	}, function(err, results) {
-		if (err || !results.userData) {
-			return callback(err || new Error('[[error:no-user]]'));
-		}
-
-		results.userData.email = results.settings.showemail ? results.userData.email : undefined;
-		results.userData.fullname = results.settings.showfullname ? results.userData.fullname : undefined;
-
-		callback(null, results.userData);
-	});
-};
-
-apiController.getModerators = function(req, res, next) {
-	categories.getModerators(req.params.cid, function(err, moderators) {
-		if (err) {
-			return next(err);
-		}
-		res.json({moderators: moderators});
-	});
-};
-
-
-apiController.getRecentPosts = function(req, res, next) {
-	posts.getRecentPosts(req.uid, 0, 19, req.params.term, function (err, data) {
-		if (err) {
-			return next(err);
-		}
-
-		res.json(data);
-	});
-};
-
-module.exports = apiController;

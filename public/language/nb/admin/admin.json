@@ -1,0 +1,7 @@
+{
+	"alert.confirm-reload": "Er du sikker på at du ønsker å laste inn NoddeBB på nytt?",
+	"alert.confirm-restart": "Er du sikker på at du ønsker å restarte NoddeBB?",
+
+	"acp-title": "%1 | NodeBB Admin Control Panel",
+	"settings-header-contents": "Contents"
+}

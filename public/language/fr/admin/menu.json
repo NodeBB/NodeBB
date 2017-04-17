@@ -1,0 +1,74 @@
+{
+	"section-general": "Général",
+	"general/dashboard": "Tableau de bord",
+	"general/homepage": "Page d'accueil",
+	"general/navigation": "Navigation",
+	"general/languages": "Langues",
+	"general/sounds": "Sons",
+	"general/social": "Social",
+
+	"section-manage": "Gestion",
+	"manage/categories": "Catégories",
+	"manage/tags": "Mots-clés",
+	"manage/users": "Utilisateurs",
+	"manage/registration": "File d'inscription",
+	"manage/groups": "Groupes",
+	"manage/ip-blacklist": "Liste noire d'IPs",
+
+	"section-settings": "Réglages",
+	"settings/general": "Général",
+	"settings/reputation": "Réputation",
+	"settings/email": "Email",
+	"settings/user": "Utilisateur",
+	"settings/group": "Groupe",
+	"settings/guest": "Invités",
+	"settings/uploads": "Envois",
+	"settings/post": "Message",
+	"settings/chat": "Discussion",
+	"settings/pagination": "Pagination",
+	"settings/tags": "Mots-clés",
+	"settings/notifications": "Notifications",
+	"settings/cookies": "Cookies",
+	"settings/web-crawler": "Robot d'indexation Web",
+	"settings/sockets": "Sockets",
+	"settings/advanced": "Avancé",
+
+	"settings.page-title": "Réglages %1",
+
+	"section-appearance": "Apparence",
+	"appearance/themes": "Thèmes",
+	"appearance/skins": "Skins",
+	"appearance/customise": "HTML et CSS personnalisés",
+
+	"section-extend": "Extensions",
+	"extend/plugins": "Plugins",
+	"extend/widgets": "Widgets",
+	"extend/rewards": "Récompenses",
+
+	"section-social-auth": "Authentification via les réseaux sociaux",
+
+	"section-plugins": "Plugins",
+	"extend/plugins.install": "Installer des plugins",
+
+	"section-advanced": "Avancé",
+	"advanced/database": "Base de données",
+	"advanced/events": "Évènements",
+	"advanced/logs": "Journaux",
+	"advanced/errors": "Erreurs",
+	"advanced/cache": "Cache",
+	"development/logger": "Logger",
+	"development/info": "Info",
+
+	"reload-forum": "Recharger le forum",
+	"restart-forum": "Redémarrer le forum",
+	"logout": "Déconnexion ",
+	"view-forum": "Voir le forum",
+
+	"search.placeholder": "Rechercher…",
+	"search.no-results": "Aucun résultat…",
+	"search.search-forum": "Rechercher <strong></strong> dans le forum",
+	"search.keep-typing": "Continuez de taper pour afficher les résultats…",
+	"search.start-typing": "Commencez à taper pour afficher les résultats…",
+
+	"connection-lost": "La connexion à %1 a été perdue, tentative de reconnexion…"
+}

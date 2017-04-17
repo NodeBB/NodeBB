@@ -1,0 +1,5 @@
+{
+	"language-settings": "Spracheinstellungen",
+	"description": "Die Standardsprache legt die Spracheinstellungen für alle Benutzer fest, die das Forum besuchen. <br />Einzelne Benutzer können die Standardsprache auf der Seite mit den Kontoeinstellungen überschreiben.",
+	"default-language": "Standardsprache"
+}

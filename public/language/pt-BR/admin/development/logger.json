@@ -1,0 +1,12 @@
+{
+	"logger-settings": "Configurações de Logs",
+	"description": "Ao habilitar as caixas de checagem, você irá receber os logs no seu terminal. Se você escolher um caminho de arquivo (path), os logs serão salvos em um arquivo ao invés disso. O log de HTTP é útil para coletar estatísticas sobre quem, quando, e o que as pessoas acessam no seu fórum.  Além de logar solicitações de HTTP, nós podemos também logar eventos de socket.io Logs de socket.io, em combinação com o monitor redis-cli, podem ser de muito auxílio para se aprender o funcionamento interno do NodeBB.",
+	"explanation": "Apenas marque/desmarque as configurações de log para habilitar ou desabilitar o log enquanto rodando. Reiniciar não é necessário.",
+	"enable-http": "Ligar o log de HTTP",
+	"enable-socket": "Ligar o log de eventos do socket.io",
+	"file-path": "Caminho do arquivo de log",
+	"file-path-placeholder": "/caminho/para/o/arquivo-de-log.log ::: deixe em branco para logar para o seu terminal",
+
+	"control-panel": "Painel de Controle do Logger",
+	"update-settings": "Atualizar Configurações do Logger"
+}

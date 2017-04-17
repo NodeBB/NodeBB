@@ -1,0 +1,17 @@
+{
+	"rewards": "報酬",
+	"condition-if-users": "ユーザーの",
+	"condition-is": ":",
+	"condition-then": "それから:",
+	"max-claims": "報酬が請求可能な金額",
+	"zero-infinite": "無限に0を入力します。",
+	"delete": "削除",
+	"enable": "有効",
+	"disable": "無効",
+	"control-panel": "報酬コントロール",
+	"new-reward": "新しい報酬",
+
+	"alert.delete-success": "報酬を削除しました",
+	"alert.no-inputs-found": "違法報酬 - 入力が見つかりません！",
+	"alert.save-success": "報酬を保存しました"
+}

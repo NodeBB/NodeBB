@@ -1,16 +1,14 @@
 'use strict';
 
-/* globals define, socket, app */
 
-define('forum/infinitescroll', function() {
-
+define('forum/infinitescroll', function () {
 	var scroll = {};
 	var callback;
 	var previousScrollTop = 0;
 	var loadingMore	= false;
 	var container;
 
-	scroll.init = function(el, cb) {
+	scroll.init = function (el, cb) {
 		if (typeof el === 'function') {
 			callback = el;
 			container = $('body');
@@ -23,7 +21,9 @@ define('forum/infinitescroll', function() {
 	};
 
 	function onScroll() {
-		if (loadingMore) {
+		var bsEnv = utils.findBootstrapEnvironment();
+		var mobileComposerOpen = (bsEnv === 'xs' || bsEnv === 'sm') && $('html').hasClass('composing');
+		if (loadingMore || mobileComposerOpen) {
 			return;
 		}
 		var currentScrollTop = $(window).scrollTop();
@@ -32,7 +32,8 @@ define('forum/infinitescroll', function() {
 		var offsetTop = container.offset() ? container.offset().top : 0;
 		var scrollPercent = 100 * (currentScrollTop - offsetTop) / (viewportHeight <= 0 ? wh : viewportHeight);
 
-		var top = 20, bottom = 80;
+		var top = 20;
+		var bottom = 80;
 
 		var direction = currentScrollTop > previousScrollTop ? 1 : -1;
 
@@ -47,35 +48,35 @@ define('forum/infinitescroll', function() {
 		previousScrollTop = currentScrollTop;
 	}
 
-	scroll.loadMore = function(method, data, callback) {
+	scroll.loadMore = function (method, data, callback) {
 		if (loadingMore) {
 			return;
 		}
 		loadingMore = true;
 
-		var hookData = {method: method, data: data};
+		var hookData = { method: method, data: data };
 		$(window).trigger('action:infinitescroll.loadmore', hookData);
 
-		socket.emit(hookData.method, hookData.data, function(err, data) {
+		socket.emit(hookData.method, hookData.data, function (err, data) {
 			if (err) {
 				loadingMore = false;
 				return app.alertError(err.message);
 			}
-			callback(data, function() {
+			callback(data, function () {
 				loadingMore = false;
 			});
 		});
 	};
 
-	scroll.removeExtra = function(els, direction, count) {
+	scroll.removeExtra = function (els, direction, count) {
 		if (els.length <= count) {
 			return;
 		}
 
 		var removeCount = els.length - count;
 		if (direction > 0) {
-			var height = $(document).height(),
-				scrollTop = $(window).scrollTop();
+			var height = $(document).height();
+			var scrollTop = $(window).scrollTop();
 
 			els.slice(0, removeCount).remove();
 

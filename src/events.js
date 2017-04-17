@@ -1,73 +1,83 @@
 
 'use strict';
 
-var async = require('async'),
+var async = require('async');
+var validator = require('validator');
 
-	db =  require('./database'),
-	batch = require('./batch'),
-	user = require('./user'),
-	utils = require('../public/src/utils');
+var db = require('./database');
+var batch = require('./batch');
+var user = require('./user');
+var utils = require('./utils');
 
-
-(function(events) {
-	events.log = function(data, callback) {
-		callback = callback || function() {};
+(function (events) {
+	events.log = function (data, callback) {
+		callback = callback || function () {};
 
 		async.waterfall([
-			function(next) {
+			function (next) {
 				db.incrObjectField('global', 'nextEid', next);
 			},
-			function(eid, next) {
+			function (eid, next) {
 				data.timestamp = Date.now();
 				data.eid = eid;
 
 				async.parallel([
-					function(next) {
+					function (next) {
 						db.sortedSetAdd('events:time', data.timestamp, eid, next);
 					},
-					function(next) {
+					function (next) {
 						db.setObject('event:' + eid, data, next);
-					}
+					},
 				], next);
-			}
-		], function(err, result) {
+			},
+		], function (err) {
 			callback(err);
 		});
 	};
 
-	events.getEvents = function(start, stop, callback) {
+	events.getEvents = function (start, stop, callback) {
 		async.waterfall([
-			function(next) {
+			function (next) {
 				db.getSortedSetRevRange('events:time', start, stop, next);
 			},
-			function(eids, next) {
-				var keys = eids.map(function(eid) {
+			function (eids, next) {
+				var keys = eids.map(function (eid) {
 					return 'event:' + eid;
 				});
 				db.getObjects(keys, next);
 			},
-			function(eventsData, next) {
+			function (eventsData, next) {
+				eventsData = eventsData.filter(Boolean);
 				addUserData(eventsData, 'uid', 'user', next);
 			},
-			function(eventsData, next) {
+			function (eventsData, next) {
 				addUserData(eventsData, 'targetUid', 'targetUser', next);
 			},
-			function(eventsData, next) {
-				eventsData.forEach(function(event) {
+			function (eventsData, next) {
+				eventsData.forEach(function (event) {
+					Object.keys(event).forEach(function (key) {
+						if (typeof event[key] === 'string') {
+							event[key] = validator.escape(String(event[key] || ''));
+						}
+					});
 					var e = utils.merge(event);
-					e.eid = e.uid = e.type = e.ip = e.user = undefined;
+					e.eid = undefined;
+					e.uid = undefined;
+					e.type = undefined;
+					e.ip = undefined;
+					e.user = undefined;
 					event.jsonString = JSON.stringify(e, null, 4);
 					event.timestampISO = new Date(parseInt(event.timestamp, 10)).toUTCString();
 				});
 				next(null, eventsData);
-			}
+			},
 		], callback);
 	};
 
 	function addUserData(eventsData, field, objectName, callback) {
-		var uids = eventsData.map(function(event) {
+		var uids = eventsData.map(function (event) {
 			return event && event[field];
-		}).filter(function(uid, index, array) {
+		}).filter(function (uid, index, array) {
 			return uid && array.indexOf(uid) === index;
 		});
 
@@ -76,13 +86,13 @@ var async = require('async'),
 		}
 
 		async.parallel({
-			isAdmin: function(next) {
+			isAdmin: function (next) {
 				user.isAdministrator(uids, next);
 			},
-			userData: function(next) {
+			userData: function (next) {
 				user.getUsersFields(uids, ['username', 'userslug', 'picture'], next);
-			}
-		}, function(err, results) {
+			},
+		}, function (err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -90,12 +100,12 @@ var async = require('async'),
 			var userData = results.userData;
 
 			var map = {};
-			userData.forEach(function(user, index) {
+			userData.forEach(function (user, index) {
 				user.isAdmin = results.isAdmin[index];
 				map[user.uid] = user;
 			});
 
-			eventsData.forEach(function(event) {
+			eventsData.forEach(function (event) {
 				if (map[event[field]]) {
 					event[objectName] = map[event[field]];
 				}
@@ -104,28 +114,26 @@ var async = require('async'),
 		});
 	}
 
-	events.deleteEvents = function(eids, callback) {
-		callback = callback || function() {};
+	events.deleteEvents = function (eids, callback) {
+		callback = callback || function () {};
 		async.parallel([
-			function(next) {
-				var keys = eids.map(function(eid) {
+			function (next) {
+				var keys = eids.map(function (eid) {
 					return 'event:' + eid;
 				});
 				db.deleteAll(keys, next);
 			},
-			function(next) {
+			function (next) {
 				db.sortedSetRemove('events:time', eids, next);
-			}
+			},
 		], callback);
 	};
 
-	events.deleteAll = function(callback) {
-		callback = callback || function() {};
+	events.deleteAll = function (callback) {
+		callback = callback || function () {};
 
-		batch.processSortedSet('events:time', function(eids, next) {
-			events.deleteEvents(eids, callback);
-		}, {alwaysStartAt: 0}, callback);
+		batch.processSortedSet('events:time', function (eids, next) {
+			events.deleteEvents(eids, next);
+		}, { alwaysStartAt: 0 }, callback);
 	};
-
-
 }(module.exports));

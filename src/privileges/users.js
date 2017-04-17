@@ -6,11 +6,10 @@ var async = require('async');
 var groups = require('../groups');
 var plugins = require('../plugins');
 
-module.exports = function(privileges) {
-
+module.exports = function (privileges) {
 	privileges.users = {};
 
-	privileges.users.isAdministrator = function(uid, callback) {
+	privileges.users.isAdministrator = function (uid, callback) {
 		if (Array.isArray(uid)) {
 			groups.isMembers(uid, 'administrators', callback);
 		} else {
@@ -18,7 +17,7 @@ module.exports = function(privileges) {
 		}
 	};
 
-	privileges.users.isGlobalModerator = function(uid, callback) {
+	privileges.users.isGlobalModerator = function (uid, callback) {
 		if (Array.isArray(uid)) {
 			groups.isMembers(uid, 'Global Moderators', callback);
 		} else {
@@ -26,62 +25,60 @@ module.exports = function(privileges) {
 		}
 	};
 
-	privileges.users.isModerator = function(uid, cid, callback) {
+	privileges.users.isModerator = function (uid, cid, callback) {
 		if (Array.isArray(cid)) {
 			isModeratorOfCategories(cid, uid, callback);
+		} else if (Array.isArray(uid)) {
+			isModeratorsOfCategory(cid, uid, callback);
 		} else {
-			if (Array.isArray(uid)) {
-				isModeratorsOfCategory(cid, uid, callback);
-			} else {
-				isModeratorOfCategory(cid, uid, callback);
-			}
+			isModeratorOfCategory(cid, uid, callback);
 		}
 	};
 
 	function isModeratorOfCategories(cids, uid, callback) {
 		if (!parseInt(uid, 10)) {
-			return filterIsModerator(cids, uid, cids.map(function() {return false;}), callback);
+			return filterIsModerator(cids, uid, cids.map(function () { return false; }), callback);
 		}
 
-		privileges.users.isGlobalModerator(uid, function(err, isGlobalModerator) {
+		privileges.users.isGlobalModerator(uid, function (err, isGlobalModerator) {
 			if (err) {
 				return callback(err);
 			}
 			if (isGlobalModerator) {
-				return filterIsModerator(cids, uid, cids.map(function() {return true;}), callback);
+				return filterIsModerator(cids, uid, cids.map(function () { return true; }), callback);
 			}
 
 
-			var uniqueCids = cids.filter(function(cid, index, array) {
+			var uniqueCids = cids.filter(function (cid, index, array) {
 				return array.indexOf(cid) === index;
 			});
 
-			var groupNames = uniqueCids.map(function(cid) {
+			var groupNames = uniqueCids.map(function (cid) {
 				return 'cid:' + cid + ':privileges:mods';	// At some point we should *probably* change this to "moderate" as well
 			});
 
-			var groupListNames = uniqueCids.map(function(cid) {
+			var groupListNames = uniqueCids.map(function (cid) {
 				return 'cid:' + cid + ':privileges:groups:moderate';
 			});
 
 			async.parallel({
 				user: async.apply(groups.isMemberOfGroups, uid, groupNames),
-				group: async.apply(groups.isMemberOfGroupsList, uid, groupListNames)
-			}, function(err, checks) {
+				group: async.apply(groups.isMemberOfGroupsList, uid, groupListNames),
+			}, function (err, checks) {
 				if (err) {
 					return callback(err);
 				}
 
-				var isMembers = checks.user.map(function(isMember, idx) {
-						return isMember || checks.group[idx];
-					}),
-					map = {};
+				var isMembers = checks.user.map(function (isMember, idx) {
+					return isMember || checks.group[idx];
+				});
+				var map = {};
 
-				uniqueCids.forEach(function(cid, index) {
+				uniqueCids.forEach(function (cid, index) {
 					map[cid] = isMembers[index];
 				});
 
-				var isModerator = cids.map(function(cid) {
+				var isModerator = cids.map(function (cid) {
 					return map[cid];
 				});
 
@@ -94,13 +91,13 @@ module.exports = function(privileges) {
 		async.parallel([
 			async.apply(privileges.users.isGlobalModerator, uids),
 			async.apply(groups.isMembers, uids, 'cid:' + cid + ':privileges:mods'),
-			async.apply(groups.isMembersOfGroupList, uids, 'cid:' + cid + ':privileges:groups:moderate')
-		], function(err, checks) {
+			async.apply(groups.isMembersOfGroupList, uids, 'cid:' + cid + ':privileges:groups:moderate'),
+		], function (err, checks) {
 			if (err) {
 				return callback(err);
 			}
 
-			var isModerator = checks[0].map(function(isMember, idx) {
+			var isModerator = checks[0].map(function (isMember, idx) {
 				return isMember || checks[1][idx] || checks[2][idx];
 			});
 
@@ -112,8 +109,8 @@ module.exports = function(privileges) {
 		async.parallel([
 			async.apply(privileges.users.isGlobalModerator, uid),
 			async.apply(groups.isMember, uid, 'cid:' + cid + ':privileges:mods'),
-			async.apply(groups.isMemberOfGroupList, uid, 'cid:' + cid + ':privileges:groups:moderate')
-		], function(err, checks) {
+			async.apply(groups.isMemberOfGroupList, uid, 'cid:' + cid + ':privileges:groups:moderate'),
+		], function (err, checks) {
 			if (err) {
 				return callback(err);
 			}
@@ -124,11 +121,11 @@ module.exports = function(privileges) {
 	}
 
 	function filterIsModerator(cid, uid, isModerator, callback) {
-		plugins.fireHook('filter:user.isModerator', {uid: uid, cid: cid, isModerator: isModerator}, function(err, data) {
+		plugins.fireHook('filter:user.isModerator', { uid: uid, cid: cid, isModerator: isModerator }, function (err, data) {
 			if (err) {
 				return callback(err);
 			}
-			if (Array.isArray(uid) && !Array.isArray(data.isModerator) || Array.isArray(cid) && !Array.isArray(data.isModerator)) {
+			if ((Array.isArray(uid) || Array.isArray(cid)) && !Array.isArray(data.isModerator)) {
 				return callback(new Error('filter:user.isModerator - i/o mismatch'));
 			}
 
@@ -136,4 +133,28 @@ module.exports = function(privileges) {
 		});
 	}
 
+	privileges.users.canEdit = function (callerUid, uid, callback) {
+		if (parseInt(callerUid, 10) === parseInt(uid, 10)) {
+			return process.nextTick(callback, null, true);
+		}
+
+		async.parallel({
+			isAdmin: function (next) {
+				privileges.users.isAdministrator(callerUid, next);
+			},
+			isGlobalMod: function (next) {
+				privileges.users.isGlobalModerator(callerUid, next);
+			},
+			isTargetAdmin: function (next) {
+				privileges.users.isAdministrator(uid, next);
+			},
+		}, function (err, results) {
+			if (err) {
+				return callback(err);
+			}
+			var canEdit = results.isAdmin || (results.isGlobalMod && !results.isTargetAdmin);
+
+			callback(null, canEdit);
+		});
+	};
 };

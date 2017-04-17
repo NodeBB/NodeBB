@@ -1,0 +1,6 @@
+{
+    "reconnection": "Neuverbindungseinstellungen",
+    "max-attempts": "Maximale Anzahl von Neuverbindungsversuchen",
+    "default-placeholder": "Standard: %1",
+    "delay": "Neuverbindungsverzögerung"
+}

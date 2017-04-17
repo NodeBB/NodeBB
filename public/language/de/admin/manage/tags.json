@@ -1,0 +1,18 @@
+{
+	"none": "Ihr Form hat bisher noch keine Themen mit Tags.",
+	"bg-color": "Hintergrundfarbe",
+	"text-color": "Textfarbe",
+	"create-modify": "Tags erstellen & bearbeiten",
+	"description": "Wählen sie Tags aus indem sie klicken und/oder ziehen, drücken die Shift um mehrere auszuwählen",
+	"create": "Tag erstellen",
+	"modify": "Tag bearbeiten",
+	"delete": "Ausgewählte Tags entfernen",
+	"search": "Nach Tags suchen",
+	"settings": "Klicken Sie <a href=\"%1\">hier</a> um die Tag-Einstellungsseite zu öffnen.",
+	"name": "Tagname",
+
+	"alerts.editing-multiple": "Bearbeite mehrere Tags",
+	"alerts.editing-x": "Bearbeite Tag \"%1\"",
+	"alerts.confirm-delete": "Wollen Sie die ausgewählten Tags löschen?",
+	"alerts.update-success": "Tag aktualisiert!"
+}

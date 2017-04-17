@@ -19,6 +19,7 @@
     "welcome_back": "Bine ai revenit",
     "you_have_successfully_logged_in": "Te-ai conectat cu succes",
     "save_changes": "Salvează Modificări",
+    "save": "Save",
     "close": "Închide",
     "pagination": "Paginație",
     "pagination.out_of": "%1 din %2",
@@ -74,6 +75,7 @@
     "norecenttopics": "Nici un subiect recent",
     "recentposts": "Mesaje Recente",
     "recentips": "Adrese IP autentificate recent",
+    "moderator_tools": "Moderator Tools",
     "away": "Plecat",
     "dnd": "Nu mă deranja",
     "invisible": "Invizibil",
@@ -96,5 +98,10 @@
     "upload": "Încărcați",
     "allowed-file-types": "Tipuri de fișiere permise sunt %1",
     "unsaved-changes": "You have unsaved changes. Are you sure you wish to navigate away?",
-    "reconnecting-message": "Looks like your connection to %1 was lost, please wait while we try to reconnect."
+    "reconnecting-message": "Looks like your connection to %1 was lost, please wait while we try to reconnect.",
+    "play": "Play",
+    "cookies.message": "This website uses cookies to ensure you get the best experience on our website.",
+    "cookies.accept": "Got it!",
+    "cookies.learn_more": "Learn More",
+    "edited": "Edited"
 }

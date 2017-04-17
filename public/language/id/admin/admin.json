@@ -1,0 +1,7 @@
+{
+	"alert.confirm-reload": "Anda yakin ingin memuat ulang NodeBB?",
+	"alert.confirm-restart": "Anda yakin ingin mulai ulang NodeBB?",
+
+	"acp-title": "%1 | Kontrol Panel Admin NodeBB",
+	"settings-header-contents": "Konten"
+}

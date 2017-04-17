@@ -1,0 +1,12 @@
+{
+	"general": "Geral",
+	"private-groups": "Grupos Privados",
+	"private-groups.help": "Se habilitado, a entrada nos grupos exigirá a apovação do dono do grupo <em>(Padrão: ligado)</em>",
+	"private-groups.warning": "<strong>Atenção!</strong> Se esta opção estiver desabilitada e você tiver grupos privados, eles automaticamente se tornarão públicos.",
+	"allow-creation": "Permitir Criação de Grupo",
+	"allow-creation-help": "Se habilitado, usuários podem criar grupos <em>(Padrão: desligado)</em>",
+	"max-name-length": "Tamanho Máximo do Nome de Grupos",
+	"cover-image": "Imagem de Capa do Grupo",
+	"default-cover": "Imagens de Capa Padrão",
+	"default-cover-help": "Adicione uma lista separada por vírgulas de imagens de capa padrão para grupo que não tenham enviado uma imagem de capa"
+}

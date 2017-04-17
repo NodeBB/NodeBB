@@ -27,6 +27,7 @@
     "details.disableJoinRequests": "Deaktiviere Beitrittsanfragen",
     "details.grant": "Gewähre/widerrufe Besitz",
     "details.kick": "Kick",
+    "details.kick_confirm": "Sind Sie sicher, dass Sie dieses Mitglied aus der Gruppe entfernen möchten?",
     "details.owner_options": "Gruppenadministration",
     "details.group_name": "Gruppenname",
     "details.member_count": "Mitgliederanzahl",
@@ -50,5 +51,8 @@
     "membership.leave-group": "Gruppe verlassen",
     "membership.reject": "Ablehnen",
     "new-group.group_name": "Gruppenname:",
-    "upload-group-cover": "Gruppentitelbild hochladen"
+    "upload-group-cover": "Gruppentitelbild hochladen",
+    "bulk-invite-instructions": "Gib eine mit Kommata getrennte Liste von Benutzernamen ein, um sie in diese Gruppe aufzunehmen",
+    "bulk-invite": "Mehrere einladen",
+    "remove_group_cover_confirm": "Bist du sicher, dass du dein Titelbild entfernen möchtest?"
 }

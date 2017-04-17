@@ -1,0 +1,64 @@
+{
+	"forum-traffic": "フォーラムのトラフィック",
+	"page-views": "ページビュー",
+	"unique-visitors": "ユニークな訪問者",
+	"users": "ユーザー",
+	"posts": "投稿",
+	"topics": "スレッド",
+	"page-views-last-month": "先月のページビュー数",
+	"page-views-this-month": "今月のページビュー数",
+	"page-views-last-day": "過去24時間のページビュー",
+
+	"stats.day": "日",
+	"stats.week": "週",
+	"stats.month": "月",
+	"stats.all": "全て",
+	
+	"updates": "更新",
+	"running-version": "<strong>NodeBB v <span id = \"version\">％1 </ span> </ strong>を実行しています。",
+	"keep-updated": "常に最新のセキュリティパッチとバグ修正のためにNodeBBが最新であることを確認してください。",
+	"up-to-date": "<p>あなたは<strong>最新の状態</ strong>です。<i class = \"fa fa-check\"> </ i> </ p>",
+	"upgrade-available": "<p>新しいバージョン (v%1) がリリースされました。<a href=\"https://docs.nodebb.org/en/latest/upgrading/index.html\">NodeBBのアップグレード</a>を検討してください。</p>",
+	"prerelease-upgrade-available": "<p>これはNodeBBの旧リリースのバージョンです。新しいバージョン(v％1)がリリースされました。<a href=\"https://docs.nodebb.org/en/latest/upgrading/index.html\"> NodeBBのアップグレード</a>を検討してください。</ p>",
+	"prerelease-warning": "<p>これはNodeBBの<strong>プレリリース版</ strong>です。意図しないバグが発生することがあります。<i class=\"fa fa-exclamation-triangle\"></i></p>",
+	"running-in-development": "<span>Forum is running in development mode. The forum may be open to potential vulnerabilities; please contact your system administrator.</span>",
+
+	"notices": "通知",
+	"restart-not-required": "再起動は必要ありません",
+	"restart-required": "再起動が必要です",
+	"search-plugin-installed": "検索プラグインのインストール",
+	"search-plugin-not-installed": "検索プラグインがインストールされていません",
+	"search-plugin-tooltip": "検索機能を有効にするには、プラグインページから検索プラグインをインストールしてください",
+
+	"control-panel": "システムコントロール",
+	"reload": "再読み込み",
+	"restart": "再起動",
+	"restart-warning": "NodeBBを再読み込み、または再起動すると、数秒間既存の接続がすべて破棄されます。",
+	"maintenance-mode": "メンテナンスモード",
+	"maintenance-mode-title": "NodeBBのメンテナンスモードを設定するには、ここをクリックしてください",
+	"realtime-chart-updates": "リアルタイムチャートの更新",
+
+	"active-users": "アクティブユーザー",
+	"active-users.users": "ユーザー",
+	"active-users.guests": "ゲスト",
+	"active-users.total": "総合",
+	"active-users.connections": "接続",
+
+	"anonymous-registered-users": "匿名 vs 登録ユーザー",
+	"anonymous": "匿名",
+	"registered": "登録数",
+
+	"user-presence": "ユーザープレゼンス",
+	"on-categories": "カテゴリ一覧",
+	"reading-posts": "記事を読む",
+	"browsing-topics": "スレッドを閲覧",
+	"recent": "最近",
+	"unread": "未読",
+
+	"high-presence-topics": "ハイプレゼンススレッド",
+
+	"graphs.page-views": "ページビュー",
+	"graphs.unique-visitors": "ユニークな訪問者",
+	"graphs.registered-users": "登録したユーザー",
+	"graphs.anonymous-users": "匿名ユーザー"
+}

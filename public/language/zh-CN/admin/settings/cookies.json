@@ -1,0 +1,11 @@
+{
+	"eu-consent": "欧盟 Cookies 政策",
+	"consent.enabled": "启用选项",
+	"consent.message": "通知消息",
+	"consent.acceptance": "赞成消息",
+	"consent.link-text": "政策链接文本",
+	"consent.blank-localised-default": "留空以便使用 NodeBB 本地默认值",
+	"settings": "设置",
+	"cookie-domain": "Session cookie 域名",
+	"blank-default": "留空以保持默认"
+}

@@ -9,21 +9,20 @@ var pagination = require('../../pagination');
 var eventsController = {};
 
 
-eventsController.get = function(req, res, next) {
-
+eventsController.get = function (req, res, next) {
 	var page = parseInt(req.query.page, 10) || 1;
 	var itemsPerPage = 20;
-	var start = (page - 1) * 20;
+	var start = (page - 1) * itemsPerPage;
 	var stop = start + itemsPerPage - 1;
 
 	async.parallel({
-		eventCount: function(next) {
+		eventCount: function (next) {
 			db.sortedSetCard('events:time', next);
 		},
-		events: function(next) {
+		events: function (next) {
 			events.getEvents(start, stop, next);
-		}
-	}, function(err, results) {
+		},
+	}, function (err, results) {
 		if (err) {
 			return next(err);
 		}
@@ -33,7 +32,7 @@ eventsController.get = function(req, res, next) {
 		res.render('admin/advanced/events', {
 			events: results.events,
 			pagination: pagination.create(page, pageCount),
-			next: 20
+			next: 20,
 		});
 	});
 };

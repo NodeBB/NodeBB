@@ -1,21 +1,21 @@
 {
-    "latest_users": "Последњи корисник",
+    "latest_users": "Најновији корисници",
     "top_posters": "Највише порука",
     "most_reputation": "Највећи углед",
-    "most_flags": "Most Flags",
+    "most_flags": "Највише ознака",
     "search": "Претрага",
     "enter_username": "Унесите корисничко име за претрагу",
     "load_more": "Учитај више",
     "users-found-search-took": "Нађено је %1 корисника! Претрага је завршена за %2 секунде.",
     "filter-by": "Филтрирај према",
-    "online-only": "Само корисници на вези",
+    "online-only": "Само корисници на мрежи",
     "invite": "Позови",
-    "invitation-email-sent": "Активациони емејл је послат на %1",
+    "invitation-email-sent": "Е-пошта са позивом  је послата на %1",
     "user_list": "Листа корисника",
-    "recent_topics": "Скорашње теме",
+    "recent_topics": "Недавне теме",
     "popular_topics": "Популарне теме",
     "unread_topics": "Непрочитане теме",
     "categories": "Категорије",
     "tags": "Ознаке",
-    "no-users-found": "No users found!"
+    "no-users-found": "Нема пронађених корисника!"
 }

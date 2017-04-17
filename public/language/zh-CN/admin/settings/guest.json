@@ -1,0 +1,8 @@
+{
+	"handles": "游客用户名",
+	"handles.enabled": "允许游客用户名",
+	"handles.enabled-help": "这个选项将允许游客使用一个额外的输入框来设置发帖时的用户名，如果被禁用，仅会统一显示为“游客”",
+	"privileges": "游客权限",
+	"privileges.can-search": "允许未登录的游客使用搜索",
+	"privileges.can-search-users": "允许未登录的游客查找用户"
+}

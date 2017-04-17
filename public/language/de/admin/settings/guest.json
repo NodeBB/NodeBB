@@ -1,0 +1,8 @@
+{
+	"handles": "Gastzugang",
+	"handles.enabled": "Gastzugänge erlauben",
+	"handles.enabled-help": "Diese option offenbart ein neues Feld, welches Gästen erlaubt einen Nutzernamen zu wählen, welcher Sie mit jedem Beitrag assoziiert den sie erstellen. Wenn diese option deaktiviert ist, werden sie einfach \"Gast\" genannt",
+	"privileges": "Gast-Berechtigungen",
+	"privileges.can-search": "Gästen erlauben das Forum zu durchsuchen ohne eingeloggt zu sein",
+	"privileges.can-search-users": "Gästen erlauben nach Benutzern zu suchen ohne eingeloggt zu sein"
+}

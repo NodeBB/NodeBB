@@ -1,0 +1,7 @@
+{
+	"alert.confirm-reload": "確認重載NodeBB？",
+	"alert.confirm-restart": "確認重啟NodeBB？",
+
+	"acp-title": "%1 | NodeBB 管理控制面板",
+	"settings-header-contents": "内容"
+}

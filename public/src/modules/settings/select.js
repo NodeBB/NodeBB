@@ -1,12 +1,13 @@
-define('settings/select', function () {
+'use strict';
 
-	var Settings = null,
-		SettingsSelect;
+define('settings/select', function () {
+	var Settings = null;
+	var SettingsSelect;
 
 	function addOptions(element, options) {
-		for (var i = 0; i < options.length; i++) {
-			var optionData = options[i],
-				value = optionData.text || optionData.value;
+		for (var i = 0; i < options.length; i += 1) {
+			var optionData = options[i];
+			var value = optionData.text || optionData.value;
 			delete optionData.text;
 			element.append($(Settings.helper.createElement('option', optionData)).text(value));
 		}
@@ -38,12 +39,9 @@ define('settings/select', function () {
 			var value = element.val();
 			if (empty || value) {
 				return value;
-			} else {
-				return void 0;
 			}
-		}
+		},
 	};
 
 	return SettingsSelect;
-
 });

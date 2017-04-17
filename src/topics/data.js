@@ -4,30 +4,65 @@ var validator = require('validator');
 
 var db = require('../database');
 var categories = require('../categories');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
+var translator = require('../translator');
 
-module.exports = function(Topics) {
+function escapeTitle(topicData) {
+	if (!topicData) {
+		return;
+	}
+	if (topicData.title) {
+		topicData.title = translator.escape(validator.escape(topicData.title.toString()));
+	}
+	if (topicData.titleRaw) {
+		topicData.titleRaw = translator.escape(topicData.titleRaw);
+	}
+}
 
-	Topics.getTopicField = function(tid, field, callback) {
-		db.getObjectField('topic:' + tid, field, callback);
+module.exports = function (Topics) {
+	Topics.getTopicField = function (tid, field, callback) {
+		db.getObjectField('topic:' + tid, field, function (err, value) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (field === 'title') {
+				value = translator.escape(validator.escape(String(value)));
+			}
+			callback(null, value);
+		});
 	};
 
-	Topics.getTopicFields = function(tid, fields, callback) {
-		db.getObjectFields('topic:' + tid, fields, callback);
+	Topics.getTopicFields = function (tid, fields, callback) {
+		db.getObjectFields('topic:' + tid, fields, function (err, topic) {
+			if (err) {
+				return callback(err);
+			}
+
+			escapeTitle(topic);
+			callback(null, topic);
+		});
 	};
 
-	Topics.getTopicsFields = function(tids, fields, callback) {
+	Topics.getTopicsFields = function (tids, fields, callback) {
 		if (!Array.isArray(tids) || !tids.length) {
 			return callback(null, []);
 		}
-		var keys = tids.map(function(tid) {
+		var keys = tids.map(function (tid) {
 			return 'topic:' + tid;
 		});
-		db.getObjectsFields(keys, fields, callback);
+		db.getObjectsFields(keys, fields, function (err, topics) {
+			if (err) {
+				return callback(err);
+			}
+
+			topics.forEach(escapeTitle);
+			callback(null, topics);
+		});
 	};
 
-	Topics.getTopicData = function(tid, callback) {
-		db.getObject('topic:' + tid, function(err, topic) {
+	Topics.getTopicData = function (tid, callback) {
+		db.getObject('topic:' + tid, function (err, topic) {
 			if (err || !topic) {
 				return callback(err);
 			}
@@ -37,14 +72,14 @@ module.exports = function(Topics) {
 		});
 	};
 
-	Topics.getTopicsData = function(tids, callback) {
+	Topics.getTopicsData = function (tids, callback) {
 		var keys = [];
 
-		for (var i=0; i<tids.length; ++i) {
+		for (var i = 0; i < tids.length; i += 1) {
 			keys.push('topic:' + tids[i]);
 		}
 
-		db.getObjects(keys, function(err, topics) {
+		db.getObjects(keys, function (err, topics) {
 			if (err) {
 				return callback(err);
 			}
@@ -58,14 +93,16 @@ module.exports = function(Topics) {
 		if (!topic) {
 			return;
 		}
+
 		topic.titleRaw = topic.title;
-		topic.title = validator.escape(String(topic.title));
+		topic.title = String(topic.title);
+		escapeTitle(topic);
 		topic.timestampISO = utils.toISOString(topic.timestamp);
 		topic.lastposttimeISO = utils.toISOString(topic.lastposttime);
 	}
 
-	Topics.getCategoryData = function(tid, callback) {
-		Topics.getTopicField(tid, 'cid', function(err, cid) {
+	Topics.getCategoryData = function (tid, callback) {
+		Topics.getTopicField(tid, 'cid', function (err, cid) {
 			if (err) {
 				return callback(err);
 			}
@@ -74,18 +111,21 @@ module.exports = function(Topics) {
 		});
 	};
 
-	Topics.setTopicField = function(tid, field, value, callback) {
+	Topics.setTopicField = function (tid, field, value, callback) {
 		db.setObjectField('topic:' + tid, field, value, callback);
 	};
 
 
-	Topics.setTopicFields = function(tid, data, callback) {
-		callback = callback || function() {};
+	Topics.setTopicFields = function (tid, data, callback) {
+		callback = callback || function () {};
 		db.setObject('topic:' + tid, data, callback);
 	};
 
-	Topics.deleteTopicField = function(tid, field, callback) {
+	Topics.deleteTopicField = function (tid, field, callback) {
 		db.deleteObjectField('topic:' + tid, field, callback);
 	};
 
+	Topics.deleteTopicFields = function (tid, fields, callback) {
+		db.deleteObjectFields('topic:' + tid, fields, callback);
+	};
 };

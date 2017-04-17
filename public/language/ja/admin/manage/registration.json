@@ -1,0 +1,20 @@
+{
+	"queue": "キュー",
+	"description": "登録キューにはユーザーが居ません。<br> この機能を有効にするには、<a href=\"%1\">設定 &rarr; ユーザー &rarr; ユーザー登録 &rarr; </a>へ移動し、<strong>登録タイプ</strong> の項目を \"管理者承認\"にしてください。",
+
+	"list.name": "名前",
+	"list.email": "メール",
+	"list.ip": "IP",
+	"list.time": "時間",
+	"list.username-spam": "周波数：%1 出現: %2 信頼度: %3",
+	"list.email-spam": "周波数：%1 出現: %2",
+	"list.ip-spam": "周波数：%1 出現: %2",
+
+	"invitations": "招待状",
+	"invitations.description": "以下は送信された招待状の完全なリストです。Ctrl-Fを使用して、電子メールまたはユーザー名でリストを検索します。<br><br>ユーザー名は、招待状を引き換えたユーザーのメールの右側に表示されます。",
+	"invitations.inviter-username": "招待者のユーザー名",
+	"invitations.invitee-email": "招待メール",
+	"invitations.invitee-username": "招待されたユーザー名(登録されている場合)",
+
+	"invitations.confirm-delete": "この招待状を削除してもよろしいですか？"
+} 

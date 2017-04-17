@@ -1,0 +1,14 @@
+{
+	"figure-x": "Figura %1",
+	"error-events-per-day": "<code>%1</code> eventi per giorno",
+	"error.404": "404 Non Trovato",
+	"error.503": "503 Servizio Non Disponibile",
+	"manage-error-log": "Gestisci il Registro degli Errori",
+	"export-error-log": "Esporta il Registro degli Errori (CSV)",
+	"clear-error-log": "Cancella il Registro degli Errori",
+	"route": "Strada",
+	"count": "Numero",
+	"no-routes-not-found": "Hooray! Nessun Errore 404!",
+	"clear404-confirm": "Sei sicuro di voler cancellare il Registro degli Errori 404?",
+	"clear404-success": "Error \"404 Non Trovato\"  Cancellati"
+}

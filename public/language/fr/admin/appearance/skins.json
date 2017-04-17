@@ -1,0 +1,9 @@
+{
+	"loading": "Chargements des skins…",
+	"homepage": "Page d'accueil",
+	"select-skin": "Sélectionner le skin",
+	"current-skin": "Skin actuel",
+	"skin-updated": "Skin mis à jour",
+	"applied-success": "Le skin %1 a été appliqué avec succès.",
+	"revert-success": "Couleurs du skin remises par défaut"
+}

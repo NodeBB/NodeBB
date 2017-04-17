@@ -1,0 +1,12 @@
+{
+	"general": "一般",
+	"private-groups": "プライベートグループ",
+	"private-groups.help": "有効の場合、グループへの参加はグループ管理人からの承認が必要です。<em>(デフォルト: 有効)</em>",
+	"private-groups.warning": "<strong>注意!</strong>このオプションが無効で、プライベートグループがある場合、自動的に公開されます。",
+	"allow-creation": "グループの作成を有効にする",
+	"allow-creation-help": "有効にすると、ユーザーはグループを作成できます<em>(デフォルト：無効)</ em>",
+	"max-name-length": "グループ名の最大文字数",
+	"cover-image": "グループ表紙イメージ",
+	"default-cover": "デフォルトのカバー画像",
+	"default-cover-help": "Add comma-separated default cover images for groups that don't have an uploaded cover image\n日本語\nアップロードされたカバー画像を持たないグループで、カンマ区切りのデフォルト表紙画像を追加する。"
+}

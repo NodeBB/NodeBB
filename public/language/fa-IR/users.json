@@ -1,0 +1,21 @@
+{
+    "latest_users": "آخرین کاربران",
+    "top_posters": "برترین فرستنده‌ها",
+    "most_reputation": "بیشترین اعتبار",
+    "most_flags": "بیشترین پرچم‌ها",
+    "search": "جستجو",
+    "enter_username": "یک نام کاربری برای جستجو وارد کنید",
+    "load_more": "بارگذاری بیش‌تر",
+    "users-found-search-took": "%1 کاربر(ها) یافت شد! جستجو %2 ثانیه زمان گرفت.",
+    "filter-by": "فیلتر با",
+    "online-only": "فقط آنلاین",
+    "invite": "دعوت",
+    "invitation-email-sent": "رایانامه دعوت‌نامه برای %1 ارسال شد",
+    "user_list": "فهرست کاربران",
+    "recent_topics": "موضوع‌های اخیر",
+    "popular_topics": "موضوع‌های پربازدید",
+    "unread_topics": "موضوع‌های خوانده نشده",
+    "categories": "دسته‌بندی‌ها",
+    "tags": "برچسب‌ها",
+    "no-users-found": "کاربری پیدا نشد!"
+}

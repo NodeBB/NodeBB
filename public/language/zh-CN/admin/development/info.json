@@ -1,0 +1,16 @@
+{
+	"you-are-on": "信息 - 你正在　<strong>%1:%2</strong>　上",
+	"host": "主机",
+	"pid": "pid",
+	"nodejs": "nodejs",
+	"online": "在线",
+	"git": "git",
+	"load": "载入",
+	"uptime": "正常运行时间",
+
+	"registered": "已注册",
+	"sockets": "接口",
+	"guests": "游客",
+
+	"info": "信息"
+}

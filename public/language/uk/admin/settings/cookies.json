@@ -1,0 +1,11 @@
+{
+	"eu-consent": "Згода ЄС",
+	"consent.enabled": "Увімкнено",
+	"consent.message": "Текст сповіщення",
+	"consent.acceptance": "Текст погодження",
+	"consent.link-text": "Текст посилання на політику",
+	"consent.blank-localised-default": "Залишити пустими, щоб використати стандартні локалізовані тексти NodeBB",
+	"settings": "Налаштування",
+	"cookie-domain": "Домен куки сесії",
+	"blank-default": "Залишити пустим для налаштувань за замовченням"
+}

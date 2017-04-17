@@ -1,18 +1,16 @@
 'use strict';
 
-/* globals define, app, socket, templates, translator */
 
-define('forum/topic/move', function() {
+define('forum/topic/move', function () {
+	var Move = {};
+	var modal;
+	var selectedEl;
 
-	var Move = {},
-		modal,
-		selectedEl;
-
-	Move.init = function(tids, currentCid, onComplete) {
+	Move.init = function (tids, currentCid, onComplete) {
 		Move.tids = tids;
 		Move.currentCid = currentCid;
 		Move.onComplete = onComplete;
-		Move.moveAll = tids ? false : true;
+		Move.moveAll = !tids;
 
 		socket.emit('categories.getMoveCategories', onCategoriesLoaded);
 	};
@@ -22,9 +20,8 @@ define('forum/topic/move', function() {
 			return app.alertError(err.message);
 		}
 
-		parseModal(categories, function() {
-
-			modal.on('hidden.bs.modal', function() {
+		parseModal(categories, function () {
+			modal.on('hidden.bs.modal', function () {
 				modal.remove();
 			});
 
@@ -34,7 +31,7 @@ define('forum/topic/move', function() {
 				modal.find('.modal-header h3').translateText('[[topic:move_topics]]');
 			}
 
-			modal.on('click', '.category-list li[data-cid]', function() {
+			modal.on('click', '.category-list li[data-cid]', function () {
 				selectCategory($(this));
 			});
 
@@ -45,15 +42,17 @@ define('forum/topic/move', function() {
 	}
 
 	function parseModal(categories, callback) {
-		templates.parse('partials/move_thread_modal', {categories: []}, function(html) {
-			translator.translate(html, function(html) {
-				modal = $(html);
-				categories.forEach(function(category) {
-					if (!category.link) {
-						buildRecursive(modal.find('.category-list'), category, '');
-					}
+		templates.parse('partials/move_thread_modal', { categories: [] }, function (html) {
+			require(['translator'], function (translator) {
+				translator.translate(html, function (html) {
+					modal = $(html);
+					categories.forEach(function (category) {
+						if (!category.link) {
+							buildRecursive(modal.find('.category-list'), category, '');
+						}
+					});
+					callback();
 				});
-				callback();
 			});
 		});
 	}
@@ -78,7 +77,7 @@ define('forum/topic/move', function() {
 		parentEl.append('<br/>');
 
 		var indent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-		category.children.forEach(function(childCategory) {
+		category.children.forEach(function (childCategory) {
 			if (!childCategory.link) {
 				buildRecursive(parentEl, childCategory, indent + level);
 			}
@@ -107,8 +106,8 @@ define('forum/topic/move', function() {
 		socket.emit(Move.moveAll ? 'topics.moveAll' : 'topics.move', {
 			tids: Move.tids,
 			cid: selectedEl.attr('data-cid'),
-			currentCid: Move.currentCid
-		}, function(err) {
+			currentCid: Move.currentCid,
+		}, function (err) {
 			modal.modal('hide');
 
 			if (err) {

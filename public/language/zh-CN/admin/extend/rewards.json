@@ -1,0 +1,17 @@
+{
+	"rewards": "奖励",
+	"condition-if-users": "如果用户的",
+	"condition-is": "是：",
+	"condition-then": "则：",
+	"max-claims": "可获取奖励的次数",
+	"zero-infinite": "无限制请输入0",
+	"delete": "删除",
+	"enable": "启用",
+	"disable": "禁用",
+	"control-panel": "奖励控制",
+	"new-reward": "新奖励",
+
+	"alert.delete-success": "已成功删除奖励",
+	"alert.no-inputs-found": "非法奖励 － 输入为空！",
+	"alert.save-success": "已成功保存奖励"
+}

@@ -1,0 +1,16 @@
+{
+	"you-are-on": "Informazione - Tu sei su <strong>%1:%2</strong>",
+	"host": "host",
+	"pid": "pid",
+	"nodejs": "nodejs",
+	"online": "online",
+	"git": "git",
+	"load": "carica",
+	"uptime": "tempo di caricamento",
+
+	"registered": "Registrato",
+	"sockets": "Sockets",
+	"guests": "Ospiti",
+
+	"info": "Informazioni"
+}

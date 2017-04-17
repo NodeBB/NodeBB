@@ -1,0 +1,9 @@
+{
+	"custom-css": "カスタムCSS",
+	"custom-css.description": "あなたのCSS設定をこちらに追加すると他のすべてのスタイルの後に適用されます。",
+	"custom-css.enable": "カスタムCSSを有効にする",
+
+	"custom-header": "カスタムヘッダー",
+	"custom-header.description": "カスタムしたHTMLを入力してください(例. JavaScript, メタタグなど)。これはフォーラムのマークアップの<code>&lt;head&gt;</code>に追加されます。",
+	"custom-header.enable": "カスタムヘッダーを有効にする"
+}

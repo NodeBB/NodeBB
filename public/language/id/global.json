@@ -19,6 +19,7 @@
     "welcome_back": "Selamat Datang Kembali",
     "you_have_successfully_logged_in": "Kamu sudah login",
     "save_changes": "Menyimpan perubahan",
+    "save": "Save",
     "close": "Tutup",
     "pagination": "Halaman",
     "pagination.out_of": "%1 dari %2",
@@ -74,6 +75,7 @@
     "norecenttopics": "Tidak ada topik terbaru",
     "recentposts": "Post Terbaru",
     "recentips": "Beberapa IP yang digunakan untuk login baru-baru ini",
+    "moderator_tools": "Moderator Tools",
     "away": "Tidak Ditempat",
     "dnd": "Jangan ganggu",
     "invisible": "Tidak Terlihat",
@@ -96,5 +98,10 @@
     "upload": "Upload",
     "allowed-file-types": "Allowed file types are %1",
     "unsaved-changes": "You have unsaved changes. Are you sure you wish to navigate away?",
-    "reconnecting-message": "Looks like your connection to %1 was lost, please wait while we try to reconnect."
+    "reconnecting-message": "Looks like your connection to %1 was lost, please wait while we try to reconnect.",
+    "play": "Play",
+    "cookies.message": "This website uses cookies to ensure you get the best experience on our website.",
+    "cookies.accept": "Got it!",
+    "cookies.learn_more": "Learn More",
+    "edited": "Edited"
 }

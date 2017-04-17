@@ -13,31 +13,37 @@ var infoController = {};
 
 var info = {};
 
-infoController.get = function(req, res, next) {
+infoController.get = function (req, res) {
 	info = {};
 	pubsub.publish('sync:node:info:start');
-	setTimeout(function() {
+	setTimeout(function () {
 		var data = [];
-		Object.keys(info).forEach(function(key) {
+		Object.keys(info).forEach(function (key) {
 			data.push(info[key]);
 		});
-		data.sort(function(a, b) {
-			return (a.os.hostname < b.os.hostname) ? -1 : (a.os.hostname > b.os.hostname) ? 1 : 0;
+		data.sort(function (a, b) {
+			if (a.os.hostname < b.os.hostname) {
+				return -1;
+			}
+			if (a.os.hostname > b.os.hostname) {
+				return 1;
+			}
+			return 0;
 		});
-		res.render('admin/development/info', {info: data, infoJSON: JSON.stringify(data, null, 4), host: os.hostname(), port: nconf.get('port')});
+		res.render('admin/development/info', { info: data, infoJSON: JSON.stringify(data, null, 4), host: os.hostname(), port: nconf.get('port') });
 	}, 500);
 };
 
-pubsub.on('sync:node:info:start', function() {
-	getNodeInfo(function(err, data) {
+pubsub.on('sync:node:info:start', function () {
+	getNodeInfo(function (err, data) {
 		if (err) {
 			return winston.error(err);
 		}
-		pubsub.publish('sync:node:info:end', {data: data, id: os.hostname() + ':' + nconf.get('port')});
+		pubsub.publish('sync:node:info:end', { data: data, id: os.hostname() + ':' + nconf.get('port') });
 	});
 });
 
-pubsub.on('sync:node:info:end', function(data) {
+pubsub.on('sync:node:info:end', function (data) {
 	info[data.id] = data.data;
 });
 
@@ -49,7 +55,7 @@ function getNodeInfo(callback) {
 			title: process.title,
 			version: process.version,
 			memoryUsage: process.memoryUsage(),
-			uptime: process.uptime()
+			uptime: process.uptime(),
 		},
 		os: {
 			hostname: os.hostname(),
@@ -57,18 +63,18 @@ function getNodeInfo(callback) {
 			platform: os.platform(),
 			arch: os.arch(),
 			release: os.release(),
-			load: os.loadavg().map(function(load){ return load.toFixed(2); }).join(', ')
-		}
+			load: os.loadavg().map(function (load) { return load.toFixed(2); }).join(', '),
+		},
 	};
 
 	async.parallel({
-		stats: function(next) {
+		stats: function (next) {
 			rooms.getLocalStats(next);
 		},
-		gitInfo: function(next) {
+		gitInfo: function (next) {
 			getGitInfo(next);
-		}
-	}, function(err, results) {
+		},
+	}, function (err, results) {
 		if (err) {
 			return callback(err);
 		}
@@ -79,18 +85,21 @@ function getNodeInfo(callback) {
 }
 
 function getGitInfo(callback) {
-	function get(cmd,  callback) {
-		exec(cmd, function(err, stdout) {
-			callback(err, stdout ? stdout.replace(/\n$/, '') : '');
+	function get(cmd, callback) {
+		exec(cmd, function (err, stdout) {
+			if (err) {
+				winston.error(err);
+			}
+			callback(null, stdout ? stdout.replace(/\n$/, '') : 'no-git-info');
 		});
 	}
 	async.parallel({
-		hash: function(next) {
+		hash: function (next) {
 			get('git rev-parse HEAD', next);
 		},
-		branch: function(next) {
+		branch: function (next) {
 			get('git rev-parse --abbrev-ref HEAD', next);
-		}
+		},
 	}, callback);
 }
 

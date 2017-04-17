@@ -1,0 +1,74 @@
+{
+	"section-general": "Ogólne",
+	"general/dashboard": "Główna",
+	"general/homepage": "Strona Startowa",
+	"general/navigation": "Nawigacja",
+	"general/languages": "Język",
+	"general/sounds": "Dźwięki",
+	"general/social": "Social",
+
+	"section-manage": "Zarządzanie",
+	"manage/categories": "Kategorie",
+	"manage/tags": "Tagi",
+	"manage/users": "Użytkownicy",
+	"manage/registration": "Kolejka Rejestracji",
+	"manage/groups": "Grupy",
+	"manage/ip-blacklist": "Czarna Lista IP",
+
+	"section-settings": "Ustawienia",
+	"settings/general": "Ogólne",
+	"settings/reputation": "Reputacja",
+	"settings/email": "Email",
+	"settings/user": "Użytkownik",
+	"settings/group": "Grupa",
+	"settings/guest": "Gość",
+	"settings/uploads": "Przesłane",
+	"settings/post": "Posty",
+	"settings/chat": "Czat",
+	"settings/pagination": "Paginacja",
+	"settings/tags": "Tagi",
+	"settings/notifications": "Powiadomienia",
+	"settings/cookies": "Ciasteczka",
+	"settings/web-crawler": "Web Crawler",
+	"settings/sockets": "Sockets",
+	"settings/advanced": "Zaawansowane",
+
+	"settings.page-title": "%1 Ustawienia",
+
+	"section-appearance": "Wygląd",
+	"appearance/themes": "Style",
+	"appearance/skins": "Skórki",
+	"appearance/customise": "Niestandardowy HTML & CSS",
+
+	"section-extend": "Extend",
+	"extend/plugins": "Pluginy",
+	"extend/widgets": "Widgety",
+	"extend/rewards": "Nagrody",
+
+	"section-social-auth": "Alternatywne Logowanie",
+
+	"section-plugins": "Pluginy",
+	"extend/plugins.install": "Zainstalowane Pluginy",
+
+	"section-advanced": "Zaawansowane",
+	"advanced/database": "Baza Danych",
+	"advanced/events": "Wydarzenia",
+	"advanced/logs": "Logi",
+	"advanced/errors": "Błędy",
+	"advanced/cache": "Pamięć",
+	"development/logger": "Logger",
+	"development/info": "Informacja",
+
+	"reload-forum": "Przeładuj Forum",
+	"restart-forum": "Restartuj Forum",
+	"logout": "Wyloguj się",
+	"view-forum": "Zobacz Forum",
+
+	"search.placeholder": "Szukaj...",
+	"search.no-results": "Brak rezultatów...",
+	"search.search-forum": "Szukaj w forum <strong></strong>",
+	"search.keep-typing": "Wpisz więcej, aby zobaczyć wyniki ...",
+	"search.start-typing": "Zacznij pisać, aby zobaczyć wyniki ...",
+
+	"connection-lost": "Połączenie z %1 zostało utracone, próba ponownego połączenia..."
+}

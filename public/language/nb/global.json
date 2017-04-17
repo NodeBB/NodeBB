@@ -19,6 +19,7 @@
     "welcome_back": "Velkommen tilbake",
     "you_have_successfully_logged_in": "Du har blitt logget inn",
     "save_changes": "Lagre endringer",
+    "save": "Save",
     "close": "Lukk",
     "pagination": "Paginering",
     "pagination.out_of": "%1 ut av %2",
@@ -74,6 +75,7 @@
     "norecenttopics": "Ingen nye emner",
     "recentposts": "Seneste innlegg",
     "recentips": "Seneste innloggede IPer",
+    "moderator_tools": "Moderator Tools",
     "away": "Borte",
     "dnd": "Ikke forstyrr",
     "invisible": "Usynlig",
@@ -96,5 +98,10 @@
     "upload": "Upload",
     "allowed-file-types": "Allowed file types are %1",
     "unsaved-changes": "You have unsaved changes. Are you sure you wish to navigate away?",
-    "reconnecting-message": "Looks like your connection to %1 was lost, please wait while we try to reconnect."
+    "reconnecting-message": "Looks like your connection to %1 was lost, please wait while we try to reconnect.",
+    "play": "Play",
+    "cookies.message": "This website uses cookies to ensure you get the best experience on our website.",
+    "cookies.accept": "Got it!",
+    "cookies.learn_more": "Learn More",
+    "edited": "Edited"
 }

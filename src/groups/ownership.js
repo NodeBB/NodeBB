@@ -1,21 +1,20 @@
 'use strict';
 
-var	async = require('async'),
-	db = require('../database'),
-	plugins = require('../plugins');
+var	async = require('async');
+var db = require('../database');
+var plugins = require('../plugins');
 
-module.exports = function(Groups) {
-
+module.exports = function (Groups) {
 	Groups.ownership = {};
 
-	Groups.ownership.isOwner = function(uid, groupName, callback) {
+	Groups.ownership.isOwner = function (uid, groupName, callback) {
 		if (!uid) {
 			return callback(null, false);
 		}
 		db.isSetMember('group:' + groupName + ':owners', uid, callback);
 	};
 
-	Groups.ownership.isOwners = function(uids, groupName, callback) {
+	Groups.ownership.isOwners = function (uids, groupName, callback) {
 		if (!Array.isArray(uids)) {
 			return callback(null, []);
 		}
@@ -23,20 +22,20 @@ module.exports = function(Groups) {
 		db.isSetMembers('group:' + groupName + ':owners', uids, callback);
 	};
 
-	Groups.ownership.grant = function(toUid, groupName, callback) {
+	Groups.ownership.grant = function (toUid, groupName, callback) {
 		// Note: No ownership checking is done here on purpose!
 		async.waterfall([
-			function(next) {
+			function (next) {
 				db.setAdd('group:' + groupName + ':owners', toUid, next);
 			},
-			function(next) {
-				plugins.fireHook('action:group.grantOwnership', {uid: toUid, groupName: groupName});
+			function (next) {
+				plugins.fireHook('action:group.grantOwnership', { uid: toUid, groupName: groupName });
 				next();
-			}
+			},
 		], callback);
 	};
 
-	Groups.ownership.rescind = function(toUid, groupName, callback) {
+	Groups.ownership.rescind = function (toUid, groupName, callback) {
 		// Note: No ownership checking is done here on purpose!
 
 		// If the owners set only contains one member, error out!
@@ -51,9 +50,9 @@ module.exports = function(Groups) {
 				db.setRemove('group:' + groupName + ':owners', toUid, next);
 			},
 			function (next) {
-				plugins.fireHook('action:group.rescindOwnership', {uid: toUid, groupName: groupName});
+				plugins.fireHook('action:group.rescindOwnership', { uid: toUid, groupName: groupName });
 				next();
-			}
+			},
 		], callback);
 	};
 };

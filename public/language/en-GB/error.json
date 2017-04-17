@@ -1,0 +1,162 @@
+{
+	"invalid-data": "Invalid Data",
+
+	"not-logged-in": "You don't seem to be logged in.",
+	"account-locked": "Your account has been locked temporarily",
+	"search-requires-login": "Searching requires an account - please login or register.",
+
+	"invalid-cid": "Invalid Category ID",
+	"invalid-tid": "Invalid Topic ID",
+	"invalid-pid": "Invalid Post ID",
+	"invalid-uid": "Invalid User ID",
+
+	"invalid-username": "Invalid Username",
+	"invalid-email": "Invalid Email",
+	"invalid-title": "Invalid title",
+	"invalid-user-data": "Invalid User Data",
+	"invalid-password": "Invalid Password",
+	"invalid-username-or-password": "Please specify both a username and password",
+	"invalid-search-term": "Invalid search term",
+	"csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
+
+	"invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
+
+	"username-taken": "Username taken",
+	"email-taken": "Email taken",
+	"email-not-confirmed": "Your email has not been confirmed yet, please click here to confirm your email.",
+	"email-not-confirmed-chat": "You are unable to chat until your email is confirmed, please click here to confirm your email.",
+	"email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email.",
+	"no-email-to-confirm": "This forum requires email confirmation, please click here to enter an email",
+	"email-confirm-failed": "We could not confirm your email, please try again later.",
+	"confirm-email-already-sent": "Confirmation email already sent, please wait %1 minute(s) to send another one.",
+	"sendmail-not-found": "The sendmail executable could not be found, please ensure it is installed and executable by the user running NodeBB.",
+
+	"username-too-short": "Username too short",
+	"username-too-long": "Username too long",
+	"password-too-long": "Password too long",
+
+	"user-banned": "User banned",
+	"user-banned-reason": "Sorry, this account has been banned (Reason: %1)",
+	"user-too-new": "Sorry, you are required to wait %1 second(s) before making your first post",
+	"blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
+	"ban-expiry-missing": "Please provide an end date for this ban",
+
+	"no-category": "Category does not exist",
+	"no-topic": "Topic does not exist",
+	"no-post": "Post does not exist",
+	"no-group": "Group does not exist",
+	"no-user": "User does not exist",
+	"no-teaser": "Teaser does not exist",
+	"no-privileges": "You do not have enough privileges for this action.",
+
+	"category-disabled": "Category disabled",
+
+	"topic-locked": "Topic Locked",
+	"post-edit-duration-expired": "You are only allowed to edit posts for %1 second(s) after posting",
+	"post-edit-duration-expired-minutes": "You are only allowed to edit posts for %1 minute(s) after posting",
+	"post-edit-duration-expired-minutes-seconds": "You are only allowed to edit posts for %1 minute(s) %2 second(s) after posting",
+	"post-edit-duration-expired-hours": "You are only allowed to edit posts for %1 hour(s) after posting",
+	"post-edit-duration-expired-hours-minutes": "You are only allowed to edit posts for %1 hour(s) %2 minute(s) after posting",
+	"post-edit-duration-expired-days": "You are only allowed to edit posts for %1 day(s) after posting",
+	"post-edit-duration-expired-days-hours": "You are only allowed to edit posts for %1 day(s) %2 hour(s) after posting",
+
+	"post-delete-duration-expired": "You are only allowed to delete posts for %1 second(s) after posting",
+	"post-delete-duration-expired-minutes": "You are only allowed to delete posts for %1 minute(s) after posting",
+	"post-delete-duration-expired-minutes-seconds": "You are only allowed to delete posts for %1 minute(s) %2 second(s) after posting",
+	"post-delete-duration-expired-hours": "You are only allowed to delete posts for %1 hour(s) after posting",
+	"post-delete-duration-expired-hours-minutes": "You are only allowed to delete posts for %1 hour(s) %2 minute(s) after posting",
+	"post-delete-duration-expired-days": "You are only allowed to delete posts for %1 day(s) after posting",
+	"post-delete-duration-expired-days-hours": "You are only allowed to delete posts for %1 day(s) %2 hour(s) after posting",
+
+	"cant-delete-topic-has-reply": "You can't delete your topic after it has a reply",
+	"cant-delete-topic-has-replies": "You can't delete your topic after it has %1 replies",
+
+	"content-too-short": "Please enter a longer post. Posts should contain at least %1 character(s).",
+	"content-too-long": "Please enter a shorter post. Posts can't be longer than %1 character(s).",
+	"title-too-short": "Please enter a longer title. Titles should contain at least %1 character(s).",
+	"title-too-long": "Please enter a shorter title. Titles can't be longer than %1 character(s).",
+	"invalid-title": "Invalid title!",
+	"category-not-selected": "Category not selected.",
+	"too-many-posts": "You can only post once every %1 second(s) - please wait before posting again",
+	"too-many-posts-newbie": "As a new user, you can only post once every %1 second(s) until you have earned %2 reputation - please wait before posting again",
+	"tag-too-short": "Please enter a longer tag. Tags should contain at least %1 character(s)",
+	"tag-too-long": "Please enter a shorter tag. Tags can't be longer than %1 character(s)",
+	"not-enough-tags": "Not enough tags. Topics must have at least %1 tag(s)",
+	"too-many-tags": "Too many tags. Topics can't have more than %1 tag(s)",
+
+	"still-uploading": "Please wait for uploads to complete.",
+	"file-too-big": "Maximum allowed file size is %1 kB - please upload a smaller file",
+	"guest-upload-disabled": "Guest uploading has been disabled",
+
+	"already-bookmarked": "You have already bookmarked this post",
+	"already-unbookmarked": "You have already unbookmarked this post",
+
+	"cant-ban-other-admins": "You can't ban other admins!",
+	"cant-remove-last-admin": "You are the only administrator. Add another user as an administrator before removing yourself as admin",
+	"cant-delete-admin": "Remove administrator privileges from this account before attempting to delete it.",
+
+	"invalid-image-type": "Invalid image type. Allowed types are: %1",
+	"invalid-image-extension": "Invalid image extension",
+	"invalid-file-type": "Invalid file type. Allowed types are: %1",
+
+	"group-name-too-short": "Group name too short",
+	"group-name-too-long": "Group name too long",
+	"group-already-exists": "Group already exists",
+	"group-name-change-not-allowed": "Group name change not allowed",
+	"group-already-member": "Already part of this group",
+	"group-not-member": "Not a member of this group",
+	"group-needs-owner": "This group requires at least one owner",
+	"group-already-invited": "This user has already been invited",
+	"group-already-requested": "Your membership request has already been submitted",
+
+	"post-already-deleted": "This post has already been deleted",
+	"post-already-restored": "This post has already been restored",
+
+	"topic-already-deleted": "This topic has already been deleted",
+	"topic-already-restored": "This topic has already been restored",
+
+	"cant-purge-main-post": "You can't purge the main post, please delete the topic instead",
+
+	"topic-thumbnails-are-disabled": "Topic thumbnails are disabled.",
+	"invalid-file": "Invalid File",
+	"uploads-are-disabled": "Uploads are disabled",
+
+	"signature-too-long" : "Sorry, your signature cannot be longer than %1 character(s).",
+	"about-me-too-long" : "Sorry, your about me cannot be longer than %1 character(s).",
+
+	"cant-chat-with-yourself": "You can't chat with yourself!",
+	"chat-restricted": "This user has restricted their chat messages. They must follow you before you can chat with them",
+	"chat-disabled": "Chat system disabled",
+	"too-many-messages": "You have sent too many messages, please wait awhile.",
+	"invalid-chat-message": "Invalid chat message",
+	"chat-message-too-long": "Chat message is too long",
+	"cant-edit-chat-message": "You are not allowed to edit this message",
+	"cant-remove-last-user": "You can't remove the last user",
+	"cant-delete-chat-message": "You are not allowed to delete this message",
+
+	"already-voting-for-this-post": "You have already voted for this post.",
+	"reputation-system-disabled": "Reputation system is disabled.",
+	"downvoting-disabled": "Downvoting is disabled",
+	"not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post",
+	"not-enough-reputation-to-flag": "You do not have enough reputation to flag this post",
+	"already-flagged": "You have already flagged this post",
+
+	"reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading.",
+
+	"registration-error": "Registration Error",
+	"parse-error": "Something went wrong while parsing server response",
+	"wrong-login-type-email": "Please use your email to login",
+	"wrong-login-type-username": "Please use your username to login",
+
+	"invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
+
+	"no-session-found": "No login session found!",
+	"not-in-room": "User not in room",
+	"no-users-in-room": "No users in this room",
+	"cant-kick-self": "You can't kick yourself from the group",
+	"no-users-selected": "No user(s) selected",
+	"invalid-home-page-route": "Invalid home page route",
+
+	"invalid-session": "Session Mismatch",
+	"invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page."
+}

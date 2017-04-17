@@ -1,0 +1,9 @@
+{
+	"pagination": "Configurações de Paginação",
+	"enable": "Paginar posts e tópicos ao invés de usar rolagem infinita.",
+	"topics": "Paginação de Tópico",
+	"posts-per-page": "Posts por Página",
+	"categories": "Paginação de Categorias",
+	"topics-per-page": "Tópicos por Página",
+	"initial-num-load": "Número Inicial de Tópicos paa Carregar em Não-lidos, Recentes, e Populares"
+}

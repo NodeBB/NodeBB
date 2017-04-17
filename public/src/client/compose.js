@@ -1,19 +1,18 @@
 'use strict';
 
-/* globals define */
 
-define('forum/compose', [], function() {
+define('forum/compose', [], function () {
 	var Compose = {};
 
-	Compose.init = function() {
+	Compose.init = function () {
 		var container = $('.composer');
 
 		if (container.length) {
 			$(window).trigger('action:composer.enhance', {
-				container: container
+				container: container,
 			});
 		}
-	}
+	};
 
 	return Compose;
 });

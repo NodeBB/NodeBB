@@ -1,0 +1,12 @@
+{
+    "tag": "Tag-Einstellungen",
+    "min-per-topic": "Minimale Tags pro Thema",
+    "max-per-topic": "Maximale Tags pro Thema",
+    "min-length": "Minimale Tag Länge",
+    "max-length": "Maximale Tag Länge",
+    "goto-manage": "Klicken Sie hier um die Tag Managementseite aufzurufen.",
+    "privacy": "Privatsphäre",
+    "list-private": "Tag-Liste privatisieren",
+    "related-topics": "Zusammenhängende Themen",
+    "max-related-topics": "Maximale Anzahl an Zusammenhängenden Themen die angezeigt werden sollen (Wenn vom Design unterstützt)"
+}

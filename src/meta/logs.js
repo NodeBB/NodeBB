@@ -1,19 +1,19 @@
 'use strict';
 
-var path = require('path'),
-	fs = require('fs'),
-	winston = require('winston');
+var path = require('path');
+var nconf = require('nconf');
+var fs = require('fs');
+var winston = require('winston');
 
-module.exports = function(Meta) {
-
+module.exports = function (Meta) {
 	Meta.logs = {
-		path: path.join('logs', path.sep, 'output.log')
+		path: path.join(nconf.get('base_dir'), 'logs', 'output.log'),
 	};
 
-	Meta.logs.get = function(callback) {
-		fs.readFile(this.path, {
-			encoding: 'utf-8'
-		}, function(err, logs) {
+	Meta.logs.get = function (callback) {
+		fs.readFile(Meta.logs.path, {
+			encoding: 'utf-8',
+		}, function (err, logs) {
 			if (err) {
 				winston.error('[meta/logs] Could not retrieve logs: ' + err.message);
 			}
@@ -22,7 +22,7 @@ module.exports = function(Meta) {
 		});
 	};
 
-	Meta.logs.clear = function(callback) {
-		fs.truncate(this.path, 0, callback);
+	Meta.logs.clear = function (callback) {
+		fs.truncate(Meta.logs.path, 0, callback);
 	};
 };

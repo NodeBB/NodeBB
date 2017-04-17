@@ -27,6 +27,7 @@
     "details.disableJoinRequests": "Katılma isteklerini devre dışı bırak",
     "details.grant": "Gurup sahibi yap/yapma",
     "details.kick": "Dışarı at",
+    "details.kick_confirm": "Bu üyeyi bu gruptan silmek istediğinden emin misin?",
     "details.owner_options": "Grup Yöneticisi",
     "details.group_name": "Grup ismi",
     "details.member_count": "Üye Sayısı",
@@ -50,5 +51,8 @@
     "membership.leave-group": "Gruptan Ayrıl",
     "membership.reject": "Reddet",
     "new-group.group_name": "Grup İsmi:",
-    "upload-group-cover": "Grup kapağı yükle"
+    "upload-group-cover": "Grup kapağı yükle",
+    "bulk-invite-instructions": "Bu gruba davet etmek için virgülle ayrılmış adlarının bir listesini girin",
+    "bulk-invite": "Toplu Davet",
+    "remove_group_cover_confirm": "Kapak görselini silmek istediğinden emin misin?"
 }

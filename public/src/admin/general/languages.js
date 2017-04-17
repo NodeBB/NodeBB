@@ -1,10 +1,10 @@
-"use strict";
-/*global define*/
+'use strict';
 
-define('admin/general/languages', ['admin/settings'], function(Settings) {
-	var Languages = {}
 
-	Languages.init = function() {
+define('admin/general/languages', ['admin/settings'], function (Settings) {
+	var Languages = {};
+
+	Languages.init = function () {
 		Settings.prepare();
 	};
 

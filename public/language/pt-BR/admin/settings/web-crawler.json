@@ -1,0 +1,10 @@
+{
+	"crawlability-settings": "Configurações de Motores de Busca",
+	"robots-txt": "Personalização de Robots.txt <small>Deixe em branco para o padrão</small>",
+	"sitemap-feed-settings": "Configurações de Mapa do Site & Feeds",
+	"disable-rss-feeds": "Desabilitar Feeds RSS",
+	"disable-sitemap-xml": "Desligar Sitemap.xml",
+	"sitemap-topics": "Número de Tópicos para mostrar no Mapa do Site",
+	"clear-sitemap-cache": "Limpar Cache de Mapa do Site",
+	"view-sitemap": "Ver Mapa do Site"
+}

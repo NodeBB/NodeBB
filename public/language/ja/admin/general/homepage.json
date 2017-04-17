@@ -1,0 +1,7 @@
+{
+	"home-page": "ホームページ",
+	"description": "ユーザーがあなたのフォーラムのルートURLに移動するときに表示されるページを選択します。",
+	"home-page-route": "ホームページのルート",
+	"custom-route": "カスタムルート",
+	"allow-user-home-pages": "ユーザーホームページを有効にする"
+}

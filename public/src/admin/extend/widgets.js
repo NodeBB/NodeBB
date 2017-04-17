@@ -1,11 +1,11 @@
-"use strict";
-/* global define, app, socket */
+'use strict';
 
-define('admin/extend/widgets', ['jqueryui'], function(jqueryui) {
+
+define('admin/extend/widgets', ['jqueryui'], function () {
 	var Widgets = {};
 
-	Widgets.init = function() {
-		$('#widgets .nav-pills a').on('click', function(ev) {
+	Widgets.init = function () {
+		$('#widgets .nav-pills a').on('click', function (ev) {
 			var $this = $(this);
 			$('#widgets .nav-pills li').removeClass('active');
 			$this.parent().addClass('active');
@@ -17,7 +17,7 @@ define('admin/extend/widgets', ['jqueryui'], function(jqueryui) {
 			return false;
 		});
 
-		$('#widget-selector').on('change', function() {
+		$('#widget-selector').on('change', function () {
 			$('.available-widgets [data-widget]').addClass('hide');
 			$('.available-widgets [data-widget="' + $(this).val() + '"]').removeClass('hide');
 		});
@@ -31,42 +31,43 @@ define('admin/extend/widgets', ['jqueryui'], function(jqueryui) {
 		$('[data-location="drafts"]').insertAfter($('[data-location="drafts"]').closest('.tab-content'));
 
 		$('#widgets .available-widgets .widget-panel').draggable({
-			helper: function(e) {
+			helper: function (e) {
 				return $(e.target).parents('.widget-panel').clone();
 			},
 			distance: 10,
-			connectToSortable: ".widget-area"
+			connectToSortable: '.widget-area',
 		});
 
 		$('#widgets .available-containers .containers > [data-container-html]')
 			.draggable({
-				helper: function(e) {
+				helper: function (e) {
 					var target = $(e.target);
 					target = target.attr('data-container-html') ? target : target.parents('[data-container-html]');
 
 					return target.clone().addClass('block').width(target.width()).css('opacity', '0.5');
 				},
-				distance: 10
+				distance: 10,
 			})
-			.each(function() {
+			.each(function () {
 				$(this).attr('data-container-html', $(this).attr('data-container-html').replace(/\\\{([\s\S]*?)\\\}/g, '{$1}'));
 			});
 
 		$('#widgets .widget-area').sortable({
 			update: function (event, ui) {
+				createDatePicker(ui.item);
 				appendToggle(ui.item);
 			},
-			connectWith: "div"
-		}).on('click', '.delete-widget', function() {
+			connectWith: 'div',
+		}).on('click', '.delete-widget', function () {
 			var panel = $(this).parents('.widget-panel');
 
-			bootbox.confirm('Are you sure you wish to delete this widget?', function(confirm) {
+			bootbox.confirm('[[admin/extend/widgets:alert.confirm-delete]]', function (confirm) {
 				if (confirm) {
 					panel.remove();
 				}
 			});
-		}).on('mouseup', '> .panel > .panel-heading', function(evt) {
-			if ( !( $(this).parent().is('.ui-sortable-helper') || $(evt.target).closest('.delete-widget').length ) ) {
+		}).on('mouseup', '> .panel > .panel-heading', function (evt) {
+			if (!($(this).parent().is('.ui-sortable-helper') || $(evt.target).closest('.delete-widget').length)) {
 				$(this).parent().children('.panel-body').toggleClass('hidden');
 			}
 		});
@@ -76,27 +77,29 @@ define('admin/extend/widgets', ['jqueryui'], function(jqueryui) {
 		function saveWidgets() {
 			var total = $('#widgets [data-template][data-location]').length;
 
-			$('#widgets [data-template][data-location]').each(function(i, el) {
+			$('#widgets [data-template][data-location]').each(function (i, el) {
 				el = $(el);
 
-				var template = el.attr('data-template'),
-					location = el.attr('data-location'),
-					area = el.children('.widget-area'),
-					widgets = [];
+				var template = el.attr('data-template');
+				var location = el.attr('data-location');
+				var area = el.children('.widget-area');
+				var widgets = [];
 
-				area.find('.widget-panel[data-widget]').each(function() {
-					var widgetData = {},
-						data = $(this).find('form').serializeArray();
+				area.find('.widget-panel[data-widget]').each(function () {
+					var widgetData = {};
+					var data = $(this).find('form').serializeArray();
 
 					for (var d in data) {
 						if (data.hasOwnProperty(d)) {
 							if (data[d].name) {
 								if (widgetData[data[d].name]) {
-									if(!Array.isArray(widgetData[data[d].name])) {
-										widgetData[data[d].name] = [ widgetData[data[d].name] ];
+									if (!Array.isArray(widgetData[data[d].name])) {
+										widgetData[data[d].name] = [
+											widgetData[data[d].name],
+										];
 									}
 									widgetData[data[d].name].push(data[d].value);
-								}else{
+								} else {
 									widgetData[data[d].name] = data[d].value;
 								}
 							}
@@ -105,16 +108,16 @@ define('admin/extend/widgets', ['jqueryui'], function(jqueryui) {
 
 					widgets.push({
 						widget: $(this).attr('data-widget'),
-						data: widgetData
+						data: widgetData,
 					});
 				});
 
 				socket.emit('admin.widgets.set', {
 					template: template,
 					location: location,
-					widgets: widgets
-				}, function(err) {
-					total--;
+					widgets: widgets,
+				}, function (err) {
+					total -= 1;
 
 					if (err) {
 						app.alertError(err.message);
@@ -124,23 +127,22 @@ define('admin/extend/widgets', ['jqueryui'], function(jqueryui) {
 						app.alert({
 							alert_id: 'admin:widgets',
 							type: 'success',
-							title: 'Widgets Updated',
-							message: 'Successfully updated widgets',
-							timeout: 2500
+							title: '[[admin/extend/widgets:alert.updated]]',
+							message: '[[admin/extend/widgets:alert.update-success]]',
+							timeout: 2500,
 						});
 					}
-
 				});
 			});
 		}
 
-		$('.color-selector').on('click', '.btn', function() {
-			var btn = $(this),
-				selector = btn.parents('.color-selector'),
-				container = selector.parents('[data-container-html]'),
-				classList = [];
+		$('.color-selector').on('click', '.btn', function () {
+			var btn = $(this);
+			var selector = btn.parents('.color-selector');
+			var container = selector.parents('[data-container-html]');
+			var classList = [];
 
-			selector.children().each(function() {
+			selector.children().each(function () {
 				classList.push($(this).attr('data-class'));
 			});
 
@@ -154,18 +156,27 @@ define('admin/extend/widgets', ['jqueryui'], function(jqueryui) {
 		});
 	}
 
+	function createDatePicker(el) {
+		var currentYear = new Date().getFullYear();
+		el.find('.date-selector').datepicker({
+			changeMonth: true,
+			changeYear: true,
+			yearRange: currentYear + ':' + (currentYear + 100),
+		});
+	}
+
 	function appendToggle(el) {
 		if (!el.hasClass('block')) {
 			el.addClass('block').css('width', '').css('height', '')
 				.droppable({
 					accept: '[data-container-html]',
-					drop: function(event, ui) {
+					drop: function (event, ui) {
 						var el = $(this);
 
 						el.find('.panel-body .container-html').val(ui.draggable.attr('data-container-html'));
 						el.find('.panel-body').removeClass('hidden');
 					},
-					hoverClass: "panel-info"
+					hoverClass: 'panel-info',
 				})
 				.children('.panel-heading')
 				.append('<div class="pull-right pointer"><span class="delete-widget"><i class="fa fa-times-circle"></i></span></div><div class="pull-left pointer"><span class="toggle-widget"><i class="fa fa-chevron-circle-down"></i></span>&nbsp;</div>')
@@ -180,9 +191,9 @@ define('admin/extend/widgets', ['jqueryui'], function(jqueryui) {
 				title.text(title.text() + ' - ' + data.title);
 			}
 
-			widget.find('input, textarea, select').each(function() {
-				var input = $(this),
-					value = data[input.attr('name')];
+			widget.find('input, textarea, select').each(function () {
+				var input = $(this);
+				var value = data[input.attr('name')];
 
 				if (input.attr('type') === 'checkbox') {
 					input.prop('checked', !!value).trigger('change');
@@ -194,21 +205,22 @@ define('admin/extend/widgets', ['jqueryui'], function(jqueryui) {
 			return widget;
 		}
 
-		$.get(RELATIVE_PATH + '/api/admin/extend/widgets', function(data) {
+		$.get(RELATIVE_PATH + '/api/admin/extend/widgets', function (data) {
 			var areas = data.areas;
 
-			for(var i=0; i<areas.length; ++i) {
-				var area = areas[i],
-					widgetArea = $('#widgets .area[data-template="' + area.template + '"][data-location="' + area.location + '"]').find('.widget-area');
+			for (var i = 0; i < areas.length; i += 1) {
+				var area = areas[i];
+				var widgetArea = $('#widgets .area[data-template="' + area.template + '"][data-location="' + area.location + '"]').find('.widget-area');
 
 				widgetArea.html('');
 
-				for (var k=0; k<area.data.length; ++k) {
-					var widgetData = area.data[k],
-						widgetEl = $('.available-widgets [data-widget="' + widgetData.widget + '"]').clone(true).removeClass('hide');
+				for (var k = 0; k < area.data.length; k += 1) {
+					var widgetData = area.data[k];
+					var widgetEl = $('.available-widgets [data-widget="' + widgetData.widget + '"]').clone(true).removeClass('hide');
 
 					widgetArea.append(populateWidget(widgetEl, widgetData.data));
 					appendToggle(widgetEl);
+					createDatePicker(widgetEl);
 				}
 			}
 

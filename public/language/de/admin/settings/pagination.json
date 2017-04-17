@@ -1,0 +1,9 @@
+{
+	"pagination": "Seitennummerierungseinstellungen",
+	"enable": "Themen in Seiten einteilen anstatt unendlich weit zu scrollen",
+	"topics": "Themen Seitennummerierung",
+	"posts-per-page": "Beiträge pro Seite",
+	"categories": "Kategorie Seitennummerierung",
+	"topics-per-page": "Themen pro Seite",
+	"initial-num-load": "Ursprüngliche anzahl an Themen, die bei Ungelesen, Aktuell und beliebt geladen werden sollen"
+}

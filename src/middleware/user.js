@@ -1,25 +1,26 @@
 'use strict';
 
 var async = require('async');
-var nconf =  require('nconf');
+var nconf = require('nconf');
+
 var meta = require('../meta');
 var user = require('../user');
+var privileges = require('../privileges');
 
 var controllers = {
-	helpers: require('../controllers/helpers')
+	helpers: require('../controllers/helpers'),
 };
 
-module.exports = function(middleware) {
-
-	middleware.checkGlobalPrivacySettings = function(req, res, next) {
+module.exports = function (middleware) {
+	middleware.checkGlobalPrivacySettings = function (req, res, next) {
 		if (!req.user && !!parseInt(meta.config.privateUserInfo, 10)) {
-			return controllers.helpers.notAllowed(req, res);
+			return middleware.authenticate(req, res, next);
 		}
 
 		next();
 	};
 
-	middleware.checkAccountPermissions = function(req, res, next) {
+	middleware.checkAccountPermissions = function (req, res, next) {
 		// This middleware ensures that only the requested user and admins can pass
 		async.waterfall([
 			function (next) {
@@ -29,12 +30,20 @@ module.exports = function(middleware) {
 				user.getUidByUserslug(req.params.userslug, next);
 			},
 			function (uid, next) {
-				if (parseInt(uid, 10) === req.uid) {
-					return next(null, true);
+				privileges.users.canEdit(req.uid, uid, next);
+			},
+			function (allowed, next) {
+				if (allowed) {
+					return next(null, allowed);
 				}
 
-				user.isAdminOrGlobalMod(req.uid, next);
-			}
+				// For the account/info page only, allow plain moderators through
+				if (/user\/.+\/info$/.test(req.path)) {
+					user.isModeratorOfAnyCategory(req.uid, next);
+				} else {
+					next(null, false);
+				}
+			},
 		], function (err, allowed) {
 			if (err || allowed) {
 				return next(err);
@@ -43,7 +52,7 @@ module.exports = function(middleware) {
 		});
 	};
 
-	middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
+	middleware.redirectToAccountIfLoggedIn = function (req, res, next) {
 		if (req.session.forceLogin) {
 			return next();
 		}
@@ -59,24 +68,24 @@ module.exports = function(middleware) {
 		});
 	};
 
-	middleware.redirectUidToUserslug = function(req, res, next) {
+	middleware.redirectUidToUserslug = function (req, res, next) {
 		var uid = parseInt(req.params.uid, 10);
 		if (!uid) {
 			return next();
 		}
-		user.getUserField(uid, 'userslug', function(err, userslug) {
+		user.getUserField(uid, 'userslug', function (err, userslug) {
 			if (err || !userslug) {
 				return next(err);
 			}
 
 			var path = req.path.replace(/^\/api/, '')
 					.replace('uid', 'user')
-					.replace(uid, function() { return userslug; });
+					.replace(uid, function () { return userslug; });
 			controllers.helpers.redirect(res, path);
 		});
 	};
 
-	middleware.isAdmin = function(req, res, next) {
+	middleware.isAdmin = function (req, res, next) {
 		if (!req.uid) {
 			return controllers.helpers.notAllowed(req, res);
 		}
@@ -87,7 +96,7 @@ module.exports = function(middleware) {
 			}
 
 			if (isAdmin) {
-				user.hasPassword(req.uid, function(err, hasPassword) {
+				user.hasPassword(req.uid, function (err, hasPassword) {
 					if (err) {
 						return next(err);
 					}
@@ -121,34 +130,29 @@ module.exports = function(middleware) {
 				return controllers.helpers.notAllowed(req, res);
 			}
 
-			middleware.buildHeader(req, res, function() {
+			middleware.buildHeader(req, res, function () {
 				controllers.helpers.notAllowed(req, res);
 			});
 		});
 	};
 
-	middleware.requireUser = function(req, res, next) {
+	middleware.requireUser = function (req, res, next) {
 		if (req.user) {
 			return next();
 		}
 
-		res.status(403).render('403', {title: '[[global:403.title]]'});
+		res.status(403).render('403', { title: '[[global:403.title]]' });
 	};
 
-	middleware.registrationComplete = function(req, res, next) {
+	middleware.registrationComplete = function (req, res, next) {
 		// If the user's session contains registration data, redirect the user to complete registration
 		if (!req.session.hasOwnProperty('registration')) {
 			return next();
+		}
+		if (!req.path.endsWith('/register/complete')) {
+			controllers.helpers.redirect(res, '/register/complete');
 		} else {
-			if (!req.path.endsWith('/register/complete')) {
-				controllers.helpers.redirect(res, '/register/complete');
-			} else {
-				return next();
-			}
+			return next();
 		}
 	};
-
 };
-
-
-
