@@ -34,14 +34,6 @@
 
 		<!-- BEGIN scripts -->
 		<script type="text/javascript" src="{scripts.src}"></script>
-		<!-- END scripts -->
-	</head>
-
-	<body class="admin {bodyClass}">
-
-    <div id="admin" style="display:none;"><!-- IMPORT admin/partials/menu.tpl --></div>
-		<div id="moderator" style="display:none;"><!-- IMPORT admin/partials/menu-moderator.tpl --></div>
-
 		<script type="text/javascript">
 		function getParameterByName(name, url) {
 				if (!url) {
@@ -54,6 +46,8 @@
 				if (!results[2]) return '';
 				return decodeURIComponent(results[2].replace(/\+/g, " "));
 		}
+
+		$(document).ready(function(){
 			var foo = getParameterByName('foo');
 
 		 if(foo == "x-dag--dag-x"){
@@ -64,6 +58,13 @@
 				document.getElementById("moderator").style.display = 'inherit';
 				document.getElementById("admin").style.display = 'none';
 			}
+		});
 		</script>
+		<!-- END scripts -->
+	</head>
+
+	<body class="admin {bodyClass}">
+    <div id="admin" style="display:none;"><!-- IMPORT admin/partials/menu.tpl --></div>
+		<div id="moderator" style="display:none;"><!-- IMPORT admin/partials/menu-moderator.tpl --></div>
 
 		<div class="container" id="content">
