@@ -15,7 +15,7 @@ module.exports = {
 		async.waterfall([
 			function (next) {
 				if (isRedisSessionStore) {
-					var rdb = require.main.require('./database/redis');
+					var rdb = require.main.require('./src/database/redis');
 					var client = rdb.connect();
 					async.waterfall([
 						function (next) {
