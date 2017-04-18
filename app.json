@@ -1,0 +1,18 @@
+{
+  "name": "NodeBB",
+  "scripts": {},
+  "env": {},
+  "addons": [
+    "autobus",
+    "librato",
+    "loaderio",
+    "mailgun",
+    "newrelic",
+    "papertrail",
+    "pingdom",
+    "rediscloud",
+    "stormpath",
+    "threescale",
+    "yahooboss"
+  ]
+}
