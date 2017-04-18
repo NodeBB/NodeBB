@@ -5,8 +5,10 @@ define('forum/groups/memberlist', ['components', 'forum/infinitescroll'], functi
 	var MemberList = {};
 	var searchInterval;
 	var groupName;
+	var templateName;
 
-	MemberList.init = function () {
+	MemberList.init = function (_templateName) {
+		templateName = _templateName || 'groups/details';
 		groupName = ajaxify.data.group.name;
 
 		handleMemberSearch();
@@ -84,7 +86,7 @@ define('forum/groups/memberlist', ['components', 'forum/infinitescroll'], functi
 	}
 
 	function parseAndTranslate(users, callback) {
-		app.parseAndTranslate('groups/details', 'members', {
+		app.parseAndTranslate(templateName, 'members', {
 			group: {
 				members: users,
 				isOwner: ajaxify.data.group.isOwner,
