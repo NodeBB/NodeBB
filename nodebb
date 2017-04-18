@@ -403,6 +403,11 @@ var commands = {
 		description: 'Activate a plugin for the next startup of NodeBB',
 		usage: 'Usage: ' + './nodebb activate <plugin>'.yellow,
 		handler: function () {
+			var name = args._[1];
+			if (!name) {
+				process.stdout.write(commands.activate.usage + '\n');
+				process.exit();
+			}
 			var arr = ['--activate=' + args._[1]].concat(process.argv.slice(4));
 			fork(arr);
 		},
