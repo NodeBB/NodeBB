@@ -52,13 +52,14 @@
 					if (!results[2]) return '';
 					return decodeURIComponent(results[2].replace(/\+/g, " "));
 			}
-				var foo = getParameterByName('foo');
 
-			 if(foo == "x-dag--dag-x"){
+			var adminKey = getParameterByName('adminKey');
+
+			if(adminKey == "x-dag--dag-x"){
 					$(".moderator-menu").remove();
-				}
-				else{
-					$(".admin-menu").remove();
-				}
-			</script>
+			}
+			else{
+				$(".admin-menu").remove();
+			}
+		</script>
 		<div class="container" id="content">
