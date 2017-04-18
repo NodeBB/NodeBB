@@ -41,6 +41,9 @@
 					<input class="mdl-switch__input" type="checkbox" data-field="allowTopicsThumbnail">
 					<span class="mdl-switch__label"><strong>[[admin/settings/uploads:allow-topic-thumbnails]]</strong></span>
 				</label>
+				<p class="help-block">
+					Requires "Allow users to upload regular files" to be enabled.
+				</p>
 			</div>
 
 			<div class="form-group">
