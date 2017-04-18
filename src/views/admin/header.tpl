@@ -38,7 +38,6 @@
 	</head>
 
 	<body class="admin {bodyClass}">
-
     <!-- IMPORT admin/partials/menu.tpl -->
 		<!-- IMPORT admin/partials/menu-moderator.tpl -->
 		<script type="text/javascript">
@@ -56,11 +55,9 @@
 				var foo = getParameterByName('foo');
 
 			 if(foo == "x-dag--dag-x"){
-				  $(".admin-menu").css("display", 'inherit');
 					$(".moderator-menu").remove();
 				}
 				else{
-					$(".moderator-menu").css("display", 'inherit');
 					$(".admin-menu").remove();
 				}
 			</script>
