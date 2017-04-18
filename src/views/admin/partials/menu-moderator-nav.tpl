@@ -5,7 +5,7 @@
 				<div class="bar"></div>
 				<div class="bar"></div>
 			</div>
-			<h1 id="main-page-title">Dashboard</h1>
+			<h1 id="main-page-title"></h1>
 		</div>
 
 		<ul id="user_label" class="pull-right">
