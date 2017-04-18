@@ -219,15 +219,15 @@ function activate() {
 			db.init(next);
 		},
 		function (next) {
+			if (plugin.indexOf('nodebb-') !== 0) {
+				// Allow omission of `nodebb-plugin-`
+				plugin = 'nodebb-plugin-' + plugin;
+			}
 			plugins.isInstalled(plugin, next);
 		},
 		function (isInstalled, next) {
 			if (!isInstalled) {
 				return next(new Error('plugin not installed'));
-			}
-			if (plugin.indexOf('nodebb-') !== 0) {
-				// Allow omission of `nodebb-plugin-`
-				plugin = 'nodebb-plugin-' + plugin;
 			}
 
 			winston.info('Activating plugin `%s`', plugin);
