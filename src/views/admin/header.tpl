@@ -39,8 +39,8 @@
 
 	<body class="admin {bodyClass}">
 
-    <div id="admin" style="display:none;"><!-- IMPORT admin/partials/menu.tpl --></div>
-		<div id="moderator" style="display:none;"><!-- IMPORT admin/partials/menu-moderator.tpl --></div>
+    <!-- IMPORT admin/partials/menu.tpl -->
+		<!-- IMPORT admin/partials/menu-moderator.tpl -->
 		<script type="text/javascript">
 			function getParameterByName(name, url) {
 					if (!url) {
@@ -56,14 +56,12 @@
 				var foo = getParameterByName('foo');
 
 			 if(foo == "x-dag--dag-x"){
-					document.getElementById("admin").style.display = 'inherit';
-					document.getElementById("moderator").style.display = 'none';
-					$("#moderator").remove();
+				  $(".admin-menu").css("display", 'inherit');
+					$(".moderator-menu").remove();
 				}
 				else{
-					document.getElementById("moderator").style.display = 'inherit';
-					document.getElementById("admin").style.display = 'none';
-					$("#admin").remove();
+					$(".moderator-menu").css("display", 'inherit');
+					$(".admin-menu").remove();
 				}
 			</script>
 		<div class="container" id="content">

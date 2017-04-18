@@ -1,4 +1,4 @@
-<nav id="menu" class="hidden-md hidden-lg">
+<nav id="menu" class="hidden-md hidden-lg moderator-menu">
 
 	<section class="menu-section">
 		<h3 class="menu-section-title">[[admin/menu:section-general]]</h3>
@@ -17,7 +17,7 @@
 	</section>
 </nav>
 
-<main id="panel">
+<main id="panel" class="moderator-menu">
 	<nav class="header" id="header">
 		<div class="pull-left">
 			<div id="mobile-menu">
@@ -50,3 +50,4 @@
 			</li>
 		</ul>
 	</nav>
+</main>

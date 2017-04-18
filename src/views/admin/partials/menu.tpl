@@ -1,4 +1,4 @@
-<nav id="menu" class="hidden-md hidden-lg">
+<nav id="menu" class="hidden-md hidden-lg admin-menu">
 	<section class="menu-section">
 		<h3 class="menu-section-title">[[admin/menu:section-general]]</h3>
 		<ul class="menu-section-list">
@@ -105,7 +105,7 @@
 	</section>
 </nav>
 
-<main id="panel">
+<main id="panel" class="admin-menu">
 	<nav class="header" id="header">
 		<div class="pull-left">
 			<div id="mobile-menu">
@@ -284,3 +284,4 @@
 			</li>
 		</ul>
 	</nav>
+</main>
