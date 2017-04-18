@@ -212,22 +212,32 @@ function upgrade() {
 
 function activate() {
 	var db = require('./src/database');
-	db.init(function (err) {
+	var plugins = require('./src/plugins');
+	var plugin = nconf.get('activate');
+	async.waterfall([
+		function (next) {
+			db.init(next);
+		},
+		function (next) {
+			plugins.isInstalled(plugin, next);
+		},
+		function (isInstalled, next) {
+			if (!isInstalled) {
+				return next(new Error('plugin not installed'));
+			}
+			if (plugin.indexOf('nodebb-') !== 0) {
+				// Allow omission of `nodebb-plugin-`
+				plugin = 'nodebb-plugin-' + plugin;
+			}
+
+			winston.info('Activating plugin `%s`', plugin);
+			db.sortedSetAdd('plugins:active', 0, plugin, next);
+		},
+	], function (err) {
 		if (err) {
-			winston.error(err.stack);
-			process.exit(1);
+			winston.error(err.message);
 		}
-
-		var plugin = nconf.get('activate');
-		if (plugin.indexOf('nodebb-') !== 0) {
-			// Allow omission of `nodebb-plugin-`
-			plugin = 'nodebb-plugin-' + plugin;
-		}
-
-		winston.info('Activating plugin `%s`', plugin);
-		db.sortedSetAdd('plugins:active', 0, plugin, function (err) {
-			process.exit(err ? 1 : 0);
-		});
+		process.exit(err ? 1 : 0);
 	});
 }
 

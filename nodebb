@@ -408,6 +408,10 @@ var commands = {
 				process.stdout.write(commands.activate.usage + '\n');
 				process.exit();
 			}
+			if (name.startsWith('nodebb-theme')) {
+				fork(['--reset', '-t', name]);
+				return;
+			}
 			var arr = ['--activate=' + name].concat(process.argv.slice(4));
 			fork(arr);
 		},
