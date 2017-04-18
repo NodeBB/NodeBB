@@ -123,9 +123,23 @@
 				<input id="unreadCutoff" type="text" class="form-control" value="2" data-field="unreadCutoff">
 			</div>
 			<div class="form-group">
- 				<label for="bookmarkthreshold">[[admin/settings/post:unread.min-track-last]]</label>
- 				<input id="bookmarkthreshold" type="text" class="form-control" value="5" data-field="bookmarkThreshold">
- 			</div>
+				<label for="bookmarkthreshold">[[admin/settings/post:unread.min-track-last]]</label>
+				<input id="bookmarkthreshold" type="text" class="form-control" value="5" data-field="bookmarkThreshold">
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/post:recent]]</div>
+	<div class="col-sm-10 col-xs-12">
+		<form>
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="disableRecentCategoryFilter">
+					<span class="mdl-switch__label"><strong>[[admin/settings/post:recent.categoryFilter.disable]]</strong></span>
+				</label>
+			</div>
 		</form>
 	</div>
 </div>

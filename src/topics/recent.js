@@ -8,6 +8,7 @@ var plugins = require('../plugins');
 var privileges = require('../privileges');
 var user = require('../user');
 var categories = require('../categories');
+var meta = require('../meta');
 
 module.exports = function (Topics) {
 	var terms = {
@@ -65,7 +66,7 @@ module.exports = function (Topics) {
 			function (tids, next) {
 				async.parallel({
 					ignoredCids: function (next) {
-						if (filter === 'watched') {
+						if (filter === 'watched' || parseInt(meta.config.disableRecentCategoryFilter, 10) === 1) {
 							return next(null, []);
 						}
 						user.getIgnoredCategories(uid, next);
