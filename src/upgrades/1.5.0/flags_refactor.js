@@ -13,6 +13,7 @@ module.exports = {
 		var batch = require('../../batch');
 		var posts = require('../../posts');
 		var flags = require('../../flags');
+		var progress = this.progress;
 
 		batch.processSortedSet('posts:pid', function (ids, next) {
 			posts.getPostsByPids(ids, 1, function (err, posts) {
@@ -80,10 +81,14 @@ module.exports = {
 							} else {
 								next(err);
 							}
+
+							progress.incr();
 						});
 					});
 				}, next);
 			});
+		}, {
+			progress: this.progress,
 		}, callback);
 	},
 };

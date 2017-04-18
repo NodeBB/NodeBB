@@ -14,6 +14,8 @@ module.exports = {
 		var batch = require('../../batch');
 		var posts = require('../../posts');
 		var count = 0;
+		var progress = this.progress;
+
 		batch.processSortedSet('posts:pid', function (pids, next) {
 			winston.verbose('upgraded ' + count + ' posts');
 			count += pids.length;
@@ -43,8 +45,12 @@ module.exports = {
 					} else {
 						next();
 					}
+
+					progress.incr();
 				}, next);
 			}, next);
-		}, {}, callback);
+		}, {
+			progress: progress,
+		}, callback);
 	},
 };

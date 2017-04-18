@@ -13,11 +13,15 @@ module.exports = {
 	method: function (callback) {
 		var posts = require('../../posts');
 		var batch = require('../../batch');
+		var progress = this.progress;
+
 		batch.processSortedSet('posts:pid', function (ids, next) {
 			posts.getPostsFields(ids, ['pid', 'toPid', 'timestamp'], function (err, data) {
 				if (err) {
 					return next(err);
 				}
+
+				progress.incr();
 
 				async.eachSeries(data, function (postData, next) {
 					if (!parseInt(postData.toPid, 10)) {
@@ -30,6 +34,8 @@ module.exports = {
 					], next);
 				}, next);
 			});
+		}, {
+			progress: progress,
 		}, callback);
 	},
 };

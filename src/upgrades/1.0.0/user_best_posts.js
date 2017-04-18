@@ -12,6 +12,7 @@ module.exports = {
 	timestamp: Date.UTC(2016, 0, 14),
 	method: function (callback) {
 		var batch = require('../../batch');
+		var progress = this.progress;
 
 		batch.processSortedSet('posts:pid', function (ids, next) {
 			async.eachSeries(ids, function (id, next) {
@@ -24,8 +25,11 @@ module.exports = {
 					}
 					winston.verbose('processing pid: ' + postData.pid + ' uid: ' + postData.uid + ' votes: ' + postData.votes);
 					db.sortedSetAdd('uid:' + postData.uid + ':posts:votes', postData.votes, postData.pid, next);
+					progress.incr();
 				});
 			}, next);
-		}, {}, callback);
+		}, {
+			progress: progress,
+		}, callback);
 	},
 };

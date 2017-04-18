@@ -7,7 +7,7 @@ var path = require('path');
 var semver = require('semver');
 
 var db = require('./database');
-var utils = require('../public/src/utils');
+var file = require('../src/file');
 
 /*
  * Need to write an upgrade script for NodeBB? Cool.
@@ -23,7 +23,7 @@ var Upgrade = {};
 
 Upgrade.getAll = function (callback) {
 	async.waterfall([
-		async.apply(utils.walk, path.join(__dirname, './upgrades')),
+		async.apply(file.walk, path.join(__dirname, './upgrades')),
 		function (files, next) {
 			// Sort the upgrade scripts based on version
 			var versionA;
@@ -93,7 +93,7 @@ Upgrade.runSingle = function (query, callback) {
 	process.stdout.write('\nParsing upgrade scripts... ');
 
 	async.waterfall([
-		async.apply(utils.walk, path.join(__dirname, './upgrades')),
+		async.apply(file.walk, path.join(__dirname, './upgrades')),
 		function (files, next) {
 			next(null, files.filter(function (file) {
 				return path.basename(file, '.js') === query;
@@ -123,6 +123,13 @@ Upgrade.process = function (files, skipCount, callback) {
 				var scriptExport = require(file);
 				var date = new Date(scriptExport.timestamp);
 				var version = path.dirname(file).split('/').pop();
+				var progress = {
+					current: 0,
+					total: 0,
+					incr: Upgrade.incrementProgress,
+					script: scriptExport,
+					date: date,
+				};
 
 				process.stdout.write('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '... ');
 
@@ -134,11 +141,20 @@ Upgrade.process = function (files, skipCount, callback) {
 				}
 
 				// Do the upgrade...
-				scriptExport.method(function (err) {
+				scriptExport.method.bind({
+					progress: progress,
+				})(function (err) {
 					if (err) {
 						process.stdout.write('error\n'.red);
 						return next(err);
 					}
+
+					if (progress.total > 0) {
+						process.stdout.clearLine();
+						process.stdout.cursorTo(0);
+						process.stdout.write('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '... ');
+					}
+
 					process.stdout.write('OK\n'.green);
 					// Record success in schemaLog
 					db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'), next);
@@ -150,6 +166,25 @@ Upgrade.process = function (files, skipCount, callback) {
 			setImmediate(next);
 		},
 	], callback);
+};
+
+Upgrade.incrementProgress = function () {
+	this.current += 1;
+
+	// Redraw the progress bar
+	var percentage = 0;
+	var filled = 0;
+	var unfilled = 15;
+	if (this.total) {
+		percentage = Math.floor((this.current / this.total) * 100) + '%';
+		filled = Math.floor((this.current / this.total) * 15);
+		unfilled = 15 - filled;
+	}
+	process.stdout.clearLine();
+	process.stdout.cursorTo(0);
+
+	process.stdout.write('  → '.white + String('[' + [this.date.getUTCFullYear(), this.date.getUTCMonth() + 1, this.date.getUTCDate()].join('/') + '] ').gray + String(this.script.name).reset + '... ');
+	process.stdout.write('[' + (filled ? new Array(filled).join('#') : '') + new Array(unfilled).join(' ') + '] (' + this.current + '/' + (this.total || '??') + ') ' + percentage);
 };
 
 module.exports = Upgrade;
