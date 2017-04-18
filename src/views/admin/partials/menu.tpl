@@ -105,8 +105,8 @@
 	</section>
 </nav>
 
-<main id="panel" class="admin-menu">
-	<nav class="header" id="header">
+<main id="panel">
+	<nav class="header admin-menu" id="header">
 		<div class="pull-left">
 			<div id="mobile-menu">
 				<div class="bar"></div>

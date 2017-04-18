@@ -17,8 +17,8 @@
 	</section>
 </nav>
 
-<main id="panel" class="moderator-menu">
-	<nav class="header" id="header">
+<main id="panel">
+	<nav class="header moderator-menu" id="header">
 		<div class="pull-left">
 			<div id="mobile-menu">
 				<div class="bar"></div>
