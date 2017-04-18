@@ -38,8 +38,13 @@
 	</head>
 
 	<body class="admin {bodyClass}">
+
     <!-- IMPORT admin/partials/menu.tpl -->
 		<!-- IMPORT admin/partials/menu-moderator.tpl -->
+		<main id="panel">
+		<!-- IMPORT admin/partials/menu-nav.tpl -->
+		<!-- IMPORT admin/partials/menu-moderator-nav.tpl -->
+
 		<script type="text/javascript">
 			function getParameterByName(name, url) {
 					if (!url) {
