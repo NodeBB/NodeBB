@@ -48,7 +48,6 @@ describe('Hash methods', function () {
 				assert.ifError(err);
 				db.getObject('emptyField', function (err, data) {
 					assert.ifError(err);
-					console.log(data);
 					done();
 				});
 			});

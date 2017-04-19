@@ -104,10 +104,10 @@ module.exports = function (Posts) {
 					plugins.fireHook('filter:post.get', { post: postData, uid: data.uid }, next);
 				});
 			},
-			function (postData, next) {
-				postData.isMain = isMain;
-				plugins.fireHook('action:post.save', { post: _.clone(postData) });
-				next(null, postData);
+			function (data, next) {
+				data.post.isMain = isMain;
+				plugins.fireHook('action:post.save', { post: _.clone(data.post) });
+				next(null, data.post);
 			},
 		], callback);
 	};
