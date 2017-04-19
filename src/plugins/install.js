@@ -49,10 +49,7 @@ module.exports = function (Plugins) {
 			},
 			function (next) {
 				meta.reloadRequired = true;
-				if (isActive) {
-					Plugins.fireHook('action:plugin.deactivate', { id: id });
-				}
-
+				Plugins.fireHook(isActive ? 'action:plugin.deactivate' : 'action:plugin.activate', { id: id });
 				setImmediate(next);
 			},
 		], function (err) {
@@ -71,12 +68,14 @@ module.exports = function (Plugins) {
 
 	function toggleInstall(id, version, callback) {
 		var installed;
+		var type;
 		async.waterfall([
 			function (next) {
 				Plugins.isInstalled(id, next);
 			},
 			function (_installed, next) {
 				installed = _installed;
+				type = installed ? 'uninstall' : 'install';
 				Plugins.isActive(id, next);
 			},
 			function (active, next) {
@@ -89,16 +88,13 @@ module.exports = function (Plugins) {
 				setImmediate(next);
 			},
 			function (next) {
-				runNpmCommand(installed ? 'uninstall' : 'install', id, version || 'latest', next);
+				runNpmCommand(type, id, version || 'latest', next);
 			},
 			function (next) {
 				Plugins.get(id, next);
 			},
 			function (pluginData, next) {
-				if (installed) {
-					Plugins.fireHook('action:plugin.uninstall', { id: id, version: version });
-				}
-
+				Plugins.fireHook('action:plugin.' + type, { id: id, version: version });
 				setImmediate(next, null, pluginData);
 			},
 		], callback);
