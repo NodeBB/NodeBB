@@ -5,7 +5,7 @@ var S = require('string');
 
 var db = require('../database');
 var user = require('../user');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 
 module.exports = function (Messaging) {
 	Messaging.getMessageField = function (mid, field, callback) {

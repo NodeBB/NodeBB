@@ -27,6 +27,7 @@
     "details.disableJoinRequests": "בטל בקשות הצטרפות",
     "details.grant": "הענק/בטל בעלות",
     "details.kick": "גרש",
+    "details.kick_confirm": "Are you sure you want to remove this member from the group?",
     "details.owner_options": "ניהול הקבוצה",
     "details.group_name": "שם הקבוצה",
     "details.member_count": "כמות משתמשים",

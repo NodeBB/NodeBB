@@ -5,7 +5,7 @@ var async = require('async');
 var os = require('os');
 var nconf = require('nconf');
 var winston = require('winston');
-var validator = require('validator');
+
 var topics = require('../../topics');
 var pubsub = require('../../pubsub');
 
@@ -109,7 +109,7 @@ SocketRooms.getAll = function (socket, data, callback) {
 			topTenTopics.forEach(function (topic, index) {
 				totals.topics[topic.tid] = {
 					value: topic.count || 0,
-					title: validator.escape(String(titles[index].title)),
+					title: String(titles[index].title),
 				};
 			});
 			next(null, totals);

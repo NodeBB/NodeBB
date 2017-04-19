@@ -2,7 +2,7 @@
 
 var async = require('async');
 var db = require('../database');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 var validator = require('validator');
 var plugins = require('../plugins');
 var groups = require('../groups');
@@ -28,10 +28,10 @@ module.exports = function (User) {
 				email: data.email || '',
 				joindate: timestamp,
 				lastonline: timestamp,
-				picture: '',
+				picture: data.picture || '',
 				fullname: data.fullname || '',
-				location: '',
-				birthday: '',
+				location: data.location || '',
+				birthday: data.birthday || '',
 				website: '',
 				signature: '',
 				uploadedpicture: '',
@@ -46,7 +46,7 @@ module.exports = function (User) {
 
 			async.parallel({
 				renamedUsername: function (next) {
-					renameUsername(userData, next);
+					User.uniqueUsername(userData, next);
 				},
 				userData: function (next) {
 					plugins.fireHook('filter:user.create', { user: userData, data: data }, next);
@@ -200,28 +200,27 @@ module.exports = function (User) {
 		callback();
 	};
 
-	function renameUsername(userData, callback) {
+	User.uniqueUsername = function (userData, callback) {
 		meta.userOrGroupExists(userData.userslug, function (err, exists) {
 			if (err || !exists) {
 				return callback(err);
 			}
 
-			var	newUsername = '';
-			async.forever(function (next) {
-				newUsername = userData.username + (Math.floor(Math.random() * 255) + 1);
-				User.existsBySlug(newUsername, function (err, exists) {
-					if (err) {
-						return callback(err);
+			var num = 0;
+
+			function go() {
+				var username = userData.username + ' ' + num.toString(32);
+				meta.userOrGroupExists(username, function (err, exists) {
+					if (err || !exists) {
+						return callback(err, username);
 					}
-					if (!exists) {
-						next(newUsername);
-					} else {
-						next();
-					}
+
+					num += 1;
+					go();
 				});
-			}, function (username) {
-				callback(null, username);
-			});
+			}
+
+			go();
 		});
-	}
+	};
 };

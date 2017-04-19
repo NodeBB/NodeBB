@@ -27,6 +27,7 @@
     "details.disableJoinRequests": "غیر فعال کردن درخواستهای عضویت",
     "details.grant": "اعطاء/خلع مالکیت",
     "details.kick": "بیرون انداختن",
+    "details.kick_confirm": "Are you sure you want to remove this member from the group?",
     "details.owner_options": "مدیر گروه",
     "details.group_name": "نام گروه",
     "details.member_count": "تعداد اعضا",

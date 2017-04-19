@@ -130,5 +130,6 @@
     "info.username-history": "Användarnamn historik",
     "info.email-history": "Epost historik",
     "info.moderation-note": "Moderations anteckning",
-    "info.moderation-note.success": "Moderations anteckning sparad"
+    "info.moderation-note.success": "Moderations anteckning sparad",
+    "info.moderation-note.add": "Add note"
 }

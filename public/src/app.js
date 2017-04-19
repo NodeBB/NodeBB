@@ -630,8 +630,8 @@ app.cacheBuster = null;
 	};
 
 	app.showCookieWarning = function () {
-		if (!config.cookies.enabled) {
-			// Only show warning if enabled (obviously)
+		if (!config.cookies.enabled || !navigator.cookieEnabled) {
+			// Skip warning if cookie consent subsystem disabled (obviously), or cookies not in use
 			return;
 		} else if (window.location.pathname.startsWith(config.relative_path + '/admin')) {
 			// No need to show cookie consent warning in ACP

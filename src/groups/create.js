@@ -3,7 +3,7 @@
 var async = require('async');
 var meta = require('../meta');
 var plugins = require('../plugins');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 var db = require('../database');
 
 module.exports = function (Groups) {

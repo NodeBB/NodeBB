@@ -7,7 +7,7 @@ var validator = require('validator');
 var db = require('./database');
 var batch = require('./batch');
 var user = require('./user');
-var utils = require('../public/src/utils');
+var utils = require('./utils');
 
 (function (events) {
 	events.log = function (data, callback) {

@@ -4,7 +4,7 @@
 var async = require('async');
 
 var topics = require('../topics');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 
 module.exports = function (Posts) {
 	Posts.getPostsFromSet = function (set, start, stop, uid, reverse, callback) {

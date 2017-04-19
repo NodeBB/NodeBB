@@ -6,7 +6,7 @@ var validator = require('validator');
 var user = require('./user');
 var db = require('./database');
 var plugins = require('./plugins');
-var utils = require('../public/src/utils');
+var utils = require('./utils');
 
 var Groups = module.exports;
 

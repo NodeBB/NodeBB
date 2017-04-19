@@ -24,13 +24,13 @@ settingsController.get = function (req, res, next) {
 function renderEmail(req, res, next) {
 	var fs = require('fs');
 	var path = require('path');
-	var utils = require('../../../public/src/utils');
+	var file = require('../../file');
 
 	var emailsPath = path.join(nconf.get('views_dir'), 'emails');
 
 	async.waterfall([
 		function (next) {
-			utils.walk(emailsPath, next);
+			file.walk(emailsPath, next);
 		},
 		function (emails, next) {
 			async.map(emails, function (email, next) {

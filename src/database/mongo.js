@@ -77,12 +77,10 @@
 		var connString = 'mongodb://' + usernamePassword + servers.join() + '/' + nconf.get('mongo:database');
 
 		var connOptions = {
-			server: {
-				poolSize: parseInt(nconf.get('mongo:poolSize'), 10) || 10,
-				socketOptions: { autoReconnect: true, keepAlive: nconf.get('mongo:keepAlive') || 0 },
-				reconnectTries: 3600,
-				reconnectInterval: 1000,
-			},
+			poolSize: 10,
+			reconnectTries: 3600,
+			reconnectInterval: 1000,
+			autoReconnect: true,
 		};
 
 		connOptions = _.deepExtend(connOptions, nconf.get('mongo:options') || {});
@@ -118,9 +116,7 @@
 		var meta = require('../meta');
 		var sessionStore;
 
-		var ttlDays = 1000 * 60 * 60 * 24 * (parseInt(meta.config.loginDays, 10) || 0);
-		var ttlSeconds = 1000 * (parseInt(meta.config.loginSeconds, 10) || 0);
-		var ttl = ttlSeconds || ttlDays || 1209600000; // Default to 14 days
+		var ttl = meta.getSessionTTLSeconds();
 
 		if (nconf.get('redis')) {
 			sessionStore = require('connect-redis')(session);
@@ -168,7 +164,7 @@
 	};
 
 	module.checkCompatibility = function (callback) {
-		var mongoPkg = require.main.require('./node_modules/mongodb/package.json');
+		var mongoPkg = require('mongodb/package.json');
 
 		if (semver.lt(mongoPkg.version, '2.0.0')) {
 			return callback(new Error('The `mongodb` package is out-of-date, please run `./nodebb setup` again.'));

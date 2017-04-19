@@ -130,5 +130,6 @@
     "info.username-history": "Histórico de nome de usuario",
     "info.email-history": "Histórico de Correo Electrónico",
     "info.moderation-note": "Nota do Moderador",
-    "info.moderation-note.success": "Nota do moderador gardada"
+    "info.moderation-note.success": "Nota do moderador gardada",
+    "info.moderation-note.add": "Add note"
 }

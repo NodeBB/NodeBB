@@ -48,7 +48,11 @@ Controllers.home = function (req, res, next) {
 		var hook = 'action:homepage.get:' + route;
 
 		if (plugins.hasListeners(hook)) {
-			return plugins.fireHook(hook, { req: req, res: res, next: next });
+			return plugins.fireHook(hook, {
+				req: req,
+				res: res,
+				next: next,
+			});
 		}
 
 		if (route === 'categories' || route === '/') {
@@ -85,7 +89,15 @@ Controllers.reset = function (req, res, next) {
 				displayExpiryNotice: req.session.passwordExpired,
 				code: req.params.code,
 				minimumPasswordLength: parseInt(meta.config.minimumPasswordLength, 10),
-				breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[reset_password:reset_password]]', url: '/reset' }, { text: '[[reset_password:update_password]]' }]),
+				breadcrumbs: helpers.buildBreadcrumbs([
+					{
+						text: '[[reset_password:reset_password]]',
+						url: '/reset',
+					},
+					{
+						text: '[[reset_password:update_password]]',
+					},
+				]),
 				title: '[[pages:reset]]',
 			});
 
@@ -94,7 +106,9 @@ Controllers.reset = function (req, res, next) {
 	} else {
 		res.render('reset', {
 			code: null,
-			breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[reset_password:reset_password]]' }]),
+			breadcrumbs: helpers.buildBreadcrumbs([{
+				text: '[[reset_password:reset_password]]',
+			}]),
 			title: '[[pages:reset]]',
 		});
 	}
@@ -124,7 +138,9 @@ Controllers.login = function (req, res, next) {
 	data.allowLocalLogin = parseInt(meta.config.allowLocalLogin, 10) === 1 || parseInt(req.query.local, 10) === 1;
 	data.allowRegistration = registrationType === 'normal' || registrationType === 'admin-approval' || registrationType === 'admin-approval-ip';
 	data.allowLoginWith = '[[login:' + allowLoginWith + ']]';
-	data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[global:login]]' }]);
+	data.breadcrumbs = helpers.buildBreadcrumbs([{
+		text: '[[global:login]]',
+	}]);
 	data.error = req.flash('error')[0] || errorText;
 	data.title = '[[pages:login]]';
 
@@ -171,7 +187,11 @@ Controllers.register = function (req, res, next) {
 			}
 		},
 		function (next) {
-			plugins.fireHook('filter:parse.post', { postData: { content: meta.config.termsOfUse || '' } }, next);
+			plugins.fireHook('filter:parse.post', {
+				postData: {
+					content: meta.config.termsOfUse || '',
+				},
+			}, next);
 		},
 	], function (err, termsOfUse) {
 		if (err) {
@@ -188,8 +208,11 @@ Controllers.register = function (req, res, next) {
 		data.minimumUsernameLength = parseInt(meta.config.minimumUsernameLength, 10);
 		data.maximumUsernameLength = parseInt(meta.config.maximumUsernameLength, 10);
 		data.minimumPasswordLength = parseInt(meta.config.minimumPasswordLength, 10);
+		data.minimumPasswordStrength = parseInt(meta.config.minimumPasswordStrength || 0, 10);
 		data.termsOfUse = termsOfUse.postData.content;
-		data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[register:register]]' }]);
+		data.breadcrumbs = helpers.buildBreadcrumbs([{
+			text: '[[register:register]]',
+		}]);
 		data.regFormEntry = [];
 		data.error = req.flash('error')[0] || errorText;
 		data.title = '[[pages:register]]';
@@ -333,7 +356,9 @@ Controllers.outgoing = function (req, res, next) {
 	res.render('outgoing', {
 		outgoing: validator.escape(String(url)),
 		title: meta.config.title,
-		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[notifications:outgoing_link]]' }]),
+		breadcrumbs: helpers.buildBreadcrumbs([{
+			text: '[[notifications:outgoing_link]]',
+		}]),
 	});
 };
 
@@ -341,7 +366,9 @@ Controllers.termsOfUse = function (req, res, next) {
 	if (!meta.config.termsOfUse) {
 		return next();
 	}
-	res.render('tos', { termsOfUse: meta.config.termsOfUse });
+	res.render('tos', {
+		termsOfUse: meta.config.termsOfUse,
+	});
 };
 
 Controllers.ping = function (req, res) {

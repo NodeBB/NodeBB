@@ -43,13 +43,14 @@ exports.handleErrors = function (err, req, res, next) { // eslint-disable-line n
 		return res.status(403).type('text/plain').send(err.message);
 	}
 
-	if (parseInt(err.status, 10) === 302 && err.path) {
-		return res.locals.isAPI ? res.status(302).json(err.path) : res.redirect(err.path);
+	var status = parseInt(err.status, 10);
+	if ((status === 302 || status === 308) && err.path) {
+		return res.locals.isAPI ? res.status(status).json(err.path) : res.redirect(err.path);
 	}
 
 	winston.error(req.path + '\n', err.stack);
 
-	res.status(err.status || 500);
+	res.status(status || 500);
 
 	var path = String(req.path || '');
 	if (res.locals.isAPI) {

@@ -8,7 +8,7 @@ var db = require('./database');
 var user = require('./user');
 var plugins = require('./plugins');
 var meta = require('./meta');
-var utils = require('../public/src/utils');
+var utils = require('./utils');
 
 var Messaging = module.exports;
 

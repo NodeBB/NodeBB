@@ -10,7 +10,7 @@ var user = require('../user');
 var topics = require('../topics');
 var plugins = require('../plugins');
 var emailer = require('../emailer');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 
 (function (Digest) {
 	Digest.execute = function (interval, callback) {

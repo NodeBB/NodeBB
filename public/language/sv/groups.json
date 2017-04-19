@@ -27,6 +27,7 @@
     "details.disableJoinRequests": "Inaktivera förfrågningar om att gå med",
     "details.grant": "Tilldela/Dra tillbaka ägarskap",
     "details.kick": "Sparka ut",
+    "details.kick_confirm": "Are you sure you want to remove this member from the group?",
     "details.owner_options": "Gruppadministration",
     "details.group_name": "Gruppnamn",
     "details.member_count": "Medlemsantal",

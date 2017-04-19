@@ -101,16 +101,21 @@ module.exports = function (Meta) {
 	}
 
 	function updateConfig(config) {
+		updateLocalConfig(config);
 		pubsub.publish('config:update', config);
+	}
+
+	function updateLocalConfig(config) {
+		for (var field in config) {
+			if (config.hasOwnProperty(field)) {
+				Meta.config[field] = config[field];
+			}
+		}
 	}
 
 	pubsub.on('config:update', function onConfigReceived(config) {
 		if (typeof config === 'object' && Meta.config) {
-			for (var field in config) {
-				if (config.hasOwnProperty(field)) {
-					Meta.config[field] = config[field];
-				}
-			}
+			updateLocalConfig(config);
 		}
 	});
 

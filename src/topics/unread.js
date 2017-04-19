@@ -9,7 +9,7 @@ var notifications = require('../notifications');
 var categories = require('../categories');
 var privileges = require('../privileges');
 var meta = require('../meta');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 
 module.exports = function (Topics) {
 	Topics.getTotalUnread = function (uid, filter, callback) {

@@ -6,7 +6,7 @@ var os = require('os');
 var nconf = require('nconf');
 
 var pubsub = require('./pubsub');
-var utils = require('../public/src/utils');
+var utils = require('./utils');
 
 (function (Meta) {
 	Meta.reloadRequired = false;
@@ -49,6 +49,13 @@ var utils = require('../public/src/utils');
 	Meta.restart = function () {
 		pubsub.publish('meta:restart', { hostname: os.hostname() });
 		restart();
+	};
+
+	Meta.getSessionTTLSeconds = function () {
+		var ttlDays = 60 * 60 * 24 * (parseInt(Meta.config.loginDays, 10) || 0);
+		var ttlSeconds = (parseInt(Meta.config.loginSeconds, 10) || 0);
+		var ttl = ttlSeconds || ttlDays || 1209600; // Default to 14 days
+		return ttl;
 	};
 
 	if (nconf.get('isPrimary') === 'true') {

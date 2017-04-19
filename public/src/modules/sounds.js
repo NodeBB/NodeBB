@@ -67,13 +67,13 @@ define('sounds', function () {
 
 			if (id) {
 				var item = 'sounds.handled:' + id;
-				if (sessionStorage.getItem(item)) {
+				if (localStorage.getItem(item)) {
 					return;
 				}
-				sessionStorage.setItem(item, true);
+				localStorage.setItem(item, true);
 
 				setTimeout(function () {
-					sessionStorage.removeItem(item);
+					localStorage.removeItem(item);
 				}, 5000);
 			}
 

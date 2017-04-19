@@ -13,7 +13,7 @@ var url = require('url');
 var User = require('./user');
 var Plugins = require('./plugins');
 var meta = require('./meta');
-var translator = require('../public/src/modules/translator');
+var translator = require('./translator');
 
 var transports = {
 	sendmail: nodemailer.createTransport(sendmailTransport()),

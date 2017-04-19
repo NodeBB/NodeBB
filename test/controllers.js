@@ -10,7 +10,7 @@ var categories = require('../src/categories');
 var topics = require('../src/topics');
 var user = require('../src/user');
 var meta = require('../src/meta');
-
+var translator = require('../src/translator');
 
 describe('Controllers', function () {
 	var tid;
@@ -1013,6 +1013,50 @@ describe('Controllers', function () {
 				assert.equal(res.statusCode, 308);
 				assert.equal(body, '"/topic/1/test-topic-title/1"');
 				done();
+			});
+		});
+	});
+
+	describe('cookie consent', function () {
+		it('should return relevant data in configs API route', function (done) {
+			request(nconf.get('url') + '/api/config', function (err, res, body) {
+				var parsed;
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+
+				try {
+					parsed = JSON.parse(body);
+				} catch (e) {
+					assert.ifError(e);
+				}
+
+				assert.ok(parsed.cookies);
+				assert.equal(translator.escape('[[global:cookies.message]]'), parsed.cookies.message);
+				assert.equal(translator.escape('[[global:cookies.accept]]'), parsed.cookies.dismiss);
+				assert.equal(translator.escape('[[global:cookies.learn_more]]'), parsed.cookies.link);
+
+				done();
+			});
+		});
+
+		it('response should be parseable when entries have apostrophes', function (done) {
+			meta.configs.set('cookieConsentMessage', 'Julian\'s Message', function (err) {
+				assert.ifError(err);
+
+				request(nconf.get('url') + '/api/config', function (err, res, body) {
+					var parsed;
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+
+					try {
+						parsed = JSON.parse(body);
+					} catch (e) {
+						assert.ifError(e);
+					}
+
+					assert.equal('Julian&#x27;s Message', parsed.cookies.message);
+					done();
+				});
 			});
 		});
 	});

@@ -38,11 +38,9 @@ There is a chance that the issue you are experiencing may have already been fixe
 You can find the NodeBB version number in the Admin Control Panel (ACP), as well as the first line output to the shell when running NodeBB
 
 ``` plaintext
-info: NodeBB v0.5.2-dev Copyright (C) 2013-2014 NodeBB Inc.
-info: This program comes with ABSOLUTELY NO WARRANTY.
-info: This is free software, and you are welcome to redistribute it under certain conditions.
-info: 
-info: Time: Tue Oct 07 2014 20:25:20 GMT-0400 (EDT)
+3/4 12:38:57 [10752] - info: NodeBB v1.4.5 Copyright (C) 2013-2017 NodeBB Inc.
+3/4 12:38:57 [10752] - info: This program comes with ABSOLUTELY NO WARRANTY.
+3/4 12:38:57 [10752] - info: This is free software, and you are welcome to redistribute it under certain conditions.
 ```
 
 If you are running NodeBB via git, it is also helpful to let the maintainers know what commit hash you are on. To find the commit hash, execute the following command:

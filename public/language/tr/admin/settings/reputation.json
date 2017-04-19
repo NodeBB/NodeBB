@@ -2,6 +2,7 @@
 	"reputation": "Oylama Ayarları",
 	"disable": "Disable Reputation System",
 	"disable-down-voting": "Eksi oyu devredışı bırak",
+	"votes-are-public": "All Votes Are Public",
 	"thresholds": "Activity Thresholds",
 	"min-rep-downvote": "Minimum reputation to downvote posts",
 	"min-rep-flag": "Minimum reputation to flag posts"

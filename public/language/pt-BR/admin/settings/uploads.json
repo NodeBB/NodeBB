@@ -9,7 +9,7 @@
 	"allow-topic-thumbnails": "Permitir usuários de enviar miniaturas de tópico",
 	"topic-thumb-size": "Tamanho da Miniatura de Tópico",
 	"allowed-file-extensions": "Extensões de Arquivo Permitidas",
-	"allowed-file-extensions-help": "Enter comma-separated list of file extensions here (e.g. <code>pdf,xls,doc</code>). An empty list means all extensions are allowed.",
+	"allowed-file-extensions-help": "Digite uma lista separada por vírguls fr extensões de arquivos aqui (ex. <code>pdf,xls,doc</code>). Uma lista vazia significa que todas as extensões são permitidas.",
 	"profile-avatars": "Avatares de Perfil",
 	"allow-profile-image-uploads": "Permitir usuários de enviar imagens de perfil",
 	"convert-profile-image-png": "Converter imagens de perfil enviadas para PNG",

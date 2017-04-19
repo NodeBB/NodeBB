@@ -1,11 +1,11 @@
 {
-	"post-cache": "Post Cache",
-	"posts-in-cache": "Posts in Cache",
-	"average-post-size": "Average Post Size",
-	"length-to-max": "Length / Max",
-	"percent-full": "%1% Full",
-	"post-cache-size": "Post Cache Size",
-	"items-in-cache": "Items in Cache",
-	"control-panel": "Control Panel",
-	"update-settings": "Update Cache Settings"
+	"post-cache": "แคชข้อความ",
+	"posts-in-cache": "ข้อความที่ถูกแคช",
+	"average-post-size": "ขนาดแคชโดยเฉลี่ย",
+	"length-to-max": "ความยาว / สูงสุด",
+	"percent-full": "เต็ม %1%",
+	"post-cache-size": "ขนาดแคชของข้อความ",
+	"items-in-cache": "รายการที่ถูกแคช",
+	"control-panel": "แผงควบคุม",
+	"update-settings": "บันทึกการตั้งค่าแคช"
 }

@@ -35,7 +35,7 @@
 			</div>
 			<div class="form-group">
 				<label for="access-control-allow-origin">[[admin/settings/advanced:headers.acao]]</label>
-				<input class="form-control" id="access-control-allow-origin" type="text" placeholder="null" value="null" data-field="access-control-allow-origin" /><br />
+				<input class="form-control" id="access-control-allow-origin" type="text" placeholder="" value="" data-field="access-control-allow-origin" /><br />
 				<p class="help-block">
 					[[admin/settings/advanced:headers.acao-help]]
 				</p>

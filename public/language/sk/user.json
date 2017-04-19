@@ -130,5 +130,6 @@
     "info.username-history": "História užívateľského mena",
     "info.email-history": "Hitória e-mailu",
     "info.moderation-note": "Zmierňujúca poznámka",
-    "info.moderation-note.success": "Zmierňujúca poznámka nebola uložená"
+    "info.moderation-note.success": "Zmierňujúca poznámka nebola uložená",
+    "info.moderation-note.add": "Pridať poznámku"
 }

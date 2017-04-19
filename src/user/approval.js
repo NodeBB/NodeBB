@@ -9,8 +9,8 @@ var meta = require('../meta');
 var emailer = require('../emailer');
 var notifications = require('../notifications');
 var groups = require('../groups');
-var translator = require('../../public/src/modules/translator');
-var utils = require('../../public/src/utils');
+var translator = require('../translator');
+var utils = require('../utils');
 var plugins = require('../plugins');
 
 module.exports = function (User) {

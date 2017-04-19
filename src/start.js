@@ -104,7 +104,6 @@ function setupConfigs() {
 
 function printStartupInfo() {
 	if (nconf.get('isPrimary') === 'true') {
-		winston.info('Time: %s', (new Date()).toString());
 		winston.info('Initializing NodeBB v%s', nconf.get('version'));
 
 		var host = nconf.get(nconf.get('database') + ':host');
