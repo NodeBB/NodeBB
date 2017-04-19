@@ -291,7 +291,7 @@ function getBundleScriptList(target, callback) {
 
 		var scripts = js.scripts.base.concat(pluginScripts);
 
-		if (target === 'client') {
+		if (target === 'client' && global.env !== 'development') {
 			scripts = scripts.concat(js.scripts.rjs);
 		}
 
