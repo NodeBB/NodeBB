@@ -101,7 +101,7 @@ module.exports = function (Posts) {
 					if (err) {
 						return next(err);
 					}
-					plugins.fireHook('filter:post.get', postData, next);
+					plugins.fireHook('filter:post.get', { post: postData, uid: data.uid }, next);
 				});
 			},
 			function (postData, next) {

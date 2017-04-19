@@ -94,13 +94,17 @@ var plugins = require('./plugins');
 	};
 
 	Posts.getPostData = function (pid, callback) {
-		db.getObject('post:' + pid, function (err, data) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function (next) {
+				db.getObject('post:' + pid, next);
+			},
+			function (data, next) {
+				plugins.fireHook('filter:post.getPostData', { post: data }, next);
+			},
+			function (data, next) {
+				next(null, data.post);
 			}
-
-			plugins.fireHook('filter:post.get', data, callback);
-		});
+		], callback);
 	};
 
 	Posts.getPostField = function (pid, field, callback) {
