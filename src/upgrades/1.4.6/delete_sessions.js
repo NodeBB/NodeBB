@@ -11,6 +11,7 @@ module.exports = {
 	method: function (callback) {
 		var configJSON = require.main.require('./config.json');
 		var isRedisSessionStore = configJSON.hasOwnProperty('redis');
+		var progress = this.progress;
 
 		async.waterfall([
 			function (next) {
@@ -22,7 +23,10 @@ module.exports = {
 							client.keys('sess:*', next);
 						},
 						function (sessionKeys, next) {
+							progress.total = sessionKeys.length;
+
 							async.eachSeries(sessionKeys, function (key, next) {
+								progress.incr();
 								client.del(key, next);
 							}, next);
 						},
