@@ -17,6 +17,7 @@ module.exports = {
 			function (next) {
 				if (isRedisSessionStore) {
 					var rdb = require.main.require('./src/database/redis');
+					var batch = require.main.require('./src/batch');
 					var client = rdb.connect();
 					async.waterfall([
 						function (next) {
@@ -25,9 +26,15 @@ module.exports = {
 						function (sessionKeys, next) {
 							progress.total = sessionKeys.length;
 
-							async.eachSeries(sessionKeys, function (key, next) {
-								progress.incr();
-								client.del(key, next);
+							batch.processArray(sessionKeys, function (keys, next) {
+								var multi = client.multi();
+								keys.forEach(function (key) {
+									progress.incr();
+									multi.del(key);
+								});
+								multi.exec(next);
+							}, {
+								batch: 1000,
 							}, next);
 						},
 					], function (err) {
