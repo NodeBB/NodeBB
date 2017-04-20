@@ -630,16 +630,17 @@ app.cacheBuster = null;
 	};
 
 	app.showCookieWarning = function () {
-		if (!config.cookies.enabled || !navigator.cookieEnabled) {
-			// Skip warning if cookie consent subsystem disabled (obviously), or cookies not in use
-			return;
-		} else if (window.location.pathname.startsWith(config.relative_path + '/admin')) {
-			// No need to show cookie consent warning in ACP
-			return;
-		} else if (window.localStorage.getItem('cookieconsent') === '1') {
-			return;
-		}
-		require(['translator'], function (translator) {
+		require(['translator', 'storage'], function (translator, storage) {
+			if (!config.cookies.enabled || !navigator.cookieEnabled) {
+				// Skip warning if cookie consent subsystem disabled (obviously), or cookies not in use
+				return;
+			} else if (window.location.pathname.startsWith(config.relative_path + '/admin')) {
+				// No need to show cookie consent warning in ACP
+				return;
+			} else if (storage.getItem('cookieconsent') === '1') {
+				return;
+			}
+
 			config.cookies.message = translator.unescape(config.cookies.message);
 			config.cookies.dismiss = translator.unescape(config.cookies.dismiss);
 			config.cookies.link = translator.unescape(config.cookies.link);
@@ -651,7 +652,7 @@ app.cacheBuster = null;
 				var dismissEl = warningEl.find('button');
 				dismissEl.on('click', function () {
 					// Save consent cookie and remove warning element
-					window.localStorage.setItem('cookieconsent', '1');
+					storage.setItem('cookieconsent', '1');
 					warningEl.remove();
 				});
 			});

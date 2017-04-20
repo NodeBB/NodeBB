@@ -78,6 +78,7 @@ module.exports = function (Meta) {
 				'public/src/modules/taskbar.js',
 				'public/src/modules/helpers.js',
 				'public/src/modules/string.js',
+				'public/src/modules/storage.js',
 			],
 
 			// modules listed below are built (/src/modules) so they can be defined anonymously
