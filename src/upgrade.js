@@ -440,14 +440,21 @@ Upgrade.upgrade = function (callback) {
 					function (next) {
 						if (isRedisSessionStore) {
 							var rdb = require('./database/redis');
+							var batch = require('./batch');
 							var client = rdb.connect();
 							async.waterfall([
 								function (next) {
 									client.keys('sess:*', next);
 								},
 								function (sessionKeys, next) {
-									async.eachSeries(sessionKeys, function (key, next) {
-										client.del(key, next);
+									batch.processArray(sessionKeys, function (keys, next) {
+										var multi = client.multi();
+										keys.forEach(function (key) {
+											multi.del(key);
+										});
+										multi.exec(next);
+									}, {
+										batch: 1000,
 									}, next);
 								},
 							], function (err) {
