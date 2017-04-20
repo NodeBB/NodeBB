@@ -129,7 +129,7 @@
 	"chat-disabled": "Chat system disabled",
 	"too-many-messages": "You have sent too many messages, please wait awhile.",
 	"invalid-chat-message": "Invalid chat message",
-	"chat-message-too-long": "Chat message is too long",
+	"chat-message-too-long": "Chat messages can not be longer than %1 characters.",
 	"cant-edit-chat-message": "You are not allowed to edit this message",
 	"cant-remove-last-user": "You can't remove the last user",
 	"cant-delete-chat-message": "You are not allowed to delete this message",
