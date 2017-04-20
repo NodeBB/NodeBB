@@ -8,6 +8,7 @@ define('storage', function () {
 		this._store = {};
 		this._keys = [];
 	}
+	Storage.prototype.isMock = true;
 	Storage.prototype.setItem = function (key, val) {
 		key = String(key);
 		if (this._keys.indexOf(key) === -1) {
