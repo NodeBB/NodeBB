@@ -1,0 +1,11 @@
+{
+    "url": "https://cryptic-inlet-39584.herokuapp.com/",
+    "secret": "390d297c-39b4-47fa-9d9a-8b7817eb0686",
+    "database": "redis",
+    "redis": {
+        "host": "redis://redistogo:8701e2e4bf4a049d6c7514d15eabb890@crestfish.redistogo.com:10877/",
+        "port": "10877",
+        "password": "8701e2e4bf4a049d6c7514d15eabb890",
+        "database": "0"
+    }
+}
