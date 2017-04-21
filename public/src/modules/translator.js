@@ -415,7 +415,7 @@
 		 * @returns {string}
 		 */
 		Translator.escape = function escape(text) {
-			return typeof text === 'string' ? text.replace(/\[/g, '&lsqb;').replace(/\]/g, '&rsqb;') : text;
+			return typeof text === 'string' ? text.replace(/\[\[/g, '&lsqb;&lsqb;').replace(/\]\]/g, '&rsqb;&rsqb;') : text;
 		};
 
 		/**
