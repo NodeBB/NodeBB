@@ -150,14 +150,13 @@ define('forum/topic', [
 				return navigator.scrollToPostIndex(postIndex, true, 0);
 			}
 		} else if (bookmark && (!config.usePagination || (config.usePagination && ajaxify.data.pagination.currentPage === 1)) && ajaxify.data.postcount > ajaxify.data.bookmarkThreshold) {
-			navigator.update(0);
 			app.alert({
 				alert_id: 'bookmark',
 				message: '[[topic:bookmark_instructions]]',
 				timeout: 0,
 				type: 'info',
 				clickfn: function () {
-					navigator.scrollToPost(parseInt(bookmark - 1, 10), true);
+					navigator.scrollToIndex(parseInt(bookmark - 1, 10), true);
 				},
 				closefn: function () {
 					localStorage.removeItem('topic:' + tid + ':bookmark');
@@ -166,8 +165,6 @@ define('forum/topic', [
 			setTimeout(function () {
 				app.removeAlert('bookmark');
 			}, 10000);
-		} else {
-			navigator.update(0);
 		}
 	}
 
@@ -204,7 +201,7 @@ define('forum/topic', [
 			var toPost = $('[component="post"][data-pid="' + toPid + '"]');
 			if (toPost.length) {
 				e.preventDefault();
-				navigator.scrollToPost(toPost.attr('data-index'), true);
+				navigator.scrollToIndex(toPost.attr('data-index'), true);
 				return false;
 			}
 		});

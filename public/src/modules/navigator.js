@@ -1,6 +1,4 @@
-
 'use strict';
-
 
 define('navigator', ['forum/pagination', 'components'], function (pagination, components) {
 	var navigator = {};
@@ -55,6 +53,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		});
 
 		navigator.setCount(count);
+		navigator.update(0);
 	};
 
 	function generateUrl(index) {
@@ -183,7 +182,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 
 	navigator.scrollTop = function (index) {
 		if ($(navigator.selector + '[data-index="' + index + '"]').length) {
-			navigator.scrollToPost(index, true);
+			navigator.scrollToIndex(index, true);
 		} else {
 			ajaxify.go(generateUrl());
 		}
@@ -193,49 +192,77 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		if (parseInt(index, 10) < 0) {
 			return;
 		}
+
 		if ($(navigator.selector + '[data-index="' + index + '"]').length) {
-			navigator.scrollToPost(index, true);
+			navigator.scrollToIndex(index, true);
 		} else {
 			index = parseInt(index, 10) + 1;
 			ajaxify.go(generateUrl(index));
 		}
 	};
 
-	navigator.scrollToPost = function (postIndex, highlight, duration) {
-		if (!utils.isNumber(postIndex) || !components.get('topic').length) {
+	navigator.scrollToPost = function (index, highlight, duration) {
+		console.log('[navigator.scrollToPost] deprecated please use, navigator.scrollToIndex');
+		navigator.scrollToIndex(index, highlight, duration);
+	};
+
+	navigator.scrollToIndex = function (index, highlight, duration) {
+		var inTopic = !!components.get('topic').length;
+		var inCategory = !!components.get('category').length;
+
+		if (!utils.isNumber(index) || (!inTopic && !inCategory)) {
 			return;
 		}
 
 		duration = duration !== undefined ? duration : 400;
 		navigator.scrollActive = true;
 
-		if (components.get('post/anchor', postIndex).length) {
-			return navigator.scrollToPostIndex(postIndex, highlight, duration);
+		// if in topic and item already on page
+		if (inTopic && components.get('post/anchor', index).length) {
+			return navigator.scrollToPostIndex(index, highlight, duration);
 		}
 
-		if (config.usePagination) {
-			var index = postIndex;
+		// if in category and item alreay on page
+		if (inCategory && $('[component="category/topic"][data-index="' + index + '"]').length) {
+			return navigator.scrollToTopicIndex(index, highlight, duration);
+		}
+
+		if (!config.usePagination) {
+			navigator.scrollActive = false;
+			index = parseInt(index, 10) + 1;
+			ajaxify.go(generateUrl(index));
+			return;
+		}
+
+		var scrollMethod = inTopic ? navigator.scrollToPostIndex : navigator.scrollToTopicIndex;
+		if (inTopic) {
 			if (config.topicPostSort === 'most_votes' || config.topicPostSort === 'newest_to_oldest') {
 				index = ajaxify.data.postcount - index;
 			}
-			var page = Math.max(1, Math.ceil(index / config.postsPerPage));
-
-			if (parseInt(page, 10) !== ajaxify.data.pagination.currentPage) {
-				pagination.loadPage(page, function () {
-					navigator.scrollToPostIndex(postIndex, highlight, duration);
-				});
-			} else {
-				navigator.scrollToPostIndex(postIndex, highlight, duration);
+		} else if (inCategory) {
+			if (config.categoryTopicSort === 'most_posts' || config.categoryTopicSort === 'oldest_to_newest') {
+				index = ajaxify.data.ajaxify.data.topic_count - index;
 			}
+		}
+
+		var page = Math.max(1, Math.ceil(index / config.postsPerPage));
+
+		if (parseInt(page, 10) !== ajaxify.data.pagination.currentPage) {
+			pagination.loadPage(page, function () {
+				scrollMethod(index, highlight, duration);
+			});
 		} else {
-			navigator.scrollActive = false;
-			postIndex = parseInt(postIndex, 10) + 1;
-			ajaxify.go(generateUrl(postIndex));
+			scrollMethod(index, highlight, duration);
 		}
 	};
 
 	navigator.scrollToPostIndex = function (postIndex, highlight, duration) {
 		var scrollTo = components.get('post', 'index', postIndex);
+		navigator.scrollToElement(scrollTo, highlight, duration);
+	};
+
+	navigator.scrollToTopicIndex = function (topicIndex, highlight, duration) {
+		var scrollTo = $('[component="category/topic"][data-index="' + topicIndex + '"]');
 		navigator.scrollToElement(scrollTo, highlight, duration);
 	};
 
