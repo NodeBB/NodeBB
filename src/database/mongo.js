@@ -201,7 +201,7 @@ mongoModule.info = function (db, callback) {
 			return callback(err);
 		}
 		var stats = results.stats;
-		var scale = 1024 * 1024;
+		var scale = 1024 * 1024 * 1024;
 
 		results.listCollections = results.listCollections.map(function (collectionInfo) {
 			return {
@@ -216,6 +216,10 @@ mongoModule.info = function (db, callback) {
 		});
 
 		stats.mem = results.serverStatus.mem;
+		stats.mem = results.serverStatus.mem;
+		stats.mem.resident = (stats.mem.resident / 1024).toFixed(2);
+		stats.mem.virtual = (stats.mem.virtual / 1024).toFixed(2);
+		stats.mem.mapped = (stats.mem.mapped / 1024).toFixed(2);
 		stats.collectionData = results.listCollections;
 		stats.network = results.serverStatus.network;
 		stats.raw = JSON.stringify(stats, null, 4);

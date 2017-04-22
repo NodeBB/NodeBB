@@ -13,16 +13,16 @@
 					<span>[[admin/advanced/database:mongo.objects]]</span> <span class="text-right formatted-number">{mongo.objects}</span><br/>
 					<span>[[admin/advanced/database:mongo.avg-object-size]]</span> <span class="text-right">[[admin/advanced/database:x-b, {mongo.avgObjSize}]]</span><br/>
 					<hr/>
-					<span>[[admin/advanced/database:mongo.data-size]]</span> <span class="text-right">[[admin/advanced/database:x-mb, {mongo.dataSize}]]</span><br/>
-					<span>[[admin/advanced/database:mongo.storage-size]]</span> <span class="text-right">[[admin/advanced/database:x-mb, {mongo.storageSize}]]</span><br/>
-					<span>[[admin/advanced/database:mongo.index-size]]</span> <span class="text-right">[[admin/advanced/database:x-mb, {mongo.indexSize}]]</span><br/>
+					<span>[[admin/advanced/database:mongo.data-size]]</span> <span class="text-right">[[admin/advanced/database:x-gb, {mongo.dataSize}]]</span><br/>
+					<span>[[admin/advanced/database:mongo.storage-size]]</span> <span class="text-right">[[admin/advanced/database:x-gb, {mongo.storageSize}]]</span><br/>
+					<span>[[admin/advanced/database:mongo.index-size]]</span> <span class="text-right">[[admin/advanced/database:x-gb, {mongo.indexSize}]]</span><br/>
 					<!-- IF mongo.fileSize -->
-					<span>[[admin/advanced/database:mongo.file-size]]</span> <span class="text-right">[[admin/advanced/database:x-mb, {mongo.fileSize}]]</span><br/>
+					<span>[[admin/advanced/database:mongo.file-size]]</span> <span class="text-right">[[admin/advanced/database:x-gb, {mongo.fileSize}]]</span><br/>
 					<!-- ENDIF mongo.fileSize -->
 					<hr/>
-					<span>[[admin/advanced/database:mongo.resident-memory]]</span> <span class="text-right">[[admin/advanced/database:x-mb, {mongo.mem.resident}]]</span><br/>
-					<span>[[admin/advanced/database:mongo.virtual-memory]]</span> <span class="text-right">[[admin/advanced/database:x-mb, {mongo.mem.virtual}]]</span><br/>
-					<span>[[admin/advanced/database:mongo.mapped-memory]]</span> <span class="text-right">[[admin/advanced/database:x-mb, {mongo.mem.mapped}]]</span><br/>
+					<span>[[admin/advanced/database:mongo.resident-memory]]</span> <span class="text-right">[[admin/advanced/database:x-gb, {mongo.mem.resident}]]</span><br/>
+					<span>[[admin/advanced/database:mongo.virtual-memory]]</span> <span class="text-right">[[admin/advanced/database:x-gb, {mongo.mem.virtual}]]</span><br/>
+					<span>[[admin/advanced/database:mongo.mapped-memory]]</span> <span class="text-right">[[admin/advanced/database:x-gb, {mongo.mem.mapped}]]</span><br/>
 				</div>
 			</div>
 		</div>
@@ -43,7 +43,7 @@
 					<span>[[admin/advanced/database:redis.blocked-clients]]</span> <span class="text-right">{redis.blocked_clients}</span><br/>
 					<hr/>
 
-					<span>[[admin/advanced/database:redis.used-memory]]</span> <span class="text-right">{redis.used_memory_human}</span><br/>
+					<span>[[admin/advanced/database:redis.used-memory]]</span> <span class="text-right">[[admin/advanced/database:x-gb, {redis.used_memory_human}]]</span><br/>
 					<span>[[admin/advanced/database:redis.memory-frag-ratio]]</span> <span class="text-right">{redis.mem_fragmentation_ratio}</span><br/>
 					<hr/>
 					<span>[[admin/advanced/database:redis.total-connections-recieved]]</span> <span class="text-right formatted-number">{redis.total_connections_received}</span><br/>
