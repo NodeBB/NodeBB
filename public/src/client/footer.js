@@ -6,14 +6,8 @@ define('forum/footer', ['notifications', 'chat', 'components', 'translator'], fu
 	Chat.prepareDOM();
 	translator.prepareDOM();
 
-	function updateUnreadTopicCount(count) {
-		$('#unread-count i')
-			.toggleClass('unread-count', count > 0)
-			.attr('data-content', count > 99 ? '99+' : count);
-	}
-
-	function updateUnreadNewTopicCount(count) {
-		$('#unread-new-count i')
+	function updateUnreadTopicCount(url, count) {
+		$('#main-nav a[href="' + config.relative_path + url + '"] i')
 			.toggleClass('unread-count', count > 0)
 			.attr('data-content', count > 99 ? '99+' : count);
 	}
@@ -67,14 +61,20 @@ define('forum/footer', ['notifications', 'chat', 'components', 'translator'], fu
 				return app.alert(err.message);
 			}
 
-			updateUnreadTopicCount(data.unreadTopicCount);
-			updateUnreadNewTopicCount(data.unreadNewTopicCount);
+			updateUnreadCounters(data);
+
 			updateUnreadChatCount(data.unreadChatCount);
 			Notifications.updateNotifCount(data.unreadNotificationCount);
 		});
 	}
 
-	socket.on('event:unread.updateCount', updateUnreadTopicCount);
+	function updateUnreadCounters(data) {
+		updateUnreadTopicCount('/unread', data.unreadTopicCount);
+		updateUnreadTopicCount('/unread/new', data.unreadNewTopicCount);
+		updateUnreadTopicCount('/unread/watched', data.unreadWatchedTopicCount);
+	}
+
+	socket.on('event:unread.updateCount', updateUnreadCounters);
 	socket.on('event:unread.updateChatCount', updateUnreadChatCount);
 
 	initUnreadTopics();
