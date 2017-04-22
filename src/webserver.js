@@ -55,13 +55,16 @@ module.exports.listen = function (callback) {
 	callback = callback || function () { };
 	emailer.registerApp(app);
 
-	setupExpressApp(app);
-
-	helpers.register();
-
-	logger.init(app);
-
 	async.waterfall([
+		function (next) {
+			setupExpressApp(app, next);
+		},
+		function (next) {
+			helpers.register();
+
+			logger.init(app);
+			next();
+		},
 		initializeNodeBB,
 		function (next) {
 			winston.info('NodeBB Ready');
@@ -110,7 +113,7 @@ function initializeNodeBB(callback) {
 	});
 }
 
-function setupExpressApp(app) {
+function setupExpressApp(app, callback) {
 	var middleware = require('./middleware');
 
 	var relativePath = nconf.get('relative_path');
@@ -155,6 +158,8 @@ function setupExpressApp(app) {
 	var toobusy = require('toobusy-js');
 	toobusy.maxLag(parseInt(meta.config.eventLoopLagThreshold, 10) || 100);
 	toobusy.interval(parseInt(meta.config.eventLoopInterval, 10) || 500);
+
+	setupAutoLocale(app, callback);
 }
 
 function setupFavicon(app) {
@@ -186,6 +191,35 @@ function setupCookie() {
 	}
 
 	return cookie;
+}
+
+function setupAutoLocale(app, callback) {
+	languages.listCodes(function (err, codes) {
+		if (err) {
+			return callback(err);
+		}
+
+		var defaultLang = meta.config.defaultLang || 'en-GB';
+
+		var langs = [defaultLang].concat(codes).filter(function (el, i, arr) {
+			return arr.indexOf(el) === i;
+		});
+
+		app.use(function (req, res, next) {
+			if (parseInt(req.uid, 10) > 0 || parseInt(meta.config.autoDetectLang, 10) !== 1) {
+				return next();
+			}
+
+			var lang = req.acceptsLanguages(langs);
+			if (!lang) {
+				return next();
+			}
+			req.query.lang = lang;
+			next();
+		});
+
+		callback();
+	});
 }
 
 function listen(callback) {
