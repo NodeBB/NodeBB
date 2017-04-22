@@ -5,7 +5,7 @@
 	"uptime-days": "Uptime in Days",
 
 	"mongo": "Mongo",
-	"mongo.version": "MongoDB Version",
+	"mongo.version": "Έκδοση MongoDB",
 	"mongo.storage-engine": "Storage Engine",
 	"mongo.collections": "Collections",
 	"mongo.objects": "Objects",
@@ -20,7 +20,7 @@
 	"mongo.raw-info": "MongoDB Raw Info",
 
 	"redis": "Redis",
-	"redis.version": "Redis Version",
+	"redis.version": "Έκδοση Redis",
 	"redis.connected-clients": "Connected Clients",
 	"redis.connected-slaves": "Connected Slaves",
 	"redis.blocked-clients": "Blocked Clients",
