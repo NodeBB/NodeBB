@@ -24,9 +24,7 @@ exports.processSortedSet = function (setKey, process, options, callback) {
 	// Progress bar handling (upgrade scripts)
 	if (options.progress) {
 		db.sortedSetCard(setKey, function (err, total) {
-			if (err) {
-				// Unable to get total, do nothing.
-			} else {
+			if (!err) {
 				options.progress.total = total;
 			}
 		});
