@@ -29,7 +29,7 @@
     "maximumAboutMeLength": 1000,
     "maximumProfileImageSize": 256,
     "maximumCoverImageSize": 2048,
-    "profileImageDimension": 128,
+    "profileImageDimension": 200,
     "requireEmailConfirmation": 0,
     "allowProfileImageUploads": 1,
     "teaserPost": "last-reply",

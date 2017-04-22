@@ -207,11 +207,6 @@ topicsController.get = function (req, res, callback) {
 					content: 'article',
 				},
 				{
-					property: 'og:url',
-					content: nconf.get('url') + '/topic/' + topicData.slug + (req.params.post_index ? ('/' + req.params.post_index) : ''),
-					noEscape: true,
-				},
-				{
 					property: 'og:image',
 					content: ogImageUrl,
 					noEscape: true,

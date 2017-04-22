@@ -91,7 +91,7 @@
 
 			<div class="form-group">
 				<label for="profileImageDimension">[[admin/settings/uploads:profile-image-dimension]]</label>
-				<input id="profileImageDimension" type="text" class="form-control" data-field="profileImageDimension" placeholder="128" />
+				<input id="profileImageDimension" type="text" class="form-control" data-field="profileImageDimension" placeholder="200" />
 				<p class="help-block">
 					[[admin/settings/uploads:profile-image-dimension-help]]
 				</p>
