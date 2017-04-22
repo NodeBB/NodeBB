@@ -5,6 +5,7 @@
 var async = require('async');
 var path = require('path');
 var semver = require('semver');
+var readline = require('readline');
 
 var db = require('./database');
 var file = require('../src/file');
@@ -131,7 +132,7 @@ Upgrade.process = function (files, skipCount, callback) {
 					date: date,
 				};
 
-				process.stdout.write('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '... ');
+				process.stdout.write('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '...\n ');
 
 				// For backwards compatibility, cross-reference with schemaDate (if found). If a script's date is older, skip it
 				if ((!results.schemaDate && !results.schemaLogCount) || (scriptExport.timestamp <= results.schemaDate && semver.lt(version, '1.5.0'))) {
@@ -150,8 +151,8 @@ Upgrade.process = function (files, skipCount, callback) {
 					}
 
 					if (progress.total > 0) {
-						process.stdout.clearLine();
-						process.stdout.cursorTo(0);
+						readline.clearLine(process.stdout, 0);
+						readline.cursorTo(process.stdout, 0);
 						process.stdout.write('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '... ');
 					}
 
@@ -180,11 +181,9 @@ Upgrade.incrementProgress = function () {
 		filled = Math.floor((this.current / this.total) * 15);
 		unfilled = 15 - filled;
 	}
-	process.stdout.clearLine();
-	process.stdout.cursorTo(0);
 
-	process.stdout.write('  → '.white + String('[' + [this.date.getUTCFullYear(), this.date.getUTCMonth() + 1, this.date.getUTCDate()].join('/') + '] ').gray + String(this.script.name).reset + '... ');
-	process.stdout.write('[' + (filled ? new Array(filled).join('#') : '') + new Array(unfilled).join(' ') + '] (' + this.current + '/' + (this.total || '??') + ') ' + percentage);
+	readline.cursorTo(process.stdout, 0);
+	process.stdout.write('    [' + (filled ? new Array(filled).join('#') : '') + new Array(unfilled).join(' ') + '] (' + this.current + '/' + (this.total || '??') + ') ' + percentage + ' ');
 };
 
 module.exports = Upgrade;

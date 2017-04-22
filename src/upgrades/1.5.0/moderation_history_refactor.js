@@ -17,6 +17,7 @@ module.exports = {
 			async.each(ids, function (uid, next) {
 				db.getObjectField('user:' + uid, 'moderationNote', function (err, moderationNote) {
 					if (err || !moderationNote) {
+						progress.incr();
 						return next(err);
 					}
 					var note = {
