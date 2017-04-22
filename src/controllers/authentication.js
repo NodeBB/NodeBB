@@ -344,10 +344,15 @@ authenticationController.localLogin = function (req, username, password, next) {
 	var uid;
 	var userData = {};
 
+	if (!password || !utils.isPasswordValid(password)) {
+		return next(new Error('[[error:invalid-password]]'));
+	}
+
+	if (password.length > 4096) {
+		return next(new Error('[[error:password-too-long]]'));
+	}
+
 	async.waterfall([
-		function (next) {
-			user.isPasswordValid(password, next);
-		},
 		function (next) {
 			user.getUidByUserslug(userslug, next);
 		},
