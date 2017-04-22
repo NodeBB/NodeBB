@@ -206,7 +206,7 @@ function setupAutoLocale(app, callback) {
 		});
 
 		app.use(function (req, res, next) {
-			if (parseInt(req.uid, 10) > 0) {
+			if (parseInt(req.uid, 10) > 0 || parseInt(meta.config.autoDetectLang, 10) !== 1) {
 				return next();
 			}
 
