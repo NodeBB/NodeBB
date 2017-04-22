@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('search', ['navigator', 'translator'], function (nav, translator) {
+define('search', ['navigator', 'translator', 'storage'], function (nav, translator, storage) {
 	var Search = {
 		current: {},
 	};
@@ -79,7 +79,7 @@ define('search', ['navigator', 'translator'], function (nav, translator) {
 
 	Search.getSearchPreferences = function () {
 		try {
-			return JSON.parse(localStorage.getItem('search-preferences') || '{}');
+			return JSON.parse(storage.getItem('search-preferences') || '{}');
 		} catch (e) {
 			return {};
 		}

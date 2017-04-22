@@ -11,7 +11,8 @@ define('forum/category', [
 	'translator',
 	'topicSelect',
 	'forum/pagination',
-], function (infinitescroll, share, navigator, categoryTools, sort, components, translator, topicSelect, pagination) {
+	'storage',
+], function (infinitescroll, share, navigator, categoryTools, sort, components, translator, topicSelect, pagination, storage) {
 	var Category = {};
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
@@ -51,8 +52,8 @@ define('forum/category', [
 			var clickedIndex = $(this).parents('[data-index]').attr('data-index');
 			$('[component="category/topic"]').each(function (index, el) {
 				if ($(el).offset().top - $(window).scrollTop() > 0) {
-					localStorage.setItem('category:' + cid + ':bookmark', $(el).attr('data-index'));
-					localStorage.setItem('category:' + cid + ':bookmark:clicked', clickedIndex);
+					storage.setItem('category:' + cid + ':bookmark', $(el).attr('data-index'));
+					storage.setItem('category:' + cid + ':bookmark:clicked', clickedIndex);
 					return false;
 				}
 			});
@@ -118,8 +119,8 @@ define('forum/category', [
 
 	$(window).on('action:ajaxify.contentLoaded', function () {
 		if (ajaxify.data.template.category && ajaxify.data.cid) {
-			var bookmarkIndex = localStorage.getItem('category:' + ajaxify.data.cid + ':bookmark');
-			var clickedIndex = localStorage.getItem('category:' + ajaxify.data.cid + ':bookmark:clicked');
+			var bookmarkIndex = storage.getItem('category:' + ajaxify.data.cid + ':bookmark');
+			var clickedIndex = storage.getItem('category:' + ajaxify.data.cid + ':bookmark:clicked');
 
 			bookmarkIndex = Math.max(0, parseInt(bookmarkIndex, 10) || 0);
 			clickedIndex = Math.max(0, parseInt(clickedIndex, 10) || 0);
