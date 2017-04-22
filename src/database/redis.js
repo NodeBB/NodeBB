@@ -8,6 +8,8 @@ var session = require('express-session');
 var redis = require('redis');
 var redisClient;
 
+_.mixin(require('underscore.deep'));
+
 var redisModule = module.exports;
 
 redisModule.questions = [
