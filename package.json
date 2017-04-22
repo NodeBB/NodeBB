@@ -77,7 +77,7 @@
     "promise-polyfill": "^6.0.2",
     "prompt": "^1.0.0",
     "redis": "~2.6.2",
-    "request": "^2.44.0",
+    "request": "2.81.0",
     "rimraf": "~2.5.0",
     "rss": "^1.0.0",
     "sanitize-html": "^1.13.0",
