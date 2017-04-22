@@ -36,7 +36,6 @@ redisModule.questions = [
 ];
 
 redisModule.init = function (callback) {
-
 	redisClient = redisModule.connect();
 
 	redisModule.client = redisClient;
