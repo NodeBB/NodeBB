@@ -80,6 +80,8 @@ redisModule.connect = function (options) {
 		options.auth_pass = nconf.get('redis:password');
 	}
 
+	options = _.deepExtend(options, nconf.get('redis:options') || {});
+
 	if (redis_socket_or_host && redis_socket_or_host.indexOf('/') >= 0) {
 		/* If redis.host contains a path name character, use the unix dom sock connection. ie, /tmp/redis.sock */
 		cxn = redis.createClient(nconf.get('redis:host'), options);
