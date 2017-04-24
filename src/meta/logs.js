@@ -7,7 +7,7 @@ var winston = require('winston');
 
 module.exports = function (Meta) {
 	Meta.logs = {
-		path: path.join(nconf.get('base_dir'), 'logs', 'output.log'),
+		path: path.join(nconf.get('base_dir') || (__dirname + '../../'), 'logs', 'output.log'),
 	};
 
 	Meta.logs.get = function (callback) {
