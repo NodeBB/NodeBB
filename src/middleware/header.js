@@ -41,6 +41,7 @@ module.exports = function (middleware) {
 
 	middleware.renderHeader = function (req, res, data, callback) {
 		var registrationType = meta.config.registrationType || 'normal';
+		res.locals.config = res.locals.config || {};
 		var templateValues = {
 			title: meta.config.title || '',
 			description: meta.config.description || '',
