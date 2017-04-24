@@ -73,7 +73,7 @@ define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 			if (!selected.length) {
 				selected = menu.find('li.result > a').first().attr('href');
 			}
-			var href = selected || config.relative_path + '/search?in=titlesposts&term=' + input.val();
+			var href = selected || config.relative_path + '/search?in=titlesposts&term=' + escape(input.val());
 
 			ajaxify.go(href.replace(/^\//, ''));
 
@@ -140,9 +140,9 @@ define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 				menu.find('.search-forum')
 					.not('.divider')
 					.find('a')
-					.attr('href', config.relative_path + '/search?in=titlesposts&term=' + value)
+					.attr('href', config.relative_path + '/search?in=titlesposts&term=' + escape(value))
 					.find('strong')
-					.html(value);
+					.text(value);
 			} else {
 				menu.removeClass('state-no-results state-yes-results');
 			}
