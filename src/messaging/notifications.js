@@ -26,6 +26,7 @@ module.exports = function (Messaging) {
 					roomId: roomId,
 					fromUid: fromUid,
 					message: messageObj,
+					uids: uids,
 				};
 
 				plugins.fireHook('filter:messaging.notify', data, next);
