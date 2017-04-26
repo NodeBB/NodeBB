@@ -172,6 +172,14 @@ Messaging.getRecentChats = function (callerUid, uid, start, stop, callback) {
 
 			next(null, { rooms: results.roomData, nextStart: stop + 1 });
 		},
+		function (ref, next) {
+			plugins.fireHook('filter:messaging.getRecentChats', {
+				rooms: ref.rooms,
+				nextStart: ref.nextStart,
+				uid: uid,
+				callerUid: callerUid,
+			}, next);
+		},
 	], callback);
 };
 
@@ -252,11 +260,16 @@ Messaging.canMessageUser = function (uid, toUid, callback) {
 			}, next);
 		},
 		function (results, next) {
-			if (!results.settings.restrictChat || results.isAdmin || results.isFollowing) {
-				return next();
+			if (results.settings.restrictChat && !results.isAdmin && !results.isFollowing) {
+				return next(new Error('[[error:chat-restricted]]'));
 			}
 
-			next(new Error('[[error:chat-restricted]]'));
+			plugins.fireHook('filter:messaging.canMessageUser', {
+				uid: uid,
+				toUid: toUid,
+			}, function (err) {
+				next(err);
+			});
 		},
 	], callback);
 };

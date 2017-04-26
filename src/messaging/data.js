@@ -6,6 +6,7 @@ var S = require('string');
 var db = require('../database');
 var user = require('../user');
 var utils = require('../utils');
+var plugins = require('../plugins');
 
 module.exports = function (Messaging) {
 	Messaging.getMessageField = function (mid, field, callback) {
@@ -127,6 +128,17 @@ module.exports = function (Messaging) {
 				} else {
 					next(null, []);
 				}
+			},
+			function (messages, next) {
+				plugins.fireHook('filter:messaging.getMessagesData', {
+					messages: messages,
+					uid: uid,
+					roomId: roomId,
+					isNew: isNew,
+					mids: mids,
+				}, function (err, data) {
+					next(err, data && data.messages);
+				});
 			},
 		], callback);
 	};
