@@ -191,7 +191,7 @@ var utils = require('./utils');
 				plugins.fireHook('filter:notification.push', { notification: notification, uids: uids }, next);
 			},
 			function (data, next) {
-				if (!data || !data.notification) {
+				if (!data || !data.notification || !data.uids || !data.uids.length) {
 					return callback();
 				}
 
