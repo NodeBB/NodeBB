@@ -274,16 +274,16 @@ describe('Post\'s', function () {
 			});
 		});
 
-		it('should purge posts and delete topic', function (done) {
+		it('should purge posts and purge topic', function (done) {
 			createTopicWithReply(function (topicPostData, replyData) {
 				socketPosts.purgePosts({ uid: voterUid }, { pids: [replyData.pid, topicPostData.postData.pid], tid: topicPostData.topicData.tid }, function (err) {
 					assert.ifError(err);
 					posts.exists('post:' + replyData.pid, function (err, exists) {
 						assert.ifError(err);
 						assert.equal(exists, false);
-						topics.getTopicField(topicPostData.topicData.tid, 'deleted', function (err, deleted) {
+						topics.exists(topicPostData.topicData.tid, function (err, exists) {
 							assert.ifError(err);
-							assert.equal(parseInt(deleted, 10), 1);
+							assert(!exists);
 							done();
 						});
 					});
