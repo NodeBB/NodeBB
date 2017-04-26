@@ -82,9 +82,6 @@ profileController.get = function (req, res, callback) {
 			var pageCount = Math.ceil(userData.postcount / itemsPerPage);
 			userData.pagination = pagination.create(page, pageCount, req.query);
 
-			userData['cover:url'] = userData['cover:url'] || require('../../coverPhoto').getDefaultProfileCover(userData.uid);
-			userData['cover:position'] = userData['cover:position'] || '50% 50%';
-
 			if (!parseInt(userData.profileviews, 10)) {
 				userData.profileviews = 1;
 			}
