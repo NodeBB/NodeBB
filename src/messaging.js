@@ -264,7 +264,7 @@ Messaging.canMessageUser = function (uid, toUid, callback) {
 				return next(new Error('[[error:chat-restricted]]'));
 			}
 
-			plugins.fireHook('filter:messaging.canMessageUser', {
+			plugins.fireHook('static:messaging.canMessageUser', {
 				uid: uid,
 				toUid: toUid,
 			}, function (err) {
@@ -306,7 +306,12 @@ Messaging.canMessageRoom = function (uid, roomId, callback) {
 				return next(new Error('[[error:email-not-confirmed-chat]]'));
 			}
 
-			next();
+			plugins.fireHook('static:messaging.canMessageRoom', {
+				uid: uid,
+				roomId: roomId,
+			}, function (err) {
+				next(err);
+			});
 		},
 	], callback);
 };

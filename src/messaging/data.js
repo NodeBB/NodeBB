@@ -130,7 +130,7 @@ module.exports = function (Messaging) {
 				}
 			},
 			function (messages, next) {
-				plugins.fireHook('filter:messaging.getMessagesData', {
+				plugins.fireHook('filter:messaging.getMessages', {
 					messages: messages,
 					uid: uid,
 					roomId: roomId,

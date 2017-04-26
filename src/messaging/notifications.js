@@ -28,7 +28,7 @@ module.exports = function (Messaging) {
 					message: messageObj,
 				};
 
-				plugins.fireHook('filter:messaging.notifyUsersInRoom', data, next);
+				plugins.fireHook('filter:messaging.notify', data, next);
 			},
 			function (data, next) {
 				if (!data || !data.uids || !data.uids.length) {
