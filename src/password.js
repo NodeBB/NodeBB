@@ -9,6 +9,9 @@
 	};
 
 	module.compare = function (password, hash, callback) {
+		if (!hash || !password) {
+			return setImmediate(callback, null, false);
+		}
 		forkChild({ type: 'compare', password: password, hash: hash }, callback);
 	};
 
