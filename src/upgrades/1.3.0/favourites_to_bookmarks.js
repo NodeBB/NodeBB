@@ -1,5 +1,3 @@
-/* jslint node: true */
-
 'use strict';
 
 var db = require('../../database');
