@@ -58,7 +58,7 @@ module.exports = function (Categories) {
 				], next);
 			},
 			function (next) {
-				async.each(privileges.privilegeList, function (privilege, next) {
+				async.eachSeries(privileges.privilegeList, function (privilege, next) {
 					groups.destroy('cid:' + cid + ':privileges:' + privilege, next);
 				}, next);
 			},
