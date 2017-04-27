@@ -31,13 +31,13 @@ infoController.get = function (req, res) {
 			}
 			return 0;
 		});
-		res.render('admin/development/info', { 
-			info: data, 
-			infoJSON: JSON.stringify(data, null, 4), 
-			host: os.hostname(), 
+		res.render('admin/development/info', {
+			info: data,
+			infoJSON: JSON.stringify(data, null, 4),
+			host: os.hostname(),
 			port: nconf.get('port'),
 			nodeCount: data.length,
-			timeout: timeoutMS
+			timeout: timeoutMS,
 		});
 	}, timeoutMS);
 };
