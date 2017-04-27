@@ -26,6 +26,8 @@ module.exports = {
 				});
 
 				async.each(posts, function (post, next) {
+					progress.incr();
+
 					async.parallel({
 						uids: async.apply(db.getSortedSetRangeWithScores, 'pid:' + post.pid + ':flag:uids', 0, -1),
 						reasons: async.apply(db.getSortedSetRange, 'pid:' + post.pid + ':flag:uid:reason', 0, -1),
@@ -81,8 +83,6 @@ module.exports = {
 							} else {
 								next(err);
 							}
-
-							progress.incr();
 						});
 					});
 				}, next);
