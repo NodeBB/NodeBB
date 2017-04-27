@@ -5,6 +5,8 @@
 		</div>
 
 		<div class="panel-body">
+			<span>[[admin/development/info:nodes-responded, {nodeCount}, {timeOut}]]</span>
+			
 			<table class="table table-striped">
 				<thead>
 					<tr>

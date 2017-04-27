@@ -16,22 +16,30 @@ var info = {};
 infoController.get = function (req, res) {
 	info = {};
 	pubsub.publish('sync:node:info:start');
+	var timeoutMS = 1000;
 	setTimeout(function () {
 		var data = [];
 		Object.keys(info).forEach(function (key) {
 			data.push(info[key]);
 		});
 		data.sort(function (a, b) {
-			if (a.os.hostname < b.os.hostname) {
+			if (a.id < b.id) {
 				return -1;
 			}
-			if (a.os.hostname > b.os.hostname) {
+			if (a.id > b.id) {
 				return 1;
 			}
 			return 0;
 		});
-		res.render('admin/development/info', { info: data, infoJSON: JSON.stringify(data, null, 4), host: os.hostname(), port: nconf.get('port') });
-	}, 500);
+		res.render('admin/development/info', { 
+			info: data, 
+			infoJSON: JSON.stringify(data, null, 4), 
+			host: os.hostname(), 
+			port: nconf.get('port'),
+			nodeCount: data.length,
+			timeout: timeoutMS
+		});
+	}, timeoutMS);
 };
 
 pubsub.on('sync:node:info:start', function () {
@@ -39,7 +47,8 @@ pubsub.on('sync:node:info:start', function () {
 		if (err) {
 			return winston.error(err);
 		}
-		pubsub.publish('sync:node:info:end', { data: data, id: os.hostname() + ':' + nconf.get('port') });
+		data.id = os.hostname() + ':' + nconf.get('port');
+		pubsub.publish('sync:node:info:end', { data: data, id: data.id });
 	});
 });
 
