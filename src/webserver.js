@@ -130,6 +130,9 @@ function setupExpressApp(app) {
 
 	app.use(compression());
 
+	app.get('/ping', ping);
+	app.get('/sping', ping);
+
 	setupFavicon(app);
 
 	app.use(relativePath + '/apple-touch-icon', middleware.routeTouchIcon);
@@ -155,6 +158,10 @@ function setupExpressApp(app) {
 	var toobusy = require('toobusy-js');
 	toobusy.maxLag(parseInt(meta.config.eventLoopLagThreshold, 10) || 100);
 	toobusy.interval(parseInt(meta.config.eventLoopInterval, 10) || 500);
+}
+
+function ping(req, res) {
+	res.status(200).send(req.path === '/sping' ? 'healthy' : '200');
 }
 
 function setupFavicon(app) {

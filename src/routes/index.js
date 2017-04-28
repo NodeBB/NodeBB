@@ -34,9 +34,6 @@ function mainRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/search', middleware, [], controllers.search.search);
 	setupPageRoute(app, '/reset/:code?', middleware, [], controllers.reset);
 	setupPageRoute(app, '/tos', middleware, [], controllers.termsOfUse);
-
-	app.get('/ping', controllers.ping);
-	app.get('/sping', controllers.ping);
 }
 
 function modRoutes(app, middleware, controllers) {
