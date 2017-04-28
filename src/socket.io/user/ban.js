@@ -1,10 +1,11 @@
 'use strict';
 
 var async = require('async');
+
 var user = require('../../user');
 var websockets = require('../index');
 var events = require('../../events');
-
+var privileges = require('../../privileges');
 var plugins = require('../../plugins');
 
 module.exports = function (SocketUser) {
@@ -72,10 +73,10 @@ module.exports = function (SocketUser) {
 
 		async.waterfall([
 			function (next) {
-				user.isAdminOrGlobalMod(uid, next);
+				privileges.users.hasBanPrivilege(uid, next);
 			},
-			function (isAdminOrGlobalMod, next) {
-				if (!isAdminOrGlobalMod) {
+			function (hasBanPrivilege, next) {
+				if (!hasBanPrivilege) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				async.each(uids, method, next);

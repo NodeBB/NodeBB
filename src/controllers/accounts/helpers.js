@@ -10,8 +10,9 @@ var groups = require('../../groups');
 var plugins = require('../../plugins');
 var meta = require('../../meta');
 var utils = require('../../utils');
+var privileges = require('../../privileges');
 
-var helpers = {};
+var helpers = module.exports;
 
 helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 	async.waterfall([
@@ -59,6 +60,9 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 				},
 				sso: function (next) {
 					plugins.fireHook('filter:auth.list', { uid: uid, associations: [] }, next);
+				},
+				canBanUser: function (next) {
+					privileges.users.canBanUser(callerUID, uid, next);
 				},
 			}, next);
 		},
@@ -109,7 +113,7 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 			userData.isAdminOrGlobalModeratorOrModerator = isAdmin || isGlobalModerator || isModerator;
 			userData.isSelfOrAdminOrGlobalModerator = isSelf || isAdmin || isGlobalModerator;
 			userData.canEdit = isAdmin || (isGlobalModerator && !results.isTargetAdmin);
-			userData.canBan = isAdmin || (isGlobalModerator && !results.isTargetAdmin);
+			userData.canBan = results.canBanUser;
 			userData.canChangePassword = isAdmin || (isSelf && parseInt(meta.config['password:disableEdit'], 10) !== 1);
 			userData.isSelf = isSelf;
 			userData.isFollowing = results.isFollowing;
@@ -186,5 +190,3 @@ function filterLinks(links, states) {
 		return permit;
 	});
 }
-
-module.exports = helpers;
