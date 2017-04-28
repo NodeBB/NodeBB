@@ -158,7 +158,7 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function (infinit
 		app.parseAndTranslate(templateName, 'topics', { topics: topics, showSelect: showSelect }, function (html) {
 			$('#category-no-topics').remove();
 
-			$('[component="category"]').append(html);
+			html.insertAfter($('[component="category/topic"]').last());
 			html.find('.timeago').timeago();
 			app.createUserTooltips();
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
