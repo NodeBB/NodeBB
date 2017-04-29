@@ -10,7 +10,7 @@ module.exports = function (Groups) {
 	Groups.getLatestMemberPosts = function (groupName, max, uid, callback) {
 		async.waterfall([
 			function (next) {
-				Groups.getMembers(groupName, 0, -1, next);
+				Groups.getMembers(groupName, 0, 100, next);
 			},
 			function (uids, next) {
 				if (!Array.isArray(uids) || !uids.length) {
