@@ -27,7 +27,7 @@ sitemap.render = function (callback) {
 	var numPages;
 
 	async.waterfall([
-		async.apply(db.getSortedSetRange, 'topics:recent', 0, -1),
+		async.apply(db.getSortedSetRange, 'topics:recent', 0, 1000),
 		function (tids, next) {
 			privileges.topics.filterTids('read', tids, 0, next);
 		},
