@@ -19,7 +19,7 @@ module.exports = function (Meta) {
 	Meta.errors.get = function (escape, callback) {
 		async.waterfall([
 			function (next) {
-				db.getSortedSetRevRangeWithScores('errors:404', 0, -1, next);
+				db.getSortedSetRevRangeWithScores('errors:404', 0, 199, next);
 			},
 			function (data, next) {
 				data = data.map(function (nfObject) {
