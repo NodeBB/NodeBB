@@ -14,8 +14,12 @@ helpers.postCommand = function (socket, command, eventName, notification, data, 
 		return callback(new Error('[[error:not-logged-in]]'));
 	}
 
-	if (!data || !data.pid || !data.room_id) {
+	if (!data || !data.pid) {
 		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	if (!data.room_id) {
+		return callback(new Error('[[error:invalid-room-id, ' + data.room_id + ' ]]'));
 	}
 
 	async.waterfall([

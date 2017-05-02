@@ -295,7 +295,7 @@ define('forum/topic/postTools', [
 
 		socket.emit(method, {
 			pid: pid,
-			room_id: app.currentRoom,
+			room_id: 'topic_' + ajaxify.data.tid,
 		}, function (err) {
 			if (err) {
 				app.alertError(err.message);

@@ -191,11 +191,13 @@ app.cacheBuster = null;
 		if (!socket) {
 			return;
 		}
+		var previousRoom = app.currentRoom;
+		app.currentRoom = '';
 		socket.emit('meta.rooms.leaveCurrent', function (err) {
 			if (err) {
+				app.currentRoom = previousRoom;
 				return app.alertError(err.message);
 			}
-			app.currentRoom = '';
 		});
 	};
 
