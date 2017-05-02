@@ -81,7 +81,7 @@ file.allowedExtensions = function () {
 		if (!extension.startsWith('.')) {
 			extension = '.' + extension;
 		}
-		return extension;
+		return extension.toLowerCase();
 	});
 
 	if (allowedExtensions.indexOf('.jpg') !== -1 && allowedExtensions.indexOf('.jpeg') === -1) {
