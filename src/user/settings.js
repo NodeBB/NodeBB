@@ -10,7 +10,7 @@ var plugins = require('../plugins');
 var LRU = require('lru-cache');
 
 var cache = LRU({
-	max: 500,
+	max: 1000,
 	length: function () { return 1; },
 	maxAge: 1000 * 60 * 60,
 });
