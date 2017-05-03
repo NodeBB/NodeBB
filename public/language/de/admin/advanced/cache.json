@@ -1,11 +1,11 @@
 {
-	"post-cache": "Eintrag Zwischenspeicher",
-	"posts-in-cache": "Einträge im Zwischenspeicher",
-	"average-post-size": "Durchschnittliche Forum Eintrags Größe",
+	"post-cache": "Beitrags Cache",
+	"posts-in-cache": "Beiträge im Cache",
+	"average-post-size": "Durchschnittliche Beitragsgröße",
 	"length-to-max": "Länge / Maximum",
 	"percent-full": "%1% Voll",
-	"post-cache-size": "Eintrags Zwischenspeicher Größe",
-	"items-in-cache": "Objekte im Zwischenspeicher",
+	"post-cache-size": "Beitrags Cache Größe",
+	"items-in-cache": "Objekte im Cache",
 	"control-panel": "Systemsteuerung",
 	"update-settings": "Aktualisiere Zwischenspeicher Einstellungen"
 }

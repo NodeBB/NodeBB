@@ -9,7 +9,7 @@
 	"create-button": "Erstellen",
 
 	"alerts.create-failure": "<strong>Oh Oh</strong><p>Ein Problem ist beim erstellen deiner Gruppe aufgetreten. Bitte versuche es später noch mal!</p>",
-	"alerts.confirm-delete": "Sind Sie sicher, dass Sie diese Gruppe löschen wollen?",
+	"alerts.confirm-delete": "Diese Gruppe wirklich löschen ?",
 
 	"edit.name": "Name",
 	"edit.description": "Beschreibung",
