@@ -86,10 +86,14 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 		var countEl = replyCount.find('[component="post/reply-count/text"]');
 		var avatars = replyCount.find('[component="post/reply-count/avatars"]');
 		var count = Math.max(0, parseInt(countEl.attr('data-replies'), 10) + inc);
+		var timestamp = replyCount.find('.timeago').attr('title', post.timestampISO);
+
 		countEl.attr('data-replies', count);
 		replyCount.toggleClass('hidden', !count);
 		countEl.translateText('[[topic:replies_to_this_post, ' + count + ']]');
 		avatars.addClass('hasMore');
+
+		timestamp.timeago();
 	}
 
 	return Replies;
