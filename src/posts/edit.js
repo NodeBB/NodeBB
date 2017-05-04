@@ -85,7 +85,7 @@ module.exports = function (Posts) {
 
 		async.parallel({
 			topic: function (next) {
-				topics.getTopicFields(tid, ['cid', 'title'], next);
+				topics.getTopicFields(tid, ['cid', 'title', 'timestamp'], next);
 			},
 			isMain: function (next) {
 				Posts.isMain(data.pid, next);
@@ -136,6 +136,7 @@ module.exports = function (Posts) {
 				function (tags, next) {
 					topicData.tags = data.tags;
 					topicData.oldTitle = results.topic.title;
+					topicData.timestamp = results.topic.timestamp;
 					plugins.fireHook('action:topic.edit', { topic: topicData, uid: data.uid });
 					next(null, {
 						tid: tid,
