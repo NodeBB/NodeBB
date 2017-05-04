@@ -93,7 +93,7 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 		countEl.translateText('[[topic:replies_to_this_post, ' + count + ']]');
 		avatars.addClass('hasMore');
 
-		timestamp.timeago();
+		timestamp.data('timeago', null).timeago();
 	}
 
 	return Replies;
