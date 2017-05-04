@@ -79,6 +79,10 @@
 		}
 
 		options = options || {};
+		options.tls = {
+			servername: redis_socket_or_host
+		};
+		
 		if (nconf.get('redis:password')) {
 			options.auth_pass = nconf.get('redis:password');
 		}
