@@ -319,6 +319,5 @@ module.exports = function (Posts) {
 				db.sortedSetsRemove(keys, pid, next);
 			},
 		], callback);
-
 	}
 };

@@ -27,14 +27,14 @@ module.exports = function (Groups) {
 				Groups.getUserGroupMembership(set, uids, next);
 			},
 			function (memberOf, next) {
-				async.map(memberOf, function(memberOf, next) {
+				async.map(memberOf, function (memberOf, next) {
 					Groups.getGroupsData(memberOf, next);
 				}, next);
 			},
 		], callback);
 	};
 
-	Groups.getUserGroupMembership = function(set, uids, callback) {
+	Groups.getUserGroupMembership = function (set, uids, callback) {
 		async.waterfall([
 			function (next) {
 				db.getSortedSetRevRange(set, 0, -1, next);

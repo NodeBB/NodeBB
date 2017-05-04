@@ -7,7 +7,6 @@ var privileges = require('../privileges');
 var posts = require('../posts');
 
 module.exports = function (Groups) {
-
 	Groups.onNewPostMade = function (postData, callback) {
 		if (!parseInt(postData.uid, 10)) {
 			return setImmediate(callback);
