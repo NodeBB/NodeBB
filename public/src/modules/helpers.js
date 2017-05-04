@@ -177,7 +177,7 @@
 	};
 
 	helpers.localeToHTML = function (locale) {
-		return locale.replace('_', '-');
+		return locale ? locale.replace('_', '-') : '';
 	};
 
 	helpers.renderTopicImage = function (topicObj) {
