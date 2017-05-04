@@ -6,6 +6,7 @@ var _ = require('underscore');
 var db = require('../database');
 var topics = require('../topics');
 var user = require('../user');
+var groups = require('../groups');
 var notifications = require('../notifications');
 var plugins = require('../plugins');
 
@@ -140,6 +141,9 @@ module.exports = function (Posts) {
 					},
 					function (next) {
 						deletePostFromReplies(pid, next);
+					},
+					function (next) {
+						deletePostFromGroups(pid, next);
 					},
 					function (next) {
 						db.sortedSetsRemove(['posts:pid', 'posts:flagged'], pid, next);
@@ -293,5 +297,28 @@ module.exports = function (Posts) {
 				async.apply(db.decrObjectField, 'post:' + toPid, 'replies'),
 			], callback);
 		});
+	}
+
+	function deletePostFromGroups(pid, callback) {
+		async.waterfall([
+			function (next) {
+				Posts.getPostField(pid, 'uid', next);
+			},
+			function (uid, next) {
+				if (!parseInt(uid, 10)) {
+					return callback();
+				}
+				groups.getUserGroupMembership('groups:visible:createtime', [uid], next);
+			},
+			function (groupNames, next) {
+				groupNames = groupNames[0];
+				var keys = groupNames.map(function (groupName) {
+					return 'group:' + groupName + ':member:pids';
+				});
+
+				db.sortedSetsRemove(keys, pid, next);
+			},
+		], callback);
+
 	}
 };

@@ -33,6 +33,9 @@ module.exports = function (redisClient, module) {
 
 	module.sortedSetsAdd = function (keys, score, value, callback) {
 		callback = callback || function () {};
+		if (!Array.isArray(keys) || !keys.length) {
+			return callback();
+		}
 		var multi = redisClient.multi();
 
 		for (var i = 0; i < keys.length; i += 1) {

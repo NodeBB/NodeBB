@@ -26,6 +26,7 @@ module.exports = function (Groups) {
 				async.apply(db.delete, 'group:' + groupName + ':pending'),
 				async.apply(db.delete, 'group:' + groupName + ':invited'),
 				async.apply(db.delete, 'group:' + groupName + ':owners'),
+				async.apply(db.delete, 'group:' + groupName + ':member:pids'),
 				async.apply(db.deleteObjectField, 'groupslug:groupname', utils.slugify(groupName)),
 				function (next) {
 					db.getSortedSetRange('groups:createtime', 0, -1, function (err, groups) {

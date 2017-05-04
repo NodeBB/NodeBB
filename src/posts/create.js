@@ -9,6 +9,7 @@ var plugins = require('../plugins');
 var user = require('../user');
 var topics = require('../topics');
 var categories = require('../categories');
+var groups = require('../groups');
 var utils = require('../utils');
 
 module.exports = function (Posts) {
@@ -81,6 +82,9 @@ module.exports = function (Posts) {
 							postData.cid = topicData.cid;
 							categories.onNewPostMade(topicData.cid, topicData.pinned, postData, next);
 						});
+					},
+					function (next) {
+						groups.onNewPostMade(postData, next);
 					},
 					function (next) {
 						db.sortedSetAdd('posts:pid', timestamp, postData.pid, next);
