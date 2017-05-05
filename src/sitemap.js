@@ -19,31 +19,25 @@ var sitemap = {
 };
 
 sitemap.render = function (callback) {
-	var numTopics = parseInt(meta.config.sitemapTopics, 10) || 500;
+	var topicsPerPage = parseInt(meta.config.sitemapTopics, 10) || 500;
 	var returnData = {
 		url: nconf.get('url'),
 		topics: [],
 	};
-	var numPages;
 
 	async.waterfall([
-		async.apply(db.getSortedSetRange, 'topics:recent', 0, 1000),
-		function (tids, next) {
-			privileges.topics.filterTids('read', tids, 0, next);
+		function (next) {
+			db.getObjectField('global', 'topicCount', next);
 		},
-	], function (err, tids) {
-		if (err) {
-			numPages = 1;
-		} else {
-			numPages = Math.ceil(tids.length / numTopics);
-		}
+		function (topicCount, next) {
+			var numPages = Math.max(0, topicCount / topicsPerPage);
+			for (var x = 1; x <= numPages; x += 1) {
+				returnData.topics.push(x);
+			}
 
-		for (var x = 1; x <= numPages; x += 1) {
-			returnData.topics.push(x);
-		}
-
-		callback(null, returnData);
-	});
+			next(null, returnData);
+		},
+	], callback);
 };
 
 sitemap.getPages = function (callback) {
