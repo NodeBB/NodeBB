@@ -10,7 +10,6 @@ app.cacheBuster = null;
 
 (function () {
 	var showWelcomeMessage = !!utils.params().loggedin;
-	var showBannedMessage = !!utils.params().banned && app.user && app.user.uid === 0;
 
 	templates.setGlobal('config', config);
 
@@ -266,11 +265,6 @@ app.cacheBuster = null;
 				title: '[[global:welcome_back]] ' + app.user.username + '!',
 				message: '[[global:you_have_successfully_logged_in]]',
 			},
-			banned: {
-				format: 'modal',
-				title: '[[error:user-banned]]',
-				message: '[[error:user-banned-reason, ' + utils.params().banned + ']]',
-			},
 		};
 
 		function showAlert(type) {
@@ -301,13 +295,6 @@ app.cacheBuster = null;
 			showWelcomeMessage = false;
 			$(document).ready(function () {
 				showAlert('login');
-			});
-		}
-
-		if (showBannedMessage) {
-			showBannedMessage = false;
-			$(document).ready(function () {
-				showAlert('banned');
 			});
 		}
 	};

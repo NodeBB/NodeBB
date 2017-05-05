@@ -7,6 +7,7 @@ var websockets = require('../index');
 var events = require('../../events');
 var privileges = require('../../privileges');
 var plugins = require('../../plugins');
+var translator = require('../../translator');
 
 module.exports = function (SocketUser) {
 	SocketUser.banUsers = function (socket, data, callback) {
@@ -99,7 +100,20 @@ module.exports = function (SocketUser) {
 				user.ban(uid, until, reason, next);
 			},
 			function (next) {
-				websockets.in('uid_' + uid).emit('event:banned');
+				console.log(reason);
+				if (!reason) {
+					return translator.translate('[[user:info.banned-no-reason]]', function (translated) {
+						next(false, translated);
+					});
+				}
+
+				next(false, reason);
+			},
+			function (_reason, next) {
+				websockets.in('uid_' + uid).emit('event:banned', {
+					until: until,
+					reason: _reason,
+				});
 				next();
 			},
 		], callback);
