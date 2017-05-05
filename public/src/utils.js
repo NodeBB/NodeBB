@@ -429,5 +429,11 @@
 		};
 	}
 
+	if (typeof String.prototype.rtrim !== 'function') {
+		String.prototype.rtrim = function () {
+			return this.replace(/\s+$/g, '');
+		};
+	}
+
 	return utils;
 }));
