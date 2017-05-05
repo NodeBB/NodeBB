@@ -36,6 +36,9 @@ module.exports = function (SocketUser) {
 					});
 					next();
 				},
+				function (next) {
+					user.auth.revokeAllSessions(uid, next);
+				},
 			], next);
 		}, callback);
 	};
