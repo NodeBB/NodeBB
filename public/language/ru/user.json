@@ -65,8 +65,8 @@
     "remove_uploaded_picture": "Удалить фото",
     "upload_cover_picture": "Загрузить обложку профиля",
     "remove_cover_picture_confirm": "Вы уверены, что хотите удалить изображение обложки?",
-    "crop_picture": "Crop picture",
-    "upload_cropped_picture": "Crop and upload",
+    "crop_picture": "Вырезать картинку",
+    "upload_cropped_picture": "Вырезать и загрузить",
     "settings": "Настройки",
     "show_email": "Показывать мою элетронную почту",
     "show_fullname": "Показывать полное имя",
@@ -131,5 +131,5 @@
     "info.email-history": "История изменения электронной почты",
     "info.moderation-note": "Примечание модератора",
     "info.moderation-note.success": "Примечание модератора сохранено",
-    "info.moderation-note.add": "Add note"
+    "info.moderation-note.add": "Добавить примечание"
 }
