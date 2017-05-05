@@ -41,7 +41,7 @@ module.exports = function (User) {
 				uid: uid,
 				timestamp: timestamp,
 				expiry: parseInt(expiry, 10),
-				expiry_readable: new Date(parseInt(expiry, 10)).toString().replace(/:/g, '%3A'),
+				expiry_readable: new Date(parseInt(expiry, 10)).toString(),
 				reason: validator.escape(String(reason)),
 			});
 		});

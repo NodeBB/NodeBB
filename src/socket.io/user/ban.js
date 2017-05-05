@@ -100,7 +100,6 @@ module.exports = function (SocketUser) {
 				user.ban(uid, until, reason, next);
 			},
 			function (next) {
-				console.log(reason);
 				if (!reason) {
 					return translator.translate('[[user:info.banned-no-reason]]', function (translated) {
 						next(false, translated);
