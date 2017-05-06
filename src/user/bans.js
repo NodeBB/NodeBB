@@ -67,7 +67,7 @@ module.exports = function (User) {
 				}
 
 				// If they are banned, see if the ban has expired
-				var stillBanned = !userData['banned:expire'] || Date.now() < userData['banned:expire'];
+				var stillBanned = !parseInt(userData['banned:expire'], 10) || Date.now() < parseInt(userData['banned:expire'], 10);
 
 				if (stillBanned) {
 					return next(null, true);

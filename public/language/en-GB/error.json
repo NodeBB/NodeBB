@@ -37,6 +37,7 @@
 
 	"user-banned": "User banned",
 	"user-banned-reason": "Sorry, this account has been banned (Reason: %1)",
+	"user-banned-reason-until": "Sorry, this account has been banned until %1 (Reason: %2)",
 	"user-too-new": "Sorry, you are required to wait %1 second(s) before making your first post",
 	"blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
 	"ban-expiry-missing": "Please provide an end date for this ban",

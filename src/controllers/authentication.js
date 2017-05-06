@@ -13,6 +13,7 @@ var user = require('../user');
 var plugins = require('../plugins');
 var utils = require('../utils');
 var Password = require('../password');
+var translator = require('../translator');
 
 var sockets = require('../socket.io');
 
@@ -379,24 +380,13 @@ authenticationController.localLogin = function (req, username, password, next) {
 			if (!result.isAdmin && parseInt(meta.config.allowLocalLogin, 10) === 0) {
 				return next(new Error('[[error:local-login-disabled]]'));
 			}
+
 			if (!userData || !userData.password) {
 				return next(new Error('[[error:invalid-user-data]]'));
 			}
+
 			if (result.banned) {
-				// Retrieve ban reason and show error
-				return user.getLatestBanInfo(uid, function (err, banInfo) {
-					if (err) {
-						if (err.message === 'no-ban-info') {
-							next(new Error('[[error:user-banned]]'));
-						} else {
-							next(err);
-						}
-					} else if (banInfo.reason) {
-						next(new Error('[[error:user-banned-reason, ' + banInfo.reason + ']]'));
-					} else {
-						next(new Error('[[error:user-banned]]'));
-					}
-				});
+				return banUser(uid, next);
 			}
 
 			Password.compare(password, userData.password, next);
@@ -437,5 +427,25 @@ authenticationController.logout = function (req, res, next) {
 	}
 };
 
+function banUser(uid, next) {
+	user.getLatestBanInfo(uid, function (err, banInfo) {
+		if (err) {
+			if (err.message === 'no-ban-info') {
+				return next(new Error('[[error:user-banned]]'));
+			}
+
+			return next(err);
+		}
+
+		if (!banInfo.reason) {
+			translator.translate('[[user:info.banned-no-reason]]', function (translated) {
+				banInfo.reason = translated;
+				next(new Error(banInfo.expiry ? '[[error:user-banned-reason-until, ' + banInfo.expiry_readable + ', ' + banInfo.reason + ']]' : '[[error:user-banned-reason, ' + banInfo.reason + ']]'));
+			});
+		} else {
+			next(new Error(banInfo.expiry ? '[[error:user-banned-reason-until, ' + banInfo.expiry_readable + ', ' + banInfo.reason + ']]' : '[[error:user-banned-reason, ' + banInfo.reason + ']]'));
+		}
+	});
+}
 
 module.exports = authenticationController;
