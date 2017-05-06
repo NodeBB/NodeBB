@@ -3,10 +3,12 @@
 var async = require('async');
 
 var user = require('../../user');
+var meta = require('../../meta');
 var websockets = require('../index');
 var events = require('../../events');
 var privileges = require('../../privileges');
 var plugins = require('../../plugins');
+var emailer = require('../../emailer');
 var translator = require('../../translator');
 
 module.exports = function (SocketUser) {
@@ -97,6 +99,22 @@ module.exports = function (SocketUser) {
 				if (isAdmin) {
 					return next(new Error('[[error:cant-ban-other-admins]]'));
 				}
+
+				user.getUserField(uid, 'username', next);
+			},
+			function (username, next) {
+				var siteTitle = meta.config.title || 'NodeBB';
+				var data = {
+					subject: '[[email:banned.subject, ' + siteTitle + ']]',
+					site_title: siteTitle,
+					username: username,
+					until: until ? new Date(until).toString() : false,
+					reason: reason,
+				};
+
+				emailer.send('banned', uid, data, next);
+			},
+			function (next) {
 				user.ban(uid, until, reason, next);
 			},
 			function (next) {
