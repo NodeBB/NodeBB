@@ -20,6 +20,7 @@
     "chat.three_months": "3個月",
     "chat.delete_message_confirm": "你確定要刪除這個訊息？",
     "chat.add-users-to-room": "將使用者加入聊天室中",
+    "chat.confirm-chat-with-dnd-user": "This user has set their status to DnD(Do not disturb). Do you still want to chat with them?",
     "composer.compose": "撰寫",
     "composer.show_preview": "顯示預覽",
     "composer.hide_preview": "隱藏預覽",

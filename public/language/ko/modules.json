@@ -20,6 +20,7 @@
     "chat.three_months": "3개월",
     "chat.delete_message_confirm": "이 대화를 삭제하시겠습니까?",
     "chat.add-users-to-room": "유저 추가하기",
+    "chat.confirm-chat-with-dnd-user": "This user has set their status to DnD(Do not disturb). Do you still want to chat with them?",
     "composer.compose": "작성",
     "composer.show_preview": "미리보기",
     "composer.hide_preview": "미리보기 숨김",

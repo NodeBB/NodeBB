@@ -60,6 +60,7 @@
     "username_taken_workaround": "Корисничко име које сте захтевали је већ заузето па смо је мало изменили. Сада сте знани као <strong>%1</strong>",
     "password_same_as_username": "Ваша лозинка је иста као ваше име, изаберите другу лозинку",
     "password_same_as_email": "Ваша лозинка је иста као ваша е-пошта, изаберите другу лозинку",
+    "weak_password": "Weak password.",
     "upload_picture": "Отпремање слике",
     "upload_a_picture": "Отпреми слику",
     "remove_uploaded_picture": "Уклоните отпремљену слику",

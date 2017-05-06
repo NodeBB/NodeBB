@@ -60,6 +60,7 @@
     "username_taken_workaround": "Tên truy cập này đã tồn tại, vì vậy chúng tôi đã sửa đổi nó một chút. Tên truy cập của bạn giờ là <strong>%1</strong>",
     "password_same_as_username": "Mật khẩu của bạn trùng với tên đăng nhập, vui lòng chọn một mật khẩu khác.",
     "password_same_as_email": "Mật khẩu của bạn trùng với email của bạn, hãy chọn mật khẩu khác.",
+    "weak_password": "Weak password.",
     "upload_picture": "Tải lên hình ảnh",
     "upload_a_picture": "Tải lên một hình ảnh",
     "remove_uploaded_picture": "Xoá ảnh đã tải lên",

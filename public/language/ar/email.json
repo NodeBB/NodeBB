@@ -32,5 +32,9 @@
     "notif.post.unsub.info": "تم إشعارك بهذه المشاركة بناءً على الخيارات التي سبق وأن حددتها.",
     "test.text1": "هذه رسالة تجريبية للتأكد من صحة إعدادت الرسائل الإلكترونية في منتدى NodeBB خاصتك.",
     "unsub.cta": "انقر هنا لتغيير تلك الإعدادات",
+    "banned.subject": "You have been banned from %1",
+    "banned.text1": "The user %1 has been banned from %2.",
+    "banned.text2": "This ban will last until %1.",
+    "banned.text3": "This is the reason why you have been banned:",
     "closing": "شكرًا لك!"
 }

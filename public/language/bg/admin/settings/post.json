@@ -29,6 +29,8 @@
 	"unread": "Настройки за непрочетените",
 	"unread.cutoff": "Възраст на публикациите, след която те не се показват в непрочетените (в брой дни)",
 	"unread.min-track-last": "Минимален брой публикации в темата, след което да започва следене на последно прочетената",
+	"recent": "Recent Settings",
+	"recent.categoryFilter.disable": "Disable filtering of topics in ignored categories on the /recent page",
 	"signature": "Настройки за подписите",
 	"signature.disable": "Забраняване на подписите",
 	"signature.no-links": "Забраняване на поставянето на връзки в подписите",

@@ -20,6 +20,7 @@
     "chat.three_months": "3 maanden",
     "chat.delete_message_confirm": "Weet je zeker dat je dit bericht wilt verwijderen?",
     "chat.add-users-to-room": "Voeg gebruikers toe aan deze chat room",
+    "chat.confirm-chat-with-dnd-user": "This user has set their status to DnD(Do not disturb). Do you still want to chat with them?",
     "composer.compose": "Samenstellen",
     "composer.show_preview": "Voorbeeldweergave",
     "composer.hide_preview": "Verberg voorbeeld",

@@ -32,5 +32,9 @@
     "notif.post.unsub.info": "This post notification was sent to you due to your subscription settings.",
     "test.text1": "นี่คืออีเมลทดสอบเพื่อยืนยันว่าระบบอีเมลมีการตั้งค่าที่ถูกต้องสำหรับ NodeBB ของคุณ",
     "unsub.cta": "กดตรงนี้เพื่อเปลี่ยนแปลงการตั้งค่า",
+    "banned.subject": "You have been banned from %1",
+    "banned.text1": "The user %1 has been banned from %2.",
+    "banned.text2": "This ban will last until %1.",
+    "banned.text3": "This is the reason why you have been banned:",
     "closing": "ขอบคุณ!"
 }

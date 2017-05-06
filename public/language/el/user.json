@@ -60,6 +60,7 @@
     "username_taken_workaround": "Το όνομα χρήστη που ζήτησες χρησιμοποιείται ήδη, οπότε το τροποποιήσαμε λίγο. Πλέον είσαι γνωστός/ή ώς <strong>%1</strong>",
     "password_same_as_username": "Your password is the same as your username, please select another password.",
     "password_same_as_email": "Your password is the same as your email, please select another password.",
+    "weak_password": "Weak password.",
     "upload_picture": "Ανέβασμα φωτογραφίας",
     "upload_a_picture": "Ανέβασε μια φωτογραφία",
     "remove_uploaded_picture": "Remove Uploaded Picture",

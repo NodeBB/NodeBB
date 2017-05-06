@@ -37,6 +37,7 @@
 	"min-username-length": "ユーザー名の最小文字数",
 	"max-username-length": "ユーザー名の最大文字数",
 	"min-password-length": "パスワードの最小文字数",
+	"min-password-strength": "Minimum Password Strength",
 	"max-about-me-length": "概要の最大文字数",
 	"terms-of-use": "フォーラム利用規約<small>(空白のままにしておくと無効になります)</ small>",
 	"user-search": "ユーザーを検索",

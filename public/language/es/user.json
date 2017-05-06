@@ -60,6 +60,7 @@
     "username_taken_workaround": "El nombre de usuario que has solicitada ya está siendo usado, por tanto lo hemos alterado ligeramente. Ahora eres conocido como <strong>%1</strong>.",
     "password_same_as_username": "Tu Constraseña es igual al nombre de Usuario, por favor seleccione otra Constraseña.",
     "password_same_as_email": "Tu contraseña es igual que tu dirección de correo, por favor elige otra contraseña.",
+    "weak_password": "Weak password.",
     "upload_picture": "Subir foto",
     "upload_a_picture": "Subir una foto",
     "remove_uploaded_picture": "Borrar Imagen subida",

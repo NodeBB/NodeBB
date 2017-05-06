@@ -20,6 +20,7 @@
     "chat.three_months": "3 أشهر",
     "chat.delete_message_confirm": "هل أنت متأكد من أنك تريد حذف هذه الرسالة؟",
     "chat.add-users-to-room": "Add users to room",
+    "chat.confirm-chat-with-dnd-user": "This user has set their status to DnD(Do not disturb). Do you still want to chat with them?",
     "composer.compose": "اكتب",
     "composer.show_preview": "عرض المعاينة",
     "composer.hide_preview": "إخفاء المعاينة",

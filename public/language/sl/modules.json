@@ -20,6 +20,7 @@
     "chat.three_months": "3 meseci",
     "chat.delete_message_confirm": "Ali ste prepričani, da želite izbrisati to sporočilo?",
     "chat.add-users-to-room": "Dodaj uporabnike v sobo.",
+    "chat.confirm-chat-with-dnd-user": "This user has set their status to DnD(Do not disturb). Do you still want to chat with them?",
     "composer.compose": "Sestavljanje",
     "composer.show_preview": "Pokaži predogled",
     "composer.hide_preview": "Skrij predogled",

@@ -60,6 +60,7 @@
     "username_taken_workaround": "Izina ushaka kujya ukoresha twasanze ryarafashwe. Ntugire impungenge kuko twakuboneye iryo byenda kumera kimwe. Uzaba uzwi ku izina rya <strong>%1</strong>",
     "password_same_as_username": "Ijambobanga ryawe rirasa neza n'izina ukoresha; hitamo irindi jambobanga.",
     "password_same_as_email": "Ijambobanga ryawe rirasa neza na email yawe; hitamo irindi jambobanga.",
+    "weak_password": "Weak password.",
     "upload_picture": "Gushyiraho ifoto",
     "upload_a_picture": "Shyiraho ifoto",
     "remove_uploaded_picture": "Kuraho Ifoto",

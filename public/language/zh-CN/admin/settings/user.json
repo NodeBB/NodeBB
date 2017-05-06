@@ -37,6 +37,7 @@
 	"min-username-length": "最小用户名长度",
 	"max-username-length": "最大用户名长度",
 	"min-password-length": "最小密码长度",
+	"min-password-strength": "Minimum Password Strength",
 	"max-about-me-length": "自我介绍的最大长度",
 	"terms-of-use": "论坛使用条款 <small>(留空即可禁用)</small>",
 	"user-search": "用户搜索",

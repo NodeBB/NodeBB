@@ -29,6 +29,8 @@
 	"unread": "Ungelesen-Einstellungen",
 	"unread.cutoff": "Ungelesen-Limit (in Tagen)",
 	"unread.min-track-last": "Minimale Anzahl an Beiträgen pro Thema bevor die letzte Sichtung mitgeschrieben wird",
+	"recent": "Recent Settings",
+	"recent.categoryFilter.disable": "Disable filtering of topics in ignored categories on the /recent page",
 	"signature": "Signatureinstellungen",
 	"signature.disable": "Signaturen deaktivieren",
 	"signature.no-links": "Links in signaturen deaktivieren",

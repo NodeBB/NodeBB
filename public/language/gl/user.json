@@ -60,6 +60,7 @@
     "username_taken_workaround": "Ese nome de usuario xa estaba collido, así que o modificamos lixeiramente. Agora o teu nome é <strong>%1</strong> ",
     "password_same_as_username": "O teu contrasinal e o teu nome de usuario son os mesmos, por favor, escolle outro contrasinal.",
     "password_same_as_email": "O teu contrasinal é igual que o teu enderezo electrónico, por favor, escolle outro contrasinal.",
+    "weak_password": "Weak password.",
     "upload_picture": "Subir foto",
     "upload_a_picture": "Subir unha foto",
     "remove_uploaded_picture": "Borrar unha foto subida",

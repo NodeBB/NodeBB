@@ -60,6 +60,7 @@
     "username_taken_workaround": "İstediğiniz kullanıcı ismi zaten alınmış, bu yüzden biraz degiştirdik. Şimdiki kullanıcı isminiz <strong>%1</strong>",
     "password_same_as_username": "Parolanız kullanıcı adınız ile aynı, lütfen başka bir parola seçiniz.",
     "password_same_as_email": "Şifreniz mail adresiniz ile aynı lütfen başka bir şifre seçin.",
+    "weak_password": "Weak password.",
     "upload_picture": "Resim Yükle",
     "upload_a_picture": "Bir Resim Yükle",
     "remove_uploaded_picture": "Yüklenmiş fotoğrafı kaldır",

@@ -32,5 +32,9 @@
     "notif.post.unsub.info": "Вы получили это уведомление согласно вашим настройкам подписки.",
     "test.text1": "Это тестовое сообщение для проверки почтового сервиса.",
     "unsub.cta": "Изменить настройки",
+    "banned.subject": "You have been banned from %1",
+    "banned.text1": "The user %1 has been banned from %2.",
+    "banned.text2": "This ban will last until %1.",
+    "banned.text3": "This is the reason why you have been banned:",
     "closing": "Спасибо!"
 }

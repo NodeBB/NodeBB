@@ -1,6 +1,7 @@
 {
 	"name": "Nazwa Grupy",
 	"description": "Opis Grupy",
+	"member-count": "Member Count",
 	"system": "System Grup",
 	"edit": "Edytuj",
 	"search-placeholder": "Szukaj",

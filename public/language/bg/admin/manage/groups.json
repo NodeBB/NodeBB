@@ -1,6 +1,7 @@
 {
 	"name": "Име на групата",
 	"description": "Описание на групата",
+	"member-count": "Member Count",
 	"system": "Системна група",
 	"edit": "Редактиране",
 	"search-placeholder": "Търсене",
