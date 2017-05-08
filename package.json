@@ -76,7 +76,7 @@
     "postcss-clean": "1.0.2",
     "promise-polyfill": "^6.0.2",
     "prompt": "^1.0.0",
-    "redis": "~2.6.2",
+    "redis": "2.7.1",
     "request": "2.81.0",
     "rimraf": "~2.5.0",
     "rss": "^1.0.0",
