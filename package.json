@@ -20,7 +20,7 @@
     "async": "2.4.0",
     "ace-builds": "^1.2.6",
     "autoprefixer": "7.0.1",
-    "bcryptjs": "~2.3.0",
+    "bcryptjs": "2.4.3",
     "body-parser": "^1.9.0",
     "bootstrap": "^3.3.7",
     "chart.js": "^2.4.0",
