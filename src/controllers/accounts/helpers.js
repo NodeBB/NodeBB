@@ -4,6 +4,7 @@
 var async = require('async');
 var validator = require('validator');
 var winston = require('winston');
+var nconf = require('nconf');
 
 var user = require('../../user');
 var groups = require('../../groups');
@@ -148,7 +149,7 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 			userData.birthday = validator.escape(String(userData.birthday || ''));
 			userData.moderationNote = validator.escape(String(userData.moderationNote || ''));
 
-			userData['cover:url'] = userData['cover:url'] || require('../../coverPhoto').getDefaultProfileCover(userData.uid);
+			userData['cover:url'] = (nconf.get('relative_path') + userData['cover:url']) || require('../../coverPhoto').getDefaultProfileCover(userData.uid);
 			userData['cover:position'] = validator.escape(String(userData['cover:position'] || '50% 50%'));
 			userData['username:disableEdit'] = !userData.isAdmin && parseInt(meta.config['username:disableEdit'], 10) === 1;
 			userData['email:disableEdit'] = !userData.isAdmin && parseInt(meta.config['email:disableEdit'], 10) === 1;
