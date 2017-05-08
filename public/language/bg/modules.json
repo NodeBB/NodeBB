@@ -20,7 +20,7 @@
     "chat.three_months": "3 месеца",
     "chat.delete_message_confirm": "Наистина ли искате да изтриете това съобщение?",
     "chat.add-users-to-room": "Добавяне на потребители към стаята",
-    "chat.confirm-chat-with-dnd-user": "This user has set their status to DnD(Do not disturb). Do you still want to chat with them?",
+    "chat.confirm-chat-with-dnd-user": "Този потребител е в състояние „не ме безпокойте“. Наистина ли искате да разговаряте с него?",
     "composer.compose": "Писане",
     "composer.show_preview": "Показване на прегледа",
     "composer.hide_preview": "Скриване на прегледа",

@@ -32,9 +32,9 @@
     "notif.post.unsub.info": "Това известие за публикация беше изпратено до Вас поради настройките Ви за абонаментите.",
     "test.text1": "Това е пробно е-писмо, за да потвърдим, че изпращачът на е-поща е правилно настроен за Вашия NodeBB.",
     "unsub.cta": "Натиснете тук, за да промените тези настройки",
-    "banned.subject": "You have been banned from %1",
-    "banned.text1": "The user %1 has been banned from %2.",
-    "banned.text2": "This ban will last until %1.",
-    "banned.text3": "This is the reason why you have been banned:",
+    "banned.subject": "Вие бяхте блокиран(а) от %1",
+    "banned.text1": "Потребителят %1 беше блокиран от %2.",
+    "banned.text2": "Това блокиране ще е в сила до %1.",
+    "banned.text3": "Това е причината, поради която бяхте блокиран(а):",
     "closing": "Благодарим Ви!"
 }

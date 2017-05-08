@@ -20,7 +20,7 @@
     "chat.three_months": "3 месеца",
     "chat.delete_message_confirm": "Да ли сте сигурни да желите да избришете ову поруку?",
     "chat.add-users-to-room": "Додајте кориснике у собу",
-    "chat.confirm-chat-with-dnd-user": "This user has set their status to DnD(Do not disturb). Do you still want to chat with them?",
+    "chat.confirm-chat-with-dnd-user": "Овај корисник је поставио свој статус на \"Не узнемиравај\". Да ли и даље желите да ћаскате са њим?",
     "composer.compose": "Писање поруке",
     "composer.show_preview": "Прикажи преглед",
     "composer.hide_preview": "Сакриј преглед",
