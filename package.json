@@ -97,7 +97,7 @@
     "validator": "7.0.0",
     "winston": "^2.1.0",
     "xml": "^1.0.1",
-    "xregexp": "~3.1.0",
+    "xregexp": "3.2.0",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
