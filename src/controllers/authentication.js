@@ -13,6 +13,7 @@ var user = require('../user');
 var plugins = require('../plugins');
 var utils = require('../utils');
 var Password = require('../password');
+var helpers = require('./helpers');
 
 var sockets = require('../socket.io');
 
@@ -42,16 +43,29 @@ authenticationController.register = function (req, res) {
 			}
 		},
 		function (next) {
+			var err;
+
 			if (!userData.email) {
-				return next(new Error('[[error:invalid-email]]'));
+				err = '[[error:invalid-email]]';
 			}
 
-			if (!userData.username || userData.username.length < meta.config.minimumUsernameLength) {
-				return next(new Error('[[error:username-too-short]]'));
+			if (!err && (!userData.username || userData.username.length < meta.config.minimumUsernameLength)) {
+				err = '[[error:username-too-short]]';
 			}
 
-			if (userData.username.length > meta.config.maximumUsernameLength) {
-				return next(new Error('[[error:username-too-long'));
+			if (!err && userData.username.length > meta.config.maximumUsernameLength) {
+				err = '[[error:username-too-long';
+			}
+
+			if (!err && userData.password !== userData['password-confirm']) {
+				err = '[[user:change_password_error_match]]';
+			}
+
+			if (err) {
+				if (req.body.noscript === 'true') {
+					return helpers.noScriptErrors(req, res, err, 400);
+				}
+				return next(new Error(err));
 			}
 
 			user.isPasswordValid(userData.password, next);
@@ -84,6 +98,9 @@ authenticationController.register = function (req, res) {
 		},
 	], function (err, data) {
 		if (err) {
+			if (req.body.noscript === 'true') {
+				return helpers.noScriptErrors(req, res, err.message, 400);
+			}
 			return res.status(400).send(err.message);
 		}
 
@@ -115,6 +132,10 @@ function registerAndLoginUser(req, res, userData, callback) {
 				}
 				userData.register = true;
 				req.session.registration = userData;
+
+				if (req.body.noscript === 'true') {
+					return res.redirect(nconf.get('relative_path') + '/register/complete');
+				}
 				return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
 			});
 		},
@@ -218,13 +239,21 @@ authenticationController.login = function (req, res, next) {
 	} else if (loginWith.indexOf('username') !== -1 && !validator.isEmail(req.body.username)) {
 		continueLogin(req, res, next);
 	} else {
-		res.status(500).send('[[error:wrong-login-type-' + loginWith + ']]');
+		var err = '[[error:wrong-login-type-' + loginWith + ']]';
+
+		if (req.body.noscript === 'true') {
+			return helpers.noScriptErrors(req, res, err, 500);
+		}
+		res.status(500).send(err);
 	}
 };
 
 function continueLogin(req, res, next) {
 	passport.authenticate('local', function (err, userData, info) {
 		if (err) {
+			if (req.body.noscript === 'true') {
+				return helpers.noScriptErrors(req, res, err.message, 403);
+			}
 			return res.status(403).send(err.message);
 		}
 
@@ -233,6 +262,9 @@ function continueLogin(req, res, next) {
 				info = '[[error:invalid-username-or-password]]';
 			}
 
+			if (req.body.noscript === 'true') {
+				return helpers.noScriptErrors(req, res, info, 403);
+			}
 			return res.status(403).send(info);
 		}
 
@@ -253,6 +285,9 @@ function continueLogin(req, res, next) {
 			req.session.passwordExpired = true;
 			user.reset.generate(userData.uid, function (err, code) {
 				if (err) {
+					if (req.body.noscript === 'true') {
+						return helpers.noScriptErrors(req, res, err.message, 403);
+					}
 					return res.status(403).send(err.message);
 				}
 
@@ -261,15 +296,23 @@ function continueLogin(req, res, next) {
 		} else {
 			authenticationController.doLogin(req, userData.uid, function (err) {
 				if (err) {
+					if (req.body.noscript === 'true') {
+						return helpers.noScriptErrors(req, res, err.message, 403);
+					}
 					return res.status(403).send(err.message);
 				}
 
+				var next;
 				if (!req.session.returnTo) {
-					res.status(200).send(nconf.get('relative_path') + '/');
+					next = nconf.get('relative_path') + '/';
 				} else {
-					var next = req.session.returnTo;
+					next = req.session.returnTo;
 					delete req.session.returnTo;
+				}
 
+				if (req.body.noscript === 'true') {
+					res.redirect(next + '?loggedin');
+				} else {
 					res.status(200).send(next);
 				}
 			});
@@ -427,7 +470,11 @@ authenticationController.logout = function (req, res, next) {
 			user.setUserField(uid, 'lastonline', Date.now() - 300000);
 
 			plugins.fireHook('static:user.loggedOut', { req: req, res: res, uid: uid }, function () {
-				res.status(200).send('');
+				if (req.body.noscript === 'true') {
+					res.redirect(nconf.get('relative_path') + '/');
+				} else {
+					res.status(200).send('');
+				}
 
 				// Force session check for all connected socket.io clients with the same session id
 				sockets.in('sess_' + sessionID).emit('checkSession', 0);
