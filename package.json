@@ -78,7 +78,7 @@
     "prompt": "^1.0.0",
     "redis": "2.7.1",
     "request": "2.81.0",
-    "rimraf": "~2.5.0",
+    "rimraf": "2.6.1",
     "rss": "^1.0.0",
     "sanitize-html": "^1.13.0",
     "semver": "^5.1.0",
