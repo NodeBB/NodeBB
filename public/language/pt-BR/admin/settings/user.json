@@ -37,6 +37,7 @@
 	"min-username-length": "Tamanho Mínimo do Nome de Usuário",
 	"max-username-length": "Tamanho Máximo do Nome de Usuário",
 	"min-password-length": "Tamanho Mínimo da Senha",
+	"min-password-strength": "Minimum Password Strength",
 	"max-about-me-length": "Tamanho Máximo do Sobre Mim",
 	"terms-of-use": "Termos de Uso do Fórum <small>(Deixar em branco para desabilitar)</small>",
 	"user-search": "Pesquisa de Usuário",

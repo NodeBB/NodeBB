@@ -1,5 +1,5 @@
 {
-	"custom-css": "Custom CSS",
+	"custom-css": "Свой CSS",
 	"custom-css.description": "Enter your own CSS declarations here, which will be applied after all other styles.",
 	"custom-css.enable": "Enable Custom CSS",
 

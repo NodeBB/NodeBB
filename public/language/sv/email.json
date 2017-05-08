@@ -32,5 +32,9 @@
     "notif.post.unsub.info": "Det här meddelandet fick du på grund av dina inställningar för prenumeration. ",
     "test.text1": "\nDet här är ett testmeddelande som verifierar att e-posten är korrekt installerad för din NodeBB. ",
     "unsub.cta": "Klicka här för att ändra inställningarna",
+    "banned.subject": "You have been banned from %1",
+    "banned.text1": "The user %1 has been banned from %2.",
+    "banned.text2": "This ban will last until %1.",
+    "banned.text3": "This is the reason why you have been banned:",
     "closing": "Tack!"
 }

@@ -16,6 +16,17 @@
 					</select>
 				</div>
 			</form>
+
+			<form class="row">
+				<div class="form-group col-sm-6">
+					<div class="checkbox">
+						<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+							<input class="mdl-switch__input" type="checkbox" data-field="autoDetectLang" <!-- IF autoDetectLang -->checked<!-- ENDIF autoDetectLang -->/>
+							<span class="mdl-switch__label">[[admin/general/languages:auto-detect]]</span>
+						</label>
+					</div>
+				</div>
+			</form>
 		</div>
 	</div>
 </div>

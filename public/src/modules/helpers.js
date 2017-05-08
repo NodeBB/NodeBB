@@ -176,8 +176,9 @@
 		}).join('');
 	};
 
-	helpers.localeToHTML = function (locale) {
-		return locale ? locale.replace('_', '-') : '';
+	helpers.localeToHTML = function (locale, fallback) {
+		locale = locale || fallback || 'en-GB';
+		return locale.replace('_', '-');
 	};
 
 	helpers.renderTopicImage = function (topicObj) {

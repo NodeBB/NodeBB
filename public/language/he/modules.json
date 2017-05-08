@@ -20,6 +20,7 @@
     "chat.three_months": "3 חודשים",
     "chat.delete_message_confirm": "האם אתה בטוח שברצונך למחוק הודעה זו?",
     "chat.add-users-to-room": "הוסף משתמשים לצ'אט",
+    "chat.confirm-chat-with-dnd-user": "This user has set their status to DnD(Do not disturb). Do you still want to chat with them?",
     "composer.compose": "צור",
     "composer.show_preview": "הצג תצוגה מקדימה",
     "composer.hide_preview": "הסתר תצוגה מקדימה",

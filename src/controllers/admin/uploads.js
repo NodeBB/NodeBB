@@ -5,6 +5,7 @@ var path = require('path');
 var async = require('async');
 var nconf = require('nconf');
 var winston = require('winston');
+var mime = require('mime');
 
 var meta = require('../../meta');
 var file = require('../../file');
@@ -101,6 +102,11 @@ uploadsController.uploadLogo = function (req, res, next) {
 
 uploadsController.uploadSound = function (req, res, next) {
 	var uploadedFile = req.files.files[0];
+
+	var mimeType = mime.lookup(uploadedFile.name);
+	if (!/^audio\//.test(mimeType)) {
+		return next(Error('[[error:invalid-data]]'));
+	}
 
 	file.saveFileToLocal(uploadedFile.name, 'sounds', uploadedFile.path, function (err) {
 		if (err) {

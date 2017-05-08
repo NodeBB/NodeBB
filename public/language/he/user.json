@@ -60,6 +60,7 @@
     "username_taken_workaround": "שם המשתמש שבחרת כבר תפוס, אז שינינו אותו מעט. שם המשתמש שלך כעת הוא <strong>%1</strong>",
     "password_same_as_username": "הסיסמה שלך זהה לשם המשתמש, אנא בחר סיסמה שונה.",
     "password_same_as_email": "הסיסמה שלך זהה לכתובת המייל שלך, אנא בחר סיסמה שונה.",
+    "weak_password": "Weak password.",
     "upload_picture": "העלה תמונה",
     "upload_a_picture": "העלה תמונה",
     "remove_uploaded_picture": "מחק את התמונה שהועלתה",

@@ -20,6 +20,7 @@
     "chat.three_months": "3 Kuud",
     "chat.delete_message_confirm": "Oled kindel, et soovid selle sõnumi kustutada?",
     "chat.add-users-to-room": "Lisa kasutajaid ruumi",
+    "chat.confirm-chat-with-dnd-user": "This user has set their status to DnD(Do not disturb). Do you still want to chat with them?",
     "composer.compose": "Koosta",
     "composer.show_preview": "Kuva eelvaadet",
     "composer.hide_preview": "Peida eelvaade",

@@ -1,10 +1,10 @@
 {
 	"crawlability-settings": "Crawlability Einstellung",
-	"robots-txt": "Benutzerdefinierte Robots.txt<small>Leer lassen für Standardeinstellung</small>",
-	"sitemap-feed-settings": "Seitenübersicht & Feed Einstellungen",
+	"robots-txt": "Benutzerdefinierte robots.txt <small>Leer lassen für Standardeinstellung</small>",
+	"sitemap-feed-settings": "Sitemap & Feed Einstellungen",
 	"disable-rss-feeds": "Deaktiviere RSS Feeds",
-	"disable-sitemap-xml": "Deaktiviere Seitenübersicht.xml",
-	"sitemap-topics": "Anzahl der Themen die auf der Seitenübersicht angezeigt werden",
-	"clear-sitemap-cache": "Leere Seitenübersicht Cache",
-	"view-sitemap": "Zeige Seitenübersicht"
+	"disable-sitemap-xml": "Deaktiviere sitemap.xml",
+	"sitemap-topics": "Anzahl der Themen die auf der Sitemap angezeigt werden",
+	"clear-sitemap-cache": "Sitemap Cache leeren",
+	"view-sitemap": "Zeige Sitemap"
 }

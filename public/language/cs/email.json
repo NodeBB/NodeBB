@@ -32,5 +32,9 @@
     "notif.post.unsub.info": "Toto upozornění na příspěvek vám bylo odesláno na základě vašeho nastavení odběru.",
     "test.text1": "Tento testovací e-mail slouží k ověření, že je e-mailer správně nastaven pro práci s NodeBB.",
     "unsub.cta": "Chcete-li změnit tyto nastavení, klikněte zde.",
+    "banned.subject": "You have been banned from %1",
+    "banned.text1": "The user %1 has been banned from %2.",
+    "banned.text2": "This ban will last until %1.",
+    "banned.text3": "This is the reason why you have been banned:",
     "closing": "Díky!"
 }

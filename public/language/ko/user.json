@@ -60,6 +60,7 @@
     "username_taken_workaround": "새 사용자 이름이 이미 존재하여 <strong>%1</strong>로 저장되었습니다.",
     "password_same_as_username": "비밀번호가 사용자명과 동일합니다. 다른 비밀번호를 입력하세요.",
     "password_same_as_email": "비밀번호가 이메일 주소와 동일합니다. 다른 비밀번호를 입력하세요.",
+    "weak_password": "Weak password.",
     "upload_picture": "사진 업로드",
     "upload_a_picture": "사진 업로드",
     "remove_uploaded_picture": "등록된 사진을 삭제",

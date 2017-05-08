@@ -29,6 +29,8 @@
 	"unread": "Unread Settings",
 	"unread.cutoff": "Unread cutoff days",
 	"unread.min-track-last": "Minimum posts in topic before tracking last read",
+	"recent": "Recent Settings",
+	"recent.categoryFilter.disable": "Disable filtering of topics in ignored categories on the /recent page",
 	"signature": "Signature Settings",
 	"signature.disable": "Disable signatures",
 	"signature.no-links": "Disable links in signatures",

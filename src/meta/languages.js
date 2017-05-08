@@ -100,6 +100,25 @@ function getTranslationTree(callback) {
 			});
 		},
 
+		// save a list of languages to `${buildLanguagesPath}/metadata.json`
+		// avoids readdirs later on
+		function (ref, next) {
+			async.waterfall([
+				function (next) {
+					mkdirp(buildLanguagesPath, next);
+				},
+				function (x, next) {
+					fs.writeFile(path.join(buildLanguagesPath, 'metadata.json'), JSON.stringify({
+						languages: ref.languages.sort(),
+						namespaces: ref.namespaces.sort(),
+					}), next);
+				},
+				function (next) {
+					next(null, ref);
+				},
+			], next);
+		},
+
 		// for each language and namespace combination,
 		// run through core and all plugins to generate
 		// a full translation hash

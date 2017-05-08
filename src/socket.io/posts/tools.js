@@ -138,38 +138,45 @@ module.exports = function (SocketPosts) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 		var postData;
+		var topicData;
+		var isMainAndLast = false;
 		async.waterfall([
 			function (next) {
 				isMainAndLastPost(data.pid, next);
 			},
 			function (results, next) {
 				if (results.isMain && !results.isLast) {
-					return callback(new Error('[[error:cant-purge-main-post]]'));
+					return next(new Error('[[error:cant-purge-main-post]]'));
 				}
-				if (results.isMain && results.isLast) {
-					return deleteTopicOf(data.pid, socket, next);
-				}
-				setImmediate(next);
+				isMainAndLast = results.isMain && results.isLast;
+
+				posts.getPostFields(data.pid, ['toPid', 'tid'], next);
 			},
-			function (next) {
-				posts.getPostField(data.pid, 'toPid', next);
-			},
-			function (toPid, next) {
-				postData = { pid: data.pid, toPid: toPid };
+			function (_postData, next) {
+				postData = _postData;
+				postData.pid = data.pid;
 				posts.tools.purge(socket.uid, data.pid, next);
 			},
 			function (next) {
 				websockets.in('topic_' + data.tid).emit('event:post_purged', postData);
-				topics.getTopicField(data.tid, 'title', next);
+				topics.getTopicFields(data.tid, ['title', 'cid'], next);
 			},
-			function (title, next) {
+			function (_topicData, next) {
+				topicData = _topicData;
 				events.log({
 					type: 'post-purge',
 					uid: socket.uid,
 					pid: data.pid,
 					ip: socket.ip,
-					title: String(title),
+					title: String(topicData.title),
 				}, next);
+			},
+			function (next) {
+				if (isMainAndLast) {
+					socketTopics.doTopicAction('purge', 'event:topic_purged', socket, { tids: [postData.tid], cid: topicData.cid }, next);
+				} else {
+					setImmediate(next);
+				}
 			},
 		], callback);
 	};

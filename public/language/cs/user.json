@@ -60,6 +60,7 @@
     "username_taken_workaround": "Zvolené uživatelské jméno je již zabrané, takže jsme ho trochu upravili. Nyní jste znám jako <strong>%1</strong>",
     "password_same_as_username": "Vaše heslo je stejné jako vaše přihlašovací jméno. Zvolte si prosím jiné heslo.",
     "password_same_as_email": "Vaše heslo je stejné jako váš e-mail. Zvolte si prosím jiné heslo.",
+    "weak_password": "Weak password.",
     "upload_picture": "Nahrát obrázek",
     "upload_a_picture": "Nahrát obrázek",
     "remove_uploaded_picture": "Odstranit nahraný obrázek",

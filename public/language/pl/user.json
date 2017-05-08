@@ -60,6 +60,7 @@
     "username_taken_workaround": "Wybrany login jest już zajęty, więc zmieniliśmy go trochę. Proponujemy  <strong>%1</strong>",
     "password_same_as_username": "Twoje hasło jest takie samo jak nazwa użytkownika, prosimy wybrać inne hasło.",
     "password_same_as_email": "Twoje hasło jest takie samo jak adres e-mail, prosimy wybrać inne hasło.",
+    "weak_password": "Weak password.",
     "upload_picture": "Prześlij zdjęcie",
     "upload_a_picture": "Prześlij zdjęcie",
     "remove_uploaded_picture": "Usuń Przesłane Zdjęcie",

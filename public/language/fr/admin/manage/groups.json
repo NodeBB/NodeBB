@@ -1,6 +1,7 @@
 {
 	"name": "Nom du groupe",
 	"description": "Description du groupe",
+	"member-count": "Member Count",
 	"system": "Groupe système",
 	"edit": "Éditer",
 	"search-placeholder": "Rechercher",

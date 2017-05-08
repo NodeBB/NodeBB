@@ -60,6 +60,7 @@
     "username_taken_workaround": "Användarnamnet är redan upptaget, så vi förändrade det lite. Du kallas nu för <strong>%1</strong>",
     "password_same_as_username": "Ditt lösenord är samma som ditt användarnamn, välj ett annat lösenord.",
     "password_same_as_email": "Ditt lösenord är detsamma som din e-postadress. Var god välj ett annat lösenord.",
+    "weak_password": "Weak password.",
     "upload_picture": "Ladda upp bild",
     "upload_a_picture": "Ladda upp en bild",
     "remove_uploaded_picture": "Ta bort uppladdad bild",

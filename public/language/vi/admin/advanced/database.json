@@ -1,6 +1,7 @@
 {
 	"x-b": "%1 b",
 	"x-mb": "%1 mb",
+	"x-gb": "%1 gb",
 	"uptime-seconds": "Thời gian hoạt động(giây)",
 	"uptime-days": "Thời gian hoạt động(Ngày)",
 

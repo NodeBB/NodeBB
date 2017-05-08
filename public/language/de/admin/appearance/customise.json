@@ -3,7 +3,7 @@
 	"custom-css.description": "Füge hier deine eigenen CSS-Eigenschaften ein, sie werden als letztes angewendet.",
 	"custom-css.enable": "Benutzerdefiniertes CSS aktivieren",
 
-	"custom-header": "Benutzerdefinierter Kopfbereich",
+	"custom-header": "Benutzerdefinierter Header",
 	"custom-header.description": "Füge hier dein benutzerdefiniertes HTML (z.B. Javascript, Meta Tags, usw.) ein, welches in den <code>&lt;head&gt;</code> Tag eingefügt werden soll.",
-	"custom-header.enable": "Benutzerdefinierten Kopfbereich aktivieren"
+	"custom-header.enable": "Benutzerdefinierten Header aktivieren"
 }

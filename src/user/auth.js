@@ -11,6 +11,9 @@ module.exports = function (User) {
 	User.auth = {};
 
 	User.auth.logAttempt = function (uid, ip, callback) {
+		if (!parseInt(uid, 10)) {
+			return setImmediate(callback);
+		}
 		async.waterfall([
 			function (next) {
 				db.exists('lockout:' + uid, next);

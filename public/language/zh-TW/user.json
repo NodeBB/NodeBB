@@ -60,6 +60,7 @@
     "username_taken_workaround": "你想要註冊的帳號已經被使用了，所以我們將它略作改變。你現在的帳號名稱是 <strong>%1</strong>",
     "password_same_as_username": "你的密碼和帳號是一樣的，請選擇另一組密碼。",
     "password_same_as_email": "你的密碼和電子郵件是一樣的，請選擇另一組密碼。",
+    "weak_password": "Weak password.",
     "upload_picture": "上傳頭像",
     "upload_a_picture": "上傳一張照片",
     "remove_uploaded_picture": "移除上傳的圖片",

@@ -29,6 +29,8 @@
 	"unread": "未読の設定",
 	"unread.cutoff": "未読のカットオフ日",
 	"unread.min-track-last": "最後に読み込みを行う前に追跡するスレッドの最小投稿数",
+	"recent": "Recent Settings",
+	"recent.categoryFilter.disable": "Disable filtering of topics in ignored categories on the /recent page",
 	"signature": "署名の設定",
 	"signature.disable": "署名を無効にする",
 	"signature.no-links": "署名内のリンクを無効にする",

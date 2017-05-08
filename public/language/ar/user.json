@@ -60,6 +60,7 @@
     "username_taken_workaround": "اسم المستخدم الذي اخترته سبق أخذه، لذا تم تغييره قليلا. أن الآن مسجل تحت الاسم <strong>%1</strong>",
     "password_same_as_username": "Your password is the same as your username, please select another password.",
     "password_same_as_email": "Your password is the same as your email, please select another password.",
+    "weak_password": "Weak password.",
     "upload_picture": "ارفع الصورة",
     "upload_a_picture": "رفع صورة",
     "remove_uploaded_picture": "Remove Uploaded Picture",

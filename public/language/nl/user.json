@@ -60,6 +60,7 @@
     "username_taken_workaround": "Helaas, de gewenste gebruikersnaam is al door iemand in gebruik genomen dus vandaar een kleine aanpassing naar <strong>%1</strong> doorgevoerd",
     "password_same_as_username": "Je wachtwoord is hetzelfde als je gebruikersnaam. Kies een ander wachtwoord.",
     "password_same_as_email": "Je wachtwoord is hetzelfde als je email, kies alsjeblieft een ander wachtwoord.",
+    "weak_password": "Weak password.",
     "upload_picture": "Upload afbeelding",
     "upload_a_picture": "Upload een afbeelding",
     "remove_uploaded_picture": "Verwijder gëuploade foto",
