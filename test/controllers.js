@@ -1061,6 +1061,15 @@ describe('Controllers', function () {
 		});
 	});
 
+	it('should return osd data', function (done) {
+		request(nconf.get('url') + '/osd.xml', function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+
 	after(function (done) {
 		var analytics = require('../src/analytics');
 		analytics.writeData(function (err) {
