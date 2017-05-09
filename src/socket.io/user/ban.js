@@ -10,6 +10,7 @@ var privileges = require('../../privileges');
 var plugins = require('../../plugins');
 var emailer = require('../../emailer');
 var translator = require('../../translator');
+var utils = require('../../../public/src/utils');
 
 module.exports = function (SocketUser) {
 	SocketUser.banUsers = function (socket, data, callback) {
@@ -108,7 +109,7 @@ module.exports = function (SocketUser) {
 					subject: '[[email:banned.subject, ' + siteTitle + ']]',
 					site_title: siteTitle,
 					username: username,
-					until: until ? new Date(until).toString() : false,
+					until: until ? utils.toISOString(until) : false,
 					reason: reason,
 				};
 
