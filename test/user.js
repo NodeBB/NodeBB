@@ -945,7 +945,11 @@ describe('User', function () {
 			};
 			socketUser.saveSettings({ uid: testUid }, data, function (err) {
 				assert.ifError(err);
-				done();
+				User.getSettings(testUid, function (err, data) {
+					assert.ifError(err);
+					assert.equal(data.usePagination, true);
+					done();
+				});
 			});
 		});
 
