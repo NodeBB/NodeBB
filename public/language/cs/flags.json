@@ -54,7 +54,7 @@
 	"modal-body": "Please specify your reason for flagging %1 %2 for review. Alternatively, use one of the quick report buttons if applicable.",
 	"modal-reason-spam": "Spam",
 	"modal-reason-offensive": "Offensive",
-	"modal-reason-custom": "Reason for reporting this content...",
+	"modal-reason-custom": "Důvod nahlášení tohoto obsahu…",
 	"modal-submit": "Submit Report",
 	"modal-submit-success": "Content has been flagged for moderation."
 }
