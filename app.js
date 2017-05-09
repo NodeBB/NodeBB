@@ -203,7 +203,8 @@ function upgrade() {
 		// Skip build
 		tasks.pop();
 	}
-
+	//disable mongo timeouts during upgrade
+	nconf.set('mongo:options:socketTimeoutMS', 0);
 	async.series(tasks, function (err) {
 		if (err) {
 			winston.error(err.stack);
