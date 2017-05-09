@@ -194,6 +194,10 @@ function pushToUids(uids, notification, callback) {
 			plugins.fireHook('filter:notification.push', { notification: notification, uids: uids }, next);
 		},
 		function (data, next) {
+			if (!data || !data.notification || !data.uids || !data.uids.length) {
+				return callback();
+			}
+
 			uids = data.uids;
 			notification = data.notification;
 
@@ -246,7 +250,6 @@ Notifications.pushGroups = function (notification, groupNames, callback) {
 		}
 
 		var members = _.unique(_.flatten(groupMembers));
-
 		Notifications.push(notification, members, callback);
 	});
 };
