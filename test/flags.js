@@ -16,6 +16,7 @@ var Meta = require('../src/meta');
 
 describe('Flags', function () {
 	before(function (done) {
+		Groups.resetCache();
 		// Create some stuff to flag
 		async.waterfall([
 			async.apply(User.create, { username: 'testUser', password: 'abcdef', email: 'b@c.com' }),
