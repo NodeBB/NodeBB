@@ -2,6 +2,7 @@
 'use strict';
 
 var async = require('async');
+var _ = require('underscore');
 
 var meta = require('../meta');
 var db = require('../database');
@@ -25,7 +26,7 @@ module.exports = function (User) {
 
 		var cached = cache.get('user:' + uid + ':settings');
 		if (cached) {
-			return onSettingsLoaded(uid, cached || {}, callback);
+			return onSettingsLoaded(uid, _.clone(cached || {}), callback);
 		}
 
 		async.waterfall([
@@ -36,7 +37,7 @@ module.exports = function (User) {
 				settings = settings || {};
 				settings.uid = uid;
 				cache.set('user:' + uid + ':settings', settings);
-				onSettingsLoaded(uid, settings || {}, next);
+				onSettingsLoaded(uid, _.clone(settings || {}), next);
 			},
 		], callback);
 	};
@@ -47,7 +48,7 @@ module.exports = function (User) {
 				return cache.get('user:' + uid + ':settings') || {};
 			});
 			async.map(settings, function (setting, next) {
-				onSettingsLoaded(setting.uid, setting, next);
+				onSettingsLoaded(setting.uid, _.clone(setting), next);
 			}, next);
 		}
 
