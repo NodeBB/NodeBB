@@ -83,6 +83,7 @@ define('forum/chats', [
 
 		Chats.addRenameHandler(ajaxify.data.roomId, $('[component="chat/room/name"]'));
 		Chats.addScrollHandler(ajaxify.data.roomId, ajaxify.data.uid, $('.chat-content'));
+		Chats.addCharactersLeftHandler(components.get('chat/input'));
 	};
 
 	Chats.addScrollHandler = function (roomId, uid, el) {
@@ -120,6 +121,12 @@ define('forum/chats', [
 					loading = false;
 				});
 			});
+		});
+	};
+
+	Chats.addCharactersLeftHandler = function (element) {
+		element.on('keyup', function () {
+			$('[component="chat/message/length"]').text(element.val().length);
 		});
 	};
 
@@ -297,11 +304,17 @@ define('forum/chats', [
 			if (err) {
 				return app.alertError(err.message);
 			}
-			if (parseInt(roomId, 10) === ajaxify.data.roomId) {
+			if (parseInt(roomId, 10) === parseInt(ajaxify.data.roomId, 10)) {
 				ajaxify.go('user/' + ajaxify.data.userslug + '/chats');
 			} else {
 				el.remove();
 			}
+			require(['chat'], function (chat) {
+				var modal = chat.getModal(roomId);
+				if (modal.length) {
+					chat.close(modal);
+				}
+			});
 		});
 	};
 

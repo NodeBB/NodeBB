@@ -3,6 +3,9 @@
 module.exports = function (redisClient, module) {
 	module.sortedSetAdd = function (key, score, value, callback) {
 		callback = callback || function () {};
+		if (!key) {
+			return setImmediate(callback);
+		}
 		if (Array.isArray(score) && Array.isArray(value)) {
 			return sortedSetAddMulti(key, score, value, callback);
 		}
@@ -33,10 +36,15 @@ module.exports = function (redisClient, module) {
 
 	module.sortedSetsAdd = function (keys, score, value, callback) {
 		callback = callback || function () {};
+		if (!Array.isArray(keys) || !keys.length) {
+			return callback();
+		}
 		var multi = redisClient.multi();
 
 		for (var i = 0; i < keys.length; i += 1) {
-			multi.zadd(keys[i], score, value);
+			if (keys[i]) {
+				multi.zadd(keys[i], score, value);
+			}
 		}
 
 		multi.exec(function (err) {

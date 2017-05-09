@@ -1,9 +1,9 @@
 {
-	"loading": "Loading Skins...",
-	"homepage": "Homepage",
-	"select-skin": "Select Skin",
-	"current-skin": "Current Skin",
-	"skin-updated": "Skin Updated",
-	"applied-success": "%1 skin was succesfully applied",
-	"revert-success": "Skin reverted to base colours"
+	"loading": "Cargando Temas...",
+	"homepage": "Pagina Principal",
+	"select-skin": "Selecciona el Tema",
+	"current-skin": "Tema Actual",
+	"skin-updated": "Tema Actualizado",
+	"applied-success": "El tema %1 se aplicó correctamente",
+	"revert-success": "El tema revierte los colores base"
 }

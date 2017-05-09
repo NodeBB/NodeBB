@@ -124,8 +124,12 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.sortedSetScore = function (key, value, callback) {
+		if (!key || value === undefined) {
+			return callback(null, null);
+		}
+
 		redisClient.zscore(key, value, function (err, score) {
-			callback(err, !err ? parseFloat(score) : undefined);
+			callback(err, !err ? parseFloat(score) : null);
 		});
 	};
 

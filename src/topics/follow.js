@@ -162,27 +162,31 @@ module.exports = function (Topics) {
 	};
 
 	Topics.filterWatchedTids = function (tids, uid, callback) {
-		db.sortedSetScores('uid:' + uid + ':followed_tids', tids, function (err, scores) {
-			if (err) {
-				return callback(err);
-			}
-			tids = tids.filter(function (tid, index) {
-				return tid && !!scores[index];
-			});
-			callback(null, tids);
-		});
+		async.waterfall([
+			function (next) {
+				db.sortedSetScores('uid:' + uid + ':followed_tids', tids, next);
+			},
+			function (scores, next) {
+				tids = tids.filter(function (tid, index) {
+					return tid && !!scores[index];
+				});
+				next(null, tids);
+			},
+		], callback);
 	};
 
 	Topics.filterNotIgnoredTids = function (tids, uid, callback) {
-		db.sortedSetScores('uid:' + uid + ':ignored_tids', tids, function (err, scores) {
-			if (err) {
-				return callback(err);
-			}
-			tids = tids.filter(function (tid, index) {
-				return tid && !scores[index];
-			});
-			callback(null, tids);
-		});
+		async.waterfall([
+			function (next) {
+				db.sortedSetScores('uid:' + uid + ':ignored_tids', tids, next);
+			},
+			function (scores, next) {
+				tids = tids.filter(function (tid, index) {
+					return tid && !scores[index];
+				});
+				next(null, tids);
+			},
+		], callback);
 	};
 
 	Topics.notifyFollowers = function (postData, exceptUid, callback) {
@@ -224,6 +228,7 @@ module.exports = function (Topics) {
 				postData.content = posts.relativeToAbsolute(postData.content);
 
 				notifications.create({
+					type: 'new-reply',
 					bodyShort: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + titleEscaped + ']]',
 					bodyLong: postData.content,
 					pid: postData.pid,

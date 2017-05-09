@@ -5,7 +5,7 @@
 	"out-of-date": "期限切れ",
 	"none-found": "プラグインが見つかりませんでした",
 	"none-active": "アクティブなプラグインが見つかりませんでした",
-	"find-plugins": "プラグインが見つかりました",
+	"find-plugins": "プラグイン一覧",
 
 	"plugin-search": "プラグインの検索",
 	"plugin-search-placeholder": "プラグインを検索します...",

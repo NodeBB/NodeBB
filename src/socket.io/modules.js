@@ -3,6 +3,7 @@
 var async = require('async');
 var validator = require('validator');
 
+var db = require('../database');
 var meta = require('../meta');
 var notifications = require('../notifications');
 var plugins = require('../plugins');
@@ -32,6 +33,17 @@ SocketModules.chats.getRaw = function (socket, data, callback) {
 				return next(new Error('[[error:not-allowed]]'));
 			}
 			Messaging.getMessageField(data.mid, 'content', next);
+		},
+	], callback);
+};
+
+SocketModules.chats.isDnD = function (socket, uid, callback) {
+	async.waterfall([
+		function (next) {
+			db.getObjectField('user:' + uid, 'status', next);
+		},
+		function (status, next) {
+			next(null, status === 'dnd');
 		},
 	], callback);
 };
@@ -133,6 +145,7 @@ SocketModules.chats.loadRoom = function (socket, data, callback) {
 			results.roomData.groupChat = results.roomData.hasOwnProperty('groupChat') ? results.roomData.groupChat : results.users.length > 2;
 			results.roomData.isOwner = parseInt(results.roomData.owner, 10) === socket.uid;
 			results.roomData.maximumUsersInChatRoom = parseInt(meta.config.maximumUsersInChatRoom, 10) || 0;
+			results.roomData.maximumChatMessageLength = parseInt(meta.config.maximumChatMessageLength, 10) || 1000;
 			results.roomData.showUserInput = !results.roomData.maximumUsersInChatRoom || results.roomData.maximumUsersInChatRoom > 2;
 			next(null, results.roomData);
 		},

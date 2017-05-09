@@ -6,6 +6,7 @@ var _ = require('underscore');
 var db = require('../database');
 var topics = require('../topics');
 var user = require('../user');
+var groups = require('../groups');
 var notifications = require('../notifications');
 var plugins = require('../plugins');
 
@@ -27,6 +28,7 @@ module.exports = function (Posts) {
 				topics.getTopicFields(_post.tid, ['tid', 'cid', 'pinned'], next);
 			},
 			function (topicData, next) {
+				postData.cid = topicData.cid;
 				async.parallel([
 					function (next) {
 						updateTopicTimestamp(topicData, next);
@@ -40,7 +42,7 @@ module.exports = function (Posts) {
 				], next);
 			},
 			function (results, next) {
-				plugins.fireHook('action:post.delete', pid);
+				plugins.fireHook('action:post.delete', { post: _.clone(postData), uid: uid });
 				next(null, postData);
 			},
 		], callback);
@@ -77,7 +79,7 @@ module.exports = function (Posts) {
 				], next);
 			},
 			function (results, next) {
-				plugins.fireHook('action:post.restore', _.clone(postData));
+				plugins.fireHook('action:post.restore', { post: _.clone(postData), uid: uid });
 				next(null, postData);
 			},
 		], callback);
@@ -141,18 +143,21 @@ module.exports = function (Posts) {
 						deletePostFromReplies(pid, next);
 					},
 					function (next) {
-						db.sortedSetsRemove(['posts:pid', 'posts:flagged'], pid, next);
+						deletePostFromGroups(pid, next);
 					},
 					function (next) {
-						Posts.dismissFlag(pid, next);
+						db.sortedSetsRemove(['posts:pid', 'posts:flagged'], pid, next);
 					},
 				], function (err) {
-					if (err) {
-						return next(err);
-					}
-					plugins.fireHook('action:post.purge', pid);
-					db.delete('post:' + pid, next);
+					next(err);
 				});
+			},
+			function (next) {
+				Posts.getPostData(pid, next);
+			},
+			function (postData, next) {
+				plugins.fireHook('action:post.purge', { post: postData, uid: uid });
+				db.delete('post:' + pid, next);
 			},
 		], callback);
 	};
@@ -292,5 +297,27 @@ module.exports = function (Posts) {
 				async.apply(db.decrObjectField, 'post:' + toPid, 'replies'),
 			], callback);
 		});
+	}
+
+	function deletePostFromGroups(pid, callback) {
+		async.waterfall([
+			function (next) {
+				Posts.getPostField(pid, 'uid', next);
+			},
+			function (uid, next) {
+				if (!parseInt(uid, 10)) {
+					return callback();
+				}
+				groups.getUserGroupMembership('groups:visible:createtime', [uid], next);
+			},
+			function (groupNames, next) {
+				groupNames = groupNames[0];
+				var keys = groupNames.map(function (groupName) {
+					return 'group:' + groupName + ':member:pids';
+				});
+
+				db.sortedSetsRemove(keys, pid, next);
+			},
+		], callback);
 	}
 };

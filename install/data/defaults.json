@@ -17,6 +17,7 @@
     "allowLocalLogin": 1,
     "allowAccountDelete": 1,
     "allowFileUploads": 0,
+    "allowedFileExtensions": "png,jpg,bmp",
     "allowUserHomePage": 1,
     "maximumFileSize": 2048,
     "minimumTitleLength": 3,
@@ -28,12 +29,13 @@
     "maximumAboutMeLength": 1000,
     "maximumProfileImageSize": 256,
     "maximumCoverImageSize": 2048,
-    "profileImageDimension": 128,
+    "profileImageDimension": 200,
     "requireEmailConfirmation": 0,
     "allowProfileImageUploads": 1,
     "teaserPost": "last-reply",
     "allowPrivateGroups": 1,
     "unreadCutoff": 2,
     "bookmarkThreshold": 5,
-    "topicsPerList": 20
+    "topicsPerList": 20,
+    "autoDetectLang": 1
 }

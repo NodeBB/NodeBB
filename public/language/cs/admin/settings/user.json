@@ -37,6 +37,7 @@
 	"min-username-length": "Minimální délka uživatelského jména",
 	"max-username-length": "Maximální délka uživatelského jména",
 	"min-password-length": "Minimální délka hesla",
+	"min-password-strength": "Minimum Password Strength",
 	"max-about-me-length": "Maximální délka hesla",
 	"terms-of-use": "Forum Terms of Use <small>(Leave blank to disable)</small>",
 	"user-search": "User Search",

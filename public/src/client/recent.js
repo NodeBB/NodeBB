@@ -132,6 +132,7 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function (infinit
 
 		infinitescroll.loadMore('topics.loadMoreRecentTopics', {
 			after: $('[component="category"]').attr('data-nextstart'),
+			count: config.topicsPerPage,
 			cid: utils.params().cid,
 			filter: ajaxify.data.selectedFilter.filter,
 			set: $('[component="category"]').attr('data-set') ? $('[component="category"]').attr('data-set') : 'topics:recent',
@@ -157,7 +158,7 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function (infinit
 		app.parseAndTranslate(templateName, 'topics', { topics: topics, showSelect: showSelect }, function (html) {
 			$('#category-no-topics').remove();
 
-			$('[component="category"]').append(html);
+			html.insertAfter($('[component="category/topic"]').last());
 			html.find('.timeago').timeago();
 			app.createUserTooltips();
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));

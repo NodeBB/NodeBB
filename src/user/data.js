@@ -26,6 +26,10 @@ module.exports = function (User) {
 	};
 
 	User.getUsersFields = function (uids, fields, callback) {
+		if (!Array.isArray(uids) || !uids.length) {
+			return callback(null, []);
+		}
+
 		var fieldsToRemove = [];
 		function addField(field) {
 			if (fields.indexOf(field) === -1) {
@@ -33,14 +37,6 @@ module.exports = function (User) {
 				fieldsToRemove.push(field);
 			}
 		}
-
-		if (!Array.isArray(uids) || !uids.length) {
-			return callback(null, []);
-		}
-
-		var keys = uids.map(function (uid) {
-			return 'user:' + uid;
-		});
 
 		if (fields.indexOf('uid') === -1) {
 			fields.push('uid');
@@ -55,11 +51,17 @@ module.exports = function (User) {
 			addField('lastonline');
 		}
 
+		var uniqueUids = uids.filter(function (uid, index) {
+			return index === uids.indexOf(uid);
+		});
+
 		async.waterfall([
 			function (next) {
-				db.getObjectsFields(keys, fields, next);
+				db.getObjectsFields(uidsToUserKeys(uniqueUids), fields, next);
 			},
 			function (users, next) {
+				users = uidsToUsers(uids, uniqueUids, users);
+
 				modifyUserData(users, fieldsToRemove, next);
 			},
 		], callback);
@@ -81,19 +83,38 @@ module.exports = function (User) {
 			return callback(null, []);
 		}
 
-		var keys = uids.map(function (uid) {
-			return 'user:' + uid;
+		var uniqueUids = uids.filter(function (uid, index) {
+			return index === uids.indexOf(uid);
 		});
 
 		async.waterfall([
 			function (next) {
-				db.getObjects(keys, next);
+				db.getObjects(uidsToUserKeys(uniqueUids), next);
 			},
 			function (users, next) {
+				users = uidsToUsers(uids, uniqueUids, users);
+
 				modifyUserData(users, [], next);
 			},
 		], callback);
 	};
+
+	function uidsToUsers(uids, uniqueUids, usersData) {
+		var ref = uniqueUids.reduce(function (memo, cur, idx) {
+			memo[cur] = idx;
+			return memo;
+		}, {});
+		var users = uids.map(function (uid) {
+			return usersData[ref[uid]];
+		});
+		return users;
+	}
+
+	function uidsToUserKeys(uids) {
+		return uids.map(function (uid) {
+			return 'user:' + uid;
+		});
+	}
 
 	function modifyUserData(users, fieldsToRemove, callback) {
 		users.forEach(function (user) {

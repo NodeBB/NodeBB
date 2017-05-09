@@ -33,12 +33,14 @@ rewards.checkConditionAndRewardUser = function (uid, condition, method, callback
 
 			async.filter(rewards, function (reward, next) {
 				if (!reward) {
-					return next(false);
+					return next(null, false);
 				}
 
-				checkCondition(reward, method, next);
-			}, function (eligible) {
-				if (!eligible) {
+				checkCondition(reward, method, function (result) {
+					next(null, result);
+				});
+			}, function (err, eligible) {
+				if (err || !eligible) {
 					return next(false);
 				}
 

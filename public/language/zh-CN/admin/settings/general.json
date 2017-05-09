@@ -6,7 +6,7 @@
 	"browser-title": "浏览器标题",
 	"browser-title-help": "如果没有指定浏览器标题，将会使用站点标题",
 	"title-layout": "标题布局",
-	"title-layout-help": "定义浏览器标题的布局，即&#123;页面标题&#125; | &#123;浏览器标题&#125;",
+	"title-layout-help": "定义浏览器标题的布局，即&#123;pageTitle&#125; | &#123;browserTitle&#125;",
 	"description.placeholder": "关于您的社区的简短说明",
 	"description": "站点描述",
 	"keywords": "站点关键字",

@@ -1,8 +1,8 @@
 {
 	"general": "Allgemein",
 	"private-groups": "Private Gruppen",
-	"private-groups.help": "Wenn aktiviert, benötigt das beitreten einer Gruppe die Bestätigung des jeweiligen Besitzers<em>(Standard: aktiviert)</em>",
-	"private-groups.warning": "<strong>Vorsicht!</strong> Wenn diese Option deaktiviert ist, und Sie private Gruppen haben, werden diese automatisch Öffentlich.",
+	"private-groups.help": "Wenn aktiviert, erfordert das Beitreten einer Gruppe die Bestätigung des jeweiligen Besitzers<em>(Standard: aktiviert)</em>",
+	"private-groups.warning": "<strong>Vorsicht!</strong> Wenn diese Option deaktiviert ist, und es private Gruppen gibt, werden diese automatisch öffentlich.",
 	"allow-creation": "Erstellung von Gruppen erlauben",
 	"allow-creation-help": "Wenn aktiviert können Nutzer Gruppen erstellen <em>(Standard: deaktiviert)</em>",
 	"max-name-length": "Maximale Länge von Gruppennamen",

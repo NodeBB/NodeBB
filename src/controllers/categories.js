@@ -21,17 +21,6 @@ categoriesController.list = function (req, res, next) {
 		content: 'website',
 	}];
 
-	var ogImage = meta.config['og:image'] || meta.config['brand:logo'] || '';
-	if (ogImage) {
-		if (!ogImage.startsWith('http')) {
-			ogImage = nconf.get('url') + ogImage;
-		}
-		res.locals.metaTags.push({
-			property: 'og:image',
-			content: ogImage,
-		});
-	}
-
 	var categoryData;
 	async.waterfall([
 		function (next) {

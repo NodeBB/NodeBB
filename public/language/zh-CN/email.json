@@ -32,5 +32,9 @@
     "notif.post.unsub.info": "根据您的订阅设置，为您发送此回帖提醒。",
     "test.text1": "这是一封测试邮件，用来验证 NodeBB 的邮件配置是否设置正确。",
     "unsub.cta": "点击这里修改这些设置",
+    "banned.subject": "You have been banned from %1",
+    "banned.text1": "The user %1 has been banned from %2.",
+    "banned.text2": "This ban will last until %1.",
+    "banned.text3": "This is the reason why you have been banned:",
     "closing": "谢谢！"
 }

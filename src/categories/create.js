@@ -72,7 +72,7 @@ module.exports = function (Categories) {
 				next(null, category);
 			},
 			function (category, next) {
-				plugins.fireHook('action:category.create', category);
+				plugins.fireHook('action:category.create', { category: category });
 				next(null, category);
 			},
 		], callback);
@@ -138,9 +138,20 @@ module.exports = function (Categories) {
 	};
 
 	Categories.copyPrivilegesFrom = function (fromCid, toCid, callback) {
-		async.each(privileges.privilegeList, function (privilege, next) {
-			copyPrivilege(privilege, fromCid, toCid, next);
-		}, callback);
+		async.waterfall([
+			function (next) {
+				plugins.fireHook('filter:categories.copyPrivilegesFrom', {
+					privileges: privileges.privilegeList,
+					fromCid: fromCid,
+					toCid: toCid,
+				}, next);
+			},
+			function (data, next) {
+				async.each(data.privileges, function (privilege, next) {
+					copyPrivilege(privilege, data.fromCid, data.toCid, next);
+				}, next);
+			},
+		], callback);
 	};
 
 	function copyPrivilege(privilege, fromCid, toCid, callback) {

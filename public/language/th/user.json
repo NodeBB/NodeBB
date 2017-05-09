@@ -60,6 +60,7 @@
     "username_taken_workaround": "ชื้อผู้ใช้นี้ถูกใช้แล้ว เราทำการแก้ไขชื่อผู้ใช้ของคุณเล็กน้อยเป็น <strong>%1</strong>",
     "password_same_as_username": "คุณใช้รหัสผ่านเดียวกับชื่อผู้ใช้ กรุณาเปลี่ยนรหัสผ่านใหม่",
     "password_same_as_email": "คุณใช้รหัสผ่านเดียวกับอีเมล กรุณาเปลี่ยนรหัสผ่านใหม่",
+    "weak_password": "Weak password.",
     "upload_picture": "อัพโหลดรูป",
     "upload_a_picture": "อัพโหลดรูป",
     "remove_uploaded_picture": "ลบภาพที่อัพโหลดไว้",

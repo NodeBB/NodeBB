@@ -13,10 +13,11 @@ var user = require('../user');
 var plugins = require('../plugins');
 var utils = require('../utils');
 var Password = require('../password');
+var translator = require('../translator');
 
 var sockets = require('../socket.io');
 
-var authenticationController = {};
+var authenticationController = module.exports;
 
 authenticationController.register = function (req, res) {
 	var registrationType = meta.config.registrationType || 'normal';
@@ -330,7 +331,7 @@ authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 		// Force session check for all connected socket.io clients with the same session id
 		sockets.in('sess_' + req.sessionID).emit('checkSession', uid);
 
-		plugins.fireHook('action:user.loggedIn', uid);
+		plugins.fireHook('action:user.loggedIn', { uid: uid, req: req });
 		callback();
 	});
 };
@@ -344,21 +345,21 @@ authenticationController.localLogin = function (req, username, password, next) {
 	var uid;
 	var userData = {};
 
+	if (!password || !utils.isPasswordValid(password)) {
+		return next(new Error('[[error:invalid-password]]'));
+	}
+
+	if (password.length > 4096) {
+		return next(new Error('[[error:password-too-long]]'));
+	}
+
 	async.waterfall([
-		function (next) {
-			user.isPasswordValid(password, next);
-		},
 		function (next) {
 			user.getUidByUserslug(userslug, next);
 		},
 		function (_uid, next) {
-			if (!_uid) {
-				return next(new Error('[[error:no-user]]'));
-			}
 			uid = _uid;
-			user.auth.logAttempt(uid, req.ip, next);
-		},
-		function (next) {
+
 			async.parallel({
 				userData: function (next) {
 					db.getObjectFields('user:' + uid, ['password', 'passwordExpiry'], next);
@@ -379,31 +380,19 @@ authenticationController.localLogin = function (req, username, password, next) {
 			if (!result.isAdmin && parseInt(meta.config.allowLocalLogin, 10) === 0) {
 				return next(new Error('[[error:local-login-disabled]]'));
 			}
-			if (!userData || !userData.password) {
-				return next(new Error('[[error:invalid-user-data]]'));
-			}
+
 			if (result.banned) {
-				// Retrieve ban reason and show error
-				return user.getLatestBanInfo(uid, function (err, banInfo) {
-					if (err) {
-						if (err.message === 'no-ban-info') {
-							next(new Error('[[error:user-banned]]'));
-						} else {
-							next(err);
-						}
-					} else if (banInfo.reason) {
-						next(new Error('[[error:user-banned-reason, ' + banInfo.reason + ']]'));
-					} else {
-						next(new Error('[[error:user-banned]]'));
-					}
-				});
+				return banUser(uid, next);
 			}
 
+			user.auth.logAttempt(uid, req.ip, next);
+		},
+		function (next) {
 			Password.compare(password, userData.password, next);
 		},
 		function (passwordMatch, next) {
 			if (!passwordMatch) {
-				return next(new Error('[[error:invalid-password]]'));
+				return next(new Error('[[error:invalid-login-credentials]]'));
 			}
 			user.auth.clearLoginAttempts(uid);
 			next(null, userData, '[[success:authentication-successful]]');
@@ -437,5 +426,23 @@ authenticationController.logout = function (req, res, next) {
 	}
 };
 
+function banUser(uid, next) {
+	user.getLatestBanInfo(uid, function (err, banInfo) {
+		if (err) {
+			if (err.message === 'no-ban-info') {
+				return next(new Error('[[error:user-banned]]'));
+			}
 
-module.exports = authenticationController;
+			return next(err);
+		}
+
+		if (!banInfo.reason) {
+			translator.translate('[[user:info.banned-no-reason]]', function (translated) {
+				banInfo.reason = translated;
+				next(new Error(banInfo.expiry ? '[[error:user-banned-reason-until, ' + banInfo.expiry_readable + ', ' + banInfo.reason + ']]' : '[[error:user-banned-reason, ' + banInfo.reason + ']]'));
+			});
+		} else {
+			next(new Error(banInfo.expiry ? '[[error:user-banned-reason-until, ' + banInfo.expiry_readable + ', ' + banInfo.reason + ']]' : '[[error:user-banned-reason, ' + banInfo.reason + ']]'));
+		}
+	});
+}

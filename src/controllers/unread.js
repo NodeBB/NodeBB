@@ -40,7 +40,15 @@ unreadController.get = function (req, res, next) {
 			settings = results.settings;
 			var start = Math.max(0, (page - 1) * settings.topicsPerPage);
 			var stop = start + settings.topicsPerPage - 1;
-			topics.getUnreadTopics(cid, req.uid, start, stop, filter, next);
+			var cutoff = req.session.unreadCutoff ? req.session.unreadCutoff : topics.unreadCutoff();
+			topics.getUnreadTopics({
+				cid: cid,
+				uid: req.uid,
+				start: start,
+				stop: stop,
+				filter: filter,
+				cutoff: cutoff,
+			}, next);
 		},
 	], function (err, data) {
 		if (err) {

@@ -176,7 +176,8 @@
 		}).join('');
 	};
 
-	helpers.localeToHTML = function (locale) {
+	helpers.localeToHTML = function (locale, fallback) {
+		locale = locale || fallback || 'en-GB';
 		return locale.replace('_', '-');
 	};
 

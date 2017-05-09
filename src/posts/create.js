@@ -9,6 +9,7 @@ var plugins = require('../plugins');
 var user = require('../user');
 var topics = require('../topics');
 var categories = require('../categories');
+var groups = require('../groups');
 var utils = require('../utils');
 
 module.exports = function (Posts) {
@@ -83,6 +84,9 @@ module.exports = function (Posts) {
 						});
 					},
 					function (next) {
+						groups.onNewPostMade(postData, next);
+					},
+					function (next) {
 						db.sortedSetAdd('posts:pid', timestamp, postData.pid, next);
 					},
 					function (next) {
@@ -101,13 +105,13 @@ module.exports = function (Posts) {
 					if (err) {
 						return next(err);
 					}
-					plugins.fireHook('filter:post.get', postData, next);
+					plugins.fireHook('filter:post.get', { post: postData, uid: data.uid }, next);
 				});
 			},
-			function (postData, next) {
-				postData.isMain = isMain;
-				plugins.fireHook('action:post.save', _.clone(postData));
-				next(null, postData);
+			function (data, next) {
+				data.post.isMain = isMain;
+				plugins.fireHook('action:post.save', { post: _.clone(data.post) });
+				next(null, data.post);
 			},
 		], callback);
 	};

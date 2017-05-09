@@ -11,17 +11,17 @@
 					<canvas id="analytics-traffic" width="100%" height="400"></canvas>
 				</div>
 				<hr/>
-				<div class="text-center pull-left monthly-pageviews">
+				<div class="text-center pull-left pageview-stats">
 					<div><strong id="pageViewsLastMonth"></strong></div>
-					<div><a href="#" data-action="updateGraph" data-units="days" data-until="last-month">[[admin/general/dashboard:page-views-last-month]]</a></div>
+					<div><a href="#" class="updatePageviewsGraph" data-action="updateGraph" data-units="days" data-until="last-month">[[admin/general/dashboard:page-views-last-month]]</a></div>
 				</div>
-				<div class="text-center pull-left monthly-pageviews">
+				<div class="text-center pull-left pageview-stats">
 					<div><strong id="pageViewsThisMonth"></strong></div>
-					<div><a href="#" data-action="updateGraph" data-units="days">[[admin/general/dashboard:page-views-this-month]]</a></div>
+					<div><a href="#" class="updatePageviewsGraph" data-action="updateGraph" data-units="days">[[admin/general/dashboard:page-views-this-month]]</a></div>
 				</div>
-				<div class="text-center pull-left monthly-pageviews">
+				<div class="text-center pull-left pageview-stats">
 					<div><strong id="pageViewsPastDay"></strong></div>
-					<div><a href="#" data-action="updateGraph" data-units="hours">[[admin/general/dashboard:page-views-last-day]]</a></div>
+					<div><a href="#" class="updatePageviewsGraph active" data-action="updateGraph" data-units="hours">[[admin/general/dashboard:page-views-last-day]]</a></div>
 				</div>
 			</div>
 		</div>
@@ -29,25 +29,25 @@
 		<div class="row">
 			<!-- BEGIN stats -->
 			<div class="col-lg-6">
-				<div class="panel panel-default">
+				<div class="panel panel-default stats">
 					<div class="panel-heading">{stats.name}</div>
 					<div class="panel-body">
 						<div id="unique-visitors">
 							<div class="text-center pull-left">
 								<span class="formatted-number">{stats.day}</span>
-								<div>[[admin/general/dashboard:stats.day]]</div>
+								<div class="stat">[[admin/general/dashboard:stats.day]]</div>
 							</div>
 							<div class="text-center pull-left">
 								<span class="formatted-number">{stats.week}</span>
-								<div>[[admin/general/dashboard:stats.week]]</div>
+								<div class="stat">[[admin/general/dashboard:stats.week]]</div>
 							</div>
 							<div class="text-center pull-left">
 								<span class="formatted-number">{stats.month}</span>
-								<div>[[admin/general/dashboard:stats.month]]</div>
+								<div class="stat">[[admin/general/dashboard:stats.month]]</div>
 							</div>
 							<div class="text-center pull-left">
 								<span class="formatted-number">{stats.alltime}</span>
-								<div>[[admin/general/dashboard:stats.all]]</div>
+								<div class="stat">[[admin/general/dashboard:stats.all]]</div>
 							</div>
 						</div>
 					</div>
@@ -115,7 +115,7 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">[[admin/general/dashboard:active-users]]</div>
 			<div class="panel-body">
-				<div id="active-users"></div>
+				<div id="active-users" class="stats"></div>
 			</div>
 		</div>
 

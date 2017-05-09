@@ -7,6 +7,7 @@ var validator = require('validator');
 var db = require('../database');
 var posts = require('../posts');
 var topics = require('../topics');
+var utils = require('../../public/src/utils');
 
 module.exports = function (User) {
 	User.getLatestBanInfo = function (uid, callback) {
@@ -40,7 +41,7 @@ module.exports = function (User) {
 				uid: uid,
 				timestamp: timestamp,
 				expiry: parseInt(expiry, 10),
-				expiry_readable: new Date(parseInt(expiry, 10)).toString().replace(/:/g, '%3A'),
+				expiry_readable: new Date(parseInt(expiry, 10)).toString(),
 				reason: validator.escape(String(reason)),
 			});
 		});
@@ -50,7 +51,7 @@ module.exports = function (User) {
 		async.waterfall([
 			function (next) {
 				async.parallel({
-					flags: async.apply(db.getSortedSetRevRangeWithScores, 'uid:' + uid + ':flag:pids', 0, 19),
+					flags: async.apply(db.getSortedSetRevRangeWithScores, 'flags:byTargetUid:' + uid, 0, 19),
 					bans: async.apply(db.getSortedSetRevRangeWithScores, 'uid:' + uid + ':bans', 0, 19),
 					reasons: async.apply(db.getSortedSetRevRangeWithScores, 'banned:' + uid + ':reasons', 0, 19),
 				}, next);
@@ -74,7 +75,7 @@ module.exports = function (User) {
 			}
 			callback(null, data.map(function (set) {
 				set.timestamp = set.score;
-				set.timestampISO = new Date(set.score).toISOString();
+				set.timestampISO = utils.toISOString(set.score);
 				set.value = validator.escape(String(set.value.split(':')[0]));
 				delete set.score;
 				return set;
@@ -138,4 +139,36 @@ module.exports = function (User) {
 			return banObj;
 		});
 	}
+
+	User.getModerationNotes = function (uid, start, stop, callback) {
+		var noteData;
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRevRange('uid:' + uid + ':moderation:notes', start, stop, next);
+			},
+			function (notes, next) {
+				var uids = [];
+				noteData = notes.map(function (note) {
+					try {
+						var data = JSON.parse(note);
+						uids.push(data.uid);
+						data.timestampISO = utils.toISOString(data.timestamp);
+						return data;
+					} catch (err) {
+						return next(err);
+					}
+				});
+
+				User.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
+			},
+			function (userData, next) {
+				noteData.forEach(function (note, index) {
+					if (note) {
+						note.user = userData[index];
+					}
+				});
+				next(null, noteData);
+			},
+		], callback);
+	};
 };

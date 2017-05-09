@@ -30,9 +30,11 @@ module.exports = function (Messaging) {
 		if (!content) {
 			return callback(new Error('[[error:invalid-chat-message]]'));
 		}
+		content = String(content);
 
-		if (content.length > (meta.config.maximumChatMessageLength || 1000)) {
-			return callback(new Error('[[error:chat-message-too-long]]'));
+		var maximumChatMessageLength = (meta.config.maximumChatMessageLength || 1000);
+		if (content.length > maximumChatMessageLength) {
+			return callback(new Error('[[error:chat-message-too-long, ' + maximumChatMessageLength + ']]'));
 		}
 		callback();
 	};
@@ -52,7 +54,7 @@ module.exports = function (Messaging) {
 			function (_mid, next) {
 				mid = _mid;
 				message = {
-					content: content,
+					content: String(content),
 					timestamp: timestamp,
 					fromuid: fromuid,
 					roomId: roomId,

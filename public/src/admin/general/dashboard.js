@@ -99,20 +99,20 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 		graphData.rooms = data;
 
 		var html = '<div class="text-center pull-left">' +
-						'<div>' + data.onlineRegisteredCount + '</div>' +
-						'<div>[[admin/general/dashboard:active-users.users]]</div>' +
+						'<span class="formatted-number">' + data.onlineRegisteredCount + '</span>' +
+						'<div class="stat">[[admin/general/dashboard:active-users.users]]</div>' +
 					'</div>' +
 					'<div class="text-center pull-left">' +
-						'<div>' + data.onlineGuestCount + '</div>' +
-						'<div>[[admin/general/dashboard:active-users.guests]]</div>' +
+						'<span class="formatted-number">' + data.onlineGuestCount + '</span>' +
+						'<div class="stat">[[admin/general/dashboard:active-users.guests]]</div>' +
 					'</div>' +
 					'<div class="text-center pull-left">' +
-						'<div>' + (data.onlineRegisteredCount + data.onlineGuestCount) + '</div>' +
-						'<div>[[admin/general/dashboard:active-users.total]]</div>' +
+						'<span class="formatted-number">' + (data.onlineRegisteredCount + data.onlineGuestCount) + '</span>' +
+						'<div class="stat">[[admin/general/dashboard:active-users.total]]</div>' +
 					'</div>' +
 					'<div class="text-center pull-left">' +
-						'<div>' + data.socketCount + '</div>' +
-						'<div>[[admin/general/dashboard:active-users.connections]]</div>' +
+						'<span class="formatted-number">' + data.socketCount + '</span>' +
+						'<div class="stat">[[admin/general/dashboard:active-users.connections]]</div>' +
 					'</div>';
 
 		updateRegisteredGraph(data.onlineRegisteredCount, data.onlineGuestCount);
@@ -303,8 +303,12 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 					until = lastMonth.getTime();
 				}
 				updateTrafficGraph($(this).attr('data-units'), until);
+				$('[data-action="updateGraph"]').removeClass('active');
+				$(this).addClass('active');
 			});
 
+			socket.emit('admin.rooms.getAll', Admin.updateRoomUsage);
+			initiateDashboard();
 			callback();
 		});
 	}

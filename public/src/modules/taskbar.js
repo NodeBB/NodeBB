@@ -115,7 +115,7 @@ define('taskbar', function () {
 			.html('<a href="#">' +
 				(data.options.icon ? '<i class="fa ' + data.options.icon + '"></i> ' : '') +
 				(data.options.image ? '<img src="' + data.options.image + '"/> ' : '') +
-				'<span>' + title + '</span>' +
+				'<span component="taskbar/title">' + title + '</span>' +
 				'</a>')
 			.attr({
 				'data-module': data.module,
@@ -135,6 +135,10 @@ define('taskbar', function () {
 		taskbarEl.data(data);
 		$(window).trigger('action:taskbar.pushed', data);
 	}
+
+	taskbar.updateTitle = function (module, uuid, newTitle) {
+		taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"] [component="taskbar/title"]').text(newTitle);
+	};
 
 	return taskbar;
 });

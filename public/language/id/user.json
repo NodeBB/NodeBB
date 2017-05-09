@@ -60,6 +60,7 @@
     "username_taken_workaround": "Nama pengguna yang kamu inginkan telah diambil, jadi kami merubahnya sedikit. Kamu saat ini dikenal sebagai <strong>%1</strong>",
     "password_same_as_username": "Your password is the same as your username, please select another password.",
     "password_same_as_email": "Your password is the same as your email, please select another password.",
+    "weak_password": "Weak password.",
     "upload_picture": "Unggah gambar/foto",
     "upload_a_picture": "Unggah sebuah gambar/foto",
     "remove_uploaded_picture": "Remove Uploaded Picture",

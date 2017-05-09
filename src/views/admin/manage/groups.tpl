@@ -9,6 +9,7 @@
 				<tr>
 					<th>[[admin/manage/groups:name]]</th>
 					<th class="hidden-xs">[[admin/manage/groups:description]]</th>
+					<th class="hidden-xs">[[admin/manage/groups:member-count]]</th>
 					<th></th>
 				</tr>
 			</thead>
@@ -23,6 +24,9 @@
 					</td>
 					<td class="hidden-xs">
 						<p class="description">{groups.description}</p>
+					</td>
+					<td class="hidden-xs text-right">
+						{groups.memberCount}
 					</td>
 					<td>
 						<div class="btn-group ">

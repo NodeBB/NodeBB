@@ -5,6 +5,8 @@
 		</div>
 
 		<div class="panel-body">
+			<span>[[admin/development/info:nodes-responded, {nodeCount}, {timeout}]]</span>
+
 			<table class="table table-striped">
 				<thead>
 					<tr>
@@ -24,8 +26,8 @@
 					<td>{info.process.pid}</td>
 					<td>{info.process.version}</td>
 					<td>
-						<span title="[[admin/development/info:registered]]">{info.stats.onlineRegisteredCount}</span> / 
-						<span title="[[admin/development/info:guests]]">{info.stats.onlineGuestCount}</span> / 
+						<span title="[[admin/development/info:registered]]">{info.stats.onlineRegisteredCount}</span> /
+						<span title="[[admin/development/info:guests]]">{info.stats.onlineGuestCount}</span> /
 						<span title="[[admin/development/info:sockets]]">{info.stats.socketCount}</span>
 					</td>
 					<td>{info.git.branch}@<a href="https://github.com/NodeBB/NodeBB/commit/{info.git.hash}" target="_blank">{info.git.hash}</a></td>

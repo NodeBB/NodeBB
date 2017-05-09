@@ -9,7 +9,6 @@ var privileges = require('../privileges');
 var plugins = require('../plugins');
 var meta = require('../meta');
 
-
 module.exports = function (Topics) {
 	Topics.createTopicFromPosts = function (uid, title, pids, fromTid, callback) {
 		if (title) {
@@ -57,7 +56,8 @@ module.exports = function (Topics) {
 				Topics.updateTopicBookmarks(fromTid, pids, function () { next(null, results); });
 			},
 			function (_tid, next) {
-				function move(pid, next) {
+				tid = _tid;
+				async.eachSeries(pids, function (pid, next) {
 					privileges.posts.canEdit(pid, uid, function (err, canEdit) {
 						if (err || !canEdit.flag) {
 							return next(err || new Error(canEdit.message));
@@ -65,14 +65,13 @@ module.exports = function (Topics) {
 
 						Topics.movePostToTopic(pid, tid, next);
 					});
-				}
-				tid = _tid;
-				async.eachSeries(pids, move, next);
+				}, next);
 			},
 			function (next) {
 				Topics.updateTimestamp(tid, Date.now(), next);
 			},
 			function (next) {
+				plugins.fireHook('action:topic.fork', { tid: tid, fromTid: fromTid, uid: uid });
 				Topics.getTopicData(tid, next);
 			},
 		], callback);

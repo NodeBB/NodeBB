@@ -38,7 +38,7 @@ searchController.search = function (req, res, next) {
 		repliesFilter: req.query.repliesFilter,
 		timeRange: req.query.timeRange,
 		timeFilter: req.query.timeFilter,
-		sortBy: req.query.sortBy,
+		sortBy: req.query.sortBy || meta.config.searchDefaultSortBy || '',
 		sortDirection: req.query.sortDirection,
 		page: page,
 		uid: req.uid,
@@ -60,13 +60,14 @@ searchController.search = function (req, res, next) {
 
 		var searchData = results.search;
 		searchData.categories = categoriesData;
-		searchData.categoriesCount = results.categories.length;
+		searchData.categoriesCount = Math.max(10, Math.min(20, categoriesData.length));
 		searchData.pagination = pagination.create(page, searchData.pageCount, req.query);
 		searchData.showAsPosts = !req.query.showAs || req.query.showAs === 'posts';
 		searchData.showAsTopics = req.query.showAs === 'topics';
 		searchData.title = '[[global:header.search]]';
 		searchData.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[global:search]]' }]);
 		searchData.expandSearch = !req.query.term;
+		searchData.searchDefaultSortBy = meta.config.searchDefaultSortBy || '';
 
 		res.render('search', searchData);
 	});

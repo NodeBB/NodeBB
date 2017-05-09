@@ -133,6 +133,9 @@ function setupExpressApp(app, callback) {
 
 	app.use(compression());
 
+	app.get('/ping', ping);
+	app.get('/sping', ping);
+
 	setupFavicon(app);
 
 	app.use(relativePath + '/apple-touch-icon', middleware.routeTouchIcon);
@@ -160,6 +163,10 @@ function setupExpressApp(app, callback) {
 	toobusy.interval(parseInt(meta.config.eventLoopInterval, 10) || 500);
 
 	setupAutoLocale(app, callback);
+}
+
+function ping(req, res) {
+	res.status(200).send(req.path === '/sping' ? 'healthy' : '200');
 }
 
 function setupFavicon(app) {
@@ -206,7 +213,7 @@ function setupAutoLocale(app, callback) {
 		});
 
 		app.use(function (req, res, next) {
-			if (parseInt(req.uid, 10) > 0) {
+			if (parseInt(req.uid, 10) > 0 || parseInt(meta.config.autoDetectLang, 10) !== 1) {
 				return next();
 			}
 
@@ -294,11 +301,11 @@ module.exports.testSocket = function (socketPath, callback) {
 	var file = require('./file');
 	async.series([
 		function (next) {
-			file.exists(socketPath, function (exists) {
+			file.exists(socketPath, function (err, exists) {
 				if (exists) {
 					next();
 				} else {
-					callback();
+					callback(err);
 				}
 			});
 		},

@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/search', ['search', 'autocomplete'], function (searchModule, autocomplete) {
+define('forum/search', ['search', 'autocomplete', 'storage'], function (searchModule, autocomplete, storage) {
 	var	Search = {};
 
 	Search.init = function () {
@@ -104,8 +104,8 @@ define('forum/search', ['search', 'autocomplete'], function (searchModule, autoc
 				$('#post-time-filter').val(formData.timeFilter);
 			}
 
-			if (formData.sortBy) {
-				$('#post-sort-by').val(formData.sortBy);
+			if (formData.sortBy || ajaxify.data.searchDefaultSortBy) {
+				$('#post-sort-by').val(formData.sortBy || ajaxify.data.searchDefaultSortBy);
 				$('#post-sort-direction').val(formData.sortDirection);
 			}
 
@@ -147,13 +147,13 @@ define('forum/search', ['search', 'autocomplete'], function (searchModule, autoc
 
 	function handleSavePreferences() {
 		$('#save-preferences').on('click', function () {
-			localStorage.setItem('search-preferences', JSON.stringify(getSearchData()));
+			storage.setItem('search-preferences', JSON.stringify(getSearchData()));
 			app.alertSuccess('[[search:search-preferences-saved]]');
 			return false;
 		});
 
 		$('#clear-preferences').on('click', function () {
-			localStorage.removeItem('search-preferences');
+			storage.removeItem('search-preferences');
 			var query = $('#search-input').val();
 			$('#advanced-search')[0].reset();
 			$('#search-input').val(query);

@@ -106,6 +106,7 @@ SocketHelpers.sendNotificationToPostOwner = function (pid, fromuid, command, not
 			var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 
 			notifications.create({
+				type: command,
 				bodyShort: '[[' + notification + ', ' + results.username + ', ' + titleEscaped + ']]',
 				bodyLong: results.postObj.content,
 				pid: pid,

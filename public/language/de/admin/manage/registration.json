@@ -1,9 +1,9 @@
 {
-	"queue": "Schlange",
-	"description": "Es sind keine Benutzer in der Registrierungsschlange.<br> Um diese Funktion zu aktivieren, gehen SIe zur <a href=\"%1\">Einstellungen &rarr; Benutzer &rarr; Benutzer registrierung</a> und ändern sie <strong>Registrierungsart</strong> auf \"Admin Genehmigung\".",
+	"queue": "Warteschlange",
+	"description": "Es sind keine Benutzer in der Registrierungs-Warteschlange.<br> Um diese Funktion zu aktivieren, gehe zu <a href=\"%1\">Einstellungen &rarr; Benutzer &rarr; Benutzer erstellen</a> und ändern sie <strong>Registrierungsart</strong> auf \"Admin Genehmigung\".",
 
 	"list.name": "Name",
-	"list.email": "Email",
+	"list.email": "E-Mail",
 	"list.ip": "IP-Adresse",
 	"list.time": "Zeit",
 	"list.username-spam": "Häufigkeit: %1 Erscheint: %2 Sicherheit: %3",
@@ -11,7 +11,7 @@
 	"list.ip-spam": "Häufigkeit: %1 Erscheint: %2",
 
 	"invitations": "Einladungen",
-	"invitations.description": "Unterhalb ist eine komplette Liste der versandten Einladungen. Benutze Strg+F um die Liste per Email oder Nutzername zu durchsuchen.<br><br> Der Nutzername wird für die Nutzer die ihre einladung angenommen haben Rechts von den Emails angezeigt.",
+	"invitations.description": "Unterhalb ist eine komplette Liste der versandten Einladungen. Benutze Strg+F um die Liste per Email oder Nutzername zu durchsuchen.<br><br> Der Nutzername wird für die Nutzer die ihre Einladung angenommen haben rechts von den E-Mails angezeigt.",
 	"invitations.inviter-username": "Nutzername des Einladenden",
 	"invitations.invitee-email": "Email des eingeladenen",
 	"invitations.invitee-username": "Nutzername des eingeladenen (Wenn registriert)",

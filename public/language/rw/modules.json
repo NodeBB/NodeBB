@@ -20,6 +20,7 @@
     "chat.three_months": "Amezi 3",
     "chat.delete_message_confirm": "Wiringiye neza ko ushaka gusiba ubu butumwa?",
     "chat.add-users-to-room": "Ongera abantu mu gikari",
+    "chat.confirm-chat-with-dnd-user": "This user has set their status to DnD(Do not disturb). Do you still want to chat with them?",
     "composer.compose": "Andika",
     "composer.show_preview": "Bona Uko Biza Gusa",
     "composer.hide_preview": "Hisha Uko Biza Gusa",

@@ -28,6 +28,10 @@ define('forum/topic/images', [
 			clearTimeout(Images._imageLoaderTimeout);
 		}
 
+		if (!config.delayImageLoading) {
+			return;
+		}
+
 		Images._imageLoaderTimeout = setTimeout(function () {
 			/*
 				If threshold is defined, images loaded above this threshold will modify

@@ -60,6 +60,7 @@
     "username_taken_workaround": "Pyytämäsi käyttäjänimi oli jo varattu, joten muutimme sitä hieman. Käyttäjänimesi on siis nyt <strong>%1</strong>",
     "password_same_as_username": "Your password is the same as your username, please select another password.",
     "password_same_as_email": "Your password is the same as your email, please select another password.",
+    "weak_password": "Weak password.",
     "upload_picture": "Lataa kuva",
     "upload_a_picture": "Lataa kuva",
     "remove_uploaded_picture": "Remove Uploaded Picture",

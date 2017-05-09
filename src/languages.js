@@ -89,7 +89,7 @@ Languages.list = function (callback) {
 
 			// filter out invalid ones
 			languages = languages.filter(function (lang) {
-				return lang.code && lang.name && lang.dir;
+				return lang && lang.code && lang.name && lang.dir;
 			});
 
 			listCache = languages;

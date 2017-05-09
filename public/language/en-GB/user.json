@@ -35,6 +35,7 @@
 	"chat": "Chat",
 	"chat_with": "Continue chat with %1",
 	"new_chat_with": "Start new chat with %1",
+	"flag-profile": "Flag Profile",
 	"follow": "Follow",
 	"unfollow": "Unfollow",
 	"more": "More",
@@ -149,5 +150,6 @@
 	"info.username-history": "Username History",
 	"info.email-history": "Email History",
 	"info.moderation-note": "Moderation Note",
-	"info.moderation-note.success": "Moderation note saved"
+	"info.moderation-note.success": "Moderation note saved",
+	"info.moderation-note.add": "Add note"
 }

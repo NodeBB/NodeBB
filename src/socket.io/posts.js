@@ -20,7 +20,6 @@ require('./posts/move')(SocketPosts);
 require('./posts/votes')(SocketPosts);
 require('./posts/bookmarks')(SocketPosts);
 require('./posts/tools')(SocketPosts);
-require('./posts/flag')(SocketPosts);
 
 SocketPosts.reply = function (socket, data, callback) {
 	if (!data || !data.tid || !data.content) {

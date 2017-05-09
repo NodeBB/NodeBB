@@ -5,7 +5,7 @@
 	"validate": "Blacklist validieren",
 	"apply": "Blacklist anwenden",
 	"hints": "Syntax Hinweise",
-	"hint-1": "Fügen Sie einzelne IP-Adresses pro Zeile ein. Sie können IP-Blöcke hinzufügen, so lange diese im CIDR Format (z.b. <code>192.168.100.0/22</code>) eingegeben werden.",
+	"hint-1": "Pro Zeile kann eine IP-Adresse angegeben werden. Es können auch IP-Blöcke im CIDR Format (z.B. <code>192.168.100.0/22</code>) hinzugefügt werden.",
 	"hint-2": "Sie können Kommentare hinzufügen, indem Sie die Zeilen mit dem <code>#</code> Symbol beginnen.",
 
 	"validate.x-valid": "<strong>%1</strong> von <strong>%2</strong> Regel(n) zulässig.",

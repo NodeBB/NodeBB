@@ -1,6 +1,6 @@
 {
-    "uploading-file": "Uploading the file...",
-    "select-file-to-upload": "Select a file to upload!",
-    "upload-success": "File uploaded successfully!",
-    "maximum-file-size": "Maximum %1 kb"
+    "uploading-file": "Το αρχείο ανεβαίνει...",
+    "select-file-to-upload": "Επίλεξε αρχείο για ανέβασμα!",
+    "upload-success": "Το αρχείο ανέβηκε επιτυχώς!",
+    "maximum-file-size": "Μέγιστο %1 kb"
 }

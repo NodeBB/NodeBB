@@ -27,18 +27,28 @@ module.exports = function (Meta) {
 			async.filter(files, function (file, next) {
 				fs.stat(path.join(themePath, file), function (err, fileStat) {
 					if (err) {
-						return next(false);
+						if (err.code === 'ENOENT') {
+							return next(null, false);
+						}
+						return next(err);
 					}
 
-					next((fileStat.isDirectory() && file.slice(0, 13) === 'nodebb-theme-'));
+					next(null, (fileStat.isDirectory() && file.slice(0, 13) === 'nodebb-theme-'));
 				});
-			}, function (themes) {
+			}, function (err, themes) {
+				if (err) {
+					return callback(err);
+				}
+
 				async.map(themes, function (theme, next) {
 					var config = path.join(themePath, theme, 'theme.json');
 
 					fs.readFile(config, function (err, file) {
 						if (err) {
-							return next();
+							if (err.code === 'ENOENT') {
+								return next(null, null);
+							}
+							return next(err);
 						}
 						try {
 							var configObj = JSON.parse(file.toString());

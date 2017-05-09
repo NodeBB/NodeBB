@@ -73,6 +73,29 @@ middleware.ensureSelfOrGlobalPrivilege = function (req, res, next) {
 	], next);
 };
 
+middleware.ensureSelfOrPrivileged = function (req, res, next) {
+	/*
+		The "self" part of this middleware hinges on you having used
+		middleware.exposeUid prior to invoking this middleware.
+	*/
+	if (req.user) {
+		if (parseInt(req.user.uid, 10) === parseInt(res.locals.uid, 10)) {
+			return next();
+		}
+
+		user.isPrivileged(req.uid, function (err, ok) {
+			if (err) {
+				return next(err);
+			} else if (ok) {
+				return next();
+			}
+			controllers.helpers.notAllowed(req, res);
+		});
+	} else {
+		controllers.helpers.notAllowed(req, res);
+	}
+};
+
 middleware.pageView = function (req, res, next) {
 	analytics.pageView({
 		ip: req.ip,

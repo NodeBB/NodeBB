@@ -1,6 +1,7 @@
 {
 	"name": "Grup Adı",
 	"description": "Grup Açıklaması",
+	"member-count": "Member Count",
 	"system": "System Group",
 	"edit": "Düzenle",
 	"search-placeholder": "Ara",

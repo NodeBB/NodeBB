@@ -3,6 +3,7 @@
 
 var async = require('async');
 
+var user = require('../user');
 var groups = require('../groups');
 var plugins = require('../plugins');
 
@@ -156,5 +157,50 @@ module.exports = function (privileges) {
 
 			callback(null, canEdit);
 		});
+	};
+
+	privileges.users.canBanUser = function (callerUid, uid, callback) {
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					isAdmin: function (next) {
+						privileges.users.isAdministrator(callerUid, next);
+					},
+					isGlobalMod: function (next) {
+						privileges.users.isGlobalModerator(callerUid, next);
+					},
+					isTargetAdmin: function (next) {
+						privileges.users.isAdministrator(uid, next);
+					},
+				}, next);
+			},
+			function (results, next) {
+				results.canBan = !results.isTargetAdmin && (results.isAdmin || results.isGlobalMod);
+				results.callerUid = callerUid;
+				results.uid = uid;
+				plugins.fireHook('filter:user.canBanUser', results, next);
+			},
+			function (data, next) {
+				next(null, data.canBan);
+			},
+		], callback);
+	};
+
+	privileges.users.hasBanPrivilege = function (uid, callback) {
+		async.waterfall([
+			function (next) {
+				user.isAdminOrGlobalMod(uid, next);
+			},
+			function (isAdminOrGlobalMod, next) {
+				plugins.fireHook('filter:user.hasBanPrivilege', {
+					uid: uid,
+					isAdminOrGlobalMod: isAdminOrGlobalMod,
+					canBan: isAdminOrGlobalMod,
+				}, next);
+			},
+			function (data, next) {
+				next(null, data.canBan);
+			},
+		], callback);
 	};
 };

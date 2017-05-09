@@ -4,6 +4,6 @@
 	"disable-down-voting": "Desabilitar Baixo Votar",
 	"votes-are-public": "All Votes Are Public",
 	"thresholds": "Limiares de Atividade",
-	"min-rep-downvote": "Reputação mínima para baixovotar posts",
+	"min-rep-downvote": "Reputação mínima para votar negativamente em posts",
 	"min-rep-flag": "Reputação mínima para sinalizar posts"
 }

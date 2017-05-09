@@ -151,7 +151,7 @@ function onMessage(socket, payload) {
 
 function requireModules() {
 	var modules = ['admin', 'categories', 'groups', 'meta', 'modules',
-		'notifications', 'plugins', 'posts', 'topics', 'user', 'blacklist',
+		'notifications', 'plugins', 'posts', 'topics', 'user', 'blacklist', 'flags',
 	];
 
 	modules.forEach(function (module) {
@@ -219,7 +219,11 @@ function addRedisAdapter(io) {
 		var redis = require('../database/redis');
 		var pub = redis.connect();
 		var sub = redis.connect();
-		io.adapter(redisAdapter({ pubClient: pub, subClient: sub }));
+		io.adapter(redisAdapter({
+			key: 'db:' + nconf.get('redis:database') + ':adapter_key',
+			pubClient: pub,
+			subClient: sub,
+		}));
 	} else if (nconf.get('isCluster') === 'true') {
 		winston.warn('[socket.io] Clustering detected, you are advised to configure Redis as a websocket store.');
 	}

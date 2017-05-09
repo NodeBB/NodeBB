@@ -10,7 +10,7 @@
 	"temp-ban": "Ban User(s) Temporarily",
 	"unban": "Unban User(s)",
 	"reset-lockout": "Reset Lockout",
-	"reset-flags": "Reset Flags",
+	"reset-flags": "Obnoviť označenia",
 	"delete": "Delete User(s)",
 	"purge": "Delete User(s) and Content",
 	"download-csv": "Download CSV",
@@ -23,7 +23,7 @@
 	"pills.top-posters": "Top Posters",
 	"pills.top-rep": "Most Reputation",
 	"pills.inactive": "Inactive",
-	"pills.flagged": "Most Flagged",
+	"pills.flagged": "Najviac označované",
 	"pills.banned": "Banned",
 	"pills.search": "User Search",
 

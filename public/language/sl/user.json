@@ -60,6 +60,7 @@
     "username_taken_workaround": "Predlagano uporabniško ime je že zasedeno, zato smo ga rahlo spremenili. Sedaj vas poznamo kot  <strong>%1</strong>",
     "password_same_as_username": "Vaše geslo je enako kot vaše uporabniško ime, prosim izberite drugačno geslo.",
     "password_same_as_email": "Vaše geslo je enako kot vaše e-poštni naslov, prosim izberite drugačno geslo.",
+    "weak_password": "Weak password.",
     "upload_picture": "Naloži fotografijo",
     "upload_a_picture": "Naloži fotografijo",
     "remove_uploaded_picture": "Odstrani preneseno sliko ",

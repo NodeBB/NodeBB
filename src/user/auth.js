@@ -11,6 +11,9 @@ module.exports = function (User) {
 	User.auth = {};
 
 	User.auth.logAttempt = function (uid, ip, callback) {
+		if (!parseInt(uid, 10)) {
+			return setImmediate(callback);
+		}
 		async.waterfall([
 			function (next) {
 				db.exists('lockout:' + uid, next);
@@ -65,7 +68,7 @@ module.exports = function (User) {
 		}
 
 		async.waterfall([
-			async.apply(db.getSortedSetRevRange, 'uid:' + uid + ':sessions', 0, -1),
+			async.apply(db.getSortedSetRevRange, 'uid:' + uid + ':sessions', 0, 19),
 			function (sids, next) {
 				_sids = sids;
 				async.map(sids, db.sessionStore.get.bind(db.sessionStore), next);

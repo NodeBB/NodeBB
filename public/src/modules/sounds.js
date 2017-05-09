@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('sounds', function () {
+define('sounds', ['storage'], function (storage) {
 	var	Sounds = {};
 
 	var fileMap;
@@ -67,13 +67,13 @@ define('sounds', function () {
 
 			if (id) {
 				var item = 'sounds.handled:' + id;
-				if (localStorage.getItem(item)) {
+				if (storage.getItem(item)) {
 					return;
 				}
-				localStorage.setItem(item, true);
+				storage.setItem(item, true);
 
 				setTimeout(function () {
-					localStorage.removeItem(item);
+					storage.removeItem(item);
 				}, 5000);
 			}
 

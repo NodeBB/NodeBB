@@ -7,7 +7,9 @@ var groups = require('../../groups');
 var categories = require('../../categories');
 var privileges = require('../../privileges');
 var plugins = require('../../plugins');
-var Categories = {};
+var events = require('../../events');
+
+var Categories = module.exports;
 
 Categories.create = function (socket, data, callback) {
 	if (!data) {
@@ -42,7 +44,26 @@ Categories.getNames = function (socket, data, callback) {
 };
 
 Categories.purge = function (socket, cid, callback) {
-	categories.purge(cid, socket.uid, callback);
+	var name;
+	async.waterfall([
+		function (next) {
+			categories.getCategoryField(cid, 'name', next);
+		},
+		function (_name, next) {
+			name = _name;
+			categories.purge(cid, socket.uid, next);
+		},
+		function (next) {
+			events.log({
+				type: 'category-purge',
+				uid: socket.uid,
+				ip: socket.ip,
+				cid: cid,
+				name: name,
+			});
+			setImmediate(next);
+		},
+	], callback);
 };
 
 Categories.update = function (socket, data, callback) {
@@ -102,5 +123,3 @@ Categories.copySettingsFrom = function (socket, data, callback) {
 Categories.copyPrivilegesFrom = function (socket, data, callback) {
 	categories.copyPrivilegesFrom(data.fromCid, data.toCid, callback);
 };
-
-module.exports = Categories;

@@ -202,6 +202,16 @@ User.isGlobalModerator = function (uid, callback) {
 	privileges.users.isGlobalModerator(uid, callback);
 };
 
+User.isPrivileged = function (uid, callback) {
+	async.parallel([
+		async.apply(User.isAdministrator, uid),
+		async.apply(User.isGlobalModerator, uid),
+		async.apply(User.isModeratorOfAnyCategory, uid),
+	], function (err, results) {
+		callback(err, results ? results.some(Boolean) : false);
+	});
+};
+
 User.isAdminOrGlobalMod = function (uid, callback) {
 	async.parallel({
 		isAdmin: async.apply(User.isAdministrator, uid),

@@ -4,14 +4,16 @@
 var async = require('async');
 var validator = require('validator');
 var winston = require('winston');
+var nconf = require('nconf');
 
 var user = require('../../user');
 var groups = require('../../groups');
 var plugins = require('../../plugins');
 var meta = require('../../meta');
 var utils = require('../../utils');
+var privileges = require('../../privileges');
 
-var helpers = {};
+var helpers = module.exports;
 
 helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 	async.waterfall([
@@ -59,6 +61,9 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 				},
 				sso: function (next) {
 					plugins.fireHook('filter:auth.list', { uid: uid, associations: [] }, next);
+				},
+				canBanUser: function (next) {
+					privileges.users.canBanUser(callerUID, uid, next);
 				},
 			}, next);
 		},
@@ -109,7 +114,7 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 			userData.isAdminOrGlobalModeratorOrModerator = isAdmin || isGlobalModerator || isModerator;
 			userData.isSelfOrAdminOrGlobalModerator = isSelf || isAdmin || isGlobalModerator;
 			userData.canEdit = isAdmin || (isGlobalModerator && !results.isTargetAdmin);
-			userData.canBan = isAdmin || (isGlobalModerator && !results.isTargetAdmin);
+			userData.canBan = results.canBanUser;
 			userData.canChangePassword = isAdmin || (isSelf && parseInt(meta.config['password:disableEdit'], 10) !== 1);
 			userData.isSelf = isSelf;
 			userData.isFollowing = results.isFollowing;
@@ -119,7 +124,13 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 			userData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
 			userData['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
 			userData['email:confirmed'] = !!parseInt(userData['email:confirmed'], 10);
-			userData.profile_links = filterLinks(results.profile_links.concat(results.profile_menu.links), isSelf);
+			userData.profile_links = filterLinks(results.profile_links.concat(results.profile_menu.links), {
+				self: isSelf,
+				other: !isSelf,
+				moderator: isModerator,
+				globalMod: isGlobalModerator,
+				admin: isAdmin,
+			});
 
 			userData.sso = results.sso.associations;
 			userData.status = user.getStatus(userData);
@@ -138,7 +149,7 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 			userData.birthday = validator.escape(String(userData.birthday || ''));
 			userData.moderationNote = validator.escape(String(userData.moderationNote || ''));
 
-			userData['cover:url'] = userData['cover:url'] || require('../../coverPhoto').getDefaultProfileCover(userData.uid);
+			userData['cover:url'] = userData['cover:url'] ? (nconf.get('relative_path') + userData['cover:url']) : require('../../coverPhoto').getDefaultProfileCover(userData.uid);
 			userData['cover:position'] = validator.escape(String(userData['cover:position'] || '50% 50%'));
 			userData['username:disableEdit'] = !userData.isAdmin && parseInt(meta.config['username:disableEdit'], 10) === 1;
 			userData['email:disableEdit'] = !userData.isAdmin && parseInt(meta.config['email:disableEdit'], 10) === 1;
@@ -154,10 +165,29 @@ helpers.getBaseUser = function (userslug, callerUID, callback) {
 	helpers.getUserDataByUserSlug(userslug, callerUID, callback);
 };
 
-function filterLinks(links, self) {
-	return links.filter(function (link) {
-		return link && (link.public || self);
+function filterLinks(links, states) {
+	return links.filter(function (link, index) {
+		// "public" is the old property, if visibility is defined, discard `public`
+		if (link.hasOwnProperty('public') && !link.hasOwnProperty('visibility')) {
+			winston.warn('[account/profileMenu (' + link.id + ')] Use of the `.public` property is deprecated, use `visibility` now');
+			return link && (link.public || states.self);
+		}
+
+		// Default visibility
+		link.visibility = Object.assign({
+			self: true,
+			other: true,
+			moderator: true,
+			globalMod: true,
+			admin: true,
+		}, link.visibility);
+
+		// Iterate through states and permit if every test passes (or is not defined)
+		var permit = Object.keys(states).some(function (state) {
+			return states[state] === link.visibility[state];
+		});
+
+		links[index].public = permit;
+		return permit;
 	});
 }
-
-module.exports = helpers;

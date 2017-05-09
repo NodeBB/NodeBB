@@ -7,9 +7,9 @@ var themesController = {};
 
 themesController.get = function (req, res, next) {
 	var themeDir = path.join(__dirname, '../../../node_modules/' + req.params.theme);
-	file.exists(themeDir, function (exists) {
-		if (!exists) {
-			return next();
+	file.exists(themeDir, function (err, exists) {
+		if (err || !exists) {
+			return next(err);
 		}
 
 		var themeConfig = require(path.join(themeDir, 'theme.json'));

@@ -79,6 +79,7 @@ module.exports = function (Messaging) {
 				}
 
 				notifications.create({
+					type: 'new-chat',
 					bodyShort: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
 					bodyLong: messageObj.content,
 					nid: 'chat_' + fromuid + '_' + roomId,

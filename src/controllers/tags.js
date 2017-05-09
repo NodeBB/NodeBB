@@ -1,8 +1,6 @@
 'use strict';
 
-
 var async = require('async');
-var nconf = require('nconf');
 var validator = require('validator');
 
 var user = require('../user');
@@ -62,10 +60,6 @@ tagsController.getTag = function (req, res, next) {
 			{
 				property: 'og:title',
 				content: tag,
-			},
-			{
-				property: 'og:url',
-				content: nconf.get('url') + '/tags/' + tag,
 			},
 		];
 		templateData.topics = topics;

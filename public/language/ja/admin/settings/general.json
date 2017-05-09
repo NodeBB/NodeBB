@@ -28,5 +28,5 @@
 	"outgoing-links": "外部サイトへのリンク",
 	"outgoing-links.warning-page": "送信リンクの警告ページを使用",
 	"search-default-sort-by": "デフォルトのソートを検索",
-	"outgoing-links.whitelist": "Domains to whitelist for bypassing the warning page"
+	"outgoing-links.whitelist": "警告ページをバイパスするためのホワイトリストへのドメイン"
 }

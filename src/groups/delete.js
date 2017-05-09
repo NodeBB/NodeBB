@@ -4,6 +4,7 @@ var async = require('async');
 var plugins = require('../plugins');
 var utils = require('../utils');
 var db = require('./../database');
+var batch = require('../batch');
 
 module.exports = function (Groups) {
 	Groups.destroy = function (groupName, callback) {
@@ -16,8 +17,6 @@ module.exports = function (Groups) {
 			}
 			var groupObj = groupsData[0];
 
-			plugins.fireHook('action:group.destroy', groupObj);
-
 			async.parallel([
 				async.apply(db.delete, 'group:' + groupName),
 				async.apply(db.sortedSetRemove, 'groups:createtime', groupName),
@@ -28,22 +27,24 @@ module.exports = function (Groups) {
 				async.apply(db.delete, 'group:' + groupName + ':pending'),
 				async.apply(db.delete, 'group:' + groupName + ':invited'),
 				async.apply(db.delete, 'group:' + groupName + ':owners'),
+				async.apply(db.delete, 'group:' + groupName + ':member:pids'),
 				async.apply(db.deleteObjectField, 'groupslug:groupname', utils.slugify(groupName)),
 				function (next) {
-					db.getSortedSetRange('groups:createtime', 0, -1, function (err, groups) {
-						if (err) {
-							return next(err);
-						}
-						async.each(groups, function (group, next) {
-							db.sortedSetRemove('group:' + group + ':members', groupName, next);
-						}, next);
-					});
+					batch.processSortedSet('groups:createtime', function (groupNames, next) {
+						var keys = groupNames.map(function (group) {
+							return 'group:' + group + ':members';
+						});
+						db.sortedSetsRemove(keys, groupName, next);
+					}, {
+						batch: 500,
+					}, next);
 				},
 			], function (err) {
 				if (err) {
 					return callback(err);
 				}
 				Groups.resetCache();
+				plugins.fireHook('action:group.destroy', { group: groupObj });
 				callback();
 			});
 		});

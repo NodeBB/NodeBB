@@ -370,7 +370,3 @@ Controllers.termsOfUse = function (req, res, next) {
 		termsOfUse: meta.config.termsOfUse,
 	});
 };
-
-Controllers.ping = function (req, res) {
-	res.status(200).send(req.path === '/sping' ? 'healthy' : '200');
-};

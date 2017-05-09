@@ -526,7 +526,7 @@ describe('Topic\'s', function () {
 					topics.ignore(newTid, uid, done);
 				},
 				function (done) {
-					topics.getUnreadTopics(0, uid, 0, -1, '', done);
+					topics.getUnreadTopics({ cid: 0, uid: uid, start: 0, stop: -1, filter: '' }, done);
 				},
 				function (results, done) {
 					var topics = results.topics;
@@ -570,7 +570,7 @@ describe('Topic\'s', function () {
 					topics.follow(newTid, uid, done);
 				},
 				function (done) {
-					topics.getUnreadTopics(0, uid, 0, -1, '', done);
+					topics.getUnreadTopics({ cid: 0, uid: uid, start: 0, stop: -1, filter: '' }, done);
 				},
 				function (results, done) {
 					var topics = results.topics;
@@ -590,7 +590,7 @@ describe('Topic\'s', function () {
 					topics.follow(newTid, uid, done);
 				},
 				function (done) {
-					topics.getUnreadTopics(0, uid, 0, -1, '', done);
+					topics.getUnreadTopics({ cid: 0, uid: uid, start: 0, stop: -1, filter: '' }, done);
 				},
 				function (results, done) {
 					var topics = results.topics;
@@ -902,7 +902,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should infinite load topic posts', function (done) {
-			socketTopics.loadMore({ uid: adminUid }, { tid: tid, after: 0 }, function (err, data) {
+			socketTopics.loadMore({ uid: adminUid }, { tid: tid, after: 0, count: 10 }, function (err, data) {
 				assert.ifError(err);
 				assert(data.mainPost);
 				assert(data.posts);
@@ -921,7 +921,7 @@ describe('Topic\'s', function () {
 		it('should load more unread topics', function (done) {
 			socketTopics.markUnread({ uid: adminUid }, tid, function (err) {
 				assert.ifError(err);
-				socketTopics.loadMoreUnreadTopics({ uid: adminUid }, { cid: topic.categoryId, after: 0 }, function (err, data) {
+				socketTopics.loadMoreUnreadTopics({ uid: adminUid }, { cid: topic.categoryId, after: 0, count: 10 }, function (err, data) {
 					assert.ifError(err);
 					assert(data);
 					assert(Array.isArray(data.topics));
@@ -939,7 +939,7 @@ describe('Topic\'s', function () {
 
 
 		it('should load more recent topics', function (done) {
-			socketTopics.loadMoreRecentTopics({ uid: adminUid }, { cid: topic.categoryId, after: 0 }, function (err, data) {
+			socketTopics.loadMoreRecentTopics({ uid: adminUid }, { cid: topic.categoryId, after: 0, count: 10 }, function (err, data) {
 				assert.ifError(err);
 				assert(data);
 				assert(Array.isArray(data.topics));
@@ -955,7 +955,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should load more from custom set', function (done) {
-			socketTopics.loadMoreFromSet({ uid: adminUid }, { set: 'uid:' + adminUid + ':topics', after: 0 }, function (err, data) {
+			socketTopics.loadMoreFromSet({ uid: adminUid }, { set: 'uid:' + adminUid + ':topics', after: 0, count: 10 }, function (err, data) {
 				assert.ifError(err);
 				assert(data);
 				assert(Array.isArray(data.topics));

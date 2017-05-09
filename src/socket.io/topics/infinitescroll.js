@@ -40,19 +40,19 @@ module.exports = function (SocketTopics) {
 				var reverse = data.topicPostSort === 'newest_to_oldest' || data.topicPostSort === 'most_votes';
 				var start = Math.max(0, parseInt(data.after, 10));
 
-				var infScrollPostsPerPage = 10;
+				var infScrollPostsPerPage = Math.max(0, Math.min(meta.config.postsPerPage || 20, parseInt(data.postsPerPage, 10) || meta.config.postsPerPage || 20) - 1);
 
 				if (data.direction > 0) {
 					if (reverse) {
 						start = results.topic.postcount - start;
 					}
 				} else if (reverse) {
-					start = results.topic.postcount - start - infScrollPostsPerPage - 1;
+					start = results.topic.postcount - start - infScrollPostsPerPage;
 				} else {
-					start = start - infScrollPostsPerPage - 1;
+					start -= infScrollPostsPerPage;
 				}
 
-				var stop = start + (infScrollPostsPerPage - 1);
+				var stop = start + (infScrollPostsPerPage);
 
 				start = Math.max(0, start);
 				stop = Math.max(0, stop);
@@ -93,9 +93,9 @@ module.exports = function (SocketTopics) {
 		}
 
 		var start = parseInt(data.after, 10);
-		var stop = start + 9;
+		var stop = start + Math.max(0, Math.min(meta.config.topicsPerPage || 20, parseInt(data.topicsPerPage, 10) || meta.config.topicsPerPage || 20) - 1);
 
-		topics.getUnreadTopics(data.cid, socket.uid, start, stop, data.filter, callback);
+		topics.getUnreadTopics({ cid: data.cid, uid: socket.uid, start: start, stop: stop, filter: data.filter }, callback);
 	};
 
 	SocketTopics.loadMoreRecentTopics = function (socket, data, callback) {
@@ -104,7 +104,7 @@ module.exports = function (SocketTopics) {
 		}
 
 		var start = parseInt(data.after, 10);
-		var stop = start + 9;
+		var stop = start + Math.max(0, Math.min(meta.config.topicsPerPage || 20, parseInt(data.topicsPerPage, 10) || meta.config.topicsPerPage || 20) - 1);
 
 		topics.getRecentTopics(data.cid, socket.uid, start, stop, data.filter, callback);
 	};
@@ -115,7 +115,7 @@ module.exports = function (SocketTopics) {
 		}
 
 		var start = parseInt(data.after, 10);
-		var stop = start + 9;
+		var stop = start + Math.max(0, Math.min(meta.config.topicsPerPage || 20, parseInt(data.topicsPerPage, 10) || meta.config.topicsPerPage || 20) - 1);
 
 		topics.getTopicsFromSet(data.set, socket.uid, start, stop, callback);
 	};

@@ -27,7 +27,7 @@
     "details.disableJoinRequests": "Отключить запросы на приглашение",
     "details.grant": "Выдать/забрать привилегии администратора",
     "details.kick": "Исключить",
-    "details.kick_confirm": "Are you sure you want to remove this member from the group?",
+    "details.kick_confirm": "Вы уверены, что хотите удалить этого участника из группы?",
     "details.owner_options": "Настройки группы",
     "details.group_name": "Имя группы",
     "details.member_count": "Количество участников",

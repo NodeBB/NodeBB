@@ -4,6 +4,7 @@
 var assert = require('assert');
 var shim = require('../public/src/modules/translator.js');
 var Translator = shim.Translator;
+var db = require('./mocks/databasemock');
 
 require('../src/languages').init(function () {});
 
@@ -118,10 +119,20 @@ describe('new Translator(language)', function () {
 		it('should properly escape and ignore % and \\, in arguments', function () {
 			var translator = Translator.create('en-GB');
 
-			var title = 'Test 1\\, 2\\, 3 % salmon';
+			var title = 'Test 1\\, 2\\, 3 %2 salmon';
 			var key = '[[topic:composer.replying_to, ' + title + ']]';
 			return translator.translate(key).then(function (translated) {
-				assert.strictEqual(translated, 'Replying to Test 1&#44; 2&#44; 3 &#37; salmon');
+				assert.strictEqual(translated, 'Replying to Test 1&#44; 2&#44; 3 &#37;2 salmon');
+			});
+		});
+
+		it('should not escape regular %', function () {
+			var translator = Translator.create('en-GB');
+
+			var title = '3 % salmon';
+			var key = '[[topic:composer.replying_to, ' + title + ']]';
+			return translator.translate(key).then(function (translated) {
+				assert.strictEqual(translated, 'Replying to 3 % salmon');
 			});
 		});
 

@@ -428,6 +428,18 @@ var commands = {
 		description: 'Run NodeBB upgrade scripts, ensure packages are up-to-date',
 		usage: 'Usage: ' + './nodebb upgrade'.yellow,
 		handler: function () {
+			if (process.argv[3]) {
+				process.stdout.write('\nUpdating NodeBB data store schema...\n'.yellow);
+				var arr = ['--upgrade'].concat(process.argv.slice(3));
+				var upgradeProc = fork(arr);
+
+				return upgradeProc.on('close', function (err) {
+					if (err) {
+						process.stdout.write('\nError'.red + ': ' + err.message + '\n');
+					}
+				});
+			}
+
 			async.series([
 				function (next) {
 					process.stdout.write('1. '.bold + 'Bringing base dependencies up to date... '.yellow);

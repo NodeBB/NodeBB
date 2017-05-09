@@ -2,6 +2,7 @@
 
 var async = require('async');
 var fs = require('fs');
+var path = require('path');
 var Jimp = require('jimp');
 var mime = require('mime');
 var winston = require('winston');
@@ -37,8 +38,9 @@ module.exports = function (Groups) {
 			},
 			function (_tempPath, next) {
 				tempPath = _tempPath;
+
 				uploadsController.uploadGroupCover(uid, {
-					name: 'groupCover',
+					name: 'groupCover' + path.extname(tempPath),
 					path: tempPath,
 					type: type,
 				}, next);
@@ -52,7 +54,7 @@ module.exports = function (Groups) {
 			},
 			function (next) {
 				uploadsController.uploadGroupCover(uid, {
-					name: 'groupCoverThumb',
+					name: 'groupCoverThumb' + path.extname(tempPath),
 					path: tempPath,
 					type: type,
 				}, next);

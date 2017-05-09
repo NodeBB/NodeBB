@@ -8,12 +8,8 @@ var helpers = {};
 
 helpers.some = function (tasks, callback) {
 	async.some(tasks, function (task, next) {
-		task(function (err, result) {
-			next(!err && result);
-		});
-	}, function (result) {
-		callback(null, result);
-	});
+		task(next);
+	}, callback);
 };
 
 helpers.isUserAllowedTo = function (privilege, uid, cid, callback) {

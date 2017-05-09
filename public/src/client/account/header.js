@@ -51,6 +51,7 @@ define('forum/account/header', [
 		components.get('account/ban').on('click', banAccount);
 		components.get('account/unban').on('click', unbanAccount);
 		components.get('account/delete').on('click', deleteAccount);
+		components.get('account/flag').on('click', flagAccount);
 	};
 
 	function hidePrivateLinks() {
@@ -173,6 +174,15 @@ define('forum/account/header', [
 					app.alertSuccess('[[user:account-deleted]]');
 					history.back();
 				});
+			});
+		});
+	}
+
+	function flagAccount() {
+		require(['flags'], function (flags) {
+			flags.showFlagModal({
+				type: 'user',
+				id: ajaxify.data.uid,
 			});
 		});
 	}

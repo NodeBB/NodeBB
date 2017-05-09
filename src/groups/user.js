@@ -24,6 +24,19 @@ module.exports = function (Groups) {
 	Groups.getUserGroupsFromSet = function (set, uids, callback) {
 		async.waterfall([
 			function (next) {
+				Groups.getUserGroupMembership(set, uids, next);
+			},
+			function (memberOf, next) {
+				async.map(memberOf, function (memberOf, next) {
+					Groups.getGroupsData(memberOf, next);
+				}, next);
+			},
+		], callback);
+	};
+
+	Groups.getUserGroupMembership = function (set, uids, callback) {
+		async.waterfall([
+			function (next) {
 				db.getSortedSetRevRange(set, 0, -1, next);
 			},
 			function (groupNames, next) {
@@ -40,7 +53,7 @@ module.exports = function (Groups) {
 								}
 							});
 
-							Groups.getGroupsData(memberOf, next);
+							next(null, memberOf);
 						},
 					], next);
 				}, next);

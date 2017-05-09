@@ -5,6 +5,7 @@ var cacheController = {};
 cacheController.get = function (req, res) {
 	var postCache = require('../../posts/cache');
 	var groupCache = require('../../groups').cache;
+	var userSettingsCache = require('../../user').settingsCache;
 
 	var avgPostSize = 0;
 	var percentFull = 0;
@@ -20,6 +21,12 @@ cacheController.get = function (req, res) {
 			itemCount: postCache.itemCount,
 			percentFull: percentFull,
 			avgPostSize: avgPostSize,
+		},
+		userSettingsCache: {
+			length: userSettingsCache.length,
+			max: userSettingsCache.max,
+			itemCount: userSettingsCache.itemCount,
+			percentFull: ((userSettingsCache.length / userSettingsCache.max) * 100).toFixed(2),
 		},
 		groupCache: {
 			length: groupCache.length,

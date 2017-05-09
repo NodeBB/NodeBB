@@ -9,7 +9,7 @@ process.on('message', function (msg) {
 	if (msg.type === 'hash') {
 		hashPassword(msg.password, msg.rounds);
 	} else if (msg.type === 'compare') {
-		bcrypt.compare(msg.password, msg.hash, done);
+		bcrypt.compare(String(msg.password || ''), String(msg.hash || ''), done);
 	}
 });
 

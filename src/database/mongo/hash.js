@@ -8,7 +8,9 @@ module.exports = function (db, module) {
 		if (!key || !data) {
 			return callback();
 		}
-
+		if (data.hasOwnProperty('')) {
+			delete data[''];
+		}
 		db.collection('objects').update({ _key: key }, { $set: data }, { upsert: true, w: 1 }, function (err) {
 			callback(err);
 		});

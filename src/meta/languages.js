@@ -27,9 +27,7 @@ function getTranslationTree(callback) {
 			});
 
 			// Filter out plugins with invalid paths
-			async.filter(paths, file.exists, function (paths) {
-				next(null, paths);
-			});
+			async.filter(paths, file.exists, next);
 		},
 		function (paths, next) {
 			async.map(paths, Plugins.loadPluginInfo, next);

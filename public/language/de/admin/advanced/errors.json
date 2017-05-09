@@ -6,7 +6,7 @@
 	"manage-error-log": "Fehlerprotokoll verwalten",
 	"export-error-log": "Exportiere das Fehlerprotokoll (CSV)",
 	"clear-error-log": "Fehlerprotokoll leeren",
-	"route": "Zielroute",
+	"route": "Pfad",
 	"count": "Anzahl",
 	"no-routes-not-found": "Hurra! Keine 404 Fehler!",
 	"clear404-confirm": "Bist du dir sicher, dass du das 404 Fehlerprotokoll löschen möchtest?",

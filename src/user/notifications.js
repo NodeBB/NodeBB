@@ -32,19 +32,79 @@ var privileges = require('../privileges');
 		});
 	};
 
-	UserNotifications.getAll = function (uid, start, stop, callback) {
-		getNotifications(uid, start, stop, function (err, notifs) {
-			if (err) {
-				return callback(err);
-			}
-			notifs = notifs.unread.concat(notifs.read);
-			notifs = notifs.filter(Boolean).sort(function (a, b) {
-				return b.datetime - a.datetime;
-			});
+	function filterNotifications(nids, filter, callback) {
+		if (!filter) {
+			return setImmediate(callback, null, nids);
+		}
+		async.waterfall([
+			function (next) {
+				var keys = nids.map(function (nid) {
+					return 'notifications:' + nid;
+				});
+				db.getObjectsFields(keys, ['nid', 'type'], next);
+			},
+			function (notifications, next) {
+				nids = notifications.filter(function (notification) {
+					return notification && notification.nid && notification.type === filter;
+				}).map(function (notification) {
+					return notification.nid;
+				});
+				next(null, nids);
+			},
+		], callback);
+	}
 
-			callback(null, notifs);
-		});
+	UserNotifications.getAll = function (uid, filter, callback) {
+		var nids;
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					unread: function (next) {
+						db.getSortedSetRevRange('uid:' + uid + ':notifications:unread', 0, -1, next);
+					},
+					read: function (next) {
+						db.getSortedSetRevRange('uid:' + uid + ':notifications:read', 0, -1, next);
+					},
+				}, next);
+			},
+			function (results, next) {
+				nids = results.unread.concat(results.read);
+				db.isSortedSetMembers('notifications', nids, next);
+			},
+			function (exists, next) {
+				var deleteNids = [];
+
+				nids = nids.filter(function (nid, index) {
+					if (!nid || !exists[index]) {
+						deleteNids.push(nid);
+					}
+					return nid && exists[index];
+				});
+
+				deleteUserNids(deleteNids, uid, next);
+			},
+			function (next) {
+				filterNotifications(nids, filter, next);
+			},
+		], callback);
 	};
+
+	function deleteUserNids(nids, uid, callback) {
+		callback = callback || function () {};
+		if (!nids.length) {
+			return setImmediate(callback);
+		}
+		async.parallel([
+			function (next) {
+				db.sortedSetRemove('uid:' + uid + ':notifications:read', nids, next);
+			},
+			function (next) {
+				db.sortedSetRemove('uid:' + uid + ':notifications:unread', nids, next);
+			},
+		], function (err) {
+			callback(err);
+		});
+	}
 
 	function getNotifications(uid, start, stop, callback) {
 		async.parallel({
@@ -58,52 +118,54 @@ var privileges = require('../privileges');
 	}
 
 	function getNotificationsFromSet(set, read, uid, start, stop, callback) {
-		var setNids;
-
 		async.waterfall([
-			async.apply(db.getSortedSetRevRange, set, start, stop),
+			function (next) {
+				db.getSortedSetRevRange(set, start, stop, next);
+			},
 			function (nids, next) {
 				if (!Array.isArray(nids) || !nids.length) {
 					return callback(null, []);
 				}
 
-				setNids = nids;
 				UserNotifications.getNotifications(nids, uid, next);
-			},
-			function (notifs, next) {
-				var deletedNids = [];
-
-				notifs.forEach(function (notification, index) {
-					if (!notification) {
-						winston.verbose('[notifications.get] nid ' + setNids[index] + ' not found. Removing.');
-						deletedNids.push(setNids[index]);
-					} else {
-						notification.read = read;
-						notification.readClass = !notification.read ? 'unread' : '';
-					}
-				});
-
-				if (deletedNids.length) {
-					db.sortedSetRemove(set, deletedNids);
-				}
-
-				notifications.merge(notifs, next);
 			},
 		], callback);
 	}
 
 	UserNotifications.getNotifications = function (nids, uid, callback) {
-		notifications.getMultiple(nids, function (err, notifications) {
-			if (err) {
-				return callback(err);
-			}
-			notifications = notifications.filter(function (notification) {
-				return notification && notification.path;
-			});
-			callback(null, notifications);
-		});
-	};
+		var notificationData = [];
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					notifications: function (next) {
+						notifications.getMultiple(nids, next);
+					},
+					hasRead: function (next) {
+						db.isSortedSetMembers('uid:' + uid + ':notifications:read', nids, next);
+					},
+				}, next);
+			},
+			function (results, next) {
+				var deletedNids = [];
+				notificationData = results.notifications.filter(function (notification, index) {
+					if (!notification || !notification.nid) {
+						deletedNids.push(nids[index]);
+					}
+					if (notification) {
+						notification.read = results.hasRead[index];
+						notification.readClass = !notification.read ? 'unread' : '';
+					}
 
+					return notification && notification.path;
+				});
+
+				deleteUserNids(deletedNids, uid, next);
+			},
+			function (next) {
+				notifications.merge(notificationData, next);
+			},
+		], callback);
+	};
 
 	UserNotifications.getDailyUnread = function (uid, callback) {
 		var yesterday = Date.now() - (1000 * 60 * 60 * 24);	// Approximate, can be more or less depending on time changes, makes no difference really.
@@ -223,6 +285,7 @@ var privileges = require('../privileges');
 				}
 
 				notifications.create({
+					type: 'new-topic',
 					bodyShort: '[[notifications:user_posted_topic, ' + postData.user.username + ', ' + title + ']]',
 					bodyLong: postData.content,
 					pid: postData.pid,

@@ -20,6 +20,7 @@
     "chat.three_months": "3 ماه",
     "chat.delete_message_confirm": "آیا مطمئن هستید که می خواهید این پیام را حذف کنید؟",
     "chat.add-users-to-room": "اضافه کردن کاربر به این گفتگو",
+    "chat.confirm-chat-with-dnd-user": "This user has set their status to DnD(Do not disturb). Do you still want to chat with them?",
     "composer.compose": "ارسال",
     "composer.show_preview": "نمایش پیش‌نمایش",
     "composer.hide_preview": "مخفی کردن پیش‌نمایش",

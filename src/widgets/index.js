@@ -43,13 +43,15 @@ widgets.render = function (uid, area, req, res, callback) {
 					data: widget.data,
 					req: req,
 					res: res,
-				}, function (err, html) {
-					if (err || html === null) {
+				}, function (err, data) {
+					if (err || data === null) {
 						return next(err);
 					}
-
+					var html = data;
 					if (typeof html !== 'string') {
-						html = '';
+						html = data.html;
+					} else {
+						winston.warn('[widgets.render] passing a string is deprecated!, filter:widget.render:' + widget.widget + '. Please set hookData.html in your plugin.');
 					}
 
 					if (widget.data.container && widget.data.container.match('{body}')) {

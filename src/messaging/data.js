@@ -9,6 +9,8 @@ var utils = require('../utils');
 var plugins = require('../plugins');
 
 module.exports = function (Messaging) {
+	Messaging.newMessageCutoff = 1000 * 60 * 3;
+
 	Messaging.getMessageField = function (mid, field, callback) {
 		Messaging.getMessageFields(mid, [field], function (err, fields) {
 			callback(err, fields ? fields[field] : null);
@@ -81,7 +83,7 @@ module.exports = function (Messaging) {
 					// Add a spacer in between messages with time gaps between them
 					messages = messages.map(function (message, index) {
 						// Compare timestamps with the previous message, and check if a spacer needs to be added
-						if (index > 0 && parseInt(message.timestamp, 10) > parseInt(messages[index - 1].timestamp, 10) + (1000 * 60 * 5)) {
+						if (index > 0 && parseInt(message.timestamp, 10) > parseInt(messages[index - 1].timestamp, 10) + Messaging.newMessageCutoff) {
 							// If it's been 5 minutes, this is a new set of messages
 							message.newSet = true;
 						} else if (index > 0 && message.fromuid !== messages[index - 1].fromuid) {
@@ -116,7 +118,7 @@ module.exports = function (Messaging) {
 						}
 
 						if (
-							(parseInt(messages[0].timestamp, 10) > parseInt(fields.timestamp, 10) + (1000 * 60 * 5)) ||
+							(parseInt(messages[0].timestamp, 10) > parseInt(fields.timestamp, 10) + Messaging.newMessageCutoff) ||
 							(parseInt(messages[0].fromuid, 10) !== parseInt(fields.fromuid, 10))
 						) {
 							// If it's been 5 minutes, this is a new set of messages

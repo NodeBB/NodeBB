@@ -49,8 +49,8 @@ module.exports = function (Plugins) {
 			},
 			function (next) {
 				meta.reloadRequired = true;
-				Plugins.fireHook(isActive ? 'action:plugin.deactivate' : 'action:plugin.activate', id);
-				next();
+				Plugins.fireHook(isActive ? 'action:plugin.deactivate' : 'action:plugin.activate', { id: id });
+				setImmediate(next);
 			},
 		], function (err) {
 			if (err) {
@@ -67,8 +67,8 @@ module.exports = function (Plugins) {
 	};
 
 	function toggleInstall(id, version, callback) {
-		var type;
 		var installed;
+		var type;
 		async.waterfall([
 			function (next) {
 				Plugins.isInstalled(id, next);
@@ -85,7 +85,7 @@ module.exports = function (Plugins) {
 					});
 					return;
 				}
-				next();
+				setImmediate(next);
 			},
 			function (next) {
 				runNpmCommand(type, id, version || 'latest', next);
@@ -94,8 +94,8 @@ module.exports = function (Plugins) {
 				Plugins.get(id, next);
 			},
 			function (pluginData, next) {
-				Plugins.fireHook('action:plugin.' + type, id);
-				next(null, pluginData);
+				Plugins.fireHook('action:plugin.' + type, { id: id, version: version });
+				setImmediate(next, null, pluginData);
 			},
 		], callback);
 	}

@@ -1,6 +1,7 @@
 {
 	"x-b": "%1 б",
 	"x-mb": "%1 мб",
+	"x-gb": "%1 gb",
 	"uptime-seconds": "Uptime в секундах",
 	"uptime-days": "Uptime в днях",
 

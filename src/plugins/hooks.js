@@ -8,6 +8,7 @@ module.exports = function (Plugins) {
 		'filter:user.custom_fields': null,	// remove in v1.1.0
 		'filter:post.save': 'filter:post.create',
 		'filter:user.profileLinks': 'filter:user.profileMenu',
+		'action:post.flag': 'action:flag.create',
 	};
 	/*
 		`data` is an object consisting of (* is required):

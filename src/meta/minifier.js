@@ -16,13 +16,21 @@ Minifier.js.minify = function (scripts, minify, callback) {
 	});
 
 	async.filter(scripts, function (script, next) {
-		file.exists(script, function (exists) {
+		file.exists(script, function (err, exists) {
+			if (err) {
+				return next(err);
+			}
+
 			if (!exists) {
 				console.warn('[minifier] file not found, ' + script);
 			}
-			next(exists);
+			next(null, exists);
 		});
-	}, function (scripts) {
+	}, function (err, scripts) {
+		if (err) {
+			return callback(err);
+		}
+
 		if (minify) {
 			minifyScripts(scripts, callback);
 		} else {

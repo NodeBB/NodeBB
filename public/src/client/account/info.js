@@ -17,7 +17,19 @@ define('forum/account/info', ['forum/account/header', 'components'], function (h
 				if (err) {
 					return app.alertError(err.message);
 				}
+				$('[component="account/moderation-note"]').val('');
 				app.alertSuccess('[[user:info.moderation-note.success]]');
+				var timestamp = Date.now();
+				var data = [{
+					note: note,
+					user: app.user,
+					timestamp: timestamp,
+					timestampISO: utils.toISOString(timestamp),
+				}];
+				app.parseAndTranslate('account/info', 'moderationNotes', { moderationNotes: data }, function (html) {
+					$('[component="account/moderation-note/list"]').prepend(html);
+					html.find('.timeago').timeago();
+				});
 			});
 		});
 	}

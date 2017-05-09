@@ -55,8 +55,8 @@
 			.box-header-font;
 			display: block;
 			position: absolute;
-			top: 20px;
-			left: 35px;
+			top: 19px;
+			left: 50px;
 			list-style-type: none;
 			padding: 0;
 
@@ -129,11 +129,32 @@
 		}
 	}
 
-	.monthly-pageviews {
+	.pageview-stats {
 		width:33%;
+
+		strong {
+			font-size: 22px;
+		}
 	}
 
 	.motd textarea {
 		width: 100%;
+	}
+
+	.stats {
+		.formatted-number {
+			font-size: 22px;
+		}
+
+		.stat {
+			text-transform: uppercase;
+			font-weight: 600;
+			font-size: 10px;
+			color: #999;
+		}
+	}
+
+	.updatePageviewsGraph.active {
+		font-weight: bold;
 	}
 }

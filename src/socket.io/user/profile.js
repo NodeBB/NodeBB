@@ -161,7 +161,7 @@ module.exports = function (SocketUser) {
 					data.email = oldUserData.email;
 				}
 
-				user.updateProfile(data.uid, data, next);
+				user.updateProfile(socket.uid, data, next);
 			},
 			function (userData, next) {
 				function log(type, eventData) {

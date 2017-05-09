@@ -1,7 +1,7 @@
 {
 	"installed": "已安装",
-	"active": "激活",
-	"inactive": "未生效",
+	"active": "已启用",
+	"inactive": "未启用",
 	"out-of-date": "已过期",
 	"none-found": "无插件。",
 	"none-active": "无生效插件",

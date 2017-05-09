@@ -140,7 +140,7 @@ module.exports = function (User) {
 						if (userNameChanged) {
 							User.notifications.sendNameChangeNotification(userData.uid, userData.username);
 						}
-						plugins.fireHook('action:user.create', userData);
+						plugins.fireHook('action:user.create', { user: userData });
 						next(null, userData.uid);
 					},
 				], callback);

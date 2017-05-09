@@ -1,5 +1,5 @@
 {
-	"handles": "Handles para Visitantes",
+	"handles": "Apelidos para Visitantes",
 	"handles.enabled": "Permitir handles de visitantes",
 	"handles.enabled-help": "Esta opção mostra um novo campo que permite visitantes de escolher um nome para associar à cada post que eles fizerem. Se desabilitado, eles serão simplesmente chamados de \"Visitante\".",
 	"privileges": "Privilégios de Visitantes",

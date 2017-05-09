@@ -41,6 +41,7 @@ module.exports = function (middleware) {
 
 	middleware.renderHeader = function (req, res, data, callback) {
 		var registrationType = meta.config.registrationType || 'normal';
+		res.locals.config = res.locals.config || {};
 		var templateValues = {
 			title: meta.config.title || '',
 			description: meta.config.description || '',
@@ -97,7 +98,7 @@ module.exports = function (middleware) {
 						db.get('uid:' + req.uid + ':confirm:email:sent', next);
 					},
 					navigation: async.apply(navigation.get),
-					tags: async.apply(meta.tags.parse, res.locals.metaTags, res.locals.linkTags),
+					tags: async.apply(meta.tags.parse, req, res.locals.metaTags, res.locals.linkTags),
 					banned: async.apply(user.isBanned, req.uid),
 					banReason: async.apply(user.getBannedReason, req.uid),
 				}, next);
@@ -105,7 +106,7 @@ module.exports = function (middleware) {
 			function (results, next) {
 				if (results.banned) {
 					req.logout();
-					return res.redirect('/?banned=' + (results.banReason || 'no-reason'));
+					return res.redirect('/');
 				}
 
 				results.user.isAdmin = results.isAdmin;
@@ -133,6 +134,7 @@ module.exports = function (middleware) {
 				templateValues.customJS = templateValues.useCustomJS ? meta.config.customJS : '';
 				templateValues.maintenanceHeader = parseInt(meta.config.maintenanceMode, 10) === 1 && !results.isAdmin;
 				templateValues.defaultLang = meta.config.defaultLang || 'en-GB';
+				templateValues.userLang = res.locals.config.userLang;
 				templateValues.privateUserInfo = parseInt(meta.config.privateUserInfo, 10) === 1;
 				templateValues.privateTagListing = parseInt(meta.config.privateTagListing, 10) === 1;
 

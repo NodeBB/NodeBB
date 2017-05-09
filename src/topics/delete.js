@@ -154,7 +154,10 @@ module.exports = function (Topics) {
 				});
 			},
 			function (next) {
-				plugins.fireHook('action:topic.purge', tid);
+				Topics.getTopicData(tid, next);
+			},
+			function (topicData, next) {
+				plugins.fireHook('action:topic.purge', { topic: topicData, uid: uid });
 				db.delete('topic:' + tid, next);
 			},
 		], callback);

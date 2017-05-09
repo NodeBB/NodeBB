@@ -9,7 +9,7 @@ var plugins = require('../plugins');
 module.exports = function (Meta) {
 	Meta.tags = {};
 
-	Meta.tags.parse = function (meta, link, callback) {
+	Meta.tags.parse = function (req, meta, link, callback) {
 		async.parallel({
 			tags: function (next) {
 				var defaultTags = [{
@@ -120,7 +120,23 @@ module.exports = function (Meta) {
 				return tag;
 			});
 
-			addDescription(meta);
+			addIfNotExists(meta, 'property', 'og:title', Meta.config.title || 'NodeBB');
+
+			var ogUrl = nconf.get('url') + req.path;
+			addIfNotExists(meta, 'property', 'og:url', ogUrl);
+
+			addIfNotExists(meta, 'name', 'description', Meta.config.description);
+			addIfNotExists(meta, 'property', 'og:description', Meta.config.description);
+
+			var ogImage = Meta.config['og:image'] || Meta.config['brand:logo'] || '';
+			if (ogImage && !ogImage.startsWith('http')) {
+				ogImage = nconf.get('url') + ogImage;
+			}
+			addIfNotExists(meta, 'property', 'og:image', ogImage);
+			if (ogImage) {
+				addIfNotExists(meta, 'property', 'og:image:width', 200);
+				addIfNotExists(meta, 'property', 'og:image:height', 200);
+			}
 
 			link = results.links.concat(link || []);
 
@@ -131,19 +147,20 @@ module.exports = function (Meta) {
 		});
 	};
 
-	function addDescription(meta) {
-		var hasDescription = false;
+	function addIfNotExists(meta, keyName, tagName, value) {
+		var exists = false;
 		meta.forEach(function (tag) {
-			if (tag.name === 'description') {
-				hasDescription = true;
+			if (tag[keyName] === tagName) {
+				exists = true;
 			}
 		});
 
-		if (!hasDescription && Meta.config.description) {
-			meta.push({
-				name: 'description',
-				content: validator.escape(String(Meta.config.description)),
-			});
+		if (!exists && value) {
+			var data = {
+				content: validator.escape(String(value)),
+			};
+			data[keyName] = tagName;
+			meta.push(data);
 		}
 	}
 };

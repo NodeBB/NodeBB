@@ -48,7 +48,7 @@ start.start = function () {
 			require('./socket.io').init(webserver.server);
 
 			if (nconf.get('isPrimary') === 'true' && !nconf.get('jobsDisabled')) {
-				require('./notifications').init();
+				require('./notifications').startJobs();
 				require('./user').startJobs();
 			}
 
@@ -58,16 +58,16 @@ start.start = function () {
 		if (err) {
 			switch (err.message) {
 			case 'schema-out-of-date':
-				winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
-				winston.warn('    ./nodebb upgrade');
+				winston.error('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
+				winston.error('    ./nodebb upgrade');
 				break;
 			case 'dependencies-out-of-date':
-				winston.warn('One or more of NodeBB\'s dependent packages are out-of-date. Please run the following command to update them:');
-				winston.warn('    ./nodebb upgrade');
+				winston.error('One or more of NodeBB\'s dependent packages are out-of-date. Please run the following command to update them:');
+				winston.error('    ./nodebb upgrade');
 				break;
 			case 'dependencies-missing':
-				winston.warn('One or more of NodeBB\'s dependent packages are missing. Please run the following command to update them:');
-				winston.warn('    ./nodebb upgrade');
+				winston.error('One or more of NodeBB\'s dependent packages are missing. Please run the following command to update them:');
+				winston.error('    ./nodebb upgrade');
 				break;
 			default:
 				winston.error(err);

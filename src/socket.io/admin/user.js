@@ -69,14 +69,6 @@ User.resetLockouts = function (socket, uids, callback) {
 	async.each(uids, user.auth.resetLockout, callback);
 };
 
-User.resetFlags = function (socket, uids, callback) {
-	if (!Array.isArray(uids)) {
-		return callback(new Error('[[error:invalid-data]]'));
-	}
-
-	user.resetFlags(uids, callback);
-};
-
 User.validateEmail = function (socket, uids, callback) {
 	if (!Array.isArray(uids)) {
 		return callback(new Error('[[error:invalid-data]]'));

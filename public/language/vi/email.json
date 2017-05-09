@@ -32,5 +32,9 @@
     "notif.post.unsub.info": "Thông báo bài viết này được gửi cho bạn dựa tên thiết lập nhận thông báo của bạn",
     "test.text1": "Đây là email kiểm tra xem chức năng gửi mail trên hệ thống NodeBB của bạn có hoạt động tốt hay không.",
     "unsub.cta": "Nhấn vào đây để thay đổi cài đặt.",
+    "banned.subject": "You have been banned from %1",
+    "banned.text1": "The user %1 has been banned from %2.",
+    "banned.text2": "This ban will last until %1.",
+    "banned.text3": "This is the reason why you have been banned:",
     "closing": "Xin cảm ơn!"
 }

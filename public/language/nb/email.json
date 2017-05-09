@@ -32,5 +32,9 @@
     "notif.post.unsub.info": "Dette innleggsvarselet ble sendt til deg basert på dine innstillinger for abonnering.",
     "test.text1": "Dette er en test e-post for å verifisere at e-postsystemet i NodeBB fungerer som det skal.",
     "unsub.cta": "Klikk her for å endre disse innstillingene",
+    "banned.subject": "You have been banned from %1",
+    "banned.text1": "The user %1 has been banned from %2.",
+    "banned.text2": "This ban will last until %1.",
+    "banned.text3": "This is the reason why you have been banned:",
     "closing": "Takk!"
 }

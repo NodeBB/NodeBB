@@ -16,7 +16,8 @@
 	"notify_me": "Be notified of new replies in this topic",
 	"quote": "Quote",
 	"reply": "Reply",
-	"replies_to_this_post": "Replies: %1",
+	"replies_to_this_post": "%1 Replies",
+	"last_reply_time": "Last reply",
 	"reply-as-topic": "Reply as topic",
 	"guest-login-reply": "Log in to reply",
 	"edit": "Edit",
@@ -28,7 +29,6 @@
 	"link": "Link",
 	"share": "Share",
 	"tools": "Tools",
-	"flag": "Flag",
 	"locked": "Locked",
 	"pinned": "Pinned",
 	"moved": "Moved",
@@ -36,22 +36,6 @@
 	"bookmark_instructions" : "Click here to return to the last read post in this thread.",
 
 	"flag_title": "Flag this post for moderation",
-	"flag_success": "This post has been flagged for moderation.",
-	"flag_manage_title": "Flagged post in %1",
-	"flag_manage_history": "Action History",
-	"flag_manage_no_history": "No event history to report",
-	"flag_manage_assignee": "Assignee",
-	"flag_manage_state": "State",
-	"flag_manage_state_open": "New/Open",
-	"flag_manage_state_wip": "Work in Progress",
-	"flag_manage_state_resolved": "Resolved",
-	"flag_manage_state_rejected": "Rejected",
-	"flag_manage_notes": "Shared Notes",
-	"flag_manage_update": "Update Flag Status",
-	"flag_manage_history_assignee": "Assigned to %1",
-	"flag_manage_history_state": "Updated state to %1",
-	"flag_manage_history_notes": "Updated flag notes",
-	"flag_manage_saved": "Flag Details Updated",
 
 	"deleted_message": "This topic has been deleted. Only users with topic management privileges can see it.",
 
@@ -153,10 +137,5 @@
 	"stale.create": "Create a new topic",
 	"stale.reply_anyway": "Reply to this topic anyway",
 
-	"link_back": "Re: [%1](%2)\n\n",
-
-	"spam": "Spam",
-	"offensive": "Offensive",
-	"custom-flag-reason": "Enter a flagging reason"
-
+	"link_back": "Re: [%1](%2)\n\n"
 }

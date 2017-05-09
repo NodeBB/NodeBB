@@ -60,6 +60,7 @@
     "username_taken_workaround": "Vaše požadované prihlasovacie meno je už obsadené, tak sme si ho dovolili mierne upraviť. Budeme Vás evidovať ako <strong>%1</strong>",
     "password_same_as_username": "Vaše heslo sa zhoduje s Vaším používateľským menom, prosím zvoľte iné heslo.",
     "password_same_as_email": "Vaše heslo sa zhoduje s Vaším e-mailom, prosím zvoľte iné heslo.",
+    "weak_password": "Slabé heslo.",
     "upload_picture": "Nahrať obrázok",
     "upload_a_picture": "Nahrať obrázok",
     "remove_uploaded_picture": "Vymazať nahraný obrázok",

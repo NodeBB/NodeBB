@@ -12,6 +12,17 @@
 	"new_notification": "New Notification",
 	"you_have_unread_notifications": "You have unread notifications.",
 
+	"all": "All",
+	"topics": "Topics",
+	"replies": "Replies",
+	"chat": "Chats",
+	"follows": "Follows",
+	"upvote": "Upvotes",
+	"new-flags": "New Flags",
+	"my-flags": "Flags assigned to me",
+	"bans": "Bans",
+
+
 	"new_message_from": "New message from <strong>%1</strong>",
 	"upvoted_your_post_in": "<strong>%1</strong> has upvoted your post in <strong>%2</strong>.",
 	"upvoted_your_post_in_dual": "<strong>%1</strong> and <strong>%2</strong> have upvoted your post in <strong>%3</strong>.",
@@ -21,6 +32,9 @@
 	"user_flagged_post_in": "<strong>%1</strong> flagged a post in <strong>%2</strong>",
 	"user_flagged_post_in_dual": "<strong>%1</strong> and <strong>%2</strong> flagged a post in <strong>%3</strong>",
 	"user_flagged_post_in_multiple": "<strong>%1</strong> and %2 others flagged a post in <strong>%3</strong>",
+	"user_flagged_user": "<strong>%1</strong> flagged a user profile (%2)",
+	"user_flagged_user_dual": "<strong>%1</strong> and <strong>%2</strong> flagged a user profile (%3)",
+	"user_flagged_user_multiple": "<strong>%1</strong> and %2 others flagged a user profile (%3)",
 	"user_posted_to" : "<strong>%1</strong> has posted a reply to: <strong>%2</strong>",
 	"user_posted_to_dual" : "<strong>%1</strong> and <strong>%2</strong> have posted replies to: <strong>%3</strong>",
 	"user_posted_to_multiple" : "<strong>%1</strong> and %2 others have posted replies to: <strong>%3</strong>",
@@ -30,6 +44,7 @@
 	"user_started_following_you_multiple": "<strong>%1</strong> and %2 others started following you.",
 	"new_register": "<strong>%1</strong> sent a registration request.",
 	"new_register_multiple": "There are <strong>%1</strong> registration requests awaiting review.",
+	"flag_assigned_to_you": "<strong>Flag %1</strong> has been assigned to you",
 
 	"email-confirmed": "Email Confirmed",
 	"email-confirmed-message": "Thank you for validating your email. Your account is now fully activated.",

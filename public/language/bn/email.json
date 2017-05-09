@@ -32,5 +32,9 @@
     "notif.post.unsub.info": "আপনার সাবস্ক্রিপশন সেটিংসের কারনে আপনার এই বার্তাটি পাঠানো হয়েছে",
     "test.text1": "আপনি সঠিকভাবে নোডবিবির জন্য মেইলার সেটাপ করেছেন কিনা নিশ্চিত করার জন্য এই টেষ্ট ইমেইল পাঠানো হয়েছে",
     "unsub.cta": "সেটিংসগুলো পরিবর্তন করতে এখানে ক্লিক করুন",
+    "banned.subject": "You have been banned from %1",
+    "banned.text1": "The user %1 has been banned from %2.",
+    "banned.text2": "This ban will last until %1.",
+    "banned.text3": "This is the reason why you have been banned:",
     "closing": "ধন্যবাদ!"
 }
