@@ -405,9 +405,13 @@
 					(relative_path.length > 0 ? targetLocation.pathname.indexOf(relative_path) === 0 : true)	// Subfolder installs need this additional check
 				);
 		},
+
+		rtrim: function (str) {
+			return str.replace(/\s+$/g, '');
+		},
 	};
 
-		/* eslint "no-extend-native": "off" */
+	/* eslint "no-extend-native": "off" */
 	if (typeof String.prototype.startsWith !== 'function') {
 		String.prototype.startsWith = function (prefix) {
 			if (this.length < prefix.length) {
@@ -429,9 +433,11 @@
 		};
 	}
 
+	// DEPRECATED: remove in 1.6
 	if (typeof String.prototype.rtrim !== 'function') {
 		String.prototype.rtrim = function () {
-			return this.replace(/\s+$/g, '');
+			console.warn('[deprecated] `String.prototype.rtrim` is deprecated as of NodeBB v1.5; use `utils.rtrim` instead.');
+			return utils.rtrim(this);
 		};
 	}
 
