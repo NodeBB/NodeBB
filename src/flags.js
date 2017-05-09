@@ -15,7 +15,7 @@ var utils = require('../public/src/utils');
 var _ = require('underscore');
 var S = require('string');
 
-var Flags = {};
+var Flags = module.exports;
 
 Flags.get = function (flagId, callback) {
 	async.waterfall([
@@ -26,6 +26,9 @@ Flags.get = function (flagId, callback) {
 			notes: async.apply(Flags.getNotes, flagId),
 		}),
 		function (data, next) {
+			if (!data.base) {
+				return callback();
+			}
 			// Second stage
 			async.parallel({
 				userObj: async.apply(user.getUserFields, data.base.uid, ['username', 'userslug', 'picture']),
@@ -682,5 +685,3 @@ Flags.notify = function (flagObj, uid, callback) {
 		break;
 	}
 };
-
-module.exports = Flags;
