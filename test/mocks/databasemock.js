@@ -146,7 +146,7 @@
 				var sockets = require('../../src/socket.io');
 				sockets.init(webserver.server);
 
-				require('../../src/notifications').init();
+				require('../../src/notifications').startJobs();
 				require('../../src/user').startJobs();
 
 				webserver.listen(next);
