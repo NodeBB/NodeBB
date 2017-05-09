@@ -171,4 +171,11 @@ describe('Utility Methods', function () {
 		}
 		done();
 	});
+
+	it('`utils.rtrim` should remove trailing space', function (done) {
+		assert.strictEqual(utils.rtrim('  thing   '), '  thing');
+		assert.strictEqual(utils.rtrim('\tthing\t\t'), '\tthing');
+		assert.strictEqual(utils.rtrim('\t thing \t'), '\t thing');
+		done();
+	});
 });
