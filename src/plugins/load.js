@@ -263,12 +263,12 @@ module.exports = function (Plugins) {
 		soundpack.id = pluginData.id;
 		soundpack.dir = path.join(pluginData.path, soundpack.dir);
 		async.each(Object.keys(soundpack.sounds), function (key, next) {
-			file.exists(path.join(soundpack.dir, soundpack.sounds[key]), function (exists) {
+			file.exists(path.join(soundpack.dir, soundpack.sounds[key]), function (err, exists) {
 				if (!exists) {
 					delete soundpack.sounds[key];
 				}
 
-				next();
+				next(err);
 			});
 		}, function (err) {
 			if (err) {
