@@ -31,7 +31,7 @@ Flags.get = function (flagId, callback) {
 			}
 			// Second stage
 			async.parallel({
-				userObj: async.apply(user.getUserFields, data.base.uid, ['username', 'userslug', 'picture']),
+				userObj: async.apply(user.getUserFields, data.base.uid, ['username', 'userslug', 'picture', 'reputation']),
 				targetObj: async.apply(Flags.getTarget, data.base.type, data.base.targetId, data.base.uid),
 			}, function (err, payload) {
 				// Final object return construction
