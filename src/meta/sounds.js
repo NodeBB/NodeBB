@@ -89,7 +89,9 @@ module.exports = function (Meta) {
 						},
 					], cb);
 				},
-			], callback);
+			], function (err) {
+				callback(err);
+			});
 		});
 	};
 
