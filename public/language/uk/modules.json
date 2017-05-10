@@ -20,7 +20,7 @@
     "chat.three_months": "3 місяці",
     "chat.delete_message_confirm": "Ви впевнені, що хочете видалити це повідомлення?",
     "chat.add-users-to-room": "Додати користувачів до кімнати",
-    "chat.confirm-chat-with-dnd-user": "This user has set their status to DnD(Do not disturb). Do you still want to chat with them?",
+    "chat.confirm-chat-with-dnd-user": "Користувач змінив свій статус на DnD (Не турбувати). Ви дійсно бажаєте надіслати йому повідомлення в чат?",
     "composer.compose": "Редактор повідомлень",
     "composer.show_preview": "Показати попередній перегляд",
     "composer.hide_preview": "Сховати попередній перегляд",
