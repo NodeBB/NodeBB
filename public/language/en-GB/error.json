@@ -1,5 +1,6 @@
 {
 	"invalid-data": "Invalid Data",
+	"invalid-json": "Invalid JSON",
 
 	"not-logged-in": "You don't seem to be logged in.",
 	"account-locked": "Your account has been locked temporarily",

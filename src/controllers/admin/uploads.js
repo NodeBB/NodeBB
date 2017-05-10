@@ -24,7 +24,7 @@ uploadsController.uploadCategoryPicture = function (req, res, next) {
 		params = JSON.parse(req.body.params);
 	} catch (e) {
 		deleteTempFile(uploadedFile.path);
-		return next(e);
+		return next(new Error('[[error:invalid-json]]'));
 	}
 
 	if (validateUpload(req, res, next, uploadedFile, allowedImageTypes)) {

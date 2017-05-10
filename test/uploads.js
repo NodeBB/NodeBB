@@ -176,7 +176,6 @@ describe('Upload Controllers', function () {
 		it('should fail to upload invalid file type', function (done) {
 			helpers.uploadFile(nconf.get('url') + '/api/admin/category/uploadpicture', path.join(__dirname, '../test/files/503.html'), { params: JSON.stringify({ cid: cid }) }, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
-				console.log(body);
 				assert.equal(body.error, '[[error:invalid-image-type, image/png&#44; image/jpeg&#44; image/pjpeg&#44; image/jpg&#44; image/gif&#44; image/svg+xml]]');
 				done();
 			});
@@ -185,7 +184,7 @@ describe('Upload Controllers', function () {
 		it('should fail to upload category image with invalid json params', function (done) {
 			helpers.uploadFile(nconf.get('url') + '/api/admin/category/uploadpicture', path.join(__dirname, '../test/files/test.png'), { params: 'invalid json' }, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
-				assert.equal(body.error, 'Unexpected token i in JSON at position 0');
+				assert.equal(body.error, '[[error:invalid-json]]');
 				done();
 			});
 		});
@@ -215,7 +214,6 @@ describe('Upload Controllers', function () {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
-				console.log(body);
 				done();
 			});
 		});
