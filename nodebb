@@ -23,12 +23,30 @@ try {
 	}
 }
 
-require('colors');
-var args = require('minimist')(process.argv.slice(2));
-var request = require('request');
-var semver = require('semver');
-var prompt = require('prompt');
-var async = require('async');
+var minimist;
+var request;
+var semver;
+var prompt;
+var async;
+
+try {
+	require('colors');
+	minimist = require('minimist');
+	request = require('request');
+	semver = require('semver');
+	prompt = require('prompt');
+	async = require('async');
+} catch (e) {
+	process.stdout.write(
+		'\x1b[31mNodeBB could not be initialised because there was an error while loading dependencies.\n' +
+		'Please run "\x1b[33mnpm install --production\x1b[31m" and try again.\x1b[0m\n\n' +
+		'For more information, please see: https://docs.nodebb.org/en/latest/installing/os.html\n\n'
+	);
+
+	throw e;
+}
+
+var args = minimist(process.argv.slice(2));
 
 var loaderPath = path.join(__dirname, 'loader.js');
 var appPath = path.join(__dirname, 'app.js');
