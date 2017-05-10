@@ -218,6 +218,24 @@ describe('Upload Controllers', function () {
 			});
 		});
 
+		it('should upload default avatar', function (done) {
+			helpers.uploadFile(nconf.get('url') + '/api/admin/uploadDefaultAvatar', path.join(__dirname, '../test/files/test.png'), { }, jar, csrf_token, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert.equal(body[0].url, nconf.get('relative_path') + '/assets/uploads/system/avatar-default.png');
+				done();
+			});
+		});
+
+		it('should upload og image', function (done) {
+			helpers.uploadFile(nconf.get('url') + '/api/admin/uploadOgImage', path.join(__dirname, '../test/files/test.png'), { }, jar, csrf_token, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert.equal(body[0].url, nconf.get('relative_path') + '/assets/uploads/system/og-image.png');
+				done();
+			});
+		});
+
 		it('should upload favicon', function (done) {
 			helpers.uploadFile(nconf.get('url') + '/api/admin/uploadfavicon', path.join(__dirname, '../test/files/favicon.ico'), {}, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);

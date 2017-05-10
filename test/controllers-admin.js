@@ -414,6 +414,23 @@ describe('Admin Controllers', function () {
 		});
 	});
 
+	it('/ip-blacklist should 404 for regular user', function (done) {
+		request(nconf.get('url') + '/api/ip-blacklist', { json: true }, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			assert.equal(res.statusCode, 404);
+			done();
+		});
+	});
+
+	it('should load /ip-blacklist', function (done) {
+		request(nconf.get('url') + '/api/ip-blacklist', { jar: jar, json: true }, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
 	it('should load /admin/appearance/themes', function (done) {
 		request(nconf.get('url') + '/api/admin/appearance/themes', { jar: jar, json: true }, function (err, res, body) {
 			assert.ifError(err);
