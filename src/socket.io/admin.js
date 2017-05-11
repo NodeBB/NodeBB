@@ -235,8 +235,8 @@ SocketAdmin.analytics.get = function (socket, data, callback) {
 					analytics.getHourlyStatsForSet('analytics:pageviews', data.until || Date.now(), data.amount, next);
 				}
 			},
-			monthlyPageViews: function (next) {
-				analytics.getMonthlyPageViews(next);
+			summary: function (next) {
+				analytics.getSummary(next);
 			},
 		}, function (err, data) {
 			data.pastDay = data.pageviews.reduce(function (a, b) { return parseInt(a, 10) + parseInt(b, 10); });

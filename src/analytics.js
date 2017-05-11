@@ -168,21 +168,18 @@ Analytics.getUnwrittenPageviews = function () {
 	return pageViews;
 };
 
-Analytics.getMonthlyPageViews = function (callback) {
-	var thisMonth = new Date();
-	var lastMonth = new Date();
-	thisMonth.setMonth(thisMonth.getMonth(), 1);
-	thisMonth.setHours(0, 0, 0, 0);
-	lastMonth.setMonth(thisMonth.getMonth() - 1, 1);
-	lastMonth.setHours(0, 0, 0, 0);
+Analytics.getSummary = function (callback) {
+	var today = new Date();
+	today.setHours(0, 0, 0, 0);
 
-	var values = [thisMonth.getTime(), lastMonth.getTime()];
-
-	db.sortedSetScores('analytics:pageviews:month', values, function (err, scores) {
-		if (err) {
-			return callback(err);
-		}
-		callback(null, { thisMonth: scores[0] || 0, lastMonth: scores[1] || 0 });
+	async.parallel({
+		seven: async.apply(Analytics.getDailyStatsForSet, 'analytics:pageviews', today, 7),
+		thirty: async.apply(Analytics.getDailyStatsForSet, 'analytics:pageviews', today, 30),
+	}, function (err, scores) {
+		callback(null, {
+			seven: scores.seven.reduce(function (sum, cur) { return sum += cur; }, 0),
+			thirty: scores.thirty.reduce(function (sum, cur) { return sum += cur; }, 0),
+		});
 	});
 };
 

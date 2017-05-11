@@ -295,14 +295,11 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 			adjustPieCharts();
 
 			$('[data-action="updateGraph"]:not([data-units="custom"])').on('click', function () {
-				var until;
-				switch ($(this).attr('data-until')) {
-				case 'last-month':
-					var lastMonth = new Date();
-					lastMonth.setDate(lastMonth.getDate() - 30);
-					until = lastMonth.getTime();
-				}
-				updateTrafficGraph($(this).attr('data-units'), until);
+				var until = new Date();
+				var amount = $(this).attr('data-amount');
+				until.setHours(0, 0, 0, 0);
+				until = until.getTime();
+				updateTrafficGraph($(this).attr('data-units'), until, amount);
 				$('[data-action="updateGraph"]').removeClass('active');
 				$(this).addClass('active');
 
@@ -406,11 +403,11 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 			} else {
 				graphs.traffic.data.xLabels = utils.getHoursArray();
 
-				$('#pageViewsThisMonth').html(data.monthlyPageViews.thisMonth);
-				$('#pageViewsLastMonth').html(data.monthlyPageViews.lastMonth);
+				$('#pageViewsThirty').html(data.summary.thirty);
+				$('#pageViewsSeven').html(data.summary.seven);
 				$('#pageViewsPastDay').html(data.pastDay);
-				utils.addCommasToNumbers($('#pageViewsThisMonth'));
-				utils.addCommasToNumbers($('#pageViewsLastMonth'));
+				utils.addCommasToNumbers($('#pageViewsThirty'));
+				utils.addCommasToNumbers($('#pageViewsSeven'));
 				utils.addCommasToNumbers($('#pageViewsPastDay'));
 			}
 

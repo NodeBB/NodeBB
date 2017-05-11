@@ -13,12 +13,12 @@
 				<hr/>
 				<div class="row">
 					<div class="col-sm-3 hidden-xs text-center pageview-stats">
-						<div><strong id="pageViewsLastMonth">0</strong></div>
-						<div><a href="#" class="updatePageviewsGraph" data-action="updateGraph" data-units="days" data-until="last-month">[[admin/general/dashboard:page-views-last-month]]</a></div>
+						<div><strong id="pageViewsThirty">0</strong></div>
+						<div><a href="#" class="updatePageviewsGraph" data-action="updateGraph" data-units="days" data-amount="30">[[admin/general/dashboard:page-views-thirty]]</a></div>
 					</div>
 					<div class="col-sm-3 text-center pageview-stats">
-						<div><strong id="pageViewsThisMonth">0</strong></div>
-						<div><a href="#" class="updatePageviewsGraph" data-action="updateGraph" data-units="days">[[admin/general/dashboard:page-views-this-month]]</a></div>
+						<div><strong id="pageViewsSeven">0</strong></div>
+						<div><a href="#" class="updatePageviewsGraph" data-action="updateGraph" data-units="days" data-amount="7">[[admin/general/dashboard:page-views-seven]]</a></div>
 					</div>
 					<div class="col-sm-3 hidden-xs text-center pageview-stats">
 						<div><strong id="pageViewsPastDay">0</strong></div>
