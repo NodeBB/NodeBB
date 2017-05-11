@@ -176,9 +176,21 @@ Analytics.getSummary = function (callback) {
 		seven: async.apply(Analytics.getDailyStatsForSet, 'analytics:pageviews', today, 7),
 		thirty: async.apply(Analytics.getDailyStatsForSet, 'analytics:pageviews', today, 30),
 	}, function (err, scores) {
+		if (err) {
+			return callback(null, {
+				seven: 0,
+				thirty: 0,
+			});
+		}
 		callback(null, {
-			seven: scores.seven.reduce(function (sum, cur) { return sum += cur; }, 0),
-			thirty: scores.thirty.reduce(function (sum, cur) { return sum += cur; }, 0),
+			seven: scores.seven.reduce(function (sum, cur) {
+				sum += cur;
+				return sum;
+			}, 0),
+			thirty: scores.thirty.reduce(function (sum, cur) {
+				sum += cur;
+				return sum;
+			}, 0),
 		});
 	});
 };
