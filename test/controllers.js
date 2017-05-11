@@ -1069,6 +1069,143 @@ describe('Controllers', function () {
 		});
 	});
 
+	describe('handle errors', function () {
+		var plugins = require('../src/plugins');
+		after(function (done) {
+			plugins.loadedHooks['filter:router.page'] = undefined;
+			done();
+		});
+
+		it('should handle topic malformed uri', function (done) {
+			request(nconf.get('url') + '/topic/1/a%AFc', function (err, res, body) {
+				assert.ifError(err);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should handle category malformed uri', function (done) {
+			request(nconf.get('url') + '/category/1/a%AFc', function (err, res, body) {
+				assert.ifError(err);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should handle malformed uri ', function (done) {
+			request(nconf.get('url') + '/user/a%AFc', function (err, res, body) {
+				assert.ifError(err);
+				assert(body);
+				assert.equal(res.statusCode, 400);
+				done();
+			});
+		});
+
+		it('should handle malformed uri in api', function (done) {
+			request(nconf.get('url') + '/api/user/a%AFc', { json: true }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 400);
+				assert.equal(body.error, '[[global:400.title]]');
+				done();
+			});
+		});
+
+		it('should handle CSRF error', function (done) {
+			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
+			plugins.loadedHooks['filter:router.page'].push({
+				method: function (req, res, next) {
+					var err = new Error('csrf-error');
+					err.code = 'EBADCSRFTOKEN';
+					next(err);
+				},
+			});
+
+			request(nconf.get('url') + '/users', { }, function (err, res, body) {
+				plugins.loadedHooks['filter:router.page'] = [];
+				assert.ifError(err);
+				assert.equal(res.statusCode, 403);
+				done();
+			});
+		});
+
+		it('should handle black-list error', function (done) {
+			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
+			plugins.loadedHooks['filter:router.page'].push({
+				method: function (req, res, next) {
+					var err = new Error('blacklist error message');
+					err.code = 'blacklisted-ip';
+					next(err);
+				},
+			});
+
+			request(nconf.get('url') + '/users', { }, function (err, res, body) {
+				plugins.loadedHooks['filter:router.page'] = [];
+				assert.ifError(err);
+				assert.equal(res.statusCode, 403);
+				assert.equal(body, 'blacklist error message');
+				done();
+			});
+		});
+
+		it('should handle page redirect through error', function (done) {
+			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
+			plugins.loadedHooks['filter:router.page'].push({
+				method: function (req, res, next) {
+					var err = new Error('redirect');
+					err.status = 302;
+					err.path = '/popular';
+					plugins.loadedHooks['filter:router.page'] = [];
+					next(err);
+				},
+			});
+
+			request(nconf.get('url') + '/users', { }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should handle api page redirect through error', function (done) {
+			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
+			plugins.loadedHooks['filter:router.page'].push({
+				method: function (req, res, next) {
+					var err = new Error('redirect');
+					err.status = 308;
+					err.path = '/api/popular';
+					plugins.loadedHooks['filter:router.page'] = [];
+					next(err);
+				},
+			});
+
+			request(nconf.get('url') + '/api/users', { json: true }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 308);
+				assert(body, '/api/popular');
+				done();
+			});
+		});
+
+		it('should handle error page', function (done) {
+			plugins.loadedHooks['filter:router.page'] = plugins.loadedHooks['filter:router.page'] || [];
+			plugins.loadedHooks['filter:router.page'].push({
+				method: function (req, res, next) {
+					var err = new Error('regular error');
+					next(err);
+				},
+			});
+
+			request(nconf.get('url') + '/users', function (err, res, body) {
+				plugins.loadedHooks['filter:router.page'] = [];
+				assert.ifError(err);
+				assert.equal(res.statusCode, 500);
+				assert(body);
+				done();
+			});
+		});
+	});
+
 
 	after(function (done) {
 		var analytics = require('../src/analytics');
