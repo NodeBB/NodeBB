@@ -104,7 +104,10 @@ helpers.uploadFile = function (uploadEndPoint, filePath, body, jar, csrf_token, 
 		if (err) {
 			return callback(err);
 		}
-		callback(err, res, body);
+		if (res.statusCode !== 200) {
+			console.log(body);
+		}
+		callback(null, res, body);
 	});
 };
 
