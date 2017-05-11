@@ -714,6 +714,34 @@ describe('Post\'s', function () {
 		});
 	});
 
+
+	describe('filterPidsByCid', function () {
+		it('should return pids as is if cid is falsy', function (done) {
+			posts.filterPidsByCid([1, 2, 3], null, function (err, pids) {
+				assert.ifError(err);
+				assert.deepEqual([1, 2, 3], pids);
+				done();
+			});
+		});
+
+		it('should filter pids by single cid', function (done) {
+			posts.filterPidsByCid([postData.pid, 100, 101], cid, function (err, pids) {
+				assert.ifError(err);
+				assert.deepEqual([postData.pid], pids);
+				done();
+			});
+		});
+
+		it('should filter pids by multiple cids', function (done) {
+			posts.filterPidsByCid([postData.pid, 100, 101], [cid, 2, 3], function (err, pids) {
+				assert.ifError(err);
+				assert.deepEqual([postData.pid], pids);
+				done();
+			});
+		});
+	});
+
+
 	after(function (done) {
 		db.emptydb(done);
 	});
