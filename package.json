@@ -108,6 +108,7 @@
     "grunt": "~1.0.0",
     "grunt-contrib-watch": "^1.0.0",
     "istanbul": "^0.4.2",
+    "jsdom": "9.12.0",
     "mocha": "~3.2.0",
     "mocha-lcov-reporter": "^1.2.0",
     "xmlhttprequest": "1.8.0",

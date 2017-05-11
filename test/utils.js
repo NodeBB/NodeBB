@@ -2,10 +2,26 @@
 
 
 var assert = require('assert');
+var jsdom = require('jsdom');
 var utils = require('./../public/src/utils.js');
 
 
 describe('Utility Methods', function () {
+	// https://gist.github.com/robballou/9ee108758dc5e0e2d028
+	// create some jsdom magic to allow jQuery to work
+	var doc = jsdom.jsdom('<html><body></body></html>');
+	var window = doc.defaultView;
+	global.jQuery = require('jquery')(window);
+	global.$ = global.jQuery;
+	var $ = global.$;
+	global.window = doc.defaultView;
+
+	it('should preserve case if requested', function (done) {
+		var slug = utils.slugify('UPPER CASE', true);
+		assert.equal(slug, 'UPPER-CASE');
+		done();
+	});
+
 	describe('username validation', function () {
 		it('accepts latin-1 characters', function () {
 			var username = "John\"'-. Doeäâèéë1234";
@@ -120,6 +136,13 @@ describe('Utility Methods', function () {
 		done();
 	});
 
+	it('should make numbers human readable on elements', function (done) {
+		var el = $('<div title="100000"></div>');
+		utils.makeNumbersHumanReadable(el);
+		assert.equal(el.html(), '100.0k');
+		done();
+	});
+
 	it('should add commas to numbers', function (done) {
 		assert.equal(utils.addCommas('100'), '100');
 		done();
@@ -133,6 +156,166 @@ describe('Utility Methods', function () {
 	it('should add commas to numbers', function (done) {
 		assert.equal(utils.addCommas('1000000'), '1,000,000');
 		done();
+	});
+
+	it('should add commas to elements', function (done) {
+		var el = $('<div>1000000</div>');
+		utils.addCommasToNumbers(el);
+		assert.equal(el.html(), '1,000,000');
+		done();
+	});
+
+	it('should return passed in value if invalid', function (done) {
+		var bigInt = -111111111111111111;
+		var result = utils.toISOString(bigInt);
+		assert.equal(bigInt, result);
+		done();
+	});
+
+	it('should return false if browser is not android', function (done) {
+		global.navigator = {
+			userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.96 Safari/537.36',
+		};
+		assert.equal(utils.isAndroidBrowser(), false);
+		done();
+	});
+
+	it('should return true if browser is android', function (done) {
+		global.navigator = {
+			userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Android /58.0.3029.96 Safari/537.36',
+		};
+		assert.equal(utils.isAndroidBrowser(), true);
+		done();
+	});
+
+	it('should return false if not touch device', function (done) {
+		global.document = global.document || {};
+		global.document.documentElement = {};
+		assert(!utils.isTouchDevice());
+		done();
+	});
+
+	it('should return true if touch device', function (done) {
+		global.document.documentElement = {
+			ontouchstart: 1,
+		};
+		assert(utils.isTouchDevice());
+		done();
+	});
+
+	it('should check if element is in viewport', function (done) {
+		var el = $('<div>some text</div>');
+		assert(utils.isElementInViewport(el));
+		done();
+	});
+
+	it('should get empty object for url params', function (done) {
+		var params = utils.params();
+		assert.equal(Object.keys(params), 0);
+		done();
+	});
+
+	it('should get url params', function (done) {
+		var params = utils.params({ url: 'http://nodebb.org?foo=1&bar=test&herp=2' });
+		assert.equal(params.foo, 1);
+		assert.equal(params.bar, 'test');
+		assert.equal(params.herp, 2);
+		done();
+	});
+
+	it('should get a single param', function (done) {
+		assert.equal(utils.param('somekey'), undefined);
+		done();
+	});
+
+
+	describe('toType', function () {
+		it('should return param as is if not string', function (done) {
+			assert.equal(123, utils.toType(123));
+			done();
+		});
+
+		it('should convert return string numbers as numbers', function (done) {
+			assert.equal(123, utils.toType('123'));
+			done();
+		});
+
+		it('should convert string "false" to boolean false', function (done) {
+			assert.strictEqual(false, utils.toType('false'));
+			done();
+		});
+
+		it('should convert string "true" to boolean true', function (done) {
+			assert.strictEqual(true, utils.toType('true'));
+			done();
+		});
+
+		it('should parse json', function (done) {
+			var data = utils.toType('{"a":"1"}');
+			assert.equal(data.a, '1');
+			done();
+		});
+
+		it('should return string as is if its not json,true,false or number', function (done) {
+			var regularStr = 'this is a regular string';
+			assert.equal(regularStr, utils.toType(regularStr));
+			done();
+		});
+	});
+
+	describe('utils.props', function () {
+		var data = {};
+
+		it('should set nested data', function (done) {
+			assert.equal(10, utils.props(data, 'a.b.c.d', 10));
+			done();
+		});
+
+		it('should return nested object', function (done) {
+			var obj = utils.props(data, 'a.b.c');
+			assert.equal(obj.d, 10);
+			done();
+		});
+
+		it('should returned undefined without throwing', function (done) {
+			assert.equal(utils.props(data, 'a.b.c.foo.bar'), undefined);
+			done();
+		});
+
+		it('should return undefined if second param is null', function (done) {
+			assert.equal(utils.props(undefined, null), undefined);
+			done();
+		});
+	});
+
+	describe('isInternalURI', function () {
+		var target = { host: '', protocol: 'https' };
+		var reference = { host: '', protocol: 'https' };
+
+		it('should return true if they match', function (done) {
+			assert(utils.isInternalURI(target, reference, ''));
+			done();
+		});
+
+		it('should return true if they match', function (done) {
+			target.host = 'nodebb.org';
+			reference.host = 'nodebb.org';
+			assert(utils.isInternalURI(target, reference, ''));
+			done();
+		});
+
+		it('should handle relative path', function (done) {
+			target.pathname = '/forum';
+			assert(utils.isInternalURI(target, reference, '/forum'));
+			done();
+		});
+
+		it('should return false if they do not match', function (done) {
+			target.pathname = '';
+			reference.host = 'designcreateplay.com';
+			assert(!utils.isInternalURI(target, reference));
+			done();
+		});
 	});
 
 	it('escape html', function (done) {
@@ -177,5 +360,21 @@ describe('Utility Methods', function () {
 		assert.strictEqual(utils.rtrim('\tthing\t\t'), '\tthing');
 		assert.strictEqual(utils.rtrim('\t thing \t'), '\t thing');
 		done();
+	});
+
+	it('should walk directory', function (done) {
+		utils.walk(__dirname, function (err, data) {
+			assert.ifError(err);
+			assert(Array.isArray(data));
+			done();
+		});
+	});
+
+	it('should profile function', function (done) {
+		var st = process.hrtime();
+		setTimeout(function () {
+			process.profile('it took', st);
+			done();
+		}, 500);
 	});
 });

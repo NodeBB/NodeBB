@@ -346,9 +346,7 @@
 		},
 
 		urlToLocation: function (url) {
-			var a = document.createElement('a');
-			a.href = url;
-			return a;
+			return $('<a href="' + url + '" />')[0];
 		},
 
 		// return boolean if string 'true' or string 'false', or if a parsable string which is a number
