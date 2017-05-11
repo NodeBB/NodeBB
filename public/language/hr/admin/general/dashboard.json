@@ -1,0 +1,64 @@
+{
+	"forum-traffic": "Promet foruma",
+	"page-views": "Broj pogleda",
+	"unique-visitors": "Jedinstveni posjetitelji",
+	"users": "Korisnici",
+	"posts": "Objave",
+	"topics": "Teme",
+	"page-views-last-month": "Broj pregleda prošli mjesec",
+	"page-views-this-month": "Pregleda ovaj mjesec",
+	"page-views-last-day": "Pogleda u zadnja 24 sata",
+
+	"stats.day": "Dan",
+	"stats.week": "Tjedan",
+	"stats.month": "Mjesec",
+	"stats.all": "Sve vrijeme",
+	
+	"updates": "Nadogradnje",
+	"running-version": "Ovo je verzija <strong>NodeBB v<span id=\"version\">%1</span></strong>.",
+	"keep-updated": "Uvijek se pobrinite da je Vaš NodeBB na najnovijoj verziji za najnovije sigurnosne mjere i popravke grešaka.",
+	"up-to-date": "<p>Vaš NodeBB je <strong>na najnovijoj verziji</strong> <i class=\"fa fa-check\"></i></p>",
+	"upgrade-available": "<p>Izašla je (v%1) nova verzija NodeBB.Razmotrite <a href=\"https://docs.nodebb.org/en/latest/upgrading/index.html\">nadogradnju Vašeg foruma</a>.</p>",
+	"prerelease-upgrade-available": "<p>Ovo je zastarjela verzija NodeBB. Nova verzija (v%1) je izašla.Razmotrite <a href=\"https://docs.nodebb.org/en/latest/upgrading/index.html\">nadogradnju Vašeg NodeBB</a>.</p>\n",
+	"prerelease-warning": "<p>Ovo je <strong>pre-release</strong> verzija NodeBB. Nenamjerne greške su moguće. <i class=\"fa fa-exclamation-triangle\"></i></p>",
+	"running-in-development": "<span>Forum je u razvojnom stanju. Forum bi mogao biti otvoren za napade; Molimo kontaktirajte vašeg sistemskog administratora</span>",
+
+	"notices": "Obavijest",
+	"restart-not-required": "Restart nije potreban",
+	"restart-required": "Potrebno je ponovno pokretanje",
+	"search-plugin-installed": "Dodatak pretrage instaliran",
+	"search-plugin-not-installed": "Dodatak pretrage nije instaliran",
+	"search-plugin-tooltip": "Instalirajte dodatak za pretragu sa stranice za upravljanje dodatcima da aktivirate mogućnost pretrage foruma.",
+
+	"control-panel": "Kontrola sistema",
+	"reload": "Ponovno učitaj",
+	"restart": "Pokreni ponovno",
+	"restart-warning": "Ponovno pokretanje NodeBB će odbaciti sve uspostavljene veze na par sekundi.",
+	"maintenance-mode": "Održavanje",
+	"maintenance-mode-title": "Postavite mod za održavanje foruma",
+	"realtime-chart-updates": "Ažuriranja u stvarnom vremenu",
+
+	"active-users": "Aktivni korisnici",
+	"active-users.users": "Korisnici",
+	"active-users.guests": "Gosti",
+	"active-users.total": "Ukupno",
+	"active-users.connections": "Veze",
+
+	"anonymous-registered-users": "Anonimni vs Registrirani korisnici",
+	"anonymous": "Anomiman",
+	"registered": "Registriran",
+
+	"user-presence": "Korisnik prisutan",
+	"on-categories": "Na listi kategorija",
+	"reading-posts": "Čita objave",
+	"browsing-topics": "Pretražuj teme",
+	"recent": "Nedavno",
+	"unread": "Nepročitano",
+
+	"high-presence-topics": "Teme visoke prisutnosti",
+
+	"graphs.page-views": "Pregled stranica",
+	"graphs.unique-visitors": "Jedninstveni posjetitelji",
+	"graphs.registered-users": "Registrirani korisnici",
+	"graphs.anonymous-users": "Anonimni korisnici"
+}

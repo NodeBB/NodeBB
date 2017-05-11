@@ -1,0 +1,23 @@
+{
+    "register": "Registracija",
+    "cancel_registration": "Obustavi registraciju",
+    "help.email": "Vaš email će biti skriven od javnosti.",
+    "help.username_restrictions": "Unikatno korisničko ime između %1 i %2 znaka. Ostali Vas mogu spomenuti sa @<span id='yourUsername'>username</span>.",
+    "help.minimum_password_length": "Dužina lozinke mora biti %1 znakova.",
+    "email_address": "Email adresa",
+    "email_address_placeholder": "Unesite email adresu",
+    "username": "Korisničko ime",
+    "username_placeholder": "Unesite korisničko ime",
+    "password": "Lozinka",
+    "password_placeholder": "Unesite lozinku",
+    "confirm_password": "Potvrdite lozinku",
+    "confirm_password_placeholder": "Potvrdite lozinku",
+    "register_now_button": "Registrirajte se",
+    "alternative_registration": "Alternativna registracija:",
+    "terms_of_use": "Uvjeti korištenja",
+    "agree_to_terms_of_use": "Prihvaćam uvjete korištenja",
+    "terms_of_use_error": "Morate prihvatiti uvjete korištenja",
+    "registration-added-to-queue": "Vaša registracija je dodana u listu zahtjeva za registraciju. Biti ćete obaviješteni kad Vas administrator prihvati.",
+    "interstitial.intro": "Treba nam još par dodatnih informacija prije nego kreirate novi račun.",
+    "interstitial.errors-found": "Nismo uspijeli dovršiti registraciju:"
+}

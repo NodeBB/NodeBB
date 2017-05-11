@@ -1,0 +1,9 @@
+{
+	"reputation": "Postavke reputacije",
+	"disable": "Onemogući reputacije",
+	"disable-down-voting": "Onemogući oduzimanje glasova",
+	"votes-are-public": "Svi glasovi su javni",
+	"thresholds": "Prag aktivnosti",
+	"min-rep-downvote": "Minimalna reputacija za glasanje protiv",
+	"min-rep-flag": "Minimalna reputacija za označavanje objava"
+}

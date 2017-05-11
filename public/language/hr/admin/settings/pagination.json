@@ -1,0 +1,9 @@
+{
+	"pagination": "Postavke numeriranja",
+	"enable": "Numeriraj teme i objave umjesto beskrajnog skrolanja.",
+	"topics": "Numeriranje tema",
+	"posts-per-page": "Objava po stranici ",
+	"categories": "Numeriranje kategorija",
+	"topics-per-page": "Tema po stranici",
+	"initial-num-load": "Početni broj tema za učitati u sekcijama nepročitano,nedavno i popularno."
+}

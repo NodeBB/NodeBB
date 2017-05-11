@@ -1,0 +1,11 @@
+{
+	"eu-consent": "Suglasnost EU",
+	"consent.enabled": "Omogućeno",
+	"consent.message": "Poruka obavijesti",
+	"consent.acceptance": "Poruka prihvaćanja",
+	"consent.link-text": "Odrednice Poveznice Tekst",
+	"consent.blank-localised-default": "Pusti prazno za zadanu NodeBB lokalizaciju",
+	"settings": "Postavke",
+	"cookie-domain": "Sesija kolačić domene",
+	"blank-default": "Ostavi prazno za osnovno"
+}

@@ -1,0 +1,20 @@
+{
+	"queue": "Na čekanju",
+	"description": "Nema korisnika na čekanju za registraciju. <br/> Za pokretanje ove mogućnosti odite na  <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> i postavite <strong>tip registracije</strong> u \"Admin Approval\".",
+
+	"list.name": "Ime",
+	"list.email": "Email",
+	"list.ip": "IP",
+	"list.time": "Vrijeme",
+	"list.username-spam": "Učestalost %1 Pojavljivanje %2 Samouvjerenost %3",
+	"list.email-spam": "Učestalost %1 Pojavljivanje %2",
+	"list.ip-spam": "Učestalost: %1 Pojavljivanje: %2",
+
+	"invitations": "Pozivnice",
+	"invitations.description": "Ispod je potpuni popis poslanih pozivnica.Koristite ctrl + f za pretragu liste po emailu ili korisničkom imenu. <br><br> Korisničko ime će biti prikazano na desno od emaila za korisnike koji su iskoristili svoje pozivnice.",
+	"invitations.inviter-username": "Korisničko ime pozivatelja",
+	"invitations.invitee-email": "Email adresa pozivatelja",
+	"invitations.invitee-username": "Korisničko ime pozivatelja (ako je registriran)",
+
+	"invitations.confirm-delete": "Sigurni ste da želite obrisati ovu pozivnicu?"
+} 
