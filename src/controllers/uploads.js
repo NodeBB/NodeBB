@@ -211,7 +211,7 @@ uploadsController.uploadFile = function (uid, uploadedFile, callback) {
 	var allowed = file.allowedExtensions();
 
 	var extension = path.extname(uploadedFile.name).toLowerCase();
-	if (!extension || extension === '.' || (allowed.length > 0 && allowed.indexOf(extension) === -1)) {
+	if (allowed.length > 0 && (!extension || extension === '.' || allowed.indexOf(extension) === -1)) {
 		return callback(new Error('[[error:invalid-file-type, ' + allowed.join('&#44; ') + ']]'));
 	}
 
