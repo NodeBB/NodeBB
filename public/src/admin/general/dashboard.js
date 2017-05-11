@@ -294,7 +294,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 			$(window).on('resize', adjustPieCharts);
 			adjustPieCharts();
 
-			$('[data-action="updateGraph"]').on('click', function () {
+			$('[data-action="updateGraph"]:not([data-units="custom"])').on('click', function () {
 				var until;
 				switch ($(this).attr('data-until')) {
 				case 'last-month':
@@ -305,6 +305,60 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 				updateTrafficGraph($(this).attr('data-units'), until);
 				$('[data-action="updateGraph"]').removeClass('active');
 				$(this).addClass('active');
+
+				require(['translator'], function (translator) {
+					translator.translate('[[admin/general/dashboard:page-views-custom]]', function (translated) {
+						$('[data-action="updateGraph"][data-units="custom"]').text(translated);
+					});
+				});
+			});
+			$('[data-action="updateGraph"][data-units="custom"]').on('click', function () {
+				var targetEl = $(this);
+
+				templates.parse('admin/partials/pageviews-range-select', {}, function (html) {
+					var modal = bootbox.dialog({
+						title: '[[admin/general/dashboard:page-views-custom]]',
+						message: html,
+						buttons: {
+							submit: {
+								label: '[[global:search]]',
+								className: 'btn-primary',
+								callback: submit,
+							},
+						},
+					});
+
+					function submit() {
+						// NEED TO ADD VALIDATION HERE FOR YYYY-MM-DD
+						var formData = modal.find('form').serializeObject();
+						var validRegexp = /\d{4}-\d{2}-\d{2}/;
+
+						// Input validation
+						if (!formData.startRange && !formData.endRange) {
+							// No range? Assume last 30 days
+							updateTrafficGraph('days');
+							$('[data-action="updateGraph"]').removeClass('active');
+							$('[data-action="updateGraph"][data-units="days"]').addClass('active');
+							return;
+						} else if (!validRegexp.test(formData.startRange) || !validRegexp.test(formData.endRange)) {
+							// Invalid Input
+							modal.find('.alert-danger').removeClass('hidden');
+							return false;
+						}
+
+						var until = new Date(formData.endRange);
+						until.setDate(until.getDate() + 1);
+						until = until.getTime();
+						var amount = (until - new Date(formData.startRange).getTime()) / (1000 * 60 * 60 * 24);
+
+						updateTrafficGraph('days', until, amount);
+						$('[data-action="updateGraph"]').removeClass('active');
+						targetEl.addClass('active');
+
+						// Update "custom range" label
+						targetEl.html(formData.startRange + ' &ndash; ' + formData.endRange);
+					}
+				});
 			});
 
 			socket.emit('admin.rooms.getAll', Admin.updateRoomUsage);
@@ -325,7 +379,9 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 		});
 	}
 
-	function updateTrafficGraph(units, until) {
+	function updateTrafficGraph(units, until, amount) {
+		// until and amount are optional
+
 		if (!app.isFocused) {
 			return;
 		}
@@ -334,6 +390,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 			graph: 'traffic',
 			units: units || 'hours',
 			until: until,
+			amount: amount,
 		}, function (err, data) {
 			if (err) {
 				return app.alertError(err.message);
@@ -345,7 +402,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 			graphData.traffic = data;
 
 			if (units === 'days') {
-				graphs.traffic.data.xLabels = utils.getDaysArray(until);
+				graphs.traffic.data.xLabels = utils.getDaysArray(until, amount);
 			} else {
 				graphs.traffic.data.xLabels = utils.getHoursArray();
 
@@ -364,6 +421,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 			graphs.traffic.update();
 			currentGraph.units = units;
 			currentGraph.until = until;
+			currentGraph.amount = amount;
 		});
 	}
 
@@ -450,7 +508,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 		}, realtime ? DEFAULTS.realtimeInterval : DEFAULTS.roomInterval);
 
 		intervals.graphs = setInterval(function () {
-			updateTrafficGraph(currentGraph.units, currentGraph.until);
+			updateTrafficGraph(currentGraph.units, currentGraph.until, currentGraph.amount);
 		}, realtime ? DEFAULTS.realtimeInterval : DEFAULTS.graphInterval);
 	}
 

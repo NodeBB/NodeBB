@@ -274,13 +274,13 @@
 			return labels.reverse();
 		},
 
-		getDaysArray: function (from) {
+		getDaysArray: function (from, amount) {
 			var currentDay = new Date(from || Date.now()).getTime();
 			var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 			var labels = [];
 			var tmpDate;
 
-			for (var x = 29; x >= 0; x -= 1) {
+			for (var x = (amount || 30) - 1; x >= 0; x -= 1) {
 				tmpDate = new Date(currentDay - (1000 * 60 * 60 * 24 * x));
 				labels.push(months[tmpDate.getMonth()] + ' ' + tmpDate.getDate());
 			}

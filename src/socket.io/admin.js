@@ -211,10 +211,12 @@ SocketAdmin.analytics.get = function (socket, data, callback) {
 	}
 
 	// Default returns views from past 24 hours, by hour
-	if (data.units === 'days') {
-		data.amount = 30;
-	} else {
-		data.amount = 24;
+	if (!data.amount) {
+		if (data.units === 'days') {
+			data.amount = 30;
+		} else {
+			data.amount = 24;
+		}
 	}
 
 	if (data.graph === 'traffic') {

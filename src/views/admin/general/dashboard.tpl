@@ -11,17 +11,23 @@
 					<canvas id="analytics-traffic" width="100%" height="400"></canvas>
 				</div>
 				<hr/>
-				<div class="text-center pull-left pageview-stats">
-					<div><strong id="pageViewsLastMonth"></strong></div>
-					<div><a href="#" class="updatePageviewsGraph" data-action="updateGraph" data-units="days" data-until="last-month">[[admin/general/dashboard:page-views-last-month]]</a></div>
-				</div>
-				<div class="text-center pull-left pageview-stats">
-					<div><strong id="pageViewsThisMonth"></strong></div>
-					<div><a href="#" class="updatePageviewsGraph" data-action="updateGraph" data-units="days">[[admin/general/dashboard:page-views-this-month]]</a></div>
-				</div>
-				<div class="text-center pull-left pageview-stats">
-					<div><strong id="pageViewsPastDay"></strong></div>
-					<div><a href="#" class="updatePageviewsGraph active" data-action="updateGraph" data-units="hours">[[admin/general/dashboard:page-views-last-day]]</a></div>
+				<div class="row">
+					<div class="col-sm-3 hidden-xs text-center pageview-stats">
+						<div><strong id="pageViewsLastMonth">0</strong></div>
+						<div><a href="#" class="updatePageviewsGraph" data-action="updateGraph" data-units="days" data-until="last-month">[[admin/general/dashboard:page-views-last-month]]</a></div>
+					</div>
+					<div class="col-sm-3 text-center pageview-stats">
+						<div><strong id="pageViewsThisMonth">0</strong></div>
+						<div><a href="#" class="updatePageviewsGraph" data-action="updateGraph" data-units="days">[[admin/general/dashboard:page-views-this-month]]</a></div>
+					</div>
+					<div class="col-sm-3 hidden-xs text-center pageview-stats">
+						<div><strong id="pageViewsPastDay">0</strong></div>
+						<div><a href="#" class="updatePageviewsGraph active" data-action="updateGraph" data-units="hours">[[admin/general/dashboard:page-views-last-day]]</a></div>
+					</div>
+					<div class="col-sm-3 text-center pageview-stats">
+						<div><strong><i class="fa fa-clock-o"></i></strong></div>
+						<div><a href="#" class="updatePageviewsGraph" data-action="updateGraph" data-units="custom">[[admin/general/dashboard:page-views-custom]]</a></div>
+					</div>
 				</div>
 			</div>
 		</div>
