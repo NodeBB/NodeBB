@@ -55,6 +55,8 @@ mongoModule.init = function (callback) {
 	var usernamePassword = '';
 	if (nconf.get('mongo:username') && nconf.get('mongo:password')) {
 		usernamePassword = nconf.get('mongo:username') + ':' + encodeURIComponent(nconf.get('mongo:password')) + '@';
+	} else {
+		winston.warn('You have no mongo username/password setup!');
 	}
 
 	// Sensible defaults for Mongo, if not set
@@ -102,15 +104,7 @@ mongoModule.init = function (callback) {
 		require('./mongo/sets')(db, mongoModule);
 		require('./mongo/sorted')(db, mongoModule);
 		require('./mongo/list')(db, mongoModule);
-
-		if (nconf.get('mongo:password') && nconf.get('mongo:username')) {
-			db.authenticate(nconf.get('mongo:username'), nconf.get('mongo:password'), function (err) {
-				callback(err);
-			});
-		} else {
-			winston.warn('You have no mongo password setup!');
-			callback();
-		}
+		callback();
 	});
 };
 
