@@ -40,7 +40,7 @@ module.exports = function (SocketTopics) {
 				var reverse = data.topicPostSort === 'newest_to_oldest' || data.topicPostSort === 'most_votes';
 				var start = Math.max(0, parseInt(data.after, 10));
 
-				var infScrollPostsPerPage = Math.max(0, Math.min(meta.config.postsPerPage || 20, parseInt(data.postsPerPage, 10) || meta.config.postsPerPage || 20) - 1);
+				var infScrollPostsPerPage = Math.max(0, Math.min(meta.config.postsPerPage || 20, parseInt(data.count, 10) || meta.config.postsPerPage || 20) - 1);
 
 				if (data.direction > 0) {
 					if (reverse) {
@@ -93,7 +93,7 @@ module.exports = function (SocketTopics) {
 		}
 
 		var start = parseInt(data.after, 10);
-		var stop = start + Math.max(0, Math.min(meta.config.topicsPerPage || 20, parseInt(data.topicsPerPage, 10) || meta.config.topicsPerPage || 20) - 1);
+		var stop = start + Math.max(0, Math.min(meta.config.topicsPerPage || 20, parseInt(data.count, 10) || meta.config.topicsPerPage || 20) - 1);
 
 		topics.getUnreadTopics({ cid: data.cid, uid: socket.uid, start: start, stop: stop, filter: data.filter }, callback);
 	};
@@ -104,7 +104,7 @@ module.exports = function (SocketTopics) {
 		}
 
 		var start = parseInt(data.after, 10);
-		var stop = start + Math.max(0, Math.min(meta.config.topicsPerPage || 20, parseInt(data.topicsPerPage, 10) || meta.config.topicsPerPage || 20) - 1);
+		var stop = start + Math.max(0, Math.min(meta.config.topicsPerPage || 20, parseInt(data.count, 10) || meta.config.topicsPerPage || 20) - 1);
 
 		topics.getRecentTopics(data.cid, socket.uid, start, stop, data.filter, callback);
 	};
@@ -115,7 +115,7 @@ module.exports = function (SocketTopics) {
 		}
 
 		var start = parseInt(data.after, 10);
-		var stop = start + Math.max(0, Math.min(meta.config.topicsPerPage || 20, parseInt(data.topicsPerPage, 10) || meta.config.topicsPerPage || 20) - 1);
+		var stop = start + Math.max(0, Math.min(meta.config.topicsPerPage || 20, parseInt(data.count, 10) || meta.config.topicsPerPage || 20) - 1);
 
 		topics.getTopicsFromSet(data.set, socket.uid, start, stop, callback);
 	};
