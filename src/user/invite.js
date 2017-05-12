@@ -60,17 +60,10 @@ module.exports = function (User) {
 				if (exists) {
 					return next(new Error('[[error:email-taken]]'));
 				}
-
-				async.parallel([
-					function (next) {
-						db.setAdd('invitation:uid:' + uid, email, next);
-					},
-					function (next) {
-						db.setAdd('invitation:uids', uid, next);
-					},
-				], function (err) {
-					next(err);
-				});
+				db.setAdd('invitation:uid:' + uid, email, next);
+			},
+			function (next) {
+				db.setAdd('invitation:uids', uid, next);
 			},
 			function (next) {
 				db.set('invitation:email:' + email, token, next);
