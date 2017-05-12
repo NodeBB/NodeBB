@@ -16,17 +16,17 @@ module.exports = function (middleware) {
 	middleware.admin.isAdmin = function (req, res, next) {
 		winston.warn('[middleware.admin.isAdmin] deprecation warning, no need to use this from plugins!');
 
-		if (!req.user) {
-			return controllers.helpers.notAllowed(req, res);
-		}
-
-		user.isAdministrator(req.user.uid, function (err, isAdmin) {
-			if (err || isAdmin) {
-				return next(err);
-			}
-
-			controllers.helpers.notAllowed(req, res);
-		});
+		async.waterfall([
+			function (next) {
+				user.isAdministrator(req.uid, next);
+			},
+			function (isAdmin, next) {
+				if (!isAdmin) {
+					return controllers.helpers.notAllowed(req, res);
+				}
+				next();
+			},
+		], next);
 	};
 
 	middleware.admin.buildHeader = function (req, res, next) {

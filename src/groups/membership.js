@@ -323,12 +323,12 @@ module.exports = function (Groups) {
 
 	Groups.isMember = function (uid, groupName, callback) {
 		if (!uid || parseInt(uid, 10) <= 0) {
-			return callback(null, false);
+			return setImmediate(callback, null, false);
 		}
 
 		var cacheKey = uid + ':' + groupName;
 		if (cache.has(cacheKey)) {
-			return process.nextTick(callback, null, cache.get(cacheKey));
+			return setImmediate(callback, null, cache.get(cacheKey));
 		}
 
 		async.waterfall([
@@ -344,7 +344,7 @@ module.exports = function (Groups) {
 
 	Groups.isMembers = function (uids, groupName, callback) {
 		function getFromCache(next) {
-			process.nextTick(next, null, uids.map(function (uid) {
+			setImmediate(next, null, uids.map(function (uid) {
 				return cache.get(uid + ':' + groupName);
 			}));
 		}
@@ -377,7 +377,7 @@ module.exports = function (Groups) {
 
 	Groups.isMemberOfGroups = function (uid, groups, callback) {
 		function getFromCache(next) {
-			process.nextTick(next, null, groups.map(function (groupName) {
+			setImmediate(next, null, groups.map(function (groupName) {
 				return cache.get(uid + ':' + groupName);
 			}));
 		}
