@@ -211,6 +211,56 @@ describe('meta', function () {
 		});
 	});
 
+	describe('dependencies', function () {
+		it('should return ENOENT if module is not found', function (done) {
+			meta.dependencies.checkModule('some-module-that-does-not-exist', function (err) {
+				assert.equal(err.code, 'ENOENT');
+				done();
+			});
+		});
+
+		it('should not error if module is a nodebb-plugin-*', function (done) {
+			meta.dependencies.checkModule('nodebb-plugin-somePlugin', function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should not error if module is nodebb-theme-*', function (done) {
+			meta.dependencies.checkModule('nodebb-theme-someTheme', function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should parse json package data', function (done) {
+			var pkgData = meta.dependencies.parseModuleData('nodebb-plugin-test', '{"a": 1}');
+			assert.equal(pkgData.a, 1);
+			done();
+		});
+
+		it('should return null data with invalid json', function (done) {
+			var pkgData = meta.dependencies.parseModuleData('nodebb-plugin-test', 'asdasd');
+			assert.strictEqual(pkgData, null);
+			done();
+		});
+
+		it('should return false if moduleData is falsy', function (done) {
+			assert(!meta.dependencies.doesSatisfy(null, '1.0.0'));
+			done();
+		});
+
+		it('should return false if moduleData doesnt not satisfy package.json', function (done) {
+			assert(!meta.dependencies.doesSatisfy({ name: 'nodebb-plugin-test', version: '0.9.0' }, '1.0.0'));
+			done();
+		});
+
+		it('should return true if _resolved is from github', function (done) {
+			assert(meta.dependencies.doesSatisfy({ name: 'nodebb-plugin-test', _resolved: 'https://github.com/some/repo', version: '0.9.0' }, '1.0.0'));
+			done();
+		});
+	});
+
 
 	after(function (done) {
 		db.emptydb(done);
