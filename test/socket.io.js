@@ -332,7 +332,7 @@ describe('socket.io', function () {
 		io.emit('admin.analytics.get', { graph: 'traffic', units: 'days' }, function (err, data) {
 			assert.ifError(err);
 			assert(data);
-			assert(data.monthlyPageViews);
+			assert(data.summary);
 			done();
 		});
 	});
@@ -341,7 +341,7 @@ describe('socket.io', function () {
 		io.emit('admin.analytics.get', { graph: 'traffic', units: 'hours' }, function (err, data) {
 			assert.ifError(err);
 			assert(data);
-			assert(data.monthlyPageViews);
+			assert(data.summary);
 			done();
 		});
 	});
