@@ -52,7 +52,7 @@ authenticationController.register = function (req, res) {
 			}
 
 			if (userData.username.length > meta.config.maximumUsernameLength) {
-				return next(new Error('[[error:username-too-long'));
+				return next(new Error('[[error:username-too-long]]'));
 			}
 
 			user.isPasswordValid(userData.password, next);
