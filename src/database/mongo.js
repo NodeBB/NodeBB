@@ -78,7 +78,7 @@ mongoModule.init = function (callback) {
 		servers.push(hosts[i] + ':' + ports[i]);
 	}
 
-	var connString = 'mongodb://' + usernamePassword + servers.join() + '/' + nconf.get('mongo:database');
+	var connString = nconf.get('mongo:uri') || 'mongodb://' + usernamePassword + servers.join() + '/' + nconf.get('mongo:database');
 
 	var connOptions = {
 		poolSize: 10,
