@@ -827,6 +827,13 @@ describe('User', function () {
 				});
 			});
 		});
+
+		it('should error if until is NaN', function (done) {
+			User.ban(testUid, 'asd', function (err) {
+				assert.equal(err.message, '[[error:ban-expiry-missing]]');
+				done();
+			});
+		});
 	});
 
 	describe('digests', function () {
