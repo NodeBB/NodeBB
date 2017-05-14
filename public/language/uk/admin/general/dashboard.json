@@ -11,8 +11,8 @@
 	"page-views-custom": "Заданий Період",
 	"page-views-custom-start": "Початок Періоду",
 	"page-views-custom-end": "Кінець Періоду",
-	"page-views-custom-help": "Enter a date range of page views you would like to view. If no date picker is available, the accepted format is <code>YYYY-MM-DD</code>",
-	"page-views-custom-error": "Please enter a valid date range in the format <code>YYYY-MM-DD</code>",
+	"page-views-custom-help": "Вкажіть календарний період, за який ви хочете побачити переглянуті сторінки. Якщо ви не можете використати селектор дат, допустимий формат дати <code>YYYY-MM-DD</code>",
+	"page-views-custom-error": "Будь-ласка вкажіть календарний період у форматі <code>YYYY-MM-DD</code>",
 
 	"stats.day": "День",
 	"stats.week": "Тиждень",
