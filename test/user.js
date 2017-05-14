@@ -798,6 +798,35 @@ describe('User', function () {
 				});
 			});
 		});
+
+		it('should ban user permanently', function (done) {
+			User.ban(testUid, function (err) {
+				assert.ifError(err);
+				User.isBanned(testUid, function (err, isBanned) {
+					assert.ifError(err);
+					assert.equal(isBanned, true);
+					User.unban(testUid, done);
+				});
+			});
+		});
+
+		it('should ban user temporarily', function (done) {
+			User.ban(testUid, Date.now() + 2000, function (err) {
+				assert.ifError(err);
+
+				User.isBanned(testUid, function (err, isBanned) {
+					assert.ifError(err);
+					assert.equal(isBanned, true);
+					setTimeout(function () {
+						User.isBanned(testUid, function (err, isBanned) {
+							assert.ifError(err);
+							assert.equal(isBanned, false);
+							User.unban(testUid, done);
+						});
+					}, 3000);
+				});
+			});
+		});
 	});
 
 	describe('digests', function () {
