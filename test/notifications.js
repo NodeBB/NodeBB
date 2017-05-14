@@ -252,7 +252,14 @@ describe('Notifications', function () {
 	});
 
 	it('should prune notifications', function (done) {
-		notifications.prune(done);
+		notifications.create({
+			bodyShort: 'bodyShort',
+			nid: 'tobedeleted',
+			path: '/notification/path',
+		}, function (err) {
+			assert.ifError(err);
+			notifications.prune(done);
+		});
 	});
 
 
