@@ -15,7 +15,7 @@ var db = require('../database');
 var userController = require('../controllers/user');
 var privileges = require('../privileges');
 
-var SocketUser = {};
+var SocketUser = module.exports;
 
 require('./user/profile')(SocketUser);
 require('./user/search')(SocketUser);
@@ -327,7 +327,7 @@ SocketUser.setModerationNote = function (socket, data, callback) {
 		},
 		function (allowed, next) {
 			if (allowed) {
-				return next(null, allowed);
+				return setImmediate(next, null, allowed);
 			}
 
 			user.isModeratorOfAnyCategory(socket.uid, next);
@@ -346,5 +346,3 @@ SocketUser.setModerationNote = function (socket, data, callback) {
 		},
 	], callback);
 };
-
-module.exports = SocketUser;

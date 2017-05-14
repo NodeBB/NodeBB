@@ -975,24 +975,33 @@ describe('User', function () {
 		});
 
 		it('should set moderation note', function (done) {
-			User.create({ username: 'noteadmin' }, function (err, adminUid) {
+			var adminUid;
+			async.waterfall([
+				function (next) {
+					User.create({ username: 'noteadmin' }, next);
+				},
+				function (_adminUid, next) {
+					adminUid = _adminUid;
+					groups.join('administrators', adminUid, next);
+				},
+				function (next) {
+					socketUser.setModerationNote({ uid: adminUid }, { uid: testUid, note: 'this is a test user' }, next);
+				},
+				function (next) {
+					setTimeout(next, 50);
+				},
+				function (next) {
+					socketUser.setModerationNote({ uid: adminUid }, { uid: testUid, note: 'second moderation note' }, next);
+				},
+				function (next) {
+					User.getModerationNotes(testUid, 0, -1, next);
+				},
+			], function (err, notes) {
 				assert.ifError(err);
-				groups.join('administrators', adminUid, function (err) {
-					assert.ifError(err);
-					socketUser.setModerationNote({ uid: adminUid }, { uid: testUid, note: 'this is a test user' }, function (err) {
-						assert.ifError(err);
-						socketUser.setModerationNote({ uid: adminUid }, { uid: testUid, note: 'second moderation note' }, function (err) {
-							assert.ifError(err);
-							User.getModerationNotes(testUid, 0, -1, function (err, notes) {
-								assert.ifError(err);
-								assert.equal(notes[0].note, 'second moderation note');
-								assert.equal(notes[0].uid, adminUid);
-								assert(notes[0].timestamp);
-								done();
-							});
-						});
-					});
-				});
+				assert.equal(notes[0].note, 'second moderation note');
+				assert.equal(notes[0].uid, adminUid);
+				assert(notes[0].timestamp);
+				done();
 			});
 		});
 	});
