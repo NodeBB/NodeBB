@@ -685,5 +685,3 @@ Flags.notify = function (flagObj, uid, callback) {
 		break;
 	}
 };
-
-module.exports = Flags;

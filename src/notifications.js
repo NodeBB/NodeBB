@@ -331,82 +331,83 @@ Notifications.markReadMultiple = function (nids, uid, callback) {
 
 			db.getObjectsFields(notificationKeys, ['nid', 'datetime'], next);
 		},
-	], function (err, notificationData) {
-		if (err) {
-			return callback(err);
-		}
+		function (notificationData, next) {
+			// Filter out notifications that didn't exist
+			notificationData = notificationData.filter(function (notification) {
+				return notification && notification.nid;
+			});
 
-		// Filter out notifications that didn't exist
-		notificationData = notificationData.filter(function (notification) {
-			return notification && notification.nid;
-		});
+			// Extract nid
+			nids = notificationData.map(function (notification) {
+				return notification.nid;
+			});
 
-		// Extract nid
-		nids = notificationData.map(function (notification) {
-			return notification.nid;
-		});
+			var datetimes = notificationData.map(function (notification) {
+				return (notification && notification.datetime) || Date.now();
+			});
 
-		var datetimes = notificationData.map(function (notification) {
-			return (notification && notification.datetime) || Date.now();
-		});
-
-		async.parallel([
-			function (next) {
-				db.sortedSetRemove('uid:' + uid + ':notifications:unread', nids, next);
-			},
-			function (next) {
-				db.sortedSetAdd('uid:' + uid + ':notifications:read', datetimes, nids, next);
-			},
-		], function (err) {
-			callback(err);
-		});
+			async.parallel([
+				function (next) {
+					db.sortedSetRemove('uid:' + uid + ':notifications:unread', nids, next);
+				},
+				function (next) {
+					db.sortedSetAdd('uid:' + uid + ':notifications:read', datetimes, nids, next);
+				},
+			], next);
+		},
+	], function (err) {
+		callback(err);
 	});
 };
 
 Notifications.markAllRead = function (uid, callback) {
-	db.getSortedSetRevRange('uid:' + uid + ':notifications:unread', 0, 99, function (err, nids) {
-		if (err) {
-			return callback(err);
-		}
+	async.waterfall([
+		function (next) {
+			db.getSortedSetRevRange('uid:' + uid + ':notifications:unread', 0, 99, next);
+		},
+		function (nids, next) {
+			if (!Array.isArray(nids) || !nids.length) {
+				return next();
+			}
 
-		if (!Array.isArray(nids) || !nids.length) {
-			return callback();
-		}
-
-		Notifications.markReadMultiple(nids, uid, callback);
-	});
+			Notifications.markReadMultiple(nids, uid, next);
+		},
+	], callback);
 };
 
-Notifications.prune = function () {
+Notifications.prune = function (callback) {
+	callback = callback || function () {};
 	var	week = 604800000;
 
 	var	cutoffTime = Date.now() - week;
 
-	db.getSortedSetRangeByScore('notifications', 0, 500, '-inf', cutoffTime, function (err, nids) {
-		if (err) {
-			return winston.error(err.message);
-		}
-
-		if (!Array.isArray(nids) || !nids.length) {
-			return;
-		}
-
-		var	keys = nids.map(function (nid) {
-			return 'notifications:' + nid;
-		});
-
-		async.parallel([
-			function (next) {
-				db.sortedSetRemove('notifications', nids, next);
-			},
-			function (next) {
-				db.deleteAll(keys, next);
-			},
-		], function (err) {
-			if (err) {
-				return winston.error('Encountered error pruning notifications: ' + err.message);
+	async.waterfall([
+		function (next) {
+			db.getSortedSetRangeByScore('notifications', 0, 500, '-inf', cutoffTime, next);
+		},
+		function (nids, next) {
+			if (!Array.isArray(nids) || !nids.length) {
+				return callback();
 			}
-		});
+
+			var	keys = nids.map(function (nid) {
+				return 'notifications:' + nid;
+			});
+
+			async.parallel([
+				function (next) {
+					db.sortedSetRemove('notifications', nids, next);
+				},
+				function (next) {
+					db.deleteAll(keys, next);
+				},
+			], next);
+		},
+	], function (err) {
+		if (err) {
+			winston.error('Encountered error pruning notifications: ' + err.message);
+		}
+		callback(err);
 	});
 };
 

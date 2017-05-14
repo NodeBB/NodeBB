@@ -251,6 +251,10 @@ describe('Notifications', function () {
 		});
 	});
 
+	it('should prune notifications', function (done) {
+		notifications.prune(done);
+	});
+
 
 	after(function (done) {
 		db.emptydb(done);

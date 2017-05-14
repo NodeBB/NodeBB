@@ -195,27 +195,31 @@ module.exports = function (User) {
 			return callback();
 		}
 
-		User.getUserFields(uid, ['username', 'userslug'], function (err, userData) {
-			if (err) {
-				return callback(err);
-			}
-
-			async.parallel([
-				function (next) {
-					updateUidMapping('username', uid, newUsername, userData.username, next);
-				},
-				function (next) {
-					var newUserslug = utils.slugify(newUsername);
-					updateUidMapping('userslug', uid, newUserslug, userData.userslug, next);
-				},
-				function (next) {
-					async.series([
-						async.apply(db.sortedSetRemove, 'username:sorted', userData.username.toLowerCase() + ':' + uid),
-						async.apply(db.sortedSetAdd, 'username:sorted', 0, newUsername.toLowerCase() + ':' + uid),
-						async.apply(db.sortedSetAdd, 'user:' + uid + ':usernames', Date.now(), newUsername + ':' + Date.now()),
-					], next);
-				},
-			], callback);
+		async.waterfall([
+			function (next) {
+				User.getUserFields(uid, ['username', 'userslug'], next);
+			},
+			function (userData, next) {
+				async.parallel([
+					function (next) {
+						updateUidMapping('username', uid, newUsername, userData.username, next);
+					},
+					function (next) {
+						var newUserslug = utils.slugify(newUsername);
+						updateUidMapping('userslug', uid, newUserslug, userData.userslug, next);
+					},
+					function (next) {
+						var now = Date.now();
+						async.series([
+							async.apply(db.sortedSetRemove, 'username:sorted', userData.username.toLowerCase() + ':' + uid),
+							async.apply(db.sortedSetAdd, 'username:sorted', 0, newUsername.toLowerCase() + ':' + uid),
+							async.apply(db.sortedSetAdd, 'user:' + uid + ':usernames', now, newUsername + ':' + now),
+						], next);
+					},
+				], next);
+			},
+		], function (err) {
+			callback(err);
 		});
 	}
 

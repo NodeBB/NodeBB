@@ -95,7 +95,7 @@ describe('User', function () {
 						assert.ifError(err);
 
 						assert.strictEqual(username, 'Jane Doe 9');
-						done();
+						next();
 					});
 				},
 			], done);
@@ -299,7 +299,7 @@ describe('User', function () {
 		});
 
 		it('.send() should create a new reset code and reset password', function (done) {
-			User.reset.send('reset@me.com', function (err, code) {
+			User.reset.send('reset@me.com', function (err) {
 				if (err) {
 					console.log(err);
 				}
@@ -751,7 +751,28 @@ describe('User', function () {
 		});
 	});
 
-	describe('.getModerationHistory', function () {
+	describe('user info', function () {
+		it('should return error if there is no ban reason', function (done) {
+			User.getLatestBanInfo(123, function (err) {
+				assert.equal(err.message, 'no-ban-info');
+				done();
+			});
+		});
+
+
+		it('should get history from set', function (done) {
+			var now = Date.now();
+			db.sortedSetAdd('user:' + testUid + ':usernames', now, 'derp:' + now, function (err) {
+				assert.ifError(err);
+				User.getHistory('user:' + testUid + ':usernames', function (err, data) {
+					assert.ifError(err);
+					assert.equal(data[0].value, 'derp');
+					assert.equal(data[0].timestamp, now);
+					done();
+				});
+			});
+		});
+
 		it('should return the correct ban reason', function (done) {
 			async.series([
 				function (next) {
@@ -960,15 +981,15 @@ describe('User', function () {
 					assert.ifError(err);
 					socketUser.setModerationNote({ uid: adminUid }, { uid: testUid, note: 'this is a test user' }, function (err) {
 						assert.ifError(err);
-						db.getSortedSetRevRange('uid:' + testUid + ':moderation:notes', 0, 0, function (err, notes) {
+						socketUser.setModerationNote({ uid: adminUid }, { uid: testUid, note: 'second moderation note' }, function (err) {
 							assert.ifError(err);
-							notes = notes.map(function (noteData) {
-								return JSON.parse(noteData);
+							User.getModerationNotes(testUid, 0, -1, function (err, notes) {
+								assert.ifError(err);
+								assert.equal(notes[0].note, 'second moderation note');
+								assert.equal(notes[0].uid, adminUid);
+								assert(notes[0].timestamp);
+								done();
 							});
-							assert.equal(notes[0].note, 'this is a test user');
-							assert.equal(notes[0].uid, adminUid);
-							assert(notes[0].timestamp);
-							done();
 						});
 					});
 				});
