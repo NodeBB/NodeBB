@@ -10,6 +10,7 @@ var categories = require('../categories');
 var privileges = require('../privileges');
 var meta = require('../meta');
 var utils = require('../utils');
+var plugins = require('../plugins');
 
 module.exports = function (Topics) {
 	Topics.getTotalUnread = function (uid, filter, callback) {
@@ -131,6 +132,17 @@ module.exports = function (Topics) {
 				tids = tids.slice(0, 200);
 
 				filterTopics(uid, tids, params.cid, params.filter, next);
+			},
+			function (tids, next) {
+				plugins.fireHook('filter:topics.getUnreadTids', {
+					uid: uid,
+					tids: tids,
+					cid: params.cid,
+					filter: params.filter,
+				}, next);
+			},
+			function (results, next) {
+				next(null, results.tids);
 			},
 		], callback);
 	};
