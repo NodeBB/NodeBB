@@ -51,7 +51,29 @@ module.exports = function (User) {
 				}, next);
 			},
 			function (data, next) {
-				getFlagMetadata(data, next);
+				// Get pids from flag objects
+				var keys = data.flags.map(function (flagObj) {
+					return 'flag:' + flagObj.value;
+				});
+				db.getObjectsFields(keys, ['type', 'targetId'], function (err, payload) {
+					if (err) {
+						return next(err);
+					}
+
+					// Only pass on flag ids from posts
+					data.flags = payload.reduce(function (memo, cur, idx) {
+						if (cur.type === 'post') {
+							memo.push({
+								value: parseInt(cur.targetId, 10),
+								score: data.flags[idx].score,
+							});
+						}
+
+						return memo;
+					}, []);
+
+					getFlagMetadata(data, next);
+				});
 			},
 			function (data, next) {
 				formatBanData(data);
