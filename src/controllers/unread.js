@@ -8,9 +8,10 @@ var validator = require('validator');
 var pagination = require('../pagination');
 var user = require('../user');
 var topics = require('../topics');
+var plugins = require('../plugins');
 var helpers = require('./helpers');
 
-var unreadController = {};
+var unreadController = module.exports;
 
 var validFilter = { '': true, new: true, watched: true };
 
@@ -19,13 +20,17 @@ unreadController.get = function (req, res, next) {
 	var results;
 	var cid = req.query.cid;
 	var filter = req.params.filter || '';
-
-	if (!validFilter[filter]) {
-		return next();
-	}
 	var settings;
+
 	async.waterfall([
 		function (next) {
+			plugins.fireHook('filter:unread.getValidFilters', { filters: validFilter }, next);
+		},
+		function (data, _next) {
+			if (!data.filters[filter]) {
+				return next();
+			}
+
 			async.parallel({
 				watchedCategories: function (next) {
 					helpers.getWatchedCategories(req.uid, cid, next);
@@ -33,7 +38,7 @@ unreadController.get = function (req, res, next) {
 				settings: function (next) {
 					user.getSettings(req.uid, next);
 				},
-			}, next);
+			}, _next);
 		},
 		function (_results, next) {
 			results = _results;
@@ -113,5 +118,3 @@ unreadController.unreadTotal = function (req, res, next) {
 		res.json(data);
 	});
 };
-
-module.exports = unreadController;
