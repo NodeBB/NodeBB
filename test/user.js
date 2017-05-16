@@ -1301,6 +1301,30 @@ describe('User', function () {
 		});
 	});
 
+	describe('user jobs', function () {
+		it('should start user jobs', function (done) {
+			User.startJobs(function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should stop user jobs', function (done) {
+			User.stopJobs();
+			done();
+		});
+
+		it('should send digetst', function (done) {
+			db.sortedSetAdd('digest:day:uids', [Date.now(), Date.now()], [1, 2], function (err) {
+				assert.ifError(err);
+				User.digest.execute('day', function (err) {
+					assert.ifError(err);
+					done();
+				});
+			});
+		});
+	});
+
 
 	after(function (done) {
 		db.emptydb(done);
