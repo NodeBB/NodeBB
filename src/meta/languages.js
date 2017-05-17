@@ -9,29 +9,14 @@ var rimraf = require('rimraf');
 
 var file = require('../file');
 var Plugins = require('../plugins');
-var db = require('../database');
 
 var buildLanguagesPath = path.join(__dirname, '../../build/public/language');
-var	coreLanguagesPath = path.join(__dirname, '../../public/language');
+var coreLanguagesPath = path.join(__dirname, '../../public/language');
 
 function getTranslationTree(callback) {
 	async.waterfall([
 		// get plugin data
-		function (next) {
-			db.getSortedSetRange('plugins:active', 0, -1, next);
-		},
-		function (plugins, next) {
-			var pluginBasePath = path.join(__dirname, '../../node_modules');
-			var paths = plugins.map(function (plugin) {
-				return path.join(pluginBasePath, plugin);
-			});
-
-			// Filter out plugins with invalid paths
-			async.filter(paths, file.exists, next);
-		},
-		function (paths, next) {
-			async.map(paths, Plugins.loadPluginInfo, next);
-		},
+		Plugins.data.getActive,
 
 		// generate list of languages and namespaces
 		function (plugins, next) {
