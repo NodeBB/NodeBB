@@ -17,8 +17,8 @@
     "coveralls": "istanbul cover _mocha --report lcovonly -- -R dot && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "dependencies": {
-    "async": "2.4.0",
     "ace-builds": "^1.2.6",
+    "async": "2.4.0",
     "autoprefixer": "7.0.1",
     "bcryptjs": "2.4.3",
     "body-parser": "^1.9.0",
@@ -45,6 +45,7 @@
     "jquery": "^3.1.0",
     "json-2-csv": "^2.0.22",
     "less": "^2.0.0",
+    "lodash.padstart": "^4.6.1",
     "logrotate-stream": "^0.2.3",
     "lru-cache": "4.0.2",
     "mime": "^1.3.4",
