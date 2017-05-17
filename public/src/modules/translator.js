@@ -304,7 +304,7 @@
 		 * Load translation file (or use a cached version), and optionally return the translation of a certain key
 		 * @param {string} namespace - The file name of the translation namespace
 		 * @param {string} [key] - The key of the specific translation to getJSON
-		 * @returns {Promise<Object>|Promise<string>}
+		 * @returns {Promise<{ [key: string]: string }>|Promise<string>}
 		 */
 		Translator.prototype.getTranslation = function getTranslation(namespace, key) {
 			var translation;
@@ -322,6 +322,70 @@
 				});
 			}
 			return translation;
+		};
+
+		/**
+		 * @param {Node} node
+		 * @returns {Node[]}
+		 */
+		function descendantTextNodes(node) {
+			var textNodes = [];
+
+			function helper(node) {
+				if (node.nodeType === 3) {
+					textNodes.push(node);
+				} else {
+					for (var i = 0, c = node.childNodes, l = c.length; i < l; i += 1) {
+						helper(c[i]);
+					}
+				}
+			}
+
+			helper(node);
+			return textNodes;
+		}
+
+		/**
+		 * Recursively translate a DOM element in place
+		 * @param {Element} element - Root element to translate
+		 * @param {string[]} [attributes] - Array of node attributes to translate
+		 * @returns {Promise<void>}
+		 */
+		Translator.prototype.translateInPlace = function translateInPlace(element, attributes) {
+			attributes = attributes || ['placeholder', 'title'];
+
+			var nodes = descendantTextNodes(element);
+			var text = nodes.map(function (node) {
+				return node.nodeValue;
+			}).join('  ||  ');
+
+			var attrNodes = attributes.reduce(function (prev, attr) {
+				var tuples = Array.prototype.map.call(element.querySelectorAll('[' + attr + '*="[["]'), function (el) {
+					return [attr, el];
+				});
+				return prev.concat(tuples);
+			}, []);
+			var attrText = attrNodes.map(function (node) {
+				return node[1].getAttribute(node[0]);
+			}).join('  ||  ');
+
+			return Promise.all([
+				this.translate(text),
+				this.translate(attrText),
+			]).then(function (ref) {
+				var translated = ref[0];
+				var translatedAttrs = ref[1];
+				if (translated) {
+					translated.split('  ||  ').forEach(function (html, i) {
+						$(nodes[i]).replaceWith(html);
+					});
+				}
+				if (translatedAttrs) {
+					translatedAttrs.split('  ||  ').forEach(function (text, i) {
+						attrNodes[i][1].setAttribute(attrNodes[i][0], text);
+					});
+				}
+			});
 		};
 
 		/**
