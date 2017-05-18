@@ -5,6 +5,7 @@ var async = require('async');
 var fs = require('fs');
 var childProcess = require('child_process');
 var os = require('os');
+var winston = require('winston');
 var less = require('less');
 var postcss = require('postcss');
 var autoprefixer = require('autoprefixer');
@@ -39,6 +40,10 @@ function setupDebugging() {
 
 var children = [];
 
+Minifier.maxThreads = os.cpus().length - 1;
+
+winston.verbose('[minifier] utilizing a maximum of ' + Minifier.maxThreads + ' additional threads');
+
 Minifier.killAll = function () {
 	children.forEach(function (child) {
 		child.kill('SIGTERM');
@@ -65,13 +70,14 @@ function forkAction(action, callback) {
 	children.push(proc);
 
 	proc.on('message', function (message) {
+		proc.kill();
+		removeChild(proc);
+
 		if (message.type === 'error') {
-			proc.kill();
-			return callback(new Error(message.message));
+			return callback(message.err);
 		}
 
 		if (message.type === 'end') {
-			proc.kill();
 			callback(null, message.result);
 		}
 	});
@@ -84,10 +90,6 @@ function forkAction(action, callback) {
 	proc.send({
 		type: 'action',
 		action: action,
-	});
-
-	proc.on('close', function () {
-		removeChild(proc);
 	});
 }
 
@@ -109,7 +111,7 @@ if (process.env.minifier_child) {
 				if (err) {
 					process.send({
 						type: 'error',
-						message: err.message,
+						err: err,
 					});
 					return;
 				}
@@ -124,7 +126,7 @@ if (process.env.minifier_child) {
 }
 
 function executeAction(action, fork, callback) {
-	if (fork) {
+	if (fork && children.length < Minifier.maxThreads) {
 		forkAction(action, callback);
 	} else {
 		if (typeof actions[action.act] !== 'function') {
