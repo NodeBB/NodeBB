@@ -67,19 +67,39 @@ module.exports = function (Plugins) {
 		});
 	}
 
-	Plugins.prepareForBuild = function (callback) {
+	Plugins.prepareForBuild = function (targets, callback) {
 		Plugins.cssFiles.length = 0;
 		Plugins.lessFiles.length = 0;
 		Plugins.clientScripts.length = 0;
 		Plugins.acpScripts.length = 0;
 		Plugins.soundpacks.length = 0;
 
+		var map = {
+			'plugin static dirs': ['staticDirs'],
+			'requirejs modules': ['modules'],
+			'client js bundle': ['clientScripts'],
+			'admin js bundle': ['acpScripts'],
+			'client side styles': ['cssFiles', 'lessFiles'],
+			'admin control panel styles': ['cssFiles', 'lessFiles'],
+			sounds: ['soundpack'],
+		};
+
+		var fields = targets.reduce(function (prev, target) {
+			if (!map[target]) {
+				return prev;
+			}
+			return prev.concat(map[target]);
+		}, []).filter(function (field, i, arr) {
+			return arr.indexOf(field) === i;
+		});
+
+		winston.verbose('[plugins] loading the following fields from plugin data: ' + fields.join(', '));
+
 		async.waterfall([
 			Plugins.data.getActive,
 			function (plugins, next) {
 				async.each(plugins, function (pluginData, next) {
-					// TODO: only load the data that's needed for the build
-					registerPluginAssets(pluginData, true, next);
+					registerPluginAssets(pluginData, fields, next);
 				}, next);
 			},
 		], callback);
@@ -101,10 +121,7 @@ module.exports = function (Plugins) {
 					registerHooks(pluginData, next);
 				},
 				function (next) {
-					// TODO: change this from `true` to `['soundpack']`
-					// this will skip several build-only plugin loading methods
-					// and only load soundpacks, which will speed up startup
-					registerPluginAssets(pluginData, true, next);
+					registerPluginAssets(pluginData, ['soundpack'], next);
 				},
 			], function (err) {
 				if (err) {

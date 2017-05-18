@@ -93,7 +93,7 @@ aliases = Object.keys(aliases).reduce(function (prev, key) {
 	return prev;
 }, {});
 
-function beforeBuild(callback) {
+function beforeBuild(targets, callback) {
 	var db = require('../database');
 	var plugins = require('../plugins');
 	meta = require('../meta');
@@ -101,7 +101,9 @@ function beforeBuild(callback) {
 	async.series([
 		db.init,
 		meta.themes.setupPaths,
-		plugins.prepareForBuild,
+		function (next) {
+			plugins.prepareForBuild(targets, next);
+		},
 	], function (err) {
 		if (err) {
 			winston.error('[build] Encountered error preparing for build: ' + err.message);
@@ -160,6 +162,8 @@ function build(targets, callback) {
 			return arr.indexOf(target) === i;
 		});
 
+	winston.verbose('[build] building the following targets: ' + targets.join(', '));
+
 	if (typeof callback !== 'function') {
 		callback = function (err) {
 			if (err) {
@@ -179,7 +183,9 @@ function build(targets, callback) {
 	var startTime;
 	var totalTime;
 	async.series([
-		beforeBuild,
+		function (next) {
+			beforeBuild(targets, next);
+		},
 		function (next) {
 			var parallel = os.cpus().length > 1 && !nconf.get('series');
 			if (parallel) {

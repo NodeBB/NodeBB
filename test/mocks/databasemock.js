@@ -83,42 +83,19 @@
 
 	before(function (done) {
 		this.timeout(30000);
-		var meta;
-		async.waterfall([
+		async.series([
 			function (next) {
 				db.init(next);
 			},
 			function (next) {
-				db.emptydb(next);
-			},
-			function (next) {
-				winston.info('test_database flushed');
-				meta = require('../../src/meta');
-				setupDefaultConfigs(meta, next);
-			},
-			function (next) {
-				meta.configs.init(next);
+				setupMockDefaults(next);
 			},
 			function (next) {
 				db.initSessionStore(next);
 			},
 			function (next) {
-				meta.dependencies.check(next);
-			},
-			function (next) {
-				meta.config.postDelay = 0;
-				meta.config.initialPostDelay = 0;
-				meta.config.newbiePostDelay = 0;
+				var meta = require('../../src/meta');
 
-				enableDefaultPlugins(next);
-			},
-			function (next) {
-				meta.themes.set({
-					type: 'local',
-					id: 'nodebb-theme-persona',
-				}, next);
-			},
-			function (next) {
 				// nconf defaults, if not set in config
 				if (!nconf.get('sessionKey')) {
 					nconf.set('sessionKey', 'express.sid');
@@ -153,6 +130,40 @@
 			},
 		], done);
 	});
+
+	function setupMockDefaults(callback) {
+		var meta = require('../../src/meta');
+
+		async.series([
+			function (next) {
+				db.emptydb(next);
+			},
+			function (next) {
+				winston.info('test_database flushed');
+				setupDefaultConfigs(meta, next);
+			},
+			function (next) {
+				meta.configs.init(next);
+			},
+			function (next) {
+				meta.dependencies.check(next);
+			},
+			function (next) {
+				meta.config.postDelay = 0;
+				meta.config.initialPostDelay = 0;
+				meta.config.newbiePostDelay = 0;
+
+				enableDefaultPlugins(next);
+			},
+			function (next) {
+				meta.themes.set({
+					type: 'local',
+					id: 'nodebb-theme-persona',
+				}, next);
+			},
+		], callback);
+	}
+	db.setupMockDefaults = setupMockDefaults;
 
 	function setupDefaultConfigs(meta, next) {
 		winston.info('Populating database with default configs, if not already set...\n');

@@ -125,7 +125,12 @@ function getStaticDirectories(pluginData, callback) {
 			next();
 		});
 	}, function (err) {
-		callback(err, staticDirs);
+		if (err) {
+			return callback(err);
+		}
+		winston.verbose('[plugins] found ' + Object.keys(staticDirs).length +
+			' static directories for ' + pluginData.id);
+		callback(null, staticDirs);
 	});
 }
 Data.getStaticDirectories = getStaticDirectories;
@@ -135,9 +140,7 @@ function getFiles(pluginData, type, callback) {
 		return callback();
 	}
 
-	if (global.env === 'development') {
-		winston.verbose('[plugins] Found ' + pluginData[type].length + ' ' + type + ' file(s) for plugin ' + pluginData.id);
-	}
+	winston.verbose('[plugins] Found ' + pluginData[type].length + ' ' + type + ' file(s) for plugin ' + pluginData.id);
 
 	var files = pluginData[type].map(function (file) {
 		return path.join(pluginData.id, file);
@@ -202,7 +205,7 @@ function getScripts(pluginData, target, callback) {
 			return callback(err);
 		}
 
-		if (scripts.length && global.env === 'development') {
+		if (scripts.length) {
 			winston.verbose('[plugins] Found ' + scripts.length + ' js file(s) for plugin ' + pluginData.id);
 		}
 		callback(err, scripts);
@@ -250,10 +253,9 @@ function getModules(pluginData, callback) {
 			return callback(err);
 		}
 
-		if (global.env === 'development') {
-			var len = Object.keys(modules).length;
-			winston.verbose('[plugins] Found ' + len + ' AMD-style module(s) for plugin ' + pluginData.id);
-		}
+		var len = Object.keys(modules).length;
+		winston.verbose('[plugins] Found ' + len + ' AMD-style module(s) for plugin ' + pluginData.id);
+
 		callback(null, modules);
 	});
 }
@@ -290,10 +292,9 @@ function getSoundpack(pluginData, callback) {
 			return callback(err);
 		}
 
-		if (global.env === 'development') {
-			var len = Object.keys(soundpack).length;
-			winston.verbose('[plugins] Found ' + len + ' sound file(s) for plugin ' + pluginData.id);
-		}
+		var len = Object.keys(soundpack.sounds).length;
+		winston.verbose('[plugins] Found ' + len + ' sound file(s) for plugin ' + pluginData.id);
+
 		callback(null, soundpack);
 	});
 }
