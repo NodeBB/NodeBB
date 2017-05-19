@@ -4,15 +4,12 @@ var winston = require('winston');
 var nconf = require('nconf');
 var fs = require('fs');
 var path = require('path');
-var less = require('less');
 var async = require('async');
-var autoprefixer = require('autoprefixer');
-var postcss = require('postcss');
-var clean = require('postcss-clean');
 
 var plugins = require('../plugins');
 var db = require('../database');
 var file = require('../file');
+var minifier = require('./minifier');
 
 module.exports = function (Meta) {
 	Meta.css = {};
@@ -49,50 +46,19 @@ module.exports = function (Meta) {
 		},
 	};
 
-	Meta.css.minify = function (target, callback) {
-		callback = callback || function () {};
-
-		winston.verbose('[meta/css] Minifying LESS/CSS');
-		db.getObjectFields('config', ['theme:type', 'theme:id'], function (err, themeData) {
-			if (err) {
-				return callback(err);
-			}
-
-			var themeId = (themeData['theme:id'] || 'nodebb-theme-persona');
-			var baseThemePath = path.join(nconf.get('themes_path'), (themeData['theme:type'] && themeData['theme:type'] === 'local' ? themeId : 'nodebb-theme-vanilla'));
-			var paths = [
-				baseThemePath,
-				path.join(__dirname, '../../node_modules'),
-				path.join(__dirname, '../../public/vendor/fontawesome/less'),
-			];
-			var source = '';
-
-			var lessFiles = filterMissingFiles(plugins.lessFiles);
-			var cssFiles = filterMissingFiles(plugins.cssFiles);
-
-			async.waterfall([
-				function (next) {
-					getStyleSource(cssFiles, '\n@import (inline) ".', '.css', next);
-				},
-				function (src, next) {
-					source += src;
-					getStyleSource(lessFiles, '\n@import ".', '.less', next);
-				},
-				function (src, next) {
-					source += src;
-					next();
-				},
-			], function (err) {
-				if (err) {
-					return callback(err);
+	function filterMissingFiles(filepaths, callback) {
+		async.filter(filepaths, function (filepath, next) {
+			file.exists(path.join(__dirname, '../../node_modules', filepath), function (err, exists) {
+				if (!exists) {
+					winston.warn('[meta/css] File not found! ' + filepath);
 				}
 
-				minify(buildImports[target](source), paths, target, callback);
+				next(err, exists);
 			});
-		});
-	};
+		}, callback);
+	}
 
-	function getStyleSource(files, prefix, extension, callback) {
+	function getImports(files, prefix, extension, callback) {
 		var	pluginDirectories = [];
 		var source = '';
 
@@ -121,55 +87,82 @@ module.exports = function (Meta) {
 		});
 	}
 
-	Meta.css.commitToFile = function (target, source, callback) {
-		var filename = (target === 'client' ? 'stylesheet' : 'admin') + '.css';
+	function getBundleMetadata(target, callback) {
+		var paths = [
+			path.join(__dirname, '../../node_modules'),
+			path.join(__dirname, '../../public/vendor/fontawesome/less'),
+		];
 
-		fs.writeFile(path.join(__dirname, '../../build/public/' + filename), source, function (err) {
-			if (!err) {
-				winston.verbose('[meta/css] ' + target + ' CSS committed to disk.');
-			} else {
-				winston.error('[meta/css] ' + err.message);
-				process.exit(1);
-			}
+		async.waterfall([
+			function (next) {
+				if (target !== 'client') {
+					return next(null, null);
+				}
 
-			callback();
-		});
-	};
+				db.getObjectFields('config', ['theme:type', 'theme:id'], next);
+			},
+			function (themeData, next) {
+				if (target === 'client') {
+					var themeId = (themeData['theme:id'] || 'nodebb-theme-persona');
+					var baseThemePath = path.join(nconf.get('themes_path'), (themeData['theme:type'] && themeData['theme:type'] === 'local' ? themeId : 'nodebb-theme-vanilla'));
+					paths.unshift(baseThemePath);
+				}
 
-	function minify(source, paths, target, callback) {
-		callback = callback || function () {};
-		less.render(source, {
-			paths: paths,
-		}, function (err, lessOutput) {
+				async.parallel({
+					less: function (cb) {
+						async.waterfall([
+							function (next) {
+								filterMissingFiles(plugins.lessFiles, next);
+							},
+							function (lessFiles, next) {
+								getImports(lessFiles, '\n@import ".', '.less', next);
+							},
+						], cb);
+					},
+					css: function (cb) {
+						async.waterfall([
+							function (next) {
+								filterMissingFiles(plugins.cssFiles, next);
+							},
+							function (cssFiles, next) {
+								getImports(cssFiles, '\n@import (inline) ".', '.css', next);
+							},
+						], cb);
+					},
+				}, next);
+			},
+			function (result, next) {
+				var cssImports = result.css;
+				var lessImports = result.less;
+
+				var imports = cssImports + '\n' + lessImports;
+				imports = buildImports[target](imports);
+
+				next(null, imports);
+			},
+		], function (err, imports) {
 			if (err) {
-				winston.error('[meta/css] Could not minify LESS/CSS: ' + err.message);
 				return callback(err);
 			}
 
-			postcss(global.env === 'development' ? [autoprefixer] : [
-				autoprefixer,
-				clean({
-					processImportFrom: ['local'],
-				}),
-			]).process(lessOutput.css).then(function (result) {
-				result.warnings().forEach(function (warn) {
-					winston.verbose(warn.toString());
-				});
-
-				return Meta.css.commitToFile(target, result.css, function () {
-					callback(null, result.css);
-				});
-			});
+			callback(null, { paths: paths, imports: imports });
 		});
 	}
 
-	function filterMissingFiles(files) {
-		return files.filter(function (filePath) {
-			var exists = file.existsSync(path.join(__dirname, '../../node_modules', filePath));
-			if (!exists) {
-				winston.warn('[meta/css] File not found! ' + filePath);
-			}
-			return exists;
-		});
-	}
+	Meta.css.buildBundle = function (target, fork, callback) {
+		async.waterfall([
+			function (next) {
+				getBundleMetadata(target, next);
+			},
+			function (data, next) {
+				var minify = global.env !== 'development';
+				minifier.css.bundle(data.imports, data.paths, minify, fork, next);
+			},
+			function (bundle, next) {
+				var filename = (target === 'client' ? 'stylesheet' : 'admin') + '.css';
+
+				fs.writeFile(path.join(__dirname, '../../build/public', filename), bundle.code, next);
+			},
+		], callback);
+	};
 };

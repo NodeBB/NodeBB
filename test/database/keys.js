@@ -102,6 +102,37 @@ describe('Key methods', function () {
 		});
 	});
 
+	it('should delete all sorted set elements', function (done) {
+		async.parallel([
+			function (next) {
+				db.sortedSetAdd('deletezset', 1, 'value1', next);
+			},
+			function (next) {
+				db.sortedSetAdd('deletezset', 2, 'value2', next);
+			},
+		], function (err) {
+			if (err) {
+				return done(err);
+			}
+			db.delete('deletezset', function (err) {
+				assert.ifError(err);
+				async.parallel({
+					key1exists: function (next) {
+						db.isSortedSetMember('deletezset', 'value1', next);
+					},
+					key2exists: function (next) {
+						db.isSortedSetMember('deletezset', 'value2', next);
+					},
+				}, function (err, results) {
+					assert.equal(err, null);
+					assert.equal(results.key1exists, false);
+					assert.equal(results.key2exists, false);
+					done();
+				});
+			});
+		});
+	});
+
 	describe('increment', function () {
 		it('should initialize key to 1', function (done) {
 			db.increment('keyToIncrement', function (err, value) {
