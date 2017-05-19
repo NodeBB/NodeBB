@@ -303,6 +303,7 @@ describe('Sorted Set methods', function () {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(!!score, false);
+				assert.strictEqual(score, null);
 				done();
 			});
 		});
@@ -312,6 +313,7 @@ describe('Sorted Set methods', function () {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(!!score, false);
+				assert.strictEqual(score, null);
 				done();
 			});
 		});

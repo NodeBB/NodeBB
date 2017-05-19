@@ -61,7 +61,7 @@ module.exports = function (User) {
 		async.waterfall([
 			async.apply(User.getUserFields, uid, ['banned', 'banned:expire']),
 			function (userData, next) {
-				var banned = parseInt(userData.banned, 10) === 1;
+				var banned = userData && parseInt(userData.banned, 10) === 1;
 				if (!banned) {
 					return next(null, banned);
 				}
