@@ -147,6 +147,33 @@ describe('authentication', function () {
 		});
 	});
 
+	it('should fail to login if user does not exist', function (done) {
+		var jar = request.jar();
+		request({
+			url: nconf.get('url') + '/api/config',
+			json: true,
+			jar: jar,
+		}, function (err, response, body) {
+			assert.ifError(err);
+
+			request.post(nconf.get('url') + '/login', {
+				form: {
+					username: 'doesnotexist',
+					password: 'nopassword',
+				},
+				json: true,
+				jar: jar,
+				headers: {
+					'x-csrf-token': body.csrf_token,
+				},
+			}, function (err, response, body) {
+				assert.equal(response.statusCode, 403);
+				assert.equal(body, '[[error:invalid-login-credentials]]');
+				done();
+			});
+		});
+	});
+
 
 	after(function (done) {
 		db.emptydb(done);
