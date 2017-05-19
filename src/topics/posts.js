@@ -392,30 +392,36 @@ module.exports = function (Topics) {
 
 	function getPostReplies(pids, callerUid, callback) {
 		async.map(pids, function (pid, next) {
-			db.getSortedSetRange('pid:' + pid + ':replies', 0, -1, function (err, replyPids) {
-				if (err) {
-					return next(err);
-				}
+			var replyPids;
+			var uids = [];
+			async.waterfall([
+				function (next) {
+					db.getSortedSetRange('pid:' + pid + ':replies', 0, -1, next);
+				},
+				function (_replyPids, next) {
+					replyPids = _replyPids;
 
-				var uids = [];
-				var count = 0;
+					var count = 0;
 
-				async.until(function () {
-					return count === replyPids.length || uids.length === 6;
-				}, function (next) {
-					posts.getPostField(replyPids[count], 'uid', function (err, uid) {
-						uid = parseInt(uid, 10);
-						if (uids.indexOf(uid) === -1) {
-							uids.push(uid);
-						}
-						count += 1;
-						next(err);
-					});
-				}, function (err) {
-					if (err) {
-						return next(err);
-					}
-
+					async.until(function () {
+						return count === replyPids.length || uids.length === 6;
+					}, function (next) {
+						async.waterfall([
+							function (next) {
+								posts.getPostField(replyPids[count], 'uid', next);
+							},
+							function (uid, next) {
+								uid = parseInt(uid, 10);
+								if (uids.indexOf(uid) === -1) {
+									uids.push(uid);
+								}
+								count += 1;
+								next();
+							},
+						], next);
+					}, next);
+				},
+				function (next) {
 					async.parallel({
 						users: function (next) {
 							user.getUsersWithFields(uids, ['uid', 'username', 'userslug', 'picture'], callerUid, next);
@@ -425,17 +431,19 @@ module.exports = function (Topics) {
 								next(err, utils.toISOString(timestamp));
 							});
 						},
-					}, function (err, replies) {
-						if (replies.users.length > 5) {
-							replies.users.shift();
-							replies.hasMore = true;
-						}
+					}, next);
+				},
+				function (replies, next) {
+					if (replies.users.length > 5) {
+						replies.users.shift();
+						replies.hasMore = true;
+					}
 
-						replies.count = replyPids.length;
-						next(err, replies);
-					});
-				});
-			});
+					replies.count = replyPids.length;
+					replies.text = replies.count > 1 ? '[[topic:replies_to_this_post, ' + replies.count + ']]' : '[[topic:one_reply_to_this_post]]';
+					next(null, replies);
+				},
+			], next);
 		}, callback);
 	}
 };
