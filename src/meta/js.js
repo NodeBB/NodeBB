@@ -88,31 +88,16 @@ module.exports = function (Meta) {
 		},
 	};
 
-	function copyFile(source, target, cb) {
-		var called = false;
-
-		var rd = fs.createReadStream(source);
-		rd.on('error', done);
-
-		var wr = fs.createWriteStream(target);
-		wr.on('error', done);
-		wr.on('close', function () {
-			done();
-		});
-		rd.pipe(wr);
-
-		function done(err) {
-			if (!called) {
-				cb(err);
-				called = true;
-			}
-		}
-	}
-
 	function minifyModules(modules, fork, callback) {
-		async.eachLimit(modules, 1000, function (mod, next) {
-			mkdirp(path.dirname(mod.destPath), next);
-		}, function (err) {
+		var moduleDirs = modules.reduce(function (prev, mod) {
+			var dir = path.resolve(path.dirname(mod.destPath));
+			if (prev.indexOf(dir) === -1) {
+				prev.push(dir);
+			}
+			return prev;
+		}, []);
+
+		async.eachLimit(moduleDirs, 1000, mkdirp, function (err) {
 			if (err) {
 				return callback(err);
 			}
@@ -133,7 +118,7 @@ module.exports = function (Meta) {
 				},
 				function (cb) {
 					async.eachLimit(filtered.skip, 500, function (mod, next) {
-						copyFile(mod.srcPath, mod.destPath, next);
+						file.link(mod.srcPath, mod.destPath, next);
 					}, cb);
 				},
 			], callback);
