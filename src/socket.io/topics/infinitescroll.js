@@ -27,7 +27,7 @@ module.exports = function (SocketTopics) {
 				}, next);
 			},
 			function (results, next) {
-				if (!results.privileges.read || (parseInt(results.topic.deleted, 10) && !results.privileges.view_deleted)) {
+				if (!results.privileges['topics:read'] || (parseInt(results.topic.deleted, 10) && !results.privileges.view_deleted)) {
 					return callback(new Error('[[error:no-privileges]]'));
 				}
 
