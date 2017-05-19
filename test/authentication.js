@@ -167,6 +167,7 @@ describe('authentication', function () {
 					'x-csrf-token': body.csrf_token,
 				},
 			}, function (err, response, body) {
+				assert.ifError(err);
 				assert.equal(response.statusCode, 403);
 				assert.equal(body, '[[error:invalid-login-credentials]]');
 				done();
