@@ -38,27 +38,26 @@ function setupDebugging() {
 	return forkProcessParams;
 }
 
-var children = [];
+var pool = [];
+var free = [];
 
 Minifier.maxThreads = os.cpus().length - 1;
 
 winston.verbose('[minifier] utilizing a maximum of ' + Minifier.maxThreads + ' additional threads');
 
 Minifier.killAll = function () {
-	children.forEach(function (child) {
+	pool.forEach(function (child) {
 		child.kill('SIGTERM');
 	});
 
-	children = [];
+	pool.length = 0;
 };
 
-function removeChild(proc) {
-	children = children.filter(function (child) {
-		return child !== proc;
-	});
-}
+function getChild() {
+	if (free.length) {
+		return free.shift();
+	}
 
-function forkAction(action, callback) {
 	var forkProcessParams = setupDebugging();
 	var proc = childProcess.fork(__filename, [], Object.assign({}, forkProcessParams, {
 		cwd: __dirname,
@@ -66,12 +65,26 @@ function forkAction(action, callback) {
 			minifier_child: true,
 		},
 	}));
+	pool.push(proc);
 
-	children.push(proc);
+	return proc;
+}
+
+function freeChild(proc) {
+	proc.removeAllListeners();
+	free.push(proc);
+}
+
+function removeChild(proc) {
+	var i = pool.indexOf(proc);
+	pool.splice(i, 1);
+}
+
+function forkAction(action, callback) {
+	var proc = getChild();
 
 	proc.on('message', function (message) {
-		proc.kill();
-		removeChild(proc);
+		freeChild(proc);
 
 		if (message.type === 'error') {
 			return callback(message.err);
@@ -102,7 +115,7 @@ if (process.env.minifier_child) {
 			if (typeof actions[action.act] !== 'function') {
 				process.send({
 					type: 'error',
-					message: 'Unknown action',
+					err: Error('Unknown action'),
 				});
 				return;
 			}
@@ -126,7 +139,7 @@ if (process.env.minifier_child) {
 }
 
 function executeAction(action, fork, callback) {
-	if (fork && children.length < Minifier.maxThreads) {
+	if (fork && (pool.length - free.length) < Minifier.maxThreads) {
 		forkAction(action, callback);
 	} else {
 		if (typeof actions[action.act] !== 'function') {
@@ -155,32 +168,38 @@ function concat(data, callback) {
 actions.concat = concat;
 
 function minifyJS(data, callback) {
-	var minified;
+	if (data.batch) {
+		async.eachLimit(data.files, 1000, function (ref, next) {
+			var srcPath = ref.srcPath;
+			var destPath = ref.destPath;
 
-	if (data.fromSource) {
-		var sources = data.source;
-		var multiple = Array.isArray(sources);
-		if (!multiple) {
-			sources = [sources];
-		}
+			fs.readFile(srcPath, function (err, buffer) {
+				if (err && err.code === 'ENOENT') {
+					return next(null, null);
+				}
+				if (err) {
+					return next(err);
+				}
 
-		try {
-			minified = sources.map(function (source) {
-				return uglifyjs.minify(source, {
-					// outSourceMap: data.filename + '.map',
-					compress: data.compress,
-					fromString: true,
-					output: {
-						// suppress uglify line length warnings
-						max_line_len: 400000,
-					},
-				});
+				try {
+					var minified = uglifyjs.minify(buffer.toString(), {
+						// outSourceMap: data.filename + '.map',
+						compress: data.compress,
+						fromString: true,
+						output: {
+							// suppress uglify line length warnings
+							max_line_len: 400000,
+						},
+					});
+
+					fs.writeFile(destPath, minified.code, next);
+				} catch (e) {
+					next(e);
+				}
 			});
-		} catch (e) {
-			return callback(e);
-		}
+		}, callback);
 
-		return callback(null, multiple ? minified : minified[0]);
+		return;
 	}
 
 	if (data.files && data.files.length) {
@@ -190,16 +209,16 @@ function minifyJS(data, callback) {
 			}
 
 			try {
-				minified = uglifyjs.minify(scripts, {
+				var minified = uglifyjs.minify(scripts, {
 					// outSourceMap: data.filename + '.map',
 					compress: data.compress,
 					fromString: false,
 				});
-			} catch (e) {
-				return callback(e);
-			}
 
-			callback(null, minified);
+				callback(null, minified);
+			} catch (e) {
+				callback(e);
+			}
 		});
 
 		return;
@@ -218,11 +237,11 @@ Minifier.js.bundle = function (scripts, minify, fork, callback) {
 	}, fork, callback);
 };
 
-Minifier.js.minify = function (source, fork, callback) {
+Minifier.js.minifyBatch = function (scripts, fork, callback) {
 	executeAction({
 		act: 'minifyJS',
-		fromSource: true,
-		source: source,
+		files: scripts,
+		batch: true,
 	}, fork, callback);
 };
 
