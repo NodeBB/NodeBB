@@ -289,15 +289,20 @@ describe('User', function () {
 					User.create({ username: 'baris' }, next);
 				},
 				function (uid, next) {
+					User.create({ username: 'bzari' }, next);
+				},
+				function (uid, next) {
 					socketUser.search({ uid: testUid }, {
 						query: 'b',
 						sortBy: 'username',
+						paginate: false,
 					}, next);
 				},
 			], function (err, data) {
 				assert.ifError(err);
 				assert.equal(data.users[0].username, 'baris');
 				assert.equal(data.users[1].username, 'brian');
+				assert.equal(data.users[2].username, 'bzari');
 				done();
 			});
 		});
