@@ -98,7 +98,7 @@ describe('List methods', function () {
 			});
 		});
 
-		it('should not get anyhing if key is falsy', function (done) {
+		it('should not get anything if key is falsy', function (done) {
 			db.getListRange(null, 0, -1, function (err, data) {
 				assert.ifError(err);
 				assert.equal(data, undefined);
