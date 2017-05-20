@@ -292,7 +292,8 @@ describe('User', function () {
 					User.create({ username: 'bzari' }, next);
 				},
 				function (uid, next) {
-					socketUser.search({ uid: testUid }, {
+					User.search({
+						uid: testUid,
 						query: 'b',
 						sortBy: 'username',
 						paginate: false,
