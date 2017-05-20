@@ -68,16 +68,17 @@ module.exports = function (User) {
 		var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 20;
 		var hardCap = resultsPerPage * 10;
 
-		db.getSortedSetRangeByLex(searchBy + ':sorted', min, max, 0, hardCap, function (err, data) {
-			if (err) {
-				return callback(err);
-			}
-
-			var uids = data.map(function (data) {
-				return data.split(':')[1];
-			});
-			callback(null, uids);
-		});
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRangeByLex(searchBy + ':sorted', min, max, 0, hardCap, next);
+			},
+			function (data, next) {
+				var uids = data.map(function (data) {
+					return data.split(':')[1];
+				});
+				next(null, uids);
+			},
+		], callback);
 	}
 
 	function filterAndSortUids(uids, data, callback) {
@@ -94,37 +95,38 @@ module.exports = function (User) {
 			fields.push('flags');
 		}
 
-		User.getUsersFields(uids, fields, function (err, userData) {
-			if (err) {
-				return callback(err);
-			}
+		async.waterfall([
+			function (next) {
+				User.getUsersFields(uids, fields, next);
+			},
+			function (userData, next) {
+				if (data.onlineOnly) {
+					userData = userData.filter(function (user) {
+						return user && user.status !== 'offline' && (Date.now() - parseInt(user.lastonline, 10) < 300000);
+					});
+				}
 
-			if (data.onlineOnly) {
-				userData = userData.filter(function (user) {
-					return user && user.status !== 'offline' && (Date.now() - parseInt(user.lastonline, 10) < 300000);
+				if (data.bannedOnly) {
+					userData = userData.filter(function (user) {
+						return user && parseInt(user.banned, 10) === 1;
+					});
+				}
+
+				if (data.flaggedOnly) {
+					userData = userData.filter(function (user) {
+						return user && parseInt(user.flags, 10) > 0;
+					});
+				}
+
+				sortUsers(userData, sortBy);
+
+				uids = userData.map(function (user) {
+					return user && user.uid;
 				});
-			}
 
-			if (data.bannedOnly) {
-				userData = userData.filter(function (user) {
-					return user && user.banned;
-				});
-			}
-
-			if (data.flaggedOnly) {
-				userData = userData.filter(function (user) {
-					return user && parseInt(user.flags, 10) > 0;
-				});
-			}
-
-			sortUsers(userData, sortBy);
-
-			uids = userData.map(function (user) {
-				return user && user.uid;
-			});
-
-			callback(null, uids);
-		});
+				next(null, uids);
+			},
+		], callback);
 	}
 
 	function sortUsers(userData, sortBy) {
