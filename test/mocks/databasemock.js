@@ -81,6 +81,10 @@
 
 	var db = require('../../src/database');
 
+	after(function (done) {
+		db.close(done);
+	});
+
 	before(function (done) {
 		this.timeout(30000);
 		var meta;
@@ -90,6 +94,9 @@
 			},
 			function (next) {
 				db.emptydb(next);
+			},
+			function (next) {
+				db.createIndices(next);
 			},
 			function (next) {
 				winston.info('test_database flushed');

@@ -9,8 +9,15 @@ describe('List methods', function () {
 	describe('listAppend()', function () {
 		it('should append to a list', function (done) {
 			db.listAppend('testList1', 5, function (err) {
-				assert.equal(err, null);
+				assert.ifError(err);
 				assert.equal(arguments.length, 1);
+				done();
+			});
+		});
+
+		it('should not add anyhing if key is falsy', function (done) {
+			db.listAppend(null, 3, function (err) {
+				assert.ifError(err);
 				done();
 			});
 		});
@@ -35,6 +42,13 @@ describe('List methods', function () {
 				},
 			], function (err) {
 				assert.equal(err, null);
+				done();
+			});
+		});
+
+		it('should not add anyhing if key is falsy', function (done) {
+			db.listPrepend(null, 3, function (err) {
+				assert.ifError(err);
 				done();
 			});
 		});
@@ -83,6 +97,14 @@ describe('List methods', function () {
 				done();
 			});
 		});
+
+		it('should not get anyhing if key is falsy', function (done) {
+			db.getListRange(null, 0, -1, function (err, data) {
+				assert.ifError(err);
+				assert.equal(data, undefined);
+				done();
+			});
+		});
 	});
 
 	describe('listRemoveLast()', function () {
@@ -102,6 +124,13 @@ describe('List methods', function () {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(lastElement, '12');
+				done();
+			});
+		});
+
+		it('should not remove anyhing if key is falsy', function (done) {
+			db.listRemoveLast(null, function (err) {
+				assert.ifError(err);
 				done();
 			});
 		});
@@ -132,6 +161,13 @@ describe('List methods', function () {
 				});
 			});
 		});
+
+		it('should not remove anyhing if key is falsy', function (done) {
+			db.listRemoveAll(null, 3, function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
 	});
 
 	describe('listTrim()', function () {
@@ -154,6 +190,13 @@ describe('List methods', function () {
 						done();
 					});
 				});
+			});
+		});
+
+		it('should not add anyhing if key is falsy', function (done) {
+			db.listTrim(null, 0, 3, function (err) {
+				assert.ifError(err);
+				done();
 			});
 		});
 	});
