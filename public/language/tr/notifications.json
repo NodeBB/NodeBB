@@ -40,7 +40,7 @@
     "user_started_following_you_multiple": "<strong>%1</strong> ve %2 kişi daha seni takip etmeye başladı.",
     "new_register": "<strong>%1</strong> kayıt olma isteği gönderdi.",
     "new_register_multiple": "Beklemede <strong>%1</strong> kayıt olma isteği bulunmaktadır.",
-    "flag_assigned_to_you": "<strong>Flag %1</strong> has been assigned to you",
+    "flag_assigned_to_you": "<Strong>Bayrak %1</ strong> size devredildi",
     "email-confirmed": "E-posta onaylandı",
     "email-confirmed-message": "E-postanızı onaylandığınız için teşekkürler. Hesabınız tamamen aktive edildi.",
     "email-confirm-error-message": "E-posta adresinizi onaylarken bir hata oluştu. Kodunuz geçersiz ya da eski olabilir.",

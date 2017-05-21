@@ -104,7 +104,7 @@
     "open_links_in_new_tab": "เปิดลิงค์ในแท็บใหม่",
     "enable_topic_searching": "เปิดใช้การค้นหาแบบ In-Topic",
     "topic_search_help": "หากเปิดใช้งาน, \"การค้นหาภายในกระทู้\" จะแทนที่ระบบ \"การค้นหาจากค่าเริ่มต้นของเบราเซอร์\" และจะทำให้คุณค้นหาข้อมูลต่างๆภายในกระทู้ได้ แทนที่จะเป็นการหาแค่สิ่งที่แสดงบนหน้าจอเท่านั้น",
-    "delay_image_loading": "Delay Image Loading",
+    "delay_image_loading": "การโหลดรูปภาพช้าลง",
     "image_load_delay_help": "หากเปิดใช้งาน, รูปภาพในกระทู้จะไม่โหลดจนกว่าจะมีการเลื่อนไปดู",
     "scroll_to_my_post": "After posting a reply, show the new post",
     "follow_topics_you_reply_to": "ดูกระทู้ที่คุณตอบ",

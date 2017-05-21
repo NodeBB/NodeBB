@@ -1,9 +1,9 @@
 {
 	"custom-css": "Özel CSS",
-	"custom-css.description": "Enter your own CSS declarations here, which will be applied after all other styles.",
-	"custom-css.enable": "Özel CSS Aktif",
+	"custom-css.description": "Özel CSS kodlarınızı bu alana girin.",
+	"custom-css.enable": "Özel CSS Etkinleştir",
 
 	"custom-header": "Özel Header",
-	"custom-header.description": "Enter custom HTML here (ex. JavaScript, Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup.",
-	"custom-header.enable": "Enable Custom Header"
+	"custom-header.description": "Forumunuzun biçimlendirmesini sağlayacak  <code>&lt;head&gt;</code> bölümüne eklenecek özel HTML'yi (ör. JavaScript, Meta Etiketler vb.) Girin.",
+	"custom-header.enable": "Özel Header'ı Etkinleştir"
 }
