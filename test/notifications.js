@@ -5,7 +5,11 @@ var assert = require('assert');
 var async = require('async');
 
 var db = require('./mocks/databasemock');
+var meta = require('../src/meta');
 var user = require('../src/user');
+var topics = require('../src/topics');
+var categories = require('../src/categories');
+var groups = require('../src/groups');
 var notifications = require('../src/notifications');
 var socketNotifications = require('../src/socket.io/notifications');
 
@@ -14,6 +18,7 @@ describe('Notifications', function () {
 	var notification;
 
 	before(function (done) {
+		groups.resetCache();
 		user.create({ username: 'poster' }, function (err, _uid) {
 			if (err) {
 				return done(err);
@@ -325,6 +330,123 @@ describe('Notifications', function () {
 				assert.equal(data.unread.length, 0);
 				assert.equal(data.read.length, 0);
 				done();
+			});
+		});
+	});
+
+	it('should return empty with falsy uid', function (done) {
+		user.notifications.get(0, function (err, data) {
+			assert.ifError(err);
+			assert.equal(data.read.length, 0);
+			assert.equal(data.unread.length, 0);
+			done();
+		});
+	});
+
+	it('should get all notifications and filter', function (done) {
+		var nid = 'willbefiltered';
+		notifications.create({
+			bodyShort: 'bodyShort',
+			nid: nid,
+			path: '/notification/path',
+			type: 'post',
+		}, function (err, notification) {
+			assert.ifError(err);
+			notifications.push(notification, [uid], function (err) {
+				assert.ifError(err);
+				setTimeout(function () {
+					user.notifications.getAll(uid, 'post', function (err, nids) {
+						assert.ifError(err);
+						assert.notEqual(nids.indexOf(nid), -1);
+						done();
+					});
+				}, 1500);
+			});
+		});
+	});
+
+	it('should not get anything if notifications does not exist', function (done) {
+		user.notifications.getNotifications(['doesnotexistnid1', 'doesnotexistnid2'], uid, function (err, data) {
+			assert.ifError(err);
+			assert.deepEqual(data, []);
+			done();
+		});
+	});
+
+	it('should get daily notifications', function (done) {
+		user.notifications.getDailyUnread(uid, function (err, data) {
+			assert.ifError(err);
+			assert.equal(data[0].nid, 'willbefiltered');
+			done();
+		});
+	});
+
+	it('should return 0 for falsy uid', function (done) {
+		user.notifications.getUnreadCount(0, function (err, count) {
+			assert.ifError(err);
+			assert.equal(count, 0);
+			done();
+		});
+	});
+
+	it('should not do anything if uid is falsy', function (done) {
+		user.notifications.deleteAll(0, function (err) {
+			assert.ifError(err);
+			done();
+		});
+	});
+
+	it('should send notification to followers of user when he posts', function (done) {
+		var followerUid;
+		async.waterfall([
+			function (next) {
+				user.create({ username: 'follower' }, next);
+			},
+			function (_followerUid, next) {
+				followerUid = _followerUid;
+				user.follow(followerUid, uid, next);
+			},
+			function (next) {
+				categories.create({
+					name: 'Test Category',
+					description: 'Test category created by testing script',
+				}, next);
+			},
+			function (category, next) {
+				topics.post({
+					uid: uid,
+					cid: category.cid,
+					title: 'Test Topic Title',
+					content: 'The content of test topic',
+				}, next);
+			},
+			function (data, next) {
+				setTimeout(next, 1100);
+			},
+			function (next) {
+				user.notifications.getAll(followerUid, '', next);
+			},
+		], function (err, data) {
+			assert.ifError(err);
+			assert(data);
+			done();
+		});
+	});
+
+	it('should send welcome notification', function (done) {
+		meta.config.welcomeNotification = 'welcome to the forums';
+		user.notifications.sendWelcomeNotification(uid, function (err) {
+			assert.ifError(err);
+			user.notifications.sendWelcomeNotification(uid, function (err) {
+				assert.ifError(err);
+				setTimeout(function () {
+					user.notifications.getAll(uid, '', function (err, data) {
+						meta.config.welcomeNotification = '';
+						assert.ifError(err);
+						assert.notEqual(data.indexOf('welcome_' + uid), -1);
+						done();
+					});
+				}, 1100);
 			});
 		});
 	});
