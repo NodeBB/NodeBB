@@ -262,6 +262,21 @@ describe('meta', function () {
 	});
 
 
+	describe('sounds', function () {
+		var socketModules = require('../src/socket.io/modules');
+
+		it('should getUserMap', function (done) {
+			socketModules.sounds.getUserSoundMap({ uid: 1 }, null, function (err, data) {
+				assert.ifError(err);
+				assert(data.hasOwnProperty('chat-incoming'));
+				assert(data.hasOwnProperty('chat-outgoing'));
+				assert(data.hasOwnProperty('notification'));
+				done();
+			});
+		});
+	});
+
+
 	after(function (done) {
 		db.emptydb(done);
 	});
