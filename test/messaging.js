@@ -339,7 +339,7 @@ describe('Messaging Library', function () {
 		});
 
 		it('should not error if user is not in room', function (done) {
-			socketModules.chats.markRead({ uid: herpUid }, roomId, function (err) {
+			socketModules.chats.markRead({ uid: herpUid }, 10, function (err) {
 				assert.ifError(err);
 				done();
 			});
@@ -508,6 +508,13 @@ describe('Messaging Library', function () {
 						done();
 					});
 				});
+			});
+		});
+
+		it('should fail to delete message if not owner', function (done) {
+			socketModules.chats.delete({ uid: herpUid }, { messageId: mid, roomId: roomId }, function (err) {
+				assert.equal(err.message, '[[error:cant-delete-chat-message]]');
+				done();
 			});
 		});
 
