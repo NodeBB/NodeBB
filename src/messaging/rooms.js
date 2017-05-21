@@ -34,7 +34,7 @@ module.exports = function (Messaging) {
 			function (roomData, next) {
 				modifyRoomData(roomData);
 				next(null, roomData);
-			}
+			},
 		], callback);
 	};
 

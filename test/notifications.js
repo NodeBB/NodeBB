@@ -24,11 +24,19 @@ describe('Notifications', function () {
 		});
 	});
 
+	it('should fail to create notification without a nid', function (done) {
+		notifications.create({}, function (err) {
+			assert.equal(err.message, '[[error:no-notification-id]]');
+			done();
+		});
+	});
+
 	it('should create a notification', function (done) {
 		notifications.create({
 			bodyShort: 'bodyShort',
 			nid: 'notification_id',
 			path: '/notification/path',
+			pid: 1,
 		}, function (err, _notification) {
 			notification = _notification;
 			assert.ifError(err);
@@ -45,6 +53,29 @@ describe('Notifications', function () {
 		});
 	});
 
+	it('should return null if pid is same and importance is lower', function (done) {
+		notifications.create({
+			bodyShort: 'bodyShort',
+			nid: 'notification_id',
+			path: '/notification/path',
+			pid: 1,
+			importance: 1,
+		}, function (err, notification) {
+			assert.ifError(err);
+			assert.strictEqual(notification, null);
+			done();
+		});
+	});
+
+	it('should get empty array', function (done) {
+		notifications.getMultiple(null, function (err, data) {
+			assert.ifError(err);
+			assert(Array.isArray(data));
+			assert.equal(data.length, 0);
+			done();
+		});
+	});
+
 	it('should get notifications', function (done) {
 		notifications.getMultiple([notification.nid], function (err, notificationsData) {
 			assert.ifError(err);
@@ -52,6 +83,19 @@ describe('Notifications', function () {
 			assert(notificationsData[0]);
 			assert.equal(notification.nid, notificationsData[0].nid);
 			done();
+		});
+	});
+
+	it('should do nothing', function (done) {
+		notifications.push(null, [], function (err) {
+			assert.ifError(err);
+			notifications.push({ nid: null }, [], function (err) {
+				assert.ifError(err);
+				notifications.push(notification, [], function (err) {
+					assert.ifError(err);
+					done();
+				});
+			});
 		});
 	});
 
@@ -94,6 +138,16 @@ describe('Notifications', function () {
 		});
 	});
 
+	it('should not mark anything with invalid uid or nid', function (done) {
+		socketNotifications.markRead({ uid: null }, null, function (err) {
+			assert.ifError(err);
+			socketNotifications.markRead({ uid: uid }, null, function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+	});
+
 	it('should mark a notification read', function (done) {
 		socketNotifications.markRead({ uid: uid }, notification.nid, function (err) {
 			assert.ifError(err);
@@ -106,6 +160,23 @@ describe('Notifications', function () {
 					done();
 				});
 			});
+		});
+	});
+
+	it('should not mark anything with invalid uid or nid', function (done) {
+		socketNotifications.markUnread({ uid: null }, null, function (err) {
+			assert.ifError(err);
+			socketNotifications.markUnread({ uid: uid }, null, function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+	});
+
+	it('should error if notification does not exist', function (done) {
+		socketNotifications.markUnread({ uid: uid }, 123123, function (err) {
+			assert.equal(err.message, '[[error:no-notification]]');
+			done();
 		});
 	});
 
@@ -140,6 +211,13 @@ describe('Notifications', function () {
 					done();
 				});
 			});
+		});
+	});
+
+	it('should not do anything', function (done) {
+		socketNotifications.markAllRead({ uid: 1000 }, null, function (err) {
+			assert.ifError(err);
+			done();
 		});
 	});
 
@@ -256,9 +334,23 @@ describe('Notifications', function () {
 			bodyShort: 'bodyShort',
 			nid: 'tobedeleted',
 			path: '/notification/path',
-		}, function (err) {
+		}, function (err, notification) {
 			assert.ifError(err);
-			notifications.prune(done);
+			notifications.prune(function (err) {
+				assert.ifError(err);
+				var week = 604800000;
+				db.sortedSetAdd('notifications', Date.now() - (2 * week), notification.nid, function (err) {
+					assert.ifError(err);
+					notifications.prune(function (err) {
+						assert.ifError(err);
+						notifications.get(notification.nid, function (err, data) {
+							assert.ifError(err);
+							assert(!data);
+							done();
+						});
+					});
+				});
+			});
 		});
 	});
 
