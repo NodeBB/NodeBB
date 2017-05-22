@@ -5,6 +5,7 @@ var path = require('path');
 var fs = require('fs');
 var assert = require('assert');
 var mkdirp = require('mkdirp');
+var rimraf = require('rimraf');
 
 var db = require('./mocks/databasemock');
 var file = require('../src/file');
@@ -98,12 +99,97 @@ describe('minifier', function () {
 	});
 });
 
-describe('Build', function () {
-	it('should build all assets', function (done) {
-		this.timeout(50000);
-		var build = require('../src/meta/build');
-		build.buildAll(function (err) {
+describe('Build', function (done) {
+	var build = require('../src/meta/build');
+
+	before(function (done) {
+		rimraf(path.join(__dirname, '../build/public'), done);
+	});
+
+	it('should build plugin static dirs', function (done) {
+		build.build(['plugin static dirs'], function (err) {
 			assert.ifError(err);
+			assert(file.existsSync(path.join(__dirname, '../build/public/plugins/nodebb-plugin-dbsearch/dbsearch')));
+			done();
+		});
+	});
+
+	it('should build requirejs modules', function (done) {
+		build.build(['requirejs modules'], function (err) {
+			assert.ifError(err);
+			var filename = path.join(__dirname, '../build/public/src/modules/Chart.js');
+			assert(file.existsSync(filename));
+			assert(fs.readFileSync(filename).toString().startsWith('/*!\n * Chart.js'));
+			done();
+		});
+	});
+
+	it('should build client js bundle', function (done) {
+		build.build(['client js bundle'], function (err) {
+			assert.ifError(err);
+			var filename = path.join(__dirname, '../build/public/nodebb.min.js');
+			assert(file.existsSync(filename));
+			assert(fs.readFileSync(filename).length > 1000);
+			done();
+		});
+	});
+
+	it('should build admin js bundle', function (done) {
+		build.build(['admin js bundle'], function (err) {
+			assert.ifError(err);
+			var filename = path.join(__dirname, '../build/public/acp.min.js');
+			assert(file.existsSync(filename));
+			assert(fs.readFileSync(filename).length > 1000);
+			done();
+		});
+	});
+
+	it('should build client side styles', function (done) {
+		build.build(['client side styles'], function (err) {
+			assert.ifError(err);
+			var filename = path.join(__dirname, '../build/public/stylesheet.css');
+			assert(file.existsSync(filename));
+			assert(fs.readFileSync(filename).toString().startsWith('/*! normalize.css'));
+			done();
+		});
+	});
+
+	it('should build admin control panel styles', function (done) {
+		build.build(['admin control panel styles'], function (err) {
+			assert.ifError(err);
+			var filename = path.join(__dirname, '../build/public/admin.css');
+			assert(file.existsSync(filename));
+			assert(fs.readFileSync(filename).toString().startsWith('@charset "UTF-8";'));
+			done();
+		});
+	});
+
+	it('should build templates', function (done) {
+		build.build(['templates'], function (err) {
+			assert.ifError(err);
+			var filename = path.join(__dirname, '../build/public/templates/admin/header.tpl');
+			assert(file.existsSync(filename));
+			assert(fs.readFileSync(filename).toString().startsWith('<!DOCTYPE html>'));
+			done();
+		});
+	});
+
+	it('should build languages', function (done) {
+		build.build(['languages'], function (err) {
+			assert.ifError(err);
+			var filename = path.join(__dirname, '../build/public/language/en-GB/global.json');
+			assert(file.existsSync(filename));
+			var global = fs.readFileSync(filename).toString();
+			assert.strictEqual(JSON.parse(global).home, 'Home');
+			done();
+		});
+	});
+
+	it('should build sounds', function (done) {
+		build.build(['sounds'], function (err) {
+			assert.ifError(err);
+			var filename = path.join(__dirname, '../build/public/sounds/fileMap.json');
+			assert(file.existsSync(filename));
 			done();
 		});
 	});
