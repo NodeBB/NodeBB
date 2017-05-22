@@ -156,7 +156,7 @@ function concat(data, callback) {
 				return callback(err);
 			}
 
-			var output = files.join(os.EOL + ';');
+			var output = files.join('\n;');
 			callback(null, { code: output });
 		});
 
