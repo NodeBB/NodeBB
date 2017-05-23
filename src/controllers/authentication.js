@@ -26,13 +26,7 @@ authenticationController.register = function (req, res) {
 		return res.sendStatus(403);
 	}
 
-	var userData = {};
-
-	for (var key in req.body) {
-		if (req.body.hasOwnProperty(key)) {
-			userData[key] = req.body[key];
-		}
-	}
+	var userData = req.body;
 
 	async.waterfall([
 		function (next) {
