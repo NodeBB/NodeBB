@@ -89,43 +89,40 @@ module.exports = function (Meta) {
 	};
 
 	function minifyModules(modules, fork, callback) {
-		// for it to never fork
-		// otherwise it spawns way too many processes
-		// maybe eventually we can pool modules
-		// and pass the pools to the minifer
-		// to reduce the total number of threads
-		fork = false;
+		var moduleDirs = modules.reduce(function (prev, mod) {
+			var dir = path.resolve(path.dirname(mod.destPath));
+			if (prev.indexOf(dir) === -1) {
+				prev.push(dir);
+			}
+			return prev;
+		}, []);
 
-		async.eachLimit(modules, 500, function (mod, next) {
-			var srcPath = mod.srcPath;
-			var destPath = mod.destPath;
+		async.eachLimit(moduleDirs, 1000, mkdirp, function (err) {
+			if (err) {
+				return callback(err);
+			}
 
-			async.parallel({
-				dirped: function (cb) {
-					mkdirp(path.dirname(destPath), cb);
-				},
-				minified: function (cb) {
-					fs.readFile(srcPath, function (err, buffer) {
-						if (err) {
-							return cb(err);
-						}
-
-						if (srcPath.endsWith('.min.js') || path.dirname(srcPath).endsWith('min')) {
-							return cb(null, { code: buffer.toString() });
-						}
-
-						minifier.js.minify(buffer.toString(), fork, cb);
-					});
-				},
-			}, function (err, results) {
-				if (err) {
-					return next(err);
+			var filtered = modules.reduce(function (prev, mod) {
+				if (mod.srcPath.endsWith('.min.js') || path.dirname(mod.srcPath).endsWith('min')) {
+					prev.skip.push(mod);
+				} else {
+					prev.minify.push(mod);
 				}
 
-				var minified = results.minified;
-				fs.writeFile(destPath, minified.code, next);
-			});
-		}, callback);
+				return prev;
+			}, { minify: [], skip: [] });
+
+			async.parallel([
+				function (cb) {
+					minifier.js.minifyBatch(filtered.minify, fork, cb);
+				},
+				function (cb) {
+					async.eachLimit(filtered.skip, 500, function (mod, next) {
+						file.link(mod.srcPath, mod.destPath, next);
+					}, cb);
+				},
+			], callback);
+		});
 	}
 
 	function linkModules(callback) {

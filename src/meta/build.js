@@ -2,7 +2,6 @@
 
 var async = require('async');
 var winston = require('winston');
-var os = require('os');
 var nconf = require('nconf');
 var padstart = require('lodash.padstart');
 
@@ -181,7 +180,7 @@ function build(targets, callback) {
 	async.series([
 		beforeBuild,
 		function (next) {
-			var parallel = os.cpus().length > 1 && !nconf.get('series');
+			var parallel = !nconf.get('series');
 			if (parallel) {
 				winston.info('[build] Building in parallel mode');
 			} else {
