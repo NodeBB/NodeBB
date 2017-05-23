@@ -82,7 +82,7 @@ authenticationController.register = function (req, res) {
 			return res.status(400).send(err.message);
 		}
 
-		if (req.body.userLang) {
+		if (data.uid && req.body.userLang) {
 			user.setSetting(data.uid, 'userLang', req.body.userLang);
 		}
 
