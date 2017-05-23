@@ -8,6 +8,8 @@ var initWorker;
 var incomplete = [];
 var running = 0;
 
+env.NODE_ENV = env.NODE_ENV || 'development';
+
 module.exports = function (grunt) {
 	var args = [];
 	var initArgs = ['--build'];

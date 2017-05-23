@@ -180,6 +180,11 @@ function build(targets, callback) {
 	async.series([
 		beforeBuild,
 		function (next) {
+			var threads = parseInt(nconf.get('threads'), 10);
+			if (threads) {
+				require('./minifier').maxThreads = threads - 1;
+			}
+
 			var parallel = !nconf.get('series');
 			if (parallel) {
 				winston.info('[build] Building in parallel mode');
