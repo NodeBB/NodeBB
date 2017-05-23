@@ -37,6 +37,33 @@ describe('authentication', function () {
 		});
 	}
 
+	function registerUser(email, username, password, callback) {
+		var jar = request.jar();
+		request({
+			url: nconf.get('url') + '/api/config',
+			json: true,
+			jar: jar,
+		}, function (err, response, body) {
+			if (err) {
+				return callback(err);
+			}
+
+			request.post(nconf.get('url') + '/register', {
+				form: {
+					email: email,
+					username: username,
+					password: password,
+				},
+				json: true,
+				jar: jar,
+				headers: {
+					'x-csrf-token': body.csrf_token,
+				},
+			}, function (err, response, body) {
+				callback(err, response, body, jar);
+			});
+		});
+	}
 
 	var jar = request.jar();
 	var regularUid;
@@ -214,6 +241,59 @@ describe('authentication', function () {
 			assert.ifError(err);
 			assert.equal(response.statusCode, 403);
 			assert.equal(body, '[[error:local-login-disabled]]');
+			done();
+		});
+	});
+
+	it('should fail to register if registraton is disabled', function (done) {
+		meta.config.registrationType = 'disabled';
+		registerUser('some@user.com', 'someuser', 'somepassword', function (err, response, body) {
+			assert.ifError(err);
+			assert.equal(response.statusCode, 403);
+			assert.equal(body, 'Forbidden');
+			done();
+		});
+	});
+
+	it('should return error if invitation is not valid', function (done) {
+		meta.config.registrationType = 'invite-only';
+		registerUser('some@user.com', 'someuser', 'somepassword', function (err, response, body) {
+			meta.config.registrationType = 'normal';
+			assert.ifError(err);
+			assert.equal(response.statusCode, 400);
+			assert.equal(body, '[[error:invalid-data]]');
+			done();
+		});
+	});
+
+	it('should fail to register if email is falsy', function (done) {
+		registerUser('', 'someuser', 'somepassword', function (err, response, body) {
+			assert.ifError(err);
+			assert.equal(response.statusCode, 400);
+			assert.equal(body, '[[error:invalid-email]]');
+			done();
+		});
+	});
+
+	it('should fail to register if username is falsy or too short', function (done) {
+		registerUser('some@user.com', '', 'somepassword', function (err, response, body) {
+			assert.ifError(err);
+			assert.equal(response.statusCode, 400);
+			assert.equal(body, '[[error:username-too-short]]');
+			registerUser('some@user.com', 'a', 'somepassword', function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(response.statusCode, 400);
+				assert.equal(body, '[[error:username-too-short]]');
+				done();
+			});
+		});
+	});
+
+	it('should fail to register if username is too long', function (done) {
+		registerUser('some@user.com', 'thisisareallylongusername', '123456', function (err, response, body) {
+			assert.ifError(err);
+			assert.equal(response.statusCode, 400);
+			assert.equal(body, '[[error:username-too-long]]');
 			done();
 		});
 	});

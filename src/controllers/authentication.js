@@ -97,21 +97,18 @@ function registerAndLoginUser(req, res, userData, callback) {
 			plugins.fireHook('filter:register.interstitial', {
 				userData: userData,
 				interstitials: [],
-			}, function (err, data) {
-				if (err) {
-					return next(err);
-				}
+			}, next);
+		},
+		function (data, next) {
+			// If interstitials are found, save registration attempt into session and abort
+			var deferRegistration = data.interstitials.length;
 
-				// If interstitials are found, save registration attempt into session and abort
-				var deferRegistration = data.interstitials.length;
-
-				if (!deferRegistration) {
-					return next();
-				}
-				userData.register = true;
-				req.session.registration = userData;
-				return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
-			});
+			if (!deferRegistration) {
+				return next();
+			}
+			userData.register = true;
+			req.session.registration = userData;
+			return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
 		},
 		function (next) {
 			user.create(userData, next);
