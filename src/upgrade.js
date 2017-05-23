@@ -13,9 +13,8 @@ var file = require('../src/file');
  *
  * 1. Copy TEMPLATE to a file name of your choice. Try to be succinct.
  * 2. Open up that file and change the user-friendly name (can be longer/more descriptive than the file name)
- *    and timestamp
+ *    and timestamp (don't forget the timestamp!)
  * 3. Add your script under the "method" property
- * 4. Append your filename to the array below for the next NodeBB version.
  */
 
 var Upgrade = {};
