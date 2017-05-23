@@ -41,9 +41,21 @@ function setupDebugging() {
 var pool = [];
 var free = [];
 
-Minifier.maxThreads = os.cpus().length - 1;
+var maxThreads = 0;
 
-winston.verbose('[minifier] utilizing a maximum of ' + Minifier.maxThreads + ' additional threads');
+Object.defineProperty(Minifier, 'maxThreads', {
+	get: function () {
+		return maxThreads;
+	},
+	set: function (val) {
+		maxThreads = val;
+		winston.verbose('[minifier] utilizing a maximum of ' + maxThreads + ' additional threads');
+	},
+	configurable: true,
+	enumerable: true,
+});
+
+Minifier.maxThreads = os.cpus().length - 1;
 
 Minifier.killAll = function () {
 	pool.forEach(function (child) {
@@ -156,7 +168,7 @@ function concat(data, callback) {
 				return callback(err);
 			}
 
-			var output = files.join(os.EOL + ';');
+			var output = files.join('\n;');
 			callback(null, { code: output });
 		});
 
