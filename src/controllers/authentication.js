@@ -282,14 +282,14 @@ authenticationController.doLogin = function (req, uid, callback) {
 	if (!uid) {
 		return callback();
 	}
-
-	req.login({ uid: uid }, function (err) {
-		if (err) {
-			return callback(err);
-		}
-
-		authenticationController.onSuccessfulLogin(req, uid, callback);
-	});
+	async.waterfall([
+		function (next) {
+			req.login({ uid: uid }, next);
+		},
+		function (next) {
+			authenticationController.onSuccessfulLogin(req, uid, next);
+		},
+	], callback);
 };
 
 authenticationController.onSuccessfulLogin = function (req, uid, callback) {
@@ -312,28 +312,30 @@ authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 		version: req.useragent.version,
 	});
 
-	// Associate login session with user
-	async.parallel([
+	async.waterfall([
 		function (next) {
-			user.auth.addSession(uid, req.sessionID, next);
+			async.parallel([
+				function (next) {
+					user.auth.addSession(uid, req.sessionID, next);
+				},
+				function (next) {
+					db.setObjectField('uid:' + uid + ':sessionUUID:sessionId', uuid, req.sessionID, next);
+				},
+				function (next) {
+					user.updateLastOnlineTime(uid, next);
+				},
+			], function (err) {
+				next(err);
+			});
 		},
 		function (next) {
-			db.setObjectField('uid:' + uid + ':sessionUUID:sessionId', uuid, req.sessionID, next);
-		},
-		function (next) {
-			user.updateLastOnlineTime(uid, next);
-		},
-	], function (err) {
-		if (err) {
-			return callback(err);
-		}
+			// Force session check for all connected socket.io clients with the same session id
+			sockets.in('sess_' + req.sessionID).emit('checkSession', uid);
 
-		// Force session check for all connected socket.io clients with the same session id
-		sockets.in('sess_' + req.sessionID).emit('checkSession', uid);
-
-		plugins.fireHook('action:user.loggedIn', { uid: uid, req: req });
-		callback();
-	});
+			plugins.fireHook('action:user.loggedIn', { uid: uid, req: req });
+			next();
+		},
+	], callback);
 };
 
 authenticationController.localLogin = function (req, username, password, next) {
