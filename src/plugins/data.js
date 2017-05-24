@@ -299,3 +299,38 @@ function getSoundpack(pluginData, callback) {
 	});
 }
 Data.getSoundpack = getSoundpack;
+
+function getLanguageData(pluginData, callback) {
+	if (typeof pluginData.languages !== 'string') {
+		return callback();
+	}
+
+	var pathToFolder = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
+	file.walk(pathToFolder, function (err, paths) {
+		if (err) {
+			return callback(err);
+		}
+
+		var namespaces = [];
+		var languages = [];
+
+		paths.forEach(function (p) {
+			var rel = path.relative(pathToFolder, p).split(/[/\\]/);
+			var language = rel.shift().replace('_', '-').replace('@', '-x-');
+			var namespace = rel.join('/').replace(/\.json$/, '');
+
+			if (!language || !namespace) {
+				return;
+			}
+
+			languages.push(language);
+			namespaces.push(namespace);
+		});
+
+		callback(null, {
+			languages: languages,
+			namespaces: namespaces,
+		});
+	});
+}
+Data.getLanguageData = getLanguageData;

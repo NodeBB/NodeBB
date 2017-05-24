@@ -107,6 +107,7 @@ describe('Build', function (done) {
 		async.parallel([
 			async.apply(rimraf, path.join(__dirname, '../build/public')),
 			db.setupMockDefaults,
+			async.apply(db.activatePlugin, 'nodebb-plugin-markdown'),
 		], done);
 	});
 
@@ -181,10 +182,17 @@ describe('Build', function (done) {
 	it('should build languages', function (done) {
 		build.build(['languages'], function (err) {
 			assert.ifError(err);
-			var filename = path.join(__dirname, '../build/public/language/en-GB/global.json');
-			assert(file.existsSync(filename));
-			var global = fs.readFileSync(filename).toString();
+
+			var globalFile = path.join(__dirname, '../build/public/language/en-GB/global.json');
+			assert(file.existsSync(globalFile));
+			var global = fs.readFileSync(globalFile).toString();
 			assert.strictEqual(JSON.parse(global).home, 'Home');
+
+			var mdFile = path.join(__dirname, '../build/public/language/en-GB/markdown.json');
+			assert(file.existsSync(mdFile));
+			var md = fs.readFileSync(mdFile).toString();
+			assert.strictEqual(JSON.parse(md).bold, 'bolded text');
+
 			done();
 		});
 	});
@@ -192,8 +200,15 @@ describe('Build', function (done) {
 	it('should build sounds', function (done) {
 		build.build(['sounds'], function (err) {
 			assert.ifError(err);
-			var filename = path.join(__dirname, '../build/public/sounds/fileMap.json');
-			assert(file.existsSync(filename));
+
+			var mapFile = path.join(__dirname, '../build/public/sounds/fileMap.json');
+			assert(file.existsSync(mapFile));
+			var fileMap = JSON.parse(fs.readFileSync(mapFile));
+			assert.strictEqual(fileMap['Default | Deedle-dum'], 'nodebb-plugin-soundpack-default/notification.mp3');
+
+			var deebleDumFile = path.join(__dirname, '../build/public/sounds/nodebb-plugin-soundpack-default/notification.mp3');
+			assert(file.existsSync(deebleDumFile));
+
 			done();
 		});
 	});

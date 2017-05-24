@@ -178,9 +178,14 @@ function enableDefaultPlugins(callback) {
 
 	var defaultEnabled = [
 		'nodebb-plugin-dbsearch',
+		'nodebb-plugin-soundpack-default',
 	];
 
 	winston.info('[install/enableDefaultPlugins] activating default plugins', defaultEnabled);
 
-	db.sortedSetAdd('plugins:active', [0], defaultEnabled, callback);
+	db.sortedSetAdd('plugins:active', Object.keys(defaultEnabled), defaultEnabled, callback);
 }
+
+db.activatePlugin = function (id, callback) {
+	db.sortedSetAdd('plugins:active', Date.now(), id, callback);
+};

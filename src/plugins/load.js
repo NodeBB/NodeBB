@@ -5,6 +5,7 @@ var semver = require('semver');
 var async = require('async');
 var winston = require('winston');
 var nconf = require('nconf');
+var _ = require('underscore');
 
 var meta = require('../meta');
 
@@ -36,6 +37,9 @@ module.exports = function (Plugins) {
 			soundpack: function (next) {
 				Plugins.data.getSoundpack(pluginData, next);
 			},
+			languageData: function (next) {
+				Plugins.data.getLanguageData(pluginData, next);
+			},
 		};
 
 		var methods;
@@ -62,6 +66,11 @@ module.exports = function (Plugins) {
 			if (results.soundpack) {
 				Plugins.soundpacks.push(results.soundpack);
 			}
+			if (results.languageData) {
+				Plugins.languageData.languages = _.union(Plugins.languageData.languages, results.languageData.languages);
+				Plugins.languageData.namespaces = _.union(Plugins.languageData.namespaces, results.languageData.namespaces);
+			}
+			Plugins.pluginsData[pluginData.id] = pluginData;
 
 			callback();
 		});
@@ -73,6 +82,8 @@ module.exports = function (Plugins) {
 		Plugins.clientScripts.length = 0;
 		Plugins.acpScripts.length = 0;
 		Plugins.soundpacks.length = 0;
+		Plugins.languageData.languages = [];
+		Plugins.languageData.namespaces = [];
 
 		var map = {
 			'plugin static dirs': ['staticDirs'],
@@ -82,6 +93,7 @@ module.exports = function (Plugins) {
 			'client side styles': ['cssFiles', 'lessFiles'],
 			'admin control panel styles': ['cssFiles', 'lessFiles'],
 			sounds: ['soundpack'],
+			languages: ['languageData'],
 		};
 
 		var fields = targets.reduce(function (prev, target) {

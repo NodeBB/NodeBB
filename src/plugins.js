@@ -23,6 +23,7 @@ var middleware;
 	Plugins.getPluginPaths = Plugins.data.getPluginPaths;
 	Plugins.loadPluginInfo = Plugins.data.loadPluginInfo;
 
+	Plugins.pluginsData = {};
 	Plugins.libraries = {};
 	Plugins.loadedHooks = {};
 	Plugins.staticDirs = {};
@@ -33,6 +34,7 @@ var middleware;
 	Plugins.libraryPaths = [];
 	Plugins.versionWarning = [];
 	Plugins.soundpacks = [];
+	Plugins.languageData = {};
 
 	Plugins.initialized = false;
 

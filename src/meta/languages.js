@@ -6,6 +6,7 @@ var async = require('async');
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
+var _ = require('underscore');
 
 var file = require('../file');
 var Plugins = require('../plugins');
@@ -15,73 +16,34 @@ var coreLanguagesPath = path.join(__dirname, '../../public/language');
 
 function getTranslationTree(callback) {
 	async.waterfall([
-		// get plugin data
-		Plugins.data.getActive,
-
 		// generate list of languages and namespaces
-		function (plugins, next) {
+		function (next) {
+			file.walk(coreLanguagesPath, next);
+		},
+		function (paths, next) {
 			var languages = [];
 			var namespaces = [];
 
-			// pull languages and namespaces from paths
-			function extrude(languageDir, paths) {
-				paths.forEach(function (p) {
-					var rel = p.split(languageDir)[1].split(/[/\\]/).slice(1);
-					var language = rel.shift().replace('_', '-').replace('@', '-x-');
-					var namespace = rel.join('/').replace(/\.json$/, '');
-
-					if (!language || !namespace) {
-						return;
-					}
-
-					if (languages.indexOf(language) === -1) {
-						languages.push(language);
-					}
-					if (namespaces.indexOf(namespace) === -1) {
-						namespaces.push(namespace);
-					}
-				});
-			}
-
-			plugins = plugins.filter(function (pluginData) {
-				return (typeof pluginData.languages === 'string');
-			});
-			async.parallel([
-				// get core languages and namespaces
-				function (nxt) {
-					file.walk(coreLanguagesPath, function (err, paths) {
-						if (err) {
-							return nxt(err);
-						}
-
-						extrude(coreLanguagesPath, paths);
-						nxt();
-					});
-				},
-				// get plugin languages and namespaces
-				function (nxt) {
-					async.each(plugins, function (pluginData, cb) {
-						var pathToFolder = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
-						file.walk(pathToFolder, function (err, paths) {
-							if (err) {
-								return cb(err);
-							}
-
-							extrude(pathToFolder, paths);
-							cb();
-						});
-					}, nxt);
-				},
-			], function (err) {
-				if (err) {
-					return next(err);
+			paths.forEach(function (p) {
+				if (!p.endsWith('.json')) {
+					return;
 				}
 
-				next(null, {
-					languages: languages,
-					namespaces: namespaces,
-					plugins: plugins,
-				});
+				var rel = path.relative(coreLanguagesPath, p).split(/[/\\]/);
+				var language = rel.shift().replace('_', '-').replace('@', '-x-');
+				var namespace = rel.join('/').replace(/\.json$/, '');
+
+				if (!language || !namespace) {
+					return;
+				}
+
+				languages.push(language);
+				namespaces.push(namespace);
+			});
+
+			next(null, {
+				languages: _.union(languages, Plugins.languageData.languages).sort().filter(Boolean),
+				namespaces: _.union(namespaces, Plugins.languageData.namespaces).sort().filter(Boolean),
 			});
 		},
 
@@ -94,8 +56,8 @@ function getTranslationTree(callback) {
 				},
 				function (x, next) {
 					fs.writeFile(path.join(buildLanguagesPath, 'metadata.json'), JSON.stringify({
-						languages: ref.languages.sort(),
-						namespaces: ref.namespaces.sort(),
+						languages: ref.languages,
+						namespaces: ref.namespaces,
 					}), next);
 				},
 				function (next) {
@@ -110,40 +72,42 @@ function getTranslationTree(callback) {
 		function (ref, next) {
 			var languages = ref.languages;
 			var namespaces = ref.namespaces;
-			var plugins = ref.plugins;
+			var plugins = _.values(Plugins.pluginsData).filter(function (plugin) {
+				return typeof plugin.languages === 'string';
+			});
 
 			var tree = {};
 
-			async.eachLimit(languages, 10, function (lang, nxt) {
-				async.eachLimit(namespaces, 10, function (ns, cb) {
+			async.eachLimit(languages, 10, function (lang, next) {
+				async.eachLimit(namespaces, 10, function (namespace, next) {
 					var translations = {};
 
 					async.series([
 						// core first
-						function (n) {
-							fs.readFile(path.join(coreLanguagesPath, lang, ns + '.json'), function (err, buffer) {
+						function (cb) {
+							fs.readFile(path.join(coreLanguagesPath, lang, namespace + '.json'), function (err, buffer) {
 								if (err) {
 									if (err.code === 'ENOENT') {
-										return n();
+										return cb();
 									}
-									return n(err);
+									return cb(err);
 								}
 
 								try {
 									Object.assign(translations, JSON.parse(buffer.toString()));
-									n();
+									cb();
 								} catch (err) {
-									n(err);
+									cb(err);
 								}
 							});
 						},
-						function (n) {
+						function (cb) {
 							// for each plugin, fallback in this order:
 							//  1. correct language string (en-GB)
 							//  2. old language string (en_GB)
 							//  3. corrected plugin defaultLang (en-US)
 							//  4. old plugin defaultLang (en_US)
-							async.eachLimit(plugins, 10, function (pluginData, call) {
+							async.eachLimit(plugins, 10, function (pluginData, done) {
 								var pluginLanguages = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
 								var defaultLang = pluginData.defaultLang || 'en-GB';
 
@@ -153,7 +117,7 @@ function getTranslationTree(callback) {
 									defaultLang.replace('_', '-').replace('@', '-x-'),
 									defaultLang.replace('-', '_').replace('-x-', '@'),
 								], function (language, next) {
-									fs.readFile(path.join(pluginLanguages, language, ns + '.json'), function (err, buffer) {
+									fs.readFile(path.join(pluginLanguages, language, namespace + '.json'), function (err, buffer) {
 										if (err) {
 											if (err.code === 'ENOENT') {
 												return next(null, false);
@@ -168,21 +132,21 @@ function getTranslationTree(callback) {
 											next(err);
 										}
 									});
-								}, call);
+								}, done);
 							}, function (err) {
 								if (err) {
-									return n(err);
+									return cb(err);
 								}
 
 								if (Object.keys(translations).length) {
 									tree[lang] = tree[lang] || {};
-									tree[lang][ns] = translations;
+									tree[lang][namespace] = translations;
 								}
-								n();
+								cb();
 							});
 						},
-					], cb);
-				}, nxt);
+					], next);
+				}, next);
 			}, function (err) {
 				next(err, tree);
 			});
@@ -193,9 +157,9 @@ function getTranslationTree(callback) {
 // write translation hashes from the generated tree to language files
 function writeLanguageFiles(tree, callback) {
 	// iterate over languages and namespaces
-	async.eachLimit(Object.keys(tree), 10, function (language, cb) {
+	async.eachLimit(Object.keys(tree), 100, function (language, cb) {
 		var namespaces = tree[language];
-		async.eachLimit(Object.keys(namespaces), 100, function (namespace, next) {
+		async.eachLimit(Object.keys(namespaces), 10, function (namespace, next) {
 			var translations = namespaces[namespace];
 
 			var filePath = path.join(buildLanguagesPath, language, namespace + '.json');
