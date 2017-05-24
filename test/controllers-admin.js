@@ -391,10 +391,20 @@ describe('Admin Controllers', function () {
 	});
 
 	it('should load /admin/general/social', function (done) {
-		request(nconf.get('url') + '/api/admin/general/social', { jar: jar, json: true }, function (err, res, body) {
+		var socketAdmin = require('../src/socket.io/admin');
+		socketAdmin.social.savePostSharingNetworks({ uid: adminUid }, ['facebook', 'twitter', 'google'], function (err) {
 			assert.ifError(err);
-			assert(body);
-			done();
+			request(nconf.get('url') + '/api/admin/general/social', { jar: jar, json: true }, function (err, res, body) {
+				assert.ifError(err);
+				assert(body);
+				body = body.posts.map(function (network) {
+					return network && network.id;
+				});
+				assert(body.indexOf('facebook') !== -1);
+				assert(body.indexOf('twitter') !== -1);
+				assert(body.indexOf('google') !== -1);
+				done();
+			});
 		});
 	});
 
