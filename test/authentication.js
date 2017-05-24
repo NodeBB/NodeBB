@@ -4,6 +4,7 @@
 var	assert = require('assert');
 var nconf = require('nconf');
 var request = require('request');
+var async = require('async');
 
 var db = require('./mocks/databasemock');
 var user = require('../src/user');
@@ -387,6 +388,39 @@ describe('authentication', function () {
 				});
 			});
 		});
+	});
+
+	it('should lockout account on 3 failed login attempts', function (done) {
+		meta.config.loginAttempts = 3;
+		var uid;
+		async.waterfall([
+			function (next) {
+				user.create({ username: 'lockme', password: '123456' }, next);
+			},
+			function (_uid, next) {
+				uid = _uid;
+				loginUser('lockme', 'abcdef', next);
+			},
+			function (res, body, jar, next) {
+				loginUser('lockme', 'abcdef', next);
+			},
+			function (res, body, jar, next) {
+				loginUser('lockme', 'abcdef', next);
+			},
+			function (res, body, jar, next) {
+				loginUser('lockme', 'abcdef', next);
+			},
+			function (res, body, jar, next) {
+				meta.config.loginAttempts = 5;
+				assert.equal(res.statusCode, 403);
+				assert.equal(body, '[[error:account-locked]]');
+				db.exists('lockout:' + uid, next);
+			},
+			function (locked, next) {
+				assert(locked);
+				next();
+			},
+		], done);
 	});
 
 	after(function (done) {
