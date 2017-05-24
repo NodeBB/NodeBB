@@ -100,9 +100,7 @@ function beforeBuild(targets, callback) {
 	async.series([
 		db.init,
 		meta.themes.setupPaths,
-		function (next) {
-			plugins.prepareForBuild(targets, next);
-		},
+		async.apply(plugins.prepareForBuild, targets),
 	], function (err) {
 		if (err) {
 			winston.error('[build] Encountered error preparing for build: ' + err.message);
@@ -182,7 +180,9 @@ function build(targets, callback) {
 	var startTime;
 	var totalTime;
 	async.series([
-		async.apply(beforeBuild, targets),
+		function (next) {
+			beforeBuild(targets, next);
+		},
 		function (next) {
 			var threads = parseInt(nconf.get('threads'), 10);
 			if (threads) {
