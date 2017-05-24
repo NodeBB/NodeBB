@@ -303,10 +303,18 @@ describe('Admin Controllers', function () {
 	});
 
 	it('should load /admin/general/navigation', function (done) {
-		request(nconf.get('url') + '/api/admin/general/navigation', { jar: jar, json: true }, function (err, res, body) {
+		var navigation = require('../src/navigation/admin');
+		var data = require('../install/data/navigation.json');
+
+		navigation.save(data, function (err) {
 			assert.ifError(err);
-			assert(body);
-			done();
+			request(nconf.get('url') + '/api/admin/general/navigation', { jar: jar, json: true }, function (err, res, body) {
+				assert.ifError(err);
+				assert(body);
+				assert(body.available);
+				assert(body.enabled);
+				done();
+			});
 		});
 	});
 
