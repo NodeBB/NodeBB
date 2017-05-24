@@ -37,13 +37,16 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 		}, function (cropperHtml) {
 			translator.translate(cropperHtml, function (translated) {
 				var cropperModal = $(translated);
-				cropperModal.modal('show');
+				cropperModal.modal({
+					backdrop: 'static',
+				}).modal('show');
 
 				var img = document.getElementById('cropped-image');
 				var cropperTool = new cropper.default(img, {
 					aspectRatio: data.aspectRatio,
 					autoCropArea: 1,
 					viewMode: 1,
+					zoomable: 0,
 					cropmove: function () {
 						if (data.restrictImageDimension) {
 							if (cropperTool.cropBoxData.width > data.imageDimension) {

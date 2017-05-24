@@ -219,8 +219,6 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 				paramValue: ajaxify.data.theirid,
 				fileSize: ajaxify.data.maximumProfileImageSize,
 				allowSkippingCrop: false,
-				restrictImageDimension: true,
-				imageDimension: ajaxify.data.profileImageDimension,
 				title: '[[user:upload_picture]]',
 				description: '[[user:upload_a_picture]]',
 				accept: '.png,.jpg,.bmp',
@@ -258,8 +256,6 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 								socketMethod: 'user.uploadCroppedPicture',
 								aspectRatio: '1 / 1',
 								allowSkippingCrop: false,
-								restrictImageDimension: true,
-								imageDimension: ajaxify.data.profileImageDimension,
 								paramName: 'uid',
 								paramValue: ajaxify.data.theirid,
 							}, onUploadComplete);
