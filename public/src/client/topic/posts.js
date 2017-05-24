@@ -18,6 +18,11 @@ define('forum/topic/posts', [
 
 		data.loggedIn = !!app.user.uid;
 		data.privileges = ajaxify.data.privileges;
+
+		// prevent timeago in future by setting timestamp to 1 sec behind now
+		data.posts[0].timestamp = Date.now() - 1000;
+		data.posts[0].timestampISO = utils.toISOString(data.posts[0].timestamp);
+
 		Posts.modifyPostsByPrivileges(data.posts);
 
 		updatePostCounts(data.posts);
