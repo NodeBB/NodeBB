@@ -104,7 +104,7 @@ describe('Build', function (done) {
 	var build = require('../src/meta/build');
 
 	before(function (done) {
-		async.parallel([
+		async.series([
 			async.apply(rimraf, path.join(__dirname, '../build/public')),
 			db.setupMockDefaults,
 			async.apply(db.activatePlugin, 'nodebb-plugin-markdown'),
@@ -184,14 +184,14 @@ describe('Build', function (done) {
 			assert.ifError(err);
 
 			var globalFile = path.join(__dirname, '../build/public/language/en-GB/global.json');
-			assert(file.existsSync(globalFile));
+			assert(file.existsSync(globalFile), 'global.json exists');
 			var global = fs.readFileSync(globalFile).toString();
-			assert.strictEqual(JSON.parse(global).home, 'Home');
+			assert.strictEqual(JSON.parse(global).home, 'Home', 'global.json contains correct translations');
 
 			var mdFile = path.join(__dirname, '../build/public/language/en-GB/markdown.json');
-			assert(file.existsSync(mdFile));
+			assert(file.existsSync(mdFile), 'markdown.json exists');
 			var md = fs.readFileSync(mdFile).toString();
-			assert.strictEqual(JSON.parse(md).bold, 'bolded text');
+			assert.strictEqual(JSON.parse(md).bold, 'bolded text', 'markdown.json contains correct translations');
 
 			done();
 		});
