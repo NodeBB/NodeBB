@@ -29,7 +29,7 @@ Notifications.get = function (nid, callback) {
 };
 
 Notifications.getMultiple = function (nids, callback) {
-	if (!nids.length) {
+	if (!Array.isArray(nids) || !nids.length) {
 		return setImmediate(callback, null, []);
 	}
 	var keys = nids.map(function (nid) {
@@ -106,50 +106,47 @@ Notifications.findRelated = function (mergeIds, set, callback) {
 
 			db.getObjectsFields(keys, ['mergeId'], next);
 		},
-	], function (err, sets) {
-		if (err) {
-			return callback(err);
-		}
+		function (sets, next) {
+			sets = sets.map(function (set) {
+				return set.mergeId;
+			});
 
-		sets = sets.map(function (set) {
-			return set.mergeId;
-		});
-
-		callback(null, _nids.filter(function (nid, idx) {
-			return mergeIds.indexOf(sets[idx]) !== -1;
-		}));
-	});
+			next(null, _nids.filter(function (nid, idx) {
+				return mergeIds.indexOf(sets[idx]) !== -1;
+			}));
+		},
+	], callback);
 };
 
 Notifications.create = function (data, callback) {
 	if (!data.nid) {
-		return callback(new Error('no-notification-id'));
+		return callback(new Error('[[error:no-notification-id]]'));
 	}
 	data.importance = data.importance || 5;
-	db.getObject('notifications:' + data.nid, function (err, oldNotification) {
-		if (err) {
-			return callback(err);
-		}
-
-		if (oldNotification) {
-			if (parseInt(oldNotification.pid, 10) === parseInt(data.pid, 10) && parseInt(oldNotification.importance, 10) > parseInt(data.importance, 10)) {
-				return callback(null, null);
+	async.waterfall([
+		function (next) {
+			db.getObject('notifications:' + data.nid, next);
+		},
+		function (oldNotification, next) {
+			if (oldNotification) {
+				if (parseInt(oldNotification.pid, 10) === parseInt(data.pid, 10) && parseInt(oldNotification.importance, 10) > parseInt(data.importance, 10)) {
+					return callback(null, null);
+				}
 			}
-		}
-
-		var now = Date.now();
-		data.datetime = now;
-		async.parallel([
-			function (next) {
-				db.sortedSetAdd('notifications', now, data.nid, next);
-			},
-			function (next) {
-				db.setObject('notifications:' + data.nid, data, next);
-			},
-		], function (err) {
-			callback(err, data);
-		});
-	});
+			var now = Date.now();
+			data.datetime = now;
+			async.parallel([
+				function (next) {
+					db.sortedSetAdd('notifications', now, data.nid, next);
+				},
+				function (next) {
+					db.setObject('notifications:' + data.nid, data, next);
+				},
+			], function (err) {
+				next(err, data);
+			});
+		},
+	], callback);
 };
 
 Notifications.push = function (notification, uids, callback) {
@@ -233,25 +230,31 @@ function pushToUids(uids, notification, callback) {
 
 Notifications.pushGroup = function (notification, groupName, callback) {
 	callback = callback || function () {};
-	groups.getMembers(groupName, 0, -1, function (err, members) {
-		if (err || !Array.isArray(members) || !members.length) {
-			return callback(err);
-		}
+	async.waterfall([
+		function (next) {
+			groups.getMembers(groupName, 0, -1, next);
+		},
+		function (members, next) {
+			if (!Array.isArray(members) || !members.length) {
+				return callback();
+			}
 
-		Notifications.push(notification, members, callback);
-	});
+			Notifications.push(notification, members, next);
+		},
+	], callback);
 };
 
 Notifications.pushGroups = function (notification, groupNames, callback) {
 	callback = callback || function () {};
-	groups.getMembersOfGroups(groupNames, function (err, groupMembers) {
-		if (err) {
-			return callback(err);
-		}
-
-		var members = _.unique(_.flatten(groupMembers));
-		Notifications.push(notification, members, callback);
-	});
+	async.waterfall([
+		function (next) {
+			groups.getMembersOfGroups(groupNames, next);
+		},
+		function (groupMembers, next) {
+			var members = _.unique(_.flatten(groupMembers));
+			Notifications.push(notification, members, next);
+		},
+	], callback);
 };
 
 Notifications.rescind = function (nid, callback) {
@@ -261,13 +264,7 @@ Notifications.rescind = function (nid, callback) {
 		async.apply(db.sortedSetRemove, 'notifications', nid),
 		async.apply(db.delete, 'notifications:' + nid),
 	], function (err) {
-		if (err) {
-			winston.error('Encountered error rescinding notification (' + nid + '): ' + err.message);
-		} else {
-			winston.verbose('[notifications/rescind] Rescinded notification "' + nid + '"');
-		}
-
-		callback(err, nid);
+		callback(err);
 	});
 };
 
@@ -284,18 +281,22 @@ Notifications.markUnread = function (nid, uid, callback) {
 	if (!parseInt(uid, 10) || !nid) {
 		return callback();
 	}
+	async.waterfall([
+		function (next) {
+			db.getObject('notifications:' + nid, next);
+		},
+		function (notification, next) {
+			if (!notification) {
+				return callback(new Error('[[error:no-notification]]'));
+			}
+			notification.datetime = notification.datetime || Date.now();
 
-	db.getObject('notifications:' + nid, function (err, notification) {
-		if (err || !notification) {
-			return callback(err || new Error('[[error:no-notification]]'));
-		}
-		notification.datetime = notification.datetime || Date.now();
-
-		async.parallel([
-			async.apply(db.sortedSetRemove, 'uid:' + uid + ':notifications:read', nid),
-			async.apply(db.sortedSetAdd, 'uid:' + uid + ':notifications:unread', notification.datetime, nid),
-		], callback);
-	});
+			async.parallel([
+				async.apply(db.sortedSetRemove, 'uid:' + uid + ':notifications:read', nid),
+				async.apply(db.sortedSetAdd, 'uid:' + uid + ':notifications:unread', notification.datetime, nid),
+			], next);
+		},
+	], callback);
 };
 
 Notifications.markReadMultiple = function (nids, uid, callback) {
@@ -377,9 +378,9 @@ Notifications.markAllRead = function (uid, callback) {
 
 Notifications.prune = function (callback) {
 	callback = callback || function () {};
-	var	week = 604800000;
+	var week = 604800000;
 
-	var	cutoffTime = Date.now() - week;
+	var cutoffTime = Date.now() - week;
 
 	async.waterfall([
 		function (next) {
@@ -390,7 +391,7 @@ Notifications.prune = function (callback) {
 				return callback();
 			}
 
-			var	keys = nids.map(function (nid) {
+			var keys = nids.map(function (nid) {
 				return 'notifications:' + nid;
 			});
 

@@ -32,9 +32,9 @@
     "notif.post.unsub.info": "Bu yazı bildirimi size abonelik ayarlarınız nedeni ile gönderilmiştir.",
     "test.text1": "Bu ileti NodeBB e-posta ayarlarınızın doğru çalışıp çalışmadığını kontrol etmek için gönderildi.",
     "unsub.cta": "Buraya tıklayarak ayarlarınızı değiştirebilirsiniz.",
-    "banned.subject": "You have been banned from %1",
-    "banned.text1": "The user %1 has been banned from %2.",
-    "banned.text2": "This ban will last until %1.",
-    "banned.text3": "This is the reason why you have been banned:",
+    "banned.subject": "%1 'den yasaklandınız",
+    "banned.text1": "%1 kullanıcısı %2 'den yasaklandı.",
+    "banned.text2": "Bu yasak %1 'e kadar sürecek.",
+    "banned.text3": "Yasaklanmanın nedeni:",
     "closing": "Teşekkürler!"
 }

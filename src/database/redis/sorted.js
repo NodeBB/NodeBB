@@ -129,7 +129,13 @@ module.exports = function (redisClient, module) {
 		}
 
 		redisClient.zscore(key, value, function (err, score) {
-			callback(err, !err ? parseFloat(score) : null);
+			if (err) {
+				return callback(err);
+			}
+			if (score === null) {
+				return callback(null, score);
+			}
+			callback(null, parseFloat(score));
 		});
 	};
 

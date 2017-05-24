@@ -190,6 +190,15 @@ describe('Hash methods', function () {
 				done();
 			});
 		});
+
+		it('should return undefined for all fields if object does not exist', function (done) {
+			db.getObjectsFields(['doesnotexist1', 'doesnotexist2'], ['name', 'age'], function (err, data) {
+				assert.ifError(err);
+				assert.equal(data.name, null);
+				assert.equal(data.age, null);
+				done();
+			});
+		});
 	});
 
 	describe('getObjectKeys()', function () {

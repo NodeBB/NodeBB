@@ -89,8 +89,19 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 		var timestamp = replyCount.find('.timeago').attr('title', post.timestampISO);
 
 		countEl.attr('data-replies', count);
-		replyCount.toggleClass('hidden', !count);
-		countEl.translateText('[[topic:replies_to_this_post, ' + count + ']]');
+		replyCount.toggleClass('hidden', count <= 0);
+		if (count > 1) {
+			countEl.translateText('[[topic:replies_to_this_post, ' + count + ']]');
+		} else {
+			countEl.translateText('[[topic:one_reply_to_this_post]]');
+		}
+
+		if (!avatars.find('[data-uid="' + post.uid + '"]').length && count < 7) {
+			app.parseAndTranslate('topic', 'posts', { posts: [{ replies: { users: [post.user] } }] }, function (html) {
+				avatars.prepend(html.find('[component="post/reply-count/avatars"] [component="user/picture"]'));
+			});
+		}
+
 		avatars.addClass('hasMore');
 
 		timestamp.data('timeago', null).timeago();

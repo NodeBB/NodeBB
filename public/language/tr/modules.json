@@ -20,7 +20,7 @@
     "chat.three_months": "3 Ay",
     "chat.delete_message_confirm": "Bu mesajı silmek istediğinden emin misin?",
     "chat.add-users-to-room": "Odaya Kullanıcı Ekle",
-    "chat.confirm-chat-with-dnd-user": "This user has set their status to DnD(Do not disturb). Do you still want to chat with them?",
+    "chat.confirm-chat-with-dnd-user": "Bu kullanıcı durumunu rahatsız etmeyin olarak ayarladı. Hala onunla sohbet etmek istiyor musun?",
     "composer.compose": "Yaz",
     "composer.show_preview": "Önizleme Göster",
     "composer.hide_preview": "Önizleme Sakla",

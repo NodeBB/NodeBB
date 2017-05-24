@@ -2,8 +2,8 @@
 	"notifications": "Bildiriler",
 	"chat-messages": "Sohbet Mesajları",
 	"play-sound": "Oynat",
-	"incoming-message": "Incoming Message",
-	"outgoing-message": "Outgoing Message",
+	"incoming-message": "Gelen İleti",
+	"outgoing-message": "Giden İleti",
 	"upload-new-sound": "Yeni Ses Yükle",
-	"saved": "Settings Saved"
+	"saved": "Ayarlar Kaydedildi"
 }

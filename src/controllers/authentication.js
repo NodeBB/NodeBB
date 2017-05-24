@@ -26,13 +26,7 @@ authenticationController.register = function (req, res) {
 		return res.sendStatus(403);
 	}
 
-	var userData = {};
-
-	for (var key in req.body) {
-		if (req.body.hasOwnProperty(key)) {
-			userData[key] = req.body[key];
-		}
-	}
+	var userData = req.body;
 
 	async.waterfall([
 		function (next) {
@@ -88,7 +82,7 @@ authenticationController.register = function (req, res) {
 			return res.status(400).send(err.message);
 		}
 
-		if (req.body.userLang) {
+		if (data.uid && req.body.userLang) {
 			user.setSetting(data.uid, 'userLang', req.body.userLang);
 		}
 
@@ -103,21 +97,18 @@ function registerAndLoginUser(req, res, userData, callback) {
 			plugins.fireHook('filter:register.interstitial', {
 				userData: userData,
 				interstitials: [],
-			}, function (err, data) {
-				if (err) {
-					return next(err);
-				}
+			}, next);
+		},
+		function (data, next) {
+			// If interstitials are found, save registration attempt into session and abort
+			var deferRegistration = data.interstitials.length;
 
-				// If interstitials are found, save registration attempt into session and abort
-				var deferRegistration = data.interstitials.length;
-
-				if (!deferRegistration) {
-					return next();
-				}
-				userData.register = true;
-				req.session.registration = userData;
-				return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
-			});
+			if (!deferRegistration) {
+				return next();
+			}
+			userData.register = true;
+			req.session.registration = userData;
+			return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
 		},
 		function (next) {
 			user.create(userData, next);
@@ -282,14 +273,14 @@ authenticationController.doLogin = function (req, uid, callback) {
 	if (!uid) {
 		return callback();
 	}
-
-	req.login({ uid: uid }, function (err) {
-		if (err) {
-			return callback(err);
-		}
-
-		authenticationController.onSuccessfulLogin(req, uid, callback);
-	});
+	async.waterfall([
+		function (next) {
+			req.login({ uid: uid }, next);
+		},
+		function (next) {
+			authenticationController.onSuccessfulLogin(req, uid, next);
+		},
+	], callback);
 };
 
 authenticationController.onSuccessfulLogin = function (req, uid, callback) {
@@ -312,28 +303,30 @@ authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 		version: req.useragent.version,
 	});
 
-	// Associate login session with user
-	async.parallel([
+	async.waterfall([
 		function (next) {
-			user.auth.addSession(uid, req.sessionID, next);
+			async.parallel([
+				function (next) {
+					user.auth.addSession(uid, req.sessionID, next);
+				},
+				function (next) {
+					db.setObjectField('uid:' + uid + ':sessionUUID:sessionId', uuid, req.sessionID, next);
+				},
+				function (next) {
+					user.updateLastOnlineTime(uid, next);
+				},
+			], function (err) {
+				next(err);
+			});
 		},
 		function (next) {
-			db.setObjectField('uid:' + uid + ':sessionUUID:sessionId', uuid, req.sessionID, next);
-		},
-		function (next) {
-			user.updateLastOnlineTime(uid, next);
-		},
-	], function (err) {
-		if (err) {
-			return callback(err);
-		}
+			// Force session check for all connected socket.io clients with the same session id
+			sockets.in('sess_' + req.sessionID).emit('checkSession', uid);
 
-		// Force session check for all connected socket.io clients with the same session id
-		sockets.in('sess_' + req.sessionID).emit('checkSession', uid);
-
-		plugins.fireHook('action:user.loggedIn', { uid: uid, req: req });
-		callback();
-	});
+			plugins.fireHook('action:user.loggedIn', { uid: uid, req: req });
+			next();
+		},
+	], callback);
 };
 
 authenticationController.localLogin = function (req, username, password, next) {

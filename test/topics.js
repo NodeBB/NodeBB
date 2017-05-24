@@ -760,13 +760,13 @@ describe('Topic\'s', function () {
 
 		it('should 401 if not allowed to read as guest', function (done) {
 			var privileges = require('../src/privileges');
-			privileges.categories.rescind(['read'], topicData.cid, 'guests', function (err) {
+			privileges.categories.rescind(['topics:read'], topicData.cid, 'guests', function (err) {
 				assert.ifError(err);
 				request(nconf.get('url') + '/api/topic/' + topicData.slug, function (err, response, body) {
 					assert.ifError(err);
 					assert.equal(response.statusCode, 401);
 					assert(body);
-					privileges.categories.give(['read'], topicData.cid, 'guests', done);
+					privileges.categories.give(['topics:read'], topicData.cid, 'guests', done);
 				});
 			});
 		});
@@ -1551,7 +1551,7 @@ describe('Topic\'s', function () {
 
 
 		it('should return empty array if first param is empty', function (done) {
-			topics.getTeasers([], function (err, teasers) {
+			topics.getTeasers([], 1, function (err, teasers) {
 				assert.ifError(err);
 				assert.equal(0, teasers.length);
 				done();
@@ -1559,7 +1559,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should get teasers with 2 params', function (done) {
-			topics.getTeasers([topic1.topicData, topic2.topicData], function (err, teasers) {
+			topics.getTeasers([topic1.topicData, topic2.topicData], 1, function (err, teasers) {
 				assert.ifError(err);
 				assert.deepEqual([undefined, undefined], teasers);
 				done();
@@ -1568,7 +1568,7 @@ describe('Topic\'s', function () {
 
 		it('should get teasers with first posts', function (done) {
 			meta.config.teaserPost = 'first';
-			topics.getTeasers([topic1.topicData, topic2.topicData], function (err, teasers) {
+			topics.getTeasers([topic1.topicData, topic2.topicData], 1, function (err, teasers) {
 				assert.ifError(err);
 				assert.equal(2, teasers.length);
 				assert(teasers[0]);
@@ -1581,7 +1581,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should get teasers even if one topic is falsy', function (done) {
-			topics.getTeasers([null, topic2.topicData], function (err, teasers) {
+			topics.getTeasers([null, topic2.topicData], 1, function (err, teasers) {
 				assert.ifError(err);
 				assert.equal(2, teasers.length);
 				assert.equal(undefined, teasers[0]);
@@ -1598,7 +1598,7 @@ describe('Topic\'s', function () {
 			topics.reply({ uid: adminUid, content: 'reply 1 content', tid: topic1.topicData.tid }, function (err, result) {
 				assert.ifError(err);
 				topic1.topicData.teaserPid = result.pid;
-				topics.getTeasers([topic1.topicData, topic2.topicData], function (err, teasers) {
+				topics.getTeasers([topic1.topicData, topic2.topicData], 1, function (err, teasers) {
 					assert.ifError(err);
 					assert(teasers[0]);
 					assert(teasers[1]);
@@ -1610,7 +1610,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should get teasers by tids', function (done) {
-			topics.getTeasersByTids([topic2.topicData.tid, topic1.topicData.tid], function (err, teasers) {
+			topics.getTeasersByTids([topic2.topicData.tid, topic1.topicData.tid], 1, function (err, teasers) {
 				assert.ifError(err);
 				assert(2, teasers.length);
 				assert.equal(teasers[1].content, 'reply 1 content');
@@ -1619,7 +1619,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should return empty array ', function (done) {
-			topics.getTeasersByTids([], function (err, teasers) {
+			topics.getTeasersByTids([], 1, function (err, teasers) {
 				assert.ifError(err);
 				assert.equal(0, teasers.length);
 				done();
@@ -1627,7 +1627,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should get teaser by tid', function (done) {
-			topics.getTeaser(topic2.topicData.tid, function (err, teaser) {
+			topics.getTeaser(topic2.topicData.tid, 1, function (err, teaser) {
 				assert.ifError(err);
 				assert(teaser);
 				assert.equal(teaser.content, 'content 2');

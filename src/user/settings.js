@@ -8,6 +8,7 @@ var meta = require('../meta');
 var db = require('../database');
 var plugins = require('../plugins');
 
+var pubsub = require('../pubsub');
 var LRU = require('lru-cache');
 
 var cache = LRU({
@@ -18,6 +19,10 @@ var cache = LRU({
 
 module.exports = function (User) {
 	User.settingsCache = cache;
+
+	pubsub.on('user:settings:cache:del', function (uid) {
+		cache.del('user:' + uid + ':settings');
+	});
 
 	User.getSettings = function (uid, callback) {
 		if (!parseInt(uid, 10)) {
@@ -178,6 +183,7 @@ module.exports = function (User) {
 			},
 			function (next) {
 				cache.del('user:' + uid + ':settings');
+				pubsub.publish('user:settings:cache:del', uid);
 				User.getSettings(uid, next);
 			},
 		], callback);

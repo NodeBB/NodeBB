@@ -267,6 +267,7 @@ module.exports = function (Topics) {
 				categories.markAsRead(cids, uid, next);
 			},
 			function (next) {
+				plugins.fireHook('action:topics.markAsRead', { uid: uid, tids: tids });
 				next(null, true);
 			},
 		], callback);

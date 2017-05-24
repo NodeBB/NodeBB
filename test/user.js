@@ -237,6 +237,76 @@ describe('User', function () {
 				done();
 			});
 		});
+
+		it('should search users by ip', function (done) {
+			User.create({ username: 'ipsearch' }, function (err, uid) {
+				assert.ifError(err);
+				db.sortedSetAdd('ip:1.1.1.1:uid', [1, 1], [testUid, uid], function (err) {
+					assert.ifError(err);
+					socketUser.search({ uid: testUid }, { query: '1.1.1.1', searchBy: 'ip' }, function (err, data) {
+						assert.ifError(err);
+						assert(Array.isArray(data.users));
+						assert.equal(data.users.length, 2);
+						done();
+					});
+				});
+			});
+		});
+
+		it('should return empty array if query is empty', function (done) {
+			socketUser.search({ uid: testUid }, { query: '' }, function (err, data) {
+				assert.ifError(err);
+				assert.equal(data.users.length, 0);
+				done();
+			});
+		});
+
+		it('should filter users', function (done) {
+			User.create({ username: 'ipsearch_filter' }, function (err, uid) {
+				assert.ifError(err);
+				User.setUserFields(uid, { banned: 1, flags: 10 }, function (err) {
+					assert.ifError(err);
+					socketUser.search({ uid: testUid }, {
+						query: 'ipsearch',
+						onlineOnly: true,
+						bannedOnly: true,
+						flaggedOnly: true,
+					}, function (err, data) {
+						assert.ifError(err);
+						assert.equal(data.users[0].username, 'ipsearch_filter');
+						done();
+					});
+				});
+			});
+		});
+
+		it('should sort results by username', function (done) {
+			async.waterfall([
+				function (next) {
+					User.create({ username: 'brian' }, next);
+				},
+				function (uid, next) {
+					User.create({ username: 'baris' }, next);
+				},
+				function (uid, next) {
+					User.create({ username: 'bzari' }, next);
+				},
+				function (uid, next) {
+					User.search({
+						uid: testUid,
+						query: 'b',
+						sortBy: 'username',
+						paginate: false,
+					}, next);
+				},
+			], function (err, data) {
+				assert.ifError(err);
+				assert.equal(data.users[0].username, 'baris');
+				assert.equal(data.users[1].username, 'brian');
+				assert.equal(data.users[2].username, 'bzari');
+				done();
+			});
+		});
 	});
 
 	describe('.delete()', function () {
