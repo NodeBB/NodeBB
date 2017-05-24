@@ -88,6 +88,7 @@ describe('authentication', function () {
 					email: 'admin@nodebb.org',
 					username: 'admin',
 					password: 'adminpwd',
+					userLang: 'it',
 				},
 				json: true,
 				jar: jar,
@@ -107,7 +108,11 @@ describe('authentication', function () {
 					assert(body);
 					assert.equal(body.username, 'admin');
 					assert.equal(body.email, 'admin@nodebb.org');
-					done();
+					user.getSettings(body.uid, function (err, settings) {
+						assert.ifError(err);
+						assert.equal(settings.userLang, 'it');
+						done();
+					});
 				});
 			});
 		});
@@ -295,6 +300,92 @@ describe('authentication', function () {
 			assert.equal(response.statusCode, 400);
 			assert.equal(body, '[[error:username-too-long]]');
 			done();
+		});
+	});
+
+	it('should queue user if ip is used before', function (done) {
+		meta.config.registrationType = 'admin-approval-ip';
+		registerUser('another@user.com', 'anotheruser', 'anotherpwd', function (err, response, body) {
+			meta.config.registrationType = 'normal';
+			assert.ifError(err);
+			assert.equal(response.statusCode, 200);
+			assert.equal(body.message, '[[register:registration-added-to-queue]]');
+			done();
+		});
+	});
+
+
+	it('should be able to login with email', function (done) {
+		user.create({ username: 'ginger', password: '123456', email: 'ginger@nodebb.org' }, function (err, uid) {
+			assert.ifError(err);
+			loginUser('ginger@nodebb.org', '123456', function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(response.statusCode, 200);
+				done();
+			});
+		});
+	});
+
+	it('should fail to login if login type is username and an email is sent', function (done) {
+		meta.config.allowLoginWith = 'username';
+		loginUser('ginger@nodebb.org', '123456', function (err, response, body) {
+			meta.config.allowLoginWith = 'username-email';
+			assert.ifError(err);
+			assert.equal(response.statusCode, 500);
+			assert.equal(body, '[[error:wrong-login-type-username]]');
+			done();
+		});
+	});
+
+	it('should send 200 if not logged in', function (done) {
+		var jar = request.jar();
+		request({
+			url: nconf.get('url') + '/api/config',
+			json: true,
+			jar: jar,
+		}, function (err, response, body) {
+			assert.ifError(err);
+
+			request.post(nconf.get('url') + '/logout', {
+				form: {},
+				json: true,
+				jar: jar,
+				headers: {
+					'x-csrf-token': body.csrf_token,
+				},
+			}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert.equal(body, 'not-logged-in');
+				done();
+			});
+		});
+	});
+
+	it('should prevent banned user from logging in', function (done) {
+		user.create({ username: 'banme', password: '123456', email: 'ban@me.com' }, function (err, uid) {
+			assert.ifError(err);
+			user.ban(uid, 0, 'spammer', function (err) {
+				assert.ifError(err);
+				loginUser('banme', '123456', function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 403);
+					assert.equal(body, '[[error:user-banned-reason, spammer]]');
+					user.unban(uid, function (err) {
+						assert.ifError(err);
+						var expiry = Date.now() + 10000;
+						user.ban(uid, expiry, '', function (err) {
+							assert.ifError(err);
+							loginUser('banme', '123456', function (err, res, body) {
+								assert.ifError(err);
+								assert.equal(res.statusCode, 403);
+								assert.equal(body, '[[error:user-banned-reason-until, ' + (new Date(parseInt(expiry, 10)).toString()) + ', No reason given.]]');
+								done();
+							});
+						});
+					});
+				});
+			});
 		});
 	});
 
