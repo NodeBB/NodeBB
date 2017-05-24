@@ -1,5 +1,6 @@
 'use strict';
 
+var async = require('async');
 var fs = require('fs');
 var path = require('path');
 var mkdirp = require('mkdirp');
@@ -15,13 +16,14 @@ function generate() {
 }
 
 exports.write = function write(callback) {
-	mkdirp(path.dirname(filePath), function (err) {
-		if (err) {
-			return callback(err);
-		}
-
-		fs.writeFile(filePath, generate(), callback);
-	});
+	async.waterfall([
+		function (next) {
+			mkdirp(path.dirname(filePath), next);
+		},
+		function (data, next) {
+			fs.writeFile(filePath, generate(), next);
+		},
+	], callback);
 };
 
 exports.read = function read(callback) {

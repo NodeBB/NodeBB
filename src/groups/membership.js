@@ -287,13 +287,14 @@ module.exports = function (Groups) {
 
 	Groups.getMemberUsers = function (groupNames, start, stop, callback) {
 		async.map(groupNames, function (groupName, next) {
-			Groups.getMembers(groupName, start, stop, function (err, uids) {
-				if (err) {
-					return next(err);
-				}
-
-				user.getUsersFields(uids, ['uid', 'username', 'picture', 'userslug'], next);
-			});
+			async.waterfall([
+				function (next) {
+					Groups.getMembers(groupName, start, stop, next);
+				},
+				function (uids, next) {
+					user.getUsersFields(uids, ['uid', 'username', 'picture', 'userslug'], next);
+				},
+			], next);
 		}, callback);
 	};
 
