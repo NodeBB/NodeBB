@@ -180,9 +180,7 @@ function build(targets, callback) {
 	var startTime;
 	var totalTime;
 	async.series([
-		function (next) {
-			beforeBuild(targets, next);
-		},
+		async.apply(beforeBuild, targets),
 		function (next) {
 			var threads = parseInt(nconf.get('threads'), 10);
 			if (threads) {
