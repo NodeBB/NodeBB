@@ -97,9 +97,8 @@ file.exists = function (path, callback) {
 			if (err.code === 'ENOENT') {
 				return callback(null, false);
 			}
-			return callback(err);
 		}
-		return callback(null, true);
+		callback(err, true);
 	});
 };
 

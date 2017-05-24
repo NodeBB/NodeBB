@@ -1287,6 +1287,25 @@ describe('Controllers', function () {
 		});
 	});
 
+	describe('timeago locales', function () {
+		it('should load timeago locale', function (done) {
+			request(nconf.get('url') + '/assets/vendor/jquery/timeago/locales/jquery.timeago.af.js', function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body.indexOf('Afrikaans') !== -1);
+				done();
+			});
+		});
+
+		it('should load timeago locale', function (done) {
+			request(nconf.get('url') + '/assets/vendor/jquery/timeago/locales/jquery.timeago.404.js', function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body.indexOf('English') !== -1);
+				done();
+			});
+		});
+	});
 
 	after(function (done) {
 		var analytics = require('../src/analytics');
