@@ -46,7 +46,6 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 					aspectRatio: data.aspectRatio,
 					autoCropArea: 1,
 					viewMode: 1,
-					zoomable: 0,
 					cropmove: function () {
 						if (data.restrictImageDimension) {
 							if (cropperTool.cropBoxData.width > data.imageDimension) {
