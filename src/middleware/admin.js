@@ -15,31 +15,21 @@ module.exports = function (middleware) {
 	middleware.admin = {};
 	middleware.admin.isAdmin = function (req, res, next) {
 		winston.warn('[middleware.admin.isAdmin] deprecation warning, no need to use this from plugins!');
-
-		async.waterfall([
-			function (next) {
-				user.isAdministrator(req.uid, next);
-			},
-			function (isAdmin, next) {
-				if (!isAdmin) {
-					return controllers.helpers.notAllowed(req, res);
-				}
-				next();
-			},
-		], next);
+		middleware.isAdmin(req, res, next);
 	};
 
 	middleware.admin.buildHeader = function (req, res, next) {
 		res.locals.renderAdminHeader = true;
 
-		controllers.api.getConfig(req, res, function (err, config) {
-			if (err) {
-				return next(err);
-			}
-
-			res.locals.config = config;
-			next();
-		});
+		async.waterfall([
+			function (next) {
+				controllers.api.getConfig(req, res, next);
+			},
+			function (config, next) {
+				res.locals.config = config;
+				next();
+			},
+		], next);
 	};
 
 	middleware.admin.renderHeader = function (req, res, data, next) {
@@ -48,41 +38,31 @@ module.exports = function (middleware) {
 			authentication: [],
 		};
 
-		user.getUserFields(req.uid, ['username', 'userslug', 'email', 'picture', 'email:confirmed'], function (err, userData) {
-			if (err) {
-				return next(err);
-			}
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					userData: function (next) {
+						user.getUserFields(req.uid, ['username', 'userslug', 'email', 'picture', 'email:confirmed'], next);
+					},
+					scripts: function (next) {
+						getAdminScripts(next);
+					},
+					custom_header: function (next) {
+						plugins.fireHook('filter:admin.header.build', custom_header, next);
+					},
+					config: function (next) {
+						controllers.api.getConfig(req, res, next);
+					},
+					configs: function (next) {
+						meta.configs.list(next);
+					},
+				}, next);
+			},
+			function (results, next) {
+				var userData = results.userData;
+				userData.uid = req.uid;
+				userData['email:confirmed'] = parseInt(userData['email:confirmed'], 10) === 1;
 
-			userData.uid = req.uid;
-			userData['email:confirmed'] = parseInt(userData['email:confirmed'], 10) === 1;
-
-			async.parallel({
-				scripts: function (next) {
-					plugins.fireHook('filter:admin.scripts.get', [], function (err, scripts) {
-						if (err) {
-							return next(err);
-						}
-						var arr = [];
-						scripts.forEach(function (script) {
-							arr.push({ src: script });
-						});
-
-						next(null, arr);
-					});
-				},
-				custom_header: function (next) {
-					plugins.fireHook('filter:admin.header.build', custom_header, next);
-				},
-				config: function (next) {
-					controllers.api.getConfig(req, res, next);
-				},
-				configs: function (next) {
-					meta.configs.list(next);
-				},
-			}, function (err, results) {
-				if (err) {
-					return next(err);
-				}
 				res.locals.config = results.config;
 
 				var acpPath = req.path.slice(1).split('/');
@@ -111,10 +91,22 @@ module.exports = function (middleware) {
 				templateValues.template[res.locals.template] = true;
 
 				req.app.render('admin/header', templateValues, next);
-			});
-		});
+			},
+		], next);
 	};
 
+	function getAdminScripts(callback) {
+		async.waterfall([
+			function (next) {
+				plugins.fireHook('filter:admin.scripts.get', [], next);
+			},
+			function (scripts, next) {
+				next(null, scripts.map(function (script) {
+					return { src: script };
+				}));
+			},
+		], callback);
+	}
 
 	middleware.admin.renderFooter = function (req, res, data, next) {
 		req.app.render('admin/footer', data, next);

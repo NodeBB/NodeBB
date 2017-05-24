@@ -2,7 +2,6 @@
 'use strict';
 
 var async = require('async');
-var winston = require('winston');
 var _ = require('underscore');
 
 var db = require('../database');
@@ -31,36 +30,33 @@ module.exports = function (Categories) {
 	};
 
 	Categories.updateRecentTid = function (cid, tid, callback) {
-		async.parallel({
-			count: function (next) {
-				db.sortedSetCard('cid:' + cid + ':recent_tids', next);
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					count: function (next) {
+						db.sortedSetCard('cid:' + cid + ':recent_tids', next);
+					},
+					numRecentReplies: function (next) {
+						db.getObjectField('category:' + cid, 'numRecentReplies', next);
+					},
+				}, next);
 			},
-			numRecentReplies: function (next) {
-				db.getObjectField('category:' + cid, 'numRecentReplies', next);
+			function (results, next) {
+				if (results.count < results.numRecentReplies) {
+					return db.sortedSetAdd('cid:' + cid + ':recent_tids', Date.now(), tid, callback);
+				}
+				db.getSortedSetRangeWithScores('cid:' + cid + ':recent_tids', 0, results.count - results.numRecentReplies, next);
 			},
-		}, function (err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (results.count < results.numRecentReplies) {
-				return db.sortedSetAdd('cid:' + cid + ':recent_tids', Date.now(), tid, callback);
-			}
-			async.waterfall([
-				function (next) {
-					db.getSortedSetRangeWithScores('cid:' + cid + ':recent_tids', 0, results.count - results.numRecentReplies, next);
-				},
-				function (data, next) {
-					if (!data.length) {
-						return next();
-					}
-					db.sortedSetsRemoveRangeByScore(['cid:' + cid + ':recent_tids'], '-inf', data[data.length - 1].score, next);
-				},
-				function (next) {
-					db.sortedSetAdd('cid:' + cid + ':recent_tids', Date.now(), tid, next);
-				},
-			], callback);
-		});
+			function (data, next) {
+				if (!data.length) {
+					return next();
+				}
+				db.sortedSetsRemoveRangeByScore(['cid:' + cid + ':recent_tids'], '-inf', data[data.length - 1].score, next);
+			},
+			function (next) {
+				db.sortedSetAdd('cid:' + cid + ':recent_tids', Date.now(), tid, next);
+			},
+		], callback);
 	};
 
 	Categories.getRecentTopicReplies = function (categoryData, uid, callback) {
@@ -185,65 +181,60 @@ module.exports = function (Categories) {
 	Categories.moveRecentReplies = function (tid, oldCid, cid, callback) {
 		callback = callback || function () {};
 		updatePostCount(tid, oldCid, cid);
-		topics.getPids(tid, function (err, pids) {
-			if (err) {
-				return winston.error(err.message);
-			}
-
-			if (!Array.isArray(pids) || !pids.length) {
-				return;
-			}
-
-			batch.processArray(pids, function (pids, next) {
-				async.waterfall([
-					function (next) {
-						posts.getPostsFields(pids, ['timestamp'], next);
-					},
-					function (postData, next) {
-						var timestamps = postData.map(function (post) {
-							return post && post.timestamp;
-						});
-
-						async.parallel([
-							function (next) {
-								db.sortedSetRemove('cid:' + oldCid + ':pids', pids, next);
-							},
-							function (next) {
-								db.sortedSetAdd('cid:' + cid + ':pids', timestamps, pids, next);
-							},
-						], next);
-					},
-				], next);
-			}, function (err) {
-				if (err) {
-					winston.error(err.stack);
+		async.waterfall([
+			function (next) {
+				topics.getPids(tid, next);
+			},
+			function (pids, next) {
+				if (!Array.isArray(pids) || !pids.length) {
+					return callback();
 				}
-				callback(err);
-			});
-		});
+
+				batch.processArray(pids, function (pids, next) {
+					async.waterfall([
+						function (next) {
+							posts.getPostsFields(pids, ['timestamp'], next);
+						},
+						function (postData, next) {
+							var timestamps = postData.map(function (post) {
+								return post && post.timestamp;
+							});
+
+							async.parallel([
+								function (next) {
+									db.sortedSetRemove('cid:' + oldCid + ':pids', pids, next);
+								},
+								function (next) {
+									db.sortedSetAdd('cid:' + cid + ':pids', timestamps, pids, next);
+								},
+							], next);
+						},
+					], next);
+				}, next);
+			},
+		], callback);
 	};
 
-	function updatePostCount(tid, oldCid, newCid) {
-		topics.getTopicField(tid, 'postcount', function (err, postCount) {
-			if (err) {
-				return winston.error(err.message);
-			}
-			if (!parseInt(postCount, 10)) {
-				return;
-			}
-			async.parallel([
-				function (next) {
-					db.incrObjectFieldBy('category:' + oldCid, 'post_count', -postCount, next);
-				},
-				function (next) {
-					db.incrObjectFieldBy('category:' + newCid, 'post_count', postCount, next);
-				},
-			], function (err) {
-				if (err) {
-					winston.error(err.message);
+	function updatePostCount(tid, oldCid, newCid, callback) {
+		callback = callback || function () {};
+		async.waterfall([
+			function (next) {
+				topics.getTopicField(tid, 'postcount', next);
+			},
+			function (postCount, next) {
+				if (!parseInt(postCount, 10)) {
+					return callback();
 				}
-			});
-		});
+				async.parallel([
+					function (next) {
+						db.incrObjectFieldBy('category:' + oldCid, 'post_count', -postCount, next);
+					},
+					function (next) {
+						db.incrObjectFieldBy('category:' + newCid, 'post_count', postCount, next);
+					},
+				], next);
+			},
+		], callback);
 	}
 };
 

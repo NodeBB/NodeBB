@@ -8,32 +8,19 @@ var db = require('../database');
 
 module.exports = function (Categories) {
 	Categories.getCategoryData = function (cid, callback) {
-		db.getObject('category:' + cid, function (err, category) {
-			if (err) {
-				return callback(err);
-			}
-
-			modifyCategory(category);
-			callback(null, category);
-		});
+		async.waterfall([
+			function (next) {
+				db.getObject('category:' + cid, next);
+			},
+			function (category, next) {
+				modifyCategory(category);
+				next(null, category);
+			},
+		], callback);
 	};
 
 	Categories.getCategoriesData = function (cids, callback) {
-		if (!Array.isArray(cids) || !cids.length) {
-			return callback(null, []);
-		}
-		var keys = cids.map(function (cid) {
-			return 'category:' + cid;
-		});
-
-		db.getObjects(keys, function (err, categories) {
-			if (err || !Array.isArray(categories) || !categories.length) {
-				return callback(err, []);
-			}
-
-			categories.forEach(modifyCategory);
-			callback(null, categories);
-		});
+		Categories.getCategoriesFields(cids, [], callback);
 	};
 
 	function modifyCategory(category) {
@@ -76,15 +63,19 @@ module.exports = function (Categories) {
 		var keys = cids.map(function (cid) {
 			return 'category:' + cid;
 		});
-
-		db.getObjectsFields(keys, fields, function (err, categories) {
-			if (err) {
-				return callback(err);
-			}
-
-			categories.forEach(modifyCategory);
-			callback(null, categories);
-		});
+		async.waterfall([
+			function (next) {
+				if (fields.length) {
+					db.getObjectsFields(keys, fields, next);
+				} else {
+					db.getObjects(keys, next);
+				}
+			},
+			function (categories, next) {
+				categories.forEach(modifyCategory);
+				next(null, categories);
+			},
+		], callback);
 	};
 
 	Categories.getMultipleCategoryFields = function (cids, fields, callback) {
