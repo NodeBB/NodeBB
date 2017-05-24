@@ -414,6 +414,11 @@ describe('authentication', function () {
 				meta.config.loginAttempts = 5;
 				assert.equal(res.statusCode, 403);
 				assert.equal(body, '[[error:account-locked]]');
+				loginUser('lockme', 'abcdef', next);
+			},
+			function (res, body, jar, next) {
+				assert.equal(res.statusCode, 403);
+				assert.equal(body, '[[error:account-locked]]');
 				db.exists('lockout:' + uid, next);
 			},
 			function (locked, next) {
