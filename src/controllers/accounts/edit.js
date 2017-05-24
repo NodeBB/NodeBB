@@ -1,8 +1,6 @@
 'use strict';
 
 var async = require('async');
-var fs = require('fs');
-var winston = require('winston');
 
 var db = require('../../database');
 var user = require('../../user');
@@ -12,49 +10,51 @@ var helpers = require('../helpers');
 var groups = require('../../groups');
 var accountHelpers = require('./helpers');
 var privileges = require('../../privileges');
+var file = require('../../file');
 
-var editController = {};
+var editController = module.exports;
 
 editController.get = function (req, res, callback) {
-	accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, function (err, userData) {
-		if (err || !userData) {
-			return callback(err);
-		}
-
-		userData.maximumSignatureLength = parseInt(meta.config.maximumSignatureLength, 10) || 255;
-		userData.maximumAboutMeLength = parseInt(meta.config.maximumAboutMeLength, 10) || 1000;
-		userData.maximumProfileImageSize = parseInt(meta.config.maximumProfileImageSize, 10);
-		userData.allowProfileImageUploads = parseInt(meta.config.allowProfileImageUploads, 10) === 1;
-		userData.allowAccountDelete = parseInt(meta.config.allowAccountDelete, 10) === 1;
-		userData.profileImageDimension = parseInt(meta.config.profileImageDimension, 10) || 200;
-
-		userData.groups = userData.groups.filter(function (group) {
-			return group && group.userTitleEnabled && !groups.isPrivilegeGroup(group.name) && group.name !== 'registered-users';
-		});
-		userData.groups.forEach(function (group) {
-			group.selected = group.name === userData.groupTitle;
-		});
-
-		userData.title = '[[pages:account/edit, ' + userData.username + ']]';
-		userData.breadcrumbs = helpers.buildBreadcrumbs([
-			{
-				text: userData.username,
-				url: '/user/' + userData.userslug,
-			},
-			{
-				text: '[[user:edit]]',
-			},
-		]);
-		userData.editButtons = [];
-
-		plugins.fireHook('filter:user.account.edit', userData, function (err, userData) {
-			if (err) {
-				return callback(err);
+	async.waterfall([
+		function (next) {
+			accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, next);
+		},
+		function (userData, next) {
+			if (!userData) {
+				return callback();
 			}
+			userData.maximumSignatureLength = parseInt(meta.config.maximumSignatureLength, 10) || 255;
+			userData.maximumAboutMeLength = parseInt(meta.config.maximumAboutMeLength, 10) || 1000;
+			userData.maximumProfileImageSize = parseInt(meta.config.maximumProfileImageSize, 10);
+			userData.allowProfileImageUploads = parseInt(meta.config.allowProfileImageUploads, 10) === 1;
+			userData.allowAccountDelete = parseInt(meta.config.allowAccountDelete, 10) === 1;
+			userData.profileImageDimension = parseInt(meta.config.profileImageDimension, 10) || 200;
 
+			userData.groups = userData.groups.filter(function (group) {
+				return group && group.userTitleEnabled && !groups.isPrivilegeGroup(group.name) && group.name !== 'registered-users';
+			});
+			userData.groups.forEach(function (group) {
+				group.selected = group.name === userData.groupTitle;
+			});
+
+			userData.title = '[[pages:account/edit, ' + userData.username + ']]';
+			userData.breadcrumbs = helpers.buildBreadcrumbs([
+				{
+					text: userData.username,
+					url: '/user/' + userData.userslug,
+				},
+				{
+					text: '[[user:edit]]',
+				},
+			]);
+			userData.editButtons = [];
+
+			plugins.fireHook('filter:user.account.edit', userData, next);
+		},
+		function (userData) {
 			res.render('account/edit', userData);
-		});
-	});
+		},
+	], callback);
 };
 
 editController.password = function (req, res, next) {
@@ -115,14 +115,11 @@ function getUserData(req, next, callback) {
 			}
 			db.getObjectField('user:' + userData.uid, 'password', next);
 		},
-	], function (err, password) {
-		if (err) {
-			return callback(err);
-		}
-
-		userData.hasPassword = !!password;
-		callback(null, userData);
-	});
+		function (password, next) {
+			userData.hasPassword = !!password;
+			next(null, userData);
+		},
+	], callback);
 }
 
 editController.uploadPicture = function (req, res, next) {
@@ -147,11 +144,7 @@ editController.uploadPicture = function (req, res, next) {
 			user.uploadPicture(updateUid, userPhoto, next);
 		},
 	], function (err, image) {
-		fs.unlink(userPhoto.path, function (err) {
-			if (err) {
-				winston.warn('[user/picture] Unable to delete picture ' + userPhoto.path, err);
-			}
-		});
+		file.delete(userPhoto.path);
 		if (err) {
 			return next(err);
 		}
@@ -165,11 +158,13 @@ editController.uploadPicture = function (req, res, next) {
 
 editController.uploadCoverPicture = function (req, res, next) {
 	var params = JSON.parse(req.body.params);
+	var coverPhoto = req.files.files[0];
 
 	user.updateCoverPicture({
-		file: req.files.files[0],
+		file: coverPhoto,
 		uid: params.uid,
 	}, function (err, image) {
+		file.delete(coverPhoto.path);
 		if (err) {
 			return next(err);
 		}
@@ -179,5 +174,3 @@ editController.uploadCoverPicture = function (req, res, next) {
 		}]);
 	});
 };
-
-module.exports = editController;

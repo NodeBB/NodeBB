@@ -1,10 +1,8 @@
 'use strict';
 
-var fs = require('fs');
 var path = require('path');
 var async = require('async');
 var nconf = require('nconf');
-var winston = require('winston');
 var mime = require('mime');
 
 var meta = require('../../meta');
@@ -23,7 +21,7 @@ uploadsController.uploadCategoryPicture = function (req, res, next) {
 	try {
 		params = JSON.parse(req.body.params);
 	} catch (e) {
-		deleteTempFile(uploadedFile.path);
+		file.delete(uploadedFile.path);
 		return next(new Error('[[error:invalid-json]]'));
 	}
 
@@ -39,7 +37,7 @@ uploadsController.uploadFavicon = function (req, res, next) {
 
 	if (validateUpload(req, res, next, uploadedFile, allowedTypes)) {
 		file.saveFileToLocal('favicon.ico', 'system', uploadedFile.path, function (err, image) {
-			deleteTempFile(uploadedFile.path);
+			file.delete(uploadedFile.path);
 			if (err) {
 				return next(err);
 			}
@@ -72,7 +70,7 @@ uploadsController.uploadTouchIcon = function (req, res, next) {
 					}),
 				], next);
 			}, function (err) {
-				deleteTempFile(uploadedFile.path);
+				file.delete(uploadedFile.path);
 
 				if (err) {
 					return next(err);
@@ -104,7 +102,7 @@ uploadsController.uploadSound = function (req, res, next) {
 			meta.sounds.build(next);
 		},
 	], function (err) {
-		deleteTempFile(uploadedFile.path);
+		file.delete(uploadedFile.path);
 		if (err) {
 			return next(err);
 		}
@@ -131,7 +129,7 @@ function upload(name, req, res, next) {
 
 function validateUpload(req, res, next, uploadedFile, allowedTypes) {
 	if (allowedTypes.indexOf(uploadedFile.type) === -1) {
-		deleteTempFile(uploadedFile.path);
+		file.delete(uploadedFile.path);
 		res.json({ error: '[[error:invalid-image-type, ' + allowedTypes.join('&#44; ') + ']]' });
 		return false;
 	}
@@ -149,18 +147,10 @@ function uploadImage(filename, folder, uploadedFile, req, res, next) {
 			}
 		},
 	], function (err, image) {
-		deleteTempFile(uploadedFile.path);
+		file.delete(uploadedFile.path);
 		if (err) {
 			return next(err);
 		}
 		res.json([{ name: uploadedFile.name, url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url }]);
-	});
-}
-
-function deleteTempFile(path) {
-	fs.unlink(path, function (err) {
-		if (err) {
-			winston.error(err);
-		}
 	});
 }

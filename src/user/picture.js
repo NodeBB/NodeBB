@@ -1,8 +1,6 @@
 'use strict';
 
 var async = require('async');
-var fs = require('fs');
-var winston = require('winston');
 var request = require('request');
 var mime = require('mime');
 
@@ -106,7 +104,7 @@ module.exports = function (User) {
 				}
 			},
 		], function (err) {
-			deleteFile(picture.path);
+			file.delete(picture.path);
 			callback(err, {
 				url: url,
 			});
@@ -175,7 +173,7 @@ module.exports = function (User) {
 				}, next);
 			},
 		], function (err) {
-			deleteFile(picture.path);
+			file.delete(picture.path);
 			callback(err, uploadedImage);
 		});
 	};
@@ -190,7 +188,7 @@ module.exports = function (User) {
 			if (err) {
 				return callback(err);
 			}
-			deleteFile(path);
+			file.delete(path);
 			callback(null, newPath);
 		});
 	}
@@ -228,16 +226,6 @@ module.exports = function (User) {
 				});
 			},
 		], callback);
-	}
-
-	function deleteFile(path) {
-		if (path) {
-			fs.unlink(path, function (err) {
-				if (err) {
-					winston.error(err);
-				}
-			});
-		}
 	}
 
 	User.removeCoverPicture = function (data, callback) {

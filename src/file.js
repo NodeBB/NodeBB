@@ -115,6 +115,16 @@ file.existsSync = function (path) {
 	return true;
 };
 
+file.delete = function (path) {
+	if (path) {
+		fs.unlink(path, function (err) {
+			if (err) {
+				winston.error(err);
+			}
+		});
+	}
+};
+
 file.link = function link(filePath, destPath, cb) {
 	if (process.platform === 'win32') {
 		fs.link(filePath, destPath, cb);
@@ -178,5 +188,3 @@ file.walk = function (dir, done) {
 		});
 	});
 };
-
-module.exports = file;
