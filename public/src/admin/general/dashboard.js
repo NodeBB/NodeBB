@@ -297,7 +297,9 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 			$('[data-action="updateGraph"]:not([data-units="custom"])').on('click', function () {
 				var until = new Date();
 				var amount = $(this).attr('data-amount');
-				until.setHours(0, 0, 0, 0);
+				if ($(this).attr('data-units') === 'days') {
+					until.setHours(0, 0, 0, 0);
+				}
 				until = until.getTime();
 				updateTrafficGraph($(this).attr('data-units'), until, amount);
 				$('[data-action="updateGraph"]').removeClass('active');
