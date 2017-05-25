@@ -72,7 +72,7 @@ app.cacheBuster = null;
 				});
 			}
 		});
-		socket.on('event:livereload', function (data) {
+		socket.on('event:livereload', function () {
 			if (app.user.isAdmin && !ajaxify.currentPage.match(/admin/)) {
 				window.location.reload();
 			}
