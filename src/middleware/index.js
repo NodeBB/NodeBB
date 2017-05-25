@@ -108,14 +108,15 @@ function expose(exposedField, method, field, req, res, next) {
 	if (!req.params.hasOwnProperty(field)) {
 		return next();
 	}
-	method(req.params[field], function (err, id) {
-		if (err) {
-			return next(err);
-		}
-
-		res.locals[exposedField] = id;
-		next();
-	});
+	async.waterfall([
+		function (next) {
+			method(req.params[field], next);
+		},
+		function (id, next) {
+			res.locals[exposedField] = id;
+			next();
+		},
+	], next);
 }
 
 middleware.privateUploads = function (req, res, next) {

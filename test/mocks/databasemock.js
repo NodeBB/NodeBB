@@ -139,6 +139,9 @@ function setupMockDefaults(callback) {
 			db.emptydb(next);
 		},
 		function (next) {
+			db.createIndices(next);
+		},
+		function (next) {
 			winston.info('test_database flushed');
 			setupDefaultConfigs(meta, next);
 		},

@@ -313,16 +313,13 @@ topicsController.teaser = function (req, res, next) {
 			}
 			posts.getPostSummaryByPids([pid], req.uid, { stripTags: false }, next);
 		},
-	], function (err, posts) {
-		if (err) {
-			return next(err);
-		}
-
-		if (!Array.isArray(posts) || !posts.length) {
-			return res.status(404).json('not-found');
-		}
-		res.json(posts[0]);
-	});
+		function (posts) {
+			if (!Array.isArray(posts) || !posts.length) {
+				return res.status(404).json('not-found');
+			}
+			res.json(posts[0]);
+		},
+	], next);
 };
 
 topicsController.pagination = function (req, res, callback) {

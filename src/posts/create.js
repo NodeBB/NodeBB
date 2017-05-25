@@ -102,11 +102,11 @@ module.exports = function (Posts) {
 						db.incrObjectField('global', 'postCount', next);
 					},
 				], function (err) {
-					if (err) {
-						return next(err);
-					}
-					plugins.fireHook('filter:post.get', { post: postData, uid: data.uid }, next);
+					next(err);
 				});
+			},
+			function (next) {
+				plugins.fireHook('filter:post.get', { post: postData, uid: data.uid }, next);
 			},
 			function (data, next) {
 				data.post.isMain = isMain;

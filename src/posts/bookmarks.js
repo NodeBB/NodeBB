@@ -18,69 +18,70 @@ module.exports = function (Posts) {
 		if (!parseInt(uid, 10)) {
 			return callback(new Error('[[error:not-logged-in]]'));
 		}
+
 		var isBookmarking = type === 'bookmark';
-
-		async.parallel({
-			owner: function (next) {
-				Posts.getPostField(pid, 'uid', next);
+		var postData;
+		var hasBookmarked;
+		var owner;
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					owner: function (next) {
+						Posts.getPostField(pid, 'uid', next);
+					},
+					postData: function (next) {
+						Posts.getPostFields(pid, ['pid', 'uid'], next);
+					},
+					hasBookmarked: function (next) {
+						Posts.hasBookmarked(pid, uid, next);
+					},
+				}, next);
 			},
-			postData: function (next) {
-				Posts.getPostFields(pid, ['pid', 'uid'], next);
-			},
-			hasBookmarked: function (next) {
-				Posts.hasBookmarked(pid, uid, next);
-			},
-		}, function (err, results) {
-			if (err) {
-				return callback(err);
-			}
+			function (results, next) {
+				owner = results.owner;
+				postData = results.postData;
+				hasBookmarked = results.hasBookmarked;
 
-			if (isBookmarking && results.hasBookmarked) {
-				return callback(new Error('[[error:already-bookmarked]]'));
-			}
-
-			if (!isBookmarking && !results.hasBookmarked) {
-				return callback(new Error('[[error:already-unbookmarked]]'));
-			}
-
-			async.waterfall([
-				function (next) {
-					if (isBookmarking) {
-						db.sortedSetAdd('uid:' + uid + ':bookmarks', Date.now(), pid, next);
-					} else {
-						db.sortedSetRemove('uid:' + uid + ':bookmarks', pid, next);
-					}
-				},
-				function (next) {
-					db[isBookmarking ? 'setAdd' : 'setRemove']('pid:' + pid + ':users_bookmarked', uid, next);
-				},
-				function (next) {
-					db.setCount('pid:' + pid + ':users_bookmarked', next);
-				},
-				function (count, next) {
-					results.postData.bookmarks = count;
-					Posts.setPostField(pid, 'bookmarks', count, next);
-				},
-			], function (err) {
-				if (err) {
-					return callback(err);
+				if (isBookmarking && hasBookmarked) {
+					return callback(new Error('[[error:already-bookmarked]]'));
 				}
 
-				var current = results.hasBookmarked ? 'bookmarked' : 'unbookmarked';
+				if (!isBookmarking && !hasBookmarked) {
+					return callback(new Error('[[error:already-unbookmarked]]'));
+				}
+
+				if (isBookmarking) {
+					db.sortedSetAdd('uid:' + uid + ':bookmarks', Date.now(), pid, next);
+				} else {
+					db.sortedSetRemove('uid:' + uid + ':bookmarks', pid, next);
+				}
+			},
+			function (next) {
+				db[isBookmarking ? 'setAdd' : 'setRemove']('pid:' + pid + ':users_bookmarked', uid, next);
+			},
+			function (next) {
+				db.setCount('pid:' + pid + ':users_bookmarked', next);
+			},
+			function (count, next) {
+				postData.bookmarks = count;
+				Posts.setPostField(pid, 'bookmarks', count, next);
+			},
+			function (next) {
+				var current = hasBookmarked ? 'bookmarked' : 'unbookmarked';
 
 				plugins.fireHook('action:post.' + type, {
 					pid: pid,
 					uid: uid,
-					owner: results.owner,
+					owner: owner,
 					current: current,
 				});
 
-				callback(null, {
-					post: results.postData,
+				next(null, {
+					post: postData,
 					isBookmarked: isBookmarking,
 				});
-			});
-		});
+			},
+		], callback);
 	}
 
 	Posts.hasBookmarked = function (pid, uid, callback) {
