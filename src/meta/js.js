@@ -88,6 +88,8 @@ module.exports = function (Meta) {
 		},
 	};
 
+	var basePath = path.resolve(__dirname, '../..');
+
 	function minifyModules(modules, fork, callback) {
 		var moduleDirs = modules.reduce(function (prev, mod) {
 			var dir = path.resolve(path.dirname(mod.destPath));
@@ -201,7 +203,10 @@ module.exports = function (Meta) {
 						};
 					});
 
-					moduleFiles = moduleFiles.concat(mods);
+					moduleFiles = moduleFiles.concat(mods).map(function (mod) {
+						mod.filename = path.relative(basePath, mod.srcPath).replace(/\\/g, '/');
+						return mod;
+					});
 
 					next();
 				});
@@ -287,8 +292,6 @@ module.exports = function (Meta) {
 				return callback(err);
 			}
 
-			var basePath = path.resolve(__dirname, '../..');
-
 			var scripts = Meta.js.scripts.base.concat(pluginScripts);
 
 			if (target === 'client' && global.env !== 'development') {
@@ -296,7 +299,11 @@ module.exports = function (Meta) {
 			}
 
 			scripts = scripts.map(function (script) {
-				return path.resolve(basePath, script).replace(/\\/g, '/');
+				var srcPath = path.resolve(basePath, script).replace(/\\/g, '/');
+				return {
+					srcPath: srcPath,
+					filename: path.relative(basePath, srcPath).replace(/\\/g, '/'),
+				};
 			});
 
 			callback(null, scripts);
@@ -315,12 +322,13 @@ module.exports = function (Meta) {
 			},
 			function (files, next) {
 				var minify = global.env !== 'development';
-
-				minifier.js.bundle(files, minify, fork, next);
-			},
-			function (bundle, next) {
 				var filePath = path.join(__dirname, '../../build/public', fileNames[target]);
-				fs.writeFile(filePath, bundle.code, next);
+
+				minifier.js.bundle({
+					files: files,
+					filename: fileNames[target],
+					destPath: filePath,
+				}, minify, fork, next);
 			},
 		], callback);
 	};
