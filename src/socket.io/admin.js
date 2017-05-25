@@ -17,6 +17,7 @@ var analytics = require('../analytics');
 var websockets = require('../socket.io/index');
 var index = require('./index');
 var getAdminSearchDict = require('../admin/search').getDictionary;
+var utils = require('../../public/src/utils');
 
 var SocketAdmin = {
 	user: require('./admin/user'),
@@ -205,6 +206,13 @@ SocketAdmin.settings.clearSitemapCache = function (socket, data, callback) {
 };
 
 SocketAdmin.email.test = function (socket, data, callback) {
+	var site_title = meta.config.title || 'NodeBB';
+	var payload = {
+		subject: '[' + site_title + '] Test Email',
+		site_title: site_title,
+		url: nconf.get('url'),
+	};
+
 	switch (data.template) {
 	case 'digest':
 		userDigest.execute({
@@ -213,13 +221,17 @@ SocketAdmin.email.test = function (socket, data, callback) {
 		}, callback);
 		break;
 
+	case 'banned':
+		Object.assign(payload, {
+			username: 'test-user',
+			until: utils.toISOString(Date.now()),
+			reason: 'Test Reason',
+		});
+		emailer.send(data.template, socket.uid, payload, callback);
+		break;
+
 	default:
-		var site_title = meta.config.title || 'NodeBB';
-		emailer.send(data.template, socket.uid, {
-			subject: '[' + site_title + '] Test Email',
-			site_title: site_title,
-			url: nconf.get('url'),
-		}, callback);
+		emailer.send(data.template, socket.uid, payload, callback);
 		break;
 	}
 };
