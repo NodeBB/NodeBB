@@ -20,12 +20,28 @@ describe('minifier', function () {
 	var scripts = [
 		path.resolve(__dirname, './files/1.js'),
 		path.resolve(__dirname, './files/2.js'),
-	];
+	].map(function (script) {
+		return {
+			srcPath: script,
+			destPath: path.resolve(__dirname, '../build/test', path.basename(script)),
+			filename: path.basename(script),
+		};
+	});
+
 	it('.js.bundle() should concat scripts', function (done) {
-		minifier.js.bundle(scripts, false, false, function (err, bundle) {
+		var destPath = path.resolve(__dirname, '../build/test/concatenated.js');
+
+		minifier.js.bundle({
+			files: scripts,
+			destPath: destPath,
+			filename: 'concatenated.js',
+		}, false, false, function (err) {
 			assert.ifError(err);
+
+			assert(file.existsSync(destPath));
+
 			assert.strictEqual(
-				bundle.code,
+				fs.readFileSync(destPath).toString(),
 				'(function (window, document) {' +
 				'\n\twindow.doStuff = function () {' +
 				'\n\t\tdocument.body.innerHTML = \'Stuff has been done\';' +
@@ -40,36 +56,40 @@ describe('minifier', function () {
 			done();
 		});
 	});
-
 	it('.js.bundle() should minify scripts', function (done) {
-		minifier.js.bundle(scripts, true, false, function (err, bundle) {
+		var destPath = path.resolve(__dirname, '../build/test/minified.js');
+
+		minifier.js.bundle({
+			files: scripts,
+			destPath: destPath,
+			filename: 'minified.js',
+		}, true, false, function (err) {
 			assert.ifError(err);
+
+			assert(file.existsSync(destPath));
+
 			assert.strictEqual(
-				bundle.code,
-				'(function(n,o){n.doStuff=function(){o.body.innerHTML="Stuff has been done"}})(window,document);function foo(n,o){return\'The person known as "\'+n+\'" is \'+o+" years old"}'
+				fs.readFileSync(destPath).toString(),
+				'!function(n,o){n.doStuff=function(){o.body.innerHTML="Stuff has been done"}}(window,document);function foo(n,o){return\'The person known as "\'+n+\'" is \'+o+" years old"}' +
+				'\n//# sourceMappingURL=minified.js.map'
 			);
 			done();
 		});
 	});
 
 	it('.js.minifyBatch() should minify each script', function (done) {
-		var s = scripts.map(function (script) {
-			return {
-				srcPath: script,
-				destPath: path.resolve(__dirname, '../build/test', path.basename(script)),
-			};
-		});
-		minifier.js.minifyBatch(s, false, function (err) {
+		minifier.js.minifyBatch(scripts, false, function (err) {
 			assert.ifError(err);
 
-			assert(file.existsSync(s[0].destPath));
-			assert(file.existsSync(s[1].destPath));
+			assert(file.existsSync(scripts[0].destPath));
+			assert(file.existsSync(scripts[1].destPath));
 
-			fs.readFile(s[0].destPath, function (err, buffer) {
+			fs.readFile(scripts[0].destPath, function (err, buffer) {
 				assert.ifError(err);
 				assert.strictEqual(
 					buffer.toString(),
-					'(function(n,o){n.doStuff=function(){o.body.innerHTML="Stuff has been done"}})(window,document);'
+					'!function(n,o){n.doStuff=function(){o.body.innerHTML="Stuff has been done"}}(window,document);' +
+					'\n//# sourceMappingURL=1.js.map'
 				);
 				done();
 			});

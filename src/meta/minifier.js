@@ -1,17 +1,15 @@
 'use strict';
 
-var uglifyjs = require('uglify-js');
-var async = require('async');
 var fs = require('fs');
 var childProcess = require('child_process');
 var os = require('os');
+var uglifyjs = require('uglify-js');
+var async = require('async');
 var winston = require('winston');
 var less = require('less');
 var postcss = require('postcss');
 var autoprefixer = require('autoprefixer');
 var clean = require('postcss-clean');
-
-var file = require('../file');
 
 var Minifier = module.exports;
 
@@ -163,13 +161,21 @@ function executeAction(action, fork, callback) {
 
 function concat(data, callback) {
 	if (data.files && data.files.length) {
-		async.mapLimit(data.files, 1000, fs.readFile, function (err, files) {
+		async.mapLimit(data.files, 1000, function (ref, next) {
+			fs.readFile(ref.srcPath, function (err, buffer) {
+				if (err) {
+					return next(err);
+				}
+
+				next(null, buffer.toString());
+			});
+		}, function (err, files) {
 			if (err) {
 				return callback(err);
 			}
 
 			var output = files.join('\n;');
-			callback(null, { code: output });
+			fs.writeFile(data.destPath, output, callback);
 		});
 
 		return;
@@ -179,81 +185,108 @@ function concat(data, callback) {
 }
 actions.concat = concat;
 
-function minifyJS(data, callback) {
-	if (data.batch) {
-		async.eachLimit(data.files, 1000, function (ref, next) {
-			var srcPath = ref.srcPath;
-			var destPath = ref.destPath;
+function minifyJS_batch(data, callback) {
+	async.eachLimit(data.files, 1000, function (ref, next) {
+		var srcPath = ref.srcPath;
+		var destPath = ref.destPath;
+		var filename = ref.filename;
 
-			fs.readFile(srcPath, function (err, buffer) {
-				if (err && err.code === 'ENOENT') {
-					return next(null, null);
-				}
-				if (err) {
-					return next(err);
-				}
-
-				try {
-					var minified = uglifyjs.minify(buffer.toString(), {
-						// outSourceMap: data.filename + '.map',
-						compress: data.compress,
-						fromString: true,
-						output: {
-							// suppress uglify line length warnings
-							max_line_len: 400000,
-						},
-					});
-
-					fs.writeFile(destPath, minified.code, next);
-				} catch (e) {
-					next(e);
-				}
-			});
-		}, callback);
-
-		return;
-	}
-
-	if (data.files && data.files.length) {
-		async.filter(data.files, file.exists, function (err, scripts) {
+		fs.readFile(srcPath, function (err, buffer) {
 			if (err) {
-				return callback(err);
+				return next(err);
 			}
+
+			var scripts = {};
+			scripts[filename] = buffer.toString();
 
 			try {
 				var minified = uglifyjs.minify(scripts, {
-					// outSourceMap: data.filename + '.map',
-					compress: data.compress,
-					fromString: false,
+					sourceMap: {
+						filename: filename,
+						url: filename + '.map',
+						includeSources: true,
+					},
 				});
 
-				callback(null, minified);
+				async.parallel([
+					async.apply(fs.writeFile, destPath, minified.code),
+					async.apply(fs.writeFile, destPath + '.map', minified.map),
+				], next);
 			} catch (e) {
-				callback(e);
+				next(e);
 			}
 		});
+	}, callback);
+}
+actions.minifyJS_batch = minifyJS_batch;
 
-		return;
-	}
+function minifyJS(data, callback) {
+	async.mapLimit(data.files, 1000, function (ref, next) {
+		var srcPath = ref.srcPath;
+		var filename = ref.filename;
 
-	callback();
+		fs.readFile(srcPath, function (err, buffer) {
+			if (err) {
+				return next(err);
+			}
+
+			next(null, {
+				srcPath: srcPath,
+				filename: filename,
+				source: buffer.toString(),
+			});
+		});
+	}, function (err, files) {
+		if (err) {
+			return callback(err);
+		}
+
+		var scripts = {};
+		files.forEach(function (ref) {
+			if (!ref) {
+				return;
+			}
+
+			scripts[ref.filename] = ref.source;
+		});
+
+		try {
+			var minified = uglifyjs.minify(scripts, {
+				sourceMap: {
+					filename: data.filename,
+					url: data.filename + '.map',
+					includeSources: true,
+				},
+				compress: {
+					hoist_funs: false,
+				},
+			});
+
+			async.parallel([
+				async.apply(fs.writeFile, data.destPath, minified.code),
+				async.apply(fs.writeFile, data.destPath + '.map', minified.map),
+			], callback);
+		} catch (e) {
+			callback(e);
+		}
+	});
 }
 actions.minifyJS = minifyJS;
 
 Minifier.js = {};
-Minifier.js.bundle = function (scripts, minify, fork, callback) {
+Minifier.js.bundle = function (data, minify, fork, callback) {
 	executeAction({
 		act: minify ? 'minifyJS' : 'concat',
-		files: scripts,
-		compress: false,
+		files: data.files,
+		filename: data.filename,
+		destPath: data.destPath,
 	}, fork, callback);
 };
 
 Minifier.js.minifyBatch = function (scripts, fork, callback) {
 	executeAction({
-		act: 'minifyJS',
+		act: 'minifyJS_batch',
 		files: scripts,
-		batch: true,
 	}, fork, callback);
 };
 

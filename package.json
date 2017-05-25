@@ -92,7 +92,7 @@
     "string": "^3.0.0",
     "templates.js": "0.3.10",
     "toobusy-js": "^0.5.1",
-    "uglify-js": "^2.6.0",
+    "uglify-js": "^3.0.11",
     "underscore": "^1.8.3",
     "underscore.deep": "^0.5.1",
     "validator": "7.0.0",
