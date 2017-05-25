@@ -6,6 +6,7 @@ var fs = require('fs');
 var assert = require('assert');
 var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
+var async = require('async');
 
 var db = require('./mocks/databasemock');
 var file = require('../src/file');
@@ -103,7 +104,11 @@ describe('Build', function (done) {
 	var build = require('../src/meta/build');
 
 	before(function (done) {
-		rimraf(path.join(__dirname, '../build/public'), done);
+		async.series([
+			async.apply(rimraf, path.join(__dirname, '../build/public')),
+			db.setupMockDefaults,
+			async.apply(db.activatePlugin, 'nodebb-plugin-markdown'),
+		], done);
 	});
 
 	it('should build plugin static dirs', function (done) {
@@ -177,10 +182,17 @@ describe('Build', function (done) {
 	it('should build languages', function (done) {
 		build.build(['languages'], function (err) {
 			assert.ifError(err);
-			var filename = path.join(__dirname, '../build/public/language/en-GB/global.json');
-			assert(file.existsSync(filename));
-			var global = fs.readFileSync(filename).toString();
-			assert.strictEqual(JSON.parse(global).home, 'Home');
+
+			var globalFile = path.join(__dirname, '../build/public/language/en-GB/global.json');
+			assert(file.existsSync(globalFile), 'global.json exists');
+			var global = fs.readFileSync(globalFile).toString();
+			assert.strictEqual(JSON.parse(global).home, 'Home', 'global.json contains correct translations');
+
+			var mdFile = path.join(__dirname, '../build/public/language/en-GB/markdown.json');
+			assert(file.existsSync(mdFile), 'markdown.json exists');
+			var md = fs.readFileSync(mdFile).toString();
+			assert.strictEqual(JSON.parse(md).bold, 'bolded text', 'markdown.json contains correct translations');
+
 			done();
 		});
 	});
@@ -188,9 +200,20 @@ describe('Build', function (done) {
 	it('should build sounds', function (done) {
 		build.build(['sounds'], function (err) {
 			assert.ifError(err);
-			var filename = path.join(__dirname, '../build/public/sounds/fileMap.json');
-			assert(file.existsSync(filename));
+
+			var mapFile = path.join(__dirname, '../build/public/sounds/fileMap.json');
+			assert(file.existsSync(mapFile));
+			var fileMap = JSON.parse(fs.readFileSync(mapFile));
+			assert.strictEqual(fileMap['Default | Deedle-dum'], 'nodebb-plugin-soundpack-default/notification.mp3');
+
+			var deebleDumFile = path.join(__dirname, '../build/public/sounds/nodebb-plugin-soundpack-default/notification.mp3');
+			assert(file.existsSync(deebleDumFile));
+
 			done();
 		});
+	});
+
+	after(function (done) {
+		db.emptydb(done);
 	});
 });

@@ -8,10 +8,8 @@ var semver = require('semver');
 var express = require('express');
 var nconf = require('nconf');
 
-var db = require('./database');
 var hotswap = require('./hotswap');
 var file = require('./file');
-var languages = require('./languages');
 
 var app;
 var middleware;
@@ -20,7 +18,12 @@ var middleware;
 	require('./plugins/install')(Plugins);
 	require('./plugins/load')(Plugins);
 	require('./plugins/hooks')(Plugins);
+	Plugins.data = require('./plugins/data');
 
+	Plugins.getPluginPaths = Plugins.data.getPluginPaths;
+	Plugins.loadPluginInfo = Plugins.data.loadPluginInfo;
+
+	Plugins.pluginsData = {};
 	Plugins.libraries = {};
 	Plugins.loadedHooks = {};
 	Plugins.staticDirs = {};
@@ -30,8 +33,8 @@ var middleware;
 	Plugins.acpScripts = [];
 	Plugins.libraryPaths = [];
 	Plugins.versionWarning = [];
-	Plugins.languageCodes = [];
 	Plugins.soundpacks = [];
+	Plugins.languageData = {};
 
 	Plugins.initialized = false;
 
@@ -84,21 +87,7 @@ var middleware;
 		Plugins.libraryPaths.length = 0;
 
 		async.waterfall([
-			function (next) {
-				// Build language code list
-				languages.list(function (err, languages) {
-					if (err) {
-						return next(err);
-					}
-
-					Plugins.languageCodes = languages.map(function (data) {
-						return data.code;
-					});
-
-					next();
-				});
-			},
-			async.apply(Plugins.getPluginPaths),
+			Plugins.getPluginPaths,
 			function (paths, next) {
 				async.eachSeries(paths, Plugins.loadPlugin, next);
 			},
@@ -150,21 +139,7 @@ var middleware;
 		var templates = {};
 		var tplName;
 
-		async.waterfall([
-			async.apply(db.getSortedSetRange, 'plugins:active', 0, -1),
-			function (plugins, next) {
-				var pluginBasePath = path.join(__dirname, '../node_modules');
-				var paths = plugins.map(function (plugin) {
-					return path.join(pluginBasePath, plugin);
-				});
-
-				// Filter out plugins with invalid paths
-				async.filter(paths, file.exists, next);
-			},
-			function (paths, next) {
-				async.map(paths, Plugins.loadPluginInfo, next);
-			},
-		], function (err, plugins) {
+		Plugins.data.getActive(function (err, plugins) {
 			if (err) {
 				return callback(err);
 			}
