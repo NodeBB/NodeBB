@@ -70,7 +70,7 @@ describe('minifier', function () {
 
 			assert.strictEqual(
 				fs.readFileSync(destPath).toString(),
-				'!function(n,o){n.doStuff=function(){o.body.innerHTML="Stuff has been done"}}(window,document);function foo(n,o){return\'The person known as "\'+n+\'" is \'+o+" years old"}' +
+				'(function(n,o){n.doStuff=function(){o.body.innerHTML="Stuff has been done"}})(window,document);function foo(n,o){return\'The person known as "\'+n+\'" is \'+o+" years old"}' +
 				'\n//# sourceMappingURL=minified.js.map'
 			);
 			done();
@@ -88,7 +88,7 @@ describe('minifier', function () {
 				assert.ifError(err);
 				assert.strictEqual(
 					buffer.toString(),
-					'!function(n,o){n.doStuff=function(){o.body.innerHTML="Stuff has been done"}}(window,document);' +
+					'(function(n,o){n.doStuff=function(){o.body.innerHTML="Stuff has been done"}})(window,document);' +
 					'\n//# sourceMappingURL=1.js.map'
 				);
 				done();

@@ -206,6 +206,7 @@ function minifyJS_batch(data, callback) {
 						url: filename + '.map',
 						includeSources: true,
 					},
+					compress: false,
 				});
 
 				async.parallel([
@@ -257,9 +258,7 @@ function minifyJS(data, callback) {
 					url: data.filename + '.map',
 					includeSources: true,
 				},
-				compress: {
-					hoist_funs: false,
-				},
+				compress: false,
 			});
 
 			async.parallel([
