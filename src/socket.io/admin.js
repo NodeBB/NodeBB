@@ -13,6 +13,7 @@ var events = require('../events');
 var emailer = require('../emailer');
 var db = require('../database');
 var analytics = require('../analytics');
+var websockets = require('../socket.io/index');
 var index = require('./index');
 var getAdminSearchDict = require('../admin/search').getDictionary;
 
@@ -278,5 +279,9 @@ SocketAdmin.deleteAllSessions = function (socket, data, callback) {
 	user.auth.deleteAllSessions(callback);
 };
 
+SocketAdmin.reloadAllSessions = function (socket, data, callback) {
+	websockets.in('uid_' + socket.uid).emit('event:livereload');
+	callback();
+};
 
 module.exports = SocketAdmin;

@@ -28,6 +28,12 @@ define('admin/appearance/customise', ['admin/settings', 'ace/ace'], function (Se
 				app.flags._unsaved = true;
 				$('#customHTML-holder').val(customHTML.getValue());
 			});
+
+			$('#save').on('click', function () {
+				if ($('#enableLiveReload').is(':checked')) {
+					socket.emit('admin.reloadAllSessions');
+				}
+			});
 		});
 	};
 
