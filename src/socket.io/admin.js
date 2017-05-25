@@ -8,6 +8,7 @@ var meta = require('../meta');
 var plugins = require('../plugins');
 var widgets = require('../widgets');
 var user = require('../user');
+var userDigest = require('../user/digest');
 var logger = require('../logger');
 var events = require('../events');
 var emailer = require('../emailer');
@@ -204,12 +205,23 @@ SocketAdmin.settings.clearSitemapCache = function (socket, data, callback) {
 };
 
 SocketAdmin.email.test = function (socket, data, callback) {
-	var site_title = meta.config.title || 'NodeBB';
-	emailer.send(data.template, socket.uid, {
-		subject: '[' + site_title + '] Test Email',
-		site_title: site_title,
-		url: nconf.get('url'),
-	}, callback);
+	switch (data.template) {
+	case 'digest':
+		userDigest.execute({
+			interval: 'day',
+			subscribers: [socket.uid],
+		}, callback);
+		break;
+
+	default:
+		var site_title = meta.config.title || 'NodeBB';
+		emailer.send(data.template, socket.uid, {
+			subject: '[' + site_title + '] Test Email',
+			site_title: site_title,
+			url: nconf.get('url'),
+		}, callback);
+		break;
+	}
 };
 
 SocketAdmin.analytics.get = function (socket, data, callback) {

@@ -14,12 +14,12 @@ var utils = require('../utils');
 
 var Digest = module.exports;
 
-Digest.execute = function (interval, callback) {
+Digest.execute = function (payload, callback) {
 	callback = callback || function () {};
 
 	var digestsDisabled = parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
 	if (digestsDisabled) {
-		winston.info('[user/jobs] Did not send digests (' + interval + ') because subscription system is disabled.');
+		winston.info('[user/jobs] Did not send digests (' + payload.interval + ') because subscription system is disabled.');
 		return callback();
 	}
 
@@ -27,8 +27,14 @@ Digest.execute = function (interval, callback) {
 	async.waterfall([
 		function (next) {
 			async.parallel({
-				topics: async.apply(topics.getLatestTopics, 0, 0, 9, interval),
-				subscribers: async.apply(Digest.getSubscribers, interval),
+				topics: async.apply(topics.getLatestTopics, 0, 0, 9, payload.interval),
+				subscribers: function (next) {
+					if (payload.subscribers) {
+						setImmediate(next, undefined, payload.subscribers);
+					} else {
+						Digest.getSubscribers(payload.interval, next);
+					}
+				},
 			}, next);
 		},
 		function (data, next) {
@@ -47,14 +53,14 @@ Digest.execute = function (interval, callback) {
 				return topicObj;
 			});
 
-			data.interval = interval;
+			data.interval = payload.interval;
 			Digest.send(data, next);
 		},
 	], function (err) {
 		if (err) {
-			winston.error('[user/jobs] Could not send digests (' + interval + '): ' + err.message);
+			winston.error('[user/jobs] Could not send digests (' + payload.interval + '): ' + err.message);
 		} else {
-			winston.info('[user/jobs] Digest (' + interval + ') scheduling completed. ' + subscribers.length + ' email(s) sent.');
+			winston.info('[user/jobs] Digest (' + payload.interval + ') scheduling completed. ' + subscribers.length + ' email(s) sent.');
 		}
 
 		callback(err);
