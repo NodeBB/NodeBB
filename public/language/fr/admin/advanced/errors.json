@@ -8,7 +8,7 @@
 	"clear-error-log": "Effacer les journaux d'erreurs",
 	"route": "Route",
 	"count": "Nombre",
-	"no-routes-not-found": "Hooray! No 404 errors!",
+	"no-routes-not-found": "Hourrah ! Aucune erreur 404 !",
 	"clear404-confirm": "Êtes-vous sûr de vouloir effacer les journaux d'erreurs 404 ?",
 	"clear404-success": "Erreurs \"404 non trouvé\" effacées"
 }
