@@ -41,7 +41,7 @@ describe('minifier', function () {
 			assert(file.existsSync(destPath));
 
 			assert.strictEqual(
-				fs.readFileSync(destPath).toString(),
+				fs.readFileSync(destPath).toString().replace(/\r\n/g, '\n'),
 				'(function (window, document) {' +
 				'\n\twindow.doStuff = function () {' +
 				'\n\t\tdocument.body.innerHTML = \'Stuff has been done\';' +
