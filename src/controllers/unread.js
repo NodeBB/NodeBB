@@ -55,66 +55,66 @@ unreadController.get = function (req, res, next) {
 				cutoff: cutoff,
 			}, next);
 		},
-	], function (err, data) {
-		if (err) {
-			return next(err);
-		}
+		function (data) {
+			data.pageCount = Math.max(1, Math.ceil(data.topicCount / settings.topicsPerPage));
+			data.pagination = pagination.create(page, data.pageCount, req.query);
 
-		data.pageCount = Math.max(1, Math.ceil(data.topicCount / settings.topicsPerPage));
-		data.pagination = pagination.create(page, data.pageCount, req.query);
+			if (settings.usePagination && (page < 1 || page > data.pageCount)) {
+				req.query.page = Math.max(1, Math.min(data.pageCount, page));
+				return helpers.redirect(res, '/unread?' + querystring.stringify(req.query));
+			}
 
-		if (settings.usePagination && (page < 1 || page > data.pageCount)) {
-			req.query.page = Math.max(1, Math.min(data.pageCount, page));
-			return helpers.redirect(res, '/unread?' + querystring.stringify(req.query));
-		}
+			data.categories = results.watchedCategories.categories;
+			data.selectedCategory = results.watchedCategories.selectedCategory;
 
-		data.categories = results.watchedCategories.categories;
-		data.selectedCategory = results.watchedCategories.selectedCategory;
+			if (req.path.startsWith('/api/unread') || req.path.startsWith('/unread')) {
+				data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[unread:title]]' }]);
+			}
 
-		if (req.path.startsWith('/api/unread') || req.path.startsWith('/unread')) {
-			data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[unread:title]]' }]);
-		}
+			data.title = '[[pages:unread]]';
+			data.filters = [{
+				name: '[[unread:all-topics]]',
+				url: 'unread',
+				selected: filter === '',
+				filter: '',
+			}, {
+				name: '[[unread:new-topics]]',
+				url: 'unread/new',
+				selected: filter === 'new',
+				filter: 'new',
+			}, {
+				name: '[[unread:watched-topics]]',
+				url: 'unread/watched',
+				selected: filter === 'watched',
+				filter: 'watched',
+			}];
 
-		data.title = '[[pages:unread]]';
-		data.filters = [{
-			name: '[[unread:all-topics]]',
-			url: 'unread',
-			selected: filter === '',
-			filter: '',
-		}, {
-			name: '[[unread:new-topics]]',
-			url: 'unread/new',
-			selected: filter === 'new',
-			filter: 'new',
-		}, {
-			name: '[[unread:watched-topics]]',
-			url: 'unread/watched',
-			selected: filter === 'watched',
-			filter: 'watched',
-		}];
+			data.selectedFilter = data.filters.find(function (filter) {
+				return filter && filter.selected;
+			});
 
-		data.selectedFilter = data.filters.find(function (filter) {
-			return filter && filter.selected;
-		});
+			data.querystring = cid ? ('?cid=' + validator.escape(String(cid))) : '';
 
-		data.querystring = cid ? ('?cid=' + validator.escape(String(cid))) : '';
-
-		res.render('unread', data);
-	});
+			res.render('unread', data);
+		},
+	], next);
 };
 
 unreadController.unreadTotal = function (req, res, next) {
 	var filter = req.params.filter || '';
 
-	if (!validFilter[filter]) {
-		return next();
-	}
-
-	topics.getTotalUnread(req.uid, filter, function (err, data) {
-		if (err) {
-			return next(err);
-		}
-
-		res.json(data);
-	});
+	async.waterfall([
+		function (next) {
+			plugins.fireHook('filter:unread.getValidFilters', { filters: validFilter }, next);
+		},
+		function (data, _next) {
+			if (!validFilter[filter]) {
+				return next();
+			}
+			topics.getTotalUnread(req.uid, filter, _next);
+		},
+		function (data) {
+			res.json(data);
+		},
+	], next);
 };

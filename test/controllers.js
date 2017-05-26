@@ -1564,6 +1564,51 @@ describe('Controllers', function () {
 		});
 	});
 
+	describe('unread', function () {
+		var jar;
+		before(function (done) {
+			helpers.loginUser('foo', 'barbar', function (err, _jar) {
+				assert.ifError(err);
+				jar = _jar;
+				done();
+			});
+		});
+
+		it('should 404 if filter is invalid', function (done) {
+			request(nconf.get('url') + '/api/unread/doesnotexist', { jar: jar }, function (err, res) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 404);
+				done();
+			});
+		});
+
+		it('should 404 if filter is invalid', function (done) {
+			request(nconf.get('url') + '/api/unread/doesnotexist/total', { jar: jar }, function (err, res) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 404);
+				done();
+			});
+		});
+
+		it('should return total unread count', function (done) {
+			request(nconf.get('url') + '/api/unread/new/total', { jar: jar }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert.equal(body, 0);
+				done();
+			});
+		});
+
+		it('should redirect if page is out of bounds', function (done) {
+			request(nconf.get('url') + '/api/unread?page=-1', { jar: jar }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 308);
+				assert.equal(body, '"/unread?page=1"');
+				done();
+			});
+		});
+	});
+
 	after(function (done) {
 		var analytics = require('../src/analytics');
 		analytics.writeData(function (err) {
