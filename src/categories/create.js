@@ -37,7 +37,7 @@ module.exports = function (Categories) {
 					post_count: 0,
 					disabled: 0,
 					order: order,
-					link: '',
+					link: data.link || '',
 					numRecentReplies: 1,
 					class: (data.class ? data.class : 'col-md-3 col-xs-6'),
 					imageClass: 'cover',

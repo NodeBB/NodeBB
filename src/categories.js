@@ -271,16 +271,14 @@ var privileges = require('./privileges');
 
 	Categories.flattenCategories = function (allCategories, categoryData) {
 		categoryData.forEach(function (category) {
-			if (!category) {
-				return;
-			}
+			if (category) {
+				if (!category.parent) {
+					allCategories.push(category);
+				}
 
-			if (!category.parent) {
-				allCategories.push(category);
-			}
-
-			if (Array.isArray(category.children) && category.children.length) {
-				Categories.flattenCategories(allCategories, category.children);
+				if (Array.isArray(category.children) && category.children.length) {
+					Categories.flattenCategories(allCategories, category.children);
+				}
 			}
 		});
 	};
