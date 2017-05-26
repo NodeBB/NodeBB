@@ -70,36 +70,42 @@ editController.email = function (req, res, next) {
 };
 
 function renderRoute(name, req, res, next) {
-	getUserData(req, next, function (err, userData) {
-		if (err || !userData) {
-			return next(err);
-		}
-		if ((name === 'username' && userData['username:disableEdit']) || (name === 'email' && userData['email:disableEdit'])) {
-			return next();
-		}
+	async.waterfall([
+		function (next) {
+			getUserData(req, next, next);
+		},
+		function (userData) {
+			if (!userData) {
+				return next();
+			}
 
-		if (name === 'password') {
-			userData.minimumPasswordLength = parseInt(meta.config.minimumPasswordLength, 10);
-			userData.minimumPasswordStrength = parseInt(meta.config.minimumPasswordStrength || 0, 10);
-		}
+			if ((name === 'username' && userData['username:disableEdit']) || (name === 'email' && userData['email:disableEdit'])) {
+				return next();
+			}
 
-		userData.title = '[[pages:account/edit/' + name + ', ' + userData.username + ']]';
-		userData.breadcrumbs = helpers.buildBreadcrumbs([
-			{
-				text: userData.username,
-				url: '/user/' + userData.userslug,
-			},
-			{
-				text: '[[user:edit]]',
-				url: '/user/' + userData.userslug + '/edit',
-			},
-			{
-				text: '[[user:' + name + ']]',
-			},
-		]);
+			if (name === 'password') {
+				userData.minimumPasswordLength = parseInt(meta.config.minimumPasswordLength, 10);
+				userData.minimumPasswordStrength = parseInt(meta.config.minimumPasswordStrength || 0, 10);
+			}
 
-		res.render('account/edit/' + name, userData);
-	});
+			userData.title = '[[pages:account/edit/' + name + ', ' + userData.username + ']]';
+			userData.breadcrumbs = helpers.buildBreadcrumbs([
+				{
+					text: userData.username,
+					url: '/user/' + userData.userslug,
+				},
+				{
+					text: '[[user:edit]]',
+					url: '/user/' + userData.userslug + '/edit',
+				},
+				{
+					text: '[[user:' + name + ']]',
+				},
+			]);
+
+			res.render('account/edit/' + name, userData);
+		},
+	], next);
 }
 
 function getUserData(req, next, callback) {
