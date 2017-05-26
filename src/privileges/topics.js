@@ -2,7 +2,7 @@
 'use strict';
 
 var async = require('async');
-var _ = require('underscore');
+var _ = require('lodash');
 
 var meta = require('../meta');
 var topics = require('../topics');
@@ -29,7 +29,9 @@ module.exports = function (privileges) {
 				}, next);
 			},
 			function (results, next) {
-				var privData = _.object(privs, results.privileges);
+				var privData = _.fromPairs(privs.map(function (priv, i) {
+					return [priv, results.privileges[i]];
+				}));
 				var disabled = parseInt(results.disabled, 10) === 1;
 				var locked = parseInt(topic.locked, 10) === 1;
 				var deleted = parseInt(topic.deleted, 10) === 1;

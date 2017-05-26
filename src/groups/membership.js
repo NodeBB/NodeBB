@@ -2,7 +2,7 @@
 
 var async = require('async');
 var winston = require('winston');
-var _ = require('underscore');
+var _ = require('lodash');
 
 var user = require('../user');
 var utils = require('../utils');
@@ -456,7 +456,7 @@ module.exports = function (Groups) {
 			},
 			function (_members, next) {
 				members = _members;
-				uniqueGroups = _.unique(_.flatten(members));
+				uniqueGroups = _.uniq(_.flatten(members));
 				uniqueGroups = Groups.removeEphemeralGroups(uniqueGroups);
 
 				Groups.isMemberOfGroups(uid, uniqueGroups, next);
