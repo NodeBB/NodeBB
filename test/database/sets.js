@@ -226,9 +226,4 @@ describe('Set methods', function () {
 			});
 		});
 	});
-
-
-	after(function (done) {
-		db.emptydb(done);
-	});
 });

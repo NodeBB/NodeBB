@@ -1467,9 +1467,4 @@ describe('User', function () {
 			});
 		});
 	});
-
-
-	after(function (done) {
-		db.emptydb(done);
-	});
 });

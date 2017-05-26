@@ -170,9 +170,4 @@ describe('Key methods', function () {
 			});
 		});
 	});
-
-
-	after(function (done) {
-		db.emptydb(done);
-	});
 });

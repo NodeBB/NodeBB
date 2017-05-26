@@ -200,9 +200,4 @@ describe('List methods', function () {
 			});
 		});
 	});
-
-
-	after(function (done) {
-		db.emptydb(done);
-	});
 });

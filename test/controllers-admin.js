@@ -553,8 +553,4 @@ describe('Admin Controllers', function () {
 			});
 		});
 	});
-
-	after(function (done) {
-		db.emptydb(done);
-	});
 });

@@ -427,9 +427,5 @@ describe('authentication', function () {
 			},
 		], done);
 	});
-
-	after(function (done) {
-		db.emptydb(done);
-	});
 });
 

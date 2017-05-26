@@ -165,8 +165,4 @@ describe('Search', function () {
 			done();
 		});
 	});
-
-	after(function (done) {
-		db.emptydb(done);
-	});
 });

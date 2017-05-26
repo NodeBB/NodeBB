@@ -564,8 +564,4 @@ describe('Flags', function () {
 			});
 		});
 	});
-
-	after(function (done) {
-		db.emptydb(done);
-	});
 });

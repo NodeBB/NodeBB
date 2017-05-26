@@ -124,9 +124,8 @@ describe('Build', function (done) {
 	var build = require('../src/meta/build');
 
 	before(function (done) {
-		async.series([
+		async.parallel([
 			async.apply(rimraf, path.join(__dirname, '../build/public')),
-			db.setupMockDefaults,
 			async.apply(db.activatePlugin, 'nodebb-plugin-markdown'),
 		], done);
 	});
@@ -231,9 +230,5 @@ describe('Build', function (done) {
 
 			done();
 		});
-	});
-
-	after(function (done) {
-		db.emptydb(done);
 	});
 });

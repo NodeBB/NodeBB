@@ -902,8 +902,4 @@ describe('Sorted Set methods', function () {
 			});
 		});
 	});
-
-	after(function (done) {
-		db.emptydb(done);
-	});
 });

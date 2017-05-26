@@ -116,7 +116,7 @@ before(function (done) {
 			nconf.set('theme_config', path.join(nconf.get('themes_path'), 'nodebb-theme-persona', 'theme.json'));
 			nconf.set('bcrypt_rounds', 1);
 
-			next();
+			meta.dependencies.check(next);
 		},
 		function (next) {
 			var	webserver = require('../../src/webserver');
@@ -129,6 +129,14 @@ before(function (done) {
 			webserver.listen(next);
 		},
 	], done);
+
+	// Iterate over all of the test suites/contexts
+	this.test.parent.suites.forEach(function (suite) {
+		// Attach an afterAll listener that resets the defaults
+		suite.afterAll(function (done) {
+			setupMockDefaults(done);
+		});
+	});
 });
 
 function setupMockDefaults(callback) {
@@ -147,9 +155,6 @@ function setupMockDefaults(callback) {
 		},
 		function (next) {
 			meta.configs.init(next);
-		},
-		function (next) {
-			meta.dependencies.check(next);
 		},
 		function (next) {
 			meta.config.postDelay = 0;
