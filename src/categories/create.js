@@ -43,6 +43,10 @@ module.exports = function (Categories) {
 					imageClass: 'cover',
 				};
 
+				if (data.backgroundImage) {
+					category.backgroundImage = data.backgroundImage;
+				}
+
 				plugins.fireHook('filter:category.create', { category: category, data: data }, next);
 			},
 			function (data, next) {
