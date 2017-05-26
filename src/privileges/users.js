@@ -40,36 +40,34 @@ module.exports = function (privileges) {
 		if (!parseInt(uid, 10)) {
 			return filterIsModerator(cids, uid, cids.map(function () { return false; }), callback);
 		}
-
-		privileges.users.isGlobalModerator(uid, function (err, isGlobalModerator) {
-			if (err) {
-				return callback(err);
-			}
-			if (isGlobalModerator) {
-				return filterIsModerator(cids, uid, cids.map(function () { return true; }), callback);
-			}
-
-
-			var uniqueCids = cids.filter(function (cid, index, array) {
-				return array.indexOf(cid) === index;
-			});
-
-			var groupNames = uniqueCids.map(function (cid) {
-				return 'cid:' + cid + ':privileges:mods';	// At some point we should *probably* change this to "moderate" as well
-			});
-
-			var groupListNames = uniqueCids.map(function (cid) {
-				return 'cid:' + cid + ':privileges:groups:moderate';
-			});
-
-			async.parallel({
-				user: async.apply(groups.isMemberOfGroups, uid, groupNames),
-				group: async.apply(groups.isMemberOfGroupsList, uid, groupListNames),
-			}, function (err, checks) {
-				if (err) {
-					return callback(err);
+		var uniqueCids;
+		async.waterfall([
+			function (next) {
+				privileges.users.isGlobalModerator(uid, next);
+			},
+			function (isGlobalModerator, next) {
+				if (isGlobalModerator) {
+					return filterIsModerator(cids, uid, cids.map(function () { return true; }), callback);
 				}
 
+				uniqueCids = cids.filter(function (cid, index, array) {
+					return array.indexOf(cid) === index;
+				});
+
+				var groupNames = uniqueCids.map(function (cid) {
+					return 'cid:' + cid + ':privileges:mods';	// At some point we should *probably* change this to "moderate" as well
+				});
+
+				var groupListNames = uniqueCids.map(function (cid) {
+					return 'cid:' + cid + ':privileges:groups:moderate';
+				});
+
+				async.parallel({
+					user: async.apply(groups.isMemberOfGroups, uid, groupNames),
+					group: async.apply(groups.isMemberOfGroupsList, uid, groupListNames),
+				}, next);
+			},
+			function (checks, next) {
 				var isMembers = checks.user.map(function (isMember, idx) {
 					return isMember || checks.group[idx];
 				});
@@ -83,80 +81,85 @@ module.exports = function (privileges) {
 					return map[cid];
 				});
 
-				filterIsModerator(cids, uid, isModerator, callback);
-			});
-		});
+				filterIsModerator(cids, uid, isModerator, next);
+			},
+		], callback);
 	}
 
 	function isModeratorsOfCategory(cid, uids, callback) {
-		async.parallel([
-			async.apply(privileges.users.isGlobalModerator, uids),
-			async.apply(groups.isMembers, uids, 'cid:' + cid + ':privileges:mods'),
-			async.apply(groups.isMembersOfGroupList, uids, 'cid:' + cid + ':privileges:groups:moderate'),
-		], function (err, checks) {
-			if (err) {
-				return callback(err);
-			}
+		async.waterfall([
+			function (next) {
+				async.parallel([
+					async.apply(privileges.users.isGlobalModerator, uids),
+					async.apply(groups.isMembers, uids, 'cid:' + cid + ':privileges:mods'),
+					async.apply(groups.isMembersOfGroupList, uids, 'cid:' + cid + ':privileges:groups:moderate'),
+				], next);
+			},
+			function (checks, next) {
+				var isModerator = checks[0].map(function (isMember, idx) {
+					return isMember || checks[1][idx] || checks[2][idx];
+				});
 
-			var isModerator = checks[0].map(function (isMember, idx) {
-				return isMember || checks[1][idx] || checks[2][idx];
-			});
-
-			filterIsModerator(cid, uids, isModerator, callback);
-		});
+				filterIsModerator(cid, uids, isModerator, next);
+			},
+		], callback);
 	}
 
 	function isModeratorOfCategory(cid, uid, callback) {
-		async.parallel([
-			async.apply(privileges.users.isGlobalModerator, uid),
-			async.apply(groups.isMember, uid, 'cid:' + cid + ':privileges:mods'),
-			async.apply(groups.isMemberOfGroupList, uid, 'cid:' + cid + ':privileges:groups:moderate'),
-		], function (err, checks) {
-			if (err) {
-				return callback(err);
-			}
-
-			var isModerator = checks[0] || checks[1] || checks[2];
-			filterIsModerator(cid, uid, isModerator, callback);
-		});
+		async.waterfall([
+			function (next) {
+				async.parallel([
+					async.apply(privileges.users.isGlobalModerator, uid),
+					async.apply(groups.isMember, uid, 'cid:' + cid + ':privileges:mods'),
+					async.apply(groups.isMemberOfGroupList, uid, 'cid:' + cid + ':privileges:groups:moderate'),
+				], next);
+			},
+			function (checks, next) {
+				var isModerator = checks[0] || checks[1] || checks[2];
+				filterIsModerator(cid, uid, isModerator, next);
+			},
+		], callback);
 	}
 
 	function filterIsModerator(cid, uid, isModerator, callback) {
-		plugins.fireHook('filter:user.isModerator', { uid: uid, cid: cid, isModerator: isModerator }, function (err, data) {
-			if (err) {
-				return callback(err);
-			}
-			if ((Array.isArray(uid) || Array.isArray(cid)) && !Array.isArray(data.isModerator)) {
-				return callback(new Error('filter:user.isModerator - i/o mismatch'));
-			}
+		async.waterfall([
+			function (next) {
+				plugins.fireHook('filter:user.isModerator', { uid: uid, cid: cid, isModerator: isModerator }, next);
+			},
+			function (data, next) {
+				if ((Array.isArray(uid) || Array.isArray(cid)) && !Array.isArray(data.isModerator)) {
+					return callback(new Error('filter:user.isModerator - i/o mismatch'));
+				}
 
-			callback(null, data.isModerator);
-		});
+				next(null, data.isModerator);
+			},
+		], callback);
 	}
 
 	privileges.users.canEdit = function (callerUid, uid, callback) {
 		if (parseInt(callerUid, 10) === parseInt(uid, 10)) {
 			return process.nextTick(callback, null, true);
 		}
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					isAdmin: function (next) {
+						privileges.users.isAdministrator(callerUid, next);
+					},
+					isGlobalMod: function (next) {
+						privileges.users.isGlobalModerator(callerUid, next);
+					},
+					isTargetAdmin: function (next) {
+						privileges.users.isAdministrator(uid, next);
+					},
+				}, next);
+			},
+			function (results, next) {
+				var canEdit = results.isAdmin || (results.isGlobalMod && !results.isTargetAdmin);
 
-		async.parallel({
-			isAdmin: function (next) {
-				privileges.users.isAdministrator(callerUid, next);
+				next(null, canEdit);
 			},
-			isGlobalMod: function (next) {
-				privileges.users.isGlobalModerator(callerUid, next);
-			},
-			isTargetAdmin: function (next) {
-				privileges.users.isAdministrator(uid, next);
-			},
-		}, function (err, results) {
-			if (err) {
-				return callback(err);
-			}
-			var canEdit = results.isAdmin || (results.isGlobalMod && !results.isTargetAdmin);
-
-			callback(null, canEdit);
-		});
+		], callback);
 	};
 
 	privileges.users.canBanUser = function (callerUid, uid, callback) {

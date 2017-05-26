@@ -323,7 +323,7 @@ module.exports = function (Groups) {
 	});
 
 	Groups.isMember = function (uid, groupName, callback) {
-		if (!uid || parseInt(uid, 10) <= 0) {
+		if (!uid || parseInt(uid, 10) <= 0 || !groupName) {
 			return setImmediate(callback, null, false);
 		}
 
