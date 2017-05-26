@@ -70,7 +70,7 @@ module.exports = function (Groups) {
 						}
 					},
 					async.apply(db.setObject, 'group:' + groupName, payload),
-					async.apply(renameGroup, groupName, values.name),
+					async.apply(Groups.renameGroup, groupName, values.name),
 				], next);
 			},
 			function (result, next) {
@@ -166,15 +166,30 @@ module.exports = function (Groups) {
 		}
 		async.waterfall([
 			function (next) {
-				Groups.existsBySlug(newSlug, next);
+				async.parallel({
+					group: function (next) {
+						db.getObject('group:' + currentName, next);
+					},
+					exists: function (next) {
+						Groups.existsBySlug(newSlug, next);
+					},
+				}, next);
 			},
-			function (exists, next) {
-				next(exists ? new Error('[[error:group-already-exists]]') : null);
+			function (results, next) {
+				if (results.exists) {
+					return next(new Error('[[error:group-already-exists]]'));
+				}
+
+				if (parseInt(results.group.system, 10) === 1) {
+					return next(new Error('[[error:not-allowed-to-rename-system-group]]'));
+				}
+
+				next();
 			},
 		], callback);
 	}
 
-	function renameGroup(oldName, newName, callback) {
+	Groups.renameGroup = function (oldName, newName, callback) {
 		if (oldName === newName || !newName || newName.length === 0) {
 			return setImmediate(callback);
 		}
@@ -187,10 +202,6 @@ module.exports = function (Groups) {
 				group = _group;
 				if (!group) {
 					return callback();
-				}
-
-				if (parseInt(group.system, 10) === 1) {
-					return callback(new Error('[[error:not-allowed-to-rename-system-group]]'));
 				}
 
 				Groups.exists(newName, next);
@@ -237,7 +248,7 @@ module.exports = function (Groups) {
 		], function (err) {
 			callback(err);
 		});
-	}
+	};
 
 	function renameGroupMember(group, oldName, newName, callback) {
 		var score;
