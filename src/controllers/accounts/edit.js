@@ -117,7 +117,7 @@ function getUserData(req, next, callback) {
 		function (data, next) {
 			userData = data;
 			if (!userData) {
-				return callback();
+				return callback(null, null);
 			}
 			db.getObjectField('user:' + userData.uid, 'password', next);
 		},

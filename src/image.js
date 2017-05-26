@@ -88,14 +88,16 @@ image.normalise = function (path, extension, callback) {
 			callback(err, path + '.png');
 		});
 	} else {
-		new Jimp(path, function (err, image) {
-			if (err) {
-				return callback(err);
-			}
-			image.write(path + '.png', function (err) {
-				callback(err, path + '.png');
-			});
-		});
+		async.waterfall([
+			function (next) {
+				new Jimp(path, next);
+			},
+			function (image, next) {
+				image.write(path + '.png', function (err) {
+					next(err, path + '.png');
+				});
+			},
+		], callback);
 	}
 };
 
