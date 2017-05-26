@@ -9,7 +9,13 @@ module.exports = function (Topics) {
 		count = parseInt(count, 10) || 20;
 
 		if (term === 'alltime') {
-			return getAllTimePopular(uid, count, callback);
+			return getAllTimePopular(uid, count, function (err, topics) {
+				if (err) {
+					return callback(err);
+				}
+
+				sortTiedTopicsByViews(topics, callback);
+			});
 		}
 
 		async.waterfall([
@@ -18,6 +24,9 @@ module.exports = function (Topics) {
 			},
 			function (tids, next) {
 				getTopics(tids, uid, count, next);
+			},
+			function (topics, next) {
+				sortTiedTopicsByViews(topics, next);
 			},
 		], callback);
 	};
@@ -47,5 +56,13 @@ module.exports = function (Topics) {
 				Topics.getTopicsByTids(tids, uid, next);
 			},
 		], callback);
+	}
+
+	function sortTiedTopicsByViews(topics, next) {
+		topics.sort(function (a, b) {
+			return parseInt(a.postcount) !== parseInt(b.postcount) ? 0 : parseInt(b.viewcount, 10) - parseInt(a.viewcount, 10);
+		});
+
+		next(null, topics);
 	}
 };
