@@ -69,6 +69,31 @@ describe('User', function () {
 				done();
 			});
 		});
+
+		it('should error with invalid password', function (done) {
+			User.create({ username: 'test', password: '1' }, function (err) {
+				assert.equal(err.message, '[[user:change_password_error_length]]');
+				done();
+			});
+		});
+
+		it('should error with invalid password', function (done) {
+			User.create({ username: 'test', password: {} }, function (err) {
+				assert.equal(err.message, '[[error:invalid-password]]');
+				done();
+			});
+		});
+
+		it('should error with a too long password', function (done) {
+			var toolong = '';
+			for (var i = 0; i < 5000; i++) {
+				toolong += 'a';
+			}
+			User.create({ username: 'test', password: toolong }, function (err) {
+				assert.equal(err.message, '[[error:password-too-long]]');
+				done();
+			});
+		});
 	});
 
 	describe('.uniqueUsername()', function () {
@@ -77,7 +102,6 @@ describe('User', function () {
 			for (var i = 0; i < 10; i += 1) {
 				users.push({
 					username: 'Jane Doe',
-					password: 'abcdefghi',
 					email: 'jane.doe' + i + '@example.com',
 				});
 			}

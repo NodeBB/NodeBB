@@ -8,8 +8,7 @@ var user = require('../user');
 var utils = require('../utils');
 var groupsController = require('../controllers/groups');
 
-var SocketGroups = {};
-
+var SocketGroups = module.exports;
 
 SocketGroups.before = function (socket, method, data, next) {
 	if (!data) {
@@ -304,5 +303,3 @@ SocketGroups.cover.remove = function (socket, data, callback) {
 		},
 	], callback);
 };
-
-module.exports = SocketGroups;

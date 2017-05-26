@@ -1,5 +1,6 @@
 'use strict';
 
+var async = require('async');
 var validator = require('validator');
 
 var db = require('../database');
@@ -21,27 +22,29 @@ function escapeTitle(topicData) {
 
 module.exports = function (Topics) {
 	Topics.getTopicField = function (tid, field, callback) {
-		db.getObjectField('topic:' + tid, field, function (err, value) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (field === 'title') {
-				value = translator.escape(validator.escape(String(value)));
-			}
-			callback(null, value);
-		});
+		async.waterfall([
+			function (next) {
+				db.getObjectField('topic:' + tid, field, next);
+			},
+			function (value, next) {
+				if (field === 'title') {
+					value = translator.escape(validator.escape(String(value)));
+				}
+				next(null, value);
+			},
+		], callback);
 	};
 
 	Topics.getTopicFields = function (tid, fields, callback) {
-		db.getObjectFields('topic:' + tid, fields, function (err, topic) {
-			if (err) {
-				return callback(err);
-			}
-
-			escapeTitle(topic);
-			callback(null, topic);
-		});
+		async.waterfall([
+			function (next) {
+				db.getObjectFields('topic:' + tid, fields, next);
+			},
+			function (topic, next) {
+				escapeTitle(topic);
+				next(null, topic);
+			},
+		], callback);
 	};
 
 	Topics.getTopicsFields = function (tids, fields, callback) {
@@ -51,42 +54,38 @@ module.exports = function (Topics) {
 		var keys = tids.map(function (tid) {
 			return 'topic:' + tid;
 		});
-		db.getObjectsFields(keys, fields, function (err, topics) {
-			if (err) {
-				return callback(err);
-			}
-
-			topics.forEach(escapeTitle);
-			callback(null, topics);
-		});
+		async.waterfall([
+			function (next) {
+				if (fields.length) {
+					db.getObjectsFields(keys, fields, next);
+				} else {
+					db.getObjects(keys, next);
+				}
+			},
+			function (topics, next) {
+				topics.forEach(modifyTopic);
+				next(null, topics);
+			},
+		], callback);
 	};
 
 	Topics.getTopicData = function (tid, callback) {
-		db.getObject('topic:' + tid, function (err, topic) {
-			if (err || !topic) {
-				return callback(err);
-			}
-
-			modifyTopic(topic);
-			callback(null, topic);
-		});
+		async.waterfall([
+			function (next) {
+				db.getObject('topic:' + tid, next);
+			},
+			function (topic, next) {
+				if (!topic) {
+					return next(null, null);
+				}
+				modifyTopic(topic);
+				next(null, topic);
+			},
+		], callback);
 	};
 
 	Topics.getTopicsData = function (tids, callback) {
-		var keys = [];
-
-		for (var i = 0; i < tids.length; i += 1) {
-			keys.push('topic:' + tids[i]);
-		}
-
-		db.getObjects(keys, function (err, topics) {
-			if (err) {
-				return callback(err);
-			}
-
-			topics.forEach(modifyTopic);
-			callback(null, topics);
-		});
+		Topics.getTopicsFields(tids, [], callback);
 	};
 
 	function modifyTopic(topic) {
@@ -102,13 +101,14 @@ module.exports = function (Topics) {
 	}
 
 	Topics.getCategoryData = function (tid, callback) {
-		Topics.getTopicField(tid, 'cid', function (err, cid) {
-			if (err) {
-				return callback(err);
-			}
-
-			categories.getCategoryData(cid, callback);
-		});
+		async.waterfall([
+			function (next) {
+				Topics.getTopicField(tid, 'cid', next);
+			},
+			function (cid, next) {
+				categories.getCategoryData(cid, next);
+			},
+		], callback);
 	};
 
 	Topics.setTopicField = function (tid, field, value, callback) {

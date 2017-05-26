@@ -38,13 +38,18 @@ var SocketAdmin = {
 };
 
 SocketAdmin.before = function (socket, method, data, next) {
-	user.isAdministrator(socket.uid, function (err, isAdmin) {
-		if (err || isAdmin) {
-			return next(err);
-		}
-		winston.warn('[socket.io] Call to admin method ( ' + method + ' ) blocked (accessed by uid ' + socket.uid + ')');
-		next(new Error('[[error:no-privileges]]'));
-	});
+	async.waterfall([
+		function (next) {
+			user.isAdministrator(socket.uid, next);
+		},
+		function (isAdmin) {
+			if (isAdmin) {
+				return next();
+			}
+			winston.warn('[socket.io] Call to admin method ( ' + method + ' ) blocked (accessed by uid ' + socket.uid + ')');
+			next(new Error('[[error:no-privileges]]'));
+		},
+	], next);
 };
 
 SocketAdmin.reload = function (socket, data, callback) {
@@ -58,26 +63,27 @@ SocketAdmin.reload = function (socket, data, callback) {
 };
 
 SocketAdmin.restart = function (socket, data, callback) {
-	require('../meta/build').buildAll(function (err) {
-		if (err) {
-			return callback(err);
-		}
+	async.waterfall([
+		function (next) {
+			require('../meta/build').buildAll(next);
+		},
+		function (next) {
+			events.log({
+				type: 'build',
+				uid: socket.uid,
+				ip: socket.ip,
+			});
 
-		events.log({
-			type: 'build',
-			uid: socket.uid,
-			ip: socket.ip,
-		});
+			events.log({
+				type: 'restart',
+				uid: socket.uid,
+				ip: socket.ip,
+			});
 
-		events.log({
-			type: 'restart',
-			uid: socket.uid,
-			ip: socket.ip,
-		});
-
-		meta.restart();
-		callback();
-	});
+			meta.restart();
+			next();
+		},
+	], callback);
 };
 
 SocketAdmin.fireEvent = function (socket, data, callback) {

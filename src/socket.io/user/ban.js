@@ -121,11 +121,11 @@ module.exports = function (SocketUser) {
 			function (next) {
 				if (!reason) {
 					return translator.translate('[[user:info.banned-no-reason]]', function (translated) {
-						next(false, translated);
+						next(null, translated);
 					});
 				}
 
-				next(false, reason);
+				next(null, reason);
 			},
 			function (_reason, next) {
 				websockets.in('uid_' + uid).emit('event:banned', {

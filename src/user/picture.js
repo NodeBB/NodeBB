@@ -183,14 +183,15 @@ module.exports = function (User) {
 		if (!convertToPNG) {
 			return setImmediate(callback, null, path);
 		}
-
-		image.normalise(path, extension, function (err, newPath) {
-			if (err) {
-				return callback(err);
-			}
-			file.delete(path);
-			callback(null, newPath);
-		});
+		async.waterfall([
+			function (next) {
+				image.normalise(path, extension, next);
+			},
+			function (newPath, next) {
+				file.delete(path);
+				next(null, newPath);
+			},
+		], callback);
 	}
 
 	function uploadProfileOrCover(filename, image, callback) {

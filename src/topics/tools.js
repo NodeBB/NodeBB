@@ -13,7 +13,6 @@ module.exports = function (Topics) {
 	var topicTools = {};
 	Topics.tools = topicTools;
 
-
 	topicTools.delete = function (tid, uid, callback) {
 		toggleDelete(tid, uid, true, callback);
 	};
@@ -246,6 +245,7 @@ module.exports = function (Topics) {
 
 	topicTools.move = function (tid, cid, uid, callback) {
 		var topic;
+		var oldCid;
 		async.waterfall([
 			function (next) {
 				Topics.exists(tid, next);
@@ -276,41 +276,41 @@ module.exports = function (Topics) {
 							topic.postcount = topic.postcount || 0;
 							db.sortedSetAdd('cid:' + cid + ':tids:posts', topic.postcount, tid, next);
 						},
-					], next);
+					], function (err) {
+						next(err);
+					});
 				}
 			},
-		], function (err) {
-			if (err) {
-				return callback(err);
-			}
-			var oldCid = topic.cid;
-			categories.moveRecentReplies(tid, oldCid, cid);
+			function (next) {
+				oldCid = topic.cid;
+				categories.moveRecentReplies(tid, oldCid, cid);
 
-			async.parallel([
-				function (next) {
-					categories.incrementCategoryFieldBy(oldCid, 'topic_count', -1, next);
-				},
-				function (next) {
-					categories.incrementCategoryFieldBy(cid, 'topic_count', 1, next);
-				},
-				function (next) {
-					Topics.setTopicFields(tid, {
-						cid: cid,
-						oldCid: oldCid,
-					}, next);
-				},
-			], function (err) {
-				if (err) {
-					return callback(err);
-				}
+				async.parallel([
+					function (next) {
+						categories.incrementCategoryFieldBy(oldCid, 'topic_count', -1, next);
+					},
+					function (next) {
+						categories.incrementCategoryFieldBy(cid, 'topic_count', 1, next);
+					},
+					function (next) {
+						Topics.setTopicFields(tid, {
+							cid: cid,
+							oldCid: oldCid,
+						}, next);
+					},
+				], function (err) {
+					next(err);
+				});
+			},
+			function (next) {
 				plugins.fireHook('action:topic.move', {
 					tid: tid,
 					fromCid: oldCid,
 					toCid: cid,
 					uid: uid,
 				});
-				callback();
-			});
-		});
+				next();
+			},
+		], callback);
 	};
 };

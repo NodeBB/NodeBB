@@ -191,7 +191,6 @@ UserNotifications.getUnreadCount = function (uid, callback) {
 		return callback(null, 0);
 	}
 
-
 	async.waterfall([
 		function (next) {
 			db.getSortedSetRevRange('uid:' + uid + ':notifications:unread', 0, 99, next);

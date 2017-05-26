@@ -11,23 +11,24 @@ module.exports = function (User) {
 	};
 
 	User.getWatchedCategories = function (uid, callback) {
-		async.parallel({
-			ignored: function (next) {
-				User.getIgnoredCategories(uid, next);
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					ignored: function (next) {
+						User.getIgnoredCategories(uid, next);
+					},
+					all: function (next) {
+						db.getSortedSetRange('categories:cid', 0, -1, next);
+					},
+				}, next);
 			},
-			all: function (next) {
-				db.getSortedSetRange('categories:cid', 0, -1, next);
+			function (results, next) {
+				var watched = results.all.filter(function (cid) {
+					return cid && results.ignored.indexOf(cid) === -1;
+				});
+				next(null, watched);
 			},
-		}, function (err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			var watched = results.all.filter(function (cid) {
-				return cid && results.ignored.indexOf(cid) === -1;
-			});
-			callback(null, watched);
-		});
+		], callback);
 	};
 
 	User.ignoreCategory = function (uid, cid, callback) {
