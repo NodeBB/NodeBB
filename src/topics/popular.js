@@ -9,13 +9,15 @@ module.exports = function (Topics) {
 		count = parseInt(count, 10) || 20;
 
 		if (term === 'alltime') {
-			return getAllTimePopular(uid, count, function (err, topics) {
-				if (err) {
-					return callback(err);
+			async.waterfall([
+				function (next) {
+					getAllTimePopular(uid, count, next);
+				},
+				function (topics, next) {
+					sortTiedTopicsByViews(topics, next);
 				}
-
-				sortTiedTopicsByViews(topics, callback);
-			});
+			], callback);
+			return;
 		}
 
 		async.waterfall([
