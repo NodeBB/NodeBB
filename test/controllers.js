@@ -8,6 +8,7 @@ var request = require('request');
 var db = require('./mocks/databasemock');
 var categories = require('../src/categories');
 var topics = require('../src/topics');
+var posts = require('../src/posts');
 var user = require('../src/user');
 var groups = require('../src/groups');
 var meta = require('../src/meta');
@@ -1031,6 +1032,151 @@ describe('Controllers', function () {
 				});
 			});
 		});
+
+		it('should load correct user', function (done) {
+			request(nconf.get('url') + '/api/user/FOO', { jar: jar, json: true }, function (err, res) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				done();
+			});
+		});
+
+		it('should redirect', function (done) {
+			request(nconf.get('url') + '/user/FOO', { jar: jar }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should 404 if user does not exist', function (done) {
+			request(nconf.get('url') + '/api/user/doesnotexist', { jar: jar }, function (err, res) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 404);
+				done();
+			});
+		});
+
+		it('should increase profile view', function (done) {
+			request(nconf.get('url') + '/api/user/foo', { }, function (err, res) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				user.getUserField(fooUid, 'profileviews', function (err, viewcount) {
+					assert.ifError(err);
+					assert(viewcount > 0);
+					done();
+				});
+			});
+		});
+
+		it('should parse about me', function (done) {
+			user.setUserFields(fooUid, { picture: '/path/to/picture', aboutme: 'hi i am a bot' }, function (err) {
+				assert.ifError(err);
+				request(nconf.get('url') + '/api/user/foo', { json: true }, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert.equal(body.aboutme, 'hi i am a bot');
+					assert.equal(body.picture, '/path/to/picture');
+					done();
+				});
+			});
+		});
+
+		it('should not return reputation if reputation is disabled', function (done) {
+			meta.config['reputation:disabled'] = 1;
+			request(nconf.get('url') + '/api/user/foo', { json: true }, function (err, res, body) {
+				meta.config['reputation:disabled'] = 0;
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(!body.hasOwnProperty('reputation'));
+				done();
+			});
+		});
+
+		it('should only return posts that are not deleted', function (done) {
+			var topicData;
+			var pidToDelete;
+			async.waterfall([
+				function (next) {
+					topics.post({ uid: fooUid, title: 'visible', content: 'some content', cid: cid }, next);
+				},
+				function (data, next) {
+					topicData = data.topicData;
+					topics.reply({ uid: fooUid, content: '1st reply', tid: topicData.tid }, next);
+				},
+				function (postData, next) {
+					pidToDelete = postData.pid;
+					topics.reply({ uid: fooUid, content: '2nd reply', tid: topicData.tid }, next);
+				},
+				function (postData, next) {
+					posts.delete(pidToDelete, fooUid, next);
+				},
+				function (next) {
+					request(nconf.get('url') + '/api/user/foo', { json: true }, function (err, res, body) {
+						assert.ifError(err);
+						assert.equal(res.statusCode, 200);
+						var contents = body.posts.map(function (p) {
+							return p.content;
+						});
+						assert(contents.indexOf('1st reply') === -1);
+						done();
+					});
+				},
+			], done);
+		});
+
+		it('should return selected group title', function (done) {
+			groups.create({
+				name: 'selectedGroup',
+			}, function (err) {
+				assert.ifError(err);
+				groups.join('selectedGroup', fooUid, function (err) {
+					assert.ifError(err);
+					request(nconf.get('url') + '/api/user/foo', { json: true }, function (err, res, body) {
+						assert.ifError(err);
+						assert.equal(res.statusCode, 200);
+						assert(body.selectedGroup.name, 'selectedGroup');
+						done();
+					});
+				});
+			});
+		});
+
+		it('should 404 if user does not exist', function (done) {
+			groups.join('administrators', fooUid, function (err) {
+				assert.ifError(err);
+				request(nconf.get('url') + '/api/user/doesnotexist/edit', { jar: jar, json: true }, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 404);
+					groups.leave('administrators', fooUid, done);
+				});
+			});
+		});
+
+		it('should render edit/password', function (done) {
+			request(nconf.get('url') + '/api/user/foo/edit/password', { jar: jar, json: true }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				done();
+			});
+		});
+
+		it('should render edit/email', function (done) {
+			request(nconf.get('url') + '/api/user/foo/edit/email', { jar: jar, json: true }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				done();
+			});
+		});
+
+		it('should render edit/username', function (done) {
+			request(nconf.get('url') + '/api/user/foo/edit/username', { jar: jar, json: true }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				done();
+			});
+		});
 	});
 
 	describe('account follow page', function () {
@@ -1570,6 +1716,14 @@ describe('Controllers', function () {
 			helpers.loginUser('foo', 'barbar', function (err, _jar) {
 				assert.ifError(err);
 				jar = _jar;
+				done();
+			});
+		});
+
+		it('should load unread page', function (done) {
+			request(nconf.get('url') + '/api/unread', { jar: jar }, function (err, res) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
 				done();
 			});
 		});
