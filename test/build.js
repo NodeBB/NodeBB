@@ -3,6 +3,7 @@
 var string = require('string');
 var path = require('path');
 var fs = require('fs');
+var os = require('os');
 var assert = require('assert');
 var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
@@ -42,16 +43,15 @@ describe('minifier', function () {
 
 			assert.strictEqual(
 				fs.readFileSync(destPath).toString(),
-				'(function (window, document) {' +
-				'\n\twindow.doStuff = function () {' +
-				'\n\t\tdocument.body.innerHTML = \'Stuff has been done\';' +
-				'\n\t};' +
-				'\n})(window, document);' +
-				'\n' +
-				'\n;function foo(name, age) {' +
-				'\n\treturn \'The person known as "\' + name + \'" is \' + age + \' years old\';' +
-				'\n}' +
-				'\n'
+				'(function (window, document) {' + os.EOL +
+				'\twindow.doStuff = function () {' + os.EOL +
+				'\t\tdocument.body.innerHTML = \'Stuff has been done\';' + os.EOL +
+				'\t};' + os.EOL +
+				'})(window, document);' + os.EOL +
+				os.EOL +
+				';function foo(name, age) {' + os.EOL +
+				'\treturn \'The person known as "\' + name + \'" is \' + age + \' years old\';' + os.EOL +
+				'}' + os.EOL
 			);
 			done();
 		});

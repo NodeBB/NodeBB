@@ -174,7 +174,7 @@ function concat(data, callback) {
 				return callback(err);
 			}
 
-			var output = files.join('\n;');
+			var output = files.join(os.EOL + ';');
 			fs.writeFile(data.destPath, output, callback);
 		});
 
