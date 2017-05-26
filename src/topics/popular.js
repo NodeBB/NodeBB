@@ -60,7 +60,7 @@ module.exports = function (Topics) {
 
 	function sortTiedTopicsByViews(topics, next) {
 		topics.sort(function (a, b) {
-			return parseInt(a.postcount) !== parseInt(b.postcount) ? 0 : parseInt(b.viewcount, 10) - parseInt(a.viewcount, 10);
+			return parseInt(a.postcount, 10) !== parseInt(b.postcount, 10) ? 0 : parseInt(b.viewcount, 10) - parseInt(a.viewcount, 10);
 		});
 
 		next(null, topics);
