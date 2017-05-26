@@ -15,7 +15,7 @@ module.exports = function (Topics) {
 				},
 				function (topics, next) {
 					sortTiedTopicsByViews(topics, next);
-				}
+				},
 			], callback);
 			return;
 		}

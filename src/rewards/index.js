@@ -74,8 +74,7 @@ function filterCompletedRewards(uid, rewards, callback) {
 				}
 
 				var claimable = parseInt(reward.claimable, 10);
-
-				return claimable === 0 || (userRewards[reward.id] < reward.claimable);
+				return claimable === 0 || (!userRewards[reward.id] || userRewards[reward.id] < reward.claimable);
 			});
 
 			next(null, rewards);
