@@ -110,6 +110,14 @@ describe('Topic\'s', function () {
 				done();
 			});
 		});
+
+		it('should return false for falsy uid', function (done) {
+			topics.isOwner(topic.tid, 0, function (err, isOwner) {
+				assert.ifError(err);
+				assert(!isOwner);
+				done();
+			});
+		});
 	});
 
 	describe('.reply', function () {

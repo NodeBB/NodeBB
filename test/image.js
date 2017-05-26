@@ -8,7 +8,6 @@ var image = require('../src/image');
 var file = require('../src/file');
 
 describe('image', function () {
-
 	it('should normalise image', function (done) {
 		image.normalise(path.join(__dirname, 'files/normalise.jpg'), '.jpg', function (err) {
 			assert.ifError(err);
@@ -19,5 +18,4 @@ describe('image', function () {
 			});
 		});
 	});
-
 });
