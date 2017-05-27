@@ -88,6 +88,9 @@ before(function (done) {
 			db.init(next);
 		},
 		function (next) {
+			db.createIndices(next);
+		},
+		function (next) {
 			setupMockDefaults(next);
 		},
 		function (next) {
@@ -145,9 +148,6 @@ function setupMockDefaults(callback) {
 	async.series([
 		function (next) {
 			db.emptydb(next);
-		},
-		function (next) {
-			db.createIndices(next);
 		},
 		function (next) {
 			winston.info('test_database flushed');
