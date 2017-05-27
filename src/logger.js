@@ -143,7 +143,7 @@ Logger.prepare_io_string = function (_type, _uid, _args) {
 	 * The format is: io: <uid> <event> <args>
 	 */
 	try {
-		return 'io: ' + _uid + ' ' + _type + ' ' + util.inspect(Array.prototype.slice.call(_args)) + '\n';
+		return 'io: ' + _uid + ' ' + _type + ' ' + util.inspect(Array.prototype.slice.call(_args), { depth: 3 }) + '\n';
 	} catch (err) {
 		winston.info('Logger.prepare_io_string: Failed', err);
 		return 'error';
@@ -157,7 +157,9 @@ Logger.io_close = function (socket) {
 	if (!socket || !socket.io || !socket.io.sockets || !socket.io.sockets.sockets) {
 		return;
 	}
+
 	var clients = socket.io.sockets.sockets;
+
 	for (var sid in clients) {
 		if (clients.hasOwnProperty(sid)) {
 			var client = clients[sid];
@@ -165,8 +167,8 @@ Logger.io_close = function (socket) {
 				client.emit = client.oEmit;
 			}
 
-			if (client.$oEmit && client.$oEmit !== client.$emit) {
-				client.$emit = client.$oEmit;
+			if (client.$onevent && client.$onevent !== client.onevent) {
+				client.onevent = client.$onevent;
 			}
 		}
 	}
@@ -213,8 +215,8 @@ Logger.io_one = function (socket, uid) {
 		var emit = socket.emit;
 		socket.emit = override(emit, 'emit', 'Logger.io_one: emit.apply: Failed');
 
-		socket.$oEmit = socket.$emit;
-		var $emit = socket.$emit;
-		socket.$emit = override($emit, 'on', 'Logger.io_one: $emit.apply: Failed');
+		socket.$onvent = socket.onevent;
+		var $onevent = socket.onevent;
+		socket.onevent = override($onevent, 'on', 'Logger.io_one: $emit.apply: Failed');
 	}
 };
