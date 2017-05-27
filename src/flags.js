@@ -342,6 +342,7 @@ Flags.create = function (type, id, uid, reason, timestamp, callback) {
 				tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byPid:' + id, timestamp, flagId));	// by target pid
 				if (targetUid) {
 					tasks.push(async.apply(db.sortedSetIncrBy.bind(db), 'users:flags', 1, targetUid));
+					tasks.push(async.apply(user.incrementUserFieldBy, targetUid, 'flags', 1));
 				}
 			}
 
@@ -543,19 +544,16 @@ Flags.getHistory = function (flagId, callback) {
 
 			user.getUsersFields(uids, ['username', 'userslug', 'picture'], next);
 		},
-	], function (err, users) {
-		if (err) {
-			return callback(err);
-		}
+		function (users, next) {
+			// Append user data to each history event
+			history = history.map(function (event, idx) {
+				event.user = users[idx];
+				return event;
+			});
 
-		// Append user data to each history event
-		history = history.map(function (event, idx) {
-			event.user = users[idx];
-			return event;
-		});
-
-		callback(null, history);
-	});
+			next(null, history);
+		},
+	], callback);
 };
 
 Flags.appendHistory = function (flagId, uid, changeset, callback) {
