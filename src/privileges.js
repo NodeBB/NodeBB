@@ -14,23 +14,12 @@ privileges.userPrivilegeList = [
 	'upload:post:image',
 	'upload:post:file',
 	'purge',
-	'mods',
+	'moderate',
 ];
 
-privileges.groupPrivilegeList = [
-	'groups:find',
-	'groups:read',
-	'groups:topics:read',
-	'groups:topics:create',
-	'groups:topics:reply',
-	'groups:posts:edit',
-	'groups:posts:delete',
-	'groups:topics:delete',
-	'groups:upload:post:image',
-	'groups:upload:post:file',
-	'groups:purge',
-	'groups:moderate',
-];
+privileges.groupPrivilegeList = privileges.userPrivilegeList.map(function (privilege) {
+	return 'groups:' + privilege;
+});
 
 privileges.privilegeList = privileges.userPrivilegeList.concat(privileges.groupPrivilegeList);
 

@@ -64,7 +64,7 @@ module.exports = function (SocketPosts) {
 				groups.getMembersOfGroups([
 					'administrators',
 					'Global Moderators',
-					'cid:' + result.topic.cid + ':privileges:mods',
+					'cid:' + result.topic.cid + ':privileges:moderate',
 					'cid:' + result.topic.cid + ':privileges:groups:moderate',
 				], next);
 			},

@@ -616,7 +616,7 @@ Flags.notify = function (flagObj, uid, callback) {
 				async.waterfall([
 					async.apply(posts.getCidByPid, flagObj.targetId),
 					function (cid, next) {
-						groups.getMembers('cid:' + cid + ':privileges:mods', 0, -1, next);
+						groups.getMembers('cid:' + cid + ':privileges:moderate', 0, -1, next);
 					},
 				], next);
 			},

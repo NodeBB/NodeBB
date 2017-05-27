@@ -120,7 +120,7 @@ Categories.getCategoriesByPrivilege = function (set, uid, privilege, callback) {
 Categories.getModerators = function (cid, callback) {
 	async.waterfall([
 		function (next) {
-			Groups.getMembers('cid:' + cid + ':privileges:mods', 0, -1, next);
+			Groups.getMembers('cid:' + cid + ':privileges:moderate', 0, -1, next);
 		},
 		function (uids, next) {
 			if (!Array.isArray(uids) || !uids.length) {

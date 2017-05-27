@@ -494,7 +494,7 @@ describe('Admin Controllers', function () {
 				assert.ifError(err);
 				moderatorJar = _jar;
 
-				groups.join('cid:' + cid + ':privileges:mods', moderatorUid, done);
+				groups.join('cid:' + cid + ':privileges:moderate', moderatorUid, done);
 			});
 		});
 

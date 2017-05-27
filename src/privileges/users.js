@@ -6,6 +6,7 @@ var async = require('async');
 var user = require('../user');
 var groups = require('../groups');
 var plugins = require('../plugins');
+var helpers = require('./helpers');
 
 module.exports = function (privileges) {
 	privileges.users = {};
@@ -54,27 +55,13 @@ module.exports = function (privileges) {
 					return array.indexOf(cid) === index;
 				});
 
-				var groupNames = uniqueCids.map(function (cid) {
-					return 'cid:' + cid + ':privileges:mods';	// At some point we should *probably* change this to "moderate" as well
-				});
-
-				var groupListNames = uniqueCids.map(function (cid) {
-					return 'cid:' + cid + ':privileges:groups:moderate';
-				});
-
-				async.parallel({
-					user: async.apply(groups.isMemberOfGroups, uid, groupNames),
-					group: async.apply(groups.isMemberOfGroupsList, uid, groupListNames),
-				}, next);
+				helpers.isUserAllowedTo('moderate', uid, uniqueCids, next);
 			},
-			function (checks, next) {
-				var isMembers = checks.user.map(function (isMember, idx) {
-					return isMember || checks.group[idx];
-				});
+			function (isAllowed, next) {
 				var map = {};
 
 				uniqueCids.forEach(function (cid, index) {
-					map[cid] = isMembers[index];
+					map[cid] = isAllowed[index];
 				});
 
 				var isModerator = cids.map(function (cid) {
@@ -91,7 +78,7 @@ module.exports = function (privileges) {
 			function (next) {
 				async.parallel([
 					async.apply(privileges.users.isGlobalModerator, uids),
-					async.apply(groups.isMembers, uids, 'cid:' + cid + ':privileges:mods'),
+					async.apply(groups.isMembers, uids, 'cid:' + cid + ':privileges:moderate'),
 					async.apply(groups.isMembersOfGroupList, uids, 'cid:' + cid + ':privileges:groups:moderate'),
 				], next);
 			},
@@ -110,7 +97,7 @@ module.exports = function (privileges) {
 			function (next) {
 				async.parallel([
 					async.apply(privileges.users.isGlobalModerator, uid),
-					async.apply(groups.isMember, uid, 'cid:' + cid + ':privileges:mods'),
+					async.apply(groups.isMember, uid, 'cid:' + cid + ':privileges:moderate'),
 					async.apply(groups.isMemberOfGroupList, uid, 'cid:' + cid + ':privileges:groups:moderate'),
 				], next);
 			},
