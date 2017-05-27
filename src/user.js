@@ -1,6 +1,6 @@
 'use strict';
 
-var	async = require('async');
+var async = require('async');
 var _ = require('underscore');
 
 var groups = require('./groups');

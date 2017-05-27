@@ -74,7 +74,7 @@ module.exports = function (Meta) {
 	};
 
 	Meta.themes.set = function (data, callback) {
-		var	themeData = {
+		var themeData = {
 			'theme:type': data.type,
 			'theme:id': data.id,
 			'theme:staticDir': '',
@@ -141,7 +141,7 @@ module.exports = function (Meta) {
 			function (data, next) {
 				var themeId = data.currentThemeId || 'nodebb-theme-persona';
 
-				var	themeObj = data.themesData.filter(function (themeObj) {
+				var themeObj = data.themesData.filter(function (themeObj) {
 					return themeObj.id === themeId;
 				})[0];
 

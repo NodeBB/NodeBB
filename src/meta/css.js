@@ -59,7 +59,7 @@ module.exports = function (Meta) {
 	}
 
 	function getImports(files, prefix, extension, callback) {
-		var	pluginDirectories = [];
+		var pluginDirectories = [];
 		var source = '';
 
 		files.forEach(function (styleFile) {

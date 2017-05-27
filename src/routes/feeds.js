@@ -233,7 +233,7 @@ function generateTopicsFeed(feedOptions, feedTopics, callback) {
 
 	feedTopics = feedTopics.filter(Boolean);
 
-	var	feed = new rss(feedOptions);
+	var feed = new rss(feedOptions);
 
 	if (feedTopics.length > 0) {
 		feed.pubDate = new Date(parseInt(feedTopics[0].lastposttime, 10)).toUTCString();
@@ -338,7 +338,7 @@ function generateForPostsFeed(feedOptions, posts) {
 	feedOptions.feed_url = nconf.get('url') + feedOptions.feed_url;
 	feedOptions.site_url = nconf.get('url') + feedOptions.site_url;
 
-	var	feed = new rss(feedOptions);
+	var feed = new rss(feedOptions);
 
 	if (posts.length > 0) {
 		feed.pubDate = new Date(parseInt(posts[0].timestamp, 10)).toUTCString();

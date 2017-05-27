@@ -55,7 +55,7 @@ module.exports = function (redisClient, module) {
 		if (!Array.isArray(fields) || !fields.length) {
 			return callback(null, keys.map(function () { return {}; }));
 		}
-		var	multi = redisClient.multi();
+		var multi = redisClient.multi();
 
 		for (var x = 0; x < keys.length; x += 1) {
 			multi.hmget.apply(multi, [keys[x]].concat(fields));

@@ -2,16 +2,16 @@
 
 var async = require('async');
 var passport = require('passport');
-var	passportLocal = require('passport-local').Strategy;
-var	nconf = require('nconf');
-var	winston = require('winston');
-var	express = require('express');
+var passportLocal = require('passport-local').Strategy;
+var nconf = require('nconf');
+var winston = require('winston');
+var express = require('express');
 
-var	controllers = require('../controllers');
-var	plugins = require('../plugins');
-var	hotswap = require('../hotswap');
+var controllers = require('../controllers');
+var plugins = require('../plugins');
+var hotswap = require('../hotswap');
 
-var	loginStrategies = [];
+var loginStrategies = [];
 
 var Auth = module.exports;
 
