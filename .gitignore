@@ -60,3 +60,4 @@ coverage
 
 build
 *.log
+test/files/normalise.jpg.png
