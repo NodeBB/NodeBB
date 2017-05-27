@@ -40,7 +40,7 @@ Messaging.getMessages = function (params, callback) {
 			db.getSortedSetRevRange('uid:' + uid + ':chat:room:' + roomId + ':mids', start, stop, next);
 		},
 		function (mids, next) {
-			if (!Array.isArray(mids) || !mids.length) {
+			if (!mids.length) {
 				return callback(null, []);
 			}
 

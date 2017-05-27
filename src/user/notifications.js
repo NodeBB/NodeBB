@@ -125,16 +125,16 @@ function getNotificationsFromSet(set, read, uid, start, stop, callback) {
 			db.getSortedSetRevRange(set, start, stop, next);
 		},
 		function (nids, next) {
-			if (!Array.isArray(nids) || !nids.length) {
-				return callback(null, []);
-			}
-
 			UserNotifications.getNotifications(nids, uid, next);
 		},
 	], callback);
 }
 
 UserNotifications.getNotifications = function (nids, uid, callback) {
+	if (!Array.isArray(nids) || !nids.length) {
+		return callback(null, []);
+	}
+
 	var notificationData = [];
 	async.waterfall([
 		function (next) {
@@ -177,10 +177,6 @@ UserNotifications.getDailyUnread = function (uid, callback) {
 			db.getSortedSetRevRangeByScore('uid:' + uid + ':notifications:unread', 0, 20, '+inf', yesterday, next);
 		},
 		function (nids, next) {
-			if (!Array.isArray(nids) || !nids.length) {
-				return callback(null, []);
-			}
-
 			UserNotifications.getNotifications(nids, uid, next);
 		},
 	], callback);
@@ -231,7 +227,7 @@ UserNotifications.getUnreadByField = function (uid, field, values, callback) {
 		},
 		function (_nids, next) {
 			nids = _nids;
-			if (!Array.isArray(nids) || !nids.length) {
+			if (!nids.length) {
 				return callback(null, []);
 			}
 

@@ -239,7 +239,7 @@ module.exports = function (Topics) {
 					},
 					function (_pids, _next) {
 						pids = _pids;
-						if (!Array.isArray(pids) || !pids.length) {
+						if (!pids.length) {
 							done = true;
 							return next();
 						}

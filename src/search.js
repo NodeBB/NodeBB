@@ -111,7 +111,7 @@ function filterAndSort(pids, data, callback) {
 			getMatchedPosts(pids, data, next);
 		},
 		function (posts, next) {
-			if (!Array.isArray(posts) || !posts.length) {
+			if (!posts.length) {
 				return callback(null, pids);
 			}
 			posts = posts.filter(Boolean);

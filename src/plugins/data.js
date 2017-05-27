@@ -18,10 +18,6 @@ function getPluginPaths(callback) {
 			db.getSortedSetRange('plugins:active', 0, -1, next);
 		},
 		function (plugins, next) {
-			if (!Array.isArray(plugins)) {
-				return next();
-			}
-
 			plugins = plugins.filter(function (plugin) {
 				return plugin && typeof plugin === 'string';
 			}).map(function (plugin) {

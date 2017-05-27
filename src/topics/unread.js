@@ -50,7 +50,7 @@ module.exports = function (Topics) {
 				Topics.getTopicsByTids(tids, params.uid, next);
 			},
 			function (topicData, next) {
-				if (!Array.isArray(topicData) || !topicData.length) {
+				if (!topicData.length) {
 					return next(null, unreadTopics);
 				}
 

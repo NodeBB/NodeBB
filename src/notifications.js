@@ -235,10 +235,6 @@ Notifications.pushGroup = function (notification, groupName, callback) {
 			groups.getMembers(groupName, 0, -1, next);
 		},
 		function (members, next) {
-			if (!Array.isArray(members) || !members.length) {
-				return callback();
-			}
-
 			Notifications.push(notification, members, next);
 		},
 	], callback);
@@ -387,7 +383,7 @@ Notifications.prune = function (callback) {
 			db.getSortedSetRangeByScore('notifications', 0, 500, '-inf', cutoffTime, next);
 		},
 		function (nids, next) {
-			if (!Array.isArray(nids) || !nids.length) {
+			if (!nids.length) {
 				return callback();
 			}
 

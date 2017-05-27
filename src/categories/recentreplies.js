@@ -186,10 +186,6 @@ module.exports = function (Categories) {
 				topics.getPids(tid, next);
 			},
 			function (pids, next) {
-				if (!Array.isArray(pids) || !pids.length) {
-					return callback();
-				}
-
 				batch.processArray(pids, function (pids, next) {
 					async.waterfall([
 						function (next) {

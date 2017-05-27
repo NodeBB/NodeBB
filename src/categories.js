@@ -94,10 +94,6 @@ Categories.getAllCategories = function (uid, callback) {
 			db.getSortedSetRange('categories:cid', 0, -1, next);
 		},
 		function (cids, next) {
-			if (!Array.isArray(cids) || !cids.length) {
-				return next(null, []);
-			}
-
 			Categories.getCategories(cids, uid, next);
 		},
 	], callback);
@@ -123,15 +119,10 @@ Categories.getModerators = function (cid, callback) {
 			Groups.getMembers('cid:' + cid + ':privileges:moderate', 0, -1, next);
 		},
 		function (uids, next) {
-			if (!Array.isArray(uids) || !uids.length) {
-				return next(null, []);
-			}
-
 			user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
 		},
 	], callback);
 };
-
 
 Categories.getCategories = function (cids, uid, callback) {
 	if (!Array.isArray(cids)) {
