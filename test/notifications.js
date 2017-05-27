@@ -475,9 +475,4 @@ describe('Notifications', function () {
 			});
 		});
 	});
-
-
-	after(function (done) {
-		db.emptydb(done);
-	});
 });

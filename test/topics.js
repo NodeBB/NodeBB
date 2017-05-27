@@ -1643,8 +1643,4 @@ describe('Topic\'s', function () {
 			});
 		});
 	});
-
-	after(function (done) {
-		db.emptydb(done);
-	});
 });

@@ -1765,9 +1765,6 @@ describe('Controllers', function () {
 
 	after(function (done) {
 		var analytics = require('../src/analytics');
-		analytics.writeData(function (err) {
-			assert.ifError(err);
-			db.emptydb(done);
-		});
+		analytics.writeData(done);
 	});
 });

@@ -408,9 +408,4 @@ describe('Hash methods', function () {
 			});
 		});
 	});
-
-
-	after(function (done) {
-		db.emptydb(done);
-	});
 });

@@ -275,9 +275,4 @@ describe('meta', function () {
 			});
 		});
 	});
-
-
-	after(function (done) {
-		db.emptydb(done);
-	});
 });

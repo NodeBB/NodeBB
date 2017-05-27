@@ -610,8 +610,4 @@ describe('Messaging Library', function () {
 			});
 		});
 	});
-
-	after(function (done) {
-		db.emptydb(done);
-	});
 });

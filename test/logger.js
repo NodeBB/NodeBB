@@ -28,8 +28,4 @@ describe('logger', function () {
 			done();
 		}, 500);
 	});
-
-	after(function (done) {
-		db.emptydb(done);
-	});
 });

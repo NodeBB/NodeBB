@@ -485,6 +485,7 @@ describe('socket.io', function () {
 		var data = [
 			{ name: 'nodebb-theme-persona', order: 0 },
 			{ name: 'nodebb-plugin-dbsearch', order: 1 },
+			{ name: 'nodebb-plugin-soundpack-default', order: 2 },
 			{ ignoreme: 'wrong data' },
 		];
 		socketAdmin.plugins.orderActivePlugins({ uid: adminUid }, data, function (err) {
@@ -584,10 +585,6 @@ describe('socket.io', function () {
 				done();
 			});
 		});
-	});
-
-	after(function (done) {
-		db.emptydb(done);
 	});
 });
 

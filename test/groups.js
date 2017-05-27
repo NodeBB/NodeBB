@@ -436,10 +436,10 @@ describe('Groups', function () {
 				var	groups = ['Test', 'Hidden'];
 				async.every(groups, function (group, next) {
 					Groups.isMember(testUid, group, function (err, isMember) {
-						assert.ifError(err);
-						next(!isMember);
+						next(err, !isMember);
 					});
-				}, function (result) {
+				}, function (err, result) {
+					assert.ifError(err);
 					assert(result);
 
 					done();
@@ -1188,9 +1188,5 @@ describe('Groups', function () {
 				});
 			});
 		});
-	});
-
-	after(function (done) {
-		db.emptydb(done);
 	});
 });
