@@ -1,6 +1,6 @@
 <!-- 
-    == Github Issues are for bug reports and feature requests only ==
-    == Please visit https://community.github.com for other support ==
+	== Github Issues are for bug reports and feature requests only ==
+	== Please visit https://community.nodebb.org for other support ==
 -->
 
 <!-- ++ Please include the following information when submitting a bug report ++ -->
@@ -13,8 +13,8 @@
 <!-- `mongod --version` or `redis-server --version` -->
 - **Exact steps to cause this issue:**
 <!--
-    1. First I did this...
-    2. Then, I clicked on this item...
+	1. First I did this...
+	2. Then, I clicked on this item...
 -->
 - **What you expected:**
 <!-- e.g. I expected *abc* to *xyz* -->
