@@ -14,7 +14,7 @@ module.exports = function (Groups) {
 				Groups.getGroupsData([groupName], next);
 			},
 			function (groupsData, next) {
-				if (!Array.isArray(groupsData) || !groupsData[0]) {
+				if (!groupsData[0]) {
 					return callback();
 				}
 				groupObj = groupsData[0];

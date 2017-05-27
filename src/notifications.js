@@ -363,10 +363,6 @@ Notifications.markAllRead = function (uid, callback) {
 			db.getSortedSetRevRange('uid:' + uid + ':notifications:unread', 0, 99, next);
 		},
 		function (nids, next) {
-			if (!Array.isArray(nids) || !nids.length) {
-				return next();
-			}
-
 			Notifications.markReadMultiple(nids, uid, next);
 		},
 	], callback);

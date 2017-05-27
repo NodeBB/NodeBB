@@ -235,7 +235,7 @@ var social = require('./social');
 				posts.getPidsFromSet(set, start, stop, reverse, next);
 			},
 			function (pids, next) {
-				if ((!Array.isArray(pids) || !pids.length) && !topic.mainPid) {
+				if (!pids.length && !topic.mainPid) {
 					return callback(null, []);
 				}
 

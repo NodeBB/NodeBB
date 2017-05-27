@@ -314,7 +314,7 @@ topicsController.teaser = function (req, res, next) {
 			posts.getPostSummaryByPids([pid], req.uid, { stripTags: false }, next);
 		},
 		function (posts) {
-			if (!Array.isArray(posts) || !posts.length) {
+			if (!posts.length) {
 				return res.status(404).json('not-found');
 			}
 			res.json(posts[0]);

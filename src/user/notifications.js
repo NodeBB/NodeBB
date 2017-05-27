@@ -271,9 +271,6 @@ UserNotifications.sendTopicNotificationToFollowers = function (uid, topicData, p
 			db.getSortedSetRange('followers:' + uid, 0, -1, next);
 		},
 		function (followers, next) {
-			if (!Array.isArray(followers) || !followers.length) {
-				return;
-			}
 			privileges.categories.filterUids('read', topicData.cid, followers, next);
 		},
 		function (_followers, next) {
