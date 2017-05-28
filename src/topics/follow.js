@@ -219,7 +219,8 @@ module.exports = function (Topics) {
 					titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 				}
 
-				postData.content = posts.relativeToAbsolute(postData.content);
+				postData.content = posts.relativeToAbsolute(postData.content, posts.urlRegex);
+				postData.content = posts.relativeToAbsolute(postData.content, posts.imgRegex);
 
 				notifications.create({
 					type: 'new-reply',
