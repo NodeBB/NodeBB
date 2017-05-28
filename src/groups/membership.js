@@ -148,7 +148,9 @@ module.exports = function (Groups) {
 		async.parallel([
 			async.apply(db.setRemove, 'group:' + groupName + ':pending', uid),
 			async.apply(db.setRemove, 'group:' + groupName + ':invited', uid),
-		], callback);
+		], function (err) {
+			callback(err);
+		});
 	};
 
 	Groups.invite = function (groupName, uid, callback) {

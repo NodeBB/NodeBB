@@ -7,6 +7,7 @@ var meta = require('../meta');
 var user = require('../user');
 var utils = require('../utils');
 var groupsController = require('../controllers/groups');
+var events = require('../events');
 
 var SocketGroups = module.exports;
 
@@ -104,19 +105,47 @@ SocketGroups.rescind = isOwner(function (socket, data, callback) {
 });
 
 SocketGroups.accept = isOwner(function (socket, data, callback) {
-	groups.acceptMembership(data.groupName, data.toUid, callback);
+	async.waterfall([
+		function (next) {
+			groups.acceptMembership(data.groupName, data.toUid, next);
+		},
+		function (next) {
+			events.log({
+				type: 'accept-membership',
+				uid: socket.uid,
+				ip: socket.ip,
+				groupName: data.groupName,
+				targetUid: data.toUid,
+			});
+			setImmediate(next);
+		},
+	], callback);
 });
 
 SocketGroups.reject = isOwner(function (socket, data, callback) {
-	groups.rejectMembership(data.groupName, data.toUid, callback);
+	async.waterfall([
+		function (next) {
+			groups.rejectMembership(data.groupName, data.toUid, next);
+		},
+		function (next) {
+			events.log({
+				type: 'reject-membership',
+				uid: socket.uid,
+				ip: socket.ip,
+				groupName: data.groupName,
+				targetUid: data.toUid,
+			});
+			setImmediate(next);
+		},
+	], callback);
 });
 
 SocketGroups.acceptAll = isOwner(function (socket, data, callback) {
-	acceptRejectAll(groups.acceptMembership, socket, data, callback);
+	acceptRejectAll(SocketGroups.accept, socket, data, callback);
 });
 
 SocketGroups.rejectAll = isOwner(function (socket, data, callback) {
-	acceptRejectAll(groups.rejectMembership, socket, data, callback);
+	acceptRejectAll(SocketGroups.reject, socket, data, callback);
 });
 
 function acceptRejectAll(method, socket, data, callback) {
@@ -126,7 +155,7 @@ function acceptRejectAll(method, socket, data, callback) {
 		},
 		function (uids, next) {
 			async.each(uids, function (uid, next) {
-				method(data.groupName, uid, next);
+				method(socket, { groupName: data.groupName, toUid: uid }, next);
 			}, next);
 		},
 	], callback);
