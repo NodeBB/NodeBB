@@ -6,6 +6,7 @@
 	"nodejs": "nodejs",
 	"online": "online",
 	"git": "git",
+	"memory": "memory",
 	"load": "load",
 	"uptime": "uptime",
 
