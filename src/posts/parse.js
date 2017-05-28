@@ -12,13 +12,13 @@ var plugins = require('../plugins');
 var translator = require('../translator');
 
 module.exports = function (Posts) {
-
 	Posts.urlRegex = {
 		regex: /href="([^"]+)"/g,
 		length: 6,
 	};
+
 	Posts.imgRegex = {
-		regex:/src="([^"]+)"/g,
+		regex: /src="([^"]+)"/g,
 		length: 5,
 	};
 
