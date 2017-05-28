@@ -137,7 +137,7 @@ module.exports = function (privileges) {
 										},
 										function (isPrivate, next) {
 											member.isPrivate = isPrivate;
-											next();
+											next(null, member);
 										},
 									], next);
 								}, next);
