@@ -60,7 +60,9 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 		if (parseInt(ajaxify.data.theirid, 10) !== parseInt(ajaxify.data.yourid, 10)) {
 			return;
 		}
-
+		if (!picture && ajaxify.data.defaultAvatar) {
+			picture = ajaxify.data.defaultAvatar;
+		}
 		components.get('header/userpicture')[picture ? 'show' : 'hide']();
 		components.get('header/usericon')[!picture ? 'show' : 'hide']();
 		if (picture) {
@@ -85,6 +87,8 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 				templates.parse('partials/modals/change_picture_modal', {
 					pictures: pictures,
 					uploaded: uploaded,
+					icon: { text: ajaxify.data['icon:text'], bgColor: ajaxify.data['icon:bgColor'] },
+					defaultAvatar: ajaxify.data.defaultAvatar,
 					allowProfileImageUploads: ajaxify.data.allowProfileImageUploads,
 				}, function (html) {
 					translator.translate(html, function (html) {
@@ -115,12 +119,6 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 						handleImageUpload(modal);
 
 						function updateImages() {
-							var userIcon = modal.find('.user-icon');
-
-							userIcon
-								.css('background-color', ajaxify.data['icon:bgColor'])
-								.text(ajaxify.data['icon:text']);
-
 							// Check to see which one is the active picture
 							if (!ajaxify.data.picture) {
 								modal.find('.list-group-item .user-icon').parents('.list-group-item').addClass('active');

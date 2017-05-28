@@ -6,6 +6,7 @@ var nconf = require('nconf');
 var winston = require('winston');
 
 var db = require('../database');
+var meta = require('../meta');
 var plugins = require('../plugins');
 var utils = require('../utils');
 
@@ -134,7 +135,7 @@ module.exports = function (User) {
 				user.uid = 0;
 				user.username = '[[global:guest]]';
 				user.userslug = '';
-				user.picture = '';
+				user.picture = User.getDefaultAvatar();
 				user['icon:text'] = '?';
 				user['icon:bgColor'] = '#aaa';
 			}
@@ -144,6 +145,9 @@ module.exports = function (User) {
 				user.picture = user.uploadedpicture;
 			} else if (user.uploadedpicture) {
 				user.uploadedpicture = user.uploadedpicture.startsWith('http') ? user.uploadedpicture : nconf.get('relative_path') + user.uploadedpicture;
+			}
+			if (meta.config.defaultAvatar && !user.picture) {
+				user.picture = User.getDefaultAvatar();
 			}
 
 			if (user.hasOwnProperty('status') && parseInt(user.lastonline, 10)) {
@@ -155,7 +159,7 @@ module.exports = function (User) {
 			}
 
 			// User Icons
-			if (user.hasOwnProperty('picture') && user.username && parseInt(user.uid, 10)) {
+			if (user.hasOwnProperty('picture') && user.username && parseInt(user.uid, 10) && !meta.config.defaultAvatar) {
 				user['icon:text'] = (user.username[0] || '').toUpperCase();
 				user['icon:bgColor'] = iconBackgrounds[Array.prototype.reduce.call(user.username, function (cur, next) {
 					return cur + next.charCodeAt();
@@ -173,6 +177,13 @@ module.exports = function (User) {
 
 		plugins.fireHook('filter:users.get', users, callback);
 	}
+
+	User.getDefaultAvatar = function () {
+		if (!meta.config.defaultAvatar) {
+			return '';
+		}
+		return meta.config.defaultAvatar.startsWith('http') ? meta.config.defaultAvatar : nconf.get('relative_path') + meta.config.defaultAvatar;
+	};
 
 	User.setUserField = function (uid, field, value, callback) {
 		callback = callback || function () {};

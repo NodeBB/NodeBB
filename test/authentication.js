@@ -9,6 +9,7 @@ var async = require('async');
 var db = require('./mocks/databasemock');
 var user = require('../src/user');
 var meta = require('../src/meta');
+var helpers = require('./helpers');
 
 describe('authentication', function () {
 	function loginUser(username, password, callback) {
@@ -120,32 +121,16 @@ describe('authentication', function () {
 	});
 
 	it('should logout a user', function (done) {
-		request({
-			url: nconf.get('url') + '/api/config',
-			json: true,
-			jar: jar,
-		}, function (err, response, body) {
+		helpers.logoutUser(jar, function (err) {
 			assert.ifError(err);
-
-			request.post(nconf.get('url') + '/logout', {
-				form: {},
+			request({
+				url: nconf.get('url') + '/api/me',
 				json: true,
 				jar: jar,
-				headers: {
-					'x-csrf-token': body.csrf_token,
-				},
-			}, function (err) {
+			}, function (err, response, body) {
 				assert.ifError(err);
-
-				request({
-					url: nconf.get('url') + '/api/me',
-					json: true,
-					jar: jar,
-				}, function (err, response, body) {
-					assert.ifError(err);
-					assert.equal(body, 'not-authorized');
-					done();
-				});
+				assert.equal(body, 'not-authorized');
+				done();
 			});
 		});
 	});
@@ -317,9 +302,9 @@ describe('authentication', function () {
 
 
 	it('should be able to login with email', function (done) {
-		user.create({ username: 'ginger', password: '123456', email: 'ginger@nodebb.org' }, function (err, uid) {
+		user.create({ username: 'ginger', password: '123456', email: 'ginger@nodebb.org' }, function (err) {
 			assert.ifError(err);
-			loginUser('ginger@nodebb.org', '123456', function (err, response, body) {
+			loginUser('ginger@nodebb.org', '123456', function (err, response) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 200);
 				done();

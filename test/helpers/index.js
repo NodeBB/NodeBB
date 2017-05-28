@@ -12,6 +12,7 @@ var helpers = module.exports;
 
 helpers.loginUser = function (username, password, callback) {
 	var jar = request.jar();
+
 	request({
 		url: nconf.get('url') + '/api/config',
 		json: true,
@@ -38,6 +39,30 @@ helpers.loginUser = function (username, password, callback) {
 			helpers.connectSocketIO(res, function (err, io) {
 				callback(err, jar, io, body.csrf_token);
 			});
+		});
+	});
+};
+
+
+helpers.logoutUser = function (jar, callback) {
+	request({
+		url: nconf.get('url') + '/api/config',
+		json: true,
+		jar: jar,
+	}, function (err, response, body) {
+		if (err) {
+			return callback(err, response, body);
+		}
+
+		request.post(nconf.get('url') + '/logout', {
+			form: {},
+			json: true,
+			jar: jar,
+			headers: {
+				'x-csrf-token': body.csrf_token,
+			},
+		}, function (err, response, body) {
+			callback(err, response, body);
 		});
 	});
 };

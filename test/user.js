@@ -650,13 +650,13 @@ describe('User', function () {
 		});
 
 		it('should set user picture to uploaded', function (done) {
-			User.setUserField(uid, 'uploadedpicture', 'test', function (err) {
+			User.setUserField(uid, 'uploadedpicture', '/test', function (err) {
 				assert.ifError(err);
 				socketUser.changePicture({ uid: uid }, { type: 'uploaded', uid: uid }, function (err) {
 					assert.ifError(err);
 					User.getUserField(uid, 'picture', function (err, picture) {
 						assert.ifError(err);
-						assert.equal(picture, 'test');
+						assert.equal(picture, nconf.get('relative_path') + '/test');
 						done();
 					});
 				});
@@ -800,6 +800,18 @@ describe('User', function () {
 				assert.equal(data[0].text, '[[user:uploaded_picture]]');
 				done();
 			});
+		});
+
+		it('should get default profile avatar', function (done) {
+			assert.strictEqual(User.getDefaultAvatar(), '');
+			meta.config.defaultAvatar = 'https://path/to/default/avatar';
+			assert.strictEqual(User.getDefaultAvatar(), meta.config.defaultAvatar);
+			meta.config.defaultAvatar = '/path/to/default/avatar';
+			nconf.set('relative_path', '/community');
+			assert.strictEqual(User.getDefaultAvatar(), '/community' + meta.config.defaultAvatar);
+			meta.config.defaultAvatar = '';
+			nconf.set('relative_path', '');
+			done();
 		});
 
 		it('should fail to get profile pictures with invalid data', function (done) {

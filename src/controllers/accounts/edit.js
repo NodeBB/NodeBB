@@ -29,6 +29,7 @@ editController.get = function (req, res, callback) {
 			userData.allowProfileImageUploads = parseInt(meta.config.allowProfileImageUploads, 10) === 1;
 			userData.allowAccountDelete = parseInt(meta.config.allowAccountDelete, 10) === 1;
 			userData.profileImageDimension = parseInt(meta.config.profileImageDimension, 10) || 200;
+			userData.defaultAvatar = user.getDefaultAvatar();
 
 			userData.groups = userData.groups.filter(function (group) {
 				return group && group.userTitleEnabled && !groups.isPrivilegeGroup(group.name) && group.name !== 'registered-users';
