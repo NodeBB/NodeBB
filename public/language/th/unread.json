@@ -5,9 +5,9 @@
     "mark_as_read": "ทำเครื่องหมายว่าอ่านแล้ว",
     "selected": "เลือก",
     "all": "ทั้งหมด",
-    "all_categories": "All categories",
+    "all_categories": "หมวดหมู่ทั้งหมด",
     "topics_marked_as_read.success": "Topic ถูกทำเครื่องหมายว่าอ่านแล้วเรียบร้อย",
-    "all-topics": "All Topics",
-    "new-topics": "New Topics",
-    "watched-topics": "Watched Topics"
+    "all-topics": "กระทู้ทั้งหมด",
+    "new-topics": "ตั้งกระทู้ใหม่",
+    "watched-topics": "กระทู้ที่ดูแล้ว"
 }
