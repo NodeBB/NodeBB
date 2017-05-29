@@ -1,5 +1,12 @@
 <div class="row">
+
 	<form role="form" class="category" data-cid="{category.cid}">
+		<select id="category-selector" class="form-control">
+			<!-- BEGIN allCategories -->
+			<option value="{allCategories.value}" <!-- IF allCategories.selected -->selected<!-- ENDIF allCategories.selected -->>{allCategories.text}</option>
+			<!-- END allCategories -->
+		</select>
+		<br/>
 		<ul class="nav nav-pills">
 			<li class="active"><a href="#category-settings" data-toggle="tab">
 				[[admin/manage/categories:settings]]
@@ -100,14 +107,14 @@
 							<div class="btn-group btn-group-justified">
 								<div class="btn-group">
 									<button type="button" data-cid="{category.cid}" class="btn btn-default upload-button">
-										<i class="fa fa-upload"></i> 
+										<i class="fa fa-upload"></i>
 										[[admin/manage/categories:upload-image]]
 									</button>
 								</div>
 								<!-- IF category.image -->
 								<div class="btn-group">
 									<button class="btn btn-warning delete-image">
-										<i data-name="icon" value="fa-times" class="fa fa-times"></i> 
+										<i data-name="icon" value="fa-times" class="fa fa-times"></i>
 										[[admin/manage/categories:delete-image]]
 									</button>
 								</div>
@@ -133,7 +140,7 @@
 										<button type="button" class="btn btn-warning" data-action="removeParent" data-parentCid="{category.parent.cid}"><i class="fa fa-times"></i></button>
 									</div>
 									<button type="button" class="btn btn-default btn-block <!-- IF category.parent.name -->hide<!-- ENDIF category.parent.name -->" data-action="setParent">
-										<i class="fa fa-sitemap"></i> 
+										<i class="fa fa-sitemap"></i>
 										[[admin/manage/categories:parent-category-none]]
 									</button>
 								</div>

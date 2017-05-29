@@ -329,22 +329,23 @@ Categories.buildForSelect = function (uid, callback) {
 			recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level);
 		});
 	}
-	Categories.getCategoriesByPrivilege('cid:0:children', uid, 'read', function (err, categories) {
-		if (err) {
-			return callback(err);
-		}
+	async.waterfall([
+		function (next) {
+			Categories.getCategoriesByPrivilege('cid:0:children', uid, 'read', next);
+		},
+		function (categories, next) {
+			var categoriesData = [];
 
-		var categoriesData = [];
+			categories = categories.filter(function (category) {
+				return category && !category.link && !parseInt(category.parentCid, 10);
+			});
 
-		categories = categories.filter(function (category) {
-			return category && !category.link && !parseInt(category.parentCid, 10);
-		});
-
-		categories.forEach(function (category) {
-			recursive(category, categoriesData, '');
-		});
-		callback(null, categoriesData);
-	});
+			categories.forEach(function (category) {
+				recursive(category, categoriesData, '');
+			});
+			next(null, categoriesData);
+		},
+	], callback);
 };
 
 Categories.getIgnorers = function (cid, start, stop, callback) {
