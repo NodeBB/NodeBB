@@ -106,7 +106,7 @@
 			return html;
 		}
 		category.children.forEach(function (child) {
-			if (child) {
+			if (child && !child.isSection) {
 				var link = child.link ? child.link : (relative_path + '/category/' + child.slug);
 				html += '<a href="' + link + '">' +
 						'<span class="fa-stack fa-lg">' +
