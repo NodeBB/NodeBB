@@ -1,6 +1,9 @@
 'use strict';
 
 var async = require('async');
+var _ = require('lodash');
+var S = require('string');
+
 var db = require('./database');
 var user = require('./user');
 var groups = require('./groups');
@@ -12,8 +15,6 @@ var posts = require('./posts');
 var privileges = require('./privileges');
 var plugins = require('./plugins');
 var utils = require('../public/src/utils');
-var _ = require('underscore');
-var S = require('string');
 
 var Flags = module.exports;
 

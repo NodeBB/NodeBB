@@ -2,7 +2,7 @@
 
 var async = require('async');
 var validator = require('validator');
-var _ = require('underscore');
+var _ = require('lodash');
 
 var db = require('../database');
 var topics = require('../topics');

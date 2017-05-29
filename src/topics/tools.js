@@ -1,7 +1,7 @@
 'use strict';
 
 var async = require('async');
-var _ = require('underscore');
+var _ = require('lodash');
 
 var db = require('../database');
 var categories = require('../categories');
@@ -210,7 +210,7 @@ module.exports = function (Topics) {
 				Topics.getTopicsFields(tids, ['cid'], next);
 			},
 			function (topicData, next) {
-				var uniqueCids = _.unique(topicData.map(function (topicData) {
+				var uniqueCids = _.uniq(topicData.map(function (topicData) {
 					return topicData && parseInt(topicData.cid, 10);
 				}));
 

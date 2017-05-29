@@ -6,11 +6,9 @@ var winston = require('winston');
 var async = require('async');
 var nconf = require('nconf');
 var session = require('express-session');
-var _ = require('underscore');
+var _ = require('lodash');
 var semver = require('semver');
 var db;
-
-_.mixin(require('underscore.deep'));
 
 var mongoModule = module.exports;
 
@@ -87,7 +85,7 @@ mongoModule.init = function (callback) {
 		autoReconnect: true,
 	};
 
-	connOptions = _.deepExtend(connOptions, nconf.get('mongo:options') || {});
+	connOptions = _.merge(connOptions, nconf.get('mongo:options') || {});
 
 	mongoClient.connect(connString, connOptions, function (err, _db) {
 		if (err) {

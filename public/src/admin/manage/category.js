@@ -12,9 +12,13 @@ define('admin/manage/category', [
 	var modified_categories = {};
 
 	Category.init = function () {
-		$('.blockclass, form.category select').each(function () {
+		$('#category-settings select').each(function () {
 			var $this = $(this);
 			$this.val($this.attr('data-value'));
+		});
+
+		$('#category-selector').on('change', function () {
+			ajaxify.go('admin/manage/categories/' + $(this).val());
 		});
 
 		function enableColorPicker(idx, inputEl) {
@@ -33,7 +37,7 @@ define('admin/manage/category', [
 		}
 
 
-		$('form.category input, form.category select').not($('.privilege-table-container input'))
+		$('#category-settings input, #category-settings select').not($('.privilege-table-container input'))
 			.on('change', function (ev) {
 				modified(ev.target);
 			})
@@ -437,7 +441,6 @@ define('admin/manage/category', [
 			});
 		});
 	}
-
 
 	return Category;
 });

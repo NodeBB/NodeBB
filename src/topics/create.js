@@ -2,7 +2,7 @@
 'use strict';
 
 var async = require('async');
-var _ = require('underscore');
+var _ = require('lodash');
 var validator = require('validator');
 var S = require('string');
 var db = require('../database');
