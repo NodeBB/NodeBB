@@ -1,19 +1,26 @@
 <div class="row">
 
 	<form role="form" class="category" data-cid="{category.cid}">
-		<select id="category-selector" class="form-control">
-			<!-- BEGIN allCategories -->
-			<option value="{allCategories.value}" <!-- IF allCategories.selected -->selected<!-- ENDIF allCategories.selected -->>{allCategories.text}</option>
-			<!-- END allCategories -->
-		</select>
+		<div class="row">
+			<div class="col-md-9">
+				<ul class="nav nav-pills">
+					<li class="active"><a href="#category-settings" data-toggle="tab">
+						[[admin/manage/categories:settings]]
+					</a></li>
+					<li><a href="#privileges" data-toggle="tab">[[admin/manage/categories:privileges]]</a></li>
+				</ul>
+			</div>
+			<div class="col-md-3">
+				<select id="category-selector" class="form-control">
+					<!-- BEGIN allCategories -->
+					<option value="{allCategories.value}" <!-- IF allCategories.selected -->selected<!-- ENDIF allCategories.selected -->>{allCategories.text}</option>
+					<!-- END allCategories -->
+				</select>
+			</div>
+		</div>
+		
 		<br/>
-		<ul class="nav nav-pills">
-			<li class="active"><a href="#category-settings" data-toggle="tab">
-				[[admin/manage/categories:settings]]
-			</a></li>
-			<li><a href="#privileges" data-toggle="tab">[[admin/manage/categories:privileges]]</a></li>
-		</ul>
-		<br />
+
 		<div class="tab-content">
 			<div class="tab-pane fade active in row" id="category-settings">
 				<div class="col-md-9">
