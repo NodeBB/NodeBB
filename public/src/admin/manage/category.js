@@ -146,6 +146,10 @@ define('admin/manage/category', [
 			iconSelect.init($(this).find('i'), modified);
 		});
 
+		$('[type="checkbox"]').on('change', function () {
+			modified($(this));
+		});
+
 		$('button[data-action="setParent"], button[data-action="changeParent"]').on('click', Category.launchParentSelector);
 		$('button[data-action="removeParent"]').on('click', function () {
 			var payload = {};
@@ -172,8 +176,15 @@ define('admin/manage/category', [
 		var cid = ajaxify.data.category.cid;
 
 		if (cid) {
+			var value;
+			if ($(el).is(':checkbox')) {
+				value = $(el).is(':checked') ? 1 : 0;
+			} else {
+				value = $(el).val();
+			}
+
 			modified_categories[cid] = modified_categories[cid] || {};
-			modified_categories[cid][$(el).attr('data-name')] = $(el).val();
+			modified_categories[cid][$(el).attr('data-name')] = value;
 
 			app.flags = app.flags || {};
 			app.flags._unsaved = true;

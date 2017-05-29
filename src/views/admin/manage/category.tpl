@@ -83,6 +83,16 @@
 									<input id="cid-{category.cid}-link" type="text" class="form-control" placeholder="http://domain.com" data-name="link" value="{category.link}" />
 								</div>
 							</div>
+							<div class="col-sm-6 col-xs-12">
+								<div class="form-group">
+									<div class="checkbox">
+										<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+											<input type="checkbox" class="mdl-switch__input" id="cid-{category.cid}-isSection" data-name="isSection" <!-- IF category.isSection -->checked<!-- ENDIF category.isSection --> />
+											<span class="mdl-switch__label"><strong>[[admin/manage/categories:is-section]]</strong></span>
+										</label>
+									</div>
+								</div>
+							</div>
 						</fieldset>
 						<fieldset>
 							<label for="tag-whitelist">Tag Whitelist</label><br />
