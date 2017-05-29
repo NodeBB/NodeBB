@@ -28,7 +28,7 @@ categoriesController.get = function (req, res, callback) {
 
 			data.allCategories.forEach(function (category) {
 				if (category) {
-					category.selected =	parseInt(category.cid, 10) === parseInt(req.params.category_id, 10);
+					category.selected = parseInt(category.cid, 10) === parseInt(req.params.category_id, 10);
 				}
 			});
 
