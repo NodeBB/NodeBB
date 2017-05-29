@@ -2,7 +2,7 @@
 'use strict';
 
 var async = require('async');
-var _ = require('underscore');
+var _ = require('lodash');
 
 var categories = require('../categories');
 var user = require('../user');
@@ -58,7 +58,7 @@ module.exports = function (privileges) {
 									});
 								});
 
-								var members = _.unique(_.flatten(memberSets));
+								var members = _.uniq(_.flatten(memberSets));
 
 								user.getUsersFields(members, ['picture', 'username'], next);
 							},
@@ -93,7 +93,7 @@ module.exports = function (privileges) {
 							},
 							function (results, next) {
 								var memberSets = results.memberSets;
-								var uniqueGroups = _.unique(_.flatten(memberSets));
+								var uniqueGroups = _.uniq(_.flatten(memberSets));
 
 								var groupNames = results.groupNames.filter(function (groupName) {
 									return groupName.indexOf(':privileges:') === -1 && uniqueGroups.indexOf(groupName) !== -1;
@@ -171,7 +171,7 @@ module.exports = function (privileges) {
 				}, next);
 			},
 			function (results, next) {
-				var privData = _.object(privs, results.privileges);
+				var privData = _.zipObject(privs, results.privileges);
 				var isAdminOrMod = results.isAdministrator || results.isModerator;
 
 				plugins.fireHook('filter:privileges.categories.get', {

@@ -1,6 +1,6 @@
 'use strict';
 
-var _ = require('underscore');
+var _ = require('lodash');
 var async = require('async');
 var winston = require('winston');
 var nconf = require('nconf');
@@ -8,8 +8,6 @@ var semver = require('semver');
 var session = require('express-session');
 var redis = require('redis');
 var redisClient;
-
-_.mixin(require('underscore.deep'));
 
 var redisModule = module.exports;
 
@@ -78,7 +76,7 @@ redisModule.connect = function (options) {
 		options.auth_pass = nconf.get('redis:password');
 	}
 
-	options = _.deepExtend(options, nconf.get('redis:options') || {});
+	options = _.merge(options, nconf.get('redis:options') || {});
 
 	if (redis_socket_or_host && redis_socket_or_host.indexOf('/') >= 0) {
 		/* If redis.host contains a path name character, use the unix dom sock connection. ie, /tmp/redis.sock */

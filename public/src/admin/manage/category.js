@@ -12,19 +12,6 @@ define('admin/manage/category', [
 	var modified_categories = {};
 
 	Category.init = function () {
-		var modified_categories = {};
-
-		function modified(el) {
-			var cid = $(el).parents('form').attr('data-cid');
-
-			if (cid) {
-				modified_categories[cid] = modified_categories[cid] || {};
-				modified_categories[cid][$(el).attr('data-name')] = $(el).val();
-
-				app.flags = app.flags || {};
-				app.flags._unsaved = true;
-			}
-		}
 
 		$('#category-settings select').each(function () {
 			var $this = $(this);

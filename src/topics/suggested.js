@@ -2,7 +2,7 @@
 'use strict';
 
 var async = require('async');
-var _ = require('underscore');
+var _ = require('lodash');
 
 var categories = require('../categories');
 var search = require('../search');
@@ -51,7 +51,7 @@ module.exports = function (Topics) {
 				}, next);
 			},
 			function (data, next) {
-				next(null, _.unique(_.flatten(data)));
+				next(null, _.uniq(_.flatten(data)));
 			},
 		], callback);
 	}

@@ -5,7 +5,7 @@ var semver = require('semver');
 var async = require('async');
 var winston = require('winston');
 var nconf = require('nconf');
-var _ = require('underscore');
+var _ = require('lodash');
 
 var meta = require('../meta');
 

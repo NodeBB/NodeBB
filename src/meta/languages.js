@@ -6,7 +6,7 @@ var async = require('async');
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
-var _ = require('underscore');
+var _ = require('lodash');
 
 var file = require('../file');
 var Plugins = require('../plugins');
