@@ -3,18 +3,16 @@
 var path = require('path');
 var fs = require('fs');
 
-module.exports = function (Meta) {
-	Meta.logs = {
-		path: path.join(__dirname, '..', '..', 'logs', 'output.log'),
-	};
+var Logs = module.exports;
 
-	Meta.logs.get = function (callback) {
-		fs.readFile(Meta.logs.path, {
-			encoding: 'utf-8',
-		}, callback);
-	};
+Logs.path = path.join(__dirname, '..', '..', 'logs', 'output.log');
 
-	Meta.logs.clear = function (callback) {
-		fs.truncate(Meta.logs.path, 0, callback);
-	};
+Logs.get = function (callback) {
+	fs.readFile(Logs.path, {
+		encoding: 'utf-8',
+	}, callback);
+};
+
+Logs.clear = function (callback) {
+	fs.truncate(Logs.path, 0, callback);
 };
