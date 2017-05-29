@@ -5,7 +5,7 @@ var winston = require('winston');
 var passport = require('passport');
 var nconf = require('nconf');
 var validator = require('validator');
-var _ = require('underscore');
+var _ = require('lodash');
 
 var db = require('../database');
 var meta = require('../meta');

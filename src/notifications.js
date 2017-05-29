@@ -5,7 +5,7 @@ var winston = require('winston');
 var cron = require('cron').CronJob;
 var nconf = require('nconf');
 var S = require('string');
-var _ = require('underscore');
+var _ = require('lodash');
 
 var db = require('./database');
 var User = require('./user');
@@ -247,7 +247,7 @@ Notifications.pushGroups = function (notification, groupNames, callback) {
 			groups.getMembersOfGroups(groupNames, next);
 		},
 		function (groupMembers, next) {
-			var members = _.unique(_.flatten(groupMembers));
+			var members = _.uniq(_.flatten(groupMembers));
 			Notifications.push(notification, members, next);
 		},
 	], callback);
