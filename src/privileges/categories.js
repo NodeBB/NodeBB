@@ -171,9 +171,7 @@ module.exports = function (privileges) {
 				}, next);
 			},
 			function (results, next) {
-				var privData = _.fromPairs(privs.map(function (priv, i) {
-					return [priv, results.privileges[i]];
-				}));
+				var privData = _.zipObject(privs, results.privileges);
 				var isAdminOrMod = results.isAdministrator || results.isModerator;
 
 				plugins.fireHook('filter:privileges.categories.get', {

@@ -29,9 +29,7 @@ module.exports = function (privileges) {
 				}, next);
 			},
 			function (results, next) {
-				var privData = _.fromPairs(privs.map(function (priv, i) {
-					return [priv, results.privileges[i]];
-				}));
+				var privData = _.zipObject(privs, results.privileges);
 				var disabled = parseInt(results.disabled, 10) === 1;
 				var locked = parseInt(topic.locked, 10) === 1;
 				var deleted = parseInt(topic.deleted, 10) === 1;

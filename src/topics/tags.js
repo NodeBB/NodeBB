@@ -247,9 +247,7 @@ module.exports = function (Topics) {
 					tag.score = results.counts[index] ? results.counts[index] : 0;
 				});
 
-				var tagData = _.fromPairs(results.tagData.map(function (tag) {
-					return [tag.value, tag];
-				}));
+				var tagData = _.zipObject(uniqueTopicTags, results.tagData);
 
 				topicTags.forEach(function (tags, index) {
 					if (Array.isArray(tags)) {

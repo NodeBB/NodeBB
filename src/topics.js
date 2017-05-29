@@ -135,12 +135,8 @@ Topics.getTopicsByTids = function (tids, uid, callback) {
 			}, next);
 		},
 		function (results, next) {
-			var users = _.fromPairs(results.users.map(function (user) {
-				return [user.uid, user];
-			}));
-			var categories = _.fromPairs(results.categories.map(function (category) {
-				return [category.cid, category];
-			}));
+			var users = _.zipObject(uids, results.users);
+			var categories = _.zipObject(cids, results.categories);
 
 			for (var i = 0; i < topics.length; i += 1) {
 				if (topics[i]) {
