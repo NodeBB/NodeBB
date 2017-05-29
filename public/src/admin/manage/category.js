@@ -12,7 +12,6 @@ define('admin/manage/category', [
 	var modified_categories = {};
 
 	Category.init = function () {
-
 		$('#category-settings select').each(function () {
 			var $this = $(this);
 			$this.val($this.attr('data-value'));
@@ -442,7 +441,6 @@ define('admin/manage/category', [
 			});
 		});
 	}
-
 
 	return Category;
 });
