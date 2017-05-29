@@ -2,7 +2,7 @@
 
 var async = require('async');
 var validator = require('validator');
-var _ = require('underscore');
+var _ = require('lodash');
 
 var db = require('../database');
 var topics = require('../topics');
@@ -83,74 +83,74 @@ module.exports = function (Posts) {
 		var tid = postData.tid;
 		var title = data.title ? data.title.trim() : '';
 
-		async.parallel({
-			topic: function (next) {
-				topics.getTopicFields(tid, ['cid', 'title', 'timestamp'], next);
+		var topicData;
+		var results;
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					topic: function (next) {
+						topics.getTopicFields(tid, ['cid', 'title', 'timestamp'], next);
+					},
+					isMain: function (next) {
+						Posts.isMain(data.pid, next);
+					},
+				}, next);
 			},
-			isMain: function (next) {
-				Posts.isMain(data.pid, next);
-			},
-		}, function (err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (!results.isMain) {
-				return callback(null, {
-					tid: tid,
-					cid: results.topic.cid,
-					isMainPost: false,
-					renamed: false,
-				});
-			}
-
-			var topicData = {
-				tid: tid,
-				cid: results.topic.cid,
-				uid: postData.uid,
-				mainPid: data.pid,
-			};
-
-			if (title) {
-				topicData.title = title;
-				topicData.slug = tid + '/' + (utils.slugify(title) || 'topic');
-			}
-
-			topicData.thumb = data.thumb || '';
-
-			data.tags = data.tags || [];
-
-			async.waterfall([
-				function (next) {
-					plugins.fireHook('filter:topic.edit', { req: data.req, topic: topicData, data: data }, next);
-				},
-				function (results, next) {
-					db.setObject('topic:' + tid, results.topic, next);
-				},
-				function (next) {
-					topics.updateTags(tid, data.tags, next);
-				},
-				function (next) {
-					topics.getTopicTagsObjects(tid, next);
-				},
-				function (tags, next) {
-					topicData.tags = data.tags;
-					topicData.oldTitle = results.topic.title;
-					topicData.timestamp = results.topic.timestamp;
-					plugins.fireHook('action:topic.edit', { topic: topicData, uid: data.uid });
-					next(null, {
+			function (_results, next) {
+				results = _results;
+				if (!results.isMain) {
+					return callback(null, {
 						tid: tid,
 						cid: results.topic.cid,
-						uid: postData.uid,
-						title: validator.escape(String(title)),
-						oldTitle: results.topic.title,
-						slug: topicData.slug,
-						isMainPost: true,
-						renamed: title !== results.topic.title,
-						tags: tags,
+						isMainPost: false,
+						renamed: false,
 					});
-				},
-			], callback);
-		});
+				}
+
+				topicData = {
+					tid: tid,
+					cid: results.topic.cid,
+					uid: postData.uid,
+					mainPid: data.pid,
+				};
+
+				if (title) {
+					topicData.title = title;
+					topicData.slug = tid + '/' + (utils.slugify(title) || 'topic');
+				}
+
+				topicData.thumb = data.thumb || '';
+
+				data.tags = data.tags || [];
+
+				plugins.fireHook('filter:topic.edit', { req: data.req, topic: topicData, data: data }, next);
+			},
+			function (results, next) {
+				db.setObject('topic:' + tid, results.topic, next);
+			},
+			function (next) {
+				topics.updateTags(tid, data.tags, next);
+			},
+			function (next) {
+				topics.getTopicTagsObjects(tid, next);
+			},
+			function (tags, next) {
+				topicData.tags = data.tags;
+				topicData.oldTitle = results.topic.title;
+				topicData.timestamp = results.topic.timestamp;
+				plugins.fireHook('action:topic.edit', { topic: topicData, uid: data.uid });
+				next(null, {
+					tid: tid,
+					cid: topicData.cid,
+					uid: postData.uid,
+					title: validator.escape(String(title)),
+					oldTitle: results.topic.title,
+					slug: topicData.slug,
+					isMainPost: true,
+					renamed: title !== results.topic.title,
+					tags: tags,
+				});
+			},
+		], callback);
 	}
 };

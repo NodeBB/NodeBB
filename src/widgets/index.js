@@ -8,119 +8,132 @@ var plugins = require('../plugins');
 var translator = require('../translator');
 var db = require('../database');
 
-var widgets = {};
+var widgets = module.exports;
 
 widgets.render = function (uid, area, req, res, callback) {
 	if (!area.locations || !area.template) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	widgets.getAreas(['global', area.template], area.locations, function (err, data) {
-		if (err) {
-			return callback(err);
-		}
+	async.waterfall([
+		function (next) {
+			widgets.getAreas(['global', area.template], area.locations, next);
+		},
+		function (data, next) {
+			var widgetsByLocation = {};
 
-		var widgetsByLocation = {};
+			async.map(area.locations, function (location, done) {
+				widgetsByLocation[location] = data.global[location].concat(data[area.template][location]);
 
-		async.map(area.locations, function (location, done) {
-			widgetsByLocation[location] = data.global[location].concat(data[area.template][location]);
-
-			if (!widgetsByLocation[location].length) {
-				return done(null, { location: location, widgets: [] });
-			}
-
-			async.map(widgetsByLocation[location], function (widget, next) {
-				if (!widget || !widget.data ||
-					(!!widget.data['hide-registered'] && uid !== 0) ||
-					(!!widget.data['hide-guests'] && uid === 0) ||
-					(!!widget.data['hide-mobile'] && area.isMobile)) {
-					return next();
+				if (!widgetsByLocation[location].length) {
+					return done(null, { location: location, widgets: [] });
 				}
 
-				plugins.fireHook('filter:widget.render:' + widget.widget, {
-					uid: uid,
-					area: area,
-					data: widget.data,
-					req: req,
-					res: res,
-				}, function (err, data) {
-					if (err || data === null) {
-						return next(err);
-					}
-					var html = data;
-					if (typeof html !== 'string') {
-						html = data.html;
-					} else {
-						winston.warn('[widgets.render] passing a string is deprecated!, filter:widget.render:' + widget.widget + '. Please set hookData.html in your plugin.');
+				async.map(widgetsByLocation[location], function (widget, next) {
+					if (!widget || !widget.data ||
+						(!!widget.data['hide-registered'] && uid !== 0) ||
+						(!!widget.data['hide-guests'] && uid === 0) ||
+						(!!widget.data['hide-mobile'] && area.isMobile)) {
+						return next();
 					}
 
-					if (widget.data.container && widget.data.container.match('{body}')) {
-						translator.translate(widget.data.title, function (title) {
-							html = templates.parse(widget.data.container, {
-								title: title,
-								body: html,
-							});
-
-							next(null, { html: html });
-						});
-					} else {
-						next(null, { html: html });
-					}
+					renderWidget(widget, uid, area, req, res, next);
+				}, function (err, result) {
+					done(err, { location: location, widgets: result.filter(Boolean) });
 				});
-			}, function (err, result) {
-				done(err, { location: location, widgets: result.filter(Boolean) });
-			});
-		}, callback);
-	});
+			}, next);
+		},
+	], callback);
 };
+
+function renderWidget(widget, uid, area, req, res, callback) {
+	async.waterfall([
+		function (next) {
+			plugins.fireHook('filter:widget.render:' + widget.widget, {
+				uid: uid,
+				area: area,
+				data: widget.data,
+				req: req,
+				res: res,
+			}, next);
+		},
+		function (data, next) {
+			if (!data) {
+				return callback();
+			}
+			var html = data;
+			if (typeof html !== 'string') {
+				html = data.html;
+			} else {
+				winston.warn('[widgets.render] passing a string is deprecated!, filter:widget.render:' + widget.widget + '. Please set hookData.html in your plugin.');
+			}
+
+			if (widget.data.container && widget.data.container.match('{body}')) {
+				translator.translate(widget.data.title, function (title) {
+					html = templates.parse(widget.data.container, {
+						title: title,
+						body: html,
+					});
+
+					next(null, { html: html });
+				});
+			} else {
+				next(null, { html: html });
+			}
+		},
+	], callback);
+}
 
 widgets.getAreas = function (templates, locations, callback) {
 	var keys = templates.map(function (tpl) {
 		return 'widgets:' + tpl;
 	});
-	db.getObjectsFields(keys, locations, function (err, data) {
-		if (err) {
-			return callback(err);
-		}
+	async.waterfall([
+		function (next) {
+			db.getObjectsFields(keys, locations, next);
+		},
+		function (data, next) {
+			var returnData = {};
 
-		var returnData = {};
-
-		templates.forEach(function (template, index) {
-			returnData[template] = returnData[template] || {};
-			locations.forEach(function (location) {
-				if (data && data[index] && data[index][location]) {
-					try {
-						returnData[template][location] = JSON.parse(data[index][location]);
-					} catch (err) {
-						winston.error('can not parse widget data. template:  ' + template + ' location: ' + location);
+			templates.forEach(function (template, index) {
+				returnData[template] = returnData[template] || {};
+				locations.forEach(function (location) {
+					if (data && data[index] && data[index][location]) {
+						try {
+							returnData[template][location] = JSON.parse(data[index][location]);
+						} catch (err) {
+							winston.error('can not parse widget data. template:  ' + template + ' location: ' + location);
+							returnData[template][location] = [];
+						}
+					} else {
 						returnData[template][location] = [];
 					}
-				} else {
-					returnData[template][location] = [];
-				}
+				});
 			});
-		});
 
-		callback(null, returnData);
-	});
+			next(null, returnData);
+		},
+	], callback);
 };
 
 widgets.getArea = function (template, location, callback) {
-	db.getObjectField('widgets:' + template, location, function (err, result) {
-		if (err) {
-			return callback(err);
-		}
-		if (!result) {
-			return callback(null, []);
-		}
-		try {
-			result = JSON.parse(result);
-		} catch (err) {
-			return callback(err);
-		}
+	async.waterfall([
+		function (next) {
+			db.getObjectField('widgets:' + template, location, next);
+		},
+		function (result, next) {
+			if (!result) {
+				return callback(null, []);
+			}
+			try {
+				result = JSON.parse(result);
+			} catch (err) {
+				return callback(err);
+			}
 
-		callback(null, result);
-	});
+			next(null, result);
+		},
+	], callback);
 };
 
 widgets.setArea = function (area, callback) {
@@ -137,42 +150,42 @@ widgets.reset = function (callback) {
 		{ name: 'Draft Zone', template: 'global', location: 'footer' },
 		{ name: 'Draft Zone', template: 'global', location: 'sidebar' },
 	];
-
-	async.parallel({
-		areas: function (next) {
-			plugins.fireHook('filter:widgets.getAreas', defaultAreas, next);
+	var drafts;
+	async.waterfall([
+		function (next) {
+			async.parallel({
+				areas: function (next) {
+					plugins.fireHook('filter:widgets.getAreas', defaultAreas, next);
+				},
+				drafts: function (next) {
+					widgets.getArea('global', 'drafts', next);
+				},
+			}, next);
 		},
-		drafts: function (next) {
-			widgets.getArea('global', 'drafts', next);
+		function (results, next) {
+			drafts = results.drafts || [];
+
+			async.each(results.areas, function (area, next) {
+				async.waterfall([
+					function (next) {
+						widgets.getArea(area.template, area.location, next);
+					},
+					function (areaData, next) {
+						drafts = drafts.concat(areaData);
+						area.widgets = [];
+						widgets.setArea(area, next);
+					},
+				], next);
+			}, next);
 		},
-	}, function (err, results) {
-		if (err) {
-			return callback(err);
-		}
-
-		var drafts = results.drafts || [];
-
-		async.each(results.areas, function (area, next) {
-			widgets.getArea(area.template, area.location, function (err, areaData) {
-				if (err) {
-					return next(err);
-				}
-
-				drafts = drafts.concat(areaData);
-				area.widgets = [];
-				widgets.setArea(area, next);
-			});
-		}, function (err) {
-			if (err) {
-				return callback(err);
-			}
+		function (next) {
 			widgets.setArea({
 				template: 'global',
 				location: 'drafts',
 				widgets: drafts,
-			}, callback);
-		});
-	});
+			}, next);
+		},
+	], callback);
 };
 
 module.exports = widgets;

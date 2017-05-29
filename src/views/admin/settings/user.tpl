@@ -156,6 +156,13 @@
 				</p>
 			</div>
 			<div class="form-group">
+				<label>[[admin/settings/user:invite-expiration]]</label>
+				<input type="number" class="form-control" data-field="inviteExpiration" placeholder="1">
+				<p class="help-block">
+					[[admin/settings/user:invite-expiration-help]]
+				</p>
+			</div>
+			<div class="form-group">
 				<label>[[admin/settings/user:min-username-length]]</label>
 				<input type="text" class="form-control" value="2" data-field="minimumUsernameLength">
 			</div>

@@ -1,0 +1,74 @@
+{
+	"section-general": "Glavno",
+	"general/dashboard": "Glavna ploča",
+	"general/homepage": "Naslovnica",
+	"general/navigation": "Navigacija",
+	"general/languages": "Jezici",
+	"general/sounds": "Zvukovi",
+	"general/social": "Socijalno",
+
+	"section-manage": "Upravljanje",
+	"manage/categories": "Kategorije",
+	"manage/tags": "Oznake",
+	"manage/users": "Korisnici",
+	"manage/registration": "Lista zahtjeva za registraciju",
+	"manage/groups": "Grupe",
+	"manage/ip-blacklist": "IP blokade",
+
+	"section-settings": "Postavke",
+	"settings/general": "Generalno",
+	"settings/reputation": "Reputacija",
+	"settings/email": "Email",
+	"settings/user": "Korisnik",
+	"settings/group": "Grupa",
+	"settings/guest": "Gosti",
+	"settings/uploads": "Slanje",
+	"settings/post": "Objave",
+	"settings/chat": "Razgovor",
+	"settings/pagination": "Numeriranje",
+	"settings/tags": "Oznake",
+	"settings/notifications": "Obavijesti",
+	"settings/cookies": "Kolačići",
+	"settings/web-crawler": "Web puzač",
+	"settings/sockets": "Utičnice",
+	"settings/advanced": "Napredno",
+
+	"settings.page-title": "%1 Postavke",
+
+	"section-appearance": "Izgled",
+	"appearance/themes": "Predlošci",
+	"appearance/skins": "Izgled",
+	"appearance/customise": "Uobičajni HTML i CSS",
+
+	"section-extend": "Proširi",
+	"extend/plugins": "Dodatci",
+	"extend/widgets": "Widgeti",
+	"extend/rewards": "Nagrade",
+
+	"section-social-auth": "Socijalna provjera autentičnosti",
+
+	"section-plugins": "Dodatci",
+	"extend/plugins.install": "Instaliraj dodatke",
+
+	"section-advanced": "Napredno",
+	"advanced/database": "Baza podataka",
+	"advanced/events": "Događanja",
+	"advanced/logs": "Dnevnik",
+	"advanced/errors": "Greške",
+	"advanced/cache": "Cache",
+	"development/logger": "Dnevnik",
+	"development/info": "Info",
+
+	"reload-forum": "Ponovno učitaj forum",
+	"restart-forum": "ponovno pokreni forum",
+	"logout": "Odjava",
+	"view-forum": "Pogledaj forum",
+
+	"search.placeholder": "Pretraga...",
+	"search.no-results": "Nema rezultata ...",
+	"search.search-forum": "Pretraži forum za <strong></strong>",
+	"search.keep-typing": "Upiši više da vidiš rezultate ...",
+	"search.start-typing": "Počni pisati da bi vidio rezultate...",
+
+	"connection-lost": "Veza sa %1 je prekinuta, pokušavam se spojiti ..."
+}

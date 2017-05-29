@@ -5,7 +5,7 @@ var async = require('async');
 
 var db = require('../database');
 var meta = require('../meta');
-var _ = require('underscore');
+var _ = require('lodash');
 var plugins = require('../plugins');
 var utils = require('../utils');
 
@@ -247,7 +247,7 @@ module.exports = function (Topics) {
 					tag.score = results.counts[index] ? results.counts[index] : 0;
 				});
 
-				var tagData = _.object(uniqueTopicTags, results.tagData);
+				var tagData = _.zipObject(uniqueTopicTags, results.tagData);
 
 				topicTags.forEach(function (tags, index) {
 					if (Array.isArray(tags)) {
@@ -444,7 +444,7 @@ module.exports = function (Topics) {
 				}, next);
 			},
 			function (tids, next) {
-				tids = _.shuffle(_.unique(_.flatten(tids))).slice(0, maximumTopics);
+				tids = _.shuffle(_.uniq(_.flatten(tids))).slice(0, maximumTopics);
 				Topics.getTopics(tids, uid, next);
 			},
 			function (topics, next) {

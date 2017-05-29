@@ -1,0 +1,27 @@
+{
+	"icon": "Ikona:",
+	"change-icon": "promjena",
+	"route": "Putanja:",
+	"tooltip": "Napomena:",
+	"text": "Tekst:",
+	"text-class": "Text Class: <small>opcija</small>",
+	"id": "ID: <small>opcionalno</small>",
+
+	"properties": "Postavke",
+	"only-admins": "Prikaži samo administratorima",
+	"only-global-mods-and-admins": "Prikazuj samo globalnim moderatorima i administratorima",
+	"only-logged-in": "Prikaži samo prijavljenim korisnicima",
+	"open-new-window": "Otvori u novom prozoru",
+
+	"installed-plugins-required": "Potrebni su instalirani dodatci:",
+	"search-plugin": "Dodatak pretrage",
+
+	"btn.delete": "Obriši",
+	"btn.disable": "Onemogući",
+	"btn.enable": "Omogući",
+
+	"available-menu-items": "Dostupni artikli menija",
+	"custom-route": "Uobičajna putanja",
+	"core": "jezgra",
+	"plugin": "dodatak"
+}

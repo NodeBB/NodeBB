@@ -5,7 +5,7 @@ var path = require('path');
 var async = require('async');
 
 var Languages = module.exports;
-var	languagesPath = path.join(__dirname, '../build/public/language');
+var languagesPath = path.join(__dirname, '../build/public/language');
 
 Languages.init = function (next) {
 	next();

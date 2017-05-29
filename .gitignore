@@ -1,3 +1,4 @@
+yarn.lock
 npm-debug.log
 node_modules/
 sftp-config.json
@@ -26,6 +27,7 @@ pidfile
 /public/templates
 
 /public/sounds
+/public/uploads
 
 # compiled files
 /public/stylesheet.css
@@ -58,3 +60,5 @@ coverage
 
 build
 *.log
+test/files/normalise.jpg.png
+test/files/normalise-resized.jpg

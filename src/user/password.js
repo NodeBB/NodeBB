@@ -17,22 +17,21 @@ module.exports = function (User) {
 
 	User.isPasswordCorrect = function (uid, password, callback) {
 		password = password || '';
+		var hashedPassword;
 		async.waterfall([
 			function (next) {
 				db.getObjectField('user:' + uid, 'password', next);
 			},
-			function (hashedPassword, next) {
+			function (_hashedPassword, next) {
+				hashedPassword = _hashedPassword;
 				if (!hashedPassword) {
 					return callback(null, true);
 				}
 
-				User.isPasswordValid(password, function (err) {
-					if (err) {
-						return next(err);
-					}
-
-					Password.compare(password, hashedPassword, next);
-				});
+				User.isPasswordValid(password, next);
+			},
+			function (next) {
+				Password.compare(password, hashedPassword, next);
 			},
 		], callback);
 	};

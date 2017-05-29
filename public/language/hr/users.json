@@ -1,0 +1,21 @@
+{
+    "latest_users": "Posljednji korisnici",
+    "top_posters": "Najviše objava",
+    "most_reputation": "Najveća reputacija",
+    "most_flags": "Najviše zastava",
+    "search": "Pretraga",
+    "enter_username": "Unesi korisničko ime za pretragu",
+    "load_more": "Učitaj više",
+    "users-found-search-took": "%1user(s) pronađeni! Pretraga je trajala %2 sekundi.",
+    "filter-by": "Filtriraj po",
+    "online-only": "Samo na mreži",
+    "invite": "Pozovi",
+    "invitation-email-sent": "Pozivnica poslana %1",
+    "user_list": "Popis korisnika",
+    "recent_topics": "Zadnje teme",
+    "popular_topics": "Popularne teme",
+    "unread_topics": "Nepročitane teme",
+    "categories": "Kategorije",
+    "tags": "Tagovi",
+    "no-users-found": "Korisnici nisu pronađeni!"
+}

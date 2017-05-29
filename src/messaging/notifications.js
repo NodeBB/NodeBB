@@ -9,6 +9,7 @@ var emailer = require('../emailer');
 var notifications = require('../notifications');
 var meta = require('../meta');
 var sockets = require('../socket.io');
+var plugins = require('../plugins');
 
 module.exports = function (Messaging) {
 	Messaging.notifyQueue = {};	// Only used to notify a user of a new chat message, see Messaging.notifyUser
@@ -25,7 +26,17 @@ module.exports = function (Messaging) {
 					roomId: roomId,
 					fromUid: fromUid,
 					message: messageObj,
+					uids: uids,
 				};
+
+				plugins.fireHook('filter:messaging.notify', data, next);
+			},
+			function (data, next) {
+				if (!data || !data.uids || !data.uids.length) {
+					return next();
+				}
+
+				var uids = data.uids;
 
 				uids.forEach(function (uid) {
 					data.self = parseInt(uid, 10) === parseInt(fromUid, 10) ? 1 : 0;

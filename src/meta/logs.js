@@ -2,7 +2,6 @@
 
 var path = require('path');
 var fs = require('fs');
-var winston = require('winston');
 
 module.exports = function (Meta) {
 	Meta.logs = {
@@ -12,13 +11,7 @@ module.exports = function (Meta) {
 	Meta.logs.get = function (callback) {
 		fs.readFile(Meta.logs.path, {
 			encoding: 'utf-8',
-		}, function (err, logs) {
-			if (err) {
-				winston.error('[meta/logs] Could not retrieve logs: ' + err.message);
-			}
-
-			callback(undefined, logs || '');
-		});
+		}, callback);
 	};
 
 	Meta.logs.clear = function (callback) {

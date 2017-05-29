@@ -367,7 +367,8 @@ define('forum/topic/postTools', [
 	}
 
 	function showStaleWarning(callback) {
-		if (staleReplyAnyway || ajaxify.data.lastposttime >= (Date.now() - (1000 * 60 * 60 * 24 * ajaxify.data.topicStaleDays))) {
+		var staleThreshold = Math.min(Date.now() - (1000 * 60 * 60 * 24 * ajaxify.data.topicStaleDays), 8640000000000000);
+		if (staleReplyAnyway || ajaxify.data.lastposttime >= staleThreshold) {
 			return callback();
 		}
 

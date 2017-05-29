@@ -169,21 +169,26 @@ SocketHelpers.sendNotificationToTopicOwner = function (tid, fromuid, command, no
 };
 
 SocketHelpers.rescindUpvoteNotification = function (pid, fromuid) {
-	var nid = 'upvote:post:' + pid + ':uid:' + fromuid;
-	notifications.rescind(nid);
-
-	posts.getPostField(pid, 'uid', function (err, uid) {
-		if (err) {
-			return winston.error(err);
-		}
-
-		user.notifications.getUnreadCount(uid, function (err, count) {
-			if (err) {
-				return winston.error(err);
-			}
-
+	var uid;
+	async.waterfall([
+		function (next) {
+			notifications.rescind('upvote:post:' + pid + ':uid:' + fromuid, next);
+		},
+		function (next) {
+			posts.getPostField(pid, 'uid', next);
+		},
+		function (_uid, next) {
+			uid = _uid;
+			user.notifications.getUnreadCount(uid, next);
+		},
+		function (count, next) {
 			websockets.in('uid_' + uid).emit('event:notifications.updateCount', count);
-		});
+			next();
+		},
+	], function (err) {
+		if (err) {
+			winston.error(err);
+		}
 	});
 };
 

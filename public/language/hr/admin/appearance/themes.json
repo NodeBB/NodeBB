@@ -1,0 +1,11 @@
+{
+    "checking-for-installed": "Provjeravam instalirane teme ...",
+    "homepage": "Naslovnica",
+    "select-theme": "Odaberi temu",
+    "current-theme": "Trenutna tema",
+    "no-themes": "Nisu pronađene instalirane teme",
+    "revert-confirm": "Sigurni ste da želite povratiti zadani NodeBB izgled ?",
+    "theme-changed": "Tema promijenjena",
+    "revert-success": "Uspješno ste vratili vaš NodeBB u početno zadanu temu.",
+    "restart-to-activate": "Ponovno pokrenite NodeBB da bi aktivirali izgled"
+}

@@ -12,23 +12,13 @@ define('admin/manage/category', [
 	var modified_categories = {};
 
 	Category.init = function () {
-		var modified_categories = {};
-
-		function modified(el) {
-			var cid = $(el).parents('form').attr('data-cid');
-
-			if (cid) {
-				modified_categories[cid] = modified_categories[cid] || {};
-				modified_categories[cid][$(el).attr('data-name')] = $(el).val();
-
-				app.flags = app.flags || {};
-				app.flags._unsaved = true;
-			}
-		}
-
-		$('.blockclass, form.category select').each(function () {
+		$('#category-settings select').each(function () {
 			var $this = $(this);
 			$this.val($this.attr('data-value'));
+		});
+
+		$('#category-selector').on('change', function () {
+			ajaxify.go('admin/manage/categories/' + $(this).val());
 		});
 
 		function enableColorPicker(idx, inputEl) {
@@ -47,7 +37,7 @@ define('admin/manage/category', [
 		}
 
 
-		$('form.category input, form.category select').not($('.privilege-table-container input'))
+		$('#category-settings input, #category-settings select').not($('.privilege-table-container input'))
 			.on('change', function (ev) {
 				modified(ev.target);
 			})
@@ -451,7 +441,6 @@ define('admin/manage/category', [
 			});
 		});
 	}
-
 
 	return Category;
 });

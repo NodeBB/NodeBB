@@ -30,18 +30,20 @@ exports.handle404 = function (req, res) {
 		}
 
 		meta.errors.log404(req.path.replace(/^\/api/, '') || '');
-		res.status(404);
-
-		var path = String(req.path || '');
-
-		if (res.locals.isAPI) {
-			return res.json({ path: validator.escape(path.replace(/^\/api/, '')), title: '[[global:404.title]]' });
-		}
-		var middleware = require('../middleware');
-		middleware.buildHeader(req, res, function () {
-			res.render('404', { path: validator.escape(path), title: '[[global:404.title]]' });
-		});
+		exports.send404(req, res);
 	} else {
 		res.status(404).type('txt').send('Not found');
 	}
+};
+
+exports.send404 = function (req, res) {
+	res.status(404);
+	var path = String(req.path || '');
+	if (res.locals.isAPI) {
+		return res.json({ path: validator.escape(path.replace(/^\/api/, '')), title: '[[global:404.title]]' });
+	}
+	var middleware = require('../middleware');
+	middleware.buildHeader(req, res, function () {
+		res.render('404', { path: validator.escape(path), title: '[[global:404.title]]' });
+	});
 };

@@ -30,13 +30,7 @@ Categories.getAll = function (socket, data, callback) {
 		function (result, next) {
 			next(null, categories.getTree(result.categories, 0));
 		},
-	], function (err, categoriesTree) {
-		if (err) {
-			return callback(err);
-		}
-
-		callback(null, categoriesTree);
-	});
+	], callback);
 };
 
 Categories.getNames = function (socket, data, callback) {
@@ -93,27 +87,31 @@ Categories.getPrivilegeSettings = function (socket, cid, callback) {
 };
 
 Categories.copyPrivilegesToChildren = function (socket, cid, callback) {
-	categories.getCategories([cid], socket.uid, function (err, categories) {
-		if (err) {
-			return callback(err);
-		}
-		var category = categories[0];
+	async.waterfall([
+		function (next) {
+			categories.getCategories([cid], socket.uid, next);
+		},
+		function (categories, next) {
+			var category = categories[0];
 
-		async.eachSeries(category.children, function (child, next) {
-			copyPrivilegesToChildrenRecursive(cid, child, next);
-		}, callback);
-	});
+			async.eachSeries(category.children, function (child, next) {
+				copyPrivilegesToChildrenRecursive(cid, child, next);
+			}, next);
+		},
+	], callback);
 };
 
 function copyPrivilegesToChildrenRecursive(parentCid, category, callback) {
-	categories.copyPrivilegesFrom(parentCid, category.cid, function (err) {
-		if (err) {
-			return callback(err);
-		}
-		async.eachSeries(category.children, function (child, next) {
-			copyPrivilegesToChildrenRecursive(parentCid, child, next);
-		}, callback);
-	});
+	async.waterfall([
+		function (next) {
+			categories.copyPrivilegesFrom(parentCid, category.cid, next);
+		},
+		function (next) {
+			async.eachSeries(category.children, function (child, next) {
+				copyPrivilegesToChildrenRecursive(parentCid, child, next);
+			}, next);
+		},
+	], callback);
 }
 
 Categories.copySettingsFrom = function (socket, data, callback) {

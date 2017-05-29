@@ -48,17 +48,18 @@ admin.getAdmin = function (callback) {
 };
 
 admin.get = function (callback) {
-	db.getSortedSetRange('navigation:enabled', 0, -1, function (err, data) {
-		if (err) {
-			return callback(err);
-		}
+	async.waterfall([
+		function (next) {
+			db.getSortedSetRange('navigation:enabled', 0, -1, next);
+		},
+		function (data, next) {
+			data = data.map(function (item, idx) {
+				return JSON.parse(item)[idx];
+			});
 
-		data = data.map(function (item, idx) {
-			return JSON.parse(item)[idx];
-		});
-
-		callback(null, data);
-	});
+			next(null, data);
+		},
+	], callback);
 };
 
 function getAvailable(callback) {

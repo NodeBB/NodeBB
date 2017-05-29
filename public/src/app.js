@@ -72,6 +72,11 @@ app.cacheBuster = null;
 				});
 			}
 		});
+		socket.on('event:livereload', function () {
+			if (app.user.isAdmin && !ajaxify.currentPage.match(/admin/)) {
+				window.location.reload();
+			}
+		});
 
 		require(['taskbar', 'helpers', 'forum/pagination'], function (taskbar, helpers, pagination) {
 			taskbar.init();

@@ -14,7 +14,7 @@ var pagination = require('../../pagination');
 var messaging = require('../../messaging');
 var translator = require('../../translator');
 
-var profileController = {};
+var profileController = module.exports;
 
 profileController.get = function (req, res, callback) {
 	var lowercaseSlug = req.params.userslug.toLowerCase();
@@ -42,6 +42,7 @@ profileController.get = function (req, res, callback) {
 			userData = _userData;
 
 			req.session.uids_viewed = req.session.uids_viewed || {};
+
 			if (req.uid !== parseInt(userData.uid, 10) && (!req.session.uids_viewed[userData.uid] || req.session.uids_viewed[userData.uid] < Date.now() - 3600000)) {
 				user.incrementUserFieldBy(userData.uid, 'profileviews', 1);
 				req.session.uids_viewed[userData.uid] = Date.now();
@@ -127,12 +128,9 @@ profileController.get = function (req, res, callback) {
 
 			plugins.fireHook('filter:user.account', { userData: userData, uid: req.uid }, next);
 		},
-	], function (err, results) {
-		if (err) {
-			return callback(err);
-		}
-		res.render('account/profile', results.userData);
-	});
+		function (results) {
+			res.render('account/profile', results.userData);
+		},
+	], callback);
 };
 
-module.exports = profileController;

@@ -572,8 +572,17 @@ describe('Post\'s', function () {
 		it('should turn relative links in post body to absolute urls', function (done) {
 			var nconf = require('nconf');
 			var content = '<a href="/users">test</a> <a href="youtube.com">youtube</a>';
-			var parsedContent = posts.relativeToAbsolute(content);
-			assert.equal(parsedContent, '<a href="' + nconf.get('url') + '/users">test</a> <a href="//youtube.com">youtube</a>');
+			var parsedContent = posts.relativeToAbsolute(content, posts.urlRegex);
+			assert.equal(parsedContent, '<a href="' + nconf.get('base_url') + '/users">test</a> <a href="//youtube.com">youtube</a>');
+			done();
+		});
+
+		it('should turn relative links in post body to absolute urls', function (done) {
+			var nconf = require('nconf');
+			var content = '<a href="/users">test</a> <a href="youtube.com">youtube</a> some test <img src="/path/to/img"/>';
+			var parsedContent = posts.relativeToAbsolute(content, posts.urlRegex);
+			parsedContent = posts.relativeToAbsolute(parsedContent, posts.imgRegex);
+			assert.equal(parsedContent, '<a href="' + nconf.get('base_url') + '/users">test</a> <a href="//youtube.com">youtube</a> some test <img src="' + nconf.get('base_url') + '/path/to/img"/>');
 			done();
 		});
 	});
@@ -714,7 +723,30 @@ describe('Post\'s', function () {
 		});
 	});
 
-	after(function (done) {
-		db.emptydb(done);
+
+	describe('filterPidsByCid', function () {
+		it('should return pids as is if cid is falsy', function (done) {
+			posts.filterPidsByCid([1, 2, 3], null, function (err, pids) {
+				assert.ifError(err);
+				assert.deepEqual([1, 2, 3], pids);
+				done();
+			});
+		});
+
+		it('should filter pids by single cid', function (done) {
+			posts.filterPidsByCid([postData.pid, 100, 101], cid, function (err, pids) {
+				assert.ifError(err);
+				assert.deepEqual([postData.pid], pids);
+				done();
+			});
+		});
+
+		it('should filter pids by multiple cids', function (done) {
+			posts.filterPidsByCid([postData.pid, 100, 101], [cid, 2, 3], function (err, pids) {
+				assert.ifError(err);
+				assert.deepEqual([postData.pid], pids);
+				done();
+			});
+		});
 	});
 });

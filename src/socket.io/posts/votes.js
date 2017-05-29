@@ -60,25 +60,30 @@ module.exports = function (SocketPosts) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
-		posts.getUpvotedUidsByPids(pids, function (err, data) {
-			if (err || !Array.isArray(data) || !data.length) {
-				return callback(err, []);
-			}
-
-			async.map(data, function (uids, next) {
-				var otherCount = 0;
-				if (uids.length > 6) {
-					otherCount = uids.length - 5;
-					uids = uids.slice(0, 5);
+		async.waterfall([
+			function (next) {
+				posts.getUpvotedUidsByPids(pids, next);
+			},
+			function (data, next) {
+				if (!data.length) {
+					return callback(null, []);
 				}
-				user.getUsernamesByUids(uids, function (err, usernames) {
-					next(err, {
-						otherCount: otherCount,
-						usernames: usernames,
+
+				async.map(data, function (uids, next) {
+					var otherCount = 0;
+					if (uids.length > 6) {
+						otherCount = uids.length - 5;
+						uids = uids.slice(0, 5);
+					}
+					user.getUsernamesByUids(uids, function (err, usernames) {
+						next(err, {
+							otherCount: otherCount,
+							usernames: usernames,
+						});
 					});
-				});
-			}, callback);
-		});
+				}, next);
+			},
+		], callback);
 	};
 
 	SocketPosts.upvote = function (socket, data, callback) {

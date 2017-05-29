@@ -1,23 +1,22 @@
 'use strict';
 
-var navigationController = {};
+var async = require('async');
+
+var navigationAdmin = require('../../navigation/admin');
+var navigationController = module.exports;
 
 navigationController.get = function (req, res, next) {
-	require('../../navigation/admin').getAdmin(function (err, data) {
-		if (err) {
-			return next(err);
-		}
+	async.waterfall([
+		navigationAdmin.getAdmin,
+		function (data) {
+			data.enabled.forEach(function (enabled, index) {
+				enabled.index = index;
+				enabled.selected = index === 0;
+			});
 
+			data.navigation = data.enabled.slice();
 
-		data.enabled.forEach(function (enabled, index) {
-			enabled.index = index;
-			enabled.selected = index === 0;
-		});
-
-		data.navigation = data.enabled.slice();
-
-		res.render('admin/general/navigation', data);
-	});
+			res.render('admin/general/navigation', data);
+		},
+	], next);
 };
-
-module.exports = navigationController;

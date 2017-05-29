@@ -69,6 +69,15 @@ describe('Sorted Set methods', function () {
 				done();
 			});
 		});
+
+		it('should return empty array if set does not exist', function (done) {
+			db.getSortedSetRange('doesnotexist', 0, -1, function (err, values) {
+				assert.ifError(err);
+				assert(Array.isArray(values));
+				assert.equal(values.length, 0);
+				done();
+			});
+		});
 	});
 
 	describe('getSortedSetRevRange()', function () {
@@ -119,6 +128,15 @@ describe('Sorted Set methods', function () {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.deepEqual(values, ['value1', 'value2']);
+				done();
+			});
+		});
+
+		it('should return empty array if set does not exist', function (done) {
+			db.getSortedSetRangeByScore('doesnotexist', 0, -1, '-inf', 0, function (err, values) {
+				assert.ifError(err);
+				assert(Array.isArray(values));
+				assert.equal(values.length, 0);
 				done();
 			});
 		});
@@ -303,6 +321,7 @@ describe('Sorted Set methods', function () {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(!!score, false);
+				assert.strictEqual(score, null);
 				done();
 			});
 		});
@@ -312,6 +331,7 @@ describe('Sorted Set methods', function () {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(!!score, false);
+				assert.strictEqual(score, null);
 				done();
 			});
 		});
@@ -899,9 +919,5 @@ describe('Sorted Set methods', function () {
 				});
 			});
 		});
-	});
-
-	after(function (done) {
-		db.emptydb(done);
 	});
 });

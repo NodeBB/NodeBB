@@ -13,6 +13,7 @@ var events = require('../events');
 var emailer = require('../emailer');
 var db = require('../database');
 var analytics = require('../analytics');
+var websockets = require('../socket.io/index');
 var index = require('./index');
 var getAdminSearchDict = require('../admin/search').getDictionary;
 
@@ -37,13 +38,18 @@ var SocketAdmin = {
 };
 
 SocketAdmin.before = function (socket, method, data, next) {
-	user.isAdministrator(socket.uid, function (err, isAdmin) {
-		if (err || isAdmin) {
-			return next(err);
-		}
-		winston.warn('[socket.io] Call to admin method ( ' + method + ' ) blocked (accessed by uid ' + socket.uid + ')');
-		next(new Error('[[error:no-privileges]]'));
-	});
+	async.waterfall([
+		function (next) {
+			user.isAdministrator(socket.uid, next);
+		},
+		function (isAdmin) {
+			if (isAdmin) {
+				return next();
+			}
+			winston.warn('[socket.io] Call to admin method ( ' + method + ' ) blocked (accessed by uid ' + socket.uid + ')');
+			next(new Error('[[error:no-privileges]]'));
+		},
+	], next);
 };
 
 SocketAdmin.reload = function (socket, data, callback) {
@@ -57,26 +63,27 @@ SocketAdmin.reload = function (socket, data, callback) {
 };
 
 SocketAdmin.restart = function (socket, data, callback) {
-	require('../meta/build').buildAll(function (err) {
-		if (err) {
-			return callback(err);
-		}
+	async.waterfall([
+		function (next) {
+			require('../meta/build').buildAll(next);
+		},
+		function (next) {
+			events.log({
+				type: 'build',
+				uid: socket.uid,
+				ip: socket.ip,
+			});
 
-		events.log({
-			type: 'build',
-			uid: socket.uid,
-			ip: socket.ip,
-		});
+			events.log({
+				type: 'restart',
+				uid: socket.uid,
+				ip: socket.ip,
+			});
 
-		events.log({
-			type: 'restart',
-			uid: socket.uid,
-			ip: socket.ip,
-		});
-
-		meta.restart();
-		callback();
-	});
+			meta.restart();
+			next();
+		},
+	], callback);
 };
 
 SocketAdmin.fireEvent = function (socket, data, callback) {
@@ -211,10 +218,12 @@ SocketAdmin.analytics.get = function (socket, data, callback) {
 	}
 
 	// Default returns views from past 24 hours, by hour
-	if (data.units === 'days') {
-		data.amount = 30;
-	} else {
-		data.amount = 24;
+	if (!data.amount) {
+		if (data.units === 'days') {
+			data.amount = 30;
+		} else {
+			data.amount = 24;
+		}
 	}
 
 	if (data.graph === 'traffic') {
@@ -233,8 +242,8 @@ SocketAdmin.analytics.get = function (socket, data, callback) {
 					analytics.getHourlyStatsForSet('analytics:pageviews', data.until || Date.now(), data.amount, next);
 				}
 			},
-			monthlyPageViews: function (next) {
-				analytics.getMonthlyPageViews(next);
+			summary: function (next) {
+				analytics.getSummary(next);
 			},
 		}, function (err, data) {
 			data.pastDay = data.pageviews.reduce(function (a, b) { return parseInt(a, 10) + parseInt(b, 10); });
@@ -276,5 +285,9 @@ SocketAdmin.deleteAllSessions = function (socket, data, callback) {
 	user.auth.deleteAllSessions(callback);
 };
 
+SocketAdmin.reloadAllSessions = function (socket, data, callback) {
+	websockets.in('uid_' + socket.uid).emit('event:livereload');
+	callback();
+};
 
 module.exports = SocketAdmin;

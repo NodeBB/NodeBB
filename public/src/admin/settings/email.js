@@ -8,6 +8,7 @@ define('admin/settings/email', ['ace/ace', 'admin/settings'], function (ace) {
 	module.init = function () {
 		configureEmailTester();
 		configureEmailEditor();
+		handleDigestHourChange();
 
 		$(window).on('action:admin.settingsLoaded action:admin.settingsSaved', handleDigestHourChange);
 		$(window).on('action:admin.settingsSaved', function () {

@@ -345,7 +345,7 @@ define('forum/category', [
 			}
 
 			if (!topicSelect.getSelectedTids().length) {
-				infinitescroll.removeExtra($('[component="category/topic"]'), direction, 60);
+				infinitescroll.removeExtra($('[component="category/topic"]'), direction, config.topicsPerPage * 3);
 			}
 
 			html.find('.timeago').timeago();

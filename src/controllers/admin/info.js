@@ -9,7 +9,7 @@ var exec = require('child_process').exec;
 var pubsub = require('../../pubsub');
 var rooms = require('../../socket.io/admin/rooms');
 
-var infoController = {};
+var infoController = module.exports;
 
 var info = {};
 
@@ -76,21 +76,25 @@ function getNodeInfo(callback) {
 		},
 	};
 
-	async.parallel({
-		stats: function (next) {
-			rooms.getLocalStats(next);
+	data.process.memoryUsage.humanReadable = (data.process.memoryUsage.rss / (1024 * 1024)).toFixed(2);
+
+	async.waterfall([
+		function (next) {
+			async.parallel({
+				stats: function (next) {
+					rooms.getLocalStats(next);
+				},
+				gitInfo: function (next) {
+					getGitInfo(next);
+				},
+			}, next);
 		},
-		gitInfo: function (next) {
-			getGitInfo(next);
+		function (results, next) {
+			data.git = results.gitInfo;
+			data.stats = results.stats;
+			next(null, data);
 		},
-	}, function (err, results) {
-		if (err) {
-			return callback(err);
-		}
-		data.git = results.gitInfo;
-		data.stats = results.stats;
-		callback(null, data);
-	});
+	], callback);
 }
 
 function getGitInfo(callback) {
@@ -111,5 +115,3 @@ function getGitInfo(callback) {
 		},
 	}, callback);
 }
-
-module.exports = infoController;

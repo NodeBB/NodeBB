@@ -461,7 +461,9 @@ define('settings', function () {
 				for (var key in values) {
 					if (values.hasOwnProperty(key)) {
 						try {
-							values[key] = JSON.parse(values[key]);
+							if (!utils.isNumber(values[key])) {
+								values[key] = JSON.parse(values[key]);
+							}
 						} catch (e) {
 							// Leave the value as is
 						}

@@ -72,8 +72,4 @@ describe('blacklist', function () {
 		assert(blacklist.test('1.1.1.1'));
 		done();
 	});
-
-	after(function (done) {
-		db.emptydb(done);
-	});
 });

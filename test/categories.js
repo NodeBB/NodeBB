@@ -20,7 +20,7 @@ describe('Categories', function () {
 
 	before(function (done) {
 		groups.resetCache();
-		async.parallel({
+		async.series({
 			posterUid: function (next) {
 				User.create({ username: 'poster' }, next);
 			},
@@ -679,10 +679,5 @@ describe('Categories', function () {
 				done();
 			});
 		});
-	});
-
-
-	after(function (done) {
-		db.emptydb(done);
 	});
 });

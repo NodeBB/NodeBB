@@ -60,7 +60,7 @@
     "username_taken_workaround": "Le nom d'utilisateur désiré est déjà utilisé, nous l'avons donc légèrement modifié. Vous êtes maintenant connu comme <strong>%1</strong>",
     "password_same_as_username": "Votre mot de passe est identique à votre nom d'utilisateur. Veuillez en choisir un autre.",
     "password_same_as_email": "Votre mot de passe est identique à votre adresse email. Veuillez en choisir un autre.",
-    "weak_password": "Weak password.",
+    "weak_password": "Sécurité du mot de passe faible.",
     "upload_picture": "Envoyer l'image",
     "upload_a_picture": "Envoyer une image",
     "remove_uploaded_picture": "Supprimer l'image envoyée",
@@ -132,5 +132,5 @@
     "info.email-history": "Historique des adresses email",
     "info.moderation-note": "Note de modération",
     "info.moderation-note.success": "Note de modération enregistrée",
-    "info.moderation-note.add": "Add note"
+    "info.moderation-note.add": "Ajouter une note"
 }

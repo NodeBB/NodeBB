@@ -49,7 +49,7 @@ topicsController.get = function (req, res, callback) {
 
 			userPrivileges = results.privileges;
 
-			if (!userPrivileges.read || !userPrivileges['topics:read'] || (parseInt(results.topic.deleted, 10) && !userPrivileges.view_deleted)) {
+			if (!userPrivileges['topics:read'] || (parseInt(results.topic.deleted, 10) && !userPrivileges.view_deleted)) {
 				return helpers.notAllowed(req, res);
 			}
 
@@ -313,16 +313,13 @@ topicsController.teaser = function (req, res, next) {
 			}
 			posts.getPostSummaryByPids([pid], req.uid, { stripTags: false }, next);
 		},
-	], function (err, posts) {
-		if (err) {
-			return next(err);
-		}
-
-		if (!Array.isArray(posts) || !posts.length) {
-			return res.status(404).json('not-found');
-		}
-		res.json(posts[0]);
-	});
+		function (posts) {
+			if (!posts.length) {
+				return res.status(404).json('not-found');
+			}
+			res.json(posts[0]);
+		},
+	], next);
 };
 
 topicsController.pagination = function (req, res, callback) {

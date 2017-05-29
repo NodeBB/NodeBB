@@ -22,6 +22,7 @@
 				</div>
 			</form>
 		</div>
+
 		<div class="tab-pane fade" id="custom-header">
 			<p>
 				[[admin/appearance/customise:custom-header.description]]
@@ -40,6 +41,18 @@
 				</div>
 			</form>
 		</div>
+
+		<form class="form">
+			<div class="form-group">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="enableLiveReload">
+					<input class="mdl-switch__input" id="enableLiveReload" type="checkbox" data-field="enableLiveReload" checked />
+					<span class="mdl-switch__label">
+						[[admin/appearance/customise:custom-css.livereload]]
+						<small>[[admin/appearance/customise:custom-css.livereload.description]]</small>
+					</span>
+				</label>
+			</div>
+		</form>
 	</div>
 </div>
 

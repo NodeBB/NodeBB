@@ -58,10 +58,6 @@ module.exports = function (Groups) {
 				db.getSortedSetRevRange('group:' + groupName + ':member:pids', 0, max - 1, next);
 			},
 			function (pids, next) {
-				if (!Array.isArray(pids) || !pids.length) {
-					return callback(null, []);
-				}
-
 				privileges.posts.filter('read', pids, uid, next);
 			},
 			function (pids, next) {

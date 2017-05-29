@@ -1,0 +1,35 @@
+{
+	"name": "Ime grupe",
+	"description": "Opis grupe",
+	"member-count": "Broj članova",
+	"system": "Sistemska grupa",
+	"edit": "Uredi",
+	"search-placeholder": "Pretraga",
+	"create": "Kreiraj grupu",
+	"description-placeholder": "Kratki opis grupe",
+	"create-button": "Napravi",
+
+	"alerts.create-failure": "<strong>Uh-Oh</strong><p>Nastao je problem sa stvaranjem Vaše grupe.Molimo probajte ponovo kasnije!</p>",
+	"alerts.confirm-delete": "Sigurni ste da želite obrisati ovu grupu?",
+
+	"edit.name": "Ime",
+	"edit.description": "Opis",
+	"edit.user-title": "Naslov članova",
+	"edit.icon": "Ikona grupe",
+	"edit.label-color": "Boja oznake grupe",
+	"edit.show-badge": "Prikaži beđ",
+	"edit.private-details": "Ako je omogućeno, pridruživanje grupi zahtjeva dozvolu vlasnika grupe.",
+	"edit.private-override": "Upozorenje:Privatne grupe su onemogućene na sistemskoj razini,koje onemogućavaju ovu opciju",
+	"edit.disable-requests": "Onemogući zahtjeve za priključenje",
+	"edit.hidden": "Skriveno",
+	"edit.hidden-details": "Ako je uključeno,ova grupa neće biti prikazana u listi grupa i korisnici će morati biti pozvani ručno",
+	"edit.add-user": "Dodaj korisnika u grupu",
+	"edit.add-user-search": "Pretraži korisnike",
+	"edit.members": "Lista članova",
+	"control-panel": "Kontrolna ploča grupa",
+	"revert": "Povrati",
+
+	"edit.no-users-found": "Korisnik nije pronađen",
+	"edit.confirm-remove-user": "Sigurni ste da želite ukloniti ovog korisnika?",
+	"edit.save-success": "Promjene spremljene!"
+}

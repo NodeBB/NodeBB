@@ -1,11 +1,9 @@
 'use strict';
 
-var fs = require('fs');
 var path = require('path');
 var async = require('async');
 var nconf = require('nconf');
 var validator = require('validator');
-var winston = require('winston');
 
 var meta = require('../meta');
 var file = require('../file');
@@ -211,7 +209,7 @@ uploadsController.uploadFile = function (uid, uploadedFile, callback) {
 	var allowed = file.allowedExtensions();
 
 	var extension = path.extname(uploadedFile.name).toLowerCase();
-	if (!extension || extension === '.' || (allowed.length > 0 && allowed.indexOf(extension) === -1)) {
+	if (allowed.length > 0 && (!extension || extension === '.' || allowed.indexOf(extension) === -1)) {
 		return callback(new Error('[[error:invalid-file-type, ' + allowed.join('&#44; ') + ']]'));
 	}
 
@@ -242,13 +240,9 @@ function saveFileToLocal(uploadedFile, callback) {
 }
 
 function deleteTempFiles(files) {
-	async.each(files, function (file, next) {
-		fs.unlink(file.path, function (err) {
-			if (err) {
-				winston.error(err);
-			}
-			next();
-		});
+	async.each(files, function (fileObj, next) {
+		file.delete(fileObj.path);
+		next();
 	});
 }
 

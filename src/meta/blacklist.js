@@ -13,27 +13,24 @@ var Blacklist = {
 
 Blacklist.load = function (callback) {
 	callback = callback || function () {};
+
 	async.waterfall([
 		Blacklist.get,
 		Blacklist.validate,
-	], function (err, rules) {
-		if (err) {
-			return callback(err);
-		}
+		function (rules, next) {
+			winston.verbose('[meta/blacklist] Loading ' + rules.valid.length + ' blacklist rules');
+			if (rules.invalid.length) {
+				winston.warn('[meta/blacklist] ' + rules.invalid.length + ' invalid blacklist rule(s) were ignored.');
+			}
 
-		winston.verbose('[meta/blacklist] Loading ' + rules.valid.length + ' blacklist rules');
-		if (rules.invalid.length) {
-			winston.warn('[meta/blacklist] ' + rules.invalid.length + ' invalid blacklist rule(s) were ignored.');
-		}
-
-		Blacklist._rules = {
-			ipv4: rules.ipv4,
-			ipv6: rules.ipv6,
-			cidr: rules.cidr,
-		};
-
-		callback();
-	});
+			Blacklist._rules = {
+				ipv4: rules.ipv4,
+				ipv6: rules.ipv6,
+				cidr: rules.cidr,
+			};
+			next();
+		},
+	], callback);
 };
 
 pubsub.on('blacklist:reload', Blacklist.load);

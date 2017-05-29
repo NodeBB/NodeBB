@@ -89,47 +89,48 @@ module.exports = function (Posts) {
 
 	function parsePosts(posts, options, callback) {
 		async.map(posts, function (post, next) {
-			if (!post.content || !options.parse) {
-				if (options.stripTags) {
-					post.content = stripTags(post.content);
-				}
-				post.content = post.content ? validator.escape(String(post.content)) : post.content;
-				return next(null, post);
-			}
-
-			Posts.parsePost(post, function (err, post) {
-				if (err) {
-					return next(err);
-				}
-				if (options.stripTags) {
-					post.content = stripTags(post.content);
-				}
-
-				next(null, post);
-			});
+			async.waterfall([
+				function (next) {
+					if (!post.content || !options.parse) {
+						post.content = post.content ? validator.escape(String(post.content)) : post.content;
+						return next(null, post);
+					}
+					Posts.parsePost(post, next);
+				},
+				function (post, next) {
+					if (options.stripTags) {
+						post.content = stripTags(post.content);
+					}
+					next(null, post);
+				},
+			], next);
 		}, callback);
 	}
 
 	function getTopicAndCategories(tids, callback) {
-		topics.getTopicsFields(tids, ['uid', 'tid', 'title', 'cid', 'slug', 'deleted', 'postcount', 'mainPid'], function (err, topics) {
-			if (err) {
-				return callback(err);
-			}
+		var topicsData;
+		async.waterfall([
+			function (next) {
+				topics.getTopicsFields(tids, ['uid', 'tid', 'title', 'cid', 'slug', 'deleted', 'postcount', 'mainPid'], next);
+			},
+			function (_topicsData, next) {
+				topicsData = _topicsData;
+				var cids = topicsData.map(function (topic) {
+					if (topic) {
+						topic.title = String(topic.title);
+						topic.deleted = parseInt(topic.deleted, 10) === 1;
+					}
+					return topic && topic.cid;
+				}).filter(function (topic, index, array) {
+					return topic && array.indexOf(topic) === index;
+				});
 
-			var cids = topics.map(function (topic) {
-				if (topic) {
-					topic.title = String(topic.title);
-					topic.deleted = parseInt(topic.deleted, 10) === 1;
-				}
-				return topic && topic.cid;
-			}).filter(function (topic, index, array) {
-				return topic && array.indexOf(topic) === index;
-			});
-
-			categories.getCategoriesFields(cids, ['cid', 'name', 'icon', 'slug', 'parentCid', 'bgColor', 'color'], function (err, categories) {
-				callback(err, { topics: topics, categories: categories });
-			});
-		});
+				categories.getCategoriesFields(cids, ['cid', 'name', 'icon', 'slug', 'parentCid', 'bgColor', 'color'], next);
+			},
+			function (categoriesData, next) {
+				next(null, { topics: topicsData, categories: categoriesData });
+			},
+		], callback);
 	}
 
 	function toObject(key, data) {

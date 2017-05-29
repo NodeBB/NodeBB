@@ -1,14 +1,13 @@
 'use strict';
 
-var _ = require('underscore');
+var _ = require('lodash');
+var async = require('async');
 var winston = require('winston');
 var nconf = require('nconf');
 var semver = require('semver');
 var session = require('express-session');
 var redis = require('redis');
 var redisClient;
-
-_.mixin(require('underscore.deep'));
 
 var redisModule = module.exports;
 
@@ -71,17 +70,13 @@ redisModule.connect = function (options) {
 	var redis_socket_or_host = nconf.get('redis:host');
 	var cxn;
 
-	if (!redis) {
-		redis = require('redis');
-	}
-
 	options = options || {};
 
 	if (nconf.get('redis:password')) {
 		options.auth_pass = nconf.get('redis:password');
 	}
 
-	options = _.deepExtend(options, nconf.get('redis:options') || {});
+	options = _.merge(options, nconf.get('redis:options') || {});
 
 	if (redis_socket_or_host && redis_socket_or_host.indexOf('/') >= 0) {
 		/* If redis.host contains a path name character, use the unix dom sock connection. ie, /tmp/redis.sock */
@@ -101,10 +96,10 @@ redisModule.connect = function (options) {
 	}
 
 	var dbIdx = parseInt(nconf.get('redis:database'), 10);
-	if (dbIdx) {
-		cxn.select(dbIdx, function (error) {
-			if (error) {
-				winston.error('NodeBB could not connect to your Redis database. Redis returned the following error: ' + error.message);
+	if (dbIdx >= 0) {
+		cxn.select(dbIdx, function (err) {
+			if (err) {
+				winston.error('NodeBB could not connect to your Redis database. Redis returned the following error: ' + err.message);
 				process.exit();
 			}
 		});
@@ -118,46 +113,52 @@ redisModule.createIndices = function (callback) {
 };
 
 redisModule.checkCompatibility = function (callback) {
-	redisModule.info(redisModule.client, function (err, info) {
-		if (err) {
-			return callback(err);
-		}
-
-		if (semver.lt(info.redis_version, '2.8.9')) {
-			return callback(new Error('Your Redis version is not new enough to support NodeBB, please upgrade Redis to v2.8.9 or higher.'));
-		}
-
-		callback();
-	});
+	async.waterfall([
+		function (next) {
+			redisModule.info(redisModule.client, next);
+		},
+		function (info, next) {
+			redisModule.checkCompatibilityVersion(info.redis_version, next);
+		},
+	], callback);
 };
 
-redisModule.close = function () {
-	redisClient.quit();
+redisModule.checkCompatibilityVersion = function (version, callback) {
+	if (semver.lt(version, '2.8.9')) {
+		return callback(new Error('Your Redis version is not new enough to support NodeBB, please upgrade Redis to v2.8.9 or higher.'));
+	}
+	callback();
+};
+
+redisModule.close = function (callback) {
+	callback = callback || function () {};
+	redisClient.quit(callback);
 };
 
 redisModule.info = function (cxn, callback) {
 	if (!cxn) {
 		return callback();
 	}
-	cxn.info(function (err, data) {
-		if (err) {
-			return callback(err);
-		}
+	async.waterfall([
+		function (next) {
+			cxn.info(next);
+		},
+		function (data, next) {
+			var lines = data.toString().split('\r\n').sort();
+			var redisData = {};
+			lines.forEach(function (line) {
+				var parts = line.split(':');
+				if (parts[1]) {
+					redisData[parts[0]] = parts[1];
+				}
+			});
+			redisData.used_memory_human = (redisData.used_memory / (1024 * 1024 * 1024)).toFixed(2);
+			redisData.raw = JSON.stringify(redisData, null, 4);
+			redisData.redis = true;
 
-		var lines = data.toString().split('\r\n').sort();
-		var redisData = {};
-		lines.forEach(function (line) {
-			var parts = line.split(':');
-			if (parts[1]) {
-				redisData[parts[0]] = parts[1];
-			}
-		});
-		redisData.used_memory_human = (redisData.used_memory / (1024 * 1024 * 1024)).toFixed(2);
-		redisData.raw = JSON.stringify(redisData, null, 4);
-		redisData.redis = true;
-
-		callback(null, redisData);
-	});
+			next(null, redisData);
+		},
+	], callback);
 };
 
 redisModule.helpers = redisModule.helpers || {};

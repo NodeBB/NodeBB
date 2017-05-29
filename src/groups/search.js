@@ -88,10 +88,7 @@ module.exports = function (Groups) {
 
 		if (!data.query) {
 			Groups.getOwnersAndMembers(data.groupName, data.uid, 0, 19, function (err, users) {
-				if (err) {
-					return callback(err);
-				}
-				callback(null, { users: users });
+				callback(err, { users: users });
 			});
 			return;
 		}

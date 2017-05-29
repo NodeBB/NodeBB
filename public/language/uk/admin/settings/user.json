@@ -37,7 +37,7 @@
 	"min-username-length": "Мінімальна довжина імені користувача",
 	"max-username-length": "Максимальна довжина імені користувача",
 	"min-password-length": "Мінімальна довжина пароля",
-	"min-password-strength": "Minimum Password Strength",
+	"min-password-strength": "Мінімальна Довжина Паролю",
 	"max-about-me-length": "Максимальна довжина розділу \"Про мене\"",
 	"terms-of-use": "Умови користування форумом <small>(Залиште пустим, щоб вимкнути)</small>",
 	"user-search": "Пошук користувачів",

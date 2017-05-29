@@ -1,0 +1,8 @@
+{
+	"handles": "Upravljanje gostima",
+	"handles.enabled": "Dozvoli upravljanje gostima",
+	"handles.enabled-help": "Ova opcija omogućava gostima da izaberi ime za svaku objavu koju naprave.Ako je onemogućena gosti će se zvati \"gost\".",
+	"privileges": "Privilegije gosta",
+	"privileges.can-search": "Dozvoli gostima pretragu bez prijave",
+	"privileges.can-search-users": "Dopusti gostima pretragu korisnika bez prijave"
+}

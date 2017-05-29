@@ -6,11 +6,9 @@ var winston = require('winston');
 var async = require('async');
 var nconf = require('nconf');
 var session = require('express-session');
-var _ = require('underscore');
+var _ = require('lodash');
 var semver = require('semver');
 var db;
-
-_.mixin(require('underscore.deep'));
 
 var mongoModule = module.exports;
 
@@ -55,6 +53,8 @@ mongoModule.init = function (callback) {
 	var usernamePassword = '';
 	if (nconf.get('mongo:username') && nconf.get('mongo:password')) {
 		usernamePassword = nconf.get('mongo:username') + ':' + encodeURIComponent(nconf.get('mongo:password')) + '@';
+	} else {
+		winston.warn('You have no mongo username/password setup!');
 	}
 
 	// Sensible defaults for Mongo, if not set
@@ -76,7 +76,7 @@ mongoModule.init = function (callback) {
 		servers.push(hosts[i] + ':' + ports[i]);
 	}
 
-	var connString = 'mongodb://' + usernamePassword + servers.join() + '/' + nconf.get('mongo:database');
+	var connString = nconf.get('mongo:uri') || 'mongodb://' + usernamePassword + servers.join() + '/' + nconf.get('mongo:database');
 
 	var connOptions = {
 		poolSize: 10,
@@ -85,7 +85,7 @@ mongoModule.init = function (callback) {
 		autoReconnect: true,
 	};
 
-	connOptions = _.deepExtend(connOptions, nconf.get('mongo:options') || {});
+	connOptions = _.merge(connOptions, nconf.get('mongo:options') || {});
 
 	mongoClient.connect(connString, connOptions, function (err, _db) {
 		if (err) {
@@ -102,15 +102,7 @@ mongoModule.init = function (callback) {
 		require('./mongo/sets')(db, mongoModule);
 		require('./mongo/sorted')(db, mongoModule);
 		require('./mongo/list')(db, mongoModule);
-
-		if (nconf.get('mongo:password') && nconf.get('mongo:username')) {
-			db.authenticate(nconf.get('mongo:username'), nconf.get('mongo:password'), function (err) {
-				callback(err);
-			});
-		} else {
-			winston.warn('You have no mongo password setup!');
-			callback();
-		}
+		callback();
 	});
 };
 
@@ -167,8 +159,11 @@ mongoModule.createIndices = function (callback) {
 
 mongoModule.checkCompatibility = function (callback) {
 	var mongoPkg = require('mongodb/package.json');
+	mongoModule.checkCompatibilityVersion(mongoPkg.version, callback);
+};
 
-	if (semver.lt(mongoPkg.version, '2.0.0')) {
+mongoModule.checkCompatibilityVersion = function (version, callback) {
+	if (semver.lt(version, '2.0.0')) {
 		return callback(new Error('The `mongodb` package is out-of-date, please run `./nodebb setup` again.'));
 	}
 
@@ -179,66 +174,75 @@ mongoModule.info = function (db, callback) {
 	if (!db) {
 		return callback();
 	}
-	async.parallel({
-		serverStatus: function (next) {
-			db.command({ serverStatus: 1 }, next);
+	async.waterfall([
+		function (next) {
+			async.parallel({
+				serverStatus: function (next) {
+					db.command({ serverStatus: 1 }, next);
+				},
+				stats: function (next) {
+					db.command({ dbStats: 1 }, next);
+				},
+				listCollections: function (next) {
+					getCollectionStats(db, next);
+				},
+			}, next);
 		},
-		stats: function (next) {
-			db.command({ dbStats: 1 }, next);
-		},
-		listCollections: function (next) {
-			db.listCollections().toArray(function (err, items) {
-				if (err) {
-					return next(err);
-				}
-				async.map(items, function (collection, next) {
-					db.collection(collection.name).stats(next);
-				}, next);
+		function (results, next) {
+			var stats = results.stats;
+			var scale = 1024 * 1024 * 1024;
+
+			results.listCollections = results.listCollections.map(function (collectionInfo) {
+				return {
+					name: collectionInfo.ns,
+					count: collectionInfo.count,
+					size: collectionInfo.size,
+					avgObjSize: collectionInfo.avgObjSize,
+					storageSize: collectionInfo.storageSize,
+					totalIndexSize: collectionInfo.totalIndexSize,
+					indexSizes: collectionInfo.indexSizes,
+				};
 			});
+
+			stats.mem = results.serverStatus.mem;
+			stats.mem = results.serverStatus.mem;
+			stats.mem.resident = (stats.mem.resident / 1024).toFixed(2);
+			stats.mem.virtual = (stats.mem.virtual / 1024).toFixed(2);
+			stats.mem.mapped = (stats.mem.mapped / 1024).toFixed(2);
+			stats.collectionData = results.listCollections;
+			stats.network = results.serverStatus.network;
+			stats.raw = JSON.stringify(stats, null, 4);
+
+			stats.avgObjSize = stats.avgObjSize.toFixed(2);
+			stats.dataSize = (stats.dataSize / scale).toFixed(2);
+			stats.storageSize = (stats.storageSize / scale).toFixed(2);
+			stats.fileSize = stats.fileSize ? (stats.fileSize / scale).toFixed(2) : 0;
+			stats.indexSize = (stats.indexSize / scale).toFixed(2);
+			stats.storageEngine = results.serverStatus.storageEngine ? results.serverStatus.storageEngine.name : 'mmapv1';
+			stats.host = results.serverStatus.host;
+			stats.version = results.serverStatus.version;
+			stats.uptime = results.serverStatus.uptime;
+			stats.mongo = true;
+
+			next(null, stats);
 		},
-	}, function (err, results) {
-		if (err) {
-			return callback(err);
-		}
-		var stats = results.stats;
-		var scale = 1024 * 1024 * 1024;
-
-		results.listCollections = results.listCollections.map(function (collectionInfo) {
-			return {
-				name: collectionInfo.ns,
-				count: collectionInfo.count,
-				size: collectionInfo.size,
-				avgObjSize: collectionInfo.avgObjSize,
-				storageSize: collectionInfo.storageSize,
-				totalIndexSize: collectionInfo.totalIndexSize,
-				indexSizes: collectionInfo.indexSizes,
-			};
-		});
-
-		stats.mem = results.serverStatus.mem;
-		stats.mem = results.serverStatus.mem;
-		stats.mem.resident = (stats.mem.resident / 1024).toFixed(2);
-		stats.mem.virtual = (stats.mem.virtual / 1024).toFixed(2);
-		stats.mem.mapped = (stats.mem.mapped / 1024).toFixed(2);
-		stats.collectionData = results.listCollections;
-		stats.network = results.serverStatus.network;
-		stats.raw = JSON.stringify(stats, null, 4);
-
-		stats.avgObjSize = stats.avgObjSize.toFixed(2);
-		stats.dataSize = (stats.dataSize / scale).toFixed(2);
-		stats.storageSize = (stats.storageSize / scale).toFixed(2);
-		stats.fileSize = stats.fileSize ? (stats.fileSize / scale).toFixed(2) : 0;
-		stats.indexSize = (stats.indexSize / scale).toFixed(2);
-		stats.storageEngine = results.serverStatus.storageEngine ? results.serverStatus.storageEngine.name : 'mmapv1';
-		stats.host = results.serverStatus.host;
-		stats.version = results.serverStatus.version;
-		stats.uptime = results.serverStatus.uptime;
-		stats.mongo = true;
-
-		callback(null, stats);
-	});
+	], callback);
 };
 
-mongoModule.close = function () {
-	db.close();
+function getCollectionStats(db, callback) {
+	async.waterfall([
+		function (next) {
+			db.listCollections().toArray(next);
+		},
+		function (items, next) {
+			async.map(items, function (collection, next) {
+				db.collection(collection.name).stats(next);
+			}, next);
+		},
+	], callback);
+}
+
+mongoModule.close = function (callback) {
+	callback = callback || function () {};
+	db.close(callback);
 };

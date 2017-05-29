@@ -1,5 +1,5 @@
 {
-	"posts": "Posts",
+	"posts": "Príspevky",
 	"allow-files": "Allow users to upload regular files",
 	"private": "Make uploaded files private",
 	"max-image-width": "Resize images down to specified width (in pixels)",

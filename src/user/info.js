@@ -1,7 +1,7 @@
 'use strict';
 
 var async = require('async');
-var _ = require('underscore');
+var _ = require('lodash');
 var validator = require('validator');
 
 var db = require('../database');
@@ -30,21 +30,15 @@ module.exports = function (User) {
 			},
 			function (_reason, next) {
 				reason = _reason && _reason.length ? _reason[0] : '';
-				next();
+				next(null, {
+					uid: uid,
+					timestamp: timestamp,
+					expiry: parseInt(expiry, 10),
+					expiry_readable: new Date(parseInt(expiry, 10)).toString(),
+					reason: validator.escape(String(reason)),
+				});
 			},
-		], function (err) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, {
-				uid: uid,
-				timestamp: timestamp,
-				expiry: parseInt(expiry, 10),
-				expiry_readable: new Date(parseInt(expiry, 10)).toString(),
-				reason: validator.escape(String(reason)),
-			});
-		});
+		], callback);
 	};
 
 	User.getModerationHistory = function (uid, callback) {
@@ -57,50 +51,70 @@ module.exports = function (User) {
 				}, next);
 			},
 			function (data, next) {
-				getFlagMetadata(data, next);
+				// Get pids from flag objects
+				var keys = data.flags.map(function (flagObj) {
+					return 'flag:' + flagObj.value;
+				});
+				db.getObjectsFields(keys, ['type', 'targetId'], function (err, payload) {
+					if (err) {
+						return next(err);
+					}
+
+					// Only pass on flag ids from posts
+					data.flags = payload.reduce(function (memo, cur, idx) {
+						if (cur.type === 'post') {
+							memo.push({
+								value: parseInt(cur.targetId, 10),
+								score: data.flags[idx].score,
+							});
+						}
+
+						return memo;
+					}, []);
+
+					getFlagMetadata(data, next);
+				});
 			},
-		], function (err, data) {
-			if (err) {
-				return callback(err);
-			}
-			formatBanData(data);
-			callback(null, data);
-		});
+			function (data, next) {
+				formatBanData(data);
+				next(null, data);
+			},
+		], callback);
 	};
 
 	User.getHistory = function (set, callback) {
-		db.getSortedSetRevRangeWithScores(set, 0, -1, function (err, data) {
-			if (err) {
-				return callback(err);
-			}
-			callback(null, data.map(function (set) {
-				set.timestamp = set.score;
-				set.timestampISO = utils.toISOString(set.score);
-				set.value = validator.escape(String(set.value.split(':')[0]));
-				delete set.score;
-				return set;
-			}));
-		});
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRevRangeWithScores(set, 0, -1, next);
+			},
+			function (data, next) {
+				next(null, data.map(function (set) {
+					set.timestamp = set.score;
+					set.timestampISO = utils.toISOString(set.score);
+					set.value = validator.escape(String(set.value.split(':')[0]));
+					delete set.score;
+					return set;
+				}));
+			},
+		], callback);
 	};
 
 	function getFlagMetadata(data, callback) {
 		var pids = data.flags.map(function (flagObj) {
 			return parseInt(flagObj.value, 10);
 		});
+		async.waterfall([
+			function (next) {
+				posts.getPostsFields(pids, ['tid'], next);
+			},
+			function (postData, next) {
+				var tids = postData.map(function (post) {
+					return post.tid;
+				});
 
-		posts.getPostsFields(pids, ['tid'], function (err, postData) {
-			if (err) {
-				return callback(err);
-			}
-
-			var tids = postData.map(function (post) {
-				return post.tid;
-			});
-
-			topics.getTopicsFields(tids, ['title'], function (err, topicData) {
-				if (err) {
-					return callback(err);
-				}
+				topics.getTopicsFields(tids, ['title'], next);
+			},
+			function (topicData, next) {
 				data.flags = data.flags.map(function (flagObj, idx) {
 					flagObj.pid = flagObj.value;
 					flagObj.timestamp = flagObj.score;
@@ -112,10 +126,9 @@ module.exports = function (User) {
 
 					return _.extend(flagObj, topicData[idx]);
 				});
-
-				callback(null, data);
-			});
-		});
+				next(null, data);
+			},
+		], callback);
 	}
 
 	function formatBanData(data) {

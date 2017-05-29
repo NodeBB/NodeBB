@@ -10,55 +10,55 @@ module.exports = function (User) {
 		if (parseInt(uid, 10) === 0) {
 			return callback();
 		}
-
-		async.parallel({
-			userData: function (next) {
-				User.getUserFields(uid, ['banned', 'lastposttime', 'joindate', 'email', 'email:confirmed', 'reputation'], next);
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					userData: function (next) {
+						User.getUserFields(uid, ['banned', 'lastposttime', 'joindate', 'email', 'email:confirmed', 'reputation'], next);
+					},
+					exists: function (next) {
+						db.exists('user:' + uid, next);
+					},
+					isAdminOrMod: function (next) {
+						privileges.categories.isAdminOrMod(cid, uid, next);
+					},
+				}, next);
 			},
-			exists: function (next) {
-				db.exists('user:' + uid, next);
+			function (results, next) {
+				if (!results.exists) {
+					return next(new Error('[[error:no-user]]'));
+				}
+
+				if (results.isAdminOrMod) {
+					return next();
+				}
+
+				var userData = results.userData;
+
+				if (parseInt(userData.banned, 10) === 1) {
+					return next(new Error('[[error:user-banned]]'));
+				}
+
+				if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
+					return next(new Error('[[error:email-not-confirmed]]'));
+				}
+
+				var now = Date.now();
+				if (now - parseInt(userData.joindate, 10) < parseInt(meta.config.initialPostDelay, 10) * 1000) {
+					return next(new Error('[[error:user-too-new, ' + meta.config.initialPostDelay + ']]'));
+				}
+
+				var lastposttime = userData.lastposttime || 0;
+
+				if (parseInt(meta.config.newbiePostDelay, 10) > 0 && parseInt(meta.config.newbiePostDelayThreshold, 10) > parseInt(userData.reputation, 10) && now - parseInt(lastposttime, 10) < parseInt(meta.config.newbiePostDelay, 10) * 1000) {
+					return next(new Error('[[error:too-many-posts-newbie, ' + meta.config.newbiePostDelay + ', ' + meta.config.newbiePostDelayThreshold + ']]'));
+				} else if (now - parseInt(lastposttime, 10) < parseInt(meta.config.postDelay, 10) * 1000) {
+					return next(new Error('[[error:too-many-posts, ' + meta.config.postDelay + ']]'));
+				}
+
+				next();
 			},
-			isAdminOrMod: function (next) {
-				privileges.categories.isAdminOrMod(cid, uid, next);
-			},
-		}, function (err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (!results.exists) {
-				return callback(new Error('[[error:no-user]]'));
-			}
-
-			if (results.isAdminOrMod) {
-				return callback();
-			}
-
-			var userData = results.userData;
-
-			if (parseInt(userData.banned, 10) === 1) {
-				return callback(new Error('[[error:user-banned]]'));
-			}
-
-			if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
-				return callback(new Error('[[error:email-not-confirmed]]'));
-			}
-
-			var now = Date.now();
-			if (now - parseInt(userData.joindate, 10) < parseInt(meta.config.initialPostDelay, 10) * 1000) {
-				return callback(new Error('[[error:user-too-new, ' + meta.config.initialPostDelay + ']]'));
-			}
-
-			var lastposttime = userData.lastposttime || 0;
-
-			if (parseInt(meta.config.newbiePostDelay, 10) > 0 && parseInt(meta.config.newbiePostDelayThreshold, 10) > parseInt(userData.reputation, 10) && now - parseInt(lastposttime, 10) < parseInt(meta.config.newbiePostDelay, 10) * 1000) {
-				return callback(new Error('[[error:too-many-posts-newbie, ' + meta.config.newbiePostDelay + ', ' + meta.config.newbiePostDelayThreshold + ']]'));
-			} else if (now - parseInt(lastposttime, 10) < parseInt(meta.config.postDelay, 10) * 1000) {
-				return callback(new Error('[[error:too-many-posts, ' + meta.config.postDelay + ']]'));
-			}
-
-			callback();
-		});
+		], callback);
 	};
 
 	User.onNewPostMade = function (postData, callback) {
@@ -84,15 +84,17 @@ module.exports = function (User) {
 
 	User.incrementUserPostCountBy = function (uid, value, callback) {
 		callback = callback || function () {};
-		User.incrementUserFieldBy(uid, 'postcount', value, function (err, newpostcount) {
-			if (err) {
-				return callback(err);
-			}
-			if (!parseInt(uid, 10)) {
-				return callback();
-			}
-			db.sortedSetAdd('users:postcount', newpostcount, uid, callback);
-		});
+		async.waterfall([
+			function (next) {
+				User.incrementUserFieldBy(uid, 'postcount', value, next);
+			},
+			function (newpostcount, next) {
+				if (!parseInt(uid, 10)) {
+					return next();
+				}
+				db.sortedSetAdd('users:postcount', newpostcount, uid, next);
+			},
+		], callback);
 	};
 
 	User.getPostIds = function (uid, start, stop, callback) {

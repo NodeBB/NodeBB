@@ -3,6 +3,7 @@
 
 var async = require('async');
 var request = require('request');
+var winston = require('winston');
 
 var db = require('../database');
 var meta = require('../meta');
@@ -138,6 +139,19 @@ module.exports = function (User) {
 		});
 	}
 
+	User.shouldQueueUser = function (ip, callback) {
+		var registrationType = meta.config.registrationType || 'normal';
+		if (registrationType === 'normal' || registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
+			setImmediate(callback, null, false);
+		} else if (registrationType === 'admin-approval') {
+			setImmediate(callback, null, true);
+		} else if (registrationType === 'admin-approval-ip') {
+			db.sortedSetCard('ip:' + ip + ':uid', function (err, count) {
+				callback(err, !!count);
+			});
+		}
+	};
+
 	User.getRegistrationQueue = function (start, stop, callback) {
 		var data;
 		async.waterfall([
@@ -152,58 +166,22 @@ module.exports = function (User) {
 				db.getObjects(keys, next);
 			},
 			function (users, next) {
-				users = users.map(function (user, index) {
-					if (user) {
-						user.timestampISO = utils.toISOString(data[index].score);
-						delete user.hashedPassword;
-					}
-
+				users = users.filter(Boolean).map(function (user, index) {
+					user.timestampISO = utils.toISOString(data[index].score);
+					delete user.hashedPassword;
 					return user;
-				}).filter(Boolean);
+				});
 
 				async.map(users, function (user, next) {
-					if (!user) {
-						return next(null, user);
-					}
-
 					// temporary: see http://www.stopforumspam.com/forum/viewtopic.php?id=6392
 					user.ip = user.ip.replace('::ffff:', '');
 
 					async.parallel([
 						function (next) {
-							User.getUidsFromSet('ip:' + user.ip + ':uid', 0, -1, function (err, uids) {
-								if (err) {
-									return next(err);
-								}
-
-								User.getUsersFields(uids, ['uid', 'username', 'picture'], function (err, ipMatch) {
-									user.ipMatch = ipMatch;
-									next(err);
-								});
-							});
+							getIPMatchedUsers(user.ip, next);
 						},
 						function (next) {
-							request({
-								method: 'get',
-								url: 'http://api.stopforumspam.org/api' +
-									'?ip=' + encodeURIComponent(user.ip) +
-									'&email=' + encodeURIComponent(user.email) +
-									'&username=' + encodeURIComponent(user.username) +
-									'&f=json',
-								json: true,
-							}, function (err, response, body) {
-								if (err) {
-									return next();
-								}
-								if (response.statusCode === 200 && body) {
-									user.spamData = body;
-									user.usernameSpam = body.username ? (body.username.frequency > 0 || body.username.appears > 0) : true;
-									user.emailSpam = body.email ? (body.email.frequency > 0 || body.email.appears > 0) : true;
-									user.ipSpam = body.ip ? (body.ip.frequency > 0 || body.ip.appears > 0) : true;
-								}
-
-								next();
-							});
+							getSpamData(user, next);
 						},
 					], function (err) {
 						next(err, user);
@@ -218,4 +196,45 @@ module.exports = function (User) {
 			},
 		], callback);
 	};
+
+	function getIPMatchedUsers(ip, callback) {
+		async.waterfall([
+			function (next) {
+				User.getUidsFromSet('ip:' + ip + ':uid', 0, -1, next);
+			},
+			function (uids, next) {
+				User.getUsersFields(uids, ['uid', 'username', 'picture'], next);
+			},
+		], callback);
+	}
+
+	function getSpamData(user, callback) {
+		async.waterfall([
+			function (next) {
+				request({
+					method: 'get',
+					url: 'http://api.stopforumspam.org/api' +
+						'?ip=' + encodeURIComponent(user.ip) +
+						'&email=' + encodeURIComponent(user.email) +
+						'&username=' + encodeURIComponent(user.username) +
+						'&f=json',
+					json: true,
+				}, next);
+			},
+			function (response, body, next) {
+				if (response.statusCode === 200 && body) {
+					user.spamData = body;
+					user.usernameSpam = body.username ? (body.username.frequency > 0 || body.username.appears > 0) : true;
+					user.emailSpam = body.email ? (body.email.frequency > 0 || body.email.appears > 0) : true;
+					user.ipSpam = body.ip ? (body.ip.frequency > 0 || body.ip.appears > 0) : true;
+				}
+				next();
+			},
+		], function (err) {
+			if (err) {
+				winston.error(err);
+			}
+			callback();
+		});
+	}
 };

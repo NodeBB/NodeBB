@@ -23,9 +23,15 @@ module.exports = function (Topics) {
 	};
 
 	function getAllTimePopular(uid, count, callback) {
-		Topics.getTopicsFromSet('topics:posts', uid, 0, count - 1, function (err, data) {
-			callback(err, data ? data.topics : null);
-		});
+		async.waterfall([
+			function (next) {
+				Topics.getTopicsFromSet('topics:posts', uid, 0, count - 1, next);
+			},
+			function (data, next) {
+				data.topics.sort(sortPopular);
+				next(null, data.topics);
+			},
+		], callback);
 	}
 
 	function getTopics(tids, uid, count, callback) {
@@ -36,9 +42,7 @@ module.exports = function (Topics) {
 			function (topics, next) {
 				tids = topics.filter(function (topic) {
 					return topic && parseInt(topic.deleted, 10) !== 1;
-				}).sort(function (a, b) {
-					return b.postcount - a.postcount;
-				}).slice(0, count).map(function (topic) {
+				}).sort(sortPopular).slice(0, count).map(function (topic) {
 					return topic.tid;
 				});
 				privileges.topics.filterTids('read', tids, uid, next);
@@ -47,5 +51,12 @@ module.exports = function (Topics) {
 				Topics.getTopicsByTids(tids, uid, next);
 			},
 		], callback);
+	}
+
+	function sortPopular(a, b) {
+		if (parseInt(a.postcount, 10) !== parseInt(b.postcount, 10)) {
+			return b.postcount - a.postcount;
+		}
+		return parseInt(b.viewcount, 10) - parseInt(a.viewcount, 10);
 	}
 };
