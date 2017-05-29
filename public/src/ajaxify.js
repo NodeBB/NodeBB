@@ -395,6 +395,10 @@ $(document).ready(function () {
 			}
 
 			if (app.flags && app.flags.hasOwnProperty('_unsaved') && app.flags._unsaved === true) {
+				if (e.ctrlKey) {
+					return;
+				}
+
 				translator.translate('[[global:unsaved-changes]]', function (text) {
 					bootbox.confirm(text, function (navigate) {
 						if (navigate) {
