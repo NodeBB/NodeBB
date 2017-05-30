@@ -75,7 +75,7 @@ SocketUser.emailConfirm = function (socket, data, callback) {
 		return callback(new Error('[[error:email-confirmations-are-disabled]]'));
 	}
 
-	user.email.sendValidationEmail(socket.uid, next);
+	user.email.sendValidationEmail(socket.uid, callback);
 };
 
 
