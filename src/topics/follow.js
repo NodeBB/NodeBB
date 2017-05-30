@@ -254,7 +254,7 @@ module.exports = function (Topics) {
 
 						if (data.userSettings.sendPostNotifications) {
 							if (parseInt(meta.config.removeEmailNotificationImages, 10) === 1) {
-								postData.content=postData.content.replace(/<img[^>]*>/, '');
+								postData.content = postData.content.replace(/<img[^>]*>/, '');
 							}
 							emailer.send('notif_post', toUid, {
 								pid: postData.pid,
