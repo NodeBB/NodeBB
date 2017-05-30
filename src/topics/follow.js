@@ -200,9 +200,15 @@ module.exports = function (Topics) {
 				Topics.getFollowers(postData.topic.tid, next);
 			},
 			function (followers, next) {
+				if (!Array.isArray(followers) || !followers.length) {
+					return callback();
+				}
 				var index = followers.indexOf(exceptUid.toString());
 				if (index !== -1) {
 					followers.splice(index, 1);
+				}
+				if (!followers.length) {
+					return callback();
 				}
 
 				privileges.topics.filterUids('read', postData.topic.tid, followers, next);
@@ -219,8 +225,7 @@ module.exports = function (Topics) {
 					titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 				}
 
-				postData.content = posts.relativeToAbsolute(postData.content, posts.urlRegex);
-				postData.content = posts.relativeToAbsolute(postData.content, posts.imgRegex);
+				postData.content = posts.relativeToAbsolute(postData.content);
 
 				notifications.create({
 					type: 'new-reply',
@@ -254,6 +259,9 @@ module.exports = function (Topics) {
 						}
 
 						if (data.userSettings.sendPostNotifications) {
+							if (parseInt(meta.config.removeEmailNotificationImages, 10) === 1) {
+								postData.content=postData.content.replace(/<img[^>]*>/, '');
+							}
 							emailer.send('notif_post', toUid, {
 								pid: postData.pid,
 								subject: '[' + (meta.config.title || 'NodeBB') + '] ' + title,
