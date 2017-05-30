@@ -9,6 +9,7 @@ var plugins = require('../plugins');
 var widgets = require('../widgets');
 var user = require('../user');
 var userDigest = require('../user/digest');
+var userEmail = require('../user/email');
 var logger = require('../logger');
 var events = require('../events');
 var emailer = require('../emailer');
@@ -228,6 +229,12 @@ SocketAdmin.email.test = function (socket, data, callback) {
 			reason: 'Test Reason',
 		});
 		emailer.send(data.template, socket.uid, payload, callback);
+		break;
+
+	case 'welcome':
+		userEmail.sendValidationEmail(socket.uid, {
+			force: 1,
+		});
 		break;
 
 	default:
