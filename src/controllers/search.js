@@ -46,7 +46,7 @@ searchController.search = function (req, res, next) {
 	};
 
 	async.parallel({
-		categories: async.apply(categories.buildForSelect, req.uid),
+		categories: async.apply(categories.buildForSelect, req.uid, 'read'),
 		search: async.apply(search.search, data),
 	}, function (err, results) {
 		if (err) {

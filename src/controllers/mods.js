@@ -59,7 +59,7 @@ modsController.flags.list = function (req, res, next) {
 			async.parallel({
 				flags: async.apply(flags.list, filters, req.uid),
 				analytics: async.apply(analytics.getDailyStatsForSet, 'analytics:flags', Date.now(), 30),
-				categories: async.apply(categories.buildForSelect, req.uid),
+				categories: async.apply(categories.buildForSelect, req.uid, 'read'),
 			}, next);
 		},
 		function (data) {

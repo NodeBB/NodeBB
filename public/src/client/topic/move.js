@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/topic/move', function () {
+define('forum/topic/move', ['categorySelector'], function (categorySelector) {
 	var Move = {};
 	var modal;
 	var selectedCategory;
@@ -31,18 +31,7 @@ define('forum/topic/move', function () {
 				modal.find('.modal-header h3').translateText('[[topic:move_topics]]');
 			}
 
-			modal.find('#select-cid').on('change', function () {
-				var cid = $(this).val();
-				var optionEl = $(this).find('option[value="' + cid + '"]');
-
-				var selectedCategory = {
-					cid: cid,
-					name: optionEl.attr('data-name'),
-					text: optionEl.text(),
-					icon: optionEl.attr('data-icon'),
-				};
-				selectCategory(selectedCategory);
-			});
+			categorySelector.init(modal.find('[component="category-selector"]'), onCategorySelected);
 
 			modal.find('#move_thread_commit').on('click', onCommitClicked);
 
@@ -58,10 +47,7 @@ define('forum/topic/move', function () {
 		});
 	}
 
-	function selectCategory(category) {
-		modal.find('#confirm-category-name').text(category.name);
-		modal.find('#move-confirm').removeClass('hide');
-
+	function onCategorySelected(category) {
 		selectedCategory = category;
 		modal.find('#move_thread_commit').prop('disabled', false);
 	}
@@ -88,7 +74,7 @@ define('forum/topic/move', function () {
 				return app.alertError(err.message);
 			}
 
-			app.alertSuccess('[[topic:topic_move_success, ' + selectedCategory.name + ']] <i class="fa fa-fw ' + selectedCategory.icon + '"></i>');
+			app.alertSuccess('[[topic:topic_move_success, ' + selectedCategory.name + ']]');
 			if (typeof Move.onComplete === 'function') {
 				Move.onComplete();
 			}

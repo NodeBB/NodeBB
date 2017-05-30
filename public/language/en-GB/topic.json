@@ -100,7 +100,6 @@
 	"move_post": "Move Post",
 	"post_moved": "Post moved!",
 	"fork_topic": "Fork Topic",
-	"topic_will_be_moved_to": "This topic will be moved to the category",
 	"fork_topic_instruction": "Click the posts you want to fork",
 	"fork_no_pids": "No posts selected!",
 	"fork_pid_count": "%1 post(s) selected",

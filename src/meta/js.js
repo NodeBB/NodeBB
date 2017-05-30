@@ -67,6 +67,7 @@ module.exports = function (Meta) {
 			'public/src/modules/sort.js',
 			'public/src/modules/navigator.js',
 			'public/src/modules/topicSelect.js',
+			'public/src/modules/categorySelector.js',
 			'public/src/modules/share.js',
 			'public/src/modules/search.js',
 			'public/src/modules/alerts.js',

@@ -7,7 +7,8 @@ define('admin/manage/category', [
 	'admin/modules/colorpicker',
 	'autocomplete',
 	'translator',
-], function (uploader, iconSelect, colorpicker, autocomplete, translator) {
+	'categorySelector',
+], function (uploader, iconSelect, colorpicker, autocomplete, translator, categorySelector) {
 	var	Category = {};
 	var modified_categories = {};
 
@@ -411,21 +412,24 @@ define('admin/manage/category', [
 		}, function (html) {
 			translator.translate(html, function (html) {
 				var modal = bootbox.dialog({
-					title: 'Select a Category',
+					title: '[[modules:composer.select_category]]',
 					message: html,
 					buttons: {
 						save: {
-							label: 'Copy',
+							label: '[[global:select]]',
 							className: 'btn-primary',
 							callback: submit,
 						},
 					},
 				});
-
-				function submit() {
-					var formData = modal.find('form').serializeObject();
-					callback(formData['select-cid']);
-					modal.modal('hide');
+				categorySelector.init(modal.find('[component="category-selector"]'));
+				function submit(ev) {
+					ev.preventDefault();
+					var selectedCategory = categorySelector.getSelectedCategory();
+					if (selectedCategory) {
+						callback(selectedCategory.cid);
+						modal.modal('hide');
+					}
 					return false;
 				}
 
