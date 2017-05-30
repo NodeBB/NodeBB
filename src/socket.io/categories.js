@@ -161,10 +161,10 @@ SocketCategories.getMoveCategories = function (socket, data, callback) {
 							db.getSortedSetRange('cid:0:children', 0, -1, next);
 						},
 						function (cids, next) {
-							privileges.categories.filterCids('read', cids, socket.uid, next);
-						},
-						function (cids, next) {
 							categories.getCategories(cids, socket.uid, next);
+						},
+						function (categoriesData, next) {
+							categories.buildForSelectCategories(categoriesData, next);
 						},
 					], next);
 				},
