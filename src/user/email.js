@@ -56,19 +56,17 @@ UserEmail.sendValidationEmail = function (uid, options, callback) {
 		function (next) {
 			// If no email passed in (default), retrieve email from uid
 			if (options.email && options.email.length) {
-				return setImmediate(next);
+				return setImmediate(next, null, options.email);
 			}
 
-			user.getUserField(uid, 'email', function (err, email) {
-				if (err) {
-					return next(err);
-				}
-
-				options.email = email;
-				next();
-			});
+			user.getUserField(uid, 'email', next);
 		},
-		function (next) {
+		function (email, next) {
+			options.email = email;
+			if (!options.email) {
+				return callback();
+			}
+
 			if (options.force) {
 				return setImmediate(next, null, false);
 			}
