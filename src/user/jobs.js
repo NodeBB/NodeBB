@@ -42,7 +42,7 @@ module.exports = function (User) {
 	function startDigestJob(name, cronString, term) {
 		jobs[name] = new cronJob(cronString, function () {
 			winston.verbose('[user/jobs] Digest job (' + name + ') started.');
-			User.digest.execute(term);
+			User.digest.execute({ interval: term });
 		}, null, true);
 		winston.verbose('[user/jobs] Starting job (' + name + ')');
 	}

@@ -1472,7 +1472,7 @@ describe('User', function () {
 		it('should send digest', function (done) {
 			db.sortedSetAdd('digest:day:uids', [Date.now(), Date.now()], [1, 2], function (err) {
 				assert.ifError(err);
-				User.digest.execute('day', function (err) {
+				User.digest.execute({ interval: 'day' }, function (err) {
 					assert.ifError(err);
 					done();
 				});
