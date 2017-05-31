@@ -1,5 +1,6 @@
 {
     "invalid-data": "Ungültige Daten",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "Du bist nicht angemeldet.",
     "account-locked": "Dein Account wurde vorübergehend gesperrt.",
     "search-requires-login": "Die Suche erfordert ein Konto, bitte einloggen oder registrieren.",
@@ -12,6 +13,7 @@
     "invalid-title": "Ungültiger Titel",
     "invalid-user-data": "Ungültige Benutzerdaten",
     "invalid-password": "Ungültiges Passwort",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Bitte gebe einen Benutzernamen und ein Passwort an",
     "invalid-search-term": "Ungültige Suchanfrage",
     "csrf-invalid": "Dein Login war nicht erfolgreich da wahrscheinlich deine Sitzung abgelaufen ist. Bitte versuche es noch einmal",

@@ -1,5 +1,6 @@
 {
     "invalid-data": "נתונים שגויים",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "נראה שאינך מחובר למערכת.",
     "account-locked": "חשבונך נחסם באופן זמני",
     "search-requires-login": "פעולת החיפוש דורשת חשבון - בבקשה התחבר או הרשם.",
@@ -12,6 +13,7 @@
     "invalid-title": "כותרת שגויה",
     "invalid-user-data": "מידע משתמש שגוי",
     "invalid-password": "סיסמא שגויה",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "אנא הגדר שם משתמש וסיסמה",
     "invalid-search-term": "מילת חיפוש לא תקינה",
     "csrf-invalid": "אין באפשרותנו לחבר אותך למערכת, מכיוון שעבר זמן רב מידי. אנא נסה שנית.",

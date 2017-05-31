@@ -1,5 +1,6 @@
 {
     "invalid-data": "无效数据",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "您还没有登录。",
     "account-locked": "您的帐号已被临时锁定",
     "search-requires-login": "搜索功能仅限会员使用 - 请先登录或者注册。",
@@ -12,6 +13,7 @@
     "invalid-title": "无效标题！",
     "invalid-user-data": "无效用户数据",
     "invalid-password": "无效密码",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "请确认用户名和密码",
     "invalid-search-term": "无效的搜索关键字",
     "csrf-invalid": "可能是由于会话过期，登录失败。请重试。",

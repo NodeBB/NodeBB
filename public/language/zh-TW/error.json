@@ -1,5 +1,6 @@
 {
     "invalid-data": "無效的資料",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "你似乎還沒有登入喔！",
     "account-locked": "你的帳戶暫時被鎖定！",
     "search-requires-login": "進行搜尋需要有帳號 - 請先註冊或登入",
@@ -12,6 +13,7 @@
     "invalid-title": "無效的主題！",
     "invalid-user-data": "無效的使用者資料",
     "invalid-password": "無效的密碼",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "請指定帳號和密碼",
     "invalid-search-term": "無效的搜索字詞",
     "csrf-invalid": "我們無法讓你登入，似乎是因為連線階段已到期。請再重試一次。",

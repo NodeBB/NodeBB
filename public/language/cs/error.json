@@ -1,5 +1,6 @@
 {
     "invalid-data": "Neplatná data",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "Zdá se, že nejste přihlášen(a)",
     "account-locked": "Váš účet byl dočasně uzamčen",
     "search-requires-login": "Searching requires an account - please login or register.",
@@ -12,6 +13,7 @@
     "invalid-title": "Neplatný titulek!",
     "invalid-user-data": "Neplatná uživatelská data",
     "invalid-password": "Neplatné heslo",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Stanovte, prosím, oboje, jak uživatelské jméno, tak heslo",
     "invalid-search-term": "Neplatný výraz pro vyhledávání",
     "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",

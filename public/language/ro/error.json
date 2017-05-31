@@ -1,5 +1,6 @@
 {
     "invalid-data": "Date invalide",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "Se pare ca nu ești logat.",
     "account-locked": "Contul tău a fost blocat temporar",
     "search-requires-login": "Pentru a cauta ai nevoie de un cont. Logheaza-te sau autentifica-te.",
@@ -12,6 +13,7 @@
     "invalid-title": "Titlu invalid!",
     "invalid-user-data": "Date utilizator invalide",
     "invalid-password": "Parolă Invalidă",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Te rugăm să specifici atât un nume de utilizator cât si o parolă",
     "invalid-search-term": "Cuvânt de căutare invalid",
     "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",

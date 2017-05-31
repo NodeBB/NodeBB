@@ -1,5 +1,6 @@
 {
     "invalid-data": "Błędne Dane",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "Nie jesteś zalogowany/a.",
     "account-locked": "Twoje konto zostało tymczasowo zablokowane",
     "search-requires-login": "Wyszukiwanie wymaga konta - zaloguj się lub zarejestruj.",
@@ -12,6 +13,7 @@
     "invalid-title": "Błędny tytuł!",
     "invalid-user-data": "Błędne Dane Użytkownika",
     "invalid-password": "Błędne Hasło",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Proszę podać nazwę użytkownika i hasło",
     "invalid-search-term": "Błędne wyszukiwane wyrażenie",
     "csrf-invalid": "Nie mogliśmy Cię zalogować. Zapewne przyczyną jest wygasła sesja. Proszę spróbować ponownie.",

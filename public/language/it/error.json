@@ -1,5 +1,6 @@
 {
     "invalid-data": "Dati non validi",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "Non sembri essere loggato.",
     "account-locked": "Il tuo account è stato bloccato temporaneamente",
     "search-requires-login": "La ricerca richiede un account! Si prega di loggarsi o registrarsi!",
@@ -12,6 +13,7 @@
     "invalid-title": "Titolo non valido",
     "invalid-user-data": "Dati Utente non validi",
     "invalid-password": "Password non valida",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Si prega di specificare sia un nome utente che una password",
     "invalid-search-term": "Termine di ricerca non valido",
     "csrf-invalid": "Non siamo riusciti a farti connettere, probabilmente perché la sessione è scaduta. Per favore riprova.",

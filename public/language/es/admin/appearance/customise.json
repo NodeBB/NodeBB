@@ -5,5 +5,8 @@
 
 	"custom-header": "Cabezera personalizada",
 	"custom-header.description": "Introduce HTML personalizado aquí (ej. JavaScript, Meta Etiquetas, etc.), el cual se adjuntará a la sección <code>&lt;head&gt;</code> del código de su foro.",
-	"custom-header.enable": "Activar cabecera personalizada"
+	"custom-header.enable": "Activar cabecera personalizada",
+
+	"custom-css.livereload": "Enable Live Reload",
+	"custom-css.livereload.description": "Enable this to force all sessions on every device under your account to refresh whenever you click save"
 }

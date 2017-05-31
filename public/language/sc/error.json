@@ -1,5 +1,6 @@
 {
     "invalid-data": "Invalid Data",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "You don't seem to be logged in.",
     "account-locked": "Your account has been locked temporarily",
     "search-requires-login": "Searching requires an account - please login or register.",
@@ -12,6 +13,7 @@
     "invalid-title": "Invalid title!",
     "invalid-user-data": "Invalid User Data",
     "invalid-password": "Invalid Password",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Please specify both a username and password",
     "invalid-search-term": "Invalid search term",
     "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",

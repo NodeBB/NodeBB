@@ -1,10 +1,12 @@
 {
 	"you-are-on": "Info - Sie verwenden <strong>%1:%2</strong>",
+	"nodes-responded": "%1 nodes responded within %2ms!",
 	"host": "Host",
 	"pid": "PID",
 	"nodejs": "Node.js Version",
 	"online": "Online",
 	"git": "git",
+	"memory": "memory",
 	"load": "Auslastung",
 	"uptime": "Uptime",
 

@@ -1,5 +1,6 @@
 {
     "invalid-data": "Érvénytelen adat",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "Úgy tűnik, nem vagy bejelentkezve.",
     "account-locked": "A fiókod ideiglenesen zárolva lett.",
     "search-requires-login": "Searching requires an account - please login or register.",
@@ -12,6 +13,7 @@
     "invalid-title": "Érvénytelen cím!",
     "invalid-user-data": "Érvénytelen felhasználói adatok",
     "invalid-password": "Érvénytelen jelszó",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Kérlek adj meg egy felhasználónevet és egy jelszót",
     "invalid-search-term": "Érvénytelen keresési feltétel",
     "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",

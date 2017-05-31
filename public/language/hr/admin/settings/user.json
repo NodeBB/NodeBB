@@ -34,6 +34,8 @@
 	"registration.max-invites": "Maksimalan broj pozivnica po korisniku",
 	"max-invites": "Maksimalan broj pozivnica po korisniku",
 	"max-invites-help": "0 bez restrikcija. Administrator ima neograničeno pozivnica <br>Primjenjivo samo za \"poziv na forum\"",
+	"invite-expiration": "Invite expiration",
+	"invite-expiration-help": "# of days invitations expire in.",
 	"min-username-length": "Minimalna dužina korisničkog imena",
 	"max-username-length": "Maksimalna dužina korisničkog imena",
 	"min-password-length": "Minimalna dužina lozinke",

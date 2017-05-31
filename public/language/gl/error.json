@@ -1,5 +1,6 @@
 {
     "invalid-data": "Datos non válidos",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "Parece que estás desconectado.",
     "account-locked": "A túa conta foi bloqueada temporalmente.",
     "search-requires-login": "As buscas requiren unha conta. Por favor inicia sesión ou rexístrate.",
@@ -12,6 +13,7 @@
     "invalid-title": "Título inválido!",
     "invalid-user-data": "Datos de Usuario Inválidos",
     "invalid-password": "Contrasinal Inválido",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Especifica ámbolos dous por favor, nome de usuario e contrasinal",
     "invalid-search-term": "Termo de búsqueda inválido",
     "csrf-invalid": "Non fomos capaces de entrar, probablemente porque a que a sesión expirou. Por favor, téntao de novo",

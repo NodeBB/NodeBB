@@ -1,10 +1,12 @@
 {
 	"you-are-on": "信息 - 你正在　<strong>%1:%2</strong>　上",
+	"nodes-responded": "%1 nodes responded within %2ms!",
 	"host": "主机",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "在线",
 	"git": "git",
+	"memory": "memory",
 	"load": "载入",
 	"uptime": "正常运行时间",
 

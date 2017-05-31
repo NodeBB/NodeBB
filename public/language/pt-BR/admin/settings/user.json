@@ -34,6 +34,8 @@
 	"registration.max-invites": "Máximo de Convites por Usuário",
 	"max-invites": "Máximo de Convites por Usuário",
 	"max-invites-help": "0 para nenhuma restrição. Administradores tem convites infinitos<br>Apenas aplicável para \"Apenas Convite\"",
+	"invite-expiration": "Invite expiration",
+	"invite-expiration-help": "# of days invitations expire in.",
 	"min-username-length": "Tamanho Mínimo do Nome de Usuário",
 	"max-username-length": "Tamanho Máximo do Nome de Usuário",
 	"min-password-length": "Tamanho Mínimo da Senha",

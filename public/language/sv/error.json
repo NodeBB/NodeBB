@@ -1,5 +1,6 @@
 {
     "invalid-data": "Ogiltig data",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "Du verkar inte vara inloggad.",
     "account-locked": "Ditt konto har tillfälligt blivit låst",
     "search-requires-login": "Sökning kräver ett konto, var god logga in eller registrera dig.",
@@ -12,6 +13,7 @@
     "invalid-title": "Ogiltig rubrik!",
     "invalid-user-data": "Ogiltig användardata",
     "invalid-password": "Ogiltigt lösenord",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Specificera både användarnamn och lösenord",
     "invalid-search-term": "Ogiltig sökterm",
     "csrf-invalid": "Det gick inte att logga in dig, sannolikt på grund av en utgången session. Var god försök igen",

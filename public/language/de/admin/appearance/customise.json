@@ -5,5 +5,8 @@
 
 	"custom-header": "Benutzerdefinierter Header",
 	"custom-header.description": "Füge hier dein benutzerdefiniertes HTML (z.B. Javascript, Meta Tags, usw.) ein, welches in den <code>&lt;head&gt;</code> Tag eingefügt werden soll.",
-	"custom-header.enable": "Benutzerdefinierten Header aktivieren"
+	"custom-header.enable": "Benutzerdefinierten Header aktivieren",
+
+	"custom-css.livereload": "Enable Live Reload",
+	"custom-css.livereload.description": "Enable this to force all sessions on every device under your account to refresh whenever you click save"
 }

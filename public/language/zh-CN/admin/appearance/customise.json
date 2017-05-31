@@ -5,5 +5,8 @@
 
 	"custom-header": "自定义 Header",
 	"custom-header.description": "请输入自定义的 HTML 代码 (如 JavaScript，Meta Tags 等)，这些代码会被添加到论坛的 <code>&lt;head&gt;</code> 部分。",
-	"custom-header.enable": "启用自定义 Header"
+	"custom-header.enable": "启用自定义 Header",
+
+	"custom-css.livereload": "Enable Live Reload",
+	"custom-css.livereload.description": "Enable this to force all sessions on every device under your account to refresh whenever you click save"
 }

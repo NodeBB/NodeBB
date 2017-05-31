@@ -5,5 +5,8 @@
 
 	"custom-header": "Özel Header",
 	"custom-header.description": "Forumunuzun biçimlendirmesini sağlayacak  <code>&lt;head&gt;</code> bölümüne eklenecek özel HTML'yi (ör. JavaScript, Meta Etiketler vb.) Girin.",
-	"custom-header.enable": "Özel Header'ı Etkinleştir"
+	"custom-header.enable": "Özel Header'ı Etkinleştir",
+
+	"custom-css.livereload": "Canlı Yenilemeyi Etkinleştir",
+	"custom-css.livereload.description": "Enable this to force all sessions on every device under your account to refresh whenever you click save"
 }

@@ -5,5 +5,8 @@
 
 	"custom-header": "Cabeçalho Personalizado",
 	"custom-header.description": "Adicione HTML pessoal aqui (ex. JavaScript, Meta Tags, Tags, etc), os quais serão acrescentados ao final da seção <code>&lt;head&gt;</code> do markup do seu fórum.",
-	"custom-header.enable": "Ligar o Cabeçalho Personalizado"
+	"custom-header.enable": "Ligar o Cabeçalho Personalizado",
+
+	"custom-css.livereload": "Enable Live Reload",
+	"custom-css.livereload.description": "Enable this to force all sessions on every device under your account to refresh whenever you click save"
 }

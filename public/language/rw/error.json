@@ -1,5 +1,6 @@
 {
     "invalid-data": "Ibyashyizwemo Ntibyemewe",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "Biragaragara ko utinjiyemo.",
     "account-locked": "Konte yawe yabaye ifunze",
     "search-requires-login": "Gushaka ikintu bisaba kuba ufite konte - Injiramo cyangwa wiyandike.",
@@ -12,6 +13,7 @@
     "invalid-title": "Umutwe utemewe!",
     "invalid-user-data": "Ibyatanzwe Ntibyemewe!",
     "invalid-password": "Ijambobanga Ntiryemewe",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Tanga izina ukoresha n'ijambobanga",
     "invalid-search-term": "Icyashatswe nticyemewe",
     "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
