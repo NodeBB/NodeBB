@@ -152,7 +152,17 @@ module.exports = function (Meta) {
 					return file.linkDirs(srcPath, destPath, next);
 				}
 
-				file.link(srcPath, destPath, next);
+				if (process.platform === 'win32') {
+					fs.readFile(srcPath, function (err, file) {
+						if (err) {
+							return next(err);
+						}
+
+						fs.writeFile(destPath, file, next);
+					});
+				} else {
+					file.link(srcPath, destPath, next);
+				}
 			});
 		}, callback);
 	}
