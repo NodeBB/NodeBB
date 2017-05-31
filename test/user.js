@@ -1004,7 +1004,7 @@ describe('User', function () {
 		it('should send digests', function (done) {
 			User.updateDigestSetting(uid, 'day', function (err) {
 				assert.ifError(err);
-				User.digest.execute('day', function (err) {
+				User.digest.execute({ interval: 'day' }, function (err) {
 					assert.ifError(err);
 					done();
 				});
