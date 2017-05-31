@@ -20,7 +20,7 @@ module.exports = function (grunt) {
 
 	function update(action, filepath, target) {
 		var updateArgs = args.slice();
-		var compiling = '';
+		var compiling;
 		var time = Date.now();
 
 		if (target === 'lessUpdated_Client') {
@@ -37,7 +37,7 @@ module.exports = function (grunt) {
 			// Do nothing, just restart
 		}
 
-		if (incomplete.indexOf(compiling) === -1) {
+		if (compiling && incomplete.indexOf(compiling) === -1) {
 			incomplete.push(compiling);
 		}
 
