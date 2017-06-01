@@ -6,6 +6,7 @@ var winston = require('winston');
 var nconf = require('nconf');
 var async = require('async');
 var db = require('./database');
+var events = require('./events');
 
 var Reset = {};
 
@@ -132,6 +133,12 @@ function resetPlugin(pluginId, callback) {
 			} else {
 				next();
 			}
+		},
+		function (next) {
+			events.log({
+				type: 'plugin-deactivate',
+				text: pluginId,
+			}, next);
 		},
 	], function (err) {
 		if (err) {

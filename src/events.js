@@ -138,3 +138,19 @@ events.deleteAll = function (callback) {
 		events.deleteEvents(eids, next);
 	}, { alwaysStartAt: 0 }, callback);
 };
+
+events.output = function () {
+	process.stdout.write('\nDisplaying last ten administrative events...\n'.bold);
+	events.getEvents(0, 9, function (err, events) {
+		if (err) {
+			process.stdout.write('    Error '.red + String(err.message).reset);
+			process.exit(1);
+		}
+
+		events.forEach(function (event) {
+			process.stdout.write('  * ' + String(event.timestampISO).green + ' ' + String(event.type).yellow + (event.text ? ' ' + event.text : '') + ' (uid: '.reset + (event.uid ? event.uid : 0) + ')\n');
+		});
+
+		process.exit(0);
+	});
+};
