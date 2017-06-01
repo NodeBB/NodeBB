@@ -1,8 +1,9 @@
 'use strict';
 
-
 var fork = require('child_process').fork;
 var path = require('path');
+
+var debugParams = require('./meta/debugParams');
 
 exports.hash = function (rounds, password, callback) {
 	forkChild({ type: 'hash', rounds: rounds, password: password }, callback);
@@ -16,11 +17,7 @@ exports.compare = function (password, hash, callback) {
 };
 
 function forkChild(message, callback) {
-	var forkProcessParams = {};
-	if (global.v8debug || parseInt(process.execArgv.indexOf('--debug'), 10) !== -1) {
-		forkProcessParams = { execArgv: ['--debug=' + (5859), '--nolazy'] };
-	}
-	var child = fork(path.join(__dirname, 'bcrypt'), [], forkProcessParams);
+	var child = fork(path.join(__dirname, 'bcrypt'), [], debugParams());
 
 	child.on('message', function (msg) {
 		if (msg.err) {
