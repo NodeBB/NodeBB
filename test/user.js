@@ -441,6 +441,16 @@ describe('User', function () {
 				done();
 			});
 		});
+
+		it('should get user data even if one uid is NaN', function (done) {
+			User.getUsersData([NaN, testUid], function (err, data) {
+				assert.ifError(err);
+				assert.equal(data[0], null);
+				assert(data[1]);
+				assert.equal(data[1].username, userData.username);
+				done();
+			});
+		});
 	});
 
 	describe('not logged in', function () {

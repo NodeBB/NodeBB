@@ -31,6 +31,10 @@ module.exports = function (User) {
 			return callback(null, []);
 		}
 
+		uids = uids.map(function (uid) {
+			return isNaN(uid) ? 0 : uid;
+		});
+
 		var fieldsToRemove = [];
 		function addField(field) {
 			if (fields.indexOf(field) === -1) {
@@ -39,7 +43,7 @@ module.exports = function (User) {
 			}
 		}
 
-		if (fields.indexOf('uid') === -1) {
+		if (fields.length && fields.indexOf('uid') === -1) {
 			fields.push('uid');
 		}
 
@@ -58,7 +62,11 @@ module.exports = function (User) {
 
 		async.waterfall([
 			function (next) {
-				db.getObjectsFields(uidsToUserKeys(uniqueUids), fields, next);
+				if (fields.length) {
+					db.getObjectsFields(uidsToUserKeys(uniqueUids), fields, next);
+				} else {
+					db.getObjects(uidsToUserKeys(uniqueUids), next);
+				}
 			},
 			function (users, next) {
 				users = uidsToUsers(uids, uniqueUids, users);
@@ -80,24 +88,7 @@ module.exports = function (User) {
 	};
 
 	User.getUsersData = function (uids, callback) {
-		if (!Array.isArray(uids) || !uids.length) {
-			return callback(null, []);
-		}
-
-		var uniqueUids = uids.filter(function (uid, index) {
-			return index === uids.indexOf(uid);
-		});
-
-		async.waterfall([
-			function (next) {
-				db.getObjects(uidsToUserKeys(uniqueUids), next);
-			},
-			function (users, next) {
-				users = uidsToUsers(uids, uniqueUids, users);
-
-				modifyUserData(users, [], next);
-			},
-		], callback);
+		User.getUsersFields(uids, [], callback);
 	};
 
 	function uidsToUsers(uids, uniqueUids, usersData) {
