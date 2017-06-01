@@ -1,6 +1,6 @@
 {
-	"installed": "Installed",
-	"active": "Active",
+	"installed": "Nainštalovaný",
+	"active": "Aktívny",
 	"inactive": "Inactive",
 	"out-of-date": "Out of Date",
 	"none-found": "No plugins found.",

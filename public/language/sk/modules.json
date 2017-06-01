@@ -20,7 +20,7 @@
     "chat.three_months": "3 mesiace",
     "chat.delete_message_confirm": "Ste si istý, že chcete odstrániť túto správu?",
     "chat.add-users-to-room": "Pridať užívateľa do miestnosti",
-    "chat.confirm-chat-with-dnd-user": "This user has set their status to DnD(Do not disturb). Do you still want to chat with them?",
+    "chat.confirm-chat-with-dnd-user": "Tento používateľ nastavil svoj stav na DnD (Nevyrušovať). Stále chcete s nimi hovoriť?",
     "composer.compose": "Zostaviť",
     "composer.show_preview": "Zobraziť náhľad",
     "composer.hide_preview": "Skryť náhľad",

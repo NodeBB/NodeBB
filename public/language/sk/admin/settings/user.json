@@ -1,5 +1,5 @@
 {
-	"authentication": "Authentication",
+	"authentication": "Overenie pravosti",
 	"allow-local-login": "Allow local login",
 	"require-email-confirmation": "Require Email Confirmation",
 	"email-confirm-interval": "User may not resend a confirmation email until",

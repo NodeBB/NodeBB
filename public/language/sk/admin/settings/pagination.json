@@ -1,5 +1,5 @@
 {
-	"pagination": "Pagination Settings",
+	"pagination": "Nastavenia stránkovania",
 	"enable": "Paginate topics and posts instead of using infinite scroll.",
 	"topics": "Topic Pagination",
 	"posts-per-page": "Posts per Page",

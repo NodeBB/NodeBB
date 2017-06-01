@@ -1,5 +1,5 @@
 {
-    "reconnection": "Reconnection Settings",
+    "reconnection": "Nastavenia opätovného pripojenia",
     "max-attempts": "Max Reconnection Attempts",
     "default-placeholder": "Default: %1",
     "delay": "Reconnection Delay"

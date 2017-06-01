@@ -1,6 +1,6 @@
 {
 	"custom-css": "Vlastné CSS",
-	"custom-css.description": "Enter your own CSS declarations here, which will be applied after all other styles.",
+	"custom-css.description": "Zadajte svoje vlastné deklarácie CSS, ktoré budú použité po všetkých ostatných štýloch.",
 	"custom-css.enable": "Enable Custom CSS",
 
 	"custom-header": "Custom Header",
