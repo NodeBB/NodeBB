@@ -1,5 +1,6 @@
 'use strict';
 
+require('colors');
 var path = require('path');
 var winston = require('winston');
 var nconf = require('nconf');
@@ -66,6 +67,7 @@ Reset.reset = function (callback) {
 
 			process.stdout.write('\nPlugin and theme reset flags (-p & -t) can take a single argument\n');
 			process.stdout.write('    e.g. ./nodebb reset -p nodebb-plugin-mentions, ./nodebb reset -t nodebb-theme-persona\n');
+			process.stdout.write('         Prefix is optional, e.g. ./nodebb reset -p markdown, ./nodebb reset -t persona\n');
 
 			process.exit(0);
 		}
