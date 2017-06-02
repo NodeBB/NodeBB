@@ -57,7 +57,7 @@ describe('Upload Controllers', function () {
 		var csrf_token;
 
 		before(function (done) {
-			helpers.loginUser('regular', 'zugzug', function (err, _jar, io, _csrf_token) {
+			helpers.loginUser('regular', 'zugzug', function (err, _jar, _csrf_token) {
 				assert.ifError(err);
 				jar = _jar;
 				csrf_token = _csrf_token;
@@ -155,7 +155,7 @@ describe('Upload Controllers', function () {
 		var csrf_token;
 
 		before(function (done) {
-			helpers.loginUser('admin', 'barbar', function (err, _jar, io, _csrf_token) {
+			helpers.loginUser('admin', 'barbar', function (err, _jar, _csrf_token) {
 				assert.ifError(err);
 				jar = _jar;
 				csrf_token = _csrf_token;

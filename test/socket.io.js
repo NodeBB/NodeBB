@@ -576,7 +576,7 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('shoudl delete all events', function (done) {
+	it('should delete all events', function (done) {
 		socketAdmin.deleteAllEvents({ uid: adminUid }, {}, function (err) {
 			assert.ifError(err);
 			db.sortedSetCard('events:time', function (err, count) {
@@ -586,5 +586,34 @@ describe('socket.io', function () {
 			});
 		});
 	});
-});
 
+	describe('logger', function () {
+		var logger = require('../src/logger');
+		var index = require('../src/socket.io');
+		var fs = require('fs');
+		var path = require('path');
+
+		it('should enable logging', function (done) {
+			meta.config.loggerStatus = 1;
+			meta.config.loggerIOStatus = 1;
+			var loggerPath = path.join(__dirname, '..', 'logs', 'logger.log');
+			logger.monitorConfig({ io: index.server }, { key: 'loggerPath', value: loggerPath });
+			setTimeout(function () {
+				io.emit('meta.rooms.enter', { enter: 'recent_topics' }, function (err) {
+					assert.ifError(err);
+					fs.readFile(loggerPath, 'utf-8', function (err, content) {
+						assert.ifError(err);
+						assert(content);
+						done();
+					});
+				});
+			}, 500);
+		});
+
+		after(function (done) {
+			meta.config.loggerStatus = 0;
+			meta.config.loggerIOStatus = 0;
+			done();
+		});
+	});
+});
