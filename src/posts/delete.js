@@ -146,7 +146,7 @@ module.exports = function (Posts) {
 						deletePostFromGroups(pid, next);
 					},
 					function (next) {
-						db.sortedSetsRemove(['posts:pid', 'posts:flagged'], pid, next);
+						db.sortedSetsRemove(['posts:pid', 'posts:votes', 'posts:flagged'], pid, next);
 					},
 				], function (err) {
 					next(err);
