@@ -34,7 +34,7 @@
     "unsub.cta": "Klicke hier, um diese Einstellungen zu ändern.",
     "banned.subject": "Du wurdest von %1 gebannt.",
     "banned.text1": "Der Benutzer %1 wurde von %2 gebannt.",
-    "banned.text2": "This ban will last until %1.",
-    "banned.text3": "This is the reason why you have been banned:",
+    "banned.text2": "Dieser Bann wird bis %1 dauern.",
+    "banned.text3": "Diese ist der Grund weshalb du gebannt wurdest",
     "closing": "Danke!"
 }
