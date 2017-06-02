@@ -3,7 +3,7 @@
 var async = require('async');
 var winston = require('winston');
 var nconf = require('nconf');
-var padstart = require('lodash.padstart');
+var _ = require('lodash');
 
 var cacheBuster = require('./cacheBuster');
 var meta;
@@ -122,7 +122,7 @@ function buildTargets(targets, parallel, callback) {
 	}));
 
 	all(targets, function (target, next) {
-		targetHandlers[target](parallel, step(padstart(target, length) + ' ', next));
+		targetHandlers[target](parallel, step(_.padStart(target, length) + ' ', next));
 	}, callback);
 }
 
