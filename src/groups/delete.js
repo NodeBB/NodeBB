@@ -20,26 +20,31 @@ module.exports = function (Groups) {
 				groupObj = groupsData[0];
 
 				async.parallel([
-					async.apply(db.delete, 'group:' + groupName),
-					async.apply(db.sortedSetRemove, 'groups:createtime', groupName),
-					async.apply(db.sortedSetRemove, 'groups:visible:createtime', groupName),
-					async.apply(db.sortedSetRemove, 'groups:visible:memberCount', groupName),
-					async.apply(db.sortedSetRemove, 'groups:visible:name', groupName.toLowerCase() + ':' + groupName),
-					async.apply(db.delete, 'group:' + groupName + ':members'),
-					async.apply(db.delete, 'group:' + groupName + ':pending'),
-					async.apply(db.delete, 'group:' + groupName + ':invited'),
-					async.apply(db.delete, 'group:' + groupName + ':owners'),
-					async.apply(db.delete, 'group:' + groupName + ':member:pids'),
-					async.apply(db.deleteObjectField, 'groupslug:groupname', utils.slugify(groupName)),
 					function (next) {
-						batch.processSortedSet('groups:createtime', function (groupNames, next) {
-							var keys = groupNames.map(function (group) {
-								return 'group:' + group + ':members';
-							});
-							db.sortedSetsRemove(keys, groupName, next);
-						}, {
-							batch: 500,
-						}, next);
+						db.deleteAll([
+							'group:' + groupName,
+							'group:' + groupName + ':members',
+							'group:' + groupName + ':pending',
+							'group:' + groupName + ':invited',
+							'group:' + groupName + ':owners',
+							'group:' + groupName + ':member:pids',
+						], next);
+					},
+					function (next) {
+						db.sortedSetsRemove([
+							'groups:createtime',
+							'groups:visible:createtime',
+							'groups:visible:memberCount',
+						], groupName, next);
+					},
+					function (next) {
+						db.sortedSetRemove('groups:visible:name', groupName.toLowerCase() + ':' + groupName, next);
+					},
+					function (next) {
+						db.deleteObjectField('groupslug:groupname', utils.slugify(groupName), next);
+					},
+					function (next) {
+						removeGroupFromOtherGroups(groupName, next);
 					},
 				], function (err) {
 					next(err);
@@ -52,4 +57,15 @@ module.exports = function (Groups) {
 			},
 		], callback);
 	};
+
+	function removeGroupFromOtherGroups(groupName, callback) {
+		batch.processSortedSet('groups:createtime', function (groupNames, next) {
+			var keys = groupNames.map(function (group) {
+				return 'group:' + group + ':members';
+			});
+			db.sortedSetsRemove(keys, groupName, next);
+		}, {
+			batch: 500,
+		}, callback);
+	}
 };
