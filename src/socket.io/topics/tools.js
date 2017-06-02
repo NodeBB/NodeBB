@@ -86,37 +86,35 @@ module.exports = function (SocketTopics) {
 		}
 
 		async.each(data.tids, function (tid, next) {
+			var title;
 			async.waterfall([
 				function (next) {
+					topics.getTopicField(tid, 'title', next);
+				},
+				function (_title, next) {
+					title = _title;
 					topics.tools[action](tid, socket.uid, next);
 				},
 				function (data, next) {
 					socketHelpers.emitToTopicAndCategory(event, data);
-					logTopicAction(action, socket, tid, next);
+					logTopicAction(action, socket, tid, title, next);
 				},
 			], next);
 		}, callback);
 	};
 
-	function logTopicAction(action, socket, tid, callback) {
+	function logTopicAction(action, socket, tid, title, callback) {
 		var actionsToLog = ['delete', 'restore', 'purge'];
 		if (actionsToLog.indexOf(action) === -1) {
 			return setImmediate(callback);
 		}
-		async.waterfall([
-			function (next) {
-				topics.getTopicField(tid, 'title', next);
-			},
-			function (title, next) {
-				events.log({
-					type: 'topic-' + action,
-					uid: socket.uid,
-					ip: socket.ip,
-					tid: tid,
-					title: String(title),
-				}, next);
-			},
-		], callback);
+		events.log({
+			type: 'topic-' + action,
+			uid: socket.uid,
+			ip: socket.ip,
+			tid: tid,
+			title: String(title),
+		}, callback);
 	}
 
 	SocketTopics.orderPinnedTopics = function (socket, data, callback) {
