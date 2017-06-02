@@ -9,6 +9,7 @@ var async = require('async');
 
 var file = require('../file');
 var db = require('../database');
+var events = require('../events');
 
 module.exports = function (Meta) {
 	Meta.themes = {};
@@ -113,6 +114,14 @@ module.exports = function (Meta) {
 
 					// Re-set the themes path (for when NodeBB is reloaded)
 					Meta.themes.setPath(config);
+				},
+				function (next) {
+					events.log({
+						type: 'theme-set',
+						uid: parseInt(data.uid, 10) || 0,
+						ip: data.ip || '127.0.0.1',
+						text: data.id,
+					}, next);
 				},
 			], callback);
 

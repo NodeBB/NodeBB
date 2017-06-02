@@ -112,6 +112,10 @@ SocketAdmin.themes.set = function (socket, data, callback) {
 			}
 		},
 		function (next) {
+			// Add uid and ip data
+			data.ip = socket.ip;
+			data.uid = socket.uid;
+
 			meta.themes.set(data, next);
 		},
 	], callback);
