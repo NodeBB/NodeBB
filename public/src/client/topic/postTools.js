@@ -204,7 +204,7 @@ define('forum/topic/postTools', [
 				username = '';
 			}
 
-			var toPid = button.is('[component="post/reply"]') ? getData(button, 'data-pid') : null;
+			var toPid = button.is('[component="topic/reply"]') || button.is('[component="post/reply"]') ? getData(button, 'data-pid') : null;
 
 			if (selectedNode.text && (!toPid || !selectedNode.pid || toPid === selectedNode.pid)) {
 				username = username || selectedNode.username;
