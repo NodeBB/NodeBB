@@ -454,17 +454,8 @@ describe('User', function () {
 	});
 
 	describe('not logged in', function () {
-		var io;
-		before(function (done) {
-			helpers.initSocketIO(function (err, _jar, _io) {
-				assert.ifError(err);
-				io = _io;
-				done();
-			});
-		});
-
 		it('should return error if not logged in', function (done) {
-			io.emit('user.updateProfile', {}, function (err) {
+			socketUser.updateProfile({ uid: 0 }, {}, function (err) {
 				assert.equal(err.message, '[[error:invalid-uid]]');
 				done();
 			});

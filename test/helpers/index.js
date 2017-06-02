@@ -92,22 +92,6 @@ helpers.connectSocketIO = function (res, callback) {
 	});
 };
 
-helpers.initSocketIO = function (callback) {
-	var jar;
-	request.get({
-		url: nconf.get('url') + '/api/config',
-		jar: jar,
-		json: true,
-	}, function (err, res) {
-		if (err) {
-			return callback(err);
-		}
-		helpers.connectSocketIO(res, function (err, io) {
-			callback(err, jar, io);
-		});
-	});
-};
-
 helpers.uploadFile = function (uploadEndPoint, filePath, body, jar, csrf_token, callback) {
 	var formData = {
 		files: [
