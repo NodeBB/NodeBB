@@ -107,15 +107,15 @@ function getTranslationTree(callback) {
 							//  2. old language string (en_GB)
 							//  3. corrected plugin defaultLang (en-US)
 							//  4. old plugin defaultLang (en_US)
-							async.eachLimit(plugins, 10, function (pluginData, done) {
+							async.eachLimit(plugins, 20, function (pluginData, done) {
 								var pluginLanguages = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
 								var defaultLang = pluginData.defaultLang || 'en-GB';
 
-								async.some([
-									lang,
-									lang.replace('-', '_').replace('-x-', '@'),
-									defaultLang.replace('_', '-').replace('@', '-x-'),
+								async.eachSeries([
 									defaultLang.replace('-', '_').replace('-x-', '@'),
+									defaultLang.replace('_', '-').replace('@', '-x-'),
+									lang.replace('-', '_').replace('-x-', '@'),
+									lang,
 								], function (language, next) {
 									fs.readFile(path.join(pluginLanguages, language, namespace + '.json'), function (err, buffer) {
 										if (err) {

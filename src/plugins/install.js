@@ -107,7 +107,7 @@ module.exports = function (Plugins) {
 	}
 
 	function runNpmCommand(command, pkgName, version, callback) {
-		require('child_process').execFile((process.platform === 'win32') ? 'npm.cmd' : 'npm', [command, pkgName + (command === 'install' ? '@' + version : '')], function (err, stdout) {
+		require('child_process').execFile((process.platform === 'win32') ? 'npm.cmd' : 'npm', [command, pkgName + (command === 'install' ? '@' + version : ''), '--no-save'], function (err, stdout) {
 			if (err) {
 				return callback(err);
 			}
