@@ -1,16 +1,38 @@
 'use strict';
 
-(function (exports) {
-	/* globals define, utils, config */
-
-	// export the class if we are in a Node-like system.
-	if (typeof module === 'object' && module.exports === exports) {
-		exports = module.exports/* = SemVer*/;
+(function (factory) {
+	if (typeof module === 'object' && module.exports) {
+		var relative_path = require('nconf').get('relative_path');
+		module.exports = factory(require('../utils'), require('templates.js'), require('string'), relative_path);
+	} else if (typeof define === 'function' && define.amd) {
+		define('helpers', ['string'], function (string) {
+			return factory(utils, templates, string, config.relative_path);
+		});
+	} else {
+		window.helpers = factory(utils, templates, window.String, config.relative_path);
 	}
+}(function (utils, templates, S, relative_path) {
+	var helpers = {
+		displayMenuItem: displayMenuItem,
+		buildMetaTag: buildMetaTag,
+		buildLinkTag: buildLinkTag,
+		stringify: stringify,
+		escape: escape,
+		stripTags: stripTags,
+		generateCategoryBackground: generateCategoryBackground,
+		generateChildrenCategories: generateChildrenCategories,
+		generateTopicClass: generateTopicClass,
+		displayUserSearch: displayUserSearch,
+		membershipBtn: membershipBtn,
+		spawnPrivilegeStates: spawnPrivilegeStates,
+		localeToHTML: localeToHTML,
+		renderTopicImage: renderTopicImage,
+		renderDigestAvatar: renderDigestAvatar,
+		userAgentIcons: userAgentIcons,
+		register: register,
+	};
 
-	var helpers = exports;
-
-	helpers.displayMenuItem = function (data, index) {
+	function displayMenuItem(data, index) {
 		var item = data.navigation[index];
 		if (!item) {
 			return false;
@@ -35,17 +57,17 @@
 		}
 
 		return true;
-	};
+	}
 
-	helpers.buildMetaTag = function (tag) {
+	function buildMetaTag(tag) {
 		var name = tag.name ? 'name="' + tag.name + '" ' : '';
 		var property = tag.property ? 'property="' + tag.property + '" ' : '';
 		var content = tag.content ? 'content="' + tag.content.replace(/\n/g, ' ') + '" ' : '';
 
 		return '<meta ' + name + property + content + '/>\n\t';
-	};
+	}
 
-	helpers.buildLinkTag = function (tag) {
+	function buildLinkTag(tag) {
 		var link = tag.link ? 'link="' + tag.link + '" ' : '';
 		var rel = tag.rel ? 'rel="' + tag.rel + '" ' : '';
 		var type = tag.type ? 'type="' + tag.type + '" ' : '';
@@ -53,29 +75,22 @@
 		var sizes = tag.sizes ? 'sizes="' + tag.sizes + '" ' : '';
 
 		return '<link ' + link + rel + type + sizes + href + '/>\n\t';
-	};
+	}
 
-	helpers.stringify = function (obj) {
+	function stringify(obj) {
 		// Turns the incoming object into a JSON string
 		return JSON.stringify(obj).replace(/&/gm, '&amp;').replace(/</gm, '&lt;').replace(/>/gm, '&gt;').replace(/"/g, '&quot;');
-	};
+	}
 
-	helpers.escape = function (str) {
-		if (typeof utils !== 'undefined') {
-			return utils.escapeHTML(str);
-		}
-		return require('../utils').escapeHTML(str);
-	};
+	function escape(str) {
+		return utils.escapeHTML(str);
+	}
 
-	helpers.stripTags = function (str) {
-		if (typeof window !== 'undefined' && window.S) {
-			return window.S(String(str)).stripTags().s;
-		}
-		var S = require('string');
+	function stripTags(str) {
 		return S(String(str)).stripTags().s;
-	};
+	}
 
-	helpers.generateCategoryBackground = function (category) {
+	function generateCategoryBackground(category) {
 		if (!category) {
 			return '';
 		}
@@ -97,11 +112,10 @@
 		}
 
 		return style.join('; ') + ';';
-	};
+	}
 
-	helpers.generateChildrenCategories = function (category) {
+	function generateChildrenCategories(category) {
 		var html = '';
-		var relative_path = (typeof config !== 'undefined' ? config.relative_path : require('nconf').get('relative_path'));
 		if (!category || !category.children || !category.children.length) {
 			return html;
 		}
@@ -117,9 +131,9 @@
 		});
 		html = html ? ('<span class="category-children">' + html + '</span>') : html;
 		return html;
-	};
+	}
 
-	helpers.generateTopicClass = function (topic) {
+	function generateTopicClass(topic) {
 		var style = [];
 
 		if (topic.locked) {
@@ -139,14 +153,14 @@
 		}
 
 		return style.join(' ');
-	};
+	}
 
-	helpers.displayUserSearch = function (data, allowGuestUserSearching) {
+	function displayUserSearch(data, allowGuestUserSearching) {
 		return data.loggedIn || allowGuestUserSearching === 'true';
-	};
+	}
 
 	// Groups helpers
-	helpers.membershipBtn = function (groupObj) {
+	function membershipBtn(groupObj) {
 		if (groupObj.isMember && groupObj.name !== 'administrators') {
 			return '<button class="btn btn-danger" data-action="leave" data-group="' + groupObj.displayName + '"><i class="fa fa-times"></i> [[groups:membership.leave-group]]</button>';
 		}
@@ -159,9 +173,9 @@
 			return '<button class="btn btn-success" data-action="join" data-group="' + groupObj.displayName + '"><i class="fa fa-plus"></i> [[groups:membership.join-group]]</button>';
 		}
 		return '';
-	};
+	}
 
-	helpers.spawnPrivilegeStates = function (member, privileges) {
+	function spawnPrivilegeStates(member, privileges) {
 		var states = [];
 		for (var priv in privileges) {
 			if (privileges.hasOwnProperty(priv)) {
@@ -174,21 +188,21 @@
 		return states.map(function (priv) {
 			return '<td class="text-center" data-privilege="' + priv.name + '"><input type="checkbox"' + (priv.state ? ' checked' : '') + (member === 'guests' && priv.name === 'groups:moderate' ? ' disabled="disabled"' : '') + ' /></td>';
 		}).join('');
-	};
+	}
 
-	helpers.localeToHTML = function (locale, fallback) {
+	function localeToHTML(locale, fallback) {
 		locale = locale || fallback || 'en-GB';
 		return locale.replace('_', '-');
-	};
+	}
 
-	helpers.renderTopicImage = function (topicObj) {
+	function renderTopicImage(topicObj) {
 		if (topicObj.thumb) {
 			return '<img src="' + topicObj.thumb + '" class="img-circle user-img" title="' + topicObj.user.username + '" />';
 		}
 		return '<img component="user/picture" data-uid="' + topicObj.user.uid + '" src="' + topicObj.user.picture + '" class="user-img" title="' + topicObj.user.username + '" />';
-	};
+	}
 
-	helpers.renderDigestAvatar = function (block) {
+	function renderDigestAvatar(block) {
 		if (block.teaser) {
 			if (block.teaser.user.picture) {
 				return '<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 1em;" src="' + block.teaser.user.picture + '" title="' + block.teaser.user.username + '" />';
@@ -199,9 +213,9 @@
 			return '<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 1em;" src="' + block.user.picture + '" title="' + block.user.username + '" />';
 		}
 		return '<div style="width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 1em; background-color: ' + block.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block;">' + block.user['icon:text'] + '</div>';
-	};
+	}
 
-	helpers.userAgentIcons = function (data) {
+	function userAgentIcons(data) {
 		var icons = '';
 
 		switch (data.platform) {
@@ -251,29 +265,13 @@
 		}
 
 		return icons;
-	};
+	}
 
-	exports.register = function () {
-		var templates;
-
-		if (typeof module === 'object') {
-			templates = require('templates.js');
-		} else {
-			templates = window.templates;
-		}
-
+	function register() {
 		Object.keys(helpers).forEach(function (helperName) {
 			templates.registerHelper(helperName, helpers[helperName]);
 		});
-	};
-
-	// export the class if we are in a Node-like system.
-	if (typeof module === 'object' && module.exports === exports) {
-		exports = module.exports/* = SemVer*/;
-	} else if (typeof define === 'function' && define.amd) {
-		// Use the define() function if we're in AMD land
-		define('helpers', exports);
-	} else if (typeof window === 'object') {
-		window.helpers = exports;
 	}
-}(typeof exports === 'object' ? exports : {}));
+
+	return helpers;
+}));
