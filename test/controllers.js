@@ -158,6 +158,7 @@ describe('Controllers', function () {
 		var data = {
 			username: 'interstitial',
 			password: '123456',
+			'password-confirm': '123456',
 			email: 'test@me.com',
 		};
 
