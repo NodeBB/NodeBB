@@ -581,6 +581,46 @@ describe('Controllers', function () {
 		});
 	});
 
+	/*it('should load compose page', function (done) {
+		request(nconf.get('url') + '/compose?cid=' + cid, function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should create a new topic', function (done) {
+		var jar = request.jar();
+		var data = {
+			cid: cid,
+			title: 'test topic title',
+			content: 'test topic content',
+		};
+
+		request({
+			url: nconf.get('url') + '/api/config',
+			json: true,
+			jar: jar,
+		}, function (err, response, body) {
+			assert.ifError(err);
+
+			request.post(nconf.get('url') + '/compose', {
+				form: data,
+				json: true,
+				jar: jar,
+				headers: {
+					'x-csrf-token': body.csrf_token,
+				},
+			}, function (err, res, body) {
+				console.log(err);
+				assert.ifError(err);
+				assert.equal(res.statusCode, 302);
+				done();
+			});
+		});
+	});*/
+
 
 	describe('revoke session', function () {
 		var uid;
