@@ -14,6 +14,7 @@ var plugins = require('../plugins');
 var utils = require('../utils');
 var Password = require('../password');
 var translator = require('../translator');
+var helpers = require('./helpers');
 
 var sockets = require('../socket.io');
 
@@ -200,13 +201,21 @@ authenticationController.login = function (req, res, next) {
 	} else if (loginWith.indexOf('username') !== -1 && !validator.isEmail(req.body.username)) {
 		continueLogin(req, res, next);
 	} else {
-		res.status(500).send('[[error:wrong-login-type-' + loginWith + ']]');
+		var err = '[[error:wrong-login-type-' + loginWith + ']]';
+
+		if (req.body.noscript === 'true') {
+			return helpers.noScriptErrors(req, res, err, 500);
+		}
+		res.status(500).send(err);
 	}
 };
 
 function continueLogin(req, res, next) {
 	passport.authenticate('local', function (err, userData, info) {
 		if (err) {
+			if (req.body.noscript === 'true') {
+				return helpers.noScriptErrors(req, res, err.message, 403);
+			}
 			return res.status(403).send(err.message);
 		}
 
@@ -215,6 +224,9 @@ function continueLogin(req, res, next) {
 				info = '[[error:invalid-username-or-password]]';
 			}
 
+			if (req.body.noscript === 'true') {
+				return helpers.noScriptErrors(req, res, info, 403);
+			}
 			return res.status(403).send(info);
 		}
 
@@ -235,6 +247,9 @@ function continueLogin(req, res, next) {
 			req.session.passwordExpired = true;
 			user.reset.generate(userData.uid, function (err, code) {
 				if (err) {
+					if (req.body.noscript === 'true') {
+						return helpers.noScriptErrors(req, res, err.message, 403);
+					}
 					return res.status(403).send(err.message);
 				}
 
@@ -243,15 +258,23 @@ function continueLogin(req, res, next) {
 		} else {
 			authenticationController.doLogin(req, userData.uid, function (err) {
 				if (err) {
+					if (req.body.noscript === 'true') {
+						return helpers.noScriptErrors(req, res, err.message, 403);
+					}
 					return res.status(403).send(err.message);
 				}
 
+				var next;
 				if (!req.session.returnTo) {
-					res.status(200).send(nconf.get('relative_path') + '/');
+					next = nconf.get('relative_path') + '/';
 				} else {
-					var next = req.session.returnTo;
+					next = req.session.returnTo;
 					delete req.session.returnTo;
+				}
 
+				if (req.body.noscript === 'true') {
+					res.redirect(next + '?loggedin');
+				} else {
 					res.status(200).send(next);
 				}
 			});
