@@ -404,7 +404,11 @@ authenticationController.logout = function (req, res, next) {
 		function () {
 			// Force session check for all connected socket.io clients with the same session id
 			sockets.in('sess_' + req.sessionID).emit('checkSession', 0);
-			res.status(200).send('');
+			if (req.body.noscript === 'true') {
+				res.redirect(nconf.get('relative_path') + '/');
+			} else {
+				res.status(200).send('');
+			}
 		},
 	], next);
 };
