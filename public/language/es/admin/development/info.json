@@ -6,13 +6,13 @@
 	"nodejs": "nodejs",
 	"online": "en-linea",
 	"git": "git",
-	"memory": "memory",
+	"memory": "memoria",
 	"load": "cargar",
-	"uptime": "uptime",
+	"uptime": "tiempo de actividad",
 
-	"registered": "Registered",
-	"sockets": "Sockets",
-	"guests": "Guests",
+	"registered": "Registrado",
+	"sockets": "Toma",
+	"guests": "Invitados",
 
-	"info": "Info"
+	"info": "Información"
 }
