@@ -1,40 +1,41 @@
 'use strict';
 
+var async = require('async');
 var nconf = require('nconf');
+
 var admin = require('./admin');
 var translator = require('../translator');
 
-var navigation = {};
+var navigation = module.exports;
 
 navigation.get = function (callback) {
 	if (admin.cache) {
 		return callback(null, admin.cache);
 	}
 
-	admin.get(function (err, data) {
-		if (err) {
-			return callback(err);
-		}
-
-		data = data.filter(function (item) {
-			return item && item.enabled;
-		}).map(function (item) {
-			if (!item.route.startsWith('http')) {
-				item.route = nconf.get('relative_path') + item.route;
-			}
-
-			for (var i in item) {
-				if (item.hasOwnProperty(i)) {
-					item[i] = translator.unescape(item[i]);
+	async.waterfall([
+		admin.get,
+		function (data, next) {
+			data = data.filter(function (item) {
+				return item && item.enabled;
+			}).map(function (item) {
+				if (!item.route.startsWith('http')) {
+					item.route = nconf.get('relative_path') + item.route;
 				}
-			}
-			return item;
-		});
 
-		admin.cache = data;
+				for (var i in item) {
+					if (item.hasOwnProperty(i)) {
+						item[i] = translator.unescape(item[i]);
+					}
+				}
+				return item;
+			});
 
-		callback(null, data);
-	});
+			admin.cache = data;
+
+			next(null, data);
+		},
+	], callback);
 };
 
 

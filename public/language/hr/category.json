@@ -1,0 +1,20 @@
+{
+    "category": "Kategorija",
+    "subcategories": "Podkategorije",
+    "new_topic_button": "Nova Tema",
+    "guest-login-post": "Prijavi se za objavu",
+    "no_topics": "<strong>Nema tema u ovoj kategoriji. </strong><br />Zašto ne probate napisati novu?",
+    "browsing": "pregledavanje",
+    "no_replies": "Nema odgovora",
+    "no_new_posts": "Nema novih tema.",
+    "share_this_category": "Podijeli ovu kategoriju",
+    "watch": "Prati",
+    "ignore": "Ignoriraj",
+    "watching": "Pratim",
+    "ignoring": "Ignoriram",
+    "watching.description": "Prikaži nepročitane teme",
+    "ignoring.description": "Ne prikazuj nepročitane teme",
+    "watch.message": "Sada pratite nove objave iz ove kategorije i svih potkategorija",
+    "ignore.message": "Sada ignorirate nove objave iz ove kategorije i svih potkategorija",
+    "watched-categories": "Praćene Kategorije"
+}

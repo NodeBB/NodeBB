@@ -2,10 +2,28 @@
 
 'use strict';
 
-var cproc;
-var args;
-var fs;
-var path;
+var fs = require('fs');
+var path = require('path');
+var cproc = require('child_process');
+
+// check to make sure dependencies are installed
+try {
+	fs.readFileSync(path.join(__dirname, 'node_modules/async/package.json'));
+} catch (e) {
+	if (e.code === 'ENOENT') {
+		process.stdout.write('Dependencies not yet installed.\n');
+		process.stdout.write('Installing them now...\n\n');
+
+		cproc.execSync('npm i --production', {
+			cwd: __dirname,
+			stdio: [0, 1, 2],
+		});
+	} else {
+		throw e;
+	}
+}
+
+var minimist;
 var request;
 var semver;
 var prompt;
@@ -13,24 +31,22 @@ var async;
 
 try {
 	require('colors');
-	cproc = require('child_process');
-	args = require('minimist')(process.argv.slice(2));
-	fs = require('fs');
-	path = require('path');
+	minimist = require('minimist');
 	request = require('request');
 	semver = require('semver');
 	prompt = require('prompt');
 	async = require('async');
 } catch (e) {
-	if (e.code === 'MODULE_NOT_FOUND') {
-		process.stdout.write('NodeBB could not be started because it\'s dependencies have not been installed.\n');
-		process.stdout.write('Please ensure that you have executed "npm install --production" prior to running NodeBB.\n\n');
-		process.stdout.write('For more information, please see: https://docs.nodebb.org/en/latest/installing/os.html\n\n');
-		process.stdout.write('Could not start: ' + e.code + '\n');
+	process.stdout.write(
+		'\x1b[31mNodeBB could not be initialised because there was an error while loading dependencies.\n' +
+		'Please run "\x1b[33mnpm install --production\x1b[31m" and try again.\x1b[0m\n\n' +
+		'For more information, please see: https://docs.nodebb.org/en/latest/installing/os.html\n\n'
+	);
 
-		process.exit(1);
-	}
+	throw e;
 }
+
+var args = minimist(process.argv.slice(2));
 
 var loaderPath = path.join(__dirname, 'loader.js');
 var appPath = path.join(__dirname, 'app.js');
@@ -477,6 +493,13 @@ var commands = {
 		description: '',
 		handler: function () {
 			upgradePlugins();
+		},
+	},
+	events: {
+		description: 'Outputs the last ten (10) administrative events recorded by NodeBB',
+		usage: 'Usage: ' + './nodebb events'.yellow,
+		handler: function () {
+			fork(['--events']);
 		},
 	},
 	help: {

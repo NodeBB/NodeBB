@@ -1,10 +1,8 @@
 'use strict';
 
-var fs = require('fs');
 var path = require('path');
 var async = require('async');
 var nconf = require('nconf');
-var winston = require('winston');
 var mime = require('mime');
 
 var meta = require('../../meta');
@@ -14,7 +12,7 @@ var plugins = require('../../plugins');
 
 var allowedImageTypes = ['image/png', 'image/jpeg', 'image/pjpeg', 'image/jpg', 'image/gif', 'image/svg+xml'];
 
-var uploadsController = {};
+var uploadsController = module.exports;
 
 uploadsController.uploadCategoryPicture = function (req, res, next) {
 	var uploadedFile = req.files.files[0];
@@ -23,12 +21,8 @@ uploadsController.uploadCategoryPicture = function (req, res, next) {
 	try {
 		params = JSON.parse(req.body.params);
 	} catch (e) {
-		fs.unlink(uploadedFile.path, function (err) {
-			if (err) {
-				winston.error(err);
-			}
-		});
-		return next(e);
+		file.delete(uploadedFile.path);
+		return next(new Error('[[error:invalid-json]]'));
 	}
 
 	if (validateUpload(req, res, next, uploadedFile, allowedImageTypes)) {
@@ -43,11 +37,7 @@ uploadsController.uploadFavicon = function (req, res, next) {
 
 	if (validateUpload(req, res, next, uploadedFile, allowedTypes)) {
 		file.saveFileToLocal('favicon.ico', 'system', uploadedFile.path, function (err, image) {
-			fs.unlink(uploadedFile.path, function (err) {
-				if (err) {
-					winston.error(err);
-				}
-			});
+			file.delete(uploadedFile.path);
 			if (err) {
 				return next(err);
 			}
@@ -80,11 +70,7 @@ uploadsController.uploadTouchIcon = function (req, res, next) {
 					}),
 				], next);
 			}, function (err) {
-				fs.unlink(uploadedFile.path, function (err) {
-					if (err) {
-						winston.error(err);
-					}
-				});
+				file.delete(uploadedFile.path);
 
 				if (err) {
 					return next(err);
@@ -108,18 +94,19 @@ uploadsController.uploadSound = function (req, res, next) {
 		return next(Error('[[error:invalid-data]]'));
 	}
 
-	file.saveFileToLocal(uploadedFile.name, 'sounds', uploadedFile.path, function (err) {
+	async.waterfall([
+		function (next) {
+			file.saveFileToLocal(uploadedFile.name, 'sounds', uploadedFile.path, next);
+		},
+		function (uploadedSound, next) {
+			meta.sounds.build(next);
+		},
+	], function (err) {
+		file.delete(uploadedFile.path);
 		if (err) {
 			return next(err);
 		}
-
-		meta.sounds.build(function (err) {
-			if (err) {
-				return next(err);
-			}
-
-			res.json([{}]);
-		});
+		res.json([{}]);
 	});
 };
 
@@ -142,12 +129,7 @@ function upload(name, req, res, next) {
 
 function validateUpload(req, res, next, uploadedFile, allowedTypes) {
 	if (allowedTypes.indexOf(uploadedFile.type) === -1) {
-		fs.unlink(uploadedFile.path, function (err) {
-			if (err) {
-				winston.error(err);
-			}
-		});
-
+		file.delete(uploadedFile.path);
 		res.json({ error: '[[error:invalid-image-type, ' + allowedTypes.join('&#44; ') + ']]' });
 		return false;
 	}
@@ -156,24 +138,19 @@ function validateUpload(req, res, next, uploadedFile, allowedTypes) {
 }
 
 function uploadImage(filename, folder, uploadedFile, req, res, next) {
-	function done(err, image) {
-		fs.unlink(uploadedFile.path, function (err) {
-			if (err) {
-				winston.error(err);
+	async.waterfall([
+		function (next) {
+			if (plugins.hasListeners('filter:uploadImage')) {
+				plugins.fireHook('filter:uploadImage', { image: uploadedFile, uid: req.user.uid }, next);
+			} else {
+				file.saveFileToLocal(filename, folder, uploadedFile.path, next);
 			}
-		});
+		},
+	], function (err, image) {
+		file.delete(uploadedFile.path);
 		if (err) {
 			return next(err);
 		}
-
 		res.json([{ name: uploadedFile.name, url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url }]);
-	}
-
-	if (plugins.hasListeners('filter:uploadImage')) {
-		plugins.fireHook('filter:uploadImage', { image: uploadedFile, uid: req.user.uid }, done);
-	} else {
-		file.saveFileToLocal(filename, folder, uploadedFile.path, done);
-	}
+	});
 }
-
-module.exports = uploadsController;

@@ -1,7 +1,6 @@
 'use strict';
 
 var async = require('async');
-var fs = require('fs');
 var path = require('path');
 var csrf = require('csurf');
 var validator = require('validator');
@@ -13,6 +12,7 @@ var plugins = require('../plugins');
 var meta = require('../meta');
 var user = require('../user');
 var groups = require('../groups');
+var file = require('../file');
 
 var analytics = require('../analytics');
 
@@ -21,7 +21,7 @@ var controllers = {
 	helpers: require('../controllers/helpers'),
 };
 
-var middleware = {};
+var middleware = module.exports;
 
 middleware.applyCSRF = csrf();
 
@@ -33,68 +33,6 @@ require('./render')(middleware);
 require('./maintenance')(middleware);
 require('./user')(middleware);
 require('./headers')(middleware);
-
-middleware.authenticate = function (req, res, next) {
-	if (req.user) {
-		return next();
-	} else if (plugins.hasListeners('action:middleware.authenticate')) {
-		return plugins.fireHook('action:middleware.authenticate', {
-			req: req,
-			res: res,
-			next: next,
-		});
-	}
-
-	controllers.helpers.notAllowed(req, res);
-};
-
-middleware.ensureSelfOrGlobalPrivilege = function (req, res, next) {
-	/*
-		The "self" part of this middleware hinges on you having used
-		middleware.exposeUid prior to invoking this middleware.
-	*/
-	async.waterfall([
-		function (next) {
-			if (!req.uid) {
-				return setImmediate(next, null, false);
-			}
-
-			if (req.uid === parseInt(res.locals.uid, 10)) {
-				return setImmediate(next, null, true);
-			}
-			user.isAdminOrGlobalMod(req.uid, next);
-		},
-		function (isAdminOrGlobalMod, next) {
-			if (!isAdminOrGlobalMod) {
-				return controllers.helpers.notAllowed(req, res);
-			}
-			next();
-		},
-	], next);
-};
-
-middleware.ensureSelfOrPrivileged = function (req, res, next) {
-	/*
-		The "self" part of this middleware hinges on you having used
-		middleware.exposeUid prior to invoking this middleware.
-	*/
-	if (req.user) {
-		if (parseInt(req.user.uid, 10) === parseInt(res.locals.uid, 10)) {
-			return next();
-		}
-
-		user.isPrivileged(req.uid, function (err, ok) {
-			if (err) {
-				return next(err);
-			} else if (ok) {
-				return next();
-			}
-			controllers.helpers.notAllowed(req, res);
-		});
-	} else {
-		controllers.helpers.notAllowed(req, res);
-	}
-};
 
 middleware.pageView = function (req, res, next) {
 	analytics.pageView({
@@ -122,9 +60,9 @@ middleware.pageView = function (req, res, next) {
 middleware.pluginHooks = function (req, res, next) {
 	async.each(plugins.loadedHooks['filter:router.page'] || [], function (hookObj, next) {
 		hookObj.method(req, res, next);
-	}, function () {
+	}, function (err) {
 		// If it got here, then none of the subscribed hooks did anything, or there were no hooks
-		next();
+		next(err);
 	});
 };
 
@@ -170,14 +108,15 @@ function expose(exposedField, method, field, req, res, next) {
 	if (!req.params.hasOwnProperty(field)) {
 		return next();
 	}
-	method(req.params[field], function (err, id) {
-		if (err) {
-			return next(err);
-		}
-
-		res.locals[exposedField] = id;
-		next();
-	});
+	async.waterfall([
+		function (next) {
+			method(req.params[field], next);
+		},
+		function (id, next) {
+			res.locals[exposedField] = id;
+			next();
+		},
+	], next);
 }
 
 middleware.privateUploads = function (req, res, next) {
@@ -205,27 +144,25 @@ middleware.applyBlacklist = function (req, res, next) {
 	});
 };
 
-middleware.processTimeagoLocales = function (req, res) {
+middleware.processTimeagoLocales = function (req, res, next) {
 	var fallback = req.path.indexOf('-short') === -1 ? 'jquery.timeago.en.js' : 'jquery.timeago.en-short.js';
 	var localPath = path.join(__dirname, '../../public/vendor/jquery/timeago/locales', req.path);
-	var exists;
 
-	try {
-		exists = fs.accessSync(localPath, fs.F_OK | fs.R_OK);
-	} catch (e) {
-		exists = false;
-	}
-
-	if (exists) {
-		res.status(200).sendFile(localPath, {
-			maxAge: req.app.enabled('cache') ? 5184000000 : 0,
-		});
-	} else {
-		res.status(200).sendFile(path.join(__dirname, '../../public/vendor/jquery/timeago/locales', fallback), {
-			maxAge: req.app.enabled('cache') ? 5184000000 : 0,
-		});
-	}
+	async.waterfall([
+		function (next) {
+			file.exists(localPath, next);
+		},
+		function (exists, next) {
+			if (exists) {
+				next(null, localPath);
+			} else {
+				next(null, path.join(__dirname, '../../public/vendor/jquery/timeago/locales', fallback));
+			}
+		},
+		function (path) {
+			res.status(200).sendFile(path, {
+				maxAge: req.app.enabled('cache') ? 5184000000 : 0,
+			});
+		},
+	], next);
 };
-
-
-module.exports = middleware;

@@ -6,7 +6,7 @@
 	"headers.allow-from": "Задати ALLOW-FROM для розміщення NodeBB в iFrame",
 	"headers.powered-by": "Налаштувати заголовок \"Powered By\", котрий відправляє NodeBB",
 	"headers.acao": "Access-Control-Allow-Origin",
-	"headers.acao-help": "To deny access to all sites, leave empty",
+	"headers.acao-help": "Щоб заборонити доступ до всіх сайтів, залиште незаповненим",
 	"headers.acam": "Access-Control-Allow-Methods",
 	"headers.acah": "Access-Control-Allow-Headers",
 	"traffic-management": "Керування трафіком",

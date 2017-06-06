@@ -1,5 +1,6 @@
 {
     "invalid-data": "Data Tak Sah",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "Anda tidak log masuk.",
     "account-locked": "Akaun anda telah dikunci untuk seketika",
     "search-requires-login": "Fungsi Carian perlukan akaun - sila log masuk atau daftar.",
@@ -12,6 +13,7 @@
     "invalid-title": "Tajuk Tak Sah!",
     "invalid-user-data": "Data Pengguna Tak Sah",
     "invalid-password": "Kata laluan salah!",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Sila tentukan kedua-dua nama pengguna dan kata laluan",
     "invalid-search-term": "Terma pencarian tak sah",
     "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",

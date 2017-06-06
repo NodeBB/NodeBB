@@ -19,7 +19,7 @@ module.exports = function (Categories) {
 				topics.getTopicsByTids(tids, data.uid, next);
 			},
 			function (topics, next) {
-				if (!Array.isArray(topics) || !topics.length) {
+				if (!topics.length) {
 					return next(null, { topics: [], uid: data.uid });
 				}
 

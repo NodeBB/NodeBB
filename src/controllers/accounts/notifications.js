@@ -70,7 +70,7 @@ notificationsController.get = function (req, res, next) {
 			user.notifications.getAll(req.uid, selectedFilter.filter, _next);
 		},
 		function (nids, next) {
-			pageCount = nids.length / itemsPerPage;
+			pageCount = Math.max(1, Math.ceil(nids.length / itemsPerPage));
 			nids = nids.slice(start, stop + 1);
 
 			user.notifications.getNotifications(nids, req.uid, next);

@@ -1,16 +1,18 @@
 {
 	"you-are-on": "Info - Tu estas en <strong>%1:%2</strong>",
+	"nodes-responded": "%1 nodes responded within %2ms!",
 	"host": "host",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "en-linea",
 	"git": "git",
+	"memory": "memoria",
 	"load": "cargar",
-	"uptime": "uptime",
+	"uptime": "tiempo de actividad",
 
-	"registered": "Registered",
-	"sockets": "Sockets",
-	"guests": "Guests",
+	"registered": "Registrado",
+	"sockets": "Toma",
+	"guests": "Invitados",
 
-	"info": "Info"
+	"info": "Información"
 }

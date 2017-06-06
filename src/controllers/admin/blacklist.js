@@ -1,19 +1,20 @@
 'use strict';
 
+var async = require('async');
 var meta = require('../../meta');
 
-var blacklistController = {};
+var blacklistController = module.exports;
 
 blacklistController.get = function (req, res, next) {
-	meta.blacklist.get(function (err, rules) {
-		if (err) {
-			return next(err);
-		}
-		res.render('admin/manage/ip-blacklist', {
-			rules: rules,
-			title: '[[pages:ip-blacklist]]',
-		});
-	});
+	async.waterfall([
+		function (next) {
+			meta.blacklist.get(next);
+		},
+		function (rules) {
+			res.render('admin/manage/ip-blacklist', {
+				rules: rules,
+				title: '[[pages:ip-blacklist]]',
+			});
+		},
+	], next);
 };
-
-module.exports = blacklistController;

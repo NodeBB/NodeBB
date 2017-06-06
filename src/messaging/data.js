@@ -6,6 +6,7 @@ var S = require('string');
 var db = require('../database');
 var user = require('../user');
 var utils = require('../utils');
+var plugins = require('../plugins');
 
 module.exports = function (Messaging) {
 	Messaging.newMessageCutoff = 1000 * 60 * 3;
@@ -129,6 +130,17 @@ module.exports = function (Messaging) {
 				} else {
 					next(null, []);
 				}
+			},
+			function (messages, next) {
+				plugins.fireHook('filter:messaging.getMessages', {
+					messages: messages,
+					uid: uid,
+					roomId: roomId,
+					isNew: isNew,
+					mids: mids,
+				}, function (err, data) {
+					next(err, data && data.messages);
+				});
 			},
 		], callback);
 	};

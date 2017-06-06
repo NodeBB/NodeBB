@@ -92,6 +92,7 @@ module.exports = function (db, module) {
 	};
 
 	module.pexpireAt = function (key, timestamp, callback) {
+		timestamp = Math.min(timestamp, 8640000000000000);
 		module.setObjectField(key, 'expireAt', new Date(timestamp), callback);
 	};
 };

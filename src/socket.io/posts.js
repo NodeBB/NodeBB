@@ -13,7 +13,7 @@ var utils = require('../utils');
 
 var apiController = require('../controllers/api');
 
-var SocketPosts = {};
+var SocketPosts = module.exports;
 
 require('./posts/edit')(SocketPosts);
 require('./posts/move')(SocketPosts);
@@ -152,6 +152,3 @@ SocketPosts.getReplies = function (socket, pid, callback) {
 		},
 	], callback);
 };
-
-
-module.exports = SocketPosts;

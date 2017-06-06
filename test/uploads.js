@@ -57,7 +57,7 @@ describe('Upload Controllers', function () {
 		var csrf_token;
 
 		before(function (done) {
-			helpers.loginUser('regular', 'zugzug', function (err, _jar, io, _csrf_token) {
+			helpers.loginUser('regular', 'zugzug', function (err, _jar, _csrf_token) {
 				assert.ifError(err);
 				jar = _jar;
 				csrf_token = _csrf_token;
@@ -155,7 +155,7 @@ describe('Upload Controllers', function () {
 		var csrf_token;
 
 		before(function (done) {
-			helpers.loginUser('admin', 'barbar', function (err, _jar, io, _csrf_token) {
+			helpers.loginUser('admin', 'barbar', function (err, _jar, _csrf_token) {
 				assert.ifError(err);
 				jar = _jar;
 				csrf_token = _csrf_token;
@@ -173,12 +173,65 @@ describe('Upload Controllers', function () {
 			});
 		});
 
+		it('should fail to upload invalid file type', function (done) {
+			helpers.uploadFile(nconf.get('url') + '/api/admin/category/uploadpicture', path.join(__dirname, '../test/files/503.html'), { params: JSON.stringify({ cid: cid }) }, jar, csrf_token, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(body.error, '[[error:invalid-image-type, image/png&#44; image/jpeg&#44; image/pjpeg&#44; image/jpg&#44; image/gif&#44; image/svg+xml]]');
+				done();
+			});
+		});
+
+		it('should fail to upload category image with invalid json params', function (done) {
+			helpers.uploadFile(nconf.get('url') + '/api/admin/category/uploadpicture', path.join(__dirname, '../test/files/test.png'), { params: 'invalid json' }, jar, csrf_token, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(body.error, '[[error:invalid-json]]');
+				done();
+			});
+		});
+
 		it('should upload category image', function (done) {
 			helpers.uploadFile(nconf.get('url') + '/api/admin/category/uploadpicture', path.join(__dirname, '../test/files/test.png'), { params: JSON.stringify({ cid: cid }) }, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
 				assert.equal(body[0].url, nconf.get('relative_path') + '/assets/uploads/category/category-1.png');
+				done();
+			});
+		});
+
+
+		it('should fail to upload invalid sound file', function (done) {
+			helpers.uploadFile(nconf.get('url') + '/api/admin/upload/sound', path.join(__dirname, '../test/files/test.png'), { }, jar, csrf_token, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 500);
+				assert.equal(body.error, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should upload sound file', function (done) {
+			helpers.uploadFile(nconf.get('url') + '/api/admin/upload/sound', path.join(__dirname, '../test/files/test.wav'), { }, jar, csrf_token, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should upload default avatar', function (done) {
+			helpers.uploadFile(nconf.get('url') + '/api/admin/uploadDefaultAvatar', path.join(__dirname, '../test/files/test.png'), { }, jar, csrf_token, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert.equal(body[0].url, nconf.get('relative_path') + '/assets/uploads/system/avatar-default.png');
+				done();
+			});
+		});
+
+		it('should upload og image', function (done) {
+			helpers.uploadFile(nconf.get('url') + '/api/admin/uploadOgImage', path.join(__dirname, '../test/files/test.png'), { }, jar, csrf_token, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert.equal(body[0].url, nconf.get('relative_path') + '/assets/uploads/system/og-image.png');
 				done();
 			});
 		});
@@ -202,10 +255,5 @@ describe('Upload Controllers', function () {
 				done();
 			});
 		});
-	});
-
-
-	after(function (done) {
-		db.emptydb(done);
 	});
 });

@@ -2,7 +2,7 @@
 'use strict';
 
 var async = require('async');
-var _ = require('underscore');
+var _ = require('lodash');
 
 var meta = require('../meta');
 var topics = require('../topics');
@@ -28,37 +28,34 @@ module.exports = function (privileges) {
 					disabled: async.apply(categories.getCategoryField, topic.cid, 'disabled'),
 				}, next);
 			},
-		], function (err, results) {
-			if (err) {
-				return callback(err);
-			}
+			function (results, next) {
+				var privData = _.zipObject(privs, results.privileges);
+				var disabled = parseInt(results.disabled, 10) === 1;
+				var locked = parseInt(topic.locked, 10) === 1;
+				var deleted = parseInt(topic.deleted, 10) === 1;
+				var isOwner = !!parseInt(uid, 10) && parseInt(uid, 10) === parseInt(topic.uid, 10);
+				var isAdminOrMod = results.isAdministrator || results.isModerator;
+				var editable = isAdminOrMod;
+				var deletable = isAdminOrMod || (isOwner && privData['topics:delete']);
 
-			var privData = _.object(privs, results.privileges);
-			var disabled = parseInt(results.disabled, 10) === 1;
-			var locked = parseInt(topic.locked, 10) === 1;
-			var deleted = parseInt(topic.deleted, 10) === 1;
-			var isOwner = !!parseInt(uid, 10) && parseInt(uid, 10) === parseInt(topic.uid, 10);
-			var isAdminOrMod = results.isAdministrator || results.isModerator;
-			var editable = isAdminOrMod;
-			var deletable = isAdminOrMod || (isOwner && privData['topics:delete']);
-
-			plugins.fireHook('filter:privileges.topics.get', {
-				'topics:reply': (privData['topics:reply'] && !locked && !deleted) || isAdminOrMod,
-				'topics:read': privData['topics:read'] || isAdminOrMod,
-				'topics:delete': (isOwner && privData['topics:delete']) || isAdminOrMod,
-				'posts:edit': (privData['posts:edit'] && !locked) || isAdminOrMod,
-				'posts:delete': (privData['posts:delete'] && !locked) || isAdminOrMod,
-				read: privData.read || isAdminOrMod,
-				view_thread_tools: editable || deletable,
-				editable: editable,
-				deletable: deletable,
-				view_deleted: isAdminOrMod || isOwner,
-				isAdminOrMod: isAdminOrMod,
-				disabled: disabled,
-				tid: tid,
-				uid: uid,
-			}, callback);
-		});
+				plugins.fireHook('filter:privileges.topics.get', {
+					'topics:reply': (privData['topics:reply'] && !locked && !deleted) || isAdminOrMod,
+					'topics:read': privData['topics:read'] || isAdminOrMod,
+					'topics:delete': (isOwner && privData['topics:delete']) || isAdminOrMod,
+					'posts:edit': (privData['posts:edit'] && !locked) || isAdminOrMod,
+					'posts:delete': (privData['posts:delete'] && !locked) || isAdminOrMod,
+					read: privData.read || isAdminOrMod,
+					view_thread_tools: editable || deletable,
+					editable: editable,
+					deletable: deletable,
+					view_deleted: isAdminOrMod || isOwner,
+					isAdminOrMod: isAdminOrMod,
+					disabled: disabled,
+					tid: tid,
+					uid: uid,
+				}, next);
+			},
+		], callback);
 	};
 
 	privileges.topics.can = function (privilege, tid, uid, callback) {
@@ -194,29 +191,26 @@ module.exports = function (privileges) {
 					'topics:delete': async.apply(helpers.isUserAllowedTo, 'topics:delete', uid, [topicData.cid]),
 				}, next);
 			},
-		], function (err, results) {
-			if (err) {
-				return callback(err);
-			}
+			function (results, next) {
+				if (results.isModerator || results.isAdministrator) {
+					return next(null, true);
+				}
 
-			if (results.isModerator || results.isAdministrator) {
-				return callback(null, true);
-			}
+				var preventTopicDeleteAfterReplies = parseInt(meta.config.preventTopicDeleteAfterReplies, 10) || 0;
+				if (preventTopicDeleteAfterReplies && (topicData.postcount - 1) >= preventTopicDeleteAfterReplies) {
+					var langKey = preventTopicDeleteAfterReplies > 1 ?
+						'[[error:cant-delete-topic-has-replies, ' + meta.config.preventTopicDeleteAfterReplies + ']]' :
+						'[[error:cant-delete-topic-has-reply]]';
+					return next(new Error(langKey));
+				}
 
-			var preventTopicDeleteAfterReplies = parseInt(meta.config.preventTopicDeleteAfterReplies, 10) || 0;
-			if (preventTopicDeleteAfterReplies && (topicData.postcount - 1) >= preventTopicDeleteAfterReplies) {
-				var langKey = preventTopicDeleteAfterReplies > 1 ?
-					'[[error:cant-delete-topic-has-replies, ' + meta.config.preventTopicDeleteAfterReplies + ']]' :
-					'[[error:cant-delete-topic-has-reply]]';
-				return callback(new Error(langKey));
-			}
+				if (!results['topics:delete'][0]) {
+					return next(null, false);
+				}
 
-			if (!results['topics:delete'][0]) {
-				return callback(null, false);
-			}
-
-			callback(null, results.isOwner);
-		});
+				next(null, results.isOwner);
+			},
+		], callback);
 	};
 
 	privileges.topics.canEdit = function (tid, uid, callback) {
@@ -234,16 +228,17 @@ module.exports = function (privileges) {
 		], callback);
 	};
 
-
 	privileges.topics.isAdminOrMod = function (tid, uid, callback) {
 		helpers.some([
 			function (next) {
-				topics.getTopicField(tid, 'cid', function (err, cid) {
-					if (err) {
-						return next(err);
-					}
-					user.isModerator(uid, cid, next);
-				});
+				async.waterfall([
+					function (next) {
+						topics.getTopicField(tid, 'cid', next);
+					},
+					function (cid, next) {
+						user.isModerator(uid, cid, next);
+					},
+				], next);
 			},
 			function (next) {
 				user.isAdministrator(uid, next);

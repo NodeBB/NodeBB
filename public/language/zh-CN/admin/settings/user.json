@@ -34,6 +34,8 @@
 	"registration.max-invites": "每个用户最大邀请数",
 	"max-invites": "每个用户最大邀请数",
 	"max-invites-help": "无限制填 0 。管理员没有邀请限制<br>仅在邀请制时可用",
+	"invite-expiration": "Invite expiration",
+	"invite-expiration-help": "# of days invitations expire in.",
 	"min-username-length": "最小用户名长度",
 	"max-username-length": "最大用户名长度",
 	"min-password-length": "最小密码长度",

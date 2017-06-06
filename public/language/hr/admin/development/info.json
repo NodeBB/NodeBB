@@ -1,0 +1,18 @@
+{
+	"you-are-on": "Info - Vi ste <strong>%1:%2</strong>",
+	"nodes-responded": "%1 nodes responded within %2ms!",
+	"host": "Domaćin",
+	"pid": "pid",
+	"nodejs": "nodejs",
+	"online": "Na mreži",
+	"git": "git",
+	"memory": "memory",
+	"load": "učitaj",
+	"uptime": "uptime",
+
+	"registered": "Registriran",
+	"sockets": "Sockets",
+	"guests": "Gosti",
+
+	"info": "Info"
+}

@@ -1,5 +1,6 @@
 {
     "invalid-data": "올바르지 않은 정보입니다.",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "로그인하지 않았습니다.",
     "account-locked": "임시로 잠긴 계정입니다.",
     "search-requires-login": "검색을 하기 위해서는 계정이 필요합니다. 로그인하거나 가입해 주십시오.",
@@ -12,6 +13,7 @@
     "invalid-title": "올바르지 않은 제목입니다.",
     "invalid-user-data": "올바르지 않은 사용자 정보입니다.",
     "invalid-password": "올바르지 않은 비밀번호입니다.",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "사용자 이름과 패스워드를 모두 설정해주세요.",
     "invalid-search-term": "올바르지 않은 검색어입니다.",
     "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",

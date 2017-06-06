@@ -37,9 +37,15 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 		}, function (cropperHtml) {
 			translator.translate(cropperHtml, function (translated) {
 				var cropperModal = $(translated);
-				cropperModal.modal('show');
+				cropperModal.modal({
+					backdrop: 'static',
+				}).modal('show');
 
+				// Set cropper image max-height based on viewport
+				var cropBoxHeight = parseInt($(window).height() / 2, 10);
 				var img = document.getElementById('cropped-image');
+				$(img).css('max-height', cropBoxHeight);
+
 				var cropperTool = new cropper.default(img, {
 					aspectRatio: data.aspectRatio,
 					autoCropArea: 1,

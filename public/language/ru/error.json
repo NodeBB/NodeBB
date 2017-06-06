@@ -1,5 +1,6 @@
 {
     "invalid-data": "Неверные данные",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "Вы не вошли на сайт.",
     "account-locked": "Учётная запись временно заблокирована",
     "search-requires-login": "Поиск доступен только для зарегистрированных участников. Пожалуйста, войдите или зарегистрируйтесь.",
@@ -12,6 +13,7 @@
     "invalid-title": "Неверный заголовок",
     "invalid-user-data": "Неверные пользовательские данные",
     "invalid-password": "Неверный пароль",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Пожалуйста, укажите имя пользователя и пароль",
     "invalid-search-term": "Неверный поисковой запрос",
     "csrf-invalid": "Нам не удалось вас найти из-за просроченной сессии. Попробуйте ещё раз.",

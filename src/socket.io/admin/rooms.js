@@ -11,11 +11,11 @@ var pubsub = require('../../pubsub');
 
 var stats = {};
 var totals = {};
-var SocketRooms = {
-	stats: stats,
-	totals: totals,
-};
 
+var SocketRooms = module.exports;
+
+SocketRooms.stats = stats;
+SocketRooms.totals = totals;
 
 pubsub.on('sync:stats:start', function () {
 	SocketRooms.getLocalStats(function (err, stats) {
@@ -181,6 +181,3 @@ SocketRooms.getLocalStats = function (callback) {
 
 	callback(null, socketData);
 };
-
-
-module.exports = SocketRooms;

@@ -2,7 +2,7 @@
 
 var async = require('async');
 var validator = require('validator');
-var _ = require('underscore');
+var _ = require('lodash');
 var S = require('string');
 
 var posts = require('../../posts');
@@ -64,12 +64,12 @@ module.exports = function (SocketPosts) {
 				groups.getMembersOfGroups([
 					'administrators',
 					'Global Moderators',
-					'cid:' + result.topic.cid + ':privileges:mods',
+					'cid:' + result.topic.cid + ':privileges:moderate',
 					'cid:' + result.topic.cid + ':privileges:groups:moderate',
 				], next);
 			},
 			function (results, next) {
-				var uids = _.unique(_.flatten(results).concat(socket.uid.toString()));
+				var uids = _.uniq(_.flatten(results).concat(socket.uid.toString()));
 				uids.forEach(function (uid) {
 					websockets.in('uid_' + uid).emit('event:post_edited', editResult);
 				});

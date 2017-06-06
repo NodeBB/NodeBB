@@ -63,9 +63,9 @@ module.exports.listen = function (callback) {
 			helpers.register();
 
 			logger.init(app);
-			next();
+
+			initializeNodeBB(next);
 		},
-		initializeNodeBB,
 		function (next) {
 			winston.info('NodeBB Ready');
 

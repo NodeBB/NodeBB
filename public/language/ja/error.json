@@ -1,5 +1,6 @@
 {
     "invalid-data": "無効なデータ",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "ログインしていません。",
     "account-locked": "あなたのアカウントは一時的にロックされています",
     "search-requires-login": "検索するにはアカウントが必要です - ログインするかアカウントを作成してください。",
@@ -12,6 +13,7 @@
     "invalid-title": "無効なタイトル!",
     "invalid-user-data": "無効なユーザーデータ",
     "invalid-password": "無効なパスワード",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "ユーザー名とパスワードの両方を指定してください",
     "invalid-search-term": "無効な検索ワード",
     "csrf-invalid": "セッションの期限切れと思われるため、私達はあなたのログイン状態を確認できませんでした。もう一度お試しください。",

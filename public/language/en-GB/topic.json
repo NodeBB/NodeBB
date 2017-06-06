@@ -17,6 +17,7 @@
 	"quote": "Quote",
 	"reply": "Reply",
 	"replies_to_this_post": "%1 Replies",
+	"one_reply_to_this_post": "1 Reply",
 	"last_reply_time": "Last reply",
 	"reply-as-topic": "Reply as topic",
 	"guest-login-reply": "Log in to reply",
@@ -69,6 +70,7 @@
 	"thread_tools.unlock": "Unlock Topic",
 	"thread_tools.move": "Move Topic",
 	"thread_tools.move_all": "Move All",
+	"thread_tools.select_category": "Select Category",
 	"thread_tools.fork": "Fork Topic",
 	"thread_tools.delete": "Delete Topic",
 	"thread_tools.delete-posts": "Delete Posts",
@@ -85,7 +87,6 @@
 	"post_purge_confirm": "Are you sure you want to purge this post?",
 
 	"load_categories": "Loading Categories",
-	"disabled_categories_note": "Disabled Categories are greyed out",
 	"confirm_move": "Move",
 	"confirm_fork": "Fork",
 
@@ -99,7 +100,6 @@
 	"move_post": "Move Post",
 	"post_moved": "Post moved!",
 	"fork_topic": "Fork Topic",
-	"topic_will_be_moved_to": "This topic will be moved to the category",
 	"fork_topic_instruction": "Click the posts you want to fork",
 	"fork_no_pids": "No posts selected!",
 	"fork_pid_count": "%1 post(s) selected",

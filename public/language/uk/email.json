@@ -32,9 +32,9 @@
     "notif.post.unsub.info": "Це поштове повідомлення було вислано вам, згідно ваших налаштувань підписки",
     "test.text1": "Це пробний лист для верифікації поштової служби. Всі налаштування вірні для NodeBB.",
     "unsub.cta": "Натисніть тут, щоб змінити ці налаштування",
-    "banned.subject": "You have been banned from %1",
-    "banned.text1": "The user %1 has been banned from %2.",
-    "banned.text2": "This ban will last until %1.",
-    "banned.text3": "This is the reason why you have been banned:",
+    "banned.subject": "Ви були забанені на %1",
+    "banned.text1": "Користувач %1 був забанений на %2.",
+    "banned.text2": "Тривалість бану - до %1.",
+    "banned.text3": "Це причина, чому ви були забанені:",
     "closing": "Дякуємо!"
 }

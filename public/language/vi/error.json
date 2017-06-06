@@ -1,5 +1,6 @@
 {
     "invalid-data": "Dữ liệu không hợp lệ",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "Có vẻ bạn chưa đăng nhập.",
     "account-locked": "Tài khoản của bạn đang tạm thời bị khóa",
     "search-requires-login": "Bạn cần phải có tài khoản để tìm kiếm - vui lòng đăng nhập hoặc đăng ký.",
@@ -12,6 +13,7 @@
     "invalid-title": "Tiêu đề không hợp lệ!",
     "invalid-user-data": "Dữ liệu tài khoản không hợp lệ",
     "invalid-password": "Mật khẩu không hợp lệ",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Xin hãy nhập cả tên đăng nhập và mật khẩu",
     "invalid-search-term": "Từ khóa không hợp lệ",
     "csrf-invalid": "Hệ thống không cho phép bạn đăng nhập, có vẻ như phiên đăng nhập cũ đã hết hạn. Hãy thử đăng nhập lại",

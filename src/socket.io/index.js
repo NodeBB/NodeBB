@@ -93,8 +93,7 @@ function onMessage(socket, payload) {
 
 	var eventName = payload.data[0];
 	var params = payload.data[1];
-	var callback = typeof payload.data[payload.data.length - 1] === 'function' ? payload.data[payload.data.length - 1] : function () {
-	};
+	var callback = typeof payload.data[payload.data.length - 1] === 'function' ? payload.data[payload.data.length - 1] : function () {};
 
 	if (!eventName) {
 		return winston.warn('[socket.io] Empty method name');

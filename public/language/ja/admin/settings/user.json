@@ -34,6 +34,8 @@
 	"registration.max-invites": "ユーザーごとの最大招待数",
 	"max-invites": "ユーザーごとの最大招待数",
 	"max-invites-help": "無制限の場合は0です。管理者は無限の招待を受ける<br>「招待のみ」にのみ適用されます",
+	"invite-expiration": "Invite expiration",
+	"invite-expiration-help": "# of days invitations expire in.",
 	"min-username-length": "ユーザー名の最小文字数",
 	"max-username-length": "ユーザー名の最大文字数",
 	"min-password-length": "パスワードの最小文字数",

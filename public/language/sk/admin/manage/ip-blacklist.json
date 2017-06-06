@@ -1,5 +1,5 @@
 {
-	"lead": "Configure your IP blacklist here.",
+	"lead": "Nakonfigurujte si čierny zoznam IP.",
 	"description": "Occasionally, a user account ban is not enough of a deterrant. Other times, restricting access to the forum to a specific IP or a range of IPs is the best way to protect a forum. In these scenarios, you can add troublesome IP addresses or entire CIDR blocks to this blacklist, and they will be prevented from logging in to or registering a new account.",
 	"active-rules": "Active Rules",
 	"validate": "Validate Blacklist",

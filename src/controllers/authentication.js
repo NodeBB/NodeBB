@@ -5,7 +5,7 @@ var winston = require('winston');
 var passport = require('passport');
 var nconf = require('nconf');
 var validator = require('validator');
-var _ = require('underscore');
+var _ = require('lodash');
 
 var db = require('../database');
 var meta = require('../meta');
@@ -26,13 +26,7 @@ authenticationController.register = function (req, res) {
 		return res.sendStatus(403);
 	}
 
-	var userData = {};
-
-	for (var key in req.body) {
-		if (req.body.hasOwnProperty(key)) {
-			userData[key] = req.body[key];
-		}
-	}
+	var userData = req.body;
 
 	async.waterfall([
 		function (next) {
@@ -52,25 +46,13 @@ authenticationController.register = function (req, res) {
 			}
 
 			if (userData.username.length > meta.config.maximumUsernameLength) {
-				return next(new Error('[[error:username-too-long'));
+				return next(new Error('[[error:username-too-long]]'));
 			}
 
 			user.isPasswordValid(userData.password, next);
 		},
 		function (next) {
-			if (registrationType === 'normal' || registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
-				next(null, false);
-			} else if (registrationType === 'admin-approval') {
-				next(null, true);
-			} else if (registrationType === 'admin-approval-ip') {
-				db.sortedSetCard('ip:' + req.ip + ':uid', function (err, count) {
-					if (err) {
-						next(err);
-					} else {
-						next(null, !!count);
-					}
-				});
-			}
+			user.shouldQueueUser(req.ip, next);
 		},
 		function (queue, next) {
 			res.locals.processLogin = true;	// set it to false in plugin if you wish to just register only
@@ -88,7 +70,7 @@ authenticationController.register = function (req, res) {
 			return res.status(400).send(err.message);
 		}
 
-		if (req.body.userLang) {
+		if (data.uid && req.body.userLang) {
 			user.setSetting(data.uid, 'userLang', req.body.userLang);
 		}
 
@@ -103,21 +85,18 @@ function registerAndLoginUser(req, res, userData, callback) {
 			plugins.fireHook('filter:register.interstitial', {
 				userData: userData,
 				interstitials: [],
-			}, function (err, data) {
-				if (err) {
-					return next(err);
-				}
+			}, next);
+		},
+		function (data, next) {
+			// If interstitials are found, save registration attempt into session and abort
+			var deferRegistration = data.interstitials.length;
 
-				// If interstitials are found, save registration attempt into session and abort
-				var deferRegistration = data.interstitials.length;
-
-				if (!deferRegistration) {
-					return next();
-				}
-				userData.register = true;
-				req.session.registration = userData;
-				return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
-			});
+			if (!deferRegistration) {
+				return next();
+			}
+			userData.register = true;
+			req.session.registration = userData;
+			return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
 		},
 		function (next) {
 			user.create(userData, next);
@@ -209,13 +188,15 @@ authenticationController.login = function (req, res, next) {
 	var loginWith = meta.config.allowLoginWith || 'username-email';
 
 	if (req.body.username && utils.isEmailValid(req.body.username) && loginWith.indexOf('email') !== -1) {
-		user.getUsernameByEmail(req.body.username, function (err, username) {
-			if (err) {
-				return next(err);
-			}
-			req.body.username = username || req.body.username;
-			continueLogin(req, res, next);
-		});
+		async.waterfall([
+			function (next) {
+				user.getUsernameByEmail(req.body.username, next);
+			},
+			function (username, next) {
+				req.body.username = username || req.body.username;
+				continueLogin(req, res, next);
+			},
+		], next);
 	} else if (loginWith.indexOf('username') !== -1 && !validator.isEmail(req.body.username)) {
 		continueLogin(req, res, next);
 	} else {
@@ -282,14 +263,14 @@ authenticationController.doLogin = function (req, uid, callback) {
 	if (!uid) {
 		return callback();
 	}
-
-	req.login({ uid: uid }, function (err) {
-		if (err) {
-			return callback(err);
-		}
-
-		authenticationController.onSuccessfulLogin(req, uid, callback);
-	});
+	async.waterfall([
+		function (next) {
+			req.login({ uid: uid }, next);
+		},
+		function (next) {
+			authenticationController.onSuccessfulLogin(req, uid, next);
+		},
+	], callback);
 };
 
 authenticationController.onSuccessfulLogin = function (req, uid, callback) {
@@ -312,28 +293,30 @@ authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 		version: req.useragent.version,
 	});
 
-	// Associate login session with user
-	async.parallel([
+	async.waterfall([
 		function (next) {
-			user.auth.addSession(uid, req.sessionID, next);
+			async.parallel([
+				function (next) {
+					user.auth.addSession(uid, req.sessionID, next);
+				},
+				function (next) {
+					db.setObjectField('uid:' + uid + ':sessionUUID:sessionId', uuid, req.sessionID, next);
+				},
+				function (next) {
+					user.updateLastOnlineTime(uid, next);
+				},
+			], function (err) {
+				next(err);
+			});
 		},
 		function (next) {
-			db.setObjectField('uid:' + uid + ':sessionUUID:sessionId', uuid, req.sessionID, next);
-		},
-		function (next) {
-			user.updateLastOnlineTime(uid, next);
-		},
-	], function (err) {
-		if (err) {
-			return callback(err);
-		}
+			// Force session check for all connected socket.io clients with the same session id
+			sockets.in('sess_' + req.sessionID).emit('checkSession', uid);
 
-		// Force session check for all connected socket.io clients with the same session id
-		sockets.in('sess_' + req.sessionID).emit('checkSession', uid);
-
-		plugins.fireHook('action:user.loggedIn', { uid: uid, req: req });
-		callback();
-	});
+			plugins.fireHook('action:user.loggedIn', { uid: uid, req: req });
+			next();
+		},
+	], callback);
 };
 
 authenticationController.localLogin = function (req, username, password, next) {
@@ -382,7 +365,7 @@ authenticationController.localLogin = function (req, username, password, next) {
 			}
 
 			if (result.banned) {
-				return banUser(uid, next);
+				return getBanInfo(uid, next);
 			}
 
 			user.auth.logAttempt(uid, req.ip, next);
@@ -401,48 +384,57 @@ authenticationController.localLogin = function (req, username, password, next) {
 };
 
 authenticationController.logout = function (req, res, next) {
-	if (req.user && parseInt(req.user.uid, 10) > 0 && req.sessionID) {
-		var uid = parseInt(req.user.uid, 10);
-		var sessionID = req.sessionID;
+	if (!req.uid || !req.sessionID) {
+		return res.status(200).send('not-logged-in');
+	}
 
-		user.auth.revokeSession(sessionID, uid, function (err) {
-			if (err) {
-				return next(err);
-			}
+	async.waterfall([
+		function (next) {
+			user.auth.revokeSession(req.sessionID, req.uid, next);
+		},
+		function (next) {
 			req.logout();
 			req.session.destroy();
 
-			user.setUserField(uid, 'lastonline', Date.now() - 300000);
-
-			plugins.fireHook('static:user.loggedOut', { req: req, res: res, uid: uid }, function () {
-				res.status(200).send('');
-
-				// Force session check for all connected socket.io clients with the same session id
-				sockets.in('sess_' + sessionID).emit('checkSession', 0);
-			});
-		});
-	} else {
-		res.status(200).send('');
-	}
+			user.setUserField(req.uid, 'lastonline', Date.now() - 300000, next);
+		},
+		function (next) {
+			plugins.fireHook('static:user.loggedOut', { req: req, res: res, uid: req.uid }, next);
+		},
+		function () {
+			// Force session check for all connected socket.io clients with the same session id
+			sockets.in('sess_' + req.sessionID).emit('checkSession', 0);
+			res.status(200).send('');
+		},
+	], next);
 };
 
-function banUser(uid, next) {
-	user.getLatestBanInfo(uid, function (err, banInfo) {
-		if (err) {
-			if (err.message === 'no-ban-info') {
-				return next(new Error('[[error:user-banned]]'));
+function getBanInfo(uid, callback) {
+	var banInfo;
+	async.waterfall([
+		function (next) {
+			user.getLatestBanInfo(uid, next);
+		},
+		function (_banInfo, next) {
+			banInfo = _banInfo;
+			if (banInfo.reason) {
+				return next();
 			}
 
-			return next(err);
-		}
-
-		if (!banInfo.reason) {
 			translator.translate('[[user:info.banned-no-reason]]', function (translated) {
 				banInfo.reason = translated;
-				next(new Error(banInfo.expiry ? '[[error:user-banned-reason-until, ' + banInfo.expiry_readable + ', ' + banInfo.reason + ']]' : '[[error:user-banned-reason, ' + banInfo.reason + ']]'));
+				next();
 			});
-		} else {
+		},
+		function (next) {
 			next(new Error(banInfo.expiry ? '[[error:user-banned-reason-until, ' + banInfo.expiry_readable + ', ' + banInfo.reason + ']]' : '[[error:user-banned-reason, ' + banInfo.reason + ']]'));
+		},
+	], function (err) {
+		if (err) {
+			if (err.message === 'no-ban-info') {
+				err.message = '[[error:user-banned]]';
+			}
 		}
+		callback(err);
 	});
 }

@@ -1,6 +1,6 @@
 {
-    "uploading-file": "Uploading the file...",
-    "select-file-to-upload": "Select a file to upload!",
-    "upload-success": "File uploaded successfully!",
-    "maximum-file-size": "Maximum %1 kb"
+    "uploading-file": "กำลังอัพโหลดไฟล์ ...",
+    "select-file-to-upload": "กรุณาเลือกไฟล์ที่จะอัพโหลด",
+    "upload-success": "อัพโหลดไฟล์เรียบร้อยแล้ว",
+    "maximum-file-size": "มากที่สุดได้ %1 kb"
 }

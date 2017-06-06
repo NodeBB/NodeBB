@@ -1,12 +1,26 @@
 <div class="row">
+
 	<form role="form" class="category" data-cid="{category.cid}">
-		<ul class="nav nav-pills">
-			<li class="active"><a href="#category-settings" data-toggle="tab">
-				[[admin/manage/categories:settings]]
-			</a></li>
-			<li><a href="#privileges" data-toggle="tab">[[admin/manage/categories:privileges]]</a></li>
-		</ul>
-		<br />
+		<div class="row">
+			<div class="col-md-9">
+				<ul class="nav nav-pills">
+					<li class="active"><a href="#category-settings" data-toggle="tab">
+						[[admin/manage/categories:settings]]
+					</a></li>
+					<li><a href="#privileges" data-toggle="tab">[[admin/manage/categories:privileges]]</a></li>
+				</ul>
+			</div>
+			<div class="col-md-3">
+				<select id="category-selector" class="form-control">
+					<!-- BEGIN allCategories -->
+					<option value="{allCategories.value}" <!-- IF allCategories.selected -->selected<!-- ENDIF allCategories.selected -->>{allCategories.text}</option>
+					<!-- END allCategories -->
+				</select>
+			</div>
+		</div>
+		
+		<br/>
+
 		<div class="tab-content">
 			<div class="tab-pane fade active in row" id="category-settings">
 				<div class="col-md-9">
@@ -76,6 +90,16 @@
 									<input id="cid-{category.cid}-link" type="text" class="form-control" placeholder="http://domain.com" data-name="link" value="{category.link}" />
 								</div>
 							</div>
+							<div class="col-sm-6 col-xs-12">
+								<div class="form-group">
+									<div class="checkbox">
+										<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+											<input type="checkbox" class="mdl-switch__input" id="cid-{category.cid}-isSection" data-name="isSection" <!-- IF category.isSection -->checked<!-- ENDIF category.isSection --> />
+											<span class="mdl-switch__label"><strong>[[admin/manage/categories:is-section]]</strong></span>
+										</label>
+									</div>
+								</div>
+							</div>
 						</fieldset>
 						<fieldset>
 							<label for="tag-whitelist">Tag Whitelist</label><br />
@@ -100,14 +124,14 @@
 							<div class="btn-group btn-group-justified">
 								<div class="btn-group">
 									<button type="button" data-cid="{category.cid}" class="btn btn-default upload-button">
-										<i class="fa fa-upload"></i> 
+										<i class="fa fa-upload"></i>
 										[[admin/manage/categories:upload-image]]
 									</button>
 								</div>
 								<!-- IF category.image -->
 								<div class="btn-group">
 									<button class="btn btn-warning delete-image">
-										<i data-name="icon" value="fa-times" class="fa fa-times"></i> 
+										<i data-name="icon" value="fa-times" class="fa fa-times"></i>
 										[[admin/manage/categories:delete-image]]
 									</button>
 								</div>
@@ -133,7 +157,7 @@
 										<button type="button" class="btn btn-warning" data-action="removeParent" data-parentCid="{category.parent.cid}"><i class="fa fa-times"></i></button>
 									</div>
 									<button type="button" class="btn btn-default btn-block <!-- IF category.parent.name -->hide<!-- ENDIF category.parent.name -->" data-action="setParent">
-										<i class="fa fa-sitemap"></i> 
+										<i class="fa fa-sitemap"></i>
 										[[admin/manage/categories:parent-category-none]]
 									</button>
 								</div>

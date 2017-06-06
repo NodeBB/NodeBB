@@ -90,6 +90,11 @@ if (nconf.get('setup') || nconf.get('install')) {
 	listPlugins();
 } else if (nconf.get('build')) {
 	require('./src/meta/build').build(nconf.get('build'));
+} else if (nconf.get('events')) {
+	async.series([
+		async.apply(require('./src/database').init),
+		async.apply(require('./src/events').output),
+	]);
 } else {
 	require('./src/start').start();
 }
@@ -203,7 +208,8 @@ function upgrade() {
 		// Skip build
 		tasks.pop();
 	}
-
+	// disable mongo timeouts during upgrade
+	nconf.set('mongo:options:socketTimeoutMS', 0);
 	async.series(tasks, function (err) {
 		if (err) {
 			winston.error(err.stack);
@@ -217,6 +223,7 @@ function upgrade() {
 function activate() {
 	var db = require('./src/database');
 	var plugins = require('./src/plugins');
+	var events = require('./src/events');
 	var plugin = nconf.get('activate');
 	async.waterfall([
 		function (next) {
@@ -236,6 +243,12 @@ function activate() {
 
 			winston.info('Activating plugin `%s`', plugin);
 			db.sortedSetAdd('plugins:active', 0, plugin, next);
+		},
+		function (next) {
+			events.log({
+				type: 'plugin-activate',
+				text: plugin,
+			}, next);
 		},
 	], function (err) {
 		if (err) {

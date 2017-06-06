@@ -1,5 +1,6 @@
 {
     "invalid-data": "Ongeldige data",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "Het lijkt erop dat je niet ingelogd bent.",
     "account-locked": "Dit account is tijdelijk vergrendeld",
     "search-requires-login": "Zoeken vereist een account - meld je aan of registreer je om te zoeken.",
@@ -12,6 +13,7 @@
     "invalid-title": "Ongeldige titel!",
     "invalid-user-data": "Ongeldige gebruikersgegevens",
     "invalid-password": "Ongeldig wachtwoord",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Geef zowel een gebruikersnaam als wachtwoord op",
     "invalid-search-term": "Ongeldig zoekterm",
     "csrf-invalid": "We konden u niet aanmelden, waarschijnlijk door een verlopen sessie. Probeer het a.u.b. nogmaals.",

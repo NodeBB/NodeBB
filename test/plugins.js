@@ -16,7 +16,6 @@ describe('Plugins', function () {
 			assert.ifError(err);
 			assert(plugins.libraries[pluginId]);
 			assert(plugins.loadedHooks['static:app.load']);
-			assert(plugins.staticDirs['nodebb-plugin-markdown/js']);
 
 			done();
 		});

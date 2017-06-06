@@ -6,7 +6,7 @@
 	"headers.allow-from": "Définissez ALLOW-FROM pour afficher NodeBB dans un iFrame",
 	"headers.powered-by": "Personnaliser l'en-tête \"Propulsé par\" envoyé par NodeBB",
 	"headers.acao": "Access-Control-Allow-Origin",
-	"headers.acao-help": "To deny access to all sites, leave empty",
+	"headers.acao-help": "Pour refuser l'accès à tous les sites, laissez vide",
 	"headers.acam": "\nAccess-Control-Allow-Methods",
 	"headers.acah": "\nAccess-Control-Allow-Headers",
 	"traffic-management": "Gestion du trafic",

@@ -1,0 +1,6 @@
+{
+	"language-settings": "Postavke jezika",
+	"description": "Zadani jezik odlučuje o postavkama jezika za sve korisnike foruma. <br/> .Korisnici mogu sami odabrati jezik na stranici postavki jezika.",
+	"default-language": "Zadani jezik",
+	"auto-detect": "Auto Detect Language Setting for Guests"
+}

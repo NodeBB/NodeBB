@@ -2,7 +2,7 @@
 'use strict';
 
 var async = require('async');
-var _ = require('underscore');
+var _ = require('lodash');
 
 var categories = require('../categories');
 var user = require('../user');
@@ -31,126 +31,127 @@ module.exports = function (privileges) {
 			{ name: 'Moderate' },
 		];
 
-		async.parallel({
-			labels: function (next) {
+		async.waterfall([
+			function (next) {
 				async.parallel({
-					users: async.apply(plugins.fireHook, 'filter:privileges.list_human', privilegeLabels),
-					groups: async.apply(plugins.fireHook, 'filter:privileges.groups.list_human', privilegeLabels),
-				}, next);
-			},
-			users: function (next) {
-				var userPrivileges;
-				async.waterfall([
-					async.apply(plugins.fireHook, 'filter:privileges.list', privileges.userPrivilegeList),
-					function (_privs, next) {
-						userPrivileges = _privs;
-						groups.getMembersOfGroups(userPrivileges.map(function (privilege) {
-							return 'cid:' + cid + ':privileges:' + privilege;
-						}), next);
-					},
-					function (memberSets, next) {
-						memberSets = memberSets.map(function (set) {
-							return set.map(function (uid) {
-								return parseInt(uid, 10);
-							});
-						});
-
-						var members = _.unique(_.flatten(memberSets));
-
-						user.getUsersFields(members, ['picture', 'username'], function (err, memberData) {
-							if (err) {
-								return next(err);
-							}
-
-							memberData.forEach(function (member) {
-								member.privileges = {};
-								for (var x = 0, numPrivs = userPrivileges.length; x < numPrivs; x += 1) {
-									member.privileges[userPrivileges[x]] = memberSets[x].indexOf(parseInt(member.uid, 10)) !== -1;
-								}
-							});
-
-							next(null, memberData);
-						});
-					},
-				], next);
-			},
-			groups: function (next) {
-				var groupPrivileges;
-				async.waterfall([
-					async.apply(plugins.fireHook, 'filter:privileges.groups.list', privileges.groupPrivilegeList),
-					function (_privs, next) {
-						groupPrivileges = _privs;
-						groups.getMembersOfGroups(groupPrivileges.map(function (privilege) {
-							return 'cid:' + cid + ':privileges:' + privilege;
-						}), next);
-					},
-					function (memberSets, next) {
-						var uniqueGroups = _.unique(_.flatten(memberSets));
-
-						groups.getGroups('groups:createtime', 0, -1, function (err, groupNames) {
-							if (err) {
-								return next(err);
-							}
-
-							groupNames = groupNames.filter(function (groupName) {
-								return groupName.indexOf(':privileges:') === -1 && uniqueGroups.indexOf(groupName) !== -1;
-							});
-
-							groupNames = groups.ephemeralGroups.concat(groupNames);
-							var registeredUsersIndex = groupNames.indexOf('registered-users');
-							if (registeredUsersIndex !== -1) {
-								groupNames.splice(0, 0, groupNames.splice(registeredUsersIndex, 1)[0]);
-							} else {
-								groupNames = ['registered-users'].concat(groupNames);
-							}
-
-							var adminIndex = groupNames.indexOf('administrators');
-							if (adminIndex !== -1) {
-								groupNames.splice(adminIndex, 1);
-							}
-
-							var memberPrivs;
-
-							var memberData = groupNames.map(function (member) {
-								memberPrivs = {};
-
-								for (var x = 0, numPrivs = groupPrivileges.length; x < numPrivs; x += 1) {
-									memberPrivs[groupPrivileges[x]] = memberSets[x].indexOf(member) !== -1;
-								}
-								return {
-									name: member,
-									privileges: memberPrivs,
-								};
-							});
-
-							next(null, memberData);
-						});
-					},
-					function (memberData, next) {
-						// Grab privacy info for the groups as well
-						async.map(memberData, function (member, next) {
-							groups.isPrivate(member.name, function (err, isPrivate) {
-								if (err) {
-									return next(err);
-								}
-
-								member.isPrivate = isPrivate;
-								next(null, member);
-							});
+					labels: function (next) {
+						async.parallel({
+							users: async.apply(plugins.fireHook, 'filter:privileges.list_human', privilegeLabels),
+							groups: async.apply(plugins.fireHook, 'filter:privileges.groups.list_human', privilegeLabels),
 						}, next);
 					},
-				], next);
+					users: function (next) {
+						var userPrivileges;
+						var memberSets;
+						async.waterfall([
+							async.apply(plugins.fireHook, 'filter:privileges.list', privileges.userPrivilegeList),
+							function (_privs, next) {
+								userPrivileges = _privs;
+								groups.getMembersOfGroups(userPrivileges.map(function (privilege) {
+									return 'cid:' + cid + ':privileges:' + privilege;
+								}), next);
+							},
+							function (_memberSets, next) {
+								memberSets = _memberSets.map(function (set) {
+									return set.map(function (uid) {
+										return parseInt(uid, 10);
+									});
+								});
+
+								var members = _.uniq(_.flatten(memberSets));
+
+								user.getUsersFields(members, ['picture', 'username'], next);
+							},
+							function (memberData, next) {
+								memberData.forEach(function (member) {
+									member.privileges = {};
+									for (var x = 0, numPrivs = userPrivileges.length; x < numPrivs; x += 1) {
+										member.privileges[userPrivileges[x]] = memberSets[x].indexOf(parseInt(member.uid, 10)) !== -1;
+									}
+								});
+
+								next(null, memberData);
+							},
+						], next);
+					},
+					groups: function (next) {
+						var groupPrivileges;
+						async.waterfall([
+							async.apply(plugins.fireHook, 'filter:privileges.groups.list', privileges.groupPrivilegeList),
+							function (_privs, next) {
+								groupPrivileges = _privs;
+								async.parallel({
+									memberSets: function (next) {
+										groups.getMembersOfGroups(groupPrivileges.map(function (privilege) {
+											return 'cid:' + cid + ':privileges:' + privilege;
+										}), next);
+									},
+									groupNames: function (next) {
+										groups.getGroups('groups:createtime', 0, -1, next);
+									},
+								}, next);
+							},
+							function (results, next) {
+								var memberSets = results.memberSets;
+								var uniqueGroups = _.uniq(_.flatten(memberSets));
+
+								var groupNames = results.groupNames.filter(function (groupName) {
+									return groupName.indexOf(':privileges:') === -1 && uniqueGroups.indexOf(groupName) !== -1;
+								});
+
+								groupNames = groups.ephemeralGroups.concat(groupNames);
+								var registeredUsersIndex = groupNames.indexOf('registered-users');
+								if (registeredUsersIndex !== -1) {
+									groupNames.splice(0, 0, groupNames.splice(registeredUsersIndex, 1)[0]);
+								} else {
+									groupNames = ['registered-users'].concat(groupNames);
+								}
+
+								var adminIndex = groupNames.indexOf('administrators');
+								if (adminIndex !== -1) {
+									groupNames.splice(adminIndex, 1);
+								}
+
+								var memberPrivs;
+
+								var memberData = groupNames.map(function (member) {
+									memberPrivs = {};
+
+									for (var x = 0, numPrivs = groupPrivileges.length; x < numPrivs; x += 1) {
+										memberPrivs[groupPrivileges[x]] = memberSets[x].indexOf(member) !== -1;
+									}
+									return {
+										name: member,
+										privileges: memberPrivs,
+									};
+								});
+
+								next(null, memberData);
+							},
+							function (memberData, next) {
+								// Grab privacy info for the groups as well
+								async.map(memberData, function (member, next) {
+									async.waterfall([
+										function (next) {
+											groups.isPrivate(member.name, next);
+										},
+										function (isPrivate, next) {
+											member.isPrivate = isPrivate;
+											next(null, member);
+										},
+									], next);
+								}, next);
+							},
+						], next);
+					},
+				}, next);
 			},
-		}, function (err, payload) {
-			if (err) {
-				return callback(err);
-			}
-
-			// This is a hack because I can't do {labels.users.length} to echo the count in templates.js
-			payload.columnCount = payload.labels.users.length + 2;
-
-			callback(null, payload);
-		});
+			function (payload, next) {
+				// This is a hack because I can't do {labels.users.length} to echo the count in templates.js
+				payload.columnCount = payload.labels.users.length + 2;
+				next(null, payload);
+			},
+		], callback);
 	};
 
 	privileges.categories.get = function (cid, uid, callback) {
@@ -170,7 +171,7 @@ module.exports = function (privileges) {
 				}, next);
 			},
 			function (results, next) {
-				var privData = _.object(privs, results.privileges);
+				var privData = _.zipObject(privs, results.privileges);
 				var isAdminOrMod = results.isAdministrator || results.isModerator;
 
 				plugins.fireHook('filter:privileges.categories.get', {

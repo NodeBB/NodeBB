@@ -1,9 +1,9 @@
 {
-	"state": "State",
+	"state": "Stav",
 	"reporter": "Reporter",
 	"reported-at": "Reported At",
 	"description": "Description",
-	"no-flags": "Hooray! No flags found.",
+	"no-flags": "Hurá! Žiadne označenia neboli nájdené.",
 	"assignee": "Assignee",
 	"update": "Update",
 	"updated": "Updated",
@@ -26,7 +26,7 @@
 	"apply-filters": "Apply Filters",
 
 	"quick-links": "Quick Links",
-	"flagged-user": "Flagged User",
+	"flagged-user": "Označený používateľ",
 	"view-profile": "View Profile",
 	"start-new-chat": "Start New Chat",
 	"go-to-target": "View Flag Target",

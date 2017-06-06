@@ -10,7 +10,7 @@ var os = require('os');
 var db = require('../database');
 var meta = require('../meta');
 var pubsub = require('../pubsub');
-
+var events = require('../events');
 
 module.exports = function (Plugins) {
 	if (nconf.get('isPrimary') === 'true') {
@@ -51,6 +51,12 @@ module.exports = function (Plugins) {
 				meta.reloadRequired = true;
 				Plugins.fireHook(isActive ? 'action:plugin.deactivate' : 'action:plugin.activate', { id: id });
 				setImmediate(next);
+			},
+			function (next) {
+				events.log({
+					type: 'plugin-' + (isActive ? 'deactivate' : 'activate'),
+					text: id,
+				}, next);
 			},
 		], function (err) {
 			if (err) {
@@ -101,7 +107,7 @@ module.exports = function (Plugins) {
 	}
 
 	function runNpmCommand(command, pkgName, version, callback) {
-		require('child_process').execFile((process.platform === 'win32') ? 'npm.cmd' : 'npm', [command, pkgName + (command === 'install' ? '@' + version : '')], function (err, stdout) {
+		require('child_process').execFile((process.platform === 'win32') ? 'npm.cmd' : 'npm', [command, pkgName + (command === 'install' ? '@' + version : ''), '--no-save'], function (err, stdout) {
 			if (err) {
 				return callback(err);
 			}

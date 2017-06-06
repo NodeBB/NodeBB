@@ -2,7 +2,7 @@
 'use strict';
 
 var async = require('async');
-var _ = require('underscore');
+var _ = require('lodash');
 var validator = require('validator');
 var S = require('string');
 var db = require('../database');
@@ -88,10 +88,6 @@ module.exports = function (Topics) {
 		], callback);
 	};
 
-	function rtrim(str) {
-		return str.replace(/\s+$/g, '');
-	}
-
 	Topics.post = function (data, callback) {
 		var uid = data.uid;
 		data.title = String(data.title).trim();
@@ -106,7 +102,7 @@ module.exports = function (Topics) {
 			},
 			function (next) {
 				if (data.content) {
-					data.content = rtrim(data.content);
+					data.content = utils.rtrim(data.content);
 				}
 				check(data.content, meta.config.minimumPostLength, meta.config.maximumPostLength, 'content-too-short', 'content-too-long', next);
 			},
@@ -239,7 +235,7 @@ module.exports = function (Topics) {
 			function (filteredData, next) {
 				content = filteredData.content || data.content;
 				if (content) {
-					content = rtrim(content);
+					content = utils.rtrim(content);
 				}
 
 				check(content, meta.config.minimumPostLength, meta.config.maximumPostLength, 'content-too-short', 'content-too-long', next);

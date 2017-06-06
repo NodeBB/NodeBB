@@ -7,28 +7,19 @@ define('admin/manage/category', [
 	'admin/modules/colorpicker',
 	'autocomplete',
 	'translator',
-], function (uploader, iconSelect, colorpicker, autocomplete, translator) {
+	'categorySelector',
+], function (uploader, iconSelect, colorpicker, autocomplete, translator, categorySelector) {
 	var	Category = {};
 	var modified_categories = {};
 
 	Category.init = function () {
-		var modified_categories = {};
-
-		function modified(el) {
-			var cid = $(el).parents('form').attr('data-cid');
-
-			if (cid) {
-				modified_categories[cid] = modified_categories[cid] || {};
-				modified_categories[cid][$(el).attr('data-name')] = $(el).val();
-
-				app.flags = app.flags || {};
-				app.flags._unsaved = true;
-			}
-		}
-
-		$('.blockclass, form.category select').each(function () {
+		$('#category-settings select').each(function () {
 			var $this = $(this);
 			$this.val($this.attr('data-value'));
+		});
+
+		$('#category-selector').on('change', function () {
+			ajaxify.go('admin/manage/categories/' + $(this).val());
 		});
 
 		function enableColorPicker(idx, inputEl) {
@@ -47,7 +38,7 @@ define('admin/manage/category', [
 		}
 
 
-		$('form.category input, form.category select').not($('.privilege-table-container input'))
+		$('#category-settings input, #category-settings select').not($('.privilege-table-container input'))
 			.on('change', function (ev) {
 				modified(ev.target);
 			})
@@ -156,6 +147,10 @@ define('admin/manage/category', [
 			iconSelect.init($(this).find('i'), modified);
 		});
 
+		$('[type="checkbox"]').on('change', function () {
+			modified($(this));
+		});
+
 		$('button[data-action="setParent"], button[data-action="changeParent"]').on('click', Category.launchParentSelector);
 		$('button[data-action="removeParent"]').on('click', function () {
 			var payload = {};
@@ -182,8 +177,15 @@ define('admin/manage/category', [
 		var cid = ajaxify.data.category.cid;
 
 		if (cid) {
+			var value;
+			if ($(el).is(':checkbox')) {
+				value = $(el).is(':checked') ? 1 : 0;
+			} else {
+				value = $(el).val();
+			}
+
 			modified_categories[cid] = modified_categories[cid] || {};
-			modified_categories[cid][$(el).attr('data-name')] = $(el).val();
+			modified_categories[cid][$(el).attr('data-name')] = value;
 
 			app.flags = app.flags || {};
 			app.flags._unsaved = true;
@@ -296,47 +298,30 @@ define('admin/manage/category', [
 	};
 
 	Category.launchParentSelector = function () {
-		socket.emit('categories.get', function (err, categories) {
-			if (err) {
-				return app.alertError(err.message);
-			}
+		var categories = ajaxify.data.allCategories.filter(function (category) {
+			return category && !category.disabled && parseInt(category.cid, 10) !== parseInt(ajaxify.data.category.cid, 10);
+		});
 
-			categories = categories.filter(function (category) {
-				return category && !category.disabled && parseInt(category.cid, 10) !== parseInt(ajaxify.data.category.cid, 10);
-			});
+		selectCategoryModal(categories, function (parentCid) {
+			var payload = {};
 
-			templates.parse('partials/category_list', {
-				categories: categories,
-			}, function (html) {
-				var modal = bootbox.dialog({
-					message: html,
-					title: '[[admin/manage/categories:alert.set-parent-category]]',
+			payload[ajaxify.data.category.cid] = {
+				parentCid: parentCid,
+			};
+
+			socket.emit('admin.categories.update', payload, function (err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				var parent = ajaxify.data.allCategories.filter(function (category) {
+					return category && parseInt(category.cid, 10) === parseInt(parentCid, 10);
 				});
+				parent = parent[0];
 
-				modal.find('li[data-cid]').on('click', function () {
-					var parentCid = $(this).attr('data-cid');
-					var payload = {};
-
-					payload[ajaxify.data.category.cid] = {
-						parentCid: parentCid,
-					};
-
-					socket.emit('admin.categories.update', payload, function (err) {
-						if (err) {
-							return app.alertError(err.message);
-						}
-						var parent = categories.filter(function (category) {
-							return category && parseInt(category.cid, 10) === parseInt(parentCid, 10);
-						});
-						parent = parent[0];
-
-						modal.modal('hide');
-						$('button[data-action="removeParent"]').parent().removeClass('hide');
-						$('button[data-action="setParent"]').addClass('hide');
-						var buttonHtml = '<i class="fa ' + parent.icon + '"></i> ' + parent.name;
-						$('button[data-action="changeParent"]').html(buttonHtml).parent().removeClass('hide');
-					});
-				});
+				$('button[data-action="removeParent"]').parent().removeClass('hide');
+				$('button[data-action="setParent"]').addClass('hide');
+				var buttonHtml = '<i class="fa ' + parent.icon + '"></i> ' + parent.name;
+				$('button[data-action="changeParent"]').html(buttonHtml).parent().removeClass('hide');
 			});
 		});
 	};
@@ -417,41 +402,41 @@ define('admin/manage/category', [
 		});
 	};
 
-	function selectCategoryModal(callback) {
-		socket.emit('admin.categories.getNames', function (err, categories) {
-			if (err) {
-				return app.alertError(err.message);
-			}
-
-			templates.parse('admin/partials/categories/select-category', {
-				categories: categories,
-			}, function (html) {
-				translator.translate(html, function (html) {
-					var modal = bootbox.dialog({
-						title: 'Select a Category',
-						message: html,
-						buttons: {
-							save: {
-								label: 'Copy',
-								className: 'btn-primary',
-								callback: submit,
-							},
+	function selectCategoryModal(categories, callback) {
+		if (typeof categories === 'function') {
+			callback = categories;
+			categories = ajaxify.data.allCategories;
+		}
+		templates.parse('admin/partials/categories/select-category', {
+			categories: categories,
+		}, function (html) {
+			translator.translate(html, function (html) {
+				var modal = bootbox.dialog({
+					title: '[[modules:composer.select_category]]',
+					message: html,
+					buttons: {
+						save: {
+							label: '[[global:select]]',
+							className: 'btn-primary',
+							callback: submit,
 						},
-					});
-
-					function submit() {
-						var formData = modal.find('form').serializeObject();
-						callback(formData['select-cid']);
-						modal.modal('hide');
-						return false;
-					}
-
-					modal.find('form').on('submit', submit);
+					},
 				});
+				categorySelector.init(modal.find('[component="category-selector"]'));
+				function submit(ev) {
+					ev.preventDefault();
+					var selectedCategory = categorySelector.getSelectedCategory();
+					if (selectedCategory) {
+						callback(selectedCategory.cid);
+						modal.modal('hide');
+					}
+					return false;
+				}
+
+				modal.find('form').on('submit', submit);
 			});
 		});
 	}
-
 
 	return Category;
 });

@@ -1,6 +1,9 @@
 'use strict';
 
 var async = require('async');
+var _ = require('lodash');
+var S = require('string');
+
 var db = require('./database');
 var user = require('./user');
 var groups = require('./groups');
@@ -12,10 +15,8 @@ var posts = require('./posts');
 var privileges = require('./privileges');
 var plugins = require('./plugins');
 var utils = require('../public/src/utils');
-var _ = require('underscore');
-var S = require('string');
 
-var Flags = {};
+var Flags = module.exports;
 
 Flags.get = function (flagId, callback) {
 	async.waterfall([
@@ -26,9 +27,12 @@ Flags.get = function (flagId, callback) {
 			notes: async.apply(Flags.getNotes, flagId),
 		}),
 		function (data, next) {
+			if (!data.base) {
+				return callback();
+			}
 			// Second stage
 			async.parallel({
-				userObj: async.apply(user.getUserFields, data.base.uid, ['username', 'userslug', 'picture']),
+				userObj: async.apply(user.getUserFields, data.base.uid, ['username', 'userslug', 'picture', 'reputation']),
 				targetObj: async.apply(Flags.getTarget, data.base.type, data.base.targetId, data.base.uid),
 			}, function (err, payload) {
 				// Final object return construction
@@ -339,6 +343,7 @@ Flags.create = function (type, id, uid, reason, timestamp, callback) {
 				tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byPid:' + id, timestamp, flagId));	// by target pid
 				if (targetUid) {
 					tasks.push(async.apply(db.sortedSetIncrBy.bind(db), 'users:flags', 1, targetUid));
+					tasks.push(async.apply(user.incrementUserFieldBy, targetUid, 'flags', 1));
 				}
 			}
 
@@ -540,19 +545,16 @@ Flags.getHistory = function (flagId, callback) {
 
 			user.getUsersFields(uids, ['username', 'userslug', 'picture'], next);
 		},
-	], function (err, users) {
-		if (err) {
-			return callback(err);
-		}
+		function (users, next) {
+			// Append user data to each history event
+			history = history.map(function (event, idx) {
+				event.user = users[idx];
+				return event;
+			});
 
-		// Append user data to each history event
-		history = history.map(function (event, idx) {
-			event.user = users[idx];
-			return event;
-		});
-
-		callback(null, history);
-	});
+			next(null, history);
+		},
+	], callback);
 };
 
 Flags.appendHistory = function (flagId, uid, changeset, callback) {
@@ -613,7 +615,7 @@ Flags.notify = function (flagObj, uid, callback) {
 				async.waterfall([
 					async.apply(posts.getCidByPid, flagObj.targetId),
 					function (cid, next) {
-						groups.getMembers('cid:' + cid + ':privileges:mods', 0, -1, next);
+						groups.getMembers('cid:' + cid + ':privileges:moderate', 0, -1, next);
 					},
 				], next);
 			},
@@ -682,5 +684,3 @@ Flags.notify = function (flagObj, uid, callback) {
 		break;
 	}
 };
-
-module.exports = Flags;

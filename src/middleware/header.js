@@ -80,7 +80,7 @@ module.exports = function (middleware) {
 							username: '[[global:guest]]',
 							userslug: '',
 							email: '',
-							picture: meta.config.defaultAvatar,
+							picture: user.getDefaultAvatar(),
 							status: 'offline',
 							reputation: 0,
 							'email:confirmed': 0,

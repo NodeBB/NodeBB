@@ -1,7 +1,7 @@
 'use strict';
 
-var	async = require('async');
-var _ = require('underscore');
+var async = require('async');
+var _ = require('lodash');
 
 var groups = require('./groups');
 var plugins = require('./plugins');
@@ -280,7 +280,7 @@ User.getModeratorUids = function (callback) {
 		async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
 		function (cids, next) {
 			var groupNames = cids.map(function (cid) {
-				return 'cid:' + cid + ':privileges:mods';
+				return 'cid:' + cid + ':privileges:moderate';
 			});
 
 			groups.getMembersOfGroups(groupNames, next);

@@ -1,0 +1,18 @@
+{
+	"none": "Vaš forum nema tema sa oznakama",
+	"bg-color": "Pozadinska boja",
+	"text-color": "Boja teksta",
+	"create-modify": "Napravi i uredi oznake",
+	"description": "Odaberite oznake klikom ili povlačenjem, koristite SHIFT za  višestruki odabir.",
+	"create": "Napravi oznaku",
+	"modify": "Uredi oznake",
+	"delete": "Obriši odabrane oznake",
+	"search": "Pretraži za oznake ...",
+	"settings": "Kliknite <a href=\"%1\">ovdje</a> za posjetu postavki oznaka",
+	"name": "Ime oznake",
+
+	"alerts.editing-multiple": "Uređivanje više oznaka",
+	"alerts.editing-x": "Uredi \"%1\" oznake",
+	"alerts.confirm-delete": "Želite li obrisati odabrane oznake?",
+	"alerts.update-success": "Oznake promijenjene!"
+}

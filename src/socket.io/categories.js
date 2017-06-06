@@ -8,133 +8,134 @@ var user = require('../user');
 var topics = require('../topics');
 var apiController = require('../controllers/api');
 
-var SocketCategories = {};
+var SocketCategories = module.exports;
 
 SocketCategories.getRecentReplies = function (socket, cid, callback) {
 	categories.getRecentReplies(cid, socket.uid, 4, callback);
 };
 
 SocketCategories.get = function (socket, data, callback) {
-	async.parallel({
-		isAdmin: async.apply(user.isAdministrator, socket.uid),
-		categories: function (next) {
-			async.waterfall([
-				async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
-				async.apply(categories.getCategoriesData),
-			], next);
+	async.waterfall([
+		function (next) {
+			async.parallel({
+				isAdmin: async.apply(user.isAdministrator, socket.uid),
+				categories: function (next) {
+					async.waterfall([
+						async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
+						async.apply(categories.getCategoriesData),
+					], next);
+				},
+			}, next);
 		},
-	}, function (err, results) {
-		if (err) {
-			return callback(err);
-		}
+		function (results, next) {
+			results.categories = results.categories.filter(function (category) {
+				return category && (!category.disabled || results.isAdmin);
+			});
 
-		results.categories = results.categories.filter(function (category) {
-			return category && (!category.disabled || results.isAdmin);
-		});
-
-		callback(null, results.categories);
-	});
+			next(null, results.categories);
+		},
+	], callback);
 };
 
 SocketCategories.getWatchedCategories = function (socket, data, callback) {
-	async.parallel({
-		categories: async.apply(categories.getCategoriesByPrivilege, 'cid:0:children', socket.uid, 'find'),
-		ignoredCids: async.apply(user.getIgnoredCategories, socket.uid),
-	}, function (err, results) {
-		if (err) {
-			return callback(err);
-		}
-		var watchedCategories = results.categories.filter(function (category) {
-			return category && results.ignoredCids.indexOf(category.cid.toString()) === -1;
-		});
+	async.waterfall([
+		function (next) {
+			async.parallel({
+				categories: async.apply(categories.getCategoriesByPrivilege, 'cid:0:children', socket.uid, 'find'),
+				ignoredCids: async.apply(user.getIgnoredCategories, socket.uid),
+			}, next);
+		},
+		function (results, next) {
+			var watchedCategories = results.categories.filter(function (category) {
+				return category && results.ignoredCids.indexOf(category.cid.toString()) === -1;
+			});
 
-		callback(null, watchedCategories);
-	});
+			next(null, watchedCategories);
+		},
+	], callback);
 };
 
 SocketCategories.loadMore = function (socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
-
-	async.parallel({
-		privileges: function (next) {
-			privileges.categories.get(data.cid, socket.uid, next);
+	var userPrivileges;
+	async.waterfall([
+		function (next) {
+			async.parallel({
+				privileges: function (next) {
+					privileges.categories.get(data.cid, socket.uid, next);
+				},
+				settings: function (next) {
+					user.getSettings(socket.uid, next);
+				},
+				targetUid: function (next) {
+					if (data.author) {
+						user.getUidByUserslug(data.author, next);
+					} else {
+						next();
+					}
+				},
+			}, next);
 		},
-		settings: function (next) {
-			user.getSettings(socket.uid, next);
-		},
-		targetUid: function (next) {
-			if (data.author) {
-				user.getUidByUserslug(data.author, next);
-			} else {
-				next();
+		function (results, next) {
+			userPrivileges = results.privileges;
+			if (!userPrivileges.read) {
+				return callback(new Error('[[error:no-privileges]]'));
 			}
-		},
-	}, function (err, results) {
-		if (err) {
-			return callback(err);
-		}
+			var infScrollTopicsPerPage = 20;
+			var set = 'cid:' + data.cid + ':tids';
+			var reverse = false;
 
-		if (!results.privileges.read) {
-			return callback(new Error('[[error:no-privileges]]'));
-		}
-
-		var infScrollTopicsPerPage = 20;
-		var set = 'cid:' + data.cid + ':tids';
-		var reverse = false;
-
-		if (data.categoryTopicSort === 'newest_to_oldest') {
-			reverse = true;
-		} else if (data.categoryTopicSort === 'most_posts') {
-			reverse = true;
-			set = 'cid:' + data.cid + ':tids:posts';
-		}
-
-		var start = Math.max(0, parseInt(data.after, 10));
-
-		if (data.direction === -1) {
-			start -= reverse ? infScrollTopicsPerPage : -infScrollTopicsPerPage;
-		}
-
-		var stop = start + infScrollTopicsPerPage - 1;
-
-		start = Math.max(0, start);
-		stop = Math.max(0, stop);
-
-		if (results.targetUid) {
-			set = 'cid:' + data.cid + ':uid:' + results.targetUid + ':tids';
-		}
-
-		if (data.tag) {
-			set = [set, 'tag:' + data.tag + ':topics'];
-		}
-
-		categories.getCategoryTopics({
-			cid: data.cid,
-			set: set,
-			reverse: reverse,
-			start: start,
-			stop: stop,
-			uid: socket.uid,
-			targetUid: results.targetUid,
-			settings: results.settings,
-		}, function (err, data) {
-			if (err) {
-				return callback(err);
+			if (data.categoryTopicSort === 'newest_to_oldest') {
+				reverse = true;
+			} else if (data.categoryTopicSort === 'most_posts') {
+				reverse = true;
+				set = 'cid:' + data.cid + ':tids:posts';
 			}
 
-			categories.modifyTopicsByPrivilege(data.topics, results.privileges);
+			var start = Math.max(0, parseInt(data.after, 10));
 
-			data.privileges = results.privileges;
+			if (data.direction === -1) {
+				start -= reverse ? infScrollTopicsPerPage : -infScrollTopicsPerPage;
+			}
+
+			var stop = start + infScrollTopicsPerPage - 1;
+
+			start = Math.max(0, start);
+			stop = Math.max(0, stop);
+
+			if (results.targetUid) {
+				set = 'cid:' + data.cid + ':uid:' + results.targetUid + ':tids';
+			}
+
+			if (data.tag) {
+				set = [set, 'tag:' + data.tag + ':topics'];
+			}
+
+			categories.getCategoryTopics({
+				cid: data.cid,
+				set: set,
+				reverse: reverse,
+				start: start,
+				stop: stop,
+				uid: socket.uid,
+				targetUid: results.targetUid,
+				settings: results.settings,
+			}, next);
+		},
+		function (data, next) {
+			categories.modifyTopicsByPrivilege(data.topics, userPrivileges);
+
+			data.privileges = userPrivileges;
 			data.template = {
 				category: true,
 				name: 'category',
 			};
 
-			callback(null, data);
-		});
-	});
+			next(null, data);
+		},
+	], callback);
 };
 
 SocketCategories.getPageCount = function (socket, cid, callback) {
@@ -150,32 +151,33 @@ SocketCategories.getCategoriesByPrivilege = function (socket, privilege, callbac
 };
 
 SocketCategories.getMoveCategories = function (socket, data, callback) {
-	async.parallel({
-		isAdmin: async.apply(user.isAdministrator, socket.uid),
-		categories: function (next) {
-			async.waterfall([
-				function (next) {
-					db.getSortedSetRange('cid:0:children', 0, -1, next);
+	async.waterfall([
+		function (next) {
+			async.parallel({
+				isAdmin: async.apply(user.isAdministrator, socket.uid),
+				categories: function (next) {
+					async.waterfall([
+						function (next) {
+							db.getSortedSetRange('cid:0:children', 0, -1, next);
+						},
+						function (cids, next) {
+							categories.getCategories(cids, socket.uid, next);
+						},
+						function (categoriesData, next) {
+							categories.buildForSelectCategories(categoriesData, next);
+						},
+					], next);
 				},
-				function (cids, next) {
-					privileges.categories.filterCids('read', cids, socket.uid, next);
-				},
-				function (cids, next) {
-					categories.getCategories(cids, socket.uid, next);
-				},
-			], next);
+			}, next);
 		},
-	}, function (err, results) {
-		if (err) {
-			return callback(err);
-		}
+		function (results, next) {
+			results.categories = results.categories.filter(function (category) {
+				return category && (!category.disabled || results.isAdmin) && !category.link;
+			});
 
-		results.categories = results.categories.filter(function (category) {
-			return category && (!category.disabled || results.isAdmin) && !category.link;
-		});
-
-		callback(null, results.categories);
-	});
+			next(null, results.categories);
+		},
+	], callback);
 };
 
 SocketCategories.watch = function (socket, cid, callback) {
@@ -231,5 +233,3 @@ SocketCategories.isModerator = function (socket, cid, callback) {
 SocketCategories.getCategory = function (socket, cid, callback) {
 	apiController.getCategoryData(cid, socket.uid, callback);
 };
-
-module.exports = SocketCategories;

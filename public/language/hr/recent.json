@@ -1,0 +1,19 @@
+{
+    "title": "Nedavno",
+    "day": "Dan",
+    "week": "Tjedan",
+    "month": "Mjesec",
+    "year": "Godina",
+    "alltime": "Sve vrijeme",
+    "no_recent_topics": "Nema nedavnih tema.",
+    "no_popular_topics": "Nema popularnih tema.",
+    "there-is-a-new-topic": "Nova tema.",
+    "there-is-a-new-topic-and-a-new-post": "Nova tema i nova objava.",
+    "there-is-a-new-topic-and-new-posts": "Nova tema i %1 nova objava",
+    "there-are-new-topics": "%1 nova tema",
+    "there-are-new-topics-and-a-new-post": "%1 nova tema i nova objava",
+    "there-are-new-topics-and-new-posts": "%1 nova tema i %2 nova objava",
+    "there-is-a-new-post": "Nova objava.",
+    "there-are-new-posts": "%1 nova objava.",
+    "click-here-to-reload": "Klikni ovdje za ponovno učitavanje."
+}

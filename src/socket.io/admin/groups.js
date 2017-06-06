@@ -3,7 +3,7 @@
 var async = require('async');
 var groups = require('../../groups');
 
-var Groups = {};
+var Groups = module.exports;
 
 Groups.create = function (socket, data, callback) {
 	if (!data) {
@@ -66,5 +66,3 @@ Groups.update = function (socket, data, callback) {
 
 	groups.update(data.groupName, data.values, callback);
 };
-
-module.exports = Groups;

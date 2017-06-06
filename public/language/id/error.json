@@ -1,5 +1,6 @@
 {
     "invalid-data": "Data Salah",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "Kamu terlihat belum login",
     "account-locked": "Akun kamu dikunci sementara",
     "search-requires-login": "Searching requires an account - please login or register.",
@@ -12,6 +13,7 @@
     "invalid-title": "Judul Salah",
     "invalid-user-data": "Data Pengguna Salah",
     "invalid-password": "Password Salah",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Mohon spesifikasikan username dan password",
     "invalid-search-term": "Kata pencarian salah",
     "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",

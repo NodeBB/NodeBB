@@ -65,14 +65,14 @@ module.exports = function (Posts) {
 		if (!parseInt(uid, 10)) {
 			return callback(null, { upvoted: false, downvoted: false });
 		}
-
-		db.isMemberOfSets(['pid:' + pid + ':upvote', 'pid:' + pid + ':downvote'], uid, function (err, hasVoted) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, { upvoted: hasVoted[0], downvoted: hasVoted[1] });
-		});
+		async.waterfall([
+			function (next) {
+				db.isMemberOfSets(['pid:' + pid + ':upvote', 'pid:' + pid + ':downvote'], uid, next);
+			},
+			function (hasVoted, next) {
+				next(null, { upvoted: hasVoted[0], downvoted: hasVoted[1] });
+			},
+		], callback);
 	};
 
 	Posts.getVoteStatusByPostIDs = function (pids, uid, callback) {
@@ -124,151 +124,157 @@ module.exports = function (Posts) {
 	}
 
 	function toggleVote(type, pid, uid, callback) {
-		unvote(pid, uid, type, function (err) {
-			if (err) {
-				return callback(err);
-			}
-
-			vote(type, false, pid, uid, callback);
-		});
+		async.waterfall([
+			function (next) {
+				unvote(pid, uid, type, function (err) {
+					next(err);
+				});
+			},
+			function (next) {
+				vote(type, false, pid, uid, next);
+			},
+		], callback);
 	}
 
 	function unvote(pid, uid, command, callback) {
-		async.parallel({
-			owner: function (next) {
-				Posts.getPostField(pid, 'uid', next);
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					owner: function (next) {
+						Posts.getPostField(pid, 'uid', next);
+					},
+					voteStatus: function (next) {
+						Posts.hasVoted(pid, uid, next);
+					},
+					reputation: function (next) {
+						user.getUserField(uid, 'reputation', next);
+					},
+				}, next);
 			},
-			voteStatus: function (next) {
-				Posts.hasVoted(pid, uid, next);
+			function (results, next) {
+				if (parseInt(uid, 10) === parseInt(results.owner, 10)) {
+					return callback(new Error('self-vote'));
+				}
+
+				if (command === 'downvote' && parseInt(results.reputation, 10) < parseInt(meta.config['privileges:downvote'], 10)) {
+					return callback(new Error('[[error:not-enough-reputation-to-downvote]]'));
+				}
+
+				var voteStatus = results.voteStatus;
+				var hook;
+				var current = voteStatus.upvoted ? 'upvote' : 'downvote';
+
+				if ((voteStatus.upvoted && command === 'downvote') || (voteStatus.downvoted && command === 'upvote')) {	// e.g. User *has* upvoted, and clicks downvote
+					hook = command;
+				} else if (voteStatus.upvoted || voteStatus.downvoted) {	// e.g. User *has* upvoted, clicks upvote (so we "unvote")
+					hook = 'unvote';
+				} else {	// e.g. User *has not* voted, clicks upvote
+					hook = command;
+					current = 'unvote';
+				}
+
+				plugins.fireHook('action:post.' + hook, {
+					pid: pid,
+					uid: uid,
+					owner: results.owner,
+					current: current,
+				});
+
+				if (!voteStatus || (!voteStatus.upvoted && !voteStatus.downvoted)) {
+					return callback();
+				}
+
+				vote(voteStatus.upvoted ? 'downvote' : 'upvote', true, pid, uid, next);
 			},
-			reputation: function (next) {
-				user.getUserField(uid, 'reputation', next);
-			},
-		}, function (err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (parseInt(uid, 10) === parseInt(results.owner, 10)) {
-				return callback(new Error('self-vote'));
-			}
-
-			if (command === 'downvote' && parseInt(results.reputation, 10) < parseInt(meta.config['privileges:downvote'], 10)) {
-				return callback(new Error('[[error:not-enough-reputation-to-downvote]]'));
-			}
-
-			var voteStatus = results.voteStatus;
-			var hook;
-			var current = voteStatus.upvoted ? 'upvote' : 'downvote';
-
-			if ((voteStatus.upvoted && command === 'downvote') || (voteStatus.downvoted && command === 'upvote')) {	// e.g. User *has* upvoted, and clicks downvote
-				hook = command;
-			} else if (voteStatus.upvoted || voteStatus.downvoted) {	// e.g. User *has* upvoted, clicks upvote (so we "unvote")
-				hook = 'unvote';
-			} else {	// e.g. User *has not* voted, clicks upvote
-				hook = command;
-				current = 'unvote';
-			}
-
-			plugins.fireHook('action:post.' + hook, {
-				pid: pid,
-				uid: uid,
-				owner: results.owner,
-				current: current,
-			});
-
-			if (!voteStatus || (!voteStatus.upvoted && !voteStatus.downvoted)) {
-				return callback();
-			}
-
-			vote(voteStatus.upvoted ? 'downvote' : 'upvote', true, pid, uid, callback);
-		});
+		], callback);
 	}
 
 	function vote(type, unvote, pid, uid, callback) {
 		uid = parseInt(uid, 10);
 
-		if (uid === 0) {
+		if (!uid) {
 			return callback(new Error('[[error:not-logged-in]]'));
 		}
+		var postData;
+		var newreputation;
+		async.waterfall([
+			function (next) {
+				Posts.getPostFields(pid, ['pid', 'uid', 'tid'], next);
+			},
+			function (_postData, next) {
+				postData = _postData;
+				var now = Date.now();
 
-		Posts.getPostFields(pid, ['pid', 'uid', 'tid'], function (err, postData) {
-			if (err) {
-				return callback(err);
-			}
-
-			var now = Date.now();
-
-			if (type === 'upvote' && !unvote) {
-				db.sortedSetAdd('uid:' + uid + ':upvote', now, pid);
-			} else {
-				db.sortedSetRemove('uid:' + uid + ':upvote', pid);
-			}
-
-			if (type === 'upvote' || unvote) {
-				db.sortedSetRemove('uid:' + uid + ':downvote', pid);
-			} else {
-				db.sortedSetAdd('uid:' + uid + ':downvote', now, pid);
-			}
-
-			user[type === 'upvote' ? 'incrementUserFieldBy' : 'decrementUserFieldBy'](postData.uid, 'reputation', 1, function (err, newreputation) {
-				if (err) {
-					return callback(err);
+				if (type === 'upvote' && !unvote) {
+					db.sortedSetAdd('uid:' + uid + ':upvote', now, pid);
+				} else {
+					db.sortedSetRemove('uid:' + uid + ':upvote', pid);
 				}
 
+				if (type === 'upvote' || unvote) {
+					db.sortedSetRemove('uid:' + uid + ':downvote', pid);
+				} else {
+					db.sortedSetAdd('uid:' + uid + ':downvote', now, pid);
+				}
+
+				user[type === 'upvote' ? 'incrementUserFieldBy' : 'decrementUserFieldBy'](postData.uid, 'reputation', 1, next);
+			},
+			function (_newreputation, next) {
+				newreputation = _newreputation;
 				if (parseInt(postData.uid, 10)) {
 					db.sortedSetAdd('users:reputation', newreputation, postData.uid);
 				}
 
-				adjustPostVotes(postData, uid, type, unvote, function (err) {
-					callback(err, {
-						user: {
-							reputation: newreputation,
-						},
-						post: postData,
-						upvote: type === 'upvote' && !unvote,
-						downvote: type === 'downvote' && !unvote,
-					});
+				adjustPostVotes(postData, uid, type, unvote, next);
+			},
+			function (next) {
+				next(null, {
+					user: {
+						reputation: newreputation,
+					},
+					post: postData,
+					upvote: type === 'upvote' && !unvote,
+					downvote: type === 'downvote' && !unvote,
 				});
-			});
-		});
+			},
+		], callback);
 	}
 
 	function adjustPostVotes(postData, uid, type, unvote, callback) {
 		var notType = (type === 'upvote' ? 'downvote' : 'upvote');
-
-		async.series([
+		async.waterfall([
 			function (next) {
-				if (unvote) {
-					db.setRemove('pid:' + postData.pid + ':' + type, uid, next);
-				} else {
-					db.setAdd('pid:' + postData.pid + ':' + type, uid, next);
-				}
+				async.series([
+					function (next) {
+						if (unvote) {
+							db.setRemove('pid:' + postData.pid + ':' + type, uid, next);
+						} else {
+							db.setAdd('pid:' + postData.pid + ':' + type, uid, next);
+						}
+					},
+					function (next) {
+						db.setRemove('pid:' + postData.pid + ':' + notType, uid, next);
+					},
+				], function (err) {
+					next(err);
+				});
 			},
 			function (next) {
-				db.setRemove('pid:' + postData.pid + ':' + notType, uid, next);
+				async.parallel({
+					upvotes: function (next) {
+						db.setCount('pid:' + postData.pid + ':upvote', next);
+					},
+					downvotes: function (next) {
+						db.setCount('pid:' + postData.pid + ':downvote', next);
+					},
+				}, next);
 			},
-		], function (err) {
-			if (err) {
-				return callback(err);
-			}
-
-			async.parallel({
-				upvotes: function (next) {
-					db.setCount('pid:' + postData.pid + ':upvote', next);
-				},
-				downvotes: function (next) {
-					db.setCount('pid:' + postData.pid + ':downvote', next);
-				},
-			}, function (err, results) {
-				if (err) {
-					return callback(err);
-				}
+			function (results, next) {
 				postData.upvotes = parseInt(results.upvotes, 10);
 				postData.downvotes = parseInt(results.downvotes, 10);
 				postData.votes = postData.upvotes - postData.downvotes;
-				Posts.updatePostVoteCount(postData, callback);
-			});
-		});
+				Posts.updatePostVoteCount(postData, next);
+			},
+		], callback);
 	}
 };

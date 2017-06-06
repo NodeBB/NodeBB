@@ -1,7 +1,7 @@
 {
 	"home-page": "Ana Sayfa",
-	"description": "Choose what page is shown when users navigate to the root URL of your forum.",
-	"home-page-route": "Home Page Route",
-	"custom-route": "Custom Route",
-	"allow-user-home-pages": "Allow User Home Pages"
+	"description": "Kullanıcıların, forumunuzun kök bağlantısına gittiğinde hangi sayfanın görüntüleneceğini seçin.",
+	"home-page-route": "Anasayfa Yolu",
+	"custom-route": "Özel Yol",
+	"allow-user-home-pages": "Kullanıcılara anasayfayı özelleştirmeye izin ver"
 }

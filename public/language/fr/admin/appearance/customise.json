@@ -5,5 +5,8 @@
 
 	"custom-header": "En-tête personnalisé",
 	"custom-header.description": "Entrez votre code HTML ici (ex. Javascripts, Méta tags, etc…), qui seront ajoutés à la section <code>&lt;head&gt;</code> du code de votre forum.",
-	"custom-header.enable": "Activer les en-têtes personnalisés"
+	"custom-header.enable": "Activer les en-têtes personnalisés",
+
+	"custom-css.livereload": "Activer le rechargement en direct",
+	"custom-css.livereload.description": "Activez cette option pour forcer toutes les sessions sur chaque appareil connecté à votre compte à se rafraichir lorsque vous cliquez sur Enregistrer."
 }

@@ -2,11 +2,13 @@
 'use strict';
 
 var async = require('async');
+var _ = require('lodash');
 
 var meta = require('../meta');
 var db = require('../database');
 var plugins = require('../plugins');
 
+var pubsub = require('../pubsub');
 var LRU = require('lru-cache');
 
 var cache = LRU({
@@ -18,6 +20,10 @@ var cache = LRU({
 module.exports = function (User) {
 	User.settingsCache = cache;
 
+	pubsub.on('user:settings:cache:del', function (uid) {
+		cache.del('user:' + uid + ':settings');
+	});
+
 	User.getSettings = function (uid, callback) {
 		if (!parseInt(uid, 10)) {
 			return onSettingsLoaded(0, {}, callback);
@@ -25,7 +31,7 @@ module.exports = function (User) {
 
 		var cached = cache.get('user:' + uid + ':settings');
 		if (cached) {
-			return onSettingsLoaded(uid, cached || {}, callback);
+			return onSettingsLoaded(uid, _.clone(cached || {}), callback);
 		}
 
 		async.waterfall([
@@ -36,7 +42,7 @@ module.exports = function (User) {
 				settings = settings || {};
 				settings.uid = uid;
 				cache.set('user:' + uid + ':settings', settings);
-				onSettingsLoaded(uid, settings || {}, next);
+				onSettingsLoaded(uid, _.clone(settings || {}), next);
 			},
 		], callback);
 	};
@@ -47,7 +53,7 @@ module.exports = function (User) {
 				return cache.get('user:' + uid + ':settings') || {};
 			});
 			async.map(settings, function (setting, next) {
-				onSettingsLoaded(setting.uid, setting, next);
+				onSettingsLoaded(setting.uid, _.clone(setting), next);
 			}, next);
 		}
 
@@ -177,6 +183,7 @@ module.exports = function (User) {
 			},
 			function (next) {
 				cache.del('user:' + uid + ':settings');
+				pubsub.publish('user:settings:cache:del', uid);
 				User.getSettings(uid, next);
 			},
 		], callback);

@@ -5,7 +5,7 @@ var async = require('async');
 var user = require('../user');
 var flags = require('../flags');
 
-var SocketFlags = {};
+var SocketFlags = module.exports;
 
 SocketFlags.create = function (socket, data, callback) {
 	if (!socket.uid) {
@@ -26,14 +26,11 @@ SocketFlags.create = function (socket, data, callback) {
 			// If we got here, then no errors occurred
 			flags.create(data.type, data.id, socket.uid, data.reason, next);
 		},
-	], function (err, flagObj) {
-		if (err) {
-			return callback(err);
-		}
-
-		flags.notify(flagObj, socket.uid);
-		callback(null, flagObj);
-	});
+		function (flagObj, next) {
+			flags.notify(flagObj, socket.uid);
+			next(null, flagObj);
+		},
+	], callback);
 };
 
 SocketFlags.update = function (socket, data, callback) {
@@ -98,5 +95,3 @@ SocketFlags.appendNote = function (socket, data, callback) {
 		},
 	], callback);
 };
-
-module.exports = SocketFlags;

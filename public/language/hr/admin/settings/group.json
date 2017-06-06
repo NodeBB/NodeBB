@@ -1,0 +1,12 @@
+{
+	"general": "Glavno",
+	"private-groups": "Privatne grupe",
+	"private-groups.help": "Ako je uključeno,ulazak u grupe zahtjevati će odobrenje vlasnika grupe <em>(Default: enabled)</em>",
+	"private-groups.warning": "<strong>Pazi!</strong> Ako je ova opcija isključena,a imate privatne grupe,automatski će postati javne.",
+	"allow-creation": "Dozvoli kreiranje grupe",
+	"allow-creation-help": "Ako je uključeno,korisnicima će biti omogućeno stvaranje grupa <em>(Default: disabled)</em>",
+	"max-name-length": "Maksimalna dužina imena grupe",
+	"cover-image": "Slika grupe",
+	"default-cover": " ",
+	"default-cover-help": "Dodaj slike sa zarezima između za grupe koje nemaju učitanu naslovnu sliku"
+}

@@ -1,7 +1,7 @@
 {
 	"x-b": "%1 octets",
 	"x-mb": "%1 Mo",
-	"x-gb": "%1 gb",
+	"x-gb": "%1 Go",
 	"uptime-seconds": "Disponibilité en secondes",
 	"uptime-days": "Disponibilité en jours",
 

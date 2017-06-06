@@ -16,6 +16,7 @@ var groups = require('../src/groups');
 var helpers = require('./helpers');
 var meta = require('../src/meta');
 var plugins = require('../src/plugins');
+var socketUser = require('../src/socket.io/user');
 
 describe('User', function () {
 	var userData;
@@ -68,6 +69,31 @@ describe('User', function () {
 				done();
 			});
 		});
+
+		it('should error with invalid password', function (done) {
+			User.create({ username: 'test', password: '1' }, function (err) {
+				assert.equal(err.message, '[[user:change_password_error_length]]');
+				done();
+			});
+		});
+
+		it('should error with invalid password', function (done) {
+			User.create({ username: 'test', password: {} }, function (err) {
+				assert.equal(err.message, '[[error:invalid-password]]');
+				done();
+			});
+		});
+
+		it('should error with a too long password', function (done) {
+			var toolong = '';
+			for (var i = 0; i < 5000; i++) {
+				toolong += 'a';
+			}
+			User.create({ username: 'test', password: toolong }, function (err) {
+				assert.equal(err.message, '[[error:password-too-long]]');
+				done();
+			});
+		});
 	});
 
 	describe('.uniqueUsername()', function () {
@@ -76,7 +102,6 @@ describe('User', function () {
 			for (var i = 0; i < 10; i += 1) {
 				users.push({
 					username: 'Jane Doe',
-					password: 'abcdefghi',
 					email: 'jane.doe' + i + '@example.com',
 				});
 			}
@@ -95,7 +120,7 @@ describe('User', function () {
 						assert.ifError(err);
 
 						assert.strictEqual(username, 'Jane Doe 9');
-						done();
+						next();
 					});
 				},
 			], done);
@@ -204,7 +229,6 @@ describe('User', function () {
 	});
 
 	describe('.search()', function () {
-		var socketUser = require('../src/socket.io/user');
 		it('should return an object containing an array of matching users', function (done) {
 			User.search({ query: 'john' }, function (err, searchData) {
 				assert.ifError(err);
@@ -234,6 +258,76 @@ describe('User', function () {
 		it('should error with invalid data', function (done) {
 			socketUser.search({ uid: testUid }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should search users by ip', function (done) {
+			User.create({ username: 'ipsearch' }, function (err, uid) {
+				assert.ifError(err);
+				db.sortedSetAdd('ip:1.1.1.1:uid', [1, 1], [testUid, uid], function (err) {
+					assert.ifError(err);
+					socketUser.search({ uid: testUid }, { query: '1.1.1.1', searchBy: 'ip' }, function (err, data) {
+						assert.ifError(err);
+						assert(Array.isArray(data.users));
+						assert.equal(data.users.length, 2);
+						done();
+					});
+				});
+			});
+		});
+
+		it('should return empty array if query is empty', function (done) {
+			socketUser.search({ uid: testUid }, { query: '' }, function (err, data) {
+				assert.ifError(err);
+				assert.equal(data.users.length, 0);
+				done();
+			});
+		});
+
+		it('should filter users', function (done) {
+			User.create({ username: 'ipsearch_filter' }, function (err, uid) {
+				assert.ifError(err);
+				User.setUserFields(uid, { banned: 1, flags: 10 }, function (err) {
+					assert.ifError(err);
+					socketUser.search({ uid: testUid }, {
+						query: 'ipsearch',
+						onlineOnly: true,
+						bannedOnly: true,
+						flaggedOnly: true,
+					}, function (err, data) {
+						assert.ifError(err);
+						assert.equal(data.users[0].username, 'ipsearch_filter');
+						done();
+					});
+				});
+			});
+		});
+
+		it('should sort results by username', function (done) {
+			async.waterfall([
+				function (next) {
+					User.create({ username: 'brian' }, next);
+				},
+				function (uid, next) {
+					User.create({ username: 'baris' }, next);
+				},
+				function (uid, next) {
+					User.create({ username: 'bzari' }, next);
+				},
+				function (uid, next) {
+					User.search({
+						uid: testUid,
+						query: 'b',
+						sortBy: 'username',
+						paginate: false,
+					}, next);
+				},
+			], function (err, data) {
+				assert.ifError(err);
+				assert.equal(data.users[0].username, 'baris');
+				assert.equal(data.users[1].username, 'brian');
+				assert.equal(data.users[2].username, 'bzari');
 				done();
 			});
 		});
@@ -299,7 +393,7 @@ describe('User', function () {
 		});
 
 		it('.send() should create a new reset code and reset password', function (done) {
-			User.reset.send('reset@me.com', function (err, code) {
+			User.reset.send('reset@me.com', function (err) {
 				if (err) {
 					console.log(err);
 				}
@@ -347,22 +441,21 @@ describe('User', function () {
 				done();
 			});
 		});
-	});
 
-	describe('not logged in', function () {
-		var jar;
-		var io;
-		before(function (done) {
-			helpers.initSocketIO(function (err, _jar, _io) {
+		it('should get user data even if one uid is NaN', function (done) {
+			User.getUsersData([NaN, testUid], function (err, data) {
 				assert.ifError(err);
-				jar = _jar;
-				io = _io;
+				assert.equal(data[0], null);
+				assert(data[1]);
+				assert.equal(data[1].username, userData.username);
 				done();
 			});
 		});
+	});
 
+	describe('not logged in', function () {
 		it('should return error if not logged in', function (done) {
-			io.emit('user.updateProfile', {}, function (err) {
+			socketUser.updateProfile({ uid: 0 }, {}, function (err) {
 				assert.equal(err.message, '[[error:invalid-uid]]');
 				done();
 			});
@@ -372,30 +465,28 @@ describe('User', function () {
 	describe('profile methods', function () {
 		var uid;
 		var jar;
-		var io;
 
 		before(function (done) {
 			User.create({ username: 'updateprofile', email: 'update@me.com', password: '123456' }, function (err, newUid) {
 				assert.ifError(err);
 				uid = newUid;
-				helpers.loginUser('updateprofile', '123456', function (err, _jar, _io) {
+				helpers.loginUser('updateprofile', '123456', function (err, _jar) {
 					assert.ifError(err);
 					jar = _jar;
-					io = _io;
 					done();
 				});
 			});
 		});
 
 		it('should return error if data is invalid', function (done) {
-			io.emit('user.updateProfile', null, function (err) {
+			socketUser.updateProfile({ uid: uid }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('should return error if data is missing uid', function (done) {
-			io.emit('user.updateProfile', { username: 'bip', email: 'bop' }, function (err) {
+			socketUser.updateProfile({ uid: uid }, { username: 'bip', email: 'bop' }, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
@@ -413,7 +504,7 @@ describe('User', function () {
 				birthday: '01/01/1980',
 				signature: 'nodebb is good',
 			};
-			io.emit('user.updateProfile', data, function (err, result) {
+			socketUser.updateProfile({ uid: uid }, data, function (err, result) {
 				assert.ifError(err);
 
 				assert.equal(result.username, 'updatedUserName');
@@ -431,7 +522,6 @@ describe('User', function () {
 		});
 
 		it('should change a user\'s password', function (done) {
-			var socketUser = require('../src/socket.io/user');
 			User.create({ username: 'changepassword', password: '123456' }, function (err, uid) {
 				assert.ifError(err);
 				socketUser.changePassword({ uid: uid }, { uid: uid, newPassword: '654321', currentPassword: '123456' }, function (err) {
@@ -446,7 +536,7 @@ describe('User', function () {
 		});
 
 		it('should change username', function (done) {
-			io.emit('user.changeUsernameEmail', { uid: uid, username: 'updatedAgain', password: '123456' }, function (err) {
+			socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, username: 'updatedAgain', password: '123456' }, function (err) {
 				assert.ifError(err);
 				db.getObjectField('user:' + uid, 'username', function (err, username) {
 					assert.ifError(err);
@@ -457,7 +547,7 @@ describe('User', function () {
 		});
 
 		it('should change email', function (done) {
-			io.emit('user.changeUsernameEmail', { uid: uid, email: 'updatedAgain@me.com', password: '123456' }, function (err) {
+			socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, email: 'updatedAgain@me.com', password: '123456' }, function (err) {
 				assert.ifError(err);
 				db.getObjectField('user:' + uid, 'email', function (err, email) {
 					assert.ifError(err);
@@ -470,7 +560,7 @@ describe('User', function () {
 		it('should update cover image', function (done) {
 			var imageData = 'data:image/png;base64,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';
 			var position = '50.0301% 19.2464%';
-			io.emit('user.updateCover', { uid: uid, imageData: imageData, position: position }, function (err, result) {
+			socketUser.updateCover({ uid: uid }, { uid: uid, imageData: imageData, position: position }, function (err, result) {
 				assert.ifError(err);
 				assert(result.url);
 				db.getObjectFields('user:' + uid, ['cover:url', 'cover:position'], function (err, data) {
@@ -484,7 +574,6 @@ describe('User', function () {
 
 		it('should upload cropped profile picture', function (done) {
 			var imageData = 'data:image/png;base64,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';
-			var socketUser = require('../src/socket.io/user');
 			socketUser.uploadCroppedPicture({ uid: uid }, { uid: uid, imageData: imageData }, function (err, result) {
 				assert.ifError(err);
 				assert(result.url);
@@ -498,7 +587,7 @@ describe('User', function () {
 		});
 
 		it('should remove cover image', function (done) {
-			io.emit('user.removeCover', { uid: uid }, function (err) {
+			socketUser.removeCover({ uid: uid }, { uid: uid }, function (err) {
 				assert.ifError(err);
 				db.getObjectField('user:' + uid, 'cover:url', function (err, url) {
 					assert.ifError(err);
@@ -509,7 +598,7 @@ describe('User', function () {
 		});
 
 		it('should set user status', function (done) {
-			io.emit('user.setStatus', 'away', function (err, data) {
+			socketUser.setStatus({ uid: uid }, 'away', function (err, data) {
 				assert.ifError(err);
 				assert.equal(data.uid, uid);
 				assert.equal(data.status, 'away');
@@ -518,14 +607,14 @@ describe('User', function () {
 		});
 
 		it('should fail for invalid status', function (done) {
-			io.emit('user.setStatus', '12345', function (err) {
+			socketUser.setStatus({ uid: uid }, '12345', function (err) {
 				assert.equal(err.message, '[[error:invalid-user-status]]');
 				done();
 			});
 		});
 
 		it('should get user status', function (done) {
-			io.emit('user.checkStatus', uid, function (err, status) {
+			socketUser.checkStatus({ uid: uid }, uid, function (err, status) {
 				assert.ifError(err);
 				assert.equal(status, 'away');
 				done();
@@ -533,12 +622,40 @@ describe('User', function () {
 		});
 
 		it('should change user picture', function (done) {
-			io.emit('user.changePicture', { type: 'default', uid: uid }, function (err) {
+			socketUser.changePicture({ uid: uid }, { type: 'default', uid: uid }, function (err) {
 				assert.ifError(err);
 				User.getUserField(uid, 'picture', function (err, picture) {
 					assert.ifError(err);
 					assert.equal(picture, '');
 					done();
+				});
+			});
+		});
+
+		it('should fail to change user picture with invalid data', function (done) {
+			socketUser.changePicture({ uid: uid }, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should fail to change user picture with invalid uid', function (done) {
+			socketUser.changePicture({ uid: 0 }, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-uid]]');
+				done();
+			});
+		});
+
+		it('should set user picture to uploaded', function (done) {
+			User.setUserField(uid, 'uploadedpicture', '/test', function (err) {
+				assert.ifError(err);
+				socketUser.changePicture({ uid: uid }, { type: 'uploaded', uid: uid }, function (err) {
+					assert.ifError(err);
+					User.getUserField(uid, 'picture', function (err, picture) {
+						assert.ifError(err);
+						assert.equal(picture, nconf.get('relative_path') + '/test');
+						done();
+					});
 				});
 			});
 		});
@@ -672,7 +789,7 @@ describe('User', function () {
 		});
 
 		it('should get profile pictures', function (done) {
-			io.emit('user.getProfilePictures', { uid: uid }, function (err, data) {
+			socketUser.getProfilePictures({ uid: uid }, { uid: uid }, function (err, data) {
 				assert.ifError(err);
 				assert(data);
 				assert(Array.isArray(data));
@@ -682,13 +799,48 @@ describe('User', function () {
 			});
 		});
 
+		it('should get default profile avatar', function (done) {
+			assert.strictEqual(User.getDefaultAvatar(), '');
+			meta.config.defaultAvatar = 'https://path/to/default/avatar';
+			assert.strictEqual(User.getDefaultAvatar(), meta.config.defaultAvatar);
+			meta.config.defaultAvatar = '/path/to/default/avatar';
+			nconf.set('relative_path', '/community');
+			assert.strictEqual(User.getDefaultAvatar(), '/community' + meta.config.defaultAvatar);
+			meta.config.defaultAvatar = '';
+			nconf.set('relative_path', '');
+			done();
+		});
+
+		it('should fail to get profile pictures with invalid data', function (done) {
+			socketUser.getProfilePictures({ uid: uid }, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				socketUser.getProfilePictures({ uid: uid }, { uid: null }, function (err) {
+					assert.equal(err.message, '[[error:invalid-data]]');
+					done();
+				});
+			});
+		});
+
 		it('should remove uploaded picture', function (done) {
-			io.emit('user.removeUploadedPicture', { uid: uid }, function (err) {
+			socketUser.removeUploadedPicture({ uid: uid }, { uid: uid }, function (err) {
 				assert.ifError(err);
 				User.getUserField(uid, 'uploadedpicture', function (err, uploadedpicture) {
 					assert.ifError(err);
 					assert.equal(uploadedpicture, '');
 					done();
+				});
+			});
+		});
+
+		it('should fail to remove uploaded picture with invalid-data', function (done) {
+			socketUser.removeUploadedPicture({ uid: uid }, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				socketUser.removeUploadedPicture({ uid: uid }, { }, function (err) {
+					assert.equal(err.message, '[[error:invalid-data]]');
+					socketUser.removeUploadedPicture({ uid: null }, { }, function (err) {
+						assert.equal(err.message, '[[error:invalid-data]]');
+						done();
+					});
 				});
 			});
 		});
@@ -751,7 +903,28 @@ describe('User', function () {
 		});
 	});
 
-	describe('.getModerationHistory', function () {
+	describe('user info', function () {
+		it('should return error if there is no ban reason', function (done) {
+			User.getLatestBanInfo(123, function (err) {
+				assert.equal(err.message, 'no-ban-info');
+				done();
+			});
+		});
+
+
+		it('should get history from set', function (done) {
+			var now = Date.now();
+			db.sortedSetAdd('user:' + testUid + ':usernames', now, 'derp:' + now, function (err) {
+				assert.ifError(err);
+				User.getHistory('user:' + testUid + ':usernames', function (err, data) {
+					assert.ifError(err);
+					assert.equal(data[0].value, 'derp');
+					assert.equal(data[0].timestamp, now);
+					done();
+				});
+			});
+		});
+
 		it('should return the correct ban reason', function (done) {
 			async.series([
 				function (next) {
@@ -777,6 +950,42 @@ describe('User', function () {
 				});
 			});
 		});
+
+		it('should ban user permanently', function (done) {
+			User.ban(testUid, function (err) {
+				assert.ifError(err);
+				User.isBanned(testUid, function (err, isBanned) {
+					assert.ifError(err);
+					assert.equal(isBanned, true);
+					User.unban(testUid, done);
+				});
+			});
+		});
+
+		it('should ban user temporarily', function (done) {
+			User.ban(testUid, Date.now() + 2000, function (err) {
+				assert.ifError(err);
+
+				User.isBanned(testUid, function (err, isBanned) {
+					assert.ifError(err);
+					assert.equal(isBanned, true);
+					setTimeout(function () {
+						User.isBanned(testUid, function (err, isBanned) {
+							assert.ifError(err);
+							assert.equal(isBanned, false);
+							User.unban(testUid, done);
+						});
+					}, 3000);
+				});
+			});
+		});
+
+		it('should error if until is NaN', function (done) {
+			User.ban(testUid, 'asd', function (err) {
+				assert.equal(err.message, '[[error:ban-expiry-missing]]');
+				done();
+			});
+		});
 	});
 
 	describe('digests', function () {
@@ -792,7 +1001,7 @@ describe('User', function () {
 		it('should send digests', function (done) {
 			User.updateDigestSetting(uid, 'day', function (err) {
 				assert.ifError(err);
-				User.digest.execute('day', function (err) {
+				User.digest.execute({ interval: 'day' }, function (err) {
 					assert.ifError(err);
 					done();
 				});
@@ -945,29 +1154,42 @@ describe('User', function () {
 			};
 			socketUser.saveSettings({ uid: testUid }, data, function (err) {
 				assert.ifError(err);
-				done();
+				User.getSettings(testUid, function (err, data) {
+					assert.ifError(err);
+					assert.equal(data.usePagination, true);
+					done();
+				});
 			});
 		});
 
 		it('should set moderation note', function (done) {
-			User.create({ username: 'noteadmin' }, function (err, adminUid) {
+			var adminUid;
+			async.waterfall([
+				function (next) {
+					User.create({ username: 'noteadmin' }, next);
+				},
+				function (_adminUid, next) {
+					adminUid = _adminUid;
+					groups.join('administrators', adminUid, next);
+				},
+				function (next) {
+					socketUser.setModerationNote({ uid: adminUid }, { uid: testUid, note: 'this is a test user' }, next);
+				},
+				function (next) {
+					setTimeout(next, 50);
+				},
+				function (next) {
+					socketUser.setModerationNote({ uid: adminUid }, { uid: testUid, note: 'second moderation note' }, next);
+				},
+				function (next) {
+					User.getModerationNotes(testUid, 0, -1, next);
+				},
+			], function (err, notes) {
 				assert.ifError(err);
-				groups.join('administrators', adminUid, function (err) {
-					assert.ifError(err);
-					socketUser.setModerationNote({ uid: adminUid }, { uid: testUid, note: 'this is a test user' }, function (err) {
-						assert.ifError(err);
-						db.getSortedSetRevRange('uid:' + testUid + ':moderation:notes', 0, 0, function (err, notes) {
-							assert.ifError(err);
-							notes = notes.map(function (noteData) {
-								return JSON.parse(noteData);
-							});
-							assert.equal(notes[0].note, 'this is a test user');
-							assert.equal(notes[0].uid, adminUid);
-							assert(notes[0].timestamp);
-							done();
-						});
-					});
-				});
+				assert.equal(notes[0].note, 'second moderation note');
+				assert.equal(notes[0].uid, adminUid);
+				assert(notes[0].timestamp);
+				done();
 			});
 		});
 	});
@@ -1231,8 +1453,27 @@ describe('User', function () {
 		});
 	});
 
+	describe('user jobs', function () {
+		it('should start user jobs', function (done) {
+			User.startJobs(function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
 
-	after(function (done) {
-		db.emptydb(done);
+		it('should stop user jobs', function (done) {
+			User.stopJobs();
+			done();
+		});
+
+		it('should send digest', function (done) {
+			db.sortedSetAdd('digest:day:uids', [Date.now(), Date.now()], [1, 2], function (err) {
+				assert.ifError(err);
+				User.digest.execute({ interval: 'day' }, function (err) {
+					assert.ifError(err);
+					done();
+				});
+			});
+		});
 	});
 });

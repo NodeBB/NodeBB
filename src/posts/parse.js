@@ -11,9 +11,17 @@ var cache = require('./cache');
 var plugins = require('../plugins');
 var translator = require('../translator');
 
-var urlRegex = /href="([^"]+)"/g;
-
 module.exports = function (Posts) {
+	Posts.urlRegex = {
+		regex: /href="([^"]+)"/g,
+		length: 6,
+	};
+
+	Posts.imgRegex = {
+		regex: /src="([^"]+)"/g,
+		length: 5,
+	};
+
 	Posts.parsePost = function (postData, callback) {
 		postData.content = String(postData.content || '');
 
@@ -42,10 +50,10 @@ module.exports = function (Posts) {
 		plugins.fireHook('filter:parse.signature', { userData: userData, uid: uid }, callback);
 	};
 
-	Posts.relativeToAbsolute = function (content) {
+	Posts.relativeToAbsolute = function (content, regex) {
 		// Turns relative links in post body to absolute urls
 		var parsed;
-		var current = urlRegex.exec(content);
+		var current = regex.regex.exec(content);
 		var absolute;
 		while (current !== null) {
 			if (current[1]) {
@@ -54,19 +62,19 @@ module.exports = function (Posts) {
 					if (!parsed.protocol) {
 						if (current[1].startsWith('/')) {
 							// Internal link
-							absolute = nconf.get('url') + current[1];
+							absolute = nconf.get('base_url') + current[1];
 						} else {
 							// External link
 							absolute = '//' + current[1];
 						}
 
-						content = content.slice(0, current.index + 6) + absolute + content.slice(current.index + 6 + current[1].length);
+						content = content.slice(0, current.index + regex.length) + absolute + content.slice(current.index + regex.length + current[1].length);
 					}
 				} catch (err) {
 					winston.verbose(err.messsage);
 				}
 			}
-			current = urlRegex.exec(content);
+			current = regex.regex.exec(content);
 		}
 
 		return content;

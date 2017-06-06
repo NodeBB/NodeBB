@@ -1,7 +1,7 @@
 'use strict';
 
 var qs = require('querystring');
-var _ = require('underscore');
+var _ = require('lodash');
 
 var pagination = {};
 

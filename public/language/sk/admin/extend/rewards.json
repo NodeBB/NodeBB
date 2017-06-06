@@ -1,6 +1,6 @@
 {
-	"rewards": "Rewards",
-	"condition-if-users": "If User's",
+	"rewards": "Odmeny",
+	"condition-if-users": "Ak je používateľ",
 	"condition-is": "Is:",
 	"condition-then": "Then:",
 	"max-claims": "Amount of times reward is claimable",

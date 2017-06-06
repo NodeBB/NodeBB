@@ -8,6 +8,8 @@ var initWorker;
 var incomplete = [];
 var running = 0;
 
+env.NODE_ENV = env.NODE_ENV || 'development';
+
 module.exports = function (grunt) {
 	var args = [];
 	var initArgs = ['--build'];
@@ -18,7 +20,7 @@ module.exports = function (grunt) {
 
 	function update(action, filepath, target) {
 		var updateArgs = args.slice();
-		var compiling = '';
+		var compiling;
 		var time = Date.now();
 
 		if (target === 'lessUpdated_Client') {
@@ -35,7 +37,7 @@ module.exports = function (grunt) {
 			// Do nothing, just restart
 		}
 
-		if (incomplete.indexOf(compiling) === -1) {
+		if (compiling && incomplete.indexOf(compiling) === -1) {
 			incomplete.push(compiling);
 		}
 

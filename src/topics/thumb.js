@@ -3,7 +3,6 @@
 
 var async = require('async');
 var nconf = require('nconf');
-var winston = require('winston');
 var path = require('path');
 var fs = require('fs');
 var request = require('request');
@@ -64,25 +63,15 @@ module.exports = function (Topics) {
 				plugins.fireHook('filter:uploadImage', { image: { path: pathToUpload, name: '' }, uid: data.uid }, next);
 			},
 			function (uploadedFile, next) {
-				deleteFile(pathToUpload);
+				file.delete(pathToUpload);
 				data.thumb = uploadedFile.url;
 				next();
 			},
 		], function (err) {
 			if (err) {
-				deleteFile(pathToUpload);
+				file.delete(pathToUpload);
 			}
 			callback(err);
 		});
 	};
-
-	function deleteFile(path) {
-		if (path) {
-			fs.unlink(path, function (err) {
-				if (err) {
-					winston.error(err);
-				}
-			});
-		}
-	}
 };

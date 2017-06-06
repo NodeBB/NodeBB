@@ -197,7 +197,14 @@
 				return '';
 			}
 
-			return Date.prototype.toISOString ? new Date(parseInt(timestamp, 10)).toISOString() : timestamp;
+			// Prevent too-high values to be passed to Date object
+			timestamp = Math.min(timestamp, 8640000000000000);
+
+			try {
+				return Date.prototype.toISOString ? new Date(parseInt(timestamp, 10)).toISOString() : timestamp;
+			} catch (e) {
+				return timestamp;
+			}
 		},
 
 		tags: ['a', 'abbr', 'acronym', 'address', 'applet', 'area', 'article', 'aside', 'audio', 'b', 'base', 'basefont', 'bdi', 'bdo', 'big', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'command', 'datalist', 'dd', 'del', 'details', 'dfn', 'dialog', 'dir', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'font', 'footer', 'form', 'frame', 'frameset', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'hr', 'html', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'keygen', 'label', 'legend', 'li', 'link', 'map', 'mark', 'menu', 'meta', 'meter', 'nav', 'noframes', 'noscript', 'object', 'ol', 'optgroup', 'option', 'output', 'p', 'param', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strike', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'track', 'tt', 'u', 'ul', 'var', 'video', 'wbr'],
@@ -267,13 +274,13 @@
 			return labels.reverse();
 		},
 
-		getDaysArray: function (from) {
+		getDaysArray: function (from, amount) {
 			var currentDay = new Date(from || Date.now()).getTime();
 			var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 			var labels = [];
 			var tmpDate;
 
-			for (var x = 29; x >= 0; x -= 1) {
+			for (var x = (amount || 30) - 1; x >= 0; x -= 1) {
 				tmpDate = new Date(currentDay - (1000 * 60 * 60 * 24 * x));
 				labels.push(months[tmpDate.getMonth()] + ' ' + tmpDate.getDate());
 			}
@@ -339,9 +346,7 @@
 		},
 
 		urlToLocation: function (url) {
-			var a = document.createElement('a');
-			a.href = url;
-			return a;
+			return $('<a href="' + url + '" />')[0];
 		},
 
 		// return boolean if string 'true' or string 'false', or if a parsable string which is a number
@@ -405,9 +410,13 @@
 					(relative_path.length > 0 ? targetLocation.pathname.indexOf(relative_path) === 0 : true)	// Subfolder installs need this additional check
 				);
 		},
+
+		rtrim: function (str) {
+			return str.replace(/\s+$/g, '');
+		},
 	};
 
-		/* eslint "no-extend-native": "off" */
+	/* eslint "no-extend-native": "off" */
 	if (typeof String.prototype.startsWith !== 'function') {
 		String.prototype.startsWith = function (prefix) {
 			if (this.length < prefix.length) {
@@ -429,9 +438,11 @@
 		};
 	}
 
+	// DEPRECATED: remove in 1.6
 	if (typeof String.prototype.rtrim !== 'function') {
 		String.prototype.rtrim = function () {
-			return this.replace(/\s+$/g, '');
+			console.warn('[deprecated] `String.prototype.rtrim` is deprecated as of NodeBB v1.5; use `utils.rtrim` instead.');
+			return utils.rtrim(this);
 		};
 	}
 

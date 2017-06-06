@@ -1,5 +1,6 @@
 {
     "invalid-data": "Klaidingi duomenys",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "Atrodo, kad jūs neesate prisijungęs.",
     "account-locked": "Jūsų paskyra buvo laikinai užrakinta",
     "search-requires-login": "Paieška reikalauja vartotojo - prašome prisijungti arba užsiregistruoti",
@@ -12,6 +13,7 @@
     "invalid-title": "Neteisingas pavadinimas!",
     "invalid-user-data": "Klaidingi vartotojo duomenys",
     "invalid-password": "Klaidingas slaptažodis",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Prašome nurodyti tiek vartotojo vardą, tiek ir slaptažodį",
     "invalid-search-term": "Neteisingas paieškos terminas",
     "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",

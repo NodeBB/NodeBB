@@ -5,5 +5,8 @@
 
 	"custom-header": "カスタムヘッダー",
 	"custom-header.description": "カスタムしたHTMLを入力してください(例. JavaScript, メタタグなど)。これはフォーラムのマークアップの<code>&lt;head&gt;</code>に追加されます。",
-	"custom-header.enable": "カスタムヘッダーを有効にする"
+	"custom-header.enable": "カスタムヘッダーを有効にする",
+
+	"custom-css.livereload": "Enable Live Reload",
+	"custom-css.livereload.description": "Enable this to force all sessions on every device under your account to refresh whenever you click save"
 }

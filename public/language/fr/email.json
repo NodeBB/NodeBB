@@ -32,9 +32,9 @@
     "notif.post.unsub.info": "La notification de ce message vous a été envoyé en raison de vos paramètres d'abonnement.",
     "test.text1": "Ceci est un e-mail de test pour vérifier que l'e-mailer est correctement configuré pour NodeBB.",
     "unsub.cta": "Cliquez ici pour modifier ces paramètres",
-    "banned.subject": "You have been banned from %1",
-    "banned.text1": "The user %1 has been banned from %2.",
-    "banned.text2": "This ban will last until %1.",
-    "banned.text3": "This is the reason why you have been banned:",
+    "banned.subject": "Vous avez été banni de %1",
+    "banned.text1": "L'utilisateur %1 a été banni de %2.",
+    "banned.text2": "Ce ban est effectif jusqu'au %1.",
+    "banned.text3": "Voici la raison pour laquelle vous avez été banni : ",
     "closing": "Merci !"
 }

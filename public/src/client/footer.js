@@ -7,7 +7,7 @@ define('forum/footer', ['notifications', 'chat', 'components', 'translator'], fu
 	translator.prepareDOM();
 
 	function updateUnreadTopicCount(url, count) {
-		$('#main-nav a[href="' + config.relative_path + url + '"] i')
+		$('a[href="' + config.relative_path + url + '"] i')
 			.toggleClass('unread-count', count > 0)
 			.attr('data-content', count > 99 ? '99+' : count);
 	}

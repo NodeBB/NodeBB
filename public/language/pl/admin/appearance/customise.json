@@ -5,5 +5,8 @@
 
 	"custom-header": "Własny nagłówek",
 	"custom-header.description": "Wpisz tutaj kod HTML (JavaScript, tagi <code>&lt;meta&gt;</code>) który ma być dołączony do sekcji <code>&lt;head&gt;</code> w szablonie forum.",
-	"custom-header.enable": "Włącz własny nagłówek"
+	"custom-header.enable": "Włącz własny nagłówek",
+
+	"custom-css.livereload": "Enable Live Reload",
+	"custom-css.livereload.description": "Enable this to force all sessions on every device under your account to refresh whenever you click save"
 }

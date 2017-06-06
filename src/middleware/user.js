@@ -6,14 +6,65 @@ var nconf = require('nconf');
 var meta = require('../meta');
 var user = require('../user');
 var privileges = require('../privileges');
+var plugins = require('../plugins');
 
 var controllers = {
 	helpers: require('../controllers/helpers'),
 };
 
 module.exports = function (middleware) {
+	middleware.authenticate = function (req, res, next) {
+		if (req.uid) {
+			return next();
+		}
+
+		if (plugins.hasListeners('action:middleware.authenticate')) {
+			return plugins.fireHook('action:middleware.authenticate', {
+				req: req,
+				res: res,
+				next: next,
+			});
+		}
+
+		controllers.helpers.notAllowed(req, res);
+	};
+
+	middleware.ensureSelfOrGlobalPrivilege = function (req, res, next) {
+		ensureSelfOrMethod(user.isAdminOrGlobalMod, req, res, next);
+	};
+
+	middleware.ensureSelfOrPrivileged = function (req, res, next) {
+		ensureSelfOrMethod(user.isPrivileged, req, res, next);
+	};
+
+	function ensureSelfOrMethod(method, req, res, next) {
+		/*
+			The "self" part of this middleware hinges on you having used
+			middleware.exposeUid prior to invoking this middleware.
+		*/
+		async.waterfall([
+			function (next) {
+				if (!req.uid) {
+					return setImmediate(next, null, false);
+				}
+
+				if (req.uid === parseInt(res.locals.uid, 10)) {
+					return setImmediate(next, null, true);
+				}
+
+				method(req.uid, next);
+			},
+			function (allowed, next) {
+				if (!allowed) {
+					return controllers.helpers.notAllowed(req, res);
+				}
+				next();
+			},
+		], next);
+	}
+
 	middleware.checkGlobalPrivacySettings = function (req, res, next) {
-		if (!req.user && !!parseInt(meta.config.privateUserInfo, 10)) {
+		if (!req.uid && !!parseInt(meta.config.privateUserInfo, 10)) {
 			return middleware.authenticate(req, res, next);
 		}
 
@@ -44,28 +95,28 @@ module.exports = function (middleware) {
 					next(null, false);
 				}
 			},
-		], function (err, allowed) {
-			if (err || allowed) {
-				return next(err);
-			}
-			controllers.helpers.notAllowed(req, res);
-		});
+			function (allowed) {
+				if (allowed) {
+					return next();
+				}
+				controllers.helpers.notAllowed(req, res);
+			},
+		], next);
 	};
 
 	middleware.redirectToAccountIfLoggedIn = function (req, res, next) {
-		if (req.session.forceLogin) {
+		if (req.session.forceLogin || !req.uid) {
 			return next();
 		}
 
-		if (!req.user) {
-			return next();
-		}
-		user.getUserField(req.user.uid, 'userslug', function (err, userslug) {
-			if (err) {
-				return next(err);
-			}
-			controllers.helpers.redirect(res, '/user/' + userslug);
-		});
+		async.waterfall([
+			function (next) {
+				user.getUserField(req.uid, 'userslug', next);
+			},
+			function (userslug) {
+				controllers.helpers.redirect(res, '/user/' + userslug);
+			},
+		], next);
 	};
 
 	middleware.redirectUidToUserslug = function (req, res, next) {
@@ -73,71 +124,61 @@ module.exports = function (middleware) {
 		if (!uid) {
 			return next();
 		}
-		user.getUserField(uid, 'userslug', function (err, userslug) {
-			if (err || !userslug) {
-				return next(err);
-			}
-
-			var path = req.path.replace(/^\/api/, '')
+		async.waterfall([
+			function (next) {
+				user.getUserField(uid, 'userslug', next);
+			},
+			function (userslug) {
+				if (!userslug) {
+					return next();
+				}
+				var path = req.path.replace(/^\/api/, '')
 					.replace('uid', 'user')
 					.replace(uid, function () { return userslug; });
-			controllers.helpers.redirect(res, path);
-		});
+				controllers.helpers.redirect(res, path);
+			},
+		], next);
 	};
 
 	middleware.isAdmin = function (req, res, next) {
-		if (!req.uid) {
-			return controllers.helpers.notAllowed(req, res);
-		}
+		async.waterfall([
+			function (next) {
+				user.isAdministrator(req.uid, next);
+			},
+			function (isAdmin, next) {
+				if (!isAdmin) {
+					return controllers.helpers.notAllowed(req, res);
+				}
+				user.hasPassword(req.uid, next);
+			},
+			function (hasPassword, next) {
+				if (!hasPassword) {
+					return next();
+				}
 
-		user.isAdministrator(req.uid, function (err, isAdmin) {
-			if (err) {
-				return next(err);
-			}
-
-			if (isAdmin) {
-				user.hasPassword(req.uid, function (err, hasPassword) {
-					if (err) {
-						return next(err);
+				var loginTime = req.session.meta ? req.session.meta.datetime : 0;
+				if (loginTime && parseInt(loginTime, 10) > Date.now() - 3600000) {
+					var timeLeft = parseInt(loginTime, 10) - (Date.now() - 3600000);
+					if (timeLeft < 300000) {
+						req.session.meta.datetime += 300000;
 					}
 
-					if (!hasPassword) {
-						return next();
-					}
+					return next();
+				}
 
-					var loginTime = req.session.meta ? req.session.meta.datetime : 0;
-					if (loginTime && parseInt(loginTime, 10) > Date.now() - 3600000) {
-						var timeLeft = parseInt(loginTime, 10) - (Date.now() - 3600000);
-						if (timeLeft < 300000) {
-							req.session.meta.datetime += 300000;
-						}
-
-						return next();
-					}
-
-					req.session.returnTo = req.path.replace(/^\/api/, '');
-					req.session.forceLogin = 1;
-					if (res.locals.isAPI) {
-						res.status(401).json({});
-					} else {
-						res.redirect(nconf.get('relative_path') + '/login');
-					}
-				});
-				return;
-			}
-
-			if (res.locals.isAPI) {
-				return controllers.helpers.notAllowed(req, res);
-			}
-
-			middleware.buildHeader(req, res, function () {
-				controllers.helpers.notAllowed(req, res);
-			});
-		});
+				req.session.returnTo = req.path.replace(/^\/api/, '');
+				req.session.forceLogin = 1;
+				if (res.locals.isAPI) {
+					res.status(401).json({});
+				} else {
+					res.redirect(nconf.get('relative_path') + '/login');
+				}
+			},
+		], next);
 	};
 
 	middleware.requireUser = function (req, res, next) {
-		if (req.user) {
+		if (req.uid) {
 			return next();
 		}
 
