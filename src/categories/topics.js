@@ -13,7 +13,7 @@ module.exports = function (Categories) {
 				plugins.fireHook('filter:category.topics.prepare', data, next);
 			},
 			function (data, next) {
-				Categories.getTopicIds(data.cid, data.set, data.reverse, data.start, data.stop, next);
+				Categories.getTopicIds(data, next);
 			},
 			function (tids, next) {
 				topics.getTopicsByTids(tids, data.uid, next);
@@ -35,14 +35,18 @@ module.exports = function (Categories) {
 		], callback);
 	};
 
-	Categories.getTopicIds = function (cid, set, reverse, start, stop, callback) {
+	Categories.getTopicIds = function (data, callback) {
 		var pinnedTids;
 		var pinnedCount;
 		var totalPinnedCount;
 
+		var start = data.start;
+		var stop = data.stop;
+		var set = data.set;
+
 		async.waterfall([
 			function (next) {
-				Categories.getPinnedTids(cid, 0, -1, next);
+				Categories.getPinnedTids(data.cid, 0, -1, next);
 			},
 			function (_pinnedTids, next) {
 				totalPinnedCount = _pinnedTids.length;
@@ -64,9 +68,9 @@ module.exports = function (Categories) {
 				stop = stop === -1 ? stop : start + normalTidsToGet - 1;
 
 				if (Array.isArray(set)) {
-					db[reverse ? 'getSortedSetRevIntersect' : 'getSortedSetIntersect']({ sets: set, start: start, stop: stop }, next);
+					db[data.reverse ? 'getSortedSetRevIntersect' : 'getSortedSetIntersect']({ sets: set, start: start, stop: stop }, next);
 				} else {
-					db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop, next);
+					db[data.reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop, next);
 				}
 			},
 			function (normalTids, next) {
