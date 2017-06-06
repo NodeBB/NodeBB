@@ -35,17 +35,13 @@ Categories.getCategoryById = function (data, callback) {
 				return next(new Error('[[error:invalid-cid]]'));
 			}
 			category = categories[0];
-
+			data.category = category;
 			async.parallel({
 				topics: function (next) {
 					Categories.getCategoryTopics(data, next);
 				},
 				topicCount: function (next) {
-					if (Array.isArray(data.set)) {
-						db.sortedSetIntersectCard(data.set, next);
-					} else {
-						next(null, category.topic_count);
-					}
+					Categories.getTopicCount(data, next);
 				},
 				isIgnored: function (next) {
 					Categories.isIgnored([data.cid], data.uid, next);

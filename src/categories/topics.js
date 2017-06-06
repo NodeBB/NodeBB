@@ -5,6 +5,7 @@ var async = require('async');
 var db = require('../database');
 var topics = require('../topics');
 var plugins = require('../plugins');
+var meta = require('../meta');
 
 module.exports = function (Categories) {
 	Categories.getCategoryTopics = function (data, callback) {
@@ -37,40 +38,52 @@ module.exports = function (Categories) {
 
 	Categories.getTopicIds = function (data, callback) {
 		var pinnedTids;
-		var pinnedCount;
-		var totalPinnedCount;
-
-		var start = data.start;
-		var stop = data.stop;
-		var set = data.set;
 
 		async.waterfall([
 			function (next) {
 				Categories.getPinnedTids(data.cid, 0, -1, next);
 			},
 			function (_pinnedTids, next) {
-				totalPinnedCount = _pinnedTids.length;
+				var totalPinnedCount = _pinnedTids.length;
 
-				pinnedTids = _pinnedTids.slice(start, stop === -1 ? undefined : stop + 1);
+				pinnedTids = _pinnedTids.slice(data.start, data.stop === -1 ? undefined : data.stop + 1);
 
-				pinnedCount = pinnedTids.length;
+				var pinnedCount = pinnedTids.length;
 
-				var topicsPerPage = stop - start + 1;
+				var topicsPerPage = data.stop - data.start + 1;
 
 				var normalTidsToGet = Math.max(0, topicsPerPage - pinnedCount);
 
-				if (!normalTidsToGet && stop !== -1) {
+				if (!normalTidsToGet && data.stop !== -1) {
 					return next(null, []);
 				}
+
+				if (plugins.hasListeners('filter:categories.getTopicIds')) {
+					return plugins.fireHook('filter:categories.getTopicIds', {
+						tids: [],
+						data: data,
+						pinnedTids: pinnedTids,
+						allPinnedTids: _pinnedTids,
+						totalPinnedCount: totalPinnedCount,
+						normalTidsToGet: normalTidsToGet,
+					}, function (err, data) {
+						callback(err, data && data.tids);
+					});
+				}
+
+				var set = Categories.buildTopicsSortedSet(data);
+				var reverse = Categories.getSortedSetRangeDirection(data.sort);
+				var start = data.start;
 				if (start > 0 && totalPinnedCount) {
 					start -= totalPinnedCount - pinnedCount;
 				}
-				stop = stop === -1 ? stop : start + normalTidsToGet - 1;
+
+				var stop = data.stop === -1 ? data.stop : start + normalTidsToGet - 1;
 
 				if (Array.isArray(set)) {
-					db[data.reverse ? 'getSortedSetRevIntersect' : 'getSortedSetIntersect']({ sets: set, start: start, stop: stop }, next);
+					db[reverse ? 'getSortedSetRevIntersect' : 'getSortedSetIntersect']({ sets: set, start: start, stop: stop }, next);
 				} else {
-					db[data.reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop, next);
+					db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop, next);
 				}
 			},
 			function (normalTids, next) {
@@ -81,6 +94,54 @@ module.exports = function (Categories) {
 				next(null, pinnedTids.concat(normalTids));
 			},
 		], callback);
+	};
+
+	Categories.getTopicCount = function (data, callback) {
+		if (plugins.hasListeners('filter:categories.getTopicCount')) {
+			return plugins.fireHook('filter:categories.getTopicCount', {
+				topicCount: data.category.topic_count,
+				data: data,
+			}, function (err, data) {
+				callback(err, data && data.topicCount);
+			});
+		}
+		var set = Categories.buildTopicsSortedSet(data);
+		if (Array.isArray(set)) {
+			db.sortedSetIntersectCard(set, callback);
+		} else {
+			callback(null, data.category.topic_count);
+		}
+	};
+
+	Categories.buildTopicsSortedSet = function (data) {
+		var cid = data.cid;
+		var set = 'cid:' + cid + ':tids';
+		var sort = data.sort || (data.settings && data.settings.categoryTopicSort) || meta.config.categoryTopicSort || 'newest_to_oldest';
+
+		if (sort === 'most_posts') {
+			set = 'cid:' + cid + ':tids:posts';
+		}
+
+		if (data.targetUid) {
+			set = 'cid:' + cid + ':uid:' + data.targetUid + ':tids';
+		}
+
+		if (data.tag) {
+			if (Array.isArray(data.tag)) {
+				set = [set].concat(data.tag.map(function (tag) {
+					return 'tag:' + tag + ':topics';
+				}));
+			} else {
+				set = [set, 'tag:' + data.tag + ':topics'];
+			}
+		}
+		return set;
+	};
+
+	Categories.getSortedSetRangeDirection = function (sort) {
+		sort = sort || 'newest_to_oldest';
+		var reverse = sort === 'newest_to_oldest' || sort === 'most_posts';
+		return reverse;
 	};
 
 	Categories.getAllTopicIds = function (cid, start, stop, callback) {

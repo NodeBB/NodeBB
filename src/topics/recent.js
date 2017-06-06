@@ -27,7 +27,12 @@ module.exports = function (Topics) {
 		async.waterfall([
 			function (next) {
 				if (cid) {
-					categories.getTopicIds(cid, 'cid:' + cid + ':tids', true, 0, 199, next);
+					categories.getTopicIds({
+						cid: cid,
+						start: 0,
+						stop: 199,
+						sort: 'newest_to_oldest',
+					}, next);
 				} else {
 					db.getSortedSetRevRange('topics:recent', 0, 199, next);
 				}

@@ -264,7 +264,7 @@ define('forum/category', [
 
 		var topics = $('[component="category/topic"]');
 		var afterEl = direction > 0 ? topics.last() : topics.first();
-		var after = (parseInt(afterEl.attr('data-index'), 10) || 0) + 1;
+		var after = (parseInt(afterEl.attr('data-index'), 10) || 0) + (direction > 0 ? 1 : 0);
 
 		loadTopicsAfter(after, direction);
 	};
@@ -281,8 +281,7 @@ define('forum/category', [
 			cid: ajaxify.data.cid,
 			after: after,
 			direction: direction,
-			author: params.author,
-			tag: params.tag,
+			query: params,
 			categoryTopicSort: config.categoryTopicSort,
 		}, function (data, done) {
 			if (data.topics && data.topics.length) {

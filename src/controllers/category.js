@@ -77,49 +77,27 @@ categoryController.get = function (req, res, callback) {
 				topicIndex = 0;
 			}
 
-			var set = 'cid:' + cid + ':tids';
-			var reverse = false;
-			// `sort` qs has priority over user setting
 			var sort = req.query.sort || settings.categoryTopicSort;
-			if (sort === 'newest_to_oldest') {
-				reverse = true;
-			} else if (sort === 'most_posts') {
-				reverse = true;
-				set = 'cid:' + cid + ':tids:posts';
-			}
-
 			var start = ((currentPage - 1) * settings.topicsPerPage) + topicIndex;
 			var stop = start + settings.topicsPerPage - 1;
-
-			var payload = {
-				cid: cid,
-				set: set,
-				reverse: reverse,
-				start: start,
-				stop: stop,
-				uid: req.uid,
-				settings: settings,
-			};
 
 			async.waterfall([
 				function (next) {
 					user.getUidByUserslug(req.query.author, next);
 				},
-				function (uid, next) {
-					payload.targetUid = uid;
-					if (uid) {
-						payload.set = 'cid:' + cid + ':uid:' + uid + ':tids';
-					}
+				function (targetUid, next) {
+					var payload = {
+						uid: req.uid,
+						cid: cid,
+						start: start,
+						stop: stop,
+						sort: sort,
+						settings: settings,
+						query: req.query,
+						tag: req.query.tag,
+						targetUid: targetUid,
+					};
 
-					if (req.query.tag) {
-						if (Array.isArray(req.query.tag)) {
-							payload.set = [payload.set].concat(req.query.tag.map(function (tag) {
-								return 'tag:' + tag + ':topics';
-							}));
-						} else {
-							payload.set = [payload.set, 'tag:' + req.query.tag + ':topics'];
-						}
-					}
 					categories.getCategoryById(payload, next);
 				},
 			], next);

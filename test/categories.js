@@ -54,8 +54,6 @@ describe('Categories', function () {
 	it('should retrieve a newly created category by its ID', function (done) {
 		Categories.getCategoryById({
 			cid: categoryObj.cid,
-			set: 'cid:' + categoryObj.cid + ':tids',
-			reverse: true,
 			start: 0,
 			stop: -1,
 			uid: 0,
@@ -103,11 +101,10 @@ describe('Categories', function () {
 		it('should return a list of topics', function (done) {
 			Categories.getCategoryTopics({
 				cid: categoryObj.cid,
-				set: 'cid:' + categoryObj.cid + ':tids',
-				reverse: true,
 				start: 0,
 				stop: 10,
 				uid: 0,
+				sort: 'oldest-to-newest',
 			}, function (err, result) {
 				assert.equal(err, null);
 
@@ -123,12 +120,11 @@ describe('Categories', function () {
 		it('should return a list of topics by a specific user', function (done) {
 			Categories.getCategoryTopics({
 				cid: categoryObj.cid,
-				set: 'cid:' + categoryObj.cid + ':uid:' + 1 + ':tids',
-				reverse: true,
 				start: 0,
 				stop: 10,
 				uid: 0,
 				targetUid: 1,
+				sort: 'oldest-to-newest',
 			}, function (err, result) {
 				assert.equal(err, null);
 				assert(Array.isArray(result.topics));
@@ -226,7 +222,14 @@ describe('Categories', function () {
 		});
 
 		it('should load more topics', function (done) {
-			socketCategories.loadMore({ uid: posterUid }, { cid: categoryObj.cid, after: 0, author: 'poster', tag: 'nodebb' }, function (err, data) {
+			socketCategories.loadMore({ uid: posterUid }, {
+				cid: categoryObj.cid,
+				after: 0,
+				query: {
+					author: 'poster',
+					tag: 'nodebb',
+				},
+			}, function (err, data) {
 				assert.ifError(err);
 				assert(Array.isArray(data.topics));
 				assert.equal(data.topics[0].user.username, 'poster');
@@ -244,7 +247,7 @@ describe('Categories', function () {
 			});
 		});
 
-		it('should load page count', function (done) {
+		it('should load topic count', function (done) {
 			socketCategories.getTopicCount({ uid: posterUid }, categoryObj.cid, function (err, topicCount) {
 				assert.ifError(err);
 				assert.equal(topicCount, 2);
@@ -676,6 +679,33 @@ describe('Categories', function () {
 			privileges.categories.isUserAllowedTo('find', null, adminUid, function (err, isAllowed) {
 				assert.ifError(err);
 				assert.equal(isAllowed, false);
+				done();
+			});
+		});
+	});
+
+
+	describe('getTopicIds', function () {
+		var plugins = require('../src/plugins');
+		it('should get topic ids with filter', function (done) {
+			function method(data, callback) {
+				data.tids = [1, 2, 3];
+				callback(null, data);
+			}
+
+			plugins.registerHook('my-test-plugin', {
+				hook: 'filter:categories.getTopicIds',
+				method: method,
+			});
+
+			Categories.getTopicIds({
+				cid: categoryObj.cid,
+				start: 0,
+				stop: 19,
+			}, function (err, tids) {
+				assert.ifError(err);
+				assert.deepEqual(tids, [1, 2, 3]);
+				plugins.unregisterHook('my-test-plugin', 'filter:categories.getTopicIds', method);
 				done();
 			});
 		});
