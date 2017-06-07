@@ -1,7 +1,7 @@
 {
 	"name": "群组名",
 	"description": "群组描述",
-	"member-count": "Member Count",
+	"member-count": "成员数",
 	"system": "系统群组",
 	"edit": "编辑",
 	"search-placeholder": "搜索",
