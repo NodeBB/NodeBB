@@ -122,7 +122,10 @@ function filterAndSort(pids, data, callback) {
 
 			sortPosts(posts, data);
 
-			pids = posts.map(function (post) {
+			plugins.fireHook('filter:search.filterAndSort', { pids: pids, posts: posts, data: data }, next);
+		},
+		function (result, next) {
+			pids = result.posts.map(function (post) {
 				return post && post.pid;
 			});
 
