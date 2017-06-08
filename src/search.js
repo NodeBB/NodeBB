@@ -182,7 +182,7 @@ function getMatchedPosts(pids, data, callback) {
 
 							async.parallel({
 								teasers: function (next) {
-									if (data.sortBy.startsWith('teaser')) {
+									if (data.sortBy && data.sortBy.startsWith('teaser')) {
 										var teaserKeys = topicsData.map(function (topic) {
 											return 'post:' + topic.teaserPid;
 										});
