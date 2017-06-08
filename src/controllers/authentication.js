@@ -44,7 +44,7 @@ authenticationController.register = function (req, res) {
 				err = '[[error:invalid-email]]';
 			}
 
-			if (!err && !userData.username || userData.username.length < meta.config.minimumUsernameLength) {
+			if (!err && (!userData.username || userData.username.length < meta.config.minimumUsernameLength)) {
 				err = '[[error:username-too-short]]';
 			}
 
