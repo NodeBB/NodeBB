@@ -44,7 +44,7 @@ module.exports = function (middleware) {
 					plugins.fireHook('filter:' + template + '.build', { req: req, res: res, templateData: options }, next);
 				},
 				function (data, next) {
-					plugins.fireHook('filter:middleware.render', { req: res, res: res, templateData: data.templateData }, next);
+					plugins.fireHook('filter:middleware.render', { req: req, res: res, templateData: data.templateData }, next);
 				},
 				function (data, next) {
 					options = data.templateData;
