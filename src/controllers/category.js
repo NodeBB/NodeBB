@@ -27,6 +27,8 @@ categoryController.get = function (req, res, callback) {
 		return callback();
 	}
 
+	var topicIndex = utils.isNumber(req.params.topic_index) ? parseInt(req.params.topic_index, 10) - 1 : 0;
+
 	async.waterfall([
 		function (next) {
 			async.parallel({
@@ -57,7 +59,7 @@ categoryController.get = function (req, res, callback) {
 			}
 
 			settings = results.userSettings;
-			var topicIndex = utils.isNumber(req.params.topic_index) ? parseInt(req.params.topic_index, 10) - 1 : 0;
+
 			var topicCount = parseInt(results.categoryData.topic_count, 10);
 			pageCount = Math.max(1, Math.ceil(topicCount / settings.topicsPerPage));
 
@@ -77,30 +79,22 @@ categoryController.get = function (req, res, callback) {
 				topicIndex = 0;
 			}
 
-			var sort = req.query.sort || settings.categoryTopicSort;
+			user.getUidByUserslug(req.query.author, next);
+		},
+		function (targetUid, next) {
 			var start = ((currentPage - 1) * settings.topicsPerPage) + topicIndex;
 			var stop = start + settings.topicsPerPage - 1;
-
-			async.waterfall([
-				function (next) {
-					user.getUidByUserslug(req.query.author, next);
-				},
-				function (targetUid, next) {
-					var payload = {
-						uid: req.uid,
-						cid: cid,
-						start: start,
-						stop: stop,
-						sort: sort,
-						settings: settings,
-						query: req.query,
-						tag: req.query.tag,
-						targetUid: targetUid,
-					};
-
-					categories.getCategoryById(payload, next);
-				},
-			], next);
+			categories.getCategoryById({
+				uid: req.uid,
+				cid: cid,
+				start: start,
+				stop: stop,
+				sort: req.query.sort || settings.categoryTopicSort,
+				settings: settings,
+				query: req.query,
+				tag: req.query.tag,
+				targetUid: targetUid,
+			}, next);
 		},
 		function (categoryData, next) {
 			categories.modifyTopicsByPrivilege(categoryData.topics, userPrivileges);
