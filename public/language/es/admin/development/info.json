@@ -1,6 +1,6 @@
 {
-	"you-are-on": "Info - Tu estas en <strong>%1:%2</strong>",
-	"nodes-responded": "%1 nodes responded within %2ms!",
+	"you-are-on": "Info - Tú estás en <strong>%1:%2</strong>",
+	"nodes-responded": "¡%1 nodos respondieron en %2ms!",
 	"host": "host",
 	"pid": "pid",
 	"nodejs": "nodejs",
