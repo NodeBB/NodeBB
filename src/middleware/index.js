@@ -123,7 +123,7 @@ middleware.privateUploads = function (req, res, next) {
 	if (req.user || parseInt(meta.config.privateUploads, 10) !== 1) {
 		return next();
 	}
-	if (req.path.startsWith('/assets/uploads/files')) {
+	if (req.path.startsWith(nconf.get('relative_path') + '/assets/uploads/files')) {
 		return res.status(403).json('not-allowed');
 	}
 	next();
