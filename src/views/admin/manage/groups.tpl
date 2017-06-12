@@ -57,11 +57,11 @@
 					<div class="alert alert-danger hide" id="create-modal-error"></div>
 					<form>
 						<div class="form-group">
-							<label for="group-name">[[admin/manage/groups:name]]</label>
+							<label for="create-group-name">[[admin/manage/groups:name]]</label>
 							<input type="text" class="form-control" id="create-group-name" placeholder="[[admin/manage/groups:name]]" />
 						</div>
 						<div class="form-group">
-							<label for="group-name">[[admin/manage/groups:name]]</label>
+							<label for="create-group-desc">[[admin/manage/groups:description]]</label>
 							<input type="text" class="form-control" id="create-group-desc" placeholder="[[admin/manage/groups:description-placeholder]]" />
 						</div>
 					</form>
