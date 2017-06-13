@@ -1,5 +1,7 @@
 'use strict';
 
+var async = require('async');
+
 var user = require('../user');
 var notifications = require('../notifications');
 var SocketNotifs = module.exports;
@@ -25,13 +27,37 @@ SocketNotifs.deleteAll = function (socket, data, callback) {
 };
 
 SocketNotifs.markRead = function (socket, nid, callback) {
-	notifications.markRead(nid, socket.uid, callback);
+	async.waterfall([
+		function (next) {
+			notifications.markRead(nid, socket.uid, next);
+		},
+		function (next) {
+			user.notifications.pushCount(socket.uid);
+			next();
+		},
+	], callback);
 };
 
 SocketNotifs.markUnread = function (socket, nid, callback) {
-	notifications.markUnread(nid, socket.uid, callback);
+	async.waterfall([
+		function (next) {
+			notifications.markUnread(nid, socket.uid, next);
+		},
+		function (next) {
+			user.notifications.pushCount(socket.uid);
+			next();
+		},
+	], callback);
 };
 
 SocketNotifs.markAllRead = function (socket, data, callback) {
-	notifications.markAllRead(socket.uid, callback);
+	async.waterfall([
+		function (next) {
+			notifications.markAllRead(socket.uid, next);
+		},
+		function (next) {
+			user.notifications.pushCount(socket.uid);
+			next();
+		},
+	], callback);
 };
