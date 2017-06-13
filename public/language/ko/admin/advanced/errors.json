@@ -1,14 +1,14 @@
 {
-	"figure-x": "Figure %1",
-	"error-events-per-day": "<code>%1</code> events per day",
-	"error.404": "404 Not Found",
-	"error.503": "503 Service Unavailable",
-	"manage-error-log": "Manage Error Log",
-	"export-error-log": "Export Error Log (CSV)",
-	"clear-error-log": "Clear Error Log",
+	"figure-x": "그림 %1",
+	"error-events-per-day": "하루당 <code>%1</code>개의 이벤트 ",
+	"error.404": "404 찾을 수 없음",
+	"error.503": "503 서비스를 사용할 수 없음",
+	"manage-error-log": "오류 기록 관리",
+	"export-error-log": "오류 기록 내보내기 (CSV)",
+	"clear-error-log": "오류 기록 삭제",
 	"route": "Route",
-	"count": "Count",
-	"no-routes-not-found": "Hooray! No 404 errors!",
-	"clear404-confirm": "Are you sure you wish to clear the 404 error logs?",
-	"clear404-success": "\"404 Not Found\" errors cleared"
+	"count": "카운트",
+	"no-routes-not-found": "만세! 404 오류 없음",
+	"clear404-confirm": "404 오류 기록을 지우시겠습니까?",
+	"clear404-success": "\"404 찾을 수 없음\" 오류 삭제 완료"
 }

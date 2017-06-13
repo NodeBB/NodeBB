@@ -27,7 +27,7 @@
     "details.disableJoinRequests": "가입 신청 비활성화하기",
     "details.grant": "소유권 이전/포기하기",
     "details.kick": "내보내기",
-    "details.kick_confirm": "Are you sure you want to remove this member from the group?",
+    "details.kick_confirm": "이 사용자를 해당 그룹에서 삭제 하시겠습니까?",
     "details.owner_options": "그룹 관리",
     "details.group_name": "그룹명",
     "details.member_count": "구성원 수",
@@ -52,7 +52,7 @@
     "membership.reject": "거절",
     "new-group.group_name": "그룹명:",
     "upload-group-cover": "그룹 커버 업로드",
-    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
-    "bulk-invite": "Bulk Invite",
-    "remove_group_cover_confirm": "Are you sure you want to remove the cover picture?"
+    "bulk-invite-instructions": "초대하고자 하는 사용자 목록을 콤마(,) 로 구분하여 기입해 주십시오.\n예:  bravominski, stjohndlee, yoojkim",
+    "bulk-invite": "다수의 사용자 초대",
+    "remove_group_cover_confirm": "해당 커버 사진을 제거 하시겠습니까?"
 }

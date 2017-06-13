@@ -1,18 +1,18 @@
 {
-	"you-are-on": "Info - You are on <strong>%1:%2</strong>",
-	"nodes-responded": "%1 nodes responded within %2ms!",
-	"host": "host",
-	"pid": "pid",
+	"you-are-on": "정보 - 여기에 위치합니다 <strong>%1:%2</strong>",
+	"nodes-responded": "%1 노드가 %2ms 안으로 응답하였습니다",
+	"host": "호스트",
+	"pid": "프로세스 아이디",
 	"nodejs": "nodejs",
-	"online": "online",
-	"git": "git",
-	"memory": "memory",
-	"load": "load",
-	"uptime": "uptime",
+	"online": "온라인",
+	"git": "깃",
+	"memory": "메모리",
+	"load": "로드",
+	"uptime": "가동 시간",
 
-	"registered": "Registered",
-	"sockets": "Sockets",
-	"guests": "Guests",
+	"registered": "등록됨",
+	"sockets": "소켓",
+	"guests": "게스트",
 
-	"info": "Info"
+	"info": "정보"
 }

@@ -1,8 +1,8 @@
 {
-    "latest_users": "가입일",
-    "top_posters": "게시물 수",
-    "most_reputation": "인기도",
-    "most_flags": "Most Flags",
+    "latest_users": "최근 사용자",
+    "top_posters": "가장 많은 게시물을 올린 사용자",
+    "most_reputation": "가장 높은 평판",
+    "most_flags": "가장 많은 플래그",
     "search": "검색",
     "enter_username": "검색할 사용자 이름을 입력하세요.",
     "load_more": "더 보기",
@@ -10,12 +10,12 @@
     "filter-by": "에 의해 분류",
     "online-only": "온라인 전용",
     "invite": "초대",
-    "invitation-email-sent": "%1님에게 초대 메일을 송신하였습니다.",
+    "invitation-email-sent": "%1님에게 초대 메일을 보냈습니다.",
     "user_list": "사용자 목록",
     "recent_topics": "최근 주제",
     "popular_topics": "인기 주제",
     "unread_topics": "읽지 않은 주제",
     "categories": "카테고리",
     "tags": "태그",
-    "no-users-found": "유저를 찾을 수 없습니다!"
+    "no-users-found": "사용자를 찾을 수 없습니다!"
 }

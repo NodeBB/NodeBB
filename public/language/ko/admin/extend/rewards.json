@@ -1,8 +1,8 @@
 {
-	"rewards": "Rewards",
-	"condition-if-users": "If User's",
+	"rewards": "보상",
+	"condition-if-users": "만약 사용자의",
 	"condition-is": "Is:",
-	"condition-then": "Then:",
+	"condition-then": "그렇다면:",
 	"max-claims": "Amount of times reward is claimable",
 	"zero-infinite": "Enter 0 for infinite",
 	"delete": "Delete",
