@@ -1,12 +1,12 @@
 {
-	"logger-settings": "Logger Settings",
-	"description": "By enabling the check boxes, you will receive logs to your terminal. If you specify a path, logs will then be saved to a file instead. HTTP logging is useful for collecting statistics about who, when, and what people access on your forum. In addition to logging HTTP requests, we can also log socket.io events. Socket.io logging, in combination with redis-cli monitor, can be very helpful for learning NodeBB's internals.",
-	"explanation": "Simply check/uncheck the logging settings to enable or disable logging on the fly. No restart needed.",
-	"enable-http": "Enable HTTP logging",
-	"enable-socket": "Enable socket.io event logging",
-	"file-path": "Path to log file",
-	"file-path-placeholder": "/path/to/log/file.log ::: leave blank to log to your terminal",
+	"logger-settings": "기록 설정",
+	"description": "체크박스를 클릭함으로써 터미널로 기록을 받게됩니다. 만약 파일 경로를 지정하면 기록들이 지정한 파일로 저장됩니다. HTTP 기록은 누가, 언제, 무엇을 포럼에서 했는지에 대한 통계를 내는 데 유용합니다. HTTP 리퀘스트들을 기록함과 더불어 socket.io 이벤트들도 기록할 수 있습니다. Socket.io 기록은 redis-cli 모니터링과 함께 사용하면 NodeBB의 내부를 배우는데 아주 유용할 수 있습니다.",
+	"explanation": "원하실때 기록 환경을 활성화/비활성화 하십시오. 재시작을 할 필요는 없습니다.",
+	"enable-http": "HTTP 기록하기 허용",
+	"enable-socket": "socket.io 이벤트 기록하기 허용",
+	"file-path": "로그 파일 경로",
+	"file-path-placeholder": "/기록을/저장할/파일까지의경로/file.log ::: 터미널로 기록을 보시려면 빈칸으로 두십시오",
 
-	"control-panel": "Logger Control Panel",
-	"update-settings": "Update Logger Settings"
+	"control-panel": "기록 제어판",
+	"update-settings": "기록 설정 업데이트"
 }

@@ -1,6 +1,6 @@
 {
     "register": "회원가입",
-    "cancel_registration": "Cancel Registration",
+    "cancel_registration": "회원가입 취소",
     "help.email": "입력하신 이메일 주소는 공개되지 않으며, 설정을 통해 공개하실 수 있습니다.",
     "help.username_restrictions": "%1자 이상 %2자 이하의 고유한 이름을 입력하세요. @<span id='yourUsername'>username</span> 같은 방식으로 다른 사람들을 언급할 수 있습니다.",
     "help.minimum_password_length": "비밀번호는 최소 %1자로 제한됩니다.",
@@ -16,8 +16,8 @@
     "alternative_registration": "다른 방법으로 회원가입",
     "terms_of_use": "이용약관",
     "agree_to_terms_of_use": "이용약관에 동의합니다.",
-    "terms_of_use_error": "You must agree to the Terms of Use",
+    "terms_of_use_error": "이용약관에 동의하셔야 합니다.",
     "registration-added-to-queue": "회원가입이 요청되었습니다. 관리자의 승인 후 메일이 발송됩니다.",
-    "interstitial.intro": "We require some additional information before we can create your account.",
-    "interstitial.errors-found": "We could not complete your registration:"
+    "interstitial.intro": "계정을 생성하기 전 추가 정보가 더 필요합니다.",
+    "interstitial.errors-found": "회원가입을 완료하지 못했습니다."
 }

@@ -60,7 +60,7 @@
     "username_taken_workaround": "Helaas, de gewenste gebruikersnaam is al door iemand in gebruik genomen dus vandaar een kleine aanpassing naar <strong>%1</strong> doorgevoerd",
     "password_same_as_username": "Je wachtwoord is hetzelfde als je gebruikersnaam. Kies een ander wachtwoord.",
     "password_same_as_email": "Je wachtwoord is hetzelfde als je email, kies alsjeblieft een ander wachtwoord.",
-    "weak_password": "Weak password.",
+    "weak_password": "Zwak wachtwoord.",
     "upload_picture": "Upload afbeelding",
     "upload_a_picture": "Upload een afbeelding",
     "remove_uploaded_picture": "Verwijder gëuploade foto",
@@ -132,5 +132,5 @@
     "info.email-history": "Email geschiedenis",
     "info.moderation-note": "Moderatie notitie",
     "info.moderation-note.success": "Moderatie notitie opgeslagen",
-    "info.moderation-note.add": "Add note"
+    "info.moderation-note.add": "Notitie toevoegen"
 }

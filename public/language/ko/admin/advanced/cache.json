@@ -1,11 +1,11 @@
 {
-	"post-cache": "Post Cache",
-	"posts-in-cache": "Posts in Cache",
-	"average-post-size": "Average Post Size",
-	"length-to-max": "Length / Max",
-	"percent-full": "%1% Full",
-	"post-cache-size": "Post Cache Size",
-	"items-in-cache": "Items in Cache",
-	"control-panel": "Control Panel",
-	"update-settings": "Update Cache Settings"
+	"post-cache": "캐시 게시물",
+	"posts-in-cache": "캐시 게시물",
+	"average-post-size": "평균 게시물 크기",
+	"length-to-max": "길이 / 최대",
+	"percent-full": "1 %1% 꽉 참",
+	"post-cache-size": "게시물 캐시 크기",
+	"items-in-cache": "캐시된 항목들",
+	"control-panel": "제어판",
+	"update-settings": "캐시 설정 변경"
 }

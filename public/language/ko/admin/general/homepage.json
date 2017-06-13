@@ -1,5 +1,5 @@
 {
-	"home-page": "Home Page",
+	"home-page": "홈페이지",
 	"description": "Choose what page is shown when users navigate to the root URL of your forum.",
 	"home-page-route": "Home Page Route",
 	"custom-route": "Custom Route",

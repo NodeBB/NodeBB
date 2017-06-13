@@ -1,7 +1,7 @@
 {
-	"logs": "Logs",
-	"control-panel": "Logs Control Panel",
-	"reload": "Reload Logs",
-	"clear": "Clear Logs",
-	"clear-success": "Logs Cleared!"
+	"logs": "기록",
+	"control-panel": "기록 제어판",
+	"reload": "기록 다시로드",
+	"clear": "기록 삭제",
+	"clear-success": "기록 삭제완료!"
 }
