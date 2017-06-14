@@ -44,6 +44,7 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator'], f
 		});
 
 		FlagsList.enableFilterForm();
+		FlagsList.enableChatButtons();
 	};
 
 	Flags.reloadNotes = function (notes) {
