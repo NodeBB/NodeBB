@@ -2,7 +2,7 @@
 	"posts": "게시물",
 	"allow-files": "유저들이 보통 파일들을 업로드하는것을 허용",
 	"private": "업로드된 파일들을 개인만 볼 수 있게 바꿉니다.",
-	"max-image-width": "Resize images down to specified width (in pixels)",
+	"max-image-width": "이미지를 특정 가로 길이까지 축소 (단위: 픽셀)",
 	"max-image-width-help": "(in pixels, default: 760 pixels, set to 0 to disable)",
 	"max-file-size": "Maximum File Size (in KiB)",
 	"max-file-size-help": "(in kilobytes, default: 2048 KiB)",

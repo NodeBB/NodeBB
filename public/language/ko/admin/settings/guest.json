@@ -1,8 +1,8 @@
 {
-	"handles": "Guest Handles",
+	"handles": "게스트 처리",
 	"handles.enabled": "Allow guest handles",
-	"handles.enabled-help": "This option exposes a new field that allows guests to pick a name to associate with each post they make. If disabled, they will simply be called \"Guest\"",
-	"privileges": "Guest Privileges",
+	"handles.enabled-help": "이 옵션은 게스트들이 포스트를 작성할 때 이름을 적는 공간을 제공합니다. 이 옵션이 비활성화 돼있다면 \"Guest\" 라고 표시될 것입니다.",
+	"privileges": "게스트 권한",
 	"privileges.can-search": "Allow guests to search without logging in",
 	"privileges.can-search-users": "Allow guests to search users without logging in"
 }

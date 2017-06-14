@@ -1,8 +1,8 @@
 {
-	"eu-consent": "EU Consent",
-	"consent.enabled": "Enabled",
-	"consent.message": "Notification message",
-	"consent.acceptance": "Acceptance message",
+	"eu-consent": "EU 법률 관련",
+	"consent.enabled": "활성화됨",
+	"consent.message": "알림 메세지",
+	"consent.acceptance": "허가 메세지",
 	"consent.link-text": "Policy Link Text",
 	"consent.blank-localised-default": "Leave blank to use NodeBB localised defaults",
 	"settings": "Settings",

@@ -3,7 +3,7 @@
 	"condition-if-users": "만약 사용자의",
 	"condition-is": "Is:",
 	"condition-then": "그렇다면:",
-	"max-claims": "Amount of times reward is claimable",
+	"max-claims": "보상을 받을 수 있는 기간",
 	"zero-infinite": "Enter 0 for infinite",
 	"delete": "Delete",
 	"enable": "Enable",

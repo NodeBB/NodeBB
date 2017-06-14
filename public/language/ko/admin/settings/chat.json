@@ -1,8 +1,8 @@
 {
-	"chat-settings": "Chat Settings",
-	"disable": "Disable chat",
-	"disable-editing": "Disable chat message editing/deletion",
-	"disable-editing-help": "Administrators and global moderators are exempt from this restriction",
+	"chat-settings": "채팅 설정",
+	"disable": "채팅 비활성화",
+	"disable-editing": "채팅 메세지 수정/삭제 비활성화",
+	"disable-editing-help": "관리자는 이 제한에서 면제됩니다.",
 	"max-length": "Maximum length of chat messages",
 	"max-room-size": "Maximum number of users in chat rooms",
 	"delay": "Time between chat messages in milliseconds"

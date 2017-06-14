@@ -1,9 +1,9 @@
 {
-	"section-general": "General",
-	"general/dashboard": "Dashboard",
-	"general/homepage": "Home Page",
+	"section-general": "일반",
+	"general/dashboard": "대시보드",
+	"general/homepage": "홈페이지",
 	"general/navigation": "Navigation",
-	"general/languages": "Languages",
+	"general/languages": "언어",
 	"general/sounds": "Sounds",
 	"general/social": "Social",
 

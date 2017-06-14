@@ -32,9 +32,9 @@
     "notif.post.unsub.info": "이 게시물 알림은 사용자의 구독 설정에 따라 전송되었습니다.",
     "test.text1": "이 시험용 메일은 NodeBB에 설정된 메일 송신자가 정상적으로 메일을 송신할 수 있는지 시험할 목적으로 발송되었습니다.",
     "unsub.cta": "설정을 변경하려면 여기를 클릭하세요.",
-    "banned.subject": "You have been banned from %1",
-    "banned.text1": "The user %1 has been banned from %2.",
-    "banned.text2": "This ban will last until %1.",
-    "banned.text3": "This is the reason why you have been banned:",
+    "banned.subject": "귀하는 %1 로 부터 차단되었습니다.",
+    "banned.text1": "사용자 %1 는 %2 로 부터 차단되었습니다.",
+    "banned.text2": "차단은 %1 까지 유효합니다.",
+    "banned.text3": "귀하가 차단된 이유는:",
     "closing": "감사합니다!"
 }

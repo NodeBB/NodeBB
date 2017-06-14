@@ -1,8 +1,8 @@
 {
-	"maintenance-mode": "Maintenance Mode",
-	"maintenance-mode.help": "When the forum is in maintenance mode, all requests will be redirected to a static holding page. Administrators are exempt from this redirection, and are able to access the site normally.",
-	"maintenance-mode.message": "Maintenance Message",
-	"headers": "Headers",
+	"maintenance-mode": "점검 모드",
+	"maintenance-mode.help": "포럼이 점검 모드일 경우 모든 요청은 정적 페이지로 라다이렉트될 것입니다. 관리자는 이 리다이렉션의 예외가 되고 사이트에 접속하는 것이 가능합니다.",
+	"maintenance-mode.message": "점검 메세지",
+	"headers": "헤더",
 	"headers.allow-from": "Set ALLOW-FROM to Place NodeBB in an iFrame",
 	"headers.powered-by": "Customise the \"Powered By\" header sent by NodeBB",
 	"headers.acao": "Access-Control-Allow-Origin",

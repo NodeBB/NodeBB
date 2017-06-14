@@ -39,8 +39,8 @@
 	"reload": "리로드",
 	"restart": "재시작",
 	"restart-warning": "NodeBB 앱을 리로드하거나 재시작할 경우에는 기존의 연결이 몇 초 동안 끊어집니다.",
-	"maintenance-mode": "관리 모드",
-	"maintenance-mode-title": "NodeBB 관리 모드를 설정하시려면 이곳을 클릭하세요.",
+	"maintenance-mode": "점검 모드",
+	"maintenance-mode-title": "NodeBB 점검 모드를 설정하시려면 이곳을 클릭하세요.",
 	"realtime-chart-updates": "실시간 차트 업데이트",
 
 	"active-users": "활동 중인 사용자",
@@ -53,14 +53,14 @@
 	"anonymous": "익명",
 	"registered": "가입한",
 
-	"user-presence": "User Presence",
-	"on-categories": "On categories list",
+	"user-presence": "사용자 활동",
+	"on-categories": "카테고리 목록 보는 중",
 	"reading-posts": "게시물 읽기",
 	"browsing-topics": "토픽 보기",
-	"recent": "Recent",
+	"recent": "최근",
 	"unread": "읽지 않은",
 
-	"high-presence-topics": "High Presence Topics",
+	"high-presence-topics": "활동량이 많은 토픽",
 
 	"graphs.page-views": "페이지 뷰",
 	"graphs.unique-visitors": "고유 방문자",

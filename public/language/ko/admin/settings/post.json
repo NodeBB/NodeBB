@@ -1,8 +1,8 @@
 {
-	"sorting": "Post Sorting",
-	"sorting.post-default": "Default Post Sorting",
-	"sorting.oldest-to-newest": "Oldest to Newest",
-	"sorting.newest-to-oldest": "Newest to Oldest",
+	"sorting": "포스트 정렬",
+	"sorting.post-default": "기본 포스트 정렬",
+	"sorting.oldest-to-newest": "오래된 순",
+	"sorting.newest-to-oldest": "최신 순",
 	"sorting.most-votes": "Most Votes",
 	"sorting.topic-default": "Default Topic Sorting",
 	"restrictions": "Posting Restrictions",
