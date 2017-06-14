@@ -144,11 +144,11 @@ define('forum/topic', [
 	function handleBookmark(tid) {
 		// use the user's bookmark data if available, fallback to local if available
 		var bookmark = ajaxify.data.bookmark || storage.getItem('topic:' + tid + ':bookmark');
-		var postIndex = getPostIndex();
+		var postIndex = ajaxify.data.postIndex;
 
-		if (postIndex && window.location.search.indexOf('page=') === -1) {
-			if (components.get('post/anchor', postIndex).length) {
-				return navigator.scrollToPostIndex(postIndex, true, 0);
+		if (postIndex > 0) {
+			if (components.get('post/anchor', postIndex - 1).length) {
+				return navigator.scrollToPostIndex(postIndex - 1, true, 0);
 			}
 		} else if (bookmark && (!config.usePagination || (config.usePagination && ajaxify.data.pagination.currentPage === 1)) && ajaxify.data.postcount > ajaxify.data.bookmarkThreshold) {
 			app.alert({
@@ -167,22 +167,6 @@ define('forum/topic', [
 				app.removeAlert('bookmark');
 			}, 10000);
 		}
-	}
-
-	function getPostIndex() {
-		var parts = window.location.pathname.split('/');
-		var lastPart = parts[parts.length - 1];
-		if (lastPart && utils.isNumber(lastPart)) {
-			lastPart = Math.max(0, parseInt(lastPart, 10) - 1);
-		} else {
-			return 0;
-		}
-
-		if (lastPart > 0 && !components.get('post/anchor', lastPart).length) {
-			return components.get('post/anchor').last().attr('name');
-		}
-
-		return lastPart;
 	}
 
 	function addBlockQuoteHandler() {

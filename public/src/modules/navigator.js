@@ -76,7 +76,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		index = 1;
 		navigator.callback = null;
 		navigator.selector = null;
-		$(window).off('scroll', navigator.update);
+		$(window).off('scroll', navigator.delayedUpdate);
 
 		toggle(false);
 	};
