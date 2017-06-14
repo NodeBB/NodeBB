@@ -292,7 +292,9 @@ Notifications.markUnread = function (nid, uid, callback) {
 				async.apply(db.sortedSetAdd, 'uid:' + uid + ':notifications:unread', notification.datetime, nid),
 			], next);
 		},
-	], callback);
+	], function (err) {
+		callback(err);
+	});
 };
 
 Notifications.markReadMultiple = function (nids, uid, callback) {

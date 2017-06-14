@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/notifications', ['components', 'notifications'], function (components, notifs) {
+define('forum/notifications', ['components'], function (components) {
 	var Notifications = {};
 
 	Notifications.init = function () {
@@ -12,14 +12,6 @@ define('forum/notifications', ['components', 'notifications'], function (compone
 				if (err) {
 					return app.alertError(err);
 				}
-
-				socket.emit('notifications.getCount', function (err, count) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-
-					notifs.updateNotifCount(count);
-				});
 			});
 		});
 
@@ -32,7 +24,6 @@ define('forum/notifications', ['components', 'notifications'], function (compone
 				}
 
 				components.get('notifications/item').removeClass('unread');
-				notifs.updateNotifCount(0);
 			});
 		});
 	};

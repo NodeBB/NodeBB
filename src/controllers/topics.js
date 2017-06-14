@@ -262,6 +262,7 @@ topicsController.get = function (req, res, callback) {
 		data.postDeleteDuration = parseInt(meta.config.postDeleteDuration, 10) || 0;
 		data.scrollToMyPost = settings.scrollToMyPost;
 		data.rssFeedUrl = nconf.get('relative_path') + '/topic/' + data.tid + '.rss';
+		data.postIndex = req.params.post_index;
 		data.pagination = pagination.create(currentPage, pageCount, req.query);
 		data.pagination.rel.forEach(function (rel) {
 			rel.href = nconf.get('url') + '/topic/' + data.slug + rel.href;
