@@ -1,7 +1,7 @@
 {
 	"home-page": "홈페이지",
-	"description": "Choose what page is shown when users navigate to the root URL of your forum.",
-	"home-page-route": "Home Page Route",
-	"custom-route": "Custom Route",
-	"allow-user-home-pages": "Allow User Home Pages"
+	"description": "사용자가 루트 URL에 들어갔을 때 어떤 페이지가 보일지 선택하세요.",
+	"home-page-route": "홈페이지 경로",
+	"custom-route": "사용자 지정 경로",
+	"allow-user-home-pages": "사용자가 직접 홈페이지를 설정할 수 있게 허락"
 }

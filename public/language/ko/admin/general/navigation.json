@@ -1,27 +1,27 @@
 {
 	"icon": "아이콘:",
-	"change-icon": "change",
-	"route": "Route:",
-	"tooltip": "Tooltip:",
-	"text": "Text:",
-	"text-class": "Text Class: <small>optional</small>",
-	"id": "ID: <small>optional</small>",
+	"change-icon": "변경",
+	"route": "경로:",
+	"tooltip": "툴팁:",
+	"text": "텍스트:",
+	"text-class": "텍스트 클래스: <small>선택 사항</small>",
+	"id": "ID: <small>선택 사항</small>",
 
-	"properties": "Properties:",
-	"only-admins": "Only display to Admins",
-	"only-global-mods-and-admins": "Only display to Global Moderators and Admins",
-	"only-logged-in": "Only display to logged in users",
-	"open-new-window": "Open in a new window",
+	"properties": "속성:",
+	"only-admins": "관리자에게만 보이기",
+	"only-global-mods-and-admins": "(준)관리자와 관리자에게만 보이기",
+	"only-logged-in": "로그인한 사용자에게만 보이기",
+	"open-new-window": "새 창에서 열기",
 
-	"installed-plugins-required": "Installed Plugins Required:",
-	"search-plugin": "Search plugin",
+	"installed-plugins-required": "설치된 플러그인 필수:",
+	"search-plugin": "검색 플러그인",
 
-	"btn.delete": "Delete",
-	"btn.disable": "Disable",
-	"btn.enable": "Enable",
+	"btn.delete": "삭제",
+	"btn.disable": "비활성화",
+	"btn.enable": "활성화",
 
-	"available-menu-items": "Available Menu Items",
-	"custom-route": "Custom Route",
-	"core": "core",
-	"plugin": "plugin"
+	"available-menu-items": "이용 가능한 메뉴 항목",
+	"custom-route": "사용자 지정 경로",
+	"core": "핵심",
+	"plugin": "플러그인"
 }

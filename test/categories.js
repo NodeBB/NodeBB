@@ -643,7 +643,6 @@ describe('Categories', function () {
 				assert.ifError(err);
 				assert.deepEqual(data, {
 					find: false,
-					mods: false,
 					'posts:delete': false,
 					read: false,
 					'topics:reply': false,
@@ -651,6 +650,10 @@ describe('Categories', function () {
 					'topics:create': false,
 					'topics:delete': false,
 					'posts:edit': false,
+					'upload:post:file': false,
+					'upload:post:image': false,
+					purge: false,
+					moderate: false,
 				});
 
 				done();
@@ -669,6 +672,10 @@ describe('Categories', function () {
 					'groups:posts:delete': true,
 					'groups:read': true,
 					'groups:topics:read': true,
+					'groups:upload:post:file': false,
+					'groups:upload:post:image': true,
+					'groups:purge': false,
+					'groups:moderate': false,
 				});
 
 				done();

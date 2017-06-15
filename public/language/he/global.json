@@ -19,7 +19,7 @@
     "welcome_back": "ברוכים השבים",
     "you_have_successfully_logged_in": "התחברת בהצלחה",
     "save_changes": "שמור שינויים",
-    "save": "Save",
+    "save": "שמור",
     "close": "סגור",
     "pagination": "עימוד",
     "pagination.out_of": "%1 מתוך %2",
@@ -53,9 +53,9 @@
     "topics": "נושאים",
     "posts": "פוסטים",
     "best": "הגבוה ביותר",
-    "upvoters": "Upvoters",
+    "upvoters": "מצביעי בעד",
     "upvoted": "הוצבע בעד",
-    "downvoters": "Downvoters",
+    "downvoters": "מצביעי נגד",
     "downvoted": "הוצבע נגד",
     "views": "צפיות",
     "reputation": "מוניטין",
@@ -75,7 +75,7 @@
     "norecenttopics": "אין נושאים מהזמן החרון",
     "recentposts": "פוסטים אחרונים",
     "recentips": "כתובות IP שנכנסו למערכת לאחרונה",
-    "moderator_tools": "Moderator Tools",
+    "moderator_tools": "כלי מוד",
     "away": "לא נמצא",
     "dnd": "נא לא להפריע",
     "invisible": "מוסתר",
@@ -102,6 +102,6 @@
     "play": "Play",
     "cookies.message": "This website uses cookies to ensure you get the best experience on our website.",
     "cookies.accept": "Got it!",
-    "cookies.learn_more": "Learn More",
-    "edited": "Edited"
+    "cookies.learn_more": "למד עוד",
+    "edited": "נערך"
 }

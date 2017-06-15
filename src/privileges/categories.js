@@ -350,59 +350,22 @@ module.exports = function (privileges) {
 	};
 
 	privileges.categories.userPrivileges = function (cid, uid, callback) {
-		async.parallel({
-			find: async.apply(groups.isMember, uid, 'cid:' + cid + ':privileges:find'),
-			read: function (next) {
-				groups.isMember(uid, 'cid:' + cid + ':privileges:read', next);
-			},
-			'topics:create': function (next) {
-				groups.isMember(uid, 'cid:' + cid + ':privileges:topics:create', next);
-			},
-			'topics:read': function (next) {
-				groups.isMember(uid, 'cid:' + cid + ':privileges:topics:read', next);
-			},
-			'topics:reply': function (next) {
-				groups.isMember(uid, 'cid:' + cid + ':privileges:topics:reply', next);
-			},
-			'posts:edit': function (next) {
-				groups.isMember(uid, 'cid:' + cid + ':privileges:posts:edit', next);
-			},
-			'posts:delete': function (next) {
-				groups.isMember(uid, 'cid:' + cid + ':privileges:posts:delete', next);
-			},
-			'topics:delete': function (next) {
-				groups.isMember(uid, 'cid:' + cid + ':privileges:topics:delete', next);
-			},
-			mods: function (next) {
-				user.isModerator(uid, cid, next);
-			},
-		}, callback);
+		var tasks = {};
+
+		privileges.userPrivilegeList.forEach(function (privilege) {
+			tasks[privilege] = async.apply(groups.isMember, uid, 'cid:' + cid + ':privileges:' + privilege);
+		});
+
+		async.parallel(tasks, callback);
 	};
 
 	privileges.categories.groupPrivileges = function (cid, groupName, callback) {
-		async.parallel({
-			'groups:find': async.apply(groups.isMember, groupName, 'cid:' + cid + ':privileges:groups:find'),
-			'groups:read': function (next) {
-				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:read', next);
-			},
-			'groups:topics:create': function (next) {
-				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:topics:create', next);
-			},
-			'groups:topics:reply': function (next) {
-				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:topics:reply', next);
-			},
-			'groups:posts:edit': function (next) {
-				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:posts:edit', next);
-			},
-			'groups:posts:delete': function (next) {
-				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:posts:delete', next);
-			},
-			'groups:topics:delete': function (next) {
-				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:topics:delete', next);
-			},
-			'groups:topics:read': function (next) {
-				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:topics:read', next);
-			},
-		}, callback);
+		var tasks = {};
+
+		privileges.groupPrivilegeList.forEach(function (privilege) {
+			tasks[privilege] = async.apply(groups.isMember, groupName, 'cid:' + cid + ':privileges:' + privilege);
+		});
+
+		async.parallel(tasks, callback);
 	};
 };

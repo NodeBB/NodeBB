@@ -1,9 +1,9 @@
 {
-	"reputation": "Reputation Settings",
-	"disable": "Disable Reputation System",
-	"disable-down-voting": "Disable Down Voting",
+	"reputation": "평판 설정",
+	"disable": "평판 시스템 비활성화",
+	"disable-down-voting": "비추천 비활성화",
 	"votes-are-public": "모든 투표는 공개적입니다.",
-	"thresholds": "Activity Thresholds",
+	"thresholds": "포럼 활동 기준선",
 	"min-rep-downvote": "평판이 낮아 이 게시물을 다운보트할 수 없습니다.",
 	"min-rep-flag": "평판이 낮아 이 게시물을 신고할 수 없습니다."
 }

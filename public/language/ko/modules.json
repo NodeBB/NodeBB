@@ -1,5 +1,5 @@
 {
-    "chat.chatting_with": "<span id=\"chat-with-name\"></span>님과의 채팅",
+    "chat.chatting_with": "<span id=\"chat-with-name\">",
     "chat.placeholder": "메시지를 여기에 입력한 후 엔터를 눌러 전송하세요.",
     "chat.send": "전송",
     "chat.no_active": "활성화된 채팅이 없습니다.",
