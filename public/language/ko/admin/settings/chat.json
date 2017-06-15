@@ -3,7 +3,7 @@
 	"disable": "채팅 비활성화",
 	"disable-editing": "채팅 메세지 수정/삭제 비활성화",
 	"disable-editing-help": "관리자는 이 제한에서 면제됩니다.",
-	"max-length": "Maximum length of chat messages",
-	"max-room-size": "Maximum number of users in chat rooms",
-	"delay": "Time between chat messages in milliseconds"
+	"max-length": "채팅 메세지의 최대 길이",
+	"max-room-size": "채팅방의 최대 인원 수",
+	"delay": "채팅 메세지 간 시간 간격(단위: 1/1000초)"
 }

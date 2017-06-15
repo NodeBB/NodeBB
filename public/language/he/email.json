@@ -32,9 +32,9 @@
     "notif.post.unsub.info": "התראת הפוסט הזו נשלחה אליך על-פי הגדרות החשבון שלך.",
     "test.text1": "זהו אימייל ניסיון על מנת לוודא שהגדרות המייל בוצעו כהלכה בהגדרות NodeBB.",
     "unsub.cta": "לחץ כאן לשנות הגדרות אלו",
-    "banned.subject": "You have been banned from %1",
-    "banned.text1": "The user %1 has been banned from %2.",
-    "banned.text2": "This ban will last until %1.",
-    "banned.text3": "This is the reason why you have been banned:",
+    "banned.subject": "הורחקת מ %1",
+    "banned.text1": "המשתמש %1 הורחק מ %2.",
+    "banned.text2": "הרחקה זו תמשך עד %1",
+    "banned.text3": "זו הסיבה שבגללה הורחקת:",
     "closing": "תודה!"
 }

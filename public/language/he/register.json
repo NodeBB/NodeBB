@@ -1,6 +1,6 @@
 {
     "register": "הרשם",
-    "cancel_registration": "Cancel Registration",
+    "cancel_registration": "בטל רישום",
     "help.email": "כברירת מחדל, כתובת האימייל שלך אינה חשופה למשתמשים אחרים",
     "help.username_restrictions": "שם משתמש ייחודי בין %1 ל %2 תווים. משתמשים אחרים יכולים לציין את שמך באמצעות @<span id='yourUsername'>שם המשתמש שלך</span>.",
     "help.minimum_password_length": "סיסמתך חייבת להיות לפחות באורך של %1 תווים.",
@@ -16,8 +16,8 @@
     "alternative_registration": "הרשם באמצעות...",
     "terms_of_use": "תנאי שימוש",
     "agree_to_terms_of_use": "אני מסכים לתנאי השימוש",
-    "terms_of_use_error": "You must agree to the Terms of Use",
+    "terms_of_use_error": "אתה מוכרח להסכים לתנאי השימוש",
     "registration-added-to-queue": "הבקשה שלך להרשמה נשלחה. תקבל בקרוב מייל אישור לכתובת האימייל שהכנסת כשמנהל יאשר את הבקשה.",
-    "interstitial.intro": "We require some additional information before we can create your account.",
-    "interstitial.errors-found": "We could not complete your registration:"
+    "interstitial.intro": "אנו דורשים מידע נוסף לפני שנוכל ליצור עבורך את החשבון.",
+    "interstitial.errors-found": "לא הצלחנו להשלים את הרישום שלך:"
 }

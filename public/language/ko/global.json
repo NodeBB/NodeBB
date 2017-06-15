@@ -99,9 +99,9 @@
     "allowed-file-types": "사용가능한 파일 유형: %1",
     "unsaved-changes": "저장되지 않은 변경사항이 있습니다. 저장하지 않고 페이지를 떠나시겠습니까?",
     "reconnecting-message": "%1 사이트로의 연결이 끊어졌습니다. 다시 연결을 시도하는동안 잠시만 기다려 주십시오.",
-    "play": "Play",
+    "play": "재생",
     "cookies.message": "이 웹사이트는 최적의 사용환경을 위해 쿠키를 활용합니다.",
-    "cookies.accept": "Got it!",
+    "cookies.accept": "알겠습니다!",
     "cookies.learn_more": "더 보기",
     "edited": "수정 되었습니다."
 }

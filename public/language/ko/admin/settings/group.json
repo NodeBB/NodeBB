@@ -3,10 +3,10 @@
 	"private-groups": "비공개 그룹",
 	"private-groups.help": " 활성화 되어있다면 그룹에 가입하는 것은 그룹 관리자의 허가를 필요로 합니다. <em>(기본 설정: 활성화)</em>",
 	"private-groups.warning": "<strong>주의</strong> 이 옵션이 비활성화 돼있고 당신에게 비공개 그룹이 있다면 그 그룹들은 모두 공개로 전환될 것입니다.",
-	"allow-creation": "Allow Group Creation",
-	"allow-creation-help": "If enabled, users can create groups <em>(Default: disabled)</em>",
-	"max-name-length": "Maximum Group Name Length",
-	"cover-image": "Group Cover Image",
-	"default-cover": "Default Cover Images",
-	"default-cover-help": "Add comma-separated default cover images for groups that don't have an uploaded cover image"
+	"allow-creation": "그룹 생성 허용",
+	"allow-creation-help": "활성화 돼있다면 유저가 그룹을 생성할 수 있습니다. <em>(기본: 비활성화)</em>",
+	"max-name-length": "그룹 명 최대 길이",
+	"cover-image": "그룹 커버 사진",
+	"default-cover": "기본 커버 사진",
+	"default-cover-help": "기본 커버 사진 목록을 콤마(,) 로 구분지어 입력해 주세요. "
 }

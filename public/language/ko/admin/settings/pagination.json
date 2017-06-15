@@ -3,7 +3,7 @@
 	"enable": "무한 스크롤 대신 페이지로 주제와 포스트 보여주기",
 	"topics": "주제 페이지",
 	"posts-per-page": "페이지 당 포스트",
-	"categories": "Category Pagination",
-	"topics-per-page": "Topics per Page",
-	"initial-num-load": "Initial Number of Topics to Load on Unread, Recent, and Popular"
+	"categories": "카테고리 페이지",
+	"topics-per-page": "페이지 당 주제 수",
+	"initial-num-load": "읽지 않은 글, 최근 작성 글, 인기 글 게시판에서 처음 보여줄 게시글 개수"
 }

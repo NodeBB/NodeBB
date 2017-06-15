@@ -3,9 +3,9 @@
 	"consent.enabled": "활성화됨",
 	"consent.message": "알림 메세지",
 	"consent.acceptance": "허가 메세지",
-	"consent.link-text": "Policy Link Text",
-	"consent.blank-localised-default": "Leave blank to use NodeBB localised defaults",
-	"settings": "Settings",
-	"cookie-domain": "Session cookie domain",
-	"blank-default": "Leave blank for default"
+	"consent.link-text": "약관 조항 링크에 표시할 텍스트",
+	"consent.blank-localised-default": "NodeBB 의 번역을 사용하시려면 빈칸으로 두세요",
+	"settings": "설정",
+	"cookie-domain": "세션 쿠키 도메인",
+	"blank-default": "기본값을 사용하시려면 빈칸으로 두세요"
 }
