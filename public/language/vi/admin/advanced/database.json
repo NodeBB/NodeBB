@@ -17,7 +17,7 @@
 	"mongo.file-size": "Kích thước tập tin",
 	"mongo.resident-memory": "Resident Memory",
 	"mongo.virtual-memory": "Bộ nhớ ảo",
-	"mongo.mapped-memory": "Mapped Memory",
+	"mongo.mapped-memory": "Nhìn vào bộ nhớ ảo",
 	"mongo.raw-info": "Thông tin MongoDB",
 
 	"redis": "Redis",

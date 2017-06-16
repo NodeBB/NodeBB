@@ -1,10 +1,10 @@
 {
-	"post-cache": "캐시 게시물",
-	"posts-in-cache": "캐시 게시물",
-	"average-post-size": "평균 게시물 크기",
+	"post-cache": "포스트 캐시",
+	"posts-in-cache": "캐시된 포스트",
+	"average-post-size": "평균 포스트 크기",
 	"length-to-max": "길이 / 최대",
-	"percent-full": "1 %1% 꽉 참",
-	"post-cache-size": "게시물 캐시 크기",
+	"percent-full": "%1%꽉참",
+	"post-cache-size": "포스트 캐시 크기",
 	"items-in-cache": "캐시된 항목들",
 	"control-panel": "제어판",
 	"update-settings": "캐시 설정 변경"

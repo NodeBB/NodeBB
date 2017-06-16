@@ -1,7 +1,7 @@
 {
-	"alert.confirm-reload": "NodeBB를 다시 로드 하시겠습니까?",
+	"alert.confirm-reload": "NodeBB를 새로 고침 하시겠습니까?",
 	"alert.confirm-restart": "NodeBB를 다시 시작하시겠습니까?",
 
 	"acp-title": "%1 | NodeBB 관리자 제어판",
-	"settings-header-contents": "내용"
+	"settings-header-contents": "컨텐츠"
 }

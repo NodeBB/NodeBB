@@ -107,18 +107,30 @@ module.exports = function (Topics) {
 				check(data.content, meta.config.minimumPostLength, meta.config.maximumPostLength, 'content-too-short', 'content-too-long', next);
 			},
 			function (next) {
-				categories.exists(data.cid, next);
+				async.parallel({
+					categoryExists: function (next) {
+						categories.exists(data.cid, next);
+					},
+					canCreate: function (next) {
+						privileges.categories.can('topics:create', data.cid, data.uid, next);
+					},
+					canTag: function (next) {
+						if (!data.tags.length) {
+							return next(null, true);
+						}
+						privileges.categories.can('topics:tag', data.cid, data.uid, next);
+					},
+				}, next);
 			},
-			function (categoryExists, next) {
-				if (!categoryExists) {
+			function (results, next) {
+				if (!results.categoryExists) {
 					return next(new Error('[[error:no-category]]'));
 				}
-				privileges.categories.can('topics:create', data.cid, data.uid, next);
-			},
-			function (canCreate, next) {
-				if (!canCreate) {
+
+				if (!results.canCreate || !results.canTag) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
+
 				guestHandleValid(data, next);
 			},
 			function (next) {
