@@ -217,13 +217,10 @@ uploadsController.uploadFile = function (uid, uploadedFile, callback) {
 };
 
 function saveFileToLocal(uploadedFile, callback) {
-	var extension = path.extname(uploadedFile.name);
-	if (!extension || extension === '.') {
-		return callback(new Error('[[error:invalid-extension]]'));
-	}
 	var filename = uploadedFile.name || 'upload';
+	var extension = path.extname(filename) || '';
 
-	filename = Date.now() + '-' + validator.escape(filename.replace(path.extname(uploadedFile.name) || '', '')).substr(0, 255) + extension;
+	filename = Date.now() + '-' + validator.escape(filename.substr(0, filename.length - extension.length)).substr(0, 255) + extension;
 
 	async.waterfall([
 		function (next) {
