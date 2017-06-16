@@ -9,6 +9,8 @@ module.exports = function (Plugins) {
 		'filter:post.save': 'filter:post.create',
 		'filter:user.profileLinks': 'filter:user.profileMenu',
 		'action:post.flag': 'action:flag.create',
+		'action:flag.create': 'action:flags.create',
+		'action:flag.update': 'action:flags.update',
 	};
 	/*
 		`data` is an object consisting of (* is required):
