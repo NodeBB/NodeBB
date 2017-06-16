@@ -1693,9 +1693,11 @@ describe('Topic\'s', function () {
 					assert.ifError(err);
 					posts.edit({ pid: result.postData.pid, uid: uid, content: 'edited content', tags: ['tag1', 'tag2'] }, function (err, result) {
 						assert.ifError(err);
-						assert.deepEqual(result.topic.tags.map(function (tag) {
+						var tags = result.topic.tags.map(function (tag) {
 							return tag.value;
-						}), ['tag1', 'tag2']);
+						});
+						assert(tags.indexOf('tag1') !== -1);
+						assert(tags.indexOf('tag2') !== -1);
 						done();
 					});
 				});
