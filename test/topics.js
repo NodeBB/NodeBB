@@ -7,7 +7,9 @@ var nconf = require('nconf');
 
 var db = require('./mocks/databasemock');
 var topics = require('../src/topics');
+var posts = require('../src/posts');
 var categories = require('../src/categories');
+var privileges = require('../src/privileges');
 var meta = require('../src/meta');
 var User = require('../src/user');
 var groups = require('../src/groups');
@@ -825,7 +827,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should 404 if tid is not a number', function (done) {
-			request(nconf.get('url') + '/api/topic/teaser/nan', { json: true }, function (err, response, body) {
+			request(nconf.get('url') + '/api/topic/teaser/nan', { json: true }, function (err, response) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 404);
 				done();
@@ -858,7 +860,7 @@ describe('Topic\'s', function () {
 
 
 		it('should 404 if tid is not a number', function (done) {
-			request(nconf.get('url') + '/api/topic/pagination/nan', { json: true }, function (err, response, body) {
+			request(nconf.get('url') + '/api/topic/pagination/nan', { json: true }, function (err, response) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 404);
 				done();
@@ -866,7 +868,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should 404 if tid does not exist', function (done) {
-			request(nconf.get('url') + '/api/topic/pagination/1231231', { json: true }, function (err, response, body) {
+			request(nconf.get('url') + '/api/topic/pagination/1231231', { json: true }, function (err, response) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 404);
 				done();
@@ -1640,6 +1642,63 @@ describe('Topic\'s', function () {
 				assert(teaser);
 				assert.equal(teaser.content, 'content 2');
 				done();
+			});
+		});
+	});
+
+	describe('tag privilege', function () {
+		var uid;
+		var cid;
+		before(function (done) {
+			async.waterfall([
+				function (next) {
+					User.create({ username: 'tag_poster' }, next);
+				},
+				function (_uid, next) {
+					uid = _uid;
+					categories.create({ name: 'tag category' }, next);
+				},
+				function (categoryObj, next) {
+					cid = categoryObj.cid;
+					next();
+				},
+			], done);
+		});
+
+		it('should fail to post if user does not have tag privilege', function (done) {
+			privileges.categories.rescind(['topics:tag'], cid, 'registered-users', function (err) {
+				assert.ifError(err);
+				topics.post({ uid: uid, cid: cid, tags: ['tag1'], title: 'topic with tags', content: 'some content here' }, function (err) {
+					assert.equal(err.message, '[[error:no-privileges]]');
+					done();
+				});
+			});
+		});
+
+		it('should fail to edit if user does not have tag privilege', function (done) {
+			topics.post({ uid: uid, cid: cid, title: 'topic with tags', content: 'some content here' }, function (err, result) {
+				assert.ifError(err);
+				var pid = result.postData.pid;
+				posts.edit({ pid: pid, uid: uid, content: 'edited content', tags: ['tag2'] }, function (err) {
+					assert.equal(err.message, '[[error:no-privileges]]');
+					done();
+				});
+			});
+		});
+
+		it('should be able to edit topic and add tags if allowed', function (done) {
+			privileges.categories.give(['topics:tag'], cid, 'registered-users', function (err) {
+				assert.ifError(err);
+				topics.post({ uid: uid, cid: cid, tags: ['tag1'], title: 'topic with tags', content: 'some content here' }, function (err, result) {
+					assert.ifError(err);
+					posts.edit({ pid: result.postData.pid, uid: uid, content: 'edited content', tags: ['tag1', 'tag2'] }, function (err, result) {
+						assert.ifError(err);
+						assert.deepEqual(result.topic.tags.map(function (tag) {
+							return tag.value;
+						}), ['tag1', 'tag2']);
+						done();
+					});
+				});
 			});
 		});
 	});

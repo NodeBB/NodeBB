@@ -16,7 +16,7 @@ module.exports = function (privileges) {
 
 	privileges.topics.get = function (tid, uid, callback) {
 		var topic;
-		var privs = ['topics:reply', 'topics:read', 'topics:delete', 'posts:edit', 'posts:delete', 'read'];
+		var privs = ['topics:reply', 'topics:read', 'topics:tag', 'topics:delete', 'posts:edit', 'posts:delete', 'read'];
 		async.waterfall([
 			async.apply(topics.getTopicFields, tid, ['cid', 'uid', 'locked', 'deleted']),
 			function (_topic, next) {
@@ -41,6 +41,7 @@ module.exports = function (privileges) {
 				plugins.fireHook('filter:privileges.topics.get', {
 					'topics:reply': (privData['topics:reply'] && !locked && !deleted) || isAdminOrMod,
 					'topics:read': privData['topics:read'] || isAdminOrMod,
+					'topics:tag': privData['topics:tag'] || isAdminOrMod,
 					'topics:delete': (isOwner && privData['topics:delete']) || isAdminOrMod,
 					'posts:edit': (privData['posts:edit'] && !locked) || isAdminOrMod,
 					'posts:delete': (privData['posts:delete'] && !locked) || isAdminOrMod,

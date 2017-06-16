@@ -16,28 +16,13 @@ module.exports = function (privileges) {
 	privileges.categories.list = function (cid, callback) {
 		// Method used in admin/category controller to show all users/groups with privs in that given cid
 
-		var privilegeLabels = [
-			{ name: 'Find Category' },
-			{ name: 'Access Category' },
-			{ name: 'Access Topics' },
-			{ name: 'Create Topics' },
-			{ name: 'Reply to Topics' },
-			{ name: 'Edit Posts' },
-			{ name: 'Delete Posts' },
-			{ name: 'Delete Topics' },
-			{ name: 'Upload Images' },
-			{ name: 'Upload Files' },
-			{ name: 'Purge' },
-			{ name: 'Moderate' },
-		];
-
 		async.waterfall([
 			function (next) {
 				async.parallel({
 					labels: function (next) {
 						async.parallel({
-							users: async.apply(plugins.fireHook, 'filter:privileges.list_human', privilegeLabels),
-							groups: async.apply(plugins.fireHook, 'filter:privileges.groups.list_human', privilegeLabels),
+							users: async.apply(plugins.fireHook, 'filter:privileges.list_human', privileges.privilegeLabels),
+							groups: async.apply(plugins.fireHook, 'filter:privileges.groups.list_human', privileges.privilegeLabels),
 						}, next);
 					},
 					users: function (next) {
@@ -155,7 +140,7 @@ module.exports = function (privileges) {
 	};
 
 	privileges.categories.get = function (cid, uid, callback) {
-		var privs = ['topics:create', 'topics:read', 'read'];
+		var privs = ['topics:create', 'topics:read', 'topics:tag', 'read'];
 		async.waterfall([
 			function (next) {
 				async.parallel({
@@ -177,6 +162,7 @@ module.exports = function (privileges) {
 				plugins.fireHook('filter:privileges.categories.get', {
 					'topics:create': privData['topics:create'] || isAdminOrMod,
 					'topics:read': privData['topics:read'] || isAdminOrMod,
+					'topics:tag': privData['topics:tag'] || isAdminOrMod,
 					read: privData.read || isAdminOrMod,
 					cid: cid,
 					uid: uid,

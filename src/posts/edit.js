@@ -48,9 +48,7 @@ module.exports = function (Posts) {
 			},
 			function (result, next) {
 				postData = result.post;
-				Posts.setPostFields(data.pid, postData, next);
-			},
-			function (next) {
+
 				async.parallel({
 					editor: function (next) {
 						user.getUserFields(data.uid, ['username', 'userslug'], next);
@@ -62,7 +60,9 @@ module.exports = function (Posts) {
 			},
 			function (_results, next) {
 				results = _results;
-
+				Posts.setPostFields(data.pid, postData, next);
+			},
+			function (next) {
 				postData.cid = results.topic.cid;
 				postData.topic = results.topic;
 				plugins.fireHook('action:post.edit', { post: _.clone(postData), uid: data.uid });
@@ -122,6 +122,17 @@ module.exports = function (Posts) {
 				topicData.thumb = data.thumb || '';
 
 				data.tags = data.tags || [];
+
+				if (!data.tags.length) {
+					return next(null, true);
+				}
+
+				privileges.categories.can('topics:tag', topicData.cid, data.uid, next);
+			},
+			function (canTag, next) {
+				if (!canTag) {
+					return next(new Error('[[error:no-privileges]]'));
+				}
 
 				plugins.fireHook('filter:topic.edit', { req: data.req, topic: topicData, data: data }, next);
 			},
