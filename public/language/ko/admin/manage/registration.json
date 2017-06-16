@@ -6,9 +6,9 @@
 	"list.email": "이메일",
 	"list.ip": "IP 주소",
 	"list.time": "시간",
-	"list.username-spam": "Frequency: %1 Appears: %2 Confidence: %3",
-	"list.email-spam": "Frequency: %1 Appears: %2",
-	"list.ip-spam": "Frequency: %1 Appears: %2",
+	"list.username-spam": "빈도: %1 출연 유무: %2 신뢰도: %3",
+	"list.email-spam": "빈도: %1 출연 유무: %2",
+	"list.ip-spam": "빈도: %1 출연 유무: %2",
 
 	"invitations": "초대",
 	"invitations.description": "발송된 초대의 목록을 아래에서 보실 수 있습니다. ctrl-f을 이용해서 이메일이나 사용자명으로 목록을 검색하세요. <br><br>초대에 응답한 사용자들은 이메일 옆에 사용자명이 표시됩니다.",

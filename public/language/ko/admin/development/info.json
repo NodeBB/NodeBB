@@ -1,18 +1,18 @@
 {
-	"you-are-on": "정보 - 여기에 위치합니다 <strong>%1:%2</strong>",
-	"nodes-responded": "%1 노드가 %2ms 안으로 응답하였습니다",
+	"you-are-on": "정보 - <strong>%1:%2</strong>에 있습니다.",
+	"nodes-responded": "%1 노드가 %2ms 내로 응답했습니다.",
 	"host": "호스트",
-	"pid": "프로세스 아이디",
+	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "온라인",
-	"git": "깃",
+	"git": "git",
 	"memory": "메모리",
 	"load": "로드",
-	"uptime": "가동 시간",
+	"uptime": "Uptime",
 
 	"registered": "등록됨",
-	"sockets": "소켓",
-	"guests": "게스트",
+	"sockets": "Sockets",
+	"guests": "미가입 사용자",
 
 	"info": "정보"
 }

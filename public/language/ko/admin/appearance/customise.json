@@ -1,12 +1,12 @@
 {
 	"custom-css": "사용자 정의 CSS",
-	"custom-css.description": "사용자 정의 CSS를 이곳에 입력하세요. 다른 스타일이 적용된 후 적용됩니다.",
+	"custom-css.description": "사용자 정의 CSS를 이곳에 입력하세요. 이 스타일들은 맨 마지막에 적용됩니다.",
 	"custom-css.enable": "사용자 정의 CSS 허용",
 
 	"custom-header": "사용자 정의 헤더",
-	"custom-header.description": "이곳에 사용자 정의된 HTML을 입력하십시오 (예시. 자바스크립트, 메타 태그, 등등). 당신의 포럼 마크업<code>&lt;head&gt;1</code> 섹션에 추가됩니다.",
+	"custom-header.description": "이곳에 사용자 정의 HTML을 입력하십시오 (예. JavaScript, Meta Tags, 등등). 당신의 포럼의 <code>&lt;head&gt;1</code> 섹션에 추가됩니다.",
 	"custom-header.enable": "사용자 정의 헤더 허용",
 
-	"custom-css.livereload": "실시간 새로고침 허용",
-	"custom-css.livereload.description": "이곳을 클릭하면 당신의 계정에 속한 장치들의 모든 세션들이 세이브할 때마다 새로고침 됩니다."
+	"custom-css.livereload": "실시간 새로 고침 허용",
+	"custom-css.livereload.description": "세이브를 누를 때마다 당신의 계정에 속한 디바이스의 모든 세션들이 새로고침 되게 하시려면 이것을 활성화하세요."
 }

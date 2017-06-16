@@ -1,9 +1,9 @@
 {
 	"notifications": "알림",
-	"chat-messages": "대화 메세지",
+	"chat-messages": "채팅 메세지",
 	"play-sound": "재생",
-	"incoming-message": "들어오는 메세지",
-	"outgoing-message": "나가는 메세지",
+	"incoming-message": "수신 메시지",
+	"outgoing-message": "발신 메시지",
 	"upload-new-sound": "새로운 사운드 업로드",
 	"saved": "설정 저장됨"
 }
