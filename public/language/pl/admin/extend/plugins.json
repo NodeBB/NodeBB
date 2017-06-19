@@ -14,8 +14,8 @@
 	"dev-interested": "Zainteresowany pisanie pluginów do NodeBB??",
 	"docs-info": "Pełna dokumentacje dotycząca pisania pluginów znajduje się tutaj <a target=\"_blank\" href=\"https://docs.nodebb.org/en/latest/plugins/create.html\">NodeBB Docs Portal</a>.",
 
-	"order.description": "Certain plugins work ideally when they are initialised before/after other plugins.",
-	"order.explanation": "Plugins load in the order specified here, from top to bottom",
+	"order.description": "Pewne pluginy działają idealnie kiedy są zainicjalizowane przed/po innymi pluginami.",
+	"order.explanation": "Pluginy ładują się tutaj w określonej kolejności, od góry do dołu.",
 	
 	"plugin-item.themes": "Style",
 	"plugin-item.deactivate": "Dezaktywować",
@@ -28,7 +28,7 @@
 	"plugin-item.upgrade": "Zaktualizuj",
 	"plugin-item.more-info": "Po więcej informacji:",
 	"plugin-item.unknown": "Nieznane",
-	"plugin-item.unknown-explanation": "The state of this plugin could not be determined, possibly due to a misconfiguration error.",
+	"plugin-item.unknown-explanation": "Stan tego pluginu nie może być ustalony, prawdopodobnie z powodu błędu konfiguracji błędów.",
 
 	"alert.enabled": "Plugin Włączony",
 	"alert.disabled": "Plugin Wyłączony",
@@ -40,8 +40,8 @@
 	"alert.upgrade-success": "Proszę przeładować NodeBB, aby poprawnie działał plugin",
 	"alert.install-success": "Plugin pomyślnie zainstalowany, proszę aktywować go.",
 	"alert.uninstall-success": "Plugin został pomyślnie zdezaktywowany oraz odinstalowany.",
-	"alert.suggest-error": "<p>NodeBB could not reach the package manager, proceed with installation of latest version?</p><div class=\"alert alert-danger\"><strong>Server returned (%1)</strong>: %2</div>",
-	"alert.package-manager-unreachable": "<p>NodeBB could not reach the package manager, an upgrade is not suggested at this time.</p>",
-	"alert.incompatible": "<p>Your version of NodeBB (v%1) is only cleared to upgrade to v%2 of this plugin. Please update your NodeBB if you wish to install a newer version of this plugin.</p>",
+	"alert.suggest-error": "<p>NodeBB nie może dostać się do menedżera pakietów, kontynuować instalacji ostatniej wersji?</p><div class=\"alert alert-danger\"><strong>Serwer zwrócił (%1)</strong>: %2</div>",
+	"alert.package-manager-unreachable": "<p>NodeBB nie może dostać się do menedżera pakietów, aktualizacja nie jest sugerowana w tym momencie.</p>",
+	"alert.incompatible": "<p>Twoja wersja NodeBB (v%1) jest usuwana w celu uaktualnienia do v%2 tego pluginu. Proszę zaktualizuj twoje NodeBB jeżeli chcesz zainstalować nowszą wersję tego pluginu.</p>",
 	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>No Compatibility Information Found</strong></p><p>This plugin did not specify a specific version for installation given your NodeBB version. Full compatibility cannot be guaranteed, and may cause your NodeBB to no longer start properly.</p></div><p>In the event that NodeBB cannot boot properly:</p><pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre><p>Continue installation of latest version of this plugin?</p>"
 }
