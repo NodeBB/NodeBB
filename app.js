@@ -35,14 +35,14 @@ var path = require('path');
 var pkg = require('./package.json');
 var file = require('./src/file');
 
-global.env = process.env.NODE_ENV || 'production';
+global.env = process.env.NODE_ENV;
 
 winston.remove(winston.transports.Console);
 winston.add(winston.transports.Console, {
 	colorize: true,
 	timestamp: function () {
 		var date = new Date();
-		return nconf.get('json-logging') ? date.toJSON() :	date.getDate() + '/' + (date.getMonth() + 1) + ' ' + date.toTimeString().substr(0, 8) + ' [' + global.process.pid + ']';
+		return nconf.get('json-logging') ? date.toJSON() :	date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' ' + date.toTimeString().substr(0, 8) + ' [' + global.process.pid + ']';
 	},
 	level: nconf.get('log-level') || (global.env === 'production' ? 'info' : 'verbose'),
 	json: (!!nconf.get('json-logging')),
