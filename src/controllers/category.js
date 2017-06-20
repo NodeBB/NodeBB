@@ -22,6 +22,7 @@ categoryController.get = function (req, res, callback) {
 	var pageCount = 1;
 	var userPrivileges;
 	var settings;
+	var rssToken;
 
 	if ((req.params.topic_index && !utils.isNumber(req.params.topic_index)) || !utils.isNumber(cid)) {
 		return callback();
@@ -39,10 +40,14 @@ categoryController.get = function (req, res, callback) {
 				userSettings: function (next) {
 					user.getSettings(req.uid, next);
 				},
+				rssToken: function (next) {
+					user.auth.getFeedToken(req.uid, next);
+				},
 			}, next);
 		},
 		function (results, next) {
 			userPrivileges = results.privileges;
+			rssToken = results.rssToken;
 
 			if (!results.categoryData.slug || (results.categoryData && parseInt(results.categoryData.disabled, 10) === 1)) {
 				return callback();
@@ -150,14 +155,16 @@ categoryController.get = function (req, res, callback) {
 			categoryData.privileges = userPrivileges;
 			categoryData.showSelect = categoryData.privileges.editable;
 
-			addTags(categoryData, res);
-
 			if (parseInt(req.uid, 10)) {
 				categories.markAsRead([cid], req.uid);
+				categoryData.rssFeedUrl = nconf.get('url') + '/category/' + categoryData.cid + '.rss?uid=' + req.uid + '&token=' + rssToken;
+			} else {
+				categoryData.rssFeedUrl = nconf.get('url') + '/category/' + categoryData.cid + '.rss';
 			}
 
+			addTags(categoryData, res);
+
 			categoryData['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
-			categoryData.rssFeedUrl = nconf.get('relative_path') + '/category/' + categoryData.cid + '.rss';
 			categoryData.title = translator.escape(categoryData.name);
 			pageCount = Math.max(1, Math.ceil(categoryData.topic_count / settings.topicsPerPage));
 			categoryData.pagination = pagination.create(currentPage, pageCount, req.query);
@@ -220,7 +227,7 @@ function addTags(categoryData, res) {
 		{
 			rel: 'alternate',
 			type: 'application/rss+xml',
-			href: nconf.get('url') + '/category/' + categoryData.cid + '.rss',
+			href: categoryData.rssFeedUrl,
 		},
 		{
 			rel: 'up',

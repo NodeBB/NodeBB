@@ -26,6 +26,37 @@ module.exports = function (app, middleware) {
 	app.get('/tags/:tag.rss', middleware.maintenanceMode, generateForTag);
 };
 
+function validateTokenIfRequiresLogin(requiresLogin, req, res, callback) {
+	var uid = req.query.uid;
+	var token = req.query.token;
+
+	if (!requiresLogin) {
+		return callback();
+	}
+
+	if (!uid || !token) {
+		return helpers.notAllowed(req, res);
+	}
+
+	user.getUserField(uid, 'rss_token', function (err, _token) {
+		if (err) {
+			return callback(err);
+		}
+
+		if (token === _token) {
+			return callback();
+		}
+
+		user.auth.logAttempt(uid, req.ip, function (err) {
+			if (err) {
+				return callback(err);
+			}
+
+			return helpers.notAllowed(req, res);
+		});
+	});
+}
+
 function generateForTopic(req, res, callback) {
 	if (parseInt(meta.config['feeds:disableRSS'], 10) === 1) {
 		return controllers404.send404(req, res);
@@ -48,11 +79,15 @@ function generateForTopic(req, res, callback) {
 			if (!results.topic || (parseInt(results.topic.deleted, 10) && !results.privileges.view_deleted)) {
 				return controllers404.send404(req, res);
 			}
-			if (!results.privileges['topics:read']) {
-				return helpers.notAllowed(req, res);
-			}
-			userPrivileges = results.privileges;
-			topics.getTopicWithPosts(results.topic, 'tid:' + tid + ':posts', req.uid, 0, 25, false, next);
+
+			validateTokenIfRequiresLogin(!results.privileges['topics:read'], req, res, function (err) {
+				if (err) {
+					return next(err);
+				}
+
+				userPrivileges = results.privileges;
+				topics.getTopicWithPosts(results.topic, 'tid:' + tid + ':posts', req.uid, 0, 25, false, next);
+			});
 		},
 		function (topicData) {
 			topics.modifyPostsByPrivilege(topicData, userPrivileges);
@@ -149,16 +184,19 @@ function generateForCategory(req, res, next) {
 			}, next);
 		},
 		function (results, next) {
-			if (!results.privileges.read) {
-				return helpers.notAllowed(req, res);
-			}
-			generateTopicsFeed({
-				uid: req.uid,
-				title: results.category.name,
-				description: results.category.description,
-				feed_url: '/category/' + cid + '.rss',
-				site_url: '/category/' + results.category.cid,
-			}, results.category.topics, next);
+			validateTokenIfRequiresLogin(!results.privileges.read, req, res, function (err) {
+				if (err) {
+					return next(err);
+				}
+
+				generateTopicsFeed({
+					uid: req.uid,
+					title: results.category.name,
+					description: results.category.description,
+					feed_url: '/category/' + cid + '.rss',
+					site_url: '/category/' + results.category.cid,
+				}, results.category.topics, next);
+			});
 		},
 		function (feed) {
 			sendFeed(feed, res);
@@ -317,18 +355,20 @@ function generateForCategoryRecentPosts(req, res, next) {
 				return next();
 			}
 
-			if (!results.privileges.read) {
-				return helpers.notAllowed(req, res);
-			}
+			validateTokenIfRequiresLogin(!results.privileges.read, req, res, function (err) {
+				if (err) {
+					return next(err);
+				}
 
-			var feed = generateForPostsFeed({
-				title: results.category.name + ' Recent Posts',
-				description: 'A list of recent posts from ' + results.category.name,
-				feed_url: '/category/' + cid + '/recentposts.rss',
-				site_url: '/category/' + cid + '/recentposts',
-			}, results.posts);
+				var feed = generateForPostsFeed({
+					title: results.category.name + ' Recent Posts',
+					description: 'A list of recent posts from ' + results.category.name,
+					feed_url: '/category/' + cid + '/recentposts.rss',
+					site_url: '/category/' + cid + '/recentposts',
+				}, results.posts);
 
-			sendFeed(feed, res);
+				sendFeed(feed, res);
+			});
 		},
 	], next);
 }
@@ -381,4 +421,3 @@ function sendFeed(feed, res) {
 	var xml = feed.xml();
 	res.type('xml').set('Content-Length', Buffer.byteLength(xml)).send(xml);
 }
-

@@ -6,6 +6,7 @@ var db = require('../database');
 var meta = require('../meta');
 var events = require('../events');
 var batch = require('../batch');
+var utils = require('../utils');
 
 module.exports = function (User) {
 	User.auth = {};
@@ -45,6 +46,25 @@ module.exports = function (User) {
 				next(new Error('[[error:account-locked]]'));
 			},
 		], callback);
+	};
+
+	User.auth.getFeedToken = function (uid, callback) {
+		if (!uid) {
+			return callback();
+		}
+
+		User.getUserField(uid, 'rss_token', function (err, token) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (!token) {
+				token = utils.generateUUID();
+				User.setUserField(uid, 'rss_token', token);
+			}
+
+			callback(false, token);
+		});
 	};
 
 	User.auth.clearLoginAttempts = function (uid) {
