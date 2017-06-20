@@ -16,6 +16,7 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var useragent = require('express-useragent');
 var favicon = require('serve-favicon');
+var morgan = require('morgan');
 
 var db = require('./database');
 var file = require('./file');
@@ -123,6 +124,8 @@ function setupExpressApp(app, callback) {
 	app.set('views', nconf.get('views_dir'));
 	app.set('json spaces', process.env.NODE_ENV === 'development' ? 4 : 0);
 	app.use(flash());
+	// apache style access logs
+	app.use(morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"'))
 
 	app.enable('view cache');
 
