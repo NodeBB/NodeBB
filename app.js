@@ -35,7 +35,7 @@ var path = require('path');
 var pkg = require('./package.json');
 var file = require('./src/file');
 
-global.env = process.env.NODE_ENV || 'development';
+global.env = process.env.NODE_ENV;
 
 winston.remove(winston.transports.Console);
 winston.add(winston.transports.Console, {
