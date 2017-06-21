@@ -133,8 +133,8 @@ function setupExpressApp(app, callback) {
 
 	app.use(compression());
 
-	app.get('/ping', ping);
-	app.get('/sping', ping);
+	app.get(relativePath + '/ping', ping);
+	app.get(relativePath + '/sping', ping);
 
 	setupFavicon(app);
 
