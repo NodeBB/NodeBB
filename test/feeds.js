@@ -181,6 +181,7 @@ describe('feeds', function () {
 
 		it('should not allow access if token is correct but has no privilege', function (done) {
 			privileges.categories.rescind(['read'], cid, 'registered-users', function (err) {
+				assert.ifError(err);
 				request(nconf.get('url') + '/category/' + cid + '.rss?uid=' + fooUid + '&token=' + rssToken, { }, function (err, res, body) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
