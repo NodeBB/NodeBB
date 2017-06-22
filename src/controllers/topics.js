@@ -150,6 +150,9 @@ topicsController.get = function (req, res, callback) {
 			if (req.uid) {
 				topicData.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
 			}
+
+			addTags(topicData, req, res);
+
 			topicData.postIndex = req.params.post_index;
 			topicData.pagination = pagination.create(currentPage, pageCount, req.query);
 			topicData.pagination.rel.forEach(function (rel) {
@@ -162,8 +165,6 @@ topicsController.get = function (req, res, callback) {
 				topics.increaseViewCount(tid);
 				req.session.tids_viewed[tid] = Date.now();
 			}
-
-			addTags(topicData, req, res);
 
 			if (req.uid) {
 				topics.markAsRead([tid], req.uid, function (err, markedRead) {

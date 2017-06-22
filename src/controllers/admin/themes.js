@@ -6,28 +6,23 @@ var async = require('async');
 
 var file = require('../../file');
 
-var themesController = {};
+var themesController = module.exports;
 
 var defaultScreenshotPath = path.join(__dirname, '../../../public/images/themes/default.png');
 
 themesController.get = function (req, res, next) {
 	var themeDir = path.join(__dirname, '../../../node_modules', req.params.theme);
 	var themeConfigPath = path.join(themeDir, 'theme.json');
-
+	var screenshotPath;
 	async.waterfall([
 		function (next) {
-			file.exists(themeConfigPath, function (err, exists) {
-				if (err) {
-					return next(err);
-				}
-				if (!exists) {
-					return next(Error('invalid-data'));
-				}
-
-				next();
-			});
+			file.exists(themeConfigPath, next);
 		},
-		function (next) {
+		function (exists, next) {
+			if (!exists) {
+				return next(Error('invalid-data'));
+			}
+
 			fs.readFile(themeConfigPath, next);
 		},
 		function (themeConfig, next) {
@@ -38,16 +33,13 @@ themesController.get = function (req, res, next) {
 				next(e);
 			}
 		},
-		function (screenshotPath, next) {
-			file.exists(screenshotPath, function (err, exists) {
-				if (err) {
-					return next(err);
-				}
-
-				res.sendFile(exists ? screenshotPath : defaultScreenshotPath);
-			});
+		function (_screenshotPath, next) {
+			screenshotPath = _screenshotPath;
+			file.exists(screenshotPath, next);
+		},
+		function (exists) {
+			res.sendFile(exists ? screenshotPath : defaultScreenshotPath);
 		},
 	], next);
 };
 
-module.exports = themesController;

@@ -1,6 +1,6 @@
 'use strict';
 
-var cacheController = {};
+var cacheController = module.exports;
 
 cacheController.get = function (req, res) {
 	var postCache = require('../../posts/cache');
@@ -37,6 +37,3 @@ cacheController.get = function (req, res) {
 		},
 	});
 };
-
-
-module.exports = cacheController;

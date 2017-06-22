@@ -1,16 +1,16 @@
 'use strict';
 
-var widgetsController = {};
+var async = require('async');
+
+var widgetsController = module.exports;
 
 widgetsController.get = function (req, res, next) {
-	require('../../widgets/admin').get(function (err, data) {
-		if (err) {
-			return next(err);
-		}
-
-		res.render('admin/extend/widgets', data);
-	});
+	async.waterfall([
+		function (next) {
+			require('../../widgets/admin').get(next);
+		},
+		function (data) {
+			res.render('admin/extend/widgets', data);
+		},
+	], next);
 };
-
-
-module.exports = widgetsController;

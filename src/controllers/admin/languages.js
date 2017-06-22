@@ -1,26 +1,27 @@
 'use strict';
 
+var async = require('async');
+
 var languages = require('../../languages');
 var meta = require('../../meta');
 
-var languagesController = {};
-
+var languagesController = module.exports;
 
 languagesController.get = function (req, res, next) {
-	languages.list(function (err, languages) {
-		if (err) {
-			return next(err);
-		}
+	async.waterfall([
+		function (next) {
+			languages.list(next);
+		},
+		function (languages) {
+			languages.forEach(function (language) {
+				language.selected = language.code === (meta.config.defaultLang || 'en-GB');
+			});
 
-		languages.forEach(function (language) {
-			language.selected = language.code === (meta.config.defaultLang || 'en-GB');
-		});
-
-		res.render('admin/general/languages', {
-			languages: languages,
-			autoDetectLang: parseInt(meta.config.autoDetectLang, 10) === 1,
-		});
-	});
+			res.render('admin/general/languages', {
+				languages: languages,
+				autoDetectLang: parseInt(meta.config.autoDetectLang, 10) === 1,
+			});
+		},
+	], next);
 };
 
-module.exports = languagesController;
