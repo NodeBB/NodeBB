@@ -16,7 +16,7 @@ groupsController.list = function (req, res, next) {
 
 	async.waterfall([
 		function (next) {
-			db.getSortedSetRevRange('groups:createtime', 0, -1, next);
+			db.getSortedSetRange('groups:createtime', 0, -1, next);
 		},
 		function (groupNames, next) {
 			groupNames = groupNames.filter(function (name) {
