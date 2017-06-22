@@ -231,6 +231,7 @@ function setupAutoLocale(app, callback) {
 
 function listen(callback) {
 	callback = callback || function () { };
+	console.log('derp', nconf.get('port'));
 	var port = parseInt(nconf.get('port'), 10);
 	var isSocket = isNaN(port);
 	var socketPath = isSocket ? nconf.get('port') : '';
