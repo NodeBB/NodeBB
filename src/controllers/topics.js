@@ -15,7 +15,7 @@ var helpers = require('./helpers');
 var pagination = require('../pagination');
 var utils = require('../utils');
 
-var topicsController = {};
+var topicsController = module.exports;
 
 topicsController.get = function (req, res, callback) {
 	var tid = req.params.topic_id;
@@ -23,6 +23,7 @@ topicsController.get = function (req, res, callback) {
 	var pageCount = 1;
 	var userPrivileges;
 	var settings;
+	var rssToken;
 
 	if ((req.params.post_index && !utils.isNumber(req.params.post_index)) || !utils.isNumber(tid)) {
 		return callback();
@@ -40,6 +41,9 @@ topicsController.get = function (req, res, callback) {
 				topic: function (next) {
 					topics.getTopicData(tid, next);
 				},
+				rssToken: function (next) {
+					user.auth.getFeedToken(req.uid, next);
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -48,6 +52,7 @@ topicsController.get = function (req, res, callback) {
 			}
 
 			userPrivileges = results.privileges;
+			rssToken = results.rssToken;
 
 			if (!userPrivileges['topics:read'] || (parseInt(results.topic.deleted, 10) && !userPrivileges.view_deleted)) {
 				return helpers.notAllowed(req, res);
@@ -129,167 +134,173 @@ topicsController.get = function (req, res, callback) {
 			plugins.fireHook('filter:controllers.topic.get', { topicData: topicData, uid: req.uid }, next);
 		},
 		function (data, next) {
-			var breadcrumbs = [
-				{
-					text: data.topicData.category.name,
-					url: nconf.get('relative_path') + '/category/' + data.topicData.category.slug,
-				},
-				{
-					text: data.topicData.title,
-				},
-			];
-
-			helpers.buildCategoryBreadcrumbs(data.topicData.category.parentCid, function (err, crumbs) {
-				if (err) {
-					return next(err);
-				}
-				data.topicData.breadcrumbs = crumbs.concat(breadcrumbs);
-				next(null, data.topicData);
-			});
+			buildBreadcrumbs(data.topicData, next);
 		},
-		function (topicData, next) {
-			function findPost(index) {
-				for (var i = 0; i < topicData.posts.length; i += 1) {
-					if (parseInt(topicData.posts[i].index, 10) === parseInt(index, 10)) {
-						return topicData.posts[i];
+		function (topicData) {
+			topicData.privileges = userPrivileges;
+			topicData.topicStaleDays = parseInt(meta.config.topicStaleDays, 10) || 60;
+			topicData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
+			topicData['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
+			topicData['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
+			topicData.bookmarkThreshold = parseInt(meta.config.bookmarkThreshold, 10) || 5;
+			topicData.postEditDuration = parseInt(meta.config.postEditDuration, 10) || 0;
+			topicData.postDeleteDuration = parseInt(meta.config.postDeleteDuration, 10) || 0;
+			topicData.scrollToMyPost = settings.scrollToMyPost;
+			topicData.rssFeedUrl = nconf.get('relative_path') + '/topic/' + topicData.tid + '.rss';
+			if (req.uid) {
+				topicData.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
+			}
+			topicData.postIndex = req.params.post_index;
+			topicData.pagination = pagination.create(currentPage, pageCount, req.query);
+			topicData.pagination.rel.forEach(function (rel) {
+				rel.href = nconf.get('url') + '/topic/' + topicData.slug + rel.href;
+				res.locals.linkTags.push(rel);
+			});
+
+			req.session.tids_viewed = req.session.tids_viewed || {};
+			if (!req.session.tids_viewed[tid] || req.session.tids_viewed[tid] < Date.now() - 3600000) {
+				topics.increaseViewCount(tid);
+				req.session.tids_viewed[tid] = Date.now();
+			}
+
+			addTags(topicData, req, res);
+
+			if (req.uid) {
+				topics.markAsRead([tid], req.uid, function (err, markedRead) {
+					if (err) {
+						return callback(err);
 					}
-				}
-			}
-			var description = '';
-			var postAtIndex = findPost(Math.max(0, req.params.post_index - 1));
-
-			if (postAtIndex && postAtIndex.content) {
-				description = S(postAtIndex.content).decodeHTMLEntities().stripTags().s;
-			}
-
-			if (description.length > 255) {
-				description = description.substr(0, 255) + '...';
-			}
-
-			var ogImageUrl = '';
-			if (topicData.thumb) {
-				ogImageUrl = topicData.thumb;
-			} else if (postAtIndex && postAtIndex.user && postAtIndex.user.picture) {
-				ogImageUrl = postAtIndex.user.picture;
-			} else if (meta.config['og:image']) {
-				ogImageUrl = meta.config['og:image'];
-			} else if (meta.config['brand:logo']) {
-				ogImageUrl = meta.config['brand:logo'];
-			} else {
-				ogImageUrl = '/logo.png';
-			}
-
-			if (typeof ogImageUrl === 'string' && ogImageUrl.indexOf('http') === -1) {
-				ogImageUrl = nconf.get('url') + ogImageUrl;
-			}
-
-			description = description.replace(/\n/g, ' ');
-
-			res.locals.metaTags = [
-				{
-					name: 'title',
-					content: topicData.titleRaw,
-				},
-				{
-					name: 'description',
-					content: description,
-				},
-				{
-					property: 'og:title',
-					content: topicData.titleRaw,
-				},
-				{
-					property: 'og:description',
-					content: description,
-				},
-				{
-					property: 'og:type',
-					content: 'article',
-				},
-				{
-					property: 'og:image',
-					content: ogImageUrl,
-					noEscape: true,
-				},
-				{
-					property: 'og:image:url',
-					content: ogImageUrl,
-					noEscape: true,
-				},
-				{
-					property: 'article:published_time',
-					content: utils.toISOString(topicData.timestamp),
-				},
-				{
-					property: 'article:modified_time',
-					content: utils.toISOString(topicData.lastposttime),
-				},
-				{
-					property: 'article:section',
-					content: topicData.category ? topicData.category.name : '',
-				},
-			];
-
-			res.locals.linkTags = [
-				{
-					rel: 'alternate',
-					type: 'application/rss+xml',
-					href: nconf.get('url') + '/topic/' + tid + '.rss',
-				},
-			];
-
-			if (topicData.category) {
-				res.locals.linkTags.push({
-					rel: 'up',
-					href: nconf.get('url') + '/category/' + topicData.category.slug,
+					if (markedRead) {
+						topics.pushUnreadCount(req.uid);
+						topics.markTopicNotificationsRead([tid], req.uid);
+					}
 				});
 			}
 
+			res.render('topic', topicData);
+		},
+	], callback);
+};
+
+function buildBreadcrumbs(topicData, callback) {
+	var breadcrumbs = [
+		{
+			text: topicData.category.name,
+			url: nconf.get('relative_path') + '/category/' + topicData.category.slug,
+		},
+		{
+			text: topicData.title,
+		},
+	];
+
+	async.waterfall([
+		function (next) {
+			helpers.buildCategoryBreadcrumbs(topicData.category.parentCid, next);
+		},
+		function (crumbs, next) {
+			topicData.breadcrumbs = crumbs.concat(breadcrumbs);
 			next(null, topicData);
 		},
-	], function (err, data) {
-		if (err) {
-			return callback(err);
-		}
+	], callback);
+}
 
-		data.privileges = userPrivileges;
-		data.topicStaleDays = parseInt(meta.config.topicStaleDays, 10) || 60;
-		data['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
-		data['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
-		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
-		data.bookmarkThreshold = parseInt(meta.config.bookmarkThreshold, 10) || 5;
-		data.postEditDuration = parseInt(meta.config.postEditDuration, 10) || 0;
-		data.postDeleteDuration = parseInt(meta.config.postDeleteDuration, 10) || 0;
-		data.scrollToMyPost = settings.scrollToMyPost;
-		data.rssFeedUrl = nconf.get('relative_path') + '/topic/' + data.tid + '.rss';
-		data.postIndex = req.params.post_index;
-		data.pagination = pagination.create(currentPage, pageCount, req.query);
-		data.pagination.rel.forEach(function (rel) {
-			rel.href = nconf.get('url') + '/topic/' + data.slug + rel.href;
-			res.locals.linkTags.push(rel);
+function addTags(topicData, req, res) {
+	function findPost(index) {
+		for (var i = 0; i < topicData.posts.length; i += 1) {
+			if (parseInt(topicData.posts[i].index, 10) === parseInt(index, 10)) {
+				return topicData.posts[i];
+			}
+		}
+	}
+	var description = '';
+	var postAtIndex = findPost(Math.max(0, req.params.post_index - 1));
+
+	if (postAtIndex && postAtIndex.content) {
+		description = S(postAtIndex.content).decodeHTMLEntities().stripTags().s;
+	}
+
+	if (description.length > 255) {
+		description = description.substr(0, 255) + '...';
+	}
+
+	var ogImageUrl = '';
+	if (topicData.thumb) {
+		ogImageUrl = topicData.thumb;
+	} else if (postAtIndex && postAtIndex.user && postAtIndex.user.picture) {
+		ogImageUrl = postAtIndex.user.picture;
+	} else if (meta.config['og:image']) {
+		ogImageUrl = meta.config['og:image'];
+	} else if (meta.config['brand:logo']) {
+		ogImageUrl = meta.config['brand:logo'];
+	} else {
+		ogImageUrl = '/logo.png';
+	}
+
+	if (typeof ogImageUrl === 'string' && ogImageUrl.indexOf('http') === -1) {
+		ogImageUrl = nconf.get('url') + ogImageUrl;
+	}
+
+	description = description.replace(/\n/g, ' ');
+	res.locals.metaTags = [
+		{
+			name: 'title',
+			content: topicData.titleRaw,
+		},
+		{
+			name: 'description',
+			content: description,
+		},
+		{
+			property: 'og:title',
+			content: topicData.titleRaw,
+		},
+		{
+			property: 'og:description',
+			content: description,
+		},
+		{
+			property: 'og:type',
+			content: 'article',
+		},
+		{
+			property: 'og:image',
+			content: ogImageUrl,
+			noEscape: true,
+		},
+		{
+			property: 'og:image:url',
+			content: ogImageUrl,
+			noEscape: true,
+		},
+		{
+			property: 'article:published_time',
+			content: utils.toISOString(topicData.timestamp),
+		},
+		{
+			property: 'article:modified_time',
+			content: utils.toISOString(topicData.lastposttime),
+		},
+		{
+			property: 'article:section',
+			content: topicData.category ? topicData.category.name : '',
+		},
+	];
+
+	res.locals.linkTags = [
+		{
+			rel: 'alternate',
+			type: 'application/rss+xml',
+			href: topicData.rssFeedUrl,
+		},
+	];
+
+	if (topicData.category) {
+		res.locals.linkTags.push({
+			rel: 'up',
+			href: nconf.get('url') + '/category/' + topicData.category.slug,
 		});
-
-		req.session.tids_viewed = req.session.tids_viewed || {};
-		if (!req.session.tids_viewed[tid] || req.session.tids_viewed[tid] < Date.now() - 3600000) {
-			topics.increaseViewCount(tid);
-			req.session.tids_viewed[tid] = Date.now();
-		}
-
-		if (req.uid) {
-			topics.markAsRead([tid], req.uid, function (err, markedRead) {
-				if (err) {
-					return callback(err);
-				}
-				if (markedRead) {
-					topics.pushUnreadCount(req.uid);
-					topics.markTopicNotificationsRead([tid], req.uid);
-				}
-			});
-		}
-
-		res.render('topic', data);
-	});
-};
+	}
+}
 
 topicsController.teaser = function (req, res, next) {
 	var tid = req.params.topic_id;
@@ -355,5 +366,3 @@ topicsController.pagination = function (req, res, callback) {
 		res.json(paginationData);
 	});
 };
-
-module.exports = topicsController;
