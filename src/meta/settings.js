@@ -36,7 +36,9 @@ Settings.set = function (hash, values, callback) {
 };
 
 Settings.setOne = function (hash, field, value, callback) {
-	db.setObjectField('settings:' + hash, field, value, callback);
+	var data = {};
+	data[field] = value;
+	Settings.set(hash, data, callback);
 };
 
 Settings.setOnEmpty = function (hash, values, callback) {
@@ -54,7 +56,7 @@ Settings.setOnEmpty = function (hash, values, callback) {
 			});
 
 			if (Object.keys(empty).length) {
-				db.setObject('settings:' + hash, empty, next);
+				Settings.set(hash, empty, next);
 			} else {
 				next();
 			}

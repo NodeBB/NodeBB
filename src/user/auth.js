@@ -6,6 +6,7 @@ var db = require('../database');
 var meta = require('../meta');
 var events = require('../events');
 var batch = require('../batch');
+var utils = require('../utils');
 
 module.exports = function (User) {
 	User.auth = {};
@@ -43,6 +44,29 @@ module.exports = function (User) {
 					ip: ip,
 				});
 				next(new Error('[[error:account-locked]]'));
+			},
+		], callback);
+	};
+
+	User.auth.getFeedToken = function (uid, callback) {
+		if (!uid) {
+			return callback();
+		}
+		var token;
+		async.waterfall([
+			function (next) {
+				User.getUserField(uid, 'rss_token', next);
+			},
+			function (_token, next) {
+				token = _token || utils.generateUUID();
+				if (!_token) {
+					User.setUserField(uid, 'rss_token', token, next);
+				} else {
+					next();
+				}
+			},
+			function (next) {
+				next(null, token);
 			},
 		], callback);
 	};

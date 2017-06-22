@@ -187,8 +187,10 @@ SocketAdmin.config.setMultiple = function (socket, data, callback) {
 					logger.monitorConfig({ io: index.server }, setting);
 				}
 			}
-			plugins.fireHook('action:config.set', { settings: data });
-			setImmediate(next);
+			data.type = 'config-change';
+			data.uid = socket.uid;
+			data.ip = socket.ip;
+			events.log(data, next);
 		},
 	], callback);
 };
@@ -202,7 +204,19 @@ SocketAdmin.settings.get = function (socket, data, callback) {
 };
 
 SocketAdmin.settings.set = function (socket, data, callback) {
-	meta.settings.set(data.hash, data.values, callback);
+	async.waterfall([
+		function (next) {
+			meta.settings.set(data.hash, data.values, next);
+		},
+		function (next) {
+			var eventData = data.values;
+			eventData.type = 'settings-change';
+			eventData.uid = socket.uid;
+			eventData.ip = socket.ip;
+			eventData.hash = data.hash;
+			events.log(eventData, next);
+		},
+	], callback);
 };
 
 SocketAdmin.settings.clearSitemapCache = function (socket, data, callback) {

@@ -7,7 +7,7 @@
 
 	"mongo": "Mongo",
 	"mongo.version": "Wersja MongoDB",
-	"mongo.storage-engine": "Storage Engine",
+	"mongo.storage-engine": "Silnik Magazynowania",
 	"mongo.collections": "Kolekcje",
 	"mongo.objects": "Obiekty",
 	"mongo.avg-object-size": "Przybliżony rozmiar obiektu",
@@ -15,7 +15,7 @@
 	"mongo.storage-size": "Rozmiar pamięci",
 	"mongo.index-size": "Rozmiar indeksu",
 	"mongo.file-size": "Rozmiar pliku",
-	"mongo.resident-memory": "Resident Memory",
+	"mongo.resident-memory": "Przynależna Pamięć",
 	"mongo.virtual-memory": "Pamięc wirtualna",
 	"mongo.mapped-memory": "Pamięc zmapowana",
 	"mongo.raw-info": "Surowe informacje MongoDB",
@@ -29,8 +29,8 @@
 	"redis.memory-frag-ratio": "Proporcja fragmentacji pamięci",
 	"redis.total-connections-recieved": "Otrzymanych połączeń",
 	"redis.total-commands-processed": "Przetworzonych połączeń",
-	"redis.iops": "Instantaneous Ops. Per Second",
-	"redis.keyspace-hits": "Keyspace Hits",
-	"redis.keyspace-misses": "Keyspace Misses",
+	"redis.iops": "Natychmiastowe Operacje Na Sekundę",
+	"redis.keyspace-hits": "Trafienia Kluczy",
+	"redis.keyspace-misses": "Nietrafione Klucze",
 	"redis.raw-info": "Surowe informacje Redis"
 }

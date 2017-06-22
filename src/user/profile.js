@@ -283,7 +283,10 @@ module.exports = function (User) {
 			},
 			function (hashedPassword, next) {
 				async.parallel([
-					async.apply(User.setUserField, data.uid, 'password', hashedPassword),
+					async.apply(User.setUserFields, data.uid, {
+						password: hashedPassword,
+						rss_token: utils.generateUUID(),
+					}),
 					async.apply(User.reset.updateExpiry, data.uid),
 					async.apply(User.auth.revokeAllSessions, data.uid),
 				], function (err) {

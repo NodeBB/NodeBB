@@ -152,7 +152,7 @@ redisModule.info = function (cxn, callback) {
 					redisData[parts[0]] = parts[1];
 				}
 			});
-			redisData.used_memory_human = (redisData.used_memory / (1024 * 1024 * 1024)).toFixed(2);
+			redisData.used_memory_human = (redisData.used_memory / (1024 * 1024 * 1024)).toFixed(3);
 			redisData.raw = JSON.stringify(redisData, null, 4);
 			redisData.redis = true;
 
