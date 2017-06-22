@@ -52,19 +52,23 @@ module.exports = function (User) {
 		if (!uid) {
 			return callback();
 		}
-
-		User.getUserField(uid, 'rss_token', function (err, token) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (!token) {
-				token = utils.generateUUID();
-				User.setUserField(uid, 'rss_token', token);
-			}
-
-			callback(false, token);
-		});
+		var token;
+		async.waterfall([
+			function (next) {
+				User.getUserField(uid, 'rss_token', next);
+			},
+			function (_token, next) {
+				token = _token || utils.generateUUID();
+				if (!_token) {
+					User.setUserField(uid, 'rss_token', token, next);
+				} else {
+					next();
+				}
+			},
+			function (next) {
+				next(null, token);
+			},
+		], callback);
 	};
 
 	User.auth.clearLoginAttempts = function (uid) {

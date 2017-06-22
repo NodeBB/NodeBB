@@ -23,6 +23,7 @@ topicsController.get = function (req, res, callback) {
 	var pageCount = 1;
 	var userPrivileges;
 	var settings;
+	var rssToken;
 
 	if ((req.params.post_index && !utils.isNumber(req.params.post_index)) || !utils.isNumber(tid)) {
 		return callback();
@@ -40,6 +41,9 @@ topicsController.get = function (req, res, callback) {
 				topic: function (next) {
 					topics.getTopicData(tid, next);
 				},
+				rssToken: function (next) {
+					user.auth.getFeedToken(req.uid, next);
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -48,6 +52,7 @@ topicsController.get = function (req, res, callback) {
 			}
 
 			userPrivileges = results.privileges;
+			rssToken = results.rssToken;
 
 			if (!userPrivileges['topics:read'] || (parseInt(results.topic.deleted, 10) && !userPrivileges.view_deleted)) {
 				return helpers.notAllowed(req, res);
@@ -262,6 +267,9 @@ topicsController.get = function (req, res, callback) {
 		data.postDeleteDuration = parseInt(meta.config.postDeleteDuration, 10) || 0;
 		data.scrollToMyPost = settings.scrollToMyPost;
 		data.rssFeedUrl = nconf.get('relative_path') + '/topic/' + data.tid + '.rss';
+		if (req.uid) {
+			data.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
+		}
 		data.postIndex = req.params.post_index;
 		data.pagination = pagination.create(currentPage, pageCount, req.query);
 		data.pagination.rel.forEach(function (rel) {

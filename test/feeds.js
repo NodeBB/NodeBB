@@ -12,6 +12,7 @@ var groups = require('../src/groups');
 var user = require('../src/user');
 var meta = require('../src/meta');
 var privileges = require('../src/privileges');
+var helpers = require('./helpers');
 
 describe('feeds', function () {
 	var tid;
@@ -110,6 +111,82 @@ describe('feeds', function () {
 				assert(body);
 				assert(body.indexOf('Login to your account') !== -1);
 				privileges.categories.give(['read'], cid, 'guests', done);
+			});
+		});
+	});
+
+	describe('private feeds and tokens', function () {
+		var jar;
+		var rssToken;
+		before(function (done) {
+			helpers.loginUser('foo', 'barbar', function (err, _jar) {
+				assert.ifError(err);
+				jar = _jar;
+				done();
+			});
+		});
+
+		it('should load feed if its not private', function (done) {
+			request(nconf.get('url') + '/category/' + cid + '.rss', { }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+
+		it('should not allow access if uid or token is missing', function (done) {
+			privileges.categories.rescind(['read'], cid, 'guests', function (err) {
+				assert.ifError(err);
+				async.parallel({
+					test1: function (next) {
+						request(nconf.get('url') + '/category/' + cid + '.rss?uid=' + fooUid, { }, next);
+					},
+					test2: function (next) {
+						request(nconf.get('url') + '/category/' + cid + '.rss?token=sometoken', { }, next);
+					},
+				}, function (err, results) {
+					assert.ifError(err);
+					assert.equal(results.test1[0].statusCode, 200);
+					assert.equal(results.test2[0].statusCode, 200);
+					assert(results.test1[0].body.indexOf('Login to your account') !== -1);
+					assert(results.test2[0].body.indexOf('Login to your account') !== -1);
+					done();
+				});
+			});
+		});
+
+		it('should not allow access if token is wrong', function (done) {
+			request(nconf.get('url') + '/category/' + cid + '.rss?uid=' + fooUid + '&token=sometoken', { }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body.indexOf('Login to your account') !== -1);
+				done();
+			});
+		});
+
+		it('should allow access if token is correct', function (done) {
+			request(nconf.get('url') + '/api/category/' + cid, { jar: jar, json: true }, function (err, res, body) {
+				assert.ifError(err);
+				rssToken = body.rssFeedUrl.split('token')[1].slice(1);
+				request(nconf.get('url') + '/category/' + cid + '.rss?uid=' + fooUid + '&token=' + rssToken, { }, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body);
+					done();
+				});
+			});
+		});
+
+		it('should not allow access if token is correct but has no privilege', function (done) {
+			privileges.categories.rescind(['read'], cid, 'registered-users', function (err) {
+				request(nconf.get('url') + '/category/' + cid + '.rss?uid=' + fooUid + '&token=' + rssToken, { }, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body.indexOf('Login to your account') !== -1);
+					done();
+				});
 			});
 		});
 	});

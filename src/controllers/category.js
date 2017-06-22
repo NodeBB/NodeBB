@@ -154,12 +154,10 @@ categoryController.get = function (req, res, callback) {
 			categoryData.description = translator.escape(categoryData.description);
 			categoryData.privileges = userPrivileges;
 			categoryData.showSelect = categoryData.privileges.editable;
-
+			categoryData.rssFeedUrl = nconf.get('url') + '/category/' + categoryData.cid + '.rss';
 			if (parseInt(req.uid, 10)) {
 				categories.markAsRead([cid], req.uid);
-				categoryData.rssFeedUrl = nconf.get('url') + '/category/' + categoryData.cid + '.rss?uid=' + req.uid + '&token=' + rssToken;
-			} else {
-				categoryData.rssFeedUrl = nconf.get('url') + '/category/' + categoryData.cid + '.rss';
+				categoryData.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
 			}
 
 			addTags(categoryData, res);
