@@ -73,21 +73,21 @@ Digest.getSubscribers = function (interval, callback) {
 			var subs = [];
 
 			batch.processSortedSet('users:joindate', function (uids, next) {
-				user.getMultipleUserSettings(uids, function (err, settings) {
-					if (err) {
-						return next(err);
-					}
-
-					settings.forEach(function (hash) {
-						if (hash.dailyDigestFreq === interval) {
-							subs.push(hash.uid);
-						}
-					});
-
-					next();
-				});
-			}, { interval: 1000 }, function () {
-				next(null, subs);
+				async.waterfall([
+					function (next) {
+						user.getMultipleUserSettings(uids, next);
+					},
+					function (settings, next) {
+						settings.forEach(function (hash) {
+							if (hash.dailyDigestFreq === interval) {
+								subs.push(hash.uid);
+							}
+						});
+						next();
+					},
+				], next);
+			}, { interval: 1000 }, function (err) {
+				next(err, subs);
 			});
 		},
 		function (subscribers, next) {
