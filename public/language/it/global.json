@@ -103,5 +103,7 @@
     "cookies.message": "Questo sito utilizza i cookie per garantirti la miglior esperienza di navigazione possibile",
     "cookies.accept": "Ho capito!",
     "cookies.learn_more": "Scopri di più",
-    "edited": "Modificato"
+    "edited": "Modificato",
+    "disabled": "Disabled",
+    "select": "Select"
 }
