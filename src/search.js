@@ -1,7 +1,6 @@
 'use strict';
 
 var async = require('async');
-var validator = require('validator');
 
 var db = require('./database');
 var posts = require('./posts');
@@ -31,7 +30,6 @@ search.search = function (data, callback) {
 			}
 		},
 		function (result, next) {
-			result.search_query = validator.escape(String(data.query || ''));
 			result.time = (process.elapsedTimeSince(start) / 1000).toFixed(2);
 			next(null, result);
 		},

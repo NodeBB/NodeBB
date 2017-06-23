@@ -2,6 +2,7 @@
 'use strict';
 
 var async = require('async');
+var validator = require('validator');
 
 var meta = require('../meta');
 var plugins = require('../plugins');
@@ -68,7 +69,8 @@ searchController.search = function (req, res, next) {
 		searchData.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[global:search]]' }]);
 		searchData.expandSearch = !req.query.term;
 		searchData.searchDefaultSortBy = meta.config.searchDefaultSortBy || '';
-
+		searchData.search_query = validator.escape(String(req.query.term || ''));
+		searchData.term = req.query.term;
 		res.render('search', searchData);
 	});
 };
