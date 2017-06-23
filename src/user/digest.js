@@ -73,6 +73,33 @@ Digest.getSubscribers = function (interval, callback) {
 			db.getSortedSetRange('digest:' + interval + ':uids', 0, -1, next);
 		},
 		function (subscribers, next) {
+			// If ACP default digest frequency is set, add all users who are not in any of the explicit subscription sorted sets
+			if (!meta.config.dailyDigestFreq || meta.configs.dailyDigestFreq === 'off') {
+				return setImmediate(next, null, subscribers);
+			}
+
+			var digestSets = ['digest:day:uids', 'digest:week:uids', 'digest:month:uids'];
+			db.getSortedSetsMembers(digestSets.concat('users:joindate'), function (err, sets) {
+				if (err) {
+					return next(err);
+				}
+
+				var allUids = sets.pop();
+				// Append those uids from the joindate zset who are not in digest sets
+				allUids.forEach(function (uid) {
+					var append = sets.every(function (set) {
+						return set.indexOf(uid) === -1;
+					});
+
+					if (append) {
+						subscribers.push(uid);
+					}
+				});
+
+				next(null, subscribers);
+			});
+		},
+		function (subscribers, next) {
 			plugins.fireHook('filter:digest.subscribers', {
 				interval: interval,
 				subscribers: subscribers,
