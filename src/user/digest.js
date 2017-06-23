@@ -5,6 +5,7 @@ var winston = require('winston');
 var nconf = require('nconf');
 
 var db = require('../database');
+var batch = require('../batch');
 var meta = require('../meta');
 var user = require('../user');
 var topics = require('../topics');
@@ -70,33 +71,20 @@ Digest.execute = function (payload, callback) {
 Digest.getSubscribers = function (interval, callback) {
 	async.waterfall([
 		function (next) {
-			db.getSortedSetRange('digest:' + interval + ':uids', 0, -1, next);
-		},
-		function (subscribers, next) {
-			// If ACP default digest frequency is set, add all users who are not in any of the explicit subscription sorted sets
-			if (!meta.config.dailyDigestFreq || meta.configs.dailyDigestFreq === 'off') {
-				return setImmediate(next, null, subscribers);
-			}
+			var subs = [];
 
-			var digestSets = ['digest:day:uids', 'digest:week:uids', 'digest:month:uids'];
-			db.getSortedSetsMembers(digestSets.concat('users:joindate'), function (err, sets) {
-				if (err) {
-					return next(err);
-				}
-
-				var allUids = sets.pop();
-				// Append those uids from the joindate zset who are not in digest sets
-				allUids.forEach(function (uid) {
-					var append = sets.every(function (set) {
-						return set.indexOf(uid) === -1;
+			batch.processSortedSet('users:joindate', function (uids, next) {
+				user.getMultipleUserSettings(uids, function (err, settings) {
+					settings.forEach(function (hash) {
+						if (hash.dailyDigestFreq === interval) {
+							subs.push(hash.uid);
+						}
 					});
 
-					if (append) {
-						subscribers.push(uid);
-					}
+					next();
 				});
-
-				next(null, subscribers);
+			}, { interval: 1000 }, function () {
+				next(null, subs);
 			});
 		},
 		function (subscribers, next) {
