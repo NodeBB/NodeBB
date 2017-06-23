@@ -4,7 +4,6 @@ var async = require('async');
 var winston = require('winston');
 var nconf = require('nconf');
 
-var db = require('../database');
 var batch = require('../batch');
 var meta = require('../meta');
 var user = require('../user');
@@ -75,6 +74,10 @@ Digest.getSubscribers = function (interval, callback) {
 
 			batch.processSortedSet('users:joindate', function (uids, next) {
 				user.getMultipleUserSettings(uids, function (err, settings) {
+					if (err) {
+						return next(err);
+					}
+
 					settings.forEach(function (hash) {
 						if (hash.dailyDigestFreq === interval) {
 							subs.push(hash.uid);
