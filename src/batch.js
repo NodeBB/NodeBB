@@ -63,7 +63,11 @@ exports.processSortedSet = function (setKey, process, options, callback) {
 					start += utils.isNumber(options.alwaysStartAt) ? options.alwaysStartAt : batch + 1;
 					stop = start + batch;
 
-					next();
+					if (options.interval) {
+						setTimeout(next, options.interval);
+					} else {
+						next();
+					}
 				});
 			});
 		},
