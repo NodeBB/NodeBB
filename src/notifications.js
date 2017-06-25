@@ -160,9 +160,7 @@ Notifications.push = function (notification, uids, callback) {
 		uids = [uids];
 	}
 
-	uids = uids.filter(function (uid, index, array) {
-		return parseInt(uid, 10) && array.indexOf(uid) === index;
-	});
+	uids = _.uniq(uids);
 
 	if (!uids.length) {
 		return callback();

@@ -273,9 +273,7 @@ module.exports = function (privileges) {
 			return callback(null, []);
 		}
 
-		uids = uids.filter(function (uid, index, array) {
-			return array.indexOf(uid) === index;
-		});
+		uids = _.uniq(uids);
 
 		async.waterfall([
 			function (next) {
@@ -286,14 +284,14 @@ module.exports = function (privileges) {
 					isModerators: function (next) {
 						user.isModerator(uids, cid, next);
 					},
-					isAdmin: function (next) {
+					isAdmins: function (next) {
 						user.isAdministrator(uids, next);
 					},
 				}, next);
 			},
 			function (results, next) {
 				uids = uids.filter(function (uid, index) {
-					return results.allowedTo[index] || results.isModerators[index] || results.isAdmin[index];
+					return results.allowedTo[index] || results.isModerators[index] || results.isAdmins[index];
 				});
 				next(null, uids);
 			},

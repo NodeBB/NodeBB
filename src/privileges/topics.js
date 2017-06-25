@@ -82,11 +82,9 @@ module.exports = function (privileges) {
 			},
 			function (_topicsData, next) {
 				topicsData = _topicsData;
-				cids = topicsData.map(function (topic) {
+				cids = _.uniq(topicsData.map(function (topic) {
 					return topic.cid;
-				}).filter(function (cid, index, array) {
-					return cid && array.indexOf(cid) === index;
-				});
+				}));
 
 				privileges.categories.getBase(privilege, cids, uid, next);
 			},
@@ -121,15 +119,14 @@ module.exports = function (privileges) {
 			return callback(null, []);
 		}
 
-		uids = uids.filter(function (uid, index, array) {
-			return array.indexOf(uid) === index;
-		});
-
+		uids = _.uniq(uids);
+		var topicData;
 		async.waterfall([
 			function (next) {
 				topics.getTopicFields(tid, ['tid', 'cid', 'deleted'], next);
 			},
-			function (topicData, next) {
+			function (_topicData, next) {
+				topicData = _topicData;
 				async.parallel({
 					disabled: function (next) {
 						categories.getCategoryField(topicData.cid, 'disabled', next);
@@ -143,18 +140,15 @@ module.exports = function (privileges) {
 					isAdmins: function (next) {
 						user.isAdministrator(uids, next);
 					},
-				}, function (err, results) {
-					if (err) {
-						return next(err);
-					}
-
-					uids = uids.filter(function (uid, index) {
-						return parseInt(results.disabled, 10) !== 1 &&
-							((results.allowedTo[index] && parseInt(topicData.deleted, 10) !== 1) || results.isAdmins[index] || results.isModerators[index]);
-					});
-
-					next(null, uids);
+				}, next);
+			},
+			function (results, next) {
+				uids = uids.filter(function (uid, index) {
+					return parseInt(results.disabled, 10) !== 1 &&
+						((results.allowedTo[index] && parseInt(topicData.deleted, 10) !== 1) || results.isAdmins[index] || results.isModerators[index]);
 				});
+
+				next(null, uids);
 			},
 		], callback);
 	};
