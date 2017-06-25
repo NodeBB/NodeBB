@@ -54,7 +54,7 @@ define('forum/login', [], function () {
 							app.flags._sessionRefresh = false;
 
 							// Select the entire password if that field has focus
-							if ($('#password:focus').size()) {
+							if ($('#password:focus').length) {
 								$('#password').select();
 							}
 						}
