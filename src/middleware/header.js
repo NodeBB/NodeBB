@@ -8,6 +8,7 @@ var user = require('../user');
 var meta = require('../meta');
 var plugins = require('../plugins');
 var navigation = require('../navigation');
+var translator = require('../translator');
 
 var controllers = {
 	api: require('../controllers/api'),
@@ -97,6 +98,11 @@ module.exports = function (middleware) {
 						}
 						db.get('uid:' + req.uid + ':confirm:email:sent', next);
 					},
+					languageDirection: function (next) {
+						translator.translate('[[language:dir]]', res.locals.config.userLang, function (translated) {
+							next(null, translated);
+						});
+					},
 					navigation: async.apply(navigation.get),
 					tags: async.apply(meta.tags.parse, req, res.locals.metaTags, res.locals.linkTags),
 					banned: async.apply(user.isBanned, req.uid),
@@ -135,6 +141,7 @@ module.exports = function (middleware) {
 				templateValues.maintenanceHeader = parseInt(meta.config.maintenanceMode, 10) === 1 && !results.isAdmin;
 				templateValues.defaultLang = meta.config.defaultLang || 'en-GB';
 				templateValues.userLang = res.locals.config.userLang;
+				templateValues.languageDirection = results.languageDirection;
 				templateValues.privateUserInfo = parseInt(meta.config.privateUserInfo, 10) === 1;
 				templateValues.privateTagListing = parseInt(meta.config.privateTagListing, 10) === 1;
 
