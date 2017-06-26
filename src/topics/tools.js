@@ -154,16 +154,13 @@ module.exports = function (Topics) {
 		var topicData;
 		async.waterfall([
 			function (next) {
-				Topics.exists(tid, next);
-			},
-			function (exists, next) {
-				if (!exists) {
-					return callback(new Error('[[error:no-topic]]'));
-				}
-				Topics.getTopicFields(tid, ['uid', 'tid', 'cid', 'lastposttime', 'postcount'], next);
+				Topics.getTopicData(tid, next);
 			},
 			function (_topicData, next) {
 				topicData = _topicData;
+				if (!topicData) {
+					return callback(new Error('[[error:no-topic]]'));
+				}
 				privileges.categories.isAdminOrMod(_topicData.cid, uid, next);
 			},
 			function (isAdminOrMod, next) {

@@ -1,6 +1,7 @@
 'use strict';
 
 var async = require('async');
+var _ = require('lodash');
 
 var db = require('../database');
 var topics = require('../topics');
@@ -41,7 +42,10 @@ module.exports = function (Categories) {
 
 		async.waterfall([
 			function (next) {
-				Categories.getPinnedTids(data.cid, 0, -1, next);
+				var dataForPinned = _.cloneDeep(data);
+				dataForPinned.start = 0;
+				dataForPinned.stop = -1;
+				Categories.getPinnedTids(dataForPinned, next);
 			},
 			function (_pinnedTids, next) {
 				var totalPinnedCount = _pinnedTids.length;
@@ -148,8 +152,17 @@ module.exports = function (Categories) {
 		db.getSortedSetRange(['cid:' + cid + ':tids:pinned', 'cid:' + cid + ':tids'], start, stop, callback);
 	};
 
-	Categories.getPinnedTids = function (cid, start, stop, callback) {
-		db.getSortedSetRevRange('cid:' + cid + ':tids:pinned', start, stop, callback);
+	Categories.getPinnedTids = function (data, callback) {
+		if (plugins.hasListeners('filter:categories.getPinnedTids')) {
+			return plugins.fireHook('filter:categories.getPinnedTids', {
+				pinnedTids: [],
+				data: data,
+			}, function (err, data) {
+				callback(err, data && data.pinnedTids);
+			});
+		}
+
+		db.getSortedSetRevRange('cid:' + data.cid + ':tids:pinned', data.start, data.stop, callback);
 	};
 
 	Categories.modifyTopicsByPrivilege = function (topics, privileges) {
