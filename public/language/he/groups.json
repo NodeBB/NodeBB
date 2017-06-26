@@ -52,7 +52,7 @@
     "membership.reject": "דחה",
     "new-group.group_name": "שם קבוצה",
     "upload-group-cover": "העלה תמונת נושא לקבוצה",
-    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
-    "bulk-invite": "Bulk Invite",
+    "bulk-invite-instructions": "הזן רשימה מופרדת בפסיק של משתמשים שתרצה להזמין לקבוצה זו.",
+    "bulk-invite": "הזמן מספר משתמשים",
     "remove_group_cover_confirm": "האם אתה בטוח שאתה רוצה להסיר את תמונת הקאבר?"
 }
