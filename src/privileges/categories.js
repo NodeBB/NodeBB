@@ -232,9 +232,7 @@ module.exports = function (privileges) {
 			return callback(null, []);
 		}
 
-		cids = cids.filter(function (cid, index, array) {
-			return array.indexOf(cid) === index;
-		});
+		cids = _.uniq(cids);
 
 		async.waterfall([
 			function (next) {

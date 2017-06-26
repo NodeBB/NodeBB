@@ -64,9 +64,7 @@ User.getUsersWithFields = function (uids, fields, uid, callback) {
 			plugins.fireHook('filter:users.addFields', { fields: fields }, next);
 		},
 		function (data, next) {
-			data.fields = data.fields.filter(function (field, index, array) {
-				return array.indexOf(field) === index;
-			});
+			data.fields = _.uniq(data.fields);
 
 			async.parallel({
 				userData: function (next) {

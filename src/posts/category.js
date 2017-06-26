@@ -28,11 +28,9 @@ module.exports = function (Posts) {
 			},
 			function (_postData, next) {
 				postData = _postData;
-				tids = postData.map(function (post) {
-					return post.tid;
-				}).filter(function (tid, index, array) {
-					return tid && array.indexOf(tid) === index;
-				});
+				tids = _.uniq(postData.map(function (post) {
+					return post && post.tid;
+				}).filter(Boolean));
 
 				topics.getTopicsFields(tids, ['cid'], next);
 			},

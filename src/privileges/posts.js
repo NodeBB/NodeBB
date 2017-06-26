@@ -2,6 +2,7 @@
 'use strict';
 
 var async = require('async');
+var _ = require('lodash');
 
 var meta = require('../meta');
 var posts = require('../posts');
@@ -72,17 +73,18 @@ module.exports = function (privileges) {
 		var tids;
 		var tidToTopic = {};
 
+		pids = _.uniq(pids);
+
 		async.waterfall([
 			function (next) {
 				posts.getPostsFields(pids, ['uid', 'tid', 'deleted'], next);
 			},
 			function (_posts, next) {
 				postData = _posts;
-				tids = _posts.map(function (post) {
+				tids = _.uniq(_posts.map(function (post) {
 					return post && post.tid;
-				}).filter(function (tid, index, array) {
-					return tid && array.indexOf(tid) === index;
-				});
+				}).filter(Boolean));
+
 				topics.getTopicsFields(tids, ['deleted', 'cid'], next);
 			},
 			function (topicData, next) {

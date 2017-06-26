@@ -1,6 +1,7 @@
 'use strict';
 
 var async = require('async');
+var _ = require('lodash');
 
 var db = require('./database');
 var posts = require('./posts');
@@ -79,9 +80,7 @@ function searchInContent(data, callback) {
 		function (mainPids, next) {
 			pids = mainPids.concat(pids).map(function (pid) {
 				return pid && pid.toString();
-			}).filter(function (pid, index, array) {
-				return pid && array.indexOf(pid) === index;
-			});
+			}).filter(Boolean);
 
 			privileges.posts.filter('read', pids, data.uid, next);
 		},
@@ -392,9 +391,8 @@ function getSearchCids(data, callback) {
 			}, next);
 		},
 		function (results, next) {
-			var cids = results.watchedCids.concat(results.childrenCids).concat(data.categories).filter(function (cid, index, array) {
-				return cid && array.indexOf(cid) === index;
-			});
+			var cids = results.watchedCids.concat(results.childrenCids).concat(data.categories).filter(Boolean);
+			cids = _.uniq(cids);
 			next(null, cids);
 		},
 	], callback);
