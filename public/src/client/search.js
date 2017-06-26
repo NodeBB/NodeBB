@@ -7,8 +7,6 @@ define('forum/search', ['search', 'autocomplete', 'storage'], function (searchMo
 	Search.init = function () {
 		var searchQuery = $('#results').attr('data-search-query');
 
-		$('#search-input').val(searchQuery);
-
 		var searchIn = $('#search-in');
 
 		searchIn.on('change', function () {
@@ -62,12 +60,13 @@ define('forum/search', ['search', 'autocomplete', 'storage'], function (searchMo
 
 	function fillOutForm() {
 		var params = utils.params();
+
 		var searchData = searchModule.getSearchPreferences();
 		var formData = utils.merge(searchData, params);
 
 		if (formData) {
-			if (params.term) {
-				$('#search-input').val(params.term);
+			if (ajaxify.data.term) {
+				$('#search-input').val(ajaxify.data.term);
 			}
 
 			if (formData.in) {

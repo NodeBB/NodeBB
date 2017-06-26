@@ -103,5 +103,7 @@
     "cookies.message": "This website uses cookies to ensure you get the best experience on our website.",
     "cookies.accept": "Got it!",
     "cookies.learn_more": "למד עוד",
-    "edited": "נערך"
+    "edited": "נערך",
+    "disabled": "Disabled",
+    "select": "Select"
 }

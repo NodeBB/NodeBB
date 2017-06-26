@@ -103,5 +103,7 @@
     "cookies.message": "A weboldal sütiket használ, a legjobb weboldalas élmény érdekében.",
     "cookies.accept": "Értem!",
     "cookies.learn_more": "Tudnivalók",
-    "edited": "Szerkesztett"
+    "edited": "Szerkesztett",
+    "disabled": "Disabled",
+    "select": "Select"
 }

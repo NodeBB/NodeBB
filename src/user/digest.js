@@ -4,7 +4,7 @@ var async = require('async');
 var winston = require('winston');
 var nconf = require('nconf');
 
-var db = require('../database');
+var batch = require('../batch');
 var meta = require('../meta');
 var user = require('../user');
 var topics = require('../topics');
@@ -70,7 +70,25 @@ Digest.execute = function (payload, callback) {
 Digest.getSubscribers = function (interval, callback) {
 	async.waterfall([
 		function (next) {
-			db.getSortedSetRange('digest:' + interval + ':uids', 0, -1, next);
+			var subs = [];
+
+			batch.processSortedSet('users:joindate', function (uids, next) {
+				async.waterfall([
+					function (next) {
+						user.getMultipleUserSettings(uids, next);
+					},
+					function (settings, next) {
+						settings.forEach(function (hash) {
+							if (hash.dailyDigestFreq === interval) {
+								subs.push(hash.uid);
+							}
+						});
+						next();
+					},
+				], next);
+			}, { interval: 1000 }, function (err) {
+				next(err, subs);
+			});
 		},
 		function (subscribers, next) {
 			plugins.fireHook('filter:digest.subscribers', {

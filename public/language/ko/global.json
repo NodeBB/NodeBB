@@ -103,5 +103,7 @@
     "cookies.message": "이 웹사이트는 최적의 사용환경을 위해 쿠키를 활용합니다.",
     "cookies.accept": "알겠습니다!",
     "cookies.learn_more": "더 보기",
-    "edited": "수정 되었습니다."
+    "edited": "수정 되었습니다.",
+    "disabled": "Disabled",
+    "select": "Select"
 }

@@ -2,6 +2,7 @@
 'use strict';
 
 var async = require('async');
+var _ = require('lodash');
 
 var user = require('../user');
 var groups = require('../groups');
@@ -51,9 +52,7 @@ module.exports = function (privileges) {
 					return filterIsModerator(cids, uid, cids.map(function () { return true; }), callback);
 				}
 
-				uniqueCids = cids.filter(function (cid, index, array) {
-					return array.indexOf(cid) === index;
-				});
+				uniqueCids = _.uniq(cids);
 
 				helpers.isUserAllowedTo('moderate', uid, uniqueCids, next);
 			},

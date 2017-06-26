@@ -10,7 +10,7 @@ var pagination = require('../../pagination');
 var events = require('../../events');
 var plugins = require('../../plugins');
 
-var usersController = {};
+var usersController = module.exports;
 
 var userFields = ['uid', 'username', 'userslug', 'email', 'postcount', 'joindate', 'banned',
 	'reputation', 'picture', 'flags', 'lastonline', 'email:confirmed'];
@@ -63,57 +63,59 @@ usersController.registrationQueue = function (req, res, next) {
 	var stop = start + itemsPerPage - 1;
 	var invitations;
 
-	async.parallel({
-		registrationQueueCount: function (next) {
-			db.sortedSetCard('registration:queue', next);
-		},
-		users: function (next) {
-			user.getRegistrationQueue(start, stop, next);
-		},
-		customHeaders: function (next) {
-			plugins.fireHook('filter:admin.registrationQueue.customHeaders', { headers: [] }, next);
-		},
-		invites: function (next) {
-			async.waterfall([
-				function (next) {
-					user.getAllInvites(next);
+	async.waterfall([
+		function (next) {
+			async.parallel({
+				registrationQueueCount: function (next) {
+					db.sortedSetCard('registration:queue', next);
 				},
-				function (_invitations, next) {
-					invitations = _invitations;
-					async.map(invitations, function (invites, next) {
-						user.getUserField(invites.uid, 'username', next);
-					}, next);
+				users: function (next) {
+					user.getRegistrationQueue(start, stop, next);
 				},
-				function (usernames, next) {
-					invitations.forEach(function (invites, index) {
-						invites.username = usernames[index];
-					});
-					async.map(invitations, function (invites, next) {
-						async.map(invites.invitations, user.getUsernameByEmail, next);
-					}, next);
+				customHeaders: function (next) {
+					plugins.fireHook('filter:admin.registrationQueue.customHeaders', { headers: [] }, next);
 				},
-				function (usernames, next) {
-					invitations.forEach(function (invites, index) {
-						invites.invitations = invites.invitations.map(function (email, i) {
-							return {
-								email: email,
-								username: usernames[index][i] === '[[global:guest]]' ? '' : usernames[index][i],
-							};
-						});
-					});
-					next(null, invitations);
+				invites: function (next) {
+					async.waterfall([
+						function (next) {
+							user.getAllInvites(next);
+						},
+						function (_invitations, next) {
+							invitations = _invitations;
+							async.map(invitations, function (invites, next) {
+								user.getUserField(invites.uid, 'username', next);
+							}, next);
+						},
+						function (usernames, next) {
+							invitations.forEach(function (invites, index) {
+								invites.username = usernames[index];
+							});
+							async.map(invitations, function (invites, next) {
+								async.map(invites.invitations, user.getUsernameByEmail, next);
+							}, next);
+						},
+						function (usernames, next) {
+							invitations.forEach(function (invites, index) {
+								invites.invitations = invites.invitations.map(function (email, i) {
+									return {
+										email: email,
+										username: usernames[index][i] === '[[global:guest]]' ? '' : usernames[index][i],
+									};
+								});
+							});
+							next(null, invitations);
+						},
+					], next);
 				},
-			], next);
+			}, next);
 		},
-	}, function (err, data) {
-		if (err) {
-			return next(err);
-		}
-		var pageCount = Math.max(1, Math.ceil(data.registrationQueueCount / itemsPerPage));
-		data.pagination = pagination.create(page, pageCount);
-		data.customHeaders = data.customHeaders.headers;
-		res.render('admin/manage/registration', data);
-	});
+		function (data) {
+			var pageCount = Math.max(1, Math.ceil(data.registrationQueueCount / itemsPerPage));
+			data.pagination = pagination.create(page, pageCount);
+			data.customHeaders = data.customHeaders.headers;
+			res.render('admin/manage/registration', data);
+		},
+	], next);
 };
 
 function getUsers(set, section, min, max, req, res, next) {
@@ -123,47 +125,48 @@ function getUsers(set, section, min, max, req, res, next) {
 	var stop = start + resultsPerPage - 1;
 	var byScore = min !== undefined && max !== undefined;
 
-	async.parallel({
-		count: function (next) {
-			if (byScore) {
-				db.sortedSetCount(set, min, max, next);
-			} else if (set === 'users:banned' || set === 'users:notvalidated') {
-				db.sortedSetCard(set, next);
-			} else {
-				db.getObjectField('global', 'userCount', next);
-			}
-		},
-		users: function (next) {
-			async.waterfall([
-				function (next) {
+	async.waterfall([
+		function (next) {
+			async.parallel({
+				count: function (next) {
 					if (byScore) {
-						db.getSortedSetRevRangeByScore(set, start, resultsPerPage, max, min, next);
+						db.sortedSetCount(set, min, max, next);
+					} else if (set === 'users:banned' || set === 'users:notvalidated') {
+						db.sortedSetCard(set, next);
 					} else {
-						user.getUidsFromSet(set, start, stop, next);
+						db.getObjectField('global', 'userCount', next);
 					}
 				},
-				function (uids, next) {
-					user.getUsersWithFields(uids, userFields, req.uid, next);
+				users: function (next) {
+					async.waterfall([
+						function (next) {
+							if (byScore) {
+								db.getSortedSetRevRangeByScore(set, start, resultsPerPage, max, min, next);
+							} else {
+								user.getUidsFromSet(set, start, stop, next);
+							}
+						},
+						function (uids, next) {
+							user.getUsersWithFields(uids, userFields, req.uid, next);
+						},
+					], next);
 				},
-			], next);
+			}, next);
 		},
-	}, function (err, results) {
-		if (err) {
-			return next(err);
-		}
-
-		results.users = results.users.filter(function (user) {
-			user.email = validator.escape(String(user.email || ''));
-			return user && parseInt(user.uid, 10);
-		});
-		var data = {
-			users: results.users,
-			page: page,
-			pageCount: Math.max(1, Math.ceil(results.count / resultsPerPage)),
-		};
-		data[section] = true;
-		render(req, res, data);
-	});
+		function (results) {
+			results.users = results.users.filter(function (user) {
+				user.email = validator.escape(String(user.email || ''));
+				return user && parseInt(user.uid, 10);
+			});
+			var data = {
+				users: results.users,
+				page: page,
+				pageCount: Math.max(1, Math.ceil(results.count / resultsPerPage)),
+			};
+			data[section] = true;
+			render(req, res, data);
+		},
+	], next);
 }
 
 function render(req, res, data) {
@@ -185,15 +188,14 @@ usersController.getCSV = function (req, res, next) {
 		uid: req.user.uid,
 		ip: req.ip,
 	});
-
-	user.getUsersCSV(function (err, data) {
-		if (err) {
-			return next(err);
-		}
-		res.attachment('users.csv');
-		res.setHeader('Content-Type', 'text/csv');
-		res.end(data);
-	});
+	async.waterfall([
+		function (next) {
+			user.getUsersCSV(next);
+		},
+		function (data) {
+			res.attachment('users.csv');
+			res.setHeader('Content-Type', 'text/csv');
+			res.end(data);
+		},
+	], next);
 };
-
-module.exports = usersController;

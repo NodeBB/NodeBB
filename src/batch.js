@@ -30,17 +30,18 @@ exports.processSortedSet = function (setKey, process, options, callback) {
 		});
 	}
 
+	options.batch = options.batch || DEFAULT_BATCH_SIZE;
+
 	// use the fast path if possible
 	if (db.processSortedSet && typeof options.doneIf !== 'function' && !utils.isNumber(options.alwaysStartAt)) {
-		return db.processSortedSet(setKey, process, options.batch || DEFAULT_BATCH_SIZE, callback);
+		return db.processSortedSet(setKey, process, options, callback);
 	}
 
 	// custom done condition
 	options.doneIf = typeof options.doneIf === 'function' ? options.doneIf : function () {};
 
-	var batch = options.batch || DEFAULT_BATCH_SIZE;
 	var start = 0;
-	var stop = batch;
+	var stop = options.batch;
 	var done = false;
 
 	async.whilst(
@@ -60,10 +61,14 @@ exports.processSortedSet = function (setKey, process, options, callback) {
 					if (err) {
 						return next(err);
 					}
-					start += utils.isNumber(options.alwaysStartAt) ? options.alwaysStartAt : batch + 1;
-					stop = start + batch;
+					start += utils.isNumber(options.alwaysStartAt) ? options.alwaysStartAt : options.batch + 1;
+					stop = start + options.batch;
 
-					next();
+					if (options.interval) {
+						setTimeout(next, options.interval);
+					} else {
+						next();
+					}
 				});
 			});
 		},

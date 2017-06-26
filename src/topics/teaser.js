@@ -2,6 +2,7 @@
 'use strict';
 
 var async = require('async');
+var _ = require('lodash');
 var S = require('string');
 var winston = require('winston');
 
@@ -57,11 +58,9 @@ module.exports = function (Topics) {
 			},
 			function (_postData, next) {
 				postData = _postData;
-				var uids = postData.map(function (post) {
+				var uids = _.uniq(postData.map(function (post) {
 					return post.uid;
-				}).filter(function (uid, index, array) {
-					return array.indexOf(uid) === index;
-				});
+				}));
 
 				user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
 			},
