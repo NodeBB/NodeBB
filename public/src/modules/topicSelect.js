@@ -39,6 +39,9 @@ define('topicSelect', ['components'], function (components) {
 
 	TopicSelect.getSelectedTids = function () {
 		var tids = [];
+		if (!topicsContainer) {
+			return tids;
+		}
 		topicsContainer.find('[component="category/topic"].selected').each(function () {
 			tids.push($(this).attr('data-tid'));
 		});
@@ -46,8 +49,10 @@ define('topicSelect', ['components'], function (components) {
 	};
 
 	TopicSelect.unselectAll = function () {
-		topicsContainer.find('[component="category/topic"].selected').removeClass('selected');
-		topicsContainer.find('[component="topic/select"]').toggleClass('fa-check-square-o', false).toggleClass('fa-square-o', true);
+		if (topicsContainer) {
+			topicsContainer.find('[component="category/topic"].selected').removeClass('selected');
+			topicsContainer.find('[component="topic/select"]').toggleClass('fa-check-square-o', false).toggleClass('fa-square-o', true);
+		}
 	};
 
 	function selectRange(clickedTid) {
