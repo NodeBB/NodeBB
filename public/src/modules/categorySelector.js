@@ -8,6 +8,7 @@ define('categorySelector', function () {
 	categorySelector.init = function (_el, callback) {
 		callback = callback || function () {};
 		el = _el;
+		selectedCategory = null;
 		el.on('click', '[data-cid]', function () {
 			var categoryEl = $(this);
 			categorySelector.selectCategory(categoryEl.attr('data-cid'));
