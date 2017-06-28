@@ -17,7 +17,7 @@
 	"filter-targetUid": "Indicador UID",
 	"filter-type": "Tipo de indicador",
 	"filter-type-all": "Todo el contenido",
-	"filter-type-post": "Post",
+	"filter-type-post": "Mensaje",
 	"filter-state": "estado",
 	"filter-assignee": "UID asignado",
 	"filter-cid": "Categoria",
@@ -56,5 +56,5 @@
 	"modal-reason-offensive": "Ofensivo",
 	"modal-reason-custom": "Razón para reportar este contenido...",
 	"modal-submit": "Enviar reporte",
-	"modal-submit-success": "Content has been flagged for moderation."
+	"modal-submit-success": "El contenido se ha reportado para moderación."
 }
