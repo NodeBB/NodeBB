@@ -1011,6 +1011,13 @@ describe('User', function () {
 				done();
 			});
 		});
+
+		it('should not send digests', function (done) {
+			User.digest.execute({ interval: 'month' }, function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
 	});
 
 	describe('socket methods', function () {
