@@ -104,6 +104,11 @@ module.exports = function (Topics) {
 				if (data.content) {
 					data.content = utils.rtrim(data.content);
 				}
+
+				if (parseInt(meta.config.minimumPostLength, 10) === 0) {
+					// Abort if minimum post length is set to 0
+					return setImmediate(next);
+				}
 				check(data.content, meta.config.minimumPostLength, meta.config.maximumPostLength, 'content-too-short', 'content-too-long', next);
 			},
 			function (next) {
