@@ -22,7 +22,7 @@ require('./posts/bookmarks')(SocketPosts);
 require('./posts/tools')(SocketPosts);
 
 SocketPosts.reply = function (socket, data, callback) {
-	if (!data || !data.tid || !data.content) {
+	if (!data || !data.tid || (parseInt(meta.config.minimumPostLength, 10) !== 0 && !data.content)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
