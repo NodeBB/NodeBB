@@ -617,7 +617,7 @@
 
 			// Add directional code if necessary
 			adaptor.translate('[[language:dir]]', function (value) {
-				if (value) {
+				if (value && !$('html').attr('data-dir')) {
 					jQuery('html').css('direction', value).attr('data-dir', value);
 				}
 			});

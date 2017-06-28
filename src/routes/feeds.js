@@ -263,7 +263,8 @@ function generateTopicsFeed(feedOptions, feedTopics, callback) {
 		if (topicData.teaser && topicData.teaser.user) {
 			feedItem.description = topicData.teaser.content;
 			feedItem.author = topicData.teaser.user.username;
-			return next(null, feedItem);
+			feed.item(feedItem);
+			return next();
 		}
 
 		topics.getMainPost(topicData.tid, feedOptions.uid, function (err, mainPost) {

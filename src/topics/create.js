@@ -104,6 +104,7 @@ module.exports = function (Topics) {
 				if (data.content) {
 					data.content = utils.rtrim(data.content);
 				}
+
 				check(data.content, meta.config.minimumPostLength, meta.config.maximumPostLength, 'content-too-short', 'content-too-long', next);
 			},
 			function (next) {
@@ -345,7 +346,7 @@ module.exports = function (Topics) {
 			item = S(item).stripTags().s.trim();
 		}
 
-		if (!item || item.length < parseInt(min, 10)) {
+		if (item === null || item === undefined || item.length < parseInt(min, 10)) {
 			return callback(new Error('[[error:' + minError + ', ' + min + ']]'));
 		} else if (item.length > parseInt(max, 10)) {
 			return callback(new Error('[[error:' + maxError + ', ' + max + ']]'));

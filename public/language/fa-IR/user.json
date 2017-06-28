@@ -114,8 +114,8 @@
     "select-skin": "انتخاب یک پوسته",
     "select-homepage": "انتخاب صفحه اصلی",
     "homepage": "صفحه اصلی",
-    "homepage_description": "Select a page to use as the forum homepage or 'None' to use the default homepage.",
-    "custom_route": "Custom Homepage Route",
+    "homepage_description": "یک صفحه را به عنوان خانه انتخاب کنید یا با انتخاب \"هیچکدام\"  صفحه‌ی پیش فرض برای شما انتخاب می‌شود.  ",
+    "custom_route": "مسیر صفحه‌ی اختصاصی",
     "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\", or \"popular\")",
     "sso.title": "Single Sign-on Services",
     "sso.associated": "Associated with",
@@ -132,5 +132,5 @@
     "info.email-history": "تاریخچه رایانامه",
     "info.moderation-note": "یادداشت مدیر",
     "info.moderation-note.success": "یادداشت مدیر ذخیره شد",
-    "info.moderation-note.add": "Add note"
+    "info.moderation-note.add": "افزودن یادداشت"
 }

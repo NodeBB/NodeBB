@@ -60,7 +60,7 @@
     "post-delete-duration-expired-days": "You are only allowed to delete posts for %1 day(s) after posting",
     "post-delete-duration-expired-days-hours": "You are only allowed to delete posts for %1 day(s) %2 hour(s) after posting",
     "cant-delete-topic-has-reply": "אינך יכול למחוק נושא אחרי שכבר הגיבו בו.",
-    "cant-delete-topic-has-replies": "You can't delete your topic after it has %1 replies",
+    "cant-delete-topic-has-replies": "לא ניתן למחוק את הנושא לאחר שקיבל %1 תגובות",
     "content-too-short": "אנא הכנס פוסט ארוך יותר. פוסטים חייבים להכיל לפחות %1 תווים.",
     "content-too-long": "אנא הכנס פוסט קצר יותר. פוסטים חייבים להיות קצרים יותר מ-%1 תווים.",
     "title-too-short": "אנא הכנס כותרת ארוכה יותר. כותרות חייבות להכיל לפחות %1 תווים.",
@@ -129,6 +129,6 @@
     "cant-kick-self": "אינך יכול להסיר את עצמך מהקבוצה",
     "no-users-selected": "לא נבחרו משתמשים",
     "invalid-home-page-route": "כתובת דף הבית הינה שגויה",
-    "invalid-session": "Session Mismatch",
-    "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page."
+    "invalid-session": "סשן לא תקין",
+    "invalid-session-text": "נראה שסשן ההתחברות שלך כבר לא פעיל. אנא טען מחדש את העמוד."
 }

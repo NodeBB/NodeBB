@@ -991,20 +991,31 @@ describe('User', function () {
 	describe('digests', function () {
 		var uid;
 		before(function (done) {
-			User.create({ username: 'digestuser', email: 'test@example.com' }, function (err, _uid) {
+			async.waterfall([
+				function (next) {
+					User.create({ username: 'digestuser', email: 'test@example.com' }, next);
+				},
+				function (_uid, next) {
+					uid = _uid;
+					User.updateDigestSetting(uid, 'day', next);
+				},
+				function (next) {
+					User.setSetting(uid, 'dailyDigestFreq', 'day', next);
+				},
+			], done);
+		});
+
+		it('should send digests', function (done) {
+			User.digest.execute({ interval: 'day' }, function (err) {
 				assert.ifError(err);
-				uid = _uid;
 				done();
 			});
 		});
 
-		it('should send digests', function (done) {
-			User.updateDigestSetting(uid, 'day', function (err) {
+		it('should not send digests', function (done) {
+			User.digest.execute({ interval: 'month' }, function (err) {
 				assert.ifError(err);
-				User.digest.execute({ interval: 'day' }, function (err) {
-					assert.ifError(err);
-					done();
-				});
+				done();
 			});
 		});
 	});

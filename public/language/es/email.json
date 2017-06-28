@@ -32,9 +32,9 @@
     "notif.post.unsub.info": "La notificación de este mensaje se te ha enviado debido a tus ajustes de subscripción.",
     "test.text1": "Este es un email de prueba para verificar que el envío de email está ajustado correctamente para tu NodeBB",
     "unsub.cta": "Haz click aquí para modificar los ajustes.",
-    "banned.subject": "You have been banned from %1",
-    "banned.text1": "The user %1 has been banned from %2.",
-    "banned.text2": "This ban will last until %1.",
-    "banned.text3": "This is the reason why you have been banned:",
+    "banned.subject": "Has sido baneado de %1",
+    "banned.text1": "El usuario %1 ha sido baneado de %2.",
+    "banned.text2": "Este ban dura hasta %1.",
+    "banned.text3": "La razón por la que has sido baneado: ",
     "closing": "¡Gracias!"
 }

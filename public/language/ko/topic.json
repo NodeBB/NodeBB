@@ -59,7 +59,7 @@
     "thread_tools.unlock": "잠금 해제",
     "thread_tools.move": "이동",
     "thread_tools.move_all": "모두 이동",
-    "thread_tools.select_category": "Select Category",
+    "thread_tools.select_category": "게시판 선택",
     "thread_tools.fork": "주제 분리",
     "thread_tools.delete": "삭제",
     "thread_tools.delete-posts": "포스트 삭제",
