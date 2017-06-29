@@ -6,6 +6,7 @@ var user = require('../user');
 var categories = require('../categories');
 var flags = require('../flags');
 var analytics = require('../analytics');
+var plugins = require('../plugins');
 
 var modsController = module.exports;
 modsController.flags = {};
@@ -13,12 +14,23 @@ modsController.flags = {};
 modsController.flags.list = function (req, res, next) {
 	var filters;
 	var hasFilter;
+	var validFilters = ['assignee', 'state', 'reporterId', 'type', 'targetUid', 'cid', 'quick'];
 	async.waterfall([
 		function (next) {
 			async.parallel({
 				isAdminOrGlobalMod: async.apply(user.isAdminOrGlobalMod, req.uid),
 				moderatedCids: async.apply(user.getModeratedCids, req.uid),
 			}, next);
+		},
+		function (results, next) {
+			plugins.fireHook('filter:flags.validateFilters', { filters: validFilters }, function (err, data) {
+				if (err) {
+					return next(err);
+				}
+
+				validFilters = data.filters;
+				next(null, results);
+			});
 		},
 		function (results, next) {
 			if (!(results.isAdminOrGlobalMod || !!results.moderatedCids.length)) {
@@ -31,8 +43,8 @@ modsController.flags.list = function (req, res, next) {
 
 			// Parse query string params for filters
 			hasFilter = false;
-			var valid = ['assignee', 'state', 'reporterId', 'type', 'targetUid', 'cid', 'quick'];
-			filters = valid.reduce(function (memo, cur) {
+
+			filters = validFilters.reduce(function (memo, cur) {
 				if (req.query.hasOwnProperty(cur)) {
 					memo[cur] = req.query[cur];
 				}
