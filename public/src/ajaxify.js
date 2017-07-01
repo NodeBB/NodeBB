@@ -293,9 +293,19 @@ $(document).ready(function () {
 			headers: {
 				'X-Return-To': app.previousUrl,
 			},
-			success: function (data) {
+			success: function (data, textStatus, xhr) {
 				if (!data) {
 					return;
+				}
+
+				if (xhr.getResponseHeader('X-Redirect')) {
+					return callback({
+						data: {
+							status: 302,
+							responseJSON: data,
+						},
+						textStatus: 'error',
+					});
 				}
 
 				ajaxify.data = data;
