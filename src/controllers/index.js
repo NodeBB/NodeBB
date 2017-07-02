@@ -301,14 +301,13 @@ Controllers.composePost = function (req, res, next) {
 				topics.reply(data, next);
 			},
 			function (postData, next) {
-				next(null, postData);
-
 				user.updateOnlineUsers(postData.uid);
 
 				res.redirect(nconf.get('relative_path') + '/post/' + postData.pid);
 			},
 		], function (err) {
 			if (err) {
+				req.body.noscript = 'true';
 				return helpers.noScriptErrors(req, res, err.message, 400);
 			}
 			next(err);
@@ -324,12 +323,11 @@ Controllers.composePost = function (req, res, next) {
 				topics.post(data, next);
 			},
 			function (result, next) {
-				next(null, result.topicData);
-
 				res.redirect(nconf.get('relative_path') + '/topic/' + result.topicData.slug);
 			},
 		], function (err) {
 			if (err) {
+				req.body.noscript = 'true';
 				return helpers.noScriptErrors(req, res, err.message, 400);
 			}
 			next(err);
