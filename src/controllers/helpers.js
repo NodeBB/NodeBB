@@ -15,6 +15,10 @@ var middleware = require('../middleware');
 var helpers = module.exports;
 
 helpers.noScriptErrors = function (req, res, error, httpStatus) {
+	if (req.body.noscript === 'false') {
+		return res.status(httpStatus).send(error);
+	}
+
 	var middleware = require('../middleware');
 	var httpStatusString = httpStatus.toString();
 	middleware.buildHeader(req, res, function () {

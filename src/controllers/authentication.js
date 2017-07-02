@@ -202,32 +202,21 @@ authenticationController.login = function (req, res, next) {
 		continueLogin(req, res, next);
 	} else {
 		var err = '[[error:wrong-login-type-' + loginWith + ']]';
-
-		if (req.body.noscript === 'true') {
-			return helpers.noScriptErrors(req, res, err, 500);
-		}
-		res.status(500).send(err);
+		helpers.noScriptErrors(req, res, err, 500);
 	}
 };
 
 function continueLogin(req, res, next) {
 	passport.authenticate('local', function (err, userData, info) {
 		if (err) {
-			if (req.body.noscript === 'true') {
-				return helpers.noScriptErrors(req, res, err.message, 403);
-			}
-			return res.status(403).send(err.message);
+			return helpers.noScriptErrors(req, res, err.message, 403);
 		}
 
 		if (!userData) {
 			if (typeof info === 'object') {
 				info = '[[error:invalid-username-or-password]]';
 			}
-
-			if (req.body.noscript === 'true') {
-				return helpers.noScriptErrors(req, res, info, 403);
-			}
-			return res.status(403).send(info);
+			return helpers.noScriptErrors(req, res, info, 403);
 		}
 
 		var passwordExpiry = userData.passwordExpiry !== undefined ? parseInt(userData.passwordExpiry, 10) : null;
@@ -247,10 +236,7 @@ function continueLogin(req, res, next) {
 			req.session.passwordExpired = true;
 			user.reset.generate(userData.uid, function (err, code) {
 				if (err) {
-					if (req.body.noscript === 'true') {
-						return helpers.noScriptErrors(req, res, err.message, 403);
-					}
-					return res.status(403).send(err.message);
+					return helpers.noScriptErrors(req, res, err.message, 403);
 				}
 
 				res.status(200).send(nconf.get('relative_path') + '/reset/' + code);
@@ -258,10 +244,7 @@ function continueLogin(req, res, next) {
 		} else {
 			authenticationController.doLogin(req, userData.uid, function (err) {
 				if (err) {
-					if (req.body.noscript === 'true') {
-						return helpers.noScriptErrors(req, res, err.message, 403);
-					}
-					return res.status(403).send(err.message);
+					return helpers.noScriptErrors(req, res, err.message, 403);
 				}
 
 				var next;
