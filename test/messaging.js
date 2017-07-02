@@ -591,10 +591,11 @@ describe('Messaging Library', function () {
 		});
 
 		it('should redirect to chats page', function (done) {
-			request(nconf.get('url') + '/api/chats', { jar: jar }, function (err, response, body) {
+			request(nconf.get('url') + '/api/chats', { jar: jar, json: true }, function (err, res, body) {
 				assert.ifError(err);
-				assert.equal(body, '"/user/herp/chats"');
-				assert.equal(response.statusCode, 308);
+				assert.equal(res.statusCode, 200);
+				assert.equal(res.headers['x-redirect'], '/user/herp/chats');
+				assert.equal(body, '/user/herp/chats');
 				done();
 			});
 		});
