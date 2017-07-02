@@ -300,7 +300,7 @@ Controllers.composePost = function (req, res, next) {
 			function (next) {
 				topics.reply(data, next);
 			},
-			function (postData, next) {
+			function (postData) {
 				user.updateOnlineUsers(postData.uid);
 
 				res.redirect(nconf.get('relative_path') + '/post/' + postData.pid);
@@ -321,7 +321,7 @@ Controllers.composePost = function (req, res, next) {
 			function (next) {
 				topics.post(data, next);
 			},
-			function (result, next) {
+			function (result) {
 				res.redirect(nconf.get('relative_path') + '/topic/' + result.topicData.slug);
 			},
 		], function (err) {
