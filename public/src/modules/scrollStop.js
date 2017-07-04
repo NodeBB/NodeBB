@@ -16,7 +16,7 @@ define('scrollStop', function () {
 		$(element).on('mousewheel', function (e) {
 			var scrollTop = this.scrollTop;
 			var scrollHeight = this.scrollHeight;
-			var elementHeight = this.getBoundingClientRect().height;
+			var elementHeight = Math.round(this.getBoundingClientRect().height);
 
 			if (
 				(e.originalEvent.deltaY < 0 && scrollTop === 0) ||							// scroll up

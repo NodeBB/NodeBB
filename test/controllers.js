@@ -808,7 +808,8 @@ describe('Controllers', function () {
 		it('should redirect to account page with logged in user', function (done) {
 			request(nconf.get('url') + '/api/login', { jar: jar, json: true }, function (err, res, body) {
 				assert.ifError(err);
-				assert.equal(res.statusCode, 308);
+				assert.equal(res.statusCode, 200);
+				assert.equal(res.headers['x-redirect'], '/user/foo');
 				assert.equal(body, '/user/foo');
 				done();
 			});
@@ -825,7 +826,8 @@ describe('Controllers', function () {
 		it('should redirect to userslug', function (done) {
 			request(nconf.get('url') + '/api/uid/' + fooUid, { json: true }, function (err, res, body) {
 				assert.ifError(err);
-				assert.equal(res.statusCode, 308);
+				assert.equal(res.statusCode, 200);
+				assert.equal(res.headers['x-redirect'], '/user/foo');
 				assert.equal(body, '/user/foo');
 				done();
 			});
@@ -1238,10 +1240,11 @@ describe('Controllers', function () {
 		});
 
 		it('should return correct post path', function (done) {
-			request(nconf.get('url') + '/api/post/' + pid, function (err, res, body) {
+			request(nconf.get('url') + '/api/post/' + pid, { json: true }, function (err, res, body) {
 				assert.ifError(err);
-				assert.equal(res.statusCode, 308);
-				assert.equal(body, '"/topic/1/test-topic-title/1"');
+				assert.equal(res.statusCode, 200);
+				assert.equal(res.headers['x-redirect'], '/topic/1/test-topic-title/1');
+				assert.equal(body, '/topic/1/test-topic-title/1');
 				done();
 			});
 		});
@@ -1411,7 +1414,8 @@ describe('Controllers', function () {
 
 			request(nconf.get('url') + '/api/users', { json: true }, function (err, res, body) {
 				assert.ifError(err);
-				assert.equal(res.statusCode, 308);
+				assert.equal(res.statusCode, 200);
+				assert.equal(res.headers['x-redirect'], '/api/popular');
 				assert(body, '/api/popular');
 				done();
 			});
@@ -1521,7 +1525,8 @@ describe('Controllers', function () {
 		it('should redirect if topic index is negative', function (done) {
 			request(nconf.get('url') + '/api/category/' + category.slug + '/-10', function (err, res) {
 				assert.ifError(err);
-				assert.equal(res.statusCode, 308);
+				assert.equal(res.statusCode, 200);
+				assert.ok(res.headers['x-redirect']);
 				done();
 			});
 		});
@@ -1627,7 +1632,8 @@ describe('Controllers', function () {
 				function (category, next) {
 					request(nconf.get('url') + '/api/category/' + category.slug, { jar: jar, json: true }, function (err, res, body) {
 						assert.ifError(err);
-						assert.equal(res.statusCode, 308);
+						assert.equal(res.statusCode, 200);
+						assert.equal(res.headers['x-redirect'], 'https://nodebb.org');
 						assert.equal(body, 'https://nodebb.org');
 						next();
 					});
@@ -1754,10 +1760,11 @@ describe('Controllers', function () {
 		});
 
 		it('should redirect if page is out of bounds', function (done) {
-			request(nconf.get('url') + '/api/unread?page=-1', { jar: jar }, function (err, res, body) {
+			request(nconf.get('url') + '/api/unread?page=-1', { jar: jar, json: true }, function (err, res, body) {
 				assert.ifError(err);
-				assert.equal(res.statusCode, 308);
-				assert.equal(body, '"/unread?page=1"');
+				assert.equal(res.statusCode, 200);
+				assert.equal(res.headers['x-redirect'], '/unread?page=1');
+				assert.equal(body, '/unread?page=1');
 				done();
 			});
 		});

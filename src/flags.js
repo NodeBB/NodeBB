@@ -3,6 +3,7 @@
 var async = require('async');
 var _ = require('lodash');
 var S = require('string');
+var winston = require('winston');
 
 var db = require('./database');
 var user = require('./user');
@@ -17,6 +18,60 @@ var plugins = require('./plugins');
 var utils = require('../public/src/utils');
 
 var Flags = module.exports;
+
+Flags.init = function (callback) {
+	// Query plugins for custom filter strategies and merge into core filter strategies
+	var prepareSets = function (sets, orSets, prefix, value) {
+		if (!Array.isArray(value)) {
+			sets.push(prefix + value);
+		} else if (value.length) {
+			value.forEach(function (x) {
+				orSets.push(prefix + x);
+			});
+		}
+	};
+
+	plugins.fireHook('filter:flags.getFilters', {
+		filters: {
+			type: function (sets, orSets, key) {
+				prepareSets(sets, orSets, 'flags:byType:', key);
+			},
+			state: function (sets, orSets, key) {
+				prepareSets(sets, orSets, 'flags:byState:', key);
+			},
+			reporterId: function (sets, orSets, key) {
+				prepareSets(sets, orSets, 'flags:byReporter:', key);
+			},
+			assignee: function (sets, orSets, key) {
+				prepareSets(sets, orSets, 'flags:byAssignee:', key);
+			},
+			targetUid: function (sets, orSets, key) {
+				prepareSets(sets, orSets, 'flags:byTargetUid:', key);
+			},
+			cid: function (sets, orSets, key) {
+				prepareSets(sets, orSets, 'flags:byCid:', key);
+			},
+			quick: function (sets, orSets, key, uid) {
+				switch (key) {
+				case 'mine':
+					sets.push('flags:byAssignee:' + uid);
+					break;
+				}
+			},
+		},
+		helpers: {
+			prepareSets: prepareSets,
+		},
+	}, function (err, data) {
+		if (err) {
+			winston.error('[flags/init] Could not retrieve filters (error: ' + err.message + ')');
+			data.filters = {};
+		}
+
+		Flags._filters = data.filters;
+		callback();
+	});
+};
 
 Flags.get = function (flagId, callback) {
 	async.waterfall([
@@ -64,51 +119,14 @@ Flags.list = function (filters, uid, callback) {
 
 	var sets = [];
 	var orSets = [];
-	var prepareSets = function (setPrefix, value) {
-		if (!Array.isArray(value)) {
-			sets.push(setPrefix + value);
-		} else if (value.length) {
-			value.forEach(function (x) {
-				orSets.push(setPrefix + x);
-			});
-		}
-	};
 
 	if (Object.keys(filters).length > 0) {
 		for (var type in filters) {
 			if (filters.hasOwnProperty(type)) {
-				switch (type) {
-				case 'type':
-					prepareSets('flags:byType:', filters[type]);
-					break;
-
-				case 'state':
-					prepareSets('flags:byState:', filters[type]);
-					break;
-
-				case 'reporterId':
-					prepareSets('flags:byReporter:', filters[type]);
-					break;
-
-				case 'assignee':
-					prepareSets('flags:byAssignee:', filters[type]);
-					break;
-
-				case 'targetUid':
-					prepareSets('flags:byTargetUid:', filters[type]);
-					break;
-
-				case 'cid':
-					prepareSets('flags:byCid:', filters[type]);
-					break;
-
-				case 'quick':
-					switch (filters.quick) {
-					case 'mine':
-						sets.push('flags:byAssignee:' + uid);
-						break;
-					}
-					break;
+				if (Flags._filters.hasOwnProperty(type)) {
+					Flags._filters[type](sets, orSets, filters[type], uid);
+				} else {
+					winston.warn('[flags/list] No flag filter type found: ' + type);
 				}
 			}
 		}

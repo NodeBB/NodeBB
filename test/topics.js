@@ -791,10 +791,11 @@ describe('Topic\'s', function () {
 		});
 
 		it('should redirect if post index is out of range', function (done) {
-			request(nconf.get('url') + '/api/topic/' + topicData.slug + '/-1', function (err, response, body) {
+			request(nconf.get('url') + '/api/topic/' + topicData.slug + '/-1', { json: true }, function (err, res, body) {
 				assert.ifError(err);
-				assert.equal(response.statusCode, 308);
-				assert.equal(body, '"/topic/13/topic-for-controller-test"');
+				assert.equal(res.statusCode, 200);
+				assert.equal(res.headers['x-redirect'], '/topic/13/topic-for-controller-test');
+				assert.equal(body, '/topic/13/topic-for-controller-test');
 				done();
 			});
 		});
