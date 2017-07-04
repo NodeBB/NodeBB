@@ -2,6 +2,6 @@
 	"alert.confirm-reload": "האם אתה בטוח שאתה רוצה לטעון מחדש את NodeBB?",
 	"alert.confirm-restart": "האם אתה בטוח שאתה רוצה לאתחל מחדש את NodeBB?",
 
-	"acp-title": "1% | לוח בקרה לאדמין NodeBB",
+	"acp-title": "%1 | לוח בקרה לאדמין NodeBB",
 	"settings-header-contents": "תוכן"
 }
