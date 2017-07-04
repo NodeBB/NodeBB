@@ -227,11 +227,13 @@ function saveFileToLocal(uploadedFile, callback) {
 			file.saveFileToLocal(filename, 'files', uploadedFile.path, next);
 		},
 		function (upload, next) {
-			next(null, {
-				url: nconf.get('relative_path') + upload.url,
-				path: upload.path,
-				name: uploadedFile.name,
-			});
+			var storedFile = {
+			url: nconf.get('relative_path') + upload.url,
+			path: upload.path,
+			name: uploadedFile.name,
+		}
+		plugins.fireHook( 'filter:uploadStored', { uploadedFile: uploadedFile, storedFile: storedFile } );
+		next(null, storedFile);
 		},
 	], callback);
 }
