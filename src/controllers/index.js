@@ -288,6 +288,7 @@ Controllers.composePost = function (req, res) {
 		timestamp: Date.now(),
 		content: body.content,
 	};
+	req.body.noscript = 'true';
 
 	if (!data.content) {
 		return helpers.noScriptErrors(req, res, '[[error:invalid-data]]', 400);
@@ -307,7 +308,6 @@ Controllers.composePost = function (req, res) {
 			},
 		], function (err) {
 			if (err) {
-				req.body.noscript = 'true';
 				return helpers.noScriptErrors(req, res, err.message, 400);
 			}
 		});
@@ -326,7 +326,6 @@ Controllers.composePost = function (req, res) {
 			},
 		], function (err) {
 			if (err) {
-				req.body.noscript = 'true';
 				return helpers.noScriptErrors(req, res, err.message, 400);
 			}
 		});
