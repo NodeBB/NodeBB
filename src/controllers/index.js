@@ -280,7 +280,7 @@ Controllers.compose = function (req, res, next) {
 	});
 };
 
-Controllers.composePost = function (req, res, next) {
+Controllers.composePost = function (req, res) {
 	var body = req.body;
 	var data = {
 		uid: req.uid,
