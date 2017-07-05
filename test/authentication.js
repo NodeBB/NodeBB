@@ -55,6 +55,7 @@ describe('authentication', function () {
 					email: email,
 					username: username,
 					password: password,
+					'password-confirm': password,
 				},
 				json: true,
 				jar: jar,
@@ -70,7 +71,7 @@ describe('authentication', function () {
 	var jar = request.jar();
 	var regularUid;
 	before(function (done) {
-		user.create({ username: 'regular', password: 'regularpwd', 'password-confirm': 'regularpwd', email: 'regular@nodebb.org' }, function (err, uid) {
+		user.create({ username: 'regular', password: 'regularpwd', email: 'regular@nodebb.org' }, function (err, uid) {
 			assert.ifError(err);
 			regularUid = uid;
 			done();
@@ -90,6 +91,7 @@ describe('authentication', function () {
 					email: 'admin@nodebb.org',
 					username: 'admin',
 					password: 'adminpwd',
+					'password-confirm': 'adminpwd',
 					userLang: 'it',
 				},
 				json: true,
@@ -349,7 +351,7 @@ describe('authentication', function () {
 	});
 
 	it('should prevent banned user from logging in', function (done) {
-		user.create({ username: 'banme', password: '123456', 'password-confirm': '123456', email: 'ban@me.com' }, function (err, uid) {
+		user.create({ username: 'banme', password: '123456', email: 'ban@me.com' }, function (err, uid) {
 			assert.ifError(err);
 			user.ban(uid, 0, 'spammer', function (err) {
 				assert.ifError(err);
@@ -380,7 +382,7 @@ describe('authentication', function () {
 		var uid;
 		async.waterfall([
 			function (next) {
-				user.create({ username: 'lockme', password: '123456', 'password-confirm': '123456' }, next);
+				user.create({ username: 'lockme', password: '123456' }, next);
 			},
 			function (_uid, next) {
 				uid = _uid;
