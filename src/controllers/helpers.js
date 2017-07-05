@@ -53,7 +53,7 @@ helpers.notAllowed = function (req, res, error) {
 
 helpers.redirect = function (res, url) {
 	if (res.locals.isAPI) {
-		res.set('X-Redirect', url).status(200).json(url);
+		res.set('X-Redirect', encodeURI(url)).status(200).json(url);
 	} else {
 		res.redirect(nconf.get('relative_path') + encodeURI(url));
 	}
