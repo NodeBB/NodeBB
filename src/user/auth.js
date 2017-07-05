@@ -55,7 +55,7 @@ module.exports = function (User) {
 		var token;
 		async.waterfall([
 			function (next) {
-				User.getUserField(uid, 'rss_token', next);
+				db.getObjectField('user:' + uid, 'rss_token', next);
 			},
 			function (_token, next) {
 				token = _token || utils.generateUUID();
