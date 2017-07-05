@@ -297,19 +297,13 @@ Controllers.composePost = function (req, res) {
 	if (body.tid) {
 		data.tid = body.tid;
 
-		async.waterfall([
-			function (next) {
-				topics.reply(data, next);
-			},
-			function (postData) {
-				user.updateOnlineUsers(postData.uid);
-
-				res.redirect(nconf.get('relative_path') + '/post/' + postData.pid);
-			},
-		], function (err) {
+		topics.reply(data, function (err, result) {
 			if (err) {
 				return helpers.noScriptErrors(req, res, err.message, 400);
 			}
+			user.updateOnlineUsers(result.uid);
+
+			res.redirect(nconf.get('relative_path') + '/post/' + result.pid);
 		});
 	} else if (body.cid) {
 		data.cid = body.cid;
@@ -317,17 +311,12 @@ Controllers.composePost = function (req, res) {
 		data.tags = [];
 		data.thumb = '';
 
-		async.waterfall([
-			function (next) {
-				topics.post(data, next);
-			},
-			function (result) {
-				res.redirect(nconf.get('relative_path') + '/topic/' + result.topicData.slug);
-			},
-		], function (err) {
+		topics.post(data, function (err, result) {
 			if (err) {
 				return helpers.noScriptErrors(req, res, err.message, 400);
 			}
+
+			res.redirect(nconf.get('relative_path') + '/topic/' + result.topicData.slug);
 		});
 	}
 };
