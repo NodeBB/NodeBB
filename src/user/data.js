@@ -122,6 +122,10 @@ module.exports = function (User) {
 				user.password = undefined;
 			}
 
+			if (user.rss_token) {
+				user.rss_token = undefined;
+			}
+
 			if (!parseInt(user.uid, 10)) {
 				user.uid = 0;
 				user.username = '[[global:guest]]';
