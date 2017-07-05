@@ -12,6 +12,7 @@ var categories = require('../categories');
 var meta = require('../meta');
 var helpers = require('../controllers/helpers');
 var privileges = require('../privileges');
+var db = require('../database');
 var controllers404 = require('../controllers/404.js');
 
 module.exports = function (app, middleware) {
@@ -40,7 +41,7 @@ function validateTokenIfRequiresLogin(requiresLogin, cid, req, res, callback) {
 
 	async.waterfall([
 		function (next) {
-			user.getUserField(uid, 'rss_token', next);
+			db.getObjectField('user:' + uid, 'rss_token', next);
 		},
 		function (_token, next) {
 			if (token === _token) {
