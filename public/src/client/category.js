@@ -15,8 +15,8 @@ define('forum/category', [
 ], function (infinitescroll, share, navigator, categoryTools, sort, components, translator, topicSelect, pagination, storage) {
 	var Category = {};
 
-	$(window).on('action:ajaxify.end', function (ev, data) {
-		if (data.tpl_url !== 'category') {
+	$(window).on('action:ajaxify.start', function (ev, data) {
+		if (data.url && !data.url.startsWith('category/')) {
 			navigator.disable();
 
 			removeListeners();

@@ -199,7 +199,7 @@ define('forum/topic/postTools', [
 		var selectedNode = getSelectedNode();
 
 		showStaleWarning(function () {
-			var username = getUserName(button);
+			var username = getUserSlug(button);
 			if (getData(button, 'data-uid') === '0' || !getData(button, 'data-userslug')) {
 				username = '';
 			}
@@ -231,7 +231,7 @@ define('forum/topic/postTools', [
 		var selectedNode = getSelectedNode();
 
 		showStaleWarning(function () {
-			var username = getUserName(button);
+			var username = getUserSlug(button);
 			var toPid = getData(button, 'data-pid');
 
 			function quote(text) {
@@ -284,7 +284,7 @@ define('forum/topic/postTools', [
 			selectedText = range.toString();
 			var postEl = $(content).parents('[component="post"]');
 			selectedPid = postEl.attr('data-pid');
-			username = getUserName($(content));
+			username = getUserSlug($(content));
 			range.detach();
 		}
 		return { text: selectedText, pid: selectedPid, username: username };
@@ -309,22 +309,22 @@ define('forum/topic/postTools', [
 		return button.parents('[data-pid]').attr(data);
 	}
 
-	function getUserName(button) {
-		var username = '';
+	function getUserSlug(button) {
+		var slug = '';
 		var post = button.parents('[data-pid]');
 
 		if (button.attr('component') === 'topic/reply') {
-			return username;
+			return slug;
 		}
 
 		if (post.length) {
-			username = post.attr('data-username').replace(/\s/g, '-');
+			slug = post.attr('data-userslug');
 		}
 		if (post.length && post.attr('data-uid') !== '0') {
-			username = '@' + username;
+			slug = '@' + slug;
 		}
 
-		return username;
+		return slug;
 	}
 
 	function togglePostDelete(button, tid) {

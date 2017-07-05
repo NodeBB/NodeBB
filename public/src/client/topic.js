@@ -23,16 +23,14 @@ define('forum/topic', [
 			Topic.replaceURLTimeout = 0;
 		}
 
-		if (ajaxify.currentPage !== data.url) {
+		if (data.url && !data.url.startsWith('topic/')) {
 			navigator.disable();
 			components.get('navbar/title').find('span').text('').hide();
 			app.removeAlert('bookmark');
 
 			events.removeListeners();
 			$(window).off('keydown', onKeyDown);
-		}
 
-		if (data.url && !data.url.startsWith('topic/')) {
 			require(['search'], function (search) {
 				if (search.topicDOM.active) {
 					search.topicDOM.end();

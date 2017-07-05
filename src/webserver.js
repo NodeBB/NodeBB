@@ -133,8 +133,8 @@ function setupExpressApp(app, callback) {
 
 	app.use(compression());
 
-	app.get('/ping', ping);
-	app.get('/sping', ping);
+	app.get(relativePath + '/ping', ping);
+	app.get(relativePath + '/sping', ping);
 
 	setupFavicon(app);
 
@@ -231,6 +231,7 @@ function setupAutoLocale(app, callback) {
 
 function listen(callback) {
 	callback = callback || function () { };
+	console.log('derp', nconf.get('port'));
 	var port = parseInt(nconf.get('port'), 10);
 	var isSocket = isNaN(port);
 	var socketPath = isSocket ? nconf.get('port') : '';

@@ -26,7 +26,10 @@ if (require.main !== module) {
 }
 
 var nconf = require('nconf');
-nconf.argv().env('__');
+nconf.argv().env({
+	separator: '__',
+	lowerCase: true,
+});
 
 var url = require('url');
 var async = require('async');
