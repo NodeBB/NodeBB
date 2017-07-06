@@ -23,7 +23,6 @@ Digest.execute = function (payload, callback) {
 		return callback();
 	}
 
-	var subscribers;
 	async.waterfall([
 		function (next) {
 			if (payload.subscribers) {
