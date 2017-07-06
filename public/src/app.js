@@ -89,7 +89,8 @@ app.cacheBuster = null;
 		});
 	};
 
-	app.logout = function () {
+	app.logout = function (e) {
+		e.preventDefault();
 		$(window).trigger('action:app.logout');
 
 		/*
