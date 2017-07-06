@@ -11,7 +11,7 @@ module.exports = {
 		var progress = this.progress;
 
 		batch.processSortedSet('users:joindate', function (uids, next) {
-			async.eachSeries(uids, function (uid, next) {
+			async.eachLimit(uids, 500, function (uid, next) {
 				progress.incr();
 				db.deleteObjectField('user:' + uid, 'rss_token', next);
 			}, next);
