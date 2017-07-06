@@ -480,32 +480,33 @@ module.exports = function (db, module) {
 				return !done;
 			},
 			function (next) {
-				cursor.next(function (err, item) {
-					if (err) {
-						return next(err);
-					}
-					if (item === null) {
-						done = true;
-					} else {
-						ids.push(item.value);
-					}
-
-					if (ids.length < options.batch && (!done || ids.length === 0)) {
-						return next(null);
-					}
-
-					process(ids, function (err) {
-						if (err) {
-							return next(err);
+				async.waterfall([
+					function (next) {
+						cursor.next(next);
+					},
+					function (item, _next) {
+						if (item === null) {
+							done = true;
+						} else {
+							ids.push(item.value);
 						}
+
+						if (ids.length < options.batch && (!done || ids.length === 0)) {
+							return next(null);
+						}
+						process(ids, function (err) {
+							_next(err);
+						});
+					},
+					function (next) {
 						ids = [];
 						if (options.interval) {
 							setTimeout(next, options.interval);
 						} else {
 							next();
 						}
-					});
-				});
+					},
+				], next);
 			},
 			callback
 		);
