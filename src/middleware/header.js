@@ -9,6 +9,7 @@ var meta = require('../meta');
 var plugins = require('../plugins');
 var navigation = require('../navigation');
 var translator = require('../translator');
+var utils = require('../utils');
 
 var controllers = {
 	api: require('../controllers/api'),
@@ -152,6 +153,8 @@ module.exports = function (middleware) {
 					return { src: script };
 				});
 
+				addTimeagoLocaleScript(templateValues.scripts, res.locals.config.userLang);
+
 				if (req.route && req.route.path === '/') {
 					modifyTitle(templateValues);
 				}
@@ -167,6 +170,11 @@ module.exports = function (middleware) {
 			},
 		], callback);
 	};
+
+	function addTimeagoLocaleScript(scripts, userLang) {
+		var languageCode = utils.userLangToTimeagoCode(userLang);
+		scripts.push({ src: nconf.get('relative_path') + '/assets/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js' });
+	}
 
 	middleware.renderFooter = function (req, res, data, callback) {
 		async.waterfall([

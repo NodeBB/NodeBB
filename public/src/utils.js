@@ -103,7 +103,16 @@
 		hasLanguageKey: function (input) {
 			return utils.languageKeyRegex.test(input);
 		},
-
+		userLangToTimeagoCode: function (userLang) {
+			var mapping = {
+				'en-GB': 'en',
+				'en-US': 'en',
+				'fa-IR': 'fa',
+				'pt-BR': 'pt-br',
+				nb: 'no',
+			};
+			return mapping[userLang] || userLang;
+		},
 		// shallow objects merge
 		merge: function () {
 			var result = {};
