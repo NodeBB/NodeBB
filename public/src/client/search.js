@@ -151,7 +151,7 @@ define('forum/search', ['search', 'autocomplete', 'storage'], function (searchMo
 
 	function handleSavePreferences() {
 		$('#save-preferences').on('click', function () {
-			storage.setItem('search-preferences', JSON.stringify(getSearchDataFromDOMFromDOM()));
+			storage.setItem('search-preferences', JSON.stringify(getSearchDataFromDOM()));
 			app.alertSuccess('[[search:search-preferences-saved]]');
 			return false;
 		});
