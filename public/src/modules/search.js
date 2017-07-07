@@ -74,6 +74,12 @@ define('search', ['navigator', 'translator', 'storage'], function (nav, translat
 		if (data.showAs) {
 			query.showAs = data.showAs;
 		}
+
+		$(window).trigger('action:search.createQueryString', {
+			query: query,
+			dom: data,
+		});
+
 		return decodeURIComponent($.param(query));
 	}
 
