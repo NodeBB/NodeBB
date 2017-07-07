@@ -233,7 +233,12 @@ function saveFileToLocal(uploadedFile, callback) {
 				name: uploadedFile.name,
 			};
 
-			plugins.fireHook('filter:uploadStored', { uploadedFile: uploadedFile, storedFile: storedFile }, function () { next(null, storedFile); });
+			plugins.fireHook('filter:uploadStored', { uploadedFile: uploadedFile, storedFile: storedFile }, function (err, data) {
+				if (err) {
+					return next(err);
+				}
+				next(null, data.storedFile);
+			});
 		},
 	], callback);
 }
