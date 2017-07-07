@@ -164,7 +164,7 @@ describe('User', function () {
 			User.getModeratorUids(function (err, uids) {
 				assert.ifError(err);
 				assert.strictEqual(1, uids.length);
-				assert.strictEqual(1, parseInt(uids[0]));
+				assert.strictEqual(1, parseInt(uids[0], 10));
 				done();
 			});
 		});
@@ -187,7 +187,7 @@ describe('User', function () {
 			User.getModeratorUids(function (err, uids) {
 				assert.ifError(err);
 				assert.strictEqual(1, uids.length);
-				assert.strictEqual(1, parseInt(uids[0]));
+				assert.strictEqual(1, parseInt(uids[0], 10));
 				done();
 			});
 		});

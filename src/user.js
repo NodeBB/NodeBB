@@ -298,7 +298,7 @@ User.getModeratorUids = function (callback) {
 			}, { working: [], regular: [] });
 
 			groups.getMembersOfGroups(sets.working, function (err, memberSets) {
-				next(null, sets.regular.concat(memberSets));
+				next(err, sets.regular.concat(memberSets || []));
 			});
 		},
 		function (memberSets, next) {
