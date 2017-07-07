@@ -688,21 +688,20 @@ describe('Controllers', function () {
 		});
 
 		it('should return {} if there is no template or locations', function (done) {
-			request(nconf.get('url') + '/api/widgets/render', { json: true }, function (err, res, body) {
+			request(nconf.get('url') + '/api/users', { json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
-				assert.equal(Object.keys(body), 0);
+				assert.equal(Object.keys(body.widgets), 0);
 				done();
 			});
 		});
 
 		it('should render templates', function (done) {
-			var url = nconf.get('url') + '/api/widgets/render?template=categories.tpl&url=&isMobile=false&locations%5B%5D=sidebar&locations%5B%5D=footer&locations%5B%5D=header';
-			request(url, { json: true }, function (err, res, body) {
+			request(nconf.get('url') + '/api/categories', { json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
-				assert(body);
+				assert(body.widgets && body.widgets.sidebar);
 				done();
 			});
 		});

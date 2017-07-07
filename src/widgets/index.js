@@ -3,27 +3,35 @@
 var async = require('async');
 var winston = require('winston');
 var templates = require('templates.js');
+var _ = require('lodash');
 
 var plugins = require('../plugins');
 var translator = require('../translator');
 var db = require('../database');
+var apiController = require('../controllers/api');
 
 var widgets = module.exports;
 
-widgets.render = function (uid, area, req, res, callback) {
-	if (!area.locations || !area.template) {
+widgets.render = function (uid, options, callback) {
+	if (!options.template) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	async.waterfall([
 		function (next) {
-			widgets.getAreas(['global', area.template], area.locations, next);
+			widgets.getWidgetDataForTemplates(['global', options.template], next);
 		},
 		function (data, next) {
 			var widgetsByLocation = {};
 
-			async.map(area.locations, function (location, done) {
-				widgetsByLocation[location] = data.global[location].concat(data[area.template][location]);
+			delete data.global.drafts;
+
+			var locations = _.uniq(Object.keys(data.global).concat(Object.keys(data[options.template])));
+
+			var returnData = {};
+
+			async.each(locations, function (location, done) {
+				widgetsByLocation[location] = (data.global[location] || []).concat(data[options.template][location] || []);
 
 				if (!widgetsByLocation[location].length) {
 					return done(null, { location: location, widgets: [] });
@@ -33,28 +41,43 @@ widgets.render = function (uid, area, req, res, callback) {
 					if (!widget || !widget.data ||
 						(!!widget.data['hide-registered'] && uid !== 0) ||
 						(!!widget.data['hide-guests'] && uid === 0) ||
-						(!!widget.data['hide-mobile'] && area.isMobile)) {
+						(!!widget.data['hide-mobile'] && options.req.useragent.isMobile)) {
 						return next();
 					}
 
-					renderWidget(widget, uid, area, req, res, next);
-				}, function (err, result) {
-					done(err, { location: location, widgets: result.filter(Boolean) });
+					renderWidget(widget, uid, options, next);
+				}, function (err, renderedWidgets) {
+					if (err) {
+						return done(err);
+					}
+					returnData[location] = renderedWidgets.filter(Boolean);
+					done();
 				});
-			}, next);
+			}, function (err) {
+				next(err, returnData);
+			});
 		},
 	], callback);
 };
 
-function renderWidget(widget, uid, area, req, res, callback) {
+function renderWidget(widget, uid, options, callback) {
 	async.waterfall([
 		function (next) {
+			if (options.res.locals.isAPI) {
+				apiController.loadConfig(options.req, next);
+			} else {
+				next(null, options.res.locals.config);
+			}
+		},
+		function (config, next) {
+			var templateData = _.assign(options.templateData, { config: config });
 			plugins.fireHook('filter:widget.render:' + widget.widget, {
 				uid: uid,
-				area: area,
+				area: options,
+				templateData: templateData,
 				data: widget.data,
-				req: req,
-				res: res,
+				req: options.req,
+				res: options.res,
 			}, next);
 		},
 		function (data, next) {
@@ -84,23 +107,28 @@ function renderWidget(widget, uid, area, req, res, callback) {
 	], callback);
 }
 
-widgets.getAreas = function (templates, locations, callback) {
+widgets.getWidgetDataForTemplates = function (templates, callback) {
 	var keys = templates.map(function (tpl) {
 		return 'widgets:' + tpl;
 	});
+
 	async.waterfall([
 		function (next) {
-			db.getObjectsFields(keys, locations, next);
+			db.getObjects(keys, next);
 		},
 		function (data, next) {
 			var returnData = {};
 
 			templates.forEach(function (template, index) {
 				returnData[template] = returnData[template] || {};
+
+				var templateWidgetData = data[index] || {};
+				var locations = Object.keys(templateWidgetData);
+
 				locations.forEach(function (location) {
-					if (data && data[index] && data[index][location]) {
+					if (templateWidgetData && templateWidgetData[location]) {
 						try {
-							returnData[template][location] = JSON.parse(data[index][location]);
+							returnData[template][location] = JSON.parse(templateWidgetData[location]);
 						} catch (err) {
 							winston.error('can not parse widget data. template:  ' + template + ' location: ' + location);
 							returnData[template][location] = [];
