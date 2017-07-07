@@ -204,7 +204,7 @@ $(document).ready(function () {
 		}
 		ajaxify.loadScript(tpl_url, done);
 
-		ajaxify.widgets.render(tpl_url, done);
+		ajaxify.widgets.render(tpl_url, url, done);
 
 		$(window).trigger('action:ajaxify.contentLoaded', { url: url, tpl: tpl_url });
 
