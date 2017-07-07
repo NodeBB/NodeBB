@@ -277,11 +277,29 @@ User.getModeratorUids = function (callback) {
 	async.waterfall([
 		async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
 		function (cids, next) {
-			var groupNames = cids.map(function (cid) {
-				return 'cid:' + cid + ':privileges:moderate';
-			});
+			var groupNames = cids.reduce(function (memo, cid) {
+				memo.push('cid:' + cid + ':privileges:moderate');
+				memo.push('cid:' + cid + ':privileges:groups:moderate');
+				return memo;
+			}, []);
 
 			groups.getMembersOfGroups(groupNames, next);
+		},
+		function (memberSets, next) {
+			// Every other set is actually a list of user groups, not uids, so convert those to members
+			var sets = memberSets.reduce(function (memo, set, idx) {
+				if (idx % 2) {
+					memo.working.push(set);
+				} else {
+					memo.regular.push(set);
+				}
+
+				return memo;
+			}, { working: [], regular: [] });
+
+			groups.getMembersOfGroups(sets.working, function (err, memberSets) {
+				next(null, sets.regular.concat(memberSets));
+			});
 		},
 		function (memberSets, next) {
 			next(null, _.union.apply(_, memberSets));

@@ -155,6 +155,51 @@ describe('User', function () {
 		});
 	});
 
+	describe('.getModeratorUids()', function () {
+		before(function (done) {
+			groups.join('cid:1:privileges:moderate', 1, done);
+		});
+
+		it('should retrieve all users with moderator bit in category privilege', function (done) {
+			User.getModeratorUids(function (err, uids) {
+				assert.ifError(err);
+				assert.strictEqual(1, uids.length);
+				assert.strictEqual(1, parseInt(uids[0]));
+				done();
+			});
+		});
+
+		after(function (done) {
+			groups.leave('cid:1:privileges:moderate', 1, done);
+		});
+	});
+
+	describe('.getModeratorUids()', function () {
+		before(function (done) {
+			async.series([
+				async.apply(groups.create, { name: 'testGroup' }),
+				async.apply(groups.join, 'cid:1:privileges:groups:moderate', 'testGroup'),
+				async.apply(groups.join, 'testGroup', 1),
+			], done);
+		});
+
+		it('should retrieve all users with moderator bit in category privilege', function (done) {
+			User.getModeratorUids(function (err, uids) {
+				assert.ifError(err);
+				assert.strictEqual(1, uids.length);
+				assert.strictEqual(1, parseInt(uids[0]));
+				done();
+			});
+		});
+
+		after(function (done) {
+			async.series([
+				async.apply(groups.leave, 'cid:1:privileges:groups:moderate', 'testGroup'),
+				async.apply(groups.destroy, 'testGroup'),
+			], done);
+		});
+	});
+
 	describe('.isReadyToPost()', function () {
 		it('should error when a user makes two posts in quick succession', function (done) {
 			Meta.config = Meta.config || {};
