@@ -29,7 +29,7 @@ JS.scripts = {
 		'public/vendor/tinycon/tinycon.js',
 		'public/vendor/xregexp/xregexp.js',
 		'public/vendor/xregexp/unicode/unicode-base.js',
-		'node_modules/templates.js/lib/templates.js',
+		'node_modules/benchpressjs/build/benchpress.js',
 		'public/src/utils.js',
 		'public/src/sockets.js',
 		'public/src/app.js',

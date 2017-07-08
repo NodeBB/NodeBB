@@ -11,7 +11,21 @@ app.cacheBuster = null;
 (function () {
 	var showWelcomeMessage = !!utils.params().loggedin;
 
-	templates.setGlobal('config', config);
+	require(['benchpress'], function (Benchpress) {
+		Benchpress.setGlobal('config', config);
+		if (Object.defineProperty) {
+			Object.defineProperty(window, 'templates', {
+				configurable: true,
+				enumerable: true,
+				get: function () {
+					console.log('[deprecated] Accessing benchpress (formerly know as templates.js) globally is deprecated. Use `require(["benchpress"], function (Benchpress) { ... })` instead');
+					return Benchpress;
+				},
+			});
+		} else {
+			window.templates = Benchpress;
+		}
+	});
 
 	app.cacheBuster = config['cache-buster'];
 

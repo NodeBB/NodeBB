@@ -328,20 +328,7 @@ $(document).ready(function () {
 	};
 
 	ajaxify.loadTemplate = function (template, callback) {
-		if (templates.cache[template]) {
-			callback(templates.cache[template]);
-		} else {
-			$.ajax({
-				url: config.relative_path + '/assets/templates/' + template + '.tpl?' + config['cache-buster'],
-				type: 'GET',
-				success: function (data) {
-					callback(data.toString());
-				},
-				error: function (error) {
-					throw new Error('Unable to load template: ' + template + ' (' + error.statusText + ')');
-				},
-			});
-		}
+		require([config.relative_path + '/assets/templates/' + template + '.tpl'], callback);
 	};
 
 	function ajaxifyAnchors() {
@@ -424,7 +411,9 @@ $(document).ready(function () {
 		});
 	}
 
-	templates.registerLoader(ajaxify.loadTemplate);
+	require(['benchpress'], function (Benchpress) {
+		Benchpress.registerLoader(ajaxify.loadTemplate);
+	});
 
 	if (window.history && window.history.pushState) {
 		// Progressive Enhancement, ajaxify available only to modern browsers
@@ -432,9 +421,4 @@ $(document).ready(function () {
 	}
 
 	app.load();
-
-	$('[type="text/tpl"][data-template]').each(function () {
-		templates.cache[$(this).attr('data-template')] = $('<div/>').html($(this).html()).text();
-		$(this).parent().remove();
-	});
 });

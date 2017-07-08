@@ -7,6 +7,7 @@ var async = require('async');
 var path = require('path');
 var fs = require('fs');
 var nconf = require('nconf');
+var Benchpress = require('benchpressjs');
 
 var plugins = require('../plugins');
 var file = require('../file');
@@ -63,10 +64,16 @@ Templates.compile = function (callback) {
 						var source = file.toString();
 						processImports(paths, relativePath, source, next);
 					},
-					function (compiled, next) {
+					function (source, next) {
 						mkdirp(path.join(viewsPath, path.dirname(relativePath)), function (err) {
-							next(err, compiled);
+							next(err, source);
 						});
+					},
+					function (source, next) {
+						Benchpress.precompile({
+							source: source,
+							minify: global.env !== 'development',
+						}, next);
 					},
 					function (compiled, next) {
 						fs.writeFile(path.join(viewsPath, relativePath), compiled, next);

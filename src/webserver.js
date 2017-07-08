@@ -27,7 +27,7 @@ var plugins = require('./plugins');
 var flags = require('./flags');
 var routes = require('./routes');
 var auth = require('./routes/authentication');
-var templates = require('templates.js');
+var Benchpress = require('benchpressjs');
 
 var helpers = require('../public/src/modules/helpers');
 
@@ -120,7 +120,7 @@ function setupExpressApp(app, callback) {
 
 	var relativePath = nconf.get('relative_path');
 
-	app.engine('tpl', templates.__express);
+	app.engine('tpl', Benchpress.__express);
 	app.set('view engine', 'tpl');
 	app.set('views', nconf.get('views_dir'));
 	app.set('json spaces', process.env.NODE_ENV === 'development' ? 4 : 0);
