@@ -5,8 +5,8 @@
 		var relative_path = require('nconf').get('relative_path');
 		module.exports = factory(require('../utils'), require('benchpressjs'), require('string'), relative_path);
 	} else if (typeof define === 'function' && define.amd) {
-		define('helpers', ['string'], function (string) {
-			return factory(utils, templates, string, config.relative_path);
+		define('helpers', ['benchpress', 'string'], function (Benchpress, string) {
+			return factory(utils, Benchpress, string, config.relative_path);
 		});
 	} else {
 		window.helpers = factory(utils, templates, window.String, config.relative_path);

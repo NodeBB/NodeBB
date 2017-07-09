@@ -328,7 +328,10 @@ $(document).ready(function () {
 	};
 
 	ajaxify.loadTemplate = function (template, callback) {
-		require([config.relative_path + '/assets/templates/' + template + '.tpl'], callback);
+		require([config.relative_path + '/assets/templates/' + template + '.tpl'], callback, function (err) {
+			console.error('Unable to load template: ' + template);
+			throw err;
+		});
 	};
 
 	function ajaxifyAnchors() {
