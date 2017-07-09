@@ -93,13 +93,12 @@ function renderWidget(widget, uid, options, callback) {
 
 			if (widget.data.container && widget.data.container.match('{body}')) {
 				translator.translate(widget.data.title, function (title) {
-					// FIXME: use actual template files so they're precompiled
-					html = Benchpress.parse(widget.data.container, {
+					Benchpress.compileParse(widget.data.container, {
 						title: title,
 						body: html,
+					}, function (err, html) {
+						next(err, { html: html });
 					});
-
-					next(null, { html: html });
 				});
 			} else {
 				next(null, { html: html });

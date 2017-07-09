@@ -3,6 +3,7 @@
 var async = require('async');
 var winston = require('winston');
 var nconf = require('nconf');
+var Benchpress = require('benchpressjs');
 var nodemailer = require('nodemailer');
 var sendmailTransport = require('nodemailer-sendmail-transport');
 var smtpTransport = require('nodemailer-smtp-transport');
@@ -171,10 +172,13 @@ Emailer.sendViaFallback = function (data, callback) {
 	});
 };
 
-// FIXME: precompile the custom templates
 function render(tpl, params, next) {
 	var customTemplate = meta.config['email:custom:' + tpl.replace('emails/', '')];
-	app.render(customTemplate || tpl, params, next);
+	if (customTemplate) {
+		Benchpress.compileParse(customTemplate, params, next);
+	} else {
+		app.render(tpl, params, next);
+	}
 }
 
 function renderAndTranslate(tpl, params, lang, callback) {
