@@ -12,8 +12,6 @@ div.categories {
 		.row {
 			margin-left: -15px;
 			margin-right: -15px;
-			padding-bottom: 12px;
-			margin-bottom: 12px;
 		}
 
 		> li li:last-child {
@@ -37,7 +35,6 @@ div.categories {
 	li {
 		min-height: @acp-line-height;
 		margin: @acp-base-line 0;
-		margin-top: 28px;
 
 		&.placeholder {
 			border: 1px dashed #2196F3;
@@ -56,21 +53,40 @@ div.categories {
 		}
 	}
 
-	.icon {
-		width: @acp-line-height;
-		height: @acp-line-height;
+	.toggle {
+		width: 24px;
+		height: 24px;
 		border-radius: 50%;
-		line-height: @acp-line-height;
+		line-height: 24px;
 		text-align: center;
 		vertical-align: bottom;
 		background-size: cover;
 		float: left;
-		margin-right: @acp-margin;
+		margin-right: 0px;
+		cursor: pointer;
+		.fa {
+			font-size: 85%;
+		}
+	}
+
+	.icon {
+		width: 24px;
+		height: 24px;
+		border-radius: 50%;
+		line-height: 24px;
+		text-align: center;
+		vertical-align: bottom;
+		background-size: cover;
+		float: left;
+		margin-right: 0px;
 		cursor: move;
+		.fa {
+			font-size: 85%;
+		}
 	}
 
 	.information {
-		padding-left: 70px;
+		padding-left: 60px;
 	}
 
 	.category-header {
