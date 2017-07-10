@@ -78,12 +78,24 @@ User.getUsersWithFields = function (uids, fields, uid, callback) {
 		function (results, next) {
 			results.userData.forEach(function (user, index) {
 				if (user) {
-					user.status = User.getStatus(user);
 					user.administrator = results.isAdmin[index];
-					user.banned = parseInt(user.banned, 10) === 1;
-					user.banned_until = parseInt(user['banned:expire'], 10) || 0;
-					user.banned_until_readable = user.banned_until ? new Date(user.banned_until).toString() : 'Not Banned';
-					user['email:confirmed'] = parseInt(user['email:confirmed'], 10) === 1;
+
+					if (user.hasOwnProperty('status')) {
+						user.status = User.getStatus(user);
+					}
+
+					if (user.hasOwnProperty('banned')) {
+						user.banned = parseInt(user.banned, 10) === 1;
+					}
+
+					if (user.hasOwnProperty('banned:expire')) {
+						user.banned_until = parseInt(user['banned:expire'], 10) || 0;
+						user.banned_until_readable = user.banned_until ? new Date(user.banned_until).toString() : 'Not Banned';
+					}
+
+					if (user.hasOwnProperty(['email:confirmed'])) {
+						user['email:confirmed'] = parseInt(user['email:confirmed'], 10) === 1;
+					}
 				}
 			});
 			plugins.fireHook('filter:userlist.get', { users: results.userData, uid: uid }, next);
