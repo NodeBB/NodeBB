@@ -9,7 +9,6 @@ module.exports = function (app, middleware, controllers) {
 	app.use('/api', router);
 
 	router.get('/config', middleware.applyCSRF, controllers.api.getConfig);
-	router.get('/widgets/render', controllers.api.renderWidgets);
 
 	router.get('/me', middleware.checkGlobalPrivacySettings, controllers.user.getCurrentUser);
 	router.get('/user/uid/:uid', middleware.checkGlobalPrivacySettings, controllers.user.getUserByUID);
