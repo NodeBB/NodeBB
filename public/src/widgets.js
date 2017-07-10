@@ -3,16 +3,6 @@
 (function (ajaxify) {
 	ajaxify.widgets = {};
 
-	ajaxify.widgets.reposition = function (location) {
-		$('body [has-widget-class]').each(function () {
-			var $this = $(this);
-			if ($this.attr('has-widget-target') === location) {
-				$this.removeClass();
-				$this.addClass($this.attr('has-widget-class'));
-			}
-		});
-	};
-
 	ajaxify.widgets.render = function (template, callback) {
 		callback = callback || function () {};
 
@@ -56,7 +46,6 @@
 
 			if (widgetsAtLocation.length) {
 				area.removeClass('hidden');
-				ajaxify.widgets.reposition(location);
 			}
 		});
 
