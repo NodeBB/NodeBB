@@ -1,9 +1,9 @@
 {
-	"loading": "Loading Skins...",
-	"homepage": "Homepage",
-	"select-skin": "Select Skin",
-	"current-skin": "Current Skin",
-	"skin-updated": "Skin Updated",
-	"applied-success": "%1 skin was succesfully applied",
-	"revert-success": "Skin reverted to base colours"
+	"loading": "Đang tải giao diện ...",
+	"homepage": "Trang chủ",
+	"select-skin": "Chọn giao diện",
+	"current-skin": "Giao diện hiện tại",
+	"skin-updated": "Đã cập nhật giao diện",
+	"applied-success": "1% giao diện đã được sử dụng thành công",
+	"revert-success": "Đã trả giao diện về màu cơ bản"
 }
