@@ -103,5 +103,7 @@
     "cookies.message": "این وب‌سایت از کوکی شما برای اطمینان و تجربه استفاده بهتر از وب‌سایت ما استفاده می‌کند.",
     "cookies.accept": "فهمیدم!",
     "cookies.learn_more": "بیشتر بدانید",
-    "edited": "Edited"
+    "edited": "Edited",
+    "disabled": "Disabled",
+    "select": "Select"
 }

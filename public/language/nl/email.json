@@ -32,9 +32,9 @@
     "notif.post.unsub.info": "Deze notificatie is door ons verzonden vanwege gebruikersinstellingen voor abonnementen en berichten.",
     "test.text1": "Dit is een testbericht om te verifiëren dat NodeBB de e-mailberichtservice correct heeft opgezet.",
     "unsub.cta": "Klik hier om deze instellingen te wijzigen",
-    "banned.subject": "You have been banned from %1",
-    "banned.text1": "The user %1 has been banned from %2.",
-    "banned.text2": "This ban will last until %1.",
-    "banned.text3": "This is the reason why you have been banned:",
+    "banned.subject": "U bent verbannen van %1",
+    "banned.text1": "De gebruiker %1 is verbannen van %2.",
+    "banned.text2": "Deze verbanning duurt tot %1.",
+    "banned.text3": "U bent verbannen om de volgende reden:",
     "closing": "Bedankt!"
 }

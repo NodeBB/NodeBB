@@ -1,5 +1,6 @@
 {
     "invalid-data": "Geçersiz Veri",
+    "invalid-json": "Geçersiz JSON",
     "not-logged-in": "Giriş yapmamış görünüyorsunuz.",
     "account-locked": "Hesabınız geçici olarak kitlendi",
     "search-requires-login": "Arama hesap gerektiriyor. Lütfen giriş yapın ya da kaydolun.",
@@ -12,6 +13,7 @@
     "invalid-title": "Geçersiz başlık!",
     "invalid-user-data": "Geçersiz Kullancı Verisi",
     "invalid-password": "Geçersiz Şifre",
+    "invalid-login-credentials": "Geçersiz kimlik bilgileri",
     "invalid-username-or-password": "Lütfen kullanıcı ismi ve parola girin.",
     "invalid-search-term": "Geçersiz arama",
     "csrf-invalid": "Büyük olasılıkla süresi dolmuş oturum nedeniyle girişinizi geçersiz kıldık. Lütfen tekrar deneyiniz.",

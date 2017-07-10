@@ -1,10 +1,12 @@
 {
 	"you-are-on": "Info - Vous êtes sur <strong>%1:%2</strong>",
+	"nodes-responded": "%1 noeuds ont répondu en %2ms !",
 	"host": "hôte",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "en ligne",
 	"git": "git",
+	"memory": "mémoire",
 	"load": "charge",
 	"uptime": "disponibilité",
 

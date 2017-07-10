@@ -1,5 +1,6 @@
 {
     "invalid-data": "Virheellinen data",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "Et taida olla kirjautuneena sisään.",
     "account-locked": "Käyttäjätilisi on lukittu väliaikaisesti",
     "search-requires-login": "Searching requires an account - please login or register.",
@@ -12,6 +13,7 @@
     "invalid-title": "Virheellinen otsikko!",
     "invalid-user-data": "Virheellinen käyttäjätieto",
     "invalid-password": "Virheellinen salasana",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Ole hyvä ja anna sekä käyttäjänimi että salasana",
     "invalid-search-term": "Virheellinen hakutermi",
     "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",

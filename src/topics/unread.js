@@ -2,6 +2,7 @@
 'use strict';
 
 var async = require('async');
+var _ = require('lodash');
 
 var db = require('../database');
 var user = require('../user');
@@ -118,9 +119,9 @@ module.exports = function (Topics) {
 					}
 				}).map(function (topic) {
 					return topic.value;
-				}).filter(function (tid, index, array) {
-					return array.indexOf(tid) === index;
 				});
+
+				tids = _.uniq(tids);
 
 				if (params.filter === 'watched') {
 					Topics.filterWatchedTids(tids, uid, next);
@@ -222,8 +223,8 @@ module.exports = function (Topics) {
 			return setImmediate(callback, null, false);
 		}
 
-		tids = tids.filter(function (tid, index, array) {
-			return tid && utils.isNumber(tid) && array.indexOf(tid) === index;
+		tids = _.uniq(tids).filter(function (tid) {
+			return tid && utils.isNumber(tid);
 		});
 
 		if (!tids.length) {
@@ -260,9 +261,9 @@ module.exports = function (Topics) {
 			function (results, next) {
 				var cids = results.topicData.map(function (topic) {
 					return topic && topic.cid;
-				}).filter(function (topic, index, array) {
-					return topic && array.indexOf(topic) === index;
-				});
+				}).filter(Boolean);
+
+				cids = _.uniq(cids);
 
 				categories.markAsRead(cids, uid, next);
 			},

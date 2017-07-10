@@ -314,7 +314,18 @@ Categories.getTree = function (categories, parentCid) {
 	return tree;
 };
 
-Categories.buildForSelect = function (uid, callback) {
+Categories.buildForSelect = function (uid, privilege, callback) {
+	async.waterfall([
+		function (next) {
+			Categories.getCategoriesByPrivilege('cid:0:children', uid, privilege, next);
+		},
+		function (categories, next) {
+			Categories.buildForSelectCategories(categories, next);
+		},
+	], callback);
+};
+
+Categories.buildForSelectCategories = function (categories, callback) {
 	function recursive(category, categoriesData, level) {
 		if (category.link) {
 			return;
@@ -322,6 +333,7 @@ Categories.buildForSelect = function (uid, callback) {
 
 		var bullet = level ? '&bull; ' : '';
 		category.value = category.cid;
+		category.level = level;
 		category.text = level + bullet + category.name;
 		categoriesData.push(category);
 
@@ -329,23 +341,17 @@ Categories.buildForSelect = function (uid, callback) {
 			recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level);
 		});
 	}
-	async.waterfall([
-		function (next) {
-			Categories.getCategoriesByPrivilege('cid:0:children', uid, 'read', next);
-		},
-		function (categories, next) {
-			var categoriesData = [];
 
-			categories = categories.filter(function (category) {
-				return category && !category.link && !parseInt(category.parentCid, 10);
-			});
+	var categoriesData = [];
 
-			categories.forEach(function (category) {
-				recursive(category, categoriesData, '');
-			});
-			next(null, categoriesData);
-		},
-	], callback);
+	categories = categories.filter(function (category) {
+		return category && !category.link && !parseInt(category.parentCid, 10);
+	});
+
+	categories.forEach(function (category) {
+		recursive(category, categoriesData, '');
+	});
+	callback(null, categoriesData);
 };
 
 Categories.getIgnorers = function (cid, start, stop, callback) {

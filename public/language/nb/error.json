@@ -1,5 +1,6 @@
 {
     "invalid-data": "Ugyldige data",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "Du ser ikke ut til å være logget inn.",
     "account-locked": "Kontoen din har blitt midlertidig låst",
     "search-requires-login": "Søking krever en konto - vennligst logg inn eller registrer deg.",
@@ -12,6 +13,7 @@
     "invalid-title": "Ugyldig tittel!",
     "invalid-user-data": "Ugyldig brukerdata",
     "invalid-password": "Ugyldig passord",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Vennligst spesifiser både et brukernavn og passord",
     "invalid-search-term": "Ugyldig søkeord",
     "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",

@@ -16,28 +16,13 @@ module.exports = function (privileges) {
 	privileges.categories.list = function (cid, callback) {
 		// Method used in admin/category controller to show all users/groups with privs in that given cid
 
-		var privilegeLabels = [
-			{ name: 'Find Category' },
-			{ name: 'Access Category' },
-			{ name: 'Access Topics' },
-			{ name: 'Create Topics' },
-			{ name: 'Reply to Topics' },
-			{ name: 'Edit Posts' },
-			{ name: 'Delete Posts' },
-			{ name: 'Delete Topics' },
-			{ name: 'Upload Images' },
-			{ name: 'Upload Files' },
-			{ name: 'Purge' },
-			{ name: 'Moderate' },
-		];
-
 		async.waterfall([
 			function (next) {
 				async.parallel({
 					labels: function (next) {
 						async.parallel({
-							users: async.apply(plugins.fireHook, 'filter:privileges.list_human', privilegeLabels),
-							groups: async.apply(plugins.fireHook, 'filter:privileges.groups.list_human', privilegeLabels),
+							users: async.apply(plugins.fireHook, 'filter:privileges.list_human', privileges.privilegeLabels),
+							groups: async.apply(plugins.fireHook, 'filter:privileges.groups.list_human', privileges.privilegeLabels),
 						}, next);
 					},
 					users: function (next) {
@@ -155,7 +140,7 @@ module.exports = function (privileges) {
 	};
 
 	privileges.categories.get = function (cid, uid, callback) {
-		var privs = ['topics:create', 'topics:read', 'read'];
+		var privs = ['topics:create', 'topics:read', 'topics:tag', 'read'];
 		async.waterfall([
 			function (next) {
 				async.parallel({
@@ -177,6 +162,7 @@ module.exports = function (privileges) {
 				plugins.fireHook('filter:privileges.categories.get', {
 					'topics:create': privData['topics:create'] || isAdminOrMod,
 					'topics:read': privData['topics:read'] || isAdminOrMod,
+					'topics:tag': privData['topics:tag'] || isAdminOrMod,
 					read: privData.read || isAdminOrMod,
 					cid: cid,
 					uid: uid,
@@ -246,9 +232,7 @@ module.exports = function (privileges) {
 			return callback(null, []);
 		}
 
-		cids = cids.filter(function (cid, index, array) {
-			return array.indexOf(cid) === index;
-		});
+		cids = _.uniq(cids);
 
 		async.waterfall([
 			function (next) {
@@ -287,9 +271,7 @@ module.exports = function (privileges) {
 			return callback(null, []);
 		}
 
-		uids = uids.filter(function (uid, index, array) {
-			return array.indexOf(uid) === index;
-		});
+		uids = _.uniq(uids);
 
 		async.waterfall([
 			function (next) {
@@ -300,14 +282,14 @@ module.exports = function (privileges) {
 					isModerators: function (next) {
 						user.isModerator(uids, cid, next);
 					},
-					isAdmin: function (next) {
+					isAdmins: function (next) {
 						user.isAdministrator(uids, next);
 					},
 				}, next);
 			},
 			function (results, next) {
 				uids = uids.filter(function (uid, index) {
-					return results.allowedTo[index] || results.isModerators[index] || results.isAdmin[index];
+					return results.allowedTo[index] || results.isModerators[index] || results.isAdmins[index];
 				});
 				next(null, uids);
 			},
@@ -350,59 +332,22 @@ module.exports = function (privileges) {
 	};
 
 	privileges.categories.userPrivileges = function (cid, uid, callback) {
-		async.parallel({
-			find: async.apply(groups.isMember, uid, 'cid:' + cid + ':privileges:find'),
-			read: function (next) {
-				groups.isMember(uid, 'cid:' + cid + ':privileges:read', next);
-			},
-			'topics:create': function (next) {
-				groups.isMember(uid, 'cid:' + cid + ':privileges:topics:create', next);
-			},
-			'topics:read': function (next) {
-				groups.isMember(uid, 'cid:' + cid + ':privileges:topics:read', next);
-			},
-			'topics:reply': function (next) {
-				groups.isMember(uid, 'cid:' + cid + ':privileges:topics:reply', next);
-			},
-			'posts:edit': function (next) {
-				groups.isMember(uid, 'cid:' + cid + ':privileges:posts:edit', next);
-			},
-			'posts:delete': function (next) {
-				groups.isMember(uid, 'cid:' + cid + ':privileges:posts:delete', next);
-			},
-			'topics:delete': function (next) {
-				groups.isMember(uid, 'cid:' + cid + ':privileges:topics:delete', next);
-			},
-			mods: function (next) {
-				user.isModerator(uid, cid, next);
-			},
-		}, callback);
+		var tasks = {};
+
+		privileges.userPrivilegeList.forEach(function (privilege) {
+			tasks[privilege] = async.apply(groups.isMember, uid, 'cid:' + cid + ':privileges:' + privilege);
+		});
+
+		async.parallel(tasks, callback);
 	};
 
 	privileges.categories.groupPrivileges = function (cid, groupName, callback) {
-		async.parallel({
-			'groups:find': async.apply(groups.isMember, groupName, 'cid:' + cid + ':privileges:groups:find'),
-			'groups:read': function (next) {
-				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:read', next);
-			},
-			'groups:topics:create': function (next) {
-				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:topics:create', next);
-			},
-			'groups:topics:reply': function (next) {
-				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:topics:reply', next);
-			},
-			'groups:posts:edit': function (next) {
-				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:posts:edit', next);
-			},
-			'groups:posts:delete': function (next) {
-				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:posts:delete', next);
-			},
-			'groups:topics:delete': function (next) {
-				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:topics:delete', next);
-			},
-			'groups:topics:read': function (next) {
-				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:topics:read', next);
-			},
-		}, callback);
+		var tasks = {};
+
+		privileges.groupPrivilegeList.forEach(function (privilege) {
+			tasks[privilege] = async.apply(groups.isMember, groupName, 'cid:' + cid + ':privileges:' + privilege);
+		});
+
+		async.parallel(tasks, callback);
 	};
 };

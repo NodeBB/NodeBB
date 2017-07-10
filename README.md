@@ -56,7 +56,7 @@ NodeBB requires the following software to be installed:
 
 ## Installation
 
-[Please refer to platform-specific installation documentation](http://docs.nodebb.org/en/latest/installing/os.html)
+[Please refer to platform-specific installation documentation](https://docs.nodebb.org/installing/os)
 
 ## Securing NodeBB
 

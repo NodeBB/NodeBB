@@ -1,5 +1,6 @@
 {
     "invalid-data": "ভুল তথ্য",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "আপনি লগিন করেননি",
     "account-locked": "আপনার অ্যাকাউন্ট সাময়িকভাবে লক করা হয়েছে",
     "search-requires-login": "Searching requires an account - please login or register.",
@@ -12,6 +13,7 @@
     "invalid-title": "ভুল শিরোনাম",
     "invalid-user-data": "ভুল ব্যবহারকারী তথ্য",
     "invalid-password": "ভুল পাসওয়ার্ড",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "অনুগ্রহ পূর্বক ইউজারনেম এবং পাসওয়ার্ড উভয়ই প্রদান করুন",
     "invalid-search-term": "অগ্রহনযোগ্য সার্চ টার্ম",
     "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",

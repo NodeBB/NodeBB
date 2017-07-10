@@ -495,6 +495,13 @@ var commands = {
 			upgradePlugins();
 		},
 	},
+	events: {
+		description: 'Outputs the last ten (10) administrative events recorded by NodeBB',
+		usage: 'Usage: ' + './nodebb events'.yellow,
+		handler: function () {
+			fork(['--events']);
+		},
+	},
 	help: {
 		description: 'Display the help message for a given command',
 		usage: 'Usage: ' + './nodebb help <command>'.yellow,

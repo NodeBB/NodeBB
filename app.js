@@ -26,7 +26,10 @@ if (require.main !== module) {
 }
 
 var nconf = require('nconf');
-nconf.argv().env('__');
+nconf.argv().env({
+	separator: '__',
+	lowerCase: true,
+});
 
 var url = require('url');
 var async = require('async');
@@ -90,6 +93,11 @@ if (nconf.get('setup') || nconf.get('install')) {
 	listPlugins();
 } else if (nconf.get('build')) {
 	require('./src/meta/build').build(nconf.get('build'));
+} else if (nconf.get('events')) {
+	async.series([
+		async.apply(require('./src/database').init),
+		async.apply(require('./src/events').output),
+	]);
 } else {
 	require('./src/start').start();
 }
@@ -218,6 +226,7 @@ function upgrade() {
 function activate() {
 	var db = require('./src/database');
 	var plugins = require('./src/plugins');
+	var events = require('./src/events');
 	var plugin = nconf.get('activate');
 	async.waterfall([
 		function (next) {
@@ -237,6 +246,12 @@ function activate() {
 
 			winston.info('Activating plugin `%s`', plugin);
 			db.sortedSetAdd('plugins:active', 0, plugin, next);
+		},
+		function (next) {
+			events.log({
+				type: 'plugin-activate',
+				text: plugin,
+			}, next);
 		},
 	], function (err) {
 		if (err) {

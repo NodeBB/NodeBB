@@ -1,5 +1,6 @@
 {
     "invalid-data": "Vigased andmed",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "Sa ei ole sisse logitud",
     "account-locked": "Su kasutaja on ajutiselt lukustatud",
     "search-requires-login": "Otsing nõuab kasutajat - palun registreeruge või logige sisse.",
@@ -12,6 +13,7 @@
     "invalid-title": "Vigane pealkiri!",
     "invalid-user-data": "Vigased kasutaja andmed",
     "invalid-password": "Vigane parool",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Palun täpsusta kasutajanime ja parooli",
     "invalid-search-term": "Vigane otsingusõna",
     "csrf-invalid": "Me ei saanud Sind sisse logida, võimalik, et tänu aegunud sessioonile, palun proovi uuesti",

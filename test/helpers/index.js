@@ -36,9 +36,7 @@ helpers.loginUser = function (username, password, callback) {
 			if (err || res.statusCode !== 200) {
 				return callback(err || new Error('[[error:invalid-response]]'));
 			}
-			helpers.connectSocketIO(res, function (err, io) {
-				callback(err, jar, io, body.csrf_token);
-			});
+			callback(null, jar, body.csrf_token);
 		});
 	});
 };
@@ -91,22 +89,6 @@ helpers.connectSocketIO = function (res, callback) {
 
 	io.on('error', function (err) {
 		callback(err);
-	});
-};
-
-helpers.initSocketIO = function (callback) {
-	var jar;
-	request.get({
-		url: nconf.get('url') + '/api/config',
-		jar: jar,
-		json: true,
-	}, function (err, res) {
-		if (err) {
-			return callback(err);
-		}
-		helpers.connectSocketIO(res, function (err, io) {
-			callback(err, jar, io);
-		});
 	});
 };
 

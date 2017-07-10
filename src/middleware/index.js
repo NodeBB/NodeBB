@@ -83,7 +83,13 @@ middleware.routeTouchIcon = function (req, res) {
 	if (meta.config['brand:touchIcon'] && validator.isURL(meta.config['brand:touchIcon'])) {
 		return res.redirect(meta.config['brand:touchIcon']);
 	}
-	return res.sendFile(path.join(__dirname, '../../public', meta.config['brand:touchIcon'] || '/logo.png'), {
+	var iconPath = '../../public';
+	if (meta.config['brand:touchIcon']) {
+		iconPath += meta.config['brand:touchIcon'].replace(/assets\/uploads/, 'uploads');
+	} else {
+		iconPath += '/logo.png';
+	}
+	return res.sendFile(path.join(__dirname, iconPath), {
 		maxAge: req.app.enabled('cache') ? 5184000000 : 0,
 	});
 };
@@ -123,7 +129,7 @@ middleware.privateUploads = function (req, res, next) {
 	if (req.user || parseInt(meta.config.privateUploads, 10) !== 1) {
 		return next();
 	}
-	if (req.path.startsWith('/assets/uploads/files')) {
+	if (req.path.startsWith(nconf.get('relative_path') + '/assets/uploads/files')) {
 		return res.status(403).json('not-allowed');
 	}
 	next();

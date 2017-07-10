@@ -4,6 +4,7 @@ var async = require('async');
 var	assert = require('assert');
 var nconf = require('nconf');
 var path = require('path');
+var request = require('request');
 
 var db = require('./mocks/databasemock');
 var categories = require('../src/categories');
@@ -57,7 +58,7 @@ describe('Upload Controllers', function () {
 		var csrf_token;
 
 		before(function (done) {
-			helpers.loginUser('regular', 'zugzug', function (err, _jar, io, _csrf_token) {
+			helpers.loginUser('regular', 'zugzug', function (err, _jar, _csrf_token) {
 				assert.ifError(err);
 				jar = _jar;
 				csrf_token = _csrf_token;
@@ -155,7 +156,7 @@ describe('Upload Controllers', function () {
 		var csrf_token;
 
 		before(function (done) {
-			helpers.loginUser('admin', 'barbar', function (err, _jar, io, _csrf_token) {
+			helpers.loginUser('admin', 'barbar', function (err, _jar, _csrf_token) {
 				assert.ifError(err);
 				jar = _jar;
 				csrf_token = _csrf_token;
@@ -247,12 +248,19 @@ describe('Upload Controllers', function () {
 		});
 
 		it('should upload touch icon', function (done) {
+			var touchiconAssetPath = '/assets/uploads/system/touchicon-orig.png';
 			helpers.uploadFile(nconf.get('url') + '/api/admin/uploadTouchIcon', path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
-				assert.equal(body[0].url, '/assets/uploads/system/touchicon-orig.png');
-				done();
+				assert.equal(body[0].url, touchiconAssetPath);
+				meta.config['brand:touchIcon'] = touchiconAssetPath;
+				request(nconf.get('url') + '/apple-touch-icon', function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body);
+					done();
+				});
 			});
 		});
 	});

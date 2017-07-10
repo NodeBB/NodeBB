@@ -34,6 +34,8 @@
 	"registration.max-invites": "Nombre maximum d'invitations par utilisateur",
 	"max-invites": "Nombre maximum d'invitations par utilisateur",
 	"max-invites-help": "0 pour supprimer cette restriction. Les admins n'ont aucune restriction<br>Valable uniquement pour \"Uniquement sur invitation\"",
+	"invite-expiration": "Expiration des invitations",
+	"invite-expiration-help": "nombre de jours avant que l'invitation n'expire.",
 	"min-username-length": "Longueur minimum du nom d'utilisateur",
 	"max-username-length": "Longueur maxmum du nom d'utilisateur",
 	"min-password-length": "Longueur minimum du mot de passe",

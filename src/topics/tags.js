@@ -23,11 +23,12 @@ module.exports = function (Topics) {
 				plugins.fireHook('filter:tags.filter', { tags: tags, tid: tid }, next);
 			},
 			function (data, next) {
-				tags = data.tags.slice(0, meta.config.maximumTagsPerTopic || 5);
+				tags = _.uniq(data.tags);
+				tags = tags.slice(0, meta.config.maximumTagsPerTopic || 5);
 				tags = tags.map(function (tag) {
 					return utils.cleanUpTag(tag, meta.config.maximumTagLength);
-				}).filter(function (tag, index, array) {
-					return tag && tag.length >= (meta.config.minimumTagLength || 3) && array.indexOf(tag) === index;
+				}).filter(function (tag) {
+					return tag && tag.length >= (meta.config.minimumTagLength || 3);
 				});
 
 				filterCategoryTags(tags, tid, next);

@@ -206,18 +206,18 @@ mongoModule.info = function (db, callback) {
 
 			stats.mem = results.serverStatus.mem;
 			stats.mem = results.serverStatus.mem;
-			stats.mem.resident = (stats.mem.resident / 1024).toFixed(2);
-			stats.mem.virtual = (stats.mem.virtual / 1024).toFixed(2);
-			stats.mem.mapped = (stats.mem.mapped / 1024).toFixed(2);
+			stats.mem.resident = (stats.mem.resident / 1024).toFixed(3);
+			stats.mem.virtual = (stats.mem.virtual / 1024).toFixed(3);
+			stats.mem.mapped = (stats.mem.mapped / 1024).toFixed(3);
 			stats.collectionData = results.listCollections;
 			stats.network = results.serverStatus.network;
 			stats.raw = JSON.stringify(stats, null, 4);
 
 			stats.avgObjSize = stats.avgObjSize.toFixed(2);
-			stats.dataSize = (stats.dataSize / scale).toFixed(2);
-			stats.storageSize = (stats.storageSize / scale).toFixed(2);
-			stats.fileSize = stats.fileSize ? (stats.fileSize / scale).toFixed(2) : 0;
-			stats.indexSize = (stats.indexSize / scale).toFixed(2);
+			stats.dataSize = (stats.dataSize / scale).toFixed(3);
+			stats.storageSize = (stats.storageSize / scale).toFixed(3);
+			stats.fileSize = stats.fileSize ? (stats.fileSize / scale).toFixed(3) : 0;
+			stats.indexSize = (stats.indexSize / scale).toFixed(3);
 			stats.storageEngine = results.serverStatus.storageEngine ? results.serverStatus.storageEngine.name : 'mmapv1';
 			stats.host = results.serverStatus.host;
 			stats.version = results.serverStatus.version;

@@ -467,38 +467,46 @@ module.exports = function (db, module) {
 		}
 	}
 
-	module.processSortedSet = function (setKey, process, batch, callback) {
+	module.processSortedSet = function (setKey, process, options, callback) {
 		var done = false;
 		var ids = [];
 		var cursor = db.collection('objects').find({ _key: setKey })
 			.sort({ score: 1 })
 			.project({ _id: 0, value: 1 })
-			.batchSize(batch);
+			.batchSize(options.batch);
 
 		async.whilst(
 			function () {
 				return !done;
 			},
 			function (next) {
-				cursor.next(function (err, item) {
-					if (err) {
-						return next(err);
-					}
-					if (item === null) {
-						done = true;
-					} else {
-						ids.push(item.value);
-					}
+				async.waterfall([
+					function (next) {
+						cursor.next(next);
+					},
+					function (item, _next) {
+						if (item === null) {
+							done = true;
+						} else {
+							ids.push(item.value);
+						}
 
-					if (ids.length < batch && (!done || ids.length === 0)) {
-						return next(null);
-					}
-
-					process(ids, function (err) {
+						if (ids.length < options.batch && (!done || ids.length === 0)) {
+							return next(null);
+						}
+						process(ids, function (err) {
+							_next(err);
+						});
+					},
+					function (next) {
 						ids = [];
-						return next(err);
-					});
-				});
+						if (options.interval) {
+							setTimeout(next, options.interval);
+						} else {
+							next();
+						}
+					},
+				], next);
 			},
 			callback
 		);

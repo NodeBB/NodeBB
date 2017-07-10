@@ -34,6 +34,8 @@
 	"registration.max-invites": "Maksymalnie ilość zaproszeń przez użytkownika",
 	"max-invites": "Maksymalnie ilość zaproszeń przez użytkownika",
 	"max-invites-help": "0 for no restriction. Admins get infinite invitations<br>Only applicable for \"Invite Only\"",
+	"invite-expiration": "Invite expiration",
+	"invite-expiration-help": "# of days invitations expire in.",
 	"min-username-length": "Minimum Username Length",
 	"max-username-length": "Maximum Username Length",
 	"min-password-length": "Minimum Password Length",

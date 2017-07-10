@@ -103,5 +103,7 @@
     "cookies.message": "Bu web sitesi en iyi deneyimi elde etmeniz amacıyla çerezlerden yararlanır.",
     "cookies.accept": "Anladım!",
     "cookies.learn_more": "Daha Fazla",
-    "edited": "Düzenlendi"
+    "edited": "Düzenlendi",
+    "disabled": "Devredışı",
+    "select": "Seç"
 }

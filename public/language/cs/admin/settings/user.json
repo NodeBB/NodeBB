@@ -34,6 +34,8 @@
 	"registration.max-invites": "Maximum Invitations per User",
 	"max-invites": "Maximum Invitations per User",
 	"max-invites-help": "0 for no restriction. Admins get infinite invitations<br>Only applicable for \"Invite Only\"",
+	"invite-expiration": "Invite expiration",
+	"invite-expiration-help": "# of days invitations expire in.",
 	"min-username-length": "Minimální délka uživatelského jména",
 	"max-username-length": "Maximální délka uživatelského jména",
 	"min-password-length": "Minimální délka hesla",

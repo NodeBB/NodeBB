@@ -1,6 +1,6 @@
 {
-	"available": "Available Widgets",
-	"explanation": "Select a widget from the dropdown menu and then drag and drop it into a template's widget area on the left.",
+	"available": "Dostupné miniaplikácie",
+	"explanation": "V rozbaľovacej ponuke vyberte miniaplikáciu a potom ju presuňte do oblasti miniaplikácií šablóny.",
 	"none-installed": "No widgets found! Activate the essential widgets plugin in the <a href=\"%1\">plugins</a> control panel.",
 	"containers.available": "Available Containers",
 	"containers.explanation": "Drag and drop on top of any active widget",

@@ -10,11 +10,11 @@
     "share_this_category": "שתף קטגוריה זו",
     "watch": "עקוב",
     "ignore": "התעלם",
-    "watching": "Watching",
-    "ignoring": "Ignoring",
+    "watching": "עוקב",
+    "ignoring": "מתעלם",
     "watching.description": "צפה בנושאים שלא נקראו",
     "ignoring.description": "אל תציג נושאים שאינם נקראו",
-    "watch.message": "You are now watching updates from this category and all subcategories",
-    "ignore.message": "You are now ignoring updates from this category and all subcategories",
+    "watch.message": "אתה כעת עוקב אחר עדכונים בקטגוריה זו וכל תת-הקטגוריות",
+    "ignore.message": "אתה כעת מתעלם מעדכונים בקטגוריה זו וכל תת-הקטגוריות",
     "watched-categories": "קטגוריות נעקבות"
 }

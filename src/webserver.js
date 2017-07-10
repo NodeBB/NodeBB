@@ -24,6 +24,7 @@ var meta = require('./meta');
 var languages = require('./languages');
 var logger = require('./logger');
 var plugins = require('./plugins');
+var flags = require('./flags');
 var routes = require('./routes');
 var auth = require('./routes/authentication');
 var templates = require('templates.js');
@@ -106,6 +107,7 @@ function initializeNodeBB(callback) {
 				meta.sounds.addUploads,
 				languages.init,
 				meta.blacklist.load,
+				flags.init,
 			], next);
 		},
 	], function (err) {
@@ -133,8 +135,8 @@ function setupExpressApp(app, callback) {
 
 	app.use(compression());
 
-	app.get('/ping', ping);
-	app.get('/sping', ping);
+	app.get(relativePath + '/ping', ping);
+	app.get(relativePath + '/sping', ping);
 
 	setupFavicon(app);
 

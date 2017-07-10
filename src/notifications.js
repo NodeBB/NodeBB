@@ -160,9 +160,7 @@ Notifications.push = function (notification, uids, callback) {
 		uids = [uids];
 	}
 
-	uids = uids.filter(function (uid, index, array) {
-		return parseInt(uid, 10) && array.indexOf(uid) === index;
-	});
+	uids = _.uniq(uids);
 
 	if (!uids.length) {
 		return callback();
@@ -292,7 +290,9 @@ Notifications.markUnread = function (nid, uid, callback) {
 				async.apply(db.sortedSetAdd, 'uid:' + uid + ':notifications:unread', notification.datetime, nid),
 			], next);
 		},
-	], callback);
+	], function (err) {
+		callback(err);
+	});
 };
 
 Notifications.markReadMultiple = function (nids, uid, callback) {

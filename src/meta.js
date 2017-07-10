@@ -12,16 +12,16 @@ var Meta = module.exports;
 
 Meta.reloadRequired = false;
 
-require('./meta/configs')(Meta);
-require('./meta/themes')(Meta);
-require('./meta/js')(Meta);
-require('./meta/css')(Meta);
-require('./meta/sounds')(Meta);
-require('./meta/settings')(Meta);
-require('./meta/logs')(Meta);
-require('./meta/errors')(Meta);
-require('./meta/tags')(Meta);
-require('./meta/dependencies')(Meta);
+Meta.configs = require('./meta/configs');
+Meta.themes = require('./meta/themes');
+Meta.js = require('./meta/js');
+Meta.css = require('./meta/css');
+Meta.sounds = require('./meta/sounds');
+Meta.settings = require('./meta/settings');
+Meta.logs = require('./meta/logs');
+Meta.errors = require('./meta/errors');
+Meta.tags = require('./meta/tags');
+Meta.dependencies = require('./meta/dependencies');
 Meta.templates = require('./meta/templates');
 Meta.blacklist = require('./meta/blacklist');
 Meta.languages = require('./meta/languages');

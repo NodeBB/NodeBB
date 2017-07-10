@@ -1,10 +1,12 @@
 {
 	"you-are-on": "お知らせ - あなたは<strong>%1:%2</strong>",
+	"nodes-responded": "%1 nodes responded within %2ms!",
 	"host": "ホスト",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "オンライン",
 	"git": "git",
+	"memory": "memory",
 	"load": "ロード",
 	"uptime": "稼働時間",
 

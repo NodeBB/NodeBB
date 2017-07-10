@@ -60,7 +60,7 @@
     "username_taken_workaround": "您申请的用户名已被占用，所以我们稍作更改。您现在的用户名是 <strong>%1</strong>",
     "password_same_as_username": "您的密码与用户名相同，请选择另外的密码。",
     "password_same_as_email": "您的密码与邮箱相同，请选择另外的密码。",
-    "weak_password": "Weak password.",
+    "weak_password": "密码强度低。",
     "upload_picture": "上传头像",
     "upload_a_picture": "上传头像",
     "remove_uploaded_picture": "删除已上传的头像",

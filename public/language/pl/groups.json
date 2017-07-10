@@ -27,7 +27,7 @@
     "details.disableJoinRequests": "Wyłączono prośbę o dołączenie",
     "details.grant": "Nadaj/Cofnij prawa Właściciela",
     "details.kick": "Wykop",
-    "details.kick_confirm": "Are you sure you want to remove this member from the group?",
+    "details.kick_confirm": "Jesteś pewny, że chcesz wyrzucić tego użytkownika z grupy?",
     "details.owner_options": "Administracja grupy",
     "details.group_name": "Nazwa grupy",
     "details.member_count": "Liczba Członków",

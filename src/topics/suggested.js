@@ -25,8 +25,8 @@ module.exports = function (Topics) {
 			},
 			function (results, next) {
 				var tids = results.tagTids.concat(results.searchTids).concat(results.categoryTids);
-				tids = tids.filter(function (_tid, index, array) {
-					return parseInt(_tid, 10) !== parseInt(tid, 10) && array.indexOf(_tid) === index;
+				tids = _.uniq(tids).filter(function (_tid) {
+					return parseInt(_tid, 10) !== parseInt(tid, 10);
 				});
 
 				if (stop === -1) {

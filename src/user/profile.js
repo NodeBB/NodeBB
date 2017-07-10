@@ -176,7 +176,9 @@ module.exports = function (User) {
 					},
 					function (next) {
 						if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && newEmail) {
-							User.email.sendValidationEmail(uid, newEmail);
+							User.email.sendValidationEmail(uid, {
+								email: newEmail,
+							});
 						}
 						User.setUserField(uid, 'email:confirmed', 0, next);
 					},
@@ -281,7 +283,10 @@ module.exports = function (User) {
 			},
 			function (hashedPassword, next) {
 				async.parallel([
-					async.apply(User.setUserField, data.uid, 'password', hashedPassword),
+					async.apply(User.setUserFields, data.uid, {
+						password: hashedPassword,
+						rss_token: utils.generateUUID(),
+					}),
 					async.apply(User.reset.updateExpiry, data.uid),
 					async.apply(User.auth.revokeAllSessions, data.uid),
 				], function (err) {

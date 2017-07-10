@@ -1,5 +1,6 @@
 {
     "invalid-data": "ข้อมูลไม่ถูกต้อง",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "คุณยังไม่ได้ลงชื่อเข้าระบบ",
     "account-locked": "บัญชีของคุณถูกระงับการใช้งานชั่วคราว",
     "search-requires-login": "\"ฟังก์ชั่นการค้นหา\" ต้องการบัญชีผู้ใช้ กรุณาเข้าสู่ระบบหรือสมัครสมาชิก",
@@ -12,6 +13,7 @@
     "invalid-title": "คำนำหน้าชื่อไม่ถูกต้อง",
     "invalid-user-data": "User Data ไม่ถูกต้อง",
     "invalid-password": "รหัสผ่านไม่ถูกต้อง",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "กรุณาระบุชื่อผู้ใช้และรหัสผ่าน",
     "invalid-search-term": "ข้อความค้นหาไม่ถูกต้อง",
     "csrf-invalid": "เราไม่สามารถนำท่านเข้าสู่ระบบได้ เหมือนกับว่าเซสชั่นหมดอายุแล้ว กรุณาลองใหม่อีกครั้ง",

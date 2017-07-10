@@ -6,7 +6,7 @@
     "greeting_with_name": "Ciao %1",
     "welcome.text1": "Grazie per esserti registrato su %1!",
     "welcome.text2": "Per attivare completamente il tuo account dobbiamo verificare che sei il proprietario dell'indirizzo email con cui ti sei registrato.",
-    "welcome.text3": "Un Amministratora ha accettato la tua registrazione. Adesso puoi collegarti con il tuo nome utente/ password.",
+    "welcome.text3": "Un amministratore ha accettato la tua registrazione. Adesso puoi collegarti con il tuo nome utente/password.",
     "welcome.cta": "Clicca qui per confermare il tuo indirizzo email",
     "invitation.text1": "%1 ti ha invitato a entrare in %2",
     "invitation.ctr": "Clicca qui per creare il tuo account.",

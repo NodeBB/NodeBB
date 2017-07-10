@@ -103,7 +103,9 @@ module.exports = function (User) {
 							], next);
 
 							if (parseInt(userData.uid, 10) !== 1 && parseInt(meta.config.requireEmailConfirmation, 10) === 1) {
-								User.email.sendValidationEmail(userData.uid, userData.email);
+								User.email.sendValidationEmail(userData.uid, {
+									email: userData.email,
+								});
 							}
 						} else {
 							next();

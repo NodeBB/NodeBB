@@ -18,6 +18,7 @@ provision.sh
 .DS_Store
 feeds/recent.rss
 .eslintcache
+.svn
 
 logs/
 
@@ -62,3 +63,4 @@ build
 *.log
 test/files/normalise.jpg.png
 test/files/normalise-resized.jpg
+package-lock.json

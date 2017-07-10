@@ -101,14 +101,14 @@ Topics.getTopicsByTids = function (tids, uid, callback) {
 			function mapFilter(array, field) {
 				return array.map(function (topic) {
 					return topic && topic[field] && topic[field].toString();
-				}).filter(function (value, index, array) {
-					return utils.isNumber(value) && array.indexOf(value) === index;
+				}).filter(function (value) {
+					return utils.isNumber(value);
 				});
 			}
 
 			topics = _topics;
-			uids = mapFilter(topics, 'uid');
-			cids = mapFilter(topics, 'cid');
+			uids = _.uniq(mapFilter(topics, 'uid'));
+			cids = _.uniq(mapFilter(topics, 'cid'));
 
 			async.parallel({
 				users: function (next) {

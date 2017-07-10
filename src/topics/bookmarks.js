@@ -8,6 +8,9 @@ var posts = require('../posts');
 
 module.exports = function (Topics) {
 	Topics.getUserBookmark = function (tid, uid, callback) {
+		if (!parseInt(uid, 10)) {
+			return callback(null, null);
+		}
 		db.sortedSetScore('tid:' + tid + ':bookmarks', uid, callback);
 	};
 

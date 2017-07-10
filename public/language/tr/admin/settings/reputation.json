@@ -1,6 +1,6 @@
 {
 	"reputation": "Oylama Ayarları",
-	"disable": "Disable Reputation System",
+	"disable": "Oylama Sistemini Devredışı",
 	"disable-down-voting": "Eksi oyu devredışı bırak",
 	"votes-are-public": "All Votes Are Public",
 	"thresholds": "Activity Thresholds",

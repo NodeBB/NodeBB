@@ -75,18 +75,7 @@ SocketUser.emailConfirm = function (socket, data, callback) {
 		return callback(new Error('[[error:email-confirmations-are-disabled]]'));
 	}
 
-	async.waterfall([
-		function (next) {
-			user.getUserField(socket.uid, 'email', next);
-		},
-		function (email, next) {
-			if (!email) {
-				return callback();
-			}
-
-			user.email.sendValidationEmail(socket.uid, email, next);
-		},
-	], callback);
+	user.email.sendValidationEmail(socket.uid, callback);
 };
 
 

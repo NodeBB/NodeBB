@@ -4,7 +4,7 @@ var async = require('async');
 var winston = require('winston');
 var nconf = require('nconf');
 
-var db = require('../database');
+var batch = require('../batch');
 var meta = require('../meta');
 var user = require('../user');
 var topics = require('../topics');
@@ -14,47 +14,40 @@ var utils = require('../utils');
 
 var Digest = module.exports;
 
-Digest.execute = function (interval, callback) {
+Digest.execute = function (payload, callback) {
 	callback = callback || function () {};
 
 	var digestsDisabled = parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
 	if (digestsDisabled) {
-		winston.info('[user/jobs] Did not send digests (' + interval + ') because subscription system is disabled.');
+		winston.info('[user/jobs] Did not send digests (' + payload.interval + ') because subscription system is disabled.');
 		return callback();
 	}
 
-	var subscribers;
 	async.waterfall([
 		function (next) {
-			async.parallel({
-				topics: async.apply(topics.getLatestTopics, 0, 0, 9, interval),
-				subscribers: async.apply(Digest.getSubscribers, interval),
-			}, next);
+			if (payload.subscribers) {
+				setImmediate(next, undefined, payload.subscribers);
+			} else {
+				Digest.getSubscribers(payload.interval, next);
+			}
 		},
-		function (data, next) {
-			subscribers = data.subscribers;
-			if (!data.subscribers.length) {
+		function (subscribers, next) {
+			if (!subscribers.length) {
 				return callback();
 			}
 
-			// Fix relative paths in topic data
-			data.topics.topics = data.topics.topics.map(function (topicObj) {
-				var user = topicObj.hasOwnProperty('teaser') && topicObj.teaser !== undefined ? topicObj.teaser.user : topicObj.user;
-				if (user && user.picture && utils.isRelativeUrl(user.picture)) {
-					user.picture = nconf.get('base_url') + user.picture;
-				}
+			var data = {
+				interval: payload.interval,
+				subscribers: subscribers,
+			};
 
-				return topicObj;
-			});
-
-			data.interval = interval;
 			Digest.send(data, next);
 		},
-	], function (err) {
+	], function (err, count) {
 		if (err) {
-			winston.error('[user/jobs] Could not send digests (' + interval + '): ' + err.message);
+			winston.error('[user/jobs] Could not send digests (' + payload.interval + '): ' + err.message);
 		} else {
-			winston.info('[user/jobs] Digest (' + interval + ') scheduling completed. ' + subscribers.length + ' email(s) sent.');
+			winston.info('[user/jobs] Digest (' + payload.interval + ') scheduling completed. ' + count + ' email(s) sent.');
 		}
 
 		callback(err);
@@ -64,7 +57,25 @@ Digest.execute = function (interval, callback) {
 Digest.getSubscribers = function (interval, callback) {
 	async.waterfall([
 		function (next) {
-			db.getSortedSetRange('digest:' + interval + ':uids', 0, -1, next);
+			var subs = [];
+
+			batch.processSortedSet('users:joindate', function (uids, next) {
+				async.waterfall([
+					function (next) {
+						user.getMultipleUserSettings(uids, next);
+					},
+					function (settings, next) {
+						settings.forEach(function (hash) {
+							if (hash.dailyDigestFreq === interval) {
+								subs.push(hash.uid);
+							}
+						});
+						next();
+					},
+				], next);
+			}, { interval: 1000 }, function (err) {
+				next(err, subs);
+			});
 		},
 		function (subscribers, next) {
 			plugins.fireHook('filter:digest.subscribers', {
@@ -92,12 +103,16 @@ Digest.send = function (data, callback) {
 			async.eachLimit(users, 100, function (userObj, next) {
 				async.waterfall([
 					function (next) {
-						user.notifications.getDailyUnread(userObj.uid, next);
+						async.parallel({
+							notifications: async.apply(user.notifications.getDailyUnread, userObj.uid),
+							topics: async.apply(topics.getPopular, data.interval, userObj.uid, 10),
+						}, next);
 					},
-					function (notifications, next) {
-						notifications = notifications.filter(Boolean);
+					function (data, next) {
+						var notifications = data.notifications.filter(Boolean);
+
 						// If there are no notifications and no new topics, don't bother sending a digest
-						if (!notifications.length && !data.topics.topics.length) {
+						if (!notifications.length && !data.topics.length) {
 							return next();
 						}
 
@@ -107,6 +122,16 @@ Digest.send = function (data, callback) {
 							}
 						});
 
+						// Fix relative paths in topic data
+						data.topics = data.topics.map(function (topicObj) {
+							var user = topicObj.hasOwnProperty('teaser') && topicObj.teaser !== undefined ? topicObj.teaser.user : topicObj.user;
+							if (user && user.picture && utils.isRelativeUrl(user.picture)) {
+								user.picture = nconf.get('base_url') + user.picture;
+							}
+
+							return topicObj;
+						});
+
 						emailer.send('digest', userObj.uid, {
 							subject: '[' + meta.config.title + '] [[email:digest.subject, ' + (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()) + ']]',
 							username: userObj.username,
@@ -114,7 +139,7 @@ Digest.send = function (data, callback) {
 							url: nconf.get('url'),
 							site_title: meta.config.title || meta.config.browserTitle || 'NodeBB',
 							notifications: notifications,
-							recent: data.topics.topics,
+							recent: data.topics,
 							interval: data.interval,
 						});
 						next();
@@ -123,6 +148,6 @@ Digest.send = function (data, callback) {
 			}, next);
 		},
 	], function (err) {
-		callback(err);
+		callback(err, data.subscribers.length);
 	});
 };

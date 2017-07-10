@@ -1,5 +1,6 @@
 {
     "invalid-data": "Dados Inválidos",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "Você não parece estar logado.",
     "account-locked": "Sua conta foi temporariamente bloqueada ",
     "search-requires-login": "É necessário ter uma conta para pesquisar - por favor efetue o login ou cadastre-se.",
@@ -12,6 +13,7 @@
     "invalid-title": "Título inválido!",
     "invalid-user-data": "Dados de Usuário Inválidos",
     "invalid-password": "Senha Inválida",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Por favor especifique ambos nome de usuário e senha",
     "invalid-search-term": "Termo de pesquisa inválido",
     "csrf-invalid": "Nós não fomos capazes de logá-lo, provavelmente devido à uma sessão expirada. Por favor tente novamente.",

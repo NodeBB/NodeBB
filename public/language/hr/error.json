@@ -1,5 +1,6 @@
 {
     "invalid-data": "Nevažeći podaci",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "Izgleda da niste prijavljeni",
     "account-locked": "Vaš račun je privremeno blokiran",
     "search-requires-login": "Pretraga zahtijeva prijavu - prijavite se ili se registrirajte.",
@@ -12,6 +13,7 @@
     "invalid-title": "Netočan naslov!",
     "invalid-user-data": "Netočni korisnički podatci",
     "invalid-password": "Netočna lozinka",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Upišite oboje, korisničko ime i lozinku",
     "invalid-search-term": "Netočan upit pretraživanja",
     "csrf-invalid": "Nismo Vas uspijeli prijaviti, najvjerovatnije zbog istekle sesije. Molimo pokušajte ponovno",

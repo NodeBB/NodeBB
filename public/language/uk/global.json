@@ -103,5 +103,7 @@
     "cookies.message": "Цей сайт використовує куки, щоб ви отримали найкращий досвід при роботі з сайтом.",
     "cookies.accept": "Зрозуміло!",
     "cookies.learn_more": "Дізнатися більше",
-    "edited": "Відредаговано"
+    "edited": "Відредаговано",
+    "disabled": "Disabled",
+    "select": "Select"
 }

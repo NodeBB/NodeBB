@@ -30,6 +30,7 @@ module.exports = function (Categories) {
 
 		category.name = validator.escape(String(category.name || ''));
 		category.disabled = category.hasOwnProperty('disabled') ? parseInt(category.disabled, 10) === 1 : undefined;
+		category.isSection = category.hasOwnProperty('isSection') ? parseInt(category.isSection, 10) === 1 : undefined;
 		category.icon = category.icon || 'hidden';
 		if (category.hasOwnProperty('post_count')) {
 			category.post_count = category.post_count || 0;

@@ -1,7 +1,7 @@
 {
-	"alert.confirm-reload": "Are you sure you wish to reload NodeBB?",
-	"alert.confirm-restart": "Are you sure you wish to restart NodeBB?",
+	"alert.confirm-reload": "Da li želite da ponovo učitate NodeBB?",
+	"alert.confirm-restart": "Da li želite da restartujete NodeBB?",
 
-	"acp-title": "%1 | NodeBB Admin Control Panel",
-	"settings-header-contents": "Contents"
+	"acp-title": "%1 | NodeBB Administratorski panel",
+	"settings-header-contents": "Sadržaj"
 }

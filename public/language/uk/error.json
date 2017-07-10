@@ -1,5 +1,6 @@
 {
     "invalid-data": "Невірні дані",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "Не схоже, що ви увійшли в систему.",
     "account-locked": "Ваш акаунт тимчасово заблоковано",
     "search-requires-login": "Для пошуку потрібен акаунт — будь ласка, увійдіть чи зареєструйтесь.",
@@ -12,6 +13,7 @@
     "invalid-title": "Невірний заголовок!",
     "invalid-user-data": "Невірні користувацькі дані",
     "invalid-password": "Невірний пароль",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Вкажіть, будь ласка, ім'я користувача та пароль",
     "invalid-search-term": "Невірний пошуковий запит",
     "csrf-invalid": "Нам не вдалося вас пустити, ймовірно, через прострочену сесію. Будь ласка, спробуйте ще раз",

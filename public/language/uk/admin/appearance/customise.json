@@ -5,5 +5,8 @@
 
 	"custom-header": "Користувацький заголовок",
 	"custom-header.description": "Уведіть власний HTML (JavaScript, мета теги, тощо), що буде додано до секції <code>&lt;head&gt;</code> вашого форуму.",
-	"custom-header.enable": "Увімкнути користувацький заголовок"
+	"custom-header.enable": "Увімкнути користувацький заголовок",
+
+	"custom-css.livereload": "Enable Live Reload",
+	"custom-css.livereload.description": "Enable this to force all sessions on every device under your account to refresh whenever you click save"
 }

@@ -1,5 +1,6 @@
 {
     "invalid-data": "Άκυρα Δεδομένα",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "Φαίνεται πως δεν είσαι συνδεδεμένος/η.",
     "account-locked": "Ο λογαριασμός σου έχει κλειδωθεί προσωρινά",
     "search-requires-login": "Searching requires an account - please login or register.",
@@ -12,6 +13,7 @@
     "invalid-title": "Άκυρος Τίτλος!",
     "invalid-user-data": "Άκυρα Δεδομένα Χρήστη",
     "invalid-password": "Άκυρος Κωδικός",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Παρακαλώ γράψε το όνομα χρήστη και τον κωδικό",
     "invalid-search-term": "Άκυρος όρος αναζήτησης",
     "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",

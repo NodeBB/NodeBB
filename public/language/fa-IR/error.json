@@ -1,5 +1,6 @@
 {
     "invalid-data": "داده(های) نامعتبر",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "وارد حساب کاربری نشده‌اید.",
     "account-locked": "حساب کاربری شما موقتاً مسدود شده است.",
     "search-requires-login": "استفاده از جستجو نیازمند ورود با نام‌کاربری و رمز‌عبور است. لطفا ابتدا وارد شوید.",
@@ -12,6 +13,7 @@
     "invalid-title": "عنوان نامعتبر است!",
     "invalid-user-data": "داده‌های کاربر نامعتبر است.",
     "invalid-password": "کلمه عبور نامعتبر است.",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "لطفا هم نام کاربری و هم کلمه عبور را مشخص کنید",
     "invalid-search-term": "کلمه جستجو نامعتبر است",
     "csrf-invalid": "اجازه ورود شما تمام شده است، لطفا دوباره وارد شوید.",

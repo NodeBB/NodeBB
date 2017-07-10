@@ -21,7 +21,7 @@ module.exports = {
 						progress.incr();
 						return next(err);
 					}
-					winston.info('renaming ' + groupName + ' to ' + newName);
+					winston.verbose('renaming ' + groupName + ' to ' + newName);
 					progress.incr();
 					groups.renameGroup(groupName, newName, next);
 				});

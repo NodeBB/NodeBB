@@ -34,6 +34,8 @@
 	"registration.max-invites": "Кількість запрошень на користувача",
 	"max-invites": "Кількість запрошень на користувача",
 	"max-invites-help": "0 — без обмежень. Адміни отримуют необмежену кількість.<br>Працює лише з типом реєстрації \"По запрошенню\".",
+	"invite-expiration": "Invite expiration",
+	"invite-expiration-help": "# of days invitations expire in.",
 	"min-username-length": "Мінімальна довжина імені користувача",
 	"max-username-length": "Максимальна довжина імені користувача",
 	"min-password-length": "Мінімальна довжина пароля",

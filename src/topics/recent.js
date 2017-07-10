@@ -90,7 +90,7 @@ module.exports = function (Topics) {
 		], callback);
 	}
 
-
+	/* not an orphan method, used in widget-essentials */
 	Topics.getLatestTopics = function (uid, start, stop, term, callback) {
 		async.waterfall([
 			function (next) {

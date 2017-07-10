@@ -26,7 +26,26 @@ UserEmail.available = function (email, callback) {
 	});
 };
 
-UserEmail.sendValidationEmail = function (uid, email, callback) {
+UserEmail.sendValidationEmail = function (uid, options, callback) {
+	/*
+	 * 	Options:
+	 * 		- email, overrides email retrieval
+	 * 		- force, sends email even if it is too soon to send another
+	 */
+
+	// Handling for 2 arguments
+	if (arguments.length === 2 && typeof options === 'function') {
+		callback = options;
+		options = {};
+	}
+
+	// Fallback behaviour (email passed in as second argument)
+	if (typeof options === 'string') {
+		options = {
+			email: options,
+		};
+	}
+
 	callback = callback || function () {};
 	var confirm_code = utils.generateUUID();
 	var confirm_link = nconf.get('url') + '/confirm/' + confirm_code;
@@ -35,6 +54,23 @@ UserEmail.sendValidationEmail = function (uid, email, callback) {
 
 	async.waterfall([
 		function (next) {
+			// If no email passed in (default), retrieve email from uid
+			if (options.email && options.email.length) {
+				return setImmediate(next, null, options.email);
+			}
+
+			user.getUserField(uid, 'email', next);
+		},
+		function (email, next) {
+			options.email = email;
+			if (!options.email) {
+				return callback();
+			}
+
+			if (options.force) {
+				return setImmediate(next, null, false);
+			}
+
 			db.get('uid:' + uid + ':confirm:email:sent', next);
 		},
 		function (sent, next) {
@@ -52,7 +88,7 @@ UserEmail.sendValidationEmail = function (uid, email, callback) {
 		function (_confirm_code, next) {
 			confirm_code = _confirm_code;
 			db.setObject('confirm:' + confirm_code, {
-				email: email.toLowerCase(),
+				email: options.email.toLowerCase(),
 				uid: uid,
 			}, next);
 		},

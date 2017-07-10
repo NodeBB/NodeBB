@@ -1138,7 +1138,7 @@ describe('Groups', function () {
 		});
 
 		it('should error if user is not owner of group', function (done) {
-			helpers.loginUser('regularuser', '123456', function (err, jar, io, csrf_token) {
+			helpers.loginUser('regularuser', '123456', function (err, jar, csrf_token) {
 				assert.ifError(err);
 				helpers.uploadFile(nconf.get('url') + '/api/groups/uploadpicture', logoPath, { params: JSON.stringify({ groupName: 'Test' }) }, jar, csrf_token, function (err, res, body) {
 					assert.ifError(err);
@@ -1150,7 +1150,7 @@ describe('Groups', function () {
 		});
 
 		it('should upload group cover with api route', function (done) {
-			helpers.loginUser('admin', '123456', function (err, jar, io, csrf_token) {
+			helpers.loginUser('admin', '123456', function (err, jar, csrf_token) {
 				assert.ifError(err);
 				helpers.uploadFile(nconf.get('url') + '/api/groups/uploadpicture', logoPath, { params: JSON.stringify({ groupName: 'Test' }) }, jar, csrf_token, function (err, res, body) {
 					assert.ifError(err);

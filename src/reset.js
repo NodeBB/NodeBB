@@ -1,10 +1,12 @@
 'use strict';
 
+require('colors');
 var path = require('path');
 var winston = require('winston');
 var nconf = require('nconf');
 var async = require('async');
 var db = require('./database');
+var events = require('./events');
 
 var Reset = {};
 
@@ -66,6 +68,7 @@ Reset.reset = function (callback) {
 
 			process.stdout.write('\nPlugin and theme reset flags (-p & -t) can take a single argument\n');
 			process.stdout.write('    e.g. ./nodebb reset -p nodebb-plugin-mentions, ./nodebb reset -t nodebb-theme-persona\n');
+			process.stdout.write('         Prefix is optional, e.g. ./nodebb reset -p markdown, ./nodebb reset -t persona\n');
 
 			process.exit(0);
 		}
@@ -130,6 +133,12 @@ function resetPlugin(pluginId, callback) {
 			} else {
 				next();
 			}
+		},
+		function (next) {
+			events.log({
+				type: 'plugin-deactivate',
+				text: pluginId,
+			}, next);
 		},
 	], function (err) {
 		if (err) {

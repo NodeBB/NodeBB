@@ -1,15 +1,15 @@
 {
-	"lead": "Configure your IP blacklist here.",
-	"description": "Occasionally, a user account ban is not enough of a deterrant. Other times, restricting access to the forum to a specific IP or a range of IPs is the best way to protect a forum. In these scenarios, you can add troublesome IP addresses or entire CIDR blocks to this blacklist, and they will be prevented from logging in to or registering a new account.",
-	"active-rules": "Active Rules",
-	"validate": "Validate Blacklist",
-	"apply": "Apply Blacklist",
-	"hints": "Syntax Hints",
-	"hint-1": "Define a single IP addresses per line. You can add IP blocks as long as they follow the CIDR format (e.g. <code>192.168.100.0/22</code>).",
-	"hint-2": "You can add in comments by starting lines with the <code>#</code> symbol.",
+	"lead": "여기에 IP 차단 목록을 구성하십시오.",
+	"description": "가끔씩 사용자 계정 차단만으로는 부족할 수 있습니다. 그럴 경우에는 특정 IP 또는 IP 범위로 접근을 차단하는 것이 포럼을 보호하는 가장 좋은 방법입니다. 문제가 되는 IP 주소들이나 CIDR 블록 전체를 블랙리스트에 추가하면 로그인하거나 새 계정을 등록할 수 없습니다.",
+	"active-rules": "사용 중인 룰",
+	"validate": "블랙리스트 확인",
+	"apply": "블랙리스트 적용",
+	"hints": "구문 힌트",
+	"hint-1": "각 줄마다 IP 주소 하나를 정의하십시오. IP 블록을 CIDR 형식 (예: <code>192.168.100.0/22</code>)을 따르는 한 추가 할 수 있습니다. ",
+	"hint-2": "<code>#</code>기호로 행을 시작하여 주석을 추가 할 수 있습니다.",
 
-	"validate.x-valid": "<strong>%1</strong> out of <strong>%2</strong> rule(s) valid.",
-	"validate.x-invalid": "The following <strong>%1</strong> rules are invalid:",
+	"validate.x-valid": "<strong>%2</strong> 룰(들) 중 <strong>%1</strong> 유효함.",
+	"validate.x-invalid": "다음 <strong>%1</strong> 규칙들은 유효하지 않습니다:",
 
-	"alerts.applied-success": "Blacklist Applied"
+	"alerts.applied-success": "블랙리스트 적용됨"
 }

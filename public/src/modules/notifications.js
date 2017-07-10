@@ -10,29 +10,27 @@ define('notifications', ['sounds', 'translator', 'components'], function (sounds
 		var notifContainer = components.get('notifications');
 		var notifTrigger = notifContainer.children('a');
 		var notifList = components.get('notifications/list');
-		var notifIcon = components.get('notifications/icon');
 
-		notifTrigger
-			.on('click', function (e) {
-				e.preventDefault();
-				if (notifContainer.hasClass('open')) {
-					return;
-				}
+		notifTrigger.on('click', function (e) {
+			e.preventDefault();
+			if (notifContainer.hasClass('open')) {
+				return;
+			}
 
-				Notifications.loadNotifications(notifList);
-			});
+			Notifications.loadNotifications(notifList);
+		});
 
 		notifList.on('click', '[data-nid]', function () {
 			var unread = $(this).hasClass('unread');
-			var nid = $(this).attr('data-nid');
 			if (!unread) {
 				return;
 			}
+			var nid = $(this).attr('data-nid');
 			socket.emit('notifications.markRead', nid, function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
-				incrementNotifCount(-1);
+
 				if (unreadNotifs[nid]) {
 					delete unreadNotifs[nid];
 				}
@@ -52,18 +50,13 @@ define('notifications', ['sounds', 'translator', 'components'], function (sounds
 				}
 
 				liEl.toggleClass('unread');
-				incrementNotifCount(unread ? -1 : 1);
+
 				if (unread && unreadNotifs[nid]) {
 					delete unreadNotifs[nid];
 				}
 			});
 			return false;
 		});
-
-		function incrementNotifCount(delta) {
-			var count = parseInt(notifIcon.attr('data-content'), 10) + delta;
-			Notifications.updateNotifCount(count);
-		}
 
 		socket.on('event:new_notification', function (notifData) {
 			// If a path is defined, show notif data, otherwise show generic data
@@ -164,7 +157,6 @@ define('notifications', ['sounds', 'translator', 'components'], function (sounds
 			if (err) {
 				app.alertError(err.message);
 			}
-			Notifications.updateNotifCount(0);
 			unreadNotifs = {};
 		});
 	};

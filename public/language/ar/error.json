@@ -1,5 +1,6 @@
 {
     "invalid-data": "بيانات غير صحيحة",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "لم تقم بتسجيل الدخول",
     "account-locked": "تم حظر حسابك مؤقتًا.",
     "search-requires-login": "البحث في المنتدى يتطلب حساب - الرجاء تسجيل الدخول أو التسجيل",
@@ -12,6 +13,7 @@
     "invalid-title": "عنوان غير صحيح",
     "invalid-user-data": "بيانات المستخدم غير صحيحة",
     "invalid-password": "كلمة السر غير مقبولة",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "المرجود تحديد اسم مستخدم و كلمة مرور",
     "invalid-search-term": "كلمة البحث غير صحيحة",
     "csrf-invalid": "لم تتمكن من تسجيل الدخول. هنالك أحتمال ان جلستك انتهت. رجاءًا حاول مرة اخرى.",

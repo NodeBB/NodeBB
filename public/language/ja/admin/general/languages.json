@@ -1,5 +1,6 @@
 {
 	"language-settings": "言語設定",
 	"description": "デフォルトの言語は、フォーラムにアクセスしているすべてのユーザーの言語表示を決定します。<br />個々のユーザーは、アカウント設定ページでデフォルトの言語を上書きできます。",
-	"default-language": "デフォルトの言語"
+	"default-language": "デフォルトの言語",
+	"auto-detect": "Auto Detect Language Setting for Guests"
 }

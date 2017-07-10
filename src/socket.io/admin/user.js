@@ -101,20 +101,9 @@ User.sendValidationEmail = function (socket, uids, callback) {
 		return callback(new Error('[[error:email-confirmations-are-disabled]]'));
 	}
 
-	async.waterfall([
-		function (next) {
-			user.getUsersFields(uids, ['uid', 'email'], next);
-		},
-		function (usersData, next) {
-			async.eachLimit(usersData, 50, function (userData, next) {
-				if (userData.email && userData.uid) {
-					user.email.sendValidationEmail(userData.uid, userData.email, next);
-				} else {
-					next();
-				}
-			}, next);
-		},
-	], callback);
+	async.eachLimit(uids, 50, function (uid, next) {
+		user.email.sendValidationEmail(uid, next);
+	}, callback);
 };
 
 User.sendPasswordResetEmail = function (socket, uids, callback) {

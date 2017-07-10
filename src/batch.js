@@ -30,17 +30,18 @@ exports.processSortedSet = function (setKey, process, options, callback) {
 		});
 	}
 
+	options.batch = options.batch || DEFAULT_BATCH_SIZE;
+
 	// use the fast path if possible
 	if (db.processSortedSet && typeof options.doneIf !== 'function' && !utils.isNumber(options.alwaysStartAt)) {
-		return db.processSortedSet(setKey, process, options.batch || DEFAULT_BATCH_SIZE, callback);
+		return db.processSortedSet(setKey, process, options, callback);
 	}
 
 	// custom done condition
 	options.doneIf = typeof options.doneIf === 'function' ? options.doneIf : function () {};
 
-	var batch = options.batch || DEFAULT_BATCH_SIZE;
 	var start = 0;
-	var stop = batch;
+	var stop = options.batch;
 	var done = false;
 
 	async.whilst(
@@ -48,24 +49,30 @@ exports.processSortedSet = function (setKey, process, options, callback) {
 			return !done;
 		},
 		function (next) {
-			db.getSortedSetRange(setKey, start, stop, function (err, ids) {
-				if (err) {
-					return next(err);
-				}
-				if (!ids.length || options.doneIf(start, stop, ids)) {
-					done = true;
-					return next();
-				}
-				process(ids, function (err) {
-					if (err) {
-						return next(err);
+			async.waterfall([
+				function (next) {
+					db.getSortedSetRange(setKey, start, stop, next);
+				},
+				function (ids, _next) {
+					if (!ids.length || options.doneIf(start, stop, ids)) {
+						done = true;
+						return next();
 					}
-					start += utils.isNumber(options.alwaysStartAt) ? options.alwaysStartAt : batch + 1;
-					stop = start + batch;
+					process(ids, function (err) {
+						_next(err);
+					});
+				},
+				function (next) {
+					start += utils.isNumber(options.alwaysStartAt) ? options.alwaysStartAt : options.batch + 1;
+					stop = start + options.batch;
 
-					next();
-				});
-			});
+					if (options.interval) {
+						setTimeout(next, options.interval);
+					} else {
+						next();
+					}
+				},
+			], next);
 		},
 		callback
 	);
@@ -101,17 +108,21 @@ exports.processArray = function (array, process, options, callback) {
 				done = true;
 				return next();
 			}
-			process(currentBatch, function (err) {
-				if (err) {
-					return next(err);
-				}
-				start += batch;
-				if (options.interval) {
-					setTimeout(next, options.interval);
-				} else {
-					next();
-				}
-			});
+			async.waterfall([
+				function (next) {
+					process(currentBatch, function (err) {
+						next(err);
+					});
+				},
+				function (next) {
+					start += batch;
+					if (options.interval) {
+						setTimeout(next, options.interval);
+					} else {
+						next();
+					}
+				},
+			], next);
 		},
 		function (err) {
 			callback(err);

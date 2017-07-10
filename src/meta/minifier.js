@@ -11,30 +11,9 @@ var postcss = require('postcss');
 var autoprefixer = require('autoprefixer');
 var clean = require('postcss-clean');
 
+var debugParams = require('./debugParams');
+
 var Minifier = module.exports;
-
-function setupDebugging() {
-	/**
-	 * Check if the parent process is running with the debug option --debug (or --debug-brk)
-	 */
-	var forkProcessParams = {};
-	if (global.v8debug || parseInt(process.execArgv.indexOf('--debug'), 10) !== -1) {
-		/**
-		 * use the line below if you want to debug minifier.js script too (or even --debug-brk option, but
-		 * you'll have to setup your debugger and connect to the forked process)
-		 */
-		// forkProcessParams = { execArgv: ['--debug=' + (global.process.debugPort + 1), '--nolazy'] };
-
-		/**
-		 * otherwise, just clean up --debug/--debug-brk options which are set up by default from the parent one
-		 */
-		forkProcessParams = {
-			execArgv: [],
-		};
-	}
-
-	return forkProcessParams;
-}
 
 var pool = [];
 var free = [];
@@ -68,7 +47,7 @@ function getChild() {
 		return free.shift();
 	}
 
-	var forkProcessParams = setupDebugging();
+	var forkProcessParams = debugParams();
 	var proc = childProcess.fork(__filename, [], Object.assign({}, forkProcessParams, {
 		cwd: __dirname,
 		env: {

@@ -1,5 +1,6 @@
 {
     "invalid-data": "Napačni podatki",
+    "invalid-json": "Invalid JSON",
     "not-logged-in": "Niste prijavljeni.",
     "account-locked": "Vaš račun je bil začasno zaklenjen.",
     "search-requires-login": "Iskanje zahteva uporabniški račun - prosimo, da se prijavite ali registrirate.",
@@ -12,6 +13,7 @@
     "invalid-title": "Napačen naslov",
     "invalid-user-data": "Napačni podatki o uporabniku",
     "invalid-password": "Napačno geslo",
+    "invalid-login-credentials": "Invalid login credentials",
     "invalid-username-or-password": "Prosimo, vpišite uporabniško ime in geslo.",
     "invalid-search-term": "Napačen iskalni izraz",
     "csrf-invalid": "Prijava ni mogoča, verjetno zaradi potekle seje. Poskusite znova.",
