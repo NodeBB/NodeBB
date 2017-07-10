@@ -430,7 +430,8 @@ module.exports = function (Topics) {
 						count: replyPids.length,
 						timestampISO: replyPids.length ? utils.toISOString(pidMap[replyPids[0]].timestamp) : undefined,
 					};
-					replyPids.sort(function(a, b) {
+
+					replyPids.sort(function (a, b) {
 						return parseInt(a, 10) - parseInt(b, 10);
 					});
 
@@ -444,8 +445,8 @@ module.exports = function (Topics) {
 
 					if (currentData.users.length > 5) {
 						currentData.users.pop();
-		 				currentData.hasMore = true;
-		 			}
+						currentData.hasMore = true;
+					}
 
 					return currentData;
 				});
