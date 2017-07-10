@@ -169,11 +169,9 @@ module.exports = function (Topics) {
 			async.apply(posts.getPostsFields, parentPids, ['uid']),
 			function (_parentPosts, next) {
 				parentPosts = _parentPosts;
-				var parentUids = parentPosts.map(function (postObj) {
-					return parseInt(postObj.uid, 10);
-				}).filter(function (uid, idx, users) {
-					return users.indexOf(uid) === idx;
-				});
+				var parentUids = _.uniq(parentPosts.map(function (postObj) {
+					return postObj && parseInt(postObj.uid, 10);
+				}));
 
 				user.getUsersFields(parentUids, ['username'], next);
 			},
@@ -391,59 +389,70 @@ module.exports = function (Topics) {
 	};
 
 	function getPostReplies(pids, callerUid, callback) {
-		async.map(pids, function (pid, next) {
-			var replyPids;
-			var uids = [];
-			async.waterfall([
-				function (next) {
-					db.getSortedSetRange('pid:' + pid + ':replies', 0, -1, next);
-				},
-				function (_replyPids, next) {
-					replyPids = _replyPids;
+		var arrayOfReplyPids;
+		var replyData;
+		var uniqueUids;
+		var uniquePids;
+		async.waterfall([
+			function (next) {
+				var keys = pids.map(function (pid) {
+					return 'pid:' + pid + ':replies';
+				});
+				db.getSortedSetsMembers(keys, next);
+			},
+			function (arrayOfPids, next) {
+				arrayOfReplyPids = arrayOfPids;
 
-					var count = 0;
+				uniquePids = _.uniq(_.flatten(arrayOfPids));
 
-					async.until(function () {
-						return count === replyPids.length || uids.length === 6;
-					}, function (next) {
-						async.waterfall([
-							function (next) {
-								posts.getPostField(replyPids[count], 'uid', next);
-							},
-							function (uid, next) {
-								uid = parseInt(uid, 10);
-								if (uids.indexOf(uid) === -1) {
-									uids.push(uid);
-								}
-								count += 1;
-								next();
-							},
-						], next);
-					}, next);
-				},
-				function (next) {
-					async.parallel({
-						users: function (next) {
-							user.getUsersWithFields(uids, ['uid', 'username', 'userslug', 'picture'], callerUid, next);
-						},
-						timestampISO: function (next) {
-							posts.getPostField(replyPids[0], 'timestamp', function (err, timestamp) {
-								next(err, utils.toISOString(timestamp));
-							});
-						},
-					}, next);
-				},
-				function (replies, next) {
-					if (replies.users.length > 5) {
-						replies.users.shift();
-						replies.hasMore = true;
+				posts.getPostsFields(uniquePids, ['pid', 'uid', 'timestamp'], next);
+			},
+			function (_replyData, next) {
+				replyData = _replyData;
+				var uids = replyData.map(function (replyData) {
+					return replyData && replyData.uid;
+				});
+
+				uniqueUids = _.uniq(uids);
+
+				user.getUsersWithFields(uniqueUids, ['uid', 'username', 'userslug', 'picture'], callerUid, next);
+			},
+			function (userData, next) {
+				var uidMap = _.zipObject(uniqueUids, userData);
+				var pidMap = _.zipObject(uniquePids, replyData);
+
+				var returnData = arrayOfReplyPids.map(function (replyPids) {
+					var uidsUsed = {};
+					var currentData = {
+						hasMore: false,
+						users: [],
+						text: replyPids.length > 1 ? '[[topic:replies_to_this_post, ' + replyPids.length + ']]' : '[[topic:one_reply_to_this_post]]',
+						count: replyPids.length,
+						timestampISO: replyPids.length ? utils.toISOString(pidMap[replyPids[0]].timestamp) : undefined,
+					};
+
+					replyPids.sort(function (a, b) {
+						return parseInt(a, 10) - parseInt(b, 10);
+					});
+
+					replyPids.forEach(function (replyPid) {
+						var replyData = pidMap[replyPid];
+						if (!uidsUsed[replyData.uid] && currentData.users.length < 6) {
+							currentData.users.push(uidMap[replyData.uid]);
+							uidsUsed[replyData.uid] = true;
+						}
+					});
+
+					if (currentData.users.length > 5) {
+						currentData.users.pop();
+						currentData.hasMore = true;
 					}
 
-					replies.count = replyPids.length;
-					replies.text = replies.count > 1 ? '[[topic:replies_to_this_post, ' + replies.count + ']]' : '[[topic:one_reply_to_this_post]]';
-					next(null, replies);
-				},
-			], next);
-		}, callback);
+					return currentData;
+				});
+
+				next(null, returnData);
+			},
+		], callback);
 	}
 };

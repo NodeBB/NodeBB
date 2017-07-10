@@ -137,15 +137,9 @@ function getBundleMetadata(target, callback) {
 			var imports = cssImports + '\n' + lessImports;
 			imports = buildImports[target](imports);
 
-			next(null, imports);
+			next(null, { paths: paths, imports: imports });
 		},
-	], function (err, imports) {
-		if (err) {
-			return callback(err);
-		}
-
-		callback(null, { paths: paths, imports: imports });
-	});
+	], callback);
 }
 
 CSS.buildBundle = function (target, fork, callback) {

@@ -291,8 +291,8 @@ Controllers.confirmEmail = function (req, res) {
 Controllers.robots = function (req, res) {
 	res.set('Content-Type', 'text/plain');
 
-	if (meta.config['robots.txt']) {
-		res.send(meta.config['robots.txt']);
+	if (meta.config['robots:txt']) {
+		res.send(meta.config['robots:txt']);
 	} else {
 		res.send('User-agent: *\n' +
 			'Disallow: ' + nconf.get('relative_path') + '/admin/\n' +

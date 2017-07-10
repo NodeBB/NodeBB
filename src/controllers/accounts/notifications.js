@@ -12,7 +12,7 @@ var notificationsController = module.exports;
 notificationsController.get = function (req, res, next) {
 	var regularFilters = [
 		{ name: '[[notifications:all]]', filter: '' },
-		{ name: '[[notifications:topics]]', filter: 'new-topic' },
+		{ name: '[[global:topics]]', filter: 'new-topic' },
 		{ name: '[[notifications:replies]]', filter: 'new-reply' },
 		{ name: '[[notifications:chat]]', filter: 'new-chat' },
 		{ name: '[[notifications:follows]]', filter: 'follow' },

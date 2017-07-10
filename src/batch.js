@@ -49,18 +49,20 @@ exports.processSortedSet = function (setKey, process, options, callback) {
 			return !done;
 		},
 		function (next) {
-			db.getSortedSetRange(setKey, start, stop, function (err, ids) {
-				if (err) {
-					return next(err);
-				}
-				if (!ids.length || options.doneIf(start, stop, ids)) {
-					done = true;
-					return next();
-				}
-				process(ids, function (err) {
-					if (err) {
-						return next(err);
+			async.waterfall([
+				function (next) {
+					db.getSortedSetRange(setKey, start, stop, next);
+				},
+				function (ids, _next) {
+					if (!ids.length || options.doneIf(start, stop, ids)) {
+						done = true;
+						return next();
 					}
+					process(ids, function (err) {
+						_next(err);
+					});
+				},
+				function (next) {
 					start += utils.isNumber(options.alwaysStartAt) ? options.alwaysStartAt : options.batch + 1;
 					stop = start + options.batch;
 
@@ -69,8 +71,8 @@ exports.processSortedSet = function (setKey, process, options, callback) {
 					} else {
 						next();
 					}
-				});
-			});
+				},
+			], next);
 		},
 		callback
 	);
@@ -106,17 +108,21 @@ exports.processArray = function (array, process, options, callback) {
 				done = true;
 				return next();
 			}
-			process(currentBatch, function (err) {
-				if (err) {
-					return next(err);
-				}
-				start += batch;
-				if (options.interval) {
-					setTimeout(next, options.interval);
-				} else {
-					next();
-				}
-			});
+			async.waterfall([
+				function (next) {
+					process(currentBatch, function (err) {
+						next(err);
+					});
+				},
+				function (next) {
+					start += batch;
+					if (options.interval) {
+						setTimeout(next, options.interval);
+					} else {
+						next();
+					}
+				},
+			], next);
 		},
 		function (err) {
 			callback(err);

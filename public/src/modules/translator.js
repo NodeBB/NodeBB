@@ -580,39 +580,13 @@
 		prepareDOM: function prepareDOM() {
 			// Load the appropriate timeago locale file,
 			// and correct NodeBB language codes to timeago codes, if necessary
-			var languageCode;
-			switch (config.userLang) {
-			case 'en-GB':
-			case 'en-US':
-				languageCode = 'en';
-				break;
+			var languageCode = utils.userLangToTimeagoCode(config.userLang);
 
-			case 'fa-IR':
-				languageCode = 'fa';
-				break;
+			adaptor.timeagoShort = assign({}, jQuery.timeago.settings.strings);
 
-			case 'pt-BR':
-				languageCode = 'pt-br';
-				break;
-
-			case 'nb':
-				languageCode = 'no';
-				break;
-
-			default:
-				languageCode = config.userLang;
-				break;
-			}
-
-			jQuery.getScript(config.relative_path + '/assets/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').done(function () {
-				jQuery('.timeago').timeago();
-				adaptor.timeagoShort = assign({}, jQuery.timeago.settings.strings);
-
-				// Retrieve the shorthand timeago values as well
-				jQuery.getScript(config.relative_path + '/assets/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '-short.js').done(function () {
-					// Switch back to long-form
-					adaptor.toggleTimeagoShorthand();
-				});
+			jQuery.getScript(config.relative_path + '/assets/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '-short.js').done(function () {
+				// Switch back to long-form
+				adaptor.toggleTimeagoShorthand();
 			});
 
 			// Add directional code if necessary

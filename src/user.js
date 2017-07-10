@@ -78,12 +78,24 @@ User.getUsersWithFields = function (uids, fields, uid, callback) {
 		function (results, next) {
 			results.userData.forEach(function (user, index) {
 				if (user) {
-					user.status = User.getStatus(user);
 					user.administrator = results.isAdmin[index];
-					user.banned = parseInt(user.banned, 10) === 1;
-					user.banned_until = parseInt(user['banned:expire'], 10) || 0;
-					user.banned_until_readable = user.banned_until ? new Date(user.banned_until).toString() : 'Not Banned';
-					user['email:confirmed'] = parseInt(user['email:confirmed'], 10) === 1;
+
+					if (user.hasOwnProperty('status')) {
+						user.status = User.getStatus(user);
+					}
+
+					if (user.hasOwnProperty('banned')) {
+						user.banned = parseInt(user.banned, 10) === 1;
+					}
+
+					if (user.hasOwnProperty('banned:expire')) {
+						user.banned_until = parseInt(user['banned:expire'], 10) || 0;
+						user.banned_until_readable = user.banned_until ? new Date(user.banned_until).toString() : 'Not Banned';
+					}
+
+					if (user.hasOwnProperty(['email:confirmed'])) {
+						user['email:confirmed'] = parseInt(user['email:confirmed'], 10) === 1;
+					}
 				}
 			});
 			plugins.fireHook('filter:userlist.get', { users: results.userData, uid: uid }, next);
@@ -277,11 +289,29 @@ User.getModeratorUids = function (callback) {
 	async.waterfall([
 		async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
 		function (cids, next) {
-			var groupNames = cids.map(function (cid) {
-				return 'cid:' + cid + ':privileges:moderate';
-			});
+			var groupNames = cids.reduce(function (memo, cid) {
+				memo.push('cid:' + cid + ':privileges:moderate');
+				memo.push('cid:' + cid + ':privileges:groups:moderate');
+				return memo;
+			}, []);
 
 			groups.getMembersOfGroups(groupNames, next);
+		},
+		function (memberSets, next) {
+			// Every other set is actually a list of user groups, not uids, so convert those to members
+			var sets = memberSets.reduce(function (memo, set, idx) {
+				if (idx % 2) {
+					memo.working.push(set);
+				} else {
+					memo.regular.push(set);
+				}
+
+				return memo;
+			}, { working: [], regular: [] });
+
+			groups.getMembersOfGroups(sets.working, function (err, memberSets) {
+				next(err, sets.regular.concat(memberSets || []));
+			});
 		},
 		function (memberSets, next) {
 			next(null, _.union.apply(_, memberSets));
