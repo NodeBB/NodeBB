@@ -70,7 +70,7 @@ function renderWidget(widget, uid, options, callback) {
 			}
 		},
 		function (config, next) {
-			var templateData = _.assign(options.templateData, { config: config });
+			var templateData = _.assign({ }, options.templateData, { config: config });
 			plugins.fireHook('filter:widget.render:' + widget.widget, {
 				uid: uid,
 				area: options,
