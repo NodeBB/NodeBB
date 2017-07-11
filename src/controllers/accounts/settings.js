@@ -34,9 +34,6 @@ settingsController.get = function (req, res, callback) {
 				languages: function (next) {
 					languages.list(next);
 				},
-				homePageRoutes: function (next) {
-					getHomePageRoutes(next);
-				},
 				soundsMapping: function (next) {
 					meta.sounds.getUserSoundMap(userData.uid, next);
 				},
@@ -45,7 +42,6 @@ settingsController.get = function (req, res, callback) {
 		function (results, next) {
 			userData.settings = results.settings;
 			userData.languages = results.languages;
-			userData.homePageRoutes = results.homePageRoutes;
 
 			var types = [
 				'notification',
@@ -90,6 +86,12 @@ settingsController.get = function (req, res, callback) {
 			plugins.fireHook('filter:user.customSettings', { settings: results.settings, customSettings: [], uid: req.uid }, next);
 		},
 		function (data, next) {
+			getHomePageRoutes(userData, function (err, routes) {
+				userData.homePageRoutes = routes;
+				next(err, data);
+			});
+		},
+		function (data, next) {
 			userData.customSettings = data.customSettings;
 			userData.disableEmailSubscriptions = parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
 			next();
@@ -128,24 +130,6 @@ settingsController.get = function (req, res, callback) {
 			{ name: 'Yeti', value: 'yeti' },
 		];
 
-		var isCustom = true;
-		userData.homePageRoutes.forEach(function (route) {
-			route.selected = route.route === userData.settings.homePageRoute;
-			if (route.selected) {
-				isCustom = false;
-			}
-		});
-
-		if (isCustom && userData.settings.homePageRoute === 'none') {
-			isCustom = false;
-		}
-
-		userData.homePageRoutes.push({
-			route: 'custom',
-			name: 'Custom',
-			selected: isCustom,
-		});
-
 		userData.bootswatchSkinOptions.forEach(function (skin) {
 			skin.selected = skin.value === userData.settings.bootswatchSkin;
 		});
@@ -168,7 +152,7 @@ settingsController.get = function (req, res, callback) {
 };
 
 
-function getHomePageRoutes(callback) {
+function getHomePageRoutes(userData, callback) {
 	async.waterfall([
 		function (next) {
 			db.getSortedSetRange('cid:0:children', 0, -1, next);
@@ -206,9 +190,36 @@ function getHomePageRoutes(callback) {
 					route: 'popular',
 					name: 'Popular',
 				},
-			].concat(categoryData) }, next);
+			].concat(categoryData, [
+				{
+					route: 'custom',
+					name: 'Custom',
+				},
+			]) }, next);
 		},
 		function (data, next) {
+			// Set selected for each route
+			var customIdx;
+			var hasSelected = false;
+			data.routes = data.routes.map(function (route, idx) {
+				if (route.route === userData.settings.homePageRoute) {
+					route.selected = true;
+					hasSelected = true;
+				} else {
+					route.selected = false;
+				}
+
+				if (route.route === 'custom') {
+					customIdx = idx;
+				}
+
+				return route;
+			});
+
+			if (!hasSelected && customIdx && userData.settings.homePageRoute !== 'none') {
+				data.routes[customIdx].selected = true;
+			}
+
 			next(null, data.routes);
 		},
 	], callback);
