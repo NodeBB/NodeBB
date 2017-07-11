@@ -108,7 +108,7 @@ Tags.parse = function (req, data, meta, link, callback) {
 			return callback(err);
 		}
 
-		meta = results.tags.concat(meta || []).map(function (tag) {
+		meta = results.tags.defaultTags.concat(meta || []).map(function (tag) {
 			if (!tag || typeof tag.content !== 'string') {
 				winston.warn('Invalid meta tag. ', tag);
 				return tag;
@@ -139,7 +139,7 @@ Tags.parse = function (req, data, meta, link, callback) {
 			addIfNotExists(meta, 'property', 'og:image:height', 200);
 		}
 
-		link = results.links.concat(link || []);
+		link = results.links.defaultLinks.concat(link || []);
 
 		callback(null, {
 			meta: meta,
