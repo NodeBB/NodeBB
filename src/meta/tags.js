@@ -10,7 +10,7 @@ var Meta = require('../meta');
 
 var Tags = module.exports;
 
-Tags.parse = function (req, meta, link, callback) {
+Tags.parse = function (req, data, meta, link, callback) {
 	async.parallel({
 		tags: function (next) {
 			var defaultTags = [{
@@ -50,7 +50,7 @@ Tags.parse = function (req, meta, link, callback) {
 				});
 			}
 
-			plugins.fireHook('filter:meta.getMetaTags', defaultTags, next);
+			plugins.fireHook('filter:meta.getMetaTags', { req: req, data: data, defaultTags: defaultTags }, next);
 		},
 		links: function (next) {
 			var defaultLinks = [{
@@ -101,7 +101,7 @@ Tags.parse = function (req, meta, link, callback) {
 					href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-192.png',
 				});
 			}
-			plugins.fireHook('filter:meta.getLinkTags', defaultLinks, next);
+			plugins.fireHook('filter:meta.getLinkTags', { req: req, data: data, defaultLinks: defaultLinks }, next);
 		},
 	}, function (err, results) {
 		if (err) {
