@@ -20,17 +20,8 @@ modsController.flags.list = function (req, res, next) {
 			async.parallel({
 				isAdminOrGlobalMod: async.apply(user.isAdminOrGlobalMod, req.uid),
 				moderatedCids: async.apply(user.getModeratedCids, req.uid),
+				validFilters: async.apply(plugins.fireHook, 'filter:flags.validateFilters', { filters: validFilters }),
 			}, next);
-		},
-		function (results, next) {
-			plugins.fireHook('filter:flags.validateFilters', { filters: validFilters }, function (err, data) {
-				if (err) {
-					return next(err);
-				}
-
-				validFilters = data.filters;
-				next(null, results);
-			});
 		},
 		function (results, next) {
 			if (!(results.isAdminOrGlobalMod || !!results.moderatedCids.length)) {
@@ -40,6 +31,8 @@ modsController.flags.list = function (req, res, next) {
 			if (!results.isAdminOrGlobalMod && results.moderatedCids.length) {
 				res.locals.cids = results.moderatedCids;
 			}
+
+			validFilters = results.validFilters.filters;
 
 			// Parse query string params for filters
 			hasFilter = false;
