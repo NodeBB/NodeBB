@@ -252,7 +252,7 @@ SocketAdmin.email.test = function (socket, data, callback) {
 	case 'welcome':
 		userEmail.sendValidationEmail(socket.uid, {
 			force: 1,
-		});
+		}, callback);
 		break;
 
 	default:
