@@ -329,5 +329,7 @@ Topics.search = function (tid, term, callback) {
 	plugins.fireHook('filter:topic.search', {
 		tid: tid,
 		term: term,
-	}, callback);
+	}, function (err, pids) {
+		callback(err, Array.isArray(pids) ? pids : []);
+	});
 };
