@@ -245,7 +245,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			}
 		}
 
-		var page = Math.max(1, Math.ceil(index / config.postsPerPage));
+		var page = Math.max(1, Math.ceil((index + 1) / config.postsPerPage));
 
 		if (parseInt(page, 10) !== ajaxify.data.pagination.currentPage) {
 			pagination.loadPage(page, function () {

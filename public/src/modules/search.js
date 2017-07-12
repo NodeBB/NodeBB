@@ -156,7 +156,7 @@ define('search', ['navigator', 'translator', 'storage'], function (nav, translat
 					return app.alertError(err.message);
 				}
 
-				nav.scrollToPost(postIndex, true);
+				nav.scrollToIndex(postIndex, true);
 			});
 		} else {
 			translator.translate('[[search:no-matches]]', function (text) {
