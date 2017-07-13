@@ -45,12 +45,17 @@ module.exports = function (Categories) {
 				var dataForPinned = _.cloneDeep(data);
 				dataForPinned.start = 0;
 				dataForPinned.stop = -1;
-				Categories.getPinnedTids(dataForPinned, next);
-			},
-			function (_pinnedTids, next) {
-				var totalPinnedCount = _pinnedTids.length;
 
-				pinnedTids = _pinnedTids.slice(data.start, data.stop === -1 ? undefined : data.stop + 1);
+				async.parallel({
+					pinnedTids: async.apply(Categories.getPinnedTids, dataForPinned),
+					set: async.apply(Categories.buildTopicsSortedSet, data),
+					direction: async.apply(Categories.getSortedSetRangeDirection, data.sort),
+				}, next);
+			},
+			function (results, next) {
+				var totalPinnedCount = results.pinnedTids.length;
+
+				pinnedTids = results.pinnedTids.slice(data.start, data.stop === -1 ? undefined : data.stop + 1);
 
 				var pinnedCount = pinnedTids.length;
 
@@ -67,7 +72,7 @@ module.exports = function (Categories) {
 						tids: [],
 						data: data,
 						pinnedTids: pinnedTids,
-						allPinnedTids: _pinnedTids,
+						allPinnedTids: results.pinnedTids,
 						totalPinnedCount: totalPinnedCount,
 						normalTidsToGet: normalTidsToGet,
 					}, function (err, data) {
@@ -75,8 +80,8 @@ module.exports = function (Categories) {
 					});
 				}
 
-				var set = Categories.buildTopicsSortedSet(data);
-				var reverse = Categories.getSortedSetRangeDirection(data.sort);
+				var set = results.set;
+				var direction = results.direction;
 				var start = data.start;
 				if (start > 0 && totalPinnedCount) {
 					start -= totalPinnedCount - pinnedCount;
@@ -85,9 +90,9 @@ module.exports = function (Categories) {
 				var stop = data.stop === -1 ? data.stop : start + normalTidsToGet - 1;
 
 				if (Array.isArray(set)) {
-					db[reverse ? 'getSortedSetRevIntersect' : 'getSortedSetIntersect']({ sets: set, start: start, stop: stop }, next);
+					db[direction === 'highest-to-lowest' ? 'getSortedSetRevIntersect' : 'getSortedSetIntersect']({ sets: set, start: start, stop: stop }, next);
 				} else {
-					db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop, next);
+					db[direction === 'highest-to-lowest' ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop, next);
 				}
 			},
 			function (normalTids, next) {
@@ -109,15 +114,21 @@ module.exports = function (Categories) {
 				callback(err, data && data.topicCount);
 			});
 		}
-		var set = Categories.buildTopicsSortedSet(data);
-		if (Array.isArray(set)) {
-			db.sortedSetIntersectCard(set, callback);
-		} else {
-			callback(null, data.category.topic_count);
-		}
+		async.waterfall([
+			function (next) {
+				Categories.buildTopicsSortedSet(data, next);
+			},
+			function (set, next) {
+				if (Array.isArray(set)) {
+					db.sortedSetIntersectCard(set, next);
+				} else {
+					next(null, data.category.topic_count);
+				}
+			},
+		], callback);
 	};
 
-	Categories.buildTopicsSortedSet = function (data) {
+	Categories.buildTopicsSortedSet = function (data, callback) {
 		var cid = data.cid;
 		var set = 'cid:' + cid + ':tids';
 		var sort = data.sort || (data.settings && data.settings.categoryTopicSort) || meta.config.categoryTopicSort || 'newest_to_oldest';
@@ -139,13 +150,23 @@ module.exports = function (Categories) {
 				set = [set, 'tag:' + data.tag + ':topics'];
 			}
 		}
-		return set;
+		plugins.fireHook('filter:categories.buildTopicsSortedSet', {
+			set: set,
+			data: data,
+		}, function (err, data) {
+			callback(err, data && data.set);
+		});
 	};
 
-	Categories.getSortedSetRangeDirection = function (sort) {
+	Categories.getSortedSetRangeDirection = function (sort, callback) {
 		sort = sort || 'newest_to_oldest';
-		var reverse = sort === 'newest_to_oldest' || sort === 'most_posts';
-		return reverse;
+		var direction = sort === 'newest_to_oldest' || sort === 'most_posts' ? 'highest-to-lowest' : 'lowest-to-highest';
+		plugins.fireHook('filter:categories.getSortedSetRangeDirection', {
+			sort: sort,
+			direction: direction,
+		}, function (err, data) {
+			callback(err, data && data.direction);
+		});
 	};
 
 	Categories.getAllTopicIds = function (cid, start, stop, callback) {
