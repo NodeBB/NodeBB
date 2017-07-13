@@ -176,8 +176,8 @@
 			<!-- Email Header : BEGIN -->
 			<table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" width="100%" style="max-width: 600px;">
 				<tr>
-					<td style="padding: 20px 0; text-align: center">
-						<img src="http://juliantest.nodebb.com/assets/images/emails/nodebb.png" height="100" width="245" alt="alt_text" border="0" style="height: auto; background: #dddddd; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
+					<td style="padding: 20px 0; text-align: left">
+						<img src="http://juliantest.nodebb.com/assets/images/emails/nodebb.png?cache-buster=1" height="49" width="192" alt="{site_title}" border="0" style="height: 49px; width: 192px; background: #222222; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
 					</td>
 				</tr>
 			</table>
@@ -189,7 +189,7 @@
 				<!-- Hero Image, Flush : BEGIN -->
 				<tr>
 					<td bgcolor="#efeff0" style="text-align: center; background-image: url(http://juliantest.nodebb.com/assets/images/emails/triangularbackground.png); background-size: cover; background-repeat: no-repeat;">
-						<img src="http://juliantest.nodebb.com/assets/images/emails/emailconfirm.png" width="600" height="" alt="alt_text" border="0" align="center" style="width: 50%; max-width: 600px; height: auto; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;" class="g-img">
+						<img src="http://juliantest.nodebb.com/assets/images/emails/emailconfirm.png" width="300" height="300" alt="alt_text" border="0" align="center" style="width: 300px; height: 300px; max-width: 300px; height: auto; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;" class="g-img">
 					</td>
 				</tr>
 				<!-- Hero Image, Flush : END -->
