@@ -326,12 +326,10 @@ Topics.isLocked = function (tid, callback) {
 };
 
 Topics.search = function (tid, term, callback) {
-	if (plugins.hasListeners('filter:topic.search')) {
-		plugins.fireHook('filter:topic.search', {
-			tid: tid,
-			term: term,
-		}, callback);
-	} else {
-		callback(new Error('[[error:no-plugins-available]]'), []);
-	}
+	plugins.fireHook('filter:topic.search', {
+		tid: tid,
+		term: term,
+	}, function (err, pids) {
+		callback(err, Array.isArray(pids) ? pids : []);
+	});
 };

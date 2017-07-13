@@ -99,7 +99,7 @@ define('forum/topic', [
 
 	function handleTopicSearch() {
 		require(['search', 'mousetrap'], function (search, mousetrap) {
-			$('.topic-search')
+			$('.topic-search').off('click')
 				.on('click', '.prev', function () {
 					search.topicDOM.prev();
 				})
