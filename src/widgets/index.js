@@ -193,7 +193,7 @@ widgets.reset = function (callback) {
 		function (results, next) {
 			drafts = results.drafts || [];
 
-			async.each(results.areas, function (area, next) {
+			async.eachSeries(results.areas, function (area, next) {
 				async.waterfall([
 					function (next) {
 						widgets.getArea(area.template, area.location, next);

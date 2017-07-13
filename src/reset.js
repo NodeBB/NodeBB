@@ -10,7 +10,6 @@ var events = require('./events');
 
 var Reset = {};
 
-
 Reset.reset = function (callback) {
 	db.init(function (err) {
 		if (err) {
@@ -163,10 +162,14 @@ function resetPlugins(callback) {
 }
 
 function resetWidgets(callback) {
-	require('./widgets').reset(function (err) {
-		winston.info('[reset] All Widgets moved to Draft Zone');
-		callback(err);
-	});
+	async.waterfall([
+		require('./plugins').reload,
+		require('./widgets').reset,
+		function (next) {
+			winston.info('[reset] All Widgets moved to Draft Zone');
+			next();
+		},
+	], callback);
 }
 
 module.exports = Reset;
