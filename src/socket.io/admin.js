@@ -228,8 +228,6 @@ SocketAdmin.email.test = function (socket, data, callback) {
 	var site_title = meta.config.title || 'NodeBB';
 	var payload = {
 		subject: '[' + site_title + '] Test Email',
-		site_title: site_title,
-		url: nconf.get('url'),
 	};
 
 	switch (data.template) {

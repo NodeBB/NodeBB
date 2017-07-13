@@ -136,8 +136,6 @@ Digest.send = function (data, callback) {
 							subject: '[' + meta.config.title + '] [[email:digest.subject, ' + (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()) + ']]',
 							username: userObj.username,
 							userslug: userObj.userslug,
-							url: nconf.get('url'),
-							site_title: meta.config.title || meta.config.browserTitle || 'NodeBB',
 							notifications: notifications,
 							recent: data.topics,
 							interval: data.interval,

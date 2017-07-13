@@ -259,7 +259,6 @@ module.exports = function (Topics) {
 								subject: '[' + (meta.config.title || 'NodeBB') + '] ' + title,
 								intro: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + titleEscaped + ']]',
 								postBody: postData.content.replace(/"\/\//g, '"https://'),
-								site_title: meta.config.title || 'NodeBB',
 								username: data.userData.username,
 								userslug: data.userData.userslug,
 								url: nconf.get('url') + '/topic/' + postData.topic.tid,

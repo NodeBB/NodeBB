@@ -124,8 +124,6 @@ module.exports = function (Messaging) {
 						subject: '[[email:notif.chat.subject, ' + messageObj.fromUser.username + ']]',
 						summary: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
 						message: messageObj,
-						site_title: meta.config.title || 'NodeBB',
-						url: nconf.get('url'),
 						roomId: messageObj.roomId,
 						username: userData.username,
 						userslug: userData.userslug,

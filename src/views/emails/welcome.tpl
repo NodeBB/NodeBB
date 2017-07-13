@@ -173,12 +173,22 @@
 			<td>
 			<![endif]-->
 
+			<!-- Email Header : BEGIN -->
+			<table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" width="100%" style="max-width: 600px;">
+				<tr>
+					<td style="padding: 20px 0; text-align: center">
+						<img src="http://juliantest.nodebb.com/assets/images/emails/nodebb.png" height="100" width="245" alt="alt_text" border="0" style="height: auto; background: #dddddd; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
+					</td>
+				</tr>
+			</table>
+			<!-- Email Header : END -->
+
 			<!-- Email Body : BEGIN -->
 			<table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" width="100%" style="max-width: 600px;">
 
 				<!-- Hero Image, Flush : BEGIN -->
 				<tr>
-					<td bgcolor="#ffffff" style="text-align: center; background-image: url(http://juliantest.nodebb.com/assets/images/emails/triangularbackground.png); background-size: cover; background-repeat: no-repeat;">
+					<td bgcolor="#efeff0" style="text-align: center; background-image: url(http://juliantest.nodebb.com/assets/images/emails/triangularbackground.png); background-size: cover; background-repeat: no-repeat;">
 						<img src="http://juliantest.nodebb.com/assets/images/emails/emailconfirm.png" width="600" height="" alt="alt_text" border="0" align="center" style="width: 50%; max-width: 600px; height: auto; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;" class="g-img">
 					</td>
 				</tr>
@@ -186,7 +196,7 @@
 
 				<!-- 1 Column Text + Button : BEGIN -->
 				<tr>
-					<td bgcolor="#ffffff">
+					<td bgcolor="#efeff0">
 						<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
 							<tr>
 								<td style="padding: 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">

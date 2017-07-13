@@ -25,9 +25,16 @@ var fallbackTransport;
 
 var Emailer = module.exports;
 
+Emailer._defaultPayload = {};
 
 Emailer.registerApp = function (expressApp) {
 	app = expressApp;
+
+	Emailer._defaultPayload = {
+		url: nconf.get('url'),
+		site_title: meta.config.title || 'NodeBB',
+		'brand:logo': nconf.get('url') + meta.config['brand:logo'],
+	};
 
 	// Enable Gmail transport if enabled in ACP
 	if (parseInt(meta.config['email:GmailTransport:enabled'], 10) === 1) {
@@ -54,6 +61,9 @@ Emailer.send = function (template, uid, params, callback) {
 		winston.warn('[emailer] App not ready!');
 		return callback();
 	}
+
+	// Combined passed-in payload with default values
+	params = Object.assign({}, Emailer._defaultPayload, params);
 
 	async.waterfall([
 		function (next) {
