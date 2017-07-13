@@ -1,21 +1,3 @@
-<p>[[email:greeting_with_name, {username}]],</p>
-
-<p>
-	<strong>[[email:welcome.text1, {site_title}]]</strong>
-</p>
-
-<p>[[email:welcome.text2]]</p>
-
-<blockquote>
-	<a href="{confirm_link}">[[email:welcome.cta]]</a>
-</blockquote>
-
-<!-- IMPORT emails/partials/footer.tpl -->
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
@@ -191,23 +173,13 @@
 			<td>
 			<![endif]-->
 
-			<!-- Email Header : BEGIN -->
-			<table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" width="100%" style="max-width: 600px;">
-				<tr>
-					<td style="padding: 20px 0; text-align: center">
-						<img src="http://placehold.it/200x50" width="200" height="50" alt="alt_text" border="0" style="height: auto; background: #dddddd; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
-					</td>
-				</tr>
-			</table>
-			<!-- Email Header : END -->
-
 			<!-- Email Body : BEGIN -->
 			<table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" width="100%" style="max-width: 600px;">
 
 				<!-- Hero Image, Flush : BEGIN -->
 				<tr>
-					<td bgcolor="#ffffff">
-						<img src="{url}/images/emails/emailconfirm.png" width="600" height="" alt="alt_text" border="0" align="center" style="width: 100%; max-width: 600px; height: auto; background: #dddddd; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555; background-image: url({url}/images/emails/trianglebackground.svg); background-size: cover; background-repeat: no-repeat;" class="g-img">
+					<td bgcolor="#ffffff" style="text-align: center; background-image: url(http://juliantest.nodebb.com/assets/images/emails/triangularbackground.png); background-size: cover; background-repeat: no-repeat;">
+						<img src="http://juliantest.nodebb.com/assets/images/emails/emailconfirm.png" width="600" height="" alt="alt_text" border="0" align="center" style="width: 50%; max-width: 600px; height: auto; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;" class="g-img">
 					</td>
 				</tr>
 				<!-- Hero Image, Flush : END -->
@@ -239,8 +211,8 @@
 							</tr>
 							<tr>
 								<td style="padding: 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
-									<h2 style="margin: 0 0 10px 0; font-family: sans-serif; font-size: 18px; line-height: 21px; color: #333333; font-weight: bold;">Praesent in felis ut velit pretium lobortis rhoncus ut&nbsp;erat.</h2>
-									<p style="margin: 0;">Maecenas sed ante pellentesque, posuere leo id, eleifend dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent laoreet malesuada cursus. Maecenas scelerisque congue eros eu posuere. Praesent in felis ut velit pretium lobortis rhoncus ut&nbsp;erat.</p>
+									<h2 style="margin: 0 0 10px 0; font-family: sans-serif; font-size: 18px; line-height: 21px; color: #333333; font-weight: bold;">[[email:closing]]</h2>
+									<p style="margin: 0;">{site_title}</p>
 								</td>
 							</tr>
 						</table>
@@ -257,34 +229,6 @@
 			</table>
 			<![endif]-->
 		</div>
-
-		<!-- Full Bleed Background Section : BEGIN -->
-		<table role="presentation" bgcolor="#709f2b" cellspacing="0" cellpadding="0" border="0" align="center" width="100%">
-			<tr>
-				<td valign="top" align="center">
-					<div style="max-width: 600px; margin: auto;" class="email-container">
-						<!--[if mso]>
-						<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" align="center">
-						<tr>
-						<td>
-						<![endif]-->
-						<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-							<tr>
-								<td style="padding: 40px; text-align: left; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #ffffff;">
-									<p style="margin: 0;">[[email:closing]]<br><strong>{site_title}</strong></p>
-								</td>
-							</tr>
-						</table>
-						<!--[if mso]>
-						</td>
-						</tr>
-						</table>
-						<![endif]-->
-					</div>
-				</td>
-			</tr>
-		</table>
-		<!-- Full Bleed Background Section : END -->
 
     </center>
 </body>
