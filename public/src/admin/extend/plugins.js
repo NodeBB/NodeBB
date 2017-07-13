@@ -20,7 +20,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 		pluginsList.on('click', 'button[data-action="toggleActive"]', function () {
 			var pluginEl = $(this).parents('li');
 			pluginID = pluginEl.attr('data-plugin-id');
-			var btn = $('#' + pluginID + ' [data-action="toggleActive"]');
+			var btn = $('[id="' + pluginID + '"] [data-action="toggleActive"]');
 			socket.emit('admin.plugins.toggleActive', pluginID, function (err, status) {
 				if (err) {
 					return app.alertError(err);
@@ -30,7 +30,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 					btn.toggleClass('btn-warning', status.active).toggleClass('btn-success', !status.active);
 
 					// clone it to active plugins tab
-					if (status.active && !$('#active #' + pluginID).length) {
+					if (status.active && !$('#active [id="' + pluginID + '"]').length) {
 						$('#active ul').prepend(pluginEl.clone(true));
 					}
 

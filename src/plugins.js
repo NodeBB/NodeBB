@@ -298,38 +298,74 @@ Plugins.normalise = function (apiReturn, callback) {
 };
 
 Plugins.showInstalled = function (callback) {
-	var npmPluginPath = path.join(__dirname, '../node_modules');
+	var nodeModulesPath = path.join(__dirname, '../node_modules');
+	var pluginNamePattern = /^(@.*?\/)?nodebb-(theme|plugin|widget|rewards)-.*$/;
 
 	async.waterfall([
-		async.apply(fs.readdir, npmPluginPath),
-
+		function (next) {
+			fs.readdir(nodeModulesPath, next);
+		},
 		function (dirs, next) {
-			dirs = dirs.filter(function (dir) {
-				return dir.startsWith('nodebb-plugin-') ||
-					dir.startsWith('nodebb-widget-') ||
-					dir.startsWith('nodebb-rewards-') ||
-					dir.startsWith('nodebb-theme-');
-			}).map(function (dir) {
-				return path.join(npmPluginPath, dir);
-			});
+			var pluginPaths = [];
 
-			async.filter(dirs, function (dir, callback) {
-				fs.stat(dir, function (err, stats) {
-					if (err) {
-						if (err.code === 'ENOENT') {
-							return callback(null, false);
-						}
-						return callback(err);
-					}
-					callback(null, stats.isDirectory());
-				});
-			}, next);
+			async.each(dirs, function (dirname, next) {
+				var dirPath = path.join(nodeModulesPath, dirname);
+
+				async.waterfall([
+					function (cb) {
+						fs.stat(dirPath, function (err, stats) {
+							if (err && err.code !== 'ENOENT') {
+								return next(err);
+							}
+							if (err || !stats.isDirectory()) {
+								return next();
+							}
+
+							if (pluginNamePattern.test(dirname)) {
+								pluginPaths.push(dirname);
+								return next();
+							}
+
+							if (dirname[0] !== '@') {
+								return next();
+							}
+							fs.readdir(dirPath, cb);
+						});
+					},
+					function (subdirs, cb) {
+						async.each(subdirs, function (subdir, next) {
+							if (!pluginNamePattern.test(subdir)) {
+								return next();
+							}
+
+							var subdirPath = path.join(dirPath, subdir);
+							fs.stat(subdirPath, function (err, stats) {
+								if (err && err.code !== 'ENOENT') {
+									return next(err);
+								}
+
+								if (err || !stats.isDirectory()) {
+									return next();
+								}
+
+								pluginPaths.push(dirname + '/' + subdir);
+								next();
+							});
+						}, cb);
+					},
+				], next);
+			}, function (err) {
+				next(err, pluginPaths);
+			});
 		},
 
-		function (files, next) {
+		function (dirs, next) {
+			dirs = dirs.map(function (dir) {
+				return path.join(nodeModulesPath, dir);
+			});
 			var plugins = [];
 
-			async.each(files, function (file, next) {
+			async.each(dirs, function (file, next) {
 				async.waterfall([
 					function (next) {
 						Plugins.loadPluginInfo(file, next);
