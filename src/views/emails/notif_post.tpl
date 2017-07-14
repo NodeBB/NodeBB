@@ -21,8 +21,8 @@
 					</td>
 				</tr>
 				<tr>
-					<td style="padding: 0px 40px 40px 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
-						<p style="margin: 0 20px; color: #777777; font-style: italic;">{postBody}</p>
+					<td style="padding: 0px 60px 40px 60px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
+						{postBody}
 					</td>
 				</tr>
 				<tr>
