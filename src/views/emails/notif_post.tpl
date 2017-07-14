@@ -17,11 +17,7 @@
 			<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
 				<tr>
 					<td style="padding: 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
-						<p style="margin: 0;">{intro}</p>
-					</td>
-				</tr>
-				<tr>
-					<td style="padding: 60px; font-family: sans-serif; font-size: 12px; font-style: italic; line-height: 20px; color: #777777;">
+						<p style="margin: 0 0 20px 0;">{intro}</p>
 						<p style="margin: 0;">{postBody}</p>
 					</td>
 				</tr>
@@ -31,7 +27,7 @@
 						<table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: auto;">
 							<tr>
 								<td style="border-radius: 3px; background: #222222; text-align: center;" class="button-td">
-									<a href="{url}" style="background: #222222; border: 15px solid #222222; font-family: sans-serif; font-size: 13px; line-height: 1.1; text-align: center; text-decoration: none; display: block; border-radius: 3px; font-weight: bold;" class="button-a">
+									<a href="{url}{topicSlug}" style="background: #222222; border: 15px solid #222222; font-family: sans-serif; font-size: 13px; line-height: 1.1; text-align: center; text-decoration: none; display: block; border-radius: 3px; font-weight: bold;" class="button-a">
 										<span style="color:#ffffff;" class="button-link">&nbsp;&nbsp;&nbsp;&nbsp;[[email:notif.post.cta]]&nbsp;&nbsp;&nbsp;&nbsp;</span>
 									</a>
 								</td>

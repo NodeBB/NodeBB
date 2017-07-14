@@ -259,12 +259,7 @@ module.exports = function (Topics) {
 								subject: '[' + (meta.config.title || 'NodeBB') + '] ' + title,
 								intro: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + titleEscaped + ']]',
 								postBody: postData.content.replace(/"\/\//g, '"https://'),
-								username: data.userData.username,
-								userslug: data.userData.userslug,
-								url: nconf.get('url') + '/topic/' + postData.topic.tid,
 								topicSlug: postData.topic.slug,
-								postCount: postData.topic.postcount,
-								base_url: nconf.get('url'),
 								showUnsubscribe: true,
 							}, next);
 						} else {
