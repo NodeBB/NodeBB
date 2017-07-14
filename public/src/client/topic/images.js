@@ -121,7 +121,7 @@ define('forum/topic/images', [
 					+ (!srcExt && altExt ? ' download="' + altFilename + '" ' : '')
 					+ ' target="_blank" >');
 			}
-			
+
 			$(window).trigger('action:images.loaded');
 		});
 	};
