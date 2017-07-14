@@ -16,8 +16,10 @@
 		<td bgcolor="#efeff0">
 			<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
 				<tr>
-					<td style="padding: 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
+					<td style="padding: 40px 40px 0px 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
 						<p style="margin: 0 0 20px 0;">{intro}</p>
+					</td>
+					<td style="padding: 0px 40px 40px 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
 						<p style="margin: 0 20px; color: #777777; font-style: italic;">{postBody}</p>
 					</td>
 				</tr>
