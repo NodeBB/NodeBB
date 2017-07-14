@@ -107,7 +107,6 @@ module.exports = function (SocketUser) {
 				var siteTitle = meta.config.title || 'NodeBB';
 				var data = {
 					subject: '[[email:banned.subject, ' + siteTitle + ']]',
-					site_title: siteTitle,
 					username: username,
 					until: until ? utils.toISOString(until) : false,
 					reason: reason,

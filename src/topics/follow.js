@@ -259,13 +259,10 @@ module.exports = function (Topics) {
 								subject: '[' + (meta.config.title || 'NodeBB') + '] ' + title,
 								intro: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + titleEscaped + ']]',
 								postBody: postData.content.replace(/"\/\//g, '"https://'),
-								site_title: meta.config.title || 'NodeBB',
 								username: data.userData.username,
 								userslug: data.userData.userslug,
-								url: nconf.get('url') + '/topic/' + postData.topic.tid,
 								topicSlug: postData.topic.slug,
-								postCount: postData.topic.postcount,
-								base_url: nconf.get('url'),
+								showUnsubscribe: true,
 							}, next);
 						} else {
 							winston.debug('[topics.notifyFollowers] uid ' + toUid + ' does not have post notifications enabled, skipping.');

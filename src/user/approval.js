@@ -89,7 +89,6 @@ module.exports = function (User) {
 				var title = meta.config.title || meta.config.browserTitle || 'NodeBB';
 				translator.translate('[[email:welcome-to, ' + title + ']]', meta.config.defaultLang, function (subject) {
 					var data = {
-						site_title: title,
 						username: username,
 						subject: subject,
 						template: 'registration_accepted',
