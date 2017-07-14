@@ -99,7 +99,7 @@ module.exports = function (grunt) {
 					'public/src/**/*.js',
 					'node_modules/nodebb-*/**/*.js',
 					'!node_modules/nodebb-*/node_modules/**',
-					'node_modules/templates.js/lib/templates.js',
+					'node_modules/benchpressjs/build/benchpress.js',
 					'!node_modules/nodebb-*/.git/**',
 				],
 				options: {
