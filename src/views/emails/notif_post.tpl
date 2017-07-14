@@ -1,13 +1,56 @@
-<p>[[email:greeting_with_name, {username}]],</p>
+<!-- IMPORT emails/partials/header.tpl -->
 
-<p>{intro}:</p>
-<blockquote>{postBody}</blockquote>
+<!-- Email Body : BEGIN -->
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" width="100%" style="max-width: 600px;">
 
-<a href="{url}">[[email:notif.post.cta]]</a>
+	<!-- Hero Image, Flush : BEGIN -->
+	<tr>
+		<td bgcolor="#efeff0" style="text-align: center; background-image: url({url}/assets/images/emails/triangularbackground.png); background-size: cover; background-repeat: no-repeat;">
+			<img src="{url}/assets/images/emails/unreadpost.png" width="300" height="300" border="0" align="center" style="width: 300px; height: 300px; max-width: 300px; height: auto; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;" class="g-img">
+		</td>
+	</tr>
+	<!-- Hero Image, Flush : END -->
+
+	<!-- 1 Column Text + Button : BEGIN -->
+	<tr>
+		<td bgcolor="#efeff0">
+			<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+				<tr>
+					<td style="padding: 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
+						<p style="margin: 0;">{intro}</p>
+					</td>
+				</tr>
+				<tr>
+					<td style="padding: 60px; font-family: sans-serif; font-size: 12px; font-style: italic; line-height: 20px; color: #777777;">
+						<p style="margin: 0;">{postBody}</p>
+					</td>
+				</tr>
+				<tr>
+					<td style="padding: 0 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
+						<!-- Button : BEGIN -->
+						<table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: auto;">
+							<tr>
+								<td style="border-radius: 3px; background: #222222; text-align: center;" class="button-td">
+									<a href="{url}" style="background: #222222; border: 15px solid #222222; font-family: sans-serif; font-size: 13px; line-height: 1.1; text-align: center; text-decoration: none; display: block; border-radius: 3px; font-weight: bold;" class="button-a">
+										<span style="color:#ffffff;" class="button-link">&nbsp;&nbsp;&nbsp;&nbsp;[[email:notif.post.cta]]&nbsp;&nbsp;&nbsp;&nbsp;</span>
+									</a>
+								</td>
+							</tr>
+						</table>
+						<!-- Button : END -->
+					</td>
+				</tr>
+				<tr>
+					<td style="padding: 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
+						<p style="margin: 0;">{site_title}</p>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<!-- 1 Column Text + Button : END -->
+
+</table>
+<!-- Email Body : END -->
 
 <!-- IMPORT emails/partials/footer.tpl -->
-
-<hr />
-<p>
-	[[email:notif.post.unsub.info]] <a href="{base_url}/user/{userslug}/settings">[[email:unsub.cta]]</a>.
-</p>

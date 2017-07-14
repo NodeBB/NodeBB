@@ -3,7 +3,9 @@
 				<tr>
 					<td style="padding: 40px 10px;width: 100%;font-size: 12px; font-family: sans-serif; line-height:18px; text-align: center; color: #888888;" class="x-gmail-data-detectors">
 						<br><br>
-						&nbsp;
+						<!-- IF showUnsubscribe -->
+						[[email:notif.post.unsub.info]] <a href="{base_url}/user/{userslug}/settings">[[email:unsub.cta]]</a>.
+						<!-- ENDIF showUnsubscribe -->
 						<br><br>
 					</td>
 				</tr>

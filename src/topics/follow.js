@@ -265,6 +265,7 @@ module.exports = function (Topics) {
 								topicSlug: postData.topic.slug,
 								postCount: postData.topic.postcount,
 								base_url: nconf.get('url'),
+								showUnsubscribe: true,
 							}, next);
 						} else {
 							winston.debug('[topics.notifyFollowers] uid ' + toUid + ' does not have post notifications enabled, skipping.');
