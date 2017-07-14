@@ -19,6 +19,8 @@
 					<td style="padding: 40px 40px 0px 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
 						<p style="margin: 0 0 20px 0;">{intro}</p>
 					</td>
+				</tr>
+				<tr>
 					<td style="padding: 0px 40px 40px 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
 						<p style="margin: 0 20px; color: #777777; font-style: italic;">{postBody}</p>
 					</td>
