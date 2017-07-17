@@ -1,14 +1,11 @@
 'use strict';
 
-var db = require('../../database');
 var image = require('../../image');
 var meta = require('../../meta');
 
 var async = require('async');
-var winston = require('winston');
 var path = require('path');
 var nconf = require('nconf');
-var url = require('url');
 
 module.exports = {
 	name: 'Generate email logo for use in email header',

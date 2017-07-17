@@ -2,7 +2,6 @@
 
 var async = require('async');
 var winston = require('winston');
-var nconf = require('nconf');
 
 var meta = require('../meta');
 var plugins = require('../plugins');

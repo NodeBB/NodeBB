@@ -2,7 +2,6 @@
 'use strict';
 
 var async = require('async');
-var nconf = require('nconf');
 var S = require('string');
 var winston = require('winston');
 
