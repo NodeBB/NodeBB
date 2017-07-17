@@ -3,6 +3,7 @@
 
 var async = require('async');
 var nconf = require('nconf');
+var path = require('path');
 
 var db = require('../database');
 var pubsub = require('../pubsub');
@@ -80,13 +81,28 @@ Configs.setMultiple = function (data, callback) {
 };
 
 function processConfig(data, callback) {
-	if (data.customCSS) {
-		return saveRenderedCss(data, callback);
-	}
-	setImmediate(callback);
+	async.parallel([
+		async.apply(saveRenderedCss, data),
+		function (next) {
+			var image = require('../image');
+			if (data['brand:logo']) {
+				image.size(path.join(nconf.get('upload_path'), 'system', 'site-logo-x50.png'), function (err, size) {
+					data['brand:emailLogo:height'] = size.height;
+					data['brand:emailLogo:width'] = size.width;
+					next(err);
+				});
+			}
+		},
+	], function (err) {
+		callback(err);
+	});
 }
 
 function saveRenderedCss(data, callback) {
+	if (!data.customCSS) {
+		return setImmediate(callback);
+	}
+
 	var less = require('less');
 	async.waterfall([
 		function (next) {

@@ -14,6 +14,7 @@ var User = require('./user');
 var Plugins = require('./plugins');
 var meta = require('./meta');
 var translator = require('./translator');
+var pubsub = require('./pubsub');
 
 var transports = {
 	sendmail: nodemailer.createTransport(sendmailTransport()),
@@ -33,7 +34,11 @@ Emailer.registerApp = function (expressApp) {
 	Emailer._defaultPayload = {
 		url: nconf.get('url'),
 		site_title: meta.config.title || 'NodeBB',
-		'brand:logo': nconf.get('url') + meta.config['brand:logo'],
+		logo: {
+			src: nconf.get('url') + meta.config['brand:logo'].replace('.png', '-x50.png'),
+			height: meta.config['brand:emailLogo:height'],
+			width: meta.config['brand:emailLogo:width'],
+		},
 	};
 
 	// Enable Gmail transport if enabled in ACP
@@ -51,6 +56,14 @@ Emailer.registerApp = function (expressApp) {
 	} else {
 		fallbackTransport = transports.sendmail;
 	}
+
+	// Update default payload if new logo is uploaded
+	pubsub.on('config:update', function (config) {
+		if (config) {
+			Emailer._defaultPayload.logo.height = config['brand:emailLogo:height'];
+			Emailer._defaultPayload.logo.width = config['brand:emailLogo:width'];
+		}
+	});
 
 	return Emailer;
 };
