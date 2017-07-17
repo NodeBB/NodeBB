@@ -35,7 +35,7 @@ Emailer.registerApp = function (expressApp) {
 		url: nconf.get('url'),
 		site_title: meta.config.title || 'NodeBB',
 		logo: {
-			src: nconf.get('url') + meta.config['brand:logo'].replace('.png', '-x50.png'),
+			src: meta.config['brand:logo'] ? nconf.get('url') + meta.config['brand:logo'].replace('.png', '-x50.png') : null,
 			height: meta.config['brand:emailLogo:height'],
 			width: meta.config['brand:emailLogo:width'],
 		},

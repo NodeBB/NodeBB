@@ -172,7 +172,11 @@
 			<table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" width="100%" style="max-width: 600px;">
 				<tr>
 					<td style="padding: 20px 0; text-align: center">
+						<!-- IF logo.src -->
 						<img src="{logo.src}" height="{logo.height}" width="{logo.width}" alt="{site_title}" border="0" style="height: {logo.height}px; width: {logo.width}px; background: #222222; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
+						<!-- ELSE -->
+						&nbsp;
+						<!-- ENDIF logo.src -->
 					</td>
 				</tr>
 			</table>
