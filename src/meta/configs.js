@@ -91,6 +91,8 @@ function processConfig(data, callback) {
 					data['brand:emailLogo:width'] = size.width;
 					next(err);
 				});
+			} else {
+				setImmediate(next);
 			}
 		},
 	], function (err) {
