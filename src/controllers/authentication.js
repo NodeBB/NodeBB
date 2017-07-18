@@ -247,18 +247,18 @@ function continueLogin(req, res, next) {
 					return helpers.noScriptErrors(req, res, err.message, 403);
 				}
 
-				var next;
+				var destination;
 				if (!req.session.returnTo) {
-					next = nconf.get('relative_path') + '/';
+					destination = nconf.get('relative_path') + '/';
 				} else {
-					next = req.session.returnTo;
+					destination = req.session.returnTo;
 					delete req.session.returnTo;
 				}
 
 				if (req.body.noscript === 'true') {
-					res.redirect(next + '?loggedin');
+					res.redirect(destination + '?loggedin');
 				} else {
-					res.status(200).send(next);
+					res.status(200).send(destination);
 				}
 			});
 		}
