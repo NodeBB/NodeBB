@@ -297,25 +297,26 @@ Plugins.normalise = function (apiReturn, callback) {
 	});
 };
 
+Plugins.nodeModulesPath = path.join(__dirname, '../node_modules');
+
 Plugins.showInstalled = function (callback) {
-	var nodeModulesPath = path.join(__dirname, '../node_modules');
 	var pluginNamePattern = /^(@.*?\/)?nodebb-(theme|plugin|widget|rewards)-.*$/;
 
 	async.waterfall([
 		function (next) {
-			fs.readdir(nodeModulesPath, next);
+			fs.readdir(Plugins.nodeModulesPath, next);
 		},
 		function (dirs, next) {
 			var pluginPaths = [];
 
 			async.each(dirs, function (dirname, next) {
-				var dirPath = path.join(nodeModulesPath, dirname);
+				var dirPath = path.join(Plugins.nodeModulesPath, dirname);
 
 				async.waterfall([
 					function (cb) {
 						fs.stat(dirPath, function (err, stats) {
 							if (err && err.code !== 'ENOENT') {
-								return next(err);
+								return cb(err);
 							}
 							if (err || !stats.isDirectory()) {
 								return next();
@@ -361,7 +362,7 @@ Plugins.showInstalled = function (callback) {
 
 		function (dirs, next) {
 			dirs = dirs.map(function (dir) {
-				return path.join(nodeModulesPath, dir);
+				return path.join(Plugins.nodeModulesPath, dir);
 			});
 			var plugins = [];
 
