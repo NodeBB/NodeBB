@@ -14,6 +14,7 @@ var plugins = require('../plugins');
 var utils = require('../utils');
 var Password = require('../password');
 var translator = require('../translator');
+var helpers = require('./helpers');
 
 var sockets = require('../socket.io');
 
@@ -49,6 +50,10 @@ authenticationController.register = function (req, res) {
 				return next(new Error('[[error:username-too-long]]'));
 			}
 
+			if (userData.password !== userData['password-confirm']) {
+				return next(new Error('[[user:change_password_error_match]]'));
+			}
+
 			user.isPasswordValid(userData.password, next);
 		},
 		function (next) {
@@ -67,7 +72,7 @@ authenticationController.register = function (req, res) {
 		},
 	], function (err, data) {
 		if (err) {
-			return res.status(400).send(err.message);
+			return helpers.noScriptErrors(req, res, err.message, 400);
 		}
 
 		if (data.uid && req.body.userLang) {
@@ -96,6 +101,10 @@ function registerAndLoginUser(req, res, userData, callback) {
 			}
 			userData.register = true;
 			req.session.registration = userData;
+
+			if (req.body.noscript === 'true') {
+				return res.redirect(nconf.get('relative_path') + '/register/complete');
+			}
 			return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
 		},
 		function (next) {
@@ -200,22 +209,22 @@ authenticationController.login = function (req, res, next) {
 	} else if (loginWith.indexOf('username') !== -1 && !validator.isEmail(req.body.username)) {
 		continueLogin(req, res, next);
 	} else {
-		res.status(500).send('[[error:wrong-login-type-' + loginWith + ']]');
+		var err = '[[error:wrong-login-type-' + loginWith + ']]';
+		helpers.noScriptErrors(req, res, err, 500);
 	}
 };
 
 function continueLogin(req, res, next) {
 	passport.authenticate('local', function (err, userData, info) {
 		if (err) {
-			return res.status(403).send(err.message);
+			return helpers.noScriptErrors(req, res, err.message, 403);
 		}
 
 		if (!userData) {
 			if (typeof info === 'object') {
 				info = '[[error:invalid-username-or-password]]';
 			}
-
-			return res.status(403).send(info);
+			return helpers.noScriptErrors(req, res, info, 403);
 		}
 
 		var passwordExpiry = userData.passwordExpiry !== undefined ? parseInt(userData.passwordExpiry, 10) : null;
@@ -235,7 +244,7 @@ function continueLogin(req, res, next) {
 			req.session.passwordExpired = true;
 			user.reset.generate(userData.uid, function (err, code) {
 				if (err) {
-					return res.status(403).send(err.message);
+					return helpers.noScriptErrors(req, res, err.message, 403);
 				}
 
 				res.status(200).send(nconf.get('relative_path') + '/reset/' + code);
@@ -243,16 +252,21 @@ function continueLogin(req, res, next) {
 		} else {
 			authenticationController.doLogin(req, userData.uid, function (err) {
 				if (err) {
-					return res.status(403).send(err.message);
+					return helpers.noScriptErrors(req, res, err.message, 403);
 				}
 
+				var destination;
 				if (!req.session.returnTo) {
-					res.status(200).send(nconf.get('relative_path') + '/');
+					destination = nconf.get('relative_path') + '/';
 				} else {
-					var next = req.session.returnTo;
+					destination = req.session.returnTo;
 					delete req.session.returnTo;
+				}
 
-					res.status(200).send(next);
+				if (req.body.noscript === 'true') {
+					res.redirect(destination + '?loggedin');
+				} else {
+					res.status(200).send(destination);
 				}
 			});
 		}
@@ -404,7 +418,11 @@ authenticationController.logout = function (req, res, next) {
 		function () {
 			// Force session check for all connected socket.io clients with the same session id
 			sockets.in('sess_' + req.sessionID).emit('checkSession', 0);
-			res.status(200).send('');
+			if (req.body.noscript === 'true') {
+				res.redirect(nconf.get('relative_path') + '/');
+			} else {
+				res.status(200).send('');
+			}
 		},
 	], next);
 };

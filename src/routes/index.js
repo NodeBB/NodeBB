@@ -34,6 +34,8 @@ function mainRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/search', middleware, [], controllers.search.search);
 	setupPageRoute(app, '/reset/:code?', middleware, [], controllers.reset);
 	setupPageRoute(app, '/tos', middleware, [], controllers.termsOfUse);
+
+	app.post('/compose', middleware.applyCSRF, controllers.composePost);
 }
 
 function modRoutes(app, middleware, controllers) {

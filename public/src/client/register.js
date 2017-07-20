@@ -16,6 +16,7 @@ define('forum/register', ['translator', 'zxcvbn'], function (translator, zxcvbn)
 		handleLanguageOverride();
 
 		$('#referrer').val(app.previousUrl);
+		$('#content #noscript').val('false');
 
 		email.on('blur', function () {
 			if (email.val().length) {

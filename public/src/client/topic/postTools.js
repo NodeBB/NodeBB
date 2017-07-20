@@ -85,7 +85,8 @@ define('forum/topic/postTools', [
 			onReplyClicked($(this), tid);
 		});
 
-		$('.topic').on('click', '[component="topic/reply"]', function () {
+		$('.topic').on('click', '[component="topic/reply"]', function (e) {
+			e.preventDefault();
 			onReplyClicked($(this), tid);
 		});
 
