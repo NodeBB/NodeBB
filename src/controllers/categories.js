@@ -7,7 +7,7 @@ var categories = require('../categories');
 var meta = require('../meta');
 var helpers = require('./helpers');
 
-var categoriesController = {};
+var categoriesController = module.exports;
 
 categoriesController.list = function (req, res, next) {
 	res.locals.metaTags = [{
@@ -34,32 +34,27 @@ categoriesController.list = function (req, res, next) {
 
 			categories.getRecentTopicReplies(allCategories, req.uid, next);
 		},
-	], function (err) {
-		if (err) {
-			return next(err);
-		}
+		function () {
+			var data = {
+				title: '[[pages:categories]]',
+				categories: categoryData,
+			};
 
-		var data = {
-			title: '[[pages:categories]]',
-			categories: categoryData,
-		};
-
-		if (req.path.startsWith('/api/categories') || req.path.startsWith('/categories')) {
-			data.breadcrumbs = helpers.buildBreadcrumbs([{ text: data.title }]);
-		}
-
-		data.categories.forEach(function (category) {
-			if (category && Array.isArray(category.posts) && category.posts.length) {
-				category.teaser = {
-					url: nconf.get('relative_path') + '/topic/' + category.posts[0].topic.slug + '/' + category.posts[0].index,
-					timestampISO: category.posts[0].timestampISO,
-					pid: category.posts[0].pid,
-				};
+			if (req.path.startsWith('/api/categories') || req.path.startsWith('/categories')) {
+				data.breadcrumbs = helpers.buildBreadcrumbs([{ text: data.title }]);
 			}
-		});
 
-		res.render('categories', data);
-	});
+			data.categories.forEach(function (category) {
+				if (category && Array.isArray(category.posts) && category.posts.length) {
+					category.teaser = {
+						url: nconf.get('relative_path') + '/post/' + category.posts[0].pid,
+						timestampISO: category.posts[0].timestampISO,
+						pid: category.posts[0].pid,
+					};
+				}
+			});
+
+			res.render('categories', data);
+		},
+	], next);
 };
-
-module.exports = categoriesController;

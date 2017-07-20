@@ -411,6 +411,32 @@ describe('Groups', function () {
 				});
 			});
 		});
+
+		it('should fail to add user to group if group name is invalid', function (done) {
+			Groups.join(0, 1, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				Groups.join(null, 1, function (err) {
+					assert.equal(err.message, '[[error:invalid-data]]');
+					Groups.join(undefined, 1, function (err) {
+						assert.equal(err.message, '[[error:invalid-data]]');
+						done();
+					});
+				});
+			});
+		});
+
+		it('should fail to add user to group if uid is invalid', function (done) {
+			Groups.join('Test', 0, function (err) {
+				assert.equal(err.message, '[[error:invalid-uid]]');
+				Groups.join('Test', null, function (err) {
+					assert.equal(err.message, '[[error:invalid-uid]]');
+					Groups.join('Test', undefined, function (err) {
+						assert.equal(err.message, '[[error:invalid-uid]]');
+						done();
+					});
+				});
+			});
+		});
 	});
 
 	describe('.leave()', function () {
