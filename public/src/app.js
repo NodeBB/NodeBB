@@ -35,7 +35,8 @@ app.cacheBuster = null;
 			app.handleSearch();
 		}
 
-		$('body').on('click', '#new_topic', function () {
+		$('body').on('click', '#new_topic', function (e) {
+			e.preventDefault();
 			app.newTopic();
 		});
 

@@ -14,6 +14,24 @@ var middleware = require('../middleware');
 
 var helpers = module.exports;
 
+helpers.noScriptErrors = function (req, res, error, httpStatus) {
+	if (req.body.noscript !== 'true') {
+		return res.status(httpStatus).send(error);
+	}
+
+	var middleware = require('../middleware');
+	var httpStatusString = httpStatus.toString();
+	middleware.buildHeader(req, res, function () {
+		res.status(httpStatus).render(httpStatusString, {
+			path: req.path,
+			loggedIn: true,
+			error: error,
+			returnLink: true,
+			title: '[[global:' + httpStatusString + '.title]]',
+		});
+	});
+};
+
 helpers.notAllowed = function (req, res, error) {
 	plugins.fireHook('filter:helpers.notAllowed', {
 		req: req,
