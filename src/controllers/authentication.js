@@ -14,6 +14,7 @@ var plugins = require('../plugins');
 var utils = require('../utils');
 var Password = require('../password');
 var translator = require('../translator');
+var helpers = require('./helpers');
 
 var sockets = require('../socket.io');
 
@@ -49,6 +50,10 @@ authenticationController.register = function (req, res) {
 				return next(new Error('[[error:username-too-long]]'));
 			}
 
+			if (userData.password !== userData['password-confirm']) {
+				return next(new Error('[[user:change_password_error_match]]'));
+			}
+
 			user.isPasswordValid(userData.password, next);
 		},
 		function (next) {
@@ -67,7 +72,7 @@ authenticationController.register = function (req, res) {
 		},
 	], function (err, data) {
 		if (err) {
-			return res.status(400).send(err.message);
+			return helpers.noScriptErrors(req, res, err.message, 400);
 		}
 
 		if (data.uid && req.body.userLang) {
@@ -96,6 +101,10 @@ function registerAndLoginUser(req, res, userData, callback) {
 			}
 			userData.register = true;
 			req.session.registration = userData;
+
+			if (req.body.noscript === 'true') {
+				return res.redirect(nconf.get('relative_path') + '/register/complete');
+			}
 			return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
 		},
 		function (next) {

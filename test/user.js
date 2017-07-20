@@ -1274,6 +1274,7 @@ describe('User', function () {
 			helpers.registerUser({
 				username: 'rejectme',
 				password: '123456',
+				'password-confirm': '123456',
 				email: 'reject@me.com',
 			}, function (err) {
 				assert.ifError(err);
@@ -1304,6 +1305,7 @@ describe('User', function () {
 			helpers.registerUser({
 				username: 'acceptme',
 				password: '123456',
+				'password-confirm': '123456',
 				email: 'accept@me.com',
 			}, function (err) {
 				assert.ifError(err);
