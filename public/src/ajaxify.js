@@ -328,7 +328,7 @@ $(document).ready(function () {
 	};
 
 	ajaxify.loadTemplate = function (template, callback) {
-		require([config.relative_path + '/assets/templates/' + template + '.tpl'], callback, function (err) {
+		require([config.relative_path + '/assets/templates/' + template + '.jst'], callback, function (err) {
 			console.error('Unable to load template: ' + template);
 			throw err;
 		});

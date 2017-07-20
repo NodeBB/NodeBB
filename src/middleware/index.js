@@ -2,11 +2,13 @@
 
 var async = require('async');
 var path = require('path');
+var fs = require('fs');
 var csrf = require('csurf');
 var validator = require('validator');
 var nconf = require('nconf');
 var ensureLoggedIn = require('connect-ensure-login');
 var toobusy = require('toobusy-js');
+var Benchpress = require('benchpressjs');
 
 var plugins = require('../plugins');
 var meta = require('../meta');
@@ -185,4 +187,34 @@ middleware.processTimeagoLocales = function (req, res, next) {
 middleware.delayLoading = function (req, res, next) {
 	// Introduces an artificial delay during load so that brute force attacks are effectively mitigated
 	setTimeout(next, 1000);
+};
+
+var viewsDir = nconf.get('views_dir');
+middleware.templatesOnDemand = function (req, res, next) {
+	var filePath = req.filePath || path.join(viewsDir, req.path);
+	if (!filePath.endsWith('.jst')) {
+		return next();
+	}
+
+	async.waterfall([
+		function (cb) {
+			file.exists(filePath, cb);
+		},
+		function (exists, cb) {
+			if (exists) {
+				return next();
+			}
+
+			fs.readFile(filePath.replace(/\.jst$/, '.tpl'), cb);
+		},
+		function (source, cb) {
+			Benchpress.precompile({
+				source: source.toString(),
+				minify: global.env !== 'development',
+			}, cb);
+		},
+		function (compiled, cb) {
+			fs.writeFile(filePath, compiled, cb);
+		},
+	], next);
 };
