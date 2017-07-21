@@ -18,13 +18,13 @@
 	"stats.week": "週",
 	"stats.month": "月",
 	"stats.all": "全て",
-	
+
 	"updates": "更新",
 	"running-version": "<strong>NodeBB v<span id=\"version\">%1</span></strong> を実行しています。",
 	"keep-updated": "常に最新のセキュリティパッチとバグ修正のためにNodeBBが最新であることを確認してください。",
 	"up-to-date": "<p>あなたは<strong>最新の状態</strong>です。<i class=\"fa fa-check\"></i></p>",
-	"upgrade-available": "<p>新しいバージョン (v%1) がリリースされました。<a href=\"https://docs.nodebb.org/en/latest/upgrading/index.html\">NodeBBのアップグレード</a>を検討してください。</p>",
-	"prerelease-upgrade-available": "<p>これはNodeBBの旧リリースのバージョンです。新しいバージョン(v%1)がリリースされました。<a href=\"https://docs.nodebb.org/en/latest/upgrading/index.html\"> NodeBBのアップグレード</a>を検討してください。</ p>",
+	"upgrade-available": "<p>A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\">upgrading your NodeBB</a>.</p>",
+	"prerelease-upgrade-available": "<p>This is an outdated pre-release version of NodeBB. A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\">upgrading your NodeBB</a>.</p>",
 	"prerelease-warning": "<p>これはNodeBBの<strong>プレリリース版</strong>です。意図しないバグが発生することがあります。<i class=\"fa fa-exclamation-triangle\"></i></p>",
 	"running-in-development": "<span>フォーラムが開発モードで動作しています。フォーラムの動作が脆弱かもしれませんので、管理者に問い合わせてください。</span>",
 

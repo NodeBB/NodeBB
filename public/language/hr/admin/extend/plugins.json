@@ -12,11 +12,11 @@
 	"reorder-plugins": "Promjenite redosljed dodataka",
 	"order-active": "Posloži aktivne dodatke",
 	"dev-interested": "Interesira vas pisanje dodataka za NodeBB?",
-	"docs-info": "Punu dokumentaciju u vezi autorstva dodatka mogu biti nađeni na target=\"_blank\" href=\"https://docs.nodebb.org/en/latest/plugins/create.html\">NodeBB Docs Portal</a>.",
+	"docs-info": "Full documentation regarding plugin authoring can be found in the <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">NodeBB Docs Portal</a>.",
 
 	"order.description": "Određeni dodatci rade idealno kada su pokrenuti prije/poslije drugih dodataka.",
 	"order.explanation": "Dodatci se učitavaju u slijedu zadanom ovdje,od vrha prema dnu.",
-	
+
 	"plugin-item.themes": "Predlošci",
 	"plugin-item.deactivate": "Deaktiviraj",
 	"plugin-item.activate": "Aktiviraj",
