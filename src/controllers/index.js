@@ -158,7 +158,7 @@ Controllers.login = function (req, res, next) {
 				return next(err);
 			}
 			data.username = allowLoginWith === 'email' ? user.email : user.username;
-			data.alternate_logins = [];
+			data.alternate_logins = false;
 			res.render('login', data);
 		});
 	} else {
