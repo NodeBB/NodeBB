@@ -23,8 +23,8 @@
 	"running-version": "Вие използвате <strong>NodeBB версия <span id=\"version\">%1</span></strong>.",
 	"keep-updated": "Стремете се винаги да използвате най-новата версия на NodeBB, за да се възползвате от последните подобрения на сигурността и поправки на проблеми.",
 	"up-to-date": "<p>Вие използвате <strong>най-новата версия</strong> <i class=\"fa fa-check\"></i></p>",
-	"upgrade-available": "<p>A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\">upgrading your NodeBB</a>.</p>",
-	"prerelease-upgrade-available": "<p>This is an outdated pre-release version of NodeBB. A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\">upgrading your NodeBB</a>.</p>",
+	"upgrade-available": "<p>Има нова версия (версия %1). Ако имате възможност, <a href=\"https://docs.nodebb.org/configuring/upgrade/\">обновете NodeBB</a>.</p>",
+	"prerelease-upgrade-available": "<p>Това е остаряла предварителна версия на NodeBB. Има нова версия (версия %1). Ако имате възможност, <a href=\"https://docs.nodebb.org/configuring/upgrade/\">обновете NodeBB</a>.</p>",
 	"prerelease-warning": "<p>Това е версия за <strong>предварителен преглед</strong> на NodeBB. Възможно е да има неочаквани неизправности. <i class=\"fa fa-exclamation-triangle\"></i></p>",
 	"running-in-development": "<span>Форумът работи в режим за разработчици, така че може да бъде уязвим. Моля, свържете се със системния си администратор.</span>",
 
