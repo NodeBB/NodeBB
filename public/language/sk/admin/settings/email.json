@@ -1,6 +1,6 @@
 {
 	"email-settings": "Nastavenia e-mailu",
-	"address": "Email Address",
+	"address": "Emailová adresa",
 	"address-help": "The following email address refers to the email that the recipient will see in the \"From\" and \"Reply To\" fields.",
 	"from": "From Name",
 	"from-help": "The from name to display in the email.",

@@ -2,7 +2,7 @@
 	"queue": "Fronta",
 	"description": "There are no users in the registration queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
 
-	"list.name": "Name",
+	"list.name": "Meno",
 	"list.email": "Email",
 	"list.ip": "IP",
 	"list.time": "Time",

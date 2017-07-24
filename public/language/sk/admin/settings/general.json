@@ -1,7 +1,7 @@
 {
 	"site-settings": "Nastavenia lokality",
 	"title": "Site Title",
-	"title.name": "Your Community Name",
+	"title.name": "Vaše komunitné meno",
 	"title.show-in-header": "Show Site Title in Header",
 	"browser-title": "Browser Title",
 	"browser-title-help": "If no browser title is specified, the site title will be used",

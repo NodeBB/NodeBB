@@ -1,9 +1,9 @@
 {
-	"reputation": "Reputation Settings",
+	"reputation": "Nastavenie reputácie",
 	"disable": "Disable Reputation System",
 	"disable-down-voting": "Disable Down Voting",
 	"votes-are-public": "Všetky hlasy sú verejné",
 	"thresholds": "Activity Thresholds",
 	"min-rep-downvote": "Minimum reputation to downvote posts",
-	"min-rep-flag": "Minimum reputation to flag posts"
+	"min-rep-flag": "Minimálna reputácia pre označenie prízpevku"
 }
