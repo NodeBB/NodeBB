@@ -1771,6 +1771,26 @@ describe('Controllers', function () {
 		});
 	});
 
+	describe('admin middlewares', function () {
+		it('should redirect to login', function (done) {
+			request(nconf.get('url') + '//api/admin/advanced/database', { json: true }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body.indexOf('Login to your account') !== -1);
+				done();
+			});
+		});
+
+		it('should redirect to login', function (done) {
+			request(nconf.get('url') + '//admin/advanced/database', { json: true }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body.indexOf('Login to your account') !== -1);
+				done();
+			});
+		});
+	});
+
 	after(function (done) {
 		var analytics = require('../src/analytics');
 		analytics.writeData(done);
