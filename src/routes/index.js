@@ -113,6 +113,8 @@ module.exports = function (app, middleware, hotswapIds, callback) {
 	pluginRouter.hotswapId = 'plugins';
 	authRouter.hotswapId = 'auth';
 
+	app.use(middleware.stripLeadingSlashes);
+
 	app.all(relativePath + '(/api|/api/*?)', middleware.prepareAPI);
 	app.all(relativePath + '(/api/admin|/api/admin/*?)', middleware.isAdmin);
 	app.all(relativePath + '(/admin|/admin/*?)', ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login?local=1'), middleware.applyCSRF, middleware.isAdmin);
