@@ -118,8 +118,8 @@ module.exports = function (app, middleware, hotswapIds, callback) {
 	app.all(relativePath + '(/api/admin|/api/admin/*?)', middleware.isAdmin);
 	app.all(relativePath + '(/admin|/admin/*?)', ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login?local=1'), middleware.applyCSRF, middleware.isAdmin);
 
-	router.all('(/api/admin|/api/admin/*?)', middleware.isAdmin);
-	router.all('(/admin|/admin/*?)', ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login?local=1'), middleware.applyCSRF, middleware.isAdmin);
+	// router.all('(/api/admin|/api/admin/*?)', middleware.isAdmin);
+	// router.all('(/admin|/admin/*?)', ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login?local=1'), middleware.applyCSRF, middleware.isAdmin);
 
 	adminRoutes(router, middleware, controllers);
 	metaRoutes(router, middleware, controllers);
@@ -138,7 +138,7 @@ module.exports = function (app, middleware, hotswapIds, callback) {
 	groupRoutes(router, middleware, controllers);
 
 	for (x = 0; x < routers.length; x += 1) {
-		app.use(relativePath, routers[x]);
+		app.use(relativePath ? relativePath : '/', routers[x]);
 	}
 
 	if (process.env.NODE_ENV === 'development') {
