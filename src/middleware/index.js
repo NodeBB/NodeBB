@@ -34,6 +34,15 @@ require('./maintenance')(middleware);
 require('./user')(middleware);
 require('./headers')(middleware);
 
+middleware.stripLeadingSlashes = function (req, res, next) {
+	var target = req.originalUrl.replace(nconf.get('relative_path'), '');
+	if (target.startsWith('//')) {
+		res.redirect(nconf.get('relative_path') + target.replace(/^\/+/, '/'));
+	} else {
+		setImmediate(next);
+	}
+};
+
 middleware.pageView = function (req, res, next) {
 	analytics.pageView({
 		ip: req.ip,
