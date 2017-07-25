@@ -12,11 +12,11 @@
 	"reorder-plugins": "重新排序",
 	"order-active": "排序已啟用的外掛",
 	"dev-interested": "對開發NodeBB的外掛有興趣嗎？",
-	"docs-info": "Full documentation regarding plugin authoring can be found in the <a target=\"_blank\" href=\"https://docs.nodebb.org/en/latest/plugins/create.html\">NodeBB Docs Portal</a>.",
+	"docs-info": "Full documentation regarding plugin authoring can be found in the <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">NodeBB Docs Portal</a>.",
 
 	"order.description": "Certain plugins work ideally when they are initialised before/after other plugins.",
 	"order.explanation": "Plugins load in the order specified here, from top to bottom",
-	
+
 	"plugin-item.themes": "佈景主題",
 	"plugin-item.deactivate": "停用",
 	"plugin-item.activate": "啟用",

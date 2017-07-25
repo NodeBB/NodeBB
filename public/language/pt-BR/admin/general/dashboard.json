@@ -18,13 +18,13 @@
 	"stats.week": "Semana",
 	"stats.month": "Mês",
 	"stats.all": "Todos os Tempos",
-	
+
 	"updates": "Atualizações",
 	"running-version": "Você está rodando o <strong>NodeBB v<span id=\"version\">%1</span></strong>.",
 	"keep-updated": "Sempre se certifique de que o seu NodeBB está atualizado para os últimos patches de segurança e bug fixes.",
 	"up-to-date": "<p>Você está <strong>atualizado</strong> <i class=\"fa fa-check\"></i></p>",
-	"upgrade-available": "<p>Uma nova versão (v%1) foi lançada. Leve em consideração <a href=\"https://docs.nodebb.org/en/latest/upgrading/index.html\">atualizar o seu NodeBB</a>.</p>",
-	"prerelease-upgrade-available": "<p>Esta versão um pre-release antigo do NodeBB. Uma nova versão (v%1) foi lançada. Leve em consideração <a href=\"https://docs.nodebb.org/en/latest/upgrading/index.html\">atualizar o seu NodeBB</a>.</p>",
+	"upgrade-available": "<p>A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\">upgrading your NodeBB</a>.</p>",
+	"prerelease-upgrade-available": "<p>This is an outdated pre-release version of NodeBB. A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\">upgrading your NodeBB</a>.</p>",
 	"prerelease-warning": "<p>Esta é uma versão <strong>pre-release</strong> do NodeBB. Bugs inesperados podem ocorrer. <i class=\"fa fa-exclamation-triangle\"></i></p>",
 	"running-in-development": "<span>O fórum está sendo executado em modo de desenvolvedor. O fórum pode estar abrto à potenciais vulnerabilidades; por favor, entre em contato com o seu administrador de sistemas.</span>",
 

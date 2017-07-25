@@ -116,7 +116,7 @@
     "downvoting-disabled": "Hlasovanie proti je zablokované",
     "not-enough-reputation-to-downvote": "Nemáte dostatočnú reputáciu k odobratiu hlasu pre tento príspevok",
     "not-enough-reputation-to-flag": "Nemáte dostatočnú reputáciu na označenie tohto príspevku",
-    "already-flagged": "Na tomto príspevku už máte značku",
+    "already-flagged": "Už ste označili tento príspevok",
     "reload-failed": "NodeBB narazil na problém pri načítaní: \"%1\". NodeBB bude pokračovať v službe existujúcej aktívnej klientskej strane, aj keď by ste mali vrátiť to, čo ste spravili tesne pred znovu načítaním.",
     "registration-error": "Chyba registrácie",
     "parse-error": "Niečo sa pokazilo pri analýze odpovede servera",

@@ -18,13 +18,13 @@
 	"stats.week": "Тиждень",
 	"stats.month": "Місяць",
 	"stats.all": "Увесь час",
-	
+
 	"updates": "Оновлень",
 	"running-version": "У вас працює <strong>NodeBB v<span id=\"version\">%1</span></strong>.",
 	"keep-updated": "Регулярно перевіряйте, що ваш NodeBB знаходиться в актуальному стані, щоб мати останні патчі та виправлення.",
 	"up-to-date": "<p>Ваша версія <strong>актуальна</strong> <i class=\"fa fa-check\"></i></p>",
-	"upgrade-available": "Була випущена нова версія (v%1). Подумайте про <a href=\"https://docs.nodebb.org/en/latest/upgrading/index.html\">оновлення свого NodeBB</a>.</p>",
-	"prerelease-upgrade-available": "У вас встановлено застарілу пре-релізну версію NodeBB. Була випущена нова версія (v%1). Подумайте про <a href=\"https://docs.nodebb.org/en/latest/upgrading/index.html\">оновлення свого NodeBB</a>.</p>",
+	"upgrade-available": "<p>A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\">upgrading your NodeBB</a>.</p>",
+	"prerelease-upgrade-available": "<p>This is an outdated pre-release version of NodeBB. A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\">upgrading your NodeBB</a>.</p>",
 	"prerelease-warning": "<p>Це <strong>пре-релізна</strong> версія NodeBB. Можуть виникати неочікувані помилки. <i class=\"fa fa-exclamation-triangle\"></i></p>",
 	"running-in-development": "Форум працює в режимі розробки. Форум потенційно може бути незахищеним, будь-ласка повідомте вашого системного адміністратора.",
 

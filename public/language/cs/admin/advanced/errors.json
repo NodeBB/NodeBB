@@ -1,14 +1,14 @@
 {
-	"figure-x": "Figure %1",
-	"error-events-per-day": "<code>%1</code> events per day",
-	"error.404": "404 Not Found",
-	"error.503": "503 Service Unavailable",
-	"manage-error-log": "Manage Error Log",
-	"export-error-log": "Export Error Log (CSV)",
-	"clear-error-log": "Clear Error Log",
-	"route": "Route",
-	"count": "Count",
-	"no-routes-not-found": "Hooray! No 404 errors!",
-	"clear404-confirm": "Are you sure you wish to clear the 404 error logs?",
-	"clear404-success": "\"404 Not Found\" errors cleared"
+	"figure-x": "Vyřešit %1",
+	"error-events-per-day": "<code>%1</code> událostí za den",
+	"error.404": "Chyba 404 - nenalezeno",
+	"error.503": "Chyba 503 - nedostupná služba",
+	"manage-error-log": "Spravovat protokol s chybami",
+	"export-error-log": "Exportovat protokol s chybami (CSV)",
+	"clear-error-log": "Smazat protokol s chybami",
+	"route": "Cesta",
+	"count": "Počet",
+	"no-routes-not-found": "Huráá. Žádná chyba 404.",
+	"clear404-confirm": "Jste si jist/a, že si přejete smazat protokol s chybami 404?",
+	"clear404-success": "Chyby \"404 - nenalezeno\" byly smazány"
 }

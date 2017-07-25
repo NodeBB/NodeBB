@@ -12,11 +12,11 @@
 	"reorder-plugins": "플러그인 작동 순서 재배열",
 	"order-active": "사용 중인 플러그인 작동 순서 배열",
 	"dev-interested": "NodeBB 플러그인을 만드는 데 관심이 있으십니까?",
-	"docs-info": "플러그인 제작 관련 문서는 <a target=\"_blank\" href=\"https://docs.nodebb.org/en/latest/plugins/create.html\">NodeBB Docs Portal</a>에서 찾아보실 수 있습니다.",
+	"docs-info": "Full documentation regarding plugin authoring can be found in the <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">NodeBB Docs Portal</a>.",
 
 	"order.description": "특정 플러그인은 다른 플러그인의 초기화 전/후에 가장 이상적으로 작동합니다.",
 	"order.explanation": "플러그인들은 여기에 나열된 순서로 로드됩니다.",
-	
+
 	"plugin-item.themes": "테마",
 	"plugin-item.deactivate": "비활성화",
 	"plugin-item.activate": "활성화",

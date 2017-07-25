@@ -1,9 +1,9 @@
 {
 	"loading": "Načítání motivů…",
 	"homepage": "Domovská stránka",
-	"select-skin": "Vyber motiv",
+	"select-skin": "Vyberte motiv",
 	"current-skin": "Současný motiv",
 	"skin-updated": "Motiv aktualizován",
-	"applied-success": "%1 skin was succesfully applied",
-	"revert-success": "Skin reverted to base colours"
+	"applied-success": "Motiv %1 byl úspěšně použit",
+	"revert-success": "Barvy u motivu navráceny na základní"
 }
