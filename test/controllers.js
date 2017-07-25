@@ -1775,8 +1775,7 @@ describe('Controllers', function () {
 		it('should redirect to login', function (done) {
 			request(nconf.get('url') + '//api/admin/advanced/database', { json: true }, function (err, res, body) {
 				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				assert(body.indexOf('Login to your account') !== -1);
+				assert.equal(res.statusCode, 401);
 				done();
 			});
 		});
