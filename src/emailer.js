@@ -31,11 +31,18 @@ Emailer._defaultPayload = {};
 Emailer.registerApp = function (expressApp) {
 	app = expressApp;
 
+	var logo = null;
+	if (meta.configs.hasOwnProperty('brand:emailLogo')) {
+		logo = nconf.get('url') + meta.configs['brand:emailLogo'];
+	} else if (meta.config.hasOwnProperty('brand:logo')) {
+		logo = nconf.get('url') + meta.config['brand:logo'].replace('.png', '-x50.png');
+	}
+
 	Emailer._defaultPayload = {
 		url: nconf.get('url'),
 		site_title: meta.config.title || 'NodeBB',
 		logo: {
-			src: meta.config['brand:logo'] ? nconf.get('url') + meta.config['brand:logo'].replace('.png', '-x50.png') : null,
+			src: logo,
 			height: meta.config['brand:emailLogo:height'],
 			width: meta.config['brand:emailLogo:width'],
 		},
