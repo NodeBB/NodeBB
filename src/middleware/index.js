@@ -39,7 +39,7 @@ middleware.stripLeadingSlashes = function (req, res, next) {
 	if (target.startsWith('//')) {
 		res.redirect(nconf.get('relative_path') + target.replace(/^\/+/, '/'));
 	} else {
-		next();
+		setImmediate(next);
 	}
 };
 
