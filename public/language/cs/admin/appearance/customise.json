@@ -1,12 +1,12 @@
 {
-	"custom-css": "Custom CSS",
-	"custom-css.description": "Enter your own CSS declarations here, which will be applied after all other styles.",
-	"custom-css.enable": "Enable Custom CSS",
+	"custom-css": "Uživatelský CSS",
+	"custom-css.description": "Zadejte vlastní deklarace CSS, které budou použity na všechny ostatních styly.",
+	"custom-css.enable": "Povolit uživatelské CSS",
 
-	"custom-header": "Custom Header",
-	"custom-header.description": "Enter custom HTML here (ex. JavaScript, Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup.",
-	"custom-header.enable": "Enable Custom Header",
+	"custom-header": "Uživatelská hlavička",
+	"custom-header.description": "Zadejte zde uživatelské HTML (např.: javascript, meta značky, atp.), které bude přiřazeno k <code>&lt;head&gt;</code>  části značek vašeho fóra.",
+	"custom-header.enable": "Povolit uživatelskou hlavičku",
 
-	"custom-css.livereload": "Enable Live Reload",
-	"custom-css.livereload.description": "Enable this to force all sessions on every device under your account to refresh whenever you click save"
+	"custom-css.livereload": "Povolit aktuální znovu načtení",
+	"custom-css.livereload.description": "Povolením si vynutíte, aby všechny relace na každém zařízení pod vaším účtem se kdykoliv obnovili při kliknutí na tlačítko \"Uložit\"."
 }

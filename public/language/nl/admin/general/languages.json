@@ -1,6 +1,6 @@
 {
-	"language-settings": "Language Settings",
-	"description": "The default language determines the language settings for all users who are visiting your forum. <br />Individual users can override the default language on their account settings page.",
-	"default-language": "Default Language",
-	"auto-detect": "Auto Detect Language Setting for Guests"
+	"language-settings": "Taalinstellingen",
+	"description": "De standaard taal bepaald de taalinstellingen voor alle gebruikers die uw forum bezoeken. <br />Individuele gebruikers kunnen deze standaard instellingen overschrijven op hun gebruikersinstellingen pagina.",
+	"default-language": "Standaard taal",
+	"auto-detect": "Detecteer de taalinstellingen voor Gasten automatisch"
 }
