@@ -142,6 +142,9 @@ settingsController.get = function (req, res, callback) {
 
 		userData.allowUserHomePage = parseInt(meta.config.allowUserHomePage, 10) === 1;
 
+		userData.hideFullname = parseInt(meta.config.hideFullname, 10) === 1;
+		userData.hideEmail = parseInt(meta.config.hideEmail, 10) === 1;
+
 		userData.inTopicSearchAvailable = plugins.hasListeners('filter:topic.search');
 
 		userData.title = '[[pages:account/settings]]';
