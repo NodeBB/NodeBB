@@ -208,7 +208,7 @@ module.exports = function (User) {
 			function (data, next) {
 				user.ipMatch = data;
 				next();
-			}
+			},
 		], callback);
 	}
 
