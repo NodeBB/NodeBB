@@ -1,6 +1,6 @@
 {
-	"events": "Events",
-	"no-events": "There are no events",
-	"control-panel": "Events Control Panel",
-	"delete-events": "Delete Events"
+	"events": "อีเวนท์",
+	"no-events": "ไม่มีอีเวนท์",
+	"control-panel": "แผงควบคุมอีเวนท์",
+	"delete-events": "ลบอีเวนท์"
 }
