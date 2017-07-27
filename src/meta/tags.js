@@ -50,7 +50,7 @@ Tags.parse = function (req, data, meta, link, callback) {
 				});
 			}
 
-			plugins.fireHook('filter:meta.getMetaTags', { req: req, data: data, defaultTags: defaultTags }, next);
+			plugins.fireHook('filter:meta.getMetaTags', { req: req, data: data, tags: defaultTags }, next);
 		},
 		links: function (next) {
 			var defaultLinks = [{
@@ -101,7 +101,7 @@ Tags.parse = function (req, data, meta, link, callback) {
 					href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-192.png',
 				});
 			}
-			plugins.fireHook('filter:meta.getLinkTags', { req: req, data: data, defaultLinks: defaultLinks }, next);
+			plugins.fireHook('filter:meta.getLinkTags', { req: req, data: data, links: defaultLinks }, next);
 		},
 	}, function (err, results) {
 		if (err) {
