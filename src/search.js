@@ -41,6 +41,8 @@ function searchInContent(data, callback) {
 	data.uid = data.uid || 0;
 	var matchCount = 0;
 	var pids;
+	var metadata;
+
 	async.waterfall([
 		function (next) {
 			async.parallel({
@@ -88,16 +90,24 @@ function searchInContent(data, callback) {
 			filterAndSort(pids, data, next);
 		},
 		function (pids, next) {
-			matchCount = pids.length;
+			plugins.fireHook('filter:search.inContent', {
+				pids: pids,
+			}, next);
+		},
+		function (_metadata, next) {
+			metadata = _metadata;
+			matchCount = metadata.pids.length;
 			if (data.page) {
 				var start = Math.max(0, (data.page - 1)) * 10;
-				pids = pids.slice(start, start + 10);
+				metadata.pids = metadata.pids.slice(start, start + 10);
 			}
 
-			posts.getPostSummaryByPids(pids, data.uid, {}, next);
+			posts.getPostSummaryByPids(metadata.pids, data.uid, {}, next);
 		},
 		function (posts, next) {
-			next(null, { posts: posts, matchCount: matchCount, pageCount: Math.max(1, Math.ceil(parseInt(matchCount, 10) / 10)) });
+			// Append metadata from plugin hooks to returned payload (without pids)
+			delete metadata.pids;
+			next(null, Object.assign({ posts: posts, matchCount: matchCount, pageCount: Math.max(1, Math.ceil(parseInt(matchCount, 10) / 10)) }, metadata));
 		},
 	], callback);
 }
