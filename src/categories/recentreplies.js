@@ -59,6 +59,25 @@ module.exports = function (Categories) {
 		], callback);
 	};
 
+	Categories.updateRecentTidForCid = function (cid, callback) {
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRevRange('cid:' + cid + ':pids', 0, 0, next);
+			},
+			function (pid, next) {
+				pid = pid[0];
+				posts.getPostField(pid, 'tid', next);
+			},
+			function (tid, next) {
+				if (!parseInt(tid, 10)) {
+					return next();
+				}
+
+				Categories.updateRecentTid(cid, tid, next);
+			},
+		], callback);
+	};
+
 	Categories.getRecentTopicReplies = function (categoryData, uid, callback) {
 		if (!Array.isArray(categoryData) || !categoryData.length) {
 			return callback();
@@ -180,8 +199,11 @@ module.exports = function (Categories) {
 
 	Categories.moveRecentReplies = function (tid, oldCid, cid, callback) {
 		callback = callback || function () {};
-		updatePostCount(tid, oldCid, cid);
+
 		async.waterfall([
+			function (next) {
+				updatePostCount(tid, oldCid, cid, next);
+			},
 			function (next) {
 				topics.getPids(tid, next);
 			},
@@ -212,7 +234,6 @@ module.exports = function (Categories) {
 	};
 
 	function updatePostCount(tid, oldCid, newCid, callback) {
-		callback = callback || function () {};
 		async.waterfall([
 			function (next) {
 				topics.getTopicField(tid, 'postcount', next);
@@ -228,7 +249,9 @@ module.exports = function (Categories) {
 					function (next) {
 						db.incrObjectFieldBy('category:' + newCid, 'post_count', postCount, next);
 					},
-				], next);
+				], function (err) {
+					next(err);
+				});
 			},
 		], callback);
 	}

@@ -223,6 +223,7 @@ fs.open(path.join(__dirname, 'config.json'), 'r', function (err) {
 			require('daemon')({
 				stdout: process.stdout,
 				stderr: process.stderr,
+				cwd: process.cwd(),
 			});
 
 			fs.writeFileSync(pidFilePath, process.pid);

@@ -12,11 +12,11 @@
 	"reorder-plugins": "プラグインの並び替え",
 	"order-active": "アクティブなプラグインの並び替え",
 	"dev-interested": "NodeBBのプラグインの作成に興味がありますか？",
-	"docs-info": "プラグインの作成に関する完全なドキュメントは<a target=\"_blank\" href=\"https://docs.nodebb.org/en/latest/plugins/create.html\">NodeBBのドキュメントポータル</a>にあります。",
+	"docs-info": "Full documentation regarding plugin authoring can be found in the <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">NodeBB Docs Portal</a>.",
 
 	"order.description": "特定のプラグインは他のプラグインの前後で初期化された際に理想的な動作をします。",
 	"order.explanation": "プラグインはここに上から下へ指定された順序でロードされます",
-	
+
 	"plugin-item.themes": "テーマ",
 	"plugin-item.deactivate": "非アクティブ化",
 	"plugin-item.activate": "アクティブ化",

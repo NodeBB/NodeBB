@@ -119,6 +119,10 @@ define('forum/search', ['search', 'autocomplete', 'storage'], function (searchMo
 				$('#show-as-topics').prop('checked', isTopic).parent().toggleClass('active', isTopic);
 				$('#show-as-posts').prop('checked', isPost).parent().toggleClass('active', isPost);
 			}
+
+			$(window).trigger('action:search.fillOutForm', {
+				form: formData,
+			});
 		}
 	}
 

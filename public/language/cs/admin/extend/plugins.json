@@ -12,11 +12,11 @@
 	"reorder-plugins": "Re-order Plugins",
 	"order-active": "Order Active Plugins",
 	"dev-interested": "Interested in writing plugins for NodeBB?",
-	"docs-info": "Full documentation regarding plugin authoring can be found in the <a target=\"_blank\" href=\"https://docs.nodebb.org/en/latest/plugins/create.html\">NodeBB Docs Portal</a>.",
+	"docs-info": "Full documentation regarding plugin authoring can be found in the <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">NodeBB Docs Portal</a>.",
 
 	"order.description": "Certain plugins work ideally when they are initialised before/after other plugins.",
 	"order.explanation": "Plugins load in the order specified here, from top to bottom",
-	
+
 	"plugin-item.themes": "Themes",
 	"plugin-item.deactivate": "Deactivate",
 	"plugin-item.activate": "Activate",

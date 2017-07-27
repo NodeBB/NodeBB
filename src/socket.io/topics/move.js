@@ -30,17 +30,14 @@ module.exports = function (SocketTopics) {
 					topicData.tid = tid;
 					topics.tools.move(tid, data.cid, socket.uid, next);
 				},
-			], function (err) {
-				if (err) {
-					return next(err);
-				}
+				function (next) {
+					socketHelpers.emitToTopicAndCategory('event:topic_moved', topicData);
 
-				socketHelpers.emitToTopicAndCategory('event:topic_moved', topicData);
+					socketHelpers.sendNotificationToTopicOwner(tid, socket.uid, 'move', 'notifications:moved_your_topic');
 
-				socketHelpers.sendNotificationToTopicOwner(tid, socket.uid, 'move', 'notifications:moved_your_topic');
-
-				next();
-			});
+					next();
+				},
+			], next);
 		}, callback);
 	};
 

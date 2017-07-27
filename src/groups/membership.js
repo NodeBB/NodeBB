@@ -28,6 +28,10 @@ module.exports = function (Groups) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
+		if (!uid) {
+			return callback(new Error('[[error:invalid-uid]]'));
+		}
+
 		async.waterfall([
 			function (next) {
 				Groups.isMember(uid, groupName, next);

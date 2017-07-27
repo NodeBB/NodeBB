@@ -1,7 +1,7 @@
 {
-	"logs": "Logs",
-	"control-panel": "Logs Control Panel",
-	"reload": "Reload Logs",
-	"clear": "Clear Logs",
-	"clear-success": "Logs Cleared!"
+	"logs": "Protokoly",
+	"control-panel": "Ovládací panel protokolů",
+	"reload": "Znovu načíst protokoly",
+	"clear": "Smazat protokoly",
+	"clear-success": "Protokoly smazány."
 }

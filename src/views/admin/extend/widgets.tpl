@@ -32,32 +32,32 @@
 			<div class="panel-body">
 				<div class="available-widgets">
 					<p>[[admin/extend/widgets:explanation]]</p>
-					<!-- IF !widgets.length -->
+					<!-- IF !availableWidgets.length -->
 					<div class="alert alert-info">[[none-installed, {config.relative_path}/admin/extend/plugins]]</div>
-					<!-- ENDIF !widgets.length -->
+					<!-- ENDIF !availableWidgets.length -->
 					<p>
 						<select id="widget-selector" class="form-control">
-							<!-- BEGIN widgets -->
-							<option value="{widgets.widget}">{widgets.name}</option>
-							<!-- END widgets -->
+							<!-- BEGIN availableWidgets -->
+							<option value="{availableWidgets.widget}">{availableWidgets.name}</option>
+							<!-- END availableWidgets -->
 						</select>
 					</p>
 					<div class="row">
-						<!-- BEGIN widgets -->
+						<!-- BEGIN availableWidgets -->
 						<div class="col-xs-12">
-							<div data-widget="{widgets.widget}" class="panel widget-panel panel-default pointer hide">
+							<div data-widget="{availableWidgets.widget}" class="panel widget-panel panel-default pointer hide">
 								<div class="panel-heading">
-									<strong>{widgets.name}</strong>
-									<small><br />{widgets.description}</small>
+									<strong>{availableWidgets.name}</strong>
+									<small><br />{availableWidgets.description}</small>
 								</div>
 								<div class="panel-body hidden">
 									<form>
-										{widgets.content}
+										{availableWidgets.content}
 									</form>
 								</div>
 							</div>
 						</div>
-						<!-- END widgets -->
+						<!-- END availableWidgets -->
 					</div>
 				</div>
 			</div>

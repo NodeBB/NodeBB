@@ -7,6 +7,7 @@ var winston = require('winston');
 
 var plugins = require('../plugins');
 var translator = require('../translator');
+var widgets = require('../widgets');
 
 module.exports = function (middleware) {
 	middleware.processRender = function (req, res, next) {
@@ -48,6 +49,17 @@ module.exports = function (middleware) {
 				},
 				function (data, next) {
 					options = data.templateData;
+
+					widgets.render(req.uid, {
+						template: template + '.tpl',
+						url: options.url,
+						templateData: options,
+						req: req,
+						res: res,
+					}, next);
+				},
+				function (data, next) {
+					options.widgets = data;
 
 					res.locals.template = template;
 					options._locals = undefined;

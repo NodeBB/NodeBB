@@ -5,7 +5,7 @@
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<strong>[[admin/settings/web-crawler:robots-txt]]</strong><br />
-			<textarea class="form-control" data-field="robots.txt"></textarea>
+			<textarea class="form-control" data-field="robots:txt"></textarea>
 		</form>
 	</div>
 </div>

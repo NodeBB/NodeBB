@@ -28,5 +28,5 @@
 	"outgoing-links": "Links Externos",
 	"outgoing-links.warning-page": "Utilizar Página de Aviso de Links Externos",
 	"search-default-sort-by": "Padrão de ordenação de pesquisa por",
-	"outgoing-links.whitelist": "Domains to whitelist for bypassing the warning page"
+	"outgoing-links.whitelist": "Domínios para colocar na lista branca de passar pela página de aviso"
 }

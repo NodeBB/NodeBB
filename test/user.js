@@ -1532,4 +1532,54 @@ describe('User', function () {
 			});
 		});
 	});
+
+	describe('hideEmail/hideFullname', function () {
+		var uid;
+		after(function (done) {
+			meta.config.hideEmail = 0;
+			meta.config.hideFullname = 0;
+			done();
+		});
+
+		it('should hide email and fullname', function (done) {
+			meta.config.hideEmail = 1;
+			meta.config.hideFullname = 1;
+
+			User.create({
+				username: 'hiddenemail',
+				email: 'should@be.hidden',
+				fullname: 'baris soner usakli',
+			}, function (err, _uid) {
+				uid = _uid;
+				assert.ifError(err);
+				request(nconf.get('url') + '/api/user/hiddenemail', { json: true }, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(body.fullname, '');
+					assert.equal(body.email, '');
+
+					done();
+				});
+			});
+		});
+
+		it('should hide fullname in topic list and topic', function (done) {
+			Topics.post({
+				uid: uid,
+				title: 'Topic hidden',
+				content: 'lorem ipsum',
+				cid: testCid,
+			}, function (err) {
+				assert.ifError(err);
+				request(nconf.get('url') + '/api/recent', { json: true }, function (err, res, body) {
+					assert.ifError(err);
+					assert(!body.topics[0].user.hasOwnProperty('fullname'));
+					request(nconf.get('url') + '/api/topic/' + body.topics[0].slug, { json: true }, function (err, res, body) {
+						assert.ifError(err);
+						assert(!body.posts[0].user.hasOwnProperty('fullname'));
+						done();
+					});
+				});
+			});
+		});
+	});
 });

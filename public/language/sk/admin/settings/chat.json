@@ -1,6 +1,6 @@
 {
 	"chat-settings": "Nastavenia konverzácie",
-	"disable": "Disable chat",
+	"disable": "Zakázať konverzáciu",
 	"disable-editing": "Disable chat message editing/deletion",
 	"disable-editing-help": "Administrators and global moderators are exempt from this restriction",
 	"max-length": "Maximum length of chat messages",

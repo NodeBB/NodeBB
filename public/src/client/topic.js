@@ -23,7 +23,7 @@ define('forum/topic', [
 			Topic.replaceURLTimeout = 0;
 		}
 
-		if (data.url && !data.url.startsWith('topic/')) {
+		if (!String(data.url).startsWith('topic/')) {
 			navigator.disable();
 			components.get('navbar/title').find('span').text('').hide();
 			app.removeAlert('bookmark');
@@ -99,7 +99,7 @@ define('forum/topic', [
 
 	function handleTopicSearch() {
 		require(['search', 'mousetrap'], function (search, mousetrap) {
-			$('.topic-search')
+			$('.topic-search').off('click')
 				.on('click', '.prev', function () {
 					search.topicDOM.prev();
 				})

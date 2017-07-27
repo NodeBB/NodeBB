@@ -20,6 +20,7 @@ define('forum/topic/images', [
 		} else {
 			images.attr('data-state', 'loaded');
 			Images.wrapImagesInLinks(posts);
+			$(window).trigger('action:images.loaded');
 		}
 	};
 
@@ -75,6 +76,7 @@ define('forum/topic/images', [
 					adjusting = false;
 
 					Images.wrapImagesInLinks(posts);
+					$(window).trigger('action:images.loaded');
 					posts.length = 0;
 				}
 			}
