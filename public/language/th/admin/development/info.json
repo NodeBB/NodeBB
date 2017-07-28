@@ -1,18 +1,18 @@
 {
-	"you-are-on": "Info - You are on <strong>%1:%2</strong>",
-	"nodes-responded": "%1 nodes responded within %2ms!",
+	"you-are-on": "ข้อมูล - คุณกำลังอยู่บน <strong>%1:%2</strong>",
+	"nodes-responded": "%1 nodes ตอบสนองแล้วภายใน %2ms!",
 	"host": "host",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "online",
 	"git": "git",
-	"memory": "memory",
-	"load": "load",
-	"uptime": "uptime",
+	"memory": "หน่วยความจำ",
+	"load": "โหลด",
+	"uptime": "ระยะเวลาการทำงาน",
 
-	"registered": "Registered",
+	"registered": "ลงทะเบียนแล้ว",
 	"sockets": "Sockets",
-	"guests": "Guests",
+	"guests": "ผู้เยี่ยมเยียน",
 
-	"info": "Info"
+	"info": "ข้อมูล"
 }

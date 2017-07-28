@@ -7,6 +7,7 @@ var db = require('./database');
 var posts = require('./posts');
 var utils = require('./utils');
 var plugins = require('./plugins');
+var meta = require('./meta');
 var user = require('./user');
 var categories = require('./categories');
 var privileges = require('./privileges');
@@ -135,6 +136,12 @@ Topics.getTopicsByTids = function (tids, uid, callback) {
 			}, next);
 		},
 		function (results, next) {
+			if (parseInt(meta.config.hideFullname, 10) === 1) {
+				results.users.forEach(function (user) {
+					user.fullname = undefined;
+				});
+			}
+
 			var users = _.zipObject(uids, results.users);
 			var categories = _.zipObject(cids, results.categories);
 

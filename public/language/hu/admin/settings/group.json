@@ -1,6 +1,6 @@
 {
 	"general": "Általános",
-	"private-groups": "Private Groups",
+	"private-groups": "Privát Csoportok",
 	"private-groups.help": "If enabled, joining of groups requires the approval of the group owner <em>(Default: enabled)</em>",
 	"private-groups.warning": "<strong>Beware!</strong> If this option is disabled and you have private groups, they automatically become public.",
 	"allow-creation": "Allow Group Creation",

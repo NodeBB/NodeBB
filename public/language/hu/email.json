@@ -32,9 +32,9 @@
     "notif.post.unsub.info": "Ez a hozzászólás-értesítés a feliratkozási beállításaid miatt lett kiküldve.",
     "test.text1": "Ez egy teszt levél, ami által ellenőrizzük, hogy a levelező helyesen lett beállítva a NodeBB-ben.",
     "unsub.cta": "Kattintson ide a beállítások módosításához",
-    "banned.subject": "You have been banned from %1",
-    "banned.text1": "The user %1 has been banned from %2.",
-    "banned.text2": "This ban will last until %1.",
-    "banned.text3": "This is the reason why you have been banned:",
+    "banned.subject": "Ki lettél tiltva a(z) %1 oldalról",
+    "banned.text1": "%1 nevű felhasználó ki lett tiltva a(z) %2 oldalról.",
+    "banned.text2": "A kitiltás %1-ig fog tartani.",
+    "banned.text3": "Az ok, amiért ki lettél tiltva:",
     "closing": "Köszönjük!"
 }

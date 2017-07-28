@@ -177,7 +177,7 @@ module.exports = function (User) {
 
 					async.parallel([
 						function (next) {
-							getIPMatchedUsers(user.ip, next);
+							getIPMatchedUsers(user, next);
 						},
 						function (next) {
 							getSpamData(user, next);
@@ -196,13 +196,17 @@ module.exports = function (User) {
 		], callback);
 	};
 
-	function getIPMatchedUsers(ip, callback) {
+	function getIPMatchedUsers(user, callback) {
 		async.waterfall([
 			function (next) {
-				User.getUidsFromSet('ip:' + ip + ':uid', 0, -1, next);
+				User.getUidsFromSet('ip:' + user.ip + ':uid', 0, -1, next);
 			},
 			function (uids, next) {
 				User.getUsersFields(uids, ['uid', 'username', 'picture'], next);
+			},
+			function (data, next) {
+				user.ipMatch = data;
+				next();
 			},
 		], callback);
 	}

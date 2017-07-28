@@ -39,7 +39,7 @@ usersController.search = function (req, res, next) {
 						query: req.query.term,
 						searchBy: req.query.searchBy || 'username',
 						page: req.query.page || 1,
-						sortBy: req.query.sortBy,
+						sortBy: req.query.sortBy || 'joindate',
 						onlineOnly: req.query.onlineOnly === 'true',
 						bannedOnly: req.query.bannedOnly === 'true',
 						flaggedOnly: req.query.flaggedOnly === 'true',

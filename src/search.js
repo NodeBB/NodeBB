@@ -97,6 +97,7 @@ function searchInContent(data, callback) {
 		function (_metadata, next) {
 			metadata = _metadata;
 			matchCount = metadata.pids.length;
+
 			if (data.page) {
 				var start = Math.max(0, (data.page - 1)) * 10;
 				metadata.pids = metadata.pids.slice(start, start + 10);
@@ -105,7 +106,7 @@ function searchInContent(data, callback) {
 			posts.getPostSummaryByPids(metadata.pids, data.uid, {}, next);
 		},
 		function (posts, next) {
-			// Append metadata from plugin hooks to returned payload (without pids)
+			// Append metadata to returned payload (without pids)
 			delete metadata.pids;
 			next(null, Object.assign({ posts: posts, matchCount: matchCount, pageCount: Math.max(1, Math.ceil(parseInt(matchCount, 10) / 10)) }, metadata));
 		},

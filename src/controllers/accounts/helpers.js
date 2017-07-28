@@ -85,13 +85,13 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 
 			userData.emailClass = 'hide';
 
-			if (!(isAdmin || isGlobalModerator || isSelf || (userData.email && userSettings.showemail))) {
+			if (!isAdmin && !isGlobalModerator && !isSelf && (!userSettings.showemail || parseInt(meta.config.hideEmail, 10) === 1)) {
 				userData.email = '';
 			} else if (!userSettings.showemail) {
 				userData.emailClass = '';
 			}
 
-			if (!isAdmin && !isGlobalModerator && !isSelf && !userSettings.showfullname) {
+			if (!isAdmin && !isGlobalModerator && !isSelf && (!userSettings.showfullname || parseInt(meta.config.hideFullname, 10) === 1)) {
 				userData.fullname = '';
 			}
 

@@ -63,29 +63,6 @@ module.exports = function (Groups) {
 	};
 
 	Groups.searchMembers = function (data, callback) {
-		function findUids(query, searchBy, callback) {
-			query = query.toLowerCase();
-
-			async.waterfall([
-				function (next) {
-					Groups.getMembers(data.groupName, 0, -1, next);
-				},
-				function (members, next) {
-					user.getUsersFields(members, ['uid'].concat([searchBy]), next);
-				},
-				function (users, next) {
-					var uids = [];
-					for (var i = 0; i < users.length; i += 1) {
-						var field = users[i][searchBy];
-						if (field.toLowerCase().startsWith(query)) {
-							uids.push(users[i].uid);
-						}
-					}
-					next(null, uids);
-				},
-			], callback);
-		}
-
 		if (!data.query) {
 			Groups.getOwnersAndMembers(data.groupName, data.uid, 0, 19, function (err, users) {
 				callback(err, { users: users });
@@ -93,14 +70,24 @@ module.exports = function (Groups) {
 			return;
 		}
 
-		data.findUids = findUids;
 		var results;
 		async.waterfall([
 			function (next) {
+				data.paginate = false;
 				user.search(data, next);
 			},
 			function (_results, next) {
 				results = _results;
+				var uids = results.users.map(function (user) {
+					return user && user.uid;
+				});
+
+				Groups.isMembers(uids, data.groupName, next);
+			},
+			function (isMembers, next) {
+				results.users = results.users.filter(function (user, index) {
+					return isMembers[index];
+				});
 				var uids = results.users.map(function (user) {
 					return user && user.uid;
 				});

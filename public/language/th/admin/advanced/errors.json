@@ -1,14 +1,14 @@
 {
-	"figure-x": "Figure %1",
-	"error-events-per-day": "<code>%1</code> events per day",
-	"error.404": "404 Not Found",
-	"error.503": "503 Service Unavailable",
-	"manage-error-log": "Manage Error Log",
-	"export-error-log": "Export Error Log (CSV)",
-	"clear-error-log": "Clear Error Log",
-	"route": "Route",
-	"count": "Count",
-	"no-routes-not-found": "Hooray! No 404 errors!",
-	"clear404-confirm": "Are you sure you wish to clear the 404 error logs?",
-	"clear404-success": "\"404 Not Found\" errors cleared"
+	"figure-x": "การปรับแต่ง %1",
+	"error-events-per-day": "<code>%1</code> อีเวนท์ต่อวัน",
+	"error.404": "404 ไม่พบเพจ",
+	"error.503": "503 เซอร์วิสไม่พร้อมใช้งาน",
+	"manage-error-log": "จัดการผลบันทึกความผิดพลาด",
+	"export-error-log": "นำออกผลบันทึกความผิดพลาด (CSV)",
+	"clear-error-log": "ล้างผลบันทึกความผิดพลาด",
+	"route": "เส้นทาง",
+	"count": "นับจำนวน",
+	"no-routes-not-found": "เอาแล้วซิ! พบความผิดพลาดรหัส 404",
+	"clear404-confirm": "คุณแน่ใจแล้วใช่ไหมว่าต้องการล้างผลบันทึกความผิดพลาดรหัส 404?",
+	"clear404-success": "บันทึกความผิดพลาด \"404 ไม่พบเพจ\" ถูกล้างเรียบร้อยแล้ว"
 }
