@@ -89,7 +89,7 @@ function searchInContent(data, callback) {
 			filterAndSort(pids, data, next);
 		},
 		function (pids, next) {
-			plugin.fireHook('filter:search.inContent', {
+			plugins.fireHook('filter:search.inContent', {
 				pids: pids,
 			}, next);
 		},
