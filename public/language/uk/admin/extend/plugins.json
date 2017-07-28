@@ -12,11 +12,11 @@
 	"reorder-plugins": "Впорядкувати плагіни",
 	"order-active": "Впорядкувати активні плагіни",
 	"dev-interested": "Зацікавлені в написанні плагінів для NodeBB?",
-	"docs-info": "Повну документацію з розробки плагінів можна знайти на <a target=\"_blank\" href=\"https://docs.nodebb.org/en/latest/plugins/create.html\">Порталі NodeBB</a>.",
+	"docs-info": "Full documentation regarding plugin authoring can be found in the <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">NodeBB Docs Portal</a>.",
 
 	"order.description": "Певні плагіни працють краще будучи ініціалізованими до/після інших плагінів.",
 	"order.explanation": "Плагіни вантажаться у заданому тут порядку, згори до низу",
-	
+
 	"plugin-item.themes": "Теми",
 	"plugin-item.deactivate": "Деактивувати",
 	"plugin-item.activate": "Активувати",

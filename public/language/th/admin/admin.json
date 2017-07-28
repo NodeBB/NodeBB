@@ -1,5 +1,5 @@
 {
-	"alert.confirm-reload": "คุณต้องการโหลดการทำงาน NodeBB อีกครั้งหรือไม่?",
+	"alert.confirm-reload": "คุณต้องการโหลด NodeBB อีกครั้งหรือไม่?",
 	"alert.confirm-restart": "คุณต้องการเริ่มการทำงาน NodeBB ใหม่หรือไม่?",
 
 	"acp-title": "%1 | แผงควบคุมของผู้ดูแลระบบ",

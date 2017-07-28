@@ -1505,13 +1505,6 @@ describe('Topic\'s', function () {
 			});
 		});
 
-		it('should error if no search plugin', function (done) {
-			socketTopics.search({ uid: adminUid }, { tid: topic.tid, term: 'test' }, function (err) {
-				assert.equal(err.message, '[[error:no-plugins-available]]');
-				done();
-			});
-		});
-
 		it('should return results', function (done) {
 			var plugins = require('../src/plugins');
 			plugins.registerHook('myTestPlugin', {

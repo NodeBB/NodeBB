@@ -59,7 +59,7 @@
     "thread_tools.unlock": "解锁主题",
     "thread_tools.move": "移动主题",
     "thread_tools.move_all": "移动全部",
-    "thread_tools.select_category": "Select Category",
+    "thread_tools.select_category": "选择版块",
     "thread_tools.fork": "分割主题",
     "thread_tools.delete": "删除主题",
     "thread_tools.delete-posts": "删除这些帖子",

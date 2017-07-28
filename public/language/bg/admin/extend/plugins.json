@@ -12,11 +12,11 @@
 	"reorder-plugins": "Пренареждане на добавките",
 	"order-active": "Подреждане на включените добавки",
 	"dev-interested": "Искате ли да пишете добавки за NodeBB?",
-	"docs-info": "Документацията за създаване на добавки може да бъде открита в <a target=\"_blank\" href=\"https://docs.nodebb.org/en/latest/plugins/create.html\">страницата с документация на NodeBB</a>.",
+	"docs-info": "Пълната документация относно създаването на добавки може да бъде намерена в <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">портала за документация на NodeBB</a>.",
 
 	"order.description": "Някои добавки работят най-добре, ако бъдат инсталирани преди или след други добавки.",
 	"order.explanation": "Добавките се зареждат в реда, посочен тук, от горе надолу.",
-	
+
 	"plugin-item.themes": "Теми",
 	"plugin-item.deactivate": "Изключване",
 	"plugin-item.activate": "Включване",

@@ -93,7 +93,7 @@ function setupConfigs() {
 	}
 	// Parse out the relative_url and other goodies from the configured URL
 	var urlObject = url.parse(nconf.get('url'));
-	var relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
+	var relativePath = urlObject.pathname !== '/' ? urlObject.pathname.replace(/\/+$/, '') : '';
 	nconf.set('base_url', urlObject.protocol + '//' + urlObject.host);
 	nconf.set('secure', urlObject.protocol === 'https:');
 	nconf.set('use_port', !!urlObject.port);

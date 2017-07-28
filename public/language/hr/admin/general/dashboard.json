@@ -18,13 +18,13 @@
 	"stats.week": "Tjedan",
 	"stats.month": "Mjesec",
 	"stats.all": "Sve vrijeme",
-	
+
 	"updates": "Nadogradnje",
 	"running-version": "Ovo je verzija <strong>NodeBB v<span id=\"version\">%1</span></strong>.",
 	"keep-updated": "Uvijek se pobrinite da je Vaš NodeBB na najnovijoj verziji za najnovije sigurnosne mjere i popravke grešaka.",
 	"up-to-date": "<p>Vaš NodeBB je <strong>na najnovijoj verziji</strong> <i class=\"fa fa-check\"></i></p>",
-	"upgrade-available": "<p>Izašla je (v%1) nova verzija NodeBB.Razmotrite <a href=\"https://docs.nodebb.org/en/latest/upgrading/index.html\">nadogradnju Vašeg foruma</a>.</p>",
-	"prerelease-upgrade-available": "<p>Ovo je zastarjela verzija NodeBB. Nova verzija (v%1) je izašla.Razmotrite <a href=\"https://docs.nodebb.org/en/latest/upgrading/index.html\">nadogradnju Vašeg NodeBB</a>.</p>\n",
+	"upgrade-available": "<p>A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\">upgrading your NodeBB</a>.</p>",
+	"prerelease-upgrade-available": "<p>This is an outdated pre-release version of NodeBB. A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\">upgrading your NodeBB</a>.</p>",
 	"prerelease-warning": "<p>Ovo je <strong>pre-release</strong> verzija NodeBB. Nenamjerne greške su moguće. <i class=\"fa fa-exclamation-triangle\"></i></p>",
 	"running-in-development": "<span>Forum je u razvojnom stanju. Forum bi mogao biti otvoren za napade; Molimo kontaktirajte vašeg sistemskog administratora</span>",
 

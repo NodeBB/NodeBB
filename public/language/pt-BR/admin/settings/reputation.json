@@ -2,7 +2,7 @@
 	"reputation": "Configurações de Reputação",
 	"disable": "Desabilitar o Sistema de Reputação",
 	"disable-down-voting": "Desabilitar Baixo Votar",
-	"votes-are-public": "All Votes Are Public",
+	"votes-are-public": "Todos os Votos São Públicos",
 	"thresholds": "Limiares de Atividade",
 	"min-rep-downvote": "Reputação mínima para votar negativamente em posts",
 	"min-rep-flag": "Reputação mínima para sinalizar posts"

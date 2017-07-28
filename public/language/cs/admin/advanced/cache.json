@@ -1,11 +1,11 @@
 {
-	"post-cache": "Post Cache",
-	"posts-in-cache": "Posts in Cache",
-	"average-post-size": "Average Post Size",
-	"length-to-max": "Length / Max",
-	"percent-full": "%1% Full",
-	"post-cache-size": "Post Cache Size",
-	"items-in-cache": "Items in Cache",
-	"control-panel": "Control Panel",
-	"update-settings": "Update Cache Settings"
+	"post-cache": "Mezipaměť příspěvku",
+	"posts-in-cache": "Příspěvků v mezipaměti",
+	"average-post-size": "Průměrná velikost příspěvku",
+	"length-to-max": "Délka / Maximum",
+	"percent-full": "%1% plný",
+	"post-cache-size": "Velikost mezipaměti příspěvku",
+	"items-in-cache": "Položek v mezipaměti",
+	"control-panel": "Ovládací panel",
+	"update-settings": "Aktualizovat nastavení mezipaměti"
 }

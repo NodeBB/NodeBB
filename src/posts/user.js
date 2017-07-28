@@ -49,6 +49,9 @@ module.exports = function (Posts) {
 					userData.status = user.getStatus(userData);
 					userData.signature = validator.escape(String(userData.signature || ''));
 					userData.fullname = validator.escape(String(userData.fullname || ''));
+					if (parseInt(meta.config.hideFullname, 10) === 1) {
+						userData.fullname = undefined;
+					}
 				});
 
 				async.map(userData, function (userData, next) {

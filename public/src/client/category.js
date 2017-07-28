@@ -16,7 +16,7 @@ define('forum/category', [
 	var Category = {};
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
-		if (data.url && !data.url.startsWith('category/')) {
+		if (!String(data.url).startsWith('category/')) {
 			navigator.disable();
 
 			removeListeners();

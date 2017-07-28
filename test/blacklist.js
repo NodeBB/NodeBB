@@ -1,6 +1,6 @@
 'use strict';
 
-/* global require, after, before*/
+/* global require, after, before */
 
 
 var async = require('async');
