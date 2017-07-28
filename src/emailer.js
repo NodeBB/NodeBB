@@ -31,7 +31,10 @@ Emailer._defaultPayload = {};
 Emailer.registerApp = function (expressApp) {
 	app = expressApp;
 
-	var logo = (!meta.config['brand:emailLogo'].startsWith('http') ? nconf.get('url') : '') + meta.config['brand:emailLogo'];
+	var logo = null;
+	if (meta.configs.hasOwnProperty('brand:emailLogo')) {
+		logo = (!meta.config['brand:emailLogo'].startsWith('http') ? nconf.get('url') : '') + meta.config['brand:emailLogo'];
+	}
 
 	Emailer._defaultPayload = {
 		url: nconf.get('url'),
