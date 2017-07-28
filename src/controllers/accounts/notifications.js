@@ -75,6 +75,17 @@ notificationsController.get = function (req, res, next) {
 
 			user.notifications.getNotifications(nids, req.uid, next);
 		},
+		function (notifications, next) {
+			plugins.fireHook('filter:notifications.get', {
+				notifications: notifications,
+			}, function (err, data) {
+				if (err) {
+					return next(err);
+				}
+
+				next(null, data.notifications);
+			});
+		},
 		function (notifications) {
 			res.render('notifications', {
 				notifications: notifications,
