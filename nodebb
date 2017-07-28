@@ -308,7 +308,7 @@ var commands = {
 			process.stdout.write('  "' + './nodebb restart'.yellow + '" to restart NodeBB\n\n'.reset);
 
 			// Spawn a new NodeBB process
-			cproc.fork(loaderPath, {
+			cproc.fork(loaderPath, process.argv.slice(3), {
 				env: process.env,
 			});
 		},
