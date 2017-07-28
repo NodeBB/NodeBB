@@ -50,7 +50,7 @@ Tags.parse = function (req, data, meta, link, callback) {
 				});
 			}
 
-			plugins.fireHook('filter:meta.getMetaTags', { req: req, data: data, defaultTags: defaultTags }, next);
+			plugins.fireHook('filter:meta.getMetaTags', { req: req, data: data, tags: defaultTags }, next);
 		},
 		links: function (next) {
 			var defaultLinks = [{
@@ -101,14 +101,14 @@ Tags.parse = function (req, data, meta, link, callback) {
 					href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-192.png',
 				});
 			}
-			plugins.fireHook('filter:meta.getLinkTags', { req: req, data: data, defaultLinks: defaultLinks }, next);
+			plugins.fireHook('filter:meta.getLinkTags', { req: req, data: data, links: defaultLinks }, next);
 		},
 	}, function (err, results) {
 		if (err) {
 			return callback(err);
 		}
 
-		meta = results.tags.defaultTags.concat(meta || []).map(function (tag) {
+		meta = results.tags.tags.concat(meta || []).map(function (tag) {
 			if (!tag || typeof tag.content !== 'string') {
 				winston.warn('Invalid meta tag. ', tag);
 				return tag;
@@ -139,7 +139,7 @@ Tags.parse = function (req, data, meta, link, callback) {
 			addIfNotExists(meta, 'property', 'og:image:height', 200);
 		}
 
-		link = results.links.defaultLinks.concat(link || []);
+		link = results.links.links.concat(link || []);
 
 		callback(null, {
 			meta: meta,
