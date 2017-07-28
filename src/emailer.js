@@ -32,10 +32,8 @@ Emailer.registerApp = function (expressApp) {
 	app = expressApp;
 
 	var logo = null;
-	if (meta.configs.hasOwnProperty('brand:emailLogo')) {
-		logo = nconf.get('url') + meta.configs['brand:emailLogo'];
-	} else if (meta.config.hasOwnProperty('brand:logo')) {
-		logo = nconf.get('url') + meta.config['brand:logo'].replace('.png', '-x50.png');
+	if (meta.config.hasOwnProperty('brand:emailLogo')) {
+		logo = nconf.get('url') + meta.config['brand:emailLogo'];
 	}
 
 	Emailer._defaultPayload = {
@@ -67,6 +65,7 @@ Emailer.registerApp = function (expressApp) {
 	// Update default payload if new logo is uploaded
 	pubsub.on('config:update', function (config) {
 		if (config) {
+			Emailer._defaultPayload.logo.src = config['brand:emailLogo'];
 			Emailer._defaultPayload.logo.height = config['brand:emailLogo:height'];
 			Emailer._defaultPayload.logo.width = config['brand:emailLogo:width'];
 		}

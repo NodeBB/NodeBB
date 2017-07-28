@@ -150,12 +150,15 @@ function uploadImage(filename, folder, uploadedFile, req, res, next) {
 			// Post-processing for site-logo
 			if (path.basename(filename, path.extname(filename)) === 'site-logo' && folder === 'system') {
 				var uploadPath = path.join(nconf.get('upload_path'), folder, 'site-logo-x50.png');
-				image.resizeImage({
-					path: uploadedFile.path,
-					target: uploadPath,
-					extension: 'png',
-					height: 50,
-				}, function (err) {
+				async.series([
+					async.apply(image.resizeImage, {
+						path: uploadedFile.path,
+						target: uploadPath,
+						extension: 'png',
+						height: 50,
+					}),
+					async.apply(meta.configs.set, 'brand:emailLogo', path.join(nconf.get('upload_url'), 'system/site-logo-x50.png'))
+				], function (err) {
 					next(err, imageData);
 				});
 			} else {
