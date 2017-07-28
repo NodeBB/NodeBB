@@ -1,11 +1,11 @@
 {
-	"post-cache": "Post Cache",
-	"posts-in-cache": "Posts in Cache",
-	"average-post-size": "Average Post Size",
-	"length-to-max": "Length / Max",
-	"percent-full": "%1% Full",
-	"post-cache-size": "Post Cache Size",
-	"items-in-cache": "Items in Cache",
-	"control-panel": "Control Panel",
-	"update-settings": "Update Cache Settings"
+	"post-cache": "Bejegyzés Gyorsítótár",
+	"posts-in-cache": "Bejegyzések a Gyorsítótárban",
+	"average-post-size": "Átlagos Bejegyzés Méret",
+	"length-to-max": "Hossz / Max",
+	"percent-full": "%1% Tele",
+	"post-cache-size": "Bejegyzés Gyorsítótár Mérete",
+	"items-in-cache": "Elemek a Gyorsítótárban",
+	"control-panel": "Kezelőpanel",
+	"update-settings": "Gyorsítótár Beállítások Frissítése"
 }
