@@ -42,7 +42,7 @@ define('forum/groups/memberlist', ['components', 'forum/infinitescroll'], functi
 			var $this = $(this);
 			var bottom = ($this[0].scrollHeight - $this.innerHeight()) * 0.9;
 
-			if ($this.scrollTop() > bottom) {
+			if ($this.scrollTop() > bottom && !$('[component="groups/members/search"]').val()) {
 				loadMoreMembers();
 			}
 		});
@@ -86,7 +86,7 @@ define('forum/groups/memberlist', ['components', 'forum/infinitescroll'], functi
 	}
 
 	function parseAndTranslate(users, callback) {
-		app.parseAndTranslate(templateName, 'members', {
+		app.parseAndTranslate(templateName, 'group.members', {
 			group: {
 				members: users,
 				isOwner: ajaxify.data.group.isOwner,
