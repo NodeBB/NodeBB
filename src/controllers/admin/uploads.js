@@ -157,7 +157,7 @@ function uploadImage(filename, folder, uploadedFile, req, res, next) {
 						extension: 'png',
 						height: 50,
 					}),
-					async.apply(meta.configs.set, 'brand:emailLogo', path.join(nconf.get('upload_url'), 'system/site-logo-x50.png'))
+					async.apply(meta.configs.set, 'brand:emailLogo', path.join(nconf.get('upload_url'), 'system/site-logo-x50.png')),
 				], function (err) {
 					next(err, imageData);
 				});
