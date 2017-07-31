@@ -93,7 +93,8 @@ function searchInContent(data, callback) {
 				pids: pids,
 			}, next);
 		},
-		function (metadata, next) {
+		function (_metadata, next) {
+			metadata = _metadata;
 			matchCount = metadata.pids.length;
 			if (data.page) {
 				var start = Math.max(0, (data.page - 1)) * 10;
