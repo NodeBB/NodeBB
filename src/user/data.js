@@ -168,6 +168,11 @@ module.exports = function (User) {
 			if (user.hasOwnProperty('lastonline')) {
 				user.lastonlineISO = utils.toISOString(user.lastonline) || user.joindateISO;
 			}
+
+			if (user.hasOwnProperty('banned:expire')) {
+				user.banned_until = parseInt(user['banned:expire'], 10) || 0;
+				user.banned_until_readable = user.banned_until ? new Date(user.banned_until).toString() : 'Not Banned';
+			}
 		});
 
 		plugins.fireHook('filter:users.get', users, callback);

@@ -88,11 +88,6 @@ User.getUsersWithFields = function (uids, fields, uid, callback) {
 						user.banned = parseInt(user.banned, 10) === 1;
 					}
 
-					if (user.hasOwnProperty('banned:expire')) {
-						user.banned_until = parseInt(user['banned:expire'], 10) || 0;
-						user.banned_until_readable = user.banned_until ? new Date(user.banned_until).toString() : 'Not Banned';
-					}
-
 					if (user.hasOwnProperty(['email:confirmed'])) {
 						user['email:confirmed'] = parseInt(user['email:confirmed'], 10) === 1;
 					}
