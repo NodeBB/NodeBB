@@ -32,9 +32,9 @@
     "notif.post.unsub.info": "Toto upozornění na příspěvek vám bylo odesláno na základě vašeho nastavení odběru.",
     "test.text1": "Tento testovací e-mail slouží k ověření, že je e-mailer správně nastaven pro práci s NodeBB.",
     "unsub.cta": "Chcete-li změnit tyto nastavení, klikněte zde.",
-    "banned.subject": "Byl jste zabanován od %1",
-    "banned.text1": "Uživatel %1 byl zabanován od %2",
-    "banned.text2": "Ban bude trvat do %1",
-    "banned.text3": "Toto je důvod, proč jste byl zabanován:",
+    "banned.subject": "Byl jste zablokován od %1",
+    "banned.text1": "Uživatel %1 byl zablokován od %2",
+    "banned.text2": "Blokace bude trvat do %1",
+    "banned.text3": "Toto je důvod, proč jste byl zablokován:",
     "closing": "Díky."
 }

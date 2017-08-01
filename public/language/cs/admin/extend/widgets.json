@@ -1,19 +1,19 @@
 {
-	"available": "Available Widgets",
-	"explanation": "Select a widget from the dropdown menu and then drag and drop it into a template's widget area on the left.",
-	"none-installed": "No widgets found! Activate the essential widgets plugin in the <a href=\"%1\">plugins</a> control panel.",
-	"containers.available": "Available Containers",
-	"containers.explanation": "Drag and drop on top of any active widget",
-	"containers.none": "None",
+	"available": "Dostupné miniaplikace",
+	"explanation": "Vyberte si miniaplikaci z vysouvací nabídky a přetáhněte ji do oblasti šablony miniaplikace nalevo.",
+	"none-installed": "Nebyly nalezeny žádné miniaplikace. Aktivujte rozšíření základních miniaplikací v ovládacím panelu <a href=\"%1\">Rozšíření</a>.",
+	"containers.available": "Dostupné moduly",
+	"containers.explanation": "Přetáhněte na jakoukoliv aktivní miniaplikaci",
+	"containers.none": "Nic",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
 	"container.panel": "Panel",
-	"container.panel-header": "Panel Header",
-	"container.panel-body": "Panel Body",
-	"container.alert": "Alert",
+	"container.panel-header": "Hlavička panelu",
+	"container.panel-body": "Tělo panelu",
+	"container.alert": "Upozornění",
 
-	"alert.confirm-delete": "Are you sure you wish to delete this widget?",
-	"alert.updated": "Widgets Updated",
-	"alert.update-success": "Successfully updated widgets"
+	"alert.confirm-delete": "Jste si jist/a, že chcete smazat tuto miniaplikaci?",
+	"alert.updated": "Miniaplikace byly aktualizovány",
+	"alert.update-success": "Miniaplikace byly úspěšně aktualizovány"
 
 }
