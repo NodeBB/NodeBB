@@ -166,7 +166,13 @@ module.exports = function (middleware) {
 					return next();
 				}
 
-				req.session.returnTo = req.path.replace(/^\/api/, '');
+				var returnTo = req.path;
+				if (nconf.get('relative_path')) {
+					returnTo = req.path.replace(new RegExp('^' + nconf.get('relative_path')), '');
+				}
+				returnTo = returnTo.replace(/^\/api/, '');
+
+				req.session.returnTo = nconf.get('relative_path') + returnTo;
 				req.session.forceLogin = 1;
 				if (res.locals.isAPI) {
 					res.status(401).json({});
