@@ -110,6 +110,12 @@ modsController.flags.detail = function (req, res, next) {
 			return next(new Error('[[error:no-privileges]]'));
 		}
 
+		if (results.flagData.type === 'user') {
+			results.flagData.type_path = 'uid';
+		} else if (results.flagData.type === 'post') {
+			results.flagData.type_path = 'post';
+		}
+
 		res.render('flags/detail', Object.assign(results.flagData, {
 			assignees: results.assignees,
 			type_bool: ['post', 'user', 'empty'].reduce(function (memo, cur) {
