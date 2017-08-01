@@ -1,7 +1,8 @@
 'use strict';
 
-module.exports = function () {
-	var debugArg = process.execArgv.find(function (arg) {
+module.exports = function (execArgv) {
+	execArgv = execArgv || process.execArgv;
+	var debugArg = execArgv.find(function (arg) {
 		return /^--(debug|inspect)/.test(arg);
 	});
 	if (global.v8debug || debugArg) {
@@ -11,5 +12,5 @@ module.exports = function () {
 		return { execArgv: [debugArg[0] + '=' + num, '--nolazy'] };
 	}
 
-	return { execArgv: []	};
+	return { execArgv: [] };
 };
