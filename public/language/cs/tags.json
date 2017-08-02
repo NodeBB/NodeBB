@@ -1,7 +1,7 @@
 {
-    "no_tag_topics": "Není zde žádné téma s tímto tagem.",
-    "tags": "Tagy",
-    "enter_tags_here": "Zde vložte tagy, každý o délce %1 až %2 znaků.",
-    "enter_tags_here_short": "Zadejte tagy…",
-    "no_tags": "Zatím tu není žádný tag."
+    "no_tag_topics": "Není zde žádné téma s touto značkou.",
+    "tags": "Značky",
+    "enter_tags_here": "Zde vložte značky, každý o délce %1 až %2 znaků.",
+    "enter_tags_here_short": "Zadejte značky…",
+    "no_tags": "Zatím tu není žádná značka."
 }
