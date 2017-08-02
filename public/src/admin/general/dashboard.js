@@ -232,6 +232,9 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 							},
 						}],
 					},
+					tooltips: {
+						mode: 'x',
+					},
 				},
 			});
 
