@@ -7,7 +7,10 @@ define('forum/footer', ['notifications', 'chat', 'components', 'translator'], fu
 	translator.prepareDOM();
 
 	function updateUnreadTopicCount(url, count) {
-		$('a[href="' + config.relative_path + url + '"] i')
+		if (!utils.isNumber(count)) {
+			return;
+		}
+		$('#header-menu a[href="' + config.relative_path + url + '"] i')
 			.toggleClass('unread-count', count > 0)
 			.attr('data-content', count > 99 ? '99+' : count);
 	}
@@ -35,7 +38,8 @@ define('forum/footer', ['notifications', 'chat', 'components', 'translator'], fu
 
 		function increaseUnreadCount() {
 			var count = parseInt($('#unread-count i').attr('data-content'), 10) + 1;
-			updateUnreadTopicCount(count);
+
+			updateUnreadTopicCount('/unread', count);
 		}
 
 		function markTopicsUnread(tid) {
