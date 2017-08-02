@@ -10,7 +10,7 @@ define('forum/footer', ['notifications', 'chat', 'components', 'translator'], fu
 		if (!utils.isNumber(count)) {
 			return;
 		}
-		$('#header-menu a[href="' + config.relative_path + url + '"] i')
+		$('a[href="' + config.relative_path + url + '"] i')
 			.toggleClass('unread-count', count > 0)
 			.attr('data-content', count > 99 ? '99+' : count);
 	}
