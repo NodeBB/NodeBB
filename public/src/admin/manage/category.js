@@ -37,6 +37,7 @@ define('admin/manage/category', [
 			});
 		}
 
+		handleTags();
 
 		$('#category-settings input, #category-settings select').not($('.privilege-table-container input'))
 			.on('change', function (ev) {
@@ -169,8 +170,6 @@ define('admin/manage/category', [
 		});
 
 		Category.setupPrivilegeTable();
-
-		handleTags();
 	};
 
 	function modified(el) {
@@ -202,6 +201,7 @@ define('admin/manage/category', [
 		ajaxify.data.category.tagWhitelist.forEach(function (tag) {
 			tagEl.tagsinput('add', tag);
 		});
+
 		tagEl.on('itemAdded itemRemoved', function () {
 			modified(tagEl);
 		});

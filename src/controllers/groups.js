@@ -98,21 +98,18 @@ groupsController.details = function (req, res, callback) {
 				},
 			}, next);
 		},
-	], function (err, results) {
-		if (err) {
-			return callback(err);
-		}
+		function (results) {
+			if (!results.group) {
+				return callback();
+			}
+			results.group.isOwner = results.group.isOwner || results.isAdmin || (results.isGlobalMod && !results.group.system);
+			results.title = '[[pages:group, ' + results.group.displayName + ']]';
+			results.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[pages:groups]]', url: '/groups' }, { text: results.group.displayName }]);
+			results.allowPrivateGroups = parseInt(meta.config.allowPrivateGroups, 10) === 1;
 
-		if (!results.group) {
-			return callback();
-		}
-		results.group.isOwner = results.group.isOwner || results.isAdmin || (results.isGlobalMod && !results.group.system);
-		results.title = '[[pages:group, ' + results.group.displayName + ']]';
-		results.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[pages:groups]]', url: '/groups' }, { text: results.group.displayName }]);
-		results.allowPrivateGroups = parseInt(meta.config.allowPrivateGroups, 10) === 1;
-
-		res.render('groups/details', results);
-	});
+			res.render('groups/details', results);
+		},
+	], callback);
 };
 
 groupsController.members = function (req, res, callback) {
@@ -139,24 +136,21 @@ groupsController.members = function (req, res, callback) {
 
 			user.getUsersFromSet('group:' + groupName + ':members', req.uid, 0, 49, next);
 		},
-	], function (err, users) {
-		if (err) {
-			return callback(err);
-		}
+		function (users) {
+			var breadcrumbs = helpers.buildBreadcrumbs([
+				{ text: '[[pages:groups]]', url: '/groups' },
+				{ text: validator.escape(String(groupName)), url: '/groups/' + req.params.slug },
+				{ text: '[[groups:details.members]]' },
+			]);
 
-		var breadcrumbs = helpers.buildBreadcrumbs([
-			{ text: '[[pages:groups]]', url: '/groups' },
-			{ text: validator.escape(String(groupName)), url: '/groups/' + req.params.slug },
-			{ text: '[[groups:details.members]]' },
-		]);
-
-		res.render('groups/members', {
-			users: users,
-			nextStart: 50,
-			loadmore_display: users.length > 50 ? 'block' : 'hide',
-			breadcrumbs: breadcrumbs,
-		});
-	});
+			res.render('groups/members', {
+				users: users,
+				nextStart: 50,
+				loadmore_display: users.length > 50 ? 'block' : 'hide',
+				breadcrumbs: breadcrumbs,
+			});
+		},
+	], callback);
 };
 
 groupsController.uploadCover = function (req, res, next) {
