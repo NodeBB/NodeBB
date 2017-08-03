@@ -90,6 +90,7 @@
     "socket.io-client": "2.0.1",
     "socket.io-redis": "5.0.1",
     "socketio-wildcard": "2.0.0",
+    "spdx-license-list": "^3.0.1",
     "string": "^3.0.0",
     "templates.js": "0.3.11",
     "toobusy-js": "^0.5.1",
