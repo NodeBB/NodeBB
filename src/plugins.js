@@ -265,6 +265,7 @@ Plugins.normalise = function (apiReturn, callback) {
 			pluginMap[plugin.id].active = plugin.active;
 			pluginMap[plugin.id].version = plugin.version;
 			pluginMap[plugin.id].settingsRoute = plugin.settingsRoute;
+			pluginMap[plugin.id].license = plugin.license;
 
 			// If package.json defines a version to use, stick to that
 			if (dependencies.hasOwnProperty(plugin.id) && semver.valid(dependencies[plugin.id])) {

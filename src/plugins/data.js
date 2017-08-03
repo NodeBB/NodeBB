@@ -55,6 +55,7 @@ function loadPluginInfo(pluginPath, callback) {
 			pluginData.repository = packageData.repository;
 			pluginData.nbbpm = packageData.nbbpm;
 			pluginData.path = pluginPath;
+			pluginData.license = packageData.license;
 		} catch (err) {
 			var pluginDir = path.basename(pluginPath);
 
