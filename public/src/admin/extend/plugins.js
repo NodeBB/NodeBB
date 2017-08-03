@@ -23,7 +23,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 			var btn = $('#' + pluginID + ' [data-action="toggleActive"]');
 			var pluginData = ajaxify.data.installed[pluginEl.attr('data-plugin-index')];
 
-			function toggleActivate () {
+			function toggleActivate() {
 				socket.emit('admin.plugins.toggleActive', pluginID, function (err, status) {
 					if (err) {
 						return app.alertError(err);
@@ -58,7 +58,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 
 			if (pluginData.license && pluginData.active !== true) {
 				templates.parse('admin/partials/plugins/license', pluginData, function (html) {
-					var modal = bootbox.dialog({
+					bootbox.dialog({
 						title: '[[admin/extend/plugins:license.title]]',
 						message: html,
 						size: 'large',
@@ -71,7 +71,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 								label: '[[modules:bootbox.confirm]]',
 								className: 'btn-primary',
 								callback: toggleActivate,
-							}
+							},
 						},
 					});
 				});
