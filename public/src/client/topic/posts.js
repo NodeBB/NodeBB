@@ -102,6 +102,10 @@ define('forum/topic/posts', [
 			return;
 		}
 
+		if (!isPreviousPostAdded && data.posts[0].selfPost) {
+			return ajaxify.go('post/' + data.posts[0].pid);
+		}
+
 		createNewPosts(data, components.get('post').not('[data-index=0]'), direction, function (html) {
 			if (html) {
 				html.addClass('new');
