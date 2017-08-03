@@ -42,7 +42,7 @@ define('forum/footer', ['notifications', 'chat', 'components', 'translator'], fu
 			var unreadTopicCount = parseInt($('a[href="' + config.relative_path + '/unread"].navigation-link i').attr('data-content'), 10) + 1;
 			updateUnreadTopicCount('/unread', unreadTopicCount);
 
-			var isNewTopic = post.isMain && parseInt(post.uid, 10) !== parseInt(app.user.uid);
+			var isNewTopic = post.isMain && parseInt(post.uid, 10) !== parseInt(app.user.uid, 10);
 			if (isNewTopic) {
 				var unreadNewTopicCount = parseInt($('a[href="' + config.relative_path + '/unread/new"].navigation-link i').attr('data-content'), 10) + 1;
 				updateUnreadTopicCount('/unread/new', unreadNewTopicCount);
