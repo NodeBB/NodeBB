@@ -40,7 +40,7 @@ try {
 	process.stdout.write(
 		'\x1b[31mNodeBB could not be initialised because there was an error while loading dependencies.\n' +
 		'Please run "\x1b[33mnpm install --production\x1b[31m" and try again.\x1b[0m\n\n' +
-		'For more information, please see: https://docs.nodebb.org/en/latest/installing/os.html\n\n'
+		'For more information, please see: https://docs.nodebb.org/installing/os/\n\n'
 	);
 
 	throw e;
