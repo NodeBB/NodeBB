@@ -10,7 +10,7 @@ define('forum/footer', ['notifications', 'chat', 'components', 'translator'], fu
 		if (!utils.isNumber(count)) {
 			return;
 		}
-		$('a[href="' + config.relative_path + url + '"] i')
+		$('a[href="' + config.relative_path + url + '"].navigation-link i')
 			.toggleClass('unread-count', count > 0)
 			.attr('data-content', count > 99 ? '99+' : count);
 	}
@@ -29,17 +29,33 @@ define('forum/footer', ['notifications', 'chat', 'components', 'translator'], fu
 				var post = data.posts[0];
 
 				if (parseInt(post.uid, 10) !== parseInt(app.user.uid, 10) && !unreadTopics[post.topic.tid]) {
-					increaseUnreadCount();
+					increaseUnreadCount(data);
 					markTopicsUnread(post.topic.tid);
 					unreadTopics[post.topic.tid] = true;
 				}
 			}
 		}
 
-		function increaseUnreadCount() {
-			var count = parseInt($('#unread-count i').attr('data-content'), 10) + 1;
+		function increaseUnreadCount(data) {
+			var post = data.posts[0];
 
-			updateUnreadTopicCount('/unread', count);
+			var unreadTopicCount = parseInt($('a[href="' + config.relative_path + '/unread"].navigation-link i').attr('data-content'), 10) + 1;
+			updateUnreadTopicCount('/unread', unreadTopicCount);
+
+			var isNewTopic = post.isMain && parseInt(post.uid, 10) !== parseInt(app.user.uid);
+			if (isNewTopic) {
+				var unreadNewTopicCount = parseInt($('a[href="' + config.relative_path + '/unread/new"].navigation-link i').attr('data-content'), 10) + 1;
+				updateUnreadTopicCount('/unread/new', unreadNewTopicCount);
+			}
+			socket.emit('topics.isFollowed', post.topic.tid, function (err, isFollowed) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				if (isFollowed) {
+					var unreadWatchedTopicCount = parseInt($('a[href="' + config.relative_path + '/unread/watched"].navigation-link i').attr('data-content'), 10) + 1;
+					updateUnreadTopicCount('/unread/watched', unreadWatchedTopicCount);
+				}
+			});
 		}
 
 		function markTopicsUnread(tid) {
