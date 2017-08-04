@@ -119,8 +119,12 @@ function launch(req, res) {
 	process.stdout.write('    "./nodebb restart" to restart NodeBB\n');
 
 	async.parallel([
-		async.apply(fs.unlink(path.join(__dirname, '../public/installer.css'))),
-		async.apply(fs.unlink(path.join(__dirname, '../public/installer.min.js'))),
+		function (next) {
+			fs.unlink(path.join(__dirname, '../public/installer.css'), next);
+		},
+		function (next) {
+			fs.unlink(path.join(__dirname, '../public/installer.min.js'), next);
+		},
 	], function (err) {
 		if (err) {
 			winston.warn('Unable to remove installer files');
