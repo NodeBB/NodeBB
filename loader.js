@@ -168,6 +168,9 @@ Loader.restart = function () {
 		nconf.set('url', conf.url);
 		nconf.stores.env.readOnly = true;
 
+		if (process.env.url !== conf.url) {
+			process.env.url = conf.url;
+		}
 		Loader.start();
 	});
 };

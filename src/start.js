@@ -104,7 +104,7 @@ function setupConfigs() {
 
 function printStartupInfo() {
 	if (nconf.get('isPrimary') === 'true') {
-		winston.info('Initializing NodeBB v%s', nconf.get('version'));
+		winston.info('Initializing NodeBB v%s %s', nconf.get('version'), nconf.get('url'));
 
 		var host = nconf.get(nconf.get('database') + ':host');
 		var storeLocation = host ? 'at ' + host + (host.indexOf('/') === -1 ? ':' + nconf.get(nconf.get('database') + ':port') : '') : '';
