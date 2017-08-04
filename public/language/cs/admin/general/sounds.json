@@ -1,9 +1,9 @@
 {
-	"notifications": "Notifications",
-	"chat-messages": "Chat Messages",
-	"play-sound": "Play",
-	"incoming-message": "Incoming Message",
-	"outgoing-message": "Outgoing Message",
-	"upload-new-sound": "Upload New Sound",
-	"saved": "Settings Saved"
+	"notifications": "Upozornění",
+	"chat-messages": "Zprávy konverzace",
+	"play-sound": "Přehrát",
+	"incoming-message": "Příchozí zpráva",
+	"outgoing-message": "Odchozí zpráva",
+	"upload-new-sound": "Nahrát nový zvuk",
+	"saved": "Nastavení bylo uloženo"
 }

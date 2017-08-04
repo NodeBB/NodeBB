@@ -1,27 +1,27 @@
 {
-	"icon": "Icon:",
-	"change-icon": "change",
-	"route": "Route:",
-	"tooltip": "Tooltip:",
+	"icon": "Ikona:",
+	"change-icon": "změnit",
+	"route": "Cesta:",
+	"tooltip": "Tip:",
 	"text": "Text:",
-	"text-class": "Text Class: <small>optional</small>",
-	"id": "ID: <small>optional</small>",
+	"text-class": "Textová třída: <small>doporučené</small>",
+	"id": "ID: <small>doporučené</small>",
 
-	"properties": "Properties:",
-	"only-admins": "Only display to Admins",
-	"only-global-mods-and-admins": "Only display to Global Moderators and Admins",
-	"only-logged-in": "Only display to logged in users",
-	"open-new-window": "Open in a new window",
+	"properties": "Vlastnosti:",
+	"only-admins": "Zobrazuje se jen správci",
+	"only-global-mods-and-admins": "Zobrazuje se jen hlavním moderátorům a správcům",
+	"only-logged-in": "Zobrazuje se jen přihlášeným uživatelům",
+	"open-new-window": "Otevřít v novém okně",
 
-	"installed-plugins-required": "Installed Plugins Required:",
-	"search-plugin": "Search plugin",
+	"installed-plugins-required": "Vyžadovaná nainstalovaná rozšíření:",
+	"search-plugin": "Hledat rozšíření",
 
-	"btn.delete": "Delete",
-	"btn.disable": "Disable",
-	"btn.enable": "Enable",
+	"btn.delete": "Odstranit",
+	"btn.disable": "Zakázat",
+	"btn.enable": "Povolit",
 
-	"available-menu-items": "Available Menu Items",
-	"custom-route": "Custom Route",
-	"core": "core",
-	"plugin": "plugin"
+	"available-menu-items": "Dostupné položky nabídky",
+	"custom-route": "Upravit cestu",
+	"core": "jádro",
+	"plugin": "rozšíření"
 }
