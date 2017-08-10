@@ -375,17 +375,19 @@ define('forum/chats', [
 
 	Chats.resizeMainWindow = function () {
 		var messagesList = $('.expanded-chat .chat-content');
+		var searchHeight = $('.chat-search').height();
+		var searchListHeight = $('[component="chat/search/list"]').outerHeight(true) - $('[component="chat/search/list"]').height();
+		var fromTop = components.get('chat/recent').offset().top;
 
 		if (messagesList.length) {
 			var margin = $('.expanded-chat ul').outerHeight(true) - $('.expanded-chat ul').height();
 			var inputHeight = $('.chat-input').outerHeight(true);
-			var fromTop = messagesList.offset().top;
-			var searchHeight = $('.chat-search').height();
-			var searchListHeight = $('[component="chat/search/list"]').outerHeight(true) - $('[component="chat/search/list"]').height();
 
 			messagesList.height($(window).height() - (fromTop + inputHeight + (margin * 4)));
 			components.get('chat/recent').height($('.expanded-chat').height() - (searchHeight + searchListHeight));
 			$('[component="chat/search/list"]').css('max-height', (components.get('chat/recent').height() / 2) + 'px');
+		} else {
+			components.get('chat/recent').height($(window).height() - (fromTop + searchHeight + searchListHeight));
 		}
 
 		Chats.setActive();
