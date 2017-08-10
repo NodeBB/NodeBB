@@ -22,6 +22,8 @@ define('forum/chats', [
 			Chats.addSocketListeners();
 			Chats.addGlobalEventListeners();
 		}
+		
+		recentChats.init();
 
 		Chats.addEventListeners();
 		Chats.createTagsInput($('[component="chat/messages"] .users-tag-input'), ajaxify.data);
@@ -48,20 +50,6 @@ define('forum/chats', [
 	};
 
 	Chats.addEventListeners = function () {
-		$('[component="chat/recent"]').on('click', '[component="chat/leave"]', function () {
-			Chats.leave($(this).parents('[data-roomid]'));
-			return false;
-		});
-
-		$('[component="chat/recent"]').on('click', '[component="chat/recent/room"]', function () {
-			var env = utils.findBootstrapEnvironment();
-			if (env === 'xs' || env === 'sm') {
-				app.openChat($(this).attr('data-roomid'));
-			} else {
-				Chats.switchChat($(this).attr('data-roomid'));
-			}
-		});
-
 		Chats.addSendHandlers(ajaxify.data.roomId, $('.chat-input'), $('.expanded-chat button[data-action="send"]'));
 
 		$('[data-action="pop-out"]').on('click', function () {
@@ -83,8 +71,6 @@ define('forum/chats', [
 		});
 
 		Chats.addEditDeleteHandler(components.get('chat/messages'), ajaxify.data.roomId);
-
-		recentChats.init();
 
 		Chats.addRenameHandler(ajaxify.data.roomId, $('[component="chat/room/name"]'));
 		Chats.addScrollHandler(ajaxify.data.roomId, ajaxify.data.uid, $('.chat-content'));
@@ -331,7 +317,17 @@ define('forum/chats', [
 					if (response.ok) {
 						response.json().then(function(payload) {
 							app.parseAndTranslate('partials/chats/message-window', payload, function (html) {
-								console.log(html);
+								components.get('chat/main-wrapper').html(html);
+								Chats.resizeMainWindow();
+								ajaxify.data = payload;
+								Chats.setActive();
+								Chats.addEventListeners();
+
+								if (history.pushState) {
+									history.pushState({
+										url: 'user/' + payload.userslug + '/chats/' + payload.roomId,
+									}, null, window.location.protocol + '//' + window.location.host + config.relative_path + '/user/' + payload.userslug + '/chats/' + payload.roomId);
+								}
 							});
 						});
 					} else {
