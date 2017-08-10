@@ -446,15 +446,16 @@ describe('User', function () {
 			});
 		});
 
-		it('.commit() should update the user\'s password', function (done) {
+		it('.commit() should update the user\'s password and confirm their email', function (done) {
 			User.reset.commit(code, 'newpassword', function (err) {
 				assert.ifError(err);
 
-				db.getObjectField('user:' + uid, 'password', function (err, newPassword) {
+				db.getObject('user:' + uid, function (err, userData) {
 					assert.ifError(err);
-					Password.compare('newpassword', newPassword, function (err, match) {
+					Password.compare('newpassword', userData.password, function (err, match) {
 						assert.ifError(err);
 						assert(match);
+						assert.equal(parseInt(userData['email:confirmed'], 10), 1);
 						done();
 					});
 				});
