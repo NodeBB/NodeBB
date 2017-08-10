@@ -54,7 +54,12 @@ define('forum/chats', [
 		});
 
 		$('[component="chat/recent"]').on('click', '[component="chat/recent/room"]', function () {
-			Chats.switchChat($(this).attr('data-roomid'));
+			var env = utils.findBootstrapEnvironment();
+			if (env === 'xs' || env === 'sm') {
+				app.openChat($(this).attr('data-roomid'));
+			} else {
+				Chats.switchChat($(this).attr('data-roomid'));
+			}
 		});
 
 		Chats.addSendHandlers(ajaxify.data.roomId, $('.chat-input'), $('.expanded-chat button[data-action="send"]'));
@@ -319,7 +324,26 @@ define('forum/chats', [
 	};
 
 	Chats.switchChat = function (roomid) {
-		ajaxify.go('user/' + ajaxify.data.userslug + '/chats/' + roomid);
+		var url = 'user/' + ajaxify.data.userslug + '/chats/' + roomid;
+		if (self.fetch) {
+			fetch(config.relative_path + '/api/' + url, { credentials: 'include' })
+				.then(function (response) {
+					if (response.ok) {
+						response.json().then(function(payload) {
+							app.parseAndTranslate('partials/chats/message-window', payload, function (html) {
+								console.log(html);
+							});
+						});
+					} else {
+						console.warn('[search] Received ' + response.status +', query: ' + query);
+					}
+				})
+				.catch(function (error) {
+					console.warn('[search] ' + error.message);
+				});
+		} else {
+			ajaxify.go(url);
+		}
 	};
 
 	Chats.addGlobalEventListeners = function () {
