@@ -42,7 +42,10 @@ web.install = function (port) {
 		extended: true,
 	}));
 
-	async.parallel([compileLess, compileJS], function () {
+	async.parallel([compileLess, compileJS], function (err) {
+		if (err) {
+			winston.error(err);
+		}
 		setupRoutes();
 		launchExpress(port);
 	});
@@ -119,8 +122,12 @@ function launch(req, res) {
 	process.stdout.write('    "./nodebb restart" to restart NodeBB\n');
 
 	async.parallel([
-		async.apply(fs.unlink(path.join(__dirname, '../public/installer.css'))),
-		async.apply(fs.unlink(path.join(__dirname, '../public/installer.min.js'))),
+		function (next) {
+			fs.unlink(path.join(__dirname, '../public/installer.css'), next);
+		},
+		function (next) {
+			fs.unlink(path.join(__dirname, '../public/installer.min.js'), next);
+		},
 	], function (err) {
 		if (err) {
 			winston.warn('Unable to remove installer files');
@@ -148,13 +155,32 @@ function compileLess(callback) {
 }
 
 function compileJS(callback) {
-	var scriptPath = path.join(__dirname, '..');
-	var result = uglify.minify(scripts.map(function (script) {
-		return path.join(scriptPath, script);
-	}));
+	var code = '';
+	async.eachSeries(scripts, function (srcPath, next) {
+		fs.readFile(path.join(__dirname, '..', srcPath), function (err, buffer) {
+			if (err) {
+				return next(err);
+			}
 
-
-	fs.writeFile(path.join(__dirname, '../public/installer.min.js'), result.code, callback);
+			code += buffer.toString();
+			next();
+		});
+	}, function (err) {
+		if (err) {
+			return callback(err);
+		}
+		try {
+			var minified = uglify.minify(code, {
+				compress: false,
+			});
+			if (!minified.code) {
+				return callback(new Error('[[error:failed-to-minify]]'));
+			}
+			fs.writeFile(path.join(__dirname, '../public/installer.min.js'), minified.code, callback);
+		} catch (e) {
+			callback(e);
+		}
+	});
 }
 
 module.exports = web;

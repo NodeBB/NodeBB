@@ -104,6 +104,11 @@ module.exports = function (middleware) {
 							next(null, translated);
 						});
 					},
+					browserTitle: function (next) {
+						translator.translate(controllers.helpers.buildTitle(translator.unescape(data.title)), function (translated) {
+							next(null, translated);
+						});
+					},
 					navigation: async.apply(navigation.get),
 					tags: async.apply(meta.tags.parse, req, data, res.locals.metaTags, res.locals.linkTags),
 					banned: async.apply(user.isBanned, req.uid),
@@ -126,7 +131,7 @@ module.exports = function (middleware) {
 
 				setBootswatchCSS(templateValues, res.locals.config);
 
-				templateValues.browserTitle = controllers.helpers.buildTitle(data.title);
+				templateValues.browserTitle = results.browserTitle;
 				templateValues.navigation = results.navigation;
 				templateValues.metaTags = results.tags.meta;
 				templateValues.linkTags = results.tags.link;

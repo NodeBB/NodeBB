@@ -89,10 +89,13 @@ SocketHelpers.sendNotificationToPostOwner = function (pid, fromuid, command, not
 		},
 		function (_postData, next) {
 			postData = _postData;
-			privileges.posts.can('read', pid, postData.uid, next);
+			async.parallel({
+				canRead: async.apply(privileges.posts.can, 'read', pid, postData.uid),
+				isIgnoring: async.apply(topics.isIgnoring, [postData.tid], postData.uid),
+			}, next);
 		},
-		function (canRead, next) {
-			if (!canRead || !postData.uid || fromuid === parseInt(postData.uid, 10)) {
+		function (results, next) {
+			if (!results.canRead || results.isIgnoring[0] || !postData.uid || fromuid === parseInt(postData.uid, 10)) {
 				return;
 			}
 			async.parallel({

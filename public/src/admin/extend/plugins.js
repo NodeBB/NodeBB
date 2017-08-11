@@ -20,34 +20,65 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 		pluginsList.on('click', 'button[data-action="toggleActive"]', function () {
 			var pluginEl = $(this).parents('li');
 			pluginID = pluginEl.attr('data-plugin-id');
-			var btn = $('[id="' + pluginID + '"] [data-action="toggleActive"]');
-			socket.emit('admin.plugins.toggleActive', pluginID, function (err, status) {
-				if (err) {
-					return app.alertError(err);
-				}
-				translator.translate('<i class="fa fa-power-off"></i> [[admin/extend/plugins:plugin-item.' + (status.active ? 'deactivate' : 'activate') + ']]', function (buttonText) {
-					btn.html(buttonText);
-					btn.toggleClass('btn-warning', status.active).toggleClass('btn-success', !status.active);
+			var btn = $('#' + pluginID + ' [data-action="toggleActive"]');
 
-					// clone it to active plugins tab
-					if (status.active && !$('#active [id="' + pluginID + '"]').length) {
-						$('#active ul').prepend(pluginEl.clone(true));
+			var pluginData = ajaxify.data.installed[pluginEl.attr('data-plugin-index')];
+
+			function toggleActivate() {
+				socket.emit('admin.plugins.toggleActive', pluginID, function (err, status) {
+					if (err) {
+						return app.alertError(err);
 					}
+					translator.translate('<i class="fa fa-power-off"></i> [[admin/extend/plugins:plugin-item.' + (status.active ? 'deactivate' : 'activate') + ']]', function (buttonText) {
+						btn.html(buttonText);
+						btn.toggleClass('btn-warning', status.active).toggleClass('btn-success', !status.active);
 
-					app.alert({
-						alert_id: 'plugin_toggled',
-						title: '[[admin/extend/plugins:alert.' + (status.active ? 'enabled' : 'disabled') + ']]',
-						message: '[[admin/extend/plugins:alert.' + (status.active ? 'activate-success' : 'deactivate-success') + ']]',
-						type: status.active ? 'warning' : 'success',
-						timeout: 5000,
-						clickfn: function () {
-							require(['admin/modules/instance'], function (instance) {
-								instance.restart();
-							});
+						// clone it to active plugins tab
+						if (status.active && !$('#active #' + pluginID).length) {
+							$('#active ul').prepend(pluginEl.clone(true));
+						}
+
+						// Toggle active state in template data
+						pluginData.active = !pluginData.active;
+
+						app.alert({
+							alert_id: 'plugin_toggled',
+							title: '[[admin/extend/plugins:alert.' + (status.active ? 'enabled' : 'disabled') + ']]',
+							message: '[[admin/extend/plugins:alert.' + (status.active ? 'activate-success' : 'deactivate-success') + ']]',
+							type: status.active ? 'warning' : 'success',
+							timeout: 5000,
+							clickfn: function () {
+								require(['admin/modules/instance'], function (instance) {
+									instance.restart();
+								});
+							},
+						});
+					});
+				});
+			}
+
+			if (pluginData.license && pluginData.active !== true) {
+				templates.parse('admin/partials/plugins/license', pluginData, function (html) {
+					bootbox.dialog({
+						title: '[[admin/extend/plugins:license.title]]',
+						message: html,
+						size: 'large',
+						buttons: {
+							cancel: {
+								label: '[[modules:bootbox.cancel]]',
+								className: 'btn-link',
+							},
+							save: {
+								label: '[[modules:bootbox.confirm]]',
+								className: 'btn-primary',
+								callback: toggleActivate,
+							},
 						},
 					});
 				});
-			});
+			} else {
+				toggleActivate(pluginID);
+			}
 		});
 
 		pluginsList.on('click', 'button[data-action="toggleInstall"]', function () {

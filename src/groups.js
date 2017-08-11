@@ -135,7 +135,7 @@ Groups.get = function (groupName, options, callback) {
 		function (_results, next) {
 			results = _results;
 			if (!results.base) {
-				return callback(new Error('[[error:no-group]]'));
+				return callback(null, null);
 			}
 			plugins.fireHook('filter:parse.raw', results.base.description, next);
 		},

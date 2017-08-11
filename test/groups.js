@@ -97,6 +97,14 @@ describe('Groups', function () {
 				done();
 			});
 		});
+
+		it('should return null if group does not exist', function (done) {
+			Groups.get('doesnotexist', {}, function (err, groupObj) {
+				assert.ifError(err);
+				assert.strictEqual(groupObj, null);
+				done();
+			});
+		});
 	});
 
 	describe('.search()', function () {
@@ -375,8 +383,9 @@ describe('Groups', function () {
 			Groups.destroy('foobar?', function (err) {
 				assert.ifError(err);
 
-				Groups.get('foobar?', {}, function (err) {
-					assert(err, 'Group still exists!');
+				Groups.get('foobar?', {}, function (err, groupObj) {
+					assert.ifError(err);
+					assert.strictEqual(groupObj, null);
 
 					done();
 				});

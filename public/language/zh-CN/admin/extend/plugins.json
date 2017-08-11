@@ -12,7 +12,7 @@
 	"reorder-plugins": "重新排序插件",
 	"order-active": "排序生效插件",
 	"dev-interested": "有兴趣为NodeBB开发插件？",
-	"docs-info": "Full documentation regarding plugin authoring can be found in the <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">NodeBB Docs Portal</a>.",
+	"docs-info": "有关插件创作的完整文档可以在 <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">NodeBB 文档</a>中找到。",
 
 	"order.description": "部分插件需要在其它插件启用之后才能完美运作。",
 	"order.explanation": "插件将按照以下顺序载入，从上至下。",

@@ -1,12 +1,12 @@
 {
 	"general": "Általános",
 	"private-groups": "Privát Csoportok",
-	"private-groups.help": "If enabled, joining of groups requires the approval of the group owner <em>(Default: enabled)</em>",
-	"private-groups.warning": "<strong>Beware!</strong> If this option is disabled and you have private groups, they automatically become public.",
-	"allow-creation": "Allow Group Creation",
-	"allow-creation-help": "If enabled, users can create groups <em>(Default: disabled)</em>",
-	"max-name-length": "Maximum Group Name Length",
-	"cover-image": "Group Cover Image",
-	"default-cover": "Default Cover Images",
-	"default-cover-help": "Add comma-separated default cover images for groups that don't have an uploaded cover image"
+	"private-groups.help": "Ha engedélyezve van, a csoporthoz való csatlakozáshoz szükség van a csoport tulajdonosának jóváhagyására <em>(Alapértelmezett: engedélyezve)</em>",
+	"private-groups.warning": "<strong>Vigyázat!</strong> Ha ez a lehetőség le van tiltva, és vannak privát csoportjaid, azok automatikusan nyilvánosak lesznek.",
+	"allow-creation": "Csoport Létrehozás Engedélyezése",
+	"allow-creation-help": "Ha engedélyezve van, a felhasználók létrehozhatnak csoportokat <em>(Alapértelmezett: letiltva)</em>",
+	"max-name-length": "Maximális Csoportnév Hossz",
+	"cover-image": "Csoport Borítókép",
+	"default-cover": "Alapértelmezett Borítóképek",
+	"default-cover-help": "Alapértelmezett borítóképek hozzáadása vesszővel elválasztva olyan csoportokhoz, amelyeknek nincs feltöltött borítóképük."
 }

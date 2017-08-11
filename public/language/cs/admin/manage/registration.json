@@ -1,20 +1,20 @@
 {
-	"queue": "Queue",
-	"description": "There are no users in the registration queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"queue": "Fronta",
+	"description": "V registrační frontě nejsou žádní uživatelé. <br>Pro povolit tuto funkci, přejděte do nabídky <a href=\"%1\">Nastavení &rarr; Uživatel &rarr; Registrace uživatele</a> a nastavte <strong> Typ registrace</strong> na \"Schválení správcem\".",
 
-	"list.name": "Name",
-	"list.email": "Email",
+	"list.name": "Jméno",
+	"list.email": "E-mail",
 	"list.ip": "IP",
-	"list.time": "Time",
-	"list.username-spam": "Frequency: %1 Appears: %2 Confidence: %3",
-	"list.email-spam": "Frequency: %1 Appears: %2",
-	"list.ip-spam": "Frequency: %1 Appears: %2",
+	"list.time": "Čas",
+	"list.username-spam": "Frekvence: %1  zdá se: %2 důvěryhodnost: %3",
+	"list.email-spam": "Frekvence: %1  zdá se: %2",
+	"list.ip-spam": "Frekvence: %1  zdá se: %2",
 
-	"invitations": "Invitations",
-	"invitations.description": "Below is a complete list of invitations sent. Use ctrl-f to search through the list by email or username. <br><br>The username will be displayed to the right of the emails for users who have redeemed their invitations.",
-	"invitations.inviter-username": "Inviter Username",
-	"invitations.invitee-email": "Invitee Email",
-	"invitations.invitee-username": "Invitee Username (if registered)",
+	"invitations": "Pozvání",
+	"invitations.description": "Níže je kompletní seznam odeslaných pozvání. Pro hledání v seznamu pomocí e-mailu nebo jména uživatele, použijte klávesu ctrl+f.<br><br>U uživatelů, kteří využili pozvání, bude uživatelské jméno zobrazeno napravo od e-mailů.",
+	"invitations.inviter-username": "Uživatelské jméno pozvaného",
+	"invitations.invitee-email": "E-mail pozvaného",
+	"invitations.invitee-username": "Uživatelské jméno pozvaného (je-li registrován)",
 
-	"invitations.confirm-delete": "Are you sure you wish to delete this invitation?"
+	"invitations.confirm-delete": "Jste si jist/a, že chcete odstraniti toto pozvání?"
 } 

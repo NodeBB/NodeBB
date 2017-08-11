@@ -275,4 +275,14 @@ describe('meta', function () {
 			});
 		});
 	});
+
+	describe('debug params', function () {
+		it('should return fork arguments for debug', function (done) {
+			var debugParams = require('../src/meta/debugParams');
+			var data = debugParams(['--debug=5858', '--foo=1']);
+			assert.equal(data.execArgv[0], '--debug=5859');
+			assert.equal(data.execArgv[1], '--nolazy');
+			done();
+		});
+	});
 });

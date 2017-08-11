@@ -18,7 +18,14 @@ Settings.getOne = function (hash, field, callback) {
 	db.getObjectField('settings:' + hash, field, callback);
 };
 
-Settings.set = function (hash, values, callback) {
+Settings.set = function (hash, values, quiet, callback) {
+	if (!callback && typeof quiet === 'function') {
+		callback = quiet;
+		quiet = false;
+	} else {
+		quiet = quiet || false;
+	}
+
 	async.waterfall([
 		function (next) {
 			db.setObject('settings:' + hash, values, next);
@@ -29,7 +36,7 @@ Settings.set = function (hash, values, callback) {
 				settings: values,
 			});
 
-			Meta.reloadRequired = true;
+			Meta.reloadRequired = !quiet;
 			next();
 		},
 	], callback);

@@ -15,21 +15,23 @@ module.exports = function (privileges) {
 
 	privileges.categories.list = function (cid, callback) {
 		// Method used in admin/category controller to show all users/groups with privs in that given cid
-
+		var privilegeLabels = privileges.privilegeLabels.slice();
+		var userPrivilegeList = privileges.userPrivilegeList.slice();
+		var groupPrivilegeList = privileges.groupPrivilegeList.slice();
 		async.waterfall([
 			function (next) {
 				async.parallel({
 					labels: function (next) {
 						async.parallel({
-							users: async.apply(plugins.fireHook, 'filter:privileges.list_human', privileges.privilegeLabels),
-							groups: async.apply(plugins.fireHook, 'filter:privileges.groups.list_human', privileges.privilegeLabels),
+							users: async.apply(plugins.fireHook, 'filter:privileges.list_human', privilegeLabels),
+							groups: async.apply(plugins.fireHook, 'filter:privileges.groups.list_human', privilegeLabels),
 						}, next);
 					},
 					users: function (next) {
 						var userPrivileges;
 						var memberSets;
 						async.waterfall([
-							async.apply(plugins.fireHook, 'filter:privileges.list', privileges.userPrivilegeList),
+							async.apply(plugins.fireHook, 'filter:privileges.list', userPrivilegeList),
 							function (_privs, next) {
 								userPrivileges = _privs;
 								groups.getMembersOfGroups(userPrivileges.map(function (privilege) {
@@ -62,7 +64,7 @@ module.exports = function (privileges) {
 					groups: function (next) {
 						var groupPrivileges;
 						async.waterfall([
-							async.apply(plugins.fireHook, 'filter:privileges.groups.list', privileges.groupPrivilegeList),
+							async.apply(plugins.fireHook, 'filter:privileges.groups.list', groupPrivilegeList),
 							function (_privs, next) {
 								groupPrivileges = _privs;
 								async.parallel({

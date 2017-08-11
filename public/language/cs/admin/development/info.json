@@ -1,18 +1,18 @@
 {
-	"you-are-on": "Info - You are on <strong>%1:%2</strong>",
-	"nodes-responded": "%1 nodes responded within %2ms!",
+	"you-are-on": "Informace - jste na <strong>%1%2</strong>",
+	"nodes-responded": "%1 vazeb odpovědělo během %2ms.",
 	"host": "host",
 	"pid": "pid",
 	"nodejs": "nodejs",
-	"online": "online",
+	"online": "připojen",
 	"git": "git",
-	"memory": "memory",
-	"load": "load",
-	"uptime": "uptime",
+	"memory": "paměť",
+	"load": "načíst",
+	"uptime": "čas spuštění",
 
-	"registered": "Registered",
-	"sockets": "Sockets",
-	"guests": "Guests",
+	"registered": "Registrován",
+	"sockets": "Sockety",
+	"guests": "Hosté",
 
-	"info": "Info"
+	"info": "Informace"
 }

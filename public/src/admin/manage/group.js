@@ -21,6 +21,10 @@ define('admin/manage/group', [
 
 		var groupName = ajaxify.data.group.name;
 
+		$('#group-selector').on('change', function () {
+			ajaxify.go('admin/manage/groups/' + $(this).val() + window.location.hash);
+		});
+
 		memberList.init('admin/manage/group');
 
 		changeGroupUserTitle.keyup(function () {

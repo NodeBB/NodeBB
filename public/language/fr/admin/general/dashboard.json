@@ -23,8 +23,8 @@
 	"running-version": "<strong>NodeBB v<span id=\"version\">%1</span></strong> est actuellement installé.",
 	"keep-updated": "Assurez-vous que votre version de NodeBB est à jour pour les derniers patchs de sécurité et correctifs de bugs.",
 	"up-to-date": "<p>Votre version <strong>est à jour</strong> <i class=\"fa fa-check\"></i></p>",
-	"upgrade-available": "<p>A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\">upgrading your NodeBB</a>.</p>",
-	"prerelease-upgrade-available": "<p>This is an outdated pre-release version of NodeBB. A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\">upgrading your NodeBB</a>.</p>",
+	"upgrade-available": "<p>Une nouvelle version (v%1) a été publiée. Merci d’envisager de <a href=\"https://docs.nodebb.org/configuring/upgrade/\">mettre à jour NodeBB</a>.</p>",
+	"prerelease-upgrade-available": "<p>Ceci est une version pre-release obsolète de NodeBB. Une nouvelle version (v%1) a été publiée. Merci d’envisager de <a href=\"https://docs.nodebb.org/configuring/upgrade/\">mettre à jour NodeBB</a>.</p>",
 	"prerelease-warning": "<p>Ceci est une version <strong>préliminaire</strong> de NodeBB. Des bugs inattendus peuvent se produire. <i class=\"fa fa-exclamation-triangle\"></i></p>",
 	"running-in-development": "<span>Le forum est en mode développement. Il peut être sujet à certaines vulnérabilités, veuillez contacter votre administrateur système.</span>",
 

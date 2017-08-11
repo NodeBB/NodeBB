@@ -12,7 +12,7 @@
 	"reorder-plugins": "Re-ordonner les plugins",
 	"order-active": "Trier les plugins actifs",
 	"dev-interested": "Êtes-vous intéressés par l'écriture de plugins pour NodeBB ?",
-	"docs-info": "Full documentation regarding plugin authoring can be found in the <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">NodeBB Docs Portal</a>.",
+	"docs-info": "La documentation complète concernant l’écriture de plugin peut être trouvée sur le<a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">Portail Documentation NodeBB</a>.",
 
 	"order.description": "Certains plugins fonctionnent mieux lorsqu'ils sont initialisés avant/après d'autres plugins.",
 	"order.explanation": "Les plugins se chargent dans l'ordre spécifié, ici de haut en bas.",

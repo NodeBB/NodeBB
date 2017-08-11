@@ -14,6 +14,8 @@
 	"disable-password-changes": "禁用修改密码",
 	"allow-account-deletion": "允许消除帐号",
 	"user-info-private": "使用户信息私有化",
+	"hide-fullname": "隐藏用户的全名",
+	"hide-email": "隐藏用户的邮箱",
 	"themes": "主题",
 	"disable-user-skins": "阻止用户选择自定义皮肤",
 	"account-protection": "帐号保护",
