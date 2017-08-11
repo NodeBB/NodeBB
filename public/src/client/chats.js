@@ -22,7 +22,7 @@ define('forum/chats', [
 			Chats.addSocketListeners();
 			Chats.addGlobalEventListeners();
 		}
-		
+
 		recentChats.init();
 
 		Chats.addEventListeners();
@@ -315,7 +315,7 @@ define('forum/chats', [
 			fetch(config.relative_path + '/api/' + url, { credentials: 'include' })
 				.then(function (response) {
 					if (response.ok) {
-						response.json().then(function(payload) {
+						response.json().then(function (payload) {
 							app.parseAndTranslate('partials/chats/message-window', payload, function (html) {
 								components.get('chat/main-wrapper').html(html);
 								Chats.resizeMainWindow();
@@ -331,7 +331,7 @@ define('forum/chats', [
 							});
 						});
 					} else {
-						console.warn('[search] Received ' + response.status +', query: ' + query);
+						console.warn('[search] Received ' + response.status);
 					}
 				})
 				.catch(function (error) {
