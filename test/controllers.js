@@ -1232,11 +1232,31 @@ describe('Controllers', function () {
 	});
 
 	describe('post redirect', function () {
+		var jar;
+		before(function (done) {
+			helpers.loginUser('foo', 'barbar', function (err, _jar) {
+				assert.ifError(err);
+				jar = _jar;
+				done();
+			});
+		});
+
 		it('should 404 for invalid pid', function (done) {
 			request(nconf.get('url') + '/api/post/fail', function (err, res) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				done();
+			});
+		});
+
+		it('should 403 if user does not have read privilege', function (done) {
+			privileges.categories.rescind(['read'], category.cid, 'registered-users', function (err) {
+				assert.ifError(err);
+				request(nconf.get('url') + '/api/post/' + pid, { jar: jar }, function (err, res) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 403);
+					privileges.categories.give(['read'], category.cid, 'registered-users', done);
+				});
 			});
 		});
 
