@@ -278,7 +278,7 @@ module.exports = function (Groups) {
 				} else {
 					next();
 				}
-			}
+			},
 		], callback);
 	}
 
