@@ -16,6 +16,7 @@
 					<thead>
 						<tr>
 							<th>[[admin/manage/post-queue:type]]</th>
+							<th>[[admin/manage/post-queue:user]]</th>
 							<th>[[admin/manage/post-queue:title]]</th>
 							<th>[[admin/manage/post-queue:content]]</th>
 							<th></th>
@@ -27,10 +28,17 @@
 							<td class="col-md-1">
 								{posts.type}
 							</td>
+							<td class="col-md-1">
+								<!-- IF posts.user.userslug -->
+								<a href="/uid/{posts.user.uid}">{posts.user.username}</a>
+								<!-- ELSE -->
+								{posts.user.username}
+								<!-- ENDIF posts.user.userslug -->
+							</td>
 							<td class="col-md-2">
 								{posts.data.title}
 							</td>
-							<td class="col-md-8">
+							<td class="col-md-7">
 								{posts.data.content}
 							</td>
 

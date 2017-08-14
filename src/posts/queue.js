@@ -31,6 +31,7 @@ module.exports = function (Posts) {
 			function (next) {
 				db.setObject('post:queue:' + id, {
 					id: id,
+					uid: data.uid,
 					type: type,
 					data: JSON.stringify(data),
 				}, next);

@@ -3,7 +3,7 @@
 var async = require('async');
 
 var db = require('../../database');
-
+var user = require('../../user');
 var pagination = require('../../pagination');
 
 var postQueueController = module.exports;
@@ -15,6 +15,8 @@ postQueueController.get = function (req, res, next) {
 
 	var start = (page - 1) * postsPerPage;
 	var stop = start + postsPerPage - 1;
+
+	var postData;
 
 	async.waterfall([
 		function (next) {
@@ -36,15 +38,25 @@ postQueueController.get = function (req, res, next) {
 
 			db.getObjects(keys, next);
 		},
-		function (data) {
+		function (data, next) {
+			postData = data;
 			data.forEach(function (data) {
 				data.data = JSON.parse(data.data);
 				return data;
 			});
+			var uids = data.map(function (data) {
+				return data && data.uid;
+			});
+			user.getUsersFields(uids, ['username', 'userslug', 'picture'], next);
+		},
+		function (userData) {
+			postData.forEach(function (postData, index) {
+				postData.user = userData[index];
+			});
 
 			res.render('admin/manage/post-queue', {
 				title: '[[pages:post-queue]]',
-				posts: data,
+				posts: postData,
 				pagination: pagination.create(page, pageCount),
 			});
 		},
