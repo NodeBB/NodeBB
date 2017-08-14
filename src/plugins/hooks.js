@@ -121,13 +121,7 @@ module.exports = function (Plugins) {
 			}
 
 			hookObj.method(params, next);
-		}, function (err, values) {
-			if (err) {
-				winston.error('[plugins] ' + hook + ',  ' + err.message);
-			}
-
-			callback(err, values);
-		});
+		}, callback);
 	}
 
 	function fireActionHook(hook, hookList, params, callback) {
