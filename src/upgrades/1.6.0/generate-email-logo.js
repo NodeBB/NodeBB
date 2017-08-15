@@ -6,6 +6,7 @@ var meta = require('../../meta');
 var async = require('async');
 var path = require('path');
 var nconf = require('nconf');
+var fs = require('fs');
 
 module.exports = {
 	name: 'Generate email logo for use in email header',
@@ -24,12 +25,19 @@ module.exports = {
 					return setImmediate(next);
 				}
 
-				image.resizeImage({
-					path: sourcePath,
-					target: uploadPath,
-					extension: 'png',
-					height: 50,
-				}, next);
+				fs.access(sourcePath, function (err) {
+					if (err) {
+						skip = true;
+						return setImmediate(next);
+					}
+
+					image.resizeImage({
+						path: sourcePath,
+						target: uploadPath,
+						extension: 'png',
+						height: 50,
+					}, next);
+				});
 			},
 			function (next) {
 				if (skip) {
