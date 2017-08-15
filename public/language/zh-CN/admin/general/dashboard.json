@@ -24,7 +24,7 @@
 	"keep-updated": "请确保您已及时更新 NodeBB 以获得最新的安全补丁与 Bug 修复。",
 	"up-to-date": "<p>正在使用 <strong>最新版本</strong> <i class=\"fa fa-check\"></i></p>",
 	"upgrade-available": "<p> 新版本 (v%1) 已经发布！ 建议 <a href=\"https://docs.nodebb.org/configuring/upgrade/\">更新你的 NodeBB</a>。</p>",
-	"prerelease-upgrade-available": "<p>你正在使用NodeBB过期的实验版本。新的版本 (v%1) 已经发布。 请考虑<a href=\"https://docs.nodebb.org/en/latest/upgrading/index.html\">更新你的 NodeBB</a>。</p>",
+	"prerelease-upgrade-available": "<p>正在使用NodeBB过期的实验版本。新的版本 (v%1) 已经发布。 请考虑<a href=\"https://docs.nodebb.org/configuring/upgrade/\">更新你的 NodeBB</a>。",
 	"prerelease-warning": "<p>正在使用<strong>测试版</strong> NodeBB。可能会出现意外的 Bug。<i class=\"fa fa-exclamation-triangle\"></i></p>",
 	"running-in-development": "<span>论坛正处于开发模式，这可能使其暴露于潜在的危险之中；请联系您的系统管理员。</span>",
 
