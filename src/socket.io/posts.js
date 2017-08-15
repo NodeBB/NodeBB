@@ -32,6 +32,21 @@ SocketPosts.reply = function (socket, data, callback) {
 
 	async.waterfall([
 		function (next) {
+			posts.shouldQueue(socket.uid, data, next);
+		},
+		function (shouldQueue, next) {
+			if (shouldQueue) {
+				posts.addToQueue(data, next);
+			} else {
+				postReply(socket, data, next);
+			}
+		},
+	], callback);
+};
+
+function postReply(socket, data, callback) {
+	async.waterfall([
+		function (next) {
 			topics.reply(data, next);
 		},
 		function (postData, next) {
@@ -50,7 +65,7 @@ SocketPosts.reply = function (socket, data, callback) {
 			socketHelpers.notifyNew(socket.uid, 'newPost', result);
 		},
 	], callback);
-};
+}
 
 SocketPosts.getRawPost = function (socket, pid, callback) {
 	async.waterfall([
@@ -152,3 +167,26 @@ SocketPosts.getReplies = function (socket, pid, callback) {
 		},
 	], callback);
 };
+
+SocketPosts.accept = function (socket, data, callback) {
+	acceptOrReject(posts.submitFromQueue, socket, data, callback);
+};
+
+SocketPosts.reject = function (socket, data, callback) {
+	acceptOrReject(posts.removeFromQueue, socket, data, callback);
+};
+
+function acceptOrReject(method, socket, data, callback) {
+	async.waterfall([
+		function (next) {
+			user.isAdminOrGlobalMod(socket.uid, next);
+		},
+		function (isAdminOrGlobalMod, next) {
+			if (!isAdminOrGlobalMod) {
+				return callback(new Error('[[error:no-privileges]]'));
+			}
+
+			method(data.id, next);
+		},
+	], callback);
+}
