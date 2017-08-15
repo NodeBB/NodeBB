@@ -16,7 +16,7 @@ module.exports = function (Posts) {
 				user.getUserFields(uid, ['reputation', 'postcount'], next);
 			},
 			function (userData, next) {
-				var shouldQueue = !parseInt(uid, 10) || (parseInt(meta.config.postQueue, 10) === 1 && parseInt(userData.reputation, 10) <= 0 && parseInt(userData.postcount, 10) <= 0);
+				var shouldQueue = parseInt(meta.config.postQueue, 10) === 1 && (!parseInt(uid, 10) || (parseInt(userData.reputation, 10) <= 0 && parseInt(userData.postcount, 10) <= 0));
 				next(null, shouldQueue);
 			},
 		], callback);
