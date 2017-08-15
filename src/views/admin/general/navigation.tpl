@@ -80,6 +80,12 @@
 					</div>
 					<div class="checkbox">
 						<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+							<input class="mdl-switch__input" type="checkbox" name="property:guestOnly" <!-- IF enabled.properties.guestOnly -->checked<!-- ENDIF enabled.properties.guestOnly -->/>
+							<span class="mdl-switch__label"><strong>[[admin/general/navigation:only-guest]]</strong></span>
+						</label>
+					</div>
+					<div class="checkbox">
+						<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 							<input class="mdl-switch__input" type="checkbox" name="property:targetBlank" <!-- IF enabled.properties.targetBlank -->checked<!-- ENDIF enabled.properties.targetBlank -->/>
 							<span class="mdl-switch__label"><strong>[[admin/general/navigation:open-new-window]]</strong></span>
 						</label>
