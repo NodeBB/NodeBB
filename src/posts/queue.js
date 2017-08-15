@@ -6,6 +6,7 @@ var db = require('../database');
 var user = require('../user');
 var meta = require('../meta');
 var topics = require('../topics');
+var privileges = require('../privileges');
 var socketHelpers = require('../socket.io/helpers');
 
 module.exports = function (Posts) {
@@ -22,9 +23,12 @@ module.exports = function (Posts) {
 	};
 
 	Posts.addToQueue = function (data, callback) {
-		var type = data.title ? 'topic' : 'post';
+		var type = data.title ? 'topic' : 'reply';
 		var id = type + '-' + Date.now();
 		async.waterfall([
+			function (next) {
+				canPost(type, data, next);
+			},
 			function (next) {
 				db.sortedSetAdd('post:queue', Date.now(), id, next);
 			},
@@ -37,6 +41,9 @@ module.exports = function (Posts) {
 				}, next);
 			},
 			function (next) {
+				user.setUserField(data.uid, 'lastposttime', Date.now(), next);
+			},
+			function (next) {
 				next(null, {
 					queued: true,
 					message: '[[success:post-queued]]',
@@ -44,6 +51,38 @@ module.exports = function (Posts) {
 			},
 		], callback);
 	};
+
+	function canPost(type, data, callback) {
+		async.waterfall([
+			function (next) {
+				if (type === 'topic') {
+					next(null, data.cid);
+				} else if (type === 'reply') {
+					topics.getTopicField(data.tid, 'cid', next);
+				}
+			},
+			function (cid, next) {
+				async.parallel({
+					canPost: function (next) {
+						if (type === 'topic') {
+							privileges.categories.can('topics:create', data.cid, data.uid, next);
+						} else if (type === 'reply') {
+							privileges.categories.can('topics:reply', cid, data.uid, next);
+						}
+					},
+					isReadyToPost: function (next) {
+						user.isReadyToPost(data.uid, cid, next);
+					},
+				}, next);
+			},
+			function (results, next) {
+				if (!results.canPost) {
+					return next(new Error('[[error:no-privileges]]'));
+				}
+				next();
+			},
+		], callback);
+	}
 
 	Posts.removeFromQueue = function (id, callback) {
 		async.waterfall([
@@ -73,8 +112,8 @@ module.exports = function (Posts) {
 
 				if (data.type === 'topic') {
 					createTopic(data.data, next);
-				} else if (data.type === 'post') {
-					createPost(data.data, next);
+				} else if (data.type === 'reply') {
+					createReply(data.data, next);
 				}
 			},
 			function (next) {
@@ -95,7 +134,7 @@ module.exports = function (Posts) {
 		], callback);
 	}
 
-	function createPost(data, callback) {
+	function createReply(data, callback) {
 		async.waterfall([
 			function (next) {
 				topics.reply(data, next);

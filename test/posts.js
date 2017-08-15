@@ -803,7 +803,7 @@ describe('Post\'s', function () {
 					});
 					assert.equal(data[0].type, 'topic');
 					assert.equal(data[0].data.content, 'queued topic content');
-					assert.equal(data[1].type, 'post');
+					assert.equal(data[1].type, 'reply');
 					assert.equal(data[1].data.content, 'this is a queued reply');
 
 					socketPosts.accept({ uid: globalModUid }, { id: ids[0] }, next);

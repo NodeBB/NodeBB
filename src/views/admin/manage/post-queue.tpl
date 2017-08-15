@@ -15,19 +15,16 @@
 				<table class="table table-striped posts-list">
 					<thead>
 						<tr>
-							<th>[[admin/manage/post-queue:type]]</th>
 							<th>[[admin/manage/post-queue:user]]</th>
 							<th>[[admin/manage/post-queue:title]]</th>
 							<th>[[admin/manage/post-queue:content]]</th>
+							<th>[[admin/manage/post-queue:posted]]</th>
 							<th></th>
 						</tr>
 					</thead>
 					<tbody>
 						<!-- BEGIN posts -->
 						<tr data-id="{posts.id}">
-							<td class="col-md-1">
-								{posts.type}
-							</td>
 							<td class="col-md-1">
 								<!-- IF posts.user.userslug -->
 								<a href="/uid/{posts.user.uid}">{posts.user.username}</a>
@@ -41,7 +38,9 @@
 							<td class="col-md-7">
 								{posts.data.content}
 							</td>
-
+							<td class="col-md-1">
+								<span class="timeago" title={posts.data.timestampISO}></span>
+							</td>
 							<td class="col-md-1">
 								<div class="btn-group pull-right">
 									<button class="btn btn-success btn-xs" data-action="accept"><i class="fa fa-check"></i></button>

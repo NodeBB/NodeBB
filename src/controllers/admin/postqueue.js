@@ -5,6 +5,7 @@ var async = require('async');
 var db = require('../../database');
 var user = require('../../user');
 var pagination = require('../../pagination');
+var utils = require('../../utils');
 
 var postQueueController = module.exports;
 
@@ -42,6 +43,7 @@ postQueueController.get = function (req, res, next) {
 			postData = data;
 			data.forEach(function (data) {
 				data.data = JSON.parse(data.data);
+				data.data.timestampISO = utils.toISOString(data.data.timestamp);
 				return data;
 			});
 			var uids = data.map(function (data) {
