@@ -1,0 +1,8 @@
+{
+	"post-queue": "Post Queue",
+	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Posting Restrictions</a> and enable <strong>Post Queue</strong>.",
+	"user": "User",
+	"title": "Title",
+	"content": "Content",
+	"posted": "Posted"
+}

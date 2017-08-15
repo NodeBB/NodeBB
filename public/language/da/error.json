@@ -20,7 +20,7 @@
     "invalid-pagination-value": "Ugyldig side værdi, skal mindst være %1 og maks. %2",
     "username-taken": "Brugernavn optaget",
     "email-taken": "Emailadresse allerede i brug",
-    "email-not-confirmed": "Din email adresse er ikke blevet bekræftet endnu, venligst klik her for at bekrætige den.",
+    "email-not-confirmed": "Din email adresse er ikke blevet bekræftet endnu, klik venligst her for at bekræfte den.",
     "email-not-confirmed-chat": "Du kan ikke chatte før din email er bekræftet, klik her for at bekræfte din email.",
     "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email.",
     "no-email-to-confirm": "Dette forum kræver bekræftelse af din email, klik her for at indtaste en email",

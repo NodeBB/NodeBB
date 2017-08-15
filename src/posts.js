@@ -24,6 +24,7 @@ require('./posts/recent')(Posts);
 require('./posts/tools')(Posts);
 require('./posts/votes')(Posts);
 require('./posts/bookmarks')(Posts);
+require('./posts/queue')(Posts);
 
 Posts.exists = function (pid, callback) {
 	db.isSortedSetMember('posts:pid', pid, callback);

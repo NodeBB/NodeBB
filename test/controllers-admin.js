@@ -424,6 +424,31 @@ describe('Admin Controllers', function () {
 		});
 	});
 
+	it('should load /admin/manage/post-queue', function (done) {
+		request(nconf.get('url') + '/api/admin/manage/post-queue', { jar: jar, json: true }, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('/post-queue should 404 for regular user', function (done) {
+		request(nconf.get('url') + '/api/post-queue', { json: true }, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			assert.equal(res.statusCode, 404);
+			done();
+		});
+	});
+
+	it('should load /post-queue', function (done) {
+		request(nconf.get('url') + '/api/post-queue', { jar: jar, json: true }, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
 	it('should load /admin/manage/ip-blacklist', function (done) {
 		request(nconf.get('url') + '/api/admin/manage/ip-blacklist', { jar: jar, json: true }, function (err, res, body) {
 			assert.ifError(err);
