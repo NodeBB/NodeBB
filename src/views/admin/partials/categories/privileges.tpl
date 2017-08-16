@@ -85,7 +85,7 @@
 									{privileges.groups.name}
 								</td>
 								<td></td>
-								{function.spawnPrivilegeStates, name, privileges}
+								{function.spawnPrivilegeStates, privileges.groups.name, privileges}
 							</tr>
 							<!-- END privileges.groups -->
 							<tr>
