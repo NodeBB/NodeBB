@@ -3,6 +3,7 @@
 
 var async = require('async');
 var S = require('string');
+var validator = require('validator');
 
 var db = require('./database');
 var user = require('./user');
@@ -211,6 +212,7 @@ Messaging.getTeaser = function (uid, roomId, callback) {
 			}
 			if (teaser.content) {
 				teaser.content = S(teaser.content).stripTags().decodeHTMLEntities().s;
+				teaser.content = validator.escape(String(teaser.content));
 			}
 
 			teaser.timestampISO = utils.toISOString(teaser.timestamp);
