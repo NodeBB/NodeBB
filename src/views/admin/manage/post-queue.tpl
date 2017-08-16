@@ -16,6 +16,7 @@
 					<thead>
 						<tr>
 							<th>[[admin/manage/post-queue:user]]</th>
+							<th>[[admin/manage/post-queue:category]]</th>
 							<th>[[admin/manage/post-queue:title]]</th>
 							<th>[[admin/manage/post-queue:content]]</th>
 							<th>[[admin/manage/post-queue:posted]]</th>
@@ -33,9 +34,15 @@
 								<!-- ENDIF posts.user.userslug -->
 							</td>
 							<td class="col-md-2">
+								<a href="{config.relative_path}/category/{posts.category.slug}"><!-- IF posts.categiry.icon --><span class="fa-stack"><i style="color: {posts.category.bgColor};" class="fa fa-circle fa-stack-2x"></i><i style="color: {posts.category.color};" class="fa fa-stack-1x fa-fw {posts.category.icon}"></i></span><!-- ENDIF posts.category.icon --> {posts.category.name}</a>
+							</td>
+							<td class="col-md-2">
+								<!-- IF posts.data.tid -->
+								<a href="{config.relative_path}/topic/{posts.data.tid}">[[admin/manage/post-queue:reply-to, {posts.topic.title}]]</a>
+								<!-- ENDIF posts.data.tid -->
 								{posts.data.title}
 							</td>
-							<td class="col-md-7">
+							<td class="col-md-5">
 								{posts.data.content}
 							</td>
 							<td class="col-md-1">

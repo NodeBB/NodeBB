@@ -6,6 +6,7 @@ var db = require('../database');
 var user = require('../user');
 var meta = require('../meta');
 var topics = require('../topics');
+var notifications = require('../notifications');
 var privileges = require('../privileges');
 var socketHelpers = require('../socket.io/helpers');
 
@@ -42,6 +43,22 @@ module.exports = function (Posts) {
 			},
 			function (next) {
 				user.setUserField(data.uid, 'lastposttime', Date.now(), next);
+			},
+			function (next) {
+				notifications.create({
+					nid: 'post-queued-' + id,
+					mergeId: 'post-queue',
+					bodyShort: '[[notifications:post_awaiting_review]]',
+					bodyLong: data.content,
+					path: '/post-queue',
+				}, next);
+			},
+			function (notification, next) {
+				if (notification) {
+					notifications.pushGroups(notification, ['administrators', 'Global Moderators'], next);
+				} else {
+					next();
+				}
 			},
 			function (next) {
 				next(null, {
@@ -91,6 +108,9 @@ module.exports = function (Posts) {
 			},
 			function (next) {
 				db.delete('post:queue:' + id, next);
+			},
+			function (next) {
+				notifications.rescind('post-queued-' + id, next);
 			},
 		], callback);
 	};

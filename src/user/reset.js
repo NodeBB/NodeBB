@@ -7,6 +7,7 @@ var winston = require('winston');
 var user = require('../user');
 var utils = require('../utils');
 var translator = require('../translator');
+var batch = require('../batch');
 
 var db = require('../database');
 var meta = require('../meta');
@@ -163,6 +164,45 @@ UserReset.clean = function (callback) {
 				async.apply(db.deleteObjectFields, 'reset:uid', results.tokens),
 				async.apply(db.sortedSetRemove, 'reset:issueDate', results.tokens),
 				async.apply(db.sortedSetRemove, 'reset:issueDate:uid', results.uids),
+			], next);
+		},
+	], callback);
+};
+
+UserReset.cleanByUid = function (uid, callback) {
+	if (typeof callback !== 'function') {
+		callback = function () {};
+	}
+
+	var toClean = [];
+	uid = parseInt(uid, 10);
+
+	async.waterfall([
+		async.apply(db.getSortedSetRange.bind(db), 'reset:issueDate', 0, -1),
+		function (tokens, next) {
+			batch.processArray(tokens, function (tokens, next) {
+				db.getObjectFields('reset:uid', tokens, function (err, results) {
+					for (var code in results) {
+						if (results.hasOwnProperty(code) && parseInt(results[code], 10) === uid) {
+							toClean.push(code);
+						}
+					}
+
+					next(err);
+				});
+			}, next);
+		},
+		function (next) {
+			if (!toClean.length) {
+				winston.verbose('[UserReset.cleanByUid] No tokens found for uid (' + uid + ').');
+				return setImmediate(next);
+			}
+
+			winston.verbose('[UserReset.cleanByUid] Found ' + toClean.length + ' token(s), removing...');
+			async.parallel([
+				async.apply(db.deleteObjectFields, 'reset:uid', toClean),
+				async.apply(db.sortedSetRemove, 'reset:issueDate', toClean),
+				async.apply(db.sortedSetRemove, 'reset:issueDate:uid', uid),
 			], next);
 		},
 	], callback);

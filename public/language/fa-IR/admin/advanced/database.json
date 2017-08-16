@@ -16,7 +16,7 @@
 	"mongo.index-size": "Index Size",
 	"mongo.file-size": "File Size",
 	"mongo.resident-memory": "Resident Memory",
-	"mongo.virtual-memory": "Virtual Memory",
+	"mongo.virtual-memory": "حافظۀ مجازی",
 	"mongo.mapped-memory": "Mapped Memory",
 	"mongo.raw-info": "MongoDB Raw Info",
 

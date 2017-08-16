@@ -4,6 +4,8 @@ var async = require('async');
 
 var db = require('../../database');
 var user = require('../../user');
+var topics = require('../../topics');
+var categories = require('../../categories');
 var pagination = require('../../pagination');
 var utils = require('../../utils');
 
@@ -51,11 +53,34 @@ postQueueController.get = function (req, res, next) {
 			});
 			user.getUsersFields(uids, ['username', 'userslug', 'picture'], next);
 		},
-		function (userData) {
+		function (userData, next) {
 			postData.forEach(function (postData, index) {
 				postData.user = userData[index];
 			});
 
+			async.map(postData, function (postData, next) {
+				async.waterfall([
+					function (next) {
+						if (postData.data.cid) {
+							next(null, { cid: postData.data.cid });
+						} else if (postData.data.tid) {
+							topics.getTopicFields(postData.data.tid, ['title', 'cid'], next);
+						} else {
+							next(null, { cid: 0 });
+						}
+					},
+					function (topicData, next) {
+						postData.topic = topicData;
+						categories.getCategoryData(topicData.cid, next);
+					},
+					function (categoryData, next) {
+						postData.category = categoryData;
+						next(null, postData);
+					},
+				], next);
+			}, next);
+		},
+		function (postData) {
 			res.render('admin/manage/post-queue', {
 				title: '[[pages:post-queue]]',
 				posts: postData,

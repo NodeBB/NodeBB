@@ -181,3 +181,8 @@ middleware.processTimeagoLocales = function (req, res, next) {
 		},
 	], next);
 };
+
+middleware.delayLoading = function (req, res, next) {
+	// Introduces an artificial delay during load so that brute force attacks are effectively mitigated
+	setTimeout(next, 1000);
+};

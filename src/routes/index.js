@@ -32,7 +32,7 @@ function mainRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/confirm/:code', middleware, [], controllers.confirmEmail);
 	setupPageRoute(app, '/outgoing', middleware, [], controllers.outgoing);
 	setupPageRoute(app, '/search', middleware, [], controllers.search.search);
-	setupPageRoute(app, '/reset/:code?', middleware, [], controllers.reset);
+	setupPageRoute(app, '/reset/:code?', middleware, [middleware.delayLoading], controllers.reset);
 	setupPageRoute(app, '/tos', middleware, [], controllers.termsOfUse);
 
 	app.post('/compose', middleware.applyCSRF, controllers.composePost);
