@@ -171,17 +171,12 @@ UserReset.clean = function (callback) {
 };
 
 UserReset.cleanByUid = function (uid, callback) {
-	if (typeof callback !== 'function') {
-		callback = function () {};
-	}
-
 	var toClean = [];
 	uid = parseInt(uid, 10);
 
 	async.waterfall([
-		async.apply(db.getSortedSetRange.bind(db), 'reset:issueDate', 0, -1),
-		function (tokens, next) {
-			batch.processArray(tokens, function (tokens, next) {
+		function (next) {
+			batch.processSortedSet('reset:issueDate', function (tokens, next) {
 				db.getObjectFields('reset:uid', tokens, function (err, results) {
 					for (var code in results) {
 						if (results.hasOwnProperty(code) && parseInt(results[code], 10) === uid) {

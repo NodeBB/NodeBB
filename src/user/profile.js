@@ -185,7 +185,9 @@ module.exports = function (User) {
 					function (next) {
 						db.sortedSetAdd('users:notvalidated', Date.now(), uid, next);
 					},
-					async.apply(User.reset.cleanByUid, uid),
+					function (next) {
+						User.reset.cleanByUid(uid, next);
+					},
 				], function (err) {
 					next(err);
 				});
