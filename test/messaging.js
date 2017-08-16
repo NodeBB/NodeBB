@@ -437,6 +437,17 @@ describe('Messaging Library', function () {
 			});
 		});
 
+		it('should escape teaser', function (done) {
+			socketModules.chats.send({ uid: fooUid }, { roomId: roomId, message: '<svg/onload=alert(document.location);' }, function (err, messageData) {
+				assert.ifError(err);
+				socketModules.chats.getRecentChats({ uid: fooUid }, { after: 0, uid: fooUid }, function (err, data) {
+					assert.ifError(err);
+					assert.equal(data.rooms[0].teaser.content, '&lt;svg&#x2F;onload=alert(document.location);');
+					done();
+				});
+			});
+		});
+
 		it('should fail to check if user has private chat with invalid data', function (done) {
 			socketModules.chats.hasPrivateChat({ uid: null }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
