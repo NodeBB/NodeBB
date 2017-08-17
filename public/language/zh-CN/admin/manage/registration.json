@@ -11,7 +11,7 @@
 	"list.ip-spam": "频率：%1 显示： %2",
 
 	"invitations": "邀请",
-	"invitations.description": "下面是一份完整的邀请请求列表。请使用Ctrl-F键以及电子邮件或者用户名以便搜索这个列表。<br><br>那些已经接受他们邀请的用户的用户名将显示在电子邮箱右边。",
+	"invitations.description": "下面列出了所有已发送的邀请。您可以使用 Ctrl+F 快捷键搜索列表中的邮箱地址或用户名。<br><br>如果用户接受了邀请，他的用户名将会被显示在邮箱右边。",
 	"invitations.inviter-username": "邀请人用户名",
 	"invitations.invitee-email": "受邀请的电子邮箱",
 	"invitations.invitee-username": "受邀请的用户名(如果已经注册)",
