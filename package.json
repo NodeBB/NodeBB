@@ -41,6 +41,7 @@
     "express-useragent": "1.0.7",
     "html-to-text": "3.3.0",
     "ip": "1.1.5",
+    "ip-range-check": "^0.0.2",
     "jimp": "0.2.28",
     "jquery": "^3.1.0",
     "json-2-csv": "^2.0.22",
