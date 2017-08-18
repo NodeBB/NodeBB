@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('notifications', ['sounds', 'translator', 'components'], function (sounds, translator, components) {
+define('notifications', ['sounds', 'translator', 'components', 'navigator'], function (sounds, translator, components, navigator) {
 	var Notifications = {};
 
 	var unreadNotifs = {};
@@ -20,7 +20,18 @@ define('notifications', ['sounds', 'translator', 'components'], function (sounds
 			Notifications.loadNotifications(notifList);
 		});
 
-		notifList.on('click', '[data-nid]', function () {
+		notifList.on('click', '[data-nid]', function (e) {
+			// Scroll to index if already in topic (gh#5873)
+			var index = $(this).attr('data-index');
+			var tid = $(this).attr('data-tid');
+			if (index && ajaxify.data.template.topic && parseInt(ajaxify.data.tid, 10) === parseInt(tid, 10)) {
+				e.stopPropagation();
+				e.preventDefault();
+
+				navigator.scrollToIndex(index, true);
+				notifTrigger.dropdown('toggle');
+			}
+
 			var unread = $(this).hasClass('unread');
 			if (!unread) {
 				return;
