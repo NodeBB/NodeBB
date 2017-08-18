@@ -1236,15 +1236,16 @@ describe('User', function () {
 					setTimeout(next, 50);
 				},
 				function (next) {
-					socketUser.setModerationNote({ uid: adminUid }, { uid: testUid, note: 'second moderation note' }, next);
+					socketUser.setModerationNote({ uid: adminUid }, { uid: testUid, note: '<svg/onload=alert(document.location);//' }, next);
 				},
 				function (next) {
 					User.getModerationNotes(testUid, 0, -1, next);
 				},
 			], function (err, notes) {
 				assert.ifError(err);
-				assert.equal(notes[0].note, 'second moderation note');
+				assert.equal(notes[0].note, '&lt;svg&#x2F;onload=alert(document.location);&#x2F;&#x2F;');
 				assert.equal(notes[0].uid, adminUid);
+				assert.equal(notes[1].note, 'this is a test user');
 				assert(notes[0].timestamp);
 				done();
 			});

@@ -166,6 +166,7 @@ module.exports = function (User) {
 						var data = JSON.parse(note);
 						uids.push(data.uid);
 						data.timestampISO = utils.toISOString(data.timestamp);
+						data.note = validator.escape(String(data.note));
 						return data;
 					} catch (err) {
 						return next(err);
