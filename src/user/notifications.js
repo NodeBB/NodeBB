@@ -140,7 +140,7 @@ UserNotifications.getNotifications = function (nids, uid, callback) {
 		function (next) {
 			async.parallel({
 				notifications: function (next) {
-					notifications.getMultiple(nids, uid, next);
+					notifications.getMultiple(nids, next);
 				},
 				hasRead: function (next) {
 					db.isSortedSetMembers('uid:' + uid + ':notifications:read', nids, next);

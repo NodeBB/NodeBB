@@ -20,23 +20,19 @@ define('notifications', ['sounds', 'translator', 'components', 'navigator'], fun
 			Notifications.loadNotifications(notifList);
 		});
 
-		notifList.on('click', '[data-nid]', function (e) {
-			// Scroll to index if already in topic (gh#5873)
-			var index = $(this).attr('data-index');
-			var tid = $(this).attr('data-tid');
-			if (index && ajaxify.data.template.topic && parseInt(ajaxify.data.tid, 10) === parseInt(tid, 10)) {
-				e.stopPropagation();
-				e.preventDefault();
-
-				navigator.scrollToIndex(index, true);
+		notifList.on('click', '[data-nid]', function (ev) {
+			var notifEl = $(this);
+			if (scrollToPostIndexIfOnPage(notifEl)) {
+				ev.stopPropagation();
+				ev.preventDefault();
 				notifTrigger.dropdown('toggle');
 			}
 
-			var unread = $(this).hasClass('unread');
+			var unread = notifEl.hasClass('unread');
 			if (!unread) {
 				return;
 			}
-			var nid = $(this).attr('data-nid');
+			var nid = notifEl.attr('data-nid');
 			socket.emit('notifications.markRead', nid, function (err) {
 				if (err) {
 					return app.alertError(err.message);
@@ -117,6 +113,19 @@ define('notifications', ['sounds', 'translator', 'components', 'navigator'], fun
 			Notifications.updateNotifCount(count);
 		});
 	};
+
+	function scrollToPostIndexIfOnPage(notifEl) {
+		// Scroll to index if already in topic (gh#5873)
+		var pid = notifEl.attr('data-pid');
+		var tid = notifEl.attr('data-tid');
+		var path = notifEl.attr('data-path');
+		var postEl = components.get('post', 'pid', pid);
+		if (path.startsWith(config.relative_path + '/post/') && pid && postEl.length && ajaxify.data.template.topic && parseInt(ajaxify.data.tid, 10) === parseInt(tid, 10)) {
+			navigator.scrollToIndex(postEl.attr('data-index'), true);
+			return true;
+		}
+		return false;
+	}
 
 	Notifications.loadNotifications = function (notifList) {
 		socket.emit('notifications.get', null, function (err, data) {

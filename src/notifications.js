@@ -13,7 +13,6 @@ var groups = require('./groups');
 var meta = require('./meta');
 var batch = require('./batch');
 var plugins = require('./plugins');
-var posts = require('./posts');
 var utils = require('./utils');
 
 var Notifications = module.exports;
@@ -23,19 +22,13 @@ Notifications.startJobs = function () {
 	new cron('*/30 * * * *', Notifications.prune, null, true);
 };
 
-Notifications.get = function (nid, uid, callback) {
-	Notifications.getMultiple([nid], uid, function (err, notifications) {
+Notifications.get = function (nid, callback) {
+	Notifications.getMultiple([nid], function (err, notifications) {
 		callback(err, Array.isArray(notifications) && notifications.length ? notifications[0] : null);
 	});
 };
 
-Notifications.getMultiple = function (nids, uid, callback) {
-	if (typeof uid === 'function' && !callback) {
-		// no uid passed in
-		callback = uid;
-		uid = undefined;
-	}
-
+Notifications.getMultiple = function (nids, callback) {
 	if (!Array.isArray(nids) || !nids.length) {
 		return setImmediate(callback, null, []);
 	}
@@ -44,19 +37,8 @@ Notifications.getMultiple = function (nids, uid, callback) {
 	});
 
 	var notifications;
-	var userSettings;
 
 	async.waterfall([
-		function (next) {
-			if (!uid) {
-				return setImmediate(next);
-			}
-
-			User.getSettings(uid, function (err, settings) {
-				userSettings = settings;
-				next(err);
-			});
-		},
 		function (next) {
 			db.getObjects(keys, next);
 		},
@@ -69,7 +51,7 @@ Notifications.getMultiple = function (nids, uid, callback) {
 			User.getUsersFields(userKeys, ['username', 'userslug', 'picture'], next);
 		},
 		function (usersData, next) {
-			async.eachOf(notifications, function (notification, index, next) {
+			notifications.forEach(function (notification, index) {
 				if (notification) {
 					notification.datetimeISO = utils.toISOString(notification.datetime);
 
@@ -86,19 +68,9 @@ Notifications.getMultiple = function (nids, uid, callback) {
 					} else if (notification.image === 'brand:logo' || !notification.image) {
 						notification.image = meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png';
 					}
-
-					if (notification.path.startsWith('/post/')) {
-						posts.getPidIndex(notification.pid, notification.tid, userSettings.topicPostSort, function (err, index) {
-							notification.index = index;
-							next(err);
-						});
-					} else {
-						next();
-					}
 				}
-			}, function (err) {
-				next(err, notifications);
 			});
+			next(null, notifications);
 		},
 	], callback);
 };
