@@ -47,24 +47,21 @@ infoController.get = function (req, res, callback) {
 				},
 			}, next);
 		},
-	], function (err, data) {
-		if (err) {
-			return callback(err);
-		}
+		function (data) {
+			userData.history = data.history;
+			userData.sessions = data.sessions;
+			userData.usernames = data.usernames;
+			userData.emails = data.emails;
 
-		userData.history = data.history;
-		userData.sessions = data.sessions;
-		userData.usernames = data.usernames;
-		userData.emails = data.emails;
+			if (userData.isAdminOrGlobalModeratorOrModerator) {
+				userData.moderationNotes = data.notes.notes;
+				var pageCount = Math.ceil(data.notes.count / itemsPerPage);
+				userData.pagination = pagination.create(page, pageCount, req.query);
+			}
+			userData.title = '[[pages:account/info]]';
+			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[user:account_info]]' }]);
 
-		if (userData.isAdminOrGlobalModeratorOrModerator) {
-			userData.moderationNotes = data.notes.notes;
-			var pageCount = Math.ceil(data.notes.count / itemsPerPage);
-			userData.pagination = pagination.create(page, pageCount, req.query);
-		}
-		userData.title = '[[pages:account/info]]';
-		userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[user:account_info]]' }]);
-
-		res.render('account/info', userData);
-	});
+			res.render('account/info', userData);
+		},
+	], callback);
 };

@@ -10,6 +10,7 @@ var topics = require('../topics');
 var user = require('../user');
 var helpers = require('./helpers');
 var plugins = require('../plugins');
+var utils = require('../utils');
 
 module.exports = function (privileges) {
 	privileges.posts = {};
@@ -186,6 +187,22 @@ module.exports = function (privileges) {
 				var deleterUid = parseInt(postData.deleterUid, 10) || 0;
 				var flag = results.isOwner && (deleterUid === 0 || deleterUid === parseInt(postData.uid, 10));
 				next(null, { flag: flag, message: '[[error:no-privileges]]' });
+			},
+		], callback);
+	};
+
+	privileges.posts.canFlag = function (pid, uid, callback) {
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					userReputation: async.apply(user.getUserField, uid, 'reputation'),
+					isAdminOrMod: async.apply(isAdminOrMod, pid, uid),
+				}, next);
+			},
+			function (results, next) {
+				var minimumReputation = utils.isNumber(meta.config['privileges:flag']) ? parseInt(meta.config['privileges:flag'], 10) : 1;
+				var canFlag = results.isAdminOrMod || parseInt(results.userReputation, 10) >= minimumReputation;
+				next(null, { flag: canFlag });
 			},
 		], callback);
 	};

@@ -4,7 +4,7 @@
 	"error.404": "404 页面不存在",
 	"error.503": "503 服务不可用",
 	"manage-error-log": "管理错误日志",
-	"export-error-log": "提取错误日志(.csv)",
+	"export-error-log": "导出错误日志 (.csv)",
 	"clear-error-log": "清空错误日志",
 	"route": "路由",
 	"count": "计数",

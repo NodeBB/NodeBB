@@ -70,7 +70,6 @@ Notifications.getMultiple = function (nids, callback) {
 					}
 				}
 			});
-
 			next(null, notifications);
 		},
 	], callback);

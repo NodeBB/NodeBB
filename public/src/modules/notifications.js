@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('notifications', ['sounds', 'translator', 'components'], function (sounds, translator, components) {
+define('notifications', ['sounds', 'translator', 'components', 'navigator'], function (sounds, translator, components, navigator) {
 	var Notifications = {};
 
 	var unreadNotifs = {};
@@ -20,12 +20,19 @@ define('notifications', ['sounds', 'translator', 'components'], function (sounds
 			Notifications.loadNotifications(notifList);
 		});
 
-		notifList.on('click', '[data-nid]', function () {
-			var unread = $(this).hasClass('unread');
+		notifList.on('click', '[data-nid]', function (ev) {
+			var notifEl = $(this);
+			if (scrollToPostIndexIfOnPage(notifEl)) {
+				ev.stopPropagation();
+				ev.preventDefault();
+				notifTrigger.dropdown('toggle');
+			}
+
+			var unread = notifEl.hasClass('unread');
 			if (!unread) {
 				return;
 			}
-			var nid = $(this).attr('data-nid');
+			var nid = notifEl.attr('data-nid');
 			socket.emit('notifications.markRead', nid, function (err) {
 				if (err) {
 					return app.alertError(err.message);
@@ -106,6 +113,19 @@ define('notifications', ['sounds', 'translator', 'components'], function (sounds
 			Notifications.updateNotifCount(count);
 		});
 	};
+
+	function scrollToPostIndexIfOnPage(notifEl) {
+		// Scroll to index if already in topic (gh#5873)
+		var pid = notifEl.attr('data-pid');
+		var tid = notifEl.attr('data-tid');
+		var path = notifEl.attr('data-path');
+		var postEl = components.get('post', 'pid', pid);
+		if (path.startsWith(config.relative_path + '/post/') && pid && postEl.length && ajaxify.data.template.topic && parseInt(ajaxify.data.tid, 10) === parseInt(tid, 10)) {
+			navigator.scrollToIndex(postEl.attr('data-index'), true);
+			return true;
+		}
+		return false;
+	}
 
 	Notifications.loadNotifications = function (notifList) {
 		socket.emit('notifications.get', null, function (err, data) {

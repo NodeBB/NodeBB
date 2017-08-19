@@ -60,7 +60,7 @@
 	"alert.copy-success": "设置已复制！",
 	"alert.set-parent-category": "设置父版块",
 	"alert.updated": "版块已更新",
-	"alert.updated-success": "版块ID %1 成功更新。",
+	"alert.updated-success": "版块 ID %1 成功更新。",
 	"alert.upload-image": "上传版块图片",
 	"alert.find-user": "查找用户",
 	"alert.user-search": "在这里查找用户…",
