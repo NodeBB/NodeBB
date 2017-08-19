@@ -119,7 +119,7 @@ Blacklist.validate = function (rules, callback) {
 			return true;
 		}
 		if (isIPv6CidrSubnet.test(rule)) {
-			cidr.push(rule);
+			cidr6.push(rule);
 			return true;
 		}
 
