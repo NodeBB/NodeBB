@@ -31,6 +31,9 @@ module.exports = function (SocketPosts) {
 					canDelete: function (next) {
 						privileges.posts.canDelete(data.pid, socket.uid, next);
 					},
+					canFlag: function (next) {
+						privileges.posts.canFlag(data.pid, socket.uid, next);
+					},
 					bookmarked: function (next) {
 						posts.hasBookmarked(data.pid, socket.uid, next);
 					},
@@ -49,6 +52,7 @@ module.exports = function (SocketPosts) {
 				results.posts.selfPost = socket.uid && socket.uid === parseInt(results.posts.uid, 10);
 				results.posts.display_edit_tools = results.canEdit.flag;
 				results.posts.display_delete_tools = results.canDelete.flag;
+				results.posts.display_flag_tools = socket.uid && !results.posts.selfPost && results.canFlag.flag;
 				results.posts.display_moderator_tools = results.posts.display_edit_tools || results.posts.display_delete_tools;
 				results.posts.display_move_tools = results.isAdminOrMod;
 				next(null, results);

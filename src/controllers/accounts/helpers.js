@@ -182,9 +182,8 @@ function filterLinks(links, states) {
 			admin: true,
 		}, link.visibility);
 
-		// Iterate through states and permit if every test passes (or is not defined)
 		var permit = Object.keys(states).some(function (state) {
-			return states[state] === link.visibility[state];
+			return states[state] && link.visibility[state];
 		});
 
 		links[index].public = permit;
