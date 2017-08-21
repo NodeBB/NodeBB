@@ -99,6 +99,10 @@
 			$('#main-menu li').removeClass('active');
 			$('#main-menu a').removeClass('active').filter('[href="' + url + '"]').each(function () {
 				var menu = $(this);
+				if (menu.parent().attr('data-link')) {
+					return;
+				}
+
 				menu
 					.parent().addClass('active')
 					.parents('.menu-item').addClass('active');
