@@ -9,7 +9,7 @@
 
 		<div class="row">
 			<div class="col-sm-6">
-				<textarea id="blacklist-rules">{rules}</textarea>
+				<textarea class="form-control" id="blacklist-rules">{rules}</textarea>
 			</div>
 			<div class="col-sm-6">
 				<div class="panel panel-default">
