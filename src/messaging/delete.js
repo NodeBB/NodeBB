@@ -14,7 +14,7 @@ module.exports = function (Messaging) {
 					return next();
 				}
 				var keys = uids.map(function (uid) {
-					return 'uid:' + uid + ':chat:room:' + roomId + 'mids';
+					return 'uid:' + uid + ':chat:room:' + roomId + ':mids';
 				});
 				db.sortedSetsRemove(keys, roomId, next);
 			},
