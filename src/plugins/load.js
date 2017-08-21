@@ -25,6 +25,9 @@ module.exports = function (Plugins) {
 			lessFiles: function (next) {
 				Plugins.data.getFiles(pluginData, 'less', next);
 			},
+			acpLessFiles: function (next) {
+				Plugins.data.getFiles(pluginData, 'acpLess', next);
+			},
 			clientScripts: function (next) {
 				Plugins.data.getScripts(pluginData, 'client', next);
 			},
@@ -60,6 +63,7 @@ module.exports = function (Plugins) {
 			Object.assign(Plugins.staticDirs, results.staticDirs || {});
 			add(Plugins.cssFiles, results.cssFiles);
 			add(Plugins.lessFiles, results.lessFiles);
+			add(Plugins.acpLessFiles, results.acpLessFiles);
 			add(Plugins.clientScripts, results.clientScripts);
 			add(Plugins.acpScripts, results.acpScripts);
 			Object.assign(meta.js.scripts.modules, results.modules || {});
@@ -79,6 +83,7 @@ module.exports = function (Plugins) {
 	Plugins.prepareForBuild = function (targets, callback) {
 		Plugins.cssFiles.length = 0;
 		Plugins.lessFiles.length = 0;
+		Plugins.acpLessFiles.length = 0;
 		Plugins.clientScripts.length = 0;
 		Plugins.acpScripts.length = 0;
 		Plugins.soundpacks.length = 0;
@@ -91,7 +96,7 @@ module.exports = function (Plugins) {
 			'client js bundle': ['clientScripts'],
 			'admin js bundle': ['acpScripts'],
 			'client side styles': ['cssFiles', 'lessFiles'],
-			'admin control panel styles': ['cssFiles', 'lessFiles'],
+			'admin control panel styles': ['cssFiles', 'lessFiles', 'acpLessFiles'],
 			sounds: ['soundpack'],
 			languages: ['languageData'],
 		};

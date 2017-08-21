@@ -118,6 +118,20 @@ function getBundleMetadata(target, callback) {
 						},
 					], cb);
 				},
+				acpLess: function (cb) {
+					if (target === 'client') {
+						return cb(null, '');
+					}
+
+					async.waterfall([
+						function (next) {
+							filterMissingFiles(plugins.acpLessFiles, next);
+						},
+						function (acpLessFiles, next) {
+							getImports(acpLessFiles, '\n@import ".', '.less', next);
+						},
+					], cb);
+				},
 				css: function (cb) {
 					async.waterfall([
 						function (next) {
@@ -133,8 +147,9 @@ function getBundleMetadata(target, callback) {
 		function (result, next) {
 			var cssImports = result.css;
 			var lessImports = result.less;
+			var acpLessImports = result.acpLess;
 
-			var imports = cssImports + '\n' + lessImports;
+			var imports = cssImports + '\n' + lessImports + '\n' + acpLessImports;
 			imports = buildImports[target](imports);
 
 			next(null, { paths: paths, imports: imports });

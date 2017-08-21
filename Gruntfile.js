@@ -83,7 +83,12 @@ module.exports = function (grunt) {
 				},
 			},
 			lessUpdated_Admin: {
-				files: ['public/**/*.less'],
+				files: [
+					'public/*.less',
+					'node_modules/nodebb-*/*.less', 'node_modules/nodebb-*/**/*.less',
+					'!node_modules/nodebb-*/node_modules/**',
+					'!node_modules/nodebb-*/.git/**',
+				],
 				options: {
 					interval: 1000,
 				},
