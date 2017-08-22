@@ -37,6 +37,10 @@ image.resizeImage = function (data, callback) {
 			var y = 0;
 			var crop;
 
+			if (image._exif && image._exif.tags && image._exif.tags.Orientation) {
+				image.exifRotate();
+			}
+
 			if (origRatio !== desiredRatio) {
 				if (desiredRatio > origRatio) {
 					desiredRatio = 1 / desiredRatio;
