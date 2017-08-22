@@ -46,6 +46,7 @@ module.exports = function (middleware) {
 		res.locals.config = res.locals.config || {};
 		var templateValues = {
 			title: meta.config.title || '',
+			'title:url': meta.config['title:url'] || '',
 			description: meta.config.description || '',
 			'cache-buster': meta.config['cache-buster'] || '',
 			'brand:logo': meta.config['brand:logo'] || '',
