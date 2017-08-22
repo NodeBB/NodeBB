@@ -7,6 +7,7 @@ var async = require('async');
 
 var db = require('../database');
 var pubsub = require('../pubsub');
+var plugins = require('../plugins');
 
 var Blacklist = {
 	_rules: [],
@@ -62,11 +63,16 @@ Blacklist.test = function (clientIp, callback) {
 		}) &&	// not in a blacklisted IPv4 cidr range
 		!ipRangeCheck(clientIp, Blacklist._rules.cidr6)	// not in a blacklisted IPv6 cidr range
 	) {
-		if (typeof callback === 'function') {
-			setImmediate(callback);
-		} else {
-			return false;
-		}
+		plugins.fireHook('filter:blacklist.test', {
+			ip: clientIp,
+			result: false,
+		}, function (err, data) {
+			if (typeof callback === 'function') {
+				callback(err);
+			} else {
+				return data.result;
+			}
+		});
 	} else {
 		var err = new Error('[[error:blacklisted-ip]]');
 		err.code = 'blacklisted-ip';
