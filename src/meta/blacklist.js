@@ -7,6 +7,7 @@ var async = require('async');
 var db = require('../database');
 var pubsub = require('../pubsub');
 var plugins = require('../plugins');
+var analytics = require('../analytics');
 
 var Blacklist = {
 	_rules: [],
@@ -70,6 +71,10 @@ Blacklist.test = function (clientIp, callback) {
 		plugins.fireHook('filter:blacklist.test', {	// To return test failure, pass back an error in callback
 			ip: clientIp,
 		}, function (err) {
+			if (err) {
+				analytics.increment('blacklist');
+			}
+
 			if (typeof callback === 'function') {
 				callback(err);
 			} else {
@@ -79,6 +84,8 @@ Blacklist.test = function (clientIp, callback) {
 	} else {
 		var err = new Error('[[error:blacklisted-ip]]');
 		err.code = 'blacklisted-ip';
+
+		analytics.increment('blacklist');
 
 		if (typeof callback === 'function') {
 			setImmediate(callback, err);
