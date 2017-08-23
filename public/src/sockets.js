@@ -29,7 +29,7 @@ app.isConnected = false;
 	});
 
 	socket.on('checkSession', function (uid, remoteExist) {
-		if (parseInt(uid, 10) !== parseInt(app.user.uid, 10) && remoteExist) {
+		if (parseInt(uid, 10) !== parseInt(app.user.uid, 10) && (uid !== 0 && remoteExist)) {
 			app.handleInvalidSession();
 		} else {
 			app.logout();
