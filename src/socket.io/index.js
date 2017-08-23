@@ -75,15 +75,17 @@ function onConnection(socket) {
 }
 
 function onConnect(socket) {
-	if (socket.uid) {
-		socket.join('uid_' + socket.uid);
-		socket.join('online_users');
-	} else {
-		socket.join('online_guests');
-	}
+	user.exists(socket.uid, function (err, exists) {
+		if (socket.uid) {
+			socket.join('uid_' + socket.uid);
+			socket.join('online_users');
+		} else {
+			socket.join('online_guests');
+		}
 
-	socket.join('sess_' + socket.request.signedCookies[nconf.get('sessionKey')]);
-	io.sockets.sockets[socket.id].emit('checkSession', socket.uid);
+		socket.join('sess_' + socket.request.signedCookies[nconf.get('sessionKey')]);
+		io.sockets.sockets[socket.id].emit('checkSession', socket.uid, exists);
+	});
 }
 
 function onMessage(socket, payload) {
