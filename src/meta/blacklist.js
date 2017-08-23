@@ -141,6 +141,7 @@ Blacklist.validate = function (rules, callback) {
 			cidr.push(rule);
 			return true;
 		}
+		return false;
 	});
 
 	callback(null, {
