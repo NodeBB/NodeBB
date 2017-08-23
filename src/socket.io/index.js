@@ -79,7 +79,7 @@ function onConnect(socket) {
 		if (err) {
 			return winston.error(err);
 		}
-		if (socket.uid) {
+		if (socket.uid && exists) {
 			socket.join('uid_' + socket.uid);
 			socket.join('online_users');
 		} else {
