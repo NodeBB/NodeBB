@@ -5,6 +5,7 @@ before_install:
   - "echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list"
   - "sudo apt-get update"
   - "sudo apt-get install mongodb-org-server"
+  - "sudo service mongod start"
 before_script:
   - sleep 30 # wait for mongodb to be ready
   - sh -c "if [ '$DB' = 'mongodb' ]; then node app --setup=\"{\\\"url\\\":\\\"http://127.0.0.1:4567\\\",\\\"secret\\\":\\\"abcdef\\\",\\\"database\\\":\\\"mongo\\\",\\\"mongo:host\\\":\\\"127.0.0.1\\\",\\\"mongo:port\\\":27017,\\\"mongo:username\\\":\\\"\\\",\\\"mongo:password\\\":\\\"\\\",\\\"mongo:database\\\":0,\\\"redis:host\\\":\\\"127.0.0.1\\\",\\\"redis:port\\\":6379,\\\"redis:password\\\":\\\"\\\",\\\"redis:database\\\":0,\\\"admin:username\\\":\\\"admin\\\",\\\"admin:email\\\":\\\"test@example.org\\\",\\\"admin:password\\\":\\\"abcdef\\\",\\\"admin:password:confirm\\\":\\\"abcdef\\\"}\" --ci=\"{\\\"host\\\":\\\"127.0.0.1\\\",\\\"port\\\":27017,\\\"database\\\":0}\"; fi"
