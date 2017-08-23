@@ -76,6 +76,9 @@ function onConnection(socket) {
 
 function onConnect(socket) {
 	user.exists(socket.uid, function (err, exists) {
+		if (err) {
+			return winston.error(err);
+		}
 		if (socket.uid) {
 			socket.join('uid_' + socket.uid);
 			socket.join('online_users');
