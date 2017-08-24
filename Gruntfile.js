@@ -73,7 +73,8 @@ module.exports = function (grunt) {
 		watch: {
 			lessUpdated_Client: {
 				files: [
-					'public/*.less',
+					'public/less/*.less',
+					'!public/less/admin/**/*.less',
 					'node_modules/nodebb-*/*.less', 'node_modules/nodebb-*/**/*.less',
 					'!node_modules/nodebb-*/node_modules/**',
 					'!node_modules/nodebb-*/.git/**',
@@ -84,7 +85,7 @@ module.exports = function (grunt) {
 			},
 			lessUpdated_Admin: {
 				files: [
-					'public/*.less',
+					'public/less/admin/**/*.less',
 					'node_modules/nodebb-*/*.less', 'node_modules/nodebb-*/**/*.less',
 					'!node_modules/nodebb-*/node_modules/**',
 					'!node_modules/nodebb-*/.git/**',
