@@ -9,6 +9,8 @@ var less = require('less');
 var async = require('async');
 var uglify = require('uglify-js');
 var nconf = require('nconf');
+var Benchpress = require('benchpressjs');
+
 var app = express();
 var server;
 
@@ -35,7 +37,7 @@ web.install = function (port) {
 	winston.info('Launching web installer on port', port);
 
 	app.use(express.static('public', {}));
-	app.engine('tpl', require('templates.js').__express);
+	app.engine('tpl', Benchpress.__express);
 	app.set('view engine', 'tpl');
 	app.set('views', path.join(__dirname, '../src/views'));
 	app.use(bodyParser.urlencoded({
