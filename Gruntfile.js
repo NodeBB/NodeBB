@@ -75,7 +75,7 @@ module.exports = function (grunt) {
 				files: [
 					'public/less/*.less',
 					'!public/less/admin/**/*.less',
-					'node_modules/nodebb-*/*.less', 'node_modules/nodebb-*/**/*.less',
+					'node_modules/nodebb-*/**/*.less',
 					'!node_modules/nodebb-*/node_modules/**',
 					'!node_modules/nodebb-*/.git/**',
 				],
@@ -86,7 +86,7 @@ module.exports = function (grunt) {
 			lessUpdated_Admin: {
 				files: [
 					'public/less/admin/**/*.less',
-					'node_modules/nodebb-*/*.less', 'node_modules/nodebb-*/**/*.less',
+					'node_modules/nodebb-*/**/*.less',
 					'!node_modules/nodebb-*/node_modules/**',
 					'!node_modules/nodebb-*/.git/**',
 				],
@@ -97,7 +97,7 @@ module.exports = function (grunt) {
 			clientUpdated: {
 				files: [
 					'public/src/**/*.js',
-					'node_modules/nodebb-*/*.js', 'node_modules/nodebb-*/**/*.js',
+					'node_modules/nodebb-*/**/*.js',
 					'!node_modules/nodebb-*/node_modules/**',
 					'node_modules/templates.js/lib/templates.js',
 					'!node_modules/nodebb-*/.git/**',
@@ -115,7 +115,7 @@ module.exports = function (grunt) {
 			templatesUpdated: {
 				files: [
 					'src/views/**/*.tpl',
-					'node_modules/nodebb-*/*.tpl', 'node_modules/nodebb-*/**/*.tpl',
+					'node_modules/nodebb-*/**/*.tpl',
 					'!node_modules/nodebb-*/node_modules/**',
 					'!node_modules/nodebb-*/.git/**',
 				],
