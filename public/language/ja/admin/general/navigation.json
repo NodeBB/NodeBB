@@ -11,6 +11,7 @@
 	"only-admins": "管理者にのみ表示する",
 	"only-global-mods-and-admins": "グローバルモデレーターおよび管理者のみに表示",
 	"only-logged-in": "ログインしたユーザーのみに表示",
+	"only-guest": "Only display to guests",
 	"open-new-window": "新しいウィンドウで開く",
 
 	"installed-plugins-required": "インストール済みのプラグインが必要です:",

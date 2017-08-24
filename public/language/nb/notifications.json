@@ -41,6 +41,7 @@
     "new_register": "<strong>%1</strong> sendte en forespørsel om registrering",
     "new_register_multiple": "There are <strong>%1</strong> registration requests awaiting review.",
     "flag_assigned_to_you": "<strong>Flag %1</strong> has been assigned to you",
+    "post_awaiting_review": "Post awaiting review",
     "email-confirmed": "E-post bekreftet",
     "email-confirmed-message": "Takk for at du har validert din e-post. Kontoen din er nå fullstendig aktivert.",
     "email-confirm-error-message": "Det oppsto et problem under valdiering av din e-post. Koden kan ha vært ugyldig eller ha utløpt.",

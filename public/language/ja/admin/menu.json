@@ -12,6 +12,7 @@
 	"manage/tags": "タグ",
 	"manage/users": "ユーザー",
 	"manage/registration": "登録キュー",
+	"manage/post-queue": "Post Queue",
 	"manage/groups": "グループ",
 	"manage/ip-blacklist": "IPブラックリスト",
 

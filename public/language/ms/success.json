@@ -1,6 +1,7 @@
 {
     "success": "Berjaya",
     "topic-post": "Kiriman anda berjaya dihantar.",
+    "post-queued": "Your post is queued for approval.",
     "authentication-successful": "Pengesahan Berjaya",
     "settings-saved": "Tetapan disimpan!"
 }

@@ -43,5 +43,9 @@
 	"alert.suggest-error": "<p>NodeBB 联系不到包管理器， 继续安装最新版本？</p><div class=\"alert alert-danger\"><strong>服务器返回 (%1)</strong>: %2</div>",
 	"alert.package-manager-unreachable": "<p>NodeBB 联系不到包管理器，暂时不建议升级。</p>",
 	"alert.incompatible": "<p>NodeBB 版本(v%1) 只支持到此插件的v%2版本。如需要此插件更加新的版本请先升级 NodeBB。</p>",
-	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>未找到兼容性信息</strong></p><p>此插件未注明对应的 NodeBB 版本。可能会产生兼容问题，导致 NodeBB 无法正常启动。</p></div><p> NodeBB 无法正常启动时请运行以下命令：</p> <pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre> <p>是否继续安装此插件的最新版本？</p>"
+	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>未找到兼容性信息</strong></p><p>此插件未注明对应的 NodeBB 版本。可能会产生兼容问题，导致 NodeBB 无法正常启动。</p></div><p> NodeBB 无法正常启动时请运行以下命令：</p> <pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre> <p>是否继续安装此插件的最新版本？</p>",
+
+	"license.title": "Plugin License Information",
+	"license.intro": "The plugin <strong>%1</strong> is licensed under the %2. Please read and understand the license terms prior to activating this plugin.",
+	"license.cta": "Do you wish to continue with activating this plugin?"
 }

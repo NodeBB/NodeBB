@@ -1,6 +1,7 @@
 {
     "success": "Sikeres",
     "topic-post": "Sikeres hozzászólás.",
+    "post-queued": "Your post is queued for approval.",
     "authentication-successful": "Sikeres hitelesítés",
     "settings-saved": "Beállítások mentve!"
 }

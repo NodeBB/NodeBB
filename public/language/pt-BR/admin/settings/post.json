@@ -6,6 +6,8 @@
 	"sorting.most-votes": "Mais Votos",
 	"sorting.topic-default": "Ordenação Padrão de Tópicos",
 	"restrictions": "Restições de Postagem",
+	"restrictions.post-queue": "Enable post queue",
+	"restrictions.post-queue-help": "Enabling post queue will put the posts of new users in a queue for approval.",
 	"restrictions.seconds-between": "Segundos entre Posts",
 	"restrictions.seconds-between-new": "Segundos entre Posts para Novos Usuários",
 	"restrictions.rep-threshold": "O tanto de reputação necessário para esta restrição ser retirada",

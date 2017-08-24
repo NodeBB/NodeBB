@@ -41,6 +41,7 @@
     "new_register": "<strong>%1</strong> wysłał żądanie rejestracji.",
     "new_register_multiple": "Są <strong>%1</strong> nowe żądania rejestracji.",
     "flag_assigned_to_you": "<strong>Flag %1</strong> has been assigned to you",
+    "post_awaiting_review": "Post awaiting review",
     "email-confirmed": "E-mail potwierdzony",
     "email-confirmed-message": "Dziękujemy za potwierdzenie maila. Twoje konto zostało aktywowane.",
     "email-confirm-error-message": "Wystąpił problem przy aktywacji - kod jest błędny lub przestarzały",

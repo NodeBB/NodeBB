@@ -1,6 +1,9 @@
 {
 	"site-settings": "Ajustes del Sitio",
 	"title": "Título del Sitio",
+	"title.url": "URL",
+	"title.url-placeholder": "The URL of the site title",
+	"title.url-help": "When the title is clicked, send users to this address. If left blank, user will be sent to the forum index.",
 	"title.name": "Nombre de tu Comunidad",
 	"title.show-in-header": "Mostrar Título del Sitio en el Encabezado",
 	"browser-title": "Título del Navegador",

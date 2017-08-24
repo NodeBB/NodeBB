@@ -6,6 +6,8 @@
 	"sorting.most-votes": "Avec le plus de votes",
 	"sorting.topic-default": "Tri des sujets par défaut",
 	"restrictions": "Restrictions d'envoi",
+	"restrictions.post-queue": "Enable post queue",
+	"restrictions.post-queue-help": "Enabling post queue will put the posts of new users in a queue for approval.",
 	"restrictions.seconds-between": "Nombre de secondes entre chaque message",
 	"restrictions.seconds-between-new": "Nombre de secondes entre chaque message pour les nouveaux utilisateurs",
 	"restrictions.rep-threshold": "Seuil de réputation avant que cette restriction soit levée",

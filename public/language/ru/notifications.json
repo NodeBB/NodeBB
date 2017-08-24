@@ -41,6 +41,7 @@
     "new_register": "Посетитель <strong>%1</strong> отправил запрос на регистрацию.",
     "new_register_multiple": "В очереди <strong>%1</strong> заявок на регистрацию.",
     "flag_assigned_to_you": "<strong>Flag %1</strong> has been assigned to you",
+    "post_awaiting_review": "Post awaiting review",
     "email-confirmed": "Электронная почта подтверждена",
     "email-confirmed-message": "Спасибо за подтверждение адреса электронной почты. Ваша учётная запись активирована. Добро пожаловать на наш сайт!",
     "email-confirm-error-message": "Ошибка проверки адреса электронной почты. Возможно, введён неправильно код подтверждения, либо у него истёк срок действия.",

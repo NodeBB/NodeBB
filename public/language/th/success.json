@@ -1,6 +1,7 @@
 {
     "success": "สำเร็จ",
     "topic-post": "คุณลงข้อความสำเร็จแล้ว",
+    "post-queued": "Your post is queued for approval.",
     "authentication-successful": "การระบุตัวตนสำเร็จแล้ว",
     "settings-saved": "การตั้งค่าได้ถูกบันทึกแล้ว"
 }

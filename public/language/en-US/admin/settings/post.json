@@ -6,6 +6,8 @@
 	"sorting.most-votes": "Most Votes",
 	"sorting.topic-default": "Default Topic Sorting",
 	"restrictions": "Posting Restrictions",
+	"restrictions.post-queue": "Enable post queue",
+	"restrictions.post-queue-help": "Enabling post queue will put the posts of new users in a queue for approval.",
 	"restrictions.seconds-between": "Seconds between Posts",
 	"restrictions.seconds-between-new": "Seconds between Posts for New Users",
 	"restrictions.rep-threshold": "Reputation threshold before this restriction is lifted",

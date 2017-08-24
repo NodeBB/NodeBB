@@ -6,6 +6,8 @@
 	"sorting.most-votes": "Кількість голосів",
 	"sorting.topic-default": "Типове сортування тем",
 	"restrictions": "Обмеження постингу",
+	"restrictions.post-queue": "Enable post queue",
+	"restrictions.post-queue-help": "Enabling post queue will put the posts of new users in a queue for approval.",
 	"restrictions.seconds-between": "Кількість секунд між постами",
 	"restrictions.seconds-between-new": "Кількість секунд між постами для нових користувачів",
 	"restrictions.rep-threshold": "Репутація, при якій зі обмеження буде знято",
