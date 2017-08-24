@@ -43,13 +43,19 @@
 				<label for="postDelay">[[admin/settings/post:restrictions.seconds-between]]</label>
 				<input id="postDelay" type="text" class="form-control" value="10" data-field="postDelay">
 			</div>
-			<div class="form-group">
-				<label for="newbiePostDelay">[[admin/settings/post:restrictions.seconds-between-new]]</label>
-				<input id="newbiePostDelay" type="text" class="form-control" value="120" data-field="newbiePostDelay">
-			</div>
-			<div class="form-group">
-				<label for="newbiePostDelayThreshold">[[admin/settings/post:restrictions.rep-threshold]]</label>
-				<input id="newbiePostDelayThreshold" type="text" class="form-control" value="3" data-field="newbiePostDelayThreshold">
+			<div class="row">
+				<div class="col-xs-6">
+					<div class="form-group">
+						<label for="newbiePostDelay">[[admin/settings/post:restrictions.seconds-between-new]]</label>
+						<input id="newbiePostDelay" type="text" class="form-control" value="120" data-field="newbiePostDelay">
+					</div>
+				</div>
+				<div class="col-xs-6">
+					<div class="form-group">
+						<label for="newbiePostDelayThreshold">[[admin/settings/post:restrictions.rep-threshold]]</label>
+						<input id="newbiePostDelayThreshold" type="text" class="form-control" value="3" data-field="newbiePostDelayThreshold">
+					</div>
+				</div>
 			</div>
 			<div class="form-group">
 				<label for="initialPostDelay">[[admin/settings/post:restrictions.seconds-defore-new]]</label>
