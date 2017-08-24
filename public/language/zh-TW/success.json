@@ -1,6 +1,7 @@
 {
     "success": "成功",
     "topic-post": "你的文章已張貼成功",
+    "post-queued": "Your post is queued for approval.",
     "authentication-successful": "驗證成功",
     "settings-saved": "設定已儲存"
 }

@@ -12,6 +12,7 @@
 	"manage/tags": "Tagovi",
 	"manage/users": "Korisnici",
 	"manage/registration": "Lista Registracija",
+	"manage/post-queue": "Post Queue",
 	"manage/groups": "Grupe",
 	"manage/ip-blacklist": "Crna Lista IP adresa",
 

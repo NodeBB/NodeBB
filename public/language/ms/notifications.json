@@ -41,6 +41,7 @@
     "new_register": "<strong>%1</strong> menghantar jemputan pendaftaran.",
     "new_register_multiple": "Ada <strong>%1</strong> permohonan ingin daftar yang sedang menunggu pengesahan.",
     "flag_assigned_to_you": "<strong>Flag %1</strong> has been assigned to you",
+    "post_awaiting_review": "Post awaiting review",
     "email-confirmed": "Emel Disahkan",
     "email-confirmed-message": "Terima kasih kerana mengesahkan emel anda. Akaun anda telah diaktifkan sepenuhnya.",
     "email-confirm-error-message": "Berlaku masalah semasa mengesahkan emel anda. Mungkin kod tidak sah atau tamat tempoh.",

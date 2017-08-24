@@ -1,12 +1,13 @@
 'use strict';
 
-var ip = require('ip');
-var ipRangeCheck = require('ip-range-check');
+var ipaddr = require('ipaddr.js');
 var winston = require('winston');
 var async = require('async');
 
 var db = require('../database');
 var pubsub = require('../pubsub');
+var plugins = require('../plugins');
+var analytics = require('../analytics');
 
 var Blacklist = {
 	_rules: [],
@@ -54,22 +55,37 @@ Blacklist.get = function (callback) {
 };
 
 Blacklist.test = function (clientIp, callback) {
+	// Some handy test addresses
+	// clientIp = '2001:db8:85a3:0:0:8a2e:370:7334';	// IPv6
+	// clientIp = '127.0.15.1';	// IPv4
+	var addr = ipaddr.parse(clientIp);
+
 	if (
 		Blacklist._rules.ipv4.indexOf(clientIp) === -1 &&	// not explicitly specified in ipv4 list
 		Blacklist._rules.ipv6.indexOf(clientIp) === -1 &&	// not explicitly specified in ipv6 list
 		!Blacklist._rules.cidr.some(function (subnet) {
-			return ip.cidrSubnet(subnet).contains(clientIp);
-		}) &&	// not in a blacklisted IPv4 cidr range
-		!ipRangeCheck(clientIp, Blacklist._rules.cidr6)	// not in a blacklisted IPv6 cidr range
+			return addr.match(ipaddr.parseCIDR(subnet));
+			// return ip.cidrSubnet(subnet).contains(clientIp);
+		})	// not in a blacklisted IPv4 or IPv6 cidr range
 	) {
-		if (typeof callback === 'function') {
-			setImmediate(callback);
-		} else {
-			return false;
-		}
+		plugins.fireHook('filter:blacklist.test', {	// To return test failure, pass back an error in callback
+			ip: clientIp,
+		}, function (err) {
+			if (err) {
+				analytics.increment('blacklist');
+			}
+
+			if (typeof callback === 'function') {
+				callback(err);
+			} else {
+				return !!err;
+			}
+		});
 	} else {
 		var err = new Error('[[error:blacklisted-ip]]');
 		err.code = 'blacklisted-ip';
+
+		analytics.increment('blacklist');
 
 		if (typeof callback === 'function') {
 			setImmediate(callback, err);
@@ -84,11 +100,8 @@ Blacklist.validate = function (rules, callback) {
 	var ipv4 = [];
 	var ipv6 = [];
 	var cidr = [];
-	var cidr6 = [];
 	var invalid = [];
 
-	var isIPv4CidrSubnet = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$/;
-	var isIPv6CidrSubnet = /^s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]d|1dd|[1-9]?d)(.(25[0-5]|2[0-4]d|1dd|[1-9]?d)){3}))|:)))(%.+)?s*(\/([0-9]|[1-9][0-9]|1[0-1][0-9]|12[0-8]))?$/;
 	var inlineCommentMatch = /#.*$/;
 	var whitelist = ['127.0.0.1', '::1', '::ffff:0:127.0.0.1'];
 
@@ -101,29 +114,39 @@ Blacklist.validate = function (rules, callback) {
 
 	// Filter out invalid rules
 	rules = rules.filter(function (rule) {
-		if (whitelist.indexOf(rule) !== -1) {
+		var addr;
+		var isRange = false;
+		try {
+			addr = ipaddr.parse(rule);
+		} catch (e) {
+			// Do nothing
+		}
+
+		try {
+			addr = ipaddr.parseCIDR(rule);
+			isRange = true;
+		} catch (e) {
+			// Do nothing
+		}
+
+		if (!addr || whitelist.indexOf(rule) !== -1) {
 			invalid.push(rule);
 			return false;
 		}
 
-		if (ip.isV4Format(rule)) {
-			ipv4.push(rule);
-			return true;
-		}
-		if (ip.isV6Format(rule)) {
-			ipv6.push(rule);
-			return true;
-		}
-		if (isIPv4CidrSubnet.test(rule)) {
+		if (!isRange) {
+			if (addr.kind() === 'ipv4' && ipaddr.IPv4.isValid(rule)) {
+				ipv4.push(rule);
+				return true;
+			}
+			if (addr.kind() === 'ipv6' && ipaddr.IPv6.isValid(rule)) {
+				ipv6.push(rule);
+				return true;
+			}
+		} else {
 			cidr.push(rule);
 			return true;
 		}
-		if (isIPv6CidrSubnet.test(rule)) {
-			cidr.push(rule);
-			return true;
-		}
-
-		invalid.push(rule);
 		return false;
 	});
 
@@ -132,7 +155,6 @@ Blacklist.validate = function (rules, callback) {
 		ipv4: ipv4,
 		ipv6: ipv6,
 		cidr: cidr,
-		cidr6: cidr6,
 		valid: rules,
 		invalid: invalid,
 	});

@@ -1,6 +1,7 @@
 {
     "success": "Успешно",
     "topic-post": "Запись была успешно создана",
+    "post-queued": "Your post is queued for approval.",
     "authentication-successful": "Авторизация выполнена успешно",
     "settings-saved": "Настройки сохранены"
 }

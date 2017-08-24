@@ -41,6 +41,7 @@
     "new_register": "<strong>%1</strong> ha inviato una richiesta di registrazione.",
     "new_register_multiple": "Ci sono <strong>%1</strong> richieste di registrazione che attendono di essere esaminate.",
     "flag_assigned_to_you": "<strong>Flag %1</strong> has been assigned to you",
+    "post_awaiting_review": "Post awaiting review",
     "email-confirmed": "Email Confermata",
     "email-confirmed-message": "Grazie per aver validato la tua email. Il tuo account è ora completamente attivato.",
     "email-confirm-error-message": "C'è stato un problema nella validazione del tuo indirizzo email. Potrebbe essere il codice non valido o scaduto.",

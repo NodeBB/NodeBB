@@ -1,6 +1,7 @@
 {
     "success": "Lyckat",
     "topic-post": "Du har nu gjort ett inlägg.",
+    "post-queued": "Your post is queued for approval.",
     "authentication-successful": "Autentisering lyckades",
     "settings-saved": "Inställningarna sparades."
 }

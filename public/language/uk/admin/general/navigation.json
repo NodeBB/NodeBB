@@ -11,6 +11,7 @@
 	"only-admins": "Показувати лише Адмінам",
 	"only-global-mods-and-admins": "Показувати лише Модераторам та Адмінам",
 	"only-logged-in": "Показувати лише увійшовшим користувачам",
+	"only-guest": "Only display to guests",
 	"open-new-window": "Відкривати у новому вікні",
 
 	"installed-plugins-required": "Необхідні встановлені плагіни:",

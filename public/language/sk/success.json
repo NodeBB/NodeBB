@@ -1,6 +1,7 @@
 {
     "success": "Úspech",
     "topic-post": "Úspešne ste pridali nový príspevok.",
+    "post-queued": "Your post is queued for approval.",
     "authentication-successful": "Overovanie úspešné",
     "settings-saved": "Nastavenia uložené!"
 }

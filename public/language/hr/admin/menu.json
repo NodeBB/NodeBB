@@ -12,6 +12,7 @@
 	"manage/tags": "Oznake",
 	"manage/users": "Korisnici",
 	"manage/registration": "Lista zahtjeva za registraciju",
+	"manage/post-queue": "Post Queue",
 	"manage/groups": "Grupe",
 	"manage/ip-blacklist": "IP blokade",
 

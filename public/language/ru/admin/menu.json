@@ -12,6 +12,7 @@
 	"manage/tags": "Теги",
 	"manage/users": "Пользователи",
 	"manage/registration": "Очередь на регистрацию",
+	"manage/post-queue": "Post Queue",
 	"manage/groups": "Группы",
 	"manage/ip-blacklist": "Блокировка IP",
 

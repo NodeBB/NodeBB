@@ -12,6 +12,7 @@
 	"manage/tags": "Tags",
 	"manage/users": "Users",
 	"manage/registration": "Registration Queue",
+	"manage/post-queue": "Post Queue",
 	"manage/groups": "Groups",
 	"manage/ip-blacklist": "IP Blacklist",
 

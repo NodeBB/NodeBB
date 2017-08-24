@@ -11,6 +11,7 @@
 	"only-admins": "Prikaži samo administratorima",
 	"only-global-mods-and-admins": "Prikazuj samo globalnim moderatorima i administratorima",
 	"only-logged-in": "Prikaži samo prijavljenim korisnicima",
+	"only-guest": "Only display to guests",
 	"open-new-window": "Otvori u novom prozoru",
 
 	"installed-plugins-required": "Potrebni su instalirani dodatci:",

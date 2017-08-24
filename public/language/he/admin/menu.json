@@ -12,6 +12,7 @@
 	"manage/tags": "תגיות",
 	"manage/users": "משתמשים",
 	"manage/registration": "Registration Queue",
+	"manage/post-queue": "Post Queue",
 	"manage/groups": "Groups",
 	"manage/ip-blacklist": "IP Blacklist",
 

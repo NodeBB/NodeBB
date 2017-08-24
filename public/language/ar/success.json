@@ -1,6 +1,7 @@
 {
     "success": "نجاح",
     "topic-post": "لقد تمت الإضافة بنجاح.",
+    "post-queued": "Your post is queued for approval.",
     "authentication-successful": "تم تسجيل الدخول بنجاح",
     "settings-saved": "تم حفظ التغييرات!"
 }

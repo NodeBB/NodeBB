@@ -41,6 +41,7 @@
     "new_register": "<strong>%1</strong> envió una solicitud de registro.",
     "new_register_multiple": "Hay <strong>%1</strong> peticiones de registros pendientes de revisión",
     "flag_assigned_to_you": "<strong>Reporte %1</strong> te ha sido asignado.",
+    "post_awaiting_review": "Post awaiting review",
     "email-confirmed": "Correo electrónico confirmado",
     "email-confirmed-message": "Gracias por validar tu correo electrónico. Tu cuenta ya está completamente activa.",
     "email-confirm-error-message": "Hubo un problema al validar tu cuenta de correo electrónico. Quizá el código era erróneo o expiró...",

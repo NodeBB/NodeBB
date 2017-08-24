@@ -12,6 +12,7 @@
 	"manage/tags": "태그",
 	"manage/users": "용자",
 	"manage/registration": "회원 가입 승인 대기자",
+	"manage/post-queue": "Post Queue",
 	"manage/groups": "그룹",
 	"manage/ip-blacklist": "IP 블랙리스트",
 

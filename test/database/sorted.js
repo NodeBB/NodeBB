@@ -599,12 +599,26 @@ describe('Sorted Set methods', function () {
 
 		it('should remove elements with scores between min max inclusive', function (done) {
 			db.sortedSetsRemoveRangeByScore(['sorted6'], 4, 5, function (err) {
-				assert.equal(err, null);
+				assert.ifError(err);
 				assert.equal(arguments.length, 1);
 				db.getSortedSetRange('sorted6', 0, -1, function (err, values) {
-					assert.equal(err, null);
+					assert.ifError(err);
 					assert.deepEqual(values, ['value1', 'value2', 'value3']);
 					done();
+				});
+			});
+		});
+
+		it('should remove elements with if strin score is passed in', function (done) {
+			db.sortedSetAdd('sortedForRemove', [11, 22, 33], ['value1', 'value2', 'value3'], function (err) {
+				assert.ifError(err);
+				db.sortedSetsRemoveRangeByScore(['sortedForRemove'], '22', '22', function (err) {
+					assert.ifError(err);
+					db.getSortedSetRange('sortedForRemove', 0, -1, function (err, values) {
+						assert.ifError(err);
+						assert.deepEqual(values, ['value1', 'value3']);
+						done();
+					});
 				});
 			});
 		});

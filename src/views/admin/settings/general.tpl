@@ -9,6 +9,12 @@
 			<label>[[admin/settings/general:title]]</label>
 			<input class="form-control" type="text" placeholder="[[admin/settings/general:title.name]]" data-field="title" />
 
+			<label for="title:url">[[admin/settings/general:title.url]]</label>
+			<input id ="title:url" type="text" class="form-control" placeholder="[[admin/settings/general:title.url-placeholder]]" data-field="title:url" />
+			<p class="help-block">
+				[[admin/settings/general:title.url-help]]
+			</p>
+
 			<div class="checkbox">
 				<label for="showSiteTitle" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input type="checkbox" class="mdl-switch__input" id="showSiteTitle" data-field="showSiteTitle" name="showSiteTitle" />

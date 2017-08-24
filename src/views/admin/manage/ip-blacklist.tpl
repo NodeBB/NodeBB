@@ -9,7 +9,26 @@
 
 		<div class="row">
 			<div class="col-sm-6">
-				<textarea class="form-control" id="blacklist-rules">{rules}</textarea>
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div><canvas id="blacklist:hourly" height="250"></canvas></div>
+					</div>
+					<div class="panel-footer"><small>[[admin/manage/ip-blacklist:analytics.blacklist-hourly]]</small></div>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div><canvas id="blacklist:daily" height="250"></canvas></div>
+					</div>
+					<div class="panel-footer"><small>[[admin/manage/ip-blacklist:analytics.blacklist-daily]]</small></div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-6">
+				<textarea id="blacklist-rules">{rules}</textarea>
 			</div>
 			<div class="col-sm-6">
 				<div class="panel panel-default">

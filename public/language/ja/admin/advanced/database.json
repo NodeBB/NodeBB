@@ -1,7 +1,7 @@
 {
 	"x-b": "%1 b",
 	"x-mb": "%1 mb",
-	"x-gb": "%1 gb",
+	"x-gb": "%1 GB",
 	"uptime-seconds": "秒単位の稼働時間",
 	"uptime-days": "日単位の稼働時間",
 

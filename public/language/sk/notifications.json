@@ -41,6 +41,7 @@
     "new_register": "<strong>%1</strong> odoslal žiadosť o registráciu.",
     "new_register_multiple": "Nachádzajú sa <strong>%1</strong> registrácie čakajúce na preskúmanie.",
     "flag_assigned_to_you": "<strong>Príznak %1</strong> vám bol priradený ",
+    "post_awaiting_review": "Post awaiting review",
     "email-confirmed": "E-mail bol potvrdený",
     "email-confirmed-message": "Ďakujeme za potvrdenie Vášho e-mailu. Účet je plne aktivovaný.",
     "email-confirm-error-message": "Vyskytla sa chyba pri overení Vašej e-mailovej adresy. ",

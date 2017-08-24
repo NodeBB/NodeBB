@@ -12,6 +12,7 @@
 	"manage/tags": "Етикети",
 	"manage/users": "Потребители",
 	"manage/registration": "Регистрационна опашка",
+	"manage/post-queue": "Опашка за публикации",
 	"manage/groups": "Групи",
 	"manage/ip-blacklist": "Черен списък за IP адреси",
 

@@ -211,3 +211,9 @@ Analytics.getErrorAnalytics = function (callback) {
 	}, callback);
 };
 
+Analytics.getBlacklistAnalytics = function (callback) {
+	async.parallel({
+		daily: async.apply(Analytics.getDailyStatsForSet, 'analytics:blacklist', Date.now(), 7),
+		hourly: async.apply(Analytics.getHourlyStatsForSet, 'analytics:blacklist', Date.now(), 24),
+	}, callback);
+};

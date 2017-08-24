@@ -1,6 +1,9 @@
 {
 	"site-settings": "Postavke stranice",
 	"title": "Naslov stranice",
+	"title.url": "URL",
+	"title.url-placeholder": "The URL of the site title",
+	"title.url-help": "When the title is clicked, send users to this address. If left blank, user will be sent to the forum index.",
 	"title.name": "Ime Vaše zajednice",
 	"title.show-in-header": "Prikaži naslov stranice u zaglavlju",
 	"browser-title": "Naslov pretraživača",

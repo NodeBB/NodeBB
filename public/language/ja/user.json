@@ -60,7 +60,7 @@
     "username_taken_workaround": "このユーザー名はすでに使用されています。いまのユーザー名は <strong>%1</strong> です。",
     "password_same_as_username": "パスワードがユーザー名と同じですから、他のパスワードを使って下さい。",
     "password_same_as_email": "パスワードがメールアドレスと同じです。他のパスワードを使って下さい。",
-    "weak_password": "Weak password.",
+    "weak_password": "弱いパスワード",
     "upload_picture": "画像をアップロード",
     "upload_a_picture": "画像をアップロード",
     "remove_uploaded_picture": "アップした写真を取り消します",
