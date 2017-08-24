@@ -14,6 +14,15 @@ describe('admin search', function () {
 			]);
 			done();
 		});
+		it('should exclude .jst files', function (done) {
+			assert.deepEqual(search.filterDirectories([
+				'hfjksfd/fdsgagag/admin/gdhgfsdg/sggag.tpl',
+				'dfahdfsgf/admin/hgkfds/fdhsdfh.jst',
+			]), [
+				'admin/gdhgfsdg/sggag',
+			]);
+			done();
+		});
 		it('should exclude partials', function (done) {
 			assert.deepEqual(search.filterDirectories([
 				'hfjksfd/fdsgagag/admin/gdhgfsdg/sggag.tpl',
