@@ -216,4 +216,35 @@ widgets.reset = function (callback) {
 	], callback);
 };
 
+widgets.resetTemplate = function (template, callback) {
+	db.getObject('widgets:' + template + '.tpl', function (err, area) {
+		if (err) {
+			return callback();
+		}
+
+		var toBeDrafted = [];
+		for (var location in area) {
+			if (area.hasOwnProperty(location)) {
+				toBeDrafted = toBeDrafted.concat(JSON.parse(area[location]));
+			}
+		}
+
+		db.delete('widgets:' + template + '.tpl');
+		db.getObjectField('widgets:global', 'drafts', function (err, draftWidgets) {
+			if (err) {
+				return callback();
+			}
+
+			draftWidgets = JSON.parse(draftWidgets).concat(toBeDrafted);
+			db.setObjectField('widgets:global', 'drafts', JSON.stringify(draftWidgets), callback);
+		});
+	});
+};
+
+widgets.resetTemplates = function (templates, callback) {
+	async.eachSeries(templates, function (template, next) {
+		widgets.resetTemplate(template, next);
+	}, callback);
+};
+
 module.exports = widgets;
