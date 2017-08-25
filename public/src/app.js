@@ -18,7 +18,7 @@ app.cacheBuster = null;
 				configurable: true,
 				enumerable: true,
 				get: function () {
-					console.warn('[deprecated] Accessing benchpress (formerly know as templates.js) globally is deprecated. Use `require(["benchpress"], function (Benchpress) { ... })` instead');
+					console.warn('[deprecated] Accessing benchpress (formerly known as templates.js) globally is deprecated. Use `require(["benchpress"], function (Benchpress) { ... })` instead');
 					return Benchpress;
 				},
 			});
