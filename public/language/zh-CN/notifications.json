@@ -41,6 +41,7 @@
     "new_register": "<strong>%1</strong> 发出了注册请求",
     "new_register_multiple": "有 <strong>%1</strong> 条注册申请等待批准。",
     "flag_assigned_to_you": "<strong>举报 %1</strong> 已经被指派给你",
+    "post_awaiting_review": "Post awaiting review",
     "email-confirmed": "电子邮箱已确认",
     "email-confirmed-message": "感谢您验证您的电子邮箱。您的帐户现已完全激活。",
     "email-confirm-error-message": "验证的您电子邮箱地址时出现了问题。可能是因为验证码无效或已过期。",

@@ -43,5 +43,9 @@
 	"alert.suggest-error": "<p>NodeBB se nemohl připojit ke správce balíčku, pokračovat v instalaci poslední verze?</p><div class=\"alert alert-danger\"><strong>Server odpověděl (%1)</strong>: %2</div>",
 	"alert.package-manager-unreachable": "<p>NodeBB se nemohl připojit ke správci balíčku, aktualizace není doporučena.</p>",
 	"alert.incompatible": "<p>Vaše verze NodeBB (v%1) umožňuje jen aktualizovat toto rozšíření na v%2. Aktualizujte prosím NodeBB, chcete-li nainstalovat nejnovější verzi tohoto rozšíření.</p>",
-	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>Nebyla nalezena žádná informace o kompatibilitě</strong></p><p>Toto rozšíření nemá nastavenou požadovanou verzi NodeBB. Plná kompatibilita nemůže být garantována a může způsobit, že se vám již NodeBB nespustí.</p></div><p>Nespustí-li se správně NodeBB:</p><pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre><p>Pokračovat v instalaci této aktuální verze rozšíření?</p>"
+	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>Nebyla nalezena žádná informace o kompatibilitě</strong></p><p>Toto rozšíření nemá nastavenou požadovanou verzi NodeBB. Plná kompatibilita nemůže být garantována a může způsobit, že se vám již NodeBB nespustí.</p></div><p>Nespustí-li se správně NodeBB:</p><pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre><p>Pokračovat v instalaci této aktuální verze rozšíření?</p>",
+
+	"license.title": "Plugin License Information",
+	"license.intro": "The plugin <strong>%1</strong> is licensed under the %2. Please read and understand the license terms prior to activating this plugin.",
+	"license.cta": "Do you wish to continue with activating this plugin?"
 }

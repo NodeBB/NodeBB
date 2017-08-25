@@ -12,6 +12,7 @@
 	"manage/tags": "话题",
 	"manage/users": "用户",
 	"manage/registration": "注册申请",
+	"manage/post-queue": "Post Queue",
 	"manage/groups": "群组",
 	"manage/ip-blacklist": "IP 黑名单",
 

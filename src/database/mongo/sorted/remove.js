@@ -41,11 +41,11 @@ module.exports = function (db, module) {
 		var query = { _key: { $in: keys } };
 
 		if (min !== '-inf') {
-			query.score = { $gte: min };
+			query.score = { $gte: parseFloat(min) };
 		}
 		if (max !== '+inf') {
 			query.score = query.score || {};
-			query.score.$lte = max;
+			query.score.$lte = parseFloat(max);
 		}
 
 		db.collection('objects').remove(query, function (err) {

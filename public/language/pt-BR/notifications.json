@@ -41,6 +41,7 @@
     "new_register": "<strong>%1</strong> lhe enviou um pedido de cadastro.",
     "new_register_multiple": "Há <strong>%1</strong> pedidos de registro aguardando revisão.",
     "flag_assigned_to_you": "A Sinalização %1</strong> foi desiganada para você",
+    "post_awaiting_review": "Post awaiting review",
     "email-confirmed": "Email Confirmado",
     "email-confirmed-message": "Obrigado por validar o seu email. Agora sua conta está plenamente ativada.",
     "email-confirm-error-message": "Houve um problema ao validar o seu endereço de email. Talvez o código era invalido ou tenha expirado.",

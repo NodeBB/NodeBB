@@ -41,6 +41,7 @@
     "new_register": "<strong>%1</strong> mengirim permintaan registrasi.",
     "new_register_multiple": "There are <strong>%1</strong> registration requests awaiting review.",
     "flag_assigned_to_you": "<strong>Flag %1</strong> has been assigned to you",
+    "post_awaiting_review": "Post awaiting review",
     "email-confirmed": "Email telah Dikonfirmasi",
     "email-confirmed-message": "Terimakasih telah melakukan validasi email. Akunmu saat ini telah aktif sepenuhnya.",
     "email-confirm-error-message": "Terjadi masalah saat melakukan validasi emailmu. Mungkin terjadi kesalahan kode atau waktu habis.",

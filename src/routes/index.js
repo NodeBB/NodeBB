@@ -4,11 +4,12 @@ var nconf = require('nconf');
 var winston = require('winston');
 var path = require('path');
 var async = require('async');
+var express = require('express');
+
 var meta = require('../meta');
 var controllers = require('../controllers');
 var plugins = require('../plugins');
 var user = require('../user');
-var express = require('express');
 
 var accountRoutes = require('./accounts');
 var metaRoutes = require('./meta');
@@ -147,6 +148,7 @@ module.exports = function (app, middleware, hotswapIds, callback) {
 	}
 
 	app.use(middleware.privateUploads);
+	app.use(relativePath + '/assets/templates', middleware.templatesOnDemand);
 
 	var statics = [
 		{ route: '/assets', path: path.join(__dirname, '../../build/public') },

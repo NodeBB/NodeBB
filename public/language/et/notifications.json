@@ -41,6 +41,7 @@
     "new_register": "<strong>%1</strong> saatis registreerimistaotluse.",
     "new_register_multiple": "<strong>%1</strong> registreerimistaotlust ootavad ülevaadet.",
     "flag_assigned_to_you": "<strong>Flag %1</strong> has been assigned to you",
+    "post_awaiting_review": "Post awaiting review",
     "email-confirmed": "Emaili aadress kinnitatud",
     "email-confirmed-message": "Täname, et kinnitasite oma emaili aadressi. Teie kasutaja on nüüd täielikult aktiveeritud.",
     "email-confirm-error-message": "Emaili aadressi kinnitamisel tekkis viga. Võibolla kinnituskood oli vale või aegunud.",

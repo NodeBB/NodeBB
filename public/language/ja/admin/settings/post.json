@@ -6,6 +6,8 @@
 	"sorting.most-votes": "最も多い評価",
 	"sorting.topic-default": "デフォルトのスレッドの並び順",
 	"restrictions": "転記の制限",
+	"restrictions.post-queue": "Enable post queue",
+	"restrictions.post-queue-help": "Enabling post queue will put the posts of new users in a queue for approval.",
 	"restrictions.seconds-between": "投稿間の秒数",
 	"restrictions.seconds-between-new": "新規ユーザーの投稿間の秒数",
 	"restrictions.rep-threshold": "この制限が解除される前の評判しきい値",

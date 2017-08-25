@@ -11,6 +11,7 @@
 	"only-admins": "Nur für Admins sichtbar",
 	"only-global-mods-and-admins": "Nur für Globale Moderatoren und Admins sichtbar",
 	"only-logged-in": "Nur für angemeldete Benutzer sichtbar",
+	"only-guest": "Only display to guests",
 	"open-new-window": "In neuem Fenster öffnen",
 
 	"installed-plugins-required": "Benötigte installierte Plugins:",

@@ -3,7 +3,7 @@
 var async = require('async');
 var winston = require('winston');
 var nconf = require('nconf');
-var templates = require('templates.js');
+var Benchpress = require('benchpressjs');
 var nodemailer = require('nodemailer');
 var sendmailTransport = require('nodemailer-sendmail-transport');
 var smtpTransport = require('nodemailer-smtp-transport');
@@ -173,9 +173,9 @@ Emailer.sendViaFallback = function (data, callback) {
 };
 
 function render(tpl, params, next) {
-	if (meta.config['email:custom:' + tpl.replace('emails/', '')]) {
-		var text = templates.parse(meta.config['email:custom:' + tpl.replace('emails/', '')], params);
-		next(null, text);
+	var customTemplate = meta.config['email:custom:' + tpl.replace('emails/', '')];
+	if (customTemplate) {
+		Benchpress.compileParse(customTemplate, params, next);
 	} else {
 		app.render(tpl, params, next);
 	}

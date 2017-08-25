@@ -12,7 +12,7 @@
 	"reorder-plugins": "プラグインの並び替え",
 	"order-active": "アクティブなプラグインの並び替え",
 	"dev-interested": "NodeBBのプラグインの作成に興味がありますか？",
-	"docs-info": "Full documentation regarding plugin authoring can be found in the <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">NodeBB Docs Portal</a>.",
+	"docs-info": "プラグインオーサリングに関する完璧な文書は<a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">NodeBB Docs Portal</a>にあります。",
 
 	"order.description": "特定のプラグインは他のプラグインの前後で初期化された際に理想的な動作をします。",
 	"order.explanation": "プラグインはここに上から下へ指定された順序でロードされます",
@@ -43,5 +43,9 @@
 	"alert.suggest-error": "<p>NodeBBはパッケージマネージャに到達できませんでした。最新バージョンのインストールを続行しましたか？</p><div class=\"alert alert-danger\"><strong>Server returned (%1)</strong>: %2</div>",
 	"alert.package-manager-unreachable": "<p>NodeBBはパッケージマネージャに到達できませんでした。今アップグレードすることはおすすめしません。</p>",
 	"alert.incompatible": "<p>NodeBBのバージョン(v%1)を v%2 にアップデートする必要があります。このプラグインの新しいバージョンをインストールするにはNodeBBをアップデートしてください。</p>",
-	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>No Compatibility Information Found</strong></p><p>このプラグインはインストールに必要なNodeBBのバージョンの指定がされていませんでした。完全な互換性は保証されず、NodeBBが正常に起動しなくなる可能性があります。</p></div><p>NodeBBが正常に起動できない場合:</p><pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre><p>このプラグインの最新バージョンのインストールを続行しますか？</p>"
+	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>No Compatibility Information Found</strong></p><p>このプラグインはインストールに必要なNodeBBのバージョンの指定がされていませんでした。完全な互換性は保証されず、NodeBBが正常に起動しなくなる可能性があります。</p></div><p>NodeBBが正常に起動できない場合:</p><pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre><p>このプラグインの最新バージョンのインストールを続行しますか？</p>",
+
+	"license.title": "Plugin License Information",
+	"license.intro": "The plugin <strong>%1</strong> is licensed under the %2. Please read and understand the license terms prior to activating this plugin.",
+	"license.cta": "Do you wish to continue with activating this plugin?"
 }

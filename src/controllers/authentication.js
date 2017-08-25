@@ -288,7 +288,6 @@ authenticationController.doLogin = function (req, uid, callback) {
 };
 
 authenticationController.onSuccessfulLogin = function (req, uid, callback) {
-	callback = callback || function () {};
 	var uuid = utils.generateUUID();
 	req.session.meta = {};
 
@@ -308,6 +307,7 @@ authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 	});
 
 	async.waterfall([
+		async.apply(meta.blacklist.test, req.ip),
 		function (next) {
 			async.parallel([
 				function (next) {
@@ -330,7 +330,17 @@ authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 			plugins.fireHook('action:user.loggedIn', { uid: uid, req: req });
 			next();
 		},
-	], callback);
+	], function (err) {
+		if (err) {
+			req.session.destroy();
+		}
+
+		if (typeof callback === 'function') {
+			callback(err);
+		} else {
+			return false;
+		}
+	});
 };
 
 authenticationController.localLogin = function (req, username, password, next) {

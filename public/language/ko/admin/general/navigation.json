@@ -11,6 +11,7 @@
 	"only-admins": "관리자에게만 보이기",
 	"only-global-mods-and-admins": "(준)관리자와 관리자에게만 보이기",
 	"only-logged-in": "로그인한 사용자에게만 보이기",
+	"only-guest": "Only display to guests",
 	"open-new-window": "새 창에서 열기",
 
 	"installed-plugins-required": "설치된 플러그인 필수:",

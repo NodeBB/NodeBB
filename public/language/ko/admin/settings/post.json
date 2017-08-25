@@ -6,6 +6,8 @@
 	"sorting.most-votes": "추천수 순으로 정렬",
 	"sorting.topic-default": "게시물 정렬기준 기본값",
 	"restrictions": "글 작성 제약사항",
+	"restrictions.post-queue": "Enable post queue",
+	"restrictions.post-queue-help": "Enabling post queue will put the posts of new users in a queue for approval.",
 	"restrictions.seconds-between": "글 작성 간 시간(초)",
 	"restrictions.seconds-between-new": "신규 사용자인 경우, 글 작성 간 시간(초)",
 	"restrictions.rep-threshold": "위 제약을 해제하기 위한 최소 등급",

@@ -2,8 +2,8 @@
 
 var async = require('async');
 var winston = require('winston');
-var templates = require('templates.js');
 var _ = require('lodash');
+var Benchpress = require('benchpressjs');
 
 var plugins = require('../plugins');
 var translator = require('../translator');
@@ -93,12 +93,12 @@ function renderWidget(widget, uid, options, callback) {
 
 			if (widget.data.container && widget.data.container.match('{body}')) {
 				translator.translate(widget.data.title, function (title) {
-					html = templates.parse(widget.data.container, {
+					Benchpress.compileParse(widget.data.container, {
 						title: title,
 						body: html,
+					}, function (err, html) {
+						next(err, { html: html });
 					});
-
-					next(null, { html: html });
 				});
 			} else {
 				next(null, { html: html });

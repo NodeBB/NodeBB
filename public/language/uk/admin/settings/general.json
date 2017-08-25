@@ -1,6 +1,9 @@
 {
 	"site-settings": "Налаштування сайту",
 	"title": "Назва сайту",
+	"title.url": "URL",
+	"title.url-placeholder": "The URL of the site title",
+	"title.url-help": "When the title is clicked, send users to this address. If left blank, user will be sent to the forum index.",
 	"title.name": "Назва вашої спільноти",
 	"title.show-in-header": "Показувати заголовок сайту в шапці",
 	"browser-title": "Заголовок браузера",

@@ -43,5 +43,9 @@
 	"alert.suggest-error": "<p>NodeBB가 페키지 매니저 접근에 실패하였습니다. 최신 버젼을 설치하시겠습니까?</p><div class=\"alert alert-danger\"><strong>서버의 응답 (%1)</strong>:%2</div>",
 	"alert.package-manager-unreachable": "<p>NodeBB가 페키지 매니저 접근에 실패했습니다. 지금 업그레이드 하는 것을 추천하지 않습니다.</p>",
 	"alert.incompatible": "<p>지금 사용하시는 NodeBB 버젼(v%1)에서는 이 플러그인을 v%2 버젼까지만 업그레이드 할 수 있습니다. 이 플러그인의 최신 버젼을 설치하고 싶으시다면 먼저 NodeBB를 업그레이드 해주십시오.</p>",
-	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>호환성 관련 정보를 찾지 못했습니다.</strong></p><p>이 플러그인은 현재 사용 중이신 NodeBB 버젼에 적합한 버젼을 명시하지 않았습니다. 따라서 완전한 호환성을 보장할 수 없고, 결과적으로 지금 사용중이신 NodeBB에 오류를 일으킬 수도 있습니다.</p></div><p>만약 NodeBB가 제대로 시작되지 않는다면:</p><pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre><p>이 플러그인의 최신 버젼을 설치를 계속 하시겠습니까?</p>"
+	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>호환성 관련 정보를 찾지 못했습니다.</strong></p><p>이 플러그인은 현재 사용 중이신 NodeBB 버젼에 적합한 버젼을 명시하지 않았습니다. 따라서 완전한 호환성을 보장할 수 없고, 결과적으로 지금 사용중이신 NodeBB에 오류를 일으킬 수도 있습니다.</p></div><p>만약 NodeBB가 제대로 시작되지 않는다면:</p><pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre><p>이 플러그인의 최신 버젼을 설치를 계속 하시겠습니까?</p>",
+
+	"license.title": "Plugin License Information",
+	"license.intro": "The plugin <strong>%1</strong> is licensed under the %2. Please read and understand the license terms prior to activating this plugin.",
+	"license.cta": "Do you wish to continue with activating this plugin?"
 }

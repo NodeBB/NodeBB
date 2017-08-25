@@ -6,6 +6,8 @@
 	"sorting.most-votes": "Najviše glasova",
 	"sorting.topic-default": "Uobičajeno sortiranje tema",
 	"restrictions": "Restrikcije postavljanja",
+	"restrictions.post-queue": "Enable post queue",
+	"restrictions.post-queue-help": "Enabling post queue will put the posts of new users in a queue for approval.",
 	"restrictions.seconds-between": "Sekundi između postova",
 	"restrictions.seconds-between-new": "Sekundi između postova za Novog korisnika",
 	"restrictions.rep-threshold": "Prag reputacije pre nego što su restrikcije skinute",

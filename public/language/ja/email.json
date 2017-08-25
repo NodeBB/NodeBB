@@ -32,9 +32,9 @@
     "notif.post.unsub.info": "この投稿の通知はあなたの申し込み設定により送られました。",
     "test.text1": "このメールはNodeBBのメーラー（emailer）が正しく設定されているか確認をするためのメールです。",
     "unsub.cta": "ここをクリックして設定を変更する",
-    "banned.subject": "You have been banned from %1",
-    "banned.text1": "The user %1 has been banned from %2.",
-    "banned.text2": "This ban will last until %1.",
-    "banned.text3": "This is the reason why you have been banned:",
+    "banned.subject": "%1さんからBANされました。",
+    "banned.text1": "%1さんは%2さんにBANされています。",
+    "banned.text2": "このBANは%1まで続きます。",
+    "banned.text3": "あなたがBANされた理由:",
     "closing": "ありがとうございます！"
 }

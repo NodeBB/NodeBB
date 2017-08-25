@@ -41,6 +41,7 @@
     "new_register": "<strong>%1</strong>傳送了註冊要求。",
     "new_register_multiple": "目前有 <strong>%1</strong> 個註冊要求等待審核中。",
     "flag_assigned_to_you": "<strong>Flag %1</strong> has been assigned to you",
+    "post_awaiting_review": "Post awaiting review",
     "email-confirmed": "已確認電子郵件",
     "email-confirmed-message": "感謝你驗證電子郵件。你的帳戶現已完整的啟動。",
     "email-confirm-error-message": "驗證你的電子郵件地址時發生問題。也許是啟動碼無效或是已過期。",
