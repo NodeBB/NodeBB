@@ -41,7 +41,7 @@
     "new_register": "<strong>%1</strong>が登録リクエストを送りました。",
     "new_register_multiple": "<strong>%1</strong>の登録リクエストがレビュー待ちです。",
     "flag_assigned_to_you": "<strong>フラグ %1</strong>はあなたに割当てられました",
-    "post_awaiting_review": "Post awaiting review",
+    "post_awaiting_review": "レビュー待ちの投稿",
     "email-confirmed": "Eメールが確認されました",
     "email-confirmed-message": "メールアドレス検証をして頂き、ありがとうございます。あなたのアカウントは完全にアクティブになりました。",
     "email-confirm-error-message": "あなたのEメールアドレス検証に問題があります。コードが無効か、期限切れです。",
