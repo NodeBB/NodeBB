@@ -11,7 +11,7 @@
 	"only-admins": "仅向管理员展示",
 	"only-global-mods-and-admins": "仅向全局版主及管理员展示",
 	"only-logged-in": "仅向已登录用户展示",
-	"only-guest": "Only display to guests",
+	"only-guest": "仅对游客展示",
 	"open-new-window": "在新窗口中打开",
 
 	"installed-plugins-required": "需要已安装的插件：",
