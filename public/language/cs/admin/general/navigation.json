@@ -11,7 +11,7 @@
 	"only-admins": "Zobrazuje se jen správci",
 	"only-global-mods-and-admins": "Zobrazuje se jen hlavním moderátorům a správcům",
 	"only-logged-in": "Zobrazuje se jen přihlášeným uživatelům",
-	"only-guest": "Only display to guests",
+	"only-guest": "Zobrazit jen hostům",
 	"open-new-window": "Otevřít v novém okně",
 
 	"installed-plugins-required": "Vyžadovaná nainstalovaná rozšíření:",

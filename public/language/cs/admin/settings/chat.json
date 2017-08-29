@@ -1,9 +1,9 @@
 {
-	"chat-settings": "Chat Settings",
-	"disable": "Disable chat",
-	"disable-editing": "Disable chat message editing/deletion",
-	"disable-editing-help": "Administrators and global moderators are exempt from this restriction",
-	"max-length": "Maximum length of chat messages",
-	"max-room-size": "Maximum number of users in chat rooms",
-	"delay": "Time between chat messages in milliseconds"
+	"chat-settings": "Nastavení konverzace",
+	"disable": "Zakázat konverzaci",
+	"disable-editing": "Zakázat upravení/odstranění konverzační zprávy",
+	"disable-editing-help": "Správci a globální moderátoři jsou vyjmuti z tohoto omezení",
+	"max-length": "Maximální délka konverzační zprávy",
+	"max-room-size": "Maximální počet uživatelů v konverzační místnosti",
+	"delay": "Čas mezi konverzačními zprávami v milisekundách"
 }
