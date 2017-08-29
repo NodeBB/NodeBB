@@ -47,12 +47,9 @@ define('admin/manage/ip-blacklist', ['Chart'], function (Chart) {
 		var	hourlyLabels = utils.getHoursArray().map(function (text, idx) {
 			return idx % 3 ? '' : text;
 		});
-		var	dailyLabels = utils.getDaysArray().map(function (text, idx) {
+		var	dailyLabels = utils.getDaysArray().slice(-7).map(function (text, idx) {
 			return idx % 3 ? '' : text;
 		});
-
-		// Only 7 days displayed in this chart
-		dailyLabels.length = 7;
 
 		if (utils.isMobile()) {
 			Chart.defaults.global.tooltips.enabled = false;
