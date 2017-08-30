@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/topic/votes', ['components', 'translator'], function (components, translator) {
+define('forum/topic/votes', ['components', 'translator', 'benchpress'], function (components, translator, Benchpress) {
 	var Votes = {};
 
 	Votes.addVoteHandler = function () {
@@ -92,7 +92,7 @@ define('forum/topic/votes', ['components', 'translator'], function (components, 
 				return app.alertError(err.message);
 			}
 
-			templates.parse('partials/modals/votes_modal', data, function (html) {
+			Benchpress.parse('partials/modals/votes_modal', data, function (html) {
 				translator.translate(html, function (translated) {
 					var dialog = bootbox.dialog({
 						title: 'Voters',

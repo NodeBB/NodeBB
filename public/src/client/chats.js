@@ -8,7 +8,8 @@ define('forum/chats', [
 	'forum/chats/recent',
 	'forum/chats/search',
 	'forum/chats/messages',
-], function (components, translator, mousetrap, recentChats, search, messages) {
+	'benchpress',
+], function (components, translator, mousetrap, recentChats, search, messages, Benchpress) {
 	var Chats = {
 		initialised: false,
 	};
@@ -366,7 +367,7 @@ define('forum/chats', [
 					roomEl.addClass('unread');
 				} else {
 					var recentEl = components.get('chat/recent');
-					templates.parse('partials/chats/recent_room', {
+					Benchpress.parse('partials/chats/recent_room', {
 						rooms: {
 							roomId: data.roomId,
 							lastUser: data.message.fromUser,

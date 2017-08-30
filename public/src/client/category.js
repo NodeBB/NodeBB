@@ -12,7 +12,8 @@ define('forum/category', [
 	'topicSelect',
 	'forum/pagination',
 	'storage',
-], function (infinitescroll, share, navigator, categoryTools, sort, components, translator, topicSelect, pagination, storage) {
+	'benchpress',
+], function (infinitescroll, share, navigator, categoryTools, sort, components, translator, topicSelect, pagination, storage, Benchpress) {
 	var Category = {};
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
@@ -204,7 +205,7 @@ define('forum/category', [
 
 		var editable = !!$('.thread-tools').length;
 
-		templates.parse('category', 'topics', {
+		Benchpress.parse('category', 'topics', {
 			privileges: { editable: editable },
 			showSelect: editable,
 			topics: [topic],

@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/categories', ['components', 'translator'], function (components, translator) {
+define('forum/categories', ['components', 'translator', 'benchpress'], function (components, translator, Benchpress) {
 	var	categories = {};
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
@@ -58,7 +58,7 @@ define('forum/categories', ['components', 'translator'], function (components, t
 	}
 
 	function parseAndTranslate(posts, callback) {
-		templates.parse('categories', '(categories.)?posts', { categories: { posts: posts } }, function (html) {
+		Benchpress.parse('categories', '(categories\\.)?posts', { categories: { posts: posts } }, function (html) {
 			translator.translate(html, function (translatedHTML) {
 				translatedHTML = $(translatedHTML);
 				translatedHTML.find('.post-content img:not(.not-responsive)').addClass('img-responsive');

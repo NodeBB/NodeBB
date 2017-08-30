@@ -7,7 +7,8 @@ define('forum/topic/threadTools', [
 	'forum/topic/delete-posts',
 	'components',
 	'translator',
-], function (fork, move, deletePosts, components, translator) {
+	'benchpress',
+], function (fork, move, deletePosts, components, translator, Benchpress) {
 	var ThreadTools = {};
 
 	ThreadTools.init = function (tid) {
@@ -138,7 +139,7 @@ define('forum/topic/threadTools', [
 					return app.alertError(err);
 				}
 
-				templates.parse('partials/topic/topic-menu-list', data, function (html) {
+				Benchpress.parse('partials/topic/topic-menu-list', data, function (html) {
 					translator.translate(html, function (html) {
 						dropdownMenu.html(html);
 						$(window).trigger('action:topic.tools.load');
