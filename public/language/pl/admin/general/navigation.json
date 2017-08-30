@@ -7,15 +7,15 @@
 	"text-class": "Text Class: <small>optional</small>",
 	"id": "ID: <small>optional</small>",
 
-	"properties": "Properties:",
+	"properties": "Ustawienia:",
 	"only-admins": "Pokaż tylko dla administracji",
 	"only-global-mods-and-admins": "Pokaż tylko dla globalnych moderatorów oraz administracji",
 	"only-logged-in": "Pokaż tylko dla zalogowanych użytkowników",
-	"only-guest": "Only display to guests",
+	"only-guest": "Pokazuj tylko gościom",
 	"open-new-window": "Otwórz w nowym oknie",
 
 	"installed-plugins-required": "Installed Plugins Required:",
-	"search-plugin": "Search plugin",
+	"search-plugin": "Wyszukiwarka",
 
 	"btn.delete": "Usunąć",
 	"btn.disable": "Wyłącz",
