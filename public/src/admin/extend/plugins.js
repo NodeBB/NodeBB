@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, translator) {
+define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], function (jqueryui, translator, Benchpress) {
 	var Plugins = {};
 	Plugins.init = function () {
 		var pluginsList = $('.plugins');
@@ -58,7 +58,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 			}
 
 			if (pluginData.license && pluginData.active !== true) {
-				templates.parse('admin/partials/plugins/license', pluginData, function (html) {
+				Benchpress.parse('admin/partials/plugins/license', pluginData, function (html) {
 					bootbox.dialog({
 						title: '[[admin/extend/plugins:license.title]]',
 						message: html,

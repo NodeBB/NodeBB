@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/manage/ip-blacklist', ['Chart'], function (Chart) {
+define('admin/manage/ip-blacklist', ['Chart', 'benchpress'], function (Chart, Benchpress) {
 	var Blacklist = {};
 
 	Blacklist.init = function () {
@@ -32,7 +32,7 @@ define('admin/manage/ip-blacklist', ['Chart'], function (Chart) {
 					return app.alertError(err.message);
 				}
 
-				templates.parse('admin/partials/blacklist-validate', data, function (html) {
+				Benchpress.parse('admin/partials/blacklist-validate', data, function (html) {
 					bootbox.alert(html);
 				});
 			});

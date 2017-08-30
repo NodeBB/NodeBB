@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/appearance/themes', ['translator'], function (translator) {
+define('admin/appearance/themes', ['translator', 'benchpress'], function (translator, Benchpress) {
 	var Themes = {};
 
 	Themes.init = function () {
@@ -73,7 +73,7 @@ define('admin/appearance/themes', ['translator'], function (translator) {
 			if (!themes.length) {
 				instListEl.append($('<li/ >').addClass('no-themes').translateHtml('[[admin/appearance/themes:no-themes]]'));
 			} else {
-				templates.parse('admin/partials/theme_list', {
+				Benchpress.parse('admin/partials/theme_list', {
 					themes: themes,
 				}, function (html) {
 					translator.translate(html, function (html) {

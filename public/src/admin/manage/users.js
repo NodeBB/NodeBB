@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/manage/users', ['translator'], function (translator) {
+define('admin/manage/users', ['translator', 'benchpress'], function (translator, Benchpress) {
 	var Users = {};
 
 	Users.init = function () {
@@ -81,7 +81,7 @@ define('admin/manage/users', ['translator'], function (translator) {
 				return false;	// specifically to keep the menu open
 			}
 
-			templates.parse('admin/partials/temporary-ban', {}, function (html) {
+			Benchpress.parse('admin/partials/temporary-ban', {}, function (html) {
 				bootbox.dialog({
 					className: 'ban-modal',
 					title: '[[user:ban_account]]',
@@ -248,7 +248,7 @@ define('admin/manage/users', ['translator'], function (translator) {
 
 		function handleUserCreate() {
 			$('#createUser').on('click', function () {
-				templates.parse('admin/partials/create_user_modal', {}, function (html) {
+				Benchpress.parse('admin/partials/create_user_modal', {}, function (html) {
 					bootbox.dialog({
 						message: html,
 						title: '[[admin/manage/users:alerts.create]]',
@@ -323,7 +323,7 @@ define('admin/manage/users', ['translator'], function (translator) {
 						return app.alertError(err.message);
 					}
 
-					templates.parse('admin/manage/users', 'users', data, function (html) {
+					Benchpress.parse('admin/manage/users', 'users', data, function (html) {
 						translator.translate(html, function (html) {
 							html = $(html);
 							$('.users-table tr').not(':first').remove();
