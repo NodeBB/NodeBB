@@ -624,7 +624,7 @@ app.cacheBuster = null;
 	};
 
 	app.parseAndTranslate = function (template, blockName, data, callback) {
-		require(['translator'], function (translator) {
+		require(['translator', 'benchpress'], function (translator, Benchpress) {
 			function translate(html, callback) {
 				translator.translate(html, function (translatedHTML) {
 					translatedHTML = translator.unescape(translatedHTML);
@@ -633,13 +633,13 @@ app.cacheBuster = null;
 			}
 
 			if (typeof blockName === 'string') {
-				templates.parse(template, blockName, data, function (html) {
+				Benchpress.parse(template, blockName, data, function (html) {
 					translate(html, callback);
 				});
 			} else {
 				callback = data;
 				data = blockName;
-				templates.parse(template, data, function (html) {
+				Benchpress.parse(template, data, function (html) {
 					translate(html, callback);
 				});
 			}

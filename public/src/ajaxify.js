@@ -10,13 +10,15 @@ $(document).ready(function () {
 	var ajaxifyTimer;
 
 	var translator;
+	var Benchpress;
 	var retry = true;
 	var previousBodyClass = '';
 
 	// Dumb hack to fool ajaxify into thinking translator is still a global
 	// When ajaxify is migrated to a require.js module, then this can be merged into the "define" call
-	require(['translator'], function (_translator) {
+	require(['translator', 'benchpress'], function (_translator, _Benchpress) {
 		translator = _translator;
+		Benchpress = _Benchpress;
 	});
 
 	$(window).on('popstate', function (ev) {
@@ -174,7 +176,7 @@ $(document).ready(function () {
 	function renderTemplate(url, tpl_url, data, callback) {
 		$(window).trigger('action:ajaxify.loadingTemplates', {});
 
-		templates.parse(tpl_url, data, function (template) {
+		Benchpress.parse(tpl_url, data, function (template) {
 			translator.translate(template, function (translatedTemplate) {
 				translatedTemplate = translator.unescape(translatedTemplate);
 				$('body').removeClass(previousBodyClass).addClass(data.bodyClass);
