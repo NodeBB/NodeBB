@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('alerts', ['translator', 'components'], function (translator, components) {
+define('alerts', ['translator', 'components', 'benchpress'], function (translator, components, Benchpress) {
 	var module = {};
 
 	module.alert = function (params) {
@@ -19,7 +19,7 @@ define('alerts', ['translator', 'components'], function (translator, components)
 	};
 
 	function createNew(params) {
-		templates.parse('alert', params, function (alertTpl) {
+		Benchpress.parse('alert', params, function (alertTpl) {
 			translator.translate(alertTpl, function (translatedHTML) {
 				var alert = $('#' + params.alert_id);
 				if (alert.length) {

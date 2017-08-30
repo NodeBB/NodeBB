@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('flags', [], function () {
+define('flags', ['benchpress'], function (Benchpress) {
 	var Flag = {};
 	var flagModal;
 	var flagCommit;
@@ -31,7 +31,7 @@ define('flags', [], function () {
 	};
 
 	function parseModal(tplData, callback) {
-		templates.parse('partials/modals/flag_modal', tplData, function (html) {
+		Benchpress.parse('partials/modals/flag_modal', tplData, function (html) {
 			require(['translator'], function (translator) {
 				translator.translate(html, callback);
 			});

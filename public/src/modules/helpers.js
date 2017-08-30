@@ -8,8 +8,6 @@
 		define('helpers', ['benchpress', 'string'], function (Benchpress, string) {
 			return factory(utils, Benchpress, string, config.relative_path);
 		});
-	} else {
-		window.helpers = factory(utils, templates, window.String, config.relative_path);
 	}
 }(function (utils, Benchpress, S, relative_path) {
 	var helpers = {
