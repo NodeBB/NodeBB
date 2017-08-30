@@ -58,7 +58,7 @@ define('forum/categories', ['components', 'translator', 'benchpress'], function 
 	}
 
 	function parseAndTranslate(posts, callback) {
-		Benchpress.parse('categories', '(categories\\.)?posts', { categories: { posts: posts } }, function (html) {
+		Benchpress.parse('partials/categories/lastpost', 'posts', { posts: posts }, function (html) {
 			translator.translate(html, function (translatedHTML) {
 				translatedHTML = $(translatedHTML);
 				translatedHTML.find('.post-content img:not(.not-responsive)').addClass('img-responsive');
