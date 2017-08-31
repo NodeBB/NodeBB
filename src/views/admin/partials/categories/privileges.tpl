@@ -31,7 +31,7 @@
 									<!-- ENDIF ../picture -->
 								</td>
 								<td>{privileges.users.username}</td>
-								{function.spawnPrivilegeStates, privileges.users.username, privileges}
+								{function.spawnPrivilegeStates, privileges.users.username, ../privileges}
 							</tr>
 							<!-- END privileges.users -->
 							<tr>
@@ -85,7 +85,7 @@
 									{privileges.groups.name}
 								</td>
 								<td></td>
-								{function.spawnPrivilegeStates, privileges.groups.name, privileges}
+								{function.spawnPrivilegeStates, privileges.groups.name, ../privileges}
 							</tr>
 							<!-- END privileges.groups -->
 							<tr>
