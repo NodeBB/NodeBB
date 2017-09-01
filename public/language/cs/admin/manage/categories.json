@@ -28,8 +28,8 @@
 	"select-category": "Vyberte kategorii",
 	"set-parent-category": "Nastavit nadřazenou kategorii",
 
-	"privileges.description": "You can configure the access control privileges for this category in this section. Privileges can be granted on a per-user or a per-group basis. You can add a new user to this table by searching for them in the form below.",
-	"privileges.warning": "<strong>Note</strong>: Privilege settings take effect immediately. It is not necessary to save the category after adjusting these settings.",
+	"privileges.description": "Můžete nastavit oprávnění ovládání přístupu ke kategorii v této sekci. Oprávnění mohou být přidělena na uživatele nebo na celou skupinu. Uživatele můžete přidat jeho vyhledáním ze spodního formuláře.",
+	"privileges.warning": "<strong>Poznámka:</strong> nastavení oprávnění má okamžitý vliv. Není tedy nutné uložit kategorii pro upravení těchto nastavení",
 	"privileges.section-viewing": "Oprávnění prohlížení",
 	"privileges.section-posting": "Oprávnění příspěvků",
 	"privileges.section-moderation": "Oprávnění moderování",
