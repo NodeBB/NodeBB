@@ -137,8 +137,8 @@ helpers.registerUser = function (data, callback) {
 			headers: {
 				'x-csrf-token': body.csrf_token,
 			},
-		}, function (err) {
-			callback(err, jar);
+		}, function (err, response, body) {
+			callback(err, jar, response, body);
 		});
 	});
 };
