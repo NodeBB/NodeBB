@@ -128,7 +128,6 @@ SocketUser.reset.commit = function (socket, data, callback) {
 			emailer.send('reset_notify', uid, {
 				username: username,
 				date: parsedDate,
-				site_title: meta.config.title || 'NodeBB',
 				subject: '[[email:reset.notify.subject]]',
 			});
 

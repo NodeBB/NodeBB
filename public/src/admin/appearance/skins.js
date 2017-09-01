@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/appearance/skins', ['translator'], function (translator) {
+define('admin/appearance/skins', ['translator', 'benchpress'], function (translator, Benchpress) {
 	var Skins = {};
 
 	Skins.init = function () {
@@ -52,7 +52,7 @@ define('admin/appearance/skins', ['translator'], function (translator) {
 	Skins.render = function (bootswatch) {
 		var themeContainer = $('#bootstrap_themes');
 
-		templates.parse('admin/partials/theme_list', {
+		Benchpress.parse('admin/partials/theme_list', {
 			themes: bootswatch.themes.map(function (theme) {
 				return {
 					type: 'bootswatch',

@@ -8,7 +8,8 @@ define('forum/topic/postTools', [
 	'translator',
 	'forum/topic/votes',
 	'forum/topic/move-post',
-], function (share, navigator, components, translator, votes, movePost) {
+	'benchpress',
+], function (share, navigator, components, translator, votes, movePost, Benchpress) {
 	var PostTools = {};
 
 	var staleReplyAnyway = false;
@@ -44,7 +45,7 @@ define('forum/topic/postTools', [
 				}
 				data.posts.display_move_tools = data.posts.display_move_tools && index !== 0;
 
-				templates.parse('partials/topic/post-menu-list', data, function (html) {
+				Benchpress.parse('partials/topic/post-menu-list', data, function (html) {
 					translator.translate(html, function (html) {
 						dropdownMenu.html(html);
 						$(window).trigger('action:post.tools.load');
@@ -85,7 +86,8 @@ define('forum/topic/postTools', [
 			onReplyClicked($(this), tid);
 		});
 
-		$('.topic').on('click', '[component="topic/reply"]', function () {
+		$('.topic').on('click', '[component="topic/reply"]', function (e) {
+			e.preventDefault();
 			onReplyClicked($(this), tid);
 		});
 

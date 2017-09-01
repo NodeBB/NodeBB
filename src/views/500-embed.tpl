@@ -1,8 +1,12 @@
-<script type="text/tpl" data-template="500">
-&#x3C;div class=&#x22;alert alert-danger&#x22;&#x3E;
-&#x9;&#x3C;strong&#x3E;[[global:500.title]]&#x3C;/strong&#x3E;
-&#x9;&#x3C;p&#x3E;[[global:500.message]]&#x3C;/p&#x3E;
-&#x9;&#x3C;p&#x3E;{path}&#x3C;/p&#x3E;
-&#x9;&#x3C;!-- IF error --&#x3E;&#x3C;p&#x3E;{error}&#x3C;/p&#x3E;&#x3C;!-- ENDIF error --&#x3E;
-&#x3C;/div&#x3E;
+<script>
+define('/assets/templates/500.jst', function () {
+	function compiled(helpers, context, get, iter, helper) {
+		return '<div class="alert alert-danger">\n\t<strong>[[global:500.title]]</strong>\n\t<p>[[global:500.message]]</p>\n\t<p>' + 
+    		helpers.__escape(get(context && context['path'])) + '</p>\n\t' + 
+			(get(context && context['error']) ? '<p>' + helpers.__escape(get(context && context['error'])) + '</p>' : '') + '\n\n\t' + 
+			(get(context && context['returnLink']) ? '\n\t<p>[[error:goback]]</p>\n\t' : '') + '\n</div>\n';
+	}
+
+	return compiled;
+});
 </script>

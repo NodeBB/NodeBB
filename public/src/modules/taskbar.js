@@ -1,13 +1,13 @@
 'use strict';
 
 
-define('taskbar', function () {
+define('taskbar', ['benchpress'], function (Benchpress) {
 	var taskbar = {};
 
 	taskbar.init = function () {
 		var self = this;
 
-		templates.parse('modules/taskbar', {}, function (html) {
+		Benchpress.parse('modules/taskbar', {}, function (html) {
 			self.taskbar = $(html);
 			self.tasklist = self.taskbar.find('ul');
 			$(document.body).append(self.taskbar);

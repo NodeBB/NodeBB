@@ -94,6 +94,23 @@ describe('Plugins', function () {
 		});
 	});
 
+	it('should show installed plugins', function (done) {
+		var nodeModulesPath = plugins.nodeModulesPath;
+		plugins.nodeModulesPath = path.join(__dirname, './mocks/plugin_modules');
+
+		plugins.showInstalled(function (err, pluginsData) {
+			assert.ifError(err);
+			var paths = pluginsData.map(function (plugin) {
+				return path.relative(plugins.nodeModulesPath, plugin.path).replace(/\\/g, '/');
+			});
+			assert(paths.indexOf('nodebb-plugin-xyz') > -1);
+			assert(paths.indexOf('@nodebb/nodebb-plugin-abc') > -1);
+
+			plugins.nodeModulesPath = nodeModulesPath;
+			done();
+		});
+	});
+
 	describe('install/activate/uninstall', function () {
 		var latest;
 		var pluginName = 'nodebb-plugin-imgur';

@@ -42,6 +42,7 @@ function searchInContent(data, callback) {
 	var matchCount = 0;
 	var pids;
 	var metadata;
+
 	async.waterfall([
 		function (next) {
 			async.parallel({
@@ -96,6 +97,7 @@ function searchInContent(data, callback) {
 		function (_metadata, next) {
 			metadata = _metadata;
 			matchCount = metadata.pids.length;
+
 			if (data.page) {
 				var start = Math.max(0, (data.page - 1)) * 10;
 				metadata.pids = metadata.pids.slice(start, start + 10);
@@ -128,7 +130,10 @@ function filterAndSort(pids, data, callback) {
 
 			sortPosts(posts, data);
 
-			pids = posts.map(function (post) {
+			plugins.fireHook('filter:search.filterAndSort', { pids: pids, posts: posts, data: data }, next);
+		},
+		function (result, next) {
+			pids = result.posts.map(function (post) {
 				return post && post.pid;
 			});
 
@@ -138,25 +143,12 @@ function filterAndSort(pids, data, callback) {
 }
 
 function getMatchedPosts(pids, data, callback) {
-	var postFields = ['pid', 'tid', 'timestamp', 'deleted'];
-	var topicFields = ['deleted'];
+	var postFields = ['pid', 'uid', 'tid', 'timestamp', 'deleted'];
 	var categoryFields = [];
 
-	if (data.replies) {
-		topicFields.push('postcount');
-	}
-
 	if (data.sortBy && data.sortBy !== 'relevance') {
-		if (data.sortBy.startsWith('category')) {
-			topicFields.push('cid');
-		} else if (data.sortBy.startsWith('topic.')) {
-			topicFields.push(data.sortBy.split('.')[1]);
-		} else if (data.sortBy.startsWith('user.')) {
-			postFields.push('uid');
-		} else if (data.sortBy.startsWith('category.')) {
+		if (data.sortBy.startsWith('category.')) {
 			categoryFields.push(data.sortBy.split('.')[1]);
-		} else if (data.sortBy.startsWith('teaser')) {
-			topicFields.push('teaserPid');
 		}
 	}
 
@@ -166,7 +158,6 @@ function getMatchedPosts(pids, data, callback) {
 			var keys = pids.map(function (pid) {
 				return 'post:' + pid;
 			});
-
 			db.getObjectsFields(keys, postFields, next);
 		},
 		function (_posts, next) {
@@ -192,14 +183,14 @@ function getMatchedPosts(pids, data, callback) {
 							var topicKeys = posts.map(function (post) {
 								return 'topic:' + post.tid;
 							});
-							db.getObjectsFields(topicKeys, topicFields, next);
+							db.getObjects(topicKeys, next);
 						},
 						function (_topics, next) {
 							topicsData = _topics;
 
 							async.parallel({
 								teasers: function (next) {
-									if (topicFields.indexOf('teaserPid') !== -1) {
+									if (data.sortBy && data.sortBy.startsWith('teaser')) {
 										var teaserKeys = topicsData.map(function (topic) {
 											return 'post:' + topic.teaserPid;
 										});

@@ -36,7 +36,7 @@
 			<br />
 			<p>
 				<button id="clear-sitemap-cache" class="btn btn-warning">[[admin/settings/web-crawler:clear-sitemap-cache]]</button>
-				<a href="/sitemap.xml" target="_blank" class="btn btn-link">[[admin/settings/web-crawler:view-sitemap]]</a>
+				<a href="{config.relative_path}/sitemap.xml" target="_blank" class="btn btn-link">[[admin/settings/web-crawler:view-sitemap]]</a>
 			</p>
 
 		</form>

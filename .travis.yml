@@ -23,9 +23,9 @@ addons:
     packages:
     - g++-4.8
 node_js:
+  - "8"
   - "7"
   - "6"
-  - "4"
 branches:
   only:
     - master

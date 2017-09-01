@@ -2,7 +2,7 @@
 
 /* globals define */
 
-define('forum/flags/detail', ['forum/flags/list', 'components', 'translator'], function (FlagsList, components, translator) {
+define('forum/flags/detail', ['forum/flags/list', 'components', 'translator', 'benchpress'], function (FlagsList, components, translator, Benchpress) {
 	var Flags = {};
 
 	Flags.init = function () {
@@ -48,7 +48,7 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator'], f
 	};
 
 	Flags.reloadNotes = function (notes) {
-		templates.parse('flags/detail', 'notes', {
+		Benchpress.parse('flags/detail', 'notes', {
 			notes: notes,
 		}, function (html) {
 			var wrapperEl = components.get('flag/notes');
@@ -60,7 +60,7 @@ define('forum/flags/detail', ['forum/flags/list', 'components', 'translator'], f
 	};
 
 	Flags.reloadHistory = function (history) {
-		templates.parse('flags/detail', 'history', {
+		Benchpress.parse('flags/detail', 'history', {
 			history: history,
 		}, function (html) {
 			translator.translate(html, function (translated) {

@@ -59,6 +59,7 @@ SocketCategories.loadMore = function (socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
+	data.query = data.query || {};
 	var userPrivileges;
 	async.waterfall([
 		function (next) {
@@ -70,8 +71,8 @@ SocketCategories.loadMore = function (socket, data, callback) {
 					user.getSettings(socket.uid, next);
 				},
 				targetUid: function (next) {
-					if (data.author) {
-						user.getUidByUserslug(data.author, next);
+					if (data.query.author) {
+						user.getUidByUserslug(data.query.author, next);
 					} else {
 						next();
 					}
@@ -84,44 +85,28 @@ SocketCategories.loadMore = function (socket, data, callback) {
 				return callback(new Error('[[error:no-privileges]]'));
 			}
 			var infScrollTopicsPerPage = 20;
-			var set = 'cid:' + data.cid + ':tids';
-			var reverse = false;
-
-			if (data.categoryTopicSort === 'newest_to_oldest') {
-				reverse = true;
-			} else if (data.categoryTopicSort === 'most_posts') {
-				reverse = true;
-				set = 'cid:' + data.cid + ':tids:posts';
-			}
+			var sort = data.sort || data.categoryTopicSort;
 
 			var start = Math.max(0, parseInt(data.after, 10));
 
 			if (data.direction === -1) {
-				start -= reverse ? infScrollTopicsPerPage : -infScrollTopicsPerPage;
+				start -= infScrollTopicsPerPage;
 			}
 
 			var stop = start + infScrollTopicsPerPage - 1;
 
 			start = Math.max(0, start);
 			stop = Math.max(0, stop);
-
-			if (results.targetUid) {
-				set = 'cid:' + data.cid + ':uid:' + results.targetUid + ':tids';
-			}
-
-			if (data.tag) {
-				set = [set, 'tag:' + data.tag + ':topics'];
-			}
-
 			categories.getCategoryTopics({
+				uid: socket.uid,
 				cid: data.cid,
-				set: set,
-				reverse: reverse,
 				start: start,
 				stop: stop,
-				uid: socket.uid,
-				targetUid: results.targetUid,
+				sort: sort,
 				settings: results.settings,
+				query: data.query,
+				tag: data.query.tag,
+				targetUid: results.targetUid,
 			}, next);
 		},
 		function (data, next) {

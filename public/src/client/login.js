@@ -74,6 +74,7 @@ define('forum/login', [], function () {
 		} else {
 			$('#content #username').focus();
 		}
+		$('#content #noscript').val('false');
 	};
 
 	return Login;

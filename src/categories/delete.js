@@ -19,7 +19,7 @@ module.exports = function (Categories) {
 				}, { alwaysStartAt: 0 }, next);
 			},
 			function (next) {
-				Categories.getPinnedTids('cid:' + cid + ':tids:pinned', 0, -1, next);
+				db.getSortedSetRevRange('cid:' + cid + ':tids:pinned', 0, -1, next);
 			},
 			function (pinnedTids, next) {
 				async.eachLimit(pinnedTids, 10, function (tid, next) {

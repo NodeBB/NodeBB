@@ -28,6 +28,8 @@ categoryController.get = function (req, res, callback) {
 		return callback();
 	}
 
+	var topicIndex = utils.isNumber(req.params.topic_index) ? parseInt(req.params.topic_index, 10) - 1 : 0;
+
 	async.waterfall([
 		function (next) {
 			async.parallel({
@@ -62,7 +64,7 @@ categoryController.get = function (req, res, callback) {
 			}
 
 			settings = results.userSettings;
-			var topicIndex = utils.isNumber(req.params.topic_index) ? parseInt(req.params.topic_index, 10) - 1 : 0;
+
 			var topicCount = parseInt(results.categoryData.topic_count, 10);
 			pageCount = Math.max(1, Math.ceil(topicCount / settings.topicsPerPage));
 
@@ -82,52 +84,22 @@ categoryController.get = function (req, res, callback) {
 				topicIndex = 0;
 			}
 
-			var set = 'cid:' + cid + ':tids';
-			var reverse = false;
-			// `sort` qs has priority over user setting
-			var sort = req.query.sort || settings.categoryTopicSort;
-			if (sort === 'newest_to_oldest') {
-				reverse = true;
-			} else if (sort === 'most_posts') {
-				reverse = true;
-				set = 'cid:' + cid + ':tids:posts';
-			}
-
+			user.getUidByUserslug(req.query.author, next);
+		},
+		function (targetUid, next) {
 			var start = ((currentPage - 1) * settings.topicsPerPage) + topicIndex;
 			var stop = start + settings.topicsPerPage - 1;
-
-			var payload = {
+			categories.getCategoryById({
+				uid: req.uid,
 				cid: cid,
-				set: set,
-				reverse: reverse,
 				start: start,
 				stop: stop,
-				uid: req.uid,
+				sort: req.query.sort || settings.categoryTopicSort,
 				settings: settings,
-			};
-
-			async.waterfall([
-				function (next) {
-					user.getUidByUserslug(req.query.author, next);
-				},
-				function (uid, next) {
-					payload.targetUid = uid;
-					if (uid) {
-						payload.set = 'cid:' + cid + ':uid:' + uid + ':tids';
-					}
-
-					if (req.query.tag) {
-						if (Array.isArray(req.query.tag)) {
-							payload.set = [payload.set].concat(req.query.tag.map(function (tag) {
-								return 'tag:' + tag + ':topics';
-							}));
-						} else {
-							payload.set = [payload.set, 'tag:' + req.query.tag + ':topics'];
-						}
-					}
-					categories.getCategoryById(payload, next);
-				},
-			], next);
+				query: req.query,
+				tag: req.query.tag,
+				targetUid: targetUid,
+			}, next);
 		},
 		function (categoryData, next) {
 			categories.modifyTopicsByPrivilege(categoryData.topics, userPrivileges);

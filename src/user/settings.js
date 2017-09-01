@@ -176,7 +176,10 @@ module.exports = function (User) {
 
 		async.waterfall([
 			function (next) {
-				db.setObject('user:' + uid + ':settings', settings, next);
+				plugins.fireHook('filter:user.saveSettings', { settings: settings, data: data }, next);
+			},
+			function (result, next) {
+				db.setObject('user:' + uid + ':settings', result.settings, next);
 			},
 			function (next) {
 				User.updateDigestSetting(uid, data.dailyDigestFreq, next);

@@ -8,7 +8,8 @@ define('forum/chats', [
 	'forum/chats/recent',
 	'forum/chats/search',
 	'forum/chats/messages',
-], function (components, translator, mousetrap, recentChats, search, messages) {
+	'benchpress',
+], function (components, translator, mousetrap, recentChats, search, messages, Benchpress) {
 	var Chats = {
 		initialised: false,
 	};
@@ -22,6 +23,8 @@ define('forum/chats', [
 			Chats.addSocketListeners();
 			Chats.addGlobalEventListeners();
 		}
+
+		recentChats.init();
 
 		Chats.addEventListeners();
 		Chats.createTagsInput($('[component="chat/messages"] .users-tag-input'), ajaxify.data);
@@ -48,15 +51,6 @@ define('forum/chats', [
 	};
 
 	Chats.addEventListeners = function () {
-		$('[component="chat/recent"]').on('click', '[component="chat/leave"]', function () {
-			Chats.leave($(this).parents('[data-roomid]'));
-			return false;
-		});
-
-		$('[component="chat/recent"]').on('click', '[component="chat/recent/room"]', function () {
-			Chats.switchChat($(this).attr('data-roomid'));
-		});
-
 		Chats.addSendHandlers(ajaxify.data.roomId, $('.chat-input'), $('.expanded-chat button[data-action="send"]'));
 
 		$('[data-action="pop-out"]').on('click', function () {
@@ -78,8 +72,6 @@ define('forum/chats', [
 		});
 
 		Chats.addEditDeleteHandler(components.get('chat/messages'), ajaxify.data.roomId);
-
-		recentChats.init();
 
 		Chats.addRenameHandler(ajaxify.data.roomId, $('[component="chat/room/name"]'));
 		Chats.addScrollHandler(ajaxify.data.roomId, ajaxify.data.uid, $('.chat-content'));
@@ -319,7 +311,36 @@ define('forum/chats', [
 	};
 
 	Chats.switchChat = function (roomid) {
-		ajaxify.go('user/' + ajaxify.data.userslug + '/chats/' + roomid);
+		var url = 'user/' + ajaxify.data.userslug + '/chats/' + roomid;
+		if (self.fetch) {
+			fetch(config.relative_path + '/api/' + url, { credentials: 'include' })
+				.then(function (response) {
+					if (response.ok) {
+						response.json().then(function (payload) {
+							app.parseAndTranslate('partials/chats/message-window', payload, function (html) {
+								components.get('chat/main-wrapper').html(html);
+								Chats.resizeMainWindow();
+								ajaxify.data = payload;
+								Chats.setActive();
+								Chats.addEventListeners();
+
+								if (history.pushState) {
+									history.pushState({
+										url: 'user/' + payload.userslug + '/chats/' + payload.roomId,
+									}, null, window.location.protocol + '//' + window.location.host + config.relative_path + '/user/' + payload.userslug + '/chats/' + payload.roomId);
+								}
+							});
+						});
+					} else {
+						console.warn('[search] Received ' + response.status);
+					}
+				})
+				.catch(function (error) {
+					console.warn('[search] ' + error.message);
+				});
+		} else {
+			ajaxify.go(url);
+		}
 	};
 
 	Chats.addGlobalEventListeners = function () {
@@ -346,7 +367,7 @@ define('forum/chats', [
 					roomEl.addClass('unread');
 				} else {
 					var recentEl = components.get('chat/recent');
-					templates.parse('partials/chats/recent_room', {
+					Benchpress.parse('partials/chats/recent_room', {
 						rooms: {
 							roomId: data.roomId,
 							lastUser: data.message.fromUser,
@@ -375,17 +396,19 @@ define('forum/chats', [
 
 	Chats.resizeMainWindow = function () {
 		var messagesList = $('.expanded-chat .chat-content');
+		var searchHeight = $('.chat-search').height();
+		var searchListHeight = $('[component="chat/search/list"]').outerHeight(true) - $('[component="chat/search/list"]').height();
+		var fromTop = components.get('chat/recent').offset().top;
 
 		if (messagesList.length) {
 			var margin = $('.expanded-chat ul').outerHeight(true) - $('.expanded-chat ul').height();
 			var inputHeight = $('.chat-input').outerHeight(true);
-			var fromTop = messagesList.offset().top;
-			var searchHeight = $('.chat-search').height();
-			var searchListHeight = $('[component="chat/search/list"]').outerHeight(true) - $('[component="chat/search/list"]').height();
 
 			messagesList.height($(window).height() - (fromTop + inputHeight + (margin * 4)));
 			components.get('chat/recent').height($('.expanded-chat').height() - (searchHeight + searchListHeight));
 			$('[component="chat/search/list"]').css('max-height', (components.get('chat/recent').height() / 2) + 'px');
+		} else {
+			components.get('chat/recent').height($(window).height() - (fromTop + searchHeight + searchListHeight));
 		}
 
 		Chats.setActive();

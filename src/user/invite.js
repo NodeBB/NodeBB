@@ -85,6 +85,9 @@ module.exports = function (User) {
 						template: 'invitation',
 					};
 
+					// Append default data to this email payload
+					data = Object.assign({}, emailer._defaultPayload, data);
+
 					emailer.sendToEmail('invitation', email, meta.config.defaultLang, data, next);
 				});
 			},

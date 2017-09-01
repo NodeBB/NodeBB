@@ -102,7 +102,6 @@ UserEmail.sendValidationEmail = function (uid, options, callback) {
 			var title = meta.config.title || meta.config.browserTitle || 'NodeBB';
 			translator.translate('[[email:welcome-to, ' + title + ']]', meta.config.defaultLang, function (subject) {
 				var data = {
-					site_title: title,
 					username: username,
 					confirm_link: confirm_link,
 					confirm_code: confirm_code,

@@ -3,10 +3,9 @@
 var async = require('async');
 var winston = require('winston');
 var nconf = require('nconf');
-var templates = require('templates.js');
+var Benchpress = require('benchpressjs');
 var nodemailer = require('nodemailer');
-var sendmailTransport = require('nodemailer-sendmail-transport');
-var smtpTransport = require('nodemailer-smtp-transport');
+var wellKnownServices = require('nodemailer/lib/well-known/services');
 var htmlToText = require('html-to-text');
 var url = require('url');
 
@@ -14,10 +13,15 @@ var User = require('./user');
 var Plugins = require('./plugins');
 var meta = require('./meta');
 var translator = require('./translator');
+var pubsub = require('./pubsub');
 
 var transports = {
-	sendmail: nodemailer.createTransport(sendmailTransport()),
-	gmail: undefined,
+	sendmail: nodemailer.createTransport({
+		sendmail: true,
+		newline: 'unix',
+	}),
+	smtp: undefined,
+	// gmail: undefined,
 };
 
 var app;
@@ -25,25 +29,62 @@ var fallbackTransport;
 
 var Emailer = module.exports;
 
+Emailer.listServices = function (callback) {
+	var services = Object.keys(wellKnownServices);
+	setImmediate(callback, null, services);
+};
+
+Emailer._defaultPayload = {};
 
 Emailer.registerApp = function (expressApp) {
 	app = expressApp;
 
+	var logo = null;
+	if (meta.configs.hasOwnProperty('brand:emailLogo')) {
+		logo = (!meta.config['brand:emailLogo'].startsWith('http') ? nconf.get('url') : '') + meta.config['brand:emailLogo'];
+	}
+
+	Emailer._defaultPayload = {
+		url: nconf.get('url'),
+		site_title: meta.config.title || 'NodeBB',
+		logo: {
+			src: logo,
+			height: meta.config['brand:emailLogo:height'],
+			width: meta.config['brand:emailLogo:width'],
+		},
+	};
+
 	// Enable Gmail transport if enabled in ACP
-	if (parseInt(meta.config['email:GmailTransport:enabled'], 10) === 1) {
-		transports.gmail = nodemailer.createTransport(smtpTransport({
-			host: 'smtp.gmail.com',
-			port: 465,
-			secure: true,
+	if (parseInt(meta.config['email:smtpTransport:enabled'], 10) === 1) {
+		var smtpOptions = {
 			auth: {
-				user: meta.config['email:GmailTransport:user'],
-				pass: meta.config['email:GmailTransport:pass'],
+				user: meta.config['email:smtpTransport:user'],
+				pass: meta.config['email:smtpTransport:pass'],
 			},
-		}));
-		fallbackTransport = transports.gmail;
+		};
+
+		if (meta.config['email:smtpTransport:serice'] === 'nodebb-custom-smtp') {
+			smtpOptions.port = meta.config['email:smtpTransport:port'];
+			smtpOptions.host = meta.config['email:smtpTransport:host'];
+			smtpOptions.secure = true;
+		} else {
+			smtpOptions.service = meta.config['email:smtpTransport:service'];
+		}
+
+		transports.smtp = nodemailer.createTransport(smtpOptions);
+		fallbackTransport = transports.smtp;
 	} else {
 		fallbackTransport = transports.sendmail;
 	}
+
+	// Update default payload if new logo is uploaded
+	pubsub.on('config:update', function (config) {
+		if (config) {
+			Emailer._defaultPayload.logo.src = config['brand:emailLogo'];
+			Emailer._defaultPayload.logo.height = config['brand:emailLogo:height'];
+			Emailer._defaultPayload.logo.width = config['brand:emailLogo:width'];
+		}
+	});
 
 	return Emailer;
 };
@@ -54,6 +95,9 @@ Emailer.send = function (template, uid, params, callback) {
 		winston.warn('[emailer] App not ready!');
 		return callback();
 	}
+
+	// Combined passed-in payload with default values
+	params = Object.assign({}, Emailer._defaultPayload, params);
 
 	async.waterfall([
 		function (next) {
@@ -144,9 +188,9 @@ Emailer.sendViaFallback = function (data, callback) {
 };
 
 function render(tpl, params, next) {
-	if (meta.config['email:custom:' + tpl.replace('emails/', '')]) {
-		var text = templates.parse(meta.config['email:custom:' + tpl.replace('emails/', '')], params);
-		next(null, text);
+	var customTemplate = meta.config['email:custom:' + tpl.replace('emails/', '')];
+	if (customTemplate) {
+		Benchpress.compileParse(customTemplate, params, next);
 	} else {
 		app.render(tpl, params, next);
 	}

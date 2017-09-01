@@ -9,11 +9,13 @@ define('admin/settings/email', ['ace/ace', 'admin/settings'], function (ace) {
 		configureEmailTester();
 		configureEmailEditor();
 		handleDigestHourChange();
+		handleSmtpServiceChange();
 
 		$(window).on('action:admin.settingsLoaded action:admin.settingsSaved', handleDigestHourChange);
 		$(window).on('action:admin.settingsSaved', function () {
 			socket.emit('admin.user.restartJobs');
 		});
+		$('[id="email:smtpTransport:service"]').change(handleSmtpServiceChange);
 	};
 
 	function configureEmailTester() {
@@ -98,6 +100,11 @@ define('admin/settings/email', ['ace/ace', 'admin/settings'], function (ace) {
 
 			$('#nextDigestTime').text(now.toString());
 		});
+	}
+
+	function handleSmtpServiceChange() {
+		var isCustom = $('[id="email:smtpTransport:service"]').val() === 'nodebb-custom-smtp';
+		$('[id="email:smtpTransport:custom-service"]')[isCustom ? 'slideDown' : 'slideUp'](isCustom);
 	}
 
 	return module;

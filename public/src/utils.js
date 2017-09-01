@@ -447,13 +447,5 @@
 		};
 	}
 
-	// DEPRECATED: remove in 1.6
-	if (typeof String.prototype.rtrim !== 'function') {
-		String.prototype.rtrim = function () {
-			console.warn('[deprecated] `String.prototype.rtrim` is deprecated as of NodeBB v1.5; use `utils.rtrim` instead.');
-			return utils.rtrim(this);
-		};
-	}
-
 	return utils;
 }));

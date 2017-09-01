@@ -4,11 +4,12 @@ var nconf = require('nconf');
 var winston = require('winston');
 var path = require('path');
 var async = require('async');
+var express = require('express');
+
 var meta = require('../meta');
 var controllers = require('../controllers');
 var plugins = require('../plugins');
 var user = require('../user');
-var express = require('express');
 
 var accountRoutes = require('./accounts');
 var metaRoutes = require('./meta');
@@ -34,6 +35,8 @@ function mainRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/search', middleware, [], controllers.search.search);
 	setupPageRoute(app, '/reset/:code?', middleware, [middleware.delayLoading], controllers.reset);
 	setupPageRoute(app, '/tos', middleware, [], controllers.termsOfUse);
+
+	app.post('/compose', middleware.applyCSRF, controllers.composePost);
 }
 
 function modRoutes(app, middleware, controllers) {
@@ -145,6 +148,7 @@ module.exports = function (app, middleware, hotswapIds, callback) {
 	}
 
 	app.use(middleware.privateUploads);
+	app.use(relativePath + '/assets/templates', middleware.templatesOnDemand);
 
 	var statics = [
 		{ route: '/assets', path: path.join(__dirname, '../../build/public') },

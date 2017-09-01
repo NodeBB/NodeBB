@@ -182,7 +182,8 @@ Topics.getTopicWithPosts = function (topicData, set, uid, start, stop, reverse, 
 		function (next) {
 			async.parallel({
 				posts: async.apply(getMainPostAndReplies, topicData, set, uid, start, stop, reverse),
-				category: async.apply(Topics.getCategoryData, topicData.tid),
+				category: async.apply(categories.getCategoryData, topicData.cid),
+				tagWhitelist: async.apply(categories.getTagWhitelist, [topicData.cid]),
 				threadTools: async.apply(plugins.fireHook, 'filter:topic.thread_tools', { topic: topicData, uid: uid, tools: [] }),
 				isFollowing: async.apply(Topics.isFollowing, [topicData.tid], uid),
 				isIgnoring: async.apply(Topics.isIgnoring, [topicData.tid], uid),
@@ -205,6 +206,7 @@ Topics.getTopicWithPosts = function (topicData, set, uid, start, stop, reverse, 
 		function (results, next) {
 			topicData.posts = results.posts;
 			topicData.category = results.category;
+			topicData.tagWhitelist = results.tagWhitelist[0];
 			topicData.thread_tools = results.threadTools.tools;
 			topicData.isFollowing = results.isFollowing[0];
 			topicData.isNotFollowing = !results.isFollowing[0] && !results.isIgnoring[0];

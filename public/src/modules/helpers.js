@@ -3,15 +3,13 @@
 (function (factory) {
 	if (typeof module === 'object' && module.exports) {
 		var relative_path = require('nconf').get('relative_path');
-		module.exports = factory(require('../utils'), require('templates.js'), require('string'), relative_path);
+		module.exports = factory(require('../utils'), require('benchpressjs'), require('string'), relative_path);
 	} else if (typeof define === 'function' && define.amd) {
-		define('helpers', ['string'], function (string) {
-			return factory(utils, templates, string, config.relative_path);
+		define('helpers', ['benchpress', 'string'], function (Benchpress, string) {
+			return factory(utils, Benchpress, string, config.relative_path);
 		});
-	} else {
-		window.helpers = factory(utils, templates, window.String, config.relative_path);
 	}
-}(function (utils, templates, S, relative_path) {
+}(function (utils, Benchpress, S, relative_path) {
 	var helpers = {
 		displayMenuItem: displayMenuItem,
 		buildMetaTag: buildMetaTag,
@@ -30,7 +28,12 @@
 		renderDigestAvatar: renderDigestAvatar,
 		userAgentIcons: userAgentIcons,
 		register: register,
+		__escape: identity,
 	};
+
+	function identity(str) {
+		return str;
+	}
 
 	function displayMenuItem(data, index) {
 		var item = data.navigation[index];
@@ -270,7 +273,7 @@
 
 	function register() {
 		Object.keys(helpers).forEach(function (helperName) {
-			templates.registerHelper(helperName, helpers[helperName]);
+			Benchpress.registerHelper(helperName, helpers[helperName]);
 		});
 	}
 

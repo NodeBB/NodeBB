@@ -146,6 +146,25 @@ function uploadImage(filename, folder, uploadedFile, req, res, next) {
 				file.saveFileToLocal(filename, folder, uploadedFile.path, next);
 			}
 		},
+		function (imageData, next) {
+			// Post-processing for site-logo
+			if (path.basename(filename, path.extname(filename)) === 'site-logo' && folder === 'system') {
+				var uploadPath = path.join(nconf.get('upload_path'), folder, 'site-logo-x50.png');
+				async.series([
+					async.apply(image.resizeImage, {
+						path: uploadedFile.path,
+						target: uploadPath,
+						extension: 'png',
+						height: 50,
+					}),
+					async.apply(meta.configs.set, 'brand:emailLogo', path.join(nconf.get('upload_url'), 'system/site-logo-x50.png')),
+				], function (err) {
+					next(err, imageData);
+				});
+			} else {
+				setImmediate(next, null, imageData);
+			}
+		},
 	], function (err, image) {
 		file.delete(uploadedFile.path);
 		if (err) {

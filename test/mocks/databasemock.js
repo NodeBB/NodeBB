@@ -112,6 +112,7 @@ before(function (done) {
 			nconf.set('relative_path', relativePath);
 			nconf.set('port', urlObject.port || nconf.get('port') || (nconf.get('PORT_ENV_VAR') ? nconf.get(nconf.get('PORT_ENV_VAR')) : false) || 4567);
 			nconf.set('upload_path', path.join(nconf.get('base_dir'), nconf.get('upload_path')));
+			nconf.set('upload_url', '/assets/uploads');
 
 			nconf.set('core_templates_path', path.join(__dirname, '../../src/views'));
 			nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-persona/templates'));

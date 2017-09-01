@@ -8,7 +8,8 @@ define('admin/manage/category', [
 	'autocomplete',
 	'translator',
 	'categorySelector',
-], function (uploader, iconSelect, colorpicker, autocomplete, translator, categorySelector) {
+	'benchpress',
+], function (uploader, iconSelect, colorpicker, autocomplete, translator, categorySelector, Benchpress) {
 	var	Category = {};
 	var modified_categories = {};
 
@@ -248,7 +249,7 @@ define('admin/manage/category', [
 				return app.alertError(err.message);
 			}
 
-			templates.parse('admin/partials/categories/privileges', {
+			Benchpress.parse('admin/partials/categories/privileges', {
 				privileges: privileges,
 			}, function (html) {
 				translator.translate(html, function (html) {
@@ -407,7 +408,7 @@ define('admin/manage/category', [
 			callback = categories;
 			categories = ajaxify.data.allCategories;
 		}
-		templates.parse('admin/partials/categories/select-category', {
+		Benchpress.parse('admin/partials/categories/select-category', {
 			categories: categories,
 		}, function (html) {
 			translator.translate(html, function (html) {

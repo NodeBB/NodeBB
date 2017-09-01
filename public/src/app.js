@@ -11,7 +11,21 @@ app.cacheBuster = null;
 (function () {
 	var showWelcomeMessage = !!utils.params().loggedin;
 
-	templates.setGlobal('config', config);
+	require(['benchpress'], function (Benchpress) {
+		Benchpress.setGlobal('config', config);
+		if (Object.defineProperty) {
+			Object.defineProperty(window, 'templates', {
+				configurable: true,
+				enumerable: true,
+				get: function () {
+					console.warn('[deprecated] Accessing benchpress (formerly known as templates.js) globally is deprecated. Use `require(["benchpress"], function (Benchpress) { ... })` instead');
+					return Benchpress;
+				},
+			});
+		} else {
+			window.templates = Benchpress;
+		}
+	});
 
 	app.cacheBuster = config['cache-buster'];
 
@@ -35,7 +49,8 @@ app.cacheBuster = null;
 			app.handleSearch();
 		}
 
-		$('body').on('click', '#new_topic', function () {
+		$('body').on('click', '#new_topic', function (e) {
+			e.preventDefault();
 			app.newTopic();
 		});
 
@@ -89,7 +104,8 @@ app.cacheBuster = null;
 		});
 	};
 
-	app.logout = function () {
+	app.logout = function (e) {
+		e.preventDefault();
 		$(window).trigger('action:app.logout');
 
 		/*
@@ -608,7 +624,7 @@ app.cacheBuster = null;
 	};
 
 	app.parseAndTranslate = function (template, blockName, data, callback) {
-		require(['translator'], function (translator) {
+		require(['translator', 'benchpress'], function (translator, Benchpress) {
 			function translate(html, callback) {
 				translator.translate(html, function (translatedHTML) {
 					translatedHTML = translator.unescape(translatedHTML);
@@ -617,13 +633,13 @@ app.cacheBuster = null;
 			}
 
 			if (typeof blockName === 'string') {
-				templates.parse(template, blockName, data, function (html) {
+				Benchpress.parse(template, blockName, data, function (html) {
 					translate(html, callback);
 				});
 			} else {
 				callback = data;
 				data = blockName;
-				templates.parse(template, data, function (html) {
+				Benchpress.parse(template, data, function (html) {
 					translate(html, callback);
 				});
 			}

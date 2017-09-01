@@ -1,10 +1,12 @@
 'use strict';
 
 var async = require('async');
+var _ = require('lodash');
 
 var db = require('../database');
 var topics = require('../topics');
 var plugins = require('../plugins');
+var meta = require('../meta');
 
 module.exports = function (Categories) {
 	Categories.getCategoryTopics = function (data, callback) {
@@ -13,7 +15,7 @@ module.exports = function (Categories) {
 				plugins.fireHook('filter:category.topics.prepare', data, next);
 			},
 			function (data, next) {
-				Categories.getTopicIds(data.cid, data.set, data.reverse, data.start, data.stop, next);
+				Categories.getTopicIds(data, next);
 			},
 			function (tids, next) {
 				topics.getTopicsByTids(tids, data.uid, next);
@@ -35,38 +37,62 @@ module.exports = function (Categories) {
 		], callback);
 	};
 
-	Categories.getTopicIds = function (cid, set, reverse, start, stop, callback) {
+	Categories.getTopicIds = function (data, callback) {
 		var pinnedTids;
-		var pinnedCount;
-		var totalPinnedCount;
 
 		async.waterfall([
 			function (next) {
-				Categories.getPinnedTids(cid, 0, -1, next);
+				var dataForPinned = _.cloneDeep(data);
+				dataForPinned.start = 0;
+				dataForPinned.stop = -1;
+
+				async.parallel({
+					pinnedTids: async.apply(Categories.getPinnedTids, dataForPinned),
+					set: async.apply(Categories.buildTopicsSortedSet, data),
+					direction: async.apply(Categories.getSortedSetRangeDirection, data.sort),
+				}, next);
 			},
-			function (_pinnedTids, next) {
-				totalPinnedCount = _pinnedTids.length;
+			function (results, next) {
+				var totalPinnedCount = results.pinnedTids.length;
 
-				pinnedTids = _pinnedTids.slice(start, stop === -1 ? undefined : stop + 1);
+				pinnedTids = results.pinnedTids.slice(data.start, data.stop === -1 ? undefined : data.stop + 1);
 
-				pinnedCount = pinnedTids.length;
+				var pinnedCount = pinnedTids.length;
 
-				var topicsPerPage = stop - start + 1;
+				var topicsPerPage = data.stop - data.start + 1;
 
 				var normalTidsToGet = Math.max(0, topicsPerPage - pinnedCount);
 
-				if (!normalTidsToGet && stop !== -1) {
+				if (!normalTidsToGet && data.stop !== -1) {
 					return next(null, []);
 				}
+
+				if (plugins.hasListeners('filter:categories.getTopicIds')) {
+					return plugins.fireHook('filter:categories.getTopicIds', {
+						tids: [],
+						data: data,
+						pinnedTids: pinnedTids,
+						allPinnedTids: results.pinnedTids,
+						totalPinnedCount: totalPinnedCount,
+						normalTidsToGet: normalTidsToGet,
+					}, function (err, data) {
+						callback(err, data && data.tids);
+					});
+				}
+
+				var set = results.set;
+				var direction = results.direction;
+				var start = data.start;
 				if (start > 0 && totalPinnedCount) {
 					start -= totalPinnedCount - pinnedCount;
 				}
-				stop = stop === -1 ? stop : start + normalTidsToGet - 1;
+
+				var stop = data.stop === -1 ? data.stop : start + normalTidsToGet - 1;
 
 				if (Array.isArray(set)) {
-					db[reverse ? 'getSortedSetRevIntersect' : 'getSortedSetIntersect']({ sets: set, start: start, stop: stop }, next);
+					db[direction === 'highest-to-lowest' ? 'getSortedSetRevIntersect' : 'getSortedSetIntersect']({ sets: set, start: start, stop: stop }, next);
 				} else {
-					db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop, next);
+					db[direction === 'highest-to-lowest' ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop, next);
 				}
 			},
 			function (normalTids, next) {
@@ -79,12 +105,85 @@ module.exports = function (Categories) {
 		], callback);
 	};
 
+	Categories.getTopicCount = function (data, callback) {
+		if (plugins.hasListeners('filter:categories.getTopicCount')) {
+			return plugins.fireHook('filter:categories.getTopicCount', {
+				topicCount: data.category.topic_count,
+				data: data,
+			}, function (err, data) {
+				callback(err, data && data.topicCount);
+			});
+		}
+		async.waterfall([
+			function (next) {
+				Categories.buildTopicsSortedSet(data, next);
+			},
+			function (set, next) {
+				if (Array.isArray(set)) {
+					db.sortedSetIntersectCard(set, next);
+				} else {
+					next(null, data.category.topic_count);
+				}
+			},
+		], callback);
+	};
+
+	Categories.buildTopicsSortedSet = function (data, callback) {
+		var cid = data.cid;
+		var set = 'cid:' + cid + ':tids';
+		var sort = data.sort || (data.settings && data.settings.categoryTopicSort) || meta.config.categoryTopicSort || 'newest_to_oldest';
+
+		if (sort === 'most_posts') {
+			set = 'cid:' + cid + ':tids:posts';
+		}
+
+		if (data.targetUid) {
+			set = 'cid:' + cid + ':uid:' + data.targetUid + ':tids';
+		}
+
+		if (data.tag) {
+			if (Array.isArray(data.tag)) {
+				set = [set].concat(data.tag.map(function (tag) {
+					return 'tag:' + tag + ':topics';
+				}));
+			} else {
+				set = [set, 'tag:' + data.tag + ':topics'];
+			}
+		}
+		plugins.fireHook('filter:categories.buildTopicsSortedSet', {
+			set: set,
+			data: data,
+		}, function (err, data) {
+			callback(err, data && data.set);
+		});
+	};
+
+	Categories.getSortedSetRangeDirection = function (sort, callback) {
+		sort = sort || 'newest_to_oldest';
+		var direction = sort === 'newest_to_oldest' || sort === 'most_posts' ? 'highest-to-lowest' : 'lowest-to-highest';
+		plugins.fireHook('filter:categories.getSortedSetRangeDirection', {
+			sort: sort,
+			direction: direction,
+		}, function (err, data) {
+			callback(err, data && data.direction);
+		});
+	};
+
 	Categories.getAllTopicIds = function (cid, start, stop, callback) {
 		db.getSortedSetRange(['cid:' + cid + ':tids:pinned', 'cid:' + cid + ':tids'], start, stop, callback);
 	};
 
-	Categories.getPinnedTids = function (cid, start, stop, callback) {
-		db.getSortedSetRevRange('cid:' + cid + ':tids:pinned', start, stop, callback);
+	Categories.getPinnedTids = function (data, callback) {
+		if (plugins.hasListeners('filter:categories.getPinnedTids')) {
+			return plugins.fireHook('filter:categories.getPinnedTids', {
+				pinnedTids: [],
+				data: data,
+			}, function (err, data) {
+				callback(err, data && data.pinnedTids);
+			});
+		}
+
+		db.getSortedSetRevRange('cid:' + data.cid + ':tids:pinned', data.start, data.stop, callback);
 	};
 
 	Categories.modifyTopicsByPrivilege = function (topics, privileges) {

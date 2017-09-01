@@ -27,7 +27,7 @@ var plugins = require('./plugins');
 var flags = require('./flags');
 var routes = require('./routes');
 var auth = require('./routes/authentication');
-var templates = require('templates.js');
+var Benchpress = require('benchpressjs');
 
 var helpers = require('../public/src/modules/helpers');
 
@@ -119,11 +119,24 @@ function setupExpressApp(app, callback) {
 	var middleware = require('./middleware');
 
 	var relativePath = nconf.get('relative_path');
+	var viewsDir = nconf.get('views_dir');
 
-	app.engine('tpl', templates.__express);
+	app.engine('tpl', function (filepath, data, next) {
+		filepath = filepath.replace(/\.tpl$/, '.jst');
+
+		middleware.templatesOnDemand({
+			filePath: filepath,
+		}, null, function (err) {
+			if (err) {
+				return next(err);
+			}
+
+			Benchpress.__express(filepath, data, next);
+		});
+	});
 	app.set('view engine', 'tpl');
-	app.set('views', nconf.get('views_dir'));
-	app.set('json spaces', process.env.NODE_ENV === 'development' ? 4 : 0);
+	app.set('views', viewsDir);
+	app.set('json spaces', global.env === 'development' ? 4 : 0);
 	app.use(flash());
 
 	app.enable('view cache');

@@ -86,7 +86,6 @@ UserReset.send = function (email, callback) {
 		function (subject, code, next) {
 			var reset_link = nconf.get('url') + '/reset/' + code;
 			emailer.send('reset', uid, {
-				site_title: (meta.config.title || 'NodeBB'),
 				reset_link: reset_link,
 				subject: subject,
 				template: 'reset',

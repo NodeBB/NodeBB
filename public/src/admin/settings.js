@@ -17,6 +17,13 @@ define('admin/settings', ['uploader'], function (uploader) {
 			$(this).prepend('<a name="' + anchor + '"></a>');
 			$('.section-content ul').append('<li><a href="#' + anchor + '">' + header + '</a></li>');
 		});
+
+		var scrollTo = $('a[name="' + window.location.hash.replace('#', '') + '"]');
+		if (scrollTo.length) {
+			$('html, body').animate({
+				scrollTop: (scrollTo.offset().top) + 'px',
+			}, 400);
+		}
 	};
 
 	Settings.prepare = function (callback) {

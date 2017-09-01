@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('pictureCropper', ['translator', 'cropper'], function (translator, cropper) {
+define('pictureCropper', ['translator', 'cropper', 'benchpress'], function (translator, cropper, Benchpress) {
 	var module = {};
 
 	module.show = function (data, callback) {
@@ -32,7 +32,7 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 
 	module.handleImageCrop = function (data, callback) {
 		$('#crop-picture-modal').remove();
-		templates.parse('modals/crop_picture', {
+		Benchpress.parse('modals/crop_picture', {
 			url: data.url,
 		}, function (cropperHtml) {
 			translator.translate(cropperHtml, function (translated) {
@@ -179,7 +179,7 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 	}
 
 	function parseModal(tplVals, callback) {
-		templates.parse('partials/modals/upload_file_modal', tplVals, function (html) {
+		Benchpress.parse('partials/modals/upload_file_modal', tplVals, function (html) {
 			translator.translate(html, callback);
 		});
 	}

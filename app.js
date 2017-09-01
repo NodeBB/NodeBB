@@ -37,6 +37,7 @@ var winston = require('winston');
 var path = require('path');
 var pkg = require('./package.json');
 var file = require('./src/file');
+var debug = require('./src/meta/debugParams')().execArgv.length;
 
 global.env = process.env.NODE_ENV || 'production';
 
@@ -51,6 +52,22 @@ winston.add(winston.transports.Console, {
 	json: (!!nconf.get('json-logging')),
 	stringify: (!!nconf.get('json-logging')),
 });
+
+if (debug) {
+	var winstonCommon = require('winston/lib/winston/common');
+	// Override to use real console.log etc for VSCode debugger
+	winston.transports.Console.prototype.log = function (level, message, meta, callback) {
+		const output = winstonCommon.log(Object.assign({}, this, {
+			level,
+			message,
+			meta,
+		}));
+
+		console[level in console ? level : 'log'](output);
+
+		setImmediate(callback, null, true);
+	};
+}
 
 
 // Alternate configuration file support

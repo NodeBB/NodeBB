@@ -12,7 +12,8 @@ define('forum/category', [
 	'topicSelect',
 	'forum/pagination',
 	'storage',
-], function (infinitescroll, share, navigator, categoryTools, sort, components, translator, topicSelect, pagination, storage) {
+	'benchpress',
+], function (infinitescroll, share, navigator, categoryTools, sort, components, translator, topicSelect, pagination, storage, Benchpress) {
 	var Category = {};
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
@@ -204,7 +205,7 @@ define('forum/category', [
 
 		var editable = !!$('.thread-tools').length;
 
-		templates.parse('category', 'topics', {
+		Benchpress.parse('category', 'topics', {
 			privileges: { editable: editable },
 			showSelect: editable,
 			topics: [topic],
@@ -267,7 +268,7 @@ define('forum/category', [
 
 		var topics = $('[component="category/topic"]');
 		var afterEl = direction > 0 ? topics.last() : topics.first();
-		var after = (parseInt(afterEl.attr('data-index'), 10) || 0) + 1;
+		var after = (parseInt(afterEl.attr('data-index'), 10) || 0) + (direction > 0 ? 1 : 0);
 
 		loadTopicsAfter(after, direction);
 	};
@@ -284,8 +285,7 @@ define('forum/category', [
 			cid: ajaxify.data.cid,
 			after: after,
 			direction: direction,
-			author: params.author,
-			tag: params.tag,
+			query: params,
 			categoryTopicSort: config.categoryTopicSort,
 		}, function (data, done) {
 			if (data.topics && data.topics.length) {

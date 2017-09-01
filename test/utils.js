@@ -2,19 +2,19 @@
 
 
 var assert = require('assert');
-var jsdom = require('jsdom');
+var JSDOM = require('jsdom').JSDOM;
 var utils = require('./../public/src/utils.js');
 
 
 describe('Utility Methods', function () {
 	// https://gist.github.com/robballou/9ee108758dc5e0e2d028
 	// create some jsdom magic to allow jQuery to work
-	var doc = jsdom.jsdom('<html><body></body></html>');
-	var window = doc.defaultView;
+	var dom = new JSDOM('<html><body></body></html>');
+	var window = dom.window;
 	global.jQuery = require('jquery')(window);
 	global.$ = global.jQuery;
 	var $ = global.$;
-	global.window = doc.defaultView;
+	global.window = window;
 
 	it('should preserve case if requested', function (done) {
 		var slug = utils.slugify('UPPER CASE', true);
