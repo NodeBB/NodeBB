@@ -22,7 +22,7 @@ var buildImports = {
 			'@import (inline) "../public/vendor/colorpicker/colorpicker.css";',
 			'@import (inline) "../node_modules/cropperjs/dist/cropper.css";',
 			'@import "../../public/less/flags.less";',
-			'@import "../../public/less/blacklist.less";',
+			'@import "../../public/less/admin/manage/ip-blacklist.less";',
 			'@import "../../public/less/generics.less";',
 			'@import "../../public/less/mixins.less";',
 			'@import "../../public/less/global.less";',
