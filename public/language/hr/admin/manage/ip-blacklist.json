@@ -11,5 +11,8 @@
 	"validate.x-valid": "<strong>%1</strong> od <strong>%2</strong> pravila valjano.",
 	"validate.x-invalid": "Sljedeća <strong>%1</strong> pravila su nevažeća:",
 
-	"alerts.applied-success": "Blokiranje omogućeno"
+	"alerts.applied-success": "Blokiranje omogućeno",
+
+	"analytics.blacklist-hourly": "<strong>Figure 1</strong> &ndash; Blacklist hits per hour",
+	"analytics.blacklist-daily": "<strong>Figure 2</strong> &ndash; Blacklist hits per day"
 }

@@ -11,5 +11,8 @@
 	"validate.x-valid": "<strong>%1</strong> de <strong>%2</strong> regras(s) validá(s).",
 	"validate.x-invalid": "As seguintes <strong>%1</strong> regras são inválidas:",
 
-	"alerts.applied-success": "Lista Negra Aplicada"
+	"alerts.applied-success": "Lista Negra Aplicada",
+
+	"analytics.blacklist-hourly": "<strong>Figure 1</strong> &ndash; Blacklist hits per hour",
+	"analytics.blacklist-daily": "<strong>Figure 2</strong> &ndash; Blacklist hits per day"
 }

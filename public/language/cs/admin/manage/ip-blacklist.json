@@ -11,5 +11,8 @@
 	"validate.x-valid": "<strong>%1</strong> z <strong>%2</strong> pravidel je platných.",
 	"validate.x-invalid": "Následujících <strong>%1</strong> pravidel není platných:",
 
-	"alerts.applied-success": "Černá listina byla použita"
+	"alerts.applied-success": "Černá listina byla použita",
+
+	"analytics.blacklist-hourly": "<strong>Postava 1</strong> - záznamů v černé listině/hodinu",
+	"analytics.blacklist-daily": "<strong>Postava 2</strong> - záznamů v černé listině/den"
 }

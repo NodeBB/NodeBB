@@ -11,5 +11,8 @@
 	"validate.x-valid": "Правилни правила: <strong>%1</strong> от <strong>%2</strong>.",
 	"validate.x-invalid": "Следните <strong>%1</strong> правила са грешни:",
 
-	"alerts.applied-success": "Черният списък е приложен"
+	"alerts.applied-success": "Черният списък е приложен",
+
+	"analytics.blacklist-hourly": "<strong>Фигура 1</strong> &ndash; Попадения в черния списък за час",
+	"analytics.blacklist-daily": "<strong>Фигура 2</strong> &ndash; Попадения в черния списък за ден"
 }
