@@ -165,7 +165,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		index = index > count ? count : index;
 
 		$('.pagination-block .pagination-text').translateHtml('[[global:pagination.out_of, ' + index + ', ' + count + ']]');
-		$('.pagination-block .progress-bar').width((index / count * 100) + '%');
+		$('.pagination-block .progress-bar').width(($(window).scrollTop() / ($(document).height() - $(window).height()) * 100) + '%');
 	};
 
 	navigator.scrollUp = function () {
