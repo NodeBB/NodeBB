@@ -4,7 +4,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 	var navigator = {};
 	var index = 1;
 	var count = 0;
-	var navigatorUpdateTimeoutId = undefined;
+	var navigatorUpdateTimeoutId;
 
 	navigator.scrollActive = false;
 
