@@ -4,7 +4,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 	var navigator = {};
 	var index = 1;
 	var count = 0;
-	var navigatorUpdateTimeoutId = 0;
+	var navigatorUpdateTimeoutId = undefined;
 
 	navigator.scrollActive = false;
 
@@ -91,11 +91,12 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 	}
 
 	navigator.delayedUpdate = function () {
-		if (navigatorUpdateTimeoutId) {
-			clearTimeout(navigatorUpdateTimeoutId);
-			navigatorUpdateTimeoutId = 0;
+		if (!navigatorUpdateTimeoutId) {
+			navigatorUpdateTimeoutId = setTimeout(function () {
+				navigator.update();
+				navigatorUpdateTimeoutId = undefined;
+			}, 100);
 		}
-		navigatorUpdateTimeoutId = setTimeout(navigator.update, 100);
 	};
 
 	navigator.update = function (threshold) {
@@ -165,7 +166,9 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		index = index > count ? count : index;
 
 		$('.pagination-block .pagination-text').translateHtml('[[global:pagination.out_of, ' + index + ', ' + count + ']]');
-		$('.pagination-block .progress-bar').width(($(window).scrollTop() / ($(document).height() - $(window).height()) * 100) + '%');
+		var fraction = $(window).scrollTop() / ($(document).height() - $(window).height());
+		$('.pagination-block meter').val(fraction);
+		$('.pagination-block .progress-bar').width((fraction * 100) + '%');
 	};
 
 	navigator.scrollUp = function () {
