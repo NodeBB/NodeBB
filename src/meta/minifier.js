@@ -230,23 +230,23 @@ function minifyJS(data, callback) {
 			scripts[ref.filename] = ref.source;
 		});
 
-		try {
-			var minified = uglifyjs.minify(scripts, {
-				sourceMap: {
-					filename: data.filename,
-					url: data.filename + '.map',
-					includeSources: true,
-				},
-				compress: false,
-			});
+		var minified = uglifyjs.minify(scripts, {
+			sourceMap: {
+				filename: data.filename,
+				url: data.filename + '.map',
+				includeSources: true,
+			},
+			compress: false,
+		});
 
-			async.parallel([
-				async.apply(fs.writeFile, data.destPath, minified.code),
-				async.apply(fs.writeFile, data.destPath + '.map', minified.map),
-			], callback);
-		} catch (e) {
-			callback(e);
+		if (minified.error) {
+			return callback(minified.error);
 		}
+
+		async.parallel([
+			async.apply(fs.writeFile, data.destPath, minified.code),
+			async.apply(fs.writeFile, data.destPath + '.map', minified.map),
+		], callback);
 	});
 }
 actions.minifyJS = minifyJS;
