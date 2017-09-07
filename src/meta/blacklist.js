@@ -41,7 +41,7 @@ pubsub.on('blacklist:reload', Blacklist.load);
 Blacklist.save = function (rules, callback) {
 	async.waterfall([
 		function (next) {
-			db.set('ip-blacklist-rules', rules, next);
+			db.setObject('ip-blacklist-rules', { rules: rules }, next);
 		},
 		function (next) {
 			Blacklist.load(next);
@@ -51,7 +51,14 @@ Blacklist.save = function (rules, callback) {
 };
 
 Blacklist.get = function (callback) {
-	db.get('ip-blacklist-rules', callback);
+	async.waterfall([
+		function (next) {
+			db.getObject('ip-blacklist-rules', next);
+		},
+		function (data, next) {
+			next(null, data && data.rules);
+		},
+	], callback);
 };
 
 Blacklist.test = function (clientIp, callback) {
