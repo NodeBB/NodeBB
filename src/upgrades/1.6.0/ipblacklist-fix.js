@@ -15,10 +15,7 @@ module.exports = {
 			},
 			function (_rules, next) {
 				rules = _rules;
-				if (!rules) {
-					return db.delete('ip-blacklist-rules', callback);
-				}
-				db.delete('ip-blacklist-rules', next);
+				db.delete('ip-blacklist-rules', rules ? next : callback);
 			},
 			function (next) {
 				db.setObject('ip-blacklist-rules', { rules: rules }, next);
