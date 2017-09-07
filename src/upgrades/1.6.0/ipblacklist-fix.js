@@ -16,7 +16,7 @@ module.exports = {
 			function (_rules, next) {
 				rules = _rules;
 				if (!rules) {
-					return next();
+					return callback();
 				}
 				db.delete('ip-blacklist-rules', next);
 			},
