@@ -7,6 +7,6 @@
 	<!-- ENDIF error -->
 
 	<!-- IF returnLink -->
-	<p>[[error:goback]]</p>
+	<a href="{returnLink}">[[error:goback]]</a>
 	<!-- ENDIF returnLink -->
 </div>
