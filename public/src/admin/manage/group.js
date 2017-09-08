@@ -104,7 +104,7 @@ define('admin/manage/group', [
 					'icon:text': userLabel.attr('data-usericon-text'),
 				};
 
-				Benchpress.parse('admin/partials/groups/memberlist', 'members', {
+				Benchpress.parse('admin/partials/groups/memberlist', 'group.members', {
 					group: {
 						isOwner: ajaxify.data.group.isOwner,
 						members: [member],

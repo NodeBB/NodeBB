@@ -20,7 +20,7 @@
     "chat.three_months": "3ヶ月",
     "chat.delete_message_confirm": "本当にこのメッセージを削除しますか？",
     "chat.add-users-to-room": "部屋にユーザーを追加",
-    "chat.confirm-chat-with-dnd-user": "This user has set their status to DnD(Do not disturb). Do you still want to chat with them?",
+    "chat.confirm-chat-with-dnd-user": "このユーザーのステータスはDnD(Do not disturb：取り込み中)に設定されています。あなたはまだチャットしたいですか？",
     "composer.compose": "構成",
     "composer.show_preview": "プレビュー表示",
     "composer.hide_preview": "プレビュー非表示",

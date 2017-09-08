@@ -41,7 +41,7 @@
     "new_register": "<strong>%1</strong> hat eine Registrationsanfrage geschickt.",
     "new_register_multiple": "Es erwarten <strong>%1</strong>  Registrierungsanfragen eine Überprüfung.",
     "flag_assigned_to_you": "<strong>Markierung %1</strong> wurde Ihnen zugewiesen",
-    "post_awaiting_review": "Post awaiting review",
+    "post_awaiting_review": "Beitrag noch nicht Überprüft",
     "email-confirmed": "E-Mail bestätigt",
     "email-confirmed-message": "Vielen Dank für Ihre E-Mail-Validierung. Ihr Konto ist nun vollständig aktiviert.",
     "email-confirm-error-message": "Es gab ein Problem bei der Validierung Ihrer E-Mail-Adresse. Möglicherweise ist der Code ungültig oder abgelaufen.",

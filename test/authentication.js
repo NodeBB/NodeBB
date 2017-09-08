@@ -78,6 +78,63 @@ describe('authentication', function () {
 		});
 	});
 
+	it('should fail to create user if username is too short', function (done) {
+		helpers.registerUser({
+			username: 'a',
+			password: '123456',
+			'password-confirm': '123456',
+			email: 'should@error1.com',
+		}, function (err, jar, response, body) {
+			assert.ifError(err);
+			assert.equal(response.statusCode, 400);
+			assert.equal(body, '[[error:username-too-short]]');
+			done();
+		});
+	});
+
+	it('should fail to create user if userslug is too short', function (done) {
+		helpers.registerUser({
+			username: '----a-----',
+			password: '123456',
+			'password-confirm': '123456',
+			email: 'should@error2.com',
+		}, function (err, jar, response, body) {
+			assert.ifError(err);
+			assert.equal(response.statusCode, 400);
+			assert.equal(body, '[[error:username-too-short]]');
+			done();
+		});
+	});
+
+	it('should fail to create user if userslug is too short', function (done) {
+		helpers.registerUser({
+			username: '     a',
+			password: '123456',
+			'password-confirm': '123456',
+			email: 'should@error3.com',
+		}, function (err, jar, response, body) {
+			assert.ifError(err);
+			assert.equal(response.statusCode, 400);
+			assert.equal(body, '[[error:username-too-short]]');
+			done();
+		});
+	});
+
+	it('should fail to create user if userslug is too short', function (done) {
+		helpers.registerUser({
+			username: 'a      ',
+			password: '123456',
+			'password-confirm': '123456',
+			email: 'should@error4.com',
+		}, function (err, jar, response, body) {
+			assert.ifError(err);
+			assert.equal(response.statusCode, 400);
+			assert.equal(body, '[[error:username-too-short]]');
+			done();
+		});
+	});
+
+
 	it('should register and login a user', function (done) {
 		request({
 			url: nconf.get('url') + '/api/config',

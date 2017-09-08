@@ -1,6 +1,6 @@
 {
-    "reconnection": "Reconnection Settings",
-    "max-attempts": "Max Reconnection Attempts",
-    "default-placeholder": "Default: %1",
-    "delay": "Reconnection Delay"
+    "reconnection": "Nastavení znovu připojení",
+    "max-attempts": "Maximální počet pokusů o znovu připojení",
+    "default-placeholder": "Výchozí: %1",
+    "delay": "Časové zpoždění pro znovu připojení"
 }

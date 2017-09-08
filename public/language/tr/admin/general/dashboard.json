@@ -36,8 +36,8 @@
 	"search-plugin-tooltip": "Install a search plugin from the plugin page in order to activate search functionality",
 
 	"control-panel": "Sistem Kontrol",
-	"reload": "Reload",
-	"restart": "Restart",
+	"reload": "Yeniden Yükle",
+	"restart": "Yeniden Başlat",
 	"restart-warning": "NodeBB yeniden yüklemek veya yeniden başlatmak için mevcut tüm bağlantıları birkaç saniye düşürür.",
 	"maintenance-mode": "Bakım Modu",
 	"maintenance-mode-title": "NodeBB için bakım modunu ayarlamak için buraya tıklayın",

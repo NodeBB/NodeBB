@@ -1,9 +1,9 @@
 {
-	"pagination": "Pagination Settings",
-	"enable": "Paginate topics and posts instead of using infinite scroll.",
-	"topics": "Topic Pagination",
-	"posts-per-page": "Posts per Page",
-	"categories": "Category Pagination",
-	"topics-per-page": "Topics per Page",
-	"initial-num-load": "Initial Number of Topics to Load on Unread, Recent, and Popular"
+	"pagination": "Nastavení stránkování",
+	"enable": "Stránkovat témata a příspěvky namísto nekonečného posouvání",
+	"topics": "Stránkování témat",
+	"posts-per-page": "Příspěvků na stránku",
+	"categories": "Stránkování kategorii",
+	"topics-per-page": "Témat na stránku",
+	"initial-num-load": "Počáteční počet témat pro načtení u nepřečtených, posledních a polulárních"
 }

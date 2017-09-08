@@ -41,9 +41,9 @@
     "new_register": "<strong>%1</strong> kayıt olma isteği gönderdi.",
     "new_register_multiple": "Beklemede <strong>%1</strong> kayıt olma isteği bulunmaktadır.",
     "flag_assigned_to_you": "<Strong>Bayrak %1</ strong> size devredildi",
-    "post_awaiting_review": "Post awaiting review",
+    "post_awaiting_review": "İleti inceleme bekliyor",
     "email-confirmed": "E-posta onaylandı",
-    "email-confirmed-message": "E-postanızı onaylandığınız için teşekkürler. Hesabınız tamamen aktive edildi.",
+    "email-confirmed-message": "E-postanızı onaylandığınız için teşekkürler. Hesabınız tamamen aktif edildi.",
     "email-confirm-error-message": "E-posta adresinizi onaylarken bir hata oluştu. Kodunuz geçersiz ya da eski olabilir.",
     "email-confirm-sent": "Onay e-postası gönderildi."
 }

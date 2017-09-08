@@ -3,6 +3,8 @@
 
 var	assert = require('assert');
 var async = require('async');
+var request = require('request');
+var nconf = require('nconf');
 
 var db = require('./mocks/databasemock');
 var topics = require('../src/topics');
@@ -14,6 +16,7 @@ var groups = require('../src/groups');
 var socketPosts = require('../src/socket.io/posts');
 var socketTopics = require('../src/socket.io/topics');
 var meta = require('../src/meta');
+var helpers = require('./helpers');
 
 describe('Post\'s', function () {
 	var voterUid;
@@ -33,7 +36,7 @@ describe('Post\'s', function () {
 				user.create({ username: 'upvotee' }, next);
 			},
 			globalModUid: function (next) {
-				user.create({ username: 'globalmod' }, next);
+				user.create({ username: 'globalmod', password: 'globalmodpwd' }, next);
 			},
 			category: function (next) {
 				categories.create({
@@ -784,7 +787,21 @@ describe('Post\'s', function () {
 			});
 		});
 
-		it('should get queued posts and submit', function (done) {
+		it('should load queued posts', function (done) {
+			helpers.loginUser('globalmod', 'globalmodpwd', function (err, jar) {
+				assert.ifError(err);
+				request(nconf.get('url') + '/api/post-queue', { jar: jar, json: true }, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(body.posts[0].type, 'topic');
+					assert.equal(body.posts[0].data.content, 'queued topic content');
+					assert.equal(body.posts[1].type, 'reply');
+					assert.equal(body.posts[1].data.content, 'this is a queued reply');
+					done();
+				});
+			});
+		});
+
+		it('should accept queued posts submit', function (done) {
 			var ids;
 			async.waterfall([
 				function (next) {
@@ -792,20 +809,6 @@ describe('Post\'s', function () {
 				},
 				function (_ids, next) {
 					ids = _ids;
-					var keys = ids.map(function (id) {
-						return 'post:queue:' + id;
-					});
-					db.getObjects(keys, next);
-				},
-				function (data, next) {
-					data.forEach(function (data) {
-						data.data = JSON.parse(data.data);
-					});
-					assert.equal(data[0].type, 'topic');
-					assert.equal(data[0].data.content, 'queued topic content');
-					assert.equal(data[1].type, 'reply');
-					assert.equal(data[1].data.content, 'this is a queued reply');
-
 					socketPosts.accept({ uid: globalModUid }, { id: ids[0] }, next);
 				},
 				function (next) {

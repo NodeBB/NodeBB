@@ -15,14 +15,14 @@
 	"open-new-window": "Open in a new window",
 
 	"installed-plugins-required": "Installed Plugins Required:",
-	"search-plugin": "Search plugin",
+	"search-plugin": "Eklenti ara",
 
-	"btn.delete": "Delete",
-	"btn.disable": "Disable",
-	"btn.enable": "Enable",
+	"btn.delete": "Sil",
+	"btn.disable": "Devre dışı",
+	"btn.enable": "Etkin",
 
 	"available-menu-items": "Available Menu Items",
 	"custom-route": "Custom Route",
-	"core": "core",
-	"plugin": "plugin"
+	"core": "çekirdek",
+	"plugin": "eklenti"
 }

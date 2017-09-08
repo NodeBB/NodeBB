@@ -18,8 +18,8 @@
 	"order.explanation": "Pluginy ładują się tutaj w określonej kolejności, od góry do dołu.",
 
 	"plugin-item.themes": "Style",
-	"plugin-item.deactivate": "Dezaktywować",
-	"plugin-item.activate": "Aktywne",
+	"plugin-item.deactivate": "Dezaktywuj",
+	"plugin-item.activate": "Aktywuj",
 	"plugin-item.install": "Zainstaluj",
 	"plugin-item.uninstall": "Odinstaluj",
 	"plugin-item.settings": "Ustawienia",
@@ -45,7 +45,7 @@
 	"alert.incompatible": "<p>Twoja wersja NodeBB (v%1) jest usuwana w celu uaktualnienia do v%2 tego pluginu. Proszę zaktualizuj twoje NodeBB jeżeli chcesz zainstalować nowszą wersję tego pluginu.</p>",
 	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>No Compatibility Information Found</strong></p><p>This plugin did not specify a specific version for installation given your NodeBB version. Full compatibility cannot be guaranteed, and may cause your NodeBB to no longer start properly.</p></div><p>In the event that NodeBB cannot boot properly:</p><pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre><p>Continue installation of latest version of this plugin?</p>",
 
-	"license.title": "Plugin License Information",
+	"license.title": "Informacje o licencji pluginu",
 	"license.intro": "The plugin <strong>%1</strong> is licensed under the %2. Please read and understand the license terms prior to activating this plugin.",
 	"license.cta": "Do you wish to continue with activating this plugin?"
 }

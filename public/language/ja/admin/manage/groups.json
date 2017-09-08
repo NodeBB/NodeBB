@@ -1,7 +1,7 @@
 {
 	"name": "グループ名",
 	"description": "グループの説明",
-	"member-count": "Member Count",
+	"member-count": "メンバー数",
 	"system": "システムグループ",
 	"edit": "編集",
 	"search-placeholder": "検索",

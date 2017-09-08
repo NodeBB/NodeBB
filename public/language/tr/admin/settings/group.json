@@ -1,11 +1,11 @@
 {
 	"general": "Genel",
 	"private-groups": "Gizli Grup",
-	"private-groups.help": "If enabled, joining of groups requires the approval of the group owner <em>(Default: enabled)</em>",
+	"private-groups.help": "Eğer etkinse, gruba katılmak için grup sahibinin onayı gerekir. <em>(Normali: Etkin)</em>",
 	"private-groups.warning": "<strong>Beware!</strong> If this option is disabled and you have private groups, they automatically become public.",
 	"allow-creation": "Allow Group Creation",
-	"allow-creation-help": "If enabled, users can create groups <em>(Default: disabled)</em>",
-	"max-name-length": "Maximum Group Name Length",
+	"allow-creation-help": "Eğer etkinse kullanıcılar grup oluşturabilir <em>(Normali: Pasif)</em>",
+	"max-name-length": "Maksimum Grup Adı Uzunluğu",
 	"cover-image": "Group Cover Image",
 	"default-cover": "Default Cover Images",
 	"default-cover-help": "Add comma-separated default cover images for groups that don't have an uploaded cover image"

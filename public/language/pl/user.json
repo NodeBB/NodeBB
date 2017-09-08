@@ -33,7 +33,7 @@
     "chat": "Rozmawiaj",
     "chat_with": "Kontynuuj rozmowę z %1",
     "new_chat_with": "Rozpocznij rozmowę z %1",
-    "flag-profile": "Flag Profile",
+    "flag-profile": "Zgłoś profil",
     "follow": "Śledź",
     "unfollow": "Przestań śledzić",
     "more": "Więcej",
@@ -60,14 +60,14 @@
     "username_taken_workaround": "Wybrany login jest już zajęty, więc zmieniliśmy go trochę. Proponujemy  <strong>%1</strong>",
     "password_same_as_username": "Twoje hasło jest takie samo jak nazwa użytkownika, prosimy wybrać inne hasło.",
     "password_same_as_email": "Twoje hasło jest takie samo jak adres e-mail, prosimy wybrać inne hasło.",
-    "weak_password": "Weak password.",
+    "weak_password": "Słabe hasło.",
     "upload_picture": "Prześlij zdjęcie",
     "upload_a_picture": "Prześlij zdjęcie",
     "remove_uploaded_picture": "Usuń Przesłane Zdjęcie",
     "upload_cover_picture": "Prześlij zdjęcie tła",
     "remove_cover_picture_confirm": "Czy jesteś pewny, że chcesz usunąć zdjęcie okładki?",
-    "crop_picture": "Crop picture",
-    "upload_cropped_picture": "Crop and upload",
+    "crop_picture": "Przytnij obrazek",
+    "upload_cropped_picture": "Przytnij i wrzuć",
     "settings": "Ustawienia",
     "show_email": "Wyświetlaj mój adres e-mail",
     "show_fullname": "Wyświetlaj moją pełną nazwę",
@@ -132,5 +132,5 @@
     "info.email-history": "Historia adresu e-mail",
     "info.moderation-note": "Notka moderatora",
     "info.moderation-note.success": "Notka nie została zapisana",
-    "info.moderation-note.add": "Add note"
+    "info.moderation-note.add": "Dodaj notatkę"
 }

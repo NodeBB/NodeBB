@@ -13,7 +13,7 @@
 	"container.alert": "Alert",
 
 	"alert.confirm-delete": "Are you sure you wish to delete this widget?",
-	"alert.updated": "Widgets Updated",
-	"alert.update-success": "Successfully updated widgets"
+	"alert.updated": "Widżety zaktualizowane",
+	"alert.update-success": "Pomyślnie widżety zostały zaktualizowane"
 
 }
