@@ -9,7 +9,7 @@ var meta = require('../meta');
 var SocketBlacklist = module.exports;
 
 SocketBlacklist.validate = function (socket, data, callback) {
-	meta.blacklist.validate(data.rules, callback);
+	meta.blacklist.validate(data.rules ? data.rules.split('\n') : [], callback);
 };
 
 SocketBlacklist.save = function (socket, rules, callback) {

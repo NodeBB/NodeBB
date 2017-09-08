@@ -41,7 +41,10 @@ pubsub.on('blacklist:reload', Blacklist.load);
 Blacklist.save = function (rules, callback) {
 	async.waterfall([
 		function (next) {
-			db.setObject('ip-blacklist-rules', { rules: rules }, next);
+			db.delete('ip-blacklist-rules', next);
+		},
+		function (next) {
+			db.setAdd('ip-blacklist-rules', rules.split('\n'), next);
 		},
 		function (next) {
 			Blacklist.load(next);
@@ -51,14 +54,9 @@ Blacklist.save = function (rules, callback) {
 };
 
 Blacklist.get = function (callback) {
-	async.waterfall([
-		function (next) {
-			db.getObject('ip-blacklist-rules', next);
-		},
-		function (data, next) {
-			next(null, data && data.rules);
-		},
-	], callback);
+	db.getSetMembers('ip-blacklist-rules', function (err, rules) {
+		callback(err, rules || []);
+	});
 };
 
 Blacklist.test = function (clientIp, callback) {
@@ -103,7 +101,6 @@ Blacklist.test = function (clientIp, callback) {
 };
 
 Blacklist.validate = function (rules, callback) {
-	rules = (rules || '').split('\n');
 	var ipv4 = [];
 	var ipv6 = [];
 	var cidr = [];
