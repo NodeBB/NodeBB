@@ -197,7 +197,6 @@ function getScripts(pluginData, target, callback) {
 
 	var scripts = [];
 	async.eachSeries(input, function (filePath, next) {
-		console.log(filePath);
 		resolveModulePath(pluginData.path, filePath, function (err, modulePath) {
 			if (err) {
 				return next(err);
