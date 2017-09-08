@@ -1,6 +1,6 @@
 {
 	"language-settings": "Dil Ayarları",
-	"description": "The default language determines the language settings for all users who are visiting your forum. <br />Individual users can override the default language on their account settings page.",
+	"description": "Varsayılan dil, forumunuzu ziyaret eden tüm kullanıcılar için dil ayarlarını belirler. <br />Kullanıcılar, bireysel olarak hesap ayarları sayfasında varsayılan dili geçersiz kılabilir.",
 	"default-language": "Varsayılan Dil",
 	"auto-detect": "Ziyaretçiler için dili otomatik tespit et"
 }

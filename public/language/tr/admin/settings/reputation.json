@@ -1,7 +1,7 @@
 {
 	"reputation": "Oylama Ayarları",
-	"disable": "Oylama Sistemini Devredışı",
-	"disable-down-voting": "Eksi oyu devredışı bırak",
+	"disable": "Oylama Sistemini Devre Dışı",
+	"disable-down-voting": "Eksi oyu devre dışı bırak",
 	"votes-are-public": "All Votes Are Public",
 	"thresholds": "Activity Thresholds",
 	"min-rep-downvote": "Minimum reputation to downvote posts",

@@ -23,8 +23,8 @@
 	"running-version": "Es läuft <strong>NodeBB v<span id=\"version\">%1</span></strong>.",
 	"keep-updated": "Stelle sicher, dass dein NodeBB immer auf dem neuesten Stand für die neuesten Sicherheits-Patches und Bug-fixes ist.",
 	"up-to-date": "<p>NodeBB Version ist <strong>aktuell</strong> <i class=\"fa fa-check\"></i></p>",
-	"upgrade-available": "<p>A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\">upgrading your NodeBB</a>.</p>",
-	"prerelease-upgrade-available": "<p>This is an outdated pre-release version of NodeBB. A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\">upgrading your NodeBB</a>.</p>",
+	"upgrade-available": "<p>Eine neue Version (v%1) ist erschienen. Erwäge <a href=\"https://docs.nodebb.org/configuring/upgrade/\">NodeBB zu upgraden</a></p>",
+	"prerelease-upgrade-available": "<p>Du benutzt eine veraltete Vorabversion von NodeBB. eine neue Version (v%1) ist erschienen. Erwäge <a href=\"https://docs.nodebb.org/configuring/upgrade/\">NodeBB zu upgraden</a>.</p>",
 	"prerelease-warning": "<p>Das ist eine <strong>pre-release</strong> Version von NodeBB. Es können ungewollte Fehler auftreten. <i class=\"fa fa-exclamation-triangle\"></i></p>",
 	"running-in-development": "<span>Das Forum wurde im Entwicklermodus gestartet. Das Forum könnte potenziellen Gefahren ausgeliefert sein. Bitte kontaktiere den Systemadministrator.</span>",
 

@@ -9,7 +9,7 @@
 	"delete": "Delete Selected Tags",
 	"search": "Search for tags...",
 	"settings": "Click <a href=\"%1\">here</a> to visit the tag settings page.",
-	"name": "Tag Name",
+	"name": "Etiket Adı",
 
 	"alerts.editing-multiple": "Editing multiple tags",
 	"alerts.editing-x": "Editing \"%1\" tag",

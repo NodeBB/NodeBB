@@ -12,7 +12,7 @@
 	"reorder-plugins": "Plugins neu sortieren",
 	"order-active": "Aktive Plugins sortieren",
 	"dev-interested": "Daran interessiert selbst Plugins für NodeBB zu schreiben?",
-	"docs-info": "Full documentation regarding plugin authoring can be found in the <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">NodeBB Docs Portal</a>.",
+	"docs-info": "Die komplette Dokumentation zum erstellen von Plugins kann im <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">NodeBB Docs Portal</a> gefunden werden.",
 
 	"order.description": "Bestimmte Plugins funktionieren optimal, wenn diese vor/nach anderen Plugins initialisiert werden.",
 	"order.explanation": "Die Plugins werden in der hier spezifizierten Reihenfolge geladen, von oben nach unten",
@@ -45,7 +45,7 @@
 	"alert.incompatible": "<p>NodeBB Version (v%1) ist nur für Aktualisierungen bis v%2 dieses Plugins bestimmt. Bitte aktualisiere NodeBB, wenn eine neuere Version dieses Plugins installiert werden soll.</p>",
 	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>Keine Kompatibilitätsinformationen gefunden</strong></p><p>Dieses Plugin legte keine spezifische NodeBB version fest, welche für die Installation benötigt wird. Volle Kompatibilität kann nicht gewährleistet werden, was dazu führen könnte, dass ihr NodeBB nicht mehr korrekt startet.</p></div><p>Für den Fall, dass NodeBB nicht mehr ordnungsgemäß startet:</p><pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre><p>Soll mit der installation der neuesten Version dieses Plugins fortgefahren werden?</p>",
 
-	"license.title": "Plugin License Information",
-	"license.intro": "The plugin <strong>%1</strong> is licensed under the %2. Please read and understand the license terms prior to activating this plugin.",
-	"license.cta": "Do you wish to continue with activating this plugin?"
+	"license.title": "Plugin-Lizenzinformation",
+	"license.intro": "Das Plugin <strong>%1</strong>is unter der %2 Lizenz lizenziert. Bitte ließ dir diese durch bevor du dieses Plugin aktivierst.",
+	"license.cta": "Willst du dieses Plugin wirklich aktivieren?"
 }

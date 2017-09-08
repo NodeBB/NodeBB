@@ -16,7 +16,7 @@
     "please_log_in": "Lütfen Giriş Yapınız",
     "logout": "Çıkış",
     "posting_restriction_info": "İleti gönderme sadece kayıtlı kullancılar içindir, giriş yapmak için buraya tıklayın.",
-    "welcome_back": "Tekrar Hoşgeldiniz",
+    "welcome_back": "Tekrar Hoş Geldiniz",
     "you_have_successfully_logged_in": "Başarıyla giriş yaptınız!",
     "save_changes": "Değişiklikleri kaydet",
     "save": "Kaydet",
@@ -57,7 +57,7 @@
     "upvoted": "Artı",
     "downvoters": "Eksi",
     "downvoted": "Eksi",
-    "views": "Görünüm",
+    "views": "Görüntülenme",
     "reputation": "Saygınlık",
     "read_more": "daha fazla oku",
     "more": "Daha Fazla",
@@ -104,6 +104,6 @@
     "cookies.accept": "Anladım!",
     "cookies.learn_more": "Daha Fazla",
     "edited": "Düzenlendi",
-    "disabled": "Devredışı",
+    "disabled": "Devre dışı",
     "select": "Seç"
 }

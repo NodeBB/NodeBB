@@ -13,6 +13,6 @@
 
 	"alerts.applied-success": "Blacklist angewandt",
 
-	"analytics.blacklist-hourly": "<strong>Figure 1</strong> &ndash; Blacklist hits per hour",
-	"analytics.blacklist-daily": "<strong>Figure 2</strong> &ndash; Blacklist hits per day"
+	"analytics.blacklist-hourly": "<strong>Figur 1</strong> &ndash; Blacklist-Treffer pro Stunde",
+	"analytics.blacklist-daily": " <strong>Figur 2</strong> &ndash; Blacklist-Treffer pro Tag"
 }

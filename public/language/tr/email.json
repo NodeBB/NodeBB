@@ -1,6 +1,6 @@
 {
     "password-reset-requested": "Parola Değiştirme İsteği Gönderildi",
-    "welcome-to": "Hoşgeldiniz",
+    "welcome-to": "Hoş geldin %1",
     "invite": "%1 sizi davet etti",
     "greeting_no_name": "Merhaba",
     "greeting_with_name": "Merhaba %1",

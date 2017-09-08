@@ -24,7 +24,7 @@
     "composer.compose": "Yaz",
     "composer.show_preview": "Önizleme Göster",
     "composer.hide_preview": "Önizleme Sakla",
-    "composer.user_said_in": "%1 %2 içinde söyledi:",
+    "composer.user_said_in": "%1, içinde söyledi: %2",
     "composer.user_said": "%1 söyledi:",
     "composer.discard": "Bu iletiyi iptal etmek istediğinizden eminmisiniz?",
     "composer.submit_and_lock": "Gönder ve Kitle",
