@@ -9,8 +9,12 @@ var blacklistController = module.exports;
 blacklistController.get = function (req, res, next) {
 	// Analytics.getBlacklistAnalytics
 	async.parallel({
-		rules: async.apply(meta.blacklist.get),
-		analytics: async.apply(analytics.getBlacklistAnalytics),
+		rules: function (next) {
+			meta.blacklist.get(function (err, rules) {
+				next(err, rules.join('\n'));
+			});
+		},
+		analytics: analytics.getBlacklistAnalytics,
 	}, function (err, data) {
 		if (err) {
 			return next(err);
