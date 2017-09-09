@@ -1,9 +1,9 @@
 {
-	"reputation": "Oylama Ayarları",
-	"disable": "Oylama Sistemini Devre Dışı",
-	"disable-down-voting": "Eksi oyu devre dışı bırak",
-	"votes-are-public": "All Votes Are Public",
+	"reputation": "İtibar Ayarları",
+	"disable": "İtibar Sistemini Devre Dışı Bırak",
+	"disable-down-voting": "Eksi Oyu Devre Dışı Bırak",
+	"votes-are-public": "Tüm Oylar Herkese Açık",
 	"thresholds": "Activity Thresholds",
-	"min-rep-downvote": "Minimum reputation to downvote posts",
-	"min-rep-flag": "Minimum reputation to flag posts"
+	"min-rep-downvote": "Eksilenen iletiler için minimum itibar",
+	"min-rep-flag": "Bayraklı iletiler için minimum itibar"
 }
