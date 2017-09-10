@@ -1,6 +1,6 @@
 {
-	"you-are-on": "Info - You are on <strong>%1:%2</strong>",
-	"nodes-responded": "%1 nodes responded within %2ms!",
+	"you-are-on": "Bilgi - Buradasınız: <strong>%1:%2</strong>",
+	"nodes-responded": "%2ms içinde %1 düğüm yanıt verdi!",
 	"host": "sunucu",
 	"pid": "pid",
 	"nodejs": "nodejs",
@@ -11,7 +11,7 @@
 	"uptime": "kesintisiz çalışma süresi",
 
 	"registered": "Kayıtlı",
-	"sockets": "soketler",
+	"sockets": "Soketler",
 	"guests": "Ziyaretçiler",
 
 	"info": "Bilgi"

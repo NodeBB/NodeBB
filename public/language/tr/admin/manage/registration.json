@@ -1,11 +1,11 @@
 {
 	"queue": "Kuyruk",
-	"description": "There are no users in the registration queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"description": "Kayıt kuyruğunda hiç kullanıcı yok. <br>Bu özelliği etkinleştirmek için, şuraya gidin: <a href=\"%1\">Ayarlar; Kullanıcı; Kullanıcı Kaydı</a> ve <strong>Kayıt Tipi</strong>ni \"Yönetici Onayı\" olarak ayarlayın.",
 
 	"list.name": "İsim",
-	"list.email": "Email",
+	"list.email": "E-posta",
 	"list.ip": "IP",
-	"list.time": "Time",
+	"list.time": "Zaman",
 	"list.username-spam": "Frequency: %1 Appears: %2 Confidence: %3",
 	"list.email-spam": "Frequency: %1 Appears: %2",
 	"list.ip-spam": "Frequency: %1 Appears: %2",

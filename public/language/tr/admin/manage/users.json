@@ -3,9 +3,9 @@
 	"edit": "Düzenle",
 	"make-admin": "Yönetici Yap",
 	"remove-admin": "Yöneticiliği Sil",
-	"validate-email": "Validate Email",
-	"send-validation-email": "Send Validation Email",
-	"password-reset-email": "Send Password Reset Email",
+	"validate-email": "E-postayı Doğrula",
+	"send-validation-email": "Onay E-postası Gönder",
+	"password-reset-email": "E-posta Sıfırlaması için Parola Gönder",
 	"ban": "Ban User(s)",
 	"temp-ban": "Ban User(s) Temporarily",
 	"unban": "Unban User(s)",
@@ -19,9 +19,9 @@
 
 	"pills.latest": "En Yeni Kullanıcılar",
 	"pills.unvalidated": "Not Validated",
-	"pills.no-posts": "No Posts",
+	"pills.no-posts": "İleti Yok",
 	"pills.top-posters": "Top Posters",
-	"pills.top-rep": "Most Reputation",
+	"pills.top-rep": "En Saygın",
 	"pills.inactive": "Etkin değil",
 	"pills.flagged": "Most Flagged",
 	"pills.banned": "Yasaklandı",
@@ -29,8 +29,8 @@
 
 	"search.username": "Kullanıcı Adına Göre",
 	"search.username-placeholder": "Aramak için bir kullanıcı adı girin",
-	"search.email": "Eposta'ya göre",
-	"search.email-placeholder": "Aramak için bir eposta adresi girin",
+	"search.email": "E-posta'ya göre",
+	"search.email-placeholder": "Aramak için bir e-posta adresi girin",
 	"search.ip": "By IP Address",
 	"search.ip-placeholder": "Enter an IP Address to search",
 	"search.not-found": "Kullanıcı bulunamadı!",
@@ -41,9 +41,9 @@
 
 	"users.uid": "uid",
 	"users.username": "kullanıcı adı",
-	"users.email": "eposta",
+	"users.email": "e-posta",
 	"users.postcount": "postcount",
-	"users.reputation": "saygınlık",
+	"users.reputation": "itibar",
 	"users.flags": "bayraklar",
 	"users.joined": "joined",
 	"users.last-online": "en son çevrimiçi",
@@ -51,7 +51,7 @@
 
 	"create.username": "Kullanıcı Adı",
 	"create.email": "E-posta",
-	"create.email-placeholder": "Bu kullanıcının eposta adresi",
+	"create.email-placeholder": "Bu kullanıcının e-posta adresi",
 	"create.password": "Parola",
 	"create.password-confirm": "Parolayı Onayla",
 
@@ -76,7 +76,7 @@
 	"alerts.validate-email-success": "Emails validated",
 	"alerts.password-reset-confirm": "Do you want to send password reset email(s) to these user(s)?",
 	"alerts.confirm-delete": "<b>Warning!</b><br/>Do you really want to delete user(s)?<br/> This action is not reversable! Only the user account will be deleted, their posts and topics will remain.",
-	"alerts.delete-success": "User(s) Deleted!",
+	"alerts.delete-success": "Kullanıcı(lar) Silindi!",
 	"alerts.confirm-purge": "<b>Warning!</b><br/>Do you really want to delete user(s) and their content?<br/> This action is not reversable! All user data and content will be erased!",
 	"alerts.create": "Kullanıcı Oluştur",
 	"alerts.button-create": "Oluştur",
@@ -86,6 +86,6 @@
 	"alerts.create-success": "Kullanıcı oluşturuldu!",
 
 	"alerts.prompt-email": "Email: ",
-	"alerts.email-sent-to": "%1'e bir davet maili gönderildi",
+	"alerts.email-sent-to": "%1'e bir davet e-postası gönderildi",
 	"alerts.x-users-found": "%1 user(s) found! Search took %2 ms."
 }

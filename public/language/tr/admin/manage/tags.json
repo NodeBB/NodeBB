@@ -8,7 +8,7 @@
 	"modify": "Etiketleri Düzenle",
 	"delete": "Delete Selected Tags",
 	"search": "Search for tags...",
-	"settings": "Click <a href=\"%1\">here</a> to visit the tag settings page.",
+	"settings": "Etiket yönetim sayfasını ziyaret etmek için <a href=\"%1\">buraya</a> tıklayın.",
 	"name": "Etiket Adı",
 
 	"alerts.editing-multiple": "Editing multiple tags",

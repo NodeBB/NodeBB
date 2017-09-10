@@ -52,7 +52,7 @@
     "not-watching.description": "Yeni bir ileti geldiğinde bildirme.<br/>Kategori susturulmamışsa okunmamış olarak göster.",
     "ignoring.description": "Yeni bir ileti geldiğinde bildirme.<br/>Okunmamış olarak gösterme.",
     "thread_tools.title": "Konu Ayarları",
-    "thread_tools.markAsUnreadForAll": "Hepsini okundu işaretle",
+    "thread_tools.markAsUnreadForAll": "Hepsini okunmadı olarak işaretle",
     "thread_tools.pin": "Başlığı Sabitle",
     "thread_tools.unpin": "Başlığı Sabitleme",
     "thread_tools.lock": "Başlığı Kitle",

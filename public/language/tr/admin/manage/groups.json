@@ -1,16 +1,16 @@
 {
 	"name": "Grup Adı",
 	"description": "Grup Açıklaması",
-	"member-count": "Member Count",
-	"system": "System Group",
+	"member-count": "Üye Sayısı",
+	"system": "Sistem Grubu",
 	"edit": "Düzenle",
 	"search-placeholder": "Ara",
 	"create": "Grup Oluştur",
 	"description-placeholder": "Grup hakkında kısa bir açıklama yazın",
 	"create-button": "Oluştur",
 
-	"alerts.create-failure": "<strong>Uh-Oh</strong><p>There was a problem creating your group. Please try again later!</p>",
-	"alerts.confirm-delete": "Are you sure you wish to delete this group?",
+	"alerts.create-failure": "<strong>Uh-Oh</strong><p>Grubu oluştururken bir sorun oluştu. Lütfen daha sonra tekrar deneyin!</p>",
+	"alerts.confirm-delete": "Bu grubu silmek istediğinizden emin misiniz?",
 
 	"edit.name": "İsim",
 	"edit.description": "Açıklama",
@@ -19,17 +19,17 @@
 	"edit.label-color": "Grubun Etiket Rengi",
 	"edit.show-badge": "Rozeti Göster",
 	"edit.private-details": "Gruba katılmak için, eğer etkinse grup sahibinin onayı gerekir.",
-	"edit.private-override": "Warning: Private groups is disabled at system level, which overrides this option.",
+	"edit.private-override": "Uyarı: Sistem düzeyinde özel gruplar devre dışı bırakıldı, bu seçenek onu geçersiz kılar.",
 	"edit.disable-requests": "Katılım isteklerini devre dışı bırak",
 	"edit.hidden": "Gizli",
 	"edit.hidden-details": "Bu grup eğer etkinse grup listelerinde bulunmaz, ve kullanıcılar bizzat davet eder",
 	"edit.add-user": "Gruba Kullanıcı Ekle",
 	"edit.add-user-search": "Kullanıcıları Ara",
 	"edit.members": "Üye Listesi",
-	"control-panel": "Groups Control Panel",
-	"revert": "Revert",
+	"control-panel": "Grup Kontrol Paneli",
+	"revert": "Eski Haline Döndür",
 
-	"edit.no-users-found": "No Users Found",
-	"edit.confirm-remove-user": "Are you sure you want to remove this user?",
+	"edit.no-users-found": "Kullanıcı Bulunamadı",
+	"edit.confirm-remove-user": "Bu kullanıcıyı kaldırmak istediğinizden emin misiniz?",
 	"edit.save-success": "Değişiklikler kaydedildi!"
 }

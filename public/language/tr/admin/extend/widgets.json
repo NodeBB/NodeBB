@@ -1,19 +1,19 @@
 {
 	"available": "Kullanılabilir Bileşenler",
-	"explanation": "Select a widget from the dropdown menu and then drag and drop it into a template's widget area on the left.",
-	"none-installed": "No widgets found! Activate the essential widgets plugin in the <a href=\"%1\">plugins</a> control panel.",
-	"containers.available": "Available Containers",
-	"containers.explanation": "Drag and drop on top of any active widget",
+	"explanation": "Açılır menüden bir bileşen seçin ve sol taraftaki bir şablonun bileşen alanına sürükleyip bırakın.",
+	"none-installed": "Bileşen bulunamadı! Gerekli bileşenleri <a href=\"%1\">eklentiler</a> kontrol panelinden aktifleştirin.",
+	"containers.available": "Kullanılabilir Konteynırlar",
+	"containers.explanation": "Aktif olan herhangi bir bileşenin üzerine sürükleyin ve bırakın",
 	"containers.none": "Hiçbiri",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
 	"container.panel": "Panel",
-	"container.panel-header": "Panel Header",
-	"container.panel-body": "Panel Body",
-	"container.alert": "Alert",
+	"container.panel-header": "Panel Başlığı",
+	"container.panel-body": "Panel Gövdesi",
+	"container.alert": "Alarm",
 
-	"alert.confirm-delete": "Are you sure you wish to delete this widget?",
-	"alert.updated": "Widgets Updated",
-	"alert.update-success": "Successfully updated widgets"
+	"alert.confirm-delete": "Bu bileşeni silmek istediğinizden emin misiniz?",
+	"alert.updated": "Bileşenler Güncellendi",
+	"alert.update-success": "Bileşenler başarıyla güncellendi"
 
 }
