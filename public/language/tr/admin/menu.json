@@ -14,7 +14,7 @@
 	"manage/registration": "Kayıt Kuyruğu",
 	"manage/post-queue": "İleti Kuyruğu",
 	"manage/groups": "Gruplar",
-	"manage/ip-blacklist": "IP Blacklist",
+	"manage/ip-blacklist": "IP Kara Listesi",
 
 	"section-settings": "Ayarlar",
 	"settings/general": "General",
@@ -27,7 +27,7 @@
 	"settings/post": "İleti",
 	"settings/chat": "Sohbet",
 	"settings/pagination": "Sayfalama",
-	"settings/tags": "Tags",
+	"settings/tags": "Etiketler",
 	"settings/notifications": "Bildirimler",
 	"settings/cookies": "Çerezler",
 	"settings/web-crawler": "Web Tarayıcısı",

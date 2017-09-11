@@ -1,5 +1,5 @@
 {
-    "chat.chatting_with": "<span id=\"chat-with-name\"> </ span> ile konuş",
+    "chat.chatting_with": "<span id=\"chat-with-name\"> </span> ile konuş",
     "chat.placeholder": "Buraya bir mesaj girin, göndermek için girişe basın",
     "chat.send": "Gönder",
     "chat.no_active": "Aktif sohbet mevcut değil",

@@ -10,11 +10,11 @@
 	"list.email-spam": "Frequency: %1 Appears: %2",
 	"list.ip-spam": "Frequency: %1 Appears: %2",
 
-	"invitations": "Invitations",
-	"invitations.description": "Below is a complete list of invitations sent. Use ctrl-f to search through the list by email or username. <br><br>The username will be displayed to the right of the emails for users who have redeemed their invitations.",
+	"invitations": "Davetiyeler",
+	"invitations.description": "Aşağıda, gönderilen davetiyelerin tam listesi bulunmaktadır. E-posta veya kullanıcı adı ile listede arama yapmak için ctrl-f kısayolunu kullanın. <br><br>Davetiyelerini kullanan kullanıcıların e-postalarının sağında kullanıcı adı görüntülenir.",
 	"invitations.inviter-username": "Davet Edenin Kullanıcı Adı",
-	"invitations.invitee-email": "Invitee Email",
-	"invitations.invitee-username": "Invitee Username (if registered)",
+	"invitations.invitee-email": "Davetli E-postası",
+	"invitations.invitee-username": "(Eğer kaydolmuşsa) Davetlinin Kullanıcı Adı",
 
 	"invitations.confirm-delete": "Are you sure you wish to delete this invitation?"
 } 

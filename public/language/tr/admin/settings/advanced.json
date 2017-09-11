@@ -1,6 +1,6 @@
 {
 	"maintenance-mode": "Bakım Modu",
-	"maintenance-mode.help": "When the forum is in maintenance mode, all requests will be redirected to a static holding page. Administrators are exempt from this redirection, and are able to access the site normally.",
+	"maintenance-mode.help": "Forum bakım modundayken, tüm istekler statik bir bekletme sayfasına yönlendirilir. Yöneticiler bu yönlendirmeden muaftır ve siteye normal olarak erişebilirler.",
 	"maintenance-mode.message": "Bakım Mesajı",
 	"headers": "Headers",
 	"headers.allow-from": "Set ALLOW-FROM to Place NodeBB in an iFrame",

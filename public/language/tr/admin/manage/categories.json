@@ -28,7 +28,7 @@
 	"select-category": "Kategori Seç",
 	"set-parent-category": "Set Parent Category",
 
-	"privileges.description": "You can configure the access control privileges for this category in this section. Privileges can be granted on a per-user or a per-group basis. You can add a new user to this table by searching for them in the form below.",
+	"privileges.description": "Bu kategorideki erişim denetimi ayrıcalıklarını bu bölümde yapılandırabilirsiniz. Ayrıcalıklar kullanıcıya veya gruba göre verilebilir. Bu tabloda, aşağıdaki formdan arama yapabilir, yeni bir kullanıcı ekleyebilirsiniz.",
 	"privileges.warning": "<strong>Note</strong>: Privilege settings take effect immediately. It is not necessary to save the category after adjusting these settings.",
 	"privileges.section-viewing": "Viewing Privileges",
 	"privileges.section-posting": "Posting Privileges",
