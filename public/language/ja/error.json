@@ -4,6 +4,7 @@
     "not-logged-in": "ログインしていません。",
     "account-locked": "あなたのアカウントは一時的にロックされています",
     "search-requires-login": "検索するにはアカウントが必要です - ログインするかアカウントを作成してください。",
+    "goback": "Press back to return to the previous page",
     "invalid-cid": "無効なカテゴリID",
     "invalid-tid": "無効なスレッドID",
     "invalid-pid": "無効な投稿ID",

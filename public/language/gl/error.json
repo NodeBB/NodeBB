@@ -4,6 +4,7 @@
     "not-logged-in": "Parece que estás desconectado.",
     "account-locked": "A túa conta foi bloqueada temporalmente.",
     "search-requires-login": "As buscas requiren unha conta. Por favor inicia sesión ou rexístrate.",
+    "goback": "Press back to return to the previous page",
     "invalid-cid": "Identificador de Categoría Inválido ",
     "invalid-tid": "Identificador de Tema Inválido",
     "invalid-pid": "Identificador de Publicación Inválido",

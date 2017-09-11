@@ -4,6 +4,7 @@
     "not-logged-in": "로그인하지 않았습니다.",
     "account-locked": "임시로 잠긴 계정입니다.",
     "search-requires-login": "검색을 하기 위해서는 계정이 필요합니다. 로그인하거나 가입해 주십시오.",
+    "goback": "Press back to return to the previous page",
     "invalid-cid": "올바르지 않은 게시판 ID입니다.",
     "invalid-tid": "올바르지 않은 게시물 ID입니다.",
     "invalid-pid": "올바르지 않은 포스트 ID입니다.",

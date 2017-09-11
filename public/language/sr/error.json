@@ -4,6 +4,7 @@
     "not-logged-in": "Изгледа да нисте пријављени.",
     "account-locked": "Ваш налог је привремено закључан",
     "search-requires-login": "Претраживање захтева налог — пријавите се или се региструјте.",
+    "goback": "Press back to return to the previous page",
     "invalid-cid": "Неисправан ID категорије",
     "invalid-tid": "Неисправан ID теме",
     "invalid-pid": "Неисправан ID поруке",

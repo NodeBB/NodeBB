@@ -4,6 +4,7 @@
     "not-logged-in": "Úgy tűnik, nem vagy bejelentkezve.",
     "account-locked": "A fiókod ideiglenesen zárolva lett.",
     "search-requires-login": "Searching requires an account - please login or register.",
+    "goback": "Press back to return to the previous page",
     "invalid-cid": "Érvénytelen kategória azonosító",
     "invalid-tid": "Érvénytelen téma azonosító",
     "invalid-pid": "Érvénytelen hozzászólás azonosító",

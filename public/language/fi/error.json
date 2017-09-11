@@ -4,6 +4,7 @@
     "not-logged-in": "Et taida olla kirjautuneena sisään.",
     "account-locked": "Käyttäjätilisi on lukittu väliaikaisesti",
     "search-requires-login": "Searching requires an account - please login or register.",
+    "goback": "Press back to return to the previous page",
     "invalid-cid": "Virheellinen kategorian ID",
     "invalid-tid": "Virheellinen aiheen ID",
     "invalid-pid": "Virheellinen viestin ID",

@@ -4,6 +4,7 @@
     "not-logged-in": "คุณยังไม่ได้ลงชื่อเข้าระบบ",
     "account-locked": "บัญชีของคุณถูกระงับการใช้งานชั่วคราว",
     "search-requires-login": "\"ฟังก์ชั่นการค้นหา\" ต้องการบัญชีผู้ใช้ กรุณาเข้าสู่ระบบหรือสมัครสมาชิก",
+    "goback": "Press back to return to the previous page",
     "invalid-cid": "Category ID ไม่ถูกต้อง",
     "invalid-tid": "Topic ID ไม่ถูกต้อง",
     "invalid-pid": "Post ID ไม่ถูกต้อง",

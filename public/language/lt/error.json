@@ -4,6 +4,7 @@
     "not-logged-in": "Atrodo, kad jūs neesate prisijungęs.",
     "account-locked": "Jūsų paskyra buvo laikinai užrakinta",
     "search-requires-login": "Paieška reikalauja vartotojo - prašome prisijungti arba užsiregistruoti",
+    "goback": "Press back to return to the previous page",
     "invalid-cid": "Klaidingas kategorijos ID",
     "invalid-tid": "Klaidingas temos ID",
     "invalid-pid": "Klaidingas pranešimo ID",

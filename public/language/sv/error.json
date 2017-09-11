@@ -4,6 +4,7 @@
     "not-logged-in": "Du verkar inte vara inloggad.",
     "account-locked": "Ditt konto har tillfälligt blivit låst",
     "search-requires-login": "Sökning kräver ett konto, var god logga in eller registrera dig.",
+    "goback": "Press back to return to the previous page",
     "invalid-cid": "Ogiltigt id för kategori",
     "invalid-tid": "Ogiltigt id för ämne",
     "invalid-pid": "Ogiltigt id för inlägg",

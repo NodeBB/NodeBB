@@ -4,6 +4,7 @@
     "not-logged-in": "Có vẻ bạn chưa đăng nhập.",
     "account-locked": "Tài khoản của bạn đang tạm thời bị khóa",
     "search-requires-login": "Bạn cần phải có tài khoản để tìm kiếm - vui lòng đăng nhập hoặc đăng ký.",
+    "goback": "Press back to return to the previous page",
     "invalid-cid": "ID chuyên mục không hợp lệ",
     "invalid-tid": "ID chủ đề không hợp lệ",
     "invalid-pid": "ID bài viết không hợp lệ",

@@ -4,6 +4,7 @@
     "not-logged-in": "Não tem sessão iniciada.",
     "account-locked": "A sua conta foi bloqueada temporariamente",
     "search-requires-login": "A pesquisa requer uma conta de utilizador - For favor inicie sessão ou crie uma conta.",
+    "goback": "Press back to return to the previous page",
     "invalid-cid": "ID de categoria inválido",
     "invalid-tid": "ID de tópico inválido",
     "invalid-pid": "ID de post inválido",

@@ -4,6 +4,7 @@
     "not-logged-in": "Не схоже, що ви увійшли в систему.",
     "account-locked": "Ваш акаунт тимчасово заблоковано",
     "search-requires-login": "Для пошуку потрібен акаунт — будь ласка, увійдіть чи зареєструйтесь.",
+    "goback": "Press back to return to the previous page",
     "invalid-cid": "Невірний ID категорії",
     "invalid-tid": "Невірний ID теми",
     "invalid-pid": "Невірний ID поста",

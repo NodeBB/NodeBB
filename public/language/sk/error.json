@@ -4,6 +4,7 @@
     "not-logged-in": "Zdá sa že nie ste prihlásený.",
     "account-locked": "Váš účet bol dočasne uzamknutý",
     "search-requires-login": "K vyhľadávaniu je vyžadovaný účet - prosím prihláste sa alebo zaregistrujte.",
+    "goback": "Press back to return to the previous page",
     "invalid-cid": "Nesprávne ID kategórie",
     "invalid-tid": "Nesprávne ID témy",
     "invalid-pid": "Nesprávne ID príspevku",

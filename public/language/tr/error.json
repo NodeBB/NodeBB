@@ -4,6 +4,7 @@
     "not-logged-in": "Giriş yapmamış görünüyorsunuz.",
     "account-locked": "Hesabınız geçici olarak kitlendi",
     "search-requires-login": "Arama hesap gerektiriyor. Lütfen giriş yapın ya da kaydolun.",
+    "goback": "Press back to return to the previous page",
     "invalid-cid": "Geçersiz Kategori ID",
     "invalid-tid": "Geçersiz Başlık ID",
     "invalid-pid": "Geçersiz İleti ID",
