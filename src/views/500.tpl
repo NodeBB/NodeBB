@@ -5,6 +5,6 @@
 	<!-- IF error --><p>{error}</p><!-- ENDIF error -->
 
 	<!-- IF returnLink -->
-	<a href="{returnLink}">[[error:goback]]</a>
+	<p>[[error:goback]]</p>
 	<!-- ENDIF returnLink -->
 </div>

@@ -7,7 +7,7 @@
 	<!-- ENDIF error -->
 
 	<!-- IF returnLink -->
-	<a href="{returnLink}">[[error:goback]]</a>
+	<p>[[error:goback]]</p>
 	<!-- ENDIF returnLink -->
 
 	<!-- IF !loggedIn -->

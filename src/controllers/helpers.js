@@ -26,7 +26,7 @@ helpers.noScriptErrors = function (req, res, error, httpStatus) {
 			path: req.path,
 			loggedIn: true,
 			error: error,
-			returnLink: req.get('Referrer'),
+			returnLink: true,
 			title: '[[global:' + httpStatusString + '.title]]',
 		});
 	});
