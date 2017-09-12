@@ -13,6 +13,6 @@
 
 	"alerts.applied-success": "Чорний список примінено",
 
-	"analytics.blacklist-hourly": "<strong>Figure 1</strong> &ndash; Blacklist hits per hour",
-	"analytics.blacklist-daily": "<strong>Figure 2</strong> &ndash; Blacklist hits per day"
+	"analytics.blacklist-hourly": "<strong>Графік 1</strong> &ndash; Внесення до чорного списку за годину",
+	"analytics.blacklist-daily": "<strong>Графік 2</strong> &ndash; Внесення до чорного списку за день"
 }

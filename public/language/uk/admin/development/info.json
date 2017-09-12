@@ -1,12 +1,12 @@
 {
 	"you-are-on": "Інформація - Ви знаходитесь на <strong>%1:%2</strong>",
-	"nodes-responded": "%1 nodes responded within %2ms!",
+	"nodes-responded": "%1 вузлів відповіли за %2мс!",
 	"host": "host",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "online",
 	"git": "git",
-	"memory": "memory",
+	"memory": "пам'ять",
 	"load": "load",
 	"uptime": "uptime",
 

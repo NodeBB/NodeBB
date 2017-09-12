@@ -1,10 +1,10 @@
 {
 	"post-queue": "Post Queue",
 	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Posting Restrictions</a> and enable <strong>Post Queue</strong>.",
-	"user": "User",
-	"category": "Category",
-	"title": "Title",
-	"content": "Content",
-	"posted": "Posted",
-	"reply-to": "Reply to \"%1\""
+	"user": "用户",
+	"category": "版块",
+	"title": "标题",
+	"content": "内容",
+	"posted": "发布",
+	"reply-to": "回复\"%1\""
 }

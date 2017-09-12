@@ -1,10 +1,10 @@
 {
-	"post-queue": "Post Queue",
-	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Posting Restrictions</a> and enable <strong>Post Queue</strong>.",
-	"user": "User",
-	"category": "Category",
-	"title": "Title",
-	"content": "Content",
-	"posted": "Posted",
-	"reply-to": "Reply to \"%1\""
+	"post-queue": "İleti Kuyruğu",
+	"description": "İleti kuyruğunda hiç ileti yok. <br>Bu özelliği etkinleştirmek için, şuraya gidin: <a href=\"%1\">Ayarlar; İleti; İleti Kısıtlamaları</a> ve <strong>İleti Kuyruğu</strong>nu etkinleştirin.",
+	"user": "Kullanıcı",
+	"category": "Kategori",
+	"title": "Başlık",
+	"content": "İçerik",
+	"posted": "Gönderildi",
+	"reply-to": "\"%1\"'e Cevap Ver"
 }

@@ -1,10 +1,10 @@
 {
-	"post-queue": "Post Queue",
-	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Posting Restrictions</a> and enable <strong>Post Queue</strong>.",
-	"user": "User",
-	"category": "Category",
-	"title": "Title",
-	"content": "Content",
-	"posted": "Posted",
-	"reply-to": "Reply to \"%1\""
+	"post-queue": "File d’attente des messages",
+	"description": "Il ny a aucun message dans la file d’attente<br>Pour activer cette fonctionnalité, allez dans<a href=\"%1\">Paramètres &rarr; Message &rarr; Restriction de publication</a>et activez<strong>File d’attente des messages</strong>.",
+	"user": "Utilisateur",
+	"category": "Catégorie",
+	"title": "Titre",
+	"content": "Contenu",
+	"posted": "Posté",
+	"reply-to": "Répondre à \"%1\""
 }

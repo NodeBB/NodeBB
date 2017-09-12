@@ -14,10 +14,10 @@
 	"upload-image": "Görsel Yükle",
 	"delete-image": "Sil",
 	"category-image": "Kategori Görseli",
-	"parent-category": "Ebeveyn Kategori",
-	"optional-parent-category": "(Optional) Parent Category",
+	"parent-category": "Ana Kategori",
+	"optional-parent-category": "(Opsiyonel) Ana Kategori",
 	"parent-category-none": "(Hiçbiri)",
-	"copy-settings": "Copy Settings From",
+	"copy-settings": "Ayarları Başka Bir Yerden Kopyala",
 	"optional-clone-settings": "(Optional) Clone Settings From Category",
 	"purge": "Kategoriyi Temizle",
 
@@ -26,7 +26,7 @@
 	"edit": "Düzenle",
 
 	"select-category": "Kategori Seç",
-	"set-parent-category": "Set Parent Category",
+	"set-parent-category": "Ana Kategori Ayarla",
 
 	"privileges.description": "Bu kategorideki erişim denetimi ayrıcalıklarını bu bölümde yapılandırabilirsiniz. Ayrıcalıklar kullanıcıya veya gruba göre verilebilir. Bu tabloda, aşağıdaki formdan arama yapabilir, yeni bir kullanıcı ekleyebilirsiniz.",
 	"privileges.warning": "<strong>Note</strong>: Privilege settings take effect immediately. It is not necessary to save the category after adjusting these settings.",
@@ -58,7 +58,7 @@
 	"alert.confirm-purge": "<p class=\"lead\">Do you really want to purge this category \"%1\"?</p><h5><strong class=\"text-danger\">Warning!</strong> All topics and posts in this category will be purged!</h5> <p class=\"help-block\">Purging a category will remove all topics and posts, and delete the category from the database. If you want to remove a category <em>temporarily</em>, you'll want to \"disable\" the category instead.</p>",
 	"alert.purge-success": "Category purged!",
 	"alert.copy-success": "Ayarlar Kopyalandı!",
-	"alert.set-parent-category": "Set Parent Category",
+	"alert.set-parent-category": "Ana Kategori Ayarla",
 	"alert.updated": "Güncellenen Kategoriler",
 	"alert.updated-success": "Category IDs %1 successfully updated.",
 	"alert.upload-image": "Kategori görseli yükle",
