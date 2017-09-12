@@ -80,7 +80,7 @@
 	"alerts.confirm-purge": "<b>Увага!</b><br/>Ви точно бажаєте видалити користувача(ів) на їх зміст?<br/> Ця дія незворотня! Будуть видалені всі дані та зміст користувача!",
 	"alerts.create": "Створити користувача",
 	"alerts.button-create": "Створити",
-	"alerts.button-cancel": "Відмінити",
+	"alerts.button-cancel": "Скасувати",
 	"alerts.error-passwords-different": "Паролі мають співпадати!",
 	"alerts.error-x": "<strong>Помилка</strong><p>%1</p>",
 	"alerts.create-success": "Користувача створено!",

@@ -4,8 +4,8 @@
     "help.email": "E-posta adresiniz varsayılan olarak topluluktan gizlidir.",
     "help.username_restrictions": "%1 ve %2 karakter arası bir kullanıcı ismi. Başkaları sizden @<span id='yourUsername'>isim</span> kullanarak bahsedebilir.",
     "help.minimum_password_length": "Şifreniz en az %1 karakter olmalı",
-    "email_address": "E-posta adresiniz",
-    "email_address_placeholder": "E-posta Adresinizi girin",
+    "email_address": "E-posta Adresi",
+    "email_address_placeholder": "E-posta Adresinizi Girin",
     "username": "Kullanıcı Adı",
     "username_placeholder": "Kullanıcı Adınızı Girin",
     "password": "Şifre",
@@ -17,7 +17,7 @@
     "terms_of_use": "Kullanım Şartları",
     "agree_to_terms_of_use": "Kullanım Şartlarını kabul ediyorum",
     "terms_of_use_error": "Kullanım şartlarını kabul etmen gerekiyor",
-    "registration-added-to-queue": "Kayıt olma isteğiniz kabul listesine eklenmiştir. Yönetici tarafından kabul edildiğinizde mail alacaksınız.",
+    "registration-added-to-queue": "Kayıt olma isteğiniz kabul listesine eklenmiştir. Yönetici tarafından kabul edildiğinizde e-posta alacaksınız.",
     "interstitial.intro": "Hesabınızı yaratmadan önce bazı ekstra bilgiler gerekiyor.",
     "interstitial.errors-found": "Kaydınınız tamamlanmadı:"
 }

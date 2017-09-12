@@ -4,6 +4,7 @@
     "not-logged-in": "Du bist nicht angemeldet.",
     "account-locked": "Dein Account wurde vorübergehend gesperrt.",
     "search-requires-login": "Die Suche erfordert ein Konto, bitte einloggen oder registrieren.",
+    "goback": "Drücke zurück um zur vorherigen Seite zurückzukehren",
     "invalid-cid": "Ungültige Kategorie-ID",
     "invalid-tid": "Ungültige Themen-ID",
     "invalid-pid": "Ungültige Beitrags-ID",

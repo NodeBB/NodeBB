@@ -45,7 +45,7 @@
 	"alert.incompatible": "<p>Votre version de NodeBB (v%1) ne peut mettre à jour que vers la version v%2 de ce plugin. Veuillez mettre à jour NodeBB si vous souhaitez installer une version plus récente de ce plugin.</p>",
 	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>Aucune information de compatibilité trouvée</strong></p><p>Ce plugin n'a pas spécifié de version pour une installation sur votre version de NodeBB. Aucune compatibilité ne peut être garantie et ce plugin pourrait empêcher NodeBB de démarrer correctement.</p></div><p>Dans l'éventualité où NodeBB ne pourrait pas démarrer proprement :</p><pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre><p>Voulez-vous continuer l'installation de ce plugin ?</p>",
 
-	"license.title": "Plugin License Information",
-	"license.intro": "The plugin <strong>%1</strong> is licensed under the %2. Please read and understand the license terms prior to activating this plugin.",
-	"license.cta": "Do you wish to continue with activating this plugin?"
+	"license.title": "Information sur la licence du plugin",
+	"license.intro": "Le plugin <strong>%1</strong> est sous licence %2. Veuillez lire et comprendre les termes de la licence avant d’activer ce plugin.",
+	"license.cta": "Voulez-vous continuer l’activation de ce plugin ?"
 }

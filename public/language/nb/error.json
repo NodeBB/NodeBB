@@ -4,6 +4,7 @@
     "not-logged-in": "Du ser ikke ut til å være logget inn.",
     "account-locked": "Kontoen din har blitt midlertidig låst",
     "search-requires-login": "Søking krever en konto - vennligst logg inn eller registrer deg.",
+    "goback": "Press back to return to the previous page",
     "invalid-cid": "Ugyldig kategori-ID",
     "invalid-tid": "Ugyldig emne-ID",
     "invalid-pid": "Ugyldig innlegg-ID",

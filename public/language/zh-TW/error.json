@@ -4,6 +4,7 @@
     "not-logged-in": "你似乎還沒有登入喔！",
     "account-locked": "你的帳戶暫時被鎖定！",
     "search-requires-login": "進行搜尋需要有帳號 - 請先註冊或登入",
+    "goback": "Press back to return to the previous page",
     "invalid-cid": "無效的類別 ID",
     "invalid-tid": "無效的主題 ID",
     "invalid-pid": "無效的文章 ID",

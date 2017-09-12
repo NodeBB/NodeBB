@@ -1,14 +1,14 @@
 {
-	"figure-x": "Figure %1",
+	"figure-x": "Figür %1",
 	"error-events-per-day": "<code>%1</code> günlük olay",
 	"error.404": "404 Bulunamadı",
 	"error.503": "503 Servis Kullanılamıyor",
-	"manage-error-log": "Manage Error Log",
+	"manage-error-log": "Hata Kayıtlarını Yönet",
 	"export-error-log": "Hata Kayıtlarını Dışarı Çıkar (CSV)",
 	"clear-error-log": "Hata Kayıtlarını Temizle",
-	"route": "Route",
-	"count": "Count",
-	"no-routes-not-found": "Hooray! No 404 errors!",
-	"clear404-confirm": "Are you sure you wish to clear the 404 error logs?",
-	"clear404-success": "\"404 Not Found\" errors cleared"
+	"route": "Rota",
+	"count": "Sayı",
+	"no-routes-not-found": "Hülooğ! Hiç 404 hatası yok!",
+	"clear404-confirm": "404 hata kayıtlarını temizlemek istediğinizden emin misiniz?",
+	"clear404-success": "\"404 Bulunamadı\" hataları temizlendi"
 }

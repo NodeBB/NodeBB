@@ -1,28 +1,28 @@
 {
 	"icon": "İkon:",
-	"change-icon": "change",
-	"route": "Route:",
-	"tooltip": "Tooltip:",
+	"change-icon": "değiştir",
+	"route": "Yol:",
+	"tooltip": "Araç Bilgisi:",
 	"text": "Yazı:",
-	"text-class": "Text Class: <small>optional</small>",
-	"id": "ID: <small>optional</small>",
+	"text-class": "Metin Sınıfı: <small>opsiyonel</small>",
+	"id": "ID: <small>opsiyonel</small>",
 
-	"properties": "Properties:",
-	"only-admins": "Only display to Admins",
-	"only-global-mods-and-admins": "Only display to Global Moderators and Admins",
-	"only-logged-in": "Only display to logged in users",
-	"only-guest": "Only display to guests",
-	"open-new-window": "Open in a new window",
+	"properties": "Özellikler:",
+	"only-admins": "Yalnızca Yöneticiler görüntüleyebilir",
+	"only-global-mods-and-admins": "Yalnızca Global Moderatörler ve Yöneticiler görüntüleyebilir",
+	"only-logged-in": "Yalnızca giriş yapmış olan kullanıcılar görüntüleyebilir",
+	"only-guest": "Yalnızca ziyaretçiler görüntüleyebilir",
+	"open-new-window": "Yeni pencerede aç",
 
-	"installed-plugins-required": "Installed Plugins Required:",
+	"installed-plugins-required": "Yüklü Eklentilerin Gereksinimleri:",
 	"search-plugin": "Eklenti ara",
 
 	"btn.delete": "Sil",
 	"btn.disable": "Devre dışı",
 	"btn.enable": "Etkin",
 
-	"available-menu-items": "Available Menu Items",
-	"custom-route": "Custom Route",
+	"available-menu-items": "Kullanılabilir Menü Öğeleri",
+	"custom-route": "Özel Yol",
 	"core": "çekirdek",
 	"plugin": "eklenti"
 }

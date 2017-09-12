@@ -1,9 +1,9 @@
 {
 	"rewards": "Ödüller",
-	"condition-if-users": "If User's",
+	"condition-if-users": "Eğer kullanıcının",
 	"condition-is": "İse:",
 	"condition-then": "Sonra:",
-	"max-claims": "Amount of times reward is claimable",
+	"max-claims": "Ödül talebinde bulunulabilecek miktar",
 	"zero-infinite": "Sınırsız için 0 girin",
 	"delete": "Sil",
 	"enable": "Etkinleştir",

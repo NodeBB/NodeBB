@@ -4,6 +4,7 @@
     "not-logged-in": "Φαίνεται πως δεν είσαι συνδεδεμένος/η.",
     "account-locked": "Ο λογαριασμός σου έχει κλειδωθεί προσωρινά",
     "search-requires-login": "Searching requires an account - please login or register.",
+    "goback": "Press back to return to the previous page",
     "invalid-cid": "Άκυρο ID Κατηγορίας",
     "invalid-tid": "Άκυρο ID Θέματος",
     "invalid-pid": "Άκυρο ID Δημοσίευσης",

@@ -4,6 +4,7 @@
     "not-logged-in": "Sa ei ole sisse logitud",
     "account-locked": "Su kasutaja on ajutiselt lukustatud",
     "search-requires-login": "Otsing nõuab kasutajat - palun registreeruge või logige sisse.",
+    "goback": "Press back to return to the previous page",
     "invalid-cid": "Vigane kategooria ID",
     "invalid-tid": "Vigane teema ID",
     "invalid-pid": "Vigane postituse ID",

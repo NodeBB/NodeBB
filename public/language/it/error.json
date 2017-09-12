@@ -4,6 +4,7 @@
     "not-logged-in": "Non sembri essere loggato.",
     "account-locked": "Il tuo account è stato bloccato temporaneamente",
     "search-requires-login": "La ricerca richiede un account! Si prega di loggarsi o registrarsi!",
+    "goback": "Press back to return to the previous page",
     "invalid-cid": "ID Categoria non valido",
     "invalid-tid": "ID Topic non valido",
     "invalid-pid": "ID Post non valido",

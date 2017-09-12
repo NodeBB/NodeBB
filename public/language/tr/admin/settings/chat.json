@@ -2,8 +2,8 @@
 	"chat-settings": "Sohbet Ayarları",
 	"disable": "Sohbeti kapat",
 	"disable-editing": "Sohbet mesajlarını düzenlemeyi/silmeyi kapat",
-	"disable-editing-help": "Administrators and global moderators are exempt from this restriction",
+	"disable-editing-help": "Yöneticiler ve global moderatörler bu kısıtlamadan muaftır",
 	"max-length": "Maksimum sohbet mesajı uzunluğu",
 	"max-room-size": "Sohbet odalarındaki maksimum kullanıcı sayısı",
-	"delay": "Time between chat messages in milliseconds"
+	"delay": "Sohbet mesajları arasındaki süre (milisaniye)"
 }

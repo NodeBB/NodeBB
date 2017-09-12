@@ -4,6 +4,7 @@
     "not-logged-in": "No has iniciado sesión.",
     "account-locked": "Tu cuenta ha sido bloqueada temporalmente.",
     "search-requires-login": "¡Buscar requiere estar registrado! Por favor, entra o regístrate.",
+    "goback": "Press back to return to the previous page",
     "invalid-cid": "Identificador de categoría no válido",
     "invalid-tid": "Identificador de tema no válido",
     "invalid-pid": "Identificador de publicación no válido",

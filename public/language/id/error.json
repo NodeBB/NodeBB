@@ -4,6 +4,7 @@
     "not-logged-in": "Kamu terlihat belum login",
     "account-locked": "Akun kamu dikunci sementara",
     "search-requires-login": "Searching requires an account - please login or register.",
+    "goback": "Press back to return to the previous page",
     "invalid-cid": "ID Kategori Salah",
     "invalid-tid": "ID Topik Salah",
     "invalid-pid": "ID Post Salah",

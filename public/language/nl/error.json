@@ -4,6 +4,7 @@
     "not-logged-in": "Het lijkt erop dat je niet ingelogd bent.",
     "account-locked": "Dit account is tijdelijk vergrendeld",
     "search-requires-login": "Zoeken vereist een account - meld je aan of registreer je om te zoeken.",
+    "goback": "Klik terug om terug te keren naar de vorige pagina",
     "invalid-cid": "Ongeldige categoriesleutel",
     "invalid-tid": "Ongeldig onderwerp ID",
     "invalid-pid": "Ongeldig berichtkenmerk",

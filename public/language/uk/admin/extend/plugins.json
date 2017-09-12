@@ -12,7 +12,7 @@
 	"reorder-plugins": "Впорядкувати плагіни",
 	"order-active": "Впорядкувати активні плагіни",
 	"dev-interested": "Зацікавлені в написанні плагінів для NodeBB?",
-	"docs-info": "Full documentation regarding plugin authoring can be found in the <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">NodeBB Docs Portal</a>.",
+	"docs-info": "Повну документацію щодо авторингу плагінів можна знайти на <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">Порталі NodeBB Docs</a>.",
 
 	"order.description": "Певні плагіни працють краще будучи ініціалізованими до/після інших плагінів.",
 	"order.explanation": "Плагіни вантажаться у заданому тут порядку, згори до низу",
@@ -45,7 +45,7 @@
 	"alert.incompatible": "</p>Ваша версія NodeBB (v%1) дозволяє оновлення цього плагіну лише до v%2. Будь ласка, оновіть NodeBB, щоб встановити новішу версію цього плагіну.</p>",
 	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>Інформацію про сумісність не знайдено</strong></p><p>У цьому плагіні не вказано сумісну версію NodeBB. Коректна робота не гарантується.</p></div><p>Якщо NodeBB перестане коректно стартувати, виконайте:</p><pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre><p>Продовжити встановлення останньої версії цього плагіну?</p>",
 
-	"license.title": "Plugin License Information",
-	"license.intro": "The plugin <strong>%1</strong> is licensed under the %2. Please read and understand the license terms prior to activating this plugin.",
-	"license.cta": "Do you wish to continue with activating this plugin?"
+	"license.title": "Інформація про ліцензію плагіну",
+	"license.intro": "Цей плагін <strong>%1</strong> ліцензований відповідно до %2. Будь-ласка прочитайте та зрозумійте умови ліцензії перед активацією цього плагіну.",
+	"license.cta": "Ви бажаєте активувати цей плагін?"
 }

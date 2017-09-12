@@ -4,6 +4,7 @@
     "not-logged-in": "Niste prijavljeni.",
     "account-locked": "Vaš račun je bil začasno zaklenjen.",
     "search-requires-login": "Iskanje zahteva uporabniški račun - prosimo, da se prijavite ali registrirate.",
+    "goback": "Press back to return to the previous page",
     "invalid-cid": "Napačen ID kategorije",
     "invalid-tid": "Napačen ID teme",
     "invalid-pid": "Napačen ID objave",

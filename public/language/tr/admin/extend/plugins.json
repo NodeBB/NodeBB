@@ -12,10 +12,10 @@
 	"reorder-plugins": "Eklentileri yeniden sırala",
 	"order-active": "Etkin eklentileri sırala",
 	"dev-interested": "NodeBB için eklenti yazmakla ilgilenir misiniz?",
-	"docs-info": "Full documentation regarding plugin authoring can be found in the <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">NodeBB Docs Portal</a>.",
+	"docs-info": "Eklenti yazarlığına ilişkin tüm belgeler <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">NodeBB Docs Portal</a>'da bulunabilir.",
 
-	"order.description": "Certain plugins work ideally when they are initialised before/after other plugins.",
-	"order.explanation": "Plugins load in the order specified here, from top to bottom",
+	"order.description": "Bazı eklentiler, diğer eklentilerden önce ya da sonra başlatıldığında ideal bir şekilde çalışırlar.",
+	"order.explanation": "Eklentiler burada belirtilen sırayla yüklenir: baştan aşağı",
 
 	"plugin-item.themes": "Temalar",
 	"plugin-item.deactivate": "Pasif",
@@ -28,7 +28,7 @@
 	"plugin-item.upgrade": "Güncelle",
 	"plugin-item.more-info": "Daha fazla bilgi için:",
 	"plugin-item.unknown": "Bilinmeyen",
-	"plugin-item.unknown-explanation": "The state of this plugin could not be determined, possibly due to a misconfiguration error.",
+	"plugin-item.unknown-explanation": "Bu eklentinin durumu muhtemelen yanlış yapılandırma hatası nedeniyle belirlenemedi.",
 
 	"alert.enabled": "Eklenti Aktif",
 	"alert.disabled": "Eklenti Devre dışı",
@@ -40,12 +40,12 @@
 	"alert.upgrade-success": "Bu eklentiyi tamamen güncelleyebilmek için lütfen NodeBB'yi yeniden başlatın",
 	"alert.install-success": "Eklenti başarıyla kuruldu, lütfen eklentiyi aktif edin.",
 	"alert.uninstall-success": "Eklenti başarıyla pasifleştirildi ve kaldırıldı.",
-	"alert.suggest-error": "<p>NodeBB could not reach the package manager, proceed with installation of latest version?</p><div class=\"alert alert-danger\"><strong>Server returned (%1)</strong>: %2</div>",
-	"alert.package-manager-unreachable": "<p>NodeBB could not reach the package manager, an upgrade is not suggested at this time.</p>",
-	"alert.incompatible": "<p>Your version of NodeBB (v%1) is only cleared to upgrade to v%2 of this plugin. Please update your NodeBB if you wish to install a newer version of this plugin.</p>",
-	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>No Compatibility Information Found</strong></p><p>This plugin did not specify a specific version for installation given your NodeBB version. Full compatibility cannot be guaranteed, and may cause your NodeBB to no longer start properly.</p></div><p>In the event that NodeBB cannot boot properly:</p><pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre><p>Continue installation of latest version of this plugin?</p>",
+	"alert.suggest-error": "<p>NodeBB paket yöneticisine ulaşamadı, en yeni sürüm yüklenmeye devam edilsin mi?</p><div class=\"alert alert-danger\"><strong>Sunucu iade etti (%1)</strong>: %2</div>",
+	"alert.package-manager-unreachable": "<p>NodeBB paket yöneticisine ulaşamadı, şu anda bir yükseltme önerilmedi.</p>",
+	"alert.incompatible": "<p>NodeBB sürümünüz (v%1) bu eklentinin v%2 sürümüne yükseltilmesi için temizlendi. Bu eklentinin yeni versiyonunu yüklemek için lütfen NodeBB'yi güncelleyin.",
+	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>Uyumluluk Bilgisi Bulunamadı.</strong></p><p>Bu eklenti, NodeBB sürümünüze göre kurulum için belirli bir sürümü belirtmedi. Tam uyumluluk garanti edilemez ve NodeBB'nizin artık düzgün çalışmamasına neden olabilir.</p></div> <p>NodeBB düzgün şekilde önyükleme yapamıyorsa: $ ./nodebb reset plugin = \"%1\"<code><pre> <p>Bu eklentinin en yeni sürümünü yüklemeye devam et?</p>",
 
 	"license.title": "Eklenti Lisans Bilgisi",
-	"license.intro": "The plugin <strong>%1</strong> is licensed under the %2. Please read and understand the license terms prior to activating this plugin.",
-	"license.cta": "Do you wish to continue with activating this plugin?"
+	"license.intro": "% 1 eklentisi,% 2 altında lisanslanmıştır. Lütfen bu eklentiyi etkinleştirmeden önce lisans koşullarını okuyun ve anlayın.",
+	"license.cta": "Bu eklentiyi aktifleştirmeye devam etmek istiyor musunuz?"
 }

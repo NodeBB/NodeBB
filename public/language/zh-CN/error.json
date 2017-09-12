@@ -4,6 +4,7 @@
     "not-logged-in": "您还没有登录。",
     "account-locked": "您的帐号已被临时锁定",
     "search-requires-login": "搜索功能仅限会员使用 - 请先登录或者注册。",
+    "goback": "Press back to return to the previous page",
     "invalid-cid": "无效版块 ID",
     "invalid-tid": "无效主题 ID",
     "invalid-pid": "无效帖子 ID",

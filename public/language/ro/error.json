@@ -4,6 +4,7 @@
     "not-logged-in": "Se pare ca nu ești logat.",
     "account-locked": "Contul tău a fost blocat temporar",
     "search-requires-login": "Pentru a cauta ai nevoie de un cont. Logheaza-te sau autentifica-te.",
+    "goback": "Press back to return to the previous page",
     "invalid-cid": "ID Categorie Invalid",
     "invalid-tid": "ID Subiect Invalid",
     "invalid-pid": "ID Mesaj Invalid",
