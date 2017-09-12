@@ -4,6 +4,7 @@
 var async = require('async');
 var validator = require('validator');
 var S = require('string');
+var _ = require('lodash');
 
 var topics = require('../topics');
 var user = require('../user');
@@ -120,10 +121,10 @@ module.exports = function (Posts) {
 						topic.title = String(topic.title);
 						topic.deleted = parseInt(topic.deleted, 10) === 1;
 					}
-					return topic && topic.cid;
-				}).filter(function (topic, index, array) {
-					return topic && array.indexOf(topic) === index;
+					return topic && parseInt(topic.cid, 10);
 				});
+
+				cids = _.unique(cids);
 
 				categories.getCategoriesFields(cids, ['cid', 'name', 'icon', 'slug', 'parentCid', 'bgColor', 'color'], next);
 			},
