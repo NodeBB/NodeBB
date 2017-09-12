@@ -115,7 +115,6 @@ module.exports = function (Topics) {
 		db.setObjectField('topic:' + tid, field, value, callback);
 	};
 
-
 	Topics.setTopicFields = function (tid, data, callback) {
 		callback = callback || function () {};
 		db.setObject('topic:' + tid, data, callback);

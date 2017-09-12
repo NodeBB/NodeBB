@@ -124,7 +124,7 @@ module.exports = function (Posts) {
 					return topic && parseInt(topic.cid, 10);
 				});
 
-				cids = _.unique(cids);
+				cids = _.uniq(cids);
 
 				categories.getCategoriesFields(cids, ['cid', 'name', 'icon', 'slug', 'parentCid', 'bgColor', 'color'], next);
 			},
