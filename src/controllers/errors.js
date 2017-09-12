@@ -77,7 +77,7 @@ exports.handleErrors = function (err, req, res, next) { // eslint-disable-line n
 		}
 
 		if (data.cases.hasOwnProperty(err.code)) {
-			data.cases[err.code](err, res, res, defaultHandler);
+			data.cases[err.code](err, req, res, defaultHandler);
 		} else {
 			defaultHandler();
 		}
