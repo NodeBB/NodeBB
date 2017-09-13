@@ -44,7 +44,7 @@ web.install = function (port) {
 			},
 			function (buffer, next) {
 				Benchpress.compileParse(buffer.toString(), options, next);
-			}
+			},
 		], callback);
 	});
 	app.set('view engine', 'tpl');
