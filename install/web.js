@@ -37,7 +37,16 @@ web.install = function (port) {
 	winston.info('Launching web installer on port', port);
 
 	app.use(express.static('public', {}));
-	app.engine('tpl', Benchpress.__express);
+	app.engine('tpl', function (filepath, options, callback) {
+		async.waterfall([
+			function (next) {
+				fs.readFile(filepath, 'utf-8', next);
+			},
+			function (buffer, next) {
+				Benchpress.compileParse(buffer.toString(), options, next);
+			}
+		], callback);
+	});
 	app.set('view engine', 'tpl');
 	app.set('views', path.join(__dirname, '../src/views'));
 	app.use(bodyParser.urlencoded({
