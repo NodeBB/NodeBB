@@ -440,7 +440,7 @@ app.cacheBuster = null;
 				.replace('{browserTitle}', function () { return config.browserTitle; });
 
 			// Allow translation strings in title on ajaxify (#5927)
-			title = title.replace(/&lsqb;/g, '[').replace(/&rsqb;/g, ']');
+			title = translator.unescape(title);
 
 			translator.translate(title, function (translated) {
 				titleObj.titles[0] = translated;
