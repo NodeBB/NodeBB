@@ -1,10 +1,10 @@
 {
-	"post-queue": "Post Queue",
-	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Posting Restrictions</a> and enable <strong>Post Queue</strong>.",
-	"user": "User",
-	"category": "Category",
-	"title": "Title",
-	"content": "Content",
-	"posted": "Posted",
-	"reply-to": "Reply to \"%1\""
+	"post-queue": "Опашка за публикации",
+	"description": "Няма публикации в опашката. <br> За да включите тази функционалност, идете в <a href=\"%1\">Настройки &rarr; Публикуване &rarr; Ограничения за публикуването</a> и включете <strong>Опашката за публикации</strong>.",
+	"user": "Потребител",
+	"category": "Категория",
+	"title": "Заглавие",
+	"content": "Съдържание",
+	"posted": "Публикувано",
+	"reply-to": "Отговор на „%1“"
 }

@@ -23,6 +23,6 @@
 	"max-cover-image-size-help": "(Kilobayt, varsayılan: 2,048 KiB)",
 	"keep-all-user-images": "Avatarların ve kapak resimlerinin eski sürümlerini sunucuda sakla",
 	"profile-covers": "Profil Kapakları",
-	"default-covers": "Varsayılan Kapak Görseli",
+	"default-covers": "Varsayılan Kapak Resmi",
 	"default-covers-help": "Kapak resmi olmayan hesapları, varsayılan kapak resimlerini kullanmaları için virgülle ayırarak ekleyin"
 }
