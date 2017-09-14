@@ -48,7 +48,7 @@
     "account/downvoted": "Von %1 negativ bewertete Beiträge",
     "account/best": "Bestbewertete Beiträge von %1",
     "confirm": "E-Mail bestätigt",
-    "maintenance.text": "%1 befindet sich derzeit in der Wartung. Bitte komme später wieder.",
+    "maintenance.text": "%1 befindet sich derzeit in der Wartung. Bitte komm später wieder.",
     "maintenance.messageIntro": "Zusätzlich hat der Administrator diese Nachricht hinterlassen:",
     "throttled.text": "%1 ist momentan aufgrund von Überlastung nicht verfügbar. Bitte komm später wieder."
 }

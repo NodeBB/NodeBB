@@ -45,10 +45,10 @@
 
 	"analytics.back": "Zpět do seznamu kategorii",
 	"analytics.title": "Analýza pro kategorii \"%1\"",
-	"analytics.pageviews-hourly": "<strong>Postava 1</strong>- zobrazení stránky za hodinu pro tuto kategorii",
-	"analytics.pageviews-daily": "<strong>Postava 2</strong> - zobrazení stránky za den pro tuto kategorii</small>",
-	"analytics.topics-daily": "<strong>Postava 3</strong> - vytvořených témat za den pro tuto kategorii</small>",
-	"analytics.posts-daily": "<strong>Postava 4</strong> - vytvořených příspěvků za den pro tuto kategorii</small>",
+	"analytics.pageviews-hourly": "<strong>Postava 1</strong>– zobrazení stránky za hodinu pro tuto kategorii",
+	"analytics.pageviews-daily": "<strong>Postava 2</strong> – zobrazení stránky za den pro tuto kategorii</small>",
+	"analytics.topics-daily": "<strong>Postava 3</strong> – vytvořených témat za den pro tuto kategorii</small>",
+	"analytics.posts-daily": "<strong>Postava 4</strong> – vytvořených příspěvků za den pro tuto kategorii</small>",
 
 	"alert.created": "Vytvořeno",
 	"alert.create-success": "Kategorie byla úspěšně vytvořena.",

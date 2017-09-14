@@ -1,5 +1,5 @@
 {
-    "password-reset-requested": "Požadována obnova hesla - %1!",
+    "password-reset-requested": "Požadována obnova hesla – %1!",
     "welcome-to": "Vítejte v %1",
     "invite": "Pozvánka od %1",
     "greeting_no_name": "Dobrý den",
@@ -9,7 +9,7 @@
     "welcome.text3": "Administrátor právě potvrdil vaší registraci. Nyní se můžete přihlásit jménem a heslem.",
     "welcome.cta": "Pro potvrzení vaší e-mailové adresy, klikněte zde",
     "invitation.text1": "%1 vás pozval, abyste se připojil k %2",
-    "invitation.ctr": "Pro vytvoření vašeho účtu, klikněte zde",
+    "invitation.ctr": "Pro vytvoření vašeho účtu, klikněte zde.",
     "reset.text1": "Obdrželi jsme požadavek na obnovu vašeho hesla, pravděpodobně z důvodu jeho zapomenutí. Pokud to není tento případ, ignorujte, prosím, tento e-mail.",
     "reset.text2": "Přejete-li si pokračovat v obnově vašeho hesla, klikněte, prosím, na následující odkaz:",
     "reset.cta": "Chcete-li obnovit vaše heslo, klikněte zde",

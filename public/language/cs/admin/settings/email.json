@@ -2,8 +2,8 @@
 	"email-settings": "Nastavení e-mailu",
 	"address": "E-mailové adresy",
 	"address-help": "Následující e-mailové adresy budou zobrazeny  příjemci v políčkách \"Od\" a \"Odpovědět\".",
-	"from": "Jméno - od",
-	"from-help": "Zobrazené jméno v e-mailu v - Od",
+	"from": "Jméno – od",
+	"from-help": "Zobrazené jméno v e-mailu v – Od",
 
 	"smtp-transport": "Přenos SMTP",
 	"smtp-transport.enabled": "Pro odesílání e-mailů použít externí e-mailový server ",

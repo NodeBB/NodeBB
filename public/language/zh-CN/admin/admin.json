@@ -2,6 +2,6 @@
 	"alert.confirm-reload": "确定要重载NodeBB吗？",
 	"alert.confirm-restart": "确定要重启NodeBB吗？",
 
-	"acp-title": "%1 | NodeBB 控制面板",
+	"acp-title": "%1 | NodeBB 管理员控制面板",
 	"settings-header-contents": "内容"
 }

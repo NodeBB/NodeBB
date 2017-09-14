@@ -1,10 +1,10 @@
 {
-	"post-queue": "Post Queue",
-	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Posting Restrictions</a> and enable <strong>Post Queue</strong>.",
-	"user": "User",
-	"category": "Category",
-	"title": "Title",
-	"content": "Content",
-	"posted": "Posted",
-	"reply-to": "Reply to \"%1\""
+	"post-queue": "Fronta příspěvků",
+	"description": "Ve frontě nejsou žádné příspěvky.Pro povolení této vastnosti, přejděte do <a href=\"%1\">Nastavení – Příspěvek – Omezení příspěvků</a> a povolte <strong>Fronta příspěvků</strong>.",
+	"user": "Uživatel",
+	"category": "Kategorie",
+	"title": "Název",
+	"content": "Obsah",
+	"posted": "Přidáno",
+	"reply-to": "Odpovědět na \"%1\""
 }

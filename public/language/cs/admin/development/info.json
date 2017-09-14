@@ -1,5 +1,5 @@
 {
-	"you-are-on": "Informace - jste na <strong>%1%2</strong>",
+	"you-are-on": "Informace – jste na <strong>%1%2</strong>",
 	"nodes-responded": "%1 vazeb odpovědělo během %2ms.",
 	"host": "host",
 	"pid": "pid",

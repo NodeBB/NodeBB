@@ -6,7 +6,7 @@
     "search": "Suchen",
     "enter_username": "Benutzer durchsuchen",
     "load_more": "Mehr laden",
-    "users-found-search-took": "%1 Benutzer gefunden! Die Suche dauerte %2 ms.",
+    "users-found-search-took": "%1 Benutzer gefunden! Die Suche dauerte %2 s.",
     "filter-by": "Filtern nach",
     "online-only": "Nur Online",
     "invite": "Einladen",

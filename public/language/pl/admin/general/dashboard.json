@@ -21,9 +21,9 @@
 
 	"updates": "Aktualizacje",
 	"running-version": "Forum działa dzięki <strong>NodeBB v<span id=\"version\">%1</span></strong>",
-	"keep-updated": "Always make sure that your NodeBB is up to date for the latest security patches and bug fixes.",
+	"keep-updated": "Regularnie sprawdzaj najnowsze aktualizacji i poprawki NodeBB i celu poprawy zabezpieczenia i optymalizacji.",
 	"up-to-date": "<p>NodeBB <strong>jest aktualny</strong> <i class=\"fa fa-check\"></i></p>",
-	"upgrade-available": "<p>A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\">upgrading your NodeBB</a>.</p>",
+	"upgrade-available": "<p>Nowa wersja (v%1) jest już dostępna. Zaktualizuj <a href=\"https://docs.nodebb.org/configuring/upgrade/\"> do nowej wersji NodeBB </a>.</p>",
 	"prerelease-upgrade-available": "<p>This is an outdated pre-release version of NodeBB. A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\">upgrading your NodeBB</a>.</p>",
 	"prerelease-warning": "<p>This is a <strong>pre-release</strong> version of NodeBB. Unintended bugs may occur. <i class=\"fa fa-exclamation-triangle\"></i></p>",
 	"running-in-development": "<span>Forum is running in development mode. The forum may be open to potential vulnerabilities; please contact your system administrator.</span>",
