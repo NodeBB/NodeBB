@@ -115,9 +115,12 @@ $('document').ready(function () {
 		$('#launch .fa-spin').removeClass('hide');
 
 		$.post('/launch', function () {
-			setInterval(function () {
+			var checker = setInterval(function () {
 				$.get('/admin').done(function () {
-					window.location = 'admin';
+					clearInterval(checker);
+					setTimeout(function () {
+						window.location = 'admin';
+					}, 2000);
 				});
 			}, 750);
 		});
