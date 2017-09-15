@@ -11,7 +11,7 @@
 	"smtp-transport.service": "Wähle einen Provider",
 	"smtp-transport.service-custom": "Benutzerdefiniert...",
 	"smtp-transport.service-help": "Wähle oben einen Provider aus um die bekannten informationen über diesen zu verwenden. Falls dein Provider nicht in der Liste sein sollte, wähle 'Benutzerdefiniert...' aus und gib die details manuell ein.",
-	"smtp-transport.gmail-warning1": "Es gab Berichte darüber, dass Gmail nicht mit Accounts mit erhöhten Sicherheitseinstellungen funktioniert. In diesem Fall wirst du <a href=\"https://www.google.com/settings/security/lesssecureapps\">deinen Gmail-Account configurieren müssen um den 'Zugriff weniger sicherer Apps' auf dein Konto zuzulassen</a>.",
+	"smtp-transport.gmail-warning1": "Es gab Berichte darüber, dass Gmail nicht mit Accounts mit erhöhten Sicherheitseinstellungen funktioniert. In diesem Fall wirst du <a href=\"https://www.google.com/settings/security/lesssecureapps\">deinen Gmail-Account konfigurieren müssen um den 'Zugriff weniger sicherer Apps' auf dein Konto zuzulassen</a>.",
 	"smtp-transport.gmail-warning2": "Um mehr zu diesem Workaround zu erfahren, ließ dir bitten <a href=\"https://nodemailer.com/usage/using-gmail/\">diesen NodeMailer Artikel zu diesem Problem durch</a>. Eine Alternative wäre, Emailer-Plugins von dritten wie etwa SendGrid, Mailgun usw. zu verwenden. <a href=\"{config.relative_path}/admin/extend/plugins\">Verfügbare Plugins durchsuchen</a>.",
 	"smtp-transport.host": "SMTP Host",
 	"smtp-transport.port": "SMTP Port",
