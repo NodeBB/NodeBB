@@ -46,6 +46,6 @@
 	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>Keine Kompatibilitätsinformationen gefunden</strong></p><p>Dieses Plugin legte keine spezifische NodeBB version fest, welche für die Installation benötigt wird. Volle Kompatibilität kann nicht gewährleistet werden, was dazu führen könnte, dass ihr NodeBB nicht mehr korrekt startet.</p></div><p>Für den Fall, dass NodeBB nicht mehr ordnungsgemäß startet:</p><pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre><p>Soll mit der installation der neuesten Version dieses Plugins fortgefahren werden?</p>",
 
 	"license.title": "Plugin-Lizenzinformation",
-	"license.intro": "Das Plugin <strong>%1</strong>is unter der %2 Lizenz lizenziert. Bitte ließ dir diese durch bevor du dieses Plugin aktivierst.",
+	"license.intro": "Das Plugin <strong>%1</strong>is unter der %2 lizenziert. Bitte ließ dir diese durch bevor du dieses Plugin aktivierst.",
 	"license.cta": "Willst du dieses Plugin wirklich aktivieren?"
 }

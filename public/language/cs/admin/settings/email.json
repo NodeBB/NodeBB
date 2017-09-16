@@ -1,7 +1,7 @@
 {
 	"email-settings": "Nastavení e-mailu",
 	"address": "E-mailové adresy",
-	"address-help": "Následující e-mailové adresy budou zobrazeny  příjemci v políčkách \"Od\" a \"Odpovědět\".",
+	"address-help": "Následující e-mailové adresy budou zobrazeny  příjemci v políčkách „Od” a „Odpovědět”.",
 	"from": "Jméno – od",
 	"from-help": "Zobrazené jméno v e-mailu v – Od",
 
@@ -10,7 +10,7 @@
 	"smtp-transport-help": "Ze seznamu můžete vybrat známé služby nebo zadat vlastní.",
 	"smtp-transport.service": "Vyberte službu",
 	"smtp-transport.service-custom": "Uživatelský služba",
-	"smtp-transport.service-help": "Pro použití známých informací, vyberte název služby. Nebo vyberte \"uživatelskou službu\" a zadejte detaily níže.",
+	"smtp-transport.service-help": "Pro použití známých informací, vyberte název služby. Nebo vyberte „uživatelskou službu” a zadejte detaily níže.",
 	"smtp-transport.gmail-warning1": "Někdy služba Gmail nefunguje správně s účty s nejvyšším zabezpečením. V těchto případech, musíte <a href=\"https://www.google.com/settings/security/lesssecureapps\">nakonfigurovat váš Gmail účet pro méně zabezpečené aplikace</a>.",
 	"smtp-transport.gmail-warning2": "For more information about this workaround, <a href=\"https://nodemailer.com/usage/using-gmail/\">please consult this NodeMailer article on the issue.</a> An alternative would be to utilise a third-party emailer plugin such as SendGrid, Mailgun, etc. <a href=\"{config.relative_path}/admin/extend/plugins\">Browse available plugins here</a>.",
 	"smtp-transport.host": "Hostitel SMTP",
