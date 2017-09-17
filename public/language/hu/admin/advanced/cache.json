@@ -1,7 +1,7 @@
 {
-	"post-cache": "Bejegyzés Gyorsítótár",
-	"posts-in-cache": "Bejegyzések a Gyorsítótárban",
-	"average-post-size": "Átlagos Bejegyzés Méret",
+	"post-cache": "Poszt gyorsítótár",
+	"posts-in-cache": "Posztok a gyorsítótárban",
+	"average-post-size": "Átlag posztméret",
 	"length-to-max": "Hossz / Max",
 	"percent-full": "%1% Tele",
 	"post-cache-size": "Bejegyzés Gyorsítótár Mérete",

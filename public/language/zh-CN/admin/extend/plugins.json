@@ -46,6 +46,6 @@
 	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>未找到兼容性信息</strong></p><p>此插件未注明对应的 NodeBB 版本。可能会产生兼容问题，导致 NodeBB 无法正常启动。</p></div><p> NodeBB 无法正常启动时请运行以下命令：</p> <pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre> <p>是否继续安装此插件的最新版本？</p>",
 
 	"license.title": "插件许可证信息",
-	"license.intro": "The plugin <strong>%1</strong> is licensed under the %2. Please read and understand the license terms prior to activating this plugin.",
+	"license.intro": "插件 <strong>%1</strong> 在 %2 下获得许可。请在激活此插件之前阅读和理解许可条款。",
 	"license.cta": "你希望继续使用这个插件吗？"
 }
