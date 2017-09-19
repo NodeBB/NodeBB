@@ -22,7 +22,7 @@
     "chat.add-users-to-room": "Dodaj użytkownika do pokoju czatu",
     "chat.confirm-chat-with-dnd-user": "Ten użytkownik ustawił swój status na \"nie przeszkadzać\". Czy wciąż chcesz z nim rozmawiać?",
     "composer.compose": "Twórz",
-    "composer.show_preview": "Pokaż Podgląd",
+    "composer.show_preview": "Pokazuj podgląd",
     "composer.hide_preview": "Ukryj Podgląd",
     "composer.user_said_in": "%1 powiedział w %2:",
     "composer.user_said": "%1 powiedział:",

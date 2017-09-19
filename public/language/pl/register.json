@@ -1,7 +1,7 @@
 {
     "register": "Rejestracja",
     "cancel_registration": "Anuluj rejestrację",
-    "help.email": "Domyślnie Twój adres e-mail będzie ukryty.",
+    "help.email": "Domyślnie twój adres e-mail będzie ukryty.",
     "help.username_restrictions": "Unikalna nazwa użytkownika z min. %1 i maks. %2 znaków. Inni użytkownicy mogą Ciebie zawołać, pisząc @<span id='yourUsername'>nazwa użytkownika</span>.",
     "help.minimum_password_length": "Hasło musi mieć co najmniej %1 znaków.",
     "email_address": "Adres e-mail",
@@ -18,6 +18,6 @@
     "agree_to_terms_of_use": "Zgadzam się na powyższe warunki",
     "terms_of_use_error": "Musisz zaakceptować Terms of Use",
     "registration-added-to-queue": "Twoja rejestracja została dodana do kolejki oczekujących na akceptację. Otrzymasz email, kiedy zostanie zatwierdzona przez administratora.",
-    "interstitial.intro": "Potrzebujemy dodatkowych informacji, zanim przejdziemy dalej do utworzenia Twojego konta.",
+    "interstitial.intro": "Potrzebujemy dodatkowych informacji, zanim przejdziemy dalej do utworzenia twojego konta.",
     "interstitial.errors-found": "Nie mogliśmy ukończyć procesu rejestracji:"
 }

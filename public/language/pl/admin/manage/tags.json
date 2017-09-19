@@ -1,18 +1,18 @@
 {
-	"none": "Your forum does not have any topics with tags yet.",
-	"bg-color": "Background Colour",
+	"none": "Twoje forum nie ma jeszcze żadnych tematów z tagami.",
+	"bg-color": "Kolor tła",
 	"text-color": "Kolor Tekstu",
-	"create-modify": "Create & Modify Tags",
-	"description": "Select tags via clicking and/or dragging, use shift to select multiple.",
-	"create": "Create Tag",
-	"modify": "Modify Tags",
-	"delete": "Delete Selected Tags",
-	"search": "Search for tags...",
-	"settings": "Click <a href=\"%1\">here</a> to visit the tag settings page.",
-	"name": "Tag Name",
+	"create-modify": "Utwórz oraz modyfikuj tagi",
+	"description": "Wybierz tagi poprzez klikanie oraz/lub przeciąganie, użyj przycisku shift do zaznaczenia wielu.",
+	"create": "Utwórz tag",
+	"modify": "Modyfikuj tagi",
+	"delete": "Usuń zaznaczone tagi",
+	"search": "Szukanie tagów...",
+	"settings": "Kliknij <a href=\"%1\">tutaj</a>, aby odwiedzić stronę zarządzania tagami.",
+	"name": "Nazwa taga",
 
-	"alerts.editing-multiple": "Editing multiple tags",
-	"alerts.editing-x": "Editing \"%1\" tag",
-	"alerts.confirm-delete": "Do you want to delete the selected tags?",
-	"alerts.update-success": "Tag Updated!"
+	"alerts.editing-multiple": "Edycja wielu tagów",
+	"alerts.editing-x": "Edytowanie tagu \"%1\"",
+	"alerts.confirm-delete": "Czy na pewno chcesz skasować zaznaczone tagi?",
+	"alerts.update-success": "Zaktualizowano tag-a!"
 }

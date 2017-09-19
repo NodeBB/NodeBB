@@ -9,10 +9,10 @@
     "in-categories": "W kategoriach",
     "search-child-categories": "Przeszukaj podkategorie",
     "has-tags": "Ma tagi",
-    "reply-count": "Ilość odpowiedzi",
+    "reply-count": "Liczba odpowiedzi",
     "at-least": "Przynajmniej",
     "at-most": "Co najwyżej",
-    "relevance": "Relevance",
+    "relevance": "Stosowność",
     "post-time": "Napisano",
     "newer-than": "Nowsze niż",
     "older-than": "Starsze niż",
@@ -27,8 +27,8 @@
     "sort-by": "Sortuj po",
     "last-reply-time": "Odpowiedziano ostatnio",
     "topic-title": "Tytuł tematu",
-    "number-of-replies": "Ilość odpowiedzi",
-    "number-of-views": "Ilość wyświetleń",
+    "number-of-replies": "Liczba odpowiedzi",
+    "number-of-views": "Liczba wyświetleń",
     "topic-start-date": "Data utworzenia tematu",
     "username": "Nazwa użytkownika",
     "category": "Kategoria",
@@ -38,5 +38,5 @@
     "clear-preferences": "Wyczyść ustawienia",
     "search-preferences-saved": "Ustawienia wyszukiwania zapisane",
     "search-preferences-cleared": "Ustawienia wyszukiwania wyczyszczone",
-    "show-results-as": "Pokaż wyniki jako"
+    "show-results-as": "Pokazuj wyniki jako"
 }
