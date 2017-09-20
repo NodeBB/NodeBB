@@ -104,7 +104,7 @@
     "signature-too-long": "Przepraszamy, twój podpis nie może być dłuższy niż %1 znaków.",
     "about-me-too-long": "Przepraszamy, twoja informacja o sobie nie może być dłuższa niż %1 znaków.",
     "cant-chat-with-yourself": "Nie możesz rozmawiać sam ze sobą!",
-    "chat-restricted": "Ten użytkownik ograniczył swoje rozmowy. Musi cię śledzić, aby kontakt z nim był możliwy",
+    "chat-restricted": "Ten użytkownik ograniczył swoje wiadomości czat. Musi cię śledzić, aby kontakt z nim był możliwy",
     "chat-disabled": "System rozmów jest wyłączony",
     "too-many-messages": "Wysłałeś zbyt wiele wiadomości, prosimy chwilę poczekać.",
     "invalid-chat-message": "Nieprawidłowa wiadomość",
