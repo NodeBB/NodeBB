@@ -185,13 +185,28 @@ function generateForRecent(req, res, next) {
 	if (parseInt(meta.config['feeds:disableRSS'], 10) === 1) {
 		return controllers404.send404(req, res);
 	}
-	generateForTopics({
-		uid: req.uid,
-		title: 'Recently Active Topics',
-		description: 'A list of topics that have been active within the past 24 hours',
-		feed_url: '/recent.rss',
-		site_url: '/recent',
-	}, 'topics:recent', req, res, next);
+
+	async.waterfall([
+		function (next) {
+			if (req.query.token && req.query.uid) {
+				db.getObjectField('user:' + req.query.uid, 'rss_token', next);
+			} else {
+				next(null, null);
+			}
+		},
+		function (token, next) {
+			next(null, token && token === req.query.token ? req.query.uid : req.uid);
+		},
+		function (uid, next) {
+			generateForTopics({
+				uid: uid,
+				title: 'Recently Active Topics',
+				description: 'A list of topics that have been active within the past 24 hours',
+				feed_url: '/recent.rss',
+				site_url: '/recent',
+			}, 'topics:recent', req, res, next);
+		},
+	], next);
 }
 
 function generateForPopular(req, res, next) {
@@ -230,7 +245,7 @@ function generateForTopics(options, set, req, res, next) {
 	var stop = options.hasOwnProperty('stop') ? options.stop : 19;
 	async.waterfall([
 		function (next) {
-			topics.getTopicsFromSet(set, req.uid, start, stop, next);
+			topics.getTopicsFromSet(set, options.uid, start, stop, next);
 		},
 		function (data, next) {
 			generateTopicsFeed(options, data.topics, next);
