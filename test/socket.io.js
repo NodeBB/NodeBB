@@ -513,7 +513,7 @@ describe('socket.io', function () {
 	});
 
 	it('should error with invalid data', function (done) {
-		var data = { template: 'global', location: 'sidebar', widgets: [{ widget: 'html', data: { html: 'test', title: 'test', container: '' } }] };
+		var data = [{ template: 'global', location: 'sidebar', widgets: [{ widget: 'html', data: { html: 'test', title: 'test', container: '' } }] }];
 		socketAdmin.widgets.set({ uid: adminUid }, data, function (err) {
 			assert.ifError(err);
 			db.getObjectField('widgets:global', 'sidebar', function (err, widgetData) {
