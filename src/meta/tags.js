@@ -66,6 +66,7 @@ Tags.parse = function (req, data, meta, link, callback) {
 				defaultLinks.push({
 					rel: 'search',
 					type: 'application/opensearchdescription+xml',
+					title: validator.escape(String(Meta.config.title || Meta.config.browserTitle || 'NodeBB')),
 					href: nconf.get('relative_path') + '/osd.xml',
 				});
 			}
