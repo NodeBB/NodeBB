@@ -293,6 +293,10 @@ function addTags(topicData, req, res) {
 			type: 'application/rss+xml',
 			href: topicData.rssFeedUrl,
 		},
+		{
+			rel: 'canonical',
+			href: nconf.get('url') + '/topic/' + topicData.slug,
+		},
 	];
 
 	if (topicData.category) {
