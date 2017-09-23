@@ -35,9 +35,9 @@ function renderEmail(req, res, next) {
 					file.walk(emailsPath, next);
 				},
 				function (emails, next) {
-					// exclude .jst files
+					// exclude .js files
 					emails = emails.filter(function (email) {
-						return !email.endsWith('.jst');
+						return !email.endsWith('.js');
 					});
 
 					async.map(emails, function (email, next) {

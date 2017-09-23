@@ -192,7 +192,7 @@ middleware.delayLoading = function (req, res, next) {
 var viewsDir = nconf.get('views_dir');
 middleware.templatesOnDemand = function (req, res, next) {
 	var filePath = req.filePath || path.join(viewsDir, req.path);
-	if (!filePath.endsWith('.jst')) {
+	if (!filePath.endsWith('.js')) {
 		return next();
 	}
 
@@ -205,7 +205,7 @@ middleware.templatesOnDemand = function (req, res, next) {
 				return next();
 			}
 
-			fs.readFile(filePath.replace(/\.jst$/, '.tpl'), cb);
+			fs.readFile(filePath.replace(/\.js$/, '.tpl'), cb);
 		},
 		function (source, cb) {
 			Benchpress.precompile({
