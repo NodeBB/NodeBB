@@ -14,10 +14,10 @@ describe('admin search', function () {
 			]);
 			done();
 		});
-		it('should exclude .jst files', function (done) {
+		it('should exclude .js files', function (done) {
 			assert.deepEqual(search.filterDirectories([
 				'hfjksfd/fdsgagag/admin/gdhgfsdg/sggag.tpl',
-				'dfahdfsgf/admin/hgkfds/fdhsdfh.jst',
+				'dfahdfsgf/admin/hgkfds/fdhsdfh.js',
 			]), [
 				'admin/gdhgfsdg/sggag',
 			]);

@@ -76,7 +76,7 @@ Templates.compile = function (callback) {
 			}, next);
 		},
 		function (next) {
-			rimraf(path.join(viewsPath, '*.jst'), next);
+			rimraf(path.join(viewsPath, '*.js'), next);
 		},
 		function (next) {
 			winston.verbose('[meta/templates] Successfully compiled templates.');
