@@ -35,7 +35,7 @@ module.exports = function (Topics) {
 
 				var extension = path.extname(data.thumb);
 				if (!extension) {
-					extension = '.' + mime.extension(type);
+					extension = '.' + mime.getExtension(type);
 				}
 				filename = Date.now() + '-topic-thumb' + extension;
 				pathToUpload = path.join(nconf.get('upload_path'), 'files', filename);

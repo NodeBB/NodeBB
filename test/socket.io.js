@@ -72,7 +72,8 @@ describe('socket.io', function () {
 				helpers.connectSocketIO(res, function (err, _io) {
 					io = _io;
 					assert.ifError(err);
-					done(err);
+
+					done();
 				});
 			});
 		});
