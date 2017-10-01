@@ -73,7 +73,8 @@ define('forum/account/header', [
 	}
 
 	function setupCoverPhoto() {
-		coverPhoto.init(components.get('account/cover'),
+		coverPhoto.init(
+			components.get('account/cover'),
 			function (imageData, position, callback) {
 				socket.emit('user.updateCover', {
 					uid: ajaxify.data.uid,

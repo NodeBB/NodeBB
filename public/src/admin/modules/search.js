@@ -36,7 +36,7 @@ define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 				'<a role= "menuitem" href= "' + config.relative_path + '/' + namespace + '" >' +
 					title +
 					'<br>' + (!results ? '' :
-					('<small><code>' +
+				('<small><code>' +
 						results +
 					'</small></code>')) +
 				'</a>' +

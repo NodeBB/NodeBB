@@ -72,8 +72,8 @@ define('admin/appearance/skins', ['translator', 'benchpress'], function (transla
 
 				if (config['theme:src']) {
 					var skin = config['theme:src']
-					.match(/latest\/(\S+)\/bootstrap.min.css/)[1]
-					.replace(/(^|\s)([a-z])/g, function (m, p1, p2) { return p1 + p2.toUpperCase(); });
+						.match(/latest\/(\S+)\/bootstrap.min.css/)[1]
+						.replace(/(^|\s)([a-z])/g, function (m, p1, p2) { return p1 + p2.toUpperCase(); });
 
 					highlightSelectedTheme(skin);
 				}
@@ -105,9 +105,9 @@ define('admin/appearance/skins', ['translator', 'benchpress'], function (transla
 			$('[data-theme="' + themeId + '"]')
 				.addClass('selected')
 				.find('[data-action="use"]')
-					.html(current)
-					.removeClass('btn-primary')
-					.addClass('btn-success');
+				.html(current)
+				.removeClass('btn-primary')
+				.addClass('btn-success');
 		});
 	}
 

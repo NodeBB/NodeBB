@@ -472,8 +472,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 				var topic = topics[tids[i]];
 				var	label = topic.value === '0' ? topic.title : '<a title="' + topic.title + '"href="' + RELATIVE_PATH + '/topic/' + tids[i] + '" target="_blank"> ' + topic.title + '</a>';
 
-				legend.append(
-					'<li>' +
+				legend.append('<li>' +
 					'<div style="background-color: ' + topicColors[i] + ';"></div>' +
 					'<span>' + label + '</span>' +
 					'</li>');

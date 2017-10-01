@@ -114,7 +114,7 @@ describe('minifier', function () {
 	it('.css.bundle() should minify styles', function (done) {
 		minifier.css.bundle(styles, paths, true, false, function (err, bundle) {
 			assert.ifError(err);
-			assert.strictEqual(bundle.code, '.help{margin:10px;display:block}.yellow{background:#ff0}.help .blue{background:#00f}');
+			assert.strictEqual(bundle.code, '.help{margin:10px}.yellow{background:#ff0}.help{display:block}.help .blue{background:#00f}');
 			done();
 		});
 	});

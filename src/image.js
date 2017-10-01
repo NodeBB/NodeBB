@@ -141,7 +141,7 @@ image.writeImageDataToTempFile = function (imageData, callback) {
 
 	var filepath = path.join(os.tmpdir(), filename + extension);
 
-	var buffer = new Buffer(imageData.slice(imageData.indexOf('base64') + 7), 'base64');
+	var buffer = Buffer.from(imageData.slice(imageData.indexOf('base64') + 7), 'base64');
 
 	fs.writeFile(filepath, buffer, {
 		encoding: 'base64',
