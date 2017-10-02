@@ -69,23 +69,21 @@ Emailer.registerApp = function (expressApp) {
 			smtpOptions.port = meta.config['email:smtpTransport:port'];
 			smtpOptions.host = meta.config['email:smtpTransport:host'];
 
-			switch(meta.config['email:smtpTransport:security']) {
-				case 'NONE':
-					smtpOptions.secure = false;
-					smtpOptions.requireTLS = false;
-					smtpOptions.ignoreTLS = true;
-					break;
-				case 'STARTTLS':
-					smtpOptions.secure = false;
-					smtpOptions.requireTLS = true;
-					smtpOptions.ignoreTLS = false;
-					break;
-				default:
-				case 'ENCRYPTED':
-					smtpOptions.secure = true;
-					smtpOptions.requireTLS = true;
-					smtpOptions.ignoreTLS = false;
-					break;
+			if(meta.config['email:smtpTransport:security'] === 'NONE') {
+				smtpOptions.secure = false;
+				smtpOptions.requireTLS = false;
+				smtpOptions.ignoreTLS = true;
+			}
+			else if(meta.config['email:smtpTransport:security'] === 'STARTTLS') {
+				smtpOptions.secure = false;
+				smtpOptions.requireTLS = true;
+				smtpOptions.ignoreTLS = false;
+			}
+			else {
+				// meta.config['email:smtpTransport:security'] === 'ENCRYPTED' or undefined
+				smtpOptions.secure = true;
+				smtpOptions.requireTLS = true;
+				smtpOptions.ignoreTLS = false;
 			}
 		} else {
 			smtpOptions.service = meta.config['email:smtpTransport:service'];
