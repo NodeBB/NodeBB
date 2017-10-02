@@ -63,6 +63,13 @@
 
 				<label for="email:smtpTransport:port">[[admin/settings/email:smtp-transport.port]]</label>
 				<input type="text" class="form-control input-md" id="email:smtpTransport:port" data-field="email:smtpTransport:port" placeholder="5555">
+
+				<label for="email:smtpTransport:security">Connection security</label>
+				<select class="form-control" id="email:smtpTransport:security" data-field="email:smtpTransport:security">
+					<option value="ENCRYPTED">Encrypted</option>
+					<option value="STARTTLS">STARTTLS</option>
+					<option value="NONE">None</option>
+				</select>
 			</div>
 			<div class="form-group">
 				<label for="email:smtpTransport:user"><strong>[[admin/settings/email:smtp-transport.username]]</strong></label>

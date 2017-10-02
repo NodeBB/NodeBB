@@ -68,7 +68,25 @@ Emailer.registerApp = function (expressApp) {
 		if (meta.config['email:smtpTransport:service'] === 'nodebb-custom-smtp') {
 			smtpOptions.port = meta.config['email:smtpTransport:port'];
 			smtpOptions.host = meta.config['email:smtpTransport:host'];
-			smtpOptions.secure = true;
+
+			switch(meta.config['email:smtpTransport:security']) {
+				case 'NONE':
+					smtpOptions.secure = false;
+					smtpOptions.requireTLS = false;
+					smtpOptions.ignoreTLS = true;
+					break;
+				case 'STARTTLS':
+					smtpOptions.secure = false;
+					smtpOptions.requireTLS = true;
+					smtpOptions.ignoreTLS = false;
+					break;
+				default:
+				case 'ENCRYPTED':
+					smtpOptions.secure = true;
+					smtpOptions.requireTLS = true;
+					smtpOptions.ignoreTLS = false;
+					break;
+			}
 		} else {
 			smtpOptions.service = meta.config['email:smtpTransport:service'];
 		}
