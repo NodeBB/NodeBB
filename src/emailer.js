@@ -63,7 +63,7 @@ Emailer.registerApp = function (expressApp) {
 			},
 		};
 
-		if (meta.config['email:smtpTransport:serice'] === 'nodebb-custom-smtp') {
+		if (meta.config['email:smtpTransport:service'] === 'nodebb-custom-smtp') {
 			smtpOptions.port = meta.config['email:smtpTransport:port'];
 			smtpOptions.host = meta.config['email:smtpTransport:host'];
 			smtpOptions.secure = true;
