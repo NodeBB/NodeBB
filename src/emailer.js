@@ -56,12 +56,14 @@ Emailer.registerApp = function (expressApp) {
 
 	// Enable Gmail transport if enabled in ACP
 	if (parseInt(meta.config['email:smtpTransport:enabled'], 10) === 1) {
-		var smtpOptions = {
-			auth: {
+		var smtpOptions = {};
+
+		if(meta.config['email:smtpTransport:user'] || meta.config['email:smtpTransport:pass']) {
+			smtpOptions.auth = {
 				user: meta.config['email:smtpTransport:user'],
-				pass: meta.config['email:smtpTransport:pass'],
-			},
-		};
+				pass: meta.config['email:smtpTransport:pass']
+			};
+		}
 
 		if (meta.config['email:smtpTransport:service'] === 'nodebb-custom-smtp') {
 			smtpOptions.port = meta.config['email:smtpTransport:port'];
