@@ -71,8 +71,11 @@ Blacklist.test = function (clientIp, callback) {
 		Blacklist._rules.ipv4.indexOf(clientIp) === -1 &&	// not explicitly specified in ipv4 list
 		Blacklist._rules.ipv6.indexOf(clientIp) === -1 &&	// not explicitly specified in ipv6 list
 		!Blacklist._rules.cidr.some(function (subnet) {
-			return addr.match(ipaddr.parseCIDR(subnet));
-			// return ip.cidrSubnet(subnet).contains(clientIp);
+			var cidr = ipaddr.parseCIDR(subnet);
+			if (addr.kind() !== cidr[0].kind()) {
+				return false;
+			}
+			return addr.match(cidr);
 		})	// not in a blacklisted IPv4 or IPv6 cidr range
 	) {
 		plugins.fireHook('filter:blacklist.test', {	// To return test failure, pass back an error in callback
