@@ -64,11 +64,11 @@
 				<label for="email:smtpTransport:port">[[admin/settings/email:smtp-transport.port]]</label>
 				<input type="text" class="form-control input-md" id="email:smtpTransport:port" data-field="email:smtpTransport:port" placeholder="5555">
 
-				<label for="email:smtpTransport:security">Connection security</label>
+				<label for="email:smtpTransport:security">[[admin/settings/email:smtp-transport.security]]</label>
 				<select class="form-control" id="email:smtpTransport:security" data-field="email:smtpTransport:security">
-					<option value="ENCRYPTED">Encrypted</option>
-					<option value="STARTTLS">STARTTLS</option>
-					<option value="NONE">None</option>
+					<option value="ENCRYPTED">[[admin/settings/email:smtp-transport.security-encrypted]]</option>
+					<option value="STARTTLS">[[admin/settings/email:smtp-transport.security-starttls]]</option>
+					<option value="NONE">[[admin/settings/email:smtp-transport.security-none]]</option>
 				</select>
 			</div>
 			<div class="form-group">
