@@ -58,10 +58,10 @@ Emailer.registerApp = function (expressApp) {
 	if (parseInt(meta.config['email:smtpTransport:enabled'], 10) === 1) {
 		var smtpOptions = {};
 
-		if(meta.config['email:smtpTransport:user'] || meta.config['email:smtpTransport:pass']) {
+		if (meta.config['email:smtpTransport:user'] || meta.config['email:smtpTransport:pass']) {
 			smtpOptions.auth = {
 				user: meta.config['email:smtpTransport:user'],
-				pass: meta.config['email:smtpTransport:pass']
+				pass: meta.config['email:smtpTransport:pass'],
 			};
 		}
 
@@ -69,17 +69,15 @@ Emailer.registerApp = function (expressApp) {
 			smtpOptions.port = meta.config['email:smtpTransport:port'];
 			smtpOptions.host = meta.config['email:smtpTransport:host'];
 
-			if(meta.config['email:smtpTransport:security'] === 'NONE') {
+			if (meta.config['email:smtpTransport:security'] === 'NONE') {
 				smtpOptions.secure = false;
 				smtpOptions.requireTLS = false;
 				smtpOptions.ignoreTLS = true;
-			}
-			else if(meta.config['email:smtpTransport:security'] === 'STARTTLS') {
+			} else if (meta.config['email:smtpTransport:security'] === 'STARTTLS') {
 				smtpOptions.secure = false;
 				smtpOptions.requireTLS = true;
 				smtpOptions.ignoreTLS = false;
-			}
-			else {
+			} else {
 				// meta.config['email:smtpTransport:security'] === 'ENCRYPTED' or undefined
 				smtpOptions.secure = true;
 				smtpOptions.requireTLS = true;
