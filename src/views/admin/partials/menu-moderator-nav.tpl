@@ -19,6 +19,7 @@
 		<ul id="main-menu">
 			<li class="dropdown menu-item">
 				<a href="{relative_path}/admin/manage/categories">[[admin/menu:manage/categories]]</a>
+				<a href="{relative_path}/admin/manage/groups">[[admin/menu:manage/groups]]</a>
 			</li>
 		</ul>
 
