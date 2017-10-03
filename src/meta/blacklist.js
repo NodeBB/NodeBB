@@ -20,7 +20,7 @@ Blacklist.load = function (callback) {
 		Blacklist.get,
 		Blacklist.validate,
 		function (rules, next) {
-			winston.verbose('[meta/blacklist] Loading ' + rules.valid.length + ' blacklist rules');
+			winston.verbose('[meta/blacklist] Loading ' + rules.valid.length + ' blacklist rule(s)' + (rules.duplicateCount > 0 ? ', ignored ' + rules.duplicateCount + ' duplicate(s)' : ''));
 			if (rules.invalid.length) {
 				winston.warn('[meta/blacklist] ' + rules.invalid.length + ' invalid blacklist rule(s) were ignored.');
 			}
@@ -44,8 +44,8 @@ Blacklist.save = function (rules, callback) {
 			db.setObject('ip-blacklist-rules', { rules: rules }, next);
 		},
 		function (next) {
-			Blacklist.load(next);
 			pubsub.publish('blacklist:reload');
+			setImmediate(next);
 		},
 	], callback);
 };
@@ -111,6 +111,7 @@ Blacklist.validate = function (rules, callback) {
 	var ipv6 = [];
 	var cidr = [];
 	var invalid = [];
+	var duplicateCount = 0;
 
 	var inlineCommentMatch = /#.*$/;
 	var whitelist = ['127.0.0.1', '::1', '::ffff:0:127.0.0.1'];
@@ -121,6 +122,16 @@ Blacklist.validate = function (rules, callback) {
 		rule = rule.replace(inlineCommentMatch, '').trim();
 		return rule.length && !rule.startsWith('#') ? rule : null;
 	}).filter(Boolean);
+
+	// Filter out duplicates
+	rules = rules.filter(function (rule, index) {
+		const pass = rules.indexOf(rule) === index;
+		if (!pass) {
+			duplicateCount += 1;
+		}
+
+		return pass;
+	});
 
 	// Filter out invalid rules
 	rules = rules.filter(function (rule) {
@@ -167,6 +178,7 @@ Blacklist.validate = function (rules, callback) {
 		cidr: cidr,
 		valid: rules,
 		invalid: invalid,
+		duplicateCount: duplicateCount,
 	});
 };
 

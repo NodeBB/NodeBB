@@ -9,6 +9,7 @@ var nconf = require('nconf');
 var ensureLoggedIn = require('connect-ensure-login');
 var toobusy = require('toobusy-js');
 var Benchpress = require('benchpressjs');
+var LRU = require('lru-cache');
 
 var plugins = require('../plugins');
 var meta = require('../meta');
@@ -22,6 +23,10 @@ var controllers = {
 	api: require('./../controllers/api'),
 	helpers: require('../controllers/helpers'),
 };
+
+var delayCache = LRU({
+	maxAge: 1000 * 60,
+});
 
 var middleware = module.exports;
 
@@ -186,6 +191,14 @@ middleware.processTimeagoLocales = function (req, res, next) {
 
 middleware.delayLoading = function (req, res, next) {
 	// Introduces an artificial delay during load so that brute force attacks are effectively mitigated
+
+	// Add IP to cache so if too many requests are made, subsequent requests are blocked for a minute
+	var timesSeen = delayCache.get(req.ip) || 0;
+	if (timesSeen > 10) {
+		return res.sendStatus(429);
+	}
+	delayCache.set(req.ip, timesSeen += 1);
+
 	setTimeout(next, 1000);
 };
 

@@ -3,6 +3,7 @@
 var nconf = require('nconf');
 var winston = require('winston');
 var validator = require('validator');
+var plugins = require('../plugins');
 
 exports.handleURIErrors = function (err, req, res, next) {
 	// Handle cases where malformed URIs are passed in
@@ -35,30 +36,50 @@ exports.handleURIErrors = function (err, req, res, next) {
 // this needs to have four arguments or express treats it as `(req, res, next)`
 // don't remove `next`!
 exports.handleErrors = function (err, req, res, next) { // eslint-disable-line no-unused-vars
-	switch (err.code) {
-	case 'EBADCSRFTOKEN':
-		winston.error(req.path + '\n', err.message);
-		return res.sendStatus(403);
-	case 'blacklisted-ip':
-		return res.status(403).type('text/plain').send(err.message);
-	}
+	var cases = {
+		EBADCSRFTOKEN: function () {
+			winston.error(req.path + '\n', err.message);
+			res.sendStatus(403);
+		},
+		'blacklisted-ip': function () {
+			res.status(403).type('text/plain').send(err.message);
+		},
+	};
+	var defaultHandler = function () {
+		// Display NodeBB error page
+		var status = parseInt(err.status, 10);
+		if ((status === 302 || status === 308) && err.path) {
+			return res.locals.isAPI ? res.set('X-Redirect', err.path).status(200).json(err.path) : res.redirect(err.path);
+		}
 
-	var status = parseInt(err.status, 10);
-	if ((status === 302 || status === 308) && err.path) {
-		return res.locals.isAPI ? res.set('X-Redirect', err.path).status(200).json(err.path) : res.redirect(err.path);
-	}
+		winston.error(req.path + '\n', err.stack);
 
-	winston.error(req.path + '\n', err.stack);
+		res.status(status || 500);
 
-	res.status(status || 500);
+		var path = String(req.path || '');
+		if (res.locals.isAPI) {
+			res.json({ path: validator.escape(path), error: err.message });
+		} else {
+			var middleware = require('../middleware');
+			middleware.buildHeader(req, res, function () {
+				res.render('500', { path: validator.escape(path), error: validator.escape(String(err.message)) });
+			});
+		}
+	};
 
-	var path = String(req.path || '');
-	if (res.locals.isAPI) {
-		res.json({ path: validator.escape(path), error: err.message });
-	} else {
-		var middleware = require('../middleware');
-		middleware.buildHeader(req, res, function () {
-			res.render('500', { path: validator.escape(path), error: validator.escape(String(err.message)) });
-		});
-	}
+	plugins.fireHook('filter:error.handle', {
+		cases: cases,
+	}, function (_err, data) {
+		if (_err) {
+			// Assume defaults
+			winston.warn('[errors/handle] Unable to retrieve plugin handlers for errors: ' + _err.message);
+			data.cases = cases;
+		}
+
+		if (data.cases.hasOwnProperty(err.code)) {
+			data.cases[err.code](err, req, res, defaultHandler);
+		} else {
+			defaultHandler();
+		}
+	});
 };
