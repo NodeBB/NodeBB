@@ -40,12 +40,12 @@
 			<div class="form-group">
 				<label for="email:smtpTransport:service"><strong>[[admin/settings/email:smtp-transport.service]]</strong></label>
 				<select class="form-control input-lg" id="email:smtpTransport:service" data-field="email:smtpTransport:service">
+					<option value="nodebb-custom-smtp" style="font-weight: bold">[[admin/settings/email:smtp-transport.service-custom]]</option>
+					<option style="font-size: 10px" disabled>&nbsp;</option>
+					
 					<!-- BEGIN services -->
 					<option value="@value">@value</option>
 					<!-- END services -->
-
-					<option style="font-size: 10px" disabled>&nbsp;</option>
-					<option value="nodebb-custom-smtp" style="font-weight: bold">[[admin/settings/email:smtp-transport.service-custom]]</option>
 				</select>
 				<p class="help-block">
 					[[admin/settings/email:smtp-transport.service-help]]
