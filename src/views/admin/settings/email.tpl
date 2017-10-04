@@ -40,12 +40,12 @@
 			<div class="form-group">
 				<label for="email:smtpTransport:service"><strong>[[admin/settings/email:smtp-transport.service]]</strong></label>
 				<select class="form-control input-lg" id="email:smtpTransport:service" data-field="email:smtpTransport:service">
+					<option value="nodebb-custom-smtp" style="font-weight: bold">[[admin/settings/email:smtp-transport.service-custom]]</option>
+					<option style="font-size: 10px" disabled>&nbsp;</option>
+					
 					<!-- BEGIN services -->
 					<option value="@value">@value</option>
 					<!-- END services -->
-
-					<option style="font-size: 10px" disabled>&nbsp;</option>
-					<option value="nodebb-custom-smtp" style="font-weight: bold">[[admin/settings/email:smtp-transport.service-custom]]</option>
 				</select>
 				<p class="help-block">
 					[[admin/settings/email:smtp-transport.service-help]]
@@ -63,6 +63,13 @@
 
 				<label for="email:smtpTransport:port">[[admin/settings/email:smtp-transport.port]]</label>
 				<input type="text" class="form-control input-md" id="email:smtpTransport:port" data-field="email:smtpTransport:port" placeholder="5555">
+
+				<label for="email:smtpTransport:security">[[admin/settings/email:smtp-transport.security]]</label>
+				<select class="form-control" id="email:smtpTransport:security" data-field="email:smtpTransport:security">
+					<option value="ENCRYPTED">[[admin/settings/email:smtp-transport.security-encrypted]]</option>
+					<option value="STARTTLS">[[admin/settings/email:smtp-transport.security-starttls]]</option>
+					<option value="NONE">[[admin/settings/email:smtp-transport.security-none]]</option>
+				</select>
 			</div>
 			<div class="form-group">
 				<label for="email:smtpTransport:user"><strong>[[admin/settings/email:smtp-transport.username]]</strong></label>

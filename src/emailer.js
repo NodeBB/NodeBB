@@ -56,17 +56,33 @@ Emailer.registerApp = function (expressApp) {
 
 	// Enable Gmail transport if enabled in ACP
 	if (parseInt(meta.config['email:smtpTransport:enabled'], 10) === 1) {
-		var smtpOptions = {
-			auth: {
+		var smtpOptions = {};
+
+		if (meta.config['email:smtpTransport:user'] || meta.config['email:smtpTransport:pass']) {
+			smtpOptions.auth = {
 				user: meta.config['email:smtpTransport:user'],
 				pass: meta.config['email:smtpTransport:pass'],
-			},
-		};
+			};
+		}
 
-		if (meta.config['email:smtpTransport:serice'] === 'nodebb-custom-smtp') {
+		if (meta.config['email:smtpTransport:service'] === 'nodebb-custom-smtp') {
 			smtpOptions.port = meta.config['email:smtpTransport:port'];
 			smtpOptions.host = meta.config['email:smtpTransport:host'];
-			smtpOptions.secure = true;
+
+			if (meta.config['email:smtpTransport:security'] === 'NONE') {
+				smtpOptions.secure = false;
+				smtpOptions.requireTLS = false;
+				smtpOptions.ignoreTLS = true;
+			} else if (meta.config['email:smtpTransport:security'] === 'STARTTLS') {
+				smtpOptions.secure = false;
+				smtpOptions.requireTLS = true;
+				smtpOptions.ignoreTLS = false;
+			} else {
+				// meta.config['email:smtpTransport:security'] === 'ENCRYPTED' or undefined
+				smtpOptions.secure = true;
+				smtpOptions.requireTLS = true;
+				smtpOptions.ignoreTLS = false;
+			}
 		} else {
 			smtpOptions.service = meta.config['email:smtpTransport:service'];
 		}
