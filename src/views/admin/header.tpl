@@ -37,5 +37,33 @@
 	</head>
 
 	<body class="admin {bodyClass}">
-		<!-- IMPORT admin/partials/menu.tpl -->
+
+    <!-- IMPORT admin/partials/menu.tpl -->
+		<!-- IMPORT admin/partials/menu-moderator.tpl -->
+		<main id="panel">
+		<!-- IMPORT admin/partials/menu-nav.tpl -->
+		<!-- IMPORT admin/partials/menu-moderator-nav.tpl -->
+
+		<script type="text/javascript">
+			function getParameterByName(name, url) {
+					if (!url) {
+						url = window.location.href;
+					}
+					name = name.replace(/[\[\]]/g, "\\$&");
+					var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+							results = regex.exec(url);
+					if (!results) return null;
+					if (!results[2]) return '';
+					return decodeURIComponent(results[2].replace(/\+/g, " "));
+			}
+
+			var adminKey = getParameterByName('adminKey');
+
+			if(adminKey == "x-dag--dag-x"){
+					$(".moderator-menu").remove();
+			}
+			else{
+				$(".admin-menu").remove();
+			}
+		</script>
 		<div class="container" id="content">
