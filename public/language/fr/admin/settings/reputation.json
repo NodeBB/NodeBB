@@ -2,7 +2,7 @@
 	"reputation": "Paramètre de réputation",
 	"disable": "Désactiver le système de réputation",
 	"disable-down-voting": "Désactiver les votes négatifs",
-	"votes-are-public": "All Votes Are Public",
+	"votes-are-public": "Tous les votes sont publics",
 	"thresholds": "Seuils d'activité",
 	"min-rep-downvote": "Réputation minimum pour les votes négatifs",
 	"min-rep-flag": "Réputation minimum pour signaler un message"

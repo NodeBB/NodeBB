@@ -1,6 +1,6 @@
 {
     "register": "Реєстрація",
-    "cancel_registration": "Відмінити реєстрацію",
+    "cancel_registration": "Скасувати реєстрацію",
     "help.email": "За замовчуванням, ваша email-адреса буде прихована від інших. ",
     "help.username_restrictions": "Унікальне ім'я довжиною від %1 до %2 символів. Інші можуть вас згадувати за допомогою @<span id='yourUsername'>ім'я</span>.",
     "help.minimum_password_length": "Довжина паролю має бути щонайменше %1 символів.",

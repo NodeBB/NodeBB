@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('pictureCropper', ['translator', 'cropper'], function (translator, cropper) {
+define('pictureCropper', ['translator', 'cropper', 'benchpress'], function (translator, cropper, Benchpress) {
 	var module = {};
 
 	module.show = function (data, callback) {
@@ -32,14 +32,20 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 
 	module.handleImageCrop = function (data, callback) {
 		$('#crop-picture-modal').remove();
-		templates.parse('modals/crop_picture', {
+		Benchpress.parse('modals/crop_picture', {
 			url: data.url,
 		}, function (cropperHtml) {
 			translator.translate(cropperHtml, function (translated) {
 				var cropperModal = $(translated);
-				cropperModal.modal('show');
+				cropperModal.modal({
+					backdrop: 'static',
+				}).modal('show');
 
+				// Set cropper image max-height based on viewport
+				var cropBoxHeight = parseInt($(window).height() / 2, 10);
 				var img = document.getElementById('cropped-image');
+				$(img).css('max-height', cropBoxHeight);
+
 				var cropperTool = new cropper.default(img, {
 					aspectRatio: data.aspectRatio,
 					autoCropArea: 1,
@@ -173,7 +179,7 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 	}
 
 	function parseModal(tplVals, callback) {
-		templates.parse('partials/modals/upload_file_modal', tplVals, function (html) {
+		Benchpress.parse('partials/modals/upload_file_modal', tplVals, function (html) {
 			translator.translate(html, callback);
 		});
 	}

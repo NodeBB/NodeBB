@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/groups/list', ['forum/infinitescroll'], function (infinitescroll) {
+define('forum/groups/list', ['forum/infinitescroll', 'benchpress'], function (infinitescroll, Benchpress) {
 	var Groups = {};
 
 	Groups.init = function () {
@@ -44,7 +44,7 @@ define('forum/groups/list', ['forum/infinitescroll'], function (infinitescroll) 
 			after: $('[component="groups/container"]').attr('data-nextstart'),
 		}, function (data, done) {
 			if (data && data.groups.length) {
-				templates.parse('partials/groups/list', {
+				Benchpress.parse('partials/groups/list', {
 					groups: data.groups,
 				}, function (html) {
 					$('#groups-list').append(html);
@@ -78,7 +78,7 @@ define('forum/groups/list', ['forum/infinitescroll'], function (infinitescroll) 
 			groups = groups.filter(function (group) {
 				return group.name !== 'registered-users' && group.name !== 'guests';
 			});
-			templates.parse('partials/groups/list', {
+			Benchpress.parse('partials/groups/list', {
 				groups: groups,
 			}, function (html) {
 				groupsEl.empty().append(html);

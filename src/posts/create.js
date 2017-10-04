@@ -1,7 +1,7 @@
 'use strict';
 
 var async = require('async');
-var _ = require('underscore');
+var _ = require('lodash');
 
 var meta = require('../meta');
 var db = require('../database');
@@ -9,7 +9,8 @@ var plugins = require('../plugins');
 var user = require('../user');
 var topics = require('../topics');
 var categories = require('../categories');
-var utils = require('../../public/src/utils');
+var groups = require('../groups');
+var utils = require('../utils');
 
 module.exports = function (Posts) {
 	Posts.create = function (data, callback) {
@@ -83,6 +84,9 @@ module.exports = function (Posts) {
 						});
 					},
 					function (next) {
+						groups.onNewPostMade(postData, next);
+					},
+					function (next) {
 						db.sortedSetAdd('posts:pid', timestamp, postData.pid, next);
 					},
 					function (next) {
@@ -98,16 +102,16 @@ module.exports = function (Posts) {
 						db.incrObjectField('global', 'postCount', next);
 					},
 				], function (err) {
-					if (err) {
-						return next(err);
-					}
-					plugins.fireHook('filter:post.get', postData, next);
+					next(err);
 				});
 			},
-			function (postData, next) {
-				postData.isMain = isMain;
-				plugins.fireHook('action:post.save', _.clone(postData));
-				next(null, postData);
+			function (next) {
+				plugins.fireHook('filter:post.get', { post: postData, uid: data.uid }, next);
+			},
+			function (data, next) {
+				data.post.isMain = isMain;
+				plugins.fireHook('action:post.save', { post: _.clone(data.post) });
+				next(null, data.post);
 			},
 		], callback);
 	};

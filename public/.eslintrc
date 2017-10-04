@@ -10,7 +10,6 @@
 		"overrides": true,
 		"componentHandler": true,
 		"bootbox": true,
-		"templates": true,
 		"Visibility": true,
 		"Tinycon": true,
 		"Promise": true

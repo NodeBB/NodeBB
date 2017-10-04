@@ -5,8 +5,8 @@ var async = require('async');
 
 var db = require('../database');
 var meta = require('../meta');
-var utils = require('../../public/src/utils');
-var translator = require('../../public/src/modules/translator');
+var utils = require('../utils');
+var translator = require('../translator');
 var plugins = require('../plugins');
 
 module.exports = function (Categories) {

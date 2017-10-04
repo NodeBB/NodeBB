@@ -10,8 +10,27 @@ var privileges = require('../privileges');
 var categories = require('../categories');
 var plugins = require('../plugins');
 var meta = require('../meta');
+var middleware = require('../middleware');
 
-var helpers = {};
+var helpers = module.exports;
+
+helpers.noScriptErrors = function (req, res, error, httpStatus) {
+	if (req.body.noscript !== 'true') {
+		return res.status(httpStatus).send(error);
+	}
+
+	var middleware = require('../middleware');
+	var httpStatusString = httpStatus.toString();
+	middleware.buildHeader(req, res, function () {
+		res.status(httpStatus).render(httpStatusString, {
+			path: req.path,
+			loggedIn: true,
+			error: error,
+			returnLink: true,
+			title: '[[global:' + httpStatusString + '.title]]',
+		});
+	});
+};
 
 helpers.notAllowed = function (req, res, error) {
 	plugins.fireHook('filter:helpers.notAllowed', {
@@ -31,11 +50,13 @@ helpers.notAllowed = function (req, res, error) {
 					title: '[[global:403.title]]',
 				});
 			} else {
-				res.status(403).render('403', {
-					path: req.path,
-					loggedIn: !!req.uid,
-					error: error,
-					title: '[[global:403.title]]',
+				middleware.buildHeader(req, res, function () {
+					res.status(403).render('403', {
+						path: req.path,
+						loggedIn: !!req.uid,
+						error: error,
+						title: '[[global:403.title]]',
+					});
 				});
 			}
 		} else if (res.locals.isAPI) {
@@ -50,7 +71,7 @@ helpers.notAllowed = function (req, res, error) {
 
 helpers.redirect = function (res, url) {
 	if (res.locals.isAPI) {
-		res.status(308).json(url);
+		res.set('X-Redirect', encodeURI(url)).status(200).json(url);
 	} else {
 		res.redirect(nconf.get('relative_path') + encodeURI(url));
 	}
@@ -62,12 +83,12 @@ helpers.buildCategoryBreadcrumbs = function (cid, callback) {
 	async.whilst(function () {
 		return parseInt(cid, 10);
 	}, function (next) {
-		categories.getCategoryFields(cid, ['name', 'slug', 'parentCid', 'disabled'], function (err, data) {
+		categories.getCategoryFields(cid, ['name', 'slug', 'parentCid', 'disabled', 'isSection'], function (err, data) {
 			if (err) {
 				return next(err);
 			}
 
-			if (!parseInt(data.disabled, 10)) {
+			if (!parseInt(data.disabled, 10) && !parseInt(data.isSection, 10)) {
 				breadcrumbs.unshift({
 					text: validator.escape(String(data.name)),
 					url: nconf.get('relative_path') + '/category/' + data.slug,
@@ -175,5 +196,3 @@ function recursive(category, categoriesData, level) {
 		recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level);
 	});
 }
-
-module.exports = helpers;

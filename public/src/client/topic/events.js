@@ -9,7 +9,8 @@ define('forum/topic/events', [
 	'forum/topic/images',
 	'components',
 	'translator',
-], function (postTools, threadTools, posts, images, components, translator) {
+	'benchpress',
+], function (postTools, threadTools, posts, images, components, translator, Benchpress) {
 	var Events = {};
 
 	var events = {
@@ -139,7 +140,7 @@ define('forum/topic/events', [
 				editedISO: utils.toISOString(data.post.edited),
 			};
 
-			templates.parse('partials/topic/post-editor', editData, function (html) {
+			Benchpress.parse('partials/topic/post-editor', editData, function (html) {
 				translator.translate(html, function (translated) {
 					html = $(translated);
 					editorEl.replaceWith(html);
@@ -150,7 +151,7 @@ define('forum/topic/events', [
 		});
 
 		if (data.topic.tags && tagsUpdated(data.topic.tags)) {
-			templates.parse('partials/post_bar', 'tags', { tags: data.topic.tags }, function (html) {
+			Benchpress.parse('partials/post_bar', 'tags', { tags: data.topic.tags }, function (html) {
 				var tags = $('.tags');
 
 				tags.fadeOut(250, function () {

@@ -6,25 +6,27 @@ var async = require('async');
 var sanitizeHTML = require('sanitize-html');
 var nconf = require('nconf');
 
-var utils = require('../../public/src/utils');
-var Translator = require('../../public/src/modules/translator').Translator;
+var file = require('../file');
+var Translator = require('../translator').Translator;
 
 function filterDirectories(directories) {
 	return directories.map(function (dir) {
 		// get the relative path
 		return dir.replace(/^.*(admin.*?).tpl$/, '$1');
 	}).filter(function (dir) {
+		// exclude .js files
 		// exclude partials
 		// only include subpaths
 		// exclude category.tpl, group.tpl, category-analytics.tpl
-		return !dir.includes('/partials/') &&
+		return !dir.endsWith('.js') &&
+			!dir.includes('/partials/') &&
 			/\/.*\//.test(dir) &&
 			!/manage\/(category|group|category-analytics)$/.test(dir);
 	});
 }
 
 function getAdminNamespaces(callback) {
-	utils.walk(path.resolve(nconf.get('views_dir'), 'admin'), function (err, directories) {
+	file.walk(path.resolve(nconf.get('views_dir'), 'admin'), function (err, directories) {
 		if (err) {
 			return callback(err);
 		}

@@ -16,7 +16,6 @@ describe('Plugins', function () {
 			assert.ifError(err);
 			assert(plugins.libraries[pluginId]);
 			assert(plugins.loadedHooks['static:app.load']);
-			assert(plugins.staticDirs['nodebb-plugin-markdown/js']);
 
 			done();
 		});
@@ -91,6 +90,23 @@ describe('Plugins', function () {
 			keys.forEach(function (key) {
 				assert(data[0].hasOwnProperty(key));
 			});
+			done();
+		});
+	});
+
+	it('should show installed plugins', function (done) {
+		var nodeModulesPath = plugins.nodeModulesPath;
+		plugins.nodeModulesPath = path.join(__dirname, './mocks/plugin_modules');
+
+		plugins.showInstalled(function (err, pluginsData) {
+			assert.ifError(err);
+			var paths = pluginsData.map(function (plugin) {
+				return path.relative(plugins.nodeModulesPath, plugin.path).replace(/\\/g, '/');
+			});
+			assert(paths.indexOf('nodebb-plugin-xyz') > -1);
+			assert(paths.indexOf('@nodebb/nodebb-plugin-abc') > -1);
+
+			plugins.nodeModulesPath = nodeModulesPath;
 			done();
 		});
 	});

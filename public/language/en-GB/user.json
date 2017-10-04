@@ -35,6 +35,7 @@
 	"chat": "Chat",
 	"chat_with": "Continue chat with %1",
 	"new_chat_with": "Start new chat with %1",
+	"flag-profile": "Flag Profile",
 	"follow": "Follow",
 	"unfollow": "Unfollow",
 	"more": "More",
@@ -62,6 +63,7 @@
 	"username_taken_workaround": "The username you requested was already taken, so we have altered it slightly. You are now known as <strong>%1</strong>",
 	"password_same_as_username": "Your password is the same as your username, please select another password.",
 	"password_same_as_email": "Your password is the same as your email, please select another password.",
+	"weak_password": "Weak password.",
 
 	"upload_picture": "Upload picture",
 	"upload_a_picture": "Upload a picture",
@@ -148,5 +150,6 @@
 	"info.username-history": "Username History",
 	"info.email-history": "Email History",
 	"info.moderation-note": "Moderation Note",
-	"info.moderation-note.success": "Moderation note saved"
+	"info.moderation-note.success": "Moderation note saved",
+	"info.moderation-note.add": "Add note"
 }

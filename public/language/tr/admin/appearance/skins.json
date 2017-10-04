@@ -2,8 +2,8 @@
 	"loading": "Deriler yükleniyor...",
 	"homepage": "Anasayfa",
 	"select-skin": "Deri Seç",
-	"current-skin": "Current Skin",
-	"skin-updated": "Skin Updated",
-	"applied-success": "%1 skin was succesfully applied",
-	"revert-success": "Skin reverted to base colours"
+	"current-skin": "Mevcut Deri",
+	"skin-updated": "Deri Güncellendi",
+	"applied-success": "%1 deri başarıyla uygulandı",
+	"revert-success": "Deri taban renkleri geri döndürüldü"
 }

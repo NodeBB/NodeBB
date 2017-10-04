@@ -57,7 +57,9 @@ module.exports = function (User) {
 					], next);
 				}
 			},
-		], callback);
+		], function (err) {
+			callback(err);
+		});
 	}
 
 	User.getFollowing = function (uid, start, stop, callback) {

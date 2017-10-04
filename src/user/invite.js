@@ -7,8 +7,8 @@ var nconf = require('nconf');
 var db = require('./../database');
 var meta = require('../meta');
 var emailer = require('../emailer');
-var translator = require('../../public/src/modules/translator');
-var utils = require('../../public/src/utils');
+var translator = require('../translator');
+var utils = require('../utils');
 
 
 module.exports = function (User) {
@@ -50,7 +50,7 @@ module.exports = function (User) {
 		var token = utils.generateUUID();
 		var registerLink = nconf.get('url') + '/register?token=' + token + '&email=' + encodeURIComponent(email);
 
-		var oneDay = 86400000;
+		var expireIn = (parseInt(meta.config.inviteExpiration, 10) || 1) * 86400000;
 
 		async.waterfall([
 			function (next) {
@@ -60,23 +60,16 @@ module.exports = function (User) {
 				if (exists) {
 					return next(new Error('[[error:email-taken]]'));
 				}
-
-				async.parallel([
-					function (next) {
-						db.setAdd('invitation:uid:' + uid, email, next);
-					},
-					function (next) {
-						db.setAdd('invitation:uids', uid, next);
-					},
-				], function (err) {
-					next(err);
-				});
+				db.setAdd('invitation:uid:' + uid, email, next);
+			},
+			function (next) {
+				db.setAdd('invitation:uids', uid, next);
 			},
 			function (next) {
 				db.set('invitation:email:' + email, token, next);
 			},
 			function (next) {
-				db.pexpireAt('invitation:email:' + email, Date.now() + oneDay, next);
+				db.pexpireAt('invitation:email:' + email, Date.now() + expireIn, next);
 			},
 			function (next) {
 				User.getUserField(uid, 'username', next);
@@ -91,6 +84,9 @@ module.exports = function (User) {
 						username: username,
 						template: 'invitation',
 					};
+
+					// Append default data to this email payload
+					data = Object.assign({}, emailer._defaultPayload, data);
 
 					emailer.sendToEmail('invitation', email, meta.config.defaultLang, data, next);
 				});

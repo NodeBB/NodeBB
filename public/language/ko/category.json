@@ -10,11 +10,11 @@
     "share_this_category": "이 카테고리를 공유",
     "watch": "관심 주제",
     "ignore": "관심 해제",
-    "watching": "Watching",
-    "ignoring": "Ignoring",
+    "watching": "관심있음",
+    "ignoring": "무시하기",
     "watching.description": "읽지 않은 주제를 표시합니다",
     "ignoring.description": "읽지 않은 주제를 표시하지 않습니다",
-    "watch.message": "You are now watching updates from this category and all subcategories",
-    "ignore.message": "You are now ignoring updates from this category and all subcategories",
+    "watch.message": "이 게시판 밑 모든 하위게시판의 업데이트에 대해 알림을 받습니다.",
+    "ignore.message": "이 게시판 밑 모든 하위게시판의 업데이트에 대해 알림을 받지 않습니다.",
     "watched-categories": "관심 카테고리"
 }

@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/manage/users', ['translator'], function (translator) {
+define('admin/manage/users', ['translator', 'benchpress'], function (translator, Benchpress) {
 	var Users = {};
 
 	Users.init = function () {
@@ -81,7 +81,7 @@ define('admin/manage/users', ['translator'], function (translator) {
 				return false;	// specifically to keep the menu open
 			}
 
-			templates.parse('admin/partials/temporary-ban', {}, function (html) {
+			Benchpress.parse('admin/partials/temporary-ban', {}, function (html) {
 				bootbox.dialog({
 					className: 'ban-modal',
 					title: '[[user:ban_account]]',
@@ -99,7 +99,7 @@ define('admin/manage/users', ['translator'], function (translator) {
 									data[cur.name] = cur.value;
 									return data;
 								}, {});
-								var until = formData.length ? (Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))) : 0;
+								var until = formData.length > 0 ? (Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))) : 0;
 								socket.emit('user.banUsers', { uids: uids, until: until, reason: formData.reason }, done('[[admin/manage/users:alerts.ban-success]]', '.ban', true));
 							},
 						},
@@ -125,15 +125,6 @@ define('admin/manage/users', ['translator'], function (translator) {
 			}
 
 			socket.emit('admin.user.resetLockouts', uids, done('[[admin/manage/users:alerts.lockout-reset-success]]'));
-		});
-
-		$('.reset-flags').on('click', function () {
-			var uids = getSelectedUids();
-			if (!uids.length) {
-				return;
-			}
-
-			socket.emit('admin.user.resetFlags', uids, done('[[admin/manage/users:alerts.flag-reset-success]]'));
 		});
 
 		$('.admin-user').on('click', function () {
@@ -257,7 +248,7 @@ define('admin/manage/users', ['translator'], function (translator) {
 
 		function handleUserCreate() {
 			$('#createUser').on('click', function () {
-				templates.parse('admin/partials/create_user_modal', {}, function (html) {
+				Benchpress.parse('admin/partials/create_user_modal', {}, function (html) {
 					bootbox.dialog({
 						message: html,
 						title: '[[admin/manage/users:alerts.create]]',
@@ -332,7 +323,7 @@ define('admin/manage/users', ['translator'], function (translator) {
 						return app.alertError(err.message);
 					}
 
-					templates.parse('admin/manage/users', 'users', data, function (html) {
+					Benchpress.parse('admin/manage/users', 'users', data, function (html) {
 						translator.translate(html, function (html) {
 							html = $(html);
 							$('.users-table tr').not(':first').remove();

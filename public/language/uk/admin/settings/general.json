@@ -1,6 +1,9 @@
 {
 	"site-settings": "Налаштування сайту",
 	"title": "Назва сайту",
+	"title.url": "URL",
+	"title.url-placeholder": "URL заголовку сайту",
+	"title.url-help": "По кліку на заголовок, спрямовувати користувача за цією адресою. Якщо залишити порожнім, користувач буде спрямований в корінь форуму.",
 	"title.name": "Назва вашої спільноти",
 	"title.show-in-header": "Показувати заголовок сайту в шапці",
 	"browser-title": "Заголовок браузера",
@@ -28,5 +31,5 @@
 	"outgoing-links": "Зовнішні посилання",
 	"outgoing-links.warning-page": "Використовувати сторінку попередження про зовнішній перехід",
 	"search-default-sort-by": "Типовий порядок результатів пошуку",
-	"outgoing-links.whitelist": "Domains to whitelist for bypassing the warning page"
+	"outgoing-links.whitelist": "Безпечні домени для пропуску сторінки попередження"
 }

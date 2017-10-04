@@ -4,7 +4,7 @@
 var async = require('async');
 var S = require('string');
 
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 var meta = require('../meta');
 var db = require('../database');
 var groups = require('../groups');
@@ -14,6 +14,9 @@ module.exports = function (User) {
 	User.updateProfile = function (uid, data, callback) {
 		var fields = ['username', 'email', 'fullname', 'website', 'location',
 			'groupTitle', 'birthday', 'signature', 'aboutme'];
+
+		var updateUid = data.uid;
+		var oldData;
 
 		if (data.aboutme !== undefined && data.aboutme.length > meta.config.maximumAboutMeLength) {
 			return callback(new Error('[[error:about-me-too-long, ' + meta.config.maximumAboutMeLength + ']]'));
@@ -32,14 +35,18 @@ module.exports = function (User) {
 				data = data.data;
 
 				async.series([
-					async.apply(isEmailAvailable, data, uid),
-					async.apply(isUsernameAvailable, data, uid),
+					async.apply(isEmailAvailable, data, updateUid),
+					async.apply(isUsernameAvailable, data, updateUid),
 					async.apply(isGroupTitleValid, data),
 				], function (err) {
 					next(err);
 				});
 			},
 			function (next) {
+				User.getUserFields(updateUid, fields, next);
+			},
+			function (_oldData, next) {
+				oldData = _oldData;
 				async.each(fields, function (field, next) {
 					if (!(data[field] !== undefined && typeof data[field] === 'string')) {
 						return next();
@@ -48,21 +55,21 @@ module.exports = function (User) {
 					data[field] = data[field].trim();
 
 					if (field === 'email') {
-						return updateEmail(uid, data.email, next);
+						return updateEmail(updateUid, data.email, next);
 					} else if (field === 'username') {
-						return updateUsername(uid, data.username, next);
+						return updateUsername(updateUid, data.username, next);
 					} else if (field === 'fullname') {
-						return updateFullname(uid, data.fullname, next);
+						return updateFullname(updateUid, data.fullname, next);
 					} else if (field === 'signature') {
 						data[field] = S(data[field]).stripTags().s;
 					}
 
-					User.setUserField(uid, field, data[field], next);
+					User.setUserField(updateUid, field, data[field], next);
 				}, next);
 			},
 			function (next) {
-				plugins.fireHook('action:user.updateProfile', { data: data, uid: uid });
-				User.getUserFields(uid, ['email', 'username', 'userslug', 'picture', 'icon:text', 'icon:bgColor'], next);
+				plugins.fireHook('action:user.updateProfile', { uid: uid, data: data, fields: fields, oldData: oldData });
+				User.getUserFields(updateUid, ['email', 'username', 'userslug', 'picture', 'icon:text', 'icon:bgColor'], next);
 			},
 		], callback);
 	};
@@ -169,12 +176,17 @@ module.exports = function (User) {
 					},
 					function (next) {
 						if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && newEmail) {
-							User.email.sendValidationEmail(uid, newEmail);
+							User.email.sendValidationEmail(uid, {
+								email: newEmail,
+							});
 						}
 						User.setUserField(uid, 'email:confirmed', 0, next);
 					},
 					function (next) {
 						db.sortedSetAdd('users:notvalidated', Date.now(), uid, next);
+					},
+					function (next) {
+						User.reset.cleanByUid(uid, next);
 					},
 				], function (err) {
 					next(err);
@@ -188,27 +200,31 @@ module.exports = function (User) {
 			return callback();
 		}
 
-		User.getUserFields(uid, ['username', 'userslug'], function (err, userData) {
-			if (err) {
-				return callback(err);
-			}
-
-			async.parallel([
-				function (next) {
-					updateUidMapping('username', uid, newUsername, userData.username, next);
-				},
-				function (next) {
-					var newUserslug = utils.slugify(newUsername);
-					updateUidMapping('userslug', uid, newUserslug, userData.userslug, next);
-				},
-				function (next) {
-					async.series([
-						async.apply(db.sortedSetRemove, 'username:sorted', userData.username.toLowerCase() + ':' + uid),
-						async.apply(db.sortedSetAdd, 'username:sorted', 0, newUsername.toLowerCase() + ':' + uid),
-						async.apply(db.sortedSetAdd, 'user:' + uid + ':usernames', Date.now(), newUsername + ':' + Date.now()),
-					], next);
-				},
-			], callback);
+		async.waterfall([
+			function (next) {
+				User.getUserFields(uid, ['username', 'userslug'], next);
+			},
+			function (userData, next) {
+				async.parallel([
+					function (next) {
+						updateUidMapping('username', uid, newUsername, userData.username, next);
+					},
+					function (next) {
+						var newUserslug = utils.slugify(newUsername);
+						updateUidMapping('userslug', uid, newUserslug, userData.userslug, next);
+					},
+					function (next) {
+						var now = Date.now();
+						async.series([
+							async.apply(db.sortedSetRemove, 'username:sorted', userData.username.toLowerCase() + ':' + uid),
+							async.apply(db.sortedSetAdd, 'username:sorted', 0, newUsername.toLowerCase() + ':' + uid),
+							async.apply(db.sortedSetAdd, 'user:' + uid + ':usernames', now, newUsername + ':' + now),
+						], next);
+					},
+				], next);
+			},
+		], function (err) {
+			callback(err);
 		});
 	}
 
@@ -270,7 +286,10 @@ module.exports = function (User) {
 			},
 			function (hashedPassword, next) {
 				async.parallel([
-					async.apply(User.setUserField, data.uid, 'password', hashedPassword),
+					async.apply(User.setUserFields, data.uid, {
+						password: hashedPassword,
+						rss_token: utils.generateUUID(),
+					}),
 					async.apply(User.reset.updateExpiry, data.uid),
 					async.apply(User.auth.revokeAllSessions, data.uid),
 				], function (err) {

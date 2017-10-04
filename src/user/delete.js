@@ -1,6 +1,7 @@
 'use strict';
 
 var async = require('async');
+var _ = require('lodash');
 
 var db = require('../database');
 var posts = require('../posts');
@@ -152,9 +153,7 @@ module.exports = function (User) {
 				}, next);
 			},
 			function (pids, next) {
-				pids = pids.upvotedPids.concat(pids.downvotedPids).filter(function (pid, index, array) {
-					return pid && array.indexOf(pid) === index;
-				});
+				pids = _.uniq(pids.upvotedPids.concat(pids.downvotedPids).filter(Boolean));
 
 				async.eachSeries(pids, function (pid, next) {
 					posts.unvote(pid, uid, next);

@@ -72,7 +72,8 @@ describe('socket.io', function () {
 				helpers.connectSocketIO(res, function (err, _io) {
 					io = _io;
 					assert.ifError(err);
-					done(err);
+
+					done();
 				});
 			});
 		});
@@ -227,14 +228,6 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('should reset flags', function (done) {
-		socketAdmin.user.resetFlags({ uid: adminUid }, [regularUid], function (err) {
-			assert.ifError(err);
-			done();
-		});
-	});
-
-
 	describe('validation emails', function () {
 		var meta = require('../src/meta');
 
@@ -340,7 +333,7 @@ describe('socket.io', function () {
 		io.emit('admin.analytics.get', { graph: 'traffic', units: 'days' }, function (err, data) {
 			assert.ifError(err);
 			assert(data);
-			assert(data.monthlyPageViews);
+			assert(data.summary);
 			done();
 		});
 	});
@@ -349,7 +342,19 @@ describe('socket.io', function () {
 		io.emit('admin.analytics.get', { graph: 'traffic', units: 'hours' }, function (err, data) {
 			assert.ifError(err);
 			assert(data);
-			assert(data.monthlyPageViews);
+			assert(data.summary);
+			done();
+		});
+	});
+
+	it('should allow a custom date range for traffic graph analytics', function (done) {
+		io.emit('admin.analytics.get', { graph: 'traffic', units: 'days', amount: '7' }, function (err, data) {
+			assert.ifError(err);
+			assert(data);
+			assert(data.pageviews);
+			assert(data.uniqueVisitors);
+			assert.strictEqual(7, data.pageviews.length);
+			assert.strictEqual(7, data.uniqueVisitors.length);
 			done();
 		});
 	});
@@ -481,6 +486,7 @@ describe('socket.io', function () {
 		var data = [
 			{ name: 'nodebb-theme-persona', order: 0 },
 			{ name: 'nodebb-plugin-dbsearch', order: 1 },
+			{ name: 'nodebb-plugin-soundpack-default', order: 2 },
 			{ ignoreme: 'wrong data' },
 		];
 		socketAdmin.plugins.orderActivePlugins({ uid: adminUid }, data, function (err) {
@@ -508,7 +514,7 @@ describe('socket.io', function () {
 	});
 
 	it('should error with invalid data', function (done) {
-		var data = { template: 'global', location: 'sidebar', widgets: [{ widget: 'html', data: { html: 'test', title: 'test', container: '' } }] };
+		var data = [{ template: 'global', location: 'sidebar', widgets: [{ widget: 'html', data: { html: 'test', title: 'test', container: '' } }] }];
 		socketAdmin.widgets.set({ uid: adminUid }, data, function (err) {
 			assert.ifError(err);
 			db.getObjectField('widgets:global', 'sidebar', function (err, widgetData) {
@@ -571,7 +577,7 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('shoudl delete all events', function (done) {
+	it('should delete all events', function (done) {
 		socketAdmin.deleteAllEvents({ uid: adminUid }, {}, function (err) {
 			assert.ifError(err);
 			db.sortedSetCard('events:time', function (err, count) {
@@ -582,8 +588,33 @@ describe('socket.io', function () {
 		});
 	});
 
-	after(function (done) {
-		db.emptydb(done);
+	describe('logger', function () {
+		var logger = require('../src/logger');
+		var index = require('../src/socket.io');
+		var fs = require('fs');
+		var path = require('path');
+
+		it('should enable logging', function (done) {
+			meta.config.loggerStatus = 1;
+			meta.config.loggerIOStatus = 1;
+			var loggerPath = path.join(__dirname, '..', 'logs', 'logger.log');
+			logger.monitorConfig({ io: index.server }, { key: 'loggerPath', value: loggerPath });
+			setTimeout(function () {
+				io.emit('meta.rooms.enter', { enter: 'recent_topics' }, function (err) {
+					assert.ifError(err);
+					fs.readFile(loggerPath, 'utf-8', function (err, content) {
+						assert.ifError(err);
+						assert(content);
+						done();
+					});
+				});
+			}, 500);
+		});
+
+		after(function (done) {
+			meta.config.loggerStatus = 0;
+			meta.config.loggerIOStatus = 0;
+			done();
+		});
 	});
 });
-

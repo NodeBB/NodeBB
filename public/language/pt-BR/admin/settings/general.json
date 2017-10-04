@@ -1,6 +1,9 @@
 {
 	"site-settings": "Configurações do Site",
 	"title": "Título do Site",
+	"title.url": "URL",
+	"title.url-placeholder": "A URL do título do site",
+	"title.url-help": "Quando o título é clicado, enviar os usuários para este endereço. Se deixado em branco, o usuário será enviado para o índice do fórum.",
 	"title.name": "Nome da Sua Comunidade",
 	"title.show-in-header": "Mostrar o Título do Site no Cabeçalho",
 	"browser-title": "Título do Navegador",
@@ -28,5 +31,5 @@
 	"outgoing-links": "Links Externos",
 	"outgoing-links.warning-page": "Utilizar Página de Aviso de Links Externos",
 	"search-default-sort-by": "Padrão de ordenação de pesquisa por",
-	"outgoing-links.whitelist": "Domains to whitelist for bypassing the warning page"
+	"outgoing-links.whitelist": "Domínios para colocar na lista branca de passar pela página de aviso"
 }

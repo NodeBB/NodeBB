@@ -2,7 +2,6 @@
 'use strict';
 
 var async = require('async');
-var nconf = require('nconf');
 var S = require('string');
 var winston = require('winston');
 
@@ -162,27 +161,31 @@ module.exports = function (Topics) {
 	};
 
 	Topics.filterWatchedTids = function (tids, uid, callback) {
-		db.sortedSetScores('uid:' + uid + ':followed_tids', tids, function (err, scores) {
-			if (err) {
-				return callback(err);
-			}
-			tids = tids.filter(function (tid, index) {
-				return tid && !!scores[index];
-			});
-			callback(null, tids);
-		});
+		async.waterfall([
+			function (next) {
+				db.sortedSetScores('uid:' + uid + ':followed_tids', tids, next);
+			},
+			function (scores, next) {
+				tids = tids.filter(function (tid, index) {
+					return tid && !!scores[index];
+				});
+				next(null, tids);
+			},
+		], callback);
 	};
 
 	Topics.filterNotIgnoredTids = function (tids, uid, callback) {
-		db.sortedSetScores('uid:' + uid + ':ignored_tids', tids, function (err, scores) {
-			if (err) {
-				return callback(err);
-			}
-			tids = tids.filter(function (tid, index) {
-				return tid && !scores[index];
-			});
-			callback(null, tids);
-		});
+		async.waterfall([
+			function (next) {
+				db.sortedSetScores('uid:' + uid + ':ignored_tids', tids, next);
+			},
+			function (scores, next) {
+				tids = tids.filter(function (tid, index) {
+					return tid && !scores[index];
+				});
+				next(null, tids);
+			},
+		], callback);
 	};
 
 	Topics.notifyFollowers = function (postData, exceptUid, callback) {
@@ -196,15 +199,9 @@ module.exports = function (Topics) {
 				Topics.getFollowers(postData.topic.tid, next);
 			},
 			function (followers, next) {
-				if (!Array.isArray(followers) || !followers.length) {
-					return callback();
-				}
 				var index = followers.indexOf(exceptUid.toString());
 				if (index !== -1) {
 					followers.splice(index, 1);
-				}
-				if (!followers.length) {
-					return callback();
 				}
 
 				privileges.topics.filterUids('read', postData.topic.tid, followers, next);
@@ -221,9 +218,11 @@ module.exports = function (Topics) {
 					titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 				}
 
-				postData.content = posts.relativeToAbsolute(postData.content);
+				postData.content = posts.relativeToAbsolute(postData.content, posts.urlRegex);
+				postData.content = posts.relativeToAbsolute(postData.content, posts.imgRegex);
 
 				notifications.create({
+					type: 'new-reply',
 					bodyShort: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + titleEscaped + ']]',
 					bodyLong: postData.content,
 					pid: postData.pid,
@@ -259,13 +258,10 @@ module.exports = function (Topics) {
 								subject: '[' + (meta.config.title || 'NodeBB') + '] ' + title,
 								intro: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + titleEscaped + ']]',
 								postBody: postData.content.replace(/"\/\//g, '"https://'),
-								site_title: meta.config.title || 'NodeBB',
 								username: data.userData.username,
 								userslug: data.userData.userslug,
-								url: nconf.get('url') + '/topic/' + postData.topic.tid,
 								topicSlug: postData.topic.slug,
-								postCount: postData.topic.postcount,
-								base_url: nconf.get('url'),
+								showUnsubscribe: true,
 							}, next);
 						} else {
 							winston.debug('[topics.notifyFollowers] uid ' + toUid + ' does not have post notifications enabled, skipping.');

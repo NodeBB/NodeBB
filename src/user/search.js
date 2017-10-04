@@ -23,11 +23,8 @@ module.exports = function (User) {
 		var searchResult = {};
 		async.waterfall([
 			function (next) {
-				if (data.findUids) {
-					data.findUids(query, searchBy, next);
-				} else {
-					findUids(query, searchBy, next);
-				}
+				var searchMethod = data.findUids || findUids;
+				searchMethod(query, searchBy, data.hardCap, next);
 			},
 			function (uids, next) {
 				filterAndSortUids(uids, data, next);
@@ -57,7 +54,7 @@ module.exports = function (User) {
 		], callback);
 	};
 
-	function findUids(query, searchBy, callback) {
+	function findUids(query, searchBy, hardCap, callback) {
 		if (!query) {
 			return callback(null, []);
 		}
@@ -66,24 +63,27 @@ module.exports = function (User) {
 		var max = query.substr(0, query.length - 1) + String.fromCharCode(query.charCodeAt(query.length - 1) + 1);
 
 		var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 20;
-		var hardCap = resultsPerPage * 10;
+		hardCap = hardCap || resultsPerPage * 10;
 
-		db.getSortedSetRangeByLex(searchBy + ':sorted', min, max, 0, hardCap, function (err, data) {
-			if (err) {
-				return callback(err);
-			}
-
-			var uids = data.map(function (data) {
-				return data.split(':')[1];
-			});
-			callback(null, uids);
-		});
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRangeByLex(searchBy + ':sorted', min, max, 0, hardCap, next);
+			},
+			function (data, next) {
+				var uids = data.map(function (data) {
+					return data.split(':')[1];
+				});
+				next(null, uids);
+			},
+		], callback);
 	}
 
 	function filterAndSortUids(uids, data, callback) {
-		var sortBy = data.sortBy || 'joindate';
+		var fields = [];
 
-		var fields = ['uid', sortBy];
+		if (data.sortBy) {
+			fields.push(data.sortBy);
+		}
 		if (data.onlineOnly) {
 			fields = fields.concat(['status', 'lastonline']);
 		}
@@ -94,37 +94,46 @@ module.exports = function (User) {
 			fields.push('flags');
 		}
 
-		User.getUsersFields(uids, fields, function (err, userData) {
-			if (err) {
-				return callback(err);
-			}
+		if (!fields.length) {
+			return callback(null, uids);
+		}
 
-			if (data.onlineOnly) {
-				userData = userData.filter(function (user) {
-					return user && user.status !== 'offline' && (Date.now() - parseInt(user.lastonline, 10) < 300000);
+		fields = ['uid'].concat(fields);
+
+		async.waterfall([
+			function (next) {
+				User.getUsersFields(uids, fields, next);
+			},
+			function (userData, next) {
+				if (data.onlineOnly) {
+					userData = userData.filter(function (user) {
+						return user && user.status !== 'offline' && (Date.now() - parseInt(user.lastonline, 10) < 300000);
+					});
+				}
+
+				if (data.bannedOnly) {
+					userData = userData.filter(function (user) {
+						return user && parseInt(user.banned, 10) === 1;
+					});
+				}
+
+				if (data.flaggedOnly) {
+					userData = userData.filter(function (user) {
+						return user && parseInt(user.flags, 10) > 0;
+					});
+				}
+
+				if (data.sortBy) {
+					sortUsers(userData, data.sortBy);
+				}
+
+				uids = userData.map(function (user) {
+					return user && user.uid;
 				});
-			}
 
-			if (data.bannedOnly) {
-				userData = userData.filter(function (user) {
-					return user && user.banned;
-				});
-			}
-
-			if (data.flaggedOnly) {
-				userData = userData.filter(function (user) {
-					return user && parseInt(user.flags, 10) > 0;
-				});
-			}
-
-			sortUsers(userData, sortBy);
-
-			uids = userData.map(function (user) {
-				return user && user.uid;
-			});
-
-			callback(null, uids);
-		});
+				next(null, uids);
+			},
+		], callback);
 	}
 
 	function sortUsers(userData, sortBy) {

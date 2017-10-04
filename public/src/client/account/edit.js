@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/account/edit', ['forum/account/header', 'translator', 'components', 'pictureCropper'], function (header, translator, components, pictureCropper) {
+define('forum/account/edit', ['forum/account/header', 'translator', 'components', 'pictureCropper', 'benchpress'], function (header, translator, components, pictureCropper, Benchpress) {
 	var AccountEdit = {};
 
 	AccountEdit.init = function () {
@@ -60,7 +60,9 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 		if (parseInt(ajaxify.data.theirid, 10) !== parseInt(ajaxify.data.yourid, 10)) {
 			return;
 		}
-
+		if (!picture && ajaxify.data.defaultAvatar) {
+			picture = ajaxify.data.defaultAvatar;
+		}
 		components.get('header/userpicture')[picture ? 'show' : 'hide']();
 		components.get('header/usericon')[!picture ? 'show' : 'hide']();
 		if (picture) {
@@ -82,9 +84,11 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 					return memo || cur.type === 'uploaded';
 				}, false);
 
-				templates.parse('partials/modals/change_picture_modal', {
+				Benchpress.parse('partials/modals/change_picture_modal', {
 					pictures: pictures,
 					uploaded: uploaded,
+					icon: { text: ajaxify.data['icon:text'], bgColor: ajaxify.data['icon:bgColor'] },
+					defaultAvatar: ajaxify.data.defaultAvatar,
 					allowProfileImageUploads: ajaxify.data.allowProfileImageUploads,
 				}, function (html) {
 					translator.translate(html, function (html) {
@@ -115,12 +119,6 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 						handleImageUpload(modal);
 
 						function updateImages() {
-							var userIcon = modal.find('.user-icon');
-
-							userIcon
-								.css('background-color', ajaxify.data['icon:bgColor'])
-								.text(ajaxify.data['icon:text']);
-
 							// Check to see which one is the active picture
 							if (!ajaxify.data.picture) {
 								modal.find('.list-group-item .user-icon').parents('.list-group-item').addClass('active');
@@ -188,7 +186,7 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 
 	function handleImageUpload(modal) {
 		function onUploadComplete(urlOnServer) {
-			urlOnServer = config.relative_path + urlOnServer + '?' + Date.now();
+			urlOnServer = (!urlOnServer.startsWith('http') ? config.relative_path : '') + urlOnServer + '?' + Date.now();
 
 			updateHeader(urlOnServer);
 
@@ -219,8 +217,6 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 				paramValue: ajaxify.data.theirid,
 				fileSize: ajaxify.data.maximumProfileImageSize,
 				allowSkippingCrop: false,
-				restrictImageDimension: true,
-				imageDimension: ajaxify.data.profileImageDimension,
 				title: '[[user:upload_picture]]',
 				description: '[[user:upload_a_picture]]',
 				accept: '.png,.jpg,.bmp',
@@ -233,7 +229,7 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 
 		modal.find('[data-action="upload-url"]').on('click', function () {
 			modal.modal('hide');
-			templates.parse('partials/modals/upload_picture_from_url_modal', {}, function (html) {
+			Benchpress.parse('partials/modals/upload_picture_from_url_modal', {}, function (html) {
 				translator.translate(html, function (html) {
 					var uploadModal = $(html);
 					uploadModal.modal('show');
@@ -258,8 +254,6 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 								socketMethod: 'user.uploadCroppedPicture',
 								aspectRatio: '1 / 1',
 								allowSkippingCrop: false,
-								restrictImageDimension: true,
-								imageDimension: ajaxify.data.profileImageDimension,
 								paramName: 'uid',
 								paramValue: ajaxify.data.theirid,
 							}, onUploadComplete);

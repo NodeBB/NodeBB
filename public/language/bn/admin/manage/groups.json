@@ -1,6 +1,7 @@
 {
 	"name": "Group Name",
 	"description": "Group Description",
+	"member-count": "Member Count",
 	"system": "System Group",
 	"edit": "Edit",
 	"search-placeholder": "Search",

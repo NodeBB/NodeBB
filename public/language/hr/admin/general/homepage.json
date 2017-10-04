@@ -1,0 +1,7 @@
+{
+	"home-page": "Naslovnica",
+	"description": "Izaberi koja stranica će se prikazivati kada korisnici navigiraju u root URL Vašeg foruma",
+	"home-page-route": "Putanja naslovnice",
+	"custom-route": "Uobičajna putanja",
+	"allow-user-home-pages": "Dozvoli korisničke naslovnice"
+}

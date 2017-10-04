@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('notifications', ['sounds', 'translator', 'components'], function (sounds, translator, components) {
+define('notifications', ['sounds', 'translator', 'components', 'navigator', 'benchpress'], function (sounds, translator, components, navigator, Benchpress) {
 	var Notifications = {};
 
 	var unreadNotifs = {};
@@ -10,29 +10,34 @@ define('notifications', ['sounds', 'translator', 'components'], function (sounds
 		var notifContainer = components.get('notifications');
 		var notifTrigger = notifContainer.children('a');
 		var notifList = components.get('notifications/list');
-		var notifIcon = components.get('notifications/icon');
 
-		notifTrigger
-			.on('click', function (e) {
-				e.preventDefault();
-				if (notifContainer.hasClass('open')) {
-					return;
-				}
+		notifTrigger.on('click', function (e) {
+			e.preventDefault();
+			if (notifContainer.hasClass('open')) {
+				return;
+			}
 
-				Notifications.loadNotifications(notifList);
-			});
+			Notifications.loadNotifications(notifList);
+		});
 
-		notifList.on('click', '[data-nid]', function () {
-			var unread = $(this).hasClass('unread');
-			var nid = $(this).attr('data-nid');
+		notifList.on('click', '[data-nid]', function (ev) {
+			var notifEl = $(this);
+			if (scrollToPostIndexIfOnPage(notifEl)) {
+				ev.stopPropagation();
+				ev.preventDefault();
+				notifTrigger.dropdown('toggle');
+			}
+
+			var unread = notifEl.hasClass('unread');
 			if (!unread) {
 				return;
 			}
+			var nid = notifEl.attr('data-nid');
 			socket.emit('notifications.markRead', nid, function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
-				incrementNotifCount(-1);
+
 				if (unreadNotifs[nid]) {
 					delete unreadNotifs[nid];
 				}
@@ -52,18 +57,13 @@ define('notifications', ['sounds', 'translator', 'components'], function (sounds
 				}
 
 				liEl.toggleClass('unread');
-				incrementNotifCount(unread ? -1 : 1);
+
 				if (unread && unreadNotifs[nid]) {
 					delete unreadNotifs[nid];
 				}
 			});
 			return false;
 		});
-
-		function incrementNotifCount(delta) {
-			var count = parseInt(notifIcon.attr('data-content'), 10) + delta;
-			Notifications.updateNotifCount(count);
-		}
 
 		socket.on('event:new_notification', function (notifData) {
 			// If a path is defined, show notif data, otherwise show generic data
@@ -114,6 +114,19 @@ define('notifications', ['sounds', 'translator', 'components'], function (sounds
 		});
 	};
 
+	function scrollToPostIndexIfOnPage(notifEl) {
+		// Scroll to index if already in topic (gh#5873)
+		var pid = notifEl.attr('data-pid');
+		var tid = notifEl.attr('data-tid');
+		var path = notifEl.attr('data-path');
+		var postEl = components.get('post', 'pid', pid);
+		if (path.startsWith(config.relative_path + '/post/') && pid && postEl.length && ajaxify.data.template.topic && parseInt(ajaxify.data.tid, 10) === parseInt(tid, 10)) {
+			navigator.scrollToIndex(postEl.attr('data-index'), true);
+			return true;
+		}
+		return false;
+	}
+
 	Notifications.loadNotifications = function (notifList) {
 		socket.emit('notifications.get', null, function (err, data) {
 			if (err) {
@@ -130,7 +143,7 @@ define('notifications', ['sounds', 'translator', 'components'], function (sounds
 			}
 			translator.toggleTimeagoShorthand();
 
-			templates.parse('partials/notifications_list', { notifications: notifs }, function (html) {
+			Benchpress.parse('partials/notifications_list', { notifications: notifs }, function (html) {
 				notifList.translateHtml(html);
 			});
 		});
@@ -164,7 +177,6 @@ define('notifications', ['sounds', 'translator', 'components'], function (sounds
 			if (err) {
 				app.alertError(err.message);
 			}
-			Notifications.updateNotifCount(0);
 			unreadNotifs = {};
 		});
 	};

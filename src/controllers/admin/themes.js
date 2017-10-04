@@ -1,25 +1,45 @@
 'use strict';
 
 var path = require('path');
+var fs = require('fs');
+var async = require('async');
+
 var file = require('../../file');
 
-var themesController = {};
+var themesController = module.exports;
+
+var defaultScreenshotPath = path.join(__dirname, '../../../public/images/themes/default.png');
 
 themesController.get = function (req, res, next) {
-	var themeDir = path.join(__dirname, '../../../node_modules/' + req.params.theme);
-	file.exists(themeDir, function (exists) {
-		if (!exists) {
-			return next();
-		}
+	var themeDir = path.join(__dirname, '../../../node_modules', req.params.theme);
+	var themeConfigPath = path.join(themeDir, 'theme.json');
+	var screenshotPath;
+	async.waterfall([
+		function (next) {
+			file.exists(themeConfigPath, next);
+		},
+		function (exists, next) {
+			if (!exists) {
+				return next(Error('invalid-data'));
+			}
 
-		var themeConfig = require(path.join(themeDir, 'theme.json'));
-		var screenshotPath = path.join(themeDir, themeConfig.screenshot);
-		if (themeConfig.screenshot && file.existsSync(screenshotPath)) {
-			res.sendFile(screenshotPath);
-		} else {
-			res.sendFile(path.join(__dirname, '../../../public/images/themes/default.png'));
-		}
-	});
+			fs.readFile(themeConfigPath, next);
+		},
+		function (themeConfig, next) {
+			try {
+				themeConfig = JSON.parse(themeConfig);
+				next(null, themeConfig.screenshot ? path.join(themeDir, themeConfig.screenshot) : defaultScreenshotPath);
+			} catch (e) {
+				next(e);
+			}
+		},
+		function (_screenshotPath, next) {
+			screenshotPath = _screenshotPath;
+			file.exists(screenshotPath, next);
+		},
+		function (exists) {
+			res.sendFile(exists ? screenshotPath : defaultScreenshotPath);
+		},
+	], next);
 };
 
-module.exports = themesController;

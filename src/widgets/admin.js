@@ -72,7 +72,7 @@ admin.get = function (callback) {
 			callback(false, {
 				templates: templates,
 				areas: widgetData.areas,
-				widgets: widgetData.widgets,
+				availableWidgets: widgetData.widgets,
 			});
 		});
 	});

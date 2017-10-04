@@ -6,7 +6,8 @@ var validator = require('validator');
 var winston = require('winston');
 
 var plugins = require('../plugins');
-var translator = require('../../public/src/modules/translator');
+var translator = require('../translator');
+var widgets = require('../widgets');
 
 module.exports = function (middleware) {
 	middleware.processRender = function (req, res, next) {
@@ -44,10 +45,21 @@ module.exports = function (middleware) {
 					plugins.fireHook('filter:' + template + '.build', { req: req, res: res, templateData: options }, next);
 				},
 				function (data, next) {
-					plugins.fireHook('filter:middleware.render', { req: res, res: res, templateData: data.templateData }, next);
+					plugins.fireHook('filter:middleware.render', { req: req, res: res, templateData: data.templateData }, next);
 				},
 				function (data, next) {
 					options = data.templateData;
+
+					widgets.render(req.uid, {
+						template: template + '.tpl',
+						url: options.url,
+						templateData: options,
+						req: req,
+						res: res,
+					}, next);
+				},
+				function (data, next) {
+					options.widgets = data;
 
 					res.locals.template = template;
 					options._locals = undefined;

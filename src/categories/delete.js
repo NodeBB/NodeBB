@@ -19,7 +19,7 @@ module.exports = function (Categories) {
 				}, { alwaysStartAt: 0 }, next);
 			},
 			function (next) {
-				Categories.getPinnedTids('cid:' + cid + ':tids:pinned', 0, -1, next);
+				db.getSortedSetRevRange('cid:' + cid + ':tids:pinned', 0, -1, next);
 			},
 			function (pinnedTids, next) {
 				async.eachLimit(pinnedTids, 10, function (tid, next) {
@@ -30,7 +30,7 @@ module.exports = function (Categories) {
 				purgeCategory(cid, next);
 			},
 			function (next) {
-				plugins.fireHook('action:category.delete', cid);
+				plugins.fireHook('action:category.delete', { cid: cid, uid: uid });
 				next();
 			},
 		], callback);
@@ -58,7 +58,7 @@ module.exports = function (Categories) {
 				], next);
 			},
 			function (next) {
-				async.each(privileges.privilegeList, function (privilege, next) {
+				async.eachSeries(privileges.privilegeList, function (privilege, next) {
 					groups.destroy('cid:' + cid + ':privileges:' + privilege, next);
 				}, next);
 			},

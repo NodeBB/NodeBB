@@ -115,9 +115,14 @@ $('document').ready(function () {
 		$('#launch .fa-spin').removeClass('hide');
 
 		$.post('/launch', function () {
+			var successCount = 0;
 			setInterval(function () {
 				$.get('/admin').done(function () {
-					window.location = 'admin';
+					if (successCount >= 5) {
+						window.location = 'admin';
+					} else {
+						successCount += 1;
+					}
 				});
 			}, 750);
 		});

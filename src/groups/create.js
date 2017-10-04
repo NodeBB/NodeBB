@@ -3,7 +3,7 @@
 var async = require('async');
 var meta = require('../meta');
 var plugins = require('../plugins');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 var db = require('../database');
 
 module.exports = function (Groups) {
@@ -69,7 +69,7 @@ module.exports = function (Groups) {
 				async.series(tasks, next);
 			},
 			function (results, next) {
-				plugins.fireHook('action:group.create', groupData);
+				plugins.fireHook('action:group.create', { group: groupData });
 				next(null, groupData);
 			},
 		], callback);

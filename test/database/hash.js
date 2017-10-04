@@ -42,6 +42,16 @@ describe('Hash methods', function () {
 				});
 			});
 		});
+
+		it('should not error if a key is empty string', function (done) {
+			db.setObject('emptyField', { '': '', b: 1 }, function (err) {
+				assert.ifError(err);
+				db.getObject('emptyField', function (err, data) {
+					assert.ifError(err);
+					done();
+				});
+			});
+		});
 	});
 
 	describe('setObjectField()', function () {
@@ -177,6 +187,18 @@ describe('Hash methods', function () {
 				assert.equal(objects[1].name, 'ginger');
 				assert.equal(objects[1].age, 3);
 				assert.equal(!!objects[2].name, false);
+				done();
+			});
+		});
+
+		it('should return undefined for all fields if object does not exist', function (done) {
+			db.getObjectsFields(['doesnotexist1', 'doesnotexist2'], ['name', 'age'], function (err, data) {
+				assert.ifError(err);
+				assert(Array.isArray(data));
+				assert.equal(data[0].name, null);
+				assert.equal(data[0].age, null);
+				assert.equal(data[1].name, null);
+				assert.equal(data[1].age, null);
 				done();
 			});
 		});
@@ -388,10 +410,5 @@ describe('Hash methods', function () {
 				done();
 			});
 		});
-	});
-
-
-	after(function (done) {
-		db.emptydb(done);
 	});
 });

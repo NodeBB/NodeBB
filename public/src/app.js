@@ -10,9 +10,22 @@ app.cacheBuster = null;
 
 (function () {
 	var showWelcomeMessage = !!utils.params().loggedin;
-	var showBannedMessage = !!utils.params().banned && app.user && app.user.uid === 0;
 
-	templates.setGlobal('config', config);
+	require(['benchpress'], function (Benchpress) {
+		Benchpress.setGlobal('config', config);
+		if (Object.defineProperty) {
+			Object.defineProperty(window, 'templates', {
+				configurable: true,
+				enumerable: true,
+				get: function () {
+					console.warn('[deprecated] Accessing benchpress (formerly known as templates.js) globally is deprecated. Use `require(["benchpress"], function (Benchpress) { ... })` instead');
+					return Benchpress;
+				},
+			});
+		} else {
+			window.templates = Benchpress;
+		}
+	});
 
 	app.cacheBuster = config['cache-buster'];
 
@@ -36,7 +49,8 @@ app.cacheBuster = null;
 			app.handleSearch();
 		}
 
-		$('body').on('click', '#new_topic', function () {
+		$('body').on('click', '#new_topic', function (e) {
+			e.preventDefault();
 			app.newTopic();
 		});
 
@@ -73,6 +87,11 @@ app.cacheBuster = null;
 				});
 			}
 		});
+		socket.on('event:livereload', function () {
+			if (app.user.isAdmin && !ajaxify.currentPage.match(/admin/)) {
+				window.location.reload();
+			}
+		});
 
 		require(['taskbar', 'helpers', 'forum/pagination'], function (taskbar, helpers, pagination) {
 			taskbar.init();
@@ -85,7 +104,8 @@ app.cacheBuster = null;
 		});
 	};
 
-	app.logout = function () {
+	app.logout = function (e) {
+		e.preventDefault();
 		$(window).trigger('action:app.logout');
 
 		/*
@@ -191,11 +211,13 @@ app.cacheBuster = null;
 		if (!socket) {
 			return;
 		}
+		var previousRoom = app.currentRoom;
+		app.currentRoom = '';
 		socket.emit('meta.rooms.leaveCurrent', function (err) {
 			if (err) {
+				app.currentRoom = previousRoom;
 				return app.alertError(err.message);
 			}
-			app.currentRoom = '';
 		});
 	};
 
@@ -264,11 +286,6 @@ app.cacheBuster = null;
 				title: '[[global:welcome_back]] ' + app.user.username + '!',
 				message: '[[global:you_have_successfully_logged_in]]',
 			},
-			banned: {
-				format: 'modal',
-				title: '[[error:user-banned]]',
-				message: '[[error:user-banned-reason, ' + utils.params().banned + ']]',
-			},
 		};
 
 		function showAlert(type) {
@@ -299,13 +316,6 @@ app.cacheBuster = null;
 			showWelcomeMessage = false;
 			$(document).ready(function () {
 				showAlert('login');
-			});
-		}
-
-		if (showBannedMessage) {
-			showBannedMessage = false;
-			$(document).ready(function () {
-				showAlert('banned');
 			});
 		}
 	};
@@ -340,6 +350,22 @@ app.cacheBuster = null;
 	};
 
 	app.newChat = function (touid, callback) {
+		function createChat() {
+			socket.emit('modules.chats.newRoom', { touid: touid }, function (err, roomId) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
+				if (!ajaxify.data.template.chats) {
+					app.openChat(roomId);
+				} else {
+					ajaxify.go('chats/' + roomId);
+				}
+
+				callback(false, roomId);
+			});
+		}
+
 		callback = callback || function () {};
 		if (!app.user.uid) {
 			return app.alertError('[[error:not-logged-in]]');
@@ -348,19 +374,18 @@ app.cacheBuster = null;
 		if (parseInt(touid, 10) === parseInt(app.user.uid, 10)) {
 			return app.alertError('[[error:cant-chat-with-yourself]]');
 		}
-
-		socket.emit('modules.chats.newRoom', { touid: touid }, function (err, roomId) {
+		socket.emit('modules.chats.isDnD', touid, function (err, isDnD) {
 			if (err) {
 				return app.alertError(err.message);
 			}
-
-			if (!ajaxify.data.template.chats) {
-				app.openChat(roomId);
-			} else {
-				ajaxify.go('chats/' + roomId);
+			if (!isDnD) {
+				return createChat();
 			}
-
-			callback(false, roomId);
+			bootbox.confirm('[[modules:chat.confirm-chat-with-dnd-user]]', function (ok) {
+				if (ok) {
+					createChat();
+				}
+			});
 		});
 	};
 
@@ -413,6 +438,9 @@ app.cacheBuster = null;
 			title = config.titleLayout.replace(/&#123;/g, '{').replace(/&#125;/g, '}')
 				.replace('{pageTitle}', function () { return title; })
 				.replace('{browserTitle}', function () { return config.browserTitle; });
+
+			// Allow translation strings in title on ajaxify (#5927)
+			title = translator.unescape(title);
 
 			translator.translate(title, function (translated) {
 				titleObj.titles[0] = translated;
@@ -599,7 +627,7 @@ app.cacheBuster = null;
 	};
 
 	app.parseAndTranslate = function (template, blockName, data, callback) {
-		require(['translator'], function (translator) {
+		require(['translator', 'benchpress'], function (translator, Benchpress) {
 			function translate(html, callback) {
 				translator.translate(html, function (translatedHTML) {
 					translatedHTML = translator.unescape(translatedHTML);
@@ -608,13 +636,13 @@ app.cacheBuster = null;
 			}
 
 			if (typeof blockName === 'string') {
-				templates.parse(template, blockName, data, function (html) {
+				Benchpress.parse(template, blockName, data, function (html) {
 					translate(html, callback);
 				});
 			} else {
 				callback = data;
 				data = blockName;
-				templates.parse(template, data, function (html) {
+				Benchpress.parse(template, data, function (html) {
 					translate(html, callback);
 				});
 			}
@@ -630,16 +658,17 @@ app.cacheBuster = null;
 	};
 
 	app.showCookieWarning = function () {
-		if (!config.cookies.enabled || !navigator.cookieEnabled) {
-			// Skip warning if cookie consent subsystem disabled (obviously), or cookies not in use
-			return;
-		} else if (window.location.pathname.startsWith(config.relative_path + '/admin')) {
-			// No need to show cookie consent warning in ACP
-			return;
-		} else if (window.localStorage.getItem('cookieconsent') === '1') {
-			return;
-		}
-		require(['translator'], function (translator) {
+		require(['translator', 'storage'], function (translator, storage) {
+			if (!config.cookies.enabled || !navigator.cookieEnabled) {
+				// Skip warning if cookie consent subsystem disabled (obviously), or cookies not in use
+				return;
+			} else if (window.location.pathname.startsWith(config.relative_path + '/admin')) {
+				// No need to show cookie consent warning in ACP
+				return;
+			} else if (storage.getItem('cookieconsent') === '1') {
+				return;
+			}
+
 			config.cookies.message = translator.unescape(config.cookies.message);
 			config.cookies.dismiss = translator.unescape(config.cookies.dismiss);
 			config.cookies.link = translator.unescape(config.cookies.link);
@@ -651,7 +680,7 @@ app.cacheBuster = null;
 				var dismissEl = warningEl.find('button');
 				dismissEl.on('click', function () {
 					// Save consent cookie and remove warning element
-					window.localStorage.setItem('cookieconsent', '1');
+					storage.setItem('cookieconsent', '1');
 					warningEl.remove();
 				});
 			});

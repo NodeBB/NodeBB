@@ -1,5 +1,5 @@
 					<!-- IF !installed.error -->
-					<li id="{installed.id}" data-plugin-id="{installed.id}" data-version="{installed.version}" class="clearfix <!-- IF installed.active -->active<!-- ENDIF installed.active -->">
+					<li id="{installed.id}" data-plugin-index="@index" data-plugin-id="{installed.id}" data-version="{installed.version}" class="clearfix <!-- IF installed.active -->active<!-- ENDIF installed.active -->">
 						<div class="pull-right controls">
 							<!-- IF installed.isTheme -->
 							<a href="{config.relative_path}/admin/appearance/themes" class="btn btn-info">[[admin/extend/plugins:plugin-item.themes]]</a>

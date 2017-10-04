@@ -1,7 +1,7 @@
 {
-	"home-page": "Strona Główna",
-	"description": "Wybierz stronę główną dla Twojego forum.",
-	"home-page-route": "Strona Główna",
+	"home-page": "Strona startowa",
+	"description": "Wybierz stronę startową dla twojego forum.",
+	"home-page-route": "Ścieżka strony startowej",
 	"custom-route": "Niestandardowy Adres",
-	"allow-user-home-pages": "Pozwól użytkownikom na zmienienie strony głownej"
+	"allow-user-home-pages": "Zezwalaj na strony startowe użytkowników"
 }

@@ -4,6 +4,7 @@
 var assert = require('assert');
 var shim = require('../public/src/modules/translator.js');
 var Translator = shim.Translator;
+var db = require('./mocks/databasemock');
 
 require('../src/languages').init(function () {});
 
@@ -118,10 +119,20 @@ describe('new Translator(language)', function () {
 		it('should properly escape and ignore % and \\, in arguments', function () {
 			var translator = Translator.create('en-GB');
 
-			var title = 'Test 1\\, 2\\, 3 % salmon';
+			var title = 'Test 1\\, 2\\, 3 %2 salmon';
 			var key = '[[topic:composer.replying_to, ' + title + ']]';
 			return translator.translate(key).then(function (translated) {
-				assert.strictEqual(translated, 'Replying to Test 1&#44; 2&#44; 3 &#37; salmon');
+				assert.strictEqual(translated, 'Replying to Test 1&#44; 2&#44; 3 &#37;2 salmon');
+			});
+		});
+
+		it('should not escape regular %', function () {
+			var translator = Translator.create('en-GB');
+
+			var title = '3 % salmon';
+			var key = '[[topic:composer.replying_to, ' + title + ']]';
+			return translator.translate(key).then(function (translated) {
+				assert.strictEqual(translated, 'Replying to 3 % salmon');
 			});
 		});
 
@@ -143,6 +154,27 @@ describe('new Translator(language)', function () {
 			var translator = Translator.create('en-GB');
 			return translator.translate('[[pages:users/latest]]').then(function (translated) {
 				assert.strictEqual(translated, 'Latest Users');
+			});
+		});
+
+		it('should use key for unknown keys without arguments', function () {
+			var translator = Translator.create('en-GB');
+			return translator.translate('[[unknown:key.without.args]]').then(function (translated) {
+				assert.strictEqual(translated, 'key.without.args');
+			});
+		});
+
+		it('should use backup for unknown keys with arguments', function () {
+			var translator = Translator.create('en-GB');
+			return translator.translate('[[unknown:key.with.args, arguments are here, derpity, derp]]').then(function (translated) {
+				assert.strictEqual(translated, 'unknown:key.with.args, arguments are here, derpity, derp');
+			});
+		});
+
+		it('should ignore unclosed tokens', function () {
+			var translator = Translator.create('en-GB');
+			return translator.translate('here is some stuff and other things [[abc:xyz, other random stuff should be fine here [[global:home]] and more things [[pages:users/latest]]').then(function (translated) {
+				assert.strictEqual(translated, 'here is some stuff and other things abc:xyz, other random stuff should be fine here Home and more things Latest Users');
 			});
 		});
 	});
@@ -227,7 +259,7 @@ describe('Translator static methods', function () {
 		it('should escape translation patterns within text', function (done) {
 			assert.strictEqual(
 				Translator.escape('some nice text [[global:home]] here'),
-				'some nice text \\[\\[global:home\\]\\] here'
+				'some nice text &lsqb;&lsqb;global:home&rsqb;&rsqb; here'
 			);
 			done();
 		});
@@ -237,6 +269,10 @@ describe('Translator static methods', function () {
 		it('should unescape escaped translation patterns within text', function (done) {
 			assert.strictEqual(
 				Translator.unescape('some nice text \\[\\[global:home\\]\\] here'),
+				'some nice text [[global:home]] here'
+			);
+			assert.strictEqual(
+				Translator.unescape('some nice text &lsqb;&lsqb;global:home&rsqb;&rsqb; here'),
 				'some nice text [[global:home]] here'
 			);
 			done();

@@ -24,9 +24,10 @@ var meta = require('./meta');
 var languages = require('./languages');
 var logger = require('./logger');
 var plugins = require('./plugins');
+var flags = require('./flags');
 var routes = require('./routes');
 var auth = require('./routes/authentication');
-var templates = require('templates.js');
+var Benchpress = require('benchpressjs');
 
 var helpers = require('../public/src/modules/helpers');
 
@@ -55,14 +56,17 @@ module.exports.listen = function (callback) {
 	callback = callback || function () { };
 	emailer.registerApp(app);
 
-	setupExpressApp(app);
-
-	helpers.register();
-
-	logger.init(app);
-
 	async.waterfall([
-		initializeNodeBB,
+		function (next) {
+			setupExpressApp(app, next);
+		},
+		function (next) {
+			helpers.register();
+
+			logger.init(app);
+
+			initializeNodeBB(next);
+		},
 		function (next) {
 			winston.info('NodeBB Ready');
 
@@ -103,6 +107,7 @@ function initializeNodeBB(callback) {
 				meta.sounds.addUploads,
 				languages.init,
 				meta.blacklist.load,
+				flags.init,
 			], next);
 		},
 	], function (err) {
@@ -110,15 +115,28 @@ function initializeNodeBB(callback) {
 	});
 }
 
-function setupExpressApp(app) {
+function setupExpressApp(app, callback) {
 	var middleware = require('./middleware');
 
 	var relativePath = nconf.get('relative_path');
+	var viewsDir = nconf.get('views_dir');
 
-	app.engine('tpl', templates.__express);
+	app.engine('tpl', function (filepath, data, next) {
+		filepath = filepath.replace(/\.tpl$/, '.js');
+
+		middleware.templatesOnDemand({
+			filePath: filepath,
+		}, null, function (err) {
+			if (err) {
+				return next(err);
+			}
+
+			Benchpress.__express(filepath, data, next);
+		});
+	});
 	app.set('view engine', 'tpl');
-	app.set('views', nconf.get('views_dir'));
-	app.set('json spaces', process.env.NODE_ENV === 'development' ? 4 : 0);
+	app.set('views', viewsDir);
+	app.set('json spaces', global.env === 'development' ? 4 : 0);
 	app.use(flash());
 
 	app.enable('view cache');
@@ -129,6 +147,9 @@ function setupExpressApp(app) {
 	}
 
 	app.use(compression());
+
+	app.get(relativePath + '/ping', ping);
+	app.get(relativePath + '/sping', ping);
 
 	setupFavicon(app);
 
@@ -155,6 +176,19 @@ function setupExpressApp(app) {
 	var toobusy = require('toobusy-js');
 	toobusy.maxLag(parseInt(meta.config.eventLoopLagThreshold, 10) || 100);
 	toobusy.interval(parseInt(meta.config.eventLoopInterval, 10) || 500);
+
+	setupAutoLocale(app, callback);
+}
+
+function ping(req, res, next) {
+	async.waterfall([
+		function (next) {
+			db.getObject('config', next);
+		},
+		function () {
+			res.status(200).send(req.path === '/sping' ? 'healthy' : '200');
+		},
+	], next);
 }
 
 function setupFavicon(app) {
@@ -166,9 +200,7 @@ function setupFavicon(app) {
 }
 
 function setupCookie() {
-	var ttlDays = 1000 * 60 * 60 * 24 * (parseInt(meta.config.loginDays, 10) || 0);
-	var ttlSeconds = 1000 * (parseInt(meta.config.loginSeconds, 10) || 0);
-	var ttl = ttlSeconds || ttlDays || 1209600000; // Default to 14 days
+	var ttl = meta.getSessionTTLSeconds() * 1000;
 
 	var cookie = {
 		maxAge: ttl,
@@ -188,6 +220,35 @@ function setupCookie() {
 	}
 
 	return cookie;
+}
+
+function setupAutoLocale(app, callback) {
+	languages.listCodes(function (err, codes) {
+		if (err) {
+			return callback(err);
+		}
+
+		var defaultLang = meta.config.defaultLang || 'en-GB';
+
+		var langs = [defaultLang].concat(codes).filter(function (el, i, arr) {
+			return arr.indexOf(el) === i;
+		});
+
+		app.use(function (req, res, next) {
+			if (parseInt(req.uid, 10) > 0 || parseInt(meta.config.autoDetectLang, 10) !== 1) {
+				return next();
+			}
+
+			var lang = req.acceptsLanguages(langs);
+			if (!lang) {
+				return next();
+			}
+			req.query.lang = lang;
+			next();
+		});
+
+		callback();
+	});
 }
 
 function listen(callback) {
@@ -262,11 +323,11 @@ module.exports.testSocket = function (socketPath, callback) {
 	var file = require('./file');
 	async.series([
 		function (next) {
-			file.exists(socketPath, function (exists) {
+			file.exists(socketPath, function (err, exists) {
 				if (exists) {
 					next();
 				} else {
-					callback();
+					callback(err);
 				}
 			});
 		},

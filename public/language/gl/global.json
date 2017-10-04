@@ -103,5 +103,7 @@
     "cookies.message": "Esta web emprega cookies para asegurar que recibes unha mellor experiencia de navegación.",
     "cookies.accept": "De Acordo!",
     "cookies.learn_more": "Saber máis",
-    "edited": "Edited"
+    "edited": "Edited",
+    "disabled": "Disabled",
+    "select": "Select"
 }

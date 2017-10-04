@@ -2,6 +2,7 @@
 'use strict';
 
 var async = require('async');
+var _ = require('lodash');
 
 var db = require('../database');
 var user = require('../user');
@@ -9,7 +10,8 @@ var notifications = require('../notifications');
 var categories = require('../categories');
 var privileges = require('../privileges');
 var meta = require('../meta');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
+var plugins = require('../plugins');
 
 module.exports = function (Topics) {
 	Topics.getTotalUnread = function (uid, filter, callback) {
@@ -17,13 +19,12 @@ module.exports = function (Topics) {
 			callback = filter;
 			filter = '';
 		}
-		Topics.getUnreadTids(0, uid, filter, function (err, tids) {
+		Topics.getUnreadTids({ cid: 0, uid: uid, filter: filter }, function (err, tids) {
 			callback(err, Array.isArray(tids) ? tids.length : 0);
 		});
 	};
 
-
-	Topics.getUnreadTopics = function (cid, uid, start, stop, filter, callback) {
+	Topics.getUnreadTopics = function (params, callback) {
 		var unreadTopics = {
 			showSelect: true,
 			nextStart: 0,
@@ -32,7 +33,7 @@ module.exports = function (Topics) {
 
 		async.waterfall([
 			function (next) {
-				Topics.getUnreadTids(cid, uid, filter, next);
+				Topics.getUnreadTids(params, next);
 			},
 			function (tids, next) {
 				unreadTopics.topicCount = tids.length;
@@ -41,21 +42,21 @@ module.exports = function (Topics) {
 					return next(null, []);
 				}
 
-				if (stop === -1) {
-					tids = tids.slice(start);
+				if (params.stop === -1) {
+					tids = tids.slice(params.start);
 				} else {
-					tids = tids.slice(start, stop + 1);
+					tids = tids.slice(params.start, params.stop + 1);
 				}
 
-				Topics.getTopicsByTids(tids, uid, next);
+				Topics.getTopicsByTids(tids, params.uid, next);
 			},
 			function (topicData, next) {
-				if (!Array.isArray(topicData) || !topicData.length) {
+				if (!topicData.length) {
 					return next(null, unreadTopics);
 				}
 
 				unreadTopics.topics = topicData;
-				unreadTopics.nextStart = stop + 1;
+				unreadTopics.nextStart = params.stop + 1;
 				next(null, unreadTopics);
 			},
 		], callback);
@@ -66,25 +67,17 @@ module.exports = function (Topics) {
 		return Date.now() - (cutoff * 86400000);
 	};
 
-	Topics.getUnreadTids = function (cid, uid, filter, callback) {
-		uid = parseInt(uid, 10);
+	Topics.getUnreadTids = function (params, callback) {
+		var uid = parseInt(params.uid, 10);
 		if (uid === 0) {
 			return callback(null, []);
 		}
 
-		var cutoff = Topics.unreadCutoff();
-
-		var ignoredCids;
+		var cutoff = params.cutoff || Topics.unreadCutoff();
 
 		async.waterfall([
 			function (next) {
 				async.parallel({
-					ignoredCids: function (next) {
-						if (filter === 'watched') {
-							return next(null, []);
-						}
-						user.getIgnoredCategories(uid, next);
-					},
 					ignoredTids: function (next) {
 						user.getIgnoredTids(uid, 0, -1, next);
 					},
@@ -104,8 +97,6 @@ module.exports = function (Topics) {
 					return callback(null, []);
 				}
 
-				ignoredCids = results.ignoredCids;
-
 				var userRead = {};
 				results.userScores.forEach(function (userItem) {
 					userRead[userItem.value] = userItem.score;
@@ -120,7 +111,7 @@ module.exports = function (Topics) {
 					if (results.ignoredTids.indexOf(recentTopic.value.toString()) !== -1) {
 						return false;
 					}
-					switch (filter) {
+					switch (params.filter) {
 					case 'new':
 						return !userRead[recentTopic.value];
 					default:
@@ -128,11 +119,11 @@ module.exports = function (Topics) {
 					}
 				}).map(function (topic) {
 					return topic.value;
-				}).filter(function (tid, index, array) {
-					return array.indexOf(tid) === index;
 				});
 
-				if (filter === 'watched') {
+				tids = _.uniq(tids);
+
+				if (params.filter === 'watched') {
 					Topics.filterWatchedTids(tids, uid, next);
 				} else {
 					next(null, tids);
@@ -141,14 +132,25 @@ module.exports = function (Topics) {
 			function (tids, next) {
 				tids = tids.slice(0, 200);
 
-				filterTopics(uid, tids, cid, ignoredCids, filter, next);
+				filterTopics(uid, tids, params.cid, params.filter, next);
+			},
+			function (tids, next) {
+				plugins.fireHook('filter:topics.getUnreadTids', {
+					uid: uid,
+					tids: tids,
+					cid: params.cid,
+					filter: params.filter,
+				}, next);
+			},
+			function (results, next) {
+				next(null, results.tids);
 			},
 		], callback);
 	};
 
 
-	function filterTopics(uid, tids, cid, ignoredCids, filter, callback) {
-		if (!Array.isArray(ignoredCids) || !tids.length) {
+	function filterTopics(uid, tids, cid, filter, callback) {
+		if (!tids.length) {
 			return callback(null, tids);
 		}
 
@@ -167,13 +169,19 @@ module.exports = function (Topics) {
 						}
 						db.sortedSetScores('uid:' + uid + ':followed_tids', tids, next);
 					},
+					ignoredCids: function (next) {
+						if (filter === 'watched') {
+							return next(null, []);
+						}
+						user.getIgnoredCategories(uid, next);
+					},
 				}, next);
 			},
 			function (results, next) {
 				var topics = results.topics;
 				tids = topics.filter(function (topic, index) {
 					return topic && topic.cid &&
-						(!!results.isTopicsFollowed[index] || ignoredCids.indexOf(topic.cid.toString()) === -1) &&
+						(!!results.isTopicsFollowed[index] || results.ignoredCids.indexOf(topic.cid.toString()) === -1) &&
 						(!cid || parseInt(cid, 10) === parseInt(topic.cid, 10));
 				}).map(function (topic) {
 					return topic.tid;
@@ -187,16 +195,22 @@ module.exports = function (Topics) {
 		callback = callback || function () {};
 
 		if (!uid || parseInt(uid, 10) === 0) {
-			return callback();
+			return setImmediate(callback);
 		}
-		Topics.getTotalUnread(uid, function (err, count) {
-			if (err) {
-				return callback(err);
-			}
 
-			require('../socket.io').in('uid_' + uid).emit('event:unread.updateCount', count);
-			callback();
-		});
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					unreadTopicCount: async.apply(Topics.getTotalUnread, uid),
+					unreadNewTopicCount: async.apply(Topics.getTotalUnread, uid, 'new'),
+					unreadWatchedTopicCount: async.apply(Topics.getTotalUnread, uid, 'watched'),
+				}, next);
+			},
+			function (results, next) {
+				require('../socket.io').in('uid_' + uid).emit('event:unread.updateCount', results);
+				setImmediate(next);
+			},
+		], callback);
 	};
 
 	Topics.markAsUnreadForAll = function (tid, callback) {
@@ -209,8 +223,8 @@ module.exports = function (Topics) {
 			return setImmediate(callback, null, false);
 		}
 
-		tids = tids.filter(function (tid, index, array) {
-			return tid && utils.isNumber(tid) && array.indexOf(tid) === index;
+		tids = _.uniq(tids).filter(function (tid) {
+			return tid && utils.isNumber(tid);
 		});
 
 		if (!tids.length) {
@@ -247,13 +261,14 @@ module.exports = function (Topics) {
 			function (results, next) {
 				var cids = results.topicData.map(function (topic) {
 					return topic && topic.cid;
-				}).filter(function (topic, index, array) {
-					return topic && array.indexOf(topic) === index;
-				});
+				}).filter(Boolean);
+
+				cids = _.uniq(cids);
 
 				categories.markAsRead(cids, uid, next);
 			},
 			function (next) {
+				plugins.fireHook('action:topics.markAsRead', { uid: uid, tids: tids });
 				next(null, true);
 			},
 		], callback);
@@ -312,30 +327,31 @@ module.exports = function (Topics) {
 			}));
 		}
 
-		async.parallel({
-			recentScores: function (next) {
-				db.sortedSetScores('topics:recent', tids, next);
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					recentScores: function (next) {
+						db.sortedSetScores('topics:recent', tids, next);
+					},
+					userScores: function (next) {
+						db.sortedSetScores('uid:' + uid + ':tids_read', tids, next);
+					},
+					tids_unread: function (next) {
+						db.sortedSetScores('uid:' + uid + ':tids_unread', tids, next);
+					},
+				}, next);
 			},
-			userScores: function (next) {
-				db.sortedSetScores('uid:' + uid + ':tids_read', tids, next);
-			},
-			tids_unread: function (next) {
-				db.sortedSetScores('uid:' + uid + ':tids_unread', tids, next);
-			},
-		}, function (err, results) {
-			if (err) {
-				return callback(err);
-			}
+			function (results, next) {
+				var cutoff = Topics.unreadCutoff();
+				var result = tids.map(function (tid, index) {
+					return !results.tids_unread[index] &&
+						(results.recentScores[index] < cutoff ||
+						!!(results.userScores[index] && results.userScores[index] >= results.recentScores[index]));
+				});
 
-			var cutoff = Topics.unreadCutoff();
-			var result = tids.map(function (tid, index) {
-				return !results.tids_unread[index] &&
-					(results.recentScores[index] < cutoff ||
-					!!(results.userScores[index] && results.userScores[index] >= results.recentScores[index]));
-			});
-
-			callback(null, result);
-		});
+				next(null, result);
+			},
+		], callback);
 	};
 
 	Topics.hasReadTopic = function (tid, uid, callback) {
@@ -362,14 +378,16 @@ module.exports = function (Topics) {
 	};
 
 	Topics.filterNewTids = function (tids, uid, callback) {
-		db.sortedSetScores('uid:' + uid + ':tids_read', tids, function (err, scores) {
-			if (err) {
-				return callback(err);
-			}
-			tids = tids.filter(function (tid, index) {
-				return tid && !scores[index];
-			});
-			callback(null, tids);
-		});
+		async.waterfall([
+			function (next) {
+				db.sortedSetScores('uid:' + uid + ':tids_read', tids, next);
+			},
+			function (scores, next) {
+				tids = tids.filter(function (tid, index) {
+					return tid && !scores[index];
+				});
+				next(null, tids);
+			},
+		], callback);
 	};
 };

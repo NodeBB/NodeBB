@@ -2,123 +2,166 @@
 
 var async = require('async');
 var winston = require('winston');
-var templates = require('templates.js');
+var _ = require('lodash');
+var Benchpress = require('benchpressjs');
 
 var plugins = require('../plugins');
-var translator = require('../../public/src/modules/translator');
+var translator = require('../translator');
 var db = require('../database');
+var apiController = require('../controllers/api');
 
-var widgets = {};
+var widgets = module.exports;
 
-widgets.render = function (uid, area, req, res, callback) {
-	if (!area.locations || !area.template) {
+widgets.render = function (uid, options, callback) {
+	if (!options.template) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	widgets.getAreas(['global', area.template], area.locations, function (err, data) {
-		if (err) {
-			return callback(err);
-		}
+	async.waterfall([
+		function (next) {
+			widgets.getWidgetDataForTemplates(['global', options.template], next);
+		},
+		function (data, next) {
+			var widgetsByLocation = {};
 
-		var widgetsByLocation = {};
+			delete data.global.drafts;
 
-		async.map(area.locations, function (location, done) {
-			widgetsByLocation[location] = data.global[location].concat(data[area.template][location]);
+			var locations = _.uniq(Object.keys(data.global).concat(Object.keys(data[options.template])));
 
-			if (!widgetsByLocation[location].length) {
-				return done(null, { location: location, widgets: [] });
-			}
+			var returnData = {};
 
-			async.map(widgetsByLocation[location], function (widget, next) {
-				if (!widget || !widget.data ||
-					(!!widget.data['hide-registered'] && uid !== 0) ||
-					(!!widget.data['hide-guests'] && uid === 0) ||
-					(!!widget.data['hide-mobile'] && area.isMobile)) {
-					return next();
+			async.each(locations, function (location, done) {
+				widgetsByLocation[location] = (data.global[location] || []).concat(data[options.template][location] || []);
+
+				if (!widgetsByLocation[location].length) {
+					return done(null, { location: location, widgets: [] });
 				}
 
-				plugins.fireHook('filter:widget.render:' + widget.widget, {
-					uid: uid,
-					area: area,
-					data: widget.data,
-					req: req,
-					res: res,
-				}, function (err, html) {
-					if (err || html === null) {
-						return next(err);
+				async.map(widgetsByLocation[location], function (widget, next) {
+					if (!widget || !widget.data ||
+						(!!widget.data['hide-registered'] && uid !== 0) ||
+						(!!widget.data['hide-guests'] && uid === 0) ||
+						(!!widget.data['hide-mobile'] && options.req.useragent.isMobile)) {
+						return next();
 					}
 
-					if (typeof html !== 'string') {
-						html = '';
+					renderWidget(widget, uid, options, next);
+				}, function (err, renderedWidgets) {
+					if (err) {
+						return done(err);
 					}
-
-					if (widget.data.container && widget.data.container.match('{body}')) {
-						translator.translate(widget.data.title, function (title) {
-							html = templates.parse(widget.data.container, {
-								title: title,
-								body: html,
-							});
-
-							next(null, { html: html });
-						});
-					} else {
-						next(null, { html: html });
-					}
+					returnData[location] = renderedWidgets.filter(Boolean);
+					done();
 				});
-			}, function (err, result) {
-				done(err, { location: location, widgets: result.filter(Boolean) });
+			}, function (err) {
+				next(err, returnData);
 			});
-		}, callback);
-	});
+		},
+	], callback);
 };
 
-widgets.getAreas = function (templates, locations, callback) {
+function renderWidget(widget, uid, options, callback) {
+	async.waterfall([
+		function (next) {
+			if (options.res.locals.isAPI) {
+				apiController.loadConfig(options.req, next);
+			} else {
+				next(null, options.res.locals.config);
+			}
+		},
+		function (config, next) {
+			var templateData = _.assign({ }, options.templateData, { config: config });
+			plugins.fireHook('filter:widget.render:' + widget.widget, {
+				uid: uid,
+				area: options,
+				templateData: templateData,
+				data: widget.data,
+				req: options.req,
+				res: options.res,
+			}, next);
+		},
+		function (data, next) {
+			if (!data) {
+				return callback();
+			}
+			var html = data;
+			if (typeof html !== 'string') {
+				html = data.html;
+			} else {
+				winston.warn('[widgets.render] passing a string is deprecated!, filter:widget.render:' + widget.widget + '. Please set hookData.html in your plugin.');
+			}
+
+			if (widget.data.container && widget.data.container.match('{body}')) {
+				translator.translate(widget.data.title, function (title) {
+					Benchpress.compileParse(widget.data.container, {
+						title: title,
+						body: html,
+					}, function (err, html) {
+						next(err, { html: html });
+					});
+				});
+			} else {
+				next(null, { html: html });
+			}
+		},
+	], callback);
+}
+
+widgets.getWidgetDataForTemplates = function (templates, callback) {
 	var keys = templates.map(function (tpl) {
 		return 'widgets:' + tpl;
 	});
-	db.getObjectsFields(keys, locations, function (err, data) {
-		if (err) {
-			return callback(err);
-		}
 
-		var returnData = {};
+	async.waterfall([
+		function (next) {
+			db.getObjects(keys, next);
+		},
+		function (data, next) {
+			var returnData = {};
 
-		templates.forEach(function (template, index) {
-			returnData[template] = returnData[template] || {};
-			locations.forEach(function (location) {
-				if (data && data[index] && data[index][location]) {
-					try {
-						returnData[template][location] = JSON.parse(data[index][location]);
-					} catch (err) {
-						winston.error('can not parse widget data. template:  ' + template + ' location: ' + location);
+			templates.forEach(function (template, index) {
+				returnData[template] = returnData[template] || {};
+
+				var templateWidgetData = data[index] || {};
+				var locations = Object.keys(templateWidgetData);
+
+				locations.forEach(function (location) {
+					if (templateWidgetData && templateWidgetData[location]) {
+						try {
+							returnData[template][location] = JSON.parse(templateWidgetData[location]);
+						} catch (err) {
+							winston.error('can not parse widget data. template:  ' + template + ' location: ' + location);
+							returnData[template][location] = [];
+						}
+					} else {
 						returnData[template][location] = [];
 					}
-				} else {
-					returnData[template][location] = [];
-				}
+				});
 			});
-		});
 
-		callback(null, returnData);
-	});
+			next(null, returnData);
+		},
+	], callback);
 };
 
 widgets.getArea = function (template, location, callback) {
-	db.getObjectField('widgets:' + template, location, function (err, result) {
-		if (err) {
-			return callback(err);
-		}
-		if (!result) {
-			return callback(null, []);
-		}
-		try {
-			result = JSON.parse(result);
-		} catch (err) {
-			return callback(err);
-		}
+	async.waterfall([
+		function (next) {
+			db.getObjectField('widgets:' + template, location, next);
+		},
+		function (result, next) {
+			if (!result) {
+				return callback(null, []);
+			}
+			try {
+				result = JSON.parse(result);
+			} catch (err) {
+				return callback(err);
+			}
 
-		callback(null, result);
-	});
+			next(null, result);
+		},
+	], callback);
 };
 
 widgets.setArea = function (area, callback) {
@@ -135,42 +178,73 @@ widgets.reset = function (callback) {
 		{ name: 'Draft Zone', template: 'global', location: 'footer' },
 		{ name: 'Draft Zone', template: 'global', location: 'sidebar' },
 	];
-
-	async.parallel({
-		areas: function (next) {
-			plugins.fireHook('filter:widgets.getAreas', defaultAreas, next);
+	var drafts;
+	async.waterfall([
+		function (next) {
+			async.parallel({
+				areas: function (next) {
+					plugins.fireHook('filter:widgets.getAreas', defaultAreas, next);
+				},
+				drafts: function (next) {
+					widgets.getArea('global', 'drafts', next);
+				},
+			}, next);
 		},
-		drafts: function (next) {
-			widgets.getArea('global', 'drafts', next);
+		function (results, next) {
+			drafts = results.drafts || [];
+
+			async.eachSeries(results.areas, function (area, next) {
+				async.waterfall([
+					function (next) {
+						widgets.getArea(area.template, area.location, next);
+					},
+					function (areaData, next) {
+						drafts = drafts.concat(areaData);
+						area.widgets = [];
+						widgets.setArea(area, next);
+					},
+				], next);
+			}, next);
 		},
-	}, function (err, results) {
-		if (err) {
-			return callback(err);
-		}
-
-		var drafts = results.drafts || [];
-
-		async.each(results.areas, function (area, next) {
-			widgets.getArea(area.template, area.location, function (err, areaData) {
-				if (err) {
-					return next(err);
-				}
-
-				drafts = drafts.concat(areaData);
-				area.widgets = [];
-				widgets.setArea(area, next);
-			});
-		}, function (err) {
-			if (err) {
-				return callback(err);
-			}
+		function (next) {
 			widgets.setArea({
 				template: 'global',
 				location: 'drafts',
 				widgets: drafts,
-			}, callback);
+			}, next);
+		},
+	], callback);
+};
+
+widgets.resetTemplate = function (template, callback) {
+	db.getObject('widgets:' + template + '.tpl', function (err, area) {
+		if (err) {
+			return callback();
+		}
+
+		var toBeDrafted = [];
+		for (var location in area) {
+			if (area.hasOwnProperty(location)) {
+				toBeDrafted = toBeDrafted.concat(JSON.parse(area[location]));
+			}
+		}
+
+		db.delete('widgets:' + template + '.tpl');
+		db.getObjectField('widgets:global', 'drafts', function (err, draftWidgets) {
+			if (err) {
+				return callback();
+			}
+
+			draftWidgets = JSON.parse(draftWidgets).concat(toBeDrafted);
+			db.setObjectField('widgets:global', 'drafts', JSON.stringify(draftWidgets), callback);
 		});
 	});
+};
+
+widgets.resetTemplates = function (templates, callback) {
+	async.eachSeries(templates, function (template, next) {
+		widgets.resetTemplate(template, next);
+	}, callback);
 };
 
 module.exports = widgets;

@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/users', ['translator'], function (translator) {
+define('forum/users', ['translator', 'benchpress'], function (translator, Benchpress) {
 	var	Users = {};
 
 	var searchTimeoutID = 0;
@@ -98,11 +98,11 @@ define('forum/users', ['translator'], function (translator) {
 	}
 
 	function renderSearchResults(data) {
-		templates.parse('partials/paginator', { pagination: data.pagination }, function (html) {
+		Benchpress.parse('partials/paginator', { pagination: data.pagination }, function (html) {
 			$('.pagination-container').replaceWith(html);
 		});
 
-		templates.parse('users', 'users', data, function (html) {
+		Benchpress.parse('users', 'users', data, function (html) {
 			translator.translate(html, function (translated) {
 				translated = $(translated);
 				$('#users-container').html(translated);

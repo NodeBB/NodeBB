@@ -1,11 +1,11 @@
 {
-	"eu-consent": "EU Consent",
-	"consent.enabled": "Enabled",
-	"consent.message": "Notification message",
-	"consent.acceptance": "Acceptance message",
-	"consent.link-text": "Policy Link Text",
-	"consent.blank-localised-default": "Leave blank to use NodeBB localised defaults",
-	"settings": "Settings",
-	"cookie-domain": "Session cookie domain",
-	"blank-default": "Leave blank for default"
+	"eu-consent": "Souhlas EU",
+	"consent.enabled": "Povolit",
+	"consent.message": "Potvrzovací zpráva",
+	"consent.acceptance": "Zpráva o příjmutí",
+	"consent.link-text": "Odkaz na text",
+	"consent.blank-localised-default": "Pro použití výchozího textu NodeBB, zanechte prázdné",
+	"settings": "Nastavení",
+	"cookie-domain": "Doména relace cookies",
+	"blank-default": "Pro výchozí, zanechte prázdné"
 }

@@ -5,7 +5,7 @@
 								<th class="arrowed" colspan="3">
 									[[admin/manage/categories:privileges.section-viewing]]
 								</th>
-								<th class="arrowed" colspan="7">
+								<th class="arrowed" colspan="8">
 									[[admin/manage/categories:privileges.section-posting]]
 								</th>
 								<th class="arrowed" colspan="2">
@@ -31,7 +31,7 @@
 									<!-- ENDIF ../picture -->
 								</td>
 								<td>{privileges.users.username}</td>
-								{function.spawnPrivilegeStates, privileges.users.username, privileges}
+								{function.spawnPrivilegeStates, privileges.users.username, ../privileges}
 							</tr>
 							<!-- END privileges.users -->
 							<tr>
@@ -61,7 +61,7 @@
 								<th class="arrowed" colspan="3">
 									[[admin/manage/categories:privileges.section-viewing]]
 								</th>
-								<th class="arrowed" colspan="7">
+								<th class="arrowed" colspan="8">
 									[[admin/manage/categories:privileges.section-posting]]
 								</th>
 								<th class="arrowed" colspan="2">
@@ -85,7 +85,7 @@
 									{privileges.groups.name}
 								</td>
 								<td></td>
-								{function.spawnPrivilegeStates, name, privileges}
+								{function.spawnPrivilegeStates, privileges.groups.name, ../privileges}
 							</tr>
 							<!-- END privileges.groups -->
 							<tr>

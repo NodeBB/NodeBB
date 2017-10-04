@@ -3,6 +3,8 @@
 
 var	assert = require('assert');
 var async = require('async');
+var request = require('request');
+var nconf = require('nconf');
 
 var db = require('./mocks/databasemock');
 var topics = require('../src/topics');
@@ -12,6 +14,9 @@ var privileges = require('../src/privileges');
 var user = require('../src/user');
 var groups = require('../src/groups');
 var socketPosts = require('../src/socket.io/posts');
+var socketTopics = require('../src/socket.io/topics');
+var meta = require('../src/meta');
+var helpers = require('./helpers');
 
 describe('Post\'s', function () {
 	var voterUid;
@@ -31,7 +36,7 @@ describe('Post\'s', function () {
 				user.create({ username: 'upvotee' }, next);
 			},
 			globalModUid: function (next) {
-				user.create({ username: 'globalmod' }, next);
+				user.create({ username: 'globalmod', password: 'globalmodpwd' }, next);
 			},
 			category: function (next) {
 				categories.create({
@@ -274,16 +279,16 @@ describe('Post\'s', function () {
 			});
 		});
 
-		it('should purge posts and delete topic', function (done) {
+		it('should purge posts and purge topic', function (done) {
 			createTopicWithReply(function (topicPostData, replyData) {
 				socketPosts.purgePosts({ uid: voterUid }, { pids: [replyData.pid, topicPostData.postData.pid], tid: topicPostData.topicData.tid }, function (err) {
 					assert.ifError(err);
 					posts.exists('post:' + replyData.pid, function (err, exists) {
 						assert.ifError(err);
 						assert.equal(exists, false);
-						topics.getTopicField(topicPostData.topicData.tid, 'deleted', function (err, deleted) {
+						topics.exists(topicPostData.topicData.tid, function (err, exists) {
 							assert.ifError(err);
-							assert.equal(parseInt(deleted, 10), 1);
+							assert(!exists);
 							done();
 						});
 					});
@@ -296,7 +301,6 @@ describe('Post\'s', function () {
 		var pid;
 		var replyPid;
 		var tid;
-		var meta = require('../src/meta');
 		before(function (done) {
 			topics.post({
 				uid: voterUid,
@@ -496,215 +500,6 @@ describe('Post\'s', function () {
 		});
 	});
 
-	describe('flagging a post', function () {
-		var meta = require('../src/meta');
-		it('should fail to flag a post due to low reputation', function (done) {
-			meta.config['privileges:flag'] = 10;
-			flagPost(function (err) {
-				assert.equal(err.message, '[[error:not-enough-reputation-to-flag]]');
-				done();
-			});
-		});
-
-		it('should flag a post', function (done) {
-			meta.config['privileges:flag'] = -1;
-			flagPost(function (err) {
-				assert.ifError(err);
-				done();
-			});
-		});
-
-		it('should return nothing without a uid or a reason', function (done) {
-			socketPosts.flag({ uid: 0 }, { pid: postData.pid, reason: 'reason' }, function (err) {
-				assert.equal(err.message, '[[error:not-logged-in]]');
-				socketPosts.flag({ uid: voteeUid }, {}, function (err) {
-					assert.equal(err.message, '[[error:invalid-data]]');
-					done();
-				});
-			});
-		});
-
-		it('should return an error without an existing post', function (done) {
-			socketPosts.flag({ uid: voteeUid }, { pid: 12312312, reason: 'reason' }, function (err) {
-				assert.equal(err.message, '[[error:no-post]]');
-				done();
-			});
-		});
-
-		it('should return an error if the flag already exists', function (done) {
-			socketPosts.flag({ uid: voteeUid }, { pid: postData.pid, reason: 'reason' }, function (err) {
-				assert.equal(err.message, '[[error:already-flagged]]');
-				done();
-			});
-		});
-	});
-
-	function flagPost(next) {
-		socketPosts.flag({ uid: voteeUid }, { pid: postData.pid, reason: 'reason' }, next);
-	}
-
-	describe('get flag data', function () {
-		it('should see the flagged post', function (done) {
-			posts.isFlaggedByUser(postData.pid, voteeUid, function (err, hasFlagged) {
-				assert.ifError(err);
-				assert(hasFlagged);
-				done();
-			});
-		});
-
-		it('should return the flagged post data', function (done) {
-			posts.getFlags('posts:flagged', cid, voteeUid, 0, -1, function (err, flagData) {
-				assert.ifError(err);
-				assert(flagData.posts);
-				assert(flagData.count);
-				assert.equal(flagData.count, 1);
-				assert.equal(flagData.posts.length, 1);
-				assert(flagData.posts[0].flagReasons);
-				assert.equal(flagData.posts[0].flagReasons.length, 1);
-				assert.strictEqual(flagData.posts[0].flagReasons[0].reason, 'reason');
-				assert(flagData.posts[0].flagData);
-				assert.strictEqual(flagData.posts[0].flagData.state, 'open');
-				done();
-			});
-		});
-	});
-
-	describe('updating a flag', function () {
-		it('should update a flag', function (done) {
-			async.waterfall([
-				function (next) {
-					socketPosts.updateFlag({ uid: globalModUid }, {
-						pid: postData.pid,
-						data: [
-							{ name: 'assignee', value: `${globalModUid}` },
-							{ name: 'notes', value: 'notes' },
-						],
-					}, function (err) {
-						assert.ifError(err);
-						posts.getFlags('posts:flagged', cid, globalModUid, 0, -1, function (err, flagData) {
-							assert.ifError(err);
-							assert(flagData.posts);
-							assert.equal(flagData.posts.length, 1);
-							assert.deepEqual({
-								assignee: flagData.posts[0].flagData.assignee,
-								notes: flagData.posts[0].flagData.notes,
-								state: flagData.posts[0].flagData.state,
-								labelClass: flagData.posts[0].flagData.labelClass,
-							}, {
-								assignee: `${globalModUid}`,
-								notes: 'notes',
-								state: 'open',
-								labelClass: 'info',
-							});
-							next();
-						});
-					});
-				}, function (next) {
-					posts.updateFlagData(globalModUid, postData.pid, {
-						state: 'rejected',
-					}, function (err) {
-						assert.ifError(err);
-						posts.getFlags('posts:flagged', cid, globalModUid, 0, -1, function (err, flagData) {
-							assert.ifError(err);
-							assert(flagData.posts);
-							assert.equal(flagData.posts.length, 1);
-							assert.deepEqual({
-								state: flagData.posts[0].flagData.state,
-								labelClass: flagData.posts[0].flagData.labelClass,
-							}, {
-								state: 'rejected',
-								labelClass: 'danger',
-							});
-							next();
-						});
-					});
-				}, function (next) {
-					posts.updateFlagData(globalModUid, postData.pid, {
-						state: 'wip',
-					}, function (err) {
-						assert.ifError(err);
-						posts.getFlags('posts:flagged', cid, globalModUid, 0, -1, function (err, flagData) {
-							assert.ifError(err);
-							assert(flagData.posts);
-							assert.equal(flagData.posts.length, 1);
-							assert.deepEqual({
-								state: flagData.posts[0].flagData.state,
-								labelClass: flagData.posts[0].flagData.labelClass,
-							}, {
-								state: 'wip',
-								labelClass: 'warning',
-							});
-							next();
-						});
-					});
-				}, function (next) {
-					posts.updateFlagData(globalModUid, postData.pid, {
-						state: 'resolved',
-					}, function (err) {
-						assert.ifError(err);
-						posts.getFlags('posts:flagged', cid, globalModUid, 0, -1, function (err, flagData) {
-							assert.ifError(err);
-							assert(flagData.posts);
-							assert.equal(flagData.posts.length, 1);
-							assert.deepEqual({
-								state: flagData.posts[0].flagData.state,
-								labelClass: flagData.posts[0].flagData.labelClass,
-							}, {
-								state: 'resolved',
-								labelClass: 'success',
-							});
-							next();
-						});
-					});
-				},
-			], done);
-		});
-	});
-
-	describe('dismissing a flag', function () {
-		it('should dismiss a flag', function (done) {
-			socketPosts.dismissFlag({ uid: globalModUid }, postData.pid, function (err) {
-				assert.ifError(err);
-				posts.isFlaggedByUser(postData.pid, voteeUid, function (err, hasFlagged) {
-					assert.ifError(err);
-					assert(!hasFlagged);
-					flagPost(function (err) {
-						assert.ifError(err);
-						done();
-					});
-				});
-			});
-		});
-
-		it('should dismiss all of a user\'s flags', function (done) {
-			posts.dismissUserFlags(voteeUid, function (err) {
-				assert.ifError(err);
-				posts.isFlaggedByUser(postData.pid, voteeUid, function (err, hasFlagged) {
-					assert.ifError(err);
-					assert(!hasFlagged);
-					flagPost(function (err) {
-						assert.ifError(err);
-						done();
-					});
-				});
-			});
-		});
-
-		it('should dismiss all flags', function (done) {
-			socketPosts.dismissAllFlags({ uid: globalModUid }, {}, function (err) {
-				assert.ifError(err);
-				posts.isFlaggedByUser(postData.pid, voteeUid, function (err, hasFlagged) {
-					assert.ifError(err);
-					assert(!hasFlagged);
-					flagPost(function (err) {
-						assert.ifError(err);
-						done();
-					});
-				});
-			});
-		});
-	});
-
 	describe('getPostSummaryByPids', function () {
 		it('should return empty array for empty pids', function (done) {
 			posts.getPostSummaryByPids([], 0, {}, function (err, data) {
@@ -762,7 +557,6 @@ describe('Post\'s', function () {
 		});
 
 		it('should parse signature and remove links and images', function (done) {
-			var meta = require('../src/meta');
 			meta.config['signatures:disableLinks'] = 1;
 			meta.config['signatures:disableImages'] = 1;
 			var userData = {
@@ -781,8 +575,17 @@ describe('Post\'s', function () {
 		it('should turn relative links in post body to absolute urls', function (done) {
 			var nconf = require('nconf');
 			var content = '<a href="/users">test</a> <a href="youtube.com">youtube</a>';
-			var parsedContent = posts.relativeToAbsolute(content);
-			assert.equal(parsedContent, '<a href="' + nconf.get('url') + '/users">test</a> <a href="//youtube.com">youtube</a>');
+			var parsedContent = posts.relativeToAbsolute(content, posts.urlRegex);
+			assert.equal(parsedContent, '<a href="' + nconf.get('base_url') + '/users">test</a> <a href="//youtube.com">youtube</a>');
+			done();
+		});
+
+		it('should turn relative links in post body to absolute urls', function (done) {
+			var nconf = require('nconf');
+			var content = '<a href="/users">test</a> <a href="youtube.com">youtube</a> some test <img src="/path/to/img"/>';
+			var parsedContent = posts.relativeToAbsolute(content, posts.urlRegex);
+			parsedContent = posts.relativeToAbsolute(parsedContent, posts.imgRegex);
+			assert.equal(parsedContent, '<a href="' + nconf.get('base_url') + '/users">test</a> <a href="//youtube.com">youtube</a> some test <img src="' + nconf.get('base_url') + '/path/to/img"/>');
 			done();
 		});
 	});
@@ -923,7 +726,102 @@ describe('Post\'s', function () {
 		});
 	});
 
-	after(function (done) {
-		db.emptydb(done);
+
+	describe('filterPidsByCid', function () {
+		it('should return pids as is if cid is falsy', function (done) {
+			posts.filterPidsByCid([1, 2, 3], null, function (err, pids) {
+				assert.ifError(err);
+				assert.deepEqual([1, 2, 3], pids);
+				done();
+			});
+		});
+
+		it('should filter pids by single cid', function (done) {
+			posts.filterPidsByCid([postData.pid, 100, 101], cid, function (err, pids) {
+				assert.ifError(err);
+				assert.deepEqual([postData.pid], pids);
+				done();
+			});
+		});
+
+		it('should filter pids by multiple cids', function (done) {
+			posts.filterPidsByCid([postData.pid, 100, 101], [cid, 2, 3], function (err, pids) {
+				assert.ifError(err);
+				assert.deepEqual([postData.pid], pids);
+				done();
+			});
+		});
+	});
+
+	describe('post queue', function () {
+		var uid;
+		before(function (done) {
+			meta.config.postQueue = 1;
+			user.create({ username: 'newuser' }, function (err, _uid) {
+				assert.ifError(err);
+				uid = _uid;
+				done();
+			});
+		});
+
+		after(function (done) {
+			meta.config.postQueue = 0;
+			done();
+		});
+
+		it('should add topic to post queue', function (done) {
+			socketTopics.post({ uid: uid }, { title: 'should be queued', content: 'queued topic content', cid: cid }, function (err, result) {
+				assert.ifError(err);
+				assert.strictEqual(result.queued, true);
+				assert.equal(result.message, '[[success:post-queued]]');
+				done();
+			});
+		});
+
+		it('should add reply to post queue', function (done) {
+			socketPosts.reply({ uid: uid }, { content: 'this is a queued reply', tid: topicData.tid }, function (err, result) {
+				assert.ifError(err);
+				assert.strictEqual(result.queued, true);
+				assert.equal(result.message, '[[success:post-queued]]');
+				done();
+			});
+		});
+
+		it('should load queued posts', function (done) {
+			helpers.loginUser('globalmod', 'globalmodpwd', function (err, jar) {
+				assert.ifError(err);
+				request(nconf.get('url') + '/api/post-queue', { jar: jar, json: true }, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(body.posts[0].type, 'topic');
+					assert.equal(body.posts[0].data.content, 'queued topic content');
+					assert.equal(body.posts[1].type, 'reply');
+					assert.equal(body.posts[1].data.content, 'this is a queued reply');
+					done();
+				});
+			});
+		});
+
+		it('should accept queued posts submit', function (done) {
+			var ids;
+			async.waterfall([
+				function (next) {
+					db.getSortedSetRange('post:queue', 0, -1, next);
+				},
+				function (_ids, next) {
+					ids = _ids;
+					socketPosts.accept({ uid: globalModUid }, { id: ids[0] }, next);
+				},
+				function (next) {
+					socketPosts.accept({ uid: globalModUid }, { id: ids[1] }, next);
+				},
+			], done);
+		});
+
+		it('should prevent regular users from approving posts', function (done) {
+			socketPosts.accept({ uid: uid }, { id: 1 }, function (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+				done();
+			});
+		});
 	});
 });

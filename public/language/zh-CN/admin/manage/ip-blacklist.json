@@ -11,5 +11,8 @@
 	"validate.x-valid": "<strong>%1</strong> / <strong>%2</strong>的规则有效。",
 	"validate.x-invalid": "下列 <strong>%0</strong> 个规则无效：",
 
-	"alerts.applied-success": "黑名单生效"
+	"alerts.applied-success": "黑名单生效",
+
+	"analytics.blacklist-hourly": "<strong>图 1 </strong> &ndash; 每小时触发黑名单数",
+	"analytics.blacklist-daily": "<strong>图 2</strong>&ndash; 每日触发黑名单数"
 }

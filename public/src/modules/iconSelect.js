@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('iconSelect', function () {
+define('iconSelect', ['benchpress'], function (Benchpress) {
 	var iconSelect = {};
 
 	iconSelect.init = function (el, onModified) {
@@ -19,7 +19,7 @@ define('iconSelect', function () {
 			}
 		}
 
-		templates.parse('partials/fontawesome', {}, function (html) {
+		Benchpress.parse('partials/fontawesome', {}, function (html) {
 			html = $(html);
 			html.find('.fa-icons').prepend($('<i class="fa fa-nbb-none"></i>'));
 

@@ -32,5 +32,9 @@
     "notif.post.unsub.info": "Esta notificação foi envidada devido às tuas definições de subscrição.",
     "test.text1": "Este é um e-mail de teste para verificar que o emailer está configurado corretamente para o teu NodeBB.",
     "unsub.cta": "Clica aqui para alterares essas definições",
+    "banned.subject": "You have been banned from %1",
+    "banned.text1": "The user %1 has been banned from %2.",
+    "banned.text2": "This ban will last until %1.",
+    "banned.text3": "This is the reason why you have been banned:",
     "closing": "Obrigado!"
 }

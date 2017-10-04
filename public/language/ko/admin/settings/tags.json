@@ -1,12 +1,12 @@
 {
-    "tag": "Tag Settings",
-    "min-per-topic": "Minimum Tags per Topic",
-    "max-per-topic": "Maximum Tags per Topic",
-    "min-length": "Minimum Tag Length",
-    "max-length": "Maximum Tag Length",
-    "goto-manage": "Click here to visit the tag management page.",
-    "privacy": "Privacy",
-    "list-private": "Make the tags list private",
-    "related-topics": "Related Topics",
-    "max-related-topics": "Maximum related topics to display (if supported by theme)"
+    "tag": "태그 설정",
+    "min-per-topic": "주제별 최소 태그",
+    "max-per-topic": "주제별 최대 태그",
+    "min-length": "태그 최소 길이",
+    "max-length": "태그 최대 길이",
+    "goto-manage": "태그 관리 페이지를 방문하시려면 클릭하세요",
+    "privacy": "개인 정보 보호",
+    "list-private": "태그 리스트를 개인만 볼 수 있게 바꿉니다.",
+    "related-topics": "관련된 주제들",
+    "max-related-topics": "테마가 지원하는 보여질 관련된 주제들의 최대 개수"
 }

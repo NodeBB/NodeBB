@@ -11,5 +11,8 @@
 	"validate.x-valid": "<strong>%1</strong> із <strong>%2</strong> правил вірні.",
 	"validate.x-invalid": "Наступні <strong>%1</strong> правил невірні:",
 
-	"alerts.applied-success": "Чорний список примінено"
+	"alerts.applied-success": "Чорний список примінено",
+
+	"analytics.blacklist-hourly": "<strong>Графік 1</strong> &ndash; Внесення до чорного списку за годину",
+	"analytics.blacklist-daily": "<strong>Графік 2</strong> &ndash; Внесення до чорного списку за день"
 }

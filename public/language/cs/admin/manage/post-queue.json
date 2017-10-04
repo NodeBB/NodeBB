@@ -1,0 +1,10 @@
+{
+	"post-queue": "Fronta příspěvků",
+	"description": "Ve frontě nejsou žádné příspěvky.Pro povolení této vastnosti, přejděte do <a href=\"%1\">Nastavení – Příspěvek – Omezení příspěvků</a> a povolte <strong>Fronta příspěvků</strong>.",
+	"user": "Uživatel",
+	"category": "Kategorie",
+	"title": "Název",
+	"content": "Obsah",
+	"posted": "Přidáno",
+	"reply-to": "Odpovědět na \"%1\""
+}

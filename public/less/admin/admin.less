@@ -1,5 +1,6 @@
-@import "./bootstrap/bootstrap";
-@import "./bootswatch";
+@import "bootstrap/less/bootstrap";
+@import "./paper/variables";
+@import "./paper/bootswatch";
 @import "./mixins";
 @import "./vars";
 
@@ -23,7 +24,7 @@
 @import "./settings";
 
 @import "../flags";
-@import "../blacklist";
+@import "./manage/ip-blacklist";
 
 @import "./modules/alerts";
 @import "./modules/selectable";
@@ -229,6 +230,11 @@ body {
 		display: inline-block;
 		margin: 35px 5px 0 5px;
 	}
+}
+
+.category-dropdown-menu {
+  max-height: 600px;
+  overflow-y: auto;
 }
 
 .table-reordering {

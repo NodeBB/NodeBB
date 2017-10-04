@@ -18,6 +18,11 @@ define('forum/topic/posts', [
 
 		data.loggedIn = !!app.user.uid;
 		data.privileges = ajaxify.data.privileges;
+
+		// prevent timeago in future by setting timestamp to 1 sec behind now
+		data.posts[0].timestamp = Date.now() - 1000;
+		data.posts[0].timestampISO = utils.toISOString(data.posts[0].timestamp);
+
 		Posts.modifyPostsByPrivileges(data.posts);
 
 		updatePostCounts(data.posts);
@@ -95,6 +100,10 @@ define('forum/topic/posts', [
 		var isPreviousPostAdded = $('[component="post"][data-index="' + (data.posts[0].index - 1) + '"]').length;
 		if (!isPreviousPostAdded && (!data.posts[0].selfPost || !ajaxify.data.scrollToMyPost)) {
 			return;
+		}
+
+		if (!isPreviousPostAdded && data.posts[0].selfPost) {
+			return ajaxify.go('post/' + data.posts[0].pid);
 		}
 
 		createNewPosts(data, components.get('post').not('[data-index=0]'), direction, function (html) {
@@ -192,7 +201,7 @@ define('forum/topic/posts', [
 				components.get('topic').append(html);
 			}
 
-			infinitescroll.removeExtra($('[component="post"]'), direction, 40);
+			infinitescroll.removeExtra($('[component="post"]'), direction, config.postsPerPage * 2);
 
 			$(window).trigger('action:posts.loaded', { posts: data.posts });
 
@@ -227,6 +236,7 @@ define('forum/topic/posts', [
 		infinitescroll.loadMore('topics.loadMore', {
 			tid: tid,
 			after: after,
+			count: config.postsPerPage,
 			direction: direction,
 			topicPostSort: config.topicPostSort,
 		}, function (data, done) {

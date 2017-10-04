@@ -1,7 +1,7 @@
 'use strict';
 
 var async = require('async');
-var _ = require('underscore');
+var _ = require('lodash');
 
 var db = require('../database');
 var categories = require('../categories');
@@ -12,7 +12,6 @@ var privileges = require('../privileges');
 module.exports = function (Topics) {
 	var topicTools = {};
 	Topics.tools = topicTools;
-
 
 	topicTools.delete = function (tid, uid, callback) {
 		toggleDelete(tid, uid, true, callback);
@@ -52,12 +51,15 @@ module.exports = function (Topics) {
 				Topics[isDelete ? 'delete' : 'restore'](tid, uid, next);
 			},
 			function (next) {
+				categories.updateRecentTidForCid(topicData.cid, next);
+			},
+			function (next) {
 				topicData.deleted = isDelete ? 1 : 0;
 
 				if (isDelete) {
-					plugins.fireHook('action:topic.delete', topicData);
+					plugins.fireHook('action:topic.delete', { topic: topicData, uid: uid });
 				} else {
-					plugins.fireHook('action:topic.restore', topicData);
+					plugins.fireHook('action:topic.restore', { topic: topicData, uid: uid });
 				}
 
 				var data = {
@@ -113,18 +115,18 @@ module.exports = function (Topics) {
 	function toggleLock(tid, uid, lock, callback) {
 		callback = callback || function () {};
 
-		var cid;
+		var topicData;
 
 		async.waterfall([
 			function (next) {
-				Topics.getTopicField(tid, 'cid', next);
+				Topics.getTopicFields(tid, ['tid', 'uid', 'cid'], next);
 			},
-			function (_cid, next) {
-				cid = _cid;
-				if (!cid) {
+			function (_topicData, next) {
+				topicData = _topicData;
+				if (!topicData || !topicData.cid) {
 					return next(new Error('[[error:no-topic]]'));
 				}
-				privileges.categories.isAdminOrMod(cid, uid, next);
+				privileges.categories.isAdminOrMod(topicData.cid, uid, next);
 			},
 			function (isAdminOrMod, next) {
 				if (!isAdminOrMod) {
@@ -134,16 +136,11 @@ module.exports = function (Topics) {
 				Topics.setTopicField(tid, 'locked', lock ? 1 : 0, next);
 			},
 			function (next) {
-				var data = {
-					tid: tid,
-					isLocked: lock,
-					uid: uid,
-					cid: cid,
-				};
+				topicData.isLocked = lock;
 
-				plugins.fireHook('action:topic.lock', data);
+				plugins.fireHook('action:topic.lock', { topic: _.clone(topicData), uid: uid });
 
-				next(null, data);
+				next(null, topicData);
 			},
 		], callback);
 	}
@@ -160,16 +157,13 @@ module.exports = function (Topics) {
 		var topicData;
 		async.waterfall([
 			function (next) {
-				Topics.exists(tid, next);
-			},
-			function (exists, next) {
-				if (!exists) {
-					return callback(new Error('[[error:no-topic]]'));
-				}
-				Topics.getTopicFields(tid, ['cid', 'lastposttime', 'postcount'], next);
+				Topics.getTopicData(tid, next);
 			},
 			function (_topicData, next) {
 				topicData = _topicData;
+				if (!topicData) {
+					return callback(new Error('[[error:no-topic]]'));
+				}
 				privileges.categories.isAdminOrMod(_topicData.cid, uid, next);
 			},
 			function (isAdminOrMod, next) {
@@ -197,16 +191,11 @@ module.exports = function (Topics) {
 				], next);
 			},
 			function (results, next) {
-				var data = {
-					tid: tid,
-					isPinned: pin,
-					uid: uid,
-					cid: topicData.cid,
-				};
+				topicData.isPinned = pin;
 
-				plugins.fireHook('action:topic.pin', data);
+				plugins.fireHook('action:topic.pin', { topic: _.clone(topicData), uid: uid });
 
-				next(null, data);
+				next(null, topicData);
 			},
 		], callback);
 	}
@@ -221,7 +210,7 @@ module.exports = function (Topics) {
 				Topics.getTopicsFields(tids, ['cid'], next);
 			},
 			function (topicData, next) {
-				var uniqueCids = _.unique(topicData.map(function (topicData) {
+				var uniqueCids = _.uniq(topicData.map(function (topicData) {
 					return topicData && parseInt(topicData.cid, 10);
 				}));
 
@@ -256,6 +245,7 @@ module.exports = function (Topics) {
 
 	topicTools.move = function (tid, cid, uid, callback) {
 		var topic;
+		var oldCid;
 		async.waterfall([
 			function (next) {
 				Topics.exists(tid, next);
@@ -271,7 +261,8 @@ module.exports = function (Topics) {
 				db.sortedSetsRemove([
 					'cid:' + topicData.cid + ':tids',
 					'cid:' + topicData.cid + ':tids:pinned',
-					'cid:' + topicData.cid + ':tids:posts',	// post count
+					'cid:' + topicData.cid + ':tids:posts',
+					'cid:' + topicData.cid + ':recent_tids',
 				], tid, next);
 			},
 			function (next) {
@@ -286,41 +277,48 @@ module.exports = function (Topics) {
 							topic.postcount = topic.postcount || 0;
 							db.sortedSetAdd('cid:' + cid + ':tids:posts', topic.postcount, tid, next);
 						},
-					], next);
+					], function (err) {
+						next(err);
+					});
 				}
 			},
-		], function (err) {
-			if (err) {
-				return callback(err);
-			}
-			var oldCid = topic.cid;
-			categories.moveRecentReplies(tid, oldCid, cid);
-
-			async.parallel([
-				function (next) {
-					categories.incrementCategoryFieldBy(oldCid, 'topic_count', -1, next);
-				},
-				function (next) {
-					categories.incrementCategoryFieldBy(cid, 'topic_count', 1, next);
-				},
-				function (next) {
-					Topics.setTopicFields(tid, {
-						cid: cid,
-						oldCid: oldCid,
-					}, next);
-				},
-			], function (err) {
-				if (err) {
-					return callback(err);
-				}
+			function (next) {
+				oldCid = topic.cid;
+				categories.moveRecentReplies(tid, oldCid, cid, next);
+			},
+			function (next) {
+				async.parallel([
+					function (next) {
+						categories.incrementCategoryFieldBy(oldCid, 'topic_count', -1, next);
+					},
+					function (next) {
+						categories.incrementCategoryFieldBy(cid, 'topic_count', 1, next);
+					},
+					function (next) {
+						categories.updateRecentTid(cid, tid, next);
+					},
+					function (next) {
+						categories.updateRecentTidForCid(oldCid, next);
+					},
+					function (next) {
+						Topics.setTopicFields(tid, {
+							cid: cid,
+							oldCid: oldCid,
+						}, next);
+					},
+				], function (err) {
+					next(err);
+				});
+			},
+			function (next) {
 				plugins.fireHook('action:topic.move', {
 					tid: tid,
 					fromCid: oldCid,
 					toCid: cid,
 					uid: uid,
 				});
-				callback();
-			});
-		});
+				next();
+			},
+		], callback);
 	};
 };

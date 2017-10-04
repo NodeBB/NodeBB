@@ -6,7 +6,7 @@
 			</div>
 			<!-- IF !users.length -->
 			<p class="panel-body">
-				[[admin/manage/registration:description, {config.relative_path}/admin/settings/user]]
+				[[admin/manage/registration:description, {config.relative_path}/admin/settings/user#user-registration]]
 			</p>
 			<!-- ENDIF !users.length -->
 			<div class="table-responsive">

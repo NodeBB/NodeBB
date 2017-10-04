@@ -91,7 +91,7 @@
 
 			<div class="form-group">
 				<label for="profileImageDimension">[[admin/settings/uploads:profile-image-dimension]]</label>
-				<input id="profileImageDimension" type="text" class="form-control" data-field="profileImageDimension" placeholder="128" />
+				<input id="profileImageDimension" type="text" class="form-control" data-field="profileImageDimension" placeholder="200" />
 				<p class="help-block">
 					[[admin/settings/uploads:profile-image-dimension-help]]
 				</p>
@@ -99,7 +99,7 @@
 
 			<div class="form-group">
 				<label>[[admin/settings/uploads:max-profile-image-size]]</label>
-				<input type="text" class="form-control" placeholder="Maximum size of uploaded user images in kilobytes" data-field="maximumProfileImageSize" />
+				<input type="text" class="form-control" placeholder="Maximum size of uploaded user images in kibibytes" data-field="maximumProfileImageSize" />
 				<p class="help-block">
 					[[admin/settings/uploads:max-profile-image-size-help]]
 				</p>
@@ -107,7 +107,7 @@
 
 			<div class="form-group">
 				<label>[[admin/settings/uploads:max-cover-image-size]]</label>
-				<input type="text" class="form-control" placeholder="Maximum size of uploaded cover images in kilobytes" data-field="maximumCoverImageSize" />
+				<input type="text" class="form-control" placeholder="Maximum size of uploaded cover images in kibibytes" data-field="maximumCoverImageSize" />
 				<p class="help-block">
 					[[admin/settings/uploads:max-cover-image-size-help]]
 				</p>

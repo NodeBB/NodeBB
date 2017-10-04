@@ -5,17 +5,17 @@ var async = require('async');
 var os = require('os');
 var nconf = require('nconf');
 var winston = require('winston');
-var validator = require('validator');
+
 var topics = require('../../topics');
 var pubsub = require('../../pubsub');
 
 var stats = {};
 var totals = {};
-var SocketRooms = {
-	stats: stats,
-	totals: totals,
-};
 
+var SocketRooms = module.exports;
+
+SocketRooms.stats = stats;
+SocketRooms.totals = totals;
 
 pubsub.on('sync:stats:start', function () {
 	SocketRooms.getLocalStats(function (err, stats) {
@@ -109,7 +109,7 @@ SocketRooms.getAll = function (socket, data, callback) {
 			topTenTopics.forEach(function (topic, index) {
 				totals.topics[topic.tid] = {
 					value: topic.count || 0,
-					title: validator.escape(String(titles[index].title)),
+					title: String(titles[index].title),
 				};
 			});
 			next(null, totals);
@@ -181,6 +181,3 @@ SocketRooms.getLocalStats = function (callback) {
 
 	callback(null, socketData);
 };
-
-
-module.exports = SocketRooms;

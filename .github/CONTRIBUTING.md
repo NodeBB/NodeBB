@@ -15,7 +15,7 @@ If you are writing contributions as part of employment from another company / in
 
 # Having problems installing NodeBB?
 
-Chances are somebody has run into this problem before. After consulting our [documentation](https://docs.nodebb.org/en/latest/installing/os.html), please head over to our [community support forum](https://community.nodebb.org) for advice.
+Chances are somebody has run into this problem before. After consulting our [documentation](https://docs.nodebb.org/installing/os/), please head over to our [community support forum](https://community.nodebb.org) for advice.
 
 # Found a Security Vulnerability?
 

@@ -1,0 +1,10 @@
+{
+	"post-queue": "İleti Kuyruğu",
+	"description": "İleti kuyruğunda hiç ileti yok. <br>Bu özelliği etkinleştirmek için, şuraya gidin: <a href=\"%1\">Ayarlar; İleti; İleti Kısıtlamaları</a> ve <strong>İleti Kuyruğu</strong>nu etkinleştirin.",
+	"user": "Kullanıcı",
+	"category": "Kategori",
+	"title": "Başlık",
+	"content": "İçerik",
+	"posted": "Gönderildi",
+	"reply-to": "\"%1\"'e Cevap Ver"
+}

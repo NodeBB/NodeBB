@@ -2,6 +2,7 @@
 'use strict';
 
 var async = require('async');
+var validator = require('validator');
 
 var meta = require('../meta');
 var plugins = require('../plugins');
@@ -38,7 +39,7 @@ searchController.search = function (req, res, next) {
 		repliesFilter: req.query.repliesFilter,
 		timeRange: req.query.timeRange,
 		timeFilter: req.query.timeFilter,
-		sortBy: req.query.sortBy,
+		sortBy: req.query.sortBy || meta.config.searchDefaultSortBy || '',
 		sortDirection: req.query.sortDirection,
 		page: page,
 		uid: req.uid,
@@ -46,7 +47,7 @@ searchController.search = function (req, res, next) {
 	};
 
 	async.parallel({
-		categories: async.apply(categories.buildForSelect, req.uid),
+		categories: async.apply(categories.buildForSelect, req.uid, 'read'),
 		search: async.apply(search.search, data),
 	}, function (err, results) {
 		if (err) {
@@ -60,14 +61,16 @@ searchController.search = function (req, res, next) {
 
 		var searchData = results.search;
 		searchData.categories = categoriesData;
-		searchData.categoriesCount = results.categories.length;
+		searchData.categoriesCount = Math.max(10, Math.min(20, categoriesData.length));
 		searchData.pagination = pagination.create(page, searchData.pageCount, req.query);
 		searchData.showAsPosts = !req.query.showAs || req.query.showAs === 'posts';
 		searchData.showAsTopics = req.query.showAs === 'topics';
 		searchData.title = '[[global:header.search]]';
 		searchData.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[global:search]]' }]);
 		searchData.expandSearch = !req.query.term;
-
+		searchData.searchDefaultSortBy = meta.config.searchDefaultSortBy || '';
+		searchData.search_query = validator.escape(String(req.query.term || ''));
+		searchData.term = req.query.term;
 		res.render('search', searchData);
 	});
 };

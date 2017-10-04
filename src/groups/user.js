@@ -6,13 +6,21 @@ var db = require('../database');
 var user = require('../user');
 
 module.exports = function (Groups) {
-	Groups.getUsersFromSet = function (set, callback) {
+	Groups.getUsersFromSet = function (set, fields, callback) {
+		if (typeof fields === 'function') {
+			callback = fields;
+			fields = null;
+		}
 		async.waterfall([
 			function (next) {
 				db.getSetMembers(set, next);
 			},
 			function (uids, next) {
-				user.getUsersData(uids, next);
+				if (fields) {
+					user.getUsersFields(uids, fields, callback);
+				} else {
+					user.getUsersData(uids, next);
+				}
 			},
 		], callback);
 	};
@@ -22,6 +30,19 @@ module.exports = function (Groups) {
 	};
 
 	Groups.getUserGroupsFromSet = function (set, uids, callback) {
+		async.waterfall([
+			function (next) {
+				Groups.getUserGroupMembership(set, uids, next);
+			},
+			function (memberOf, next) {
+				async.map(memberOf, function (memberOf, next) {
+					Groups.getGroupsData(memberOf, next);
+				}, next);
+			},
+		], callback);
+	};
+
+	Groups.getUserGroupMembership = function (set, uids, callback) {
 		async.waterfall([
 			function (next) {
 				db.getSortedSetRevRange(set, 0, -1, next);
@@ -40,7 +61,7 @@ module.exports = function (Groups) {
 								}
 							});
 
-							Groups.getGroupsData(memberOf, next);
+							next(null, memberOf);
 						},
 					], next);
 				}, next);

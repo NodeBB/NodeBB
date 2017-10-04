@@ -1,6 +1,6 @@
 {
     "uploading-file": "Nahrávání souboru…",
-    "select-file-to-upload": "Vyberte soubor pro nahrání!",
-    "upload-success": "Soubor byl úspěšně nahrán!",
-    "maximum-file-size": "Maximum %1 kb"
+    "select-file-to-upload": "Vyberte soubor pro nahrání.",
+    "upload-success": "Soubor byl úspěšně nahrán.",
+    "maximum-file-size": "Maximálně %1 kb"
 }

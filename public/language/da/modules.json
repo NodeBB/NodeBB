@@ -20,6 +20,7 @@
     "chat.three_months": "3 måneder",
     "chat.delete_message_confirm": "Er du sikker på at du vil slette denne besked?",
     "chat.add-users-to-room": "Tilføj brugere til chatrum",
+    "chat.confirm-chat-with-dnd-user": "This user has set their status to DnD(Do not disturb). Do you still want to chat with them?",
     "composer.compose": "Skriv",
     "composer.show_preview": "Vis forhåndsvisning",
     "composer.hide_preview": "Fjern forhåndsvisning",

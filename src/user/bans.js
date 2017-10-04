@@ -61,13 +61,13 @@ module.exports = function (User) {
 		async.waterfall([
 			async.apply(User.getUserFields, uid, ['banned', 'banned:expire']),
 			function (userData, next) {
-				var banned = parseInt(userData.banned, 10) === 1;
+				var banned = userData && parseInt(userData.banned, 10) === 1;
 				if (!banned) {
 					return next(null, banned);
 				}
 
 				// If they are banned, see if the ban has expired
-				var stillBanned = !userData['banned:expire'] || Date.now() < userData['banned:expire'];
+				var stillBanned = !parseInt(userData['banned:expire'], 10) || Date.now() < parseInt(userData['banned:expire'], 10);
 
 				if (stillBanned) {
 					return next(null, true);
@@ -84,13 +84,13 @@ module.exports = function (User) {
 	};
 
 	User.getBannedReason = function (uid, callback) {
-		// Grabs the latest ban reason
-		db.getSortedSetRevRange('banned:' + uid + ':reasons', 0, 0, function (err, reasons) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, reasons.length ? reasons[0] : '');
-		});
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRevRange('banned:' + uid + ':reasons', 0, 0, next);
+			},
+			function (reasons, next) {
+				next(null, reasons.length ? reasons[0] : '');
+			},
+		], callback);
 	};
 };

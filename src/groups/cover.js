@@ -1,13 +1,13 @@
 'use strict';
 
 var async = require('async');
-var fs = require('fs');
+var path = require('path');
 var Jimp = require('jimp');
 var mime = require('mime');
-var winston = require('winston');
 
 var db = require('../database');
 var image = require('../image');
+var file = require('../file');
 var uploadsController = require('../controllers/uploads');
 
 module.exports = function (Groups) {
@@ -26,7 +26,7 @@ module.exports = function (Groups) {
 
 		var tempPath = data.file ? data.file : '';
 		var url;
-		var type = data.file ? mime.lookup(data.file) : 'image/png';
+		var type = data.file ? mime.getType(data.file) : 'image/png';
 
 		async.waterfall([
 			function (next) {
@@ -37,8 +37,9 @@ module.exports = function (Groups) {
 			},
 			function (_tempPath, next) {
 				tempPath = _tempPath;
+
 				uploadsController.uploadGroupCover(uid, {
-					name: 'groupCover',
+					name: 'groupCover' + path.extname(tempPath),
 					path: tempPath,
 					type: type,
 				}, next);
@@ -52,7 +53,7 @@ module.exports = function (Groups) {
 			},
 			function (next) {
 				uploadsController.uploadGroupCover(uid, {
-					name: 'groupCoverThumb',
+					name: 'groupCoverThumb' + path.extname(tempPath),
 					path: tempPath,
 					type: type,
 				}, next);
@@ -68,12 +69,8 @@ module.exports = function (Groups) {
 				}
 			},
 		], function (err) {
-			fs.unlink(tempPath, function (unlinkErr) {
-				if (unlinkErr) {
-					winston.error(unlinkErr);
-				}
-				callback(err, { url: url });
-			});
+			file.delete(tempPath);
+			callback(err, { url: url });
 		});
 	};
 

@@ -1,0 +1,14 @@
+{
+	"figure-x": "Figura %1",
+	"error-events-per-day": "<code>%1</code> događaja po danu",
+	"error.404": "404 Nije pronađeno",
+	"error.503": "503 Usluga nedostupna",
+	"manage-error-log": "Upravljaj dnevnikom grešaka",
+	"export-error-log": "Izvedi dnevnik grešaka (CSV)",
+	"clear-error-log": "Očisti dnevnik grešaka",
+	"route": "Putanja",
+	"count": "Zbroj",
+	"no-routes-not-found": "Huura! Nema 404 grešaka!",
+	"clear404-confirm": "Sigurni ste da želite očistiti 404 greše iz dnevnika?",
+	"clear404-success": "\"404 Nije pronađen\" greške očišćene"
+}

@@ -1,13 +1,14 @@
 'use strict';
 
+require('colors');
 var path = require('path');
 var winston = require('winston');
 var nconf = require('nconf');
 var async = require('async');
 var db = require('./database');
+var events = require('./events');
 
 var Reset = {};
-
 
 Reset.reset = function (callback) {
 	db.init(function (err) {
@@ -66,6 +67,7 @@ Reset.reset = function (callback) {
 
 			process.stdout.write('\nPlugin and theme reset flags (-p & -t) can take a single argument\n');
 			process.stdout.write('    e.g. ./nodebb reset -p nodebb-plugin-mentions, ./nodebb reset -t nodebb-theme-persona\n');
+			process.stdout.write('         Prefix is optional, e.g. ./nodebb reset -p markdown, ./nodebb reset -t persona\n');
 
 			process.exit(0);
 		}
@@ -131,6 +133,12 @@ function resetPlugin(pluginId, callback) {
 				next();
 			}
 		},
+		function (next) {
+			events.log({
+				type: 'plugin-deactivate',
+				text: pluginId,
+			}, next);
+		},
 	], function (err) {
 		if (err) {
 			winston.error('[reset] Could not disable plugin: %s encountered error %s', pluginId, err.message);
@@ -154,10 +162,14 @@ function resetPlugins(callback) {
 }
 
 function resetWidgets(callback) {
-	require('./widgets').reset(function (err) {
-		winston.info('[reset] All Widgets moved to Draft Zone');
-		callback(err);
-	});
+	async.waterfall([
+		require('./plugins').reload,
+		require('./widgets').reset,
+		function (next) {
+			winston.info('[reset] All Widgets moved to Draft Zone');
+			next();
+		},
+	], callback);
 }
 
 module.exports = Reset;

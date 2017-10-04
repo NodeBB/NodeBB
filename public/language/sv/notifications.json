@@ -41,6 +41,7 @@
     "new_register": "<strong>%1</strong> skickade en registreringsförfrågan.",
     "new_register_multiple": "Det finns <strong>%1</strong> förfrågningar om registrering som inväntar granskning.",
     "flag_assigned_to_you": "<strong>Flag %1</strong> has been assigned to you",
+    "post_awaiting_review": "Post awaiting review",
     "email-confirmed": "E-post bekräftad",
     "email-confirmed-message": "Tack för att du bekräftat din e-postadress. Ditt konto är nu fullt ut aktiverat.",
     "email-confirm-error-message": "Det uppstod ett problem med bekräftelsen av din e-postadress. Kanske var koden felaktig eller ogiltig.",

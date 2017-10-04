@@ -6,7 +6,7 @@ var path = require('path');
 var prompt = require('prompt');
 var winston = require('winston');
 var nconf = require('nconf');
-var utils = require('../public/src/utils.js');
+var utils = require('./utils.js');
 
 var install = {};
 var questions = {};
@@ -84,7 +84,7 @@ function checkSetupFlag(next) {
 }
 
 function checkCIFlag(next) {
-	var	ciVals;
+	var ciVals;
 	try {
 		ciVals = JSON.parse(nconf.get('ci'));
 	} catch (e) {
@@ -188,7 +188,7 @@ function setupDefaultConfigs(next) {
 }
 
 function enableDefaultTheme(next) {
-	var	meta = require('./meta');
+	var meta = require('./meta');
 
 	meta.configs.get('theme:id', function (err, id) {
 		if (err || id) {
@@ -470,7 +470,7 @@ function enableDefaultPlugins(next) {
 }
 
 function setCopyrightWidget(next) {
-	var	db = require('./database');
+	var db = require('./database');
 	async.parallel({
 		footerJSON: function (next) {
 			fs.readFile(path.join(__dirname, '../', 'install/data/footer.json'), next);
@@ -507,12 +507,11 @@ install.setup = function (callback) {
 		setCopyrightWidget,
 		function (next) {
 			var upgrade = require('./upgrade');
-			upgrade.check(function (err, uptodate) {
-				if (err) {
+			upgrade.check(function (err) {
+				if (err && err.message === 'schema-out-of-date') {
+					upgrade.run(next);
+				} else if (err) {
 					return next(err);
-				}
-				if (!uptodate) {
-					upgrade.upgrade(next);
 				} else {
 					next();
 				}
@@ -535,7 +534,7 @@ install.setup = function (callback) {
 };
 
 install.save = function (server_conf, callback) {
-	var	serverConfigPath = path.join(__dirname, '../config.json');
+	var serverConfigPath = path.join(__dirname, '../config.json');
 
 	if (nconf.get('config')) {
 		serverConfigPath = path.resolve(__dirname, '../', nconf.get('config'));

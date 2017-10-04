@@ -1,9 +1,10 @@
 'use strict';
 
-var coverPhoto = {};
+
 var meta = require('./meta');
 var nconf = require('nconf');
 
+var coverPhoto = module.exports;
 
 coverPhoto.getDefaultGroupCover = function (groupName) {
 	return getCover('groups', groupName);
@@ -28,5 +29,3 @@ function getCover(type, id) {
 
 	return nconf.get('relative_path') + '/assets/images/cover-default.png';
 }
-
-module.exports = coverPhoto;

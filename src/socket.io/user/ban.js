@@ -1,11 +1,16 @@
 'use strict';
 
 var async = require('async');
+
 var user = require('../../user');
+var meta = require('../../meta');
 var websockets = require('../index');
 var events = require('../../events');
-
+var privileges = require('../../privileges');
 var plugins = require('../../plugins');
+var emailer = require('../../emailer');
+var translator = require('../../translator');
+var utils = require('../../../public/src/utils');
 
 module.exports = function (SocketUser) {
 	SocketUser.banUsers = function (socket, data, callback) {
@@ -34,6 +39,9 @@ module.exports = function (SocketUser) {
 						until: data.until > 0 ? data.until : undefined,
 					});
 					next();
+				},
+				function (next) {
+					user.auth.revokeAllSessions(uid, next);
 				},
 			], next);
 		}, callback);
@@ -72,10 +80,10 @@ module.exports = function (SocketUser) {
 
 		async.waterfall([
 			function (next) {
-				user.isAdminOrGlobalMod(uid, next);
+				privileges.users.hasBanPrivilege(uid, next);
 			},
-			function (isAdminOrGlobalMod, next) {
-				if (!isAdminOrGlobalMod) {
+			function (hasBanPrivilege, next) {
+				if (!hasBanPrivilege) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				async.each(uids, method, next);
@@ -92,10 +100,37 @@ module.exports = function (SocketUser) {
 				if (isAdmin) {
 					return next(new Error('[[error:cant-ban-other-admins]]'));
 				}
+
+				user.getUserField(uid, 'username', next);
+			},
+			function (username, next) {
+				var siteTitle = meta.config.title || 'NodeBB';
+				var data = {
+					subject: '[[email:banned.subject, ' + siteTitle + ']]',
+					username: username,
+					until: until ? utils.toISOString(until) : false,
+					reason: reason,
+				};
+
+				emailer.send('banned', uid, data, next);
+			},
+			function (next) {
 				user.ban(uid, until, reason, next);
 			},
 			function (next) {
-				websockets.in('uid_' + uid).emit('event:banned');
+				if (!reason) {
+					return translator.translate('[[user:info.banned-no-reason]]', function (translated) {
+						next(null, translated);
+					});
+				}
+
+				next(null, reason);
+			},
+			function (_reason, next) {
+				websockets.in('uid_' + uid).emit('event:banned', {
+					until: until,
+					reason: _reason,
+				});
 				next();
 			},
 		], callback);

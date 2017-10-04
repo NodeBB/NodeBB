@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/extend/rewards', ['translator'], function (translator) {
+define('admin/extend/rewards', ['translator', 'benchpress'], function (translator, Benchpress) {
 	var rewards = {};
 
 
@@ -139,7 +139,7 @@ define('admin/extend/rewards', ['translator'], function (translator) {
 			rewards: available,
 		};
 
-		templates.parse('admin/extend/rewards', 'active', data, function (li) {
+		Benchpress.parse('admin/extend/rewards', 'active', data, function (li) {
 			translator.translate(li, function (li) {
 				li = $(li);
 				ul.append(li);

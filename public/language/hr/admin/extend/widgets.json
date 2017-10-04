@@ -1,0 +1,19 @@
+{
+	"available": "Dostupni dodatci",
+	"explanation": "Select a widget from the dropdown menu and then drag and drop it into a template's widget area on the left.",
+	"none-installed": "No widgets found! Activate the essential widgets plugin in the <a href=\"%1\">plugins</a> control panel.",
+	"containers.available": "Dostupni kontejneri",
+	"containers.explanation": "Povucite i ispustite na vrhu bilo kojeg aktivnog widgeta",
+	"containers.none": "Ništa",
+	"container.well": "`",
+	"container.jumbotron": "Jumbotron",
+	"container.panel": "Ploča",
+	"container.panel-header": "Ploča zaglavlja",
+	"container.panel-body": "Tijelo ploče",
+	"container.alert": "Upozorenje",
+
+	"alert.confirm-delete": "Sigurni ste da želite obrisati ovaj widget?",
+	"alert.updated": "Widgeti ažurirani",
+	"alert.update-success": "Uspješno promijenjeni widgeti"
+
+}

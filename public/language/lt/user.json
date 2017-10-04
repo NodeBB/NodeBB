@@ -60,6 +60,7 @@
     "username_taken_workaround": "Jūsų norimas vartotojo vardas jau užimtas, todėl mes jį šiek tiek pakeitėme. Dabar jūs esate žinomas kaip <strong>%1</strong>",
     "password_same_as_username": "Jūsų slaptažodis sutampa su Jūsų vartotojo vardu. Dėl saugumo, prašome naudoti kitą slaptažodį.",
     "password_same_as_email": "Jūsų slaptažodis sutampa su Jūsų el. pašto adresu. Dėl saugumo, prašome naudoti kitą slaptažodį.",
+    "weak_password": "Weak password.",
     "upload_picture": "Įkelti paveikslėlį",
     "upload_a_picture": "Įkelti paveikslėlį",
     "remove_uploaded_picture": "Ištrinti paveikslėlį",

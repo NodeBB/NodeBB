@@ -1,7 +1,6 @@
 'use strict';
 
-
-define('admin/appearance/customise', ['admin/settings'], function (Settings) {
+define('admin/appearance/customise', ['admin/settings', 'ace/ace'], function (Settings, ace) {
 	var Customise = {};
 
 	Customise.init = function () {
@@ -28,6 +27,12 @@ define('admin/appearance/customise', ['admin/settings'], function (Settings) {
 				app.flags = app.flags || {};
 				app.flags._unsaved = true;
 				$('#customHTML-holder').val(customHTML.getValue());
+			});
+
+			$('#save').on('click', function () {
+				if ($('#enableLiveReload').is(':checked')) {
+					socket.emit('admin.reloadAllSessions');
+				}
 			});
 		});
 	};

@@ -1,6 +1,7 @@
 {
     "success": "הצלחה",
     "topic-post": "העלת פוסט בהצלחה.",
+    "post-queued": "Your post is queued for approval.",
     "authentication-successful": "הנתונים אומתו בהצלחה",
     "settings-saved": "הנתונים נשמרו!"
 }

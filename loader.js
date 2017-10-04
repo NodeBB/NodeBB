@@ -7,6 +7,7 @@ var path = require('path');
 var fork = require('child_process').fork;
 var async = require('async');
 var logrotate = require('logrotate-stream');
+
 var file = require('./src/file');
 var pkg = require('./package.json');
 
@@ -23,6 +24,7 @@ var workers = [];
 var Loader = {
 	timesStarted: 0,
 };
+var appPath = path.join(__dirname, 'app.js');
 
 Loader.init = function (callback) {
 	if (silent) {
@@ -114,7 +116,7 @@ function forkWorker(index, isPrimary) {
 	process.env.isCluster = ports.length > 1;
 	process.env.port = ports[index];
 
-	var worker = fork('app.js', args, {
+	var worker = fork(appPath, args, {
 		silent: silent,
 		env: process.env,
 	});
@@ -140,7 +142,7 @@ function getPorts() {
 		process.exit();
 	}
 	var urlObject = url.parse(_url);
-	var port = nconf.get('port') || nconf.get('PORT') || urlObject.port || 4567;
+	var port = nconf.get('port') || urlObject.port || 4567;
 	if (!Array.isArray(port)) {
 		port = [port];
 	}
@@ -166,6 +168,9 @@ Loader.restart = function () {
 		nconf.set('url', conf.url);
 		nconf.stores.env.readOnly = true;
 
+		if (process.env.url !== conf.url) {
+			process.env.url = conf.url;
+		}
 		Loader.start();
 	});
 };
@@ -182,7 +187,9 @@ Loader.stop = function () {
 	killWorkers();
 
 	// Clean up the pidfile
-	fs.unlinkSync(pidFilePath);
+	if (nconf.get('daemon') !== 'false' && nconf.get('daemon') !== false) {
+		fs.unlinkSync(pidFilePath);
+	}
 };
 
 function killWorkers() {
@@ -221,6 +228,7 @@ fs.open(path.join(__dirname, 'config.json'), 'r', function (err) {
 			require('daemon')({
 				stdout: process.stdout,
 				stderr: process.stderr,
+				cwd: process.cwd(),
 			});
 
 			fs.writeFileSync(pidFilePath, process.pid);

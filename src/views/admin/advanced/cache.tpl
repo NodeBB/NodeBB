@@ -27,6 +27,24 @@
 		</div>
 
 		<div class="panel panel-default">
+			<div class="panel-heading"><i class="fa fa-calendar-o"></i> User Settings Cache</div>
+			<div class="panel-body">
+
+				<label>[[admin/advanced/cache:items-in-cache]]</label><br/>
+				<span>{userSettingsCache.itemCount}</span><br/>
+
+				<label>[[admin/advanced/cache:length-to-max]]</label><br/>
+				<span>{userSettingsCache.length} / {userSettingsCache.max}</span><br/>
+
+				<div class="progress">
+					<div class="progress-bar" role="progressbar" aria-valuenow="{userSettingsCache.percentFull}" aria-valuemin="0" aria-valuemax="100" style="width: {userSettingsCache.percentFull}%;">
+						[[admin/advanced/cache:percent-full, {userSettingsCache.percentFull}]]
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-calendar-o"></i> Group Cache</div>
 			<div class="panel-body">
 

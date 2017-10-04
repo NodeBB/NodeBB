@@ -20,6 +20,7 @@
     "chat.three_months": "3 månader",
     "chat.delete_message_confirm": "Är du säker på att du vill radera det här meddelandet?",
     "chat.add-users-to-room": "Addera användare till rum",
+    "chat.confirm-chat-with-dnd-user": "This user has set their status to DnD(Do not disturb). Do you still want to chat with them?",
     "composer.compose": "Komponera",
     "composer.show_preview": "Visa förhandsgranskning",
     "composer.hide_preview": "Dölj förhandsgranskning",

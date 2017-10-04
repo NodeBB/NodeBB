@@ -1,16 +1,18 @@
 {
-	"you-are-on": "Info - You are on <strong>%1:%2</strong>",
-	"host": "host",
+	"you-are-on": "Bilgi - Buradasınız: <strong>%1:%2</strong>",
+	"nodes-responded": "%2ms içinde %1 düğüm yanıt verdi!",
+	"host": "sunucu",
 	"pid": "pid",
 	"nodejs": "nodejs",
-	"online": "online",
+	"online": "çevrimiçi",
 	"git": "git",
-	"load": "load",
-	"uptime": "uptime",
+	"memory": "hafıza",
+	"load": "yükle",
+	"uptime": "kesintisiz çalışma süresi",
 
-	"registered": "Registered",
-	"sockets": "Sockets",
+	"registered": "Kayıtlı",
+	"sockets": "Soketler",
 	"guests": "Ziyaretçiler",
 
-	"info": "Info"
+	"info": "Bilgi"
 }

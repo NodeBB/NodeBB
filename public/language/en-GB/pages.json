@@ -6,8 +6,10 @@
 	"popular-month": "Popular topics this month",
 	"popular-alltime": "All time popular topics",
 	"recent": "Recent Topics",
-	"flagged-posts": "Flagged Posts",
+	"moderator-tools": "Moderator Tools",
+	"flagged-content": "Flagged Content",
 	"ip-blacklist": "IP Blacklist",
+	"post-queue": "Post Queue",
 
 	"users/online": "Online Users",
 	"users/latest": "Latest Users",
@@ -31,6 +33,9 @@
 
 	"chats": "Chats",
 	"chat": "Chatting with %1",
+
+	"flags": "Flags",
+	"flag-details": "Flag %1 Details",
 
 	"account/edit": "Editing \"%1\"",
 	"account/edit/password": "Editing password of \"%1\"",

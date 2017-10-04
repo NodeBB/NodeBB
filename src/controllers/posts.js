@@ -3,6 +3,7 @@
 var async = require('async');
 
 var posts = require('../posts');
+var privileges = require('../privileges');
 var helpers = require('./helpers');
 
 var postsController = module.exports;
@@ -15,13 +16,23 @@ postsController.redirectToPost = function (req, res, next) {
 
 	async.waterfall([
 		function (next) {
-			posts.generatePostPath(pid, req.uid, next);
+			async.parallel({
+				canRead: function (next) {
+					privileges.posts.can('read', pid, req.uid, next);
+				},
+				path: function (next) {
+					posts.generatePostPath(pid, req.uid, next);
+				},
+			}, next);
 		},
-		function (path, next) {
-			if (!path) {
+		function (results, next) {
+			if (!results.canRead) {
+				return helpers.notAllowed(req, res);
+			}
+			if (!results.path) {
 				return next();
 			}
-			helpers.redirect(res, path);
+			helpers.redirect(res, results.path);
 		},
 	], next);
 };

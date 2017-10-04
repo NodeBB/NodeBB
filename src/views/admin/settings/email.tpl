@@ -7,7 +7,7 @@
 			<div class="form-group">
 				<label for="email:from"><strong>[[admin/settings/email:address]]</strong></label>
 				<p class="help-block">
-					
+					[[admin/settings/email:address-help]]
 				</p>
 				<input type="text" class="form-control input-lg" id="email:from" data-field="email:from" placeholder="info@example.org" /><br />
 			</div>
@@ -23,33 +23,57 @@
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/email:gmail-routing]]</div>
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/email:smtp-transport]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<div class="alert alert-warning">
 			<p>
-				[[admin/settings/email:gmail-routing-help1]]
-			</p>
-			<p>
-				[[admin/settings/email:gmail-routing-help2]]
+				[[admin/settings/email:smtp-transport-help]]
 			</p>
 		</div>
 		<form>
 			<div class="checkbox">
-				<label for="email:GmailTransport:enabled" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" id="email:GmailTransport:enabled" data-field="email:GmailTransport:enabled" name="email:GmailTransport:enabled" />
-					<span class="mdl-switch__label">[[admin/settings/email:gmail-transport]]</span>
+				<label for="email:smtpTransport:enabled" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" id="email:smtpTransport:enabled" data-field="email:smtpTransport:enabled" name="email:smtpTransport:enabled" />
+					<span class="mdl-switch__label">[[admin/settings/email:smtp-transport.enabled]]</span>
 				</label>
 			</div>
 			<div class="form-group">
-				<label for="email:GmailTransport:user"><strong>[[admin/settings/email:gmail-transport.username]]</strong></label>
-				<input type="text" class="form-control input-lg" id="email:GmailTransport:user" data-field="email:GmailTransport:user" placeholder="admin@example.org" />
+				<label for="email:smtpTransport:service"><strong>[[admin/settings/email:smtp-transport.service]]</strong></label>
+				<select class="form-control input-lg" id="email:smtpTransport:service" data-field="email:smtpTransport:service">
+					<!-- BEGIN services -->
+					<option value="@value">@value</option>
+					<!-- END services -->
+
+					<option style="font-size: 10px" disabled>&nbsp;</option>
+					<option value="nodebb-custom-smtp" style="font-weight: bold">[[admin/settings/email:smtp-transport.service-custom]]</option>
+				</select>
 				<p class="help-block">
-					[[admin/settings/email:gmail-transport.username-help]]
+					[[admin/settings/email:smtp-transport.service-help]]
+					<br>
+					[[admin/settings/email:smtp-transport.gmail-warning1]]
+					<br>
+					[[admin/settings/email:smtp-transport.gmail-warning2]]
+				</p>
+			</div>
+			<div class="form-group well" id="email:smtpTransport:custom-service" style="display: none">
+				<h5>Custom Service</h5>
+
+				<label for="email:smtpTransport:host">[[admin/settings/email:smtp-transport.host]]</label>
+				<input type="text" class="form-control input-md" id="email:smtpTransport:host" data-field="email:smtpTransport:host" placeholder="smtp.example.org">
+
+				<label for="email:smtpTransport:port">[[admin/settings/email:smtp-transport.port]]</label>
+				<input type="text" class="form-control input-md" id="email:smtpTransport:port" data-field="email:smtpTransport:port" placeholder="5555">
+			</div>
+			<div class="form-group">
+				<label for="email:smtpTransport:user"><strong>[[admin/settings/email:smtp-transport.username]]</strong></label>
+				<input type="text" class="form-control input-lg" id="email:smtpTransport:user" data-field="email:smtpTransport:user" placeholder="admin@example.org" />
+				<p class="help-block">
+					[[admin/settings/email:smtp-transport.username-help]]
 				</p>
 			</div>
 			<div class="form-group">
-				<label for="email:GmailTransport:pass"><strong>[[admin/settings/email:gmail-transport.password]]</strong></label>
-				<input type="password" class="form-control input-lg" id="email:GmailTransport:pass" data-field="email:GmailTransport:pass" />
+				<label for="email:smtpTransport:pass"><strong>[[admin/settings/email:smtp-transport.password]]</strong></label>
+				<input type="password" class="form-control input-lg" id="email:smtpTransport:pass" data-field="email:smtpTransport:pass" />
 			</div>
 		</form>
 	</div>

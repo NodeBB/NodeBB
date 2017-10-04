@@ -2,7 +2,7 @@
 'use strict';
 
 var async = require('async');
-var _ = require('underscore');
+var _ = require('lodash');
 var validator = require('validator');
 
 var db = require('../database');
@@ -10,6 +10,7 @@ var user = require('../user');
 var posts = require('../posts');
 var meta = require('../meta');
 var plugins = require('../plugins');
+var utils = require('../../public/src/utils');
 
 module.exports = function (Topics) {
 	Topics.onNewPostMade = function (postData, callback) {
@@ -103,6 +104,9 @@ module.exports = function (Topics) {
 					parents: function (next) {
 						Topics.addParentPosts(postData, next);
 					},
+					replies: function (next) {
+						getPostReplies(pids, uid, next);
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -115,7 +119,7 @@ module.exports = function (Topics) {
 						postObj.upvoted = results.voteData.upvotes[i];
 						postObj.downvoted = results.voteData.downvotes[i];
 						postObj.votes = postObj.votes || 0;
-						postObj.replies = postObj.replies || 0;
+						postObj.replies = results.replies[i];
 						postObj.selfPost = !!parseInt(uid, 10) && parseInt(uid, 10) === parseInt(postObj.uid, 10);
 
 						// Username override for guests, if enabled
@@ -165,11 +169,9 @@ module.exports = function (Topics) {
 			async.apply(posts.getPostsFields, parentPids, ['uid']),
 			function (_parentPosts, next) {
 				parentPosts = _parentPosts;
-				var parentUids = parentPosts.map(function (postObj) {
-					return parseInt(postObj.uid, 10);
-				}).filter(function (uid, idx, users) {
-					return users.indexOf(uid) === idx;
-				});
+				var parentUids = _.uniq(parentPosts.map(function (postObj) {
+					return postObj && parseInt(postObj.uid, 10);
+				}));
 
 				user.getUsersFields(parentUids, ['username'], next);
 			},
@@ -235,7 +237,7 @@ module.exports = function (Topics) {
 					},
 					function (_pids, _next) {
 						pids = _pids;
-						if (!Array.isArray(pids) || !pids.length) {
+						if (!pids.length) {
 							done = true;
 							return next();
 						}
@@ -385,4 +387,72 @@ module.exports = function (Topics) {
 	Topics.getPostCount = function (tid, callback) {
 		db.getObjectField('topic:' + tid, 'postcount', callback);
 	};
+
+	function getPostReplies(pids, callerUid, callback) {
+		var arrayOfReplyPids;
+		var replyData;
+		var uniqueUids;
+		var uniquePids;
+		async.waterfall([
+			function (next) {
+				var keys = pids.map(function (pid) {
+					return 'pid:' + pid + ':replies';
+				});
+				db.getSortedSetsMembers(keys, next);
+			},
+			function (arrayOfPids, next) {
+				arrayOfReplyPids = arrayOfPids;
+
+				uniquePids = _.uniq(_.flatten(arrayOfPids));
+
+				posts.getPostsFields(uniquePids, ['pid', 'uid', 'timestamp'], next);
+			},
+			function (_replyData, next) {
+				replyData = _replyData;
+				var uids = replyData.map(function (replyData) {
+					return replyData && replyData.uid;
+				});
+
+				uniqueUids = _.uniq(uids);
+
+				user.getUsersWithFields(uniqueUids, ['uid', 'username', 'userslug', 'picture'], callerUid, next);
+			},
+			function (userData, next) {
+				var uidMap = _.zipObject(uniqueUids, userData);
+				var pidMap = _.zipObject(uniquePids, replyData);
+
+				var returnData = arrayOfReplyPids.map(function (replyPids) {
+					var uidsUsed = {};
+					var currentData = {
+						hasMore: false,
+						users: [],
+						text: replyPids.length > 1 ? '[[topic:replies_to_this_post, ' + replyPids.length + ']]' : '[[topic:one_reply_to_this_post]]',
+						count: replyPids.length,
+						timestampISO: replyPids.length ? utils.toISOString(pidMap[replyPids[0]].timestamp) : undefined,
+					};
+
+					replyPids.sort(function (a, b) {
+						return parseInt(a, 10) - parseInt(b, 10);
+					});
+
+					replyPids.forEach(function (replyPid) {
+						var replyData = pidMap[replyPid];
+						if (!uidsUsed[replyData.uid] && currentData.users.length < 6) {
+							currentData.users.push(uidMap[replyData.uid]);
+							uidsUsed[replyData.uid] = true;
+						}
+					});
+
+					if (currentData.users.length > 5) {
+						currentData.users.pop();
+						currentData.hasMore = true;
+					}
+
+					return currentData;
+				});
+
+				next(null, returnData);
+			},
+		], callback);
+	}
 };

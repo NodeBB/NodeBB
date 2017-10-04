@@ -1,18 +1,21 @@
 'use strict';
 
 var async = require('async');
-var fs = require('fs');
 var path = require('path');
+var fs = require('fs');
 var csrf = require('csurf');
 var validator = require('validator');
 var nconf = require('nconf');
 var ensureLoggedIn = require('connect-ensure-login');
 var toobusy = require('toobusy-js');
+var Benchpress = require('benchpressjs');
+var LRU = require('lru-cache');
 
 var plugins = require('../plugins');
 var meta = require('../meta');
 var user = require('../user');
 var groups = require('../groups');
+var file = require('../file');
 
 var analytics = require('../analytics');
 
@@ -21,7 +24,11 @@ var controllers = {
 	helpers: require('../controllers/helpers'),
 };
 
-var middleware = {};
+var delayCache = LRU({
+	maxAge: 1000 * 60,
+});
+
+var middleware = module.exports;
 
 middleware.applyCSRF = csrf();
 
@@ -34,43 +41,13 @@ require('./maintenance')(middleware);
 require('./user')(middleware);
 require('./headers')(middleware);
 
-middleware.authenticate = function (req, res, next) {
-	if (req.user) {
-		return next();
-	} else if (plugins.hasListeners('action:middleware.authenticate')) {
-		return plugins.fireHook('action:middleware.authenticate', {
-			req: req,
-			res: res,
-			next: next,
-		});
+middleware.stripLeadingSlashes = function (req, res, next) {
+	var target = req.originalUrl.replace(nconf.get('relative_path'), '');
+	if (target.startsWith('//')) {
+		res.redirect(nconf.get('relative_path') + target.replace(/^\/+/, '/'));
+	} else {
+		setImmediate(next);
 	}
-
-	controllers.helpers.notAllowed(req, res);
-};
-
-middleware.ensureSelfOrGlobalPrivilege = function (req, res, next) {
-	/*
-		The "self" part of this middleware hinges on you having used
-		middleware.exposeUid prior to invoking this middleware.
-	*/
-	async.waterfall([
-		function (next) {
-			if (!req.uid) {
-				return setImmediate(next, null, false);
-			}
-
-			if (req.uid === parseInt(res.locals.uid, 10)) {
-				return setImmediate(next, null, true);
-			}
-			user.isAdminOrGlobalMod(req.uid, next);
-		},
-		function (isAdminOrGlobalMod, next) {
-			if (!isAdminOrGlobalMod) {
-				return controllers.helpers.notAllowed(req, res);
-			}
-			next();
-		},
-	], next);
 };
 
 middleware.pageView = function (req, res, next) {
@@ -99,9 +76,9 @@ middleware.pageView = function (req, res, next) {
 middleware.pluginHooks = function (req, res, next) {
 	async.each(plugins.loadedHooks['filter:router.page'] || [], function (hookObj, next) {
 		hookObj.method(req, res, next);
-	}, function () {
+	}, function (err) {
 		// If it got here, then none of the subscribed hooks did anything, or there were no hooks
-		next();
+		next(err);
 	});
 };
 
@@ -122,7 +99,13 @@ middleware.routeTouchIcon = function (req, res) {
 	if (meta.config['brand:touchIcon'] && validator.isURL(meta.config['brand:touchIcon'])) {
 		return res.redirect(meta.config['brand:touchIcon']);
 	}
-	return res.sendFile(path.join(__dirname, '../../public', meta.config['brand:touchIcon'] || '/logo.png'), {
+	var iconPath = '../../public';
+	if (meta.config['brand:touchIcon']) {
+		iconPath += meta.config['brand:touchIcon'].replace(/assets\/uploads/, 'uploads');
+	} else {
+		iconPath += '/logo.png';
+	}
+	return res.sendFile(path.join(__dirname, iconPath), {
 		maxAge: req.app.enabled('cache') ? 5184000000 : 0,
 	});
 };
@@ -147,21 +130,22 @@ function expose(exposedField, method, field, req, res, next) {
 	if (!req.params.hasOwnProperty(field)) {
 		return next();
 	}
-	method(req.params[field], function (err, id) {
-		if (err) {
-			return next(err);
-		}
-
-		res.locals[exposedField] = id;
-		next();
-	});
+	async.waterfall([
+		function (next) {
+			method(req.params[field], next);
+		},
+		function (id, next) {
+			res.locals[exposedField] = id;
+			next();
+		},
+	], next);
 }
 
 middleware.privateUploads = function (req, res, next) {
 	if (req.user || parseInt(meta.config.privateUploads, 10) !== 1) {
 		return next();
 	}
-	if (req.path.startsWith('/assets/uploads/files')) {
+	if (req.path.startsWith(nconf.get('relative_path') + '/assets/uploads/files')) {
 		return res.status(403).json('not-allowed');
 	}
 	next();
@@ -182,27 +166,68 @@ middleware.applyBlacklist = function (req, res, next) {
 	});
 };
 
-middleware.processTimeagoLocales = function (req, res) {
+middleware.processTimeagoLocales = function (req, res, next) {
 	var fallback = req.path.indexOf('-short') === -1 ? 'jquery.timeago.en.js' : 'jquery.timeago.en-short.js';
 	var localPath = path.join(__dirname, '../../public/vendor/jquery/timeago/locales', req.path);
-	var exists;
 
-	try {
-		exists = fs.accessSync(localPath, fs.F_OK | fs.R_OK);
-	} catch (e) {
-		exists = false;
-	}
-
-	if (exists) {
-		res.status(200).sendFile(localPath, {
-			maxAge: req.app.enabled('cache') ? 5184000000 : 0,
-		});
-	} else {
-		res.status(200).sendFile(path.join(__dirname, '../../public/vendor/jquery/timeago/locales', fallback), {
-			maxAge: req.app.enabled('cache') ? 5184000000 : 0,
-		});
-	}
+	async.waterfall([
+		function (next) {
+			file.exists(localPath, next);
+		},
+		function (exists, next) {
+			if (exists) {
+				next(null, localPath);
+			} else {
+				next(null, path.join(__dirname, '../../public/vendor/jquery/timeago/locales', fallback));
+			}
+		},
+		function (path) {
+			res.status(200).sendFile(path, {
+				maxAge: req.app.enabled('cache') ? 5184000000 : 0,
+			});
+		},
+	], next);
 };
 
+middleware.delayLoading = function (req, res, next) {
+	// Introduces an artificial delay during load so that brute force attacks are effectively mitigated
 
-module.exports = middleware;
+	// Add IP to cache so if too many requests are made, subsequent requests are blocked for a minute
+	var timesSeen = delayCache.get(req.ip) || 0;
+	if (timesSeen > 10) {
+		return res.sendStatus(429);
+	}
+	delayCache.set(req.ip, timesSeen += 1);
+
+	setTimeout(next, 1000);
+};
+
+var viewsDir = nconf.get('views_dir');
+middleware.templatesOnDemand = function (req, res, next) {
+	var filePath = req.filePath || path.join(viewsDir, req.path);
+	if (!filePath.endsWith('.js')) {
+		return next();
+	}
+
+	async.waterfall([
+		function (cb) {
+			file.exists(filePath, cb);
+		},
+		function (exists, cb) {
+			if (exists) {
+				return next();
+			}
+
+			fs.readFile(filePath.replace(/\.js$/, '.tpl'), cb);
+		},
+		function (source, cb) {
+			Benchpress.precompile({
+				source: source.toString(),
+				minify: global.env !== 'development',
+			}, cb);
+		},
+		function (compiled, cb) {
+			fs.writeFile(filePath, compiled, cb);
+		},
+	], next);
+};

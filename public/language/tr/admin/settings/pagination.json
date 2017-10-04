@@ -2,8 +2,8 @@
 	"pagination": "Sayfalama Ayarları",
 	"enable": "Paginate topics and posts instead of using infinite scroll.",
 	"topics": "Başlık Sayfalama",
-	"posts-per-page": "Posts per Page",
-	"categories": "Category Pagination",
-	"topics-per-page": "Topics per Page",
+	"posts-per-page": "Sayfa başına İletiler",
+	"categories": "Kategori Sayfalama",
+	"topics-per-page": "Sayfa başına Konular",
 	"initial-num-load": "Initial Number of Topics to Load on Unread, Recent, and Popular"
 }

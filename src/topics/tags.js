@@ -5,9 +5,9 @@ var async = require('async');
 
 var db = require('../database');
 var meta = require('../meta');
-var _ = require('underscore');
+var _ = require('lodash');
 var plugins = require('../plugins');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 
 
 module.exports = function (Topics) {
@@ -23,11 +23,12 @@ module.exports = function (Topics) {
 				plugins.fireHook('filter:tags.filter', { tags: tags, tid: tid }, next);
 			},
 			function (data, next) {
-				tags = data.tags.slice(0, meta.config.maximumTagsPerTopic || 5);
+				tags = _.uniq(data.tags);
+				tags = tags.slice(0, meta.config.maximumTagsPerTopic || 5);
 				tags = tags.map(function (tag) {
 					return utils.cleanUpTag(tag, meta.config.maximumTagLength);
-				}).filter(function (tag, index, array) {
-					return tag && tag.length >= (meta.config.minimumTagLength || 3) && array.indexOf(tag) === index;
+				}).filter(function (tag) {
+					return tag && tag.length >= (meta.config.minimumTagLength || 3);
 				});
 
 				filterCategoryTags(tags, tid, next);
@@ -247,7 +248,7 @@ module.exports = function (Topics) {
 					tag.score = results.counts[index] ? results.counts[index] : 0;
 				});
 
-				var tagData = _.object(uniqueTopicTags, results.tagData);
+				var tagData = _.zipObject(uniqueTopicTags, results.tagData);
 
 				topicTags.forEach(function (tags, index) {
 					if (Array.isArray(tags)) {
@@ -444,7 +445,7 @@ module.exports = function (Topics) {
 				}, next);
 			},
 			function (tids, next) {
-				tids = _.shuffle(_.unique(_.flatten(tids))).slice(0, maximumTopics);
+				tids = _.shuffle(_.uniq(_.flatten(tids))).slice(0, maximumTopics);
 				Topics.getTopics(tids, uid, next);
 			},
 			function (topics, next) {

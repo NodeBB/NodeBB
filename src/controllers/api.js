@@ -11,12 +11,11 @@ var topics = require('../topics');
 var categories = require('../categories');
 var privileges = require('../privileges');
 var plugins = require('../plugins');
-var widgets = require('../widgets');
-var translator = require('../../public/src/modules/translator');
+var translator = require('../translator');
 
 var apiController = module.exports;
 
-apiController.getConfig = function (req, res, next) {
+apiController.loadConfig = function (req, callback) {
 	var config = {};
 	config.environment = process.env.NODE_ENV;
 	config.relative_path = nconf.get('relative_path');
@@ -29,8 +28,8 @@ apiController.getConfig = function (req, res, next) {
 	config.maximumTitleLength = meta.config.maximumTitleLength;
 	config.minimumPostLength = meta.config.minimumPostLength;
 	config.maximumPostLength = meta.config.maximumPostLength;
-	config.minimumTagsPerTopic = meta.config.minimumTagsPerTopic || 0;
-	config.maximumTagsPerTopic = meta.config.maximumTagsPerTopic || 5;
+	config.minimumTagsPerTopic = parseInt(meta.config.minimumTagsPerTopic || 0, 10);
+	config.maximumTagsPerTopic = parseInt(meta.config.maximumTagsPerTopic || 5, 10);
 	config.minimumTagLength = meta.config.minimumTagLength || 3;
 	config.maximumTagLength = meta.config.maximumTagLength || 15;
 	config.hasImageUploadPlugin = plugins.hasListeners('filter:uploadImage');
@@ -59,7 +58,7 @@ apiController.getConfig = function (req, res, next) {
 	config.requireEmailConfirmation = parseInt(meta.config.requireEmailConfirmation, 10) === 1;
 	config.topicPostSort = meta.config.topicPostSort || 'oldest_to_newest';
 	config.categoryTopicSort = meta.config.categoryTopicSort || 'newest_to_oldest';
-	config.csrf_token = req.csrfToken();
+	config.csrf_token = req.csrfToken && req.csrfToken();
 	config.searchEnabled = plugins.hasListeners('filter:search.query');
 	config.bootswatchSkin = meta.config.bootswatchSkin || 'noskin';
 	config.defaultBootswatchSkin = meta.config.bootswatchSkin || 'noskin';
@@ -80,7 +79,7 @@ apiController.getConfig = function (req, res, next) {
 
 	async.waterfall([
 		function (next) {
-			if (!req.user) {
+			if (!req.uid) {
 				return next(null, config);
 			}
 			user.getSettings(req.uid, next);
@@ -98,41 +97,22 @@ apiController.getConfig = function (req, res, next) {
 			config.bootswatchSkin = (settings.bootswatchSkin && settings.bootswatchSkin !== 'default') ? settings.bootswatchSkin : config.bootswatchSkin;
 			plugins.fireHook('filter:config.get', config, next);
 		},
-	], function (err, config) {
-		if (err) {
-			return next(err);
-		}
-
-		if (res.locals.isAPI) {
-			res.json(config);
-		} else {
-			next(null, config);
-		}
-	});
+	], callback);
 };
 
-
-apiController.renderWidgets = function (req, res, next) {
-	if (!req.query.template || !req.query.locations) {
-		return res.status(200).json({});
-	}
-
-	widgets.render(req.uid,
-		{
-			template: req.query.template,
-			url: req.query.url,
-			locations: req.query.locations,
-			isMobile: req.query.isMobile === 'true',
-			cid: req.query.cid,
+apiController.getConfig = function (req, res, next) {
+	async.waterfall([
+		function (next) {
+			apiController.loadConfig(req, next);
 		},
-		req,
-		res,
-		function (err, widgets) {
-			if (err) {
-				return next(err);
+		function (config, next) {
+			if (res.locals.isAPI) {
+				res.json(config);
+			} else {
+				next(null, config);
 			}
-			res.status(200).json(widgets);
-		});
+		},
+	], next);
 };
 
 apiController.getPostData = function (pid, uid, callback) {

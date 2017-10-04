@@ -1,0 +1,9 @@
+{
+	"loading": "Učitavam Izgled ...",
+	"homepage": "Naslovnica",
+	"select-skin": "Odaberi izgled",
+	"current-skin": "Trenutni izgled",
+	"skin-updated": "Izgled promijenjen",
+	"applied-success": "%1 izgled je primjenjen",
+	"revert-success": "Izgled povraćen na osnovne boje"
+}

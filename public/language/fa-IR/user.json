@@ -60,6 +60,7 @@
     "username_taken_workaround": "نام کاربری درخواستی شما در حال حاضر گرفته شده است، بنابراین ما آن را کمی تغییر داده‌ایم. شما هم‌اکنون با نام <strong>%1</strong  شناخته می‌شوید.",
     "password_same_as_username": "کلمه ی عبور شما با نام کاربری شما یکسان می باشند ، لطفا کلمه ی عبور دیگری را انتخاب کنید",
     "password_same_as_email": "کلمه ی عبور شما با ایمیل شما یکسان است، لطفا کلمه عبور دیگری را انتخاب کنید.",
+    "weak_password": "Weak password.",
     "upload_picture": "بارگذاری تصویر",
     "upload_a_picture": "یک تصویر بارگذاری کنید",
     "remove_uploaded_picture": "پاک کردن عکس بارگذاری شده",
@@ -113,8 +114,8 @@
     "select-skin": "انتخاب یک پوسته",
     "select-homepage": "انتخاب صفحه اصلی",
     "homepage": "صفحه اصلی",
-    "homepage_description": "Select a page to use as the forum homepage or 'None' to use the default homepage.",
-    "custom_route": "Custom Homepage Route",
+    "homepage_description": "یک صفحه را به عنوان خانه انتخاب کنید یا با انتخاب \"هیچکدام\"  صفحه‌ی پیش فرض برای شما انتخاب می‌شود.  ",
+    "custom_route": "مسیر صفحه‌ی اختصاصی",
     "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\", or \"popular\")",
     "sso.title": "Single Sign-on Services",
     "sso.associated": "Associated with",
@@ -131,5 +132,5 @@
     "info.email-history": "تاریخچه رایانامه",
     "info.moderation-note": "یادداشت مدیر",
     "info.moderation-note.success": "یادداشت مدیر ذخیره شد",
-    "info.moderation-note.add": "Add note"
+    "info.moderation-note.add": "افزودن یادداشت"
 }

@@ -3,5 +3,5 @@
 	"alert.confirm-restart": "Are you sure you wish to restart NodeBB?",
 
 	"acp-title": "%1 | NodeBB Admin Control Panel",
-	"settings-header-contents": "Contents"
+	"settings-header-contents": "Conteúdo"
 }

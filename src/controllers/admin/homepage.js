@@ -7,8 +7,7 @@ var categories = require('../../categories');
 var privileges = require('../../privileges');
 var plugins = require('../../plugins');
 
-var homePageController = {};
-
+var homePageController = module.exports;
 
 homePageController.get = function (req, res, next) {
 	async.waterfall([
@@ -28,39 +27,29 @@ homePageController.get = function (req, res, next) {
 					name: 'Category: ' + category.name,
 				};
 			});
-			next(null, categoryData);
+
+			plugins.fireHook('filter:homepage.get', { routes: [
+				{
+					route: 'categories',
+					name: 'Categories',
+				},
+				{
+					route: 'recent',
+					name: 'Recent',
+				},
+				{
+					route: 'popular',
+					name: 'Popular',
+				},
+			].concat(categoryData) }, next);
 		},
-	], function (err, categoryData) {
-		if (err || !categoryData) {
-			categoryData = [];
-		}
-
-		plugins.fireHook('filter:homepage.get', { routes: [
-			{
-				route: 'categories',
-				name: 'Categories',
-			},
-			{
-				route: 'recent',
-				name: 'Recent',
-			},
-			{
-				route: 'popular',
-				name: 'Popular',
-			},
-		].concat(categoryData) }, function (err, data) {
-			if (err) {
-				return next(err);
-			}
-
+		function (data) {
 			data.routes.push({
 				route: '',
 				name: 'Custom',
 			});
 
 			res.render('admin/general/homepage', data);
-		});
-	});
+		},
+	], next);
 };
-
-module.exports = homePageController;

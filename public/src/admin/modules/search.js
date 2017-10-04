@@ -1,6 +1,5 @@
 'use strict';
 
-
 define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 	var search = {};
 
@@ -11,16 +10,17 @@ define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 			var namespace = params.namespace;
 			var translations = params.translations;
 			var title = params.title;
+			var escaped = utils.escapeRegexChars(term);
 
 			var results = translations
 				// remove all lines without a match
-				.replace(new RegExp('^(?:(?!' + term + ').)*$', 'gmi'), '')
+				.replace(new RegExp('^(?:(?!' + escaped + ').)*$', 'gmi'), '')
 				// remove lines that only match the title
 				.replace(new RegExp('(^|\\n).*?' + title + '.*?(\\n|$)', 'g'), '')
 				// get up to 25 characters of context on both sides of the match
 				// and wrap the match in a `.search-match` element
 				.replace(
-					new RegExp('^[\\s\\S]*?(.{0,25})(' + term + ')(.{0,25})[\\s\\S]*?$', 'gmi'),
+					new RegExp('^[\\s\\S]*?(.{0,25})(' + escaped + ')(.{0,25})[\\s\\S]*?$', 'gmi'),
 					'...$1<span class="search-match">$2</span>$3...<br>'
 				)
 				// collapse whitespace
@@ -28,7 +28,7 @@ define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 				.trim();
 
 			title = title.replace(
-				new RegExp('(^.*?)(' + term + ')(.*?$)', 'gi'),
+				new RegExp('(^.*?)(' + escaped + ')(.*?$)', 'gi'),
 				'$1<span class="search-match">$2</span>$3'
 			);
 
@@ -36,7 +36,7 @@ define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 				'<a role= "menuitem" href= "' + config.relative_path + '/' + namespace + '" >' +
 					title +
 					'<br>' + (!results ? '' :
-					('<small><code>' +
+				('<small><code>' +
 						results +
 					'</small></code>')) +
 				'</a>' +
@@ -73,7 +73,7 @@ define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 			if (!selected.length) {
 				selected = menu.find('li.result > a').first().attr('href');
 			}
-			var href = selected || config.relative_path + '/search?in=titlesposts&term=' + input.val();
+			var href = selected || config.relative_path + '/search?in=titlesposts&term=' + escape(input.val());
 
 			ajaxify.go(href.replace(/^\//, ''));
 
@@ -123,7 +123,7 @@ define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 
 			menu.children('.result').remove();
 
-			var len = value.length;
+			var len = /\W/.test(value) ? 3 : value.length;
 			var results;
 
 			menu.toggleClass('state-start-typing', len === 0);
@@ -140,9 +140,9 @@ define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 				menu.find('.search-forum')
 					.not('.divider')
 					.find('a')
-					.attr('href', config.relative_path + '/search?in=titlesposts&term=' + value)
+					.attr('href', config.relative_path + '/search?in=titlesposts&term=' + escape(value))
 					.find('strong')
-					.html(value);
+					.text(value);
 			} else {
 				menu.removeClass('state-no-results state-yes-results');
 			}

@@ -9,29 +9,37 @@ var exec = require('child_process').exec;
 var pubsub = require('../../pubsub');
 var rooms = require('../../socket.io/admin/rooms');
 
-var infoController = {};
+var infoController = module.exports;
 
 var info = {};
 
 infoController.get = function (req, res) {
 	info = {};
 	pubsub.publish('sync:node:info:start');
+	var timeoutMS = 1000;
 	setTimeout(function () {
 		var data = [];
 		Object.keys(info).forEach(function (key) {
 			data.push(info[key]);
 		});
 		data.sort(function (a, b) {
-			if (a.os.hostname < b.os.hostname) {
+			if (a.id < b.id) {
 				return -1;
 			}
-			if (a.os.hostname > b.os.hostname) {
+			if (a.id > b.id) {
 				return 1;
 			}
 			return 0;
 		});
-		res.render('admin/development/info', { info: data, infoJSON: JSON.stringify(data, null, 4), host: os.hostname(), port: nconf.get('port') });
-	}, 500);
+		res.render('admin/development/info', {
+			info: data,
+			infoJSON: JSON.stringify(data, null, 4),
+			host: os.hostname(),
+			port: nconf.get('port'),
+			nodeCount: data.length,
+			timeout: timeoutMS,
+		});
+	}, timeoutMS);
 };
 
 pubsub.on('sync:node:info:start', function () {
@@ -39,7 +47,8 @@ pubsub.on('sync:node:info:start', function () {
 		if (err) {
 			return winston.error(err);
 		}
-		pubsub.publish('sync:node:info:end', { data: data, id: os.hostname() + ':' + nconf.get('port') });
+		data.id = os.hostname() + ':' + nconf.get('port');
+		pubsub.publish('sync:node:info:end', { data: data, id: data.id });
 	});
 });
 
@@ -67,21 +76,25 @@ function getNodeInfo(callback) {
 		},
 	};
 
-	async.parallel({
-		stats: function (next) {
-			rooms.getLocalStats(next);
+	data.process.memoryUsage.humanReadable = (data.process.memoryUsage.rss / (1024 * 1024)).toFixed(2);
+
+	async.waterfall([
+		function (next) {
+			async.parallel({
+				stats: function (next) {
+					rooms.getLocalStats(next);
+				},
+				gitInfo: function (next) {
+					getGitInfo(next);
+				},
+			}, next);
 		},
-		gitInfo: function (next) {
-			getGitInfo(next);
+		function (results, next) {
+			data.git = results.gitInfo;
+			data.stats = results.stats;
+			next(null, data);
 		},
-	}, function (err, results) {
-		if (err) {
-			return callback(err);
-		}
-		data.git = results.gitInfo;
-		data.stats = results.stats;
-		callback(null, data);
-	});
+	], callback);
 }
 
 function getGitInfo(callback) {
@@ -102,5 +115,3 @@ function getGitInfo(callback) {
 		},
 	}, callback);
 }
-
-module.exports = infoController;

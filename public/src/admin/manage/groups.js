@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/manage/groups', ['translator'], function (translator) {
+define('admin/manage/groups', ['translator', 'benchpress'], function (translator, Benchpress) {
 	var	Groups = {};
 
 	var intervalId = 0;
@@ -94,7 +94,7 @@ define('admin/manage/groups', ['translator'], function (translator) {
 					return app.alertError(err.message);
 				}
 
-				templates.parse('admin/manage/groups', 'groups', {
+				Benchpress.parse('admin/manage/groups', 'groups', {
 					groups: groups,
 				}, function (html) {
 					translator.translate(html, function (html) {

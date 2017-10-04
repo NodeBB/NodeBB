@@ -8,6 +8,9 @@ module.exports = function (Plugins) {
 		'filter:user.custom_fields': null,	// remove in v1.1.0
 		'filter:post.save': 'filter:post.create',
 		'filter:user.profileLinks': 'filter:user.profileMenu',
+		'action:post.flag': 'action:flag.create',
+		'action:flag.create': 'action:flags.create',
+		'action:flag.update': 'action:flags.update',
 	};
 	/*
 		`data` is an object consisting of (* is required):
@@ -36,8 +39,7 @@ module.exports = function (Plugins) {
 				(Plugins.deprecatedHooks[data.hook] ?
 					'please use `' + Plugins.deprecatedHooks[data.hook] + '` instead.' :
 					'there is no alternative.'
-				)
-			);
+				));
 		} else {
 			// handle hook's startsWith, i.e. action:homepage.get
 			var parts = data.hook.split(':');
@@ -58,7 +60,7 @@ module.exports = function (Plugins) {
 					if (memo && memo[prop]) {
 						return memo[prop];
 					}
-						// Couldn't find method by path, aborting
+					// Couldn't find method by path, aborting
 					return null;
 				}, Plugins.libraries[data.id]);
 
@@ -118,13 +120,7 @@ module.exports = function (Plugins) {
 			}
 
 			hookObj.method(params, next);
-		}, function (err, values) {
-			if (err) {
-				winston.error('[plugins] ' + hook + ',  ' + err.message);
-			}
-
-			callback(err, values);
-		});
+		}, callback);
 	}
 
 	function fireActionHook(hook, hookList, params, callback) {

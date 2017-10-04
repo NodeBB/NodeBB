@@ -7,6 +7,7 @@ var validator = require('validator');
 var meta = require('../meta');
 var user = require('../user');
 var plugins = require('../plugins');
+var topics = require('../topics');
 var helpers = require('./helpers');
 
 var Controllers = module.exports;
@@ -48,7 +49,11 @@ Controllers.home = function (req, res, next) {
 		var hook = 'action:homepage.get:' + route;
 
 		if (plugins.hasListeners(hook)) {
-			return plugins.fireHook(hook, { req: req, res: res, next: next });
+			return plugins.fireHook(hook, {
+				req: req,
+				res: res,
+				next: next,
+			});
 		}
 
 		if (route === 'categories' || route === '/') {
@@ -85,7 +90,15 @@ Controllers.reset = function (req, res, next) {
 				displayExpiryNotice: req.session.passwordExpired,
 				code: req.params.code,
 				minimumPasswordLength: parseInt(meta.config.minimumPasswordLength, 10),
-				breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[reset_password:reset_password]]', url: '/reset' }, { text: '[[reset_password:update_password]]' }]),
+				breadcrumbs: helpers.buildBreadcrumbs([
+					{
+						text: '[[reset_password:reset_password]]',
+						url: '/reset',
+					},
+					{
+						text: '[[reset_password:update_password]]',
+					},
+				]),
 				title: '[[pages:reset]]',
 			});
 
@@ -94,7 +107,9 @@ Controllers.reset = function (req, res, next) {
 	} else {
 		res.render('reset', {
 			code: null,
-			breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[reset_password:reset_password]]' }]),
+			breadcrumbs: helpers.buildBreadcrumbs([{
+				text: '[[reset_password:reset_password]]',
+			}]),
 			title: '[[pages:reset]]',
 		});
 	}
@@ -124,7 +139,9 @@ Controllers.login = function (req, res, next) {
 	data.allowLocalLogin = parseInt(meta.config.allowLocalLogin, 10) === 1 || parseInt(req.query.local, 10) === 1;
 	data.allowRegistration = registrationType === 'normal' || registrationType === 'admin-approval' || registrationType === 'admin-approval-ip';
 	data.allowLoginWith = '[[login:' + allowLoginWith + ']]';
-	data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[global:login]]' }]);
+	data.breadcrumbs = helpers.buildBreadcrumbs([{
+		text: '[[global:login]]',
+	}]);
 	data.error = req.flash('error')[0] || errorText;
 	data.title = '[[pages:login]]';
 
@@ -142,7 +159,7 @@ Controllers.login = function (req, res, next) {
 				return next(err);
 			}
 			data.username = allowLoginWith === 'email' ? user.email : user.username;
-			data.alternate_logins = [];
+			data.alternate_logins = false;
 			res.render('login', data);
 		});
 	} else {
@@ -171,7 +188,11 @@ Controllers.register = function (req, res, next) {
 			}
 		},
 		function (next) {
-			plugins.fireHook('filter:parse.post', { postData: { content: meta.config.termsOfUse || '' } }, next);
+			plugins.fireHook('filter:parse.post', {
+				postData: {
+					content: meta.config.termsOfUse || '',
+				},
+			}, next);
 		},
 	], function (err, termsOfUse) {
 		if (err) {
@@ -188,8 +209,11 @@ Controllers.register = function (req, res, next) {
 		data.minimumUsernameLength = parseInt(meta.config.minimumUsernameLength, 10);
 		data.maximumUsernameLength = parseInt(meta.config.maximumUsernameLength, 10);
 		data.minimumPasswordLength = parseInt(meta.config.minimumPasswordLength, 10);
+		data.minimumPasswordStrength = parseInt(meta.config.minimumPasswordStrength || 0, 10);
 		data.termsOfUse = termsOfUse.postData.content;
-		data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[register:register]]' }]);
+		data.breadcrumbs = helpers.buildBreadcrumbs([{
+			text: '[[register:register]]',
+		}]);
 		data.regFormEntry = [];
 		data.error = req.flash('error')[0] || errorText;
 		data.title = '[[pages:register]]';
@@ -256,6 +280,47 @@ Controllers.compose = function (req, res, next) {
 	});
 };
 
+Controllers.composePost = function (req, res) {
+	var body = req.body;
+	var data = {
+		uid: req.uid,
+		req: req,
+		timestamp: Date.now(),
+		content: body.content,
+	};
+	req.body.noscript = 'true';
+
+	if (!data.content) {
+		return helpers.noScriptErrors(req, res, '[[error:invalid-data]]', 400);
+	}
+
+	if (body.tid) {
+		data.tid = body.tid;
+
+		topics.reply(data, function (err, result) {
+			if (err) {
+				return helpers.noScriptErrors(req, res, err.message, 400);
+			}
+			user.updateOnlineUsers(result.uid);
+
+			res.redirect(nconf.get('relative_path') + '/post/' + result.pid);
+		});
+	} else if (body.cid) {
+		data.cid = body.cid;
+		data.title = body.title;
+		data.tags = [];
+		data.thumb = '';
+
+		topics.post(data, function (err, result) {
+			if (err) {
+				return helpers.noScriptErrors(req, res, err.message, 400);
+			}
+
+			res.redirect(nconf.get('relative_path') + '/topic/' + result.topicData.slug);
+		});
+	}
+};
+
 Controllers.confirmEmail = function (req, res) {
 	user.email.confirm(req.params.code, function (err) {
 		res.render('confirm', {
@@ -268,8 +333,8 @@ Controllers.confirmEmail = function (req, res) {
 Controllers.robots = function (req, res) {
 	res.set('Content-Type', 'text/plain');
 
-	if (meta.config['robots.txt']) {
-		res.send(meta.config['robots.txt']);
+	if (meta.config['robots:txt']) {
+		res.send(meta.config['robots:txt']);
 	} else {
 		res.send('User-agent: *\n' +
 			'Disallow: ' + nconf.get('relative_path') + '/admin/\n' +
@@ -333,7 +398,9 @@ Controllers.outgoing = function (req, res, next) {
 	res.render('outgoing', {
 		outgoing: validator.escape(String(url)),
 		title: meta.config.title,
-		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[notifications:outgoing_link]]' }]),
+		breadcrumbs: helpers.buildBreadcrumbs([{
+			text: '[[notifications:outgoing_link]]',
+		}]),
 	});
 };
 
@@ -341,9 +408,7 @@ Controllers.termsOfUse = function (req, res, next) {
 	if (!meta.config.termsOfUse) {
 		return next();
 	}
-	res.render('tos', { termsOfUse: meta.config.termsOfUse });
-};
-
-Controllers.ping = function (req, res) {
-	res.status(200).send(req.path === '/sping' ? 'healthy' : '200');
+	res.render('tos', {
+		termsOfUse: meta.config.termsOfUse,
+	});
 };

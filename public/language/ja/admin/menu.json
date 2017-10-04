@@ -7,11 +7,12 @@
 	"general/sounds": "サウンド",
 	"general/social": "ソーシャル",
 
-	"section-manage": "メッセージ",
+	"section-manage": "管理",
 	"manage/categories": "カテゴリ",
 	"manage/tags": "タグ",
 	"manage/users": "ユーザー",
 	"manage/registration": "登録キュー",
+	"manage/post-queue": "投稿キュー",
 	"manage/groups": "グループ",
 	"manage/ip-blacklist": "IPブラックリスト",
 

@@ -12,6 +12,7 @@
 	"manage/tags": "Mots-clés",
 	"manage/users": "Utilisateurs",
 	"manage/registration": "File d'inscription",
+	"manage/post-queue": "File d’attente des messages",
 	"manage/groups": "Groupes",
 	"manage/ip-blacklist": "Liste noire d'IPs",
 

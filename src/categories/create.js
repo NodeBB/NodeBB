@@ -6,7 +6,7 @@ var db = require('../database');
 var groups = require('../groups');
 var plugins = require('../plugins');
 var privileges = require('../privileges');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 
 module.exports = function (Categories) {
 	Categories.create = function (data, callback) {
@@ -37,18 +37,33 @@ module.exports = function (Categories) {
 					post_count: 0,
 					disabled: 0,
 					order: order,
-					link: '',
+					link: data.link || '',
 					numRecentReplies: 1,
 					class: (data.class ? data.class : 'col-md-3 col-xs-6'),
 					imageClass: 'cover',
 				};
+
+				if (data.backgroundImage) {
+					category.backgroundImage = data.backgroundImage;
+				}
 
 				plugins.fireHook('filter:category.create', { category: category, data: data }, next);
 			},
 			function (data, next) {
 				category = data.category;
 
-				var defaultPrivileges = ['find', 'read', 'topics:read', 'topics:create', 'topics:reply', 'posts:edit', 'posts:delete', 'topics:delete', 'upload:post:image'];
+				var defaultPrivileges = [
+					'find',
+					'read',
+					'topics:read',
+					'topics:create',
+					'topics:reply',
+					'topics:tag',
+					'posts:edit',
+					'posts:delete',
+					'topics:delete',
+					'upload:post:image',
+				];
 
 				async.series([
 					async.apply(db.setObject, 'category:' + category.cid, category),
@@ -72,7 +87,7 @@ module.exports = function (Categories) {
 				next(null, category);
 			},
 			function (category, next) {
-				plugins.fireHook('action:category.create', category);
+				plugins.fireHook('action:category.create', { category: category });
 				next(null, category);
 			},
 		], callback);
@@ -138,9 +153,20 @@ module.exports = function (Categories) {
 	};
 
 	Categories.copyPrivilegesFrom = function (fromCid, toCid, callback) {
-		async.each(privileges.privilegeList, function (privilege, next) {
-			copyPrivilege(privilege, fromCid, toCid, next);
-		}, callback);
+		async.waterfall([
+			function (next) {
+				plugins.fireHook('filter:categories.copyPrivilegesFrom', {
+					privileges: privileges.privilegeList.slice(),
+					fromCid: fromCid,
+					toCid: toCid,
+				}, next);
+			},
+			function (data, next) {
+				async.each(data.privileges, function (privilege, next) {
+					copyPrivilege(privilege, data.fromCid, data.toCid, next);
+				}, next);
+			},
+		], callback);
 	};
 
 	function copyPrivilege(privilege, fromCid, toCid, callback) {

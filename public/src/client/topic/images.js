@@ -20,12 +20,17 @@ define('forum/topic/images', [
 		} else {
 			images.attr('data-state', 'loaded');
 			Images.wrapImagesInLinks(posts);
+			$(window).trigger('action:images.loaded');
 		}
 	};
 
 	Images.loadImages = function (threshold) {
 		if (Images._imageLoaderTimeout) {
 			clearTimeout(Images._imageLoaderTimeout);
+		}
+
+		if (!config.delayImageLoading) {
+			return;
 		}
 
 		Images._imageLoaderTimeout = setTimeout(function () {
@@ -71,6 +76,7 @@ define('forum/topic/images', [
 					adjusting = false;
 
 					Images.wrapImagesInLinks(posts);
+					$(window).trigger('action:images.loaded');
 					posts.length = 0;
 				}
 			}

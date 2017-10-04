@@ -15,7 +15,7 @@ var db = require('../database');
 var userController = require('../controllers/user');
 var privileges = require('../privileges');
 
-var SocketUser = {};
+var SocketUser = module.exports;
 
 require('./user/profile')(SocketUser);
 require('./user/search')(SocketUser);
@@ -75,18 +75,7 @@ SocketUser.emailConfirm = function (socket, data, callback) {
 		return callback(new Error('[[error:email-confirmations-are-disabled]]'));
 	}
 
-	async.waterfall([
-		function (next) {
-			user.getUserField(socket.uid, 'email', next);
-		},
-		function (email, next) {
-			if (!email) {
-				return callback();
-			}
-
-			user.email.sendValidationEmail(socket.uid, email, next);
-		},
-	], callback);
+	user.email.sendValidationEmail(socket.uid, callback);
 };
 
 
@@ -139,7 +128,6 @@ SocketUser.reset.commit = function (socket, data, callback) {
 			emailer.send('reset_notify', uid, {
 				username: username,
 				date: parsedDate,
-				site_title: meta.config.title || 'NodeBB',
 				subject: '[[email:reset.notify.subject]]',
 			});
 
@@ -171,6 +159,7 @@ SocketUser.follow = function (socket, data, callback) {
 		function (_userData, next) {
 			userData = _userData;
 			notifications.create({
+				type: 'follow',
 				bodyShort: '[[notifications:user_started_following_you, ' + userData.username + ']]',
 				nid: 'follow:' + data.uid + ':uid:' + socket.uid,
 				from: socket.uid,
@@ -196,17 +185,18 @@ SocketUser.unfollow = function (socket, data, callback) {
 };
 
 function toggleFollow(method, uid, theiruid, callback) {
-	user[method](uid, theiruid, function (err) {
-		if (err) {
-			return callback(err);
-		}
-
-		plugins.fireHook('action:user.' + method, {
-			fromUid: uid,
-			toUid: theiruid,
-		});
-		callback();
-	});
+	async.waterfall([
+		function (next) {
+			user[method](uid, theiruid, next);
+		},
+		function (next) {
+			plugins.fireHook('action:user.' + method, {
+				fromUid: uid,
+				toUid: theiruid,
+			});
+			next();
+		},
+	], callback);
 }
 
 SocketUser.saveSettings = function (socket, data, callback) {
@@ -256,6 +246,7 @@ SocketUser.getUnreadCounts = function (socket, data, callback) {
 	async.parallel({
 		unreadTopicCount: async.apply(topics.getTotalUnread, socket.uid),
 		unreadNewTopicCount: async.apply(topics.getTotalUnread, socket.uid, 'new'),
+		unreadWatchedTopicCount: async.apply(topics.getTotalUnread, socket.uid, 'watched'),
 		unreadChatCount: async.apply(messaging.getUnreadCount, socket.uid),
 		unreadNotificationCount: async.apply(user.notifications.getUnreadCount, socket.uid),
 	}, callback);
@@ -315,7 +306,7 @@ SocketUser.getUserByEmail = function (socket, email, callback) {
 };
 
 SocketUser.setModerationNote = function (socket, data, callback) {
-	if (!socket.uid || !data || !data.uid) {
+	if (!socket.uid || !data || !data.uid || !data.note) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
@@ -325,7 +316,7 @@ SocketUser.setModerationNote = function (socket, data, callback) {
 		},
 		function (allowed, next) {
 			if (allowed) {
-				return next(null, allowed);
+				return setImmediate(next, null, allowed);
 			}
 
 			user.isModeratorOfAnyCategory(socket.uid, next);
@@ -334,13 +325,13 @@ SocketUser.setModerationNote = function (socket, data, callback) {
 			if (!allowed) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
-			if (data.note) {
-				user.setUserField(data.uid, 'moderationNote', data.note, next);
-			} else {
-				db.deleteObjectField('user:' + data.uid, 'moderationNote', next);
-			}
+
+			var note = {
+				uid: socket.uid,
+				note: data.note,
+				timestamp: Date.now(),
+			};
+			db.sortedSetAdd('uid:' + data.uid + ':moderation:notes', note.timestamp, JSON.stringify(note), next);
 		},
 	], callback);
 };
-
-module.exports = SocketUser;

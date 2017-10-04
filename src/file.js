@@ -8,9 +8,9 @@ var jimp = require('jimp');
 var mkdirp = require('mkdirp');
 var mime = require('mime');
 
-var utils = require('../public/src/utils');
+var utils = require('./utils');
 
-var file = {};
+var file = module.exports;
 
 file.saveFileToLocal = function (filename, folder, tempPath, callback) {
 	/*
@@ -45,7 +45,7 @@ file.saveFileToLocal = function (filename, folder, tempPath, callback) {
 };
 
 file.base64ToLocal = function (imageData, uploadPath, callback) {
-	var buffer = new Buffer(imageData.slice(imageData.indexOf('base64') + 7), 'base64');
+	var buffer = Buffer.from(imageData.slice(imageData.indexOf('base64') + 7), 'base64');
 	uploadPath = path.join(nconf.get('upload_path'), uploadPath);
 
 	fs.writeFile(uploadPath, buffer, {
@@ -81,7 +81,7 @@ file.allowedExtensions = function () {
 		if (!extension.startsWith('.')) {
 			extension = '.' + extension;
 		}
-		return extension;
+		return extension.toLowerCase();
 	});
 
 	if (allowedExtensions.indexOf('.jpg') !== -1 && allowedExtensions.indexOf('.jpeg') === -1) {
@@ -92,20 +92,37 @@ file.allowedExtensions = function () {
 };
 
 file.exists = function (path, callback) {
-	fs.stat(path, function (err, stat) {
-		callback(!err && stat);
+	fs.stat(path, function (err) {
+		if (err) {
+			if (err.code === 'ENOENT') {
+				return callback(null, false);
+			}
+		}
+		callback(err, true);
 	});
 };
 
 file.existsSync = function (path) {
-	var exists = false;
 	try {
-		exists = fs.statSync(path);
+		fs.statSync(path);
 	} catch (err) {
-		exists = false;
+		if (err.code === 'ENOENT') {
+			return false;
+		}
+		throw err;
 	}
 
-	return !!exists;
+	return true;
+};
+
+file.delete = function (path) {
+	if (path) {
+		fs.unlink(path, function (err) {
+			if (err) {
+				winston.error(err);
+			}
+		});
+	}
 };
 
 file.link = function link(filePath, destPath, cb) {
@@ -124,9 +141,50 @@ file.linkDirs = function linkDirs(sourceDir, destDir, callback) {
 file.typeToExtension = function (type) {
 	var extension;
 	if (type) {
-		extension = '.' + mime.extension(type);
+		extension = '.' + mime.getExtension(type);
 	}
 	return extension;
 };
 
-module.exports = file;
+// Adapted from http://stackoverflow.com/questions/5827612/node-js-fs-readdir-recursive-directory-search
+file.walk = function (dir, done) {
+	var results = [];
+
+	fs.readdir(dir, function (err, list) {
+		if (err) {
+			return done(err);
+		}
+		var pending = list.length;
+		if (!pending) {
+			return done(null, results);
+		}
+		list.forEach(function (filename) {
+			filename = dir + '/' + filename;
+			fs.stat(filename, function (err, stat) {
+				if (err) {
+					return done(err);
+				}
+
+				if (stat && stat.isDirectory()) {
+					file.walk(filename, function (err, res) {
+						if (err) {
+							return done(err);
+						}
+
+						results = results.concat(res);
+						pending -= 1;
+						if (!pending) {
+							done(null, results);
+						}
+					});
+				} else {
+					results.push(filename);
+					pending -= 1;
+					if (!pending) {
+						done(null, results);
+					}
+				}
+			});
+		});
+	});
+};

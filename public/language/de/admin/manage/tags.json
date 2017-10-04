@@ -1,14 +1,14 @@
 {
-	"none": "Ihr Form hat bisher noch keine Themen mit Tags.",
+	"none": "Das Forum hat bisher noch keine Themen mit Tags.",
 	"bg-color": "Hintergrundfarbe",
 	"text-color": "Textfarbe",
 	"create-modify": "Tags erstellen & bearbeiten",
-	"description": "Wählen sie Tags aus indem sie klicken und/oder ziehen, drücken die Shift um mehrere auszuwählen",
+	"description": "Tags auswählen indem Du klickst und/oder ziehst, drücke die SHIFT-Taste, um mehrere auszuwählen",
 	"create": "Tag erstellen",
 	"modify": "Tag bearbeiten",
 	"delete": "Ausgewählte Tags entfernen",
 	"search": "Nach Tags suchen",
-	"settings": "Klicken Sie <a href=\"%1\">hier</a> um die Tag-Einstellungsseite zu öffnen.",
+	"settings": "Klicke <a href=\"%1\">hier</a>, um die Tag-Einstellungsseite zu öffnen.",
 	"name": "Tagname",
 
 	"alerts.editing-multiple": "Bearbeite mehrere Tags",

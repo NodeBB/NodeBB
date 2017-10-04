@@ -1,6 +1,6 @@
 {
-	"events": "Events",
-	"no-events": "There are no events",
-	"control-panel": "Events Control Panel",
-	"delete-events": "Delete Events"
+	"events": "이벤트",
+	"no-events": "이벤트가 없습니다",
+	"control-panel": "이벤트 제어판",
+	"delete-events": "이벤트 삭제"
 }

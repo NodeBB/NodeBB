@@ -1,6 +1,6 @@
 {
     "reconnection": "Tekrar Bağlantı Ayarları",
-    "max-attempts": "Max Reconnection Attempts",
+    "max-attempts": "Maks Tekrar Bağlanma Denemesi",
     "default-placeholder": "Varsayılan: %1",
-    "delay": "Reconnection Delay"
+    "delay": "Yeniden Bağlanma Gecikmesi"
 }

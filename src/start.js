@@ -48,7 +48,7 @@ start.start = function () {
 			require('./socket.io').init(webserver.server);
 
 			if (nconf.get('isPrimary') === 'true' && !nconf.get('jobsDisabled')) {
-				require('./notifications').init();
+				require('./notifications').startJobs();
 				require('./user').startJobs();
 			}
 
@@ -58,16 +58,16 @@ start.start = function () {
 		if (err) {
 			switch (err.message) {
 			case 'schema-out-of-date':
-				winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
-				winston.warn('    ./nodebb upgrade');
+				winston.error('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
+				winston.error('    ./nodebb upgrade');
 				break;
 			case 'dependencies-out-of-date':
-				winston.warn('One or more of NodeBB\'s dependent packages are out-of-date. Please run the following command to update them:');
-				winston.warn('    ./nodebb upgrade');
+				winston.error('One or more of NodeBB\'s dependent packages are out-of-date. Please run the following command to update them:');
+				winston.error('    ./nodebb upgrade');
 				break;
 			case 'dependencies-missing':
-				winston.warn('One or more of NodeBB\'s dependent packages are missing. Please run the following command to update them:');
-				winston.warn('    ./nodebb upgrade');
+				winston.error('One or more of NodeBB\'s dependent packages are missing. Please run the following command to update them:');
+				winston.error('    ./nodebb upgrade');
 				break;
 			default:
 				winston.error(err);
@@ -93,18 +93,18 @@ function setupConfigs() {
 	}
 	// Parse out the relative_url and other goodies from the configured URL
 	var urlObject = url.parse(nconf.get('url'));
-	var relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
+	var relativePath = urlObject.pathname !== '/' ? urlObject.pathname.replace(/\/+$/, '') : '';
 	nconf.set('base_url', urlObject.protocol + '//' + urlObject.host);
 	nconf.set('secure', urlObject.protocol === 'https:');
 	nconf.set('use_port', !!urlObject.port);
 	nconf.set('relative_path', relativePath);
-	nconf.set('port', urlObject.port || nconf.get('port') || nconf.get('PORT') || (nconf.get('PORT_ENV_VAR') ? nconf.get(nconf.get('PORT_ENV_VAR')) : false) || 4567);
+	nconf.set('port', urlObject.port || nconf.get('port') || (nconf.get('PORT_ENV_VAR') ? nconf.get(nconf.get('PORT_ENV_VAR')) : false) || 4567);
 	nconf.set('upload_url', '/assets/uploads');
 }
 
 function printStartupInfo() {
 	if (nconf.get('isPrimary') === 'true') {
-		winston.info('Initializing NodeBB v%s', nconf.get('version'));
+		winston.info('Initializing NodeBB v%s %s', nconf.get('version'), nconf.get('url'));
 
 		var host = nconf.get(nconf.get('database') + ':host');
 		var storeLocation = host ? 'at ' + host + (host.indexOf('/') === -1 ? ':' + nconf.get(nconf.get('database') + ':port') : '') : '';

@@ -2,10 +2,10 @@
 
 var async = require('async');
 var winston = require('winston');
-var _ = require('underscore');
+var _ = require('lodash');
 
 var user = require('../user');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 var plugins = require('../plugins');
 var notifications = require('../notifications');
 var db = require('../database');
@@ -26,6 +26,10 @@ module.exports = function (Groups) {
 
 		if (!groupName) {
 			return callback(new Error('[[error:invalid-data]]'));
+		}
+
+		if (!uid) {
+			return callback(new Error('[[error:invalid-uid]]'));
 		}
 
 		async.waterfall([
@@ -148,7 +152,9 @@ module.exports = function (Groups) {
 		async.parallel([
 			async.apply(db.setRemove, 'group:' + groupName + ':pending', uid),
 			async.apply(db.setRemove, 'group:' + groupName + ':invited', uid),
-		], callback);
+		], function (err) {
+			callback(err);
+		});
 	};
 
 	Groups.invite = function (groupName, uid, callback) {
@@ -246,6 +252,9 @@ module.exports = function (Groups) {
 				}
 			},
 			function (next) {
+				clearGroupTitleIfSet(groupName, uid, next);
+			},
+			function (next) {
 				plugins.fireHook('action:group.leave', {
 					groupName: groupName,
 					uid: uid,
@@ -254,6 +263,24 @@ module.exports = function (Groups) {
 			},
 		], callback);
 	};
+
+	function clearGroupTitleIfSet(groupName, uid, callback) {
+		if (groupName === 'registered-users' || Groups.isPrivilegeGroup(groupName)) {
+			return callback();
+		}
+		async.waterfall([
+			function (next) {
+				db.getObjectField('user:' + uid, 'groupTitle', next);
+			},
+			function (groupTitle, next) {
+				if (groupTitle === groupName) {
+					db.deleteObjectField('user:' + uid, 'groupTitle', next);
+				} else {
+					next();
+				}
+			},
+		], callback);
+	}
 
 	Groups.leaveAllGroups = function (uid, callback) {
 		async.waterfall([
@@ -287,13 +314,14 @@ module.exports = function (Groups) {
 
 	Groups.getMemberUsers = function (groupNames, start, stop, callback) {
 		async.map(groupNames, function (groupName, next) {
-			Groups.getMembers(groupName, start, stop, function (err, uids) {
-				if (err) {
-					return next(err);
-				}
-
-				user.getUsersFields(uids, ['uid', 'username', 'picture', 'userslug'], next);
-			});
+			async.waterfall([
+				function (next) {
+					Groups.getMembers(groupName, start, stop, next);
+				},
+				function (uids, next) {
+					user.getUsersFields(uids, ['uid', 'username', 'picture', 'userslug'], next);
+				},
+			], next);
 		}, callback);
 	};
 
@@ -322,13 +350,13 @@ module.exports = function (Groups) {
 	});
 
 	Groups.isMember = function (uid, groupName, callback) {
-		if (!uid || parseInt(uid, 10) <= 0) {
-			return callback(null, false);
+		if (!uid || parseInt(uid, 10) <= 0 || !groupName) {
+			return setImmediate(callback, null, false);
 		}
 
 		var cacheKey = uid + ':' + groupName;
 		if (cache.has(cacheKey)) {
-			return process.nextTick(callback, null, cache.get(cacheKey));
+			return setImmediate(callback, null, cache.get(cacheKey));
 		}
 
 		async.waterfall([
@@ -344,7 +372,7 @@ module.exports = function (Groups) {
 
 	Groups.isMembers = function (uids, groupName, callback) {
 		function getFromCache(next) {
-			process.nextTick(next, null, uids.map(function (uid) {
+			setImmediate(next, null, uids.map(function (uid) {
 				return cache.get(uid + ':' + groupName);
 			}));
 		}
@@ -377,7 +405,7 @@ module.exports = function (Groups) {
 
 	Groups.isMemberOfGroups = function (uid, groups, callback) {
 		function getFromCache(next) {
-			process.nextTick(next, null, groups.map(function (groupName) {
+			setImmediate(next, null, groups.map(function (groupName) {
 				return cache.get(uid + ':' + groupName);
 			}));
 		}
@@ -455,7 +483,7 @@ module.exports = function (Groups) {
 			},
 			function (_members, next) {
 				members = _members;
-				uniqueGroups = _.unique(_.flatten(members));
+				uniqueGroups = _.uniq(_.flatten(members));
 				uniqueGroups = Groups.removeEphemeralGroups(uniqueGroups);
 
 				Groups.isMemberOfGroups(uid, uniqueGroups, next);

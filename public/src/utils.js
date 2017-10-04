@@ -1,13 +1,17 @@
 'use strict';
 
-(function (module) {
-	var utils;
-	var fs;
-	var XRegExp;
+(function (factory) {
+	if (typeof module === 'object' && module.exports) {
+		var winston = require('winston');
 
-	if (typeof window === 'undefined') {
-		fs = require('fs');
-		XRegExp = require('xregexp');
+
+		module.exports = factory(require('xregexp'));
+		module.exports.walk = function (dir, done) {
+			// DEPRECATED
+			var file = require('../../src/file');
+			winston.warn('[deprecated] `utils.walk` is deprecated. Use `file.walk` instead.');
+			file.walk(dir, done);
+		};
 
 		process.profile = function (operation, start) {
 			console.log('%s took %d milliseconds', operation, process.elapsedTimeSince(start));
@@ -18,59 +22,15 @@
 			return (diff[0] * 1e3) + (diff[1] / 1e6);
 		};
 	} else {
-		XRegExp = window.XRegExp;
+		window.utils = factory(window.XRegExp);
 	}
-
-
-	utils = {
+}(function (XRegExp) {
+	var utils = {
 		generateUUID: function () {
 			return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
 				var r = Math.random() * 16 | 0;
 				var v = c === 'x' ? r : ((r & 0x3) | 0x8);
 				return v.toString(16);
-			});
-		},
-
-		// Adapted from http://stackoverflow.com/questions/5827612/node-js-fs-readdir-recursive-directory-search
-		walk: function (dir, done) {
-			var results = [];
-
-			fs.readdir(dir, function (err, list) {
-				if (err) {
-					return done(err);
-				}
-				var pending = list.length;
-				if (!pending) {
-					return done(null, results);
-				}
-				list.forEach(function (file) {
-					file = dir + '/' + file;
-					fs.stat(file, function (err, stat) {
-						if (err) {
-							return done(err);
-						}
-
-						if (stat && stat.isDirectory()) {
-							utils.walk(file, function (err, res) {
-								if (err) {
-									return done(err);
-								}
-
-								results = results.concat(res);
-								pending -= 1;
-								if (!pending) {
-									done(null, results);
-								}
-							});
-						} else {
-							results.push(file);
-							pending -= 1;
-							if (!pending) {
-								done(null, results);
-							}
-						}
-					});
-				});
 			});
 		},
 
@@ -143,7 +103,16 @@
 		hasLanguageKey: function (input) {
 			return utils.languageKeyRegex.test(input);
 		},
-
+		userLangToTimeagoCode: function (userLang) {
+			var mapping = {
+				'en-GB': 'en',
+				'en-US': 'en',
+				'fa-IR': 'fa',
+				'pt-BR': 'pt-br',
+				nb: 'no',
+			};
+			return mapping[userLang] || userLang;
+		},
 		// shallow objects merge
 		merge: function () {
 			var result = {};
@@ -198,7 +167,7 @@
 		},
 
 		isRelativeUrl: function (url) {
-			var firstChar = url.slice(0, 1);
+			var firstChar = String(url || '').charAt(0);
 			return (firstChar === '.' || firstChar === '/');
 		},
 
@@ -237,7 +206,14 @@
 				return '';
 			}
 
-			return Date.prototype.toISOString ? new Date(parseInt(timestamp, 10)).toISOString() : timestamp;
+			// Prevent too-high values to be passed to Date object
+			timestamp = Math.min(timestamp, 8640000000000000);
+
+			try {
+				return Date.prototype.toISOString ? new Date(parseInt(timestamp, 10)).toISOString() : timestamp;
+			} catch (e) {
+				return timestamp;
+			}
 		},
 
 		tags: ['a', 'abbr', 'acronym', 'address', 'applet', 'area', 'article', 'aside', 'audio', 'b', 'base', 'basefont', 'bdi', 'bdo', 'big', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'command', 'datalist', 'dd', 'del', 'details', 'dfn', 'dialog', 'dir', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'font', 'footer', 'form', 'frame', 'frameset', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'hr', 'html', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'keygen', 'label', 'legend', 'li', 'link', 'map', 'mark', 'menu', 'meta', 'meter', 'nav', 'noframes', 'noscript', 'object', 'ol', 'optgroup', 'option', 'output', 'p', 'param', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strike', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'track', 'tt', 'u', 'ul', 'var', 'video', 'wbr'],
@@ -307,13 +283,13 @@
 			return labels.reverse();
 		},
 
-		getDaysArray: function (from) {
+		getDaysArray: function (from, amount) {
 			var currentDay = new Date(from || Date.now()).getTime();
 			var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 			var labels = [];
 			var tmpDate;
 
-			for (var x = 29; x >= 0; x -= 1) {
+			for (var x = (amount || 30) - 1; x >= 0; x -= 1) {
 				tmpDate = new Date(currentDay - (1000 * 60 * 60 * 24 * x));
 				labels.push(months[tmpDate.getMonth()] + ' ' + tmpDate.getDate());
 			}
@@ -379,9 +355,7 @@
 		},
 
 		urlToLocation: function (url) {
-			var a = document.createElement('a');
-			a.href = url;
-			return a;
+			return $('<a href="' + url + '" />')[0];
 		},
 
 		// return boolean if string 'true' or string 'false', or if a parsable string which is a number
@@ -445,14 +419,13 @@
 					(relative_path.length > 0 ? targetLocation.pathname.indexOf(relative_path) === 0 : true)	// Subfolder installs need this additional check
 				);
 		},
+
+		rtrim: function (str) {
+			return str.replace(/\s+$/g, '');
+		},
 	};
 
-	module.exports = utils;
-	if (typeof window !== 'undefined') {
-		window.utils = module.exports;
-	}
-
-		/* eslint "no-extend-native": "off" */
+	/* eslint "no-extend-native": "off" */
 	if (typeof String.prototype.startsWith !== 'function') {
 		String.prototype.startsWith = function (prefix) {
 			if (this.length < prefix.length) {
@@ -474,13 +447,5 @@
 		};
 	}
 
-	if (typeof String.prototype.rtrim !== 'function') {
-		String.prototype.rtrim = function () {
-			return this.replace(/\s+$/g, '');
-		};
-	}
-}(typeof module === 'undefined' ? {
-	module: {
-		exports: {},
-	},
-} : module));
+	return utils;
+}));

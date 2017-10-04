@@ -11,7 +11,7 @@ var meta = require('../meta');
 var helpers = require('./helpers');
 var pagination = require('../pagination');
 
-var recentController = {};
+var recentController = module.exports;
 
 var validFilter = { '': true, new: true, watched: true };
 
@@ -22,7 +22,7 @@ recentController.get = function (req, res, next) {
 	var cid = req.query.cid;
 	var filter = req.params.filter || '';
 	var categoryData;
-
+	var rssToken;
 	if (!validFilter[filter]) {
 		return next();
 	}
@@ -36,9 +36,13 @@ recentController.get = function (req, res, next) {
 				watchedCategories: function (next) {
 					helpers.getWatchedCategories(req.uid, cid, next);
 				},
+				rssToken: function (next) {
+					user.auth.getFeedToken(req.uid, next);
+				},
 			}, next);
 		},
 		function (results, next) {
+			rssToken = results.rssToken;
 			settings = results.settings;
 			categoryData = results.watchedCategories;
 
@@ -47,49 +51,47 @@ recentController.get = function (req, res, next) {
 
 			topics.getRecentTopics(cid, req.uid, start, stop, filter, next);
 		},
-	], function (err, data) {
-		if (err) {
-			return next(err);
-		}
+		function (data) {
+			data.categories = categoryData.categories;
+			data.selectedCategory = categoryData.selectedCategory;
+			data.nextStart = stop + 1;
+			data.set = 'topics:recent';
+			data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
+			data.rssFeedUrl = nconf.get('relative_path') + '/recent.rss';
+			if (req.uid) {
+				data.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
+			}
+			data.title = '[[pages:recent]]';
+			data.filters = [{
+				name: '[[unread:all-topics]]',
+				url: 'recent',
+				selected: filter === '',
+				filter: '',
+			}, {
+				name: '[[unread:new-topics]]',
+				url: 'recent/new',
+				selected: filter === 'new',
+				filter: 'new',
+			}, {
+				name: '[[unread:watched-topics]]',
+				url: 'recent/watched',
+				selected: filter === 'watched',
+				filter: 'watched',
+			}];
 
-		data.categories = categoryData.categories;
-		data.selectedCategory = categoryData.selectedCategory;
-		data.nextStart = stop + 1;
-		data.set = 'topics:recent';
-		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
-		data.rssFeedUrl = nconf.get('relative_path') + '/recent.rss';
-		data.title = '[[pages:recent]]';
-		data.filters = [{
-			name: '[[unread:all-topics]]',
-			url: 'recent',
-			selected: filter === '',
-			filter: '',
-		}, {
-			name: '[[unread:new-topics]]',
-			url: 'recent/new',
-			selected: filter === 'new',
-			filter: 'new',
-		}, {
-			name: '[[unread:watched-topics]]',
-			url: 'recent/watched',
-			selected: filter === 'watched',
-			filter: 'watched',
-		}];
+			data.selectedFilter = data.filters.find(function (filter) {
+				return filter && filter.selected;
+			});
 
-		data.selectedFilter = data.filters.find(function (filter) {
-			return filter && filter.selected;
-		});
+			var pageCount = Math.max(1, Math.ceil(data.topicCount / settings.topicsPerPage));
+			data.pagination = pagination.create(page, pageCount, req.query);
 
-		var pageCount = Math.max(1, Math.ceil(data.topicCount / settings.topicsPerPage));
-		data.pagination = pagination.create(page, pageCount, req.query);
+			if (req.path.startsWith('/api/recent') || req.path.startsWith('/recent')) {
+				data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[recent:title]]' }]);
+			}
 
-		if (req.path.startsWith('/api/recent') || req.path.startsWith('/recent')) {
-			data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[recent:title]]' }]);
-		}
-
-		data.querystring = cid ? ('?cid=' + validator.escape(String(cid))) : '';
-		res.render('recent', data);
-	});
+			data.querystring = cid ? ('?cid=' + validator.escape(String(cid))) : '';
+			res.render('recent', data);
+		},
+	], next);
 };
-
-module.exports = recentController;

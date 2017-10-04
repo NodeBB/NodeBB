@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/topic/votes', ['components', 'translator'], function (components, translator) {
+define('forum/topic/votes', ['components', 'translator', 'benchpress'], function (components, translator, Benchpress) {
 	var Votes = {};
 
 	Votes.addVoteHandler = function () {
@@ -67,7 +67,7 @@ define('forum/topic/votes', ['components', 'translator'], function (components, 
 
 		socket.emit(currentState ? 'posts.unvote' : method, {
 			pid: post.attr('data-pid'),
-			room_id: app.currentRoom,
+			room_id: 'topic_' + ajaxify.data.tid,
 		}, function (err) {
 			if (err) {
 				if (err.message === 'self-vote') {
@@ -92,7 +92,7 @@ define('forum/topic/votes', ['components', 'translator'], function (components, 
 				return app.alertError(err.message);
 			}
 
-			templates.parse('partials/modals/votes_modal', data, function (html) {
+			Benchpress.parse('partials/modals/votes_modal', data, function (html) {
 				translator.translate(html, function (translated) {
 					var dialog = bootbox.dialog({
 						title: 'Voters',

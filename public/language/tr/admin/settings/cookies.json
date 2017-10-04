@@ -1,11 +1,11 @@
 {
 	"eu-consent": "AB Onayı",
 	"consent.enabled": "Aktif",
-	"consent.message": "Notification message",
-	"consent.acceptance": "Acceptance message",
-	"consent.link-text": "Policy Link Text",
-	"consent.blank-localised-default": "Leave blank to use NodeBB localised defaults",
+	"consent.message": "Bildirim mesajı",
+	"consent.acceptance": "Onay mesajı",
+	"consent.link-text": "Politika Bağlantısı Metni",
+	"consent.blank-localised-default": "NodeBB yerelleştirilmiş varsayılanlarını kullanmak için boş bırakın",
 	"settings": "Ayarlar",
-	"cookie-domain": "Session cookie domain",
-	"blank-default": "Leave blank for default"
+	"cookie-domain": "Oturum çerezi alanı",
+	"blank-default": "Varsayılan için boş bırakın"
 }

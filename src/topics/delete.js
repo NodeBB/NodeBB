@@ -154,7 +154,10 @@ module.exports = function (Topics) {
 				});
 			},
 			function (next) {
-				plugins.fireHook('action:topic.purge', tid);
+				Topics.getTopicData(tid, next);
+			},
+			function (topicData, next) {
+				plugins.fireHook('action:topic.purge', { topic: topicData, uid: uid });
 				db.delete('topic:' + tid, next);
 			},
 		], callback);
@@ -192,6 +195,7 @@ module.exports = function (Topics) {
 							'cid:' + topicData.cid + ':tids',
 							'cid:' + topicData.cid + ':tids:pinned',
 							'cid:' + topicData.cid + ':tids:posts',
+							'cid:' + topicData.cid + ':recent_tids',
 							'cid:' + topicData.cid + ':uid:' + topicData.uid + ':tids',
 							'uid:' + topicData.uid + ':topics',
 						], tid, next);

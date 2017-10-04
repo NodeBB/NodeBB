@@ -1,14 +1,14 @@
 {
-	"figure-x": "Figure %1",
-	"error-events-per-day": "<code>%1</code> events per day",
-	"error.404": "404 Not Found",
-	"error.503": "503 Service Unavailable",
-	"manage-error-log": "Manage Error Log",
+	"figure-x": "Рисунок %1",
+	"error-events-per-day": "событий <code>%1</code> в день",
+	"error.404": "404 Не найдено",
+	"error.503": "503 Сервис недоступен",
+	"manage-error-log": "Управление журналами ошибок",
 	"export-error-log": "Export Error Log (CSV)",
 	"clear-error-log": "Clear Error Log",
-	"route": "Route",
-	"count": "Count",
-	"no-routes-not-found": "Hooray! No 404 errors!",
-	"clear404-confirm": "Are you sure you wish to clear the 404 error logs?",
-	"clear404-success": "\"404 Not Found\" errors cleared"
+	"route": "Путь",
+	"count": "Кол-во",
+	"no-routes-not-found": "Ура! Ошибок 404 нет!",
+	"clear404-confirm": "Вы уверены, что хотите очистить журнал ошибок 404?",
+	"clear404-success": "Журнал ошибок 404 очищен"
 }

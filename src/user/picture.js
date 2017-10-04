@@ -1,8 +1,6 @@
 'use strict';
 
 var async = require('async');
-var fs = require('fs');
-var winston = require('winston');
 var request = require('request');
 var mime = require('mime');
 
@@ -30,7 +28,7 @@ module.exports = function (User) {
 				var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
 				var size = res.headers['content-length'];
 				var type = res.headers['content-type'];
-				var extension = mime.extension(type);
+				var extension = mime.getExtension(type);
 
 				if (['png', 'jpeg', 'jpg', 'gif'].indexOf(extension) === -1) {
 					return callback(new Error('[[error:invalid-image-extension]]'));
@@ -106,7 +104,7 @@ module.exports = function (User) {
 				}
 			},
 		], function (err) {
-			deleteFile(picture.path);
+			file.delete(picture.path);
 			callback(err, {
 				url: url,
 			});
@@ -154,7 +152,7 @@ module.exports = function (User) {
 			function (path, next) {
 				picture.path = path;
 
-				var imageDimension = parseInt(meta.config.profileImageDimension, 10) || 128;
+				var imageDimension = parseInt(meta.config.profileImageDimension, 10) || 200;
 				image.resizeImage({
 					path: picture.path,
 					extension: extension,
@@ -175,7 +173,7 @@ module.exports = function (User) {
 				}, next);
 			},
 		], function (err) {
-			deleteFile(picture.path);
+			file.delete(picture.path);
 			callback(err, uploadedImage);
 		});
 	};
@@ -185,14 +183,15 @@ module.exports = function (User) {
 		if (!convertToPNG) {
 			return setImmediate(callback, null, path);
 		}
-
-		image.normalise(path, extension, function (err, newPath) {
-			if (err) {
-				return callback(err);
-			}
-			deleteFile(path);
-			callback(null, newPath);
-		});
+		async.waterfall([
+			function (next) {
+				image.normalise(path, extension, next);
+			},
+			function (newPath, next) {
+				file.delete(path);
+				next(null, newPath);
+			},
+		], callback);
 	}
 
 	function uploadProfileOrCover(filename, image, callback) {
@@ -228,16 +227,6 @@ module.exports = function (User) {
 				});
 			},
 		], callback);
-	}
-
-	function deleteFile(path) {
-		if (path) {
-			fs.unlink(path, function (err) {
-				if (err) {
-					winston.error(err);
-				}
-			});
-		}
 	}
 
 	User.removeCoverPicture = function (data, callback) {

@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/register', ['translator'], function (translator) {
+define('forum/register', ['translator', 'zxcvbn'], function (translator, zxcvbn) {
 	var Register = {};
 	var validationError = false;
 	var successIcon = '';
@@ -16,6 +16,7 @@ define('forum/register', ['translator'], function (translator) {
 		handleLanguageOverride();
 
 		$('#referrer').val(app.previousUrl);
+		$('#content #noscript').val('false');
 
 		email.on('blur', function () {
 			if (email.val().length) {
@@ -170,6 +171,7 @@ define('forum/register', ['translator'], function (translator) {
 	function validatePassword(password, password_confirm) {
 		var password_notify = $('#password-notify');
 		var password_confirm_notify = $('#password-confirm-notify');
+		var passwordStrength = zxcvbn(password);
 
 		if (password.length < ajaxify.data.minimumPasswordLength) {
 			showError(password_notify, '[[user:change_password_error_length]]');
@@ -181,6 +183,8 @@ define('forum/register', ['translator'], function (translator) {
 			showError(password_notify, '[[user:password_same_as_username]]');
 		} else if (password === $('#email').val()) {
 			showError(password_notify, '[[user:password_same_as_email]]');
+		} else if (passwordStrength.score < ajaxify.data.minimumPasswordStrength) {
+			showError(password_notify, '[[user:weak_password]]');
 		} else {
 			showSuccess(password_notify, successIcon);
 		}

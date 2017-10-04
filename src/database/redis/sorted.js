@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function (redisClient, module) {
-	var utils = require('../../../public/src/utils');
+	var utils = require('../../utils');
 
 	var helpers = module.helpers.redis;
 
@@ -124,8 +124,18 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.sortedSetScore = function (key, value, callback) {
+		if (!key || value === undefined) {
+			return callback(null, null);
+		}
+
 		redisClient.zscore(key, value, function (err, score) {
-			callback(err, !err ? parseFloat(score) : undefined);
+			if (err) {
+				return callback(err);
+			}
+			if (score === null) {
+				return callback(null, score);
+			}
+			callback(null, parseFloat(score));
 		});
 	};
 

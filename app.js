@@ -19,8 +19,17 @@
 
 'use strict';
 
+if (require.main !== module) {
+	require.main.require = function (path) {
+		return require(path);
+	};
+}
+
 var nconf = require('nconf');
-nconf.argv().env('__');
+nconf.argv().env({
+	separator: '__',
+	lowerCase: true,
+});
 
 var url = require('url');
 var async = require('async');
@@ -28,6 +37,7 @@ var winston = require('winston');
 var path = require('path');
 var pkg = require('./package.json');
 var file = require('./src/file');
+var debug = require('./src/meta/debugParams')().execArgv.length;
 
 global.env = process.env.NODE_ENV || 'production';
 
@@ -42,6 +52,22 @@ winston.add(winston.transports.Console, {
 	json: (!!nconf.get('json-logging')),
 	stringify: (!!nconf.get('json-logging')),
 });
+
+if (debug) {
+	var winstonCommon = require('winston/lib/winston/common');
+	// Override to use real console.log etc for VSCode debugger
+	winston.transports.Console.prototype.log = function (level, message, meta, callback) {
+		const output = winstonCommon.log(Object.assign({}, this, {
+			level,
+			message,
+			meta,
+		}));
+
+		console[level in console ? level : 'log'](output);
+
+		setImmediate(callback, null, true);
+	};
+}
 
 
 // Alternate configuration file support
@@ -84,6 +110,11 @@ if (nconf.get('setup') || nconf.get('install')) {
 	listPlugins();
 } else if (nconf.get('build')) {
 	require('./src/meta/build').build(nconf.get('build'));
+} else if (nconf.get('events')) {
+	async.series([
+		async.apply(require('./src/database').init),
+		async.apply(require('./src/events').output),
+	]);
 } else {
 	require('./src/start').start();
 }
@@ -188,13 +219,18 @@ function upgrade() {
 	var meta = require('./src/meta');
 	var upgrade = require('./src/upgrade');
 	var build = require('./src/meta/build');
+	var tasks = [db.init, meta.configs.init, upgrade.run, build.buildAll];
 
-	async.series([
-		async.apply(db.init),
-		async.apply(meta.configs.init),
-		async.apply(upgrade.upgrade),
-		async.apply(build.buildAll),
-	], function (err) {
+	if (nconf.get('upgrade') !== true) {
+		// Likely an upgrade script name passed in
+		tasks[2] = async.apply(upgrade.runSingle, nconf.get('upgrade'));
+
+		// Skip build
+		tasks.pop();
+	}
+	// disable mongo timeouts during upgrade
+	nconf.set('mongo:options:socketTimeoutMS', 0);
+	async.series(tasks, function (err) {
 		if (err) {
 			winston.error(err.stack);
 			process.exit(1);
@@ -206,22 +242,39 @@ function upgrade() {
 
 function activate() {
 	var db = require('./src/database');
-	db.init(function (err) {
+	var plugins = require('./src/plugins');
+	var events = require('./src/events');
+	var plugin = nconf.get('activate');
+	async.waterfall([
+		function (next) {
+			db.init(next);
+		},
+		function (next) {
+			if (plugin.indexOf('nodebb-') !== 0) {
+				// Allow omission of `nodebb-plugin-`
+				plugin = 'nodebb-plugin-' + plugin;
+			}
+			plugins.isInstalled(plugin, next);
+		},
+		function (isInstalled, next) {
+			if (!isInstalled) {
+				return next(new Error('plugin not installed'));
+			}
+
+			winston.info('Activating plugin `%s`', plugin);
+			db.sortedSetAdd('plugins:active', 0, plugin, next);
+		},
+		function (next) {
+			events.log({
+				type: 'plugin-activate',
+				text: plugin,
+			}, next);
+		},
+	], function (err) {
 		if (err) {
-			winston.error(err.stack);
-			process.exit(1);
+			winston.error(err.message);
 		}
-
-		var plugin = nconf.get('activate');
-		if (plugin.indexOf('nodebb-') !== 0) {
-			// Allow omission of `nodebb-plugin-`
-			plugin = 'nodebb-plugin-' + plugin;
-		}
-
-		winston.info('Activating plugin `%s`', plugin);
-		db.sortedSetAdd('plugins:active', 0, plugin, function (err) {
-			process.exit(err ? 1 : 0);
-		});
+		process.exit(err ? 1 : 0);
 	});
 }
 

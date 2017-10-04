@@ -192,7 +192,97 @@ describe('meta', function () {
 	});
 
 
-	after(function (done) {
-		db.emptydb(done);
+	describe('session TTL', function () {
+		it('should return 14 days in seconds', function (done) {
+			assert(meta.getSessionTTLSeconds(), 1209600);
+			done();
+		});
+
+		it('should return 7 days in seconds', function (done) {
+			meta.config.loginDays = 7;
+			assert(meta.getSessionTTLSeconds(), 604800);
+			done();
+		});
+
+		it('should return 2 days in seconds', function (done) {
+			meta.config.loginSeconds = 172800;
+			assert(meta.getSessionTTLSeconds(), 172800);
+			done();
+		});
+	});
+
+	describe('dependencies', function () {
+		it('should return ENOENT if module is not found', function (done) {
+			meta.dependencies.checkModule('some-module-that-does-not-exist', function (err) {
+				assert.equal(err.code, 'ENOENT');
+				done();
+			});
+		});
+
+		it('should not error if module is a nodebb-plugin-*', function (done) {
+			meta.dependencies.checkModule('nodebb-plugin-somePlugin', function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should not error if module is nodebb-theme-*', function (done) {
+			meta.dependencies.checkModule('nodebb-theme-someTheme', function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should parse json package data', function (done) {
+			var pkgData = meta.dependencies.parseModuleData('nodebb-plugin-test', '{"a": 1}');
+			assert.equal(pkgData.a, 1);
+			done();
+		});
+
+		it('should return null data with invalid json', function (done) {
+			var pkgData = meta.dependencies.parseModuleData('nodebb-plugin-test', 'asdasd');
+			assert.strictEqual(pkgData, null);
+			done();
+		});
+
+		it('should return false if moduleData is falsy', function (done) {
+			assert(!meta.dependencies.doesSatisfy(null, '1.0.0'));
+			done();
+		});
+
+		it('should return false if moduleData doesnt not satisfy package.json', function (done) {
+			assert(!meta.dependencies.doesSatisfy({ name: 'nodebb-plugin-test', version: '0.9.0' }, '1.0.0'));
+			done();
+		});
+
+		it('should return true if _resolved is from github', function (done) {
+			assert(meta.dependencies.doesSatisfy({ name: 'nodebb-plugin-test', _resolved: 'https://github.com/some/repo', version: '0.9.0' }, '1.0.0'));
+			done();
+		});
+	});
+
+
+	describe('sounds', function () {
+		var socketModules = require('../src/socket.io/modules');
+
+		it('should getUserMap', function (done) {
+			socketModules.sounds.getUserSoundMap({ uid: 1 }, null, function (err, data) {
+				assert.ifError(err);
+				assert(data.hasOwnProperty('chat-incoming'));
+				assert(data.hasOwnProperty('chat-outgoing'));
+				assert(data.hasOwnProperty('notification'));
+				done();
+			});
+		});
+	});
+
+	describe('debug params', function () {
+		it('should return fork arguments for debug', function (done) {
+			var debugParams = require('../src/meta/debugParams');
+			var data = debugParams(['--debug=5858', '--foo=1']);
+			assert.equal(data.execArgv[0], '--debug=5859');
+			assert.equal(data.execArgv[1], '--nolazy');
+			done();
+		});
 	});
 });

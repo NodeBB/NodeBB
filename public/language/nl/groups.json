@@ -27,7 +27,7 @@
     "details.disableJoinRequests": "Groepsverzoeken uitschakelen",
     "details.grant": "Toekennen/herroepen van eigendom",
     "details.kick": "Kick",
-    "details.kick_confirm": "Are you sure you want to remove this member from the group?",
+    "details.kick_confirm": "Weet u zeker dat u de gebruiker wilt verwijderen uit de groep?",
     "details.owner_options": "Groepsadministratie",
     "details.group_name": "Groepsnaam",
     "details.member_count": "Ledentelling",
@@ -54,5 +54,5 @@
     "upload-group-cover": "Upload groepscover",
     "bulk-invite-instructions": "Vul een lijst is met gebruikersnamen gescheiden met komma's om deze uit te nodigen voor deze groep",
     "bulk-invite": "Massa uitnodiging",
-    "remove_group_cover_confirm": "Are you sure you want to remove the cover picture?"
+    "remove_group_cover_confirm": "Weet u zeker dat u de cover foto wilt verwijderen?"
 }

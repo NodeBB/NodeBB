@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/chats/messages', ['components', 'sounds', 'translator'], function (components, sounds, translator) {
+define('forum/chats/messages', ['components', 'sounds', 'translator', 'benchpress'], function (components, sounds, translator, Benchpress) {
 	var messages = {};
 
 	messages.sendMessage = function (roomId, inputEl) {
@@ -9,7 +9,7 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 		var mid = inputEl.attr('data-mid');
 
 		if (msg.length > ajaxify.data.maximumChatMessageLength) {
-			return app.alertError('[[error:chat-message-too-long]]');
+			return app.alertError('[[error:chat-message-too-long,' + ajaxify.data.maximumChatMessageLength + ']]');
 		}
 
 		if (!msg.length) {
@@ -35,7 +35,14 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 					if (err.message === '[[error:email-not-confirmed-chat]]') {
 						return app.showEmailConfirmWarning(err);
 					}
-					return app.alertError(err.message);
+
+					return app.alert({
+						alert_id: 'chat_spam_error',
+						title: '[[global:alert.error]]',
+						message: err.message,
+						type: 'danger',
+						timeout: 10000,
+					});
 				}
 
 				sounds.play('chat-outgoing');
@@ -57,8 +64,10 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 
 	messages.appendChatMessage = function (chatContentEl, data) {
 		var lastSpeaker = parseInt(chatContentEl.find('.chat-message').last().attr('data-uid'), 10);
+		var lasttimestamp = parseInt(chatContentEl.find('.chat-message').last().attr('data-timestamp'), 10);
 		if (!Array.isArray(data)) {
-			data.newSet = lastSpeaker !== data.fromuid;
+			data.newSet = lastSpeaker !== parseInt(data.fromuid, 10) ||
+				parseInt(data.timestamp, 10) > parseInt(lasttimestamp, 10) + (1000 * 60 * 3);
 		}
 
 		messages.parseMessage(data, function (html) {
@@ -77,7 +86,7 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 
 
 	messages.parseMessage = function (data, callback) {
-		templates.parse('partials/chats/message' + (Array.isArray(data) ? 's' : ''), {
+		Benchpress.parse('partials/chats/message' + (Array.isArray(data) ? 's' : ''), {
 			messages: data,
 		}, function (html) {
 			translator.translate(html, callback);
@@ -87,9 +96,7 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 
 	messages.scrollToBottom = function (containerEl) {
 		if (containerEl.length) {
-			containerEl.scrollTop(
-				containerEl[0].scrollHeight - containerEl.height()
-			);
+			containerEl.scrollTop(containerEl[0].scrollHeight - containerEl.height());
 		}
 	};
 

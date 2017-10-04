@@ -9,21 +9,20 @@ var topics = require('../topics');
 var user = require('../user');
 var websockets = require('./index');
 var socketHelpers = require('./helpers');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 
 var apiController = require('../controllers/api');
 
-var SocketPosts = {};
+var SocketPosts = module.exports;
 
 require('./posts/edit')(SocketPosts);
 require('./posts/move')(SocketPosts);
 require('./posts/votes')(SocketPosts);
 require('./posts/bookmarks')(SocketPosts);
 require('./posts/tools')(SocketPosts);
-require('./posts/flag')(SocketPosts);
 
 SocketPosts.reply = function (socket, data, callback) {
-	if (!data || !data.tid || !data.content) {
+	if (!data || !data.tid || (parseInt(meta.config.minimumPostLength, 10) !== 0 && !data.content)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
@@ -31,6 +30,21 @@ SocketPosts.reply = function (socket, data, callback) {
 	data.req = websockets.reqFromSocket(socket);
 	data.timestamp = Date.now();
 
+	async.waterfall([
+		function (next) {
+			posts.shouldQueue(socket.uid, data, next);
+		},
+		function (shouldQueue, next) {
+			if (shouldQueue) {
+				posts.addToQueue(data, next);
+			} else {
+				postReply(socket, data, next);
+			}
+		},
+	], callback);
+};
+
+function postReply(socket, data, callback) {
 	async.waterfall([
 		function (next) {
 			topics.reply(data, next);
@@ -51,7 +65,7 @@ SocketPosts.reply = function (socket, data, callback) {
 			socketHelpers.notifyNew(socket.uid, 'newPost', result);
 		},
 	], callback);
-};
+}
 
 SocketPosts.getRawPost = function (socket, pid, callback) {
 	async.waterfall([
@@ -154,5 +168,25 @@ SocketPosts.getReplies = function (socket, pid, callback) {
 	], callback);
 };
 
+SocketPosts.accept = function (socket, data, callback) {
+	acceptOrReject(posts.submitFromQueue, socket, data, callback);
+};
 
-module.exports = SocketPosts;
+SocketPosts.reject = function (socket, data, callback) {
+	acceptOrReject(posts.removeFromQueue, socket, data, callback);
+};
+
+function acceptOrReject(method, socket, data, callback) {
+	async.waterfall([
+		function (next) {
+			user.isAdminOrGlobalMod(socket.uid, next);
+		},
+		function (isAdminOrGlobalMod, next) {
+			if (!isAdminOrGlobalMod) {
+				return callback(new Error('[[error:no-privileges]]'));
+			}
+
+			method(data.id, next);
+		},
+	], callback);
+}

@@ -1,7 +1,7 @@
 {
-	"home-page": "Home Page",
-	"description": "Choose what page is shown when users navigate to the root URL of your forum.",
-	"home-page-route": "Home Page Route",
+	"home-page": "Página Principal",
+	"description": "Escoge que pagina se muestra cuando los usuarios navegan en la raíz del foro.",
+	"home-page-route": "Ruta de la Pagina Principal",
 	"custom-route": "Custom Route",
-	"allow-user-home-pages": "Allow User Home Pages"
+	"allow-user-home-pages": "Permitir Pagina de Perfil del Usuario"
 }

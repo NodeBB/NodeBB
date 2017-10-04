@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('search', ['navigator', 'translator'], function (nav, translator) {
+define('search', ['navigator', 'translator', 'storage'], function (nav, translator, storage) {
 	var Search = {
 		current: {},
 	};
@@ -74,12 +74,18 @@ define('search', ['navigator', 'translator'], function (nav, translator) {
 		if (data.showAs) {
 			query.showAs = data.showAs;
 		}
+
+		$(window).trigger('action:search.createQueryString', {
+			query: query,
+			data: data,
+		});
+
 		return decodeURIComponent($.param(query));
 	}
 
 	Search.getSearchPreferences = function () {
 		try {
-			return JSON.parse(localStorage.getItem('search-preferences') || '{}');
+			return JSON.parse(storage.getItem('search-preferences') || '{}');
 		} catch (e) {
 			return {};
 		}
@@ -150,7 +156,7 @@ define('search', ['navigator', 'translator'], function (nav, translator) {
 					return app.alertError(err.message);
 				}
 
-				nav.scrollToPost(postIndex, true);
+				nav.scrollToIndex(postIndex, true);
 			});
 		} else {
 			translator.translate('[[search:no-matches]]', function (text) {

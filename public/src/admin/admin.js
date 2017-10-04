@@ -99,6 +99,10 @@
 			$('#main-menu li').removeClass('active');
 			$('#main-menu a').removeClass('active').filter('[href="' + url + '"]').each(function () {
 				var menu = $(this);
+				if (menu.parent().attr('data-link')) {
+					return;
+				}
+
 				menu
 					.parent().addClass('active')
 					.parents('.menu-item').addClass('active');
@@ -231,4 +235,10 @@
 			});
 		});
 	}
+
+	// tell ace to use the right paths when requiring modules
+	require(['ace/ace'], function (ace) {
+		ace.config.set('packaged', true);
+		ace.config.set('basePath', config.relative_path + '/assets/src/modules/ace/');
+	});
 }());

@@ -5,5 +5,8 @@
 
 	"custom-header": "Intestazione Personalizzata",
 	"custom-header.description": "Inserisci l' HTML personalizzato qui  (es. JavaScript, Meta Tags, ecc.), verrà attaccato al codice  <code>&lt;head&gt;</code> sezione del markup del tuo forum",
-	"custom-header.enable": "Abilita l'Intestazione Personalizzata"
+	"custom-header.enable": "Abilita l'Intestazione Personalizzata",
+
+	"custom-css.livereload": "Enable Live Reload",
+	"custom-css.livereload.description": "Enable this to force all sessions on every device under your account to refresh whenever you click save"
 }

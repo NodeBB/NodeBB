@@ -93,6 +93,13 @@
 				</fieldset>
 			</div>
 		</div>
+		<div class="col-md-3">
+			<select id="group-selector" class="form-control">
+				<!-- BEGIN groupNames -->
+				<option value="{groupNames.encodedName}" <!-- IF groupNames.selected -->selected<!-- ENDIF groupNames.selected -->>{groupNames.displayName}</option>
+				<!-- END groupNames -->
+			</select>
+		</div>
 	</form>
 </div>
 

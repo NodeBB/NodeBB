@@ -1,24 +1,28 @@
 
 'use strict';
 
+var async = require('async');
+
 var user = require('../user');
 var meta = require('../meta');
 
-var SocketBlacklist = {};
+var SocketBlacklist = module.exports;
 
 SocketBlacklist.validate = function (socket, data, callback) {
 	meta.blacklist.validate(data.rules, callback);
 };
 
 SocketBlacklist.save = function (socket, rules, callback) {
-	user.isAdminOrGlobalMod(socket.uid, function (err, isAdminOrGlobalMod) {
-		if (err || !isAdminOrGlobalMod) {
-			return callback(err || new Error('[[error:no-privileges]]'));
-		}
+	async.waterfall([
+		function (next) {
+			user.isAdminOrGlobalMod(socket.uid, next);
+		},
+		function (isAdminOrGlobalMod, next) {
+			if (!isAdminOrGlobalMod) {
+				return callback(new Error('[[error:no-privileges]]'));
+			}
 
-		meta.blacklist.save(rules, callback);
-	});
+			meta.blacklist.save(rules, next);
+		},
+	], callback);
 };
-
-
-module.exports = SocketBlacklist;

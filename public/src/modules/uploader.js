@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('uploader', ['translator'], function (translator) {
+define('uploader', ['translator', 'benchpress'], function (translator, Benchpress) {
 	var module = {};
 
 	module.open = function (route, params, fileSize, callback) {
@@ -102,7 +102,7 @@ define('uploader', ['translator'], function (translator) {
 	}
 
 	function parseModal(tplVals, callback) {
-		templates.parse('partials/modals/upload_file_modal', tplVals, function (html) {
+		Benchpress.parse('partials/modals/upload_file_modal', tplVals, function (html) {
 			translator.translate(html, callback);
 		});
 	}

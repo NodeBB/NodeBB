@@ -16,17 +16,21 @@ var uniquevisitors = 0;
 
 var isCategory = /^(?:\/api)?\/category\/(\d+)/;
 
-new cronJob('*/10 * * * *', function () {
+new cronJob('*/10 * * * * *', function () {
 	Analytics.writeData();
 }, null, true);
 
-Analytics.increment = function (keys) {
+Analytics.increment = function (keys, callback) {
 	keys = Array.isArray(keys) ? keys : [keys];
 
 	keys.forEach(function (key) {
 		counters[key] = counters[key] || 0;
 		counters[key] += 1;
 	});
+
+	if (typeof callback === 'function') {
+		callback();
+	}
 };
 
 Analytics.pageView = function (payload) {
@@ -164,21 +168,30 @@ Analytics.getUnwrittenPageviews = function () {
 	return pageViews;
 };
 
-Analytics.getMonthlyPageViews = function (callback) {
-	var thisMonth = new Date();
-	var lastMonth = new Date();
-	thisMonth.setMonth(thisMonth.getMonth(), 1);
-	thisMonth.setHours(0, 0, 0, 0);
-	lastMonth.setMonth(thisMonth.getMonth() - 1, 1);
-	lastMonth.setHours(0, 0, 0, 0);
+Analytics.getSummary = function (callback) {
+	var today = new Date();
+	today.setHours(0, 0, 0, 0);
 
-	var values = [thisMonth.getTime(), lastMonth.getTime()];
-
-	db.sortedSetScores('analytics:pageviews:month', values, function (err, scores) {
+	async.parallel({
+		seven: async.apply(Analytics.getDailyStatsForSet, 'analytics:pageviews', today, 7),
+		thirty: async.apply(Analytics.getDailyStatsForSet, 'analytics:pageviews', today, 30),
+	}, function (err, scores) {
 		if (err) {
-			return callback(err);
+			return callback(null, {
+				seven: 0,
+				thirty: 0,
+			});
 		}
-		callback(null, { thisMonth: scores[0] || 0, lastMonth: scores[1] || 0 });
+		callback(null, {
+			seven: scores.seven.reduce(function (sum, cur) {
+				sum += cur;
+				return sum;
+			}, 0),
+			thirty: scores.thirty.reduce(function (sum, cur) {
+				sum += cur;
+				return sum;
+			}, 0),
+		});
 	});
 };
 
@@ -198,3 +211,9 @@ Analytics.getErrorAnalytics = function (callback) {
 	}, callback);
 };
 
+Analytics.getBlacklistAnalytics = function (callback) {
+	async.parallel({
+		daily: async.apply(Analytics.getDailyStatsForSet, 'analytics:blacklist', Date.now(), 7),
+		hourly: async.apply(Analytics.getHourlyStatsForSet, 'analytics:blacklist', Date.now(), 24),
+	}, callback);
+};

@@ -1,6 +1,7 @@
 {
     "success": "Riuscito",
     "topic-post": "Hai postato correttamente.",
+    "post-queued": "Your post is queued for approval.",
     "authentication-successful": "Autenticazione Riuscita",
     "settings-saved": "Impostazioni salvate!"
 }

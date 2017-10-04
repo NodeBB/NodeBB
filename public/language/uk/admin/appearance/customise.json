@@ -5,5 +5,8 @@
 
 	"custom-header": "Користувацький заголовок",
 	"custom-header.description": "Уведіть власний HTML (JavaScript, мета теги, тощо), що буде додано до секції <code>&lt;head&gt;</code> вашого форуму.",
-	"custom-header.enable": "Увімкнути користувацький заголовок"
+	"custom-header.enable": "Увімкнути користувацький заголовок",
+
+	"custom-css.livereload": "Увімкнути Автоматичне Оновлення",
+	"custom-css.livereload.description": "Увімкніть цю опцію, щоб примусово оновлювати всі сесії вашого акаунту, коли ви натискаєте Зберегти"
 }

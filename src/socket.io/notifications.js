@@ -1,11 +1,10 @@
 'use strict';
 
 var async = require('async');
+
 var user = require('../user');
 var notifications = require('../notifications');
-var utils = require('../../public/src/utils');
-
-var SocketNotifs = {};
+var SocketNotifs = module.exports;
 
 SocketNotifs.get = function (socket, data, callback) {
 	if (data && Array.isArray(data.nids) && socket.uid) {
@@ -13,25 +12,6 @@ SocketNotifs.get = function (socket, data, callback) {
 	} else {
 		user.notifications.get(socket.uid, callback);
 	}
-};
-
-SocketNotifs.loadMore = function (socket, data, callback) {
-	if (!data || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
-		return callback(new Error('[[error:invalid-data]]'));
-	}
-	if (!socket.uid) {
-		return callback(new Error('[[error:no-privileges]]'));
-	}
-	var start = parseInt(data.after, 10);
-	var stop = start + 20;
-	async.waterfall([
-		function (next) {
-			user.notifications.getAll(socket.uid, start, stop, next);
-		},
-		function (notifications, next) {
-			next(null, { notifications: notifications, nextStart: stop });
-		},
-	], callback);
 };
 
 SocketNotifs.getCount = function (socket, data, callback) {
@@ -47,15 +27,37 @@ SocketNotifs.deleteAll = function (socket, data, callback) {
 };
 
 SocketNotifs.markRead = function (socket, nid, callback) {
-	notifications.markRead(nid, socket.uid, callback);
+	async.waterfall([
+		function (next) {
+			notifications.markRead(nid, socket.uid, next);
+		},
+		function (next) {
+			user.notifications.pushCount(socket.uid);
+			next();
+		},
+	], callback);
 };
 
 SocketNotifs.markUnread = function (socket, nid, callback) {
-	notifications.markUnread(nid, socket.uid, callback);
+	async.waterfall([
+		function (next) {
+			notifications.markUnread(nid, socket.uid, next);
+		},
+		function (next) {
+			user.notifications.pushCount(socket.uid);
+			next();
+		},
+	], callback);
 };
 
 SocketNotifs.markAllRead = function (socket, data, callback) {
-	notifications.markAllRead(socket.uid, callback);
+	async.waterfall([
+		function (next) {
+			notifications.markAllRead(socket.uid, next);
+		},
+		function (next) {
+			user.notifications.pushCount(socket.uid);
+			next();
+		},
+	], callback);
 };
-
-module.exports = SocketNotifs;

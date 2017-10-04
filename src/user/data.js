@@ -6,8 +6,9 @@ var nconf = require('nconf');
 var winston = require('winston');
 
 var db = require('../database');
+var meta = require('../meta');
 var plugins = require('../plugins');
-var utils = require('../../public/src/utils');
+var utils = require('../utils');
 
 module.exports = function (User) {
 	var iconBackgrounds = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3',
@@ -26,6 +27,14 @@ module.exports = function (User) {
 	};
 
 	User.getUsersFields = function (uids, fields, callback) {
+		if (!Array.isArray(uids) || !uids.length) {
+			return callback(null, []);
+		}
+
+		uids = uids.map(function (uid) {
+			return isNaN(uid) ? 0 : uid;
+		});
+
 		var fieldsToRemove = [];
 		function addField(field) {
 			if (fields.indexOf(field) === -1) {
@@ -34,15 +43,7 @@ module.exports = function (User) {
 			}
 		}
 
-		if (!Array.isArray(uids) || !uids.length) {
-			return callback(null, []);
-		}
-
-		var keys = uids.map(function (uid) {
-			return 'user:' + uid;
-		});
-
-		if (fields.indexOf('uid') === -1) {
+		if (fields.length && fields.indexOf('uid') === -1) {
 			fields.push('uid');
 		}
 
@@ -55,11 +56,21 @@ module.exports = function (User) {
 			addField('lastonline');
 		}
 
+		var uniqueUids = uids.filter(function (uid, index) {
+			return index === uids.indexOf(uid);
+		});
+
 		async.waterfall([
 			function (next) {
-				db.getObjectsFields(keys, fields, next);
+				if (fields.length) {
+					db.getObjectsFields(uidsToUserKeys(uniqueUids), fields, next);
+				} else {
+					db.getObjects(uidsToUserKeys(uniqueUids), next);
+				}
 			},
 			function (users, next) {
+				users = uidsToUsers(uids, uniqueUids, users);
+
 				modifyUserData(users, fieldsToRemove, next);
 			},
 		], callback);
@@ -77,23 +88,25 @@ module.exports = function (User) {
 	};
 
 	User.getUsersData = function (uids, callback) {
-		if (!Array.isArray(uids) || !uids.length) {
-			return callback(null, []);
-		}
+		User.getUsersFields(uids, [], callback);
+	};
 
-		var keys = uids.map(function (uid) {
+	function uidsToUsers(uids, uniqueUids, usersData) {
+		var ref = uniqueUids.reduce(function (memo, cur, idx) {
+			memo[cur] = idx;
+			return memo;
+		}, {});
+		var users = uids.map(function (uid) {
+			return usersData[ref[uid]];
+		});
+		return users;
+	}
+
+	function uidsToUserKeys(uids) {
+		return uids.map(function (uid) {
 			return 'user:' + uid;
 		});
-
-		async.waterfall([
-			function (next) {
-				db.getObjects(keys, next);
-			},
-			function (users, next) {
-				modifyUserData(users, [], next);
-			},
-		], callback);
-	};
+	}
 
 	function modifyUserData(users, fieldsToRemove, callback) {
 		users.forEach(function (user) {
@@ -109,11 +122,15 @@ module.exports = function (User) {
 				user.password = undefined;
 			}
 
+			if (user.rss_token) {
+				user.rss_token = undefined;
+			}
+
 			if (!parseInt(user.uid, 10)) {
 				user.uid = 0;
 				user.username = '[[global:guest]]';
 				user.userslug = '';
-				user.picture = '';
+				user.picture = User.getDefaultAvatar();
 				user['icon:text'] = '?';
 				user['icon:bgColor'] = '#aaa';
 			}
@@ -123,6 +140,9 @@ module.exports = function (User) {
 				user.picture = user.uploadedpicture;
 			} else if (user.uploadedpicture) {
 				user.uploadedpicture = user.uploadedpicture.startsWith('http') ? user.uploadedpicture : nconf.get('relative_path') + user.uploadedpicture;
+			}
+			if (meta.config.defaultAvatar && !user.picture) {
+				user.picture = User.getDefaultAvatar();
 			}
 
 			if (user.hasOwnProperty('status') && parseInt(user.lastonline, 10)) {
@@ -134,7 +154,7 @@ module.exports = function (User) {
 			}
 
 			// User Icons
-			if (user.hasOwnProperty('picture') && user.username && parseInt(user.uid, 10)) {
+			if (user.hasOwnProperty('picture') && user.username && parseInt(user.uid, 10) && !meta.config.defaultAvatar) {
 				user['icon:text'] = (user.username[0] || '').toUpperCase();
 				user['icon:bgColor'] = iconBackgrounds[Array.prototype.reduce.call(user.username, function (cur, next) {
 					return cur + next.charCodeAt();
@@ -148,10 +168,22 @@ module.exports = function (User) {
 			if (user.hasOwnProperty('lastonline')) {
 				user.lastonlineISO = utils.toISOString(user.lastonline) || user.joindateISO;
 			}
+
+			if (user.hasOwnProperty('banned:expire')) {
+				user.banned_until = parseInt(user['banned:expire'], 10) || 0;
+				user.banned_until_readable = user.banned_until ? new Date(user.banned_until).toString() : 'Not Banned';
+			}
 		});
 
 		plugins.fireHook('filter:users.get', users, callback);
 	}
+
+	User.getDefaultAvatar = function () {
+		if (!meta.config.defaultAvatar) {
+			return '';
+		}
+		return meta.config.defaultAvatar.startsWith('http') ? meta.config.defaultAvatar : nconf.get('relative_path') + meta.config.defaultAvatar;
+	};
 
 	User.setUserField = function (uid, field, value, callback) {
 		callback = callback || function () {};

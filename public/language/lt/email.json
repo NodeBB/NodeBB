@@ -32,5 +32,9 @@
     "notif.post.unsub.info": "Šios žinutės perspėjimas buvo išsiųstas į tavo prenumeratos nustatymus",
     "test.text1": "Ši žinutė yra bandomoji kad įsitikint, kad vartotojas teisingai nustatė nustatymus tavo NodeBB",
     "unsub.cta": "Spauskite čia norėdami pakeisti šiuos nustatymus",
+    "banned.subject": "You have been banned from %1",
+    "banned.text1": "The user %1 has been banned from %2.",
+    "banned.text2": "This ban will last until %1.",
+    "banned.text3": "This is the reason why you have been banned:",
     "closing": "Ačiū!"
 }

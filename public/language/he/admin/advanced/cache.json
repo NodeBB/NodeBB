@@ -1,11 +1,11 @@
 {
-	"post-cache": "Post Cache",
-	"posts-in-cache": "Posts in Cache",
-	"average-post-size": "Average Post Size",
-	"length-to-max": "Length / Max",
-	"percent-full": "%1% Full",
-	"post-cache-size": "Post Cache Size",
-	"items-in-cache": "Items in Cache",
+	"post-cache": "מטמון פוסטים",
+	"posts-in-cache": "פוסטים במטמון",
+	"average-post-size": "גודל פוסט ממוצע",
+	"length-to-max": "אורך / מקסימום",
+	"percent-full": "%1% מלא",
+	"post-cache-size": "גודל מטמון פוסטים",
+	"items-in-cache": "פריטים במטמון",
 	"control-panel": "לוח הבקרה",
-	"update-settings": "Update Cache Settings"
+	"update-settings": "עדכן הגדרות מטמון"
 }

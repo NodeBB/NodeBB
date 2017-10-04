@@ -9,7 +9,6 @@ var privileges = require('../privileges');
 var plugins = require('../plugins');
 var meta = require('../meta');
 
-
 module.exports = function (Topics) {
 	Topics.createTopicFromPosts = function (uid, title, pids, fromTid, callback) {
 		if (title) {
@@ -57,7 +56,8 @@ module.exports = function (Topics) {
 				Topics.updateTopicBookmarks(fromTid, pids, function () { next(null, results); });
 			},
 			function (_tid, next) {
-				function move(pid, next) {
+				tid = _tid;
+				async.eachSeries(pids, function (pid, next) {
 					privileges.posts.canEdit(pid, uid, function (err, canEdit) {
 						if (err || !canEdit.flag) {
 							return next(err || new Error(canEdit.message));
@@ -65,14 +65,13 @@ module.exports = function (Topics) {
 
 						Topics.movePostToTopic(pid, tid, next);
 					});
-				}
-				tid = _tid;
-				async.eachSeries(pids, move, next);
+				}, next);
 			},
 			function (next) {
 				Topics.updateTimestamp(tid, Date.now(), next);
 			},
 			function (next) {
+				plugins.fireHook('action:topic.fork', { tid: tid, fromTid: fromTid, uid: uid });
 				Topics.getTopicData(tid, next);
 			},
 		], callback);
@@ -127,33 +126,35 @@ module.exports = function (Topics) {
 				async.parallel([
 					async.apply(updateRecentTopic, tid),
 					async.apply(updateRecentTopic, postData.tid),
-				], next);
+				], function (err) {
+					next(err);
+				});
 			},
-		], function (err) {
-			if (err) {
-				return callback(err);
-			}
-			plugins.fireHook('action:post.move', { post: postData, tid: tid });
-			callback();
-		});
+			function (next) {
+				plugins.fireHook('action:post.move', { post: postData, tid: tid });
+				next();
+			},
+		], callback);
 	};
 
 	function updateCategoryPostCount(oldTid, tid, callback) {
-		Topics.getTopicsFields([oldTid, tid], ['cid'], function (err, topicData) {
-			if (err) {
-				return callback(err);
-			}
-			if (!topicData[0].cid || !topicData[1].cid) {
-				return callback();
-			}
-			if (parseInt(topicData[0].cid, 10) === parseInt(topicData[1].cid, 10)) {
-				return callback();
-			}
-			async.parallel([
-				async.apply(db.incrObjectFieldBy, 'category:' + topicData[0].cid, 'post_count', -1),
-				async.apply(db.incrObjectFieldBy, 'category:' + topicData[1].cid, 'post_count', 1),
-			], callback);
-		});
+		async.waterfall([
+			function (next) {
+				Topics.getTopicsFields([oldTid, tid], ['cid'], next);
+			},
+			function (topicData, next) {
+				if (!topicData[0].cid || !topicData[1].cid) {
+					return callback();
+				}
+				if (parseInt(topicData[0].cid, 10) === parseInt(topicData[1].cid, 10)) {
+					return callback();
+				}
+				async.parallel([
+					async.apply(db.incrObjectFieldBy, 'category:' + topicData[0].cid, 'post_count', -1),
+					async.apply(db.incrObjectFieldBy, 'category:' + topicData[1].cid, 'post_count', 1),
+				], next);
+			},
+		], callback);
 	}
 
 	function updateRecentTopic(tid, callback) {

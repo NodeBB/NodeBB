@@ -8,6 +8,8 @@ var initWorker;
 var incomplete = [];
 var running = 0;
 
+env.NODE_ENV = env.NODE_ENV || 'development';
+
 module.exports = function (grunt) {
 	var args = [];
 	var initArgs = ['--build'];
@@ -18,7 +20,7 @@ module.exports = function (grunt) {
 
 	function update(action, filepath, target) {
 		var updateArgs = args.slice();
-		var compiling = '';
+		var compiling;
 		var time = Date.now();
 
 		if (target === 'lessUpdated_Client') {
@@ -35,7 +37,7 @@ module.exports = function (grunt) {
 			// Do nothing, just restart
 		}
 
-		if (incomplete.indexOf(compiling) === -1) {
+		if (compiling && incomplete.indexOf(compiling) === -1) {
 			incomplete.push(compiling);
 		}
 
@@ -71,8 +73,9 @@ module.exports = function (grunt) {
 		watch: {
 			lessUpdated_Client: {
 				files: [
-					'public/*.less',
-					'node_modules/nodebb-*/*.less', 'node_modules/nodebb-*/**/*.less',
+					'public/less/*.less',
+					'!public/less/admin/**/*.less',
+					'node_modules/nodebb-*/**/*.less',
 					'!node_modules/nodebb-*/node_modules/**',
 					'!node_modules/nodebb-*/.git/**',
 				],
@@ -81,7 +84,12 @@ module.exports = function (grunt) {
 				},
 			},
 			lessUpdated_Admin: {
-				files: ['public/**/*.less'],
+				files: [
+					'public/less/admin/**/*.less',
+					'node_modules/nodebb-*/**/*.less',
+					'!node_modules/nodebb-*/node_modules/**',
+					'!node_modules/nodebb-*/.git/**',
+				],
 				options: {
 					interval: 1000,
 				},
@@ -89,9 +97,9 @@ module.exports = function (grunt) {
 			clientUpdated: {
 				files: [
 					'public/src/**/*.js',
-					'node_modules/nodebb-*/*.js', 'node_modules/nodebb-*/**/*.js',
+					'node_modules/nodebb-*/**/*.js',
 					'!node_modules/nodebb-*/node_modules/**',
-					'node_modules/templates.js/lib/templates.js',
+					'node_modules/benchpressjs/build/benchpress.js',
 					'!node_modules/nodebb-*/.git/**',
 				],
 				options: {
@@ -107,7 +115,7 @@ module.exports = function (grunt) {
 			templatesUpdated: {
 				files: [
 					'src/views/**/*.tpl',
-					'node_modules/nodebb-*/*.tpl', 'node_modules/nodebb-*/**/*.tpl',
+					'node_modules/nodebb-*/**/*.tpl',
 					'!node_modules/nodebb-*/node_modules/**',
 					'!node_modules/nodebb-*/.git/**',
 				],

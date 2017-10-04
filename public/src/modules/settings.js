@@ -461,12 +461,17 @@ define('settings', function () {
 				for (var key in values) {
 					if (values.hasOwnProperty(key)) {
 						try {
-							values[key] = JSON.parse(values[key]);
+							if (!utils.isNumber(values[key])) {
+								values[key] = JSON.parse(values[key]);
+							}
 						} catch (e) {
 							// Leave the value as is
 						}
 					}
 				}
+
+				// Save loaded settings into ajaxify.data for use client-side
+				ajaxify.data.settings = values;
 
 				$(formEl).deserialize(values);
 				$(formEl).find('input[type="checkbox"]').each(function () {
@@ -507,6 +512,9 @@ define('settings', function () {
 				}, function (err) {
 					// Remove unsaved flag to re-enable ajaxify
 					app.flags._unsaved = false;
+
+					// Also save to local ajaxify.data
+					ajaxify.data.settings = values;
 
 					if (typeof callback === 'function') {
 						callback(err);

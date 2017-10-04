@@ -3,12 +3,13 @@
 
 var async = require('async');
 var S = require('string');
+var validator = require('validator');
 
 var db = require('./database');
 var user = require('./user');
 var plugins = require('./plugins');
 var meta = require('./meta');
-var utils = require('../public/src/utils');
+var utils = require('./utils');
 
 var Messaging = module.exports;
 
@@ -40,7 +41,7 @@ Messaging.getMessages = function (params, callback) {
 			db.getSortedSetRevRange('uid:' + uid + ':chat:room:' + roomId + ':mids', start, stop, next);
 		},
 		function (mids, next) {
-			if (!Array.isArray(mids) || !mids.length) {
+			if (!mids.length) {
 				return callback(null, []);
 			}
 
@@ -102,7 +103,7 @@ Messaging.isNewSet = function (uid, roomId, timestamp, callback) {
 		},
 		function (messages, next) {
 			if (messages && messages.length) {
-				next(null, parseInt(timestamp, 10) > parseInt(messages[0].score, 10) + (1000 * 60 * 5));
+				next(null, parseInt(timestamp, 10) > parseInt(messages[0].score, 10) + Messaging.newMessageCutoff);
 			} else {
 				next(null, true);
 			}
@@ -172,6 +173,14 @@ Messaging.getRecentChats = function (callerUid, uid, start, stop, callback) {
 
 			next(null, { rooms: results.roomData, nextStart: stop + 1 });
 		},
+		function (ref, next) {
+			plugins.fireHook('filter:messaging.getRecentChats', {
+				rooms: ref.rooms,
+				nextStart: ref.nextStart,
+				uid: uid,
+				callerUid: callerUid,
+			}, next);
+		},
 	], callback);
 };
 
@@ -203,6 +212,7 @@ Messaging.getTeaser = function (uid, roomId, callback) {
 			}
 			if (teaser.content) {
 				teaser.content = S(teaser.content).stripTags().decodeHTMLEntities().s;
+				teaser.content = validator.escape(String(teaser.content));
 			}
 
 			teaser.timestampISO = utils.toISOString(teaser.timestamp);
@@ -252,11 +262,16 @@ Messaging.canMessageUser = function (uid, toUid, callback) {
 			}, next);
 		},
 		function (results, next) {
-			if (!results.settings.restrictChat || results.isAdmin || results.isFollowing) {
-				return next();
+			if (results.settings.restrictChat && !results.isAdmin && !results.isFollowing) {
+				return next(new Error('[[error:chat-restricted]]'));
 			}
 
-			next(new Error('[[error:chat-restricted]]'));
+			plugins.fireHook('static:messaging.canMessageUser', {
+				uid: uid,
+				toUid: toUid,
+			}, function (err) {
+				next(err);
+			});
 		},
 	], callback);
 };
@@ -293,7 +308,12 @@ Messaging.canMessageRoom = function (uid, roomId, callback) {
 				return next(new Error('[[error:email-not-confirmed-chat]]'));
 			}
 
-			next();
+			plugins.fireHook('static:messaging.canMessageRoom', {
+				uid: uid,
+				roomId: roomId,
+			}, function (err) {
+				next(err);
+			});
 		},
 	], callback);
 };

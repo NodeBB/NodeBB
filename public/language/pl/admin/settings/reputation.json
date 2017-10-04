@@ -1,9 +1,9 @@
 {
-	"reputation": "Ustawienia Reputacji",
-	"disable": "Wyłącz System Reputacji",
-	"disable-down-voting": "Wyłącz System \"Głosów przeciw\"",
-	"votes-are-public": "All Votes Are Public",
-	"thresholds": "Activity Thresholds",
-	"min-rep-downvote": "Minimum reputation to downvote posts",
-	"min-rep-flag": "Minimum reputation to flag posts"
+	"reputation": "Ustawienia reputacji",
+	"disable": "Wyłącz system reputacji",
+	"disable-down-voting": "Wyłącz system \"głosów przeciw\"",
+	"votes-are-public": "Wszystkie głosy są publiczne",
+	"thresholds": "Progi aktywności",
+	"min-rep-downvote": "Minimalna reputacja, aby negatywnie oceniać posty",
+	"min-rep-flag": "Minimalna reputacja, aby flagować posty"
 }

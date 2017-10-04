@@ -69,6 +69,15 @@ describe('Sorted Set methods', function () {
 				done();
 			});
 		});
+
+		it('should return empty array if set does not exist', function (done) {
+			db.getSortedSetRange('doesnotexist', 0, -1, function (err, values) {
+				assert.ifError(err);
+				assert(Array.isArray(values));
+				assert.equal(values.length, 0);
+				done();
+			});
+		});
 	});
 
 	describe('getSortedSetRevRange()', function () {
@@ -119,6 +128,15 @@ describe('Sorted Set methods', function () {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.deepEqual(values, ['value1', 'value2']);
+				done();
+			});
+		});
+
+		it('should return empty array if set does not exist', function (done) {
+			db.getSortedSetRangeByScore('doesnotexist', 0, -1, '-inf', 0, function (err, values) {
+				assert.ifError(err);
+				assert(Array.isArray(values));
+				assert.equal(values.length, 0);
 				done();
 			});
 		});
@@ -303,6 +321,7 @@ describe('Sorted Set methods', function () {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(!!score, false);
+				assert.strictEqual(score, null);
 				done();
 			});
 		});
@@ -312,6 +331,7 @@ describe('Sorted Set methods', function () {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(!!score, false);
+				assert.strictEqual(score, null);
 				done();
 			});
 		});
@@ -324,6 +344,22 @@ describe('Sorted Set methods', function () {
 				done();
 			});
 		});
+
+		it('should not error if key is undefined', function (done) {
+			db.sortedSetScore(undefined, 1, function (err, score) {
+				assert.ifError(err);
+				assert.strictEqual(score, null);
+				done();
+			});
+		});
+
+		it('should not error if value is undefined', function (done) {
+			db.sortedSetScore('sortedSetTest1', undefined, function (err, score) {
+				assert.ifError(err);
+				assert.strictEqual(score, null);
+				done();
+			});
+		});
 	});
 
 	describe('sortedSetsScore()', function () {
@@ -332,6 +368,15 @@ describe('Sorted Set methods', function () {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.deepEqual(scores, [1.1, 1, null]);
+				done();
+			});
+		});
+
+		it('should return scores even if some keys are undefined', function (done) {
+			db.sortedSetsScore(['sortedSetTest1', undefined, 'doesnotexist'], 'value1', function (err, scores) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.deepEqual(scores, [1.1, null, null]);
 				done();
 			});
 		});
@@ -355,6 +400,15 @@ describe('Sorted Set methods', function () {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.deepEqual(scores, [1.2, 1.1, null]);
+				done();
+			});
+		});
+
+		it('should return scores even if some values are undefined', function (done) {
+			db.sortedSetScores('sortedSetTest1', ['value2', undefined, 'doesnotexist'], function (err, scores) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.deepEqual(scores, [1.2, null, null]);
 				done();
 			});
 		});
@@ -545,12 +599,26 @@ describe('Sorted Set methods', function () {
 
 		it('should remove elements with scores between min max inclusive', function (done) {
 			db.sortedSetsRemoveRangeByScore(['sorted6'], 4, 5, function (err) {
-				assert.equal(err, null);
+				assert.ifError(err);
 				assert.equal(arguments.length, 1);
 				db.getSortedSetRange('sorted6', 0, -1, function (err, values) {
-					assert.equal(err, null);
+					assert.ifError(err);
 					assert.deepEqual(values, ['value1', 'value2', 'value3']);
 					done();
+				});
+			});
+		});
+
+		it('should remove elements with if strin score is passed in', function (done) {
+			db.sortedSetAdd('sortedForRemove', [11, 22, 33], ['value1', 'value2', 'value3'], function (err) {
+				assert.ifError(err);
+				db.sortedSetsRemoveRangeByScore(['sortedForRemove'], '22', '22', function (err) {
+					assert.ifError(err);
+					db.getSortedSetRange('sortedForRemove', 0, -1, function (err, values) {
+						assert.ifError(err);
+						assert.deepEqual(values, ['value1', 'value3']);
+						done();
+					});
 				});
 			});
 		});
@@ -865,9 +933,5 @@ describe('Sorted Set methods', function () {
 				});
 			});
 		});
-	});
-
-	after(function (done) {
-		db.emptydb(done);
 	});
 });
