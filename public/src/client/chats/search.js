@@ -63,8 +63,8 @@ define('forum/chats/search', ['components'], function (components) {
 		}
 
 		var chatEl = $('<li component="chat/search/user" />')
-				.attr('data-uid', userObj.uid)
-				.appendTo(chatsListEl);
+			.attr('data-uid', userObj.uid)
+			.appendTo(chatsListEl);
 
 		chatEl.append(createUserImage());
 		return chatEl;

@@ -77,8 +77,9 @@
 		var type = tag.type ? 'type="' + tag.type + '" ' : '';
 		var href = tag.href ? 'href="' + tag.href + '" ' : '';
 		var sizes = tag.sizes ? 'sizes="' + tag.sizes + '" ' : '';
+		var title = tag.title ? 'title="' + tag.title + '" ' : '';
 
-		return '<link ' + link + rel + type + sizes + href + '/>\n\t';
+		return '<link ' + link + rel + type + sizes + title + href + '/>\n\t';
 	}
 
 	function stringify(obj) {

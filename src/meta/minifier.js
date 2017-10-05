@@ -282,9 +282,9 @@ function buildCSS(data, callback) {
 				processImportFrom: ['local'],
 			}),
 		] : [autoprefixer]).process(lessOutput.css).then(function (result) {
-			callback(null, { code: result.css });
+			process.nextTick(callback, null, { code: result.css });
 		}, function (err) {
-			callback(err);
+			process.nextTick(callback, err);
 		});
 	});
 }

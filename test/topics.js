@@ -654,8 +654,8 @@ describe('Topic\'s', function () {
 				function (next) {
 					topicPids = replies.map(function (reply) { return reply.pid; });
 					socketTopics.bookmark({ uid: topic.userId }, { tid: newTopic.tid, index: originalBookmark }, next);
-				}],
-				done);
+				},
+			], done);
 		});
 
 		it('should fail with invalid data', function (done) {
@@ -711,7 +711,8 @@ describe('Topic\'s', function () {
 						'Fork test, no bookmark update',
 						topicPids.slice(1, 3),
 						newTopic.tid,
-						next);
+						next
+					);
 				},
 				function (forkedTopicData, next) {
 					topics.getUserBookmark(newTopic.tid, topic.userId, next);

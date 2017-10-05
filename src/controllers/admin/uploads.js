@@ -89,7 +89,7 @@ uploadsController.uploadLogo = function (req, res, next) {
 uploadsController.uploadSound = function (req, res, next) {
 	var uploadedFile = req.files.files[0];
 
-	var mimeType = mime.lookup(uploadedFile.name);
+	var mimeType = mime.getType(uploadedFile.name);
 	if (!/^audio\//.test(mimeType)) {
 		return next(Error('[[error:invalid-data]]'));
 	}
