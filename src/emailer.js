@@ -37,6 +37,7 @@ Emailer.listServices = function (callback) {
 Emailer._defaultPayload = {};
 
 Emailer.setupFallbackTransport = function (config) {
+	winston.verbose('[emailer] Setting up SMTP fallback transport');
 	// Enable Gmail transport if enabled in ACP
 	if (parseInt(config['email:smtpTransport:enabled'], 10) === 1) {
 		var smtpOptions = {};
