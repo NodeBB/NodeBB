@@ -36,6 +36,48 @@ Emailer.listServices = function (callback) {
 
 Emailer._defaultPayload = {};
 
+Emailer.setupFallbackTransport = function (config) {
+	winston.verbose('[emailer] Setting up SMTP fallback transport');
+	// Enable Gmail transport if enabled in ACP
+	if (parseInt(config['email:smtpTransport:enabled'], 10) === 1) {
+		var smtpOptions = {};
+
+		if (config['email:smtpTransport:user'] || config['email:smtpTransport:pass']) {
+			smtpOptions.auth = {
+				user: config['email:smtpTransport:user'],
+				pass: config['email:smtpTransport:pass'],
+			};
+		}
+
+		if (config['email:smtpTransport:service'] === 'nodebb-custom-smtp') {
+			smtpOptions.port = config['email:smtpTransport:port'];
+			smtpOptions.host = config['email:smtpTransport:host'];
+
+			if (config['email:smtpTransport:security'] === 'NONE') {
+				smtpOptions.secure = false;
+				smtpOptions.requireTLS = false;
+				smtpOptions.ignoreTLS = true;
+			} else if (config['email:smtpTransport:security'] === 'STARTTLS') {
+				smtpOptions.secure = false;
+				smtpOptions.requireTLS = true;
+				smtpOptions.ignoreTLS = false;
+			} else {
+				// meta.config['email:smtpTransport:security'] === 'ENCRYPTED' or undefined
+				smtpOptions.secure = true;
+				smtpOptions.requireTLS = true;
+				smtpOptions.ignoreTLS = false;
+			}
+		} else {
+			smtpOptions.service = config['email:smtpTransport:service'];
+		}
+
+		transports.smtp = nodemailer.createTransport(smtpOptions);
+		fallbackTransport = transports.smtp;
+	} else {
+		fallbackTransport = transports.sendmail;
+	}
+};
+
 Emailer.registerApp = function (expressApp) {
 	app = expressApp;
 
@@ -54,48 +96,14 @@ Emailer.registerApp = function (expressApp) {
 		},
 	};
 
-	// Enable Gmail transport if enabled in ACP
-	if (parseInt(meta.config['email:smtpTransport:enabled'], 10) === 1) {
-		var smtpOptions = {};
-
-		if (meta.config['email:smtpTransport:user'] || meta.config['email:smtpTransport:pass']) {
-			smtpOptions.auth = {
-				user: meta.config['email:smtpTransport:user'],
-				pass: meta.config['email:smtpTransport:pass'],
-			};
-		}
-
-		if (meta.config['email:smtpTransport:service'] === 'nodebb-custom-smtp') {
-			smtpOptions.port = meta.config['email:smtpTransport:port'];
-			smtpOptions.host = meta.config['email:smtpTransport:host'];
-
-			if (meta.config['email:smtpTransport:security'] === 'NONE') {
-				smtpOptions.secure = false;
-				smtpOptions.requireTLS = false;
-				smtpOptions.ignoreTLS = true;
-			} else if (meta.config['email:smtpTransport:security'] === 'STARTTLS') {
-				smtpOptions.secure = false;
-				smtpOptions.requireTLS = true;
-				smtpOptions.ignoreTLS = false;
-			} else {
-				// meta.config['email:smtpTransport:security'] === 'ENCRYPTED' or undefined
-				smtpOptions.secure = true;
-				smtpOptions.requireTLS = true;
-				smtpOptions.ignoreTLS = false;
-			}
-		} else {
-			smtpOptions.service = meta.config['email:smtpTransport:service'];
-		}
-
-		transports.smtp = nodemailer.createTransport(smtpOptions);
-		fallbackTransport = transports.smtp;
-	} else {
-		fallbackTransport = transports.sendmail;
-	}
+	Emailer.setupFallbackTransport(meta.config);
 
 	// Update default payload if new logo is uploaded
 	pubsub.on('config:update', function (config) {
 		if (config) {
+			if ('email:smtpTransport:enabled' in config) {
+				Emailer.setupFallbackTransport(config);
+			}
 			Emailer._defaultPayload.logo.src = config['brand:emailLogo'];
 			Emailer._defaultPayload.logo.height = config['brand:emailLogo:height'];
 			Emailer._defaultPayload.logo.width = config['brand:emailLogo:width'];
