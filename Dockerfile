@@ -13,3 +13,5 @@ CMD node app --setup && npm start
 
 # the default port for NodeBB is exposed outside the container
 EXPOSE 4567
+
+#plugin users will want to append -v /plugindir:/src/plugins to ensure that plugins are kept through reboots.  
