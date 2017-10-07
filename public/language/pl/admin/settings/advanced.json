@@ -9,8 +9,6 @@
 	"headers.acao-help": "Aby zablokować dostęp do wszystkich stron, pozostaw puste.",
 	"headers.acam": "Access-Control-Allow-Methods",
 	"headers.acah": "Access-Control-Allow-Headers",
-	"headers.hsts": "HTTP Strict Transport Security",
-	"headers.hsts-help": "Sugeruje przeglądarce by zawsze wybierała protokół https jeżeli żaden protokół nie jest zdefiniowany przez użytkownika. Aby włączyć należy zdefiniować wartość \"max-age\" (sugerujemy 15552000 - 180 dni w sekundach).",
 	"traffic-management": "Zarządzanie ruchem",
 	"traffic.help": "NodeBB jest dostarczane z modułem, który automatycznie blokuje żądania w sytuacjach wysokiego ruchu. Tutaj możesz zmienić te ustawienia, ale ustawienia początkowe są dobrym punktem wyjścia w większości sytuacji.",
 	"traffic.enable": "Włącz zarządzanie ruchem",
