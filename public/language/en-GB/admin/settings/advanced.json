@@ -9,6 +9,8 @@
 	"headers.acao-help": "To deny access to all sites, leave empty",
 	"headers.acam": "Access-Control-Allow-Methods",
 	"headers.acah": "Access-Control-Allow-Headers",
+	"headers.hsts": "HTTP Strict Transport Security",
+	"headers.hsts-help": "Tells the browsers to always choose https first when protocol is not defined. To enable, set a max-age declaration (sugested is 15552000 - 180 days in seconds).",
 	"traffic-management": "Traffic Management",
 	"traffic.help": "NodeBB deploys equipped with a module that automatically denies requests in high-traffic situations. You can tune these settings here, although the defaults are a good starting point.",
 	"traffic.enable": "Enable Traffic Management",

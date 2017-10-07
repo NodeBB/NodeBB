@@ -48,6 +48,13 @@
 				<label for="access-control-allow-headers">[[admin/settings/advanced:headers.acah]]</label>
 				<input class="form-control" id="access-control-allow-headers" type="text" placeholder="" data-field="access-control-allow-headers" /><br />
 			</div>
+			<div class="form-group">
+				<label for="strict-transport-security">[[admin/settings/advanced:headers.hsts]]</label>
+				<input class="form-control" id="strict-transport-security" type="number" placeholder="" data-field="strict-transport-security" /><br />
+				<p class="help-block">
+					[[admin/settings/advanced:headers.hsts-help]]
+				</p>
+			</div>
 		</form>
 	</div>
 </div>
