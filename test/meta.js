@@ -276,13 +276,28 @@ describe('meta', function () {
 		});
 	});
 
-	describe('debug params', function () {
-		it('should return fork arguments for debug', function (done) {
-			var debugParams = require('../src/meta/debugParams');
-			var data = debugParams(['--debug=5858', '--foo=1']);
-			assert.equal(data.execArgv[0], '--debug=5859');
-			assert.equal(data.execArgv[1], '--nolazy');
+	describe('debugFork', function () {
+		var oldArgv;
+		before(function () {
+			oldArgv = process.execArgv;
+			process.execArgv = ['--debug=5858', '--foo=1'];
+		});
+
+		it('should detect debugging', function (done) {
+			var debugFork = require('../src/meta/debugFork');
+			assert(!debugFork.debugging);
+
+			var debugForkPath = require.resolve('../src/meta/debugFork');
+			delete require.cache[debugForkPath];
+
+			debugFork = require('../src/meta/debugFork');
+			assert(debugFork.debugging);
+
 			done();
+		});
+
+		after(function () {
+			process.execArgv = oldArgv;
 		});
 	});
 });

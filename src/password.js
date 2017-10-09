@@ -1,9 +1,8 @@
 'use strict';
 
-var fork = require('child_process').fork;
 var path = require('path');
 
-var debugParams = require('./meta/debugParams');
+var fork = require('./meta/debugFork');
 
 exports.hash = function (rounds, password, callback) {
 	forkChild({ type: 'hash', rounds: rounds, password: password }, callback);
@@ -17,7 +16,7 @@ exports.compare = function (password, hash, callback) {
 };
 
 function forkChild(message, callback) {
-	var child = fork(path.join(__dirname, 'bcrypt'), [], debugParams());
+	var child = fork(path.join(__dirname, 'bcrypt'));
 
 	child.on('message', function (msg) {
 		if (msg.err) {
