@@ -391,7 +391,7 @@ Controllers.manifest = function (req, res) {
 Controllers.outgoing = function (req, res, next) {
 	var url = req.query.url || '';
 
-	if (!url) {
+	if (!url || url.startsWith('javascript:')) {
 		return next();
 	}
 
