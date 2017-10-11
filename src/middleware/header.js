@@ -144,7 +144,9 @@ module.exports = function (middleware) {
 				templateValues.useCustomCSS = parseInt(meta.config.useCustomCSS, 10) === 1 && meta.config.customCSS;
 				templateValues.customCSS = templateValues.useCustomCSS ? (meta.config.renderedCustomCSS || '') : '';
 				templateValues.useCustomJS = parseInt(meta.config.useCustomJS, 10) === 1;
+				templateValues.useCustomHTML = parseInt(meta.config.useCustomHTML, 10) === 1;
 				templateValues.customJS = templateValues.useCustomJS ? meta.config.customJS : '';
+				templateValues.customHTML = templateValues.useCustomHTML ? meta.config.customHTML : '';
 				templateValues.maintenanceHeader = parseInt(meta.config.maintenanceMode, 10) === 1 && !results.isAdmin;
 				templateValues.defaultLang = meta.config.defaultLang || 'en-GB';
 				templateValues.userLang = res.locals.config.userLang;
