@@ -390,8 +390,10 @@ Controllers.manifest = function (req, res) {
 
 Controllers.outgoing = function (req, res, next) {
 	var url = req.query.url || '';
+	var allowedProtocols = ['http', 'https', 'ftp', 'ftps', 'mailto', 'news', 'irc', 'gopher', 'nntp', 'feed', 'telnet', 'mms', 'rtsp', 'svn', 'tel', 'fax', 'xmpp', 'webcal'];
+	var parsed = require('url').parse(url);
 
-	if (!url) {
+	if (!url || !allowedProtocols.includes(parsed.protocol.slice(0, -1))) {
 		return next();
 	}
 

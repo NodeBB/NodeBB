@@ -37,7 +37,7 @@ var winston = require('winston');
 var path = require('path');
 var pkg = require('./package.json');
 var file = require('./src/file');
-var debug = require('./src/meta/debugParams')().execArgv.length;
+var debug = require('./src/meta/debugFork').debugging;
 
 global.env = process.env.NODE_ENV || 'production';
 

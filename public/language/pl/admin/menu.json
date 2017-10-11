@@ -1,9 +1,9 @@
 {
 	"section-general": "Ogólne",
-	"general/dashboard": "Główna",
-	"general/homepage": "Strona Startowa",
+	"general/dashboard": "Deska rozdzielcza",
+	"general/homepage": "Strona startowa",
 	"general/navigation": "Nawigacja",
-	"general/languages": "Język",
+	"general/languages": "Języki",
 	"general/sounds": "Dźwięki",
 	"general/social": "Social",
 
@@ -11,10 +11,10 @@
 	"manage/categories": "Kategorie",
 	"manage/tags": "Tagi",
 	"manage/users": "Użytkownicy",
-	"manage/registration": "Kolejka Rejestracji",
-	"manage/post-queue": "Post Queue",
+	"manage/registration": "Kolejka rejestracji",
+	"manage/post-queue": "Kolejka postów",
 	"manage/groups": "Grupy",
-	"manage/ip-blacklist": "Czarna Lista IP",
+	"manage/ip-blacklist": "Czarna lista IP",
 
 	"section-settings": "Ustawienia",
 	"settings/general": "Ogólne",
@@ -30,7 +30,7 @@
 	"settings/tags": "Tagi",
 	"settings/notifications": "Powiadomienia",
 	"settings/cookies": "Ciasteczka",
-	"settings/web-crawler": "Web Crawler",
+	"settings/web-crawler": "Roboty internetowe",
 	"settings/sockets": "Sockets",
 	"settings/advanced": "Zaawansowane",
 
@@ -42,14 +42,14 @@
 	"appearance/customise": "Niestandardowy HTML & CSS",
 
 	"section-extend": "Rozszerzenia",
-	"extend/plugins": "Pluginy",
+	"extend/plugins": "Wtyczki",
 	"extend/widgets": "Widgety",
 	"extend/rewards": "Nagrody",
 
 	"section-social-auth": "Alternatywne Logowanie",
 
-	"section-plugins": "Pluginy",
-	"extend/plugins.install": "Zainstalowane Pluginy",
+	"section-plugins": "Wtyczki",
+	"extend/plugins.install": "Zainstalowane wtyczki",
 
 	"section-advanced": "Zaawansowane",
 	"advanced/database": "Baza Danych",
@@ -57,11 +57,11 @@
 	"advanced/logs": "Logi",
 	"advanced/errors": "Błędy",
 	"advanced/cache": "Pamięć",
-	"development/logger": "Logger",
+	"development/logger": "Loger",
 	"development/info": "Informacja",
 
 	"reload-forum": "Przeładuj Forum",
-	"restart-forum": "Restartuj Forum",
+	"restart-forum": "Restartuj forum",
 	"logout": "Wyloguj się",
 	"view-forum": "Zobacz Forum",
 

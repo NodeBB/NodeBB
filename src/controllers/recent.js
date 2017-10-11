@@ -22,7 +22,7 @@ recentController.get = function (req, res, next) {
 	var cid = req.query.cid;
 	var filter = req.params.filter || '';
 	var categoryData;
-
+	var rssToken;
 	if (!validFilter[filter]) {
 		return next();
 	}
@@ -36,9 +36,13 @@ recentController.get = function (req, res, next) {
 				watchedCategories: function (next) {
 					helpers.getWatchedCategories(req.uid, cid, next);
 				},
+				rssToken: function (next) {
+					user.auth.getFeedToken(req.uid, next);
+				},
 			}, next);
 		},
 		function (results, next) {
+			rssToken = results.rssToken;
 			settings = results.settings;
 			categoryData = results.watchedCategories;
 
@@ -54,6 +58,9 @@ recentController.get = function (req, res, next) {
 			data.set = 'topics:recent';
 			data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 			data.rssFeedUrl = nconf.get('relative_path') + '/recent.rss';
+			if (req.uid) {
+				data.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
+			}
 			data.title = '[[pages:recent]]';
 			data.filters = [{
 				name: '[[unread:all-topics]]',

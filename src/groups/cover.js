@@ -26,7 +26,7 @@ module.exports = function (Groups) {
 
 		var tempPath = data.file ? data.file : '';
 		var url;
-		var type = data.file ? mime.lookup(data.file) : 'image/png';
+		var type = data.file ? mime.getType(data.file) : 'image/png';
 
 		async.waterfall([
 			function (next) {

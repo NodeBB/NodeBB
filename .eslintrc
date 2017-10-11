@@ -32,6 +32,9 @@
 		"no-prototype-builtins": "off",
 		"new-cap": "off",
 		"no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
+		"object-curly-newline": "off",
+		"no-restricted-globals": "off",
+		"function-paren-newline": "off",
 		"import/no-unresolved": "error",
 
 		// ES6
@@ -42,6 +45,7 @@
 		"no-var": "off",
 		"object-shorthand": "off",
 		"vars-on-top": "off",
+		"prefer-destructuring": "off",
 
 		// TODO
 		"import/no-extraneous-dependencies": "off",

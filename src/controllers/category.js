@@ -187,8 +187,11 @@ function addTags(categoryData, res) {
 	];
 
 	if (categoryData.backgroundImage) {
+		if (!categoryData.backgroundImage.startsWith('http')) {
+			categoryData.backgroundImage = nconf.get('url') + categoryData.backgroundImage;
+		}
 		res.locals.metaTags.push({
-			name: 'og:image',
+			property: 'og:image',
 			content: categoryData.backgroundImage,
 		});
 	}

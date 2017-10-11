@@ -4,25 +4,25 @@
 	"route": "Ścieżka:",
 	"tooltip": "Tooltip:",
 	"text": "Tekst:",
-	"text-class": "Text Class: <small>optional</small>",
-	"id": "ID: <small>optional</small>",
+	"text-class": "Klasa tekstu <small>opcjonalnie</small>",
+	"id": "ID: <small>opcjonalnie</small>",
 
 	"properties": "Ustawienia:",
-	"only-admins": "Pokaż tylko dla administracji",
-	"only-global-mods-and-admins": "Pokaż tylko dla globalnych moderatorów oraz administracji",
-	"only-logged-in": "Pokaż tylko dla zalogowanych użytkowników",
+	"only-admins": "Pokazuj tylko administracji",
+	"only-global-mods-and-admins": "Pokazuj tylko globalnym moderatorom oraz administracji",
+	"only-logged-in": "Pokazuj tylko zalogowanym użytkownikom",
 	"only-guest": "Pokazuj tylko gościom",
 	"open-new-window": "Otwórz w nowym oknie",
 
-	"installed-plugins-required": "Installed Plugins Required:",
+	"installed-plugins-required": "Wymagane zainstalowane wtyczki:",
 	"search-plugin": "Wyszukiwarka",
 
 	"btn.delete": "Usunąć",
 	"btn.disable": "Wyłącz",
 	"btn.enable": "Włącz",
 
-	"available-menu-items": "Available Menu Items",
-	"custom-route": "Custom Route",
+	"available-menu-items": "Dostępne obiekty menu",
+	"custom-route": "Niestandardowa ścieżka",
 	"core": "core",
-	"plugin": "plugin"
+	"plugin": "wtyczka"
 }

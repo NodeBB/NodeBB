@@ -1,10 +1,10 @@
 {
-	"post-queue": "Post Queue",
-	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Posting Restrictions</a> and enable <strong>Post Queue</strong>.",
-	"user": "User",
-	"category": "Category",
-	"title": "Title",
-	"content": "Content",
-	"posted": "Posted",
-	"reply-to": "Reply to \"%1\""
+	"post-queue": "Kolejka postów",
+	"description": "Brak postów w kolejce. <br> W celu włączenia tej funkcji, odwiedź <a href=\\\"%1\\\">Ustawienia &rarr; Posty &rarr; Ograniczenia pisania </a> i włącz <strong>Kolejkę postów </strong>. ",
+	"user": "Użytkownik",
+	"category": "Kategoria",
+	"title": "Tytuł",
+	"content": "Zawartość",
+	"posted": "Napisano",
+	"reply-to": "Odpowiedz do \"%1\""
 }

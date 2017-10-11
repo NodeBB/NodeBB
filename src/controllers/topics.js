@@ -227,6 +227,8 @@ function addTags(topicData, req, res) {
 	var ogImageUrl = '';
 	if (topicData.thumb) {
 		ogImageUrl = topicData.thumb;
+	} else if (topicData.category.backgroundImage && (!postAtIndex || !postAtIndex.index)) {
+		ogImageUrl = topicData.category.backgroundImage;
 	} else if (postAtIndex && postAtIndex.user && postAtIndex.user.picture) {
 		ogImageUrl = postAtIndex.user.picture;
 	} else if (meta.config['og:image']) {
@@ -292,6 +294,10 @@ function addTags(topicData, req, res) {
 			rel: 'alternate',
 			type: 'application/rss+xml',
 			href: topicData.rssFeedUrl,
+		},
+		{
+			rel: 'canonical',
+			href: nconf.get('url') + '/topic/' + topicData.slug,
 		},
 	];
 

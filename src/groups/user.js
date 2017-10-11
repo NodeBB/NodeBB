@@ -6,13 +6,21 @@ var db = require('../database');
 var user = require('../user');
 
 module.exports = function (Groups) {
-	Groups.getUsersFromSet = function (set, callback) {
+	Groups.getUsersFromSet = function (set, fields, callback) {
+		if (typeof fields === 'function') {
+			callback = fields;
+			fields = null;
+		}
 		async.waterfall([
 			function (next) {
 				db.getSetMembers(set, next);
 			},
 			function (uids, next) {
-				user.getUsersData(uids, next);
+				if (fields) {
+					user.getUsersFields(uids, fields, callback);
+				} else {
+					user.getUsersData(uids, next);
+				}
 			},
 		], callback);
 	};

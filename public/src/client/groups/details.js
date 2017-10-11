@@ -21,7 +21,8 @@ define('forum/groups/details', [
 		if (ajaxify.data.group.isOwner) {
 			Details.prepareSettings();
 
-			coverPhoto.init(components.get('groups/cover'),
+			coverPhoto.init(
+				components.get('groups/cover'),
 				function (imageData, position, callback) {
 					socket.emit('groups.cover.update', {
 						groupName: groupName,

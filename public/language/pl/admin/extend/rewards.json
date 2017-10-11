@@ -1,10 +1,10 @@
 {
 	"rewards": "Nagrody",
-	"condition-if-users": "Jeżeli Użytkownik",
+	"condition-if-users": "Jeżeli użytkownik",
 	"condition-is": "Jest:",
 	"condition-then": "To:",
 	"max-claims": "Ile razy nagroda może zostać przyznana",
-	"zero-infinite": "Wpisz 0, aby nieskończona ilość razy",
+	"zero-infinite": "Wpisz 0, aby nieskończona liczbę razy",
 	"delete": "Usuń",
 	"enable": "Włącz",
 	"disable": "Wyłącz",

@@ -149,11 +149,11 @@ SocketAdmin.plugins.upgrade = function (socket, data, callback) {
 };
 
 SocketAdmin.widgets.set = function (socket, data, callback) {
-	if (!data) {
+	if (!Array.isArray(data)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	widgets.setArea(data, callback);
+	async.eachSeries(data, widgets.setArea, callback);
 };
 
 SocketAdmin.config.set = function (socket, data, callback) {

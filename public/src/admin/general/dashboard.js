@@ -208,7 +208,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 						backgroundColor: 'rgba(151,187,205,0.2)',
 						borderColor: 'rgba(151,187,205,1)',
 						pointBackgroundColor: 'rgba(151,187,205,1)',
-						pointHoverBackgroundColor: '#fff',
+						pointHoverBackgroundColor: 'rgba(151,187,205,1)',
 						pointBorderColor: '#fff',
 						pointHoverBorderColor: 'rgba(151,187,205,1)',
 						data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -472,8 +472,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 				var topic = topics[tids[i]];
 				var	label = topic.value === '0' ? topic.title : '<a title="' + topic.title + '"href="' + RELATIVE_PATH + '/topic/' + tids[i] + '" target="_blank"> ' + topic.title + '</a>';
 
-				legend.append(
-					'<li>' +
+				legend.append('<li>' +
 					'<div style="background-color: ' + topicColors[i] + ';"></div>' +
 					'<span>' + label + '</span>' +
 					'</li>');

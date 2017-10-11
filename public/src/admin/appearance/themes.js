@@ -94,16 +94,16 @@ define('admin/appearance/themes', ['translator', 'benchpress'], function (transl
 			$('[data-theme]')
 				.removeClass('selected')
 				.find('[data-action="use"]')
-					.html(select)
-					.removeClass('btn-success')
-					.addClass('btn-primary');
+				.html(select)
+				.removeClass('btn-success')
+				.addClass('btn-primary');
 
 			$('[data-theme="' + themeId + '"]')
 				.addClass('selected')
 				.find('[data-action="use"]')
-					.html(current)
-					.removeClass('btn-primary')
-					.addClass('btn-success');
+				.html(current)
+				.removeClass('btn-primary')
+				.addClass('btn-success');
 		});
 	}
 

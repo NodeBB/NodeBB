@@ -75,8 +75,7 @@ define('admin/extend/widgets', ['jqueryui'], function () {
 		$('#save').on('click', saveWidgets);
 
 		function saveWidgets() {
-			var total = $('#widgets [data-template][data-location]').length;
-
+			var saveData = [];
 			$('#widgets [data-template][data-location]').each(function (i, el) {
 				el = $(el);
 
@@ -112,26 +111,24 @@ define('admin/extend/widgets', ['jqueryui'], function () {
 					});
 				});
 
-				socket.emit('admin.widgets.set', {
+				saveData.push({
 					template: template,
 					location: location,
 					widgets: widgets,
-				}, function (err) {
-					total -= 1;
+				});
+			});
 
-					if (err) {
-						app.alertError(err.message);
-					}
+			socket.emit('admin.widgets.set', saveData, function (err) {
+				if (err) {
+					app.alertError(err.message);
+				}
 
-					if (total === 0) {
-						app.alert({
-							alert_id: 'admin:widgets',
-							type: 'success',
-							title: '[[admin/extend/widgets:alert.updated]]',
-							message: '[[admin/extend/widgets:alert.update-success]]',
-							timeout: 2500,
-						});
-					}
+				app.alert({
+					alert_id: 'admin:widgets',
+					type: 'success',
+					title: '[[admin/extend/widgets:alert.updated]]',
+					message: '[[admin/extend/widgets:alert.update-success]]',
+					timeout: 2500,
 				});
 			});
 		}
@@ -151,8 +148,7 @@ define('admin/extend/widgets', ['jqueryui'], function () {
 				.addClass(btn.attr('data-class'));
 
 			container.attr('data-container-html', container.attr('data-container-html')
-				.replace(/class="[a-zA-Z0-9-\s]+"/, 'class="' + container[0].className.replace(' pointer ui-draggable', '') + '"')
-			);
+				.replace(/class="[a-zA-Z0-9-\s]+"/, 'class="' + container[0].className.replace(' pointer ui-draggable', '') + '"'));
 		});
 	}
 

@@ -1,10 +1,10 @@
 {
-	"post-queue": "Post Queue",
-	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Posting Restrictions</a> and enable <strong>Post Queue</strong>.",
-	"user": "User",
-	"category": "Category",
-	"title": "Title",
-	"content": "Content",
-	"posted": "Posted",
-	"reply-to": "Reply to \"%1\""
+	"post-queue": "Fila de Posts",
+	"description": "Não há posts na fila de posts.<br> Para habilitar esta função, vá para<a href=\"%1\">Configurações &rarr; Post &rarr; Restrições de Postagem</a>e habilite <strong>Fila de Posts</strong>.",
+	"user": "Usuário",
+	"category": "Categoria",
+	"title": "Título",
+	"content": "Conteúdo",
+	"posted": "Postado",
+	"reply-to": "Resposta para \"%1\""
 }

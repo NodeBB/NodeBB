@@ -216,7 +216,7 @@ describe('Controllers', function () {
 	});
 
 	it('should load /outgoing?url=<url>', function (done) {
-		request(nconf.get('url') + '/outgoing?url=http//youtube.com', function (err, res, body) {
+		request(nconf.get('url') + '/outgoing?url=http://youtube.com', function (err, res, body) {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -226,6 +226,15 @@ describe('Controllers', function () {
 
 	it('should 404 on /outgoing with no url', function (done) {
 		request(nconf.get('url') + '/outgoing', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 404);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should 404 on /outgoing with javascript: protocol', function (done) {
+		request(nconf.get('url') + '/outgoing?url=javascript:alert(1);', function (err, res, body) {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 404);
 			assert(body);

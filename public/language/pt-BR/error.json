@@ -4,7 +4,7 @@
     "not-logged-in": "Você não parece estar logado.",
     "account-locked": "Sua conta foi temporariamente bloqueada ",
     "search-requires-login": "É necessário ter uma conta para pesquisar - por favor efetue o login ou cadastre-se.",
-    "goback": "Press back to return to the previous page",
+    "goback": "Pressione voltar para retornar à página anterior",
     "invalid-cid": "ID de Categoria Inválido",
     "invalid-tid": "ID de Tópico Inválido",
     "invalid-pid": "ID de Post Inválido",

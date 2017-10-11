@@ -307,7 +307,7 @@ module.exports = function (privileges) {
 	};
 
 	function giveOrRescind(method, privileges, cid, groupName, callback) {
-		async.each(privileges, function (privilege, next) {
+		async.eachSeries(privileges, function (privilege, next) {
 			method('cid:' + cid + ':privileges:groups:' + privilege, groupName, next);
 		}, callback);
 	}

@@ -122,7 +122,7 @@ function setupExpressApp(app, callback) {
 	var viewsDir = nconf.get('views_dir');
 
 	app.engine('tpl', function (filepath, data, next) {
-		filepath = filepath.replace(/\.tpl$/, '.jst');
+		filepath = filepath.replace(/\.tpl$/, '.js');
 
 		middleware.templatesOnDemand({
 			filePath: filepath,
@@ -180,8 +180,15 @@ function setupExpressApp(app, callback) {
 	setupAutoLocale(app, callback);
 }
 
-function ping(req, res) {
-	res.status(200).send(req.path === '/sping' ? 'healthy' : '200');
+function ping(req, res, next) {
+	async.waterfall([
+		function (next) {
+			db.getObject('config', next);
+		},
+		function () {
+			res.status(200).send(req.path === '/sping' ? 'healthy' : '200');
+		},
+	], next);
 }
 
 function setupFavicon(app) {

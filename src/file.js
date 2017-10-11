@@ -45,7 +45,7 @@ file.saveFileToLocal = function (filename, folder, tempPath, callback) {
 };
 
 file.base64ToLocal = function (imageData, uploadPath, callback) {
-	var buffer = new Buffer(imageData.slice(imageData.indexOf('base64') + 7), 'base64');
+	var buffer = Buffer.from(imageData.slice(imageData.indexOf('base64') + 7), 'base64');
 	uploadPath = path.join(nconf.get('upload_path'), uploadPath);
 
 	fs.writeFile(uploadPath, buffer, {
@@ -141,7 +141,7 @@ file.linkDirs = function linkDirs(sourceDir, destDir, callback) {
 file.typeToExtension = function (type) {
 	var extension;
 	if (type) {
-		extension = '.' + mime.extension(type);
+		extension = '.' + mime.getExtension(type);
 	}
 	return extension;
 };

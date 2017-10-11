@@ -28,7 +28,7 @@ module.exports = function (User) {
 				var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
 				var size = res.headers['content-length'];
 				var type = res.headers['content-type'];
-				var extension = mime.extension(type);
+				var extension = mime.getExtension(type);
 
 				if (['png', 'jpeg', 'jpg', 'gif'].indexOf(extension) === -1) {
 					return callback(new Error('[[error:invalid-image-extension]]'));

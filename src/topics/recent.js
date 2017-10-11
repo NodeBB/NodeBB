@@ -83,7 +83,7 @@ module.exports = function (Topics) {
 			},
 			function (results, next) {
 				tids = results.topicData.filter(function (topic) {
-					if (topic) {
+					if (topic && topic.cid) {
 						return results.ignoredCids.indexOf(topic.cid.toString()) === -1;
 					}
 					return false;
