@@ -92,17 +92,18 @@ function renderWidget(widget, uid, options, callback) {
 			}
 
 			if (widget.data.container && widget.data.container.match('{body}')) {
-				translator.translate(widget.data.title, function (title) {
-					Benchpress.compileParse(widget.data.container, {
-						title: title,
-						body: html,
-					}, function (err, html) {
-						next(err, { html: html });
-					});
-				});
+				Benchpress.compileParse(widget.data.container, {
+					title: widget.data.title,
+					body: html,
+				}, next);
 			} else {
-				next(null, { html: html });
+				next(null, html);
 			}
+		},
+		function (html, next) {
+			translator.translate(html, function (translatedHtml) {
+				next(null, { html: translatedHtml });
+			});
 		},
 	], callback);
 }

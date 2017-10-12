@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('pictureCropper', ['translator', 'cropper', 'benchpress'], function (translator, cropper, Benchpress) {
+define('pictureCropper', ['translator', 'cropper', 'benchpress'], function (translator, Cropper, Benchpress) {
 	var module = {};
 
 	module.show = function (data, callback) {
@@ -46,7 +46,7 @@ define('pictureCropper', ['translator', 'cropper', 'benchpress'], function (tran
 				var img = document.getElementById('cropped-image');
 				$(img).css('max-height', cropBoxHeight);
 
-				var cropperTool = new cropper.default(img, {
+				var cropperTool = new Cropper(img, {
 					aspectRatio: data.aspectRatio,
 					autoCropArea: 1,
 					viewMode: 1,
@@ -122,7 +122,7 @@ define('pictureCropper', ['translator', 'cropper', 'benchpress'], function (tran
 							$(this).addClass('disabled');
 							cropperTool.destroy();
 
-							cropperTool = new cropper.default(img, {
+							cropperTool = new Cropper(img, {
 								viewMode: 1,
 								autoCropArea: 1,
 								ready: function () {

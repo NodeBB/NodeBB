@@ -6,8 +6,8 @@
 	"from-help": "用于邮件中显示的发送者",
 
 	"smtp-transport": "SMTP 通信",
-	"smtp-transport.enabled": "使用一个外部邮箱系统来发送邮件",
-	"smtp-transport-help": "你可以从列表中选取一个已知的服务或自定义。",
+	"smtp-transport.enabled": "使用一个外部电子邮箱系统来发送邮件",
+	"smtp-transport-help": "您可以从列表中选取一个已知的服务或自定义。",
 	"smtp-transport.service": "选择服务",
 	"smtp-transport.service-custom": "自定义",
 	"smtp-transport.service-help": "选取一个上方服务以便使用已知的信息。此外，还可以选取 “自定义”并在下方输入配置细节。",
@@ -20,7 +20,7 @@
 	"smtp-transport.security-starttls": "StartTLS",
 	"smtp-transport.security-none": "None",
 	"smtp-transport.username": "用户名",
-	"smtp-transport.username-help": "<b>对于Gmail服务，</b>请在这里输入完整的电子邮件地址，尤其是如果你使用的是 Google Apps 托管的域名。",
+	"smtp-transport.username-help": "<b>对于Gmail服务，</b>请在这里输入完整的电子邮箱地址，尤其是如果您使用的是 Google Apps 托管的域名。",
 	"smtp-transport.password": "密码",
 
 	"template": "编辑电子邮件模板",

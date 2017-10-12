@@ -4,7 +4,7 @@
     "not-logged-in": "Vous ne semblez pas être connecté.",
     "account-locked": "Votre compte a été temporairement suspendu",
     "search-requires-login": "Rechercher nécessite d'avoir un compte. Veuillez vous identifier ou vous enregistrer.",
-    "goback": "Press back to return to the previous page",
+    "goback": "Appuyez sur retour pour revenir à la page précédente",
     "invalid-cid": "ID de catégorie invalide",
     "invalid-tid": "ID de sujet invalide",
     "invalid-pid": "ID de message invalide",

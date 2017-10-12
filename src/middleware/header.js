@@ -79,6 +79,7 @@ module.exports = function (middleware) {
 							uid: 0,
 							username: '[[global:guest]]',
 							userslug: '',
+							fullname: '[[global:guest]]',
 							email: '',
 							picture: user.getDefaultAvatar(),
 							status: 'offline',

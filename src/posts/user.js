@@ -12,12 +12,21 @@ module.exports = function (Posts) {
 	Posts.getUserInfoForPosts = function (uids, uid, callback) {
 		var groupsMap = {};
 		var userData;
+		var userSettings;
 		async.waterfall([
 			function (next) {
-				user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status', 'lastonline', 'groupTitle'], next);
+				async.parallel({
+					userData: function (next) {
+						user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status', 'lastonline', 'groupTitle'], next);
+					},
+					userSettings: function (next) {
+						user.getMultipleUserSettings(uids, next);
+					},
+				}, next);
 			},
-			function (_userData, next) {
-				userData = _userData;
+			function (results, next) {
+				userData = results.userData;
+				userSettings = results.userSettings;
 				var groupTitles = userData.map(function (userData) {
 					return userData && userData.groupTitle;
 				}).filter(function (groupTitle, index, array) {
@@ -38,7 +47,7 @@ module.exports = function (Posts) {
 					}
 				});
 
-				userData.forEach(function (userData) {
+				userData.forEach(function (userData, index) {
 					userData.uid = userData.uid || 0;
 					userData.username = userData.username || '[[global:guest]]';
 					userData.userslug = userData.userslug || '';
@@ -48,7 +57,7 @@ module.exports = function (Posts) {
 					userData.picture = userData.picture || '';
 					userData.status = user.getStatus(userData);
 					userData.signature = validator.escape(String(userData.signature || ''));
-					userData.fullname = validator.escape(String(userData.fullname || ''));
+					userData.fullname = userSettings[index].showfullname ? validator.escape(String(userData.fullname || '')) : undefined;
 					if (parseInt(meta.config.hideFullname, 10) === 1) {
 						userData.fullname = undefined;
 					}

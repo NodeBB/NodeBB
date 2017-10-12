@@ -115,6 +115,9 @@ Topics.getTopicsByTids = function (tids, uid, callback) {
 				users: function (next) {
 					user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status'], next);
 				},
+				userSettings: function (next) {
+					user.getMultipleUserSettings(uids, next);
+				},
 				categories: function (next) {
 					categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'image', 'bgColor', 'color', 'disabled'], next);
 				},
@@ -136,11 +139,11 @@ Topics.getTopicsByTids = function (tids, uid, callback) {
 			}, next);
 		},
 		function (results, next) {
-			if (parseInt(meta.config.hideFullname, 10) === 1) {
-				results.users.forEach(function (user) {
+			results.users.forEach(function (user, index) {
+				if (parseInt(meta.config.hideFullname, 10) === 1 || !results.userSettings[index].showfullname) {
 					user.fullname = undefined;
-				});
-			}
+				}
+			});
 
 			var users = _.zipObject(uids, results.users);
 			var categories = _.zipObject(cids, results.categories);

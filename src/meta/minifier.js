@@ -1,7 +1,6 @@
 'use strict';
 
 var fs = require('fs');
-var childProcess = require('child_process');
 var os = require('os');
 var uglifyjs = require('uglify-js');
 var async = require('async');
@@ -11,7 +10,7 @@ var postcss = require('postcss');
 var autoprefixer = require('autoprefixer');
 var clean = require('postcss-clean');
 
-var debugParams = require('./debugParams');
+var fork = require('./debugFork');
 
 var Minifier = module.exports;
 
@@ -47,13 +46,12 @@ function getChild() {
 		return free.shift();
 	}
 
-	var forkProcessParams = debugParams();
-	var proc = childProcess.fork(__filename, [], Object.assign({}, forkProcessParams, {
+	var proc = fork(__filename, [], {
 		cwd: __dirname,
 		env: {
 			minifier_child: true,
 		},
-	}));
+	});
 	pool.push(proc);
 
 	return proc;

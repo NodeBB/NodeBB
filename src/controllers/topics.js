@@ -227,6 +227,8 @@ function addTags(topicData, req, res) {
 	var ogImageUrl = '';
 	if (topicData.thumb) {
 		ogImageUrl = topicData.thumb;
+	} else if (topicData.category.backgroundImage && (!postAtIndex || !postAtIndex.index)) {
+		ogImageUrl = topicData.category.backgroundImage;
 	} else if (postAtIndex && postAtIndex.user && postAtIndex.user.picture) {
 		ogImageUrl = postAtIndex.user.picture;
 	} else if (meta.config['og:image']) {
