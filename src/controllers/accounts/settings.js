@@ -12,9 +12,7 @@ var db = require('../../database');
 var helpers = require('../helpers');
 var accountHelpers = require('./helpers');
 
-
-var settingsController = {};
-
+var settingsController = module.exports;
 
 settingsController.get = function (req, res, callback) {
 	var userData;
@@ -91,67 +89,64 @@ settingsController.get = function (req, res, callback) {
 				next(err, data);
 			});
 		},
-		function (data, next) {
+		function (data) {
 			userData.customSettings = data.customSettings;
 			userData.disableEmailSubscriptions = parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
-			next();
+
+			userData.dailyDigestFreqOptions = [
+				{ value: 'off', name: '[[user:digest_off]]', selected: userData.settings.dailyDigestFreq === 'off' },
+				{ value: 'day', name: '[[user:digest_daily]]', selected: userData.settings.dailyDigestFreq === 'day' },
+				{ value: 'week', name: '[[user:digest_weekly]]', selected: userData.settings.dailyDigestFreq === 'week' },
+				{ value: 'month', name: '[[user:digest_monthly]]', selected: userData.settings.dailyDigestFreq === 'month' },
+			];
+
+			userData.bootswatchSkinOptions = [
+				{ name: 'No skin', value: 'noskin' },
+				{ name: 'Default', value: 'default' },
+				{ name: 'Cerulean', value: 'cerulean' },
+				{ name: 'Cosmo', value: 'cosmo'	},
+				{ name: 'Cyborg', value: 'cyborg' },
+				{ name: 'Darkly', value: 'darkly' },
+				{ name: 'Flatly', value: 'flatly' },
+				{ name: 'Journal', value: 'journal'	},
+				{ name: 'Lumen', value: 'lumen' },
+				{ name: 'Paper', value: 'paper' },
+				{ name: 'Readable', value: 'readable' },
+				{ name: 'Sandstone', value: 'sandstone' },
+				{ name: 'Simplex', value: 'simplex' },
+				{ name: 'Slate', value: 'slate'	},
+				{ name: 'Spacelab', value: 'spacelab' },
+				{ name: 'Superhero', value: 'superhero' },
+				{ name: 'United', value: 'united' },
+				{ name: 'Yeti', value: 'yeti' },
+			];
+
+			userData.bootswatchSkinOptions.forEach(function (skin) {
+				skin.selected = skin.value === userData.settings.bootswatchSkin;
+			});
+
+			userData.languages.forEach(function (language) {
+				language.selected = language.code === userData.settings.userLang;
+			});
+
+			userData.disableCustomUserSkins = parseInt(meta.config.disableCustomUserSkins, 10) === 1;
+
+			userData.allowUserHomePage = parseInt(meta.config.allowUserHomePage, 10) === 1;
+
+			userData.hideFullname = parseInt(meta.config.hideFullname, 10) === 1;
+			userData.hideEmail = parseInt(meta.config.hideEmail, 10) === 1;
+
+			userData.inTopicSearchAvailable = plugins.hasListeners('filter:topic.search');
+
+			userData.maxTopicsPerPage = parseInt(meta.config.maxTopicsPerPage, 10) || 20;
+			userData.maxPostsPerPage = parseInt(meta.config.maxPostsPerPage, 10) || 20;
+
+			userData.title = '[[pages:account/settings]]';
+			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[user:settings]]' }]);
+
+			res.render('account/settings', userData);
 		},
-	], function (err) {
-		if (err) {
-			return callback(err);
-		}
-
-		userData.dailyDigestFreqOptions = [
-			{ value: 'off', name: '[[user:digest_off]]', selected: userData.settings.dailyDigestFreq === 'off' },
-			{ value: 'day', name: '[[user:digest_daily]]', selected: userData.settings.dailyDigestFreq === 'day' },
-			{ value: 'week', name: '[[user:digest_weekly]]', selected: userData.settings.dailyDigestFreq === 'week' },
-			{ value: 'month', name: '[[user:digest_monthly]]', selected: userData.settings.dailyDigestFreq === 'month' },
-		];
-
-
-		userData.bootswatchSkinOptions = [
-			{ name: 'No skin', value: 'noskin' },
-			{ name: 'Default', value: 'default' },
-			{ name: 'Cerulean', value: 'cerulean' },
-			{ name: 'Cosmo', value: 'cosmo'	},
-			{ name: 'Cyborg', value: 'cyborg' },
-			{ name: 'Darkly', value: 'darkly' },
-			{ name: 'Flatly', value: 'flatly' },
-			{ name: 'Journal', value: 'journal'	},
-			{ name: 'Lumen', value: 'lumen' },
-			{ name: 'Paper', value: 'paper' },
-			{ name: 'Readable', value: 'readable' },
-			{ name: 'Sandstone', value: 'sandstone' },
-			{ name: 'Simplex', value: 'simplex' },
-			{ name: 'Slate', value: 'slate'	},
-			{ name: 'Spacelab', value: 'spacelab' },
-			{ name: 'Superhero', value: 'superhero' },
-			{ name: 'United', value: 'united' },
-			{ name: 'Yeti', value: 'yeti' },
-		];
-
-		userData.bootswatchSkinOptions.forEach(function (skin) {
-			skin.selected = skin.value === userData.settings.bootswatchSkin;
-		});
-
-		userData.languages.forEach(function (language) {
-			language.selected = language.code === userData.settings.userLang;
-		});
-
-		userData.disableCustomUserSkins = parseInt(meta.config.disableCustomUserSkins, 10) === 1;
-
-		userData.allowUserHomePage = parseInt(meta.config.allowUserHomePage, 10) === 1;
-
-		userData.hideFullname = parseInt(meta.config.hideFullname, 10) === 1;
-		userData.hideEmail = parseInt(meta.config.hideEmail, 10) === 1;
-
-		userData.inTopicSearchAvailable = plugins.hasListeners('filter:topic.search');
-
-		userData.title = '[[pages:account/settings]]';
-		userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[user:settings]]' }]);
-
-		res.render('account/settings', userData);
-	});
+	], callback);
 };
 
 

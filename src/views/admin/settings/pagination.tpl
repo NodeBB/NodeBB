@@ -18,7 +18,8 @@
 	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/pagination:topics]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
-			<strong>[[admin/settings/pagination:posts-per-page]]</strong><br /> <input type="text" class="form-control" value="20" data-field="postsPerPage">
+			<strong>[[admin/settings/pagination:posts-per-page]]</strong><br /> <input type="text" class="form-control" value="20" data-field="postsPerPage"><br/>
+			<strong>[[admin/settings/pagination:max-posts-per-page]]</strong><br /> <input type="text" class="form-control" value="20" data-field="maxPostsPerPage"><br/>
 		</form>
 	</div>
 </div>
@@ -28,6 +29,7 @@
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<strong>[[admin/settings/pagination:topics-per-page]]</strong><br /> <input type="text" class="form-control" value="20" data-field="topicsPerPage"><br />
+			<strong>[[admin/settings/pagination:max-topics-per-page]]</strong><br /> <input type="text" class="form-control" value="20" data-field="maxTopicsPerPage"><br/>
 			<strong>[[admin/settings/pagination:initial-num-load]]</strong><br /> <input type="text" class="form-control" value="20" data-field="topicsPerList">
 		</form>
 	</div>
