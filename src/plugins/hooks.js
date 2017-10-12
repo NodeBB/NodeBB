@@ -40,13 +40,6 @@ module.exports = function (Plugins) {
 					'please use `' + Plugins.deprecatedHooks[data.hook] + '` instead.' :
 					'there is no alternative.'
 				));
-		} else {
-			// handle hook's startsWith, i.e. action:homepage.get
-			var parts = data.hook.split(':');
-			if (parts.length > 2) {
-				parts.pop();
-			}
-			parts.join(':');
 		}
 
 		if (data.hook && data.method) {
