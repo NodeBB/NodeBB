@@ -65,9 +65,6 @@ module.exports = function (middleware) {
 		async.waterfall([
 			function (next) {
 				async.parallel({
-					scripts: function (next) {
-						plugins.fireHook('filter:scripts.get', [], next);
-					},
 					isAdmin: function (next) {
 						user.isAdministrator(req.uid, next);
 					},
@@ -155,12 +152,6 @@ module.exports = function (middleware) {
 				templateValues.template = { name: res.locals.template };
 				templateValues.template[res.locals.template] = true;
 
-				templateValues.scripts = results.scripts.map(function (script) {
-					return { src: script };
-				});
-
-				addTimeagoLocaleScript(templateValues.scripts, res.locals.config.userLang);
-
 				if (req.route && req.route.path === '/') {
 					modifyTitle(templateValues);
 				}
@@ -192,6 +183,18 @@ module.exports = function (middleware) {
 				}, next);
 			},
 			function (data, next) {
+				async.parallel({
+					scripts: async.apply(plugins.fireHook, 'filter:scripts.get', []),
+				}, function (err, results) {
+					next(err, data, results);
+				});
+			},
+			function (data, results, next) {
+				data.templateValues.scripts = results.scripts.map(function (script) {
+					return { src: script };
+				});
+				addTimeagoLocaleScript(data.templateValues.scripts, res.locals.config.userLang);
+
 				data.templateValues.useCustomJS = parseInt(meta.config.useCustomJS, 10) === 1;
 				data.templateValues.customJS = data.templateValues.useCustomJS ? meta.config.customJS : '';
 
