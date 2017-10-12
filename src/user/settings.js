@@ -12,7 +12,7 @@ var pubsub = require('../pubsub');
 var LRU = require('lru-cache');
 
 var cache = LRU({
-	max: 1000,
+	max: 2000,
 	length: function () { return 1; },
 	maxAge: 1000 * 60 * 60,
 });
