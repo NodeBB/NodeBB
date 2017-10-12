@@ -143,9 +143,7 @@ module.exports = function (middleware) {
 				templateValues.userJSON = JSON.stringify(results.user);
 				templateValues.useCustomCSS = parseInt(meta.config.useCustomCSS, 10) === 1 && meta.config.customCSS;
 				templateValues.customCSS = templateValues.useCustomCSS ? (meta.config.renderedCustomCSS || '') : '';
-				templateValues.useCustomJS = parseInt(meta.config.useCustomJS, 10) === 1;
 				templateValues.useCustomHTML = parseInt(meta.config.useCustomHTML, 10) === 1;
-				templateValues.customJS = templateValues.useCustomJS ? meta.config.customJS : '';
 				templateValues.customHTML = templateValues.useCustomHTML ? meta.config.customHTML : '';
 				templateValues.maintenanceHeader = parseInt(meta.config.maintenanceMode, 10) === 1 && !results.isAdmin;
 				templateValues.defaultLang = meta.config.defaultLang || 'en-GB';
@@ -194,6 +192,9 @@ module.exports = function (middleware) {
 				}, next);
 			},
 			function (data, next) {
+				data.templateValues.useCustomJS = parseInt(meta.config.useCustomJS, 10) === 1;
+				data.templateValues.customJS = data.templateValues.useCustomJS ? meta.config.customJS : '';
+
 				req.app.render('footer', data.templateValues, next);
 			},
 		], callback);
