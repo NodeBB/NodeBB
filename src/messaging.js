@@ -153,23 +153,27 @@ Messaging.getRecentChats = function (callerUid, uid, start, stop, callback) {
 		},
 		function (results, next) {
 			results.roomData.forEach(function (room, index) {
-				room.users = results.users[index];
-				room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : room.users.length > 2;
-				room.unread = results.unread[index];
-				room.teaser = results.teasers[index];
+				if (room) {
+					room.users = results.users[index];
+					room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : room.users.length > 2;
+					room.unread = results.unread[index];
+					room.teaser = results.teasers[index];
 
-				room.users.forEach(function (userData) {
-					if (userData && parseInt(userData.uid, 10)) {
-						userData.status = user.getStatus(userData);
-					}
-				});
-				room.users = room.users.filter(function (user) {
-					return user && parseInt(user.uid, 10);
-				});
-				room.lastUser = room.users[0];
+					room.users.forEach(function (userData) {
+						if (userData && parseInt(userData.uid, 10)) {
+							userData.status = user.getStatus(userData);
+						}
+					});
+					room.users = room.users.filter(function (user) {
+						return user && parseInt(user.uid, 10);
+					});
+					room.lastUser = room.users[0];
 
-				room.usernames = Messaging.generateUsernames(room.users, uid);
+					room.usernames = Messaging.generateUsernames(room.users, uid);
+				}
 			});
+
+			results.roomData = results.roomData.filter(Boolean);
 
 			next(null, { rooms: results.roomData, nextStart: stop + 1 });
 		},
