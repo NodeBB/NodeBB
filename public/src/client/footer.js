@@ -98,5 +98,4 @@ define('forum/footer', ['notifications', 'chat', 'components', 'translator'], fu
 	socket.on('event:unread.updateChatCount', updateUnreadChatCount);
 
 	initUnreadTopics();
-	app.load();
 });

@@ -424,4 +424,6 @@ $(document).ready(function () {
 		// Progressive Enhancement, ajaxify available only to modern browsers
 		ajaxifyAnchors();
 	}
+
+	app.load();
 });
