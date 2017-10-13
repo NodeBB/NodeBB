@@ -87,23 +87,19 @@ Upgrade.run = function (callback) {
 	});
 };
 
-Upgrade.runSingle = function (query, callback) {
+Upgrade.runParticular = function (names, callback) {
 	process.stdout.write('\nParsing upgrade scripts... ');
 
 	async.waterfall([
 		async.apply(file.walk, path.join(__dirname, './upgrades')),
 		function (files, next) {
-			next(null, files.filter(function (file) {
-				return path.basename(file, '.js') === query;
-			}));
-		},
-	], function (err, files) {
-		if (err) {
-			return callback(err);
-		}
+			var upgrades = files.filter(function (file) {
+				return names.indexOf(path.basename(file, '.js')) !== -1;
+			});
 
-		Upgrade.process(files, 0, callback);
-	});
+			Upgrade.process(upgrades, 0, next);
+		},
+	], callback);
 };
 
 Upgrade.process = function (files, skipCount, callback) {
