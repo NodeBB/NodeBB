@@ -219,14 +219,13 @@ function upgrade() {
 	var meta = require('./src/meta');
 	var upgrade = require('./src/upgrade');
 	var build = require('./src/meta/build');
-	var tasks = [db.init, meta.configs.init, upgrade.run, build.buildAll];
+	var tasks = [db.init, meta.configs.init];
 
 	if (nconf.get('upgrade') !== true) {
 		// Likely an upgrade script name passed in
-		tasks[2] = async.apply(upgrade.runSingle, nconf.get('upgrade'));
-
-		// Skip build
-		tasks.pop();
+		tasks.push(async.apply(upgrade.runParticular, nconf.get('upgrade').split(',')));
+	} else {
+		tasks.push(upgrade.run, build.buildAll);
 	}
 	// disable mongo timeouts during upgrade
 	nconf.set('mongo:options:socketTimeoutMS', 0);
