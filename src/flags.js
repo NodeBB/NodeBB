@@ -4,6 +4,7 @@ var async = require('async');
 var _ = require('lodash');
 var S = require('string');
 var winston = require('winston');
+var validator = require('validator');
 
 var db = require('./database');
 var user = require('./user');
@@ -92,6 +93,7 @@ Flags.get = function (flagId, callback) {
 			}, function (err, payload) {
 				// Final object return construction
 				next(err, Object.assign(data.base, {
+					description: validator.escape(data.base.description),
 					datetimeISO: new Date(parseInt(data.base.datetime, 10)).toISOString(),
 					target_readable: data.base.type.charAt(0).toUpperCase() + data.base.type.slice(1) + ' ' + data.base.targetId,
 					target: payload.targetObj,
@@ -200,6 +202,7 @@ Flags.list = function (filters, uid, callback) {
 					}
 
 					next(null, Object.assign(flagObj, {
+						description: validator.escape(flagObj.description),
 						target_readable: flagObj.type.charAt(0).toUpperCase() + flagObj.type.slice(1) + ' ' + flagObj.targetId,
 						datetimeISO: new Date(parseInt(flagObj.datetime, 10)).toISOString(),
 					}));
