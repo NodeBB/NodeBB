@@ -23,7 +23,7 @@ define('admin/appearance/customise', ['admin/settings', 'ace/ace'], function (Se
 			});
 
 			customJS.setTheme('ace/theme/twilight');
-			customJS.getSession().setMode('ace/mode/js');
+			customJS.getSession().setMode('ace/mode/javascript');
 
 			customJS.on('change', function () {
 				app.flags = app.flags || {};
