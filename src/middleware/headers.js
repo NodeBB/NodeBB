@@ -15,6 +15,11 @@ module.exports = function (middleware) {
 			headers['Access-Control-Allow-Origin'] = encodeURI(meta.config['access-control-allow-origin']);
 		}
 
+		if (meta.config['strict-transport-security']) {
+			headers['Strict-Transport-Security']
+				= 'max-age=' + parseInt(meta.config['strict-transport-security'], 10);
+		}
+
 		for (var key in headers) {
 			if (headers.hasOwnProperty(key) && headers[key]) {
 				res.setHeader(key, headers[key]);
