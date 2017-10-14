@@ -111,10 +111,10 @@
 				var level = 0;
 
 				while (i + 2 <= len) {
-					if (text.slice(i, i + 2) === '[[') {
+					if (text[i] === '[' && text[i + 1] === '[') {
 						level += 1;
 						i += 1;
-					} else if (text.slice(i, i + 2) === ']]') {
+					} else if (text[i] === ']' && text[i + 1] === ']') {
 						level -= 1;
 						i += 1;
 					} else if (level === 0 && text[i] === ',' && text[i - 1] !== '\\') {
@@ -128,111 +128,113 @@
 				return arr;
 			}
 
+			// move to the first [[
+			cursor = str.indexOf('[[', cursor);
+
 			// the loooop, we'll go to where the cursor
 			// is equal to the length of the string since
 			// slice doesn't include the ending index
-			while (cursor + 2 <= len) {
-				// if the current position in the string looks
-				// like the beginning of a translation string
-				if (str.slice(cursor, cursor + 2) === '[[') {
-					// split the string from the last break
-					// to the character before the cursor
-					// add that to the result array
-					toTranslate.push(str.slice(lastBreak, cursor));
-					// set the cursor position past the beginning
-					// brackets of the translation string
-					cursor += 2;
-					// set the last break to our current
-					// spot since we just broke the string
-					lastBreak = cursor;
-					// we're in a token now
-					inToken = true;
+			while (cursor + 2 <= len && cursor !== -1) {
+				// split the string from the last break
+				// to the character before the cursor
+				// add that to the result array
+				toTranslate.push(str.slice(lastBreak, cursor));
+				// set the cursor position past the beginning
+				// brackets of the translation string
+				cursor += 2;
+				// set the last break to our current
+				// spot since we just broke the string
+				lastBreak = cursor;
+				// we're in a token now
+				inToken = true;
 
-					// the current level of nesting of the translation strings
-					var level = 0;
-					var sliced;
-					// validating the current string is actually a translation
-					var textBeforeColonFound = false;
-					var colonFound = false;
-					var textAfterColonFound = false;
-					var commaAfterNameFound = false;
+				// the current level of nesting of the translation strings
+				var level = 0;
+				var char0;
+				var char1;
+				// validating the current string is actually a translation
+				var textBeforeColonFound = false;
+				var colonFound = false;
+				var textAfterColonFound = false;
+				var commaAfterNameFound = false;
 
-					while (cursor + 2 <= len) {
-						sliced = str.slice(cursor, cursor + 2);
-						// found some text after the double bracket,
-						// so this is probably a translation string
-						if (!textBeforeColonFound && validTextRegex.test(sliced[0])) {
-							textBeforeColonFound = true;
-							cursor += 1;
-						// found a colon, so this is probably a translation string
-						} else if (textBeforeColonFound && !colonFound && sliced[0] === ':') {
-							colonFound = true;
-							cursor += 1;
-						// found some text after the colon,
-						// so this is probably a translation string
-						} else if (colonFound && !textAfterColonFound && validTextRegex.test(sliced[0])) {
-							textAfterColonFound = true;
-							cursor += 1;
-						} else if (textAfterColonFound && !commaAfterNameFound && sliced[0] === ',') {
-							commaAfterNameFound = true;
-							cursor += 1;
-						// a space or comma was found before the name
-						// this isn't a translation string, so back out
-						} else if (!(textBeforeColonFound && colonFound && textAfterColonFound && commaAfterNameFound) &&
-								invalidTextRegex.test(sliced[0])) {
-							cursor += 1;
-							lastBreak -= 2;
-							// no longer in a token
-							inToken = false;
-							if (level > 0) {
-								level -= 1;
-							} else {
-								break;
-							}
-						// if we're at the beginning of another translation string,
-						// we're nested, so add to our level
-						} else if (sliced === '[[') {
-							level += 1;
-							cursor += 2;
-						// if we're at the end of a translation string
-						} else if (sliced === ']]') {
-							// if we're at the base level, then this is the end
-							if (level === 0) {
-								// so grab the name and args
-								var currentSlice = str.slice(lastBreak, cursor);
-								var result = split(currentSlice);
-								var name = result[0];
-								var args = result.slice(1);
-
-								// make a backup based on the raw string of the token
-								// if there are arguments to the token
-								var backup = '';
-								if (args && args.length) {
-									backup = this.translate(currentSlice);
-								}
-								// add the translation promise to the array
-								toTranslate.push(this.translateKey(name, args, backup));
-								// skip past the ending brackets
-								cursor += 2;
-								// set this as our last break
-								lastBreak = cursor;
-								// and we're no longer in a translation string,
-								// so continue with the main loop
-								inToken = false;
-								break;
-							}
-							// otherwise we lower the level
+				while (cursor + 2 <= len) {
+					char0 = str[cursor];
+					char1 = str[cursor + 1];
+					// found some text after the double bracket,
+					// so this is probably a translation string
+					if (!textBeforeColonFound && validTextRegex.test(char0)) {
+						textBeforeColonFound = true;
+						cursor += 1;
+					// found a colon, so this is probably a translation string
+					} else if (textBeforeColonFound && !colonFound && char0 === ':') {
+						colonFound = true;
+						cursor += 1;
+					// found some text after the colon,
+					// so this is probably a translation string
+					} else if (colonFound && !textAfterColonFound && validTextRegex.test(char0)) {
+						textAfterColonFound = true;
+						cursor += 1;
+					} else if (textAfterColonFound && !commaAfterNameFound && char0 === ',') {
+						commaAfterNameFound = true;
+						cursor += 1;
+					// a space or comma was found before the name
+					// this isn't a translation string, so back out
+					} else if (!(textBeforeColonFound && colonFound && textAfterColonFound && commaAfterNameFound) &&
+							invalidTextRegex.test(char0)) {
+						cursor += 1;
+						lastBreak -= 2;
+						// no longer in a token
+						inToken = false;
+						if (level > 0) {
 							level -= 1;
-							// and skip past the ending brackets
-							cursor += 2;
 						} else {
-							// otherwise just move to the next character
-							cursor += 1;
+							break;
 						}
+					// if we're at the beginning of another translation string,
+					// we're nested, so add to our level
+					} else if (char0 === '[' && char1 === '[') {
+						level += 1;
+						cursor += 2;
+					// if we're at the end of a translation string
+					} else if (char0 === ']' && char1 === ']') {
+						// if we're at the base level, then this is the end
+						if (level === 0) {
+							// so grab the name and args
+							var currentSlice = str.slice(lastBreak, cursor);
+							var result = split(currentSlice);
+							var name = result[0];
+							var args = result.slice(1);
+
+							// make a backup based on the raw string of the token
+							// if there are arguments to the token
+							var backup = '';
+							if (args && args.length) {
+								backup = this.translate(currentSlice);
+							}
+							// add the translation promise to the array
+							toTranslate.push(this.translateKey(name, args, backup));
+							// skip past the ending brackets
+							cursor += 2;
+							// set this as our last break
+							lastBreak = cursor;
+							// and we're no longer in a translation string,
+							// so continue with the main loop
+							inToken = false;
+							break;
+						}
+						// otherwise we lower the level
+						level -= 1;
+						// and skip past the ending brackets
+						cursor += 2;
+					} else {
+						// otherwise just move to the next character
+						cursor += 1;
 					}
 				}
-				// move to the next character
-				cursor += 1;
+
+				// skip to the next [[
+				cursor = str.indexOf('[[', cursor);
 			}
 
 			// ending string of source
@@ -304,7 +306,7 @@
 		 * Load translation file (or use a cached version), and optionally return the translation of a certain key
 		 * @param {string} namespace - The file name of the translation namespace
 		 * @param {string} [key] - The key of the specific translation to getJSON
-		 * @returns {Promise<{ [key: string]: string }>|Promise<string>}
+		 * @returns {Promise<{ [key: string]: string } | string>}
 		 */
 		Translator.prototype.getTranslation = function getTranslation(namespace, key) {
 			var translation;
