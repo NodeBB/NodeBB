@@ -42,7 +42,6 @@
 	}
 }(function (utils, load, warn) {
 	var assign = Object.assign || jQuery.extend;
-	function classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 	function escapeHTML(str) {
 		return utils.decodeHTMLEntities(
@@ -62,7 +61,6 @@
 		 */
 		function Translator(language) {
 			var self = this;
-			classCallCheck(self, Translator);
 
 			if (!language) {
 				throw new TypeError('Parameter `language` must be a language string. Received ' + language + (language === '' ? '(empty string)' : ''));
