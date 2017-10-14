@@ -10,8 +10,8 @@
 	}
 	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as a named module
-		define('translator', ['string'], function (string) {
-			return factory(string, loadClient, warn);
+		define('translator', [], function () {
+			return factory(utils, loadClient, warn);
 		});
 	} else if (typeof module === 'object' && module.exports) {
 		// Node
@@ -37,14 +37,21 @@
 				});
 			}
 
-			module.exports = factory(require('string'), loadServer, warn);
+			module.exports = factory(require('../utils'), loadServer, warn);
 		}());
-	} else {
-		window.translator = factory(window.string, loadClient, warn);
 	}
-}(function (string, load, warn) {
+}(function (utils, load, warn) {
 	var assign = Object.assign || jQuery.extend;
-	function classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function escapeHTML(str) {
+		return utils.decodeHTMLEntities(
+			String(str)
+				.replace(/[\s\xa0]+/g, ' ')
+				.replace(/^\s+|\s+$/g, '')
+		).replace(/[<>]/g, function (c) {
+			return c === '<' ? '&lt;' : '&gt;';
+		});
+	}
 
 	var Translator = (function () {
 		/**
@@ -54,7 +61,6 @@
 		 */
 		function Translator(language) {
 			var self = this;
-			classCallCheck(self, Translator);
 
 			if (!language) {
 				throw new TypeError('Parameter `language` must be a language string. Received ' + language + (language === '' ? '(empty string)' : ''));
@@ -284,9 +290,7 @@
 				}
 
 				var argsToTranslate = args.map(function (arg) {
-					return string(arg).collapseWhitespace().decodeHTMLEntities().escapeHTML().s.replace(/&amp;/g, '&');
-				}).map(function (arg) {
-					return self.translate(arg);
+					return self.translate(escapeHTML(arg));
 				});
 
 				return Promise.all(argsToTranslate).then(function (translatedArgs) {
@@ -539,12 +543,13 @@
 				return cb('');
 			}
 
-			Translator.create(lang).translate(text).catch(function (err) {
+			return Translator.create(lang).translate(text).then(function (output) {
+				if (cb) {
+					setTimeout(cb, 0, output);
+				}
+				return output;
+			}, function (err) {
 				warn('Translation failed: ' + err.stack);
-			}).then(function (output) {
-				cb(output);
-			}).catch(function (err) {
-				console.error(err);
 			});
 		},
 

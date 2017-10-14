@@ -3,12 +3,12 @@
 
 var async = require('async');
 var winston = require('winston');
-var S = require('string');
 
 var db = require('../database');
 var meta = require('../meta');
 var notifications = require('../notifications');
 var privileges = require('../privileges');
+var utils = require('../utils');
 
 var UserNotifications = module.exports;
 
@@ -281,7 +281,7 @@ UserNotifications.sendTopicNotificationToFollowers = function (uid, topicData, p
 
 			var title = topicData.title;
 			if (title) {
-				title = S(title).decodeHTMLEntities().s;
+				title = utils.decodeHTMLEntities(title);
 			}
 
 			notifications.create({

@@ -3,7 +3,6 @@
 
 var async = require('async');
 var _ = require('lodash');
-var S = require('string');
 var winston = require('winston');
 
 var meta = require('../meta');
@@ -91,8 +90,7 @@ module.exports = function (Topics) {
 					if (tidToPost[topic.tid]) {
 						tidToPost[topic.tid].index = meta.config.teaserPost === 'first' ? 1 : counts[index];
 						if (tidToPost[topic.tid].content) {
-							var s = S(tidToPost[topic.tid].content);
-							tidToPost[topic.tid].content = s.stripTags.apply(s, utils.stripTags).s;
+							tidToPost[topic.tid].content = utils.stripHTMLTags(tidToPost[topic.tid].content, utils.stripTags);
 						}
 					}
 					return tidToPost[topic.tid];

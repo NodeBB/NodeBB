@@ -2,7 +2,6 @@
 
 
 var async = require('async');
-var S = require('string');
 var validator = require('validator');
 
 var db = require('./database');
@@ -215,7 +214,7 @@ Messaging.getTeaser = function (uid, roomId, callback) {
 				return callback();
 			}
 			if (teaser.content) {
-				teaser.content = S(teaser.content).stripTags().decodeHTMLEntities().s;
+				teaser.content = utils.stripHTMLTags(utils.decodeHTMLEntities(teaser.content));
 				teaser.content = validator.escape(String(teaser.content));
 			}
 
