@@ -5,7 +5,6 @@ var nconf = require('nconf');
 var fs = require('fs');
 var winston = require('winston');
 
-var myXhr = require('../mocks/newXhr');
 var utils = require('../../public/src/utils');
 
 var helpers = module.exports;
@@ -66,28 +65,22 @@ helpers.logoutUser = function (jar, callback) {
 };
 
 helpers.connectSocketIO = function (res, callback) {
-	myXhr.callbacks.headerCallback = function () {
-		this.setDisableHeaderCheck(true);
-		var stdOpen = this.open;
-		this.open = function () {
-			stdOpen.apply(this, arguments);
-			this.setRequestHeader('Cookie', res.headers['set-cookie'][0].split(';')[0]);
-			this.setRequestHeader('Origin', nconf.get('url'));
-		};
-	};
+	var io = require('socket.io-client');
 
-	var socketClient = require('socket.io-client');
-
-	var io = socketClient.connect(nconf.get('base_url'), {
+	var cookie = res.headers['set-cookie'][0].split(';')[0];
+	var socket = io(nconf.get('base_url'), {
 		path: nconf.get('relative_path') + '/socket.io',
-		forceNew: true,
-		multiplex: false,
-	});
-	io.on('connect', function () {
-		callback(null, io);
+		extraHeaders: {
+			Origin: nconf.get('url'),
+			Cookie: cookie,
+		},
 	});
 
-	io.on('error', function (err) {
+	socket.on('connect', function () {
+		callback(null, socket);
+	});
+
+	socket.on('error', function (err) {
 		callback(err);
 	});
 };
