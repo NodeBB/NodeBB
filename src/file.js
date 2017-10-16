@@ -39,7 +39,6 @@ file.copyFile = function (src, dst, opts, cb) {
 				if (err) {
 					return cb(err);
 				}
-
 				fs.utimes(dst, stat.atime, stat.mtime, cb);
 			});
 		});
