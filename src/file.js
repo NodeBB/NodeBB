@@ -45,7 +45,7 @@ file.copyFile = function (src, dst, opts, cb) {
 	}
 
 	/* Test for availability of fs.CopyFile */
-	if (fs.copyFile === 'function') {
+	if (typeof fs.copyFile === 'function') {
 		fs.copyFile(src, dst, opts, cb);
 	} else {
 		/* lifted nearly wholesale from https://github.com/coolaj86/utile-fs/blob/master/fs.extra/fs.copy.js */
