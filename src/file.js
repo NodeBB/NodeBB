@@ -32,16 +32,15 @@ file.saveFileToLocal = function (filename, folder, tempPath, callback) {
 
 		var is = fs.createReadStream(tempPath);
 		var os = fs.createWriteStream(uploadPath);
-		is.on('end', function () {
-			callback(null, {
-				url: '/assets/uploads/' + folder + '/' + filename,
-				path: uploadPath,
-			});
+		is.pipe(os)
+		  .on('finish', function () {
+		    callback(null, {
+		      url: '/assets/uploads/' + folder + '/' + filename,
+		      path: uploadPath,
+		    });
+		  })
+		  .on('error', callback);
 		});
-
-		os.on('error', callback);
-		is.pipe(os);
-	});
 };
 
 file.base64ToLocal = function (imageData, uploadPath, callback) {
