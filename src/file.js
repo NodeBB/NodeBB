@@ -12,7 +12,7 @@ var utils = require('./utils');
 
 var file = module.exports;
 
-file.copyFile(src, dst, opts, cb) {
+file.copyFile = function(src, dst, opts, cb) {
 	/* Wrapper for copyFile function with code to handle it not being present. If/When nodejs 8.5 or greater is a baseline requirement/assumption,
 	   this can be pruned and wholesale replace in all calls with fs.copyFile. */
 
@@ -82,6 +82,7 @@ file.saveFileToLocal = function (filename, folder, tempPath, callback) {
 		if (err) {
 			callback(err);
 		}
+	});
 
   /* When nodeJS 8.5.0 is below the assumed base, change this to fs.copyfile and remove the above function */
 
