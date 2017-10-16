@@ -63,11 +63,15 @@ define('forum/topic/move', ['categorySelector'], function (categorySelector) {
 	}
 
 	function moveTopics() {
-		socket.emit(Move.moveAll ? 'topics.moveAll' : 'topics.move', {
+		var data = {
 			tids: Move.tids,
 			cid: selectedCategory.cid,
 			currentCid: Move.currentCid,
-		}, function (err) {
+		};
+
+		$(window).trigger('action:topic.move', data);
+
+		socket.emit(Move.moveAll ? 'topics.moveAll' : 'topics.move', data, function (err) {
 			modal.modal('hide');
 
 			if (err) {

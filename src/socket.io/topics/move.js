@@ -28,7 +28,8 @@ module.exports = function (SocketTopics) {
 				function (_topicData, next) {
 					topicData = _topicData;
 					topicData.tid = tid;
-					topics.tools.move(tid, data.cid, socket.uid, next);
+					data.uid = socket.uid;
+					topics.tools.move(tid, data, next);
 				},
 				function (next) {
 					socketHelpers.emitToTopicAndCategory('event:topic_moved', topicData);
@@ -59,8 +60,9 @@ module.exports = function (SocketTopics) {
 				categories.getAllTopicIds(data.currentCid, 0, -1, next);
 			},
 			function (tids, next) {
+				data.uid = socket.uid;
 				async.eachLimit(tids, 50, function (tid, next) {
-					topics.tools.move(tid, data.cid, socket.uid, next);
+					topics.tools.move(tid, data, next);
 				}, next);
 			},
 		], callback);
