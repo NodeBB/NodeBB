@@ -12,51 +12,24 @@ var utils = require('./utils');
 
 var file = module.exports;
 
-file.copyFile = function (src, dst, opts, cb) {
+file.copyFile = function (src, dst, urlPath, opts, cb) {
 	/* Wrapper for copyFile function with code to handle it not being present. If/When nodejs 8.5 or greater is a baseline requirement/assumption,
 	   this can be pruned and wholesale replace in all calls with fs.copyFile. */
-
-	function noop() {}
-
-	function copyHelper(err) {
-		var is;
-		var os;
-
-		if (!err && !(opts.replace || opts.overwrite)) {
-			return cb(new Error('File ' + dst + ' exists.'));
-		}
-
-		fs.stat(src, function (err, stat) {
-			if (err) {
-				return cb(err);
-			}
-
-			is = fs.createReadStream(src);
-			os = fs.createWriteStream(dst);
-
-			is.pipe(os);
-			os.on('close', function (err) {
-				if (err) {
-					return cb(err);
-				}
-				fs.utimes(dst, stat.atime, stat.mtime, cb);
-			});
-		});
-	}
 
 	/* Test for availability of fs.CopyFile */
 	if (typeof fs.copyFile === 'function') {
 		fs.copyFile(src, dst, opts, cb);
 	} else {
-		/* lifted nearly wholesale from https://github.com/coolaj86/utile-fs/blob/master/fs.extra/fs.copy.js */
-		if (typeof opts === 'function') {
-			cb = opts;
-			opts = null;
-		}
-		opts = opts || {};
-
-		cb = cb || noop;
-		fs.stat(dst, copyHelper);
+		var is = fs.createReadStream(src);
+		var os = fs.createWriteStream(dst);
+		is.pipe(os)
+			.on('end', function () {
+				cb(null, {
+					url: urlPath,
+					path: dst,
+				});
+			})
+			.on('error', cb);
 	}
 };
 
@@ -80,9 +53,9 @@ file.saveFileToLocal = function (filename, folder, tempPath, callback) {
 		}
 	});
 
-	/* When nodeJS 8.5.0 is below the assumed base, change this to fs.copyfile and remove the above function */
+	var urlPath = '/assets/uploads/' + folder + '/' + filename;
 
-	file.copyFile(tempPath, uploadPath, {}, function (err) {
+	file.copyFile(tempPath, uploadPath, urlPath, {}, function (err) {
 		if (err) {
 			callback(err);
 		} else {
