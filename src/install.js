@@ -442,7 +442,7 @@ function enableDefaultPlugins(next) {
 		'nodebb-plugin-emoji-extended',
 		'nodebb-plugin-emoji-one',
 	];
-	var customDefaults = nconf.get('defaultPlugins');
+	var customDefaults = nconf.get('defaultplugins') || nconf.get('defaultPlugins');
 
 	winston.info('[install/defaultPlugins] customDefaults', customDefaults);
 
