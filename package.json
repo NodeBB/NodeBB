@@ -101,8 +101,8 @@
   },
   "devDependencies": {
     "coveralls": "^3.0.0",
-    "eslint": "^4.8.0",
-    "eslint-config-airbnb-base": "^12.0.1",
+    "eslint": "^4.9.0",
+    "eslint-config-airbnb-base": "^12.0.2",
     "eslint-plugin-import": "^2.7.0",
     "grunt": "^1.0.1",
     "grunt-contrib-watch": "^1.0.0",
