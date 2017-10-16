@@ -84,7 +84,7 @@ file.saveFileToLocal = function (filename, folder, tempPath, callback) {
 
 	file.copyFile(tempPath, uploadPath, {}, function (err) {
 		if (err) {
-			callback();
+			callback(err);
 		} else {
 			callback(null, {
 				url: '/assets/uploads/' + folder + '/' + filename,
