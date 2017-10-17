@@ -12,7 +12,7 @@ var utils = require('./utils');
 
 var file = module.exports;
 
-file.copyFile = function (src, dst, urlPath, opts, cb) {
+file.copyFile = function (src, dst, opts, cb) {
 	/* Wrapper for copyFile function with code to handle it not being present. If/When nodejs 8.5 or greater is a baseline requirement/assumption,
 	   this can be pruned and wholesale replace in all calls with fs.copyFile. */
 
@@ -24,10 +24,7 @@ file.copyFile = function (src, dst, urlPath, opts, cb) {
 		var os = fs.createWriteStream(dst);
 		is.pipe(os)
 			.on('finish', function () {
-				cb(null, {
-					url: urlPath,
-					path: dst,
-				});
+				cb(null);
 			})
 			.on('error', cb);
 	}
@@ -53,9 +50,7 @@ file.saveFileToLocal = function (filename, folder, tempPath, callback) {
 		}
 	});
 
-	var urlPath = '/assets/uploads/' + folder + '/' + filename;
-
-	file.copyFile(tempPath, uploadPath, urlPath, {}, function (err) {
+	file.copyFile(tempPath, uploadPath, {}, function (err) {
 		if (err) {
 			callback(err);
 		} else {
