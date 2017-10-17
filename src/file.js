@@ -23,7 +23,7 @@ file.copyFile = function (src, dst, urlPath, opts, cb) {
 		var is = fs.createReadStream(src);
 		var os = fs.createWriteStream(dst);
 		is.pipe(os)
-			.on('end', function () {
+			.on('finish', function () {
 				cb(null, {
 					url: urlPath,
 					path: dst,
