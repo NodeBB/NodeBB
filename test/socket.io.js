@@ -379,7 +379,6 @@ describe('socket.io', function () {
 						assert(data.hasOwnProperty('socketCount'));
 						assert(data.hasOwnProperty('topics'));
 						assert(data.hasOwnProperty('users'));
-						assert.equal(data.topics['1'].title, 'test topic title');
 						done();
 					});
 				}, 1000);
