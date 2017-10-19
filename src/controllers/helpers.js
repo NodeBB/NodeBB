@@ -32,6 +32,32 @@ helpers.noScriptErrors = function (req, res, error, httpStatus) {
 	});
 };
 
+helpers.validFilters = { '': true, new: true, watched: true, unreplied: true };
+
+helpers.buildFilters = function (url, filter) {
+	return [{
+		name: '[[unread:all-topics]]',
+		url: url,
+		selected: filter === '',
+		filter: '',
+	}, {
+		name: '[[unread:new-topics]]',
+		url: url + '/new',
+		selected: filter === 'new',
+		filter: 'new',
+	}, {
+		name: '[[unread:watched-topics]]',
+		url: url + '/watched',
+		selected: filter === 'watched',
+		filter: 'watched',
+	}, {
+		name: '[[unread:unreplied-topics]]',
+		url: url + '/unreplied',
+		selected: filter === 'unreplied',
+		filter: 'unreplied',
+	}];
+};
+
 helpers.notAllowed = function (req, res, error) {
 	plugins.fireHook('filter:helpers.notAllowed', {
 		req: req,
