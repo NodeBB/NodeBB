@@ -233,9 +233,7 @@ function saveFileToLocal(uploadedFile, uid, callback) {
 				path: upload.path,
 				name: uploadedFile.name,
 			};
-			if (plugins.hasListeners('filter:uploadStored')) {
-				plugins.fireHook('filter:uploadStored', { uploadedFile: uploadedFile, storedFile: storedFile }, next);
-			}
+			plugins.fireHook('filter:uploadStored', { uploadedFile: uploadedFile, storedFile: storedFile }, next);
 		},
 		function (data, next) {
 			next(null, data.storedFile);
