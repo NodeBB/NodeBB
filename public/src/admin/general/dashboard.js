@@ -117,7 +117,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 
 		updateRegisteredGraph(data.onlineRegisteredCount, data.onlineGuestCount);
 		updatePresenceGraph(data.users);
-		updateTopicsGraph(data.topics);
+		updateTopicsGraph(data.topTenTopics);
 
 		$('#active-users').translateHtml(html);
 	};
@@ -444,39 +444,36 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 	}
 
 	function updateTopicsGraph(topics) {
-		if (!Object.keys(topics).length) {
-			topics = { 0: {
+		if (!topics.length) {
+			topics = [{
 				title: 'No users browsing',
-				value: 1,
-			} };
+				count: 1,
+			}];
 		}
-
-		var tids = Object.keys(topics);
 
 		graphs.topics.data.labels = [];
 		graphs.topics.data.datasets[0].data = [];
 		graphs.topics.data.datasets[0].backgroundColor = [];
 		graphs.topics.data.datasets[0].hoverBackgroundColor = [];
 
-		for (var i = 0, ii = tids.length; i < ii; i += 1) {
-			graphs.topics.data.labels.push(topics[tids[i]].title);
-			graphs.topics.data.datasets[0].data.push(topics[tids[i]].value);
+		topics.forEach(function (topic, i) {
+			graphs.topics.data.labels.push(topic.title);
+			graphs.topics.data.datasets[0].data.push(topic.count);
 			graphs.topics.data.datasets[0].backgroundColor.push(topicColors[i]);
 			graphs.topics.data.datasets[0].hoverBackgroundColor.push(lighten(topicColors[i], 10));
-		}
+		});
 
 		function buildTopicsLegend() {
 			var legend = $('#topics-legend').html('');
 
-			for (var i = 0, ii = tids.length; i < ii; i += 1) {
-				var topic = topics[tids[i]];
-				var	label = topic.value === '0' ? topic.title : '<a title="' + topic.title + '"href="' + RELATIVE_PATH + '/topic/' + tids[i] + '" target="_blank"> ' + topic.title + '</a>';
+			topics.forEach(function (topic, i) {
+				var	label = topic.count === '0' ? topic.title : '<a title="' + topic.title + '"href="' + RELATIVE_PATH + '/topic/' + topic.tid + '" target="_blank"> ' + topic.title + '</a>';
 
 				legend.append('<li>' +
 					'<div style="background-color: ' + topicColors[i] + ';"></div>' +
 					'<span>' + label + '</span>' +
 					'</li>');
-			}
+			});
 		}
 
 		buildTopicsLegend();

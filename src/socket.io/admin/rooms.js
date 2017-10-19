@@ -89,7 +89,7 @@ SocketRooms.getAll = function (socket, data, callback) {
 
 	var topTenTopics = [];
 	Object.keys(totals.topics).forEach(function (tid) {
-		topTenTopics.push({ tid: tid, count: totals.topics[tid].count });
+		topTenTopics.push({ tid: tid, count: totals.topics[tid].count || 0 });
 	});
 
 	topTenTopics = topTenTopics.sort(function (a, b) {
@@ -105,13 +105,11 @@ SocketRooms.getAll = function (socket, data, callback) {
 			topics.getTopicsFields(topTenTids, ['title'], next);
 		},
 		function (titles, next) {
-			totals.topics = {};
-			topTenTopics.forEach(function (topic, index) {
-				totals.topics[topic.tid] = {
-					value: topic.count || 0,
-					title: String(titles[index].title),
-				};
+			totals.topTenTopics = topTenTopics.map(function (topic, index) {
+				topic.title = titles[index].title;
+				return topic;
 			});
+
 			next(null, totals);
 		},
 	], callback);

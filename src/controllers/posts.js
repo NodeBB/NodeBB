@@ -26,11 +26,11 @@ postsController.redirectToPost = function (req, res, next) {
 			}, next);
 		},
 		function (results, next) {
-			if (!results.canRead) {
-				return helpers.notAllowed(req, res);
-			}
 			if (!results.path) {
 				return next();
+			}
+			if (!results.canRead) {
+				return helpers.notAllowed(req, res);
 			}
 			helpers.redirect(res, results.path);
 		},

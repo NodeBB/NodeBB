@@ -125,6 +125,8 @@ module.exports = function (Topics) {
 
 				if (params.filter === 'watched') {
 					Topics.filterWatchedTids(tids, uid, next);
+				} else if (params.filter === 'unreplied') {
+					Topics.filterUnrepliedTids(tids, next);
 				} else {
 					next(null, tids);
 				}
@@ -385,6 +387,20 @@ module.exports = function (Topics) {
 			function (scores, next) {
 				tids = tids.filter(function (tid, index) {
 					return tid && !scores[index];
+				});
+				next(null, tids);
+			},
+		], callback);
+	};
+
+	Topics.filterUnrepliedTids = function (tids, callback) {
+		async.waterfall([
+			function (next) {
+				db.sortedSetScores('topics:posts', tids, next);
+			},
+			function (scores, next) {
+				tids = tids.filter(function (tid, index) {
+					return tid && scores[index] <= 1;
 				});
 				next(null, tids);
 			},

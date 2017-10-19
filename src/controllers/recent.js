@@ -13,8 +13,6 @@ var pagination = require('../pagination');
 
 var recentController = module.exports;
 
-var validFilter = { '': true, new: true, watched: true };
-
 recentController.get = function (req, res, next) {
 	var page = parseInt(req.query.page, 10) || 1;
 	var stop = 0;
@@ -23,7 +21,8 @@ recentController.get = function (req, res, next) {
 	var filter = req.params.filter || '';
 	var categoryData;
 	var rssToken;
-	if (!validFilter[filter]) {
+
+	if (!helpers.validFilters[filter]) {
 		return next();
 	}
 
@@ -62,22 +61,7 @@ recentController.get = function (req, res, next) {
 				data.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
 			}
 			data.title = '[[pages:recent]]';
-			data.filters = [{
-				name: '[[unread:all-topics]]',
-				url: 'recent',
-				selected: filter === '',
-				filter: '',
-			}, {
-				name: '[[unread:new-topics]]',
-				url: 'recent/new',
-				selected: filter === 'new',
-				filter: 'new',
-			}, {
-				name: '[[unread:watched-topics]]',
-				url: 'recent/watched',
-				selected: filter === 'watched',
-				filter: 'watched',
-			}];
+			data.filters = helpers.buildFilters('recent', filter);
 
 			data.selectedFilter = data.filters.find(function (filter) {
 				return filter && filter.selected;

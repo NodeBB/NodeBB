@@ -61,6 +61,8 @@ module.exports = function (Topics) {
 					Topics.filterWatchedTids(tids, uid, next);
 				} else if (filter === 'new') {
 					Topics.filterNewTids(tids, uid, next);
+				} else if (filter === 'unreplied') {
+					Topics.filterUnrepliedTids(tids, next);
 				} else {
 					Topics.filterNotIgnoredTids(tids, uid, next);
 				}

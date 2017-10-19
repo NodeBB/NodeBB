@@ -13,8 +13,6 @@ var helpers = require('./helpers');
 
 var unreadController = module.exports;
 
-var validFilter = { '': true, new: true, watched: true };
-
 unreadController.get = function (req, res, next) {
 	var page = parseInt(req.query.page, 10) || 1;
 	var results;
@@ -24,7 +22,7 @@ unreadController.get = function (req, res, next) {
 
 	async.waterfall([
 		function (next) {
-			plugins.fireHook('filter:unread.getValidFilters', { filters: validFilter }, next);
+			plugins.fireHook('filter:unread.getValidFilters', { filters: Object.assign({}, helpers.validFilters) }, next);
 		},
 		function (data, _next) {
 			if (!data.filters[filter]) {
@@ -72,22 +70,7 @@ unreadController.get = function (req, res, next) {
 			}
 
 			data.title = '[[pages:unread]]';
-			data.filters = [{
-				name: '[[unread:all-topics]]',
-				url: 'unread',
-				selected: filter === '',
-				filter: '',
-			}, {
-				name: '[[unread:new-topics]]',
-				url: 'unread/new',
-				selected: filter === 'new',
-				filter: 'new',
-			}, {
-				name: '[[unread:watched-topics]]',
-				url: 'unread/watched',
-				selected: filter === 'watched',
-				filter: 'watched',
-			}];
+			data.filters = helpers.buildFilters('unread', filter);
 
 			data.selectedFilter = data.filters.find(function (filter) {
 				return filter && filter.selected;
@@ -105,10 +88,10 @@ unreadController.unreadTotal = function (req, res, next) {
 
 	async.waterfall([
 		function (next) {
-			plugins.fireHook('filter:unread.getValidFilters', { filters: validFilter }, next);
+			plugins.fireHook('filter:unread.getValidFilters', { filters: Object.assign({}, helpers.validFilters) }, next);
 		},
 		function (data, _next) {
-			if (!validFilter[filter]) {
+			if (!data.filters[filter]) {
 				return next();
 			}
 			topics.getTotalUnread(req.uid, filter, _next);

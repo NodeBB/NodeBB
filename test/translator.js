@@ -6,8 +6,6 @@ var shim = require('../public/src/modules/translator.js');
 var Translator = shim.Translator;
 var db = require('./mocks/databasemock');
 
-require('../src/languages').init(function () {});
-
 describe('Translator shim', function () {
 	describe('.translate()', function () {
 		it('should translate correctly', function (done) {
