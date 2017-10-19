@@ -7,10 +7,6 @@ var async = require('async');
 var Languages = module.exports;
 var languagesPath = path.join(__dirname, '../build/public/language');
 
-Languages.init = function (next) {
-	next();
-};
-
 Languages.get = function (language, namespace, callback) {
 	fs.readFile(path.join(languagesPath, language, namespace + '.json'), { encoding: 'utf-8' }, function (err, data) {
 		if (err) {

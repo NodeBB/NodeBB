@@ -105,7 +105,6 @@ function initializeNodeBB(callback) {
 		function (next) {
 			async.series([
 				meta.sounds.addUploads,
-				languages.init,
 				meta.blacklist.load,
 				flags.init,
 			], next);
