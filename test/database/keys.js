@@ -170,4 +170,69 @@ describe('Key methods', function () {
 			});
 		});
 	});
+
+	describe('type', function () {
+		it('should return null if key does not exist', function (done) {
+			db.type('doesnotexist', function (err, type) {
+				assert.ifError(err);
+				assert.strictEqual(type, null);
+				done();
+			});
+		});
+
+		it('should return hash as type', function (done) {
+			db.setObject('typeHash', { foo: 1 }, function (err) {
+				assert.ifError(err);
+				db.type('typeHash', function (err, type) {
+					assert.ifError(err);
+					assert.equal(type, 'hash');
+					done();
+				});
+			});
+		});
+
+		it('should return zset as type', function (done) {
+			db.sortedSetAdd('typeZset', 123, 'value1', function (err) {
+				assert.ifError(err);
+				db.type('typeZset', function (err, type) {
+					assert.ifError(err);
+					assert.equal(type, 'zset');
+					done();
+				});
+			});
+		});
+
+		it('should return set as type', function (done) {
+			db.setAdd('typeSet', 'value1', function (err) {
+				assert.ifError(err);
+				db.type('typeSet', function (err, type) {
+					assert.ifError(err);
+					assert.equal(type, 'set');
+					done();
+				});
+			});
+		});
+
+		it('should return list as type', function (done) {
+			db.listAppend('typeList', 'value1', function (err) {
+				assert.ifError(err);
+				db.type('typeList', function (err, type) {
+					assert.ifError(err);
+					assert.equal(type, 'list');
+					done();
+				});
+			});
+		});
+
+		it('should return string as type', function (done) {
+			db.set('typeString', 'value1', function (err) {
+				assert.ifError(err);
+				db.type('typeString', function (err, type) {
+					assert.ifError(err);
+					assert.equal(type, 'string');
+					done();
+				});
+			});
+		});
+	});
 });

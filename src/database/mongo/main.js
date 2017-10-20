@@ -79,6 +79,28 @@ module.exports = function (db, module) {
 		});
 	};
 
+	module.type = function (key, callback) {
+		db.collection('objects').findOne({ _key: key }, function (err, data) {
+			if (err) {
+				return callback(err);
+			}
+			if (!data) {
+				return callback(null, null);
+			}
+			var keys = Object.keys(data);
+			if (keys.length === 4 && data.hasOwnProperty('_key') && data.hasOwnProperty('score') && data.hasOwnProperty('value')) {
+				return callback(null, 'zset');
+			} else if (keys.length === 3 && data.hasOwnProperty('_key') && data.hasOwnProperty('members')) {
+				return callback(null, 'set');
+			} else if (keys.length === 3 && data.hasOwnProperty('_key') && data.hasOwnProperty('array')) {
+				return callback(null, 'list');
+			} else if (keys.length === 3 && data.hasOwnProperty('_key') && data.hasOwnProperty('value')) {
+				return callback(null, 'string');
+			}
+			callback(null, 'hash');
+		});
+	};
+
 	module.expire = function (key, seconds, callback) {
 		module.expireAt(key, Math.round(Date.now() / 1000) + seconds, callback);
 	};
