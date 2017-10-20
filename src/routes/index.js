@@ -188,7 +188,7 @@ module.exports = function (app, middleware, hotswapIds, callback) {
 	];
 	app.use(relativePath, function (req, res, next) {
 		if (deprecatedPaths.some(function (path) { return req.path.startsWith(path); })) {
-			winston.verbose('[deprecated] Accessing `' + req.path.slice(1) + '` from `/` is deprecated. ' +
+			winston.warn('[deprecated] Accessing `' + req.path.slice(1) + '` from `/` is deprecated to be REMOVED in NodeBB v1.7.0. ' +
 				'Use `/assets' + req.path + '` to access this file.');
 			res.redirect(relativePath + '/assets' + req.path + '?' + meta.config['cache-buster']);
 		} else {
@@ -197,7 +197,7 @@ module.exports = function (app, middleware, hotswapIds, callback) {
 	});
 	// DEPRECATED
 	app.use(relativePath + '/api/language', function (req, res) {
-		winston.verbose('[deprecated] Accessing language files from `/api/language` is deprecated. ' +
+		winston.warn('[deprecated] Accessing language files from `/api/language` is deprecated to be REMOVED in NodeBB v1.7.0. ' +
 			'Use `/assets/language' + req.path + '.json` for prefetch paths.');
 		res.redirect(relativePath + '/assets/language' + req.path + '.json?' + meta.config['cache-buster']);
 	});
