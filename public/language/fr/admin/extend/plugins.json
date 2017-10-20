@@ -5,11 +5,11 @@
 	"out-of-date": "Périmé",
 	"none-found": "Aucun plugin trouvé",
 	"none-active": "Aucun plugin actif",
-	"find-plugins": "Plugins trouvés",
+	"find-plugins": "Chercher des plugins",
 
 	"plugin-search": "Recherche de plugin",
 	"plugin-search-placeholder": "Rechercher un plugin…",
-	"reorder-plugins": "Re-ordonner les plugins",
+	"reorder-plugins": "Réordonner les plugins",
 	"order-active": "Trier les plugins actifs",
 	"dev-interested": "Êtes-vous intéressés par l'écriture de plugins pour NodeBB ?",
 	"docs-info": "La documentation complète concernant l’écriture de plugin peut être trouvée sur le<a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">Portail Documentation NodeBB</a>.",
@@ -47,5 +47,5 @@
 
 	"license.title": "Information sur la licence du plugin",
 	"license.intro": "Le plugin <strong>%1</strong> est sous licence %2. Veuillez lire et comprendre les termes de la licence avant d’activer ce plugin.",
-	"license.cta": "Voulez-vous continuer l’activation de ce plugin ?"
+	"license.cta": "Voulez-vous poursuivre en activant ce plugin ?"
 }
