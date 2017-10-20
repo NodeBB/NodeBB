@@ -4,6 +4,7 @@ var async = require('async');
 var path = require('path');
 var semver = require('semver');
 var readline = require('readline');
+var winston = require('winston');
 
 var db = require('./database');
 var file = require('../src/file');
@@ -34,6 +35,37 @@ Upgrade.getAll = function (callback) {
 
 				return semver.compare(versionA, versionB);
 			}));
+		},
+		async.apply(Upgrade.appendPluginScripts),
+	], callback);
+};
+
+Upgrade.appendPluginScripts = function (files, callback) {
+	async.waterfall([
+		// Find all active plugins
+		async.apply(db.getSortedSetRange.bind(db), 'plugins:active', 0, -1),
+
+		// Read plugin.json and check for upgrade scripts
+		function (plugins, next) {
+			async.each(plugins, function (plugin, next) {
+				var configPath = path.join(__dirname, '../node_modules', plugin, 'plugin.json');
+				try {
+					var pluginConfig = require(configPath);
+					if (pluginConfig.hasOwnProperty('upgrades') && Array.isArray(pluginConfig.upgrades)) {
+						pluginConfig.upgrades.forEach(function (script) {
+							files.push(path.join(path.dirname(configPath), script));
+						});
+					}
+
+					next();
+				} catch (e) {
+					winston.warn('[upgrade/appendPluginScripts] Unable to read plugin.json for plugin `' + plugin + '`. Skipping.');
+					process.nextTick(next);
+				}
+			}, function (err) {
+				// Return list of upgrade scripts for continued processing
+				next(err, files);
+			});
 		},
 	], callback);
 };
