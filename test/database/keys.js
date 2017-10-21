@@ -12,15 +12,15 @@ describe('Key methods', function () {
 
 	it('should set a key without error', function (done) {
 		db.set('testKey', 'testValue', function (err) {
-			assert.equal(err, null);
-			assert.equal(arguments.length, 1);
+			assert.ifError(err);
+			assert(arguments.length < 2);
 			done();
 		});
 	});
 
 	it('should get a key without error', function (done) {
 		db.get('testKey', function (err, value) {
-			assert.equal(err, null);
+			assert.ifError(err);
 			assert.equal(arguments.length, 2);
 			assert.strictEqual(value, 'testValue');
 			done();
@@ -29,7 +29,7 @@ describe('Key methods', function () {
 
 	it('should return true if key exist', function (done) {
 		db.exists('testKey', function (err, exists) {
-			assert.equal(err, null);
+			assert.ifError(err);
 			assert.equal(arguments.length, 2);
 			assert.strictEqual(exists, true);
 			done();
@@ -38,7 +38,7 @@ describe('Key methods', function () {
 
 	it('should return false if key does not exist', function (done) {
 		db.exists('doesnotexist', function (err, exists) {
-			assert.equal(err, null);
+			assert.ifError(err);
 			assert.equal(arguments.length, 2);
 			assert.strictEqual(exists, false);
 			done();
@@ -47,11 +47,11 @@ describe('Key methods', function () {
 
 	it('should delete a key without error', function (done) {
 		db.delete('testKey', function (err) {
-			assert.equal(err, null);
-			assert.equal(arguments.length, 1);
+			assert.ifError(err);
+			assert(arguments.length < 2);
 
 			db.get('testKey', function (err, value) {
-				assert.equal(err, null);
+				assert.ifError(err);
 				assert.equal(false, !!value);
 				done();
 			});
@@ -60,10 +60,10 @@ describe('Key methods', function () {
 
 	it('should return false if key was deleted', function (done) {
 		db.delete('testKey', function (err) {
-			assert.equal(err, null);
-			assert.equal(arguments.length, 1);
+			assert.ifError(err);
+			assert(arguments.length < 2);
 			db.exists('testKey', function (err, exists) {
-				assert.equal(err, null);
+				assert.ifError(err);
 				assert.strictEqual(exists, false);
 				done();
 			});
@@ -83,7 +83,7 @@ describe('Key methods', function () {
 				return done(err);
 			}
 			db.deleteAll(['key1', 'key2'], function (err) {
-				assert.equal(err, null);
+				assert.ifError(err);
 				assert.equal(arguments.length, 1);
 				async.parallel({
 					key1exists: function (next) {
@@ -93,7 +93,7 @@ describe('Key methods', function () {
 						db.exists('key2', next);
 					},
 				}, function (err, results) {
-					assert.equal(err, null);
+					assert.ifError(err);
 					assert.equal(results.key1exists, false);
 					assert.equal(results.key2exists, false);
 					done();
@@ -124,7 +124,7 @@ describe('Key methods', function () {
 						db.isSortedSetMember('deletezset', 'value2', next);
 					},
 				}, function (err, results) {
-					assert.equal(err, null);
+					assert.ifError(err);
 					assert.equal(results.key1exists, false);
 					assert.equal(results.key2exists, false);
 					done();
@@ -136,7 +136,7 @@ describe('Key methods', function () {
 	describe('increment', function () {
 		it('should initialize key to 1', function (done) {
 			db.increment('keyToIncrement', function (err, value) {
-				assert.equal(err, null);
+				assert.ifError(err);
 				assert.strictEqual(parseInt(value, 10), 1);
 				done();
 			});
@@ -144,7 +144,7 @@ describe('Key methods', function () {
 
 		it('should increment key to 2', function (done) {
 			db.increment('keyToIncrement', function (err, value) {
-				assert.equal(err, null);
+				assert.ifError(err);
 				assert.strictEqual(parseInt(value, 10), 2);
 				done();
 			});
@@ -158,11 +158,11 @@ describe('Key methods', function () {
 					return done(err);
 				}
 				db.rename('keyOldName', 'keyNewName', function (err) {
-					assert.equal(err, null);
-					assert.equal(arguments.length, 1);
+					assert.ifError(err);
+					assert(arguments.length < 2);
 
 					db.get('keyNewName', function (err, value) {
-						assert.equal(err, null);
+						assert.ifError(err);
 						assert.equal(value, 'renamedKeyValue');
 						done();
 					});

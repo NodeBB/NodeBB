@@ -19,8 +19,8 @@ describe('Hash methods', function () {
 	describe('setObject()', function () {
 		it('should create a object', function (done) {
 			db.setObject('testObject1', { foo: 'baris', bar: 99 }, function (err) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 1);
+				assert.ifError(err);
+				assert(arguments.length < 2);
 				done();
 			});
 		});
@@ -57,16 +57,16 @@ describe('Hash methods', function () {
 	describe('setObjectField()', function () {
 		it('should create a new object with field', function (done) {
 			db.setObjectField('testObject2', 'name', 'ginger', function (err) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 1);
+				assert.ifError(err);
+				assert(arguments.length < 2);
 				done();
 			});
 		});
 
 		it('should add a new field to an object', function (done) {
 			db.setObjectField('testObject2', 'type', 'cat', function (err) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 1);
+				assert.ifError(err, null);
+				assert(arguments.length < 2);
 				done();
 			});
 		});
@@ -305,10 +305,10 @@ describe('Hash methods', function () {
 
 		it('should delete an objects field', function (done) {
 			db.deleteObjectField('testObject10', 'delete', function (err) {
-				assert.equal(err, null);
-				assert.equal(arguments.length, 1);
+				assert.ifError(err);
+				assert(arguments.length < 2);
 				db.isObjectField('testObject10', 'delete', function (err, isField) {
-					assert.equal(err, null);
+					assert.ifError(err);
 					assert.equal(isField, false);
 					done();
 				});
@@ -318,7 +318,7 @@ describe('Hash methods', function () {
 		it('should delete multiple fields of the object', function (done) {
 			db.deleteObjectFields('testObject10', ['delete1', 'delete2'], function (err) {
 				assert.ifError(err);
-				assert.equal(arguments.length, 1);
+				assert(arguments.length < 2);
 				async.parallel({
 					delete1: async.apply(db.isObjectField, 'testObject10', 'delete1'),
 					delete2: async.apply(db.isObjectField, 'testObject10', 'delete2'),

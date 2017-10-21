@@ -13,7 +13,11 @@ module.exports = function (db, module) {
 	module.emptydb = function (callback) {
 		callback = callback || helpers.noop;
 		db.collection('objects').remove({}, function (err) {
-			callback(err);
+			if (err) {
+				return callback(err);
+			}
+			module.resetObjectCache();
+			callback();
 		});
 	};
 
@@ -32,7 +36,11 @@ module.exports = function (db, module) {
 			return callback();
 		}
 		db.collection('objects').remove({ _key: key }, function (err) {
-			callback(err);
+			if (err) {
+				return callback(err);
+			}
+			module.delObjectCache(key);
+			callback();
 		});
 	};
 
@@ -42,7 +50,15 @@ module.exports = function (db, module) {
 			return callback();
 		}
 		db.collection('objects').remove({ _key: { $in: keys } }, function (err) {
-			callback(err);
+			if (err) {
+				return callback(err);
+			}
+
+			keys.forEach(function (key) {
+				module.delObjectCache(key);
+			});
+
+			callback(null);
 		});
 	};
 
@@ -75,7 +91,12 @@ module.exports = function (db, module) {
 	module.rename = function (oldKey, newKey, callback) {
 		callback = callback || helpers.noop;
 		db.collection('objects').update({ _key: oldKey }, { $set: { _key: newKey } }, { multi: true }, function (err) {
-			callback(err);
+			if (err) {
+				return callback(err);
+			}
+			module.delObjectCache(oldKey);
+			module.delObjectCache(newKey);
+			callback();
 		});
 	};
 
