@@ -1,6 +1,6 @@
 {
-	"alert.confirm-reload": "Está seguro que desea recargar NodeBB?",
-	"alert.confirm-restart": "Está seguro que desea reiniciar NodeBB?",
+	"alert.confirm-reload": "¿Está seguro que desea recargar NodeBB?",
+	"alert.confirm-restart": "¿Está seguro que desea reiniciar NodeBB?",
 
 	"acp-title": "%1 | Panel de control de administrador NodeBB",
 	"settings-header-contents": "Contenidos"
