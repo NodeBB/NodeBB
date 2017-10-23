@@ -1,15 +1,15 @@
 {
 	"posts": "Posty",
 	"allow-files": "Zezwalaj użytkownikom wysyłać pliki",
-	"private": "Rób wysyłane pliki prywatnymi",
-	"max-image-width": "Zmniejszaj obrazy do specyficznej szerokości (w pikselach)",
+	"private": "Oznaczaj wysyłane pliki jako prywatne",
+	"max-image-width": "Zmniejszaj obrazy do zadanej szerokości (w pikselach)",
 	"max-image-width-help": "(w pikselach, domyślnie: 760px; ustaw 0, aby wyłączyć)",
 	"max-file-size": "Maksymalny rozmiar plików (w KiB)",
-	"max-file-size-help": "(w kilobajtach, domyślnie: 2,048 KiB)",
-	"allow-topic-thumbnails": "Zezwalaj użytkownikom na wysyłanie obrazków tematów",
+	"max-file-size-help": "(w kilobajtach, domyślnie: 2048 KiB)",
+	"allow-topic-thumbnails": "Zezwalaj użytkownikom na ustawianie miniaturek tematów",
 	"topic-thumb-size": "Rozmiar miniatury tematu",
 	"allowed-file-extensions": "Dozwolone typy plików",
-	"allowed-file-extensions-help": "Tutaj wprowadź oddzielone kropką rozszerzenia plików (np. <code>pdf,xls,doc</code>). Pusta lista oznacza, że wszystkie rozszerzenia są dozwolone.",
+	"allowed-file-extensions-help": "Wprowadź rozdzielone przecinkami rozszerzenia plików (np. <code>pdf,xls,doc</code>). Pusta lista oznacza, że wszystkie rozszerzenia są dozwolone.",
 	"profile-avatars": "Profilowe awatary",
 	"allow-profile-image-uploads": "Zezwalaj użytkownikom na ładowanie obrazów profilowych",
 	"convert-profile-image-png": "Konwertuj przesłane obrazy profilowe na PNG",
@@ -20,9 +20,9 @@
 	"max-profile-image-size": "Maksymalny rozmiar obrazka profilowego",
 	"max-profile-image-size-help": "(w kilobajtach, domyślnie: 256 KiB)",
 	"max-cover-image-size": "Maksymalny rozmiar obrazka profilowego",
-	"max-cover-image-size-help": "(w kilobajtach, domyślnie: 2,048 KiB)",
+	"max-cover-image-size-help": "(w kilobajtach, domyślnie: 2048 KiB)",
 	"keep-all-user-images": "Zachowaj stare wersje awatarów oraz okładek profili na serwerze",
 	"profile-covers": "Okładki profili",
 	"default-covers": "Domyślne obrazy profilowe",
-	"default-covers-help": "Dodaj udzieloną kropkami listę domyślnych obrazów dla kont użytkowników, którzy nie wysłali swoich własnych obrazów profilowych."
+	"default-covers-help": "Dodaj rozdzieloną przecinkami listę domyślnych obrazów dla kont użytkowników, którzy nie wysłali swoich własnych obrazów profilowych."
 }

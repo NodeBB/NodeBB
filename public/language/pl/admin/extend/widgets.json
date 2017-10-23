@@ -8,12 +8,12 @@
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
 	"container.panel": "Panel",
-	"container.panel-header": "Panel nagłówka",
+	"container.panel-header": "Nagłówek panelu",
 	"container.panel-body": "Zawartość panelu",
 	"container.alert": "Alarm",
 
 	"alert.confirm-delete": "Czy na pewno chcesz usunąć ten widget?",
 	"alert.updated": "Widżety zaktualizowane",
-	"alert.update-success": "Pomyślnie widżety zostały zaktualizowane"
+	"alert.update-success": "Widżety zostały pomyślnie zaktualizowane"
 
 }

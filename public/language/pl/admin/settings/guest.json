@@ -1,6 +1,6 @@
 {
-	"handles": "Uchwyty gości",
-	"handles.enabled": "Zezwalaj na uchwyty gości",
+	"handles": "Podpisywanie się gości",
+	"handles.enabled": "Zezwalaj gościom na podpisywanie się",
 	"handles.enabled-help": "Ta opcja udostępnia gościom nowe pole, które umożliwia wybranie nazwy, pod którą będą publikowane ich posty. Jeśli wyłączone, będą po prostu nazywani \"Gość\"",
 	"privileges": "Uprawnienia gości",
 	"privileges.can-search": "Zezwalaj gościom na szukanie bez logowania",

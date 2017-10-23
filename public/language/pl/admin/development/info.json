@@ -1,7 +1,7 @@
 {
 	"you-are-on": "Informacja - Jesteś na  <strong>%1:%2</strong>",
-	"nodes-responded": "%1 nodes odpowiedziały w ciągu %2ms!",
-	"host": "Host",
+	"nodes-responded": "%1 węzły odpowiedziały w ciągu %2ms!",
+	"host": "host",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "online",

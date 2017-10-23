@@ -1,7 +1,7 @@
 {
 	"maintenance-mode": "Tryb konserwacji",
 	"maintenance-mode.help": "Kiedy forum jest w trybie konserwacji, wszystkie żądania będą przekierowane do statycznej strony oczekiwania. Administratorzy nie są objęci tym przekierowaniem i mogą normalnie korzystać ze strony.",
-	"maintenance-mode.message": "Wiadomość podczas konserwacji",
+	"maintenance-mode.message": "Komunikat na ekranie konserwacji",
 	"headers": "Nagłówek",
 	"headers.allow-from": "Ustaw ALLOW-FROM, aby umieścić NodeBB w ramce iFrame",
 	"headers.powered-by": "Dopasuj nagłówek \"Powered By\" wysyłany przez NodeBB",
@@ -10,7 +10,7 @@
 	"headers.acam": "Access-Control-Allow-Methods",
 	"headers.acah": "Access-Control-Allow-Headers",
 	"traffic-management": "Zarządzanie ruchem",
-	"traffic.help": "NodeBB jest dostarczane z modułem, który automatycznie blokuje żądania w sytuacjach wysokiego ruchu. Tutaj możesz zmienić te ustawienia, ale ustawienia początkowe są dobrym punktem wyjścia w większości sytuacji.",
+	"traffic.help": "System NodeBB jest dostarczany z modułem, który automatycznie blokuje żądania w przypadku nadmiernego ruchu. Tutaj możesz zmienić te ustawienia, ale ustawienia początkowe są dobrym punktem wyjścia w większości sytuacji.",
 	"traffic.enable": "Włącz zarządzanie ruchem",
 	"traffic.event-lag": "Próg opóźnienia pętli zdarzeń (w milisekundach)",
 	"traffic.event-lag-help": "Obniżenie tej wartości spowoduje krótsze ładowanie stron, ale równocześnie wyświetli komunikat \"excessive load\" dla większej liczby użytkowników (wymagany restart).",

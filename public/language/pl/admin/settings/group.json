@@ -1,8 +1,8 @@
 {
 	"general": "Ogólne",
-	"private-groups": "Prywatne grupy",
-	"private-groups.help": "Jeśli włączone, dołączenie do grup wymaga zatwierdzenia przez właściciela grupy <em>(domyślnie: włączone)</em>",
-	"private-groups.warning": "<strong>Uwaga!</strong>Jeśli ta opcja jest wyłączona i masz prywatne grupy, automatycznie stają się one publiczne.",
+	"private-groups": "Grupy prywatne",
+	"private-groups.help": "Jeśli włączone, dołączenie do grupy wymaga zatwierdzenia przez właściciela grupy <em>(domyślnie: włączone)</em>",
+	"private-groups.warning": "<strong>Uwaga!</strong> Jeśli ta opcja jest wyłączona i masz prywatne grupy, automatycznie stają się one publiczne.",
 	"allow-creation": "Zezwalaj na tworzeni grup",
 	"allow-creation-help": "Jeśli włączone, użytkownicy mogą tworzyć grupy <em>(domyślnie: wyłączone)</em>",
 	"max-name-length": "Maksymalna długość nazwy grupy",
