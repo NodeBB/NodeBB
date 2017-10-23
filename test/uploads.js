@@ -77,6 +77,14 @@ describe('Upload Controllers', function () {
 			});
 		});
 
+		it('should fail to upload an image to a post with invalid cid', function (done) {
+			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/test.png'), { cid: '0' }, jar, csrf_token, function (err, res, body) {
+				assert.equal(res.statusCode, 500);
+				assert.equal(body.error, '[[error:category-not-selected]]')
+				done();
+			});
+		});
+
 		it('should upload an image to a post', function (done) {
 			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/test.png'), { cid: cid }, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);

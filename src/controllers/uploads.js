@@ -37,6 +37,9 @@ uploadsController.upload = function (req, res, filesIterator) {
 
 uploadsController.uploadPost = function (req, res, next) {
 	uploadsController.upload(req, res, function (uploadedFile, next) {
+		if (!parseInt(req.body.cid, 10)) {
+			return next(new Error('[[error:category-not-selected]]'));
+		}
 		var isImage = uploadedFile.type.match(/image./);
 		if (isImage) {
 			uploadAsImage(req, uploadedFile, next);
