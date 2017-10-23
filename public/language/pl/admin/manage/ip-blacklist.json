@@ -1,12 +1,12 @@
 {
-	"lead": "Tutaj skonfigurują swoją czarną listę IP.",
-	"description": "Czasami ban konta użytkownika nie jest wystarczającym odstraszaczem i wtedy ograniczanie dostępu do forum dla konkretnego adresu IP lub zakresu adresów IP, są najlepszymi metodami ochrony forum. W tym przypadkach, możesz dodać adresy UP lub całe bloki CIDR do tej czarnej listy i będą one ograniczały możliwość logowania na forum lub rejestracji nowych kont.",
+	"lead": "Tutaj skonfiguruj swoją czarną listę IP.",
+	"description": "Czasami ban konta użytkownika nie jest wystarczającym zabezpieczeniem. Wtedy ograniczanie dostępu do forum dla konkretnego adresu IP lub zakresu adresów IP jest najlepszą metodą ochrony forum. W tym przypadku możesz dodać adresy IP lub całe bloki CIDR do czarnej listy i będą one miały zablokowaną możliwość logowania na forum lub rejestracji nowych kont.",
 	"active-rules": "Aktywne reguły",
 	"validate": "Sprawdzanie czarnej listy",
 	"apply": "Zastosuj czarną listę",
 	"hints": "Podpowiedzi składni",
 	"hint-1": "W każdej linii zdefiniuj pojedynczy adres IP. Możesz dodać bloki IP pod warunkiem, że spełniają one wymagania formatu CIDR (np. <code>192.168.100.0/22</code>).",
-	"hint-2": "Możesz dodawać komentarze porze rozpoczęcie linii symbolem <code>#</code>.",
+	"hint-2": "Możesz dodawać komentarze poprzez rozpoczęcie linii symbolem <code>#</code>.",
 
 	"validate.x-valid": "<strong>%1</strong> z <strong>%2</strong> reguła(-u) są poprawne.",
 	"validate.x-invalid": "Następujące <strong>%1</strong> reguły są niewłaściwe:",

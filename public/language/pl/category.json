@@ -10,11 +10,11 @@
     "share_this_category": "Udostępnij tę kategorię",
     "watch": "Obserwuj",
     "ignore": "Ignoruj",
-    "watching": "Obserwowanie",
-    "ignoring": "Ignorowanie",
-    "watching.description": "Pokazuj tematy jako nieprzeczytane",
-    "ignoring.description": "Nie pokazuj tematów jako nieprzeczytane",
-    "watch.message": "Włączyłeś powiadomienia dla tej kategorii oraz subkategorii.",
-    "ignore.message": "Wyłączyłeś powiadomienia dla tej kategorii oraz subkategorii.",
+    "watching": "Obserwowane",
+    "ignoring": "Ignorowane",
+    "watching.description": "Pokazuj tematy w nieprzeczytanych",
+    "ignoring.description": "Nie pokazuj tematów w nieprzeczytanych",
+    "watch.message": "Włączyłeś powiadomienia dla tej kategorii oraz wszystkich podkategorii.",
+    "ignore.message": "Wyłączyłeś powiadomienia dla tej kategorii oraz wszystkich podkategorii.",
     "watched-categories": "Obserwowane kategorie"
 }

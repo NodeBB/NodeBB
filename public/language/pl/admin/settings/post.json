@@ -1,11 +1,11 @@
 {
 	"sorting": "Sortowanie postów",
 	"sorting.post-default": "Domyślne sortowanie postów",
-	"sorting.oldest-to-newest": "Najstarsze do Najnowszych",
-	"sorting.newest-to-oldest": "Najnowsze do Najstarszych",
+	"sorting.oldest-to-newest": "Najstarsze do najnowszych",
+	"sorting.newest-to-oldest": "Najnowsze do najstarszych",
 	"sorting.most-votes": "Najwięcej głosów",
 	"sorting.topic-default": "Domyślne sortowanie tematów",
-	"restrictions": "Ograniczenia pistania",
+	"restrictions": "Ograniczenia pisania",
 	"restrictions.post-queue": "Włącz kolejkę postów",
 	"restrictions.post-queue-help": "Włączenie kolejki postów będzie dodawało posty nowych użytkowników do kolejki w celu zatwierdzenia.",
 	"restrictions.seconds-between": "Sekund pomiędzy postami",
@@ -41,7 +41,7 @@
 	"composer": "Ustawienia okna pisania",
 	"composer-help": "Następujące ustawienia zarządzają funkcjonalnością oraz/lub wyglądem okna pisania postów wyświetlanego\n\t\t\t\tużytkownikom kiedy tworzą nowe tematy lub odpowiadają w istniejących.",
 	"composer.show-help": "Pokazuj zakładkę \"Pomoc\"",
-	"composer.enable-plugin-help": "Zezwalaj wtyczką na dodawanie zawartości do zakładki pomocy",
+	"composer.enable-plugin-help": "Zezwalaj wtyczkom na dodawanie zawartości do zakładki pomocy",
 	"composer.custom-help": "Własny tekst pomocy",
 	"ip-tracking": "Śledzenie IP",
 	"ip-tracking.each-post": "Śledź adres IP każdego z postów"

@@ -1,9 +1,9 @@
 {
 	"none": "Twoje forum nie ma jeszcze żadnych tematów z tagami.",
 	"bg-color": "Kolor tła",
-	"text-color": "Kolor Tekstu",
+	"text-color": "Kolor tekstu",
 	"create-modify": "Utwórz oraz modyfikuj tagi",
-	"description": "Wybierz tagi poprzez klikanie oraz/lub przeciąganie, użyj przycisku shift do zaznaczenia wielu.",
+	"description": "Wybierz tagi poprzez klikanie lub przeciąganie, użyj przycisku shift do zaznaczenia wielu.",
 	"create": "Utwórz tag",
 	"modify": "Modyfikuj tagi",
 	"delete": "Usuń zaznaczone tagi",
