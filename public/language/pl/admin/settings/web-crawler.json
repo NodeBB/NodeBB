@@ -5,6 +5,6 @@
 	"disable-rss-feeds": "Wyłącz kanały RSS",
 	"disable-sitemap-xml": "Wyłącz Sitemap.xml",
 	"sitemap-topics": "Liczba tematów do wyświetlenia w mapie strony",
-	"clear-sitemap-cache": "Wyczyść pamięć podręczną map strony",
-	"view-sitemap": "Zobacz mapę strony"
+	"clear-sitemap-cache": "Wyczyść pamięć podręczną mapy strony",
+	"view-sitemap": "Wyświetl mapę strony"
 }

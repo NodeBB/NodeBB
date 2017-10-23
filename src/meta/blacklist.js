@@ -44,8 +44,8 @@ Blacklist.save = function (rules, callback) {
 			db.setObject('ip-blacklist-rules', { rules: rules }, next);
 		},
 		function (next) {
+			Blacklist.load(next);
 			pubsub.publish('blacklist:reload');
-			setImmediate(next);
 		},
 	], callback);
 };

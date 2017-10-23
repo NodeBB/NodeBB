@@ -137,13 +137,13 @@ module.exports = function (db, module) {
 			if (err) {
 				return callback(err);
 			}
-
-			result = result.map(function (item) {
-				return item._key;
+			var map = {};
+			result.forEach(function (item) {
+				map[item._key] = true;
 			});
 
 			result = sets.map(function (set) {
-				return result.indexOf(set) !== -1;
+				return !!map[set];
 			});
 
 			callback(null, result);

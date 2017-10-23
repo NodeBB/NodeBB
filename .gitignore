@@ -58,6 +58,7 @@ tx.exe
 
 ##Coverage output
 coverage
+.nyc_output
 
 build
 *.log

@@ -8,7 +8,7 @@
 	"page-views-seven": "Ostatnie 7 dni",
 	"page-views-thirty": "Ostatnie 30 dni",
 	"page-views-last-day": "Ostatnie 24 godziny",
-	"page-views-custom": "Własna zakres dat",
+	"page-views-custom": "Własny zakres dat",
 	"page-views-custom-start": "Początek zakresu",
 	"page-views-custom-end": "Koniec zakresu",
 	"page-views-custom-help": "Wprowadź zakres dat dla wyświetl strony, które chciałbyś zobaczyć. Jeśli brakuje możliwości wybory daty, akceptowalny format to <code>YYYY-MM-DD</code>",
@@ -33,12 +33,12 @@
 	"restart-required": "Wymagany restart",
 	"search-plugin-installed": "Wyszukiwarka jest zainstalowana",
 	"search-plugin-not-installed": "Wyszukiwarka nie jest zainstalowana",
-	"search-plugin-tooltip": "Zainstaluj wtyczkę wyszukiwania ze strony wtyczek, aby aktywować funkcjonalność szukania",
+	"search-plugin-tooltip": "Zainstaluj wtyczkę wyszukiwania ze strony wtyczek, aby aktywować funkcję szukania",
 
 	"control-panel": "Zarządzanie systemem",
 	"reload": "Odśwież",
 	"restart": "Restart",
-	"restart-warning": "Przeładowanie lub Restart NodeBB spowoduje przerwanie wszystkich istniejących połączeń na kilka sekund.",
+	"restart-warning": "Przeładowanie lub restart NodeBB spowoduje przerwanie wszystkich istniejących połączeń na kilka sekund.",
 	"maintenance-mode": "Tryb konserwacji",
 	"maintenance-mode-title": "Kliknij tutaj aby skonfigurować tryb konserwacji dla NodeBB",
 	"realtime-chart-updates": "Wykresy aktualizowane na żywo",
@@ -60,10 +60,10 @@
 	"recent": "Ostatnie",
 	"unread": "Nieprzeczytane",
 
-	"high-presence-topics": "Tematy wysokiej obecności",
+	"high-presence-topics": "Popularne tematy",
 
 	"graphs.page-views": "Wyświetlenia strony",
-	"graphs.unique-visitors": "Unikalni Użytkownicy",
-	"graphs.registered-users": "Zarejestrowani Użytkownicy",
-	"graphs.anonymous-users": "Anonimowi Użytkownicy"
+	"graphs.unique-visitors": "Unikalni użytkownicy",
+	"graphs.registered-users": "Zarejestrowani użytkownicy",
+	"graphs.anonymous-users": "Anonimowi użytkownicy"
 }

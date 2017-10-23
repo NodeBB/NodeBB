@@ -60,6 +60,12 @@ module.exports = function (redisClient, module) {
 		});
 	};
 
+	module.type = function (key, callback) {
+		redisClient.type(key, function (err, type) {
+			callback(err, type !== 'none' ? type : null);
+		});
+	};
+
 	module.expire = function (key, seconds, callback) {
 		callback = callback || function () {};
 		redisClient.expire(key, seconds, function (err) {
