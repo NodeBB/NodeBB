@@ -12,6 +12,25 @@ var utils = require('./utils');
 
 var file = module.exports;
 
+file.copyFile = function (src, dst, opts, cb) {
+	/* Wrapper for copyFile function with code to handle it not being present. If/When nodejs 8.5 or greater is a baseline requirement/assumption,
+	   this can be pruned and wholesale replace in all calls with fs.copyFile. */
+
+	/* Test for availability of fs.CopyFile */
+	if (typeof fs.copyFile === 'function') {
+		fs.copyFile(src, dst, opts, cb);
+	} else {
+		var is = fs.createReadStream(src);
+		var os = fs.createWriteStream(dst);
+		is.pipe(os)
+			.on('finish', function () {
+				cb(null);
+			})
+			.on('error', cb);
+	}
+};
+
+
 file.saveFileToLocal = function (filename, folder, tempPath, callback) {
 	/*
 	 * remarkable doesn't allow spaces in hyperlinks, once that's fixed, remove this.
@@ -29,18 +48,17 @@ file.saveFileToLocal = function (filename, folder, tempPath, callback) {
 		if (err) {
 			callback(err);
 		}
+	});
 
-		var is = fs.createReadStream(tempPath);
-		var os = fs.createWriteStream(uploadPath);
-		is.on('end', function () {
+	file.copyFile(tempPath, uploadPath, {}, function (err) {
+		if (err) {
+			callback(err);
+		} else {
 			callback(null, {
 				url: '/assets/uploads/' + folder + '/' + filename,
 				path: uploadPath,
 			});
-		});
-
-		os.on('error', callback);
-		is.pipe(os);
+		}
 	});
 };
 

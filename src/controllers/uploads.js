@@ -185,7 +185,7 @@ uploadsController.uploadGroupCover = function (uid, uploadedFile, callback) {
 			file.isFileTypeAllowed(uploadedFile.path, next);
 		},
 		function (next) {
-			saveFileToLocal(uploadedFile, next);
+			saveFileToLocal(uploadedFile, uid, next);
 		},
 	], callback);
 };
@@ -213,10 +213,10 @@ uploadsController.uploadFile = function (uid, uploadedFile, callback) {
 		return callback(new Error('[[error:invalid-file-type, ' + allowed.join('&#44; ') + ']]'));
 	}
 
-	saveFileToLocal(uploadedFile, callback);
+	saveFileToLocal(uploadedFile, uid, callback);
 };
 
-function saveFileToLocal(uploadedFile, callback) {
+function saveFileToLocal(uploadedFile, uid, callback) {
 	var filename = uploadedFile.name || 'upload';
 	var extension = path.extname(filename) || '';
 
@@ -228,11 +228,11 @@ function saveFileToLocal(uploadedFile, callback) {
 		},
 		function (upload, next) {
 			var storedFile = {
+				uid: uid,
 				url: nconf.get('relative_path') + upload.url,
 				path: upload.path,
 				name: uploadedFile.name,
 			};
-
 			plugins.fireHook('filter:uploadStored', { uploadedFile: uploadedFile, storedFile: storedFile }, next);
 		},
 		function (data, next) {
