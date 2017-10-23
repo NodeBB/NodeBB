@@ -10,7 +10,7 @@ module.exports = function (db, module) {
 	var cache = LRU({
 		max: 10000,
 		length: function () { return 1; },
-		maxAge: 1000 * 60 * 60,
+		maxAge: 0,
 	});
 
 	module.objectCache = cache;
@@ -86,7 +86,7 @@ module.exports = function (db, module) {
 		}
 
 		var nonCachedKeys = keys.filter(function (key) {
-			return !cache.has(key);
+			return !cache.get(key);
 		});
 
 		if (!nonCachedKeys.length) {
