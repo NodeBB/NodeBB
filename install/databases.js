@@ -34,7 +34,7 @@ function getDatabaseConfig(config, callback) {
 			prompt.get(questions.redis, callback);
 		}
 	} else if (config.database === 'mongo') {
-		if (config['mongo:host'] && config['mongo:port']) {
+		if ((config['mongo:host'] && config['mongo:port']) || config['mongo:uri']) {
 			callback(null, config);
 		} else {
 			prompt.get(questions.mongo, callback);
@@ -68,6 +68,7 @@ function saveDatabaseConfig(config, databaseConfig, callback) {
 			username: databaseConfig['mongo:username'],
 			password: databaseConfig['mongo:password'],
 			database: databaseConfig['mongo:database'],
+			uri: databaseConfig['mongo:uri'],
 		};
 	} else {
 		return callback(new Error('unknown database : ' + config.database));
