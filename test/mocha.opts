@@ -1,2 +1,3 @@
 --reporter dot
 --timeout 25000
+--exit
