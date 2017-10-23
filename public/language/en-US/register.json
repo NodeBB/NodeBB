@@ -1,7 +1,7 @@
 {
     "register": "Register",
     "cancel_registration": "Cancel Registration",
-    "help.email": "By default, your email will be hidden from the public.",
+    "help.email": "By default, your email will be hidden from the public. We do not allow users to register with free email domain providers like Gmail and Hotmail.",
     "help.username_restrictions": "A unique username between %1 and %2 characters. Others can mention you with @<span id='yourUsername'>username</span>.",
     "help.minimum_password_length": "Your password's length must be at least %1 characters.",
     "email_address": "Email Address",

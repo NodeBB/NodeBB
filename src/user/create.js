@@ -146,7 +146,12 @@ module.exports = function (User) {
 		async.parallel({
 			emailValid: function (next) {
 				if (userData.email) {
-					next(!utils.isEmailValid(userData.email) ? new Error('[[error:invalid-email]]') : null);
+					var isFreeEmail = require('./freeEmailChecker')(userData.email);
+					if (isFreeEmail) {
+						next(new Error('[[error:Free email domain providers (ex: Gmail, Hotmail) are not allowed.]]'));
+					} else {
+						next(!utils.isEmailValid(userData.email) ? new Error('[[error:invalid-email]]') : null);
+					}
 				} else {
 					next();
 				}
