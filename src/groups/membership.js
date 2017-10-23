@@ -15,7 +15,7 @@ var LRU = require('lru-cache');
 
 var cache = LRU({
 	max: 40000,
-	maxAge: 1000 * 60 * 60,
+	maxAge: 0,
 });
 
 module.exports = function (Groups) {
@@ -382,7 +382,7 @@ module.exports = function (Groups) {
 		}
 
 		var nonCachedUids = uids.filter(function (uid) {
-			return !cache.has(uid + ':' + groupName);
+			return !cache.get(uid + ':' + groupName);
 		});
 
 		if (!nonCachedUids.length) {
@@ -415,7 +415,7 @@ module.exports = function (Groups) {
 		}
 
 		var nonCachedGroups = groups.filter(function (groupName) {
-			return !cache.has(uid + ':' + groupName);
+			return !cache.get(uid + ':' + groupName);
 		});
 
 		if (!nonCachedGroups.length) {
