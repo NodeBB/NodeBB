@@ -60,7 +60,7 @@ module.exports = function (middleware) {
 			bodyClass: data.bodyClass,
 		};
 
-		templateValues.configJSON = JSON.stringify(res.locals.config);
+		templateValues.configJSON = JSON.stringify(res.locals.config).replace(/\\"/g, '\\\\"').replace(/'/g, '\\\'').replace(/<\//g, '<\\/');
 
 		async.waterfall([
 			function (next) {
