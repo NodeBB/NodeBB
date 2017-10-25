@@ -2,6 +2,7 @@
 
 var async = require('async');
 var nconf = require('nconf');
+var jsesc = require('jsesc');
 
 var db = require('../database');
 var user = require('../user');
@@ -60,7 +61,7 @@ module.exports = function (middleware) {
 			bodyClass: data.bodyClass,
 		};
 
-		templateValues.configJSON = JSON.stringify(res.locals.config).replace(/\\"/g, '\\\\"').replace(/'/g, '\\\'').replace(/<\//g, '<\\/');
+		templateValues.configJSON = jsesc(JSON.stringify(res.locals.config), { isScriptContext: true });
 
 		async.waterfall([
 			function (next) {
@@ -127,7 +128,7 @@ module.exports = function (middleware) {
 				results.user.isGlobalMod = results.isGlobalMod;
 				results.user.isMod = !!results.isModerator;
 				results.user.uid = parseInt(results.user.uid, 10);
-				results.user.email = String(results.user.email).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+				results.user.email = String(results.user.email);
 				results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
 				results.user.isEmailConfirmSent = !!results.isEmailConfirmSent;
 
@@ -141,7 +142,7 @@ module.exports = function (middleware) {
 				templateValues.isGlobalMod = results.user.isGlobalMod;
 				templateValues.showModMenu = results.user.isAdmin || results.user.isGlobalMod || results.user.isMod;
 				templateValues.user = results.user;
-				templateValues.userJSON = JSON.stringify(results.user);
+				templateValues.userJSON = jsesc(JSON.stringify(results.user), { isScriptContext: true });
 				templateValues.useCustomCSS = parseInt(meta.config.useCustomCSS, 10) === 1 && meta.config.customCSS;
 				templateValues.customCSS = templateValues.useCustomCSS ? (meta.config.renderedCustomCSS || '') : '';
 				templateValues.useCustomJS = parseInt(meta.config.useCustomJS, 10) === 1;
