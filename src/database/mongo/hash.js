@@ -13,6 +13,8 @@ module.exports = function (db, module) {
 		maxAge: 0,
 	});
 
+	cache.misses = 0;
+	cache.hits = 0;
 	module.objectCache = cache;
 
 	pubsub.on('mongo:hash:cache:del', function (key) {
@@ -86,8 +88,13 @@ module.exports = function (db, module) {
 		}
 
 		var nonCachedKeys = keys.filter(function (key) {
-			return !cache.get(key);
+			return cache.get(key) === undefined;
 		});
+
+		var hits = keys.length - nonCachedKeys.length;
+		var misses = keys.length - hits;
+		cache.hits += hits;
+		cache.misses += misses;
 
 		if (!nonCachedKeys.length) {
 			return getFromCache(callback);
@@ -98,12 +105,9 @@ module.exports = function (db, module) {
 				return callback(err);
 			}
 
-			data.forEach(function (objectData) {
-				if (objectData) {
-					var key = objectData._key;
-					delete objectData._key;
-					cache.set(key, objectData);
-				}
+			var map = helpers.toMap(data);
+			nonCachedKeys.forEach(function (key) {
+				cache.set(key, map[key] || null);
 			});
 
 			getFromCache(callback);
