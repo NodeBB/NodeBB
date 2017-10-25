@@ -30,14 +30,19 @@
 			<div class="panel-heading"><i class="fa fa-calendar-o"></i> Object Cache</div>
 			<div class="panel-body">
 
+
+
 				<label>[[admin/advanced/cache:length-to-max]]</label><br/>
 				<span>{objectCache.length} / {objectCache.max}</span><br/>
-
 				<div class="progress">
 					<div class="progress-bar" role="progressbar" aria-valuenow="{objectCache.percentFull}" aria-valuemin="0" aria-valuemax="100" style="width: {objectCache.percentFull}%;">
 						[[admin/advanced/cache:percent-full, {objectCache.percentFull}]]
 					</div>
 				</div>
+
+				<label>Hits:</label> <span>{objectCache.hits}</span><br/>
+				<label>Misses:</label> <span>{objectCache.misses}</span><br/>
+				<label>Miss Ratio:</label> <span>{objectCache.missRatio}</span><br/>
 
 				<!-- IF objectCache.dump -->
 				<pre>{objectCache.dump}</pre>

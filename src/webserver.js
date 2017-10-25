@@ -252,7 +252,7 @@ function setupAutoLocale(app, callback) {
 
 function listen(callback) {
 	callback = callback || function () { };
-	var port = parseInt(nconf.get('port'), 10);
+	var port = nconf.get('port');
 	var isSocket = isNaN(port);
 	var socketPath = isSocket ? nconf.get('port') : '';
 
@@ -270,7 +270,7 @@ function listen(callback) {
 			process.exit();
 		}
 	}
-
+	port = parseInt(port, 10);
 	if ((port !== 80 && port !== 443) || nconf.get('trust_proxy') === true) {
 		winston.info('Enabling \'trust proxy\'');
 		app.enable('trust proxy');

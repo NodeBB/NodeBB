@@ -2,6 +2,8 @@
 
 var cacheController = module.exports;
 
+var utils = require('../../utils');
+
 cacheController.get = function (req, res) {
 	var postCache = require('../../posts/cache');
 	var groupCache = require('../../groups').cache;
@@ -38,6 +40,9 @@ cacheController.get = function (req, res) {
 			itemCount: objectCache.itemCount,
 			percentFull: ((objectCache.length / objectCache.max) * 100).toFixed(2),
 			dump: req.query.debug ? JSON.stringify(objectCache.dump(), null, 4) : false,
+			hits: utils.addCommas(String(objectCache.hits)),
+			misses: utils.addCommas(String(objectCache.misses)),
+			missRatio: (1 - (objectCache.hits / (objectCache.hits + objectCache.misses))).toFixed(4),
 		};
 	}
 
