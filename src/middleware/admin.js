@@ -5,6 +5,7 @@ var winston = require('winston');
 var user = require('../user');
 var meta = require('../meta');
 var plugins = require('../plugins');
+var jsesc = require('jsesc');
 
 var controllers = {
 	api: require('../controllers/api'),
@@ -73,11 +74,11 @@ module.exports = function (middleware) {
 
 				var templateValues = {
 					config: results.config,
-					configJSON: JSON.stringify(results.config),
+					configJSON: jsesc(JSON.stringify(results.config), { isScriptContext: true }),
 					relative_path: results.config.relative_path,
 					adminConfigJSON: encodeURIComponent(JSON.stringify(results.configs)),
 					user: userData,
-					userJSON: JSON.stringify(userData).replace(/'/g, "\\'"),
+					userJSON: jsesc(JSON.stringify(userData), { isScriptContext: true }),
 					plugins: results.custom_header.plugins,
 					authentication: results.custom_header.authentication,
 					scripts: results.scripts,

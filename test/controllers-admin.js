@@ -578,4 +578,33 @@ describe('Admin Controllers', function () {
 			});
 		});
 	});
+
+	it('should escape special characters in config', function (done) {
+		var plugins = require('../src/plugins');
+		function onConfigGet(config, callback) {
+			config.someValue = '"foo"';
+			config.otherValue = "'123'";
+			config.script = '</script>';
+			callback(null, config);
+		}
+		plugins.registerHook('somePlugin', { hook: 'filter:config.get', method: onConfigGet });
+		request(nconf.get('url') + '/admin', { jar: jar }, function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			assert(body.indexOf('"someValue":"\\\\"foo\\\\""') !== -1);
+			assert(body.indexOf('"otherValue":"\\\'123\\\'"') !== -1);
+			assert(body.indexOf('"script":"<\\/script>"') !== -1);
+			request(nconf.get('url'), { jar: jar }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				assert(body.indexOf('"someValue":"\\\\"foo\\\\""') !== -1);
+				assert(body.indexOf('"otherValue":"\\\'123\\\'"') !== -1);
+				assert(body.indexOf('"script":"<\\/script>"') !== -1);
+				plugins.unregisterHook('somePlugin', 'filter:config.get', onConfigGet);
+				done();
+			});
+		});
+	});
 });
