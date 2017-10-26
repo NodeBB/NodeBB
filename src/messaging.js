@@ -78,6 +78,9 @@ Messaging.parse = function (message, fromuid, uid, roomId, isNew, callback) {
 			return callback(err);
 		}
 
+		parsed = S(parsed).stripTags().decodeHTMLEntities().s;
+		parsed = validator.escape(String(parsed));
+
 		var messageData = {
 			message: message,
 			parsed: parsed,
