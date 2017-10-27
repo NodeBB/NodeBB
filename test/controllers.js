@@ -702,7 +702,7 @@ describe('Controllers', function () {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body.widgets);
-				assert.equal(Object.keys(body.widgets), 0);
+				assert.equal(Object.keys(body.widgets).length, 0);
 				done();
 			});
 		});
@@ -715,6 +715,19 @@ describe('Controllers', function () {
 				assert(body.widgets);
 				assert(body.widgets.sidebar);
 				done();
+			});
+		});
+
+		it('should reset templates', function (done) {
+			widgets.resetTemplates(['categories', 'category'], function (err) {
+				assert.ifError(err);
+				request(nconf.get('url') + '/api/categories', { json: true }, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body.widgets);
+					assert.equal(Object.keys(body.widgets).length, 0);
+					done();
+				});
 			});
 		});
 	});
