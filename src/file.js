@@ -125,15 +125,33 @@ file.delete = function (path) {
 	}
 };
 
-file.link = function link(filePath, destPath, cb) {
+file.link = function link(filePath, destPath, relative, callback) {
+	if (!callback) {
+		callback = relative;
+		relative = false;
+	}
+
+	if (relative) {
+		filePath = path.relative(path.dirname(destPath), filePath);
+	}
+
 	if (process.platform === 'win32') {
-		fs.link(filePath, destPath, cb);
+		fs.link(filePath, destPath, callback);
 	} else {
-		fs.symlink(filePath, destPath, 'file', cb);
+		fs.symlink(filePath, destPath, 'file', callback);
 	}
 };
 
-file.linkDirs = function linkDirs(sourceDir, destDir, callback) {
+file.linkDirs = function linkDirs(sourceDir, destDir, relative, callback) {
+	if (!callback) {
+		callback = relative;
+		relative = false;
+	}
+
+	if (relative) {
+		sourceDir = path.relative(path.dirname(destDir), sourceDir);
+	}
+
 	var type = (process.platform === 'win32') ? 'junction' : 'dir';
 	fs.symlink(sourceDir, destDir, type, callback);
 };
