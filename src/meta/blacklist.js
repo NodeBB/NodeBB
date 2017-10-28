@@ -66,7 +66,7 @@ Blacklist.test = function (clientIp, callback) {
 	// clientIp = '2001:db8:85a3:0:0:8a2e:370:7334';	// IPv6
 	// clientIp = '127.0.15.1';	// IPv4
 	// clientIp = '127.0.15.1:3443'; // IPv4 with port strip port to not fail 
-	clientIp = clientIp.split(":").length == 2 ? clientIp.split(":")[0] : clientIp;
+	clientIp = clientIp.split(":").length === 2 ? clientIp.split(":")[0] : clientIp;
 	
 	var addr = ipaddr.parse(clientIp);
 
