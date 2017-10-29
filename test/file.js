@@ -4,7 +4,6 @@ var assert = require('assert');
 var fs = require('fs');
 var path = require('path');
 var nconf = require('nconf');
-var mkdirp = require('mkdirp');
 
 var utils = require('../src/utils');
 var file = require('../src/file');
@@ -13,8 +12,7 @@ describe('file', function () {
 	var filename = utils.generateUUID() + '.png';
 	var folder = 'files';
 	var uploadPath = path.join(nconf.get('upload_path'), folder, filename);
-	var tempPath = path.join(__dirname, './files/normalise.jpg.png');
-	mkdirp.sync(path.dirname(uploadPath));
+	var tempPath = path.join(__dirname, './files/test.png');
 
 	afterEach(function (done) {
 		fs.unlink(uploadPath, function () {
@@ -68,7 +66,7 @@ describe('file', function () {
 
 			file.copyFile(tempPath, uploadPath, function (err) {
 				assert(err);
-				assert.strictEqual(err.code, 'EPERM');
+				assert(err.code === 'EPERM' || err.code === 'EACCES');
 
 				done();
 			});
