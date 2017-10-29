@@ -4,6 +4,7 @@ var assert = require('assert');
 var fs = require('fs');
 var path = require('path');
 var nconf = require('nconf');
+var mkdirp = require('mkdirp');
 
 var utils = require('../src/utils');
 var file = require('../src/file');
@@ -13,6 +14,7 @@ describe('file', function () {
 	var folder = 'files';
 	var uploadPath = path.join(nconf.get('upload_path'), folder, filename);
 	var tempPath = path.join(__dirname, './files/normalise.jpg.png');
+	mkdirp.sync(path.dirname(uploadPath));
 
 	afterEach(function (done) {
 		fs.unlink(uploadPath, function () {

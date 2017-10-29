@@ -172,7 +172,7 @@ file.link = function link(filePath, destPath, relative, callback) {
 		relative = false;
 	}
 
-	if (relative) {
+	if (relative && process.platform !== 'win32') {
 		filePath = path.relative(path.dirname(destPath), filePath);
 	}
 
@@ -189,7 +189,7 @@ file.linkDirs = function linkDirs(sourceDir, destDir, relative, callback) {
 		relative = false;
 	}
 
-	if (relative) {
+	if (relative && process.platform !== 'win32') {
 		sourceDir = path.relative(path.dirname(destDir), sourceDir);
 	}
 
