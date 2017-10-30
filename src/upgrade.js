@@ -195,8 +195,8 @@ Upgrade.process = function (files, skipCount, callback) {
 	], callback);
 };
 
-Upgrade.incrementProgress = function () {
-	this.current += 1;
+Upgrade.incrementProgress = function (value) {
+	this.current += value || 1;
 
 	// Redraw the progress bar
 	var percentage = 0;

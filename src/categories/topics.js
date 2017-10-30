@@ -217,6 +217,9 @@ module.exports = function (Categories) {
 				db.sortedSetAdd('cid:' + cid + ':pids', postData.timestamp, postData.pid, next);
 			},
 			function (next) {
+				db.sortedSetAdd('cid:' + cid + ':tids:lastposttime', postData.timestamp, postData.tid, next);
+			},
+			function (next) {
 				db.incrObjectField('category:' + cid, 'post_count', next);
 			},
 			function (next) {

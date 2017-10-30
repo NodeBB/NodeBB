@@ -262,8 +262,12 @@ module.exports = function (Topics) {
 					'cid:' + topicData.cid + ':tids',
 					'cid:' + topicData.cid + ':tids:pinned',
 					'cid:' + topicData.cid + ':tids:posts',
+					'cid:' + topicData.cid + ':tids:lastposttime',
 					'cid:' + topicData.cid + ':recent_tids',
 				], tid, next);
+			},
+			function (next) {
+				db.sortedSetAdd('cid:' + cid + ':tids:lastposttime', topic.lastposttime, tid, next);
 			},
 			function (next) {
 				if (parseInt(topic.pinned, 10)) {
