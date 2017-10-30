@@ -75,6 +75,10 @@ module.exports = function (Topics) {
 
 		var cutoff = params.cutoff || Topics.unreadCutoff();
 
+		if (params.cid && !Array.isArray(params.cid)) {
+			params.cid = [params.cid];
+		}
+
 		async.waterfall([
 			function (next) {
 				async.parallel({
@@ -181,10 +185,11 @@ module.exports = function (Topics) {
 			},
 			function (results, next) {
 				var topics = results.topics;
+				cid = cid && cid.map(String);
 				tids = topics.filter(function (topic, index) {
 					return topic && topic.cid &&
 						(!!results.isTopicsFollowed[index] || results.ignoredCids.indexOf(topic.cid.toString()) === -1) &&
-						(!cid || parseInt(cid, 10) === parseInt(topic.cid, 10));
+						(!cid || (cid.length && cid.indexOf(String(topic.cid)) !== -1));
 				}).map(function (topic) {
 					return topic.tid;
 				});

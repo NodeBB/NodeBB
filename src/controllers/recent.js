@@ -3,7 +3,7 @@
 
 var async = require('async');
 var nconf = require('nconf');
-var validator = require('validator');
+var querystring = require('querystring');
 
 var user = require('../user');
 var topics = require('../topics');
@@ -53,6 +53,7 @@ recentController.get = function (req, res, next) {
 		function (data) {
 			data.categories = categoryData.categories;
 			data.selectedCategory = categoryData.selectedCategory;
+			data.selectedCids = categoryData.selectedCids;
 			data.nextStart = stop + 1;
 			data.set = 'topics:recent';
 			data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
@@ -74,7 +75,8 @@ recentController.get = function (req, res, next) {
 				data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[recent:title]]' }]);
 			}
 
-			data.querystring = cid ? ('?cid=' + validator.escape(String(cid))) : '';
+			data.querystring = cid ? '?' + querystring.stringify({ cid: cid }) : '';
+
 			res.render('recent', data);
 		},
 	], next);

@@ -19,6 +19,8 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 
 		recent.watchForNewPosts();
 
+		recent.handleCategorySelection();
+
 		$(window).trigger('action:topics.loaded', { topics: ajaxify.data.topics });
 
 		$('#markSelectedRead').on('click', function () {
@@ -88,12 +90,11 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 			if (direction < 0 || !$('[component="category"]').length) {
 				return;
 			}
-			var params = utils.params();
-			var cid = params.cid;
+
 			infinitescroll.loadMore('topics.loadMoreUnreadTopics', {
 				after: $('[component="category"]').attr('data-nextstart'),
 				count: config.topicsPerPage,
-				cid: cid,
+				cid: utils.params().cid,
 				filter: ajaxify.data.selectedFilter.filter,
 			}, function (data, done) {
 				if (data.topics && data.topics.length) {

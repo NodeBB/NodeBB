@@ -3,11 +3,11 @@
 'use strict';
 
 var async = require('async');
+
 var db = require('../database');
 var plugins = require('../plugins');
 var privileges = require('../privileges');
 var user = require('../user');
-var categories = require('../categories');
 var meta = require('../meta');
 
 module.exports = function (Topics) {
@@ -23,22 +23,15 @@ module.exports = function (Topics) {
 			nextStart: 0,
 			topics: [],
 		};
-
+		if (cid && !Array.isArray(cid)) {
+			cid = [cid];
+		}
 		async.waterfall([
 			function (next) {
-				if (cid) {
-					categories.getTopicIds({
-						cid: cid,
-						start: 0,
-						stop: 199,
-						sort: 'newest_to_oldest',
-					}, next);
-				} else {
-					db.getSortedSetRevRange('topics:recent', 0, 199, next);
-				}
+				db.getSortedSetRevRange('topics:recent', 0, 199, next);
 			},
 			function (tids, next) {
-				filterTids(tids, uid, filter, next);
+				filterTids(tids, uid, filter, cid, next);
 			},
 			function (tids, next) {
 				recentTopics.topicCount = tids.length;
@@ -53,8 +46,7 @@ module.exports = function (Topics) {
 		], callback);
 	};
 
-
-	function filterTids(tids, uid, filter, callback) {
+	function filterTids(tids, uid, filter, cid, callback) {
 		async.waterfall([
 			function (next) {
 				if (filter === 'watched') {
@@ -84,9 +76,10 @@ module.exports = function (Topics) {
 				}, next);
 			},
 			function (results, next) {
+				cid = cid && cid.map(String);
 				tids = results.topicData.filter(function (topic) {
 					if (topic && topic.cid) {
-						return results.ignoredCids.indexOf(topic.cid.toString()) === -1;
+						return results.ignoredCids.indexOf(topic.cid.toString()) === -1 && (!cid || (cid.length && cid.indexOf(topic.cid.toString()) !== -1));
 					}
 					return false;
 				}).map(function (topic) {
