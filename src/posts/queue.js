@@ -8,6 +8,7 @@ var meta = require('../meta');
 var topics = require('../topics');
 var notifications = require('../notifications');
 var privileges = require('../privileges');
+var plugins = require('../plugins');
 var socketHelpers = require('../socket.io/helpers');
 
 module.exports = function (Posts) {
@@ -18,7 +19,14 @@ module.exports = function (Posts) {
 			},
 			function (userData, next) {
 				var shouldQueue = parseInt(meta.config.postQueue, 10) === 1 && (!parseInt(uid, 10) || (parseInt(userData.reputation, 10) <= 0 && parseInt(userData.postcount, 10) <= 0));
-				next(null, shouldQueue);
+				plugins.fireHook('filter:post.shouldQueue', {
+					shouldQueue: shouldQueue,
+					uid: uid,
+					data: data,
+				}, next);
+			},
+			function (result, next) {
+				next(null, result.shouldQueue);
 			},
 		], callback);
 	};

@@ -91,11 +91,8 @@ module.exports = function (Categories) {
 				db.getSortedSetsMembers(keys, next);
 			},
 			function (results, next) {
-				var tids = _.flatten(results);
+				var tids = _.uniq(_.flatten(results).filter(Boolean));
 
-				tids = tids.filter(function (tid, index, array) {
-					return !!tid && array.indexOf(tid) === index;
-				});
 				privileges.topics.filterTids('read', tids, uid, next);
 			},
 			function (tids, next) {

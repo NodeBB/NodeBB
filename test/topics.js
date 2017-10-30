@@ -1133,7 +1133,7 @@ describe('Topic\'s', function () {
 			});
 		});
 
-		it('should mark all read', function (done) {
+		it('should mark category topics read', function (done) {
 			socketTopics.markUnread({ uid: adminUid }, tid, function (err) {
 				assert.ifError(err);
 				socketTopics.markCategoryTopicsRead({ uid: adminUid }, topic.categoryId, function (err) {

@@ -3,7 +3,6 @@
 
 var async = require('async');
 var querystring = require('querystring');
-var validator = require('validator');
 
 var pagination = require('../pagination');
 var user = require('../user');
@@ -64,6 +63,7 @@ unreadController.get = function (req, res, next) {
 
 			data.categories = results.watchedCategories.categories;
 			data.selectedCategory = results.watchedCategories.selectedCategory;
+			data.selectedCids = results.watchedCategories.selectedCids;
 
 			if (req.path.startsWith('/api/unread') || req.path.startsWith('/unread')) {
 				data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[unread:title]]' }]);
@@ -76,8 +76,7 @@ unreadController.get = function (req, res, next) {
 				return filter && filter.selected;
 			});
 
-			data.querystring = cid ? ('?cid=' + validator.escape(String(cid))) : '';
-
+			data.querystring = cid ? '?' + querystring.stringify({ cid: cid }) : '';
 			res.render('unread', data);
 		},
 	], next);
