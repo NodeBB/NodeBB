@@ -28,7 +28,13 @@ module.exports = function (Topics) {
 		}
 		async.waterfall([
 			function (next) {
-				db.getSortedSetRevRange('topics:recent', 0, 199, next);
+				var key = 'topics:recent';
+				if (cid) {
+					key = cid.map(function (cid) {
+						return 'cid:' + cid + ':tids:lastposttime';
+					});
+				}
+				db.getSortedSetRevRange(key, 0, 199, next);
 			},
 			function (tids, next) {
 				filterTids(tids, uid, filter, cid, next);
@@ -119,12 +125,17 @@ module.exports = function (Topics) {
 	Topics.updateTimestamp = function (tid, timestamp, callback) {
 		async.parallel([
 			function (next) {
+				var topicData;
 				async.waterfall([
 					function (next) {
-						Topics.getTopicField(tid, 'deleted', next);
+						Topics.getTopicFields(tid, ['cid', 'deleted'], next);
 					},
-					function (deleted, next) {
-						if (parseInt(deleted, 10) === 1) {
+					function (_topicData, next) {
+						topicData = _topicData;
+						db.sortedSetAdd('cid:' + topicData.cid + ':tids:lastposttime', timestamp, tid, next);
+					},
+					function (next) {
+						if (parseInt(topicData.deleted, 10) === 1) {
 							return next();
 						}
 						Topics.updateRecent(tid, timestamp, next);
