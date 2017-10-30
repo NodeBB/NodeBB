@@ -8,20 +8,9 @@ var jimp = require('jimp');
 var mkdirp = require('mkdirp');
 var mime = require('mime');
 
-var utils = require('./utils');
-
 var file = module.exports;
 
 file.saveFileToLocal = function (filename, folder, tempPath, callback) {
-	/*
-	 * remarkable doesn't allow spaces in hyperlinks, once that's fixed, remove this.
-	 */
-	filename = filename.split('.');
-	filename.forEach(function (name, idx) {
-		filename[idx] = utils.slugify(name);
-	});
-	filename = filename.join('.');
-
 	var uploadPath = path.join(nconf.get('upload_path'), folder, filename);
 
 	winston.verbose('Saving file ' + filename + ' to : ' + uploadPath);

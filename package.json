@@ -57,7 +57,7 @@
     "morgan": "^1.9.0",
     "mousetrap": "^1.6.1",
     "nconf": "^0.8.5",
-    "nodebb-plugin-composer-default": "6.0.1",
+    "nodebb-plugin-composer-default": "6.0.2",
     "nodebb-plugin-dbsearch": "2.0.8",
     "nodebb-plugin-emoji-extended": "1.1.1",
     "nodebb-plugin-emoji-one": "1.2.1",
