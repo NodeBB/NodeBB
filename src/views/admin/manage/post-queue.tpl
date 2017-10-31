@@ -18,7 +18,7 @@
 							<th>[[admin/manage/post-queue:user]]</th>
 							<th>[[admin/manage/post-queue:category]]</th>
 							<th>[[admin/manage/post-queue:title]]</th>
-							<th>[[admin/manage/post-queue:content]]</th>
+							<th>[[admin/manage/post-queue:content]] <i class="fa fa-info-circle" data-toggle="tooltip" title="[[admin/manage/post-queue:content-editable]]"></i></th>
 							<th>[[admin/manage/post-queue:posted]]</th>
 							<th></th>
 						</tr>
@@ -42,9 +42,7 @@
 								<!-- ENDIF posts.data.tid -->
 								{posts.data.title}
 							</td>
-							<td class="col-md-5">
-								{posts.data.content}
-							</td>
+							<td class="col-md-5 post-content" contenteditable="true">{posts.data.content}</td>
 							<td class="col-md-1">
 								<span class="timeago" title={posts.data.timestampISO}></span>
 							</td>

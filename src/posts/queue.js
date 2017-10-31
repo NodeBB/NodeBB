@@ -70,6 +70,8 @@ module.exports = function (Posts) {
 			},
 			function (next) {
 				next(null, {
+					id: id,
+					type: type,
 					queued: true,
 					message: '[[success:post-queued]]',
 				});
@@ -178,4 +180,27 @@ module.exports = function (Posts) {
 			},
 		], callback);
 	}
+
+	Posts.editQueuedContent = function (uid, id, content, callback) {
+		async.waterfall([
+			function (next) {
+				user.isAdminOrGlobalMod(uid, next);
+			},
+			function (isAdminOrGlobalMod, next) {
+				if (!isAdminOrGlobalMod) {
+					return callback(new Error('[[error:no-privileges]]'));
+				}
+				db.getObject('post:queue:' + id, next);
+			},
+			function (data, next) {
+				try {
+					data.data = JSON.parse(data.data);
+				} catch (err) {
+					return next(err);
+				}
+				data.data.content = content;
+				db.setObjectField('post:queue:' + id, 'data', JSON.stringify(data.data), next);
+			},
+		], callback);
+	};
 };

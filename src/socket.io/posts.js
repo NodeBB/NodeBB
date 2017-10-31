@@ -175,6 +175,12 @@ SocketPosts.accept = function (socket, data, callback) {
 SocketPosts.reject = function (socket, data, callback) {
 	acceptOrReject(posts.removeFromQueue, socket, data, callback);
 };
+SocketPosts.editQueuedContent = function (socket, data, callback) {
+	if (!data || !data.id || !data.content) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	posts.editQueuedContent(socket.uid, data.id, data.content, callback);
+};
 
 function acceptOrReject(method, socket, data, callback) {
 	async.waterfall([

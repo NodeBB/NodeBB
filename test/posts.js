@@ -761,6 +761,8 @@ describe('Post\'s', function () {
 
 	describe('post queue', function () {
 		var uid;
+		var queueId;
+		var jar;
 		before(function (done) {
 			meta.config.postQueue = 1;
 			user.create({ username: 'newuser' }, function (err, _uid) {
@@ -780,6 +782,7 @@ describe('Post\'s', function () {
 				assert.ifError(err);
 				assert.strictEqual(result.queued, true);
 				assert.equal(result.message, '[[success:post-queued]]');
+
 				done();
 			});
 		});
@@ -789,12 +792,14 @@ describe('Post\'s', function () {
 				assert.ifError(err);
 				assert.strictEqual(result.queued, true);
 				assert.equal(result.message, '[[success:post-queued]]');
+				queueId = result.id;
 				done();
 			});
 		});
 
 		it('should load queued posts', function (done) {
-			helpers.loginUser('globalmod', 'globalmodpwd', function (err, jar) {
+			helpers.loginUser('globalmod', 'globalmodpwd', function (err, _jar) {
+				jar = _jar;
 				assert.ifError(err);
 				request(nconf.get('url') + '/api/post-queue', { jar: jar, json: true }, function (err, res, body) {
 					assert.ifError(err);
@@ -802,6 +807,25 @@ describe('Post\'s', function () {
 					assert.equal(body.posts[0].data.content, 'queued topic content');
 					assert.equal(body.posts[1].type, 'reply');
 					assert.equal(body.posts[1].data.content, 'this is a queued reply');
+					done();
+				});
+			});
+		});
+
+		it('should error if data is invalid', function (done) {
+			socketPosts.editQueuedContent({ uid: globalModUid }, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should edit post in queue', function (done) {
+			socketPosts.editQueuedContent({ uid: globalModUid }, { id: queueId, content: 'newContent' }, function (err) {
+				assert.ifError(err);
+				request(nconf.get('url') + '/api/post-queue', { jar: jar, json: true }, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(body.posts[1].type, 'reply');
+					assert.equal(body.posts[1].data.content, 'newContent');
 					done();
 				});
 			});
