@@ -11,7 +11,7 @@ var pagination = require('../../pagination');
 var helpers = require('../helpers');
 var accountHelpers = require('./helpers');
 
-var postsController = {};
+var postsController = module.exports;
 
 var templateToData = {
 	'account/bookmarks': {
@@ -50,6 +50,12 @@ var templateToData = {
 		noItemsFoundKey: '[[user:has_no_watched_topics]]',
 		crumb: '[[user:watched]]',
 	},
+	'account/ignored': {
+		set: 'ignored_tids',
+		type: 'topics',
+		noItemsFoundKey: '[[user:has_no_ignored_topics]]',
+		crumb: '[[user:ignored]]',
+	},
 	'account/topics': {
 		set: 'topics',
 		type: 'topics',
@@ -82,6 +88,10 @@ postsController.getWatchedTopics = function (req, res, next) {
 	getFromUserSet('account/watched', req, res, next);
 };
 
+postsController.getIgnoredTopics = function (req, res, next) {
+	getFromUserSet('account/ignored', req, res, next);
+};
+
 postsController.getTopics = function (req, res, next) {
 	getFromUserSet('account/topics', req, res, next);
 };
@@ -93,6 +103,7 @@ function getFromUserSet(template, req, res, callback) {
 	var userData;
 	var itemsPerPage;
 	var page = Math.max(1, parseInt(req.query.page, 10) || 1);
+
 	async.waterfall([
 		function (next) {
 			async.parallel({
@@ -130,23 +141,20 @@ function getFromUserSet(template, req, res, callback) {
 				},
 			}, next);
 		},
-	], function (err, results) {
-		if (err) {
-			return callback(err);
-		}
+		function (results) {
+			userData[data.type] = results.data[data.type];
+			userData.nextStart = results.data.nextStart;
 
-		userData[data.type] = results.data[data.type];
-		userData.nextStart = results.data.nextStart;
+			var pageCount = Math.ceil(results.itemCount / itemsPerPage);
+			userData.pagination = pagination.create(page, pageCount);
 
-		var pageCount = Math.ceil(results.itemCount / itemsPerPage);
-		userData.pagination = pagination.create(page, pageCount);
+			userData.noItemsFoundKey = data.noItemsFoundKey;
+			userData.title = '[[pages:' + data.template + ', ' + userData.username + ']]';
+			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: data.crumb }]);
 
-		userData.noItemsFoundKey = data.noItemsFoundKey;
-		userData.title = '[[pages:' + data.template + ', ' + userData.username + ']]';
-		userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: data.crumb }]);
-
-		res.render(data.template, userData);
-	});
+			res.render(data.template, userData);
+		},
+	], callback);
 }
 
 module.exports = postsController;

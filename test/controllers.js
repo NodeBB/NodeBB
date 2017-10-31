@@ -945,6 +945,15 @@ describe('Controllers', function () {
 			});
 		});
 
+		it('should load /user/foo/ignored', function (done) {
+			request(nconf.get('url') + '/api/user/foo/ignored', { jar: jar }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
 		it('should load /user/foo/topics', function (done) {
 			request(nconf.get('url') + '/api/user/foo/topics', function (err, res, body) {
 				assert.ifError(err);
