@@ -50,7 +50,7 @@ module.exports = function (Posts) {
 				}, next);
 			},
 			function (next) {
-				user.setUserField(data.uid, 'lastposttime', Date.now(), next);
+				user.setUserField(data.uid, 'lastqueuetime', Date.now(), next);
 			},
 			function (next) {
 				notifications.create({
@@ -95,8 +95,8 @@ module.exports = function (Posts) {
 							privileges.categories.can('topics:reply', cid, data.uid, next);
 						}
 					},
-					isReadyToPost: function (next) {
-						user.isReadyToPost(data.uid, cid, next);
+					isReadyToQueue: function (next) {
+						user.isReadyToQueue(data.uid, cid, next);
 					},
 				}, next);
 			},

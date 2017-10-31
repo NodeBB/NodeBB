@@ -726,7 +726,6 @@ describe('Post\'s', function () {
 		});
 	});
 
-
 	describe('filterPidsByCid', function () {
 		it('should return pids as is if cid is falsy', function (done) {
 			posts.filterPidsByCid([1, 2, 3], null, function (err, pids) {
@@ -750,6 +749,13 @@ describe('Post\'s', function () {
 				assert.deepEqual([postData.pid], pids);
 				done();
 			});
+		});
+	});
+
+	it('should error if user does not exist', function (done) {
+		user.isReadyToPost(21123123, 1, function (err) {
+			assert.equal(err.message, '[[error:no-user]]');
+			done();
 		});
 	});
 

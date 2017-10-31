@@ -7,6 +7,14 @@ var privileges = require('../privileges');
 
 module.exports = function (User) {
 	User.isReadyToPost = function (uid, cid, callback) {
+		isReady(uid, cid, 'lastposttime', callback);
+	};
+
+	User.isReadyToQueue = function (uid, cid, callback) {
+		isReady(uid, cid, 'lastqueuetime', callback);
+	};
+
+	function isReady(uid, cid, field, callback) {
 		if (parseInt(uid, 10) === 0) {
 			return callback();
 		}
@@ -14,10 +22,7 @@ module.exports = function (User) {
 			function (next) {
 				async.parallel({
 					userData: function (next) {
-						User.getUserFields(uid, ['banned', 'lastposttime', 'joindate', 'email', 'email:confirmed', 'reputation'], next);
-					},
-					exists: function (next) {
-						db.exists('user:' + uid, next);
+						User.getUserFields(uid, ['uid', 'banned', 'joindate', 'email', 'email:confirmed', 'reputation'].concat([field]), next);
 					},
 					isAdminOrMod: function (next) {
 						privileges.categories.isAdminOrMod(cid, uid, next);
@@ -25,7 +30,7 @@ module.exports = function (User) {
 				}, next);
 			},
 			function (results, next) {
-				if (!results.exists) {
+				if (!parseInt(results.userData.uid, 10)) {
 					return next(new Error('[[error:no-user]]'));
 				}
 
@@ -48,18 +53,18 @@ module.exports = function (User) {
 					return next(new Error('[[error:user-too-new, ' + meta.config.initialPostDelay + ']]'));
 				}
 
-				var lastposttime = userData.lastposttime || 0;
+				var lasttime = userData[field] || 0;
 
-				if (parseInt(meta.config.newbiePostDelay, 10) > 0 && parseInt(meta.config.newbiePostDelayThreshold, 10) > parseInt(userData.reputation, 10) && now - parseInt(lastposttime, 10) < parseInt(meta.config.newbiePostDelay, 10) * 1000) {
+				if (parseInt(meta.config.newbiePostDelay, 10) > 0 && parseInt(meta.config.newbiePostDelayThreshold, 10) > parseInt(userData.reputation, 10) && now - parseInt(lasttime, 10) < parseInt(meta.config.newbiePostDelay, 10) * 1000) {
 					return next(new Error('[[error:too-many-posts-newbie, ' + meta.config.newbiePostDelay + ', ' + meta.config.newbiePostDelayThreshold + ']]'));
-				} else if (now - parseInt(lastposttime, 10) < parseInt(meta.config.postDelay, 10) * 1000) {
+				} else if (now - parseInt(lasttime, 10) < parseInt(meta.config.postDelay, 10) * 1000) {
 					return next(new Error('[[error:too-many-posts, ' + meta.config.postDelay + ']]'));
 				}
 
 				next();
 			},
 		], callback);
-	};
+	}
 
 	User.onNewPostMade = function (postData, callback) {
 		async.series([
