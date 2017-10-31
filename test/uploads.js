@@ -13,8 +13,8 @@ var user = require('../src/user');
 var groups = require('../src/groups');
 var privileges = require('../src/privileges');
 var meta = require('../src/meta');
+var socketUser = require('../src/socket.io/user');
 var helpers = require('./helpers');
-
 
 describe('Upload Controllers', function () {
 	var tid;
@@ -157,8 +157,21 @@ describe('Upload Controllers', function () {
 				done();
 			});
 		});
-	});
 
+		it('should not allow non image uploads', function (done) {
+			socketUser.updateCover({ uid: 1 }, { uid: 1, imageData: 'data:text/html;base64,PHN2Zy9vbmxvYWQ9YWxlcnQoMik+' }, function (err) {
+				assert.equal(err.message, '[[error:invalid-image]]');
+				done();
+			});
+		});
+
+		it('should not allow non image uploads', function (done) {
+			socketUser.uploadCroppedPicture({ uid: 1 }, { uid: 1, imageData: 'data:text/html;base64,PHN2Zy9vbmxvYWQ9YWxlcnQoMik+' }, function (err) {
+				assert.equal(err.message, '[[error:invalid-image]]');
+				done();
+			});
+		});
+	});
 
 	describe('admin uploads', function () {
 		var jar;

@@ -79,7 +79,6 @@
 	"content-too-long": "Please enter a shorter post. Posts can't be longer than %1 character(s).",
 	"title-too-short": "Please enter a longer title. Titles should contain at least %1 character(s).",
 	"title-too-long": "Please enter a shorter title. Titles can't be longer than %1 character(s).",
-	"invalid-title": "Invalid title!",
 	"category-not-selected": "Category not selected.",
 	"too-many-posts": "You can only post once every %1 second(s) - please wait before posting again",
 	"too-many-posts-newbie": "As a new user, you can only post once every %1 second(s) until you have earned %2 reputation - please wait before posting again",
@@ -99,6 +98,7 @@
 	"cant-remove-last-admin": "You are the only administrator. Add another user as an administrator before removing yourself as admin",
 	"cant-delete-admin": "Remove administrator privileges from this account before attempting to delete it.",
 
+	"invalid-image": "Invalid image",
 	"invalid-image-type": "Invalid image type. Allowed types are: %1",
 	"invalid-image-extension": "Invalid image extension",
 	"invalid-file-type": "Invalid file type. Allowed types are: %1",

@@ -763,7 +763,7 @@ describe('User', function () {
 				name: 'test',
 			};
 			User.uploadPicture(uid, picture, function (err) {
-				assert.equal(err.message, '[[error:invalid-image-extension]]');
+				assert.equal(err.message, '[[error:invalid-image]]');
 				done();
 			});
 		});
