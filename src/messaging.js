@@ -72,7 +72,7 @@ function canGet(hook, callerUid, uid, callback) {
 }
 
 Messaging.parse = function (message, fromuid, uid, roomId, isNew, callback) {
-	message = S(message).stripTags().decodeHTMLEntities().s;
+	message = utils.decodeHTMLEntities(utils.stripHTMLTags(message));
 	message = validator.escape(String(message));
 
 	plugins.fireHook('filter:parse.raw', message, function (err, parsed) {
