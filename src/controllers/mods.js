@@ -7,6 +7,7 @@ var categories = require('../categories');
 var flags = require('../flags');
 var analytics = require('../analytics');
 var plugins = require('../plugins');
+var adminPostQueueController = require('./admin/postqueue');
 
 var modsController = module.exports;
 modsController.flags = {};
@@ -136,3 +137,18 @@ modsController.flags.detail = function (req, res, next) {
 		}));
 	});
 };
+
+modsController.postQueue = function (req, res, next) {
+	async.waterfall([
+		function (next) {
+			user.isPrivileged(req.uid, next);
+		},
+		function (isPrivileged, next) {
+			if (!isPrivileged) {
+				return next();
+			}
+			adminPostQueueController.get(req, res, next);
+		},
+	], next);
+};
+

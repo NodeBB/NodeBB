@@ -831,7 +831,21 @@ describe('Post\'s', function () {
 			});
 		});
 
-		it('should accept queued posts submit', function (done) {
+		it('should prevent regular users from approving posts', function (done) {
+			socketPosts.accept({ uid: uid }, { id: queueId }, function (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+				done();
+			});
+		});
+
+		it('should prevent regular users from approving non existing posts', function (done) {
+			socketPosts.accept({ uid: uid }, { id: 123123 }, function (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+				done();
+			});
+		});
+
+		it('should accept queued posts and submit', function (done) {
 			var ids;
 			async.waterfall([
 				function (next) {
@@ -845,13 +859,6 @@ describe('Post\'s', function () {
 					socketPosts.accept({ uid: globalModUid }, { id: ids[1] }, next);
 				},
 			], done);
-		});
-
-		it('should prevent regular users from approving posts', function (done) {
-			socketPosts.accept({ uid: uid }, { id: 1 }, function (err) {
-				assert.equal(err.message, '[[error:no-privileges]]');
-				done();
-			});
 		});
 	});
 });

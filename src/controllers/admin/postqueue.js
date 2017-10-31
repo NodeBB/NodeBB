@@ -14,31 +14,51 @@ var postQueueController = module.exports;
 postQueueController.get = function (req, res, next) {
 	var page = parseInt(req.query.page, 10) || 1;
 	var postsPerPage = 20;
-	var pageCount = 0;
-
-	var start = (page - 1) * postsPerPage;
-	var stop = start + postsPerPage - 1;
-
-	var postData;
-
+	var results;
 	async.waterfall([
 		function (next) {
 			async.parallel({
-				count: function (next) {
-					db.sortedSetCard('post:queue', next);
-				},
 				ids: function (next) {
-					db.getSortedSetRange('post:queue', start, stop, next);
+					db.getSortedSetRange('post:queue', 0, -1, next);
+				},
+				isAdminOrGlobalMod: function (next) {
+					user.isAdminOrGlobalMod(req.uid, next);
+				},
+				moderatedCids: function (next) {
+					user.getModeratedCids(req.uid, next);
 				},
 			}, next);
 		},
-		function (results, next) {
-			pageCount = Math.ceil(results.count / postsPerPage);
-
-			var keys = results.ids.map(function (id) {
-				return 'post:queue:' + id;
+		function (_results, next) {
+			results = _results;
+			getQueuedPosts(results.ids, next);
+		},
+		function (postData) {
+			postData = postData.filter(function (postData) {
+				return postData && (results.isAdminOrGlobalMod || results.moderatedCids.includes(String(postData.category.cid)));
 			});
 
+			var pageCount = Math.max(1, Math.ceil(postData.length / postsPerPage));
+			var start = (page - 1) * postsPerPage;
+			var stop = start + postsPerPage - 1;
+			postData = postData.slice(start, stop + 1);
+
+			res.render('admin/manage/post-queue', {
+				title: '[[pages:post-queue]]',
+				posts: postData,
+				pagination: pagination.create(page, pageCount),
+			});
+		},
+	], next);
+};
+
+function getQueuedPosts(ids, callback) {
+	var keys = ids.map(function (id) {
+		return 'post:queue:' + id;
+	});
+	var postData;
+	async.waterfall([
+		function (next) {
 			db.getObjects(keys, next);
 		},
 		function (data, next) {
@@ -80,12 +100,5 @@ postQueueController.get = function (req, res, next) {
 				], next);
 			}, next);
 		},
-		function (postData) {
-			res.render('admin/manage/post-queue', {
-				title: '[[pages:post-queue]]',
-				posts: postData,
-				pagination: pagination.create(page, pageCount),
-			});
-		},
-	], next);
-};
+	], callback);
+}

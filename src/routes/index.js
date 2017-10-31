@@ -42,10 +42,10 @@ function mainRoutes(app, middleware, controllers) {
 function modRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/flags', middleware, [], controllers.mods.flags.list);
 	setupPageRoute(app, '/flags/:flagId', middleware, [], controllers.mods.flags.detail);
+	setupPageRoute(app, '/post-queue', middleware, [], controllers.mods.postQueue);
 }
 
 function globalModRoutes(app, middleware, controllers) {
-	setupPageRoute(app, '/post-queue', middleware, [], controllers.globalMods.postQueue);
 	setupPageRoute(app, '/ip-blacklist', middleware, [], controllers.globalMods.ipBlacklist);
 }
 
