@@ -6,6 +6,7 @@ var cproc = require('child_process');
 
 var packageFilePath = path.join(__dirname, '../../package.json');
 var packageDefaultFilePath = path.join(__dirname, '../../package.default.json');
+var modulesPath = path.join(__dirname, '../../node_modules');
 
 function updatePackageFile() {
 	var oldPackageContents = {};
@@ -36,3 +37,43 @@ function npmInstallProduction() {
 }
 
 exports.npmInstallProduction = npmInstallProduction;
+
+function preserveExtraneousPlugins() {
+	// Skip if `node_modules/` is not found or inaccessible
+	try {
+		fs.accessSync(modulesPath, fs.constants.R_OK);
+	} catch (e) {
+		return;
+	}
+
+	var isPackage = /^nodebb-(plugin|theme|widget|reward)-\w+/;
+	var packages = fs.readdirSync(modulesPath).filter(function (pkgName) {
+		return isPackage.test(pkgName);
+	});
+	var packageContents = JSON.parse(fs.readFileSync(packageFilePath, 'utf8'));
+
+	// Find extraneous plugins
+	var bundled = [];
+	for (var pkgName in packageContents.dependencies) {
+		if (packageContents.dependencies.hasOwnProperty(pkgName)) {
+			bundled.push(pkgName);
+		}
+	}
+	var extraneous = packages.filter(function (pkgName) {
+		return !bundled.includes(pkgName);
+	});
+
+	// Get those plugins' versions
+	var pkgConfig;
+	extraneous = extraneous.reduce(function (memo, cur) {
+		pkgConfig = JSON.parse(fs.readFileSync(path.join(modulesPath, cur, 'package.json')));
+		memo[cur] = pkgConfig.version;
+		return memo;
+	}, {});
+
+	// Add those packages to package.json
+	Object.assign(packageContents.dependencies, extraneous);
+	fs.writeFileSync(packageFilePath, JSON.stringify(packageContents, null, 2));
+}
+
+exports.preserveExtraneousPlugins = preserveExtraneousPlugins;

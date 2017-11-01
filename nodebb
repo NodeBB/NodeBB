@@ -18,6 +18,7 @@ try {
 		process.stdout.write('Installing them now...\n\n');
 
 		packageInstall.updatePackageFile();
+		packageInstall.preserveExtraneousPlugins();
 		packageInstall.npmInstallProduction();
 	} else {
 		throw e;
