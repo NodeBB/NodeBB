@@ -461,16 +461,6 @@ var commands = {
 
 			async.series([
 				function (next) {
-					if (global.env === 'development') {
-						return next();
-					}
-
-					cproc.exec('git pull', {
-						cwd: __dirname,
-						stdio: [0, 1, 2],
-					}, next);
-				},
-				function (next) {
 					packageInstall.updatePackageFile();
 					next();
 				},
