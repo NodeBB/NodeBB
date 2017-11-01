@@ -12,35 +12,76 @@ var utils = require('./utils');
 
 var file = module.exports;
 
+/**
+ * Asynchronously copies `src` to `dest`
+ * @param {string} src - source filename to copy
+ * @param {string} dest - destination filename of the copy operation
+ * @param {function(Error): void} callback
+ */
+function copyFile(src, dest, callback) {
+	var calledBack = false;
+
+	var read;
+	var write;
+
+	function done(err) {
+		if (calledBack) {
+			return;
+		}
+		calledBack = true;
+
+		if (err) {
+			if (read) {
+				read.destroy();
+			}
+			if (write) {
+				write.destroy();
+			}
+		}
+
+		callback(err);
+	}
+
+	read = fs.createReadStream(src);
+	read.on('error', done);
+
+	write = fs.createWriteStream(dest);
+	write.on('error', done);
+	write.on('close', function () {
+		done();
+	});
+
+	read.pipe(write);
+}
+
+file.copyFile = (typeof fs.copyFile === 'function') ? fs.copyFile : copyFile;
+
 file.saveFileToLocal = function (filename, folder, tempPath, callback) {
 	/*
 	 * remarkable doesn't allow spaces in hyperlinks, once that's fixed, remove this.
 	 */
-	filename = filename.split('.');
-	filename.forEach(function (name, idx) {
-		filename[idx] = utils.slugify(name);
-	});
-	filename = filename.join('.');
+	filename = filename.split('.').map(function (name) {
+		return utils.slugify(name);
+	}).join('.');
 
 	var uploadPath = path.join(nconf.get('upload_path'), folder, filename);
 
 	winston.verbose('Saving file ' + filename + ' to : ' + uploadPath);
 	mkdirp(path.dirname(uploadPath), function (err) {
 		if (err) {
-			callback(err);
+			return callback(err);
 		}
 
-		var is = fs.createReadStream(tempPath);
-		var os = fs.createWriteStream(uploadPath);
-		is.on('end', function () {
+		file.copyFile(tempPath, uploadPath, function (err) {
+			if (err) {
+				return callback(err);
+			}
+
 			callback(null, {
 				url: '/assets/uploads/' + folder + '/' + filename,
 				path: uploadPath,
 			});
 		});
-
-		os.on('error', callback);
-		is.pipe(os);
 	});
 };
 
@@ -125,15 +166,33 @@ file.delete = function (path) {
 	}
 };
 
-file.link = function link(filePath, destPath, cb) {
+file.link = function link(filePath, destPath, relative, callback) {
+	if (!callback) {
+		callback = relative;
+		relative = false;
+	}
+
+	if (relative && process.platform !== 'win32') {
+		filePath = path.relative(path.dirname(destPath), filePath);
+	}
+
 	if (process.platform === 'win32') {
-		fs.link(filePath, destPath, cb);
+		fs.link(filePath, destPath, callback);
 	} else {
-		fs.symlink(filePath, destPath, 'file', cb);
+		fs.symlink(filePath, destPath, 'file', callback);
 	}
 };
 
-file.linkDirs = function linkDirs(sourceDir, destDir, callback) {
+file.linkDirs = function linkDirs(sourceDir, destDir, relative, callback) {
+	if (!callback) {
+		callback = relative;
+		relative = false;
+	}
+
+	if (relative && process.platform !== 'win32') {
+		sourceDir = path.relative(path.dirname(destDir), sourceDir);
+	}
+
 	var type = (process.platform === 'win32') ? 'junction' : 'dir';
 	fs.symlink(sourceDir, destDir, type, callback);
 };
