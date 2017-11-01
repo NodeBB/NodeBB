@@ -333,7 +333,7 @@
 			var pattern = (tags || ['']).map(function (tag) {
 				return utils.escapeRegexChars(tag);
 			}).join('|');
-			return String(str).replace(new RegExp('</?(?:' + pattern + ')[^<>]*>', 'gi'), '');
+			return String(str).replace(new RegExp('<(\\/)?(' + (pattern || '[^\\s>]+') + ')(\\s+[^<>]*?)?\\s*(\\/)?>', 'gi'), '');
 		},
 
 		invalidUnicodeChars: XRegExp('[^\\p{L}\\s\\d\\-_]', 'g'),
