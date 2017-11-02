@@ -1,6 +1,8 @@
 'use strict';
 
-var helpers = {};
+var helpers = module.exports;
+
+helpers.noop = function () {};
 
 helpers.toMap = function (data) {
 	var map = {};
@@ -31,7 +33,3 @@ helpers.valueToString = function (value) {
 
 	return value.toString();
 };
-
-helpers.noop = function () {};
-
-module.exports = helpers;
