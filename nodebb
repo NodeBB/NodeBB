@@ -462,6 +462,7 @@ var commands = {
 			async.series([
 				function (next) {
 					packageInstall.updatePackageFile();
+					packageInstall.preserveExtraneousPlugins();
 					next();
 				},
 				function (next) {

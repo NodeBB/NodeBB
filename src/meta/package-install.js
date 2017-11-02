@@ -52,24 +52,17 @@ function preserveExtraneousPlugins() {
 	});
 	var packageContents = JSON.parse(fs.readFileSync(packageFilePath, 'utf8'));
 
-	// Find extraneous plugins
-	var bundled = [];
-	for (var pkgName in packageContents.dependencies) {
-		if (packageContents.dependencies.hasOwnProperty(pkgName)) {
-			bundled.push(pkgName);
-		}
-	}
-	var extraneous = packages.filter(function (pkgName) {
-		return !bundled.includes(pkgName);
-	});
-
-	// Get those plugins' versions
-	var pkgConfig;
-	extraneous = extraneous.reduce(function (memo, cur) {
-		pkgConfig = JSON.parse(fs.readFileSync(path.join(modulesPath, cur, 'package.json')));
-		memo[cur] = pkgConfig.version;
-		return memo;
-	}, {});
+	var extraneous = packages
+		// only extraneous plugins (ones not in package.json)
+		.filter(function (pkgName) {
+			return !packageContents.dependencies.hasOwnProperty(pkgName);
+		})
+		// reduce to a map of package names to package versions
+		.reduce(function (map, pkgName) {
+			var pkgConfig = JSON.parse(fs.readFileSync(path.join(modulesPath, pkgName, 'package.json')));
+			map[pkgName] = pkgConfig.version;
+			return map;
+		}, {});
 
 	// Add those packages to package.json
 	Object.assign(packageContents.dependencies, extraneous);
