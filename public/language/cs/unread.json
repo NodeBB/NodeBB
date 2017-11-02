@@ -9,5 +9,7 @@
     "topics_marked_as_read.success": "Téma bylo označeno jako přečtené.",
     "all-topics": "Všechna témata",
     "new-topics": "Nová témata",
-    "watched-topics": "Sledovaná témata"
+    "watched-topics": "Sledovaná témata",
+    "unreplied-topics": "Unreplied Topics",
+    "multiple-categories-selected": "Multiple Selected"
 }

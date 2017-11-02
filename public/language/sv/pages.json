@@ -44,6 +44,7 @@
     "account/bookmarks": "%1'st bokmärkta inlägg",
     "account/settings": "Avnändarinställningar",
     "account/watched": "Ämnen som bevakas av %1",
+    "account/ignored": "Topics ignored by %1",
     "account/upvoted": "Inlägg som röstats upp av %1",
     "account/downvoted": "Inlägg som röstats ned av %1",
     "account/best": "Bästa inläggen skapade av %1",

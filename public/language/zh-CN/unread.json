@@ -9,5 +9,7 @@
     "topics_marked_as_read.success": "主题被标为已读！",
     "all-topics": "全部主题",
     "new-topics": "新建主题",
-    "watched-topics": "看过的主题"
+    "watched-topics": "看过的主题",
+    "unreplied-topics": "Unreplied Topics",
+    "multiple-categories-selected": "Multiple Selected"
 }

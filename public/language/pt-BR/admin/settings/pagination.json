@@ -3,7 +3,9 @@
 	"enable": "Paginar posts e tópicos ao invés de usar rolagem infinita.",
 	"topics": "Paginação de Tópico",
 	"posts-per-page": "Posts por Página",
+	"max-posts-per-page": "Maximum posts per page",
 	"categories": "Paginação de Categorias",
 	"topics-per-page": "Tópicos por Página",
+	"max-topics-per-page": "Maximum topics per page",
 	"initial-num-load": "Número Inicial de Tópicos paa Carregar em Não-lidos, Recentes, e Populares"
 }

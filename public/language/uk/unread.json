@@ -9,5 +9,7 @@
     "topics_marked_as_read.success": "Теми відмічені прочитаними!",
     "all-topics": "Всі теми",
     "new-topics": "Нові теми",
-    "watched-topics": "Переглянуті теми"
+    "watched-topics": "Переглянуті теми",
+    "unreplied-topics": "Unreplied Topics",
+    "multiple-categories-selected": "Multiple Selected"
 }

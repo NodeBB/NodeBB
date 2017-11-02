@@ -54,7 +54,11 @@
 	"modal-body": "กรุณาระเหตุผลสำหรับการปักธง %1 %2 สำหรับการรีวิว หรือไม่ก็ใช้หนึ่งในปุ่มกดรายงานด่วนถ้าเป็นไปได้",
 	"modal-reason-spam": "สแปม",
 	"modal-reason-offensive": "น่ารังเกียจ",
+	"modal-reason-other": "Other (specify below)",
 	"modal-reason-custom": "เหตุผลว่าทำไมถึงรายงานเนื้อหานี้...",
 	"modal-submit": "ส่งรายงาน",
-	"modal-submit-success": "เนื้อหาถูกรายงานตามความเหมาะสมแล้ว"
+	"modal-submit-success": "เนื้อหาถูกรายงานตามความเหมาะสมแล้ว",
+	"modal-submit-confirm": "Confirm Submission",
+	"modal-submit-confirm-text": "You have a custom reason specified already. Are you sure you wish to submit via quick-report?",
+	"modal-submit-confirm-text-help": "Submitting a quick report will overwrite any custom reasons defined."
 }

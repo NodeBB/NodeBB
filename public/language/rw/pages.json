@@ -44,6 +44,7 @@
     "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "Itunganya",
     "account/watched": "Ibiganiro bikurikirwa na %1",
+    "account/ignored": "Topics ignored by %1",
     "account/upvoted": "Ibiganiro byakunzwe na %1",
     "account/downvoted": "Ibiganiro byanzwe na %1",
     "account/best": "Ibihebuje byashyizweho na %1",

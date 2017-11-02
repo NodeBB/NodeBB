@@ -44,6 +44,7 @@
     "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "Uporabniške nastavitve",
     "account/watched": "Teme, ki jih spremlja %1",
+    "account/ignored": "Topics ignored by %1",
     "account/upvoted": " Objave uporabnika %1 z glasovi za",
     "account/downvoted": "Objave uporabnika %1 z glasovi proti",
     "account/best": "Najboljše objave uporabnika %1",

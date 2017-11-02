@@ -9,5 +9,7 @@
     "topics_marked_as_read.success": "Все темы помечены как прочитанные",
     "all-topics": "Все темы",
     "new-topics": "Новые темы",
-    "watched-topics": "Подписанные темы"
+    "watched-topics": "Подписанные темы",
+    "unreplied-topics": "Unreplied Topics",
+    "multiple-categories-selected": "Multiple Selected"
 }

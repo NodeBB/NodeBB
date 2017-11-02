@@ -9,5 +9,7 @@
     "topics_marked_as_read.success": "Теме су означене као прочитане!",
     "all-topics": "Све теме",
     "new-topics": "Нове теме",
-    "watched-topics": "Надгледане теме"
+    "watched-topics": "Надгледане теме",
+    "unreplied-topics": "Unreplied Topics",
+    "multiple-categories-selected": "Multiple Selected"
 }

@@ -6,5 +6,6 @@
 	"title": "Заголовок",
 	"content": "Зміст",
 	"posted": "Опубліковано",
-	"reply-to": "Відповідь для \"%1\""
+	"reply-to": "Відповідь для \"%1\"",
+	"content-editable": "You can click on individual content to edit before posting."
 }

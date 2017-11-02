@@ -9,5 +9,7 @@
     "topics_marked_as_read.success": "Témakör olvasottnak jelölve!",
     "all-topics": "Minden témakör",
     "new-topics": "Új témakör",
-    "watched-topics": "Figyelt témakör"
+    "watched-topics": "Figyelt témakör",
+    "unreplied-topics": "Unreplied Topics",
+    "multiple-categories-selected": "Multiple Selected"
 }

@@ -44,6 +44,7 @@
     "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "Kasutaja sätted",
     "account/watched": "Teemasid jälgib %1 kasutajat",
+    "account/ignored": "Topics ignored by %1",
     "account/upvoted": "Postitused %1 poolt heaks kiidetud",
     "account/downvoted": "Postitused %1 poolt vastu hääletatud",
     "account/best": "Parimad postitused %1 poolt",

@@ -3,7 +3,9 @@
 	"enable": "Paginate topics and posts instead of using infinite scroll.",
 	"topics": "Başlık Sayfalama",
 	"posts-per-page": "Sayfa başına İletiler",
+	"max-posts-per-page": "Maximum posts per page",
 	"categories": "Kategori Sayfalama",
 	"topics-per-page": "Sayfa başına Konular",
+	"max-topics-per-page": "Maximum topics per page",
 	"initial-num-load": "Initial Number of Topics to Load on Unread, Recent, and Popular"
 }

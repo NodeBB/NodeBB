@@ -44,6 +44,7 @@
     "account/bookmarks": "%1's Favoriete Berichten",
     "account/settings": "Gebruikersinstellingen",
     "account/watched": "Berichten die door %1 bekeken worden",
+    "account/ignored": "Topics ignored by %1",
     "account/upvoted": "Berichten omhoog gestemd door %1",
     "account/downvoted": "Berichten omlaag gestemd door %1",
     "account/best": "Beste berichten geplaast door %1",

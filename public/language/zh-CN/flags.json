@@ -54,7 +54,11 @@
 	"modal-body": "请选择或者输入您举报 %1%2 的原因以便版主进行审核。",
 	"modal-reason-spam": "垃圾信息",
 	"modal-reason-offensive": "人身攻击",
+	"modal-reason-other": "Other (specify below)",
 	"modal-reason-custom": "举报此内容的理由……",
 	"modal-submit": "提交举报",
-	"modal-submit-success": "已举报此内容。"
+	"modal-submit-success": "已举报此内容。",
+	"modal-submit-confirm": "Confirm Submission",
+	"modal-submit-confirm-text": "You have a custom reason specified already. Are you sure you wish to submit via quick-report?",
+	"modal-submit-confirm-text-help": "Submitting a quick report will overwrite any custom reasons defined."
 }

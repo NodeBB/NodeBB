@@ -9,5 +9,7 @@
     "topics_marked_as_read.success": "Темите бяха отбелязани като прочетени!",
     "all-topics": "Всички теми",
     "new-topics": "Нови теми",
-    "watched-topics": "Следени теми"
+    "watched-topics": "Следени теми",
+    "unreplied-topics": "Теми без отговор",
+    "multiple-categories-selected": "Избрани са няколко"
 }

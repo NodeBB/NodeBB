@@ -44,6 +44,7 @@
     "account/bookmarks": "Posty w zakładkach %1",
     "account/settings": "Ustawienia użytkownika",
     "account/watched": "Tematy obserwowane przez %1",
+    "account/ignored": "Topics ignored by %1",
     "account/upvoted": "Posty za głosowane za przez  %1",
     "account/downvoted": "Posty za głosowane przeciw przez %1",
     "account/best": "Najlepsze posty od %1",

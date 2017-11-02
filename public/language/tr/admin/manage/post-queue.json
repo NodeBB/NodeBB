@@ -6,5 +6,6 @@
 	"title": "Başlık",
 	"content": "İçerik",
 	"posted": "Gönderildi",
-	"reply-to": "\"%1\"'e Cevap Ver"
+	"reply-to": "\"%1\"'e Cevap Ver",
+	"content-editable": "You can click on individual content to edit before posting."
 }

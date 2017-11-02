@@ -44,6 +44,7 @@
     "account/bookmarks": "Lesezeichen von %1",
     "account/settings": "Benutzer-Einstellungen",
     "account/watched": "Von %1 beobachtete Themen",
+    "account/ignored": "Topics ignored by %1",
     "account/upvoted": "Von %1 positiv bewertete Beiträge",
     "account/downvoted": "Von %1 negativ bewertete Beiträge",
     "account/best": "Bestbewertete Beiträge von %1",

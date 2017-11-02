@@ -3,7 +3,9 @@
 	"enable": "Themen in Seiten einteilen anstatt endlos zu scrollen",
 	"topics": "Themen Seitennummerierung",
 	"posts-per-page": "Beiträge pro Seite",
+	"max-posts-per-page": "Maximum posts per page",
 	"categories": "Kategorie Seitennummerierung",
 	"topics-per-page": "Themen pro Seite",
+	"max-topics-per-page": "Maximum topics per page",
 	"initial-num-load": "Ursprüngliche Anzahl an Themen, die bei ungelesen, aktuell und beliebt geladen werden sollen"
 }

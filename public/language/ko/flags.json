@@ -54,7 +54,11 @@
 	"modal-body": "%1 %2 에 대한 신고 사유를 적어주시거나, 빠른 신고 버튼 중 하나를 사용해 주세요.",
 	"modal-reason-spam": "스팸",
 	"modal-reason-offensive": "부적절한 글",
+	"modal-reason-other": "Other (specify below)",
 	"modal-reason-custom": "신고 사유",
 	"modal-submit": "리포트 제출",
-	"modal-submit-success": "이 컨텐츠는 신고되었습니다."
+	"modal-submit-success": "이 컨텐츠는 신고되었습니다.",
+	"modal-submit-confirm": "Confirm Submission",
+	"modal-submit-confirm-text": "You have a custom reason specified already. Are you sure you wish to submit via quick-report?",
+	"modal-submit-confirm-text-help": "Submitting a quick report will overwrite any custom reasons defined."
 }

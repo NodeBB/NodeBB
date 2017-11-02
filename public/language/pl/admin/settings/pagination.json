@@ -3,7 +3,9 @@
 	"enable": "Paginuj tematy oraz posty zamiast używać nieskończonego przewijania",
 	"topics": "Paginacja tematów",
 	"posts-per-page": "Postów na stronie",
+	"max-posts-per-page": "Maximum posts per page",
 	"categories": "Paginacja kategorii",
 	"topics-per-page": "Tematów na stronę",
+	"max-topics-per-page": "Maximum topics per page",
 	"initial-num-load": "Początkowa liczba pozycji do załadowania w Nieprzeczytanych, Ostatnich oraz Popularnych tematów"
 }

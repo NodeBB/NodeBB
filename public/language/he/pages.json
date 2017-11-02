@@ -44,6 +44,7 @@
     "account/bookmarks": "הפוסטים השמורים של %1",
     "account/settings": "הגדרות משתמש",
     "account/watched": "נושאים שנצפו על ידי %1",
+    "account/ignored": "Topics ignored by %1",
     "account/upvoted": "פוסטים שהוצבעו לטובה על ידי %1",
     "account/downvoted": "פוסטים שהוצבעו לרעה על ידי %1",
     "account/best": "הפוסטים הטובים ביותר שנוצרו על ידי %1",

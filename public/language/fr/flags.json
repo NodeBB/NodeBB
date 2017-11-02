@@ -54,7 +54,11 @@
 	"modal-body": "Veuillez spécifier votre raison de signaler %1 %2 pour une révision.  Vous pouvez utiliser un des boutons de report rapide si c'est plus approprié",
 	"modal-reason-spam": "Spam",
 	"modal-reason-offensive": "Choquant",
+	"modal-reason-other": "Other (specify below)",
 	"modal-reason-custom": "Motif du signalement...",
 	"modal-submit": "Soumettre le signalement",
-	"modal-submit-success": "Le contenu a été soumis pour examen."
+	"modal-submit-success": "Le contenu a été soumis pour examen.",
+	"modal-submit-confirm": "Confirm Submission",
+	"modal-submit-confirm-text": "You have a custom reason specified already. Are you sure you wish to submit via quick-report?",
+	"modal-submit-confirm-text-help": "Submitting a quick report will overwrite any custom reasons defined."
 }

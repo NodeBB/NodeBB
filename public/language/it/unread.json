@@ -9,5 +9,7 @@
     "topics_marked_as_read.success": "Discussione marcata come letta!",
     "all-topics": "Tutte le Discussioni",
     "new-topics": "Nuova Discussione",
-    "watched-topics": "Discussioni seguite"
+    "watched-topics": "Discussioni seguite",
+    "unreplied-topics": "Unreplied Topics",
+    "multiple-categories-selected": "Multiple Selected"
 }

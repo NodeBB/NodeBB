@@ -44,6 +44,7 @@
     "account/bookmarks": "Омиљене поруке корисника $1",
     "account/settings": "Корисничка подешавања",
     "account/watched": "Теме које %1 надгледа",
+    "account/ignored": "Topics ignored by %1",
     "account/upvoted": "Поруке које је позитивно гласао %1",
     "account/downvoted": "Поруке које је негативно гласао %1",
     "account/best": "Најбоље поруке од %1",

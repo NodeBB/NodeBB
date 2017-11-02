@@ -9,5 +9,7 @@
     "topics_marked_as_read.success": "標記主題成已讀!",
     "all-topics": "所有主題",
     "new-topics": "新主題",
-    "watched-topics": "已觀看主題"
+    "watched-topics": "已觀看主題",
+    "unreplied-topics": "Unreplied Topics",
+    "multiple-categories-selected": "Multiple Selected"
 }

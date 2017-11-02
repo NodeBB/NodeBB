@@ -44,6 +44,7 @@
     "account/bookmarks": "%1のブックマークされた投稿",
     "account/settings": "ユーザー設定",
     "account/watched": " %1がスレッドを見ました。",
+    "account/ignored": "Topics ignored by %1",
     "account/upvoted": "%1が投稿を高評価しました",
     "account/downvoted": "%1が投稿を低評価しました",
     "account/best": "%1のベストな投稿",

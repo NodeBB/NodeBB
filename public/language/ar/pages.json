@@ -44,6 +44,7 @@
     "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "خيارات المستخدم",
     "account/watched": "Topics watched by %1",
+    "account/ignored": "Topics ignored by %1",
     "account/upvoted": "Posts upvoted by %1",
     "account/downvoted": "Posts downvoted by %1",
     "account/best": "Best posts made by %1",
