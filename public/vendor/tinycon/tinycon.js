@@ -3,7 +3,6 @@
  * Tom Moor, http://tommoor.com
  * Copyright (c) 2015 Tom Moor
  * @license MIT Licensed
- * @version 0.6.4
  */
 
 (function(){
@@ -14,7 +13,8 @@
   var faviconImage = null;
   var canvas = null;
   var options = {};
-  var r = window.devicePixelRatio || 1;
+  // Chrome browsers with nonstandard zoom report fractional devicePixelRatio.
+  var r = Math.ceil(window.devicePixelRatio) || 1;
   var size = 16 * r;
   var defaults = {
     width: 7,
@@ -60,12 +60,11 @@
   var removeFaviconTag = function(){
 
     var links = document.getElementsByTagName('link');
-    var head = document.getElementsByTagName('head')[0];
 
     for(var i=0, len=links.length; i < len; i++) {
       var exists = (typeof(links[i]) !== 'undefined');
       if (exists && (links[i].getAttribute('rel') || '').match(/\bicon\b/i)) {
-        head.removeChild(links[i]);
+        links[i].parentNode.removeChild(links[i]);
       }
     }
   };
@@ -192,16 +191,16 @@
 
     // bubble
     context.beginPath();
-        context.moveTo(left + radius, top);
+    context.moveTo(left + radius, top);
     context.quadraticCurveTo(left, top, left, top + radius);
     context.lineTo(left, bottom - radius);
-        context.quadraticCurveTo(left, bottom, left + radius, bottom);
-        context.lineTo(right - radius, bottom);
-        context.quadraticCurveTo(right, bottom, right, bottom - radius);
-        context.lineTo(right, top + radius);
-        context.quadraticCurveTo(right, top, right - radius, top);
-        context.closePath();
-        context.fill();
+    context.quadraticCurveTo(left, bottom, left + radius, bottom);
+    context.lineTo(right - radius, bottom);
+    context.quadraticCurveTo(right, bottom, right, bottom - radius);
+    context.lineTo(right, top + radius);
+    context.quadraticCurveTo(right, top, right - radius, top);
+    context.closePath();
+    context.fill();
 
     // bottom shadow
     context.beginPath();
