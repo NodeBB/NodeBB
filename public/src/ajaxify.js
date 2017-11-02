@@ -368,10 +368,9 @@ $(document).ready(function () {
 							window.open(this.href, '_blank');
 							e.preventDefault();
 						} else if (config.useOutgoingLinksPage) {
-							var safeUrls = config.outgoingLinksWhitelist.trim().split(/[\s,]+/g);
+							var safeUrls = config.outgoingLinksWhitelist.trim().split(/[\s,]+/g).filter(Boolean);
 							var href = this.href;
-
-							if (!safeUrls.some(function (url) { return href.indexOf(url) !== -1; })) {
+							if (!safeUrls.length || !safeUrls.some(function (url) { return href.indexOf(url) !== -1; })) {
 								ajaxify.go('outgoing?url=' + encodeURIComponent(href));
 								e.preventDefault();
 							}
