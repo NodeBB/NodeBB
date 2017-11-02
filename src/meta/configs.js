@@ -15,23 +15,19 @@ var Configs = module.exports;
 Meta.config = {};
 
 Configs.init = function (callback) {
-	Meta.config = null;
-
+	var config;
 	async.waterfall([
 		function (next) {
 			Configs.list(next);
 		},
-		function (config, next) {
-			cacheBuster.read(function (err, buster) {
-				if (err) {
-					return next(err);
-				}
-
-				config['cache-buster'] = 'v=' + (buster || Date.now());
-
-				Meta.config = config;
-				next();
-			});
+		function (_config, next) {
+			config = _config;
+			cacheBuster.read(next);
+		},
+		function (buster, next) {
+			config['cache-buster'] = 'v=' + (buster || Date.now());
+			Meta.config = config;
+			next();
 		},
 	], callback);
 };
