@@ -13,8 +13,8 @@ var Reset = {};
 Reset.reset = function (callback) {
 	db.init(function (err) {
 		if (err) {
-			winston.error(err.message);
-			process.exit(1);
+			winston.error(err);
+			throw err;
 		}
 
 		if (nconf.get('t')) {
@@ -50,7 +50,7 @@ Reset.reset = function (callback) {
 				if (!err) {
 					winston.info('[reset] Reset complete.');
 				} else {
-					winston.error('[reset] Errors were encountered while resetting your forum settings: %s', err.message);
+					winston.error('[reset] Errors were encountered while resetting your forum settings: %s', err);
 				}
 
 				callback();
@@ -141,7 +141,7 @@ function resetPlugin(pluginId, callback) {
 		},
 	], function (err) {
 		if (err) {
-			winston.error('[reset] Could not disable plugin: %s encountered error %s', pluginId, err.message);
+			winston.error('[reset] Could not disable plugin: %s encountered error %s', pluginId, err);
 		} else if (active) {
 			winston.info('[reset] Plugin `%s` disabled', pluginId);
 		} else {

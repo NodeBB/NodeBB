@@ -3,6 +3,7 @@
 
 var async = require('async');
 var validator = require('validator');
+var winston = require('winston');
 
 var db = require('./database');
 var batch = require('./batch');
@@ -143,8 +144,8 @@ events.output = function () {
 	process.stdout.write('\nDisplaying last ten administrative events...\n'.bold);
 	events.getEvents(0, 9, function (err, events) {
 		if (err) {
-			process.stdout.write('    Error '.red + String(err.message).reset);
-			process.exit(1);
+			winston.error('Error fetching events', err);
+			throw err;
 		}
 
 		events.forEach(function (event) {

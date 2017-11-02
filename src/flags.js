@@ -2,7 +2,6 @@
 
 var async = require('async');
 var _ = require('lodash');
-var S = require('string');
 var winston = require('winston');
 var validator = require('validator');
 
@@ -65,7 +64,7 @@ Flags.init = function (callback) {
 		},
 	}, function (err, data) {
 		if (err) {
-			winston.error('[flags/init] Could not retrieve filters (error: ' + err.message + ')');
+			winston.error('[flags/init] Could not retrieve filters', err);
 			data.filters = {};
 		}
 
@@ -660,7 +659,7 @@ Flags.notify = function (flagObj, uid, callback) {
 				return callback(err);
 			}
 
-			var title = S(results.title).decodeHTMLEntities().s;
+			var title = utils.decodeHTMLEntities(results.title);
 			var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 
 			notifications.create({

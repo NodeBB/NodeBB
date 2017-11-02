@@ -6,18 +6,20 @@ var fs = require('fs');
 var path = require('path');
 var cproc = require('child_process');
 
+var packageInstall = require('./src/meta/package-install');
+
 // check to make sure dependencies are installed
 try {
+	fs.readFileSync(path.join(__dirname, './package.json'));
 	fs.readFileSync(path.join(__dirname, 'node_modules/async/package.json'));
 } catch (e) {
 	if (e.code === 'ENOENT') {
 		process.stdout.write('Dependencies not yet installed.\n');
 		process.stdout.write('Installing them now...\n\n');
 
-		cproc.execSync('npm i --production', {
-			cwd: __dirname,
-			stdio: [0, 1, 2],
-		});
+		packageInstall.updatePackageFile();
+		packageInstall.preserveExtraneousPlugins();
+		packageInstall.npmInstallProduction();
 	} else {
 		throw e;
 	}
@@ -451,15 +453,22 @@ var commands = {
 
 				return upgradeProc.on('close', function (err) {
 					if (err) {
-						process.stdout.write('\nError'.red + ': ' + err.message + '\n');
+						process.stdout.write('Error occurred during upgrade');
+						throw err;
 					}
 				});
 			}
 
 			async.series([
 				function (next) {
+					packageInstall.updatePackageFile();
+					packageInstall.preserveExtraneousPlugins();
+					next();
+				},
+				function (next) {
 					process.stdout.write('1. '.bold + 'Bringing base dependencies up to date... '.yellow);
-					cproc.exec('npm i --production', { cwd: __dirname, stdio: 'ignore' }, next);
+					packageInstall.npmInstallProduction();
+					next();
 				},
 				function (next) {
 					process.stdout.write('OK\n'.green);
@@ -472,19 +481,21 @@ var commands = {
 					var upgradeProc = fork(arr);
 
 					upgradeProc.on('close', next);
+					upgradeProc.on('error', next);
 				},
 			], function (err) {
 				if (err) {
-					process.stdout.write('\nError'.red + ': ' + err.message + '\n');
-				} else {
-					var message = 'NodeBB Upgrade Complete!';
-					// some consoles will return undefined/zero columns, so just use 2 spaces in upgrade script if we can't get our column count
-					var columns = process.stdout.columns;
-					var spaces = columns ? new Array(Math.floor(columns / 2) - (message.length / 2) + 1).join(' ') : '  ';
-
-					process.stdout.write('OK\n'.green);
-					process.stdout.write('\n' + spaces + message.green.bold + '\n\n'.reset);
+					process.stdout.write('Error occurred during upgrade');
+					throw err;
 				}
+
+				var message = 'NodeBB Upgrade Complete!';
+				// some consoles will return undefined/zero columns, so just use 2 spaces in upgrade script if we can't get our column count
+				var columns = process.stdout.columns;
+				var spaces = columns ? new Array(Math.floor(columns / 2) - (message.length / 2) + 1).join(' ') : '  ';
+
+				process.stdout.write('OK\n'.green);
+				process.stdout.write('\n' + spaces + message.green.bold + '\n\n'.reset);
 			});
 		},
 	},

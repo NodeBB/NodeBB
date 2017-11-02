@@ -99,8 +99,8 @@ redisModule.connect = function (options) {
 	if (dbIdx >= 0) {
 		cxn.select(dbIdx, function (err) {
 			if (err) {
-				winston.error('NodeBB could not connect to your Redis database. Redis returned the following error: ' + err.message);
-				process.exit();
+				winston.error('NodeBB could not connect to your Redis database. Redis returned the following error', err);
+				throw err;
 			}
 		});
 	}

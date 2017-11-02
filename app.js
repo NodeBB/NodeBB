@@ -192,7 +192,8 @@ function setup() {
 		process.stdout.write('\n' + separator + '\n\n');
 
 		if (err) {
-			winston.error('There was a problem completing NodeBB setup: ', err.message);
+			winston.error('There was a problem completing NodeBB setup', err);
+			throw err;
 		} else {
 			if (data.hasOwnProperty('password')) {
 				process.stdout.write('An administrative user was automatically created for you:\n');
@@ -270,9 +271,10 @@ function activate() {
 		},
 	], function (err) {
 		if (err) {
-			winston.error(err.message);
+			winston.error('An error occurred during plugin activation', err);
+			throw err;
 		}
-		process.exit(err ? 1 : 0);
+		process.exit(0);
 	});
 }
 

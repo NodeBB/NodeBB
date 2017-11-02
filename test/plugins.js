@@ -5,6 +5,7 @@ var	assert = require('assert');
 var path = require('path');
 var nconf = require('nconf');
 var request = require('request');
+var fs = require('fs');
 
 var db = require('./mocks/databasemock');
 var plugins = require('../src/plugins');
@@ -128,6 +129,9 @@ describe('Plugins', function () {
 				assert.equal(pluginData.active, false);
 				assert.equal(pluginData.installed, true);
 
+				var packageFile = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8'));
+				assert(packageFile.dependencies[pluginName]);
+
 				done();
 			});
 		});
@@ -160,6 +164,10 @@ describe('Plugins', function () {
 				assert.ifError(err);
 				assert.equal(pluginData.installed, false);
 				assert.equal(pluginData.active, false);
+
+				var packageFile = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8'));
+				assert(!packageFile.dependencies[pluginName]);
+
 				done();
 			});
 		});

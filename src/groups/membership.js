@@ -52,7 +52,7 @@ module.exports = function (Groups) {
 					hidden: 1,
 				}, function (err) {
 					if (err && err.message !== '[[error:group-already-exists]]') {
-						winston.error('[groups.join] Could not create new hidden group: ' + err.message);
+						winston.error('[groups.join] Could not create new hidden group', err);
 						return callback(err);
 					}
 					next();

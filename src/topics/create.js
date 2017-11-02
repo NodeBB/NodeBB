@@ -4,7 +4,7 @@
 var async = require('async');
 var _ = require('lodash');
 var validator = require('validator');
-var S = require('string');
+
 var db = require('../database');
 var utils = require('../utils');
 var plugins = require('../plugins');
@@ -343,7 +343,7 @@ module.exports = function (Topics) {
 	function check(item, min, max, minError, maxError, callback) {
 		// Trim and remove HTML (latter for composers that send in HTML, like redactor)
 		if (typeof item === 'string') {
-			item = S(item).stripTags().s.trim();
+			item = utils.stripHTMLTags(item).trim();
 		}
 
 		if (item === null || item === undefined || item.length < parseInt(min, 10)) {

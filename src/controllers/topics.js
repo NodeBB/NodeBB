@@ -2,7 +2,6 @@
 
 
 var async = require('async');
-var S = require('string');
 var nconf = require('nconf');
 
 var user = require('../user');
@@ -217,7 +216,7 @@ function addTags(topicData, req, res) {
 	var postAtIndex = findPost(Math.max(0, req.params.post_index - 1));
 
 	if (postAtIndex && postAtIndex.content) {
-		description = S(postAtIndex.content).decodeHTMLEntities().stripTags().s;
+		description = utils.stripHTMLTags(utils.decodeHTMLEntities(postAtIndex.content));
 	}
 
 	if (description.length > 255) {

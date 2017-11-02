@@ -2,7 +2,6 @@
 
 
 var async = require('async');
-var S = require('string');
 var validator = require('validator');
 
 var db = require('./database');
@@ -73,7 +72,7 @@ function canGet(hook, callerUid, uid, callback) {
 }
 
 Messaging.parse = function (message, fromuid, uid, roomId, isNew, callback) {
-	message = S(message).stripTags().decodeHTMLEntities().s;
+	message = utils.decodeHTMLEntities(utils.stripHTMLTags(message));
 	message = validator.escape(String(message));
 
 	plugins.fireHook('filter:parse.raw', message, function (err, parsed) {
@@ -219,7 +218,7 @@ Messaging.getTeaser = function (uid, roomId, callback) {
 				return callback();
 			}
 			if (teaser.content) {
-				teaser.content = S(teaser.content).stripTags().decodeHTMLEntities().s;
+				teaser.content = utils.stripHTMLTags(utils.decodeHTMLEntities(teaser.content));
 				teaser.content = validator.escape(String(teaser.content));
 			}
 

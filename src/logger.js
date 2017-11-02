@@ -88,7 +88,7 @@ Logger.open = function (value) {
 
 		if (stream) {
 			stream.on('error', function (err) {
-				winston.error(err.message);
+				winston.error(err);
 			});
 		}
 	} else {

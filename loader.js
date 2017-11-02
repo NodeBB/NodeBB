@@ -158,8 +158,8 @@ Loader.restart = function () {
 
 	fs.readFile(pathToConfig, { encoding: 'utf-8' }, function (err, configFile) {
 		if (err) {
-			console.log('Error reading config : ' + err.message);
-			process.exit();
+			console.error('Error reading config');
+			throw err;
 		}
 
 		var conf = JSON.parse(configFile);
@@ -240,11 +240,12 @@ fs.open(path.join(__dirname, 'config.json'), 'r', function (err) {
 			Loader.start,
 		], function (err) {
 			if (err) {
-				console.log('[loader] Error during startup: ' + err.message);
+				console.error('[loader] Error during startup');
+				throw err;
 			}
 		});
 	} else {
 		// No config detected, kickstart web installer
-		require('child_process').fork('app');
+		fork('app');
 	}
 });

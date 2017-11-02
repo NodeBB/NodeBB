@@ -1,7 +1,6 @@
 'use strict';
 
 var async = require('async');
-var S = require('string');
 
 var db = require('../database');
 var user = require('../user');
@@ -73,7 +72,7 @@ module.exports = function (Messaging) {
 							return next(err);
 						}
 						message.content = result;
-						message.cleanedContent = S(result).stripTags().decodeHTMLEntities().s;
+						message.cleanedContent = utils.stripHTMLTags(utils.decodeHTMLEntities(result));
 						next(null, message);
 					});
 				}, next);

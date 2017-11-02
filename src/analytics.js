@@ -100,7 +100,7 @@ Analytics.writeData = function (callback) {
 
 	async.parallel(dbQueue, function (err) {
 		if (err) {
-			winston.error('[analytics] Encountered error while writing analytics to data store: ' + err.message);
+			winston.error('[analytics] Encountered error while writing analytics to data store', err);
 		}
 		callback(err);
 	});

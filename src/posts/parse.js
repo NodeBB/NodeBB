@@ -4,12 +4,12 @@ var async = require('async');
 var nconf = require('nconf');
 var url = require('url');
 var winston = require('winston');
-var S = require('string');
 
 var meta = require('../meta');
 var cache = require('./cache');
 var plugins = require('../plugins');
 var translator = require('../translator');
+var utils = require('../utils');
 
 module.exports = function (Posts) {
 	Posts.urlRegex = {
@@ -82,7 +82,6 @@ module.exports = function (Posts) {
 
 	function sanitizeSignature(signature) {
 		signature = translator.escape(signature);
-		var string = S(signature);
 		var tagsToStrip = [];
 
 		if (parseInt(meta.config['signatures:disableLinks'], 10) === 1) {
@@ -93,6 +92,6 @@ module.exports = function (Posts) {
 			tagsToStrip.push('img');
 		}
 
-		return tagsToStrip.length ? string.stripTags.apply(string, tagsToStrip).s : signature;
+		return utils.stripHTMLTags(signature, tagsToStrip);
 	}
 };
