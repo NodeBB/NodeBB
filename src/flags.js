@@ -64,7 +64,7 @@ Flags.init = function (callback) {
 		},
 	}, function (err, data) {
 		if (err) {
-			winston.error('[flags/init] Could not retrieve filters (error: ' + err.message + ')');
+			winston.error('[flags/init] Could not retrieve filters', err);
 			data.filters = {};
 		}
 

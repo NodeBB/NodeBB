@@ -1,6 +1,5 @@
 'use strict';
 
-var winston = require('winston');
 var path = require('path');
 var async = require('async');
 var fs = require('fs');
@@ -182,11 +181,5 @@ exports.build = function buildLanguages(callback) {
 		},
 		getTranslationTree,
 		writeLanguageFiles,
-	], function (err) {
-		if (err) {
-			winston.error('[build] Language build failed: ' + err.message);
-			throw err;
-		}
-		callback();
-	});
+	], callback);
 };

@@ -396,7 +396,7 @@ Notifications.prune = function (callback) {
 		},
 	], function (err) {
 		if (err) {
-			winston.error('Encountered error pruning notifications: ' + err.message);
+			winston.error('Encountered error pruning notifications', err);
 		}
 		callback(err);
 	});

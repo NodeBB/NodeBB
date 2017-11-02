@@ -43,13 +43,13 @@ if (nconf.get('ssl')) {
 module.exports.server = server;
 
 server.on('error', function (err) {
-	winston.error(err);
 	if (err.code === 'EADDRINUSE') {
-		winston.error('NodeBB address in use, exiting...');
-		process.exit(1);
+		winston.error('NodeBB address in use, exiting...', err);
 	} else {
-		throw err;
+		winston.error(err);
 	}
+
+	throw err;
 });
 
 module.exports.listen = function (callback) {
@@ -301,13 +301,12 @@ function listen(callback) {
 	if (isSocket) {
 		oldUmask = process.umask('0000');
 		module.exports.testSocket(socketPath, function (err) {
-			if (!err) {
-				server.listen.apply(server, args);
-			} else {
-				winston.error('[startup] NodeBB was unable to secure domain socket access (' + socketPath + ')');
-				winston.error('[startup] ' + err.message);
-				process.exit();
+			if (err) {
+				winston.error('[startup] NodeBB was unable to secure domain socket access (' + socketPath + ')', err);
+				throw err;
 			}
+
+			server.listen.apply(server, args);
 		});
 	} else {
 		server.listen.apply(server, args);

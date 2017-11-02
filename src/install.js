@@ -542,7 +542,7 @@ install.save = function (server_conf, callback) {
 
 	fs.writeFile(serverConfigPath, JSON.stringify(server_conf, null, 4), function (err) {
 		if (err) {
-			winston.error('Error saving server configuration! ' + err.message);
+			winston.error('Error saving server configuration!', err);
 			return callback(err);
 		}
 

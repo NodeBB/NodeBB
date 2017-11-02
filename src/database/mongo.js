@@ -104,7 +104,7 @@ mongoModule.init = function (callback) {
 
 	mongoClient.connect(connString, connOptions, function (err, _db) {
 		if (err) {
-			winston.error('NodeBB could not connect to your Mongo database. Mongo returned the following error: ' + err.message);
+			winston.error('NodeBB could not connect to your Mongo database. Mongo returned the following error', err);
 			return callback(err);
 		}
 
@@ -164,7 +164,7 @@ mongoModule.createIndices = function (callback) {
 		async.apply(createIndex, 'objects', { expireAt: 1 }, { expireAfterSeconds: 0, background: true }),
 	], function (err) {
 		if (err) {
-			winston.error('Error creating index ' + err.message);
+			winston.error('Error creating index', err);
 			return callback(err);
 		}
 		winston.info('[database] Checking database indices done!');
