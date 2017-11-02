@@ -418,8 +418,11 @@ authenticationController.logout = function (req, res, next) {
 		},
 		function (next) {
 			req.logout();
-			req.session.destroy();
-
+			req.session.destroy(function (err) {
+				next(err);
+			});
+		},
+		function (next) {
 			user.setUserField(req.uid, 'lastonline', Date.now() - 300000, next);
 		},
 		function (next) {
