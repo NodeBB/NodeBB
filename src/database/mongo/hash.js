@@ -77,9 +77,10 @@ module.exports = function (db, module) {
 	};
 
 	module.getObjects = function (keys, callback) {
-		function getFromCache(next) {
-			setImmediate(next, null, keys.map(function (key) {
-				return _.clone(cache.get(key));
+		var cachedData = {};
+		function getFromCache() {
+			process.nextTick(callback, null, keys.map(function (key) {
+				return _.clone(cachedData[key]);
 			}));
 		}
 
@@ -88,7 +89,11 @@ module.exports = function (db, module) {
 		}
 
 		var nonCachedKeys = keys.filter(function (key) {
-			return cache.get(key) === undefined;
+			var data = cache.get(key);
+			if (data !== undefined) {
+				cachedData[key] = data;
+			}
+			return data === undefined;
 		});
 
 		var hits = keys.length - nonCachedKeys.length;
@@ -97,7 +102,7 @@ module.exports = function (db, module) {
 		cache.misses += misses;
 
 		if (!nonCachedKeys.length) {
-			return getFromCache(callback);
+			return getFromCache();
 		}
 
 		db.collection('objects').find({ _key: { $in: nonCachedKeys } }, { _id: 0 }).toArray(function (err, data) {
@@ -107,10 +112,11 @@ module.exports = function (db, module) {
 
 			var map = helpers.toMap(data);
 			nonCachedKeys.forEach(function (key) {
-				cache.set(key, map[key] || null);
+				cachedData[key] = map[key] || null;
+				cache.set(key, cachedData[key]);
 			});
 
-			getFromCache(callback);
+			getFromCache();
 		});
 	};
 
