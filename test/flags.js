@@ -63,10 +63,10 @@ describe('Flags', function () {
 					type: 'post',
 					description: 'Test flag',
 				};
-
+				assert(flagData);
 				for (var key in compare) {
 					if (compare.hasOwnProperty(key)) {
-						assert.ok(flagData[key]);
+						assert.ok(flagData[key], 'undefined key ' + key);
 						assert.equal(flagData[key], compare[key]);
 					}
 				}
@@ -140,10 +140,10 @@ describe('Flags', function () {
 					description: 'Test flag',
 					state: 'open',
 				};
-
+				assert(flagData);
 				for (var key in compare) {
 					if (compare.hasOwnProperty(key)) {
-						assert.ok(flagData[key]);
+						assert.ok(flagData[key], 'undefined key ' + key);
 						assert.equal(flagData[key], compare[key]);
 					}
 				}
