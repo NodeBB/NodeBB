@@ -12,6 +12,7 @@ var helpers = require('./helpers');
 
 var Controllers = module.exports;
 
+Controllers.home = require('./home');
 Controllers.topics = require('./topics');
 Controllers.posts = require('./posts');
 Controllers.categories = require('./categories');
@@ -34,45 +35,6 @@ Controllers.sitemap = require('./sitemap');
 Controllers.osd = require('./osd');
 Controllers['404'] = require('./404');
 Controllers.errors = require('./errors');
-
-Controllers.home = function (req, res, next) {
-	if (req.path !== '/' && req.path !== '/api/') {
-		return next();
-	}
-
-	var route = (meta.config.homePageRoute || meta.config.homePageCustom || '').replace(/^\/+/, '') || 'categories';
-
-	function after() {
-		var hook = 'action:homepage.get:' + route;
-
-		if (plugins.hasListeners(hook)) {
-			return plugins.fireHook(hook, {
-				req: req,
-				res: res,
-				next: next,
-			});
-		}
-
-		req.url = req.path + route;
-		next();
-	}
-
-	if (parseInt(meta.config.allowUserHomePage, 10) === 1) {
-		user.getSettings(req.uid, function (err, settings) {
-			if (err) {
-				return next(err);
-			}
-
-			if (settings.homePageRoute !== 'undefined' && settings.homePageRoute !== 'none') {
-				route = settings.homePageRoute || route;
-			}
-
-			after();
-		});
-	} else {
-		after();
-	}
-};
 
 Controllers.reset = function (req, res, next) {
 	if (req.params.code) {
