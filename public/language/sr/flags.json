@@ -54,7 +54,7 @@
 	"modal-body": "Наведите разлог за означавање %1 %2 за проверу. Алтернативно, користите један од тастера за брзу пријаву ко је применљиво.",
 	"modal-reason-spam": "Непожељно",
 	"modal-reason-offensive": "Увредљиво",
-	"modal-reason-other": "Other (specify below)",
+	"modal-reason-other": "Остало (наведите испод)",
 	"modal-reason-custom": "Разлог за пријаву овог садржаја...",
 	"modal-submit": "Пошаљи извештај",
 	"modal-submit-success": "Садржај је означен за модерацију.",
