@@ -22,8 +22,6 @@ var helpers = require('./helpers');
 var setupPageRoute = helpers.setupPageRoute;
 
 function mainRoutes(app, middleware, controllers) {
-	setupPageRoute(app, '/', middleware, [], controllers.home);
-
 	var loginRegisterMiddleware = [middleware.redirectToAccountIfLoggedIn];
 
 	setupPageRoute(app, '/login', middleware, loginRegisterMiddleware, controllers.login);
@@ -122,6 +120,9 @@ module.exports = function (app, middleware, hotswapIds, callback) {
 	app.all(relativePath + '(/+admin|/+admin/*?)', ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login?local=1'), middleware.applyCSRF, middleware.isAdmin);
 
 	app.use(middleware.stripLeadingSlashes);
+
+	// handle custom homepage routes
+	app.use(relativePath, controllers.home);
 
 	adminRoutes(router, middleware, controllers);
 	metaRoutes(router, middleware, controllers);

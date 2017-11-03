@@ -3,7 +3,6 @@
 var async = require('async');
 var nconf = require('nconf');
 var validator = require('validator');
-var request = require('request');
 
 var meta = require('../meta');
 var user = require('../user');
@@ -37,49 +36,42 @@ Controllers['404'] = require('./404');
 Controllers.errors = require('./errors');
 
 Controllers.home = function (req, res, next) {
-	var route = meta.config.homePageRoute || (meta.config.homePageCustom || '').replace(/^\/+/, '') || 'categories';
+	if (req.path !== '/' && req.path !== '/api/') {
+		return next();
+	}
 
-	async.waterfall([
-		function (next) {
-			user.getSettings(req.uid, next);
-		},
-		function (settings, next) {
-			if (parseInt(meta.config.allowUserHomePage, 10) === 1 && settings.homePageRoute !== 'undefined' && settings.homePageRoute !== 'none') {
+	var route = (meta.config.homePageRoute || meta.config.homePageCustom || '').replace(/^\/+/, '') || 'categories';
+
+	function after() {
+		var hook = 'action:homepage.get:' + route;
+
+		if (plugins.hasListeners(hook)) {
+			return plugins.fireHook(hook, {
+				req: req,
+				res: res,
+				next: next,
+			});
+		}
+
+		req.url = req.path + route;
+		next();
+	}
+
+	if (parseInt(meta.config.allowUserHomePage, 10) === 1) {
+		user.getSettings(req.uid, function (err, settings) {
+			if (err) {
+				return next(err);
+			}
+
+			if (settings.homePageRoute !== 'undefined' && settings.homePageRoute !== 'none') {
 				route = settings.homePageRoute || route;
 			}
 
-			var hook = 'action:homepage.get:' + route;
-
-			if (plugins.hasListeners(hook)) {
-				return plugins.fireHook(hook, {
-					req: req,
-					res: res,
-					next: next,
-				});
-			}
-
-			if (route === 'categories' || route === '/') {
-				Controllers.categories.list(req, res, next);
-			} else if (route === 'unread') {
-				Controllers.unread.get(req, res, next);
-			} else if (route === 'recent') {
-				Controllers.recent.get(req, res, next);
-			} else if (route === 'popular') {
-				Controllers.popular.get(req, res, next);
-			} else {
-				var match = /^category\/(\d+)\/(.*)$/.exec(route);
-
-				if (match) {
-					req.params.topic_index = '1';
-					req.params.category_id = match[1];
-					req.params.slug = match[2];
-					Controllers.category.get(req, res, next);
-				} else {
-					request.get(nconf.get('url') + '/' + route).pipe(res);
-				}
-			}
-		},
-	], next);
+			after();
+		});
+	} else {
+		after();
+	}
 };
 
 Controllers.reset = function (req, res, next) {
