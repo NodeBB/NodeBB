@@ -14,6 +14,7 @@ var groups = require('../src/groups');
 var meta = require('../src/meta');
 var translator = require('../src/translator');
 var privileges = require('../src/privileges');
+var plugins = require('../src/plugins');
 var helpers = require('./helpers');
 
 describe('Controllers', function () {
@@ -107,6 +108,37 @@ describe('Controllers', function () {
 		});
 	});
 
+	it('should redirect to custom homepage', function (done) {
+		meta.config.homePageRoute = 'groups';
+		request(nconf.get('url'), function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should render custom homepage with hook', function (done) {
+		function hookMethod(hookData) {
+			assert(hookData.req);
+			assert(hookData.res);
+			assert(hookData.next);
+			hookData.res.json('works');
+		}
+		plugins.registerHook('myTestPlugin', {
+			hook: 'action:homepage.get:custom',
+			method: hookMethod,
+		});
+		meta.config.homePageRoute = 'custom';
+		request(nconf.get('url'), function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert.equal(body, '"works"');
+			plugins.unregisterHook('myTestPlugin', 'action:homepage.get:custom', hookMethod);
+			done();
+		});
+	});
+
 	it('should load /reset without code', function (done) {
 		request(nconf.get('url') + '/reset', function (err, res, body) {
 			assert.ifError(err);
@@ -144,7 +176,6 @@ describe('Controllers', function () {
 	});
 
 	it('should load /register/complete', function (done) {
-		var plugins = require('../src/plugins');
 		function hookMethod(data, next) {
 			data.interstitials.push({ template: 'topic.tpl', data: {} });
 			next(null, data);

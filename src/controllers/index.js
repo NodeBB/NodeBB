@@ -38,72 +38,75 @@ Controllers.errors = require('./errors');
 Controllers.home = function (req, res, next) {
 	var route = meta.config.homePageRoute || (meta.config.homePageCustom || '').replace(/^\/+/, '') || 'categories';
 
-	user.getSettings(req.uid, function (err, settings) {
-		if (err) {
-			return next(err);
-		}
-		if (parseInt(meta.config.allowUserHomePage, 10) === 1 && settings.homePageRoute !== 'undefined' && settings.homePageRoute !== 'none') {
-			route = settings.homePageRoute || route;
-		}
-
-		var hook = 'action:homepage.get:' + route;
-
-		if (plugins.hasListeners(hook)) {
-			return plugins.fireHook(hook, {
-				req: req,
-				res: res,
-				next: next,
-			});
-		}
-
-		if (route === 'categories' || route === '/') {
-			Controllers.categories.list(req, res, next);
-		} else if (route === 'unread') {
-			Controllers.unread.get(req, res, next);
-		} else if (route === 'recent') {
-			Controllers.recent.get(req, res, next);
-		} else if (route === 'popular') {
-			Controllers.popular.get(req, res, next);
-		} else {
-			var match = /^category\/(\d+)\/(.*)$/.exec(route);
-
-			if (match) {
-				req.params.topic_index = '1';
-				req.params.category_id = match[1];
-				req.params.slug = match[2];
-				Controllers.category.get(req, res, next);
-			} else {
-				res.redirect(route);
+	async.waterfall([
+		function (next) {
+			user.getSettings(req.uid, next);
+		},
+		function (settings, next) {
+			if (parseInt(meta.config.allowUserHomePage, 10) === 1 && settings.homePageRoute !== 'undefined' && settings.homePageRoute !== 'none') {
+				route = settings.homePageRoute || route;
 			}
-		}
-	});
+
+			var hook = 'action:homepage.get:' + route;
+
+			if (plugins.hasListeners(hook)) {
+				return plugins.fireHook(hook, {
+					req: req,
+					res: res,
+					next: next,
+				});
+			}
+
+			if (route === 'categories' || route === '/') {
+				Controllers.categories.list(req, res, next);
+			} else if (route === 'unread') {
+				Controllers.unread.get(req, res, next);
+			} else if (route === 'recent') {
+				Controllers.recent.get(req, res, next);
+			} else if (route === 'popular') {
+				Controllers.popular.get(req, res, next);
+			} else {
+				var match = /^category\/(\d+)\/(.*)$/.exec(route);
+
+				if (match) {
+					req.params.topic_index = '1';
+					req.params.category_id = match[1];
+					req.params.slug = match[2];
+					Controllers.category.get(req, res, next);
+				} else {
+					helpers.redirect(res, route);
+				}
+			}
+		},
+	], next);
 };
 
 Controllers.reset = function (req, res, next) {
 	if (req.params.code) {
-		user.reset.validate(req.params.code, function (err, valid) {
-			if (err) {
-				return next(err);
-			}
-			res.render('reset_code', {
-				valid: valid,
-				displayExpiryNotice: req.session.passwordExpired,
-				code: req.params.code,
-				minimumPasswordLength: parseInt(meta.config.minimumPasswordLength, 10),
-				breadcrumbs: helpers.buildBreadcrumbs([
-					{
-						text: '[[reset_password:reset_password]]',
-						url: '/reset',
-					},
-					{
-						text: '[[reset_password:update_password]]',
-					},
-				]),
-				title: '[[pages:reset]]',
-			});
-
-			delete req.session.passwordExpired;
-		});
+		async.waterfall([
+			function (next) {
+				user.reset.validate(req.params.code, next);
+			},
+			function (valid) {
+				res.render('reset_code', {
+					valid: valid,
+					displayExpiryNotice: req.session.passwordExpired,
+					code: req.params.code,
+					minimumPasswordLength: parseInt(meta.config.minimumPasswordLength, 10),
+					breadcrumbs: helpers.buildBreadcrumbs([
+						{
+							text: '[[reset_password:reset_password]]',
+							url: '/reset',
+						},
+						{
+							text: '[[reset_password:update_password]]',
+						},
+					]),
+					title: '[[pages:reset]]',
+				});
+				delete req.session.passwordExpired;
+			},
+		], next);
 	} else {
 		res.render('reset', {
 			code: null,
