@@ -3,6 +3,7 @@
 var async = require('async');
 var nconf = require('nconf');
 var validator = require('validator');
+var request = require('request');
 
 var meta = require('../meta');
 var user = require('../user');
@@ -74,7 +75,7 @@ Controllers.home = function (req, res, next) {
 					req.params.slug = match[2];
 					Controllers.category.get(req, res, next);
 				} else {
-					helpers.redirect(res, route);
+					request.get(nconf.get('url') + '/' + route).pipe(res);
 				}
 			}
 		},

@@ -118,6 +118,16 @@ describe('Controllers', function () {
 		});
 	});
 
+	it('should 404 if custom homepage does not exist', function (done) {
+		meta.config.homePageRoute = 'thisroutedoesnotexist';
+		request(nconf.get('url'), function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 404);
+			assert(body);
+			done();
+		});
+	});
+
 	it('should render custom homepage with hook', function (done) {
 		function hookMethod(hookData) {
 			assert(hookData.req);
