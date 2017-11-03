@@ -75,7 +75,7 @@ define('forum/chats', [
 
 		Chats.addRenameHandler(ajaxify.data.roomId, $('[component="chat/room/name"]'));
 		Chats.addScrollHandler(ajaxify.data.roomId, ajaxify.data.uid, $('.chat-content'));
-		Chats.addCharactersLeftHandler(components.get('chat/input'));
+		Chats.addCharactersLeftHandler($('[component="chat/main-wrapper"]'));
 	};
 
 	Chats.addScrollHandler = function (roomId, uid, el) {
@@ -116,9 +116,10 @@ define('forum/chats', [
 		});
 	};
 
-	Chats.addCharactersLeftHandler = function (element) {
+	Chats.addCharactersLeftHandler = function (parent) {
+		var element = parent.find('[component="chat/input"]');
 		element.on('keyup', function () {
-			$('[component="chat/message/length"]').text(element.val().length);
+			parent.find('[component="chat/message/length"]').text(element.val().length);
 		});
 	};
 
