@@ -14,6 +14,21 @@ var Configs = module.exports;
 
 Meta.config = {};
 
+function serialize(config) {
+	var serialized = {};
+	Object.keys(config).forEach(function (key) {
+		serialized[key] = JSON.stringify(config[key]);
+	});
+	return serialized;
+}
+function deserialize(config) {
+	var deserialized = {};
+	Object.keys(config).forEach(function (key) {
+		deserialized[key] = JSON.parse(config[key]);
+	});
+	return deserialized;
+}
+
 Configs.init = function (callback) {
 	var config;
 	async.waterfall([
@@ -34,19 +49,49 @@ Configs.init = function (callback) {
 
 Configs.list = function (callback) {
 	db.getObject('config', function (err, config) {
-		config = config || {};
+		if (err) {
+			return callback(err);
+		}
+
+		try {
+			config = deserialize(config || {});
+		} catch (e) {
+			return callback(e);
+		}
 		config.version = nconf.get('version');
 		config.registry = nconf.get('registry');
-		callback(err, config);
+		callback(null, config);
 	});
 };
 
 Configs.get = function (field, callback) {
-	db.getObjectField('config', field, callback);
+	db.getObjectField('config', field, function (err, value) {
+		if (err) {
+			return callback(err);
+		}
+
+		try {
+			value = JSON.parse(value);
+		} catch (e) {
+			return callback(e);
+		}
+		callback(null, value);
+	});
 };
 
 Configs.getFields = function (fields, callback) {
-	db.getObjectFields('config', fields, callback);
+	db.getObjectFields('config', fields, function (err, values) {
+		if (err) {
+			return callback(err);
+		}
+
+		try {
+			values = deserialize(values || {});
+		} catch (e) {
+			return callback(e);
+		}
+		callback(null, values);
+	});
 };
 
 Configs.set = function (field, value, callback) {
@@ -67,13 +112,29 @@ Configs.setMultiple = function (data, callback) {
 			processConfig(data, next);
 		},
 		function (next) {
-			db.setObject('config', data, next);
+			db.setObject('config', serialize(data), next);
 		},
 		function (next) {
 			updateConfig(data);
 			setImmediate(next);
 		},
 	], callback);
+};
+
+Configs.setOnEmpty = function (values, callback) {
+	async.waterfall([
+		function (next) {
+			db.getObject('config', next);
+		},
+		function (data, next) {
+			var config = Object.assign({}, values, deserialize(data || {}));
+			db.setObject('config', serialize(config), next);
+		},
+	], callback);
+};
+
+Configs.remove = function (field, callback) {
+	db.deleteObjectField('config', field, callback);
 };
 
 function processConfig(data, callback) {
@@ -129,29 +190,3 @@ pubsub.on('config:update', function onConfigReceived(config) {
 		updateLocalConfig(config);
 	}
 });
-
-Configs.setOnEmpty = function (values, callback) {
-	async.waterfall([
-		function (next) {
-			db.getObject('config', next);
-		},
-		function (data, next) {
-			data = data || {};
-			var empty = {};
-			Object.keys(values).forEach(function (key) {
-				if (!data.hasOwnProperty(key)) {
-					empty[key] = values[key];
-				}
-			});
-			if (Object.keys(empty).length) {
-				db.setObject('config', empty, next);
-			} else {
-				setImmediate(next);
-			}
-		},
-	], callback);
-};
-
-Configs.remove = function (field, callback) {
-	db.deleteObjectField('config', field, callback);
-};

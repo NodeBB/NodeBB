@@ -171,7 +171,7 @@ describe('meta', function () {
 		it('should not set config if not empty', function (done) {
 			meta.configs.setOnEmpty({ someField1: 'foo' }, function (err) {
 				assert.ifError(err);
-				db.getObjectField('config', 'someField1', function (err, value) {
+				meta.configs.get('someField1', function (err, value) {
 					assert.ifError(err);
 					assert.equal(value, 'someValue1');
 					done();
