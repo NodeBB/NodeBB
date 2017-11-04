@@ -121,11 +121,7 @@ function updateConfig(config) {
 }
 
 function updateLocalConfig(config) {
-	for (var field in config) {
-		if (config.hasOwnProperty(field)) {
-			Meta.config[field] = config[field];
-		}
-	}
+	Object.assign(Meta.config, config);
 }
 
 pubsub.on('config:update', function onConfigReceived(config) {

@@ -466,7 +466,7 @@ var commands = {
 					next();
 				},
 				function (next) {
-					process.stdout.write('1. '.bold + 'Bringing base dependencies up to date... '.yellow);
+					process.stdout.write('1. '.bold + 'Bringing base dependencies up to date... \n'.yellow);
 					packageInstall.npmInstallProduction();
 					next();
 				},

@@ -69,62 +69,80 @@ describe('Controllers', function () {
 	});
 
 	it('should load unread as home route', function (done) {
-		meta.config.homePageRoute = 'unread';
-		request(nconf.get('url'), function (err, res, body) {
+		meta.configs.set('homePageRoute', 'unread', function (err) {
 			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
+
+			request(nconf.get('url'), function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
 		});
 	});
 
 	it('should load recent as home route', function (done) {
-		meta.config.homePageRoute = 'recent';
-		request(nconf.get('url'), function (err, res, body) {
+		meta.configs.set('homePageRoute', 'recent', function (err) {
 			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
+
+			request(nconf.get('url'), function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
 		});
 	});
 
 	it('should load popular as home route', function (done) {
-		meta.config.homePageRoute = 'popular';
-		request(nconf.get('url'), function (err, res, body) {
+		meta.configs.set('homePageRoute', 'popular', function (err) {
 			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
+
+			request(nconf.get('url'), function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
 		});
 	});
 
 	it('should load category as home route', function (done) {
-		meta.config.homePageRoute = 'category/1/test-category';
-		request(nconf.get('url'), function (err, res, body) {
+		meta.configs.set('homePageRoute', 'category/1/test-category', function (err) {
 			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
+
+			request(nconf.get('url'), function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
 		});
 	});
 
 	it('should redirect to custom homepage', function (done) {
-		meta.config.homePageRoute = 'groups';
-		request(nconf.get('url'), function (err, res, body) {
+		meta.configs.set('homePageRoute', 'groups', function (err) {
 			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
+
+			request(nconf.get('url'), function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
 		});
 	});
 
 	it('should 404 if custom homepage does not exist', function (done) {
-		meta.config.homePageRoute = 'thisroutedoesnotexist';
-		request(nconf.get('url'), function (err, res, body) {
+		meta.configs.set('homePageRoute', 'this-route-does-not-exist', function (err) {
 			assert.ifError(err);
-			assert.equal(res.statusCode, 404);
-			assert(body);
-			done();
+
+			request(nconf.get('url'), function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 404);
+				assert(body);
+				done();
+			});
 		});
 	});
 
@@ -139,13 +157,16 @@ describe('Controllers', function () {
 			hook: 'action:homepage.get:custom',
 			method: hookMethod,
 		});
-		meta.config.homePageRoute = 'custom';
-		request(nconf.get('url'), function (err, res, body) {
+		meta.configs.set('homePageRoute', 'custom', function (err) {
 			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert.equal(body, '"works"');
-			plugins.unregisterHook('myTestPlugin', 'action:homepage.get:custom', hookMethod);
-			done();
+
+			request(nconf.get('url'), function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert.equal(body, '"works"');
+				plugins.unregisterHook('myTestPlugin', 'action:homepage.get:custom', hookMethod);
+				done();
+			});
 		});
 	});
 
