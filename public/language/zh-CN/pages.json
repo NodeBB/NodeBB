@@ -44,7 +44,7 @@
     "account/bookmarks": "%1 收藏的帖子",
     "account/settings": "用户设置",
     "account/watched": "主题已被 %1 关注",
-    "account/ignored": "Topics ignored by %1",
+    "account/ignored": "主题已被 %1 忽略",
     "account/upvoted": "帖子被 %1 顶过",
     "account/downvoted": "帖子被 %1 踩过",
     "account/best": "%1 发布的最佳帖子",
