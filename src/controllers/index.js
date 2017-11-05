@@ -7,7 +7,6 @@ var validator = require('validator');
 var meta = require('../meta');
 var user = require('../user');
 var plugins = require('../plugins');
-var topics = require('../topics');
 var helpers = require('./helpers');
 
 var Controllers = module.exports;
@@ -35,6 +34,7 @@ Controllers.sitemap = require('./sitemap');
 Controllers.osd = require('./osd');
 Controllers['404'] = require('./404');
 Controllers.errors = require('./errors');
+Controllers.composer = require('./composer');
 
 Controllers.reset = function (req, res, next) {
 	if (req.params.code) {
@@ -152,32 +152,30 @@ Controllers.register = function (req, res, next) {
 				},
 			}, next);
 		},
-	], function (err, termsOfUse) {
-		if (err) {
-			return next(err);
-		}
-		var loginStrategies = require('../routes/authentication').getLoginStrategies();
-		var data = {
-			'register_window:spansize': loginStrategies.length ? 'col-md-6' : 'col-md-12',
-			alternate_logins: !!loginStrategies.length,
-		};
+		function (termsOfUse) {
+			var loginStrategies = require('../routes/authentication').getLoginStrategies();
+			var data = {
+				'register_window:spansize': loginStrategies.length ? 'col-md-6' : 'col-md-12',
+				alternate_logins: !!loginStrategies.length,
+			};
 
-		data.authentication = loginStrategies;
+			data.authentication = loginStrategies;
 
-		data.minimumUsernameLength = parseInt(meta.config.minimumUsernameLength, 10);
-		data.maximumUsernameLength = parseInt(meta.config.maximumUsernameLength, 10);
-		data.minimumPasswordLength = parseInt(meta.config.minimumPasswordLength, 10);
-		data.minimumPasswordStrength = parseInt(meta.config.minimumPasswordStrength || 0, 10);
-		data.termsOfUse = termsOfUse.postData.content;
-		data.breadcrumbs = helpers.buildBreadcrumbs([{
-			text: '[[register:register]]',
-		}]);
-		data.regFormEntry = [];
-		data.error = req.flash('error')[0] || errorText;
-		data.title = '[[pages:register]]';
+			data.minimumUsernameLength = parseInt(meta.config.minimumUsernameLength, 10);
+			data.maximumUsernameLength = parseInt(meta.config.maximumUsernameLength, 10);
+			data.minimumPasswordLength = parseInt(meta.config.minimumPasswordLength, 10);
+			data.minimumPasswordStrength = parseInt(meta.config.minimumPasswordStrength || 0, 10);
+			data.termsOfUse = termsOfUse.postData.content;
+			data.breadcrumbs = helpers.buildBreadcrumbs([{
+				text: '[[register:register]]',
+			}]);
+			data.regFormEntry = [];
+			data.error = req.flash('error')[0] || errorText;
+			data.title = '[[pages:register]]';
 
-		res.render('register', data);
-	});
+			res.render('register', data);
+		},
+	], next);
 };
 
 Controllers.registerInterstitial = function (req, res, next) {
@@ -214,69 +212,6 @@ Controllers.registerInterstitial = function (req, res, next) {
 			});
 		},
 	], next);
-};
-
-Controllers.compose = function (req, res, next) {
-	plugins.fireHook('filter:composer.build', {
-		req: req,
-		res: res,
-		next: next,
-		templateData: {},
-	}, function (err, data) {
-		if (err) {
-			return next(err);
-		}
-
-		if (data.templateData.disabled) {
-			res.render('', {
-				title: '[[modules:composer.compose]]',
-			});
-		} else {
-			data.templateData.title = '[[modules:composer.compose]]';
-			res.render('compose', data.templateData);
-		}
-	});
-};
-
-Controllers.composePost = function (req, res) {
-	var body = req.body;
-	var data = {
-		uid: req.uid,
-		req: req,
-		timestamp: Date.now(),
-		content: body.content,
-	};
-	req.body.noscript = 'true';
-
-	if (!data.content) {
-		return helpers.noScriptErrors(req, res, '[[error:invalid-data]]', 400);
-	}
-
-	if (body.tid) {
-		data.tid = body.tid;
-
-		topics.reply(data, function (err, result) {
-			if (err) {
-				return helpers.noScriptErrors(req, res, err.message, 400);
-			}
-			user.updateOnlineUsers(result.uid);
-
-			res.redirect(nconf.get('relative_path') + '/post/' + result.pid);
-		});
-	} else if (body.cid) {
-		data.cid = body.cid;
-		data.title = body.title;
-		data.tags = [];
-		data.thumb = '';
-
-		topics.post(data, function (err, result) {
-			if (err) {
-				return helpers.noScriptErrors(req, res, err.message, 400);
-			}
-
-			res.redirect(nconf.get('relative_path') + '/topic/' + result.topicData.slug);
-		});
-	}
 };
 
 Controllers.confirmEmail = function (req, res) {

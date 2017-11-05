@@ -27,14 +27,14 @@ function mainRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/login', middleware, loginRegisterMiddleware, controllers.login);
 	setupPageRoute(app, '/register', middleware, loginRegisterMiddleware, controllers.register);
 	setupPageRoute(app, '/register/complete', middleware, [], controllers.registerInterstitial);
-	setupPageRoute(app, '/compose', middleware, [], controllers.compose);
+	setupPageRoute(app, '/compose', middleware, [], controllers.composer.get);
 	setupPageRoute(app, '/confirm/:code', middleware, [], controllers.confirmEmail);
 	setupPageRoute(app, '/outgoing', middleware, [], controllers.outgoing);
 	setupPageRoute(app, '/search', middleware, [], controllers.search.search);
 	setupPageRoute(app, '/reset/:code?', middleware, [middleware.delayLoading], controllers.reset);
 	setupPageRoute(app, '/tos', middleware, [], controllers.termsOfUse);
 
-	app.post('/compose', middleware.applyCSRF, controllers.composePost);
+	app.post('/compose', middleware.applyCSRF, controllers.composer.post);
 }
 
 function modRoutes(app, middleware, controllers) {

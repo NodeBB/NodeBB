@@ -1904,6 +1904,110 @@ describe('Controllers', function () {
 		});
 	});
 
+	describe('composer', function () {
+		var csrf_token;
+		var jar;
+
+		before(function (done) {
+			helpers.loginUser('foo', 'barbar', function (err, _jar) {
+				assert.ifError(err);
+				jar = _jar;
+
+				request({
+					url: nconf.get('url') + '/api/config',
+					json: true,
+					jar: jar,
+				}, function (err, response, body) {
+					assert.ifError(err);
+					csrf_token = body.csrf_token;
+					done();
+				});
+			});
+		});
+
+		it('should load the composer route', function (done) {
+			request(nconf.get('url') + '/api/compose', { json: true }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body.title);
+				assert(body.template);
+				assert.equal(body.url, '/compose');
+				done();
+			});
+		});
+
+		it('should load the composer route if disabled by plugin', function (done) {
+			function hookMethod(hookData, callback) {
+				hookData.templateData.disabled = true;
+				callback(null, hookData);
+			}
+
+			plugins.registerHook('myTestPlugin', {
+				hook: 'filter:composer.build',
+				method: hookMethod,
+			});
+
+			request(nconf.get('url') + '/api/compose', { json: true }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body.title);
+				assert.strictEqual(body.template.name, '');
+				assert.strictEqual(body.url, '/compose');
+
+				plugins.unregisterHook('myTestPlugin', 'filter:composer.build', hookMethod);
+				done();
+			});
+		});
+
+		it('should error with invalid data', function (done) {
+			request.post(nconf.get('url') + '/compose', {
+				form: {
+					content: 'a new reply',
+				},
+				jar: jar,
+				headers: {
+					'x-csrf-token': csrf_token,
+				},
+			}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 400);
+				done();
+			});
+		});
+
+		it('should create a new topic and reply by composer route', function (done) {
+			var data = {
+				cid: cid,
+				title: 'no js is good',
+				content: 'a topic with noscript',
+			};
+			request.post(nconf.get('url') + '/compose', {
+				form: data,
+				jar: jar,
+				headers: {
+					'x-csrf-token': csrf_token,
+				},
+			}, function (err, res) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 302);
+				request.post(nconf.get('url') + '/compose', {
+					form: {
+						tid: tid,
+						content: 'a new reply',
+					},
+					jar: jar,
+					headers: {
+						'x-csrf-token': csrf_token,
+					},
+				}, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 302);
+					done();
+				});
+			});
+		});
+	});
+
 	after(function (done) {
 		var analytics = require('../src/analytics');
 		analytics.writeData(done);
