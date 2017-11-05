@@ -38,6 +38,7 @@ Errors.log404 = function (route, callback) {
 	if (!route) {
 		return setImmediate(callback);
 	}
+	route = route.slice(0, 512);
 	route = route.replace(/\/$/, '');	// remove trailing slashes
 	analytics.increment('errors:404');
 	counters[route] = counters[route] || 0;
