@@ -1971,7 +1971,19 @@ describe('Controllers', function () {
 			}, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 400);
-				done();
+				request.post(nconf.get('url') + '/compose', {
+					form: {
+						tid: tid,
+					},
+					jar: jar,
+					headers: {
+						'x-csrf-token': csrf_token,
+					},
+				}, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 400);
+					done();
+				});
 			});
 		});
 
