@@ -442,7 +442,7 @@ describe('Flags', function () {
 		it('should retrieve a list of notes, from newest to oldest', function (done) {
 			Flags.getNotes(1, function (err, notes) {
 				assert.ifError(err);
-				assert(notes[0].datetime > notes[1].datetime);
+				assert(notes[0].datetime > notes[1].datetime, notes[0].datetime + '-' + notes[1].datetime);
 				assert.strictEqual('this is the second note', notes[0].content);
 				done();
 			});
