@@ -44,6 +44,7 @@
     "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "使用者設定",
     "account/watched": "%1 所觀看的主題",
+    "account/ignored": "Topics ignored by %1",
     "account/upvoted": "%1 所正向投票的張貼",
     "account/downvoted": "%1 所負向投票的張貼",
     "account/best": "由 %1 建立的最佳張貼文",

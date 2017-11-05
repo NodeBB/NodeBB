@@ -2,7 +2,6 @@
 'use strict';
 
 var async = require('async');
-var S = require('string');
 
 var utils = require('../utils');
 var meta = require('../meta');
@@ -61,7 +60,7 @@ module.exports = function (User) {
 					} else if (field === 'fullname') {
 						return updateFullname(updateUid, data.fullname, next);
 					} else if (field === 'signature') {
-						data[field] = S(data[field]).stripTags().s;
+						data[field] = utils.stripHTMLTags(data[field]);
 					}
 
 					User.setUserField(updateUid, field, data[field], next);

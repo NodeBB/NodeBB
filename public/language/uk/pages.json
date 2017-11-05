@@ -44,6 +44,7 @@
     "account/bookmarks": "Закладки %1",
     "account/settings": "Налаштування користувача",
     "account/watched": "Теми за якими стежить %1",
+    "account/ignored": "Topics ignored by %1",
     "account/upvoted": "Пости за які проголосував %1",
     "account/downvoted": "Пости проти яких проголосував %1",
     "account/best": "Найкращі пости %1",

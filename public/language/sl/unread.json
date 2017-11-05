@@ -9,5 +9,7 @@
     "topics_marked_as_read.success": "Teme označene kot prebrane!",
     "all-topics": "Vse teme",
     "new-topics": "Nove teme",
-    "watched-topics": "Spremljane teme"
+    "watched-topics": "Spremljane teme",
+    "unreplied-topics": "Unreplied Topics",
+    "multiple-categories-selected": "Multiple Selected"
 }

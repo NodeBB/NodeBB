@@ -9,5 +9,7 @@
     "topics_marked_as_read.success": "נושאים שמסומנים כנקרא!",
     "all-topics": "כל הנושאים",
     "new-topics": "נושאים חדשים",
-    "watched-topics": "נושאים שאתה עוקב אחריהם"
+    "watched-topics": "נושאים שאתה עוקב אחריהם",
+    "unreplied-topics": "Unreplied Topics",
+    "multiple-categories-selected": "Multiple Selected"
 }

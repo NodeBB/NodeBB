@@ -132,7 +132,7 @@ module.exports = function (middleware) {
 			try {
 				p = decodeURIComponent(p);
 			} catch (err) {
-				winston.error(err.message);
+				winston.error(err);
 				p = '';
 			}
 			p = validator.escape(String(p));

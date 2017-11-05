@@ -9,5 +9,7 @@
     "topics_marked_as_read.success": "Sujets marqués comme lus !",
     "all-topics": "Tous les sujets",
     "new-topics": "Nouveau sujet",
-    "watched-topics": "Abonnements"
+    "watched-topics": "Abonnements",
+    "unreplied-topics": "Unreplied Topics",
+    "multiple-categories-selected": "Multiple Selected"
 }

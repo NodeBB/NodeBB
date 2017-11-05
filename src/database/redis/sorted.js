@@ -180,6 +180,7 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.sortedSetIncrBy = function (key, increment, value, callback) {
+		callback = callback || helpers.noop;
 		redisClient.zincrby(key, increment, value, function (err, newValue) {
 			callback(err, !err ? parseFloat(newValue) : undefined);
 		});

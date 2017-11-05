@@ -9,5 +9,7 @@
     "topics_marked_as_read.success": "Teemad märgitud loetuks!",
     "all-topics": "Kõik teemad",
     "new-topics": "Uued teemad",
-    "watched-topics": "Vaadatud teemad"
+    "watched-topics": "Vaadatud teemad",
+    "unreplied-topics": "Unreplied Topics",
+    "multiple-categories-selected": "Multiple Selected"
 }

@@ -44,6 +44,7 @@
     "account/bookmarks": "%1 сообщений в закладках",
     "account/settings": "Настройки учётной записи",
     "account/watched": "Тему просмотрели %1",
+    "account/ignored": "Topics ignored by %1",
     "account/upvoted": "Рейтинг записей поднят %1",
     "account/downvoted": "Рейтинг записей снижен %1",
     "account/best": "Лучшие записи участника %1",

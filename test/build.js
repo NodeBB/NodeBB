@@ -1,6 +1,5 @@
 'use strict';
 
-var string = require('string');
 var path = require('path');
 var fs = require('fs');
 var assert = require('assert');

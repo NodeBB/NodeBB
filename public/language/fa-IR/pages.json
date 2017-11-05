@@ -44,6 +44,7 @@
     "account/bookmarks": "%1 پست نشانک گذاری شده است",
     "account/settings": "تنظیمات کاربر",
     "account/watched": "موضوع های دیده شده توسط \"%1\"",
+    "account/ignored": "Topics ignored by %1",
     "account/upvoted": "رای مثبت داده شده به پست ها توسط  %1",
     "account/downvoted": "رای منفی داده شده به پست ها توسط %1",
     "account/best": "بهترین پست های ارسال شده توسط %1",

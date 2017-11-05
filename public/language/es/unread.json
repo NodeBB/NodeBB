@@ -9,5 +9,7 @@
     "topics_marked_as_read.success": "¡Temas marcados como leídos!",
     "all-topics": "Todos los Temas",
     "new-topics": "Temas Nuevos",
-    "watched-topics": "Temas Suscritos"
+    "watched-topics": "Temas Suscritos",
+    "unreplied-topics": "Unreplied Topics",
+    "multiple-categories-selected": "Multiple Selected"
 }

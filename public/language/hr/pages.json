@@ -44,6 +44,7 @@
     "account/bookmarks": "%1 zabilježene objave",
     "account/settings": "Korisničke postavke",
     "account/watched": "Teme prati %1",
+    "account/ignored": "Topics ignored by %1",
     "account/upvoted": "%1 glasao za",
     "account/downvoted": "%1 glasao protiv",
     "account/best": "Najbolje objave od %1",

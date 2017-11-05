@@ -6,5 +6,6 @@
 	"title": "标题",
 	"content": "内容",
 	"posted": "发布",
-	"reply-to": "回复\"%1\""
+	"reply-to": "回复\"%1\"",
+	"content-editable": "发布之前，您可以点击内容进行编辑。"
 }

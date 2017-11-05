@@ -44,6 +44,7 @@
     "account/bookmarks": "%1's zazáložkované příspěvky",
     "account/settings": "Uživatelské nastavení",
     "account/watched": "Témata sledovaná uživatelem %1",
+    "account/ignored": "Topics ignored by %1",
     "account/upvoted": "Souhlasí s příspěvkem %1",
     "account/downvoted": "Nesouhlasí s příspěvkem %1",
     "account/best": "Nejlepší příspěvky od %1",

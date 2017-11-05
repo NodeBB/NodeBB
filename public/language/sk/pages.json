@@ -44,6 +44,7 @@
     "account/bookmarks": "%1 príspevky v záložkach",
     "account/settings": "Užívateľské nastavenia",
     "account/watched": "Témy sledovalo %1",
+    "account/ignored": "Topics ignored by %1",
     "account/upvoted": "Príspevky, ktorým užívateľ %1 dal hlas",
     "account/downvoted": "Príspevky, ktorým užívateľ %1 odobral hlas",
     "account/best": "Najlepšie príspevky vytvorené užívateľom %1",

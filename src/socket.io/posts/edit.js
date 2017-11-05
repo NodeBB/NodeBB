@@ -3,12 +3,12 @@
 var async = require('async');
 var validator = require('validator');
 var _ = require('lodash');
-var S = require('string');
 
 var posts = require('../../posts');
 var groups = require('../../groups');
 var events = require('../../events');
 var meta = require('../../meta');
+var utils = require('../../utils');
 var websockets = require('../index');
 
 module.exports = function (SocketPosts) {
@@ -20,7 +20,7 @@ module.exports = function (SocketPosts) {
 		}
 
 		// Trim and remove HTML (latter for composers that send in HTML, like redactor)
-		var contentLen = S(data.content).stripTags().s.trim().length;
+		var contentLen = utils.stripHTMLTags(data.content).trim().length;
 
 		if (data.title && data.title.length < parseInt(meta.config.minimumTitleLength, 10)) {
 			return callback(new Error('[[error:title-too-short, ' + meta.config.minimumTitleLength + ']]'));

@@ -4,7 +4,6 @@ var async = require('async');
 var winston = require('winston');
 var cron = require('cron').CronJob;
 var nconf = require('nconf');
-var S = require('string');
 var _ = require('lodash');
 
 var db = require('./database');
@@ -56,7 +55,7 @@ Notifications.getMultiple = function (nids, callback) {
 					notification.datetimeISO = utils.toISOString(notification.datetime);
 
 					if (notification.bodyLong) {
-						notification.bodyLong = S(notification.bodyLong).escapeHTML().s;
+						notification.bodyLong = utils.escapeHTML(notification.bodyLong);
 					}
 
 					notification.user = usersData[index];
@@ -397,7 +396,7 @@ Notifications.prune = function (callback) {
 		},
 	], function (err) {
 		if (err) {
-			winston.error('Encountered error pruning notifications: ' + err.message);
+			winston.error('Encountered error pruning notifications', err);
 		}
 		callback(err);
 	});
@@ -470,7 +469,7 @@ Notifications.merge = function (notifications, callback) {
 				});
 				var numUsers = usernames.length;
 
-				var title = S(notifications[modifyIndex].topicTitle || '').decodeHTMLEntities().s;
+				var title = utils.decodeHTMLEntities(notifications[modifyIndex].topicTitle || '');
 				var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 				titleEscaped = titleEscaped ? (', ' + titleEscaped) : '';
 

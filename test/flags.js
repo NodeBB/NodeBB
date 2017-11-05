@@ -63,10 +63,10 @@ describe('Flags', function () {
 					type: 'post',
 					description: 'Test flag',
 				};
-
+				assert(flagData);
 				for (var key in compare) {
 					if (compare.hasOwnProperty(key)) {
-						assert.ok(flagData[key]);
+						assert.ok(flagData[key], 'undefined key ' + key);
 						assert.equal(flagData[key], compare[key]);
 					}
 				}
@@ -140,10 +140,10 @@ describe('Flags', function () {
 					description: 'Test flag',
 					state: 'open',
 				};
-
+				assert(flagData);
 				for (var key in compare) {
 					if (compare.hasOwnProperty(key)) {
-						assert.ok(flagData[key]);
+						assert.ok(flagData[key], 'undefined key ' + key);
 						assert.equal(flagData[key], compare[key]);
 					}
 				}
@@ -442,7 +442,7 @@ describe('Flags', function () {
 		it('should retrieve a list of notes, from newest to oldest', function (done) {
 			Flags.getNotes(1, function (err, notes) {
 				assert.ifError(err);
-				assert(notes[0].datetime > notes[1].datetime);
+				assert(notes[0].datetime > notes[1].datetime, notes[0].datetime + '-' + notes[1].datetime);
 				assert.strictEqual('this is the second note', notes[0].content);
 				done();
 			});

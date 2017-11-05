@@ -44,6 +44,7 @@
     "account/bookmarks": "%1 님이 즐겨찾기 한 포스트",
     "account/settings": "사용자 설정",
     "account/watched": "%1 님이 관심 가진 게시물",
+    "account/ignored": "Topics ignored by %1",
     "account/upvoted": "%1 님이 추천한 포스트",
     "account/downvoted": "%1 님에 비추천한 포스트",
     "account/best": "%1 님 최고의 포스트",

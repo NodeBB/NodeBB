@@ -3,7 +3,6 @@
 
 var async = require('async');
 var validator = require('validator');
-var S = require('string');
 var _ = require('lodash');
 
 var topics = require('../topics');
@@ -144,8 +143,7 @@ module.exports = function (Posts) {
 
 	function stripTags(content) {
 		if (content) {
-			var s = S(content);
-			return s.stripTags.apply(s, utils.stripTags).s;
+			return utils.stripHTMLTags(content, utils.stripTags);
 		}
 		return content;
 	}

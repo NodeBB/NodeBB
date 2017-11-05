@@ -63,7 +63,7 @@ Plugins.init = function (nbbApp, nbbMiddleware, callback) {
 
 	Plugins.reload(function (err) {
 		if (err) {
-			winston.error('[plugins] NodeBB encountered a problem while loading plugins', err.message);
+			winston.error('[plugins] NodeBB encountered a problem while loading plugins', err);
 			return callback(err);
 		}
 
@@ -132,7 +132,7 @@ Plugins.reloadRoutes = function (callback) {
 	var controllers = require('./controllers');
 	Plugins.fireHook('static:app.load', { app: app, router: router, middleware: middleware, controllers: controllers }, function (err) {
 		if (err) {
-			winston.error('[plugins] Encountered error while executing post-router plugins hooks: ' + err.message);
+			winston.error('[plugins] Encountered error while executing post-router plugins hooks', err);
 			return callback(err);
 		}
 
@@ -218,7 +218,7 @@ Plugins.list = function (matching, callback) {
 		json: true,
 	}, function (err, res, body) {
 		if (err) {
-			winston.error('Error parsing plugins : ' + err.message);
+			winston.error('Error parsing plugins', err);
 			return callback(err);
 		}
 

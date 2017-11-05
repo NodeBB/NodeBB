@@ -9,5 +9,7 @@
     "topics_marked_as_read.success": "Ämnet markerat som läst.",
     "all-topics": "Alla ämnen",
     "new-topics": "Nya ämnen",
-    "watched-topics": "Bevakade ämnen"
+    "watched-topics": "Bevakade ämnen",
+    "unreplied-topics": "Unreplied Topics",
+    "multiple-categories-selected": "Multiple Selected"
 }

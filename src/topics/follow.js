@@ -2,7 +2,6 @@
 'use strict';
 
 var async = require('async');
-var S = require('string');
 var winston = require('winston');
 
 var db = require('../database');
@@ -13,6 +12,7 @@ var privileges = require('../privileges');
 var meta = require('../meta');
 var emailer = require('../emailer');
 var plugins = require('../plugins');
+var utils = require('../utils');
 
 module.exports = function (Topics) {
 	Topics.toggleFollow = function (tid, uid, callback) {
@@ -214,7 +214,7 @@ module.exports = function (Topics) {
 				title = postData.topic.title;
 
 				if (title) {
-					title = S(title).decodeHTMLEntities().s;
+					title = utils.decodeHTMLEntities(title);
 					titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 				}
 

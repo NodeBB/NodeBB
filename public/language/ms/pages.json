@@ -44,6 +44,7 @@
     "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "Tetapan Pengguna",
     "account/watched": "Topik Diperhati Oleh %1",
+    "account/ignored": "Topics ignored by %1",
     "account/upvoted": "Kiriman diundi naik oleh %1",
     "account/downvoted": "Kiriman dibuang undi oleh %1",
     "account/best": "Kiriman Terbaik Oleh %1",

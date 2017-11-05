@@ -2,6 +2,8 @@
 
 var helpers = module.exports;
 
+helpers.noop = function () {};
+
 helpers.multiKeys = function (redisClient, command, keys, callback) {
 	callback = callback || function () {};
 	var multi = redisClient.multi();

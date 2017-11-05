@@ -3,7 +3,9 @@
 	"enable": "スクロールでのページ自動ロードはしない",
 	"topics": "スレッドページ",
 	"posts-per-page": "ページごとの投稿数",
+	"max-posts-per-page": "Maximum posts per page",
 	"categories": "カテゴリページ",
 	"topics-per-page": "ページごとのスレッド数",
+	"max-topics-per-page": "Maximum topics per page",
 	"initial-num-load": "未読、最近、および人気に読み込むスレッドの初期数"
 }

@@ -44,6 +44,7 @@
     "account/bookmarks": "บุ๊กมาร์คโพสต์ของ  %1",
     "account/settings": "การตั้งค่าผู้ใช้",
     "account/watched": "กระทู้ที่ถูกดูโดย  %1",
+    "account/ignored": "Topics ignored by %1",
     "account/upvoted": "โพสต์ที่ถูกโหวตขึ้นโดย %1",
     "account/downvoted": "โพสต์ที่โหวตลงโดย %1",
     "account/best": "โพสต์ดีที่สุดที่ถูกสร้างโดย %1",

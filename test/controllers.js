@@ -14,6 +14,7 @@ var groups = require('../src/groups');
 var meta = require('../src/meta');
 var translator = require('../src/translator');
 var privileges = require('../src/privileges');
+var plugins = require('../src/plugins');
 var helpers = require('./helpers');
 
 describe('Controllers', function () {
@@ -68,42 +69,104 @@ describe('Controllers', function () {
 	});
 
 	it('should load unread as home route', function (done) {
-		meta.config.homePageRoute = 'unread';
-		request(nconf.get('url'), function (err, res, body) {
+		meta.configs.set('homePageRoute', 'unread', function (err) {
 			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
+
+			request(nconf.get('url'), function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
 		});
 	});
 
 	it('should load recent as home route', function (done) {
-		meta.config.homePageRoute = 'recent';
-		request(nconf.get('url'), function (err, res, body) {
+		meta.configs.set('homePageRoute', 'recent', function (err) {
 			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
+
+			request(nconf.get('url'), function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
 		});
 	});
 
 	it('should load popular as home route', function (done) {
-		meta.config.homePageRoute = 'popular';
-		request(nconf.get('url'), function (err, res, body) {
+		meta.configs.set('homePageRoute', 'popular', function (err) {
 			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
+
+			request(nconf.get('url'), function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
 		});
 	});
 
 	it('should load category as home route', function (done) {
-		meta.config.homePageRoute = 'category/1/test-category';
-		request(nconf.get('url'), function (err, res, body) {
+		meta.configs.set('homePageRoute', 'category/1/test-category', function (err) {
 			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
+
+			request(nconf.get('url'), function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+	});
+
+	it('should redirect to custom homepage', function (done) {
+		meta.configs.set('homePageRoute', 'groups', function (err) {
+			assert.ifError(err);
+
+			request(nconf.get('url'), function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+	});
+
+	it('should 404 if custom homepage does not exist', function (done) {
+		meta.configs.set('homePageRoute', 'this-route-does-not-exist', function (err) {
+			assert.ifError(err);
+
+			request(nconf.get('url'), function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 404);
+				assert(body);
+				done();
+			});
+		});
+	});
+
+	it('should render custom homepage with hook', function (done) {
+		function hookMethod(hookData) {
+			assert(hookData.req);
+			assert(hookData.res);
+			assert(hookData.next);
+			hookData.res.json('works');
+		}
+		plugins.registerHook('myTestPlugin', {
+			hook: 'action:homepage.get:custom',
+			method: hookMethod,
+		});
+		meta.configs.set('homePageRoute', 'custom', function (err) {
+			assert.ifError(err);
+
+			request(nconf.get('url'), function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert.equal(body, '"works"');
+				plugins.unregisterHook('myTestPlugin', 'action:homepage.get:custom', hookMethod);
+				done();
+			});
 		});
 	});
 
@@ -144,7 +207,6 @@ describe('Controllers', function () {
 	});
 
 	it('should load /register/complete', function (done) {
-		var plugins = require('../src/plugins');
 		function hookMethod(data, next) {
 			data.interstitials.push({ template: 'topic.tpl', data: {} });
 			next(null, data);

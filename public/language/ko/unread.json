@@ -9,5 +9,7 @@
     "topics_marked_as_read.success": "게시물들을 읽음으로 표시했습니다.",
     "all-topics": "모든 게시물",
     "new-topics": "새 게시물",
-    "watched-topics": "관심있는 게시물"
+    "watched-topics": "관심있는 게시물",
+    "unreplied-topics": "Unreplied Topics",
+    "multiple-categories-selected": "Multiple Selected"
 }

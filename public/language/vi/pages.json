@@ -44,6 +44,7 @@
     "account/bookmarks": "Đã bookmark %1's chủ đề",
     "account/settings": "Thiết lập",
     "account/watched": "Chủ đề %1 đang theo dõi",
+    "account/ignored": "Topics ignored by %1",
     "account/upvoted": "Bài viết %1 tán thành",
     "account/downvoted": "Bài viết %1 phản đối",
     "account/best": "Bài viết hay nhất của %1",

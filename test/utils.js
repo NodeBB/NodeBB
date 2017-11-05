@@ -16,6 +16,30 @@ describe('Utility Methods', function () {
 	var $ = global.$;
 	global.window = window;
 
+	// https://github.com/jprichardson/string.js/blob/master/test/string.test.js
+	it('should decode HTML entities', function (done) {
+		assert.strictEqual(
+			utils.decodeHTMLEntities('Ken Thompson &amp; Dennis Ritchie'),
+			'Ken Thompson & Dennis Ritchie'
+		);
+		assert.strictEqual(
+			utils.decodeHTMLEntities('3 &lt; 4'),
+			'3 < 4'
+		);
+		assert.strictEqual(
+			utils.decodeHTMLEntities('http:&#47;&#47;'),
+			'http://'
+		);
+		done();
+	});
+	it('should strip HTML tags', function (done) {
+		assert.strictEqual(utils.stripHTMLTags('<p>just <b>some</b> text</p>'), 'just some text');
+		assert.strictEqual(utils.stripHTMLTags('<p>just <b>some</b> text</p>', ['p']), 'just <b>some</b> text');
+		assert.strictEqual(utils.stripHTMLTags('<i>just</i> some <image/> text', ['i']), 'just some <image/> text');
+		assert.strictEqual(utils.stripHTMLTags('<i>just</i> some <image/> <div>text</div>', ['i', 'div']), 'just some <image/> text');
+		done();
+	});
+
 	it('should preserve case if requested', function (done) {
 		var slug = utils.slugify('UPPER CASE', true);
 		assert.equal(slug, 'UPPER-CASE');

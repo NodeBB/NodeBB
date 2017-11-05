@@ -44,6 +44,7 @@
     "account/bookmarks": "%1's Mensaxes marcadas",
     "account/settings": "Opcións de Usuario",
     "account/watched": "Temas vistos por %1",
+    "account/ignored": "Topics ignored by %1",
     "account/upvoted": "Mensaxes votadas positivamente por %1",
     "account/downvoted": "Mensaxes votadas negativamente por %1",
     "account/best": "Mellores mensaxes escritas por %1",

@@ -6,6 +6,7 @@ var path = require('path');
 var fs = require('fs');
 var nconf = require('nconf');
 var os = require('os');
+var cproc = require('child_process');
 
 var db = require('../database');
 var meta = require('../meta');
@@ -107,7 +108,7 @@ module.exports = function (Plugins) {
 	}
 
 	function runNpmCommand(command, pkgName, version, callback) {
-		require('child_process').execFile((process.platform === 'win32') ? 'npm.cmd' : 'npm', [command, pkgName + (command === 'install' ? '@' + version : ''), '--no-save'], function (err, stdout) {
+		cproc.execFile((process.platform === 'win32') ? 'npm.cmd' : 'npm', [command, pkgName + (command === 'install' ? '@' + version : ''), '--save'], function (err, stdout) {
 			if (err) {
 				return callback(err);
 			}

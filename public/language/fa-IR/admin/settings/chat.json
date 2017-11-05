@@ -1,7 +1,7 @@
 {
-	"chat-settings": "Chat Settings",
-	"disable": "Disable chat",
-	"disable-editing": "Disable chat message editing/deletion",
+	"chat-settings": "تنظیمات گفتگو ها",
+	"disable": "غیرفعال کردن چت",
+	"disable-editing": "غیرفعال کردن ویرایش کردن / پاک کردن پیام های چت",
 	"disable-editing-help": "Administrators and global moderators are exempt from this restriction",
 	"max-length": "Maximum length of chat messages",
 	"max-room-size": "Maximum number of users in chat rooms",

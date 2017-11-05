@@ -6,5 +6,6 @@
 	"title": "Tytuł",
 	"content": "Zawartość",
 	"posted": "Napisano",
-	"reply-to": "Odpowiedz do \"%1\""
+	"reply-to": "Odpowiedz do \"%1\"",
+	"content-editable": "You can click on individual content to edit before posting."
 }

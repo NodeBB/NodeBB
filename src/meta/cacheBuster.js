@@ -33,7 +33,7 @@ exports.read = function read(callback) {
 
 	fs.readFile(filePath, function (err, buffer) {
 		if (err) {
-			winston.warn('[cache-buster] could not read cache buster: ' + err.message);
+			winston.warn('[cache-buster] could not read cache buster', err);
 			return callback(null, generate());
 		}
 

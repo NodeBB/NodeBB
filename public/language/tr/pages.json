@@ -44,6 +44,7 @@
     "account/bookmarks": "%1'in yer imine eklenmiş iletiler",
     "account/settings": "Kullanıcı Ayarları",
     "account/watched": "%1 tarafından izlenen konular",
+    "account/ignored": "Topics ignored by %1",
     "account/upvoted": "%1 tarafından artılanan gönderiler",
     "account/downvoted": "%1 tarafından eksilenen gönderiler",
     "account/best": "%1 tarafından en iyi gönderiler",

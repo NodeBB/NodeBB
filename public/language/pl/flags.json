@@ -54,7 +54,11 @@
 	"modal-body": "Prosimy o opisanie powodu oflagowania %1 %2 do przeglądów. Alternatywnie, jeśli to możliwe użyj jednego z przycisków szybkiego raportowania.",
 	"modal-reason-spam": "Spam",
 	"modal-reason-offensive": "Obraźliwy",
+	"modal-reason-other": "Other (specify below)",
 	"modal-reason-custom": "Powód raportowania tej zawartości.",
 	"modal-submit": "Wyślij raport",
-	"modal-submit-success": "Zawartość została oflagowana do moderacji."
+	"modal-submit-success": "Zawartość została oflagowana do moderacji.",
+	"modal-submit-confirm": "Confirm Submission",
+	"modal-submit-confirm-text": "You have a custom reason specified already. Are you sure you wish to submit via quick-report?",
+	"modal-submit-confirm-text-help": "Submitting a quick report will overwrite any custom reasons defined."
 }

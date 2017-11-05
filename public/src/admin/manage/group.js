@@ -120,7 +120,7 @@ define('admin/manage/group', [
 		$('[component="groups/members"]').on('click', '[data-action]', function () {
 			var btnEl = $(this);
 			var userRow = btnEl.parents('[data-uid]');
-			var ownerFlagEl = userRow.find('.member-name i');
+			var ownerFlagEl = userRow.find('.member-name .user-owner-icon');
 			var isOwner = !ownerFlagEl.hasClass('invisible');
 			var uid = userRow.attr('data-uid');
 			var action = btnEl.attr('data-action');

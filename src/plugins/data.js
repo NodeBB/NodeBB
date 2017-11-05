@@ -69,7 +69,7 @@ function loadPluginInfo(pluginPath, callback) {
 		} catch (err) {
 			var pluginDir = path.basename(pluginPath);
 
-			winston.error('[plugins/' + pluginDir + '] Error in plugin.json or package.json! ' + err.message);
+			winston.error('[plugins/' + pluginDir + '] Error in plugin.json or package.json!', err);
 			return callback(new Error('[[error:parse-error]]'));
 		}
 

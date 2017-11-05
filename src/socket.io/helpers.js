@@ -2,7 +2,6 @@
 
 var async = require('async');
 var winston = require('winston');
-var S = require('string');
 
 var db = require('../database');
 var websockets = require('./index');
@@ -12,6 +11,7 @@ var topics = require('../topics');
 var privileges = require('../privileges');
 var notifications = require('../notifications');
 var plugins = require('../plugins');
+var utils = require('../utils');
 
 var SocketHelpers = {};
 
@@ -105,7 +105,7 @@ SocketHelpers.sendNotificationToPostOwner = function (pid, fromuid, command, not
 			}, next);
 		},
 		function (results, next) {
-			var title = S(results.topicTitle).decodeHTMLEntities().s;
+			var title = utils.decodeHTMLEntities(results.topicTitle);
 			var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 
 			notifications.create({
@@ -151,7 +151,7 @@ SocketHelpers.sendNotificationToTopicOwner = function (tid, fromuid, command, no
 				return;
 			}
 			ownerUid = results.topicData.uid;
-			var title = S(results.topicData.title).decodeHTMLEntities().s;
+			var title = utils.decodeHTMLEntities(results.topicData.title);
 			var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 
 			notifications.create({

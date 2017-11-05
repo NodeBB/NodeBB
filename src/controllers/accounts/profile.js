@@ -2,7 +2,6 @@
 
 var nconf = require('nconf');
 var async = require('async');
-var S = require('string');
 
 var user = require('../../user');
 var posts = require('../../posts');
@@ -13,6 +12,7 @@ var helpers = require('../helpers');
 var pagination = require('../../pagination');
 var messaging = require('../../messaging');
 var translator = require('../../translator');
+var utils = require('../../utils');
 
 var profileController = module.exports;
 
@@ -87,7 +87,7 @@ profileController.get = function (req, res, callback) {
 				userData.profileviews = 1;
 			}
 
-			var plainAboutMe = userData.aboutme ? S(userData.aboutme).decodeHTMLEntities().stripTags().s : '';
+			var plainAboutMe = userData.aboutme ? utils.stripHTMLTags(utils.decodeHTMLEntities(userData.aboutme)) : '';
 
 			res.locals.metaTags = [
 				{

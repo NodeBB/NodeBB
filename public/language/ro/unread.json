@@ -9,5 +9,7 @@
     "topics_marked_as_read.success": "Subiectele au fost marcate ca citite!",
     "all-topics": "Toate subiectele",
     "new-topics": "Subiecte noi",
-    "watched-topics": "Subiecte urmărite"
+    "watched-topics": "Subiecte urmărite",
+    "unreplied-topics": "Unreplied Topics",
+    "multiple-categories-selected": "Multiple Selected"
 }

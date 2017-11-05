@@ -9,5 +9,7 @@
     "topics_marked_as_read.success": "すべてのスレッドを既読にしました。",
     "all-topics": "すべてのスレッド",
     "new-topics": "新しいスレッド",
-    "watched-topics": "スレッドをウォッチしました"
+    "watched-topics": "スレッドをウォッチしました",
+    "unreplied-topics": "Unreplied Topics",
+    "multiple-categories-selected": "Multiple Selected"
 }

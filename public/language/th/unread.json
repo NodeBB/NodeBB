@@ -9,5 +9,7 @@
     "topics_marked_as_read.success": "Topic ถูกทำเครื่องหมายว่าอ่านแล้วเรียบร้อย",
     "all-topics": "กระทู้ทั้งหมด",
     "new-topics": "ตั้งกระทู้ใหม่",
-    "watched-topics": "กระทู้ที่ดูแล้ว"
+    "watched-topics": "กระทู้ที่ดูแล้ว",
+    "unreplied-topics": "Unreplied Topics",
+    "multiple-categories-selected": "Multiple Selected"
 }

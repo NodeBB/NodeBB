@@ -27,7 +27,7 @@
     "details.disableJoinRequests": "غیر فعال کردن درخواستهای عضویت",
     "details.grant": "اعطاء/خلع مالکیت",
     "details.kick": "بیرون انداختن",
-    "details.kick_confirm": "Are you sure you want to remove this member from the group?",
+    "details.kick_confirm": "آیا شما مطمئن هستید که می خواهید این عضو از گروه را حذف کنید؟",
     "details.owner_options": "مدیر گروه",
     "details.group_name": "نام گروه",
     "details.member_count": "تعداد اعضا",
@@ -54,5 +54,5 @@
     "upload-group-cover": "آپلود کاور گروه",
     "bulk-invite-instructions": "برای دعوت به این گروه فهرستی از نام‌کاربری که با کاما جدا کنید را وارد کنید",
     "bulk-invite": "میزان دعوت",
-    "remove_group_cover_confirm": "Are you sure you want to remove the cover picture?"
+    "remove_group_cover_confirm": "آیا شما مطمئن هستید که می خواهید عکس کاور را حذف کنید؟"
 }
