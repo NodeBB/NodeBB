@@ -149,7 +149,13 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 			userData.birthday = validator.escape(String(userData.birthday || ''));
 			userData.moderationNote = validator.escape(String(userData.moderationNote || ''));
 
-			userData['cover:url'] = userData['cover:url'] ? (nconf.get('relative_path') + userData['cover:url']) : require('../../coverPhoto').getDefaultProfileCover(userData.uid);
+			var _userDataCoverUrl;
+			if (userData['cover:url']) {
+				_userDataCoverUrl = userData['cover:url'].startsWith('http') ? userData['cover:url'] : (nconf.get('relative_path') + userData['cover:url']);
+			} else {
+				_userDataCoverUrl = require('../../coverPhoto').getDefaultProfileCover(userData.uid);
+			}
+			userData['cover:url'] = _userDataCoverUrl;
 			userData['cover:position'] = validator.escape(String(userData['cover:position'] || '50% 50%'));
 			userData['username:disableEdit'] = !userData.isAdmin && parseInt(meta.config['username:disableEdit'], 10) === 1;
 			userData['email:disableEdit'] = !userData.isAdmin && parseInt(meta.config['email:disableEdit'], 10) === 1;
