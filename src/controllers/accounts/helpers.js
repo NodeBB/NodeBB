@@ -150,7 +150,7 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 			userData.moderationNote = validator.escape(String(userData.moderationNote || ''));
 
 			var _userDataCoverUrl;
-			if(userData['cover:url']) {
+			if (userData['cover:url']) {
 				_userDataCoverUrl = userData['cover:url'].startsWith('http') ? userData['cover:url'] : (nconf.get('relative_path') + userData['cover:url']);
 			} else {
 				_userDataCoverUrl = require('../../coverPhoto').getDefaultProfileCover(userData.uid);
