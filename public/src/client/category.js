@@ -6,14 +6,14 @@ define('forum/category', [
 	'share',
 	'navigator',
 	'forum/category/tools',
+	'forum/recent',
 	'sort',
 	'components',
 	'translator',
 	'topicSelect',
 	'forum/pagination',
 	'storage',
-	'benchpress',
-], function (infinitescroll, share, navigator, categoryTools, sort, components, translator, topicSelect, pagination, storage, Benchpress) {
+], function (infinitescroll, share, navigator, categoryTools, recent, sort, components, translator, topicSelect, pagination, storage) {
 	var Category = {};
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
@@ -25,8 +25,8 @@ define('forum/category', [
 	});
 
 	function removeListeners() {
-		socket.removeListener('event:new_topic', Category.onNewTopic);
 		categoryTools.removeListeners();
+		recent.removeListeners();
 	}
 
 	Category.init = function () {
@@ -36,10 +36,8 @@ define('forum/category', [
 
 		share.addShareHandlers(ajaxify.data.name);
 
-		socket.removeListener('event:new_topic', Category.onNewTopic);
-		socket.on('event:new_topic', Category.onNewTopic);
-
 		categoryTools.init(cid);
+		recent.watchForNewPosts();
 
 		sort.handleSort('categoryTopicSort', 'user.setCategorySort', 'category/' + ajaxify.data.slug);
 
@@ -193,72 +191,6 @@ define('forum/category', [
 		} else {
 			navigator.disable();
 		}
-	}
-
-	Category.onNewTopic = function (topic) {
-		var	cid = ajaxify.data.cid;
-		if (!topic || parseInt(topic.cid, 10) !== parseInt(cid, 10)) {
-			return;
-		}
-
-		$(window).trigger('filter:categories.new_topic', topic);
-
-		var editable = !!$('.thread-tools').length;
-
-		Benchpress.parse('category', 'topics', {
-			privileges: { editable: editable },
-			showSelect: editable,
-			topics: [topic],
-			template: { category: true },
-		}, function (html) {
-			translator.translate(html, function (translatedHTML) {
-				var topic = $(translatedHTML);
-				var container = $('[component="category"]');
-				var topics = $('[component="category/topic"]');
-				var numTopics = topics.length;
-
-				$('[component="category"]').removeClass('hidden');
-				$('.category-sidebar').removeClass('hidden');
-
-				var noTopicsWarning = $('#category-no-topics');
-				if (noTopicsWarning.length) {
-					noTopicsWarning.remove();
-					ajaxify.widgets.render('category', window.location.pathname.slice(1));
-				}
-
-				if (numTopics > 0) {
-					for (var x = 0; x < numTopics; x += 1) {
-						var pinned = $(topics[x]).hasClass('pinned');
-						if (!pinned) {
-							topic.insertBefore(topics[x]);
-							break;
-						}
-						if (x === numTopics - 1) {
-							topic.insertAfter(topics[x]);
-						}
-					}
-				} else {
-					container.append(topic);
-				}
-
-				topic.hide().fadeIn('slow');
-
-				topic.find('.timeago').timeago();
-				app.createUserTooltips();
-				updateTopicCount();
-
-				$(window).trigger('action:categories.new_topic.loaded');
-			});
-		});
-	};
-
-	function updateTopicCount() {
-		socket.emit('categories.getTopicCount', ajaxify.data.cid, function (err, topicCount) {
-			if (err) {
-				return app.alertError(err.message);
-			}
-			navigator.setCount(topicCount);
-		});
 	}
 
 	Category.loadMoreTopics = function (direction) {
