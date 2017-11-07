@@ -48,6 +48,10 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function (infinit
 			return;
 		}
 
+		if (ajaxify.data.template.category && parseInt(ajaxify.data.cid, 10) !== parseInt(data.cid, 10)) {
+			return;
+		}
+
 		newTopicCount += 1;
 		Recent.updateAlertText();
 	}
@@ -71,6 +75,10 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function (infinit
 		}
 
 		if (ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'new') {
+			return;
+		}
+
+		if (ajaxify.data.template.category && parseInt(ajaxify.data.cid, 10) !== parseInt(post.topic.cid, 10)) {
 			return;
 		}
 
