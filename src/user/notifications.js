@@ -320,6 +320,7 @@ UserNotifications.sendWelcomeNotification = function (uid, callback) {
 				bodyShort: meta.config.welcomeNotification,
 				path: path,
 				nid: 'welcome_' + uid,
+				from: meta.config.welcomeUid ? meta.config.welcomeUid : null,
 			}, next);
 		},
 		function (notification, next) {
