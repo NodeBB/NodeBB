@@ -29,7 +29,7 @@
 	<div class="col-sm-10 col-xs-12">
 		<form>
 		<div class="row">
-  		<div class="col-xs-6">
+			<div class="col-xs-6">
 			<div class="form-group">
 				<label for="minimumTitleLength">[[admin/settings/post:restrictions.min-title-length]]</label>
 				<input id="minimumTitleLength" type="text" class="form-control" value="3" data-field="minimumTitleLength">
@@ -39,7 +39,7 @@
 				<input id="maximumTitleLength" type="text" class="form-control" value="255" data-field="maximumTitleLength">
 			</div>
 		</div>
-  		<div class="col-xs-6">
+		<div class="col-xs-6">
 			<div class="form-group">
 				<label for="minimumPostLength">[[admin/settings/post:restrictions.min-post-length]]</label>
 				<input id="minimumPostLength" type="text" class="form-control" value="8" data-field="minimumPostLength">
@@ -137,7 +137,7 @@
 			<!-- <div class="form-group">
 				<div class="checkbox">
 					<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-						<input class="mdl-switch__input" type="checkbox" data-field="postQueue">
+						<input class="mdl-switch__input" type="checkbox" data-field="toggleUserRestrictions">
 						<span class="mdl-switch__label"><strong>[[admin/settings/post:restrictions-new.post-queue]]</strong></span>
 					</label>
 				</div>
