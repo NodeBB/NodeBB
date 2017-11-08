@@ -102,10 +102,11 @@ User.getUsersWithFields = function (uids, fields, uid, callback) {
 };
 
 User.getUsers = function (uids, uid, callback) {
-	var fields = ['uid', 'username', 'userslug', 'picture', 'status', 'flags',
-		'banned', 'banned:expire', 'joindate', 'postcount', 'reputation', 'email:confirmed', 'lastonline'];
-
-	User.getUsersWithFields(uids, fields, uid, callback);
+	User.getUsersWithFields(uids, [
+		'uid', 'username', 'userslug', 'picture', 'status',
+		'postcount', 'reputation', 'email:confirmed', 'lastonline',
+		'flags', 'banned', 'banned:expire', 'joindate',
+	], uid, callback);
 };
 
 User.getStatus = function (userData) {

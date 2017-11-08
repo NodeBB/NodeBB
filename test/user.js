@@ -490,9 +490,45 @@ describe('User', function () {
 		it('should get user data even if one uid is NaN', function (done) {
 			User.getUsersData([NaN, testUid], function (err, data) {
 				assert.ifError(err);
-				assert.equal(data[0], null);
+				assert(data[0]);
+				assert.equal(data[0].username, '[[global:guest]]');
 				assert(data[1]);
 				assert.equal(data[1].username, userData.username);
+				done();
+			});
+		});
+
+		it('should not return private user data', function (done) {
+			User.setUserFields(testUid, {
+				fb_token: '123123123',
+				another_secret: 'abcde',
+				postcount: '123',
+			}, function (err) {
+				assert.ifError(err);
+				User.getUserData(testUid, function (err, userData) {
+					assert.ifError(err);
+					assert(!userData.hasOwnProperty('fb_token'));
+					assert(!userData.hasOwnProperty('another_secret'));
+					assert(!userData.hasOwnProperty('password'));
+					assert(!userData.hasOwnProperty('rss_token'));
+					assert.equal(userData.postcount, '123');
+					done();
+				});
+			});
+		});
+
+		it('should return private data if field is whitelisted', function (done) {
+			function filterMethod(data, callback) {
+				data.whitelist.push('another_secret');
+				callback(null, data);
+			}
+
+			plugins.registerHook('test-plugin', { hook: 'filter:user.whitelistFields', method: filterMethod });
+			User.getUserData(testUid, function (err, userData) {
+				assert.ifError(err);
+				assert(!userData.hasOwnProperty('fb_token'));
+				assert.equal(userData.another_secret, 'abcde');
+				plugins.unregisterHook('test-plugin', 'filter:user.whitelistFields', filterMethod);
 				done();
 			});
 		});
