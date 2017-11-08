@@ -90,7 +90,10 @@ module.exports = function (Categories) {
 				var stop = data.stop === -1 ? data.stop : start + normalTidsToGet - 1;
 
 				if (Array.isArray(set)) {
-					db[direction === 'highest-to-lowest' ? 'getSortedSetRevIntersect' : 'getSortedSetIntersect']({ sets: set, start: start, stop: stop }, next);
+					var weights = set.map(function (s, index) {
+						return index ? 0 : 1;
+					});
+					db[direction === 'highest-to-lowest' ? 'getSortedSetRevIntersect' : 'getSortedSetIntersect']({ sets: set, start: start, stop: stop, weights: weights }, next);
 				} else {
 					db[direction === 'highest-to-lowest' ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop, next);
 				}

@@ -661,6 +661,18 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
+		it('should return the reverse intersection of two sets', function (done) {
+			db.getSortedSetRevIntersect({
+				sets: ['interSet1', 'interSet2'],
+				start: 0,
+				stop: 2,
+			}, function (err, data) {
+				assert.ifError(err);
+				assert.deepEqual(['value3', 'value2'], data);
+				done();
+			});
+		});
+
 		it('should return the intersection of two sets with scores aggregate MIN', function (done) {
 			db.getSortedSetIntersect({
 				sets: ['interSet1', 'interSet2'],
