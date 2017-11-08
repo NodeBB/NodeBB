@@ -26,8 +26,8 @@ editController.get = function (req, res, callback) {
 			userData.maximumSignatureLength = parseInt(meta.config.maximumSignatureLength, 10) || 255;
 			userData.maximumAboutMeLength = parseInt(meta.config.maximumAboutMeLength, 10) || 1000;
 			userData.maximumProfileImageSize = parseInt(meta.config.maximumProfileImageSize, 10);
-			userData.allowProfileImageUploads = parseInt(meta.config.allowProfileImageUploads, 10) === 1;
-			userData.allowAccountDelete = parseInt(meta.config.allowAccountDelete, 10) === 1;
+			userData.allowProfileImageUploads = meta.config.allowProfileImageUploads;
+			userData.allowAccountDelete = meta.config.allowAccountDelete;
 			userData.profileImageDimension = parseInt(meta.config.profileImageDimension, 10) || 200;
 			userData.defaultAvatar = user.getDefaultAvatar();
 

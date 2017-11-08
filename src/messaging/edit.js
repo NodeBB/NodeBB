@@ -44,9 +44,9 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.canEdit = function (messageId, uid, callback) {
-		if (parseInt(meta.config.disableChat, 10) === 1) {
+		if (meta.config.disableChat) {
 			return callback(null, false);
-		} else if (parseInt(meta.config.disableChatMessageEditing, 10) === 1) {
+		} else if (meta.config.disableChatMessageEditing) {
 			return callback(null, false);
 		}
 
@@ -59,7 +59,7 @@ module.exports = function (Messaging) {
 					return callback(null, false);
 				}
 
-				if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
+				if (meta.config.requireEmailConfirmation && parseInt(userData['email:confirmed'], 10) !== 1) {
 					return callback(null, false);
 				}
 

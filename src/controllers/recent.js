@@ -56,7 +56,7 @@ recentController.get = function (req, res, next) {
 			data.selectedCids = categoryData.selectedCids;
 			data.nextStart = stop + 1;
 			data.set = 'topics:recent';
-			data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
+			data['feeds:disableRSS'] = meta.config['feeds:disableRSS'];
 			data.rssFeedUrl = nconf.get('relative_path') + '/recent.rss';
 			if (req.uid) {
 				data.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;

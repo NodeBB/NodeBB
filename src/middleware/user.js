@@ -64,7 +64,7 @@ module.exports = function (middleware) {
 	}
 
 	middleware.checkGlobalPrivacySettings = function (req, res, next) {
-		if (!req.uid && !!parseInt(meta.config.privateUserInfo, 10)) {
+		if (!req.uid && meta.config.privateUserInfo) {
 			return middleware.authenticate(req, res, next);
 		}
 

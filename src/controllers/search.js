@@ -19,7 +19,7 @@ searchController.search = function (req, res, next) {
 		return next();
 	}
 
-	if (!req.user && parseInt(meta.config.allowGuestSearching, 10) !== 1) {
+	if (!req.user && !meta.config.allowGuestSearching) {
 		return helpers.notAllowed(req, res);
 	}
 

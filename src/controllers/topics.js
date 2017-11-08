@@ -138,9 +138,9 @@ topicsController.get = function (req, res, callback) {
 		function (topicData) {
 			topicData.privileges = userPrivileges;
 			topicData.topicStaleDays = parseInt(meta.config.topicStaleDays, 10) || 60;
-			topicData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
-			topicData['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
-			topicData['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
+			topicData['reputation:disabled'] = meta.config['reputation:disabled'];
+			topicData['downvote:disabled'] = meta.config['downvote:disabled'];
+			topicData['feeds:disableRSS'] = meta.config['feeds:disableRSS'];
 			topicData.bookmarkThreshold = parseInt(meta.config.bookmarkThreshold, 10) || 5;
 			topicData.postEditDuration = parseInt(meta.config.postEditDuration, 10) || 0;
 			topicData.postDeleteDuration = parseInt(meta.config.postDeleteDuration, 10) || 0;

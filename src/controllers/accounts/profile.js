@@ -68,7 +68,7 @@ profileController.get = function (req, res, callback) {
 			}, next);
 		},
 		function (results, next) {
-			if (parseInt(meta.config['reputation:disabled'], 10) === 1) {
+			if (meta.config['reputation:disabled']) {
 				delete userData.reputation;
 			}
 

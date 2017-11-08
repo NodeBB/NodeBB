@@ -91,7 +91,7 @@ settingsController.get = function (req, res, callback) {
 		},
 		function (data) {
 			userData.customSettings = data.customSettings;
-			userData.disableEmailSubscriptions = parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
+			userData.disableEmailSubscriptions = meta.config.disableEmailSubscriptions;
 
 			userData.dailyDigestFreqOptions = [
 				{ value: 'off', name: '[[user:digest_off]]', selected: userData.settings.dailyDigestFreq === 'off' },
@@ -129,12 +129,12 @@ settingsController.get = function (req, res, callback) {
 				language.selected = language.code === userData.settings.userLang;
 			});
 
-			userData.disableCustomUserSkins = parseInt(meta.config.disableCustomUserSkins, 10) === 1;
+			userData.disableCustomUserSkins = meta.config.disableCustomUserSkins;
 
-			userData.allowUserHomePage = parseInt(meta.config.allowUserHomePage, 10) === 1;
+			userData.allowUserHomePage = meta.config.allowUserHomePage;
 
-			userData.hideFullname = parseInt(meta.config.hideFullname, 10) === 1;
-			userData.hideEmail = parseInt(meta.config.hideEmail, 10) === 1;
+			userData.hideFullname = meta.config.hideFullname;
+			userData.hideEmail = meta.config.hideEmail;
 
 			userData.inTopicSearchAvailable = plugins.hasListeners('filter:topic.search');
 

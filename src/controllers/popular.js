@@ -46,7 +46,7 @@ popularController.get = function (req, res, next) {
 		function (topics) {
 			var data = {
 				topics: topics,
-				'feeds:disableRSS': parseInt(meta.config['feeds:disableRSS'], 10) === 1,
+				'feeds:disableRSS': meta.config['feeds:disableRSS'],
 				rssFeedUrl: nconf.get('relative_path') + '/popular/' + (req.params.term || 'daily') + '.rss',
 				title: '[[pages:popular-' + term + ']]',
 				term: term,

@@ -85,13 +85,13 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 
 			userData.emailClass = 'hide';
 
-			if (!isAdmin && !isGlobalModerator && !isSelf && (!userSettings.showemail || parseInt(meta.config.hideEmail, 10) === 1)) {
+			if (!isAdmin && !isGlobalModerator && !isSelf && (!userSettings.showemail || meta.config.hideEmail)) {
 				userData.email = '';
 			} else if (!userSettings.showemail) {
 				userData.emailClass = '';
 			}
 
-			if (!isAdmin && !isGlobalModerator && !isSelf && (!userSettings.showfullname || parseInt(meta.config.hideFullname, 10) === 1)) {
+			if (!isAdmin && !isGlobalModerator && !isSelf && (!userSettings.showfullname || meta.config.hideFullname)) {
 				userData.fullname = '';
 			}
 
@@ -115,14 +115,14 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 			userData.isSelfOrAdminOrGlobalModerator = isSelf || isAdmin || isGlobalModerator;
 			userData.canEdit = isAdmin || (isGlobalModerator && !results.isTargetAdmin);
 			userData.canBan = results.canBanUser;
-			userData.canChangePassword = isAdmin || (isSelf && parseInt(meta.config['password:disableEdit'], 10) !== 1);
+			userData.canChangePassword = isAdmin || (isSelf && !meta.config['password:disableEdit']);
 			userData.isSelf = isSelf;
 			userData.isFollowing = results.isFollowing;
 			userData.showHidden = isSelf || isAdmin || (isGlobalModerator && !results.isTargetAdmin);
 			userData.groups = Array.isArray(results.groups) && results.groups.length ? results.groups[0] : [];
-			userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
-			userData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
-			userData['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
+			userData.disableSignatures = meta.config.disableSignatures !== undefined && meta.config.disableSignatures;
+			userData['reputation:disabled'] = meta.config['reputation:disabled'];
+			userData['downvote:disabled'] = meta.config['downvote:disabled'];
 			userData['email:confirmed'] = !!parseInt(userData['email:confirmed'], 10);
 			userData.profile_links = filterLinks(results.profile_links.concat(results.profile_menu.links), {
 				self: isSelf,
@@ -151,8 +151,8 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 
 			userData['cover:url'] = userData['cover:url'] ? (nconf.get('relative_path') + userData['cover:url']) : require('../../coverPhoto').getDefaultProfileCover(userData.uid);
 			userData['cover:position'] = validator.escape(String(userData['cover:position'] || '50% 50%'));
-			userData['username:disableEdit'] = !userData.isAdmin && parseInt(meta.config['username:disableEdit'], 10) === 1;
-			userData['email:disableEdit'] = !userData.isAdmin && parseInt(meta.config['email:disableEdit'], 10) === 1;
+			userData['username:disableEdit'] = !userData.isAdmin && meta.config['username:disableEdit'];
+			userData['email:disableEdit'] = !userData.isAdmin && meta.config['email:disableEdit'];
 
 			next(null, userData);
 		},

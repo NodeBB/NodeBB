@@ -98,7 +98,7 @@ module.exports = function (Messaging) {
 	}
 
 	function sendNotificationEmails(uids, messageObj) {
-		if (parseInt(meta.config.disableEmailSubscriptions, 10) === 1) {
+		if (meta.config.disableEmailSubscriptions) {
 			return;
 		}
 

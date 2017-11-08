@@ -97,7 +97,7 @@ usersController.getUsersSortedByPosts = function (req, res, next) {
 };
 
 usersController.getUsersSortedByReputation = function (req, res, next) {
-	if (parseInt(meta.config['reputation:disabled'], 10) === 1) {
+	if (meta.config['reputation:disabled']) {
 		return next();
 	}
 	usersController.renderUsersPage('users:reputation', req, res, next);
@@ -229,7 +229,7 @@ function render(req, res, data, next) {
 	data.maximumInvites = meta.config.maximumInvites;
 	data.inviteOnly = registrationType === 'invite-only' || registrationType === 'admin-invite-only';
 	data.adminInviteOnly = registrationType === 'admin-invite-only';
-	data['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
+	data['reputation:disabled'] = meta.config['reputation:disabled'];
 
 	async.waterfall([
 		function (next) {

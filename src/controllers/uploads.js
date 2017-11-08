@@ -88,7 +88,7 @@ function uploadAsFile(req, uploadedFile, callback) {
 			if (!canUpload) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
-			if (parseInt(meta.config.allowFileUploads, 10) !== 1) {
+			if (!meta.config.allowFileUploads) {
 				return next(new Error('[[error:uploads-are-disabled]]'));
 			}
 			uploadsController.uploadFile(req.uid, uploadedFile, next);
@@ -131,7 +131,7 @@ function resizeImage(fileObj, callback) {
 }
 
 uploadsController.uploadThumb = function (req, res, next) {
-	if (parseInt(meta.config.allowTopicsThumbnail, 10) !== 1) {
+	if (!meta.config.allowTopicsThumbnail) {
 		deleteTempFiles(req.files.files);
 		return next(new Error('[[error:topic-thumbnails-are-disabled]]'));
 	}

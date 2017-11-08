@@ -384,7 +384,7 @@ authenticationController.localLogin = function (req, username, password, next) {
 			userData.uid = uid;
 			userData.isAdmin = result.isAdmin;
 
-			if (!result.isAdmin && parseInt(meta.config.allowLocalLogin, 10) === 0) {
+			if (!result.isAdmin && !meta.config.allowLocalLogin) {
 				return next(new Error('[[error:local-login-disabled]]'));
 			}
 

@@ -235,7 +235,7 @@ Messaging.getTeaser = function (uid, roomId, callback) {
 };
 
 Messaging.canMessageUser = function (uid, toUid, callback) {
-	if (parseInt(meta.config.disableChat, 10) === 1 || !uid || uid === toUid) {
+	if (meta.config.disableChat || !uid || uid === toUid) {
 		return callback(new Error('[[error:chat-disabled]]'));
 	}
 
@@ -258,7 +258,7 @@ Messaging.canMessageUser = function (uid, toUid, callback) {
 				return callback(new Error('[[error:user-banned]]'));
 			}
 
-			if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
+			if (meta.config.requireEmailConfirmation && parseInt(userData['email:confirmed'], 10) !== 1) {
 				return callback(new Error('[[error:email-not-confirmed-chat]]'));
 			}
 
@@ -284,7 +284,7 @@ Messaging.canMessageUser = function (uid, toUid, callback) {
 };
 
 Messaging.canMessageRoom = function (uid, roomId, callback) {
-	if (parseInt(meta.config.disableChat, 10) === 1 || !uid) {
+	if (meta.config.disableChat || !uid) {
 		return callback(new Error('[[error:chat-disabled]]'));
 	}
 
@@ -311,7 +311,7 @@ Messaging.canMessageRoom = function (uid, roomId, callback) {
 				return next(new Error('[[error:user-banned]]'));
 			}
 
-			if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
+			if (meta.config.requireEmailConfirmation && parseInt(userData['email:confirmed'], 10) !== 1) {
 				return next(new Error('[[error:email-not-confirmed-chat]]'));
 			}
 

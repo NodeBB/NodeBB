@@ -10,7 +10,7 @@ var getRoute;
 
 function configUpdated() {
 	adminHomePageRoute = (meta.config.homePageRoute || meta.config.homePageCustom || '').replace(/^\/+/, '') || 'categories';
-	getRoute = parseInt(meta.config.allowUserHomePage, 10) ? getRouteAllowUserHomePage : getRouteDisableUserHomePage;
+	getRoute = meta.config.allowUserHomePage ? getRouteAllowUserHomePage : getRouteDisableUserHomePage;
 }
 
 function getRouteDisableUserHomePage(uid, next) {
