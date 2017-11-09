@@ -8,12 +8,14 @@ var nodemailer = require('nodemailer');
 var wellKnownServices = require('nodemailer/lib/well-known/services');
 var htmlToText = require('html-to-text');
 var url = require('url');
+var path = require('path');
 
 var User = require('./user');
 var Plugins = require('./plugins');
 var meta = require('./meta');
 var translator = require('./translator');
 var pubsub = require('./pubsub');
+var file = require('./file');
 
 var transports = {
 	sendmail: nodemailer.createTransport({
@@ -214,7 +216,23 @@ Emailer.sendViaFallback = function (data, callback) {
 function render(tpl, params, next) {
 	var customTemplate = meta.config['email:custom:' + tpl.replace('emails/', '')];
 	if (customTemplate) {
-		Benchpress.compileParse(customTemplate, params, next);
+		var viewsDir = nconf.get('views_dir');
+		async.waterfall([
+			function (next) {
+				file.walk(viewsDir, next);
+			},
+			function (paths, next) {
+				paths = paths.reduce(function (obj, p) {
+					var relative = path.relative(viewsDir, p);
+					obj['/' + relative] = p;
+					return obj;
+				}, {});
+				meta.templates.processImports(paths, tpl, customTemplate, next);
+			},
+			function (source, next) {
+				Benchpress.compileParse(source, params, next);
+			},
+		]);
 	} else {
 		app.render(tpl, params, next);
 	}

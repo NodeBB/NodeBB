@@ -15,39 +15,39 @@ var viewsPath = nconf.get('views_dir');
 
 var Templates = module.exports;
 
+function processImports(paths, templatePath, source, callback) {
+	var regex = /<!-- IMPORT (.+?) -->/;
+
+	var matches = source.match(regex);
+
+	if (!matches) {
+		return callback(null, source);
+	}
+
+	var partial = '/' + matches[1];
+	if (paths[partial] && templatePath !== partial) {
+		fs.readFile(paths[partial], 'utf8', function (err, partialSource) {
+			if (err) {
+				return callback(err);
+			}
+
+			source = source.replace(regex, partialSource);
+			processImports(paths, templatePath, source, callback);
+		});
+	} else {
+		winston.warn('[meta/templates] Partial not loaded: ' + matches[1]);
+		source = source.replace(regex, '');
+
+		processImports(paths, templatePath, source, callback);
+	}
+}
+Templates.processImports = processImports;
+
 Templates.compile = function (callback) {
 	callback = callback || function () {};
 
 	var themeConfig = require(nconf.get('theme_config'));
 	var baseTemplatesPaths = themeConfig.baseTheme ? getBaseTemplates(themeConfig.baseTheme) : [nconf.get('base_templates_path')];
-
-	function processImports(paths, relativePath, source, callback) {
-		var regex = /<!-- IMPORT (.+?) -->/;
-
-		var matches = source.match(regex);
-
-		if (!matches) {
-			return callback(null, source);
-		}
-
-		var partial = '/' + matches[1];
-		if (paths[partial] && relativePath !== partial) {
-			fs.readFile(paths[partial], 'utf8', function (err, partialSource) {
-				if (err) {
-					return callback(err);
-				}
-
-				source = source.replace(regex, partialSource);
-
-				processImports(paths, relativePath, source, callback);
-			});
-		} else {
-			winston.warn('[meta/templates] Partial not loaded: ' + matches[1]);
-			source = source.replace(regex, '');
-
-			processImports(paths, relativePath, source, callback);
-		}
-	}
 
 	async.waterfall([
 		function (next) {
