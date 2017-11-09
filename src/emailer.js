@@ -9,6 +9,7 @@ var wellKnownServices = require('nodemailer/lib/well-known/services');
 var htmlToText = require('html-to-text');
 var url = require('url');
 var path = require('path');
+var fs = require('fs');
 
 var User = require('./user');
 var Plugins = require('./plugins');
@@ -30,6 +31,45 @@ var app;
 var fallbackTransport;
 
 var Emailer = module.exports;
+
+var viewsDir = nconf.get('views_dir');
+var emailsPath = path.join(viewsDir, 'emails');
+
+Emailer.getTemplates = function (config, cb) {
+	async.waterfall([
+		function (next) {
+			file.walk(emailsPath, next);
+		},
+		function (emails, next) {
+			// exclude .js files
+			emails = emails.filter(function (email) {
+				return !email.endsWith('.js');
+			});
+
+			async.map(emails, function (email, next) {
+				var path = email.replace(emailsPath, '').substr(1).replace('.tpl', '');
+
+				async.waterfall([
+					function (next) {
+						fs.readFile(email, 'utf8', next);
+					},
+					function (original, next) {
+						var isCustom = !!config['email:custom:' + path];
+						var text = config['email:custom:' + path] || original;
+
+						next(null, {
+							path: path,
+							fullpath: email,
+							text: text,
+							original: original,
+							isCustom: isCustom,
+						});
+					},
+				], next);
+			}, next);
+		},
+	], cb);
+};
 
 Emailer.listServices = function (callback) {
 	var services = Object.keys(wellKnownServices);
@@ -99,16 +139,19 @@ Emailer.registerApp = function (expressApp) {
 	};
 
 	Emailer.setupFallbackTransport(meta.config);
+	buildCustomTemplates(meta.config);
 
 	// Update default payload if new logo is uploaded
 	pubsub.on('config:update', function (config) {
 		if (config) {
-			if ('email:smtpTransport:enabled' in config) {
+			if (config['email:smtpTransport:enabled']) {
 				Emailer.setupFallbackTransport(config);
 			}
 			Emailer._defaultPayload.logo.src = config['brand:emailLogo'];
 			Emailer._defaultPayload.logo.height = config['brand:emailLogo:height'];
 			Emailer._defaultPayload.logo.width = config['brand:emailLogo:width'];
+
+			buildCustomTemplates(config);
 		}
 	});
 
@@ -213,29 +256,48 @@ Emailer.sendViaFallback = function (data, callback) {
 	});
 };
 
+function buildCustomTemplates(config) {
+	async.waterfall([
+		function (next) {
+			Emailer.getTemplates(config, next);
+		},
+		function (templates, next) {
+			templates = templates.filter(function (template) {
+				return template.isCustom;
+			});
+			async.each(templates, function (template, next) {
+				async.waterfall([
+					function (next) {
+						file.walk(viewsDir, next);
+					},
+					function (paths, next) {
+						paths = paths.reduce(function (obj, p) {
+							var relative = path.relative(viewsDir, p);
+							obj['/' + relative] = p;
+							return obj;
+						}, {});
+						meta.templates.processImports(paths, template.path, template.text, next);
+					},
+					function (source, next) {
+						Benchpress.precompile(source, {
+							minify: global.env !== 'development',
+						}, next);
+					},
+					function (compiled, next) {
+						fs.writeFile(template.fullpath.replace(/\.tpl$/, '.js'), compiled, next);
+					},
+				], next);
+			}, next);
+		},
+		function (next) {
+			Benchpress.flush();
+			next();
+		},
+	]);
+}
+
 function render(tpl, params, next) {
-	var customTemplate = meta.config['email:custom:' + tpl.replace('emails/', '')];
-	if (customTemplate) {
-		var viewsDir = nconf.get('views_dir');
-		async.waterfall([
-			function (next) {
-				file.walk(viewsDir, next);
-			},
-			function (paths, next) {
-				paths = paths.reduce(function (obj, p) {
-					var relative = path.relative(viewsDir, p);
-					obj['/' + relative] = p;
-					return obj;
-				}, {});
-				meta.templates.processImports(paths, tpl, customTemplate, next);
-			},
-			function (source, next) {
-				Benchpress.compileParse(source, params, next);
-			},
-		]);
-	} else {
-		app.render(tpl, params, next);
-	}
+	app.render(tpl, params, next);
 }
 
 function renderAndTranslate(tpl, params, lang, callback) {
