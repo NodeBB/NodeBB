@@ -44,8 +44,9 @@ module.exports = function (User) {
 					userSettings.uid = uids[index];
 					return userSettings;
 				});
-
-				next(null, settings);
+				async.map(settings, function (userSettings, next) {
+					onSettingsLoaded(userSettings.uid, userSettings, next);
+				}, next);
 			},
 		], callback);
 	};
