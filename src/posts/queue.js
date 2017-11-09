@@ -54,7 +54,8 @@ module.exports = function (Posts) {
 			},
 			function (next) {
 				notifications.create({
-					nid: 'post-queued-' + id,
+					type: 'post-queue',
+					nid: 'post-queue-' + id,
 					mergeId: 'post-queue',
 					bodyShort: '[[notifications:post_awaiting_review]]',
 					bodyLong: data.content,

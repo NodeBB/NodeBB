@@ -84,13 +84,19 @@ settingsController.get = function (req, res, callback) {
 			plugins.fireHook('filter:user.customSettings', { settings: results.settings, customSettings: [], uid: req.uid }, next);
 		},
 		function (data, next) {
-			getHomePageRoutes(userData, function (err, routes) {
-				userData.homePageRoutes = routes;
-				next(err, data);
-			});
-		},
-		function (data) {
 			userData.customSettings = data.customSettings;
+			async.parallel({
+				notificationSettings: function (next) {
+					getNotificationSettings(userData, next);
+				},
+				routes: function (next) {
+					getHomePageRoutes(userData, next);
+				},
+			}, next);
+		},
+		function (results) {
+			userData.homePageRoutes = results.routes;
+			userData.notificationSettings = results.notificationSettings;
 			userData.disableEmailSubscriptions = parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
 
 			userData.dailyDigestFreqOptions = [
@@ -149,6 +155,47 @@ settingsController.get = function (req, res, callback) {
 	], callback);
 };
 
+function getNotificationSettings(userData, callback) {
+	var coreTypes = [
+		'notificationType_upvote', // type = upvote
+		'notificationType_new-topic', // type = new-topic
+		'notificationType_new-reply', // type = new-reply
+		'notificationType_follow', // type = follow
+		'notificationType_new-chat', // type = new-chat
+		'notificationType_group-invite', // type = group-invite
+		// mention - plugin // type = mention
+	];
+
+	var privilegedTypes = [
+		'notificationType_new-register', // type = new-register //admin
+		'notificationType_post-queue', // type = post-queued //'administrators', 'Global Moderators'
+		'notificationType_new-user-flag', // type = new-user-flag //'administrators', 'Global Moderators'
+		'notificationType_new-post-flag', // type = new-post-flag //'administrators', 'Global Moderators'
+	];
+	var notificationSettings;
+
+	async.waterfall([
+		function (next) {
+			// TODO: mentions will add stuff into coreTypes
+			plugins.fireHook('filter:user.notificationTypes', { userData: userData, coreTypes: coreTypes }, next);
+		},
+		function (results, next) {
+			notificationSettings = results.coreTypes.map(function (type) {
+				var setting = userData.settings[type] || 'notification';
+
+				return {
+					name: type,
+					label: '[[notifications:' + type + ']]',
+					none: setting === 'none',
+					notification: setting === 'notification',
+					email: setting === 'email',
+					notificationemail: setting === 'notificationemail',
+				};
+			});
+			next(null, notificationSettings);
+		},
+	], callback);
+}
 
 function getHomePageRoutes(userData, callback) {
 	async.waterfall([
