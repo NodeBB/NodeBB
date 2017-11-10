@@ -165,20 +165,30 @@ function getNotificationSettings(userData, callback) {
 		'notificationType_group-invite',
 	];
 
-	var privilegedTypes = [
-		'notificationType_new-register', // type = new-register //admin
-		'notificationType_post-queue', // type = post-queued //'administrators', 'Global Moderators'
-		'notificationType_new-user-flag', // type = new-user-flag //'administrators', 'Global Moderators'
-		'notificationType_new-post-flag', // type = new-post-flag //'administrators', 'Global Moderators'
-	];
-	var notificationSettings;
+	var privilegedTypes = [];
 
 	async.waterfall([
 		function (next) {
-			plugins.fireHook('filter:user.notificationTypes', { userData: userData, types: types }, next);
+			user.getPrivileges(userData.uid, next);
+		},
+		function (privileges, next) {
+			if (privileges.isAdmin) {
+				privilegedTypes.push('notificationType_new-register');
+			}
+			if (privileges.isAdmin || privileges.isGlobalMod || privileges.isModeratorOfAnyCategory) {
+				privilegedTypes.push('notificationType_post-queue', 'notificationType_new-post-flag');
+			}
+			if (privileges.isAdmin || privileges.isGlobalMod) {
+				privilegedTypes.push('notificationType_new-user-flag');
+			}
+			plugins.fireHook('filter:user.notificationTypes', {
+				userData: userData,
+				types: types,
+				privilegedTypes: privilegedTypes,
+			}, next);
 		},
 		function (results, next) {
-			notificationSettings = results.types.map(function (type) {
+			function modifyType(type) {
 				var setting = userData.settings[type] || 'notification';
 
 				return {
@@ -189,7 +199,8 @@ function getNotificationSettings(userData, callback) {
 					email: setting === 'email',
 					notificationemail: setting === 'notificationemail',
 				};
-			});
+			}
+			var notificationSettings = results.types.map(modifyType).concat(results.privilegedTypes.map(modifyType));
 			next(null, notificationSettings);
 		},
 	], callback);
