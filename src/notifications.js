@@ -180,7 +180,7 @@ Notifications.push = function (notification, uids, callback) {
 
 function pushToUids(uids, notification, callback) {
 	function sendNotification(uids, callback) {
-		if (uids.length) {
+		if (!uids.length) {
 			return callback();
 		}
 		var oneWeekAgo = Date.now() - 604800000;
