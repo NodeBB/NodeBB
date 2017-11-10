@@ -157,13 +157,12 @@ settingsController.get = function (req, res, callback) {
 
 function getNotificationSettings(userData, callback) {
 	var types = [
-		'notificationType_upvote', // type = upvote
-		'notificationType_new-topic', // type = new-topic
-		'notificationType_new-reply', // type = new-reply
-		'notificationType_follow', // type = follow
-		'notificationType_new-chat', // type = new-chat
-		'notificationType_group-invite', // type = group-invite
-		// mention - plugin // type = mention
+		'notificationType_upvote',
+		'notificationType_new-topic',
+		'notificationType_new-reply',
+		'notificationType_follow',
+		'notificationType_new-chat',
+		'notificationType_group-invite',
 	];
 
 	var privilegedTypes = [
@@ -176,7 +175,6 @@ function getNotificationSettings(userData, callback) {
 
 	async.waterfall([
 		function (next) {
-			// TODO: mentions will add stuff into coreTypes
 			plugins.fireHook('filter:user.notificationTypes', { userData: userData, types: types }, next);
 		},
 		function (results, next) {
