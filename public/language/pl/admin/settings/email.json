@@ -12,7 +12,7 @@
 	"smtp-transport.service-custom": "Usługa niestandardowa",
 	"smtp-transport.service-help": "Wybierz nazwę usługi powyżej w celu wykorzystania jej parametrów. Alternatywnie, wybierz \"Własna usługa\" i wpisz szczegóły poniżej.",
 	"smtp-transport.gmail-warning1": "Zdarzały się raporty dot. usługi Gmail nie działającej na kontach z podwyższonym bezpieczeństwem. W takim przypadku będziesz musiał <a href=\"https://www.google.com/settings/security/lesssecureapps\">skonfigurować swoje konto Gmail, aby dopuszczało mniej bezpieczne aplikacji</a>. ",
-	"smtp-transport.gmail-warning2": "W celu uzyskania dalszych informacji o tym rozwiązaniu, proszę zapoznać się z artykułem NodeMailer dot. tego zagadnienia.</a>Alternatywą byłoby wykorzystanie zewnętrznej wtyczki obsługi email np. SendGrid, Mailgun itp. <a href=\"{config.relative_path}/admin/extend/plugins\">Przeglądaj dostępne wtyczki tyutaj</a>.",
+	"smtp-transport.gmail-warning2": "W celu uzyskania dalszych informacji o tym rozwiązaniu, proszę zapoznać się z artykułem NodeMailer dot. tego zagadnienia.</a>Alternatywą byłoby wykorzystanie zewnętrznej wtyczki obsługi email np. SendGrid, Mailgun itp. <a href=\"../extend/plugins\">Przeglądaj dostępne wtyczki tyutaj</a>.",
 	"smtp-transport.host": "Host SMTP",
 	"smtp-transport.port": "Port SMTP",
 	"smtp-transport.security": "Bezpieczeństwo połączenia",
