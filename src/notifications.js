@@ -238,12 +238,12 @@ function pushToUids(uids, notification, callback) {
 			function (usersSettings, next) {
 				usersSettings.forEach(function (userSettings) {
 					var setting = userSettings['notificationType_' + notification.type] || 'notification';
-					if (setting === 'notificationemail') {
+
+					if (setting === 'notification' || setting === 'notificationemail') {
 						uidsToNotify.push(userSettings.uid);
-						uidsToEmail.push(userSettings.uid);
-					} else if (setting === 'notification') {
-						uidsToNotify.push(userSettings.uid);
-					} else if (setting === 'email') {
+					}
+
+					if (setting === 'email' || setting === 'notificationemail') {
 						uidsToEmail.push(userSettings.uid);
 					}
 				});
