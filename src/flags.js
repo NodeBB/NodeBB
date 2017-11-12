@@ -370,9 +370,11 @@ Flags.create = function (type, id, uid, reason, timestamp, callback) {
 			if (targetUid) {
 				tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byTargetUid:' + targetUid, timestamp, flagId));	// by target uid
 			}
+
 			if (targetCid) {
 				tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byCid:' + targetCid, timestamp, flagId));	// by target cid
 			}
+
 			if (type === 'post') {
 				tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byPid:' + id, timestamp, flagId));	// by target pid
 				if (targetUid) {
@@ -381,16 +383,12 @@ Flags.create = function (type, id, uid, reason, timestamp, callback) {
 				}
 			}
 
+			if (doHistoryAppend) {
+				tasks.push(async.apply(Flags.update, flagId, uid, { state: 'open' }));
+			}
+
 			async.parallel(tasks, function (err) {
-				if (err) {
-					return next(err);
-				}
-
-				if (doHistoryAppend) {
-					Flags.update(flagId, uid, { state: 'open' });
-				}
-
-				next(null, flagId);
+				next(err, flagId);
 			});
 		},
 		async.apply(Flags.get),
