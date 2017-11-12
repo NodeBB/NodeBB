@@ -35,7 +35,9 @@ Command.prototype.helpInformation = function () {
 
 	var cmds = [];
 	var commandHelp = this.commandHelp();
-	if (commandHelp) cmds = [commandHelp];
+	if (commandHelp) {
+		cmds = [commandHelp];
+	}
 
 	var options = [
 		'',
@@ -63,9 +65,9 @@ Command.prototype.usage = function () {
 		return humanReadableArgName(arg);
 	});
 
-	var usage = '[options]'[optionColor]
-		+ (this.commands.length ? ' [command]' : '')[subCommandColor]
-		+ (this._args.length ? ' ' + args.join(' ') : '')[argColor];
+	var usage = '[options]'[optionColor] +
+		(this.commands.length ? ' [command]' : '')[subCommandColor] +
+		(this._args.length ? ' ' + args.join(' ') : '')[argColor];
 
 	return usage;
 };
@@ -76,7 +78,9 @@ function pad(str, width) {
 }
 
 Command.prototype.commandHelp = function () {
-	if (!this.commands.length) return '';
+	if (!this.commands.length) {
+		return '';
+	}
 
 	var commands = this.commands.filter(function (cmd) {
 		return !cmd._noHelp;
