@@ -12,7 +12,7 @@
 	"smtp-transport.service-custom": "Serviço Personalizado",
 	"smtp-transport.service-help": "Escolha o nome de um serviço acima de modo a utilizar a informação conhecida sobre ele. Alternativamente, escolha 'Serviço Personalizado' e entre com os seus detalhes abaixo.",
 	"smtp-transport.gmail-warning1": "Houve relatos do serviço do Gmail não funcionar em contas com segurança aumentada. Nestes casos, você terá que <a href=\"https://www.google.com/settings/security/lesssecureapps\">configurar a sua contada do GMail para permitir apps menos seguros</a>.",
-	"smtp-transport.gmail-warning2": "Para mais informação sobre este workaround, <a href=\"https://nodemailer.com/usage/using-gmail/\">por gentileza consulte este artigo no NodeMailer sobre o assunto..</a> Uma alternativa seria utilizar um plugin de email terceirizado como o SendGrid, Maigun etc. . <a href=\"{config.relative_path}/admin/extend/plugins\">Explore pelos plugins disponíveis aqui</a>.",
+	"smtp-transport.gmail-warning2": "Para mais informação sobre este workaround, <a href=\"https://nodemailer.com/usage/using-gmail/\">por gentileza consulte este artigo no NodeMailer sobre o assunto..</a> Uma alternativa seria utilizar um plugin de email terceirizado como o SendGrid, Maigun etc. . <a href=\"../extend/plugins\">Explore pelos plugins disponíveis aqui</a>.",
 	"smtp-transport.host": "Host SMTP",
 	"smtp-transport.port": "Porta SMTP",
 	"smtp-transport.security": "Segurança da conexão",

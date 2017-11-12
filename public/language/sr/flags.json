@@ -58,7 +58,7 @@
 	"modal-reason-custom": "Разлог за пријаву овог садржаја...",
 	"modal-submit": "Пошаљи извештај",
 	"modal-submit-success": "Садржај је означен за модерацију.",
-	"modal-submit-confirm": "Confirm Submission",
-	"modal-submit-confirm-text": "You have a custom reason specified already. Are you sure you wish to submit via quick-report?",
-	"modal-submit-confirm-text-help": "Submitting a quick report will overwrite any custom reasons defined."
+	"modal-submit-confirm": "Потврди подношење",
+	"modal-submit-confirm-text": "Већ имате наведени прилагођени разлог. Да ли сте сигурни да желите послати путем брзог извештаја?",
+	"modal-submit-confirm-text-help": "Подношење брзог извештаја ће заменити све прилагођене разлоге."
 }

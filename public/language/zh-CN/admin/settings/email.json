@@ -12,7 +12,7 @@
 	"smtp-transport.service-custom": "自定义",
 	"smtp-transport.service-help": "选取一个上方服务以便使用已知的信息。此外，还可以选取 “自定义”并在下方输入配置细节。",
 	"smtp-transport.gmail-warning1": "有报告称，Gmail 代发在安全性更高的账户上不工作。在这种情况中，你需要<a href=\"https://www.google.com/settings/security/lesssecureapps\">将您的Gmail帐户设为允许安全性较低的应用程式</a>。",
-	"smtp-transport.gmail-warning2": "有关此解决方法的更多信息，请参阅有关该问题的<a href=\"https://nodemailer.com/usage/using-gmail/\">NodeMailer 文章</a>。 另一种方法是利用 SendGrid，Mailgun 等第三方电子邮件插件。<a href=\"{config.relative_path}/admin/extend/plugins\">点这儿以浏览可用的插件。</a>",
+	"smtp-transport.gmail-warning2": "有关此解决方法的更多信息，请参阅有关该问题的<a href=\"https://nodemailer.com/usage/using-gmail/\">NodeMailer 文章</a>。 另一种方法是利用 SendGrid，Mailgun 等第三方电子邮件插件。<a href=\"../extend/plugins\">点这儿以浏览可用的插件。</a>",
 	"smtp-transport.host": "SMTP 主机名",
 	"smtp-transport.port": "SMTP 端口",
 	"smtp-transport.security": "连接安全设置",
