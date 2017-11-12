@@ -3,7 +3,6 @@
 var fs = require('fs');
 var path = require('path');
 
-var prestart = require('../prestart');
 var packageInstall = require('../meta/package-install');
 var dirname = require('./paths').baseDir;
 
@@ -33,6 +32,7 @@ var program = require('commander');
 
 var pkg = require('../../package.json');
 var file = require('../file');
+var prestart = require('../prestart');
 
 program
 	.name('./nodebb')
