@@ -5,6 +5,7 @@ var async = require('async');
 
 var install = require('../install');
 var build = require('../meta/build');
+var prestart = require('../prestart');
 
 function setup() {
 	winston.info('NodeBB Setup Triggered via Command Line');
@@ -15,6 +16,7 @@ function setup() {
 
 	async.series([
 		install.setup,
+		prestart.loadConfig,
 		build.buildAll,
 	], function (err, data) {
 		// Disregard build step data
