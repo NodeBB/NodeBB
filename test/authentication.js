@@ -186,8 +186,9 @@ describe('authentication', function () {
 				url: nconf.get('url') + '/api/me',
 				json: true,
 				jar: jar,
-			}, function (err, response, body) {
+			}, function (err, res, body) {
 				assert.ifError(err);
+				assert.equal(res.statusCode, 401);
 				assert.equal(body, 'not-authorized');
 				done();
 			});

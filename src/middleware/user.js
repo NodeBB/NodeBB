@@ -148,7 +148,7 @@ module.exports = function (middleware) {
 			},
 			function (userslug) {
 				if (!userslug) {
-					return next();
+					return res.status(401).send('not-authorized');
 				}
 				var path = req.path.replace(/^(\/api)?\/me/, '/user/' + userslug);
 				controllers.helpers.redirect(res, path);

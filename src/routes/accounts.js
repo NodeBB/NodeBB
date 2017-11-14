@@ -7,7 +7,7 @@ module.exports = function (app, middleware, controllers) {
 	var middlewares = [middleware.checkGlobalPrivacySettings];
 	var accountMiddlewares = [middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions];
 
-	setupPageRoute(app, '/me*', middleware, [], middleware.redirectMeToUserslug);
+	setupPageRoute(app, '/me/*', middleware, [], middleware.redirectMeToUserslug);
 	setupPageRoute(app, '/uid/:uid*', middleware, [], middleware.redirectUidToUserslug);
 
 	setupPageRoute(app, '/user/:userslug', middleware, middlewares, controllers.accounts.profile.get);
