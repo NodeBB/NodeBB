@@ -243,18 +243,7 @@ module.exports = function (Topics) {
 				user.isReadyToPost(uid, cid, next);
 			},
 			function (next) {
-				plugins.fireHook('filter:topic.reply', data, next);
-			},
-			function (filteredData, next) {
-				content = filteredData.content || data.content;
-				if (content) {
-					content = utils.rtrim(content);
-				}
-
-				check(content, meta.config.minimumPostLength, meta.config.maximumPostLength, 'content-too-short', 'content-too-long', next);
-			},
-			function (next) {
-				posts.create({
+				var post = {
 					uid: uid,
 					tid: tid,
 					handle: data.handle,
@@ -262,7 +251,22 @@ module.exports = function (Topics) {
 					toPid: data.toPid,
 					timestamp: data.timestamp,
 					ip: data.req ? data.req.ip : null,
-				}, next);
+				};
+				data.post = post;
+				plugins.fireHook('filter:topic.reply', data, next);
+			},
+			function (filteredData, next) {
+				content = filteredData.post.content || filteredData.content || data.content;
+				if (content) {
+					content = utils.rtrim(content);
+				}
+
+				filteredData.post.content = content;
+
+				check(content, meta.config.minimumPostLength, meta.config.maximumPostLength, 'content-too-short', 'content-too-long', next);
+			},
+			function (next) {
+				posts.create(data.post, next);
 			},
 			function (_postData, next) {
 				postData = _postData;
