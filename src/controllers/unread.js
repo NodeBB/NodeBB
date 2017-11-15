@@ -2,6 +2,7 @@
 'use strict';
 
 var async = require('async');
+var nconf = require('nconf');
 var querystring = require('querystring');
 
 var pagination = require('../pagination');
