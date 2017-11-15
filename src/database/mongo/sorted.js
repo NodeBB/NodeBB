@@ -467,7 +467,7 @@ module.exports = function (db, module) {
 		}
 	}
 
-	module.processSortedSet = function (setKey, process, options, callback) {
+	module.processSortedSet = function (setKey, processFn, options, callback) {
 		var done = false;
 		var ids = [];
 		var cursor = db.collection('objects').find({ _key: setKey })
@@ -494,7 +494,7 @@ module.exports = function (db, module) {
 						if (ids.length < options.batch && (!done || ids.length === 0)) {
 							return process.nextTick(next, null);
 						}
-						process(ids, function (err) {
+						processFn(ids, function (err) {
 							_next(err);
 						});
 					},
