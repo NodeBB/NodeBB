@@ -492,7 +492,7 @@ module.exports = function (db, module) {
 						}
 
 						if (ids.length < options.batch && (!done || ids.length === 0)) {
-							return next(null);
+							return process.nextTick(next, null);
 						}
 						process(ids, function (err) {
 							_next(err);
