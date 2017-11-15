@@ -11,6 +11,7 @@ var autoprefixer = require('autoprefixer');
 var clean = require('postcss-clean');
 
 var fork = require('./debugFork');
+require('../file'); // for graceful-fs
 
 var Minifier = module.exports;
 
@@ -139,12 +140,12 @@ function executeAction(action, fork, callback) {
 function concat(data, callback) {
 	if (data.files && data.files.length) {
 		async.mapLimit(data.files, 1000, function (ref, next) {
-			fs.readFile(ref.srcPath, function (err, buffer) {
+			fs.readFile(ref.srcPath, 'utf8', function (err, file) {
 				if (err) {
 					return next(err);
 				}
 
-				next(null, buffer.toString());
+				next(null, file);
 			});
 		}, function (err, files) {
 			if (err) {
@@ -163,18 +164,18 @@ function concat(data, callback) {
 actions.concat = concat;
 
 function minifyJS_batch(data, callback) {
-	async.eachLimit(data.files, 1000, function (ref, next) {
+	async.each(data.files, function (ref, next) {
 		var srcPath = ref.srcPath;
 		var destPath = ref.destPath;
 		var filename = ref.filename;
 
-		fs.readFile(srcPath, function (err, buffer) {
+		fs.readFile(srcPath, 'utf8', function (err, file) {
 			if (err) {
 				return next(err);
 			}
 
 			var scripts = {};
-			scripts[filename] = buffer.toString();
+			scripts[filename] = file;
 
 			try {
 				var minified = uglifyjs.minify(scripts, {
@@ -203,7 +204,7 @@ function minifyJS(data, callback) {
 		var srcPath = ref.srcPath;
 		var filename = ref.filename;
 
-		fs.readFile(srcPath, function (err, buffer) {
+		fs.readFile(srcPath, 'utf8', function (err, file) {
 			if (err) {
 				return next(err);
 			}
@@ -211,7 +212,7 @@ function minifyJS(data, callback) {
 			next(null, {
 				srcPath: srcPath,
 				filename: filename,
-				source: buffer.toString(),
+				source: file,
 			});
 		});
 	}, function (err, files) {

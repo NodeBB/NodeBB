@@ -106,7 +106,7 @@ function minifyModules(modules, fork, callback) {
 		return prev;
 	}, []);
 
-	async.eachLimit(moduleDirs, 1000, mkdirp, function (err) {
+	async.each(moduleDirs, mkdirp, function (err) {
 		if (err) {
 			return callback(err);
 		}
@@ -126,7 +126,7 @@ function minifyModules(modules, fork, callback) {
 				minifier.js.minifyBatch(filtered.minify, fork, cb);
 			},
 			function (cb) {
-				async.eachLimit(filtered.skip, 500, function (mod, next) {
+				async.each(filtered.skip, function (mod, next) {
 					linkIfLinux(mod.srcPath, mod.destPath, next);
 				}, cb);
 			},
@@ -137,7 +137,7 @@ function minifyModules(modules, fork, callback) {
 function linkModules(callback) {
 	var modules = JS.scripts.modules;
 
-	async.eachLimit(Object.keys(modules), 1000, function (relPath, next) {
+	async.each(Object.keys(modules), function (relPath, next) {
 		var srcPath = path.join(__dirname, '../../', modules[relPath]);
 		var destPath = path.join(__dirname, '../../build/public/src/modules', relPath);
 
@@ -183,7 +183,7 @@ function getModuleList(callback) {
 	modules = modules.concat(coreDirs);
 
 	var moduleFiles = [];
-	async.eachLimit(modules, 1000, function (module, next) {
+	async.each(modules, function (module, next) {
 		var srcPath = module.srcPath;
 		var destPath = module.destPath;
 
@@ -255,7 +255,7 @@ JS.linkStatics = function (callback) {
 		if (err) {
 			return callback(err);
 		}
-		async.eachLimit(Object.keys(plugins.staticDirs), 1000, function (mappedPath, next) {
+		async.each(Object.keys(plugins.staticDirs), function (mappedPath, next) {
 			var sourceDir = plugins.staticDirs[mappedPath];
 			var destDir = path.join(__dirname, '../../build/public/plugins', mappedPath);
 

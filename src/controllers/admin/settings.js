@@ -45,16 +45,16 @@ function renderEmail(req, res, next) {
 
 						async.waterfall([
 							function (next) {
-								fs.readFile(email, next);
+								fs.readFile(email, 'utf8', next);
 							},
 							function (original, next) {
-								var text = meta.config['email:custom:' + path] ? meta.config['email:custom:' + path] : original.toString();
+								var text = meta.config['email:custom:' + path] ? meta.config['email:custom:' + path] : original;
 
 								next(null, {
 									path: path,
 									fullpath: email,
 									text: text,
-									original: original.toString(),
+									original: original,
 								});
 							},
 						], next);

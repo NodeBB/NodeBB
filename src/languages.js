@@ -29,7 +29,7 @@ Languages.listCodes = function (callback) {
 		return callback(null, codeCache);
 	}
 
-	fs.readFile(path.join(languagesPath, 'metadata.json'), function (err, buffer) {
+	fs.readFile(path.join(languagesPath, 'metadata.json'), 'utf8', function (err, file) {
 		if (err && err.code === 'ENOENT') {
 			return callback(null, []);
 		}
@@ -39,7 +39,7 @@ Languages.listCodes = function (callback) {
 
 		var parsed;
 		try {
-			parsed = JSON.parse(buffer.toString());
+			parsed = JSON.parse(file);
 		} catch (e) {
 			return callback(e);
 		}
@@ -64,7 +64,7 @@ Languages.list = function (callback) {
 		async.map(codes, function (folder, next) {
 			var configPath = path.join(languagesPath, folder, 'language.json');
 
-			fs.readFile(configPath, function (err, buffer) {
+			fs.readFile(configPath, 'utf8', function (err, file) {
 				if (err && err.code === 'ENOENT') {
 					return next();
 				}
@@ -72,7 +72,7 @@ Languages.list = function (callback) {
 					return next(err);
 				}
 				try {
-					var lang = JSON.parse(buffer.toString());
+					var lang = JSON.parse(file);
 					next(null, lang);
 				} catch (e) {
 					next(e);

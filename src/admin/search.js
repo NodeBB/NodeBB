@@ -63,12 +63,11 @@ var fallbackCacheInProgress = {};
 var fallbackCache = {};
 
 function initFallback(namespace, callback) {
-	fs.readFile(path.resolve(nconf.get('views_dir'), namespace + '.tpl'), function (err, file) {
+	fs.readFile(path.resolve(nconf.get('views_dir'), namespace + '.tpl'), 'utf8', function (err, template) {
 		if (err) {
 			return callback(err);
 		}
 
-		var template = file.toString();
 		var title = nsToTitle(namespace);
 
 		var translations = sanitize(template);
