@@ -503,7 +503,7 @@ module.exports = function (db, module) {
 						if (options.interval) {
 							setTimeout(next, options.interval);
 						} else {
-							next();
+							process.nextTick(next);
 						}
 					},
 				], next);
