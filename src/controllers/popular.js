@@ -52,7 +52,7 @@ popularController.get = function (req, res, next) {
 				term: term,
 			};
 
-			if (req.path.startsWith('/api/popular') || req.path.startsWith('/popular')) {
+			if (req.originalUrl.startsWith(nconf.get('relative_path') + '/api/popular') || req.originalUrl.startsWith(nconf.get('relative_path') + '/popular')) {
 				var breadcrumbs = [{ text: termToBreadcrumb[term] }];
 
 				if (req.params.term) {

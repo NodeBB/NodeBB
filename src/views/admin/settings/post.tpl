@@ -17,7 +17,7 @@
 				<select class="form-control" data-field="categoryTopicSort">
 					<option value="oldest_to_newest">[[admin/settings/post:sorting.oldest-to-newest]]</option>
 					<option value="newest_to_oldest">[[admin/settings/post:sorting.newest-to-oldest]]</option>
-					<option value="most_votes">[[admin/settings/post:sorting.most-votes]]</option>
+					<option value="most_posts">[[admin/settings/post:sorting.most-posts]]</option>
 				</select>
 			</div>
 		</form>
