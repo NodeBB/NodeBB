@@ -64,8 +64,7 @@ unreadController.get = function (req, res, next) {
 			data.categories = results.watchedCategories.categories;
 			data.selectedCategory = results.watchedCategories.selectedCategory;
 			data.selectedCids = results.watchedCategories.selectedCids;
-
-			if (req.path.startsWith('/api/unread') || req.path.startsWith('/unread')) {
+			if (req.originalUrl.startsWith(nconf.get('relative_path') + '/api/unread') || req.originalUrl.startsWith(nconf.get('relative_path') + '/unread')) {
 				data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[unread:title]]' }]);
 			}
 

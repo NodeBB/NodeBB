@@ -109,7 +109,7 @@ categoryController.get = function (req, res, callback) {
 				return helpers.redirect(res, categoryData.link);
 			}
 
-			buildBreadcrumbs(categoryData, next);
+			buildBreadcrumbs(req, categoryData, next);
 		},
 		function (categoryData, next) {
 			if (!categoryData.children.length) {
@@ -148,7 +148,7 @@ categoryController.get = function (req, res, callback) {
 	], callback);
 };
 
-function buildBreadcrumbs(categoryData, callback) {
+function buildBreadcrumbs(req, categoryData, callback) {
 	var breadcrumbs = [
 		{
 			text: categoryData.name,
@@ -160,7 +160,9 @@ function buildBreadcrumbs(categoryData, callback) {
 			helpers.buildCategoryBreadcrumbs(categoryData.parentCid, next);
 		},
 		function (crumbs, next) {
-			categoryData.breadcrumbs = crumbs.concat(breadcrumbs);
+			if (req.originalUrl.startsWith(nconf.get('relative_path') + '/api/category') || req.originalUrl.startsWith(nconf.get('relative_path') + '/category')) {
+				categoryData.breadcrumbs = crumbs.concat(breadcrumbs);
+			}
 			next(null, categoryData);
 		},
 	], callback);
