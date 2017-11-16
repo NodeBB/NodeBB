@@ -131,6 +131,12 @@ module.exports = function (User) {
 			notificationSound: data.notificationSound,
 			incomingChatSound: data.incomingChatSound,
 			outgoingChatSound: data.outgoingChatSound,
+			notificationType_upvote: data.notificationType_upvote,
+			'notificationType_new-topic': data['notificationType_new-topic'],
+			'notificationType_new-reply': data['notificationType_new-reply'],
+			notificationType_follow: data.notificationType_follow,
+			'notificationType_new-chat': data['notificationType_new-chat'],
+			'notificationType_group-invite': data['notificationType_group-invite'],
 		};
 
 		if (data.bootswatchSkin) {

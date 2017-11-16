@@ -696,6 +696,7 @@ Flags.notify = function (flagObj, uid, callback) {
 			}
 
 			notifications.create({
+				type: 'new-user-flag',
 				bodyShort: '[[notifications:user_flagged_user, ' + flagObj.reporter.username + ', ' + flagObj.target.username + ']]',
 				bodyLong: flagObj.description,
 				path: '/uid/' + flagObj.targetId,
