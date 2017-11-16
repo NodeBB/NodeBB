@@ -157,13 +157,12 @@ Categories.getCategories = function (cids, uid, callback) {
 					category.parent = results.parents[i] || undefined;
 					category.tagWhitelist = results.tagWhitelist[i];
 					category['unread-class'] = (parseInt(category.topic_count, 10) === 0 || (results.hasRead[i] && uid !== 0)) ? '' : 'unread';
-					calculateUnreadChildren(category.children, uid);
 					calculateTopicPostCount(category);
 				}
 			});
 
 			next(null, results.categories);
-		},
+		}
 	], callback);
 };
 
@@ -173,23 +172,6 @@ Categories.getTagWhitelist = function (cids, callback) {
 	});
 	db.getSortedSetsMembers(keys, callback);
 };
-
-function calculateUnreadChildren(children, uid) {
-	var cids = children.map(function (child) {
-		return child.cid;
-	});
-
-	Categories.hasReadCategories(cids, uid, function (err, data) {
-		if (err) {
-			return;
-		}
-
-		data.forEach(function (read, i) {
-			var child = children[i];
-			child['unread-class'] = (parseInt(child.topic_count, 10) === 0 || read) ? '' : 'unread';
-		});
-	});
-}
 
 function calculateTopicPostCount(category) {
 	if (!category) {
@@ -277,9 +259,29 @@ function getChildrenRecursive(category, uid, callback) {
 			}
 			Categories.getCategoriesData(children, next);
 		},
-		function (childrenData, next) {
-			childrenData = childrenData.filter(Boolean);
-			category.children = childrenData;
+		function (children, next) {
+			children = children.filter(Boolean);
+			category.children = children;
+
+			async.map(children, function (child, next) {
+				next(null, child.cid);
+			}, next);
+		},
+		function (cids, next) {
+			Categories.hasReadCategories(cids, uid, function (err, data) {
+				if (err) {
+					return next(err);
+				}
+
+				data.forEach(function (read, i) {
+					var child = category.children[i];
+					child['unread-class'] = (parseInt(child.topic_count, 10) === 0 || (read && uid !== 0)) ? '' : 'unread';
+				});
+
+				next(null);
+			});
+		},
+		function (next) {
 			async.each(category.children, function (child, next) {
 				getChildrenRecursive(child, uid, next);
 			}, next);
