@@ -937,6 +937,35 @@ describe('Controllers', function () {
 			});
 		});
 
+		describe('/me/*', function () {
+			it('api should redirect to /user/[userslug]/bookmarks', function (done) {
+				request(nconf.get('url') + '/api/me/bookmarks', { jar: jar, json: true }, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert.equal(res.headers['x-redirect'], '/user/foo/bookmarks');
+					assert.equal(body, '/user/foo/bookmarks');
+					done();
+				});
+			});
+			it('api should redirect to /user/[userslug]/edit/username', function (done) {
+				request(nconf.get('url') + '/api/me/edit/username', { jar: jar, json: true }, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert.equal(res.headers['x-redirect'], '/user/foo/edit/username');
+					assert.equal(body, '/user/foo/edit/username');
+					done();
+				});
+			});
+			it('should 401 if user is not logged in', function (done) {
+				request(nconf.get('url') + '/me/bookmarks', { json: true }, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 401);
+					assert.equal(body, 'not-authorized');
+					done();
+				});
+			});
+		});
+
 		it('should 401 if user is not logged in', function (done) {
 			request(nconf.get('url') + '/api/admin', { json: true }, function (err, res) {
 				assert.ifError(err);

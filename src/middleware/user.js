@@ -140,6 +140,22 @@ module.exports = function (middleware) {
 		], next);
 	};
 
+	middleware.redirectMeToUserslug = function (req, res, next) {
+		var uid = req.uid;
+		async.waterfall([
+			function (next) {
+				user.getUserField(uid, 'userslug', next);
+			},
+			function (userslug) {
+				if (!userslug) {
+					return res.status(401).send('not-authorized');
+				}
+				var path = req.path.replace(/^(\/api)?\/me/, '/user/' + userslug);
+				controllers.helpers.redirect(res, path);
+			},
+		], next);
+	};
+
 	middleware.isAdmin = function (req, res, next) {
 		async.waterfall([
 			function (next) {
