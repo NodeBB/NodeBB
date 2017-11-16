@@ -162,7 +162,7 @@ Categories.getCategories = function (cids, uid, callback) {
 			});
 
 			next(null, results.categories);
-		}
+		},
 	], callback);
 };
 
