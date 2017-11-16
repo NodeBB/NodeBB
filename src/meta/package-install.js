@@ -59,7 +59,7 @@ function preserveExtraneousPlugins() {
 		})
 		// reduce to a map of package names to package versions
 		.reduce(function (map, pkgName) {
-			var pkgConfig = JSON.parse(fs.readFileSync(path.join(modulesPath, pkgName, 'package.json')));
+			var pkgConfig = JSON.parse(fs.readFileSync(path.join(modulesPath, pkgName, 'package.json'), 'utf8'));
 			map[pkgName] = pkgConfig.version;
 			return map;
 		}, {});

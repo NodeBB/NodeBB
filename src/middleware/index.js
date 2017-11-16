@@ -218,11 +218,11 @@ middleware.templatesOnDemand = function (req, res, next) {
 				return next();
 			}
 
-			fs.readFile(filePath.replace(/\.js$/, '.tpl'), cb);
+			fs.readFile(filePath.replace(/\.js$/, '.tpl'), 'utf8', cb);
 		},
 		function (source, cb) {
 			Benchpress.precompile({
-				source: source.toString(),
+				source: source,
 				minify: global.env !== 'development',
 			}, cb);
 		},

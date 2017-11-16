@@ -120,9 +120,7 @@ image.size = function (path, callback) {
 };
 
 image.convertImageToBase64 = function (path, callback) {
-	fs.readFile(path, function (err, data) {
-		callback(err, data ? data.toString('base64') : null);
-	});
+	fs.readFile(path, 'base64', callback);
 };
 
 image.mimeFromBase64 = function (imageData) {

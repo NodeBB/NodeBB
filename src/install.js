@@ -371,7 +371,7 @@ function createCategories(next) {
 
 		process.stdout.write('No categories found, populating instance with default categories\n');
 
-		fs.readFile(path.join(__dirname, '../', 'install/data/categories.json'), function (err, default_categories) {
+		fs.readFile(path.join(__dirname, '../', 'install/data/categories.json'), 'utf8', function (err, default_categories) {
 			if (err) {
 				return next(err);
 			}
@@ -402,7 +402,7 @@ function createWelcomePost(next) {
 
 	async.parallel([
 		function (next) {
-			fs.readFile(path.join(__dirname, '../', 'install/data/welcome.md'), next);
+			fs.readFile(path.join(__dirname, '../', 'install/data/welcome.md'), 'utf8', next);
 		},
 		function (next) {
 			db.getObjectField('global', 'topicCount', next);
@@ -421,7 +421,7 @@ function createWelcomePost(next) {
 				uid: 1,
 				cid: 2,
 				title: 'Welcome to your NodeBB!',
-				content: content.toString(),
+				content: content,
 			}, next);
 		} else {
 			next();
@@ -473,7 +473,7 @@ function setCopyrightWidget(next) {
 	var db = require('./database');
 	async.parallel({
 		footerJSON: function (next) {
-			fs.readFile(path.join(__dirname, '../', 'install/data/footer.json'), next);
+			fs.readFile(path.join(__dirname, '../', 'install/data/footer.json'), 'utf8', next);
 		},
 		footer: function (next) {
 			db.getObjectField('widgets:global', 'footer', next);
@@ -484,7 +484,7 @@ function setCopyrightWidget(next) {
 		}
 
 		if (!results.footer && results.footerJSON) {
-			db.setObjectField('widgets:global', 'footer', results.footerJSON.toString(), next);
+			db.setObjectField('widgets:global', 'footer', results.footerJSON, next);
 		} else {
 			next();
 		}

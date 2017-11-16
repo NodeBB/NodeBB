@@ -32,12 +32,11 @@ Templates.compile = function (callback) {
 
 		var partial = '/' + matches[1];
 		if (paths[partial] && relativePath !== partial) {
-			fs.readFile(paths[partial], function (err, file) {
+			fs.readFile(paths[partial], 'utf8', function (err, partialSource) {
 				if (err) {
 					return callback(err);
 				}
 
-				var partialSource = file.toString();
 				source = source.replace(regex, partialSource);
 
 				processImports(paths, relativePath, source, callback);
@@ -58,10 +57,9 @@ Templates.compile = function (callback) {
 			async.each(Object.keys(paths), function (relativePath, next) {
 				async.waterfall([
 					function (next) {
-						fs.readFile(paths[relativePath], next);
+						fs.readFile(paths[relativePath], 'utf8', next);
 					},
-					function (file, next) {
-						var source = file.toString();
+					function (source, next) {
 						processImports(paths, relativePath, source, next);
 					},
 					function (source, next) {
