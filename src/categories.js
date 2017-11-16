@@ -175,8 +175,7 @@ Categories.getTagWhitelist = function (cids, callback) {
 };
 
 function calculateUnreadChildren(children, uid) {
-	var unreadChildren = false;
-	var cids = children.map(function (child, i) {
+	var cids = children.map(function (child) {
 		return child.cid;
 	});
 
