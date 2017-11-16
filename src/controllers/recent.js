@@ -71,7 +71,7 @@ recentController.get = function (req, res, next) {
 			var pageCount = Math.max(1, Math.ceil(data.topicCount / settings.topicsPerPage));
 			data.pagination = pagination.create(page, pageCount, req.query);
 
-			if (req.path.startsWith('/api/recent') || req.path.startsWith('/recent')) {
+			if (req.originalUrl.startsWith(nconf.get('relative_path') + '/api/recent') || req.originalUrl.startsWith(nconf.get('relative_path') + '/recent')) {
 				data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[recent:title]]' }]);
 			}
 
