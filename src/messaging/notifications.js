@@ -1,12 +1,9 @@
 'use strict';
 
 var async = require('async');
-var winston = require('winston');
 
 var user = require('../user');
-var emailer = require('../emailer');
 var notifications = require('../notifications');
-var meta = require('../meta');
 var sockets = require('../socket.io');
 var plugins = require('../plugins');
 
@@ -92,46 +89,6 @@ module.exports = function (Messaging) {
 				if (notification) {
 					notifications.push(notification, uids);
 				}
-				sendNotificationEmails(uids, messageObj);
-			}
-		});
-	}
-
-	function sendNotificationEmails(uids, messageObj) {
-		if (parseInt(meta.config.disableEmailSubscriptions, 10) === 1) {
-			return;
-		}
-
-		async.waterfall([
-			function (next) {
-				async.parallel({
-					userData: function (next) {
-						user.getUsersFields(uids, ['uid', 'username', 'userslug'], next);
-					},
-					userSettings: function (next) {
-						user.getMultipleUserSettings(uids, next);
-					},
-				}, next);
-			},
-
-			function (results, next) {
-				results.userData = results.userData.filter(function (userData, index) {
-					return userData && results.userSettings[index] && results.userSettings[index].sendChatNotifications;
-				});
-				async.each(results.userData, function (userData, next) {
-					emailer.send('notif_chat', userData.uid, {
-						subject: '[[email:notif.chat.subject, ' + messageObj.fromUser.username + ']]',
-						summary: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
-						message: messageObj,
-						roomId: messageObj.roomId,
-						username: userData.username,
-						userslug: userData.userslug,
-					}, next);
-				}, next);
-			},
-		], function (err) {
-			if (err) {
-				return winston.error(err);
 			}
 		});
 	}

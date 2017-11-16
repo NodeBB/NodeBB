@@ -120,6 +120,16 @@ describe('Controllers', function () {
 		});
 	});
 
+	it('should load not load breadcrumbs on home page route', function (done) {
+		request(nconf.get('url') + '/api', { json: true }, function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			assert(!body.breadcrumbs);
+			done();
+		});
+	});
+
 	it('should redirect to custom homepage', function (done) {
 		meta.configs.set('homePageRoute', 'groups', function (err) {
 			assert.ifError(err);

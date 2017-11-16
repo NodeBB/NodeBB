@@ -13,6 +13,7 @@ var meta = require('./meta');
 var batch = require('./batch');
 var plugins = require('./plugins');
 var utils = require('./utils');
+var emailer = require('./emailer');
 
 var Notifications = module.exports;
 
@@ -178,9 +179,78 @@ Notifications.push = function (notification, uids, callback) {
 };
 
 function pushToUids(uids, notification, callback) {
-	var oneWeekAgo = Date.now() - 604800000;
-	var unreadKeys = [];
-	var readKeys = [];
+	function sendNotification(uids, callback) {
+		if (!uids.length) {
+			return callback();
+		}
+		var oneWeekAgo = Date.now() - 604800000;
+		var unreadKeys = [];
+		var readKeys = [];
+		async.waterfall([
+			function (next) {
+				uids.forEach(function (uid) {
+					unreadKeys.push('uid:' + uid + ':notifications:unread');
+					readKeys.push('uid:' + uid + ':notifications:read');
+				});
+
+				db.sortedSetsAdd(unreadKeys, notification.datetime, notification.nid, next);
+			},
+			function (next) {
+				db.sortedSetsRemove(readKeys, notification.nid, next);
+			},
+			function (next) {
+				db.sortedSetsRemoveRangeByScore(unreadKeys, '-inf', oneWeekAgo, next);
+			},
+			function (next) {
+				db.sortedSetsRemoveRangeByScore(readKeys, '-inf', oneWeekAgo, next);
+			},
+			function (next) {
+				var websockets = require('./socket.io');
+				if (websockets.server) {
+					uids.forEach(function (uid) {
+						websockets.in('uid_' + uid).emit('event:new_notification', notification);
+					});
+				}
+				next();
+			},
+		], callback);
+	}
+
+	function sendEmail(uids, callback) {
+		async.eachLimit(uids, 3, function (uid, next) {
+			emailer.send('notification', uid, {
+				path: notification.path,
+				subject: '[' + (meta.config.title || 'NodeBB') + '] ' + notification.bodyShort,
+				intro: '[[notifications:new_notification_from, ' + meta.config.title + ']]',
+				body: notification.bodyLong || notification.bodyShort,
+				showUnsubscribe: true,
+			}, next);
+		}, callback);
+	}
+
+	function getUidsBySettings(uids, callback) {
+		var uidsToNotify = [];
+		var uidsToEmail = [];
+		async.waterfall([
+			function (next) {
+				User.getMultipleUserSettings(uids, next);
+			},
+			function (usersSettings, next) {
+				usersSettings.forEach(function (userSettings) {
+					var setting = userSettings['notificationType_' + notification.type] || 'notification';
+
+					if (setting === 'notification' || setting === 'notificationemail') {
+						uidsToNotify.push(userSettings.uid);
+					}
+
+					if (setting === 'email' || setting === 'notificationemail') {
+						uidsToEmail.push(userSettings.uid);
+					}
+				});
+				next(null, { uidsToNotify: uidsToNotify, uidsToEmail: uidsToEmail });
+			},
+		], callback);
+	}
 
 	async.waterfall([
 		function (next) {
@@ -190,35 +260,32 @@ function pushToUids(uids, notification, callback) {
 			if (!data || !data.notification || !data.uids || !data.uids.length) {
 				return callback();
 			}
-
-			uids = data.uids;
 			notification = data.notification;
-
-			uids.forEach(function (uid) {
-				unreadKeys.push('uid:' + uid + ':notifications:unread');
-				readKeys.push('uid:' + uid + ':notifications:read');
-			});
-
-			db.sortedSetsAdd(unreadKeys, notification.datetime, notification.nid, next);
-		},
-		function (next) {
-			db.sortedSetsRemove(readKeys, notification.nid, next);
-		},
-		function (next) {
-			db.sortedSetsRemoveRangeByScore(unreadKeys, '-inf', oneWeekAgo, next);
-		},
-		function (next) {
-			db.sortedSetsRemoveRangeByScore(readKeys, '-inf', oneWeekAgo, next);
-		},
-		function (next) {
-			var websockets = require('./socket.io');
-			if (websockets.server) {
-				uids.forEach(function (uid) {
-					websockets.in('uid_' + uid).emit('event:new_notification', notification);
-				});
+			if (notification.type) {
+				getUidsBySettings(data.uids, next);
+			} else {
+				next(null, { uidsToNotify: data.uids, uidsToEmail: [] });
 			}
-
-			plugins.fireHook('action:notification.pushed', { notification: notification, uids: uids });
+		},
+		function (results, next) {
+			async.parallel([
+				function (next) {
+					sendNotification(results.uidsToNotify, next);
+				},
+				function (next) {
+					sendEmail(results.uidsToEmail, next);
+				},
+			], function (err) {
+				next(err, results);
+			});
+		},
+		function (results, next) {
+			plugins.fireHook('action:notification.pushed', {
+				notification: notification,
+				uids: results.uidsToNotify,
+				uidsNotified: results.uidsToNotify,
+				uidsEmailed: results.uidsToEmail,
+			});
 			next();
 		},
 	], callback);

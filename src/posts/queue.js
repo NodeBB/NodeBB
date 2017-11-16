@@ -53,17 +53,25 @@ module.exports = function (Posts) {
 				user.setUserField(data.uid, 'lastqueuetime', Date.now(), next);
 			},
 			function (next) {
-				notifications.create({
-					nid: 'post-queued-' + id,
-					mergeId: 'post-queue',
-					bodyShort: '[[notifications:post_awaiting_review]]',
-					bodyLong: data.content,
-					path: '/post-queue',
+				async.parallel({
+					notification: function (next) {
+						notifications.create({
+							type: 'post-queue',
+							nid: 'post-queue-' + id,
+							mergeId: 'post-queue',
+							bodyShort: '[[notifications:post_awaiting_review]]',
+							bodyLong: data.content,
+							path: '/post-queue',
+						}, next);
+					},
+					cid: function (next) {
+						getCid(type, data, next);
+					},
 				}, next);
 			},
-			function (notification, next) {
-				if (notification) {
-					notifications.pushGroups(notification, ['administrators', 'Global Moderators'], next);
+			function (results, next) {
+				if (results.notification) {
+					notifications.pushGroups(results.notification, ['administrators', 'Global Moderators', 'cid:' + results.cid + ':privileges:moderate'], next);
 				} else {
 					next();
 				}
@@ -79,20 +87,26 @@ module.exports = function (Posts) {
 		], callback);
 	};
 
+	function getCid(type, data, callback) {
+		if (type === 'topic') {
+			return setImmediate(callback, null, data.cid);
+		} else if (type === 'reply') {
+			topics.getTopicField(data.tid, 'cid', callback);
+		} else {
+			return setImmediate(callback, null, null);
+		}
+	}
+
 	function canPost(type, data, callback) {
 		async.waterfall([
 			function (next) {
-				if (type === 'topic') {
-					next(null, data.cid);
-				} else if (type === 'reply') {
-					topics.getTopicField(data.tid, 'cid', next);
-				}
+				getCid(type, data, next);
 			},
 			function (cid, next) {
 				async.parallel({
 					canPost: function (next) {
 						if (type === 'topic') {
-							privileges.categories.can('topics:create', data.cid, data.uid, next);
+							privileges.categories.can('topics:create', cid, data.uid, next);
 						} else if (type === 'reply') {
 							privileges.categories.can('topics:reply', cid, data.uid, next);
 						}

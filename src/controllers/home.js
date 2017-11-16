@@ -37,7 +37,7 @@ pubsub.on('config:update', configUpdated);
 configUpdated();
 
 module.exports = function (req, res, next) {
-	if (req.path !== '/' && req.path !== '/api/') {
+	if (req.path !== '/' && req.path !== '/api/' && req.path !== '/api') {
 		return next();
 	}
 
@@ -56,7 +56,7 @@ module.exports = function (req, res, next) {
 			});
 		}
 
-		req.url = req.path + route;
+		req.url = req.path + (!req.path.endsWith('/') ? '/' : '') + route;
 		next();
 	});
 };

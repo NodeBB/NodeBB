@@ -27,9 +27,9 @@
 							<div class="well inline-block">
 								<label for="condition">[[admin/extend/rewards:condition-then]]</label><br />
 								<select name="rid" data-selected="{active.rid}">
-									<!-- BEGIN rewards -->
+									<!-- BEGIN ../../rewards -->
 									<option value="{rewards.rid}">{rewards.name}</option>
-									<!-- END rewards -->
+									<!-- END ../../rewards -->
 								</select>
 							</div>
 						</form>
