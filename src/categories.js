@@ -263,23 +263,19 @@ function getChildrenRecursive(category, uid, callback) {
 			children = children.filter(Boolean);
 			category.children = children;
 
-			async.map(children, function (child, next) {
-				next(null, child.cid);
-			}, next);
-		},
-		function (cids, next) {
-			Categories.hasReadCategories(cids, uid, function (err, data) {
-				if (err) {
-					return next(err);
-				}
-
-				data.forEach(function (read, i) {
-					var child = category.children[i];
-					child['unread-class'] = (parseInt(child.topic_count, 10) === 0 || (read && uid !== 0)) ? '' : 'unread';
-				});
-
-				next(null);
+			var cids = children.map(function (child) {
+				return child.cid;
 			});
+
+			Categories.hasReadCategories(cids, uid, next);
+		},
+		function (hasRead, next) {
+			hasRead.forEach(function (read, i) {
+				var child = category.children[i];
+				child['unread-class'] = (parseInt(child.topic_count, 10) === 0 || (read && uid !== 0)) ? '' : 'unread';
+			});
+
+			next();
 		},
 		function (next) {
 			async.each(category.children, function (child, next) {
