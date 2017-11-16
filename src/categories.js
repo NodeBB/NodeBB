@@ -153,10 +153,11 @@ Categories.getCategories = function (cids, uid, callback) {
 			uid = parseInt(uid, 10);
 			results.categories.forEach(function (category, i) {
 				if (category) {
-					category['unread-class'] = (parseInt(category.topic_count, 10) === 0 || (results.hasRead[i] && uid !== 0)) ? '' : 'unread';
 					category.children = results.children[i];
 					category.parent = results.parents[i] || undefined;
 					category.tagWhitelist = results.tagWhitelist[i];
+					category['unread-class'] = (parseInt(category.topic_count, 10) === 0 || (results.hasRead[i] && uid !== 0)) ? '' : 'unread';
+					calculateUnreadChildren(category.children, uid);
 					calculateTopicPostCount(category);
 				}
 			});
@@ -172,6 +173,24 @@ Categories.getTagWhitelist = function (cids, callback) {
 	});
 	db.getSortedSetsMembers(keys, callback);
 };
+
+function calculateUnreadChildren(children, uid) {
+	var unreadChildren = false;
+	var cids = children.map(function (child, i) {
+		return child.cid;
+	});
+
+	Categories.hasReadCategories(cids, uid, function (err, data) {
+		if (err) {
+			return;
+		}
+
+		data.forEach(function (read, i) {
+			var child = children[i];
+			child['unread-class'] = (parseInt(child.topic_count, 10) === 0 || read) ? '' : 'unread';
+		});
+	});
+}
 
 function calculateTopicPostCount(category) {
 	if (!category) {
