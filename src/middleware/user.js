@@ -173,10 +173,12 @@ module.exports = function (middleware) {
 				}
 
 				var loginTime = req.session.meta ? req.session.meta.datetime : 0;
-				if (loginTime && parseInt(loginTime, 10) > Date.now() - 3600000) {
-					var timeLeft = parseInt(loginTime, 10) - (Date.now() - 3600000);
-					if (timeLeft < 300000) {
-						req.session.meta.datetime += 300000;
+				var adminReloginDuration = (meta.config.adminReloginDuration || 60) * 60000;
+				var disabled = parseInt(meta.config.adminReloginDuration, 10) === 0;
+				if (disabled || (loginTime && parseInt(loginTime, 10) > Date.now() - adminReloginDuration)) {
+					var timeLeft = parseInt(loginTime, 10) - (Date.now() - adminReloginDuration);
+					if (timeLeft < Math.min(300000, adminReloginDuration)) {
+						req.session.meta.datetime += Math.min(300000, adminReloginDuration);
 					}
 
 					return next();
