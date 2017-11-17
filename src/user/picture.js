@@ -3,6 +3,7 @@
 var async = require('async');
 var request = require('request');
 var mime = require('mime');
+var winston = require('winston');
 
 var plugins = require('../plugins');
 var file = require('../file');
@@ -53,6 +54,12 @@ module.exports = function (User) {
 	};
 
 	User.updateCoverPosition = function (uid, position, callback) {
+		// Reject anything that isn't two percentages
+		if (!/^[\d.]+%\s[\d.]+%$/.test(position)) {
+			winston.warn('[user/updateCoverPosition] Invalid position received: ' + position);
+			return callback(new Error('[[error:invalid-data]]'));
+		}
+
 		User.setUserField(uid, 'cover:position', position, callback);
 	};
 
