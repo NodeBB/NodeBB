@@ -505,7 +505,7 @@
 		Translator.compile = function compile() {
 			var args = Array.prototype.slice.call(arguments, 0).map(function (text) {
 				// escape commas and percent signs in arguments
-				return text.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+				return String(text).replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 			});
 
 			return '[[' + args.join(', ') + ']]';
