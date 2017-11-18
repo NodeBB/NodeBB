@@ -293,7 +293,14 @@ function buildCustomTemplates(config) {
 			Benchpress.flush();
 			next();
 		},
-	]);
+	], function (err) {
+		if (err) {
+			winston.error('[emailer] Failed to build custom email templates', err);
+			return;
+		}
+
+		winston.verbose('[emailer] Built custom email templates');
+	});
 }
 
 function render(tpl, params, next) {
