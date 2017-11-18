@@ -18,7 +18,9 @@ var translator = require('./translator');
 var pubsub = require('./pubsub');
 var file = require('./file');
 
-var transports = {
+var Emailer = module.exports;
+
+Emailer.transports = {
 	sendmail: nodemailer.createTransport({
 		sendmail: true,
 		newline: 'unix',
@@ -28,9 +30,6 @@ var transports = {
 };
 
 var app;
-var fallbackTransport;
-
-var Emailer = module.exports;
 
 var viewsDir = nconf.get('views_dir');
 var emailsPath = path.join(viewsDir, 'emails');
@@ -113,10 +112,10 @@ Emailer.setupFallbackTransport = function (config) {
 			smtpOptions.service = config['email:smtpTransport:service'];
 		}
 
-		transports.smtp = nodemailer.createTransport(smtpOptions);
-		fallbackTransport = transports.smtp;
+		Emailer.transports.smtp = nodemailer.createTransport(smtpOptions);
+		Emailer.fallbackTransport = Emailer.transports.smtp;
 	} else {
-		fallbackTransport = transports.sendmail;
+		Emailer.fallbackTransport = Emailer.transports.sendmail;
 	}
 };
 
@@ -248,7 +247,7 @@ Emailer.sendViaFallback = function (data, callback) {
 	delete data.from_name;
 
 	winston.verbose('[emailer] Sending email to uid ' + data.uid + ' (' + data.to + ')');
-	fallbackTransport.sendMail(data, function (err) {
+	Emailer.fallbackTransport.sendMail(data, function (err) {
 		if (err) {
 			winston.error(err);
 		}
