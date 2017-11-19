@@ -68,10 +68,6 @@ describe('emailer', function () {
 		var from = 'admin@example.org';
 		var username = 'another@example.com';
 
-		function next() {
-			Meta.configs.set('email:smtpTransport:enabled', '0', done);
-		}
-
 		onMail = function (address, session, callback) {
 			assert.equal(address.address, from);
 			assert.equal(session.user, username);
@@ -83,7 +79,7 @@ describe('emailer', function () {
 			assert.equal(address.address, email);
 
 			callback();
-			next();
+			done();
 		};
 
 		Meta.configs.setMultiple({
@@ -97,11 +93,18 @@ describe('emailer', function () {
 		}, function (err) {
 			assert.ifError(err);
 
-			assert.equal(Emailer.fallbackTransport, Emailer.transports.smtp);
+			// delay so emailer has a chance to update after config changes
+			setTimeout(function () {
+				assert.equal(Emailer.fallbackTransport, Emailer.transports.smtp);
 
-			Emailer.sendToEmail(template, email, language, params, function (err) {
-				assert.ifError(err);
-			});
+				Emailer.sendToEmail(template, email, language, params, function (err) {
+					assert.ifError(err);
+				});
+			}, 200);
 		});
+	});
+
+	after(function (done) {
+		Meta.configs.set('email:smtpTransport:enabled', '0', done);
 	});
 });
