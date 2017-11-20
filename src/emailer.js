@@ -119,6 +119,23 @@ Emailer.setupFallbackTransport = function (config) {
 	}
 };
 
+var prevConfig = meta.config;
+function smtpSettingsChanged(config) {
+	var settings = [
+		'email:smtpTransport:enabled',
+		'email:smtpTransport:user',
+		'email:smtpTransport:pass',
+		'email:smtpTransport:service',
+		'email:smtpTransport:port',
+		'email:smtpTransport:host',
+		'email:smtpTransport:security',
+	];
+
+	return settings.some(function (key) {
+		return config[key] !== prevConfig[key];
+	});
+}
+
 Emailer.registerApp = function (expressApp) {
 	app = expressApp;
 
@@ -143,14 +160,16 @@ Emailer.registerApp = function (expressApp) {
 	// Update default payload if new logo is uploaded
 	pubsub.on('config:update', function (config) {
 		if (config) {
-			if (config['email:smtpTransport:enabled']) {
-				Emailer.setupFallbackTransport(config);
-			}
 			Emailer._defaultPayload.logo.src = config['brand:emailLogo'];
 			Emailer._defaultPayload.logo.height = config['brand:emailLogo:height'];
 			Emailer._defaultPayload.logo.width = config['brand:emailLogo:width'];
 
+			if (smtpSettingsChanged(config)) {
+				Emailer.setupFallbackTransport(config);
+			}
 			buildCustomTemplates(config);
+
+			prevConfig = config;
 		}
 	});
 
@@ -194,7 +213,7 @@ Emailer.sendToEmail = function (template, email, language, params, callback) {
 		function (next) {
 			async.parallel({
 				html: function (next) {
-					renderAndTranslate('emails/' + template, params, lang, next);
+					Emailer.renderAndTranslate(template, params, lang, next);
 				},
 				subject: function (next) {
 					translator.translate(params.subject, lang, function (translated) {
@@ -262,7 +281,7 @@ function buildCustomTemplates(config) {
 		},
 		function (templates, next) {
 			templates = templates.filter(function (template) {
-				return template.isCustom;
+				return template.isCustom && template.text !== prevConfig['email:custom:' + path];
 			});
 			async.each(templates, function (template, next) {
 				async.waterfall([
@@ -302,17 +321,16 @@ function buildCustomTemplates(config) {
 	});
 }
 
-function render(tpl, params, next) {
-	app.render(tpl, params, next);
-}
-
-function renderAndTranslate(tpl, params, lang, callback) {
-	render(tpl, params, function (err, html) {
+Emailer.renderAndTranslate = function (template, params, lang, callback) {
+	app.render('emails/' + template, params, function (err, html) {
+		if (err) {
+			return callback(err);
+		}
 		translator.translate(html, lang, function (translated) {
-			callback(err, translated);
+			callback(null, translated);
 		});
 	});
-}
+};
 
 function getHostname() {
 	var configUrl = nconf.get('url');

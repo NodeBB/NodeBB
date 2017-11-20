@@ -2,6 +2,8 @@
 
 var SMTPServer = require('smtp-server').SMTPServer;
 var assert = require('assert');
+var fs = require('fs');
+var path = require('path');
 
 var Plugins = require('../src/plugins');
 var Emailer = require('../src/emailer');
@@ -64,6 +66,31 @@ describe('emailer', function () {
 		});
 	});
 
+	it('should build custom template on config change', function (done) {
+		var text = 'a random string of text';
+
+		// make sure it's not already set
+		Emailer.renderAndTranslate('test', {}, 'en-GB', function (err, output) {
+			assert.ifError(err);
+
+			assert.notEqual(output, text);
+
+			Meta.configs.set('email:custom:test', text, function (err) {
+				assert.ifError(err);
+
+				// wait for pubsub stuff
+				setTimeout(function () {
+					Emailer.renderAndTranslate('test', {}, 'en-GB', function (err, output) {
+						assert.ifError(err);
+
+						assert.equal(output, text);
+						done();
+					});
+				}, 500);
+			});
+		});
+	});
+
 	it('should send via SMTP', function (done) {
 		var from = 'admin@example.org';
 		var username = 'another@example.com';
@@ -105,6 +132,10 @@ describe('emailer', function () {
 	});
 
 	after(function (done) {
-		Meta.configs.set('email:smtpTransport:enabled', '0', done);
+		fs.unlinkSync(path.join(__dirname, '../build/public/templates/emails/test.js'));
+		Meta.configs.setMultiple({
+			'email:smtpTransport:enabled': '0',
+			'email:custom:test': '',
+		}, done);
 	});
 });
