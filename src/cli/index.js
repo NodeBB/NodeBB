@@ -207,7 +207,7 @@ program
 	.on('--help', function () {
 		process.stdout.write(
 			'\n' +
-			'When running particular upgrade scripts, options are ignored' +
+			'When running particular upgrade scripts, options are ignored.\n' +
 			'By default all options are enabled. Passing any options disables that default.\n' +
 			'Only package and dependency updates: ' + './nodebb upgrade -mi\n'.yellow +
 			'Only database update: ' + './nodebb upgrade -d\n\n'.yellow
