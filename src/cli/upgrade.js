@@ -10,32 +10,63 @@ var db = require('../database');
 var meta = require('../meta');
 var upgradePlugins = require('./upgrade-plugins').upgradePlugins;
 
-function upgradeEverything() {
-	async.series([
-		function (next) {
-			packageInstall.updatePackageFile();
-			packageInstall.preserveExtraneousPlugins();
-			next();
-		},
-		function (next) {
-			process.stdout.write('1. '.bold + 'Bringing base dependencies up to date... \n'.yellow);
-			packageInstall.npmInstallProduction();
-			db.init(next);
-		},
-		function (next) {
-			process.stdout.write('OK\n'.green);
-			process.stdout.write('2. '.bold + 'Checking installed plugins for updates... '.yellow);
-			upgradePlugins(next);
-		},
-		function (next) {
-			process.stdout.write('3. '.bold + 'Updating NodeBB data store schema...\n'.yellow);
-			upgrade.run(next);
-		},
-		function (next) {
-			process.stdout.write('4. '.bold + 'Rebuilding assets...\n'.yellow);
-			build.buildAll(next);
-		},
-	], function (err) {
+var steps = {
+	package: function (next) {
+		process.stdout.write('Updating package.json file with defaults... \n'.yellow);
+		packageInstall.updatePackageFile();
+		packageInstall.preserveExtraneousPlugins();
+		process.stdout.write('OK\n'.green);
+		next();
+	},
+	install: function (next) {
+		process.stdout.write('Bringing base dependencies up to date... \n'.yellow);
+		packageInstall.npmInstallProduction();
+		process.stdout.write('OK\n'.green);
+		next();
+	},
+	plugins: function (next) {
+		process.stdout.write('Checking installed plugins for updates... \n'.yellow);
+		async.series([
+			db.init,
+			upgradePlugins,
+			function (next) {
+				process.stdout.write('OK\n'.green);
+				next();
+			},
+		], next);
+	},
+	schema: function (next) {
+		process.stdout.write('Updating NodeBB data store schema...\n'.yellow);
+		async.series([
+			db.init,
+			upgrade.run,
+			function (next) {
+				process.stdout.write('OK\n'.green);
+				next();
+			},
+		], next);
+	},
+	build: function (next) {
+		process.stdout.write('Rebuilding assets...\n'.yellow);
+		async.series([
+			build.buildAll,
+			function (next) {
+				process.stdout.write('OK\n'.green);
+				next();
+			},
+		], next);
+	},
+};
+
+function runSteps(tasks) {
+	tasks = tasks.map(function (key, i) {
+		return function (next) {
+			process.stdout.write(((i + 1) + '. ').bold);
+			return steps[key](next);
+		};
+	});
+
+	async.series(tasks, function (err) {
 		if (err) {
 			process.stdout.write('Error occurred during upgrade');
 			throw err;
@@ -46,21 +77,27 @@ function upgradeEverything() {
 		var columns = process.stdout.columns;
 		var spaces = columns ? new Array(Math.floor(columns / 2) - (message.length / 2) + 1).join(' ') : '  ';
 
-		process.stdout.write('OK\n'.green);
 		process.stdout.write('\n' + spaces + message.green.bold + '\n\n'.reset);
 
 		process.exit();
 	});
 }
 
-function runUpgrade(upgrades) {
-	process.stdout.write('\nUpdating NodeBB data store schema...\n'.yellow);
+function runUpgrade(upgrades, options) {
+	process.stdout.write('\nUpdating NodeBB...\n'.cyan);
 
 	// disable mongo timeouts during upgrade
 	nconf.set('mongo:options:socketTimeoutMS', 0);
 
 	if (upgrades === true) {
-		upgradeEverything();
+		var tasks = Object.keys(steps);
+		if (options.package || options.install ||
+				options.plugins || options.schema || options.build) {
+			tasks = tasks.filter(function (key) {
+				return options[key];
+			});
+		}
+		runSteps(tasks);
 		return;
 	}
 

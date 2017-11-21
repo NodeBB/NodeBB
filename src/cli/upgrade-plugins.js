@@ -204,13 +204,7 @@ function upgradePlugins(callback) {
 					args.push(suggestObj.name + '@' + suggestObj.suggested);
 				});
 
-				cproc.execFile((process.platform === 'win32') ? 'npm.cmd' : 'npm', args, { stdio: 'ignore' }, function (err) {
-					if (!err) {
-						process.stdout.write(' OK\n'.green);
-					}
-
-					callback(err);
-				});
+				cproc.execFile((process.platform === 'win32') ? 'npm.cmd' : 'npm', args, { stdio: 'ignore' }, callback);
 			} else {
 				process.stdout.write('\nPackage upgrades skipped'.yellow + '. Check for upgrades at any time by running "'.reset + './nodebb upgrade-plugins'.green + '".\n'.reset);
 				callback();

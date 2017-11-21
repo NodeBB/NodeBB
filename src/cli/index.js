@@ -199,8 +199,22 @@ resetCommand
 program
 	.command('upgrade [scripts...]')
 	.description('Run NodeBB upgrade scripts and ensure packages are up-to-date, or run a particular upgrade script')
-	.action(function (scripts) {
-		require('./upgrade').upgrade(scripts.length ? scripts : true);
+	.option('-m, --package', 'Update package.json from defaults', false)
+	.option('-i, --install', 'Bringing base dependencies up to date', false)
+	.option('-p, --plugins', 'Check installed plugins for updates', false)
+	.option('-s, --schema', 'Update NodeBB data store schema', false)
+	.option('-b, --build', 'Rebuild assets', false)
+	.on('--help', function () {
+		process.stdout.write(
+			'\n' +
+			'When running particular upgrade scripts, options are ignored' +
+			'By default all options are enabled. Passing any options disables that default.\n' +
+			'Only package and dependency updates: ' + './nodebb upgrade -mi\n'.yellow +
+			'Only database update: ' + './nodebb upgrade -d\n\n'.yellow
+		);
+	})
+	.action(function (scripts, options) {
+		require('./upgrade').upgrade(scripts.length ? scripts : true, options);
 	});
 
 program
@@ -214,6 +228,7 @@ program
 			if (err) {
 				throw err;
 			}
+			process.stdout.write('OK\n'.green);
 			process.exit();
 		});
 	});
