@@ -219,6 +219,22 @@ program
 	});
 
 program
+	.command('help [command]')
+	.description('Display help for [command]')
+	.action(function (name) {
+		if (!name) {
+			return program.help();
+		}
+
+		var command = program.commands.find(function (command) { return command._name === name; });
+		if (command) {
+			command.help();
+		} else {
+			program.help();
+		}
+	});
+
+program
 	.command('*', {}, {
 		noHelp: true,
 	})
@@ -227,5 +243,7 @@ program
 	});
 
 require('./colors');
+
+program.executables = false;
 
 program.parse(process.argv);
