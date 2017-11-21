@@ -90,10 +90,13 @@ describe('Messaging Library', function () {
 
 		it('should return rate limit error on second try', function (done) {
 			var socketMock = { uid: fooUid };
+			var oldValue = meta.config.chatMessageDelay;
+			meta.config.chatMessageDelay = 1000;
 			socketModules.chats.newRoom(socketMock, { touid: bazUid }, function (err) {
 				assert.ifError(err);
 				socketModules.chats.newRoom(socketMock, { touid: bazUid }, function (err) {
 					assert.equal(err.message, '[[error:too-many-messages]]');
+					meta.configs.chatMessageDelay = oldValue;
 					done();
 				});
 			});
@@ -250,10 +253,13 @@ describe('Messaging Library', function () {
 
 		it('should fail to send second message due to rate limit', function (done) {
 			var socketMock = { uid: fooUid };
+			var oldValue = meta.config.chatMessageDelay;
+			meta.config.chatMessageDelay = 1000;
 			socketModules.chats.send(socketMock, { roomId: roomId, message: 'first chat message' }, function (err) {
 				assert.ifError(err);
 				socketModules.chats.send(socketMock, { roomId: roomId, message: 'first chat message' }, function (err) {
 					assert.equal(err.message, '[[error:too-many-messages]]');
+					meta.config.chatMessageDelay = oldValue;
 					done();
 				});
 			});
