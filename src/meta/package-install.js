@@ -5,7 +5,7 @@ var fs = require('fs');
 var cproc = require('child_process');
 
 var packageFilePath = path.join(__dirname, '../../package.json');
-var packageDefaultFilePath = path.join(__dirname, '../../package.default.json');
+var packageDefaultFilePath = path.join(__dirname, '../../install/package.json');
 var modulesPath = path.join(__dirname, '../../node_modules');
 
 function updatePackageFile() {
