@@ -1,16 +1,16 @@
 {
 	"state": "وضعیت",
-	"reporter": "گزارش دهنده",
+	"reporter": "کاربر گزارش دهنده",
 	"reported-at": "گزارش شده در",
 	"description": "شرح",
 	"no-flags": "هووووورا ! هیچ گزارشی یافت نشد.",
 	"assignee": "اختصاص دادن ",
 	"update": "به روزرسانی",
 	"updated": "به روز رسانی شد",
-	"target-purged": "The content this flag referred to has been purged and is no longer available.",
+	"target-purged": "محتوای این گزارش حذف شده است و در دسترس نیست.",
 
 	"quick-filters": "فیلتر های سریع",
-	"filter-active": "There are one or more filters active in this list of flags",
+	"filter-active": "یک یا تعداد بیشتری از فیلتر ها در لیست گزارش ها فعال هستند",
 	"filter-reset": "حذف فیلتر ها",
 	"filters": "گزینه های فیلتر",
 	"filter-reporterId": "UID گزارش دهنده",
@@ -29,7 +29,7 @@
 	"flagged-user": "کاربر گزارش شده",
 	"view-profile": "نمایش پروفایل",
 	"start-new-chat": "شروع چت جدید",
-	"go-to-target": "مشاهده محتوا گزارش شده",
+	"go-to-target": "مشاهده محتوای گزارش شده",
 
 	"user-view": "نمایش پروفایل",
 	"user-edit": "ویرایش پروفایل",
@@ -51,7 +51,7 @@
 	"note-added": "یادداشت افزوده شد",
 
 	"modal-title": "گزارش محتوای نامناسب",
-	"modal-body": "Please specify your reason for flagging %1 %2 for review. Alternatively, use one of the quick report buttons if applicable.",
+	"modal-body": "لطفا علت گزارش 1% 2% را برای بررسی مشخص کنید. همچنین می توانید از یکی از دکمه های ارسال سریع استفاده کنید.",
 	"modal-reason-spam": "هرزنامه",
 	"modal-reason-offensive": "توهین آمیز",
 	"modal-reason-other": "دیگر (در زیر مشخص کنید)",
@@ -59,6 +59,6 @@
 	"modal-submit": "ارسال گزارش",
 	"modal-submit-success": "محتوا برای بررسی نشانه گذاری شد",
 	"modal-submit-confirm": "تأیید ارسال",
-	"modal-submit-confirm-text": "You have a custom reason specified already. Are you sure you wish to submit via quick-report?",
-	"modal-submit-confirm-text-help": "Submitting a quick report will overwrite any custom reasons defined."
+	"modal-submit-confirm-text": "شما همواره علت دیگری را مشخص کردید. آیا مطمئن هستید که می خواهید از طریق گزینه های گزارش سریع ارسال کنید؟",
+	"modal-submit-confirm-text-help": "ارسال از طریق گزارش سریع جایگزین علت های مشخص شده دیگر می شود."
 }
