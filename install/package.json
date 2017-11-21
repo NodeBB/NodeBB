@@ -110,7 +110,8 @@
       "jsdom": "^11.3.0",
       "mocha": "^4.0.1",
       "mocha-lcov-reporter": "^1.3.0",
-      "nyc": "^11.2.1"
+      "nyc": "^11.2.1",
+      "smtp-server": "^3.3.0"
     },
     "bugs": {
       "url": "https://github.com/NodeBB/NodeBB/issues"
