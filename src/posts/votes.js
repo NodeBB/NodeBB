@@ -232,6 +232,7 @@ module.exports = function (Posts) {
 					user: {
 						reputation: newreputation,
 					},
+					fromuid: uid,
 					post: postData,
 					upvote: type === 'upvote' && !unvote,
 					downvote: type === 'downvote' && !unvote,

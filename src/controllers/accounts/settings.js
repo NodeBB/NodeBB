@@ -135,6 +135,20 @@ settingsController.get = function (req, res, callback) {
 				language.selected = language.code === userData.settings.userLang;
 			});
 
+			var notifFreqOptions = [
+				'all',
+				'everyTen',
+				'logarithmic',
+				'disabled',
+			];
+
+			userData.upvoteNotifFreq = notifFreqOptions.map(function (name) {
+				return {
+					name: name,
+					selected: name === userData.notifFreqOptions,
+				};
+			});
+
 			userData.disableCustomUserSkins = parseInt(meta.config.disableCustomUserSkins, 10) === 1;
 
 			userData.allowUserHomePage = parseInt(meta.config.allowUserHomePage, 10) === 1;

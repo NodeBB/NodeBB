@@ -69,7 +69,9 @@ function executeCommand(socket, command, eventName, notification, data, callback
 				websockets.in(data.room_id).emit('event:' + eventName, result);
 			}
 
-			if (result && notification) {
+			if (result && command === 'upvote') {
+				socketHelpers.upvote(result, notification);
+			} else if (result && notification) {
 				socketHelpers.sendNotificationToPostOwner(data.pid, socket.uid, command, notification);
 			} else if (result && command === 'unvote') {
 				socketHelpers.rescindUpvoteNotification(data.pid, socket.uid);

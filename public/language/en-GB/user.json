@@ -110,6 +110,11 @@
 	"outgoing-message-sound": "Outgoing message sound",
 	"notification-sound": "Notification sound",
 	"no-sound": "No sound",
+	"upvote-notif-freq": "Upvote Notification Frequency",
+	"upvote-notif-freq.all": "All Upvotes",
+	"upvote-notif-freq.everyTen": "Every Ten Upvotes",
+	"upvote-notif-freq.logarithmic": "On 10, 100, 1000...",
+	"upvote-notif-freq.disabled": "Disabled",
 
 	"browsing": "Browsing Settings",
 	"open_links_in_new_tab": "Open outgoing links in new tab",
