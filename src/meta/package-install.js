@@ -53,9 +53,12 @@ function preserveExtraneousPlugins() {
 	var packageContents = JSON.parse(fs.readFileSync(packageFilePath, 'utf8'));
 
 	var extraneous = packages
-		// only extraneous plugins (ones not in package.json)
+		// only extraneous plugins (ones not in package.json) which are not links
 		.filter(function (pkgName) {
-			return !packageContents.dependencies.hasOwnProperty(pkgName);
+			const extraneous = !packageContents.dependencies.hasOwnProperty(pkgName);
+			const isLink = fs.lstatSync(path.join(modulesPath, pkgName)).isSymbolicLink();
+
+			return extraneous && !isLink;
 		})
 		// reduce to a map of package names to package versions
 		.reduce(function (map, pkgName) {
@@ -67,6 +70,8 @@ function preserveExtraneousPlugins() {
 	// Add those packages to package.json
 	Object.assign(packageContents.dependencies, extraneous);
 	fs.writeFileSync(packageFilePath, JSON.stringify(packageContents, null, 2));
+	console.log('written');
+	process.exit(0);
 }
 
 exports.preserveExtraneousPlugins = preserveExtraneousPlugins;
