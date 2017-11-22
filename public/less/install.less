@@ -9,27 +9,31 @@
 }
 
 .working {
+	@spinner-size: 24px;
+
 	display: inline-block;
-	font-family: monospace;
+	font-family: Arial, sans-serif;
 	font-style: normal;
-	height: 24px;
-	width: 24px;
+	font-size: @spinner-size;
+	line-height: @spinner-size;
+	height: @spinner-size;
+	width: @spinner-size;
 	overflow: hidden;
 	vertical-align: bottom;
-}
 
-.working::before {
-	content: '*';
-	display: inline-block;
-	font-family: monospace;
-	font-style: normal;
-	height: 24px;
-	width: 24px;
-	font-size: 40px;
-	line-height: 36px;
-	animation: spin 2s infinite linear;
-}
+	&::before, &::after {
+		content: '+';
+		display: inline-block;
+		height: @spinner-size;
+		width: @spinner-size;
+		animation: spin 2s infinite linear;
+	}
 
+	&::after {
+		margin-left: -@spinner-size;
+		animation-delay: 0.25s;
+	}
+}
 
 .btn, .form-control, .navbar {
 	border-radius: 0;
