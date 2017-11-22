@@ -144,6 +144,7 @@
 	"sso.title": "Single Sign-on Services",
 	"sso.associated": "Associated with",
 	"sso.not-associated": "Click here to associate with",
+	"sso.dissociate": "Dissociate",
 
 	"info.latest-flags": "Latest Flags",
 	"info.no-flags": "No Flagged Posts Found",
