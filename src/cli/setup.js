@@ -3,11 +3,13 @@
 var winston = require('winston');
 var async = require('async');
 
-var install = require('../install');
-var build = require('../meta/build');
-var prestart = require('../prestart');
+var install = require('../../install/web').install;
 
 function setup() {
+	var install = require('../install');
+	var build = require('../meta/build');
+	var prestart = require('../prestart');
+
 	winston.info('NodeBB Setup Triggered via Command Line');
 
 	process.stdout.write('\nWelcome to NodeBB!\n');
@@ -54,3 +56,4 @@ function setup() {
 }
 
 exports.setup = setup;
+exports.webInstall = install;

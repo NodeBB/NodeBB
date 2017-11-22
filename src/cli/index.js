@@ -63,7 +63,8 @@ prestart.loadConfig(configFile);
 prestart.versionCheck();
 
 if (!configExists && process.argv[2] !== 'setup') {
-	require('./manage').webInstall();
+	require('./setup').webInstall();
+	return;
 }
 
 // running commands
@@ -130,7 +131,7 @@ program
 	.command('install')
 	.description('Launch the NodeBB web installer for configuration setup')
 	.action(function () {
-		require('./manage').webInstall();
+		require('./setup').webInstall();
 	});
 program
 	.command('build [targets...]')

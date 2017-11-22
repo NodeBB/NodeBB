@@ -10,7 +10,6 @@ var db = require('../database');
 var plugins = require('../plugins');
 var events = require('../events');
 var reset = require('./reset');
-var install = require('../../install/web');
 
 function buildTargets() {
 	var aliases = build.aliases;
@@ -136,7 +135,6 @@ function info() {
 	});
 }
 
-exports.webInstall = install.install;
 exports.build = build.build;
 exports.buildTargets = buildTargets;
 exports.activate = activate;
