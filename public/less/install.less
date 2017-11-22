@@ -1,38 +1,46 @@
-// spinner
-@keyframes spin {
-	from {
-		transform: rotate(0deg);
+.working {
+  width: 24px;
+  height: 24px;
+
+  position: relative;
+	display: inline-block;
+	vertical-align: bottom;
+	
+	&::before, &::after {
+		content: ' ';
+
+		width: 100%;
+		height: 100%;
+		border-radius: 50%;
+		background-color: #fff;
+		opacity: 0.6;
+		position: absolute;
+		top: 0;
+		left: 0;
+		
+		-webkit-animation: sk-bounce 2.0s infinite ease-in-out;
+		animation: sk-bounce 2.0s infinite ease-in-out;
 	}
-	to {
-		transform: rotate(360deg);
+	
+	&::after {
+		-webkit-animation-delay: -1.0s;
+		animation-delay: -1.0s;
 	}
 }
 
-.working {
-	@spinner-size: 24px;
+@-webkit-keyframes sk-bounce {
+  0%, 100% { -webkit-transform: scale(0.0) }
+  50% { -webkit-transform: scale(1.0) }
+}
 
-	display: inline-block;
-	font-family: Arial, sans-serif;
-	font-style: normal;
-	font-size: @spinner-size;
-	line-height: @spinner-size;
-	height: @spinner-size;
-	width: @spinner-size;
-	overflow: hidden;
-	vertical-align: bottom;
-
-	&::before, &::after {
-		content: '+';
-		display: inline-block;
-		height: @spinner-size;
-		width: @spinner-size;
-		animation: spin 2s infinite linear;
-	}
-
-	&::after {
-		margin-left: -@spinner-size;
-		animation-delay: 0.25s;
-	}
+@keyframes sk-bounce {
+  0%, 100% { 
+    transform: scale(0.0);
+    -webkit-transform: scale(0.0);
+  } 50% { 
+    transform: scale(1.0);
+    -webkit-transform: scale(1.0);
+  }
 }
 
 .btn, .form-control, .navbar {
