@@ -153,7 +153,7 @@ module.exports = function (Posts) {
 			},
 			function (results, next) {
 				if (parseInt(uid, 10) === parseInt(results.owner, 10)) {
-					return callback(new Error('self-vote'));
+					return callback(new Error('[[error:self-vote]]'));
 				}
 
 				if (command === 'downvote' && parseInt(results.reputation, 10) < parseInt(meta.config['privileges:downvote'], 10)) {
