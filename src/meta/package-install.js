@@ -70,8 +70,6 @@ function preserveExtraneousPlugins() {
 	// Add those packages to package.json
 	Object.assign(packageContents.dependencies, extraneous);
 	fs.writeFileSync(packageFilePath, JSON.stringify(packageContents, null, 2));
-	console.log('written');
-	process.exit(0);
 }
 
 exports.preserveExtraneousPlugins = preserveExtraneousPlugins;
