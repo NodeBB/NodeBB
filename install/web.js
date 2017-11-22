@@ -133,14 +133,15 @@ function launch(req, res) {
 	process.stdout.write('    "./nodebb log" to view server output\n');
 	process.stdout.write('    "./nodebb restart" to restart NodeBB\n');
 
-	async.parallel([
-		function (next) {
-			fs.unlink(path.join(__dirname, '../public/installer.css'), next);
-		},
-		function (next) {
-			fs.unlink(path.join(__dirname, '../public/installer.min.js'), next);
-		},
-	], function (err) {
+	var filesToDelete = [
+		'installer.css',
+		'installer.min.js',
+		'bootstrap.min.css',
+	];
+
+	async.each(filesToDelete, function (filename, next) {
+		fs.unlink(path.join(__dirname, '../public', filename), next);
+	}, function (err) {
 		if (err) {
 			winston.warn('Unable to remove installer files');
 		}
