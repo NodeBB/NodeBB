@@ -77,10 +77,14 @@ function setupRoutes() {
 
 function welcome(req, res) {
 	var dbs = ['redis', 'mongo'];
-	var databases = dbs.map(function (el) {
+	var databases = dbs.map(function (databaseName) {
+		var questions = require('../src/database/' + databaseName).questions.filter(function (question) {
+			return question && !question.hideOnWebInstall;
+		});
+
 		return {
-			name: el,
-			questions: require('../src/database/' + el).questions,
+			name: databaseName,
+			questions: questions,
 		};
 	});
 
