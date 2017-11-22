@@ -330,6 +330,34 @@ describe('Hash methods', function () {
 				});
 			});
 		});
+
+		it('should not error if key is undefined', function (done) {
+			db.deleteObjectField(undefined, 'someField', function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should not error if key is null', function (done) {
+			db.deleteObjectField(null, 'someField', function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should not error if field is undefined', function (done) {
+			db.deleteObjectField('someKey', undefined, function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should not error if field is null', function (done) {
+			db.deleteObjectField('someKey', null, function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
 	});
 
 	describe('incrObjectField()', function () {
