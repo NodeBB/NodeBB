@@ -26,6 +26,7 @@ winston.add(winston.transports.File, {
 
 var web = {};
 var scripts = [
+	'node_modules/jquery/dist/jquery.js',
 	'public/vendor/xregexp/xregexp.js',
 	'public/vendor/xregexp/unicode/unicode-base.js',
 	'public/src/utils.js',
@@ -53,7 +54,7 @@ web.install = function (port) {
 		extended: true,
 	}));
 
-	async.parallel([compileLess, compileJS], function (err) {
+	async.parallel([compileLess, compileJS, copyCSS], function (err) {
 		if (err) {
 			winston.error(err);
 		}
@@ -192,6 +193,17 @@ function compileJS(callback) {
 			callback(e);
 		}
 	});
+}
+
+function copyCSS(next) {
+	async.waterfall([
+		function (next) {
+			fs.readFile(path.join(__dirname, '../node_modules/bootstrap/dist/css/bootstrap.min.css'), 'utf8', next);
+		},
+		function (src, next) {
+			fs.writeFile(path.join(__dirname, '../public/bootstrap.min.css'), src, next);
+		},
+	], next);
 }
 
 module.exports = web;

@@ -1,3 +1,36 @@
+// spinner
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.working {
+	display: inline-block;
+	font-family: monospace;
+	font-style: normal;
+	height: 24px;
+	width: 24px;
+	overflow: hidden;
+	vertical-align: bottom;
+}
+
+.working::before {
+	content: '*';
+	display: inline-block;
+	font-family: monospace;
+	font-style: normal;
+	height: 24px;
+	width: 24px;
+	font-size: 40px;
+	line-height: 36px;
+	animation: spin 2s infinite linear;
+}
+
+
 .btn, .form-control, .navbar {
 	border-radius: 0;
 }
@@ -8,7 +41,7 @@
 }
 
 body, small, p, div {
-	font-family: "Roboto", sans-serif;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 .input-row {
