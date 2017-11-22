@@ -87,11 +87,9 @@ define('forum/register', ['translator', 'zxcvbn'], function (translator, zxcvbn)
 						if (data.referrer) {
 							window.location.href = data.referrer;
 						} else if (data.message) {
-							require(['translator'], function (translator) {
-								translator.translate(data.message, function (msg) {
-									bootbox.alert(msg);
-									ajaxify.go('/');
-								});
+							translator.translate(data.message, function (msg) {
+								bootbox.alert(msg);
+								ajaxify.go('/');
 							});
 						}
 					},
