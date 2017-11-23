@@ -119,6 +119,7 @@
     "not-enough-reputation-to-downvote": "Nu ai destulă reputație pentru a vota negativ acest post.",
     "not-enough-reputation-to-flag": "You do not have enough reputation to flag this post",
     "already-flagged": "You have already flagged this post",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "NodeBB a întâmpinat o problemă la reîncarcare: \"%1\". NodeBB va continua să servească fișierele existente pentru partea-client, dar tu va trebuie să refaci modificările pe care le-ai facut înainte de reîncarcare.",
     "registration-error": "Registration Error",
     "parse-error": "Something went wrong while parsing server response",

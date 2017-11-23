@@ -119,6 +119,7 @@
     "not-enough-reputation-to-downvote": "Anda tidak mempunyai reputasi mencukupi untuk mengundi turun kiriman ini",
     "not-enough-reputation-to-flag": "Anda tidak mempunyai reputasi mencukupi untuk menanda kiriman ini",
     "already-flagged": "Anda telah menanda kiriman ini",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "NodeBB menemui masalah ketika muat semula: \"%1\". NodeBB akan terus melayan aset pelanggan sedia ada, tapi anda seharusnya undur perbuatan yang dilakukan sebelum muat semula.",
     "registration-error": "Ralat pendaftaran.",
     "parse-error": "Sesuatu tidak kena berlaku ketika menghuraikan repson pelayan (server)",

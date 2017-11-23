@@ -119,6 +119,7 @@
     "not-enough-reputation-to-downvote": "Nimate dovolj ugleda za negativno glasovanje.",
     "not-enough-reputation-to-flag": "Nimate dovolj ugleda za prijavo te objave.",
     "already-flagged": "To objavo ste že prijavili.",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "NodeBB je zaznal težavo pri osveževanju: ",
     "registration-error": "Napaka pri registraciji",
     "parse-error": "Nekaj je šlo narobe pri pridobivanju odgovora s strežnika.",

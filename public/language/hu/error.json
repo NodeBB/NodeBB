@@ -119,6 +119,7 @@
     "not-enough-reputation-to-downvote": "Nem rendelkezel elég Hírnév ponttal, hogy leszavazhasd ezt a hozzászólást",
     "not-enough-reputation-to-flag": "Nem rendelkezel elég Hírnév ponttal, hogy jelentsd ezt a hozzászólást",
     "already-flagged": "You have already flagged this post",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "NodeBB egy hibát észlelt újratöltés közben: \"% 1\". A fórum továbbra is kiszolgálja a kliens-oldali eszközöket, bár vissza kellene csinálnod amit az újratöltés előtt elállítottál.",
     "registration-error": "Regisztrációs hiba",
     "parse-error": "Hiba történt a szerver válaszának feldolgozása közben",

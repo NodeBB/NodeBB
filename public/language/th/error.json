@@ -119,6 +119,7 @@
     "not-enough-reputation-to-downvote": "คุณไม่มีชื่อเสียงพอที่จะโหวตโพสต์นี้ลง",
     "not-enough-reputation-to-flag": "คุณไม่มีชื่อเสียงพอที่จะปักธงให้โพสต์นี้",
     "already-flagged": "คุณได้ปักธงให้โพสต์นี้แล้ว",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading.",
     "registration-error": "การสมัครสมาชิกผิดพลาด",
     "parse-error": "มีบางอย่างผิดพลาดขณะรอการตอบกลับจากเซิร์ฟเวอร์",

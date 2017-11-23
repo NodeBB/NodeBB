@@ -119,6 +119,7 @@
     "not-enough-reputation-to-downvote": "你沒有足夠的信譽可以對這個張貼進行反向投票",
     "not-enough-reputation-to-flag": "你沒有足夠的信譽來舉報這個帖子",
     "already-flagged": "你已經對這個張貼標記過了",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "NodeBB重載\"%1\"時遇到了問題。 NodeBB將繼續提供現有的客戶端資源，但請你撤消重載前的動作。",
     "registration-error": "註冊錯誤",
     "parse-error": "當剖析伺服器回應時發生了某個錯誤",

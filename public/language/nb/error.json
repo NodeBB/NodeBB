@@ -119,6 +119,7 @@
     "not-enough-reputation-to-downvote": "Du har ikke nok rykte til å nedstemme det innlegget",
     "not-enough-reputation-to-flag": "Du har ikke nok rykte til å flagge dette innlegget",
     "already-flagged": "Du har allerede flagget dette innlegget",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "NodeBB støtte på et problem under lasting på nytt: \"%1\". NodeBB vil fortsette å servere eksisterende klientside ressurser, selv om du burde angre endringene du gjorde før du lastet på nytt.",
     "registration-error": "Feil under registrering",
     "parse-error": "Noe gikk feil under analysering av serversvar",

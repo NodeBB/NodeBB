@@ -119,6 +119,7 @@
     "not-enough-reputation-to-downvote": "Sul ei ole piisavalt reputatsiooni, et anda negatiivset hinnangut sellele postitusele.",
     "not-enough-reputation-to-flag": "Sul ei ole piisavalt reputatsiooni, et seda postitust raporteerida",
     "already-flagged": "Te juba teatasite sellest postitusest.",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "\"%1\" värskendamisel tekkis süsteemne viga. Foorum ei lakka töötamast, kuid peaksid kindlasti eemaldama enne värskendamist tehtud muudatused.",
     "registration-error": "Viga registreerimisel",
     "parse-error": "Midagi läks valesti...",

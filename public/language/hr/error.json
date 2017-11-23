@@ -119,6 +119,7 @@
     "not-enough-reputation-to-downvote": "Nemate dovoljno reputacije da bi ste glasali",
     "not-enough-reputation-to-flag": "Nemate dovoljno reputacije da bi stavili zastavicu na ovu objavu",
     "already-flagged": "Već ste označili zastavicom ovu objavu",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "Problem kod ponovnog podizanja: \"%1\" will continue to serve the existing client-side assets.",
     "registration-error": "Greška prilikom registracije",
     "parse-error": "Došlo je do pogreške u komunikaciji sa serverom",

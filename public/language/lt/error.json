@@ -119,6 +119,7 @@
     "not-enough-reputation-to-downvote": "Jūs neturite pakankamai reputacijos balsuoti prieš šį pranešimą",
     "not-enough-reputation-to-flag": "Jūs neturite pakankamai reputacijos kad įspėti dėl šito pranešimo",
     "already-flagged": "Jūs jau pranešėte apie šį pranešimą",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "NodeBB susidūrė su problema persikraunant: \"%1\", NodeBB pratęs veikti su šiuo klientu. bet jums reiktu patikrinti ką jūs darėte prieš perkraunant NodeBB",
     "registration-error": "Registracijos klaida",
     "parse-error": "Kažkokia klaida įvyko bandant gaut serverio atsaykmą",

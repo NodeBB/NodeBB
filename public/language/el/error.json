@@ -119,6 +119,7 @@
     "not-enough-reputation-to-downvote": "Δεν έχεις αρκετή φήμη για να καταψηφίσεις αυτή την δημοσίευση",
     "not-enough-reputation-to-flag": "You do not have enough reputation to flag this post",
     "already-flagged": "You have already flagged this post",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "Το NodeBB συνάντησε ένα πρόβλημα καθώς γινόταν η ανανέωση: \"%1\". Το NodeBB θα συνεχίσει να προσφέρει τα στοιχεία του χρήστη, αν και θα ήταν καλή ιδέα να επαναφέρεις ότι έκανες πριν την ανανέωση.",
     "registration-error": "Registration Error",
     "parse-error": "Something went wrong while parsing server response",

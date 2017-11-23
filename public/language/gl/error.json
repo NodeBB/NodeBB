@@ -119,6 +119,7 @@
     "not-enough-reputation-to-downvote": "Non tes reputación dabonda para esta acción",
     "not-enough-reputation-to-flag": "Non tes reputación dabondo para reportar esta mensaxe.",
     "already-flagged": "Xa reportache-la mensaxe.",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "NodeBB atopou un erro mentras recargaba: \"%1\". NodeBB seguirá a servir os activos dos clientes aínda que se deberá desfacer o que se fixo antes da descarga.",
     "registration-error": "Erro de rexistro",
     "parse-error": "Algo foi mal namentras se agardaba a resposta do servidor",

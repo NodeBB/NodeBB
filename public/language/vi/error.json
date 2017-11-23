@@ -119,6 +119,7 @@
     "not-enough-reputation-to-downvote": "Bạn không có đủ phiếu tín nhiệm để downvote bài này",
     "not-enough-reputation-to-flag": "Bạn không đủ tín nhiệm để đánh dấu bài viết này",
     "already-flagged": "Bạn đã gắn cờ cho bài viết này",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "NodeBB gặp lỗi trong khi tải lại: \"%1\". NodeBB sẽ tiếp tục hoạt động với dữ liệu trước đó, tuy nhiên bạn nên tháo gỡ những gì bạn vừa thực hiện trước khi tải lại.",
     "registration-error": "Lỗi đăng kí",
     "parse-error": "Có gì không ổn khi nhận kết quả từ máy chủ",

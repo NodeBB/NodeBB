@@ -119,6 +119,7 @@
     "not-enough-reputation-to-downvote": "Nemáte dostatečnou reputaci pro vyjádření nesouhlasu u tohoto příspěvku",
     "not-enough-reputation-to-flag": "Pro označení tohoto příspěvku nemáte dostatečnou reputaci",
     "already-flagged": "Tento příspěvek jste již označil",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "Vyskytla se chyba v NodeBB při znovu načtení: \"%1\". NodeBB bude pokračovat v běhu na straně klienta,  nicméně byste měl/a přenastavit zpět to, co jste udělal/a před opětovným načtením.",
     "registration-error": "Chyba při registraci",
     "parse-error": "Při analýze odpovědi serveru nastala chyba",

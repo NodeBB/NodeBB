@@ -119,6 +119,7 @@
     "not-enough-reputation-to-downvote": "인지도가 낮아 이 포스트를 비추천할 수 없습니다.",
     "not-enough-reputation-to-flag": "인지도가 낮아 이 포스트를 신고할 수 없습니다.",
     "already-flagged": "이미 이 게시물을 신고했습니다.",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "NodeBB 서버를 다시 읽어들이는 중 다음과 같은 문제가 발생했으나 사용자측은 지속적으로 자원을 제공받습니다. 오류 문구: \"%1\" 문제를 해결하시려면 다시 읽어들이기 전의 수정사항을 원래대로 되돌려주세요.  ",
     "registration-error": "등록 오류",
     "parse-error": "서버로 부터의 응답을 읽는 동안 문제가 발생했습니다.",

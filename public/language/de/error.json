@@ -119,6 +119,7 @@
     "not-enough-reputation-to-downvote": "Dein Ansehen ist zu niedrig, um diesen Beitrag negativ zu bewerten.",
     "not-enough-reputation-to-flag": "Dein Ansehen ist zu niedrig, um diesen Beitrag zu melden",
     "already-flagged": "Du hast diesen Beitrag bereits gemeldet",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "Es ist ein Problem während des Reloads von NodeBB aufgetreten: \"%1\". NodeBB wird weiterhin clientseitige Assets bereitstellen, allerdings solltest du das, was du vor dem Reload gemacht hast, rückgängig machen.",
     "registration-error": "Registrierungsfehler",
     "parse-error": "Beim auswerten der Serverantwort ist etwas schiefgegangen",

@@ -119,6 +119,7 @@
     "not-enough-reputation-to-downvote": "Non hai i privilegi per votare negativamente questo post",
     "not-enough-reputation-to-flag": "Tu non hai abbastanza reputazione per segnalare questo Post",
     "already-flagged": "Hai già messo marcato questo post",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "NodeBB ha incontrato un problema durante il ricaricamento: \"%1\". NodeBB continuerà a servire gli assets esistenti lato client, così puoi annullare quello che hai fatto prima di ricaricare.",
     "registration-error": "Errore nella registrazione",
     "parse-error": "Qualcosa è andato storto durante l'analisi della risposta proveniente dal server",
