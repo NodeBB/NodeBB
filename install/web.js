@@ -26,6 +26,7 @@ winston.add(winston.transports.File, {
 
 var web = {};
 var scripts = [
+	'node_modules/jquery/dist/jquery.js',
 	'public/vendor/xregexp/xregexp.js',
 	'public/vendor/xregexp/unicode/unicode-base.js',
 	'public/src/utils.js',
@@ -53,7 +54,7 @@ web.install = function (port) {
 		extended: true,
 	}));
 
-	async.parallel([compileLess, compileJS], function (err) {
+	async.parallel([compileLess, compileJS, copyCSS], function (err) {
 		if (err) {
 			winston.error(err);
 		}
@@ -136,14 +137,15 @@ function launch(req, res) {
 	process.stdout.write('    "./nodebb log" to view server output\n');
 	process.stdout.write('    "./nodebb restart" to restart NodeBB\n');
 
-	async.parallel([
-		function (next) {
-			fs.unlink(path.join(__dirname, '../public/installer.css'), next);
-		},
-		function (next) {
-			fs.unlink(path.join(__dirname, '../public/installer.min.js'), next);
-		},
-	], function (err) {
+	var filesToDelete = [
+		'installer.css',
+		'installer.min.js',
+		'bootstrap.min.css',
+	];
+
+	async.each(filesToDelete, function (filename, next) {
+		fs.unlink(path.join(__dirname, '../public', filename), next);
+	}, function (err) {
 		if (err) {
 			winston.warn('Unable to remove installer files');
 		}
@@ -196,6 +198,17 @@ function compileJS(callback) {
 			callback(e);
 		}
 	});
+}
+
+function copyCSS(next) {
+	async.waterfall([
+		function (next) {
+			fs.readFile(path.join(__dirname, '../node_modules/bootstrap/dist/css/bootstrap.min.css'), 'utf8', next);
+		},
+		function (src, next) {
+			fs.writeFile(path.join(__dirname, '../public/bootstrap.min.css'), src, next);
+		},
+	], next);
 }
 
 module.exports = web;
