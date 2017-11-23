@@ -58,39 +58,7 @@
 	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/post:restrictions]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
-			<!-- <div class="form-group">
-				<div class="checkbox">
-					<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-						<input class="mdl-switch__input" type="checkbox" data-field="postQueue">
-						<span class="mdl-switch__label"><strong>[[admin/settings/post:restrictions.post-queue]]</strong></span>
-					</label>
-				</div>
-				<p class="help-block">
-					[[admin/settings/post:restrictions.post-queue-help]]
-				</p>
-			</div> -->
-			<!-- <div class="form-group">
-				<label for="postDelay">[[admin/settings/post:restrictions.seconds-between]]</label>
-				<input id="postDelay" type="text" class="form-control" value="10" data-field="postDelay">
-			</div>
-			<div class="row">
-				<div class="col-xs-6">
-					<div class="form-group">
-						<label for="newbiePostDelay">[[admin/settings/post:restrictions.seconds-between-new]]</label>
-						<input id="newbiePostDelay" type="text" class="form-control" value="120" data-field="newbiePostDelay">
-					</div>
-				</div> -->
-				<!-- <div class="col-xs-6">
-					<div class="form-group">
-						<label for="newbiePostDelayThreshold">[[admin/settings/post:restrictions.rep-threshold]]</label>
-						<input id="newbiePostDelayThreshold" type="text" class="form-control" value="3" data-field="newbiePostDelayThreshold">
-					</div>
-				</div>
-			</div>
-			<div class="form-group">
-				<label for="initialPostDelay">[[admin/settings/post:restrictions.seconds-defore-new]]</label>
-				<input id="initialPostDelay" type="text" class="form-control" value="10" data-field="initialPostDelay">
-			</div> -->
+			
 			<div class="form-group">
 				<label for="postEditDuration">[[admin/settings/post:restrictions.seconds-edit-after]]</label>
 				<input id="postEditDuration" type="text" class="form-control" value="0" data-field="postEditDuration">
@@ -103,22 +71,7 @@
 				<label for="preventTopicDeleteAfterReplies">[[admin/settings/post:restrictions.replies-no-delete]]</label>
 				<input id="preventTopicDeleteAfterReplies" type="text" class="form-control" value="0" data-field="preventTopicDeleteAfterReplies">
 			</div>
-			<!-- <div class="form-group">
-				<label for="minimumTitleLength">[[admin/settings/post:restrictions.min-title-length]]</label>
-				<input id="minimumTitleLength" type="text" class="form-control" value="3" data-field="minimumTitleLength">
-			</div>
-			<div class="form-group">
-				<label for="maximumTitleLength">[[admin/settings/post:restrictions.max-title-length]]</label>
-				<input id="maximumTitleLength" type="text" class="form-control" value="255" data-field="maximumTitleLength">
-			</div>
-			<div class="form-group">
-				<label for="minimumPostLength">[[admin/settings/post:restrictions.min-post-length]]</label>
-				<input id="minimumPostLength" type="text" class="form-control" value="8" data-field="minimumPostLength">
-			</div>
-			<div class="form-group">
-				<label for="maximumPostLength">[[admin/settings/post:restrictions.max-post-length]]</label>
-				<input id="maximumPostLength" type="text" class="form-control" value="32767" data-field="maximumPostLength">
-			</div> -->
+			
 			<div class="form-group">
 				<label for="topicStaleDays">[[admin/settings/post:restrictions.days-until-stale]]</label>
 				<input id="topicStaleDays" type="text" class="form-control" value="60" data-field="topicStaleDays">
@@ -134,7 +87,7 @@
 	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/post:restrictions-new]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
-			<div class="form-group">
+			<!-- <div class="form-group">
 				<div class="checkbox">
 					<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 						<input class="mdl-switch__input" type="checkbox" data-field="toggleUserRestrictions">
@@ -144,7 +97,7 @@
 				<p class="help-block">
 					[[admin/settings/post:restrictions-new.post-queue-help]]
 				</p>
-			</div>
+			</div> -->
 			<div class="form-group">
 				<div class="checkbox">
 					<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
@@ -156,10 +109,7 @@
 					[[admin/settings/post:restrictions.post-queue-help]]
 				</p>
 			</div>
-			<!-- <div class="form-group">
-				<label for="postDelay">[[admin/settings/post:restrictions.seconds-between]]</label>
-				<input id="postDelay" type="text" class="form-control" value="10" data-field="postDelay">
-			</div> -->
+			
 			<div class="row">
 				<div class="col-xs-6">
 					<div class="form-group">
@@ -171,52 +121,14 @@
 					<div class="form-group">
 					<label for="initialPostDelay">[[admin/settings/post:restrictions.seconds-defore-new]]</label>
 					<input id="initialPostDelay" type="text" class="form-control" value="10" data-field="initialPostDelay" data-type="newUserRestrictions">
-						<!-- <label for="newbiePostDelayThreshold">[[admin/settings/post:restrictions.rep-threshold]]</label>
-						<input id="newbiePostDelayThreshold" type="text" class="form-control" value="3" data-field="newbiePostDelayThreshold"> -->
+						
 					</div>
 				</div>
 			</div>
 			<div class="form-group">
 			<label for="newbiePostDelayThreshold">[[admin/settings/post:restrictions.rep-threshold]]</label>
-						<input id="newbiePostDelayThreshold" type="text" class="form-control" value="3" data-field="newbiePostDelayThreshold" data-type="newUserRestrictions">
-				<!-- <label for="initialPostDelay">[[admin/settings/post:restrictions.seconds-defore-new]]</label>
-				<input id="initialPostDelay" type="text" class="form-control" value="10" data-field="initialPostDelay"> -->
+						<input id="newbiePostDelayThreshold" type="text" class="form-control" value="3" data-field="newbiePostDelayThreshold" data-type="newUserRestrictions"">
 			</div>
-			<!-- <div class="form-group">
-				<label for="postEditDuration">[[admin/settings/post:restrictions.seconds-edit-after]]</label>
-				<input id="postEditDuration" type="text" class="form-control" value="0" data-field="postEditDuration">
-			</div>
-			<div class="form-group">
-				<label for="postDeleteDuration">[[admin/settings/post:restrictions.seconds-delete-after]]</label>
-				<input id="postDeleteDuration" type="text" class="form-control" value="0" data-field="postDeleteDuration">
-			</div>
-			<div class="form-group">
-				<label for="preventTopicDeleteAfterReplies">[[admin/settings/post:restrictions.replies-no-delete]]</label>
-				<input id="preventTopicDeleteAfterReplies" type="text" class="form-control" value="0" data-field="preventTopicDeleteAfterReplies">
-			</div>
-			<div class="form-group">
-				<label for="minimumTitleLength">[[admin/settings/post:restrictions.min-title-length]]</label>
-				<input id="minimumTitleLength" type="text" class="form-control" value="3" data-field="minimumTitleLength">
-			</div>
-			<div class="form-group">
-				<label for="maximumTitleLength">[[admin/settings/post:restrictions.max-title-length]]</label>
-				<input id="maximumTitleLength" type="text" class="form-control" value="255" data-field="maximumTitleLength">
-			</div>
-			<div class="form-group">
-				<label for="minimumPostLength">[[admin/settings/post:restrictions.min-post-length]]</label>
-				<input id="minimumPostLength" type="text" class="form-control" value="8" data-field="minimumPostLength">
-			</div>
-			<div class="form-group">
-				<label for="maximumPostLength">[[admin/settings/post:restrictions.max-post-length]]</label>
-				<input id="maximumPostLength" type="text" class="form-control" value="32767" data-field="maximumPostLength">
-			</div>
-			<div class="form-group">
-				<label for="topicStaleDays">[[admin/settings/post:restrictions.days-until-stale]]</label>
-				<input id="topicStaleDays" type="text" class="form-control" value="60" data-field="topicStaleDays">
-				<p class="help-block">
-					[[admin/settings/post:restrictions.stale-help]]
-				</p>
-			</div> -->
 		</form>
 	</div>
 </div>
