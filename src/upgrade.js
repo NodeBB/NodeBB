@@ -18,7 +18,7 @@ var file = require('../src/file');
  * 3. Add your script under the "method" property
  */
 
-var Upgrade = {};
+var Upgrade = module.exports;
 
 Upgrade.getAll = function (callback) {
 	async.waterfall([
@@ -212,4 +212,3 @@ Upgrade.incrementProgress = function (value) {
 	process.stdout.write('    [' + (filled ? new Array(filled).join('#') : '') + new Array(unfilled).join(' ') + '] (' + this.current + '/' + (this.total || '??') + ') ' + percentage + ' ');
 };
 
-module.exports = Upgrade;
