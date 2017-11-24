@@ -2036,6 +2036,27 @@ describe('Controllers', function () {
 			});
 		});
 
+		it('should 404 if plugin calls next', function (done) {
+			function hookMethod(hookData, callback) {
+				hookData.next();
+			}
+
+			plugins.registerHook('myTestPlugin', {
+				hook: 'filter:composer.build',
+				method: hookMethod,
+			});
+
+			request(nconf.get('url') + '/api/compose', { json: true }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 404);
+				console.log(body);
+
+				plugins.unregisterHook('myTestPlugin', 'filter:composer.build', hookMethod);
+				done();
+			});
+		});
+
+
 		it('should error with invalid data', function (done) {
 			request.post(nconf.get('url') + '/compose', {
 				form: {
