@@ -85,7 +85,13 @@ define('forum/register', ['translator', 'zxcvbn'], function (translator, zxcvbn)
 							return;
 						}
 						if (data.referrer) {
-							window.location.href = data.referrer;
+							var pathname = utils.urlToLocation(data.referrer).pathname;
+
+							var params = utils.params({ url: data.referrer });
+							params.registered = true;
+							var qs = decodeURIComponent($.param(params));
+
+							window.location.href = pathname + '?' + qs;
 						} else if (data.message) {
 							translator.translate(data.message, function (msg) {
 								bootbox.alert(msg);
