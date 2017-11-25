@@ -3,9 +3,9 @@
 	"posts-in-cache": "Закешировано сообщений",
 	"average-post-size": "Средний размер сообщения",
 	"length-to-max": "Размер / Максимум",
-	"percent-full": "%1% Full",
+	"percent-full": "Заполнен на%1%",
 	"post-cache-size": "Размер кэша сообщений",
-	"items-in-cache": "Items in Cache",
+	"items-in-cache": "Элементы в Кэш",
 	"control-panel": "Панель управления",
 	"update-settings": "Обновить настройки кэша"
 }
