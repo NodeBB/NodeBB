@@ -23,8 +23,8 @@
 	"running-version": "<strong>NodeBB v<span id=\"version\">%1</span></strong> 를 사용 중입니다.",
 	"keep-updated": "사용하시는 NodeBB의 보안 및 오류 업데이트를 항상 최신 버젼으로 유지하십시오.",
 	"up-to-date": "<p><strong>최신 버전입니다</strong><i class=\"fa fa-check\"></i></p>",
-	"upgrade-available": "<p>A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\">upgrading your NodeBB</a>.</p>",
-	"prerelease-upgrade-available": "<p>This is an outdated pre-release version of NodeBB. A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\">upgrading your NodeBB</a>.</p>",
+	"upgrade-available": "<p>새로운 버전 (v%1)이 나왔습니다.  <a href=\"https://docs.nodebb.org/configuring/upgrade/\">NodeBB 업데이트</a>가 가능합니다.</p>",
+	"prerelease-upgrade-available": "<p>NodeBB의 시험판을 사용중입니다. 새 버전 (v%1)이 출시되었습니다. <a href=\"https://docs.nodebb.org/configuring/upgrade/\">NodeBB 업데이트</a>를 하세요.</p>",
 	"prerelease-warning": "<p>이것은 <strong>정식 발표 전 버젼</strong>의 NodeBB 입니다.  예상치 못한 버그가 발생할 수 있습니다.<i class=\"fa fa-exclamation-triangle\"></i></p>",
 	"running-in-development": "<span>포럼이 개발자 모드로 실행되고 있습니다. 잠재적 취약점에 노출되어 있을 수 있으니 시스템 관리자에게 문의하십시오.</span>",
 

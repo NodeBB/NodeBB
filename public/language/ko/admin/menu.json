@@ -12,7 +12,7 @@
 	"manage/tags": "태그",
 	"manage/users": "용자",
 	"manage/registration": "회원 가입 승인 대기자",
-	"manage/post-queue": "Post Queue",
+	"manage/post-queue": "게시 대기열",
 	"manage/groups": "그룹",
 	"manage/ip-blacklist": "IP 블랙리스트",
 
@@ -65,7 +65,7 @@
 	"logout": "로그아웃",
 	"view-forum": "포럼 보기",
 
-	"search.placeholder": "Search for settings",
+	"search.placeholder": "설정 검색",
 	"search.no-results": "검색 결과가 없습니다...",
 	"search.search-forum": "포럼에서 <strong></strong>를 검색하세요",
 	"search.keep-typing": "검색 결과를 보기 위해 더 입력하세요...",
