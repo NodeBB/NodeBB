@@ -127,15 +127,8 @@ function launch(req, res) {
 	res.json({});
 	server.close();
 
-	var child = require('child_process').spawn('node', ['loader.js'], {
-		detached: true,
-		stdio: ['ignore', 'ignore', 'ignore'],
-	});
-
-	process.stdout.write('\nStarting NodeBB\n');
-	process.stdout.write('    "./nodebb stop" to stop the NodeBB server\n');
-	process.stdout.write('    "./nodebb log" to view server output\n');
-	process.stdout.write('    "./nodebb restart" to restart NodeBB\n');
+	var running = require('../src/cli/running');
+	var child = running.start({});
 
 	var filesToDelete = [
 		'installer.css',

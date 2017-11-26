@@ -38,21 +38,23 @@ function start(options) {
 		return;
 	}
 	if (options.log) {
-		process.stdout.write('\nStarting NodeBB with logging output\n'.bold);
-		process.stdout.write('\nHit '.red + 'Ctrl-C '.bold + 'to exit'.red);
-
-		process.stdout.write('\nThe NodeBB process will continue to run in the background');
-		process.stdout.write('\nUse "' + './nodebb stop'.yellow + '" to stop the NodeBB server\n');
-		process.stdout.write('\n\n'.reset);
+		console.log('\n' + [
+			'Starting NodeBB with logging output'.bold,
+			'Hit '.red + 'Ctrl-C '.bold + 'to exit'.red,
+			'The NodeBB process will continue to run in the background',
+			'Use "' + './nodebb stop'.yellow + '" to stop the NodeBB server',
+		].join('\n'));
 	} else if (!options.silent) {
-		process.stdout.write('\nStarting NodeBB\n'.bold);
-		process.stdout.write('  "' + './nodebb stop'.yellow + '" to stop the NodeBB server\n');
-		process.stdout.write('  "' + './nodebb log'.yellow + '" to view server output\n');
-		process.stdout.write('  "' + './nodebb restart'.yellow + '" to restart NodeBB\n\n'.reset);
+		console.log('\n' + [
+			'Starting NodeBB'.bold,
+			'  "' + './nodebb stop'.yellow + '" to stop the NodeBB server',
+			'  "' + './nodebb log'.yellow + '" to view server output',
+			'  "' + './nodebb help'.yellow + '" for more commands\n'.reset,
+		].join('\n'));
 	}
 
 	// Spawn a new NodeBB process
-	fork(paths.loader, process.argv.slice(3), {
+	var child = fork(paths.loader, process.argv.slice(3), {
 		env: process.env,
 		cwd: dirname,
 	});
@@ -62,15 +64,17 @@ function start(options) {
 			stdio: 'inherit',
 		});
 	}
+
+	return child;
 }
 
 function stop() {
 	getRunningPid(function (err, pid) {
 		if (!err) {
 			process.kill(pid, 'SIGTERM');
-			process.stdout.write('Stopping NodeBB. Goodbye!\n');
+			console.log('Stopping NodeBB. Goodbye!');
 		} else {
-			process.stdout.write('NodeBB is already stopped.\n');
+			console.log('NodeBB is already stopped.');
 		}
 	});
 }
@@ -78,13 +82,13 @@ function stop() {
 function restart(options) {
 	getRunningPid(function (err, pid) {
 		if (!err) {
-			process.stdout.write('\nRestarting NodeBB\n'.bold);
+			console.log('\nRestarting NodeBB'.bold);
 			process.kill(pid, 'SIGTERM');
 
 			options.silent = true;
 			start(options);
 		} else {
-			process.stdout.write('NodeBB could not be restarted, as a running instance could not be found.\n');
+			console.warn('NodeBB could not be restarted, as a running instance could not be found.');
 		}
 	});
 }
@@ -92,20 +96,21 @@ function restart(options) {
 function status() {
 	getRunningPid(function (err, pid) {
 		if (!err) {
-			process.stdout.write('\nNodeBB Running '.bold + '(pid '.cyan + pid.toString().cyan + ')\n'.cyan);
-			process.stdout.write('\t"' + './nodebb stop'.yellow + '" to stop the NodeBB server\n');
-			process.stdout.write('\t"' + './nodebb log'.yellow + '" to view server output\n');
-			process.stdout.write('\t"' + './nodebb restart'.yellow + '" to restart NodeBB\n\n');
+			console.log('\n' + [
+				'NodeBB Running '.bold + ('(pid ' + pid.toString() + ')').cyan,
+				'\t"' + './nodebb stop'.yellow + '" to stop the NodeBB server',
+				'\t"' + './nodebb log'.yellow + '" to view server output',
+				'\t"' + './nodebb restart'.yellow + '" to restart NodeBB\n',
+			].join('\n'));
 		} else {
-			process.stdout.write('\nNodeBB is not running\n'.bold);
-			process.stdout.write('\t"' + './nodebb start'.yellow + '" to launch the NodeBB server\n\n'.reset);
+			console.log('\nNodeBB is not running'.bold);
+			console.log('\t"' + './nodebb start'.yellow + '" to launch the NodeBB server\n'.reset);
 		}
 	});
 }
 
 function log() {
-	process.stdout.write('\nHit '.red + 'Ctrl-C '.bold + 'to exit'.red);
-	process.stdout.write('\n\n'.reset);
+	console.log('\nHit '.red + 'Ctrl-C '.bold + 'to exit\n'.red + '\n'.reset);
 	childProcess.spawn('tail', ['-F', './logs/output.log'], {
 		cwd: dirname,
 		stdio: 'inherit',

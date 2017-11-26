@@ -105,7 +105,7 @@ function getCurrentVersion(callback) {
 
 function checkPlugins(standalone, callback) {
 	if (standalone) {
-		process.stdout.write('Checking installed plugins and themes for updates... ');
+		console.log('Checking installed plugins and themes for updates... ');
 	}
 
 	async.waterfall([
@@ -117,7 +117,7 @@ function checkPlugins(standalone, callback) {
 			var toCheck = Object.keys(payload.plugins);
 
 			if (!toCheck.length) {
-				process.stdout.write('OK'.green + '\n'.reset);
+				console.log('OK'.green + ''.reset);
 				return next(null, []);	// no extraneous plugins installed
 			}
 
@@ -127,10 +127,10 @@ function checkPlugins(standalone, callback) {
 				json: true,
 			}, function (err, res, body) {
 				if (err) {
-					process.stdout.write('error'.red + '\n'.reset);
+					console.log('error'.red + ''.reset);
 					return next(err);
 				}
-				process.stdout.write('OK'.green + '\n'.reset);
+				console.log('OK'.green + ''.reset);
 
 				if (!Array.isArray(body) && toCheck.length === 1) {
 					body = [body];
@@ -167,19 +167,19 @@ function upgradePlugins(callback) {
 
 	checkPlugins(standalone, function (err, found) {
 		if (err) {
-			process.stdout.write('Warning'.yellow + ': An unexpected error occured when attempting to verify plugin upgradability\n'.reset);
+			console.log('Warning'.yellow + ': An unexpected error occured when attempting to verify plugin upgradability'.reset);
 			return callback(err);
 		}
 
 		if (found && found.length) {
-			process.stdout.write('\nA total of ' + String(found.length).bold + ' package(s) can be upgraded:\n');
+			console.log('\nA total of ' + String(found.length).bold + ' package(s) can be upgraded:');
 			found.forEach(function (suggestObj) {
-				process.stdout.write('  * '.yellow + suggestObj.name.reset + ' (' + suggestObj.current.yellow + ' -> '.reset + suggestObj.suggested.green + ')\n'.reset);
+				console.log('  * '.yellow + suggestObj.name.reset + ' (' + suggestObj.current.yellow + ' -> '.reset + suggestObj.suggested.green + ')\n'.reset);
 			});
-			process.stdout.write('\n');
+			console.log('');
 		} else {
 			if (standalone) {
-				process.stdout.write('\nAll packages up-to-date!'.green + '\n'.reset);
+				console.log('\nAll packages up-to-date!'.green + ''.reset);
 			}
 			return callback();
 		}
@@ -198,7 +198,7 @@ function upgradePlugins(callback) {
 			}
 
 			if (['y', 'Y', 'yes', 'YES'].indexOf(result.upgrade) !== -1) {
-				process.stdout.write('\nUpgrading packages...');
+				console.log('\nUpgrading packages...');
 				var args = ['i'];
 				found.forEach(function (suggestObj) {
 					args.push(suggestObj.name + '@' + suggestObj.suggested);
@@ -206,7 +206,7 @@ function upgradePlugins(callback) {
 
 				cproc.execFile((process.platform === 'win32') ? 'npm.cmd' : 'npm', args, { stdio: 'ignore' }, callback);
 			} else {
-				process.stdout.write('\nPackage upgrades skipped'.yellow + '. Check for upgrades at any time by running "'.reset + './nodebb upgrade-plugins'.green + '".\n'.reset);
+				console.log('Package upgrades skipped'.yellow + '. Check for upgrades at any time by running "'.reset + './nodebb upgrade-plugins'.green + '".'.reset);
 				callback();
 			}
 		});

@@ -24,11 +24,11 @@ function buildTargets() {
 	}).map(function (tuple) {
 		return '     ' + _.padEnd('"' + tuple[0] + '"', length + 2).magenta + '  |  ' + tuple[1];
 	}).join('\n');
-	process.stdout.write(
+	console.log(
 		'\n\n  Build targets:\n' +
 		('\n     ' + _.padEnd('Target', length + 2) + '  |  Aliases').green +
 		'\n     ------------------------------------------------------\n'.blue +
-		output + '\n\n'
+		output + '\n'
 	);
 }
 
@@ -100,24 +100,23 @@ function listEvents() {
 }
 
 function info() {
+	console.log('');
 	async.waterfall([
 		function (next) {
 			var version = require('../../package.json').version;
-			process.stdout.write('\n  version:  ' + version);
+			console.log('  version:  ' + version);
 
-			process.stdout.write('\n  Node ver: ' + process.version);
+			console.log('  Node ver: ' + process.version);
 			next();
 		},
 		function (next) {
-			process.stdout.write('\n  git hash: ');
-			childProcess.execSync('git rev-parse HEAD', {
-				stdio: 'inherit',
-			});
+			var hash = childProcess.execSync('git rev-parse HEAD');
+			console.log('  git hash: ' + hash);
 			next();
 		},
 		function (next) {
 			var config = require('../../config.json');
-			process.stdout.write('\n  database: ' + config.database);
+			console.log('  database: ' + config.database);
 			next();
 		},
 		db.init,
@@ -125,8 +124,8 @@ function info() {
 			db.info(db.client, next);
 		},
 		function (info, next) {
-			process.stdout.write('\n        version: ' + info.version);
-			process.stdout.write('\n        engine:  ' + info.storageEngine);
+			console.log('        version: ' + info.version);
+			console.log('        engine:  ' + info.storageEngine);
 			next();
 		},
 	], function (err) {
