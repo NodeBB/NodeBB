@@ -1081,6 +1081,69 @@ describe('User', function () {
 		});
 	});
 
+	describe('Digest.getSubscribers', function (done) {
+		var offsubUid;
+
+		before(function (done) {
+			var testUsers = ['daysub', 'offsub', 'nullsub'];
+			async.each(testUsers, function (username, next) {
+				async.waterfall([
+					async.apply(User.create, { username: username, email: username + '@example.com' }),
+					function (uid, next) {
+						if (username === 'nullsub') {
+							return setImmediate(next);
+						} else if (username === 'offsub') {
+							offsubUid = uid; // used in a later test
+						}
+
+						var sub = username.slice(0, 3);
+						async.parallel([
+							async.apply(User.updateDigestSetting, uid, sub),
+							async.apply(User.setSetting, uid, 'dailyDigestFreq', sub),
+						], next);
+					},
+				], next);
+			}, done);
+		});
+
+		it('should accurately build digest list given ACP default "null" (not set)', function (done) {
+			User.digest.getSubscribers('day', function (err, subs) {
+				assert.ifError(err);
+				assert.strictEqual(subs.length, 1);
+
+				done();
+			});
+		});
+
+		it('should accurately build digest list given ACP default "day"', function (done) {
+			async.series([
+				async.apply(meta.configs.set, 'dailyDigestFreq', 'day'),
+				function (next) {
+					User.digest.getSubscribers('day', function (err, subs) {
+						assert.ifError(err);
+						assert.strictEqual(subs.includes(offsubUid.toString()), false);	// offsubUid doesn't get emailed
+
+						next();
+					});
+				},
+			], done);
+		});
+
+		it('should accurately build digest list given ACP default "off"', function (done) {
+			async.series([
+				async.apply(meta.configs.set, 'dailyDigestFreq', 'off'),
+				function (next) {
+					User.digest.getSubscribers('day', function (err, subs) {
+						assert.ifError(err);
+						assert.strictEqual(subs.length, 1);
+
+						next();
+					});
+				},
+			], done);
+		});
+	});
+
 	describe('digests', function () {
 		var uid;
 		before(function (done) {
