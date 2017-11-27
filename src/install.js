@@ -439,8 +439,8 @@ function enableDefaultPlugins(next) {
 		'nodebb-widget-essentials',
 		'nodebb-rewards-essentials',
 		'nodebb-plugin-soundpack-default',
-		'nodebb-plugin-emoji-extended',
-		'nodebb-plugin-emoji-one',
+		'nodebb-plugin-emoji',
+		'nodebb-plugin-emoji-android',
 	];
 	var customDefaults = nconf.get('defaultplugins') || nconf.get('defaultPlugins');
 
