@@ -76,6 +76,19 @@ JS.scripts = {
 		'public/src/modules/storage.js',
 	],
 
+	admin: [
+		'node_modules/material-design-lite/material.js',
+		'public/vendor/jquery/sortable/Sortable.js',
+		'public/vendor/colorpicker/colorpicker.js',
+		'public/src/admin/admin.js',
+		'public/vendor/semver/semver.browser.js',
+		'public/vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js',
+		'public/vendor/jquery/deserialize/jquery.deserialize.min.js',
+		'public/vendor/snackbar/snackbar.min.js',
+		'public/vendor/slideout/slideout.min.js',
+		'public/vendor/nprogress.min.js',
+	],
+
 	// modules listed below are built (/src/modules) so they can be defined anonymously
 	modules: {
 		'Chart.js': 'node_modules/chart.js/dist/Chart.min.js',
@@ -299,13 +312,15 @@ function getBundleScriptList(target, callback) {
 			return callback(err);
 		}
 
-		var scripts = JS.scripts.base.concat(pluginScripts);
+		var scripts = JS.scripts.base;
 
 		if (target === 'client' && global.env !== 'development') {
 			scripts = scripts.concat(JS.scripts.rjs);
+		} else if (target === 'acp') {
+			scripts = scripts.concat(JS.scripts.admin);
 		}
 
-		scripts = scripts.map(function (script) {
+		scripts = scripts.concat(pluginScripts).map(function (script) {
 			var srcPath = path.resolve(basePath, script).replace(/\\/g, '/');
 			return {
 				srcPath: srcPath,
