@@ -627,6 +627,19 @@ describe('User', function () {
 			});
 		});
 
+		it('should not update a user\'s username if it did not change', function (done) {
+			socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, username: 'updatedAgain', password: '123456' }, function (err) {
+				assert.ifError(err);
+				db.getSortedSetRevRange('user:' + uid + ':usernames', 0, -1, function (err, data) {
+					assert.ifError(err);
+					console.log(data);
+					assert(data[0].startsWith('updatedAgain'));
+					assert(data[1].startsWith('updatedUserName'));
+					done();
+				});
+			});
+		});
+
 		it('should change email', function (done) {
 			socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, email: 'updatedAgain@me.com', password: '123456' }, function (err) {
 				assert.ifError(err);
