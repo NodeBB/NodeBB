@@ -12,8 +12,7 @@ var questions = {
 module.exports = function (config, callback) {
 	async.waterfall([
 		function (next) {
-			process.stdout.write('\n');
-			winston.info('Now configuring ' + config.database + ' database:');
+			winston.info('\nNow configuring ' + config.database + ' database:');
 			getDatabaseConfig(config, next);
 		},
 		function (databaseConfig, next) {

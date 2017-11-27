@@ -12,15 +12,15 @@ try {
 	fs.readFileSync(path.join(dirname, 'node_modules/async/package.json'));
 } catch (e) {
 	if (e.code === 'ENOENT') {
-		process.stdout.write('Dependencies not yet installed.\n');
-		process.stdout.write('Installing them now...\n\n');
+		console.warn('Dependencies not yet installed.');
+		console.log('Installing them now...\n');
 
 		packageInstall.updatePackageFile();
 		packageInstall.preserveExtraneousPlugins();
 		packageInstall.npmInstallProduction();
 
 		require('colors');
-		process.stdout.write('OK'.green + '\n'.reset);
+		console.log('OK'.green + '\n'.reset);
 	} else {
 		throw e;
 	}
@@ -182,7 +182,7 @@ resetCommand
 			return options[x];
 		});
 		if (!valid) {
-			process.stdout.write('\n  No valid options passed in, so nothing was reset.\n'.red);
+			console.warn('\n  No valid options passed in, so nothing was reset.'.red);
 			resetCommand.help();
 		}
 
@@ -206,13 +206,12 @@ program
 	.option('-s, --schema', 'Update NodeBB data store schema', false)
 	.option('-b, --build', 'Rebuild assets', false)
 	.on('--help', function () {
-		process.stdout.write(
-			'\n' +
-			'When running particular upgrade scripts, options are ignored.\n' +
-			'By default all options are enabled. Passing any options disables that default.\n' +
-			'Only package and dependency updates: ' + './nodebb upgrade -mi\n'.yellow +
-			'Only database update: ' + './nodebb upgrade -d\n\n'.yellow
-		);
+		console.log('\n' + [
+			'When running particular upgrade scripts, options are ignored.',
+			'By default all options are enabled. Passing any options disables that default.',
+			'Only package and dependency updates: ' + './nodebb upgrade -mi'.yellow,
+			'Only database update: ' + './nodebb upgrade -d'.yellow,
+		].join('\n'));
 	})
 	.action(function (scripts, options) {
 		require('./upgrade').upgrade(scripts.length ? scripts : true, options);
@@ -229,7 +228,7 @@ program
 			if (err) {
 				throw err;
 			}
-			process.stdout.write('OK\n'.green);
+			console.log('OK'.green);
 			process.exit();
 		});
 	});

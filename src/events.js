@@ -141,7 +141,7 @@ events.deleteAll = function (callback) {
 };
 
 events.output = function () {
-	process.stdout.write('\nDisplaying last ten administrative events...\n'.bold);
+	console.log('\nDisplaying last ten administrative events...'.bold);
 	events.getEvents(0, 9, function (err, events) {
 		if (err) {
 			winston.error('Error fetching events', err);
@@ -149,7 +149,7 @@ events.output = function () {
 		}
 
 		events.forEach(function (event) {
-			process.stdout.write('  * ' + String(event.timestampISO).green + ' ' + String(event.type).yellow + (event.text ? ' ' + event.text : '') + ' (uid: '.reset + (event.uid ? event.uid : 0) + ')\n');
+			console.log('  * ' + String(event.timestampISO).green + ' ' + String(event.type).yellow + (event.text ? ' ' + event.text : '') + ' (uid: '.reset + (event.uid ? event.uid : 0) + ')');
 		});
 
 		process.exit(0);

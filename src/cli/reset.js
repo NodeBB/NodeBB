@@ -54,18 +54,19 @@ exports.reset = function (options, callback) {
 		.map(function (x) { return map[x]; });
 
 	if (!tasks.length) {
-		process.stdout.write('\nNodeBB Reset\n'.bold);
-		process.stdout.write('No arguments passed in, so nothing was reset.\n\n'.yellow);
-		process.stdout.write('Use ./nodebb reset ' + '{-t|-p|-w|-s|-a}\n'.red);
-		process.stdout.write('    -t\tthemes\n');
-		process.stdout.write('    -p\tplugins\n');
-		process.stdout.write('    -w\twidgets\n');
-		process.stdout.write('    -s\tsettings\n');
-		process.stdout.write('    -a\tall of the above\n');
-
-		process.stdout.write('\nPlugin and theme reset flags (-p & -t) can take a single argument\n');
-		process.stdout.write('    e.g. ./nodebb reset -p nodebb-plugin-mentions, ./nodebb reset -t nodebb-theme-persona\n');
-		process.stdout.write('         Prefix is optional, e.g. ./nodebb reset -p markdown, ./nodebb reset -t persona\n');
+		console.log([
+			'No arguments passed in, so nothing was reset.\n'.yellow,
+			'Use ./nodebb reset ' + '{-t|-p|-w|-s|-a}'.red,
+			'    -t\tthemes',
+			'    -p\tplugins',
+			'    -w\twidgets',
+			'    -s\tsettings',
+			'    -a\tall of the above',
+			'',
+			'Plugin and theme reset flags (-p & -t) can take a single argument',
+			'    e.g. ./nodebb reset -p nodebb-plugin-mentions, ./nodebb reset -t nodebb-theme-persona',
+			'         Prefix is optional, e.g. ./nodebb reset -p markdown, ./nodebb reset -t persona',
+		].join('\n'));
 
 		process.exit(0);
 	}

@@ -91,7 +91,7 @@ Upgrade.check = function (callback) {
 };
 
 Upgrade.run = function (callback) {
-	process.stdout.write('\nParsing upgrade scripts... ');
+	console.log('\nParsing upgrade scripts... ');
 	var queue = [];
 	var skipped = 0;
 
@@ -120,7 +120,7 @@ Upgrade.run = function (callback) {
 };
 
 Upgrade.runParticular = function (names, callback) {
-	process.stdout.write('\nParsing upgrade scripts... ');
+	console.log('\nParsing upgrade scripts... ');
 
 	async.waterfall([
 		async.apply(file.walk, path.join(__dirname, './upgrades')),
@@ -135,7 +135,7 @@ Upgrade.runParticular = function (names, callback) {
 };
 
 Upgrade.process = function (files, skipCount, callback) {
-	process.stdout.write('OK'.green + ' | '.reset + String(files.length).cyan + ' script(s) found'.cyan + (skipCount > 0 ? ', '.cyan + String(skipCount).cyan + ' skipped'.cyan : '') + '\n'.reset);
+	console.log('OK'.green + ' | '.reset + String(files.length).cyan + ' script(s) found'.cyan + (skipCount > 0 ? ', '.cyan + String(skipCount).cyan + ' skipped'.cyan : ''));
 
 	async.waterfall([
 		function (next) {
@@ -157,14 +157,14 @@ Upgrade.process = function (files, skipCount, callback) {
 					date: date,
 				};
 
-				process.stdout.write('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '...\n');
+				console.log('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '...');
 
 				// For backwards compatibility, cross-reference with schemaDate (if found). If a script's date is older, skip it
 				if ((!results.schemaDate && !results.schemaLogCount) || (scriptExport.timestamp <= results.schemaDate && semver.lt(version, '1.5.0'))) {
 					readline.clearLine(process.stdout, 0);
 					readline.cursorTo(process.stdout, 0);
 					readline.moveCursor(process.stdout, 0, -1);
-					process.stdout.write('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '... ' + 'skipped\n'.grey);
+					console.log('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '... ' + 'skipped'.grey);
 					db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'), next);
 					return;
 				}
@@ -174,14 +174,14 @@ Upgrade.process = function (files, skipCount, callback) {
 					progress: progress,
 				})(function (err) {
 					if (err) {
-						process.stdout.write('error\n'.red);
+						console.error('Error occurred');
 						return next(err);
 					}
 
 					readline.clearLine(process.stdout, 0);
 					readline.cursorTo(process.stdout, 0);
 					readline.moveCursor(process.stdout, 0, -1);
-					process.stdout.write('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '... ' + 'OK\n'.green);
+					console.log('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '... ' + 'OK'.green);
 
 					// Record success in schemaLog
 					db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'), next);
@@ -189,7 +189,7 @@ Upgrade.process = function (files, skipCount, callback) {
 			}, next);
 		},
 		function (next) {
-			process.stdout.write('Upgrade complete!\n\n'.green);
+			console.log('Upgrade complete!\n'.green);
 			setImmediate(next);
 		},
 	], callback);

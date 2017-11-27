@@ -5,6 +5,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var fs = require('fs');
 var path = require('path');
+var childProcess = require('child_process');
 var less = require('less');
 var async = require('async');
 var uglify = require('uglify-js');
@@ -127,15 +128,15 @@ function launch(req, res) {
 	res.json({});
 	server.close();
 
-	var child = require('child_process').spawn('node', ['loader.js'], {
+	var child = childProcess.spawn('node', ['loader.js'], {
 		detached: true,
 		stdio: ['ignore', 'ignore', 'ignore'],
 	});
 
-	process.stdout.write('\nStarting NodeBB\n');
-	process.stdout.write('    "./nodebb stop" to stop the NodeBB server\n');
-	process.stdout.write('    "./nodebb log" to view server output\n');
-	process.stdout.write('    "./nodebb restart" to restart NodeBB\n');
+	console.log('\nStarting NodeBB');
+	console.log('    "./nodebb stop" to stop the NodeBB server');
+	console.log('    "./nodebb log" to view server output');
+	console.log('    "./nodebb restart" to restart NodeBB');
 
 	var filesToDelete = [
 		'installer.css',
