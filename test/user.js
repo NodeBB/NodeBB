@@ -632,7 +632,6 @@ describe('User', function () {
 				assert.ifError(err);
 				db.getSortedSetRevRange('user:' + uid + ':usernames', 0, -1, function (err, data) {
 					assert.ifError(err);
-					console.log(data);
 					assert(data[0].startsWith('updatedAgain'));
 					assert(data[1].startsWith('updatedUserName'));
 					done();
