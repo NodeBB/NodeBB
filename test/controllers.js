@@ -352,6 +352,15 @@ describe('Controllers', function () {
 		});
 	});
 
+	it('should 404 on /outgoing with invalid url', function (done) {
+		request(nconf.get('url') + '/outgoing?url=derp', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 404);
+			assert(body);
+			done();
+		});
+	});
+
 	it('should load /tos', function (done) {
 		meta.config.termsOfUse = 'please accept our tos';
 		request(nconf.get('url') + '/tos', function (err, res, body) {
