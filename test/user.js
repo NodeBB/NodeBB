@@ -1081,6 +1081,87 @@ describe('User', function () {
 		});
 	});
 
+	describe('Digest.getSubscribers', function (done) {
+		var uidIndex = {};
+
+		before(function (done) {
+			var testUsers = ['daysub', 'offsub', 'nullsub', 'weeksub'];
+			async.each(testUsers, function (username, next) {
+				async.waterfall([
+					async.apply(User.create, { username: username, email: username + '@example.com' }),
+					function (uid, next) {
+						if (username === 'nullsub') {
+							return setImmediate(next);
+						}
+
+						uidIndex[username] = uid;
+
+						var sub = username.slice(0, -3);
+						async.parallel([
+							async.apply(User.updateDigestSetting, uid, sub),
+							async.apply(User.setSetting, uid, 'dailyDigestFreq', sub),
+						], next);
+					},
+				], next);
+			}, done);
+		});
+
+		it('should accurately build digest list given ACP default "null" (not set)', function (done) {
+			User.digest.getSubscribers('day', function (err, subs) {
+				assert.ifError(err);
+				assert.strictEqual(subs.length, 1);
+
+				done();
+			});
+		});
+
+		it('should accurately build digest list given ACP default "day"', function (done) {
+			async.series([
+				async.apply(meta.configs.set, 'dailyDigestFreq', 'day'),
+				function (next) {
+					User.digest.getSubscribers('day', function (err, subs) {
+						assert.ifError(err);
+						assert.strictEqual(subs.includes(uidIndex.daysub.toString()), true);	// daysub does get emailed
+						assert.strictEqual(subs.includes(uidIndex.weeksub.toString()), false);	// weeksub does not get emailed
+						assert.strictEqual(subs.includes(uidIndex.offsub.toString()), false);	// offsub doesn't get emailed
+
+						next();
+					});
+				},
+			], done);
+		});
+
+		it('should accurately build digest list given ACP default "week"', function (done) {
+			async.series([
+				async.apply(meta.configs.set, 'dailyDigestFreq', 'week'),
+				function (next) {
+					User.digest.getSubscribers('week', function (err, subs) {
+						assert.ifError(err);
+						assert.strictEqual(subs.includes(uidIndex.weeksub.toString()), true);	// weeksub gets emailed
+						assert.strictEqual(subs.includes(uidIndex.daysub.toString()), false);	// daysub gets emailed
+						assert.strictEqual(subs.includes(uidIndex.offsub.toString()), false);	// offsub does not get emailed
+
+						next();
+					});
+				},
+			], done);
+		});
+
+		it('should accurately build digest list given ACP default "off"', function (done) {
+			async.series([
+				async.apply(meta.configs.set, 'dailyDigestFreq', 'off'),
+				function (next) {
+					User.digest.getSubscribers('day', function (err, subs) {
+						assert.ifError(err);
+						assert.strictEqual(subs.length, 1);
+
+						next();
+					});
+				},
+			], done);
+		});
+	});
+
 	describe('digests', function () {
 		var uid;
 		before(function (done) {
