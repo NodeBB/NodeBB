@@ -1082,21 +1082,21 @@ describe('User', function () {
 	});
 
 	describe('Digest.getSubscribers', function (done) {
-		var offsubUid;
+		var uidIndex = {};
 
 		before(function (done) {
-			var testUsers = ['daysub', 'offsub', 'nullsub'];
+			var testUsers = ['daysub', 'offsub', 'nullsub', 'weeksub'];
 			async.each(testUsers, function (username, next) {
 				async.waterfall([
 					async.apply(User.create, { username: username, email: username + '@example.com' }),
 					function (uid, next) {
 						if (username === 'nullsub') {
 							return setImmediate(next);
-						} else if (username === 'offsub') {
-							offsubUid = uid; // used in a later test
 						}
 
-						var sub = username.slice(0, 3);
+						uidIndex[username] = uid;
+
+						var sub = username.slice(0, -3);
 						async.parallel([
 							async.apply(User.updateDigestSetting, uid, sub),
 							async.apply(User.setSetting, uid, 'dailyDigestFreq', sub),
@@ -1121,7 +1121,25 @@ describe('User', function () {
 				function (next) {
 					User.digest.getSubscribers('day', function (err, subs) {
 						assert.ifError(err);
-						assert.strictEqual(subs.includes(offsubUid.toString()), false);	// offsubUid doesn't get emailed
+						assert.strictEqual(subs.includes(uidIndex.daysub.toString()), true);	// daysub does get emailed
+						assert.strictEqual(subs.includes(uidIndex.weeksub.toString()), false);	// weeksub does not get emailed
+						assert.strictEqual(subs.includes(uidIndex.offsub.toString()), false);	// offsub doesn't get emailed
+
+						next();
+					});
+				},
+			], done);
+		});
+
+		it('should accurately build digest list given ACP default "week"', function (done) {
+			async.series([
+				async.apply(meta.configs.set, 'dailyDigestFreq', 'week'),
+				function (next) {
+					User.digest.getSubscribers('week', function (err, subs) {
+						assert.ifError(err);
+						assert.strictEqual(subs.includes(uidIndex.weeksub.toString()), true);	// weeksub gets emailed
+						assert.strictEqual(subs.includes(uidIndex.daysub.toString()), false);	// daysub gets emailed
+						assert.strictEqual(subs.includes(uidIndex.offsub.toString()), false);	// offsub does not get emailed
 
 						next();
 					});
