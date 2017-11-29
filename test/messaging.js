@@ -243,7 +243,7 @@ describe('Messaging Library', function () {
 				assert.equal(messageData.content, 'first chat message');
 				assert(messageData.fromUser);
 				assert(messageData.roomId, roomId);
-				socketModules.chats.getRaw({ uid: fooUid }, { roomId: roomId, mid: messageData.mid }, function (err, raw) {
+				socketModules.chats.getRaw({ uid: fooUid }, { mid: messageData.mid }, function (err, raw) {
 					assert.ifError(err);
 					assert.equal(raw, 'first chat message');
 					setTimeout(done, 300);
@@ -275,12 +275,29 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should return not in room error', function (done) {
-			socketModules.chats.getRaw({ uid: 0 }, { roomId: roomId, mid: 1 }, function (err) {
-				assert.equal(err.message, '[[error:not-allowed]]');
-				done();
+		it('should return not allowed error if mid is not in room', function (done) {
+			var myRoomId;
+			User.create({ username: 'dummy' }, function (err, uid) {
+				assert.ifError(err);
+				socketModules.chats.newRoom({ uid: bazUid }, { touid: uid }, function (err, _roomId) {
+					myRoomId = _roomId;
+					assert.ifError(err);
+					assert(myRoomId);
+					socketModules.chats.getRaw({ uid: bazUid }, { mid: 1 }, function (err) {
+						assert.equal(err.message, '[[error:not-allowed]]');
+						socketModules.chats.send({ uid: bazUid }, { roomId: myRoomId, message: 'admin will see this' }, function (err, message) {
+							assert.ifError(err);
+							socketModules.chats.getRaw({ uid: fooUid }, { mid: message.mid }, function (err, raw) {
+								assert.ifError(err);
+								assert.equal(raw, 'admin will see this');
+								done();
+							});
+						});
+					});
+				});
 			});
 		});
+
 
 		it('should notify offline users of message', function (done) {
 			Messaging.notificationSendDelay = 100;
@@ -507,7 +524,7 @@ describe('Messaging Library', function () {
 		it('should edit message', function (done) {
 			socketModules.chats.edit({ uid: fooUid }, { mid: mid, roomId: roomId, message: 'message edited' }, function (err) {
 				assert.ifError(err);
-				socketModules.chats.getRaw({ uid: fooUid }, { roomId: roomId, mid: mid }, function (err, raw) {
+				socketModules.chats.getRaw({ uid: fooUid }, { mid: mid }, function (err, raw) {
 					assert.ifError(err);
 					assert.equal(raw, 'message edited');
 					done();
