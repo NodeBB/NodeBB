@@ -19,6 +19,8 @@
 	"themes": "Теми",
 	"disable-user-skins": "Заборонити користувачам обирати стиль сайту",
 	"account-protection": "Захист акаунту",
+	"admin-relogin-duration": "Admin relogin duration (minutes)",
+	"admin-relogin-duration-help": "After a set amount of time accessing the admin section will require re-login, set to 0 to disable",
 	"login-attempts": "Кількість спроб входу за годину",
 	"login-attempts-help": "Якщо кількість спроб входу в акаунт користувача перевищить цей ліміт, акаунт буде заблоковано на задану кількість часу",
 	"lockout-duration": "Тривалість блокування акаунту (хвилин)",

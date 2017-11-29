@@ -119,6 +119,7 @@
     "not-enough-reputation-to-downvote": "Masz za mało reputacji, aby negatywnie ocenić ten post",
     "not-enough-reputation-to-flag": "Nie masz dość reputacji, by flagować ten post",
     "already-flagged": "Ten post jest już przez Ciebie oznaczony",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "NodeBB napotkało problem w czasie przeładowywania \"%1\". Forum będzie nadal dostarczać istniejące zasoby strony klienta, jednak powinieneś cofnąć ostatnią akcję.",
     "registration-error": "Błąd rejestracji",
     "parse-error": "Coś poszło nie tak podczas przetwarzania odpowiedzi serwera",

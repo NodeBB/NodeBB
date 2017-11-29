@@ -124,7 +124,7 @@ Tags.parse = function (req, data, meta, link, callback) {
 
 		addIfNotExists(meta, 'property', 'og:title', Meta.config.title || 'NodeBB');
 
-		var ogUrl = nconf.get('url') + req.path;
+		var ogUrl = nconf.get('url') + (req.originalUrl !== '/' ? req.originalUrl : '');
 		addIfNotExists(meta, 'property', 'og:url', ogUrl);
 
 		addIfNotExists(meta, 'name', 'description', Meta.config.description);

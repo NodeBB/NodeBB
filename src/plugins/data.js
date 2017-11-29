@@ -33,10 +33,10 @@ Data.getPluginPaths = getPluginPaths;
 function loadPluginInfo(pluginPath, callback) {
 	async.parallel({
 		package: function (next) {
-			fs.readFile(path.join(pluginPath, 'package.json'), next);
+			fs.readFile(path.join(pluginPath, 'package.json'), 'utf8', next);
 		},
 		plugin: function (next) {
-			fs.readFile(path.join(pluginPath, 'plugin.json'), next);
+			fs.readFile(path.join(pluginPath, 'plugin.json'), 'utf8', next);
 		},
 	}, function (err, results) {
 		if (err) {

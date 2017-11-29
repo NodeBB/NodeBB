@@ -78,7 +78,11 @@ module.exports = function (User) {
 			function (results, next) {
 				if (fields.length) {
 					fields = fields.filter(function (field) {
-						return field && results.whitelist.includes(field);
+						var isFieldWhitelisted = field && results.whitelist.includes(field);
+						if (!isFieldWhitelisted) {
+							winston.verbose('[user/getUsersFields] ' + field + ' removed because it is not whitelisted, see `filter:user.whietlistFields`');
+						}
+						return isFieldWhitelisted;
 					});
 				} else {
 					fields = results.whitelist;

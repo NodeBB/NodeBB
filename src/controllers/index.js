@@ -286,7 +286,7 @@ Controllers.outgoing = function (req, res, next) {
 	var allowedProtocols = ['http', 'https', 'ftp', 'ftps', 'mailto', 'news', 'irc', 'gopher', 'nntp', 'feed', 'telnet', 'mms', 'rtsp', 'svn', 'tel', 'fax', 'xmpp', 'webcal'];
 	var parsed = require('url').parse(url);
 
-	if (!url || !allowedProtocols.includes(parsed.protocol.slice(0, -1))) {
+	if (!url || !parsed.protocol || !allowedProtocols.includes(parsed.protocol.slice(0, -1))) {
 		return next();
 	}
 

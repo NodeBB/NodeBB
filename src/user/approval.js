@@ -49,6 +49,7 @@ module.exports = function (User) {
 		async.waterfall([
 			function (next) {
 				notifications.create({
+					type: 'new-register',
 					bodyShort: '[[notifications:new_register, ' + username + ']]',
 					nid: 'new_register:' + username,
 					path: '/admin/manage/registration',

@@ -9,6 +9,7 @@
     "continue_to": "继续前往 %1",
     "return_to": "返回 %1",
     "new_notification": "新通知",
+    "new_notification_from": "You have a new Notification from %1",
     "you_have_unread_notifications": "您有未读的通知。",
     "all": "所有",
     "topics": "主题",
@@ -45,5 +46,19 @@
     "email-confirmed": "电子邮箱已确认",
     "email-confirmed-message": "感谢您验证您的电子邮箱。您的帐户现已完全激活。",
     "email-confirm-error-message": "验证的您电子邮箱地址时出现了问题。可能是因为验证码无效或已过期。",
-    "email-confirm-sent": "确认邮件已发送。"
+    "email-confirm-sent": "确认邮件已发送。",
+    "none": "None",
+    "notification_only": "Notification Only",
+    "email_only": "Email Only",
+    "notification_and_email": "Notification & Email",
+    "notificationType_upvote": "When someone upvotes your post",
+    "notificationType_new-topic": "When someone you follow posts a topic",
+    "notificationType_new-reply": "When a new reply is posted in a topic you are watching",
+    "notificationType_follow": "When someone starts following you",
+    "notificationType_new-chat": "When you receive a chat message",
+    "notificationType_group-invite": "When you receive a group invite",
+    "notificationType_new-register": "When someone gets added to registration queue",
+    "notificationType_post-queue": "When a new post is queued",
+    "notificationType_new-post-flag": "When a post is flagged",
+    "notificationType_new-user-flag": "When a user is flagged"
 }

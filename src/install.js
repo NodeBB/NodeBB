@@ -174,7 +174,7 @@ function completeConfigSetup(config, next) {
 }
 
 function setupDefaultConfigs(next) {
-	process.stdout.write('Populating database with default configs, if not already set...\n');
+	console.log('Populating database with default configs, if not already set...');
 	var meta = require('./meta');
 	var defaults = require(path.join(__dirname, '../', 'install/data/defaults.json'));
 
@@ -192,11 +192,11 @@ function enableDefaultTheme(next) {
 
 	meta.configs.get('theme:id', function (err, id) {
 		if (err || id) {
-			process.stdout.write('Previous theme detected, skipping enabling default theme\n');
+			console.log('Previous theme detected, skipping enabling default theme');
 			return next(err);
 		}
 		var defaultTheme = nconf.get('defaultTheme') || 'nodebb-theme-persona';
-		process.stdout.write('Enabling default theme: ' + defaultTheme + '\n');
+		console.log('Enabling default theme: ' + defaultTheme);
 		meta.themes.set({
 			type: 'local',
 			id: defaultTheme,
@@ -211,7 +211,7 @@ function createAdministrator(next) {
 			return next(err);
 		}
 		if (memberCount > 0) {
-			process.stdout.write('Administrator found, skipping Admin setup\n');
+			console.log('Administrator found, skipping Admin setup');
 			next();
 		} else {
 			createAdmin(next);
@@ -315,7 +315,7 @@ function createAdmin(callback) {
 	} else {
 		// If automated setup did not provide a user password, generate one, it will be shown to the user upon setup completion
 		if (!install.values.hasOwnProperty('admin:password') && !nconf.get('admin:password')) {
-			process.stdout.write('Password was not provided during automated setup, generating one...\n');
+			console.log('Password was not provided during automated setup, generating one...');
 			password = utils.generateUUID().slice(0, 8);
 		}
 
@@ -365,13 +365,13 @@ function createCategories(next) {
 		}
 
 		if (Array.isArray(categoryData) && categoryData.length) {
-			process.stdout.write('Categories OK. Found ' + categoryData.length + ' categories.\n');
+			console.log('Categories OK. Found ' + categoryData.length + ' categories.');
 			return next();
 		}
 
-		process.stdout.write('No categories found, populating instance with default categories\n');
+		console.log('No categories found, populating instance with default categories');
 
-		fs.readFile(path.join(__dirname, '../', 'install/data/categories.json'), function (err, default_categories) {
+		fs.readFile(path.join(__dirname, '../', 'install/data/categories.json'), 'utf8', function (err, default_categories) {
 			if (err) {
 				return next(err);
 			}
@@ -402,7 +402,7 @@ function createWelcomePost(next) {
 
 	async.parallel([
 		function (next) {
-			fs.readFile(path.join(__dirname, '../', 'install/data/welcome.md'), next);
+			fs.readFile(path.join(__dirname, '../', 'install/data/welcome.md'), 'utf8', next);
 		},
 		function (next) {
 			db.getObjectField('global', 'topicCount', next);
@@ -416,12 +416,12 @@ function createWelcomePost(next) {
 		var numTopics = results[1];
 
 		if (!parseInt(numTopics, 10)) {
-			process.stdout.write('Creating welcome post!\n');
+			console.log('Creating welcome post!');
 			Topics.post({
 				uid: 1,
 				cid: 2,
 				title: 'Welcome to your NodeBB!',
-				content: content.toString(),
+				content: content,
 			}, next);
 		} else {
 			next();
@@ -430,7 +430,7 @@ function createWelcomePost(next) {
 }
 
 function enableDefaultPlugins(next) {
-	process.stdout.write('Enabling default plugins\n');
+	console.log('Enabling default plugins');
 
 	var defaultEnabled = [
 		'nodebb-plugin-composer-default',
@@ -439,8 +439,8 @@ function enableDefaultPlugins(next) {
 		'nodebb-widget-essentials',
 		'nodebb-rewards-essentials',
 		'nodebb-plugin-soundpack-default',
-		'nodebb-plugin-emoji-extended',
-		'nodebb-plugin-emoji-one',
+		'nodebb-plugin-emoji',
+		'nodebb-plugin-emoji-android',
 	];
 	var customDefaults = nconf.get('defaultplugins') || nconf.get('defaultPlugins');
 
@@ -473,7 +473,7 @@ function setCopyrightWidget(next) {
 	var db = require('./database');
 	async.parallel({
 		footerJSON: function (next) {
-			fs.readFile(path.join(__dirname, '../', 'install/data/footer.json'), next);
+			fs.readFile(path.join(__dirname, '../', 'install/data/footer.json'), 'utf8', next);
 		},
 		footer: function (next) {
 			db.getObjectField('widgets:global', 'footer', next);
@@ -484,7 +484,7 @@ function setCopyrightWidget(next) {
 		}
 
 		if (!results.footer && results.footerJSON) {
-			db.setObjectField('widgets:global', 'footer', results.footerJSON.toString(), next);
+			db.setObjectField('widgets:global', 'footer', results.footerJSON, next);
 		} else {
 			next();
 		}
@@ -546,7 +546,7 @@ install.save = function (server_conf, callback) {
 			return callback(err);
 		}
 
-		process.stdout.write('Configuration Saved OK\n');
+		console.log('Configuration Saved OK');
 
 		nconf.file({
 			file: path.join(__dirname, '..', 'config.json'),

@@ -9,6 +9,7 @@
     "continue_to": "Продължаване към %1",
     "return_to": "Връщане към %1",
     "new_notification": "Ново известие",
+    "new_notification_from": "Имате ново известие от %1",
     "you_have_unread_notifications": "Имате непрочетени известия",
     "all": "Всички",
     "topics": "Теми",
@@ -45,5 +46,19 @@
     "email-confirmed": "Е-пощата беше потвърдена",
     "email-confirmed-message": "Благодарим Ви, че потвърдихте е-пощата си. Акаунтът Ви е вече напълно активиран.",
     "email-confirm-error-message": "Възникна проблем при потвърждаването на е-пощата Ви. Може кодът да е грешен или давността му да е изтекла.",
-    "email-confirm-sent": "Изпратено е е-писмо за потвърждение."
+    "email-confirm-sent": "Изпратено е е-писмо за потвърждение.",
+    "none": "Нищо",
+    "notification_only": "Само известие",
+    "email_only": "Само е-писмо",
+    "notification_and_email": "Известие и е-писмо",
+    "notificationType_upvote": "Когато някой гласува положително за Ваша публикация",
+    "notificationType_new-topic": "Когато някой, когото следвате, публикува тема",
+    "notificationType_new-reply": "Когато бъде публикуван нов отговор в тема, която следвате",
+    "notificationType_follow": "Когато някой започне да Ви следва",
+    "notificationType_new-chat": "Когато получите съобщение в разговор",
+    "notificationType_group-invite": "Когато получите покана за група",
+    "notificationType_new-register": "Когато някой бъде добавен в опашката за регистрация",
+    "notificationType_post-queue": "Когато бъде добавена нова публикация в опашката",
+    "notificationType_new-post-flag": "Когато публикация бъде докладвана",
+    "notificationType_new-user-flag": "Когато потребител бъде докладван"
 }

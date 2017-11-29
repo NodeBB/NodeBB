@@ -11,6 +11,7 @@ var topics = require('../src/topics');
 var user = require('../src/user');
 var groups = require('../src/groups');
 var helpers = require('./helpers');
+var meta = require('../src/meta');
 
 describe('Admin Controllers', function () {
 	var tid;
@@ -491,7 +492,6 @@ describe('Admin Controllers', function () {
 	});
 
 	it('should load /recent in maintenance mode', function (done) {
-		var meta = require('../src/meta');
 		meta.config.maintenanceMode = 1;
 		request(nconf.get('url') + '/api/recent', { jar: jar, json: true }, function (err, res, body) {
 			assert.ifError(err);
@@ -554,15 +554,16 @@ describe('Admin Controllers', function () {
 
 		it('should error with not enough reputation to flag', function (done) {
 			var socketFlags = require('../src/socket.io/flags');
-
+			var oldValue = meta.config['privileges:flag'];
+			meta.config['privileges:flag'] = 1000;
 			socketFlags.create({ uid: regularUid }, { id: pid, type: 'post', reason: 'spam' }, function (err) {
 				assert.equal(err.message, '[[error:not-enough-reputation-to-flag]]');
+				meta.config['privileges:flag'] = oldValue;
 				done();
 			});
 		});
 
 		it('should return flag details', function (done) {
-			var meta = require('../src/meta');
 			var socketFlags = require('../src/socket.io/flags');
 			var oldValue = meta.config['privileges:flag'];
 			meta.config['privileges:flag'] = 0;

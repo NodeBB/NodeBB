@@ -19,6 +19,8 @@
 	"themes": "Teme",
 	"disable-user-skins": "Onemogući korisnike da izaberu određenu temu",
 	"account-protection": "Začtita naloga",
+	"admin-relogin-duration": "Admin relogin duration (minutes)",
+	"admin-relogin-duration-help": "After a set amount of time accessing the admin section will require re-login, set to 0 to disable",
 	"login-attempts": "Dozvoljeno logovanje po satu",
 	"login-attempts-help": "Ako broj logovanja prema user&apos;s predje određenu granicu, taj nalog može biti zaključan na određeno prekonfigurisano vreme",
 	"lockout-duration": "Trajanje dok se nalog ne otključa (minuta)",

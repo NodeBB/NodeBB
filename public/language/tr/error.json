@@ -119,6 +119,7 @@
     "not-enough-reputation-to-downvote": "Bu iletiyi eksilemek için yeterince itibarınız yok.",
     "not-enough-reputation-to-flag": "Bu iletiyi bayraklamak için yeterince itibarınız yok",
     "already-flagged": "Bu iletiyi zaten bayrakladınız",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "NodeBB tekrar yüklenirken bir sorunla karşılaştı: “%1“. NodeBB varolan dosyaları servis etmeye devam edecek.",
     "registration-error": "Kayıt Hatası",
     "parse-error": "Sunucu yanıtı çözümlemesi sırasında bir şeyler ters gitti",

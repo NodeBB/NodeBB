@@ -36,7 +36,7 @@ function getRouteAllowUserHomePage(uid, next) {
 pubsub.on('config:update', configUpdated);
 configUpdated();
 
-module.exports = function (req, res, next) {
+function rewrite(req, res, next) {
 	if (req.path !== '/' && req.path !== '/api/' && req.path !== '/api') {
 		return next();
 	}
@@ -48,15 +48,26 @@ module.exports = function (req, res, next) {
 
 		var hook = 'action:homepage.get:' + route;
 
-		if (plugins.hasListeners(hook)) {
-			return plugins.fireHook(hook, {
-				req: req,
-				res: res,
-				next: next,
-			});
+		if (!plugins.hasListeners(hook)) {
+			req.url = req.path + (!req.path.endsWith('/') ? '/' : '') + route;
+		} else {
+			res.locals.homePageRoute = route;
 		}
 
-		req.url = req.path + (!req.path.endsWith('/') ? '/' : '') + route;
 		next();
 	});
-};
+}
+
+exports.rewrite = rewrite;
+
+function pluginHook(req, res, next) {
+	var hook = 'action:homepage.get:' + res.locals.homePageRoute;
+
+	plugins.fireHook(hook, {
+		req: req,
+		res: res,
+		next: next,
+	});
+}
+
+exports.pluginHook = pluginHook;

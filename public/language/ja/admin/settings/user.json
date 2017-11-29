@@ -19,6 +19,8 @@
 	"themes": "テーマ",
 	"disable-user-skins": "ユーザーがカスタムスキンを選択できないようにする",
 	"account-protection": "アカウント保護",
+	"admin-relogin-duration": "Admin relogin duration (minutes)",
+	"admin-relogin-duration-help": "After a set amount of time accessing the admin section will require re-login, set to 0 to disable",
 	"login-attempts": "時間ごとのログイン試行",
 	"login-attempts-help": "ユーザのアカウントへのログイン試行数がこの値を超える場合、そのアカウントは予め設定された時間だけロックされます。",
 	"lockout-duration": "アカウントロックアウト期間(分)",

@@ -1,5 +1,6 @@
 {
 	"notifications": "告示",
 	"welcome-notification": "歡迎告示",
-	"welcome-notification-link": "歡迎告示連結"
+	"welcome-notification-link": "歡迎告示連結",
+	"welcome-notification-uid": "Welcome Notification User (UID)"
 }

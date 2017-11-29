@@ -208,13 +208,17 @@ User.isGlobalModerator = function (uid, callback) {
 	privileges.users.isGlobalModerator(uid, callback);
 };
 
+User.getPrivileges = function (uid, callback) {
+	async.parallel({
+		isAdmin: async.apply(User.isAdministrator, uid),
+		isGlobalModerator: async.apply(User.isGlobalModerator, uid),
+		isModeratorOfAnyCategory: async.apply(User.isModeratorOfAnyCategory, uid),
+	}, callback);
+};
+
 User.isPrivileged = function (uid, callback) {
-	async.parallel([
-		async.apply(User.isAdministrator, uid),
-		async.apply(User.isGlobalModerator, uid),
-		async.apply(User.isModeratorOfAnyCategory, uid),
-	], function (err, results) {
-		callback(err, results ? results.some(Boolean) : false);
+	User.getPrivileges(uid, function (err, results) {
+		callback(err, results ? (results.isAdmin || results.isGlobalModerator || results.isModeratorOfAnyCategory) : false);
 	});
 };
 

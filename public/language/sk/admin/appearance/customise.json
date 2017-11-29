@@ -3,8 +3,12 @@
 	"custom-css.description": "Zadajte svoje vlastné deklarácie CSS, ktoré budú použité po všetkých ostatných štýloch.",
 	"custom-css.enable": "Enable Custom CSS",
 
+	"custom-js": "Custom Javascript",
+	"custom-js.description": "Enter your own javascript here. It will be executed after the page is loaded completely.",
+	"custom-js.enable": "Enable Custom Javascript",
+
 	"custom-header": "Custom Header",
-	"custom-header.description": "Enter custom HTML here (ex. JavaScript, Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup.",
+	"custom-header.description": "Enter custom HTML here (ex. Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup. Script tags are allowed, but are discouraged, as the <a href=\"#custom-header\" data-toggle=\"tab\">Custom Javascript</a> tab is available.",
 	"custom-header.enable": "Enable Custom Header",
 
 	"custom-css.livereload": "Enable Live Reload",

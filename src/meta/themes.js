@@ -42,7 +42,7 @@ Themes.get = function (callback) {
 			async.map(themes, function (theme, next) {
 				var config = path.join(themePath, theme, 'theme.json');
 
-				fs.readFile(config, function (err, file) {
+				fs.readFile(config, 'utf8', function (err, file) {
 					if (err) {
 						if (err.code === 'ENOENT') {
 							return next(null, null);
@@ -50,7 +50,7 @@ Themes.get = function (callback) {
 						return next(err);
 					}
 					try {
-						var configObj = JSON.parse(file.toString());
+						var configObj = JSON.parse(file);
 
 						// Minor adjustments for API output
 						configObj.type = 'local';
@@ -96,9 +96,9 @@ Themes.set = function (data, callback) {
 				});
 			},
 			function (next) {
-				fs.readFile(path.join(nconf.get('themes_path'), data.id, 'theme.json'), function (err, config) {
+				fs.readFile(path.join(nconf.get('themes_path'), data.id, 'theme.json'), 'utf8', function (err, config) {
 					if (!err) {
-						config = JSON.parse(config.toString());
+						config = JSON.parse(config);
 						next(null, config);
 					} else {
 						next(err);

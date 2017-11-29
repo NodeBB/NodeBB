@@ -200,7 +200,7 @@ module.exports = function (privileges) {
 				}, next);
 			},
 			function (results, next) {
-				var minimumReputation = utils.isNumber(meta.config['privileges:flag']) ? parseInt(meta.config['privileges:flag'], 10) : 1;
+				var minimumReputation = utils.isNumber(meta.config['privileges:flag']) ? parseInt(meta.config['privileges:flag'], 10) : 0;
 				var canFlag = results.isAdminOrMod || parseInt(results.userReputation, 10) >= minimumReputation;
 				next(null, { flag: canFlag });
 			},

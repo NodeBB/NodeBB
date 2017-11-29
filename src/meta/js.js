@@ -76,6 +76,19 @@ JS.scripts = {
 		'public/src/modules/storage.js',
 	],
 
+	admin: [
+		'node_modules/material-design-lite/material.js',
+		'public/vendor/jquery/sortable/Sortable.js',
+		'public/vendor/colorpicker/colorpicker.js',
+		'public/src/admin/admin.js',
+		'public/vendor/semver/semver.browser.js',
+		'public/vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js',
+		'public/vendor/jquery/deserialize/jquery.deserialize.min.js',
+		'public/vendor/snackbar/snackbar.min.js',
+		'public/vendor/slideout/slideout.min.js',
+		'public/vendor/nprogress.min.js',
+	],
+
 	// modules listed below are built (/src/modules) so they can be defined anonymously
 	modules: {
 		'Chart.js': 'node_modules/chart.js/dist/Chart.min.js',
@@ -106,7 +119,7 @@ function minifyModules(modules, fork, callback) {
 		return prev;
 	}, []);
 
-	async.eachLimit(moduleDirs, 1000, mkdirp, function (err) {
+	async.each(moduleDirs, mkdirp, function (err) {
 		if (err) {
 			return callback(err);
 		}
@@ -126,7 +139,7 @@ function minifyModules(modules, fork, callback) {
 				minifier.js.minifyBatch(filtered.minify, fork, cb);
 			},
 			function (cb) {
-				async.eachLimit(filtered.skip, 500, function (mod, next) {
+				async.each(filtered.skip, function (mod, next) {
 					linkIfLinux(mod.srcPath, mod.destPath, next);
 				}, cb);
 			},
@@ -137,7 +150,7 @@ function minifyModules(modules, fork, callback) {
 function linkModules(callback) {
 	var modules = JS.scripts.modules;
 
-	async.eachLimit(Object.keys(modules), 1000, function (relPath, next) {
+	async.each(Object.keys(modules), function (relPath, next) {
 		var srcPath = path.join(__dirname, '../../', modules[relPath]);
 		var destPath = path.join(__dirname, '../../build/public/src/modules', relPath);
 
@@ -183,7 +196,7 @@ function getModuleList(callback) {
 	modules = modules.concat(coreDirs);
 
 	var moduleFiles = [];
-	async.eachLimit(modules, 1000, function (module, next) {
+	async.each(modules, function (module, next) {
 		var srcPath = module.srcPath;
 		var destPath = module.destPath;
 
@@ -255,7 +268,7 @@ JS.linkStatics = function (callback) {
 		if (err) {
 			return callback(err);
 		}
-		async.eachLimit(Object.keys(plugins.staticDirs), 1000, function (mappedPath, next) {
+		async.each(Object.keys(plugins.staticDirs), function (mappedPath, next) {
 			var sourceDir = plugins.staticDirs[mappedPath];
 			var destDir = path.join(__dirname, '../../build/public/plugins', mappedPath);
 
@@ -299,13 +312,15 @@ function getBundleScriptList(target, callback) {
 			return callback(err);
 		}
 
-		var scripts = JS.scripts.base.concat(pluginScripts);
+		var scripts = JS.scripts.base;
 
 		if (target === 'client' && global.env !== 'development') {
 			scripts = scripts.concat(JS.scripts.rjs);
+		} else if (target === 'acp') {
+			scripts = scripts.concat(JS.scripts.admin);
 		}
 
-		scripts = scripts.map(function (script) {
+		scripts = scripts.concat(pluginScripts).map(function (script) {
 			var srcPath = path.resolve(basePath, script).replace(/\\/g, '/');
 			return {
 				srcPath: srcPath,

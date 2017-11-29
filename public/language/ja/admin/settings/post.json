@@ -4,6 +4,7 @@
 	"sorting.oldest-to-newest": "新しい順に",
 	"sorting.newest-to-oldest": "新しいものから古いものへ",
 	"sorting.most-votes": "最も多い評価",
+	"sorting.most-posts": "Most Posts",
 	"sorting.topic-default": "デフォルトのスレッドの並び順",
 	"restrictions": "転記の制限",
 	"restrictions.post-queue": "投稿キューを有効にする",

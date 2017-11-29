@@ -119,6 +119,7 @@
     "not-enough-reputation-to-downvote": "Não tens reputação suficiente para atribuir um voto negativo a esta publicação",
     "not-enough-reputation-to-flag": "Não tens reputação suficiente para sinalizar esta publicação",
     "already-flagged": "Já sinalizaste esta publicação",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "NodeBB encontrou um erro enquanto recarregava: \"%1\". NodeBB irá continuar a servir os ativos existentes do lado do utilizador. No entanto deverias desfazer o que fizeste mesmo antes de teres voltado a recarregar.",
     "registration-error": "Erro de registro",
     "parse-error": "Ocorreu um erro enquanto analisávamos a resposta do servidor",

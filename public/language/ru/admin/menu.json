@@ -39,7 +39,7 @@
 	"section-appearance": "Вид",
 	"appearance/themes": "Темы",
 	"appearance/skins": "Скины",
-	"appearance/customise": "Custom HTML & CSS",
+	"appearance/customise": "Custom Content (HTML/JS/CSS)",
 
 	"section-extend": "Расширения",
 	"extend/plugins": "Плагины",

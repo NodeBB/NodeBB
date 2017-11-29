@@ -19,6 +19,8 @@
 	"themes": "Predlošci",
 	"disable-user-skins": "Onemogući korisnicima odabir predloška",
 	"account-protection": "Zaštita računa",
+	"admin-relogin-duration": "Admin relogin duration (minutes)",
+	"admin-relogin-duration-help": "After a set amount of time accessing the admin section will require re-login, set to 0 to disable",
 	"login-attempts": "Pokušaji prijave po satu",
 	"login-attempts-help": "U slučaju pokušaja prijave na račun user&apos;s u tolikoj količini da prelazi ovaj prag,račun će biti zaključan na pre-konfigurirano vrijeme",
 	"lockout-duration": "Broj minuta u slučaju zaključavanja računa",

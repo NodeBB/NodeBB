@@ -9,6 +9,7 @@
     "continue_to": "Fortsett til %1",
     "return_to": "Gå tilbake til %1",
     "new_notification": "Nytt varsel",
+    "new_notification_from": "You have a new Notification from %1",
     "you_have_unread_notifications": "Du har uleste varsler.",
     "all": "All",
     "topics": "Topics",
@@ -45,5 +46,19 @@
     "email-confirmed": "E-post bekreftet",
     "email-confirmed-message": "Takk for at du har validert din e-post. Kontoen din er nå fullstendig aktivert.",
     "email-confirm-error-message": "Det oppsto et problem under valdiering av din e-post. Koden kan ha vært ugyldig eller ha utløpt.",
-    "email-confirm-sent": "Bekreftelsesepost sendt."
+    "email-confirm-sent": "Bekreftelsesepost sendt.",
+    "none": "None",
+    "notification_only": "Notification Only",
+    "email_only": "Email Only",
+    "notification_and_email": "Notification & Email",
+    "notificationType_upvote": "When someone upvotes your post",
+    "notificationType_new-topic": "When someone you follow posts a topic",
+    "notificationType_new-reply": "When a new reply is posted in a topic you are watching",
+    "notificationType_follow": "When someone starts following you",
+    "notificationType_new-chat": "When you receive a chat message",
+    "notificationType_group-invite": "When you receive a group invite",
+    "notificationType_new-register": "When someone gets added to registration queue",
+    "notificationType_post-queue": "When a new post is queued",
+    "notificationType_new-post-flag": "When a post is flagged",
+    "notificationType_new-user-flag": "When a user is flagged"
 }

@@ -97,12 +97,12 @@ Plugins.reload = function (callback) {
 		function (next) {
 			// If some plugins are incompatible, throw the warning here
 			if (Plugins.versionWarning.length && nconf.get('isPrimary') === 'true') {
-				process.stdout.write('\n');
+				console.log('');
 				winston.warn('[plugins/load] The following plugins may not be compatible with your version of NodeBB. This may cause unintended behaviour or crashing. In the event of an unresponsive NodeBB caused by this plugin, run `./nodebb reset -p PLUGINNAME` to disable it.');
 				for (var x = 0, numPlugins = Plugins.versionWarning.length; x < numPlugins; x += 1) {
-					process.stdout.write('  * '.yellow + Plugins.versionWarning[x] + '\n');
+					console.log('  * '.yellow + Plugins.versionWarning[x]);
 				}
-				process.stdout.write('\n');
+				console.log('');
 			}
 
 			Object.keys(Plugins.loadedHooks).forEach(function (hook) {
@@ -119,10 +119,6 @@ Plugins.reload = function (callback) {
 
 Plugins.reloadRoutes = function (callback) {
 	var router = express.Router();
-	// var ensureLoggedIn = require('connect-ensure-login');
-
-	// router.all('(/api/admin|/api/admin/*?)', middleware.isAdmin);
-	// router.all('(/admin|/admin/*?)', ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login?local=1'), middleware.applyCSRF, middleware.isAdmin);
 
 	router.hotswapId = 'plugins';
 	router.render = function () {
@@ -219,7 +215,7 @@ Plugins.list = function (matching, callback) {
 	}, function (err, res, body) {
 		if (err) {
 			winston.error('Error parsing plugins', err);
-			return callback(err);
+			return Plugins.normalise([], callback);
 		}
 
 		Plugins.normalise(body, callback);

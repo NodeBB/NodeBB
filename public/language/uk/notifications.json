@@ -9,6 +9,7 @@
     "continue_to": "Перейти до %1",
     "return_to": "Повернутись до %1",
     "new_notification": "Нове сповіщення",
+    "new_notification_from": "You have a new Notification from %1",
     "you_have_unread_notifications": "У вас немає непрочитаних сповіщень",
     "all": "Всі",
     "topics": "Теми",
@@ -45,5 +46,19 @@
     "email-confirmed": "Електронну пошту підтверджено",
     "email-confirmed-message": "Дякуємо за підтвердження електронної пошти. Ваш акаунт тепер повністю активовано.",
     "email-confirm-error-message": "При перевірці вашої електронної пошти сталася проблема. Можливо код був недійсним або простроченим.",
-    "email-confirm-sent": "Підтвердження по електронній пошті було надіслано."
+    "email-confirm-sent": "Підтвердження по електронній пошті було надіслано.",
+    "none": "None",
+    "notification_only": "Notification Only",
+    "email_only": "Email Only",
+    "notification_and_email": "Notification & Email",
+    "notificationType_upvote": "When someone upvotes your post",
+    "notificationType_new-topic": "When someone you follow posts a topic",
+    "notificationType_new-reply": "When a new reply is posted in a topic you are watching",
+    "notificationType_follow": "When someone starts following you",
+    "notificationType_new-chat": "When you receive a chat message",
+    "notificationType_group-invite": "When you receive a group invite",
+    "notificationType_new-register": "When someone gets added to registration queue",
+    "notificationType_post-queue": "When a new post is queued",
+    "notificationType_new-post-flag": "When a post is flagged",
+    "notificationType_new-user-flag": "When a user is flagged"
 }

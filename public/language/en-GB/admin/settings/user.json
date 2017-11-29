@@ -19,6 +19,8 @@
 	"themes": "Themes",
 	"disable-user-skins": "Prevent users from choosing a custom skin",
 	"account-protection": "Account Protection",
+	"admin-relogin-duration": "Admin relogin duration (minutes)",
+	"admin-relogin-duration-help": "After a set amount of time accessing the admin section will require re-login, set to 0 to disable",
 	"login-attempts": "Login attempts per hour",
 	"login-attempts-help": "If login attempts to a user&apos;s account exceeds this threshold, that account will be locked for a pre-configured amount of time",
 	"lockout-duration": "Account Lockout Duration (minutes)",

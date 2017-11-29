@@ -119,6 +119,7 @@
     "not-enough-reputation-to-downvote": "אין לך מספיק מוניטין כדי להוריד את הדירוג של פוסט זה",
     "not-enough-reputation-to-flag": "אין לך מוניטין מספק על מנת לסמן את הפוסט הזה",
     "already-flagged": "כבר סימנת את הפוסט הזה",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "אירעה תקלה ב NodeBB בזמן הטעינה של: \"%1\". המערכת תמשיך להגיש דפים קיימים, אבל כדאי שתשחזר את הפעולות שלך מהפעם האחרונה שהמערכת עבדה כראוי.",
     "registration-error": "שגיאה בהרשמה",
     "parse-error": "אירעה שגיאה בעת בעת ניתוח תגובת השרת",

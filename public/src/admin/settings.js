@@ -143,7 +143,7 @@ define('admin/settings', ['uploader'], function (uploader) {
 					if (ajaxify.currentPage === 'admin/general/sounds') {
 						ajaxify.refresh();
 					} else {
-						$('#' + uploadBtn.attr('data-target')).val(image);
+						$('#' + uploadBtn.attr('data-target')).val([image, Date.now()].join('?v='));
 					}
 				});
 			});

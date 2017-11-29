@@ -106,6 +106,13 @@
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
+				<label for="adminReloginDuration">[[admin/settings/user:admin-relogin-duration]]</label>
+				<input id="adminReloginDuration" type="text" class="form-control" data-field="adminReloginDuration" placeholder="60" />
+				<p class="help-block">
+					[[admin/settings/user:admin-relogin-duration-help]]
+				</p>
+			</div>
+			<div class="form-group">
 				<label for="loginAttempts">[[admin/settings/user:login-attempts]]</label>
 				<input id="loginAttempts" type="text" class="form-control" data-field="loginAttempts" placeholder="5" />
 				<p class="help-block">

@@ -239,7 +239,8 @@ define('forum/category/tools', [
 	}
 
 	function handlePinnedTopicSort() {
-		if (!ajaxify.data.privileges.isAdminOrMod) {
+		var env = utils.findBootstrapEnvironment();
+		if (!ajaxify.data.privileges.isAdminOrMod || env === 'xs' || env === 'sm') {
 			return;
 		}
 		app.loadJQueryUI(function () {

@@ -119,6 +119,7 @@
     "not-enough-reputation-to-downvote": "Du har ikke nok omdømme til at nedstemme dette indlæg",
     "not-enough-reputation-to-flag": "Du har ikke nok omdømme til at vurdere dette indlæg",
     "already-flagged": "Du har allerede vurderet dette indlæg",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "NodeBB stødte på et problem under genindlæsningen : \"%1\". NodeBB vil fortsætte med en ældre version, og det er nok god ide at genoptage fra lige før du genindlæste siden.",
     "registration-error": "Registeringsfejl",
     "parse-error": "Noget gik galt under fortolknings er serverens respons",

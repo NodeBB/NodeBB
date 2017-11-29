@@ -30,6 +30,7 @@
     "notif.chat.unsub.info": "Thông báo tin nhắn này được gửi tới dựa theo cài đặt theo dõi của bạn.",
     "notif.post.cta": "Nhấn vào đây để đọc toàn bộ chủ đề",
     "notif.post.unsub.info": "Thông báo bài viết này được gửi cho bạn dựa tên thiết lập nhận thông báo của bạn",
+    "notif.cta": "Click here to go to forum",
     "test.text1": "Đây là email kiểm tra xem chức năng gửi mail trên hệ thống NodeBB của bạn có hoạt động tốt hay không.",
     "unsub.cta": "Nhấn vào đây để thay đổi cài đặt.",
     "banned.subject": "You have been banned from %1",

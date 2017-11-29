@@ -7,8 +7,11 @@ var winston = require('winston');
 var jimp = require('jimp');
 var mkdirp = require('mkdirp');
 var mime = require('mime');
+var graceful = require('graceful-fs');
 
 var utils = require('./utils');
+
+graceful.gracefulify(fs);
 
 var file = module.exports;
 

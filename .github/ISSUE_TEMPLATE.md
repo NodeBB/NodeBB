@@ -2,6 +2,7 @@
 	== Github Issues are for bug reports and feature requests only ==
 	== Please visit https://community.nodebb.org for other support ==
 	== Found a security exploit? Please email us at security@nodebb.org instead for immediate attention ==
+	==   → DO NOT SUBMIT VULNERABILITIES TO THE PUBLIC BUG TRACKER ==
 -->
 
 <!-- ++ Please include the following information when submitting a bug report ++ -->

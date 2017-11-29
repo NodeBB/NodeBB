@@ -119,6 +119,7 @@
     "not-enough-reputation-to-downvote": "Ntabwo ufite amanota ahagije ngo ube wakwemererwa kugira uwo wambura amanota",
     "not-enough-reputation-to-flag": "Ntabwo ufite amanota ahagije ngo ube wakwemererwa gutambikana uyu muntu",
     "already-flagged": "Wari waramaze gutambikana ibi",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "NodeBB yahuye n'ingorane mu gihe cy'ipakira: \"%1\". NodeBB irakomeza kuzana ibyo yari ifite ku ruhande rw'imbere nubwo ufite kuba wasubira inyuma ugafata ibyo wari wakoze mbere yo gupakira. ",
     "registration-error": "Ukwibeshya mu Iyandika",
     "parse-error": "Hari ikibazo cyavutse mu gihe twari kugerageza kuzana igisubizo kivuye kuri server",

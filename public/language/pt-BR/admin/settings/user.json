@@ -19,6 +19,8 @@
 	"themes": "Temas",
 	"disable-user-skins": "Impedir usuários de escolherem um skin personalizado",
 	"account-protection": "Proteção de Conta",
+	"admin-relogin-duration": "Admin relogin duration (minutes)",
+	"admin-relogin-duration-help": "After a set amount of time accessing the admin section will require re-login, set to 0 to disable",
 	"login-attempts": "Tentativas de login por hora",
 	"login-attempts-help": "Se tentativas de login na conta de um usuário ultrapassar este limite, aquela conta será trancada por um período de tempo pré-configurado",
 	"lockout-duration": "Duração de Trancamento de Conta (minutos)",

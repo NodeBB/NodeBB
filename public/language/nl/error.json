@@ -119,6 +119,7 @@
     "not-enough-reputation-to-downvote": "Je hebt onvoldoende reputatie om een negatieve stem uit te mogen brengen",
     "not-enough-reputation-to-flag": "Je hebt onvoldoende reputatie om dit bericht aan de beheerders te mogen melden",
     "already-flagged": "Je hebt deze post al gerapporteerd",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "Tijdens het herladen van \"%1\" is NodeBB een fout of probleem tegengekomen. NodeBB blijft operationeel. Echter het is verstandig om de oorzaak te onderzoeken en wellicht de vorige actie, voor het herladen, ongedaan te maken.",
     "registration-error": "Fout tijdens registratie",
     "parse-error": "Tijdens het verwerken van het antwoord van de server is er iets misgegaan.",

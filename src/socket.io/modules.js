@@ -21,17 +21,31 @@ SocketModules.settings = {};
 /* Chat */
 
 SocketModules.chats.getRaw = function (socket, data, callback) {
-	if (!data || !data.hasOwnProperty('mid') || !data.hasOwnProperty('roomId')) {
+	if (!data || !data.hasOwnProperty('mid')) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 	async.waterfall([
 		function (next) {
-			Messaging.isUserInRoom(socket.uid, data.roomId, next);
+			Messaging.getMessageField(data.mid, 'roomId', next);
 		},
-		function (inRoom, next) {
-			if (!inRoom) {
+		function (roomId, next) {
+			async.parallel({
+				isAdmin: function (next) {
+					user.isAdministrator(socket.uid, next);
+				},
+				hasMessage: function (next) {
+					db.isSortedSetMember('uid:' + socket.uid + ':chat:room:' + roomId + ':mids', data.mid, next);
+				},
+				inRoom: function (next) {
+					Messaging.isUserInRoom(socket.uid, roomId, next);
+				},
+			}, next);
+		},
+		function (results, next) {
+			if (!results.isAdmin && (!results.inRoom || !results.hasMessage)) {
 				return next(new Error('[[error:not-allowed]]'));
 			}
+
 			Messaging.getMessageField(data.mid, 'content', next);
 		},
 	], callback);

@@ -39,7 +39,7 @@
 	"section-appearance": "Зовнішній вигляд",
 	"appearance/themes": "Теми",
 	"appearance/skins": "Стилі",
-	"appearance/customise": "Користувацькі HTML та CSS",
+	"appearance/customise": "Custom Content (HTML/JS/CSS)",
 
 	"section-extend": "Розширити",
 	"extend/plugins": "Плагіни",

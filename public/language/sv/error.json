@@ -119,6 +119,7 @@
     "not-enough-reputation-to-downvote": "Du har inte tillräckligt förtroende för att rösta ner det här meddelandet",
     "not-enough-reputation-to-flag": "Du har inte tillräckligt förtroende för att flagga det här inlägget.",
     "already-flagged": "Du har redan flaggat det här inlägget",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "NodeBB stötte på problem med att ladda om: \"%1\". NodeBB kommer fortsätta servera befintliga resurser till klienten, men du borde återställa det du gjorde innan du försökte ladda om.",
     "registration-error": "Registreringsfel",
     "parse-error": "Något gick fel vid tolkning av svar från servern",

@@ -196,7 +196,7 @@ module.exports = function (User) {
 
 	function updateUsername(uid, newUsername, callback) {
 		if (!newUsername) {
-			return callback();
+			return setImmediate(callback);
 		}
 
 		async.waterfall([
@@ -204,6 +204,9 @@ module.exports = function (User) {
 				User.getUserFields(uid, ['username', 'userslug'], next);
 			},
 			function (userData, next) {
+				if (userData.username === newUsername) {
+					return callback();
+				}
 				async.parallel([
 					function (next) {
 						updateUidMapping('username', uid, newUsername, userData.username, next);

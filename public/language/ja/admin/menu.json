@@ -39,7 +39,7 @@
 	"section-appearance": "外観",
 	"appearance/themes": "テーマ",
 	"appearance/skins": "スキン",
-	"appearance/customise": "カスタムHTML & CSS",
+	"appearance/customise": "Custom Content (HTML/JS/CSS)",
 
 	"section-extend": "拡張",
 	"extend/plugins": "プラグイン",

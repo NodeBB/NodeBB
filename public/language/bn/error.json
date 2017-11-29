@@ -119,6 +119,7 @@
     "not-enough-reputation-to-downvote": "আপনার এই পোস্ট downvote করার জন্য পর্যাপ্ত সম্মাননা নেই",
     "not-enough-reputation-to-flag": "এই পোষ্টকে ফ্লাগ করার জন্য আপনার পর্যাপ্ত সম্মাননা নেই",
     "already-flagged": "You have already flagged this post",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "\"%1\" রিলোড করতে সমস্যা হয়েছে। রিলোডের পূর্বে যা করা হয়েছিল সেটি আনডু করা সমীচীন। ",
     "registration-error": "নিবন্ধন এরর!",
     "parse-error": "Something went wrong while parsing server response",

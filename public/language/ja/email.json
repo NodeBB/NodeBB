@@ -30,6 +30,7 @@
     "notif.chat.unsub.info": "このチャットの通知はあなたの購読設定により送られました。",
     "notif.post.cta": "ここをクリックして全て読みます",
     "notif.post.unsub.info": "この投稿の通知はあなたの申し込み設定により送られました。",
+    "notif.cta": "Click here to go to forum",
     "test.text1": "このメールはNodeBBのメーラー（emailer）が正しく設定されているか確認をするためのメールです。",
     "unsub.cta": "ここをクリックして設定を変更する",
     "banned.subject": "%1さんからBANされました。",

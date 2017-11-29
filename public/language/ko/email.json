@@ -30,6 +30,7 @@
     "notif.chat.unsub.info": "이 대화 알림은 사용자의 구독 설정에 따라 전송되었습니다.",
     "notif.post.cta": "이곳을 클릭하여 전체 내용 보기",
     "notif.post.unsub.info": "이 게시물 알림은 사용자의 구독 설정에 따라 전송되었습니다.",
+    "notif.cta": "Click here to go to forum",
     "test.text1": "이 시험용 메일은 NodeBB에 설정된 메일 송신자가 정상적으로 메일을 송신할 수 있는지 시험할 목적으로 발송되었습니다.",
     "unsub.cta": "설정을 변경하려면 여기를 클릭하세요.",
     "banned.subject": "귀하는 %1 로 부터 차단되었습니다.",

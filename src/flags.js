@@ -241,7 +241,7 @@ Flags.validate = function (payload, callback) {
 					return callback(err);
 				}
 
-				var minimumReputation = utils.isNumber(meta.config['privileges:flag']) ? parseInt(meta.config['privileges:flag'], 10) : 1;
+				var minimumReputation = utils.isNumber(meta.config['privileges:flag']) ? parseInt(meta.config['privileges:flag'], 10) : 0;
 				// Check if reporter meets rep threshold (or can edit the target post, in which case threshold does not apply)
 				if (!editable.flag && parseInt(data.reporter.reputation, 10) < minimumReputation) {
 					return callback(new Error('[[error:not-enough-reputation-to-flag]]'));
@@ -257,7 +257,7 @@ Flags.validate = function (payload, callback) {
 					return callback(err);
 				}
 
-				var minimumReputation = utils.isNumber(meta.config['privileges:flag']) ? parseInt(meta.config['privileges:flag'], 10) : 1;
+				var minimumReputation = utils.isNumber(meta.config['privileges:flag']) ? parseInt(meta.config['privileges:flag'], 10) : 0;
 				// Check if reporter meets rep threshold (or can edit the target user, in which case threshold does not apply)
 				if (!editable && parseInt(data.reporter.reputation, 10) < minimumReputation) {
 					return callback(new Error('[[error:not-enough-reputation-to-flag]]'));
@@ -696,6 +696,7 @@ Flags.notify = function (flagObj, uid, callback) {
 			}
 
 			notifications.create({
+				type: 'new-user-flag',
 				bodyShort: '[[notifications:user_flagged_user, ' + flagObj.reporter.username + ', ' + flagObj.target.username + ']]',
 				bodyLong: flagObj.description,
 				path: '/uid/' + flagObj.targetId,
