@@ -30,6 +30,7 @@
     "notif.chat.unsub.info": "Sesuai pengaturan langganan anda, notifikasi obrolan ini dikirmkan kepada anda",
     "notif.post.cta": "Click here to read the full topic",
     "notif.post.unsub.info": "This post notification was sent to you due to your subscription settings.",
+    "notif.cta": "Click here to go to forum",
     "test.text1": "Ini hanya email percobaan untuk menverifkasi pengiriman email telah diatur oleh  NodeBB secara benar",
     "unsub.cta": "Klik di sini untuk mengubah pengaturan-pengaturan tersebut.",
     "banned.subject": "You have been banned from %1",

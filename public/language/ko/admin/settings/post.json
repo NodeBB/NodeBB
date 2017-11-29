@@ -4,6 +4,7 @@
 	"sorting.oldest-to-newest": "오래된 순",
 	"sorting.newest-to-oldest": "최신 순",
 	"sorting.most-votes": "추천수 순으로 정렬",
+	"sorting.most-posts": "Most Posts",
 	"sorting.topic-default": "게시물 정렬기준 기본값",
 	"restrictions": "글 작성 제약사항",
 	"restrictions.post-queue": "게시 대기열 사용",

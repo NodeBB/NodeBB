@@ -30,6 +30,7 @@
     "notif.chat.unsub.info": "Bu bildirim şectiğiniz ayarlar yüzünden gönderildi.",
     "notif.post.cta": "Konunun tamamını okumak için buraya tıklayın",
     "notif.post.unsub.info": "Bu yazı bildirimi size abonelik ayarlarınız nedeni ile gönderilmiştir.",
+    "notif.cta": "Click here to go to forum",
     "test.text1": "Bu ileti NodeBB e-posta ayarlarınızın doğru çalışıp çalışmadığını kontrol etmek için gönderildi.",
     "unsub.cta": "Buraya tıklayarak ayarlarınızı değiştirebilirsiniz.",
     "banned.subject": "%1 'den yasaklandınız",

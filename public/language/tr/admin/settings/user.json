@@ -19,6 +19,8 @@
 	"themes": "Temalar",
 	"disable-user-skins": "Kullanıcıların özel bir deri seçmesini engelle",
 	"account-protection": "Hesap Koruma",
+	"admin-relogin-duration": "Admin relogin duration (minutes)",
+	"admin-relogin-duration-help": "After a set amount of time accessing the admin section will require re-login, set to 0 to disable",
 	"login-attempts": "Saatlik giriş deneme sayısı",
 	"login-attempts-help": "Bir kullanıcının hesabına giriş denemesi bu sınırı aşarsa, bu hesap önceden belirlenmiş olan bir süre için kilitlenir.",
 	"lockout-duration": "Hesap Kilitleme Süresi (dakika)",

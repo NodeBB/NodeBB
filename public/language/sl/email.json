@@ -30,6 +30,7 @@
     "notif.chat.unsub.info": "Obvestilo o klepetu vam je bilo poslano zaradi nastavitev vaše naročnine.",
     "notif.post.cta": "Kliknite tu, če želite prebrati celotno temo.",
     "notif.post.unsub.info": "Obvestilo o objavi vam je bilo poslano zaradi nastavitev vaše naročnine.",
+    "notif.cta": "Click here to go to forum",
     "test.text1": "To je testno elektronsko sporočilo za preverjanje pravilnosti nastavitev podsistema za pošiljanje NodeBB poštnih sporočil.",
     "unsub.cta": "Kliknite tu za spremembo nastavitev.",
     "banned.subject": "You have been banned from %1",

@@ -1,5 +1,6 @@
 {
 	"notifications": "Benachrichtigungen",
 	"welcome-notification": "Wilkommensnachricht",
-	"welcome-notification-link": "Wilkommensnachricht-Link"
+	"welcome-notification-link": "Wilkommensnachricht-Link",
+	"welcome-notification-uid": "Welcome Notification User (UID)"
 }

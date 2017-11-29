@@ -19,6 +19,8 @@
 	"themes": "主题",
 	"disable-user-skins": "阻止用户选择自定义皮肤",
 	"account-protection": "帐号保护",
+	"admin-relogin-duration": "Admin relogin duration (minutes)",
+	"admin-relogin-duration-help": "After a set amount of time accessing the admin section will require re-login, set to 0 to disable",
 	"login-attempts": "每小时尝试登录次数",
 	"login-attempts-help": "如果用户的尝试登录次数超过此界限，该帐号将会被被锁定预设的时间。",
 	"lockout-duration": "帐户锁定时间(分钟)",

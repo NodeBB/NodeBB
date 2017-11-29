@@ -39,7 +39,7 @@
 	"section-appearance": "스타일",
 	"appearance/themes": "테마",
 	"appearance/skins": "스킨",
-	"appearance/customise": "사용자 정의 HTML & CSS",
+	"appearance/customise": "Custom Content (HTML/JS/CSS)",
 
 	"section-extend": "추가 기능",
 	"extend/plugins": "플러그인",

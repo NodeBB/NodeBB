@@ -39,7 +39,7 @@
 	"section-appearance": "界面",
 	"appearance/themes": "主题",
 	"appearance/skins": "皮肤",
-	"appearance/customise": "自定义 HTML&CSS",
+	"appearance/customise": "Custom Content (HTML/JS/CSS)",
 
 	"section-extend": "扩展",
 	"extend/plugins": "插件",

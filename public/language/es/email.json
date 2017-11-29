@@ -30,6 +30,7 @@
     "notif.chat.unsub.info": "Esta notificación de chat se te envió debido a tus ajustes de suscripción.",
     "notif.post.cta": "Cliquea aquí para leer la publicación completa",
     "notif.post.unsub.info": "La notificación de este mensaje se te ha enviado debido a tus ajustes de subscripción.",
+    "notif.cta": "Click here to go to forum",
     "test.text1": "Este es un email de prueba para verificar que el envío de email está ajustado correctamente para tu NodeBB",
     "unsub.cta": "Haz click aquí para modificar los ajustes.",
     "banned.subject": "Has sido baneado de %1",

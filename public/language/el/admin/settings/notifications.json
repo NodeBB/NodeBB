@@ -1,5 +1,6 @@
 {
 	"notifications": "Ειδοποιήσεις",
 	"welcome-notification": "Ειδοποίηση καλωσορίσματος",
-	"welcome-notification-link": "Welcome Notification Link"
+	"welcome-notification-link": "Welcome Notification Link",
+	"welcome-notification-uid": "Welcome Notification User (UID)"
 }

@@ -4,6 +4,7 @@
 	"sorting.oldest-to-newest": "从旧到新",
 	"sorting.newest-to-oldest": "从新到旧",
 	"sorting.most-votes": "最多投票",
+	"sorting.most-posts": "Most Posts",
 	"sorting.topic-default": "默认主题排序",
 	"restrictions": "发帖限制",
 	"restrictions.post-queue": "启用发布队列",

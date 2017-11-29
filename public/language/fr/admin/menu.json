@@ -39,7 +39,7 @@
 	"section-appearance": "Apparence",
 	"appearance/themes": "Thèmes",
 	"appearance/skins": "Skins",
-	"appearance/customise": "HTML et CSS personnalisés",
+	"appearance/customise": "Custom Content (HTML/JS/CSS)",
 
 	"section-extend": "Extensions",
 	"extend/plugins": "Plugins",
