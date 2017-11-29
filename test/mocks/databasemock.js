@@ -48,7 +48,7 @@ if (!testDbConfig) {
 		'    "host": "127.0.0.1",\n' +
 		'    "port": "27017",\n' +
 		'    "password": "",\n' +
-		'    "database": "1\n' +
+		'    "database": "1"\n' +
 		'}\n' +
 		' or (mongo) in a replicaset\n' +
 		'"test_database": {\n' +
