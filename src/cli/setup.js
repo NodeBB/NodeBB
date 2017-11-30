@@ -9,10 +9,11 @@ function setup() {
 	var install = require('../install');
 	var build = require('../meta/build');
 	var prestart = require('../prestart');
+	var pkg = require('../../package.json');
 
 	winston.info('NodeBB Setup Triggered via Command Line');
 
-	console.log('\nWelcome to NodeBB!');
+	console.log('\nWelcome to NodeBB v' + pkg.version + '!');
 	console.log('\nThis looks like a new installation, so you\'ll have to answer a few questions about your environment before we can proceed.');
 	console.log('Press enter to accept the default setting (shown in brackets).');
 
