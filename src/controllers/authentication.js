@@ -6,7 +6,6 @@ var passport = require('passport');
 var nconf = require('nconf');
 var validator = require('validator');
 var _ = require('lodash');
-var ipaddr = require('ipaddr.js');
 
 var db = require('../database');
 var meta = require('../meta');
