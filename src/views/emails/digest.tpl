@@ -29,9 +29,9 @@
 							<li style="text-decoration: none; list-style-type: none; padding-bottom: 0.5em;">
 								<a href="{url}{notifications.path}">
 									<!-- IF notifications.image -->
-									<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 1em;" src="{notifications.image}" />
+									<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 8px;" src="{notifications.image}" />
 									<!-- ELSE -->
-									<div style="width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 1em; background-color: {notifications.user.icon:bgColor}; color: white; text-align: center; display: inline-block;">{notifications.user.icon:text}</div>
+									<div style="vertical-align: middle; width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 8px; background-color: {notifications.user.icon:bgColor}; color: white; text-align: center; display: inline-block;">{notifications.user.icon:text}</div>
 									<!-- ENDIF notifications.image -->
 									{notifications.bodyShort}
 								</a>
