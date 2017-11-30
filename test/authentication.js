@@ -235,6 +235,36 @@ describe('authentication', function () {
 		});
 	});
 
+	it('should fail to login if ip address if invalid', function (done) {
+		var jar = request.jar();
+		request({
+			url: nconf.get('url') + '/api/config',
+			json: true,
+			jar: jar,
+		}, function (err, response, body) {
+			if (err) {
+				return done(err);
+			}
+
+			request.post(nconf.get('url') + '/login', {
+				form: {
+					username: 'regular',
+					password: 'regularpwd',
+				},
+				json: true,
+				jar: jar,
+				headers: {
+					'x-csrf-token': body.csrf_token,
+					'x-forwarded-for': '<script>alert("xss")</script>',
+				},
+			}, function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(response.statusCode, 500);
+				done();
+			});
+		});
+	});
+
 	it('should fail to login if user does not exist', function (done) {
 		loginUser('doesnotexist', 'nopassword', function (err, response, body) {
 			assert.ifError(err);

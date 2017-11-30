@@ -6,6 +6,7 @@ var passport = require('passport');
 var nconf = require('nconf');
 var validator = require('validator');
 var _ = require('lodash');
+var ipaddr = require('ipaddr.js');
 
 var db = require('../database');
 var meta = require('../meta');
@@ -289,26 +290,30 @@ authenticationController.doLogin = function (req, uid, callback) {
 
 authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 	var uuid = utils.generateUUID();
-	req.session.meta = {};
-
-	delete req.session.forceLogin;
-
-	// Associate IP used during login with user account
-	user.logIP(uid, req.ip);
-	req.session.meta.ip = req.ip;
-
-	// Associate metadata retrieved via user-agent
-	req.session.meta = _.extend(req.session.meta, {
-		uuid: uuid,
-		datetime: Date.now(),
-		platform: req.useragent.platform,
-		browser: req.useragent.browser,
-		version: req.useragent.version,
-	});
 
 	async.waterfall([
-		async.apply(meta.blacklist.test, req.ip),
 		function (next) {
+			meta.blacklist.test(req.ip, next);
+		},
+		function (next) {
+			user.logIP(uid, req.ip, next);
+		},
+		function (next) {
+			req.session.meta = {};
+
+			delete req.session.forceLogin;
+			// Associate IP used during login with user account
+			req.session.meta.ip = req.ip;
+
+			// Associate metadata retrieved via user-agent
+			req.session.meta = _.extend(req.session.meta, {
+				uuid: uuid,
+				datetime: Date.now(),
+				platform: req.useragent.platform,
+				browser: req.useragent.browser,
+				version: req.useragent.version,
+			});
+
 			async.parallel([
 				function (next) {
 					user.auth.addSession(uid, req.sessionID, next);
