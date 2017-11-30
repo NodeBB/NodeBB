@@ -1699,4 +1699,89 @@ describe('Topic\'s', function () {
 			});
 		});
 	});
+
+	describe('topic merge', function (done) {
+		var uid;
+		var topic1Data;
+		var topic2Data;
+
+		before(function (done) {
+			async.waterfall([
+				function (next) {
+					User.create({ username: 'mergevictim' }, next);
+				},
+				function (_uid, next) {
+					uid = _uid;
+					topics.post({ uid: uid, cid: categoryObj.cid, title: 'topic 1', content: 'topic 1 OP' }, next);
+				},
+				function (result, next) {
+					topic1Data = result.topicData;
+					topics.post({ uid: uid, cid: categoryObj.cid, title: 'topic 2', content: 'topic 2 OP' }, next);
+				},
+				function (result, next) {
+					topic2Data = result.topicData;
+					topics.reply({ uid: uid, content: 'topic 1 reply', tid: topic1Data.tid }, next);
+				},
+				function (postData, next) {
+					topics.reply({ uid: uid, content: 'topic 2 reply', tid: topic2Data.tid }, next);
+				},
+			], done);
+		});
+
+		it('should error if data is not an array', function (done) {
+			socketTopics.merge({ uid: 0 }, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should error if user does not have privileges', function (done) {
+			socketTopics.merge({ uid: 0 }, [topic2Data.tid, topic1Data.tid], function (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+				done();
+			});
+		});
+
+		it('should merge 2 topics', function (done) {
+			async.waterfall([
+				function (next) {
+					socketTopics.merge({ uid: adminUid }, [topic2Data.tid, topic1Data.tid], next);
+				},
+				function (next) {
+					async.parallel({
+						topic1: function (next) {
+							async.waterfall([
+								function (next) {
+									topics.getTopicData(topic1Data.tid, next);
+								},
+								function (topicData, next) {
+									topics.getTopicWithPosts(topicData, 'tid:' + topicData.tid + ':posts', adminUid, 0, 19, false, next);
+								},
+							], next);
+						},
+						topic2: function (next) {
+							async.waterfall([
+								function (next) {
+									topics.getTopicData(topic2Data.tid, next);
+								},
+								function (topicData, next) {
+									topics.getTopicWithPosts(topicData, 'tid:' + topicData.tid + ':posts', adminUid, 0, 19, false, next);
+								},
+							], next);
+						},
+					}, next);
+				},
+				function (results, next) {
+					assert.equal(results.topic1.posts.length, 4);
+					assert.equal(results.topic2.posts.length, 0);
+
+					assert.equal(results.topic1.posts[0].content, 'topic 1 OP');
+					assert.equal(results.topic1.posts[1].content, 'topic 2 OP');
+					assert.equal(results.topic1.posts[2].content, 'topic 1 reply');
+					assert.equal(results.topic1.posts[3].content, 'topic 2 reply');
+					done();
+				},
+			], done);
+		});
+	});
 });
