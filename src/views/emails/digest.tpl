@@ -16,13 +16,13 @@
 		<td bgcolor="#efeff0">
 			<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
 				<tr>
-					<td style="padding: 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
+					<td style="padding: 40px 40px 24px 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
 						<h1 style="margin: 0 0 10px 0; font-family: sans-serif; font-size: 24px; line-height: 27px; color: #333333; font-weight: normal;">[[email:greeting_with_name, {username}]],</h1>
 					</td>
 				</tr>
 				<!-- IF notifications.length -->
 				<tr>
-					<td style="padding: 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
+					<td style="padding: 0px 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
 						<p style="margin: 0;">[[email:digest.notifications, {site_title}]]</p>
 						<ul>
 							<!-- BEGIN notifications -->
@@ -42,7 +42,7 @@
 				</tr>
 				<!-- ENDIF notifications.length -->
 				<tr>
-					<td style="padding: 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
+					<td style="padding: 0px 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
 						<p style="margin: 0;">[[email:digest.latest_topics, {site_title}]]</p>
 						<ul>
 							<!-- IF recent.length -->
