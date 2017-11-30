@@ -211,11 +211,6 @@ $(document).ready(function () {
 		$(window).trigger('action:ajaxify.contentLoaded', { url: url, tpl: tpl_url });
 
 		app.processPage();
-
-		var timeElapsed = Date.now() - ajaxifyTimer;
-		if (config.environment === 'development' && !isNaN(timeElapsed)) {
-			console.info('[ajaxify /' + url + '] Time elapsed:', timeElapsed + 'ms');
-		}
 	};
 
 	ajaxify.parseData = function () {
