@@ -3,6 +3,7 @@
 
 var async = require('async');
 var nconf = require('nconf');
+var validator = require('validator');
 
 var db = require('./../database');
 var meta = require('../meta');
@@ -10,10 +11,19 @@ var emailer = require('../emailer');
 var translator = require('../translator');
 var utils = require('../utils');
 
-
 module.exports = function (User) {
 	User.getInvites = function (uid, callback) {
-		db.getSetMembers('invitation:uid:' + uid, callback);
+		async.waterfall([
+			function (next) {
+				db.getSetMembers('invitation:uid:' + uid, next);
+			},
+			function (emails, next) {
+				emails = emails.map(function (email) {
+					return validator.escape(String(email));
+				});
+				next(null, emails);
+			},
+		], callback);
 	};
 
 	User.getInvitesNumber = function (uid, callback) {
