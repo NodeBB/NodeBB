@@ -8,6 +8,7 @@ var winston = require('winston');
 var plugins = require('../plugins');
 var translator = require('../translator');
 var widgets = require('../widgets');
+var utils = require('../utils');
 
 module.exports = function (middleware) {
 	middleware.processRender = function (req, res, next) {
@@ -40,7 +41,7 @@ module.exports = function (middleware) {
 					options.template = { name: template };
 					options.template[template] = true;
 					options.url = (req.baseUrl + req.path.replace(/^\/api/, ''));
-					options.bodyClass = buildBodyClass(req);
+					options.bodyClass = buildBodyClass(req, options);
 
 					plugins.fireHook('filter:' + template + '.build', { req: req, res: res, templateData: options }, next);
 				},
@@ -125,7 +126,7 @@ module.exports = function (middleware) {
 		});
 	}
 
-	function buildBodyClass(req) {
+	function buildBodyClass(req, templateData) {
 		var clean = req.path.replace(/^\/api/, '').replace(/^\/|\/$/g, '');
 		var parts = clean.split('/').slice(0, 3);
 		parts.forEach(function (p, index) {
@@ -138,6 +139,12 @@ module.exports = function (middleware) {
 			p = validator.escape(String(p));
 			parts[index] = index ? parts[0] + '-' + p : 'page-' + (p || 'home');
 		});
+
+		if (templateData.template.topic) {
+			parts.push('page-topic-category-' + templateData.category.cid);
+			parts.push('page-topic-category-' + utils.slugify(templateData.category.name));
+		}
+
 		return parts.join(' ');
 	}
 };
