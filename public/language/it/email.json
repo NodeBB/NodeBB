@@ -30,7 +30,7 @@
     "notif.chat.unsub.info": "Questa notifica di chat ti è stata inviata perché l'hai scelta nelle impostazioni.",
     "notif.post.cta": "Clicca qui per leggere la discussione completa",
     "notif.post.unsub.info": "Questo post ti è stato notificato in base alle tue impostazioni di sottoscrizione.",
-    "notif.cta": "Click here to go to forum",
+    "notif.cta": "Vai alla discussione",
     "test.text1": "Questa è una email di test per verificare che il servizio di invio email è configurato correttamente sul tuo NodeBB.",
     "unsub.cta": "Clicca qui per modificare queste impostazioni",
     "banned.subject": "You have been banned from %1",
