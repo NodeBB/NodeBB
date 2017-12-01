@@ -255,9 +255,38 @@ describe('Admin Controllers', function () {
 		});
 	});
 
-	it('should load /admin/users/csv', function (done) {
+	it('should return 403 if no referer', function (done) {
 		request(nconf.get('url') + '/api/admin/users/csv', { jar: jar }, function (err, res, body) {
 			assert.ifError(err);
+			assert.equal(res.statusCode, 403);
+			assert.equal(body, '[[error:invalid-origin]]');
+			done();
+		});
+	});
+
+	it('should return 403 if referer is not /admin/users/csv', function (done) {
+		request(nconf.get('url') + '/api/admin/users/csv', {
+			jar: jar,
+			headers: {
+				referer: '/topic/1/test',
+			},
+		}, function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 403);
+			assert.equal(body, '[[error:invalid-origin]]');
+			done();
+		});
+	});
+
+	it('should load /admin/users/csv', function (done) {
+		request(nconf.get('url') + '/api/admin/users/csv', {
+			jar: jar,
+			headers: {
+				referer: nconf.get('url') + '/admin/manage/users',
+			},
+		}, function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
 			assert(body);
 			done();
 		});
