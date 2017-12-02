@@ -1,20 +1,20 @@
 {
-    "category": "فئة",
-    "subcategories": "فئة فرعية",
+    "category": "قسم",
+    "subcategories": "قسم فرعي",
     "new_topic_button": "موضوع جديد",
-    "guest-login-post": "سجل بالدخول للرد",
-    "no_topics": "<strong>لا توجد مواضيع في هذه الفئة</strong>لم لا تحاول إنشاء موضوع؟<br />",
+    "guest-login-post": "سجل الدخول للمشاركة",
+    "no_topics": "<strong>لا توجد مواضيع في هذه القسم</strong>لم لا تحاول إنشاء موضوع؟<br />",
     "browsing": "تصفح",
     "no_replies": "لم يرد أحد",
     "no_new_posts": "لا توجد مشاركات جديدة.",
-    "share_this_category": "انشر هذه الفئة",
+    "share_this_category": "انشر هذا القسم",
     "watch": "تابع",
     "ignore": "تجاهل",
     "watching": "متابع",
     "ignoring": "متجاهل",
     "watching.description": "أظهر المواضيع في غير مقروء",
     "ignoring.description": "لا تظهر المواضيع في غير مقروء",
-    "watch.message": "You are now watching updates from this category and all subcategories",
-    "ignore.message": "You are now ignoring updates from this category and all subcategories",
-    "watched-categories": "الفئات المتابعة"
+    "watch.message": "أنت الآن تتابع التحديثات من هذا القسم وجميع الأقسام الفرعية",
+    "ignore.message": "أنت الآن تتجاهل التحديثات من هذا القسم وجميع الأقسام الفرعية",
+    "watched-categories": "الأقسام المُتابعة"
 }
