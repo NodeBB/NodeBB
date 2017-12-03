@@ -16,8 +16,8 @@
     "alternative_registration": "طريقة تسجيل بديلة",
     "terms_of_use": "شروط الاستخدام",
     "agree_to_terms_of_use": "أوافق على شروط الاستخدام",
-    "terms_of_use_error": "You must agree to the Terms of Use",
-    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator.",
-    "interstitial.intro": "We require some additional information before we can create your account.",
-    "interstitial.errors-found": "We could not complete your registration:"
+    "terms_of_use_error": "يجب عليك الموافقة على شروط الاستخدام",
+    "registration-added-to-queue": "تمت إضافتك في قائمة الإنتضار. ستتلقى رسالة إلكترونية عند الموافقة على تسجيلك من قبل الإدارة.",
+    "interstitial.intro": "نحتاج إلى بعض المعلومات الإضافية قبل أن نتمكن من إنشاء حسابك.",
+    "interstitial.errors-found": "تعذر علينا إتمام عملية التسجيل:"
 }

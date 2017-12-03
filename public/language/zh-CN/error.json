@@ -119,7 +119,7 @@
     "not-enough-reputation-to-downvote": "您的声望不足以踩此帖",
     "not-enough-reputation-to-flag": "您的声望不足以举报此帖",
     "already-flagged": "您已举报此帖",
-    "self-vote": "You cannot vote on your own post",
+    "self-vote": "你不能在您自己的帖子内投票",
     "reload-failed": "刷新 NodeBB 时遇到问题: \"%1\"。NodeBB 保持给已连接的客户端服务，您应该撤销刷新前做的更改。",
     "registration-error": "注册错误",
     "parse-error": "服务器响应解析出错",

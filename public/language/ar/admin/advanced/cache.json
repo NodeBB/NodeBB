@@ -1,11 +1,11 @@
 {
-	"post-cache": "Post Cache",
-	"posts-in-cache": "Posts in Cache",
-	"average-post-size": "Average Post Size",
-	"length-to-max": "Length / Max",
+	"post-cache": "التخزين المؤقت للمشاركات",
+	"posts-in-cache": "المشاركات المخزنة مؤقتاً",
+	"average-post-size": "متوسط ​​حجم المشاركة",
+	"length-to-max": "الطول / أقصى حد",
 	"percent-full": "%1% Full",
-	"post-cache-size": "Post Cache Size",
-	"items-in-cache": "Items in Cache",
-	"control-panel": "Control Panel",
-	"update-settings": "Update Cache Settings"
+	"post-cache-size": "حجم التخزين المؤقت للمشاركات",
+	"items-in-cache": "العناصر في التخزين المؤقت",
+	"control-panel": "لوحة التحكم",
+	"update-settings": "تحديث إعدادات التخزين المؤقت"
 }

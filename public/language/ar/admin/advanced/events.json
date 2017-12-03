@@ -1,6 +1,6 @@
 {
-	"events": "Events",
-	"no-events": "There are no events",
-	"control-panel": "Events Control Panel",
-	"delete-events": "Delete Events"
+	"events": "أحداث",
+	"no-events": "لا توجد أحداث",
+	"control-panel": "لوحة تحكم الأحداث",
+	"delete-events": "حذف الأحداث"
 }
