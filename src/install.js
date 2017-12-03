@@ -8,7 +8,7 @@ var winston = require('winston');
 var nconf = require('nconf');
 var utils = require('./utils.js');
 
-var install = {};
+var install = module.exports;
 var questions = {};
 
 questions.main = [
@@ -42,17 +42,15 @@ questions.optional = [
 ];
 
 function checkSetupFlag(next) {
-	var setupVal;
+	var setupVal = install.values;
 
 	try {
 		if (nconf.get('setup')) {
 			setupVal = JSON.parse(nconf.get('setup'));
 		}
-	} catch (err) {
-		setupVal = undefined;
-	}
+	} catch (err) {}
 
-	if (setupVal && setupVal instanceof Object) {
+	if (setupVal && typeof setupVal === 'object') {
 		if (setupVal['admin:username'] && setupVal['admin:password'] && setupVal['admin:password:confirm'] && setupVal['admin:email']) {
 			install.values = setupVal;
 			next();
@@ -74,9 +72,8 @@ function checkSetupFlag(next) {
 			process.exit();
 		}
 	} else if (nconf.get('database')) {
-		install.values = {
-			database: nconf.get('database'),
-		};
+		install.values = install.values || {};
+		install.values.database = nconf.get('database');
 		next();
 	} else {
 		next();
@@ -549,11 +546,9 @@ install.save = function (server_conf, callback) {
 		console.log('Configuration Saved OK');
 
 		nconf.file({
-			file: path.join(__dirname, '..', 'config.json'),
+			file: serverConfigPath,
 		});
 
 		callback();
 	});
 };
-
-module.exports = install;
