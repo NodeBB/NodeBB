@@ -20,7 +20,7 @@ module.exports = function (SocketTopics) {
 				if (allowed.includes(false)) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
-				topics.merge(tids, next);
+				topics.merge(tids, socket.uid, next);
 			},
 		], callback);
 	};

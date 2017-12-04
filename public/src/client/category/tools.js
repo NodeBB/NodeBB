@@ -4,10 +4,11 @@
 
 define('forum/category/tools', [
 	'forum/topic/move',
+	'forum/topic/merge',
 	'topicSelect',
 	'components',
 	'translator',
-], function (move, topicSelect, components, translator) {
+], function (move, merge, topicSelect, components, translator) {
 	var CategoryTools = {};
 
 	CategoryTools.init = function (cid) {
@@ -100,6 +101,8 @@ define('forum/category/tools', [
 				ajaxify.refresh();
 			});
 		});
+
+		merge.init();
 
 		CategoryTools.removeListeners();
 		socket.on('event:topic_deleted', setDeleteState);

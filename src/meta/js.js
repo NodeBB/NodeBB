@@ -49,6 +49,7 @@ JS.scripts = {
 		'public/src/client/unread.js',
 		'public/src/client/topic.js',
 		'public/src/client/topic/events.js',
+		'public/src/client/topic/merge.js',
 		'public/src/client/topic/fork.js',
 		'public/src/client/topic/move.js',
 		'public/src/client/topic/posts.js',

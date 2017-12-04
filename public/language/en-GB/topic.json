@@ -6,6 +6,8 @@
 	"no_topics_found": "No topics found!",
 	"no_posts_found": "No posts found!",
 
+	"no_topics_selected": "No topics selected!",
+
 	"post_is_deleted": "This post is deleted!",
 	"topic_is_deleted": "This topic is deleted!",
 
@@ -79,6 +81,8 @@
 	"thread_tools.restore_confirm": "Are you sure you want to restore this topic?",
 	"thread_tools.purge": "Purge Topic",
 	"thread_tools.purge_confirm" : "Are you sure you want to purge this topic?",
+	"thread_tools.merge_topics": "Merge Topics",
+	"thread_tools.merge": "Merge",
 
 	"topic_move_success": "This topic has been successfully moved to %1",
 
@@ -105,6 +109,7 @@
 	"fork_pid_count": "%1 post(s) selected",
 	"fork_success": "Successfully forked topic! Click here to go to the forked topic.",
 	"delete_posts_instruction": "Click the posts you want to delete/purge",
+	"merge_topics_instruction": "Click the topics you want to merge",
 
 	"composer.title_placeholder": "Enter your topic title here...",
 	"composer.handle_placeholder": "Name",

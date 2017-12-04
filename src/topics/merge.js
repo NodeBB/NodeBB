@@ -3,7 +3,7 @@
 var async = require('async');
 
 module.exports = function (Topics) {
-	Topics.merge = function (tids, callback) {
+	Topics.merge = function (tids, uid, callback) {
 		var mergeIntoTid = findOldestTopic(tids);
 
 		var otherTids = tids.filter(function (tid) {
@@ -22,6 +22,9 @@ module.exports = function (Topics) {
 				},
 				function (next) {
 					Topics.setTopicField(tid, 'mainPid', 0, next);
+				},
+				function (next) {
+					Topics.delete(tid, uid, next);
 				},
 			], next);
 		}, callback);

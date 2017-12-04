@@ -1700,7 +1700,7 @@ describe('Topic\'s', function () {
 		});
 	});
 
-	describe('topic merge', function (done) {
+	describe('topic merge', function () {
 		var uid;
 		var topic1Data;
 		var topic2Data;
@@ -1774,12 +1774,13 @@ describe('Topic\'s', function () {
 				function (results, next) {
 					assert.equal(results.topic1.posts.length, 4);
 					assert.equal(results.topic2.posts.length, 0);
+					assert.equal(results.topic2.deleted, true);
 
 					assert.equal(results.topic1.posts[0].content, 'topic 1 OP');
 					assert.equal(results.topic1.posts[1].content, 'topic 2 OP');
 					assert.equal(results.topic1.posts[2].content, 'topic 1 reply');
 					assert.equal(results.topic1.posts[3].content, 'topic 2 reply');
-					done();
+					next();
 				},
 			], done);
 		});
