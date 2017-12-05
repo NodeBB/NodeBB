@@ -35,60 +35,65 @@ define('forum/category/tools', [
 
 		components.get('topic/lock').on('click', function () {
 			var tids = topicSelect.getSelectedTids();
-			if (tids.length) {
-				socket.emit('topics.lock', { tids: tids, cid: CategoryTools.cid }, onCommandComplete);
+			if (!tids.length) {
+				return app.alertError('[[error:no-topics-selected]]');
 			}
+			socket.emit('topics.lock', { tids: tids, cid: CategoryTools.cid }, onCommandComplete);
 			return false;
 		});
 
 		components.get('topic/unlock').on('click', function () {
 			var tids = topicSelect.getSelectedTids();
-			if (tids.length) {
-				socket.emit('topics.unlock', { tids: tids, cid: CategoryTools.cid }, onCommandComplete);
+			if (!tids.length) {
+				return app.alertError('[[error:no-topics-selected]]');
 			}
+			socket.emit('topics.unlock', { tids: tids, cid: CategoryTools.cid }, onCommandComplete);
 			return false;
 		});
 
 		components.get('topic/pin').on('click', function () {
 			var tids = topicSelect.getSelectedTids();
-			if (tids.length) {
-				socket.emit('topics.pin', { tids: tids, cid: CategoryTools.cid }, onCommandComplete);
+			if (!tids.length) {
+				return app.alertError('[[error:no-topics-selected]]');
 			}
+			socket.emit('topics.pin', { tids: tids, cid: CategoryTools.cid }, onCommandComplete);
 			return false;
 		});
 
 		components.get('topic/unpin').on('click', function () {
 			var tids = topicSelect.getSelectedTids();
-			if (tids.length) {
-				socket.emit('topics.unpin', { tids: tids, cid: CategoryTools.cid }, onCommandComplete);
+			if (!tids.length) {
+				return app.alertError('[[error:no-topics-selected]]');
 			}
+			socket.emit('topics.unpin', { tids: tids, cid: CategoryTools.cid }, onCommandComplete);
 			return false;
 		});
 
 		components.get('topic/mark-unread-for-all').on('click', function () {
 			var tids = topicSelect.getSelectedTids();
-			if (tids.length) {
-				socket.emit('topics.markAsUnreadForAll', tids, function (err) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-					app.alertSuccess('[[topic:markAsUnreadForAll.success]]');
-					tids.forEach(function (tid) {
-						$('[component="category/topic"][data-tid="' + tid + '"]').addClass('unread');
-					});
-					onCommandComplete();
-				});
+			if (!tids.length) {
+				return app.alertError('[[error:no-topics-selected]]');
 			}
-
+			socket.emit('topics.markAsUnreadForAll', tids, function (err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				app.alertSuccess('[[topic:markAsUnreadForAll.success]]');
+				tids.forEach(function (tid) {
+					$('[component="category/topic"][data-tid="' + tid + '"]').addClass('unread');
+				});
+				onCommandComplete();
+			});
 			return false;
 		});
 
 		components.get('topic/move').on('click', function () {
 			var tids = topicSelect.getSelectedTids();
 
-			if (tids.length) {
-				move.init(tids, cid, onCommandComplete);
+			if (!tids.length) {
+				return app.alertError('[[error:no-topics-selected]]');
 			}
+			move.init(tids, cid, onCommandComplete);
 			return false;
 		});
 
@@ -117,7 +122,7 @@ define('forum/category/tools', [
 
 	function categoryCommand(command, tids) {
 		if (!tids.length) {
-			return;
+			return app.alertError('[[error:no-topics-selected]]');
 		}
 
 		translator.translate('[[topic:thread_tools.' + command + '_confirm]]', function (msg) {

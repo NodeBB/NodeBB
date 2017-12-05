@@ -163,5 +163,7 @@
 	"invalid-home-page-route": "Invalid home page route",
 
 	"invalid-session": "Session Mismatch",
-	"invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page."
+	"invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page.",
+
+	"no-topics-selected": "No topics selected!"
 }

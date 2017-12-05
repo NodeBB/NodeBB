@@ -82,7 +82,7 @@ define('forum/topic/merge', function () {
 				modal.find('.topics-section').html(html);
 			});
 		} else {
-			modal.find('.topics-section').translateHtml('[[topic:no_topics_selected]]');
+			modal.find('.topics-section').translateHtml('[[error:no-topics-selected]]');
 		}
 	}
 
