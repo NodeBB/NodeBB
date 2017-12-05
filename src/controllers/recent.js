@@ -61,7 +61,7 @@ recentController.get = function (req, res, next) {
 			if (req.uid) {
 				data.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
 			}
-			data.title = '[[pages:recent]]';
+			data.title = '[[pages:home]]';
 			data.filters = helpers.buildFilters('recent', filter);
 
 			data.selectedFilter = data.filters.find(function (filter) {
@@ -72,6 +72,7 @@ recentController.get = function (req, res, next) {
 			data.pagination = pagination.create(page, pageCount, req.query);
 
 			if (req.originalUrl.startsWith(nconf.get('relative_path') + '/api/recent') || req.originalUrl.startsWith(nconf.get('relative_path') + '/recent')) {
+				data.title = '[[pages:recent]]';
 				data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[recent:title]]' }]);
 			}
 

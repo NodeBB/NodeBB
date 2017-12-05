@@ -45,14 +45,15 @@ popularController.get = function (req, res, next) {
 		},
 		function (topics) {
 			var data = {
+				title: '[[pages:home]]',
 				topics: topics,
 				'feeds:disableRSS': parseInt(meta.config['feeds:disableRSS'], 10) === 1,
 				rssFeedUrl: nconf.get('relative_path') + '/popular/' + (req.params.term || 'daily') + '.rss',
-				title: '[[pages:popular-' + term + ']]',
 				term: term,
 			};
 
 			if (req.originalUrl.startsWith(nconf.get('relative_path') + '/api/popular') || req.originalUrl.startsWith(nconf.get('relative_path') + '/popular')) {
+				data.title = '[[pages:popular-' + term + ']]';
 				var breadcrumbs = [{ text: termToBreadcrumb[term] }];
 
 				if (req.params.term) {
