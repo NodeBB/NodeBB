@@ -9,7 +9,9 @@ app.widgets = {};
 app.cacheBuster = null;
 
 (function () {
-	var showWelcomeMessage = !!utils.params().loggedin;
+	var params = utils.params();
+	var showWelcomeMessage = !!params.loggedin;
+	var registerMessage = params.register;
 
 	require(['benchpress'], function (Benchpress) {
 		Benchpress.setGlobal('config', config);
@@ -286,9 +288,12 @@ app.cacheBuster = null;
 				title: '[[global:welcome_back]] ' + app.user.username + '!',
 				message: '[[global:you_have_successfully_logged_in]]',
 			},
+			register: {
+				format: 'modal',
+			},
 		};
 
-		function showAlert(type) {
+		function showAlert(type, message) {
 			switch (messages[type].format) {
 			case 'alert':
 				app.alert({
@@ -301,7 +306,7 @@ app.cacheBuster = null;
 
 			case 'modal':
 				require(['translator'], function (translator) {
-					translator.translate(messages[type].message, function (translated) {
+					translator.translate(message || messages[type].message, function (translated) {
 						bootbox.alert({
 							title: messages[type].title,
 							message: translated,
@@ -316,6 +321,12 @@ app.cacheBuster = null;
 			showWelcomeMessage = false;
 			$(document).ready(function () {
 				showAlert('login');
+			});
+		}
+		if (registerMessage) {
+			$(document).ready(function () {
+				showAlert('register', decodeURIComponent(registerMessage));
+				registerMessage = false;
 			});
 		}
 	};

@@ -57,18 +57,7 @@ authenticationController.register = function (req, res) {
 			user.isPasswordValid(userData.password, next);
 		},
 		function (next) {
-			user.shouldQueueUser(req.ip, next);
-		},
-		function (queue, next) {
-			res.locals.processLogin = true;	// set it to false in plugin if you wish to just register only
-			plugins.fireHook('filter:register.check', { req: req, res: res, userData: userData, queue: queue }, next);
-		},
-		function (data, next) {
-			if (data.queue) {
-				addToApprovalQueue(req, userData, next);
-			} else {
-				registerAndLoginUser(req, res, userData, next);
-			}
+			registerAndLoginUser(req, res, userData, next);
 		},
 	], function (err, data) {
 		if (err) {
@@ -108,7 +97,18 @@ function registerAndLoginUser(req, res, userData, callback) {
 			return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
 		},
 		function (next) {
-			user.create(userData, next);
+			user.shouldQueueUser(req.ip, next);
+		},
+		function (queue, next) {
+			res.locals.processLogin = true;	// set it to false in plugin if you wish to just register only
+			plugins.fireHook('filter:register.check', { req: req, res: res, userData: userData, queue: queue }, next);
+		},
+		function (data, next) {
+			if (data.queue) {
+				addToApprovalQueue(req, userData, callback);
+			} else {
+				user.create(userData, next);
+			}
 		},
 		function (_uid, next) {
 			uid = _uid;
@@ -155,9 +155,11 @@ authenticationController.registerComplete = function (req, res, next) {
 			return memo;
 		}, []);
 
-		var done = function () {
+		var done = function (err, data) {
 			delete req.session.registration;
-
+			if (!err && data && data.message) {
+				return res.redirect(nconf.get('relative_path') + '/?register=' + encodeURIComponent(data.message));
+			}
 			if (req.session.returnTo) {
 				res.redirect(req.session.returnTo);
 			} else {
