@@ -37,6 +37,7 @@ $(document).ready(function () {
 		}
 	});
 
+	ajaxify.count = 0;
 	ajaxify.currentPage = null;
 
 	ajaxify.go = function (url, callback, quiet) {
@@ -100,6 +101,10 @@ $(document).ready(function () {
 		return true;
 	};
 
+	ajaxify.isCold = function () {
+		return ajaxify.count <= 1;
+	};
+
 	ajaxify.handleRedirects = function (url) {
 		url = ajaxify.removeRelativePath(url.replace(/^\/|\/$/g, '')).toLowerCase();
 		var isClientToAdmin = url.startsWith('admin') && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') !== 0;
@@ -113,7 +118,6 @@ $(document).ready(function () {
 		return false;
 	};
 
-
 	ajaxify.start = function (url) {
 		url = ajaxify.removeRelativePath(url.replace(/^\/|\/$/g, ''));
 
@@ -122,6 +126,8 @@ $(document).ready(function () {
 		};
 
 		$(window).trigger('action:ajaxify.start', payload);
+
+		ajaxify.count += 1;
 
 		return payload.url;
 	};
@@ -197,7 +203,6 @@ $(document).ready(function () {
 
 	ajaxify.end = function (url, tpl_url) {
 		var count = 2;
-
 		function done() {
 			count -= 1;
 			if (count === 0) {
@@ -205,7 +210,6 @@ $(document).ready(function () {
 			}
 		}
 		ajaxify.loadScript(tpl_url, done);
-
 		ajaxify.widgets.render(tpl_url, done);
 
 		$(window).trigger('action:ajaxify.contentLoaded', { url: url, tpl: tpl_url });

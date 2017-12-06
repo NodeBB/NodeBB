@@ -278,7 +278,9 @@ app.cacheBuster = null;
 		app.replaceSelfLinks();
 
 		// Scroll back to top of page
-		window.scrollTo(0, 0);
+		if (!ajaxify.isCold()) {
+			window.scrollTo(0, 0);
+		}
 	};
 
 	app.showMessages = function () {
