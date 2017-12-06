@@ -125,6 +125,7 @@
     "parse-error": "אירעה שגיאה בעת בעת ניתוח תגובת השרת",
     "wrong-login-type-email": "בבקשה השתמש בכתובת המייל שלך להתחברות",
     "wrong-login-type-username": "בבקשה השתמש בשם המשתמש שלך להתחברות",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "הזמנת את הכמות המירבית של אנשים (%1 מתוך %2).",
     "no-session-found": "לא נמצאו סשני התחברות!",
     "not-in-room": "משתמש זה לא בצ'אט",
@@ -133,5 +134,6 @@
     "no-users-selected": "לא נבחרו משתמשים",
     "invalid-home-page-route": "כתובת דף הבית הינה שגויה",
     "invalid-session": "סשן לא תקין",
-    "invalid-session-text": "נראה שסשן ההתחברות שלך כבר לא פעיל. אנא טען מחדש את העמוד."
+    "invalid-session-text": "נראה שסשן ההתחברות שלך כבר לא פעיל. אנא טען מחדש את העמוד.",
+    "no-topics-selected": "No topics selected!"
 }

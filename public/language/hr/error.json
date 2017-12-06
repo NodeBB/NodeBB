@@ -125,6 +125,7 @@
     "parse-error": "Došlo je do pogreške u komunikaciji sa serverom",
     "wrong-login-type-email": "Upišite Vaš email za prijavu",
     "wrong-login-type-username": "Upišite Vaše korisničko ime za prijavu",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "Pozvali ste maksimalan broj ljudi (%1 od %2).",
     "no-session-found": "Nije pronađena sesija prijave!",
     "not-in-room": "Korisnik nije u sobi",
@@ -133,5 +134,6 @@
     "no-users-selected": "Korisnici nisu odabrani",
     "invalid-home-page-route": "Netočna putanja naslovnice",
     "invalid-session": "Pogreška sesije",
-    "invalid-session-text": "Vaša sesija nije više aktivna ili se više ne poklapa sa serverom. Molimo osvježite stranicu."
+    "invalid-session-text": "Vaša sesija nije više aktivna ili se više ne poklapa sa serverom. Molimo osvježite stranicu.",
+    "no-topics-selected": "No topics selected!"
 }

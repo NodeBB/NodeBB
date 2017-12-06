@@ -125,6 +125,7 @@
     "parse-error": "Qualcosa è andato storto durante l'analisi della risposta proveniente dal server",
     "wrong-login-type-email": "Per favore usa la tua email per accedere",
     "wrong-login-type-username": "Per favore usa il tuo nome utente per accedere",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "Hai invitato il massimo numero di persone possibili (%1 su %2).",
     "no-session-found": "Nessuna sessione valida di login trovata!",
     "not-in-room": "L'utente non è in questa stanza",
@@ -133,5 +134,6 @@
     "no-users-selected": "Nessun utente selezionato",
     "invalid-home-page-route": "Percorso della pagina iniziale non valido",
     "invalid-session": "Discrepanza della sessione",
-    "invalid-session-text": "Sembra che la tua sessione non sia più attiva, oppure non corrisponde con il server. Per favore ricarica la pagina."
+    "invalid-session-text": "Sembra che la tua sessione non sia più attiva, oppure non corrisponde con il server. Per favore ricarica la pagina.",
+    "no-topics-selected": "No topics selected!"
 }

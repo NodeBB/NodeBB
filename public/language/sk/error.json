@@ -125,6 +125,7 @@
     "parse-error": "Niečo sa pokazilo pri analýze odpovede servera",
     "wrong-login-type-email": "Prosím použite svoj e-mail, k prihláseniu",
     "wrong-login-type-username": "Použite svoje užívateľské meno pre prihlásenie",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "Pozvali ste maximálny počet ľudí (%1 z %2).",
     "no-session-found": "Žiadne prihlásenie sa do relácií nenájdené!",
     "not-in-room": "Užívateľ nie je v miestnosti",
@@ -133,5 +134,6 @@
     "no-users-selected": "Žiadny užívateľ(ia) neboli vybratý",
     "invalid-home-page-route": "Neplatná cesta pre domovskú stránku",
     "invalid-session": "Relácia neodpovedá",
-    "invalid-session-text": "Vyzerá to, že Vaše prihlasovacia relácia už nie je aktívna, alebo sa už nezhoduje so serverom. Aktualizujte túto stránku."
+    "invalid-session-text": "Vyzerá to, že Vaše prihlasovacia relácia už nie je aktívna, alebo sa už nezhoduje so serverom. Aktualizujte túto stránku.",
+    "no-topics-selected": "No topics selected!"
 }

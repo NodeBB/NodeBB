@@ -125,6 +125,7 @@
     "parse-error": "هنگام تجزیه پاسخ سرور اشتباهی پیش امد",
     "wrong-login-type-email": "لطفا از ایمیل خود برای ورود استفاده کنید",
     "wrong-login-type-username": "لطفا از نام کاربری خود برای ورود استفاده کنید",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "ظرفیت دعوت شما تکمیل شده است (%1 از %2)",
     "no-session-found": "هیچ session ورودی یافت نشد!",
     "not-in-room": "هیچ کاربری در این گفتگو نیست",
@@ -133,5 +134,6 @@
     "no-users-selected": "هیچ کاربر(های) انتخاب نشده",
     "invalid-home-page-route": "مسیر صفحه اصلی نامعتبر است",
     "invalid-session": "عدم تطابق جلسه",
-    "invalid-session-text": "به نظر می‌رسد این جلسه برای ورود دیگر فعال نیست و یا با سرور هماهنگ نیست. لطفا این صفحه را رفرش کنید."
+    "invalid-session-text": "به نظر می‌رسد این جلسه برای ورود دیگر فعال نیست و یا با سرور هماهنگ نیست. لطفا این صفحه را رفرش کنید.",
+    "no-topics-selected": "No topics selected!"
 }

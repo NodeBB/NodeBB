@@ -125,6 +125,7 @@
     "parse-error": "Algo foi mal namentras se agardaba a resposta do servidor",
     "wrong-login-type-email": "Por favor, emprega o teu correo para contectarte",
     "wrong-login-type-username": "Por favor, usa o teu nome de usuario para conectarte",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "Convidaches á cantidade máxima de persoas  (%1 de %2).",
     "no-session-found": "Non se atopou ningún inicio de sesión!",
     "not-in-room": "O usuario non se atopa nesta sala",
@@ -133,5 +134,6 @@
     "no-users-selected": "Ningún usuario seleccionado",
     "invalid-home-page-route": "Ruta de páxina de inicio inválida",
     "invalid-session": "Non concordan os datos da sesión",
-    "invalid-session-text": "Parece que a súa sesión expirou ou non concorda co servidor. Por favor, recarge a páxina."
+    "invalid-session-text": "Parece que a súa sesión expirou ou non concorda co servidor. Por favor, recarge a páxina.",
+    "no-topics-selected": "No topics selected!"
 }

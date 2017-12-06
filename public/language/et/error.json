@@ -125,6 +125,7 @@
     "parse-error": "Midagi läks valesti...",
     "wrong-login-type-email": "Sisse logimiseks kasuta oma emaili",
     "wrong-login-type-username": "Sisse logimiseks kasuta oma kasutajanime",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "Sa oled kutsunud maksimaalse lubatud inimeste arvu (%1 %2 'st).",
     "no-session-found": "Sisse logimis sessiooni ei leitud!",
     "not-in-room": "Kasutaja pole ruumis",
@@ -133,5 +134,6 @@
     "no-users-selected": "Ühtki kasutajat pole valitud",
     "invalid-home-page-route": "Vigane avalehe suunamine",
     "invalid-session": "Session Mismatch",
-    "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page."
+    "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page.",
+    "no-topics-selected": "No topics selected!"
 }

@@ -125,6 +125,7 @@
     "parse-error": "Tijdens het verwerken van het antwoord van de server is er iets misgegaan.",
     "wrong-login-type-email": "Gebruik je e-mailadres om in te loggen",
     "wrong-login-type-username": "Gebruik je gebruikersnaam om in te loggen",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "Je heb het maximum aantal mensen uitgenodigd (%1 van de %2).",
     "no-session-found": "Geen login sessie gevonden!",
     "not-in-room": "Gebruiker niet in de chat",
@@ -133,5 +134,6 @@
     "no-users-selected": "Geen gebruiker(s) geselecteerd",
     "invalid-home-page-route": "Onbekende homepage route",
     "invalid-session": "Verkeerde sessie combinatie",
-    "invalid-session-text": "Het lijkt erop dat je login sessie niet meer actief is of niet langer synchroon is met de server. Ververs de pagina."
+    "invalid-session-text": "Het lijkt erop dat je login sessie niet meer actief is of niet langer synchroon is met de server. Ververs de pagina.",
+    "no-topics-selected": "No topics selected!"
 }

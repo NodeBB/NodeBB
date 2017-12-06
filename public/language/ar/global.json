@@ -4,7 +4,7 @@
     "buttons.close": "أغلق",
     "403.title": "غير مسموح بالدخول",
     "403.message": "يبدو أنك قد تعثرت على صفحة لا تمتلك الصلاحية للدخول إليها",
-    "403.login": "حاول أن  <a href='%1/login'>تسجل دخولك</a>.",
+    "403.login": "ربما يجب عليك  <a href='%1/login'>تسجل دخولك</a>.",
     "404.title": "لم يتم العثور",
     "404.message": "الصفحة غير موجودة. العودة لـ <a href='%1/'>الرئيسية</a>",
     "500.title": "خطأ داخلي",
@@ -25,7 +25,7 @@
     "pagination.out_of": "%1 من %2",
     "pagination.enter_index": "أدخل الرقم التسلسلي",
     "header.admin": "مدير النظام",
-    "header.categories": "الفئات",
+    "header.categories": "الأقسام",
     "header.recent": "حديث",
     "header.unread": "غير مقروء",
     "header.tags": "وسم",
@@ -103,7 +103,7 @@
     "cookies.message": "هذا الموقع يستخدم ملفات تعريف الارتباط لضمان حصولك على أفضل تجربة على موقعنا.",
     "cookies.accept": "فهمت الأمر!",
     "cookies.learn_more": "أعرف المزيد",
-    "edited": "Edited",
+    "edited": "حُرِر",
     "disabled": "معطل",
     "select": "تحديد"
 }

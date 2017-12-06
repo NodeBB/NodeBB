@@ -125,6 +125,7 @@
     "parse-error": "Щось пішло не так при розборі відповіді сервера",
     "wrong-login-type-email": "Будь ласка, використайте вашу електронну пошту для входу",
     "wrong-login-type-username": "Будь ласка, використайте ваше ім'я для входу",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "Ви запросили максимальну кілкість людей (%1 з %2).",
     "no-session-found": "Жодної сесії не знайдено!",
     "not-in-room": "Користувача немає в кімнаті",
@@ -133,5 +134,6 @@
     "no-users-selected": "Не вибрано жодного користувача",
     "invalid-home-page-route": "Невірний шлях на головну",
     "invalid-session": "Сесія не існує",
-    "invalid-session-text": "Здається, що ваша сесія більше неактивна або розійшлася з серверною. Оновіть, будь ласка, цю сторінку."
+    "invalid-session-text": "Здається, що ваша сесія більше неактивна або розійшлася з серверною. Оновіть, будь ласка, цю сторінку.",
+    "no-topics-selected": "No topics selected!"
 }
