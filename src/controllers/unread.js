@@ -5,6 +5,7 @@ var async = require('async');
 var nconf = require('nconf');
 var querystring = require('querystring');
 
+var meta = require('../meta');
 var pagination = require('../pagination');
 var user = require('../user');
 var topics = require('../topics');
