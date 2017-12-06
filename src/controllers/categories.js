@@ -33,7 +33,7 @@ categoriesController.list = function (req, res, next) {
 		},
 		function () {
 			var data = {
-				title: '[[pages:home]]',
+				title: meta.config.homePageTitle || '[[pages:home]]',
 				categories: categoryData,
 			};
 

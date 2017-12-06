@@ -54,7 +54,7 @@ unreadController.get = function (req, res, next) {
 			}, next);
 		},
 		function (data) {
-			data.title = '[[pages:home]]';
+			data.title = meta.config.homePageTitle || '[[pages:home]]';
 			data.pageCount = Math.max(1, Math.ceil(data.topicCount / settings.topicsPerPage));
 			data.pagination = pagination.create(page, data.pageCount, req.query);
 

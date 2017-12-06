@@ -61,7 +61,7 @@ recentController.get = function (req, res, next) {
 			if (req.uid) {
 				data.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
 			}
-			data.title = '[[pages:home]]';
+			data.title = meta.config.homePageTitle || '[[pages:home]]';
 			data.filters = helpers.buildFilters('recent', filter);
 
 			data.selectedFilter = data.filters.find(function (filter) {
