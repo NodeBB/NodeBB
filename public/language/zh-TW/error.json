@@ -125,6 +125,7 @@
     "parse-error": "當剖析伺服器回應時發生了某個錯誤",
     "wrong-login-type-email": "請使用你的電子郵件進行登入",
     "wrong-login-type-username": "請使用你的帳號進行登入",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "你已經邀請最多可邀請的人數限制 (%1 於 %2)。",
     "no-session-found": "沒有找到登入的連線階段!",
     "not-in-room": "使用者沒有在聊天室中",
@@ -133,5 +134,6 @@
     "no-users-selected": "沒有選定使用者",
     "invalid-home-page-route": "無效的首頁路由",
     "invalid-session": "會話階段錯誤",
-    "invalid-session-text": "看起來你的登入會話階段已經無效，或是不符合於伺服器。請重新整理這個頁面。"
+    "invalid-session-text": "看起來你的登入會話階段已經無效，或是不符合於伺服器。請重新整理這個頁面。",
+    "no-topics-selected": "No topics selected!"
 }

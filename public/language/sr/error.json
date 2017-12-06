@@ -125,6 +125,7 @@
     "parse-error": "Нешто је кренуло погрешно приликом анализе одговора сервера",
     "wrong-login-type-email": "Користите вашу е-пошту за пријављивање",
     "wrong-login-type-username": "Користите ваше корисничко име за пријављивање",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "Позвали сте максимални број особа (%1 од %2).",
     "no-session-found": "Није пронађена сесија пријављивања!",
     "not-in-room": "Корисник није у соби",
@@ -133,5 +134,6 @@
     "no-users-selected": "Није одабран корисник",
     "invalid-home-page-route": "Неважећа путања почетне странице",
     "invalid-session": "Неподударање сесија",
-    "invalid-session-text": "Изгледа да ваша сесија пријављивања није више активна или се више не подудара са сервером. Поново учитајте ову страницу."
+    "invalid-session-text": "Изгледа да ваша сесија пријављивања није више активна или се више не подудара са сервером. Поново учитајте ову страницу.",
+    "no-topics-selected": "No topics selected!"
 }

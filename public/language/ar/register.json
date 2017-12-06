@@ -2,8 +2,8 @@
     "register": "تسجيل",
     "cancel_registration": "إلغاء التسجيل",
     "help.email": "افتراضيا، سيتم إخفاء بريدك الإلكتروني من العامة.",
-    "help.username_restrictions": "اسم مستخدم فريدة من نوعها بين1% و2% حرفا. يمكن للآخرين ذكرك @ <'span id='your-username> اسم المستخدم </span>.",
-    "help.minimum_password_length": "كلمة المرور يجب أن تكون على الأقل بها 1% أحرف",
+    "help.username_restrictions": "اسم مستخدم فريدة من نوعها بين 1% و 2% حرفا. بإمكان الآخرين مناداتك بـ @<span id='yourUsername'>اسم المستخدم</span>.",
+    "help.minimum_password_length": "كلمة المرور يجب أن تتكون على الأقل من 1% أحرف/حروف",
     "email_address": "عنوان البريد الإلكتروني",
     "email_address_placeholder": "ادخل عنوان البريد الإلكتروني",
     "username": "اسم المستخدم",
@@ -16,8 +16,8 @@
     "alternative_registration": "طريقة تسجيل بديلة",
     "terms_of_use": "شروط الاستخدام",
     "agree_to_terms_of_use": "أوافق على شروط الاستخدام",
-    "terms_of_use_error": "You must agree to the Terms of Use",
-    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator.",
-    "interstitial.intro": "We require some additional information before we can create your account.",
-    "interstitial.errors-found": "We could not complete your registration:"
+    "terms_of_use_error": "يجب عليك الموافقة على شروط الاستخدام",
+    "registration-added-to-queue": "تمت إضافتك في قائمة الإنتضار. ستتلقى رسالة إلكترونية عند الموافقة على تسجيلك من قبل الإدارة.",
+    "interstitial.intro": "نحتاج إلى بعض المعلومات الإضافية قبل أن نتمكن من إنشاء حسابك.",
+    "interstitial.errors-found": "تعذر علينا إتمام عملية التسجيل:"
 }

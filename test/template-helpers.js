@@ -164,28 +164,28 @@ describe('helpers', function () {
 	it('should render digest avatar', function (done) {
 		var block = { teaser: { user: { username: 'baris', picture: '/uploads/1.png' } } };
 		var html = helpers.renderDigestAvatar(block);
-		assert.equal(html, '<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 1em;" src="' + block.teaser.user.picture + '" title="' + block.teaser.user.username + '" />');
+		assert.equal(html, '<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 8px;" src="' + block.teaser.user.picture + '" title="' + block.teaser.user.username + '" />');
 		done();
 	});
 
 	it('should render digest avatar', function (done) {
 		var block = { teaser: { user: { username: 'baris', 'icon:text': 'B', 'icon:bgColor': '#ff000' } } };
 		var html = helpers.renderDigestAvatar(block);
-		assert.equal(html, '<div style="width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 1em; background-color: ' + block.teaser.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block;">' + block.teaser.user['icon:text'] + '</div>');
+		assert.equal(html, '<div style="vertical-align: middle; width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 8px; background-color: ' + block.teaser.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block;">' + block.teaser.user['icon:text'] + '</div>');
 		done();
 	});
 
 	it('should render digest avatar', function (done) {
 		var block = { user: { username: 'baris', picture: '/uploads/1.png' } };
 		var html = helpers.renderDigestAvatar(block);
-		assert.equal(html, '<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 1em;" src="' + block.user.picture + '" title="' + block.user.username + '" />');
+		assert.equal(html, '<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 8px;" src="' + block.user.picture + '" title="' + block.user.username + '" />');
 		done();
 	});
 
 	it('should render digest avatar', function (done) {
 		var block = { user: { username: 'baris', 'icon:text': 'B', 'icon:bgColor': '#ff000' } };
 		var html = helpers.renderDigestAvatar(block);
-		assert.equal(html, '<div style="width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 1em; background-color: ' + block.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block;">' + block.user['icon:text'] + '</div>');
+		assert.equal(html, '<div style="vertical-align: middle; width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 8px; background-color: ' + block.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block;">' + block.user['icon:text'] + '</div>');
 		done();
 	});
 

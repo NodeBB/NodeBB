@@ -125,6 +125,7 @@
     "parse-error": "Une erreur est survenue en analysant la réponse du serveur",
     "wrong-login-type-email": "Veuillez utiliser votre adresse email pour vous connecter",
     "wrong-login-type-username": "Veuillez utiliser votre identifiant pour vous connecter",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "Vous avez invité la quantité maximale de personnes (%1 de %2).",
     "no-session-found": "Pas de session de connexion trouvé!",
     "not-in-room": "L'utilisateur n'est pas dans cette salle",
@@ -133,5 +134,6 @@
     "no-users-selected": "Aucun utilisateur sélectionné",
     "invalid-home-page-route": "Route de page d'accueil invalide",
     "invalid-session": "Session Interrompue",
-    "invalid-session-text": "Il semble que votre session ne soit plus active, ou que le serveur ne la reconnaisse plus. Merci de rafraichir cette page."
+    "invalid-session-text": "Il semble que votre session ne soit plus active, ou que le serveur ne la reconnaisse plus. Merci de rafraichir cette page.",
+    "no-topics-selected": "No topics selected!"
 }

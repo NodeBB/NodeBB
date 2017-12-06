@@ -125,6 +125,7 @@
     "parse-error": "Při analýze odpovědi serveru nastala chyba",
     "wrong-login-type-email": "Pro přihlášení použijte vaši e-mailovou adresu",
     "wrong-login-type-username": "Pro přihlášení použijte vaše uživatelské jméno",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "Již jste pozval/a maximálně možný počet lidí (%1 z %2).",
     "no-session-found": "Nebyla nalezena relace s přihlášením.",
     "not-in-room": "Uživatel není přítomen v místnosti",
@@ -133,5 +134,6 @@
     "no-users-selected": "Žádný uživatel/é nebyl/y vybrán/i",
     "invalid-home-page-route": "Neplatná cesta k domovské stránkce",
     "invalid-session": "Nesoulad v relacích",
-    "invalid-session-text": "Zdá se, že vše relace s přihlášením již není aktivní nebo již neodpovídá s relací na serveru. Obnovte prosím tuto stránku."
+    "invalid-session-text": "Zdá se, že vše relace s přihlášením již není aktivní nebo již neodpovídá s relací na serveru. Obnovte prosím tuto stránku.",
+    "no-topics-selected": "No topics selected!"
 }

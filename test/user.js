@@ -1405,7 +1405,7 @@ describe('User', function () {
 				username: 'rejectme',
 				password: '123456',
 				'password-confirm': '123456',
-				email: 'reject@me.com',
+				email: '<script>alert("ok");<script>reject@me.com',
 			}, function (err) {
 				assert.ifError(err);
 				helpers.loginUser('admin', '123456', function (err, jar) {
@@ -1413,7 +1413,7 @@ describe('User', function () {
 					request(nconf.get('url') + '/api/admin/manage/registration', { jar: jar, json: true }, function (err, res, body) {
 						assert.ifError(err);
 						assert.equal(body.users[0].username, 'rejectme');
-						assert.equal(body.users[0].email, 'reject@me.com');
+						assert.equal(body.users[0].email, '&lt;script&gt;alert(&quot;ok&quot;);&lt;script&gt;reject@me.com');
 						done();
 					});
 				});
@@ -1597,6 +1597,17 @@ describe('User', function () {
 						assert.equal(isMember, false);
 						done();
 					});
+				});
+			});
+		});
+
+		it('should escape email', function (done) {
+			socketUser.invite({ uid: inviterUid }, '<script>alert("ok");</script>', function (err) {
+				assert.ifError(err);
+				User.getInvites(inviterUid, function (err, data) {
+					assert.ifError(err);
+					assert.equal(data[0], '&lt;script&gt;alert(&quot;ok&quot;);&lt;&#x2F;script&gt;');
+					done();
 				});
 			});
 		});

@@ -125,6 +125,7 @@
     "parse-error": "Ocorreu um erro enquanto analisávamos a resposta do servidor",
     "wrong-login-type-email": "Por favor utiliza o teu e-mail para efetuares o login",
     "wrong-login-type-username": "Por favor utiliza o teu nome de utilizador para efetuares o login",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "Convidaste o máximo de pessoas (%1 em %2).",
     "no-session-found": "Não encontramos sessões de login!",
     "not-in-room": "Utilizador não se encontra na sala",
@@ -133,5 +134,6 @@
     "no-users-selected": "Não existe(m) utilizador(es) selecionado(s)",
     "invalid-home-page-route": "Rota para a página principal inválida",
     "invalid-session": "Sessão incompatível",
-    "invalid-session-text": "Parece que a sua sessão de login não se encontra mais ativa ou não tem correspondência com o servidor. por favor recarregue esta página."
+    "invalid-session-text": "Parece que a sua sessão de login não se encontra mais ativa ou não tem correspondência com o servidor. por favor recarregue esta página.",
+    "no-topics-selected": "No topics selected!"
 }

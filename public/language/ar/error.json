@@ -125,6 +125,7 @@
     "parse-error": "حدث خطأ ما أثناء تحليل استجابة الخادم",
     "wrong-login-type-email": "الرجاء استعمال بريدك اﻹلكتروني للدخول",
     "wrong-login-type-username": "الرجاء استعمال اسم المستخدم الخاص بك للدخول",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "لقد قمت بدعوة الحد الأقصى من الأشخاص (%1 من %2)",
     "no-session-found": "لم دخول مسجل!",
     "not-in-room": "المستخدم غير موجود في الغرفة.",
@@ -133,5 +134,6 @@
     "no-users-selected": "لا يوجد مستخدم محدد.",
     "invalid-home-page-route": "Invalid home page route",
     "invalid-session": "Session Mismatch",
-    "invalid-session-text": "يبدو أن فترة التسجيل لم تعد قائمة او هي غير مطابقة مع الخادم. يرجى إعادة تحميل هذه الصفحة."
+    "invalid-session-text": "يبدو أن فترة التسجيل لم تعد قائمة او هي غير مطابقة مع الخادم. يرجى إعادة تحميل هذه الصفحة.",
+    "no-topics-selected": "No topics selected!"
 }

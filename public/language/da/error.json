@@ -125,6 +125,7 @@
     "parse-error": "Noget gik galt under fortolknings er serverens respons",
     "wrong-login-type-email": "Brug venligt din email til login",
     "wrong-login-type-username": "Brug venligt dit brugernavn til login",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "Du har inviteret det maksimale antal personer (%1 ud af %2)",
     "no-session-found": "Ingen login session kan findes!",
     "not-in-room": "Bruger er ikke i rummet",
@@ -133,5 +134,6 @@
     "no-users-selected": "No user(s) selected",
     "invalid-home-page-route": "Invalid home page route",
     "invalid-session": "Session Mismatch",
-    "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page."
+    "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page.",
+    "no-topics-selected": "No topics selected!"
 }

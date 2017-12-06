@@ -2,6 +2,7 @@
 
 var async = require('async');
 var winston = require('winston');
+var validator = require('validator');
 var db = require('../database');
 var meta = require('../meta');
 var events = require('../events');
@@ -126,12 +127,15 @@ module.exports = function (User) {
 					next(err, sessions);
 				});
 			},
-		], function (err, sessions) {
-			callback(err, sessions ? sessions.map(function (sessObj) {
-				sessObj.meta.datetimeISO = new Date(sessObj.meta.datetime).toISOString();
-				return sessObj.meta;
-			}) : undefined);
-		});
+			function (sessions, next) {
+				sessions = sessions.map(function (sessObj) {
+					sessObj.meta.datetimeISO = new Date(sessObj.meta.datetime).toISOString();
+					sessObj.meta.ip = validator.escape(String(sessObj.meta.ip));
+					return sessObj.meta;
+				});
+				next(null, sessions);
+			},
+		], callback);
 	};
 
 	User.auth.addSession = function (uid, sessionId, callback) {

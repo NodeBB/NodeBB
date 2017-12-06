@@ -125,6 +125,7 @@
     "parse-error": "Something went wrong while parsing server response",
     "wrong-login-type-email": "Please use your email to login",
     "wrong-login-type-username": "Please use your username to login",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
     "no-session-found": "No login session found!",
     "not-in-room": "ユーザーが部屋にいません",
@@ -133,5 +134,6 @@
     "no-users-selected": "ユーザー(s)が選択されていません",
     "invalid-home-page-route": "ホームページのルートが無効",
     "invalid-session": "セッションの不一致",
-    "invalid-session-text": "ログインセッションの期限切れ、またはサーバーとの未接続が長すぎると思われます。このページを更新してみてください。"
+    "invalid-session-text": "ログインセッションの期限切れ、またはサーバーとの未接続が長すぎると思われます。このページを更新してみてください。",
+    "no-topics-selected": "No topics selected!"
 }

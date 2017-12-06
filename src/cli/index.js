@@ -9,14 +9,30 @@ var dirname = require('./paths').baseDir;
 // check to make sure dependencies are installed
 try {
 	fs.readFileSync(path.join(dirname, 'package.json'));
-	fs.readFileSync(path.join(dirname, 'node_modules/async/package.json'));
+} catch (e) {
+	if (e.code === 'ENOENT') {
+		console.warn('package.json not found.');
+		console.log('Populating package.json...\n');
+
+		packageInstall.updatePackageFile();
+		packageInstall.preserveExtraneousPlugins();
+
+		console.log('OK'.green + '\n'.reset);
+	} else {
+		throw e;
+	}
+}
+
+try {
+	fs.readFileSync(path.join(dirname, 'node_modules/async/package.json'), 'utf8');
+	fs.readFileSync(path.join(dirname, 'node_modules/commander/package.json'), 'utf8');
+	fs.readFileSync(path.join(dirname, 'node_modules/colors/package.json'), 'utf8');
+	fs.readFileSync(path.join(dirname, 'node_modules/nconf/package.json'), 'utf8');
 } catch (e) {
 	if (e.code === 'ENOENT') {
 		console.warn('Dependencies not yet installed.');
 		console.log('Installing them now...\n');
 
-		packageInstall.updatePackageFile();
-		packageInstall.preserveExtraneousPlugins();
 		packageInstall.npmInstallProduction();
 
 		require('colors');
@@ -121,10 +137,20 @@ program
 
 // management commands
 program
-	.command('setup')
-	.description('Run the NodeBB setup script')
-	.action(function () {
-		require('./setup').setup();
+	.command('setup [config]')
+	.description('Run the NodeBB setup script, or setup with an initial config')
+	.action(function (initConfig) {
+		if (initConfig) {
+			try {
+				initConfig = JSON.parse(initConfig);
+			} catch (e) {
+				console.warn('Invalid JSON passed as initial config value.'.red);
+				console.log('If you meant to pass in an initial config value, please try again.\n');
+
+				throw e;
+			}
+		}
+		require('./setup').setup(initConfig);
 	});
 
 program

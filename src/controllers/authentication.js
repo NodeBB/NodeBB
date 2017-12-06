@@ -57,18 +57,7 @@ authenticationController.register = function (req, res) {
 			user.isPasswordValid(userData.password, next);
 		},
 		function (next) {
-			user.shouldQueueUser(req.ip, next);
-		},
-		function (queue, next) {
-			res.locals.processLogin = true;	// set it to false in plugin if you wish to just register only
-			plugins.fireHook('filter:register.check', { req: req, res: res, userData: userData, queue: queue }, next);
-		},
-		function (data, next) {
-			if (data.queue) {
-				addToApprovalQueue(req, userData, next);
-			} else {
-				registerAndLoginUser(req, res, userData, next);
-			}
+			registerAndLoginUser(req, res, userData, next);
 		},
 	], function (err, data) {
 		if (err) {
@@ -108,7 +97,18 @@ function registerAndLoginUser(req, res, userData, callback) {
 			return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
 		},
 		function (next) {
-			user.create(userData, next);
+			user.shouldQueueUser(req.ip, next);
+		},
+		function (queue, next) {
+			res.locals.processLogin = true;	// set it to false in plugin if you wish to just register only
+			plugins.fireHook('filter:register.check', { req: req, res: res, userData: userData, queue: queue }, next);
+		},
+		function (data, next) {
+			if (data.queue) {
+				addToApprovalQueue(req, userData, callback);
+			} else {
+				user.create(userData, next);
+			}
 		},
 		function (_uid, next) {
 			uid = _uid;
@@ -155,9 +155,11 @@ authenticationController.registerComplete = function (req, res, next) {
 			return memo;
 		}, []);
 
-		var done = function () {
+		var done = function (err, data) {
 			delete req.session.registration;
-
+			if (!err && data && data.message) {
+				return res.redirect(nconf.get('relative_path') + '/?register=' + encodeURIComponent(data.message));
+			}
 			if (req.session.returnTo) {
 				res.redirect(req.session.returnTo);
 			} else {
@@ -289,26 +291,30 @@ authenticationController.doLogin = function (req, uid, callback) {
 
 authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 	var uuid = utils.generateUUID();
-	req.session.meta = {};
-
-	delete req.session.forceLogin;
-
-	// Associate IP used during login with user account
-	user.logIP(uid, req.ip);
-	req.session.meta.ip = req.ip;
-
-	// Associate metadata retrieved via user-agent
-	req.session.meta = _.extend(req.session.meta, {
-		uuid: uuid,
-		datetime: Date.now(),
-		platform: req.useragent.platform,
-		browser: req.useragent.browser,
-		version: req.useragent.version,
-	});
 
 	async.waterfall([
-		async.apply(meta.blacklist.test, req.ip),
 		function (next) {
+			meta.blacklist.test(req.ip, next);
+		},
+		function (next) {
+			user.logIP(uid, req.ip, next);
+		},
+		function (next) {
+			req.session.meta = {};
+
+			delete req.session.forceLogin;
+			// Associate IP used during login with user account
+			req.session.meta.ip = req.ip;
+
+			// Associate metadata retrieved via user-agent
+			req.session.meta = _.extend(req.session.meta, {
+				uuid: uuid,
+				datetime: Date.now(),
+				platform: req.useragent.platform,
+				browser: req.useragent.browser,
+				version: req.useragent.version,
+			});
+
 			async.parallel([
 				function (next) {
 					user.auth.addSession(uid, req.sessionID, next);

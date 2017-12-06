@@ -8,12 +8,16 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 
 	navigator.scrollActive = false;
 
+	$(window).on('action:ajaxify.start', function () {
+		$(window).off('keydown', onKeyDown);
+	});
+
 	navigator.init = function (selector, count, toTop, toBottom, callback, calculateIndex) {
 		index = 1;
 		navigator.selector = selector;
 		navigator.callback = callback;
-		toTop = toTop || function () {};
-		toBottom = toBottom || function () {};
+		navigator.toTop = toTop || function () {};
+		navigator.toBottom = toBottom || function () {};
 
 		$(window).off('scroll', navigator.delayedUpdate).on('scroll', navigator.delayedUpdate);
 
@@ -29,8 +33,8 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 
 		$('.pagination-block .pageup').off('click').on('click', navigator.scrollUp);
 		$('.pagination-block .pagedown').off('click').on('click', navigator.scrollDown);
-		$('.pagination-block .pagetop').off('click').on('click', toTop);
-		$('.pagination-block .pagebottom').off('click').on('click', toBottom);
+		$('.pagination-block .pagetop').off('click').on('click', navigator.toTop);
+		$('.pagination-block .pagebottom').off('click').on('click', navigator.toBottom);
 
 		$('.pagination-block input').on('keydown', function (e) {
 			if (e.which === 13) {
@@ -52,9 +56,32 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			}
 		});
 
+		handleKeys();
+
 		navigator.setCount(count);
 		navigator.update(0);
 	};
+
+	function handleKeys() {
+		if (!config.usePagination) {
+			$(window).off('keydown', onKeyDown).on('keydown', onKeyDown);
+		}
+	}
+
+	function onKeyDown(ev) {
+		if (ev.target.nodeName === 'BODY') {
+			if (ev.shiftKey || ev.ctrlKey || ev.altKey) {
+				return;
+			}
+			if (ev.which === 36 && navigator.toTop) { // home key
+				navigator.toTop();
+				return false;
+			} else if (ev.which === 35 && navigator.toBottom) { // end key
+				navigator.toBottom();
+				return false;
+			}
+		}
+	}
 
 	function generateUrl(index) {
 		var pathname = window.location.pathname.replace(config.relative_path, '');
@@ -164,12 +191,25 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			return;
 		}
 		index = index > count ? count : index;
-
-		$('.pagination-block .pagination-text').translateHtml('[[global:pagination.out_of, ' + index + ', ' + count + ']]');
-		var fraction = $(window).scrollTop() / ($(document).height() - $(window).height());
+		var relIndex = getRelativeIndex();
+		$('.pagination-block .pagination-text').translateHtml('[[global:pagination.out_of, ' + relIndex + ', ' + count + ']]');
+		var fraction = relIndex / count;
 		$('.pagination-block meter').val(fraction);
 		$('.pagination-block .progress-bar').width((fraction * 100) + '%');
 	};
+
+	function getRelativeIndex() {
+		var relIndex = index;
+		if (relIndex === 1) {
+			return 1;
+		}
+		if (ajaxify.data.template.topic) {
+			if (config.topicPostSort === 'most_votes' || config.topicPostSort === 'newest_to_oldest') {
+				relIndex = ajaxify.data.postcount - index + 2;
+			}
+		}
+		return relIndex;
+	}
 
 	navigator.scrollUp = function () {
 		$('body,html').animate({
@@ -244,7 +284,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			}
 		} else if (inCategory) {
 			if (config.categoryTopicSort === 'most_posts' || config.categoryTopicSort === 'oldest_to_newest') {
-				index = ajaxify.data.ajaxify.data.topic_count - index;
+				index = ajaxify.data.topic_count - index;
 			}
 		}
 

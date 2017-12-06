@@ -125,6 +125,7 @@
     "parse-error": "Похоже, что-то пошло не так в процессе обработки ответа сервера.",
     "wrong-login-type-email": "Пожалуйста, для входа используйте адрес своей электронной почты.",
     "wrong-login-type-username": "Пожалуйста, для входа используйте имя пользователя.",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "Вы пригласили %1 людей из %2 возможных.",
     "no-session-found": "Сессия входа не найдена!",
     "not-in-room": "Пользователь отсутствует в этой комнате",
@@ -133,5 +134,6 @@
     "no-users-selected": "Выберите одного или нескольких пользователей",
     "invalid-home-page-route": "Неверная ссылка на домашнюю страницу",
     "invalid-session": "Сессия не существует",
-    "invalid-session-text": "Похоже, что ваша сессия больше не активна или она не совпадает с сессией на сервере. Пожалуйста, обновите эту страницу."
+    "invalid-session-text": "Похоже, что ваша сессия больше не активна или она не совпадает с сессией на сервере. Пожалуйста, обновите эту страницу.",
+    "no-topics-selected": "No topics selected!"
 }

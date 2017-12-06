@@ -125,6 +125,7 @@
     "parse-error": "Có gì không ổn khi nhận kết quả từ máy chủ",
     "wrong-login-type-email": "Xin vui lòng sửa dụng email của bạn để đăng nhập",
     "wrong-login-type-username": "Vui lòng sử dụng tên đăng nhập của bạn để đăng nhập",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "Bạn đã sử dụng hết số lượng lời mời bạn có thể gửi (%1 đã gửi trên tổng số %2 được cho phép)",
     "no-session-found": "Không tìm thấy phiên đăng nhập!",
     "not-in-room": "Thành viên không có trong phòng",
@@ -133,5 +134,6 @@
     "no-users-selected": "Chưa có người dùng(s) nào",
     "invalid-home-page-route": "Đường dẫn trang chủ không hợp lệ",
     "invalid-session": "Không đúng session",
-    "invalid-session-text": "Có vẻ như phiên đăng nhập của bạn đã không còn hoạt động nữa, hoặc không còn đúng với thông tin trên máy chủ. Vui lòng tải lại trang này"
+    "invalid-session-text": "Có vẻ như phiên đăng nhập của bạn đã không còn hoạt động nữa, hoặc không còn đúng với thông tin trên máy chủ. Vui lòng tải lại trang này",
+    "no-topics-selected": "No topics selected!"
 }

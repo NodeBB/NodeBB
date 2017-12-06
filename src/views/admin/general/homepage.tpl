@@ -24,6 +24,9 @@
 						<span class="mdl-switch__label"><strong>[[admin/general/homepage:allow-user-home-pages]]</strong></span>
 					</label>
 				</div>
+				<br>
+				<label>[[admin/general/homepage:home-page-title]]</label>
+				<input class="form-control" type="text" data-field="homePageTitle" placeholder="[[pages:home]]">
 			</div>
 		</form>
 	</div>

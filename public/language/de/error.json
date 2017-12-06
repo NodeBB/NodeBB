@@ -125,6 +125,7 @@
     "parse-error": "Beim auswerten der Serverantwort ist etwas schiefgegangen",
     "wrong-login-type-email": "Bitte nutze deine E-Mail-Adresse zum einloggen",
     "wrong-login-type-username": "Bitte nutze deinen Benutzernamen zum einloggen",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "Du hast bereits die maximale Anzahl an Personen eingeladen (%1 von %2).",
     "no-session-found": "Keine Login-Sitzung gefunden!",
     "not-in-room": "Benutzer nicht im Raum",
@@ -133,5 +134,6 @@
     "no-users-selected": "Kein(e) Benutzer ausgewählt",
     "invalid-home-page-route": "Ungültiger Startseitenpfad",
     "invalid-session": "Sitzungsdiskrepanz",
-    "invalid-session-text": "Es scheint als wäre deine Login-Sitzung nicht mehr aktiv oder sie passt nicht mehr mit der des Servers. Bitte aktualisiere diese Seite."
+    "invalid-session-text": "Es scheint als wäre deine Login-Sitzung nicht mehr aktiv oder sie passt nicht mehr mit der des Servers. Bitte aktualisiere diese Seite.",
+    "no-topics-selected": "No topics selected!"
 }

@@ -2,6 +2,7 @@
 
 var async = require('async');
 var validator = require('validator');
+var nconf = require('nconf');
 
 var user = require('../../user');
 var meta = require('../../meta');
@@ -183,6 +184,11 @@ function render(req, res, data) {
 }
 
 usersController.getCSV = function (req, res, next) {
+	var referer = req.headers.referer;
+
+	if (!referer || !referer.replace(nconf.get('url'), '').startsWith('/admin/manage/users')) {
+		return res.status(403).send('[[error:invalid-origin]]');
+	}
 	events.log({
 		type: 'getUsersCSV',
 		uid: req.user.uid,

@@ -125,6 +125,7 @@
     "parse-error": "Nekaj je šlo narobe pri pridobivanju odgovora s strežnika.",
     "wrong-login-type-email": "Uporabite svoj e-poštni naslov za prijavo.",
     "wrong-login-type-username": "Uporabite svoje uporabniško ime za prijavo.",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "Povabili ste največje dovoljeno število ljudi (%1 od %2).",
     "no-session-found": "Prijavne seje ni mogoče najti!",
     "not-in-room": "Uporabnika ni v sobi.",
@@ -133,5 +134,6 @@
     "no-users-selected": "Ni izbranih uporabnikov.",
     "invalid-home-page-route": "Napačna pot do domače strani.",
     "invalid-session": "Seje se ne ujemajo.",
-    "invalid-session-text": "Kaže, da vaša prijavna seja ni več aktiva. Prosimo, osvežite to stran."
+    "invalid-session-text": "Kaže, da vaša prijavna seja ni več aktiva. Prosimo, osvežite to stran.",
+    "no-topics-selected": "No topics selected!"
 }

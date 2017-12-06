@@ -2,23 +2,37 @@
 
 var winston = require('winston');
 var async = require('async');
+var path = require('path');
+var nconf = require('nconf');
 
 var install = require('../../install/web').install;
 
-function setup() {
+function setup(initConfig) {
+	var paths = require('./paths');
 	var install = require('../install');
 	var build = require('../meta/build');
 	var prestart = require('../prestart');
+	var pkg = require('../../package.json');
 
 	winston.info('NodeBB Setup Triggered via Command Line');
 
-	console.log('\nWelcome to NodeBB!');
+	console.log('\nWelcome to NodeBB v' + pkg.version + '!');
 	console.log('\nThis looks like a new installation, so you\'ll have to answer a few questions about your environment before we can proceed.');
 	console.log('Press enter to accept the default setting (shown in brackets).');
 
+	install.values = initConfig;
+
 	async.series([
 		install.setup,
-		prestart.loadConfig,
+		function (next) {
+			var configFile = paths.config;
+			if (nconf.get('config')) {
+				configFile = path.resolve(paths.baseDir, nconf.get('config'));
+			}
+
+			prestart.loadConfig(configFile);
+			next();
+		},
 		build.buildAll,
 	], function (err, data) {
 		// Disregard build step data

@@ -31,6 +31,7 @@ require('./topics/suggested')(Topics);
 require('./topics/tools')(Topics);
 require('./topics/thumb')(Topics);
 require('./topics/bookmarks')(Topics);
+require('./topics/merge')(Topics);
 
 Topics.exists = function (tid, callback) {
 	db.isSortedSetMember('topics:tid', tid, callback);
@@ -252,7 +253,7 @@ function getMainPostAndReplies(topic, set, uid, start, stop, reverse, callback) 
 				return callback(null, []);
 			}
 
-			if (topic.mainPid && start === 0) {
+			if (parseInt(topic.mainPid, 10) && start === 0) {
 				pids.unshift(topic.mainPid);
 			}
 			posts.getPostsByPids(pids, uid, next);

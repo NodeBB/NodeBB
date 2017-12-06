@@ -326,7 +326,7 @@ module.exports = function (Topics) {
 				}, next);
 			},
 			function (results, next) {
-				if (results.mainPid) {
+				if (parseInt(results.mainPid, 10)) {
 					results.pids = [results.mainPid].concat(results.pids);
 				}
 				next(null, results.pids);
