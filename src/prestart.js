@@ -11,7 +11,7 @@ var dirname = require('./cli/paths').baseDir;
 function setupWinston() {
 	winston.remove(winston.transports.Console);
 	winston.add(winston.transports.Console, {
-		colorize: true,
+		colorize: nconf.get('log-colorize') !== 'false',
 		timestamp: function () {
 			var date = new Date();
 			return nconf.get('json-logging') ? date.toJSON() :
