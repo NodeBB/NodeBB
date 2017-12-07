@@ -273,9 +273,11 @@ describe('User', function () {
 	});
 
 	describe('.search()', function () {
+		var uid;
 		it('should return an object containing an array of matching users', function (done) {
 			User.search({ query: 'john' }, function (err, searchData) {
 				assert.ifError(err);
+				uid = searchData.users[0].uid;
 				assert.equal(Array.isArray(searchData.users) && searchData.users.length > 0, true);
 				assert.equal(searchData.users[0].username, 'John Smith');
 				done();
@@ -318,6 +320,15 @@ describe('User', function () {
 						done();
 					});
 				});
+			});
+		});
+
+		it('should search users by ip', function (done) {
+			socketUser.search({ uid: testUid }, { query: uid, searchBy: 'uid' }, function (err, data) {
+				assert.ifError(err);
+				assert(Array.isArray(data.users));
+				assert.equal(data.users[0].uid, uid);
+				done();
 			});
 		});
 
