@@ -336,8 +336,8 @@
 			return String(str).replace(new RegExp('<(\\/)?(' + (pattern || '[^\\s>]+') + ')(\\s+[^<>]*?)?\\s*(\\/)?>', 'gi'), '');
 		},
 
-		invalidUnicodeChars: XRegExp('([^\\p{L}\\s\\d-]|_)', 'g'),
-		invalidLatinChars: /([^\w\s\d-]|_)/g,
+		invalidUnicodeChars: XRegExp('[^\\p{L}\\s\\d\\-_]', 'g'),
+		invalidLatinChars: /[^\w\s\d\-_]/g,
 		trimRegex: /^\s+|\s+$/g,
 		collapseWhitespace: /\s+/g,
 		collapseDash: /-+/g,
