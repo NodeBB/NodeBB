@@ -288,18 +288,19 @@ function addTags(topicData, req, res) {
 		},
 	];
 
-	var regex = /src\s*=\s*"(.+?)"/;
-
 	topicData.posts.forEach(function (postData) {
+		var regex = /src\s*=\s*"(.+?)"/g;
 		var match = regex.exec(postData.content);
-		if (match) {
+		while (match !== null) {
 			var image = match[1];
+
 			if (image.startsWith(nconf.get('url') + '/plugins')) {
 				return;
 			}
 			if (!image.startsWith('http')) {
 				image = nconf.get('url') + image;
 			}
+
 			res.locals.metaTags.push({
 				property: 'og:image',
 				content: image,
@@ -310,6 +311,7 @@ function addTags(topicData, req, res) {
 				content: image,
 				noEscape: true,
 			});
+			match = regex.exec(postData.content);
 		}
 	});
 
