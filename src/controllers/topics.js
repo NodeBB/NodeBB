@@ -297,14 +297,16 @@ function addTags(topicData, req, res) {
 			if (image.startsWith(nconf.get('url') + '/plugins')) {
 				return;
 			}
-			var data = {
+			res.locals.metaTags.push({
 				property: 'og:image',
 				content: image,
 				noEscape: true,
-			};
-			res.locals.metaTags.push(data);
-			data.property = 'og:image:url';
-			res.locals.metaTags.push(data);
+			});
+			res.locals.metaTags.push({
+				property: 'og:image:url',
+				content: image,
+				noEscape: true,
+			});
 		}
 	});
 
