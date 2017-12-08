@@ -288,6 +288,26 @@ function addTags(topicData, req, res) {
 		},
 	];
 
+	var regex = /src\s*=\s*"(.+?)"/g;
+
+	topicData.posts.forEach(function (postData) {
+		var match = regex.exec(postData.content);
+		if (match) {
+			var image = match[1];
+			if (image.startsWith(nconf.get('url') + '/plugins')) {
+				return;
+			}
+			var data = {
+				property: 'og:image',
+				content: image,
+				noEscape: true,
+			};
+			res.locals.metaTags.push(data);
+			data.property = 'og:image:url';
+			res.locals.metaTags.push(data);
+		}
+	});
+
 	res.locals.linkTags = [
 		{
 			rel: 'alternate',
