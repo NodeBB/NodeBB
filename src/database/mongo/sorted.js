@@ -41,6 +41,22 @@ module.exports = function (db, module) {
 			key = { $in: key };
 		}
 
+		if (start < 0 && start > stop) {
+			return callback(null, []);
+		}
+
+		var reverse = false;
+		if (start === 0 && stop < -1) {
+			reverse = true;
+			sort *= -1;
+			start = Math.abs(stop + 1);
+			stop = -1;
+		} else if (start < 0 && stop > start) {
+			var tmp1 = Math.abs(stop + 1);
+			stop = Math.abs(start + 1);
+			start = tmp1;
+		}
+
 		var limit = stop - start + 1;
 		if (limit <= 0) {
 			limit = 0;
@@ -54,7 +70,9 @@ module.exports = function (db, module) {
 				if (err || !data) {
 					return callback(err);
 				}
-
+				if (reverse) {
+					data.reverse();
+				}
 				if (!withScores) {
 					data = data.map(function (item) {
 						return item.value;
