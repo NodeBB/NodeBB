@@ -1016,11 +1016,11 @@ describe('Controllers', function () {
 					done();
 				});
 			});
-			it('should 401 if user is not logged in', function (done) {
+			it('should redirect to login if user is not logged in', function (done) {
 				request(nconf.get('url') + '/me/bookmarks', { json: true }, function (err, res, body) {
 					assert.ifError(err);
-					assert.equal(res.statusCode, 401);
-					assert.equal(body, 'not-authorized');
+					assert.equal(res.statusCode, 200);
+					assert(body.indexOf('Login to your account') !== -1);
 					done();
 				});
 			});
