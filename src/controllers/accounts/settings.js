@@ -255,6 +255,10 @@ function getHomePageRoutes(userData, callback) {
 					name: 'Recent',
 				},
 				{
+					route: 'top',
+					name: 'Top',
+				},
+				{
 					route: 'popular',
 					name: 'Popular',
 				},
@@ -292,6 +296,3 @@ function getHomePageRoutes(userData, callback) {
 		},
 	], callback);
 }
-
-
-module.exports = settingsController;

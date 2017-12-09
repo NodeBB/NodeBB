@@ -118,6 +118,19 @@ describe('Controllers', function () {
 			});
 		});
 
+		it('should load top', function (done) {
+			meta.configs.set('homePageRoute', 'top', function (err) {
+				assert.ifError(err);
+
+				request(nconf.get('url'), function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body);
+					done();
+				});
+			});
+		});
+
 		it('should load popular', function (done) {
 			meta.configs.set('homePageRoute', 'popular', function (err) {
 				assert.ifError(err);
