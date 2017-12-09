@@ -20,7 +20,12 @@ module.exports = function (Topics) {
 				}, next);
 			},
 			function (next) {
-				db.sortedSetsRemove(['topics:recent', 'topics:posts', 'topics:views'], tid, next);
+				db.sortedSetsRemove([
+					'topics:recent',
+					'topics:posts',
+					'topics:views',
+					'topics:votes',
+				], tid, next);
 			},
 			function (next) {
 				async.waterfall([
@@ -48,7 +53,7 @@ module.exports = function (Topics) {
 		var topicData;
 		async.waterfall([
 			function (next) {
-				Topics.getTopicFields(tid, ['cid', 'lastposttime', 'postcount', 'viewcount'], next);
+				Topics.getTopicData(tid, next);
 			},
 			function (_topicData, next) {
 				topicData = _topicData;
@@ -67,6 +72,11 @@ module.exports = function (Topics) {
 					},
 					function (next) {
 						db.sortedSetAdd('topics:views', topicData.viewcount, tid, next);
+					},
+					function (next) {
+						var upvotes = parseInt(topicData.upvotes, 10) || 0;
+						var downvotes = parseInt(topicData.downvotes, 10) || 0;
+						db.sortedSetAdd('topics:votes', upvotes - downvotes, tid, next);
 					},
 					function (next) {
 						async.waterfall([
@@ -138,7 +148,13 @@ module.exports = function (Topics) {
 						], next);
 					},
 					function (next) {
-						db.sortedSetsRemove(['topics:tid', 'topics:recent', 'topics:posts', 'topics:views'], tid, next);
+						db.sortedSetsRemove([
+							'topics:tid',
+							'topics:recent',
+							'topics:posts',
+							'topics:views',
+							'topics:votes',
+						], tid, next);
 					},
 					function (next) {
 						deleteTopicFromCategoryAndUser(tid, next);
@@ -196,6 +212,7 @@ module.exports = function (Topics) {
 							'cid:' + topicData.cid + ':tids:pinned',
 							'cid:' + topicData.cid + ':tids:posts',
 							'cid:' + topicData.cid + ':tids:lastposttime',
+							'cid:' + topicData.cid + ':tids:votes',
 							'cid:' + topicData.cid + ':recent_tids',
 							'cid:' + topicData.cid + ':uid:' + topicData.uid + ':tids',
 							'uid:' + topicData.uid + ':topics',
