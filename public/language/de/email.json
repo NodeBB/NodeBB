@@ -30,7 +30,7 @@
     "notif.chat.unsub.info": "Diese Chat-Benachrichtigung wurde dir aufgrund deiner Abonnement-Einstellungen gesendet.",
     "notif.post.cta": "Hier klicken, um das gesamte Thema zu lesen",
     "notif.post.unsub.info": "Diese Mitteilung wurde dir aufgrund deiner Abonnement-Einstellungen gesendet.",
-    "notif.cta": "Click here to go to forum",
+    "notif.cta": "Klicke hier um das Forum zu besuchen",
     "test.text1": "Dies ist eine Test-E-Mail, um zu überprüfen, ob der E-Mailer deines NodeBB korrekt eingestellt wurde.",
     "unsub.cta": "Klicke hier, um diese Einstellungen zu ändern",
     "banned.subject": "Du wurdest von %1 gebannt.",
