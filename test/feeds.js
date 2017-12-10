@@ -53,6 +53,7 @@ describe('feeds', function () {
 			nconf.get('url') + '/topic/' + tid + '.rss',
 			nconf.get('url') + '/category/' + cid + '.rss',
 			nconf.get('url') + '/recent.rss',
+			nconf.get('url') + '/top.rss',
 			nconf.get('url') + '/popular.rss',
 			nconf.get('url') + '/popular/day.rss',
 			nconf.get('url') + '/recentposts.rss',

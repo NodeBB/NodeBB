@@ -449,6 +449,15 @@ describe('Controllers', function () {
 		});
 	});
 
+	it('should load recent rss feed', function (done) {
+		request(nconf.get('url') + '/top.rss', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
 	it('should load popular rss feed', function (done) {
 		request(nconf.get('url') + '/popular.rss', function (err, res, body) {
 			assert.ifError(err);

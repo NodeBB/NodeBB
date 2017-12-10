@@ -138,6 +138,8 @@ module.exports = function (Categories) {
 
 		if (sort === 'most_posts') {
 			set = 'cid:' + cid + ':tids:posts';
+		} else if (sort === 'most_votes') {
+			set = 'cid:' + cid + ':tids:votes';
 		}
 
 		if (data.targetUid) {
@@ -163,7 +165,7 @@ module.exports = function (Categories) {
 
 	Categories.getSortedSetRangeDirection = function (sort, callback) {
 		sort = sort || 'newest_to_oldest';
-		var direction = sort === 'newest_to_oldest' || sort === 'most_posts' ? 'highest-to-lowest' : 'lowest-to-highest';
+		var direction = sort === 'newest_to_oldest' || sort === 'most_posts' || sort === 'most_votes' ? 'highest-to-lowest' : 'lowest-to-highest';
 		plugins.fireHook('filter:categories.getSortedSetRangeDirection', {
 			sort: sort,
 			direction: direction,
