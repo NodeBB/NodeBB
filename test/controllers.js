@@ -449,7 +449,7 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load recent rss feed', function (done) {
+	it('should load top rss feed', function (done) {
 		request(nconf.get('url') + '/top.rss', function (err, res, body) {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
