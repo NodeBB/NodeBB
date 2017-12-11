@@ -44,10 +44,25 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.canEdit = function (messageId, uid, callback) {
+		canEditDelete(messageId, uid, 'edit', callback);
+	};
+
+	Messaging.canDelete = function (messageId, uid, callback) {
+		canEditDelete(messageId, uid, 'delete', callback);
+	};
+
+	function canEditDelete(messageId, uid, type, callback) {
+		var durationConfig = '';
+		if (type === 'edit') {
+			durationConfig = 'chatEditDuration';
+		} else if (type === 'delete') {
+			durationConfig = 'chatDeleteDuration';
+		}
+
 		if (parseInt(meta.config.disableChat, 10) === 1) {
-			return callback(null, false);
+			return callback(new Error('[[error:chat-disabled]]'));
 		} else if (parseInt(meta.config.disableChatMessageEditing, 10) === 1) {
-			return callback(null, false);
+			return callback(new Error('[[error:chat-message-editing-disabled]]'));
 		}
 
 		async.waterfall([
@@ -56,25 +71,36 @@ module.exports = function (Messaging) {
 			},
 			function (userData, next) {
 				if (parseInt(userData.banned, 10) === 1) {
-					return callback(null, false);
+					return callback(new Error('[[error:user-banned]]'));
 				}
 
 				if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
-					return callback(null, false);
+					return callback(new Error('[[error:email-not-confirmed]]'));
+				}
+				async.parallel({
+					isAdmin: function (next) {
+						user.isAdministrator(uid, next);
+					},
+					messageData: function (next) {
+						Messaging.getMessageFields(messageId, ['fromuid', 'timestamp'], next);
+					},
+				}, next);
+			},
+			function (results, next) {
+				if (results.isAdmin) {
+					return callback();
+				}
+				var chatConfigDuration = parseInt(meta.config[durationConfig], 10);
+				if (chatConfigDuration && Date.now() - parseInt(results.messageData.timestamp, 10) > chatConfigDuration * 1000) {
+					return callback(new Error('[[error:chat-' + type + '-duration-expired, ' + meta.config[durationConfig] + ']]'));
 				}
 
-				Messaging.getMessageField(messageId, 'fromuid', next);
-			},
-			function (fromUid, next) {
-				if (parseInt(fromUid, 10) === parseInt(uid, 10)) {
-					return callback(null, true);
+				if (parseInt(results.messageData.fromuid, 10) === parseInt(uid, 10)) {
+					return callback();
 				}
 
-				user.isAdministrator(uid, next);
-			},
-			function (isAdmin, next) {
-				next(null, isAdmin);
+				next(new Error('[[error:cant-' + type + '-chat-message]]'));
 			},
 		], callback);
-	};
+	}
 };
