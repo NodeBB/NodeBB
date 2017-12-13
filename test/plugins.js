@@ -77,7 +77,9 @@ describe('Plugins', function () {
 			callback(null, data);
 		}
 
+		plugins.registerHook('test-plugin-crash', { hook: 'filter:test.crashHook', method: filterMethod });
 
+		plugins.fireHook('filter:test.crashHook', { foo: 1 }, function (err, data) {
 			assert(err);
 			assert.equal(err.message, 'Cannot set property \'a\' of undefined');
 			done();
