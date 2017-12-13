@@ -70,6 +70,20 @@ describe('Plugins', function () {
 		});
 	});
 
+	it('should not crash if there is an exception in a hook', function (done) {
+		function filterMethod(data, callback) {
+			var crash;
+			crash.a = 5;
+			callback(null, data);
+		}
+
+
+			assert(err);
+			assert.equal(err.message, 'Cannot set property \'a\' of undefined');
+			done();
+		});
+	});
+
 	it('should get plugin data from nbbpm', function (done) {
 		plugins.get('nodebb-plugin-markdown', function (err, data) {
 			assert.ifError(err);
