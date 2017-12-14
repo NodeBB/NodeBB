@@ -197,7 +197,7 @@
 				</ul>
 			</li>
 			<li class="dropdown menu-item">
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-settings]]</a>
+				<a id="settings-menu" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-settings]]</a>
 				<ul class="dropdown-menu" role="menu">
 					<li><a href="{relative_path}/admin/settings/general">[[admin/menu:section-general]]</a></li>
 					<li><a href="{relative_path}/admin/settings/user">[[admin/menu:settings/user]]</a></li>
