@@ -849,6 +849,20 @@ describe('User', function () {
 			});
 		});
 
+		it('should return error if url is invalid when uploading from url', function (done) {
+			function filterMethod(data, callback) {
+				callback(null, data);
+			}
+
+			plugins.registerHook('test-plugin', { hook: 'filter:uploadImage', method: filterMethod });
+
+			User.uploadFromUrl(uid, 'http://scanme.nmap.org:2234/index.html', function (err) {
+				assert.equal(err.message, '[[error:invalid-url]]');
+				done();
+			});
+		});
+
+
 		it('should return error if the file is too big when uploading from url', function (done) {
 			var url = nconf.get('url') + '/assets/logo.png';
 			meta.config.maximumProfileImageSize = 1;

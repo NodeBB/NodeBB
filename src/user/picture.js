@@ -23,7 +23,12 @@ module.exports = function (User) {
 
 		async.waterfall([
 			function (next) {
-				request.head(url, next);
+				request.head(url, function (err, res, body) {
+					if (err) {
+						return setTimeout(next.bind(null, new Error('[[error:invalid-url]]')), err.message === 'Parse Error' ? 1000 : 0);
+					}
+					next(null, res, body);
+				});
 			},
 			function (res, body, next) {
 				var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
