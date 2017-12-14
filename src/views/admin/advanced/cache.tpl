@@ -42,7 +42,7 @@
 
 				<label>Hits:</label> <span>{objectCache.hits}</span><br/>
 				<label>Misses:</label> <span>{objectCache.misses}</span><br/>
-				<label>Miss Ratio:</label> <span>{objectCache.missRatio}</span><br/>
+				<label>Hit Ratio:</label> <span>{objectCache.hitRatio}</span><br/>
 
 				<!-- IF objectCache.dump -->
 				<pre>{objectCache.dump}</pre>
