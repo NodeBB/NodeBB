@@ -81,7 +81,7 @@ function runSteps(tasks) {
 
 function runUpgrade(upgrades, options) {
 	console.log('\nUpdating NodeBB...'.cyan);
-
+	options = options || {};
 	// disable mongo timeouts during upgrade
 	nconf.set('mongo:options:socketTimeoutMS', 0);
 
