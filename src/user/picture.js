@@ -1,8 +1,6 @@
 'use strict';
 
 var async = require('async');
-var request = require('request');
-var mime = require('mime');
 var winston = require('winston');
 
 var plugins = require('../plugins');
@@ -12,52 +10,6 @@ var meta = require('../meta');
 var db = require('../database');
 
 module.exports = function (User) {
-	User.uploadPicture = function (uid, picture, callback) {
-		User.uploadCroppedPicture({ uid: uid, file: picture }, callback);
-	};
-
-	User.uploadFromUrl = function (uid, url, callback) {
-		if (!plugins.hasListeners('filter:uploadImage')) {
-			return callback(new Error('[[error:no-plugin]]'));
-		}
-
-		async.waterfall([
-			function (next) {
-				request.head(url, function (err, res, body) {
-					if (err) {
-						return setTimeout(next.bind(null, new Error('[[error:invalid-url]]')), err.message === 'Parse Error' ? 1000 : 0);
-					}
-					next(null, res, body);
-				});
-			},
-			function (res, body, next) {
-				var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
-				var size = res.headers['content-length'];
-				var type = res.headers['content-type'];
-				var extension = mime.getExtension(type);
-
-				if (['png', 'jpeg', 'jpg', 'gif'].indexOf(extension) === -1) {
-					return callback(new Error('[[error:invalid-image-extension]]'));
-				}
-
-				if (size > uploadSize * 1024) {
-					return callback(new Error('[[error:file-too-big, ' + uploadSize + ']]'));
-				}
-
-				plugins.fireHook('filter:uploadImage', {
-					uid: uid,
-					image: {
-						url: url,
-						name: '',
-					},
-				}, next);
-			},
-			function (image, next) {
-				next(null, image);
-			},
-		], callback);
-	};
-
 	User.updateCoverPosition = function (uid, position, callback) {
 		// Reject anything that isn't two percentages
 		if (!/^[\d.]+%\s[\d.]+%$/.test(position)) {
