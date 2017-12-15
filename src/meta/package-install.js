@@ -5,7 +5,7 @@ var fs = require('fs');
 var cproc = require('child_process');
 
 var packageFilePath = path.join(__dirname, '../../package.json');
-var packageDefaultFilePath = path.join(__dirname, '../../package.default.json');
+var packageDefaultFilePath = path.join(__dirname, '../../install/package.json');
 var modulesPath = path.join(__dirname, '../../node_modules');
 
 function updatePackageFile() {
@@ -53,13 +53,16 @@ function preserveExtraneousPlugins() {
 	var packageContents = JSON.parse(fs.readFileSync(packageFilePath, 'utf8'));
 
 	var extraneous = packages
-		// only extraneous plugins (ones not in package.json)
+		// only extraneous plugins (ones not in package.json) which are not links
 		.filter(function (pkgName) {
-			return !packageContents.dependencies.hasOwnProperty(pkgName);
+			const extraneous = !packageContents.dependencies.hasOwnProperty(pkgName);
+			const isLink = fs.lstatSync(path.join(modulesPath, pkgName)).isSymbolicLink();
+
+			return extraneous && !isLink;
 		})
 		// reduce to a map of package names to package versions
 		.reduce(function (map, pkgName) {
-			var pkgConfig = JSON.parse(fs.readFileSync(path.join(modulesPath, pkgName, 'package.json')));
+			var pkgConfig = JSON.parse(fs.readFileSync(path.join(modulesPath, pkgName, 'package.json'), 'utf8'));
 			map[pkgName] = pkgConfig.version;
 			return map;
 		}, {});

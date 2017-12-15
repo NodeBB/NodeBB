@@ -4,6 +4,8 @@ var async = require('async');
 var assert = require('assert');
 var nconf = require('nconf');
 var request = require('request');
+var fs = require('fs');
+var path = require('path');
 
 var db = require('./mocks/databasemock');
 var categories = require('../src/categories');
@@ -15,6 +17,7 @@ var meta = require('../src/meta');
 var translator = require('../src/translator');
 var privileges = require('../src/privileges');
 var plugins = require('../src/plugins');
+var utils = require('../src/utils');
 var helpers = require('./helpers');
 
 describe('Controllers', function () {
@@ -58,115 +61,173 @@ describe('Controllers', function () {
 		});
 	});
 
-
-	it('should load default home route', function (done) {
-		request(nconf.get('url'), function (err, res, body) {
-			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
-		});
-	});
-
-	it('should load unread as home route', function (done) {
-		meta.configs.set('homePageRoute', 'unread', function (err) {
-			assert.ifError(err);
-
-			request(nconf.get('url'), function (err, res, body) {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				assert(body);
-				done();
-			});
-		});
-	});
-
-	it('should load recent as home route', function (done) {
-		meta.configs.set('homePageRoute', 'recent', function (err) {
-			assert.ifError(err);
-
-			request(nconf.get('url'), function (err, res, body) {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				assert(body);
-				done();
-			});
-		});
-	});
-
-	it('should load popular as home route', function (done) {
-		meta.configs.set('homePageRoute', 'popular', function (err) {
-			assert.ifError(err);
-
-			request(nconf.get('url'), function (err, res, body) {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				assert(body);
-				done();
-			});
-		});
-	});
-
-	it('should load category as home route', function (done) {
-		meta.configs.set('homePageRoute', 'category/1/test-category', function (err) {
-			assert.ifError(err);
-
-			request(nconf.get('url'), function (err, res, body) {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				assert(body);
-				done();
-			});
-		});
-	});
-
-	it('should redirect to custom homepage', function (done) {
-		meta.configs.set('homePageRoute', 'groups', function (err) {
-			assert.ifError(err);
-
-			request(nconf.get('url'), function (err, res, body) {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				assert(body);
-				done();
-			});
-		});
-	});
-
-	it('should 404 if custom homepage does not exist', function (done) {
-		meta.configs.set('homePageRoute', 'this-route-does-not-exist', function (err) {
-			assert.ifError(err);
-
-			request(nconf.get('url'), function (err, res, body) {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 404);
-				assert(body);
-				done();
-			});
-		});
-	});
-
-	it('should render custom homepage with hook', function (done) {
+	describe('homepage', function () {
 		function hookMethod(hookData) {
 			assert(hookData.req);
 			assert(hookData.res);
 			assert(hookData.next);
-			hookData.res.json('works');
-		}
-		plugins.registerHook('myTestPlugin', {
-			hook: 'action:homepage.get:custom',
-			method: hookMethod,
-		});
-		meta.configs.set('homePageRoute', 'custom', function (err) {
-			assert.ifError(err);
 
+			hookData.res.render('custom', {
+				works: true,
+			});
+		}
+		var message = utils.generateUUID();
+		var tplPath = path.join(nconf.get('views_dir'), 'custom.tpl');
+
+		before(function () {
+			plugins.registerHook('myTestPlugin', {
+				hook: 'action:homepage.get:custom',
+				method: hookMethod,
+			});
+
+			fs.writeFileSync(tplPath, message);
+		});
+
+		it('should load default', function (done) {
 			request(nconf.get('url'), function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
-				assert.equal(body, '"works"');
-				plugins.unregisterHook('myTestPlugin', 'action:homepage.get:custom', hookMethod);
+				assert(body);
 				done();
 			});
+		});
+
+		it('should load unread', function (done) {
+			meta.configs.set('homePageRoute', 'unread', function (err) {
+				assert.ifError(err);
+
+				request(nconf.get('url'), function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body);
+					done();
+				});
+			});
+		});
+
+		it('should load recent', function (done) {
+			meta.configs.set('homePageRoute', 'recent', function (err) {
+				assert.ifError(err);
+
+				request(nconf.get('url'), function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body);
+					done();
+				});
+			});
+		});
+
+		it('should load top', function (done) {
+			meta.configs.set('homePageRoute', 'top', function (err) {
+				assert.ifError(err);
+
+				request(nconf.get('url'), function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body);
+					done();
+				});
+			});
+		});
+
+		it('should load popular', function (done) {
+			meta.configs.set('homePageRoute', 'popular', function (err) {
+				assert.ifError(err);
+
+				request(nconf.get('url'), function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body);
+					done();
+				});
+			});
+		});
+
+		it('should load category', function (done) {
+			meta.configs.set('homePageRoute', 'category/1/test-category', function (err) {
+				assert.ifError(err);
+
+				request(nconf.get('url'), function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body);
+					done();
+				});
+			});
+		});
+
+		it('should not load breadcrumbs on home page route', function (done) {
+			request(nconf.get('url') + '/api', { json: true }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				assert(!body.breadcrumbs);
+				done();
+			});
+		});
+
+		it('should redirect to custom', function (done) {
+			meta.configs.set('homePageRoute', 'groups', function (err) {
+				assert.ifError(err);
+
+				request(nconf.get('url'), function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body);
+					done();
+				});
+			});
+		});
+
+		it('should 404 if custom does not exist', function (done) {
+			meta.configs.set('homePageRoute', 'this-route-does-not-exist', function (err) {
+				assert.ifError(err);
+
+				request(nconf.get('url'), function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 404);
+					assert(body);
+					done();
+				});
+			});
+		});
+
+		it('api should work with hook', function (done) {
+			meta.configs.set('homePageRoute', 'custom', function (err) {
+				assert.ifError(err);
+
+				request(nconf.get('url') + '/api', { json: true }, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert.equal(body.works, true);
+					assert.equal(body.template.custom, true);
+
+					done();
+				});
+			});
+		});
+
+		it('should render with hook', function (done) {
+			meta.configs.set('homePageRoute', 'custom', function (err) {
+				assert.ifError(err);
+
+				request(nconf.get('url'), function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert.ok(body);
+					assert.ok(body.indexOf('<main id="panel"'));
+					assert.ok(body.indexOf(message) !== -1);
+
+					done();
+				});
+			});
+		});
+
+		after(function () {
+			plugins.unregisterHook('myTestPlugin', 'action:homepage.get:custom', hookMethod);
+			fs.unlinkSync(tplPath);
+			fs.unlinkSync(tplPath.replace(/\.tpl$/, '.js'));
 		});
 	});
 
@@ -304,6 +365,15 @@ describe('Controllers', function () {
 		});
 	});
 
+	it('should 404 on /outgoing with invalid url', function (done) {
+		request(nconf.get('url') + '/outgoing?url=derp', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 404);
+			assert(body);
+			done();
+		});
+	});
+
 	it('should load /tos', function (done) {
 		meta.config.termsOfUse = 'please accept our tos';
 		request(nconf.get('url') + '/tos', function (err, res, body) {
@@ -372,6 +442,15 @@ describe('Controllers', function () {
 
 	it('should load recent rss feed', function (done) {
 		request(nconf.get('url') + '/recent.rss', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load top rss feed', function (done) {
+		request(nconf.get('url') + '/top.rss', function (err, res, body) {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -924,6 +1003,35 @@ describe('Controllers', function () {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				done();
+			});
+		});
+
+		describe('/me/*', function () {
+			it('api should redirect to /user/[userslug]/bookmarks', function (done) {
+				request(nconf.get('url') + '/api/me/bookmarks', { jar: jar, json: true }, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert.equal(res.headers['x-redirect'], '/user/foo/bookmarks');
+					assert.equal(body, '/user/foo/bookmarks');
+					done();
+				});
+			});
+			it('api should redirect to /user/[userslug]/edit/username', function (done) {
+				request(nconf.get('url') + '/api/me/edit/username', { jar: jar, json: true }, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert.equal(res.headers['x-redirect'], '/user/foo/edit/username');
+					assert.equal(body, '/user/foo/edit/username');
+					done();
+				});
+			});
+			it('should redirect to login if user is not logged in', function (done) {
+				request(nconf.get('url') + '/me/bookmarks', { json: true }, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body.indexOf('Login to your account') !== -1);
+					done();
+				});
 			});
 		});
 
@@ -1958,6 +2066,27 @@ describe('Controllers', function () {
 				done();
 			});
 		});
+
+		it('should 404 if plugin calls next', function (done) {
+			function hookMethod(hookData, callback) {
+				hookData.next();
+			}
+
+			plugins.registerHook('myTestPlugin', {
+				hook: 'filter:composer.build',
+				method: hookMethod,
+			});
+
+			request(nconf.get('url') + '/api/compose', { json: true }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 404);
+				console.log(body);
+
+				plugins.unregisterHook('myTestPlugin', 'filter:composer.build', hookMethod);
+				done();
+			});
+		});
+
 
 		it('should error with invalid data', function (done) {
 			request.post(nconf.get('url') + '/compose', {

@@ -30,6 +30,7 @@
     "notif.chat.unsub.info": "To powiadomienie o czacie zostało Ci wysłane zgodnie z ustawieniami twojego konta.",
     "notif.post.cta": "Kliknij tutaj, aby przeczytać cały temat.",
     "notif.post.unsub.info": "To powiadomienie o poście zostało Ci wysłane zgodnie z ustawieniami twojego konta.",
+    "notif.cta": "Click here to go to forum",
     "test.text1": "To jest e-mail testowy, aby sprawdzić, czy poprawnie skonfigurowałeś e-mailer w swoim NodeBB.",
     "unsub.cta": "Kliknij tutaj, aby zmienić te ustawienia",
     "banned.subject": "Zostałeś zbanowany na %1",

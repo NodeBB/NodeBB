@@ -84,13 +84,19 @@ settingsController.get = function (req, res, callback) {
 			plugins.fireHook('filter:user.customSettings', { settings: results.settings, customSettings: [], uid: req.uid }, next);
 		},
 		function (data, next) {
-			getHomePageRoutes(userData, function (err, routes) {
-				userData.homePageRoutes = routes;
-				next(err, data);
-			});
-		},
-		function (data) {
 			userData.customSettings = data.customSettings;
+			async.parallel({
+				notificationSettings: function (next) {
+					getNotificationSettings(userData, next);
+				},
+				routes: function (next) {
+					getHomePageRoutes(userData, next);
+				},
+			}, next);
+		},
+		function (results) {
+			userData.homePageRoutes = results.routes;
+			userData.notificationSettings = results.notificationSettings;
 			userData.disableEmailSubscriptions = parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
 
 			userData.dailyDigestFreqOptions = [
@@ -129,6 +135,20 @@ settingsController.get = function (req, res, callback) {
 				language.selected = language.code === userData.settings.userLang;
 			});
 
+			var notifFreqOptions = [
+				'all',
+				'everyTen',
+				'logarithmic',
+				'disabled',
+			];
+
+			userData.upvoteNotifFreq = notifFreqOptions.map(function (name) {
+				return {
+					name: name,
+					selected: name === userData.notifFreqOptions,
+				};
+			});
+
 			userData.disableCustomUserSkins = parseInt(meta.config.disableCustomUserSkins, 10) === 1;
 
 			userData.allowUserHomePage = parseInt(meta.config.allowUserHomePage, 10) === 1;
@@ -149,6 +169,56 @@ settingsController.get = function (req, res, callback) {
 	], callback);
 };
 
+function getNotificationSettings(userData, callback) {
+	var types = [
+		'notificationType_upvote',
+		'notificationType_new-topic',
+		'notificationType_new-reply',
+		'notificationType_follow',
+		'notificationType_new-chat',
+		'notificationType_group-invite',
+	];
+
+	var privilegedTypes = [];
+
+	async.waterfall([
+		function (next) {
+			user.getPrivileges(userData.uid, next);
+		},
+		function (privileges, next) {
+			if (privileges.isAdmin) {
+				privilegedTypes.push('notificationType_new-register');
+			}
+			if (privileges.isAdmin || privileges.isGlobalMod || privileges.isModeratorOfAnyCategory) {
+				privilegedTypes.push('notificationType_post-queue', 'notificationType_new-post-flag');
+			}
+			if (privileges.isAdmin || privileges.isGlobalMod) {
+				privilegedTypes.push('notificationType_new-user-flag');
+			}
+			plugins.fireHook('filter:user.notificationTypes', {
+				userData: userData,
+				types: types,
+				privilegedTypes: privilegedTypes,
+			}, next);
+		},
+		function (results, next) {
+			function modifyType(type) {
+				var setting = userData.settings[type] || 'notification';
+
+				return {
+					name: type,
+					label: '[[notifications:' + type + ']]',
+					none: setting === 'none',
+					notification: setting === 'notification',
+					email: setting === 'email',
+					notificationemail: setting === 'notificationemail',
+				};
+			}
+			var notificationSettings = results.types.map(modifyType).concat(results.privilegedTypes.map(modifyType));
+			next(null, notificationSettings);
+		},
+	], callback);
+}
 
 function getHomePageRoutes(userData, callback) {
 	async.waterfall([
@@ -183,6 +253,10 @@ function getHomePageRoutes(userData, callback) {
 				{
 					route: 'recent',
 					name: 'Recent',
+				},
+				{
+					route: 'top',
+					name: 'Top',
 				},
 				{
 					route: 'popular',
@@ -222,6 +296,3 @@ function getHomePageRoutes(userData, callback) {
 		},
 	], callback);
 }
-
-
-module.exports = settingsController;

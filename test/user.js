@@ -273,9 +273,11 @@ describe('User', function () {
 	});
 
 	describe('.search()', function () {
+		var uid;
 		it('should return an object containing an array of matching users', function (done) {
 			User.search({ query: 'john' }, function (err, searchData) {
 				assert.ifError(err);
+				uid = searchData.users[0].uid;
 				assert.equal(Array.isArray(searchData.users) && searchData.users.length > 0, true);
 				assert.equal(searchData.users[0].username, 'John Smith');
 				done();
@@ -318,6 +320,15 @@ describe('User', function () {
 						done();
 					});
 				});
+			});
+		});
+
+		it('should search users by ip', function (done) {
+			socketUser.search({ uid: testUid }, { query: uid, searchBy: 'uid' }, function (err, data) {
+				assert.ifError(err);
+				assert(Array.isArray(data.users));
+				assert.equal(data.users[0].uid, uid);
+				done();
 			});
 		});
 
@@ -627,6 +638,18 @@ describe('User', function () {
 			});
 		});
 
+		it('should not update a user\'s username if it did not change', function (done) {
+			socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, username: 'updatedAgain', password: '123456' }, function (err) {
+				assert.ifError(err);
+				db.getSortedSetRevRange('user:' + uid + ':usernames', 0, -1, function (err, data) {
+					assert.ifError(err);
+					assert(data[0].startsWith('updatedAgain'));
+					assert(data[1].startsWith('updatedUserName'));
+					done();
+				});
+			});
+		});
+
 		it('should change email', function (done) {
 			socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, email: 'updatedAgain@me.com', password: '123456' }, function (err) {
 				assert.ifError(err);
@@ -753,7 +776,10 @@ describe('User', function () {
 						name: 'test_copy.png',
 						type: 'image/png',
 					};
-					User.uploadPicture(uid, picture, function (err, uploadedPicture) {
+					User.uploadCroppedPicture({
+						uid: uid,
+						file: picture,
+					}, function (err, uploadedPicture) {
 						assert.ifError(err);
 						assert.equal(uploadedPicture.url, '/assets/uploads/profile/' + uid + '-profileavatar.png');
 						assert.equal(uploadedPicture.path, path.join(nconf.get('base_dir'), 'public', 'uploads', 'profile', uid + '-profileavatar.png'));
@@ -771,7 +797,10 @@ describe('User', function () {
 				name: 'test.png',
 				type: 'image/png',
 			};
-			User.uploadPicture(uid, picture, function (err) {
+			User.uploadCroppedPicture({
+				uid: uid,
+				file: picture,
+			}, function (err) {
 				assert.equal(err.message, '[[error:profile-image-uploads-disabled]]');
 				done();
 			});
@@ -785,7 +814,11 @@ describe('User', function () {
 				name: 'test.png',
 				type: 'image/png',
 			};
-			User.uploadPicture(uid, picture, function (err) {
+
+			User.uploadCroppedPicture({
+				uid: uid,
+				file: picture,
+			}, function (err) {
 				assert.equal(err.message, '[[error:file-too-big, 256]]');
 				done();
 			});
@@ -797,75 +830,48 @@ describe('User', function () {
 				size: 7189,
 				name: 'test',
 			};
-			User.uploadPicture(uid, picture, function (err) {
+			User.uploadCroppedPicture({
+				uid: uid,
+				file: picture,
+			}, function (err) {
 				assert.equal(err.message, '[[error:invalid-image]]');
 				done();
 			});
 		});
 
-		it('should return error if no plugins listening for filter:uploadImage when uploading from url', function (done) {
-			var url = nconf.get('url') + '/assets/logo.png';
-			User.uploadFromUrl(uid, url, function (err) {
-				assert.equal(err.message, '[[error:no-plugin]]');
-				done();
+		describe('user.uploadCroppedPicture', function () {
+			var goodImage = 'data:image/gif;base64,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';
+			var badImage = 'data:audio/mp3;base64,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';
+			it('should error if both file and imageData are missing', function (done) {
+				User.uploadCroppedPicture({}, function (err) {
+					assert.equal('[[error:invalid-data]]', err.message);
+					done();
+				});
 			});
-		});
 
-		it('should return error if the extension is invalid when uploading from url', function (done) {
-			var url = nconf.get('url') + '/favicon.ico';
+			it('should error if file size is too big', function (done) {
+				var temp = meta.config.maximumProfileImageSize;
+				meta.config.maximumProfileImageSize = 1;
+				User.uploadCroppedPicture({
+					uid: 1,
+					imageData: goodImage,
+				}, function (err) {
+					assert.equal('[[error:file-too-big, 1]]', err.message);
 
-			function filterMethod(data, callback) {
-				callback(null, data);
-			}
-
-			plugins.registerHook('test-plugin', { hook: 'filter:uploadImage', method: filterMethod });
-
-			User.uploadFromUrl(uid, url, function (err) {
-				assert.equal(err.message, '[[error:invalid-image-extension]]');
-				done();
+					// Restore old value
+					meta.config.maximumProfileImageSize = temp;
+					done();
+				});
 			});
-		});
 
-		it('should return error if the file is too big when uploading from url', function (done) {
-			var url = nconf.get('url') + '/assets/logo.png';
-			meta.config.maximumProfileImageSize = 1;
-
-			function filterMethod(data, callback) {
-				callback(null, data);
-			}
-
-			plugins.registerHook('test-plugin', { hook: 'filter:uploadImage', method: filterMethod });
-
-			User.uploadFromUrl(uid, url, function (err) {
-				assert.equal(err.message, '[[error:file-too-big, ' + meta.config.maximumProfileImageSize + ']]');
-				done();
-			});
-		});
-
-		it('should error with invalid data', function (done) {
-			var socketUser = require('../src/socket.io/user');
-
-			socketUser.uploadProfileImageFromUrl({ uid: uid }, { uid: uid, url: '' }, function (err) {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
-		});
-
-		it('should upload picture when uploading from url', function (done) {
-			var socketUser = require('../src/socket.io/user');
-			var url = nconf.get('url') + '/assets/logo.png';
-			meta.config.maximumProfileImageSize = '';
-
-			function filterMethod(data, callback) {
-				callback(null, { url: url });
-			}
-
-			plugins.registerHook('test-plugin', { hook: 'filter:uploadImage', method: filterMethod });
-
-			socketUser.uploadProfileImageFromUrl({ uid: uid }, { uid: uid, url: url }, function (err, uploadedPicture) {
-				assert.ifError(err);
-				assert.equal(uploadedPicture, url);
-				done();
+			it('should not allow image data with bad MIME type to be passed in', function (done) {
+				User.uploadCroppedPicture({
+					uid: 1,
+					imageData: badImage,
+				}, function (err) {
+					assert.equal('[[error:invalid-image]]', err.message);
+					done();
+				});
 			});
 		});
 
@@ -1066,6 +1072,87 @@ describe('User', function () {
 				assert.equal(err.message, '[[error:ban-expiry-missing]]');
 				done();
 			});
+		});
+	});
+
+	describe('Digest.getSubscribers', function (done) {
+		var uidIndex = {};
+
+		before(function (done) {
+			var testUsers = ['daysub', 'offsub', 'nullsub', 'weeksub'];
+			async.each(testUsers, function (username, next) {
+				async.waterfall([
+					async.apply(User.create, { username: username, email: username + '@example.com' }),
+					function (uid, next) {
+						if (username === 'nullsub') {
+							return setImmediate(next);
+						}
+
+						uidIndex[username] = uid;
+
+						var sub = username.slice(0, -3);
+						async.parallel([
+							async.apply(User.updateDigestSetting, uid, sub),
+							async.apply(User.setSetting, uid, 'dailyDigestFreq', sub),
+						], next);
+					},
+				], next);
+			}, done);
+		});
+
+		it('should accurately build digest list given ACP default "null" (not set)', function (done) {
+			User.digest.getSubscribers('day', function (err, subs) {
+				assert.ifError(err);
+				assert.strictEqual(subs.length, 1);
+
+				done();
+			});
+		});
+
+		it('should accurately build digest list given ACP default "day"', function (done) {
+			async.series([
+				async.apply(meta.configs.set, 'dailyDigestFreq', 'day'),
+				function (next) {
+					User.digest.getSubscribers('day', function (err, subs) {
+						assert.ifError(err);
+						assert.strictEqual(subs.includes(uidIndex.daysub.toString()), true);	// daysub does get emailed
+						assert.strictEqual(subs.includes(uidIndex.weeksub.toString()), false);	// weeksub does not get emailed
+						assert.strictEqual(subs.includes(uidIndex.offsub.toString()), false);	// offsub doesn't get emailed
+
+						next();
+					});
+				},
+			], done);
+		});
+
+		it('should accurately build digest list given ACP default "week"', function (done) {
+			async.series([
+				async.apply(meta.configs.set, 'dailyDigestFreq', 'week'),
+				function (next) {
+					User.digest.getSubscribers('week', function (err, subs) {
+						assert.ifError(err);
+						assert.strictEqual(subs.includes(uidIndex.weeksub.toString()), true);	// weeksub gets emailed
+						assert.strictEqual(subs.includes(uidIndex.daysub.toString()), false);	// daysub gets emailed
+						assert.strictEqual(subs.includes(uidIndex.offsub.toString()), false);	// offsub does not get emailed
+
+						next();
+					});
+				},
+			], done);
+		});
+
+		it('should accurately build digest list given ACP default "off"', function (done) {
+			async.series([
+				async.apply(meta.configs.set, 'dailyDigestFreq', 'off'),
+				function (next) {
+					User.digest.getSubscribers('day', function (err, subs) {
+						assert.ifError(err);
+						assert.strictEqual(subs.length, 1);
+
+						next();
+					});
+				},
+			], done);
 		});
 	});
 
@@ -1312,7 +1399,7 @@ describe('User', function () {
 				username: 'rejectme',
 				password: '123456',
 				'password-confirm': '123456',
-				email: 'reject@me.com',
+				email: '<script>alert("ok");<script>reject@me.com',
 			}, function (err) {
 				assert.ifError(err);
 				helpers.loginUser('admin', '123456', function (err, jar) {
@@ -1320,7 +1407,7 @@ describe('User', function () {
 					request(nconf.get('url') + '/api/admin/manage/registration', { jar: jar, json: true }, function (err, res, body) {
 						assert.ifError(err);
 						assert.equal(body.users[0].username, 'rejectme');
-						assert.equal(body.users[0].email, 'reject@me.com');
+						assert.equal(body.users[0].email, '&lt;script&gt;alert(&quot;ok&quot;);&lt;script&gt;reject@me.com');
 						done();
 					});
 				});
@@ -1504,6 +1591,17 @@ describe('User', function () {
 						assert.equal(isMember, false);
 						done();
 					});
+				});
+			});
+		});
+
+		it('should escape email', function (done) {
+			socketUser.invite({ uid: inviterUid }, '<script>alert("ok");</script>', function (err) {
+				assert.ifError(err);
+				User.getInvites(inviterUid, function (err, data) {
+					assert.ifError(err);
+					assert.equal(data[0], '&lt;script&gt;alert(&quot;ok&quot;);&lt;&#x2F;script&gt;');
+					done();
 				});
 			});
 		});

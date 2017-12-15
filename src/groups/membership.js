@@ -161,6 +161,7 @@ module.exports = function (Groups) {
 		async.waterfall([
 			async.apply(inviteOrRequestMembership, groupName, uid, 'invite'),
 			async.apply(notifications.create, {
+				type: 'group-invite',
 				bodyShort: '[[groups:invited.notification_title, ' + groupName + ']]',
 				bodyLong: '',
 				nid: 'group:' + groupName + ':uid:' + uid + ':invite',

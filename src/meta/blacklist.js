@@ -68,7 +68,12 @@ Blacklist.test = function (clientIp, callback) {
 	// clientIp = '127.0.15.1:3443'; // IPv4 with port strip port to not fail
 	clientIp = clientIp.split(':').length === 2 ? clientIp.split(':')[0] : clientIp;
 
-	var addr = ipaddr.parse(clientIp);
+	var addr;
+	try {
+		addr = ipaddr.parse(clientIp);
+	} catch (err) {
+		return callback(err);
+	}
 
 	if (
 		Blacklist._rules.ipv4.indexOf(clientIp) === -1 &&	// not explicitly specified in ipv4 list
@@ -88,11 +93,7 @@ Blacklist.test = function (clientIp, callback) {
 				analytics.increment('blacklist');
 			}
 
-			if (typeof callback === 'function') {
-				callback(err);
-			} else {
-				return !!err;
-			}
+			callback(err);
 		});
 	} else {
 		var err = new Error('[[error:blacklisted-ip]]');
@@ -100,11 +101,7 @@ Blacklist.test = function (clientIp, callback) {
 
 		analytics.increment('blacklist');
 
-		if (typeof callback === 'function') {
-			setImmediate(callback, err);
-		} else {
-			return true;
-		}
+		setImmediate(callback, err);
 	}
 };
 

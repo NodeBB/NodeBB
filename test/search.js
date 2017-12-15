@@ -165,4 +165,15 @@ describe('Search', function () {
 			done();
 		});
 	});
+
+	it('should not crash if tags is not an array', function (done) {
+		search.search({
+			query: 'mongodb',
+			searchIn: 'titles',
+			hasTags: 'nodebb,javascript',
+		}, function (err, data) {
+			assert.ifError(err);
+			done();
+		});
+	});
 });

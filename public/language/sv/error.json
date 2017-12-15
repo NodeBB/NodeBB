@@ -119,11 +119,13 @@
     "not-enough-reputation-to-downvote": "Du har inte tillräckligt förtroende för att rösta ner det här meddelandet",
     "not-enough-reputation-to-flag": "Du har inte tillräckligt förtroende för att flagga det här inlägget.",
     "already-flagged": "Du har redan flaggat det här inlägget",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "NodeBB stötte på problem med att ladda om: \"%1\". NodeBB kommer fortsätta servera befintliga resurser till klienten, men du borde återställa det du gjorde innan du försökte ladda om.",
     "registration-error": "Registreringsfel",
     "parse-error": "Något gick fel vid tolkning av svar från servern",
     "wrong-login-type-email": "Använd din e-postadress för att logga in",
     "wrong-login-type-username": "Använd ditt användarnamn för att logga in",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "Du har bjudit in det maximala antalet användare (%1 av %2)",
     "no-session-found": "Ingen login-session hittades!",
     "not-in-room": "Användaren finns inte i rummet",
@@ -132,5 +134,6 @@
     "no-users-selected": "Ingen användare vald(a)",
     "invalid-home-page-route": "Ogiltig sidsökväg",
     "invalid-session": "Session fel",
-    "invalid-session-text": "Det ser ut som din inloggningssession inte längre är aktiv eller inte längre överensstämmer med servern. Uppdatera denna sida."
+    "invalid-session-text": "Det ser ut som din inloggningssession inte längre är aktiv eller inte längre överensstämmer med servern. Uppdatera denna sida.",
+    "no-topics-selected": "No topics selected!"
 }

@@ -4,10 +4,7 @@
 	function loadClient(language, namespace) {
 		return Promise.resolve(jQuery.getJSON(config.relative_path + '/assets/language/' + language + '/' + namespace + '.json?' + config['cache-buster']));
 	}
-	var warn = function () {};
-	if (typeof config === 'object' && config.environment === 'development') {
-		warn = console.warn.bind(console);
-	}
+	var warn = console.warn;
 	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as a named module
 		define('translator', [], function () {
@@ -505,7 +502,7 @@
 		Translator.compile = function compile() {
 			var args = Array.prototype.slice.call(arguments, 0).map(function (text) {
 				// escape commas and percent signs in arguments
-				return text.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+				return String(text).replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 			});
 
 			return '[[' + args.join(', ') + ']]';

@@ -30,6 +30,7 @@
     "notif.chat.unsub.info": "تم إرسال هذا الإشعار بوجودة محادثة جديدة وفقا لخيارات تسجيلك.",
     "notif.post.cta": "انقر هنا لقراءة الموضوع بأكمله",
     "notif.post.unsub.info": "تم إشعارك بهذه المشاركة بناءً على الخيارات التي سبق وأن حددتها.",
+    "notif.cta": "Click here to go to forum",
     "test.text1": "هذه رسالة تجريبية للتأكد من صحة إعدادت الرسائل الإلكترونية في منتدى NodeBB خاصتك.",
     "unsub.cta": "انقر هنا لتغيير تلك الإعدادات",
     "banned.subject": "You have been banned from %1",

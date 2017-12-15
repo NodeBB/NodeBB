@@ -119,11 +119,13 @@
     "not-enough-reputation-to-downvote": "আপনার এই পোস্ট downvote করার জন্য পর্যাপ্ত সম্মাননা নেই",
     "not-enough-reputation-to-flag": "এই পোষ্টকে ফ্লাগ করার জন্য আপনার পর্যাপ্ত সম্মাননা নেই",
     "already-flagged": "You have already flagged this post",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "\"%1\" রিলোড করতে সমস্যা হয়েছে। রিলোডের পূর্বে যা করা হয়েছিল সেটি আনডু করা সমীচীন। ",
     "registration-error": "নিবন্ধন এরর!",
     "parse-error": "Something went wrong while parsing server response",
     "wrong-login-type-email": "Please use your email to login",
     "wrong-login-type-username": "Please use your username to login",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
     "no-session-found": "No login session found!",
     "not-in-room": "User not in room",
@@ -132,5 +134,6 @@
     "no-users-selected": "No user(s) selected",
     "invalid-home-page-route": "Invalid home page route",
     "invalid-session": "Session Mismatch",
-    "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page."
+    "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page.",
+    "no-topics-selected": "No topics selected!"
 }

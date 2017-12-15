@@ -31,18 +31,18 @@ exports.read = function read(callback) {
 		return callback(null, cached);
 	}
 
-	fs.readFile(filePath, function (err, buffer) {
+	fs.readFile(filePath, 'utf8', function (err, buster) {
 		if (err) {
 			winston.warn('[cache-buster] could not read cache buster', err);
 			return callback(null, generate());
 		}
 
-		if (!buffer || buffer.toString().length !== 11) {
-			winston.warn('[cache-buster] cache buster string invalid: expected /[a-z0-9]{11}/, got `' + buffer + '`');
+		if (!buster || buster.length !== 11) {
+			winston.warn('[cache-buster] cache buster string invalid: expected /[a-z0-9]{11}/, got `' + buster + '`');
 			return callback(null, generate());
 		}
 
-		cached = buffer.toString();
+		cached = buster;
 		callback(null, cached);
 	});
 };

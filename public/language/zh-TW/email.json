@@ -30,6 +30,7 @@
     "notif.chat.unsub.info": "本聊天通知按你的訂閱設置發送給你。",
     "notif.post.cta": "點擊此處來閱讀完整主題",
     "notif.post.unsub.info": "本張貼通知按你的訂閱設置發送給你。",
+    "notif.cta": "Click here to go to forum",
     "test.text1": "這是一個測試電子郵件，用於確認你的NodeBB郵件功能是否設置正確。",
     "unsub.cta": "點擊此處來更改這些設置",
     "banned.subject": "You have been banned from %1",

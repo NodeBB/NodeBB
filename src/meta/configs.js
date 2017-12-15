@@ -83,9 +83,12 @@ function processConfig(data, callback) {
 			var image = require('../image');
 			if (data['brand:logo']) {
 				image.size(path.join(nconf.get('upload_path'), 'system', 'site-logo-x50.png'), function (err, size) {
+					if (err) {
+						return next(err);
+					}
 					data['brand:emailLogo:height'] = size.height;
 					data['brand:emailLogo:width'] = size.width;
-					next(err);
+					next();
 				});
 			} else {
 				setImmediate(next);

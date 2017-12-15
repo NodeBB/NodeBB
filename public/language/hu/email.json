@@ -30,6 +30,7 @@
     "notif.chat.unsub.info": "Ez a chat-értesítés a feliratkozási beállításaid miatt lett kiküldve.",
     "notif.post.cta": "Kattints ide a teljes téma olvasásához",
     "notif.post.unsub.info": "Ez a hozzászólás-értesítés a feliratkozási beállításaid miatt lett kiküldve.",
+    "notif.cta": "Click here to go to forum",
     "test.text1": "Ez egy teszt levél, ami által ellenőrizzük, hogy a levelező helyesen lett beállítva a NodeBB-ben.",
     "unsub.cta": "Kattintson ide a beállítások módosításához",
     "banned.subject": "Ki lettél tiltva a(z) %1 oldalról",

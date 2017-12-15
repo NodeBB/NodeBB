@@ -23,7 +23,7 @@ themesController.get = function (req, res, next) {
 				return next(Error('invalid-data'));
 			}
 
-			fs.readFile(themeConfigPath, next);
+			fs.readFile(themeConfigPath, 'utf8', next);
 		},
 		function (themeConfig, next) {
 			try {

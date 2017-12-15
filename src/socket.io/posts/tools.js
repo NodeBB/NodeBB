@@ -75,7 +75,7 @@ module.exports = function (SocketPosts) {
 			},
 			function (results, next) {
 				if (results.isMain && results.isLast) {
-					deleteTopicOf(data.pid, socket, next);
+					deleteOrRestoreTopicOf('delete', data.pid, socket, next);
 				} else {
 					next();
 				}
@@ -99,12 +99,23 @@ module.exports = function (SocketPosts) {
 		if (!data || !data.pid) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
-
+		var postData;
 		async.waterfall([
 			function (next) {
 				posts.tools.restore(socket.uid, data.pid, next);
 			},
-			function (postData, next) {
+			function (_postData, next) {
+				postData = _postData;
+				isMainAndLastPost(data.pid, next);
+			},
+			function (results, next) {
+				if (results.isMain && results.isLast) {
+					deleteOrRestoreTopicOf('restore', data.pid, socket, next);
+				} else {
+					setImmediate(next);
+				}
+			},
+			function (next) {
 				websockets.in('topic_' + data.tid).emit('event:post_restored', postData);
 
 				events.log({
@@ -185,13 +196,19 @@ module.exports = function (SocketPosts) {
 		], callback);
 	};
 
-	function deleteTopicOf(pid, socket, callback) {
+	function deleteOrRestoreTopicOf(command, pid, socket, callback) {
 		async.waterfall([
 			function (next) {
-				posts.getTopicFields(pid, ['tid', 'cid'], next);
+				posts.getTopicFields(pid, ['tid', 'cid', 'deleted'], next);
 			},
 			function (topic, next) {
-				socketTopics.doTopicAction('delete', 'event:topic_deleted', socket, { tids: [topic.tid], cid: topic.cid }, next);
+				if (parseInt(topic.deleted, 10) !== 1 && command === 'delete') {
+					socketTopics.doTopicAction('delete', 'event:topic_deleted', socket, { tids: [topic.tid], cid: topic.cid }, next);
+				} else if (parseInt(topic.deleted, 10) === 1 && command === 'restore') {
+					socketTopics.doTopicAction('restore', 'event:topic_restored', socket, { tids: [topic.tid], cid: topic.cid }, next);
+				} else {
+					setImmediate(next);
+				}
 			},
 		], callback);
 	}

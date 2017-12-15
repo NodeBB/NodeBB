@@ -74,8 +74,7 @@ module.exports = function (User) {
 				settings.categoryTopicSort = getSetting(settings, 'categoryTopicSort', 'newest_to_oldest');
 				settings.followTopicsOnCreate = parseInt(getSetting(settings, 'followTopicsOnCreate', 1), 10) === 1;
 				settings.followTopicsOnReply = parseInt(getSetting(settings, 'followTopicsOnReply', 0), 10) === 1;
-				settings.sendChatNotifications = parseInt(getSetting(settings, 'sendChatNotifications', 0), 10) === 1;
-				settings.sendPostNotifications = parseInt(getSetting(settings, 'sendPostNotifications', 0), 10) === 1;
+				settings.upvoteNotifFreq = getSetting(settings, 'upvoteNotifFreq', 'all');
 				settings.restrictChat = parseInt(getSetting(settings, 'restrictChat', 0), 10) === 1;
 				settings.topicSearchEnabled = parseInt(getSetting(settings, 'topicSearchEnabled', 0), 10) === 1;
 				settings.delayImageLoading = parseInt(getSetting(settings, 'delayImageLoading', 1), 10) === 1;
@@ -121,8 +120,6 @@ module.exports = function (User) {
 			userLang: data.userLang || meta.config.defaultLang,
 			followTopicsOnCreate: data.followTopicsOnCreate,
 			followTopicsOnReply: data.followTopicsOnReply,
-			sendChatNotifications: data.sendChatNotifications,
-			sendPostNotifications: data.sendPostNotifications,
 			restrictChat: data.restrictChat,
 			topicSearchEnabled: data.topicSearchEnabled,
 			delayImageLoading: data.delayImageLoading,
@@ -131,6 +128,13 @@ module.exports = function (User) {
 			notificationSound: data.notificationSound,
 			incomingChatSound: data.incomingChatSound,
 			outgoingChatSound: data.outgoingChatSound,
+			upvoteNotifFreq: data.upvoteNotifFreq,
+			notificationType_upvote: data.notificationType_upvote,
+			'notificationType_new-topic': data['notificationType_new-topic'],
+			'notificationType_new-reply': data['notificationType_new-reply'],
+			notificationType_follow: data.notificationType_follow,
+			'notificationType_new-chat': data['notificationType_new-chat'],
+			'notificationType_group-invite': data['notificationType_group-invite'],
 		};
 
 		if (data.bootswatchSkin) {

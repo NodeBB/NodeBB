@@ -27,6 +27,8 @@
 	"pills.banned": "Banned",
 	"pills.search": "User Search",
 
+	"search.uid": "By User ID",
+	"search.uid-placeholder": "Enter a user ID to search",
 	"search.username": "By User Name",
 	"search.username-placeholder": "Enter a username to search",
 	"search.email": "By Email",

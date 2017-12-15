@@ -7,20 +7,7 @@
 
 (function (factory) {
 	"use strict";
-
-	if (typeof define === "function" && define.amd) {
-		define(factory);
-	}
-	else if (typeof module != "undefined" && typeof module.exports != "undefined") {
-		module.exports = factory();
-	}
-	else if (typeof Package !== "undefined") {
-		Sortable = factory();  // export for Meteor.js
-	}
-	else {
-		/* jshint sub:true */
-		window["Sortable"] = factory();
-	}
+	window.Sortable = factory();
 })(function () {
 	"use strict";
 

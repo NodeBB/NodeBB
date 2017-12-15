@@ -30,6 +30,7 @@
     "notif.chat.unsub.info": "Ova obavijest razgovora Vam je poslana na temelju vaših postavki pretplate.",
     "notif.post.cta": "Pročitaj temu",
     "notif.post.unsub.info": "Ova objava Vam je poslana na temelju vaših postavki pretplate.",
+    "notif.cta": "Click here to go to forum",
     "test.text1": "Ovo je test email za provjeru Vaše konfiguracije.",
     "unsub.cta": "Klikni ovdje za promjenu postavki",
     "banned.subject": "Blokirani se na %1",

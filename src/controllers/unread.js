@@ -2,8 +2,10 @@
 'use strict';
 
 var async = require('async');
+var nconf = require('nconf');
 var querystring = require('querystring');
 
+var meta = require('../meta');
 var pagination = require('../pagination');
 var user = require('../user');
 var topics = require('../topics');
@@ -53,6 +55,7 @@ unreadController.get = function (req, res, next) {
 			}, next);
 		},
 		function (data) {
+			data.title = meta.config.homePageTitle || '[[pages:home]]';
 			data.pageCount = Math.max(1, Math.ceil(data.topicCount / settings.topicsPerPage));
 			data.pagination = pagination.create(page, data.pageCount, req.query);
 
@@ -64,12 +67,11 @@ unreadController.get = function (req, res, next) {
 			data.categories = results.watchedCategories.categories;
 			data.selectedCategory = results.watchedCategories.selectedCategory;
 			data.selectedCids = results.watchedCategories.selectedCids;
-
-			if (req.path.startsWith('/api/unread') || req.path.startsWith('/unread')) {
+			if (req.originalUrl.startsWith(nconf.get('relative_path') + '/api/unread') || req.originalUrl.startsWith(nconf.get('relative_path') + '/unread')) {
+				data.title = '[[pages:unread]]';
 				data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[unread:title]]' }]);
 			}
 
-			data.title = '[[pages:unread]]';
 			data.filters = helpers.buildFilters('unread', filter);
 
 			data.selectedFilter = data.filters.find(function (filter) {

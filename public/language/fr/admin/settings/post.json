@@ -4,6 +4,7 @@
 	"sorting.oldest-to-newest": "Du plus ancien au plus récent",
 	"sorting.newest-to-oldest": "Du plus récent au plus ancien",
 	"sorting.most-votes": "Avec le plus de votes",
+	"sorting.most-posts": "Most Posts",
 	"sorting.topic-default": "Tri des sujets par défaut",
 	"restrictions": "Restrictions d'envoi",
 	"restrictions.post-queue": "Activer la file d'attente des messages",

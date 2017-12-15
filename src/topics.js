@@ -21,6 +21,7 @@ require('./topics/delete')(Topics);
 require('./topics/unread')(Topics);
 require('./topics/recent')(Topics);
 require('./topics/popular')(Topics);
+require('./topics/top')(Topics);
 require('./topics/user')(Topics);
 require('./topics/fork')(Topics);
 require('./topics/posts')(Topics);
@@ -31,6 +32,7 @@ require('./topics/suggested')(Topics);
 require('./topics/tools')(Topics);
 require('./topics/thumb')(Topics);
 require('./topics/bookmarks')(Topics);
+require('./topics/merge')(Topics);
 
 Topics.exists = function (tid, callback) {
 	db.isSortedSetMember('topics:tid', tid, callback);
@@ -164,6 +166,9 @@ Topics.getTopicsByTids = function (tids, uid, callback) {
 					topics[i].bookmark = results.bookmarks[i];
 					topics[i].unreplied = !topics[i].teaser;
 
+					topics[i].upvotes = parseInt(topics[i].upvotes, 10) || 0;
+					topics[i].downvotes = parseInt(topics[i].downvotes, 10) || 0;
+					topics[i].votes = topics[i].upvotes - topics[i].downvotes;
 					topics[i].icons = [];
 				}
 			}
@@ -225,6 +230,10 @@ Topics.getTopicWithPosts = function (topicData, set, uid, start, stop, reverse, 
 			topicData.locked = parseInt(topicData.locked, 10) === 1;
 			topicData.pinned = parseInt(topicData.pinned, 10) === 1;
 
+			topicData.upvotes = parseInt(topicData.upvotes, 10) || 0;
+			topicData.downvotes = parseInt(topicData.downvotes, 10) || 0;
+			topicData.votes = topicData.upvotes - topicData.downvotes;
+
 			topicData.icons = [];
 
 			plugins.fireHook('filter:topic.get', { topic: topicData, uid: uid }, next);
@@ -252,7 +261,7 @@ function getMainPostAndReplies(topic, set, uid, start, stop, reverse, callback) 
 				return callback(null, []);
 			}
 
-			if (topic.mainPid && start === 0) {
+			if (parseInt(topic.mainPid, 10) && start === 0) {
 				pids.unshift(topic.mainPid);
 			}
 			posts.getPostsByPids(pids, uid, next);

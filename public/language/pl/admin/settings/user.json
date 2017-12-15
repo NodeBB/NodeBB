@@ -19,6 +19,8 @@
 	"themes": "Motywy",
 	"disable-user-skins": "Nie zezwalaj użytkownikom na wybranie niestandardowej skórki",
 	"account-protection": "Ochrona konta",
+	"admin-relogin-duration": "Admin relogin duration (minutes)",
+	"admin-relogin-duration-help": "After a set amount of time accessing the admin section will require re-login, set to 0 to disable",
 	"login-attempts": "Maksymalna liczba prób logowania na godzinę",
 	"login-attempts-help": "Jeśli liczba prób logowania na konto użytkownika przekroczy ten próg, to konto zostanie zablokowane na zdefiniowany wcześniej czas",
 	"lockout-duration": "Czas trwania blokady konta (minuty)",

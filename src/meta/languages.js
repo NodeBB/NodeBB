@@ -13,7 +13,7 @@ var Plugins = require('../plugins');
 var buildLanguagesPath = path.join(__dirname, '../../build/public/language');
 var coreLanguagesPath = path.join(__dirname, '../../public/language');
 
-function getTranslationTree(callback) {
+function getTranslationMetadata(callback) {
 	async.waterfall([
 		// generate list of languages and namespaces
 		function (next) {
@@ -49,129 +49,113 @@ function getTranslationTree(callback) {
 		// save a list of languages to `${buildLanguagesPath}/metadata.json`
 		// avoids readdirs later on
 		function (ref, next) {
-			async.waterfall([
+			async.series([
 				function (next) {
 					mkdirp(buildLanguagesPath, next);
 				},
-				function (x, next) {
+				function (next) {
 					fs.writeFile(path.join(buildLanguagesPath, 'metadata.json'), JSON.stringify({
 						languages: ref.languages,
 						namespaces: ref.namespaces,
 					}), next);
 				},
-				function (next) {
-					next(null, ref);
-				},
-			], next);
-		},
-
-		// for each language and namespace combination,
-		// run through core and all plugins to generate
-		// a full translation hash
-		function (ref, next) {
-			var languages = ref.languages;
-			var namespaces = ref.namespaces;
-			var plugins = _.values(Plugins.pluginsData).filter(function (plugin) {
-				return typeof plugin.languages === 'string';
-			});
-
-			var tree = {};
-
-			async.eachLimit(languages, 10, function (lang, next) {
-				async.eachLimit(namespaces, 10, function (namespace, next) {
-					var translations = {};
-
-					async.series([
-						// core first
-						function (cb) {
-							fs.readFile(path.join(coreLanguagesPath, lang, namespace + '.json'), function (err, buffer) {
-								if (err) {
-									if (err.code === 'ENOENT') {
-										return cb();
-									}
-									return cb(err);
-								}
-
-								try {
-									Object.assign(translations, JSON.parse(buffer.toString()));
-									cb();
-								} catch (err) {
-									cb(err);
-								}
-							});
-						},
-						function (cb) {
-							// for each plugin, fallback in this order:
-							//  1. correct language string (en-GB)
-							//  2. old language string (en_GB)
-							//  3. corrected plugin defaultLang (en-US)
-							//  4. old plugin defaultLang (en_US)
-							async.eachLimit(plugins, 20, function (pluginData, done) {
-								var pluginLanguages = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
-								var defaultLang = pluginData.defaultLang || 'en-GB';
-
-								async.eachSeries([
-									defaultLang.replace('-', '_').replace('-x-', '@'),
-									defaultLang.replace('_', '-').replace('@', '-x-'),
-									lang.replace('-', '_').replace('-x-', '@'),
-									lang,
-								], function (language, next) {
-									fs.readFile(path.join(pluginLanguages, language, namespace + '.json'), function (err, buffer) {
-										if (err) {
-											if (err.code === 'ENOENT') {
-												return next(null, false);
-											}
-											return next(err);
-										}
-
-										try {
-											Object.assign(translations, JSON.parse(buffer.toString()));
-											next(null, true);
-										} catch (err) {
-											next(err);
-										}
-									});
-								}, done);
-							}, function (err) {
-								if (err) {
-									return cb(err);
-								}
-
-								if (Object.keys(translations).length) {
-									tree[lang] = tree[lang] || {};
-									tree[lang][namespace] = translations;
-								}
-								cb();
-							});
-						},
-					], next);
-				}, next);
-			}, function (err) {
-				next(err, tree);
+			], function (err) {
+				next(err, ref);
 			});
 		},
 	], callback);
 }
 
-// write translation hashes from the generated tree to language files
-function writeLanguageFiles(tree, callback) {
-	// iterate over languages and namespaces
-	async.eachLimit(Object.keys(tree), 100, function (language, cb) {
-		var namespaces = tree[language];
-		async.eachLimit(Object.keys(namespaces), 10, function (namespace, next) {
-			var translations = namespaces[namespace];
+function writeLanguageFile(language, namespace, translations, callback) {
+	var dev = global.env === 'development';
+	var filePath = path.join(buildLanguagesPath, language, namespace + '.json');
 
-			var filePath = path.join(buildLanguagesPath, language, namespace + '.json');
+	async.series([
+		async.apply(mkdirp, path.dirname(filePath)),
+		async.apply(fs.writeFile, filePath, JSON.stringify(translations, null, dev ? 2 : 0)),
+	], callback);
+}
 
-			mkdirp(path.dirname(filePath), function (err) {
-				if (err) {
-					return next(err);
-				}
+// for each language and namespace combination,
+// run through core and all plugins to generate
+// a full translation hash
+function buildTranslations(ref, next) {
+	var namespaces = ref.namespaces;
+	var languages = ref.languages;
+	var plugins = _.values(Plugins.pluginsData).filter(function (plugin) {
+		return typeof plugin.languages === 'string';
+	});
 
-				fs.writeFile(filePath, JSON.stringify(translations), next);
-			});
-		}, cb);
-	}, callback);
+	async.each(namespaces, function (namespace, next) {
+		async.each(languages, function (lang, next) {
+			var translations = {};
+
+			async.series([
+				// core first
+				function (cb) {
+					fs.readFile(path.join(coreLanguagesPath, lang, namespace + '.json'), 'utf8', function (err, file) {
+						if (err) {
+							if (err.code === 'ENOENT') {
+								return cb();
+							}
+							return cb(err);
+						}
+
+						try {
+							Object.assign(translations, JSON.parse(file));
+							cb();
+						} catch (err) {
+							cb(err);
+						}
+					});
+				},
+				function (cb) {
+					// for each plugin, fallback in this order:
+					//  1. correct language string (en-GB)
+					//  2. old language string (en_GB)
+					//  3. corrected plugin defaultLang (en-US)
+					//  4. old plugin defaultLang (en_US)
+					async.each(plugins, function (pluginData, done) {
+						var pluginLanguages = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
+						var defaultLang = pluginData.defaultLang || 'en-GB';
+
+						async.eachSeries([
+							defaultLang.replace('-', '_').replace('-x-', '@'),
+							defaultLang.replace('_', '-').replace('@', '-x-'),
+							lang.replace('-', '_').replace('-x-', '@'),
+							lang,
+						], function (language, next) {
+							fs.readFile(path.join(pluginLanguages, language, namespace + '.json'), 'utf8', function (err, file) {
+								if (err) {
+									if (err.code === 'ENOENT') {
+										return next(null, false);
+									}
+									return next(err);
+								}
+
+								try {
+									Object.assign(translations, JSON.parse(file));
+									next(null, true);
+								} catch (err) {
+									next(err);
+								}
+							});
+						}, done);
+					}, function (err) {
+						if (err) {
+							return cb(err);
+						}
+
+						if (Object.keys(translations).length) {
+							writeLanguageFile(lang, namespace, translations, cb);
+							return;
+						}
+						cb();
+					});
+				},
+			], next);
+		}, next);
+	}, next);
 }
 
 exports.build = function buildLanguages(callback) {
@@ -179,7 +163,7 @@ exports.build = function buildLanguages(callback) {
 		function (next) {
 			rimraf(buildLanguagesPath, next);
 		},
-		getTranslationTree,
-		writeLanguageFiles,
+		getTranslationMetadata,
+		buildTranslations,
 	], callback);
 };

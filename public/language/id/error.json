@@ -119,11 +119,13 @@
     "not-enough-reputation-to-downvote": "Tidak cukup reputation untuk downvote post ini",
     "not-enough-reputation-to-flag": "Tidak cukup reputation untuk flag post ini",
     "already-flagged": "You have already flagged this post",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "NodeBB mengalami masalah saat memuat \"%1\". NodeBB akan melanjutkan pemuatan, kamu harus membatalkan tindakanmu sebelum pemuatan kembali dilakukan.",
     "registration-error": "Registrasti Error",
     "parse-error": "Something went wrong while parsing server response",
     "wrong-login-type-email": "Please use your email to login",
     "wrong-login-type-username": "Please use your username to login",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
     "no-session-found": "No login session found!",
     "not-in-room": "User not in room",
@@ -132,5 +134,6 @@
     "no-users-selected": "No user(s) selected",
     "invalid-home-page-route": "Invalid home page route",
     "invalid-session": "Session Mismatch",
-    "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page."
+    "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page.",
+    "no-topics-selected": "No topics selected!"
 }

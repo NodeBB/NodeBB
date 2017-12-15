@@ -119,11 +119,13 @@
     "not-enough-reputation-to-downvote": "Masz za mało reputacji, aby negatywnie ocenić ten post",
     "not-enough-reputation-to-flag": "Nie masz dość reputacji, by flagować ten post",
     "already-flagged": "Ten post jest już przez Ciebie oznaczony",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "NodeBB napotkało problem w czasie przeładowywania \"%1\". Forum będzie nadal dostarczać istniejące zasoby strony klienta, jednak powinieneś cofnąć ostatnią akcję.",
     "registration-error": "Błąd rejestracji",
     "parse-error": "Coś poszło nie tak podczas przetwarzania odpowiedzi serwera",
     "wrong-login-type-email": "Zaloguj się, używając adresu email",
     "wrong-login-type-username": "Zaloguj się używając nazwy użytkownika",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "Zaprosiłeś maksymalną liczba osób (%1 z %2).",
     "no-session-found": "Nie znaleziono sesji logowania",
     "not-in-room": "Użytkownik nie jest w pokoju",
@@ -132,5 +134,6 @@
     "no-users-selected": "Nie wybrano żadnych użytkowników",
     "invalid-home-page-route": "Niepoprawny odnośnik strony domowej",
     "invalid-session": "Niewłaściwa sesja",
-    "invalid-session-text": "Wygląda na to, że twoja sesja jest nieaktywna lub nie zgadza się z serwerem. Proszę odświeżyć tę stronę."
+    "invalid-session-text": "Wygląda na to, że twoja sesja jest nieaktywna lub nie zgadza się z serwerem. Proszę odświeżyć tę stronę.",
+    "no-topics-selected": "No topics selected!"
 }

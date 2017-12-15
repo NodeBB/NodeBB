@@ -119,11 +119,13 @@
     "not-enough-reputation-to-downvote": "Δεν έχεις αρκετή φήμη για να καταψηφίσεις αυτή την δημοσίευση",
     "not-enough-reputation-to-flag": "You do not have enough reputation to flag this post",
     "already-flagged": "You have already flagged this post",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "Το NodeBB συνάντησε ένα πρόβλημα καθώς γινόταν η ανανέωση: \"%1\". Το NodeBB θα συνεχίσει να προσφέρει τα στοιχεία του χρήστη, αν και θα ήταν καλή ιδέα να επαναφέρεις ότι έκανες πριν την ανανέωση.",
     "registration-error": "Registration Error",
     "parse-error": "Something went wrong while parsing server response",
     "wrong-login-type-email": "Please use your email to login",
     "wrong-login-type-username": "Please use your username to login",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
     "no-session-found": "No login session found!",
     "not-in-room": "User not in room",
@@ -132,5 +134,6 @@
     "no-users-selected": "No user(s) selected",
     "invalid-home-page-route": "Invalid home page route",
     "invalid-session": "Session Mismatch",
-    "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page."
+    "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page.",
+    "no-topics-selected": "No topics selected!"
 }

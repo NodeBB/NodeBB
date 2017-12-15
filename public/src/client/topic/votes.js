@@ -70,11 +70,7 @@ define('forum/topic/votes', ['components', 'translator', 'benchpress'], function
 			room_id: 'topic_' + ajaxify.data.tid,
 		}, function (err) {
 			if (err) {
-				if (err.message === 'self-vote') {
-					Votes.showVotes(post.attr('data-pid'));
-				} else {
-					app.alertError(err.message);
-				}
+				app.alertError(err.message);
 			}
 		});
 

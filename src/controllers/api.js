@@ -17,9 +17,7 @@ var apiController = module.exports;
 
 apiController.loadConfig = function (req, callback) {
 	var config = {};
-	config.environment = process.env.NODE_ENV;
 	config.relative_path = nconf.get('relative_path');
-	config.version = nconf.get('version');
 	config.siteTitle = validator.escape(String(meta.config.title || meta.config.browserTitle || 'NodeBB'));
 	config.browserTitle = validator.escape(String(meta.config.browserTitle || meta.config.title || 'NodeBB'));
 	config.titleLayout = (meta.config.titleLayout || '{pageTitle} | {browserTitle}').replace(/{/g, '&#123;').replace(/}/g, '&#125;');
@@ -32,7 +30,6 @@ apiController.loadConfig = function (req, callback) {
 	config.maximumTagsPerTopic = parseInt(meta.config.maximumTagsPerTopic || 5, 10);
 	config.minimumTagLength = meta.config.minimumTagLength || 3;
 	config.maximumTagLength = meta.config.maximumTagLength || 15;
-	config.hasImageUploadPlugin = plugins.hasListeners('filter:uploadImage');
 	config.useOutgoingLinksPage = parseInt(meta.config.useOutgoingLinksPage, 10) === 1;
 	config.allowGuestSearching = parseInt(meta.config.allowGuestSearching, 10) === 1;
 	config.allowGuestUserSearching = parseInt(meta.config.allowGuestUserSearching, 10) === 1;

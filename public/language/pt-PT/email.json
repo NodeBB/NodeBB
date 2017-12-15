@@ -30,6 +30,7 @@
     "notif.chat.unsub.info": "Esta notificação de chat foi enviada devido às suas definições de subscrição",
     "notif.post.cta": "Clique aqui para ler o tópico completo",
     "notif.post.unsub.info": "Esta notificação foi envidada devido às tuas definições de subscrição.",
+    "notif.cta": "Click here to go to forum",
     "test.text1": "Este é um e-mail de teste para verificar que o emailer está configurado corretamente para o teu NodeBB.",
     "unsub.cta": "Clica aqui para alterares essas definições",
     "banned.subject": "You have been banned from %1",

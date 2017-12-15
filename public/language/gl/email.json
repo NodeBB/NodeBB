@@ -30,6 +30,7 @@
     "notif.chat.unsub.info": "Esta notificación de charla foiche enviada polas túas opcións de subscrición.",
     "notif.post.cta": "Pica aquí para leer todos os temas",
     "notif.post.unsub.info": "Esta notificación de mensaxe foiche enviada polas túas opcións de subscrición.",
+    "notif.cta": "Click here to go to forum",
     "test.text1": "Esta é unha mensaxe de proba para verificar que o envío de correo está configurado correctamente para o seu NodeBB.",
     "unsub.cta": "Pica aquí para cambiar os axustes",
     "banned.subject": "You have been banned from %1",

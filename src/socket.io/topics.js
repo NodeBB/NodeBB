@@ -16,6 +16,7 @@ require('./topics/move')(SocketTopics);
 require('./topics/tools')(SocketTopics);
 require('./topics/infinitescroll')(SocketTopics);
 require('./topics/tags')(SocketTopics);
+require('./topics/merge')(SocketTopics);
 
 SocketTopics.post = function (socket, data, callback) {
 	if (!data) {

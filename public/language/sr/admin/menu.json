@@ -39,7 +39,7 @@
 	"section-appearance": "Izgled",
 	"appearance/themes": "Teme",
 	"appearance/skins": "Skins",
-	"appearance/customise": "Custom HTML & CSS",
+	"appearance/customise": "Custom Content (HTML/JS/CSS)",
 
 	"section-extend": "Proširiti",
 	"extend/plugins": "Plaginovi",

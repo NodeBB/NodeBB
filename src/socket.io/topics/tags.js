@@ -7,7 +7,7 @@ var utils = require('../../utils');
 
 module.exports = function (SocketTopics) {
 	SocketTopics.isTagAllowed = function (socket, data, callback) {
-		if (!data || !data.cid || !data.tag) {
+		if (!data || !utils.isNumber(data.cid) || !data.tag) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 		async.waterfall([
@@ -15,10 +15,7 @@ module.exports = function (SocketTopics) {
 				db.getSortedSetRange('cid:' + data.cid + ':tag:whitelist', 0, -1, next);
 			},
 			function (tagWhitelist, next) {
-				if (!tagWhitelist.length) {
-					return next(null, true);
-				}
-				next(null, tagWhitelist.indexOf(data.tag) !== -1);
+				next(null, !tagWhitelist.length || tagWhitelist.includes(data.tag));
 			},
 		], callback);
 	};

@@ -9,6 +9,7 @@
     "continue_to": "Fortfahren zu %1",
     "return_to": "Kehre zurück zu %1",
     "new_notification": "Neue Benachrichtigung",
+    "new_notification_from": "Du hast eine neue Nachricht von %1",
     "you_have_unread_notifications": "Du hast ungelesene Benachrichtigungen.",
     "all": "Alle",
     "topics": "Themen",
@@ -45,5 +46,19 @@
     "email-confirmed": "E-Mail bestätigt",
     "email-confirmed-message": "Vielen Dank für Ihre E-Mail-Validierung. Ihr Konto ist nun vollständig aktiviert.",
     "email-confirm-error-message": "Es gab ein Problem bei der Validierung Ihrer E-Mail-Adresse. Möglicherweise ist der Code ungültig oder abgelaufen.",
-    "email-confirm-sent": "Bestätigungs-E-Mail gesendet."
+    "email-confirm-sent": "Bestätigungs-E-Mail gesendet.",
+    "none": "Keine",
+    "notification_only": "Nur Benachrichtigungen",
+    "email_only": "Nur Emails",
+    "notification_and_email": "Benachrichtigungen & Emails",
+    "notificationType_upvote": "Wenn jemand deinen beitrag positiv bewertet",
+    "notificationType_new-topic": "Wenn jemand dem du folgst einen Beitrag erstellt",
+    "notificationType_new-reply": "Wenn es eine neue Antwort auf ein Thema das du beobachtest gibt",
+    "notificationType_follow": "Wenn dir jemand neues folgt",
+    "notificationType_new-chat": "Wenn du eine Chat Nachricht erhältst",
+    "notificationType_group-invite": "Wenn du eine Gruppeneinladung erhältst",
+    "notificationType_new-register": "Wenn jemand der Registrierungswarteschlange hinzugefügt wird",
+    "notificationType_post-queue": "Wenn ein neuer Beitrag eingereiht wird",
+    "notificationType_new-post-flag": "Wenn ein Beitrag gemeldet wird",
+    "notificationType_new-user-flag": "Wenn ein Benutzer gemeldet wird"
 }

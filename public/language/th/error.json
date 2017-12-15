@@ -119,11 +119,13 @@
     "not-enough-reputation-to-downvote": "คุณไม่มีชื่อเสียงพอที่จะโหวตโพสต์นี้ลง",
     "not-enough-reputation-to-flag": "คุณไม่มีชื่อเสียงพอที่จะปักธงให้โพสต์นี้",
     "already-flagged": "คุณได้ปักธงให้โพสต์นี้แล้ว",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading.",
     "registration-error": "การสมัครสมาชิกผิดพลาด",
     "parse-error": "มีบางอย่างผิดพลาดขณะรอการตอบกลับจากเซิร์ฟเวอร์",
     "wrong-login-type-email": "กรุณาใช้อีเมล์ของคุณในการเข้าสู่ระบบ",
     "wrong-login-type-username": "กรุณาใช้ชื่อผู้ใช้ของคุณในการเข้าสู่ระบบ",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "คุณได้ทำการเชิญผู้คนจำนวนมากที่สุด (%1 out of %2).",
     "no-session-found": "ไม่พบการเข้าสู่ระบบ",
     "not-in-room": "ผู้ใช้ไม่อยู่ในห้อง",
@@ -132,5 +134,6 @@
     "no-users-selected": "ไม่มีผู้ใช้ที่เลือก",
     "invalid-home-page-route": "เส้นทางไปหน้าแรกผิดพลาด",
     "invalid-session": "เซสชั่นไม่ถูกต้อง",
-    "invalid-session-text": "เหมือนกับว่าการเข้าสู่ระบบของคุณไม่ได้มีอยู่ในระบบ หรือไม่ก็ไม่ได้รับการตอบกลับจากเซิร์ฟเวอร์ กรุณารีเฟรชหน้าเว็บนี้"
+    "invalid-session-text": "เหมือนกับว่าการเข้าสู่ระบบของคุณไม่ได้มีอยู่ในระบบ หรือไม่ก็ไม่ได้รับการตอบกลับจากเซิร์ฟเวอร์ กรุณารีเฟรชหน้าเว็บนี้",
+    "no-topics-selected": "No topics selected!"
 }

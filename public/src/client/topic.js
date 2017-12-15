@@ -29,7 +29,6 @@ define('forum/topic', [
 			app.removeAlert('bookmark');
 
 			events.removeListeners();
-			$(window).off('keydown', onKeyDown);
 
 			require(['search'], function (search) {
 				if (search.topicDOM.active) {
@@ -63,8 +62,6 @@ define('forum/topic', [
 
 		addParentHandler();
 
-		handleKeys();
-
 		navigator.init('[component="post"]', ajaxify.data.postcount, Topic.toTop, Topic.toBottom, Topic.navigatorCallback, Topic.calculateIndex);
 
 		handleBookmark(tid);
@@ -75,27 +72,6 @@ define('forum/topic', [
 
 		$(window).trigger('action:topic.loaded', ajaxify.data);
 	};
-
-	function handleKeys() {
-		if (!config.usePagination) {
-			$(window).off('keydown', onKeyDown).on('keydown', onKeyDown);
-		}
-	}
-
-	function onKeyDown(ev) {
-		if (ev.target.nodeName === 'BODY') {
-			if (ev.shiftKey || ev.ctrlKey || ev.altKey) {
-				return;
-			}
-			if (ev.which === 36) { // home key
-				Topic.toTop();
-				return false;
-			} else if (ev.which === 35) { // end key
-				Topic.toBottom();
-				return false;
-			}
-		}
-	}
 
 	function handleTopicSearch() {
 		require(['search', 'mousetrap'], function (search, mousetrap) {

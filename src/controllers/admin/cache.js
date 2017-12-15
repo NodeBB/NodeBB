@@ -42,7 +42,7 @@ cacheController.get = function (req, res) {
 			dump: req.query.debug ? JSON.stringify(objectCache.dump(), null, 4) : false,
 			hits: utils.addCommas(String(objectCache.hits)),
 			misses: utils.addCommas(String(objectCache.misses)),
-			missRatio: (1 - (objectCache.hits / (objectCache.hits + objectCache.misses))).toFixed(4),
+			hitRatio: (objectCache.hits / (objectCache.hits + objectCache.misses)).toFixed(4),
 		};
 	}
 

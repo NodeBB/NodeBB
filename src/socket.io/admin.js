@@ -232,7 +232,7 @@ SocketAdmin.email.test = function (socket, data, callback) {
 	switch (data.template) {
 	case 'digest':
 		userDigest.execute({
-			interval: 'day',
+			interval: 'alltime',
 			subscribers: [socket.uid],
 		}, callback);
 		break;

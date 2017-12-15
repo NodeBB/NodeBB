@@ -30,6 +30,7 @@
     "notif.chat.unsub.info": "Denna notifikation skickades till dig på grund av dina inställningar för prenumerationer.",
     "notif.post.cta": "Klicka här för att läsa hela ämnet",
     "notif.post.unsub.info": "Det här meddelandet fick du på grund av dina inställningar för prenumeration. ",
+    "notif.cta": "Click here to go to forum",
     "test.text1": "\nDet här är ett testmeddelande som verifierar att e-posten är korrekt installerad för din NodeBB. ",
     "unsub.cta": "Klicka här för att ändra inställningarna",
     "banned.subject": "You have been banned from %1",

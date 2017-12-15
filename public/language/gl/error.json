@@ -119,11 +119,13 @@
     "not-enough-reputation-to-downvote": "Non tes reputación dabonda para esta acción",
     "not-enough-reputation-to-flag": "Non tes reputación dabondo para reportar esta mensaxe.",
     "already-flagged": "Xa reportache-la mensaxe.",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "NodeBB atopou un erro mentras recargaba: \"%1\". NodeBB seguirá a servir os activos dos clientes aínda que se deberá desfacer o que se fixo antes da descarga.",
     "registration-error": "Erro de rexistro",
     "parse-error": "Algo foi mal namentras se agardaba a resposta do servidor",
     "wrong-login-type-email": "Por favor, emprega o teu correo para contectarte",
     "wrong-login-type-username": "Por favor, usa o teu nome de usuario para conectarte",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "Convidaches á cantidade máxima de persoas  (%1 de %2).",
     "no-session-found": "Non se atopou ningún inicio de sesión!",
     "not-in-room": "O usuario non se atopa nesta sala",
@@ -132,5 +134,6 @@
     "no-users-selected": "Ningún usuario seleccionado",
     "invalid-home-page-route": "Ruta de páxina de inicio inválida",
     "invalid-session": "Non concordan os datos da sesión",
-    "invalid-session-text": "Parece que a súa sesión expirou ou non concorda co servidor. Por favor, recarge a páxina."
+    "invalid-session-text": "Parece que a súa sesión expirou ou non concorda co servidor. Por favor, recarge a páxina.",
+    "no-topics-selected": "No topics selected!"
 }

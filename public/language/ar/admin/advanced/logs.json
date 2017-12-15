@@ -1,7 +1,7 @@
 {
-	"logs": "Logs",
-	"control-panel": "Logs Control Panel",
-	"reload": "Reload Logs",
-	"clear": "Clear Logs",
-	"clear-success": "Logs Cleared!"
+	"logs": "السجلات",
+	"control-panel": "لوحة تحكم السجلات",
+	"reload": "إعادة تحميل السجلات",
+	"clear": "محو السجلات",
+	"clear-success": "تم محو السجلات!"
 }

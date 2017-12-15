@@ -106,6 +106,13 @@
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
+				<label for="adminReloginDuration">[[admin/settings/user:admin-relogin-duration]]</label>
+				<input id="adminReloginDuration" type="text" class="form-control" data-field="adminReloginDuration" placeholder="60" />
+				<p class="help-block">
+					[[admin/settings/user:admin-relogin-duration-help]]
+				</p>
+			</div>
+			<div class="form-group">
 				<label for="loginAttempts">[[admin/settings/user:login-attempts]]</label>
 				<input id="loginAttempts" type="text" class="form-control" data-field="loginAttempts" placeholder="5" />
 				<p class="help-block">
@@ -269,20 +276,6 @@
 					<option value="week">[[admin/settings/user:digest-freq.weekly]]</option>
 					<option value="month">[[admin/settings/user:digest-freq.monthly]]</option>
 				</select>
-			</div>
-
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="sendChatNotifications">
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:email-chat-notifs]]</strong></span>
-				</label>
-			</div>
-
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="sendPostNotifications">
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:email-post-notif]]</strong></span>
-				</label>
 			</div>
 
 			<div class="checkbox">

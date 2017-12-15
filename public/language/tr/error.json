@@ -119,11 +119,13 @@
     "not-enough-reputation-to-downvote": "Bu iletiyi eksilemek için yeterince itibarınız yok.",
     "not-enough-reputation-to-flag": "Bu iletiyi bayraklamak için yeterince itibarınız yok",
     "already-flagged": "Bu iletiyi zaten bayrakladınız",
+    "self-vote": "You cannot vote on your own post",
     "reload-failed": "NodeBB tekrar yüklenirken bir sorunla karşılaştı: “%1“. NodeBB varolan dosyaları servis etmeye devam edecek.",
     "registration-error": "Kayıt Hatası",
     "parse-error": "Sunucu yanıtı çözümlemesi sırasında bir şeyler ters gitti",
     "wrong-login-type-email": "Lütfen giriş için e-posta adresinizi kullanın",
     "wrong-login-type-username": "Lütfen giriş için kullanıcı adınızı kullanın",
+    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "invite-maximum-met": "Sen maksimum miktarda insanı davet ettin (%2 üzerinden %1).",
     "no-session-found": "Giriş yapılmış bir oturum bulunamadı!",
     "not-in-room": "Odada kullanıcı yok",
@@ -132,5 +134,6 @@
     "no-users-selected": "Seçili kullanıcı(s) bulunamadı",
     "invalid-home-page-route": "Geçersiz anasayfa yolu",
     "invalid-session": "Oturum Uyuşmazlığı",
-    "invalid-session-text": "Senin giriş oturumun pek aktif gözükmüyor, ya da sunucu ile eşleşmiyor. Lütfen sayfayı yenileyiniz."
+    "invalid-session-text": "Senin giriş oturumun pek aktif gözükmüyor, ya da sunucu ile eşleşmiyor. Lütfen sayfayı yenileyiniz.",
+    "no-topics-selected": "No topics selected!"
 }

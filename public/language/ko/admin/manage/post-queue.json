@@ -1,11 +1,11 @@
 {
-	"post-queue": "Post Queue",
-	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Posting Restrictions</a> and enable <strong>Post Queue</strong>.",
-	"user": "User",
-	"category": "Category",
-	"title": "Title",
-	"content": "Content",
-	"posted": "Posted",
-	"reply-to": "Reply to \"%1\"",
-	"content-editable": "You can click on individual content to edit before posting."
+	"post-queue": "게시 대기열",
+	"description": "게시 대기열에 글이 없습니다. <br> 이 기능을 사용하려면 <a href=\"%1\">설정 &rarr; 글&rarr; 게시대기</a>에서<strong>게시대기</strong>를 활성화 하세요.",
+	"user": "사용자",
+	"category": "카테고리",
+	"title": "제목",
+	"content": "컨텐츠",
+	"posted": "작성됨",
+	"reply-to": "'%1'에 대한 답글",
+	"content-editable": "게시하기 전에 콘텐츠를 클릭하여 편집 할 수 있습니다."
 }

@@ -2,37 +2,28 @@
 <html>
 <head>
 	<meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>NodeBB Web Installer</title>
 
-	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/united/bootstrap.min.css">
-	<link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500,700' rel='stylesheet' type='text/css'>
-	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="installer.css">
-
+	
+	<script type="text/javascript" async defer src="installer.min.js"></script>
 </head>
 
 <body>
 	<nav class="navbar navbar-default">
 		<div class="container-fluid">
 			<div class="navbar-header">
-				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
 				<a class="navbar-brand" href="#">NodeBB</a>
 			</div>
 
-			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-				<ul class="nav navbar-nav">
-					<li class="active"><a href="/">Installer</a></li>
-					<li><a href="https://docs.nodebb.org" target="_blank">Get Help</a></li>
-					<li><a href="https://community.nodebb.org" target="_blank">Community</a></li>
-				</ul>
-			</div>
+			<ul class="nav navbar-nav">
+				<li class="active"><a href="/">Installer</a></li>
+				<li><a href="https://docs.nodebb.org" target="_blank">Get Help</a></li>
+				<li><a href="https://community.nodebb.org" target="_blank">Community</a></li>
+			</ul>
 		</div>
 	</nav>
 
@@ -104,7 +95,7 @@
 			</div>
 			<!-- ENDIF !skipDatabaseSetup -->
 
-			<button id="submit" type="submit" class="btn btn-lg btn-success">Install NodeBB <i class="fa fa-spinner fa-spin hide"></i></button>
+			<button id="submit" type="submit" class="btn btn-lg btn-success">Install NodeBB <i class="working hide"></i></button>
 		</form>
 	</div>
 
@@ -113,7 +104,7 @@
 		<p>
 			<h1>Congratulations! Your NodeBB has been set-up.</h1>
 
-			<button id="launch" class="btn btn-lg btn-success">Launch NodeBB <i class="fa fa-spinner fa-spin hide"></i></button>
+			<button id="launch" class="btn btn-lg btn-success">Launch NodeBB <i class="working hide"></i></button>
 		</p>
 	</div>
 
@@ -131,9 +122,5 @@
 		</div>
 		<!-- END databases -->
 	</div>
-
-	<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="installer.min.js"></script>
 </body>
 </html>

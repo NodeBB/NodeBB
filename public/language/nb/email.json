@@ -30,6 +30,7 @@
     "notif.chat.unsub.info": "Denne samtale-varselen ble sendt til deg basert på dine innstillinger for abonnering.",
     "notif.post.cta": "Trykk for å lese hele emnet",
     "notif.post.unsub.info": "Dette innleggsvarselet ble sendt til deg basert på dine innstillinger for abonnering.",
+    "notif.cta": "Click here to go to forum",
     "test.text1": "Dette er en test e-post for å verifisere at e-postsystemet i NodeBB fungerer som det skal.",
     "unsub.cta": "Klikk her for å endre disse innstillingene",
     "banned.subject": "You have been banned from %1",

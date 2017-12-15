@@ -10,12 +10,12 @@
     "filter-by": "Filter By",
     "online-only": "المتصلون فقط",
     "invite": "دعوة",
-    "invitation-email-sent": "An invitation email has been sent to %1",
+    "invitation-email-sent": "تم إرسال دعوة بالبريد الإلكتروني إلى %1",
     "user_list": "قائمة اﻷعضاء",
     "recent_topics": "أحدث المواضيع",
-    "popular_topics": "Popular Topics",
+    "popular_topics": "المواضيع الأكثر شهرة",
     "unread_topics": "المواضيع الغير مقروءة",
-    "categories": "الفئات",
-    "tags": "الكلمات الدلالية",
-    "no-users-found": "No users found!"
+    "categories": "الأقسام",
+    "tags": "الوسوم",
+    "no-users-found": "لم يتم العثور على مستخدمين!"
 }

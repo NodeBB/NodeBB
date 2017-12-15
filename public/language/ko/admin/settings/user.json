@@ -19,6 +19,8 @@
 	"themes": "테마",
 	"disable-user-skins": "일반 사용자가 스킨 지정 금지",
 	"account-protection": "계정 보호",
+	"admin-relogin-duration": "Admin relogin duration (minutes)",
+	"admin-relogin-duration-help": "After a set amount of time accessing the admin section will require re-login, set to 0 to disable",
 	"login-attempts": "시간당 가능한 로그인 시도 횟수",
 	"login-attempts-help": "사용자의 로그인 시도가 이 횟수제한을 초과하면 정해진 시간만큼 해당 계정이 잠깁니다.",
 	"lockout-duration": "계정 잠금 기간 (분)",

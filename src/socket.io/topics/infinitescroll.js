@@ -109,6 +109,17 @@ module.exports = function (SocketTopics) {
 		topics.getRecentTopics(data.cid, socket.uid, start, stop, data.filter, callback);
 	};
 
+	SocketTopics.loadMoreTopTopics = function (socket, data, callback) {
+		if (!data || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
+			return callback(new Error('[[error:invalid-data]]'));
+		}
+
+		var start = parseInt(data.after, 10);
+		var stop = start + Math.max(0, Math.min(meta.config.topicsPerPage || 20, parseInt(data.count, 10) || meta.config.topicsPerPage || 20) - 1);
+
+		topics.getTopTopics(data.cid, socket.uid, start, stop, data.filter, callback);
+	};
+
 	SocketTopics.loadMoreFromSet = function (socket, data, callback) {
 		if (!data || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0 || !data.set) {
 			return callback(new Error('[[error:invalid-data]]'));

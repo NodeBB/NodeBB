@@ -256,11 +256,27 @@ Posts.updatePostVoteCount = function (postData, callback) {
 		function (next) {
 			async.waterfall([
 				function (next) {
-					topics.getTopicField(postData.tid, 'mainPid', next);
+					topics.getTopicFields(postData.tid, ['mainPid', 'cid'], next);
 				},
-				function (mainPid, next) {
-					if (parseInt(mainPid, 10) === parseInt(postData.pid, 10)) {
-						return next();
+				function (topicData, next) {
+					if (parseInt(topicData.mainPid, 10) === parseInt(postData.pid, 10)) {
+						async.parallel([
+							function (next) {
+								topics.setTopicFields(postData.tid, {
+									upvotes: postData.upvotes,
+									downvotes: postData.downvotes,
+								}, next);
+							},
+							function (next) {
+								db.sortedSetAdd('topics:votes', postData.votes, postData.tid, next);
+							},
+							function (next) {
+								db.sortedSetAdd('cid:' + topicData.cid + ':tids:votes', postData.votes, postData.tid, next);
+							},
+						], function (err) {
+							next(err);
+						});
+						return;
 					}
 					db.sortedSetAdd('tid:' + postData.tid + ':posts:votes', postData.votes, postData.pid, next);
 				},
@@ -270,7 +286,10 @@ Posts.updatePostVoteCount = function (postData, callback) {
 			db.sortedSetAdd('posts:votes', postData.votes, postData.pid, next);
 		},
 		function (next) {
-			Posts.setPostFields(postData.pid, { upvotes: postData.upvotes, downvotes: postData.downvotes }, next);
+			Posts.setPostFields(postData.pid, {
+				upvotes: postData.upvotes,
+				downvotes: postData.downvotes,
+			}, next);
 		},
 	], function (err) {
 		callback(err);

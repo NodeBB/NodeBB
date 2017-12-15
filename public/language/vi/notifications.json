@@ -9,6 +9,7 @@
     "continue_to": "Tiếp tục tới %1",
     "return_to": "Quay lại %1",
     "new_notification": "Thông báo mới",
+    "new_notification_from": "You have a new Notification from %1",
     "you_have_unread_notifications": "Bạn có thông báo chưa đọc",
     "all": "All",
     "topics": "Topics",
@@ -45,5 +46,19 @@
     "email-confirmed": "Đã xác nhận email",
     "email-confirmed-message": "Cảm ơn bạn đã xác nhận địa chỉ email của bạn. Tài khoản của bạn đã được kích hoạt đầy đủ.",
     "email-confirm-error-message": "Đã có lỗi khi xác nhận địa chỉ email. Có thể đoạn mã không đúng hoặc đã hết hạn.",
-    "email-confirm-sent": "Email xác nhận đã gửi."
+    "email-confirm-sent": "Email xác nhận đã gửi.",
+    "none": "None",
+    "notification_only": "Notification Only",
+    "email_only": "Email Only",
+    "notification_and_email": "Notification & Email",
+    "notificationType_upvote": "When someone upvotes your post",
+    "notificationType_new-topic": "When someone you follow posts a topic",
+    "notificationType_new-reply": "When a new reply is posted in a topic you are watching",
+    "notificationType_follow": "When someone starts following you",
+    "notificationType_new-chat": "When you receive a chat message",
+    "notificationType_group-invite": "When you receive a group invite",
+    "notificationType_new-register": "When someone gets added to registration queue",
+    "notificationType_post-queue": "When a new post is queued",
+    "notificationType_new-post-flag": "When a post is flagged",
+    "notificationType_new-user-flag": "When a user is flagged"
 }

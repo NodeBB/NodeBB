@@ -208,13 +208,17 @@ User.isGlobalModerator = function (uid, callback) {
 	privileges.users.isGlobalModerator(uid, callback);
 };
 
+User.getPrivileges = function (uid, callback) {
+	async.parallel({
+		isAdmin: async.apply(User.isAdministrator, uid),
+		isGlobalModerator: async.apply(User.isGlobalModerator, uid),
+		isModeratorOfAnyCategory: async.apply(User.isModeratorOfAnyCategory, uid),
+	}, callback);
+};
+
 User.isPrivileged = function (uid, callback) {
-	async.parallel([
-		async.apply(User.isAdministrator, uid),
-		async.apply(User.isGlobalModerator, uid),
-		async.apply(User.isModeratorOfAnyCategory, uid),
-	], function (err, results) {
-		callback(err, results ? results.some(Boolean) : false);
+	User.getPrivileges(uid, function (err, results) {
+		callback(err, results ? (results.isAdmin || results.isGlobalModerator || results.isModeratorOfAnyCategory) : false);
 	});
 };
 
@@ -233,6 +237,10 @@ User.isAdminOrSelf = function (callerUid, uid, callback) {
 
 User.isAdminOrGlobalModOrSelf = function (callerUid, uid, callback) {
 	isSelfOrMethod(callerUid, uid, User.isAdminOrGlobalMod, callback);
+};
+
+User.isPrivilegedOrSelf = function (callerUid, uid, callback) {
+	isSelfOrMethod(callerUid, uid, User.isPrivileged, callback);
 };
 
 function isSelfOrMethod(callerUid, uid, method, callback) {

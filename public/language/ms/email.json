@@ -30,6 +30,7 @@
     "notif.chat.unsub.info": "Pemberitahuan sembang ini dihantar berdasarkan tetapan langganan anda.",
     "notif.post.cta": "Klik sini untuk baca artikel penuh",
     "notif.post.unsub.info": "Kiriman pemberitahuan ini dihantar berdasarkan tetapan langganan anda.",
+    "notif.cta": "Click here to go to forum",
     "test.text1": "Ini adalah percubaan email untuk mengesahkan emailer ditetap dengan betul di NodeBB.",
     "unsub.cta": "Klik sini untuk mengubah tetapan itu",
     "banned.subject": "You have been banned from %1",

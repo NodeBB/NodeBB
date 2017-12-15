@@ -28,7 +28,7 @@
 					<a target="_blank" href="{config.relative_path}/api/admin/users/csv" class="btn btn-primary pull-right">[[admin/manage/users:download-csv]]</a>
 
 					<!-- IF inviteOnly -->
-					<button component="user/invite" class="btn btn-success form-control"><i class="fa fa-users"></i> [[admin/manage/users:invite]]</button>
+					<button component="user/invite" class="btn btn-success pull-right"><i class="fa fa-users"></i> [[admin/manage/users:invite]]</button>
 					<!-- ENDIF inviteOnly -->
 
 					<button id="createUser" class="btn btn-primary pull-right">[[admin/manage/users:new]]</button>
@@ -49,6 +49,9 @@
 				<br />
 
 				<div class="search {search_display}">
+					<label>[[admin/manage/users:search.uid]]</label>
+					<input class="form-control" id="search-user-uid" data-search-type="uid" type="text" placeholder="[[admin/manage/users:search.uid-placeholder]]"/><br />
+
 					<label>[[admin/manage/users:search.username]]</label>
 					<input class="form-control" id="search-user-name" data-search-type="username" type="text" placeholder="[[admin/manage/users:search.username-placeholder]]"/><br />
 

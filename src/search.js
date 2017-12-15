@@ -209,7 +209,7 @@ function getMatchedPosts(pids, data, callback) {
 									db.getObjectsFields(cids, categoryFields, next);
 								},
 								tags: function (next) {
-									if (data.hasTags && data.hasTags.length) {
+									if (Array.isArray(data.hasTags) && data.hasTags.length) {
 										var tids = posts.map(function (post) {
 											return post && post.tid;
 										});
@@ -299,10 +299,10 @@ function filterByTimerange(posts, timeRange, timeFilter) {
 }
 
 function filterByTags(posts, hasTags) {
-	if (hasTags && hasTags.length) {
+	if (Array.isArray(hasTags) && hasTags.length) {
 		posts = posts.filter(function (post) {
 			var hasAllTags = false;
-			if (post && post.topic && post.topic.tags && post.topic.tags.length) {
+			if (post && post.topic && Array.isArray(post.topic.tags) && post.topic.tags.length) {
 				hasAllTags = hasTags.every(function (tag) {
 					return post.topic.tags.indexOf(tag) !== -1;
 				});
