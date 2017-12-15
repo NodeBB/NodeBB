@@ -90,7 +90,7 @@ define('forum/chats', [
 				return;
 			}
 			loading = true;
-			var start = parseInt($('.chat-content').children('[data-index]').first().attr('data-index'), 10) + 1;
+			var start = parseInt(el.children('[data-mid]').length, 10);
 			socket.emit('modules.chats.getMessages', {
 				roomId: roomId,
 				uid: uid,
