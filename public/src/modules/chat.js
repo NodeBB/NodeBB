@@ -249,7 +249,7 @@ define('chat', [
 				}
 			});
 
-			Chats.addEditDeleteHandler(chatModal.find('[component="chat/messages"]'), data.roomId);
+			Chats.addActionHandlers(chatModal.find('[component="chat/messages"]'), data.roomId);
 
 			chatModal.find('[component="chat/controlsToggle"]').on('click', function () {
 				var messagesEl = chatModal.find('[component="chat/messages"]');
