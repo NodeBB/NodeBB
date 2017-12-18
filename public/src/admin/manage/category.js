@@ -20,7 +20,12 @@ define('admin/manage/category', [
 		});
 
 		$('#category-selector').on('change', function () {
-			ajaxify.go('admin/manage/categories/' + $(this).val() + window.location.hash);
+			var val = $(this).val();
+			if (val === 'global') {
+				ajaxify.go('admin/manage/privileges');
+			} else {
+				ajaxify.go('admin/manage/categories/' + $(this).val() + window.location.hash);
+			}
 		});
 
 		function enableColorPicker(idx, inputEl) {

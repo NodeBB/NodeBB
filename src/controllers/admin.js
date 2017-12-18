@@ -3,6 +3,7 @@
 var adminController = {
 	dashboard: require('./admin/dashboard'),
 	categories: require('./admin/categories'),
+	privileges: require('./admin/privileges'),
 	tags: require('./admin/tags'),
 	postQueue: require('./admin/postqueue'),
 	blacklist: require('./admin/blacklist'),

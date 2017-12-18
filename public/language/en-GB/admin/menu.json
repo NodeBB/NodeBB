@@ -9,6 +9,7 @@
 
 	"section-manage": "Manage",
 	"manage/categories": "Categories",
+	"manage/privileges": "Privileges",
 	"manage/tags": "Tags",
 	"manage/users": "Users",
 	"manage/registration": "Registration Queue",

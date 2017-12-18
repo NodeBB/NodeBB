@@ -11,6 +11,7 @@ var Messaging = require('../messaging');
 var utils = require('../utils');
 var server = require('./');
 var user = require('../user');
+var privileges = require('../privileges');
 
 var SocketModules = module.exports;
 
@@ -73,6 +74,12 @@ SocketModules.chats.newRoom = function (socket, data, callback) {
 
 	async.waterfall([
 		function (next) {
+			privileges.global.can('chat', socket.uid, next);
+		},
+		function (canChat, next) {
+			if (!canChat) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
 			Messaging.canMessageUser(socket.uid, data.touid, next);
 		},
 		function (next) {
@@ -92,6 +99,13 @@ SocketModules.chats.send = function (socket, data, callback) {
 
 	async.waterfall([
 		function (next) {
+			privileges.global.can('chat', socket.uid, next);
+		},
+		function (canChat, next) {
+			if (!canChat) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
+
 			plugins.fireHook('filter:messaging.send', {
 				data: data,
 				uid: socket.uid,
@@ -133,6 +147,13 @@ SocketModules.chats.loadRoom = function (socket, data, callback) {
 
 	async.waterfall([
 		function (next) {
+			privileges.global.can('chat', socket.uid, next);
+		},
+		function (canChat, next) {
+			if (!canChat) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
+
 			Messaging.isUserInRoom(socket.uid, data.roomId, next);
 		},
 		function (inRoom, next) {
@@ -174,6 +195,13 @@ SocketModules.chats.addUserToRoom = function (socket, data, callback) {
 	var uid;
 	async.waterfall([
 		function (next) {
+			privileges.global.can('chat', socket.uid, next);
+		},
+		function (canChat, next) {
+			if (!canChat) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
+
 			Messaging.getUserCountInRoom(data.roomId, next);
 		},
 		function (userCount, next) {

@@ -12,13 +12,15 @@
 			</div>
 			<div class="col-md-3">
 				<select id="category-selector" class="form-control">
+					<option value="global" selected>[[admin/manage/privileges:global]]</option>
+					<option disabled>_____________</option>
 					<!-- BEGIN allCategories -->
 					<option value="{allCategories.value}" <!-- IF allCategories.selected -->selected<!-- ENDIF allCategories.selected -->>{allCategories.text}</option>
 					<!-- END allCategories -->
 				</select>
 			</div>
 		</div>
-		
+
 		<br/>
 
 		<div class="tab-content">

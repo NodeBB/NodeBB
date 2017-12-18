@@ -40,6 +40,7 @@ privileges.groupPrivilegeList = privileges.userPrivilegeList.map(function (privi
 
 privileges.privilegeList = privileges.userPrivilegeList.concat(privileges.groupPrivilegeList);
 
+require('./privileges/global')(privileges);
 require('./privileges/categories')(privileges);
 require('./privileges/topics')(privileges);
 require('./privileges/posts')(privileges);

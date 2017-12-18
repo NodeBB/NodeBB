@@ -10,6 +10,7 @@ var meta = require('../meta');
 var plugins = require('../plugins');
 var navigation = require('../navigation');
 var translator = require('../translator');
+var privileges = require('../privileges');
 var utils = require('../utils');
 
 var controllers = {
@@ -75,6 +76,9 @@ module.exports = function (middleware) {
 					isModerator: function (next) {
 						user.isModeratorOfAnyCategory(req.uid, next);
 					},
+					canChat: function (next) {
+						privileges.global.can('chat', req.uid, next);
+					},
 					user: function (next) {
 						var userData = {
 							uid: 0,
@@ -124,6 +128,7 @@ module.exports = function (middleware) {
 				results.user.isAdmin = results.isAdmin;
 				results.user.isGlobalMod = results.isGlobalMod;
 				results.user.isMod = !!results.isModerator;
+
 				results.user.uid = parseInt(results.user.uid, 10);
 				results.user.email = String(results.user.email);
 				results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
@@ -138,6 +143,7 @@ module.exports = function (middleware) {
 				templateValues.isAdmin = results.user.isAdmin;
 				templateValues.isGlobalMod = results.user.isGlobalMod;
 				templateValues.showModMenu = results.user.isAdmin || results.user.isGlobalMod || results.user.isMod;
+				templateValues.canChat = results.canChat;
 				templateValues.user = results.user;
 				templateValues.userJSON = jsesc(JSON.stringify(results.user), { isScriptContext: true });
 				templateValues.useCustomCSS = parseInt(meta.config.useCustomCSS, 10) === 1 && meta.config.customCSS;

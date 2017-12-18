@@ -15,6 +15,7 @@
 		<h3 class="menu-section-title">[[admin/menu:section-manage]]</h3>
 		<ul class="menu-section-list">
 			<li><a href="{relative_path}/admin/manage/categories">[[admin/menu:manage/categories]]</a></li>
+			<li><a href="{relative_path}/admin/manage/privileges">[[admin/menu:manage/privileges]]</a></li>
 			<li><a href="{relative_path}/admin/manage/users">[[admin/menu:manage/users]]</a></li>
 			<li><a href="{relative_path}/admin/manage/groups">[[admin/menu:manage/groups]]</a></li>
 			<li><a href="{relative_path}/admin/manage/tags">[[admin/menu:manage/tags]]</a></li>
@@ -188,6 +189,7 @@
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-manage]]</a>
 				<ul class="dropdown-menu" role="menu">
 					<li><a href="{relative_path}/admin/manage/categories">[[admin/menu:manage/categories]]</a></li>
+					<li><a href="{relative_path}/admin/manage/privileges">[[admin/menu:manage/privileges]]</a></li>
 					<li><a href="{relative_path}/admin/manage/users">[[admin/menu:manage/users]]</a></li>
 					<li><a href="{relative_path}/admin/manage/groups">[[admin/menu:manage/groups]]</a></li>
 					<li><a href="{relative_path}/admin/manage/tags">[[admin/menu:manage/tags]]</a></li>
