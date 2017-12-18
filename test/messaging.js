@@ -14,8 +14,8 @@ var helpers = require('./helpers');
 var socketModules = require('../src/socket.io/modules');
 
 describe('Messaging Library', function () {
-	var fooUid;
-	var bazUid;
+	var fooUid;	// the admin
+	var bazUid;	// the user with chat restriction enabled
 	var herpUid;
 	var roomId;
 
@@ -552,19 +552,69 @@ describe('Messaging Library', function () {
 			});
 		});
 
-
-		it('should delete message', function (done) {
+		it('should mark the message as deleted', function (done) {
 			socketModules.chats.delete({ uid: fooUid }, { messageId: mid, roomId: roomId }, function (err) {
 				assert.ifError(err);
-				db.exists('message:' + mid, function (err, exists) {
+				db.getObjectField('message:' + mid, 'deleted', function (err, value) {
 					assert.ifError(err);
-					assert(!exists);
-					db.isSortedSetMember('uid:' + fooUid + ':chat:room:' + roomId + ':mids', mid, function (err, isMember) {
-						assert.ifError(err);
-						assert(!isMember);
-						done();
-					});
+					assert.strictEqual(1, parseInt(value, 10));
+					done();
 				});
+			});
+		});
+
+		it('should show deleted message to original users', function (done) {
+			socketModules.chats.getMessages({ uid: fooUid }, { uid: fooUid, roomId: roomId, start: 0 }, function (err, messages) {
+				assert.ifError(err);
+
+				// Reduce messages to their mids
+				var mids = messages.reduce(function (mids, cur) {
+					mids.push(cur.messageId);
+					return mids;
+				}, []);
+
+				assert(mids.includes(mid));
+				done();
+			});
+		});
+
+		it('should not show deleted message to other users', function (done) {
+			socketModules.chats.getMessages({ uid: herpUid }, { uid: herpUid, roomId: roomId, start: 0 }, function (err, messages) {
+				assert.ifError(err);
+
+				// Reduce messages to their mids
+				var mids = messages.reduce(function (mids, cur) {
+					mids.push(cur.messageId);
+					return mids;
+				}, []);
+
+				assert(!mids.includes(mid));
+				done();
+			});
+		});
+
+		it('should error out if a message is deleted again', function (done) {
+			socketModules.chats.delete({ uid: fooUid }, { messageId: mid, roomId: roomId }, function (err) {
+				assert.strictEqual('[[error:chat-deleted-already]]', err.message);
+				done();
+			});
+		});
+
+		it('should restore the message', function (done) {
+			socketModules.chats.restore({ uid: fooUid }, { messageId: mid, roomId: roomId }, function (err) {
+				assert.ifError(err);
+				db.getObjectField('message:' + mid, 'deleted', function (err, value) {
+					assert.ifError(err);
+					assert.strictEqual(0, parseInt(value, 10));
+					done();
+				});
+			});
+		});
+
+		it('should error out if a message is restored again', function (done) {
+			socketModules.chats.restore({ uid: fooUid }, { messageId: mid, roomId: roomId }, function (err) {
+				assert.strictEqual('[[error:chat-restored-already]]', err.message);
+				done();
 			});
 		});
 	});

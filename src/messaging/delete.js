@@ -1,25 +1,30 @@
 'use strict';
 
 var async = require('async');
-var db = require('../database');
 
 module.exports = function (Messaging) {
 	Messaging.deleteMessage = function (mid, roomId, callback) {
 		async.waterfall([
-			function (next) {
-				Messaging.getUidsInRoom(roomId, 0, -1, next);
-			},
-			function (uids, next) {
-				if (!uids.length) {
-					return next();
+			async.apply(Messaging.getMessageField, mid, 'deleted'),
+			function (deleted, next) {
+				if (parseInt(deleted, 10)) {
+					return next(new Error('[[error:chat-deleted-already]]'));
 				}
-				var keys = uids.map(function (uid) {
-					return 'uid:' + uid + ':chat:room:' + roomId + ':mids';
-				});
-				db.sortedSetsRemove(keys, mid, next);
+
+				Messaging.setMessageField(mid, 'deleted', 1, next);
 			},
-			function (next) {
-				db.delete('message:' + mid, next);
+		], callback);
+	};
+
+	Messaging.restoreMessage = function (mid, roomId, callback) {
+		async.waterfall([
+			async.apply(Messaging.getMessageField, mid, 'deleted'),
+			function (deleted, next) {
+				if (!parseInt(deleted, 10)) {
+					return next(new Error('[[error:chat-restored-already]]'));
+				}
+
+				Messaging.setMessageField(mid, 'deleted', 0, next);
 			},
 		], callback);
 	};

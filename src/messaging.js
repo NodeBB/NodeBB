@@ -56,6 +56,16 @@ Messaging.getMessages = function (params, callback) {
 			messageData.forEach(function (messageData) {
 				messageData.index = indices[messageData.messageId.toString()];
 			});
+
+			// Filter out deleted messages unless you're the sender of said message
+			messageData = messageData.filter(function (messageData) {
+				if (messageData.deleted && parseInt(messageData.fromuid, 10) !== parseInt(params.uid, 10)) {
+					return false;
+				}
+
+				return true;
+			});
+
 			next(null, messageData);
 		},
 	], callback);

@@ -71,7 +71,7 @@ define('forum/chats', [
 			});
 		});
 
-		Chats.addEditDeleteHandler(components.get('chat/messages'), ajaxify.data.roomId);
+		Chats.addActionHandlers(components.get('chat/messages'), ajaxify.data.roomId);
 
 		Chats.addRenameHandler(ajaxify.data.roomId, $('[component="chat/room/name"]'));
 		Chats.addScrollHandler(ajaxify.data.roomId, ajaxify.data.uid, $('.chat-content'));
@@ -123,14 +123,25 @@ define('forum/chats', [
 		});
 	};
 
-	Chats.addEditDeleteHandler = function (element, roomId) {
-		element.on('click', '[data-action="edit"]', function () {
+	Chats.addActionHandlers = function (element, roomId) {
+		element.on('click', '[data-action]', function () {
 			var messageId = $(this).parents('[data-mid]').attr('data-mid');
-			var inputEl = $('[data-roomid="' + roomId + '"] [component="chat/input"]');
-			messages.prepEdit(inputEl, messageId, roomId);
-		}).on('click', '[data-action="delete"]', function () {
-			var messageId = $(this).parents('[data-mid]').attr('data-mid');
-			messages.delete(messageId, roomId);
+			var action = this.getAttribute('data-action');
+
+			switch (action) {
+			case 'edit':
+				var inputEl = $('[data-roomid="' + roomId + '"] [component="chat/input"]');
+				messages.prepEdit(inputEl, messageId, roomId);
+				break;
+
+			case 'delete':
+				messages.delete(messageId, roomId);
+				break;
+
+			case 'restore':
+				messages.restore(messageId, roomId);
+				break;
+			}
 		});
 	};
 

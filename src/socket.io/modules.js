@@ -267,6 +267,21 @@ SocketModules.chats.delete = function (socket, data, callback) {
 	], callback);
 };
 
+SocketModules.chats.restore = function (socket, data, callback) {
+	if (!data || !data.roomId || !data.messageId) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	async.waterfall([
+		function (next) {
+			Messaging.canDelete(data.messageId, socket.uid, next);
+		},
+		function (next) {
+			Messaging.restoreMessage(data.messageId, data.roomId, next);
+		},
+	], callback);
+};
+
 SocketModules.chats.canMessage = function (socket, roomId, callback) {
 	Messaging.canMessageRoom(socket.uid, roomId, callback);
 };

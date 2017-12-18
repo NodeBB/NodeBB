@@ -67,6 +67,8 @@ module.exports = function (Messaging) {
 					if (message.hasOwnProperty('edited')) {
 						message.editedISO = new Date(parseInt(message.edited, 10)).toISOString();
 					}
+
+					message.deleted = !!parseInt(message.deleted, 10);
 				});
 
 				async.map(messages, function (message, next) {

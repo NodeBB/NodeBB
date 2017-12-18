@@ -146,11 +146,22 @@ define('forum/chats/messages', ['components', 'sounds', 'translator', 'benchpres
 						return app.alertError(err.message);
 					}
 
-					components.get('chat/message', messageId).slideUp('slow', function () {
-						$(this).remove();
-					});
+					components.get('chat/message', messageId).toggleClass('deleted', true);
 				});
 			});
+		});
+	};
+
+	messages.restore = function (messageId, roomId) {
+		socket.emit('modules.chats.restore', {
+			messageId: messageId,
+			roomId: roomId,
+		}, function (err) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
+			components.get('chat/message', messageId).toggleClass('deleted', false);
 		});
 	};
 
