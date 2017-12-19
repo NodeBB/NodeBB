@@ -205,7 +205,7 @@ Upgrade.incrementProgress = function (value) {
 	if (this.total) {
 		percentage = Math.floor((this.current / this.total) * 100) + '%';
 		filled = Math.floor((this.current / this.total) * 15);
-		unfilled = 15 - filled;
+		unfilled = Math.min(0, 15 - filled);
 	}
 
 	readline.cursorTo(process.stdout, 0);
