@@ -140,14 +140,17 @@ topicsController.get = function (req, res, callback) {
 			topicData.topicStaleDays = parseInt(meta.config.topicStaleDays, 10) || 60;
 			topicData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
 			topicData['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
-			topicData['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 			topicData.bookmarkThreshold = parseInt(meta.config.bookmarkThreshold, 10) || 5;
 			topicData.postEditDuration = parseInt(meta.config.postEditDuration, 10) || 0;
 			topicData.postDeleteDuration = parseInt(meta.config.postDeleteDuration, 10) || 0;
 			topicData.scrollToMyPost = settings.scrollToMyPost;
-			topicData.rssFeedUrl = nconf.get('relative_path') + '/topic/' + topicData.tid + '.rss';
-			if (req.uid) {
-				topicData.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
+
+			topicData['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
+			if (!topicData['feeds:disableRSS']) {
+				topicData.rssFeedUrl = nconf.get('relative_path') + '/topic/' + topicData.tid + '.rss';
+				if (req.uid) {
+					topicData.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
+				}
 			}
 
 			addTags(topicData, req, res);
@@ -205,11 +208,16 @@ function buildBreadcrumbs(topicData, callback) {
 }
 
 function addTags(topicData, req, res) {
-	var postAtIndex = topicData.posts.find(function (postData) {
-		return parseInt(postData.index, 10) === parseInt(Math.max(0, req.params.post_index - 1), 10);
-	});
-
+	function findPost(index) {
+		for (var i = 0; i < topicData.posts.length; i += 1) {
+			if (parseInt(topicData.posts[i].index, 10) === parseInt(index, 10)) {
+				return topicData.posts[i];
+			}
+		}
+	}
 	var description = '';
+	var postAtIndex = findPost(Math.max(0, req.params.post_index - 1));
+
 	if (postAtIndex && postAtIndex.content) {
 		description = utils.stripHTMLTags(utils.decodeHTMLEntities(postAtIndex.content));
 	}
@@ -217,8 +225,27 @@ function addTags(topicData, req, res) {
 	if (description.length > 255) {
 		description = description.substr(0, 255) + '...';
 	}
-	description = description.replace(/\n/g, ' ');
 
+	var ogImageUrl = '';
+	if (topicData.thumb) {
+		ogImageUrl = topicData.thumb;
+	} else if (topicData.category.backgroundImage && (!postAtIndex || !postAtIndex.index)) {
+		ogImageUrl = topicData.category.backgroundImage;
+	} else if (postAtIndex && postAtIndex.user && postAtIndex.user.picture) {
+		ogImageUrl = postAtIndex.user.picture;
+	} else if (meta.config['og:image']) {
+		ogImageUrl = meta.config['og:image'];
+	} else if (meta.config['brand:logo']) {
+		ogImageUrl = meta.config['brand:logo'];
+	} else {
+		ogImageUrl = '/logo.png';
+	}
+
+	if (typeof ogImageUrl === 'string' && ogImageUrl.indexOf('http') === -1) {
+		ogImageUrl = nconf.get('url') + ogImageUrl;
+	}
+
+	description = description.replace(/\n/g, ' ');
 	res.locals.metaTags = [
 		{
 			name: 'title',
@@ -241,6 +268,16 @@ function addTags(topicData, req, res) {
 			content: 'article',
 		},
 		{
+			property: 'og:image',
+			content: ogImageUrl,
+			noEscape: true,
+		},
+		{
+			property: 'og:image:url',
+			content: ogImageUrl,
+			noEscape: true,
+		},
+		{
 			property: 'article:published_time',
 			content: utils.toISOString(topicData.timestamp),
 		},
@@ -254,19 +291,19 @@ function addTags(topicData, req, res) {
 		},
 	];
 
-	addOGImageTags(res, topicData, postAtIndex);
-
 	res.locals.linkTags = [
-		{
-			rel: 'alternate',
-			type: 'application/rss+xml',
-			href: topicData.rssFeedUrl,
-		},
 		{
 			rel: 'canonical',
 			href: nconf.get('url') + '/topic/' + topicData.slug,
 		},
 	];
+	if (!topicData['feeds:disableRSS']) {
+		res.locals.linkTags.push({
+			rel: 'alternate',
+			type: 'application/rss+xml',
+			href: topicData.rssFeedUrl,
+		});
+	}
 
 	if (topicData.category) {
 		res.locals.linkTags.push({
@@ -274,60 +311,6 @@ function addTags(topicData, req, res) {
 			href: nconf.get('url') + '/category/' + topicData.category.slug,
 		});
 	}
-}
-
-function addOGImageTags(res, topicData, postAtIndex) {
-	var ogImageUrl = '';
-	if (topicData.thumb) {
-		ogImageUrl = topicData.thumb;
-	} else if (topicData.category.backgroundImage && (!postAtIndex || !postAtIndex.index)) {
-		ogImageUrl = topicData.category.backgroundImage;
-	} else if (postAtIndex && postAtIndex.user && postAtIndex.user.picture) {
-		ogImageUrl = postAtIndex.user.picture;
-	} else if (meta.config['og:image']) {
-		ogImageUrl = meta.config['og:image'];
-	} else if (meta.config['brand:logo']) {
-		ogImageUrl = meta.config['brand:logo'];
-	} else {
-		ogImageUrl = '/logo.png';
-	}
-
-	addOGImageTag(res, ogImageUrl);
-	addOGImageTagsForPosts(res, topicData.posts);
-}
-
-function addOGImageTagsForPosts(res, posts) {
-	posts.forEach(function (postData) {
-		var regex = /src\s*=\s*"(.+?)"/g;
-		var match = regex.exec(postData.content);
-		while (match !== null) {
-			var image = match[1];
-
-			if (image.startsWith(nconf.get('url') + '/plugins')) {
-				return;
-			}
-
-			addOGImageTag(res, image);
-
-			match = regex.exec(postData.content);
-		}
-	});
-}
-
-function addOGImageTag(res, imageUrl) {
-	if (typeof imageUrl === 'string' && !imageUrl.startsWith('http')) {
-		imageUrl = nconf.get('url') + imageUrl;
-	}
-	res.locals.metaTags.push({
-		property: 'og:image',
-		content: imageUrl,
-		noEscape: true,
-	});
-	res.locals.metaTags.push({
-		property: 'og:image:url',
-		content: imageUrl,
-		noEscape: true,
-	});
 }
 
 topicsController.teaser = function (req, res, next) {
