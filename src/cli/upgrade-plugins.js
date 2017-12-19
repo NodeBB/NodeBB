@@ -38,53 +38,49 @@ function getInstalledPlugins(callback) {
 	async.parallel({
 		files: async.apply(fs.readdir, path.join(dirname, 'node_modules')),
 		deps: async.apply(fs.readFile, path.join(dirname, 'package.json'), { encoding: 'utf-8' }),
+		bundled: async.apply(fs.readFile, path.join(dirname, 'install/package.json'), { encoding: 'utf-8' }),
 	}, function (err, payload) {
 		if (err) {
 			return callback(err);
 		}
 
 		var isNbbModule = /^nodebb-(?:plugin|theme|widget|rewards)-[\w-]+$/;
-		var moduleName;
-		var isGitRepo;
+		var checklist;
 
 		payload.files = payload.files.filter(function (file) {
 			return isNbbModule.test(file);
 		});
 
 		try {
-			payload.deps = JSON.parse(payload.deps).dependencies;
-			payload.bundled = [];
-			payload.installed = [];
+			payload.deps = Object.keys(JSON.parse(payload.deps).dependencies);
+			payload.bundled = Object.keys(JSON.parse(payload.bundled).dependencies);
 		} catch (err) {
 			return callback(err);
 		}
 
-		for (moduleName in payload.deps) {
-			if (isNbbModule.test(moduleName)) {
-				payload.bundled.push(moduleName);
-			}
-		}
+		payload.bundled = payload.bundled.filter(function (pkgName) {
+			return isNbbModule.test(pkgName);
+		});
+		payload.deps = payload.deps.filter(function (pkgName) {
+			return isNbbModule.test(pkgName);
+		});
 
 		// Whittle down deps to send back only extraneously installed plugins/themes/etc
-		payload.files.forEach(function (moduleName) {
-			try {
-				fs.accessSync(path.join(dirname, 'node_modules', moduleName, '.git'));
-				isGitRepo = true;
-			} catch (e) {
-				isGitRepo = false;
+		checklist = payload.deps.filter(function (pkgName) {
+			if (payload.bundled.includes(pkgName)) {
+				return false;
 			}
 
-			if (
-				payload.files.indexOf(moduleName) !== -1 &&	// found in `node_modules/`
-				payload.bundled.indexOf(moduleName) === -1 &&	// not found in `package.json`
-				!fs.lstatSync(path.join(dirname, 'node_modules', moduleName)).isSymbolicLink() &&	// is not a symlink
-				!isGitRepo	// .git/ does not exist, so it is not a git repository
-			) {
-				payload.installed.push(moduleName);
+			// Ignore git repositories
+			try {
+				fs.accessSync(path.join(dirname, 'node_modules', pkgName, '.git'));
+				return false;
+			} catch (e) {
+				return true;
 			}
 		});
 
-		getModuleVersions(payload.installed, callback);
+		getModuleVersions(checklist, callback);
 	});
 }
 
@@ -105,7 +101,7 @@ function getCurrentVersion(callback) {
 
 function checkPlugins(standalone, callback) {
 	if (standalone) {
-		console.log('Checking installed plugins and themes for updates... ');
+		process.stdout.write('Checking installed plugins and themes for updates... ');
 	}
 
 	async.waterfall([
@@ -117,7 +113,7 @@ function checkPlugins(standalone, callback) {
 			var toCheck = Object.keys(payload.plugins);
 
 			if (!toCheck.length) {
-				console.log('OK'.green + ''.reset);
+				process.stdout.write('  OK'.green + ''.reset);
 				return next(null, []);	// no extraneous plugins installed
 			}
 
@@ -127,10 +123,10 @@ function checkPlugins(standalone, callback) {
 				json: true,
 			}, function (err, res, body) {
 				if (err) {
-					console.log('error'.red + ''.reset);
+					process.stdout.write('error'.red + ''.reset);
 					return next(err);
 				}
-				console.log('OK'.green + ''.reset);
+				process.stdout.write('  OK'.green + ''.reset);
 
 				if (!Array.isArray(body) && toCheck.length === 1) {
 					body = [body];
@@ -172,11 +168,10 @@ function upgradePlugins(callback) {
 		}
 
 		if (found && found.length) {
-			console.log('\nA total of ' + String(found.length).bold + ' package(s) can be upgraded:');
+			process.stdout.write('\n\nA total of ' + String(found.length).bold + ' package(s) can be upgraded:\n\n');
 			found.forEach(function (suggestObj) {
-				console.log('  * '.yellow + suggestObj.name.reset + ' (' + suggestObj.current.yellow + ' -> '.reset + suggestObj.suggested.green + ')\n'.reset);
+				process.stdout.write('  * '.yellow + suggestObj.name.reset + ' (' + suggestObj.current.yellow + ' -> '.reset + suggestObj.suggested.green + ')\n'.reset);
 			});
-			console.log('');
 		} else {
 			if (standalone) {
 				console.log('\nAll packages up-to-date!'.green + ''.reset);
@@ -190,7 +185,7 @@ function upgradePlugins(callback) {
 		prompt.start();
 		prompt.get({
 			name: 'upgrade',
-			description: 'Proceed with upgrade (y|n)?'.reset,
+			description: '\nProceed with upgrade (y|n)?'.reset,
 			type: 'string',
 		}, function (err, result) {
 			if (err) {
@@ -204,10 +199,12 @@ function upgradePlugins(callback) {
 					args.push(suggestObj.name + '@' + suggestObj.suggested);
 				});
 
-				cproc.execFile((process.platform === 'win32') ? 'npm.cmd' : 'npm', args, { stdio: 'ignore' }, callback);
+				cproc.execFile((process.platform === 'win32') ? 'npm.cmd' : 'npm', args, { stdio: 'ignore' }, function (err) {
+					callback(err, true);
+				});
 			} else {
-				console.log('Package upgrades skipped'.yellow + '. Check for upgrades at any time by running "'.reset + './nodebb upgrade-plugins'.green + '".'.reset);
-				callback();
+				console.log('Package upgrades skipped'.yellow + '. Check for upgrades at any time by running "'.reset + './nodebb upgrade -p'.green + '".'.reset);
+				callback(null, true);
 			}
 		});
 	});

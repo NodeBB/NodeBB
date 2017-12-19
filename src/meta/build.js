@@ -99,6 +99,8 @@ function beforeBuild(targets, callback) {
 	var plugins = require('../plugins');
 	meta = require('../meta');
 
+	process.stdout.write('  started'.green + '\n'.reset);
+
 	async.series([
 		db.init,
 		meta.themes.setupPaths,
@@ -210,7 +212,7 @@ function build(targets, callback) {
 		}
 
 		winston.info('[build] Asset compilation successful. Completed in ' + totalTime + 'sec.');
-		callback();
+		callback(null, true);
 	});
 }
 

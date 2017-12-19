@@ -189,7 +189,7 @@ Upgrade.process = function (files, skipCount, callback) {
 			}, next);
 		},
 		function (next) {
-			console.log('Upgrade complete!\n'.green);
+			console.log('Schema update(s) complete!\n'.green);
 			setImmediate(next);
 		},
 	], callback);

@@ -30,6 +30,7 @@ function updatePackageFile() {
 exports.updatePackageFile = updatePackageFile;
 
 function npmInstallProduction() {
+	process.stdout.write('\n');
 	cproc.execSync('npm i --production', {
 		cwd: path.join(__dirname, '../../'),
 		stdio: [0, 1, 2],
