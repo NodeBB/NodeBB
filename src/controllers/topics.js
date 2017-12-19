@@ -140,14 +140,17 @@ topicsController.get = function (req, res, callback) {
 			topicData.topicStaleDays = parseInt(meta.config.topicStaleDays, 10) || 60;
 			topicData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
 			topicData['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
-			topicData['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 			topicData.bookmarkThreshold = parseInt(meta.config.bookmarkThreshold, 10) || 5;
 			topicData.postEditDuration = parseInt(meta.config.postEditDuration, 10) || 0;
 			topicData.postDeleteDuration = parseInt(meta.config.postDeleteDuration, 10) || 0;
 			topicData.scrollToMyPost = settings.scrollToMyPost;
-			topicData.rssFeedUrl = nconf.get('relative_path') + '/topic/' + topicData.tid + '.rss';
-			if (req.uid) {
-				topicData.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
+
+			topicData['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
+			if (!topicData['feeds:disableRSS']) {
+				topicData.rssFeedUrl = nconf.get('relative_path') + '/topic/' + topicData.tid + '.rss';
+				if (req.uid) {
+					topicData.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
+				}
 			}
 
 			addTags(topicData, req, res);
@@ -258,15 +261,17 @@ function addTags(topicData, req, res) {
 
 	res.locals.linkTags = [
 		{
-			rel: 'alternate',
-			type: 'application/rss+xml',
-			href: topicData.rssFeedUrl,
-		},
-		{
 			rel: 'canonical',
 			href: nconf.get('url') + '/topic/' + topicData.slug,
 		},
 	];
+	if (!topicData['feeds:disableRSS']) {
+		res.locals.linkTags.push({
+			rel: 'alternate',
+			type: 'application/rss+xml',
+			href: topicData.rssFeedUrl,
+		});
+	}
 
 	if (topicData.category) {
 		res.locals.linkTags.push({

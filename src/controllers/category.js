@@ -126,15 +126,18 @@ categoryController.get = function (req, res, callback) {
 			categoryData.description = translator.escape(categoryData.description);
 			categoryData.privileges = userPrivileges;
 			categoryData.showSelect = categoryData.privileges.editable;
-			categoryData.rssFeedUrl = nconf.get('url') + '/category/' + categoryData.cid + '.rss';
-			if (parseInt(req.uid, 10)) {
-				categories.markAsRead([cid], req.uid);
-				categoryData.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
+
+			categoryData['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
+			if (!categoryData['feeds:disableRSS']) {
+				categoryData.rssFeedUrl = nconf.get('url') + '/category/' + categoryData.cid + '.rss';
+				if (parseInt(req.uid, 10)) {
+					categories.markAsRead([cid], req.uid);
+					categoryData.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
+				}
 			}
 
 			addTags(categoryData, res);
 
-			categoryData['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 			categoryData.title = translator.escape(categoryData.name);
 			pageCount = Math.max(1, Math.ceil(categoryData.topic_count / settings.topicsPerPage));
 			categoryData.pagination = pagination.create(currentPage, pageCount, req.query);
