@@ -578,8 +578,8 @@
 
 		toggleTimeagoShorthand: function toggleTimeagoShorthand() {
 			var tmp = assign({}, jQuery.timeago.settings.strings);
-			jQuery.timeago.settings.strings = assign({}, adaptor.timeagoShort);
-			adaptor.timeagoShort = assign({}, tmp);
+			jQuery.timeago.settings.strings = assign({}, tmp, adaptor.timeagoShort);
+			adaptor.timeagoShort = assign({}, adaptor.timeagoShort, tmp);
 		},
 		prepareDOM: function prepareDOM() {
 			// Load the appropriate timeago locale file,
