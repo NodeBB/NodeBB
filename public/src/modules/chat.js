@@ -190,7 +190,7 @@ define('chat', [
 						return;
 					}
 
-					chatModal.find('.chat-content').css('height', module.calculateChatListHeight(chatModal));
+					chatModal.find('.modal-body').css('height', module.calculateChatListHeight(chatModal));
 				});
 
 				chatModal.draggable({
@@ -346,12 +346,8 @@ define('chat', [
 	};
 
 	module.calculateChatListHeight = function (modalEl) {
-		var totalHeight = modalEl.find('.modal-content').outerHeight() - modalEl.find('.modal-header').outerHeight();
-		var padding = parseInt(modalEl.find('.modal-body').css('padding-top'), 10) + parseInt(modalEl.find('.modal-body').css('padding-bottom'), 10);
-		var contentMargin = parseInt(modalEl.find('.chat-content').css('margin-top'), 10) + parseInt(modalEl.find('.chat-content').css('margin-bottom'), 10);
-		var inputGroupHeight = modalEl.find('.input-group').outerHeight();
-
-		return totalHeight - padding - contentMargin - inputGroupHeight;
+		// Formula: modal height minus header height. Simple(tm).
+		return modalEl.find('.modal-content').outerHeight() - modalEl.find('.modal-header').outerHeight();
 	};
 
 	module.minimize = function (uuid) {
