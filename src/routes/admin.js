@@ -55,7 +55,7 @@ function addRoutes(router, middleware, controllers) {
 	router.get('/manage/categories/:category_id', middlewares, controllers.admin.categories.get);
 	router.get('/manage/categories/:category_id/analytics', middlewares, controllers.admin.categories.getAnalytics);
 
-	router.get('/manage/privileges', middlewares, controllers.admin.privileges.get);
+	router.get('/manage/privileges/:cid?', middlewares, controllers.admin.privileges.get);
 	router.get('/manage/tags', middlewares, controllers.admin.tags.get);
 	router.get('/manage/post-queue', middlewares, controllers.admin.postQueue.get);
 	router.get('/manage/ip-blacklist', middlewares, controllers.admin.blacklist.get);

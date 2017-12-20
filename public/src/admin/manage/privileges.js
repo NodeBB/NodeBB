@@ -1,19 +1,21 @@
 'use strict';
 
-
 define('admin/manage/privileges', [
 	'autocomplete',
 	'translator',
 	'benchpress',
-], function (autocomplete, translator, Benchpress) {
+	'categorySelector'
+], function (autocomplete, translator, Benchpress, categorySelector) {
 	var	Privileges = {};
 
+	var cid;
+
 	Privileges.init = function () {
+		cid = ajaxify.data.cid || 0;
+
 		$('#category-selector').on('change', function () {
 			var val = $(this).val();
-			if (val !== 'global') {
-				ajaxify.go('admin/manage/categories/' + $(this).val() + '#privileges');
-			}
+			ajaxify.go('admin/manage/privileges/' + (val === 'global' ? '' : $(this).val()));
 		});
 
 
@@ -31,7 +33,17 @@ define('admin/manage/privileges', [
 			var isGroup = rowEl.attr('data-group-name') !== undefined;
 
 			if (member) {
-				Privileges.setPrivilege(member, privilege, state, checkboxEl);
+				if (isGroup && privilege === 'groups:moderate' && !isPrivate && state) {
+					bootbox.confirm('[[admin/manage/categories:alert.confirm-moderate]]', function (confirm) {
+						if (confirm) {
+							Privileges.setPrivilege(member, privilege, state, checkboxEl);
+						} else {
+							checkboxEl.prop('checked', !checkboxEl.prop('checked'));
+						}
+					});
+				} else {
+					Privileges.setPrivilege(member, privilege, state, checkboxEl);
+				}
 			} else {
 				app.alertError('[[error:invalid-data]]');
 			}
@@ -39,17 +51,19 @@ define('admin/manage/privileges', [
 
 		$('.privilege-table-container').on('click', '[data-action="search.user"]', Privileges.addUserToPrivilegeTable);
 		$('.privilege-table-container').on('click', '[data-action="search.group"]', Privileges.addGroupToPrivilegeTable);
+		$('.privilege-table-container').on('click', '[data-action="copyToChildren"]', Privileges.copyPrivilegesToChildren);
+		$('.privilege-table-container').on('click', '[data-action="copyPrivilegesFrom"]', Privileges.copyPrivilegesFromCategory);
 
 		Privileges.exposeAssumedPrivileges();
 	};
 
 	Privileges.refreshPrivilegeTable = function () {
-		socket.emit('admin.categories.getPrivilegeSettings', function (err, privileges) {
+		socket.emit('admin.categories.getPrivilegeSettings', cid, function (err, privileges) {
 			if (err) {
 				return app.alertError(err.message);
 			}
-
-			Benchpress.parse('admin/partials/global/privileges', {
+			var tpl = cid ? 'admin/partials/categories/privileges' : 'admin/manage/privileges';
+			Benchpress.parse(tpl, {
 				privileges: privileges,
 			}, function (html) {
 				translator.translate(html, function (html) {
@@ -84,7 +98,7 @@ define('admin/manage/privileges', [
 
 	Privileges.setPrivilege = function (member, privilege, state, checkboxEl) {
 		socket.emit('admin.categories.setPrivilege', {
-			cid: 0,
+			cid: cid,
 			privilege: privilege,
 			set: state,
 			member: member,
@@ -109,9 +123,10 @@ define('admin/manage/privileges', [
 			var inputEl = modal.find('input');
 
 			autocomplete.user(inputEl, function (ev, ui) {
+				var defaultPrivileges = cid ? ['find', 'read', 'topics:read'] : ['chat'];
 				socket.emit('admin.categories.setPrivilege', {
-					cid: 0,
-					privilege: ['chat'],
+					cid: cid,
+					privilege: defaultPrivileges,
 					set: true,
 					member: ui.item.user.uid,
 				}, function (err) {
@@ -137,9 +152,10 @@ define('admin/manage/privileges', [
 			var inputEl = modal.find('input');
 
 			autocomplete.group(inputEl, function (ev, ui) {
+				var defaultPrivileges = cid ? ['groups:find', 'groups:read', 'groups:topics:read'] : ['groups:chat'];
 				socket.emit('admin.categories.setPrivilege', {
-					cid: 0,
-					privilege: ['groups:chat'],
+					cid: cid,
+					privilege: defaultPrivileges,
 					set: true,
 					member: ui.item.group.name,
 				}, function (err) {
@@ -150,6 +166,26 @@ define('admin/manage/privileges', [
 					Privileges.refreshPrivilegeTable();
 					modal.modal('hide');
 				});
+			});
+		});
+	};
+
+	Privileges.copyPrivilegesToChildren = function () {
+		socket.emit('admin.categories.copyPrivilegesToChildren', cid, function (err) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+			app.alertSuccess('Privileges copied!');
+		});
+	};
+
+	Privileges.copyPrivilegesFromCategory = function () {
+		categorySelector.modal(function (fromCid) {
+			socket.emit('admin.categories.copyPrivilegesFrom', { toCid: cid, fromCid: fromCid }, function (err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				ajaxify.refresh();
 			});
 		});
 	};

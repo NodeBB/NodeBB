@@ -2,18 +2,8 @@
 
 	<form role="form" class="category" data-cid="{category.cid}">
 		<div class="row">
-			<div class="col-md-9">
-				<ul class="nav nav-pills">
-					<li class="active"><a href="#category-settings" data-toggle="tab">
-						[[admin/manage/categories:settings]]
-					</a></li>
-					<li><a href="#privileges" data-toggle="tab">[[admin/manage/categories:privileges]]</a></li>
-				</ul>
-			</div>
-			<div class="col-md-3">
+			<div class="col-md-3 pull-right">
 				<select id="category-selector" class="form-control">
-					<option value="global" selected>[[admin/manage/privileges:global]]</option>
-					<option disabled>_____________</option>
 					<!-- BEGIN allCategories -->
 					<option value="{allCategories.value}" <!-- IF allCategories.selected -->selected<!-- ENDIF allCategories.selected -->>{allCategories.text}</option>
 					<!-- END allCategories -->
@@ -174,19 +164,6 @@
 							</button>
 						</div>
 					</div>
-				</div>
-			</div>
-
-			<div class="tab-pane fade col-xs-12" id="privileges">
-				<p>
-					[[admin/manage/categories:privileges.description]]
-				</p>
-				<p class="text-warning">
-					[[admin/manage/categories:privileges.warning]]
-				</p>
-				<hr />
-				<div class="privilege-table-container">
-					<!-- IMPORT admin/partials/categories/privileges.tpl -->
 				</div>
 			</div>
 		</div>

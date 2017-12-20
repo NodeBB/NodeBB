@@ -1,6 +1,4 @@
 {
 	"global": "Global",
-	"global.description": "You can configure the global privileges in this section. Privileges can be granted on a per-user or a per-group basis. You can add a new user to this table by searching for them in the form below.",
-	"global.warning": "<strong>Note</strong>: Privilege settings take effect immediately. It is not necessary to save after adjusting these settings.",
 	"global.no-users": "No user-specific global privileges."
 }
