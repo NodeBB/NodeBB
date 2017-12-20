@@ -353,6 +353,11 @@ function createGlobalModeratorsGroup(next) {
 	], next);
 }
 
+function giveGlobalPrivileges(next) {
+	var groups = require('./groups');
+	groups.join('cid:0:privileges:groups:chat', 'registered-users', next);
+}
+
 function createCategories(next) {
 	var Categories = require('./categories');
 
@@ -498,6 +503,7 @@ install.setup = function (callback) {
 		createCategories,
 		createAdministrator,
 		createGlobalModeratorsGroup,
+		giveGlobalPrivileges,
 		createMenuItems,
 		createWelcomePost,
 		enableDefaultPlugins,

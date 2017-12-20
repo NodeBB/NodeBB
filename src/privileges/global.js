@@ -2,10 +2,8 @@
 'use strict';
 
 var async = require('async');
-var _ = require('lodash');
 
 var user = require('../user');
-var groups = require('../groups');
 var helpers = require('./helpers');
 var plugins = require('../plugins');
 
@@ -65,6 +63,4 @@ module.exports = function (privileges) {
 			},
 		], callback);
 	};
-
-
 };

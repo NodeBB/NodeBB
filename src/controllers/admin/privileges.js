@@ -13,7 +13,7 @@ privilegesController.get = function (req, res, callback) {
 		function (next) {
 			async.parallel({
 				privileges: function (next) {
-					if (!cid)  {
+					if (!cid) {
 						privileges.global.list(next);
 					} else {
 						privileges.categories.list(cid, next);
@@ -23,7 +23,6 @@ privilegesController.get = function (req, res, callback) {
 			}, next);
 		},
 		function (data) {
-
 			data.allCategories.forEach(function (category) {
 				if (category) {
 					category.selected = parseInt(category.cid, 10) === parseInt(cid, 10);

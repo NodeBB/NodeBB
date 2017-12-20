@@ -18,7 +18,6 @@ define('admin/manage/category', [
 		});
 
 		$('#category-selector').on('change', function () {
-			var val = $(this).val();
 			ajaxify.go('admin/manage/categories/' + $(this).val() + window.location.hash);
 		});
 

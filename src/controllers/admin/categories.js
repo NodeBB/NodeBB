@@ -3,7 +3,6 @@
 var async = require('async');
 
 var categories = require('../../categories');
-var privileges = require('../../privileges');
 var analytics = require('../../analytics');
 var plugins = require('../../plugins');
 var translator = require('../../translator');

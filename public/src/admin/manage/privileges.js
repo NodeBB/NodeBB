@@ -4,7 +4,7 @@ define('admin/manage/privileges', [
 	'autocomplete',
 	'translator',
 	'benchpress',
-	'categorySelector'
+	'categorySelector',
 ], function (autocomplete, translator, Benchpress, categorySelector) {
 	var	Privileges = {};
 
@@ -62,7 +62,7 @@ define('admin/manage/privileges', [
 			if (err) {
 				return app.alertError(err.message);
 			}
-			var tpl = cid ? 'admin/partials/categories/privileges' : 'admin/manage/privileges';
+			var tpl = cid ? 'admin/partials/categories/privileges' : 'admin/partials/global/privileges';
 			Benchpress.parse(tpl, {
 				privileges: privileges,
 			}, function (html) {
