@@ -53,10 +53,12 @@ var steps = {
 function runSteps(tasks) {
 	tasks = tasks.map(function (key, i) {
 		return function (next) {
-			console.log(((i + 1) + '. ').bold + steps[key].message.yellow);
-			return steps[key].handler(function (err) {
+			process.stdout.write('\n' + ((i + 1) + '. ').bold + steps[key].message.yellow);
+			return steps[key].handler(function (err, inhibitOk) {
 				if (err) { return next(err); }
-				console.log('  OK'.green);
+				if (!inhibitOk) {
+					process.stdout.write('  OK'.green + '\n'.reset);
+				}
 				next();
 			});
 		};
@@ -73,7 +75,7 @@ function runSteps(tasks) {
 		var columns = process.stdout.columns;
 		var spaces = columns ? new Array(Math.floor(columns / 2) - (message.length / 2) + 1).join(' ') : '  ';
 
-		console.log('\n' + spaces + message.green.bold + '\n'.reset);
+		console.log('\n\n' + spaces + message.green.bold + '\n'.reset);
 
 		process.exit();
 	});
