@@ -120,6 +120,7 @@ define('forum/chats', [
 		var element = parent.find('[component="chat/input"]');
 		element.on('keyup', function () {
 			parent.find('[component="chat/message/length"]').text(element.val().length);
+			parent.find('[component="chat/message/remaining"]').text(config.maximumChatMessageLength - element.val().length);
 		});
 	};
 
@@ -147,7 +148,7 @@ define('forum/chats', [
 
 	Chats.addHotkeys = function () {
 		mousetrap.bind('ctrl+up', function () {
-			var activeContact = $('.chats-list .bg-primary');
+			var activeContact = $('.chats-list .bg-info');
 			var prev = activeContact.prev();
 
 			if (prev.length) {
@@ -155,7 +156,7 @@ define('forum/chats', [
 			}
 		});
 		mousetrap.bind('ctrl+down', function () {
-			var activeContact = $('.chats-list .bg-primary');
+			var activeContact = $('.chats-list .bg-info');
 			var next = activeContact.next();
 
 			if (next.length) {
@@ -419,8 +420,8 @@ define('forum/chats', [
 			socket.emit('modules.chats.markRead', ajaxify.data.roomId);
 			$('.expanded-chat input').focus();
 		}
-		$('.chats-list li').removeClass('bg-primary');
-		$('.chats-list li[data-roomid="' + ajaxify.data.roomId + '"]').addClass('bg-primary');
+		$('.chats-list li').removeClass('bg-info');
+		$('.chats-list li[data-roomid="' + ajaxify.data.roomId + '"]').addClass('bg-info');
 	};
 
 
