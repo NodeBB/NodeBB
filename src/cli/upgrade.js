@@ -3,7 +3,7 @@
 var async = require('async');
 var nconf = require('nconf');
 
-var packageInstall = require('../meta/package-install');
+var packageInstall = require('./package-install');
 var upgrade = require('../upgrade');
 var build = require('../meta/build');
 var db = require('../database');
@@ -22,7 +22,7 @@ var steps = {
 	install: {
 		message: 'Bringing base dependencies up to date...',
 		handler: function (next) {
-			packageInstall.npmInstallProduction();
+			packageInstall.installAll();
 			next();
 		},
 	},

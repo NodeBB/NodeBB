@@ -7,8 +7,17 @@ var cproc = require('child_process');
 var semver = require('semver');
 var fs = require('fs');
 var path = require('path');
+var nconf = require('nconf');
 
 var paths = require('./paths');
+
+var packageManager = nconf.get('package_manager');
+var packageManagerExecutable = packageManager === 'yarn' ? 'yarn' : 'npm';
+var packageManagerInstallArgs = packageManager === 'yarn' ? ['add'] : ['install', '--save'];
+
+if (process.platform === 'win32') {
+	packageManagerExecutable += '.cmd';
+}
 
 var dirname = paths.baseDir;
 
@@ -85,7 +94,7 @@ function getInstalledPlugins(callback) {
 }
 
 function getCurrentVersion(callback) {
-	fs.readFile(path.join(dirname, 'package.json'), { encoding: 'utf-8' }, function (err, pkg) {
+	fs.readFile(path.join(dirname, 'install/package.json'), { encoding: 'utf-8' }, function (err, pkg) {
 		if (err) {
 			return callback(err);
 		}
@@ -106,8 +115,8 @@ function checkPlugins(standalone, callback) {
 
 	async.waterfall([
 		async.apply(async.parallel, {
-			plugins: async.apply(getInstalledPlugins),
-			version: async.apply(getCurrentVersion),
+			plugins: getInstalledPlugins,
+			version: getCurrentVersion,
 		}),
 		function (payload, next) {
 			var toCheck = Object.keys(payload.plugins);
@@ -194,13 +203,12 @@ function upgradePlugins(callback) {
 
 			if (['y', 'Y', 'yes', 'YES'].indexOf(result.upgrade) !== -1) {
 				console.log('\nUpgrading packages...');
-				var args = ['i'];
-				found.forEach(function (suggestObj) {
-					args.push(suggestObj.name + '@' + suggestObj.suggested);
-				});
+				var args = packageManagerInstallArgs.concat(found.map(function (suggestObj) {
+					return suggestObj.name + '@' + suggestObj.suggested;
+				}));
 
-				cproc.execFile((process.platform === 'win32') ? 'npm.cmd' : 'npm', args, { stdio: 'ignore' }, function (err) {
-					callback(err, true);
+				cproc.execFile(packageManagerExecutable, args, { stdio: 'ignore' }, function (err) {
+					callback(err, false);
 				});
 			} else {
 				console.log('Package upgrades skipped'.yellow + '. Check for upgrades at any time by running "'.reset + './nodebb upgrade -p'.green + '".'.reset);
