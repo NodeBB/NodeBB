@@ -332,6 +332,7 @@ define('forum/chats', [
 						response.json().then(function (payload) {
 							app.parseAndTranslate('partials/chats/message-window', payload, function (html) {
 								components.get('chat/main-wrapper').html(html);
+								html.find('.timeago').timeago();
 								Chats.resizeMainWindow();
 								ajaxify.data = payload;
 								Chats.setActive();
