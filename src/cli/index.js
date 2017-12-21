@@ -3,7 +3,7 @@
 var fs = require('fs');
 var path = require('path');
 
-var packageInstall = require('../meta/package-install');
+var packageInstall = require('./package-install');
 var dirname = require('./paths').baseDir;
 
 // check to make sure dependencies are installed
@@ -12,12 +12,17 @@ try {
 } catch (e) {
 	if (e.code === 'ENOENT') {
 		console.warn('package.json not found.');
-		console.log('Populating package.json...\n');
+		console.log('Populating package.json...');
 
 		packageInstall.updatePackageFile();
 		packageInstall.preserveExtraneousPlugins();
 
-		console.log('OK'.green + '\n'.reset);
+		try {
+			require('colors');
+			console.log('OK'.green);
+		} catch (e) {
+			console.log('OK');
+		}
 	} else {
 		throw e;
 	}
@@ -33,7 +38,7 @@ try {
 		console.warn('Dependencies not yet installed.');
 		console.log('Installing them now...\n');
 
-		packageInstall.npmInstallProduction();
+		packageInstall.installAll();
 
 		require('colors');
 		console.log('OK'.green + '\n'.reset);
