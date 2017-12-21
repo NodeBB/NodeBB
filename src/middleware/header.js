@@ -143,7 +143,7 @@ module.exports = function (middleware) {
 				templateValues.isAdmin = results.user.isAdmin;
 				templateValues.isGlobalMod = results.user.isGlobalMod;
 				templateValues.showModMenu = results.user.isAdmin || results.user.isGlobalMod || results.user.isMod;
-				templateValues.canChat = results.canChat;
+				templateValues.canChat = results.canChat && parseInt(meta.config.disableChat, 10) !== 1;
 				templateValues.user = results.user;
 				templateValues.userJSON = jsesc(JSON.stringify(results.user), { isScriptContext: true });
 				templateValues.useCustomCSS = parseInt(meta.config.useCustomCSS, 10) === 1 && meta.config.customCSS;
