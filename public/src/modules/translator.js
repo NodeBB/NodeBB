@@ -576,23 +576,29 @@
 			adaptor.getTranslations(language, namespace, callback);
 		},
 
-		toggleTimeagoShorthand: function toggleTimeagoShorthand() {
-			var tmp = assign({}, jQuery.timeago.settings.strings);
-			jQuery.timeago.settings.strings = assign({}, adaptor.timeagoShort);
-			adaptor.timeagoShort = assign({}, tmp);
+		toggleTimeagoShorthand: function toggleTimeagoShorthand(callback) {
+			function toggle() {
+				var tmp = assign({}, jQuery.timeago.settings.strings);
+				jQuery.timeago.settings.strings = assign({}, adaptor.timeagoShort);
+				adaptor.timeagoShort = assign({}, tmp);
+				if (typeof callback === 'function') {
+					callback();
+				}
+			}
+
+			if (!adaptor.timeagoShort) {
+				var languageCode = utils.userLangToTimeagoCode(config.userLang);
+				var originalSettings = assign({}, jQuery.timeago.settings.strings);
+				jQuery.getScript(config.relative_path + '/assets/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '-short.js').done(function () {
+					adaptor.timeagoShort = assign({}, jQuery.timeago.settings.strings);
+					jQuery.timeago.settings.strings = assign({}, originalSettings);
+					toggle();
+				});
+			} else {
+				toggle();
+			}
 		},
 		prepareDOM: function prepareDOM() {
-			// Load the appropriate timeago locale file,
-			// and correct NodeBB language codes to timeago codes, if necessary
-			var languageCode = utils.userLangToTimeagoCode(config.userLang);
-
-			adaptor.timeagoShort = assign({}, jQuery.timeago.settings.strings);
-
-			jQuery.getScript(config.relative_path + '/assets/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '-short.js').done(function () {
-				// Switch back to long-form
-				adaptor.toggleTimeagoShorthand();
-			});
-
 			// Add directional code if necessary
 			adaptor.translate('[[language:dir]]', function (value) {
 				if (value && !$('html').attr('data-dir')) {

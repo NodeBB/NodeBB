@@ -258,15 +258,18 @@ function addTags(topicData, req, res) {
 
 	res.locals.linkTags = [
 		{
-			rel: 'alternate',
-			type: 'application/rss+xml',
-			href: topicData.rssFeedUrl,
-		},
-		{
 			rel: 'canonical',
 			href: nconf.get('url') + '/topic/' + topicData.slug,
 		},
 	];
+
+	if (!topicData['feeds:disableRSS']) {
+		res.locals.linkTags.push({
+			rel: 'alternate',
+			type: 'application/rss+xml',
+			href: topicData.rssFeedUrl,
+		});
+	}
 
 	if (topicData.category) {
 		res.locals.linkTags.push({

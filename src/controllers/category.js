@@ -200,13 +200,16 @@ function addTags(categoryData, res) {
 
 	res.locals.linkTags = [
 		{
-			rel: 'alternate',
-			type: 'application/rss+xml',
-			href: categoryData.rssFeedUrl,
-		},
-		{
 			rel: 'up',
 			href: nconf.get('url'),
 		},
 	];
+
+	if (!categoryData['feeds:disableRSS']) {
+		res.locals.linkTags.push({
+			rel: 'alternate',
+			type: 'application/rss+xml',
+			href: categoryData.rssFeedUrl,
+		});
+	}
 }
