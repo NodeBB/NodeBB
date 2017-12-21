@@ -251,14 +251,7 @@ define('chat', [
 
 			Chats.addActionHandlers(chatModal.find('[component="chat/messages"]'), data.roomId);
 
-			chatModal.find('[component="chat/controlsToggle"]').on('click', function () {
-				var messagesEl = chatModal.find('[component="chat/messages"]');
-
-				chatModal.find('[component="chat/controls"]').toggle();
-				messagesEl.css('height', module.calculateChatListHeight(chatModal));
-			});
-
-			Chats.addRenameHandler(chatModal.attr('data-roomid'), chatModal.find('[component="chat/room/name"]'));
+			Chats.addRenameHandler(chatModal.attr('data-roomid'), chatModal.find('[data-action="rename"]'), chatModal.attr('data-name'));
 
 			Chats.addSendHandlers(chatModal.attr('data-roomid'), chatModal.find('#chat-message-input'), chatModal.find('#chat-message-send-btn'));
 

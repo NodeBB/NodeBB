@@ -12,6 +12,7 @@
 	"chat.recent-chats": "Recent Chats",
 	"chat.contacts": "Contacts",
 	"chat.message-history": "Message History",
+	"chat.options": "Chat options",
 	"chat.pop-out": "Pop out chat",
 	"chat.minimize": "Minimize",
 	"chat.maximize": "Maximize",
@@ -21,6 +22,10 @@
 	"chat.delete_message_confirm": "Are you sure you wish to delete this message?",
 	"chat.add-users-to-room": "Add users to room",
 	"chat.confirm-chat-with-dnd-user": "This user has set their status to DnD(Do not disturb). Do you still want to chat with them?",
+	"chat.rename-room": "Rename room",
+	"chat.rename-placeholder": "Enter your room name here",
+	"chat.rename-help": "The room name set here will be viewable by all participants in the room.",
+	"chat.in-room": "In this room",
 
 	"composer.compose": "Compose",
 	"composer.show_preview": "Show Preview",

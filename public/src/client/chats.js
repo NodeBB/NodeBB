@@ -31,10 +31,6 @@ define('forum/chats', [
 		Chats.createAutoComplete($('[component="chat/input"]'));
 		Chats.resizeMainWindow();
 
-		components.get('expanded-chat/controlsToggle').on('click', function () {
-			components.get('expanded-chat/controls').toggleClass('hide');
-		});
-
 		if (env === 'md' || env === 'lg') {
 			Chats.addHotkeys();
 		}
@@ -72,8 +68,7 @@ define('forum/chats', [
 		});
 
 		Chats.addActionHandlers(components.get('chat/messages'), ajaxify.data.roomId);
-
-		Chats.addRenameHandler(ajaxify.data.roomId, $('[component="chat/room/name"]'));
+		Chats.addRenameHandler(ajaxify.data.roomId, components.get('expanded-chat/controls').find('[data-action="rename"]'));
 		Chats.addScrollHandler(ajaxify.data.roomId, ajaxify.data.uid, $('.chat-content'));
 		Chats.addCharactersLeftHandler($('[component="chat/main-wrapper"]'));
 	};
@@ -175,28 +170,39 @@ define('forum/chats', [
 		});
 	};
 
-	Chats.addRenameHandler = function (roomId, inputEl) {
-		var oldName = inputEl.val();
-		inputEl.on('blur keypress', function (ev) {
-			if (ev.type === 'keypress' && ev.keyCode !== 13) {
-				return;
-			}
-			var newName = inputEl.val();
+	Chats.addRenameHandler = function (roomId, buttonEl, roomName) {
+		var modal;
 
-			if (oldName === newName) {
-				return;
-			}
+		buttonEl.on('click', function () {
+			Benchpress.parse('partials/modals/rename_room', {
+				name: roomName || ajaxify.data.roomName,
+			}, function (html) {
+				translator.translate(html, function (html) {
+					modal = bootbox.dialog({
+						title: '[[modules:chat.rename-room]]',
+						message: html,
+						buttons: {
+							save: {
+								label: '[[global:save]]',
+								className: 'btn-primary',
+								callback: submit,
+							},
+						},
+					});
+				});
+			});
+		});
+
+		function submit() {
 			socket.emit('modules.chats.renameRoom', {
 				roomId: roomId,
-				newName: newName,
+				newName: modal.find('#roomName').val(),
 			}, function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
-				oldName = newName;
-				inputEl.blur();
 			});
-		});
+		}
 	};
 
 	Chats.addSendHandlers = function (roomId, inputEl, sendEl) {
