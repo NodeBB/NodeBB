@@ -218,7 +218,7 @@ describe('Set methods', function () {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 
-				db.isSetMember('testSet', element, function (err, ismember) {
+				db.isSetMember('testSet7', element, function (err, ismember) {
 					assert.equal(err, null);
 					assert.equal(ismember, false);
 					done();
