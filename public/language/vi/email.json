@@ -33,9 +33,9 @@
     "notif.cta": "Click here to go to forum",
     "test.text1": "Đây là email kiểm tra xem chức năng gửi mail trên hệ thống NodeBB của bạn có hoạt động tốt hay không.",
     "unsub.cta": "Nhấn vào đây để thay đổi cài đặt.",
-    "banned.subject": "You have been banned from %1",
-    "banned.text1": "The user %1 has been banned from %2.",
-    "banned.text2": "This ban will last until %1.",
-    "banned.text3": "This is the reason why you have been banned:",
+    "banned.subject": "Bạn đã bị cấm khỏi %1",
+    "banned.text1": "Người dùng %1 đã bị cấm khỏi %2.",
+    "banned.text2": "Lệnh cấm sẽ kéo dài đến %1.",
+    "banned.text3": "Đây là lý do bạn bị cấm:",
     "closing": "Xin cảm ơn!"
 }
