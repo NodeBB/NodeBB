@@ -148,7 +148,10 @@ editController.uploadPicture = function (req, res, next) {
 				return helpers.notAllowed(req, res);
 			}
 
-			user.uploadPicture(updateUid, userPhoto, next);
+			user.uploadCroppedPicture({
+				uid: updateUid,
+				file: userPhoto,
+			}, next);
 		},
 	], function (err, image) {
 		file.delete(userPhoto.path);

@@ -14,17 +14,19 @@ module.exports = function (User) {
 		var uid = data.uid || 0;
 		var paginate = data.hasOwnProperty('paginate') ? data.paginate : true;
 
-		if (searchBy === 'ip') {
-			return searchByIP(query, uid, callback);
-		}
-
 		var startTime = process.hrtime();
 
 		var searchResult = {};
 		async.waterfall([
 			function (next) {
-				var searchMethod = data.findUids || findUids;
-				searchMethod(query, searchBy, data.hardCap, next);
+				if (searchBy === 'ip') {
+					searchByIP(query, next);
+				} else if (searchBy === 'uid') {
+					next(null, [query]);
+				} else {
+					var searchMethod = data.findUids || findUids;
+					searchMethod(query, searchBy, data.hardCap, next);
+				}
 			},
 			function (uids, next) {
 				filterAndSortUids(uids, data, next);
@@ -153,20 +155,7 @@ module.exports = function (User) {
 		}
 	}
 
-	function searchByIP(ip, uid, callback) {
-		var start = process.hrtime();
-		async.waterfall([
-			function (next) {
-				db.getSortedSetRevRange('ip:' + ip + ':uid', 0, -1, next);
-			},
-			function (uids, next) {
-				User.getUsers(uids, uid, next);
-			},
-			function (users, next) {
-				var diff = process.hrtime(start);
-				var timing = ((diff[0] * 1e3) + (diff[1] / 1e6)).toFixed(1);
-				next(null, { timing: timing, users: users });
-			},
-		], callback);
+	function searchByIP(ip, callback) {
+		db.getSortedSetRevRange('ip:' + ip + ':uid', 0, -1, callback);
 	}
 };

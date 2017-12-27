@@ -66,7 +66,7 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback();
 		}
-		module.getObjectField(key, 'value', callback);
+		module.getObjectField(key, 'data', callback);
 	};
 
 	module.set = function (key, value, callback) {
@@ -74,7 +74,7 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback();
 		}
-		var data = { value: value };
+		var data = { data: value };
 		module.setObject(key, data, callback);
 	};
 
@@ -115,7 +115,7 @@ module.exports = function (db, module) {
 				return callback(null, 'set');
 			} else if (keys.length === 3 && data.hasOwnProperty('_key') && data.hasOwnProperty('array')) {
 				return callback(null, 'list');
-			} else if (keys.length === 3 && data.hasOwnProperty('_key') && data.hasOwnProperty('value')) {
+			} else if (keys.length === 3 && data.hasOwnProperty('_key') && data.hasOwnProperty('data')) {
 				return callback(null, 'string');
 			}
 			callback(null, 'hash');

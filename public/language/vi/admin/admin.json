@@ -1,5 +1,5 @@
 {
-	"alert.confirm-reload": "Bạn có thật sự muốn tải lại NodeBB",
+	"alert.confirm-reload": "Bạn có thật sự muốn xác lập lại NodeBB",
 	"alert.confirm-restart": "Bạn có thật sự muốn khởi động lại NodeBB",
 
 	"acp-title": "%1 | Bảng điểu khiển",

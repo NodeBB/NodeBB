@@ -24,6 +24,16 @@
 		</div>
 
 		<div class="form-group">
+			<label>[[admin/settings/chat:restrictions.seconds-edit-after]]</label>
+			<input type="text" class="form-control" value="0" data-field="chatEditDuration">
+		</div>
+
+		<div class="form-group">
+			<label>[[admin/settings/chat:restrictions.seconds-delete-after]]</label>
+			<input type="text" class="form-control" value="0" data-field="chatDeleteDuration">
+		</div>
+
+		<div class="form-group">
 			<label>[[admin/settings/chat:max-length]]</label>
 			<input type="text" class="form-control" value="1000" data-field="maximumChatMessageLength">
 		</div>

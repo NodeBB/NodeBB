@@ -157,7 +157,7 @@ define('forum/topic', [
 		components.get('topic').on('click', '[component="post/parent"]', function (e) {
 			var toPid = $(this).attr('data-topid');
 
-			var toPost = $('[component="post"][data-pid="' + toPid + '"]');
+			var toPost = $('[component="topic"]>[component="post"][data-pid="' + toPid + '"]');
 			if (toPost.length) {
 				e.preventDefault();
 				navigator.scrollToIndex(toPost.attr('data-index'), true);

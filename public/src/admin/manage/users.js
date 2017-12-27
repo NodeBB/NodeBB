@@ -306,7 +306,7 @@ define('admin/manage/users', ['translator', 'benchpress'], function (translator,
 
 		var timeoutId = 0;
 
-		$('#search-user-name, #search-user-email, #search-user-ip').on('keyup', function () {
+		$('#search-user-uid, #search-user-name, #search-user-email, #search-user-ip').on('keyup', function () {
 			if (timeoutId !== 0) {
 				clearTimeout(timeoutId);
 				timeoutId = 0;

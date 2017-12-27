@@ -240,7 +240,7 @@ module.exports = function (Groups) {
 							old: oldName,
 							new: newName,
 						});
-
+						Groups.resetCache();
 						next();
 					},
 				], next);

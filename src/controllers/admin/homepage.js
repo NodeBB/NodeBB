@@ -38,6 +38,10 @@ homePageController.get = function (req, res, next) {
 					name: 'Recent',
 				},
 				{
+					route: 'top',
+					name: 'Top',
+				},
+				{
 					route: 'popular',
 					name: 'Popular',
 				},

@@ -78,6 +78,49 @@ describe('Sorted Set methods', function () {
 				done();
 			});
 		});
+
+		it('should handle negative start/stop', function (done) {
+			db.sortedSetAdd('negatives', [1, 2, 3, 4, 5], ['1', '2', '3', '4', '5'], function (err) {
+				assert.ifError(err);
+				db.getSortedSetRange('negatives', -2, -4, function (err, data) {
+					assert.ifError(err);
+					assert.deepEqual(data, []);
+					done();
+				});
+			});
+		});
+
+		it('should handle negative start/stop', function (done) {
+			db.getSortedSetRange('negatives', -4, -2, function (err, data) {
+				assert.ifError(err);
+				assert.deepEqual(data, ['2', '3', '4']);
+				done();
+			});
+		});
+
+		it('should handle negative start/stop', function (done) {
+			db.getSortedSetRevRange('negatives', -4, -2, function (err, data) {
+				assert.ifError(err);
+				assert.deepEqual(data, ['4', '3', '2']);
+				done();
+			});
+		});
+
+		it('should handle negative start/stop', function (done) {
+			db.getSortedSetRange('negatives', -5, -1, function (err, data) {
+				assert.ifError(err);
+				assert.deepEqual(data, ['1', '2', '3', '4', '5']);
+				done();
+			});
+		});
+
+		it('should handle negative start/stop', function (done) {
+			db.getSortedSetRange('negatives', 0, -2, function (err, data) {
+				assert.ifError(err);
+				assert.deepEqual(data, ['1', '2', '3', '4']);
+				done();
+			});
+		});
 	});
 
 	describe('getSortedSetRevRange()', function () {

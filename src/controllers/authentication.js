@@ -57,6 +57,10 @@ authenticationController.register = function (req, res) {
 			user.isPasswordValid(userData.password, next);
 		},
 		function (next) {
+			res.locals.processLogin = true;	// set it to false in plugin if you wish to just register only
+			plugins.fireHook('filter:register.check', { req: req, res: res, userData: userData }, next);
+		},
+		function (result, next) {
 			registerAndLoginUser(req, res, userData, next);
 		},
 	], function (err, data) {
@@ -100,8 +104,7 @@ function registerAndLoginUser(req, res, userData, callback) {
 			user.shouldQueueUser(req.ip, next);
 		},
 		function (queue, next) {
-			res.locals.processLogin = true;	// set it to false in plugin if you wish to just register only
-			plugins.fireHook('filter:register.check', { req: req, res: res, userData: userData, queue: queue }, next);
+			plugins.fireHook('filter:register.shouldQueue', { req: req, res: res, userData: userData, queue: queue }, next);
 		},
 		function (data, next) {
 			if (data.queue) {

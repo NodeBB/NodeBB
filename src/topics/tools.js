@@ -179,12 +179,15 @@ module.exports = function (Topics) {
 								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:pinned', Date.now(), tid),
 								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids', tid),
 								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:posts', tid),
+								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:votes', tid),
 							], next);
 						} else {
+							var votes = (parseInt(topicData.upvotes, 10) || 0) - (parseInt(topicData.downvotes, 10) || 0);
 							async.parallel([
 								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:pinned', tid),
 								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids', topicData.lastposttime, tid),
 								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:posts', topicData.postcount, tid),
+								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:votes', votes, tid),
 							], next);
 						}
 					},

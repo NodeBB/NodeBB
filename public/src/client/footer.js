@@ -75,6 +75,7 @@ define('forum/footer', ['notifications', 'chat', 'components', 'translator'], fu
 		socket.on('event:new_post', onNewPost);
 	}
 
+	// DEPRECATED: remove in 1.8.0
 	if (app.user.uid) {
 		socket.emit('user.getUnreadCounts', function (err, data) {
 			if (err) {

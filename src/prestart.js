@@ -11,12 +11,11 @@ var dirname = require('./cli/paths').baseDir;
 function setupWinston() {
 	winston.remove(winston.transports.Console);
 	winston.add(winston.transports.Console, {
-		colorize: true,
+		colorize: nconf.get('log-colorize') !== 'false',
 		timestamp: function () {
 			var date = new Date();
 			return nconf.get('json-logging') ? date.toJSON() :
-				date.getDate() + '/' + (date.getMonth() + 1) + ' ' +
-				date.toTimeString().substr(0, 8) + ' [' + global.process.pid + ']';
+				date.toISOString() + ' [' + global.process.pid + ']';
 		},
 		level: nconf.get('log-level') || (global.env === 'production' ? 'info' : 'verbose'),
 		json: !!nconf.get('json-logging'),

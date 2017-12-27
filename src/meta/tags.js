@@ -1,12 +1,12 @@
 'use strict';
 
 var nconf = require('nconf');
-var validator = require('validator');
 var async = require('async');
 var winston = require('winston');
 
 var plugins = require('../plugins');
 var Meta = require('../meta');
+var utils = require('../utils');
 
 var Tags = module.exports;
 
@@ -66,7 +66,7 @@ Tags.parse = function (req, data, meta, link, callback) {
 				defaultLinks.push({
 					rel: 'search',
 					type: 'application/opensearchdescription+xml',
-					title: validator.escape(String(Meta.config.title || Meta.config.browserTitle || 'NodeBB')),
+					title: utils.escapeHTML(String(Meta.config.title || Meta.config.browserTitle || 'NodeBB')),
 					href: nconf.get('relative_path') + '/osd.xml',
 				});
 			}
@@ -116,7 +116,7 @@ Tags.parse = function (req, data, meta, link, callback) {
 			}
 
 			if (!tag.noEscape) {
-				tag.content = validator.escape(String(tag.content));
+				tag.content = utils.escapeHTML(String(tag.content));
 			}
 
 			return tag;
@@ -159,7 +159,7 @@ function addIfNotExists(meta, keyName, tagName, value) {
 
 	if (!exists && value) {
 		var data = {
-			content: validator.escape(String(value)),
+			content: utils.escapeHTML(String(value)),
 		};
 		data[keyName] = tagName;
 		meta.push(data);

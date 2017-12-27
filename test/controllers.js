@@ -118,6 +118,19 @@ describe('Controllers', function () {
 			});
 		});
 
+		it('should load top', function (done) {
+			meta.configs.set('homePageRoute', 'top', function (err) {
+				assert.ifError(err);
+
+				request(nconf.get('url'), function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body);
+					done();
+				});
+			});
+		});
+
 		it('should load popular', function (done) {
 			meta.configs.set('homePageRoute', 'popular', function (err) {
 				assert.ifError(err);
@@ -429,6 +442,15 @@ describe('Controllers', function () {
 
 	it('should load recent rss feed', function (done) {
 		request(nconf.get('url') + '/recent.rss', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load top rss feed', function (done) {
+		request(nconf.get('url') + '/top.rss', function (err, res, body) {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -1003,11 +1025,11 @@ describe('Controllers', function () {
 					done();
 				});
 			});
-			it('should 401 if user is not logged in', function (done) {
+			it('should redirect to login if user is not logged in', function (done) {
 				request(nconf.get('url') + '/me/bookmarks', { json: true }, function (err, res, body) {
 					assert.ifError(err);
-					assert.equal(res.statusCode, 401);
-					assert.equal(body, 'not-authorized');
+					assert.equal(res.statusCode, 200);
+					assert(body.indexOf('Login to your account') !== -1);
 					done();
 				});
 			});

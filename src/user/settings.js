@@ -120,8 +120,6 @@ module.exports = function (User) {
 			userLang: data.userLang || meta.config.defaultLang,
 			followTopicsOnCreate: data.followTopicsOnCreate,
 			followTopicsOnReply: data.followTopicsOnReply,
-			sendChatNotifications: data.sendChatNotifications,
-			sendPostNotifications: data.sendPostNotifications,
 			restrictChat: data.restrictChat,
 			topicSearchEnabled: data.topicSearchEnabled,
 			delayImageLoading: data.delayImageLoading,

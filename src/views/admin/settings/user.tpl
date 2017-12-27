@@ -280,20 +280,6 @@
 
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="sendChatNotifications">
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:email-chat-notifs]]</strong></span>
-				</label>
-			</div>
-
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="sendPostNotifications">
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:email-post-notif]]</strong></span>
-				</label>
-			</div>
-
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="followTopicsOnCreate">
 					<span class="mdl-switch__label"><strong>[[admin/settings/user:follow-created-topics]]</strong></span>
 				</label>

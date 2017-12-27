@@ -129,10 +129,12 @@ module.exports = function (User) {
 			},
 			function (sessions, next) {
 				sessions = sessions.map(function (sessObj) {
-					sessObj.meta.datetimeISO = new Date(sessObj.meta.datetime).toISOString();
-					sessObj.meta.ip = validator.escape(String(sessObj.meta.ip));
+					if (sessObj.meta) {
+						sessObj.meta.datetimeISO = new Date(sessObj.meta.datetime).toISOString();
+						sessObj.meta.ip = validator.escape(String(sessObj.meta.ip));
+					}
 					return sessObj.meta;
-				});
+				}).filter(Boolean);
 				next(null, sessions);
 			},
 		], callback);

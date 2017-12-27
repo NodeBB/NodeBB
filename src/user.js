@@ -239,6 +239,10 @@ User.isAdminOrGlobalModOrSelf = function (callerUid, uid, callback) {
 	isSelfOrMethod(callerUid, uid, User.isAdminOrGlobalMod, callback);
 };
 
+User.isPrivilegedOrSelf = function (callerUid, uid, callback) {
+	isSelfOrMethod(callerUid, uid, User.isPrivileged, callback);
+};
+
 function isSelfOrMethod(callerUid, uid, method, callback) {
 	if (parseInt(callerUid, 10) === parseInt(uid, 10)) {
 		return callback();

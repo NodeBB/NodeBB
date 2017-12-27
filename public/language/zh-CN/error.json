@@ -125,7 +125,7 @@
     "parse-error": "服务器响应解析出错",
     "wrong-login-type-email": "请输入您的电子邮箱地址登录",
     "wrong-login-type-username": "请输入您的用户名登录",
-    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
+    "sso-registration-disabled": "已经禁止注册注册 %1 账户, 请使用邮箱地址注册",
     "invite-maximum-met": "您的邀请人数超出了上限 (%1 超过了 %2)。",
     "no-session-found": "未登录!",
     "not-in-room": "用户已不在聊天室中",
@@ -135,5 +135,5 @@
     "invalid-home-page-route": "无效的首页路径",
     "invalid-session": "Session 无法匹配",
     "invalid-session-text": "您的登入状态已经失效，或者是与服务器信息不匹配。请刷新此页面。",
-    "no-topics-selected": "No topics selected!"
+    "no-topics-selected": "没有主题被选中!"
 }
