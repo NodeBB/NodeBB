@@ -31,7 +31,7 @@ widgets.render = function (uid, options, callback) {
 			var returnData = {};
 
 			async.each(locations, function (location, done) {
-				widgetsByLocation[location] = (data.global[location] || []).concat(data[options.template][location] || []);
+				widgetsByLocation[location] = (data[options.template][location] || []).concat(data.global[location] || []);
 
 				if (!widgetsByLocation[location].length) {
 					return done(null, { location: location, widgets: [] });
