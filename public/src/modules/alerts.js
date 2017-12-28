@@ -117,7 +117,6 @@ define('alerts', ['translator', 'components', 'benchpress'], function (translato
 		alert
 			.on('mouseenter', function () {
 				$(this).css('transition-duration', 0);
-				console.log(this);
 			});
 	}
 
