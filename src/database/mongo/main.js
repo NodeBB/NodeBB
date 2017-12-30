@@ -108,6 +108,7 @@ module.exports = function (db, module) {
 			if (!data) {
 				return callback(null, null);
 			}
+			delete data.expireAt;
 			var keys = Object.keys(data);
 			if (keys.length === 4 && data.hasOwnProperty('_key') && data.hasOwnProperty('score') && data.hasOwnProperty('value')) {
 				return callback(null, 'zset');
