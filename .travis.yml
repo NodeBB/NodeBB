@@ -1,11 +1,7 @@
 services:
+  - mongodb
   - redis-server
 before_install:
-  - "sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6"
-  - "echo 'deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse' | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list"
-  - "sudo apt-get update"
-  - "sudo apt-get install -y mongodb-org"
-  - "sudo service mongod start"
   - cp install/package.json package.json
 cache:
   directories:
@@ -17,15 +13,19 @@ before_script:
 after_success:
   - "npm run coveralls"
 language: node_js
+sudo: false
+dist: trusty
 env:
   - CXX=g++-4.8 DB=mongodb
   - CXX=g++-4.8 DB=redis
 addons:
   apt:
     sources:
-    - ubuntu-toolchain-r-test
+      - ubuntu-toolchain-r-test
+      - mongodb-3.4-trusty
     packages:
-    - g++-4.8
+      - g++-4.8
+      - mongodb-org-server
 node_js:
   - "9"
   - "8"
