@@ -20,7 +20,7 @@
     "chat.three_months": "3 Mesi",
     "chat.delete_message_confirm": "Sei sicuro di voler eliminare questo messaggio?",
     "chat.add-users-to-room": "Aggiungi utenti alla stanza",
-    "chat.confirm-chat-with-dnd-user": "This user has set their status to DnD(Do not disturb). Do you still want to chat with them?",
+    "chat.confirm-chat-with-dnd-user": "Questo utente ha impostato il suo stato su Non Disturbare. Sei sicuro di voler iniziare una conversazione?",
     "composer.compose": "Componi",
     "composer.show_preview": "Visualizza Anteprima",
     "composer.hide_preview": "Nascondi Anteprima",
