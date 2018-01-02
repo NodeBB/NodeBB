@@ -16,6 +16,7 @@ var steps = {
 		handler: function (next) {
 			packageInstall.updatePackageFile();
 			packageInstall.preserveExtraneousPlugins();
+			process.stdout.write('  OK\n'.green);
 			next();
 		},
 	},
@@ -54,11 +55,8 @@ function runSteps(tasks) {
 	tasks = tasks.map(function (key, i) {
 		return function (next) {
 			process.stdout.write('\n' + ((i + 1) + '. ').bold + steps[key].message.yellow);
-			return steps[key].handler(function (err, inhibitOk) {
+			return steps[key].handler(function (err) {
 				if (err) { return next(err); }
-				if (!inhibitOk) {
-					process.stdout.write('  OK'.green + '\n'.reset);
-				}
 				next();
 			});
 		};

@@ -30,7 +30,7 @@ function updatePackageFile() {
 exports.updatePackageFile = updatePackageFile;
 
 function installAll() {
-	process.stdout.write('\n');
+	process.stdout.write('  started\n'.green);
 
 	var prod = global.env !== 'development';
 	var command = 'npm install';

@@ -212,7 +212,7 @@ function upgradePlugins(callback) {
 				});
 			} else {
 				console.log('Package upgrades skipped'.yellow + '. Check for upgrades at any time by running "'.reset + './nodebb upgrade -p'.green + '".'.reset);
-				callback(null, true);
+				callback();
 			}
 		});
 	});
