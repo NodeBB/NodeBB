@@ -220,7 +220,7 @@ module.exports = function (Topics) {
 
 				notifications.create({
 					type: 'new-reply',
-					subject: '[' + (meta.config.title || 'NodeBB') + '] ' + title,
+					subject: title,
 					bodyShort: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + titleEscaped + ']]',
 					bodyLong: postData.content,
 					pid: postData.pid,
