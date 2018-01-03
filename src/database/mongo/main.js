@@ -83,8 +83,9 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback();
 		}
-		db.collection('objects').findAndModify({ _key: key }, {}, { $inc: { value: 1 } }, { new: true, upsert: true }, function (err, result) {
-			callback(err, result && result.value ? result.value.value : null);
+		db.collection('objects').findAndModify({ _key: key }, {}, { $inc: { data: 1 } }, { new: true, upsert: true }, function (err, result) {
+			console.log(result)
+			callback(err, result && result.value ? result.value.data : null);
 		});
 	};
 

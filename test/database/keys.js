@@ -149,6 +149,21 @@ describe('Key methods', function () {
 				done();
 			});
 		});
+
+		it('should set then increment a key', function (done) {
+			db.set('myIncrement', 1, function (err) {
+				assert.ifError(err);
+				db.increment('myIncrement', function (err, value) {
+					assert.ifError(err);
+					assert.equal(value, 2);
+					db.get('myIncrement', function (err, value) {
+						assert.ifError(err);
+						assert.equal(value, 2);
+						done();
+					});
+				});
+			});
+		});
 	});
 
 	describe('rename', function () {
