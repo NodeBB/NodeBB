@@ -63,7 +63,7 @@ define('forum/account/edit/password', ['forum/account/header', 'translator', 'zx
 			onPasswordConfirmChanged();
 
 			var btn = $(this);
-			if ((passwordvalid && passwordsmatch) || app.user.isAdmin) {
+			if (passwordvalid && passwordsmatch) {
 				btn.addClass('disabled').find('i').removeClass('hide');
 				socket.emit('user.changePassword', {
 					currentPassword: currentPassword.val(),
