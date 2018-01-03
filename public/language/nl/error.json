@@ -119,13 +119,13 @@
     "not-enough-reputation-to-downvote": "Je hebt onvoldoende reputatie om een negatieve stem uit te mogen brengen",
     "not-enough-reputation-to-flag": "Je hebt onvoldoende reputatie om dit bericht aan de beheerders te mogen melden",
     "already-flagged": "Je hebt deze post al gerapporteerd",
-    "self-vote": "You cannot vote on your own post",
+    "self-vote": "Het is niet mogelijk om op je eigen bericht te stemmen",
     "reload-failed": "Tijdens het herladen van \"%1\" is NodeBB een fout of probleem tegengekomen. NodeBB blijft operationeel. Echter het is verstandig om de oorzaak te onderzoeken en wellicht de vorige actie, voor het herladen, ongedaan te maken.",
     "registration-error": "Fout tijdens registratie",
     "parse-error": "Tijdens het verwerken van het antwoord van de server is er iets misgegaan.",
     "wrong-login-type-email": "Gebruik je e-mailadres om in te loggen",
     "wrong-login-type-username": "Gebruik je gebruikersnaam om in te loggen",
-    "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
+    "sso-registration-disabled": "Registratie is uitgeschakeld voor %1 accounts, registreer eerst met een e-mailadres",
     "invite-maximum-met": "Je heb het maximum aantal mensen uitgenodigd (%1 van de %2).",
     "no-session-found": "Geen login sessie gevonden!",
     "not-in-room": "Gebruiker niet in de chat",
@@ -135,5 +135,5 @@
     "invalid-home-page-route": "Onbekende homepage route",
     "invalid-session": "Verkeerde sessie combinatie",
     "invalid-session-text": "Het lijkt erop dat je login sessie niet meer actief is of niet langer synchroon is met de server. Ververs de pagina.",
-    "no-topics-selected": "No topics selected!"
+    "no-topics-selected": "Geen onderwerpen geselecteerd!"
 }

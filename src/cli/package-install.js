@@ -29,15 +29,27 @@ function updatePackageFile() {
 
 exports.updatePackageFile = updatePackageFile;
 
-function npmInstallProduction() {
-	process.stdout.write('\n');
-	cproc.execSync('npm i --production', {
+function installAll() {
+	process.stdout.write('  started\n'.green);
+
+	var prod = global.env !== 'development';
+	var command = 'npm install';
+	try {
+		var packageManager = require('nconf').get('package_manager');
+		if (packageManager === 'yarn') {
+			command = 'yarn';
+		}
+	} catch (e) {
+		// ignore
+	}
+
+	cproc.execSync(command + (prod ? ' --production' : ''), {
 		cwd: path.join(__dirname, '../../'),
 		stdio: [0, 1, 2],
 	});
 }
 
-exports.npmInstallProduction = npmInstallProduction;
+exports.installAll = installAll;
 
 function preserveExtraneousPlugins() {
 	// Skip if `node_modules/` is not found or inaccessible

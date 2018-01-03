@@ -3,7 +3,7 @@
 var async = require('async');
 var nconf = require('nconf');
 
-var packageInstall = require('../meta/package-install');
+var packageInstall = require('./package-install');
 var upgrade = require('../upgrade');
 var build = require('../meta/build');
 var db = require('../database');
@@ -16,13 +16,14 @@ var steps = {
 		handler: function (next) {
 			packageInstall.updatePackageFile();
 			packageInstall.preserveExtraneousPlugins();
+			process.stdout.write('  OK\n'.green);
 			next();
 		},
 	},
 	install: {
 		message: 'Bringing base dependencies up to date...',
 		handler: function (next) {
-			packageInstall.npmInstallProduction();
+			packageInstall.installAll();
 			next();
 		},
 	},
@@ -54,11 +55,8 @@ function runSteps(tasks) {
 	tasks = tasks.map(function (key, i) {
 		return function (next) {
 			process.stdout.write('\n' + ((i + 1) + '. ').bold + steps[key].message.yellow);
-			return steps[key].handler(function (err, inhibitOk) {
+			return steps[key].handler(function (err) {
 				if (err) { return next(err); }
-				if (!inhibitOk) {
-					process.stdout.write('  OK'.green + '\n'.reset);
-				}
 				next();
 			});
 		};

@@ -39,7 +39,7 @@
 	"section-appearance": "Vzhled",
 	"appearance/themes": "Motivy",
 	"appearance/skins": "Vzhledy",
-	"appearance/customise": "Custom Content (HTML/JS/CSS)",
+	"appearance/customise": "Uživatelský obsah (HTML/JS/CSS)",
 
 	"section-extend": "Rozšířit",
 	"extend/plugins": "Rozšíření",
@@ -65,7 +65,7 @@
 	"logout": "Odhlásit",
 	"view-forum": "Zobrazit fórum",
 
-	"search.placeholder": "Search for settings",
+	"search.placeholder": "Hledat nastavení",
 	"search.no-results": "Žádné výsledky…",
 	"search.search-forum": "Prohledat fórum pro <strong></strong>",
 	"search.keep-typing": "Pište dále pro zobrazení výsledků…",

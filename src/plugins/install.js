@@ -13,6 +13,23 @@ var meta = require('../meta');
 var pubsub = require('../pubsub');
 var events = require('../events');
 
+var packageManager = nconf.get('package_manager') === 'yarn' ? 'yarn' : 'npm';
+var packageManagerExecutable = packageManager;
+var packageManagerCommands = {
+	yarn: {
+		install: 'add',
+		uninstall: 'remove',
+	},
+	npm: {
+		install: 'install',
+		uninstall: 'uninstall',
+	},
+};
+
+if (process.platform === 'win32') {
+	packageManagerExecutable += '.cmd';
+}
+
 module.exports = function (Plugins) {
 	if (nconf.get('isPrimary') === 'true') {
 		pubsub.on('plugins:toggleInstall', function (data) {
@@ -95,7 +112,7 @@ module.exports = function (Plugins) {
 				setImmediate(next);
 			},
 			function (next) {
-				runNpmCommand(type, id, version || 'latest', next);
+				runPackageManagerCommand(type, id, version || 'latest', next);
 			},
 			function (next) {
 				Plugins.get(id, next);
@@ -107,8 +124,12 @@ module.exports = function (Plugins) {
 		], callback);
 	}
 
-	function runNpmCommand(command, pkgName, version, callback) {
-		cproc.execFile((process.platform === 'win32') ? 'npm.cmd' : 'npm', [command, pkgName + (command === 'install' ? '@' + version : ''), '--save'], function (err, stdout) {
+	function runPackageManagerCommand(command, pkgName, version, callback) {
+		cproc.execFile(packageManagerExecutable, [
+			packageManagerCommands[packageManager][command],
+			pkgName + (command === 'install' ? '@' + version : ''),
+			'--save',
+		], function (err, stdout) {
 			if (err) {
 				return callback(err);
 			}
@@ -125,7 +146,7 @@ module.exports = function (Plugins) {
 
 	function upgrade(id, version, callback) {
 		async.waterfall([
-			async.apply(runNpmCommand, 'install', id, version || 'latest'),
+			async.apply(runPackageManagerCommand, 'install', id, version || 'latest'),
 			function (next) {
 				Plugins.isActive(id, next);
 			},

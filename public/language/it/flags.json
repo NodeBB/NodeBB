@@ -27,12 +27,12 @@
 
 	"quick-links": "Quick Links",
 	"flagged-user": "Flagged User",
-	"view-profile": "View Profile",
+	"view-profile": "Vedi Profilo",
 	"start-new-chat": "Start New Chat",
 	"go-to-target": "View Flag Target",
 
-	"user-view": "View Profile",
-	"user-edit": "Edit Profile",
+	"user-view": "Vedi Profilo",
+	"user-edit": "Modifica Profilo",
 
 	"notes": "Flag Notes",
 	"add-note": "Add Note",
@@ -44,21 +44,21 @@
 
 	"state-all": "All states",
 	"state-open": "New/Open",
-	"state-wip": "Work in Progress",
-	"state-resolved": "Resolved",
+	"state-wip": "Lavori in Corso",
+	"state-resolved": "Risolto",
 	"state-rejected": "Rejected",
-	"no-assignee": "Not Assigned",
+	"no-assignee": "Non Assegnato",
 	"note-added": "Note Added",
 
-	"modal-title": "Report Inappropriate Content",
+	"modal-title": "Segnala Contenuto Inappropriato",
 	"modal-body": "Please specify your reason for flagging %1 %2 for review. Alternatively, use one of the quick report buttons if applicable.",
 	"modal-reason-spam": "Spam",
-	"modal-reason-offensive": "Offensive",
-	"modal-reason-other": "Other (specify below)",
-	"modal-reason-custom": "Reason for reporting this content...",
-	"modal-submit": "Submit Report",
-	"modal-submit-success": "Content has been flagged for moderation.",
-	"modal-submit-confirm": "Confirm Submission",
+	"modal-reason-offensive": "Offensivo",
+	"modal-reason-other": "Altro (Specificare di seguito)",
+	"modal-reason-custom": "Motivazione della segnalazione...",
+	"modal-submit": "Invia la Segnalazione",
+	"modal-submit-success": "Il contenuto è stato segnalato.",
+	"modal-submit-confirm": "Conferma la Segnalazione",
 	"modal-submit-confirm-text": "You have a custom reason specified already. Are you sure you wish to submit via quick-report?",
 	"modal-submit-confirm-text-help": "Submitting a quick report will overwrite any custom reasons defined."
 }

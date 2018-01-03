@@ -1,5 +1,5 @@
 {
-    "register": "Registrazione",
+    "register": "Registrati",
     "cancel_registration": "Cancella Registrazione",
     "help.email": "Come opzione predefinita, il tuo indirizzo email non verrà reso pubblico.",
     "help.username_restrictions": "Un nome utente unico, di almeno %1 caratteri e al massimo di %2. Gli altri utenti ti possono menzionare usando @<span id='yourUsername'>username</span>.",

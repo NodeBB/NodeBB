@@ -9,6 +9,7 @@ var notifications = require('../notifications');
 var privileges = require('../privileges');
 var plugins = require('../plugins');
 var utils = require('../utils');
+var meta = require('../meta');
 
 module.exports = function (Topics) {
 	Topics.toggleFollow = function (tid, uid, callback) {
@@ -219,6 +220,7 @@ module.exports = function (Topics) {
 
 				notifications.create({
 					type: 'new-reply',
+					subject: '[' + (meta.config.title || 'NodeBB') + '] ' + title,
 					bodyShort: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + titleEscaped + ']]',
 					bodyLong: postData.content,
 					pid: postData.pid,

@@ -6,6 +6,8 @@ var jsesc = require('jsesc');
 
 var db = require('../database');
 var user = require('../user');
+var topics = require('../topics');
+var messaging = require('../messaging');
 var meta = require('../meta');
 var plugins = require('../plugins');
 var navigation = require('../navigation');
@@ -113,10 +115,16 @@ module.exports = function (middleware) {
 							next(null, translated);
 						});
 					},
-					navigation: async.apply(navigation.get),
+					navigation: navigation.get,
 					tags: async.apply(meta.tags.parse, req, data, res.locals.metaTags, res.locals.linkTags),
 					banned: async.apply(user.isBanned, req.uid),
 					banReason: async.apply(user.getBannedReason, req.uid),
+
+					unreadTopicCount: async.apply(topics.getTotalUnread, req.uid),
+					unreadNewTopicCount: async.apply(topics.getTotalUnread, req.uid, 'new'),
+					unreadWatchedTopicCount: async.apply(topics.getTotalUnread, req.uid, 'watched'),
+					unreadChatCount: async.apply(messaging.getUnreadCount, req.uid),
+					unreadNotificationCount: async.apply(user.notifications.getUnreadCount, req.uid),
 				}, next);
 			},
 			function (results, next) {
@@ -136,8 +144,45 @@ module.exports = function (middleware) {
 
 				setBootswatchCSS(templateValues, res.locals.config);
 
+				var unreadCount = {
+					topic: results.unreadTopicCount || 0,
+					newTopic: results.unreadNewTopicCount || 0,
+					watchedTopic: results.unreadWatchedTopicCount || 0,
+					chat: results.unreadChatCount || 0,
+					notification: results.unreadNotificationCount || 0,
+				};
+				Object.keys(unreadCount).forEach(function (key) {
+					if (unreadCount[key] > 99) {
+						unreadCount[key] = '99+';
+					}
+				});
+
+				results.navigation = results.navigation.map(function (item) {
+					if (item.originalRoute === '/unread' && results.unreadTopicCount > 0) {
+						return Object.assign({}, item, {
+							content: unreadCount.topic,
+							iconClass: item.iconClass + ' unread-count',
+						});
+					}
+					if (item.originalRoute === '/unread/new' && results.unreadNewTopicCount > 0) {
+						return Object.assign({}, item, {
+							content: unreadCount.newTopic,
+							iconClass: item.iconClass + ' unread-count',
+						});
+					}
+					if (item.originalRoute === '/unread/watched' && results.unreadWatchedTopicCount > 0) {
+						return Object.assign({}, item, {
+							content: unreadCount.watchedTopic,
+							iconClass: item.iconClass + ' unread-count',
+						});
+					}
+
+					return item;
+				});
+
 				templateValues.browserTitle = results.browserTitle;
 				templateValues.navigation = results.navigation;
+				templateValues.unreadCount = unreadCount;
 				templateValues.metaTags = results.tags.meta;
 				templateValues.linkTags = results.tags.link;
 				templateValues.isAdmin = results.user.isAdmin;
