@@ -155,6 +155,9 @@ function setupMockDefaults(callback) {
 			setupDefaultConfigs(meta, next);
 		},
 		function (next) {
+			giveDefaultGlobalPrivileges(next);
+		},
+		function (next) {
 			meta.configs.init(next);
 		},
 		function (next) {
@@ -180,6 +183,11 @@ function setupDefaultConfigs(meta, next) {
 	var defaults = require(path.join(nconf.get('base_dir'), 'install/data/defaults.json'));
 
 	meta.configs.setOnEmpty(defaults, next);
+}
+
+function giveDefaultGlobalPrivileges(next) {
+	var privileges = require('../../src/privileges');
+	privileges.global.give(['chat', 'upload:post:image'], 'registered-users', next);
 }
 
 function enableDefaultPlugins(callback) {

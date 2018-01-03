@@ -78,8 +78,8 @@ module.exports = function (middleware) {
 					isModerator: function (next) {
 						user.isModeratorOfAnyCategory(req.uid, next);
 					},
-					canChat: function (next) {
-						privileges.global.can('chat', req.uid, next);
+					privileges: function (next) {
+						privileges.global.get(req.uid, next);
 					},
 					user: function (next) {
 						var userData = {
@@ -136,6 +136,7 @@ module.exports = function (middleware) {
 				results.user.isAdmin = results.isAdmin;
 				results.user.isGlobalMod = results.isGlobalMod;
 				results.user.isMod = !!results.isModerator;
+				results.user.privileges = results.privileges;
 
 				results.user.uid = parseInt(results.user.uid, 10);
 				results.user.email = String(results.user.email);

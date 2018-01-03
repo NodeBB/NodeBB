@@ -20,18 +20,19 @@ chatsController.get = function (req, res, callback) {
 
 	async.waterfall([
 		function (next) {
-			privileges.global.can('chat', req.uid, next);
-		},
-		function (canChat, next) {
-			if (!canChat) {
-				return next(new Error('[[error:no-privileges]]'));
-			}
 			user.getUidByUserslug(req.params.userslug, next);
 		},
 		function (_uid, next) {
 			uid = _uid;
 			if (!uid) {
 				return callback();
+			}
+
+			privileges.global.can('chat', req.uid, next);
+		},
+		function (canChat, next) {
+			if (!canChat) {
+				return next(new Error('[[error:no-privileges]]'));
 			}
 			messaging.getRecentChats(req.uid, uid, 0, 19, next);
 		},

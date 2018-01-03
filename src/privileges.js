@@ -12,8 +12,6 @@ privileges.privilegeLabels = [
 	{ name: 'Edit Posts' },
 	{ name: 'Delete Posts' },
 	{ name: 'Delete Topics' },
-	{ name: 'Upload Images' },
-	{ name: 'Upload Files' },
 	{ name: 'Purge' },
 	{ name: 'Moderate' },
 ];
@@ -28,8 +26,6 @@ privileges.userPrivilegeList = [
 	'posts:edit',
 	'posts:delete',
 	'topics:delete',
-	'upload:post:image',
-	'upload:post:file',
 	'purge',
 	'moderate',
 ];
