@@ -84,7 +84,6 @@ module.exports = function (db, module) {
 			return callback();
 		}
 		db.collection('objects').findAndModify({ _key: key }, {}, { $inc: { data: 1 } }, { new: true, upsert: true }, function (err, result) {
-			console.log(result)
 			callback(err, result && result.value ? result.value.data : null);
 		});
 	};
