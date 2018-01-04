@@ -410,7 +410,10 @@ define('forum/chats', [
 		messages.onChatMessageEdit();
 
 		socket.on('event:chats.roomRename', function (data) {
-			$('[component="chat/room/name"]').val($('<div/>').html(data.newName).text());
+			var roomEl = components.get('chat/recent/room', data.roomId);
+			var titleEl = roomEl.find('[component="chat/title"]');
+
+			titleEl.text(data.newName);
 		});
 	};
 

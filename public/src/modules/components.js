@@ -50,8 +50,13 @@ define('components', function () {
 		'chat/message': function (messageId) {
 			return $('[component="chat/message"][data-mid="' + messageId + '"]');
 		},
+
 		'chat/message/body': function (messageId) {
 			return $('[component="chat/message"][data-mid="' + messageId + '"] [component="chat/message/body"]');
+		},
+
+		'chat/recent/room': function (roomid) {
+			return $('[component="chat/recent/room"][data-roomid="' + roomid + '"]');
 		},
 	};
 
