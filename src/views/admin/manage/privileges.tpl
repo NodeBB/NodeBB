@@ -18,9 +18,6 @@
 			<p>
 				[[admin/manage/categories:privileges.description]]
 			</p>
-			<p class="text-warning">
-				[[admin/manage/categories:privileges.warning]]
-			</p>
 			<hr />
 			<div class="privilege-table-container">
 				<!-- IF cid -->
@@ -32,7 +29,3 @@
 		</div>
 	</form>
 </div>
-
-<button id="save" class="floating-button mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
-    <i class="material-icons">save</i>
-</button>

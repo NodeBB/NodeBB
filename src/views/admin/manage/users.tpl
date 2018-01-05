@@ -8,9 +8,6 @@
 					<div class="btn-group pull-right">
 						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">[[admin/manage/users:edit]] <span class="caret"></span></button>
 						<ul class="dropdown-menu">
-							<li><a href="#" class="admin-user"><i class="fa fa-fw fa-shield"></i> [[admin/manage/users:make-admin]]</a></li>
-							<li><a href="#" class="remove-admin-user"><i class="fa fa-fw fa-ban"></i> [[admin/manage/users:remove-admin]]</a></li>
-							<li class="divider"></li>
 							<li><a href="#" class="validate-email"><i class="fa fa-fw fa-check"></i> [[admin/manage/users:validate-email]]</a></li>
 							<li><a href="#" class="send-validation-email"><i class="fa fa-fw fa-mail-forward"></i> [[admin/manage/users:send-validation-email]]</a></li>
 							<li><a href="#" class="password-reset-email"><i class="fa fa-fw fa-key"></i> [[admin/manage/users:password-reset-email]]</a></li>

@@ -12,6 +12,7 @@
 	"manage/privileges": "Privileges",
 	"manage/tags": "Tags",
 	"manage/users": "Users",
+	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "Registration Queue",
 	"manage/post-queue": "Post Queue",
 	"manage/groups": "Groups",
