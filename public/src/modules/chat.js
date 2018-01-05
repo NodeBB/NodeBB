@@ -253,7 +253,7 @@ define('chat', [
 
 			Chats.addRenameHandler(chatModal.attr('data-roomid'), chatModal.find('[data-action="rename"]'), chatModal.attr('data-name'));
 
-			Chats.addSendHandlers(chatModal.attr('data-roomid'), chatModal.find('#chat-message-input'), chatModal.find('#chat-message-send-btn'));
+			Chats.addSendHandlers(chatModal.attr('data-roomid'), chatModal.find('.chat-input'), chatModal.find('[data-action="send"]'));
 
 			Chats.createTagsInput(chatModal.find('.users-tag-input'), data);
 			Chats.createAutoComplete(chatModal.find('[component="chat/input"]'));

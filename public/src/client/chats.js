@@ -35,7 +35,7 @@ define('forum/chats', [
 			Chats.addHotkeys();
 		}
 
-		messages.scrollToBottom($('.expanded-chat ul'));
+		messages.scrollToBottom($('.expanded-chat ul.chat-content'));
 
 		Chats.initialised = true;
 
