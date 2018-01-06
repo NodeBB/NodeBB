@@ -27,7 +27,7 @@
     "details.disableJoinRequests": "Disabilita le richieste d'adesione",
     "details.grant": "Concedi / Rimuovi la Proprietà",
     "details.kick": "Espelli",
-    "details.kick_confirm": "Are you sure you want to remove this member from the group?",
+    "details.kick_confirm": "Sei sicuro di voler rimuovere questo membro dal gruppo?",
     "details.owner_options": "Amministratore del Grupo",
     "details.group_name": "Nome Gruppo",
     "details.member_count": "Totale Membri",
@@ -53,6 +53,6 @@
     "new-group.group_name": "Nome Gruppo:",
     "upload-group-cover": "Carica copertina del gruppo",
     "bulk-invite-instructions": "Inserisci una lista di nomi utente da invitare in questo gruppo separati da virgole",
-    "bulk-invite": "Bulk Invite",
+    "bulk-invite": "Invita in Massa",
     "remove_group_cover_confirm": "Sei sicuro di voler rimuovere l'immagine copertina?"
 }

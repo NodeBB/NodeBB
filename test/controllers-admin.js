@@ -255,6 +255,14 @@ describe('Admin Controllers', function () {
 		});
 	});
 
+	it('should load /admin/manage/admins-mods', function (done) {
+		request(nconf.get('url') + '/api/admin/manage/admins-mods', { jar: jar, json: true }, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
 	it('should return 403 if no referer', function (done) {
 		request(nconf.get('url') + '/api/admin/users/csv', { jar: jar }, function (err, res, body) {
 			assert.ifError(err);

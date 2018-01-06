@@ -62,7 +62,6 @@ module.exports = function (Categories) {
 					'posts:edit',
 					'posts:delete',
 					'topics:delete',
-					'upload:post:image',
 				];
 
 				async.series([

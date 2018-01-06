@@ -62,7 +62,7 @@ describe('Upload Controllers', function () {
 				assert.ifError(err);
 				jar = _jar;
 				csrf_token = _csrf_token;
-				privileges.categories.give(['upload:post:file'], cid, 'registered-users', done);
+				privileges.global.give(['upload:post:file'], 'registered-users', done);
 			});
 		});
 
@@ -77,17 +77,8 @@ describe('Upload Controllers', function () {
 			});
 		});
 
-		it('should fail to upload an image to a post with invalid cid', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/test.png'), { cid: '0' }, jar, csrf_token, function (err, res, body) {
-				assert.ifError(err);
-				assert.equal(res.statusCode, 500);
-				assert.equal(body.error, '[[error:category-not-selected]]');
-				done();
-			});
-		});
-
 		it('should upload an image to a post', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/test.png'), { cid: cid }, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
@@ -100,7 +91,7 @@ describe('Upload Controllers', function () {
 		it('should resize and upload an image to a post', function (done) {
 			var oldValue = meta.config.maximumImageWidth;
 			meta.config.maximumImageWidth = 10;
-			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/test.png'), { cid: cid }, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
@@ -116,7 +107,7 @@ describe('Upload Controllers', function () {
 			meta.config.allowFileUploads = 1;
 			var oldValue = meta.config.allowedFileExtensions;
 			meta.config.allowedFileExtensions = 'png,jpg,bmp,html';
-			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/503.html'), { cid: cid }, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/503.html'), {}, jar, csrf_token, function (err, res, body) {
 				meta.config.allowedFileExtensions = oldValue;
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);

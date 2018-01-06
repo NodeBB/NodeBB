@@ -83,7 +83,11 @@ Categories.setPrivilege = function (socket, data, callback) {
 };
 
 Categories.getPrivilegeSettings = function (socket, cid, callback) {
-	privileges.categories.list(cid, callback);
+	if (!parseInt(cid, 10)) {
+		privileges.global.list(callback);
+	} else {
+		privileges.categories.list(cid, callback);
+	}
 };
 
 Categories.copyPrivilegesToChildren = function (socket, cid, callback) {

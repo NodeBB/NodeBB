@@ -638,7 +638,7 @@ describe('Categories', function () {
 			});
 		});
 
-		it('should load user privileges', function (done) {
+		it('should load category user privileges', function (done) {
 			privileges.categories.userPrivileges(categoryObj.cid, 1, function (err, data) {
 				assert.ifError(err);
 				assert.deepEqual(data, {
@@ -651,8 +651,6 @@ describe('Categories', function () {
 					'topics:tag': false,
 					'topics:delete': false,
 					'posts:edit': false,
-					'upload:post:file': false,
-					'upload:post:image': false,
 					purge: false,
 					moderate: false,
 				});
@@ -661,7 +659,20 @@ describe('Categories', function () {
 			});
 		});
 
-		it('should load group privileges', function (done) {
+		it('should load global user privileges', function (done) {
+			privileges.global.userPrivileges(1, function (err, data) {
+				assert.ifError(err);
+				assert.deepEqual(data, {
+					chat: false,
+					'upload:post:image': false,
+					'upload:post:file': false,
+				});
+
+				done();
+			});
+		});
+
+		it('should load category group privileges', function (done) {
 			privileges.categories.groupPrivileges(categoryObj.cid, 'registered-users', function (err, data) {
 				assert.ifError(err);
 				assert.deepEqual(data, {
@@ -674,10 +685,21 @@ describe('Categories', function () {
 					'groups:posts:delete': true,
 					'groups:read': true,
 					'groups:topics:read': true,
-					'groups:upload:post:file': false,
-					'groups:upload:post:image': true,
 					'groups:purge': false,
 					'groups:moderate': false,
+				});
+
+				done();
+			});
+		});
+
+		it('should load global group privileges', function (done) {
+			privileges.global.groupPrivileges('registered-users', function (err, data) {
+				assert.ifError(err);
+				assert.deepEqual(data, {
+					'groups:chat': true,
+					'groups:upload:post:image': true,
+					'groups:upload:post:file': false,
 				});
 
 				done();

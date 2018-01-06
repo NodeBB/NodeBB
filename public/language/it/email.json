@@ -13,7 +13,7 @@
     "reset.text1": "Abbiamo ricevuto una richiesta di reset della tua password, probabilmente perché l'hai dimenticata. Se non è così si prega di ignorare questa email.",
     "reset.text2": "Per confermare il reset della password per favore clicca il seguente link:",
     "reset.cta": "Clicca qui per resettare la tua password",
-    "reset.notify.subject": "Possword modificata con successo.",
+    "reset.notify.subject": "Password modificata con successo.",
     "reset.notify.text1": "Ti informiamo che in data %1, la password è stata cambiata con successo.",
     "reset.notify.text2": "Se non hai autorizzato questo, per favore notifica immediatamente un amministratore.",
     "digest.notifications": "Hai una notifica non letta da %1:",
@@ -33,9 +33,9 @@
     "notif.cta": "Vai alla discussione",
     "test.text1": "Questa è una email di test per verificare che il servizio di invio email è configurato correttamente sul tuo NodeBB.",
     "unsub.cta": "Clicca qui per modificare queste impostazioni",
-    "banned.subject": "You have been banned from %1",
-    "banned.text1": "The user %1 has been banned from %2.",
-    "banned.text2": "This ban will last until %1.",
-    "banned.text3": "This is the reason why you have been banned:",
+    "banned.subject": "Sei stato bannato da %1",
+    "banned.text1": "%1 è stato bannato da %2",
+    "banned.text2": "Questo ban durerà fino a %1.",
+    "banned.text3": "Il motivo del ban è:",
     "closing": "Grazie!"
 }

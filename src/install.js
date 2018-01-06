@@ -353,6 +353,11 @@ function createGlobalModeratorsGroup(next) {
 	], next);
 }
 
+function giveGlobalPrivileges(next) {
+	var privileges = require('./privileges');
+	privileges.global.give(['chat', 'upload:post:image'], 'registered-users', next);
+}
+
 function createCategories(next) {
 	var Categories = require('./categories');
 
@@ -498,6 +503,7 @@ install.setup = function (callback) {
 		createCategories,
 		createAdministrator,
 		createGlobalModeratorsGroup,
+		giveGlobalPrivileges,
 		createMenuItems,
 		createWelcomePost,
 		enableDefaultPlugins,

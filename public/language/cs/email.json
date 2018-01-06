@@ -30,7 +30,7 @@
     "notif.chat.unsub.info": "Toto upozornění na chat vám bylo odesláno na základě vašeho nastavení odběru.",
     "notif.post.cta": "Klikněte zde pro přečtené celého tématu",
     "notif.post.unsub.info": "Toto upozornění na příspěvek vám bylo odesláno na základě vašeho nastavení odběru.",
-    "notif.cta": "Click here to go to forum",
+    "notif.cta": "Pro přejití na fórum, klikněte zde",
     "test.text1": "Tento testovací e-mail slouží k ověření, že je e-mailer správně nastaven pro práci s NodeBB.",
     "unsub.cta": "Chcete-li změnit tyto nastavení, klikněte zde.",
     "banned.subject": "Byl jste zablokován od %1",

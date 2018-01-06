@@ -55,6 +55,7 @@ function addRoutes(router, middleware, controllers) {
 	router.get('/manage/categories/:category_id', middlewares, controllers.admin.categories.get);
 	router.get('/manage/categories/:category_id/analytics', middlewares, controllers.admin.categories.getAnalytics);
 
+	router.get('/manage/privileges/:cid?', middlewares, controllers.admin.privileges.get);
 	router.get('/manage/tags', middlewares, controllers.admin.tags.get);
 	router.get('/manage/post-queue', middlewares, controllers.admin.postQueue.get);
 	router.get('/manage/ip-blacklist', middlewares, controllers.admin.blacklist.get);
@@ -70,6 +71,8 @@ function addRoutes(router, middleware, controllers) {
 	router.get('/manage/users/flagged', middlewares, controllers.admin.users.flagged);
 	router.get('/manage/users/banned', middlewares, controllers.admin.users.banned);
 	router.get('/manage/registration', middlewares, controllers.admin.users.registrationQueue);
+
+	router.get('/manage/admins-mods', middlewares, controllers.admin.adminsMods.get);
 
 	router.get('/manage/groups', middlewares, controllers.admin.groups.list);
 	router.get('/manage/groups/:name', middlewares, controllers.admin.groups.get);

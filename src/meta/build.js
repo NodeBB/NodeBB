@@ -212,7 +212,7 @@ function build(targets, callback) {
 		}
 
 		winston.info('[build] Asset compilation successful. Completed in ' + totalTime + 'sec.');
-		callback(null, true);
+		callback();
 	});
 }
 
