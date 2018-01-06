@@ -6,9 +6,11 @@ var path = require('path');
 var packageInstall = require('./package-install');
 var dirname = require('./paths').baseDir;
 
+var defaultPackage;
+
 // check to make sure dependencies are installed
 try {
-	fs.readFileSync(path.join(dirname, 'package.json'));
+	defaultPackage = JSON.parse(fs.readFileSync(path.join(dirname, 'install/package.json'), 'utf8'));
 } catch (e) {
 	if (e.code === 'ENOENT') {
 		console.warn('package.json not found.');
@@ -29,13 +31,24 @@ try {
 }
 
 try {
-	fs.readFileSync(path.join(dirname, 'node_modules/async/package.json'), 'utf8');
-	fs.readFileSync(path.join(dirname, 'node_modules/commander/package.json'), 'utf8');
-	fs.readFileSync(path.join(dirname, 'node_modules/colors/package.json'), 'utf8');
-	fs.readFileSync(path.join(dirname, 'node_modules/nconf/package.json'), 'utf8');
+	var semver = require('semver');
+
+	var checkVersion = function (packageName) {
+		var version = JSON.parse(fs.readFileSync(path.join(dirname, 'node_modules', packageName, 'package.json'), 'utf8')).version;
+		if (!semver.satisfies(version, defaultPackage.dependencies[packageName])) {
+			var e = new TypeError('Incorrect dependency version: ' + packageName);
+			e.code = 'DEP_WRONG_VERSION';
+			throw e;
+		}
+	};
+
+	checkVersion('nconf');
+	checkVersion('async');
+	checkVersion('commander');
+	checkVersion('colors');
 } catch (e) {
-	if (e.code === 'ENOENT') {
-		console.warn('Dependencies not yet installed.');
+	if (['ENOENT', 'DEP_WRONG_VERSION', 'MODULE_NOT_FOUND'].indexOf(e.code) !== -1) {
+		console.warn('Dependencies outdated or not yet installed.');
 		console.log('Installing them now...\n');
 
 		packageInstall.installAll();
