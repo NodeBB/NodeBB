@@ -379,7 +379,7 @@ define('forum/chats', [
 								ajaxify.data = payload;
 								Chats.setActive();
 								Chats.addEventListeners();
-
+								messages.scrollToBottom($('.expanded-chat ul'));
 								if (history.pushState) {
 									history.pushState({
 										url: 'user/' + payload.userslug + '/chats/' + payload.roomId,

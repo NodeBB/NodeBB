@@ -83,8 +83,8 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback();
 		}
-		db.collection('objects').findAndModify({ _key: key }, {}, { $inc: { value: 1 } }, { new: true, upsert: true }, function (err, result) {
-			callback(err, result && result.value ? result.value.value : null);
+		db.collection('objects').findAndModify({ _key: key }, {}, { $inc: { data: 1 } }, { new: true, upsert: true }, function (err, result) {
+			callback(err, result && result.value ? result.value.data : null);
 		});
 	};
 
@@ -108,6 +108,7 @@ module.exports = function (db, module) {
 			if (!data) {
 				return callback(null, null);
 			}
+			delete data.expireAt;
 			var keys = Object.keys(data);
 			if (keys.length === 4 && data.hasOwnProperty('_key') && data.hasOwnProperty('score') && data.hasOwnProperty('value')) {
 				return callback(null, 'zset');
