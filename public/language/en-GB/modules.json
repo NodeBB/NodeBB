@@ -21,6 +21,8 @@
 	"chat.three_months": "3 Months",
 	"chat.delete_message_confirm": "Are you sure you wish to delete this message?",
 	"chat.add-users-to-room": "Add users to room",
+	"chat.retrieving-users": "Retrieving users...",
+	"chat.manage-room": "Manage Chat Room",
 	"chat.confirm-chat-with-dnd-user": "This user has set their status to DnD(Do not disturb). Do you still want to chat with them?",
 	"chat.rename-room": "Rename room",
 	"chat.rename-placeholder": "Enter your room name here",

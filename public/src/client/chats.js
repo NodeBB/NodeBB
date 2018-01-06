@@ -48,7 +48,15 @@ define('forum/chats', [
 
 	Chats.addEventListeners = function () {
 		Chats.addSendHandlers(ajaxify.data.roomId, $('.chat-input'), $('.expanded-chat button[data-action="send"]'));
+		Chats.addPopoutHandler();
+		Chats.addActionHandlers(components.get('chat/messages'), ajaxify.data.roomId);
+		Chats.addMemberHandler(ajaxify.data.roomId, components.get('chat/controls').find('[data-action="members"]'));
+		Chats.addRenameHandler(ajaxify.data.roomId, components.get('chat/controls').find('[data-action="rename"]'));
+		Chats.addScrollHandler(ajaxify.data.roomId, ajaxify.data.uid, $('.chat-content'));
+		Chats.addCharactersLeftHandler($('[component="chat/main-wrapper"]'));
+	};
 
+	Chats.addPopoutHandler = function () {
 		$('[data-action="pop-out"]').on('click', function () {
 			var text = components.get('chat/input').val();
 			var roomId = ajaxify.data.roomId;
@@ -66,11 +74,6 @@ define('forum/chats', [
 				components.get('chat/input').val(text);
 			});
 		});
-
-		Chats.addActionHandlers(components.get('chat/messages'), ajaxify.data.roomId);
-		Chats.addRenameHandler(ajaxify.data.roomId, components.get('expanded-chat/controls').find('[data-action="rename"]'));
-		Chats.addScrollHandler(ajaxify.data.roomId, ajaxify.data.uid, $('.chat-content'));
-		Chats.addCharactersLeftHandler($('[component="chat/main-wrapper"]'));
 	};
 
 	Chats.addScrollHandler = function (roomId, uid, el) {
@@ -167,6 +170,39 @@ define('forum/chats', [
 
 				messages.prepEdit(inputEl, lastMid, ajaxify.data.roomId);
 			}
+		});
+	};
+
+	Chats.addMemberHandler = function (roomId, buttonEl) {
+		var modal;
+
+		buttonEl.on('click', function () {
+			Benchpress.parse('partials/modals/manage_room', {}, function (html) {
+				translator.translate(html, function (html) {
+					modal = bootbox.dialog({
+						title: '[[modules:chat.manage-room]]',
+						message: html,
+					});
+
+					modal.attr('component', 'chat/manage-modal');
+
+					socket.emit('modules.chats.getUsersInRoom', { roomId: roomId }, function (err, users) {
+						var listEl = modal.find('.list-group');
+
+						if (err) {
+							return translator.translate('[[error:invalid-data]]', function (translated) {
+								listEl.find('li').text(translated);
+							});
+						}
+
+						Benchpress.parse('partials/modals/manage_room_users', {
+							users: users,
+						}, function (html) {
+							listEl.html(html);
+						});
+					});
+				});
+			});
 		});
 	};
 

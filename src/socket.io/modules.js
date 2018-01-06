@@ -167,6 +167,14 @@ SocketModules.chats.loadRoom = function (socket, data, callback) {
 	], callback);
 };
 
+SocketModules.chats.getUsersInRoom = function (socket, data, callback) {
+	if (!data || !data.roomId) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	Messaging.getUsersInRoom(data.roomId, 0, -1, callback);
+};
+
 SocketModules.chats.addUserToRoom = function (socket, data, callback) {
 	if (!data || !data.roomId || !data.username) {
 		return callback(new Error('[[error:invalid-data]]'));
