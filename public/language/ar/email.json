@@ -30,12 +30,12 @@
     "notif.chat.unsub.info": "تم إرسال هذا الإشعار بوجودة محادثة جديدة وفقا لخيارات تسجيلك.",
     "notif.post.cta": "انقر هنا لقراءة الموضوع بأكمله",
     "notif.post.unsub.info": "تم إشعارك بهذه المشاركة بناءً على الخيارات التي سبق وأن حددتها.",
-    "notif.cta": "Click here to go to forum",
+    "notif.cta": "اضغط هنا للذهاب الى المنتدى",
     "test.text1": "هذه رسالة تجريبية للتأكد من صحة إعدادت الرسائل الإلكترونية في منتدى NodeBB خاصتك.",
     "unsub.cta": "انقر هنا لتغيير تلك الإعدادات",
-    "banned.subject": "You have been banned from %1",
-    "banned.text1": "The user %1 has been banned from %2.",
-    "banned.text2": "This ban will last until %1.",
-    "banned.text3": "This is the reason why you have been banned:",
+    "banned.subject": "%1 لقد تم طردك من",
+    "banned.text1": "لقد تم طرد المستخدم ٪1 من 2%.",
+    "banned.text2": "%1 مده الطرد حتى",
+    "banned.text3": "سبب الطرد:",
     "closing": "شكرًا لك!"
 }
