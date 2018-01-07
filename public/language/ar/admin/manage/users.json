@@ -1,6 +1,6 @@
 {
-	"users": "Users",
-	"edit": "Edit",
+	"users": "المستخدمين",
+	"edit": "تحرير",
 	"make-admin": "Make Admin",
 	"remove-admin": "Remove Admin",
 	"validate-email": "Validate Email",
