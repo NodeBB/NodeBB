@@ -241,7 +241,6 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 							id: 'right-y-axis',
 							ticks: {
 								beginAtZero: true,
-								stepSize: 1,
 								suggestedMax: 10,
 							},
 							type: 'linear',
