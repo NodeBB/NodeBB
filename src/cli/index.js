@@ -254,7 +254,7 @@ program
 			'When running particular upgrade scripts, options are ignored.',
 			'By default all options are enabled. Passing any options disables that default.',
 			'Only package and dependency updates: ' + './nodebb upgrade -mi'.yellow,
-			'Only database update: ' + './nodebb upgrade -d'.yellow,
+			'Only database update: ' + './nodebb upgrade -s'.yellow,
 		].join('\n'));
 	})
 	.action(function (scripts, options) {
