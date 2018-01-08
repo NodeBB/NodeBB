@@ -275,10 +275,6 @@ module.exports = function (Topics) {
 				db.sortedSetAdd('cid:' + cid + ':tids:lastposttime', topic.lastposttime, tid, next);
 			},
 			function (next) {
-				var votes = (parseInt(topic.upvotes, 10) || 0) - (parseInt(topic.downvotes, 10) || 0);
-				db.sortedSetAdd('cid:' + cid + ':tids:votes', votes, tid, next);
-			},
-			function (next) {
 				if (parseInt(topic.pinned, 10)) {
 					db.sortedSetAdd('cid:' + cid + ':tids:pinned', Date.now(), tid, next);
 				} else {
@@ -289,6 +285,10 @@ module.exports = function (Topics) {
 						function (next) {
 							topic.postcount = topic.postcount || 0;
 							db.sortedSetAdd('cid:' + cid + ':tids:posts', topic.postcount, tid, next);
+						},
+						function (next) {
+							var votes = (parseInt(topic.upvotes, 10) || 0) - (parseInt(topic.downvotes, 10) || 0);
+							db.sortedSetAdd('cid:' + cid + ':tids:votes', votes, tid, next);
 						},
 					], function (err) {
 						next(err);
