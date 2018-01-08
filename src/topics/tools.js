@@ -250,6 +250,7 @@ module.exports = function (Topics) {
 		var topic;
 		var oldCid;
 		var cid = data.cid;
+
 		async.waterfall([
 			function (next) {
 				Topics.exists(tid, next);
@@ -262,6 +263,9 @@ module.exports = function (Topics) {
 			},
 			function (topicData, next) {
 				topic = topicData;
+				if (parseInt(cid, 10) === parseInt(topic.cid, 10)) {
+					return next(new Error('[[error:cant-move-topic-to-same-category]]'));
+				}
 				db.sortedSetsRemove([
 					'cid:' + topicData.cid + ':tids',
 					'cid:' + topicData.cid + ':tids:pinned',

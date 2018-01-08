@@ -28,12 +28,12 @@ module.exports = {
 						var downvotes = parseInt(topicData.downvotes, 10) || 0;
 						var votes = upvotes - downvotes;
 
-						async.parallel([
+						async.series([
 							function (next) {
 								db.sortedSetRemove('cid:' + topicData.oldCid + ':tids:votes', tid, next);
 							},
 							function (next) {
-								if (!parseInt(topicData.pinned, 10)) {
+								if (parseInt(topicData.pinned, 10) !== 1) {
 									db.sortedSetAdd('cid:' + topicData.cid + ':tids:votes', votes, tid, next);
 								} else {
 									next();
