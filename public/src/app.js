@@ -107,7 +107,9 @@ app.cacheBuster = null;
 	};
 
 	app.logout = function (e) {
-		e && e.preventDefault();
+		if (e) {
+			e.preventDefault();
+		}
 		$(window).trigger('action:app.logout');
 
 		/*
