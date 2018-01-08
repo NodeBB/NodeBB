@@ -217,6 +217,10 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 			};
 
 			trafficCanvas.width = $(trafficCanvas).parent().width();
+
+			data.datasets[0].yAxisID = 'left-y-axis';
+			data.datasets[1].yAxisID = 'right-y-axis';
+
 			graphs.traffic = new Chart(trafficCtx, {
 				type: 'line',
 				data: data,
@@ -227,9 +231,21 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 					},
 					scales: {
 						yAxes: [{
+							id: 'left-y-axis',
 							ticks: {
 								beginAtZero: true,
 							},
+							type: 'linear',
+							position: 'left',
+						}, {
+							id: 'right-y-axis',
+							ticks: {
+								beginAtZero: true,
+								stepSize: 1,
+								suggestedMax: 10,
+							},
+							type: 'linear',
+							position: 'right',
 						}],
 					},
 					tooltips: {
