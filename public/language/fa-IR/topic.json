@@ -52,7 +52,7 @@
     "not-watching.description": "به من پس از ارسال هر پاسخی جدیدی اطلاع نده.<br/>تاپیک به صورت خوانده نشده قرار بگیرد ولی نادیده گرفته نشود.",
     "ignoring.description": "به من پس از ارسال هر پاسخی جدیدی اطلاع نده.<br/>دیگر تاپیک را به صورت خوانده نشده نشان نده.",
     "thread_tools.title": "ابزارهای موضوع",
-    "thread_tools.markAsUnreadForAll": "علامت بزن به عنوان خوانده نشده برای همه",
+    "thread_tools.markAsUnreadForAll": "Mark Unread For All",
     "thread_tools.pin": "سنجاق زدن موضوع",
     "thread_tools.unpin": "برداشتن سنجاق موضوع",
     "thread_tools.lock": "قفل کردن موضوع",

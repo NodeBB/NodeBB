@@ -6,6 +6,7 @@ var meta = require('../meta');
 var db = require('../database');
 var user = require('../user');
 var plugins = require('../plugins');
+var privileges = require('../privileges');
 
 module.exports = function (Posts) {
 	var votesInProgress = {};
@@ -15,16 +16,27 @@ module.exports = function (Posts) {
 			return callback(new Error('[[error:reputation-system-disabled]]'));
 		}
 
-		if (voteInProgress(pid, uid)) {
-			return callback(new Error('[[error:already-voting-for-this-post]]'));
-		}
+		async.waterfall([
+			function (next) {
+				privileges.posts.can('posts:upvote', pid, uid, next);
+			},
+			function (canUpvote, next) {
+				if (!canUpvote) {
+					return next(new Error('[[error:no-privileges]]'));
+				}
 
-		putVoteInProgress(pid, uid);
+				if (voteInProgress(pid, uid)) {
+					return next(new Error('[[error:already-voting-for-this-post]]'));
+				}
 
-		toggleVote('upvote', pid, uid, function (err, data) {
-			clearVoteProgress(pid, uid);
-			callback(err, data);
-		});
+				putVoteInProgress(pid, uid);
+
+				toggleVote('upvote', pid, uid, function (err, data) {
+					clearVoteProgress(pid, uid);
+					next(err, data);
+				});
+			},
+		], callback);
 	};
 
 	Posts.downvote = function (pid, uid, callback) {
@@ -36,16 +48,27 @@ module.exports = function (Posts) {
 			return callback(new Error('[[error:downvoting-disabled]]'));
 		}
 
-		if (voteInProgress(pid, uid)) {
-			return callback(new Error('[[error:already-voting-for-this-post]]'));
-		}
+		async.waterfall([
+			function (next) {
+				privileges.posts.can('posts:downvote', pid, uid, next);
+			},
+			function (canUpvote, next) {
+				if (!canUpvote) {
+					return next(new Error('[[error:no-privileges]]'));
+				}
 
-		putVoteInProgress(pid, uid);
+				if (voteInProgress(pid, uid)) {
+					return next(new Error('[[error:already-voting-for-this-post]]'));
+				}
 
-		toggleVote('downvote', pid, uid, function (err, data) {
-			clearVoteProgress(pid, uid);
-			callback(err, data);
-		});
+				putVoteInProgress(pid, uid);
+
+				toggleVote('downvote', pid, uid, function (err, data) {
+					clearVoteProgress(pid, uid);
+					next(err, data);
+				});
+			},
+		], callback);
 	};
 
 	Posts.unvote = function (pid, uid, callback) {
@@ -106,7 +129,7 @@ module.exports = function (Posts) {
 	};
 
 	function voteInProgress(pid, uid) {
-		return Array.isArray(votesInProgress[uid]) && votesInProgress[uid].indexOf(parseInt(pid, 10)) !== -1;
+		return Array.isArray(votesInProgress[uid]) && votesInProgress[uid].includes(parseInt(pid, 10));
 	}
 
 	function putVoteInProgress(pid, uid) {

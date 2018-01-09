@@ -52,7 +52,7 @@
     "not-watching.description": "Ne obaviještavaj me o novim odgovorima.<br/>Prikaži temu u nepročitanim ako kategorija nije ignorirana.",
     "ignoring.description": "Nemoj slati obavijesti o novim odgovorima.<br/>Ne prikazuj temu u nepročitanom.",
     "thread_tools.title": "Alati teme",
-    "thread_tools.markAsUnreadForAll": "Označi kao nepročitano za sve",
+    "thread_tools.markAsUnreadForAll": "Mark Unread For All",
     "thread_tools.pin": "Zakači temu",
     "thread_tools.unpin": "Otkači temu",
     "thread_tools.lock": "Zaključaj temu",

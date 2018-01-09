@@ -52,7 +52,7 @@
     "not-watching.description": "有新的回覆不用通知我。<br/>如果類別不是被忽略的，在未讀頁中顯示主題。",
     "ignoring.description": "有新的回覆不用通知我。<br/>在未讀頁中不顯示主題。",
     "thread_tools.title": "主題工具箱",
-    "thread_tools.markAsUnreadForAll": "Mark unread for all",
+    "thread_tools.markAsUnreadForAll": "Mark Unread For All",
     "thread_tools.pin": "釘選主題",
     "thread_tools.unpin": "取消釘選主題",
     "thread_tools.lock": "鎖定主題",

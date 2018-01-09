@@ -52,7 +52,7 @@
     "not-watching.description": "新しく返信通知を受け取らない。<br/>カテゴリが無視されていない場合、未読のスレッドを表示します。",
     "ignoring.description": "新しく返信通知を受け取らない。<br/>未読のスレッドは表示されません。",
     "thread_tools.title": "スレッドツール",
-    "thread_tools.markAsUnreadForAll": "すべて未読にマーク",
+    "thread_tools.markAsUnreadForAll": "Mark Unread For All",
     "thread_tools.pin": "スレッドを最上部に固定",
     "thread_tools.unpin": "スレッドの固定を解除",
     "thread_tools.lock": "スレッドをロック",

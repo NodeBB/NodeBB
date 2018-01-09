@@ -52,7 +52,7 @@
     "not-watching.description": "不要在有新回复时通知我。<br/>如果这个版块未被忽略则在未读主题中显示。",
     "ignoring.description": "不要在有新回复时通知我。<br/>不要在未读主题中显示该主题。",
     "thread_tools.title": "主题工具",
-    "thread_tools.markAsUnreadForAll": "标记全部未读",
+    "thread_tools.markAsUnreadForAll": "Mark Unread For All",
     "thread_tools.pin": "置顶主题",
     "thread_tools.unpin": "取消置顶主题",
     "thread_tools.lock": "锁定主题",

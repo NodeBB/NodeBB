@@ -651,6 +651,8 @@ describe('Categories', function () {
 					'topics:tag': false,
 					'topics:delete': false,
 					'posts:edit': false,
+					'posts:upvote': false,
+					'posts:downvote': false,
 					purge: false,
 					moderate: false,
 				});
@@ -678,6 +680,8 @@ describe('Categories', function () {
 				assert.deepEqual(data, {
 					'groups:find': true,
 					'groups:posts:edit': true,
+					'groups:posts:upvote': true,
+					'groups:posts:downvote': true,
 					'groups:topics:delete': false,
 					'groups:topics:create': true,
 					'groups:topics:reply': true,

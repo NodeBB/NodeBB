@@ -52,7 +52,7 @@
     "not-watching.description": "Ne obvesti me o novih odgovorih.<br/>Teme prikaži v Neprebrano le če kategorija ni prezrta.",
     "ignoring.description": "Ne obvesti me o novih odgovorih.<br/>Teme ne prikaži v Neprebrano.",
     "thread_tools.title": "Orodja teme",
-    "thread_tools.markAsUnreadForAll": "Označi vse kot neprebrano",
+    "thread_tools.markAsUnreadForAll": "Mark Unread For All",
     "thread_tools.pin": "Pripni temo",
     "thread_tools.unpin": "Odpni temo",
     "thread_tools.lock": "Zakleni temo",

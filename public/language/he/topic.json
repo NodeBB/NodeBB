@@ -52,7 +52,7 @@
     "not-watching.description": "Do not notify me of new replies.<br/>Show topic in unread if category is not ignored.",
     "ignoring.description": "Do not notify me of new replies.<br/>Do not show topic in unread.",
     "thread_tools.title": "כלי נושא",
-    "thread_tools.markAsUnreadForAll": "סמן הכל כלא נקרא",
+    "thread_tools.markAsUnreadForAll": "Mark Unread For All",
     "thread_tools.pin": "נעץ נושא",
     "thread_tools.unpin": "הסר נעץ",
     "thread_tools.lock": "נעל נושא",

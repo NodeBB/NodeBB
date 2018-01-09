@@ -52,7 +52,7 @@
     "not-watching.description": "Do not notify me of new replies.<br/>Show topic in unread if category is not ignored.",
     "ignoring.description": "Do not notify me of new replies.<br/>Do not show topic in unread.",
     "thread_tools.title": "টপিক সম্পর্কিত টুলস",
-    "thread_tools.markAsUnreadForAll": "Mark unread for all",
+    "thread_tools.markAsUnreadForAll": "Mark Unread For All",
     "thread_tools.pin": "টপিক পিন করুন",
     "thread_tools.unpin": "টপিক আনপিন করুন",
     "thread_tools.lock": "টপিক বন্ধ করুন",
