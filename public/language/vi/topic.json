@@ -52,7 +52,7 @@
     "not-watching.description": "Không thông báo tôi các trả lời mới. <br/>Hiển thị mục chưa đọc nếu danh mục bị bỏ qua.",
     "ignoring.description": "Không thông báo tôi các trả lời mới. <br/>Không hiển thị các mục chưa đọc.",
     "thread_tools.title": "Công cụ",
-    "thread_tools.markAsUnreadForAll": "Đánh dấu tất cả thành chưa đọc",
+    "thread_tools.markAsUnreadForAll": "Mark Unread For All",
     "thread_tools.pin": "Pin chủ đề",
     "thread_tools.unpin": "Bỏ pin chủ đề",
     "thread_tools.lock": "Khóa chủ đề",

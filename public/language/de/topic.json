@@ -52,7 +52,7 @@
     "not-watching.description": "Keine Benachrichtigung bei neuen Beiträgen.<br/>Ungelesen Beiträge anzeigen wenn die Kategorie nicht ignoriert wird.",
     "ignoring.description": "Keine Benachrichtigung bei neuen Beiträgen.<br/>Ungelesene Beiträge nicht anzeigen.",
     "thread_tools.title": "Themen-Werkzeuge",
-    "thread_tools.markAsUnreadForAll": "Für alle als ungelesen markiert.",
+    "thread_tools.markAsUnreadForAll": "Mark Unread For All",
     "thread_tools.pin": "Thema anheften",
     "thread_tools.unpin": "Thema nicht mehr anheften",
     "thread_tools.lock": "Thema schließen",

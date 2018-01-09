@@ -52,7 +52,7 @@
     "not-watching.description": "Ne pas me notifier les nouvelles réponses.<br/>Afficher le sujet dans l'onglet \"Non lu\" si la catégorie n'est pas ignorée.",
     "ignoring.description": "Ne pas me notifier les nouvelle réponses.<br/>Ne pas afficher ce sujet dans l'onglet \"Non lu\".",
     "thread_tools.title": "Outils pour sujets",
-    "thread_tools.markAsUnreadForAll": "Marquer tous comme non-lus",
+    "thread_tools.markAsUnreadForAll": "Mark Unread For All",
     "thread_tools.pin": "Épingler le sujet",
     "thread_tools.unpin": "Désépingler le sujet",
     "thread_tools.lock": "Verrouiller le sujet",

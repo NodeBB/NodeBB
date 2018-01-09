@@ -52,7 +52,7 @@
     "not-watching.description": "Meddela mig inte om nya svar. <br/> Visa ämne i oläst ifall kategorin är ignorerad.",
     "ignoring.description": "Meddela mig inte om nya svar. <br/>Visa inte ämne i oläst.",
     "thread_tools.title": "Ämnesverktyg",
-    "thread_tools.markAsUnreadForAll": "Markera oläst för alla",
+    "thread_tools.markAsUnreadForAll": "Mark Unread For All",
     "thread_tools.pin": "Nåla fast ämne",
     "thread_tools.unpin": "Lösgör ämne",
     "thread_tools.lock": "Lås ämne",

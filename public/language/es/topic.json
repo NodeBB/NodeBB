@@ -52,7 +52,7 @@
     "not-watching.description": "No notificarme de nuevas respuestas.<br/>Mostrar tema en no leídos si sigo esa categoría. ",
     "ignoring.description": "No notificarme de nuevas respuestas.<br/>No mostrar tema en no leídos. ",
     "thread_tools.title": "Herramientas",
-    "thread_tools.markAsUnreadForAll": "Marcar todo como no leído.",
+    "thread_tools.markAsUnreadForAll": "Mark Unread For All",
     "thread_tools.pin": "Adherir tema",
     "thread_tools.unpin": "Despegar tema",
     "thread_tools.lock": "Cerrar tema",

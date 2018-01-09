@@ -52,7 +52,7 @@
     "not-watching.description": "Non notificarmi sulle nuove risposte.<br/>Mostra la discussione fra le non lette se la categoria non è ignorata.",
     "ignoring.description": "Non notificarmi sulle nuove risposte.<br/>Non mostrare la discussione fra le non lette.",
     "thread_tools.title": "Strumenti per la Discussione",
-    "thread_tools.markAsUnreadForAll": "Segna tutti come non letti",
+    "thread_tools.markAsUnreadForAll": "Mark Unread For All",
     "thread_tools.pin": "Fissa Discussione",
     "thread_tools.unpin": "Sblocca Discussione",
     "thread_tools.lock": "Blocca Discussione",
