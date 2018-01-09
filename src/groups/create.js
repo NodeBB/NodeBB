@@ -90,11 +90,11 @@ module.exports = function (Groups) {
 			return callback(new Error('[[error:group-name-too-long]]'));
 		}
 
-		if (!Groups.isPrivilegeGroup(name) && name.indexOf(':') !== -1) {
+		if (!Groups.isPrivilegeGroup(name) && name.includes(':')) {
 			return callback(new Error('[[error:invalid-group-name]]'));
 		}
 
-		if (name.indexOf('/') !== -1 || !utils.slugify(name)) {
+		if (name.includes('/') || !utils.slugify(name)) {
 			return callback(new Error('[[error:invalid-group-name]]'));
 		}
 

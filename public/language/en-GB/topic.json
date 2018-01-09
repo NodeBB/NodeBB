@@ -63,7 +63,7 @@
 	"ignoring.description": "Do not notify me of new replies.<br/>Do not show topic in unread.",
 
 	"thread_tools.title": "Topic Tools",
-	"thread_tools.markAsUnreadForAll": "Mark unread for all",
+	"thread_tools.markAsUnreadForAll": "Mark Unread For All",
 	"thread_tools.pin": "Pin Topic",
 	"thread_tools.unpin": "Unpin Topic",
 	"thread_tools.lock": "Lock Topic",

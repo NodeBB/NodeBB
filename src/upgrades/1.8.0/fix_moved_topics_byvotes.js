@@ -5,8 +5,8 @@ var batch = require('../../batch');
 var db = require('../../database');
 
 module.exports = {
-	name: 'Add votes to topics',
-	timestamp: Date.UTC(2017, 11, 8),
+	name: 'Fix sort by votes for moved topics',
+	timestamp: Date.UTC(2018, 0, 8),
 	method: function (callback) {
 		var progress = this.progress;
 
@@ -16,32 +16,21 @@ module.exports = {
 				var topicData;
 				async.waterfall([
 					function (next) {
-						db.getObjectFields('topic:' + tid, ['mainPid', 'cid', 'pinned'], next);
+						db.getObjectFields('topic:' + tid, ['cid', 'oldCid', 'upvotes', 'downvotes', 'pinned'], next);
 					},
 					function (_topicData, next) {
 						topicData = _topicData;
-						if (!topicData.mainPid || !topicData.cid) {
+						if (!topicData.cid || !topicData.oldCid) {
 							return _next();
 						}
-						db.getObject('post:' + topicData.mainPid, next);
-					},
-					function (postData, next) {
-						if (!postData) {
-							return _next();
-						}
-						var upvotes = parseInt(postData.upvotes, 10) || 0;
-						var downvotes = parseInt(postData.downvotes, 10) || 0;
-						var data = {
-							upvotes: upvotes,
-							downvotes: downvotes,
-						};
+
+						var upvotes = parseInt(topicData.upvotes, 10) || 0;
+						var downvotes = parseInt(topicData.downvotes, 10) || 0;
 						var votes = upvotes - downvotes;
-						async.parallel([
+
+						async.series([
 							function (next) {
-								db.setObject('topic:' + tid, data, next);
-							},
-							function (next) {
-								db.sortedSetAdd('topics:votes', votes, tid, next);
+								db.sortedSetRemove('cid:' + topicData.oldCid + ':tids:votes', tid, next);
 							},
 							function (next) {
 								if (parseInt(topicData.pinned, 10) !== 1) {

@@ -52,7 +52,7 @@
     "not-watching.description": "Stuur me geen melding van nieuwe reacties.<br/>Toon onderwerp in ongelezen mits de categorie niet genegeerd wordt.",
     "ignoring.description": "Stuur me geen melding van nieuwe reacties.<br/>Toon dit onderwerp niet onder de ongelezen onderwerpen.",
     "thread_tools.title": "Acties",
-    "thread_tools.markAsUnreadForAll": "Markeer alles als ongelezen",
+    "thread_tools.markAsUnreadForAll": "Alles als ongelezen markeren",
     "thread_tools.pin": "Onderwerp vastpinnen",
     "thread_tools.unpin": "Onderwerp losmaken",
     "thread_tools.lock": "Onderwerp sluiten",

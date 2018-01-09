@@ -61,6 +61,8 @@ module.exports = function (Categories) {
 					'topics:tag',
 					'posts:edit',
 					'posts:delete',
+					'posts:upvote',
+					'posts:downvote',
 					'topics:delete',
 				];
 
