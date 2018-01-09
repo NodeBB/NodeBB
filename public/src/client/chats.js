@@ -52,6 +52,7 @@ define('forum/chats', [
 		Chats.addActionHandlers(components.get('chat/messages'), ajaxify.data.roomId);
 		Chats.addMemberHandler(ajaxify.data.roomId, components.get('chat/controls').find('[data-action="members"]'));
 		Chats.addRenameHandler(ajaxify.data.roomId, components.get('chat/controls').find('[data-action="rename"]'));
+		Chats.addLeaveHandler(ajaxify.data.roomId, components.get('chat/controls').find('[data-action="leave"]'));
 		Chats.addScrollHandler(ajaxify.data.roomId, ajaxify.data.uid, $('.chat-content'));
 		Chats.addCharactersLeftHandler($('[component="chat/main-wrapper"]'));
 	};
@@ -186,22 +187,76 @@ define('forum/chats', [
 
 					modal.attr('component', 'chat/manage-modal');
 
-					socket.emit('modules.chats.getUsersInRoom', { roomId: roomId }, function (err, users) {
-						var listEl = modal.find('.list-group');
+					Chats.refreshParticipantsList(roomId, modal);
 
-						if (err) {
-							return translator.translate('[[error:invalid-data]]', function (translated) {
-								listEl.find('li').text(translated);
+					var searchInput = modal.find('input');
+					var errorEl = modal.find('.text-danger');
+					require(['autocomplete', 'translator'], function (autocomplete, translator) {
+						autocomplete.user(searchInput, function (event, selected) {
+							errorEl.text('');
+							socket.emit('modules.chats.addUserToRoom', {
+								roomId: roomId,
+								username: selected.item.user.name,
+							}, function (err) {
+								if (err) {
+									translator.translate(err.message, function (translated) {
+										errorEl.text(translated);
+									});
+								}
+
+								Chats.refreshParticipantsList(roomId, modal);
+								searchInput.val('');
 							});
-						}
-
-						Benchpress.parse('partials/modals/manage_room_users', {
-							users: users,
-						}, function (html) {
-							listEl.html(html);
 						});
 					});
 				});
+			});
+		});
+	};
+
+	Chats.addLeaveHandler = function (roomId, buttonEl) {
+		buttonEl.on('click', function () {
+			bootbox.confirm({
+				size: 'small',
+				title: '[[modules:chat.leave]]',
+				message: '<p>[[modules:chat.leave-prompt]]</p><p class="help-block">[[modules:chat.leave-help]]</p>',
+				callback: function (ok) {
+					if (ok) {
+						socket.emit('modules.chats.leave', roomId, function (err) {
+							if (err) {
+								app.alertError(err.message);
+							}
+
+							// Return user to chats page. If modal, close modal.
+							var modal = buttonEl.parents('.chat-modal');
+							if (modal.length) {
+								require(['chat'], function (chatLib) {
+									chatLib.close(modal);
+								});
+							} else {
+								ajaxify.go('chats');
+							}
+						});
+					}
+				},
+			});
+		});
+	};
+
+	Chats.refreshParticipantsList = function (roomId, modal) {
+		socket.emit('modules.chats.getUsersInRoom', { roomId: roomId }, function (err, users) {
+			var listEl = modal.find('.list-group');
+
+			if (err) {
+				return translator.translate('[[error:invalid-data]]', function (translated) {
+					listEl.find('li').text(translated);
+				});
+			}
+
+			Benchpress.parse('partials/modals/manage_room_users', {
+				users: users,
+			}, function (html) {
+				listEl.html(html);
 			});
 		});
 	};

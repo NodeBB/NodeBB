@@ -228,7 +228,7 @@ SocketModules.chats.addUserToRoom = function (socket, data, callback) {
 				return next(new Error('[[error:no-user]]'));
 			}
 			if (socket.uid === parseInt(uid, 10)) {
-				return next(new Error('[[error:cant-add-self-to-chat-room]]'));
+				return next(new Error('[[error:cant-chat-with-yourself]]'));
 			}
 			async.parallel({
 				settings: async.apply(user.getSettings, uid),

@@ -250,9 +250,8 @@ define('chat', [
 			});
 
 			Chats.addActionHandlers(chatModal.find('[component="chat/messages"]'), data.roomId);
-
 			Chats.addRenameHandler(chatModal.attr('data-roomid'), chatModal.find('[data-action="rename"]'), chatModal.attr('data-name'));
-
+			Chats.addLeaveHandler(chatModal.attr('data-roomid'), chatModal.find('[data-action="leave"]'));
 			Chats.addSendHandlers(chatModal.attr('data-roomid'), chatModal.find('.chat-input'), chatModal.find('[data-action="send"]'));
 
 			Chats.createTagsInput(chatModal.find('.users-tag-input'), data);
