@@ -76,7 +76,7 @@ module.exports = function (Messaging) {
 
 				notifications.create({
 					type: 'new-chat',
-					subject: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
+					subject: '[[email:notif.chat.subject, ' + messageObj.fromUser.username + ']]',
 					bodyShort: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
 					bodyLong: messageObj.content,
 					nid: 'chat_' + fromuid + '_' + roomId,
