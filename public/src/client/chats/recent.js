@@ -6,11 +6,6 @@ define('forum/chats/recent', function () {
 
 	recent.init = function () {
 		require(['forum/chats'], function (Chats) {
-			$('[component="chat/recent"]').on('click', '[component="chat/leave"]', function () {
-				Chats.leave($(this).parents('[data-roomid]'));
-				return false;
-			});
-
 			$('[component="chat/recent"]').on('click', '[component="chat/recent/room"]', function () {
 				Chats.switchChat($(this).attr('data-roomid'));
 			});

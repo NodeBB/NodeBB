@@ -471,7 +471,7 @@ define('forum/chats', [
 				data.message.self = data.self;
 
 				messages.appendChatMessage($('.expanded-chat .chat-content'), data.message);
-			} else if (ajaxify.currentPage.startsWith('chats')) {
+			} else if (ajaxify.data.template.chats) {
 				var roomEl = $('[data-roomid=' + data.roomId + ']');
 
 				if (roomEl.length > 0) {
@@ -503,6 +503,7 @@ define('forum/chats', [
 		socket.on('event:chats.roomRename', function (data) {
 			var roomEl = components.get('chat/recent/room', data.roomId);
 			var titleEl = roomEl.find('[component="chat/title"]');
+			ajaxify.data.roomName = data.newName;
 
 			titleEl.text(data.newName);
 		});
@@ -519,6 +520,7 @@ define('forum/chats', [
 	Chats.setActive = function () {
 		if (ajaxify.data.roomId) {
 			socket.emit('modules.chats.markRead', ajaxify.data.roomId);
+			$('[data-roomid="' + ajaxify.data.roomId + '"]').toggleClass('unread', false);
 			$('.expanded-chat input').focus();
 		}
 		$('.chats-list li').removeClass('bg-info');

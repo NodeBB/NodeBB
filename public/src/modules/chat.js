@@ -106,7 +106,7 @@ define('chat', [
 		socket.on('event:chats.roomRename', function (data) {
 			var newTitle = $('<div/>').html(data.newName).text();
 			var modal = module.getModal(data.roomId);
-			modal.find('[component="chat/room/name"]').val(newTitle);
+			modal.find('[component="chat/room/name"]').text(newTitle);
 			taskbar.updateTitle('chat', modal.attr('UUID'), newTitle);
 		});
 
