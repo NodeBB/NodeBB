@@ -10,7 +10,7 @@ var dirname = require('./paths').baseDir;
 try {
 	require('../../package.json');
 } catch (e) {
-	if (e.code === 'ENOENT') {
+	if (e.code === 'MODULE_NOT_FOUND') {
 		console.warn('package.json not found.');
 		console.log('Populating package.json...');
 
