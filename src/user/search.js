@@ -81,6 +81,10 @@ module.exports = function (User) {
 	}
 
 	function filterAndSortUids(uids, data, callback) {
+		uids = uids.filter(function (uid) {
+			return parseInt(uid, 10);
+		});
+
 		var fields = [];
 
 		if (data.sortBy) {
