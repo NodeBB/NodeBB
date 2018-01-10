@@ -2,6 +2,7 @@
 'use strict';
 
 var async = require('async');
+var validator = require('validator');
 
 var db = require('../database');
 var meta = require('../meta');
@@ -191,6 +192,7 @@ module.exports = function (Topics) {
 			},
 			function (tagData, next) {
 				tags.forEach(function (tag, index) {
+					tag.valueEscaped = validator.escape(String(tag.value));
 					tag.color = tagData[index] ? tagData[index].color : '';
 					tag.bgColor = tagData[index] ? tagData[index].bgColor : '';
 				});
