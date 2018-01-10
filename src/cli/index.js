@@ -6,11 +6,9 @@ var path = require('path');
 var packageInstall = require('./package-install');
 var dirname = require('./paths').baseDir;
 
-var defaultPackage;
-
 // check to make sure dependencies are installed
 try {
-	defaultPackage = JSON.parse(fs.readFileSync(path.join(dirname, 'install/package.json'), 'utf8'));
+	require('../../package.json');
 } catch (e) {
 	if (e.code === 'ENOENT') {
 		console.warn('package.json not found.');
@@ -32,6 +30,7 @@ try {
 
 try {
 	var semver = require('semver');
+	var defaultPackage = require('../../install/package.json');
 
 	var checkVersion = function (packageName) {
 		var version = JSON.parse(fs.readFileSync(path.join(dirname, 'node_modules', packageName, 'package.json'), 'utf8')).version;
