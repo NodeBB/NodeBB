@@ -9,8 +9,10 @@
 
 	"section-manage": "Gestion",
 	"manage/categories": "Catégories",
+	"manage/privileges": "Privileges",
 	"manage/tags": "Mots-clés",
 	"manage/users": "Utilisateurs",
+	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "File d'inscription",
 	"manage/post-queue": "File d’attente des messages",
 	"manage/groups": "Groupes",

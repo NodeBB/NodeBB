@@ -9,8 +9,10 @@
 
 	"section-manage": "管理",
 	"manage/categories": "版块",
+	"manage/privileges": "Privileges",
 	"manage/tags": "话题",
 	"manage/users": "用户",
+	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "注册申请",
 	"manage/post-queue": "提交列表",
 	"manage/groups": "群组",

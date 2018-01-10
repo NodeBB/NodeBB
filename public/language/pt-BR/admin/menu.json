@@ -9,8 +9,10 @@
 
 	"section-manage": "Administrar",
 	"manage/categories": "Categorias",
+	"manage/privileges": "Privileges",
 	"manage/tags": "Tags",
 	"manage/users": "Usuários",
+	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "Fila de Registro",
 	"manage/post-queue": "Fileira da Posts",
 	"manage/groups": "Grupos",

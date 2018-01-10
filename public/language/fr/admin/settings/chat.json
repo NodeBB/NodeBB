@@ -5,5 +5,7 @@
 	"disable-editing-help": "Les administrateurs et modérateurs globaux sont dispensés de cette restriction",
 	"max-length": "Longueur maximales des messages de discussion",
 	"max-room-size": "Nombre maximum d'utilisateurs dans une même discussion",
-	"delay": "Temps entre chaque message de discussion (en millisecondes)"
+	"delay": "Temps entre chaque message de discussion (en millisecondes)",
+	"restrictions.seconds-edit-after": "Number of seconds before users are allowed to edit chat messages after posting. (0 disabled)",
+	"restrictions.seconds-delete-after": "Number of seconds before users are allowed to delete chat messages after posting. (0 disabled)"
 }

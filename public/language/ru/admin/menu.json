@@ -9,8 +9,10 @@
 
 	"section-manage": "Управление",
 	"manage/categories": "Категории",
+	"manage/privileges": "Privileges",
 	"manage/tags": "Теги",
 	"manage/users": "Пользователи",
+	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "Очередь на регистрацию",
 	"manage/post-queue": "Post Queue",
 	"manage/groups": "Группы",

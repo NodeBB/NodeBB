@@ -9,8 +9,10 @@
 
 	"section-manage": "Керування",
 	"manage/categories": "Категорії",
+	"manage/privileges": "Privileges",
 	"manage/tags": "Теги",
 	"manage/users": "Користувачі",
+	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "Черга реєстрації",
 	"manage/post-queue": "Черга Постів",
 	"manage/groups": "Групи",
