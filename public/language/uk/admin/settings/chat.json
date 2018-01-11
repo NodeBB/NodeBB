@@ -5,5 +5,7 @@
 	"disable-editing-help": "Адміністратори на модератори звільнені від цього обмеження",
 	"max-length": "Максимальна довжина повідомлення",
 	"max-room-size": "Максимальна кількість людей у кімнаті",
-	"delay": "Час між повідомленнями в мілісекундах"
+	"delay": "Час між повідомленнями в мілісекундах",
+	"restrictions.seconds-edit-after": "Number of seconds before users are allowed to edit chat messages after posting. (0 disabled)",
+	"restrictions.seconds-delete-after": "Number of seconds before users are allowed to delete chat messages after posting. (0 disabled)"
 }

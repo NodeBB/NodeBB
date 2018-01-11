@@ -9,8 +9,10 @@
 
 	"section-manage": "Spravovat",
 	"manage/categories": "Kategorie",
+	"manage/privileges": "Privileges",
 	"manage/tags": "Značky",
 	"manage/users": "Uživatelé",
+	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "Registrační fronta",
 	"manage/post-queue": "Fronta příspěvků",
 	"manage/groups": "Skupiny",

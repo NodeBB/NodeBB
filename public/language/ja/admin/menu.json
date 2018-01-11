@@ -9,8 +9,10 @@
 
 	"section-manage": "管理",
 	"manage/categories": "カテゴリ",
+	"manage/privileges": "Privileges",
 	"manage/tags": "タグ",
 	"manage/users": "ユーザー",
+	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "登録キュー",
 	"manage/post-queue": "投稿キュー",
 	"manage/groups": "グループ",

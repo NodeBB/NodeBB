@@ -9,8 +9,10 @@
 
 	"section-manage": "إدارة",
 	"manage/categories": "الأقسام",
+	"manage/privileges": "Privileges",
 	"manage/tags": "الكلمات المفتاحية",
 	"manage/users": "الأعضاء",
+	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "قائمة انتظار التسجيل",
 	"manage/post-queue": "قائمة انتظار المشاركة",
 	"manage/groups": "المجموعات",

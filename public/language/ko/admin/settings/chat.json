@@ -5,5 +5,7 @@
 	"disable-editing-help": "관리자는 이 제한에서 면제됩니다.",
 	"max-length": "채팅 메세지의 최대 길이",
 	"max-room-size": "채팅방의 최대 인원 수",
-	"delay": "채팅 메세지 간 시간 간격(단위: 1/1000초)"
+	"delay": "채팅 메세지 간 시간 간격(단위: 1/1000초)",
+	"restrictions.seconds-edit-after": "Number of seconds before users are allowed to edit chat messages after posting. (0 disabled)",
+	"restrictions.seconds-delete-after": "Number of seconds before users are allowed to delete chat messages after posting. (0 disabled)"
 }

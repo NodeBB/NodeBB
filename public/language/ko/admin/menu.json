@@ -9,8 +9,10 @@
 
 	"section-manage": "관리",
 	"manage/categories": "게시판",
+	"manage/privileges": "Privileges",
 	"manage/tags": "태그",
 	"manage/users": "용자",
+	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "회원 가입 승인 대기자",
 	"manage/post-queue": "게시 대기열",
 	"manage/groups": "그룹",
