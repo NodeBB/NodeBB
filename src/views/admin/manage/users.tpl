@@ -47,7 +47,7 @@
 
 				<div class="search {search_display}">
 					<label>[[admin/manage/users:search.uid]]</label>
-					<input class="form-control" id="search-user-uid" data-search-type="uid" type="text" placeholder="[[admin/manage/users:search.uid-placeholder]]"/><br />
+					<input class="form-control" id="search-user-uid" data-search-type="uid" type="number" placeholder="[[admin/manage/users:search.uid-placeholder]]"/><br />
 
 					<label>[[admin/manage/users:search.username]]</label>
 					<input class="form-control" id="search-user-name" data-search-type="username" type="text" placeholder="[[admin/manage/users:search.username-placeholder]]"/><br />

@@ -5,5 +5,7 @@
 	"disable-editing-help": "管理者およびグローバルモデレーターはこの制限を免除されます",
 	"max-length": "チャットメッセージの最大の長さ",
 	"max-room-size": "チャットルームの最大ユーザー数",
-	"delay": "ミリ秒単位のチャットメッセージ間の時間"
+	"delay": "ミリ秒単位のチャットメッセージ間の時間",
+	"restrictions.seconds-edit-after": "Number of seconds before users are allowed to edit chat messages after posting. (0 disabled)",
+	"restrictions.seconds-delete-after": "Number of seconds before users are allowed to delete chat messages after posting. (0 disabled)"
 }

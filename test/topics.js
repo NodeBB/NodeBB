@@ -1274,9 +1274,9 @@ describe('Topic\'s', function () {
 				assert.equal(data.matchCount, 3);
 				assert.equal(data.pageCount, 1);
 				var tagData = [
-					{ value: 'nodebb', color: '', bgColor: '', score: 3 },
-					{ value: 'nodejs', color: '', bgColor: '', score: 1 },
-					{ value: 'nosql', color: '', bgColor: '', score: 1 },
+					{ value: 'nodebb', valueEscaped: 'nodebb', color: '', bgColor: '', score: 3 },
+					{ value: 'nodejs', valueEscaped: 'nodejs', color: '', bgColor: '', score: 1 },
+					{ value: 'nosql', valueEscaped: 'nosql', color: '', bgColor: '', score: 1 },
 				];
 				assert.deepEqual(data.tags, tagData);
 

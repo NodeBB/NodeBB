@@ -3,5 +3,6 @@
 	"description": "Vyberte, kterou stránku chcete zobrazit, jakmile uživatel přejde na výchozí URL vašeho fóra.",
 	"home-page-route": "Cesta k domovské stránce",
 	"custom-route": "Upravit cestu",
-	"allow-user-home-pages": "Povolit uživatelům domovské stránky"
+	"allow-user-home-pages": "Povolit uživatelům domovské stránky",
+	"home-page-title": "Title of the home page (default \"Home\")"
 }

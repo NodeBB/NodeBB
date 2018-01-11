@@ -9,8 +9,10 @@
 
 	"section-manage": "Manage",
 	"manage/categories": "קטגוריות",
+	"manage/privileges": "Privileges",
 	"manage/tags": "תגיות",
 	"manage/users": "משתמשים",
+	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "Registration Queue",
 	"manage/post-queue": "Post Queue",
 	"manage/groups": "Groups",

@@ -114,6 +114,15 @@ describe('new Translator(language)', function () {
 			});
 		});
 
+		it('should not unescape html in parameters', function () {
+			var translator = Translator.create('en-GB');
+
+			var key = '[[pages:tag, some&amp;tag]]';
+			return translator.translate(key).then(function (translated) {
+				assert.strictEqual(translated, 'Topics tagged under &quot;some&amp;tag&quot;');
+			});
+		});
+
 		it('should properly escape and ignore % and \\, in arguments', function () {
 			var translator = Translator.create('en-GB');
 

@@ -9,8 +9,10 @@
 
 	"section-manage": "Verwalten",
 	"manage/categories": "Kategorien",
+	"manage/privileges": "Privileges",
 	"manage/tags": "Tags",
 	"manage/users": "Benutzer",
+	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "Warteliste",
 	"manage/post-queue": "Beitragswarteschlange",
 	"manage/groups": "Gruppen",

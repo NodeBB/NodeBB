@@ -9,8 +9,10 @@
 
 	"section-manage": "Yönet",
 	"manage/categories": "Kategoriler",
+	"manage/privileges": "Privileges",
 	"manage/tags": "Etiketler",
 	"manage/users": "Kullanıcılar",
+	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "Kayıt Kuyruğu",
 	"manage/post-queue": "İleti Kuyruğu",
 	"manage/groups": "Gruplar",

@@ -3,5 +3,6 @@
 	"description": "Wähle aus, welche Seite angezeigt werden soll, wenn Nutzer zur Startseite des Forums navigieren.",
 	"home-page-route": "Startseitenpfad",
 	"custom-route": "Eigener Startseitenpfad",
-	"allow-user-home-pages": "Benutzern eigene Startseiten erlauben"
+	"allow-user-home-pages": "Benutzern eigene Startseiten erlauben",
+	"home-page-title": "Title of the home page (default \"Home\")"
 }

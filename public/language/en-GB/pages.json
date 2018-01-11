@@ -22,7 +22,7 @@
 
 	"notifications": "Notifications",
 	"tags": "Tags",
-	"tag": "Topics tagged under \"%1\"",
+	"tag": "Topics tagged under &quot;%1&quot;",
 	"register": "Register an account",
 	"registration-complete": "Registration complete",
 	"login": "Login to your account",
