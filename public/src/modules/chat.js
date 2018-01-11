@@ -61,7 +61,7 @@ define('chat', [
 				if (modal.is(':visible')) {
 					taskbar.updateActive(modal.attr('UUID'));
 					ChatsMessages.scrollToBottom(modal.find('.chat-content'));
-				} else {
+				} else if (!ajaxify.data.template.chats) {
 					module.toggleNew(modal.attr('UUID'), true, true);
 				}
 
@@ -75,7 +75,7 @@ define('chat', [
 						roomId: data.roomId,
 					});
 				}
-			} else {
+			} else if (!ajaxify.data.template.chats) {
 				socket.emit('modules.chats.loadRoom', {
 					roomId: data.roomId,
 				}, function (err, roomData) {
