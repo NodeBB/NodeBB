@@ -102,7 +102,7 @@
     "notification-sound": "Bildirim sesi",
     "no-sound": "Ses yok",
     "upvote-notif-freq": "Upvote Notification Frequency",
-    "upvote-notif-freq.all": "All Upvotes",
+    "upvote-notif-freq.all": "Büyün Artı Oylar",
     "upvote-notif-freq.everyTen": "Every Ten Upvotes",
     "upvote-notif-freq.logarithmic": "On 10, 100, 1000...",
     "upvote-notif-freq.disabled": "Disabled",

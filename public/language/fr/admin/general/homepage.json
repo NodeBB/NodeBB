@@ -4,5 +4,5 @@
 	"home-page-route": "Route de la page d'accueil",
 	"custom-route": "Route personnalisée",
 	"allow-user-home-pages": "Permettre aux utilisateurs de choisir une page d'accueil personnalisée",
-	"home-page-title": "Title of the home page (default \"Home\")"
+	"home-page-title": "Titre de la page d'accueil (par défaut \"Accueil\")"
 }

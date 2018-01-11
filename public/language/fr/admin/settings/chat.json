@@ -6,6 +6,6 @@
 	"max-length": "Longueur maximales des messages de discussion",
 	"max-room-size": "Nombre maximum d'utilisateurs dans une même discussion",
 	"delay": "Temps entre chaque message de discussion (en millisecondes)",
-	"restrictions.seconds-edit-after": "Number of seconds before users are allowed to edit chat messages after posting. (0 disabled)",
-	"restrictions.seconds-delete-after": "Number of seconds before users are allowed to delete chat messages after posting. (0 disabled)"
+	"restrictions.seconds-edit-after": "Nombre de secondes avant que les utilisateurs ne soient autorisés à modifier les messages après leur publication. (0 désactivé)",
+	"restrictions.seconds-delete-after": "Nombre de secondes avant que les utilisateurs ne soient autorisés à supprimer des messages après leur publication. (0 désactivé)"
 }
