@@ -254,7 +254,6 @@ define('chat', [
 			Chats.addLeaveHandler(chatModal.attr('data-roomid'), chatModal.find('[data-action="leave"]'));
 			Chats.addSendHandlers(chatModal.attr('data-roomid'), chatModal.find('.chat-input'), chatModal.find('[data-action="send"]'));
 
-			Chats.createTagsInput(chatModal.find('.users-tag-input'), data);
 			Chats.createAutoComplete(chatModal.find('[component="chat/input"]'));
 
 			Chats.addScrollHandler(chatModal.attr('data-roomid'), data.uid, chatModal.find('.chat-content'));
