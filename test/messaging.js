@@ -156,7 +156,7 @@ describe('Messaging Library', function () {
 
 		it('should fail to add self to room', function (done) {
 			socketModules.chats.addUserToRoom({ uid: fooUid }, { roomId: roomId, username: 'foo' }, function (err) {
-				assert.equal(err.message, '[[error:cant-add-self-to-chat-room]]');
+				assert.equal(err.message, '[[error:cant-chat-with-yourself]]');
 				done();
 			});
 		});
