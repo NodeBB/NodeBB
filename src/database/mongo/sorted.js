@@ -223,20 +223,16 @@ module.exports = function (db, module) {
 			db.collection('objects').count({
 				$or: [
 					{
+						_key: key,
 						score: reverse ? { $gt: score } : { $lt: score },
 					},
 					{
+						_key: key,
 						score: score,
 						value: reverse ? { $gt: value } : { $lt: value },
 					},
 				],
-			}, function (err, rank) {
-				if (err) {
-					return callback(err);
-				}
-
-				callback(null, rank);
-			});
+			}, function (err, rank) { callback(err, rank); });
 		});
 	}
 
