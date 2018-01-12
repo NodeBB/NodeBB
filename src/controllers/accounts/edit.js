@@ -28,6 +28,9 @@ editController.get = function (req, res, callback) {
 			userData.maximumProfileImageSize = parseInt(meta.config.maximumProfileImageSize, 10);
 			userData.allowProfileImageUploads = parseInt(meta.config.allowProfileImageUploads, 10) === 1;
 			userData.allowAccountDelete = parseInt(meta.config.allowAccountDelete, 10) === 1;
+			userData.allowWebsite = !userData.isSelf || parseInt(userData.reputation, 10) >= (parseInt(meta.config['min:rep:website'], 10) || 0);
+			userData.allowAboutMe = !userData.isSelf || parseInt(userData.reputation, 10) >= (parseInt(meta.config['min:rep:aboutme'], 10) || 0);
+			userData.allowSignature = !userData.isSelf || parseInt(userData.reputation, 10) >= (parseInt(meta.config['min:rep:signature'], 10) || 0);
 			userData.profileImageDimension = parseInt(meta.config.profileImageDimension, 10) || 200;
 			userData.defaultAvatar = user.getDefaultAvatar();
 

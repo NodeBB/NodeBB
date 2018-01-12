@@ -38,5 +38,5 @@
     "bookmarkThreshold": 5,
     "topicsPerList": 20,
     "autoDetectLang": 1,
-    "privileges:flag": 0
+    "min:rep:flag": 0
 }

@@ -179,7 +179,7 @@ module.exports = function (Posts) {
 					return callback(new Error('[[error:self-vote]]'));
 				}
 
-				if (command === 'downvote' && parseInt(results.reputation, 10) < parseInt(meta.config['privileges:downvote'], 10)) {
+				if (command === 'downvote' && parseInt(results.reputation, 10) < parseInt(meta.config['min:rep:downvote'], 10)) {
 					return callback(new Error('[[error:not-enough-reputation-to-downvote]]'));
 				}
 

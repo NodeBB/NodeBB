@@ -364,7 +364,7 @@ describe('Flags', function () {
 		});
 
 		it('should not pass validation if flag threshold is set and user rep does not meet it', function (done) {
-			Meta.configs.set('privileges:flag', '50', function (err) {
+			Meta.configs.set('min:rep:flag', '50', function (err) {
 				assert.ifError(err);
 
 				Flags.validate({
@@ -374,7 +374,7 @@ describe('Flags', function () {
 				}, function (err) {
 					assert.ok(err);
 					assert.strictEqual('[[error:not-enough-reputation-to-flag]]', err.message);
-					Meta.configs.set('privileges:flag', 0, done);
+					Meta.configs.set('min:rep:flag', 0, done);
 				});
 			});
 		});

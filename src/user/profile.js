@@ -17,14 +17,6 @@ module.exports = function (User) {
 		var updateUid = data.uid;
 		var oldData;
 
-		if (data.aboutme !== undefined && data.aboutme.length > meta.config.maximumAboutMeLength) {
-			return callback(new Error('[[error:about-me-too-long, ' + meta.config.maximumAboutMeLength + ']]'));
-		}
-
-		if (data.signature !== undefined && data.signature.length > meta.config.maximumSignatureLength) {
-			return callback(new Error('[[error:signature-too-long, ' + meta.config.maximumSignatureLength + ']]'));
-		}
-
 		async.waterfall([
 			function (next) {
 				plugins.fireHook('filter:user.updateProfile', { uid: uid, data: data, fields: fields }, next);
@@ -33,13 +25,7 @@ module.exports = function (User) {
 				fields = data.fields;
 				data = data.data;
 
-				async.series([
-					async.apply(isEmailAvailable, data, updateUid),
-					async.apply(isUsernameAvailable, data, updateUid),
-					async.apply(isGroupTitleValid, data),
-				], function (err) {
-					next(err);
-				});
+				validateData(uid, data, next);
 			},
 			function (next) {
 				User.getUserFields(updateUid, fields, next);
@@ -72,6 +58,19 @@ module.exports = function (User) {
 			},
 		], callback);
 	};
+
+	function validateData(callerUid, data, callback) {
+		async.series([
+			async.apply(isEmailAvailable, data, data.uid),
+			async.apply(isUsernameAvailable, data, data.uid),
+			async.apply(isGroupTitleValid, data),
+			async.apply(isWebsiteValid, callerUid, data),
+			async.apply(isAboutMeValid, callerUid, data),
+			async.apply(isSignatureValid, callerUid, data),
+		], function (err) {
+			callback(err);
+		});
+	}
 
 	function isEmailAvailable(data, uid, callback) {
 		if (!data.email) {
@@ -139,6 +138,52 @@ module.exports = function (User) {
 		} else {
 			callback();
 		}
+	}
+
+	function isWebsiteValid(callerUid, data, callback) {
+		if (!data.website) {
+			return setImmediate(callback);
+		}
+		checkMinReputation(callerUid, data.uid, 'min:rep:website', callback);
+	}
+
+	function isAboutMeValid(callerUid, data, callback) {
+		if (!data.aboutme) {
+			return setImmediate(callback);
+		}
+		if (data.aboutme !== undefined && data.aboutme.length > meta.config.maximumAboutMeLength) {
+			return callback(new Error('[[error:about-me-too-long, ' + meta.config.maximumAboutMeLength + ']]'));
+		}
+
+		checkMinReputation(callerUid, data.uid, 'min:rep:aboutme', callback);
+	}
+
+	function isSignatureValid(callerUid, data, callback) {
+		if (!data.signature) {
+			return setImmediate(callback);
+		}
+		if (data.signature !== undefined && data.signature.length > meta.config.maximumSignatureLength) {
+			return callback(new Error('[[error:signature-too-long, ' + meta.config.maximumSignatureLength + ']]'));
+		}
+		checkMinReputation(callerUid, data.uid, 'min:rep:signature', callback);
+	}
+
+	function checkMinReputation(callerUid, uid, setting, callback) {
+		var isSelf = parseInt(callerUid, 10) === parseInt(uid, 10);
+		if (!isSelf) {
+			return setImmediate(callback);
+		}
+		async.waterfall([
+			function (next) {
+				User.getUserField(uid, 'reputation', next);
+			},
+			function (reputation, next) {
+				if (parseInt(reputation, 10) < (parseInt(meta.config[setting], 10) || 0)) {
+					return next(new Error('[[error:not-enough-reputation-' + setting.replace(/:/g, '-') + ']]'));
+				}
+				next();
+			},
+		], callback);
 	}
 
 	function updateEmail(uid, newEmail, callback) {

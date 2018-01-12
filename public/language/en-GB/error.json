@@ -146,6 +146,9 @@
 	"downvoting-disabled": "Downvoting is disabled",
 	"not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post",
 	"not-enough-reputation-to-flag": "You do not have enough reputation to flag this post",
+	"not-enough-reputation-min-rep-website": "You do not have enough reputation to add a website",
+	"not-enough-reputation-min-rep-aboutme": "You do not have enough reputation to add an about me",
+	"not-enough-reputation-min-rep-signature": "You do not have enough reputation to add a signature",
 	"already-flagged": "You have already flagged this post",
 	"self-vote": "You cannot vote on your own post",
 
