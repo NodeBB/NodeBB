@@ -35,6 +35,8 @@ function get() {
 		pubsub = require('./database/redis/pubsub');
 	} else if (nconf.get('mongo')) {
 		pubsub = require('./database/mongo/pubsub');
+	} else if (nconf.get('postgres')) {
+		pubsub = require('./database/postgres/pubsub');
 	}
 
 	if (!pubsub) {
