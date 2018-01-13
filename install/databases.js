@@ -7,6 +7,7 @@ var winston = require('winston');
 var questions = {
 	redis: require('../src/database/redis').questions,
 	mongo: require('../src/database/mongo').questions,
+	postgres: require('../src/database/postgres').questions,
 };
 
 module.exports = function (config, callback) {
@@ -37,6 +38,12 @@ function getDatabaseConfig(config, callback) {
 			callback(null, config);
 		} else {
 			prompt.get(questions.mongo, callback);
+		}
+	} else if (config.database === 'postgres') {
+		if (config['postgres:host'] && config['postgres:port']) {
+			callback(null, config);
+		} else {
+			prompt.get(questions.postgres, callback);
 		}
 	} else {
 		return callback(new Error('unknown database : ' + config.database));
@@ -69,11 +76,19 @@ function saveDatabaseConfig(config, databaseConfig, callback) {
 			database: databaseConfig['mongo:database'],
 			uri: databaseConfig['mongo:uri'],
 		};
+	} else if (config.database === 'postgres') {
+		config.postgres = {
+			host: databaseConfig['postgres:host'],
+			port: databaseConfig['postgres:port'],
+			username: databaseConfig['postgres:username'],
+			password: databaseConfig['postgres:password'],
+			database: databaseConfig['postgres:database'],
+		};
 	} else {
 		return callback(new Error('unknown database : ' + config.database));
 	}
 
-	var allQuestions = questions.redis.concat(questions.mongo);
+	var allQuestions = questions.redis.concat(questions.mongo).concat(questions.postgres);
 	for (var x = 0; x < allQuestions.length; x += 1) {
 		delete config[allQuestions[x].name];
 	}

@@ -45,10 +45,12 @@ module.exports = {
 					], function (err) {
 						next(err);
 					});
-				} else {
+				} else if (db.client && db.client.collection) {
 					db.client.collection('sessions').deleteMany({}, {}, function (err) {
 						next(err);
 					});
+				} else {
+					next();
 				}
 			},
 		], callback);
