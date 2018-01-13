@@ -15,6 +15,7 @@
 		locations.forEach(function (location) {
 			var area = $('#content [widget-area="' + location + '"]');
 			if (area.length) {
+				$(window).trigger('action:widgets.loaded', {});
 				return;
 			}
 
