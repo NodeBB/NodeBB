@@ -4,5 +4,5 @@
 	"home-page-route": "Startseitenpfad",
 	"custom-route": "Eigener Startseitenpfad",
 	"allow-user-home-pages": "Benutzern eigene Startseiten erlauben",
-	"home-page-title": "Title of the home page (default \"Home\")"
+	"home-page-title": "Titel der Startseite (Standardmäßig \"Home\")"
 }
