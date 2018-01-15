@@ -75,7 +75,7 @@ function forkAction(action, callback) {
 		freeChild(proc);
 
 		if (message.type === 'error') {
-			return callback(message.err);
+			return callback(message.message);
 		}
 
 		if (message.type === 'end') {
@@ -103,7 +103,7 @@ if (process.env.minifier_child) {
 			if (typeof actions[action.act] !== 'function') {
 				process.send({
 					type: 'error',
-					err: Error('Unknown action'),
+					message: 'Unknown action',
 				});
 				return;
 			}
@@ -112,7 +112,7 @@ if (process.env.minifier_child) {
 				if (err) {
 					process.send({
 						type: 'error',
-						err: err,
+						message: err.message,
 					});
 					return;
 				}
