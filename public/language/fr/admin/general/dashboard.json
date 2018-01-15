@@ -31,8 +31,8 @@
 	"notices": "Informations",
 	"restart-not-required": "Pas de redémarrage nécessaire",
 	"restart-required": "Redémarrage requis",
-	"search-plugin-installed": "Recherche un plugin installé",
-	"search-plugin-not-installed": "Rechercher un plugin non installé",
+	"search-plugin-installed": "Le plugin de recherche est installé",
+	"search-plugin-not-installed": "Le plugin de recherche n'est pas installé",
 	"search-plugin-tooltip": "Installer un plugin de recherche depuis la page des plugins pour activer la fonctionnalité de recherche",
 
 	"control-panel": "Contrôle du système",
