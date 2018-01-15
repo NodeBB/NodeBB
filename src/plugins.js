@@ -138,9 +138,12 @@ Plugins.reloadRoutes = function (callback) {
 	});
 };
 
+// DEPRECATED: remove in v1.8.0
 Plugins.getTemplates = function (callback) {
 	var templates = {};
 	var tplName;
+
+	winston.warn('[deprecated] Plugins.getTemplates is DEPRECATED to be removed in v1.8.0');
 
 	Plugins.data.getActive(function (err, plugins) {
 		if (err) {
