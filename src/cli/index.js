@@ -293,15 +293,11 @@ program
 		}
 	});
 
-program
-	.command('*', {}, {
-		noHelp: true,
-	})
-	.action(function () {
-		program.help();
-	});
-
 require('./colors');
+
+if (process.argv.length === 2) {
+	program.help();
+}
 
 program.executables = false;
 
