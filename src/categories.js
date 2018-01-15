@@ -339,10 +339,6 @@ Categories.buildForSelect = function (uid, privilege, callback) {
 
 Categories.buildForSelectCategories = function (categories, callback) {
 	function recursive(category, categoriesData, level, depth) {
-		if (category.link) {
-			return;
-		}
-
 		var bullet = level ? '&bull; ' : '';
 		category.value = category.cid;
 		category.level = level;
@@ -358,7 +354,7 @@ Categories.buildForSelectCategories = function (categories, callback) {
 	var categoriesData = [];
 
 	categories = categories.filter(function (category) {
-		return category && !category.link && !parseInt(category.parentCid, 10);
+		return category && !parseInt(category.parentCid, 10);
 	});
 
 	categories.forEach(function (category) {
