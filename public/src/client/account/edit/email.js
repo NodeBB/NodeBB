@@ -31,7 +31,7 @@ define('forum/account/edit/email', ['forum/account/header'], function (header) {
 					return app.alertError(err.message);
 				}
 
-				ajaxify.go('user/' + ajaxify.data.userslug);
+				ajaxify.go('user/' + ajaxify.data.userslug + '/edit');
 			});
 
 			return false;
