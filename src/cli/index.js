@@ -50,6 +50,7 @@ try {
 		console.warn('Dependencies outdated or not yet installed.');
 		console.log('Installing them now...\n');
 
+		packageInstall.updatePackageFile();
 		packageInstall.installAll();
 
 		require('colors');
