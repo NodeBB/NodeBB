@@ -344,6 +344,11 @@ JS.buildBundle = function (target, fork, callback) {
 			getBundleScriptList(target, next);
 		},
 		function (files, next) {
+			mkdirp(path.join(__dirname, '../../build/public'), function (err) {
+				next(err, files);
+			});
+		},
+		function (files, next) {
 			var minify = global.env !== 'development';
 			var filePath = path.join(__dirname, '../../build/public', fileNames[target]);
 
