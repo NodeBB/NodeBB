@@ -10,6 +10,7 @@ var less = require('less');
 var async = require('async');
 var uglify = require('uglify-js');
 var nconf = require('nconf');
+var _ = require('lodash');
 var Benchpress = require('benchpressjs');
 
 var app = express();
@@ -103,14 +104,15 @@ function welcome(req, res) {
 }
 
 function install(req, res) {
+	var setupEnvVars = _.assign({}, process.env);
 	for (var i in req.body) {
 		if (req.body.hasOwnProperty(i) && !process.env.hasOwnProperty(i)) {
-			process.env[i.replace(':', '__')] = req.body[i];
+			setupEnvVars[i.replace(':', '__')] = req.body[i];
 		}
 	}
 
 	var child = require('child_process').fork('app', ['--setup'], {
-		env: process.env,
+		env: setupEnvVars,
 	});
 
 	child.on('close', function (data) {
