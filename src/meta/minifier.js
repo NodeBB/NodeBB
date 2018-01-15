@@ -112,7 +112,7 @@ if (process.env.minifier_child) {
 				if (err) {
 					process.send({
 						type: 'error',
-						message: err.message,
+						message: err.stack,
 					});
 					return;
 				}
