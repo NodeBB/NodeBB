@@ -10,6 +10,7 @@ var htmlToText = require('html-to-text');
 var url = require('url');
 var path = require('path');
 var fs = require('fs');
+var _ = require('lodash');
 
 var User = require('./user');
 var Plugins = require('./plugins');
@@ -289,11 +290,10 @@ function buildCustomTemplates(config) {
 						file.walk(viewsDir, next);
 					},
 					function (paths, next) {
-						paths = paths.reduce(function (obj, p) {
-							var relative = path.relative(viewsDir, p);
-							obj['/' + relative] = p;
-							return obj;
-						}, {});
+						paths = _.fromPairs(paths.map(function (p) {
+							var relative = path.relative(viewsDir, p).replace(/\\/g, '/');
+							return [relative, p];
+						}));
 						meta.templates.processImports(paths, template.path, template.text, next);
 					},
 					function (source, next) {
