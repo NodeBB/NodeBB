@@ -324,7 +324,7 @@ define('chat', [
 	module.enableMobileBehaviour = function (modalEl) {
 		app.toggleNavbar(false);
 		modalEl.attr('data-mobile', '1');
-		var messagesEl = modalEl.find('.chat-content');
+		var messagesEl = modalEl.find('.modal-body');
 		messagesEl.css('height', module.calculateChatListHeight(modalEl));
 
 		$(window).on('resize', function () {
