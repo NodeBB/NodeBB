@@ -104,6 +104,7 @@ function welcome(req, res) {
 }
 
 function install(req, res) {
+	req.setTimeout(0);
 	var setupEnvVars = _.assign({}, process.env);
 	for (var i in req.body) {
 		if (req.body.hasOwnProperty(i) && !process.env.hasOwnProperty(i)) {
