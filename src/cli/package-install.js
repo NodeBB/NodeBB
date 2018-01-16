@@ -33,6 +33,8 @@ function installAll() {
 	var prod = global.env !== 'development';
 	var command = 'npm install';
 	try {
+		fs.accessSync(path.join(dirname, 'node_modules/nconf/package.json'), fs.constants.R_OK);
+
 		var packageManager = require('nconf').get('package_manager');
 		if (packageManager === 'yarn') {
 			command = 'yarn';
