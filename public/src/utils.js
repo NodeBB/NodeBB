@@ -746,6 +746,27 @@
 		rtrim: function (str) {
 			return str.replace(/\s+$/g, '');
 		},
+
+		debounce: function (func, wait, immediate) {
+			// modified from https://davidwalsh.name/javascript-debounce-function
+			var timeout;
+			return function () {
+				var context = this;
+				var args = arguments;
+				var later = function () {
+					timeout = null;
+					if (!immediate) {
+						func.apply(context, args);
+					}
+				};
+				var callNow = immediate && !timeout;
+				clearTimeout(timeout);
+				timeout = setTimeout(later, wait);
+				if (callNow) {
+					func.apply(context, args);
+				}
+			};
+		},
 	};
 
 	/* eslint "no-extend-native": "off" */
