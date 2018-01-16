@@ -4,5 +4,5 @@
 	"home-page-route": "主页路由",
 	"custom-route": "自定义路由",
 	"allow-user-home-pages": "允许用户主页",
-	"home-page-title": "Title of the home page (default \"Home\")"
+	"home-page-title": "首页标题(默认“Home”)"
 }
