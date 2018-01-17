@@ -4,44 +4,36 @@
 define('forum/topic/move-post', [], function () {
 	var MovePost = {};
 
-
 	MovePost.openMovePostModal = function (button) {
 		app.parseAndTranslate('partials/move_post_modal', {}, function (html) {
-			var moveModal = $(html);
+			var dialog = bootbox.dialog({
+				title: '[[topic:move_post]]',
+				message: html,
+				show: true,
+				buttons: {
+					submit: {
+						label: '[[topic:confirm_move]]',
+						className: 'btn-primary submit-btn',
+						callback: function () {
+							var topicIdEl = dialog.find('#topicId');
+							if (!topicIdEl.val()) {
+								return;
+							}
 
-			var	moveBtn = moveModal.find('#move_post_commit');
-			var topicId = moveModal.find('#topicId');
-
-			moveModal.on('hidden.bs.modal', function () {
-				moveModal.remove();
+							movePost(button.parents('[data-pid]'), button.parents('[data-pid]').attr('data-pid'), topicIdEl.val(), function () {
+								topicId.val('');
+							});
+						},
+					},
+				},
 			});
+			dialog.find('.submit-btn').attr('disabled', true);
 
-			showMoveModal(moveModal);
-
-			moveModal.find('.close, #move_post_cancel').on('click', function () {
-				moveModal.addClass('hide');
-			});
-
-			topicId.on('keyup change', function () {
-				moveBtn.attr('disabled', !topicId.val());
-			});
-
-			moveBtn.on('click', function () {
-				movePost(button.parents('[data-pid]'), button.parents('[data-pid]').attr('data-pid'), topicId.val(), function () {
-					moveModal.modal('hide');
-					topicId.val('');
-				});
+			dialog.find('#topicId').on('keyup change', function () {
+				dialog.find('.submit-btn').attr('disabled', !dialog.find('#topicId').val());
 			});
 		});
 	};
-
-	function showMoveModal(modal) {
-		modal.modal('show')
-			.css('position', 'fixed')
-			.css('left', Math.max(0, (($(window).width() - modal.outerWidth()) / 2) + $(window).scrollLeft()) + 'px')
-			.css('top', '0px')
-			.css('z-index', '2000');
-	}
 
 	function movePost(post, pid, tid, callback) {
 		socket.emit('posts.movePost', { pid: pid, tid: tid }, function (err) {
