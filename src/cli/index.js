@@ -8,9 +8,9 @@ var dirname = require('./paths').baseDir;
 
 // check to make sure dependencies are installed
 try {
-	require('../../package.json');
+	fs.accessSync(path.join(dirname, 'package.json'), fs.constants.R_OK);
 } catch (e) {
-	if (e.code === 'MODULE_NOT_FOUND') {
+	if (e.code === 'ENOENT') {
 		console.warn('package.json not found.');
 		console.log('Populating package.json...');
 
@@ -18,6 +18,8 @@ try {
 		packageInstall.preserveExtraneousPlugins();
 
 		try {
+			fs.accessSync(path.join(dirname, 'node_modules/colors/package.json'), fs.constants.R_OK);
+
 			require('colors');
 			console.log('OK'.green);
 		} catch (e) {
@@ -29,6 +31,8 @@ try {
 }
 
 try {
+	fs.accessSync(path.join(dirname, 'node_modules/semver/package.json'), fs.constants.R_OK);
+
 	var semver = require('semver');
 	var defaultPackage = require('../../install/package.json');
 
@@ -50,6 +54,7 @@ try {
 		console.warn('Dependencies outdated or not yet installed.');
 		console.log('Installing them now...\n');
 
+		packageInstall.updatePackageFile();
 		packageInstall.installAll();
 
 		require('colors');
@@ -292,15 +297,11 @@ program
 		}
 	});
 
-program
-	.command('*', {}, {
-		noHelp: true,
-	})
-	.action(function () {
-		program.help();
-	});
-
 require('./colors');
+
+if (process.argv.length === 2) {
+	program.help();
+}
 
 program.executables = false;
 

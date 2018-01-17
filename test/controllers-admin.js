@@ -591,21 +591,21 @@ describe('Admin Controllers', function () {
 
 		it('should error with not enough reputation to flag', function (done) {
 			var socketFlags = require('../src/socket.io/flags');
-			var oldValue = meta.config['privileges:flag'];
-			meta.config['privileges:flag'] = 1000;
+			var oldValue = meta.config['min:rep:flag'];
+			meta.config['min:rep:flag'] = 1000;
 			socketFlags.create({ uid: regularUid }, { id: pid, type: 'post', reason: 'spam' }, function (err) {
 				assert.equal(err.message, '[[error:not-enough-reputation-to-flag]]');
-				meta.config['privileges:flag'] = oldValue;
+				meta.config['min:rep:flag'] = oldValue;
 				done();
 			});
 		});
 
 		it('should return flag details', function (done) {
 			var socketFlags = require('../src/socket.io/flags');
-			var oldValue = meta.config['privileges:flag'];
-			meta.config['privileges:flag'] = 0;
+			var oldValue = meta.config['min:rep:flag'];
+			meta.config['min:rep:flag'] = 0;
 			socketFlags.create({ uid: regularUid }, { id: pid, type: 'post', reason: 'spam' }, function (err, data) {
-				meta.config['privileges:flag'] = oldValue;
+				meta.config['min:rep:flag'] = oldValue;
 				assert.ifError(err);
 				request(nconf.get('url') + '/api/flags/' + data.flagId, { jar: moderatorJar, json: true }, function (err, res, body) {
 					assert.ifError(err);

@@ -48,7 +48,7 @@ module.exports = {
 									done = true;
 									return next();
 								}
-
+								delete item.expireAt;
 								if (Object.keys(item).length === 3 && item.hasOwnProperty('_key') && item.hasOwnProperty('value')) {
 									client.collection('objects').update({ _key: item._key }, { $rename: { value: 'data' } }, next);
 								} else {

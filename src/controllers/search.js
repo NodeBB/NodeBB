@@ -54,6 +54,10 @@ searchController.search = function (req, res, next) {
 			return next(err);
 		}
 
+		results.categories = results.categories.filter(function (category) {
+			return category && !category.link;
+		});
+
 		var categoriesData = [
 			{ value: 'all', text: '[[unread:all_categories]]' },
 			{ value: 'watched', text: '[[category:watched-categories]]' },

@@ -1350,28 +1350,57 @@ describe('Topic\'s', function () {
 			});
 		});
 
-		it('should error if data.tag is invalid', function (done) {
+		it('should error if data is not an array', function (done) {
 			socketAdmin.tags.update({ uid: adminUid }, {
 				bgColor: '#ff0000',
 				color: '#00ff00',
 			}, function (err) {
-				assert.equal(err.message, '[[error:invalid-tag]]');
+				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('should update tag', function (done) {
-			socketAdmin.tags.update({ uid: adminUid }, {
-				tag: 'emptytag',
+			socketAdmin.tags.update({ uid: adminUid }, [{
+				value: 'emptytag',
 				bgColor: '#ff0000',
 				color: '#00ff00',
-			}, function (err) {
+			}], function (err) {
 				assert.ifError(err);
 				db.getObject('tag:emptytag', function (err, data) {
 					assert.ifError(err);
 					assert.equal(data.bgColor, '#ff0000');
 					assert.equal(data.color, '#00ff00');
 					done();
+				});
+			});
+		});
+
+		it('should rename tags', function (done) {
+			async.parallel({
+				topic1: function (next) {
+					topics.post({ uid: adminUid, tags: ['plugins'], title: 'topic tagged with plugins', content: 'topic 1 content', cid: topic.categoryId }, next);
+				},
+				topic2: function (next) {
+					topics.post({ uid: adminUid, tags: ['plugin'], title: 'topic tagged with plugin', content: 'topic 2 content', cid: topic.categoryId }, next);
+				},
+			}, function (err, result) {
+				assert.ifError(err);
+				socketAdmin.tags.rename({ uid: adminUid }, [{
+					value: 'plugin',
+					newName: 'plugins',
+				}], function (err) {
+					assert.ifError(err);
+					topics.getTagTids('plugins', 0, -1, function (err, tids) {
+						assert.ifError(err);
+						assert.equal(tids.length, 2);
+						topics.getTopicTags(result.topic2.topicData.tid, function (err, tags) {
+							assert.ifError(err);
+							assert.equal(tags.length, 1);
+							assert.equal(tags[0], 'plugins');
+							done();
+						});
+					});
 				});
 			});
 		});

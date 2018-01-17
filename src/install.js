@@ -157,15 +157,16 @@ function completeConfigSetup(config, next) {
 		}
 	}
 
+	nconf.overrides(config);
 	async.waterfall([
-		function (next) {
-			install.save(config, next);
-		},
 		function (next) {
 			require('./database').init(next);
 		},
 		function (next) {
 			require('./database').createIndices(next);
+		},
+		function (next) {
+			install.save(config, next);
 		},
 	], next);
 }
@@ -523,7 +524,7 @@ install.setup = function (callback) {
 	], function (err, results) {
 		if (err) {
 			winston.warn('NodeBB Setup Aborted.\n ' + err.stack);
-			process.exit();
+			process.exit(1);
 		} else {
 			var data = {};
 			if (results[6]) {

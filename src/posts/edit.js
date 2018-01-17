@@ -140,7 +140,7 @@ module.exports = function (Posts) {
 				db.setObject('topic:' + tid, results.topic, next);
 			},
 			function (next) {
-				topics.updateTags(tid, data.tags, next);
+				topics.updateTopicTags(tid, data.tags, next);
 			},
 			function (next) {
 				topics.getTopicTagsObjects(tid, next);
