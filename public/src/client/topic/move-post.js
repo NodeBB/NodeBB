@@ -21,7 +21,7 @@ define('forum/topic/move-post', [], function () {
 							}
 
 							movePost(button.parents('[data-pid]'), button.parents('[data-pid]').attr('data-pid'), topicIdEl.val(), function () {
-								topicId.val('');
+								topicIdEl.val('');
 							});
 						},
 					},
