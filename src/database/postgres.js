@@ -6,6 +6,7 @@ var nconf = require('nconf');
 var session = require('express-session');
 var _ = require('lodash');
 var semver = require('semver');
+var dbNamespace = require('continuation-local-storage').createNamespace('postgres');
 var db;
 
 var postgresModule = module.exports;
@@ -75,6 +76,17 @@ postgresModule.init = function (callback) {
 
 	db = new Pool(connOptions);
 
+	db.on('connect', function (client) {
+		var realQuery = client.query;
+		client.query = function () {
+			var args = [].slice.call(arguments, 0);
+			if (dbNamespace.active && typeof args[args.length - 1] === 'function') {
+				args[args.length - 1] = dbNamespace.bind(args[args.length - 1]);
+			}
+			return realQuery.apply(client, args);
+		};
+	});
+
 	db.connect(function (err, client, release) {
 		if (err) {
 			winston.error('NodeBB could not connect to your PostgreSQL database. PostgreSQL returned the following error: ' + err.message);
@@ -82,7 +94,21 @@ postgresModule.init = function (callback) {
 		}
 
 		postgresModule.pool = db;
-		postgresModule.client = db;
+		Object.defineProperty(postgresModule, 'client', {
+			get: function () {
+				return (dbNamespace.active && dbNamespace.get('db')) || db;
+			},
+			configurable: true,
+		});
+
+		var wrappedDB = {
+			connect: function () {
+				return postgresModule.pool.connect.apply(postgresModule.pool, arguments);
+			},
+			query: function () {
+				return postgresModule.client.query.apply(postgresModule.client, arguments);
+			},
+		};
 
 		checkUpgrade(client, function (err) {
 			release();
@@ -90,12 +116,12 @@ postgresModule.init = function (callback) {
 				return callback(err);
 			}
 
-			require('./postgres/main')(db, postgresModule);
-			require('./postgres/hash')(db, postgresModule);
-			require('./postgres/sets')(db, postgresModule);
-			require('./postgres/sorted')(db, postgresModule);
-			require('./postgres/list')(db, postgresModule);
-			require('./postgres/transaction')(db, postgresModule);
+			require('./postgres/main')(wrappedDB, postgresModule);
+			require('./postgres/hash')(wrappedDB, postgresModule);
+			require('./postgres/sets')(wrappedDB, postgresModule);
+			require('./postgres/sorted')(wrappedDB, postgresModule);
+			require('./postgres/list')(wrappedDB, postgresModule);
+			require('./postgres/transaction')(db, dbNamespace, postgresModule);
 
 			callback();
 		});

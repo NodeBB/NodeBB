@@ -37,6 +37,7 @@
         "connect-multiparty": "^2.1.0",
         "connect-pg-simple": "^4.2.1",
         "connect-redis": "3.3.3",
+        "continuation-local-storage": "^3.2.1",
         "cookie-parser": "^1.4.3",
         "cron": "^1.3.0",
         "cropperjs": "^1.2.2",

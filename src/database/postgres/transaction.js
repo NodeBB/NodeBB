@@ -1,37 +1,30 @@
 'use strict';
 
-module.exports = function (db, module) {
+module.exports = function (db, dbNamespace, module) {
 	module.transaction = function (perform, callback) {
 		db.connect(function (err, client, done) {
 			if (err) {
 				return callback(err);
 			}
 
-			client.query(`BEGIN`, function (err) {
-				if (err) {
-					done();
-					return callback(err);
-				}
+			dbNamespace.run(function () {
+				dbNamespace.set('db', client);
 
-				var tx = {
-					client: client,
-					helpers: { postgres: require('./helpers') },
-					ensureTx: function (p, c) {
-						p(tx, c);
-					},
-				};
-				require('./main')(client, tx);
-				require('./hash')(client, tx);
-				require('./sets')(client, tx);
-				require('./sorted')(client, tx);
-				require('./list')(client, tx);
-
-				perform(tx, function (err) {
-					var args = Array.prototype.slice.call(arguments, 1);
-
-					client.query(err ? `ROLLBACK` : `COMMIT`, function (err1) {
+				client.query(`BEGIN`, function (err) {
+					if (err) {
 						done();
-						callback.apply(this, [err || err1].concat(args));
+						dbNamespace.set('db', null);
+						return callback(err);
+					}
+
+					perform(module, function (err) {
+						var args = Array.prototype.slice.call(arguments, 1);
+
+						client.query(err ? `ROLLBACK` : `COMMIT`, function (err1) {
+							done();
+							dbNamespace.set('db', null);
+							callback.apply(this, [err || err1].concat(args));
+						});
 					});
 				});
 			});
@@ -39,6 +32,10 @@ module.exports = function (db, module) {
 	};
 
 	module.ensureTx = function (p, c) {
-		return module.transaction(p, c);
+		if (dbNamespace.active && dbNamespace.get('db')) {
+			p(module, c);
+		} else {
+			module.transaction(p, c);
+		}
 	};
 };
