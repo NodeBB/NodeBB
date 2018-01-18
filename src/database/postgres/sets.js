@@ -12,7 +12,7 @@ module.exports = function (db, module) {
 			value = [value];
 		}
 
-		module.ensureTx(function (tx, done) {
+		module.transaction(function (tx, done) {
 			var query = tx.client.query.bind(tx.client);
 
 			async.series([
@@ -48,7 +48,7 @@ SELECT $1::TEXT, m
 			return a.indexOf(k) === i;
 		});
 
-		module.ensureTx(function (tx, done) {
+		module.transaction(function (tx, done) {
 			var query = tx.client.query.bind(tx.client);
 
 			async.series([

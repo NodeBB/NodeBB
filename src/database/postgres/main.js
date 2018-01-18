@@ -118,7 +118,7 @@ SELECT s."data" t
 			return callback();
 		}
 
-		module.ensureTx(function (tx, done) {
+		module.transaction(function (tx, done) {
 			async.series([
 				async.apply(helpers.ensureLegacyObjectType, tx.client, key, 'string'),
 				async.apply(tx.client.query.bind(tx.client), {
@@ -143,7 +143,7 @@ VALUES ($1::TEXT, $2::TEXT)
 			return callback();
 		}
 
-		module.ensureTx(function (tx, done) {
+		module.transaction(function (tx, done) {
 			async.waterfall([
 				async.apply(helpers.ensureLegacyObjectType, tx.client, key, 'string'),
 				async.apply(tx.client.query.bind(tx.client), {
@@ -167,7 +167,7 @@ RETURNING "data" d`,
 	};
 
 	module.rename = function (oldKey, newKey, callback) {
-		module.ensureTx(function (tx, done) {
+		module.transaction(function (tx, done) {
 			async.series([
 				async.apply(tx.delete, newKey),
 				async.apply(tx.client.query.bind(tx.client), {

@@ -12,7 +12,7 @@ module.exports = function (db, module) {
 			return callback();
 		}
 
-		module.ensureTx(function (tx, done) {
+		module.transaction(function (tx, done) {
 			var query = tx.client.query.bind(tx.client);
 
 			async.series([
@@ -39,7 +39,7 @@ VALUES ($1::TEXT, ARRAY[$2::TEXT])
 			return callback();
 		}
 
-		module.ensureTx(function (tx, done) {
+		module.transaction(function (tx, done) {
 			var query = tx.client.query.bind(tx.client);
 
 			async.series([
