@@ -5,7 +5,6 @@ module.exports = function (db, module) {
 
 	var LRU = require('lru-cache');
 	var _ = require('lodash');
-	var pubsub = require('../../pubsub');
 
 	var cache = LRU({
 		max: 10000,
@@ -16,24 +15,6 @@ module.exports = function (db, module) {
 	cache.misses = 0;
 	cache.hits = 0;
 	module.objectCache = cache;
-
-	pubsub.on('mongo:hash:cache:del', function (key) {
-		cache.del(key);
-	});
-
-	pubsub.on('mongo:hash:cache:reset', function () {
-		cache.reset();
-	});
-
-	module.delObjectCache = function (key) {
-		pubsub.publish('mongo:hash:cache:del', key);
-		cache.del(key);
-	};
-
-	module.resetObjectCache = function () {
-		pubsub.publish('mongo:hash:cache:reset');
-		cache.reset();
-	};
 
 	module.setObject = function (key, data, callback) {
 		callback = callback || helpers.noop;

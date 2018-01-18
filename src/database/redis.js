@@ -50,6 +50,7 @@ redisModule.init = function (callback) {
 		require('./redis/sets')(redisClient, redisModule);
 		require('./redis/sorted')(redisClient, redisModule);
 		require('./redis/list')(redisClient, redisModule);
+		require('./redis/pubsub')(redisClient, redisModule);
 
 		callback();
 	});
@@ -167,6 +168,17 @@ redisModule.info = function (cxn, callback) {
 			next(null, redisData);
 		},
 	], callback);
+};
+
+redisModule.socketAdapter = function () {
+	var redisAdapter = require('socket.io-redis');
+	var pub = redisModule.connect();
+	var sub = redisModule.connect();
+	return redisAdapter({
+		key: 'db:' + nconf.get('redis:database') + ':adapter_key',
+		pubClient: pub,
+		subClient: sub,
+	});
 };
 
 redisModule.helpers = redisModule.helpers || {};
