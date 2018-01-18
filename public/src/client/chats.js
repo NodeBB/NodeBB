@@ -446,8 +446,8 @@ define('forum/chats', [
 	Chats.resizeMainWindow = function () {
 		var viewportHeight = $(window).height();
 		var fromTop = components.get('chat/main-wrapper').offset().top || components.get('chat/nav-wrapper').offset().top;
+		$('.chats-full').height(viewportHeight - fromTop - 1);
 
-		$('.chats-full').height(viewportHeight - fromTop);
 		Chats.setActive();
 	};
 
