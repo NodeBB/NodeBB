@@ -16,7 +16,7 @@ module.exports = function (db, module) {
 			delete data[''];
 		}
 
-		module.ensureTx(function (tx, done) {
+		module.transaction(function (tx, done) {
 			var query = tx.client.query.bind(tx.client);
 
 			async.series([
@@ -43,7 +43,7 @@ VALUES ($1::TEXT, $2::TEXT::JSONB)
 			return callback();
 		}
 
-		module.ensureTx(function (tx, done) {
+		module.transaction(function (tx, done) {
 			var query = tx.client.query.bind(tx.client);
 
 			async.series([
@@ -356,7 +356,7 @@ UPDATE "legacy_hash"
 			return callback();
 		}
 
-		module.ensureTx(function (tx, done) {
+		module.transaction(function (tx, done) {
 			var query = tx.client.query.bind(tx.client);
 
 			async.waterfall([

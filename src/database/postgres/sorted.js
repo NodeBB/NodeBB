@@ -543,7 +543,7 @@ SELECT o."_key" k,
 		value = helpers.valueToString(value);
 		increment = parseFloat(increment);
 
-		module.ensureTx(function (tx, done) {
+		module.transaction(function (tx, done) {
 			async.waterfall([
 				async.apply(helpers.ensureLegacyObjectType, tx.client, key, 'zset'),
 				async.apply(tx.client.query.bind(tx.client), {

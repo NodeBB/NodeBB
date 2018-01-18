@@ -19,7 +19,7 @@ module.exports = function (db, module) {
 		value = helpers.valueToString(value);
 		score = parseFloat(score);
 
-		module.ensureTx(function (tx, done) {
+		module.transaction(function (tx, done) {
 			var query = tx.client.query.bind(tx.client);
 
 			async.series([
@@ -52,7 +52,7 @@ VALUES ($1::TEXT, $2::TEXT, $3::NUMERIC)
 			return parseFloat(score);
 		});
 
-		module.ensureTx(function (tx, done) {
+		module.transaction(function (tx, done) {
 			var query = tx.client.query.bind(tx.client);
 
 			async.series([
@@ -83,7 +83,7 @@ SELECT $1::TEXT, v, s
 		value = helpers.valueToString(value);
 		score = parseFloat(score);
 
-		module.ensureTx(function (tx, done) {
+		module.transaction(function (tx, done) {
 			var query = tx.client.query.bind(tx.client);
 
 			async.series([

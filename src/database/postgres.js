@@ -79,7 +79,7 @@ postgresModule.init = function (callback) {
 	db.on('connect', function (client) {
 		var realQuery = client.query;
 		client.query = function () {
-			var args = [].slice.call(arguments, 0);
+			var args = Array.prototype.slice.call(arguments, 0);
 			if (dbNamespace.active && typeof args[args.length - 1] === 'function') {
 				args[args.length - 1] = dbNamespace.bind(args[args.length - 1]);
 			}
