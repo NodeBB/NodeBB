@@ -101,13 +101,15 @@
 			<div class="panel-heading">[[admin/general/dashboard:control-panel]]</div>
 			<div class="panel-body text-center">
 				<p>
-					<div class="btn-group">
-						<button class="btn btn-warning reload">[[admin/general/dashboard:reload]]</button>
-						<button class="btn btn-danger restart">[[admin/general/dashboard:restart]]</button>
-					</div>
+					<button class="btn btn-block btn-warning reload"<!-- IF !canRestart --> disabled<!-- END -->>[[admin/general/dashboard:reload]]</button>
+					<button class="btn btn-block btn-danger restart"<!-- IF !canRestart --> disabled<!-- END -->>[[admin/general/dashboard:restart]]</button>
 				</p>
-				<p class="help-block">
+				<p class="<!-- IF canRestart -->help-block<!-- ELSE -->alert alert-warning<!-- END -->">
+					<!-- IF canRestart -->
 					[[admin/general/dashboard:restart-warning]]
+					<!-- ELSE -->
+					[[admin/general/dashboard:restart-disabled]]
+					<!-- END -->
 				</p>
 				<p>
 					<a href="{config.relative_path}/admin/settings/advanced" class="btn btn-info btn-block" data-placement="bottom" data-toggle="tooltip" title="[[admin/general/dashboard:maintenance-mode-title]]">[[admin/general/dashboard:maintenance-mode]]</a>
