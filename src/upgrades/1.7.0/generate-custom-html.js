@@ -33,8 +33,6 @@ module.exports = {
 			// Combine newJS array
 			newJS = newJS.join('\n\n');
 
-			console.log('wut', newJS, 'and', newHTML);
-
 			// Write both values to config
 			meta.configs.setMultiple({
 				customHTML: newHTML,
