@@ -31,8 +31,6 @@
 	}
 
 	$(document).ready(function () {
-		setupKeybindings();
-
 		if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
 			require(['admin/modules/search'], function (search) {
 				search.init();
@@ -60,24 +58,6 @@
 
 		$(window).on('action:ajaxify.end', function () {
 			NProgress.done();
-		});
-	}
-
-	function setupKeybindings() {
-		require(['mousetrap', 'admin/modules/instance'], function (mousetrap, instance) {
-			mousetrap.bind('ctrl+shift+a r', function () {
-				instance.reload();
-			});
-
-			mousetrap.bind('ctrl+shift+a R', function () {
-				socket.emit('admin.restart');
-			});
-
-			mousetrap.bind('/', function () {
-				$('#acp-search input').focus();
-
-				return false;
-			});
 		});
 	}
 
