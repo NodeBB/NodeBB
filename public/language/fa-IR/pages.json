@@ -20,7 +20,7 @@
     "users/search": "جستجوی کاربر",
     "notifications": "آگاه‌سازی‌ها",
     "tags": "برچسب‌ها",
-    "tag": "موضوع های داری کلیدواژه \"%1\"",
+    "tag": "Topics tagged under &quot;%1&quot;",
     "register": "ثبت نام یک حساب",
     "registration-complete": "ثبت نام تکمیل شد",
     "login": "به حساب خوب وارد شوید",

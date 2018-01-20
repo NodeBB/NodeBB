@@ -76,7 +76,7 @@
 	"alerts.remove-admin-success": "Потребителят вече няма да бъде администратор.",
 	"alerts.make-global-mod-success": "Потребителят вече ще бъде глобален модератор.",
 	"alerts.confirm-remove-global-mod": "Наистина ли искате да премахнете този глобален модератор?",
-	"alerts.remove-global-mod-success": "Потребителят вече няма да бъде глобален модератор.",
+	"alerts.remove-global-mod-success": "User is no longer global moderator.",
 	"alerts.make-moderator-success": "Потребителят вече ще бъде модератор.",
 	"alerts.confirm-remove-moderator": "Наистина ли искате да премахнете този модератор?",
 	"alerts.remove-moderator-success": "Потребителят вече ще бъде модератор.",

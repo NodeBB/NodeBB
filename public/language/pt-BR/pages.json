@@ -20,7 +20,7 @@
     "users/search": "Pesquisa de Usuários",
     "notifications": "Notificações",
     "tags": "Tags",
-    "tag": "Tópicos com a tag \"%1\"",
+    "tag": "Topics tagged under &quot;%1&quot;",
     "register": "Registrar uma conta",
     "registration-complete": "Registro completado",
     "login": "Entrar na sua conta",

@@ -20,7 +20,7 @@
     "users/search": "חיפוש משתמשים",
     "notifications": "התראות",
     "tags": "תגיות",
-    "tag": "נושאים שתוייגו תחת \"%1\"",
+    "tag": "Topics tagged under &quot;%1&quot;",
     "register": "יצירת חשבון",
     "registration-complete": "ההרשמה הושלמה",
     "login": "התחבר לחשבונך",

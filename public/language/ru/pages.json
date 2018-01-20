@@ -20,7 +20,7 @@
     "users/search": "Поиск участников",
     "notifications": "Уведомления",
     "tags": "Метки",
-    "tag": "Темы с меткой \"%1\"",
+    "tag": "Topics tagged under &quot;%1&quot;",
     "register": "Зарегистрироваться",
     "registration-complete": "Регистрация завершена",
     "login": "Войти",

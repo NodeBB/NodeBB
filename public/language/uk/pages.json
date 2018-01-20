@@ -20,7 +20,7 @@
     "users/search": "Пошук користувача",
     "notifications": "Сповіщення",
     "tags": "Теги",
-    "tag": "Теми з тегом \"%1\"",
+    "tag": "Topics tagged under &quot;%1&quot;",
     "register": "Зареєструвати акаунт",
     "registration-complete": "Реєстрацію завершено",
     "login": "Увійдіть в свій акаунт",

@@ -20,7 +20,7 @@
     "users/search": "Hľadanie užívateľov",
     "notifications": "Oznámenia",
     "tags": "Značky",
-    "tag": "Témy pod značkou \"%1\"",
+    "tag": "Topics tagged under &quot;%1&quot;",
     "register": "Zaregistrovať účet",
     "registration-complete": "Registrácia úspešná",
     "login": "Prihlásiť sa do účtu",

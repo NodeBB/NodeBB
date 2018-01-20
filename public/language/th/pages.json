@@ -20,7 +20,7 @@
     "users/search": "ค้นหาผู้ใช้",
     "notifications": "การแจ้งเตือน",
     "tags": "แท็ก",
-    "tag": "กระทู้ที่ถูกติดแท็กภายใต้  \"%1\"",
+    "tag": "Topics tagged under &quot;%1&quot;",
     "register": "สมัครบัญชีผู้ใช้",
     "registration-complete": "สมัครสมาชิกสำเร็จเรียบร้อย",
     "login": "เข้าสู่ระบบบัญชีของคุณ",

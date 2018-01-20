@@ -20,7 +20,7 @@
     "users/search": "ユーザーを検索",
     "notifications": "通知",
     "tags": "タグ",
-    "tag": "スレッドは\"%1\"の下にタグ付けされました",
+    "tag": "Topics tagged under &quot;%1&quot;",
     "register": "アカウントを登録",
     "registration-complete": "登録完了",
     "login": "あなたのアカウントでログイン",

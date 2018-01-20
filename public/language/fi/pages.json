@@ -20,7 +20,7 @@
     "users/search": "User Search",
     "notifications": "Ilmoitukset",
     "tags": "Tunnisteet",
-    "tag": "Topics tagged under \"%1\"",
+    "tag": "Topics tagged under &quot;%1&quot;",
     "register": "Luo käyttäjät",
     "registration-complete": "Registration complete",
     "login": "Kirjaudu käyttäjällesi",

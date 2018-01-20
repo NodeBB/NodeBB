@@ -1,7 +1,7 @@
 {
-	"custom-css": "Користувацькі CSS",
-	"custom-css.description": "Уведіть власні CSS правила, що будуть примінені після всіх інших стилів.",
-	"custom-css.enable": "Увімкнути користувацькі CSS",
+	"custom-css": "Custom CSS/LESS",
+	"custom-css.description": "Enter your own CSS/LESS declarations here, which will be applied after all other styles.",
+	"custom-css.enable": "Enable Custom CSS/LESS",
 
 	"custom-js": "Custom Javascript",
 	"custom-js.description": "Enter your own javascript here. It will be executed after the page is loaded completely.",

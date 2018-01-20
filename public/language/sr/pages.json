@@ -20,7 +20,7 @@
     "users/search": "Претрага корисника",
     "notifications": "Обавештења",
     "tags": "Ознаке",
-    "tag": "Теме са ознаком „%1“",
+    "tag": "Topics tagged under &quot;%1&quot;",
     "register": "Региструј налог",
     "registration-complete": "Регистрација је комплетирана",
     "login": "Пријавите се на ваш налог",

@@ -6,6 +6,7 @@
 	"description": "Wybierz tagi poprzez klikanie lub przeciąganie, użyj przycisku shift do zaznaczenia wielu.",
 	"create": "Utwórz tag",
 	"modify": "Modyfikuj tagi",
+	"rename": "Rename Tags",
 	"delete": "Usuń zaznaczone tagi",
 	"search": "Szukanie tagów...",
 	"settings": "Kliknij <a href=\"%1\">tutaj</a>, aby odwiedzić stronę zarządzania tagami.",

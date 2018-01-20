@@ -20,7 +20,7 @@
     "users/search": "会员搜索",
     "notifications": "提醒",
     "tags": "话题",
-    "tag": "\"%1\" 下的主题",
+    "tag": "Topics tagged under &quot;%1&quot;",
     "register": "注册帐号",
     "registration-complete": "注册完成",
     "login": "登录帐号",

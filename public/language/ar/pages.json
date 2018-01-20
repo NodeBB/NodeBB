@@ -20,7 +20,7 @@
     "users/search": "بحث عن مستخدم",
     "notifications": "التنبيهات",
     "tags": "الكلمات الدلالية",
-    "tag": "المواضيع المرتبطة بالوسم %1",
+    "tag": "Topics tagged under &quot;%1&quot;",
     "register": "تسجيل حساب",
     "registration-complete": "Registration complete",
     "login": "سجل الدخول الى حسابك",

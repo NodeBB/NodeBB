@@ -5,5 +5,8 @@
 	"votes-are-public": "Alle Bewertungen sind öffentlich",
 	"thresholds": "Aktivitätsschwelle",
 	"min-rep-downvote": "Minimales Ansehen um Beiträge negativ zu bewerten",
-	"min-rep-flag": "Minimales Ansehen und Beiträge zu melden"
+	"min-rep-flag": "Minimales Ansehen und Beiträge zu melden",
+	"min-rep-website": "Erforderliche Reputation um eine \"Website\" zum Benutzerprofil hinzuzufügen",
+	"min-rep-aboutme": "Erforderliche Reputation um eine \"Über mich\"-Sektion zum Benutzerprofil hinzuzufügen",
+	"min-rep-signature": "Erforderliche Reputation um eine \"Signatur\" zum Benutzerprofil hinzuzufügen"
 }

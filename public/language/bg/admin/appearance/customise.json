@@ -1,7 +1,7 @@
 {
-	"custom-css": "Персонализиран CSS",
-	"custom-css.description": "Въведете своите собствени декларации за стилове, те ще бъдат приложени след всички останали стилове.",
-	"custom-css.enable": "Включване на персонализиран CSS",
+	"custom-css": "Custom CSS/LESS",
+	"custom-css.description": "Enter your own CSS/LESS declarations here, which will be applied after all other styles.",
+	"custom-css.enable": "Enable Custom CSS/LESS",
 
 	"custom-js": "Персонализиран код на Javascript",
 	"custom-js.description": "Въведете свой собствен код на javascript тук. Той ще бъде изпълнен след като страницата се зареди напълно.",

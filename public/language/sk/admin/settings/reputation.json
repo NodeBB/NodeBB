@@ -5,5 +5,8 @@
 	"votes-are-public": "Všetky hlasy sú verejné",
 	"thresholds": "Activity Thresholds",
 	"min-rep-downvote": "Minimum reputation to downvote posts",
-	"min-rep-flag": "Minimálna reputácia pre označenie prízpevku"
+	"min-rep-flag": "Minimálna reputácia pre označenie prízpevku",
+	"min-rep-website": "Minimum reputation to add \"Website\" to user profile",
+	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",
+	"min-rep-signature": "Minimum reputation to add \"Signature\" to user profile"
 }

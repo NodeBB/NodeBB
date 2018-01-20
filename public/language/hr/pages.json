@@ -20,7 +20,7 @@
     "users/search": "Pretraga korisnika",
     "notifications": "Obavijesti",
     "tags": "Oznake",
-    "tag": "Teme označene pod \\\"%1\\\"",
+    "tag": "Topics tagged under &quot;%1&quot;",
     "register": "Registrirajte se",
     "registration-complete": "Registracija uspješna",
     "login": "Prijavite se na Vaš račun",

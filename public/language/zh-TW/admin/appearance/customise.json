@@ -1,13 +1,13 @@
 {
-	"custom-css": "Custom CSS",
-	"custom-css.description": "Enter your own CSS declarations here, which will be applied after all other styles.",
-	"custom-css.enable": "Enable Custom CSS",
+	"custom-css": "自定義 CSS/LESS",
+	"custom-css.description": "在這裡輸入你想應用于所有其他風格的 CSS/LESS,",
+	"custom-css.enable": "啟用自定義 CSS/LESS",
 
-	"custom-js": "Custom Javascript",
-	"custom-js.description": "Enter your own javascript here. It will be executed after the page is loaded completely.",
-	"custom-js.enable": "Enable Custom Javascript",
+	"custom-js": "自定義Javascript",
+	"custom-js.description": "在這裡輸入你想應用于完全加載頁后執行的 javascript。",
+	"custom-js.enable": "啟用自定義 Javascript",
 
-	"custom-header": "Custom Header",
+	"custom-header": "自定義頭標",
 	"custom-header.description": "Enter custom HTML here (ex. Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup. Script tags are allowed, but are discouraged, as the <a href=\"#custom-header\" data-toggle=\"tab\">Custom Javascript</a> tab is available.",
 	"custom-header.enable": "Enable Custom Header",
 

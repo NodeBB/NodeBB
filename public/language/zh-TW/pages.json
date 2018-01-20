@@ -20,7 +20,7 @@
     "users/search": "使用者搜尋",
     "notifications": "新訊息通知",
     "tags": "標籤",
-    "tag": "有\"%1\"標籤的主題",
+    "tag": "Topics tagged under &quot;%1&quot;",
     "register": "註冊帳號",
     "registration-complete": "Registration complete",
     "login": "登入帳號",

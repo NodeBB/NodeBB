@@ -20,7 +20,7 @@
     "users/search": "Kasutajate otsing",
     "notifications": "Teated",
     "tags": "Märksõnad",
-    "tag": "Teemad märksõnadega \"%1\"",
+    "tag": "Topics tagged under &quot;%1&quot;",
     "register": "Registreeri kasutaja",
     "registration-complete": "Registration complete",
     "login": "Logi oma kasutajasse sisse",

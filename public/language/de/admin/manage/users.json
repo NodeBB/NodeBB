@@ -76,7 +76,7 @@
 	"alerts.remove-admin-success": "Der Benutzer ist kein Administrator mehr",
 	"alerts.make-global-mod-success": "Der Benutzer ist nun ein globaler Moderator",
 	"alerts.confirm-remove-global-mod": "Willst du wirklich diesen globalen Moderator entfernen?",
-	"alerts.remove-global-mod-success": "Der Benutzer ist kein globaler Moderator mehr",
+	"alerts.remove-global-mod-success": "Der Benutzer ist kein globaler Moderator mehr.",
 	"alerts.make-moderator-success": "Der Benutzer ist nun ein Moderator",
 	"alerts.confirm-remove-moderator": "Willst du wirklich diesen Moderator entfernen?",
 	"alerts.remove-moderator-success": "Der Benutzer ist kein Moderator mehr",

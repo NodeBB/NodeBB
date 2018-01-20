@@ -6,6 +6,7 @@
 	"description": "Tıklayarak ve/veya sürükleyerek etiketleri seçin, birden çok seçmek için kaydırın.",
 	"create": "Etiket Oluştur",
 	"modify": "Etiketleri Düzenle",
+	"rename": "Rename Tags",
 	"delete": "Seçili Etiketleri Sil",
 	"search": "Etiketleri ara...",
 	"settings": "Etiket yönetim sayfasını ziyaret etmek için <a href=\"%1\">buraya</a> tıklayın.",

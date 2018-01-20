@@ -1,7 +1,7 @@
 {
 	"custom-css": "Benutzerdefiniertes CSS/LESS",
-	"custom-css.description": "Füge hier deine eigenen CSS/LESS-Eigenschaften ein, sie werden als letztes angewendet.",
-	"custom-css.enable": "Benutzerdefiniertes CSS/LESS aktivieren",
+	"custom-css.description": "Füge deine eigenen CSS/LESS deklarationen hier ein, die nach allen anderen Styles angewandt werden.",
+	"custom-css.enable": "Aktiviere benutzerdefiniertes CSS/LESS",
 
 	"custom-js": "Benutzerdefiniertes Javascript",
 	"custom-js.description": "Füge dein eigenes Javascipt hier ein.\nEs wird ausgeführt nachdem die Seite komplett geladen wurde.",

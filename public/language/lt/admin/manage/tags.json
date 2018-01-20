@@ -6,6 +6,7 @@
 	"description": "Select tags via clicking and/or dragging, use shift to select multiple.",
 	"create": "Create Tag",
 	"modify": "Modify Tags",
+	"rename": "Rename Tags",
 	"delete": "Delete Selected Tags",
 	"search": "Search for tags...",
 	"settings": "Click <a href=\"%1\">here</a> to visit the tag settings page.",
