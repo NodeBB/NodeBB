@@ -6,7 +6,7 @@
 	"thresholds": "Ограничения на дейността",
 	"min-rep-downvote": "Минимална репутация, необходима за отрицателно гласуване за публикации",
 	"min-rep-flag": "Минимална репутация, необходима за докладване на публикации",
-	"min-rep-website": "Minimum reputation to add \"Website\" to user profile",
-	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",
-	"min-rep-signature": "Minimum reputation to add \"Signature\" to user profile"
+	"min-rep-website": "Минимална репутация, необходима за добавяне на полето „Уебсайт“ към профила на потребителя",
+	"min-rep-aboutme": "Минимална репутация, необходима за добавяне на полето „За мен“ към профила на потребителя",
+	"min-rep-signature": "Минимална репутация, необходима за добавяне на полето „Подпис“ към профила на потребителя"
 }

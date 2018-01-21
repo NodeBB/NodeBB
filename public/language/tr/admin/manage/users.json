@@ -6,7 +6,7 @@
 	"validate-email": "E-postayı Doğrula",
 	"send-validation-email": "Onay E-postası Gönder",
 	"password-reset-email": "E-posta Sıfırlaması için Parola Gönder",
-	"ban": "Ban User(s)",
+	"ban": "Yasaklı Kullanıcı(lar)",
 	"temp-ban": "Ban User(s) Temporarily",
 	"unban": "Unban User(s)",
 	"reset-lockout": "Reset Lockout",
