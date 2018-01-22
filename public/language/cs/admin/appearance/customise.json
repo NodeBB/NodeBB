@@ -1,7 +1,7 @@
 {
-	"custom-css": "Uživatelský CSS",
-	"custom-css.description": "Zadejte vlastní deklarace CSS, které budou použity na všechny ostatních styly.",
-	"custom-css.enable": "Povolit uživatelské CSS",
+	"custom-css": "Custom CSS/LESS",
+	"custom-css.description": "Enter your own CSS/LESS declarations here, which will be applied after all other styles.",
+	"custom-css.enable": "Enable Custom CSS/LESS",
 
 	"custom-js": "Uživatelský Javascript",
 	"custom-js.description": "Zadejte zde váš javascriptový kód. Bude spuštěn, jakmile se stránka plně načte.",

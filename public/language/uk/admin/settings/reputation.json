@@ -5,5 +5,8 @@
 	"votes-are-public": "Всі голоси публічні",
 	"thresholds": "Допуски активності",
 	"min-rep-downvote": "Мінімальна репутація для голосування проти постів",
-	"min-rep-flag": "Мінімальна репутація для подання скарг на пости"
+	"min-rep-flag": "Мінімальна репутація для подання скарг на пости",
+	"min-rep-website": "Minimum reputation to add \"Website\" to user profile",
+	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",
+	"min-rep-signature": "Minimum reputation to add \"Signature\" to user profile"
 }

@@ -20,7 +20,7 @@
     "users/search": "Benutzer Suche",
     "notifications": "Benachrichtigungen",
     "tags": "Markierungen",
-    "tag": "Themen markiert unter \"%1\"",
+    "tag": "Unter \"%1\" getaggte Themen",
     "register": "Einen Benutzer erstellen",
     "registration-complete": "Registration abgeschlossen",
     "login": "Einloggen",

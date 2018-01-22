@@ -6,6 +6,7 @@
 	"description": "Sélectionnez les mot-clés par clic ou glisser-déposer, maintenez shift pour en sélectionner plusieurs.",
 	"create": "Créer le mot-clés",
 	"modify": "Modifier le mot-clés",
+	"rename": "Rename Tags",
 	"delete": "Supprimer les mots-clés sélectionnés",
 	"search": "Chercher des mots-clés...",
 	"settings": "Cliquez <a href=\"%1\">ici</a> pour visiter la page de paramètres des mots clés.",

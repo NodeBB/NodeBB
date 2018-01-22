@@ -6,6 +6,7 @@
 	"description": "Vyberte značky pomocí kliknutí a/nebo přetažením, pro vícenásobný výběr, použijte klávesu Shift.",
 	"create": "Vytvořit značku",
 	"modify": "Upravit značky",
+	"rename": "Rename Tags",
 	"delete": "Odstranit vybrané značky",
 	"search": "Hledat značky...",
 	"settings": "Pro přejití na stránku s nastavením značek, klikněte <a href=\"%1\">zde</a>.",

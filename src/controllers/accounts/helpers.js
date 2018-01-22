@@ -62,6 +62,9 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 				sso: function (next) {
 					plugins.fireHook('filter:auth.list', { uid: uid, associations: [] }, next);
 				},
+				canEdit: function (next) {
+					privileges.users.canEdit(callerUID, uid, next);
+				},
 				canBanUser: function (next) {
 					privileges.users.canBanUser(callerUID, uid, next);
 				},
@@ -113,7 +116,7 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 			userData.isAdminOrGlobalModerator = isAdmin || isGlobalModerator;
 			userData.isAdminOrGlobalModeratorOrModerator = isAdmin || isGlobalModerator || isModerator;
 			userData.isSelfOrAdminOrGlobalModerator = isSelf || isAdmin || isGlobalModerator;
-			userData.canEdit = isAdmin || (isGlobalModerator && !results.isTargetAdmin);
+			userData.canEdit = results.canEdit;
 			userData.canBan = results.canBanUser;
 			userData.canChangePassword = isAdmin || (isSelf && parseInt(meta.config['password:disableEdit'], 10) !== 1);
 			userData.isSelf = isSelf;

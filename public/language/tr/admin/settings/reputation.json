@@ -5,5 +5,8 @@
 	"votes-are-public": "Tüm Oylar Herkese Açık",
 	"thresholds": "Activity Thresholds",
 	"min-rep-downvote": "Eksilenen iletiler için minimum itibar",
-	"min-rep-flag": "Bayraklı iletiler için minimum itibar"
+	"min-rep-flag": "Bayraklı iletiler için minimum itibar",
+	"min-rep-website": "Minimum reputation to add \"Website\" to user profile",
+	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",
+	"min-rep-signature": "Minimum reputation to add \"Signature\" to user profile"
 }

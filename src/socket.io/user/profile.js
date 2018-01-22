@@ -15,7 +15,7 @@ module.exports = function (SocketUser) {
 
 		async.waterfall([
 			function (next) {
-				isAdminOrSelfAndPasswordMatch(socket.uid, data, next);
+				isPrivilegedOrSelfAndPasswordMatch(socket.uid, data, next);
 			},
 			function (next) {
 				SocketUser.updateProfile(socket, data, next);
@@ -29,7 +29,7 @@ module.exports = function (SocketUser) {
 		}
 		async.waterfall([
 			function (next) {
-				user.isAdminOrSelf(socket.uid, data.uid, next);
+				user.isAdminOrGlobalModOrSelf(socket.uid, data.uid, next);
 			},
 			function (next) {
 				user.updateCoverPicture(data, next);
@@ -43,7 +43,7 @@ module.exports = function (SocketUser) {
 		}
 		async.waterfall([
 			function (next) {
-				user.isAdminOrSelf(socket.uid, data.uid, next);
+				user.isAdminOrGlobalModOrSelf(socket.uid, data.uid, next);
 			},
 			function (next) {
 				user.uploadCroppedPicture(data, next);
@@ -58,7 +58,7 @@ module.exports = function (SocketUser) {
 
 		async.waterfall([
 			function (next) {
-				user.isAdminOrSelf(socket.uid, data.uid, next);
+				user.isAdminOrGlobalModOrSelf(socket.uid, data.uid, next);
 			},
 			function (next) {
 				user.removeCoverPicture(data, next);
@@ -66,11 +66,13 @@ module.exports = function (SocketUser) {
 		], callback);
 	};
 
-	function isAdminOrSelfAndPasswordMatch(uid, data, callback) {
+	function isPrivilegedOrSelfAndPasswordMatch(uid, data, callback) {
 		async.waterfall([
 			function (next) {
 				async.parallel({
 					isAdmin: async.apply(user.isAdministrator, uid),
+					isTargetAdmin: async.apply(user.isAdministrator, data.uid),
+					isGlobalMod: async.apply(user.isGlobalModerator, uid),
 					hasPassword: async.apply(user.hasPassword, data.uid),
 					passwordMatch: function (next) {
 						if (data.password) {
@@ -84,7 +86,11 @@ module.exports = function (SocketUser) {
 			function (results, next) {
 				var isSelf = parseInt(uid, 10) === parseInt(data.uid, 10);
 
-				if (!results.isAdmin && !isSelf) {
+				if (results.isTargetAdmin && !results.isAdmin) {
+					return next(new Error('[[error:no-privileges]]'));
+				}
+
+				if ((!results.isAdmin || !results.isGlobalMod) && !isSelf) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 

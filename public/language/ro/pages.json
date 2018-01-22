@@ -20,7 +20,7 @@
     "users/search": "User Search",
     "notifications": "Notificări",
     "tags": "Taguri",
-    "tag": "Topics tagged under \"%1\"",
+    "tag": "Topics tagged under &quot;%1&quot;",
     "register": "Înregistrează un cont nou",
     "registration-complete": "Registration complete",
     "login": "Login to your account",

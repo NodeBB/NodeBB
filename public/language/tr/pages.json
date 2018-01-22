@@ -20,7 +20,7 @@
     "users/search": "Kullanıcı Ara",
     "notifications": "Bildirimler",
     "tags": "Etiketler",
-    "tag": "“%1“ ile etiketlenmiş konular",
+    "tag": "&quot;%1&quot; altında etiketlenen başlıklar",
     "register": "Bir hesap aç",
     "registration-complete": "Kayıt tamamlandı",
     "login": "Hesabına giriş yap",

@@ -1,9 +1,9 @@
 {
-	"custom-css": "Özel CSS",
-	"custom-css.description": "Özel CSS kodlarınızı bu alana girin.",
-	"custom-css.enable": "Özel CSS Etkinleştir",
+	"custom-css": "Özel CSS/LESS",
+	"custom-css.description": "Enter your own CSS/LESS declarations here, which will be applied after all other styles.",
+	"custom-css.enable": "Enable Custom CSS/LESS",
 
-	"custom-js": "Custom Javascript",
+	"custom-js": "Özel Javascript",
 	"custom-js.description": "Enter your own javascript here. It will be executed after the page is loaded completely.",
 	"custom-js.enable": "Enable Custom Javascript",
 

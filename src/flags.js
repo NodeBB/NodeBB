@@ -387,7 +387,7 @@ Flags.create = function (type, id, uid, reason, timestamp, callback) {
 				tasks.push(async.apply(Flags.update, flagId, uid, { state: 'open' }));
 			}
 
-			async.parallel(tasks, function (err) {
+			async.series(tasks, function (err) {
 				next(err, flagId);
 			});
 		},

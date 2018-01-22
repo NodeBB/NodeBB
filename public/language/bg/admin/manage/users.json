@@ -79,7 +79,7 @@
 	"alerts.remove-global-mod-success": "Потребителят вече няма да бъде глобален модератор.",
 	"alerts.make-moderator-success": "Потребителят вече ще бъде модератор.",
 	"alerts.confirm-remove-moderator": "Наистина ли искате да премахнете този модератор?",
-	"alerts.remove-moderator-success": "Потребителят вече ще бъде модератор.",
+	"alerts.remove-moderator-success": "Потребителят вече няма да бъде модератор.",
 	"alerts.confirm-validate-email": "Искате ли да проверите е-пощата/ите на този/тези потребител(и)?",
 	"alerts.validate-email-success": "Е-пощите са проверени",
 	"alerts.password-reset-confirm": "Искате ли да изпратите е-писмо/а за възстановяване на паролата на този/тези потребител(и)?",
