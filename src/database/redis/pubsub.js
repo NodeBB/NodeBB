@@ -7,10 +7,10 @@ var EventEmitter = require('events').EventEmitter;
 
 var channelName;
 
-var PubSub = function (redisModule) {
+var PubSub = function (db) {
 	var self = this;
-	var subClient = redisModule.connect();
-	this.pubClient = redisModule.connect();
+	var subClient = db.connect();
+	this.pubClient = db.connect();
 
 	channelName = 'db:' + nconf.get('redis:database') + 'pubsub_channel';
 	subClient.subscribe(channelName);
@@ -35,6 +35,7 @@ PubSub.prototype.publish = function (event, data) {
 	this.pubClient.publish(channelName, JSON.stringify({ event: event, data: data }));
 };
 
-module.exports = function (redisClient, redisModule) {
-	redisModule.pubsub = new PubSub(redisModule);
+module.exports = function () {
+	var db = require('../redis');
+	return new PubSub(db);
 };

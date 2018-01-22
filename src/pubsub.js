@@ -32,9 +32,9 @@ function get() {
 		pubsub = new EventEmitter();
 		pubsub.publish = pubsub.emit.bind(pubsub);
 	} else if (nconf.get('redis')) {
-		pubsub = require('./database/redis').pubsub;
-	} else {
-		pubsub = require('./database').pubsub;
+		pubsub = require('./database/redis/pubsub');
+	} else if (nconf.get('mongo')) {
+		pubsub = require('./database/mongo/pubsub');
 	}
 
 	if (!pubsub) {
