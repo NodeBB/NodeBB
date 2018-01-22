@@ -253,16 +253,13 @@ module.exports = function (Topics) {
 
 		async.waterfall([
 			function (next) {
-				Topics.exists(tid, next);
-			},
-			function (exists, next) {
-				if (!exists) {
-					return next(new Error('[[error:no-topic]]'));
-				}
-				Topics.getTopicFields(tid, ['cid', 'lastposttime', 'pinned', 'deleted', 'postcount', 'upvotes', 'downvotes'], next);
+				Topics.getTopicData(tid, next);
 			},
 			function (topicData, next) {
 				topic = topicData;
+				if (!topic) {
+					return next(new Error('[[error:no-topic]]'));
+				}
 				if (parseInt(cid, 10) === parseInt(topic.cid, 10)) {
 					return next(new Error('[[error:cant-move-topic-to-same-category]]'));
 				}
@@ -273,10 +270,14 @@ module.exports = function (Topics) {
 					'cid:' + topicData.cid + ':tids:votes',
 					'cid:' + topicData.cid + ':tids:lastposttime',
 					'cid:' + topicData.cid + ':recent_tids',
+					'cid:' + topicData.cid + ':uid:' + topicData.uid + ':tids',
 				], tid, next);
 			},
 			function (next) {
 				db.sortedSetAdd('cid:' + cid + ':tids:lastposttime', topic.lastposttime, tid, next);
+			},
+			function (next) {
+				db.sortedSetAdd('cid:' + cid + ':uid:' + topic.uid + ':tids', topic.timestamp, tid, next);
 			},
 			function (next) {
 				if (parseInt(topic.pinned, 10)) {
