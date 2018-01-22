@@ -7,8 +7,9 @@ var EventEmitter = require('events').EventEmitter;
 
 var channelName;
 
-var PubSub = function (db) {
+var PubSub = function () {
 	var self = this;
+	var db = require('../redis');
 	var subClient = db.connect();
 	this.pubClient = db.connect();
 
@@ -35,7 +36,4 @@ PubSub.prototype.publish = function (event, data) {
 	this.pubClient.publish(channelName, JSON.stringify({ event: event, data: data }));
 };
 
-module.exports = function () {
-	var db = require('../redis');
-	return new PubSub(db);
-};
+module.exports = new PubSub();
