@@ -141,9 +141,13 @@ module.exports = function (privileges) {
 				}, next);
 			},
 			function (results, next) {
-				var canEdit = results.isAdmin || (results.isGlobalMod && !results.isTargetAdmin);
-
-				next(null, canEdit);
+				results.canEdit = results.isAdmin || (results.isGlobalMod && !results.isTargetAdmin);
+				results.callerUid = callerUid;
+				results.uid = uid;
+				plugins.fireHook('filter:user.canEdit', results, next);
+			},
+			function (data, next) {
+				next(null, data.canEdit);
 			},
 		], callback);
 	};
