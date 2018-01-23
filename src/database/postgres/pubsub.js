@@ -1,6 +1,5 @@
 'use strict';
 
-var nconf = require('nconf');
 var util = require('util');
 var winston = require('winston');
 var EventEmitter = require('events').EventEmitter;
