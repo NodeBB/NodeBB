@@ -54,11 +54,11 @@
 	"modal-body": "%1 %2 için bayraklama nedenini belirtin. Alternatif olarak hızlı rapor butonlarından birinini kullanabilirsin.",
 	"modal-reason-spam": "Gereksiz",
 	"modal-reason-offensive": "Saldırgan",
-	"modal-reason-other": "Other (specify below)",
+	"modal-reason-other": "Diğer (aşağıda belirtin)",
 	"modal-reason-custom": "Bir içeriği bildirme nedeni...",
 	"modal-submit": "Raporu Gönder",
 	"modal-submit-success": "İçerik, denetlemek için bayraklandı.",
-	"modal-submit-confirm": "Confirm Submission",
-	"modal-submit-confirm-text": "You have a custom reason specified already. Are you sure you wish to submit via quick-report?",
-	"modal-submit-confirm-text-help": "Submitting a quick report will overwrite any custom reasons defined."
+	"modal-submit-confirm": "Gönderimi Onayla",
+	"modal-submit-confirm-text": "Zaten belirtilen özel bir sebebin var. Hızlı raporla göndermek istediğinizden emin misin?",
+	"modal-submit-confirm-text-help": "Hızlı bir rapor göndermek tanımlanan özel nedenlerin üzerine yazacaktır."
 }

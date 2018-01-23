@@ -387,7 +387,7 @@ topicsController.pagination = function (req, res, callback) {
 		}
 
 		var postCount = parseInt(results.topic.postcount, 10);
-		var pageCount = Math.max(1, Math.ceil((postCount - 1) / results.settings.postsPerPage));
+		var pageCount = Math.max(1, Math.ceil(postCount / results.settings.postsPerPage));
 
 		var paginationData = pagination.create(currentPage, pageCount);
 		paginationData.rel.forEach(function (rel) {

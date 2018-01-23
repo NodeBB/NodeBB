@@ -52,7 +52,7 @@ Topics.getPageCount = function (tid, uid, callback) {
 			user.getSettings(uid, next);
 		},
 		function (settings, next) {
-			next(null, Math.ceil((parseInt(postCount, 10) - 1) / settings.postsPerPage));
+			next(null, Math.ceil(parseInt(postCount, 10) / settings.postsPerPage));
 		},
 	], callback);
 };

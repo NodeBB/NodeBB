@@ -90,8 +90,9 @@ Digest.getSubscribers = function (interval, callback) {
 };
 
 Digest.send = function (data, callback) {
+	var emailsSent = 0;
 	if (!data || !data.subscribers || !data.subscribers.length) {
-		return callback();
+		return callback(null, emailsSent);
 	}
 	var now = new Date();
 
@@ -131,7 +132,7 @@ Digest.send = function (data, callback) {
 
 							return topicObj;
 						});
-
+						emailsSent += 1;
 						emailer.send('digest', userObj.uid, {
 							subject: '[' + meta.config.title + '] [[email:digest.subject, ' + (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()) + ']]',
 							username: userObj.username,
@@ -151,6 +152,6 @@ Digest.send = function (data, callback) {
 			}, next);
 		},
 	], function (err) {
-		callback(err, data.subscribers.length);
+		callback(err, emailsSent);
 	});
 };
