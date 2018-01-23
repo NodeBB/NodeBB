@@ -65,7 +65,7 @@ postgresModule.getConnectionOptions = function () {
 	};
 
 	return _.merge(connOptions, nconf.get('postgres:options') || {});
-}
+};
 
 postgresModule.init = function (callback) {
 	callback = callback || function () { };
@@ -140,23 +140,23 @@ SELECT EXISTS(SELECT *
                WHERE "table_schema" = 'public'
                  AND "table_name" = 'legacy_hash'
                  AND "column_name" = '_key') b`, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
+		if (err) {
+			return callback(err);
+		}
 
-			if (res.rows[0].b) {
-				return callback(null);
-			}
+		if (res.rows[0].b) {
+			return callback(null);
+		}
 
-			var query = client.query.bind(client);
+		var query = client.query.bind(client);
 
-			async.series([
-				async.apply(query, `BEGIN`),
-				async.apply(query, `
+		async.series([
+			async.apply(query, `BEGIN`),
+			async.apply(query, `
 CREATE TYPE LEGACY_OBJECT_TYPE AS ENUM (
 	'hash', 'zset', 'set', 'list', 'string'
 )`),
-				async.apply(query, `
+			async.apply(query, `
 CREATE TABLE "legacy_object" (
 	"_key" TEXT NOT NULL
 		PRIMARY KEY,
@@ -164,7 +164,7 @@ CREATE TABLE "legacy_object" (
 	"expireAt" TIMESTAMPTZ DEFAULT NULL,
 	UNIQUE ( "_key", "type" )
 )`),
-				async.apply(query, `
+			async.apply(query, `
 CREATE TABLE "legacy_hash" (
 	"_key" TEXT NOT NULL
 		PRIMARY KEY,
@@ -178,7 +178,7 @@ CREATE TABLE "legacy_hash" (
 		ON UPDATE CASCADE
 		ON DELETE CASCADE
 )`),
-				async.apply(query, `
+			async.apply(query, `
 CREATE TABLE "legacy_zset" (
 	"_key" TEXT NOT NULL,
 	"value" TEXT NOT NULL,
@@ -193,7 +193,7 @@ CREATE TABLE "legacy_zset" (
 		ON UPDATE CASCADE
 		ON DELETE CASCADE
 )`),
-				async.apply(query, `
+			async.apply(query, `
 CREATE TABLE "legacy_set" (
 	"_key" TEXT NOT NULL,
 	"member" TEXT NOT NULL,
@@ -207,7 +207,7 @@ CREATE TABLE "legacy_set" (
 		ON UPDATE CASCADE
 		ON DELETE CASCADE
 )`),
-				async.apply(query, `
+			async.apply(query, `
 CREATE TABLE "legacy_list" (
 	"_key" TEXT NOT NULL
 		PRIMARY KEY,
@@ -221,7 +221,7 @@ CREATE TABLE "legacy_list" (
 		ON UPDATE CASCADE
 		ON DELETE CASCADE
 )`),
-				async.apply(query, `
+			async.apply(query, `
 CREATE TABLE "legacy_string" (
 	"_key" TEXT NOT NULL
 		PRIMARY KEY,
@@ -235,12 +235,12 @@ CREATE TABLE "legacy_string" (
 		ON UPDATE CASCADE
 		ON DELETE CASCADE
 )`),
-				function (next) {
-					if (!res.rows[0].a) {
-						return next();
-					}
-					async.series([
-						async.apply(query, `
+			function (next) {
+				if (!res.rows[0].a) {
+					return next();
+				}
+				async.series([
+					async.apply(query, `
 INSERT INTO "legacy_object" ("_key", "type", "expireAt")
 SELECT DISTINCT "data"->>'_key',
                 CASE WHEN (SELECT COUNT(*)
@@ -268,7 +268,7 @@ SELECT DISTINCT "data"->>'_key',
                      ELSE NULL
                 END
   FROM "objects"`),
-						async.apply(query, `
+					async.apply(query, `
 INSERT INTO "legacy_hash" ("_key", "data")
 SELECT "data"->>'_key',
        "data" - '_key' - 'expireAt'
@@ -285,7 +285,7 @@ SELECT "data"->>'_key',
                   AND ("data" ? 'score'))
             ELSE TRUE
        END`),
-						async.apply(query, `
+					async.apply(query, `
 INSERT INTO "legacy_zset" ("_key", "value", "score")
 SELECT "data"->>'_key',
        "data"->>'value',
@@ -295,7 +295,7 @@ SELECT "data"->>'_key',
           FROM jsonb_object_keys("data" - 'expireAt')) = 3
    AND ("data" ? 'value')
    AND ("data" ? 'score')`),
-						async.apply(query, `
+					async.apply(query, `
 INSERT INTO "legacy_set" ("_key", "member")
 SELECT "data"->>'_key',
        jsonb_array_elements_text("data"->'members')
@@ -303,7 +303,7 @@ SELECT "data"->>'_key',
  WHERE (SELECT COUNT(*)
           FROM jsonb_object_keys("data" - 'expireAt')) = 2
    AND ("data" ? 'members')`),
-						async.apply(query, `
+					async.apply(query, `
 INSERT INTO "legacy_list" ("_key", "array")
 SELECT "data"->>'_key',
        ARRAY(SELECT t
@@ -313,7 +313,7 @@ SELECT "data"->>'_key',
  WHERE (SELECT COUNT(*)
           FROM jsonb_object_keys("data" - 'expireAt')) = 2
    AND ("data" ? 'array')`),
-						async.apply(query, `
+					async.apply(query, `
 INSERT INTO "legacy_string" ("_key", "data")
 SELECT "data"->>'_key',
        CASE WHEN "data" ? 'value'
@@ -325,22 +325,22 @@ SELECT "data"->>'_key',
           FROM jsonb_object_keys("data" - 'expireAt')) = 2
    AND (("data" ? 'value')
      OR ("data" ? 'data'))`),
-						async.apply(query, `DROP TABLE "objects" CASCADE`),
-						async.apply(query, `DROP FUNCTION "fun__objects__expireAt"() CASCADE`),
-					], next);
-				},
-				async.apply(query, `
+					async.apply(query, `DROP TABLE "objects" CASCADE`),
+					async.apply(query, `DROP FUNCTION "fun__objects__expireAt"() CASCADE`),
+				], next);
+			},
+			async.apply(query, `
 CREATE VIEW "legacy_object_live" AS
 SELECT "_key", "type"
   FROM "legacy_object"
  WHERE "expireAt" IS NULL
     OR "expireAt" > CURRENT_TIMESTAMP`),
-			], function (err) {
-				query(err ? `ROLLBACK` : `COMMIT`, function (err1) {
-					callback(err1 || err);
-				});
+		], function (err) {
+			query(err ? `ROLLBACK` : `COMMIT`, function (err1) {
+				callback(err1 || err);
 			});
 		});
+	});
 }
 
 postgresModule.initSessionStore = function (callback) {
@@ -373,18 +373,18 @@ CREATE TABLE IF NOT EXISTS "session" (
 		NOT DEFERRABLE
 		INITIALLY IMMEDIATE
 ) WITH (OIDS=FALSE)`, function (err) {
-			if (err) {
-				return callback(err);
-			}
+		if (err) {
+			return callback(err);
+		}
 
-			sessionStore = require('connect-pg-simple')(session);
-			postgresModule.sessionStore = new sessionStore({
-				pool: db,
-				ttl: ttl,
-			});
-
-			callback();
+		sessionStore = require('connect-pg-simple')(session);
+		postgresModule.sessionStore = new sessionStore({
+			pool: db,
+			ttl: ttl,
 		});
+
+		callback();
+	});
 };
 
 postgresModule.createIndices = function (callback) {
@@ -431,11 +431,11 @@ postgresModule.info = function (db, callback) {
 SELECT true "postgres",
        current_setting('server_version') "version",
        EXTRACT(EPOCH FROM NOW() - pg_postmaster_start_time()) * 1000 "uptime"`, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-			callback(null, res.rows[0]);
-		});
+		if (err) {
+			return callback(err);
+		}
+		callback(null, res.rows[0]);
+	});
 };
 
 postgresModule.close = function (callback) {
