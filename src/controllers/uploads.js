@@ -37,9 +37,6 @@ uploadsController.upload = function (req, res, filesIterator) {
 
 uploadsController.uploadPost = function (req, res, next) {
 	uploadsController.upload(req, res, function (uploadedFile, next) {
-		if (!parseInt(req.body.cid, 10)) {
-			return next(new Error('[[error:category-not-selected]]'));
-		}
 		var isImage = uploadedFile.type.match(/image./);
 		if (isImage) {
 			uploadAsImage(req, uploadedFile, next);
@@ -52,7 +49,7 @@ uploadsController.uploadPost = function (req, res, next) {
 function uploadAsImage(req, uploadedFile, callback) {
 	async.waterfall([
 		function (next) {
-			privileges.categories.can('upload:post:image', req.body.cid, req.uid, next);
+			privileges.global.can('upload:post:image', req.uid, next);
 		},
 		function (canUpload, next) {
 			if (!canUpload) {
@@ -82,7 +79,7 @@ function uploadAsImage(req, uploadedFile, callback) {
 function uploadAsFile(req, uploadedFile, callback) {
 	async.waterfall([
 		function (next) {
-			privileges.categories.can('upload:post:file', req.body.cid, req.uid, next);
+			privileges.global.can('upload:post:file', req.uid, next);
 		},
 		function (canUpload, next) {
 			if (!canUpload) {

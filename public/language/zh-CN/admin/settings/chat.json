@@ -5,5 +5,7 @@
 	"disable-editing-help": "管理员和超级管理员不受此限制",
 	"max-length": "聊天信息的最大长度",
 	"max-room-size": "聊天室的最多用户数",
-	"delay": "聊天信息间的毫秒数"
+	"delay": "聊天信息间的毫秒数",
+	"restrictions.seconds-edit-after": "用户在发布后允许编辑帖子的时间（0为禁用，单位：秒）",
+	"restrictions.seconds-delete-after": "用户在发布后允许删除帖子的时间（0为禁用，单位：秒）"
 }

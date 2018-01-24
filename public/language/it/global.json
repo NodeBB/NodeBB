@@ -53,6 +53,7 @@
     "topics": "Discussioni",
     "posts": "Post",
     "best": "Migliore",
+    "votes": "Votes",
     "upvoters": "Hanno votato positivamente",
     "upvoted": "Apprezzati",
     "downvoters": "Hanno negato negativamente",
@@ -104,6 +105,6 @@
     "cookies.accept": "Ho capito!",
     "cookies.learn_more": "Scopri di più",
     "edited": "Modificato",
-    "disabled": "Disabled",
-    "select": "Select"
+    "disabled": "Disabilitato",
+    "select": "Seleziona"
 }

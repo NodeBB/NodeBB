@@ -3,5 +3,6 @@
 	"description": "Escolha qual página será mostrada quando usuários navegarem para a URL raíz do seu fórum.",
 	"home-page-route": "Rota da Página Inicial",
 	"custom-route": "Rota Personalizada",
-	"allow-user-home-pages": "Permitir Home Pages de Usuários"
+	"allow-user-home-pages": "Permitir Home Pages de Usuários",
+	"home-page-title": "Title of the home page (default \"Home\")"
 }

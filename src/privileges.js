@@ -11,9 +11,9 @@ privileges.privilegeLabels = [
 	{ name: 'Tag Topics' },
 	{ name: 'Edit Posts' },
 	{ name: 'Delete Posts' },
+	{ name: 'Upvote Posts' },
+	{ name: 'Downvote Posts' },
 	{ name: 'Delete Topics' },
-	{ name: 'Upload Images' },
-	{ name: 'Upload Files' },
 	{ name: 'Purge' },
 	{ name: 'Moderate' },
 ];
@@ -27,9 +27,9 @@ privileges.userPrivilegeList = [
 	'topics:tag',
 	'posts:edit',
 	'posts:delete',
+	'posts:upvote',
+	'posts:downvote',
 	'topics:delete',
-	'upload:post:image',
-	'upload:post:file',
 	'purge',
 	'moderate',
 ];
@@ -40,6 +40,7 @@ privileges.groupPrivilegeList = privileges.userPrivilegeList.map(function (privi
 
 privileges.privilegeList = privileges.userPrivilegeList.concat(privileges.groupPrivilegeList);
 
+require('./privileges/global')(privileges);
 require('./privileges/categories')(privileges);
 require('./privileges/topics')(privileges);
 require('./privileges/posts')(privileges);

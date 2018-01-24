@@ -52,7 +52,7 @@
     "not-watching.description": "Não me notificar de novas respostas.<br/>Mostrar tópico em \"não lidos\" se a categoria não está ignorada.",
     "ignoring.description": "Não me notificar de novas respostas.<br/>Não mostrar este tópico em \"não lidos\".",
     "thread_tools.title": "Ferramentas de tópicos",
-    "thread_tools.markAsUnreadForAll": "Marcar todas como não lidas",
+    "thread_tools.markAsUnreadForAll": "Mark Unread For All",
     "thread_tools.pin": "Fixar tópico",
     "thread_tools.unpin": "Desafixar tópico",
     "thread_tools.lock": "Bloquear tópico",

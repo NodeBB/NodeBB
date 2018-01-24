@@ -6,6 +6,7 @@
 	"description": "Odaberite oznake klikom ili povlačenjem, koristite SHIFT za  višestruki odabir.",
 	"create": "Napravi oznaku",
 	"modify": "Uredi oznake",
+	"rename": "Rename Tags",
 	"delete": "Obriši odabrane oznake",
 	"search": "Pretraži za oznake ...",
 	"settings": "Kliknite <a href=\"%1\">ovdje</a> za posjetu postavki oznaka",

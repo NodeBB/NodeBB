@@ -1,7 +1,7 @@
 {
-	"custom-css": "自定义 CSS",
-	"custom-css.description": "在这里输入自定义 CSS 变量声明，它们将被添加在样式中。",
-	"custom-css.enable": "启用自定义 CSS",
+	"custom-css": "自定义 CSS/LESS",
+	"custom-css.description": "在这里输入你想应用于所有其他风格的 CSS/LESS,",
+	"custom-css.enable": "启用自定义 CSS/LESS",
 
 	"custom-js": "自定义 Javascript",
 	"custom-js.description": "在这里输入你想在页面加载完成后执行的 Javascript 代码。",

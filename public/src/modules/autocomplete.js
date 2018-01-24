@@ -29,6 +29,11 @@ define('autocomplete', function () {
 										uid: user.uid,
 										name: user.username,
 										slug: user.userslug,
+										username: user.username,
+										userslug: user.userslug,
+										picture: user.picture,
+										'icon:text': user['icon:text'],
+										'icon:bgColor': user['icon:bgColor'],
 									},
 								};
 							});

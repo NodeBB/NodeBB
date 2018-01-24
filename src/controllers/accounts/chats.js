@@ -5,6 +5,7 @@ var async = require('async');
 var messaging = require('../../messaging');
 var meta = require('../../meta');
 var user = require('../../user');
+var privileges = require('../../privileges');
 var helpers = require('../helpers');
 
 var chatsController = module.exports;
@@ -25,6 +26,13 @@ chatsController.get = function (req, res, callback) {
 			uid = _uid;
 			if (!uid) {
 				return callback();
+			}
+
+			privileges.global.can('chat', req.uid, next);
+		},
+		function (canChat, next) {
+			if (!canChat) {
+				return next(new Error('[[error:no-privileges]]'));
 			}
 			messaging.getRecentChats(req.uid, uid, 0, 19, next);
 		},

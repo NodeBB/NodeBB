@@ -127,36 +127,6 @@ define('admin/manage/users', ['translator', 'benchpress'], function (translator,
 			socket.emit('admin.user.resetLockouts', uids, done('[[admin/manage/users:alerts.lockout-reset-success]]'));
 		});
 
-		$('.admin-user').on('click', function () {
-			var uids = getSelectedUids();
-			if (!uids.length) {
-				return;
-			}
-
-			if (uids.indexOf(app.user.uid.toString()) !== -1) {
-				app.alertError('[[admin/manage/users:alerts.no-remove-yourself-admin]]');
-			} else {
-				socket.emit('admin.user.makeAdmins', uids, done('[[admin/manage/users:alerts.make-admin-success]]', '.administrator', true));
-			}
-		});
-
-		$('.remove-admin-user').on('click', function () {
-			var uids = getSelectedUids();
-			if (!uids.length) {
-				return;
-			}
-
-			if (uids.indexOf(app.user.uid.toString()) !== -1) {
-				app.alertError('[[admin/manage/users:alerts.no-remove-yourself-admin]]');
-			} else {
-				bootbox.confirm('[[admin/manage/users:alerts.confirm-remove-admin]]', function (confirm) {
-					if (confirm) {
-						socket.emit('admin.user.removeAdmins', uids, done('[[admin/manage/users:alerts.remove-admin-success]]', '.administrator', false));
-					}
-				});
-			}
-		});
-
 		$('.validate-email').on('click', function () {
 			var uids = getSelectedUids();
 			if (!uids.length) {

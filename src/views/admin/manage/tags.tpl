@@ -41,6 +41,7 @@
 				<p>[[admin/manage/tags:description]]</p>
 				<button class="btn btn-primary btn-block" id="create">[[admin/manage/tags:create]]</button>
 				<button class="btn btn-primary btn-block" id="modify">[[admin/manage/tags:modify]]</button>
+				<button class="btn btn-primary btn-block" id="rename">[[admin/manage/tags:rename]]</button>
 				<button class="btn btn-warning btn-block" id="deleteSelected">[[admin/manage/tags:delete]]</button>
 			</div>
 		</div>
@@ -72,6 +73,13 @@
 					<button type="button" class="btn btn-primary" id="create-modal-go">[[admin/manage/tags:create]]</button>
 				</div>
 			</div>
+		</div>
+	</div>
+
+	<div class="rename-modal hidden">
+		<div class="form-group">
+			<label for="value">[[admin/manage/tags:name]]</label>
+			<input id="value" data-name="value" value="{tags.value}" class="form-control" />
 		</div>
 	</div>
 </div>

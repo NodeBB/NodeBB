@@ -23,6 +23,7 @@ var steps = {
 	install: {
 		message: 'Bringing base dependencies up to date...',
 		handler: function (next) {
+			process.stdout.write('  started\n'.green);
 			packageInstall.installAll();
 			next();
 		},

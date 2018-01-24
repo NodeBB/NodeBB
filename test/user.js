@@ -471,6 +471,40 @@ describe('User', function () {
 				});
 			});
 		});
+
+		it('.commit() should invalidate old codes', function (done) {
+			var code1;
+			var code2;
+			var uid;
+			async.waterfall([
+				function (next) {
+					User.create({ username: 'doublereseter', email: 'sorry@forgot.com', password: '123456' }, next);
+				},
+				function (_uid, next) {
+					uid = _uid;
+					User.reset.generate(uid, next);
+				},
+				function (code, next) {
+					code1 = code;
+					User.reset.generate(uid, next);
+				},
+				function (code, next) {
+					code2 = code;
+					User.reset.validate(code1, next);
+				},
+				function (isValid, next) {
+					assert(isValid);
+					User.reset.commit(code2, 'newPwd123', next);
+				},
+				function (next) {
+					User.reset.validate(code1, next);
+				},
+				function (isValid, next) {
+					assert(!isValid);
+					next();
+				},
+			], done);
+		});
 	});
 
 	describe('hash methods', function () {

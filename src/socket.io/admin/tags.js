@@ -13,11 +13,19 @@ Tags.create = function (socket, data, callback) {
 };
 
 Tags.update = function (socket, data, callback) {
-	if (!data) {
+	if (!Array.isArray(data)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	topics.updateTag(data.tag, data, callback);
+	topics.updateTags(data, callback);
+};
+
+Tags.rename = function (socket, data, callback) {
+	if (!Array.isArray(data)) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	topics.renameTags(data, callback);
 };
 
 Tags.deleteTags = function (socket, data, callback) {

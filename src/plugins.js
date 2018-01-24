@@ -138,9 +138,12 @@ Plugins.reloadRoutes = function (callback) {
 	});
 };
 
+// DEPRECATED: remove in v1.8.0
 Plugins.getTemplates = function (callback) {
 	var templates = {};
 	var tplName;
+
+	winston.warn('[deprecated] Plugins.getTemplates is DEPRECATED to be removed in v1.8.0');
 
 	Plugins.data.getActive(function (err, plugins) {
 		if (err) {
@@ -213,8 +216,8 @@ Plugins.list = function (matching, callback) {
 	require('request')(url, {
 		json: true,
 	}, function (err, res, body) {
-		if (err) {
-			winston.error('Error parsing plugins', err);
+		if (err || (res && res.statusCode !== 200)) {
+			winston.error('Error loading ' + url, err || body);
 			return Plugins.normalise([], callback);
 		}
 
@@ -225,7 +228,7 @@ Plugins.list = function (matching, callback) {
 Plugins.normalise = function (apiReturn, callback) {
 	var pluginMap = {};
 	var dependencies = require(path.join(nconf.get('base_dir'), 'package.json')).dependencies;
-	apiReturn = apiReturn || [];
+	apiReturn = Array.isArray(apiReturn) ? apiReturn : [];
 	for (var i = 0; i < apiReturn.length; i += 1) {
 		apiReturn[i].id = apiReturn[i].name;
 		apiReturn[i].installed = false;

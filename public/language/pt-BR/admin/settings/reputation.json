@@ -5,5 +5,8 @@
 	"votes-are-public": "Todos os Votos São Públicos",
 	"thresholds": "Limiares de Atividade",
 	"min-rep-downvote": "Reputação mínima para votar negativamente em posts",
-	"min-rep-flag": "Reputação mínima para sinalizar posts"
+	"min-rep-flag": "Reputação mínima para sinalizar posts",
+	"min-rep-website": "Minimum reputation to add \"Website\" to user profile",
+	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",
+	"min-rep-signature": "Minimum reputation to add \"Signature\" to user profile"
 }

@@ -3,5 +3,6 @@
 	"description": "Wybierz stronę startową dla twojego forum.",
 	"home-page-route": "Ścieżka strony głównej",
 	"custom-route": "Niestandardowa Ścieżka",
-	"allow-user-home-pages": "Zezwalaj na strony startowe użytkowników"
+	"allow-user-home-pages": "Zezwalaj na strony startowe użytkowników",
+	"home-page-title": "Title of the home page (default \"Home\")"
 }

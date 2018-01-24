@@ -48,6 +48,7 @@ dashboardController.get = function (req, res, next) {
 				version: nconf.get('version'),
 				notices: results.notices,
 				stats: results.stats,
+				canRestart: !!process.send,
 			});
 		},
 	], next);

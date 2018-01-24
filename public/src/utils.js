@@ -545,6 +545,20 @@
 			return str.toString().replace(escapeChars, replaceChar);
 		},
 
+		addNoReferrer: function (containerEl) {
+			containerEl.find('a').attr('rel', function (idx, value) {
+				value = value ? value.split(' ') : [];
+
+				['noopener', 'noreferrer'].forEach(function (property) {
+					if (!value.includes(property)) {
+						value.push(property);
+					}
+				});
+
+				return value.join(' ');
+			});
+		},
+
 		isAndroidBrowser: function () {
 			// http://stackoverflow.com/questions/9286355/how-to-detect-only-the-native-android-browser
 			var nua = navigator.userAgent;
@@ -731,6 +745,27 @@
 
 		rtrim: function (str) {
 			return str.replace(/\s+$/g, '');
+		},
+
+		debounce: function (func, wait, immediate) {
+			// modified from https://davidwalsh.name/javascript-debounce-function
+			var timeout;
+			return function () {
+				var context = this;
+				var args = arguments;
+				var later = function () {
+					timeout = null;
+					if (!immediate) {
+						func.apply(context, args);
+					}
+				};
+				var callNow = immediate && !timeout;
+				clearTimeout(timeout);
+				timeout = setTimeout(later, wait);
+				if (callNow) {
+					func.apply(context, args);
+				}
+			};
 		},
 	};
 

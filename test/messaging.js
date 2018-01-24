@@ -414,7 +414,7 @@ describe('Messaging Library', function () {
 
 		it('should fail to load room if user is not in', function (done) {
 			socketModules.chats.loadRoom({ uid: 0 }, { roomId: roomId }, function (err) {
-				assert.equal(err.message, '[[error:not-allowed]]');
+				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
 		});
@@ -579,11 +579,12 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should 404 for guest', function (done) {
+		it('should 500 for guest with no privilege error', function (done) {
 			meta.config.disableChat = 0;
-			request(nconf.get('url') + '/user/baz/chats', function (err, response) {
+			request(nconf.get('url') + '/api/user/baz/chats', { json: true }, function (err, response, body) {
 				assert.ifError(err);
-				assert.equal(response.statusCode, 404);
+				assert.equal(response.statusCode, 500);
+				assert.equal(body.error, '[[error:no-privileges]]');
 				done();
 			});
 		});

@@ -52,7 +52,7 @@
     "not-watching.description": "Vypnúť upozornenia na nové odpovede.<br/> Zobraziť tému v neprečítaných ak kategória nie je ignorovaná.",
     "ignoring.description": "Neupozorňovať na nové upozornenia.<br/>Nezobrazovať témy v neprečítaných.",
     "thread_tools.title": "Nástroje témy",
-    "thread_tools.markAsUnreadForAll": "Označiť všetko ako neprečítané",
+    "thread_tools.markAsUnreadForAll": "Mark Unread For All",
     "thread_tools.pin": "Zviditeľniť tému",
     "thread_tools.unpin": "Odstrániť zviditeľnenie témy",
     "thread_tools.lock": "Uzamknúť tému",

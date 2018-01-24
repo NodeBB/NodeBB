@@ -338,30 +338,27 @@ Categories.buildForSelect = function (uid, privilege, callback) {
 };
 
 Categories.buildForSelectCategories = function (categories, callback) {
-	function recursive(category, categoriesData, level) {
-		if (category.link) {
-			return;
-		}
-
+	function recursive(category, categoriesData, level, depth) {
 		var bullet = level ? '&bull; ' : '';
 		category.value = category.cid;
 		category.level = level;
 		category.text = level + bullet + category.name;
+		category.depth = depth;
 		categoriesData.push(category);
 
 		category.children.forEach(function (child) {
-			recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level);
+			recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level, depth + 1);
 		});
 	}
 
 	var categoriesData = [];
 
 	categories = categories.filter(function (category) {
-		return category && !category.link && !parseInt(category.parentCid, 10);
+		return category && !parseInt(category.parentCid, 10);
 	});
 
 	categories.forEach(function (category) {
-		recursive(category, categoriesData, '');
+		recursive(category, categoriesData, '', 0);
 	});
 	callback(null, categoriesData);
 };

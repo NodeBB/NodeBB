@@ -3,5 +3,6 @@
 	"description": "Escoge que pagina se muestra cuando los usuarios navegan en la raíz del foro.",
 	"home-page-route": "Ruta de la Pagina Principal",
 	"custom-route": "Custom Route",
-	"allow-user-home-pages": "Permitir Pagina de Perfil del Usuario"
+	"allow-user-home-pages": "Permitir Pagina de Perfil del Usuario",
+	"home-page-title": "Title of the home page (default \"Home\")"
 }

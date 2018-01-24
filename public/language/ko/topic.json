@@ -52,7 +52,7 @@
     "not-watching.description": "새로운 답글에 대해 알림 받지 않기. 해당 게시판을 팔로우 중이라면 \"읽지않은 게시물\" 에서 보여주기.",
     "ignoring.description": "새로운 답글에 대한 알림 받지 않기. \"읽지않은 게시물\"에서 보여주지 않기.",
     "thread_tools.title": "게시물 관리",
-    "thread_tools.markAsUnreadForAll": "모든 사용자에게 읽지 않음으로 표시",
+    "thread_tools.markAsUnreadForAll": "Mark Unread For All",
     "thread_tools.pin": "상단 고정",
     "thread_tools.unpin": "상단 고정 해제",
     "thread_tools.lock": "잠금",

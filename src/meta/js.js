@@ -14,6 +14,7 @@ var JS = module.exports;
 
 JS.scripts = {
 	base: [
+		'node_modules/promise-polyfill/dist/polyfill.js',
 		'node_modules/jquery/dist/jquery.js',
 		'node_modules/socket.io-client/dist/socket.io.js',
 		'public/vendor/jquery/timeago/jquery.timeago.js',
@@ -36,7 +37,6 @@ JS.scripts = {
 		'public/src/ajaxify.js',
 		'public/src/overrides.js',
 		'public/src/widgets.js',
-		'node_modules/promise-polyfill/promise.js',
 	],
 
 	// files listed below are only available client-side, or are bundled in to reduce # of network requests on cold load
@@ -342,6 +342,11 @@ JS.buildBundle = function (target, fork, callback) {
 	async.waterfall([
 		function (next) {
 			getBundleScriptList(target, next);
+		},
+		function (files, next) {
+			mkdirp(path.join(__dirname, '../../build/public'), function (err) {
+				next(err, files);
+			});
 		},
 		function (files, next) {
 			var minify = global.env !== 'development';

@@ -39,7 +39,7 @@ define('forum/account/edit/username', ['forum/account/header'], function (header
 					$('[component="header/usericon"]').css('background-color', data['icon:bgColor']).text(data['icon:text']);
 				}
 
-				ajaxify.go('user/' + userslug);
+				ajaxify.go('user/' + userslug + '/edit');
 			});
 
 			return false;

@@ -5,5 +5,8 @@
 	"votes-are-public": "Svi glasovi su javni",
 	"thresholds": "Prag aktivnosti",
 	"min-rep-downvote": "Minimalna reputacija za glasanje protiv",
-	"min-rep-flag": "Minimalna reputacija za označavanje objava"
+	"min-rep-flag": "Minimalna reputacija za označavanje objava",
+	"min-rep-website": "Minimum reputation to add \"Website\" to user profile",
+	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",
+	"min-rep-signature": "Minimum reputation to add \"Signature\" to user profile"
 }

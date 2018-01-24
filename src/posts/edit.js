@@ -12,6 +12,7 @@ var plugins = require('../plugins');
 var cache = require('./cache');
 var pubsub = require('../pubsub');
 var utils = require('../utils');
+var translator = require('../translator');
 
 module.exports = function (Posts) {
 	pubsub.on('post:edit', function (pid) {
@@ -140,7 +141,7 @@ module.exports = function (Posts) {
 				db.setObject('topic:' + tid, results.topic, next);
 			},
 			function (next) {
-				topics.updateTags(tid, data.tags, next);
+				topics.updateTopicTags(tid, data.tags, next);
 			},
 			function (next) {
 				topics.getTopicTagsObjects(tid, next);
@@ -149,6 +150,7 @@ module.exports = function (Posts) {
 				topicData.tags = data.tags;
 				topicData.oldTitle = results.topic.title;
 				topicData.timestamp = results.topic.timestamp;
+				var renamed = translator.escape(validator.escape(String(title))) !== results.topic.title;
 				plugins.fireHook('action:topic.edit', { topic: topicData, uid: data.uid });
 				next(null, {
 					tid: tid,
@@ -158,7 +160,7 @@ module.exports = function (Posts) {
 					oldTitle: results.topic.title,
 					slug: topicData.slug,
 					isMainPost: true,
-					renamed: title !== results.topic.title,
+					renamed: renamed,
 					tags: tags,
 				});
 			},

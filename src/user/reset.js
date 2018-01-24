@@ -119,7 +119,7 @@ UserReset.commit = function (code, password, callback) {
 			user.hashPassword(password, next);
 		},
 		function (hash, next) {
-			async.parallel([
+			async.series([
 				async.apply(user.setUserFields, uid, { password: hash, 'email:confirmed': 1 }),
 				async.apply(db.deleteObjectField, 'reset:uid', code),
 				async.apply(db.sortedSetRemove, 'reset:issueDate', code),
@@ -128,7 +128,10 @@ UserReset.commit = function (code, password, callback) {
 				async.apply(user.auth.resetLockout, uid),
 				async.apply(db.delete, 'uid:' + uid + ':confirm:email:sent'),
 				async.apply(db.sortedSetRemove, 'users:notvalidated', uid),
-			], next);
+				async.apply(UserReset.cleanByUid, uid),
+			], function (err) {
+				next(err);
+			});
 		},
 	], callback);
 };

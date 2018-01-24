@@ -9,8 +9,10 @@
 
 	"section-manage": "Upravljanje",
 	"manage/categories": "Kategorije",
+	"manage/privileges": "Privileges",
 	"manage/tags": "Oznake",
 	"manage/users": "Korisnici",
+	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "Lista zahtjeva za registraciju",
 	"manage/post-queue": "Post Queue",
 	"manage/groups": "Grupe",

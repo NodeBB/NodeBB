@@ -1,7 +1,7 @@
 {
 	"name": "群组名",
 	"description": "群组描述",
-	"member-count": "成员数",
+	"member-count": "成员数量",
 	"system": "系统群组",
 	"edit": "编辑",
 	"search-placeholder": "搜索",
@@ -10,9 +10,9 @@
 	"create-button": "创建",
 
 	"alerts.create-failure": "<strong>哦不！</strong><p>创建您的群组时出现问题。 请稍后再试！</p>",
-	"alerts.confirm-delete": "确认要删除这个群组么？",
+	"alerts.confirm-delete": "你确定要删除此群组吗？",
 
-	"edit.name": "名字",
+	"edit.name": "名称",
 	"edit.description": "描述",
 	"edit.user-title": "成员标题",
 	"edit.icon": "群组标志",

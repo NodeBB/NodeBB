@@ -71,9 +71,9 @@ describe('Groups', function () {
 
 	describe('.list()', function () {
 		it('should list the groups present', function (done) {
-			Groups.getGroupsFromSet('groups:createtime', 0, 0, -1, function (err, groups) {
+			Groups.getGroupsFromSet('groups:visible:createtime', 0, 0, -1, function (err, groups) {
 				assert.ifError(err);
-				assert.equal(groups.length, 7);
+				assert.equal(groups.length, 4);
 				done();
 			});
 		});

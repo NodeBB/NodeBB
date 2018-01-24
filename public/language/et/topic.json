@@ -52,7 +52,7 @@
     "not-watching.description": "Ära teavita mind uutest vastustest.<br/>Näita teemat lugemata teemade hulgas, kui kategooria on ignoreeritud.",
     "ignoring.description": "Ära teavita mind uutest vastustest.<br/>Ära näita teemat lugemata teemade hulgas.",
     "thread_tools.title": "Teema tööriistad",
-    "thread_tools.markAsUnreadForAll": "Mark unread for all",
+    "thread_tools.markAsUnreadForAll": "Mark Unread For All",
     "thread_tools.pin": "Tõsta esile teema",
     "thread_tools.unpin": "Märgista teema",
     "thread_tools.lock": "Lukusta teema",

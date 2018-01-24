@@ -5,5 +5,8 @@
 	"votes-are-public": "すべての投票は公開されています",
 	"thresholds": "アクティビティのしきい値",
 	"min-rep-downvote": "投稿をdownvoteするための最低評価",
-	"min-rep-flag": "フラグの投稿に低評価"
+	"min-rep-flag": "フラグの投稿に低評価",
+	"min-rep-website": "Minimum reputation to add \"Website\" to user profile",
+	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",
+	"min-rep-signature": "Minimum reputation to add \"Signature\" to user profile"
 }

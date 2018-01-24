@@ -72,6 +72,22 @@ describe('Post\'s', function () {
 	});
 
 	describe('voting', function () {
+		it('should fail to upvote post if group does not have upvote permission', function (done) {
+			privileges.categories.rescind(['posts:upvote', 'posts:downvote'], cid, 'registered-users', function (err) {
+				assert.ifError(err);
+				socketPosts.upvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' }, function (err) {
+					assert.equal(err.message, '[[error:no-privileges]]');
+					socketPosts.downvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' }, function (err) {
+						assert.equal(err.message, '[[error:no-privileges]]');
+						privileges.categories.give(['posts:upvote', 'posts:downvote'], cid, 'registered-users', function (err) {
+							assert.ifError(err);
+							done();
+						});
+					});
+				});
+			});
+		});
+
 		it('should upvote a post', function (done) {
 			socketPosts.upvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' }, function (err, result) {
 				assert.ifError(err);

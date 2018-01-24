@@ -63,7 +63,7 @@ define('forum/account/edit/password', ['forum/account/header', 'translator', 'zx
 			onPasswordConfirmChanged();
 
 			var btn = $(this);
-			if ((passwordvalid && passwordsmatch) || app.user.isAdmin) {
+			if (passwordvalid && passwordsmatch) {
 				btn.addClass('disabled').find('i').removeClass('hide');
 				socket.emit('user.changePassword', {
 					currentPassword: currentPassword.val(),
@@ -82,8 +82,11 @@ define('forum/account/edit/password', ['forum/account/header', 'translator', 'zx
 						onPasswordConfirmChanged();
 						return app.alertError(err.message);
 					}
-
-					window.location.href = config.relative_path + '/login';
+					if (parseInt(app.user.uid, 10) === parseInt(ajaxify.data.uid, 10)) {
+						window.location.href = config.relative_path + '/login';
+					} else {
+						ajaxify.go('user/' + ajaxify.data.userslug + '/edit');
+					}
 				});
 			} else {
 				if (!passwordsmatch) {

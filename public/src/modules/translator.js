@@ -41,13 +41,11 @@
 	var assign = Object.assign || jQuery.extend;
 
 	function escapeHTML(str) {
-		return utils.decodeHTMLEntities(
+		return utils.escapeHTML(utils.decodeHTMLEntities(
 			String(str)
 				.replace(/[\s\xa0]+/g, ' ')
 				.replace(/^\s+|\s+$/g, '')
-		).replace(/[<>]/g, function (c) {
-			return c === '<' ? '&lt;' : '&gt;';
-		});
+		));
 	}
 
 	var Translator = (function () {

@@ -37,19 +37,22 @@ redisModule.questions = [
 ];
 
 redisModule.init = function (callback) {
-	redisClient = redisModule.connect();
+	callback = callback || function () { };
+	redisClient = redisModule.connect({}, function (err) {
+		if (err) {
+			winston.error('NodeBB could not connect to your Redis database. Redis returned the following error', err);
+			return callback(err);
+		}
+		redisModule.client = redisClient;
 
-	redisModule.client = redisClient;
+		require('./redis/main')(redisClient, redisModule);
+		require('./redis/hash')(redisClient, redisModule);
+		require('./redis/sets')(redisClient, redisModule);
+		require('./redis/sorted')(redisClient, redisModule);
+		require('./redis/list')(redisClient, redisModule);
 
-	require('./redis/main')(redisClient, redisModule);
-	require('./redis/hash')(redisClient, redisModule);
-	require('./redis/sets')(redisClient, redisModule);
-	require('./redis/sorted')(redisClient, redisModule);
-	require('./redis/list')(redisClient, redisModule);
-
-	if (typeof callback === 'function') {
 		callback();
-	}
+	});
 };
 
 redisModule.initSessionStore = function (callback) {
@@ -66,7 +69,8 @@ redisModule.initSessionStore = function (callback) {
 	}
 };
 
-redisModule.connect = function (options) {
+redisModule.connect = function (options, callback) {
+	callback = callback || function () {};
 	var redis_socket_or_host = nconf.get('redis:host');
 	var cxn;
 
@@ -88,7 +92,11 @@ redisModule.connect = function (options) {
 
 	cxn.on('error', function (err) {
 		winston.error(err.stack);
-		process.exit(1);
+		callback(err);
+	});
+
+	cxn.on('ready', function () {
+		callback();
 	});
 
 	if (nconf.get('redis:password')) {
@@ -99,7 +107,7 @@ redisModule.connect = function (options) {
 	if (dbIdx >= 0) {
 		cxn.select(dbIdx, function (err) {
 			if (err) {
-				winston.error('NodeBB could not connect to your Redis database. Redis returned the following error', err);
+				winston.error('NodeBB could not select Redis database. Redis returned the following error', err);
 				throw err;
 			}
 		});
