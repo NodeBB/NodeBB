@@ -82,9 +82,6 @@ function canGet(hook, callerUid, uid, callback) {
 }
 
 Messaging.parse = function (message, fromuid, uid, roomId, isNew, callback) {
-	message = utils.decodeHTMLEntities(utils.stripHTMLTags(message));
-	message = validator.escape(String(message));
-
 	plugins.fireHook('filter:parse.raw', message, function (err, parsed) {
 		if (err) {
 			return callback(err);
