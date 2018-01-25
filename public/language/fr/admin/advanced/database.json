@@ -1,7 +1,7 @@
 {
-	"x-b": "%1 octets",
-	"x-mb": "%1 Mo",
-	"x-gb": "%1 Go",
+	"x-b": "%1 b",
+	"x-mb": "%1 Mb",
+	"x-gb": "%1 Gb",
 	"uptime-seconds": "Disponibilité en secondes",
 	"uptime-days": "Disponibilité en jours",
 
@@ -29,7 +29,7 @@
 	"redis.memory-frag-ratio": "Ratio de fragmentation de la mémoire",
 	"redis.total-connections-recieved": "Connexions totales reçues",
 	"redis.total-commands-processed": "Commandes totales exécutées",
-	"redis.iops": "Opérations par seconde",
+	"redis.iops": "Opérations instantanées par seconde",
 	"redis.keyspace-hits": "Keyspace Hits",
 	"redis.keyspace-misses": "Keyspace Misses",
 	"redis.raw-info": "Informations brutes Redis"
