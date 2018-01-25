@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/categories', ['components', 'translator', 'benchpress'], function (components, translator, Benchpress) {
+define('forum/categories', ['components'], function (components) {
 	var	categories = {};
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
