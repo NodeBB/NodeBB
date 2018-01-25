@@ -116,6 +116,7 @@ function initializeNodeBB(callback) {
 
 function setupExpressApp(app, callback) {
 	var middleware = require('./middleware');
+	var pingController = require('./controllers/ping');
 
 	var relativePath = nconf.get('relative_path');
 	var viewsDir = nconf.get('views_dir');
@@ -147,8 +148,8 @@ function setupExpressApp(app, callback) {
 
 	app.use(compression());
 
-	app.get(relativePath + '/ping', ping);
-	app.get(relativePath + '/sping', ping);
+	app.get(relativePath + '/ping', pingController.ping);
+	app.get(relativePath + '/sping', pingController.ping);
 
 	setupFavicon(app);
 
@@ -177,17 +178,6 @@ function setupExpressApp(app, callback) {
 	toobusy.interval(parseInt(meta.config.eventLoopInterval, 10) || 500);
 
 	setupAutoLocale(app, callback);
-}
-
-function ping(req, res, next) {
-	async.waterfall([
-		function (next) {
-			db.getObject('config', next);
-		},
-		function () {
-			res.status(200).send(req.path === '/sping' ? 'healthy' : '200');
-		},
-	], next);
 }
 
 function setupFavicon(app) {

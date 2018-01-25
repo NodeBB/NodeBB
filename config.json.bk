@@ -1,0 +1,11 @@
+{
+    "url": "http://127.0.0.1:4567",
+    "secret": "catsRkool",
+    "database": "redis",
+    "port": 4567,
+    "redis": {
+        "host": "127.0.0.1",
+        "port": "6379",
+        "database": "0"
+    }
+}
