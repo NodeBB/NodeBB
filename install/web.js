@@ -76,6 +76,12 @@ function setupRoutes() {
 	app.get('/', welcome);
 	app.post('/', install);
 	app.post('/launch', launch);
+	app.get('/ping', ping);
+	app.get('/sping', ping);
+}
+
+function ping(req, res) {
+	res.status(200).send(req.path === '/sping' ? 'healthy' : '200');
 }
 
 function welcome(req, res) {
