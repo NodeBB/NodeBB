@@ -29,6 +29,7 @@ pidfile
 
 /public/sounds
 /public/uploads
+/test/uploads
 
 # compiled files
 /public/stylesheet.css

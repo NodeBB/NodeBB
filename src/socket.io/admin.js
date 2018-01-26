@@ -2,6 +2,9 @@
 
 var async = require('async');
 var winston = require('winston');
+var fs = require('fs');
+var path = require('path');
+var nconf = require('nconf');
 
 var meta = require('../meta');
 var plugins = require('../plugins');
@@ -37,6 +40,7 @@ var SocketAdmin = {
 	analytics: {},
 	logs: {},
 	errors: {},
+	uploads: {},
 };
 
 SocketAdmin.before = function (socket, method, data, next) {
@@ -334,6 +338,15 @@ SocketAdmin.deleteAllSessions = function (socket, data, callback) {
 SocketAdmin.reloadAllSessions = function (socket, data, callback) {
 	websockets.in('uid_' + socket.uid).emit('event:livereload');
 	callback();
+};
+
+SocketAdmin.uploads.delete = function (socket, pathToFile, callback) {
+	pathToFile = path.join(nconf.get('upload_path'), pathToFile);
+	if (!pathToFile.startsWith(nconf.get('upload_path'))) {
+		return callback(new Error('[[error:invalid-path]]'));
+	}
+
+	fs.unlink(pathToFile, callback);
 };
 
 module.exports = SocketAdmin;

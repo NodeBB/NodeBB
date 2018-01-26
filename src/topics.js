@@ -198,6 +198,7 @@ Topics.getTopicWithPosts = function (topicData, set, uid, start, stop, reverse, 
 				bookmark: async.apply(Topics.getUserBookmark, topicData.tid, uid),
 				postSharing: async.apply(social.getActivePostSharing),
 				deleter: async.apply(getDeleter, topicData),
+				merger: async.apply(getMerger, topicData),
 				related: function (next) {
 					async.waterfall([
 						function (next) {
@@ -223,6 +224,8 @@ Topics.getTopicWithPosts = function (topicData, set, uid, start, stop, reverse, 
 			topicData.postSharing = results.postSharing;
 			topicData.deleter = results.deleter;
 			topicData.deletedTimestampISO = utils.toISOString(topicData.deletedTimestamp);
+			topicData.merger = results.merger;
+			topicData.mergedTimestampISO = utils.toISOString(topicData.mergedTimestamp);
 			topicData.related = results.related || [];
 
 			topicData.unreplied = parseInt(topicData.postcount, 10) === 1;
@@ -288,6 +291,28 @@ function getDeleter(topicData, callback) {
 		return setImmediate(callback, null, null);
 	}
 	user.getUserFields(topicData.deleterUid, ['username', 'userslug', 'picture'], callback);
+}
+
+function getMerger(topicData, callback) {
+	if (!topicData.mergerUid) {
+		return setImmediate(callback, null, null);
+	}
+	async.waterfall([
+		function (next) {
+			async.parallel({
+				merger: function (next) {
+					user.getUserFields(topicData.mergerUid, ['username', 'userslug', 'picture'], next);
+				},
+				mergedIntoTitle: function (next) {
+					Topics.getTopicField(topicData.mergeIntoTid, 'title', next);
+				},
+			}, next);
+		},
+		function (results, next) {
+			results.merger.mergedIntoTitle = results.mergedIntoTitle;
+			next(null, results.merger);
+		},
+	], callback);
 }
 
 Topics.getMainPost = function (tid, uid, callback) {

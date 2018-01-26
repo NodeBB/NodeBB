@@ -11,6 +11,7 @@ var helpers = require('./helpers');
 
 var Controllers = module.exports;
 
+Controllers.ping = require('./ping');
 Controllers.home = require('./home');
 Controllers.topics = require('./topics');
 Controllers.posts = require('./posts');

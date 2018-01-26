@@ -26,6 +26,13 @@ module.exports = function (Topics) {
 				function (next) {
 					Topics.delete(tid, uid, next);
 				},
+				function (next) {
+					Topics.setTopicFields(tid, {
+						mergeIntoTid: mergeIntoTid,
+						mergerUid: uid,
+						mergedTimestamp: Date.now(),
+					}, next);
+				},
 			], next);
 		}, callback);
 	};

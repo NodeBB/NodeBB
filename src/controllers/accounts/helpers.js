@@ -106,7 +106,6 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 				userData.moderationNote = undefined;
 			}
 
-			userData.uid = userData.uid;
 			userData.yourid = callerUID;
 			userData.theirid = userData.uid;
 			userData.isTargetAdmin = results.isTargetAdmin;
