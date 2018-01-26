@@ -550,7 +550,7 @@
 				value = value ? value.split(' ') : [];
 
 				['noopener', 'noreferrer'].forEach(function (property) {
-					if (!value.includes(property)) {
+					if (value.indexOf(property) === -1) {
 						value.push(property);
 					}
 				});
