@@ -75,7 +75,7 @@ Tags.parse = function (req, data, meta, link, callback) {
 			if (Meta.config['brand:touchIcon']) {
 				defaultLinks.push({
 					rel: 'apple-touch-icon',
-					href: nconf.get('relative_path') + '/apple-touch-icon',
+					href: nconf.get('relative_path') + nconf.get('upload_url') + '/system/touchicon-orig.png',
 				}, {
 					rel: 'icon',
 					sizes: '36x36',
