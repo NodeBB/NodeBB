@@ -82,6 +82,10 @@ define('forum/chats/messages', ['components', 'sounds', 'translator', 'benchpres
 		newMessage.find('.timeago').timeago();
 		newMessage.find('img:not(.not-responsive)').addClass('img-responsive');
 		messages.scrollToBottom(chatContentEl);
+
+		$(window).trigger('action:chat.received', {
+			messageEl: newMessage,
+		});
 	}
 
 

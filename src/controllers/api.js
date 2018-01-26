@@ -18,6 +18,7 @@ var apiController = module.exports;
 apiController.loadConfig = function (req, callback) {
 	var config = {};
 	config.relative_path = nconf.get('relative_path');
+	config.upload_url = nconf.get('upload_url');
 	config.siteTitle = validator.escape(String(meta.config.title || meta.config.browserTitle || 'NodeBB'));
 	config.browserTitle = validator.escape(String(meta.config.browserTitle || meta.config.title || 'NodeBB'));
 	config.titleLayout = (meta.config.titleLayout || '{pageTitle} | {browserTitle}').replace(/{/g, '&#123;').replace(/}/g, '&#125;');
