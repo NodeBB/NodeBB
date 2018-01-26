@@ -56,7 +56,7 @@ Tags.parse = function (req, data, meta, link, callback) {
 			var defaultLinks = [{
 				rel: 'icon',
 				type: 'image/x-icon',
-				href: nconf.get('relative_path') + '/assets/uploads/system/favicon.ico' + (Meta.config['cache-buster'] ? '?' + Meta.config['cache-buster'] : ''),
+				href: nconf.get('relative_path') + nconf.get('upload_path') + '/system/favicon.ico' + (Meta.config['cache-buster'] ? '?' + Meta.config['cache-buster'] : ''),
 			}, {
 				rel: 'manifest',
 				href: nconf.get('relative_path') + '/manifest.json',
@@ -79,27 +79,27 @@ Tags.parse = function (req, data, meta, link, callback) {
 				}, {
 					rel: 'icon',
 					sizes: '36x36',
-					href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-36.png',
+					href: nconf.get('relative_path') + nconf.get('upload_path') + '/system/touchicon-36.png',
 				}, {
 					rel: 'icon',
 					sizes: '48x48',
-					href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-48.png',
+					href: nconf.get('relative_path') + nconf.get('upload_path') + '/system/touchicon-48.png',
 				}, {
 					rel: 'icon',
 					sizes: '72x72',
-					href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-72.png',
+					href: nconf.get('relative_path') + nconf.get('upload_path') + '/system/touchicon-72.png',
 				}, {
 					rel: 'icon',
 					sizes: '96x96',
-					href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-96.png',
+					href: nconf.get('relative_path') + nconf.get('upload_path') + '/system/touchicon-96.png',
 				}, {
 					rel: 'icon',
 					sizes: '144x144',
-					href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-144.png',
+					href: nconf.get('relative_path') + nconf.get('upload_path') + '/system/touchicon-144.png',
 				}, {
 					rel: 'icon',
 					sizes: '192x192',
-					href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-192.png',
+					href: nconf.get('relative_path') + nconf.get('upload_path') + '/system/touchicon-192.png',
 				});
 			}
 			plugins.fireHook('filter:meta.getLinkTags', { req: req, data: data, links: defaultLinks }, next);
