@@ -3,7 +3,7 @@
 var qs = require('querystring');
 var _ = require('lodash');
 
-var pagination = {};
+var pagination = module.exports;
 
 pagination.create = function (currentPage, pageCount, queryObj) {
 	if (pageCount <= 1) {
@@ -76,6 +76,3 @@ pagination.create = function (currentPage, pageCount, queryObj) {
 	}
 	return data;
 };
-
-
-module.exports = pagination;

@@ -17,6 +17,7 @@ function apiRoutes(router, middleware, controllers) {
 	router.post('/uploadlogo', middlewares, controllers.admin.uploads.uploadLogo);
 	router.post('/uploadOgImage', middlewares, controllers.admin.uploads.uploadOgImage);
 	router.post('/upload/sound', middlewares, controllers.admin.uploads.uploadSound);
+	router.post('/upload/file', middlewares, controllers.admin.uploads.uploadFile);
 	router.post('/uploadDefaultAvatar', middlewares, controllers.admin.uploads.uploadDefaultAvatar);
 }
 
@@ -76,6 +77,8 @@ function addRoutes(router, middleware, controllers) {
 
 	router.get('/manage/groups', middlewares, controllers.admin.groups.list);
 	router.get('/manage/groups/:name', middlewares, controllers.admin.groups.get);
+
+	router.get('/manage/uploads', middlewares, controllers.admin.uploads.get);
 
 	router.get('/settings/:term?', middlewares, controllers.admin.settings.get);
 

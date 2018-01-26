@@ -23,6 +23,7 @@
 			<li><a href="{relative_path}/admin/manage/registration">[[admin/menu:manage/registration]]</a></li>
 			<li><a href="{relative_path}/admin/manage/post-queue">[[admin/menu:manage/post-queue]]</a></li>
 			<li><a href="{relative_path}/admin/manage/ip-blacklist">[[admin/menu:manage/ip-blacklist]]</a></li>
+			<li><a href="{relative_path}/admin/manage/uploads">[[admin/menu:manage/uploads]]</a></li>
 		</ul>
 	</section>
 
@@ -198,6 +199,7 @@
 					<li><a href="{relative_path}/admin/manage/registration">[[admin/menu:manage/registration]]</a></li>
 					<li><a href="{relative_path}/admin/manage/post-queue">[[admin/menu:manage/post-queue]]</a></li>
 					<li><a href="{relative_path}/admin/manage/ip-blacklist">[[admin/menu:manage/ip-blacklist]]</a></li>
+					<li><a href="{relative_path}/admin/manage/uploads">[[admin/menu:manage/uploads]]</a></li>
 				</ul>
 			</li>
 			<li class="dropdown menu-item">
