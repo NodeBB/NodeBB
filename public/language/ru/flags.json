@@ -1,5 +1,5 @@
 {
-	"state": "State",
+	"state": "Состояние",
 	"reporter": "Reporter",
 	"reported-at": "Reported At",
 	"description": "Описание",
@@ -9,7 +9,7 @@
 	"updated": "Обновлено",
 	"target-purged": "The content this flag referred to has been purged and is no longer available.",
 
-	"quick-filters": "Quick Filters",
+	"quick-filters": "Быстрые фильтры",
 	"filter-active": "There are one or more filters active in this list of flags",
 	"filter-reset": "Убрать фильтры",
 	"filters": "Filter Options",
@@ -17,13 +17,13 @@
 	"filter-targetUid": "Flagged UID",
 	"filter-type": "Flag Type",
 	"filter-type-all": "Весь контент",
-	"filter-type-post": "Написать",
-	"filter-state": "State",
+	"filter-type-post": "Сообщение",
+	"filter-state": "Состояние",
 	"filter-assignee": "Assignee UID",
 	"filter-cid": "Категория",
 	"filter-quick-mine": "Assigned to me",
 	"filter-cid-all": "Все категории",
-	"apply-filters": "Apply Filters",
+	"apply-filters": "Применить фильтры",
 
 	"quick-links": "Quick Links",
 	"flagged-user": "Flagged User",
@@ -32,7 +32,7 @@
 	"go-to-target": "View Flag Target",
 
 	"user-view": "Просмотреть профиль",
-	"user-edit": "Изменить Профиль",
+	"user-edit": "Изменить профиль",
 
 	"notes": "Flag Notes",
 	"add-note": "Добавить примечание",
@@ -42,8 +42,8 @@
 	"back": "Back to Flags List",
 	"no-history": "No flag history.",
 
-	"state-all": "Все государства",
-	"state-open": "Новый/Открыть",
+	"state-all": "Все состояния",
+	"state-open": "Новый/Открытый",
 	"state-wip": "Work in Progress",
 	"state-resolved": "Решен",
 	"state-rejected": "Отклонен",
@@ -53,12 +53,12 @@
 	"modal-title": "Report Inappropriate Content",
 	"modal-body": "Please specify your reason for flagging %1 %2 for review. Alternatively, use one of the quick report buttons if applicable.",
 	"modal-reason-spam": "Спам",
-	"modal-reason-offensive": "Offensive",
-	"modal-reason-other": "Other (specify below)",
-	"modal-reason-custom": "Reason for reporting this content...",
+	"modal-reason-offensive": "Оскорбительный",
+	"modal-reason-other": "Другое (укажите ниже)",
+	"modal-reason-custom": "Причина жалобы на содержимое...",
 	"modal-submit": "Представить отчет",
 	"modal-submit-success": "Content has been flagged for moderation.",
-	"modal-submit-confirm": "Confirm Submission",
+	"modal-submit-confirm": "Подтвердить отправку",
 	"modal-submit-confirm-text": "You have a custom reason specified already. Are you sure you wish to submit via quick-report?",
 	"modal-submit-confirm-text-help": "Submitting a quick report will overwrite any custom reasons defined."
 }
