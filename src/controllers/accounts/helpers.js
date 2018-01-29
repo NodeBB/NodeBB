@@ -98,7 +98,7 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 				userData.fullname = '';
 			}
 
-			if (isAdmin || isSelf || (isGlobalModerator && !results.isTargetAdmin)) {
+			if (isAdmin || isSelf || ((isGlobalModerator || isModerator) && !results.isTargetAdmin)) {
 				userData.ips = results.ips;
 			}
 
