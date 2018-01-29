@@ -3,9 +3,12 @@
 
 var async = require('async');
 var nconf = require('nconf');
+
 var topics = require('../topics');
 var meta = require('../meta');
+var user = require('../user');
 var helpers = require('./helpers');
+var pagination = require('../pagination');
 
 var popularController = module.exports;
 
@@ -19,6 +22,7 @@ var terms = {
 };
 
 popularController.get = function (req, res, next) {
+	var page = parseInt(req.query.page, 10) || 1;
 	var term = terms[req.params.term];
 
 	if (!term && req.params.term) {
@@ -38,19 +42,25 @@ popularController.get = function (req, res, next) {
 			return res.render('popular', anonCache[term]);
 		}
 	}
-
+	var settings;
 	async.waterfall([
 		function (next) {
-			topics.getPopular(term, req.uid, meta.config.topicsPerList, next);
+			user.getSettings(req.uid, next);
 		},
-		function (topics) {
-			var data = {
-				title: meta.config.homePageTitle || '[[pages:home]]',
-				topics: topics,
-				'feeds:disableRSS': parseInt(meta.config['feeds:disableRSS'], 10) === 1,
-				rssFeedUrl: nconf.get('relative_path') + '/popular/' + (req.params.term || 'daily') + '.rss',
-				term: term,
-			};
+		function (_settings, next) {
+			settings = _settings;
+			var start = Math.max(0, (page - 1) * settings.topicsPerPage);
+			var stop = start + settings.topicsPerPage - 1;
+			topics.getPopularTopics(term, req.uid, start, stop, next);
+		},
+		function (data) {
+			var pageCount = Math.max(1, Math.ceil(data.topicCount / settings.topicsPerPage));
+
+			data.title = meta.config.homePageTitle || '[[pages:home]]';
+			data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
+			data.rssFeedUrl = nconf.get('relative_path') + '/popular/' + (req.params.term || 'alltime') + '.rss';
+			data.term = term;
+			data.pagination = pagination.create(page, pageCount, req.query);
 
 			if (req.originalUrl.startsWith(nconf.get('relative_path') + '/api/popular') || req.originalUrl.startsWith(nconf.get('relative_path') + '/popular')) {
 				data.title = '[[pages:popular-' + term + ']]';

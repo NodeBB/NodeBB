@@ -252,16 +252,16 @@ function generateForPopular(req, res, next) {
 
 	async.waterfall([
 		function (next) {
-			topics.getPopular(term, req.uid, 19, next);
+			topics.getPopularTopics(term, req.uid, 0, 19, next);
 		},
-		function (topics, next) {
+		function (result, next) {
 			generateTopicsFeed({
 				uid: req.uid,
 				title: 'Popular Topics',
 				description: 'A list of topics that are sorted by post count',
 				feed_url: '/popular/' + (req.params.term || 'daily') + '.rss',
 				site_url: '/popular/' + (req.params.term || 'daily'),
-			}, topics, next);
+			}, result.topics, next);
 		},
 		function (feed) {
 			sendFeed(feed, res);
