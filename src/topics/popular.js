@@ -2,39 +2,50 @@
 'use strict';
 
 var async = require('async');
+
+var db = require('../database');
 var privileges = require('../privileges');
 
 module.exports = function (Topics) {
 	Topics.getPopular = function (term, uid, count, callback) {
 		count = parseInt(count, 10) || 20;
-
-		if (term === 'alltime') {
-			return getAllTimePopular(uid, count, callback);
-		}
-
 		async.waterfall([
 			function (next) {
-				Topics.getLatestTidsFromSet('topics:tid', 0, -1, term, next);
+				Topics.getPopularTopics(term, uid, 0, count - 1, next);
 			},
-			function (tids, next) {
-				getTopics(tids, uid, count, next);
+			function (data, next) {
+				next(null, data.topics);
 			},
 		], callback);
 	};
 
-	function getAllTimePopular(uid, count, callback) {
+	Topics.getPopularTopics = function (term, uid, start, stop, callback) {
+		var popularTopics = {
+			nextStart: 0,
+			topicCount: 0,
+			topics: [],
+		};
 		async.waterfall([
 			function (next) {
-				Topics.getTopicsFromSet('topics:posts', uid, 0, count - 1, next);
+				if (term === 'alltime') {
+					db.getSortedSetRevRange('topics:posts', 0, 199, next);
+				} else {
+					Topics.getLatestTidsFromSet('topics:tid', 0, -1, term, next);
+				}
 			},
-			function (data, next) {
-				data.topics.sort(sortPopular);
-				next(null, data.topics);
+			function (tids, next) {
+				popularTopics.topicCount = tids.length;
+				getTopics(tids, uid, start, stop, next);
+			},
+			function (topics, next) {
+				popularTopics.topics = topics;
+				popularTopics.nextStart = stop + 1;
+				next(null, popularTopics);
 			},
 		], callback);
-	}
+	};
 
-	function getTopics(tids, uid, count, callback) {
+	function getTopics(tids, uid, start, stop, callback) {
 		async.waterfall([
 			function (next) {
 				Topics.getTopicsFields(tids, ['tid', 'postcount', 'deleted'], next);
@@ -42,7 +53,7 @@ module.exports = function (Topics) {
 			function (topics, next) {
 				tids = topics.filter(function (topic) {
 					return topic && parseInt(topic.deleted, 10) !== 1;
-				}).sort(sortPopular).slice(0, count).map(function (topic) {
+				}).sort(sortPopular).slice(start, stop !== -1 ? stop - 1 : undefined).map(function (topic) {
 					return topic.tid;
 				});
 				privileges.topics.filterTids('read', tids, uid, next);

@@ -99,13 +99,14 @@ middleware.routeTouchIcon = function (req, res) {
 	if (meta.config['brand:touchIcon'] && validator.isURL(meta.config['brand:touchIcon'])) {
 		return res.redirect(meta.config['brand:touchIcon']);
 	}
-	var iconPath = '../../public';
+	var iconPath = '';
 	if (meta.config['brand:touchIcon']) {
-		iconPath += meta.config['brand:touchIcon'].replace(/assets\/uploads/, 'uploads');
+		iconPath = path.join(nconf.get('upload_path'), meta.config['brand:touchIcon'].replace(/assets\/uploads/, ''));
 	} else {
-		iconPath += '/logo.png';
+		iconPath = path.join(nconf.get('base_dir'), 'public/logo.png');
 	}
-	return res.sendFile(path.join(__dirname, iconPath), {
+
+	return res.sendFile(iconPath, {
 		maxAge: req.app.enabled('cache') ? 5184000000 : 0,
 	});
 };
