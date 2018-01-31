@@ -25,6 +25,7 @@ define('admin/extend/widgets', ['jqueryui'], function () {
 		$('#widget-selector').trigger('change');
 
 		loadWidgetData();
+		setupCloneButton();
 	};
 
 	function prepareWidgets() {
@@ -221,6 +222,52 @@ define('admin/extend/widgets', ['jqueryui'], function () {
 			}
 
 			prepareWidgets();
+		});
+	}
+
+	function setupCloneButton() {
+		var clone = $('[component="clone"]');
+		var cloneBtn = $('[component="clone/button"]');
+
+		clone.find('.dropdown-menu li').on('click', function () {
+			var template = $(this).find('a').text();
+			cloneBtn.translateHtml('[[admin/extend/widgets:clone-from]] <strong>' + template + '</strong>');
+			cloneBtn.attr('data-template', template);
+		});
+
+		cloneBtn.on('click', function () {
+			var template = cloneBtn.attr('data-template');
+			if (!template) {
+				return app.alertError('[[admin/extend/widgets:error.select-clone]]');
+			}
+
+			var currentTemplate = $('#active-widgets .active.tab-pane[data-template] .area');
+			var templateToClone = $('#active-widgets .tab-pane[data-template="' + template + '"] .area');
+
+			var currentAreas = currentTemplate.map(function () {
+				return $(this).attr('data-location');
+			}).get();
+
+			var areasToClone = templateToClone.map(function () {
+				var location = $(this).attr('data-location');
+				return currentAreas.indexOf(location) !== -1 ? location : undefined;
+			}).get().filter(function (i) { return i; });
+
+			function clone(location) {
+				$('#active-widgets .tab-pane[data-template="' + template + '"] [data-location="' + location + '"]').each(function () {
+					$(this).find('[data-widget]').each(function () {
+						var widget = $(this).clone(true);
+						$('#active-widgets .active.tab-pane[data-template]:not([data-template="global"]) [data-location="' + location + '"] .widget-area').append(widget);
+					});
+				});
+			}
+
+			for (var i = 0, ii = areasToClone.length; i < ii; i++) {
+				var location = areasToClone[i];
+				clone(location);
+			}
+
+			app.alertSuccess('[[admin/extend/widgets:alert.clone-success]]');
 		});
 	}
 
