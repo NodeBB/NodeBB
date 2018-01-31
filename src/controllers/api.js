@@ -78,7 +78,7 @@ apiController.loadConfig = function (req, callback) {
 
 	async.waterfall([
 		function (next) {
-			if (!req.uid) {
+			if (!req.loggedIn) {
 				return next(null, config);
 			}
 			user.getSettings(req.uid, next);

@@ -22,7 +22,7 @@ require('./groups/posts')(Groups);
 require('./groups/user')(Groups);
 
 
-Groups.ephemeralGroups = ['guests'];
+Groups.ephemeralGroups = ['guests', 'spiders'];
 
 Groups.getEphemeralGroup = function (groupName) {
 	return {

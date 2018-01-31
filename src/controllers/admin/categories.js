@@ -13,7 +13,7 @@ categoriesController.get = function (req, res, callback) {
 	async.waterfall([
 		function (next) {
 			async.parallel({
-				category: async.apply(categories.getCategories, [req.params.category_id], req.user.uid),
+				category: async.apply(categories.getCategories, [req.params.category_id], req.uid),
 				allCategories: async.apply(categories.buildForSelect, req.uid, 'read'),
 			}, next);
 		},

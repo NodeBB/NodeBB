@@ -191,7 +191,7 @@ usersController.getCSV = function (req, res, next) {
 	}
 	events.log({
 		type: 'getUsersCSV',
-		uid: req.user.uid,
+		uid: req.uid,
 		ip: req.ip,
 	});
 	async.waterfall([

@@ -9,7 +9,7 @@ var accountHelpers = require('./accounts/helpers');
 var userController = module.exports;
 
 userController.getCurrentUser = function (req, res, next) {
-	if (!req.uid) {
+	if (!req.loggedIn) {
 		return res.status(401).json('not-authorized');
 	}
 	async.waterfall([

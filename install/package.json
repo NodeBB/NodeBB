@@ -95,6 +95,7 @@
         "socket.io-redis": "5.2.0",
         "socketio-wildcard": "2.0.0",
         "spdx-license-list": "^3.0.1",
+        "spider-detector": "1.0.18",
         "toobusy-js": "^0.5.1",
         "uglify-js": "^3.3.4",
         "validator": "9.2.0",

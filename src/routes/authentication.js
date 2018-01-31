@@ -20,7 +20,15 @@ Auth.initialize = function (app, middleware) {
 	app.use(passport.session());
 
 	app.use(function (req, res, next) {
-		req.uid = req.user ? parseInt(req.user.uid, 10) : 0;
+		var isSpider = req.isSpider();
+		req.loggedIn = !isSpider && !!req.user;
+		if (isSpider) {
+			req.uid = -1;
+		} else if (req.user) {
+			req.uid = parseInt(req.user.uid, 10);
+		} else {
+			req.uid = 0;
+		}
 		next();
 	});
 

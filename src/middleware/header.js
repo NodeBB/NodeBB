@@ -93,7 +93,7 @@ module.exports = function (middleware) {
 							reputation: 0,
 							'email:confirmed': 0,
 						};
-						if (req.uid) {
+						if (req.loggedIn) {
 							user.getUserFields(req.uid, Object.keys(userData), next);
 						} else {
 							next(null, userData);

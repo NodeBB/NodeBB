@@ -417,7 +417,7 @@ authenticationController.localLogin = function (req, username, password, next) {
 };
 
 authenticationController.logout = function (req, res, next) {
-	if (!req.uid || !req.sessionID) {
+	if (!req.loggedIn || !req.sessionID) {
 		return res.status(200).send('not-logged-in');
 	}
 

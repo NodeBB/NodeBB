@@ -37,7 +37,7 @@ popularController.get = function (req, res, next) {
 		alltime: '[[global:header.popular]]',
 	};
 
-	if (!req.uid) {
+	if (!req.loggedIn) {
 		if (anonCache[term] && (Date.now() - lastUpdateTime) < 60 * 60 * 1000) {
 			return res.render('popular', anonCache[term]);
 		}
@@ -73,7 +73,7 @@ popularController.get = function (req, res, next) {
 				data.breadcrumbs = helpers.buildBreadcrumbs(breadcrumbs);
 			}
 
-			if (!req.uid) {
+			if (!req.loggedIn) {
 				anonCache[term] = data;
 				lastUpdateTime = Date.now();
 			}

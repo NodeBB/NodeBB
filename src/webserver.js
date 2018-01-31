@@ -16,6 +16,7 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var useragent = require('express-useragent');
 var favicon = require('serve-favicon');
+var detector = require('spider-detector');
 
 var db = require('./database');
 var file = require('./file');
@@ -159,6 +160,7 @@ function setupExpressApp(app, callback) {
 	app.use(bodyParser.json());
 	app.use(cookieParser());
 	app.use(useragent.express());
+	app.use(detector.middleware());
 
 	app.use(session({
 		store: db.sessionStore,

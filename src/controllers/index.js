@@ -113,7 +113,7 @@ Controllers.login = function (req, res, next) {
 		}
 		return res.redirect(nconf.get('relative_path') + data.authentication[0].url);
 	}
-	if (req.uid) {
+	if (req.loggedIn) {
 		user.getUserFields(req.uid, ['username', 'email'], function (err, user) {
 			if (err) {
 				return next(err);
