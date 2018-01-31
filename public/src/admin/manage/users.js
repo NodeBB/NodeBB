@@ -191,6 +191,9 @@ define('admin/manage/users', ['translator', 'benchpress'], function (translator,
 						app.alertSuccess('[[admin/manage/users:alerts.delete-success]]');
 						removeSelected();
 						unselectAll();
+						if (!$('.users-table [component="user/select/single"]').length) {
+							ajaxify.refresh();
+						}
 					});
 				}
 			});
@@ -211,6 +214,9 @@ define('admin/manage/users', ['translator', 'benchpress'], function (translator,
 						app.alertSuccess('[[admin/manage/users:alerts.delete-success]]');
 						removeSelected();
 						unselectAll();
+						if (!$('.users-table [component="user/select/single"]').length) {
+							ajaxify.refresh();
+						}
 					});
 				}
 			});
