@@ -158,18 +158,22 @@ function getBundleMetadata(target, callback) {
 }
 
 CSS.buildBundle = function (target, fork, callback) {
+	var filename = (target === 'client' ? 'stylesheet' : 'admin') + '.css';
 	async.waterfall([
 		function (next) {
 			getBundleMetadata(target, next);
 		},
 		function (data, next) {
 			var minify = global.env !== 'development';
-			minifier.css.bundle(data.imports, data.paths, minify, fork, next);
+			minifier.css.bundle(data.imports, filename, data.paths, minify, fork, next);
 		},
 		function (bundle, next) {
-			var filename = (target === 'client' ? 'stylesheet' : 'admin') + '.css';
+			var fullpath = path.join(__dirname, '../../build/public', filename);
 
-			fs.writeFile(path.join(__dirname, '../../build/public', filename), bundle.code, next);
+			async.parallel([
+				async.apply(fs.writeFile, fullpath, bundle.code),
+				async.apply(fs.writeFile, fullpath + '.map', bundle.map),
+			], next);
 		},
 	], callback);
 };

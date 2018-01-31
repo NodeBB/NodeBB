@@ -2,13 +2,13 @@
 
 var fs = require('fs');
 var os = require('os');
+var path = require('path');
 var uglifyjs = require('uglify-js');
 var async = require('async');
 var winston = require('winston');
 var less = require('less');
-var postcss = require('postcss');
-var autoprefixer = require('autoprefixer');
-var clean = require('postcss-clean');
+var AutoPrefix = require('less-plugin-autoprefix');
+var CleanCSS = require('less-plugin-clean-css');
 
 var fork = require('./debugFork');
 require('../file'); // for graceful-fs
@@ -268,31 +268,36 @@ Minifier.js.minifyBatch = function (scripts, fork, callback) {
 };
 
 function buildCSS(data, callback) {
+	var plugins = [new AutoPrefix()];
+	if (data.minify) {
+		plugins.push(new CleanCSS());
+	}
 	less.render(data.source, {
 		paths: data.paths,
+		plugins: plugins,
+		sourceMap: {
+			sourceMapURL: data.filename + '.map',
+			outputSourceFiles: true,
+			sourceMapBasepath: path.dirname(path.dirname(__dirname)),
+		},
 	}, function (err, lessOutput) {
 		if (err) {
-			return callback(err);
+			return process.nextTick(callback, err);
 		}
 
-		postcss(data.minify ? [
-			autoprefixer,
-			clean({
-				processImportFrom: ['local'],
-			}),
-		] : [autoprefixer]).process(lessOutput.css).then(function (result) {
-			process.nextTick(callback, null, { code: result.css });
-		}, function (err) {
-			process.nextTick(callback, err);
+		process.nextTick(callback, null, {
+			code: lessOutput.css,
+			map: lessOutput.map,
 		});
 	});
 }
 actions.buildCSS = buildCSS;
 
 Minifier.css = {};
-Minifier.css.bundle = function (source, paths, minify, fork, callback) {
+Minifier.css.bundle = function (source, filename, paths, minify, fork, callback) {
 	executeAction({
 		act: 'buildCSS',
+		filename: filename,
 		source: source,
 		paths: paths,
 		minify: minify,

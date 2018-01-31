@@ -103,17 +103,17 @@ describe('minifier', function () {
 		path.resolve(__dirname, './files'),
 	];
 	it('.css.bundle() should concat styles', function (done) {
-		minifier.css.bundle(styles, paths, false, false, function (err, bundle) {
+		minifier.css.bundle(styles, 'test.css', paths, false, false, function (err, bundle) {
 			assert.ifError(err);
-			assert.strictEqual(bundle.code, '.help { margin: 10px; } .yellow { background: yellow; }\n.help {\n  display: block;\n}\n.help .blue {\n  background: blue;\n}\n');
+			assert.strictEqual(bundle.code, '.help { margin: 10px; } .yellow { background: yellow; }\n.help {\n  display: block;\n}\n.help .blue {\n  background: blue;\n}\n/*# sourceMappingURL=test.css.map */');
 			done();
 		});
 	});
 
 	it('.css.bundle() should minify styles', function (done) {
-		minifier.css.bundle(styles, paths, true, false, function (err, bundle) {
+		minifier.css.bundle(styles, 'test.css', paths, true, false, function (err, bundle) {
 			assert.ifError(err);
-			assert.strictEqual(bundle.code, '.help{margin:10px}.yellow{background:#ff0}.help{display:block}.help .blue{background:#00f}');
+			assert.strictEqual(bundle.code, '.help{margin:10px}.yellow{background:#ff0}.help{display:block}.help .blue{background:#00f}/*# sourceMappingURL=test.css.map */');
 			done();
 		});
 	});
