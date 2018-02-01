@@ -117,14 +117,18 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.incrObjectField = function (key, field, callback) {
-		redisClient.hincrby(key, field, 1, callback);
+		module.incrObjectFieldBy(key, field, 1, callback);
 	};
 
 	module.decrObjectField = function (key, field, callback) {
-		redisClient.hincrby(key, field, -1, callback);
+		module.incrObjectFieldBy(key, field, -1, callback);
 	};
 
 	module.incrObjectFieldBy = function (key, field, value, callback) {
+		value = parseInt(value, 10);
+		if (!key || isNaN(value)) {
+			return callback(null, null);
+		}
 		redisClient.hincrby(key, field, value, callback);
 	};
 };

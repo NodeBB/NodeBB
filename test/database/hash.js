@@ -438,5 +438,17 @@ describe('Hash methods', function () {
 				done();
 			});
 		});
+
+		it('should return null if value is NaN', function (done) {
+			db.incrObjectFieldBy('testObject15', 'lastonline', 'notanumber', function (err, newValue) {
+				assert.ifError(err);
+				assert.strictEqual(newValue, null);
+				db.isObjectField('testObject15', 'lastonline', function (err, isField) {
+					assert.ifError(err);
+					assert(!isField);
+					done();
+				});
+			});
+		});
 	});
 });
