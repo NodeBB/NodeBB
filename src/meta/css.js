@@ -2,7 +2,6 @@
 
 var winston = require('winston');
 var nconf = require('nconf');
-var fs = require('fs');
 var path = require('path');
 var async = require('async');
 
@@ -168,12 +167,9 @@ CSS.buildBundle = function (target, fork, callback) {
 			minifier.css.bundle(data.imports, filename, data.paths, minify, fork, next);
 		},
 		function (bundle, next) {
-			var fullpath = path.join(__dirname, '../../build/public', filename);
+			var destPath = path.join(__dirname, '../../build/public', filename);
 
-			async.parallel([
-				async.apply(fs.writeFile, fullpath, bundle.code),
-				async.apply(fs.writeFile, fullpath + '.map', bundle.map),
-			], next);
+			minifier.writeFiles(destPath, bundle, next);
 		},
 	], callback);
 };

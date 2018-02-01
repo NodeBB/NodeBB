@@ -137,6 +137,13 @@ function executeAction(action, fork, callback) {
 	}
 }
 
+Minifier.writeFiles = function (destPath, minified, callback) {
+	async.parallel([
+		async.apply(fs.writeFile, destPath, minified.code),
+		async.apply(fs.writeFile, destPath + '.map', minified.map),
+	], callback);
+};
+
 function concat(data, callback) {
 	if (data.files && data.files.length) {
 		async.mapLimit(data.files, 1000, function (ref, next) {
@@ -187,10 +194,7 @@ function minifyJS_batch(data, callback) {
 					compress: false,
 				});
 
-				async.parallel([
-					async.apply(fs.writeFile, destPath, minified.code),
-					async.apply(fs.writeFile, destPath + '.map', minified.map),
-				], next);
+				Minifier.writeFiles(destPath, minified, next);
 			} catch (e) {
 				next(e);
 			}
@@ -242,10 +246,7 @@ function minifyJS(data, callback) {
 			return callback(minified.error);
 		}
 
-		async.parallel([
-			async.apply(fs.writeFile, data.destPath, minified.code),
-			async.apply(fs.writeFile, data.destPath + '.map', minified.map),
-		], callback);
+		Minifier.writeFiles(data.destPath, minified, callback);
 	});
 }
 actions.minifyJS = minifyJS;
