@@ -24,8 +24,8 @@ module.exports = function (Topics) {
 				}, next);
 			},
 			function (results, next) {
-				var tids = results.tagTids.concat(results.searchTids).concat(results.categoryTids);
-				tids = _.uniq(tids).filter(function (_tid) {
+				var tids = _.shuffle(_.uniq(results.tagTids.concat(results.searchTids).concat(results.categoryTids)));
+				tids = tids.filter(function (_tid) {
 					return parseInt(_tid, 10) !== parseInt(tid, 10);
 				});
 
@@ -59,10 +59,10 @@ module.exports = function (Topics) {
 	function getSearchTids(tid, callback) {
 		async.waterfall([
 			function (next) {
-				Topics.getTopicField(tid, 'title', next);
+				Topics.getTopicFields(tid, ['title', 'cid'], next);
 			},
-			function (title, next) {
-				search.searchQuery('topic', title, [], [], next);
+			function (topicData, next) {
+				search.searchQuery('topic', topicData.title, [topicData.cid], [], next);
 			},
 		], callback);
 	}
