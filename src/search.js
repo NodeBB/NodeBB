@@ -42,7 +42,7 @@ function searchInContent(data, callback) {
 	var matchCount = 0;
 	var pids;
 	var metadata;
-
+	var itemsPerPage = data.itemsPerPage || 10;
 	async.waterfall([
 		function (next) {
 			async.parallel({
@@ -99,8 +99,8 @@ function searchInContent(data, callback) {
 			matchCount = metadata.pids.length;
 
 			if (data.page) {
-				var start = Math.max(0, (data.page - 1)) * 10;
-				metadata.pids = metadata.pids.slice(start, start + 10);
+				var start = Math.max(0, (data.page - 1)) * itemsPerPage;
+				metadata.pids = metadata.pids.slice(start, start + itemsPerPage);
 			}
 
 			posts.getPostSummaryByPids(metadata.pids, data.uid, {}, next);
@@ -108,7 +108,11 @@ function searchInContent(data, callback) {
 		function (posts, next) {
 			// Append metadata to returned payload (without pids)
 			delete metadata.pids;
-			next(null, Object.assign({ posts: posts, matchCount: matchCount, pageCount: Math.max(1, Math.ceil(parseInt(matchCount, 10) / 10)) }, metadata));
+			next(null, Object.assign({
+				posts: posts,
+				matchCount: matchCount,
+				pageCount: Math.max(1, Math.ceil(parseInt(matchCount, 10) / 10)),
+			}, metadata));
 		},
 	], callback);
 }
