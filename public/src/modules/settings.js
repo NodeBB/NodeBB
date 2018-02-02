@@ -457,19 +457,6 @@ define('settings', function () {
 					return callback(err);
 				}
 
-				// Parse all values. If they are json, return json
-				for (var key in values) {
-					if (values.hasOwnProperty(key)) {
-						try {
-							if (!utils.isNumber(values[key])) {
-								values[key] = JSON.parse(values[key]);
-							}
-						} catch (e) {
-							// Leave the value as is
-						}
-					}
-				}
-
 				// Save loaded settings into ajaxify.data for use client-side
 				ajaxify.data.settings = values;
 
@@ -498,12 +485,6 @@ define('settings', function () {
 					if (!inputEl.is(':checked')) {
 						values[inputEl.attr('name')] = 'off';
 					}
-				});
-
-				// Normalizing value of multiple selects
-				formEl.find('select[multiple]').each(function (idx, selectEl) {
-					selectEl = $(selectEl);
-					values[selectEl.attr('name')] = JSON.stringify(selectEl.val());
 				});
 
 				socket.emit('admin.settings.set', {
