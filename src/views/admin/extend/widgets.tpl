@@ -59,6 +59,20 @@
 						</div>
 						<!-- END availableWidgets -->
 					</div>
+
+					<div class="btn-group" component="clone">
+						<button type="button" class="btn btn-primary" component="clone/button">[[admin/extend/widgets:clone-from]] ...</button>
+						<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+							<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu pull-right">
+							<!-- BEGIN templates -->
+							<!-- IF !@first -->
+							<li><a href="#">{templates.template}</a></li>
+							<!-- END -->
+							<!-- END templates -->
+						</ul>
+					</div>
 				</div>
 			</div>
 		</div>
