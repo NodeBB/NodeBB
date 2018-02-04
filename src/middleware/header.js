@@ -283,7 +283,7 @@ module.exports = function (middleware) {
 			}
 
 			if (skinToUse) {
-				obj.bootswatchCSS = '//maxcdn.bootstrapcdn.com/bootswatch/latest/' + skinToUse + '/bootstrap.min.css';
+				obj.bootswatchCSS = '//maxcdn.bootstrapcdn.com/bootswatch/3.3.7/' + skinToUse + '/bootstrap.min.css';
 			}
 		}
 	}
