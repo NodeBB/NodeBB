@@ -37,7 +37,6 @@ define('forum/topic/merge', function () {
 
 	function onTopicClicked(ev) {
 		var tid = $(this).parents('[component="category/topic"]').attr('data-tid');
-		var index = $(this).parents('[component="category/topic"]').attr('data-index');
 		socket.emit('topics.getTopic', tid, function (err, topicData) {
 			if (err) {
 				return app.alertError(err);
