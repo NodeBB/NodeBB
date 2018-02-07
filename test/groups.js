@@ -265,6 +265,47 @@ describe('Groups', function () {
 			});
 		});
 
+		it('should create a hidden group if hidden is 1', function (done) {
+			Groups.create({
+				name: 'hidden group',
+				hidden: '1',
+			}, function (err) {
+				assert.ifError(err);
+				db.isSortedSetMember('groups:visible:memberCount', 'visible group', function (err, isMember) {
+					assert.ifError(err);
+					assert(!isMember);
+					done();
+				});
+			});
+		});
+
+		it('should create a visible group if hidden is 0', function (done) {
+			Groups.create({
+				name: 'visible group',
+				hidden: '0',
+			}, function (err) {
+				assert.ifError(err);
+				db.isSortedSetMember('groups:visible:memberCount', 'visible group', function (err, isMember) {
+					assert.ifError(err);
+					assert(isMember);
+					done();
+				});
+			});
+		});
+
+		it('should create a visible group if hidden is not passed in', function (done) {
+			Groups.create({
+				name: 'visible group 2',
+			}, function (err) {
+				assert.ifError(err);
+				db.isSortedSetMember('groups:visible:memberCount', 'visible group 2', function (err, isMember) {
+					assert.ifError(err);
+					assert(isMember);
+					done();
+				});
+			});
+		});
+
 		it('should fail to create group with duplicate group name', function (done) {
 			Groups.create({ name: 'foo' }, function (err) {
 				assert(err);

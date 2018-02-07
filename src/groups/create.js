@@ -8,13 +8,14 @@ var db = require('../database');
 
 module.exports = function (Groups) {
 	Groups.create = function (data, callback) {
-		var system = isSystemGroup(data);
+		var isSystem = isSystemGroup(data);
 		var groupData;
 		var timestamp = data.timestamp || Date.now();
 		var disableJoinRequests = parseInt(data.disableJoinRequests, 10) === 1 ? 1 : 0;
 		if (data.name === 'administrators') {
 			disableJoinRequests = 1;
 		}
+		var isHidden = parseInt(data.hidden, 10) === 1;
 		async.waterfall([
 			function (next) {
 				validateGroupName(data.name, next);
@@ -38,8 +39,8 @@ module.exports = function (Groups) {
 					description: data.description || '',
 					memberCount: memberCount,
 					deleted: 0,
-					hidden: parseInt(data.hidden, 10) === 1 ? 1 : 0,
-					system: system ? 1 : 0,
+					hidden: isHidden ? 1 : 0,
+					system: isSystem ? 1 : 0,
 					private: isPrivate,
 					disableJoinRequests: disableJoinRequests,
 				};
@@ -58,7 +59,7 @@ module.exports = function (Groups) {
 					groupData.ownerUid = data.ownerUid;
 				}
 
-				if (!data.hidden && !system) {
+				if (!isHidden && !isSystem) {
 					tasks.push(async.apply(db.sortedSetAdd, 'groups:visible:createtime', timestamp, groupData.name));
 					tasks.push(async.apply(db.sortedSetAdd, 'groups:visible:memberCount', groupData.memberCount, groupData.name));
 					tasks.push(async.apply(db.sortedSetAdd, 'groups:visible:name', 0, groupData.name.toLowerCase() + ':' + groupData.name));
