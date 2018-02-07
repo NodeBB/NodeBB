@@ -177,7 +177,48 @@ describe('Messaging Library', function () {
 				Messaging.isUserInRoom(bazUid, roomId, function (err, isUserInRoom) {
 					assert.ifError(err);
 					assert.equal(isUserInRoom, false);
-					done();
+					Messaging.getRoomData(roomId, function (err, data) {
+						assert.ifError(err);
+						assert.equal(data.owner, fooUid);
+						done();
+					});
+				});
+			});
+		});
+
+		it('should change owner when owner leaves room', function (done) {
+			socketModules.chats.newRoom({ uid: herpUid }, { touid: fooUid }, function (err, roomId) {
+				assert.ifError(err);
+				socketModules.chats.addUserToRoom({ uid: herpUid }, { roomId: roomId, username: 'baz' }, function (err) {
+					assert.ifError(err);
+					socketModules.chats.leave({ uid: herpUid }, roomId, function (err) {
+						assert.ifError(err);
+						Messaging.getRoomData(roomId, function (err, data) {
+							assert.ifError(err);
+							assert.equal(data.owner, fooUid);
+							done();
+						});
+					});
+				});
+			});
+		});
+
+		it('should change owner if owner is deleted', function (done) {
+			User.create({ username: 'deleted_chat_user' }, function (err, sender) {
+				assert.ifError(err);
+				User.create({ username: 'receiver' }, function (err, receiver) {
+					assert.ifError(err);
+					socketModules.chats.newRoom({ uid: sender }, { touid: receiver }, function (err, roomId) {
+						assert.ifError(err);
+						User.deleteAccount(sender, function (err) {
+							assert.ifError(err);
+							Messaging.getRoomData(roomId, function (err, data) {
+								assert.ifError(err);
+								assert.equal(data.owner, receiver);
+								done();
+							});
+						});
+					});
 				});
 			});
 		});
