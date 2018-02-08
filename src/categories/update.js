@@ -41,7 +41,7 @@ module.exports = function (Categories) {
 				}
 			},
 			function (next) {
-				plugins.fireHook('filter:category.update', { category: modifiedFields }, next);
+				plugins.fireHook('filter:category.update', { cid: cid, category: modifiedFields }, next);
 			},
 			function (categoryData, next) {
 				category = categoryData.category;
