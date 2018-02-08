@@ -645,10 +645,15 @@ Flags.notify = function (flagObj, uid, callback) {
 			admins: async.apply(groups.getMembers, 'administrators', 0, -1),
 			globalMods: async.apply(groups.getMembers, 'Global Moderators', 0, -1),
 			moderators: function (next) {
+				var cid;
 				async.waterfall([
 					async.apply(posts.getCidByPid, flagObj.targetId),
-					function (cid, next) {
-						groups.getMembersOfGroups(['cid:' + cid + ':privileges:moderate', 'cid:' + cid + ':privileges:groups:moderate'], next);
+					function (_cid, next) {
+						cid = _cid;
+						groups.getMembers('cid:' + cid + ':privileges:groups:moderate', 0, -1, next);
+					},
+					function (moderatorGroups, next) {
+						groups.getMembersOfGroups(moderatorGroups.concat(['cid:' + cid + ':privileges:moderate']), next);
 					},
 					function (members, next) {
 						next(null, _.flatten(members));
