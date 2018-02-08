@@ -126,14 +126,24 @@ UserEmail.sendValidationEmail = function (uid, options, callback) {
 };
 
 UserEmail.confirm = function (code, callback) {
+	var confirmObj;
 	async.waterfall([
 		function (next) {
 			db.getObject('confirm:' + code, next);
 		},
-		function (confirmObj, next) {
+		function (_confirmObj, next) {
+			confirmObj = _confirmObj;
 			if (!confirmObj || !confirmObj.uid || !confirmObj.email) {
 				return next(new Error('[[error:invalid-data]]'));
 			}
+
+			user.getUserField(confirmObj.uid, 'email', next);
+		},
+		function (currentEmail, next) {
+			if (!currentEmail || currentEmail.toLowerCase() !== confirmObj.email) {
+				return next(new Error('[[error:invalid-email]]'));
+			}
+
 			async.series([
 				async.apply(user.setUserField, confirmObj.uid, 'email:confirmed', 1),
 				async.apply(db.delete, 'confirm:' + code),
