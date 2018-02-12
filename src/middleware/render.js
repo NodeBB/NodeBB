@@ -120,6 +120,9 @@ module.exports = function (middleware) {
 
 	function translate(str, req, res, next) {
 		var language = (res.locals.config && res.locals.config.userLang) || 'en-GB';
+		if (res.locals.renderAdminHeader) {
+			language = (res.locals.config && res.locals.config.acpLang) || 'en-GB';
+		}
 		language = req.query.lang ? validator.escape(String(req.query.lang)) : language;
 		translator.translate(str, language, function (translated) {
 			next(null, translator.unescape(translated));
