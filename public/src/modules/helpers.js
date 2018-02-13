@@ -46,8 +46,7 @@
 			if ((properties.loggedIn && !loggedIn) ||
 				(properties.guestOnly && loggedIn) ||
 				(properties.globalMod && !data.isGlobalMod && !data.isAdmin) ||
-				(properties.adminOnly && !data.isAdmin) ||
-				(properties.searchInstalled && !data.searchEnabled)) {
+				(properties.adminOnly && !data.isAdmin)) {
 				return false;
 			}
 		}
