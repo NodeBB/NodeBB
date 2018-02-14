@@ -237,12 +237,18 @@ middleware.templatesOnDemand = function (req, res, next) {
 			fs.readFile(filePath.replace(/\.js$/, '.tpl'), 'utf8', cb);
 		},
 		function (source, cb) {
+			if (!source) {
+				return cb(new Error('[[error:templatesOnDemand.source-template-empty]]'));
+			}
 			Benchpress.precompile({
 				source: source,
 				minify: global.env !== 'development',
 			}, cb);
 		},
 		function (compiled, cb) {
+			if (!compiled) {
+				return cb(new Error('[[error:templatesOnDemand.compiled-template-empty]]'));
+			}
 			fs.writeFile(filePath, compiled, cb);
 		},
 	], function (err) {
