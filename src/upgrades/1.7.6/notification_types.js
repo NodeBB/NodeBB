@@ -15,9 +15,9 @@ module.exports = {
 				db.setObject('config', {
 					notificationType_upvote: config.notificationType_upvote || 'notification',
 					'notificationType_new-topic': config.notificationType_upvote || 'notification',
-					'notificationType_new-reply': config.notificationType_upvote || 'notification',
+					'notificationType_new-reply': config.notificationType_upvote || config.sendPostNotifications || 'notification',
 					notificationType_follow: config.notificationType_upvote || 'notification',
-					'notificationType_new-chat': config.notificationType_upvote || 'notification',
+					'notificationType_new-chat': config.notificationType_upvote || config.sendChatNotifications || 'notification',
 					'notificationType_group-invite': config.notificationType_upvote || 'notification',
 				}, next);
 			},
