@@ -113,6 +113,7 @@ SocketHelpers.sendNotificationToPostOwner = function (pid, fromuid, command, not
 				bodyShort: '[[' + notification + ', ' + results.username + ', ' + titleEscaped + ']]',
 				bodyLong: results.postObj.content,
 				pid: pid,
+				tid: postData.tid,
 				path: '/post/' + pid,
 				nid: command + ':post:' + pid + ':uid:' + fromuid,
 				from: fromuid,
