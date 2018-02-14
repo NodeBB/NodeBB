@@ -14,11 +14,11 @@ module.exports = {
 			function (config, next) {
 				db.setObject('config', {
 					notificationType_upvote: config.notificationType_upvote || 'notification',
-					'notificationType_new-topic': config.notificationType_upvote || 'notification',
-					'notificationType_new-reply': config.notificationType_upvote || config.sendPostNotifications || 'notification',
-					notificationType_follow: config.notificationType_upvote || 'notification',
-					'notificationType_new-chat': config.notificationType_upvote || config.sendChatNotifications || 'notification',
-					'notificationType_group-invite': config.notificationType_upvote || 'notification',
+					'notificationType_new-topic': config['notificationType_new-topic'] || 'notification',
+					'notificationType_new-reply': config['notificationType_new-reply'] || config.sendPostNotifications || 'notification',
+					notificationType_follow: config.notificationType_follow || 'notification',
+					'notificationType_new-chat': config['notificationType_new-chat'] || config.sendChatNotifications || 'notification',
+					'notificationType_group-invite': config['notificationType_group-invite'] || 'notification',
 				}, next);
 			},
 		], callback);
