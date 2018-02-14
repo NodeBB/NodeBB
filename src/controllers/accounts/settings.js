@@ -213,7 +213,7 @@ function getNotificationSettings(userData, callback) {
 		},
 		function (results, next) {
 			function modifyType(type) {
-				var setting = userData.settings[type] || 'notification';
+				var setting = userData.settings[type];
 
 				return {
 					name: type,
