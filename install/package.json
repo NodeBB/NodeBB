@@ -25,6 +25,7 @@
         "body-parser": "^1.18.2",
         "bootstrap": "^3.3.7",
         "chart.js": "^2.7.1",
+        "clipboard": "1.7.1",
         "colors": "^1.1.2",
         "compression": "^1.7.1",
         "commander": "^2.12.2",

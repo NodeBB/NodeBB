@@ -26,3 +26,18 @@ SocketBlacklist.save = function (socket, rules, callback) {
 		},
 	], callback);
 };
+
+SocketBlacklist.addRule = function (socket, rule, callback) {
+	async.waterfall([
+		function (next) {
+			user.isAdminOrGlobalMod(socket.uid, next);
+		},
+		function (isAdminOrGlobalMod, next) {
+			if (!isAdminOrGlobalMod) {
+				return callback(new Error('[[error:no-privileges]]'));
+			}
+
+			meta.blacklist.addRule(rule, next);
+		},
+	], callback);
+};
