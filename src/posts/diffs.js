@@ -8,6 +8,12 @@ var diff = require('diff');
 module.exports = function (Posts) {
 	Posts.diffs = {};
 
+	Posts.diffs.exists = function (pid, callback) {
+		db.sortedSetCard('post:' + pid + ':diffs', function (err, numDiffs) {
+			return callback(err, numDiffs > 0);
+		});
+	};
+
 	Posts.diffs.list = function (pid, callback) {
 		db.getSortedSetRangeWithScores('post:' + pid + ':diffs', 0, -1, function (err, diffs) {
 			callback(err, diffs ? diffs.map(function (diffObj) {
