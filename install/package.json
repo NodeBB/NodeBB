@@ -39,6 +39,7 @@
         "cropperjs": "^1.2.2",
         "csurf": "^1.9.0",
         "daemon": "^1.1.0",
+        "diff": "^3.4.0",
         "express": "^4.16.2",
         "express-session": "^1.15.6",
         "express-useragent": "1.0.8",
