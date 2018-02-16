@@ -357,7 +357,7 @@ describe('Notifications', function () {
 				setTimeout(function () {
 					user.notifications.getAll(uid, 'post', function (err, nids) {
 						assert.ifError(err);
-						assert.notEqual(nids.indexOf(nid), -1);
+						assert(nids.includes(nid));
 						done();
 					});
 				}, 1500);

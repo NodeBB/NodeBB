@@ -33,6 +33,8 @@
 	"locked": "Locked",
 	"pinned": "Pinned",
 	"moved": "Moved",
+	"copy-ip": "Copy IP",
+	"ban-ip": "Ban IP",
 
 	"bookmark_instructions" : "Click here to return to the last read post in this thread.",
 

@@ -6,6 +6,6 @@
 	"max-length": "Maximální délka konverzační zprávy",
 	"max-room-size": "Maximální počet uživatelů v konverzační místnosti",
 	"delay": "Čas mezi konverzačními zprávami v milisekundách",
-	"restrictions.seconds-edit-after": "Number of seconds before users are allowed to edit chat messages after posting. (0 disabled)",
-	"restrictions.seconds-delete-after": "Number of seconds before users are allowed to delete chat messages after posting. (0 disabled)"
+	"restrictions.seconds-edit-after": "Počet sekund než je uživateli umožněno upravit zprávy konverzace po jejich odeslání. (0 zákaz)",
+	"restrictions.seconds-delete-after": "Počet sekund než je uživateli umožněno smazat zprávy konverzace po jejich odeslání. (0 zákaz)"
 }

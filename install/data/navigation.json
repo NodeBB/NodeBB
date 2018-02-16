@@ -70,16 +70,5 @@
 			"targetBlank": false,
 			"adminOnly": true
 		}
-	},
-	{
-		"route": "/search",
-		"title": "[[global:header.search]]",
-		"enabled": true,
-		"iconClass": "fa-search",
-		"textClass": "visible-xs-inline",
-		"text": "[[global:header.search]]",
-		"properties": {
-			"searchInstalled": true
-		}
 	}
 ]

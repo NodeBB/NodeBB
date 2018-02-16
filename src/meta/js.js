@@ -98,6 +98,7 @@ JS.scripts = {
 		'jqueryui.js': 'public/vendor/jquery/js/jquery-ui.js',
 		'zxcvbn.js': 'node_modules/zxcvbn/dist/zxcvbn.js',
 		ace: 'node_modules/ace-builds/src-min',
+		'clipboard.js': 'node_modules/clipboard/dist/clipboard.min.js',
 	},
 };
 
