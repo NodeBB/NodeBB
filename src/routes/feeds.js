@@ -106,7 +106,7 @@ function generateForTopic(req, res, callback) {
 			var author = topicData.posts.length ? topicData.posts[0].username : '';
 
 			var feed = new rss({
-				title: utils.stripHTMLTags(topicData.title, utils.stripTags),
+				title: utils.stripHTMLTags(topicData.title, utils.tags),
 				description: description,
 				feed_url: nconf.get('url') + '/topic/' + tid + '.rss',
 				site_url: nconf.get('url') + '/topic/' + topicData.slug,
@@ -125,7 +125,7 @@ function generateForTopic(req, res, callback) {
 					dateStamp = new Date(parseInt(parseInt(postData.edited, 10) === 0 ? postData.timestamp : postData.edited, 10)).toUTCString();
 
 					feed.item({
-						title: 'Reply to ' + utils.stripHTMLTags(topicData.title, utils.stripTags) + ' on ' + dateStamp,
+						title: 'Reply to ' + utils.stripHTMLTags(topicData.title, utils.tags) + ' on ' + dateStamp,
 						description: postData.content,
 						url: nconf.get('url') + '/post/' + postData.pid,
 						author: postData.user ? postData.user.username : '',
@@ -301,7 +301,7 @@ function generateTopicsFeed(feedOptions, feedTopics, callback) {
 
 	async.each(feedTopics, function (topicData, next) {
 		var feedItem = {
-			title: utils.stripHTMLTags(topicData.title, utils.stripTags),
+			title: utils.stripHTMLTags(topicData.title, utils.tags),
 			url: nconf.get('url') + '/topic/' + topicData.slug,
 			date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString(),
 		};

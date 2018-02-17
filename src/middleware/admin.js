@@ -38,7 +38,7 @@ module.exports = function (middleware) {
 			plugins: [],
 			authentication: [],
 		};
-
+		res.locals.config = res.locals.config || {};
 		async.waterfall([
 			function (next) {
 				async.parallel({
@@ -51,9 +51,6 @@ module.exports = function (middleware) {
 					custom_header: function (next) {
 						plugins.fireHook('filter:admin.header.build', custom_header, next);
 					},
-					config: function (next) {
-						controllers.api.getConfig(req, res, next);
-					},
 					configs: function (next) {
 						meta.configs.list(next);
 					},
@@ -64,8 +61,6 @@ module.exports = function (middleware) {
 				userData.uid = req.uid;
 				userData['email:confirmed'] = parseInt(userData['email:confirmed'], 10) === 1;
 
-				res.locals.config = results.config;
-
 				var acpPath = req.path.slice(1).split('/');
 				acpPath.forEach(function (path, i) {
 					acpPath[i] = path.charAt(0).toUpperCase() + path.slice(1);
@@ -73,9 +68,9 @@ module.exports = function (middleware) {
 				acpPath = acpPath.join(' > ');
 
 				var templateValues = {
-					config: results.config,
-					configJSON: jsesc(JSON.stringify(results.config), { isScriptContext: true }),
-					relative_path: results.config.relative_path,
+					config: res.locals.config,
+					configJSON: jsesc(JSON.stringify(res.locals.config), { isScriptContext: true }),
+					relative_path: res.locals.config.relative_path,
 					adminConfigJSON: encodeURIComponent(JSON.stringify(results.configs)),
 					user: userData,
 					userJSON: jsesc(JSON.stringify(userData), { isScriptContext: true }),

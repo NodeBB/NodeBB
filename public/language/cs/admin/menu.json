@@ -9,10 +9,10 @@
 
 	"section-manage": "Spravovat",
 	"manage/categories": "Kategorie",
-	"manage/privileges": "Privileges",
+	"manage/privileges": "Oprávnění",
 	"manage/tags": "Značky",
 	"manage/users": "Uživatelé",
-	"manage/admins-mods": "Admins & Mods",
+	"manage/admins-mods": "Správci a moderátoři",
 	"manage/registration": "Registrační fronta",
 	"manage/post-queue": "Fronta příspěvků",
 	"manage/groups": "Skupiny",
@@ -70,8 +70,8 @@
 	"search.placeholder": "Hledat nastavení",
 	"search.no-results": "Žádné výsledky…",
 	"search.search-forum": "Prohledat fórum pro <strong></strong>",
-	"search.keep-typing": "Pište dále pro zobrazení výsledků…",
-	"search.start-typing": "Začněte psát pro zobrazení výsledků…",
+	"search.keep-typing": "Pište dále pro zobrazení výsledků…",
+	"search.start-typing": "Začněte psát pro zobrazení výsledků…",
 
-	"connection-lost": "Připojení k %1 bylo ztraceno, snaha o opětovné připojení…"
+	"connection-lost": "Připojení k %1 bylo ztraceno, snaha o opětovné připojení…"
 }

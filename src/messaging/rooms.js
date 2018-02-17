@@ -177,8 +177,43 @@ module.exports = function (Messaging) {
 				}));
 				db.sortedSetsRemove(keys, roomId, next);
 			},
+			function (next) {
+				updateOwner(roomId, next);
+			},
 		], callback);
 	};
+
+	Messaging.leaveRooms = function (uid, roomIds, callback) {
+		async.waterfall([
+			function (next) {
+				var roomKeys = roomIds.map(function (roomId) {
+					return 'chat:room:' + roomId + ':uids';
+				});
+				db.sortedSetsRemove(roomKeys, uid, next);
+			},
+			function (next) {
+				db.sortedSetRemove('uid:' + uid + ':chat:rooms', roomIds, next);
+			},
+			function (next) {
+				db.sortedSetRemove('uid:' + uid + ':chat:rooms:unread', roomIds, next);
+			},
+			function (next) {
+				async.eachSeries(roomIds, updateOwner, next);
+			},
+		], callback);
+	};
+
+	function updateOwner(roomId, callback) {
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRange('chat:room:' + roomId + ':uids', 0, 0, next);
+			},
+			function (uids, next) {
+				var newOwner = uids[0] || 0;
+				db.setObjectField('chat:room:' + roomId, 'owner', newOwner, next);
+			},
+		], callback);
+	}
 
 	Messaging.getUidsInRoom = function (roomId, start, stop, callback) {
 		db.getSortedSetRevRange('chat:room:' + roomId + ':uids', start, stop, callback);

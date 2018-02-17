@@ -1,6 +1,6 @@
 {
-	"events": "Events",
-	"no-events": "There are no events",
-	"control-panel": "Events Control Panel",
-	"delete-events": "Delete Events"
+	"events": "رویداد ها",
+	"no-events": "رویدادی موجود نیست",
+	"control-panel": "کنترل پنل رویداد ها",
+	"delete-events": "پاک کردن رویداد ها"
 }

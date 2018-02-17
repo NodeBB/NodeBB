@@ -1,6 +1,7 @@
 'use strict';
 
 var async = require('async');
+var _ = require('lodash');
 
 var user = require('../../user');
 var languages = require('../../languages');
@@ -40,6 +41,9 @@ settingsController.get = function (req, res, callback) {
 		function (results, next) {
 			userData.settings = results.settings;
 			userData.languages = results.languages;
+			if (userData.isAdmin && userData.isSelf) {
+				userData.acpLanguages = _.cloneDeep(results.languages);
+			}
 
 			var types = [
 				'notification',
@@ -135,6 +139,12 @@ settingsController.get = function (req, res, callback) {
 				language.selected = language.code === userData.settings.userLang;
 			});
 
+			if (userData.isAdmin && userData.isSelf) {
+				userData.acpLanguages.forEach(function (language) {
+					language.selected = language.code === userData.settings.acpLang;
+				});
+			}
+
 			var notifFreqOptions = [
 				'all',
 				'everyTen',
@@ -203,7 +213,7 @@ function getNotificationSettings(userData, callback) {
 		},
 		function (results, next) {
 			function modifyType(type) {
-				var setting = userData.settings[type] || 'notification';
+				var setting = userData.settings[type];
 
 				return {
 					name: type,

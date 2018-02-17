@@ -53,7 +53,7 @@
     "topics": "Темы",
     "posts": "Записи",
     "best": "Лучшие",
-    "votes": "Votes",
+    "votes": "Голоса",
     "upvoters": "Кому понравилось",
     "upvoted": "Понравилось",
     "downvoters": "Кому не понравилось",
@@ -105,6 +105,6 @@
     "cookies.accept": "Понял",
     "cookies.learn_more": "Подробнее",
     "edited": "Отредактированный",
-    "disabled": "Disabled",
-    "select": "Select"
+    "disabled": "Отключено",
+    "select": "Выбрать"
 }

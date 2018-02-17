@@ -231,7 +231,7 @@ define('forum/topic', [
 		var bookmarkKey = 'topic:' + ajaxify.data.tid + ':bookmark';
 		var currentBookmark = ajaxify.data.bookmark || storage.getItem(bookmarkKey);
 
-		if (ajaxify.data.postcount > ajaxify.data.bookmarkThreshold && (!currentBookmark || parseInt(index, 10) > parseInt(currentBookmark, 10))) {
+		if (ajaxify.data.postcount > ajaxify.data.bookmarkThreshold && (!currentBookmark || parseInt(index, 10) > parseInt(currentBookmark, 10) || ajaxify.data.postcount < parseInt(currentBookmark, 10))) {
 			if (app.user.uid) {
 				socket.emit('topics.bookmark', {
 					tid: ajaxify.data.tid,

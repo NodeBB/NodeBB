@@ -8,8 +8,7 @@ define('forum/topic/postTools', [
 	'translator',
 	'forum/topic/votes',
 	'forum/topic/move-post',
-	'benchpress',
-], function (share, navigator, components, translator, votes, movePost, Benchpress) {
+], function (share, navigator, components, translator, votes, movePost) {
 	var PostTools = {};
 
 	var staleReplyAnyway = false;
@@ -45,11 +44,12 @@ define('forum/topic/postTools', [
 				}
 				data.posts.display_move_tools = data.posts.display_move_tools && index !== 0;
 
-				Benchpress.parse('partials/topic/post-menu-list', data, function (html) {
-					translator.translate(html, function (html) {
-						dropdownMenu.html(html);
-						$(window).trigger('action:post.tools.load');
+				app.parseAndTranslate('partials/topic/post-menu-list', data, function (html) {
+					dropdownMenu.html(html);
+					require(['clipboard'], function (clipboard) {
+						new clipboard('[data-clipboard-text]');
 					});
+					$(window).trigger('action:post.tools.load');
 				});
 			});
 		});
@@ -190,6 +190,16 @@ define('forum/topic/postTools', [
 
 		postContainer.on('click', '[component="post/move"]', function () {
 			movePost.openMovePostModal($(this));
+		});
+
+		postContainer.on('click', '[component="post/ban-ip"]', function () {
+			var ip = $(this).attr('data-ip');
+			socket.emit('blacklist.addRule', ip, function (err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				app.alertSuccess('[[admin/manage/blacklist:ban-ip]]');
+			});
 		});
 
 		postContainer.on('click', '[component="post/chat"]', function () {

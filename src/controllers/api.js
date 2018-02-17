@@ -88,6 +88,7 @@ apiController.loadConfig = function (req, callback) {
 			config.topicsPerPage = settings.topicsPerPage;
 			config.postsPerPage = settings.postsPerPage;
 			config.userLang = (req.query.lang ? validator.escape(String(req.query.lang)) : null) || settings.userLang || config.defaultLang;
+			config.acpLang = (req.query.lang ? validator.escape(String(req.query.lang)) : null) || settings.acpLang;
 			config.openOutgoingLinksInNewTab = settings.openOutgoingLinksInNewTab;
 			config.topicPostSort = settings.topicPostSort || config.topicPostSort;
 			config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;

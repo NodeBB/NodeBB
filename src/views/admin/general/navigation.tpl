@@ -91,15 +91,6 @@
 						</label>
 					</div>
 
-					<strong>[[admin/general/navigation:installed-plugins-required]]</strong>
-
-					<div class="checkbox">
-						<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-							<input class="mdl-switch__input" type="checkbox" name="property:searchInstalled" <!-- IF enabled.properties.searchInstalled -->checked<!-- ENDIF enabled.properties.searchInstalled -->/>
-							<span class="mdl-switch__label"><strong>[[admin/general/navigation:search-plugin]]</strong></span>
-						</label>
-					</div>
-
 					<button class="btn btn-danger delete">[[admin/general/navigation:btn.delete]]</button>
 					<!-- IF enabled.enabled -->
 					<button class="btn btn-warning toggle">[[admin/general/navigation:btn.disable]]</button>

@@ -232,7 +232,6 @@
 	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/user:default-user-settings]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
-
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="showemail">
@@ -292,6 +291,85 @@
 				</label>
 			</div>
 
+			<label>[[admin/settings/user:default-notification-settings]]</label>
+			<div class="row">
+				<div class="form-group col-xs-7">
+					<label>[[notifications:notificationType_upvote]]</label>
+				</div>
+				<div class="form-group col-xs-5">
+					<select class="form-control" data-field="notificationType_upvote">
+						<option value="none">[[notifications:none]]</option>
+						<option value="notification">[[notifications:notification_only]]</option>
+						<option value="email">[[notifications:email_only]]</option>
+						<option value="notificationemail">[[notifications:notification_and_email]]</option>
+					</select>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-xs-7">
+					<label>[[notifications:notificationType_new-topic]]</label>
+				</div>
+				<div class="form-group col-xs-5">
+					<select class="form-control" data-field="notificationType_new-topic">
+						<option value="none">[[notifications:none]]</option>
+						<option value="notification">[[notifications:notification_only]]</option>
+						<option value="email">[[notifications:email_only]]</option>
+						<option value="notificationemail">[[notifications:notification_and_email]]</option>
+					</select>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-xs-7">
+					<label>[[notifications:notificationType_new-reply]]</label>
+				</div>
+				<div class="form-group col-xs-5">
+					<select class="form-control" data-field="notificationType_new-reply">
+						<option value="none">[[notifications:none]]</option>
+						<option value="notification">[[notifications:notification_only]]</option>
+						<option value="email">[[notifications:email_only]]</option>
+						<option value="notificationemail">[[notifications:notification_and_email]]</option>
+					</select>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-xs-7">
+					<label>[[notifications:notificationType_follow]]</label>
+				</div>
+				<div class="form-group col-xs-5">
+					<select class="form-control" data-field="notificationType_follow">
+						<option value="none">[[notifications:none]]</option>
+						<option value="notification">[[notifications:notification_only]]</option>
+						<option value="email">[[notifications:email_only]]</option>
+						<option value="notificationemail">[[notifications:notification_and_email]]</option>
+					</select>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-xs-7">
+					<label>[[notifications:notificationType_new-chat]]</label>
+				</div>
+				<div class="form-group col-xs-5">
+					<select class="form-control" data-field="notificationType_new-chat">
+						<option value="none">[[notifications:none]]</option>
+						<option value="notification">[[notifications:notification_only]]</option>
+						<option value="email">[[notifications:email_only]]</option>
+						<option value="notificationemail">[[notifications:notification_and_email]]</option>
+					</select>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col-xs-7">
+					<label>[[notifications:notificationType_group-invite]]</label>
+				</div>
+				<div class="form-group col-xs-5">
+					<select class="form-control" data-field="notificationType_group-invite">
+						<option value="none">[[notifications:none]]</option>
+						<option value="notification">[[notifications:notification_only]]</option>
+						<option value="email">[[notifications:email_only]]</option>
+						<option value="notificationemail">[[notifications:notification_and_email]]</option>
+					</select>
+				</div>
+			</div>
 		</form>
 	</div>
 </div>

@@ -65,7 +65,7 @@ function runSteps(tasks) {
 
 	async.series(tasks, function (err) {
 		if (err) {
-			console.error('Error occurred during upgrade');
+			console.error('Error occurred during upgrade: ' + err.stack);
 			throw err;
 		}
 
