@@ -8,7 +8,8 @@ define('forum/topic/postTools', [
 	'translator',
 	'forum/topic/votes',
 	'forum/topic/move-post',
-], function (share, navigator, components, translator, votes, movePost) {
+	'forum/topic/diffs',
+], function (share, navigator, components, translator, votes, movePost, diffs) {
 	var PostTools = {};
 
 	var staleReplyAnyway = false;
@@ -137,6 +138,11 @@ define('forum/topic/postTools', [
 					pid: getData(btn, 'data-pid'),
 				});
 			}
+		});
+
+		postContainer.on('click', '[component="post/view-history"], [component="post/edit-indicator"]', function () {
+			var btn = $(this);
+			diffs.open(getData(btn, 'data-pid'));
 		});
 
 		postContainer.on('click', '[component="post/delete"]', function () {

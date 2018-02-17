@@ -8,6 +8,6 @@ module.exports = function (SocketPosts) {
 	};
 
 	SocketPosts.showPostAt = function (socket, data, callback) {
-		posts.diffs.load(data.pid, data.since, callback);
+		posts.diffs.load(data.pid, data.since, socket.uid, callback);
 	};
 };

@@ -35,6 +35,7 @@
 	"moved": "Moved",
 	"copy-ip": "Copy IP",
 	"ban-ip": "Ban IP",
+	"view-history": "Edit History",
 
 	"bookmark_instructions" : "Click here to return to the last read post in this thread.",
 
@@ -143,5 +144,9 @@
 	"stale.create": "Create a new topic",
 	"stale.reply_anyway": "Reply to this topic anyway",
 
-	"link_back": "Re: [%1](%2)\n\n"
+	"link_back": "Re: [%1](%2)\n\n",
+
+	"diffs.title": "Post Edit History",
+	"diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
+	"diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
 }
