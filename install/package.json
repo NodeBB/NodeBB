@@ -21,7 +21,7 @@
         "async": "2.6.0",
         "autoprefixer": "7.2.4",
         "bcryptjs": "2.4.3",
-        "benchpressjs": "^1.2.0",
+        "benchpressjs": "^1.2.1",
         "body-parser": "^1.18.2",
         "bootstrap": "^3.3.7",
         "chart.js": "^2.7.1",
