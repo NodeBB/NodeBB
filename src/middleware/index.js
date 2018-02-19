@@ -237,9 +237,6 @@ middleware.templatesOnDemand = function (req, res, next) {
 			fs.readFile(tplPath, 'utf8', cb);
 		},
 		function (source, cb) {
-			if (!source) {
-				return cb(new Error('[[error:templatesOnDemand.source-template-empty, ' + tplPath + ']]'));
-			}
 			Benchpress.precompile({
 				source: source,
 				minify: global.env !== 'development',
