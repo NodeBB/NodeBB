@@ -211,7 +211,7 @@ middleware.templatesOnDemand = function (req, res, next) {
 	if (!filePath.endsWith('.js')) {
 		return next();
 	}
-
+	var tplPath = filePath.replace(/\.js$/, '.tpl');
 	if (workingCache[filePath]) {
 		workingCache[filePath].push(next);
 		return;
@@ -234,11 +234,11 @@ middleware.templatesOnDemand = function (req, res, next) {
 			}
 
 			workingCache[filePath] = [next];
-			fs.readFile(filePath.replace(/\.js$/, '.tpl'), 'utf8', cb);
+			fs.readFile(tplPath, 'utf8', cb);
 		},
 		function (source, cb) {
 			if (!source) {
-				return cb(new Error('[[error:templatesOnDemand.source-template-empty]]'));
+				return cb(new Error('[[error:templatesOnDemand.source-template-empty, ' + tplPath + ']]'));
 			}
 			Benchpress.precompile({
 				source: source,
@@ -247,7 +247,7 @@ middleware.templatesOnDemand = function (req, res, next) {
 		},
 		function (compiled, cb) {
 			if (!compiled) {
-				return cb(new Error('[[error:templatesOnDemand.compiled-template-empty]]'));
+				return cb(new Error('[[error:templatesOnDemand.compiled-template-empty, ' + tplPath + ']]'));
 			}
 			fs.writeFile(filePath, compiled, cb);
 		},
