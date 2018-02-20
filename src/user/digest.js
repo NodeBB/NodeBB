@@ -106,14 +106,14 @@ Digest.send = function (data, callback) {
 					function (next) {
 						async.parallel({
 							notifications: async.apply(user.notifications.getDailyUnread, userObj.uid),
-							popular: async.apply(topics.getPopularTopics, data.interval, userObj.uid, 0, 9),
+							topics: async.apply(getTermTopics, data.interval, userObj.uid, 0, 9),
 						}, next);
 					},
 					function (data, next) {
 						var notifications = data.notifications.filter(Boolean);
 
 						// If there are no notifications and no new topics, don't bother sending a digest
-						if (!notifications.length && !data.popular.topics.length) {
+						if (!notifications.length && !data.topics.length) {
 							return next();
 						}
 
@@ -124,7 +124,7 @@ Digest.send = function (data, callback) {
 						});
 
 						// Fix relative paths in topic data
-						data.popular.topics = data.popular.topics.map(function (topicObj) {
+						data.topics = data.topics.map(function (topicObj) {
 							var user = topicObj.hasOwnProperty('teaser') && topicObj.teaser !== undefined ? topicObj.teaser.user : topicObj.user;
 							if (user && user.picture && utils.isRelativeUrl(user.picture)) {
 								user.picture = nconf.get('base_url') + user.picture;
@@ -138,7 +138,7 @@ Digest.send = function (data, callback) {
 							username: userObj.username,
 							userslug: userObj.userslug,
 							notifications: notifications,
-							recent: data.popular.topics,
+							recent: data.topics,
 							interval: data.interval,
 							showUnsubscribe: true,
 						}, function (err) {
@@ -154,4 +154,22 @@ Digest.send = function (data, callback) {
 	], function (err) {
 		callback(err, emailsSent);
 	});
+
+	function getTermTopics(term, uid, start, stop, callback) {
+		async.waterfall([
+			function (next) {
+				topics.getPopularTopics(term, uid, start, stop, next);
+			},
+			function (data, next) {
+				if (!data.topics.length) {
+					topics.getLatestTopics(uid, start, stop, term, next);
+				} else {
+					next(null, data);
+				}
+			},
+			function (data, next) {
+				next(null, data.topics);
+			},
+		], callback);
+	}
 };
