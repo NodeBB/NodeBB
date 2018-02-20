@@ -1,5 +1,7 @@
 'use strict';
 
+var os = require('os');
+
 var meta = require('../meta');
 
 module.exports = function (middleware) {
@@ -13,6 +15,10 @@ module.exports = function (middleware) {
 
 		if (meta.config['access-control-allow-origin']) {
 			headers['Access-Control-Allow-Origin'] = encodeURI(meta.config['access-control-allow-origin']);
+		}
+
+		if (process.env.NODE_ENV === 'development') {
+			headers['X-Upstream-Hostname'] = os.hostname();
 		}
 
 		for (var key in headers) {
