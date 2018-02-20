@@ -3,6 +3,7 @@
 
 var fs = require('fs');
 var path = require('path');
+var os = require('os');
 var nconf = require('nconf');
 var express = require('express');
 var app = express();
@@ -72,6 +73,7 @@ module.exports.listen = function (callback) {
 
 			require('./socket.io').server.emit('event:nodebb.ready', {
 				'cache-buster': meta.config['cache-buster'],
+				hostname: os.hostname(),
 			});
 
 			plugins.fireHook('action:nodebb.ready');

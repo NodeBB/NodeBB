@@ -75,7 +75,7 @@ app.cacheBuster = null;
 
 		socket.removeAllListeners('event:nodebb.ready');
 		socket.on('event:nodebb.ready', function (data) {
-			if (!app.cacheBuster || app.cacheBuster !== data['cache-buster']) {
+			if ((data.hostname === app.upstreamHost) && (!app.cacheBuster || app.cacheBuster !== data['cache-buster'])) {
 				app.cacheBuster = data['cache-buster'];
 
 				app.alert({
