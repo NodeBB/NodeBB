@@ -70,6 +70,7 @@ module.exports = function (User) {
 				settings.topicsPerPage = Math.min(settings.topicsPerPage ? parseInt(settings.topicsPerPage, 10) : defaultTopicsPerPage, defaultTopicsPerPage);
 				settings.postsPerPage = Math.min(settings.postsPerPage ? parseInt(settings.postsPerPage, 10) : defaultPostsPerPage, defaultPostsPerPage);
 				settings.userLang = settings.userLang || meta.config.defaultLang || 'en-GB';
+				settings.acpLang = settings.acpLang || settings.userLang;
 				settings.topicPostSort = getSetting(settings, 'topicPostSort', 'oldest_to_newest');
 				settings.categoryTopicSort = getSetting(settings, 'categoryTopicSort', 'newest_to_oldest');
 				settings.followTopicsOnCreate = parseInt(getSetting(settings, 'followTopicsOnCreate', 1), 10) === 1;
@@ -80,6 +81,12 @@ module.exports = function (User) {
 				settings.delayImageLoading = parseInt(getSetting(settings, 'delayImageLoading', 1), 10) === 1;
 				settings.bootswatchSkin = settings.bootswatchSkin || meta.config.bootswatchSkin || 'default';
 				settings.scrollToMyPost = parseInt(getSetting(settings, 'scrollToMyPost', 1), 10) === 1;
+				settings.notificationType_upvote = getSetting(settings, 'notificationType_upvote', 'notification');
+				settings['notificationType_new-topic'] = getSetting(settings, 'notificationType_new-topic', 'notification');
+				settings['notificationType_new-reply'] = getSetting(settings, 'notificationType_new-reply', 'notification');
+				settings.notificationType_follow = getSetting(settings, 'notificationType_follow', 'notification');
+				settings['notificationType_new-chat'] = getSetting(settings, 'notificationType_new-chat', 'notification');
+				settings['notificationType_group-invite'] = getSetting(settings, 'notificationType_group-invite', 'notification');
 				next(null, settings);
 			},
 		], callback);
@@ -118,6 +125,7 @@ module.exports = function (User) {
 			topicsPerPage: Math.min(data.topicsPerPage, parseInt(maxTopicsPerPage, 10) || 20),
 			postsPerPage: Math.min(data.postsPerPage, parseInt(maxPostsPerPage, 10) || 20),
 			userLang: data.userLang || meta.config.defaultLang,
+			acpLang: data.acpLang || meta.config.defaultLang,
 			followTopicsOnCreate: data.followTopicsOnCreate,
 			followTopicsOnReply: data.followTopicsOnReply,
 			restrictChat: data.restrictChat,

@@ -7,6 +7,7 @@ var db = require('../database');
 var posts = require('../posts');
 var topics = require('../topics');
 var groups = require('../groups');
+var messaging = require('../messaging');
 var plugins = require('../plugins');
 var batch = require('../batch');
 
@@ -173,12 +174,9 @@ module.exports = function (User) {
 				var userKeys = roomIds.map(function (roomId) {
 					return 'uid:' + uid + ':chat:room:' + roomId + ':mids';
 				});
-				var roomKeys = roomIds.map(function (roomId) {
-					return 'chat:room:' + roomId + ':uids';
-				});
 
 				async.parallel([
-					async.apply(db.sortedSetsRemove, roomKeys, uid),
+					async.apply(messaging.leaveRooms, uid, roomIds),
 					async.apply(db.deleteAll, userKeys),
 				], next);
 			},

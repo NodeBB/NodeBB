@@ -4,5 +4,5 @@
 	"home-page-route": "Шлях головної сторінки",
 	"custom-route": "Користувацький шлях",
 	"allow-user-home-pages": "Дозволити користувачам власні сторінки",
-	"home-page-title": "Title of the home page (default \"Home\")"
+	"home-page-title": "Назва домашньої сторінки (за замовчуванням \"Домашня сторінка\")"
 }

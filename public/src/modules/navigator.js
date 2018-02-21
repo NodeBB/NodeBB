@@ -193,7 +193,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		index = index > count ? count : index;
 		var relIndex = getRelativeIndex();
 		$('.pagination-block .pagination-text').translateHtml('[[global:pagination.out_of, ' + relIndex + ', ' + count + ']]');
-		var fraction = relIndex / count;
+		var fraction = (relIndex - 1) / (count - 1 || 1);
 		$('.pagination-block meter').val(fraction);
 		$('.pagination-block .progress-bar').width((fraction * 100) + '%');
 	};

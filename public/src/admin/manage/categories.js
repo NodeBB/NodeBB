@@ -37,6 +37,20 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 			el.find('i').toggleClass('fa-minus').toggleClass('fa-plus');
 			el.closest('[data-cid]').find('> ul[data-cid]').toggleClass('hidden');
 		});
+
+		$('#collapse-all').on('click', function () {
+			toggleAll(false);
+		});
+
+		$('#expand-all').on('click', function () {
+			toggleAll(true);
+		});
+
+		function toggleAll(expand) {
+			var el = $('.categories .toggle');
+			el.find('i').toggleClass('fa-minus', expand).toggleClass('fa-plus', !expand);
+			el.closest('[data-cid]').find('> ul[data-cid]').toggleClass('hidden', !expand);
+		}
 	};
 
 	Categories.throwCreateModal = function () {

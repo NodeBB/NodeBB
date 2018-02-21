@@ -816,7 +816,7 @@ describe('User', function () {
 					}, function (err, uploadedPicture) {
 						assert.ifError(err);
 						assert.equal(uploadedPicture.url, '/assets/uploads/profile/' + uid + '-profileavatar.png');
-						assert.equal(uploadedPicture.path, path.join(nconf.get('base_dir'), 'public', 'uploads', 'profile', uid + '-profileavatar.png'));
+						assert.equal(uploadedPicture.path, path.join(nconf.get('upload_path'), 'profile', uid + '-profileavatar.png'));
 						done();
 					});
 				}

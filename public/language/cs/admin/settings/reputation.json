@@ -6,7 +6,7 @@
 	"thresholds": "Omezení aktivity",
 	"min-rep-downvote": "Minimální reputace pro vyjádření nesouhlasu s příspěvkem",
 	"min-rep-flag": "Minimální reputace pro označení příspěvků",
-	"min-rep-website": "Minimum reputation to add \"Website\" to user profile",
-	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",
-	"min-rep-signature": "Minimum reputation to add \"Signature\" to user profile"
+	"min-rep-website": "Minimální reputace pro přidání „Webové stránky” do uživatelského profilu",
+	"min-rep-aboutme": "Minimální reputace pro přidání „O mně” do uživatelského profilu",
+	"min-rep-signature": "Minimální reputace pro přidání „Podpisu” do uživatelského profilu"
 }

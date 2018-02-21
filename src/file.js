@@ -81,7 +81,7 @@ file.saveFileToLocal = function (filename, folder, tempPath, callback) {
 			}
 
 			callback(null, {
-				url: '/assets/uploads/' + folder + '/' + filename,
+				url: '/assets/uploads/' + (folder ? folder + '/' : '') + filename,
 				path: uploadPath,
 			});
 		});

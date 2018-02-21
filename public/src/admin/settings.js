@@ -89,7 +89,7 @@ define('admin/settings', ['uploader'], function (uploader) {
 						alert_id: 'config_status',
 						timeout: 2500,
 						title: 'Changes Not Saved',
-						message: 'NodeBB encountered a problem saving your changes',
+						message: 'NodeBB encountered a problem saving your changes. (' + err.message + ')',
 						type: 'danger',
 					});
 				}
@@ -143,7 +143,7 @@ define('admin/settings', ['uploader'], function (uploader) {
 					if (ajaxify.currentPage === 'admin/general/sounds') {
 						ajaxify.refresh();
 					} else {
-						$('#' + uploadBtn.attr('data-target')).val([image, Date.now()].join('?v='));
+						$('#' + uploadBtn.attr('data-target')).val(image);
 					}
 				});
 			});

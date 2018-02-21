@@ -292,13 +292,7 @@ module.exports = function (Groups) {
 				async.each(groups, function (groupName, next) {
 					async.parallel([
 						function (next) {
-							Groups.isMember(uid, groupName, function (err, isMember) {
-								if (!err && isMember) {
-									Groups.leave(groupName, uid, next);
-								} else {
-									next();
-								}
-							});
+							Groups.leave(groupName, uid, next);
 						},
 						function (next) {
 							Groups.rejectMembership(groupName, uid, next);

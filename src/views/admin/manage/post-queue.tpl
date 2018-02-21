@@ -1,6 +1,6 @@
 <div class="row">
 	<div class="col-xs-12">
-		<div class="post-queue panel panel-primary">
+		<div class="post-queue panel panel-primary preventSlideout">
 			<div class="panel-heading">
 				[[admin/manage/post-queue:post-queue]]
 			</div>

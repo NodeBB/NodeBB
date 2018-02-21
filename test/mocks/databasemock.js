@@ -17,7 +17,7 @@ nconf.file({ file: path.join(__dirname, '../../config.json') });
 nconf.defaults({
 	base_dir: path.join(__dirname, '../..'),
 	themes_path: path.join(__dirname, '../../node_modules'),
-	upload_path: 'public/uploads',
+	upload_path: 'test/uploads',
 	views_dir: path.join(__dirname, '../../build/public/templates'),
 	relative_path: '',
 });
@@ -172,6 +172,21 @@ function setupMockDefaults(callback) {
 				type: 'local',
 				id: 'nodebb-theme-persona',
 			}, next);
+		},
+		function (next) {
+			var rimraf = require('rimraf');
+			rimraf('test/uploads', next);
+		},
+		function (next) {
+			var mkdirp = require('mkdirp');
+			async.eachSeries([
+				'test/uploads',
+				'test/uploads/category',
+				'test/uploads/files',
+				'test/uploads/system',
+				'test/uploads/sounds',
+				'test/uploads/profile',
+			], mkdirp, next);
 		},
 	], callback);
 }

@@ -4,6 +4,7 @@
 var async = require('async');
 var nconf = require('nconf');
 var path = require('path');
+var winston = require('winston');
 
 var db = require('../database');
 var pubsub = require('../pubsub');
@@ -83,9 +84,17 @@ function processConfig(data, callback) {
 			var image = require('../image');
 			if (data['brand:logo']) {
 				image.size(path.join(nconf.get('upload_path'), 'system', 'site-logo-x50.png'), function (err, size) {
-					if (err) {
+					if (err && err.code === 'ENOENT') {
+						// For whatever reason the x50 logo wasn't generated, gracefully error out
+						winston.warn('[logo] The email-safe logo doesn\'t seem to have been created, please re-upload your site logo.');
+						size = {
+							height: 0,
+							width: 0,
+						};
+					} else if (err) {
 						return next(err);
 					}
+
 					data['brand:emailLogo:height'] = size.height;
 					data['brand:emailLogo:width'] = size.width;
 					next();

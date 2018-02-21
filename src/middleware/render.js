@@ -41,8 +41,7 @@ module.exports = function (middleware) {
 					options.template = { name: template };
 					options.template[template] = true;
 					options.url = (req.baseUrl + req.path.replace(/^\/api/, ''));
-					options.bodyClass = buildBodyClass(req, options);
-
+					options.bodyClass = buildBodyClass(req, res, options);
 					plugins.fireHook('filter:' + template + '.build', { req: req, res: res, templateData: options }, next);
 				},
 				function (data, next) {
@@ -120,13 +119,16 @@ module.exports = function (middleware) {
 
 	function translate(str, req, res, next) {
 		var language = (res.locals.config && res.locals.config.userLang) || 'en-GB';
+		if (res.locals.renderAdminHeader) {
+			language = (res.locals.config && res.locals.config.acpLang) || 'en-GB';
+		}
 		language = req.query.lang ? validator.escape(String(req.query.lang)) : language;
 		translator.translate(str, language, function (translated) {
 			next(null, translator.unescape(translated));
 		});
 	}
 
-	function buildBodyClass(req, templateData) {
+	function buildBodyClass(req, res, templateData) {
 		var clean = req.path.replace(/^\/api/, '').replace(/^\/|\/$/g, '');
 		var parts = clean.split('/').slice(0, 3);
 		parts.forEach(function (p, index) {
@@ -145,6 +147,7 @@ module.exports = function (middleware) {
 			parts.push('page-topic-category-' + utils.slugify(templateData.category.name));
 		}
 
+		parts.push('page-status-' + res.statusCode);
 		return parts.join(' ');
 	}
 };

@@ -1,5 +1,5 @@
 <div id="themes" class="themes">
-	<div class="directory row" id="installed_themes">
+	<div class="directory row text-center" id="installed_themes">
 		<i class="fa fa-refresh fa-spin"></i> [[admin/appearance/themes:checking-for-installed]]
 	</div>
 </div>

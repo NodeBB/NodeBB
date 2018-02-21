@@ -82,23 +82,20 @@ module.exports = function (Plugins) {
 
 		var hookList = Plugins.loadedHooks[hook];
 		var hookType = hook.split(':')[0];
-		try {
-			switch (hookType) {
-			case 'filter':
-				fireFilterHook(hook, hookList, params, callback);
-				break;
-			case 'action':
-				fireActionHook(hook, hookList, params, callback);
-				break;
-			case 'static':
-				fireStaticHook(hook, hookList, params, callback);
-				break;
-			default:
-				winston.warn('[plugins] Unknown hookType: ' + hookType + ', hook : ' + hook);
-				break;
-			}
-		} catch (err) {
-			callback(err);
+		switch (hookType) {
+		case 'filter':
+			fireFilterHook(hook, hookList, params, callback);
+			break;
+		case 'action':
+			fireActionHook(hook, hookList, params, callback);
+			break;
+		case 'static':
+			fireStaticHook(hook, hookList, params, callback);
+			break;
+		default:
+			winston.warn('[plugins] Unknown hookType: ' + hookType + ', hook : ' + hook);
+			callback();
+			break;
 		}
 	};
 
