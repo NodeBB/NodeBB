@@ -13,7 +13,6 @@ var meta = require('../meta');
 var helpers = require('../controllers/helpers');
 var privileges = require('../privileges');
 var db = require('../database');
-var utils = require('../utils');
 var controllers404 = require('../controllers/404.js');
 
 module.exports = function (app, middleware) {
@@ -106,7 +105,7 @@ function generateForTopic(req, res, callback) {
 			var author = topicData.posts.length ? topicData.posts[0].username : '';
 
 			var feed = new rss({
-				title: utils.stripHTMLTags(topicData.title, utils.tags),
+				title: topicData.title,
 				description: description,
 				feed_url: nconf.get('url') + '/topic/' + tid + '.rss',
 				site_url: nconf.get('url') + '/topic/' + topicData.slug,
@@ -125,7 +124,7 @@ function generateForTopic(req, res, callback) {
 					dateStamp = new Date(parseInt(parseInt(postData.edited, 10) === 0 ? postData.timestamp : postData.edited, 10)).toUTCString();
 
 					feed.item({
-						title: 'Reply to ' + utils.stripHTMLTags(topicData.title, utils.tags) + ' on ' + dateStamp,
+						title: 'Reply to ' + topicData.title + ' on ' + dateStamp,
 						description: postData.content,
 						url: nconf.get('url') + '/post/' + postData.pid,
 						author: postData.user ? postData.user.username : '',
@@ -253,16 +252,16 @@ function generateForPopular(req, res, next) {
 
 	async.waterfall([
 		function (next) {
-			topics.getPopularTopics(term, req.uid, 0, 19, next);
+			topics.getPopular(term, req.uid, 19, next);
 		},
-		function (result, next) {
+		function (topics, next) {
 			generateTopicsFeed({
 				uid: req.uid,
 				title: 'Popular Topics',
 				description: 'A list of topics that are sorted by post count',
 				feed_url: '/popular/' + (req.params.term || 'daily') + '.rss',
 				site_url: '/popular/' + (req.params.term || 'daily'),
-			}, result.topics, next);
+			}, topics, next);
 		},
 		function (feed) {
 			sendFeed(feed, res);
@@ -301,7 +300,7 @@ function generateTopicsFeed(feedOptions, feedTopics, callback) {
 
 	async.each(feedTopics, function (topicData, next) {
 		var feedItem = {
-			title: utils.stripHTMLTags(topicData.title, utils.tags),
+			title: topicData.title,
 			url: nconf.get('url') + '/topic/' + topicData.slug,
 			date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString(),
 		};

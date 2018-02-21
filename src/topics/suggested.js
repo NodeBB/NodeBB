@@ -4,50 +4,43 @@
 var async = require('async');
 var _ = require('lodash');
 
-var privileges = require('../privileges');
+var categories = require('../categories');
 var search = require('../search');
 
 module.exports = function (Topics) {
 	Topics.getSuggestedTopics = function (tid, uid, start, stop, callback) {
-		var tids;
 		async.waterfall([
 			function (next) {
 				async.parallel({
 					tagTids: function (next) {
-						getTidsWithSameTags(tid, uid, next);
+						getTidsWithSameTags(tid, next);
 					},
 					searchTids: function (next) {
-						getSearchTids(tid, uid, next);
+						getSearchTids(tid, next);
+					},
+					categoryTids: function (next) {
+						getCategoryTids(tid, next);
 					},
 				}, next);
 			},
 			function (results, next) {
-				tids = results.tagTids.concat(results.searchTids);
-				tids = tids.filter(function (_tid) {
+				var tids = results.tagTids.concat(results.searchTids).concat(results.categoryTids);
+				tids = _.uniq(tids).filter(function (_tid) {
 					return parseInt(_tid, 10) !== parseInt(tid, 10);
 				});
-				tids = _.shuffle(_.uniq(tids));
 
-				if (stop !== -1 && tids.length < stop - start + 1) {
-					getCategoryTids(tid, uid, next);
-				} else {
-					next(null, []);
-				}
-			},
-			function (categoryTids, next) {
-				tids = _.uniq(tids.concat(categoryTids));
 				if (stop === -1) {
 					tids = tids.slice(start);
 				} else {
 					tids = tids.slice(start, stop + 1);
 				}
 
-				Topics.getTopicsByTids(tids, uid, next);
+				Topics.getTopics(tids, uid, next);
 			},
 		], callback);
 	};
 
-	function getTidsWithSameTags(tid, uid, callback) {
+	function getTidsWithSameTags(tid, callback) {
 		async.waterfall([
 			function (next) {
 				Topics.getTopicTags(tid, next);
@@ -60,52 +53,31 @@ module.exports = function (Topics) {
 			function (data, next) {
 				next(null, _.uniq(_.flatten(data)));
 			},
-			function (tids, next) {
-				tids = tids.map(Number);
-				privileges.topics.filterTids('read', tids, uid, next);
-			},
 		], callback);
 	}
 
-	function getSearchTids(tid, uid, callback) {
+	function getSearchTids(tid, callback) {
 		async.waterfall([
 			function (next) {
-				Topics.getTopicFields(tid, ['title', 'cid'], next);
+				Topics.getTopicField(tid, 'title', next);
 			},
-			function (topicData, next) {
-				search.search({
-					query: topicData.title,
-					searchIn: 'titles',
-					categories: [topicData.cid],
-					uid: uid,
-					page: 1,
-					itemsPerPage: 20,
-				}, next);
-			},
-			function (data, next) {
-				var tids = data.posts.map(function (post) {
-					return post && parseInt(post.tid, 10);
-				});
-				next(null, tids);
+			function (title, next) {
+				search.searchQuery('topic', title, [], [], next);
 			},
 		], callback);
 	}
 
-	function getCategoryTids(tid, uid, callback) {
+	function getCategoryTids(tid, callback) {
 		async.waterfall([
 			function (next) {
 				Topics.getTopicField(tid, 'cid', next);
 			},
 			function (cid, next) {
-				Topics.getRecentTopics(cid, uid, 0, 9, '', next);
-			},
-			function (data, next) {
-				var tids = data.topics.filter(function (topic) {
-					return topic && !topic.deleted && parseInt(tid, 10) !== parseInt(topic.tid, 10);
-				}).map(function (topic) {
-					return topic && parseInt(topic.tid, 10);
-				});
-				next(null, tids);
+				categories.getTopicIds({
+					cid: cid,
+					start: 0,
+					stop: 9,
+				}, next);
 			},
 		], callback);
 	}

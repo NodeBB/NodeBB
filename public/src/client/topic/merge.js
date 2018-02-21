@@ -10,6 +10,9 @@ define('forum/topic/merge', function () {
 
 	Merge.init = function () {
 		$('.category').on('click', '[component="topic/merge"]', onMergeTopicsClicked);
+		if (modal) {
+			$('[component="category/topic"]').on('click', 'a', onTopicClicked);
+		}
 	};
 
 	function onMergeTopicsClicked() {
@@ -25,7 +28,7 @@ define('forum/topic/merge', function () {
 
 			modal.find('.close,#merge_topics_cancel').on('click', closeModal);
 
-			$('[component="category"]').on('click', '[component="category/topic"] a', onTopicClicked);
+			$('[component="category/topic"]').on('click', 'a', onTopicClicked);
 
 			showTopicsSelected();
 
@@ -37,19 +40,15 @@ define('forum/topic/merge', function () {
 
 	function onTopicClicked(ev) {
 		var tid = $(this).parents('[component="category/topic"]').attr('data-tid');
-		socket.emit('topics.getTopic', tid, function (err, topicData) {
-			if (err) {
-				return app.alertError(err);
-			}
-			var title = topicData ? topicData.title : 'No title';
-			if (selectedTids[tid]) {
-				delete selectedTids[tid];
-			} else {
-				selectedTids[tid] = title;
-			}
-			checkButtonEnable();
-			showTopicsSelected();
-		});
+		var index = $(this).parents('[component="category/topic"]').attr('data-index');
+		var title = ajaxify.data.topics[index] ? ajaxify.data.topics[index].title : 'No title';
+		if (selectedTids[tid]) {
+			delete selectedTids[tid];
+		} else {
+			selectedTids[tid] = title;
+		}
+		checkButtonEnable();
+		showTopicsSelected();
 		ev.preventDefault();
 		ev.stopPropagation();
 		return false;

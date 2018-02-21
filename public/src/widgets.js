@@ -58,6 +58,7 @@
 				title: $(this).attr('title'),
 			});
 		});
+		utils.addNoReferrer(widgetAreas);
 		$(window).trigger('action:widgets.loaded', {});
 		callback();
 	};

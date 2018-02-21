@@ -34,10 +34,6 @@ app.isConnected = false;
 		}
 	});
 
-	socket.on('setHostname', function (hostname) {
-		app.upstreamHost = hostname;
-	});
-
 	socket.on('event:banned', onEventBanned);
 
 	socket.on('event:alert', app.alert);

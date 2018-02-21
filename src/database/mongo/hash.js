@@ -277,7 +277,7 @@ module.exports = function (db, module) {
 		callback = callback || helpers.noop;
 		value = parseInt(value, 10);
 		if (!key || isNaN(value)) {
-			return callback(null, null);
+			return callback();
 		}
 
 		var data = {};

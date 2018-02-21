@@ -38,3 +38,6 @@ navigation.get = function (callback) {
 		},
 	], callback);
 };
+
+
+module.exports = navigation;

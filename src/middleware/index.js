@@ -99,14 +99,13 @@ middleware.routeTouchIcon = function (req, res) {
 	if (meta.config['brand:touchIcon'] && validator.isURL(meta.config['brand:touchIcon'])) {
 		return res.redirect(meta.config['brand:touchIcon']);
 	}
-	var iconPath = '';
+	var iconPath = '../../public';
 	if (meta.config['brand:touchIcon']) {
-		iconPath = path.join(nconf.get('upload_path'), meta.config['brand:touchIcon'].replace(/assets\/uploads/, ''));
+		iconPath += meta.config['brand:touchIcon'].replace(/assets\/uploads/, 'uploads');
 	} else {
-		iconPath = path.join(nconf.get('base_dir'), 'public/logo.png');
+		iconPath += '/logo.png';
 	}
-
-	return res.sendFile(iconPath, {
+	return res.sendFile(path.join(__dirname, iconPath), {
 		maxAge: req.app.enabled('cache') ? 5184000000 : 0,
 	});
 };
@@ -211,7 +210,7 @@ middleware.templatesOnDemand = function (req, res, next) {
 	if (!filePath.endsWith('.js')) {
 		return next();
 	}
-	var tplPath = filePath.replace(/\.js$/, '.tpl');
+
 	if (workingCache[filePath]) {
 		workingCache[filePath].push(next);
 		return;
@@ -234,7 +233,7 @@ middleware.templatesOnDemand = function (req, res, next) {
 			}
 
 			workingCache[filePath] = [next];
-			fs.readFile(tplPath, 'utf8', cb);
+			fs.readFile(filePath.replace(/\.js$/, '.tpl'), 'utf8', cb);
 		},
 		function (source, cb) {
 			Benchpress.precompile({
@@ -243,9 +242,6 @@ middleware.templatesOnDemand = function (req, res, next) {
 			}, cb);
 		},
 		function (compiled, cb) {
-			if (!compiled) {
-				return cb(new Error('[[error:templatesOnDemand.compiled-template-empty, ' + tplPath + ']]'));
-			}
 			fs.writeFile(filePath, compiled, cb);
 		},
 	], function (err) {

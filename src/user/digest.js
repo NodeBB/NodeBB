@@ -106,7 +106,7 @@ Digest.send = function (data, callback) {
 					function (next) {
 						async.parallel({
 							notifications: async.apply(user.notifications.getDailyUnread, userObj.uid),
-							topics: async.apply(getTermTopics, data.interval, userObj.uid, 0, 9),
+							topics: async.apply(topics.getPopular, data.interval, userObj.uid, 10),
 						}, next);
 					},
 					function (data, next) {
@@ -154,22 +154,4 @@ Digest.send = function (data, callback) {
 	], function (err) {
 		callback(err, emailsSent);
 	});
-
-	function getTermTopics(term, uid, start, stop, callback) {
-		async.waterfall([
-			function (next) {
-				topics.getPopularTopics(term, uid, start, stop, next);
-			},
-			function (data, next) {
-				if (!data.topics.length) {
-					topics.getLatestTopics(uid, start, stop, term, next);
-				} else {
-					next(null, data);
-				}
-			},
-			function (data, next) {
-				next(null, data.topics);
-			},
-		], callback);
-	}
 };

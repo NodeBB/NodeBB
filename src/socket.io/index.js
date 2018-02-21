@@ -1,6 +1,5 @@
 'use strict';
 
-var os = require('os');
 var async = require('async');
 var nconf = require('nconf');
 var winston = require('winston');
@@ -85,7 +84,6 @@ function onConnect(socket) {
 
 	socket.join('sess_' + socket.request.signedCookies[nconf.get('sessionKey')]);
 	io.sockets.sockets[socket.id].emit('checkSession', socket.uid);
-	io.sockets.sockets[socket.id].emit('setHostname', os.hostname());
 }
 
 function onMessage(socket, payload) {

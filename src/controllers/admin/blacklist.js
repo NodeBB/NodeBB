@@ -7,6 +7,7 @@ var analytics = require('../../analytics');
 var blacklistController = module.exports;
 
 blacklistController.get = function (req, res, next) {
+	// Analytics.getBlacklistAnalytics
 	async.parallel({
 		rules: async.apply(meta.blacklist.get),
 		analytics: async.apply(analytics.getBlacklistAnalytics),

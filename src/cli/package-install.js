@@ -41,18 +41,11 @@ function installAll() {
 	} catch (e) {
 		// ignore
 	}
-	try {
-		cproc.execSync(command + (prod ? ' --production' : ''), {
-			cwd: path.join(__dirname, '../../'),
-			stdio: [0, 1, 2],
-		});
-	} catch (e) {
-		console.log('Error installing dependencies!');
-		console.log('message: ' + e.message);
-		console.log('stdout: ' + e.stdout);
-		console.log('stderr: ' + e.stderr);
-		throw e;
-	}
+
+	cproc.execSync(command + (prod ? ' --production' : ''), {
+		cwd: path.join(__dirname, '../../'),
+		stdio: [0, 1, 2],
+	});
 }
 
 exports.installAll = installAll;

@@ -71,13 +71,12 @@ Languages.list = function (callback) {
 				if (err) {
 					return next(err);
 				}
-				var lang;
 				try {
-					lang = JSON.parse(file);
+					var lang = JSON.parse(file);
+					next(null, lang);
 				} catch (e) {
-					return next(e);
+					next(e);
 				}
-				next(null, lang);
 			});
 		}, function (err, languages) {
 			if (err) {

@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/categories', ['components'], function (components) {
+define('forum/categories', ['components', 'translator', 'benchpress'], function (components, translator, Benchpress) {
 	var	categories = {};
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
@@ -36,8 +36,7 @@ define('forum/categories', ['components'], function (components) {
 
 		var recentPosts = category.find('[component="category/posts"]');
 
-		app.parseAndTranslate('partials/categories/lastpost', 'posts', { posts: [post] }, function (html) {
-			html.find('.post-content img:not(.not-responsive)').addClass('img-responsive');
+		parseAndTranslate([post], function (html) {
 			html.hide();
 			if (recentPosts.length === 0) {
 				html.appendTo(category);
@@ -55,6 +54,17 @@ define('forum/categories', ['components'], function (components) {
 			}
 
 			$(window).trigger('action:posts.loaded', { posts: [post] });
+		});
+	}
+
+	function parseAndTranslate(posts, callback) {
+		Benchpress.parse('partials/categories/lastpost', 'posts', { posts: posts }, function (html) {
+			translator.translate(html, function (translatedHTML) {
+				translatedHTML = $(translatedHTML);
+				translatedHTML.find('.post-content img:not(.not-responsive)').addClass('img-responsive');
+
+				callback(translatedHTML);
+			});
 		});
 	}
 

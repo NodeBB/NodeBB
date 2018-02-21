@@ -33,13 +33,7 @@ Upgrade.getAll = function (callback) {
 				versionA = path.dirname(a).split('/').pop();
 				versionB = path.dirname(b).split('/').pop();
 
-				var semverCompare = semver.compare(versionA, versionB);
-				if (semverCompare) {
-					return semverCompare;
-				}
-				var timestampA = require(a).timestamp;
-				var timestampB = require(b).timestamp;
-				return timestampA - timestampB;
+				return semver.compare(versionA, versionB);
 			}));
 		},
 		async.apply(Upgrade.appendPluginScripts),

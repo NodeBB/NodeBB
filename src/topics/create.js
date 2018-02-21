@@ -209,17 +209,18 @@ module.exports = function (Topics) {
 		var uid = data.uid;
 		var content = data.content;
 		var postData;
+		var cid;
 
 		async.waterfall([
 			function (next) {
 				Topics.getTopicField(tid, 'cid', next);
 			},
-			function (cid, next) {
-				data.cid = cid;
+			function (_cid, next) {
+				cid = _cid;
 				async.parallel({
 					topicData: async.apply(Topics.getTopicData, tid),
 					canReply: async.apply(privileges.topics.can, 'topics:reply', tid, uid),
-					isAdminOrMod: async.apply(privileges.categories.isAdminOrMod, data.cid, uid),
+					isAdminOrMod: async.apply(privileges.categories.isAdminOrMod, cid, uid),
 				}, next);
 			},
 			function (results, next) {
@@ -242,7 +243,7 @@ module.exports = function (Topics) {
 				guestHandleValid(data, next);
 			},
 			function (next) {
-				user.isReadyToPost(uid, data.cid, next);
+				user.isReadyToPost(uid, cid, next);
 			},
 			function (next) {
 				plugins.fireHook('filter:topic.reply', data, next);
@@ -283,7 +284,7 @@ module.exports = function (Topics) {
 				}
 
 				Topics.notifyFollowers(postData, uid);
-				analytics.increment(['posts', 'posts:byCid:' + data.cid]);
+				analytics.increment(['posts', 'posts:byCid:' + cid]);
 				plugins.fireHook('action:topic.reply', { post: _.clone(postData) });
 
 				next(null, postData);

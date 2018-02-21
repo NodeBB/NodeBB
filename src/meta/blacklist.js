@@ -9,8 +9,9 @@ var pubsub = require('../pubsub');
 var plugins = require('../plugins');
 var analytics = require('../analytics');
 
-var Blacklist = module.exports;
-Blacklist._rules = [];
+var Blacklist = {
+	_rules: [],
+};
 
 Blacklist.load = function (callback) {
 	callback = callback || function () {};
@@ -181,22 +182,4 @@ Blacklist.validate = function (rules, callback) {
 	});
 };
 
-Blacklist.addRule = function (rule, callback) {
-	var valid;
-	async.waterfall([
-		function (next) {
-			Blacklist.validate(rule, next);
-		},
-		function (result, next) {
-			valid = result.valid;
-			if (!valid.length) {
-				return next(new Error('[[error:invalid-rule]]'));
-			}
-			Blacklist.get(next);
-		},
-		function (rules, next) {
-			rules = rules + '\n' + valid[0];
-			Blacklist.save(rules, next);
-		},
-	], callback);
-};
+module.exports = Blacklist;
