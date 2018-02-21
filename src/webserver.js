@@ -17,6 +17,7 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var useragent = require('express-useragent');
 var favicon = require('serve-favicon');
+var helmet = require('helmet');
 
 var db = require('./database');
 var file = require('./file');
@@ -171,6 +172,8 @@ function setupExpressApp(app, callback) {
 		saveUninitialized: true,
 	}));
 
+	app.use(helmet());
+	app.use(helmet.referrerPolicy({ policy: 'strict-origin-when-cross-origin' }));
 	app.use(middleware.addHeaders);
 	app.use(middleware.processRender);
 	auth.initialize(app, middleware);
