@@ -10,13 +10,13 @@ var helpers = require('./helpers');
 
 exports.get = function (req, res, callback) {
 	async.waterfall([
-		function (next) {
+		function (_next) {
 			plugins.fireHook('filter:composer.build', {
 				req: req,
 				res: res,
 				next: callback,
 				templateData: {},
-			}, next);
+			}, _next);
 		},
 		function (data) {
 			if (data.templateData.disabled) {
