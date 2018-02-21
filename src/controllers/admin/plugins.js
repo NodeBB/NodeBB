@@ -33,11 +33,18 @@ pluginsController.get = function (req, res, next) {
 			var compatiblePkgNames = payload.compatible.map(function (pkgData) {
 				return pkgData.name;
 			});
+			var installedPlugins = payload.compatible.filter(function (plugin) {
+				return plugin && plugin.installed;
+			});
+			var activePlugins = payload.all.filter(function (plugin) {
+				return plugin && plugin.installed && plugin.active;
+			});
 
 			res.render('admin/extend/plugins', {
-				installed: payload.compatible.filter(function (plugin) {
-					return plugin.installed;
-				}),
+				installed: installedPlugins,
+				installedCount: installedPlugins.length,
+				activeCount: activePlugins.length,
+				inactiveCount: Math.max(0, installedPlugins.length - activePlugins.length),
 				upgradeCount: payload.compatible.reduce(function (count, current) {
 					if (current.installed && current.outdated) {
 						count += 1;
