@@ -83,7 +83,7 @@ module.exports = function (middleware) {
 					},
 					user: function (next) {
 						var userData = {
-							uid: 0,
+							uid: req.uid,
 							username: '[[global:guest]]',
 							userslug: '',
 							fullname: '[[global:guest]]',
