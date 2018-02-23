@@ -14,9 +14,6 @@
 	"only-guest": "N’afficher qu’aux utilisateurs invités",
 	"open-new-window": "Ouvrir dans une nouvelle fenêtre",
 
-	"installed-plugins-required": "Plugins installés requis :",
-	"search-plugin": "Rechercher un plugin",
-
 	"btn.delete": "Supprimer",
 	"btn.disable": "Désactiver",
 	"btn.enable": "Activer",

@@ -553,20 +553,6 @@
 			return str.toString().replace(escapeChars, replaceChar);
 		},
 
-		addNoReferrer: function (containerEl) {
-			containerEl.find('a').attr('rel', function (idx, value) {
-				value = value ? value.split(' ') : [];
-
-				['noopener', 'noreferrer'].forEach(function (property) {
-					if (value.indexOf(property) === -1) {
-						value.push(property);
-					}
-				});
-
-				return value.join(' ');
-			});
-		},
-
 		isAndroidBrowser: function () {
 			// http://stackoverflow.com/questions/9286355/how-to-detect-only-the-native-android-browser
 			var nua = navigator.userAgent;

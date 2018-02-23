@@ -62,5 +62,6 @@
 	"email-chat-notifs": "オンラインではない時に新しいチャットメッセージを受信した場合、通知メールを送信する。",
 	"email-post-notif": "購読中のスレッドに返信があった場合、メールで通知する。",
 	"follow-created-topics": "投稿したスレッドをフォローします",
-	"follow-replied-topics": "返信したスレッドをフォローします"
+	"follow-replied-topics": "返信したスレッドをフォローします",
+	"default-notification-settings": "Default notification settings"
 }

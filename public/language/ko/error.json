@@ -132,6 +132,7 @@
     "wrong-login-type-email": "이메일 주소를 통해 로그인하세요.",
     "wrong-login-type-username": "사용자명을 통해 로그인하세요.",
     "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
+    "sso-multiple-association": "You cannot associate multiple accounts from this service to your NodeBB account. Please dissociate your existing account and try again.",
     "invite-maximum-met": "초대 한도 만큼의 사용자를 초대했습니다. (%2명 중 %1을 초대)",
     "no-session-found": "로그인 세션을 찾을 수 없습니다.",
     "not-in-room": "없는 사용자입니다.",

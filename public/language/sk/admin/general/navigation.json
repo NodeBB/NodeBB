@@ -14,9 +14,6 @@
 	"only-guest": "Only display to guests",
 	"open-new-window": "Open in a new window",
 
-	"installed-plugins-required": "Installed Plugins Required:",
-	"search-plugin": "Search plugin",
-
 	"btn.delete": "Delete",
 	"btn.disable": "Disable",
 	"btn.enable": "Enable",

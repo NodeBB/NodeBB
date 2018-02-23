@@ -14,5 +14,6 @@
 	"alerts.applied-success": "Liste noire appliquée",
 
 	"analytics.blacklist-hourly": "<strong>Figure 1</strong> &ndash; Nombre de visites de la liste noire par heure",
-	"analytics.blacklist-daily": "<strong>Figure 2</strong> &ndash; Nombre de visites de la liste noire par jour"
+	"analytics.blacklist-daily": "<strong>Figure 2</strong> &ndash; Nombre de visites de la liste noire par jour",
+	"ip-banned": "IP banned"
 }

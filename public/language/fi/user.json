@@ -95,6 +95,7 @@
     "topics_per_page": "Aihetta per sivu",
     "posts_per_page": "Viestiä per sivu",
     "max_items_per_page": "Maximum %1",
+    "acp_language": "Admin Page Language",
     "notification_sounds": "Play a sound when you receive a notification",
     "notifications_and_sounds": "Notifications & Sounds",
     "incoming-message-sound": "Incoming message sound",

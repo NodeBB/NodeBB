@@ -95,6 +95,7 @@
     "topics_per_page": "Теми на страница",
     "posts_per_page": "Публикации на страница",
     "max_items_per_page": "Най-много %1",
+    "acp_language": "Език на администраторската страница",
     "notification_sounds": "Изпълняване на звук, когато получите известие",
     "notifications_and_sounds": "Известия и звуци",
     "incoming-message-sound": "Звук за входящо съобщение",

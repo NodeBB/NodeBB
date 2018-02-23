@@ -36,9 +36,10 @@
 	"search-plugin-tooltip": "검색 기능을 활성화하시려면 플러그인 페이지에서 검색 플러그인을 설치하세요.",
 
 	"control-panel": "시스템 제어",
-	"reload": "리로드",
-	"restart": "재시작",
-	"restart-warning": "NodeBB 앱을 리로드하거나 재시작할 경우에는 기존의 연결이 몇 초 동안 끊어집니다.",
+	"reload": "Restart",
+	"restart": "Rebuild &amp; Restart",
+	"restart-warning": "Rebuilding or Restarting your NodeBB will drop all existing connections for a few seconds.",
+	"restart-disabled": "Rebuilding and Restarting your NodeBB has been disabled as you do not seem to be running it via the appropriate daemon.",
 	"maintenance-mode": "점검 모드",
 	"maintenance-mode-title": "NodeBB 점검 모드를 설정하시려면 이곳을 클릭하세요.",
 	"realtime-chart-updates": "실시간 차트 업데이트",

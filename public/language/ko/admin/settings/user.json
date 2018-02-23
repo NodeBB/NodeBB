@@ -62,5 +62,6 @@
 	"email-chat-notifs": "오프라인일 때 채팅 메시지가 도착하면 알림 메일 보내기",
 	"email-post-notif": "내가 구독한 주제에 답글이 달리면 메일 보내기",
 	"follow-created-topics": "작성한 게시물 팔로우",
-	"follow-replied-topics": "답글 단 게시물을 팔로우"
+	"follow-replied-topics": "답글 단 게시물을 팔로우",
+	"default-notification-settings": "Default notification settings"
 }

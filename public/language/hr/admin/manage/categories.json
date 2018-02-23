@@ -65,5 +65,7 @@
 	"alert.find-user": "Pronađi korisnika",
 	"alert.user-search": "Pretraži korisnika ovdje ...",
 	"alert.find-group": "Pronađi grupu",
-	"alert.group-search": "Pretraži grupu ovdje ..."
+	"alert.group-search": "Pretraži grupu ovdje ...",
+	"collapse-all": "Collapse All",
+	"expand-all": "Expand All"
 }

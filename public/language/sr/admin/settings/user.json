@@ -62,5 +62,6 @@
 	"email-chat-notifs": "Pošalji email ako nova chat poruka stigne dok nisam online",
 	"email-post-notif": "Pošalji email kada odgovori su načinjeni u temu u kojoj sam ja pretplaćen",
 	"follow-created-topics": "Prati teme koje si ti napravio",
-	"follow-replied-topics": "Prati teme na koje si ti odgovorio"
+	"follow-replied-topics": "Prati teme na koje si ti odgovorio",
+	"default-notification-settings": "Default notification settings"
 }

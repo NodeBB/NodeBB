@@ -14,5 +14,6 @@
 	"alerts.applied-success": "Kara Liste Uygulandı",
 
 	"analytics.blacklist-hourly": "<strong>Şekil 1</strong> Saatlik kara liste isabeti",
-	"analytics.blacklist-daily": "<strong>Şekil 2</strong> Günlük kara liste isabeti"
+	"analytics.blacklist-daily": "<strong>Şekil 2</strong> Günlük kara liste isabeti",
+	"ip-banned": "IP banned"
 }

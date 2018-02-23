@@ -36,9 +36,10 @@
 	"search-plugin-tooltip": "Pro aktivování funkce vyhledávání, nainstalujte rozšíření pro hledání ze stránky rozšíření.",
 
 	"control-panel": "Ovládání systému",
-	"reload": "Znovu načíst",
-	"restart": "Restartovat",
-	"restart-warning": "Znovu načtení nebo restartování NodeBB odpojí na pár vteřin všechna stávající připojení.",
+	"reload": "Restart",
+	"restart": "Rebuild &amp; Restart",
+	"restart-warning": "Rebuilding or Restarting your NodeBB will drop all existing connections for a few seconds.",
+	"restart-disabled": "Rebuilding and Restarting your NodeBB has been disabled as you do not seem to be running it via the appropriate daemon.",
 	"maintenance-mode": "Režim údržby",
 	"maintenance-mode-title": "Pro nastavení režimu údržby NodeBB, klikněte zde",
 	"realtime-chart-updates": "Aktualizace grafů v reálném čase",

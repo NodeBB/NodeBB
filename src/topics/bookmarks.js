@@ -30,7 +30,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getTopicBookmarks = function (tid, callback) {
-		db.getSortedSetRangeWithScores(['tid:' + tid + ':bookmarks'], 0, -1, callback);
+		db.getSortedSetRangeWithScores('tid:' + tid + ':bookmarks', 0, -1, callback);
 	};
 
 	Topics.updateTopicBookmarks = function (tid, pids, callback) {

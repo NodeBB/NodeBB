@@ -95,6 +95,7 @@
     "topics_per_page": "Topik setiap muka",
     "posts_per_page": "Kiriman setiap muka",
     "max_items_per_page": "Maximum %1",
+    "acp_language": "Admin Page Language",
     "notification_sounds": "Mainkan bunyi apabila anda mendapat pemberitahuan",
     "notifications_and_sounds": "Notifications & Sounds",
     "incoming-message-sound": "Incoming message sound",

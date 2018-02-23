@@ -36,9 +36,10 @@
 	"search-plugin-tooltip": "Install a search plugin from the plugin page in order to activate search functionality",
 
 	"control-panel": "Управление",
-	"reload": "Перезапустить",
-	"restart": "Перезагрузить",
-	"restart-warning": "Перезапуск системы сбросит все соединения на несколько секунд.",
+	"reload": "Restart",
+	"restart": "Rebuild &amp; Restart",
+	"restart-warning": "Rebuilding or Restarting your NodeBB will drop all existing connections for a few seconds.",
+	"restart-disabled": "Rebuilding and Restarting your NodeBB has been disabled as you do not seem to be running it via the appropriate daemon.",
 	"maintenance-mode": "Режим тех обслуживания",
 	"maintenance-mode-title": "Нажмите, чтобы включить режим тех обслуживания",
 	"realtime-chart-updates": "Обновление графиков в реальном времени",

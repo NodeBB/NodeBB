@@ -36,9 +36,10 @@
 	"search-plugin-tooltip": "Installer un plugin de recherche depuis la page des plugins pour activer la fonctionnalité de recherche",
 
 	"control-panel": "Contrôle du système",
-	"reload": "Recharger",
-	"restart": "Redémarrer",
-	"restart-warning": "Recharger ou redémarrer NodeBB coupera toutes les connexions existantes pendant quelques secondes.",
+	"reload": "Restart",
+	"restart": "Rebuild &amp; Restart",
+	"restart-warning": "Rebuilding or Restarting your NodeBB will drop all existing connections for a few seconds.",
+	"restart-disabled": "Rebuilding and Restarting your NodeBB has been disabled as you do not seem to be running it via the appropriate daemon.",
 	"maintenance-mode": "Mode maintenance",
 	"maintenance-mode-title": "Cliquez ici pour passer NodeBB en mode maintenance",
 	"realtime-chart-updates": "Mises à jour des graphiques en temps réel",

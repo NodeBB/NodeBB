@@ -132,6 +132,7 @@
     "wrong-login-type-email": "Xin vui lòng sửa dụng email của bạn để đăng nhập",
     "wrong-login-type-username": "Vui lòng sử dụng tên đăng nhập của bạn để đăng nhập",
     "sso-registration-disabled": "Không thể đăng ký với tài khoản %1, vui lòng đăng ký với địa chỉ email của bạn",
+    "sso-multiple-association": "You cannot associate multiple accounts from this service to your NodeBB account. Please dissociate your existing account and try again.",
     "invite-maximum-met": "Bạn đã sử dụng hết số lượng lời mời bạn có thể gửi (%1 đã gửi trên tổng số %2 được cho phép)",
     "no-session-found": "Không tìm thấy phiên đăng nhập!",
     "not-in-room": "Thành viên không có trong phòng",

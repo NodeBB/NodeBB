@@ -95,6 +95,7 @@
     "topics_per_page": "Število tem na stran",
     "posts_per_page": "Število objav na stran",
     "max_items_per_page": "Maximum %1",
+    "acp_language": "Admin Page Language",
     "notification_sounds": "Zvočno me opozori, ko prejmem obvestilo",
     "notifications_and_sounds": "Obvestila in zvoki",
     "incoming-message-sound": "Zvok za prejeto sporočilo",

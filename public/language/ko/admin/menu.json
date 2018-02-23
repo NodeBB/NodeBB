@@ -17,6 +17,7 @@
 	"manage/post-queue": "게시 대기열",
 	"manage/groups": "그룹",
 	"manage/ip-blacklist": "IP 블랙리스트",
+	"manage/uploads": "Uploads",
 
 	"section-settings": "설정",
 	"settings/general": "일반",

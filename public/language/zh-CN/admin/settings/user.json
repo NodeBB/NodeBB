@@ -62,5 +62,6 @@
 	"email-chat-notifs": "当我不在线并收到新的聊天消息时，给我发送邮件通知",
 	"email-post-notif": "当我订阅的主题有新回复时，给我发送邮件通知",
 	"follow-created-topics": "关注您创建的主题",
-	"follow-replied-topics": "关注您回复的主题"
+	"follow-replied-topics": "关注您回复的主题",
+	"default-notification-settings": "Default notification settings"
 }

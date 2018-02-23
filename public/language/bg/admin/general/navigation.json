@@ -14,9 +14,6 @@
 	"only-guest": "Да е видимо само за гостите",
 	"open-new-window": "Отваряне в нов прозорец",
 
-	"installed-plugins-required": "Нужни инсталирани добавки:",
-	"search-plugin": "Търсене на добавката",
-
 	"btn.delete": "Изтриване",
 	"btn.disable": "Изключване",
 	"btn.enable": "Включване",

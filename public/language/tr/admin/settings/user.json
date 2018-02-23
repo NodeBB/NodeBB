@@ -62,5 +62,6 @@
 	"email-chat-notifs": "Çevrimiçi değilken gelen mesajları e-posta olarak gönder",
 	"email-post-notif": "Abone olduğum konulara cevap gelince bana e-posta gönder",
 	"follow-created-topics": "Kendi konularımı takip et",
-	"follow-replied-topics": "Cevap verdiğim konuları takip et"
+	"follow-replied-topics": "Cevap verdiğim konuları takip et",
+	"default-notification-settings": "Default notification settings"
 }

@@ -17,6 +17,7 @@
 	"manage/post-queue": "File d’attente des messages",
 	"manage/groups": "Groupes",
 	"manage/ip-blacklist": "Liste noire d'IPs",
+	"manage/uploads": "Uploads",
 
 	"section-settings": "Réglages",
 	"settings/general": "Général",

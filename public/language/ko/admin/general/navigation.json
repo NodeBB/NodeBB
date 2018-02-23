@@ -14,9 +14,6 @@
 	"only-guest": "게스트에게만 보이기",
 	"open-new-window": "새 창에서 열기",
 
-	"installed-plugins-required": "설치된 플러그인 필수:",
-	"search-plugin": "검색 플러그인",
-
 	"btn.delete": "삭제",
 	"btn.disable": "비활성화",
 	"btn.enable": "활성화",

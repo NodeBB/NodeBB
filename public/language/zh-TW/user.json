@@ -95,6 +95,7 @@
     "topics_per_page": "每頁的主題數",
     "posts_per_page": "每頁的文章數",
     "max_items_per_page": "Maximum %1",
+    "acp_language": "Admin Page Language",
     "notification_sounds": "當你接收到通知時撥放音效",
     "notifications_and_sounds": "通知&音效",
     "incoming-message-sound": "收到訊息音效",

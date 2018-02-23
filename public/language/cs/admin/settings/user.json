@@ -62,5 +62,6 @@
 	"email-chat-notifs": "Nejsem-li online zaslat e-mail, dorazí-li nová zpráva z chatu",
 	"email-post-notif": "Zaslat e-mail, objeví-li se odpovědi v tématu, který sleduji",
 	"follow-created-topics": "Sledovat mnou vytvořená témata",
-	"follow-replied-topics": "Sledovat témata, na které jste odpověděl"
+	"follow-replied-topics": "Sledovat témata, na které jste odpověděl",
+	"default-notification-settings": "Default notification settings"
 }

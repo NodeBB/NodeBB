@@ -65,5 +65,7 @@
 	"alert.find-user": "사용자 검색",
 	"alert.user-search": "여기서 사용자를 검색하십시오...",
 	"alert.find-group": "그룹 검색",
-	"alert.group-search": "여기서 그룹을 검색하십시오..."
+	"alert.group-search": "여기서 그룹을 검색하십시오...",
+	"collapse-all": "Collapse All",
+	"expand-all": "Expand All"
 }

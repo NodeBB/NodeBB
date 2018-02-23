@@ -95,6 +95,7 @@
     "topics_per_page": "Teme po stranici",
     "posts_per_page": "Objave po stranici",
     "max_items_per_page": "Maximum %1",
+    "acp_language": "Admin Page Language",
     "notification_sounds": "Sviraj zvuk kada primim obavijest",
     "notifications_and_sounds": "Obavijesti i zvukovi",
     "incoming-message-sound": "Zvuk nadolazećih poruka",

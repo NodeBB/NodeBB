@@ -36,9 +36,10 @@
 	"search-plugin-tooltip": "Arama işlevselliğini etkinleştirmek için eklenti sayfasından bir arama eklentisi kurun",
 
 	"control-panel": "Sistem Kontrol",
-	"reload": "Yeniden Yükle",
-	"restart": "Yeniden Başlat",
-	"restart-warning": "NodeBB'yi yeniden yüklemek veya yeniden başlatmak, mevcut tüm bağlantıları birkaç saniye için sonlandırır.",
+	"reload": "Restart",
+	"restart": "Rebuild &amp; Restart",
+	"restart-warning": "Rebuilding or Restarting your NodeBB will drop all existing connections for a few seconds.",
+	"restart-disabled": "Rebuilding and Restarting your NodeBB has been disabled as you do not seem to be running it via the appropriate daemon.",
 	"maintenance-mode": "Bakım Modu",
 	"maintenance-mode-title": "NodeBB için bakım modunu ayarlamak için buraya tıklayın",
 	"realtime-chart-updates": "Gerçek Zamanlı Grafik Güncellemeleri",

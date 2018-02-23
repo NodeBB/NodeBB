@@ -2,6 +2,7 @@
 	"available": "Dostępne Widgety",
 	"explanation": "Wybierz widget z menu rozwijalnego i przeciągnij go na wybrane pole z lewej strony.",
 	"none-installed": "Nie odnaleziono widżetów! Aktywuj wtyczkę \"essential widgets\" w panelu sterowania <a href=\"%1\">wtyczek</a>.",
+	"clone-from": "Clone widgets from",
 	"containers.available": "Dostępne kontenery",
 	"containers.explanation": "Przeciągnij i upuść na dowolnym, aktywnym widżecie",
 	"containers.none": "Żadna",
@@ -14,6 +15,8 @@
 
 	"alert.confirm-delete": "Czy na pewno chcesz usunąć ten widget?",
 	"alert.updated": "Widżety zaktualizowane",
-	"alert.update-success": "Widżety zostały pomyślnie zaktualizowane"
+	"alert.update-success": "Widżety zostały pomyślnie zaktualizowane",
+	"alert.clone-success": "Successfully cloned widgets",
 
+	"error.select-clone": "Please select a page to clone from"
 }

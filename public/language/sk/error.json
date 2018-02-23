@@ -132,6 +132,7 @@
     "wrong-login-type-email": "Prosím použite svoj e-mail, k prihláseniu",
     "wrong-login-type-username": "Použite svoje užívateľské meno pre prihlásenie",
     "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
+    "sso-multiple-association": "You cannot associate multiple accounts from this service to your NodeBB account. Please dissociate your existing account and try again.",
     "invite-maximum-met": "Pozvali ste maximálny počet ľudí (%1 z %2).",
     "no-session-found": "Žiadne prihlásenie sa do relácií nenájdené!",
     "not-in-room": "Užívateľ nie je v miestnosti",

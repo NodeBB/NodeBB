@@ -132,6 +132,7 @@
     "wrong-login-type-email": "Lütfen giriş için e-posta adresinizi kullanın",
     "wrong-login-type-username": "Lütfen giriş için kullanıcı adınızı kullanın",
     "sso-registration-disabled": "%1 hesap için kayıt işlemi devre dışı bırakıldı, lütfen öncelikle bir eposta adresi ile kayıt olun",
+    "sso-multiple-association": "You cannot associate multiple accounts from this service to your NodeBB account. Please dissociate your existing account and try again.",
     "invite-maximum-met": "Sen maksimum miktarda insanı davet ettin (%2 üzerinden %1).",
     "no-session-found": "Giriş yapılmış bir oturum bulunamadı!",
     "not-in-room": "Odada kullanıcı yok",

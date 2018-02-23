@@ -95,6 +95,7 @@
     "topics_per_page": "จำนวนกระทู้ต่อหน้า",
     "posts_per_page": "จำนวนข้อความต่อหน้า",
     "max_items_per_page": "Maximum %1",
+    "acp_language": "Admin Page Language",
     "notification_sounds": "เล่นเสียงเมื่อมีการแจ้งเตือน",
     "notifications_and_sounds": "เสียงและการแจ้งเตือน",
     "incoming-message-sound": "เสียงข้อความเข้า",

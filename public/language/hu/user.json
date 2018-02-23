@@ -95,6 +95,7 @@
     "topics_per_page": "Téma oldalanként",
     "posts_per_page": "Hozzászólás oldalanként",
     "max_items_per_page": "Maximum %1",
+    "acp_language": "Admin Page Language",
     "notification_sounds": "Hang lejátszása, mikor értesítést kapsz",
     "notifications_and_sounds": "Értesítések és hangok",
     "incoming-message-sound": "Beérkező üzenet hangja",

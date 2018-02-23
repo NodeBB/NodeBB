@@ -36,9 +36,10 @@
 	"search-plugin-tooltip": "Встановіть пошуковий плагін зі сторінки плагінів, що активувати пошуковий функціонал",
 
 	"control-panel": "Керування системою",
-	"reload": "Перевантажити",
-	"restart": "Перезавантажити",
-	"restart-warning": "Перевантажування або перезавантаження вашого NodeBB скине всі існуючі з`єднання на декілька секунд.",
+	"reload": "Restart",
+	"restart": "Rebuild &amp; Restart",
+	"restart-warning": "Rebuilding or Restarting your NodeBB will drop all existing connections for a few seconds.",
+	"restart-disabled": "Rebuilding and Restarting your NodeBB has been disabled as you do not seem to be running it via the appropriate daemon.",
 	"maintenance-mode": "Режим обслуговування",
 	"maintenance-mode-title": "Натисніть тут, щоб налаштувати режим обслуговування NodeBB",
 	"realtime-chart-updates": "Оновлення графіків в реальному часі",

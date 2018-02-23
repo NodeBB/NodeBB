@@ -95,6 +95,7 @@
     "topics_per_page": "Temas por páxina",
     "posts_per_page": "Mensaxes por páxina",
     "max_items_per_page": "Maximum %1",
+    "acp_language": "Admin Page Language",
     "notification_sounds": "Reproducir un son cando recibes unha notificación.",
     "notifications_and_sounds": "Notificacións e Sons",
     "incoming-message-sound": "Son da mensaxe entrante",

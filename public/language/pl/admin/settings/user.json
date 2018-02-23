@@ -62,5 +62,6 @@
 	"email-chat-notifs": "Wyślij powiadomienie email, jeśli dostanę nową wiadomość, a nie jestem on-line",
 	"email-post-notif": "Wyślij wiadomość email, kiedy w tematach, które subskrybuję, pojawią się odpowiedzi",
 	"follow-created-topics": "Śledź tematy, które stworzyłeś",
-	"follow-replied-topics": "Śledź tematy, w których się wypowiedziałeś "
+	"follow-replied-topics": "Śledź tematy, w których się wypowiedziałeś ",
+	"default-notification-settings": "Default notification settings"
 }
