@@ -132,6 +132,7 @@
     "wrong-login-type-email": "Sila guna emel anda untuk log masuk",
     "wrong-login-type-username": "Sila guna nama pengguna anda untuk log masuk",
     "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
+    "sso-multiple-association": "You cannot associate multiple accounts from this service to your NodeBB account. Please dissociate your existing account and try again.",
     "invite-maximum-met": "Anda telah menjemput semaksima jumlah orang (%1 daripada %2).",
     "no-session-found": "Tiada sesyen log masuk dijumpai",
     "not-in-room": "Pengguna tiada dalam bilik",

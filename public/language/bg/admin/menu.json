@@ -17,6 +17,7 @@
 	"manage/post-queue": "Опашка за публикации",
 	"manage/groups": "Групи",
 	"manage/ip-blacklist": "Черен списък за IP адреси",
+	"manage/uploads": "Качвания",
 
 	"section-settings": "Настройки",
 	"settings/general": "Общи",

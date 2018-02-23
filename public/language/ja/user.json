@@ -95,6 +95,7 @@
     "topics_per_page": "ページごとのスレッド数",
     "posts_per_page": "ページごとの投稿数",
     "max_items_per_page": "Maximum %1",
+    "acp_language": "Admin Page Language",
     "notification_sounds": "通知の時に音を鳴らします",
     "notifications_and_sounds": "通知 & サウンド",
     "incoming-message-sound": "受信メッセージの音",

@@ -36,9 +36,10 @@
 	"search-plugin-tooltip": "Installiere ein Such-Plugin auf der Plugin-Seite um die Such-Funktionalität zu aktivieren",
 
 	"control-panel": "Systemsteuerung",
-	"reload": "Reload",
-	"restart": "Neustart",
-	"restart-warning": "Ein Reload oder Neustart trennt die Verbindung für ein paar Sekunden.",
+	"reload": "Restart",
+	"restart": "Rebuild &amp; Restart",
+	"restart-warning": "Rebuilding or Restarting your NodeBB will drop all existing connections for a few seconds.",
+	"restart-disabled": "Rebuilding and Restarting your NodeBB has been disabled as you do not seem to be running it via the appropriate daemon.",
 	"maintenance-mode": "Wartungsmodus",
 	"maintenance-mode-title": "Hier klicken um NodeBB in den Wartungsmodus zu versetzen",
 	"realtime-chart-updates": "Echtzeit Chartaktualisierung",

@@ -132,6 +132,7 @@
     "wrong-login-type-email": "請使用你的電子郵件進行登入",
     "wrong-login-type-username": "請使用你的帳號進行登入",
     "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
+    "sso-multiple-association": "You cannot associate multiple accounts from this service to your NodeBB account. Please dissociate your existing account and try again.",
     "invite-maximum-met": "你已經邀請最多可邀請的人數限制 (%1 於 %2)。",
     "no-session-found": "沒有找到登入的連線階段!",
     "not-in-room": "使用者沒有在聊天室中",

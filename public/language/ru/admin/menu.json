@@ -17,6 +17,7 @@
 	"manage/post-queue": "Post Queue",
 	"manage/groups": "Группы",
 	"manage/ip-blacklist": "Блокировка IP",
+	"manage/uploads": "Uploads",
 
 	"section-settings": "Настройки",
 	"settings/general": "Главные",

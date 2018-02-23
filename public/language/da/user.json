@@ -95,6 +95,7 @@
     "topics_per_page": "Emner per side",
     "posts_per_page": "Indlæg per side",
     "max_items_per_page": "Maximum %1",
+    "acp_language": "Admin Page Language",
     "notification_sounds": "Afspil en lyd når du modtager en notifikation",
     "notifications_and_sounds": "Underretninger & Lyde",
     "incoming-message-sound": "Indgående besked lyd",

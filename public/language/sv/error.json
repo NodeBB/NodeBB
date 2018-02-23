@@ -132,6 +132,7 @@
     "wrong-login-type-email": "Använd din e-postadress för att logga in",
     "wrong-login-type-username": "Använd ditt användarnamn för att logga in",
     "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
+    "sso-multiple-association": "You cannot associate multiple accounts from this service to your NodeBB account. Please dissociate your existing account and try again.",
     "invite-maximum-met": "Du har bjudit in det maximala antalet användare (%1 av %2)",
     "no-session-found": "Ingen login-session hittades!",
     "not-in-room": "Användaren finns inte i rummet",

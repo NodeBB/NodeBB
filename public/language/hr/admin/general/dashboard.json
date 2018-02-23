@@ -36,9 +36,10 @@
 	"search-plugin-tooltip": "Instalirajte dodatak za pretragu sa stranice za upravljanje dodatcima da aktivirate mogućnost pretrage foruma.",
 
 	"control-panel": "Kontrola sistema",
-	"reload": "Ponovno učitaj",
-	"restart": "Pokreni ponovno",
-	"restart-warning": "Ponovno pokretanje NodeBB će odbaciti sve uspostavljene veze na par sekundi.",
+	"reload": "Restart",
+	"restart": "Rebuild &amp; Restart",
+	"restart-warning": "Rebuilding or Restarting your NodeBB will drop all existing connections for a few seconds.",
+	"restart-disabled": "Rebuilding and Restarting your NodeBB has been disabled as you do not seem to be running it via the appropriate daemon.",
 	"maintenance-mode": "Održavanje",
 	"maintenance-mode-title": "Postavite mod za održavanje foruma",
 	"realtime-chart-updates": "Ažuriranja u stvarnom vremenu",

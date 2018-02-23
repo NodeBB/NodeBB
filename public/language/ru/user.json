@@ -95,6 +95,7 @@
     "topics_per_page": "Тем на странице",
     "posts_per_page": "Записей на странице",
     "max_items_per_page": "Максимум %1",
+    "acp_language": "Admin Page Language",
     "notification_sounds": "Воспроизводить звук во время получения уведомления",
     "notifications_and_sounds": "Уведомления и звуки",
     "incoming-message-sound": "Звук входящего сообщения",

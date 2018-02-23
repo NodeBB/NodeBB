@@ -65,5 +65,7 @@
 	"alert.find-user": "ユーザーの検索",
 	"alert.user-search": "ここでユーザーを検索...",
 	"alert.find-group": "グループを探す",
-	"alert.group-search": "ここでグループを検索する..."
+	"alert.group-search": "ここでグループを検索する...",
+	"collapse-all": "Collapse All",
+	"expand-all": "Expand All"
 }

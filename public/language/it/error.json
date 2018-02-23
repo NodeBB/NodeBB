@@ -132,6 +132,7 @@
     "wrong-login-type-email": "Per favore usa la tua email per accedere",
     "wrong-login-type-username": "Per favore usa il tuo nome utente per accedere",
     "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
+    "sso-multiple-association": "You cannot associate multiple accounts from this service to your NodeBB account. Please dissociate your existing account and try again.",
     "invite-maximum-met": "Hai invitato il massimo numero di persone possibili (%1 su %2).",
     "no-session-found": "Nessuna sessione valida di login trovata!",
     "not-in-room": "L'utente non è in questa stanza",

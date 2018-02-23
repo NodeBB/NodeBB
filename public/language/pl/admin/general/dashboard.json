@@ -36,9 +36,10 @@
 	"search-plugin-tooltip": "Zainstaluj wtyczkę wyszukiwania ze strony wtyczek, aby aktywować funkcję szukania",
 
 	"control-panel": "Zarządzanie systemem",
-	"reload": "Odśwież",
-	"restart": "Restart",
-	"restart-warning": "Przeładowanie lub restart NodeBB spowoduje przerwanie wszystkich istniejących połączeń na kilka sekund.",
+	"reload": "Restart",
+	"restart": "Rebuild &amp; Restart",
+	"restart-warning": "Rebuilding or Restarting your NodeBB will drop all existing connections for a few seconds.",
+	"restart-disabled": "Rebuilding and Restarting your NodeBB has been disabled as you do not seem to be running it via the appropriate daemon.",
 	"maintenance-mode": "Tryb konserwacji",
 	"maintenance-mode-title": "Kliknij tutaj aby skonfigurować tryb konserwacji dla NodeBB",
 	"realtime-chart-updates": "Wykresy aktualizowane na żywo",

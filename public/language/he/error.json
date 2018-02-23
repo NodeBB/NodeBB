@@ -132,6 +132,7 @@
     "wrong-login-type-email": "בבקשה השתמש בכתובת המייל שלך להתחברות",
     "wrong-login-type-username": "בבקשה השתמש בשם המשתמש שלך להתחברות",
     "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
+    "sso-multiple-association": "You cannot associate multiple accounts from this service to your NodeBB account. Please dissociate your existing account and try again.",
     "invite-maximum-met": "הזמנת את הכמות המירבית של אנשים (%1 מתוך %2).",
     "no-session-found": "לא נמצאו סשני התחברות!",
     "not-in-room": "משתמש זה לא בצ'אט",

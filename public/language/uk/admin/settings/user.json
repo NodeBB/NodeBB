@@ -62,5 +62,6 @@
 	"email-chat-notifs": "Надсилати листа, коли я не в мережі, якщо приходить чат повідомлення",
 	"email-post-notif": "Надсилати листа, коли в темах на які я підписаний з'являються відповіді",
 	"follow-created-topics": "Стежити за темами які ви створюєте",
-	"follow-replied-topics": "Стежити за темами в котрих ви відповідаєте"
+	"follow-replied-topics": "Стежити за темами в котрих ви відповідаєте",
+	"default-notification-settings": "Default notification settings"
 }

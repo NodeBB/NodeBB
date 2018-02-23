@@ -65,5 +65,7 @@
 	"alert.find-user": "Знайти користувача",
 	"alert.user-search": "Шукайте користувача тут...",
 	"alert.find-group": "Знайти групу",
-	"alert.group-search": "Шукайте групу тут..."
+	"alert.group-search": "Шукайте групу тут...",
+	"collapse-all": "Collapse All",
+	"expand-all": "Expand All"
 }

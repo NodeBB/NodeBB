@@ -17,6 +17,7 @@
 	"manage/post-queue": "Kolejka postów",
 	"manage/groups": "Grupy",
 	"manage/ip-blacklist": "Czarna lista IP",
+	"manage/uploads": "Uploads",
 
 	"section-settings": "Ustawienia",
 	"settings/general": "Ogólne",

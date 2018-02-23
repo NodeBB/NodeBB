@@ -65,5 +65,7 @@
 	"alert.find-user": "Trouver un utilisateur",
 	"alert.user-search": "Chercher un utilisateur ici...",
 	"alert.find-group": "Trouver un groupe",
-	"alert.group-search": "Chercher un groupe ici..."
+	"alert.group-search": "Chercher un groupe ici...",
+	"collapse-all": "Collapse All",
+	"expand-all": "Expand All"
 }

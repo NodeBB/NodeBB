@@ -132,6 +132,7 @@
     "wrong-login-type-email": "Sisse logimiseks kasuta oma emaili",
     "wrong-login-type-username": "Sisse logimiseks kasuta oma kasutajanime",
     "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
+    "sso-multiple-association": "You cannot associate multiple accounts from this service to your NodeBB account. Please dissociate your existing account and try again.",
     "invite-maximum-met": "Sa oled kutsunud maksimaalse lubatud inimeste arvu (%1 %2 'st).",
     "no-session-found": "Sisse logimis sessiooni ei leitud!",
     "not-in-room": "Kasutaja pole ruumis",

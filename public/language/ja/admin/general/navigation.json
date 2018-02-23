@@ -14,9 +14,6 @@
 	"only-guest": "ゲストにのみ表示する",
 	"open-new-window": "新しいウィンドウで開く",
 
-	"installed-plugins-required": "インストール済みのプラグインが必要です:",
-	"search-plugin": "検索プラグイン",
-
 	"btn.delete": "削除",
 	"btn.disable": "無効",
 	"btn.enable": "有効",

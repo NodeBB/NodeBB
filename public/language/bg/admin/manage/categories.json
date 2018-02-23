@@ -65,5 +65,7 @@
 	"alert.find-user": "Търсене на потребител",
 	"alert.user-search": "Потърсете потребител тук…",
 	"alert.find-group": "Търсене на група",
-	"alert.group-search": "Потърсете група тук…"
+	"alert.group-search": "Потърсете група тук…",
+	"collapse-all": "Свиване на всички",
+	"expand-all": "Разгъване на всички"
 }

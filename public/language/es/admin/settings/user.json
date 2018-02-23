@@ -62,5 +62,6 @@
 	"email-chat-notifs": "Send an email if a new chat message arrives and I am not online",
 	"email-post-notif": "Send an email when replies are made to topics I am subscribed to",
 	"follow-created-topics": "Follow topics you create",
-	"follow-replied-topics": "Follow topics that you reply to"
+	"follow-replied-topics": "Follow topics that you reply to",
+	"default-notification-settings": "Default notification settings"
 }

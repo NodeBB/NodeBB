@@ -95,6 +95,7 @@
     "topics_per_page": "Тем на сторінку",
     "posts_per_page": "Постів на сторінку",
     "max_items_per_page": "Maximum %1",
+    "acp_language": "Admin Page Language",
     "notification_sounds": "Програвати звук, коли ви отримуєте сповіщення",
     "notifications_and_sounds": "Сповіщення та звуки",
     "incoming-message-sound": "Звук вхідного повідомлення",

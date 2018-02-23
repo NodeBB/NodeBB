@@ -2,6 +2,7 @@
 	"available": "Kullanılabilir Bileşenler",
 	"explanation": "Açılır menüden bir bileşen seçin ve sol taraftaki bir şablonun bileşen alanına sürükleyip bırakın.",
 	"none-installed": "Bileşen bulunamadı! Gerekli bileşenleri <a href=\"%1\">eklentiler</a> kontrol panelinden aktifleştirin.",
+	"clone-from": "Clone widgets from",
 	"containers.available": "Kullanılabilir Konteynırlar",
 	"containers.explanation": "Aktif olan herhangi bir bileşenin üzerine sürükleyin ve bırakın",
 	"containers.none": "Hiçbiri",
@@ -14,6 +15,8 @@
 
 	"alert.confirm-delete": "Bu bileşeni silmek istediğinizden emin misiniz?",
 	"alert.updated": "Bileşenler Güncellendi",
-	"alert.update-success": "Bileşenler başarıyla güncellendi"
+	"alert.update-success": "Bileşenler başarıyla güncellendi",
+	"alert.clone-success": "Successfully cloned widgets",
 
+	"error.select-clone": "Please select a page to clone from"
 }
