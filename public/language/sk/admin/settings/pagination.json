@@ -1,11 +1,11 @@
 {
 	"pagination": "Nastavenia stránkovania",
-	"enable": "Paginate topics and posts instead of using infinite scroll.",
-	"topics": "Topic Pagination",
-	"posts-per-page": "Posts per Page",
-	"max-posts-per-page": "Maximum posts per page",
-	"categories": "Category Pagination",
-	"topics-per-page": "Topics per Page",
-	"max-topics-per-page": "Maximum topics per page",
-	"initial-num-load": "Initial Number of Topics to Load on Unread, Recent, and Popular"
+	"enable": "Stránkovať témy a príspevky namiesto použitia nekonečného posúvania.",
+	"topics": "Stránkovanie tém",
+	"posts-per-page": "Príspevkov na stránku",
+	"max-posts-per-page": "Maximálne množstvo príspevkov na stránku",
+	"categories": "Stránkovanie kategórií",
+	"topics-per-page": "Tém na stránku",
+	"max-topics-per-page": "Maximálne množstvo tém na stránku",
+	"initial-num-load": "Počiatočný počet tém, ktoré sa majú načítať u neprečítaných, nedávnych a populárnych"
 }

@@ -1,12 +1,12 @@
 {
 	"general": "Všeobecné",
 	"private-groups": "Súkromné ​​skupiny",
-	"private-groups.help": "If enabled, joining of groups requires the approval of the group owner <em>(Default: enabled)</em>",
-	"private-groups.warning": "<strong>Beware!</strong> If this option is disabled and you have private groups, they automatically become public.",
-	"allow-creation": "Allow Group Creation",
-	"allow-creation-help": "If enabled, users can create groups <em>(Default: disabled)</em>",
-	"max-name-length": "Maximum Group Name Length",
-	"cover-image": "Group Cover Image",
-	"default-cover": "Default Cover Images",
-	"default-cover-help": "Add comma-separated default cover images for groups that don't have an uploaded cover image"
+	"private-groups.help": "Ak je povolené, pripojenie k skupine vyžaduje schválenie zakladateľa skupiny <em> (Predvolené: povolené)</em>",
+	"private-groups.warning": "<strong>Ale pozor</strong>, ak je táto možnosť zakázaná a vy máte súkromné ​​skupiny, stanú sa automaticky verejnými.",
+	"allow-creation": "Povoliť vytvorenie skupín",
+	"allow-creation-help": "Ak je povolené, používatelia môžu vytvoriť skupiny <em>(Predvolené: zakázané)</em>",
+	"max-name-length": "Maximálna dĺžka názvu skupiny",
+	"cover-image": "Obrázok skupiny",
+	"default-cover": "Predvolený obrázok",
+	"default-cover-help": "Pre skupiny, ktoré nemajú nahraný obrázok, pridajte predvolené obrázky oddelené čiarkami"
 }

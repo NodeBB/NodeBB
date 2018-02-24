@@ -1,12 +1,12 @@
 {
 	"reputation": "Nastavenie reputácie",
-	"disable": "Disable Reputation System",
-	"disable-down-voting": "Disable Down Voting",
-	"votes-are-public": "Všetky hlasy sú verejné",
-	"thresholds": "Activity Thresholds",
-	"min-rep-downvote": "Minimum reputation to downvote posts",
-	"min-rep-flag": "Minimálna reputácia pre označenie prízpevku",
-	"min-rep-website": "Minimum reputation to add \"Website\" to user profile",
-	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",
-	"min-rep-signature": "Minimum reputation to add \"Signature\" to user profile"
+	"disable": "Zakázať systém reputácie",
+	"disable-down-voting": "Zakázať hlasovanie",
+	"votes-are-public": "Všetky hlasovania sú verejné",
+	"thresholds": "Obmedzenie aktivity",
+	"min-rep-downvote": "Minimálna reputácia k vyjadreniu nesúhlasu s príspevkom ",
+	"min-rep-flag": "Minimálna reputácia pre označenie príspevku",
+	"min-rep-website": "Minimálna reputácia pre pridanie „Webovej stránky” do používateľského profilu",
+	"min-rep-aboutme": "Minimálna reputácia pre pridanie „O mne” do používateľského profilu",
+	"min-rep-signature": "Minimálna reputácia pre pridanie „Podpisu” do používateľského profilu"
 }

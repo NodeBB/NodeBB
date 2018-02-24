@@ -2,6 +2,6 @@
 	"alert.confirm-reload": "Biztosan újra szeretnéd tölteni a NodeBB-t?",
 	"alert.confirm-restart": "Biztosan újra szeretnéd indítani a NodeBB-t?",
 
-	"acp-title": "%1 | NodeBB Admin Vezérlőpult",
+	"acp-title": "%1 | NodeBB Adminisztrációs vezérlőpult",
 	"settings-header-contents": "Tartalmak"
 }
