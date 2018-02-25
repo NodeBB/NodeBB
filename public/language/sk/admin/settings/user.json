@@ -18,7 +18,7 @@
 	"hide-email": "Skryť e-mail pre používateľmi",
 	"themes": "Vzhľady",
 	"disable-user-skins": "Zabrániť používateľovi vo výbere vlastného vzhľadu",
-	"account-protection": "Account Protection",
+	"account-protection": "Ochrana účtu",
 	"admin-relogin-duration": "Admin relogin duration (minutes)",
 	"admin-relogin-duration-help": "After a set amount of time accessing the admin section will require re-login, set to 0 to disable",
 	"login-attempts": "Login attempts per hour",

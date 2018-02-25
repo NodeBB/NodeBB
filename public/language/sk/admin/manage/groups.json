@@ -20,7 +20,7 @@
 	"edit.show-badge": "Zobraziť odznak",
 	"edit.private-details": "Ak je povolené, pripojenie k skupine vyžaduje schválenie od vlastníka skupiny.",
 	"edit.private-override": "Upozornenie: súkromné ​​skupiny sú zakázané na systémovej úrovni, ktorej táto možnosť zruší platnosť.",
-	"edit.disable-requests": "Disable join requests",
+	"edit.disable-requests": "Zakázať požiadavky pre pripojenie",
 	"edit.hidden": "Hidden",
 	"edit.hidden-details": "If enabled, this group will not be found in the groups listing, and users will have to be invited manually",
 	"edit.add-user": "Add User to Group",

@@ -6,13 +6,13 @@
 	"nodejs": "nodejs",
 	"online": "online",
 	"git": "git",
-	"memory": "memory",
-	"load": "load",
-	"uptime": "uptime",
+	"memory": "memória",
+	"load": "terhelés",
+	"uptime": "üzemidő",
 
-	"registered": "Registered",
+	"registered": "Regisztrált",
 	"sockets": "Sockets",
-	"guests": "Guests",
+	"guests": "Vendégek",
 
-	"info": "Info"
+	"info": "Információ"
 }

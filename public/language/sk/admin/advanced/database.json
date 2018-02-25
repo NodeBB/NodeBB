@@ -21,7 +21,7 @@
 	"mongo.raw-info": "Raw informácie MongoDB",
 
 	"redis": "Redis",
-	"redis.version": "Redis Version",
+	"redis.version": "Verzia Redis",
 	"redis.connected-clients": "Connected Clients",
 	"redis.connected-slaves": "Connected Slaves",
 	"redis.blocked-clients": "Blocked Clients",

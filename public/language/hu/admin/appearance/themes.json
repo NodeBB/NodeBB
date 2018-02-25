@@ -1,11 +1,11 @@
 {
-    "checking-for-installed": "Checking for installed themes...",
-    "homepage": "Homepage",
-    "select-theme": "Select Theme",
-    "current-theme": "Current Theme",
-    "no-themes": "No installed themes found",
-    "revert-confirm": "Are you sure you wish to restore the default NodeBB theme?",
-    "theme-changed": "Theme Changed",
-    "revert-success": "You have successfully reverted your NodeBB back to it's default theme.",
-    "restart-to-activate": "Please restart your NodeBB to fully activate this theme"
+    "checking-for-installed": "Telepített témák ellenőrzése...",
+    "homepage": "Kezdőoldal",
+    "select-theme": "Téma választása",
+    "current-theme": "Aktuális téma",
+    "no-themes": "Nem található telepített téma",
+    "revert-confirm": "Biztos vissza akarod állítani az alapértelmezett NodeBB témát?",
+    "theme-changed": "Téma módosítva",
+    "revert-success": "Sikeresen visszaállítottad a NodeBB alapértelmezett témáját.",
+    "restart-to-activate": "Kérlek, indítsd újra a NodeBB-t, a téma teljes aktiválásához"
 }

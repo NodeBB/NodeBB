@@ -1,9 +1,9 @@
 {
-	"loading": "Loading Skins...",
-	"homepage": "Homepage",
-	"select-skin": "Select Skin",
-	"current-skin": "Current Skin",
-	"skin-updated": "Skin Updated",
-	"applied-success": "%1 skin was succesfully applied",
-	"revert-success": "Skin reverted to base colours"
+	"loading": "Felületek betöltése...",
+	"homepage": "Kezdőoldal",
+	"select-skin": "Felület választása",
+	"current-skin": "Jelenlegi felület",
+	"skin-updated": "Felület frissítve",
+	"applied-success": "%1 felület sikeresen alkalmazva",
+	"revert-success": "Felület visszaállítva az alap színekre"
 }

@@ -18,7 +18,7 @@
 	"restrictions.rep-threshold": "Ohraničenie reputácie pred zrušením týchto obmedzení",
 	"restrictions.seconds-defore-new": "Sekundy predtým, než používateľ môže pridať príspevok",
 	"restrictions.seconds-edit-after": "Počet sekúnd než bude môcť používateľ upraviť príspevok pred jeho odoslaním. (0 zákaz)",
-	"restrictions.seconds-delete-after": "Number of seconds before users are allowed to delete posts after posting. (0 disabled)",
+	"restrictions.seconds-delete-after": "Počet sekúnd než bude môcť používateľ zmazať príspevok pred jeho odoslaním. (0 zákaz)",
 	"restrictions.replies-no-delete": "Number of replies after users are disallowed to delete their own topics. (0 disabled)",
 	"restrictions.min-title-length": "Minimum Title Length",
 	"restrictions.max-title-length": "Maximum Title Length",
