@@ -95,7 +95,7 @@ function uploadAsFile(req, uploadedFile, callback) {
 		},
 		function (fileObj, next) {
 			next(null, { url: fileObj.url });
-		}
+		},
 	], callback);
 }
 
