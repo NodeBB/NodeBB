@@ -73,7 +73,14 @@ function uploadAsImage(req, uploadedFile, callback) {
 
 			resizeImage(fileObj, next);
 		},
-	], callback);
+	], function (err, fileObj) {
+		if (err) {
+			return callback(err);
+		}
+
+		delete fileObj.path;
+		callback(null, fileObj);
+	});
 }
 
 function uploadAsFile(req, uploadedFile, callback) {
@@ -90,7 +97,14 @@ function uploadAsFile(req, uploadedFile, callback) {
 			}
 			uploadsController.uploadFile(req.uid, uploadedFile, next);
 		},
-	], callback);
+	], function (err, fileObj) {
+		if (err) {
+			return callback(err);
+		}
+
+		delete fileObj.path;
+		callback(null, fileObj);
+	});
 }
 
 function resizeImage(fileObj, callback) {
