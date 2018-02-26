@@ -82,7 +82,6 @@ describe('Upload Controllers', function () {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
-				assert(body[0].path);
 				assert(body[0].url);
 				done();
 			});
@@ -95,7 +94,6 @@ describe('Upload Controllers', function () {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
-				assert(body[0].path);
 				assert(body[0].url);
 				meta.config.maximumImageWidth = oldValue;
 				done();
@@ -112,7 +110,6 @@ describe('Upload Controllers', function () {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
-				assert(body[0].path);
 				assert(body[0].url);
 				done();
 			});
