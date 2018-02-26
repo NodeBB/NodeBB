@@ -22,15 +22,15 @@
 
 	"redis": "Redis",
 	"redis.version": "Verzia Redis",
-	"redis.connected-clients": "Connected Clients",
-	"redis.connected-slaves": "Connected Slaves",
-	"redis.blocked-clients": "Blocked Clients",
-	"redis.used-memory": "Used Memory",
-	"redis.memory-frag-ratio": "Memory Fragmentation Ratio",
-	"redis.total-connections-recieved": "Total Connections Received",
-	"redis.total-commands-processed": "Total Commands Processed",
-	"redis.iops": "Instantaneous Ops. Per Second",
-	"redis.keyspace-hits": "Keyspace Hits",
-	"redis.keyspace-misses": "Keyspace Misses",
-	"redis.raw-info": "Redis Raw Info"
+	"redis.connected-clients": "Pripojených klientov",
+	"redis.connected-slaves": "Druhotné pripojenia",
+	"redis.blocked-clients": "Blokovaných klientov",
+	"redis.used-memory": "Použitá pamäť",
+	"redis.memory-frag-ratio": "Pomer fragmentácia pamäte",
+	"redis.total-connections-recieved": "Súhrnné množstvo pripojení",
+	"redis.total-commands-processed": "Súhrnne spracované príkazov",
+	"redis.iops": "Okamžité spracovanie za sekundu",
+	"redis.keyspace-hits": "Spracovaných kľúčov",
+	"redis.keyspace-misses": "Chyby kľúča",
+	"redis.raw-info": "Informácie Redis Raw"
 }

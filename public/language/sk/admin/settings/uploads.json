@@ -19,10 +19,10 @@
 	"profile-image-dimension-help": "(v pixeloch, predvolené: 128 pixelov)",
 	"max-profile-image-size": "Maximálna veľkosť profilového obrázka",
 	"max-profile-image-size-help": "(v kilobajtoch, predvolené: 256 KiB)",
-	"max-cover-image-size": "Maximum Cover Image File Size",
-	"max-cover-image-size-help": "(in kibibytes, default: 2,048 KiB)",
-	"keep-all-user-images": "Keep old versions of avatars and profile covers on the server",
-	"profile-covers": "Profile Covers",
-	"default-covers": "Default Cover Images",
-	"default-covers-help": "Add comma-separated default cover images for accounts that don't have an uploaded cover image"
+	"max-cover-image-size": "Maximálna veľkosť profilového obrázku",
+	"max-cover-image-size-help": "(v kilobajtoch, predvolené: 2048 KiB)",
+	"keep-all-user-images": "Ponechať starú verziu obrázkov a profilových obrázkov na serveri",
+	"profile-covers": "Profilové obrázky",
+	"default-covers": "Predvolený obrázok",
+	"default-covers-help": "Pridať predvolené obrázky oddelené čiarkou pre účty, ktoré nemajú nahraný obrázok"
 }

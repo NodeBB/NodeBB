@@ -28,7 +28,7 @@
     "notif.chat.subject": "Máte novú správu od %1",
     "notif.chat.cta": "Kliknite sem pre pokračovanie v konverzácii",
     "notif.chat.unsub.info": "Túto správu konverzácie ste prijali na základe Vašich nastavení odoberania.",
-    "notif.post.cta": "Kliknite sem pre zobrazenie celej diskusie",
+    "notif.post.cta": "Kliknite sem, pre zobrazenie celej témy",
     "notif.post.unsub.info": "Toto oznámenie o príspevkoch ste prijali na základe Vašich nastavení účtu.",
     "notif.cta": "Click here to go to forum",
     "test.text1": "Toto je skúšobný e-mail na overenie funkčnosti e-mailovej aplikácie Vášho NodeBB fóra.",

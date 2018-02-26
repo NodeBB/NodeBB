@@ -21,13 +21,13 @@
     "csrf-invalid": "Nie sme schopný Vás znova prihlásiť, pravdepodobne kvôli uplynutiu relácie. Zopakujte to neskôr prosím.",
     "invalid-pagination-value": "Neplatná stránkovania hodnota, musí byť najmenej %1 a najviac %2",
     "username-taken": "Užívateľské meno je už obsadené",
-    "email-taken": "E-mail je už obsadený",
-    "email-not-confirmed": "Váš e-mail nebol ešte overený, prosím kliknite sem pre overenie Vášho e-mailu.",
-    "email-not-confirmed-chat": "Nemôžete vytvoriť konverzáciu pokiaľ Váš e-mail nebude overený, prosím kliknite sem pre overenie Vášho e-mailu.",
+    "email-taken": "Tento e-mail je už obsadený",
+    "email-not-confirmed": "Váš e-mail nebol ešte overený. Prosím kliknite sem, pre overenie Vášho e-mailu.",
+    "email-not-confirmed-chat": "Nemôžete vytvoriť konverzáciu pokiaľ Váš e-mail nebude overený. Prosím kliknite sem, pre overenie Vášho e-mailu.",
     "email-not-confirmed-email-sent": "Váš e-mail zatiaľ nebol overený, prosíme skontrolujte si svoju doručenú poštu pre overenie e-mailu.",
-    "no-email-to-confirm": "Pre toto fórum je potrebné overenie e-mailom, prosím kliknite sem pre zadanie e-mailu.",
+    "no-email-to-confirm": "Pre toto fórum je potrebné overenie e-mailom. Prosím kliknite sem, pre zadanie e-mailu.",
     "email-confirm-failed": "Momentálne nemôžeme overiť Váš e-mail, prosím zopakujte to neskôr.",
-    "confirm-email-already-sent": "Overovací e-mail už bol odoslaný, prosím počkajte %1 minút(y) k odoslaniu ďalšieho.",
+    "confirm-email-already-sent": "Overovací e-mail už bol odoslaný. Prosím počkajte %1 minút(y) k odoslaniu ďalšieho.",
     "sendmail-not-found": "Odoslaný spúšťač nebol nájdený, prosím uistite sa že je nainštalovaný a spustiteľný užívateľom používajúcim NodeBB.",
     "username-too-short": "Užívateľské meno je príliš krátke",
     "username-too-long": "Užívateľské meno je príliš dlhé",
@@ -142,5 +142,5 @@
     "invalid-home-page-route": "Neplatná cesta pre domovskú stránku",
     "invalid-session": "Relácia neodpovedá",
     "invalid-session-text": "Vyzerá to, že Vaše prihlasovacia relácia už nie je aktívna, alebo sa už nezhoduje so serverom. Aktualizujte túto stránku.",
-    "no-topics-selected": "No topics selected!"
+    "no-topics-selected": "Žiadne vybrané témy."
 }
