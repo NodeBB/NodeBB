@@ -132,7 +132,7 @@
     "wrong-login-type-email": "请输入您的电子邮箱地址登录",
     "wrong-login-type-username": "请输入您的用户名登录",
     "sso-registration-disabled": "已经禁止注册注册 %1 账户, 请使用邮箱地址注册",
-    "sso-multiple-association": "You cannot associate multiple accounts from this service to your NodeBB account. Please dissociate your existing account and try again.",
+    "sso-multiple-association": "您无法将此服务中的多个账户关联到您的NodeBB账号。请您分离的现有账号并重试。",
     "invite-maximum-met": "您的邀请人数超出了上限 (%1 超过了 %2)。",
     "no-session-found": "未登录!",
     "not-in-room": "用户已不在聊天室中",
