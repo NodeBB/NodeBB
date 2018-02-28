@@ -16,12 +16,14 @@ module.exports = function (privileges) {
 		{ name: 'Chat' },
 		{ name: 'Upload Images' },
 		{ name: 'Upload Files' },
+		{ name: 'Signature' },
 	];
 
 	privileges.global.userPrivilegeList = [
 		'chat',
 		'upload:post:image',
 		'upload:post:file',
+		'signature',
 	];
 
 	privileges.global.groupPrivilegeList = privileges.global.userPrivilegeList.map(function (privilege) {

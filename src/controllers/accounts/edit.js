@@ -17,9 +17,17 @@ var editController = module.exports;
 editController.get = function (req, res, callback) {
 	async.waterfall([
 		function (next) {
-			accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, next);
+			async.parallel({
+				userData: function (next) {
+					accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, next);
+				},
+				canUseSignature: function (next) {
+					privileges.global.can('signature', req.uid, next);
+				},
+			}, next);
 		},
-		function (userData, next) {
+		function (results, next) {
+			var userData = results.userData;
 			if (!userData) {
 				return callback();
 			}
@@ -30,7 +38,7 @@ editController.get = function (req, res, callback) {
 			userData.allowAccountDelete = parseInt(meta.config.allowAccountDelete, 10) === 1;
 			userData.allowWebsite = !userData.isSelf || parseInt(userData.reputation, 10) >= (parseInt(meta.config['min:rep:website'], 10) || 0);
 			userData.allowAboutMe = !userData.isSelf || parseInt(userData.reputation, 10) >= (parseInt(meta.config['min:rep:aboutme'], 10) || 0);
-			userData.allowSignature = !userData.isSelf || parseInt(userData.reputation, 10) >= (parseInt(meta.config['min:rep:signature'], 10) || 0);
+			userData.allowSignature = results.canUseSignature && (!userData.isSelf || parseInt(userData.reputation, 10) >= (parseInt(meta.config['min:rep:signature'], 10) || 0));
 			userData.profileImageDimension = parseInt(meta.config.profileImageDimension, 10) || 200;
 			userData.defaultAvatar = user.getDefaultAvatar();
 

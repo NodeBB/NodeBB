@@ -668,6 +668,7 @@ describe('Categories', function () {
 					chat: false,
 					'upload:post:image': false,
 					'upload:post:file': false,
+					signature: false,
 				});
 
 				done();
@@ -704,6 +705,7 @@ describe('Categories', function () {
 					'groups:chat': true,
 					'groups:upload:post:image': true,
 					'groups:upload:post:file': false,
+					'groups:signature': true,
 				});
 
 				done();

@@ -7,12 +7,14 @@ var user = require('../user');
 var groups = require('../groups');
 var meta = require('../meta');
 var plugins = require('../plugins');
+var privileges = require('../privileges');
 
 module.exports = function (Posts) {
 	Posts.getUserInfoForPosts = function (uids, uid, callback) {
 		var groupsMap = {};
 		var userData;
 		var userSettings;
+		var canUseSignature;
 		async.waterfall([
 			function (next) {
 				async.parallel({
@@ -22,11 +24,15 @@ module.exports = function (Posts) {
 					userSettings: function (next) {
 						user.getMultipleUserSettings(uids, next);
 					},
+					canUseSignature: function (next) {
+						privileges.global.can('signature', uid, next);
+					},
 				}, next);
 			},
 			function (results, next) {
 				userData = results.userData;
 				userSettings = results.userSettings;
+				canUseSignature = results.canUseSignature;
 				var groupTitles = userData.map(function (userData) {
 					return userData && userData.groupTitle;
 				}).filter(function (groupTitle, index, array) {
@@ -74,7 +80,7 @@ module.exports = function (Posts) {
 									groups.isMember(userData.uid, userData.groupTitle, next);
 								},
 								signature: function (next) {
-									if (!userData.signature || parseInt(meta.config.disableSignatures, 10) === 1) {
+									if (!userData.signature || !canUseSignature || parseInt(meta.config.disableSignatures, 10) === 1) {
 										userData.signature = '';
 										return next();
 									}
