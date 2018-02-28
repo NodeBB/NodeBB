@@ -2,9 +2,11 @@
 
 var async = require('async');
 var validator = require('validator');
+var diff = require('diff');
 
 var db = require('../database');
-var diff = require('diff');
+var plugins = require('../plugins');
+var translator = require('../translator');
 
 module.exports = function (Posts) {
 	Posts.diffs = {};
@@ -50,16 +52,26 @@ module.exports = function (Posts) {
 
 			// Replace content with re-constructed content from that point in time
 			data.post.content = data.diffs.reverse().reduce(function (content, diffString) {
-				return diff.applyPatch(content, diffString);
+				return diff.applyPatch(content, diffString, {
+					fuzzFactor: 1,
+				});
 			}, data.post.content);
 
 			// Clear editor data (as it is outdated for this content)
 			delete data.post.edited;
 			data.post.editor = null;
 
-			Posts.parsePost(data.post, function (err, post) {
-				callback(err, post);
-			});
+			data.post.content = String(data.post.content || '');
+
+			async.waterfall([
+				function (next) {
+					plugins.fireHook('filter:parse.post', { postData: data.post }, next);
+				},
+				function (data, next) {
+					data.postData.content = translator.escape(data.postData.content);
+					next(null, data.postData);
+				},
+			], callback);
 		});
 	};
 };
