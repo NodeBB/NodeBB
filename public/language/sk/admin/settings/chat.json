@@ -1,11 +1,11 @@
 {
 	"chat-settings": "Nastavenia konverzácie",
 	"disable": "Zakázať konverzáciu",
-	"disable-editing": "Disable chat message editing/deletion",
-	"disable-editing-help": "Administrators and global moderators are exempt from this restriction",
-	"max-length": "Maximum length of chat messages",
-	"max-room-size": "Maximum number of users in chat rooms",
-	"delay": "Time between chat messages in milliseconds",
-	"restrictions.seconds-edit-after": "Number of seconds before users are allowed to edit chat messages after posting. (0 disabled)",
-	"restrictions.seconds-delete-after": "Number of seconds before users are allowed to delete chat messages after posting. (0 disabled)"
+	"disable-editing": "Zakázať upravenie/odstránenie konverzačnej správy",
+	"disable-editing-help": "Správcovia a globálny moderátori sú vyňatí z tohto obmedzenia",
+	"max-length": "Maximálna dĺžka konverzačnej správy",
+	"max-room-size": "Maximálny počet používateľov v konverzačnej miestnosti",
+	"delay": "Čas medzi konverzačnými správami v milisekundách",
+	"restrictions.seconds-edit-after": "Počet sekúnd než je používateľovi umožnené upraviť správy konverzácie po ich odoslaní. (0 zákaz)",
+	"restrictions.seconds-delete-after": "Počet sekúnd než je užívateľovi umožnené zmazať správy konverzácie po ich odoslaní. (0 zákaz)"
 }

@@ -1,9 +1,9 @@
 {
 	"notifications": "Oznámenia",
-	"chat-messages": "Chat Messages",
-	"play-sound": "Play",
-	"incoming-message": "Incoming Message",
-	"outgoing-message": "Outgoing Message",
-	"upload-new-sound": "Upload New Sound",
-	"saved": "Settings Saved"
+	"chat-messages": "Správy konverzácie",
+	"play-sound": "Prehrať",
+	"incoming-message": "Prichádzajúca správa",
+	"outgoing-message": "Odchádzajúca správa",
+	"upload-new-sound": "Nahrať novú zvuk",
+	"saved": "Nastavenie bolo uložené"
 }

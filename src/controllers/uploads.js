@@ -73,6 +73,9 @@ function uploadAsImage(req, uploadedFile, callback) {
 
 			resizeImage(fileObj, next);
 		},
+		function (fileObj, next) {
+			next(null, { url: fileObj.url });
+		},
 	], callback);
 }
 
@@ -89,6 +92,9 @@ function uploadAsFile(req, uploadedFile, callback) {
 				return next(new Error('[[error:uploads-are-disabled]]'));
 			}
 			uploadsController.uploadFile(req.uid, uploadedFile, next);
+		},
+		function (fileObj, next) {
+			next(null, { url: fileObj.url });
 		},
 	], callback);
 }

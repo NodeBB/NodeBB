@@ -19,7 +19,7 @@
 	"themes": "主题",
 	"disable-user-skins": "阻止用户选择自定义皮肤",
 	"account-protection": "帐号保护",
-	"admin-relogin-duration": "管理面板无操作自动退出时长 (分钟)",
+	"admin-relogin-duration": "管理员无操作自动退出时长 (分钟)",
 	"admin-relogin-duration-help": "访问管理面板一段时间后需要重新登录以保证管理面板的安全，设置为0以禁用。",
 	"login-attempts": "每小时尝试登录次数",
 	"login-attempts-help": "如果用户的尝试登录次数超过此界限，该帐号将会被被锁定预设的时间。",
@@ -63,5 +63,5 @@
 	"email-post-notif": "当我订阅的主题有新回复时，给我发送邮件通知",
 	"follow-created-topics": "关注您创建的主题",
 	"follow-replied-topics": "关注您回复的主题",
-	"default-notification-settings": "Default notification settings"
+	"default-notification-settings": "默认通知设置"
 }

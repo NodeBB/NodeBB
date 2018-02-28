@@ -387,7 +387,7 @@
 		},
 
 		isEmailValid: function (email) {
-			return typeof email === 'string' && email.length && email.indexOf('@') !== -1;
+			return typeof email === 'string' && email.length && email.indexOf('@') !== -1 && email.indexOf(',') === -1 && email.indexOf(';') === -1;
 		},
 
 		isUserNameValid: function (name) {

@@ -66,6 +66,6 @@
 	"alert.user-search": "Hier nach einem Benutzer suchen...",
 	"alert.find-group": "Gruppe finden",
 	"alert.group-search": "Hier nach einer Gruppe suchen...",
-	"collapse-all": "Collapse All",
-	"expand-all": "Expand All"
+	"collapse-all": "Alle einklappen",
+	"expand-all": "Alle ausklappen"
 }

@@ -1,7 +1,7 @@
 {
     "title": "Olvasatlan",
     "no_unread_topics": "Nincs olvasatlan témakör.",
-    "load_more": "Több betöltése",
+    "load_more": "További betöltése",
     "mark_as_read": "Megjelölés olvasottként",
     "selected": "Kiválasztva",
     "all": "Mind",
@@ -10,6 +10,6 @@
     "all-topics": "Minden témakör",
     "new-topics": "Új témakör",
     "watched-topics": "Figyelt témakör",
-    "unreplied-topics": "Unreplied Topics",
-    "multiple-categories-selected": "Multiple Selected"
+    "unreplied-topics": "Meg nem válaszolt témakör",
+    "multiple-categories-selected": "Többszörös kijelölés"
 }

@@ -15,5 +15,5 @@
 
 	"analytics.blacklist-hourly": "<strong>Figur 1</strong> &ndash; Blacklist-Treffer pro Stunde",
 	"analytics.blacklist-daily": " <strong>Figur 2</strong> &ndash; Blacklist-Treffer pro Tag",
-	"ip-banned": "IP banned"
+	"ip-banned": "IP-Adresse ist gebannt"
 }

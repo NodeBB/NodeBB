@@ -1,19 +1,19 @@
 {
 	"none": "Vaše fórum zatiaľ neobsahuje žiadne témy.",
-	"bg-color": "Background Colour",
-	"text-color": "Text Colour",
-	"create-modify": "Create & Modify Tags",
-	"description": "Select tags via clicking and/or dragging, use shift to select multiple.",
-	"create": "Create Tag",
-	"modify": "Modify Tags",
-	"rename": "Rename Tags",
+	"bg-color": "Farba pozadia",
+	"text-color": "Farba textu",
+	"create-modify": "Vytvoriť a upraviť značky",
+	"description": "Vyberte značky pomocou kliknutia a/alebo pretiahnutím, pre viacnásobný výber, použite klávesu Shift.",
+	"create": "Vytvoriť značku",
+	"modify": "upraviť značky",
+	"rename": "Premenovať značky",
 	"delete": "Odstrániť vybraté značky",
-	"search": "Search for tags...",
-	"settings": "Click <a href=\"%1\">here</a> to visit the tag settings page.",
-	"name": "Tag Name",
+	"search": "Hľadanie značky...",
+	"settings": "K prejdeniu na stránku s nastavením značiek, kliknite <a href=\"%1\">sem</a>.",
+	"name": "Názov značky",
 
-	"alerts.editing-multiple": "Editing multiple tags",
-	"alerts.editing-x": "Editing \"%1\" tag",
-	"alerts.confirm-delete": "Do you want to delete the selected tags?",
-	"alerts.update-success": "Tag Updated!"
+	"alerts.editing-multiple": "Úprava viacerých značiek",
+	"alerts.editing-x": "Úprava značky \"%1\"",
+	"alerts.confirm-delete": "Chcete odstrániť vybranú značku?",
+	"alerts.update-success": "Značka bola aktualizovaná."
 }

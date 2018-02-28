@@ -188,11 +188,11 @@
 				</ul>
 			</li>
 			<li class="dropdown menu-item">
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-manage]]</a>
+				<a id="manage-menu" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-manage]]</a>
 				<ul class="dropdown-menu" role="menu">
-					<li><a href="{relative_path}/admin/manage/categories">[[admin/menu:manage/categories]]</a></li>
+					<li><a id="manage-categories" href="{relative_path}/admin/manage/categories">[[admin/menu:manage/categories]]</a></li>
 					<li><a href="{relative_path}/admin/manage/privileges">[[admin/menu:manage/privileges]]</a></li>
-					<li><a href="{relative_path}/admin/manage/users">[[admin/menu:manage/users]]</a></li>
+					<li><a id="manage-users" href="{relative_path}/admin/manage/users">[[admin/menu:manage/users]]</a></li>
 					<li><a href="{relative_path}/admin/manage/admins-mods">[[admin/menu:manage/admins-mods]]</a></li>
 					<li><a href="{relative_path}/admin/manage/groups">[[admin/menu:manage/groups]]</a></li>
 					<li><a href="{relative_path}/admin/manage/tags">[[admin/menu:manage/tags]]</a></li>
@@ -205,7 +205,7 @@
 			<li class="dropdown menu-item">
 				<a id="settings-menu" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-settings]]</a>
 				<ul class="dropdown-menu" role="menu">
-					<li><a href="{relative_path}/admin/settings/general">[[admin/menu:section-general]]</a></li>
+					<li><a id="settings-general" href="{relative_path}/admin/settings/general">[[admin/menu:section-general]]</a></li>
 					<li><a href="{relative_path}/admin/settings/user">[[admin/menu:settings/user]]</a></li>
 					<li><a href="{relative_path}/admin/settings/group">[[admin/menu:settings/group]]</a></li>
 					<li><a href="{relative_path}/admin/settings/tags">[[admin/menu:manage/tags]]</a></li>
@@ -224,11 +224,11 @@
 				</ul>
 			</li>
 			<li class="dropdown menu-item">
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-appearance]]</a>
+				<a id="appearance-menu" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-appearance]]</a>
 				<ul class="dropdown-menu" role="menu">
-					<li><a href="{relative_path}/admin/appearance/themes">[[admin/menu:appearance/themes]]</a></li>
-					<li><a href="{relative_path}/admin/appearance/skins">[[admin/menu:appearance/skins]]</a></li>
-					<li><a href="{relative_path}/admin/appearance/customise">[[admin/menu:appearance/customise]]</a></li>
+					<li><a id="appearance-themes" href="{relative_path}/admin/appearance/themes">[[admin/menu:appearance/themes]]</a></li>
+					<li><a id="appearance-skins" href="{relative_path}/admin/appearance/skins">[[admin/menu:appearance/skins]]</a></li>
+					<li><a id="appearance-customise" href="{relative_path}/admin/appearance/customise">[[admin/menu:appearance/customise]]</a></li>
 				</ul>
 			</li>
 			<li class="dropdown menu-item">

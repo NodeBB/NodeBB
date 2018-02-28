@@ -132,7 +132,7 @@
     "wrong-login-type-email": "Користите вашу е-пошту за пријављивање",
     "wrong-login-type-username": "Користите ваше корисничко име за пријављивање",
     "sso-registration-disabled": "Регистрација је онемогућена за %1 налога, региструјте се са адресом е-поште прво",
-    "sso-multiple-association": "You cannot associate multiple accounts from this service to your NodeBB account. Please dissociate your existing account and try again.",
+    "sso-multiple-association": "Не можете повезати више налога са овог сервиса на ваш NodeBB налог. Раздвојите ваш постојећи налог и покушајте поново.",
     "invite-maximum-met": "Позвали сте максимални број особа (%1 од %2).",
     "no-session-found": "Није пронађена сесија пријављивања!",
     "not-in-room": "Корисник није у соби",

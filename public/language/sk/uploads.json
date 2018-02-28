@@ -1,6 +1,6 @@
 {
     "uploading-file": "Nahrávanie súboru...",
-    "select-file-to-upload": "Vyberte súbor, ktorý chcete nahrať!",
+    "select-file-to-upload": "Vyberte súbor, ktorý chcete nahrať.",
     "upload-success": "Súbor bol úspešne nahraný!",
     "maximum-file-size": "Maximálne %1 kb"
 }

@@ -66,6 +66,6 @@
 	"alert.user-search": "在这里查找用户…",
 	"alert.find-group": "查找群组",
 	"alert.group-search": "在此处搜索群组...",
-	"collapse-all": "Collapse All",
-	"expand-all": "Expand All"
+	"collapse-all": "全部折叠",
+	"expand-all": "全部展开"
 }
