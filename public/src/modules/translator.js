@@ -4,7 +4,7 @@
 	function loadClient(language, namespace) {
 		return Promise.resolve(jQuery.getJSON(config.relative_path + '/assets/language/' + language + '/' + namespace + '.json?' + config['cache-buster']));
 	}
-	var warn = console.warn;
+	var warn = function () { console.warn.apply(console, arguments); };
 	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as a named module
 		define('translator', [], function () {
