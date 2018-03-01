@@ -144,7 +144,7 @@ Groups.get = function (groupName, options, callback) {
 			Groups.escapeGroupData(groupData);
 
 			groupData.descriptionParsed = descriptionParsed;
-			groupData.userTitleEnabled = groupData.userTitleEnabled ? !!parseInt(groupData.userTitleEnabled, 10) : true;
+			groupData.userTitleEnabled = groupData.userTitleEnabled ? parseInt(groupData.userTitleEnabled, 10) === 1 : true;
 			groupData.createtimeISO = utils.toISOString(groupData.createtime);
 			groupData.members = results.members;
 			groupData.membersNextStart = stop + 1;
