@@ -188,6 +188,14 @@ SocketModules.chats.loadRoom = function (socket, data, callback) {
 	], callback);
 };
 
+SocketModules.chats.getUsersInRoom = function (socket, data, callback) {
+	if (!data || !data.roomId) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	Messaging.getUsersInRoom(data.roomId, 0, -1, callback);
+};
+
 SocketModules.chats.addUserToRoom = function (socket, data, callback) {
 	if (!data || !data.roomId || !data.username) {
 		return callback(new Error('[[error:invalid-data]]'));
@@ -220,7 +228,7 @@ SocketModules.chats.addUserToRoom = function (socket, data, callback) {
 				return next(new Error('[[error:no-user]]'));
 			}
 			if (socket.uid === parseInt(uid, 10)) {
-				return next(new Error('[[error:cant-add-self-to-chat-room]]'));
+				return next(new Error('[[error:cant-chat-with-yourself]]'));
 			}
 			async.parallel({
 				settings: async.apply(user.getSettings, uid),
@@ -291,6 +299,21 @@ SocketModules.chats.delete = function (socket, data, callback) {
 		},
 		function (next) {
 			Messaging.deleteMessage(data.messageId, data.roomId, next);
+		},
+	], callback);
+};
+
+SocketModules.chats.restore = function (socket, data, callback) {
+	if (!data || !data.roomId || !data.messageId) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	async.waterfall([
+		function (next) {
+			Messaging.canDelete(data.messageId, socket.uid, next);
+		},
+		function (next) {
+			Messaging.restoreMessage(data.messageId, data.roomId, next);
 		},
 	], callback);
 };

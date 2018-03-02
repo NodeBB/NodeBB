@@ -97,7 +97,7 @@ chatsController.get = function (req, res, callback) {
 
 chatsController.redirectToChat = function (req, res, next) {
 	var roomid = parseInt(req.params.roomid, 10);
-	if (!req.uid) {
+	if (!req.loggedIn) {
 		return next();
 	}
 	async.waterfall([

@@ -1,11 +1,12 @@
 'use strict';
 
+var pubsub = require('../../pubsub');
+
 module.exports = function (db, module) {
 	var helpers = module.helpers.mongo;
 
 	var LRU = require('lru-cache');
 	var _ = require('lodash');
-	var pubsub = require('../../pubsub');
 
 	var cache = LRU({
 		max: 10000,
@@ -34,6 +35,7 @@ module.exports = function (db, module) {
 		pubsub.publish('mongo:hash:cache:reset');
 		cache.reset();
 	};
+
 
 	module.setObject = function (key, data, callback) {
 		callback = callback || helpers.noop;

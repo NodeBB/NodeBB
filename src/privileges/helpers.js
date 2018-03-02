@@ -10,6 +10,11 @@ var plugins = require('../plugins');
 
 var helpers = module.exports;
 
+var uidToSystemGroup = {
+	0: 'guests',
+	'-1': 'spiders',
+};
+
 helpers.some = function (tasks, callback) {
 	async.some(tasks, function (task, next) {
 		task(next);
@@ -27,8 +32,8 @@ helpers.isUserAllowedTo = function (privilege, uid, cid, callback) {
 };
 
 function isUserAllowedToCids(privilege, uid, cids, callback) {
-	if (parseInt(uid, 10) === 0) {
-		return isGuestAllowedToCids(privilege, cids, callback);
+	if (parseInt(uid, 10) <= 0) {
+		return isSystemGroupAllowedToCids(privilege, uid, cids, callback);
 	}
 
 	var userKeys = [];
@@ -42,8 +47,8 @@ function isUserAllowedToCids(privilege, uid, cids, callback) {
 }
 
 function isUserAllowedToPrivileges(privileges, uid, cid, callback) {
-	if (parseInt(uid, 10) === 0) {
-		return isGuestAllowedToPrivileges(privileges, cid, callback);
+	if (parseInt(uid, 10) <= 0) {
+		return isSystemGroupAllowedToPrivileges(privileges, uid, cid, callback);
 	}
 
 	var userKeys = [];
@@ -100,20 +105,20 @@ helpers.isUsersAllowedTo = function (privilege, uids, cid, callback) {
 	], callback);
 };
 
-function isGuestAllowedToCids(privilege, cids, callback) {
+function isSystemGroupAllowedToCids(privilege, uid, cids, callback) {
 	var groupKeys = cids.map(function (cid) {
 		return 'cid:' + cid + ':privileges:groups:' + privilege;
 	});
 
-	groups.isMemberOfGroups('guests', groupKeys, callback);
+	groups.isMemberOfGroups(uidToSystemGroup[uid], groupKeys, callback);
 }
 
-function isGuestAllowedToPrivileges(privileges, cid, callback) {
+function isSystemGroupAllowedToPrivileges(privileges, uid, cid, callback) {
 	var groupKeys = privileges.map(function (privilege) {
 		return 'cid:' + cid + ':privileges:groups:' + privilege;
 	});
 
-	groups.isMemberOfGroups('guests', groupKeys, callback);
+	groups.isMemberOfGroups(uidToSystemGroup[uid], groupKeys, callback);
 }
 
 helpers.getUserPrivileges = function (cid, hookName, userPrivilegeList, callback) {

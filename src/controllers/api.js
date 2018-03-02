@@ -18,6 +18,7 @@ var apiController = module.exports;
 apiController.loadConfig = function (req, callback) {
 	var config = {};
 	config.relative_path = nconf.get('relative_path');
+	config.upload_url = nconf.get('upload_url');
 	config.siteTitle = validator.escape(String(meta.config.title || meta.config.browserTitle || 'NodeBB'));
 	config.browserTitle = validator.escape(String(meta.config.browserTitle || meta.config.title || 'NodeBB'));
 	config.titleLayout = (meta.config.titleLayout || '{pageTitle} | {browserTitle}').replace(/{/g, '&#123;').replace(/}/g, '&#125;');
@@ -39,6 +40,7 @@ apiController.loadConfig = function (req, callback) {
 	config.usePagination = parseInt(meta.config.usePagination, 10) === 1;
 	config.disableChat = parseInt(meta.config.disableChat, 10) === 1;
 	config.disableChatMessageEditing = parseInt(meta.config.disableChatMessageEditing, 10) === 1;
+	config.maximumChatMessageLength = parseInt(meta.config.maximumChatMessageLength, 10) || 1000;
 	config.socketioTransports = nconf.get('socket.io:transports') || ['polling', 'websocket'];
 	config.websocketAddress = nconf.get('socket.io:address') || '';
 	config.maxReconnectionAttempts = meta.config.maxReconnectionAttempts || 5;
@@ -76,7 +78,7 @@ apiController.loadConfig = function (req, callback) {
 
 	async.waterfall([
 		function (next) {
-			if (!req.uid) {
+			if (!req.loggedIn) {
 				return next(null, config);
 			}
 			user.getSettings(req.uid, next);

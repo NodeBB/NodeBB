@@ -24,7 +24,7 @@ helpers.noScriptErrors = function (req, res, error, httpStatus) {
 	middleware.buildHeader(req, res, function () {
 		res.status(httpStatus).render(httpStatusString, {
 			path: req.path,
-			loggedIn: true,
+			loggedIn: req.loggedIn,
 			error: error,
 			returnLink: true,
 			title: '[[global:' + httpStatusString + '.title]]',
@@ -67,11 +67,11 @@ helpers.notAllowed = function (req, res, error) {
 		if (err) {
 			return winston.error(err);
 		}
-		if (req.uid) {
+		if (req.loggedIn) {
 			if (res.locals.isAPI) {
 				res.status(403).json({
 					path: req.path.replace(/^\/api/, ''),
-					loggedIn: !!req.uid,
+					loggedIn: req.loggedIn,
 					error: error,
 					title: '[[global:403.title]]',
 				});
@@ -79,7 +79,7 @@ helpers.notAllowed = function (req, res, error) {
 				middleware.buildHeader(req, res, function () {
 					res.status(403).render('403', {
 						path: req.path,
-						loggedIn: !!req.uid,
+						loggedIn: req.loggedIn,
 						error: error,
 						title: '[[global:403.title]]',
 					});

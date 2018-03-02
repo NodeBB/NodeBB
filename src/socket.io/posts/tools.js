@@ -51,6 +51,7 @@ module.exports = function (SocketPosts) {
 					postSharing: function (next) {
 						social.getActivePostSharing(next);
 					},
+					history: async.apply(posts.diffs.exists, data.pid),
 				}, next);
 			},
 			function (results, next) {
@@ -64,6 +65,7 @@ module.exports = function (SocketPosts) {
 				results.posts.display_moderator_tools = results.posts.display_edit_tools || results.posts.display_delete_tools;
 				results.posts.display_move_tools = results.isAdmin || results.isModerator;
 				results.posts.display_ip_ban = (results.isAdmin || results.isGlobalMod) && !results.posts.selfPost;
+				results.posts.display_history = results.history;
 
 				if (!results.isAdmin && !results.isGlobalMod && !results.isModerator) {
 					results.posts.ip = undefined;

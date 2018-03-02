@@ -1,30 +1,33 @@
 services:
+  - mongodb
   - redis-server
 before_install:
-  - "sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6"
-  - "echo 'deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse' | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list"
-  - "sudo apt-get update"
-  - "sudo apt-get install -y mongodb-org"
-  - "sudo service mongod start"
+  - cp install/package.json package.json
+cache:
+  directories:
+    - node_modules
 before_script:
   - sleep 15 # wait for mongodb to be ready
-  - cp install/package.json package.json
-  - npm install
   - sh -c "if [ '$DB' = 'mongodb' ]; then node app --setup=\"{\\\"url\\\":\\\"http://127.0.0.1:4567\\\",\\\"secret\\\":\\\"abcdef\\\",\\\"database\\\":\\\"mongo\\\",\\\"mongo:host\\\":\\\"127.0.0.1\\\",\\\"mongo:port\\\":27017,\\\"mongo:username\\\":\\\"\\\",\\\"mongo:password\\\":\\\"\\\",\\\"mongo:database\\\":0,\\\"redis:host\\\":\\\"127.0.0.1\\\",\\\"redis:port\\\":6379,\\\"redis:password\\\":\\\"\\\",\\\"redis:database\\\":0,\\\"admin:username\\\":\\\"admin\\\",\\\"admin:email\\\":\\\"test@example.org\\\",\\\"admin:password\\\":\\\"abcdef\\\",\\\"admin:password:confirm\\\":\\\"abcdef\\\"}\" --ci=\"{\\\"host\\\":\\\"127.0.0.1\\\",\\\"port\\\":27017,\\\"database\\\":0}\"; fi"
   - sh -c "if [ '$DB' = 'redis' ]; then node app --setup=\"{\\\"url\\\":\\\"http://127.0.0.1:4567\\\",\\\"secret\\\":\\\"abcdef\\\",\\\"database\\\":\\\"redis\\\",\\\"mongo:host\\\":\\\"127.0.0.1\\\",\\\"mongo:port\\\":27017,\\\"mongo:username\\\":\\\"\\\",\\\"mongo:password\\\":\\\"\\\",\\\"mongo:database\\\":0,\\\"redis:host\\\":\\\"127.0.0.1\\\",\\\"redis:port\\\":6379,\\\"redis:password\\\":\\\"\\\",\\\"redis:database\\\":0,\\\"admin:username\\\":\\\"admin\\\",\\\"admin:email\\\":\\\"test@example.org\\\",\\\"admin:password\\\":\\\"abcdef\\\",\\\"admin:password:confirm\\\":\\\"abcdef\\\"}\" --ci=\"{\\\"host\\\":\\\"127.0.0.1\\\",\\\"port\\\":6379,\\\"database\\\":0}\"; fi"
 after_success:
   - "npm run coveralls"
 language: node_js
+sudo: false
+dist: trusty
 env:
   - CXX=g++-4.8 DB=mongodb
   - CXX=g++-4.8 DB=redis
 addons:
   apt:
     sources:
-    - ubuntu-toolchain-r-test
+      - ubuntu-toolchain-r-test
+      - mongodb-3.4-trusty
     packages:
-    - g++-4.8
+      - g++-4.8
+      - mongodb-org-server
 node_js:
+  - "9"
   - "8"
   - "7"
   - "6"

@@ -61,11 +61,7 @@ mongoModule.questions = [
 mongoModule.helpers = mongoModule.helpers || {};
 mongoModule.helpers.mongo = require('./mongo/helpers');
 
-mongoModule.init = function (callback) {
-	callback = callback || function () { };
-
-	var mongoClient = require('mongodb').MongoClient;
-
+function getConnectionString() {
 	var usernamePassword = '';
 	if (nconf.get('mongo:username') && nconf.get('mongo:password')) {
 		usernamePassword = nconf.get('mongo:username') + ':' + encodeURIComponent(nconf.get('mongo:password')) + '@';
@@ -92,7 +88,15 @@ mongoModule.init = function (callback) {
 		servers.push(hosts[i] + ':' + ports[i]);
 	}
 
-	var connString = nconf.get('mongo:uri') || 'mongodb://' + usernamePassword + servers.join() + '/' + nconf.get('mongo:database');
+	return nconf.get('mongo:uri') || 'mongodb://' + usernamePassword + servers.join() + '/' + nconf.get('mongo:database');
+}
+
+mongoModule.init = function (callback) {
+	callback = callback || function () { };
+
+	var mongoClient = require('mongodb').MongoClient;
+
+	var connString = getConnectionString();
 
 	var connOptions = {
 		poolSize: 10,
@@ -261,4 +265,9 @@ function getCollectionStats(db, callback) {
 mongoModule.close = function (callback) {
 	callback = callback || function () {};
 	db.close(callback);
+};
+
+mongoModule.socketAdapter = function () {
+	var mongoAdapter = require('socket.io-adapter-mongo');
+	return mongoAdapter(getConnectionString());
 };

@@ -51,11 +51,14 @@ module.exports = function (Messaging) {
 					return msg && msg.fromuid;
 				});
 
-				user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status'], next);
+				user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'banned'], next);
 			},
 			function (users, next) {
 				messages.forEach(function (message, index) {
 					message.fromUser = users[index];
+					message.fromUser.banned = !!parseInt(message.fromUser.banned, 10);
+					message.fromUser.deleted = parseInt(message.fromuid, 10) !== message.fromUser.uid && message.fromUser.uid === 0;
+
 					var self = parseInt(message.fromuid, 10) === parseInt(uid, 10);
 					message.self = self ? 1 : 0;
 					message.timestampISO = utils.toISOString(message.timestamp);
@@ -64,6 +67,8 @@ module.exports = function (Messaging) {
 					if (message.hasOwnProperty('edited')) {
 						message.editedISO = new Date(parseInt(message.edited, 10)).toISOString();
 					}
+
+					message.deleted = !!parseInt(message.deleted, 10);
 				});
 
 				async.map(messages, function (message, next) {

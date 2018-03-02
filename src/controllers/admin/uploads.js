@@ -253,7 +253,7 @@ function uploadImage(filename, folder, uploadedFile, req, res, next) {
 	async.waterfall([
 		function (next) {
 			if (plugins.hasListeners('filter:uploadImage')) {
-				plugins.fireHook('filter:uploadImage', { image: uploadedFile, uid: req.user.uid }, next);
+				plugins.fireHook('filter:uploadImage', { image: uploadedFile, uid: req.uid }, next);
 			} else {
 				file.saveFileToLocal(filename, folder, uploadedFile.path, next);
 			}

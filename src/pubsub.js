@@ -1,48 +1,70 @@
-
 'use strict';
 
 var nconf = require('nconf');
-var util = require('util');
-var winston = require('winston');
-var EventEmitter = require('events').EventEmitter;
 
-var channelName;
+var real;
+var fake = {
+	publishQueue: [],
+	publish: function (event, data) {
+		fake.publishQueue.push({ event: event, data: data });
+	},
+	listenQueue: {},
+	on: function (event, callback) {
+		if (!Object.prototype.hasOwnProperty.call(fake.listenQueue, event)) {
+			fake.listenQueue[event] = [];
+		}
+		fake.listenQueue[event].push(callback);
+	},
+	removeAllListeners: function (event) {
+		delete fake.listenQueue[event];
+	},
+};
 
-var PubSub = function () {
-	var self = this;
-	if (nconf.get('redis')) {
-		var redis = require('./database/redis');
-		var subClient = redis.connect();
-		this.pubClient = redis.connect();
+function get() {
+	if (real) {
+		return real;
+	}
 
-		channelName = 'db:' + nconf.get('redis:database') + 'pubsub_channel';
-		subClient.subscribe(channelName);
+	var pubsub;
 
-		subClient.on('message', function (channel, message) {
-			if (channel !== channelName) {
-				return;
-			}
+	if (nconf.get('isCluster') === 'false') {
+		var EventEmitter = require('events');
+		pubsub = new EventEmitter();
+		pubsub.publish = pubsub.emit.bind(pubsub);
+	} else if (nconf.get('redis')) {
+		pubsub = require('./database/redis/pubsub');
+	} else if (nconf.get('mongo')) {
+		pubsub = require('./database/mongo/pubsub');
+	}
 
-			try {
-				var msg = JSON.parse(message);
-				self.emit(msg.event, msg.data);
-			} catch (err) {
-				winston.error(err.stack);
-			}
+	if (!pubsub) {
+		return fake;
+	}
+
+	Object.keys(fake.listenQueue).forEach(function (event) {
+		fake.listenQueue[event].forEach(function (callback) {
+			pubsub.on(event, callback);
 		});
-	}
+	});
+
+	fake.publishQueue.forEach(function (msg) {
+		pubsub.publish(msg.event, msg.data);
+	});
+
+	real = pubsub;
+	fake = null;
+
+	return pubsub;
+}
+
+module.exports = {
+	publish: function (event, data) {
+		get().publish(event, data);
+	},
+	on: function (event, callback) {
+		get().on(event, callback);
+	},
+	removeAllListeners: function (event) {
+		get().removeAllListeners(event);
+	},
 };
-
-util.inherits(PubSub, EventEmitter);
-
-PubSub.prototype.publish = function (event, data) {
-	if (this.pubClient) {
-		this.pubClient.publish(channelName, JSON.stringify({ event: event, data: data }));
-	} else {
-		this.emit(event, data);
-	}
-};
-
-var pubsub = new PubSub();
-
-module.exports = pubsub;

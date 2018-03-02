@@ -52,6 +52,8 @@ define('forum/chats/search', ['components'], function (components) {
 			var chatEl = displayUser(chatsListEl, userObj);
 			onUserClick(chatEl, userObj);
 		});
+
+		chatsListEl.parent().toggleClass('open', true);
 	}
 
 	function displayUser(chatsListEl, userObj) {

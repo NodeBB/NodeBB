@@ -169,5 +169,16 @@ redisModule.info = function (cxn, callback) {
 	], callback);
 };
 
+redisModule.socketAdapter = function () {
+	var redisAdapter = require('socket.io-redis');
+	var pub = redisModule.connect();
+	var sub = redisModule.connect();
+	return redisAdapter({
+		key: 'db:' + nconf.get('redis:database') + ':adapter_key',
+		pubClient: pub,
+		subClient: sub,
+	});
+};
+
 redisModule.helpers = redisModule.helpers || {};
 redisModule.helpers.redis = require('./redis/helpers');

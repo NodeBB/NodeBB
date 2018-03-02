@@ -135,6 +135,7 @@ categoryController.get = function (req, res, callback) {
 			addTags(categoryData, res);
 
 			categoryData['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
+			categoryData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
 			categoryData.title = translator.escape(categoryData.name);
 			pageCount = Math.max(1, Math.ceil(categoryData.topic_count / settings.topicsPerPage));
 			categoryData.pagination = pagination.create(currentPage, pageCount, req.query);
