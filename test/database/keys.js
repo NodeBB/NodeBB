@@ -27,6 +27,14 @@ describe('Key methods', function () {
 		});
 	});
 
+	it('should return null if key does not exist', function (done) {
+		db.get('doesnotexist', function (err, value) {
+			assert.ifError(err);
+			assert.equal(value, null);
+			done();
+		});
+	});
+
 	it('should return true if key exist', function (done) {
 		db.exists('testKey', function (err, exists) {
 			assert.ifError(err);
