@@ -61,6 +61,7 @@ widgets.render = function (uid, options, callback) {
 };
 
 function renderWidget(widget, uid, options, callback) {
+	var userLang;
 	async.waterfall([
 		function (next) {
 			if (options.res.locals.isAPI) {
@@ -70,6 +71,7 @@ function renderWidget(widget, uid, options, callback) {
 			}
 		},
 		function (config, next) {
+			userLang = config.userLang;
 			var templateData = _.assign({ }, options.templateData, { config: config });
 			plugins.fireHook('filter:widget.render:' + widget.widget, {
 				uid: uid,
@@ -101,7 +103,7 @@ function renderWidget(widget, uid, options, callback) {
 			}
 		},
 		function (html, next) {
-			translator.translate(html, function (translatedHtml) {
+			translator.translate(html, userLang, function (translatedHtml) {
 				next(null, { html: translatedHtml });
 			});
 		},
