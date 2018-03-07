@@ -1,6 +1,7 @@
 {
     "banned": "Bannlyst",
     "offline": "Offline",
+    "deleted": "Deleted",
     "username": "Användarnamn",
     "joindate": "Gick med",
     "postcount": "Antal inlägg",

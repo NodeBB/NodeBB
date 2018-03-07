@@ -32,6 +32,7 @@
     "moved": "Verschoben",
     "copy-ip": "IP-Adresse Kopieren",
     "ban-ip": "IP-Adresse bannen",
+    "view-history": "Edit History",
     "bookmark_instructions": "Klicke hier, um zum letzten gelesenen Beitrag des Themas zurückzukehren.",
     "flag_title": "Diesen Beitrag zur Moderation markieren",
     "merged_message": "Dieses Thema wurde mit <a href=\"/topic/%1\">%2</a> zusammengeführt",
@@ -121,5 +122,8 @@
     "stale.warning": "Das Thema auf das du antworten willst ist ziemlich alt. Möchtest du stattdessen ein neues Thema erstellen und auf dieses in deiner Antwort hinweisen?",
     "stale.create": "Ein neues Thema erstellen",
     "stale.reply_anyway": "Auf dieses Thema trotzdem antworten",
-    "link_back": "Re: [%1](%2)"
+    "link_back": "Re: [%1](%2)",
+    "diffs.title": "Post Edit History",
+    "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
+    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
 }

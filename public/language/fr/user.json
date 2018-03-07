@@ -1,6 +1,7 @@
 {
     "banned": "Banni",
     "offline": "Hors-ligne",
+    "deleted": "Deleted",
     "username": "Nom d'utilisateur",
     "joindate": "Date d'inscription",
     "postcount": "Nombre de messages",

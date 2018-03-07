@@ -116,6 +116,8 @@
     "cant-delete-chat-message": "Tuto zprávu nemůžete odstranit",
     "chat-edit-duration-expired": "Je vám umožněno upravit konverzační zprávy pod dobu %1 sekund/y po jejich odeslání",
     "chat-delete-duration-expired": "Je vám umožněno odstranit konverzační zprávy pod dobu %1 sekund/y po jejich odeslání",
+    "chat-deleted-already": "This chat message has already been deleted.",
+    "chat-restored'already": "This chat message has already been restored.",
     "already-voting-for-this-post": "Již jste v tomto příspěvku hlasoval.",
     "reputation-system-disabled": "Systém reputací je zakázán.",
     "downvoting-disabled": "Systém nesouhlasu je zakázán",

@@ -106,5 +106,6 @@
     "cookies.learn_more": "เรียนรู้เพิ่มเติม",
     "edited": "ถูกแก้ไขแล้ว",
     "disabled": "ปิด",
-    "select": "เลือก"
+    "select": "เลือก",
+    "user-search-prompt": "Type something here to find users..."
 }

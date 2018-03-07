@@ -32,6 +32,7 @@
     "moved": "Moved",
     "copy-ip": "Copy IP",
     "ban-ip": "Ban IP",
+    "view-history": "Edit History",
     "bookmark_instructions": "Click here to return to the last read post in this thread.",
     "flag_title": "মডারেশনের জন্য এই পোস্টটি ফ্ল্যাগ করুন",
     "merged_message": "This topic has been merged into <a href=\"/topic/%1\">%2</a>",
@@ -121,5 +122,8 @@
     "stale.warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
     "stale.create": "Create a new topic",
     "stale.reply_anyway": "Reply to this topic anyway",
-    "link_back": "Re: [%1](%2)"
+    "link_back": "Re: [%1](%2)",
+    "diffs.title": "Post Edit History",
+    "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
+    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
 }

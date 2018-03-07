@@ -32,6 +32,7 @@
     "moved": "已移动",
     "copy-ip": "复制IP",
     "ban-ip": "禁止IP",
+    "view-history": "Edit History",
     "bookmark_instructions": "点击阅读本主题帖中的最新回复",
     "flag_title": "举报此帖",
     "merged_message": "此主题已并入<a href=\"/topic/%1\">%2</a>",
@@ -121,5 +122,8 @@
     "stale.warning": "您回复的主题已经非常老了。开个新帖，然后在新帖中引用这个老帖的内容，可以吗？",
     "stale.create": "创建新主题",
     "stale.reply_anyway": "仍然回复此帖",
-    "link_back": "回复: [%1](%2)"
+    "link_back": "回复: [%1](%2)",
+    "diffs.title": "Post Edit History",
+    "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
+    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
 }

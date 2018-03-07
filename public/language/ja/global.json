@@ -106,5 +106,6 @@
     "cookies.learn_more": "もっと詳しく",
     "edited": "編集されました",
     "disabled": "無効",
-    "select": "選択"
+    "select": "選択",
+    "user-search-prompt": "Type something here to find users..."
 }

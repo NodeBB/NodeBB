@@ -1,6 +1,7 @@
 {
     "banned": "Utestengt",
     "offline": "Offline",
+    "deleted": "Deleted",
     "username": "Brukernavn",
     "joindate": "Registereringsdato",
     "postcount": "Antall innlegg",

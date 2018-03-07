@@ -106,5 +106,6 @@
     "cookies.learn_more": "למד עוד",
     "edited": "נערך",
     "disabled": "לא מאופשר",
-    "select": "בחר"
+    "select": "בחר",
+    "user-search-prompt": "Type something here to find users..."
 }

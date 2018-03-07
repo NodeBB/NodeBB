@@ -1,6 +1,7 @@
 {
     "banned": "Blokiran",
     "offline": "Nije na mreži",
+    "deleted": "Deleted",
     "username": "Korisničko ime",
     "joindate": "Datum prijave",
     "postcount": "Broj objava",
