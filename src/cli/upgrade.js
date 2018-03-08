@@ -7,7 +7,6 @@ var packageInstall = require('./package-install');
 var upgrade = require('../upgrade');
 var build = require('../meta/build');
 var db = require('../database');
-var meta = require('../meta');
 var upgradePlugins = require('./upgrade-plugins').upgradePlugins;
 
 var steps = {
@@ -100,7 +99,7 @@ function runUpgrade(upgrades, options) {
 
 	async.series([
 		db.init,
-		meta.configs.init,
+		require('../meta').configs.init,
 		async.apply(upgrade.runParticular, upgrades),
 	], function (err) {
 		if (err) {
