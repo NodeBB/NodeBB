@@ -245,7 +245,7 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 						pictureCropper.handleImageCrop({
 							url: url,
 							socketMethod: 'user.uploadCroppedPicture',
-							aspectRatio: '1 / 1',
+							aspectRatio: 1,
 							allowSkippingCrop: false,
 							paramName: 'uid',
 							paramValue: ajaxify.data.theirid,

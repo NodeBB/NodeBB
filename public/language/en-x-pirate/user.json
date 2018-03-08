@@ -1,6 +1,7 @@
 {
     "banned": "Blackmarked",
     "offline": "Asleep at the wheel",
+    "deleted": "Deleted",
     "username": "User Name",
     "joindate": "Join Date",
     "postcount": "Post Count",

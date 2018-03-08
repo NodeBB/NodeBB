@@ -106,5 +106,6 @@
     "cookies.learn_more": "Xem thêm",
     "edited": "Đã cập nhật",
     "disabled": "Bị khóa",
-    "select": "Chọn"
+    "select": "Chọn",
+    "user-search-prompt": "Type something here to find users..."
 }

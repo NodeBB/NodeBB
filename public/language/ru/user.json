@@ -1,6 +1,7 @@
 {
     "banned": "Заблокирован",
     "offline": "Не в сети",
+    "deleted": "Deleted",
     "username": "Имя участника",
     "joindate": "Дата регистрации",
     "postcount": "Сообщений",

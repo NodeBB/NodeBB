@@ -116,6 +116,8 @@
     "cant-delete-chat-message": "شما اجازه حذف این پیام را ندارید.",
     "chat-edit-duration-expired": "شما قادر هستید پیام های چت را فقط بعد از %1 ثانیه ویرایش کنید",
     "chat-delete-duration-expired": "شما قادر هستید پیام های چت را فقط بعد از %1 ثانیه پاک کنید",
+    "chat-deleted-already": "این پیام قبلا حذف شده است",
+    "chat-restored'already": "این پیام قبلا بازگردانده شده است",
     "already-voting-for-this-post": "شما قبلا به این پست رای داده اید.",
     "reputation-system-disabled": "سیستم اعتبار غیر فعال شده است",
     "downvoting-disabled": "رأی منفی غیر فعال شده است",

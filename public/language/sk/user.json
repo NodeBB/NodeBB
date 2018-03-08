@@ -1,6 +1,7 @@
 {
     "banned": "Zablokovaný",
     "offline": "Nepripojený",
+    "deleted": "Deleted",
     "username": "Užívateľské meno",
     "joindate": "Dátum registrácie",
     "postcount": "Počet príspevkov",

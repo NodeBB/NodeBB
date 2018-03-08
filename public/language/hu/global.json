@@ -106,5 +106,6 @@
     "cookies.learn_more": "Tudnivalók",
     "edited": "Szerkesztett",
     "disabled": "Letiltva",
-    "select": "Kiválaszt"
+    "select": "Kiválaszt",
+    "user-search-prompt": "Írj be valamit, hogy felhasználókra keress..."
 }

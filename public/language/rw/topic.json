@@ -32,6 +32,7 @@
     "moved": "Moved",
     "copy-ip": "Copy IP",
     "ban-ip": "Ban IP",
+    "view-history": "Edit History",
     "bookmark_instructions": "Click here to return to the last read post in this thread.",
     "flag_title": "Bimenyeshe ubuyobozi",
     "merged_message": "This topic has been merged into <a href=\"/topic/%1\">%2</a>",
@@ -121,5 +122,8 @@
     "stale.warning": "Ikiganiro ushaka kuvugaho cyarashaje. Wahitamo gutangiza ikiganiro gishya ariko wenda ukagaragaza kino mu gisubizo uza gushyiraho?",
     "stale.create": "Tangiza ikiganiro gishya",
     "stale.reply_anyway": "Vuga kuri iki kiganiro nubundi",
-    "link_back": "Igisubizo: [%1](%2)"
+    "link_back": "Igisubizo: [%1](%2)",
+    "diffs.title": "Post Edit History",
+    "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
+    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
 }

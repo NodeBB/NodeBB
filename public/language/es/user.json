@@ -1,6 +1,7 @@
 {
     "banned": "Baneado",
     "offline": "Desconectado",
+    "deleted": "Deleted",
     "username": "Nombre de usuario",
     "joindate": "Fecha de registro",
     "postcount": "Número De Publicaciones",

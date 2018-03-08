@@ -32,6 +32,7 @@
     "moved": "Movido",
     "copy-ip": "Copy IP",
     "ban-ip": "Ban IP",
+    "view-history": "Edit History",
     "bookmark_instructions": "Pica aquí para volver á última mensaxe lida neste tema ",
     "flag_title": "Reportar esta mensaxe",
     "merged_message": "This topic has been merged into <a href=\"/topic/%1\">%2</a>",
@@ -121,5 +122,8 @@
     "stale.warning": "O tema no que queres publicar é bastante vello. Queres crear un novo tema no seu lugar e incluir unha referencia a este na túa mensaxe?",
     "stale.create": "Crear un novo tema",
     "stale.reply_anyway": "Publicar neste tema de tódolos xeitos",
-    "link_back": "Re: [%1](%2)"
+    "link_back": "Re: [%1](%2)",
+    "diffs.title": "Post Edit History",
+    "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
+    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
 }

@@ -106,5 +106,6 @@
     "cookies.learn_more": "Дізнатися більше",
     "edited": "Відредаговано",
     "disabled": "Вимкнено",
-    "select": "Обрати"
+    "select": "Обрати",
+    "user-search-prompt": "Type something here to find users..."
 }

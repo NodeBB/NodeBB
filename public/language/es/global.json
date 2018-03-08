@@ -106,5 +106,6 @@
     "cookies.learn_more": "Quiero saber más",
     "edited": "Editado",
     "disabled": "Desahabilitado",
-    "select": "Seleccionar"
+    "select": "Seleccionar",
+    "user-search-prompt": "Type something here to find users..."
 }

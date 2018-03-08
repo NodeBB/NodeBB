@@ -1,6 +1,7 @@
 {
     "banned": "차단된 계정",
     "offline": "오프라인",
+    "deleted": "Deleted",
     "username": "사용자 이름",
     "joindate": "가입일",
     "postcount": "포스트 수",

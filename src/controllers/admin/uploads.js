@@ -96,7 +96,7 @@ function filesToData(currentDir, files, callback) {
 					name: file,
 					path: path.join(currentDir, file).replace(nconf.get('upload_path'), ''),
 					url: url,
-					fileCount: filesInDir.length - 1, // ignore .gitignore
+					fileCount: Math.max(0, filesInDir.length - 1), // ignore .gitignore
 					size: stat.size,
 					sizeHumanReadable: (stat.size / 1024).toFixed(1) + 'KiB',
 					isDirectory: stat.isDirectory(),

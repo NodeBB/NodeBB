@@ -32,6 +32,7 @@
     "moved": "ถูกย้าย",
     "copy-ip": "Copy IP",
     "ban-ip": "Ban IP",
+    "view-history": "Edit History",
     "bookmark_instructions": "คลิกที่นี่เพื่อกลับไปยังโพสต์ล่าสุดในหัวข้อนี้",
     "flag_title": "ปักธงโพสต์นี้เพื่อดำเนินการ",
     "merged_message": "This topic has been merged into <a href=\"/topic/%1\">%2</a>",
@@ -121,5 +122,8 @@
     "stale.warning": "กระทู้ที่คุณกำลังตอบเก่าไปหน่อยนะ อยากจะลองตั้งกระทู้ใหม่แทนไหมล่ะ? แล้วก็อ้างอิงกระทู้นี้ไปยังคำตอบของคุณ",
     "stale.create": "ตั้งกระทู้ใหม่",
     "stale.reply_anyway": "ตอบกระทู้นี้ไม่ว่ายังไงก็ตาม",
-    "link_back": "ตอบกลับ: [%1](%2)"
+    "link_back": "ตอบกลับ: [%1](%2)",
+    "diffs.title": "Post Edit History",
+    "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
+    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
 }

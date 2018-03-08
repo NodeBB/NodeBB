@@ -237,6 +237,10 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 							},
 							type: 'linear',
 							position: 'left',
+							scaleLabel: {
+								display: true,
+								labelString: translations[0],
+							},
 						}, {
 							id: 'right-y-axis',
 							ticks: {
@@ -245,6 +249,10 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 							},
 							type: 'linear',
 							position: 'right',
+							scaleLabel: {
+								display: true,
+								labelString: translations[1],
+							},
 						}],
 					},
 					tooltips: {

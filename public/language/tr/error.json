@@ -116,6 +116,8 @@
     "cant-delete-chat-message": "Bu mesajı silmek için izin verilmez",
     "chat-edit-duration-expired": "Gönderildikten sonra yalnızca %1 saniye mesajı(ları) düzenlemene izin verilir",
     "chat-delete-duration-expired": "Gönderildikten sonra yalnızca %1 saniye mesajı(ları) silmene izin verilir",
+    "chat-deleted-already": "This chat message has already been deleted.",
+    "chat-restored'already": "This chat message has already been restored.",
     "already-voting-for-this-post": "Bu gönderi için zaten oy verdin.",
     "reputation-system-disabled": "İtibar sistemi devre dışı.",
     "downvoting-disabled": "Aşagı oylama kapatılmış",

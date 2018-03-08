@@ -116,6 +116,8 @@
     "cant-delete-chat-message": "Het is niet toegestaan om dit bericht te verwijderen",
     "chat-edit-duration-expired": "Het is slechts toegestaan om binnen %1 seconde(n) na plaatsen van het chat bericht, deze te bewerken.",
     "chat-delete-duration-expired": "Het is slechts toegestaan om binnen %1 seconde(n) na plaatsen van het chat bericht, deze te verwijderen.",
+    "chat-deleted-already": "This chat message has already been deleted.",
+    "chat-restored'already": "This chat message has already been restored.",
     "already-voting-for-this-post": "Je hebt al gestemd voor deze post.",
     "reputation-system-disabled": "Reputatie systeem is uitgeschakeld.",
     "downvoting-disabled": "Negatief stemmen is uitgeschakeld",
