@@ -19,6 +19,7 @@
 					<td style="padding: 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
 						<h1 style="margin: 0 0 10px 0; font-family: sans-serif; font-size: 24px; line-height: 27px; color: #333333; font-weight: normal;">[[email:greeting_no_name]]</h1>
 						<p style="margin: 0;">[[email:invitation.text1, {username}, {site_title}]]</p>
+						<p style="margin: 0;">[[email:invitation.text2, {expireDays}]]</p>
 					</td>
 				</tr>
 				<tr>

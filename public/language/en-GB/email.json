@@ -13,6 +13,7 @@
 	"welcome.cta": "Click here to confirm your email address",
 
 	"invitation.text1": "%1 has invited you to join %2",
+	"invitation.text2": "Your invitation will expire in %1 days.",
 	"invitation.ctr": "Click here to create your account.",
 
 	"reset.text1": "We received a request to reset your password, possibly because you have forgotten it. If this is not the case, please ignore this email.",

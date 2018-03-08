@@ -176,7 +176,7 @@
 			</div>
 			<div class="form-group">
 				<label>[[admin/settings/user:invite-expiration]]</label>
-				<input type="number" class="form-control" data-field="inviteExpiration" placeholder="1">
+				<input type="number" class="form-control" data-field="inviteExpiration" placeholder="7">
 				<p class="help-block">
 					[[admin/settings/user:invite-expiration-help]]
 				</p>
