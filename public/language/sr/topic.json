@@ -32,7 +32,7 @@
     "moved": "Премештено",
     "copy-ip": "Копирај IP",
     "ban-ip": "Бануј IP",
-    "view-history": "Edit History",
+    "view-history": "Уреди историју",
     "bookmark_instructions": "Кликните овде за повратак на последњу прочитану поруку у овој теми.",
     "flag_title": "Означи ову поруку за модерацију",
     "merged_message": "Ова тема је обједињена у <a href=\"/topic/%1\">%2</a>",
@@ -123,7 +123,7 @@
     "stale.create": "Креирај нову тему",
     "stale.reply_anyway": "Одговори на ову тему у сваком случају",
     "link_back": "Re: [%1](%2)",
-    "diffs.title": "Post Edit History",
-    "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
-    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
+    "diffs.title": "Историја уређивања поруке",
+    "diffs.description": "Ова порука има <strong>%1</strong> корекција. Кликните на једну од корекција да бисте видели садржај поруке у том тренутку.",
+    "diffs.no-revisions-description": "Ова порука има %1 корекција."
 }
