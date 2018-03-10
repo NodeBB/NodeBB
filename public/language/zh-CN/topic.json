@@ -123,7 +123,7 @@
     "stale.create": "创建新主题",
     "stale.reply_anyway": "仍然回复此帖",
     "link_back": "回复: [%1](%2)",
-    "diffs.title": "Post Edit History",
-    "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
-    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
+    "diffs.title": "历史提交记录",
+    "diffs.description": "该帖已经重新修改。点击修改查看某个时间点提交的内容。",
+    "diffs.no-revisions-description": "该贴已重新修改"
 }
