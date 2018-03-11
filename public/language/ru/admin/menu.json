@@ -9,7 +9,7 @@
 
 	"section-manage": "Управление",
 	"manage/categories": "Категории",
-	"manage/privileges": "Privileges",
+	"manage/privileges": "Привилегии",
 	"manage/tags": "Теги",
 	"manage/users": "Пользователи",
 	"manage/admins-mods": "Admins & Mods",
@@ -66,7 +66,7 @@
 	"reload-forum": "Reload Forum",
 	"restart-forum": "Restart Forum",
 	"logout": "Выйти",
-	"view-forum": "View Forum",
+	"view-forum": "Просмотреть Форум",
 
 	"search.placeholder": "Search for settings",
 	"search.no-results": "Нет результата...",
