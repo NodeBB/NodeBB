@@ -10,9 +10,9 @@
 	"load": "load",
 	"uptime": "uptime",
 
-	"registered": "Registered",
+	"registered": "Зарегистрированных",
 	"sockets": "Sockets",
-	"guests": "Guests",
+	"guests": "Гостей",
 
 	"info": "Info"
 }

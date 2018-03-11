@@ -30,9 +30,9 @@
     "locked": "Закрыт",
     "pinned": "Прикреплена",
     "moved": "Перемещена",
-    "copy-ip": "Copy IP",
+    "copy-ip": "Копировать IP",
     "ban-ip": "Ban IP",
-    "view-history": "Edit History",
+    "view-history": "Редактировать историю",
     "bookmark_instructions": "Нажмите здесь, чтобы вернуться к последнему прочитанному сообщению в этой теме.",
     "flag_title": "Отметить сообщение для модерирования",
     "merged_message": "This topic has been merged into <a href=\"/topic/%1\">%2</a>",
@@ -123,7 +123,7 @@
     "stale.create": "Создать новую тему",
     "stale.reply_anyway": "Всё равно ответить в этой теме",
     "link_back": "Ответ: [%1](%2)",
-    "diffs.title": "Post Edit History",
+    "diffs.title": "История Редактирования Сообщения",
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
     "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
 }
