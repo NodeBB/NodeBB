@@ -27,6 +27,7 @@
     "minimumPasswordLength": 6,
     "maximumSignatureLength": 255,
     "maximumAboutMeLength": 1000,
+    "maximumChatMessageLength": 1000,
     "maximumProfileImageSize": 256,
     "maximumCoverImageSize": 2048,
     "profileImageDimension": 200,
