@@ -18,6 +18,7 @@ define('chat', [
 	module.prepareDOM = function () {
 		var chatsToggleEl = components.get('chat/dropdown');
 		var chatsListEl = components.get('chat/list');
+		var chatsDropdownWrapper = chatsToggleEl.parents('.dropdown');
 
 		chatsToggleEl.on('click', function () {
 			if (chatsToggleEl.parent().hasClass('open')) {
@@ -26,6 +27,10 @@ define('chat', [
 
 			module.loadChatsDropdown(chatsListEl);
 		});
+
+		if (chatsDropdownWrapper.hasClass('open')) {
+			module.loadChatsDropdown(chatsListEl);
+		}
 
 		chatsListEl.on('click', '[data-roomid]', function (ev) {
 			if ($(ev.target).parents('.user-link').length) {
