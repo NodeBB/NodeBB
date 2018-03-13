@@ -14,8 +14,8 @@
 	"dev-interested": "คุณสนใจที่จะสร้างปลั๊กอินสำหรับ NodeBB หรือไม่?",
 	"docs-info": "เอกสารฉบับเต็มเกี่ยวกับปลั๊กอินสามารถพบได้ที่ <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">คลังเอกสาร NodeBB </a>",
 
-	"order.description": "Certain plugins work ideally when they are initialised before/after other plugins.",
-	"order.explanation": "Plugins load in the order specified here, from top to bottom",
+	"order.description": "ปลั๊กอินบางตัวใช้งานได้ดีเมื่อเริ่มต้นใช้งานก่อน / หลังปลั๊กอินอื่น ๆ",
+	"order.explanation": "โหลดปลั๊กอินตามลำดับที่ระบุจากบนลงล่าง",
 
 	"plugin-item.themes": "ธีม",
 	"plugin-item.deactivate": "ปิดการใช้งาน",
@@ -28,24 +28,24 @@
 	"plugin-item.upgrade": "อัพเกรด",
 	"plugin-item.more-info": "ข้อมูลเพิ่มเติม:",
 	"plugin-item.unknown": "ไม่ทราบ",
-	"plugin-item.unknown-explanation": "The state of this plugin could not be determined, possibly due to a misconfiguration error.",
+	"plugin-item.unknown-explanation": "สถานะของปลั๊กอินนี้ไม่สามารถระบุได้ซึ่งอาจเกิดจากข้อผิดพลาดในการกำหนดค่าผิดพลาด",
 
-	"alert.enabled": "Plugin Enabled",
-	"alert.disabled": "Plugin Disabled",
+	"alert.enabled": "เปิดใช้งานปลั๊กอินแล้ว",
+	"alert.disabled": "ปิดใช้งานปลั๊กอินแล้ว",
 	"alert.upgraded": "อัพเกรดปลั๊กอินแล้ว",
 	"alert.installed": "ติดตั้งปลั๊กอินแล้ว",
 	"alert.uninstalled": "ถอนการติดตั้งปลั๊กอินแล้ว",
 	"alert.activate-success": "โปรดรีสตาร์ท NodeBB ของคุณเพื่อเปิดการทำงานของธีมนี้",
 	"alert.deactivate-success": "ปิดการใช้งานปลั๊กอินนี้แล้ว",
 	"alert.upgrade-success": "โปรดรีสตาร์ท NodeBB ของคุณเพื่ออัพเกรดปลั๊กอินนี้",
-	"alert.install-success": "Plugin successfully installed, please activate the plugin.",
-	"alert.uninstall-success": "The plugin has been successfully deactivated and uninstalled.",
-	"alert.suggest-error": "<p>NodeBB could not reach the package manager, proceed with installation of latest version?</p><div class=\"alert alert-danger\"><strong>Server returned (%1)</strong>: %2</div>",
-	"alert.package-manager-unreachable": "<p>NodeBB could not reach the package manager, an upgrade is not suggested at this time.</p>",
-	"alert.incompatible": "<p>Your version of NodeBB (v%1) is only cleared to upgrade to v%2 of this plugin. Please update your NodeBB if you wish to install a newer version of this plugin.</p>",
-	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>No Compatibility Information Found</strong></p><p>This plugin did not specify a specific version for installation given your NodeBB version. Full compatibility cannot be guaranteed, and may cause your NodeBB to no longer start properly.</p></div><p>In the event that NodeBB cannot boot properly:</p><pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre><p>Continue installation of latest version of this plugin?</p>",
+	"alert.install-success": "ติดตั้งปลั๊กอินแล้ว โปรดเปิดใช้งานปลั๊กอิน",
+	"alert.uninstall-success": "ปิดใช้งานปลั๊กอินและยกเลิกการติดตั้งแล้ว",
+	"alert.suggest-error": "<p>NodeBB ไม่สามารถเข้าถึงตัวจัดการแพคเกจดำเนินการติดตั้งเวอร์ชันล่าสุดได้หรือไม่?</p><div class=\"alert alert-danger\"><strong>เซิร์ฟเวอร์ตอบกลับ (%1)</strong>: %2</div>",
+	"alert.package-manager-unreachable": "<p>NodeBB ไม่สามารถติดต่อตัวจัดการแพคเกจได้ในขณะนี้เราไม่แนะนำให้อัปเกรด</p>",
+	"alert.incompatible": "เวอร์ชันของ NodeBB  (v%1) จะถูกล้างเพื่อให้มีการอัพเกรดไป v%2 ของปลั๊กอินนี้ โปรดอัปเดต NodeBB ของคุณหากคุณต้องการติดตั้งปลั๊กอินเวอร์ชันใหม่นี้<p>",
+	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>ไม่พบข้อมูลความเข้ากันได้</strong></p><p>ปลั๊กอินนี้ไม่ได้ระบุเวอร์ชันเฉพาะสำหรับการติดตั้งที่ให้เวอร์ชัน NodeBB ของคุณ ไม่สามารถรับประกันความสามารถในการใช้งานร่วมกันได้เต็มรูปแบบและอาจทำให้ NodeBB ของคุณทำงานไม่ได้อย่างถูกต้องอีกต่อไป </p></div><p> ในกรณีที่ NodeBB ไม่สามารถบูตได้อย่างถูกต้อง:</p><pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre><p>ติดตั้งปลั๊กอินนี้เวอร์ชันล่าสุดต่อหรือไม่?</p>",
 
 	"license.title": "ข้อมูลลิขสิทธิ์ปลั๊กอิน",
-	"license.intro": "The plugin <strong>%1</strong> is licensed under the %2. Please read and understand the license terms prior to activating this plugin.",
-	"license.cta": "Do you wish to continue with activating this plugin?"
+	"license.intro": "ปลั๊กอิน <strong>%1</strong>ได้รับอนุญาตภายใต้ %2 โปรดอ่านและทำความเข้าใจข้อกำหนดสิทธิ์การใช้งานก่อนเปิดใช้งานปลั๊กอินนี้",
+	"license.cta": "คุณต้องการจะเปิดใช้ปลั๊กอินนี้ต่อหรือไม่?"
 }
