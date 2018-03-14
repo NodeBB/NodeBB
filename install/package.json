@@ -2,19 +2,19 @@
     "name": "nodebb",
     "license": "GPL-3.0",
     "description": "NodeBB Forum",
-    "version": "1.7.5",
+    "version": "1.8.0",
     "homepage": "http://www.nodebb.org",
     "repository": {
-      "type": "git",
-      "url": "https://github.com/NodeBB/NodeBB/"
+        "type": "git",
+        "url": "https://github.com/NodeBB/NodeBB/"
     },
     "main": "app.js",
     "scripts": {
-      "start": "node loader.js",
-      "lint": "eslint --cache ./nodebb .",
-      "pretest": "npm run lint",
-      "test": "nyc --reporter=html --reporter=text-summary mocha",
-      "coveralls": "nyc report --reporter=text-lcov | coveralls && rm -r coverage"
+        "start": "node loader.js",
+        "lint": "eslint --cache ./nodebb .",
+        "pretest": "npm run lint",
+        "test": "nyc --reporter=html --reporter=text-summary mocha",
+        "coveralls": "nyc report --reporter=text-lcov | coveralls && rm -r coverage"
     },
     "dependencies": {
         "ace-builds": "^1.2.9",
@@ -121,26 +121,26 @@
         "smtp-server": "^3.4.1"
     },
     "bugs": {
-      "url": "https://github.com/NodeBB/NodeBB/issues"
+        "url": "https://github.com/NodeBB/NodeBB/issues"
     },
     "engines": {
-      "node": ">=6"
+        "node": ">=6"
     },
     "maintainers": [
-      {
-        "name": "Andrew Rodrigues",
-        "email": "andrew@nodebb.org",
-        "url": "https://github.com/psychobunny"
-      },
-      {
-        "name": "Julian Lam",
-        "email": "julian@nodebb.org",
-        "url": "https://github.com/julianlam"
-      },
-      {
-        "name": "Barış Soner Uşaklı",
-        "email": "baris@nodebb.org",
-        "url": "https://github.com/barisusakli"
-      }
+        {
+            "name": "Andrew Rodrigues",
+            "email": "andrew@nodebb.org",
+            "url": "https://github.com/psychobunny"
+        },
+        {
+            "name": "Julian Lam",
+            "email": "julian@nodebb.org",
+            "url": "https://github.com/julianlam"
+        },
+        {
+            "name": "Barış Soner Uşaklı",
+            "email": "baris@nodebb.org",
+            "url": "https://github.com/barisusakli"
+        }
     ]
-  }
+}
