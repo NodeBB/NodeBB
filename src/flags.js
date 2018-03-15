@@ -201,7 +201,7 @@ Flags.list = function (filters, uid, callback) {
 					}
 
 					next(null, Object.assign(flagObj, {
-						description: validator.escape(flagObj.description),
+						description: validator.escape(String(flagObj.description)),
 						target_readable: flagObj.type.charAt(0).toUpperCase() + flagObj.type.slice(1) + ' ' + flagObj.targetId,
 						datetimeISO: new Date(parseInt(flagObj.datetime, 10)).toISOString(),
 					}));
