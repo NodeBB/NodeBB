@@ -13,6 +13,8 @@ define('forum/topic/diffs', ['benchpress', 'translator'], function (Benchpress, 
 
 			Benchpress.parse('partials/modals/post_history', {
 				diffs: timestamps.map(function (timestamp) {
+					timestamp = parseInt(timestamp, 10);
+
 					return {
 						timestamp: timestamp,
 						pretty: new Date(timestamp).toLocaleString(config.userLang.replace('_', '-'), localeStringOpts),
