@@ -200,4 +200,19 @@ describe('List methods', function () {
 			});
 		});
 	});
+
+
+	it('should get the length of a list', function (done) {
+		db.listAppend('getLengthList', 1, function (err) {
+			assert.ifError(err);
+			db.listAppend('getLengthList', 2, function (err) {
+				assert.ifError(err);
+				db.listLength('getLengthList', function (err, length) {
+					assert.ifError(err);
+					assert.equal(length, 2);
+					done();
+				});
+			});
+		});
+	});
 });
