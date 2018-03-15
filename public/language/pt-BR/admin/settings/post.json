@@ -49,5 +49,6 @@
 	"composer.enable-plugin-help": "Permitir plugins de adicionar conteúdo à aba ajuda",
 	"composer.custom-help": "Texto de Ajuda Personalizado",
 	"ip-tracking": "Rastreamento de IP",
-	"ip-tracking.each-post": "Rastrear Endereço IP para cada post"
+	"ip-tracking.each-post": "Rastrear Endereço IP para cada post",
+	"enable-post-history": "Enable Post History"
 }
