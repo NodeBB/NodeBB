@@ -1,6 +1,6 @@
 'use strict';
 
-define('forum/topic/diffs', ['benchpress', 'translator'], function (Benchpress, translator) {
+define('forum/topic/diffs', ['forum/topic/images', 'benchpress', 'translator'], function (Images, Benchpress, translator) {
 	var Diffs = {};
 
 	Diffs.open = function (pid) {
@@ -60,6 +60,8 @@ define('forum/topic/diffs', ['benchpress', 'translator'], function (Benchpress, 
 				posts: [data],
 			}, function (html) {
 				postContainer.empty().append(html);
+				Images.unloadImages(html);
+				Images.loadImages();
 			});
 		});
 	};
