@@ -24,6 +24,7 @@ define('forum/topic/diffs', ['benchpress', 'translator'], function (Benchpress, 
 					var modal = bootbox.dialog({
 						title: '[[topic:diffs.title]]',
 						message: html,
+						size: 'large',
 					});
 
 					if (!timestamps.length) {

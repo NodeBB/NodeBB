@@ -12,21 +12,44 @@ module.exports = function (Posts) {
 	Posts.diffs = {};
 
 	Posts.diffs.exists = function (pid, callback) {
-		db.sortedSetCard('post:' + pid + ':diffs', function (err, numDiffs) {
-			return callback(err, numDiffs > 0);
+		db.listLength('post:' + pid + ':diffs', function (err, numDiffs) {
+			return callback(err, !!numDiffs);
 		});
+	};
+
+	Posts.diffs.get = function (pid, since, callback) {
+		async.waterfall([
+			async.apply(db.getListRange.bind(db), 'post:' + pid + ':diffs', 0, -1),
+			function (timestamps, next) {
+				// Pass those made after `since`, and create keys
+				const keys = timestamps.filter(function (timestamp) {
+					return (parseInt(timestamp, 10) || 0) > since;
+				}).map(function (timestamp) {
+					return 'diff:' + pid + '.' + timestamp;
+				});
+
+				db.getObjects(keys, next);
+			},
+		], callback);
 	};
 
 	Posts.diffs.list = function (pid, callback) {
-		db.getSortedSetRangeWithScores('post:' + pid + ':diffs', 0, -1, function (err, diffs) {
-			callback(err, diffs ? diffs.map(function (diffObj) {
-				return diffObj.score;
-			}).reverse() : null);
-		});
+		db.getListRange('post:' + pid + ':diffs', 0, -1, callback);
 	};
 
 	Posts.diffs.save = function (pid, oldContent, newContent, callback) {
-		db.sortedSetAdd('post:' + pid + ':diffs', Date.now(), diff.createPatch('', newContent, oldContent), callback);
+		const now = Date.now();
+		const patch = diff.createPatch('', newContent, oldContent);
+		async.parallel([
+			async.apply(db.listPrepend.bind(db), 'post:' + pid + ':diffs', now),
+			async.apply(db.setObject.bind(db), 'diff:' + pid + '.' + now, {
+				pid: pid,
+				patch: patch,
+			}),
+		], function (err) {
+			// No return arguments passed back
+			callback(err);
+		});
 	};
 
 	Posts.diffs.load = function (pid, since, uid, callback) {
@@ -41,7 +64,7 @@ module.exports = function (Posts) {
 			post: async.apply(Posts.getPostSummaryByPids, [pid], uid, {
 				parse: false,
 			}),
-			diffs: async.apply(db.getSortedSetRangeByScore.bind(db), 'post:' + pid + ':diffs', 0, -1, since, Date.now()),
+			diffs: async.apply(Posts.diffs.get, pid, since),
 		}, function (err, data) {
 			if (err) {
 				return callback(err);
@@ -51,8 +74,8 @@ module.exports = function (Posts) {
 			data.post.content = validator.unescape(data.post.content);
 
 			// Replace content with re-constructed content from that point in time
-			data.post.content = data.diffs.reverse().reduce(function (content, diffString) {
-				return diff.applyPatch(content, diffString, {
+			data.post.content = data.diffs.reduce(function (content, currentDiff) {
+				return diff.applyPatch(content, currentDiff.patch, {
 					fuzzFactor: 1,
 				});
 			}, data.post.content);
