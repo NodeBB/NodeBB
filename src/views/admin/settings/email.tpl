@@ -42,7 +42,7 @@
 				<select class="form-control input-lg" id="email:smtpTransport:service" data-field="email:smtpTransport:service">
 					<option value="nodebb-custom-smtp" style="font-weight: bold">[[admin/settings/email:smtp-transport.service-custom]]</option>
 					<option style="font-size: 10px" disabled>&nbsp;</option>
-					
+
 					<!-- BEGIN services -->
 					<option value="@value">@value</option>
 					<!-- END services -->
@@ -73,14 +73,14 @@
 			</div>
 			<div class="form-group">
 				<label for="email:smtpTransport:user"><strong>[[admin/settings/email:smtp-transport.username]]</strong></label>
-				<input type="text" class="form-control input-lg" id="email:smtpTransport:user" data-field="email:smtpTransport:user" placeholder="admin@example.org" />
+				<input type="text" class="form-control input-lg" data-field="email:smtpTransport:user" placeholder="admin@example.org" />
 				<p class="help-block">
 					[[admin/settings/email:smtp-transport.username-help]]
 				</p>
 			</div>
 			<div class="form-group">
 				<label for="email:smtpTransport:pass"><strong>[[admin/settings/email:smtp-transport.password]]</strong></label>
-				<input type="password" class="form-control input-lg" id="email:smtpTransport:pass" data-field="email:smtpTransport:pass" />
+				<input type="password" class="form-control input-lg" data-field="email:smtpTransport:pass" />
 			</div>
 		</form>
 	</div>
