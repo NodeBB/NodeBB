@@ -142,19 +142,13 @@ module.exports = function (Groups) {
 
 	Groups.acceptMembership = function (groupName, uid, callback) {
 		async.waterfall([
-			async.apply(db.setRemove, 'group:' + groupName + ':pending', uid),
-			async.apply(db.setRemove, 'group:' + groupName + ':invited', uid),
+			async.apply(db.setsRemove, ['group:' + groupName + ':pending', 'group:' + groupName + ':invited'], uid),
 			async.apply(Groups.join, groupName, uid),
 		], callback);
 	};
 
 	Groups.rejectMembership = function (groupName, uid, callback) {
-		async.parallel([
-			async.apply(db.setRemove, 'group:' + groupName + ':pending', uid),
-			async.apply(db.setRemove, 'group:' + groupName + ':invited', uid),
-		], function (err) {
-			callback(err);
-		});
+		db.setsRemove(['group:' + groupName + ':pending', 'group:' + groupName + ':invited'], uid, callback);
 	};
 
 	Groups.invite = function (groupName, uid, callback) {
@@ -217,19 +211,16 @@ module.exports = function (Groups) {
 
 		async.waterfall([
 			function (next) {
-				Groups.isMember(uid, groupName, next);
+				async.parallel({
+					isMember: async.apply(Groups.isMember, uid, groupName),
+					exists: async.apply(Groups.exists, groupName),
+				}, next);
 			},
-			function (isMember, next) {
-				if (!isMember) {
+			function (result, next) {
+				if (!result.isMember || !result.exists) {
 					return callback();
 				}
 
-				Groups.exists(groupName, next);
-			},
-			function (exists, next) {
-				if (!exists) {
-					return callback();
-				}
 				async.parallel([
 					async.apply(db.sortedSetRemove, 'group:' + groupName + ':members', uid),
 					async.apply(db.setRemove, 'group:' + groupName + ':owners', uid),
