@@ -33,9 +33,9 @@ Emailer.transports = {
 var app;
 
 var viewsDir = nconf.get('views_dir');
-var emailsPath = path.join(viewsDir, 'emails');
 
 Emailer.getTemplates = function (config, cb) {
+	var emailsPath = path.join(viewsDir, 'emails');
 	async.waterfall([
 		function (next) {
 			file.walk(emailsPath, next);
