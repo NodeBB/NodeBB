@@ -188,6 +188,21 @@ describe('Set methods', function () {
 				});
 			});
 		});
+
+		it('should remove multiple elements from set', function (done) {
+			db.setAdd('multiRemoveSet', [1, 2, 3, 4, 5], function (err) {
+				assert.ifError(err);
+				db.setRemove('multiRemoveSet', [1, 3, 5], function (err) {
+					assert.ifError(err);
+					db.getSetMembers('multiRemoveSet', function (err, members) {
+						assert.ifError(err);
+						assert(members.includes('2'));
+						assert(members.includes('4'));
+						done();
+					});
+				});
+			});
+		});
 	});
 
 	describe('setsRemove()', function () {
