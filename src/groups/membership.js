@@ -367,9 +367,11 @@ module.exports = function (Groups) {
 	}
 
 	pubsub.on('group:cache:del', function (data) {
-		data.groupNames.forEach(function (groupName) {
-			cache.del(data.uid + ':' + groupName);
-		});
+		if (data && data.groupNames) {
+			data.groupNames.forEach(function (groupName) {
+				cache.del(data.uid + ':' + groupName);
+			});
+		}
 	});
 
 	Groups.isMember = function (uid, groupName, callback) {
