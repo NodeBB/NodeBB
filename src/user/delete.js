@@ -53,7 +53,7 @@ module.exports = function (User) {
 				db.getObject('user:' + uid, next);
 			},
 			function (_userData, next) {
-				if (!_userData) {
+				if (!_userData || !_userData.username) {
 					return callback();
 				}
 				userData = _userData;
