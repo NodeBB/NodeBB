@@ -50,15 +50,12 @@ module.exports = function (User) {
 		var userData;
 		async.waterfall([
 			function (next) {
-				User.exists(uid, next);
-			},
-			function (exists, next) {
-				if (!exists) {
-					return callback();
-				}
-				User.getUserFields(uid, ['username', 'userslug', 'fullname', 'email'], next);
+				db.getObject('user:' + uid, next);
 			},
 			function (_userData, next) {
+				if (!_userData) {
+					return callback();
+				}
 				userData = _userData;
 				plugins.fireHook('static:user.delete', { uid: uid }, next);
 			},
