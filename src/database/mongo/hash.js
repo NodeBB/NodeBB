@@ -289,7 +289,10 @@ module.exports = function (db, module) {
 
 		if (Array.isArray(key)) {
 			var bulk = db.collection('objects').initializeUnorderedBulkOp();
-			bulk.find({ _key: { $in: key } }).upsert().update({ $inc: data });
+			key.forEach(function (key) {
+				bulk.find({ _key: key }).upsert().update({ $inc: data });
+			});
+
 			async.waterfall([
 				function (next) {
 					bulk.execute(function (err) {

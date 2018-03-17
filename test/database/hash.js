@@ -408,10 +408,11 @@ describe('Hash methods', function () {
 		});
 
 		it('should decrement multiple objects field by 1 and return an array of new values', function (done) {
-			db.decrObjectField(['testObject13', 'testObject14'], 'age', function (err, data) {
+			db.decrObjectField(['testObject13', 'testObject14', 'decrTestObject'], 'age', function (err, data) {
 				assert.ifError(err);
 				assert.equal(data[0], 97);
 				assert.equal(data[1], -1);
+				assert.equal(data[2], -1);
 				done();
 			});
 		});
