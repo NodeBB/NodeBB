@@ -30,12 +30,12 @@
     "locked": "Verrouillé",
     "pinned": "Épinglé",
     "moved": "Déplacé",
-    "copy-ip": "Copy IP",
-    "ban-ip": "Ban IP",
-    "view-history": "Edit History",
+    "copy-ip": "Copier l'IP",
+    "ban-ip": "Bannir l'IP",
+    "view-history": "Éditer l'historique",
     "bookmark_instructions": "Cliquez ici pour retourner au dernier message lu de ce fil.",
     "flag_title": "Signaler ce message à la modération",
-    "merged_message": "This topic has been merged into <a href=\"/topic/%1\">%2</a>",
+    "merged_message": "Ce sujet a été fusionné dans <a href=\"/topic/%1\">%2</a>",
     "deleted_message": "Ce sujet a été supprimé. Seuls les utilisateurs avec les droits d'administration peuvent le voir.",
     "following_topic.message": "Vous recevrez désormais des notifications lorsque quelqu'un postera dans ce sujet.",
     "not_following_topic.message": "Vous verrez ce sujet dans la liste des sujets non-lus, mais vous ne recevrez pas de notification lorsque quelqu'un postera dans ce sujet.",
@@ -123,7 +123,7 @@
     "stale.create": "Créer un nouveau sujet",
     "stale.reply_anyway": "Répondre à ce sujet quand même",
     "link_back": "Re : [%1](%2)",
-    "diffs.title": "Post Edit History",
-    "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
-    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
+    "diffs.title": "Historique",
+    "diffs.description": "Cet article a <strong>% 1</strong> révisions. Cliquez sur l'une des révisions ci-dessous pour voir le contenu du message.",
+    "diffs.no-revisions-description": "Cet article a <strong>% 1</strong> révisions."
 }

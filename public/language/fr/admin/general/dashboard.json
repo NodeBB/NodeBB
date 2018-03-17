@@ -39,7 +39,7 @@
 	"reload": "Recharger",
 	"restart": "Redémarrer",
 	"restart-warning": "Recharger ou redémarrer NodeBB coupera toutes les connexions existantes pendant quelques secondes. ",
-	"restart-disabled": "Rebuilding and Restarting your NodeBB has been disabled as you do not seem to be running it via the appropriate daemon.",
+	"restart-disabled": "La recharge et le redémarrage de votre forum ont été désactivés car vous ne semblez pas les exécuter à l'aide du serveur approprié.",
 	"maintenance-mode": "Mode maintenance",
 	"maintenance-mode-title": "Cliquez ici pour passer NodeBB en mode maintenance",
 	"realtime-chart-updates": "Mises à jour des graphiques en temps réel",

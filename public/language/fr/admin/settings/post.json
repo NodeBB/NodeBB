@@ -50,5 +50,5 @@
 	"composer.custom-help": "Message d'aide personnalisé",
 	"ip-tracking": "Suivi d'IP",
 	"ip-tracking.each-post": "Suivre l'adresse IP pour chaque message",
-	"enable-post-history": "Enable Post History"
+	"enable-post-history": "Activer l'historique des publications"
 }
