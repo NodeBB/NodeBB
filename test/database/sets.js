@@ -203,6 +203,27 @@ describe('Set methods', function () {
 				});
 			});
 		});
+
+		it('should remove multiple values from multiple keys', function (done) {
+			db.setAdd('multiSetTest1', ['one', 'two', 'three', 'four'], function (err) {
+				assert.ifError(err);
+				db.setAdd('multiSetTest2', ['three', 'four', 'five', 'six'], function (err) {
+					assert.ifError(err);
+					db.setRemove(['multiSetTest1', 'multiSetTest2'], ['three', 'four', 'five', 'doesnt exist'], function (err) {
+						assert.ifError(err);
+						db.getSetsMembers(['multiSetTest1', 'multiSetTest2'], function (err, members) {
+							assert.ifError(err);
+							assert.equal(members[0].length, 2);
+							assert.equal(members[1].length, 1);
+							assert(members[0].includes('one'));
+							assert(members[0].includes('two'));
+							assert(members[1].includes('six'));
+							done();
+						});
+					});
+				});
+			});
+		});
 	});
 
 	describe('setsRemove()', function () {

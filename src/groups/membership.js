@@ -147,8 +147,16 @@ module.exports = function (Groups) {
 		], callback);
 	};
 
-	Groups.rejectMembership = function (groupName, uid, callback) {
-		db.setsRemove(['group:' + groupName + ':pending', 'group:' + groupName + ':invited'], uid, callback);
+	Groups.rejectMembership = function (groupNames, uid, callback) {
+		if (!Array.isArray(groupNames)) {
+			groupNames = [groupNames];
+		}
+		var sets = [];
+		groupNames.forEach(function (groupName) {
+			sets.push('group:' + groupName + ':pending', 'group:' + groupName + ':invited');
+		});
+
+		db.setsRemove(sets, uid, callback);
 	};
 
 	Groups.invite = function (groupName, uid, callback) {
@@ -206,49 +214,70 @@ module.exports = function (Groups) {
 		], callback);
 	}
 
-	Groups.leave = function (groupName, uid, callback) {
+	Groups.leave = function (groupNames, uid, callback) {
 		callback = callback || function () {};
+
+		if (!Array.isArray(groupNames)) {
+			groupNames = [groupNames];
+		}
 
 		async.waterfall([
 			function (next) {
 				async.parallel({
-					isMember: async.apply(Groups.isMember, uid, groupName),
-					exists: async.apply(Groups.exists, groupName),
+					isMembers: async.apply(Groups.isMemberOfGroups, uid, groupNames),
+					exists: async.apply(Groups.exists, groupNames),
 				}, next);
 			},
 			function (result, next) {
-				if (!result.isMember || !result.exists) {
+				groupNames = groupNames.filter(function (groupName, index) {
+					return result.isMembers[index] && result.exists[index];
+				});
+
+				if (!groupNames.length) {
 					return callback();
 				}
 
 				async.parallel([
-					async.apply(db.sortedSetRemove, 'group:' + groupName + ':members', uid),
-					async.apply(db.setRemove, 'group:' + groupName + ':owners', uid),
-					async.apply(db.decrObjectField, 'group:' + groupName, 'memberCount'),
+					async.apply(db.sortedSetRemove, groupNames.map(groupName => 'group:' + groupName + ':members'), uid),
+					async.apply(db.setRemove, groupNames.map(groupName => 'group:' + groupName + ':owners'), uid),
+					async.apply(db.decrObjectField, groupNames.map(groupName => 'group:' + groupName), 'memberCount'),
 				], next);
 			},
 			function (results, next) {
-				clearCache(uid, groupName);
-				Groups.getGroupFields(groupName, ['hidden', 'memberCount'], next);
+				clearCache(uid, groupNames);
+				Groups.getGroupsFields(groupNames, ['name', 'hidden', 'memberCount'], next);
 			},
 			function (groupData, next) {
 				if (!groupData) {
 					return callback();
 				}
-				if (Groups.isPrivilegeGroup(groupName) && parseInt(groupData.memberCount, 10) === 0) {
-					Groups.destroy(groupName, next);
-				} else if (parseInt(groupData.hidden, 10) !== 1) {
-					db.sortedSetAdd('groups:visible:memberCount', groupData.memberCount, groupName, next);
-				} else {
-					next();
+				var tasks = [];
+
+				var emptyPrivilegeGroups = groupData.filter(function (groupData) {
+					return groupData && Groups.isPrivilegeGroup(groupData.name) && parseInt(groupData.memberCount, 10) === 0;
+				});
+				if (emptyPrivilegeGroups.length) {
+					tasks.push(async.apply(Groups.destroy, emptyPrivilegeGroups));
 				}
+
+				var visibleGroups = groupData.filter(function (groupData) {
+					return groupData && parseInt(groupData.hidden, 10) !== 1;
+				});
+				if (visibleGroups.length) {
+					tasks.push(async.apply(db.sortedSetAdd, 'groups:visible:memberCount', visibleGroups.map(groupData => groupData.memberCount), visibleGroups.map(groupData => groupData.name)));
+				}
+
+				async.parallel(tasks, function (err) {
+					next(err);
+				});
 			},
 			function (next) {
-				clearGroupTitleIfSet(groupName, uid, next);
+				clearGroupTitleIfSet(groupNames, uid, next);
 			},
 			function (next) {
 				plugins.fireHook('action:group.leave', {
-					groupName: groupName,
+					groupName: groupNames[0],
+					groupNames: groupNames,
 					uid: uid,
 				});
 				next();
@@ -256,8 +285,11 @@ module.exports = function (Groups) {
 		], callback);
 	};
 
-	function clearGroupTitleIfSet(groupName, uid, callback) {
-		if (groupName === 'registered-users' || Groups.isPrivilegeGroup(groupName)) {
+	function clearGroupTitleIfSet(groupNames, uid, callback) {
+		groupNames = groupNames.filter(function (groupName) {
+			return groupName !== 'registered-users' && !Groups.isPrivilegeGroup(groupName);
+		});
+		if (!groupNames.length) {
 			return callback();
 		}
 		async.waterfall([
@@ -265,7 +297,7 @@ module.exports = function (Groups) {
 				db.getObjectField('user:' + uid, 'groupTitle', next);
 			},
 			function (groupTitle, next) {
-				if (groupTitle === groupName) {
+				if (groupNames.includes(groupTitle)) {
 					db.deleteObjectField('user:' + uid, 'groupTitle', next);
 				} else {
 					next();
@@ -280,16 +312,14 @@ module.exports = function (Groups) {
 				db.getSortedSetRange('groups:createtime', 0, -1, next);
 			},
 			function (groups, next) {
-				async.each(groups, function (groupName, next) {
-					async.parallel([
-						function (next) {
-							Groups.leave(groupName, uid, next);
-						},
-						function (next) {
-							Groups.rejectMembership(groupName, uid, next);
-						},
-					], next);
-				}, next);
+				async.parallel([
+					function (next) {
+						Groups.leave(groups, uid, next);
+					},
+					function (next) {
+						Groups.rejectMembership(groups, uid, next);
+					},
+				], next);
 			},
 		], callback);
 	};
@@ -326,13 +356,20 @@ module.exports = function (Groups) {
 		cache.reset();
 	});
 
-	function clearCache(uid, groupName) {
-		pubsub.publish('group:cache:del', { uid: uid, groupName: groupName });
-		cache.del(uid + ':' + groupName);
+	function clearCache(uid, groupNames) {
+		if (!Array.isArray(groupNames)) {
+			groupNames = [groupNames];
+		}
+		pubsub.publish('group:cache:del', { uid: uid, groupNames: groupNames });
+		groupNames.forEach(function (groupName) {
+			cache.del(uid + ':' + groupName);
+		});
 	}
 
 	pubsub.on('group:cache:del', function (data) {
-		cache.del(data.uid + ':' + data.groupName);
+		data.groupNames.forEach(function (groupName) {
+			cache.del(data.uid + ':' + groupName);
+		});
 	});
 
 	Groups.isMember = function (uid, groupName, callback) {

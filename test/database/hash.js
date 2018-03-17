@@ -406,6 +406,15 @@ describe('Hash methods', function () {
 				done();
 			});
 		});
+
+		it('should decrement multiple objects field by 1 and return an array of new values', function (done) {
+			db.decrObjectField(['testObject13', 'testObject14'], 'age', function (err, data) {
+				assert.ifError(err);
+				assert.equal(data[0], 97);
+				assert.equal(data[1], -1);
+				done();
+			});
+		});
 	});
 
 	describe('incrObjectFieldBy()', function () {

@@ -384,7 +384,7 @@ module.exports = function (db, module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback(null, []);
 		}
-		db.collection('objects').find({ _key: { $in: keys } }, { _id: 0, _key: 1, value: 1 }).toArray(function (err, data) {
+		db.collection('objects').find({ _key: { $in: keys } }, { _id: 0, _key: 1, value: 1 }).sort({ score: 1 }).toArray(function (err, data) {
 			if (err) {
 				return callback(err);
 			}
