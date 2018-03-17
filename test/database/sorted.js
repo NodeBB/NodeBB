@@ -678,6 +678,26 @@ describe('Sorted Set methods', function () {
 				});
 			});
 		});
+
+		it('should remove multiple values from multiple keys', function (done) {
+			db.sortedSetAdd('multiTest5', [1], ['one'], function (err) {
+				assert.ifError(err);
+				db.sortedSetAdd('multiTest6', [2], ['two'], function (err) {
+					assert.ifError(err);
+					db.sortedSetAdd('multiTest7', [3], ['three'], function (err) {
+						assert.ifError(err);
+						db.sortedSetRemove(['multiTest5', 'multiTest6', 'multiTest7'], ['one', 'two', 'three'], function (err) {
+							assert.ifError(err);
+							db.getSortedSetsMembers(['multiTest5', 'multiTest6', 'multiTest7'], function (err, members) {
+								assert.ifError(err);
+								assert.deepEqual(members, [[], [], []]);
+								done();
+							});
+						});
+					});
+				});
+			});
+		});
 	});
 
 	describe('sortedSetsRemove()', function () {
