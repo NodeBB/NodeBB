@@ -30,12 +30,12 @@
     "locked": "Kilitli",
     "pinned": "İğnelendi",
     "moved": "Taşındı",
-    "copy-ip": "Copy IP",
-    "ban-ip": "Ban IP",
-    "view-history": "Edit History",
+    "copy-ip": "IP Kopyala",
+    "ban-ip": "IP Engelle",
+    "view-history": "Geçmişi Düzenle",
     "bookmark_instructions": "Bu başlıkta en son kaldığın yere dönmek için tıklayın.",
     "flag_title": "Bu iletiyi moderatöre haber et",
-    "merged_message": "This topic has been merged into <a href=\"/topic/%1\">%2</a>",
+    "merged_message": "Bu konu <a href=\"/topic/%1\">%2</a> olarak birleştirildi",
     "deleted_message": "Bu başlık silindi. Sadece başlık düzenleme yetkisi olan kullanıcılar görebilir.",
     "following_topic.message": "Artık bir kullanıcı bu başlığa ileti gönderdiğinde bildirim alacaksınız.",
     "not_following_topic.message": "Bu başlığı okunmamışlarda göreceksiniz ama biri bir şey yazdığında bildirim gelmeyecek.",
@@ -123,7 +123,7 @@
     "stale.create": "Yeni bir başlık yarat",
     "stale.reply_anyway": "Bu konuyu cevapla",
     "link_back": "Re: [%1](%2)",
-    "diffs.title": "Post Edit History",
-    "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
-    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
+    "diffs.title": "İleti Geçmiş Düzenle",
+    "diffs.description": "Bu iletinin <strong>%1</strong>revizyonu var. Zaman içerisinde ileti içeriğinin tamamını görmek için aşağıdaki düzeltmelerden birine tıklayın.",
+    "diffs.no-revisions-description": "Bu iletinin <strong>%1</strong> revizyonu var."
 }

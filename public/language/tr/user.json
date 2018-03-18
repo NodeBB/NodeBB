@@ -1,7 +1,7 @@
 {
     "banned": "Yasaklı",
     "offline": "Çevrimdışı",
-    "deleted": "Deleted",
+    "deleted": "Silindi",
     "username": "Kullanıcı Adı",
     "joindate": "Katılım Tarihi",
     "postcount": "İleti Sayısı",
@@ -96,7 +96,7 @@
     "topics_per_page": "Sayfa başına Konular",
     "posts_per_page": "Sayfa başına İletiler",
     "max_items_per_page": "Maksimum %1",
-    "acp_language": "Admin Page Language",
+    "acp_language": "Yönetici Sayfası Dili",
     "notification_sounds": "Uyarı alındığında ses çal",
     "notifications_and_sounds": "Bildirimler & Sesler",
     "incoming-message-sound": "Gelen mesaj sesi",
