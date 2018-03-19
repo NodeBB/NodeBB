@@ -9,15 +9,15 @@
 
 	"section-manage": "Керування",
 	"manage/categories": "Категорії",
-	"manage/privileges": "Privileges",
+	"manage/privileges": "Привілеї",
 	"manage/tags": "Теги",
 	"manage/users": "Користувачі",
-	"manage/admins-mods": "Admins & Mods",
+	"manage/admins-mods": "Адміністратори та моди",
 	"manage/registration": "Черга реєстрації",
 	"manage/post-queue": "Черга Постів",
 	"manage/groups": "Групи",
 	"manage/ip-blacklist": "Чорний список IP-адрес",
-	"manage/uploads": "Uploads",
+	"manage/uploads": "Вивантаження",
 
 	"section-settings": "Налаштування",
 	"settings/general": "Загальні",
@@ -42,7 +42,7 @@
 	"section-appearance": "Зовнішній вигляд",
 	"appearance/themes": "Теми",
 	"appearance/skins": "Стилі",
-	"appearance/customise": "Custom Content (HTML/JS/CSS)",
+	"appearance/customise": "Користувацький вміст (HTML/JS/CSS)",
 
 	"section-extend": "Розширити",
 	"extend/plugins": "Плагіни",
