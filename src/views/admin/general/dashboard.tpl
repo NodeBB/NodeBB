@@ -65,20 +65,24 @@
 				<div class="panel panel-default">
 					<div class="panel-heading">[[admin/general/dashboard:updates]]</div>
 					<div class="panel-body">
-						<div class="alert <!-- IF upgradeAvailable -->alert-warning<!-- ELSE --><!-- IF currentPrerelease -->alert-info<!-- ELSE -->alert-success<!-- END --><!-- END --> version-check">
+						<div class="alert <!-- IF lookupFailed -->alert-danger<!-- ELSE --><!-- IF upgradeAvailable -->alert-warning<!-- ELSE --><!-- IF currentPrerelease -->alert-info<!-- ELSE -->alert-success<!-- END --><!-- END --><!-- END --> version-check">
 							<p>[[admin/general/dashboard:running-version, {version}]]</p>
 							<p>
-							<!-- IF upgradeAvailable -->
-								<!-- IF currentPrerelease -->
-								[[admin/general/dashboard:prerelease-upgrade-available, {latestVersion}]]
-								<!-- ELSE -->
-								[[admin/general/dashboard:upgrade-available, {latestVersion}]]
-								<!-- END -->
+							<!-- IF lookupFailed -->
+							[[admin/general/dashboard:latest-lookup-failed]]
 							<!-- ELSE -->
-								<!-- IF currentPrerelease -->
-								[[admin/general/dashboard:prerelease-warning]]
+								<!-- IF upgradeAvailable -->
+									<!-- IF currentPrerelease -->
+									[[admin/general/dashboard:prerelease-upgrade-available, {latestVersion}]]
+									<!-- ELSE -->
+									[[admin/general/dashboard:upgrade-available, {latestVersion}]]
+									<!-- END -->
 								<!-- ELSE -->
-								[[admin/general/dashboard:up-to-date]]
+									<!-- IF currentPrerelease -->
+									[[admin/general/dashboard:prerelease-warning]]
+									<!-- ELSE -->
+									[[admin/general/dashboard:up-to-date]]
+									<!-- END -->
 								<!-- END -->
 							<!-- END -->
 							</p>

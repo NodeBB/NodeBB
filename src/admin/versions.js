@@ -1,8 +1,9 @@
 'use strict';
 
-var nconf = require('nconf');
 var semver = require('semver');
 var request = require('request');
+
+var meta = require('../meta');
 
 var versionCache = '';
 var versionCacheLastModified = '';
@@ -10,13 +11,18 @@ var versionCacheLastModified = '';
 var	isPrerelease = /^v?\d+\.\d+\.\d+-.+$/;
 
 function getLatestVersion(callback) {
+	var headers = {
+		Accept: 'application/vnd.github.v3+json',
+		'User-Agent': 'NodeBB Admin Control Panel/' + meta.config.title,
+	};
+
+	if (versionCacheLastModified) {
+		headers['If-Modified-Since'] = versionCacheLastModified;
+	}
+
 	request('https://api.github.com/repos/NodeBB/NodeBB/tags', {
 		json: true,
-		headers: {
-			Accept: 'application/vnd.github.v3+json',
-			'User-Agent': 'NodeBB Admin Control Panel - ' + nconf.get('url'),
-			'If-Modified-Since': versionCacheLastModified || undefined,
-		},
+		headers: headers,
 	}, function (err, res, releases) {
 		if (err) {
 			return callback(err);

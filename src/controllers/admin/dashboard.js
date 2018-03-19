@@ -3,6 +3,7 @@
 var async = require('async');
 var nconf = require('nconf');
 var semver = require('semver');
+var winston = require('winston');
 
 var versions = require('../../admin/versions');
 var db = require('../../database');
@@ -41,7 +42,15 @@ dashboardController.get = function (req, res, next) {
 
 					plugins.fireHook('filter:admin.notices', notices, next);
 				},
-				latestVersion: versions.getLatestVersion,
+				latestVersion: function (next) {
+					versions.getLatestVersion(function (err, result) {
+						if (err) {
+							winston.error('[acp] Failed to fetch latest version', err);
+						}
+
+						next(null, err ? null : result);
+					});
+				},
 			}, next);
 		},
 		function (results) {
@@ -49,8 +58,9 @@ dashboardController.get = function (req, res, next) {
 
 			res.render('admin/general/dashboard', {
 				version: version,
+				lookupFailed: results.latestVersion === null,
 				latestVersion: results.latestVersion,
-				upgradeAvailable: semver.gt(results.latestVersion, version),
+				upgradeAvailable: results.latestVersion && semver.gt(results.latestVersion, version),
 				currentPrerelease: versions.isPrerelease.test(version),
 				notices: results.notices,
 				stats: results.stats,

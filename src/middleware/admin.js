@@ -58,7 +58,15 @@ module.exports = function (middleware) {
 					configs: function (next) {
 						meta.configs.list(next);
 					},
-					latestVersion: versions.getLatestVersion,
+					latestVersion: function (next) {
+						versions.getLatestVersion(function (err, result) {
+							if (err) {
+								winston.error('[acp] Failed to fetch latest version', err);
+							}
+
+							next(null, err ? null : result);
+						});
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -90,7 +98,7 @@ module.exports = function (middleware) {
 					bodyClass: data.bodyClass,
 					version: version,
 					latestVersion: results.latestVersion,
-					upgradeAvailable: semver.gt(results.latestVersion, version),
+					upgradeAvailable: results.latestVersion && semver.gt(results.latestVersion, version),
 				};
 
 				templateValues.template = { name: res.locals.template };
