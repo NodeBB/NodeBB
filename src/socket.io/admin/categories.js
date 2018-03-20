@@ -88,7 +88,7 @@ Categories.setPrivilege = function (socket, data, callback) {
 			privilege: data.privilege,
 			action: data.set ? 'grant' : 'rescind',
 			target: data.member,
-		});
+		}, callback);
 	}
 };
 
