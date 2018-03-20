@@ -228,9 +228,8 @@ SocketAdmin.settings.clearSitemapCache = function (socket, data, callback) {
 };
 
 SocketAdmin.email.test = function (socket, data, callback) {
-	var site_title = meta.config.title || 'NodeBB';
 	var payload = {
-		subject: '[' + site_title + '] Test Email',
+		subject: 'Test Email',
 	};
 
 	switch (data.template) {

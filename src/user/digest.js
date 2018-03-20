@@ -134,7 +134,7 @@ Digest.send = function (data, callback) {
 						});
 						emailsSent += 1;
 						emailer.send('digest', userObj.uid, {
-							subject: '[' + meta.config.title + '] [[email:digest.subject, ' + (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()) + ']]',
+							subject: '[[email:digest.subject, ' + (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()) + ']]',
 							username: userObj.username,
 							userslug: userObj.userslug,
 							notifications: notifications,
