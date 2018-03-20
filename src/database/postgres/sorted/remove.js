@@ -28,7 +28,7 @@ module.exports = function (db, module) {
 			text: `
 DELETE FROM "legacy_zset"
  WHERE "_key" = ANY($1::TEXT[])
-   AND "value" = ANY($2::TEXT)`,
+   AND "value" = ANY($2::TEXT[])`,
 			values: [key, value],
 		}, done);
 	};
