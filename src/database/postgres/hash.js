@@ -353,7 +353,7 @@ UPDATE "legacy_hash"
 		value = parseInt(value, 10);
 
 		if (!key || isNaN(value)) {
-			return callback();
+			return callback(null, null);
 		}
 
 		module.transaction(function (tx, done) {
