@@ -360,8 +360,17 @@ UPDATE "legacy_hash"
 			var query = tx.client.query.bind(tx.client);
 
 			async.waterfall([
-				async.apply(helpers.ensureLegacyObjectType, tx.client, key, 'hash'),
-				async.apply(query, {
+				async.apply(Array.isArray(key) ? helpers.ensureLegacyObjectsType : helpers.ensureLegacyObjectType, tx.client, key, 'hash'),
+				async.apply(query, Array.isArray(key) ? {
+					name: 'incrObjectFieldByMulti',
+					text: `
+INSERT INTO "legacy_hash" ("_key", "data")
+SELECT UNNEST($1::TEXT[]), jsonb_build_object($2::TEXT, $3::NUMERIC)
+    ON CONFLICT ("_key")
+    DO UPDATE SET "data" = jsonb_set("legacy_hash"."data", ARRAY[$2::TEXT], to_jsonb(COALESCE(("legacy_hash"."data"->>$2::TEXT)::NUMERIC, 0) + $3::NUMERIC))
+RETURNING ("data"->>$2::TEXT)::NUMERIC v`,
+					values: [key, field, value],
+				} : {
 					name: 'incrObjectFieldBy',
 					text: `
 INSERT INTO "legacy_hash" ("_key", "data")
@@ -372,7 +381,9 @@ RETURNING ("data"->>$2::TEXT)::NUMERIC v`,
 					values: [key, field, value],
 				}),
 				function (res, next) {
-					next(null, parseFloat(res.rows[0].v));
+					next(null, Array.isArray(key) ? res.rows.map(function (r) {
+						return parseFloat(r.v);
+					}) : parseFloat(res.rows[0].v));
 				},
 			], done);
 		}, callback);

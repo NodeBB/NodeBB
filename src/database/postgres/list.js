@@ -207,4 +207,28 @@ SELECT ARRAY(SELECT m.m
 			callback(null, []);
 		});
 	};
+
+	module.listLength = function (key, callback) {
+		db.query({
+			name: 'listLength',
+			text: `
+SELECT array_length(l."array", 1) l
+  FROM "legacy_object_live" o
+ INNER JOIN "legacy_list" l
+         ON o."_key" = l."_key"
+        AND o."type" = l."type"
+      WHERE o."_key" = $1::TEXT`,
+			values: [key],
+		}, function (err, res) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (res.rows.length) {
+				return callback(null, res.rows[0].l);
+			}
+
+			callback(null, 0);
+		});
+	};
 };

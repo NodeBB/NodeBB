@@ -512,7 +512,7 @@ SELECT o."_key" k
 			name: 'getSortedSetsMembers',
 			text: `
 SELECT o."_key" k,
-       array_agg(z."value") m
+       array_agg(z."value" ORDER BY z."score" ASC) m
   FROM "legacy_object_live" o
  INNER JOIN "legacy_zset" z
          ON o."_key" = z."_key"

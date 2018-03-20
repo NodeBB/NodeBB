@@ -14,27 +14,23 @@ module.exports = function (db, module) {
 			return done();
 		}
 
-		if (Array.isArray(value)) {
-			value = value.map(helpers.valueToString);
-			db.query({
-				name: 'sortedSetRemoveBulk',
-				text: `
-DELETE FROM "legacy_zset"
- WHERE "_key" = $1::TEXT
-   AND "value" = ANY($2::TEXT[])`,
-				values: [key, value],
-			}, done);
-		} else {
-			value = helpers.valueToString(value);
-			db.query({
-				name: 'sortedSetRemove',
-				text: `
-DELETE FROM "legacy_zset"
- WHERE "_key" = $1::TEXT
-   AND "value" = $2::TEXT`,
-				values: [key, value],
-			}, done);
+		if (!Array.isArray(key)) {
+			key = [key];
 		}
+
+		if (!Array.isArray(value)) {
+			value = [value];
+		}
+		value = value.map(helpers.valueToString);
+
+		db.query({
+			name: 'sortedSetRemove',
+			text: `
+DELETE FROM "legacy_zset"
+ WHERE "_key" = ANY($1::TEXT[])
+   AND "value" = ANY($2::TEXT)`,
+			values: [key, value],
+		}, done);
 	};
 
 	module.sortedSetsRemove = function (keys, value, callback) {

@@ -73,6 +73,10 @@ SELECT k, m
 	module.setRemove = function (key, value, callback) {
 		callback = callback || helpers.noop;
 
+		if (!Array.isArray(key)) {
+			key = [key];
+		}
+
 		if (!Array.isArray(value)) {
 			value = [value];
 		}
@@ -81,7 +85,7 @@ SELECT k, m
 			name: 'setRemove',
 			text: `
 DELETE FROM "legacy_set"
- WHERE "_key" = $1::TEXT
+ WHERE "_key" = ANY($1::TEXT[])
    AND "member" = ANY($2::TEXT[])`,
 			values: [key, value],
 		}, function (err) {
