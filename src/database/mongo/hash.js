@@ -1,5 +1,6 @@
 'use strict';
 
+var async = require('async');
 var pubsub = require('../../pubsub');
 
 module.exports = function (db, module) {
@@ -285,6 +286,36 @@ module.exports = function (db, module) {
 		var data = {};
 		field = helpers.fieldToString(field);
 		data[field] = value;
+
+		if (Array.isArray(key)) {
+			var bulk = db.collection('objects').initializeUnorderedBulkOp();
+			key.forEach(function (key) {
+				bulk.find({ _key: key }).upsert().update({ $inc: data });
+			});
+
+			async.waterfall([
+				function (next) {
+					bulk.execute(function (err) {
+						next(err);
+					});
+				},
+				function (next) {
+					key.forEach(function (key) {
+						module.delObjectCache(key);
+					});
+
+					module.getObjectsFields(key, [field], next);
+				},
+				function (data, next) {
+					data = data.map(function (data) {
+						return data && data[field];
+					});
+					next(null, data);
+				},
+			], callback);
+			return;
+		}
+
 
 		db.collection('objects').findAndModify({ _key: key }, {}, { $inc: data }, { new: true, upsert: true }, function (err, result) {
 			if (err) {

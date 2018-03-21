@@ -96,16 +96,10 @@ function deleteUserNids(nids, uid, callback) {
 	if (!nids.length) {
 		return setImmediate(callback);
 	}
-	async.parallel([
-		function (next) {
-			db.sortedSetRemove('uid:' + uid + ':notifications:read', nids, next);
-		},
-		function (next) {
-			db.sortedSetRemove('uid:' + uid + ':notifications:unread', nids, next);
-		},
-	], function (err) {
-		callback(err);
-	});
+	db.sortedSetRemove([
+		'uid:' + uid + ':notifications:read',
+		'uid:' + uid + ':notifications:unread',
+	], nids, callback);
 }
 
 function getNotifications(uid, start, stop, callback) {

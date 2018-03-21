@@ -56,4 +56,8 @@ module.exports = function (redisClient, module) {
 		}
 		redisClient.lrange(key, start, stop, callback);
 	};
+
+	module.listLength = function (key, callback) {
+		redisClient.llen(key, callback);
+	};
 };

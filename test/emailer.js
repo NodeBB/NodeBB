@@ -5,6 +5,7 @@ var assert = require('assert');
 var fs = require('fs');
 var path = require('path');
 
+var db = require('./mocks/databasemock');
 var Plugins = require('../src/plugins');
 var Emailer = require('../src/emailer');
 var Meta = require('../src/meta');
@@ -52,7 +53,7 @@ describe('emailer', function () {
 			method: function (data, next) {
 				assert(data);
 				assert.equal(data.to, email);
-				assert.equal(data.subject, params.subject);
+				assert.equal(data.subject, '[NodeBB] ' + params.subject);
 
 				next(error);
 			},

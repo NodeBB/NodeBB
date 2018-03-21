@@ -16,10 +16,31 @@
 		font-weight: 300;
 	}
 
-	#user_label {
-		position: absolute;
-		right: 30px;
-		bottom: 125px;
+	.quick-actions {
+		position: static;
+		padding: 15px;
+		display: flex;
+		flex-direction: row-reverse;
+		margin: 0;
+
+		> * {
+			margin-right: 20px;
+		}
+
+		> .menu-button {
+			margin-right: 0;
+			padding: 0 5px;
+		}
+
+		.alert {
+			font-size: 14px;
+			margin-bottom: 0;
+
+			&.alert-info {
+				background-color: #eee;
+				color: #333;
+			}
+		}
 
 		.dropdown {
 			margin-right: 0px;
@@ -29,7 +50,7 @@
 			}
 		}
 
-		.fa-home {
+		.fa {
 			margin-top: 12px;
 			font-size: 25px;
 		}
@@ -46,9 +67,6 @@
 	}
 
 	#acp-search {
-		margin-top: 2px;
-		margin-right: 20px;
-
 		input {
 			padding: 10px 20px;
 			width: 250px;
@@ -96,9 +114,6 @@
 	}
 
 	.reconnect-spinner {
-		left: auto;
-		right: 380px;
-		bottom: initial;
-		top: 14px;
+		line-height: 44px;
 	}
 }

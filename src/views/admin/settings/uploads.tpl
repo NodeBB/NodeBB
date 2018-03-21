@@ -29,6 +29,14 @@
 			</div>
 
 			<div class="form-group">
+				<label for="resizeImageQuality">[[admin/settings/uploads:resize-image-quality]]</label>
+				<input type="text" class="form-control" value="60" data-field="resizeImageQuality" placeholder="60">
+				<p class="help-block">
+					[[admin/settings/uploads:resize-image-quality-help]]
+				</p>
+			</div>
+
+			<div class="form-group">
 				<label for="maximumFileSize">[[admin/settings/uploads:max-file-size]]</label>
 				<input type="text" class="form-control" value="2048" data-field="maximumFileSize">
 				<p class="help-block">

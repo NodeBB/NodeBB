@@ -20,6 +20,7 @@ image.resizeImage = function (data, callback) {
 			extension: data.extension,
 			width: data.width,
 			height: data.height,
+			quality: data.quality,
 		}, function (err) {
 			callback(err);
 		});
@@ -74,6 +75,9 @@ image.resizeImage = function (data, callback) {
 					}
 				},
 				function (image, next) {
+					if (data.quality) {
+						image.quality(data.quality);
+					}
 					image.write(data.target || data.path, next);
 				},
 			], function (err) {

@@ -2,7 +2,10 @@
 
 var async = require('async');
 var nconf = require('nconf');
+var semver = require('semver');
+var winston = require('winston');
 
+var versions = require('../../admin/versions');
 var db = require('../../database');
 var meta = require('../../meta');
 var plugins = require('../../plugins');
@@ -13,9 +16,7 @@ dashboardController.get = function (req, res, next) {
 	async.waterfall([
 		function (next) {
 			async.parallel({
-				stats: function (next) {
-					getStats(next);
-				},
+				stats: getStats,
 				notices: function (next) {
 					var notices = [
 						{
@@ -41,11 +42,26 @@ dashboardController.get = function (req, res, next) {
 
 					plugins.fireHook('filter:admin.notices', notices, next);
 				},
+				latestVersion: function (next) {
+					versions.getLatestVersion(function (err, result) {
+						if (err) {
+							winston.error('[acp] Failed to fetch latest version', err);
+						}
+
+						next(null, err ? null : result);
+					});
+				},
 			}, next);
 		},
 		function (results) {
+			var version = nconf.get('version');
+
 			res.render('admin/general/dashboard', {
-				version: nconf.get('version'),
+				version: version,
+				lookupFailed: results.latestVersion === null,
+				latestVersion: results.latestVersion,
+				upgradeAvailable: results.latestVersion && semver.gt(results.latestVersion, version),
+				currentPrerelease: versions.isPrerelease.test(version),
 				notices: results.notices,
 				stats: results.stats,
 				canRestart: !!process.send,

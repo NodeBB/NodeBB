@@ -137,13 +137,21 @@ module.exports = function (User) {
 			incomingChatSound: data.incomingChatSound,
 			outgoingChatSound: data.outgoingChatSound,
 			upvoteNotifFreq: data.upvoteNotifFreq,
-			notificationType_upvote: data.notificationType_upvote,
-			'notificationType_new-topic': data['notificationType_new-topic'],
-			'notificationType_new-reply': data['notificationType_new-reply'],
-			notificationType_follow: data.notificationType_follow,
-			'notificationType_new-chat': data['notificationType_new-chat'],
-			'notificationType_group-invite': data['notificationType_group-invite'],
 		};
+
+		var notificationTypes = [
+			'notificationType_upvote', 'notificationType_new-topic', 'notificationType_new-reply',
+			'notificationType_follow', 'notificationType_new-chat', 'notificationType_group-invite',
+			'notificationType_new-register', 'notificationType_post-queue', 'notificationType_new-post-flag',
+			'notificationType_new-user-flag',
+		];
+
+		notificationTypes.forEach(function (notificationType) {
+			if (data[notificationType]) {
+				settings[notificationType] = data[notificationType];
+			}
+		});
+
 
 		if (data.bootswatchSkin) {
 			settings.bootswatchSkin = data.bootswatchSkin;

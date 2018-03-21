@@ -1,6 +1,6 @@
 'use strict';
 
-define('forum/topic/diffs', ['benchpress', 'translator'], function (Benchpress, translator) {
+define('forum/topic/diffs', ['forum/topic/images', 'benchpress', 'translator'], function (Images, Benchpress, translator) {
 	var Diffs = {};
 
 	Diffs.open = function (pid) {
@@ -13,6 +13,8 @@ define('forum/topic/diffs', ['benchpress', 'translator'], function (Benchpress, 
 
 			Benchpress.parse('partials/modals/post_history', {
 				diffs: timestamps.map(function (timestamp) {
+					timestamp = parseInt(timestamp, 10);
+
 					return {
 						timestamp: timestamp,
 						pretty: new Date(timestamp).toLocaleString(config.userLang.replace('_', '-'), localeStringOpts),
@@ -24,6 +26,7 @@ define('forum/topic/diffs', ['benchpress', 'translator'], function (Benchpress, 
 					var modal = bootbox.dialog({
 						title: '[[topic:diffs.title]]',
 						message: html,
+						size: 'large',
 					});
 
 					if (!timestamps.length) {
@@ -57,6 +60,8 @@ define('forum/topic/diffs', ['benchpress', 'translator'], function (Benchpress, 
 				posts: [data],
 			}, function (html) {
 				postContainer.empty().append(html);
+				Images.unloadImages(html);
+				Images.loadImages();
 			});
 		});
 	};

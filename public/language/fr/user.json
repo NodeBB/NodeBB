@@ -1,7 +1,7 @@
 {
     "banned": "Banni",
     "offline": "Hors-ligne",
-    "deleted": "Deleted",
+    "deleted": "Effacé",
     "username": "Nom d'utilisateur",
     "joindate": "Date d'inscription",
     "postcount": "Nombre de messages",
@@ -96,7 +96,7 @@
     "topics_per_page": "Sujets par page",
     "posts_per_page": "Messages par page",
     "max_items_per_page": "Maximum %1",
-    "acp_language": "Admin Page Language",
+    "acp_language": "Page de gestion des langues",
     "notification_sounds": "Émettre un son lors de la réception de notifications",
     "notifications_and_sounds": "Notifications & Sons",
     "incoming-message-sound": "Son pour les messages entrants",

@@ -6,6 +6,6 @@
 	"max-length": "Максимальна довжина повідомлення",
 	"max-room-size": "Максимальна кількість людей у кімнаті",
 	"delay": "Час між повідомленнями в мілісекундах",
-	"restrictions.seconds-edit-after": "Number of seconds before users are allowed to edit chat messages after posting. (0 disabled)",
-	"restrictions.seconds-delete-after": "Number of seconds before users are allowed to delete chat messages after posting. (0 disabled)"
+	"restrictions.seconds-edit-after": "Кількість секунд, перш ніж користувачі зможуть редагувати повідомлення чату після публікації. (0 вимкнено)",
+	"restrictions.seconds-delete-after": "Кількість секунд, перш ніж користувачі зможуть видаляти повідомлення чату після публікації. (0 вимкнено)"
 }

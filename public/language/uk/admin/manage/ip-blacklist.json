@@ -15,5 +15,5 @@
 
 	"analytics.blacklist-hourly": "<strong>Графік 1</strong> &ndash; Внесення до чорного списку за годину",
 	"analytics.blacklist-daily": "<strong>Графік 2</strong> &ndash; Внесення до чорного списку за день",
-	"ip-banned": "IP banned"
+	"ip-banned": "IP заблоковано"
 }

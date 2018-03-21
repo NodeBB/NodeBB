@@ -1,9 +1,9 @@
 {
-	"custom-css": "Custom CSS/LESS",
-	"custom-css.description": "Enter your own CSS/LESS declarations here, which will be applied after all other styles.",
-	"custom-css.enable": "Enable Custom CSS/LESS",
+	"custom-css": "사용자 정의 CSS/LESS ",
+	"custom-css.description": "사용자 정의 CSS/LESS 코드를 입력하세요. 모든 스타일 다음에 적용됩니다.",
+	"custom-css.enable": "사용자 정의 CSS/LESS 활성화",
 
-	"custom-js": "Custom Javascript",
+	"custom-js": "사용자 정의 javascript",
 	"custom-js.description": "Enter your own javascript here. It will be executed after the page is loaded completely.",
 	"custom-js.enable": "Enable Custom Javascript",
 

@@ -129,6 +129,14 @@ module.exports = function (redisClient, module) {
 		if (!key || isNaN(value)) {
 			return callback(null, null);
 		}
-		redisClient.hincrby(key, field, value, callback);
+		if (Array.isArray(key)) {
+			var multi = redisClient.multi();
+			key.forEach(function (key) {
+				multi.hincrby(key, field, value);
+			});
+			multi.exec(callback);
+		} else {
+			redisClient.hincrby(key, field, value, callback);
+		}
 	};
 };
