@@ -78,9 +78,6 @@ image.resizeImage = function (data, callback) {
 					if (data.quality) {
 						image.quality(data.quality);
 					}
-					next(null, image);
-				},
-				function (image, next) {
 					image.write(data.target || data.path, next);
 				},
 			], function (err) {
