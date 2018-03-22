@@ -128,6 +128,9 @@ function install(req, res) {
 		}
 	}
 
+	winston.info('Starting setup process');
+	winston.info(setupEnvVars);
+
 	var child = require('child_process').fork('app', ['--setup'], {
 		env: setupEnvVars,
 	});
