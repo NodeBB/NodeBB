@@ -242,13 +242,14 @@ function copyCSS(next) {
 }
 
 function loadDefaults(next) {
-	var setupDefaultsPath = path.join(__dirname, './data/setup.json');
+	var setupDefaultsPath = path.join(__dirname, '../setup.json');
 	fs.access(setupDefaultsPath, fs.constants.F_OK | fs.constants.R_OK, function (err) {
 		if (err) {
 			// setup.json not found or inaccessible, proceed with no defaults
 			return setImmediate(next);
 		}
 
+		winston.info('[installer] Found setup.json, populating default values');
 		nconf.file({
 			file: setupDefaultsPath,
 		});
