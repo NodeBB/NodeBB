@@ -50,5 +50,5 @@
 	"composer.custom-help": "自定义帮助文本",
 	"ip-tracking": "IP 跟踪",
 	"ip-tracking.each-post": "跟踪每个帖子的 IP 地址",
-	"enable-post-history": "Enable Post History"
+	"enable-post-history": "启用帖子历史"
 }
