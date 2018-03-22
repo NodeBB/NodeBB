@@ -122,9 +122,11 @@ function install(req, res) {
 		setupEnvVars[parentKey + '__' + key] = setupEnvVars[parentKey][key];
 	};
 	for (var j in setupEnvVars) {
-		if (setupEnvVars.hasOwnProperty(j) && typeof setupEnvVars[j] === 'object' && setupEnvVars[j] !== null) {
+		if (setupEnvVars.hasOwnProperty(j) && typeof setupEnvVars[j] === 'object' && setupEnvVars[j] !== null && !Array.isArray(setupEnvVars[j])) {
 			Object.keys(setupEnvVars[j]).forEach(pushToRoot.bind(null, j));
 			delete setupEnvVars[j];
+		} else if (Array.isArray(setupEnvVars[j])) {
+			setupEnvVars[j] = JSON.stringify(setupEnvVars[j]);
 		}
 	}
 
