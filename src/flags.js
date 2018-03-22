@@ -94,7 +94,7 @@ Flags.get = function (flagId, callback) {
 				next(err, Object.assign(data.base, {
 					description: validator.escape(data.base.description),
 					datetimeISO: utils.toISOString(data.base.datetime),
-					target_readable: data.base.type ? (data.base.type.charAt(0).toUpperCase() + data.base.type.slice(1) + ' ' + data.base.targetId) : '',
+					target_readable: data.base.type.charAt(0).toUpperCase() + data.base.type.slice(1) + ' ' + data.base.targetId,
 					target: payload.targetObj,
 					history: data.history,
 					notes: data.notes,
@@ -202,7 +202,7 @@ Flags.list = function (filters, uid, callback) {
 
 					next(null, Object.assign(flagObj, {
 						description: validator.escape(String(flagObj.description)),
-						target_readable: flagObj.type ? (flagObj.type.charAt(0).toUpperCase() + flagObj.type.slice(1) + ' ' + flagObj.targetId) : '',
+						target_readable: flagObj.type.charAt(0).toUpperCase() + flagObj.type.slice(1) + ' ' + flagObj.targetId,
 						datetimeISO: utils.toISOString(flagObj.datetime),
 					}));
 				});
