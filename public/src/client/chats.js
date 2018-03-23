@@ -455,7 +455,7 @@ define('forum/chats', [
 		if (ajaxify.data.roomId) {
 			socket.emit('modules.chats.markRead', ajaxify.data.roomId);
 			$('[data-roomid="' + ajaxify.data.roomId + '"]').toggleClass('unread', false);
-			$('.expanded-chat input').focus();
+			$('.expanded-chat [component="chat/input"]').focus();
 		}
 		$('.chats-list li').removeClass('bg-info');
 		$('.chats-list li[data-roomid="' + ajaxify.data.roomId + '"]').addClass('bg-info');
