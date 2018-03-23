@@ -277,7 +277,7 @@ define('chat', [
 	};
 
 	module.focusInput = function (chatModal) {
-		chatModal.find('#chat-message-input').focus();
+		chatModal.find('[component="chat/input"]').focus();
 	};
 
 	module.close = function (chatModal) {
