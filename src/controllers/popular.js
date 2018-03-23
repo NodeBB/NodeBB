@@ -38,8 +38,8 @@ popularController.get = function (req, res, next) {
 	};
 
 	if (!req.loggedIn) {
-		if (anonCache[term] && (Date.now() - lastUpdateTime) < 60 * 60 * 1000) {
-			return res.render('popular', anonCache[term]);
+		if (anonCache[term] && anonCache[term][page] && (Date.now() - lastUpdateTime) < 60 * 60 * 1000) {
+			return res.render('popular', anonCache[term][page]);
 		}
 	}
 	var settings;
@@ -74,7 +74,8 @@ popularController.get = function (req, res, next) {
 			}
 
 			if (!req.loggedIn) {
-				anonCache[term] = data;
+				anonCache[term] = {};
+				anonCache[term][page] = data;
 				lastUpdateTime = Date.now();
 			}
 
