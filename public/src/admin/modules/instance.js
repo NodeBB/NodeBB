@@ -6,16 +6,15 @@ define('admin/modules/instance', function () {
 
 	instance.reload = function (callback) {
 		app.alert({
-			alert_id: 'instance_reload',
+			alert_id: 'instance_rebuild_and_restart',
 			type: 'info',
 			title: 'Rebuilding... <i class="fa fa-spin fa-refresh"></i>',
 			message: 'NodeBB is rebuilding front-end assets (css, javascript, etc).',
-			timeout: 10000,
 		});
 
 		$(window).one('action:reconnected', function () {
 			app.alert({
-				alert_id: 'instance_reload',
+				alert_id: 'instance_rebuild_and_restart',
 				type: 'success',
 				title: '<i class="fa fa-check"></i> Success',
 				message: 'NodeBB has rebuilt and restarted successfully.',
@@ -29,11 +28,10 @@ define('admin/modules/instance', function () {
 
 		socket.emit('admin.reload', function () {
 			app.alert({
-				alert_id: 'instance_rebuilt',
+				alert_id: 'instance_rebuild_and_restart',
 				type: 'info',
 				title: 'Build Complete!... <i class="fa fa-spin fa-refresh"></i>',
 				message: 'NodeBB is restarting.',
-				timeout: 5000,
 			});
 		});
 	};
@@ -44,7 +42,6 @@ define('admin/modules/instance', function () {
 			type: 'info',
 			title: 'Restarting... <i class="fa fa-spin fa-refresh"></i>',
 			message: 'NodeBB is restarting.',
-			timeout: 5000,
 		});
 
 		$(window).one('action:reconnected', function () {
