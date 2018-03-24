@@ -280,7 +280,9 @@ function buildCSS(data, callback) {
 			clean({
 				processImportFrom: ['local'],
 			}),
-		] : [autoprefixer]).process(lessOutput.css).then(function (result) {
+		] : [autoprefixer]).process(lessOutput.css, {
+			from: undefined,
+		}).then(function (result) {
 			process.nextTick(callback, null, { code: result.css });
 		}, function (err) {
 			process.nextTick(callback, err);
