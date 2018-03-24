@@ -34,7 +34,7 @@ define('admin/appearance/themes', ['translator', 'benchpress'], function (transl
 						timeout: 5000,
 						clickfn: function () {
 							require(['admin/modules/instance'], function (instance) {
-								instance.reload();
+								instance.rebuildAndRestart();
 							});
 						},
 					});

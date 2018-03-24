@@ -49,7 +49,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], functio
 							timeout: 5000,
 							clickfn: function () {
 								require(['admin/modules/instance'], function (instance) {
-									instance.restart();
+									instance.rebuildAndRestart();
 								});
 							},
 						});
@@ -217,7 +217,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], functio
 					timeout: 5000,
 					clickfn: function () {
 						require(['admin/modules/instance'], function (instance) {
-							instance.reload();
+							instance.rebuildAndRestart();
 						});
 					},
 				});

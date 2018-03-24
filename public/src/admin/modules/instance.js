@@ -4,7 +4,7 @@
 define('admin/modules/instance', function () {
 	var instance = {};
 
-	instance.reload = function (callback) {
+	instance.rebuildAndRestart = function (callback) {
 		app.alert({
 			alert_id: 'instance_rebuild_and_restart',
 			type: 'info',
