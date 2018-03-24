@@ -74,7 +74,7 @@ popularController.get = function (req, res, next) {
 			}
 
 			if (!req.loggedIn) {
-				anonCache[term] = {};
+				anonCache[term] = anonCache[term] || {};
 				anonCache[term][page] = data;
 				lastUpdateTime = Date.now();
 			}
