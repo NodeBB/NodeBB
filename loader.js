@@ -11,8 +11,10 @@ var logrotate = require('logrotate-stream');
 var file = require('./src/file');
 var pkg = require('./package.json');
 
+var pathToConfig = path.resolve(__dirname, process.env.CONFIG || 'config.json');
+
 nconf.argv().env().file({
-	file: path.join(__dirname, 'config.json'),
+	file: pathToConfig,
 });
 
 var	pidFilePath = path.join(__dirname, 'pidfile');
@@ -152,7 +154,6 @@ function getPorts() {
 Loader.restart = function () {
 	killWorkers();
 
-	var pathToConfig = path.join(__dirname, '/config.json');
 	nconf.remove('file');
 	nconf.use('file', { file: pathToConfig });
 
@@ -212,7 +213,7 @@ Loader.notifyWorkers = function (msg, worker_pid) {
 	});
 };
 
-fs.open(path.join(__dirname, 'config.json'), 'r', function (err) {
+fs.open(pathToConfig, 'r', function (err) {
 	if (!err) {
 		if (nconf.get('daemon') !== 'false' && nconf.get('daemon') !== false) {
 			if (file.existsSync(pidFilePath)) {
