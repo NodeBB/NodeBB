@@ -15,6 +15,8 @@ define('forum/reset_code', ['zxcvbn'], function (zxcvbn) {
 			var strength = zxcvbn(password.val());
 			if (password.val().length < ajaxify.data.minimumPasswordLength) {
 				app.alertError('[[reset_password:password_too_short]]');
+			} else if (password.val().length > 512) {
+				app.alertError('[[error:password-too-long]]');
 			} else if (password.val() !== repeat.val()) {
 				app.alertError('[[reset_password:passwords_do_not_match]]');
 			} else if (strength.score < ajaxify.data.minimumPasswordStrength) {
