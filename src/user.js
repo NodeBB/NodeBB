@@ -110,7 +110,7 @@ User.getUsers = function (uids, uid, callback) {
 };
 
 User.getStatus = function (userData) {
-	if (parseInt(userData.uid) <= 0) {
+	if (parseInt(userData.uid, 10) <= 0) {
 		return 'offline';
 	}
 	var isOnline = (Date.now() - parseInt(userData.lastonline, 10)) < 300000;
