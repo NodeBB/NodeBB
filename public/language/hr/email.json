@@ -9,6 +9,7 @@
     "welcome.text3": "Administrator je prihvatio vaš zahtjev za registraciju. Možete se prijaviti koristeći svoje korisničko ime i lozinku.",
     "welcome.cta": "Kliknite ovdje da bi potvrdili email adresu",
     "invitation.text1": "%1 vas je pozvao da se pridružite %2",
+    "invitation.text2": "Your invitation will expire in %1 days.",
     "invitation.ctr": "Kliknite ovdje kako biste stvorili korisnički račun.",
     "reset.text1": "Dobili smo zahtjev za ponovnim kreiranjem lozinke, vjerojatno jer ste ju zaboravili. Ako niste, molimo vas da ignorirate ovaj email.",
     "reset.text2": "Da bi nastavili sa ponovnim kreiranjem lozinke, kliknite na ovaj link:",

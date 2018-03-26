@@ -144,5 +144,6 @@
     "invalid-home-page-route": "Niepoprawny odnośnik strony domowej",
     "invalid-session": "Niewłaściwa sesja",
     "invalid-session-text": "Wygląda na to, że twoja sesja jest nieaktywna lub nie zgadza się z serwerem. Proszę odświeżyć tę stronę.",
-    "no-topics-selected": "No topics selected!"
+    "no-topics-selected": "No topics selected!",
+    "cant-move-to-same-topic": "Can't move post to same topic!"
 }

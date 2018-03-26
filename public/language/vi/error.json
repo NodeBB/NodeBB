@@ -144,5 +144,6 @@
     "invalid-home-page-route": "Đường dẫn trang chủ không hợp lệ",
     "invalid-session": "Không đúng session",
     "invalid-session-text": "Có vẻ như phiên đăng nhập của bạn đã không còn hoạt động nữa, hoặc không còn đúng với thông tin trên máy chủ. Vui lòng tải lại trang này",
-    "no-topics-selected": "Không có chủ đề nào đang được chọn!"
+    "no-topics-selected": "Không có chủ đề nào đang được chọn!",
+    "cant-move-to-same-topic": "Can't move post to same topic!"
 }

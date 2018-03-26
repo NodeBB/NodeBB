@@ -144,5 +144,6 @@
     "invalid-home-page-route": "Rota para a página principal inválida",
     "invalid-session": "Sessão incompatível",
     "invalid-session-text": "Parece que a sua sessão de login não se encontra mais ativa ou não tem correspondência com o servidor. por favor recarregue esta página.",
-    "no-topics-selected": "No topics selected!"
+    "no-topics-selected": "No topics selected!",
+    "cant-move-to-same-topic": "Can't move post to same topic!"
 }

@@ -144,5 +144,6 @@
     "invalid-home-page-route": "مسیر صفحه اصلی نامعتبر است",
     "invalid-session": "عدم تطابق جلسه",
     "invalid-session-text": "به نظر می‌رسد این جلسه برای ورود دیگر فعال نیست و یا با سرور هماهنگ نیست. لطفا این صفحه را رفرش کنید.",
-    "no-topics-selected": "هیچ موضوعی انتخاب نشده است !"
+    "no-topics-selected": "هیچ موضوعی انتخاب نشده است !",
+    "cant-move-to-same-topic": "Can't move post to same topic!"
 }

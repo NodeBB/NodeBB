@@ -9,6 +9,7 @@
     "welcome.text3": "管理员接受了您的注册请求，请用您的用户名和密码登陆。",
     "welcome.cta": "点击这里确认您的电子邮箱地址",
     "invitation.text1": "%1 邀请您加入%2",
+    "invitation.text2": "Your invitation will expire in %1 days.",
     "invitation.ctr": "点击这里新建账户",
     "reset.text1": "可能由于您忘记了密码，我们收到了重置您帐户密码的申请。 如果您没有提交密码重置的请求，请忽略这封邮件。",
     "reset.text2": "如需继续重置密码，请点击下面的链接：",

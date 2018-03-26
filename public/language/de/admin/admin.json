@@ -1,5 +1,5 @@
 {
-	"alert.confirm-reload": "Bist du sicher, dass du NodeBB neu laden möchtest?",
+	"alert.confirm-reload": "Are you sure you wish to rebuild and restart NodeBB?",
 	"alert.confirm-restart": "Bist du sicher, dass du NodeBB neu starten möchtest?",
 
 	"acp-title": "%1 | NodeBB Admin Systemsteuerung",

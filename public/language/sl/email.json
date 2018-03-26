@@ -9,6 +9,7 @@
     "welcome.text3": "Skrbnik je sprejel vašo registracijo. Sedaj se lahko prijavite s svojim uporabniškim imenom in geslom.",
     "welcome.cta": "Kliknite tu za potrditev svojega elektronskega naslova.",
     "invitation.text1": "%1 te je povabil/-a, da se pridružiš forumu %2.",
+    "invitation.text2": "Your invitation will expire in %1 days.",
     "invitation.ctr": "Kliknite tu in ustvarite svoj račun.",
     "reset.text1": "Dobili smo zahtevo za ponastavitev vašega gesla. Če niste zahtevali ponastavitve gesla, prosimo, da prezrete to sporočilo.",
     "reset.text2": "Za nadaljevanje ponastavitve gesla prosimo, da kliknete na naslednjo povezavo:",

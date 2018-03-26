@@ -144,5 +144,6 @@
     "invalid-home-page-route": "Ruta de página de inicio invalida",
     "invalid-session": "No concuerdan los datos de sesión",
     "invalid-session-text": "Parece que su sesión ha expirado o no concuerda con el servidor. Por favor vuelva a cargar la página.",
-    "no-topics-selected": "No topics selected!"
+    "no-topics-selected": "No topics selected!",
+    "cant-move-to-same-topic": "Can't move post to same topic!"
 }

@@ -144,5 +144,6 @@
     "invalid-home-page-route": "Невірний шлях на головну",
     "invalid-session": "Сесія не існує",
     "invalid-session-text": "Здається, що ваша сесія більше неактивна або розійшлася з серверною. Оновіть, будь ласка, цю сторінку.",
-    "no-topics-selected": "Не вибрано жодної теми!"
+    "no-topics-selected": "Не вибрано жодної теми!",
+    "cant-move-to-same-topic": "Can't move post to same topic!"
 }

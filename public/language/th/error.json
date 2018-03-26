@@ -144,5 +144,6 @@
     "invalid-home-page-route": "เส้นทางไปหน้าแรกผิดพลาด",
     "invalid-session": "เซสชั่นไม่ถูกต้อง",
     "invalid-session-text": "เหมือนกับว่าการเข้าสู่ระบบของคุณไม่ได้มีอยู่ในระบบ หรือไม่ก็ไม่ได้รับการตอบกลับจากเซิร์ฟเวอร์ กรุณารีเฟรชหน้าเว็บนี้",
-    "no-topics-selected": "No topics selected!"
+    "no-topics-selected": "No topics selected!",
+    "cant-move-to-same-topic": "Can't move post to same topic!"
 }

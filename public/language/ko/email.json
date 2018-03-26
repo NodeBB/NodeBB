@@ -9,6 +9,7 @@
     "welcome.text3": "관리자에 의해 승인되었습니다. 사용자명/비밀번호를 통해 지금 로그인 하실 수 있습니다.",
     "welcome.cta": "메일 주소를 확인하려면 여기를 클릭하세요.",
     "invitation.text1": "%1님이 %2에 귀하를 초대하였습니다.",
+    "invitation.text2": "Your invitation will expire in %1 days.",
     "invitation.ctr": "이곳을 클릭하여 계정을 생성하세요.",
     "reset.text1": "비밀번호 재설정 요청을 받았습니다. 비밀번호를 분실해서 요청한 것이 아니라면 이 메일을 무시하셔도 좋습니다.",
     "reset.text2": "비밀번호를 재설정하려면 다음 링크를 클릭하세요.",
