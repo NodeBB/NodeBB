@@ -8,7 +8,7 @@ var path = require('path');
 var childProcess = require('child_process');
 var less = require('less');
 var async = require('async');
-var uglify = require('uglify-js');
+var uglify = require('uglify-es');
 var nconf = require('nconf');
 var Benchpress = require('benchpressjs');
 

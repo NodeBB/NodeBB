@@ -100,7 +100,7 @@
         "spdx-license-list": "^3.0.1",
         "spider-detector": "1.0.18",
         "toobusy-js": "^0.5.1",
-        "uglify-js": "^3.3.4",
+        "uglify-es": "^3.3.9",
         "validator": "9.2.0",
         "winston": "^2.4.0",
         "xml": "^1.0.1",
