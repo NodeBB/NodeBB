@@ -120,8 +120,8 @@
 			<div class="panel-heading">[[admin/general/dashboard:control-panel]]</div>
 			<div class="panel-body text-center">
 				<p>
-					<button class="btn btn-block btn-warning reload"<!-- IF !canRestart --> disabled<!-- END -->>[[admin/general/dashboard:reload]]</button>
-					<button class="btn btn-block btn-danger restart"<!-- IF !canRestart --> disabled<!-- END -->>[[admin/general/dashboard:restart]]</button>
+					<button class="btn btn-block btn-warning restart"<!-- IF !canRestart --> disabled<!-- END -->>[[admin/general/dashboard:restart]]</button>
+					<button class="btn btn-block btn-danger rebuild-and-restart"<!-- IF !canRestart --> disabled<!-- END -->>[[admin/general/dashboard:rebuild-and-restart]]</button>
 				</p>
 				<p class="<!-- IF canRestart -->help-block<!-- ELSE -->alert alert-warning<!-- END -->">
 					<!-- IF canRestart -->

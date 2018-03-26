@@ -33,7 +33,9 @@ define('admin/appearance/themes', ['translator', 'benchpress'], function (transl
 						message: '[[admin/appearance/themes:restart-to-activate]]',
 						timeout: 5000,
 						clickfn: function () {
-							socket.emit('admin.restart');
+							require(['admin/modules/instance'], function (instance) {
+								instance.rebuildAndRestart();
+							});
 						},
 					});
 				});

@@ -4,21 +4,20 @@
 define('admin/modules/instance', function () {
 	var instance = {};
 
-	instance.reload = function (callback) {
+	instance.rebuildAndRestart = function (callback) {
 		app.alert({
-			alert_id: 'instance_reload',
+			alert_id: 'instance_rebuild_and_restart',
 			type: 'info',
-			title: 'Reloading... <i class="fa fa-spin fa-refresh"></i>',
-			message: 'NodeBB is reloading.',
-			timeout: 5000,
+			title: 'Rebuilding... <i class="fa fa-spin fa-refresh"></i>',
+			message: 'NodeBB is rebuilding front-end assets (css, javascript, etc).',
 		});
 
 		$(window).one('action:reconnected', function () {
 			app.alert({
-				alert_id: 'instance_reload',
+				alert_id: 'instance_rebuild_and_restart',
 				type: 'success',
 				title: '<i class="fa fa-check"></i> Success',
-				message: 'NodeBB has reloaded successfully.',
+				message: 'NodeBB has rebuilt and restarted successfully.',
 				timeout: 5000,
 			});
 
@@ -27,16 +26,22 @@ define('admin/modules/instance', function () {
 			}
 		});
 
-		socket.emit('admin.reload');
+		socket.emit('admin.reload', function () {
+			app.alert({
+				alert_id: 'instance_rebuild_and_restart',
+				type: 'info',
+				title: 'Build Complete!... <i class="fa fa-spin fa-refresh"></i>',
+				message: 'NodeBB is restarting.',
+			});
+		});
 	};
 
 	instance.restart = function (callback) {
 		app.alert({
 			alert_id: 'instance_restart',
 			type: 'info',
-			title: 'Rebuilding... <i class="fa fa-spin fa-refresh"></i>',
-			message: 'NodeBB is rebuilding front-end assets (css, javascript, etc).',
-			timeout: 10000,
+			title: 'Restarting... <i class="fa fa-spin fa-refresh"></i>',
+			message: 'NodeBB is restarting.',
 		});
 
 		$(window).one('action:reconnected', function () {
@@ -44,8 +49,8 @@ define('admin/modules/instance', function () {
 				alert_id: 'instance_restart',
 				type: 'success',
 				title: '<i class="fa fa-check"></i> Success',
-				message: 'NodeBB has successfully restarted.',
-				timeout: 10000,
+				message: 'NodeBB has restarted successfully.',
+				timeout: 5000,
 			});
 
 			if (typeof callback === 'function') {
@@ -53,15 +58,7 @@ define('admin/modules/instance', function () {
 			}
 		});
 
-		socket.emit('admin.restart', function () {
-			app.alert({
-				alert_id: 'instance_restart',
-				type: 'info',
-				title: 'Build Complete!... <i class="fa fa-spin fa-refresh"></i>',
-				message: 'NodeBB is reloading.',
-				timeout: 10000,
-			});
-		});
+		socket.emit('admin.restart');
 	};
 
 	return instance;

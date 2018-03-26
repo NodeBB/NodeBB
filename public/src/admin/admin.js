@@ -119,11 +119,11 @@
 	}
 
 	function setupRestartLinks() {
-		$('.reload').off('click').on('click', function () {
-			bootbox.confirm('[[admin/admin:alert.confirm-reload]]', function (confirm) {
+		$('.rebuild-and-restart').off('click').on('click', function () {
+			bootbox.confirm('[[admin/admin:alert.confirm-rebuild-and-restart]]', function (confirm) {
 				if (confirm) {
 					require(['admin/modules/instance'], function (instance) {
-						instance.reload();
+						instance.rebuildAndRestart();
 					});
 				}
 			});

@@ -9,7 +9,7 @@
 	</a>
 </li>
 <li>
-	<a href="#" class="reload" data-toggle="tooltip" data-placement="bottom" title="[[admin/menu:reload-forum]]">
+	<a href="#" class="rebuild-and-restart" data-toggle="tooltip" data-placement="bottom" title="[[admin/menu:rebuild-and-restart-forum]]">
 		<i class="fa fa-fw fa-refresh"></i>
 	</a>
 </li>
