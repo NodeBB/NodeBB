@@ -1,7 +1,11 @@
 'use strict';
 
-
-define('admin/modules/instance', function () {
+define('admin/modules/instance', [
+	// need to preload the compiled alert template
+	// otherwise it can be unloaded when rebuild & restart is run
+	// the client can't fetch the template file, resulting in an error
+	config.relative_path + '/assets/templates/alert.js',
+], function () {
 	var instance = {};
 
 	instance.rebuildAndRestart = function (callback) {
