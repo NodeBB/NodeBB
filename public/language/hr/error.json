@@ -144,5 +144,6 @@
     "invalid-home-page-route": "Netočna putanja naslovnice",
     "invalid-session": "Pogreška sesije",
     "invalid-session-text": "Vaša sesija nije više aktivna ili se više ne poklapa sa serverom. Molimo osvježite stranicu.",
-    "no-topics-selected": "No topics selected!"
+    "no-topics-selected": "No topics selected!",
+    "cant-move-to-same-topic": "Can't move post to same topic!"
 }

@@ -1,5 +1,5 @@
 {
-	"alert.confirm-reload": "Είσαι σίγουρος/η πως θέλεις να επαναφορτώσεις το NodeBB?",
+	"alert.confirm-reload": "Are you sure you wish to rebuild and restart NodeBB?",
 	"alert.confirm-restart": "Είσαι σίγουρος/η πως θέλεις να επανεκκινήσεις το NodeBB?",
 
 	"acp-title": "%1 | NodeBB Πίνακας ελέγχου",

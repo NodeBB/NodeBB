@@ -144,5 +144,6 @@
     "invalid-home-page-route": "Neplatná cesta k domovské stránkce",
     "invalid-session": "Nesoulad v relacích",
     "invalid-session-text": "Zdá se, že vše relace s přihlášením již není aktivní nebo již neodpovídá s relací na serveru. Obnovte prosím tuto stránku.",
-    "no-topics-selected": "Žádná vybraná témata."
+    "no-topics-selected": "Žádná vybraná témata.",
+    "cant-move-to-same-topic": "Can't move post to same topic!"
 }

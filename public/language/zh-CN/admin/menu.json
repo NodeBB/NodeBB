@@ -63,7 +63,7 @@
 	"development/logger": "记录器",
 	"development/info": "信息",
 
-	"reload-forum": "重载论坛",
+	"reload-forum": "Rebuild & Restart Forum",
 	"restart-forum": "重启论坛",
 	"logout": "登出",
 	"view-forum": "查看论坛",
@@ -74,5 +74,8 @@
 	"search.keep-typing": "输入更多以查看结果...",
 	"search.start-typing": "开始输入以查看结果...",
 
-	"connection-lost": "与  %1  的连接已丢失，正尝试重新连接..."
+	"connection-lost": "与  %1  的连接已丢失，正尝试重新连接...",
+
+	"alerts.version": "Running <strong>NodeBB v%1</strong>",
+	"alerts.upgrade": "Upgrade to v%1"
 }

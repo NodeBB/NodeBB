@@ -144,5 +144,6 @@
     "invalid-home-page-route": "Napačna pot do domače strani.",
     "invalid-session": "Seje se ne ujemajo.",
     "invalid-session-text": "Kaže, da vaša prijavna seja ni več aktiva. Prosimo, osvežite to stran.",
-    "no-topics-selected": "No topics selected!"
+    "no-topics-selected": "No topics selected!",
+    "cant-move-to-same-topic": "Can't move post to same topic!"
 }

@@ -144,5 +144,6 @@
     "invalid-home-page-route": "Chemin vers la page d'accueil invalide",
     "invalid-session": "Session interrompue",
     "invalid-session-text": "Il semble que votre session ne soit plus active, ou que le serveur ne la reconnaisse plus. Merci de rafraichir cette page.",
-    "no-topics-selected": "Aucun sujet sélectionné !"
+    "no-topics-selected": "Aucun sujet sélectionné !",
+    "cant-move-to-same-topic": "Can't move post to same topic!"
 }

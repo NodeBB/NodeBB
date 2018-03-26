@@ -23,10 +23,11 @@
 	"running-version": "Fungujete na <strong>NodeBB v<span id=\"version\">%1</span></strong>.",
 	"keep-updated": "Vždy udržujte NodeBB aktuální kvůli bezpečnostním záplatám a opravám.",
 	"up-to-date": "<p>Máte <strong>aktuální verzi</strong><i class=\"fa fa-check\"></i></p>",
-	"upgrade-available": "<p>Byla uvolněna nová verze (v%1). Zvažte <a href=\"https://docs.nodebb.org/configuring/upgrade/\">aktualizaci vašeho NodeBB</a>.</p>",
-	"prerelease-upgrade-available": "<p>Toto je zastaralá zkušební verze NodeBB. Nová verze (v%1) byla uvolněna. Zvažte <a href=\"https://docs.nodebb.org/configuring/upgrade/\">aktualizaci NodeBB</a>.</p>",
+	"upgrade-available": "<p>A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">upgrading your NodeBB</a>.</p>",
+	"prerelease-upgrade-available": "<p>This is an outdated pre-release version of NodeBB. A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">upgrading your NodeBB</a>.</p>",
 	"prerelease-warning": "<p>Toto je <strong>zkušební</strong> verze NodeBB. Mohou se vyskytnout různé chyby.<i class=\"fa fa-exclamation-triangle\"></i></p>",
 	"running-in-development": "<span>Fórum běží ve vývojářském režimu a může být potencionálně zranitelné . Kontaktujte správce systému.</span>",
+	"latest-lookup-failed": "<p>Failed to look up latest available version of NodeBB</p>",
 
 	"notices": "Oznámení",
 	"restart-not-required": "Restart není potřeba",

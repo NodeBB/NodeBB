@@ -144,5 +144,6 @@
     "invalid-home-page-route": "Onbekende homepage route",
     "invalid-session": "Verkeerde sessie combinatie",
     "invalid-session-text": "Het lijkt erop dat je login sessie niet meer actief is of niet langer synchroon is met de server. Ververs de pagina.",
-    "no-topics-selected": "Geen onderwerpen geselecteerd!"
+    "no-topics-selected": "Geen onderwerpen geselecteerd!",
+    "cant-move-to-same-topic": "Can't move post to same topic!"
 }

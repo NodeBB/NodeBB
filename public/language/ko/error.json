@@ -144,5 +144,6 @@
     "invalid-home-page-route": "올바르지 않은 홈페이지 경로입니다. ",
     "invalid-session": "일치하지 않는 세션입니다.",
     "invalid-session-text": "로그인 세션이 비활성화 되었거나 서버와 일치하지 않습니다. 페이지를 새로 고쳐주세요.",
-    "no-topics-selected": "No topics selected!"
+    "no-topics-selected": "No topics selected!",
+    "cant-move-to-same-topic": "Can't move post to same topic!"
 }

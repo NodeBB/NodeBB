@@ -144,5 +144,6 @@
     "invalid-home-page-route": "כתובת דף הבית הינה שגויה",
     "invalid-session": "סשן לא תקין",
     "invalid-session-text": "נראה שסשן ההתחברות שלך כבר לא פעיל. אנא טען מחדש את העמוד.",
-    "no-topics-selected": "No topics selected!"
+    "no-topics-selected": "לא נבחרו נושאים!",
+    "cant-move-to-same-topic": "Can't move post to same topic!"
 }

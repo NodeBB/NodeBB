@@ -144,5 +144,6 @@
     "invalid-home-page-route": "Грешен път към началната страница",
     "invalid-session": "Несъответствие в сесията",
     "invalid-session-text": "Изглежда сесията Ви на вписване вече е изтекла или не съответства на сървъра. Моля, опреснете страницата.",
-    "no-topics-selected": "Няма избрани теми!"
+    "no-topics-selected": "Няма избрани теми!",
+    "cant-move-to-same-topic": "Can't move post to same topic!"
 }

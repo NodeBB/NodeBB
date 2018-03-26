@@ -9,6 +9,7 @@
     "welcome.text3": "Un amministratore ha accettato la tua registrazione. Adesso puoi collegarti con il tuo nome utente/password.",
     "welcome.cta": "Clicca qui per confermare il tuo indirizzo email",
     "invitation.text1": "%1 ti ha invitato a entrare in %2",
+    "invitation.text2": "Your invitation will expire in %1 days.",
     "invitation.ctr": "Clicca qui per creare il tuo account.",
     "reset.text1": "Abbiamo ricevuto una richiesta di reset della tua password, probabilmente perché l'hai dimenticata. Se non è così si prega di ignorare questa email.",
     "reset.text2": "Per confermare il reset della password per favore clicca il seguente link:",

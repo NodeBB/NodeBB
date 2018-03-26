@@ -9,6 +9,7 @@
     "welcome.text3": "Administrator zaakceptował twój wniosek o rejestrację. Możesz się zalogować, używając swojej nazwy użytkownika i hasła.",
     "welcome.cta": "Kliknij tutaj, aby potwierdzić swój adres",
     "invitation.text1": "%1 zaprasza do dołączenia do %2",
+    "invitation.text2": "Your invitation will expire in %1 days.",
     "invitation.ctr": "Kliknij tutaj, aby utworzyć konto.",
     "reset.text1": "Otrzymaliśmy żądanie przywrócenia twojego hasła. Jeśli nie żądałeś przywrócenia hasła, zignoruj ten e-mail.",
     "reset.text2": "Aby przywrócić swoje hasło, skorzystaj z poniższego odnośnika:",

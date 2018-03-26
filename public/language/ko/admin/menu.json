@@ -63,7 +63,7 @@
 	"development/logger": "로거",
 	"development/info": "정보",
 
-	"reload-forum": "포럼 리로드",
+	"reload-forum": "Rebuild & Restart Forum",
 	"restart-forum": "포럼 재시작",
 	"logout": "로그아웃",
 	"view-forum": "포럼 보기",
@@ -74,5 +74,8 @@
 	"search.keep-typing": "검색 결과를 보기 위해 더 입력하세요...",
 	"search.start-typing": "검색 결과를 보기 위해 여기 입력하세요...",
 
-	"connection-lost": "%1과의 연결이 끊어졌습니다. 다시 연결을 시도하는 중입니다..."
+	"connection-lost": "%1과의 연결이 끊어졌습니다. 다시 연결을 시도하는 중입니다...",
+
+	"alerts.version": "Running <strong>NodeBB v%1</strong>",
+	"alerts.upgrade": "Upgrade to v%1"
 }

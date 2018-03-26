@@ -9,6 +9,7 @@
     "welcome.text3": "Een administrator heeft uw registratie geaccepteerd. U kan nu inloggen met uw gebruikersnaam en wachtwoord.",
     "welcome.cta": "Klik hier om je e-mailadres te bevestigen",
     "invitation.text1": "%1 heeft u uitgenodigd voor %2 ",
+    "invitation.text2": "Your invitation will expire in %1 days.",
     "invitation.ctr": "Klik hier om je account aan te maken.",
     "reset.text1": "We hebben een verzoek ontvangen om je wachtwoord te herstellen, wellicht omdat je hem bent vergeten. Indien dit niet het geval is kan je deze e-mail gewoon negeren.",
     "reset.text2": "Om je wachtwoord opnieuw in te stellen klik je op deze link:",

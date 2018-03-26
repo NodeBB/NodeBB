@@ -144,5 +144,6 @@
     "invalid-home-page-route": "无效的首页路径",
     "invalid-session": "Session 无法匹配",
     "invalid-session-text": "您的登入状态已经失效，或者是与服务器信息不匹配。请刷新此页面。",
-    "no-topics-selected": "没有主题被选中!"
+    "no-topics-selected": "没有主题被选中!",
+    "cant-move-to-same-topic": "Can't move post to same topic!"
 }

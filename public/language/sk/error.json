@@ -144,5 +144,6 @@
     "invalid-home-page-route": "Neplatná cesta pre domovskú stránku",
     "invalid-session": "Relácia neodpovedá",
     "invalid-session-text": "Vyzerá to, že Vaše prihlasovacia relácia už nie je aktívna, alebo sa už nezhoduje so serverom. Aktualizujte túto stránku.",
-    "no-topics-selected": "Žiadne vybrané témy."
+    "no-topics-selected": "Žiadne vybrané témy.",
+    "cant-move-to-same-topic": "Can't move post to same topic!"
 }
