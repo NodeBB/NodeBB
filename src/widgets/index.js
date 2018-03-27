@@ -98,6 +98,7 @@ function renderWidget(widget, uid, options, callback) {
 				Benchpress.compileParse(widget.data.container, {
 					title: widget.data.title,
 					body: html,
+					template: data.templateData.template,
 				}, next);
 			} else {
 				next(null, html);
