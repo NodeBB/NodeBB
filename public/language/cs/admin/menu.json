@@ -17,7 +17,7 @@
 	"manage/post-queue": "Fronta příspěvků",
 	"manage/groups": "Skupiny",
 	"manage/ip-blacklist": "Černá listina IP",
-	"manage/uploads": "Uploads",
+	"manage/uploads": "Nahráno",
 
 	"section-settings": "Nastavení",
 	"settings/general": "Všeobecné",
@@ -63,7 +63,7 @@
 	"development/logger": "Protokolář",
 	"development/info": "Informace",
 
-	"reload-forum": "Rebuild & Restart Forum",
+	"reload-forum": "Znovu sestavit a restartovat fórum",
 	"restart-forum": "Restartovat fórum",
 	"logout": "Odhlásit",
 	"view-forum": "Zobrazit fórum",
@@ -76,6 +76,6 @@
 
 	"connection-lost": "Připojení k %1 bylo ztraceno, snaha o opětovné připojení…",
 
-	"alerts.version": "Running <strong>NodeBB v%1</strong>",
-	"alerts.upgrade": "Upgrade to v%1"
+	"alerts.version": "Spušteno <strong>NodeBB v%1</strong>",
+	"alerts.upgrade": "Aktualizovat na v%1"
 }

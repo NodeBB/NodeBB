@@ -49,6 +49,5 @@
 	"composer.enable-plugin-help": "Дозволити плагінам додавати зміст довідки",
 	"composer.custom-help": "Користувацький текст довідки",
 	"ip-tracking": "Відстеження IP",
-	"ip-tracking.each-post": "Відстежувати IP адреси для кожного посту",
-	"enable-post-history": "Увімкнути історію постів"
+	"ip-tracking.each-post": "Відстежувати IP адреси для кожного посту"
 }

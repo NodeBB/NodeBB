@@ -4,6 +4,8 @@
 	"private": "Učini datoteke privatnim",
 	"max-image-width": "Promjeni veličinu slike na zadanu širinu (u pikselima)",
 	"max-image-width-help": "(u pixelima,zadano:760 pixela,upiši 0 za onemogućiti opciju)",
+	"resize-image-quality": "Quality to use when resizing images",
+	"resize-image-quality-help": "Use a lower quality setting to reduce the file size of resized images.",
 	"max-file-size": "Maksimalna veličina datoteka (in KiB)",
 	"max-file-size-help": "(in kibibytes, default: 2048 KiB)",
 	"allow-topic-thumbnails": "Dozvoli korisnicima da učitaju sliku teme",

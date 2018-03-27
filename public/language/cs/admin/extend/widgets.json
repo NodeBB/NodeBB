@@ -2,7 +2,7 @@
 	"available": "Dostupné miniaplikace",
 	"explanation": "Vyberte si miniaplikaci z vysouvací nabídky a přetáhněte ji do oblasti šablony miniaplikace nalevo.",
 	"none-installed": "Nebyly nalezeny žádné miniaplikace. Aktivujte rozšíření základních miniaplikací v ovládacím panelu <a href=\"%1\">Rozšíření</a>.",
-	"clone-from": "Clone widgets from",
+	"clone-from": "Klonovat miniaplikaci z",
 	"containers.available": "Dostupné moduly",
 	"containers.explanation": "Přetáhněte na jakoukoliv aktivní miniaplikaci",
 	"containers.none": "Nic",
@@ -16,7 +16,7 @@
 	"alert.confirm-delete": "Jste si jist/a, že chcete smazat tuto miniaplikaci?",
 	"alert.updated": "Miniaplikace byly aktualizovány",
 	"alert.update-success": "Miniaplikace byly úspěšně aktualizovány",
-	"alert.clone-success": "Successfully cloned widgets",
+	"alert.clone-success": "Úspěšně naklonované miniaplikace",
 
-	"error.select-clone": "Please select a page to clone from"
+	"error.select-clone": "Vyberte prosím stránku, ze které chcete klonovat"
 }

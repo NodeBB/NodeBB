@@ -49,6 +49,5 @@
 	"composer.enable-plugin-help": "Povoliť zásuvné moduly pre pridanie obsahu do záložky nápovedy",
 	"composer.custom-help": "Používateľský text nápovedy",
 	"ip-tracking": "IP Tracking",
-	"ip-tracking.each-post": "Track IP Address for each post",
-	"enable-post-history": "Enable Post History"
+	"ip-tracking.each-post": "Track IP Address for each post"
 }

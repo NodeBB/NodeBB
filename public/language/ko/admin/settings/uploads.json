@@ -4,6 +4,8 @@
 	"private": "업로드된 파일들을 개인만 볼 수 있게 바꿉니다.",
 	"max-image-width": "이미지를 특정 가로 길이까지 축소 (단위: 픽셀)",
 	"max-image-width-help": "(단위: 픽셀, 기본값: 760 픽셀, 비활성화를 원하시면 0으로 지정하세요)",
+	"resize-image-quality": "Quality to use when resizing images",
+	"resize-image-quality-help": "Use a lower quality setting to reduce the file size of resized images.",
 	"max-file-size": "최대 파일 사이즈(KB)",
 	"max-file-size-help": "(in kibibytes, default: 2048 KiB)",
 	"allow-topic-thumbnails": "사용자들이 게시물 썸네일을 업로드 하는것을 허용",

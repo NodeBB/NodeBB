@@ -1,7 +1,7 @@
 {
     "banned": "Zablokován",
     "offline": "Nepřipojen",
-    "deleted": "Deleted",
+    "deleted": "Odstraněno",
     "username": "Uživatelské jméno",
     "joindate": "Datum registrace",
     "postcount": "Počet příspěvků",
@@ -96,7 +96,7 @@
     "topics_per_page": "Témat na stránce",
     "posts_per_page": "Příspěvků na stránce",
     "max_items_per_page": "Maximum %1",
-    "acp_language": "Admin Page Language",
+    "acp_language": "Jazyk stránky správce",
     "notification_sounds": "Přehrát zvuk, obdržíte-li oznámení",
     "notifications_and_sounds": "Upozornění a zvuky",
     "incoming-message-sound": "Zvuk příchozí zprávy",

@@ -7,6 +7,7 @@
 	"headers.powered-by": "NodeBB 의 \"Powered By\" 를 커스터마이징하기",
 	"headers.acao": "Access-Control-Allow-Origin",
 	"headers.acao-help": "모든 사이트에 접근을 거부하시려면, 빈칸으로 남기세요",
+	"headers.acac": "Access-Control-Allow-Credentials",
 	"headers.acam": "Access-Control-Allow-Methods",
 	"headers.acah": "Access-Control-Allow-Headers",
 	"traffic-management": "트래픽 관리",
