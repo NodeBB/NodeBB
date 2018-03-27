@@ -45,5 +45,6 @@
     "notificationType_new-reply": "notification",
     "notificationType_follow": "notification",
     "notificationType_new-chat": "notification",
-    "notificationType_group-invite": "notification"
+    "notificationType_group-invite": "notification",
+    "notificationType_mention": "notification"
 }

@@ -292,12 +292,14 @@
 			</div>
 
 			<label>[[admin/settings/user:default-notification-settings]]</label>
+
+			<!-- BEGIN notificationSettings -->
 			<div class="row">
 				<div class="form-group col-xs-7">
-					<label>[[notifications:notificationType_upvote]]</label>
+					<label>{notificationSettings.label}</label>
 				</div>
 				<div class="form-group col-xs-5">
-					<select class="form-control" data-field="notificationType_upvote">
+					<select class="form-control" data-field="{notificationSettings.name}">
 						<option value="none">[[notifications:none]]</option>
 						<option value="notification">[[notifications:notification_only]]</option>
 						<option value="email">[[notifications:email_only]]</option>
@@ -305,71 +307,8 @@
 					</select>
 				</div>
 			</div>
-			<div class="row">
-				<div class="form-group col-xs-7">
-					<label>[[notifications:notificationType_new-topic]]</label>
-				</div>
-				<div class="form-group col-xs-5">
-					<select class="form-control" data-field="notificationType_new-topic">
-						<option value="none">[[notifications:none]]</option>
-						<option value="notification">[[notifications:notification_only]]</option>
-						<option value="email">[[notifications:email_only]]</option>
-						<option value="notificationemail">[[notifications:notification_and_email]]</option>
-					</select>
-				</div>
-			</div>
-			<div class="row">
-				<div class="form-group col-xs-7">
-					<label>[[notifications:notificationType_new-reply]]</label>
-				</div>
-				<div class="form-group col-xs-5">
-					<select class="form-control" data-field="notificationType_new-reply">
-						<option value="none">[[notifications:none]]</option>
-						<option value="notification">[[notifications:notification_only]]</option>
-						<option value="email">[[notifications:email_only]]</option>
-						<option value="notificationemail">[[notifications:notification_and_email]]</option>
-					</select>
-				</div>
-			</div>
-			<div class="row">
-				<div class="form-group col-xs-7">
-					<label>[[notifications:notificationType_follow]]</label>
-				</div>
-				<div class="form-group col-xs-5">
-					<select class="form-control" data-field="notificationType_follow">
-						<option value="none">[[notifications:none]]</option>
-						<option value="notification">[[notifications:notification_only]]</option>
-						<option value="email">[[notifications:email_only]]</option>
-						<option value="notificationemail">[[notifications:notification_and_email]]</option>
-					</select>
-				</div>
-			</div>
-			<div class="row">
-				<div class="form-group col-xs-7">
-					<label>[[notifications:notificationType_new-chat]]</label>
-				</div>
-				<div class="form-group col-xs-5">
-					<select class="form-control" data-field="notificationType_new-chat">
-						<option value="none">[[notifications:none]]</option>
-						<option value="notification">[[notifications:notification_only]]</option>
-						<option value="email">[[notifications:email_only]]</option>
-						<option value="notificationemail">[[notifications:notification_and_email]]</option>
-					</select>
-				</div>
-			</div>
-			<div class="row">
-				<div class="form-group col-xs-7">
-					<label>[[notifications:notificationType_group-invite]]</label>
-				</div>
-				<div class="form-group col-xs-5">
-					<select class="form-control" data-field="notificationType_group-invite">
-						<option value="none">[[notifications:none]]</option>
-						<option value="notification">[[notifications:notification_only]]</option>
-						<option value="email">[[notifications:email_only]]</option>
-						<option value="notificationemail">[[notifications:notification_and_email]]</option>
-					</select>
-				</div>
-			</div>
+			<!-- END notificationSettings -->
+
 		</form>
 	</div>
 </div>
