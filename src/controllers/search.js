@@ -30,6 +30,7 @@ searchController.search = function (req, res, next) {
 	var data = {
 		query: req.query.term,
 		searchIn: req.query.in || 'posts',
+		matchWords: req.query.matchWords || 'all',
 		postedBy: req.query.by,
 		categories: req.query.categories,
 		searchChildren: req.query.searchChildren,

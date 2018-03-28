@@ -76,6 +76,7 @@ module.exports = function (Topics) {
 				search.search({
 					query: topicData.title,
 					searchIn: 'titles',
+					matchWords: 'any',
 					categories: [topicData.cid],
 					uid: uid,
 					page: 1,

@@ -37,6 +37,7 @@ define('forum/search', ['search', 'autocomplete', 'storage'], function (searchMo
 		};
 		searchData.term = $('#search-input').val();
 		if (searchData.in === 'posts' || searchData.in === 'titlesposts' || searchData.in === 'titles') {
+			searchData.matchWords = form.find('#match-words-filter').val();
 			searchData.by = form.find('#posted-by-user').val();
 			searchData.categories = form.find('#posted-in-categories').val();
 			searchData.searchChildren = form.find('#search-children').is(':checked');
@@ -77,6 +78,10 @@ define('forum/search', ['search', 'autocomplete', 'storage'], function (searchMo
 			if (formData.in) {
 				$('#search-in').val(formData.in);
 				updateFormItemVisiblity(formData.in);
+			}
+
+			if (formData.matchWords) {
+				$('#match-words-filter').val(formData.matchWords);
 			}
 
 			if (formData.by) {
