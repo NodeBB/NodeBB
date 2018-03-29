@@ -1,7 +1,7 @@
 {
     "banned": "Bị cấm",
     "offline": "Offline",
-    "deleted": "Deleted",
+    "deleted": "Đã xoá",
     "username": "Tên truy cập",
     "joindate": "Ngày gia nhập",
     "postcount": "Số bài viết",
@@ -96,7 +96,7 @@
     "topics_per_page": "Số chủ đề trong một trang",
     "posts_per_page": "Số bài viết trong một trang",
     "max_items_per_page": "Tối đa %1",
-    "acp_language": "Admin Page Language",
+    "acp_language": "Ngôn ngữ trang quản trị",
     "notification_sounds": "Phát âm thanh khi bạn nhận được thông báo mới",
     "notifications_and_sounds": "Thông báo & Âm thanh",
     "incoming-message-sound": "Âm báo tin nhắn tới",

@@ -27,7 +27,7 @@
     "details.disableJoinRequests": "Vô hiệu hóa yêu cầu tham gia",
     "details.grant": "Cấp/Huỷ quyền trưởng nhóm",
     "details.kick": "Đá ra",
-    "details.kick_confirm": "Are you sure you want to remove this member from the group?",
+    "details.kick_confirm": "Bạn có chắc muốn xoá thành viên này khỏi nhóm?",
     "details.owner_options": "Quản trị nhóm",
     "details.group_name": "Tên nhóm",
     "details.member_count": "Số thành viên",
@@ -54,5 +54,5 @@
     "upload-group-cover": "Tải ảnh bìa lên cho nhóm",
     "bulk-invite-instructions": "Nhập danh sách username, ngăn cách bằng dấu phẩy, để mời vào nhóm",
     "bulk-invite": "Mời nhiều người",
-    "remove_group_cover_confirm": "Are you sure you want to remove the cover picture?"
+    "remove_group_cover_confirm": "Bạn có chắc rằng muốn xoá ảnh bìa không?"
 }

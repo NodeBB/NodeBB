@@ -9,7 +9,7 @@
     "welcome.text3": "Quản trị viên đã chấp nhận đơn đăng ký của bạn. Bạn có thể đăng nhập với tên đăng nhập/mật khẩu ngay bây giờ.",
     "welcome.cta": "Nhấn vào đây để xác nhận địa chỉ email",
     "invitation.text1": "%1 đã mời bạn tham gia %2",
-    "invitation.text2": "Your invitation will expire in %1 days.",
+    "invitation.text2": "Lời mời của bạn sẽ hết hạn sau %1 ngày.",
     "invitation.ctr": "Click vào đây để tạo tài khoản.",
     "reset.text1": "Chúng tôi nhận được yêu cầu khởi tạo lại mật khẩu của bạn, rất có thể vì bạn đã quên mất nó. Nếu bạn không gởi yêu cầu, hãy bỏ qua email này.",
     "reset.text2": "Để đặt lại mật khẩu, hãy click vào liên kết sau:",

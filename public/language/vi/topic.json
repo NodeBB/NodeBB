@@ -30,12 +30,12 @@
     "locked": "Khóa",
     "pinned": "Đã ghim",
     "moved": "Chuyển đi",
-    "copy-ip": "Copy IP",
-    "ban-ip": "Ban IP",
-    "view-history": "Edit History",
+    "copy-ip": "Sao chép IP",
+    "ban-ip": "Cấm IP",
+    "view-history": "Lịch sử chỉnh sửa",
     "bookmark_instructions": "Bấm vào đây để quay về đọc bài viết mới nhất trong chủ đề này.",
     "flag_title": "Flag bài viết này để chỉnh sửa",
-    "merged_message": "This topic has been merged into <a href=\"/topic/%1\">%2</a>",
+    "merged_message": "Chủ đề này đã được sát nhập với <a href=\"/topic/%1\">%2</a>",
     "deleted_message": "Chủ đề này đã bị xóa. Chỉ ban quản trị mới xem được.",
     "following_topic.message": "Từ giờ bạn sẽ nhận được thông báo khi có ai đó gửi bài viết trong chủ đề này",
     "not_following_topic.message": "Bạn có thể xem chủ đề này trong danh sách chủ đề chưa xem, nhưng bạn sẽ không nhận thông báo khi có ai đó đăng bài viết trong chủ đề này",
@@ -123,7 +123,7 @@
     "stale.create": "Tạo chủ đề mới",
     "stale.reply_anyway": "Trả lời chủ đề này",
     "link_back": "Re: [%1](%2)",
-    "diffs.title": "Post Edit History",
-    "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
-    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
+    "diffs.title": "Lịch sử chỉnh sửa bài viết",
+    "diffs.description": "Bài viết này có <strong>%1</strong> sửa đổi. Chọn một trong các thời điểm dưới đây để xem nội dung bài viết",
+    "diffs.no-revisions-description": "Bài viết này có <strong>%1</strong> sửa đổi"
 }
