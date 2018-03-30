@@ -8,5 +8,5 @@
 	"file-path-placeholder": "/path/to/log/file.log ::: laissez vide pour journaliser vers votre terminal",
 
 	"control-panel": "Panneau de contrôle de la journalisation",
-	"update-settings": "Mettre à jour les réglages de la journalisation"
+	"update-settings": "Mettre à jour la configuration"
 }
