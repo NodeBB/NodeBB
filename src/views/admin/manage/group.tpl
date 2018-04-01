@@ -111,7 +111,7 @@
 	<div class="icon-container">
 		<div class="row fa-icons">
 			<i class="fa fa-doesnt-exist"></i>
-			<!-- IMPORT partials/fontawesome.tpl -->
+			<!-- IMPORT partials/forkawesome.tpl -->
 		</div>
 	</div>
 </div>
