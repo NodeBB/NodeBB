@@ -1,14 +1,14 @@
 {
-	"custom-css": "Custom CSS/LESS",
-	"custom-css.description": "Enter your own CSS/LESS declarations here, which will be applied after all other styles.",
-	"custom-css.enable": "Enable Custom CSS/LESS",
+	"custom-css": "Własny CSS/LESS",
+	"custom-css.description": "Wprowadź tutaj własne deklaracje CSS/LESS, które będą użyte po wszystkich pozostałych stylach.",
+	"custom-css.enable": "Aktywuj własne CSS/LESS",
 
-	"custom-js": "Custom Javascript",
-	"custom-js.description": "Enter your own javascript here. It will be executed after the page is loaded completely.",
-	"custom-js.enable": "Enable Custom Javascript",
+	"custom-js": "Własny Javascript",
+	"custom-js.description": "Wprowadź własny kod javascript tutaj. Będzie użyty po pełnym załadowaniu strony.",
+	"custom-js.enable": "Aktywuj własny Javascript.",
 
 	"custom-header": "Własny nagłówek",
-	"custom-header.description": "Enter custom HTML here (ex. Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup. Script tags are allowed, but are discouraged, as the <a href=\"#custom-header\" data-toggle=\"tab\">Custom Javascript</a> tab is available.",
+	"custom-header.description": "Wprowadź tutaj własny kod HTML (np. meta tagi, itp.), które będą dołączone do sekcji <code>&lt;head&gt;</code> twojego forumowego znacznika. Tagi skryptów są dozwolone, ale niezaleccane jako że zakładka <a href=\"#custom-header\" data-toggle=\"tab\">Własny Javascript</a> jest dostępna. ",
 	"custom-header.enable": "Włącz własny nagłówek",
 
 	"custom-css.livereload": "Włącz dynamiczne przeładowanie",
