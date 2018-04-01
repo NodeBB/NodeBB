@@ -16,7 +16,7 @@ var CSS = module.exports;
 var buildImports = {
 	client: function (source) {
 		return '@import "./theme";\n' + source + '\n' + [
-			'@import "font-awesome";',
+			'@import "fork-awesome";',
 			'@import (inline) "../public/vendor/jquery/css/smoothness/jquery-ui.css";',
 			'@import (inline) "../public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.css";',
 			'@import (inline) "../public/vendor/colorpicker/colorpicker.css";',
@@ -32,7 +32,7 @@ var buildImports = {
 	},
 	admin: function (source) {
 		return source + '\n' + [
-			'@import "font-awesome";',
+			'@import "fork-awesome";',
 			'@import "../public/less/admin/admin";',
 			'@import "../public/less/generics.less";',
 			'@import (inline) "../public/vendor/colorpicker/colorpicker.css";',
@@ -89,7 +89,7 @@ function getImports(files, prefix, extension, callback) {
 function getBundleMetadata(target, callback) {
 	var paths = [
 		path.join(__dirname, '../../node_modules'),
-		path.join(__dirname, '../../public/vendor/fontawesome/less'),
+		path.join(__dirname, '../../public/vendor/forkawesome/less'),
 	];
 
 	async.waterfall([
