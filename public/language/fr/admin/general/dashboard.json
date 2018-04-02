@@ -38,7 +38,7 @@
 
 	"control-panel": "Contrôle du système",
 	"reload": "Recharger",
-	"restart": "Redémarrer",
+	"restart": "Recharger &amp; Redémarrer",
 	"restart-warning": "Recharger ou redémarrer NodeBB coupera toutes les connexions existantes pendant quelques secondes. ",
 	"restart-disabled": "La recharge et le redémarrage de votre forum ont été désactivés car vous ne semblez pas les exécuter à l'aide du serveur approprié.",
 	"maintenance-mode": "Mode maintenance",
