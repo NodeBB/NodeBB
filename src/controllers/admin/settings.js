@@ -54,16 +54,23 @@ function renderUser(req, res, next) {
 		'notificationType_group-invite',
 	];
 
+	var privilegedTypes = [
+		'notificationType_new-register',
+		'notificationType_post-queue',
+		'notificationType_new-post-flag',
+		'notificationType_new-user-flag',
+	];
+
 	async.waterfall([
 		function (next) {
 			plugins.fireHook('filter:user.notificationTypes', {
 				userData: {},
 				types: types,
-				privilegedTypes: [],
+				privilegedTypes: privilegedTypes,
 			}, next);
 		},
 		function (results) {
-			var notificationSettings = results.types.map(function modifyType(type) {
+			var notificationSettings = results.types.concat(results.privilegedTypes).map(function (type) {
 				return {
 					name: type,
 					label: '[[notifications:' + type + ']]',
