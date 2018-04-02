@@ -180,7 +180,12 @@ module.exports = function (User) {
 		});
 	};
 
-	User.isPasswordValid = function (password, callback) {
+	User.isPasswordValid = function (password, minStrength, callback) {
+		if (typeof minStrength === 'function' && !callback) {
+			callback = minStrength;
+			minStrength = meta.config.minimumPasswordStrength;
+		}
+
 		// Sanity checks: Checks if defined and is string
 		if (!password || !utils.isPasswordValid(password)) {
 			return callback(new Error('[[error:invalid-password]]'));
@@ -195,7 +200,7 @@ module.exports = function (User) {
 		}
 
 		var strength = zxcvbn(password);
-		if (strength.score < meta.config.minimumPasswordStrength) {
+		if (strength.score < minStrength) {
 			return callback(new Error('[[user:weak_password]]'));
 		}
 
