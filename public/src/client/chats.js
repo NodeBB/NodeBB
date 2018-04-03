@@ -119,9 +119,8 @@ define('forum/chats', [
 
 	Chats.addCharactersLeftHandler = function (parent) {
 		var element = parent.find('[component="chat/input"]');
-		element.on('keyup', function () {
-			parent.find('[component="chat/message/length"]').text(element.val().length);
-			parent.find('[component="chat/message/remaining"]').text(config.maximumChatMessageLength - element.val().length);
+		element.on('change keyup paste', function () {
+			messages.updateRemainingLength(parent);
 		});
 	};
 
