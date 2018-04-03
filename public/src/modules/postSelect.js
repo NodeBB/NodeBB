@@ -57,8 +57,7 @@ define('postSelect', ['components'], function (components) {
 
 	function enableClicksOnPosts() {
 		components.get('post').off('click', 'button,a', disableClicks);
-	};
-
+	}
 
 	return PostSelect;
 });
