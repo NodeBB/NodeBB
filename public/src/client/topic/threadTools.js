@@ -5,10 +5,11 @@ define('forum/topic/threadTools', [
 	'forum/topic/fork',
 	'forum/topic/move',
 	'forum/topic/delete-posts',
+	'forum/topic/move-post',
 	'components',
 	'translator',
 	'benchpress',
-], function (fork, move, deletePosts, components, translator, Benchpress) {
+], function (fork, move, deletePosts, movePosts, components, translator, Benchpress) {
 	var ThreadTools = {};
 
 	ThreadTools.init = function (tid) {
@@ -80,6 +81,7 @@ define('forum/topic/threadTools', [
 
 		deletePosts.init();
 		fork.init();
+		movePosts.init();
 
 		$('.topic').on('click', '[component="topic/following"]', function () {
 			changeWatching('follow');
