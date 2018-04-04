@@ -146,7 +146,9 @@ redisModule.checkCompatibilityVersion = function (version, callback) {
 
 redisModule.close = function (callback) {
 	callback = callback || function () {};
-	redisClient.quit(callback);
+	redisClient.quit(function (err) {
+		callback(err);
+	});
 };
 
 redisModule.info = function (cxn, callback) {

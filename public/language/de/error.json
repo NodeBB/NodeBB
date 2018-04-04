@@ -145,5 +145,5 @@
     "invalid-session": "Sitzungsdiskrepanz",
     "invalid-session-text": "Es scheint als wäre deine Login-Sitzung nicht mehr aktiv oder sie passt nicht mehr mit der des Servers. Bitte aktualisiere diese Seite.",
     "no-topics-selected": "Keine Beiträge ausgewählt!",
-    "cant-move-to-same-topic": "Can't move post to same topic!"
+    "cant-move-to-same-topic": "Du kannst den Beitrag nicht in das selbe Thema schieben!"
 }

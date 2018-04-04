@@ -103,6 +103,13 @@ module.exports = function (SocketUser) {
 		], callback);
 	}
 
+	SocketUser.checkPassword = function (socket, data, callback) {
+		isPrivilegedOrSelfAndPasswordMatch(socket.uid, data, function (err) {
+			// Return a bool (without delayed response to prevent brute-force checking of password validity)
+			setTimeout(callback.bind(null, null, !err), 1000);
+		});
+	};
+
 	SocketUser.changePassword = function (socket, data, callback) {
 		if (!socket.uid) {
 			return callback(new Error('[[error:invalid-uid]]'));

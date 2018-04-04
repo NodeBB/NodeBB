@@ -26,6 +26,7 @@ module.exports = function (SocketUser) {
 					onlineOnly: data.onlineOnly,
 					bannedOnly: data.bannedOnly,
 					flaggedOnly: data.flaggedOnly,
+					paginate: data.paginate,
 					uid: socket.uid,
 				}, next);
 			},

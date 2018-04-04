@@ -9,13 +9,20 @@ define('postSelect', ['components'], function (components) {
 	PostSelect.init = function (onSelect) {
 		PostSelect.pids.length = 0;
 		components.get('topic').on('click', '[data-pid]', function () {
-			togglePostSelection($(this), onSelect);
+			PostSelect.togglePostSelection($(this), onSelect);
 		});
 		disableClicksOnPosts();
 	};
 
+	PostSelect.disable = function () {
+		PostSelect.pids.forEach(function (pid) {
+			components.get('post', 'pid', pid).toggleClass('bg-success', false);
+		});
+		components.get('topic').off('click', '[data-pid]');
+		enableClicksOnPosts();
+	};
 
-	function togglePostSelection(post, callback) {
+	PostSelect.togglePostSelection = function (post, callback) {
 		var newPid = post.attr('data-pid');
 
 		if (parseInt(post.attr('data-index'), 10) === 0) {
@@ -37,7 +44,7 @@ define('postSelect', ['components'], function (components) {
 			}
 			callback();
 		}
-	}
+	};
 
 
 	function disableClicks() {
@@ -48,10 +55,9 @@ define('postSelect', ['components'], function (components) {
 		components.get('post').on('click', 'button,a', disableClicks);
 	}
 
-	PostSelect.enableClicksOnPosts = function () {
+	function enableClicksOnPosts() {
 		components.get('post').off('click', 'button,a', disableClicks);
-	};
-
+	}
 
 	return PostSelect;
 });

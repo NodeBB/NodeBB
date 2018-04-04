@@ -2,7 +2,7 @@
 
 var fs = require('fs');
 var os = require('os');
-var uglifyjs = require('uglify-js');
+var uglify = require('uglify-es');
 var async = require('async');
 var winston = require('winston');
 var less = require('less');
@@ -178,7 +178,7 @@ function minifyJS_batch(data, callback) {
 			scripts[filename] = file;
 
 			try {
-				var minified = uglifyjs.minify(scripts, {
+				var minified = uglify.minify(scripts, {
 					sourceMap: {
 						filename: filename,
 						url: filename + '.map',
@@ -229,7 +229,7 @@ function minifyJS(data, callback) {
 			scripts[ref.filename] = ref.source;
 		});
 
-		var minified = uglifyjs.minify(scripts, {
+		var minified = uglify.minify(scripts, {
 			sourceMap: {
 				filename: data.filename,
 				url: data.filename + '.map',
@@ -280,7 +280,9 @@ function buildCSS(data, callback) {
 			clean({
 				processImportFrom: ['local'],
 			}),
-		] : [autoprefixer]).process(lessOutput.css).then(function (result) {
+		] : [autoprefixer]).process(lessOutput.css, {
+			from: undefined,
+		}).then(function (result) {
 			process.nextTick(callback, null, { code: result.css });
 		}, function (err) {
 			process.nextTick(callback, err);

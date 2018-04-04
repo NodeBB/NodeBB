@@ -63,7 +63,7 @@
 	"development/logger": "로거",
 	"development/info": "정보",
 
-	"reload-forum": "Rebuild & Restart Forum",
+	"rebuild-and-restart-forum": "Rebuild & Restart Forum",
 	"restart-forum": "포럼 재시작",
 	"logout": "로그아웃",
 	"view-forum": "포럼 보기",

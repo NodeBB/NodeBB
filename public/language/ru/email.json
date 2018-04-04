@@ -31,12 +31,12 @@
     "notif.chat.unsub.info": "Вы получили это уведомление в соответствии с настройками своей подписки на новости сайта.",
     "notif.post.cta": "Нажмите для просмотра всей темы.",
     "notif.post.unsub.info": "Вы получили это уведомление согласно вашим настройкам подписки.",
-    "notif.cta": "Click here to go to forum",
+    "notif.cta": "Нажмите здесь для перехода к форуму",
     "test.text1": "Это тестовое сообщение для проверки почтового сервиса.",
     "unsub.cta": "Изменить настройки",
-    "banned.subject": "You have been banned from %1",
-    "banned.text1": "The user %1 has been banned from %2.",
-    "banned.text2": "This ban will last until %1.",
-    "banned.text3": "This is the reason why you have been banned:",
+    "banned.subject": "Вы были заблокированы в %1.",
+    "banned.text1": "Участник %1 заблокирован в %2.",
+    "banned.text2": "Эта блокировка продлится до %1.",
+    "banned.text3": "Это причина, почему вы были заблокированны.",
     "closing": "Спасибо!"
 }

@@ -9,7 +9,7 @@
     "welcome.text3": "Un administrateur a accepté votre demande d'inscription. Vous pouvez maintenant vous connecter avec vos identifiants/mots  de passe.",
     "welcome.cta": "Cliquez ici pour confirmer votre adresse e-mail",
     "invitation.text1": "%1 vous a invité à rejoindre %2",
-    "invitation.text2": "Your invitation will expire in %1 days.",
+    "invitation.text2": "Votre invitation va expirée dans %1 jours.",
     "invitation.ctr": "Cliquer ici pour créer votre compte.",
     "reset.text1": "Nous avons reçu une demande de réinitialisation de votre mot de passe, probablement parce que vous l'avez oublié. Si ce n'est pas le cas, veuillez ignorer cet email.",
     "reset.text2": "Pour confirmer la réinitialisation de votre mot de passe, veuillez cliquer sur le lien suivant :",

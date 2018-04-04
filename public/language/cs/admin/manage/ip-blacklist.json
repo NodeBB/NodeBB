@@ -15,5 +15,5 @@
 
 	"analytics.blacklist-hourly": "<strong>Postava 1</strong> – záznamů v černé listině/hodinu",
 	"analytics.blacklist-daily": "<strong>Postava 2</strong> – záznamů v černé listině/den",
-	"ip-banned": "IP banned"
+	"ip-banned": "IP zakázáno"
 }

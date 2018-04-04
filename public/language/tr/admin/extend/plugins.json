@@ -37,7 +37,7 @@
 	"alert.uninstalled": "Eklenti Kaldırıldı",
 	"alert.activate-success": "Bu eklentiyi tamamen aktif edebilmek için lütfen NodeBB'yi yeniden başlatın",
 	"alert.deactivate-success": "Eklenti başarıyla pasifleştirildi",
-	"alert.upgrade-success": "Bu eklentiyi tamamen güncelleyebilmek için lütfen NodeBB'yi yeniden başlatın",
+	"alert.upgrade-success": "Please rebuild and restart your NodeBB to fully upgrade this plugin.",
 	"alert.install-success": "Eklenti başarıyla kuruldu, lütfen eklentiyi aktif edin.",
 	"alert.uninstall-success": "Eklenti başarıyla pasifleştirildi ve kaldırıldı.",
 	"alert.suggest-error": "<p>NodeBB paket yöneticisine ulaşamadı, en yeni sürüm yüklenmeye devam edilsin mi?</p><div class=\"alert alert-danger\"><strong>Sunucu iade etti (%1)</strong>: %2</div>",

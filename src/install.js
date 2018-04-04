@@ -451,11 +451,11 @@ function enableDefaultPlugins(next) {
 
 	if (customDefaults && customDefaults.length) {
 		try {
-			customDefaults = JSON.parse(customDefaults);
+			customDefaults = Array.isArray(customDefaults) ? customDefaults : JSON.parse(customDefaults);
 			defaultEnabled = defaultEnabled.concat(customDefaults);
 		} catch (e) {
 			// Invalid value received
-			winston.warn('[install/enableDefaultPlugins] Invalid defaultPlugins value received. Ignoring.');
+			winston.info('[install/enableDefaultPlugins] Invalid defaultPlugins value received. Ignoring.');
 		}
 	}
 

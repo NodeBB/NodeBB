@@ -58,7 +58,7 @@ SocketAdmin.before = function (socket, method, data, next) {
 	], next);
 };
 
-SocketAdmin.reload = function (socket, data, callback) {
+SocketAdmin.restart = function (socket, data, callback) {
 	events.log({
 		type: 'restart',
 		uid: socket.uid,
@@ -68,7 +68,7 @@ SocketAdmin.reload = function (socket, data, callback) {
 	callback();
 };
 
-SocketAdmin.restart = function (socket, data, callback) {
+SocketAdmin.reload = function (socket, data, callback) {
 	async.waterfall([
 		function (next) {
 			require('../meta/build').buildAll(next);

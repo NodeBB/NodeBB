@@ -7,5 +7,5 @@
     "revert-confirm": "هل أنت متأكد من أنك ترغب في استعادة قااب NodeBB الافتراضي؟",
     "theme-changed": "تم تغيير القالب",
     "revert-success": "لقد قمت بنجاح بإستعادة القالب الأساسي لـNodeBB",
-    "restart-to-activate": "الرجاء إعادة تشغيل NodeBB لتنشيط هذا القالب بشكل كامل"
+    "restart-to-activate": "Please rebuild and restart your NodeBB to fully activate this theme."
 }

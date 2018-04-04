@@ -50,6 +50,7 @@ Controllers.reset = function (req, res, next) {
 					displayExpiryNotice: req.session.passwordExpired,
 					code: req.params.code,
 					minimumPasswordLength: parseInt(meta.config.minimumPasswordLength, 10),
+					minimumPasswordStrength: parseInt(meta.config.minimumPasswordStrength, 10),
 					breadcrumbs: helpers.buildBreadcrumbs([
 						{
 							text: '[[reset_password:reset_password]]',

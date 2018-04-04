@@ -145,5 +145,5 @@
     "invalid-session": "Oturum Uyuşmazlığı",
     "invalid-session-text": "Senin giriş oturumun pek aktif gözükmüyor, ya da sunucu ile eşleşmiyor. Lütfen sayfayı yenileyiniz.",
     "no-topics-selected": "Hiçbir başlık seçilmedi!",
-    "cant-move-to-same-topic": "Can't move post to same topic!"
+    "cant-move-to-same-topic": "İletiyi aynı başlığa taşıyamazsın!"
 }

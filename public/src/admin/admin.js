@@ -38,7 +38,6 @@
 		}
 
 		$('[component="logout"]').on('click', app.logout);
-		app.alert = launchSnackbar;
 
 		configureSlidemenu();
 		setupNProgress();
@@ -120,11 +119,11 @@
 	}
 
 	function setupRestartLinks() {
-		$('.reload').off('click').on('click', function () {
-			bootbox.confirm('[[admin/admin:alert.confirm-reload]]', function (confirm) {
+		$('.rebuild-and-restart').off('click').on('click', function () {
+			bootbox.confirm('[[admin/admin:alert.confirm-rebuild-and-restart]]', function (confirm) {
 				if (confirm) {
 					require(['admin/modules/instance'], function (instance) {
-						instance.reload();
+						instance.rebuildAndRestart();
 					});
 				}
 			});
@@ -136,24 +135,6 @@
 					require(['admin/modules/instance'], function (instance) {
 						instance.restart();
 					});
-				}
-			});
-		});
-	}
-
-	function launchSnackbar(params) {
-		var message = (params.title ? '<strong>' + params.title + '</strong>' : '') + (params.message ? params.message : '');
-
-		require(['translator'], function (translator) {
-			translator.translate(message, function (html) {
-				var bar = $.snackbar({
-					content: html,
-					timeout: params.timeout || 3000,
-					htmlAllowed: true,
-				});
-
-				if (params.clickfn) {
-					bar.on('click', params.clickfn);
 				}
 			});
 		});

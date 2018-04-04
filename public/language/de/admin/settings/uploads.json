@@ -4,6 +4,8 @@
 	"private": "Hochgeladene Dateien privatisieren",
 	"max-image-width": "Bilder zu einer bestimmten Breite runterskalieren",
 	"max-image-width-help": "(in Pixeln, standard 760 pixel, auf 0 setzen um zu deaktivieren)",
+	"resize-image-quality": "Zu benutzende Qualität beim verändern von Bildauflösungen",
+	"resize-image-quality-help": "Benutze eine niedrigere Qualitätseinstellung um die Dateigröße der gespeicherten Bilder zu minimieren.",
 	"max-file-size": "Maximale Dateigröße (in KiB)",
 	"max-file-size-help": "(In Kibibytes, Standardmäßig 2048 KiB)",
 	"allow-topic-thumbnails": "Nutzern erlauben Themen Thumbnails hochzuladen",

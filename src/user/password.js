@@ -28,7 +28,7 @@ module.exports = function (User) {
 					return callback(null, true);
 				}
 
-				User.isPasswordValid(password, next);
+				User.isPasswordValid(password, 0, next);
 			},
 			function (next) {
 				Password.compare(password, hashedPassword, next);

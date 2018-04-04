@@ -7,6 +7,7 @@
 	"headers.powered-by": "Customise the \"Powered By\" header sent by NodeBB",
 	"headers.acao": "Access-Control-Allow-Origin",
 	"headers.acao-help": "To deny access to all sites, leave empty",
+	"headers.acac": "Access-Control-Allow-Credentials",
 	"headers.acam": "Access-Control-Allow-Methods",
 	"headers.acah": "Access-Control-Allow-Headers",
 	"traffic-management": "Traffic Management",

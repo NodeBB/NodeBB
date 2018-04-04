@@ -56,8 +56,14 @@ function searchInContent(data, callback) {
 		},
 		function (results, next) {
 			function doSearch(type, searchIn, next) {
-				if (searchIn.indexOf(data.searchIn) !== -1) {
-					search.searchQuery(type, data.query, results.searchCids, results.searchUids, next);
+				if (searchIn.includes(data.searchIn)) {
+					plugins.fireHook('filter:search.query', {
+						index: type,
+						content: data.query,
+						matchWords: data.matchWords || 'all',
+						cid: results.searchCids,
+						uid: results.searchUids,
+					}, next);
 				} else {
 					next(null, []);
 				}
@@ -430,13 +436,3 @@ function getSearchUids(data, callback) {
 		callback(null, []);
 	}
 }
-
-search.searchQuery = function (index, content, cids, uids, callback) {
-	plugins.fireHook('filter:search.query', {
-		index: index,
-		content: content,
-		cid: cids,
-		uid: uids,
-	}, callback);
-};
-

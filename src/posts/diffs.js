@@ -5,12 +5,17 @@ var validator = require('validator');
 var diff = require('diff');
 
 var db = require('../database');
+var meta = require('../meta');
 var plugins = require('../plugins');
 var translator = require('../translator');
 
 var Diffs = {};
 
 Diffs.exists = function (pid, callback) {
+	if (parseInt(meta.config.enablePostHistory || 1, 10) !== 1) {
+		return callback(null, 0);
+	}
+
 	db.listLength('post:' + pid + ':diffs', function (err, numDiffs) {
 		return callback(err, !!numDiffs);
 	});

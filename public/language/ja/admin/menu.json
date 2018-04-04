@@ -63,7 +63,7 @@
 	"development/logger": "ロガー",
 	"development/info": "情報",
 
-	"reload-forum": "Rebuild & Restart Forum",
+	"rebuild-and-restart-forum": "Rebuild & Restart Forum",
 	"restart-forum": "フォーラムを再開",
 	"logout": "ログアウト",
 	"view-forum": "フォーラムを表示",

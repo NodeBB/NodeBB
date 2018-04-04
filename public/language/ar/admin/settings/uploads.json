@@ -4,6 +4,8 @@
 	"private": "جعل الملفات التي تم رفعها خاصة",
 	"max-image-width": "تغيير حجم الصور إلى عرض محدد (بالبكسل)",
 	"max-image-width-help": "(بالبكسل، الافتراضي: 760 بكسل، ضع إلى 0 لتعطيل الخاصية)",
+	"resize-image-quality": "Quality to use when resizing images",
+	"resize-image-quality-help": "Use a lower quality setting to reduce the file size of resized images.",
 	"max-file-size": "الحد الأقصى لحجم الملف (بالكيبيبايت)",
 	"max-file-size-help": "(بالكيبيبايت، الافتراضي: 2048)",
 	"allow-topic-thumbnails": "السماح للاعضاء برفع الصور المصغرة للموضوع",

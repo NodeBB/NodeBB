@@ -116,7 +116,7 @@ module.exports = function (Topics) {
 			function (_mainPid, next) {
 				mainPid = _mainPid;
 				batch.processSortedSet('tid:' + tid + ':posts', function (pids, next) {
-					async.eachLimit(pids, 10, function (pid, next) {
+					async.eachSeries(pids, function (pid, next) {
 						posts.purge(pid, uid, next);
 					}, next);
 				}, { alwaysStartAt: 0 }, next);
