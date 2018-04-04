@@ -49,5 +49,6 @@
 	"composer.enable-plugin-help": "Eklentilerin yardım sekmesine içerik eklemesine izin ver",
 	"composer.custom-help": "Özel Yardım Metni",
 	"ip-tracking": "IP İzleme",
-	"ip-tracking.each-post": "Her ileti için IP Adresini takip et"
+	"ip-tracking.each-post": "Her ileti için IP Adresini takip et",
+	"enable-post-history": "Enable Post History"
 }

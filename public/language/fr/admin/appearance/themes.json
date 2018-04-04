@@ -7,5 +7,5 @@
     "revert-confirm": "Êtes-vous sûr de vouloir restaurer le thème NodeBB par défaut ?",
     "theme-changed": "Thème changé",
     "revert-success": "Vous avez restauré avec succès le thème par défaut de NodeBB.",
-    "restart-to-activate": "Veuillez redémarrer NodeBB pour complètement activer ce thème."
+    "restart-to-activate": "Please rebuild and restart your NodeBB to fully activate this theme."
 }

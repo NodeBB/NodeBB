@@ -37,7 +37,7 @@
 	"alert.uninstalled": "Плагин удален",
 	"alert.activate-success": "Please restart your NodeBB to fully activate this plugin",
 	"alert.deactivate-success": "Плагин успешно отключен",
-	"alert.upgrade-success": "Пожалуйста перезапустите ваш NodeBB, чтобы полностью обновить этот плагин",
+	"alert.upgrade-success": "Please rebuild and restart your NodeBB to fully upgrade this plugin.",
 	"alert.install-success": "Плагин успешно установлен, пожалуйста активируйте этот плагин.",
 	"alert.uninstall-success": "Плагин успешно отключен и удален.",
 	"alert.suggest-error": "<p>NodeBB could not reach the package manager, proceed with installation of latest version?</p><div class=\"alert alert-danger\"><strong>Server returned (%1)</strong>: %2</div>",

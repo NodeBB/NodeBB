@@ -37,7 +37,7 @@
 	"alert.uninstalled": "Плагін видалено",
 	"alert.activate-success": "Будь ласка, перезавантажте NodeBB, щоб повністю активувати цей плагін",
 	"alert.deactivate-success": "Плагін успішно деактивовано",
-	"alert.upgrade-success": "Будь ласка, перевантажте NodeBB, щоб повністю оновити цей плагін",
+	"alert.upgrade-success": "Please rebuild and restart your NodeBB to fully upgrade this plugin.",
 	"alert.install-success": "Плагін успішно встановлено, будь-ласка активуйте його.",
 	"alert.uninstall-success": "Плагін успішно деактивовано та видалено.",
 	"alert.suggest-error": "<p>NodeBB не вдалося зв'язатися з менеджером пакетів, приступити до установки останньої версії?</p><div class=\"alert alert-danger\"><strong>Відповідь сервера (%1)</strong>: %2</div>",

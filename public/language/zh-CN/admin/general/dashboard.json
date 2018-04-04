@@ -37,8 +37,8 @@
 	"search-plugin-tooltip": "在插件页面安装搜索插件来激活搜索功能",
 
 	"control-panel": "系统控制",
-	"reload": "重启",
-	"restart": "重载&重启",
+	"rebuild-and-restart": "Rebuild &amp; Restart",
+	"restart": "Restart",
 	"restart-warning": "重载或重启 NodeBB 会丢失数秒内全部的连接。",
 	"restart-disabled": "重建和重新启动NodeBB已被禁用，因为您似乎没有通过适当的守护进程运行它。",
 	"maintenance-mode": "维护模式",

@@ -37,7 +37,7 @@
 	"alert.uninstalled": "플러그인이 제거됐습니다.",
 	"alert.activate-success": "이 플러그인을 완전히 활성화하려면 NodeBB를 다시 시작해주십시오.",
 	"alert.deactivate-success": "플러그인이 성공적으로 비활성화됐습니다.",
-	"alert.upgrade-success": "이 플러그인을 완전히 업그레이드 시키려면 NodeBB를 다시 로드해주십시오.",
+	"alert.upgrade-success": "Please rebuild and restart your NodeBB to fully upgrade this plugin.",
 	"alert.install-success": "플러그인이 성공적으로 설치됐습니다. 플러그인을 활성화 해주십시오.",
 	"alert.uninstall-success": "플러그인이 성공적으로 비활성화되고 삭제됐습니다.",
 	"alert.suggest-error": "<p>NodeBB가 페키지 매니저 접근에 실패하였습니다. 최신 버젼을 설치하시겠습니까?</p><div class=\"alert alert-danger\"><strong>서버의 응답 (%1)</strong>:%2</div>",

@@ -37,7 +37,7 @@
 	"alert.uninstalled": "外掛已移除",
 	"alert.activate-success": "請重新啟動你的NodeBB來完成外掛的啟用",
 	"alert.deactivate-success": "外掛已成功停用",
-	"alert.upgrade-success": "請重新載入你的NodeBB來完成外掛的升級",
+	"alert.upgrade-success": "Please rebuild and restart your NodeBB to fully upgrade this plugin.",
 	"alert.install-success": "外掛已成功安裝，請啟用外掛。",
 	"alert.uninstall-success": "外掛已成功停用並且移除。",
 	"alert.suggest-error": "<p>NodeBB could not reach the package manager, proceed with installation of latest version?</p><div class=\"alert alert-danger\"><strong>Server returned (%1)</strong>: %2</div>",

@@ -63,7 +63,7 @@
 	"development/logger": "记录器",
 	"development/info": "信息",
 
-	"reload-forum": "重建并重启论坛",
+	"rebuild-and-restart-forum": "Rebuild & Restart Forum",
 	"restart-forum": "重启论坛",
 	"logout": "登出",
 	"view-forum": "查看论坛",

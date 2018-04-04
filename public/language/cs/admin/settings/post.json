@@ -49,5 +49,6 @@
 	"composer.enable-plugin-help": "Povolit rozšíření přidat obsah do záložky nápovědy",
 	"composer.custom-help": "Uživatelský text nápovědy",
 	"ip-tracking": "Sledování IP",
-	"ip-tracking.each-post": "Sledovat adresu IP u každého příspěvku"
+	"ip-tracking.each-post": "Sledovat adresu IP u každého příspěvku",
+	"enable-post-history": "Enable Post History"
 }

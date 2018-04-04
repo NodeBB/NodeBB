@@ -37,7 +37,7 @@
 	"alert.uninstalled": "Rozšíření bylo odinstalováno",
 	"alert.activate-success": "Pro plnou aktivaci tohoto rozšíření, restartujte NodeBB",
 	"alert.deactivate-success": "Rozšíření bylo úspěšně deaktivováno",
-	"alert.upgrade-success": "Pro plnou aktualizace tohoto rozšíření, znovu načtěte vaše NodeBB",
+	"alert.upgrade-success": "Please rebuild and restart your NodeBB to fully upgrade this plugin.",
 	"alert.install-success": "Rozšíření bylo úspěšně nainstalováno, můžete ho aktivovat.",
 	"alert.uninstall-success": "Rozšíření bylo úspěšně deaktivováno a odinstalováno.",
 	"alert.suggest-error": "<p>NodeBB se nemohl připojit ke správce balíčku, pokračovat v instalaci poslední verze?</p><div class=\"alert alert-danger\"><strong>Server odpověděl (%1)</strong>: %2</div>",

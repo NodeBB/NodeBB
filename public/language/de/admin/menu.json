@@ -63,7 +63,7 @@
 	"development/logger": "Logger",
 	"development/info": "Info",
 
-	"reload-forum": "Forum Neustarten",
+	"rebuild-and-restart-forum": "Rebuild & Restart Forum",
 	"restart-forum": "Forum neu starten",
 	"logout": "Abmelden",
 	"view-forum": "Forum anzeigen",

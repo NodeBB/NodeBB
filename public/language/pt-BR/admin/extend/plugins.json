@@ -37,7 +37,7 @@
 	"alert.uninstalled": "Plugin Desinstalado",
 	"alert.activate-success": "Por favor reinicie o seu NodeBB para ativar completamente este plugin",
 	"alert.deactivate-success": "Plugin desativado com sucesso",
-	"alert.upgrade-success": "Por favor recarregue o seu NodeBB para atualizar completamente este plugin",
+	"alert.upgrade-success": "Please rebuild and restart your NodeBB to fully upgrade this plugin.",
 	"alert.install-success": "Plugin instalado com sucesso, por favor ative o plugin.",
 	"alert.uninstall-success": "O plugin foi desativado com sucesso e desinstalado.",
 	"alert.suggest-error": "<p>O NodeBB não pôde encontrar o administrador de pacotes, proceder com a instalação da última versão?</p><div class=\"alert alert-danger\"><strong>O servidor retornou (%1)</strong>: %2</div>",

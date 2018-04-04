@@ -37,7 +37,7 @@
 	"alert.uninstalled": "ถอนการติดตั้งปลั๊กอินแล้ว",
 	"alert.activate-success": "โปรดรีสตาร์ท NodeBB ของคุณเพื่อเปิดการทำงานของธีมนี้",
 	"alert.deactivate-success": "ปิดการใช้งานปลั๊กอินนี้แล้ว",
-	"alert.upgrade-success": "โปรดรีสตาร์ท NodeBB ของคุณเพื่ออัพเกรดปลั๊กอินนี้",
+	"alert.upgrade-success": "Please rebuild and restart your NodeBB to fully upgrade this plugin.",
 	"alert.install-success": "ติดตั้งปลั๊กอินแล้ว โปรดเปิดใช้งานปลั๊กอิน",
 	"alert.uninstall-success": "ปิดใช้งานปลั๊กอินและยกเลิกการติดตั้งแล้ว",
 	"alert.suggest-error": "<p>NodeBB ไม่สามารถเข้าถึงตัวจัดการแพคเกจดำเนินการติดตั้งเวอร์ชันล่าสุดได้หรือไม่?</p><div class=\"alert alert-danger\"><strong>เซิร์ฟเวอร์ตอบกลับ (%1)</strong>: %2</div>",

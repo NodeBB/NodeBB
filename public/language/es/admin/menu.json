@@ -63,7 +63,7 @@
 	"development/logger": "Registro",
 	"development/info": "Información",
 
-	"reload-forum": "Rebuild & Restart Forum",
+	"rebuild-and-restart-forum": "Rebuild & Restart Forum",
 	"restart-forum": "Reiniciar foro",
 	"logout": "Cerrar sesión",
 	"view-forum": "Ver foro",

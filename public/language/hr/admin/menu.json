@@ -63,7 +63,7 @@
 	"development/logger": "Dnevnik",
 	"development/info": "Info",
 
-	"reload-forum": "Rebuild & Restart Forum",
+	"rebuild-and-restart-forum": "Rebuild & Restart Forum",
 	"restart-forum": "ponovno pokreni forum",
 	"logout": "Odjava",
 	"view-forum": "Pogledaj forum",

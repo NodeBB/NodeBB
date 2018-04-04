@@ -49,5 +49,6 @@
 	"composer.enable-plugin-help": "プラグインがヘルプタブにコンテンツを追加できるようにする",
 	"composer.custom-help": "カスタムヘルプテキスト",
 	"ip-tracking": "IPトラッキング",
-	"ip-tracking.each-post": "各投稿のトラックIPアドレス"
+	"ip-tracking.each-post": "各投稿のトラックIPアドレス",
+	"enable-post-history": "Enable Post History"
 }

@@ -37,7 +37,7 @@
 	"alert.uninstalled": "プラグインはアンインストールされました",
 	"alert.activate-success": "このプラグインを完全にアクティブするためにNodeBBを再起動してください",
 	"alert.deactivate-success": "プラグインは正常に非アクティブ化されました",
-	"alert.upgrade-success": "このプラグインを完全にアップグレードするためにNodeBBをリロードしてください",
+	"alert.upgrade-success": "Please rebuild and restart your NodeBB to fully upgrade this plugin.",
 	"alert.install-success": "プラグインは正常にインストールされました。プラグインをアクティブにしてください",
 	"alert.uninstall-success": "プラグインは正常に非アクティブ化とアンインストールされました。",
 	"alert.suggest-error": "<p>NodeBBはパッケージマネージャに到達できませんでした。最新バージョンのインストールを続行しましたか？</p><div class=\"alert alert-danger\"><strong>Server returned (%1)</strong>: %2</div>",

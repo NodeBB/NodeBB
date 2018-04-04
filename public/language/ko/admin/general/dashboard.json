@@ -37,8 +37,8 @@
 	"search-plugin-tooltip": "검색 기능을 활성화하시려면 플러그인 페이지에서 검색 플러그인을 설치하세요.",
 
 	"control-panel": "시스템 제어",
-	"reload": "Restart",
-	"restart": "Rebuild &amp; Restart",
+	"rebuild-and-restart": "Rebuild &amp; Restart",
+	"restart": "Restart",
 	"restart-warning": "Rebuilding or Restarting your NodeBB will drop all existing connections for a few seconds.",
 	"restart-disabled": "Rebuilding and Restarting your NodeBB has been disabled as you do not seem to be running it via the appropriate daemon.",
 	"maintenance-mode": "점검 모드",
