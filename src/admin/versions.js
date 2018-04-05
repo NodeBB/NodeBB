@@ -2,6 +2,7 @@
 
 var semver = require('semver');
 var request = require('request');
+var nconf = require('nconf');
 
 var meta = require('../meta');
 
@@ -20,7 +21,7 @@ function getLatestVersion(callback) {
 		headers['If-Modified-Since'] = versionCacheLastModified;
 	}
 
-	request('https://api.github.com/repos/NodeBB/NodeBB/tags', {
+	request(nconf.get('versionAPI') || 'https://api.github.com/repos/NodeBB/NodeBB/tags', {
 		json: true,
 		headers: headers,
 	}, function (err, res, releases) {
