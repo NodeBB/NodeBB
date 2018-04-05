@@ -12,7 +12,7 @@
     "ban_account_confirm": "Êtes-vous sûr de bien vouloir bannir cet utilisateur ?",
     "unban_account": "Restaurer le compte",
     "delete_account": "Supprimer le compte",
-    "delete_account_confirm": "Are you sure you want to delete your account? <br /><strong>This action is irreversible and you will not be able to recover any of your data</strong><br /><br />Enter your password to confirm that you wish to destroy this account.",
+    "delete_account_confirm": "Êtes-vous sûr de vouloir supprimer votre compte?<br /><strong>Cette action est irréversible et vous ne pourrez récupérer aucune de vos données</strong><br /><br />Entrez votre mot de passe pour confirmer que vous souhaitez détruire ce compte.",
     "delete_this_account_confirm": "Etes-vous sûr de vouloir supprimer ce compte? <br /><strong>Cette action est irréversible et vous ne pourrez récupérer aucune donnée.",
     "account-deleted": "Compte supprimé",
     "fullname": "Nom",

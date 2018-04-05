@@ -44,11 +44,11 @@
 	"signature.no-images": "Désactiver les images en signature ",
 	"signature.max-length": "Longueur maximum des signatures",
 	"composer": "Paramètres Composer",
-	"composer-help": "Les réglages suivants permettent de choisir les fonctionnalités et/ou l'apparence du composeur de message affiché\n\\t\\t\\t\\taux utilisateurs quand ils créent de nouveaux sujets ou répondent à des sujets existants.",
+	"composer-help": "Les réglages suivants permettent de choisir les fonctionnalités et/ou l'apparence du composeur de message affiché\n\t\t\t\ttaux utilisateurs quand ils créent de nouveaux sujets ou répondent à des sujets existants.",
 	"composer.show-help": "Afficher l'onglet \"Aide\"",
 	"composer.enable-plugin-help": "Autoriser les plugins à modifier l'onglet d'aide",
 	"composer.custom-help": "Message d'aide personnalisé",
 	"ip-tracking": "Suivi d'IP",
 	"ip-tracking.each-post": "Suivre l'adresse IP pour chaque message",
-	"enable-post-history": "Enable Post History"
+	"enable-post-history": "Activer l'historique des publications"
 }
