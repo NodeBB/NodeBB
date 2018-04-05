@@ -2,19 +2,19 @@
     "name": "nodebb",
     "license": "GPL-3.0",
     "description": "NodeBB Forum",
-    "version": "1.7.5",
+    "version": "1.8.2",
     "homepage": "http://www.nodebb.org",
     "repository": {
-      "type": "git",
-      "url": "https://github.com/NodeBB/NodeBB/"
+        "type": "git",
+        "url": "https://github.com/NodeBB/NodeBB/"
     },
     "main": "app.js",
     "scripts": {
-      "start": "node loader.js",
-      "lint": "eslint --cache ./nodebb .",
-      "pretest": "npm run lint",
-      "test": "nyc --reporter=html --reporter=text-summary mocha",
-      "coveralls": "nyc report --reporter=text-lcov | coveralls && rm -r coverage"
+        "start": "node loader.js",
+        "lint": "eslint --cache ./nodebb .",
+        "pretest": "npm run lint",
+        "test": "nyc --reporter=html --reporter=text-summary mocha",
+        "coveralls": "nyc report --reporter=text-lcov | coveralls && rm -r coverage"
     },
     "dependencies": {
         "ace-builds": "^1.2.9",
@@ -63,19 +63,19 @@
         "mousetrap": "^1.6.1",
         "mubsub": "^1.4.0",
         "nconf": "^0.9.1",
-        "nodebb-plugin-composer-default": "6.0.16",
-        "nodebb-plugin-dbsearch": "2.0.9",
-        "nodebb-plugin-emoji": "^2.1.0",
+        "nodebb-plugin-composer-default": "6.0.20",
+        "nodebb-plugin-dbsearch": "2.0.13",
+        "nodebb-plugin-emoji": "^2.2.0",
         "nodebb-plugin-emoji-android": "2.0.0",
-        "nodebb-plugin-markdown": "8.4.1",
-        "nodebb-plugin-mentions": "2.2.3",
+        "nodebb-plugin-markdown": "8.4.2",
+        "nodebb-plugin-mentions": "2.2.4",
         "nodebb-plugin-soundpack-default": "1.0.0",
         "nodebb-plugin-spam-be-gone": "0.5.3",
         "nodebb-rewards-essentials": "0.0.11",
-        "nodebb-theme-lavender": "5.0.3",
-        "nodebb-theme-persona": "7.2.27",
-        "nodebb-theme-slick": "1.1.4",
-        "nodebb-theme-vanilla": "8.1.12",
+        "nodebb-theme-lavender": "5.0.4",
+        "nodebb-theme-persona": "8.0.9",
+        "nodebb-theme-slick": "1.2.1",
+        "nodebb-theme-vanilla": "9.0.7",
         "nodebb-widget-essentials": "4.0.2",
         "nodemailer": "4.4.1",
         "passport": "^0.4.0",
@@ -100,7 +100,7 @@
         "spdx-license-list": "^3.0.1",
         "spider-detector": "1.0.18",
         "toobusy-js": "^0.5.1",
-        "uglify-js": "^3.3.4",
+        "uglify-es": "^3.3.9",
         "validator": "9.2.0",
         "winston": "^2.4.0",
         "xml": "^1.0.1",
@@ -121,26 +121,26 @@
         "smtp-server": "^3.4.1"
     },
     "bugs": {
-      "url": "https://github.com/NodeBB/NodeBB/issues"
+        "url": "https://github.com/NodeBB/NodeBB/issues"
     },
     "engines": {
-      "node": ">=6"
+        "node": ">=6"
     },
     "maintainers": [
-      {
-        "name": "Andrew Rodrigues",
-        "email": "andrew@nodebb.org",
-        "url": "https://github.com/psychobunny"
-      },
-      {
-        "name": "Julian Lam",
-        "email": "julian@nodebb.org",
-        "url": "https://github.com/julianlam"
-      },
-      {
-        "name": "Barış Soner Uşaklı",
-        "email": "baris@nodebb.org",
-        "url": "https://github.com/barisusakli"
-      }
+        {
+            "name": "Andrew Rodrigues",
+            "email": "andrew@nodebb.org",
+            "url": "https://github.com/psychobunny"
+        },
+        {
+            "name": "Julian Lam",
+            "email": "julian@nodebb.org",
+            "url": "https://github.com/julianlam"
+        },
+        {
+            "name": "Barış Soner Uşaklı",
+            "email": "baris@nodebb.org",
+            "url": "https://github.com/barisusakli"
+        }
     ]
-  }
+}

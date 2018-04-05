@@ -53,7 +53,7 @@
     "topics": "Теми",
     "posts": "Пости",
     "best": "Найкращі",
-    "votes": "Votes",
+    "votes": "Голоси",
     "upvoters": "За",
     "upvoted": "За",
     "downvoters": "Проти",
@@ -106,5 +106,6 @@
     "cookies.learn_more": "Дізнатися більше",
     "edited": "Відредаговано",
     "disabled": "Вимкнено",
-    "select": "Обрати"
+    "select": "Обрати",
+    "user-search-prompt": "Введіть щось тут, щоб знайти користувачів..."
 }

@@ -119,9 +119,8 @@ define('forum/chats', [
 
 	Chats.addCharactersLeftHandler = function (parent) {
 		var element = parent.find('[component="chat/input"]');
-		element.on('keyup', function () {
-			parent.find('[component="chat/message/length"]').text(element.val().length);
-			parent.find('[component="chat/message/remaining"]').text(config.maximumChatMessageLength - element.val().length);
+		element.on('change keyup paste', function () {
+			messages.updateRemainingLength(parent);
 		});
 	};
 
@@ -455,7 +454,7 @@ define('forum/chats', [
 		if (ajaxify.data.roomId) {
 			socket.emit('modules.chats.markRead', ajaxify.data.roomId);
 			$('[data-roomid="' + ajaxify.data.roomId + '"]').toggleClass('unread', false);
-			$('.expanded-chat input').focus();
+			$('.expanded-chat [component="chat/input"]').focus();
 		}
 		$('.chats-list li').removeClass('bg-info');
 		$('.chats-list li[data-roomid="' + ajaxify.data.roomId + '"]').addClass('bg-info');

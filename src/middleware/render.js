@@ -133,7 +133,7 @@ module.exports = function (middleware) {
 		var parts = clean.split('/').slice(0, 3);
 		parts.forEach(function (p, index) {
 			try {
-				p = decodeURIComponent(p);
+				p = utils.slugify(decodeURIComponent(p));
 			} catch (err) {
 				winston.error(err);
 				p = '';

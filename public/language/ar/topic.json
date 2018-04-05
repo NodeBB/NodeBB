@@ -32,6 +32,7 @@
     "moved": "منقول",
     "copy-ip": "Copy IP",
     "ban-ip": "Ban IP",
+    "view-history": "Edit History",
     "bookmark_instructions": "اضغط هنا للعودة لأخر مشاركة مقروءة في الموضوع",
     "flag_title": "إشعار بمشاركة مخلة.",
     "merged_message": "This topic has been merged into <a href=\"/topic/%1\">%2</a>",
@@ -61,6 +62,7 @@
     "thread_tools.lock": "أقفل الموضوع",
     "thread_tools.unlock": "إلغاء إقفال الموضوع",
     "thread_tools.move": "نقل الموضوع",
+    "thread_tools.move-posts": "Move Posts",
     "thread_tools.move_all": "نقل الكل",
     "thread_tools.select_category": "Select Category",
     "thread_tools.fork": "إنشاء فرع الموضوع",
@@ -95,6 +97,7 @@
     "fork_success": "تم إنشاء فرع للموضوع بنجاح! إضغط هنا لمعاينة الفرع.",
     "delete_posts_instruction": "Click the posts you want to delete/purge",
     "merge_topics_instruction": "Click the topics you want to merge",
+    "move_posts_instruction": "Click the posts you want to move",
     "composer.title_placeholder": "أدخل عنوان موضوعك هنا...",
     "composer.handle_placeholder": "اﻹسم",
     "composer.discard": "نبذ التغييرات",
@@ -121,5 +124,8 @@
     "stale.warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
     "stale.create": "موضوع جديد",
     "stale.reply_anyway": "الرد على هذا الموضوع ",
-    "link_back": "رد:  [%1](%2)"
+    "link_back": "رد:  [%1](%2)",
+    "diffs.title": "Post Edit History",
+    "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
+    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
 }

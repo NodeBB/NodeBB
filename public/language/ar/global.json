@@ -106,5 +106,6 @@
     "cookies.learn_more": "أعرف المزيد",
     "edited": "حُرِر",
     "disabled": "معطل",
-    "select": "تحديد"
+    "select": "تحديد",
+    "user-search-prompt": "Type something here to find users..."
 }

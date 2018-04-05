@@ -9,6 +9,7 @@
     "welcome.text3": "En administrator har accepterat din registreringsansökan. Du kan logga in med ditt användarnamn och lösenord nu.",
     "welcome.cta": "Klicka här för att bekräfta din e-postadress ",
     "invitation.text1": "%1 har bjudit in dig till %2",
+    "invitation.text2": "Your invitation will expire in %1 days.",
     "invitation.ctr": "Klicka här för att skapa ditt konto.",
     "reset.text1": "Vi fick en förfrågan om att återställa ditt lösenord, möjligen för att du har glömt det. Om detta inte är fallet, så kan du bortse från det här epostmeddelandet. ",
     "reset.text2": "För att fortsätta med återställning av lösenordet så kan du klicka på följande länk:",

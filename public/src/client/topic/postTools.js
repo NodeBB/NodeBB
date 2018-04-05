@@ -195,7 +195,7 @@ define('forum/topic/postTools', [
 		});
 
 		postContainer.on('click', '[component="post/move"]', function () {
-			movePost.openMovePostModal($(this));
+			movePost.openMovePostModal($(this).parents('[data-pid]'));
 		});
 
 		postContainer.on('click', '[component="post/ban-ip"]', function () {

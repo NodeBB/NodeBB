@@ -66,7 +66,21 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback();
 		}
-		module.getObjectField(key, 'data', callback);
+		module.getObject(key, function (err, objectData) {
+			if (err) {
+				return callback(err);
+			}
+			// fallback to old field name 'value' for backwards compatibility #6340
+			var value = null;
+			if (objectData) {
+				if (objectData.hasOwnProperty('data')) {
+					value = objectData.data;
+				} else if (objectData.hasOwnProperty('value')) {
+					value = objectData.value;
+				}
+			}
+			callback(null, value);
+		});
 	};
 
 	module.set = function (key, value, callback) {

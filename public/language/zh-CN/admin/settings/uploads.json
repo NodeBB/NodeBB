@@ -4,6 +4,8 @@
 	"private": "使上传的文件私有化",
 	"max-image-width": "缩小图片到指定宽度(单位像素)",
 	"max-image-width-help": "(像素单位，默认 760 px，设置为0以禁用)",
+	"resize-image-quality": "调整图像大小时使用的质量",
+	"resize-image-quality-help": "使用较低质量的设置来减小调整过大小的图像的文件大小",
 	"max-file-size": "最大文件尺寸(单位 KiB)",
 	"max-file-size-help": "(单位 KiB ,默认 2048KiB)",
 	"allow-topic-thumbnails": "允许用户上传主题缩略图",

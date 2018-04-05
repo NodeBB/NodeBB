@@ -158,22 +158,45 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 	function handleAccountDelete() {
 		$('#deleteAccountBtn').on('click', function () {
 			translator.translate('[[user:delete_account_confirm]]', function (translated) {
-				var modal = bootbox.confirm(translated + '<p><input type="text" class="form-control" id="confirm-username" /></p>', function (confirm) {
+				var modal = bootbox.confirm(translated + '<p><input type="password" class="form-control" id="confirm-password" /></p>', function (confirm) {
 					if (!confirm) {
 						return;
 					}
 
-					if ($('#confirm-username').val() !== app.user.username) {
-						app.alertError('[[error:invalid-username]]');
-						return false;
-					}
-					socket.emit('user.deleteAccount', {}, function (err) {
-						if (err) {
-							return app.alertError(err.message);
+					var confirmBtn = modal.find('.btn-primary');
+					confirmBtn.html('<i class="fa fa-spinner fa-spin"></i>');
+					confirmBtn.prop('disabled', true);
+
+					socket.emit('user.checkPassword', {
+						uid: parseInt(ajaxify.data.uid, 10),
+						password: $('#confirm-password').val(),
+					}, function (err, ok) {
+						function restoreButton() {
+							translator.translate('[[modules:bootbox.confirm]]', function (confirmText) {
+								confirmBtn.text(confirmText);
+								confirmBtn.prop('disabled', false);
+							});
 						}
 
-						window.location.href = config.relative_path + '/';
+						if (err) {
+							restoreButton();
+							return app.alertError(err.message);
+						} else if (!ok) {
+							restoreButton();
+							return app.alertError('[[error:invalid-password]]');
+						}
+
+						confirmBtn.html('<i class="fa fa-check"></i>');
+						socket.emit('user.deleteAccount', {}, function (err) {
+							if (err) {
+								return app.alertError(err.message);
+							}
+
+							window.location.href = config.relative_path + '/';
+						});
 					});
+
+					return false;
 				});
 
 				modal.on('shown.bs.modal', function () {
@@ -245,7 +268,7 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 						pictureCropper.handleImageCrop({
 							url: url,
 							socketMethod: 'user.uploadCroppedPicture',
-							aspectRatio: '1 / 1',
+							aspectRatio: 1,
 							allowSkippingCrop: false,
 							paramName: 'uid',
 							paramValue: ajaxify.data.theirid,

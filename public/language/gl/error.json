@@ -116,6 +116,8 @@
     "cant-delete-chat-message": "Non tes permitido borrar esta mensaxe.",
     "chat-edit-duration-expired": "You are only allowed to edit chat messages for %1 second(s) after posting",
     "chat-delete-duration-expired": "You are only allowed to delete chat messages for %1 second(s) after posting",
+    "chat-deleted-already": "This chat message has already been deleted.",
+    "chat-restored'already": "This chat message has already been restored.",
     "already-voting-for-this-post": "Xa votache esta mensaxe.",
     "reputation-system-disabled": "O sistema de reputación está deshabilitado",
     "downvoting-disabled": "Os votos negativos están deshabilitados",
@@ -142,5 +144,6 @@
     "invalid-home-page-route": "Ruta de páxina de inicio inválida",
     "invalid-session": "Non concordan os datos da sesión",
     "invalid-session-text": "Parece que a súa sesión expirou ou non concorda co servidor. Por favor, recarge a páxina.",
-    "no-topics-selected": "No topics selected!"
+    "no-topics-selected": "No topics selected!",
+    "cant-move-to-same-topic": "Can't move post to same topic!"
 }

@@ -53,7 +53,7 @@
     "topics": "กระทู้",
     "posts": "กระทู้",
     "best": "ดีที่สุด",
-    "votes": "Votes",
+    "votes": "โหวต",
     "upvoters": "ผู้ที่โหวดขึ้น",
     "upvoted": "โหวตแล้ว",
     "downvoters": "ผู้ที่โหวตลง",
@@ -83,8 +83,8 @@
     "offline": "ออฟไลน์",
     "email": "อีเมล์",
     "language": "ภาษา",
-    "guest": "Guest",
-    "guests": "Guests",
+    "guest": "แขก",
+    "guests": "แขก",
     "updated.title": "ฟอรั่มที่ถูกอัพเดทแล้ว",
     "updated.message": "ฟอรั่มนี้เพิ่งได้รับการอัพเดทให้เป็นเวอร์ชั่นล่าสุด คลิกที่นี่เพื่อรีเฟรชหน้าเพจ",
     "privacy": "ความเป็นส่วนตัว",
@@ -106,5 +106,6 @@
     "cookies.learn_more": "เรียนรู้เพิ่มเติม",
     "edited": "ถูกแก้ไขแล้ว",
     "disabled": "ปิด",
-    "select": "เลือก"
+    "select": "เลือก",
+    "user-search-prompt": "Type something here to find users..."
 }

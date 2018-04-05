@@ -73,7 +73,7 @@ redisModule.connect = function (options, callback) {
 	callback = callback || function () {};
 	var redis_socket_or_host = nconf.get('redis:host');
 	var cxn;
-
+	var callbackCalled = false;
 	options = options || {};
 
 	if (nconf.get('redis:password')) {
@@ -92,11 +92,17 @@ redisModule.connect = function (options, callback) {
 
 	cxn.on('error', function (err) {
 		winston.error(err.stack);
-		callback(err);
+		if (!callbackCalled) {
+			callbackCalled = true;
+			callback(err);
+		}
 	});
 
 	cxn.on('ready', function () {
-		callback();
+		if (!callbackCalled) {
+			callbackCalled = true;
+			callback();
+		}
 	});
 
 	if (nconf.get('redis:password')) {
@@ -140,7 +146,9 @@ redisModule.checkCompatibilityVersion = function (version, callback) {
 
 redisModule.close = function (callback) {
 	callback = callback || function () {};
-	redisClient.quit(callback);
+	redisClient.quit(function (err) {
+		callback(err);
+	});
 };
 
 redisModule.info = function (cxn, callback) {

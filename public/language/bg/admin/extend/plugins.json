@@ -37,7 +37,7 @@
 	"alert.uninstalled": "Добавката е деинсталирана",
 	"alert.activate-success": "Моля, рестартирайте NodeBB, за да включите тази добавка напълно.",
 	"alert.deactivate-success": "Добавката е изключена успешно.",
-	"alert.upgrade-success": "Моля, презаредете NodeBB, за да обновите тази добавка напълно.",
+	"alert.upgrade-success": "Please rebuild and restart your NodeBB to fully upgrade this plugin.",
 	"alert.install-success": "Добавката е инсталирана успешно, моля, включете я",
 	"alert.uninstall-success": "Добавката беше изключена и деинсталирана успешно.",
 	"alert.suggest-error": "<p>NodeBB не може да се свърже с пакетния мениджър. Искате ли да продължите с инсталацията на най-новата версия?</p><div class=\"alert alert-danger\"><strong>Сървърът върна (%1)</strong>: %2</div>",

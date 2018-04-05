@@ -116,6 +116,8 @@
     "cant-delete-chat-message": "Nemáte oprávanie k odstráneniu tejto správy",
     "chat-edit-duration-expired": "You are only allowed to edit chat messages for %1 second(s) after posting",
     "chat-delete-duration-expired": "You are only allowed to delete chat messages for %1 second(s) after posting",
+    "chat-deleted-already": "This chat message has already been deleted.",
+    "chat-restored'already": "This chat message has already been restored.",
     "already-voting-for-this-post": "Za tento príspevok ste už hlasovali.",
     "reputation-system-disabled": "Systém reputácie je zablokovaný.",
     "downvoting-disabled": "Hlasovanie proti je zablokované",
@@ -142,5 +144,6 @@
     "invalid-home-page-route": "Neplatná cesta pre domovskú stránku",
     "invalid-session": "Relácia neodpovedá",
     "invalid-session-text": "Vyzerá to, že Vaše prihlasovacia relácia už nie je aktívna, alebo sa už nezhoduje so serverom. Aktualizujte túto stránku.",
-    "no-topics-selected": "Žiadne vybrané témy."
+    "no-topics-selected": "Žiadne vybrané témy.",
+    "cant-move-to-same-topic": "Can't move post to same topic!"
 }

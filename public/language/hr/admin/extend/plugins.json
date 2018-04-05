@@ -37,7 +37,7 @@
 	"alert.uninstalled": "Dodatak deinstaliran",
 	"alert.activate-success": "Pokrenite NodeBB za aktivaciju dodataka",
 	"alert.deactivate-success": "Dodatak uspjepno deaktiviran",
-	"alert.upgrade-success": "Ponovno pokrenite NodeBB da bi potpuno nadogradili dodatke",
+	"alert.upgrade-success": "Please rebuild and restart your NodeBB to fully upgrade this plugin.",
 	"alert.install-success": "Dodatak instaliran, aktivirajte ga.",
 	"alert.uninstall-success": "Dodatak je uspješno deaktiviran i deinstaliran.",
 	"alert.suggest-error": "<p>NodeBB could not reach the package manager, proceed with installation of latest version?</p><div class=\"alert alert-danger\"><strong>Server returned (%1)</strong>: %2</div>",

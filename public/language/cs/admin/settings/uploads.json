@@ -4,6 +4,8 @@
 	"private": "Nahrané soubory jsou sokromé",
 	"max-image-width": "Zmenšit velikost obrázků na potřebné rozlišení (v pixelech)",
 	"max-image-width-help": "(v pixelech, výchozí: 760 pixelů, pro zákaz nastavte 0)",
+	"resize-image-quality": "Kvalita při změně velikosti obrázků",
+	"resize-image-quality-help": "Pro snížení velikosti zmenšených obrázků použijte nižší nastavení kvality.",
 	"max-file-size": "Maximální velikost souboru (v KiB)",
 	"max-file-size-help": "(v kilobajtech, výchozí 2048 KiB)",
 	"allow-topic-thumbnails": "Povolit uživatelům nahrát miniatury témat",

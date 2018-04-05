@@ -63,7 +63,7 @@
 	"development/logger": "Loger",
 	"development/info": "Informacja",
 
-	"reload-forum": "Przeładuj forum",
+	"rebuild-and-restart-forum": "Rebuild & Restart Forum",
 	"restart-forum": "Restartuj forum",
 	"logout": "Wyloguj się",
 	"view-forum": "Zobacz forum",
@@ -74,5 +74,8 @@
 	"search.keep-typing": "Wpisz więcej, aby zobaczyć wyniki ...",
 	"search.start-typing": "Zacznij pisać, aby zobaczyć wyniki ...",
 
-	"connection-lost": "Połączenie z %1 zostało utracone, próba ponownego połączenia..."
+	"connection-lost": "Połączenie z %1 zostało utracone, próba ponownego połączenia...",
+
+	"alerts.version": "Running <strong>NodeBB v%1</strong>",
+	"alerts.upgrade": "Upgrade to v%1"
 }

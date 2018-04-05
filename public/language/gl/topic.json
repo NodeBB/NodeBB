@@ -32,6 +32,7 @@
     "moved": "Movido",
     "copy-ip": "Copy IP",
     "ban-ip": "Ban IP",
+    "view-history": "Edit History",
     "bookmark_instructions": "Pica aquí para volver á última mensaxe lida neste tema ",
     "flag_title": "Reportar esta mensaxe",
     "merged_message": "This topic has been merged into <a href=\"/topic/%1\">%2</a>",
@@ -61,6 +62,7 @@
     "thread_tools.lock": "Pechar Tema",
     "thread_tools.unlock": "Reabrir Tema",
     "thread_tools.move": "Mover Tema",
+    "thread_tools.move-posts": "Move Posts",
     "thread_tools.move_all": "Mover todo",
     "thread_tools.select_category": "Select Category",
     "thread_tools.fork": "Dividir Tema",
@@ -95,6 +97,7 @@
     "fork_success": "Creouse un novo tema a partir do orixinal! Fai clic aquí para ir ó novo tema.",
     "delete_posts_instruction": "Fai clic nas mensaxes que queres eliminar/limpar",
     "merge_topics_instruction": "Click the topics you want to merge",
+    "move_posts_instruction": "Click the posts you want to move",
     "composer.title_placeholder": "Introduce o título do teu tema",
     "composer.handle_placeholder": "Nome",
     "composer.discard": "Descartar",
@@ -121,5 +124,8 @@
     "stale.warning": "O tema no que queres publicar é bastante vello. Queres crear un novo tema no seu lugar e incluir unha referencia a este na túa mensaxe?",
     "stale.create": "Crear un novo tema",
     "stale.reply_anyway": "Publicar neste tema de tódolos xeitos",
-    "link_back": "Re: [%1](%2)"
+    "link_back": "Re: [%1](%2)",
+    "diffs.title": "Post Edit History",
+    "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
+    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
 }

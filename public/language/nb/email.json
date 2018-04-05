@@ -9,6 +9,7 @@
     "welcome.text3": "En administrator har akseptert din søknad om registering. Du kan nå logge inn med ditt brukernavn og passord.",
     "welcome.cta": "Klikk her for å verifisere e-postadressen din",
     "invitation.text1": "%1 har invitert deg til å bli med i %2",
+    "invitation.text2": "Your invitation will expire in %1 days.",
     "invitation.ctr": "Klikk her for å opprette din konto",
     "reset.text1": "Vi har blitt bedt om å tilbakestille passordet ditt, muligens fordi du har glemt det. Hvis dette ikke stemmer kan du ignorere denne e-posten.",
     "reset.text2": "Vennligst klikk på følgende lenke for å fortsette med tilbakestillingen:",

@@ -9,6 +9,7 @@
     "welcome.text3": "En administrator har accepteret din registreringsansøgning. Du kan logge ind med dit brugernavn og adgangskode nu.",
     "welcome.cta": "Klik her for at bekræfte din email adresse.",
     "invitation.text1": "%1 har inviteret dig til at deltage i %2",
+    "invitation.text2": "Your invitation will expire in %1 days.",
     "invitation.ctr": "Klik her for at oprette din konto.",
     "reset.text1": "Vi har modtaget en anmodning om at nulstille dit kodeord, måske fordi du har glemt det. Hvis det ikke er tilfældet, venligst ignorer denne email.",
     "reset.text2": "For at fortsætte med at nulstille kodeordet, venligst klik på dette link:",

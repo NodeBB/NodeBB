@@ -272,11 +272,12 @@ Messaging.canMessageUser = function (uid, toUid, callback) {
 			async.parallel({
 				settings: async.apply(user.getSettings, toUid),
 				isAdmin: async.apply(user.isAdministrator, uid),
+				isModerator: async.apply(user.isModeratorOfAnyCategory, uid),
 				isFollowing: async.apply(user.isFollowing, toUid, uid),
 			}, next);
 		},
 		function (results, next) {
-			if (results.settings.restrictChat && !results.isAdmin && !results.isFollowing) {
+			if (results.settings.restrictChat && !results.isAdmin && !results.isModerator && !results.isFollowing) {
 				return next(new Error('[[error:chat-restricted]]'));
 			}
 

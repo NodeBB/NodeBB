@@ -116,6 +116,8 @@
     "cant-delete-chat-message": "Du darfst diese Nachricht nicht löschen",
     "chat-edit-duration-expired": "Du darfst Chat-Nachrichten nur bis zu %1 Sekunde(n) nach der erstellung verändern",
     "chat-delete-duration-expired": "Du darfst Chat-Nachrichten nur bis zu %1 Sekunde(n) nach der erstellung löschen",
+    "chat-deleted-already": "Diese Chatnachricht wurde bereits gelöscht.",
+    "chat-restored'already": "Diese Chatnachricht wurde bereits Wiederhergestellt.",
     "already-voting-for-this-post": "Du hast diesen Beitrag bereits bewertet.",
     "reputation-system-disabled": "Das Reputationssystem ist deaktiviert.",
     "downvoting-disabled": "Downvotes sind deaktiviert.",
@@ -142,5 +144,6 @@
     "invalid-home-page-route": "Ungültiger Startseitenpfad",
     "invalid-session": "Sitzungsdiskrepanz",
     "invalid-session-text": "Es scheint als wäre deine Login-Sitzung nicht mehr aktiv oder sie passt nicht mehr mit der des Servers. Bitte aktualisiere diese Seite.",
-    "no-topics-selected": "Keine Beiträge ausgewählt!"
+    "no-topics-selected": "Keine Beiträge ausgewählt!",
+    "cant-move-to-same-topic": "Du kannst den Beitrag nicht in das selbe Thema schieben!"
 }

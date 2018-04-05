@@ -49,5 +49,6 @@
 	"composer.enable-plugin-help": "Dozvoli dodatcima da dodaju sadržaj u \"Pomoć\"",
 	"composer.custom-help": "Tekst \"Pomoć\"",
 	"ip-tracking": "IP praćenje",
-	"ip-tracking.each-post": "Prati IP adresu za svaku objavu"
+	"ip-tracking.each-post": "Prati IP adresu za svaku objavu",
+	"enable-post-history": "Enable Post History"
 }

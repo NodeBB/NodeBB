@@ -1,5 +1,5 @@
 {
-	"alert.confirm-reload": "Ste si naozaj istý/á, že chcete znovu načítať NodeBB?",
+	"alert.confirm-rebuild-and-restart": "Are you sure you wish to rebuild and restart NodeBB?",
 	"alert.confirm-restart": "Ste si naozaj istý/á, že chcete reštartovať NodeBB?",
 
 	"acp-title": "Ovládací panel administrátora %1 | NodeBB ",

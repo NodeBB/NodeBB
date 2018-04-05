@@ -25,7 +25,17 @@ module.exports = function (redisClient, module) {
 
 	module.setRemove = function (key, value, callback) {
 		callback = callback || function () {};
-		redisClient.srem(key, value, function (err) {
+		if (!Array.isArray(value)) {
+			value = [value];
+		}
+		if (!Array.isArray(key)) {
+			key = [key];
+		}
+		var multi = redisClient.multi();
+		key.forEach(function (key) {
+			multi.srem(key, value);
+		});
+		multi.exec(function (err) {
 			callback(err);
 		});
 	};

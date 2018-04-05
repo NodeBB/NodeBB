@@ -100,4 +100,13 @@ module.exports = function (db, module) {
 			callback(null, data.array);
 		});
 	};
+
+	module.listLength = function (key, callback) {
+		db.collection('objects').aggregate([
+			{ $match: { _key: key } },
+			{ $project: { count: { $size: '$array' } } },
+		], function (err, result) {
+			callback(err, Array.isArray(result) && result.length && result[0].count);
+		});
+	};
 };

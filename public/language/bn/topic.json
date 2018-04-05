@@ -32,6 +32,7 @@
     "moved": "Moved",
     "copy-ip": "Copy IP",
     "ban-ip": "Ban IP",
+    "view-history": "Edit History",
     "bookmark_instructions": "Click here to return to the last read post in this thread.",
     "flag_title": "মডারেশনের জন্য এই পোস্টটি ফ্ল্যাগ করুন",
     "merged_message": "This topic has been merged into <a href=\"/topic/%1\">%2</a>",
@@ -61,6 +62,7 @@
     "thread_tools.lock": "টপিক বন্ধ করুন",
     "thread_tools.unlock": "টপিক খুলে দিন",
     "thread_tools.move": "টপিক সরান",
+    "thread_tools.move-posts": "Move Posts",
     "thread_tools.move_all": "সমস্ত টপিক সরান",
     "thread_tools.select_category": "Select Category",
     "thread_tools.fork": "টপিক ফর্ক করুন",
@@ -95,6 +97,7 @@
     "fork_success": "টপিক ফর্ক করা হয়েছে। ফর্ক করা টপিকে যেতে এখানে ক্লিক করুন",
     "delete_posts_instruction": "Click the posts you want to delete/purge",
     "merge_topics_instruction": "Click the topics you want to merge",
+    "move_posts_instruction": "Click the posts you want to move",
     "composer.title_placeholder": "আপনার টপিকের শিরোনাম দিন",
     "composer.handle_placeholder": "Name",
     "composer.discard": "বাতিল",
@@ -121,5 +124,8 @@
     "stale.warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
     "stale.create": "Create a new topic",
     "stale.reply_anyway": "Reply to this topic anyway",
-    "link_back": "Re: [%1](%2)"
+    "link_back": "Re: [%1](%2)",
+    "diffs.title": "Post Edit History",
+    "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
+    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
 }

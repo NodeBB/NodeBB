@@ -55,6 +55,25 @@ server.on('error', function (err) {
 	throw err;
 });
 
+// see https://github.com/isaacs/server-destroy/blob/master/index.js
+var connections = {};
+server.on('connection', function (conn) {
+	var key = conn.remoteAddress + ':' + conn.remotePort;
+	connections[key] = conn;
+	conn.on('close', function () {
+		delete connections[key];
+	});
+});
+
+module.exports.destroy = function (callback) {
+	server.close(callback);
+	for (var key in connections) {
+		if (connections.hasOwnProperty(key)) {
+			connections[key].destroy();
+		}
+	}
+};
+
 module.exports.listen = function (callback) {
 	callback = callback || function () { };
 	emailer.registerApp(app);
@@ -250,7 +269,7 @@ function setupAutoLocale(app, callback) {
 function listen(callback) {
 	callback = callback || function () { };
 	var port = nconf.get('port');
-	var isSocket = isNaN(port);
+	var isSocket = isNaN(port) && !Array.isArray(port);
 	var socketPath = isSocket ? nconf.get('port') : '';
 
 	if (Array.isArray(port)) {

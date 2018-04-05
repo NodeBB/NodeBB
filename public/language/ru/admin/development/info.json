@@ -1,18 +1,18 @@
 {
-	"you-are-on": "Info - You are on <strong>%1:%2</strong>",
+	"you-are-on": "Инфо - Вы находитесь на <strong>%1:%2</strong>",
 	"nodes-responded": "%1 nodes responded within %2ms!",
-	"host": "host",
+	"host": "хост",
 	"pid": "pid",
 	"nodejs": "nodejs",
-	"online": "online",
+	"online": "онлайн",
 	"git": "git",
-	"memory": "memory",
-	"load": "load",
-	"uptime": "uptime",
+	"memory": "память",
+	"load": "загрузка",
+	"uptime": "время работы",
 
-	"registered": "Registered",
+	"registered": "Зарегистрированных",
 	"sockets": "Sockets",
-	"guests": "Guests",
+	"guests": "Гостей",
 
-	"info": "Info"
+	"info": "Инфо"
 }

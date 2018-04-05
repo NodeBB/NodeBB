@@ -1,8 +1,8 @@
 {
 	"home-page": "หน้าแรก",
-	"description": "Choose what page is shown when users navigate to the root URL of your forum.",
-	"home-page-route": "Home Page Route",
-	"custom-route": "Custom Route",
-	"allow-user-home-pages": "Allow User Home Pages",
-	"home-page-title": "Title of the home page (default \"Home\")"
+	"description": "เลือกหน้าเว็บที่จะแสดงเมื่อผู้ใช้ไปที่ URL หลักของฟอรัม",
+	"home-page-route": "เส้นทางหน้าแรก",
+	"custom-route": "เส้นทางที่กำหนดเอง",
+	"allow-user-home-pages": "อนุญาตหน้าแรกของผู้ใช้",
+	"home-page-title": "Title ของหน้าแรก (ค่าเริ่มต้น \"Home\")"
 }

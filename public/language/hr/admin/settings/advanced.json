@@ -7,6 +7,7 @@
 	"headers.powered-by": "Uredi \"Powered by\" zaglavlje koje šalje NodeBB",
 	"headers.acao": "Pristup-Kontrola-Dozvoli-Izvor",
 	"headers.acao-help": "Za zabranu pristupa svim stranicama ostavi prazno",
+	"headers.acac": "Access-Control-Allow-Credentials",
 	"headers.acam": "Access-Control-Allow-Methods",
 	"headers.acah": "Access-Control-Allow-Headers",
 	"traffic-management": "Upravljanje prometom",

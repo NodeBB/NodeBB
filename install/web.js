@@ -8,9 +8,8 @@ var path = require('path');
 var childProcess = require('child_process');
 var less = require('less');
 var async = require('async');
-var uglify = require('uglify-js');
+var uglify = require('uglify-es');
 var nconf = require('nconf');
-var _ = require('lodash');
 var Benchpress = require('benchpressjs');
 
 var app = express();
@@ -56,7 +55,7 @@ web.install = function (port) {
 		extended: true,
 	}));
 
-	async.parallel([compileLess, compileJS, copyCSS], function (err) {
+	async.parallel([compileLess, compileJS, copyCSS, loadDefaults], function (err) {
 		if (err) {
 			winston.error(err);
 		}
@@ -111,12 +110,28 @@ function welcome(req, res) {
 
 function install(req, res) {
 	req.setTimeout(0);
-	var setupEnvVars = _.assign({}, process.env);
+	var setupEnvVars = nconf.get();
 	for (var i in req.body) {
 		if (req.body.hasOwnProperty(i) && !process.env.hasOwnProperty(i)) {
 			setupEnvVars[i.replace(':', '__')] = req.body[i];
 		}
 	}
+
+	// Flatten any objects in setupEnvVars
+	const pushToRoot = function (parentKey, key) {
+		setupEnvVars[parentKey + '__' + key] = setupEnvVars[parentKey][key];
+	};
+	for (var j in setupEnvVars) {
+		if (setupEnvVars.hasOwnProperty(j) && typeof setupEnvVars[j] === 'object' && setupEnvVars[j] !== null && !Array.isArray(setupEnvVars[j])) {
+			Object.keys(setupEnvVars[j]).forEach(pushToRoot.bind(null, j));
+			delete setupEnvVars[j];
+		} else if (Array.isArray(setupEnvVars[j])) {
+			setupEnvVars[j] = JSON.stringify(setupEnvVars[j]);
+		}
+	}
+
+	winston.info('Starting setup process');
+	winston.info(setupEnvVars);
 
 	var child = require('child_process').fork('app', ['--setup'], {
 		env: setupEnvVars,
@@ -137,15 +152,25 @@ function launch(req, res) {
 	res.json({});
 	server.close();
 
-	var child = childProcess.spawn('node', ['loader.js'], {
-		detached: true,
-		stdio: ['ignore', 'ignore', 'ignore'],
-	});
+	var child;
 
-	console.log('\nStarting NodeBB');
-	console.log('    "./nodebb stop" to stop the NodeBB server');
-	console.log('    "./nodebb log" to view server output');
-	console.log('    "./nodebb restart" to restart NodeBB');
+	if (!nconf.get('launchCmd')) {
+		child = childProcess.spawn('node', ['loader.js'], {
+			detached: true,
+			stdio: ['ignore', 'ignore', 'ignore'],
+		});
+
+		console.log('\nStarting NodeBB');
+		console.log('    "./nodebb stop" to stop the NodeBB server');
+		console.log('    "./nodebb log" to view server output');
+		console.log('    "./nodebb restart" to restart NodeBB');
+	} else {
+		// Use launchCmd instead, if specified
+		child = childProcess.exec(nconf.get('launchCmd'), {
+			detached: true,
+			stdio: ['ignore', 'ignore', 'ignore'],
+		});
+	}
 
 	var filesToDelete = [
 		'installer.css',
@@ -219,6 +244,23 @@ function copyCSS(next) {
 			fs.writeFile(path.join(__dirname, '../public/bootstrap.min.css'), src, next);
 		},
 	], next);
+}
+
+function loadDefaults(next) {
+	var setupDefaultsPath = path.join(__dirname, '../setup.json');
+	fs.access(setupDefaultsPath, fs.constants.F_OK | fs.constants.R_OK, function (err) {
+		if (err) {
+			// setup.json not found or inaccessible, proceed with no defaults
+			return setImmediate(next);
+		}
+
+		winston.info('[installer] Found setup.json, populating default values');
+		nconf.file({
+			file: setupDefaultsPath,
+		});
+
+		next();
+	});
 }
 
 module.exports = web;

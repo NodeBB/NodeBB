@@ -63,7 +63,7 @@
 	"development/logger": "Logger",
 	"development/info": "Info",
 
-	"reload-forum": "Forum neu laden",
+	"rebuild-and-restart-forum": "Rebuild & Restart Forum",
 	"restart-forum": "Forum neu starten",
 	"logout": "Abmelden",
 	"view-forum": "Forum anzeigen",
@@ -74,5 +74,8 @@
 	"search.keep-typing": "Gib mehr ein, um die Ergebnisse zu sehen...",
 	"search.start-typing": "Starte die Eingabe, um die Ergebnisse zu sehen...",
 
-	"connection-lost": "Verbindung zu %1 verloren, wird wieder hergestellt..."
+	"connection-lost": "Verbindung zu %1 verloren, wird wieder hergestellt...",
+
+	"alerts.version": "Es läuft <strong>NodeBB v%1</strong>",
+	"alerts.upgrade": "Upgrade auf v%1"
 }

@@ -642,6 +642,62 @@ describe('Sorted Set methods', function () {
 				});
 			});
 		});
+
+		it('should remove multiple values from multiple keys', function (done) {
+			db.sortedSetAdd('multiTest1', [1, 2, 3, 4], ['one', 'two', 'three', 'four'], function (err) {
+				assert.ifError(err);
+				db.sortedSetAdd('multiTest2', [3, 4, 5, 6], ['three', 'four', 'five', 'six'], function (err) {
+					assert.ifError(err);
+					db.sortedSetRemove(['multiTest1', 'multiTest2'], ['two', 'three', 'four', 'five', 'doesnt exist'], function (err) {
+						assert.ifError(err);
+						db.getSortedSetsMembers(['multiTest1', 'multiTest2'], function (err, members) {
+							assert.ifError(err);
+							assert.equal(members[0].length, 1);
+							assert.equal(members[1].length, 1);
+							assert.deepEqual(members, [['one'], ['six']]);
+							done();
+						});
+					});
+				});
+			});
+		});
+
+		it('should remove value from multiple keys', function (done) {
+			db.sortedSetAdd('multiTest3', [1, 2, 3, 4], ['one', 'two', 'three', 'four'], function (err) {
+				assert.ifError(err);
+				db.sortedSetAdd('multiTest4', [3, 4, 5, 6], ['three', 'four', 'five', 'six'], function (err) {
+					assert.ifError(err);
+					db.sortedSetRemove(['multiTest3', 'multiTest4'], 'three', function (err) {
+						assert.ifError(err);
+						db.getSortedSetsMembers(['multiTest3', 'multiTest4'], function (err, members) {
+							assert.ifError(err);
+							assert.deepEqual(members, [['one', 'two', 'four'], ['four', 'five', 'six']]);
+							done();
+						});
+					});
+				});
+			});
+		});
+
+		it('should remove multiple values from multiple keys', function (done) {
+			db.sortedSetAdd('multiTest5', [1], ['one'], function (err) {
+				assert.ifError(err);
+				db.sortedSetAdd('multiTest6', [2], ['two'], function (err) {
+					assert.ifError(err);
+					db.sortedSetAdd('multiTest7', [3], ['three'], function (err) {
+						assert.ifError(err);
+						db.sortedSetRemove(['multiTest5', 'multiTest6', 'multiTest7'], ['one', 'two', 'three'], function (err) {
+							assert.ifError(err);
+							db.getSortedSetsMembers(['multiTest5', 'multiTest6', 'multiTest7'], function (err, members) {
+								assert.ifError(err);
+								assert.deepEqual(members, [[], [], []]);
+								done();
+							});
+						});
+					});
+				});
+			});
+		});
 	});
 
 	describe('sortedSetsRemove()', function () {

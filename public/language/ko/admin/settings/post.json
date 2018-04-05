@@ -49,5 +49,6 @@
 	"composer.enable-plugin-help": "플러그인이 도움말 탭에 내용 추가하는 것을 허용",
 	"composer.custom-help": "사용자 설정 \"도움말\" 내용",
 	"ip-tracking": "IP 추적",
-	"ip-tracking.each-post": "모든 글의 IP 주소 추적"
+	"ip-tracking.each-post": "모든 글의 IP 주소 추적",
+	"enable-post-history": "Enable Post History"
 }

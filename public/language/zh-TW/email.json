@@ -9,6 +9,7 @@
     "welcome.text3": "管理者已經批準你的註冊申請。你現在可以使用你的帳號/密碼進行登入。",
     "welcome.cta": "請點擊此處來確認你的電子郵件地址",
     "invitation.text1": "%1 邀請你加入 %2",
+    "invitation.text2": "Your invitation will expire in %1 days.",
     "invitation.ctr": "點擊這裡來建立你的帳號",
     "reset.text1": "我們收到一個重設密碼的請求，你忘掉了密碼嗎？如果不是，請忽略這封郵件。",
     "reset.text2": "要繼續重置密碼，請點擊以下鏈接：",

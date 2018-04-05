@@ -32,6 +32,7 @@
     "moved": "Премештено",
     "copy-ip": "Копирај IP",
     "ban-ip": "Бануј IP",
+    "view-history": "Уреди историју",
     "bookmark_instructions": "Кликните овде за повратак на последњу прочитану поруку у овој теми.",
     "flag_title": "Означи ову поруку за модерацију",
     "merged_message": "Ова тема је обједињена у <a href=\"/topic/%1\">%2</a>",
@@ -61,6 +62,7 @@
     "thread_tools.lock": "Закључај тему",
     "thread_tools.unlock": "Откључај тему",
     "thread_tools.move": "Премести тему",
+    "thread_tools.move-posts": "Move Posts",
     "thread_tools.move_all": "Премести све",
     "thread_tools.select_category": "Изаберите категорију",
     "thread_tools.fork": "Рачвај тему",
@@ -95,6 +97,7 @@
     "fork_success": "Тема је успешно рачвана! Кликните овде за одлазак на рачвану тему.",
     "delete_posts_instruction": "Кликните на поруке које желите да избришете/очистите",
     "merge_topics_instruction": "Кликните на теме које желите да спојите",
+    "move_posts_instruction": "Click the posts you want to move",
     "composer.title_placeholder": "Овде унесите назив теме...",
     "composer.handle_placeholder": "Име",
     "composer.discard": "Одбаци",
@@ -121,5 +124,8 @@
     "stale.warning": "Тема у којој желите да одговорите је сувише стара. Да ли желите да уместо тога креирате нову тему и упутите на ову у вашем одговору?",
     "stale.create": "Креирај нову тему",
     "stale.reply_anyway": "Одговори на ову тему у сваком случају",
-    "link_back": "Re: [%1](%2)"
+    "link_back": "Re: [%1](%2)",
+    "diffs.title": "Историја уређивања поруке",
+    "diffs.description": "Ова порука има <strong>%1</strong> корекција. Кликните на једну од корекција да бисте видели садржај поруке у том тренутку.",
+    "diffs.no-revisions-description": "Ова порука има %1 корекција."
 }

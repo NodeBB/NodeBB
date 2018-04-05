@@ -41,6 +41,10 @@
 				</p>
 			</div>
 			<div class="form-group">
+				<label for="access-control-allow-credentials">[[admin/settings/advanced:headers.acac]]</label>
+				<input class="form-control" id="access-control-allow-credentials" type="text" placeholder="" value="" data-field="access-control-allow-credentials" /><br />
+			</div>
+			<div class="form-group">
 				<label for="access-control-allow-methods">[[admin/settings/advanced:headers.acam]]</label>
 				<input class="form-control" id="access-control-allow-methods" type="text" placeholder="" data-field="access-control-allow-methods" /><br />
 			</div>

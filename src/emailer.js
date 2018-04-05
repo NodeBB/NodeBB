@@ -33,9 +33,9 @@ Emailer.transports = {
 var app;
 
 var viewsDir = nconf.get('views_dir');
-var emailsPath = path.join(viewsDir, 'emails');
 
 Emailer.getTemplates = function (config, cb) {
+	var emailsPath = path.join(viewsDir, 'emails');
 	async.waterfall([
 		function (next) {
 			file.walk(emailsPath, next);
@@ -229,7 +229,7 @@ Emailer.sendToEmail = function (template, email, language, params, callback) {
 				to: email,
 				from: meta.config['email:from'] || 'no-reply@' + getHostname(),
 				from_name: meta.config['email:from_name'] || 'NodeBB',
-				subject: results.subject,
+				subject: '[' + meta.config.title + '] ' + results.subject,
 				html: results.html,
 				plaintext: htmlToText.fromString(results.html, {
 					ignoreImage: true,

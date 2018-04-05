@@ -39,11 +39,7 @@ var file = require('./src/file');
 global.env = process.env.NODE_ENV || 'production';
 
 // Alternate configuration file support
-var	configFile = path.join(__dirname, 'config.json');
-
-if (nconf.get('config')) {
-	configFile = path.resolve(__dirname, nconf.get('config'));
-}
+var	configFile = path.resolve(__dirname, nconf.any(['config', 'CONFIG']) || 'config.json');
 
 var configExists = file.existsSync(configFile) || (nconf.get('url') && nconf.get('secret') && nconf.get('database'));
 

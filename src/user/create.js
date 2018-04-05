@@ -8,6 +8,8 @@ var plugins = require('../plugins');
 var groups = require('../groups');
 var meta = require('../meta');
 
+var zxcvbn = require('zxcvbn');
+
 module.exports = function (User) {
 	User.create = function (data, callback) {
 		data.username = data.username.trim();
@@ -178,17 +180,28 @@ module.exports = function (User) {
 		});
 	};
 
-	User.isPasswordValid = function (password, callback) {
+	User.isPasswordValid = function (password, minStrength, callback) {
+		if (typeof minStrength === 'function' && !callback) {
+			callback = minStrength;
+			minStrength = meta.config.minimumPasswordStrength;
+		}
+
+		// Sanity checks: Checks if defined and is string
 		if (!password || !utils.isPasswordValid(password)) {
 			return callback(new Error('[[error:invalid-password]]'));
 		}
 
 		if (password.length < meta.config.minimumPasswordLength) {
-			return callback(new Error('[[user:change_password_error_length]]'));
+			return callback(new Error('[[reset_password:password_too_short]]'));
 		}
 
-		if (password.length > 4096) {
+		if (password.length > 512) {
 			return callback(new Error('[[error:password-too-long]]'));
+		}
+
+		var strength = zxcvbn(password);
+		if (strength.score < minStrength) {
+			return callback(new Error('[[user:weak_password]]'));
 		}
 
 		callback();

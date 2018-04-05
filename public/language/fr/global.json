@@ -54,8 +54,8 @@
     "posts": "Messages",
     "best": "Meilleurs",
     "votes": "Votes",
-    "upvoters": "Votes pour",
-    "upvoted": "Votes pour",
+    "upvoters": "Votes positifs",
+    "upvoted": "Votes positifs",
     "downvoters": "Votes contre",
     "downvoted": "Vote négatif",
     "views": "Vues",
@@ -106,5 +106,6 @@
     "cookies.learn_more": "En savoir plus",
     "edited": "Modifié",
     "disabled": "Désactivé",
-    "select": "Sélectionner"
+    "select": "Sélectionner",
+    "user-search-prompt": "Écrivez ici pour rechercher des utilisateurs ..."
 }

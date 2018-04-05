@@ -116,6 +116,8 @@
     "cant-delete-chat-message": "NImate dovoljenja za izbris tega sporočila.",
     "chat-edit-duration-expired": "You are only allowed to edit chat messages for %1 second(s) after posting",
     "chat-delete-duration-expired": "You are only allowed to delete chat messages for %1 second(s) after posting",
+    "chat-deleted-already": "This chat message has already been deleted.",
+    "chat-restored'already": "This chat message has already been restored.",
     "already-voting-for-this-post": "Za to objavo ste že glasovali.",
     "reputation-system-disabled": "Sistem za ugled je onemogočen.",
     "downvoting-disabled": "Negativno glasovanje je onemogočeno.",
@@ -142,5 +144,6 @@
     "invalid-home-page-route": "Napačna pot do domače strani.",
     "invalid-session": "Seje se ne ujemajo.",
     "invalid-session-text": "Kaže, da vaša prijavna seja ni več aktiva. Prosimo, osvežite to stran.",
-    "no-topics-selected": "No topics selected!"
+    "no-topics-selected": "No topics selected!",
+    "cant-move-to-same-topic": "Can't move post to same topic!"
 }

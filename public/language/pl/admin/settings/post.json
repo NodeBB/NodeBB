@@ -49,5 +49,6 @@
 	"composer.enable-plugin-help": "Zezwalaj wtyczkom na dodawanie zawartości do zakładki pomocy",
 	"composer.custom-help": "Własny tekst pomocy",
 	"ip-tracking": "Śledzenie IP",
-	"ip-tracking.each-post": "Śledź adres IP każdego z postów"
+	"ip-tracking.each-post": "Śledź adres IP każdego z postów",
+	"enable-post-history": "Enable Post History"
 }

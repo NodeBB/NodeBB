@@ -1,12 +1,12 @@
 {
-	"reputation": "Reputation Settings",
-	"disable": "Disable Reputation System",
-	"disable-down-voting": "Disable Down Voting",
-	"votes-are-public": "All Votes Are Public",
+	"reputation": "Настройки репутации",
+	"disable": "Отключить Репутационную Систему",
+	"disable-down-voting": "Отключить Понижение Репутации",
+	"votes-are-public": "Все Голоса Общедоступны",
 	"thresholds": "Activity Thresholds",
-	"min-rep-downvote": "Minimum reputation to downvote posts",
+	"min-rep-downvote": "Минимальная репутация для понижения рейтинга сообщения",
 	"min-rep-flag": "Minimum reputation to flag posts",
-	"min-rep-website": "Minimum reputation to add \"Website\" to user profile",
-	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",
-	"min-rep-signature": "Minimum reputation to add \"Signature\" to user profile"
+	"min-rep-website": "Минимальная репутация для добавления «Веб-сайта» в профиль пользователя",
+	"min-rep-aboutme": "Минимальная репутация, чтобы добавить «Обо мне» в профиль пользователя",
+	"min-rep-signature": "Минимальная репутация для добавления «Подписи» в профиль пользователя"
 }

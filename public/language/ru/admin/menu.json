@@ -9,15 +9,15 @@
 
 	"section-manage": "Управление",
 	"manage/categories": "Категории",
-	"manage/privileges": "Privileges",
+	"manage/privileges": "Привилегии",
 	"manage/tags": "Теги",
 	"manage/users": "Пользователи",
 	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "Очередь на регистрацию",
-	"manage/post-queue": "Post Queue",
+	"manage/post-queue": "Очередь публикации",
 	"manage/groups": "Группы",
 	"manage/ip-blacklist": "Блокировка IP",
-	"manage/uploads": "Uploads",
+	"manage/uploads": "Загрузки",
 
 	"section-settings": "Настройки",
 	"settings/general": "Главные",
@@ -63,16 +63,19 @@
 	"development/logger": "Logger",
 	"development/info": "Info",
 
-	"reload-forum": "Reload Forum",
-	"restart-forum": "Restart Forum",
+	"rebuild-and-restart-forum": "Rebuild & Restart Forum",
+	"restart-forum": "Перезапустить Форум",
 	"logout": "Выйти",
-	"view-forum": "View Forum",
+	"view-forum": "Просмотреть Форум",
 
-	"search.placeholder": "Search for settings",
+	"search.placeholder": "Поиск настроек",
 	"search.no-results": "Нет результата...",
 	"search.search-forum": "Search the forum for <strong></strong>",
 	"search.keep-typing": "Type more to see results...",
 	"search.start-typing": "Start typing to see results...",
 
-	"connection-lost": "Connection to %1 has been lost, attempting to reconnect..."
+	"connection-lost": "Connection to %1 has been lost, attempting to reconnect...",
+
+	"alerts.version": "Running <strong>NodeBB v%1</strong>",
+	"alerts.upgrade": "Upgrade to v%1"
 }

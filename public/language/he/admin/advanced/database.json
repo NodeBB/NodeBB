@@ -15,22 +15,22 @@
 	"mongo.storage-size": "גודל האחסון",
 	"mongo.index-size": "גודל האינדקס",
 	"mongo.file-size": "גודל הקובץ",
-	"mongo.resident-memory": "Resident Memory",
+	"mongo.resident-memory": "זכרון קיים",
 	"mongo.virtual-memory": "זיכרון וירטואלי",
 	"mongo.mapped-memory": "זיכרון ממופה",
-	"mongo.raw-info": "MongoDB Raw Info",
+	"mongo.raw-info": "מידע לא מעובד מMongoDB",
 
 	"redis": "Redis",
-	"redis.version": "Redis Version",
+	"redis.version": "גרסת Redis",
 	"redis.connected-clients": "לקוחות מחוברים",
 	"redis.connected-slaves": "Connected Slaves",
 	"redis.blocked-clients": "לקוחות חסומים",
 	"redis.used-memory": "זכרון בשימוש",
-	"redis.memory-frag-ratio": "Memory Fragmentation Ratio",
+	"redis.memory-frag-ratio": "יחס פיצול זכרון",
 	"redis.total-connections-recieved": "סך כל החיבורים שהתקבלו",
 	"redis.total-commands-processed": "סך כל הפקודות שעובדו",
 	"redis.iops": "Instantaneous Ops. Per Second",
 	"redis.keyspace-hits": "Keyspace Hits",
 	"redis.keyspace-misses": "Keyspace Misses",
-	"redis.raw-info": "Redis Raw Info"
+	"redis.raw-info": "מידע לא מעובד מRedis"
 }

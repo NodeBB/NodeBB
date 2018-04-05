@@ -2,10 +2,14 @@
 
 var async = require('async');
 var winston = require('winston');
+var jsesc = require('jsesc');
+var nconf = require('nconf');
+var semver = require('semver');
+
 var user = require('../user');
 var meta = require('../meta');
 var plugins = require('../plugins');
-var jsesc = require('jsesc');
+var versions = require('../admin/versions');
 
 var controllers = {
 	api: require('../controllers/api'),
@@ -54,6 +58,15 @@ module.exports = function (middleware) {
 					configs: function (next) {
 						meta.configs.list(next);
 					},
+					latestVersion: function (next) {
+						versions.getLatestVersion(function (err, result) {
+							if (err) {
+								winston.error('[acp] Failed to fetch latest version', err);
+							}
+
+							next(null, err ? null : result);
+						});
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -66,6 +79,8 @@ module.exports = function (middleware) {
 					acpPath[i] = path.charAt(0).toUpperCase() + path.slice(1);
 				});
 				acpPath = acpPath.join(' > ');
+
+				var version = nconf.get('version');
 
 				var templateValues = {
 					config: res.locals.config,
@@ -81,6 +96,9 @@ module.exports = function (middleware) {
 					env: !!process.env.NODE_ENV,
 					title: (acpPath || 'Dashboard') + ' | NodeBB Admin Control Panel',
 					bodyClass: data.bodyClass,
+					version: version,
+					latestVersion: results.latestVersion,
+					upgradeAvailable: results.latestVersion && semver.gt(results.latestVersion, version),
 				};
 
 				templateValues.template = { name: res.locals.template };

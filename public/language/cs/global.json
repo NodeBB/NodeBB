@@ -106,5 +106,6 @@
     "cookies.learn_more": "Zjistit více",
     "edited": "Upraveno",
     "disabled": "Nepovoleno",
-    "select": "Vyberte"
+    "select": "Vyberte",
+    "user-search-prompt": "Pro hledání uživatelů, zde pište..."
 }

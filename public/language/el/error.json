@@ -116,6 +116,8 @@
     "cant-delete-chat-message": "You are not allowed to delete this message",
     "chat-edit-duration-expired": "You are only allowed to edit chat messages for %1 second(s) after posting",
     "chat-delete-duration-expired": "You are only allowed to delete chat messages for %1 second(s) after posting",
+    "chat-deleted-already": "This chat message has already been deleted.",
+    "chat-restored'already": "This chat message has already been restored.",
     "already-voting-for-this-post": "You have already voted for this post.",
     "reputation-system-disabled": "Το σύστημα φήμης έχει απενεργοποιηθεί.",
     "downvoting-disabled": "Η καταψήφιση έχει απενεργοποιηθεί",
@@ -142,5 +144,6 @@
     "invalid-home-page-route": "Invalid home page route",
     "invalid-session": "Session Mismatch",
     "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page.",
-    "no-topics-selected": "No topics selected!"
+    "no-topics-selected": "No topics selected!",
+    "cant-move-to-same-topic": "Can't move post to same topic!"
 }

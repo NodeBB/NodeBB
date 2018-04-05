@@ -258,6 +258,7 @@ define('chat', [
 			Chats.addRenameHandler(chatModal.attr('data-roomid'), chatModal.find('[data-action="rename"]'), chatModal.attr('data-name'));
 			Chats.addLeaveHandler(chatModal.attr('data-roomid'), chatModal.find('[data-action="leave"]'));
 			Chats.addSendHandlers(chatModal.attr('data-roomid'), chatModal.find('.chat-input'), chatModal.find('[data-action="send"]'));
+			Chats.addMemberHandler(chatModal.attr('data-roomid'), chatModal.find('[data-action="members"]'));
 
 			Chats.createAutoComplete(chatModal.find('[component="chat/input"]'));
 
@@ -281,7 +282,7 @@ define('chat', [
 	};
 
 	module.focusInput = function (chatModal) {
-		chatModal.find('#chat-message-input').focus();
+		chatModal.find('[component="chat/input"]').focus();
 	};
 
 	module.close = function (chatModal) {

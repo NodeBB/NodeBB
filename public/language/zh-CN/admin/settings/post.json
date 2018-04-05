@@ -49,5 +49,6 @@
 	"composer.enable-plugin-help": "允许插件将内容添加到帮助选项卡",
 	"composer.custom-help": "自定义帮助文本",
 	"ip-tracking": "IP 跟踪",
-	"ip-tracking.each-post": "跟踪每个帖子的 IP 地址"
+	"ip-tracking.each-post": "跟踪每个帖子的 IP 地址",
+	"enable-post-history": "Enable Post History"
 }

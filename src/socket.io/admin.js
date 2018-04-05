@@ -58,7 +58,7 @@ SocketAdmin.before = function (socket, method, data, next) {
 	], next);
 };
 
-SocketAdmin.reload = function (socket, data, callback) {
+SocketAdmin.restart = function (socket, data, callback) {
 	events.log({
 		type: 'restart',
 		uid: socket.uid,
@@ -68,7 +68,7 @@ SocketAdmin.reload = function (socket, data, callback) {
 	callback();
 };
 
-SocketAdmin.restart = function (socket, data, callback) {
+SocketAdmin.reload = function (socket, data, callback) {
 	async.waterfall([
 		function (next) {
 			require('../meta/build').buildAll(next);
@@ -228,9 +228,8 @@ SocketAdmin.settings.clearSitemapCache = function (socket, data, callback) {
 };
 
 SocketAdmin.email.test = function (socket, data, callback) {
-	var site_title = meta.config.title || 'NodeBB';
 	var payload = {
-		subject: '[' + site_title + '] Test Email',
+		subject: 'Test Email',
 	};
 
 	switch (data.template) {

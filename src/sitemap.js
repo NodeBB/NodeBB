@@ -30,7 +30,7 @@ sitemap.render = function (callback) {
 			db.getObjectField('global', 'topicCount', next);
 		},
 		function (topicCount, next) {
-			var numPages = Math.max(0, topicCount / topicsPerPage);
+			var numPages = Math.ceil(Math.max(0, topicCount / topicsPerPage));
 			for (var x = 1; x <= numPages; x += 1) {
 				returnData.topics.push(x);
 			}

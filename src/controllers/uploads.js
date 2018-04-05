@@ -118,6 +118,7 @@ function resizeImage(fileObj, callback) {
 				target: path.join(dirname, basename + '-resized' + extname),
 				extension: extname,
 				width: parseInt(meta.config.maximumImageWidth, 10) || 760,
+				quality: parseInt(meta.config.resizeImageQuality, 10) || 60,
 			}, next);
 		},
 		function (next) {

@@ -9,6 +9,7 @@
     "welcome.text3": "Administraator aktsepteeris teie registreerimise. Te saate nüüd sisse logida oma kasutajanime/parooliga.",
     "welcome.cta": "Vajuta siia, et kinnitada oma e-maili aadress",
     "invitation.text1": "%1 kutsus teid gruppi %2",
+    "invitation.text2": "Your invitation will expire in %1 days.",
     "invitation.ctr": "Vajuta siia, et registreeruda.",
     "reset.text1": "Meile laekus päring parooli muutmiseks. Kui päring ei ole teie poolt esitatud või te ei soovi parooli muuta, siis võite antud kirja ignoreerida.",
     "reset.text2": "Selleks, et jätkata parooli muutmisega vajuta järgnevale lingile:",

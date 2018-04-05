@@ -9,6 +9,7 @@
     "welcome.text3": "Ylläpitäjä hyväksyi rekisteröintipyyntösi. Voit nyt kirjautua käyttäjänimelläsi ja salasanallasi.",
     "welcome.cta": "Napsauta tästä vahvistaaksesi sähköpostiosoitteesi",
     "invitation.text1": "%1 pyysi sinua liittymään %2",
+    "invitation.text2": "Your invitation will expire in %1 days.",
     "invitation.ctr": "Napsauta tästä luodaksesi käyttäjätilisi.",
     "reset.text1": "Saimme pyynnön vaihtaa salasanasi, todennäkösesti koska olit unohtanut sen. Jos näin ei ollut käynyt, voit jättää tämän viestin huomiotta.",
     "reset.text2": "Jatkaaksesi salasanan nollausta, napsauta seuraavaa linkkiä:",

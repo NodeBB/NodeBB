@@ -37,7 +37,7 @@
 	"alert.uninstalled": "Plugin Uninstalled",
 	"alert.activate-success": "Please restart your NodeBB to fully activate this plugin",
 	"alert.deactivate-success": "Plugin successfully deactivated",
-	"alert.upgrade-success": "Please reload your NodeBB to fully upgrade this plugin",
+	"alert.upgrade-success": "Please rebuild and restart your NodeBB to fully upgrade this plugin.",
 	"alert.install-success": "Plugin successfully installed, please activate the plugin.",
 	"alert.uninstall-success": "The plugin has been successfully deactivated and uninstalled.",
 	"alert.suggest-error": "<p>NodeBB sa nemohol pripojiť k správcovi balíčku, pokračovať v inštalácii poslednej verzie?</p><div class=\"alert alert-danger\">Server odpovedal (% 1)</strong>:%2</div>",

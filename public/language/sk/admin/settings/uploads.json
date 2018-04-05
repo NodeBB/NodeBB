@@ -4,6 +4,8 @@
 	"private": "Nahrané súbory sú súkromné",
 	"max-image-width": "Zmenšiť veľkosť obrázkov na potrebné rozlíšenie (v pixeloch)",
 	"max-image-width-help": "(v pixeloch, predvolené: 760 pixelov, pre zákaz nastavte 0)",
+	"resize-image-quality": "Quality to use when resizing images",
+	"resize-image-quality-help": "Use a lower quality setting to reduce the file size of resized images.",
 	"max-file-size": "Maximálna veľkosť súboru (v KiB)",
 	"max-file-size-help": "(v kilobajtoch, predvolené 2048 KiB)",
 	"allow-topic-thumbnails": "Povoliť používateľom nahrať miniatúry tém",

@@ -9,6 +9,7 @@
     "welcome.text3": "Um administrador aceitou o seu pedido de registro. Você pode fazer login agora com seu nome de usuário/senha.",
     "welcome.cta": "Clique aqui para confirmar seu endereço de email",
     "invitation.text1": "%1 convidou você para participar de %2",
+    "invitation.text2": "Your invitation will expire in %1 days.",
     "invitation.ctr": "Clique aqui para criar a sua conta.",
     "reset.text1": "Nós recebemos um pedido para reconfigurar sua senha, possivelmente porque você a esqueceu. Se este não é o caso, por favor ignore este email.",
     "reset.text2": "Para continuar com a reconfiguração de senha, por favor clique no seguinte link:",

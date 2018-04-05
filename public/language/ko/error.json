@@ -116,6 +116,8 @@
     "cant-delete-chat-message": "이 메세지를 삭제할 권한이 없습니다.",
     "chat-edit-duration-expired": "You are only allowed to edit chat messages for %1 second(s) after posting",
     "chat-delete-duration-expired": "You are only allowed to delete chat messages for %1 second(s) after posting",
+    "chat-deleted-already": "This chat message has already been deleted.",
+    "chat-restored'already": "This chat message has already been restored.",
     "already-voting-for-this-post": "이미 이 포스트에 투표하셨습니다.",
     "reputation-system-disabled": "인지도 시스템이 비활성 상태입니다.",
     "downvoting-disabled": "비추천 기능이 비활성 상태입니다.",
@@ -142,5 +144,6 @@
     "invalid-home-page-route": "올바르지 않은 홈페이지 경로입니다. ",
     "invalid-session": "일치하지 않는 세션입니다.",
     "invalid-session-text": "로그인 세션이 비활성화 되었거나 서버와 일치하지 않습니다. 페이지를 새로 고쳐주세요.",
-    "no-topics-selected": "No topics selected!"
+    "no-topics-selected": "No topics selected!",
+    "cant-move-to-same-topic": "Can't move post to same topic!"
 }

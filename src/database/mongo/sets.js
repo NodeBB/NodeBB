@@ -47,7 +47,7 @@ module.exports = function (db, module) {
 		var bulk = db.collection('objects').initializeUnorderedBulkOp();
 
 		for (var i = 0; i < keys.length; i += 1) {
-			bulk.find({ _key: keys[i] }).upsert().updateOne({	$addToSet: {
+			bulk.find({ _key: keys[i] }).upsert().updateOne({ $addToSet: {
 				members: {
 					$each: value,
 				},
@@ -69,9 +69,15 @@ module.exports = function (db, module) {
 			array[index] = helpers.valueToString(element);
 		});
 
-		db.collection('objects').update({ _key: key }, { $pullAll: { members: value } }, function (err) {
-			callback(err);
-		});
+		if (Array.isArray(key)) {
+			db.collection('objects').updateMany({ _key: { $in: key } }, { $pullAll: { members: value } }, function (err) {
+				callback(err);
+			});
+		} else {
+			db.collection('objects').update({ _key: key }, { $pullAll: { members: value } }, function (err) {
+				callback(err);
+			});
+		}
 	};
 
 	module.setsRemove = function (keys, value, callback) {
@@ -81,15 +87,7 @@ module.exports = function (db, module) {
 		}
 		value = helpers.valueToString(value);
 
-		var bulk = db.collection('objects').initializeUnorderedBulkOp();
-
-		for (var i = 0; i < keys.length; i += 1) {
-			bulk.find({ _key: keys[i] }).updateOne({ $pull: {
-				members: value,
-			} });
-		}
-
-		bulk.execute(function (err) {
+		db.collection('objects').update({ _key: { $in: keys } }, { $pull: { members: value } }, { multi: true }, function (err) {
 			callback(err);
 		});
 	};

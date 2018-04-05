@@ -60,7 +60,8 @@ module.exports = function (User) {
 		var token = utils.generateUUID();
 		var registerLink = nconf.get('url') + '/register?token=' + token + '&email=' + encodeURIComponent(email);
 
-		var expireIn = (parseInt(meta.config.inviteExpiration, 10) || 1) * 86400000;
+		var expireDays = (parseInt(meta.config.inviteExpiration, 10) || 7);
+		var expireIn = expireDays * 86400000;
 
 		async.waterfall([
 			function (next) {
@@ -93,6 +94,7 @@ module.exports = function (User) {
 						subject: subject,
 						username: username,
 						template: 'invitation',
+						expireDays: expireDays,
 					};
 
 					// Append default data to this email payload

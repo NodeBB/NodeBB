@@ -9,6 +9,7 @@
     "welcome.text3": "Um administrador aceitou o teu registo de aplicação. Podes agora fazer login com o teu nome de utilizador/palavra-passe.",
     "welcome.cta": "Clica aqui para confirmares o teu endereço de e-mail",
     "invitation.text1": "%1 convidou-te para te juntares a %2",
+    "invitation.text2": "Your invitation will expire in %1 days.",
     "invitation.ctr": "Clica aqui para criares a tua conta.",
     "reset.text1": "Recebemos um pedido para reiniciar a tua palavra-passe, possivelmente porque te esqueceste dela. Se este não é o caso, por favor ignora este e-mail.",
     "reset.text2": "Para continuares com o reinício da tua palavra-passe, clica no seguinte link:",

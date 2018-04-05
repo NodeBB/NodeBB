@@ -106,5 +106,6 @@
     "cookies.learn_more": "了解更多",
     "edited": "已编辑",
     "disabled": "禁用",
-    "select": "选择"
+    "select": "选择",
+    "user-search-prompt": "输入以查找用户"
 }

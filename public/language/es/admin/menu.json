@@ -63,7 +63,7 @@
 	"development/logger": "Registro",
 	"development/info": "Información",
 
-	"reload-forum": "Recargar foro",
+	"rebuild-and-restart-forum": "Rebuild & Restart Forum",
 	"restart-forum": "Reiniciar foro",
 	"logout": "Cerrar sesión",
 	"view-forum": "Ver foro",
@@ -74,5 +74,8 @@
 	"search.keep-typing": "Escribe más para ver resultados...",
 	"search.start-typing": "Empieza a escribir para ver resultados...",
 
-	"connection-lost": "La conexión a %1 se ha perdido, intentando reconectar..."
+	"connection-lost": "La conexión a %1 se ha perdido, intentando reconectar...",
+
+	"alerts.version": "Running <strong>NodeBB v%1</strong>",
+	"alerts.upgrade": "Upgrade to v%1"
 }

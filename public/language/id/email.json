@@ -9,6 +9,7 @@
     "welcome.text3": "Administrator telah menerima aplikasi pendaftaran anda. Anda dapat masuk dengan username/password anda sekarang",
     "welcome.cta": "Klik disini untuk mengkonfirmasi alamat email anda.",
     "invitation.text1": "%1 telah mengundang anda untuk bergabung %2",
+    "invitation.text2": "Your invitation will expire in %1 days.",
     "invitation.ctr": "Klik di sini untuk membuat akun anda",
     "reset.text1": "Kami menerima permintan untuk mengatur ulang kata sandi anda, Ini dikarenakan anda telah lupa akan kata sandi anda. Tolong abaikan email ini jika sebaliknya.",
     "reset.text2": "Mohon klik link berikut untuk mengatur ulang kata sandi anda.",

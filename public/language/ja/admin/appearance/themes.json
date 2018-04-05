@@ -7,5 +7,5 @@
     "revert-confirm": "本当にNodeBBのテーマをデフォルトに復元してもよろしいですか？",
     "theme-changed": "テーマが変更されました",
     "revert-success": "NodeBBは正常にデフォルトテーマに戻りました。",
-    "restart-to-activate": "テーマを完全に有効化するためにNodeBBを再起動してください"
+    "restart-to-activate": "Please rebuild and restart your NodeBB to fully activate this theme."
 }

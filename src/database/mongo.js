@@ -264,7 +264,9 @@ function getCollectionStats(db, callback) {
 
 mongoModule.close = function (callback) {
 	callback = callback || function () {};
-	db.close(callback);
+	db.close(function (err) {
+		callback(err);
+	});
 };
 
 mongoModule.socketAdapter = function () {

@@ -32,6 +32,7 @@
     "moved": "Premaknjeno",
     "copy-ip": "Copy IP",
     "ban-ip": "Ban IP",
+    "view-history": "Edit History",
     "bookmark_instructions": "Klikni tukaj za vrnitev na zadnje prebrano objavo v tej niti",
     "flag_title": "Označi to objavo za vodenje",
     "merged_message": "This topic has been merged into <a href=\"/topic/%1\">%2</a>",
@@ -61,6 +62,7 @@
     "thread_tools.lock": "Zakleni temo",
     "thread_tools.unlock": "Odkleni temo",
     "thread_tools.move": "Premakni temo",
+    "thread_tools.move-posts": "Move Posts",
     "thread_tools.move_all": "Premakni vse",
     "thread_tools.select_category": "Select Category",
     "thread_tools.fork": "Razcepi temo",
@@ -95,6 +97,7 @@
     "fork_success": "Uspešno ste razcepili temo! Klikni tu za ogled te teme.",
     "delete_posts_instruction": "Kliknite na teme, ki jih želite izbrisati/očistiti ",
     "merge_topics_instruction": "Click the topics you want to merge",
+    "move_posts_instruction": "Click the posts you want to move",
     "composer.title_placeholder": "Vpiši naslov teme...",
     "composer.handle_placeholder": "Ime",
     "composer.discard": "Zavrzi",
@@ -121,5 +124,8 @@
     "stale.warning": "Tema na katero odgovarjaš je precej stara. A ne bi raje ustvaril novo temo namesto te, z sklicem na to v tvojem odgovoru?",
     "stale.create": "Ustvari novo temo",
     "stale.reply_anyway": "Vseeno odgovori na to temo",
-    "link_back": "Odg: [%1](%2)"
+    "link_back": "Odg: [%1](%2)",
+    "diffs.title": "Post Edit History",
+    "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
+    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
 }

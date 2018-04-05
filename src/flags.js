@@ -95,7 +95,7 @@ Flags.get = function (flagId, callback) {
 				// Final object return construction
 				next(err, Object.assign(data.base, {
 					description: validator.escape(data.base.description),
-					datetimeISO: new Date(parseInt(data.base.datetime, 10)).toISOString(),
+					datetimeISO: utils.toISOString(data.base.datetime),
 					target_readable: data.base.type.charAt(0).toUpperCase() + data.base.type.slice(1) + ' ' + data.base.targetId,
 					target: payload.targetObj,
 					history: data.history,
@@ -210,9 +210,9 @@ Flags.list = function (filters, uid, callback) {
 					}
 
 					next(null, Object.assign(flagObj, {
-						description: validator.escape(flagObj.description),
+						description: validator.escape(String(flagObj.description)),
 						target_readable: flagObj.type.charAt(0).toUpperCase() + flagObj.type.slice(1) + ' ' + flagObj.targetId,
-						datetimeISO: new Date(parseInt(flagObj.datetime, 10)).toISOString(),
+						datetimeISO: utils.toISOString(flagObj.datetime),
 					}));
 				});
 			}, function (err, flags) {
@@ -304,7 +304,7 @@ Flags.getNotes = function (flagId, callback) {
 						uid: noteObj[0],
 						content: noteObj[1],
 						datetime: note.score,
-						datetimeISO: new Date(parseInt(note.score, 10)).toISOString(),
+						datetimeISO: utils.toISOString(note.score),
 					};
 				} catch (e) {
 					return next(e);
@@ -588,7 +588,7 @@ Flags.getHistory = function (flagId, callback) {
 					uid: entry.value[0],
 					fields: changeset,
 					datetime: entry.score,
-					datetimeISO: new Date(parseInt(entry.score, 10)).toISOString(),
+					datetimeISO: utils.toISOString(entry.score),
 				};
 			});
 

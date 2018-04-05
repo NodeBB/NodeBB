@@ -9,6 +9,7 @@
     "welcome.text3": "Správca práve potvrdil vašu registráciu. Teraz sa môžete prihlásiť svojím menom a heslom.",
     "welcome.cta": "Kliknite sem pre potvrdenie Vašej e-mailovej adresy",
     "invitation.text1": "%1 Vás pozval aby ste sa pridali k %2",
+    "invitation.text2": "Your invitation will expire in %1 days.",
     "invitation.ctr": "Kliknite sem, pre vytvorenie Vášho účtu",
     "reset.text1": "Obdržali sme žiadosť o obnovu Vášho hesla. Ak ste o zmenu hesla nežiadali, prosím ignorujte tento e-mail.",
     "reset.text2": "Pre pokračovanie v obnove hesla, kliknite na nasledovný odkaz:",

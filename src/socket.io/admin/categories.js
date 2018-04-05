@@ -76,9 +76,19 @@ Categories.setPrivilege = function (socket, data, callback) {
 	if (Array.isArray(data.privilege)) {
 		async.each(data.privilege, function (privilege, next) {
 			groups[data.set ? 'join' : 'leave']('cid:' + data.cid + ':privileges:' + privilege, data.member, next);
-		}, callback);
+		}, onSetComplete);
 	} else {
-		groups[data.set ? 'join' : 'leave']('cid:' + data.cid + ':privileges:' + data.privilege, data.member, callback);
+		groups[data.set ? 'join' : 'leave']('cid:' + data.cid + ':privileges:' + data.privilege, data.member, onSetComplete);
+	}
+
+	function onSetComplete() {
+		events.log({
+			uid: socket.uid,
+			ip: socket.ip,
+			privilege: data.privilege,
+			action: data.set ? 'grant' : 'rescind',
+			target: data.member,
+		}, callback);
 	}
 };
 
