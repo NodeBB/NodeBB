@@ -37,6 +37,8 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 			aboutme: $('#inputAboutMe').val(),
 		};
 
+		userData.groupTitle = JSON.stringify(Array.isArray(userData.groupTitle) ? userData.groupTitle : [userData.groupTitle]);
+
 		$(window).trigger('action:profile.update', userData);
 
 		socket.emit('user.updateProfile', userData, function (err, data) {

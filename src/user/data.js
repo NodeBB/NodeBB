@@ -135,7 +135,9 @@ module.exports = function (User) {
 			if (!user) {
 				return;
 			}
-
+			if (user.hasOwnProperty('groupTitle')) {
+				parseGroupTitle(user);
+			}
 			if (user.hasOwnProperty('username')) {
 				user.username = validator.escape(user.username ? user.username.toString() : '');
 			}
@@ -190,6 +192,20 @@ module.exports = function (User) {
 		});
 
 		plugins.fireHook('filter:users.get', users, callback);
+	}
+
+	function parseGroupTitle(user) {
+		try {
+			user.groupTitleArray = JSON.parse(user.groupTitle);
+		} catch (err) {
+			user.groupTitleArray = [user.groupTitle];
+		}
+		if (!Array.isArray(user.groupTitleArray)) {
+			user.groupTitleArray = [user.groupTitleArray];
+		}
+		if (parseInt(meta.config.allowMultipleBadges, 10) !== 1) {
+			user.groupTitleArray = [user.groupTitleArray[0]];
+		}
 	}
 
 	User.getDefaultAvatar = function () {

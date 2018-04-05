@@ -145,6 +145,7 @@ topicsController.get = function (req, res, callback) {
 			topicData.postEditDuration = parseInt(meta.config.postEditDuration, 10) || 0;
 			topicData.postDeleteDuration = parseInt(meta.config.postDeleteDuration, 10) || 0;
 			topicData.scrollToMyPost = settings.scrollToMyPost;
+			topicData.allowMultipleBadges = parseInt(meta.config.allowMultipleBadges, 10) === 1;
 			topicData.rssFeedUrl = nconf.get('relative_path') + '/topic/' + topicData.tid + '.rss';
 			if (req.loggedIn) {
 				topicData.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;

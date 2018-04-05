@@ -35,6 +35,7 @@ editController.get = function (req, res, callback) {
 			userData.maximumAboutMeLength = parseInt(meta.config.maximumAboutMeLength, 10) || 1000;
 			userData.maximumProfileImageSize = parseInt(meta.config.maximumProfileImageSize, 10);
 			userData.allowProfileImageUploads = parseInt(meta.config.allowProfileImageUploads, 10) === 1;
+			userData.allowMultipleBadges = parseInt(meta.config.allowMultipleBadges, 10) === 1;
 			userData.allowAccountDelete = parseInt(meta.config.allowAccountDelete, 10) === 1;
 			userData.allowWebsite = !userData.isSelf || parseInt(userData.reputation, 10) >= (parseInt(meta.config['min:rep:website'], 10) || 0);
 			userData.allowAboutMe = !userData.isSelf || parseInt(userData.reputation, 10) >= (parseInt(meta.config['min:rep:aboutme'], 10) || 0);
@@ -45,8 +46,12 @@ editController.get = function (req, res, callback) {
 			userData.groups = userData.groups.filter(function (group) {
 				return group && group.userTitleEnabled && !groups.isPrivilegeGroup(group.name) && group.name !== 'registered-users';
 			});
+
+			if (!userData.allowMultipleBadges) {
+				userData.groupTitle = userData.groupTitleArray[0];
+			}
 			userData.groups.forEach(function (group) {
-				group.selected = group.name === userData.groupTitle;
+				group.selected = userData.groupTitleArray.includes(group.name);
 			});
 
 			userData.title = '[[pages:account/edit, ' + userData.username + ']]';
