@@ -12,20 +12,24 @@ module.exports = function (Plugins) {
 		'action:flag.create': 'action:flags.create',
 		'action:flag.update': 'action:flags.update',
 	};
-	/*
-		`data` is an object consisting of (* is required):
-			`data.hook`*, the name of the NodeBB hook
-			`data.method`*, the method called in that plugin
-			`data.priority`, the relative priority of the method when it is eventually called (default: 10)
-	*/
-	Plugins.registerHook = function (id, data, callback) {
-		callback = callback || function () {};
-		function register() {
+
+	Plugins.internals = {
+		_register: function (data, callback) {
 			Plugins.loadedHooks[data.hook] = Plugins.loadedHooks[data.hook] || [];
 			Plugins.loadedHooks[data.hook].push(data);
 
 			callback();
-		}
+		},
+	};
+
+	/*
+		`data` is an object consisting of (* is required):
+			`data.hook`*, the name of the NodeBB hook
+			`data.method`*, the method called in that plugin (can be an array of functions)
+			`data.priority`, the relative priority of the method when it is eventually called (default: 10)
+	*/
+	Plugins.registerHook = function (id, data, callback) {
+		callback = callback || function () {};
 
 		if (!data.hook) {
 			winston.warn('[plugins/' + id + '] registerHook called with invalid data.hook', data);
@@ -48,7 +52,13 @@ module.exports = function (Plugins) {
 				data.priority = 10;
 			}
 
-			if (typeof data.method === 'string' && data.method.length > 0) {
+			if (Array.isArray(data.method) && data.method.every(method => typeof method === 'function' || typeof method === 'string')) {
+				// Go go gadget recursion!
+				async.eachSeries(data.method, function (method, next) {
+					const singularData = Object.assign({}, data, { method: method });
+					Plugins.registerHook(id, singularData, next);
+				}, callback);
+			} else if (typeof data.method === 'string' && data.method.length > 0) {
 				method = data.method.split('.').reduce(function (memo, prop) {
 					if (memo && memo[prop]) {
 						return memo[prop];
@@ -60,9 +70,9 @@ module.exports = function (Plugins) {
 				// Write the actual method reference to the hookObj
 				data.method = method;
 
-				register();
+				Plugins.internals._register(data, callback);
 			} else if (typeof data.method === 'function') {
-				register();
+				Plugins.internals._register(data, callback);
 			} else {
 				winston.warn('[plugins/' + id + '] Hook method mismatch: ' + data.hook + ' => ' + data.method);
 				return callback();
