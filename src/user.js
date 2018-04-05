@@ -348,25 +348,50 @@ User.getModeratedCids = function (uid, callback) {
 User.addInterstitials = function (callback) {
 	plugins.registerHook('core', {
 		hook: 'filter:register.interstitial',
-		method: function (data, callback) {
-			if (meta.config.termsOfUse && !data.userData.acceptTos) {
-				data.interstitials.push({
-					template: 'partials/acceptTos',
-					data: {
-						termsOfUse: meta.config.termsOfUse,
-					},
-					callback: function (userData, formData, next) {
-						if (formData['agree-terms'] === 'on') {
-							userData.acceptTos = true;
-						}
+		method: [
+			// GDPR information collection/processing consent + email consent
+			function (data, callback) {
+				if (!data.userData.gdpr_consent) {
+					data.interstitials.push({
+						template: 'partials/gdpr_consent',
+						data: {
+							digestFrequency: meta.config.dailyDigestFreq,
+							digestEnabled: meta.config.dailyDigestFreq !== 'off',
+						},
+						callback: function (userData, formData, next) {
+							if (formData.gdpr_agree_data === 'on' && formData.gdpr_agree_email === 'on') {
+								userData.gdpr_consent = true;
+							}
 
-						next(userData.acceptTos ? null : new Error('[[register:terms_of_use_error]]'));
-					},
-				});
-			}
+							next(userData.gdpr_consent ? null : new Error('[[register:gdpr_consent_denied]]'));
+						},
+					});
+				}
 
-			callback(null, data);
-		},
+				setImmediate(callback, null, data);
+			},
+
+			// Forum Terms of Use
+			function (data, callback) {
+				if (meta.config.termsOfUse && !data.userData.acceptTos) {
+					data.interstitials.push({
+						template: 'partials/acceptTos',
+						data: {
+							termsOfUse: meta.config.termsOfUse,
+						},
+						callback: function (userData, formData, next) {
+							if (formData['agree-terms'] === 'on') {
+								userData.acceptTos = true;
+							}
+
+							next(userData.acceptTos ? null : new Error('[[register:terms_of_use_error]]'));
+						},
+					});
+				}
+
+				setImmediate(callback, null, data);
+			},
+		],
 	});
 
 	callback();
