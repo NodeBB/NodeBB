@@ -16,7 +16,7 @@ module.exports = function (Posts) {
 		var userData;
 		var userSettings;
 		var canUseSignature;
-		var allowMultipleBadges = parseInt(meta.config.allowMultipleBadges, 10) === 1;
+
 		async.waterfall([
 			function (next) {
 				async.parallel({
