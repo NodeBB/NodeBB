@@ -164,91 +164,84 @@ function concat(data, callback) {
 actions.concat = concat;
 
 function minifyJS_batch(data, callback) {
-	async.each(data.files, function (ref, next) {
-		var srcPath = ref.srcPath;
-		var destPath = ref.destPath;
-		var filename = ref.filename;
-
-		fs.readFile(srcPath, 'utf8', function (err, file) {
+	async.each(data.files, function (fileObj, next) {
+		fs.readFile(fileObj.srcPath, 'utf8', function (err, source) {
 			if (err) {
 				return next(err);
 			}
 
-			var scripts = {};
-			scripts[filename] = file;
-
-			try {
-				var minified = uglify.minify(scripts, {
-					sourceMap: {
-						filename: filename,
-						url: filename + '.map',
-						includeSources: true,
-					},
-					compress: false,
-				});
-
-				async.parallel([
-					async.apply(fs.writeFile, destPath, minified.code),
-					async.apply(fs.writeFile, destPath + '.map', minified.map),
-				], next);
-			} catch (e) {
-				next(e);
-			}
+			var filesToMinify = [
+				{
+					srcPath: fileObj.srcPath,
+					filename: fileObj.filename,
+					source: source,
+				},
+			];
+			minifyAndSave({
+				files: filesToMinify,
+				destPath: fileObj.destPath,
+				filename: fileObj.filename,
+			}, next);
 		});
 	}, callback);
 }
 actions.minifyJS_batch = minifyJS_batch;
 
 function minifyJS(data, callback) {
-	async.mapLimit(data.files, 1000, function (ref, next) {
-		var srcPath = ref.srcPath;
-		var filename = ref.filename;
-
-		fs.readFile(srcPath, 'utf8', function (err, file) {
+	async.mapLimit(data.files, 1000, function (fileObj, next) {
+		fs.readFile(fileObj.srcPath, 'utf8', function (err, source) {
 			if (err) {
 				return next(err);
 			}
 
 			next(null, {
-				srcPath: srcPath,
-				filename: filename,
-				source: file,
+				srcPath: fileObj.srcPath,
+				filename: fileObj.filename,
+				source: source,
 			});
 		});
-	}, function (err, files) {
+	}, function (err, filesToMinify) {
 		if (err) {
 			return callback(err);
 		}
 
-		var scripts = {};
-		files.forEach(function (ref) {
-			if (!ref) {
-				return;
-			}
-
-			scripts[ref.filename] = ref.source;
-		});
-
-		var minified = uglify.minify(scripts, {
-			sourceMap: {
-				filename: data.filename,
-				url: data.filename + '.map',
-				includeSources: true,
-			},
-			compress: false,
-		});
-
-		if (minified.error) {
-			return callback(minified.error);
-		}
-
-		async.parallel([
-			async.apply(fs.writeFile, data.destPath, minified.code),
-			async.apply(fs.writeFile, data.destPath + '.map', minified.map),
-		], callback);
+		minifyAndSave({
+			files: filesToMinify,
+			destPath: data.destPath,
+			filename: data.filename,
+		}, callback);
 	});
 }
 actions.minifyJS = minifyJS;
+
+function minifyAndSave(data, callback) {
+	var scripts = {};
+	data.files.forEach(function (ref) {
+		if (!ref) {
+			return;
+		}
+
+		scripts[ref.filename] = ref.source;
+	});
+
+	var minified = uglify.minify(scripts, {
+		sourceMap: {
+			filename: data.filename,
+			url: data.filename + '.map',
+			includeSources: true,
+		},
+		compress: false,
+	});
+
+	if (minified.error) {
+		return callback(minified.error);
+	}
+
+	async.parallel([
+		async.apply(fs.writeFile, data.destPath, minified.code),
+		async.apply(fs.writeFile, data.destPath + '.map', minified.map),
+	], callback);
+}
 
 Minifier.js = {};
 Minifier.js.bundle = function (data, minify, fork, callback) {
