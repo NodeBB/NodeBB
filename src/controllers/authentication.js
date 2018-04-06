@@ -152,7 +152,12 @@ authenticationController.registerComplete = function (req, res, next) {
 
 		var callbacks = data.interstitials.reduce(function (memo, cur) {
 			if (cur.hasOwnProperty('callback') && typeof cur.callback === 'function') {
-				memo.push(async.apply(cur.callback, req.session.registration, req.body));
+				memo.push(function (next) {
+					cur.callback(req.session.registration, req.body, function (err) {
+						// Pass error as second argument so all callbacks are executed
+						next(null, err);
+					});
+				});
 			}
 
 			return memo;
@@ -170,9 +175,11 @@ authenticationController.registerComplete = function (req, res, next) {
 			}
 		};
 
-		async.parallel(callbacks, function (err) {
-			if (err) {
-				req.flash('error', err.message);
+		async.parallel(callbacks, function (_blank, err) {
+			if (err.length) {
+				req.flash('errors', err.filter(Boolean).map(function (err) {
+					return err.message;
+				}));
 				return res.redirect(nconf.get('relative_path') + '/register/complete');
 			}
 

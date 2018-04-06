@@ -207,7 +207,7 @@ Controllers.registerInterstitial = function (req, res, next) {
 			async.parallel(renders, next);
 		},
 		function (sections) {
-			var errors = req.flash('error');
+			var errors = req.flash('errors');
 			res.render('registerComplete', {
 				title: '[[pages:registration-complete]]',
 				errors: errors,
