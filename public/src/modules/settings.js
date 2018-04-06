@@ -464,7 +464,7 @@ define('settings', function () {
 						try {
 							values[key] = JSON.parse(values[key]);
 						} catch (e) {
- 							// Leave the value as is
+							// Leave the value as is
 						}
 					}
 				});
