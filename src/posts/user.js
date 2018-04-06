@@ -36,7 +36,7 @@ module.exports = function (Posts) {
 			},
 			function (groupsData, next) {
 				groupsData.forEach(function (group) {
-					if (group && group.userTitleEnabled) {
+					if (group && group.userTitleEnabled && !group.hidden) {
 						groupsMap[group.name] = {
 							name: group.name,
 							slug: group.slug,
