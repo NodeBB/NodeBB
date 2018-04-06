@@ -2,5 +2,6 @@
 	"uploading-file" : "Uploading the file...",
 	"select-file-to-upload": "Select a file to upload!",
 	"upload-success": "File uploaded successfully!",
-	"maximum-file-size": "Maximum %1 kb"
+	"maximum-file-size": "Maximum %1 kb",
+	"no-uploads-found": "No uploads found"
 }
