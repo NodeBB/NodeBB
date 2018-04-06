@@ -2,6 +2,8 @@
 
 var async = require('async');
 var _ = require('lodash');
+var path = require('path');
+var nconf = require('nconf');
 
 var db = require('../database');
 var posts = require('../posts');
@@ -10,6 +12,7 @@ var groups = require('../groups');
 var messaging = require('../messaging');
 var plugins = require('../plugins');
 var batch = require('../batch');
+var file = require('../file');
 
 module.exports = function (User) {
 	User.delete = function (callerUid, uid, callback) {
@@ -23,6 +26,9 @@ module.exports = function (User) {
 			},
 			function (next) {
 				deleteTopics(callerUid, uid, next);
+			},
+			function (next) {
+				deleteUploads(uid, next);
 			},
 			function (next) {
 				User.deleteAccount(uid, next);
@@ -43,6 +49,22 @@ module.exports = function (User) {
 			async.eachSeries(ids, function (tid, next) {
 				topics.purge(tid, callerUid, next);
 			}, next);
+		}, { alwaysStartAt: 0 }, callback);
+	}
+
+	function deleteUploads(uid, callback) {
+		batch.processSortedSet('uid:' + uid + ':uploads', function (urls, next) {
+			async.waterfall([
+				function (next) {
+					async.each(urls, function (url, next) {
+						var filePath = path.join(nconf.get('upload_path'), url.replace(nconf.get('upload_url'), ''));
+						file.delete(filePath, next);
+					}, next);
+				},
+				function (next) {
+					db.sortedSetRemove('uid:' + uid + ':uploads', urls, next);
+				},
+			], next);
 		}, { alwaysStartAt: 0 }, callback);
 	}
 
