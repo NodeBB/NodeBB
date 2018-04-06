@@ -37,7 +37,7 @@
 	"alert.uninstalled": "Wtyczka odinstalowana",
 	"alert.activate-success": "Proszę zrestartować NodeBB, aby w pełni aktywować tą wtyczkę",
 	"alert.deactivate-success": "Wtyczka pomyślnie dezaktywowana",
-	"alert.upgrade-success": "Please rebuild and restart your NodeBB to fully upgrade this plugin.",
+	"alert.upgrade-success": "Proszę odbudować i zrestartować NodeBB by w pełni zaktualizować tę wtyczkę.",
 	"alert.install-success": "Wtyczka została pomyślnie zainstalowana, proszę ją aktywować.",
 	"alert.uninstall-success": "Wtyczka została pomyślnie zdezaktywowana oraz odinstalowana.",
 	"alert.suggest-error": "<p>NodeBB nie może dostać się do menedżera pakietów, kontynuować instalacji ostatniej wersji?</p><div class=\"alert alert-danger\"><strong>Serwer zwrócił (%1)</strong>: %2</div>",

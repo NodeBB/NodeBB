@@ -23,11 +23,11 @@
 	"running-version": "Forum działa dzięki <strong>NodeBB v<span id=\"version\">%1</span></strong>",
 	"keep-updated": "Regularnie sprawdzaj najnowsze aktualizacji i poprawki NodeBB, w celu poprawy bezpieczeństwa i optymalizacji.",
 	"up-to-date": "<p>NodeBB <strong>jest aktualny</strong> <i class=\"fa fa-check\"></i></p>",
-	"upgrade-available": "<p>A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">upgrading your NodeBB</a>.</p>",
-	"prerelease-upgrade-available": "<p>This is an outdated pre-release version of NodeBB. A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">upgrading your NodeBB</a>.</p>",
+	"upgrade-available": "<p>Została wydana nowa wersja (v%1). Rozważ <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">aktualizację NodeBB</a>.</p>",
+	"prerelease-upgrade-available": "<p>To jest nieaktualna przedpremierowa wersja NodeBB. Jest wydana nowa wersja (v%1) . Rozważ <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">aktualizację NodeBB</a>.</p>",
 	"prerelease-warning": "<p>To jest wersja <strong>pre-release</strong> NodeBB. Mogą występować błędy. <i class=\"fa fa-exclamation-triangle\"></i></p>",
 	"running-in-development": "<span>Forum pracuje w trybie programistyczny, może być ono podatne na potencjalne zagrożenia; proszę skontaktuj się z administratorem.</span>",
-	"latest-lookup-failed": "<p>Failed to look up latest available version of NodeBB</p>",
+	"latest-lookup-failed": "<p>Nie udało się odnaleźć najnowszej wersji NodeBB</p>",
 
 	"notices": "Powiadomienia",
 	"restart-not-required": "Restart nie jest wymagany",
@@ -37,11 +37,11 @@
 	"search-plugin-tooltip": "Zainstaluj wtyczkę wyszukiwania ze strony wtyczek, aby aktywować funkcję szukania",
 
 	"control-panel": "Zarządzanie systemem",
-	"rebuild-and-restart": "Rebuild &amp; Restart",
+	"rebuild-and-restart": "Przebudowa i Restart",
 	"restart": "Restart",
-	"restart-warning": "Rebuilding or Restarting your NodeBB will drop all existing connections for a few seconds.",
-	"restart-disabled": "Rebuilding and Restarting your NodeBB has been disabled as you do not seem to be running it via the appropriate daemon.",
-	"maintenance-mode": "Tryb konserwacji",
+	"restart-warning": "Przebudowa i restart NodeBB zerwie na kilka sekund wszystkie aktywne połączenia. ",
+	"restart-disabled": "Przebudowa i restart jest zablokowana ponieważ wygląda na to, że nie uruchamiasz NodeBB poprzez właściwy serwis.",
+	"maintenance-mode": "Tryb serwisowy",
 	"maintenance-mode-title": "Kliknij tutaj aby skonfigurować tryb konserwacji dla NodeBB",
 	"realtime-chart-updates": "Wykresy aktualizowane na żywo",
 
@@ -51,7 +51,7 @@
 	"active-users.total": "Łącznie",
 	"active-users.connections": "Połączenia",
 
-	"anonymous-registered-users": "Anonimowi vs Zarejestrowani użytkownicy",
+	"anonymous-registered-users": "Użytkownicy Anonimowi vs Zarejestrowani",
 	"anonymous": "Anonimowi",
 	"registered": "Zarejestrowani",
 

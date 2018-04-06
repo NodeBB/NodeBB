@@ -62,7 +62,7 @@
     "thread_tools.lock": "Zablokuj temat",
     "thread_tools.unlock": "Odblokuj temat",
     "thread_tools.move": "Przenieś temat",
-    "thread_tools.move-posts": "Move Posts",
+    "thread_tools.move-posts": "Przenieś wiadomości",
     "thread_tools.move_all": "Przenieś wszystko",
     "thread_tools.select_category": "Wybierz kategorię",
     "thread_tools.fork": "Skopiuj temat",
@@ -97,7 +97,7 @@
     "fork_success": "Udało się skopiować temat. Kliknij tutaj, aby do niego przejść.",
     "delete_posts_instruction": "Kliknij na posty, które chcesz usunąć",
     "merge_topics_instruction": "Zaznacz tematy, które chcesz połączyć",
-    "move_posts_instruction": "Click the posts you want to move",
+    "move_posts_instruction": "Kliknij posty, które chcesz przenieść",
     "composer.title_placeholder": "Wpisz tutaj tytuł tematu...",
     "composer.handle_placeholder": "Nazwa",
     "composer.discard": "Odrzuć",
@@ -125,7 +125,7 @@
     "stale.create": "Stwórz nowy temat",
     "stale.reply_anyway": "Odpowiedź na ten temat mimo tego",
     "link_back": "Re: [%1](%2)",
-    "diffs.title": "Post Edit History",
-    "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
-    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
+    "diffs.title": "Wyślij edycję historii",
+    "diffs.description": "Ta wiadomość ma <strong>%1</strong> rewizji. Kliknij jedną z rewizji poniżej by zobaczyć treść wiadomości w tamtym okresie.",
+    "diffs.no-revisions-description": "Ta wiadomość ma <strong>%1</strong> rewizji."
 }

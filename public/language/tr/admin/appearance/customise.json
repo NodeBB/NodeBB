@@ -1,6 +1,6 @@
 {
 	"custom-css": "Özel CSS/LESS",
-	"custom-css.description": "Enter your own CSS/LESS declarations here, which will be applied after all other styles.",
+	"custom-css.description": "Diğer tüm stillerden sonra uygulanacak kendi CSS/LESS kodlarınızı buraya girin.",
 	"custom-css.enable": "Enable Custom CSS/LESS",
 
 	"custom-js": "Özel Javascript",
