@@ -457,6 +457,18 @@ define('settings', function () {
 					return callback(err);
 				}
 
+				// multipe selects are saved as json arrays, parse them here
+				$(formEl).find('select[multiple]').each(function (idx, selectEl) {
+					var key = $(selectEl).attr('name');
+					if (key && values.hasOwnProperty(key)) {
+						try {
+							values[key] = JSON.parse(values[key]);
+						} catch (e) {
+							// Leave the value as is
+						}
+					}
+				});
+
 				// Save loaded settings into ajaxify.data for use client-side
 				ajaxify.data.settings = values;
 
@@ -479,12 +491,19 @@ define('settings', function () {
 			formEl = $(formEl);
 			if (formEl.length) {
 				var values = formEl.serializeObject();
+
 				// "Fix" checkbox values, so that unchecked options are not omitted
 				formEl.find('input[type="checkbox"]').each(function (idx, inputEl) {
 					inputEl = $(inputEl);
 					if (!inputEl.is(':checked')) {
 						values[inputEl.attr('name')] = 'off';
 					}
+				});
+
+				// save multiple selects as json arrays
+				formEl.find('select[multiple]').each(function (idx, selectEl) {
+					selectEl = $(selectEl);
+					values[selectEl.attr('name')] = JSON.stringify(selectEl.val());
 				});
 
 				socket.emit('admin.settings.set', {

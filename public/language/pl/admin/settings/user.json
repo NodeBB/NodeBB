@@ -19,8 +19,8 @@
 	"themes": "Motywy",
 	"disable-user-skins": "Nie zezwalaj użytkownikom na wybranie niestandardowej skórki",
 	"account-protection": "Ochrona konta",
-	"admin-relogin-duration": "Admin relogin duration (minutes)",
-	"admin-relogin-duration-help": "After a set amount of time accessing the admin section will require re-login, set to 0 to disable",
+	"admin-relogin-duration": "Czas do ponownego logowania administratora (minuty)",
+	"admin-relogin-duration-help": "Po zdefiniowanym czasie dostęp do sekcji administracyjnej będzie wymagał ponownego logowania, ustaw 0 by wyłączyć.",
 	"login-attempts": "Maksymalna liczba prób logowania na godzinę",
 	"login-attempts-help": "Jeśli liczba prób logowania na konto użytkownika przekroczy ten próg, to konto zostanie zablokowane na zdefiniowany wcześniej czas",
 	"lockout-duration": "Czas trwania blokady konta (minuty)",
@@ -63,5 +63,5 @@
 	"email-post-notif": "Wyślij wiadomość email, kiedy w tematach, które subskrybuję, pojawią się odpowiedzi",
 	"follow-created-topics": "Śledź tematy, które stworzyłeś",
 	"follow-replied-topics": "Śledź tematy, w których się wypowiedziałeś ",
-	"default-notification-settings": "Default notification settings"
+	"default-notification-settings": "Domyślne ustawienia powiadomień"
 }

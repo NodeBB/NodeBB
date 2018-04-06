@@ -7,5 +7,5 @@
     "revert-confirm": "Наистина ли искате да възстановите стандартната тема на NodeBB?",
     "theme-changed": "Темата е променена",
     "revert-success": "Вие възстановихте успешно стандартната тема на NodeBB.",
-    "restart-to-activate": "Please rebuild and restart your NodeBB to fully activate this theme."
+    "restart-to-activate": "Моля, изградете повторно и рестартирайте NodeBB, за да може тази тема да влезе в сила напълно."
 }

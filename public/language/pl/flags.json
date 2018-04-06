@@ -54,7 +54,7 @@
 	"modal-body": "Prosimy o opisanie powodu oflagowania %1 %2 do przeglądów. Alternatywnie, jeśli to możliwe użyj jednego z przycisków szybkiego raportowania.",
 	"modal-reason-spam": "Spam",
 	"modal-reason-offensive": "Obraźliwy",
-	"modal-reason-other": "Other (specify below)",
+	"modal-reason-other": "Inne (wybierz poniżej)",
 	"modal-reason-custom": "Powód raportowania tej zawartości.",
 	"modal-submit": "Wyślij raport",
 	"modal-submit-success": "Zawartość została oflagowana do moderacji.",

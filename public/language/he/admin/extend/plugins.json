@@ -17,7 +17,7 @@
 	"order.description": "Certain plugins work ideally when they are initialised before/after other plugins.",
 	"order.explanation": "Plugins load in the order specified here, from top to bottom",
 
-	"plugin-item.themes": "Themes",
+	"plugin-item.themes": "ערכות נושא",
 	"plugin-item.deactivate": "בטל",
 	"plugin-item.activate": "הפעל",
 	"plugin-item.install": "התקן",
