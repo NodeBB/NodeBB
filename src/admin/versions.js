@@ -21,7 +21,7 @@ function getLatestVersion(callback) {
 		headers['If-Modified-Since'] = versionCacheLastModified;
 	}
 
-	request(nconf.get('versionAPI') || 'https://api.github.com/repos/NodeBB/NodeBB/tags', {
+	request(nconf.get('github_api') || 'https://api.github.com/repos/NodeBB/NodeBB/tags', {
 		json: true,
 		headers: headers,
 	}, function (err, res, releases) {
