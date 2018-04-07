@@ -37,8 +37,8 @@
 	"search-plugin-tooltip": "Pro aktivování funkce vyhledávání, nainstalujte rozšíření pro hledání ze stránky rozšíření.",
 
 	"control-panel": "Ovládání systému",
-	"rebuild-and-restart": "Rebuild &amp; Restart",
-	"restart": "Restart",
+	"rebuild-and-restart": "Znovu sestavit a restartovat",
+	"restart": "Restartovat",
 	"restart-warning": "Znovu sestavení nebo restartování NodeBB odpojí všechna existující připojení na několik vteřin.",
 	"restart-disabled": "Znovu sestavení a restartování vašeho NodeBB bylo zakázáno, protože se nezdá, že byste byl/a připojena přes příslušného „daemona”.",
 	"maintenance-mode": "Režim údržby",

@@ -50,5 +50,5 @@
 	"composer.custom-help": "Uživatelský text nápovědy",
 	"ip-tracking": "Sledování IP",
 	"ip-tracking.each-post": "Sledovat adresu IP u každého příspěvku",
-	"enable-post-history": "Enable Post History"
+	"enable-post-history": "Povolit historii příspěvku"
 }

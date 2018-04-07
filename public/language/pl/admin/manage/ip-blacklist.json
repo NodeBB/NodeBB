@@ -15,5 +15,5 @@
 
 	"analytics.blacklist-hourly": "<strong>Ilustracja 1</strong> &ndash; Wpisy z czarnej listy na godzinę",
 	"analytics.blacklist-daily": "<strong>Ilustracja 2</strong> &ndash; Wpisy z czarnej listy na dzień",
-	"ip-banned": "IP banned"
+	"ip-banned": "Zbanowany adres IP"
 }

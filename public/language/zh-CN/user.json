@@ -12,7 +12,7 @@
     "ban_account_confirm": "您确定要封禁这位用户吗？",
     "unban_account": "解禁账户",
     "delete_account": "删除帐号",
-    "delete_account_confirm": "Are you sure you want to delete your account? <br /><strong>This action is irreversible and you will not be able to recover any of your data</strong><br /><br />Enter your password to confirm that you wish to destroy this account.",
+    "delete_account_confirm": "你确定要删除你的账户嘛？ <br /><strong>本操作不可撤销， 你的数据都会被移除且不可恢复。</strong><br /><br />输入密码以确认你确实需要删除你的账户。",
     "delete_this_account_confirm": "您确定要删除账户吗？ <br /><strong>这个操作不可逆，而且您可能不能找回任何数据</strong><br /><br />",
     "account-deleted": "帐号已删除",
     "fullname": "姓名",
