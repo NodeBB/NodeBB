@@ -1,21 +1,31 @@
 'use strict';
 
-var winston = require('winston');
-var async = require('async');
-var path = require('path');
-var fs = require('fs');
-var nconf = require('nconf');
-var os = require('os');
-var cproc = require('child_process');
+const winston = require('winston');
+const async = require('async');
+const path = require('path');
+const fs = require('fs');
+const nconf = require('nconf');
+const os = require('os');
+const cproc = require('child_process');
 
-var db = require('../database');
-var meta = require('../meta');
-var pubsub = require('../pubsub');
-var events = require('../events');
+const db = require('../database');
+const meta = require('../meta');
+const pubsub = require('../pubsub');
+const events = require('../events');
 
-var packageManager = nconf.get('package_manager') === 'yarn' ? 'yarn' : 'npm';
-var packageManagerExecutable = packageManager;
-var packageManagerCommands = {
+const supportPackageManager = [
+	'yarn',
+	'npm',
+	'pnpm'
+];
+let packageManager = nconf.get('package_manager') || 'npm';
+// Check
+if (supportPackageManager.indexOf(packageManager) === -1) {
+	packageManager = 'npm';
+}
+
+const packageManagerExecutable = packageManager;
+const packageManagerCommands = {
 	yarn: {
 		install: 'add',
 		uninstall: 'remove',
@@ -24,6 +34,10 @@ var packageManagerCommands = {
 		install: 'install',
 		uninstall: 'uninstall',
 	},
+	pnpm: {
+		install: 'install',
+		uninstall: 'uninstall',
+	}
 };
 
 if (process.platform === 'win32') {
