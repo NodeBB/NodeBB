@@ -15,7 +15,7 @@
     "login": "Zaloguj się",
     "please_log_in": "Proszę się zalogować",
     "logout": "Wyloguj się",
-    "posting_restriction_info": "Pisanie jest dostępne tylko dla zarejestrowanych członków forum. Kliknij tutaj, aby się zalogować.",
+    "posting_restriction_info": "Posty mogą pisać tylko zarejestrowani użytkownicy forum. Kliknij tutaj, aby się zalogować.",
     "welcome_back": "Witamy ponownie!",
     "you_have_successfully_logged_in": "Zostałeś pomyślnie zalogowany.",
     "save_changes": "Zapisz zmiany",
@@ -43,7 +43,7 @@
     "previouspage": "Poprzednia strona",
     "nextpage": "Następna strona",
     "alert.success": "Udało się",
-    "alert.error": "Niepowodzenie",
+    "alert.error": "Błąd",
     "alert.banned": "Ban",
     "alert.banned.message": "Zostałeś/aś zbanowany/a - teraz nastąpi wylogowanie",
     "alert.unfollow": "Nie obserwujesz już %1.",
@@ -98,8 +98,8 @@
     "upload_file": "Prześlij plik",
     "upload": "Prześlij",
     "allowed-file-types": "Dozwolone typy plików %1",
-    "unsaved-changes": "Posiadasz niezapisane zmiany. Jesteś pewien, że chcesz opuścić stronę?",
-    "reconnecting-message": "Wygląda na to, że twoje połączenie z %1 zostało przerwane. Proszę czekać, gdy staramy się je odnowić.",
+    "unsaved-changes": "Twoje zmiany nie zostały zapisane. Czy na pewno chcesz opuścić stronę?",
+    "reconnecting-message": "Zdaje się, że Twoje połączenie z %1 zostało przerwane. Zaczekaj na ponowne nawiązanie połączenia.",
     "play": "Odtwórz",
     "cookies.message": "Ta strona używa plików cookies, by zapewnić Ci najlepsze działanie naszej strony.",
     "cookies.accept": "Rozumiem!",
@@ -107,5 +107,5 @@
     "edited": "Edytowany",
     "disabled": "Wyłączony",
     "select": "Wybierz",
-    "user-search-prompt": "Aby znaleźć użytkowników wpisz tutaj..."
+    "user-search-prompt": "Aby znaleźć użytkowników, wpisz tutaj..."
 }

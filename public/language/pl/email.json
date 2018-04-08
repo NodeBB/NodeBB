@@ -29,7 +29,7 @@
     "notif.chat.subject": "Nowa wiadomość na czacie od %1",
     "notif.chat.cta": "Kliknij tutaj, aby kontynuować rozmowę",
     "notif.chat.unsub.info": "To powiadomienie o czacie zostało wysłane zgodnie z Twoimi ustawieniami.",
-    "notif.post.cta": "Kliknij tutaj, aby przeczytać cały temat.",
+    "notif.post.cta": "Kliknij tutaj, aby przeczytać cały temat",
     "notif.post.unsub.info": "To powiadomienie o poście zostało wysłane zgodnie z Twoimi ustawieniami.",
     "notif.cta": "Kliknij tutaj, aby przejść do forum",
     "test.text1": "To jest e-mail testowy wysyłany w celu sprawdzenia konfiguracji e-mailera w NodeBB.",

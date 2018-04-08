@@ -39,7 +39,7 @@
     "deleted_message": "Ten temat został usunięty. Mogą go zobaczyć tylko użytkownicy upoważnieni do zarządzania tematami.",
     "following_topic.message": "Będziesz teraz otrzymywać powiadomienia o nowych odpowiedziach w tym temacie.",
     "not_following_topic.message": "Zobaczysz ten temat na liście nieprzeczytanych, ale nie będziesz otrzymywać powiadomień o odpowiedziach w tym temacie.",
-    "ignoring_topic.message": "Nie zobaczysz już tego tematu na liście nieprzeczytanych. Otrzymasz powiadomienie, kiedy ktoś o Tobie wspomni lub odda głos na Twój post.",
+    "ignoring_topic.message": "Nie zobaczysz już tego tematu na liście nieprzeczytanych. Otrzymasz powiadomienie, kiedy ktoś o Tobie wspomni lub zagłosuje na Twój post.",
     "login_to_subscribe": "Zarejestruj lub zloguj się, aby subskrybować ten temat.",
     "markAsUnreadForAll.success": "Temat oznaczony jako nieprzeczytany dla wszystkich.",
     "mark_unread": "Oznacz jako nieprzeczytany",
