@@ -37,6 +37,8 @@ function installAll() {
 		var packageManager = require('nconf').get('package_manager');
 		if (packageManager === 'yarn') {
 			command = 'yarn';
+		} else if(packageManager === 'pnpm') {
+			command = 'pnpm install';
 		}
 	} catch (e) {
 		// ignore
