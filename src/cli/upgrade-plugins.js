@@ -1,20 +1,34 @@
 'use strict';
 
-var async = require('async');
-var prompt = require('prompt');
-var request = require('request');
-var cproc = require('child_process');
-var semver = require('semver');
-var fs = require('fs');
-var path = require('path');
-var nconf = require('nconf');
+const async = require('async');
+const prompt = require('prompt');
+const request = require('request');
+const cproc = require('child_process');
+const semver = require('semver');
+const fs = require('fs');
+const path = require('path');
+const nconf = require('nconf');
 
-var paths = require('./paths');
+const paths = require('./paths');
 
-var packageManager = nconf.get('package_manager');
-var packageManagerExecutable = packageManager === 'yarn' ? 'yarn' : 'npm';
-var packageManagerInstallArgs = packageManager === 'yarn' ? ['add'] : ['install', '--save'];
-
+const packageManager = nconf.get('package_manager');
+let packageManagerExecutable;
+let packageManagerInstallArgs;
+switch(packageManager) {
+	case 'yarn':
+		packageManagerExecutable = 'yarn';
+		packageManagerInstallArgs = ['add'];
+		break;
+	case 'pnpm':
+		packageManagerExecutable = 'pnpm';
+		packageManagerInstallArgs = ['install', '--save'];
+		break;
+	default:
+		packageManagerExecutable = 'npm';
+		packageManagerInstallArgs = ['install', '--save'];
+		break;
+	
+}
 if (process.platform === 'win32') {
 	packageManagerExecutable += '.cmd';
 }
