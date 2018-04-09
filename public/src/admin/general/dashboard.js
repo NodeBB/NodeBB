@@ -48,6 +48,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 			socket.emit('admin.rooms.getAll', Admin.updateRoomUsage);
 			initiateDashboard();
 		});
+		setupFullscreen();
 	};
 
 	Admin.updateRoomUsage = function (err, data) {
@@ -494,6 +495,41 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 		intervals.graphs = setInterval(function () {
 			updateTrafficGraph(currentGraph.units, currentGraph.until, currentGraph.amount);
 		}, realtime ? DEFAULTS.realtimeInterval : DEFAULTS.graphInterval);
+	}
+
+	function setupFullscreen() {
+		var container = document.getElementById('analytics-traffic-container');
+		var $container = $(container);
+		var btn = $container.find('.fa-expand');
+		var fsMethod;
+		var exitMethod;
+
+		if (container.requestFullscreen) {
+			fsMethod = 'requestFullscreen';
+			exitMethod = 'exitFullscreen';
+		} else if (container.mozRequestFullScreen) {
+			fsMethod = 'mozRequestFullScreen';
+			exitMethod = 'mozCancelFullScreen';
+		} else if (container.webkitRequestFullscreen) {
+			fsMethod = 'webkitRequestFullscreen';
+			exitMethod = 'webkitCancelFullScreen';
+		} else if (container.msRequestFullscreen) {
+			fsMethod = 'msRequestFullscreen';
+			exitMethod = 'msCancelFullScreen';
+		}
+
+		if (fsMethod) {
+			btn.addClass('active');
+			btn.on('click', function () {
+				if ($container.hasClass('fullscreen')) {
+					document[exitMethod]();
+					$container.removeClass('fullscreen');
+				} else {
+					container[fsMethod]();
+					$container.addClass('fullscreen');
+				}
+			});
+		}
 	}
 
 	return Admin;
