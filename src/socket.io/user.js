@@ -340,3 +340,9 @@ SocketUser.setModerationNote = function (socket, data, callback) {
 		},
 	], callback);
 };
+
+SocketUser.gdpr = {};
+
+SocketUser.gdpr.consent = function (socket, data, callback) {
+	user.setUserField(socket.uid, 'gdpr_consent', 1, callback);
+};

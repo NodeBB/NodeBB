@@ -68,6 +68,17 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 								globalMod: true,
 								admin: true,
 							},
+						}, {
+							id: 'consent',
+							route: 'consent',
+							name: '[[user:consent.title]]',
+							visibility: {
+								self: true,
+								other: false,
+								moderator: false,
+								globalMod: false,
+								admin: false,
+							},
 						}],
 					}, next);
 				},
