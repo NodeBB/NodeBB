@@ -2,8 +2,7 @@
 
 var async = require('async');
 var _ = require('lodash');
-var path = require('path');
-var nconf = require('nconf');
+
 
 var db = require('../database');
 var posts = require('../posts');
@@ -57,8 +56,7 @@ module.exports = function (User) {
 			async.waterfall([
 				function (next) {
 					async.each(urls, function (url, next) {
-						var filePath = path.join(nconf.get('upload_path'), url.replace(nconf.get('upload_url'), ''));
-						file.delete(filePath, next);
+						file.delete(file.uploadUrlToPath(url), next);
 					}, next);
 				},
 				function (next) {

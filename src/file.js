@@ -88,6 +88,13 @@ file.saveFileToLocal = function (filename, folder, tempPath, callback) {
 	});
 };
 
+file.uploadUrlToPath = function (url) {
+	if (typeof url !== 'string') {
+		return '';
+	}
+	return path.join(nconf.get('upload_path'), url.replace(nconf.get('upload_url'), ''));
+};
+
 file.base64ToLocal = function (imageData, uploadPath, callback) {
 	var buffer = Buffer.from(imageData.slice(imageData.indexOf('base64') + 7), 'base64');
 	uploadPath = path.join(nconf.get('upload_path'), uploadPath);
