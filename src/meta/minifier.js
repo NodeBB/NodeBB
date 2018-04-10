@@ -234,7 +234,7 @@ function minifyAndSave(data, callback) {
 	});
 
 	if (minified.error) {
-		return callback(minified.error);
+		return callback({ stack: 'Error minifying ' + minified.error.filename + '\n' + minified.error.stack });
 	}
 
 	async.parallel([
