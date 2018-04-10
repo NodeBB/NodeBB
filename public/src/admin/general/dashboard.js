@@ -301,6 +301,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 					});
 				});
 			});
+
 			$('[data-action="updateGraph"][data-units="custom"]').on('click', function () {
 				var targetEl = $(this);
 
@@ -315,6 +316,14 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 								callback: submit,
 							},
 						},
+					}).on('shown.bs.modal', function () {
+						var date = new Date();
+						var today = date.toISOString().substr(0, 10);
+						date.setDate(date.getDate() - 1);
+						var yesterday = date.toISOString().substr(0, 10);
+
+						modal.find('#startRange').val(targetEl.attr('data-startRange') || yesterday);
+						modal.find('#endRange').val(targetEl.attr('data-endRange') || today);
 					});
 
 					function submit() {
@@ -345,6 +354,8 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 						targetEl.addClass('active');
 
 						// Update "custom range" label
+						targetEl.attr('data-startRange', formData.startRange);
+						targetEl.attr('data-endRange', formData.endRange);
 						targetEl.html(formData.startRange + ' &ndash; ' + formData.endRange);
 					}
 				});
