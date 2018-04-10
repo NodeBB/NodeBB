@@ -341,11 +341,11 @@ SocketUser.setModerationNote = function (socket, data, callback) {
 	], callback);
 };
 
-SocketUser.deleteUpload = function (socket, url, callback) {
-	if (!url) {
+SocketUser.deleteUpload = function (socket, data, callback) {
+	if (!data || !data.url || !data.uid) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
-	user.deleteUpload(socket.uid, url, callback);
+	user.deleteUpload(socket.uid, data.uid, data.url, callback);
 };
 
 SocketUser.gdpr = {};

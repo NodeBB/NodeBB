@@ -6,15 +6,15 @@ var db = require('../database');
 var file = require('../file');
 
 module.exports = function (User) {
-	User.deleteUpload = function (uid, url, callback) {
+	User.deleteUpload = function (callerUid, uid, url, callback) {
 		async.waterfall([
 			function (next) {
 				async.parallel({
 					isUsersUpload: function (next) {
-						db.isSortedSetMember('uid:' + uid + ':uploads', url, next);
+						db.isSortedSetMember('uid:' + callerUid + ':uploads', url, next);
 					},
 					isAdminOrGlobalMod: function (next) {
-						User.isAdminOrGlobalMod(uid, next);
+						User.isAdminOrGlobalMod(callerUid, next);
 					},
 				}, next);
 			},
@@ -24,6 +24,9 @@ module.exports = function (User) {
 				}
 
 				file.delete(file.uploadUrlToPath(url), next);
+			},
+			function (next) {
+				db.sortedSetRemove('uid:' + uid + ':uploads', url, next);
 			},
 		], callback);
 	};

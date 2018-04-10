@@ -10,7 +10,7 @@ define('forum/account/uploads', ['forum/account/header'], function (header) {
 			var el = $(this).parents('[data-url]');
 			var url = el.attr('data-url');
 
-			socket.emit('user.deleteUpload', url, function (err) {
+			socket.emit('user.deleteUpload', { url: url, uid: ajaxify.data.uid }, function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
