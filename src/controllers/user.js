@@ -1,9 +1,12 @@
 'use strict';
 
 var async = require('async');
+var converter = require('json-2-csv');
 
 var user = require('../user');
 var meta = require('../meta');
+var posts = require('../posts');
+var batch = require('../batch');
 var accountHelpers = require('./accounts/helpers');
 
 var userController = module.exports;
@@ -95,5 +98,38 @@ userController.getUserDataByUID = function (callerUid, uid, callback) {
 		results.userData.fullname = results.settings.showfullname && parseInt(meta.config.hideFullname, 10) !== 1 ? results.userData.fullname : undefined;
 
 		callback(null, results.userData);
+	});
+};
+
+userController.exportPosts = function (req, res, next) {
+	async.waterfall([
+		function (next) {
+			var payload = [];
+			batch.processSortedSet('uid:' + req.params.uid + ':posts', function (pids, next) {
+				async.map(pids, posts.getPostData, function (err, posts) {
+					if (err) {
+						return next(err);
+					}
+
+					// Convert newlines in content
+					posts = posts.map(function (post) {
+						post.content = '"' + post.content.replace(/\n/g, '\\n').replace(/"/g, '\\"') + '"';
+						return post;
+					});
+
+					payload = payload.concat(posts);
+					next();
+				});
+			}, function (err) {
+				next(err, payload);
+			});
+		},
+		async.apply(converter.json2csv),
+	], function (err, csv) {
+		if (err) {
+			return next(err);
+		}
+
+		res.set('Content-Type', 'text/csv').set('Content-Disposition', 'attachment; filename="' + req.params.uid + '_posts.csv"').send(csv);
 	});
 };

@@ -15,6 +15,8 @@ module.exports = function (app, middleware, controllers) {
 	router.get('/user/username/:username', middleware.checkGlobalPrivacySettings, controllers.user.getUserByUsername);
 	router.get('/user/email/:email', middleware.checkGlobalPrivacySettings, controllers.user.getUserByEmail);
 
+	router.get('/user/uid/:uid/export/posts', middleware.checkAccountPermissions, controllers.user.exportPosts);
+
 	router.get('/:type/pid/:id', controllers.api.getObject);
 	router.get('/:type/tid/:id', controllers.api.getObject);
 	router.get('/:type/cid/:id', controllers.api.getObject);
