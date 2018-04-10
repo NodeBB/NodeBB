@@ -90,7 +90,7 @@ module.exports = function (SocketUser) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 
-				if ((!results.isAdmin || !results.isGlobalMod) && !isSelf) {
+				if (!isSelf && !(results.isAdmin || results.isGlobalMod)) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 
