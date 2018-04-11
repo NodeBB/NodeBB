@@ -140,10 +140,12 @@ define('forum/topic/postTools', [
 			}
 		});
 
-		postContainer.on('click', '[component="post/view-history"], [component="post/edit-indicator"]', function () {
-			var btn = $(this);
-			diffs.open(getData(btn, 'data-pid'));
-		});
+		if (config.enablePostHistory) {
+			postContainer.on('click', '[component="post/view-history"], [component="post/edit-indicator"]', function () {
+				var btn = $(this);
+				diffs.open(getData(btn, 'data-pid'));
+			});
+		}
 
 		postContainer.on('click', '[component="post/delete"]', function () {
 			var btn = $(this);

@@ -1,7 +1,7 @@
 {
 	"email-settings": "Ustawienia poczty",
 	"address": "Adres email",
-	"address-help": "Ten adres email odbiorca zobaczy w polach \"Od\" oraz \"Odpowiedz do\" wiadomości email.",
+	"address-help": "Ten adres e-mail odbiorca zobaczy w polach „Od” oraz „Odpowiedz na”.",
 	"from": "Pole Od",
 	"from-help": "Nazwa \"Od\" widoczna w wiadomościach email",
 

@@ -157,6 +157,11 @@ function completeConfigSetup(config, next) {
 		}
 	}
 
+	// Add package_manager object if set
+	if (nconf.get('package_manager')) {
+		config.package_manager = nconf.get('package_manager');
+	}
+
 	nconf.overrides(config);
 	async.waterfall([
 		function (next) {

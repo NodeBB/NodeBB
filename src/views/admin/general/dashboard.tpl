@@ -3,7 +3,8 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">[[admin/general/dashboard:forum-traffic]]</div>
 			<div class="panel-body">
-				<div class="graph-container">
+				<div class="graph-container" id="analytics-traffic-container">
+					<i class="fa fa-expand"></i>
 					<ul class="graph-legend">
 						<li><div class="page-views"></div><span>[[admin/general/dashboard:page-views]]</span></li>
 						<li><div class="unique-visitors"></div><span>[[admin/general/dashboard:unique-visitors]]</span></li>

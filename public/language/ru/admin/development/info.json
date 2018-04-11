@@ -1,6 +1,6 @@
 {
 	"you-are-on": "Инфо - Вы находитесь на <strong>%1:%2</strong>",
-	"nodes-responded": "%1 nodes responded within %2ms!",
+	"nodes-responded": "Узлов: %1. Время ответа %2мс!",
 	"host": "хост",
 	"pid": "pid",
 	"nodejs": "nodejs",
@@ -11,7 +11,7 @@
 	"uptime": "время работы",
 
 	"registered": "Зарегистрированных",
-	"sockets": "Sockets",
+	"sockets": "Сокеты",
 	"guests": "Гостей",
 
 	"info": "Инфо"

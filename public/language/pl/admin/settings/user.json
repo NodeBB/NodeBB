@@ -51,7 +51,7 @@
 	"default-user-settings": "Domyślne ustawienia użytkownika",
 	"show-email": "Pokazuj adres email",
 	"show-fullname": "Pokazuj pełną nazwę uzytkownika",
-	"restrict-chat": "Pozwalaj na wiadomości chat tylko od użytkowników, których śledzę",
+	"restrict-chat": "Przyjmuj wiadomości na czacie tylko od osób, które obserwuję",
 	"outgoing-new-tab": "Otwieraj odnośniki wychodzące na nowej karcie",
 	"topic-search": "Włącz wyszukiwanie wewnątrz tematów",
 	"digest-freq": "Podsumowania - tryb",
@@ -61,7 +61,7 @@
 	"digest-freq.monthly": "Miesięczny",
 	"email-chat-notifs": "Wyślij powiadomienie email, jeśli dostanę nową wiadomość, a nie jestem on-line",
 	"email-post-notif": "Wyślij wiadomość email, kiedy w tematach, które subskrybuję, pojawią się odpowiedzi",
-	"follow-created-topics": "Śledź tematy, które stworzyłeś",
-	"follow-replied-topics": "Śledź tematy, w których się wypowiedziałeś ",
+	"follow-created-topics": "Obserwuj tematy, które stworzyłeś",
+	"follow-replied-topics": "Obserwuj tematy, w których się wypowiedziałeś ",
 	"default-notification-settings": "Domyślne ustawienia powiadomień"
 }

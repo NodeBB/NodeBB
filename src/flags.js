@@ -705,7 +705,13 @@ Flags.notify = function (flagObj, uid, callback) {
 				plugins.fireHook('action:flags.create', {
 					flag: flagObj,
 				});
-				notifications.push(notification, results.admins.concat(results.moderators).concat(results.globalMods), callback);
+
+				var uids = results.admins.concat(results.moderators).concat(results.globalMods);
+				uids = uids.filter(function (_uid) {
+					return parseInt(_uid, 10) !== parseInt(uid, 10);
+				});
+
+				notifications.push(notification, uids, callback);
 			});
 		});
 		break;

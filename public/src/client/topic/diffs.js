@@ -4,6 +4,10 @@ define('forum/topic/diffs', ['forum/topic/images', 'benchpress', 'translator'], 
 	var Diffs = {};
 
 	Diffs.open = function (pid) {
+		if (!config.enablePostHistory) {
+			return;
+		}
+
 		var localeStringOpts = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
 
 		socket.emit('posts.getDiffs', { pid: pid }, function (err, timestamps) {
@@ -49,6 +53,10 @@ define('forum/topic/diffs', ['forum/topic/images', 'benchpress', 'translator'], 
 	};
 
 	Diffs.load = function (pid, since, postContainer) {
+		if (!config.enablePostHistory) {
+			return;
+		}
+
 		socket.emit('posts.showPostAt', { pid: pid, since: since }, function (err, data) {
 			if (err) {
 				return app.alertError(err.message);

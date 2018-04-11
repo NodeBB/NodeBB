@@ -58,7 +58,7 @@
 	"modal-reason-custom": "Powód raportowania tej zawartości.",
 	"modal-submit": "Wyślij raport",
 	"modal-submit-success": "Zawartość została oflagowana do moderacji.",
-	"modal-submit-confirm": "Confirm Submission",
-	"modal-submit-confirm-text": "You have a custom reason specified already. Are you sure you wish to submit via quick-report?",
-	"modal-submit-confirm-text-help": "Submitting a quick report will overwrite any custom reasons defined."
+	"modal-submit-confirm": "Potwierdź wysłanie",
+	"modal-submit-confirm-text": "Posiadasz zdefiniowany własny powód.  Na pewno wysłać poprzez szybkie wysyłanie?",
+	"modal-submit-confirm-text-help": "Wysłanie szybkiego zgłoszenia nadpisze ew. zdefiniowane powody własne"
 }
