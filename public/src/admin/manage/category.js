@@ -7,7 +7,8 @@ define('admin/manage/category', [
 	'autocomplete',
 	'translator',
 	'categorySelector',
-], function (uploader, iconSelect, colorpicker, autocomplete, translator, categorySelector) {
+	'benchpress',
+], function (uploader, iconSelect, colorpicker, autocomplete, translator, categorySelector, Benchpress) {
 	var	Category = {};
 	var modified_categories = {};
 
@@ -80,19 +81,53 @@ define('admin/manage/category', [
 		$('.purge').on('click', function (e) {
 			e.preventDefault();
 
-			bootbox.confirm(translator.compile(
-				'admin/manage/categories:alert.confirm-purge',
-				$('form.category').find('input[data-name="name"]').val()
-			), function (confirm) {
-				if (!confirm) {
-					return;
-				}
-				socket.emit('admin.categories.purge', ajaxify.data.category.cid, function (err) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-					app.alertSuccess('[[admin/manage/categories:alert.purge-success]]');
-					ajaxify.go('admin/manage/categories');
+			Benchpress.parse('admin/partials/categories/purge', {
+				name: ajaxify.data.category.name,
+				topic_count: ajaxify.data.category.topic_count,
+			}, function (html) {
+				var modal = bootbox.dialog({
+					title: '[[admin/manage/categories:purge]]',
+					message: html,
+					size: 'large',
+					buttons: {
+						save: {
+							label: '[[modules:bootbox.confirm]]',
+							className: 'btn-primary',
+							callback: function () {
+								modal.find('.modal-footer button').prop('disabled', true);
+
+								var intervalId = setInterval(function () {
+									socket.emit('categories.getTopicCount', ajaxify.data.category.cid, function (err, count) {
+										if (err) {
+											return app.alertError(err);
+										}
+
+										var percent = 0;
+										if (ajaxify.data.category.topic_count > 0) {
+											percent = Math.max(0, (1 - (count / ajaxify.data.category.topic_count))) * 100;
+										}
+
+										modal.find('.progress-bar').css({ width: percent + '%' });
+									});
+								}, 1000);
+
+								socket.emit('admin.categories.purge', ajaxify.data.category.cid, function (err) {
+									if (err) {
+										return app.alertError(err.message);
+									}
+
+									if (intervalId) {
+										clearInterval(intervalId);
+									}
+									modal.modal('hide');
+									app.alertSuccess('[[admin/manage/categories:alert.purge-success]]');
+									ajaxify.go('admin/manage/categories');
+								});
+
+								return false;
+							},
+						},
+					},
 				});
 			});
 		});
