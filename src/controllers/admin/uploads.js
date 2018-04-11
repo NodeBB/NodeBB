@@ -5,6 +5,7 @@ var async = require('async');
 var nconf = require('nconf');
 var mime = require('mime');
 var fs = require('fs');
+var jimp = require('jimp');
 
 var meta = require('../../meta');
 var file = require('../../file');
@@ -272,6 +273,17 @@ function uploadImage(filename, folder, uploadedFile, req, res, next) {
 					async.apply(meta.configs.set, 'brand:emailLogo', path.join(nconf.get('upload_url'), 'system/site-logo-x50.png')),
 				], function (err) {
 					next(err, imageData);
+				});
+			} else if (path.basename(filename, path.extname(filename)) === 'og:image' && folder === 'system') {
+				jimp.read(imageData.path).then(function (image) {
+					meta.configs.setMultiple({
+						'og:image:height': image.bitmap.height,
+						'og:image:width': image.bitmap.width,
+					}, function (err) {
+						next(err, imageData);
+					});
+				}).catch(function (err) {
+					next(err);
 				});
 			} else {
 				setImmediate(next, null, imageData);

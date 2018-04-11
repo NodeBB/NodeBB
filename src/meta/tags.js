@@ -136,8 +136,8 @@ Tags.parse = function (req, data, meta, link, callback) {
 		}
 		addIfNotExists(meta, 'property', 'og:image', ogImage);
 		if (ogImage) {
-			addIfNotExists(meta, 'property', 'og:image:width', 200);
-			addIfNotExists(meta, 'property', 'og:image:height', 200);
+			addIfNotExists(meta, 'property', 'og:image:width', Meta.config['og:image:width'] || 200);
+			addIfNotExists(meta, 'property', 'og:image:height', Meta.config['og:image:height'] || 200);
 		}
 
 		link = results.links.links.concat(link || []);
