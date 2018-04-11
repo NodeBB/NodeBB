@@ -32,7 +32,7 @@
     "chat.leave-prompt": "Czy jesteś pewnien, że chcesz opuścić ten czat?",
     "chat.leave-help": "Opuszczenie czatu usunie cię z przyszłej korespondencji na czacie. Jeśli zostaniesz w przyszłości znów dodany nie będziesz widzieć historii czatu sprzed dodania.",
     "chat.in-room": "W tym pokoju",
-    "composer.compose": "Skomponuj",
+    "composer.compose": "Napisz",
     "composer.show_preview": "Pokazuj podgląd",
     "composer.hide_preview": "Ukryj Podgląd",
     "composer.user_said_in": "%1 napisał(a) w %2:",
@@ -55,6 +55,6 @@
     "bootbox.cancel": "Anuluj",
     "bootbox.confirm": "Potwierdź",
     "cover.dragging_title": "Pozycjonowanie tła",
-    "cover.dragging_message": "Przeciągnij i upuść zdjęcie na żądanym miejscu. Po zakończeniu kliknij \"Zapisz\"",
+    "cover.dragging_message": "Przeciągnij zdjęcie tła do wybranej pozycji i kliknij „Zapisz”",
     "cover.saved": "Tło zapisane"
 }

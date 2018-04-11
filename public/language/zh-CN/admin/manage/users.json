@@ -27,7 +27,7 @@
 	"pills.banned": "被封禁",
 	"pills.search": "搜寻用户",
 
-	"search.uid": "通过用户名",
+	"search.uid": "通过用户ID",
 	"search.uid-placeholder": "搜索用户ID",
 	"search.username": "通过用户名",
 	"search.username-placeholder": "输入你想查询的用户名",
