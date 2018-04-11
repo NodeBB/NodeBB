@@ -124,13 +124,13 @@ Tags.parse = function (req, data, meta, link, callback) {
 
 		addIfNotExists(meta, 'property', 'og:title', Meta.config.title || 'NodeBB');
 
-		var ogUrl = nconf.get('url') + (req.originalUrl !== '/' ? req.originalUrl : '');
+		var ogUrl = nconf.get('url') + (req.originalUrl !== '/' ? stripRelativePath(req.originalUrl) : '');
 		addIfNotExists(meta, 'property', 'og:url', ogUrl);
 
 		addIfNotExists(meta, 'name', 'description', Meta.config.description);
 		addIfNotExists(meta, 'property', 'og:description', Meta.config.description);
 
-		var ogImage = Meta.config['og:image'] || Meta.config['brand:logo'] || '';
+		var ogImage = stripRelativePath(Meta.config['og:image'] || Meta.config['brand:logo'] || '');
 		if (ogImage && !ogImage.startsWith('http')) {
 			ogImage = nconf.get('url') + ogImage;
 		}
@@ -164,4 +164,12 @@ function addIfNotExists(meta, keyName, tagName, value) {
 		data[keyName] = tagName;
 		meta.push(data);
 	}
+}
+
+function stripRelativePath(url) {
+	if (url.startsWith(nconf.get('relative_path'))) {
+		return url.slice(nconf.get('relative_path').length);
+	}
+
+	return url;
 }
