@@ -2,6 +2,7 @@
 
 
 var async = require('async');
+var nconf = require('nconf');
 
 var db = require('../../database');
 var helpers = require('../helpers');
@@ -33,15 +34,16 @@ uploadsController.get = function (req, res, callback) {
 				itemCount: function (next) {
 					db.sortedSetCard('uid:' + userData.uid + ':uploads', next);
 				},
-				uploadUrls: function (next) {
+				uploadNames: function (next) {
 					db.getSortedSetRevRange('uid:' + userData.uid + ':uploads', start, stop, next);
 				},
 			}, next);
 		},
 		function (results) {
-			userData.uploads = results.uploadUrls.map(function (url) {
+			userData.uploads = results.uploadNames.map(function (uploadName) {
 				return {
-					url: url,
+					name: uploadName,
+					url: nconf.get('upload_url') + uploadName,
 				};
 			});
 			var pageCount = Math.ceil(results.itemCount / itemsPerPage);

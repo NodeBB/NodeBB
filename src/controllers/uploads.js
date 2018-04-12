@@ -241,7 +241,8 @@ function saveFileToLocal(uid, uploadedFile, callback) {
 				name: uploadedFile.name,
 			};
 
-			db.sortedSetAdd('uid:' + uid + ':uploads', Date.now(), upload.url, next);
+			var fileKey = upload.url.replace(nconf.get('upload_url'), '');
+			db.sortedSetAdd('uid:' + uid + ':uploads', Date.now(), fileKey, next);
 		},
 		function (next) {
 			plugins.fireHook('filter:uploadStored', { uid: uid, uploadedFile: uploadedFile, storedFile: storedFile }, next);

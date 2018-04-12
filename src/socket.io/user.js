@@ -342,10 +342,10 @@ SocketUser.setModerationNote = function (socket, data, callback) {
 };
 
 SocketUser.deleteUpload = function (socket, data, callback) {
-	if (!data || !data.url || !data.uid) {
+	if (!data || !data.name || !data.uid) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
-	user.deleteUpload(socket.uid, data.uid, data.url, callback);
+	user.deleteUpload(socket.uid, data.uid, data.name, callback);
 };
 
 SocketUser.gdpr = {};

@@ -2,7 +2,8 @@
 
 var async = require('async');
 var _ = require('lodash');
-
+var path = require('path');
+var nconf = require('nconf');
 
 var db = require('../database');
 var posts = require('../posts');
@@ -52,15 +53,15 @@ module.exports = function (User) {
 	}
 
 	function deleteUploads(uid, callback) {
-		batch.processSortedSet('uid:' + uid + ':uploads', function (urls, next) {
+		batch.processSortedSet('uid:' + uid + ':uploads', function (uploadNames, next) {
 			async.waterfall([
 				function (next) {
-					async.each(urls, function (url, next) {
-						file.delete(file.uploadUrlToPath(url), next);
+					async.each(uploadNames, function (uploadName, next) {
+						file.delete(path.join(nconf.get('upload_path'), uploadName), next);
 					}, next);
 				},
 				function (next) {
-					db.sortedSetRemove('uid:' + uid + ':uploads', urls, next);
+					db.sortedSetRemove('uid:' + uid + ':uploads', uploadNames, next);
 				},
 			], next);
 		}, { alwaysStartAt: 0 }, callback);
