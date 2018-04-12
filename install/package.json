@@ -18,6 +18,7 @@
     },
     "dependencies": {
         "ace-builds": "^1.2.9",
+        "archiver": "^2.1.1",
         "async": "2.6.0",
         "autoprefixer": "7.2.4",
         "bcryptjs": "2.4.3",
