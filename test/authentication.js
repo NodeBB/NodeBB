@@ -169,6 +169,7 @@ describe('authentication', function () {
 				}, function (err, response, body) {
 					assert.ifError(err);
 					assert(body);
+					console.log(body);
 					assert.equal(body.username, 'admin');
 					assert.equal(body.email, 'admin@nodebb.org');
 					user.getSettings(body.uid, function (err, settings) {
