@@ -212,12 +212,23 @@ Emailer.sendToEmail = function (template, email, language, params, callback) {
 
 	async.waterfall([
 		function (next) {
+			Plugins.fireHook('filter:email.params', {
+				template: template,
+				email: email,
+				language: lang,
+				params: params,
+			}, next);
+		},
+		function (result, next) {
+			template = result.template;
+			email = result.email;
+			params = result.params;
 			async.parallel({
 				html: function (next) {
-					Emailer.renderAndTranslate(template, params, lang, next);
+					Emailer.renderAndTranslate(template, params, result.language, next);
 				},
 				subject: function (next) {
-					translator.translate(params.subject, lang, function (translated) {
+					translator.translate(params.subject, result.language, function (translated) {
 						next(null, translated);
 					});
 				},
