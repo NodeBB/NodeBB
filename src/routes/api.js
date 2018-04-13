@@ -17,6 +17,7 @@ module.exports = function (app, middleware, controllers) {
 
 	router.get('/user/uid/:uid/export/posts', middleware.checkAccountPermissions, controllers.user.exportPosts);
 	router.get('/user/uid/:uid/export/uploads', middleware.checkAccountPermissions, controllers.user.exportUploads);
+	router.get('/user/uid/:uid/export/profile', middleware.checkAccountPermissions, controllers.user.exportProfile);
 
 	router.get('/:type/pid/:id', controllers.api.getObject);
 	router.get('/:type/tid/:id', controllers.api.getObject);

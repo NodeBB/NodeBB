@@ -179,5 +179,9 @@
 	"consent.right_to_erasure": "You have the Right to Erasure",
 	"consent.right_to_erasure_description": "At any time, you are able to revoke your consent to data collection and/or processing by deleting your account.",
 	"consent.right_to_data_portability": "You have the Right to Data Portability",
-	"consent.right_to_data_portability_description": "You may request from us a machine-readable export of any collected data about you and your account. You can do so by clicking the appropriate button below."
+	"consent.right_to_data_portability_description": "You may request from us a machine-readable export of any collected data about you and your account. You can do so by clicking the appropriate button below.",
+
+	"consent.export_profile": "Export Your Profile (.csv)",
+	"consent.export_uploads": "Export Uploaded Content (.zip)",
+	"consent.export_posts": "Export Posts (.csv)"
 }

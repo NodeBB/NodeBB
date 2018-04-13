@@ -7,6 +7,7 @@ var winston = require('winston');
 var converter = require('json-2-csv');
 var archiver = require('archiver');
 
+var db = require('../database');
 var user = require('../user');
 var meta = require('../meta');
 var posts = require('../posts');
@@ -217,5 +218,23 @@ userController.exportUploads = function (req, res, next) {
 		}
 
 		archive.finalize();
+	});
+};
+
+userController.exportProfile = function (req, res, next) {
+	async.waterfall([
+		async.apply(db.getObjects.bind(db), ['user:1', 'user:1:settings']),
+		function (objects, next) {
+			Object.assign(objects[0], objects[1]);
+			delete objects[0].password;
+
+			converter.json2csv(objects[0], next);
+		},
+	], function (err, csv) {
+		if (err) {
+			return next(err);
+		}
+
+		res.set('Content-Type', 'text/csv').set('Content-Disposition', 'attachment; filename="' + req.params.uid + '_profile.csv"').send(csv);
 	});
 };
