@@ -12,6 +12,10 @@ var utils = require('./utils');
 
 var events = module.exports;
 
+/**
+ * Useful options in data: type, uid, ip, targetUid
+ * Everything else gets stringified and shown as pretty JSON string
+ */
 events.log = function (data, callback) {
 	callback = callback || function () {};
 
