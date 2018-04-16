@@ -46,8 +46,8 @@ module.exports = function (Posts) {
 	Posts.uploads.associate = function (pid, filePaths, callback) {
 		// Adds an upload to a post's sorted set of uploads
 		const now = Date.now();
-		const scores = filePaths.map(() => now);
 		filePaths = !Array.isArray(filePaths) ? [filePaths] : filePaths;
+		const scores = filePaths.map(() => now);
 
 		db.sortedSetAdd('post:' + pid + ':uploads', scores, filePaths, callback);
 	};

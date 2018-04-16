@@ -877,4 +877,121 @@ describe('Post\'s', function () {
 			], done);
 		});
 	});
+
+	describe('upload methods', function () {
+		var pid;
+
+		before(function (done) {
+			topics.post({
+				uid: 1,
+				cid: 1,
+				title: 'topic with some images',
+				content: 'here is an image [alt text](/assets/uploads/files/abracadabra.png) and another [alt text](/assets/uploads/files/shazam.jpg)',
+			}, function (err, topicPostData) {
+				assert.ifError(err);
+				pid = topicPostData.postData.pid;
+				done();
+			});
+		});
+
+		describe('.sync()', function () {
+			it('should properly add new images to the post\'s zset', function (done) {
+				posts.uploads.sync(pid, function (err) {
+					assert.ifError(err);
+
+					db.sortedSetCard('post:' + pid + ':uploads', function (err, length) {
+						assert.ifError(err);
+						assert.strictEqual(2, length);
+						done();
+					});
+				});
+			});
+
+			it('should remove an image if it is edited out of the post', function (done) {
+				async.series([
+					function (next) {
+						posts.edit({
+							pid: pid,
+							uid: 1,
+							content: 'here is an image [alt text](/assets/uploads/files/abracadabra.png)... AND NO MORE!',
+						}, next);
+					},
+					async.apply(posts.uploads.sync, pid),
+				], function (err) {
+					assert.ifError(err);
+					db.sortedSetCard('post:' + pid + ':uploads', function (err, length) {
+						assert.ifError(err);
+						assert.strictEqual(1, length);
+						done();
+					});
+				});
+			});
+		});
+
+		describe('.list()', function () {
+			it('should display the uploaded files for a specific post', function (done) {
+				posts.uploads.list(pid, function (err, uploads) {
+					assert.ifError(err);
+					assert.equal(true, Array.isArray(uploads));
+					assert.strictEqual(1, uploads.length);
+					assert.equal('string', typeof uploads[0]);
+					done();
+				});
+			});
+		});
+
+		describe('.associate()', function () {
+			it('should add an image to the post\'s maintained list of uploads', function (done) {
+				async.waterfall([
+					async.apply(posts.uploads.associate, pid, 'whoa.gif'),
+					async.apply(posts.uploads.list, pid),
+				], function (err, uploads) {
+					assert.ifError(err);
+					assert.strictEqual(2, uploads.length);
+					assert.strictEqual('whoa.gif', uploads[1]);
+					done();
+				});
+			});
+
+			it('should allow arrays to be passed in', function (done) {
+				async.waterfall([
+					async.apply(posts.uploads.associate, pid, ['amazeballs.jpg', 'wut.txt']),
+					async.apply(posts.uploads.list, pid),
+				], function (err, uploads) {
+					assert.ifError(err);
+					assert.strictEqual(4, uploads.length);
+					assert.strictEqual('amazeballs.jpg', uploads[2]);
+					assert.strictEqual('wut.txt', uploads[3]);
+					done();
+				});
+			});
+		});
+
+		describe('.dissociate()', function () {
+			it('should remove an image from the post\'s maintained list of uploads', function (done) {
+				async.waterfall([
+					async.apply(posts.uploads.dissociate, pid, 'whoa.gif'),
+					async.apply(posts.uploads.list, pid),
+				], function (err, uploads) {
+					assert.ifError(err);
+					assert.strictEqual(3, uploads.length);
+					assert.strictEqual(false, uploads.includes('whoa.gif'));
+					done();
+				});
+			});
+
+			it('should allow arrays to be passed in', function (done) {
+				async.waterfall([
+					async.apply(posts.uploads.dissociate, pid, ['amazeballs.jpg', 'wut.txt']),
+					async.apply(posts.uploads.list, pid),
+				], function (err, uploads) {
+					assert.ifError(err);
+					assert.strictEqual(1, uploads.length);
+					assert.strictEqual(false, uploads.includes('amazeballs.jpg'));
+					assert.strictEqual(false, uploads.includes('wut.txt'));
+					done();
+				});
+			});
+		});
+	});
 });
