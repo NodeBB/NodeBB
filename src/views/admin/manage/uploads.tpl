@@ -17,7 +17,7 @@
 			<tr data-path="{files.path}">
 				<!-- IF files.isDirectory -->
 				<td class="col-md-9" role="button">
-					<i class="fa fa-fw fa-folder-o"></i> <a href="{config.relative}/admin/manage/uploads?dir={files.path}">{files.name}</a>
+					<i class="fa fa-fw fa-folder-o"></i> <a href="{config.relative_path}/admin/manage/uploads?dir={files.path}">{files.name}</a>
 				</td>
 				<!-- ENDIF files.isDirectory -->
 
