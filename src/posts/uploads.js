@@ -9,7 +9,7 @@ module.exports = function (Posts) {
 
 	Posts.uploads.sync = function (pid, callback) {
 		// Scans a post and updates sorted set of uploads
-		const searchRegex = /\/assets\/uploads\/files\/([^\s]+\.[\w]+)/g;
+		const searchRegex = /\/assets\/uploads\/files\/([^\s")]+\.?[\w]*)/g;
 
 		async.parallel({
 			content: async.apply(Posts.getPostField, pid, 'content'),
