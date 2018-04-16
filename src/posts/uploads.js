@@ -49,6 +49,13 @@ module.exports = function (Posts) {
 		db.getSortedSetRange('post:' + pid + ':uploads', 0, -1, callback);
 	};
 
+	Posts.uploads.isOrphan = function (filePath, callback) {
+		// Returns bool indicating whether a file is still CURRENTLY included in any posts
+		db.sortedSetCard('upload:' + md5(filePath) + ':pids', function (err, length) {
+			callback(err, length === 0);
+		});
+	};
+
 	Posts.uploads.associate = function (pid, filePaths, callback) {
 		// Adds an upload to a post's sorted set of uploads
 		const now = Date.now();

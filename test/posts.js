@@ -941,6 +941,24 @@ describe('Post\'s', function () {
 			});
 		});
 
+		describe('.isOrphan()', function () {
+			it('should return false if upload is not an orphan', function (done) {
+				posts.uploads.isOrphan('abracadabra.png', function (err, isOrphan) {
+					assert.ifError(err);
+					assert.equal(false, isOrphan);
+					done();
+				});
+			});
+
+			it('should return true if upload is an orphan', function (done) {
+				posts.uploads.isOrphan('shazam.jpg', function (err, isOrphan) {
+					assert.ifError(err);
+					assert.equal(true, isOrphan);
+					done();
+				});
+			});
+		});
+
 		describe('.associate()', function () {
 			it('should add an image to the post\'s maintained list of uploads', function (done) {
 				async.waterfall([
