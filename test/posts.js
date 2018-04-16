@@ -5,6 +5,7 @@ var	assert = require('assert');
 var async = require('async');
 var request = require('request');
 var nconf = require('nconf');
+var crypto = require('crypto');
 
 var db = require('./mocks/databasemock');
 var topics = require('../src/topics');
@@ -965,6 +966,23 @@ describe('Post\'s', function () {
 					done();
 				});
 			});
+
+			it('should save a reverse association of md5sum to pid', function (done) {
+				const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
+
+				async.waterfall([
+					async.apply(posts.uploads.associate, pid, ['test.bmp']),
+					function (next) {
+						db.getSortedSetRange('upload:' + md5('test.bmp') + ':pids', 0, -1, next);
+					},
+				], function (err, pids) {
+					assert.ifError(err);
+					assert.strictEqual(true, Array.isArray(pids));
+					assert.strictEqual(true, pids.length > 0);
+					assert.equal(pid, pids[0]);
+					done();
+				});
+			});
 		});
 
 		describe('.dissociate()', function () {
@@ -974,7 +992,7 @@ describe('Post\'s', function () {
 					async.apply(posts.uploads.list, pid),
 				], function (err, uploads) {
 					assert.ifError(err);
-					assert.strictEqual(3, uploads.length);
+					assert.strictEqual(4, uploads.length);
 					assert.strictEqual(false, uploads.includes('whoa.gif'));
 					done();
 				});
@@ -986,7 +1004,7 @@ describe('Post\'s', function () {
 					async.apply(posts.uploads.list, pid),
 				], function (err, uploads) {
 					assert.ifError(err);
-					assert.strictEqual(1, uploads.length);
+					assert.strictEqual(2, uploads.length);
 					assert.strictEqual(false, uploads.includes('amazeballs.jpg'));
 					assert.strictEqual(false, uploads.includes('wut.txt'));
 					done();

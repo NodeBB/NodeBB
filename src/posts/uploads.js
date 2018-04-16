@@ -1,11 +1,14 @@
 'use strict';
 
 var async = require('async');
+var crypto = require('crypto');
 
 var db = require('../database');
 
 module.exports = function (Posts) {
 	Posts.uploads = {};
+
+	const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
 
 	Posts.uploads.sync = function (pid, callback) {
 		// Scans a post and updates sorted set of uploads
@@ -51,14 +54,24 @@ module.exports = function (Posts) {
 		const now = Date.now();
 		filePaths = !Array.isArray(filePaths) ? [filePaths] : filePaths;
 		const scores = filePaths.map(() => now);
+		let methods = [async.apply(db.sortedSetAdd.bind(db), 'post:' + pid + ':uploads', scores, filePaths)];
+		methods = methods.concat(filePaths.map(path => async.apply(db.sortedSetAdd.bind(db), 'upload:' + md5(path) + ':pids', now, pid)));
 
-		db.sortedSetAdd('post:' + pid + ':uploads', scores, filePaths, callback);
+		async.parallel(methods, function (err) {
+			// Strictly return only err
+			callback(err);
+		});
 	};
 
 	Posts.uploads.dissociate = function (pid, filePaths, callback) {
 		// Removes an upload from a post's sorted set of uploads
 		filePaths = !Array.isArray(filePaths) ? [filePaths] : filePaths;
+		let methods = [async.apply(db.sortedSetRemove.bind(db), 'post:' + pid + ':uploads', filePaths)];
+		methods = methods.concat(filePaths.map(path => async.apply(db.sortedSetRemove.bind(db), 'upload:' + md5(path) + ':pids', pid)));
 
-		db.sortedSetRemove('post:' + pid + ':uploads', filePaths, callback);
+		async.parallel(methods, function (err) {
+			// Strictly return only err
+			callback(err);
+		});
 	};
 };
