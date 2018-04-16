@@ -34,7 +34,10 @@ module.exports = function (Posts) {
 			async.parallel([
 				async.apply(Posts.uploads.associate, pid, add),
 				async.apply(Posts.uploads.dissociate, pid, remove),
-			], callback);
+			], function (err) {
+				// Strictly return only err
+				callback(err);
+			});
 		});
 	};
 

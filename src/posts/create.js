@@ -101,6 +101,7 @@ module.exports = function (Posts) {
 					function (next) {
 						db.incrObjectField('global', 'postCount', next);
 					},
+					async.apply(Posts.uploads.sync, postData.pid),
 				], function (err) {
 					next(err);
 				});

@@ -948,7 +948,7 @@ describe('Post\'s', function () {
 				], function (err, uploads) {
 					assert.ifError(err);
 					assert.strictEqual(2, uploads.length);
-					assert.strictEqual('whoa.gif', uploads[1]);
+					assert.strictEqual(true, uploads.includes('whoa.gif'));
 					done();
 				});
 			});
@@ -960,8 +960,8 @@ describe('Post\'s', function () {
 				], function (err, uploads) {
 					assert.ifError(err);
 					assert.strictEqual(4, uploads.length);
-					assert.strictEqual('amazeballs.jpg', uploads[2]);
-					assert.strictEqual('wut.txt', uploads[3]);
+					assert.strictEqual(true, uploads.includes('amazeballs.jpg'));
+					assert.strictEqual(true, uploads.includes('wut.txt'));
 					done();
 				});
 			});
@@ -991,6 +991,59 @@ describe('Post\'s', function () {
 					assert.strictEqual(false, uploads.includes('wut.txt'));
 					done();
 				});
+			});
+		});
+	});
+
+	describe('post uploads management', function () {
+		let topic;
+		let reply;
+		before(function (done) {
+			topics.post({
+				uid: 1,
+				cid: cid,
+				title: 'topic to test uploads with',
+				content: '[abcdef](/assets/uploads/files/abracadabra.png)',
+			}, function (err, topicPostData) {
+				assert.ifError(err);
+				topics.reply({
+					uid: 1,
+					tid: topicPostData.topicData.tid,
+					timestamp: Date.now(),
+					content: '[abcdef](/assets/uploads/files/shazam.png)',
+				}, function (err, replyData) {
+					assert.ifError(err);
+					topic = topicPostData;
+					reply = replyData;
+					done();
+				});
+			});
+		});
+
+		it('should automatically sync uploads on topic create and reply', function (done) {
+			db.sortedSetsCard(['post:' + topic.topicData.mainPid + ':uploads', 'post:' + reply.pid + ':uploads'], function (err, lengths) {
+				assert.ifError(err);
+				assert.strictEqual(1, lengths[0]);
+				assert.strictEqual(1, lengths[1]);
+				done();
+			});
+		});
+
+		it('should automatically sync uploads on post edit', function (done) {
+			async.waterfall([
+				async.apply(posts.edit, {
+					pid: reply.pid,
+					uid: 1,
+					content: 'no uploads',
+				}),
+				function (postData, next) {
+					posts.uploads.list(reply.pid, next);
+				},
+			], function (err, uploads) {
+				assert.ifError(err);
+				assert.strictEqual(true, Array.isArray(uploads));
+				assert.strictEqual(0, uploads.length);
+				done();
 			});
 		});
 	});
