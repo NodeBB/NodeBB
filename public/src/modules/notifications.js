@@ -75,7 +75,7 @@ define('notifications', ['sounds', 'translator', 'components', 'navigator', 'ben
 			var payload = {
 				alert_id: 'new_notif',
 				title: '[[notifications:new_notification]]',
-				timeout: 2000,
+				timeout: parseInt(config.notificationAlertTimeout, 10) || 5000,
 			};
 
 			if (notifData.path) {
