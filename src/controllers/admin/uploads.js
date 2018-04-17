@@ -68,7 +68,9 @@ function buildBreadcrumbs(currentFolder) {
 		var dir = path.join(currentPath, part);
 		crumbs.push({
 			text: part || 'Uploads',
-			url: part ? '/admin/manage/uploads?dir=' + dir : '/admin/manage/uploads',
+			url: part
+				? (nconf.get('relative_path') + '/admin/manage/uploads?dir=' + dir)
+				: nconf.get('relative_path') + '/admin/manage/uploads',
 		});
 		currentPath = dir;
 	});
