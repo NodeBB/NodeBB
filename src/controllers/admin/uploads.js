@@ -43,12 +43,16 @@ uploadsController.get = function (req, res, next) {
 			filesToData(currentFolder, files, next);
 		},
 		function (files, next) {
+			// Float directories to the top
 			files.sort(function (a, b) {
 				if (a.isDirectory && !b.isDirectory) {
 					return -1;
 				} else if (!a.isDirectory && b.isDirectory) {
 					return 1;
+				} else if (!a.isDirectory && !b.isDirectory) {
+					return a.mtime < b.mtime ? -1 : 1;
 				}
+
 				return 0;
 			});
 
@@ -122,6 +126,7 @@ function filesToData(currentDir, files, callback) {
 					sizeHumanReadable: (stat.size / 1024).toFixed(1) + 'KiB',
 					isDirectory: stat.isDirectory(),
 					isFile: stat.isFile(),
+					mtime: stat.mtimeMs,
 				});
 			},
 		], next);
