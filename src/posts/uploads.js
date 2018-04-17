@@ -26,7 +26,7 @@ module.exports = function (Posts) {
 			let match = searchRegex.exec(data.content);
 			const uploads = [];
 			while (match) {
-				uploads.push(match[1]);
+				uploads.push(match[1].replace('-resized', ''));
 				match = searchRegex.exec(data.content);
 			}
 
@@ -54,6 +54,18 @@ module.exports = function (Posts) {
 		db.sortedSetCard('upload:' + md5(filePath) + ':pids', function (err, length) {
 			callback(err, length === 0);
 		});
+	};
+
+	Posts.uploads.getUsage = function (filePaths, callback) {
+		// Given an array of file names, determines which pids they are used in
+		if (!Array.isArray(filePaths)) {
+			filePaths = [filePaths];
+		}
+
+		const keys = filePaths.map(fileObj => 'upload:' + md5(fileObj.name.replace('-resized', '')) + ':pids');
+		async.map(keys, function (key, next) {
+			db.getSortedSetRange(key, 0, -1, next);
+		}, callback);
 	};
 
 	Posts.uploads.associate = function (pid, filePaths, callback) {

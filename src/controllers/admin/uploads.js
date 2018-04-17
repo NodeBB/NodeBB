@@ -8,6 +8,7 @@ var fs = require('fs');
 var jimp = require('jimp');
 
 var meta = require('../../meta');
+var posts = require('../../posts');
 var file = require('../../file');
 var image = require('../../image');
 var plugins = require('../../plugins');
@@ -41,7 +42,7 @@ uploadsController.get = function (req, res, next) {
 
 			filesToData(currentFolder, files, next);
 		},
-		function (files) {
+		function (files, next) {
 			files.sort(function (a, b) {
 				if (a.isDirectory && !b.isDirectory) {
 					return -1;
@@ -50,14 +51,33 @@ uploadsController.get = function (req, res, next) {
 				}
 				return 0;
 			});
-			res.render('admin/manage/uploads', {
-				currentFolder: currentFolder.replace(nconf.get('upload_path'), ''),
-				files: files,
-				breadcrumbs: buildBreadcrumbs(currentFolder),
-				pagination: pagination.create(page, Math.ceil(itemCount / itemsPerPage), req.query),
-			});
+
+			// Add post usage info if in /files
+			if (req.query.dir === '/files') {
+				posts.uploads.getUsage(files, function (err, usage) {
+					files.forEach(function (file, idx) {
+						file.inPids = usage[idx].map(pid => parseInt(pid, 10));
+					});
+
+					next(err, files);
+				});
+			} else {
+				setImmediate(next, null, files);
+			}
 		},
-	], next);
+	], function (err, files) {
+		if (err) {
+			return next(err);
+		}
+
+		res.render('admin/manage/uploads', {
+			currentFolder: currentFolder.replace(nconf.get('upload_path'), ''),
+			showPids: files[0].hasOwnProperty('inPids'),
+			files: files,
+			breadcrumbs: buildBreadcrumbs(currentFolder),
+			pagination: pagination.create(page, Math.ceil(itemCount / itemsPerPage), req.query),
+		});
+	});
 };
 
 function buildBreadcrumbs(currentFolder) {
