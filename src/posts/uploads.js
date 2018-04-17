@@ -2,6 +2,8 @@
 
 var async = require('async');
 var crypto = require('crypto');
+var fs = require('fs');
+var path = require('path');
 
 var db = require('../database');
 
@@ -9,6 +11,7 @@ module.exports = function (Posts) {
 	Posts.uploads = {};
 
 	const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
+	const pathPrefix = path.join(__dirname, '../../public/uploads/files');
 
 	Posts.uploads.sync = function (pid, callback) {
 		// Scans a post and updates sorted set of uploads
@@ -73,12 +76,23 @@ module.exports = function (Posts) {
 		const now = Date.now();
 		filePaths = !Array.isArray(filePaths) ? [filePaths] : filePaths;
 		const scores = filePaths.map(() => now);
-		let methods = [async.apply(db.sortedSetAdd.bind(db), 'post:' + pid + ':uploads', scores, filePaths)];
-		methods = methods.concat(filePaths.map(path => async.apply(db.sortedSetAdd.bind(db), 'upload:' + md5(path) + ':pids', now, pid)));
 
-		async.parallel(methods, function (err) {
-			// Strictly return only err
-			callback(err);
+		async.filter(filePaths, function (filePath, next) {
+			// Only process files that exist
+			fs.access(path.join(pathPrefix, filePath), fs.constants.F_OK | fs.constants.R_OK, function (err) {
+				next(null, !err);
+			});
+		}, function (err, filePaths) {
+			let methods = [async.apply(db.sortedSetAdd.bind(db), 'post:' + pid + ':uploads', scores, filePaths)];
+			if (err) {
+				return callback(err);
+			}
+
+			methods = methods.concat(filePaths.map(path => async.apply(db.sortedSetAdd.bind(db), 'upload:' + md5(path) + ':pids', now, pid)));
+			async.parallel(methods, function (err) {
+				// Strictly return only err
+				callback(err);
+			});
 		});
 	};
 

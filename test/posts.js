@@ -6,6 +6,8 @@ var async = require('async');
 var request = require('request');
 var nconf = require('nconf');
 var crypto = require('crypto');
+var fs = require('fs');
+var path = require('path');
 
 var db = require('./mocks/databasemock');
 var topics = require('../src/topics');
@@ -883,6 +885,10 @@ describe('Post\'s', function () {
 		var pid;
 
 		before(function (done) {
+			// Create stub files for testing
+			['abracadabra.png', 'shazam.jpg', 'whoa.gif', 'amazeballs.jpg', 'wut.txt', 'test.bmp']
+				.forEach(filename => fs.closeSync(fs.openSync(path.join(__dirname, '../public/uploads/files', filename), 'w')));
+
 			topics.post({
 				uid: 1,
 				cid: 1,
@@ -1001,6 +1007,18 @@ describe('Post\'s', function () {
 					done();
 				});
 			});
+
+			it('should not associate a file that does not exist on the local disk', function (done) {
+				async.waterfall([
+					async.apply(posts.uploads.associate, pid, ['nonexistant.xls']),
+					async.apply(posts.uploads.list, pid),
+				], function (err, uploads) {
+					assert.ifError(err);
+					assert.strictEqual(uploads.length, 5);
+					assert.strictEqual(false, uploads.includes('nonexistant.xls'));
+					done();
+				});
+			});
 		});
 
 		describe('.dissociate()', function () {
@@ -1046,7 +1064,7 @@ describe('Post\'s', function () {
 					uid: 1,
 					tid: topicPostData.topicData.tid,
 					timestamp: Date.now(),
-					content: '[abcdef](/assets/uploads/files/shazam.png)',
+					content: '[abcdef](/assets/uploads/files/shazam.jpg)',
 				}, function (err, replyData) {
 					assert.ifError(err);
 					topic = topicPostData;
