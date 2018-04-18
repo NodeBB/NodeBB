@@ -18,7 +18,7 @@
     "invalid-username-or-password": "Podaj nazwę użytkownika i hasło",
     "invalid-search-term": "Błędne wyszukiwane wyrażenie",
     "invalid-url": "Błąd w adresie URL.",
-    "csrf-invalid": "Logowanie nie powiodło się. Przyczyną jest zapewne wygaśnięcie sesji. Spróbój ponownie.",
+    "csrf-invalid": "Logowanie nie powiodło się, zapewne na skutek wygaśnięcia sesji. Spróbuj ponownie.",
     "invalid-pagination-value": "Błędna wartość paginacji, zakres od %1 do %2",
     "username-taken": "Login zajęty",
     "email-taken": "Email zajęty",
