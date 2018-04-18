@@ -380,8 +380,8 @@ authenticationController.localLogin = function (req, username, password, next) {
 				userData: function (next) {
 					db.getObjectFields('user:' + uid, ['password', 'passwordExpiry'], next);
 				},
-				isAdmin: function (next) {
-					user.isAdministrator(uid, next);
+				isAdminOrGlobalMod: function (next) {
+					user.isAdminOrGlobalMod(uid, next);
 				},
 				banned: function (next) {
 					user.isBanned(uid, next);
@@ -391,9 +391,9 @@ authenticationController.localLogin = function (req, username, password, next) {
 		function (result, next) {
 			userData = result.userData;
 			userData.uid = uid;
-			userData.isAdmin = result.isAdmin;
+			userData.isAdminOrGlobalMod = result.isAdminOrGlobalMod;
 
-			if (!result.isAdmin && parseInt(meta.config.allowLocalLogin, 10) === 0) {
+			if (!result.isAdminOrGlobalMod && parseInt(meta.config.allowLocalLogin, 10) === 0) {
 				return next(new Error('[[error:local-login-disabled]]'));
 			}
 
