@@ -349,6 +349,10 @@ $(document).ready(function () {
 				return;
 			}
 
+			if (this.href.test(/^\/(assets|plugins)/i)) {
+				return;
+			}
+
 			var internalLink = utils.isInternalURI(this, window.location, RELATIVE_PATH);
 
 			var process = function () {
