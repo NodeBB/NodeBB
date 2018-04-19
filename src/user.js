@@ -36,6 +36,7 @@ require('./user/invite')(User);
 require('./user/password')(User);
 require('./user/info')(User);
 require('./user/online')(User);
+require('./user/blocks')(User);
 
 User.getUidsFromSet = function (set, start, stop, callback) {
 	if (set === 'users:online') {

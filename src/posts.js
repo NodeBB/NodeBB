@@ -63,6 +63,7 @@ Posts.getPostsByPids = function (pids, uid, callback) {
 				Posts.parsePost(post, next);
 			}, next);
 		},
+		async.apply(user.blocks.filter, uid),
 		function (posts, next) {
 			plugins.fireHook('filter:post.getPosts', { posts: posts, uid: uid }, next);
 		},

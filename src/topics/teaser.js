@@ -57,6 +57,7 @@ module.exports = function (Topics) {
 			function (next) {
 				posts.getPostsFields(teaserPids, ['pid', 'uid', 'timestamp', 'tid', 'content'], next);
 			},
+			async.apply(user.blocks.filter, uid),
 			function (_postData, next) {
 				postData = _postData;
 				var uids = _.uniq(postData.map(function (post) {

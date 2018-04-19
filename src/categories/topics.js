@@ -7,6 +7,7 @@ var db = require('../database');
 var topics = require('../topics');
 var plugins = require('../plugins');
 var meta = require('../meta');
+var user = require('../user');
 
 module.exports = function (Categories) {
 	Categories.getCategoryTopics = function (data, callback) {
@@ -20,6 +21,7 @@ module.exports = function (Categories) {
 			function (tids, next) {
 				topics.getTopicsByTids(tids, data.uid, next);
 			},
+			async.apply(user.blocks.filter, data.uid),
 			function (topics, next) {
 				if (!topics.length) {
 					return next(null, { topics: [], uid: data.uid });

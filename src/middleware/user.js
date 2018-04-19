@@ -220,4 +220,27 @@ module.exports = function (middleware) {
 			return next();
 		}
 	};
+
+	middleware.exposeUid = function (req, res, next) {
+		if (!req.params.userslug) {
+			return next();
+		}
+
+		user.getUidByUserslug(req.params.userslug, function (err, uid) {
+			res.locals.uid = uid;
+			next(err, uid);
+		});
+	};
+
+	middleware.handleBlocking = function (req, res, next) {
+		user.blocks.is(res.locals.uid, req.uid, function (err, blocked) {
+			if (err) {
+				return next(err);
+			} else if (blocked) {
+				res.status(404).render('404', { title: '[[global:404.title]]' });
+			} else {
+				return next();
+			}
+		});
+	};
 };
