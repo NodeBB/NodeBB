@@ -109,9 +109,8 @@ $(document).ready(function () {
 		url = ajaxify.removeRelativePath(url.replace(/^\/|\/$/g, '')).toLowerCase();
 		var isClientToAdmin = url.startsWith('admin') && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') !== 0;
 		var isAdminToClient = !url.startsWith('admin') && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') === 0;
-		var uploadsOrApi = url.startsWith('assets/') || url.startsWith('uploads') || url.startsWith('api');
 
-		if (isClientToAdmin || isAdminToClient || uploadsOrApi) {
+		if (isClientToAdmin || isAdminToClient) {
 			window.open(RELATIVE_PATH + '/' + url, '_top');
 			return true;
 		}
@@ -387,6 +386,13 @@ $(document).ready(function () {
 
 			// Default behaviour for rss feeds
 			if (internalLink && $(this).attr('href') && $(this).attr('href').endsWith('.rss')) {
+				return;
+			}
+
+			// Default behaviour for uploads and direct links to API urls
+			if (internalLink && ['/assets/uploads/', '/api/'].some(function (prefix) {
+				return String(_self.pathname).startsWith(config.relative_path + prefix);
+			})) {
 				return;
 			}
 
