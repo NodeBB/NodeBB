@@ -52,19 +52,27 @@ module.exports = function (User) {
 		], callback);
 	};
 
-	User.blocks.filter = function (uid, set, callback) {
-		// Given whatever is passed in, iterates through it, and removes made by blocked uids
-		if (!Array.isArray(set) || !set[0].hasOwnProperty('uid')) {
+	User.blocks.filter = function (uid, property, set, callback) {
+		// property is optional
+		if (Array.isArray(property) && typeof set === 'function' && !callback) {
+			callback = set;
+			set = property;
+			property = 'uid';
+		}
+
+		// Given whatever is passed in, iterates through it, and removes entries made by blocked uids
+		if (!Array.isArray(set) || !(set[0].hasOwnProperty(property) || typeof set[0] === 'number' || typeof set[0] === 'string')) {
 			return callback(null, set);
 		}
 
+		const isPlain = typeof set[0] !== 'object';
 		User.blocks.list(uid, function (err, blocked_uids) {
 			if (err) {
 				return callback(err);
 			}
 
 			set = set.filter(function (item) {
-				return !blocked_uids.includes(parseInt(item.uid, 10));
+				return !blocked_uids.includes(parseInt(isPlain ? item : item[property], 10));
 			});
 
 			callback(null, set);

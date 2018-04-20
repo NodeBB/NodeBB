@@ -39,6 +39,7 @@ module.exports = function (Messaging) {
 
 				db.getObjects(keys, next);
 			},
+			async.apply(user.blocks.filter, uid, 'fromuid'),
 			function (_messages, next) {
 				messages = _messages.map(function (msg, idx) {
 					if (msg) {
