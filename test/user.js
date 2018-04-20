@@ -1790,6 +1790,16 @@ describe('User', function () {
 			});
 		});
 
+		describe('.is()', function () {
+			it('should return a Boolean with blocked status for the queried uid', function (done) {
+				User.blocks.is(blockeeUid, 1, function (err, blocked) {
+					assert.ifError(err);
+					assert.strictEqual(blocked, true);
+					done();
+				});
+			});
+		});
+
 		describe('.list()', function () {
 			it('should return a list of blocked uids', function (done) {
 				User.blocks.list(1, function (err, blocked_uids) {
