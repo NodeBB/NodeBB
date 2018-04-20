@@ -219,6 +219,15 @@ Messaging.getTeaser = function (uid, roomId, callback) {
 			}
 			Messaging.getMessageFields(mids[0], ['fromuid', 'content', 'timestamp'], next);
 		},
+		function (teaser, next) {
+			user.blocks.is(teaser.fromuid, uid, function (err, blocked) {
+				if (err || blocked) {
+					return callback(err);
+				}
+
+				next(null, teaser);
+			});
+		},
 		function (_teaser, next) {
 			teaser = _teaser;
 			if (!teaser) {

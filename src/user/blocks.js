@@ -29,9 +29,6 @@ module.exports = function (User) {
 				return callback(err);
 			}
 
-			// for debugging
-			// blocked = [2];
-
 			blocked = blocked.map(uid => parseInt(uid, 10)).filter(Boolean);
 			User.blocks._cache.set(uid, blocked);
 			callback(null, blocked);
@@ -61,6 +58,7 @@ module.exports = function (User) {
 	};
 
 	User.blocks.filter = function (uid, property, set, callback) {
+		// Given whatever is passed in, iterates through it, and removes entries made by blocked uids
 		// property is optional
 		if (Array.isArray(property) && typeof set === 'function' && !callback) {
 			callback = set;
@@ -68,7 +66,6 @@ module.exports = function (User) {
 			property = 'uid';
 		}
 
-		// Given whatever is passed in, iterates through it, and removes entries made by blocked uids
 		if (!Array.isArray(set) || !(set[0].hasOwnProperty(property) || typeof set[0] === 'number' || typeof set[0] === 'string')) {
 			return callback(null, set);
 		}

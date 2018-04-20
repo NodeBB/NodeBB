@@ -77,9 +77,19 @@ module.exports = function (Topics) {
 						user.getIgnoredCategories(uid, next);
 					},
 					topicData: function (next) {
-						Topics.getTopicsFields(tids, ['tid', 'cid'], next);
+						Topics.getTopicsFields(tids, ['uid', 'tid', 'cid'], next);
 					},
 				}, next);
+			},
+			function (results, next) {
+				user.blocks.filter(uid, results.topicData, function (err, filtered) {
+					if (err) {
+						return next(err);
+					}
+
+					results.topicData = filtered;
+					next(null, results);
+				});
 			},
 			function (results, next) {
 				cid = cid && cid.map(String);

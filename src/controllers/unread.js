@@ -54,6 +54,12 @@ unreadController.get = function (req, res, next) {
 				cutoff: cutoff,
 			}, next);
 		},
+		function (data, next) {
+			user.blocks.filter(req.uid, data.topics, function (err, filtered) {
+				data.topics = filtered;
+				next(err, data);
+			});
+		},
 		function (data) {
 			data.title = meta.config.homePageTitle || '[[pages:home]]';
 			data.pageCount = Math.max(1, Math.ceil(data.topicCount / settings.topicsPerPage));
