@@ -51,14 +51,14 @@
     "notification_only": "התראות בלבד",
     "email_only": "דוא\"ל בלבד",
     "notification_and_email": "התראות & דוא\"ל",
-    "notificationType_upvote": "When someone upvotes your post",
+    "notificationType_upvote": "כאשר מישהו מצביע בעד הפוסט שלך",
     "notificationType_new-topic": "כשמישהו שאתה עוקב אחריו פרסם נושא",
     "notificationType_new-reply": "כשתגובה חדשה מפורסמת בנושא שאתה צופה בו",
     "notificationType_follow": "כשמישהו מתחיל לעקוב אחריך",
     "notificationType_new-chat": "כשאתה מקבל הודעת צאט",
     "notificationType_group-invite": "כשאתה מקבל הזמנה מקבוצה",
-    "notificationType_new-register": "When someone gets added to registration queue",
+    "notificationType_new-register": "כאשר מישהו מתווסף לתור הרישום",
     "notificationType_post-queue": "כשהודעה חדשה נכנסת לתור",
-    "notificationType_new-post-flag": "When a post is flagged",
-    "notificationType_new-user-flag": "When a user is flagged"
+    "notificationType_new-post-flag": "כאשר פוסט מסומן",
+    "notificationType_new-user-flag": "כאשר משתמש מסומן"
 }
