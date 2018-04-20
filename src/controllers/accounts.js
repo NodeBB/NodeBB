@@ -11,6 +11,7 @@ var accountsController = {
 	notifications: require('./accounts/notifications'),
 	chats: require('./accounts/chats'),
 	session: require('./accounts/session'),
+	blocks: require('./accounts/blocks'),
 };
 
 module.exports = accountsController;

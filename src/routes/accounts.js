@@ -13,6 +13,7 @@ module.exports = function (app, middleware, controllers) {
 	setupPageRoute(app, '/user/:userslug', middleware, middlewares, controllers.accounts.profile.get);
 	setupPageRoute(app, '/user/:userslug/following', middleware, middlewares, controllers.accounts.follow.getFollowing);
 	setupPageRoute(app, '/user/:userslug/followers', middleware, middlewares, controllers.accounts.follow.getFollowers);
+	setupPageRoute(app, '/user/:userslug/blocks', middleware, middlewares, controllers.accounts.blocks.getBlocks);
 	setupPageRoute(app, '/user/:userslug/posts', middleware, middlewares, controllers.accounts.posts.getPosts);
 	setupPageRoute(app, '/user/:userslug/topics', middleware, middlewares, controllers.accounts.posts.getTopics);
 	setupPageRoute(app, '/user/:userslug/best', middleware, middlewares, controllers.accounts.posts.getBestPosts);
