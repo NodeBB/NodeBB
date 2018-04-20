@@ -390,7 +390,7 @@ $(document).ready(function () {
 			}
 
 			// Default behaviour for uploads and direct links to API urls
-			if (internalLink && ['/assets/uploads/', '/api/'].some(function (prefix) {
+			if (internalLink && ['/uploads', '/assets/uploads/', '/api/'].some(function (prefix) {
 				return String(_self.pathname).startsWith(config.relative_path + prefix);
 			})) {
 				return;
