@@ -30,7 +30,7 @@ module.exports = function (User) {
 			}
 
 			// for debugging
-			blocked = [2];
+			// blocked = [2];
 
 			blocked = blocked.map(uid => parseInt(uid, 10)).filter(Boolean);
 			User.blocks._cache.set(uid, blocked);
@@ -41,6 +41,10 @@ module.exports = function (User) {
 	User.blocks.add = function (targetUid, uid, callback) {
 		async.waterfall([
 			async.apply(db.sortedSetAdd.bind(db), 'uid:' + uid + ':blocked_uids', Date.now(), targetUid),
+			function (next) {
+				User.blocks._cache.del(uid);
+				setImmediate(next);
+			},
 			async.apply(User.blocks.list, uid),
 		], callback);
 	};
@@ -48,6 +52,10 @@ module.exports = function (User) {
 	User.blocks.remove = function (targetUid, uid, callback) {
 		async.waterfall([
 			async.apply(db.sortedSetRemove.bind(db), 'uid:' + uid + ':blocked_uids', targetUid),
+			function (next) {
+				User.blocks._cache.del(uid);
+				setImmediate(next);
+			},
 			async.apply(User.blocks.list, uid),
 		], callback);
 	};
