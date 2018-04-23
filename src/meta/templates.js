@@ -47,6 +47,10 @@ Templates.processImports = processImports;
 
 function getTemplateDirs(activePlugins, callback) {
 	var pluginTemplates = activePlugins.map(function (id) {
+		if (id.startsWith('nodebb-theme-')) {
+			return nconf.get('theme_templates_path');
+		}
+
 		return path.join(__dirname, '../../node_modules/', id, plugins.pluginsData[id].templates || 'templates');
 	});
 
