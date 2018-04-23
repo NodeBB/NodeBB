@@ -11,6 +11,7 @@ var _ = require('lodash');
 
 var plugins = require('../plugins');
 var file = require('../file');
+var db = require('../database');
 
 var viewsPath = nconf.get('views_dir');
 
@@ -44,20 +45,16 @@ function processImports(paths, templatePath, source, callback) {
 }
 Templates.processImports = processImports;
 
-function getTemplateDirs(callback) {
-	var pluginTemplates = _.values(plugins.pluginsData)
-		.filter(function (pluginData) {
-			return !pluginData.id.startsWith('nodebb-theme-');
-		})
-		.map(function (pluginData) {
-			return path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.templates || 'templates');
-		});
+function getTemplateDirs(activePlugins, callback) {
+	var pluginTemplates = activePlugins.map(function (id) {
+		return path.join(__dirname, '../../node_modules/', id, plugins.pluginsData[id].templates || 'templates');
+	});
 
 	var themeConfig = require(nconf.get('theme_config'));
 	var theme = themeConfig.baseTheme;
 
 	var themePath;
-	var themeTemplates = [nconf.get('theme_templates_path')];
+	var themeTemplates = [];
 	while (theme) {
 		themePath = path.join(nconf.get('themes_path'), theme);
 		themeConfig = require(path.join(themePath, 'theme.json'));
@@ -117,6 +114,9 @@ function compile(callback) {
 		},
 		function (next) {
 			mkdirp(viewsPath, function (err) { next(err); });
+		},
+		function (next) {
+			db.getSortedSetRange('plugins:active', 0, -1, next);
 		},
 		getTemplateDirs,
 		getTemplateFiles,
