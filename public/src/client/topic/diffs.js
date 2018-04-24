@@ -15,6 +15,8 @@ define('forum/topic/diffs', ['forum/topic/images', 'benchpress', 'translator'], 
 				return app.alertError(err.message);
 			}
 
+			timestamps.unshift(Date.now());
+
 			Benchpress.parse('partials/modals/post_history', {
 				diffs: timestamps.map(function (timestamp) {
 					timestamp = parseInt(timestamp, 10);
