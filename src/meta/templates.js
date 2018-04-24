@@ -50,9 +50,11 @@ function getTemplateDirs(activePlugins, callback) {
 		if (id.startsWith('nodebb-theme-')) {
 			return nconf.get('theme_templates_path');
 		}
-
+		if (!plugins.pluginsData[id]) {
+			return '';
+		}
 		return path.join(__dirname, '../../node_modules/', id, plugins.pluginsData[id].templates || 'templates');
-	});
+	}).filter(Boolean);
 
 	var themeConfig = require(nconf.get('theme_config'));
 	var theme = themeConfig.baseTheme;
