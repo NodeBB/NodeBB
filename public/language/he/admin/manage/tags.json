@@ -7,7 +7,7 @@
 	"create": "צור תג",
 	"modify": "שנה תג",
 	"rename": "שנה שם של תג",
-	"delete": "Delete Selected Tags",
+	"delete": "מחק תגים שנבחרו",
 	"search": "חפש תג...",
 	"settings": "Click <a href=\"%1\">here</a> to visit the tag settings page.",
 	"name": "שם תג",

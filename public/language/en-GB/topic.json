@@ -150,5 +150,7 @@
 
 	"diffs.title": "Post Edit History",
 	"diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
-	"diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
+	"diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
+	"diffs.current-revision": "current revision",
+	"diffs.original-revision": "original revision"
 }

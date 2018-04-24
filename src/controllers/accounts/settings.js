@@ -9,6 +9,7 @@ var meta = require('../../meta');
 var plugins = require('../../plugins');
 var privileges = require('../../privileges');
 var categories = require('../../categories');
+var notifications = require('../../notifications');
 var db = require('../../database');
 var helpers = require('../helpers');
 var accountHelpers = require('./helpers');
@@ -180,15 +181,6 @@ settingsController.get = function (req, res, callback) {
 };
 
 function getNotificationSettings(userData, callback) {
-	var types = [
-		'notificationType_upvote',
-		'notificationType_new-topic',
-		'notificationType_new-reply',
-		'notificationType_follow',
-		'notificationType_new-chat',
-		'notificationType_group-invite',
-	];
-
 	var privilegedTypes = [];
 
 	async.waterfall([
@@ -206,8 +198,7 @@ function getNotificationSettings(userData, callback) {
 				privilegedTypes.push('notificationType_new-user-flag');
 			}
 			plugins.fireHook('filter:user.notificationTypes', {
-				userData: userData,
-				types: types,
+				types: notifications.baseTypes.slice(),
 				privilegedTypes: privilegedTypes,
 			}, next);
 		},
