@@ -1080,14 +1080,12 @@ describe('Topic\'s', function () {
 		});
 
 		it('should mark topic notifications read', function (done) {
-			var socketPosts = require('../src/socket.io/posts');
-
 			async.waterfall([
 				function (next) {
 					socketTopics.follow({ uid: adminUid }, tid, next);
 				},
 				function (next) {
-					socketPosts.reply({ uid: uid }, { content: 'some content', tid: tid }, next);
+					topics.reply({ uid: uid, timestamp: Date.now(), content: 'some content', tid: tid }, next);
 				},
 				function (data, next) {
 					setTimeout(next, 2500);
