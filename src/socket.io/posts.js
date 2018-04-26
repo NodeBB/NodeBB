@@ -59,7 +59,7 @@ function postReply(socket, data, callback) {
 
 			next(null, postData);
 
-			websockets.in('uid_' + socket.uid).emit('event:new_post', result);
+			socket.emit('event:new_post', result);
 
 			user.updateOnlineUsers(socket.uid);
 
