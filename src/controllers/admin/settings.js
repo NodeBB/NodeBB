@@ -4,7 +4,7 @@ var async = require('async');
 
 var meta = require('../../meta');
 var emailer = require('../../emailer');
-var plugins = require('../../plugins');
+var notifications = require('../../notifications');
 
 var settingsController = module.exports;
 
@@ -45,32 +45,12 @@ function renderEmail(req, res, next) {
 }
 
 function renderUser(req, res, next) {
-	var types = [
-		'notificationType_upvote',
-		'notificationType_new-topic',
-		'notificationType_new-reply',
-		'notificationType_follow',
-		'notificationType_new-chat',
-		'notificationType_group-invite',
-	];
-
-	var privilegedTypes = [
-		'notificationType_new-register',
-		'notificationType_post-queue',
-		'notificationType_new-post-flag',
-		'notificationType_new-user-flag',
-	];
-
 	async.waterfall([
 		function (next) {
-			plugins.fireHook('filter:user.notificationTypes', {
-				userData: {},
-				types: types,
-				privilegedTypes: privilegedTypes,
-			}, next);
+			notifications.getAllNotificationTypes(next);
 		},
-		function (results) {
-			var notificationSettings = results.types.concat(results.privilegedTypes).map(function (type) {
+		function (notificationTypes) {
+			var notificationSettings = notificationTypes.map(function (type) {
 				return {
 					name: type,
 					label: '[[notifications:' + type + ']]',

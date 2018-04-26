@@ -17,6 +17,36 @@ var emailer = require('./emailer');
 
 var Notifications = module.exports;
 
+Notifications.baseTypes = [
+	'notificationType_upvote',
+	'notificationType_new-topic',
+	'notificationType_new-reply',
+	'notificationType_follow',
+	'notificationType_new-chat',
+	'notificationType_group-invite',
+];
+
+Notifications.privilegedTypes = [
+	'notificationType_new-register',
+	'notificationType_post-queue',
+	'notificationType_new-post-flag',
+	'notificationType_new-user-flag',
+];
+
+Notifications.getAllNotificationTypes = function (callback) {
+	async.waterfall([
+		function (next) {
+			plugins.fireHook('filter:user.notificationTypes', {
+				types: Notifications.baseTypes.slice(),
+				privilegedTypes: Notifications.privilegedTypes.slice(),
+			}, next);
+		},
+		function (results, next) {
+			next(null, results.types.concat(results.privilegedTypes));
+		},
+	], callback);
+};
+
 Notifications.startJobs = function () {
 	winston.verbose('[notifications.init] Registering jobs.');
 	new cron('*/30 * * * *', Notifications.prune, null, true);

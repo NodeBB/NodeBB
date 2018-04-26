@@ -8,7 +8,12 @@ module.exports = {
 	name: 'Change the schema of simple keys so they don\'t use value field (mongodb only)',
 	timestamp: Date.UTC(2017, 11, 18),
 	method: function (callback) {
-		var configJSON = require('../../../config.json');
+		var configJSON;
+		try {
+			configJSON = require('../../../config.json') || { [process.env.database]: true, database: process.env.database };
+		} catch (err) {
+			configJSON = { [process.env.database]: true, database: process.env.database };
+		}
 		var isMongo = configJSON.hasOwnProperty('mongo') && configJSON.database === 'mongo';
 		var progress = this.progress;
 		if (!isMongo) {

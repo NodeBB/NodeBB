@@ -182,6 +182,19 @@ define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], functio
 					return app.alertError(err.message);
 				}
 				$('#order-active-plugins-modal').modal('hide');
+
+				app.alert({
+					alert_id: 'plugin_reordered',
+					title: '[[admin/extend/plugins:alert.reorder]]',
+					message: '[[admin/extend/plugins:alert.reorder-success]]',
+					type: 'success',
+					timeout: 5000,
+					clickfn: function () {
+						require(['admin/modules/instance'], function (instance) {
+							instance.rebuildAndRestart();
+						});
+					},
+				});
 			});
 		});
 

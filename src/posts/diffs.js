@@ -27,7 +27,7 @@ Diffs.get = function (pid, since, callback) {
 		function (timestamps, next) {
 			// Pass those made after `since`, and create keys
 			const keys = timestamps.filter(function (timestamp) {
-				return (parseInt(timestamp, 10) || 0) > since;
+				return (parseInt(timestamp, 10) || 0) >= since;
 			}).map(function (timestamp) {
 				return 'diff:' + pid + '.' + timestamp;
 			});
