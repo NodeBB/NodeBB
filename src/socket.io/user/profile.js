@@ -200,4 +200,13 @@ module.exports = function (SocketUser) {
 			},
 		], callback);
 	};
+
+	SocketUser.toggleBlock = function (socket, data, callback) {
+		async.waterfall([
+			async.apply(user.blocks.is, data.uid, socket.uid),
+			function (is, next) {
+				user.blocks[is ? 'remove' : 'add'](data.uid, socket.uid, next);
+			},
+		], callback);
+	};
 };
