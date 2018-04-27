@@ -37,8 +37,10 @@ module.exports = function (User) {
 
 	User.blocks.add = function (targetUid, uid, callback) {
 		async.waterfall([
+			async.apply(this.stateCheck, true, targetUid, uid),
 			async.apply(db.sortedSetAdd.bind(db), 'uid:' + uid + ':blocked_uids', Date.now(), targetUid),
-			function (next) {
+			async.apply(User.incrementUserFieldBy, uid, 'blocksCount', 1),
+			function (_blank, next) {
 				User.blocks._cache.del(uid);
 				setImmediate(next);
 			},
@@ -48,13 +50,21 @@ module.exports = function (User) {
 
 	User.blocks.remove = function (targetUid, uid, callback) {
 		async.waterfall([
+			async.apply(this.stateCheck, false, targetUid, uid),
 			async.apply(db.sortedSetRemove.bind(db), 'uid:' + uid + ':blocked_uids', targetUid),
-			function (next) {
+			async.apply(User.decrementUserFieldBy, uid, 'blocksCount', 1),
+			function (_blank, next) {
 				User.blocks._cache.del(uid);
 				setImmediate(next);
 			},
 			async.apply(User.blocks.list, uid),
 		], callback);
+	};
+
+	User.blocks.stateCheck = function (block, targetUid, uid, callback) {
+		User.blocks.is(targetUid, uid, function (err, is) {
+			callback(err || (is === block ? new Error('[[error:already-' + (block ? 'blocked' : 'unblocked') + ']]') : null));
+		});
 	};
 
 	User.blocks.filter = function (uid, property, set, callback) {
