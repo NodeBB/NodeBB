@@ -30,6 +30,8 @@ module.exports = function (app, middleware, controllers) {
 	setupPageRoute(app, '/user/:userslug/edit/password', middleware, accountMiddlewares, controllers.accounts.edit.password);
 	setupPageRoute(app, '/user/:userslug/info', middleware, accountMiddlewares, controllers.accounts.info.get);
 	setupPageRoute(app, '/user/:userslug/settings', middleware, accountMiddlewares, controllers.accounts.settings.get);
+	setupPageRoute(app, '/user/:userslug/uploads', middleware, accountMiddlewares, controllers.accounts.uploads.get);
+	setupPageRoute(app, '/user/:userslug/consent', middleware, accountMiddlewares, controllers.accounts.consent.get);
 
 	app.delete('/api/user/:userslug/session/:uuid', [middleware.exposeUid, middleware.ensureSelfOrGlobalPrivilege], controllers.accounts.session.revoke);
 

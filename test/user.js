@@ -1434,6 +1434,7 @@ describe('User', function () {
 				password: '123456',
 				'password-confirm': '123456',
 				email: '<script>alert("ok")<script>reject@me.com',
+				gdpr_consent: true,
 			}, function (err) {
 				assert.ifError(err);
 				helpers.loginUser('admin', '123456', function (err, jar) {
@@ -1465,6 +1466,7 @@ describe('User', function () {
 				password: '123456',
 				'password-confirm': '123456',
 				email: 'accept@me.com',
+				gdpr_consent: true,
 			}, function (err) {
 				assert.ifError(err);
 				socketAdmin.user.acceptRegistration({ uid: adminUid }, { username: 'acceptme' }, function (err, uid) {

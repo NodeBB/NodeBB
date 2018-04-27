@@ -340,3 +340,16 @@ SocketUser.setModerationNote = function (socket, data, callback) {
 		},
 	], callback);
 };
+
+SocketUser.deleteUpload = function (socket, data, callback) {
+	if (!data || !data.name || !data.uid) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	user.deleteUpload(socket.uid, data.uid, data.name, callback);
+};
+
+SocketUser.gdpr = {};
+
+SocketUser.gdpr.consent = function (socket, data, callback) {
+	user.setUserField(socket.uid, 'gdpr_consent', 1, callback);
+};

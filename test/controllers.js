@@ -1336,13 +1336,17 @@ describe('Controllers', function () {
 				name: 'selectedGroup',
 			}, function (err) {
 				assert.ifError(err);
-				groups.join('selectedGroup', fooUid, function (err) {
+				user.create({ username: 'groupie' }, function (err, uid) {
 					assert.ifError(err);
-					request(nconf.get('url') + '/api/user/foo', { json: true }, function (err, res, body) {
+					groups.join('selectedGroup', uid, function (err) {
 						assert.ifError(err);
-						assert.equal(res.statusCode, 200);
-						assert(body.selectedGroup.name, 'selectedGroup');
-						done();
+						request(nconf.get('url') + '/api/user/groupie', { json: true }, function (err, res, body) {
+							assert.ifError(err);
+							assert.equal(res.statusCode, 200);
+							assert(Array.isArray(body.selectedGroup));
+							assert.equal(body.selectedGroup[0].name, 'selectedGroup');
+							done();
+						});
 					});
 				});
 			});

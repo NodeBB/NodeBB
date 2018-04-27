@@ -51,6 +51,8 @@ Flags.init = function (callback) {
 			cid: function (sets, orSets, key) {
 				prepareSets(sets, orSets, 'flags:byCid:', key);
 			},
+			page: function () {	/* noop */ },
+			perPage: function () {	/* noop */ },
 			quick: function (sets, orSets, key, uid) {
 				switch (key) {
 				case 'mine':
@@ -121,14 +123,16 @@ Flags.list = function (filters, uid, callback) {
 	var sets = [];
 	var orSets = [];
 
-	if (Object.keys(filters).length > 0) {
-		for (var type in filters) {
-			if (filters.hasOwnProperty(type)) {
-				if (Flags._filters.hasOwnProperty(type)) {
-					Flags._filters[type](sets, orSets, filters[type], uid);
-				} else {
-					winston.warn('[flags/list] No flag filter type found: ' + type);
-				}
+	// Default filter
+	filters.page = filters.hasOwnProperty('page') ? Math.abs(parseInt(filters.page, 10) || 1) : 1;
+	filters.perPage = filters.hasOwnProperty('perPage') ? Math.abs(parseInt(filters.perPage, 10) || 20) : 20;
+
+	for (var type in filters) {
+		if (filters.hasOwnProperty(type)) {
+			if (Flags._filters.hasOwnProperty(type)) {
+				Flags._filters[type](sets, orSets, filters[type], uid);
+			} else {
+				winston.warn('[flags/list] No flag filter type found: ' + type);
 			}
 		}
 	}
@@ -165,6 +169,11 @@ Flags.list = function (filters, uid, callback) {
 			}
 		},
 		function (flagIds, next) {
+			// Create subset for parsing based on page number (n=20)
+			const flagsPerPage = Math.abs(parseInt(filters.perPage, 10) || 1);
+			const pageCount = Math.ceil(flagIds.length / flagsPerPage);
+			flagIds = flagIds.slice((filters.page - 1) * flagsPerPage, filters.page * flagsPerPage);
+
 			async.map(flagIds, function (flagId, next) {
 				async.waterfall([
 					async.apply(db.getObject, 'flag:' + flagId),
@@ -206,13 +215,20 @@ Flags.list = function (filters, uid, callback) {
 						datetimeISO: utils.toISOString(flagObj.datetime),
 					}));
 				});
-			}, next);
+			}, function (err, flags) {
+				next(err, flags, pageCount);
+			});
 		},
-		function (flags, next) {
+		function (flags, pageCount, next) {
 			plugins.fireHook('filter:flags.list', {
 				flags: flags,
+				page: filters.page,
 			}, function (err, data) {
-				next(err, data.flags);
+				next(err, {
+					flags: data.flags,
+					page: data.page,
+					pageCount: pageCount,
+				});
 			});
 		},
 	], callback);

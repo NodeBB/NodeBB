@@ -205,7 +205,7 @@ function setupDefaultConfigs(meta, next) {
 
 function giveDefaultGlobalPrivileges(next) {
 	var privileges = require('../../src/privileges');
-	privileges.global.give(['chat', 'upload:post:image'], 'registered-users', next);
+	privileges.global.give(['chat', 'upload:post:image', 'signature'], 'registered-users', next);
 }
 
 function enableDefaultPlugins(callback) {

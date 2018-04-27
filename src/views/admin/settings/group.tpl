@@ -29,6 +29,17 @@
 				[[admin/settings/group:allow-creation-help]]
 			</p>
 
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="allowMultipleBadges">
+					<span class="mdl-switch__label"><strong>Allow Multiple Badges</strong></span>
+				</label>
+			</div>
+
+			<p class="help-block">
+				[[admin/settings/group:allow-multiple-badges-help]]
+			</p>
+
 			<label>[[admin/settings/group:max-name-length]]</label>
 			<input class="form-control" type="text" placeholder="255" data-field="maximumGroupNameLength" />
 		</form>

@@ -361,7 +361,7 @@ function createGlobalModeratorsGroup(next) {
 
 function giveGlobalPrivileges(next) {
 	var privileges = require('./privileges');
-	privileges.global.give(['chat', 'upload:post:image'], 'registered-users', next);
+	privileges.global.give(['chat', 'upload:post:image', 'signature'], 'registered-users', next);
 }
 
 function createCategories(next) {

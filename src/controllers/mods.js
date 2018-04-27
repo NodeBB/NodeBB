@@ -7,15 +7,17 @@ var categories = require('../categories');
 var flags = require('../flags');
 var analytics = require('../analytics');
 var plugins = require('../plugins');
-var adminPostQueueController = require('./admin/postqueue');
+var pagination = require('../pagination');
 
+var adminPostQueueController = require('./admin/postqueue');
 var modsController = module.exports;
 modsController.flags = {};
 
 modsController.flags.list = function (req, res, next) {
 	var filters;
 	var hasFilter;
-	var validFilters = ['assignee', 'state', 'reporterId', 'type', 'targetUid', 'cid', 'quick'];
+	var validFilters = ['assignee', 'state', 'reporterId', 'type', 'targetUid', 'cid', 'quick', 'page', 'perPage'];
+
 	async.waterfall([
 		function (next) {
 			async.parallel({
@@ -62,6 +64,11 @@ modsController.flags.list = function (req, res, next) {
 				}
 			}
 
+			// Pagination doesn't count as a filter
+			if (Object.keys(filters).length === 2 && filters.hasOwnProperty('page') && filters.hasOwnProperty('perPage')) {
+				hasFilter = false;
+			}
+
 			async.parallel({
 				flags: async.apply(flags.list, filters, req.uid),
 				analytics: async.apply(analytics.getDailyStatsForSet, 'analytics:flags', Date.now(), 30),
@@ -92,12 +99,13 @@ modsController.flags.list = function (req, res, next) {
 			}, {});
 
 			res.render('flags/list', {
-				flags: data.flags,
+				flags: data.flags.flags,
 				analytics: data.analytics,
 				categories: data.categories,
 				hasFilter: hasFilter,
 				filters: filters,
 				title: '[[pages:flags]]',
+				pagination: pagination.create(data.flags.page, data.flags.pageCount, req.query),
 			});
 		},
 	], next);

@@ -155,15 +155,18 @@ describe('Flags', function () {
 
 	describe('.list()', function () {
 		it('should show a list of flags (with one item)', function (done) {
-			Flags.list({}, 1, function (err, flags) {
+			Flags.list({}, 1, function (err, payload) {
 				assert.ifError(err);
-				assert.ok(Array.isArray(flags));
-				assert.equal(flags.length, 1);
+				assert.ok(payload.hasOwnProperty('flags'));
+				assert.ok(payload.hasOwnProperty('page'));
+				assert.ok(payload.hasOwnProperty('pageCount'));
+				assert.ok(Array.isArray(payload.flags));
+				assert.equal(payload.flags.length, 1);
 
-				Flags.get(flags[0].flagId, function (err, flagData) {
+				Flags.get(payload.flags[0].flagId, function (err, flagData) {
 					assert.ifError(err);
-					assert.equal(flags[0].flagId, flagData.flagId);
-					assert.equal(flags[0].description, flagData.description);
+					assert.equal(payload.flags[0].flagId, flagData.flagId);
+					assert.equal(payload.flags[0].description, flagData.description);
 					done();
 				});
 			});
@@ -173,10 +176,13 @@ describe('Flags', function () {
 			it('should return a filtered list of flags if said filters are passed in', function (done) {
 				Flags.list({
 					state: 'open',
-				}, 1, function (err, flags) {
+				}, 1, function (err, payload) {
 					assert.ifError(err);
-					assert.ok(Array.isArray(flags));
-					assert.strictEqual(1, parseInt(flags[0].flagId, 10));
+					assert.ok(payload.hasOwnProperty('flags'));
+					assert.ok(payload.hasOwnProperty('page'));
+					assert.ok(payload.hasOwnProperty('pageCount'));
+					assert.ok(Array.isArray(payload.flags));
+					assert.strictEqual(1, parseInt(payload.flags[0].flagId, 10));
 					done();
 				});
 			});
@@ -184,10 +190,13 @@ describe('Flags', function () {
 			it('should return no flags if a filter with no matching flags is used', function (done) {
 				Flags.list({
 					state: 'rejected',
-				}, 1, function (err, flags) {
+				}, 1, function (err, payload) {
 					assert.ifError(err);
-					assert.ok(Array.isArray(flags));
-					assert.strictEqual(0, flags.length);
+					assert.ok(payload.hasOwnProperty('flags'));
+					assert.ok(payload.hasOwnProperty('page'));
+					assert.ok(payload.hasOwnProperty('pageCount'));
+					assert.ok(Array.isArray(payload.flags));
+					assert.strictEqual(0, payload.flags.length);
 					done();
 				});
 			});
@@ -195,10 +204,13 @@ describe('Flags', function () {
 			it('should return a flag when filtered by cid 1', function (done) {
 				Flags.list({
 					cid: 1,
-				}, 1, function (err, flags) {
+				}, 1, function (err, payload) {
 					assert.ifError(err);
-					assert.ok(Array.isArray(flags));
-					assert.strictEqual(1, flags.length);
+					assert.ok(payload.hasOwnProperty('flags'));
+					assert.ok(payload.hasOwnProperty('page'));
+					assert.ok(payload.hasOwnProperty('pageCount'));
+					assert.ok(Array.isArray(payload.flags));
+					assert.strictEqual(1, payload.flags.length);
 					done();
 				});
 			});
@@ -206,10 +218,13 @@ describe('Flags', function () {
 			it('shouldn\'t return a flag when filtered by cid 2', function (done) {
 				Flags.list({
 					cid: 2,
-				}, 1, function (err, flags) {
+				}, 1, function (err, payload) {
 					assert.ifError(err);
-					assert.ok(Array.isArray(flags));
-					assert.strictEqual(0, flags.length);
+					assert.ok(payload.hasOwnProperty('flags'));
+					assert.ok(payload.hasOwnProperty('page'));
+					assert.ok(payload.hasOwnProperty('pageCount'));
+					assert.ok(Array.isArray(payload.flags));
+					assert.strictEqual(0, payload.flags.length);
 					done();
 				});
 			});
@@ -217,10 +232,13 @@ describe('Flags', function () {
 			it('should return a flag when filtered by both cid 1 and 2', function (done) {
 				Flags.list({
 					cid: [1, 2],
-				}, 1, function (err, flags) {
+				}, 1, function (err, payload) {
 					assert.ifError(err);
-					assert.ok(Array.isArray(flags));
-					assert.strictEqual(1, flags.length);
+					assert.ok(payload.hasOwnProperty('flags'));
+					assert.ok(payload.hasOwnProperty('page'));
+					assert.ok(payload.hasOwnProperty('pageCount'));
+					assert.ok(Array.isArray(payload.flags));
+					assert.strictEqual(1, payload.flags.length);
 					done();
 				});
 			});
@@ -229,10 +247,13 @@ describe('Flags', function () {
 				Flags.list({
 					cid: [1, 2],
 					state: 'open',
-				}, 1, function (err, flags) {
+				}, 1, function (err, payload) {
 					assert.ifError(err);
-					assert.ok(Array.isArray(flags));
-					assert.strictEqual(1, flags.length);
+					assert.ok(payload.hasOwnProperty('flags'));
+					assert.ok(payload.hasOwnProperty('page'));
+					assert.ok(payload.hasOwnProperty('pageCount'));
+					assert.ok(Array.isArray(payload.flags));
+					assert.strictEqual(1, payload.flags.length);
 					done();
 				});
 			});
@@ -241,10 +262,13 @@ describe('Flags', function () {
 				Flags.list({
 					cid: [1, 2],
 					state: 'resolved',
-				}, 1, function (err, flags) {
+				}, 1, function (err, payload) {
 					assert.ifError(err);
-					assert.ok(Array.isArray(flags));
-					assert.strictEqual(0, flags.length);
+					assert.ok(payload.hasOwnProperty('flags'));
+					assert.ok(payload.hasOwnProperty('page'));
+					assert.ok(payload.hasOwnProperty('pageCount'));
+					assert.ok(Array.isArray(payload.flags));
+					assert.strictEqual(0, payload.flags.length);
 					done();
 				});
 			});

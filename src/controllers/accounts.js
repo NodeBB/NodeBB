@@ -12,6 +12,8 @@ var accountsController = {
 	chats: require('./accounts/chats'),
 	session: require('./accounts/session'),
 	blocks: require('./accounts/blocks'),
+	uploads: require('./accounts/uploads'),
+	consent: require('./accounts/consent'),
 };
 
 module.exports = accountsController;
