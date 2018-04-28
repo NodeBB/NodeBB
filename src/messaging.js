@@ -220,6 +220,9 @@ Messaging.getTeaser = function (uid, roomId, callback) {
 			Messaging.getMessageFields(mids[0], ['fromuid', 'content', 'timestamp'], next);
 		},
 		function (teaser, next) {
+			if (!teaser) {
+				return callback();
+			}
 			user.blocks.is(teaser.fromuid, uid, function (err, blocked) {
 				if (err || blocked) {
 					return callback(err);

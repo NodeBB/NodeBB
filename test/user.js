@@ -1783,7 +1783,7 @@ describe('User', function () {
 			it('should automatically increment corresponding user field', function (done) {
 				db.getObjectField('user:1', 'blocksCount', function (err, count) {
 					assert.ifError(err);
-					assert.strictEqual(count, '1');
+					assert.strictEqual(parseInt(count, 10), 1);
 					done();
 				});
 			});
@@ -1809,7 +1809,7 @@ describe('User', function () {
 			it('should automatically decrement corresponding user field', function (done) {
 				db.getObjectField('user:1', 'blocksCount', function (err, count) {
 					assert.ifError(err);
-					assert.strictEqual(count, '0');
+					assert.strictEqual(parseInt(count, 10), 0);
 					done();
 				});
 			});
