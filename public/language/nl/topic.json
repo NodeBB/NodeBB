@@ -118,8 +118,8 @@
     "sort_by": "Sorteer op",
     "oldest_to_newest": "Oudste berichten bovenaan",
     "newest_to_oldest": "Meest recente berichten bovenaan",
-    "most_votes": "Meeste aantal stemmen",
-    "most_posts": "Meeste aantal reacties",
+    "most_votes": "Most Votes",
+    "most_posts": "Most Posts",
     "stale.title": "Een nieuw onderwerp maken in de plaats?",
     "stale.warning": "Het onderwerp waar je op antwoord is vrij oud. Zou je graag een nieuw onderwerp maken met een referentie naar dit onderwerp in je antwoord?",
     "stale.create": "Maak een nieuw onderwerp",
@@ -127,5 +127,7 @@
     "link_back": "Re: [%1](%2)",
     "diffs.title": "Bericht revisie geschiedenis",
     "diffs.description": "Dit bericht heeft <strong>%1</strong> revisies. Klik op een revisie hieronder om het bericht te zien op dat punt in de tijd.",
-    "diffs.no-revisions-description": "Dit bericht heeft <strong>%1</strong> revisies."
+    "diffs.no-revisions-description": "Dit bericht heeft <strong>%1</strong> revisies.",
+    "diffs.current-revision": "current revision",
+    "diffs.original-revision": "original revision"
 }

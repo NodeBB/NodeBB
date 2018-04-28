@@ -49,6 +49,8 @@
     "account/upvoted": "رای مثبت داده شده به پست ها توسط  %1",
     "account/downvoted": "رای منفی داده شده به پست ها توسط %1",
     "account/best": "بهترین پست های ارسال شده توسط %1",
+    "account/blocks": "Blocked users for %1",
+    "account/uploads": "Uploads by %1",
     "confirm": "ایمیل تایید شد",
     "maintenance.text": "%1 در حال حاضر تحت تعمیر و نگهدارییست. لطفا زمان دیگری مراجعه کنید.",
     "maintenance.messageIntro": "علاوه بر این، مدیر این پیام را گذاشته است:",

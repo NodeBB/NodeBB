@@ -2,5 +2,8 @@
     "uploading-file": "Subiendo el archivo...",
     "select-file-to-upload": "¡Selecciona un archivo para subir!",
     "upload-success": "¡Archivo subido correctamente!",
-    "maximum-file-size": "Máximo %1 kb"
+    "maximum-file-size": "Máximo %1 kb",
+    "no-uploads-found": "No uploads found",
+    "public-uploads-info": "Uploads are public, all visitors can see them.",
+    "private-uploads-info": "Uploads are private, only logged in users can see them."
 }

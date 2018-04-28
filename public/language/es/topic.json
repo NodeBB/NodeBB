@@ -118,8 +118,8 @@
     "sort_by": "Ordenar",
     "oldest_to_newest": "Más antiguo a más nuevo",
     "newest_to_oldest": "Más nuevo a más antiguo",
-    "most_votes": "Mayor número de votos",
-    "most_posts": "Mayor número de mensajes",
+    "most_votes": "Most Votes",
+    "most_posts": "Most Posts",
     "stale.title": "¿Crear un nuevo hilo en su lugar?",
     "stale.warning": "El hilo al que estás respondiendo es muy antiguo. ¿Quieres crear un nuevo hilo en su lugar y añadir una referencia a este en tu mensaje?",
     "stale.create": "Crear un nuevo hilo",
@@ -127,5 +127,7 @@
     "link_back": "Re: [%1](%2)",
     "diffs.title": "Post Edit History",
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
-    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
+    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
+    "diffs.current-revision": "current revision",
+    "diffs.original-revision": "original revision"
 }

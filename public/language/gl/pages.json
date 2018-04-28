@@ -49,6 +49,8 @@
     "account/upvoted": "Mensaxes votadas positivamente por %1",
     "account/downvoted": "Mensaxes votadas negativamente por %1",
     "account/best": "Mellores mensaxes escritas por %1",
+    "account/blocks": "Blocked users for %1",
+    "account/uploads": "Uploads by %1",
     "confirm": "Enderezo electrónico confirmado",
     "maintenance.text": "%1 está baixo mantemento. Por favor, volve máis tarde.",
     "maintenance.messageIntro": "A máis, o administrador deixou esta mensaxe: ",

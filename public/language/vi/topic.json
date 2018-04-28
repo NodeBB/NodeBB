@@ -118,8 +118,8 @@
     "sort_by": "Sắp xếp theo",
     "oldest_to_newest": "Cũ đến mới",
     "newest_to_oldest": "Mới đến cũ",
-    "most_votes": "Bình chọn nhiều nhất",
-    "most_posts": "Có nhiều bài viết nhất",
+    "most_votes": "Most Votes",
+    "most_posts": "Most Posts",
     "stale.title": "Tạo chủ đề mới?",
     "stale.warning": "Chủ đề bạn đang trả lời đã khá cũ. Bạn có muốn tạo chủ đề mới, và liên kết với chủ đề hiện tại trong bài viết trả lời của bạn?",
     "stale.create": "Tạo chủ đề mới",
@@ -127,5 +127,7 @@
     "link_back": "Re: [%1](%2)",
     "diffs.title": "Lịch sử chỉnh sửa bài viết",
     "diffs.description": "Bài viết này có <strong>%1</strong> sửa đổi. Chọn một trong các thời điểm dưới đây để xem nội dung bài viết",
-    "diffs.no-revisions-description": "Bài viết này có <strong>%1</strong> sửa đổi"
+    "diffs.no-revisions-description": "Bài viết này có <strong>%1</strong> sửa đổi",
+    "diffs.current-revision": "current revision",
+    "diffs.original-revision": "original revision"
 }

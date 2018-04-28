@@ -5,6 +5,7 @@
 	"private-groups.warning": "<strong>Ale pozor</strong>, ak je táto možnosť zakázaná a vy máte súkromné ​​skupiny, stanú sa automaticky verejnými.",
 	"allow-creation": "Povoliť vytvorenie skupín",
 	"allow-creation-help": "Ak je povolené, používatelia môžu vytvoriť skupiny <em>(Predvolené: zakázané)</em>",
+	"allow-multiple-badges-help": "This flag can be used to allow users to select multiple group badges, requires theme support.",
 	"max-name-length": "Maximálna dĺžka názvu skupiny",
 	"cover-image": "Obrázok skupiny",
 	"default-cover": "Predvolený obrázok",

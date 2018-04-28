@@ -44,6 +44,8 @@
 	"alert.package-manager-unreachable": "<p>NodeBB nie może dostać się do menedżera pakietów, aktualizacja nie jest sugerowana w tym momencie.</p>",
 	"alert.incompatible": "<p>Twoja wersja NodeBB (v%1) umożliwia uaktualnienie jedynie do v%2 tej wtyczki. Proszę zaktualizuj twoje NodeBB, jeżeli chcesz zainstalować nowszą wersję tej wtyczki.</p>",
 	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>Nie znaleziono informacji o kompatybilności</strong></p><p>Ta wtyczka nie specyfikuje konkretnej wersji NodeBB. Pełna zgodność nie może być zagwarantowana oraz może się zdarzyć, że NodeBB nie będzie uruchamiać się prawidłowo.</p></div><p>W przypadku, gdy NodeBB nie możne się poprawnie uruchomić:</p><pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre><p>Kontynuować instalacje ostatniej wersji tej wtyczki?</p>",
+	"alert.reorder": "Plugins Re-ordered",
+	"alert.reorder-success": "Please rebuild and restart your NodeBB to fully complete the process.",
 
 	"license.title": "Informacje o licencji wtyczki",
 	"license.intro": "Wtyczka <strong>%1</strong> jest licencjonowana według %2. Proszę zapoznać się z warunkami licencji przed aktywacją tej wtyczki.",

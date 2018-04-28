@@ -19,5 +19,8 @@
     "terms_of_use_error": "Devi accettare i Termini d'Utilizzo",
     "registration-added-to-queue": "La tua registrazione è stata aggiunta alla coda di moderazione. Riceverai una mail quando verrà accettata da un amministratore.",
     "interstitial.intro": "Abbiamo bisogno di qualche informazione in più prima di poter creare il tuo account.",
-    "interstitial.errors-found": "Non abbiamo potuto completare la tua registrazione:"
+    "interstitial.errors-found": "Non abbiamo potuto completare la tua registrazione:",
+    "gdpr_agree_data": "I consent to the collection and processing of my personal information on this website.",
+    "gdpr_agree_email": "I consent to receive digest and notification emails from this website.",
+    "gdpr_consent_denied": "You must give consent to this site to collect/process your information, and to send you emails."
 }

@@ -44,6 +44,8 @@
 	"alert.package-manager-unreachable": "<p>NodeBB paket yöneticisine ulaşamadı, şu anda bir yükseltme önerilmedi.</p>",
 	"alert.incompatible": "<p>NodeBB sürümünüz (v%1) bu eklentinin v%2 sürümüne yükseltilmesi için temizlendi. Bu eklentinin yeni versiyonunu yüklemek için lütfen NodeBB'yi güncelleyin.",
 	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>Uyumluluk Bilgisi Bulunamadı.</strong></p><p>Bu eklenti, NodeBB sürümünüze göre kurulum için belirli bir sürümü belirtmedi. Tam uyumluluk garanti edilemez ve NodeBB'nizin artık düzgün çalışmamasına neden olabilir.</p></div> <p>NodeBB düzgün şekilde önyükleme yapamıyorsa: $ ./nodebb reset plugin = \"%1\"<code><pre> <p>Bu eklentinin en yeni sürümünü yüklemeye devam et?</p>",
+	"alert.reorder": "Plugins Re-ordered",
+	"alert.reorder-success": "Please rebuild and restart your NodeBB to fully complete the process.",
 
 	"license.title": "Eklenti Lisans Bilgisi",
 	"license.intro": "% 1 eklentisi,% 2 altında lisanslanmıştır. Lütfen bu eklentiyi etkinleştirmeden önce lisans koşullarını okuyun ve anlayın.",

@@ -49,6 +49,8 @@
     "account/upvoted": "Príspevky, ktorým používateľ %1 dal hlas",
     "account/downvoted": "Nesúhlasí s príspevkom %1",
     "account/best": "Najlepšie príspevky vytvorené užívateľom %1",
+    "account/blocks": "Blocked users for %1",
+    "account/uploads": "Uploads by %1",
     "confirm": "E-mail potvrdený",
     "maintenance.text": "%1 v súčasnej dobe prebieha údržba. Prosíme, vráťte sa neskôr.",
     "maintenance.messageIntro": "Správca, dodatočne zanechal túto správu:",

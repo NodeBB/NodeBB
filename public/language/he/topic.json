@@ -118,8 +118,8 @@
     "sort_by": "סדר על-פי",
     "oldest_to_newest": "מהישן לחדש",
     "newest_to_oldest": "מהחדש לישן",
-    "most_votes": "הכי הרבה הצבעות",
-    "most_posts": "הכי הרבה פוסטים",
+    "most_votes": "Most Votes",
+    "most_posts": "Most Posts",
     "stale.title": "פתח נושא חדש במקום?",
     "stale.warning": "הנושא בו אתה מגיב הוא דיי ישן. האם ברצונך לפתוח נושא חדש, ולהזכיר את הנושא הזה בתגובתך?",
     "stale.create": "צור נושא חדש",
@@ -127,5 +127,7 @@
     "link_back": "תגובה: [%1](%2)",
     "diffs.title": "Post Edit History",
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
-    "diffs.no-revisions-description": "לפוסט זה יש <strong>%1</strong>גרסאות"
+    "diffs.no-revisions-description": "לפוסט זה יש <strong>%1</strong>גרסאות",
+    "diffs.current-revision": "current revision",
+    "diffs.original-revision": "original revision"
 }

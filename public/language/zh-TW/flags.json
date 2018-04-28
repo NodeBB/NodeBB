@@ -18,6 +18,7 @@
 	"filter-type": "Flag Type",
 	"filter-type-all": "All Content",
 	"filter-type-post": "文章",
+	"filter-type-user": "User",
 	"filter-state": "State",
 	"filter-assignee": "Assignee UID",
 	"filter-cid": "分類",

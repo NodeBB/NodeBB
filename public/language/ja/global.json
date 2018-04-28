@@ -97,6 +97,7 @@
     "enter_page_number": "ページ番号を入力",
     "upload_file": "ファイルをアップロード",
     "upload": "アップロード",
+    "uploads": "Uploads",
     "allowed-file-types": "有効なファイル形式は %1 です。",
     "unsaved-changes": "変更はまだ保存されていません。本当にこのページから離れますか？",
     "reconnecting-message": "%1への接続が失われたと思われます。再接続されるまでしばらくお待ちください。",

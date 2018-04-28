@@ -49,6 +49,8 @@
     "account/upvoted": "Posts upvoted by %1",
     "account/downvoted": "Posts downvoted by %1",
     "account/best": "Best posts made by %1",
+    "account/blocks": "Blocked users for %1",
+    "account/uploads": "Uploads by %1",
     "confirm": "تم التحقق من عنوان البريد الإلكتروني",
     "maintenance.text": "جاري صيانة %1. المرجو العودة لاحقًا.",
     "maintenance.messageIntro": "بالإضافة إلى ذلك، قام مدبر النظام بترك هذه الرسالة:",

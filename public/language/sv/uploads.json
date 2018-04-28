@@ -2,5 +2,8 @@
     "uploading-file": "Laddar upp filen...",
     "select-file-to-upload": "Välj en fil att ladda upp!",
     "upload-success": "Filen laddades upp!",
-    "maximum-file-size": "Maximalt %1 kb"
+    "maximum-file-size": "Maximalt %1 kb",
+    "no-uploads-found": "No uploads found",
+    "public-uploads-info": "Uploads are public, all visitors can see them.",
+    "private-uploads-info": "Uploads are private, only logged in users can see them."
 }

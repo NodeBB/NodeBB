@@ -44,6 +44,8 @@
 	"alert.package-manager-unreachable": "<p>NodeBB could not reach the package manager, an upgrade is not suggested at this time.</p>",
 	"alert.incompatible": "<p>Your version of NodeBB (v%1) is only cleared to upgrade to v%2 of this plugin. Please update your NodeBB if you wish to install a newer version of this plugin.</p>",
 	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>Nebola nájdená žiadna informácia o kompatibilite</strong></p><p>Toto rozšírenie nemá nastavenú požadovanú verziu NodeBB. Plná kompatibilita nemôže byť garantovaná a môže spôsobiť, že sa Vám už NodeBB nespustí.</p></div><p>Nespustí ak sa správne NodeBB:</p><pre><code> $ ./nodebb reset plugin = '% 1\"</code></pre><p>Pokračovať v inštalácii tejto aktuálnej verzie rozšírenie?</p>",
+	"alert.reorder": "Plugins Re-ordered",
+	"alert.reorder-success": "Please rebuild and restart your NodeBB to fully complete the process.",
 
 	"license.title": "Plugin License Information",
 	"license.intro": "The plugin <strong>%1</strong> is licensed under the %2. Please read and understand the license terms prior to activating this plugin.",

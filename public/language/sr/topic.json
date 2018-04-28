@@ -118,8 +118,8 @@
     "sort_by": "Поређај",
     "oldest_to_newest": "Од старијих ка новијим",
     "newest_to_oldest": "Од новијих ка старијим",
-    "most_votes": "По броју гласова",
-    "most_posts": "По броју порука",
+    "most_votes": "Most Votes",
+    "most_posts": "Most Posts",
     "stale.title": "Креирати нову тему уместо тога?",
     "stale.warning": "Тема у којој желите да одговорите је сувише стара. Да ли желите да уместо тога креирате нову тему и упутите на ову у вашем одговору?",
     "stale.create": "Креирај нову тему",
@@ -127,5 +127,7 @@
     "link_back": "Re: [%1](%2)",
     "diffs.title": "Историја уређивања поруке",
     "diffs.description": "Ова порука има <strong>%1</strong> корекција. Кликните на једну од корекција да бисте видели садржај поруке у том тренутку.",
-    "diffs.no-revisions-description": "Ова порука има %1 корекција."
+    "diffs.no-revisions-description": "Ова порука има %1 корекција.",
+    "diffs.current-revision": "current revision",
+    "diffs.original-revision": "original revision"
 }

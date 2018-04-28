@@ -97,6 +97,7 @@
     "enter_page_number": "Skriv in sidnummer",
     "upload_file": "Ladda upp en fil",
     "upload": "Ladda upp",
+    "uploads": "Uploads",
     "allowed-file-types": "Tillåtna filtyper är %1",
     "unsaved-changes": "Du har ändringar som inte sparats. Är du säker på att du vill navigera bort?",
     "reconnecting-message": "Ser ut som din anslutning till %1 gick förlorad, vänta medan vi försöker att återansluta.",

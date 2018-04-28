@@ -49,6 +49,8 @@
     "account/upvoted": "Inlägg som röstats upp av %1",
     "account/downvoted": "Inlägg som röstats ned av %1",
     "account/best": "Bästa inläggen skapade av %1",
+    "account/blocks": "Blocked users for %1",
+    "account/uploads": "Uploads by %1",
     "confirm": "E-postadress bekräftad",
     "maintenance.text": "%1 genomgår underhåll just nu. Vänligen kom tillbaka lite senare.",
     "maintenance.messageIntro": "Utöver det så lämnade administratören följande meddelande:",

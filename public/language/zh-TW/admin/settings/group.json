@@ -5,6 +5,7 @@
 	"private-groups.warning": "<strong>Beware!</strong> If this option is disabled and you have private groups, they automatically become public.",
 	"allow-creation": "允許建立群組",
 	"allow-creation-help": "如果開啟，使用者可自行建立群組 <em>(預設: disabled)</em>",
+	"allow-multiple-badges-help": "This flag can be used to allow users to select multiple group badges, requires theme support.",
 	"max-name-length": "群組最大名稱長度",
 	"cover-image": "群組封面圖像",
 	"default-cover": "預設封面圖像",

@@ -49,6 +49,8 @@
     "account/upvoted": "Пости за які проголосував %1",
     "account/downvoted": "Пости проти яких проголосував %1",
     "account/best": "Найкращі пости %1",
+    "account/blocks": "Blocked users for %1",
+    "account/uploads": "Uploads by %1",
     "confirm": "Електронну пошту підтверджено",
     "maintenance.text": "%1 в данний час на технічному обслуговувані. Завітайте, будь ласка, пізніше.",
     "maintenance.messageIntro": "Крім того, адміністратор залишив це повідомлення:",

@@ -118,8 +118,8 @@
     "sort_by": "Seřadit dle",
     "oldest_to_newest": "Od nejstarších po nejnovější",
     "newest_to_oldest": "Od nejnovějších po nejstarší",
-    "most_votes": "Nejvíce hlasů",
-    "most_posts": "Nejvíce příspěvků",
+    "most_votes": "Most Votes",
+    "most_posts": "Most Posts",
     "stale.title": "Raději vytvořit nové téma?",
     "stale.warning": "Reagujete na starší téma. Nechcete raději vytvořit nové téma a na původní v něm odkázat?",
     "stale.create": "Vytvořit nové téma",
@@ -127,5 +127,7 @@
     "link_back": "Odpověď: [%1](%2)",
     "diffs.title": "Historie úpravy příspěvku",
     "diffs.description": "Tento příspěvek má <strong>%1</strong> změn. Pro zobrazení obsahu příspěvku platného v daný čas, klikněte níže na jednu ze změn.",
-    "diffs.no-revisions-description": "Tento příspěvek má <strong>%1</strong> změn."
+    "diffs.no-revisions-description": "Tento příspěvek má <strong>%1</strong> změn.",
+    "diffs.current-revision": "current revision",
+    "diffs.original-revision": "original revision"
 }

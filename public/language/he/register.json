@@ -19,5 +19,8 @@
     "terms_of_use_error": "אתה מוכרח להסכים לתנאי השימוש",
     "registration-added-to-queue": "הבקשה שלך להרשמה נשלחה. תקבל בקרוב מייל אישור לכתובת האימייל שהכנסת כשמנהל יאשר את הבקשה.",
     "interstitial.intro": "אנו דורשים מידע נוסף לפני שנוכל ליצור עבורך את החשבון.",
-    "interstitial.errors-found": "לא הצלחנו להשלים את הרישום שלך:"
+    "interstitial.errors-found": "לא הצלחנו להשלים את הרישום שלך:",
+    "gdpr_agree_data": "I consent to the collection and processing of my personal information on this website.",
+    "gdpr_agree_email": "I consent to receive digest and notification emails from this website.",
+    "gdpr_consent_denied": "You must give consent to this site to collect/process your information, and to send you emails."
 }

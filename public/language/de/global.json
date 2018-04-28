@@ -97,6 +97,7 @@
     "enter_page_number": "Seitennummer eingeben",
     "upload_file": "Datei hochladen",
     "upload": "Hochladen",
+    "uploads": "Uploads",
     "allowed-file-types": "Erlaubte Dateitypen sind %1",
     "unsaved-changes": "Es gibt ungespeicherte Änderungen. Bist du dir sicher, dass du die Seite verlassen willst?",
     "reconnecting-message": "Es scheint als hättest du die Verbindung zu %1 verloren, bitte warte während wir versuchen sie wieder aufzubauen.",

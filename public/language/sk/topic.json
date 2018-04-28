@@ -118,8 +118,8 @@
     "sort_by": "Zoradiť podľa",
     "oldest_to_newest": "Od najstarších po najnovšie",
     "newest_to_oldest": "Od najnovších po najstaršie",
-    "most_votes": "Najviac hlasov",
-    "most_posts": "Najviac príspevkov",
+    "most_votes": "Most Votes",
+    "most_posts": "Most Posts",
     "stale.title": "Vytvoriť novú tému namiesto?",
     "stale.warning": "Téma na ktorú odpovedáte je pomerne stará. Chceli by ste vytvoriť novú tému namiesto tejto, a odkazovať na ňu vo Vašej odpovedi?",
     "stale.create": "Vytvoriť novú tému",
@@ -127,5 +127,7 @@
     "link_back": "Re: [%1](%2)",
     "diffs.title": "Post Edit History",
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
-    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
+    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
+    "diffs.current-revision": "current revision",
+    "diffs.original-revision": "original revision"
 }

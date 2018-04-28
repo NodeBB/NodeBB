@@ -49,6 +49,8 @@
     "account/upvoted": "Publicaciones votadas positivamente %1",
     "account/downvoted": "Publicaciones votadas negativamente %1",
     "account/best": "Mejores publicaciones hechas por %1",
+    "account/blocks": "Blocked users for %1",
+    "account/uploads": "Uploads by %1",
     "confirm": "Correo electrónico confirmado",
     "maintenance.text": "%1 está en mantenimiento actualmente. Por favor vuelva en otro momento.",
     "maintenance.messageIntro": "Además, la administración ha dejado este mensaje:",

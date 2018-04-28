@@ -118,8 +118,8 @@
     "sort_by": "Susun ikut",
     "oldest_to_newest": "Lama ke Baru",
     "newest_to_oldest": "Baru ke Lama",
-    "most_votes": "Terbanyak Undi",
-    "most_posts": "Terbanyak Kiriman",
+    "most_votes": "Most Votes",
+    "most_posts": "Most Posts",
     "stale.title": "Bukan topik baru?",
     "stale.warning": "Topik yang anda nak balas agak lapuk. Adakah anda ingin buka topik baru dan rujukkan topik ini dalam balasan anda?",
     "stale.create": "Buka topik baru",
@@ -127,5 +127,7 @@
     "link_back": "Re: [%1](%2)",
     "diffs.title": "Post Edit History",
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
-    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
+    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
+    "diffs.current-revision": "current revision",
+    "diffs.original-revision": "original revision"
 }

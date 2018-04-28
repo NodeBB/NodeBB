@@ -49,6 +49,8 @@
     "account/upvoted": "Kiriman diundi naik oleh %1",
     "account/downvoted": "Kiriman dibuang undi oleh %1",
     "account/best": "Kiriman Terbaik Oleh %1",
+    "account/blocks": "Blocked users for %1",
+    "account/uploads": "Uploads by %1",
     "confirm": "Emel Telah Disahkan",
     "maintenance.text": "%1 sedang berada dalam mod pembaikpulihan. Sila cuba lagi nanti.",
     "maintenance.messageIntro": "Tambahan, admin meninggalkan mesej ini :",

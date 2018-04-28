@@ -49,6 +49,8 @@
     "account/upvoted": "โพสต์ที่ถูกโหวตขึ้นโดย %1",
     "account/downvoted": "โพสต์ที่โหวตลงโดย %1",
     "account/best": "โพสต์ดีที่สุดที่ถูกสร้างโดย %1",
+    "account/blocks": "Blocked users for %1",
+    "account/uploads": "Uploads by %1",
     "confirm": "อีเมล์ได้รับการยืนยันแล้ว",
     "maintenance.text": "%1 กำลังอยู่ระหว่างการปิดปรับปรุงชั่วคราว กรุณาลองใหม่อีกครั้งในภายหลัง",
     "maintenance.messageIntro": "ผู้ดูแลระบบได้ฝากข้อความต่อไปนี้เอาไว้",

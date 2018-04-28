@@ -18,6 +18,7 @@
 	"filter-type": "举报类型",
 	"filter-type-all": "所有内容",
 	"filter-type-post": "帖子",
+	"filter-type-user": "User",
 	"filter-state": "状态",
 	"filter-assignee": "受委托人 UID",
 	"filter-cid": "版块",

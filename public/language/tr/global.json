@@ -97,6 +97,7 @@
     "enter_page_number": "Sayfa numarasını girin",
     "upload_file": "Dosya yükle",
     "upload": "Yükle",
+    "uploads": "Uploads",
     "allowed-file-types": "İzin verilen dosya tipleri %1",
     "unsaved-changes": "Kaydedilmemiş değişiklikler var. Çıkmak istediğinize emin misiniz?",
     "reconnecting-message": "%1 ile bağlantınız koptu, yeniden bağlanmak için lütfen bekleyiniz.",

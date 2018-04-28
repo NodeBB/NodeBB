@@ -49,6 +49,8 @@
     "account/upvoted": "%1 által kedvelt témakörök",
     "account/downvoted": "%1 által utált témakörök",
     "account/best": "%1 által írt legjobb hozzászólások",
+    "account/blocks": "Blocked users for %1",
+    "account/uploads": "Uploads by %1",
     "confirm": "E-mail megerősítve",
     "maintenance.text": "%1 jelenleg karbantartás alatt van. Kérlek, nézz vissza később!",
     "maintenance.messageIntro": "Ezenkívúl, az adminisztrátor ezt az üzenetet hagyta:",

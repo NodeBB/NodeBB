@@ -49,6 +49,8 @@
     "account/upvoted": "%1 glasao za",
     "account/downvoted": "%1 glasao protiv",
     "account/best": "Najbolje objave od %1",
+    "account/blocks": "Blocked users for %1",
+    "account/uploads": "Uploads by %1",
     "confirm": "Email potvrđen!",
     "maintenance.text": "%1 Održavanje u toku. Posjetite nas uskoro.",
     "maintenance.messageIntro": "Poruka administratora:",

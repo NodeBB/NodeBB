@@ -118,8 +118,8 @@
     "sort_by": "Rendezés",
     "oldest_to_newest": "Régebbiek elől",
     "newest_to_oldest": "Újabbak elől",
-    "most_votes": "Legtöbb szavazat",
-    "most_posts": "Legtöbb hozzászólás",
+    "most_votes": "Most Votes",
+    "most_posts": "Most Posts",
     "stale.title": "Inkább új témakör létrehozása?",
     "stale.warning": "A témakör, melyre válaszolsz, elég régi. Szeretnél helyette inkább új témakört létrehozni, és erre hivatkozni a válaszodban?",
     "stale.create": "Új témakör létrehozása",
@@ -127,5 +127,7 @@
     "link_back": "Válasz: [%1](%2)",
     "diffs.title": "Post Edit History",
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
-    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
+    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
+    "diffs.current-revision": "current revision",
+    "diffs.original-revision": "original revision"
 }

@@ -19,5 +19,8 @@
     "terms_of_use_error": "你需要同意使用條款",
     "registration-added-to-queue": "你的註冊已經被加入到審核序列中。你將會在管理者批準後收到一封電子郵件。",
     "interstitial.intro": "我們要求一些額外的資訊，在我們建立你的帳戶之前。",
-    "interstitial.errors-found": "我們無法完成你的註冊"
+    "interstitial.errors-found": "我們無法完成你的註冊",
+    "gdpr_agree_data": "I consent to the collection and processing of my personal information on this website.",
+    "gdpr_agree_email": "I consent to receive digest and notification emails from this website.",
+    "gdpr_consent_denied": "You must give consent to this site to collect/process your information, and to send you emails."
 }
