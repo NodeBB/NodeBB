@@ -20,7 +20,7 @@
     "registration-added-to-queue": "Votre inscription a été ajoutée à la liste d'approbation. Vous recevrez un email quand celle-ci sera acceptée par un administrateur.",
     "interstitial.intro": "Nous avons besoin de quelques informations supplémentaires avant de pouvoir créer votre compte.",
     "interstitial.errors-found": "Nous n'avons pas pu compléter votre inscription :",
-    "gdpr_agree_data": "I consent to the collection and processing of my personal information on this website.",
-    "gdpr_agree_email": "I consent to receive digest and notification emails from this website.",
-    "gdpr_consent_denied": "You must give consent to this site to collect/process your information, and to send you emails."
+    "gdpr_agree_data": "J'accepte la collecte et le traitement de mes données personnelles sur ce site.",
+    "gdpr_agree_email": "J'accepte de recevoir des courriels et des notifications de ce site Web.",
+    "gdpr_consent_denied": "Vous devez accepter que ce site puisse collecter et traiter vos données, et pour vous envoyer des courriels."
 }

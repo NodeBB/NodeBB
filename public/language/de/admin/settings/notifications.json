@@ -3,5 +3,5 @@
 	"welcome-notification": "Wilkommensnachricht",
 	"welcome-notification-link": "Wilkommensnachricht-Link",
 	"welcome-notification-uid": "Wilkommensbenachrichtigung Benutzer (UID)",
-	"notification-alert-timeout": "Notification Alert Timeout"
+	"notification-alert-timeout": "Benachrichtigungs Timeout"
 }

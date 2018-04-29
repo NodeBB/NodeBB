@@ -20,7 +20,7 @@
     "registration-added-to-queue": "Deine Registration wurde abgeschickt. Du wirst eine E-Mail erhalten, sobald sie von einem Administrator akzeptiert wird.",
     "interstitial.intro": "Wir benötigen ein wenig mehr Informationen bevor wir deinen Account erstellen können.",
     "interstitial.errors-found": "Wir konnten deinen Registrierungsvorgang nicht abschließen:",
-    "gdpr_agree_data": "I consent to the collection and processing of my personal information on this website.",
-    "gdpr_agree_email": "I consent to receive digest and notification emails from this website.",
-    "gdpr_consent_denied": "You must give consent to this site to collect/process your information, and to send you emails."
+    "gdpr_agree_data": "Ich stimme der Sammlung und Verarbeitung meiner Persönlichen Daten auf dieser Website zu.",
+    "gdpr_agree_email": "Ich bin damit einverstanden, dass ich Informations und Benachrichtigungs-EMails von dieser Website erhalte.",
+    "gdpr_consent_denied": "Du musst zustimmen, dass diese Seite deine Daten sammeln und verarbeiten darf, und dir Emails senden darf."
 }

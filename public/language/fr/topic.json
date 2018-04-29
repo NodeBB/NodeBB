@@ -118,8 +118,8 @@
     "sort_by": "Trier",
     "oldest_to_newest": "Du plus ancien au plus récent",
     "newest_to_oldest": "Du plus récent au plus ancien",
-    "most_votes": "Most Votes",
-    "most_posts": "Most Posts",
+    "most_votes": "Les plus votés",
+    "most_posts": "Meilleurs messages",
     "stale.title": "Créer un nouveau sujet à la place ?",
     "stale.warning": "Le sujet auquel vous répondez est assez ancien. Ne voudriez-vous pas créer un nouveau sujet à la place et placer une référence vers celui-ci dans votre réponse ?",
     "stale.create": "Créer un nouveau sujet",
@@ -128,6 +128,6 @@
     "diffs.title": "Historique",
     "diffs.description": "Cet article a <strong>% 1</strong> révisions. Cliquez sur l'une des révisions ci-dessous pour voir le contenu du message.",
     "diffs.no-revisions-description": "Cet article a <strong>% 1</strong> révisions.",
-    "diffs.current-revision": "current revision",
-    "diffs.original-revision": "original revision"
+    "diffs.current-revision": "Révision en cours",
+    "diffs.original-revision": "Révision originale"
 }

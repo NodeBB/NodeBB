@@ -118,8 +118,8 @@
     "sort_by": "排序",
     "oldest_to_newest": "从旧到新",
     "newest_to_oldest": "从新到旧",
-    "most_votes": "Most Votes",
-    "most_posts": "Most Posts",
+    "most_votes": "最多赞同",
+    "most_posts": "最多回复",
     "stale.title": "接受建议并创建新主题？",
     "stale.warning": "您回复的主题已经很古老了，是否发布新主题并引用此主题的内容？",
     "stale.create": "创建新主题",
@@ -128,6 +128,6 @@
     "diffs.title": "历史发布记录",
     "diffs.description": "此主题已经重新发布并修订。点击某个时间点查看修订的内容。",
     "diffs.no-revisions-description": "该贴已重新修改",
-    "diffs.current-revision": "current revision",
-    "diffs.original-revision": "original revision"
+    "diffs.current-revision": "当前版本",
+    "diffs.original-revision": "原始版本"
 }

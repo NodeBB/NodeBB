@@ -9,7 +9,7 @@
     "welcome.text3": "Egy adminisztrátor elfogadta a regisztrációdat. Mostantól a felhasználónév/jelszó párosoddal be tudsz lépni.",
     "welcome.cta": "Kattints ide az e-mail címed megerősítéséhez",
     "invitation.text1": "%1 meghívott ide: %2",
-    "invitation.text2": "Your invitation will expire in %1 days.",
+    "invitation.text2": "A meghívó %1 napon belül lejár.",
     "invitation.ctr": "Kattints ide a fiókod létrehozásához.",
     "reset.text1": "Kaptunk egy kérést jelszavad visszaállítására, valószínűleg azért, mert elfelejtetted azt. Ha ez nem így van, hagyd figyelmen kívül ezt a levelet.",
     "reset.text2": "A jelszó visszaállításának folytatásához kattints az alábbi linkre:",
