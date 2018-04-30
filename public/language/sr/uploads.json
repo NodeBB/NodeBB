@@ -3,7 +3,7 @@
     "select-file-to-upload": "Изаберите датотеку за отпремање!",
     "upload-success": "Датотека је успешно отпремљена!",
     "maximum-file-size": "Највише %1 kb",
-    "no-uploads-found": "No uploads found",
-    "public-uploads-info": "Uploads are public, all visitors can see them.",
-    "private-uploads-info": "Uploads are private, only logged in users can see them."
+    "no-uploads-found": "Нема пронађених отпремања",
+    "public-uploads-info": "Отпремања су јавна, сви посетиоци их могу видети.",
+    "private-uploads-info": "Отпремања си приватна, само пријављени корисници их могу видети."
 }
