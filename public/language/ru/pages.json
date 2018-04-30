@@ -49,6 +49,8 @@
     "account/upvoted": "Рейтинг записей поднят %1",
     "account/downvoted": "Рейтинг записей снижен %1",
     "account/best": "Лучшие записи участника %1",
+    "account/blocks": "Blocked users for %1",
+    "account/uploads": "Uploads by %1",
     "confirm": "Электронная почта подтверждена",
     "maintenance.text": "Приносим наши извинения, %1 в настоящее время на обслуживании. Пожалуйста, приходите позже.",
     "maintenance.messageIntro": "Администратор оставил сообщение:",

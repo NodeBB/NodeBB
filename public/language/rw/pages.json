@@ -49,6 +49,8 @@
     "account/upvoted": "Ibiganiro byakunzwe na %1",
     "account/downvoted": "Ibiganiro byanzwe na %1",
     "account/best": "Ibihebuje byashyizweho na %1",
+    "account/blocks": "Blocked users for %1",
+    "account/uploads": "Uploads by %1",
     "confirm": "Email Yemejwe",
     "maintenance.text": "%1 ntiboneka kuko ubu iri gutunganywa. Muze kongera kugaruka. ",
     "maintenance.messageIntro": "Byongeye, kandi, umuyobozi yasize ubu butumwa: ",

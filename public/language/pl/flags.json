@@ -18,6 +18,7 @@
 	"filter-type": "Typ flagi",
 	"filter-type-all": "Cała zawartość",
 	"filter-type-post": "Post",
+	"filter-type-user": "User",
 	"filter-state": "Stan",
 	"filter-assignee": "UID Przypisanego(-ej)",
 	"filter-cid": "Kategoria",

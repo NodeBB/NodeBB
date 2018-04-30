@@ -18,6 +18,7 @@
     "invalid-username-or-password": "请确认用户名和密码",
     "invalid-search-term": "无效的搜索关键字",
     "invalid-url": "无效的 URL",
+    "local-login-disabled": "Local login system has been disabled for non-privileged accounts.",
     "csrf-invalid": "可能是由于会话过期，登录失败。请重试。",
     "invalid-pagination-value": "无效的分页数值，必须介于 %1 和 %2 之间",
     "username-taken": "此用户名已被占用",

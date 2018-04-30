@@ -118,8 +118,8 @@
     "sort_by": "排序方式",
     "oldest_to_newest": "從舊到新",
     "newest_to_oldest": "從新到舊",
-    "most_votes": "得票最多",
-    "most_posts": "最多張貼",
+    "most_votes": "Most Votes",
+    "most_posts": "Most Posts",
     "stale.title": "改為建立新的主題？",
     "stale.warning": "你正回覆的主題是非常舊的一篇。你想要改為建立一個新主題，然後參考到這篇你回覆的？",
     "stale.create": "建立新主題",
@@ -127,5 +127,7 @@
     "link_back": "回覆: [%1](%2)",
     "diffs.title": "Post Edit History",
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
-    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
+    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
+    "diffs.current-revision": "current revision",
+    "diffs.original-revision": "original revision"
 }

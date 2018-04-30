@@ -18,6 +18,7 @@
 	"filter-type": "Flag Type",
 	"filter-type-all": "Alle inhoud",
 	"filter-type-post": "Bericht",
+	"filter-type-user": "User",
 	"filter-state": "Status",
 	"filter-assignee": "UID van toewijzer",
 	"filter-cid": "Categorie",

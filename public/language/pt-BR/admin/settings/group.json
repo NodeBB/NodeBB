@@ -5,6 +5,7 @@
 	"private-groups.warning": "<strong>Atenção!</strong> Se esta opção estiver desabilitada e você tiver grupos privados, eles automaticamente se tornarão públicos.",
 	"allow-creation": "Permitir Criação de Grupo",
 	"allow-creation-help": "Se habilitado, usuários podem criar grupos <em>(Padrão: desligado)</em>",
+	"allow-multiple-badges-help": "This flag can be used to allow users to select multiple group badges, requires theme support.",
 	"max-name-length": "Tamanho Máximo do Nome de Grupos",
 	"cover-image": "Imagem de Capa do Grupo",
 	"default-cover": "Imagens de Capa Padrão",

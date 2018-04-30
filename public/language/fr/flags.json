@@ -18,6 +18,7 @@
 	"filter-type": "Type de signalement",
 	"filter-type-all": "Tout le contenu",
 	"filter-type-post": "Message",
+	"filter-type-user": "Utilisateur",
 	"filter-state": "Etat",
 	"filter-assignee": "UID assigné",
 	"filter-cid": "Catégorie",

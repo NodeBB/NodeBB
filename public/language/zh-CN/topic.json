@@ -127,5 +127,7 @@
     "link_back": "回复: [%1](%2)",
     "diffs.title": "历史发布记录",
     "diffs.description": "此主题已经重新发布并修订。点击某个时间点查看修订的内容。",
-    "diffs.no-revisions-description": "该贴已重新修改"
+    "diffs.no-revisions-description": "该贴已重新修改",
+    "diffs.current-revision": "当前版本",
+    "diffs.original-revision": "原始版本"
 }

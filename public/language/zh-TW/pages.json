@@ -49,6 +49,8 @@
     "account/upvoted": "%1 所正向投票的張貼",
     "account/downvoted": "%1 所負向投票的張貼",
     "account/best": "由 %1 建立的最佳張貼文",
+    "account/blocks": "Blocked users for %1",
+    "account/uploads": "Uploads by %1",
     "confirm": "已確認電子郵件",
     "maintenance.text": "目前 %1 正在進行維修。請稍後再來。",
     "maintenance.messageIntro": "此外，管理員有以下訊息：",

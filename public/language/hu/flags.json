@@ -18,6 +18,7 @@
 	"filter-type": "Flag Type",
 	"filter-type-all": "All Content",
 	"filter-type-post": "Hozzászólás",
+	"filter-type-user": "User",
 	"filter-state": "Állapot",
 	"filter-assignee": "Assignee UID",
 	"filter-cid": "Kategória",

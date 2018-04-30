@@ -19,5 +19,8 @@
     "terms_of_use_error": "Для регистрации на нашем сайте необходимо согласиться с условиями",
     "registration-added-to-queue": "Ваша регистрация была добавлена в очередь на утверждение. Вы получите уведомление по электронной почте, когда она будет одобрена администратором.",
     "interstitial.intro": "Нам потребуется дополнительная информация, прежде чем мы сможем создать вашу учётную запись.",
-    "interstitial.errors-found": "Мы не смогли завершить регистрацию:"
+    "interstitial.errors-found": "Мы не смогли завершить регистрацию:",
+    "gdpr_agree_data": "I consent to the collection and processing of my personal information on this website.",
+    "gdpr_agree_email": "I consent to receive digest and notification emails from this website.",
+    "gdpr_consent_denied": "You must give consent to this site to collect/process your information, and to send you emails."
 }

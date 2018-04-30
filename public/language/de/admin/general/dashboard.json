@@ -37,8 +37,8 @@
 	"search-plugin-tooltip": "Installiere ein Such-Plugin auf der Plugin-Seite um die Such-Funktionalität zu aktivieren",
 
 	"control-panel": "Systemsteuerung",
-	"rebuild-and-restart": "Rebuild &amp; Restart",
-	"restart": "Restart",
+	"rebuild-and-restart": "Regenerieren &amp; Neustarten",
+	"restart": "Neustarten",
 	"restart-warning": "NodeBB zu regenerieren oder neuzustarten wird alle existierenden Verbindungen für ein paar Sekunden trennen.",
 	"restart-disabled": "Das Regenerieren und Neustarten von NodeBB wurde deaktiviert, da es nicht so aussieht als ob es über einem kompatiblem daemon läuft.",
 	"maintenance-mode": "Wartungsmodus",

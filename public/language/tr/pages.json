@@ -49,6 +49,8 @@
     "account/upvoted": "%1 tarafından artılanan gönderiler",
     "account/downvoted": "%1 tarafından eksilenen gönderiler",
     "account/best": "%1 tarafından en iyi gönderiler",
+    "account/blocks": "Blocked users for %1",
+    "account/uploads": "Uploads by %1",
     "confirm": "E-posta Onaylandı",
     "maintenance.text": "%1 şu anda bakımda. Lütfen bir süre sonra tekrar deneyin.",
     "maintenance.messageIntro": "Ayrıca, yönetici şu mesaji bıraktı:",

@@ -1,8 +1,8 @@
 {
 	"rewards": "Recompensas",
 	"condition-if-users": "If User's",
-	"condition-is": "Is:",
-	"condition-then": "Then:",
+	"condition-is": "Es:",
+	"condition-then": "Entonces:",
 	"max-claims": "Amount of times reward is claimable",
 	"zero-infinite": "Enter 0 for infinite",
 	"delete": "Delete",

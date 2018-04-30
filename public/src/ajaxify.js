@@ -182,7 +182,7 @@ $(document).ready(function () {
 		$(window).trigger('action:ajaxify.loadingTemplates', {});
 
 		Benchpress.parse(tpl_url, data, function (template) {
-			translator.translate(template, function (translatedTemplate) {
+			translator.translate(template, app.inAdmin ? config.acpLang : config.userLang, function (translatedTemplate) {
 				translatedTemplate = translator.unescape(translatedTemplate);
 				$('body').removeClass(previousBodyClass).addClass(data.bodyClass);
 				$('#content').html(translatedTemplate);

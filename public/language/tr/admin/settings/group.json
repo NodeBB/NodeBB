@@ -5,6 +5,7 @@
 	"private-groups.warning": "<strong>Dikkat!</strong> Eğer bu opsiyon devre dışıysa ve özel gruplarınız varsa, onlar otomatik olarak genele dönüşecektir.",
 	"allow-creation": "Grup Oluşturmaya İzin Ver",
 	"allow-creation-help": "Eğer etkinse kullanıcılar grup oluşturabilir <em>(Varsayılan: Pasif)</em>",
+	"allow-multiple-badges-help": "This flag can be used to allow users to select multiple group badges, requires theme support.",
 	"max-name-length": "Maksimum Grup Adı Uzunluğu",
 	"cover-image": "Grup Kapak Resmi",
 	"default-cover": "Varsayılan Kapak Resmi",

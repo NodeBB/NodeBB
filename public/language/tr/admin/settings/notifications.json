@@ -2,5 +2,6 @@
 	"notifications": "Bildirimler",
 	"welcome-notification": "Hoş Geldin Bildirimi",
 	"welcome-notification-link": "Hoş Geldin Bildirimi Bağlantısı",
-	"welcome-notification-uid": "Welcome Notification User (UID)"
+	"welcome-notification-uid": "Welcome Notification User (UID)",
+	"notification-alert-timeout": "Notification Alert Timeout"
 }

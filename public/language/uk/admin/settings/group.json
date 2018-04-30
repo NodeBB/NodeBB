@@ -5,6 +5,7 @@
 	"private-groups.warning": "<strong>Увага!</strong> Якщо ця опція вимикається і у вас є приватні групи, вони автоматично стають публічними.",
 	"allow-creation": "Дозволити створення груп",
 	"allow-creation-help": "Якщо увімкнено, користувачі можуть створювати групи <em>(По замовчуванню: вимкнено)</em>",
+	"allow-multiple-badges-help": "This flag can be used to allow users to select multiple group badges, requires theme support.",
 	"max-name-length": "Максимальна довжина імені групи",
 	"cover-image": "Зображення обкладинки групи",
 	"default-cover": "Зображення обкладинки по замовчуванню",

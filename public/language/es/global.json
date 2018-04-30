@@ -97,6 +97,7 @@
     "enter_page_number": "Escribe el número de página",
     "upload_file": "Subir archivo",
     "upload": "Subir",
+    "uploads": "Uploads",
     "allowed-file-types": "Los tipos de archivos permitidos son: %1",
     "unsaved-changes": "Tienes cambios sin guardar. Seguro que quieres salir?",
     "reconnecting-message": "Has perdido la conexión. Reconectando a %1.",

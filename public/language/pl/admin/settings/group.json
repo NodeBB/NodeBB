@@ -5,6 +5,7 @@
 	"private-groups.warning": "<strong>Uwaga!</strong> Jeśli ta opcja jest wyłączona i masz prywatne grupy, automatycznie stają się one publiczne.",
 	"allow-creation": "Zezwalaj na tworzeni grup",
 	"allow-creation-help": "Jeśli włączone, użytkownicy mogą tworzyć grupy <em>(domyślnie: wyłączone)</em>",
+	"allow-multiple-badges-help": "This flag can be used to allow users to select multiple group badges, requires theme support.",
 	"max-name-length": "Maksymalna długość nazwy grupy",
 	"cover-image": "Obraz profilowy grupy",
 	"default-cover": "Domyślne obrazy profilowe",

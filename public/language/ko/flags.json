@@ -18,6 +18,7 @@
 	"filter-type": "신고 유형",
 	"filter-type-all": "모든 컨텐츠",
 	"filter-type-post": "포스트",
+	"filter-type-user": "User",
 	"filter-state": "처리 상태",
 	"filter-assignee": "담당자 ID",
 	"filter-cid": "게시판",

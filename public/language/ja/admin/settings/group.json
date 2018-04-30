@@ -5,6 +5,7 @@
 	"private-groups.warning": "<strong>注意!</strong>このオプションが無効で、プライベートグループがある場合、自動的に公開されます。",
 	"allow-creation": "グループの作成を有効にする",
 	"allow-creation-help": "有効にすると、ユーザーはグループを作成できます<em>(デフォルト：無効)</ em>",
+	"allow-multiple-badges-help": "This flag can be used to allow users to select multiple group badges, requires theme support.",
 	"max-name-length": "グループ名の最大文字数",
 	"cover-image": "グループ表紙イメージ",
 	"default-cover": "デフォルトのカバー画像",

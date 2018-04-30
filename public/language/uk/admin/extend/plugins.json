@@ -44,6 +44,8 @@
 	"alert.package-manager-unreachable": "<p>NodeBB не вдалося зв'язатися з менеджером пакетів, оновлення наразі не рекомендується.</p>",
 	"alert.incompatible": "</p>Ваша версія NodeBB (v%1) дозволяє оновлення цього плагіну лише до v%2. Будь ласка, оновіть NodeBB, щоб встановити новішу версію цього плагіну.</p>",
 	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>Інформацію про сумісність не знайдено</strong></p><p>У цьому плагіні не вказано сумісну версію NodeBB. Коректна робота не гарантується.</p></div><p>Якщо NodeBB перестане коректно стартувати, виконайте:</p><pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre><p>Продовжити встановлення останньої версії цього плагіну?</p>",
+	"alert.reorder": "Plugins Re-ordered",
+	"alert.reorder-success": "Please rebuild and restart your NodeBB to fully complete the process.",
 
 	"license.title": "Інформація про ліцензію плагіну",
 	"license.intro": "Цей плагін <strong>%1</strong> ліцензований відповідно до %2. Будь-ласка прочитайте та зрозумійте умови ліцензії перед активацією цього плагіну.",

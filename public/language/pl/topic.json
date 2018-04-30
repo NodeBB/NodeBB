@@ -118,8 +118,8 @@
     "sort_by": "Sortuj według",
     "oldest_to_newest": "Najpierw najstarsze",
     "newest_to_oldest": "Najpierw najnowsze",
-    "most_votes": "Najwięcej głosów",
-    "most_posts": "Najwięcej postów",
+    "most_votes": "Most Votes",
+    "most_posts": "Most Posts",
     "stale.title": "Stworzyć nowy temat?",
     "stale.warning": "Temat, na który chcesz udzielić odpowiedzi, jest dość stary. Czy nie wolisz utworzyć nowego tematu i jedynie odnieść się do tego?",
     "stale.create": "Stwórz nowy temat",
@@ -127,5 +127,7 @@
     "link_back": "Re: [%1](%2)",
     "diffs.title": "Historia edycji posta",
     "diffs.description": "Ten post zawiera <strong>%1</strong> zmian. Kliknij w którąś ze zmian poniżej, aby zobaczyć treść posta w momencie jej dokonania.",
-    "diffs.no-revisions-description": "Ten post zawiera <strong>%1</strong> zmian."
+    "diffs.no-revisions-description": "Ten post zawiera <strong>%1</strong> zmian.",
+    "diffs.current-revision": "current revision",
+    "diffs.original-revision": "original revision"
 }

@@ -118,8 +118,8 @@
     "sort_by": "정렬 기준",
     "oldest_to_newest": "오래된 순으로 정렬",
     "newest_to_oldest": "최신 순으로 정렬",
-    "most_votes": "추천수 순으로 정렬",
-    "most_posts": "포스트 많은 순으로 정렬",
+    "most_votes": "Most Votes",
+    "most_posts": "Most Posts",
     "stale.title": "새로운 게시물을 생성 하시겠습니까?",
     "stale.warning": "현재 답글을 작성중인 게시물은 오래전에 작성 되었습니다. 새로 게시물을 생성하시고 이 게시물을 인용 하시겠습니까?",
     "stale.create": "새로운 게시물 작성",
@@ -127,5 +127,7 @@
     "link_back": "답글: [%1](%2)",
     "diffs.title": "Post Edit History",
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
-    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
+    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
+    "diffs.current-revision": "current revision",
+    "diffs.original-revision": "original revision"
 }

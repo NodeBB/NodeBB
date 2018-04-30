@@ -18,6 +18,7 @@
     "invalid-username-or-password": "Prosím upresnite používateľské meno a heslo",
     "invalid-search-term": "Neplatný výraz pre vyhľadávanie",
     "invalid-url": "Neplatná URL",
+    "local-login-disabled": "Local login system has been disabled for non-privileged accounts.",
     "csrf-invalid": "Nie sme schopný Vás znova prihlásiť, pravdepodobne kvôli uplynutiu relácie. Zopakujte to neskôr prosím.",
     "invalid-pagination-value": "Neplatná stránkovania hodnota, musí byť najmenej %1 a najviac %2",
     "username-taken": "Užívateľské meno je už obsadené",

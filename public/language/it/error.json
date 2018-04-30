@@ -18,6 +18,7 @@
     "invalid-username-or-password": "Si prega di specificare sia un nome utente che una password",
     "invalid-search-term": "Termine di ricerca non valido",
     "invalid-url": "Invalid URL",
+    "local-login-disabled": "Local login system has been disabled for non-privileged accounts.",
     "csrf-invalid": "Non siamo riusciti a farti connettere, probabilmente perché la sessione è scaduta. Per favore riprova.",
     "invalid-pagination-value": "Valore di paginazione non valido, deve essere almeno %1 ed al massimo %2",
     "username-taken": "Nome utente già preso",

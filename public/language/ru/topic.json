@@ -118,8 +118,8 @@
     "sort_by": "Сортировка",
     "oldest_to_newest": "Начиная со старых записей",
     "newest_to_oldest": "Начиная с новых записей",
-    "most_votes": "По голосам",
-    "most_posts": "По количеству ответов",
+    "most_votes": "Most Votes",
+    "most_posts": "Most Posts",
     "stale.title": "Создать новую тему вместо этой?",
     "stale.warning": "Тема, в которую вы пишите, очень старая. Вы хотите создать новую тему?",
     "stale.create": "Создать новую тему",
@@ -127,5 +127,7 @@
     "link_back": "Ответ: [%1](%2)",
     "diffs.title": "История Редактирования Сообщения",
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
-    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
+    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
+    "diffs.current-revision": "current revision",
+    "diffs.original-revision": "original revision"
 }

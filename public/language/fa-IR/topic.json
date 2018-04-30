@@ -118,8 +118,8 @@
     "sort_by": "مرتب‌سازی بر اساس",
     "oldest_to_newest": "قدیمی‌ترین به جدید‌ترین",
     "newest_to_oldest": "جدید‌ترین به قدیمی‌ترین",
-    "most_votes": "بیشترین رأی‌ها",
-    "most_posts": "بیشتر پست ها",
+    "most_votes": "Most Votes",
+    "most_posts": "Most Posts",
     "stale.title": "آیا مایلید به جای آن یک موضوع جدید ایجاد کنید؟",
     "stale.warning": "موضوعی که شما در حال پاسخگویی به آن هستید قدیمی می باشد. آیا میلید به جای آن یک موضوع جدید ایجاد کنید و در آن به این موضوع ارجاع دهید؟",
     "stale.create": "ایجاد یک موضوع جدید",
@@ -127,5 +127,7 @@
     "link_back": "پاسخ: [%1](%2)",
     "diffs.title": "تاریخچه ویرایش پست",
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
-    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
+    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
+    "diffs.current-revision": "current revision",
+    "diffs.original-revision": "original revision"
 }

@@ -18,6 +18,7 @@
     "invalid-username-or-password": "請指定帳號和密碼",
     "invalid-search-term": "無效的搜索字詞",
     "invalid-url": "Invalid URL",
+    "local-login-disabled": "Local login system has been disabled for non-privileged accounts.",
     "csrf-invalid": "我們無法讓你登入，似乎是因為連線階段已到期。請再重試一次。",
     "invalid-pagination-value": "無效的分頁數值, 必需是至少 %1 與最多 %2",
     "username-taken": "該使用者名稱已被使用",

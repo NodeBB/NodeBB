@@ -49,6 +49,8 @@
     "account/upvoted": "Avis positifs de %1",
     "account/downvoted": "Avis négatifs de %1",
     "account/best": "Meilleurs messages postés par %1",
+    "account/blocks": "Utilisateurs bloqués pour %1",
+    "account/uploads": "Envoyé par %1",
     "confirm": "Email vérifié",
     "maintenance.text": "%1 est en maintenance. Veuillez revenir un peu plus tard.",
     "maintenance.messageIntro": "De plus, l'administrateur a laissé ce message :",
