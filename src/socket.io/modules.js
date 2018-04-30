@@ -193,7 +193,21 @@ SocketModules.chats.getUsersInRoom = function (socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	Messaging.getUsersInRoom(data.roomId, 0, -1, callback);
+	async.parallel({
+		users: async.apply(Messaging.getUsersInRoom, data.roomId, 0, -1),
+		isOwner: async.apply(Messaging.isRoomOwner, socket.uid, data.roomId),
+	}, function (err, payload) {
+		if (err) {
+			return callback(err);
+		}
+
+		payload.users = payload.users.map((user) => {
+			user.canKick = payload.isOwner;
+			return user;
+		});
+
+		callback(null, payload.users);
+	});
 };
 
 SocketModules.chats.addUserToRoom = function (socket, data, callback) {
@@ -250,16 +264,17 @@ SocketModules.chats.removeUserFromRoom = function (socket, data, callback) {
 	if (!data || !data.roomId) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
+
 	async.waterfall([
 		function (next) {
-			user.getUidByUsername(data.username, next);
+			user.exists(data.uid, next);
 		},
-		function (uid, next) {
-			if (!uid) {
+		function (exists, next) {
+			if (!exists) {
 				return next(new Error('[[error:no-user]]'));
 			}
 
-			Messaging.removeUsersFromRoom(socket.uid, [uid], data.roomId, next);
+			Messaging.removeUsersFromRoom(socket.uid, [data.uid], data.roomId, next);
 		},
 	], callback);
 };

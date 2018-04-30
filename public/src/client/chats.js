@@ -189,6 +189,7 @@ define('forum/chats', [
 					modal.attr('component', 'chat/manage-modal');
 
 					Chats.refreshParticipantsList(roomId, modal);
+					Chats.addKickHandler(roomId, modal);
 
 					var searchInput = modal.find('input');
 					var errorEl = modal.find('.text-danger');
@@ -211,6 +212,23 @@ define('forum/chats', [
 						});
 					});
 				});
+			});
+		});
+	};
+
+	Chats.addKickHandler = function (roomId, modal) {
+		modal.on('click', '[data-action="kick"]', function () {
+			var uid = parseInt(this.getAttribute('data-uid'), 10);
+
+			socket.emit('modules.chats.removeUserFromRoom', {
+				roomId: roomId,
+				uid: uid,
+			}, function (err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
+				Chats.refreshParticipantsList(roomId, modal);
 			});
 		});
 	};
@@ -254,7 +272,7 @@ define('forum/chats', [
 				});
 			}
 
-			Benchpress.parse('partials/modals/manage_room_users', {
+			app.parseAndTranslate('partials/modals/manage_room_users', {
 				users: users,
 			}, function (html) {
 				listEl.html(html);
