@@ -182,7 +182,7 @@ authenticationController.registerComplete = function (req, res, next) {
 				});
 			}
 
-			if (err) {
+			if (err.length) {
 				req.flash('errors', err);
 				return res.redirect(nconf.get('relative_path') + '/register/complete');
 			}
