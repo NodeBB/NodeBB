@@ -177,9 +177,13 @@ authenticationController.registerComplete = function (req, res, next) {
 
 		async.parallel(callbacks, function (_blank, err) {
 			if (err.length) {
-				req.flash('errors', err.filter(Boolean).map(function (err) {
+				err = err.filter(Boolean).map(function (err) {
 					return err.message;
-				}));
+				});
+			}
+
+			if (err) {
+				req.flash('errors', err);
 				return res.redirect(nconf.get('relative_path') + '/register/complete');
 			}
 
