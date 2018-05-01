@@ -180,7 +180,7 @@
 	"consent.right_to_rectification": "You have the Right to Rectification",
 	"consent.right_to_rectification_description": "You have the right to change or update any inaccurate data provided to us. Your profile can be updated by editing your profile, and post content can always be edited. If this is not the case, please contact this site&apos;s administrative team.",
 	"consent.right_to_erasure": "You have the Right to Erasure",
-	"consent.right_to_erasure_description": "At any time, you are able to revoke your consent to data collection and/or processing by deleting your account.",
+	"consent.right_to_erasure_description": "At any time, you are able to revoke your consent to data collection and/or processing by deleting your account. Your individual profile can be deleted, although your posted content will remain. If you wish to delete both your account <strong>and</strong> your content, please contact the administrative team for this website.",
 	"consent.right_to_data_portability": "You have the Right to Data Portability",
 	"consent.right_to_data_portability_description": "You may request from us a machine-readable export of any collected data about you and your account. You can do so by clicking the appropriate button below.",
 
