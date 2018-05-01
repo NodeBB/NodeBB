@@ -160,7 +160,7 @@
     "consent.right_to_rectification": "您拥有纠正权",
     "consent.right_to_rectification_description": "您拥有修改或更新提供给我们的任何不准确的个人数据的权力。您可以通过编辑以更新个人资料，并可以修改您发表的内容。若非如此，请联系本网站的管理团队。",
     "consent.right_to_erasure": "您拥有被遗忘权",
-    "consent.right_to_erasure_description": "您在任何时候都可以通过删除您的账户，以取消您授予我们的对您数据收集和/或处理的许可。",
+    "consent.right_to_erasure_description": "At any time, you are able to revoke your consent to data collection and/or processing by deleting your account. Your individual profile can be deleted, although your posted content will remain. If you wish to delete both your account <strong>and</strong> your content, please contact the administrative team for this website.",
     "consent.right_to_data_portability": "您拥有数据转移权",
     "consent.right_to_data_portability_description": "您可以要求我们导出所收集的您和您的账户的任何数据的机器可读副本。您可以点击下方的按钮以获取。",
     "consent.export_profile": "导出个人资料 (.csv)",
