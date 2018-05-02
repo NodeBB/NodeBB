@@ -942,6 +942,19 @@ describe('Groups', function () {
 			});
 		});
 
+		it('should fail to rename guests group', function (done) {
+			var data = {
+				groupName: 'guests',
+				values: {
+					name: 'guests2',
+				},
+			};
+			socketGroups.update({ uid: adminUid }, data, function (err) {
+				assert.equal(err.message, '[[error:no-group]]');
+				done();
+			});
+		});
+
 		it('should delete group', function (done) {
 			socketGroups.delete({ uid: adminUid }, { groupName: 'renamedupdategroup' }, function (err) {
 				assert.ifError(err);
@@ -969,6 +982,13 @@ describe('Groups', function () {
 
 		it('should fail to delete group if name is special', function (done) {
 			socketGroups.delete({ uid: adminUid }, { groupName: 'Global Moderators' }, function (err) {
+				assert.equal(err.message, '[[error:not-allowed]]');
+				done();
+			});
+		});
+
+		it('should fail to delete group if name is special', function (done) {
+			socketGroups.delete({ uid: adminUid }, { groupName: 'guests' }, function (err) {
 				assert.equal(err.message, '[[error:not-allowed]]');
 				done();
 			});
