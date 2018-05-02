@@ -353,7 +353,7 @@ User.addInterstitials = function (callback) {
 		method: [
 			// GDPR information collection/processing consent + email consent
 			function (data, callback) {
-				if (!data.userData.gdpr_consent) {
+				const add = function () {
 					data.interstitials.push({
 						template: 'partials/gdpr_consent',
 						data: {
@@ -368,14 +368,32 @@ User.addInterstitials = function (callback) {
 							next(userData.gdpr_consent ? null : new Error('[[register:gdpr_consent_denied]]'));
 						},
 					});
-				}
+				};
 
-				setImmediate(callback, null, data);
+				if (!data.userData.gdpr_consent) {
+					if (data.userData.uid) {
+						db.getObjectField('user:' + data.userData.uid, 'gdpr_consent', function (err, consented) {
+							if (err) {
+								return callback(err);
+							} else if (!parseInt(consented, 10)) {
+								add();
+							}
+
+							callback(null, data);
+						});
+					} else {
+						add();
+						setImmediate(callback, null, data);
+					}
+				} else {
+					// GDPR consent signed
+					setImmediate(callback, null, data);
+				}
 			},
 
 			// Forum Terms of Use
 			function (data, callback) {
-				if (meta.config.termsOfUse && !data.userData.acceptTos) {
+				const add = function () {
 					data.interstitials.push({
 						template: 'partials/acceptTos',
 						data: {
@@ -389,9 +407,27 @@ User.addInterstitials = function (callback) {
 							next(userData.acceptTos ? null : new Error('[[register:terms_of_use_error]]'));
 						},
 					});
-				}
+				};
 
-				setImmediate(callback, null, data);
+				if (meta.config.termsOfUse && !data.userData.acceptTos) {
+					if (data.userData.uid) {
+						db.getObjectField('user:' + data.userData.uid, 'acceptTos', function (err, accepted) {
+							if (err) {
+								return callback(err);
+							} else if (!parseInt(accepted, 10)) {
+								add();
+							}
+
+							callback(null, data);
+						});
+					} else {
+						add();
+						setImmediate(callback, null, data);
+					}
+				} else {
+					// TOS accepted
+					setImmediate(callback, null, data);
+				}
 			},
 		],
 	});

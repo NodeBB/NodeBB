@@ -191,8 +191,18 @@ authenticationController.registerComplete = function (req, res, next) {
 				res.locals.processLogin = true;
 				registerAndLoginUser(req, res, req.session.registration, done);
 			} else {
-				// Clear registration data in session
-				done();
+				// Update user hash, clear registration data in session
+				const payload = req.session.registration;
+				const uid = payload.uid;
+				delete payload.uid;
+
+				Object.keys(payload).forEach((prop) => {
+					if (typeof payload[prop] === 'boolean') {
+						payload[prop] = payload[prop] ? 1 : 0;
+					}
+				});
+
+				user.setUserFields(uid, payload, done);
 			}
 		});
 	});

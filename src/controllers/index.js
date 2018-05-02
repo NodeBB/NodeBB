@@ -197,7 +197,7 @@ Controllers.registerInterstitial = function (req, res, next) {
 			if (!data.interstitials.length) {
 				// No interstitials, redirect to home
 				delete req.session.registration;
-				return res.redirect('/');
+				return res.redirect(nconf.get('relative_path') + '/');
 			}
 			var renders = data.interstitials.map(function (interstitial) {
 				return async.apply(req.app.render.bind(req.app), interstitial.template, interstitial.data || {});
