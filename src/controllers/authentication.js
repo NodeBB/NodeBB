@@ -357,6 +357,9 @@ authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 			// Force session check for all connected socket.io clients with the same session id
 			sockets.in('sess_' + req.sessionID).emit('checkSession', uid);
 
+			// Trigger registration interstitial check
+			req.session.registration = req.session.registration || {};
+
 			plugins.fireHook('action:user.loggedIn', { uid: uid, req: req });
 			next();
 		},
