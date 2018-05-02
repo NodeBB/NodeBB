@@ -59,14 +59,23 @@ SocketAdmin.before = function (socket, method, data, next) {
 };
 
 SocketAdmin.restart = function (socket, data, callback) {
+	logRestart(socket);
+	meta.restart();
+	callback();
+};
+
+function logRestart(socket) {
 	events.log({
 		type: 'restart',
 		uid: socket.uid,
 		ip: socket.ip,
 	});
-	meta.restart();
-	callback();
-};
+	db.setObject('lastrestart', {
+		uid: socket.uid,
+		ip: socket.ip,
+		timestamp: Date.now(),
+	});
+}
 
 SocketAdmin.reload = function (socket, data, callback) {
 	async.waterfall([
@@ -80,12 +89,7 @@ SocketAdmin.reload = function (socket, data, callback) {
 				ip: socket.ip,
 			});
 
-			events.log({
-				type: 'restart',
-				uid: socket.uid,
-				ip: socket.ip,
-			});
-
+			logRestart(socket);
 			meta.restart();
 			next();
 		},

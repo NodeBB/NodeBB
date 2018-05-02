@@ -124,6 +124,10 @@
 					<button class="btn btn-block btn-warning restart"<!-- IF !canRestart --> disabled<!-- END -->>[[admin/general/dashboard:restart]]</button>
 					<button class="btn btn-block btn-danger rebuild-and-restart"<!-- IF !canRestart --> disabled<!-- END -->>[[admin/general/dashboard:rebuild-and-restart]]</button>
 				</p>
+				<!-- IF lastrestart -->
+				<p>[[admin/general/dashboard:last-restarted-by]]</p>
+				<p><a href="{config.relative_path}/uid/{lastrestart.uid}">{lastrestart.user.username}</a> <span>{lastrestart.timestampISO}</span></p>
+				<!-- ENDIF lastrestart -->
 				<p class="<!-- IF canRestart -->help-block<!-- ELSE -->alert alert-warning<!-- END -->">
 					<!-- IF canRestart -->
 					[[admin/general/dashboard:restart-warning]]
