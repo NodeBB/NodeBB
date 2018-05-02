@@ -942,6 +942,16 @@ describe('Groups', function () {
 			});
 		});
 
+		it('should fail to create a group with name guests', function (done) {
+			var oldValue = meta.config.allowGroupCreation;
+			meta.config.allowGroupCreation = 1;
+			socketGroups.create({ uid: adminUid }, { name: 'guests' }, function (err) {
+				meta.config.allowGroupCreation = oldValue;
+				assert.equal(err.message, '[[error:invalid-group-name]]');
+				done();
+			});
+		});
+
 		it('should fail to rename guests group', function (done) {
 			var data = {
 				groupName: 'guests',

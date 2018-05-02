@@ -91,7 +91,7 @@ module.exports = function (Groups) {
 			return callback(new Error('[[error:group-name-too-long]]'));
 		}
 
-		if (!Groups.isPrivilegeGroup(name) && name.includes(':')) {
+		if (name === 'guests' || (!Groups.isPrivilegeGroup(name) && name.includes(':'))) {
 			return callback(new Error('[[error:invalid-group-name]]'));
 		}
 
