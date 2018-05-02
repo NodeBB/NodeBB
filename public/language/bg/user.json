@@ -160,7 +160,7 @@
     "consent.right_to_rectification": "Имате право на поправка",
     "consent.right_to_rectification_description": "Имате право да промените или поправите всички неточни данни, които сте ни предоставили. Профилът Ви може да бъде променен като го редактирате, а съдържанието на публикациите може да бъде редактирано по всяко време. Ако имате по-различно изискване, моля, свържете се с администраторския екип",
     "consent.right_to_erasure": "Имате право на изтриване",
-    "consent.right_to_erasure_description": "At any time, you are able to revoke your consent to data collection and/or processing by deleting your account. Your individual profile can be deleted, although your posted content will remain. If you wish to delete both your account <strong>and</strong> your content, please contact the administrative team for this website.",
+    "consent.right_to_erasure_description": "Във всеки един момент можете да оттеглите съгласието си за събиране и/или обработка на данни, като изтриете акаунта си. Вашият профил може да бъде изтрит, но публикуваното от Вас съдържание ще остане. Ако искате да изтриете както акаунта, така <strong>и</strong> съдържанието, публикувано от Вас, моля, свържете се с администрационния екип на уеб сайта.",
     "consent.right_to_data_portability": "Имате право на пренос на данни",
     "consent.right_to_data_portability_description": "Можете да изискате от нас всички събрани за Вас и акаунта Ви данни в машинен формат. Можете да направите това като натиснете съответния бутон по-долу.",
     "consent.export_profile": "Изнасяне на профила (.csv)",
