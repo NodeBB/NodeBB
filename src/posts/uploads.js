@@ -73,9 +73,7 @@ module.exports = function (Posts) {
 
 	Posts.uploads.associate = function (pid, filePaths, callback) {
 		// Adds an upload to a post's sorted set of uploads
-		const now = Date.now();
 		filePaths = !Array.isArray(filePaths) ? [filePaths] : filePaths;
-		const scores = filePaths.map(() => now);
 
 		async.filter(filePaths, function (filePath, next) {
 			// Only process files that exist
@@ -83,10 +81,12 @@ module.exports = function (Posts) {
 				next(null, !err);
 			});
 		}, function (err, filePaths) {
-			let methods = [async.apply(db.sortedSetAdd.bind(db), 'post:' + pid + ':uploads', scores, filePaths)];
 			if (err) {
 				return callback(err);
 			}
+			const now = Date.now();
+			const scores = filePaths.map(() => now);
+			let methods = [async.apply(db.sortedSetAdd.bind(db), 'post:' + pid + ':uploads', scores, filePaths)];
 
 			methods = methods.concat(filePaths.map(path => async.apply(db.sortedSetAdd.bind(db), 'upload:' + md5(path) + ':pids', now, pid)));
 			async.parallel(methods, function (err) {
