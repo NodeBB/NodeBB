@@ -76,7 +76,10 @@ module.exports = function (User) {
 			property = 'uid';
 		}
 
-		if (!set || !Array.isArray(set) || !set.length || !(set[0].hasOwnProperty(property) || typeof set[0] === 'number' || typeof set[0] === 'string')) {
+		if (!Array.isArray(set) || !set.length || !set.every((item) => {
+			const check = item.hasOwnProperty(property) ? item[property] : item;
+			return item && ['number', 'string'].includes(typeof check);
+		})) {
 			return callback(null, set);
 		}
 
