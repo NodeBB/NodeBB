@@ -77,8 +77,12 @@ module.exports = function (User) {
 		}
 
 		if (!Array.isArray(set) || !set.length || !set.every((item) => {
+			if (!item) {
+				return false;
+			}
+
 			const check = item.hasOwnProperty(property) ? item[property] : item;
-			return item && ['number', 'string'].includes(typeof check);
+			return ['number', 'string'].includes(typeof check);
 		})) {
 			return callback(null, set);
 		}
