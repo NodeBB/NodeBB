@@ -76,7 +76,7 @@ module.exports = function (User) {
 			property = 'uid';
 		}
 
-		if (!Array.isArray(set) || !set.length || !(set[0].hasOwnProperty(property) || typeof set[0] === 'number' || typeof set[0] === 'string')) {
+		if (!set || !Array.isArray(set) || !set.length || !(set[0].hasOwnProperty(property) || typeof set[0] === 'number' || typeof set[0] === 'string')) {
 			return callback(null, set);
 		}
 
