@@ -22,11 +22,16 @@ define('forum/account/blocks', ['forum/account/header', 'autocomplete'], functio
 		});
 	};
 
-	Blocks.refreshList = function () {
+	Blocks.refreshList = function (err) {
+		if (err) {
+			return app.alertError(err.message);
+		}
+
 		$.get(config.relative_path + '/api/' + ajaxify.currentPage)
 			.done(function (payload) {
 				app.parseAndTranslate('account/blocks', 'users', payload, function (html) {
 					$('#users-container').html(html);
+					$('#users-container').siblings('div.alert')[html.length ? 'hide' : 'show']();
 				});
 			})
 			.fail(function () {
