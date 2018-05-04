@@ -19,6 +19,11 @@ module.exports = function (User) {
 		});
 	};
 
+	User.blocks.can = function (uid, callback) {
+		// Administrators and global moderators cannot be blocked
+		User.isAdminOrGlobalMod(uid, (err, can) => callback(err, !can));
+	};
+
 	User.blocks.list = function (uid, callback) {
 		if (User.blocks._cache.has(uid)) {
 			return setImmediate(callback, null, User.blocks._cache.get(uid));
@@ -37,7 +42,7 @@ module.exports = function (User) {
 
 	User.blocks.add = function (targetUid, uid, callback) {
 		async.waterfall([
-			async.apply(this.stateCheck, true, targetUid, uid),
+			async.apply(this.applyChecks, true, targetUid, uid),
 			async.apply(db.sortedSetAdd.bind(db), 'uid:' + uid + ':blocked_uids', Date.now(), targetUid),
 			async.apply(User.incrementUserFieldBy, uid, 'blocksCount', 1),
 			function (_blank, next) {
@@ -50,7 +55,7 @@ module.exports = function (User) {
 
 	User.blocks.remove = function (targetUid, uid, callback) {
 		async.waterfall([
-			async.apply(this.stateCheck, false, targetUid, uid),
+			async.apply(this.applyChecks, false, targetUid, uid),
 			async.apply(db.sortedSetRemove.bind(db), 'uid:' + uid + ':blocked_uids', targetUid),
 			async.apply(User.decrementUserFieldBy, uid, 'blocksCount', 1),
 			function (_blank, next) {
@@ -61,7 +66,11 @@ module.exports = function (User) {
 		], callback);
 	};
 
-	User.blocks.stateCheck = function (block, targetUid, uid, callback) {
+	User.blocks.applyChecks = function (block, targetUid, uid, callback) {
+		if (parseInt(targetUid, 10) === parseInt(uid, 10)) {
+			return setImmediate(callback, new Error('[[error:cannot-block-self]]'));
+		}
+
 		User.blocks.is(targetUid, uid, function (err, is) {
 			callback(err || (is === block ? new Error('[[error:already-' + (block ? 'blocked' : 'unblocked') + ']]') : null));
 		});

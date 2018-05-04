@@ -203,6 +203,15 @@ module.exports = function (SocketUser) {
 
 	SocketUser.toggleBlock = function (socket, data, callback) {
 		async.waterfall([
+			function (next) {
+				user.blocks.can(data.uid, function (err, can) {
+					if (err || !can) {
+						return next(err || new Error('[[error:cannot-block-privileged]]'));
+					}
+
+					next();
+				});
+			},
 			async.apply(user.blocks.is, data.uid, socket.uid),
 			function (is, next) {
 				user.blocks[is ? 'remove' : 'add'](data.uid, socket.uid, next);
