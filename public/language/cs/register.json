@@ -20,7 +20,7 @@
     "registration-added-to-queue": "Vaše registrace byla přidána do fronty. Obdržíte e-mail až ji správce schválí.",
     "interstitial.intro": "Před vytvořením účtu vyžadujeme některé dodatečné informace.",
     "interstitial.errors-found": "Nebylo možné dokončit vaší registraci:",
-    "gdpr_agree_data": "I consent to the collection and processing of my personal information on this website.",
-    "gdpr_agree_email": "I consent to receive digest and notification emails from this website.",
-    "gdpr_consent_denied": "You must give consent to this site to collect/process your information, and to send you emails."
+    "gdpr_agree_data": "Dávám souhlas se sběrem a zpracováním mých osobních údajů na této webové stránce.",
+    "gdpr_agree_email": "Dávám souhlas k dostávání e-mailových přehledů a oznámení z týkající se této webové stránky.",
+    "gdpr_consent_denied": "Musíte dát souhlas této stránce sbírat/zpracovávat informace o vaší činnosti a odesílat vám e-maily."
 }
