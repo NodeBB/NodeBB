@@ -29,8 +29,8 @@
     "ignored": "Игнорисано",
     "followers": "Пратиоци",
     "following": "Праћења",
-    "blocks": "Blocks",
-    "block_toggle": "Toggle Block",
+    "blocks": "Блокирања",
+    "block_toggle": "Блокирај/одблокирај",
     "aboutme": "О мени",
     "signature": "Потпис",
     "birthday": "Рођендан",
@@ -163,7 +163,7 @@
     "consent.right_to_erasure_description": "At any time, you are able to revoke your consent to data collection and/or processing by deleting your account. Your individual profile can be deleted, although your posted content will remain. If you wish to delete both your account <strong>and</strong> your content, please contact the administrative team for this website.",
     "consent.right_to_data_portability": "You have the Right to Data Portability",
     "consent.right_to_data_portability_description": "You may request from us a machine-readable export of any collected data about you and your account. You can do so by clicking the appropriate button below.",
-    "consent.export_profile": "Export Profile (.csv)",
-    "consent.export_uploads": "Export Uploaded Content (.zip)",
-    "consent.export_posts": "Export Posts (.csv)"
+    "consent.export_profile": "Извези профил (.csv)",
+    "consent.export_uploads": "Извези отпремљени садржај (.zip)",
+    "consent.export_posts": "Извези поруке (.csv)"
 }
