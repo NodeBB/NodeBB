@@ -179,26 +179,26 @@ module.exports = function (Topics) {
 					},
 				}, next);
 			},
-			function (data, next) {
-				if (!Array.isArray(data.topicData) || !data.topicData.length) {
+			function (result, next) {
+				if (!Array.isArray(result.topicData) || !result.topicData.length) {
 					return next(new Error('[[error:no-topic]]'));
 				}
 
-				data.topicData = data.topicData[0];
-				data.topicData.unreplied = 1;
-				data.topicData.mainPost = data.postData;
-				data.postData.index = 0;
+				result.topicData = result.topicData[0];
+				result.topicData.unreplied = 1;
+				result.topicData.mainPost = result.postData;
+				result.postData.index = 0;
 
-				analytics.increment(['topics', 'topics:byCid:' + data.topicData.cid]);
-				plugins.fireHook('action:topic.post', { topic: data.topicData, post: data.postData });
+				analytics.increment(['topics', 'topics:byCid:' + result.topicData.cid]);
+				plugins.fireHook('action:topic.post', { topic: result.topicData, post: result.postData, data: data });
 
 				if (parseInt(uid, 10)) {
-					user.notifications.sendTopicNotificationToFollowers(uid, data.topicData, data.postData);
+					user.notifications.sendTopicNotificationToFollowers(uid, result.topicData, result.postData);
 				}
 
 				next(null, {
-					topicData: data.topicData,
-					postData: data.postData,
+					topicData: result.topicData,
+					postData: result.postData,
 				});
 			},
 		], callback);
@@ -284,7 +284,7 @@ module.exports = function (Topics) {
 
 				Topics.notifyFollowers(postData, uid);
 				analytics.increment(['posts', 'posts:byCid:' + data.cid]);
-				plugins.fireHook('action:topic.reply', { post: _.clone(postData) });
+				plugins.fireHook('action:topic.reply', { post: _.clone(postData), data: data });
 
 				next(null, postData);
 			},
