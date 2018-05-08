@@ -130,7 +130,12 @@ userController.exportPosts = function (req, res, next) {
 				next(err, payload);
 			});
 		},
-		async.apply(converter.json2csv),
+		function (payload, next) {
+			converter.json2csv(payload, next, {
+				checkSchemaDifferences: false,
+				emptyFieldValue: '',
+			});
+		},
 	], function (err, csv) {
 		if (err) {
 			return next(err);
