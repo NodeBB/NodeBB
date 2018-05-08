@@ -53,6 +53,7 @@ apiController.loadConfig = function (req, callback) {
 	config.defaultLang = meta.config.defaultLang || 'en-GB';
 	config.userLang = req.query.lang ? validator.escape(String(req.query.lang)) : config.defaultLang;
 	config.loggedIn = !!req.user;
+	config.uid = req.uid;
 	config['cache-buster'] = meta.config['cache-buster'] || '';
 	config.requireEmailConfirmation = parseInt(meta.config.requireEmailConfirmation, 10) === 1;
 	config.topicPostSort = meta.config.topicPostSort || 'oldest_to_newest';
