@@ -95,7 +95,6 @@ function uploadAsFile(req, uploadedFile, callback) {
 			uploadsController.uploadFile(req.uid, uploadedFile, next);
 		},
 		function (fileObj, next) {
-			console.log(fileObj);
 			next(null, {
 				url: fileObj.url,
 				name: fileObj.name,
