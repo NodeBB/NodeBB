@@ -3,7 +3,7 @@
 	"disable": "İtibar Sistemini Devre Dışı Bırak",
 	"disable-down-voting": "Eksi Oyu Devre Dışı Bırak",
 	"votes-are-public": "Tüm Oylar Herkese Açık",
-	"thresholds": "Activity Thresholds",
+	"thresholds": "Etkinlik Eşikleri",
 	"min-rep-downvote": "Eksilenen iletiler için minimum itibar",
 	"min-rep-flag": "Bayraklı iletiler için minimum itibar",
 	"min-rep-website": "Minimum reputation to add \"Website\" to user profile",
