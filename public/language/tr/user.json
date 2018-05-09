@@ -12,7 +12,7 @@
     "ban_account_confirm": "Hesabı dondurmak istediğinizden emin misiniz!",
     "unban_account": "Hesabı Kullanıma Aç",
     "delete_account": "Hesabı Sil",
-    "delete_account_confirm": "Are you sure you want to delete your account? <br /><strong>This action is irreversible and you will not be able to recover any of your data</strong><br /><br />Enter your password to confirm that you wish to destroy this account.",
+    "delete_account_confirm": "Hesabınızı silmek istediğinize emin misiniz? <br /><strong>Bu işlem geri döndürülemez ve verilerinizin herhangi bir bölümünü kurtaramazsınız</strong><br /><br />Bu hesabı yoketme isteğinizi onaylamak için şifrenizi girin.",
     "delete_this_account_confirm": "Bu hesabı silmek istediğinizden emin misiniz? <br /><strong>Bu işlem geri döndürülemez ve hiç bir veriyi kurtaramazsınız</strong><br /><br />",
     "account-deleted": "Hesap silindi",
     "fullname": "Tam Ad",

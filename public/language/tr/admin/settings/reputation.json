@@ -6,7 +6,7 @@
 	"thresholds": "Etkinlik Eşikleri",
 	"min-rep-downvote": "Eksilenen iletiler için minimum itibar",
 	"min-rep-flag": "Bayraklı iletiler için minimum itibar",
-	"min-rep-website": "Minimum reputation to add \"Website\" to user profile",
-	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",
-	"min-rep-signature": "Minimum reputation to add \"Signature\" to user profile"
+	"min-rep-website": "Kullanıcı profiline \"Web Sitesi\" eklemek için gerekli asgari itibar",
+	"min-rep-aboutme": "Kullanıcı profiline \"Hakkımda\" eklemek için gereken asgari itibar",
+	"min-rep-signature": "Kullanıcı profiline \"İmza\" eklemek için gerekli asgari itibar"
 }

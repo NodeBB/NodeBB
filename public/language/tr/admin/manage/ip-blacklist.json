@@ -8,12 +8,12 @@
 	"hint-1": "Her satır için tek bir IP adresi tanımlayın. CIDR formatını izledikleri sürece IP blokları ekleyebilirsiniz (Örn: <code>192.168.100.0/22</code>).",
 	"hint-2": "Yorumlara <code>#</code> sembolüyle başlayan satırları ekleyebilirsiniz.",
 
-	"validate.x-valid": "<strong>%1</strong> out of <strong>%2</strong> rule(s) valid.",
-	"validate.x-invalid": "The following <strong>%1</strong> rules are invalid:",
+	"validate.x-valid": "<strong>%2</strong> geçerli kuraldan <strong>%1</strong> tanesi.",
+	"validate.x-invalid": "Şu <strong>%1</strong> kural geçersiz:",
 
 	"alerts.applied-success": "Kara Liste Uygulandı",
 
 	"analytics.blacklist-hourly": "<strong>Şekil 1</strong> Saatlik kara liste isabeti",
 	"analytics.blacklist-daily": "<strong>Şekil 2</strong> Günlük kara liste isabeti",
-	"ip-banned": "IP banned"
+	"ip-banned": "IP yasaklandı"
 }

@@ -9,15 +9,15 @@
 
 	"section-manage": "Yönet",
 	"manage/categories": "Kategoriler",
-	"manage/privileges": "Privileges",
+	"manage/privileges": "Yetkiler",
 	"manage/tags": "Etiketler",
 	"manage/users": "Kullanıcılar",
-	"manage/admins-mods": "Admins & Mods",
+	"manage/admins-mods": "Yöneticiler ve Modlar",
 	"manage/registration": "Kayıt Kuyruğu",
 	"manage/post-queue": "İleti Kuyruğu",
 	"manage/groups": "Gruplar",
 	"manage/ip-blacklist": "IP Kara Listesi",
-	"manage/uploads": "Uploads",
+	"manage/uploads": "Yüklemeler",
 
 	"section-settings": "Ayarlar",
 	"settings/general": "General",
