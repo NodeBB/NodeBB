@@ -228,7 +228,7 @@ userController.exportUploads = function (req, res, next) {
 
 userController.exportProfile = function (req, res, next) {
 	async.waterfall([
-		async.apply(db.getObjects.bind(db), ['user:1', 'user:1:settings']),
+		async.apply(db.getObjects.bind(db), ['user:' + req.params.uid, 'user:' + req.params.uid + ':settings']),
 		function (objects, next) {
 			Object.assign(objects[0], objects[1]);
 			delete objects[0].password;
