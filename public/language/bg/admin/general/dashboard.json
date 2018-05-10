@@ -67,5 +67,6 @@
 	"graphs.page-views": "Преглеждания на страниците",
 	"graphs.unique-visitors": "Уникални посетители",
 	"graphs.registered-users": "Регистрирани потребители",
-	"graphs.anonymous-users": "Анонимни потребители"
+	"graphs.anonymous-users": "Анонимни потребители",
+	"last-restarted-by": "Last restarted by"
 }

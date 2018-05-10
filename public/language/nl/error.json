@@ -146,5 +146,7 @@
     "invalid-session": "Verkeerde sessie combinatie",
     "invalid-session-text": "Het lijkt erop dat je login sessie niet meer actief is of niet langer synchroon is met de server. Ververs de pagina.",
     "no-topics-selected": "Geen onderwerpen geselecteerd!",
-    "cant-move-to-same-topic": "Een bericht kan niet naar hetzelfde onderwerp worden verplaatst!"
+    "cant-move-to-same-topic": "Een bericht kan niet naar hetzelfde onderwerp worden verplaatst!",
+    "cannot-block-self": "You cannot block yourself!",
+    "cannot-block-privileged": "You cannot block administrators or global moderators"
 }

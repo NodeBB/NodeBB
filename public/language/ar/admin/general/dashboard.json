@@ -67,5 +67,6 @@
 	"graphs.page-views": "مشاهدات الصفحة",
 	"graphs.unique-visitors": "زوار فريدين",
 	"graphs.registered-users": "مستخدمين مسجلين",
-	"graphs.anonymous-users": "مستخدمين مجهولين"
+	"graphs.anonymous-users": "مستخدمين مجهولين",
+	"last-restarted-by": "Last restarted by"
 }

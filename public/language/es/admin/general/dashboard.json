@@ -67,5 +67,6 @@
 	"graphs.page-views": "Vista de la Pagina",
 	"graphs.unique-visitors": "Visitantes Unicos",
 	"graphs.registered-users": "Usuarios Registrados",
-	"graphs.anonymous-users": "Usuarios Anónimos"
+	"graphs.anonymous-users": "Usuarios Anónimos",
+	"last-restarted-by": "Last restarted by"
 }

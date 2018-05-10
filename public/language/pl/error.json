@@ -146,5 +146,7 @@
     "invalid-session": "Niewłaściwa sesja",
     "invalid-session-text": "Wygląda na to, że twoja sesja jest nieaktywna lub nie zgadza się z serwerem. Proszę odświeżyć tę stronę.",
     "no-topics-selected": "Nie wybrano tematów.",
-    "cant-move-to-same-topic": "Nie można przenieść wpisu do tego samego tematu!"
+    "cant-move-to-same-topic": "Nie można przenieść wpisu do tego samego tematu!",
+    "cannot-block-self": "You cannot block yourself!",
+    "cannot-block-privileged": "You cannot block administrators or global moderators"
 }

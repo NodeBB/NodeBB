@@ -67,5 +67,6 @@
 	"graphs.page-views": "Sayfa Gösterimi",
 	"graphs.unique-visitors": "Benzersiz Ziyaretçiler",
 	"graphs.registered-users": "Kayıtlı Kullanıcılar",
-	"graphs.anonymous-users": "Anonim Kullanıcılar"
+	"graphs.anonymous-users": "Anonim Kullanıcılar",
+	"last-restarted-by": "Last restarted by"
 }

@@ -146,5 +146,7 @@
     "invalid-session": "Erro de Sessão",
     "invalid-session-text": "Parece que sua sessão de login não está mais ativa, ou não combina mais com a do servidor. Por gentileza, recarregue esta página.",
     "no-topics-selected": "Nenhum tópico selecionado!",
-    "cant-move-to-same-topic": "Não é possível mover um post para o mesmo tópico!"
+    "cant-move-to-same-topic": "Não é possível mover um post para o mesmo tópico!",
+    "cannot-block-self": "You cannot block yourself!",
+    "cannot-block-privileged": "You cannot block administrators or global moderators"
 }

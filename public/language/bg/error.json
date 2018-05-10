@@ -146,5 +146,7 @@
     "invalid-session": "Несъответствие в сесията",
     "invalid-session-text": "Изглежда сесията Ви на вписване вече е изтекла или не съответства на сървъра. Моля, опреснете страницата.",
     "no-topics-selected": "Няма избрани теми!",
-    "cant-move-to-same-topic": "Публикацията не може да бъде преместена в същата тема!"
+    "cant-move-to-same-topic": "Публикацията не може да бъде преместена в същата тема!",
+    "cannot-block-self": "You cannot block yourself!",
+    "cannot-block-privileged": "You cannot block administrators or global moderators"
 }

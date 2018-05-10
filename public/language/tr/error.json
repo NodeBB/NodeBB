@@ -146,5 +146,7 @@
     "invalid-session": "Oturum Uyuşmazlığı",
     "invalid-session-text": "Senin giriş oturumun pek aktif gözükmüyor, ya da sunucu ile eşleşmiyor. Lütfen sayfayı yenileyiniz.",
     "no-topics-selected": "Hiçbir başlık seçilmedi!",
-    "cant-move-to-same-topic": "İletiyi aynı başlığa taşıyamazsın!"
+    "cant-move-to-same-topic": "İletiyi aynı başlığa taşıyamazsın!",
+    "cannot-block-self": "You cannot block yourself!",
+    "cannot-block-privileged": "You cannot block administrators or global moderators"
 }

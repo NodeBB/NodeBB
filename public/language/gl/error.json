@@ -146,5 +146,7 @@
     "invalid-session": "Non concordan os datos da sesión",
     "invalid-session-text": "Parece que a súa sesión expirou ou non concorda co servidor. Por favor, recarge a páxina.",
     "no-topics-selected": "No topics selected!",
-    "cant-move-to-same-topic": "Can't move post to same topic!"
+    "cant-move-to-same-topic": "Can't move post to same topic!",
+    "cannot-block-self": "You cannot block yourself!",
+    "cannot-block-privileged": "You cannot block administrators or global moderators"
 }

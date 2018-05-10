@@ -146,5 +146,7 @@
     "invalid-session": "Không đúng session",
     "invalid-session-text": "Có vẻ như phiên đăng nhập của bạn đã không còn hoạt động nữa, hoặc không còn đúng với thông tin trên máy chủ. Vui lòng tải lại trang này",
     "no-topics-selected": "Không có chủ đề nào đang được chọn!",
-    "cant-move-to-same-topic": "Can't move post to same topic!"
+    "cant-move-to-same-topic": "Can't move post to same topic!",
+    "cannot-block-self": "You cannot block yourself!",
+    "cannot-block-privileged": "You cannot block administrators or global moderators"
 }

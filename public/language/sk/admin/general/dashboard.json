@@ -67,5 +67,6 @@
 	"graphs.page-views": "Zobrazenia stránok",
 	"graphs.unique-visitors": "Unikátny navštevníci",
 	"graphs.registered-users": "Zarestrovaný užívatelia",
-	"graphs.anonymous-users": "Neznámy užívatelia"
+	"graphs.anonymous-users": "Neznámy užívatelia",
+	"last-restarted-by": "Last restarted by"
 }
