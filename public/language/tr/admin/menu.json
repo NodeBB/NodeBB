@@ -20,7 +20,7 @@
 	"manage/uploads": "Yüklemeler",
 
 	"section-settings": "Ayarlar",
-	"settings/general": "General",
+	"settings/general": "Genel",
 	"settings/reputation": "İtibar",
 	"settings/email": "E-posta",
 	"settings/user": "Kullanıcı",
@@ -37,7 +37,7 @@
 	"settings/sockets": "Soketler",
 	"settings/advanced": "Gelişmiş",
 
-	"settings.page-title": "%1 Settings",
+	"settings.page-title": "%1 Ayar",
 
 	"section-appearance": "Görünüm",
 	"appearance/themes": "Temalar",
@@ -61,7 +61,7 @@
 	"advanced/errors": "Hatalar",
 	"advanced/cache": "Önbellek",
 	"development/logger": "Logger",
-	"development/info": "Info",
+	"development/info": "bilgi",
 
 	"rebuild-and-restart-forum": "Rebuild & Restart Forum",
 	"restart-forum": "Forumu Yeniden Başlat",
@@ -69,7 +69,7 @@
 	"view-forum": "Forumu Görüntüle",
 
 	"search.placeholder": "Search for settings",
-	"search.no-results": "No results...",
+	"search.no-results": "Sonuç yok...",
 	"search.search-forum": "Search the forum for <strong></strong>",
 	"search.keep-typing": "Type more to see results...",
 	"search.start-typing": "Start typing to see results...",

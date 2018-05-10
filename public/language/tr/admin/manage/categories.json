@@ -30,17 +30,17 @@
 
 	"privileges.description": "Bu kategorideki erişim denetimi ayrıcalıklarını bu bölümde yapılandırabilirsiniz. Ayrıcalıklar kullanıcıya veya gruba göre verilebilir. Bu tabloda, aşağıdaki formdan arama yapabilir, yeni bir kullanıcı ekleyebilirsiniz.",
 	"privileges.warning": "<strong>Note</strong>: Privilege settings take effect immediately. It is not necessary to save the category after adjusting these settings.",
-	"privileges.section-viewing": "Viewing Privileges",
-	"privileges.section-posting": "Posting Privileges",
+	"privileges.section-viewing": "Ayrıcalıkları Görüntüle",
+	"privileges.section-posting": "Gönderme Ayrıcalıkları",
 	"privileges.section-moderation": "Moderatörlük Ayrıcalıkları",
 	"privileges.section-user": "Kullanıcı",
 	"privileges.search-user": "Kullanıcı Ekle",
-	"privileges.no-users": "No user-specific privileges in this category.",
+	"privileges.no-users": "Bu kategoride kullanıcıya-özel ayrıcalıklar yok.",
 	"privileges.section-group": "Grup",
 	"privileges.group-private": "Bu grup gizlidir",
 	"privileges.search-group": "Grup Ekle",
 	"privileges.copy-to-children": "Copy to Children",
-	"privileges.copy-from-category": "Copy from Category",
+	"privileges.copy-from-category": "Kategoriden Kopyala",
 	"privileges.inherit": "If the <code>registered-users</code> group is granted a specific privilege, all other groups receive an <strong>implicit privilege</strong>, even if they are not explicitly defined/checked. This implicit privilege is shown to you because all users are part of the <code>registered-users</code> user group, and so, privileges for additional groups need not be explicitly granted.",
 
 	"analytics.back": "Kategori listesine geri dön",
@@ -66,6 +66,6 @@
 	"alert.user-search": "Search for a user here...",
 	"alert.find-group": "Bir Grup Ara",
 	"alert.group-search": "Search for a group here...",
-	"collapse-all": "Collapse All",
-	"expand-all": "Expand All"
+	"collapse-all": "Hepsini Kapat",
+	"expand-all": "Hepsini Genişlet"
 }

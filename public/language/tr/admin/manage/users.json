@@ -20,21 +20,21 @@
 	"pills.latest": "En Yeni Kullanıcılar",
 	"pills.unvalidated": "Onaylanmamış",
 	"pills.no-posts": "İleti Yok",
-	"pills.top-posters": "Top Posters",
+	"pills.top-posters": "En Çok Gönderim Yapanlar",
 	"pills.top-rep": "En Saygın",
 	"pills.inactive": "Etkin değil",
-	"pills.flagged": "Most Flagged",
+	"pills.flagged": "En Çok İşaretlenenler",
 	"pills.banned": "Yasaklandı",
 	"pills.search": "Kullanıcı Ara",
 
-	"search.uid": "By User ID",
-	"search.uid-placeholder": "Enter a user ID to search",
+	"search.uid": "Kullanıcı Kimliğiyle",
+	"search.uid-placeholder": "Aramak için bir kullanıcı kimliği girin",
 	"search.username": "Kullanıcı Adına Göre",
 	"search.username-placeholder": "Aramak için bir kullanıcı adı girin",
 	"search.email": "E-posta'ya göre",
 	"search.email-placeholder": "Aramak için bir e-posta adresi girin",
-	"search.ip": "By IP Address",
-	"search.ip-placeholder": "Enter an IP Address to search",
+	"search.ip": "IP Adresiyle",
+	"search.ip-placeholder": "Aramak için bir IP adresi girin",
 	"search.not-found": "Kullanıcı bulunamadı!",
 
 	"inactive.3-months": "3 ay",
@@ -93,7 +93,7 @@
 	"alerts.error-x": "<strong>Error</strong><p>%1</p>",
 	"alerts.create-success": "Kullanıcı oluşturuldu!",
 
-	"alerts.prompt-email": "Email: ",
+	"alerts.prompt-email": "Eposta:",
 	"alerts.email-sent-to": "%1'e bir davet e-postası gönderildi",
 	"alerts.x-users-found": "%1 user(s) found! Search took %2 ms."
 }

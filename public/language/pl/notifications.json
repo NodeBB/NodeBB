@@ -26,7 +26,7 @@
     "upvoted_your_post_in_multiple": "<strong>%1</strong> oraz %2 innych zagłosowali na Twój post w <strong>%3</strong>.",
     "moved_your_post": "<strong>%1</strong> przeniósł Twój post do <strong>%2</strong>",
     "moved_your_topic": "<strong>%1</strong> przeniósł <strong>%2</strong>",
-    "user_flagged_post_in": "<strong>%1<strong> oflagował post w <strong>%2</strong>",
+    "user_flagged_post_in": "<strong>%1</strong> oflagował post w <strong>%2</strong>",
     "user_flagged_post_in_dual": "<strong>%1</strong> oraz <strong>%2</strong> oflagowali post w <strong>%3</strong>",
     "user_flagged_post_in_multiple": "<strong>%1</strong> oraz %2 innych oflagowali post w <strong>%3</strong>",
     "user_flagged_user": "<strong>%1</strong> oflagował profil użytkownika (%2)",

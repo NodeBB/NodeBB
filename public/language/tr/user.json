@@ -29,8 +29,8 @@
     "ignored": "Susturuldu",
     "followers": "Takipçiler",
     "following": "Takip Ediyor",
-    "blocks": "Blocks",
-    "block_toggle": "Toggle Block",
+    "blocks": "Blok",
+    "block_toggle": "Blokta Geçiş Yap",
     "aboutme": "Hakkımda",
     "signature": "İmza",
     "birthday": "Doğum Tarihi",
@@ -154,7 +154,7 @@
     "consent.digest_off": "Currently, this community does not send out email digests",
     "consent.received": "You have provided consent for this website to collect and process your information. No additional action is required.",
     "consent.not_received": "You have not provided consent for data collection and processing. At any time this website&apos;s administration may elect to delete your account in order to become compliant with the General Data Protection Regulation.",
-    "consent.give": "Give consent",
+    "consent.give": "İzin ver",
     "consent.right_of_access": "You have the Right of Access",
     "consent.right_of_access_description": "You have the right to access any data collected by this website upon request. You can retrieve a copy of this data by clicking the appropriate button below.",
     "consent.right_to_rectification": "You have the Right to Rectification",
@@ -163,7 +163,7 @@
     "consent.right_to_erasure_description": "At any time, you are able to revoke your consent to data collection and/or processing by deleting your account. Your individual profile can be deleted, although your posted content will remain. If you wish to delete both your account <strong>and</strong> your content, please contact the administrative team for this website.",
     "consent.right_to_data_portability": "You have the Right to Data Portability",
     "consent.right_to_data_portability_description": "You may request from us a machine-readable export of any collected data about you and your account. You can do so by clicking the appropriate button below.",
-    "consent.export_profile": "Export Profile (.csv)",
+    "consent.export_profile": "Profili Dışarı Çıkar (.csv)",
     "consent.export_uploads": "Export Uploaded Content (.zip)",
     "consent.export_posts": "Export Posts (.csv)"
 }
