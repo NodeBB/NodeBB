@@ -152,7 +152,8 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback(null, []);
 		}
-		db.collection('objects').findOne({ _key: key }, { members: 1 }, { _id: 0, _key: 0 }, function (err, data) {
+
+		db.collection('objects').findOne({ _key: key }, { projection: { _id: 0, _key: 0 } }, function (err, data) {
 			callback(err, data ? data.members : []);
 		});
 	};
@@ -161,7 +162,7 @@ module.exports = function (db, module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback(null, []);
 		}
-		db.collection('objects').find({ _key: { $in: keys } }, { _id: 0, _key: 1, members: 1 }).toArray(function (err, data) {
+		db.collection('objects').find({ _key: { $in: keys } }, { projection: { _id: 0 } }).toArray(function (err, data) {
 			if (err) {
 				return callback(err);
 			}

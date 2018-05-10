@@ -105,7 +105,7 @@ module.exports = function (db, module) {
 		db.collection('objects').aggregate([
 			{ $match: { _key: key } },
 			{ $project: { count: { $size: '$array' } } },
-		], function (err, result) {
+		]).toArray(function (err, result) {
 			callback(err, Array.isArray(result) && result.length && result[0].count);
 		});
 	};
