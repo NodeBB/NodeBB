@@ -2027,7 +2027,7 @@ growl@1.10.3:
   version "1.10.3"
   resolved "https://registry.yarnpkg.com/growl/-/growl-1.10.3.tgz#1926ba90cf3edfe2adb4927f5880bc22c66c790f"
 
-grunt-cli@^1.2.0, grunt-cli@~1.2.0:
+grunt-cli@~1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/grunt-cli/-/grunt-cli-1.2.0.tgz#562b119ebb069ddb464ace2845501be97b35b6a8"
   dependencies:
@@ -3431,9 +3431,9 @@ node-cache@^4.1.1:
     clone "2.x"
     lodash "4.x"
 
-nodebb-plugin-composer-default@6.0.22:
-  version "6.0.22"
-  resolved "https://registry.yarnpkg.com/nodebb-plugin-composer-default/-/nodebb-plugin-composer-default-6.0.22.tgz#92a88e136cf7c7e63a404e3b7cb714e85de60759"
+nodebb-plugin-composer-default@6.0.23:
+  version "6.0.23"
+  resolved "https://registry.yarnpkg.com/nodebb-plugin-composer-default/-/nodebb-plugin-composer-default-6.0.23.tgz#4e2303522938e58906f2fb5f447c99d3f41ffdfd"
   dependencies:
     screenfull "3.0.0"
 
@@ -3463,9 +3463,9 @@ nodebb-plugin-emoji@^2.2.2:
     preact "^8.2.5"
     string-hash "^1.1.3"
 
-nodebb-plugin-markdown@8.4.2:
-  version "8.4.2"
-  resolved "https://registry.yarnpkg.com/nodebb-plugin-markdown/-/nodebb-plugin-markdown-8.4.2.tgz#bcb4c691bbed12b029db1d67874b14740e297d56"
+nodebb-plugin-markdown@8.4.3:
+  version "8.4.3"
+  resolved "https://registry.yarnpkg.com/nodebb-plugin-markdown/-/nodebb-plugin-markdown-8.4.3.tgz#ed1c2177d90137dc08762d528d3c79fabb9df527"
   dependencies:
     async "^2.6.0"
     markdown-it "^6.0.0"
@@ -3500,9 +3500,9 @@ nodebb-theme-lavender@5.0.4:
   version "5.0.4"
   resolved "https://registry.yarnpkg.com/nodebb-theme-lavender/-/nodebb-theme-lavender-5.0.4.tgz#83b8be4becd484a0cf38e15d9e86cc9960dd851e"
 
-nodebb-theme-persona@9.0.3:
-  version "9.0.3"
-  resolved "https://registry.yarnpkg.com/nodebb-theme-persona/-/nodebb-theme-persona-9.0.3.tgz#67c642f48e70d88214e7f2b8995f9556e46059f1"
+nodebb-theme-persona@9.0.4:
+  version "9.0.4"
+  resolved "https://registry.yarnpkg.com/nodebb-theme-persona/-/nodebb-theme-persona-9.0.4.tgz#8bd5f9f9a00138c0173051710f8217c0740654cb"
   dependencies:
     pulling "^1.1.2"
     striptags "^3.1.1"
@@ -3511,13 +3511,13 @@ nodebb-theme-slick@1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/nodebb-theme-slick/-/nodebb-theme-slick-1.2.1.tgz#8d9c92bb6479c9ff6cdfb14453de026675ce209b"
 
-nodebb-theme-vanilla@10.0.3:
-  version "10.0.3"
-  resolved "https://registry.yarnpkg.com/nodebb-theme-vanilla/-/nodebb-theme-vanilla-10.0.3.tgz#cfd16b06eda54ffd89f256b9b859ebfcb49a99ac"
+nodebb-theme-vanilla@10.0.4:
+  version "10.0.4"
+  resolved "https://registry.yarnpkg.com/nodebb-theme-vanilla/-/nodebb-theme-vanilla-10.0.4.tgz#0ed5128e2f22d84b7de9f11b087af05a26545573"
 
-nodebb-widget-essentials@4.0.2:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/nodebb-widget-essentials/-/nodebb-widget-essentials-4.0.2.tgz#35531006bb1b787658266fce8e5afed6b575a278"
+nodebb-widget-essentials@4.0.4:
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/nodebb-widget-essentials/-/nodebb-widget-essentials-4.0.4.tgz#9bd3c293137c094a5af10a26a347648a2e6cc592"
 
 nodemailer@4.4.1:
   version "4.4.1"
