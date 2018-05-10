@@ -146,5 +146,7 @@
     "invalid-session": "일치하지 않는 세션입니다.",
     "invalid-session-text": "로그인 세션이 비활성화 되었거나 서버와 일치하지 않습니다. 페이지를 새로 고쳐주세요.",
     "no-topics-selected": "No topics selected!",
-    "cant-move-to-same-topic": "Can't move post to same topic!"
+    "cant-move-to-same-topic": "Can't move post to same topic!",
+    "cannot-block-self": "You cannot block yourself!",
+    "cannot-block-privileged": "You cannot block administrators or global moderators"
 }

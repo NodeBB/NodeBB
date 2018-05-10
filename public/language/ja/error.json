@@ -146,5 +146,7 @@
     "invalid-session": "セッションの不一致",
     "invalid-session-text": "ログインセッションの期限切れ、またはサーバーとの未接続が長すぎると思われます。このページを更新してみてください。",
     "no-topics-selected": "No topics selected!",
-    "cant-move-to-same-topic": "Can't move post to same topic!"
+    "cant-move-to-same-topic": "Can't move post to same topic!",
+    "cannot-block-self": "You cannot block yourself!",
+    "cannot-block-privileged": "You cannot block administrators or global moderators"
 }

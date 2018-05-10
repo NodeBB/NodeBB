@@ -1,11 +1,11 @@
 {
 	"pagination": "Sayfalama Ayarları",
-	"enable": "Paginate topics and posts instead of using infinite scroll.",
+	"enable": "Sonsuz kaydırma yerine konu ve gönderileri sayfalandır.",
 	"topics": "Başlık Sayfalama",
 	"posts-per-page": "Sayfa başına İletiler",
-	"max-posts-per-page": "Maximum posts per page",
+	"max-posts-per-page": "Sayfa başına azami gönderi sayısı",
 	"categories": "Kategori Sayfalama",
 	"topics-per-page": "Sayfa başına Konular",
-	"max-topics-per-page": "Maximum topics per page",
-	"initial-num-load": "Initial Number of Topics to Load on Unread, Recent, and Popular"
+	"max-topics-per-page": "Sayfa başına azami konu",
+	"initial-num-load": "Okunmamış, Son ve Popülere Başlangıçta Yüklenecek Konu Sayısı"
 }

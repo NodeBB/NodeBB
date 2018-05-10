@@ -146,5 +146,7 @@
     "invalid-session": "Session 无法匹配",
     "invalid-session-text": "您的登入状态已经失效，或者是与服务器信息不匹配。请刷新此页面。",
     "no-topics-selected": "没有主题被选中!",
-    "cant-move-to-same-topic": "无法将帖子移动到相同的主题中！"
+    "cant-move-to-same-topic": "无法将帖子移动到相同的主题中！",
+    "cannot-block-self": "You cannot block yourself!",
+    "cannot-block-privileged": "You cannot block administrators or global moderators"
 }

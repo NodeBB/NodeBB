@@ -77,5 +77,5 @@
 	"connection-lost": "La connexion à %1 a été perdue, tentative de reconnexion…",
 
 	"alerts.version": "Version actuelle <strong>NodeBB v%1</strong>",
-	"alerts.upgrade": "Mettre à jour en v% 1"
+	"alerts.upgrade": "Mettre à jour en v%1"
 }

@@ -67,5 +67,6 @@
 	"graphs.page-views": "页面察看",
 	"graphs.unique-visitors": "单一访客",
 	"graphs.registered-users": "已注册用户",
-	"graphs.anonymous-users": "匿名用户"
+	"graphs.anonymous-users": "匿名用户",
+	"last-restarted-by": "Last restarted by"
 }

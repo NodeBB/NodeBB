@@ -67,5 +67,6 @@
 	"graphs.page-views": "Просмотров",
 	"graphs.unique-visitors": "Уникальных пользователей",
 	"graphs.registered-users": "Зарегистрированных пользователей",
-	"graphs.anonymous-users": "Анонимных пользователей"
+	"graphs.anonymous-users": "Анонимных пользователей",
+	"last-restarted-by": "Last restarted by"
 }

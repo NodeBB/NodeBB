@@ -130,7 +130,12 @@ userController.exportPosts = function (req, res, next) {
 				next(err, payload);
 			});
 		},
-		async.apply(converter.json2csv),
+		function (payload, next) {
+			converter.json2csv(payload, next, {
+				checkSchemaDifferences: false,
+				emptyFieldValue: '',
+			});
+		},
 	], function (err, csv) {
 		if (err) {
 			return next(err);
@@ -223,7 +228,7 @@ userController.exportUploads = function (req, res, next) {
 
 userController.exportProfile = function (req, res, next) {
 	async.waterfall([
-		async.apply(db.getObjects.bind(db), ['user:1', 'user:1:settings']),
+		async.apply(db.getObjects.bind(db), ['user:' + req.params.uid, 'user:' + req.params.uid + ':settings']),
 		function (objects, next) {
 			Object.assign(objects[0], objects[1]);
 			delete objects[0].password;

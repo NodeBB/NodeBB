@@ -18,7 +18,7 @@
     "invalid-username-or-password": "Zadejte prosím uživatelské jméno a i heslo",
     "invalid-search-term": "Neplatný výraz pro vyhledávání",
     "invalid-url": "Neplatné URL",
-    "local-login-disabled": "Local login system has been disabled for non-privileged accounts.",
+    "local-login-disabled": "Systém přihlášení pro místní účty byl zakázán pro neoprávněné účty.",
     "csrf-invalid": "Není možné vás přihlásit, díky vypršení relace. Zkuste to prosím znovu.",
     "invalid-pagination-value": "Neplatná hodnota stránkování, musí být alespoň %1 a nejvýše %2",
     "username-taken": "Uživatelské jméno je již použito",
@@ -146,5 +146,7 @@
     "invalid-session": "Nesoulad v relacích",
     "invalid-session-text": "Zdá se, že vše relace s přihlášením již není aktivní nebo již neodpovídá s relací na serveru. Obnovte prosím tuto stránku.",
     "no-topics-selected": "Žádná vybraná témata.",
-    "cant-move-to-same-topic": "Není možné přesunout příspěvek do stejného tématu!"
+    "cant-move-to-same-topic": "Není možné přesunout příspěvek do stejného tématu!",
+    "cannot-block-self": "You cannot block yourself!",
+    "cannot-block-privileged": "You cannot block administrators or global moderators"
 }

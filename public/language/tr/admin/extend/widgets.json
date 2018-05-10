@@ -2,12 +2,12 @@
 	"available": "Kullanılabilir Bileşenler",
 	"explanation": "Açılır menüden bir bileşen seçin ve sol taraftaki bir şablonun bileşen alanına sürükleyip bırakın.",
 	"none-installed": "Bileşen bulunamadı! Gerekli bileşenleri <a href=\"%1\">eklentiler</a> kontrol panelinden aktifleştirin.",
-	"clone-from": "Clone widgets from",
+	"clone-from": "Bileşenleri klonla",
 	"containers.available": "Kullanılabilir Konteynırlar",
 	"containers.explanation": "Aktif olan herhangi bir bileşenin üzerine sürükleyin ve bırakın",
 	"containers.none": "Hiçbiri",
-	"container.well": "Well",
-	"container.jumbotron": "Jumbotron",
+	"container.well": "Kaynak",
+	"container.jumbotron": "Büyük Gösterim",
 	"container.panel": "Panel",
 	"container.panel-header": "Panel Başlığı",
 	"container.panel-body": "Panel Gövdesi",
@@ -16,7 +16,7 @@
 	"alert.confirm-delete": "Bu bileşeni silmek istediğinizden emin misiniz?",
 	"alert.updated": "Bileşenler Güncellendi",
 	"alert.update-success": "Bileşenler başarıyla güncellendi",
-	"alert.clone-success": "Successfully cloned widgets",
+	"alert.clone-success": "Bileşenler başarıyla klonlandı",
 
-	"error.select-clone": "Please select a page to clone from"
+	"error.select-clone": "Lütfen klonlanacak bir sayfa seçin"
 }

@@ -5,7 +5,7 @@
 	"name": "版块名",
 	"description": "版块描述",
 	"bg-color": "背景颜色",
-	"text-color": "文字颜色",
+	"text-color": "图标颜色",
 	"bg-image-size": "背景图片大小",
 	"custom-class": "自定义 Class",
 	"num-recent-replies": "最近回复数",

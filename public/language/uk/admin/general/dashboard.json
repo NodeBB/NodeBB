@@ -67,5 +67,6 @@
 	"graphs.page-views": "Перегляди сторінок",
 	"graphs.unique-visitors": "Унікальні відвідувачі",
 	"graphs.registered-users": "Зареєстровані користувачі",
-	"graphs.anonymous-users": "Анонімні користувачі"
+	"graphs.anonymous-users": "Анонімні користувачі",
+	"last-restarted-by": "Last restarted by"
 }

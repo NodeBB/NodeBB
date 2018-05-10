@@ -12,7 +12,7 @@
     "invited.none": "Momentan nu există membrii invitați",
     "invited.uninvite": "Anulează invitația",
     "invited.search": "Search for a user to invite to this group",
-    "invited.notification_title": "Ai fost  invitat să te alături <strong>%1<strong>",
+    "invited.notification_title": "Ai fost  invitat să te alături <strong>%1</strong>",
     "request.notification_title": "Group Membership Request from <strong>%1</strong>",
     "request.notification_text": "<strong>%1</strong> has requested to become a member of <strong>%2</strong>",
     "cover-save": "Salvează",

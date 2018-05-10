@@ -146,5 +146,7 @@
     "invalid-session": "Relácia neodpovedá",
     "invalid-session-text": "Vyzerá to, že Vaše prihlasovacia relácia už nie je aktívna, alebo sa už nezhoduje so serverom. Aktualizujte túto stránku.",
     "no-topics-selected": "Žiadne vybrané témy.",
-    "cant-move-to-same-topic": "Can't move post to same topic!"
+    "cant-move-to-same-topic": "Can't move post to same topic!",
+    "cannot-block-self": "You cannot block yourself!",
+    "cannot-block-privileged": "You cannot block administrators or global moderators"
 }
