@@ -248,6 +248,10 @@ module.exports = function (Messaging) {
 				}
 				db.setObjectField('chat:room:' + roomId, 'roomName', newName, next);
 			},
+			async.apply(plugins.fireHook, 'action:chat.renameRoom', {
+				id: roomId,
+				name: newName,
+			}),
 		], callback);
 	};
 
