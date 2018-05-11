@@ -18,7 +18,7 @@
     "invalid-username-or-password": "Podaj nazwę użytkownika i hasło",
     "invalid-search-term": "Błędne wyszukiwane wyrażenie",
     "invalid-url": "Błąd w adresie URL.",
-    "local-login-disabled": "Local login system has been disabled for non-privileged accounts.",
+    "local-login-disabled": "System lokalnego logowania został wyłączony dla kont bez uprawnień.",
     "csrf-invalid": "Logowanie nie powiodło się, zapewne na skutek wygaśnięcia sesji. Spróbuj ponownie.",
     "invalid-pagination-value": "Błędna wartość paginacji, zakres od %1 do %2",
     "username-taken": "Login zajęty",
@@ -134,7 +134,7 @@
     "parse-error": "Coś poszło nie tak podczas przetwarzania odpowiedzi serwera",
     "wrong-login-type-email": "Zaloguj się za pomocą adresu e-mail",
     "wrong-login-type-username": "Zaloguj się za pomocą nazwy użytkownika",
-    "sso-registration-disabled": "Rejestracja dla kont %1 jest zablokowana, proszę się najpierw zarejestrować adresem email.",
+    "sso-registration-disabled": "Rejestracja dla kont %1 jest zablokowana. Zarejestruj się najpierw za pomocą adresu e-mail.",
     "sso-multiple-association": "Nie można dowiązać wielu kont z tego serwisu do twojego konta NodeBB. Proszę odwiązać istniejące konto i spróbować ponownie.",
     "invite-maximum-met": "Zaprosiłeś maksymalną liczbę osób (%1 z %2).",
     "no-session-found": "Nie znaleziono sesji logowania",
@@ -144,9 +144,9 @@
     "no-users-selected": "Nie wybrano żadnych użytkowników",
     "invalid-home-page-route": "Niepoprawny odnośnik strony domowej",
     "invalid-session": "Niewłaściwa sesja",
-    "invalid-session-text": "Wygląda na to, że twoja sesja jest nieaktywna lub nie zgadza się z serwerem. Proszę odświeżyć tę stronę.",
+    "invalid-session-text": "Zdaje się, że Twoja sesja jest nieaktywna lub nie zgadza się z serwerem. Odśwież stronę.",
     "no-topics-selected": "Nie wybrano tematów.",
     "cant-move-to-same-topic": "Nie można przenieść wpisu do tego samego tematu!",
-    "cannot-block-self": "You cannot block yourself!",
-    "cannot-block-privileged": "You cannot block administrators or global moderators"
+    "cannot-block-self": "Nie możesz zablokować samego siebie!",
+    "cannot-block-privileged": "Nie możesz blokować administratorów ani globalnych moderatorów"
 }

@@ -11,7 +11,7 @@
 	"page-views-custom": "Własny zakres dat",
 	"page-views-custom-start": "Początek zakresu",
 	"page-views-custom-end": "Koniec zakresu",
-	"page-views-custom-help": "Wprowadź zakres dat dla wyświetl strony, które chciałbyś zobaczyć. Jeśli brakuje możliwości wybory daty, akceptowalny format to <code>YYYY-MM-DD</code>",
+	"page-views-custom-help": "Wprowadź zakres dat dla wyświetleń strony, które chcesz zobaczyć. Jeśli nie ma możliwości wyboru daty, obowiązuje format <code>RRRR-MM-DD</code>",
 	"page-views-custom-error": "Proszę wprowadzić poprawny zakres dat w formacie <code>YYYY-MM-DD</code>",
 
 	"stats.day": "Dzień",
@@ -21,12 +21,12 @@
 
 	"updates": "Aktualizacje",
 	"running-version": "Forum działa dzięki <strong>NodeBB v<span id=\"version\">%1</span></strong>",
-	"keep-updated": "Regularnie sprawdzaj najnowsze aktualizacji i poprawki NodeBB, w celu poprawy bezpieczeństwa i optymalizacji.",
+	"keep-updated": "Regularnie aktualizuj NodeBB, by podnosić bezpieczeństwo i wprowadzać poprawki.",
 	"up-to-date": "<p>NodeBB <strong>jest aktualny</strong> <i class=\"fa fa-check\"></i></p>",
 	"upgrade-available": "<p>Została wydana nowa wersja (v%1). Rozważ <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">aktualizację NodeBB</a>.</p>",
-	"prerelease-upgrade-available": "<p>To jest nieaktualna przedpremierowa wersja NodeBB. Jest wydana nowa wersja (v%1) . Rozważ <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">aktualizację NodeBB</a>.</p>",
-	"prerelease-warning": "<p>To jest wersja <strong>pre-release</strong> NodeBB. Mogą występować błędy. <i class=\"fa fa-exclamation-triangle\"></i></p>",
-	"running-in-development": "<span>Forum pracuje w trybie programistyczny, może być ono podatne na potencjalne zagrożenia; proszę skontaktuj się z administratorem.</span>",
+	"prerelease-upgrade-available": "<p>To jest nieaktualna przedpremierowa wersja NodeBB. Została wydana nowa wersja (v%1). Rozważ <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">aktualizację NodeBB</a>.</p>",
+	"prerelease-warning": "<p>To jest <strong>przedpremierowa</strong> wersja NodeBB. Mogą występować błędy. <i class=\"fa fa-exclamation-triangle\"></i></p>",
+	"running-in-development": "<span>Forum działa w trybie programistycznym i może być podatne na zagrożenia. Skontaktuj się z administratorem.</span>",
 	"latest-lookup-failed": "<p>Nie udało się odnaleźć najnowszej wersji NodeBB</p>",
 
 	"notices": "Powiadomienia",
@@ -34,15 +34,15 @@
 	"restart-required": "Wymagany restart",
 	"search-plugin-installed": "Wyszukiwarka jest zainstalowana",
 	"search-plugin-not-installed": "Wyszukiwarka nie jest zainstalowana",
-	"search-plugin-tooltip": "Zainstaluj wtyczkę wyszukiwania ze strony wtyczek, aby aktywować funkcję szukania",
+	"search-plugin-tooltip": "Zainstaluj wyszukiwarkę ze strony wtyczek, by aktywować funkcję wyszukiwania",
 
 	"control-panel": "Zarządzanie systemem",
-	"rebuild-and-restart": "Przebudowa i Restart",
+	"rebuild-and-restart": "Przebudowa i restart",
 	"restart": "Restart",
 	"restart-warning": "Przebudowa i restart NodeBB zerwie na kilka sekund wszystkie aktywne połączenia. ",
-	"restart-disabled": "Przebudowa i restart jest zablokowana ponieważ wygląda na to, że nie uruchamiasz NodeBB poprzez właściwy serwis.",
+	"restart-disabled": "Zablokowano przebudowę i restart, ponieważ wygląda na to, że nie uruchamiasz NodeBB poprzez właściwy serwis.",
 	"maintenance-mode": "Tryb serwisowy",
-	"maintenance-mode-title": "Kliknij tutaj aby skonfigurować tryb konserwacji dla NodeBB",
+	"maintenance-mode-title": "Kliknij tutaj, by skonfigurować tryb serwisowy dla NodeBB",
 	"realtime-chart-updates": "Wykresy aktualizowane na żywo",
 
 	"active-users": "Aktywni użytkownicy",
@@ -51,7 +51,7 @@
 	"active-users.total": "Łącznie",
 	"active-users.connections": "Połączenia",
 
-	"anonymous-registered-users": "Użytkownicy Anonimowi vs Zarejestrowani",
+	"anonymous-registered-users": "Użytkownicy anonimowi vs zarejestrowani",
 	"anonymous": "Anonimowi",
 	"registered": "Zarejestrowani",
 
@@ -68,5 +68,5 @@
 	"graphs.unique-visitors": "Unikalni użytkownicy",
 	"graphs.registered-users": "Zarejestrowani użytkownicy",
 	"graphs.anonymous-users": "Anonimowi użytkownicy",
-	"last-restarted-by": "Last restarted by"
+	"last-restarted-by": "Ostatnio restartowany przez"
 }
