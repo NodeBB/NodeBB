@@ -12,7 +12,7 @@
 	"manage/privileges": "权限",
 	"manage/tags": "话题",
 	"manage/users": "用户",
-	"manage/admins-mods": "管理员插件",
+	"manage/admins-mods": "权限分配",
 	"manage/registration": "注册申请",
 	"manage/post-queue": "提交列表",
 	"manage/groups": "群组",
