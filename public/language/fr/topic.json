@@ -126,8 +126,8 @@
     "stale.reply_anyway": "Répondre à ce sujet quand même",
     "link_back": "Re : [%1](%2)",
     "diffs.title": "Historique",
-    "diffs.description": "Cet article a <strong>% 1</strong> révisions. Cliquez sur l'une des révisions ci-dessous pour voir le contenu du message.",
-    "diffs.no-revisions-description": "Cet article a <strong>% 1</strong> révisions.",
+    "diffs.description": "Cet article a <strong>%1</strong> révisions. Cliquez sur l'une des révisions ci-dessous pour voir le contenu du message.",
+    "diffs.no-revisions-description": "Cet article a <strong>%1</strong> révisions.",
     "diffs.current-revision": "Révision en cours",
     "diffs.original-revision": "Révision originale"
 }
