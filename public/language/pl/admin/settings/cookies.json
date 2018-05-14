@@ -4,7 +4,7 @@
 	"consent.message": "Wiadomość powiadomienia",
 	"consent.acceptance": "Wiadomość o zaakceptowaniu",
 	"consent.link-text": "Tekst odnośnika do polityki",
-	"consent.blank-localised-default": "Pozostaw puste, aby użyć tłumaczone informacje domyślne NodeBB ",
+	"consent.blank-localised-default": "Pozostaw puste, aby użyć przetłumaczonych informacji domyślnych NodeBB ",
 	"settings": "Ustawienia",
 	"cookie-domain": "Domena plików cookie sesji",
 	"blank-default": "Pozostaw puste, aby użyć wartości domyślnej"
