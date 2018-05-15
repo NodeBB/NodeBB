@@ -99,6 +99,8 @@ function welcome(req, res) {
 	var defaults = require('./data/defaults');
 
 	res.render('install/index', {
+		url: nconf.get('url') || (req.protocol + '://' + req.get('host')),
+		skipGeneralSetup: !!nconf.get('url'),
 		databases: databases,
 		skipDatabaseSetup: !!nconf.get('database'),
 		error: !!res.locals.error,
