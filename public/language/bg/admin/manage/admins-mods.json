@@ -1,10 +1,10 @@
 {
-    "administrators": "Administrators",
-    "global-moderators": "Global Moderators",
-    "no-global-moderators": "No Global Moderators",
-    "moderators-of-category": "%1 Moderators",
-    "no-moderators": "No Moderators",
-    "add-administrator": "Add Administrator",
-    "add-global-moderator": "Add Global Moderator",
-    "add-moderator": "Add Moderator"
+    "administrators": "Администратори",
+    "global-moderators": "Глобални модератори",
+    "no-global-moderators": "Няма глобални модератори",
+    "moderators-of-category": "%1 модератори",
+    "no-moderators": "Няма модератори",
+    "add-administrator": "Добавяне на администратор",
+    "add-global-moderator": "Добавяне на глобален модератор",
+    "add-moderator": "Добавяне на модератор"
 }

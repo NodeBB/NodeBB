@@ -1,10 +1,10 @@
 {
-    "administrators": "Administrators",
-    "global-moderators": "Global Moderators",
-    "no-global-moderators": "No Global Moderators",
-    "moderators-of-category": "%1 Moderators",
-    "no-moderators": "No Moderators",
-    "add-administrator": "Add Administrator",
-    "add-global-moderator": "Add Global Moderator",
-    "add-moderator": "Add Moderator"
+    "administrators": "Administrator",
+    "global-moderators": "Moderator Global",
+    "no-global-moderators": "Tidak ada Moderator Global",
+    "moderators-of-category": "%1 Moderator",
+    "no-moderators": "Tidak ada Moderator",
+    "add-administrator": "Tambah Administrator",
+    "add-global-moderator": "Tambah Moderator Global",
+    "add-moderator": "Tambah Moderator"
 }

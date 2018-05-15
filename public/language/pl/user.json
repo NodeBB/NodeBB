@@ -147,7 +147,7 @@
     "info.moderation-note.success": "Notatka została zapisana",
     "info.moderation-note.add": "Dodaj notatkę",
     "consent.title": "Your Rights &amp; Consent",
-    "consent.lead": "This community forum collects and processes your personal information.",
+    "consent.lead": "To forum gromadzi i przetwarza twoje dane osobowe.",
     "consent.intro": "We use this information strictly to personalise your experience in this community, as well as to associate the posts you make to your user account. During the registration step you were asked to provide a username and email address, you can also optionally provide additional information to complete your user profile on this website.<br /><br />We retain this information for the life of your user account, and you are able to withdraw consent at any time by deleting your account. At any time you may request a copy of your contribution to this website, via your Rights &amp; Consent page.<br /><br />If you have any questions or concerns, we encourage you to reach out to this forum's administrative team.",
     "consent.email_intro": "Occasionally, we may send emails to your registered email address in order to provide updates and/or to notify you of new activity that is pertinent to you. You can customise the frequency of the community digest (including disabling it outright), as well as select which types of notifications to receive via email, via your user settings page.",
     "consent.digest_frequency": "By default, this community delivers email digests every %1.",
@@ -163,7 +163,7 @@
     "consent.right_to_erasure_description": "At any time, you are able to revoke your consent to data collection and/or processing by deleting your account. Your individual profile can be deleted, although your posted content will remain. If you wish to delete both your account <strong>and</strong> your content, please contact the administrative team for this website.",
     "consent.right_to_data_portability": "You have the Right to Data Portability",
     "consent.right_to_data_portability_description": "You may request from us a machine-readable export of any collected data about you and your account. You can do so by clicking the appropriate button below.",
-    "consent.export_profile": "Export Profile (.csv)",
+    "consent.export_profile": "Eksportuj profil (csv)",
     "consent.export_uploads": "Export Uploaded Content (.zip)",
-    "consent.export_posts": "Export Posts (.csv)"
+    "consent.export_posts": "Eksportuj wpisy (csv)"
 }

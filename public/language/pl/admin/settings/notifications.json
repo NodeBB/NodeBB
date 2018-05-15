@@ -1,7 +1,7 @@
 {
 	"notifications": "Powiadomienia",
 	"welcome-notification": "Powiadomienie powitalne",
-	"welcome-notification-link": "Odnośnik powiadomienia powitalnego",
+	"welcome-notification-link": "Łącze do komunikatu powitalnego",
 	"welcome-notification-uid": "Powiadomienie powitalne użytkownika (UID)",
-	"notification-alert-timeout": "Notification Alert Timeout"
+	"notification-alert-timeout": "Czas trwania komunikatu ostrzegawczego"
 }
