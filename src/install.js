@@ -161,6 +161,7 @@ function completeConfigSetup(config, next) {
 		config.package_manager = nconf.get('package_manager');
 	}
 
+	nconf.overrides(config);
 	async.waterfall([
 		function (next) {
 			require('./database').init(next);
