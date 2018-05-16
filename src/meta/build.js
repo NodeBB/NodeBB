@@ -96,15 +96,19 @@ aliases = Object.keys(aliases).reduce(function (prev, key) {
 
 function beforeBuild(targets, callback) {
 	var db = require('../database');
-	var plugins = require('../plugins');
-	meta = require('../meta');
-
+	require('colors');
 	process.stdout.write('  started'.green + '\n'.reset);
 
 	async.series([
 		db.init,
-		meta.themes.setupPaths,
-		async.apply(plugins.prepareForBuild, targets),
+		function (next) {
+			meta = require('../meta');
+			meta.themes.setupPaths(next);
+		},
+		function (next)	{
+			var plugins = require('../plugins');
+			plugins.prepareForBuild(targets, next);
+		},
 	], function (err) {
 		if (err) {
 			winston.error('[build] Encountered error preparing for build', err);
