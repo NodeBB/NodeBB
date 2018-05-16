@@ -28,7 +28,7 @@
     "email-not-confirmed-email-sent": "Vaše e-mailová schránka nebyla ještě potvrzena. Ověřte prosím vaši příchozí poštu.",
     "no-email-to-confirm": "Toto fórum vyžaduje ověření e-mailové adresy. Pro zadání e-mailu, klikněte zde.",
     "email-confirm-failed": "Nemohli jsme ověřit vaši e-mailovou adresu, zkuste to později.",
-    "confirm-email-already-sent": "Potvrzovací e-mail byl již odeslán. Vyčkejte %1 minut/y, chcete-li odeslat další.",
+    "confirm-email-already-sent": "Potvrzovací e-mail byl již odeslán. Vyčkejte %1 minut/y, chcete-li odeslat další.",
     "sendmail-not-found": "Modul pro odeslání e-mailů nebyl nalezen. Zkontrolujte prosím, zda je nainstalován a spuštěn uživatelem, který spustil NodeBB.",
     "username-too-short": "Uživatelské jméno je moc krátké",
     "username-too-long": "Uživatelské jméno je moc dlouhé",
@@ -147,6 +147,6 @@
     "invalid-session-text": "Zdá se, že vše relace s přihlášením již není aktivní nebo již neodpovídá s relací na serveru. Obnovte prosím tuto stránku.",
     "no-topics-selected": "Žádná vybraná témata.",
     "cant-move-to-same-topic": "Není možné přesunout příspěvek do stejného tématu!",
-    "cannot-block-self": "You cannot block yourself!",
-    "cannot-block-privileged": "You cannot block administrators or global moderators"
+    "cannot-block-self": "Nemůžete zablokovat sebe sama!",
+    "cannot-block-privileged": "Nemůžete zablokovat správce nebo hlavní moderátory"
 }

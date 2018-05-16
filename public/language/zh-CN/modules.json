@@ -23,7 +23,7 @@
     "chat.retrieving-users": "查找用户",
     "chat.manage-room": "管理聊天室",
     "chat.add-user-help": "在这里查找更多用户。选中之后添加到聊天中，新用户在加入聊天之前看不到聊天消息。只有聊天室所有者可以从聊天室中移除用户。",
-    "chat.confirm-chat-with-dnd-user": "该用户将其状态设置为DnD（请勿打扰）。 你还想和他们聊天吗？",
+    "chat.confirm-chat-with-dnd-user": "该用户已将其状态设置为 DnD（请勿打扰）。 您仍希望与其聊天吗？",
     "chat.rename-room": "重命名房间",
     "chat.rename-placeholder": "在这里输入房间名字",
     "chat.rename-help": "这里设置的房间名字能够被房间内所有人都看到。",

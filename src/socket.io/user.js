@@ -353,3 +353,16 @@ SocketUser.gdpr = {};
 SocketUser.gdpr.consent = function (socket, data, callback) {
 	user.setUserField(socket.uid, 'gdpr_consent', 1, callback);
 };
+
+SocketUser.gdpr.check = function (socket, data, callback) {
+	async.waterfall([
+		async.apply(user.isAdministrator, socket.uid),
+		function (isAdmin, next) {
+			if (!isAdmin) {
+				data.uid = socket.uid;
+			}
+
+			db.getObjectField('user:' + data.uid, 'gdpr_consent', next);
+		},
+	], callback);
+};

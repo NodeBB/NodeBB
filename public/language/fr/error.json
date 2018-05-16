@@ -147,6 +147,6 @@
     "invalid-session-text": "Il semble que votre session ne soit plus active, ou que le serveur ne la reconnaisse plus. Merci de rafraichir cette page.",
     "no-topics-selected": "Aucun sujet sélectionné !",
     "cant-move-to-same-topic": "Impossible de déplacer le message dans le même sujet !",
-    "cannot-block-self": "You cannot block yourself!",
-    "cannot-block-privileged": "You cannot block administrators or global moderators"
+    "cannot-block-self": "Vous ne pouvez pas vous bloquer !",
+    "cannot-block-privileged": "Vous ne pouvez pas bloquer les administrateurs ou les modérateurs global"
 }

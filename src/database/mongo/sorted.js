@@ -179,7 +179,7 @@ module.exports = function (db, module) {
 			{ $group: { _id: { _key: '$_key' }, count: { $sum: 1 } } },
 			{ $project: { _id: 1, count: '$count' } },
 		];
-		db.collection('objects').aggregate(pipeline, function (err, results) {
+		db.collection('objects').aggregate(pipeline).toArray(function (err, results) {
 			if (err) {
 				return callback(err);
 			}

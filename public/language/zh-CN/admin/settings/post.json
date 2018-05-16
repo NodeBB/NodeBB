@@ -46,7 +46,7 @@
 	"composer": "编辑器设置",
 	"composer-help": "以下设置控制所示后期编辑器的功能和/或外观\n\t\t\t\t当用户创建新主题或回复现有主题时。",
 	"composer.show-help": "显示“帮助”选项卡",
-	"composer.enable-plugin-help": "允许插件将内容添加到帮助选项卡",
+	"composer.enable-plugin-help": "允许插件添加内容到帮助选项卡",
 	"composer.custom-help": "自定义帮助文本",
 	"ip-tracking": "IP 跟踪",
 	"ip-tracking.each-post": "跟踪每个帖子的 IP 地址",

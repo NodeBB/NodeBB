@@ -1,0 +1,10 @@
+{
+    "administrators": "Správci",
+    "global-moderators": "Hlavní moderátoři",
+    "no-global-moderators": "Žádní hlavní moderátoři",
+    "moderators-of-category": "%1 moderátorů",
+    "no-moderators": "Žádní moderátoři",
+    "add-administrator": "Přidat správce",
+    "add-global-moderator": "Přidat hlavního moderátora",
+    "add-moderator": "Přidat moderátora"
+}

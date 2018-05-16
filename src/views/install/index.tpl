@@ -33,6 +33,22 @@
 			You are just a few steps away from launching your own NodeBB forum!
 		</p>
 		<form id="install" action="/" method="post">
+			<!-- IF !skipGeneralSetup -->
+			<div class="general">
+				<p>
+					<h1><small>General Instance Setup</small></h1>
+					<hr />
+				</p>
+
+				<div class="row input-row">
+					<div class="col-sm-7 col-xs-12 input-field">
+						<label for="url">Web Address (URL)</label>
+						<input type="text" class="form-control" name="url" value="<!-- IF url -->{url}<!-- ENDIF url -->" placeholder="http://localhost:4567" />
+					</div>
+					<div class="col-sm-5 help-text" data-help="This is the address that resolves to your NodeBB forum. If no port is specified, <code>4567</code> will be used."></div>
+				</div>
+			</div>
+			<!-- END -->
 			<div class="admin">
 				<p>
 					<h1><small>Create an Administrator account</small></h1>

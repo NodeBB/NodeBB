@@ -1,12 +1,12 @@
 {
 	"reputation": "Ustawienia reputacji",
 	"disable": "Wyłącz system reputacji",
-	"disable-down-voting": "Wyłącz system \"głosów przeciw\"",
+	"disable-down-voting": "Wyłącz system „głosów przeciwko”",
 	"votes-are-public": "Wszystkie głosy są publiczne",
 	"thresholds": "Progi aktywności",
-	"min-rep-downvote": "Minimalna reputacja, aby negatywnie oceniać posty",
-	"min-rep-flag": "Minimalna reputacja, aby flagować posty",
-	"min-rep-website": "Minimalna reputacja aby dodać sekcję \"Strona WWW\" w profilu użytkownika",
-	"min-rep-aboutme": "Minimalna reputacja aby dodać sekcję \"O mnie\" w profilu użytkownika",
-	"min-rep-signature": "Minimalna reputacja aby dodać sekcję \"Sygnatura\" w profilu użytkownika"
+	"min-rep-downvote": "Minimalna reputacja pozwalająca dawać głosy przeciwko",
+	"min-rep-flag": "Minimalna reputacja pozwalająca flagować posty",
+	"min-rep-website": "Minimalna reputacja pozwalająca wypełnić sekcję „Strona WWW” w profilu użytkownika",
+	"min-rep-aboutme": "Minimalna reputacja pozwalająca wypełnić sekcję „O mnie” w profilu użytkownika",
+	"min-rep-signature": "Minimalna reputacja pozwalająca wypełnić sekcję „Sygnatura” w profilu użytkownika"
 }

@@ -10,6 +10,7 @@ var _ = require('lodash');
 var semver = require('semver');
 var prompt = require('prompt');
 var db;
+var client;
 
 var mongoModule = module.exports;
 
@@ -107,13 +108,13 @@ mongoModule.init = function (callback) {
 
 	connOptions = _.merge(connOptions, nconf.get('mongo:options') || {});
 
-	mongoClient.connect(connString, connOptions, function (err, _db) {
+	mongoClient.connect(connString, connOptions, function (err, _client) {
 		if (err) {
 			winston.error('NodeBB could not connect to your Mongo database. Mongo returned the following error', err);
 			return callback(err);
 		}
-
-		db = _db;
+		client = _client;
+		db = client.db();
 
 		mongoModule.client = db;
 
@@ -264,7 +265,7 @@ function getCollectionStats(db, callback) {
 
 mongoModule.close = function (callback) {
 	callback = callback || function () {};
-	db.close(function (err) {
+	client.close(function (err) {
 		callback(err);
 	});
 };
