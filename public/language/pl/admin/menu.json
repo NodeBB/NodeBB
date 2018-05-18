@@ -22,8 +22,8 @@
 	"section-settings": "Ustawienia",
 	"settings/general": "Ogólne",
 	"settings/reputation": "Reputacja",
-	"settings/email": "Email",
-	"settings/user": "Użytkownicy",
+	"settings/email": "E-mail",
+	"settings/user": "Użytkownik",
 	"settings/group": "Grupy",
 	"settings/guest": "Goście",
 	"settings/uploads": "Przesyłanie plików",
@@ -37,7 +37,7 @@
 	"settings/sockets": "Sockety",
 	"settings/advanced": "Zaawansowane",
 
-	"settings.page-title": "%1 Ustawienia",
+	"settings.page-title": "Ustawienia %1",
 
 	"section-appearance": "Wygląd",
 	"appearance/themes": "Motywy",
