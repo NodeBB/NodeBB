@@ -76,7 +76,7 @@ uploadsController.get = function (req, res, next) {
 
 		res.render('admin/manage/uploads', {
 			currentFolder: currentFolder.replace(nconf.get('upload_path'), ''),
-			showPids: files[0].hasOwnProperty('inPids'),
+			showPids: files.length && files[0].hasOwnProperty('inPids'),
 			files: files,
 			breadcrumbs: buildBreadcrumbs(currentFolder),
 			pagination: pagination.create(page, Math.ceil(itemCount / itemsPerPage), req.query),
