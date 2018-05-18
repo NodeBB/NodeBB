@@ -12,10 +12,10 @@ module.exports = function (Posts) {
 
 	const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
 	const pathPrefix = path.join(__dirname, '../../public/uploads/files');
+	const searchRegex = /\/assets\/uploads\/files\/([^\s")]+\.?[\w]*)/g;
 
 	Posts.uploads.sync = function (pid, callback) {
 		// Scans a post and updates sorted set of uploads
-		const searchRegex = /\/assets\/uploads\/files\/([^\s")]+\.?[\w]*)/g;
 
 		async.parallel({
 			content: async.apply(Posts.getPostField, pid, 'content'),
