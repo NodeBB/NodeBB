@@ -74,7 +74,9 @@ module.exports = function (Posts) {
 	Posts.uploads.associate = function (pid, filePaths, callback) {
 		// Adds an upload to a post's sorted set of uploads
 		filePaths = !Array.isArray(filePaths) ? [filePaths] : filePaths;
-
+		if (!filePaths.length) {
+			return setImmediate(callback);
+		}
 		async.filter(filePaths, function (filePath, next) {
 			// Only process files that exist
 			fs.access(path.join(pathPrefix, filePath), fs.constants.F_OK | fs.constants.R_OK, function (err) {
@@ -99,6 +101,9 @@ module.exports = function (Posts) {
 	Posts.uploads.dissociate = function (pid, filePaths, callback) {
 		// Removes an upload from a post's sorted set of uploads
 		filePaths = !Array.isArray(filePaths) ? [filePaths] : filePaths;
+		if (!filePaths.length) {
+			return setImmediate(callback);
+		}
 		let methods = [async.apply(db.sortedSetRemove.bind(db), 'post:' + pid + ':uploads', filePaths)];
 		methods = methods.concat(filePaths.map(path => async.apply(db.sortedSetRemove.bind(db), 'upload:' + md5(path) + ':pids', pid)));
 
