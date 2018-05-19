@@ -18,7 +18,7 @@
 	"optional-parent-category": "(Opcjonalne) Kategoria nadrzędna",
 	"parent-category-none": "(Żadna)",
 	"copy-settings": "Skopiuj ustawienia z",
-	"optional-clone-settings": "(Opcjonalnie) Spoiowanie ustawień z kategorii",
+	"optional-clone-settings": "(Opcjonalnie) Skopiowanie ustawień z kategorii",
 	"purge": "Usuń kategorię",
 
 	"enable": "Włącz",
@@ -39,7 +39,7 @@
 	"privileges.section-group": "Grupa",
 	"privileges.group-private": "Ta grupa jest prywatna",
 	"privileges.search-group": "Dodaj grupę",
-	"privileges.copy-to-children": "Skopiuj z podrzędnej",
+	"privileges.copy-to-children": "Skopiuj do podrzędnej",
 	"privileges.copy-from-category": "Skopiuj z kategorii",
 	"privileges.inherit": "W przypadku, gdy grupie <code>registered-users</code> zostaje nadane specyficzne uprawnienia, wszystkie inne grupy otrzymują to <strong>bezwarunkowe uprawnienie</strong>, nawet jeśli ów nie zostało zdefiniowane/zaznaczone. Bezwarunkowe uprawnienie jest wyświetlane ponieważ wszyscy użytkownicy są częścią grupy <code>registered-users</code>, więc uprawnienia dla dodatkowych grup nie mogą się wykluczać.",
 
