@@ -1,20 +1,20 @@
 {
-	"queue": "Queue",
+	"queue": "Várósor",
 	"description": "There are no users in the registration queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
 
-	"list.name": "Name",
+	"list.name": "Név",
 	"list.email": "Email",
 	"list.ip": "IP",
-	"list.time": "Time",
-	"list.username-spam": "Frequency: %1 Appears: %2 Confidence: %3",
-	"list.email-spam": "Frequency: %1 Appears: %2",
-	"list.ip-spam": "Frequency: %1 Appears: %2",
+	"list.time": "idő",
+	"list.username-spam": "Gyakoriság: %1 Megjelenik: %2 Magabiztosság: %3",
+	"list.email-spam": "Gyakoriság: %1 Megjelenik: %2",
+	"list.ip-spam": "Gyakoriság: %1 Megjelenik: %2",
 
-	"invitations": "Invitations",
+	"invitations": "Meghívások",
 	"invitations.description": "Below is a complete list of invitations sent. Use ctrl-f to search through the list by email or username. <br><br>The username will be displayed to the right of the emails for users who have redeemed their invitations.",
-	"invitations.inviter-username": "Inviter Username",
-	"invitations.invitee-email": "Invitee Email",
-	"invitations.invitee-username": "Invitee Username (if registered)",
+	"invitations.inviter-username": "Meghívó felhasználóneve",
+	"invitations.invitee-email": "Meghívott email címe",
+	"invitations.invitee-username": "Meghívott felhasználóneve (ha regisztrált)",
 
-	"invitations.confirm-delete": "Are you sure you wish to delete this invitation?"
+	"invitations.confirm-delete": "Biztosan törölni szeretnéd ezt a meghívót?"
 } 
