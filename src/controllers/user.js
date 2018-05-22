@@ -117,8 +117,8 @@ userController.exportPosts = function (req, res, next) {
 						return next(err);
 					}
 
-					// Convert newlines in content
-					posts = posts.map(function (post) {
+					// Remove empty post references and convert newlines in content
+					posts = posts.filter(Boolean).map(function (post) {
 						post.content = '"' + post.content.replace(/\n/g, '\\n').replace(/"/g, '\\"') + '"';
 						return post;
 					});
