@@ -62,7 +62,7 @@
     "thread_tools.lock": "Onderwerp sluiten",
     "thread_tools.unlock": "Onderwerp openen",
     "thread_tools.move": "Onderwerp verplaatsen",
-    "thread_tools.move-posts": "Move Posts",
+    "thread_tools.move-posts": "Verplaats berichten",
     "thread_tools.move_all": "Verplaats alles",
     "thread_tools.select_category": "Selecteer categorie",
     "thread_tools.fork": "Onderwerp afsplitsen",
@@ -97,7 +97,7 @@
     "fork_success": "Onderwerp is succesvol afgesplitst. Klik hier om het nieuwe onderwerp te zien.",
     "delete_posts_instruction": "Klik op de berichten die verwijderd moeten worden",
     "merge_topics_instruction": "Klik op de onderwerpen die samengevoegd moeten worden",
-    "move_posts_instruction": "Click the posts you want to move",
+    "move_posts_instruction": "Klik op de berichten die je wilt verplaatsen",
     "composer.title_placeholder": "Voer hier de titel van het onderwerp in...",
     "composer.handle_placeholder": "Naam",
     "composer.discard": "Annuleren",
@@ -118,8 +118,8 @@
     "sort_by": "Sorteer op",
     "oldest_to_newest": "Oudste berichten bovenaan",
     "newest_to_oldest": "Meest recente berichten bovenaan",
-    "most_votes": "Most Votes",
-    "most_posts": "Most Posts",
+    "most_votes": "Meeste stemmen",
+    "most_posts": "Meeste berichten",
     "stale.title": "Een nieuw onderwerp maken in de plaats?",
     "stale.warning": "Het onderwerp waar je op antwoord is vrij oud. Zou je graag een nieuw onderwerp maken met een referentie naar dit onderwerp in je antwoord?",
     "stale.create": "Maak een nieuw onderwerp",
@@ -128,6 +128,6 @@
     "diffs.title": "Bericht revisie geschiedenis",
     "diffs.description": "Dit bericht heeft <strong>%1</strong> revisies. Klik op een revisie hieronder om het bericht te zien op dat punt in de tijd.",
     "diffs.no-revisions-description": "Dit bericht heeft <strong>%1</strong> revisies.",
-    "diffs.current-revision": "current revision",
-    "diffs.original-revision": "original revision"
+    "diffs.current-revision": "Huidige revisie",
+    "diffs.original-revision": "Oorspronkelijke revisie"
 }
