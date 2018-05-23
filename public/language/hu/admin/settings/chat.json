@@ -1,11 +1,11 @@
 {
-	"chat-settings": "Chat Settings",
-	"disable": "Disable chat",
-	"disable-editing": "Disable chat message editing/deletion",
-	"disable-editing-help": "Administrators and global moderators are exempt from this restriction",
-	"max-length": "Maximum length of chat messages",
-	"max-room-size": "Maximum number of users in chat rooms",
-	"delay": "Time between chat messages in milliseconds",
-	"restrictions.seconds-edit-after": "Number of seconds before users are allowed to edit chat messages after posting. (0 disabled)",
-	"restrictions.seconds-delete-after": "Number of seconds before users are allowed to delete chat messages after posting. (0 disabled)"
+	"chat-settings": "Chat beállítások",
+	"disable": "Chat letiltása",
+	"disable-editing": "Chat üzenetek szerkesztésének/törlésének letiltása",
+	"disable-editing-help": "Az adminisztrátorok és globális moderátorok kivételnek számítanak ezen korlátozás alól",
+	"max-length": "Chat üzenetek maximális hossza",
+	"max-room-size": "A chat szobákban lévő felhasználók maximális száma",
+	"delay": "Chat üzenetek közötti idő ezredmásodpercben",
+	"restrictions.seconds-edit-after": "Hozzászólást követő, a felhasználók számára a chat üzenetek szerkesztésének engedélyezését megelőző másodpercek száma. (0 letiltva)",
+	"restrictions.seconds-delete-after": "Hozzászólást követő, a felhasználók számára a chat üzenetek törlésének engedélyezését megelőző másodpercek száma. (0 letiltva)"
 }
