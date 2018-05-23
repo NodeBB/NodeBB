@@ -16,6 +16,11 @@ $('document').ready(function () {
 
 	$('#launch').on('click', launchForum);
 
+	if ($('#installing').length) {
+		setTimeout(function () {
+			window.location.reload(true);
+		}, 5000);
+	}
 
 	function setupInputs() {
 		$('form').on('focus', '.form-control', function () {

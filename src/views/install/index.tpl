@@ -115,6 +115,13 @@
 		</form>
 	</div>
 
+	<!-- IF installing -->
+	<div id="installing" class="container">
+		<p>
+			<h1>Hang tight! Your NodeBB is being installed.</h1>
+		</p>
+	</div>
+	<!-- ENDIF installing -->
 
 	<div class="container <!-- IF !success -->hide<!-- ENDIF !success -->">
 		<p>
