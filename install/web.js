@@ -36,6 +36,8 @@ var scripts = [
 ];
 
 var installing = false;
+var success = false;
+var error = false;
 
 web.install = function (port) {
 	port = port || 4567;
@@ -106,8 +108,8 @@ function welcome(req, res) {
 		skipGeneralSetup: !!nconf.get('url'),
 		databases: databases,
 		skipDatabaseSetup: !!nconf.get('database'),
-		error: !!res.locals.error,
-		success: !!res.locals.success,
+		error: error,
+		success: success,
 		values: req.body,
 		minimumPasswordLength: defaults.minimumPasswordLength,
 		installing: installing,
@@ -149,11 +151,8 @@ function install(req, res) {
 
 	child.on('close', function (data) {
 		installing = false;
-		if (data === 0) {
-			res.locals.success = true;
-		} else {
-			res.locals.error = true;
-		}
+		success = data === 0;
+		error = data !== 0;
 
 		welcome(req, res);
 	});
