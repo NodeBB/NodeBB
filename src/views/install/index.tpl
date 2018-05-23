@@ -111,7 +111,7 @@
 			</div>
 			<!-- ENDIF !skipDatabaseSetup -->
 
-			<button id="submit" type="submit" class="btn btn-lg btn-success" <!-- IF installing -->disabled<!-- ENDIF installing -->>Install NodeBB <i class="working hide"></i></button>
+			<button id="submit" type="submit" class="btn btn-lg btn-success" <!-- IF installing -->disabled<!-- ENDIF installing -->>Install NodeBB <i class="working <!-- IF !installing -->hide<!-- ENDIF !installing -->"></i></button>
 		</form>
 	</div>
 
