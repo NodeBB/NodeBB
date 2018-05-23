@@ -38,15 +38,7 @@ define('notifications', ['sounds', 'translator', 'components', 'navigator', 'ben
 				return;
 			}
 			var nid = notifEl.attr('data-nid');
-			socket.emit('notifications.markRead', nid, function (err) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-
-				if (unreadNotifs[nid]) {
-					delete unreadNotifs[nid];
-				}
-			});
+			markNotification(nid, true);
 		});
 
 		notifContainer.on('click', '.mark-all-read', Notifications.markAllRead);
@@ -55,17 +47,8 @@ define('notifications', ['sounds', 'translator', 'components', 'navigator', 'ben
 			var liEl = $(this).parent();
 			var unread = liEl.hasClass('unread');
 			var nid = liEl.attr('data-nid');
-
-			socket.emit('notifications.mark' + (unread ? 'Read' : 'Unread'), nid, function (err) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-
+			markNotification(nid, unread, function () {
 				liEl.toggleClass('unread');
-
-				if (unread && unreadNotifs[nid]) {
-					delete unreadNotifs[nid];
-				}
 			});
 			return false;
 		});
@@ -82,6 +65,7 @@ define('notifications', ['sounds', 'translator', 'components', 'navigator', 'ben
 				payload.message = notifData.bodyShort;
 				payload.type = 'info';
 				payload.clickfn = function () {
+					markNotification(notifData.nid, true);
 					if (notifData.path.startsWith('http') || notifData.path.startsWith('https')) {
 						window.location.href = notifData.path;
 					} else {
@@ -118,6 +102,21 @@ define('notifications', ['sounds', 'translator', 'components', 'navigator', 'ben
 			Notifications.updateNotifCount(count);
 		});
 	};
+
+	function markNotification(nid, read, callback) {
+		socket.emit('notifications.mark' + (read ? 'Read' : 'Unread'), nid, function (err) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
+			if (read && unreadNotifs[nid]) {
+				delete unreadNotifs[nid];
+			}
+			if (callback) {
+				callback();
+			}
+		});
+	}
 
 	function scrollToPostIndexIfOnPage(notifEl) {
 		// Scroll to index if already in topic (gh#5873)
