@@ -39,7 +39,7 @@
 	"control-panel": "Sistem Kontrol",
 	"rebuild-and-restart": "Rebuild &amp; Restart",
 	"restart": "Yeniden Başlat",
-	"restart-warning": "Rebuilding or Restarting your NodeBB will drop all existing connections for a few seconds.",
+	"restart-warning": "NodeBB'yi yeniden yapılandırmak veya yeniden başlatmak, mevcut tüm bağlantıları birkaç saniye için sonlandırır.",
 	"restart-disabled": "Rebuilding and Restarting your NodeBB has been disabled as you do not seem to be running it via the appropriate daemon.",
 	"maintenance-mode": "Bakım Modu",
 	"maintenance-mode-title": "NodeBB için bakım modunu ayarlamak için buraya tıklayın",
@@ -68,5 +68,5 @@
 	"graphs.unique-visitors": "Benzersiz Ziyaretçiler",
 	"graphs.registered-users": "Kayıtlı Kullanıcılar",
 	"graphs.anonymous-users": "Anonim Kullanıcılar",
-	"last-restarted-by": "Last restarted by"
+	"last-restarted-by": "Son olarak yeniden başlatıldı"
 }

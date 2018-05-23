@@ -1,22 +1,22 @@
 {
-	"available": "Available Widgets",
-	"explanation": "Select a widget from the dropdown menu and then drag and drop it into a template's widget area on the left.",
-	"none-installed": "No widgets found! Activate the essential widgets plugin in the <a href=\"%1\">plugins</a> control panel.",
-	"clone-from": "Clone widgets from",
-	"containers.available": "Available Containers",
-	"containers.explanation": "Drag and drop on top of any active widget",
-	"containers.none": "None",
-	"container.well": "Well",
+	"available": "Elérhető modulok",
+	"explanation": "Válassz egy modult a legördülő menüből, majd húzd rá az egyik sablon modul területére a bal oldalon.",
+	"none-installed": "Nem találhatók modulok! Aktiváld az essential widgets beépülőt a <a href=\"%1\">beépülők</a> vezérlőpulton.",
+	"clone-from": "Modul klónozása innen",
+	"containers.available": "Elérhető tárolók",
+	"containers.explanation": "Húzd rá az alábbiakat bármely aktív modulra",
+	"containers.none": "Nincs",
+	"container.well": "Akna",
 	"container.jumbotron": "Jumbotron",
 	"container.panel": "Panel",
-	"container.panel-header": "Panel Header",
-	"container.panel-body": "Panel Body",
-	"container.alert": "Alert",
+	"container.panel-header": "Panel fejléc",
+	"container.panel-body": "Panel test",
+	"container.alert": "Riasztás",
 
-	"alert.confirm-delete": "Are you sure you wish to delete this widget?",
-	"alert.updated": "Widgets Updated",
-	"alert.update-success": "Successfully updated widgets",
-	"alert.clone-success": "Successfully cloned widgets",
+	"alert.confirm-delete": "Biztosan szeretnéd törölni ezt a modult?",
+	"alert.updated": "Modulok frissítve",
+	"alert.update-success": "Modulok sikeresen frissítve",
+	"alert.clone-success": "Modulok sikersen klónozva",
 
-	"error.select-clone": "Please select a page to clone from"
+	"error.select-clone": "Kérlek válassz oldalt a klónozáshoz"
 }

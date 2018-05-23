@@ -6,7 +6,7 @@
     "joindate": "Katılım Tarihi",
     "postcount": "İleti Sayısı",
     "email": "E-posta",
-    "confirm_email": "E-posta Adresini Onayla",
+    "confirm_email": "Eposta Adresini Onayla",
     "account_info": "Hesap Bilgisi",
     "ban_account": "Hesabı Dondur",
     "ban_account_confirm": "Hesabı dondurmak istediğinizden emin misiniz!",
@@ -91,7 +91,7 @@
     "has_no_upvoted_posts": "Bu kullanıcı henüz hiç bir gönderiyi artılamamış.",
     "has_no_downvoted_posts": "Bu kullanıcı henüz hiç bir gönderiyi eksilememiş.",
     "has_no_voted_posts": "Bu kullanıcının hiç oylanmış gönderisi yok.",
-    "has_no_blocks": "You have blocked no users.",
+    "has_no_blocks": "Hiçbir kullanıcıyı engellemediniz.",
     "email_hidden": "E-posta gizli",
     "hidden": "gizli",
     "paginate_description": "Sonsuz yükleme yerine konu ve iletileri sayfalara böl",
@@ -146,8 +146,8 @@
     "info.moderation-note": "Moderasyon Notu",
     "info.moderation-note.success": "Moderasyon notu kaydedildi",
     "info.moderation-note.add": "Not ekle",
-    "consent.title": "Your Rights &amp; Consent",
-    "consent.lead": "This community forum collects and processes your personal information.",
+    "consent.title": "Haklarınız & İzinleriniz",
+    "consent.lead": "Bu topluluk forumu kişisel bilgilerinizi toplar ve işler.",
     "consent.intro": "We use this information strictly to personalise your experience in this community, as well as to associate the posts you make to your user account. During the registration step you were asked to provide a username and email address, you can also optionally provide additional information to complete your user profile on this website.<br /><br />We retain this information for the life of your user account, and you are able to withdraw consent at any time by deleting your account. At any time you may request a copy of your contribution to this website, via your Rights &amp; Consent page.<br /><br />If you have any questions or concerns, we encourage you to reach out to this forum's administrative team.",
     "consent.email_intro": "Occasionally, we may send emails to your registered email address in order to provide updates and/or to notify you of new activity that is pertinent to you. You can customise the frequency of the community digest (including disabling it outright), as well as select which types of notifications to receive via email, via your user settings page.",
     "consent.digest_frequency": "Unless explicitly changed in your user settings, this community delivers email digests every %1.",
@@ -164,6 +164,6 @@
     "consent.right_to_data_portability": "You have the Right to Data Portability",
     "consent.right_to_data_portability_description": "You may request from us a machine-readable export of any collected data about you and your account. You can do so by clicking the appropriate button below.",
     "consent.export_profile": "Profili Dışarı Çıkar (.csv)",
-    "consent.export_uploads": "Export Uploaded Content (.zip)",
-    "consent.export_posts": "Export Posts (.csv)"
+    "consent.export_uploads": "Karşıya Yüklenmiş İçeriği Dışarı Aktar (.zip)",
+    "consent.export_posts": "Gönderileri Dışa Aktar (.csv)"
 }

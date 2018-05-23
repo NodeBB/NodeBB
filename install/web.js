@@ -25,7 +25,8 @@ winston.add(winston.transports.File, {
 	level: 'verbose',
 });
 
-var web = {};
+var web = module.exports;
+
 var scripts = [
 	'node_modules/jquery/dist/jquery.js',
 	'public/vendor/xregexp/xregexp.js',
@@ -33,6 +34,10 @@ var scripts = [
 	'public/src/utils.js',
 	'public/src/installer/install.js',
 ];
+
+var installing = false;
+var success = false;
+var error = false;
 
 web.install = function (port) {
 	port = port || 4567;
@@ -103,15 +108,20 @@ function welcome(req, res) {
 		skipGeneralSetup: !!nconf.get('url'),
 		databases: databases,
 		skipDatabaseSetup: !!nconf.get('database'),
-		error: !!res.locals.error,
-		success: !!res.locals.success,
+		error: error,
+		success: success,
 		values: req.body,
 		minimumPasswordLength: defaults.minimumPasswordLength,
+		installing: installing,
 	});
 }
 
 function install(req, res) {
+	if (installing) {
+		return welcome(req, res);
+	}
 	req.setTimeout(0);
+	installing = true;
 	var setupEnvVars = nconf.get();
 	for (var i in req.body) {
 		if (req.body.hasOwnProperty(i) && !process.env.hasOwnProperty(i)) {
@@ -140,11 +150,9 @@ function install(req, res) {
 	});
 
 	child.on('close', function (data) {
-		if (data === 0) {
-			res.locals.success = true;
-		} else {
-			res.locals.error = true;
-		}
+		installing = false;
+		success = data === 0;
+		error = data !== 0;
 
 		welcome(req, res);
 	});
@@ -264,5 +272,3 @@ function loadDefaults(next) {
 		next();
 	});
 }
-
-module.exports = web;

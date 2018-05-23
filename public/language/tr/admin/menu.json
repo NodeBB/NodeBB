@@ -49,7 +49,7 @@
 	"extend/widgets": "Bileşenler",
 	"extend/rewards": "Ödüller",
 
-	"section-social-auth": "Social Authentication",
+	"section-social-auth": "Sosyal Kimlik Doğrulama",
 
 	"section-plugins": "Eklentiler",
 	"extend/plugins.install": "Eklenti Yükle",
@@ -60,7 +60,7 @@
 	"advanced/logs": "Kayıtlar",
 	"advanced/errors": "Hatalar",
 	"advanced/cache": "Önbellek",
-	"development/logger": "Logger",
+	"development/logger": "Kaydedici",
 	"development/info": "bilgi",
 
 	"rebuild-and-restart-forum": "Rebuild & Restart Forum",
@@ -68,11 +68,11 @@
 	"logout": "Çıkış",
 	"view-forum": "Forumu Görüntüle",
 
-	"search.placeholder": "Search for settings",
+	"search.placeholder": "Ayarları ara",
 	"search.no-results": "Sonuç yok...",
 	"search.search-forum": "Search the forum for <strong></strong>",
-	"search.keep-typing": "Type more to see results...",
-	"search.start-typing": "Start typing to see results...",
+	"search.keep-typing": "Sonuçları görmek için daha fazla yazın...",
+	"search.start-typing": "Sonuçları görmek için yazmaya başlayın...",
 
 	"connection-lost": "Connection to %1 has been lost, attempting to reconnect...",
 

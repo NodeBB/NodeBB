@@ -8,7 +8,7 @@
 
 	<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="installer.css">
-	
+
 	<script type="text/javascript" async defer src="installer.min.js"></script>
 </head>
 
@@ -26,7 +26,7 @@
 			</ul>
 		</div>
 	</nav>
-
+	<!-- IF !installing -->
 	<div class="container <!-- IF success -->hide<!-- ENDIF success -->">
 		<p>
 			<h1>Welcome to the NodeBB Installer</h1>
@@ -114,7 +114,15 @@
 			<button id="submit" type="submit" class="btn btn-lg btn-success">Install NodeBB <i class="working hide"></i></button>
 		</form>
 	</div>
+	<!-- ENDIF !installing -->
 
+	<!-- IF installing -->
+	<div id="installing" class="container">
+		<p>
+			<h1>Hang tight! Your NodeBB is being installed.</h1>
+		</p>
+	</div>
+	<!-- ENDIF installing -->
 
 	<div class="container <!-- IF !success -->hide<!-- ENDIF !success -->">
 		<p>
