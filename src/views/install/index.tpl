@@ -26,7 +26,7 @@
 			</ul>
 		</div>
 	</nav>
-
+	<!-- IF !installing -->
 	<div class="container <!-- IF success -->hide<!-- ENDIF success -->">
 		<p>
 			<h1>Welcome to the NodeBB Installer</h1>
@@ -111,9 +111,10 @@
 			</div>
 			<!-- ENDIF !skipDatabaseSetup -->
 
-			<button id="submit" type="submit" class="btn btn-lg btn-success" <!-- IF installing -->disabled<!-- ENDIF installing -->>Install NodeBB <i class="working <!-- IF !installing -->hide<!-- ENDIF !installing -->"></i></button>
+			<button id="submit" type="submit" class="btn btn-lg btn-success">Install NodeBB <i class="working hide"></i></button>
 		</form>
 	</div>
+	<!-- ENDIF !installing -->
 
 	<!-- IF installing -->
 	<div id="installing" class="container">
