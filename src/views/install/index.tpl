@@ -8,7 +8,7 @@
 
 	<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="installer.css">
-	
+
 	<script type="text/javascript" async defer src="installer.min.js"></script>
 </head>
 
@@ -111,7 +111,7 @@
 			</div>
 			<!-- ENDIF !skipDatabaseSetup -->
 
-			<button id="submit" type="submit" class="btn btn-lg btn-success">Install NodeBB <i class="working hide"></i></button>
+			<button id="submit" type="submit" class="btn btn-lg btn-success" <!-- IF installing -->disabled<!-- ENDIF installing -->>Install NodeBB <i class="working hide"></i></button>
 		</form>
 	</div>
 

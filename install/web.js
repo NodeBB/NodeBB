@@ -25,7 +25,8 @@ winston.add(winston.transports.File, {
 	level: 'verbose',
 });
 
-var web = {};
+var web = module.exports;
+
 var scripts = [
 	'node_modules/jquery/dist/jquery.js',
 	'public/vendor/xregexp/xregexp.js',
@@ -33,6 +34,8 @@ var scripts = [
 	'public/src/utils.js',
 	'public/src/installer/install.js',
 ];
+
+var installing = false;
 
 web.install = function (port) {
 	port = port || 4567;
@@ -107,11 +110,16 @@ function welcome(req, res) {
 		success: !!res.locals.success,
 		values: req.body,
 		minimumPasswordLength: defaults.minimumPasswordLength,
+		installing: installing,
 	});
 }
 
 function install(req, res) {
+	if (installing) {
+		return welcome(req, res);
+	}
 	req.setTimeout(0);
+	installing = true;
 	var setupEnvVars = nconf.get();
 	for (var i in req.body) {
 		if (req.body.hasOwnProperty(i) && !process.env.hasOwnProperty(i)) {
@@ -140,6 +148,7 @@ function install(req, res) {
 	});
 
 	child.on('close', function (data) {
+		installing = false;
 		if (data === 0) {
 			res.locals.success = true;
 		} else {
@@ -264,5 +273,3 @@ function loadDefaults(next) {
 		next();
 	});
 }
-
-module.exports = web;
