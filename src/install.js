@@ -178,8 +178,12 @@ function completeConfigSetup(config, next) {
 			if (urlObj.port) {
 				config.port = urlObj.port;
 			}
-			urlObj.pathname = null;
-			urlObj.path = null;
+
+			// Remove trailing slash from non-subfolder installs
+			if (urlObj.path === '/') {
+				urlObj.path = '';
+				urlObj.pathname = '';
+			}
 
 			config.url = url.format(urlObj);
 
