@@ -4,7 +4,6 @@
 var async = require('async');
 var _ = require('lodash');
 
-var user = require('../user');
 var groups = require('../groups');
 var plugins = require('../plugins');
 var helpers = require('./helpers');
@@ -156,11 +155,8 @@ module.exports = function (privileges) {
 		async.waterfall([
 			function (next) {
 				async.parallel({
-					isAdmin: function (next) {
-						privileges.users.isAdministrator(callerUid, next);
-					},
-					isGlobalMod: function (next) {
-						privileges.users.isGlobalModerator(callerUid, next);
+					canBan: function (next) {
+						privileges.global.can('ban', callerUid, next);
 					},
 					isTargetAdmin: function (next) {
 						privileges.users.isAdministrator(uid, next);
@@ -168,7 +164,7 @@ module.exports = function (privileges) {
 				}, next);
 			},
 			function (results, next) {
-				results.canBan = !results.isTargetAdmin && (results.isAdmin || results.isGlobalMod);
+				results.canBan = !results.isTargetAdmin && results.canBan;
 				results.callerUid = callerUid;
 				results.uid = uid;
 				plugins.fireHook('filter:user.canBanUser', results, next);
@@ -182,13 +178,12 @@ module.exports = function (privileges) {
 	privileges.users.hasBanPrivilege = function (uid, callback) {
 		async.waterfall([
 			function (next) {
-				user.isAdminOrGlobalMod(uid, next);
+				privileges.global.can('ban', uid, next);
 			},
-			function (isAdminOrGlobalMod, next) {
+			function (canBan, next) {
 				plugins.fireHook('filter:user.hasBanPrivilege', {
 					uid: uid,
-					isAdminOrGlobalMod: isAdminOrGlobalMod,
-					canBan: isAdminOrGlobalMod,
+					canBan: canBan,
 				}, next);
 			},
 			function (data, next) {

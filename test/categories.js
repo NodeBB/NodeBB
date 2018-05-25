@@ -665,6 +665,7 @@ describe('Categories', function () {
 			privileges.global.userPrivileges(1, function (err, data) {
 				assert.ifError(err);
 				assert.deepEqual(data, {
+					ban: false,
 					chat: false,
 					'upload:post:image': false,
 					'upload:post:file': false,
@@ -702,6 +703,7 @@ describe('Categories', function () {
 			privileges.global.groupPrivileges('registered-users', function (err, data) {
 				assert.ifError(err);
 				assert.deepEqual(data, {
+					'groups:ban': false,
 					'groups:chat': true,
 					'groups:upload:post:image': true,
 					'groups:upload:post:file': false,

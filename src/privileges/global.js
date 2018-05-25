@@ -17,6 +17,7 @@ module.exports = function (privileges) {
 		{ name: 'Upload Images' },
 		{ name: 'Upload Files' },
 		{ name: 'Signature' },
+		{ name: 'Ban' },
 	];
 
 	privileges.global.userPrivilegeList = [
@@ -24,6 +25,7 @@ module.exports = function (privileges) {
 		'upload:post:image',
 		'upload:post:file',
 		'signature',
+		'ban',
 	];
 
 	privileges.global.groupPrivilegeList = privileges.global.userPrivilegeList.map(function (privilege) {
