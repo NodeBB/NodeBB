@@ -62,7 +62,7 @@ mongoModule.questions = [
 mongoModule.helpers = mongoModule.helpers || {};
 mongoModule.helpers.mongo = require('./mongo/helpers');
 
-function getConnectionString() {
+mongoModule.getConnectionString = function () {
 	var usernamePassword = '';
 	if (nconf.get('mongo:username') && nconf.get('mongo:password')) {
 		usernamePassword = nconf.get('mongo:username') + ':' + encodeURIComponent(nconf.get('mongo:password')) + '@';
@@ -90,15 +90,9 @@ function getConnectionString() {
 	}
 
 	return nconf.get('mongo:uri') || 'mongodb://' + usernamePassword + servers.join() + '/' + nconf.get('mongo:database');
-}
+};
 
-mongoModule.init = function (callback) {
-	callback = callback || function () { };
-
-	var mongoClient = require('mongodb').MongoClient;
-
-	var connString = getConnectionString();
-
+mongoModule.getConnectionOptions = function () {
 	var connOptions = {
 		poolSize: 10,
 		reconnectTries: 3600,
@@ -106,7 +100,16 @@ mongoModule.init = function (callback) {
 		autoReconnect: true,
 	};
 
-	connOptions = _.merge(connOptions, nconf.get('mongo:options') || {});
+	return _.merge(connOptions, nconf.get('mongo:options') || {});
+};
+
+mongoModule.init = function (callback) {
+	callback = callback || function () { };
+
+	var mongoClient = require('mongodb').MongoClient;
+
+	var connString = mongoModule.getConnectionString();
+	var connOptions = mongoModule.getConnectionOptions();
 
 	mongoClient.connect(connString, connOptions, function (err, _client) {
 		if (err) {
@@ -272,5 +275,5 @@ mongoModule.close = function (callback) {
 
 mongoModule.socketAdapter = function () {
 	var mongoAdapter = require('socket.io-adapter-mongo');
-	return mongoAdapter(getConnectionString());
+	return mongoAdapter(mongoModule.getConnectionString());
 };
