@@ -27,9 +27,8 @@ addons:
       - g++-4.8
       - mongodb-org-server
 node_js:
-  - "9"
+  - "10"
   - "8"
-  - "7"
   - "6"
 branches:
   only:
