@@ -8,7 +8,7 @@ var pagination = require('../../pagination');
 var user = require('../../user');
 var plugins = require('../../plugins');
 
-var blocksController = {};
+var blocksController = module.exports;
 
 blocksController.getBlocks = function (req, res, callback) {
 	var userData;
@@ -41,20 +41,15 @@ blocksController.getBlocks = function (req, res, callback) {
 		function (data, next) {
 			user.getUsers(data.uids, res.locals.uid, next);
 		},
-	], function (err, users) {
-		if (err) {
-			return callback(err);
-		}
+		function (users) {
+			userData.users = users;
+			userData.title = '[[pages:account/blocks, ' + userData.username + ']]';
+			var count = userData.blocksCount;
+			var pageCount = Math.ceil(count / resultsPerPage);
+			userData.pagination = pagination.create(page, pageCount);
+			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[user:blocks]]' }]);
 
-		userData.users = users;
-		userData.title = '[[pages:account/blocks, ' + userData.username + ']]';
-		var count = userData.blocksCount;
-		var pageCount = Math.ceil(count / resultsPerPage);
-		userData.pagination = pagination.create(page, pageCount);
-		userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[user:blocks]]' }]);
-
-		res.render('account/blocks', userData);
-	});
+			res.render('account/blocks', userData);
+		},
+	], callback);
 };
-
-module.exports = blocksController;

@@ -1133,6 +1133,33 @@ describe('Controllers', function () {
 			});
 		});
 
+		it('should load /user/foo/blocks', function (done) {
+			request(nconf.get('url') + '/api/user/foo/blocks', { jar: jar }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load /user/foo/consent', function (done) {
+			request(nconf.get('url') + '/api/user/foo/consent', { jar: jar }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load /user/foo/uploads', function (done) {
+			request(nconf.get('url') + '/api/user/foo/uploads', { jar: jar }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
 		it('should load notifications page', function (done) {
 			var notifications = require('../src/notifications');
 			var notifData = {

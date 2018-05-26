@@ -7,7 +7,7 @@ var meta = require('../../meta');
 var helpers = require('../helpers');
 var accountHelpers = require('./helpers');
 
-var consentController = {};
+var consentController = module.exports;
 
 consentController.get = function (req, res, next) {
 	var userData;
@@ -23,31 +23,19 @@ consentController.get = function (req, res, next) {
 			}
 
 			// Direct database call is used here because `gdpr_consent` is a protected user field and is automatically scrubbed from standard user data retrieval calls
-			db.getObjectField('user:' + userData.uid, 'gdpr_consent', function (err, consented) {
-				if (err) {
-					return next(err);
-				}
-
-				userData.gdpr_consent = !!parseInt(consented, 10);
-
-				next(null, userData);
-			});
+			db.getObjectField('user:' + userData.uid, 'gdpr_consent', next);
 		},
-	], function (err, userData) {
-		if (err) {
-			return next(err);
-		}
+		function (consented) {
+			userData.gdpr_consent = parseInt(consented, 10) === 1;
+			userData.digest = {
+				frequency: meta.config.dailyDigestFreq,
+				enabled: meta.config.dailyDigestFreq !== 'off',
+			};
 
-		userData.digest = {
-			frequency: meta.config.dailyDigestFreq,
-			enabled: meta.config.dailyDigestFreq !== 'off',
-		};
+			userData.title = '[[user:consent.title]]';
+			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[user:consent.title]]' }]);
 
-		userData.title = '[[user:consent.title]]';
-		userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[user:consent.title]]' }]);
-
-		res.render('account/consent', userData);
-	});
+			res.render('account/consent', userData);
+		},
+	], next);
 };
-
-module.exports = consentController;
