@@ -128,7 +128,7 @@
 		<p>
 			<h1>Congratulations! Your NodeBB has been set-up.</h1>
 
-			<button id="launch" class="btn btn-lg btn-success">Launch NodeBB <i class="working hide"></i></button>
+			<button id="launch" data-url="{launchUrl}" class="btn btn-lg btn-success">Launch NodeBB <i class="working hide"></i></button>
 		</p>
 	</div>
 
