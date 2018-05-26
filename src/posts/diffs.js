@@ -23,7 +23,9 @@ Diffs.exists = function (pid, callback) {
 
 Diffs.get = function (pid, since, callback) {
 	async.waterfall([
-		async.apply(db.getListRange.bind(db), 'post:' + pid + ':diffs', 0, -1),
+		function (next) {
+			Diffs.list(pid, next);
+		},
 		function (timestamps, next) {
 			// Pass those made after `since`, and create keys
 			const keys = timestamps.filter(function (timestamp) {

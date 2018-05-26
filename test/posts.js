@@ -443,6 +443,24 @@ describe('Post\'s', function () {
 				done();
 			});
 		});
+
+		it('should return diffs', function (done) {
+			posts.diffs.get(replyPid, 0, function (err, data) {
+				assert.ifError(err);
+				assert(Array.isArray(data));
+				assert(data[0].pid, replyPid);
+				assert(data[0].patch);
+				done();
+			});
+		});
+
+		it('should load diffs and reconstruct post', function (done) {
+			posts.diffs.load(replyPid, 0, voterUid, function (err, data) {
+				assert.ifError(err);
+				assert.equal(data.content, 'A reply to edit\n');
+				done();
+			});
+		});
 	});
 
 	describe('move', function () {
