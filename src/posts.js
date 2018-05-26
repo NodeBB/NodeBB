@@ -109,6 +109,20 @@ Posts.getPostData = function (pid, callback) {
 	], callback);
 };
 
+Posts.getPostsData = function (pids, callback) {
+	async.waterfall([
+		function (next) {
+			db.getObjects(pids.map(pid => 'post:' + pid), next);
+		},
+		function (data, next) {
+			plugins.fireHook('filter:post.getPostsData', { posts: data }, next);
+		},
+		function (data, next) {
+			next(null, data.posts);
+		},
+	], callback);
+};
+
 Posts.getPostField = function (pid, field, callback) {
 	async.waterfall([
 		function (next) {

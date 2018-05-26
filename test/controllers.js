@@ -1160,6 +1160,33 @@ describe('Controllers', function () {
 			});
 		});
 
+		it('should export users posts', function (done) {
+			request(nconf.get('url') + '/api/user/uid/foo/export/posts', { jar: jar }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should export users uploads', function (done) {
+			request(nconf.get('url') + '/api/user/uid/foo/export/uploads', { jar: jar }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should export users profile', function (done) {
+			request(nconf.get('url') + '/api/user/uid/foo/export/profile', { jar: jar }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
 		it('should load notifications page', function (done) {
 			var notifications = require('../src/notifications');
 			var notifData = {

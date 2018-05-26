@@ -111,8 +111,8 @@ userController.exportPosts = function (req, res, next) {
 	async.waterfall([
 		function (next) {
 			var payload = [];
-			batch.processSortedSet('uid:' + req.params.uid + ':posts', function (pids, next) {
-				async.map(pids, posts.getPostData, function (err, posts) {
+			batch.processSortedSet('uid:' + res.locals.uid + ':posts', function (pids, next) {
+				posts.getPostsData(pids, function (err, posts) {
 					if (err) {
 						return next(err);
 					}
@@ -136,22 +136,19 @@ userController.exportPosts = function (req, res, next) {
 				emptyFieldValue: '',
 			});
 		},
-	], function (err, csv) {
-		if (err) {
-			return next(err);
-		}
-
-		res.set('Content-Type', 'text/csv').set('Content-Disposition', 'attachment; filename="' + req.params.uid + '_posts.csv"').send(csv);
-	});
+		function (csv) {
+			res.set('Content-Type', 'text/csv').set('Content-Disposition', 'attachment; filename="' + req.params.uid + '_posts.csv"').send(csv);
+		},
+	], next);
 };
 
 userController.exportUploads = function (req, res, next) {
-	const archivePath = path.join(__dirname, '../../build/export', req.params.uid + '_uploads.zip');
+	const targetUid = res.locals.uid;
+	const archivePath = path.join(__dirname, '../../build/export', targetUid + '_uploads.zip');
 	const archive = archiver('zip', {
 		zlib: { level: 9 }, // Sets the compression level.
 	});
 	const maxAge = 1000 * 60 * 60 * 24;	// 1 day
-
 	const rootDirectory = path.join(__dirname, '../../public/uploads/');
 	const trimPath = function (path) {
 		return path.replace(rootDirectory, '');
@@ -161,15 +158,15 @@ userController.exportUploads = function (req, res, next) {
 		events.log({
 			type: 'export:uploads',
 			uid: req.uid,
-			targetUid: req.params.uid,
+			targetUid: targetUid,
 			ip: req.ip,
 			fresh: isFresh,
 		});
 
-		res.sendFile(req.params.uid + '_uploads.zip', {
+		res.sendFile(targetUid + '_uploads.zip', {
 			root: path.join(__dirname, '../../build/export'),
 			headers: {
-				'Content-Disposition': 'attachment; filename=' + req.params.uid + '_uploads.zip',
+				'Content-Disposition': 'attachment; filename=' + targetUid + '_uploads.zip',
 				maxAge: maxAge,
 			},
 		});
@@ -216,8 +213,8 @@ userController.exportUploads = function (req, res, next) {
 	});
 
 	archive.pipe(output);
-	winston.info('[user/export/uploads] Collating uploads for uid ' + req.params.uid);
-	user.collateUploads(req.params.uid, archive, function (err) {
+	winston.info('[user/export/uploads] Collating uploads for uid ' + targetUid);
+	user.collateUploads(targetUid, archive, function (err) {
 		if (err) {
 			return next(err);
 		}
@@ -227,19 +224,17 @@ userController.exportUploads = function (req, res, next) {
 };
 
 userController.exportProfile = function (req, res, next) {
+	const targetUid = res.locals.uid;
 	async.waterfall([
-		async.apply(db.getObjects.bind(db), ['user:' + req.params.uid, 'user:' + req.params.uid + ':settings']),
+		async.apply(db.getObjects.bind(db), ['user:' + targetUid, 'user:' + targetUid + ':settings']),
 		function (objects, next) {
 			Object.assign(objects[0], objects[1]);
 			delete objects[0].password;
 
 			converter.json2csv(objects[0], next);
 		},
-	], function (err, csv) {
-		if (err) {
-			return next(err);
-		}
-
-		res.set('Content-Type', 'text/csv').set('Content-Disposition', 'attachment; filename="' + req.params.uid + '_profile.csv"').send(csv);
-	});
+		function (csv) {
+			res.set('Content-Type', 'text/csv').set('Content-Disposition', 'attachment; filename="' + targetUid + '_profile.csv"').send(csv);
+		},
+	], next);
 };

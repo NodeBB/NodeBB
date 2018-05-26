@@ -13,7 +13,7 @@ module.exports = function (app, middleware, controllers) {
 	setupPageRoute(app, '/user/:userslug', middleware, middlewares, controllers.accounts.profile.get);
 	setupPageRoute(app, '/user/:userslug/following', middleware, middlewares, controllers.accounts.follow.getFollowing);
 	setupPageRoute(app, '/user/:userslug/followers', middleware, middlewares, controllers.accounts.follow.getFollowers);
-	setupPageRoute(app, '/user/:userslug/blocks', middleware, middlewares, controllers.accounts.blocks.getBlocks);
+
 	setupPageRoute(app, '/user/:userslug/posts', middleware, middlewares, controllers.accounts.posts.getPosts);
 	setupPageRoute(app, '/user/:userslug/topics', middleware, middlewares, controllers.accounts.posts.getTopics);
 	setupPageRoute(app, '/user/:userslug/best', middleware, middlewares, controllers.accounts.posts.getBestPosts);
@@ -32,6 +32,7 @@ module.exports = function (app, middleware, controllers) {
 	setupPageRoute(app, '/user/:userslug/settings', middleware, accountMiddlewares, controllers.accounts.settings.get);
 	setupPageRoute(app, '/user/:userslug/uploads', middleware, accountMiddlewares, controllers.accounts.uploads.get);
 	setupPageRoute(app, '/user/:userslug/consent', middleware, accountMiddlewares, controllers.accounts.consent.get);
+	setupPageRoute(app, '/user/:userslug/blocks', middleware, accountMiddlewares, controllers.accounts.blocks.getBlocks);
 
 	app.delete('/api/user/:userslug/session/:uuid', [middleware.exposeUid, middleware.ensureSelfOrGlobalPrivilege], controllers.accounts.session.revoke);
 

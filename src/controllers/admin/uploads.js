@@ -69,19 +69,16 @@ uploadsController.get = function (req, res, next) {
 				setImmediate(next, null, files);
 			}
 		},
-	], function (err, files) {
-		if (err) {
-			return next(err);
-		}
-
-		res.render('admin/manage/uploads', {
-			currentFolder: currentFolder.replace(nconf.get('upload_path'), ''),
-			showPids: files.length && files[0].hasOwnProperty('inPids'),
-			files: files,
-			breadcrumbs: buildBreadcrumbs(currentFolder),
-			pagination: pagination.create(page, Math.ceil(itemCount / itemsPerPage), req.query),
-		});
-	});
+		function (files) {
+			res.render('admin/manage/uploads', {
+				currentFolder: currentFolder.replace(nconf.get('upload_path'), ''),
+				showPids: files.length && files[0].hasOwnProperty('inPids'),
+				files: files,
+				breadcrumbs: buildBreadcrumbs(currentFolder),
+				pagination: pagination.create(page, Math.ceil(itemCount / itemsPerPage), req.query),
+			});
+		},
+	], next);
 };
 
 function buildBreadcrumbs(currentFolder) {
