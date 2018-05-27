@@ -44,7 +44,7 @@
     "nextpage": "下一页",
     "alert.success": "成功",
     "alert.error": "错误",
-    "alert.banned": "封禁",
+    "alert.banned": "已封禁",
     "alert.banned.message": "您刚刚被封禁了，现在您将登出站点。",
     "alert.unfollow": "您已取消关注 %1！",
     "alert.follow": "您已关注 %1！",
