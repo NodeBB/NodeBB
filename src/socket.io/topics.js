@@ -6,6 +6,7 @@ var topics = require('../topics');
 var posts = require('../posts');
 var websockets = require('./index');
 var user = require('../user');
+var meta = require('../meta');
 var apiController = require('../controllers/api');
 var socketHelpers = require('./helpers');
 
@@ -28,6 +29,9 @@ SocketTopics.post = function (socket, data, callback) {
 	data.timestamp = Date.now();
 
 	async.waterfall([
+		function (next) {
+			meta.blacklist.test(data.req.ip, next);
+		},
 		function (next) {
 			posts.shouldQueue(socket.uid, data, next);
 		},

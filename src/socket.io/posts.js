@@ -33,6 +33,9 @@ SocketPosts.reply = function (socket, data, callback) {
 
 	async.waterfall([
 		function (next) {
+			meta.blacklist.test(data.req.ip, next);
+		},
+		function (next) {
 			posts.shouldQueue(socket.uid, data, next);
 		},
 		function (shouldQueue, next) {
