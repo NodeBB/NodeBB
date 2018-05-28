@@ -80,6 +80,7 @@ profileController.get = function (req, res, callback) {
 			userData.nextStart = results.posts.nextStart;
 			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username }]);
 			userData.title = userData.username;
+			userData.allowCoverPicture = !userData.isSelf || parseInt(userData.reputation, 10) >= (parseInt(meta.config['min:rep:cover-picture'], 10) || 0);
 			var pageCount = Math.ceil(userData.postcount / itemsPerPage);
 			userData.pagination = pagination.create(page, pageCount, req.query);
 

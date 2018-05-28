@@ -144,7 +144,7 @@ module.exports = function (User) {
 		if (!data.website) {
 			return setImmediate(callback);
 		}
-		checkMinReputation(callerUid, data.uid, 'min:rep:website', callback);
+		User.checkMinReputation(callerUid, data.uid, 'min:rep:website', callback);
 	}
 
 	function isAboutMeValid(callerUid, data, callback) {
@@ -155,7 +155,7 @@ module.exports = function (User) {
 			return callback(new Error('[[error:about-me-too-long, ' + meta.config.maximumAboutMeLength + ']]'));
 		}
 
-		checkMinReputation(callerUid, data.uid, 'min:rep:aboutme', callback);
+		User.checkMinReputation(callerUid, data.uid, 'min:rep:aboutme', callback);
 	}
 
 	function isSignatureValid(callerUid, data, callback) {
@@ -165,10 +165,10 @@ module.exports = function (User) {
 		if (data.signature !== undefined && data.signature.length > meta.config.maximumSignatureLength) {
 			return callback(new Error('[[error:signature-too-long, ' + meta.config.maximumSignatureLength + ']]'));
 		}
-		checkMinReputation(callerUid, data.uid, 'min:rep:signature', callback);
+		User.checkMinReputation(callerUid, data.uid, 'min:rep:signature', callback);
 	}
 
-	function checkMinReputation(callerUid, uid, setting, callback) {
+	User.checkMinReputation = function (callerUid, uid, setting, callback) {
 		var isSelf = parseInt(callerUid, 10) === parseInt(uid, 10);
 		if (!isSelf) {
 			return setImmediate(callback);
@@ -184,7 +184,7 @@ module.exports = function (User) {
 				next();
 			},
 		], callback);
-	}
+	};
 
 	function updateEmail(uid, newEmail, callback) {
 		async.waterfall([

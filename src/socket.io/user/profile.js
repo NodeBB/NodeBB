@@ -32,6 +32,9 @@ module.exports = function (SocketUser) {
 				user.isAdminOrGlobalModOrSelf(socket.uid, data.uid, next);
 			},
 			function (next) {
+				user.checkMinReputation(socket.uid, data.uid, 'min:rep:cover-picture', next);
+			},
+			function (next) {
 				user.updateCoverPicture(data, next);
 			},
 		], callback);
@@ -44,6 +47,9 @@ module.exports = function (SocketUser) {
 		async.waterfall([
 			function (next) {
 				user.isAdminOrGlobalModOrSelf(socket.uid, data.uid, next);
+			},
+			function (next) {
+				user.checkMinReputation(socket.uid, data.uid, 'min:rep:profile-picture', next);
 			},
 			function (next) {
 				user.uploadCroppedPicture(data, next);
@@ -204,15 +210,14 @@ module.exports = function (SocketUser) {
 	SocketUser.toggleBlock = function (socket, data, callback) {
 		async.waterfall([
 			function (next) {
-				user.blocks.can(data.uid, function (err, can) {
-					if (err || !can) {
-						return next(err || new Error('[[error:cannot-block-privileged]]'));
-					}
-
-					next();
-				});
+				user.blocks.can(data.uid, next);
 			},
-			async.apply(user.blocks.is, data.uid, socket.uid),
+			function (can, next) {
+				if (!can) {
+					return next(new Error('[[error:cannot-block-privileged]]'));
+				}
+				user.blocks.is(data.uid, socket.uid, next);
+			},
 			function (is, next) {
 				user.blocks[is ? 'remove' : 'add'](data.uid, socket.uid, next);
 			},
