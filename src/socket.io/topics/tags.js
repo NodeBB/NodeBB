@@ -3,6 +3,7 @@
 var async = require('async');
 var db = require('../../database');
 var topics = require('../../topics');
+var privileges = require('../../privileges');
 var utils = require('../../utils');
 
 module.exports = function (SocketTopics) {
@@ -25,12 +26,26 @@ module.exports = function (SocketTopics) {
 	};
 
 	SocketTopics.searchTags = function (socket, data, callback) {
-		topics.searchTags(data, callback);
+		searchTags(socket.uid, topics.searchTags, data, callback);
 	};
 
 	SocketTopics.searchAndLoadTags = function (socket, data, callback) {
-		topics.searchAndLoadTags(data, callback);
+		searchTags(socket.uid, topics.searchAndLoadTags, data, callback);
 	};
+
+	function searchTags(uid, method, data, callback) {
+		async.waterfall([
+			function (next) {
+				privileges.global.can('search:tags', uid, next);
+			},
+			function (allowed, next) {
+				if (!allowed) {
+					return next(new Error('[[error:no-privileges]]'));
+				}
+				method(data, next);
+			},
+		], callback);
+	}
 
 	SocketTopics.loadMoreTags = function (socket, data, callback) {
 		if (!data || !utils.isNumber(data.after)) {

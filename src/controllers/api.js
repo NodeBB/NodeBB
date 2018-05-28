@@ -32,8 +32,6 @@ apiController.loadConfig = function (req, callback) {
 	config.minimumTagLength = meta.config.minimumTagLength || 3;
 	config.maximumTagLength = meta.config.maximumTagLength || 15;
 	config.useOutgoingLinksPage = parseInt(meta.config.useOutgoingLinksPage, 10) === 1;
-	config.allowGuestSearching = parseInt(meta.config.allowGuestSearching, 10) === 1;
-	config.allowGuestUserSearching = parseInt(meta.config.allowGuestUserSearching, 10) === 1;
 	config.allowGuestHandles = parseInt(meta.config.allowGuestHandles, 10) === 1;
 	config.allowFileUploads = parseInt(meta.config.allowFileUploads, 10) === 1;
 	config.allowTopicsThumbnail = parseInt(meta.config.allowTopicsThumbnail, 10) === 1;

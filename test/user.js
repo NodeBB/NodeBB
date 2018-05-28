@@ -293,10 +293,8 @@ describe('User', function () {
 		});
 
 		it('should error for guest', function (done) {
-			meta.config.allowGuestUserSearching = 0;
 			socketUser.search({ uid: 0 }, { query: 'john' }, function (err) {
-				assert.equal(err.message, '[[error:not-logged-in]]');
-				meta.config.allowGuestUserSearching = 1;
+				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
 		});

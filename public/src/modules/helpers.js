@@ -20,7 +20,6 @@
 		generateCategoryBackground: generateCategoryBackground,
 		generateChildrenCategories: generateChildrenCategories,
 		generateTopicClass: generateTopicClass,
-		displayUserSearch: displayUserSearch,
 		membershipBtn: membershipBtn,
 		spawnPrivilegeStates: spawnPrivilegeStates,
 		localeToHTML: localeToHTML,
@@ -157,10 +156,6 @@
 		}
 
 		return style.join(' ');
-	}
-
-	function displayUserSearch(data, allowGuestUserSearching) {
-		return data.loggedIn || allowGuestUserSearching === 'true';
 	}
 
 	// Groups helpers

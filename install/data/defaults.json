@@ -11,7 +11,6 @@
     "maximumTagsPerTopic": 5,
     "minimumTagLength": 3,
     "maximumTagLength": 15,
-    "allowGuestSearching": 0,
     "allowTopicsThumbnail": 0,
     "registrationType": "normal",
     "allowLocalLogin": 1,

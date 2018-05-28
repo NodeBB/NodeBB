@@ -11,6 +11,7 @@ var topics = require('../src/topics');
 var categories = require('../src/categories');
 var user = require('../src/user');
 var search = require('../src/search');
+var privileges = require('../src/privileges');
 
 describe('Search', function () {
 	var phoebeUid;
@@ -96,21 +97,22 @@ describe('Search', function () {
 
 	it('should search term in titles and posts', function (done) {
 		var meta = require('../src/meta');
-		meta.config.allowGuestSearching = 1;
 		var qs = '/api/search?term=cucumber&in=titlesposts&categories[]=' + cid1 + '&by=phoebe&replies=1&repliesFilter=atleast&sortBy=timestamp&sortDirection=desc&showAs=posts';
-
-		request({
-			url: nconf.get('url') + qs,
-			json: true,
-		}, function (err, response, body) {
+		privileges.global.give(['search:content'], 'guests', function (err) {
 			assert.ifError(err);
-			assert(body);
-			assert.equal(body.matchCount, 1);
-			assert.equal(body.posts.length, 1);
-			assert.equal(body.posts[0].pid, post1Data.pid);
-			assert.equal(body.posts[0].uid, phoebeUid);
+			request({
+				url: nconf.get('url') + qs,
+				json: true,
+			}, function (err, response, body) {
+				assert.ifError(err);
+				assert(body);
+				assert.equal(body.matchCount, 1);
+				assert.equal(body.posts.length, 1);
+				assert.equal(body.posts[0].pid, post1Data.pid);
+				assert.equal(body.posts[0].uid, phoebeUid);
 
-			done();
+				privileges.global.rescind(['search:content'], 'guests', done);
+			});
 		});
 	});
 

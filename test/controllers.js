@@ -630,12 +630,25 @@ describe('Controllers', function () {
 		});
 	});
 
-	it('should load users search page', function (done) {
-		request(nconf.get('url') + '/users?term=bar&section=sort-posts', function (err, res, body) {
+	it('should error if guests do not have search privilege', function (done) {
+		request(nconf.get('url') + '/api/users?term=bar&section=sort-posts', { json: true }, function (err, res, body) {
 			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
+			assert.equal(res.statusCode, 500);
 			assert(body);
+			assert.equal(body.error, '[[error:no-privileges]]');
 			done();
+		});
+	});
+
+	it('should load users search page', function (done) {
+		privileges.global.give(['search:users'], 'guests', function (err) {
+			assert.ifError(err);
+			request(nconf.get('url') + '/users?term=bar&section=sort-posts', function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				privileges.global.rescind(['search:users'], 'guests', done);
+			});
 		});
 	});
 

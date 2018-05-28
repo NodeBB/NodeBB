@@ -18,6 +18,9 @@ module.exports = function (privileges) {
 		{ name: 'Upload Files' },
 		{ name: 'Signature' },
 		{ name: 'Ban' },
+		{ name: 'Search Content' },
+		{ name: 'Search Users' },
+		{ name: 'Search Tags' },
 	];
 
 	privileges.global.userPrivilegeList = [
@@ -26,6 +29,9 @@ module.exports = function (privileges) {
 		'upload:post:file',
 		'signature',
 		'ban',
+		'search:content',
+		'search:users',
+		'search:tags',
 	];
 
 	privileges.global.groupPrivilegeList = privileges.global.userPrivilegeList.map(function (privilege) {
@@ -81,6 +87,9 @@ module.exports = function (privileges) {
 					chat: privData.chat || isAdminOrMod,
 					'upload:post:image': privData['upload:post:image'] || isAdminOrMod,
 					'upload:post:file': privData['upload:post:file'] || isAdminOrMod,
+					'search:content': privData['search:content'] || isAdminOrMod,
+					'search:users': privData['search:users'] || isAdminOrMod,
+					'search:tags': privData['search:tags'] || isAdminOrMod,
 				}, next);
 			},
 		], callback);
