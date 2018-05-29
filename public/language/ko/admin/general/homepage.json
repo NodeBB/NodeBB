@@ -4,5 +4,5 @@
 	"home-page-route": "홈페이지 경로",
 	"custom-route": "사용자 지정 경로",
 	"allow-user-home-pages": "사용자가 직접 홈페이지를 설정할 수 있게 허용",
-	"home-page-title": "Title of the home page (default \"Home\")"
+	"home-page-title": "홈페이지의 타이틀 (기본값 \"Home\")"
 }

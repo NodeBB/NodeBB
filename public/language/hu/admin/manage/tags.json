@@ -1,5 +1,5 @@
 {
-	"none": "Your forum does not have any topics with tags yet.",
+	"none": "Fórumod még nem rendelkezik egy címkékkel ellátott témakörrel sem.",
 	"bg-color": "Háttérszín",
 	"text-color": "Szövegszín",
 	"create-modify": "Címkék létrehozása és módosítása",
@@ -14,6 +14,6 @@
 
 	"alerts.editing-multiple": "Több címke szerkesztése",
 	"alerts.editing-x": "\"%1\" címke szerkesztése",
-	"alerts.confirm-delete": "Do you want to delete the selected tags?",
-	"alerts.update-success": "Címke frissítve"
+	"alerts.confirm-delete": "Biztosan törölni akarod a kijelölt címkéket?",
+	"alerts.update-success": "Címke frissítve!"
 }
