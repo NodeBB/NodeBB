@@ -18,6 +18,7 @@ $(document).ready(function () {
 	// When ajaxify is migrated to a require.js module, then this can be merged into the "define" call
 	require(['translator', 'benchpress'], function (_translator, _Benchpress) {
 		translator = _translator;
+		translator.translate('[[error:no-connection]]', app.inAdmin ? config.acpLang : config.userLang);
 		Benchpress = _Benchpress;
 	});
 
@@ -318,6 +319,8 @@ $(document).ready(function () {
 			error: function (data, textStatus) {
 				if (data.status === 0 && textStatus === 'error') {
 					data.status = 500;
+					data.responseJSON = data.responseJSON || {};
+					data.responseJSON.error = '[[error:no-connection]]';
 				}
 				callback({
 					data: data,
