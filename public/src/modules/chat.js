@@ -142,24 +142,6 @@ define('chat', [
 		});
 	};
 
-	module.bringModalToTop = function (chatModal) {
-		var topZ = 0;
-
-		taskbar.updateActive(chatModal.attr('data-uuid'));
-
-		if ($('.chat-modal').length === 1) {
-			return;
-		}
-		$('.chat-modal').each(function () {
-			var thisZ = parseInt($(this).css('zIndex'), 10);
-			if (thisZ > topZ) {
-				topZ = thisZ;
-			}
-		});
-
-		chatModal.css('zIndex', topZ + 1);
-	};
-
 	module.getModal = function (roomId) {
 		return $('#chat-modal-' + roomId);
 	};
@@ -199,7 +181,7 @@ define('chat', [
 
 				chatModal.draggable({
 					start: function () {
-						module.bringModalToTop(chatModal);
+						taskbar.updateActive(uuid);
 					},
 					stop: function () {
 						chatModal.find('#chat-message-input').focus();
@@ -233,7 +215,7 @@ define('chat', [
 			});
 
 			chatModal.on('click', function () {
-				module.bringModalToTop(chatModal);
+				taskbar.updateActive(this.getAttribute('data-uuid'));
 
 				if (dragged) {
 					dragged = false;
@@ -316,7 +298,6 @@ define('chat', [
 		chatModal.removeClass('hide');
 		taskbar.updateActive(uuid);
 		ChatsMessages.scrollToBottom(chatModal.find('.chat-content'));
-		module.bringModalToTop(chatModal);
 		module.focusInput(chatModal);
 		socket.emit('modules.chats.markRead', chatModal.attr('data-roomid'));
 
