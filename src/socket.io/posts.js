@@ -4,6 +4,7 @@ var async = require('async');
 
 var posts = require('../posts');
 var privileges = require('../privileges');
+var plugins = require('../plugins');
 var meta = require('../meta');
 var topics = require('../topics');
 var user = require('../user');
@@ -184,7 +185,14 @@ SocketPosts.editQueuedContent = function (socket, data, callback) {
 	if (!data || !data.id || !data.content) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
-	posts.editQueuedContent(socket.uid, data.id, data.content, callback);
+	async.waterfall([
+		function (next) {
+			posts.editQueuedContent(socket.uid, data.id, data.content, next);
+		},
+		function (next) {
+			plugins.fireHook('filter:parse.post', { postData: data }, next);
+		},
+	], callback);
 };
 
 function acceptOrReject(method, socket, data, callback) {

@@ -7,6 +7,7 @@ var user = require('../../user');
 var topics = require('../../topics');
 var categories = require('../../categories');
 var pagination = require('../../pagination');
+var plugins = require('../../plugins');
 var utils = require('../../utils');
 
 var postQueueController = module.exports;
@@ -79,6 +80,7 @@ function getQueuedPosts(ids, callback) {
 			});
 
 			async.map(postData, function (postData, next) {
+				postData.data.rawContent = postData.data.content;
 				async.waterfall([
 					function (next) {
 						if (postData.data.cid) {
@@ -95,6 +97,10 @@ function getQueuedPosts(ids, callback) {
 					},
 					function (categoryData, next) {
 						postData.category = categoryData;
+						plugins.fireHook('filter:parse.post', { postData: postData.data }, next);
+					},
+					function (result, next) {
+						postData.data.content = result.postData.content;
 						next(null, postData);
 					},
 				], next);
