@@ -342,7 +342,7 @@ app.cacheBuster = null;
 
 		require(['chat'], function (chat) {
 			function loadAndCenter(chatModal) {
-				chat.load(chatModal.attr('UUID'));
+				chat.load(chatModal.attr('data-uuid'));
 				chat.center(chatModal);
 				chat.focusInput(chatModal);
 			}
