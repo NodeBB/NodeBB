@@ -18,11 +18,7 @@ module.exports = function (Messaging) {
 				Messaging.getUidsInRoom(roomId, 0, -1, next);
 			},
 			function (uids, next) {
-				async.filter(uids, function (uid, next) {
-					user.blocks.is(fromUid, uid, function (err, blocked) {
-						next(err, !blocked);
-					});
-				}, next);
+				user.blocks.filterUids(fromUid, uids, next);
 			},
 			function (uids, next) {
 				var data = {

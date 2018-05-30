@@ -286,16 +286,9 @@ function pushToUids(uids, notification, callback) {
 	async.waterfall([
 		function (next) {
 			// Remove uid from recipients list if they have blocked the user triggering the notification
-			async.filter(uids, function (uid, next) {
-				User.blocks.is(notification.from, uid, function (err, blocked) {
-					next(err, !blocked);
-				});
-			}, function (err, _uids) {
-				uids = _uids;
-				next(err);
-			});
+			User.blocks.filterUids(notification.from, uids, next);
 		},
-		function (next) {
+		function (uids, next) {
 			plugins.fireHook('filter:notification.push', { notification: notification, uids: uids }, next);
 		},
 		function (data, next) {

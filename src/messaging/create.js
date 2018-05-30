@@ -5,7 +5,7 @@ var async = require('async');
 var meta = require('../meta');
 var plugins = require('../plugins');
 var db = require('../database');
-
+var user = require('../user');
 
 module.exports = function (Messaging) {
 	Messaging.sendMessage = function (uid, roomId, content, timestamp, callback) {
@@ -72,6 +72,9 @@ module.exports = function (Messaging) {
 			function (_isNewSet, next) {
 				isNewSet = _isNewSet;
 				db.getSortedSetRange('chat:room:' + roomId + ':uids', 0, -1, next);
+			},
+			function (uids, next) {
+				user.blocks.filterUids(fromuid, uids, next);
 			},
 			function (uids, next) {
 				async.parallel([

@@ -76,6 +76,14 @@ module.exports = function (User) {
 		});
 	};
 
+	User.blocks.filterUids = function (targetUid, uids, callback) {
+		async.filter(uids, function (uid, next) {
+			User.blocks.is(targetUid, uid, function (err, blocked) {
+				next(err, !blocked);
+			});
+		}, callback);
+	};
+
 	User.blocks.filter = function (uid, property, set, callback) {
 		// Given whatever is passed in, iterates through it, and removes entries made by blocked uids
 		// property is optional
