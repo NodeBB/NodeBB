@@ -252,9 +252,9 @@ SELECT o."_key" k,
 			}
 
 			callback(null, keys.map(function (k) {
-				return (res.rows.find(function (r) {
+				return parseInt((res.rows.find(function (r) {
 					return r.k === k;
-				}) || { c: 0 }).c;
+				}) || { c: 0 }).c, 10);
 			}));
 		});
 	};
