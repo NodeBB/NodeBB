@@ -276,9 +276,9 @@ function buildCSS(data, callback) {
 		] : [autoprefixer]).process(lessOutput.css, {
 			from: undefined,
 		}).then(function (result) {
-			process.nextTick(callback, null, { code: result.css });
+			setImmediate(callback, null, { code: result.css });
 		}, function (err) {
-			process.nextTick(callback, err);
+			setImmediate(callback, err);
 		});
 	});
 }

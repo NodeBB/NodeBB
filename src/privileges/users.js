@@ -123,7 +123,7 @@ module.exports = function (privileges) {
 
 	privileges.users.canEdit = function (callerUid, uid, callback) {
 		if (parseInt(callerUid, 10) === parseInt(uid, 10)) {
-			return process.nextTick(callback, null, true);
+			return setImmediate(callback, null, true);
 		}
 		async.waterfall([
 			function (next) {
