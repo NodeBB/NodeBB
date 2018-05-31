@@ -118,7 +118,13 @@ SocketModules.chats.send = function (socket, data, callback) {
 			Messaging.canMessageRoom(socket.uid, data.roomId, next);
 		},
 		function (next) {
-			Messaging.sendMessage(socket.uid, data.roomId, data.message, Date.now(), next);
+			Messaging.sendMessage({
+				uid: socket.uid,
+				roomId: data.roomId,
+				content: data.message,
+				timestamp: Date.now(),
+				ip: socket.ip,
+			}, next);
 		},
 		function (message, next) {
 			Messaging.notifyUsersInRoom(socket.uid, data.roomId, message);
@@ -171,6 +177,9 @@ SocketModules.chats.loadRoom = function (socket, data, callback) {
 					roomId: data.roomId,
 					isNew: false,
 				}),
+				isAdminOrGlobalMod: function (next) {
+					user.isAdminOrGlobalMod(socket.uid, next);
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -183,6 +192,7 @@ SocketModules.chats.loadRoom = function (socket, data, callback) {
 			results.roomData.maximumUsersInChatRoom = parseInt(meta.config.maximumUsersInChatRoom, 10) || 0;
 			results.roomData.maximumChatMessageLength = parseInt(meta.config.maximumChatMessageLength, 10) || 1000;
 			results.roomData.showUserInput = !results.roomData.maximumUsersInChatRoom || results.roomData.maximumUsersInChatRoom > 2;
+			results.roomData.isAdminOrGlobalMod = results.isAdminOrGlobalMod;
 			next(null, results.roomData);
 		},
 	], callback);
@@ -436,6 +446,20 @@ SocketModules.chats.getMessages = function (socket, data, callback) {
 	};
 
 	Messaging.getMessages(params, callback);
+};
+
+SocketModules.chats.getIP = function (socket, mid, callback) {
+	async.waterfall([
+		function (next) {
+			user.isAdminOrGlobalMod(socket.uid, next);
+		},
+		function (allowed, next) {
+			if (!allowed) {
+				return next(new Error('[[error:no-privilege]]'));
+			}
+			Messaging.getMessageField(mid, 'ip', next);
+		},
+	], callback);
 };
 
 /* Sounds */

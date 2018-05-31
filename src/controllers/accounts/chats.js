@@ -67,6 +67,9 @@ chatsController.get = function (req, res, callback) {
 					roomId: req.params.roomid,
 					isNew: false,
 				}),
+				isAdminOrGlobalMod: function (next) {
+					user.isAdminOrGlobalMod(req.uid, next);
+				},
 			}, next);
 		},
 		function (data) {
@@ -89,7 +92,7 @@ chatsController.get = function (req, res, callback) {
 			room.maximumUsersInChatRoom = parseInt(meta.config.maximumUsersInChatRoom, 10) || 0;
 			room.maximumChatMessageLength = parseInt(meta.config.maximumChatMessageLength, 10) || 1000;
 			room.showUserInput = !room.maximumUsersInChatRoom || room.maximumUsersInChatRoom > 2;
-
+			room.isAdminOrGlobalMod = data.isAdminOrGlobalMod;
 			res.render('chats', room);
 		},
 	], callback);

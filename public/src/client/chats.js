@@ -57,6 +57,20 @@ define('forum/chats', [
 		Chats.addLeaveHandler(ajaxify.data.roomId, components.get('chat/controls').find('[data-action="leave"]'));
 		Chats.addScrollHandler(ajaxify.data.roomId, ajaxify.data.uid, $('.chat-content'));
 		Chats.addCharactersLeftHandler($('[component="chat/main-wrapper"]'));
+		Chats.addIPHandler($('[component="chat/main-wrapper"]'));
+	};
+
+	Chats.addIPHandler = function (container) {
+		container.on('click', '.chat-ip-button', function () {
+			var ipEl = $(this).parent();
+			var mid = ipEl.parents('[data-mid]').attr('data-mid');
+			socket.emit('modules.chats.getIP', mid, function (err, ip) {
+				if (err) {
+					return app.alertError(err);
+				}
+				ipEl.html(ip);
+			});
+		});
 	};
 
 	Chats.addPopoutHandler = function () {

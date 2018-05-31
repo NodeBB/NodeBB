@@ -59,11 +59,7 @@ Messaging.getMessages = function (params, callback) {
 
 			// Filter out deleted messages unless you're the sender of said message
 			messageData = messageData.filter(function (messageData) {
-				if (messageData.deleted && parseInt(messageData.fromuid, 10) !== parseInt(params.uid, 10)) {
-					return false;
-				}
-
-				return true;
+				return (!messageData.deleted || parseInt(messageData.fromuid, 10) === parseInt(params.uid, 10));
 			});
 
 			next(null, messageData);
@@ -86,7 +82,6 @@ Messaging.parse = function (message, fromuid, uid, roomId, isNew, callback) {
 		if (err) {
 			return callback(err);
 		}
-
 
 		var messageData = {
 			message: message,

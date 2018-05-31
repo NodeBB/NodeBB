@@ -44,6 +44,7 @@ module.exports = function (Messaging) {
 				messages = _messages.map(function (msg, idx) {
 					if (msg) {
 						msg.messageId = parseInt(mids[idx], 10);
+						msg.ip = undefined;
 					}
 					return msg;
 				}).filter(Boolean);

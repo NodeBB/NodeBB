@@ -246,6 +246,7 @@ define('chat', [
 			Chats.addScrollHandler(chatModal.attr('data-roomid'), data.uid, chatModal.find('.chat-content'));
 
 			Chats.addCharactersLeftHandler(chatModal);
+			Chats.addIPHandler(chatModal);
 
 			taskbar.push('chat', chatModal.attr('data-uuid'), {
 				title: data.roomName || (data.users.length ? data.users[0].username : ''),
