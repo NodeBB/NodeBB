@@ -53,7 +53,7 @@
     "topics": "Témy",
     "posts": "Príspevky",
     "best": "Najlepšie",
-    "votes": "Votes",
+    "votes": "Počet hlasov",
     "upvoters": "Hlasovali za",
     "upvoted": "Pridaný hlas",
     "downvoters": "Hlasovali proti",
@@ -97,7 +97,7 @@
     "enter_page_number": "Zadajte číslo stránky",
     "upload_file": "Nahrať súbor",
     "upload": "Nahrať",
-    "uploads": "Uploads",
+    "uploads": "Nahrané",
     "allowed-file-types": "Povolené typy súborov sú %1",
     "unsaved-changes": "Máte neuložené zmeny. Ste si istý, že chcete opustiť stránku?",
     "reconnecting-message": "Vyzerá to tak, že pripojenie k %1 bolo stratené. Prosím chvíľku počkajte, snažíme sa pripojiť znovu.",
@@ -108,5 +108,5 @@
     "edited": "Zmenené",
     "disabled": "Zablokovaný",
     "select": "Vybrať",
-    "user-search-prompt": "Type something here to find users..."
+    "user-search-prompt": "Pre hľadanie používateľov, píšte sem..."
 }

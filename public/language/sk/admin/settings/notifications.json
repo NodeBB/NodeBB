@@ -3,5 +3,5 @@
 	"welcome-notification": "Uvítacie oznámenie",
 	"welcome-notification-link": "Odkaz na uvítanie",
 	"welcome-notification-uid": "Uvítanie používateľa (UID)",
-	"notification-alert-timeout": "Notification Alert Timeout"
+	"notification-alert-timeout": "Čas pre zobrazenia oznámení"
 }

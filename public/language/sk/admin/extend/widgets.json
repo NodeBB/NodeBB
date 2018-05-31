@@ -16,7 +16,7 @@
 	"alert.confirm-delete": "Ste si istý že chcete zmazať túto miniaplikáciu?",
 	"alert.updated": "Miniaplikácie boli aktualizované",
 	"alert.update-success": "Miniaplikácie boli úspešne aktualizované",
-	"alert.clone-success": "Successfully cloned widgets",
+	"alert.clone-success": "Úspešne naklonované miniaplikácie",
 
-	"error.select-clone": "Please select a page to clone from"
+	"error.select-clone": "Vyberte prosím stránku, z ktorej chcete klonovať"
 }
