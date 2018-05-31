@@ -11,9 +11,8 @@ define('forum/category', [
 	'components',
 	'translator',
 	'topicSelect',
-	'forum/pagination',
-	'storage',
-], function (infinitescroll, share, navigator, categoryTools, recent, sort, components, translator, topicSelect, pagination, storage) {
+	'handleBack',
+], function (infinitescroll, share, navigator, categoryTools, recent, sort, components, translator, topicSelect, handleBack) {
 	var Category = {};
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
@@ -43,15 +42,8 @@ define('forum/category', [
 
 		enableInfiniteLoadingOrPagination();
 
-		$('[component="category"]').on('click', '[component="topic/header"]', function () {
-			var clickedIndex = $(this).parents('[data-index]').attr('data-index');
-			$('[component="category/topic"]').each(function (index, el) {
-				if ($(el).offset().top - $(window).scrollTop() > 0) {
-					storage.setItem('category:' + cid + ':bookmark', $(el).attr('data-index'));
-					storage.setItem('category:' + cid + ':bookmark:clicked', clickedIndex);
-					return false;
-				}
-			});
+		handleBack.init(function (after, cb) {
+			loadTopicsAfter(after, 1, cb);
 		});
 
 		handleScrollToTopicIndex();
@@ -110,78 +102,6 @@ define('forum/category', [
 
 	Category.navigatorCallback = function (topIndex, bottomIndex) {
 		return bottomIndex;
-	};
-
-	$(window).on('action:popstate', function () {
-		if (ajaxify.data.template.category && ajaxify.data.cid) {
-			var bookmarkIndex = storage.getItem('category:' + ajaxify.data.cid + ':bookmark');
-			var clickedIndex = storage.getItem('category:' + ajaxify.data.cid + ':bookmark:clicked');
-
-			storage.removeItem('category:' + ajaxify.data.cid + ':bookmark');
-			storage.removeItem('category:' + ajaxify.data.cid + ':bookmark:clicked');
-
-			bookmarkIndex = Math.max(0, parseInt(bookmarkIndex, 10) || 0);
-			clickedIndex = Math.max(0, parseInt(clickedIndex, 10) || 0);
-			if (!parseInt(bookmarkIndex, 10)) {
-				return;
-			}
-
-			if (config.usePagination) {
-				var page = Math.ceil((parseInt(bookmarkIndex, 10) + 1) / config.topicsPerPage);
-				if (parseInt(page, 10) !== ajaxify.data.pagination.currentPage) {
-					pagination.loadPage(page, function () {
-						Category.scrollToTopic(bookmarkIndex, clickedIndex, 0);
-					});
-				} else {
-					Category.scrollToTopic(bookmarkIndex, clickedIndex, 0);
-				}
-			} else {
-				if (bookmarkIndex === 0) {
-					Category.highlightTopic(clickedIndex);
-					return;
-				}
-
-				$('[component="category"]').empty();
-
-				loadTopicsAfter(Math.max(0, bookmarkIndex - 1) + 1, 1, function () {
-					$(window).one('action:topics.loaded', function () {
-						Category.scrollToTopic(bookmarkIndex, clickedIndex, 0);
-					});
-				});
-			}
-		}
-	});
-
-	Category.highlightTopic = function (topicIndex) {
-		var highlight = components.get('category/topic', 'index', topicIndex);
-
-		if (highlight.length && !highlight.hasClass('highlight')) {
-			highlight.addClass('highlight');
-			setTimeout(function () {
-				highlight.removeClass('highlight');
-			}, 5000);
-		}
-	};
-
-	Category.scrollToTopic = function (bookmarkIndex, clickedIndex, duration, offset) {
-		if (!bookmarkIndex) {
-			return;
-		}
-
-		if (!offset) {
-			offset = 0;
-		}
-
-		var scrollTo = components.get('category/topic', 'index', bookmarkIndex);
-
-		if (scrollTo.length) {
-			$('html, body').animate({
-				scrollTop: (scrollTo.offset().top - offset) + 'px',
-			}, duration !== undefined ? duration : 400, function () {
-				Category.highlightTopic(clickedIndex);
-				navigator.update();
-			});
-		}
 	};
 
 	function enableInfiniteLoadingOrPagination() {

@@ -28,7 +28,7 @@ define('forum/popular', ['forum/recent', 'components', 'forum/infinitescroll'], 
 			term: ajaxify.data.term,
 		}, function (data, done) {
 			if (data.topics && data.topics.length) {
-				recent.onTopicsLoaded('popular', data.topics, false, done);
+				recent.onTopicsLoaded('popular', data.topics, false, direction, done);
 				$('[component="category"]').attr('data-nextstart', data.nextStart);
 			} else {
 				done();

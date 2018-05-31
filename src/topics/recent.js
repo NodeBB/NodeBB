@@ -45,6 +45,9 @@ module.exports = function (Topics) {
 				Topics.getTopicsByTids(tids, uid, next);
 			},
 			function (topicData, next) {
+				topicData.forEach(function (topicObj, i) {
+					topicObj.index = start + i;
+				});
 				recentTopics.topics = topicData;
 				recentTopics.nextStart = stop + 1;
 				next(null, recentTopics);

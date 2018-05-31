@@ -1,7 +1,6 @@
 'use strict';
 
-
-define('forum/recent', ['forum/infinitescroll', 'components'], function (infinitescroll, components) {
+define('forum/recent', ['forum/infinitescroll', 'components', 'handleBack'], function (infinitescroll, components, handleBack) {
 	var	Recent = {};
 
 	var newTopicCount = 0;
@@ -19,6 +18,10 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function (infinit
 		Recent.watchForNewPosts();
 
 		Recent.handleCategorySelection();
+
+		handleBack.init(function (after, cb) {
+			loadTopicsAfter(after, 1, cb);
+		});
 
 		$('#new-topics-alert').on('click', function () {
 			$(this).addClass('hide');
@@ -186,27 +189,36 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function (infinit
 	};
 
 	Recent.loadMoreTopics = function (direction) {
-		if (direction < 0 || !$('[component="category"]').length) {
+		if (!$('[component="category"]').length) {
 			return;
 		}
+		var topics = $('[component="category/topic"]');
+		var afterEl = direction > 0 ? topics.last() : topics.first();
+		var after = (parseInt(afterEl.attr('data-index'), 10) || 0) + (direction > 0 ? 1 : 0);
+		loadTopicsAfter(after, direction);
+	};
 
+	function loadTopicsAfter(after, direction, callback) {
+		callback = callback || function () {};
 		infinitescroll.loadMore('topics.loadMoreRecentTopics', {
-			after: $('[component="category"]').attr('data-nextstart'),
+			after: after,
+			direction: direction,
 			count: config.topicsPerPage,
 			cid: utils.params().cid,
 			filter: ajaxify.data.selectedFilter.filter,
 			set: $('[component="category"]').attr('data-set') ? $('[component="category"]').attr('data-set') : 'topics:recent',
 		}, function (data, done) {
 			if (data.topics && data.topics.length) {
-				Recent.onTopicsLoaded('recent', data.topics, false, done);
+				Recent.onTopicsLoaded('recent', data.topics, false, direction, done);
 			} else {
 				done();
 			}
 			$('[component="category"]').attr('data-nextstart', data.nextStart);
+			callback();
 		});
-	};
+	}
 
-	Recent.onTopicsLoaded = function (templateName, topics, showSelect, callback) {
+	Recent.onTopicsLoaded = function (templateName, topics, showSelect, direction, callback) {
 		topics = topics.filter(function (topic) {
 			return !components.get('category/topic', 'tid', topic.tid).length;
 		});
@@ -215,10 +227,32 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function (infinit
 			return callback();
 		}
 
+		var after;
+		var before;
+		var topicsList = $('[component="category/topic"]');
+
+		if (direction > 0 && topics.length) {
+			after = topicsList.last();
+		} else if (direction < 0 && topics.length) {
+			before = topicsList.first();
+		}
+
 		app.parseAndTranslate(templateName, 'topics', { topics: topics, showSelect: showSelect }, function (html) {
 			$('#category-no-topics').remove();
 
-			html.insertAfter($('[component="category/topic"]').last());
+			if (after && after.length) {
+				html.insertAfter(after);
+			} else if (before && before.length) {
+				var height = $(document).height();
+				var scrollTop = $(window).scrollTop();
+
+				html.insertBefore(before);
+
+				$(window).scrollTop(scrollTop + ($(document).height() - height));
+			} else {
+				$('[component="category"]').append(html);
+			}
+
 			html.find('.timeago').timeago();
 			app.createUserTooltips();
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
