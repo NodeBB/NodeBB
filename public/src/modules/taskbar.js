@@ -87,8 +87,8 @@ define('taskbar', ['benchpress'], function (Benchpress) {
 		tasks.removeClass('active');
 		tasks.filter('[data-uuid="' + uuid + '"]').addClass('active');
 
-		$('[data-uuid]:not([data-module])').toggleClass('modal-focused', false);
-		$('[data-uuid="' + uuid + '"]:not([data-module])').toggleClass('modal-focused', true);
+		$('[data-uuid]:not([data-module])').toggleClass('modal-unfocused', true);
+		$('[data-uuid="' + uuid + '"]:not([data-module])').toggleClass('modal-unfocused', false);
 	};
 
 	taskbar.isActive = function (uuid) {
