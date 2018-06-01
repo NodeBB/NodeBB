@@ -151,51 +151,7 @@ SocketModules.chats.loadRoom = function (socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	async.waterfall([
-		function (next) {
-			privileges.global.can('chat', socket.uid, next);
-		},
-		function (canChat, next) {
-			if (!canChat) {
-				return next(new Error('[[error:no-privileges]]'));
-			}
-
-			Messaging.isUserInRoom(socket.uid, data.roomId, next);
-		},
-		function (inRoom, next) {
-			if (!inRoom) {
-				return next(new Error('[[error:not-allowed]]'));
-			}
-
-			async.parallel({
-				roomData: async.apply(Messaging.getRoomData, data.roomId),
-				canReply: async.apply(Messaging.canReply, data.roomId, socket.uid),
-				users: async.apply(Messaging.getUsersInRoom, data.roomId, 0, -1),
-				messages: async.apply(Messaging.getMessages, {
-					callerUid: socket.uid,
-					uid: data.uid || socket.uid,
-					roomId: data.roomId,
-					isNew: false,
-				}),
-				isAdminOrGlobalMod: function (next) {
-					user.isAdminOrGlobalMod(socket.uid, next);
-				},
-			}, next);
-		},
-		function (results, next) {
-			results.roomData.users = results.users;
-			results.roomData.canReply = results.canReply;
-			results.roomData.usernames = Messaging.generateUsernames(results.users, socket.uid);
-			results.roomData.messages = results.messages;
-			results.roomData.groupChat = results.roomData.hasOwnProperty('groupChat') ? results.roomData.groupChat : results.users.length > 2;
-			results.roomData.isOwner = parseInt(results.roomData.owner, 10) === socket.uid;
-			results.roomData.maximumUsersInChatRoom = parseInt(meta.config.maximumUsersInChatRoom, 10) || 0;
-			results.roomData.maximumChatMessageLength = parseInt(meta.config.maximumChatMessageLength, 10) || 1000;
-			results.roomData.showUserInput = !results.roomData.maximumUsersInChatRoom || results.roomData.maximumUsersInChatRoom > 2;
-			results.roomData.isAdminOrGlobalMod = results.isAdminOrGlobalMod;
-			next(null, results.roomData);
-		},
-	], callback);
+	Messaging.loadRoom(socket.uid, data, callback);
 };
 
 SocketModules.chats.getUsersInRoom = function (socket, data, callback) {
