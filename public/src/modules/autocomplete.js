@@ -12,7 +12,9 @@ define('autocomplete', function () {
 				open: function () {
 					$(this).autocomplete('widget').css('z-index', 100005);
 				},
-				select: onselect,
+				select: function (event, ui) {
+					handleOnSelect(input, onselect, event, ui);
+				},
 				source: function (request, response) {
 					socket.emit('user.search', {
 						query: request.term,
@@ -90,14 +92,7 @@ define('autocomplete', function () {
 					$(this).autocomplete('widget').css('z-index', 20000);
 				},
 				select: function (event, ui) {
-					onselect = onselect || function () {};
-					var e = jQuery.Event('keypress');
-					e.which = 13;
-					e.keyCode = 13;
-					setTimeout(function () {
-						input.trigger(e);
-					}, 100);
-					onselect(event, ui);
+					handleOnSelect(input, onselect, event, ui);
 				},
 				source: function (request, response) {
 					socket.emit('topics.autocompleteTags', {
@@ -116,6 +111,17 @@ define('autocomplete', function () {
 			});
 		});
 	};
+
+	function handleOnSelect(input, onselect, event, ui) {
+		onselect = onselect || function () {};
+		var e = jQuery.Event('keypress');
+		e.which = 13;
+		e.keyCode = 13;
+		setTimeout(function () {
+			input.trigger(e);
+		}, 100);
+		onselect(event, ui);
+	}
 
 	return module;
 });
