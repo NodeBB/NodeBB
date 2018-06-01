@@ -14,8 +14,6 @@ var pageViews = 0;
 var uniqueIPCount = 0;
 var uniquevisitors = 0;
 
-var isCategory = /^(?:\/api)?\/category\/(\d+)/;
-
 new cronJob('*/10 * * * * *', function () {
 	Analytics.writeData();
 }, null, true);
@@ -51,15 +49,6 @@ Analytics.pageView = function (payload) {
 				db.sortedSetAdd('ip:recent', Date.now(), payload.ip);
 			}
 		});
-	}
-
-	if (payload.path) {
-		var categoryMatch = payload.path.match(isCategory);
-		var cid = categoryMatch ? parseInt(categoryMatch[1], 10) : null;
-
-		if (cid) {
-			Analytics.increment(['pageviews:byCid:' + cid]);
-		}
 	}
 };
 

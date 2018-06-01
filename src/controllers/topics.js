@@ -13,6 +13,7 @@ var plugins = require('../plugins');
 var helpers = require('./helpers');
 var pagination = require('../pagination');
 var utils = require('../utils');
+var analytics = require('../analytics');
 
 var topicsController = module.exports;
 
@@ -177,6 +178,8 @@ topicsController.get = function (req, res, callback) {
 					}
 				});
 			}
+
+			analytics.increment(['pageviews:byCid:' + topicData.category.cid]);
 
 			res.render('topic', topicData);
 		},

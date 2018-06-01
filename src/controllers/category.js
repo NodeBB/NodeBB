@@ -13,6 +13,7 @@ var pagination = require('../pagination');
 var helpers = require('./helpers');
 var utils = require('../utils');
 var translator = require('../translator');
+var analytics = require('../analytics');
 
 var categoryController = module.exports;
 
@@ -143,6 +144,8 @@ categoryController.get = function (req, res, callback) {
 				rel.href = nconf.get('url') + '/category/' + categoryData.slug + rel.href;
 				res.locals.linkTags.push(rel);
 			});
+
+			analytics.increment(['pageviews:byCid:' + categoryData.cid]);
 
 			res.render('category', categoryData);
 		},

@@ -53,7 +53,6 @@ middleware.stripLeadingSlashes = function (req, res, next) {
 middleware.pageView = function (req, res, next) {
 	analytics.pageView({
 		ip: req.ip,
-		path: req.path,
 		uid: req.uid,
 	});
 
