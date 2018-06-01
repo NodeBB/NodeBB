@@ -18,6 +18,11 @@ modsController.flags.list = function (req, res, next) {
 	var hasFilter;
 	var validFilters = ['assignee', 'state', 'reporterId', 'type', 'targetUid', 'cid', 'quick', 'page', 'perPage'];
 
+	// Reset filters if explicitly requested
+	if (parseInt(req.query.reset, 10) === 1) {
+		delete req.session.flags_filters;
+	}
+
 	async.waterfall([
 		function (next) {
 			async.parallel({
@@ -49,6 +54,12 @@ modsController.flags.list = function (req, res, next) {
 			}, {});
 			hasFilter = !!Object.keys(filters).length;
 
+			if (!hasFilter && req.session.hasOwnProperty('flags_filters')) {
+				// Load filters from session object
+				filters = req.session.flags_filters;
+				hasFilter = true;
+			}
+
 			if (res.locals.cids) {
 				if (!filters.cid) {
 					// If mod and no cid filter, add filter for their modded categories
@@ -68,6 +79,9 @@ modsController.flags.list = function (req, res, next) {
 			if (Object.keys(filters).length === 2 && filters.hasOwnProperty('page') && filters.hasOwnProperty('perPage')) {
 				hasFilter = false;
 			}
+
+			// Save filters into session unless removed
+			req.session.flags_filters = filters;
 
 			async.parallel({
 				flags: async.apply(flags.list, filters, req.uid),
