@@ -3,6 +3,8 @@
 var cronJob = require('cron').CronJob;
 var async = require('async');
 var winston = require('winston');
+var nconf = require('nconf');
+var crypto = require('crypto');
 
 var db = require('./database');
 
@@ -13,6 +15,18 @@ var counters = {};
 var pageViews = 0;
 var uniqueIPCount = 0;
 var uniquevisitors = 0;
+
+/**
+ * TODO: allow the cache's max value to be configurable. On high-traffic installs,
+ * the cache could be exhausted continuously if there are more than 500 concurrently
+ * active users
+ */
+var LRU = require('lru-cache');
+var ipCache = LRU({
+	max: 500,
+	length: function () { return 1; },
+	maxAge: 0,
+});
 
 new cronJob('*/10 * * * * *', function () {
 	Analytics.writeData();
@@ -35,7 +49,14 @@ Analytics.pageView = function (payload) {
 	pageViews += 1;
 
 	if (payload.ip) {
-		db.sortedSetScore('ip:recent', payload.ip, function (err, score) {
+		// Retrieve hash or calculate if not present
+		let hash = ipCache.get(payload.ip + nconf.get('secret'));
+		if (!hash) {
+			hash = crypto.createHash('sha1').update(payload.ip + nconf.get('secret')).digest('hex');
+			ipCache.set(payload.ip + nconf.get('secret'), hash);
+		}
+
+		db.sortedSetScore('ip:recent', hash, function (err, score) {
 			if (err) {
 				return;
 			}
@@ -46,7 +67,7 @@ Analytics.pageView = function (payload) {
 			today.setHours(today.getHours(), 0, 0, 0);
 			if (!score || score < today.getTime()) {
 				uniquevisitors += 1;
-				db.sortedSetAdd('ip:recent', Date.now(), payload.ip);
+				db.sortedSetAdd('ip:recent', Date.now(), hash);
 			}
 		});
 	}
