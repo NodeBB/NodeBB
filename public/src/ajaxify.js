@@ -18,7 +18,7 @@ $(document).ready(function () {
 	// When ajaxify is migrated to a require.js module, then this can be merged into the "define" call
 	require(['translator', 'benchpress'], function (_translator, _Benchpress) {
 		translator = _translator;
-		translator.translate('[[error:no-connection]]', app.inAdmin ? config.acpLang : config.userLang);
+		translator.translate('[[error:no-connection]]');
 		Benchpress = _Benchpress;
 	});
 
@@ -183,7 +183,7 @@ $(document).ready(function () {
 		$(window).trigger('action:ajaxify.loadingTemplates', {});
 
 		Benchpress.parse(tpl_url, data, function (template) {
-			translator.translate(template, app.inAdmin ? config.acpLang : config.userLang, function (translatedTemplate) {
+			translator.translate(template, function (translatedTemplate) {
 				translatedTemplate = translator.unescape(translatedTemplate);
 				$('body').removeClass(previousBodyClass).addClass(data.bodyClass);
 				$('#content').html(translatedTemplate);

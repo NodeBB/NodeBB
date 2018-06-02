@@ -3,19 +3,19 @@
 var privileges = module.exports;
 
 privileges.privilegeLabels = [
-	{ name: 'Find Category' },
-	{ name: 'Access Category' },
-	{ name: 'Access Topics' },
-	{ name: 'Create Topics' },
-	{ name: 'Reply to Topics' },
-	{ name: 'Tag Topics' },
-	{ name: 'Edit Posts' },
-	{ name: 'Delete Posts' },
-	{ name: 'Upvote Posts' },
-	{ name: 'Downvote Posts' },
-	{ name: 'Delete Topics' },
-	{ name: 'Purge' },
-	{ name: 'Moderate' },
+	{ name: '[[admin/manage/privileges:find-category]]' },
+	{ name: '[[admin/manage/privileges:access-category]]' },
+	{ name: '[[admin/manage/privileges:access-topics]]' },
+	{ name: '[[admin/manage/privileges:create-topics]]' },
+	{ name: '[[admin/manage/privileges:reply-to-topics]]' },
+	{ name: '[[admin/manage/privileges:tag-topics]]' },
+	{ name: '[[admin/manage/privileges:edit-posts]]' },
+	{ name: '[[admin/manage/privileges:delete-posts]]' },
+	{ name: '[[admin/manage/privileges:upvote-posts]]' },
+	{ name: '[[admin/manage/privileges:downvote-posts]]' },
+	{ name: '[[admin/manage/privileges:delete-topics]]' },
+	{ name: '[[admin/manage/privileges:purge]]' },
+	{ name: '[[admin/manage/privileges:moderate]]' },
 ];
 
 privileges.userPrivilegeList = [

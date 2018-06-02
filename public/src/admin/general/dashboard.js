@@ -444,7 +444,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 	function updateTopicsGraph(topics) {
 		if (!topics.length) {
 			topics = [{
-				title: 'No users browsing',
+				title: '[[admin/general/dashboard:no-users-browsing]]',
 				count: 1,
 			}];
 		}
@@ -463,15 +463,16 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 
 		function buildTopicsLegend() {
 			var legend = $('#topics-legend').html('');
-
+			var html = '';
 			topics.forEach(function (topic, i) {
 				var	label = topic.count === '0' ? topic.title : '<a title="' + topic.title + '"href="' + RELATIVE_PATH + '/topic/' + topic.tid + '" target="_blank"> ' + topic.title + '</a>';
 
-				legend.append('<li>' +
+				html += '<li>' +
 					'<div style="background-color: ' + topicColors[i] + ';"></div>' +
 					'<span>' + label + '</span>' +
-					'</li>');
+					'</li>';
 			});
+			legend.translateHtml(html);
 		}
 
 		buildTopicsLegend();

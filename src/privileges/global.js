@@ -13,14 +13,14 @@ module.exports = function (privileges) {
 	privileges.global = {};
 
 	privileges.global.privilegeLabels = [
-		{ name: 'Chat' },
-		{ name: 'Upload Images' },
-		{ name: 'Upload Files' },
-		{ name: 'Signature' },
-		{ name: 'Ban' },
-		{ name: 'Search Content' },
-		{ name: 'Search Users' },
-		{ name: 'Search Tags' },
+		{ name: '[[admin/manage/privileges:chat]]' },
+		{ name: '[[admin/manage/privileges:upload-images]]' },
+		{ name: '[[admin/manage/privileges:upload-files]]' },
+		{ name: '[[admin/manage/privileges:signature]]' },
+		{ name: '[[admin/manage/privileges:ban]]' },
+		{ name: '[[admin/manage/privileges:search-content]]' },
+		{ name: '[[admin/manage/privileges:search-users]]' },
+		{ name: '[[admin/manage/privileges:search-tags]]' },
 	];
 
 	privileges.global.userPrivilegeList = [
