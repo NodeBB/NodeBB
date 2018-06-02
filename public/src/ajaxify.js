@@ -108,11 +108,11 @@ $(document).ready(function () {
 
 	ajaxify.handleRedirects = function (url) {
 		url = ajaxify.removeRelativePath(url.replace(/^\/|\/$/g, '')).toLowerCase();
-		var isClientToAdmin = url.startsWith('admin') && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') !== 0;
-		var isAdminToClient = !url.startsWith('admin') && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') === 0;
+		var isClientToAdmin = url.startsWith('admin') && window.location.pathname.indexOf(config.relative_path + '/admin') !== 0;
+		var isAdminToClient = !url.startsWith('admin') && window.location.pathname.indexOf(config.relative_path + '/admin') === 0;
 
 		if (isClientToAdmin || isAdminToClient) {
-			window.open(RELATIVE_PATH + '/' + url, '_top');
+			window.open(config.relative_path + '/' + url, '_top');
 			return true;
 		}
 		return false;
@@ -137,7 +137,7 @@ $(document).ready(function () {
 		if (window.history && window.history.pushState) {
 			window.history[!quiet ? 'pushState' : 'replaceState']({
 				url: url,
-			}, url, RELATIVE_PATH + '/' + url);
+			}, url, config.relative_path + '/' + url);
 		}
 	};
 
@@ -226,8 +226,8 @@ $(document).ready(function () {
 	};
 
 	ajaxify.removeRelativePath = function (url) {
-		if (url.startsWith(RELATIVE_PATH.slice(1))) {
-			url = url.slice(RELATIVE_PATH.length);
+		if (url.startsWith(config.relative_path.slice(1))) {
+			url = url.slice(config.relative_path.length);
 		}
 		return url;
 	};
@@ -289,7 +289,7 @@ $(document).ready(function () {
 		$(window).trigger('action:ajaxify.loadingData', { url: url });
 
 		apiXHR = $.ajax({
-			url: RELATIVE_PATH + '/api/' + url,
+			url: config.relative_path + '/api/' + url,
 			cache: false,
 			headers: {
 				'X-Return-To': app.previousUrl,
@@ -351,12 +351,12 @@ $(document).ready(function () {
 				return;
 			}
 
-			var internalLink = utils.isInternalURI(this, window.location, RELATIVE_PATH);
+			var internalLink = utils.isInternalURI(this, window.location, config.relative_path);
 
 			var process = function () {
 				if (!e.ctrlKey && !e.shiftKey && !e.metaKey && e.which === 1) {
 					if (internalLink) {
-						var pathname = this.href.replace(rootUrl + RELATIVE_PATH + '/', '');
+						var pathname = this.href.replace(rootUrl + config.relative_path + '/', '');
 
 						// Special handling for urls with hashes
 						if (window.location.pathname === this.pathname && this.hash.length) {
@@ -364,7 +364,7 @@ $(document).ready(function () {
 						} else if (ajaxify.go(pathname)) {
 							e.preventDefault();
 						}
-					} else if (window.location.pathname !== '/outgoing') {
+					} else if (window.location.pathname !== config.relative_path + '/outgoing') {
 						if (config.openOutgoingLinksInNewTab && $.contains(contentEl, this)) {
 							window.open(this.href, '_blank');
 							e.preventDefault();
