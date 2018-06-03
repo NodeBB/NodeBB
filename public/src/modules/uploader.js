@@ -4,15 +4,6 @@
 define('uploader', ['translator', 'benchpress'], function (translator, Benchpress) {
 	var module = {};
 
-	module.open = function (route, params, fileSize, callback) {
-		console.warn('[uploader] uploader.open() is deprecated, please use uploader.show() instead, and pass parameters as a singe option with callback, e.g. uploader.show({}, callback);');
-		module.show({
-			route: route,
-			params: params,
-			fileSize: fileSize,
-		}, callback);
-	};
-
 	module.show = function (data, callback) {
 		var fileSize = data.hasOwnProperty('fileSize') && data.fileSize !== undefined ? parseInt(data.fileSize, 10) : false;
 		parseModal({
