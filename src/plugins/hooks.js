@@ -5,9 +5,7 @@ var async = require('async');
 
 module.exports = function (Plugins) {
 	Plugins.deprecatedHooks = {
-		'action:post.flag': 'action:flag.create',
-		'action:flag.create': 'action:flags.create',
-		'action:flag.update': 'action:flags.update',
+
 	};
 
 	Plugins.internals = {
