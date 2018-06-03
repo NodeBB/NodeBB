@@ -244,11 +244,6 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		}
 	};
 
-	navigator.scrollToPost = function (index, highlight, duration) {
-		console.log('[navigator.scrollToPost] deprecated please use, navigator.scrollToIndex');
-		navigator.scrollToIndex(index, highlight, duration);
-	};
-
 	navigator.scrollToIndex = function (index, highlight, duration) {
 		var inTopic = !!components.get('topic').length;
 		var inCategory = !!components.get('category').length;
