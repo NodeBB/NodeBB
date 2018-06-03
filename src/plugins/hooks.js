@@ -5,7 +5,6 @@ var async = require('async');
 
 module.exports = function (Plugins) {
 	Plugins.deprecatedHooks = {
-		'filter:user.profileLinks': 'filter:user.profileMenu',
 		'action:post.flag': 'action:flag.create',
 		'action:flag.create': 'action:flags.create',
 		'action:flag.update': 'action:flags.update',

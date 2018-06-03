@@ -50,9 +50,6 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 				ips: function (next) {
 					user.getIPs(uid, 4, next);
 				},
-				profile_links: function (next) { // DEPRECATED, do not use
-					plugins.fireHook('filter:user.profileLinks', [], next);
-				},
 				profile_menu: function (next) {
 					plugins.fireHook('filter:user.profileMenu', {
 						uid: uid,
@@ -152,7 +149,7 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 			userData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
 			userData['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
 			userData['email:confirmed'] = !!parseInt(userData['email:confirmed'], 10);
-			userData.profile_links = filterLinks(results.profile_links.concat(results.profile_menu.links), {
+			userData.profile_links = filterLinks(results.profile_menu.links, {
 				self: isSelf,
 				other: !isSelf,
 				moderator: isModerator,
