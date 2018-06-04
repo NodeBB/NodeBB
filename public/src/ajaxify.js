@@ -366,7 +366,9 @@ $(document).ready(function () {
 						}
 					} else if (window.location.pathname !== config.relative_path + '/outgoing') {
 						if (config.openOutgoingLinksInNewTab && $.contains(contentEl, this)) {
-							window.open(this.href, '_blank');
+							var externalTab = window.open();
+							externalTab.opener = null;
+							externalTab.location = this.href;
 							e.preventDefault();
 						} else if (config.useOutgoingLinksPage) {
 							var safeUrls = config.outgoingLinksWhitelist.trim().split(/[\s,]+/g).filter(Boolean);
