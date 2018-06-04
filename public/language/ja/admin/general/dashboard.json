@@ -68,5 +68,6 @@
 	"graphs.unique-visitors": "ユニークな訪問者",
 	"graphs.registered-users": "登録したユーザー",
 	"graphs.anonymous-users": "匿名ユーザー",
-	"last-restarted-by": "Last restarted by"
+	"last-restarted-by": "Last restarted by",
+	"no-users-browsing": "No users browsing"
 }

@@ -127,6 +127,8 @@
     "not-enough-reputation-min-rep-website": "You do not have enough reputation to add a website",
     "not-enough-reputation-min-rep-aboutme": "You do not have enough reputation to add an about me",
     "not-enough-reputation-min-rep-signature": "You do not have enough reputation to add a signature",
+    "not-enough-reputation-min-rep-profile-picture": "You do not have enough reputation to add a profile picture",
+    "not-enough-reputation-min-rep-cover-picture": "You do not have enough reputation to add a cover picture",
     "already-flagged": "כבר סימנת את הפוסט הזה",
     "self-vote": "אי אפשר להצביע בפרסום שיצרת",
     "reload-failed": "אירעה תקלה ב NodeBB בזמן הטעינה של: \"%1\". המערכת תמשיך להגיש דפים קיימים, אבל כדאי שתשחזר את הפעולות שלך מהפעם האחרונה שהמערכת עבדה כראוי.",
@@ -148,5 +150,6 @@
     "no-topics-selected": "לא נבחרו נושאים!",
     "cant-move-to-same-topic": "Can't move post to same topic!",
     "cannot-block-self": "You cannot block yourself!",
-    "cannot-block-privileged": "You cannot block administrators or global moderators"
+    "cannot-block-privileged": "You cannot block administrators or global moderators",
+    "no-connection": "There seems to be a problem with your internet connection"
 }

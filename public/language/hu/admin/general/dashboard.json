@@ -68,5 +68,6 @@
 	"graphs.unique-visitors": "Egyedi látogatók",
 	"graphs.registered-users": "Regisztrált felhasználók",
 	"graphs.anonymous-users": "Névtelen felhasználók",
-	"last-restarted-by": "Utoljára újraindította:"
+	"last-restarted-by": "Utoljára újraindította:",
+	"no-users-browsing": "No users browsing"
 }

@@ -32,6 +32,7 @@
     "chat.leave-help": "Leaving this chat will remove you from future correspondence in this chat. If you are re-added in the future, you will not see any chat history from prior to your re-joining.",
     "chat.in-room": "In this room",
     "chat.kick": "Kick",
+    "chat.show-ip": "Show IP",
     "composer.compose": "Sestavljanje",
     "composer.show_preview": "Pokaži predogled",
     "composer.hide_preview": "Skrij predogled",

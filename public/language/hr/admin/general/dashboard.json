@@ -68,5 +68,6 @@
 	"graphs.unique-visitors": "Jedninstveni posjetitelji",
 	"graphs.registered-users": "Registrirani korisnici",
 	"graphs.anonymous-users": "Anonimni korisnici",
-	"last-restarted-by": "Last restarted by"
+	"last-restarted-by": "Last restarted by",
+	"no-users-browsing": "No users browsing"
 }

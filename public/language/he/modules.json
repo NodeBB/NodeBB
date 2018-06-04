@@ -32,6 +32,7 @@
     "chat.leave-help": "עזיבת צ'אט זה תסיר אותך מהתכתבות עתידית בצ'אט זה. אם תתווסף מחדש בעתיד, לא תראה כל היסטוריית צ'אט שלפני הצטרפותך מחדש.",
     "chat.in-room": "בתוך החדר הזה",
     "chat.kick": "Kick",
+    "chat.show-ip": "Show IP",
     "composer.compose": "צור",
     "composer.show_preview": "הצג תצוגה מקדימה",
     "composer.hide_preview": "הסתר תצוגה מקדימה",

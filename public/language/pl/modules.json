@@ -32,6 +32,7 @@
     "chat.leave-help": "Opuszczając czat, tracisz dostęp do dalszej rozmowy na czacie. Jeśli w przyszłości zostaniesz znów dodany, nie zobaczysz historii czatu sprzed ponownego dołączenia.",
     "chat.in-room": "W tym pokoju",
     "chat.kick": "Wyrzuć",
+    "chat.show-ip": "Show IP",
     "composer.compose": "Napisz",
     "composer.show_preview": "Pokaż podgląd",
     "composer.hide_preview": "Ukryj podgląd",

@@ -127,6 +127,8 @@
     "not-enough-reputation-min-rep-website": "Pre pridanie webovej stránky nemáte dostatok reputácie",
     "not-enough-reputation-min-rep-aboutme": "Pre pridanie „O mne“ nemáte dostatok reputácie",
     "not-enough-reputation-min-rep-signature": "Pre pridanie podpisu nemáte dostatok reputácie",
+    "not-enough-reputation-min-rep-profile-picture": "You do not have enough reputation to add a profile picture",
+    "not-enough-reputation-min-rep-cover-picture": "You do not have enough reputation to add a cover picture",
     "already-flagged": "Už ste označili tento príspevok",
     "self-vote": "Za svoj vlastný príspevok nemôžete hlasovať",
     "reload-failed": "NodeBB narazil na problém pri načítaní: \"%1\". NodeBB bude pokračovať v službe existujúcej aktívnej klientskej strane, aj keď by ste mali vrátiť to, čo ste spravili tesne pred znovu načítaním.",
@@ -148,5 +150,6 @@
     "no-topics-selected": "Žiadne vybrané témy.",
     "cant-move-to-same-topic": "Nie je možné presunúť príspevok do rovnakej témy!",
     "cannot-block-self": "Nemôžete zablokovať seba samého!",
-    "cannot-block-privileged": "Nemôžete zablokovať správcov alebo hlavných moderátorov"
+    "cannot-block-privileged": "Nemôžete zablokovať správcov alebo hlavných moderátorov",
+    "no-connection": "There seems to be a problem with your internet connection"
 }

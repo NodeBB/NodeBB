@@ -127,6 +127,8 @@
     "not-enough-reputation-min-rep-website": "Bir website eklemek için yeterli saygınlığa sahip değilsin",
     "not-enough-reputation-min-rep-aboutme": "Hakkında kısmını doldurabilmek için yeterli saygınlığa sahip değilsin",
     "not-enough-reputation-min-rep-signature": "İmza eklemek için yeterli saygınlığa sahip değilsin",
+    "not-enough-reputation-min-rep-profile-picture": "You do not have enough reputation to add a profile picture",
+    "not-enough-reputation-min-rep-cover-picture": "You do not have enough reputation to add a cover picture",
     "already-flagged": "Bu iletiyi zaten bayrakladınız",
     "self-vote": "Kendi iletinize oy veremezsiniz",
     "reload-failed": "NodeBB tekrar yüklenirken bir sorunla karşılaştı: “%1“. NodeBB varolan dosyaları servis etmeye devam edecek.",
@@ -148,5 +150,6 @@
     "no-topics-selected": "Hiçbir başlık seçilmedi!",
     "cant-move-to-same-topic": "İletiyi aynı başlığa taşıyamazsın!",
     "cannot-block-self": "You cannot block yourself!",
-    "cannot-block-privileged": "You cannot block administrators or global moderators"
+    "cannot-block-privileged": "You cannot block administrators or global moderators",
+    "no-connection": "There seems to be a problem with your internet connection"
 }

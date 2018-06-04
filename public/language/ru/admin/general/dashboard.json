@@ -68,5 +68,6 @@
 	"graphs.unique-visitors": "Уникальных пользователей",
 	"graphs.registered-users": "Зарегистрированных пользователей",
 	"graphs.anonymous-users": "Анонимных пользователей",
-	"last-restarted-by": "Last restarted by"
+	"last-restarted-by": "Last restarted by",
+	"no-users-browsing": "No users browsing"
 }

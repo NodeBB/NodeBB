@@ -68,5 +68,6 @@
 	"graphs.unique-visitors": "Unikátny navštevníci",
 	"graphs.registered-users": "Zarestrovaný užívatelia",
 	"graphs.anonymous-users": "Neznámy užívatelia",
-	"last-restarted-by": "Posledná obnova od"
+	"last-restarted-by": "Posledná obnova od",
+	"no-users-browsing": "No users browsing"
 }

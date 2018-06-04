@@ -32,6 +32,7 @@
     "chat.leave-help": "离开此聊天会将您在聊天中的未接收的消息移除。您在重新加入之后不会看到任何聊天记录",
     "chat.in-room": "在此房间",
     "chat.kick": "踢出",
+    "chat.show-ip": "Show IP",
     "composer.compose": "编写帮助",
     "composer.show_preview": "显示预览",
     "composer.hide_preview": "隐藏预览",

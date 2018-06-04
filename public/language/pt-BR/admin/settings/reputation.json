@@ -8,5 +8,7 @@
 	"min-rep-flag": "Reputação mínima para sinalizar posts",
 	"min-rep-website": "Minimum reputation to add \"Website\" to user profile",
 	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",
-	"min-rep-signature": "Minimum reputation to add \"Signature\" to user profile"
+	"min-rep-signature": "Minimum reputation to add \"Signature\" to user profile",
+	"min-rep-profile-picture": "Minimum reputation to add \"Profile Picture\" to user profile",
+	"min-rep-cover-picture": "Minimum reputation to add \"Cover Picture\" to user profile"
 }

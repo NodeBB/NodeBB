@@ -127,6 +127,8 @@
     "not-enough-reputation-min-rep-website": "You do not have enough reputation to add a website",
     "not-enough-reputation-min-rep-aboutme": "You do not have enough reputation to add an about me",
     "not-enough-reputation-min-rep-signature": "You do not have enough reputation to add a signature",
+    "not-enough-reputation-min-rep-profile-picture": "You do not have enough reputation to add a profile picture",
+    "not-enough-reputation-min-rep-cover-picture": "You do not have enough reputation to add a cover picture",
     "already-flagged": "Bạn đã gắn cờ cho bài viết này",
     "self-vote": "Bạn không thể tự bầu cho bài đăng của mình",
     "reload-failed": "NodeBB gặp lỗi trong khi tải lại: \"%1\". NodeBB sẽ tiếp tục hoạt động với dữ liệu trước đó, tuy nhiên bạn nên tháo gỡ những gì bạn vừa thực hiện trước khi tải lại.",
@@ -148,5 +150,6 @@
     "no-topics-selected": "Không có chủ đề nào đang được chọn!",
     "cant-move-to-same-topic": "Can't move post to same topic!",
     "cannot-block-self": "You cannot block yourself!",
-    "cannot-block-privileged": "You cannot block administrators or global moderators"
+    "cannot-block-privileged": "You cannot block administrators or global moderators",
+    "no-connection": "There seems to be a problem with your internet connection"
 }

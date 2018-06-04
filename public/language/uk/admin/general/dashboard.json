@@ -68,5 +68,6 @@
 	"graphs.unique-visitors": "Унікальні відвідувачі",
 	"graphs.registered-users": "Зареєстровані користувачі",
 	"graphs.anonymous-users": "Анонімні користувачі",
-	"last-restarted-by": "Last restarted by"
+	"last-restarted-by": "Last restarted by",
+	"no-users-browsing": "No users browsing"
 }

@@ -32,6 +32,7 @@
     "chat.leave-help": "Ukončením tejto konverzácie budete odstránený z budúcej komunikácie v tejto konverzácií. Ak budete následne znovu pridaný, neuvidíte históriu komunikácie od Vášho odchodu.",
     "chat.in-room": "V tejto miestnosti",
     "chat.kick": "Vykopnúť",
+    "chat.show-ip": "Show IP",
     "composer.compose": "Napísať",
     "composer.show_preview": "Zobraziť náhľad",
     "composer.hide_preview": "Skryť náhľad",

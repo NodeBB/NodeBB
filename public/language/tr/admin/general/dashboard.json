@@ -68,5 +68,6 @@
 	"graphs.unique-visitors": "Benzersiz Ziyaretçiler",
 	"graphs.registered-users": "Kayıtlı Kullanıcılar",
 	"graphs.anonymous-users": "Anonim Kullanıcılar",
-	"last-restarted-by": "Son olarak yeniden başlatıldı"
+	"last-restarted-by": "Son olarak yeniden başlatıldı",
+	"no-users-browsing": "No users browsing"
 }

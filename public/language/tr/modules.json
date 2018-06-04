@@ -32,6 +32,7 @@
     "chat.leave-help": "Bu sohbetten ayrılmak, bu sohbetteki gelecekteki yazışmalardan sizi silecektir. Gelecekte tekrar eklendiyseniz, yeniden katılmadan önce herhangi bir sohbet geçmişi görmezsiniz.",
     "chat.in-room": "Bu odada",
     "chat.kick": "Dışarı At",
+    "chat.show-ip": "Show IP",
     "composer.compose": "Yaz",
     "composer.show_preview": "Önizleme Göster",
     "composer.hide_preview": "Önizleme Sakla",

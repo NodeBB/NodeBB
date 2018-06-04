@@ -127,6 +127,8 @@
     "not-enough-reputation-min-rep-website": "You do not have enough reputation to add a website",
     "not-enough-reputation-min-rep-aboutme": "You do not have enough reputation to add an about me",
     "not-enough-reputation-min-rep-signature": "You do not have enough reputation to add a signature",
+    "not-enough-reputation-min-rep-profile-picture": "You do not have enough reputation to add a profile picture",
+    "not-enough-reputation-min-rep-cover-picture": "You do not have enough reputation to add a cover picture",
     "already-flagged": "你已經對這個張貼標記過了",
     "self-vote": "You cannot vote on your own post",
     "reload-failed": "NodeBB重載\"%1\"時遇到了問題。 NodeBB將繼續提供現有的客戶端資源，但請你撤消重載前的動作。",
@@ -148,5 +150,6 @@
     "no-topics-selected": "No topics selected!",
     "cant-move-to-same-topic": "Can't move post to same topic!",
     "cannot-block-self": "You cannot block yourself!",
-    "cannot-block-privileged": "You cannot block administrators or global moderators"
+    "cannot-block-privileged": "You cannot block administrators or global moderators",
+    "no-connection": "There seems to be a problem with your internet connection"
 }

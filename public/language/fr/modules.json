@@ -32,6 +32,7 @@
     "chat.leave-help": "Si vous quittez vous ne pourrez plus suivre la discussion. Si vous êtes de nouveau ajouté, vous ne verrez aucun historique de la discussion avant votre réintégration.",
     "chat.in-room": "Dans cet espace de discussion",
     "chat.kick": "Exclure",
+    "chat.show-ip": "Show IP",
     "composer.compose": "Écrire",
     "composer.show_preview": "Afficher l'aperçu",
     "composer.hide_preview": "Masquer l'aperçu",

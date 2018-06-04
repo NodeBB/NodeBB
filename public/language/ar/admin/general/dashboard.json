@@ -68,5 +68,6 @@
 	"graphs.unique-visitors": "زوار فريدين",
 	"graphs.registered-users": "مستخدمين مسجلين",
 	"graphs.anonymous-users": "مستخدمين مجهولين",
-	"last-restarted-by": "Last restarted by"
+	"last-restarted-by": "Last restarted by",
+	"no-users-browsing": "No users browsing"
 }

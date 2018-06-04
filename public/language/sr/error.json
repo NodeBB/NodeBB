@@ -127,6 +127,8 @@
     "not-enough-reputation-min-rep-website": "Немате довољно велики углед да бисте додали веб сајт",
     "not-enough-reputation-min-rep-aboutme": "Немате довољно велики углед да бисте додали информације",
     "not-enough-reputation-min-rep-signature": "Немате довољно велики углед да бисте додали потпис",
+    "not-enough-reputation-min-rep-profile-picture": "You do not have enough reputation to add a profile picture",
+    "not-enough-reputation-min-rep-cover-picture": "You do not have enough reputation to add a cover picture",
     "already-flagged": "Већ сте означили заставицом ову поруку",
     "self-vote": "Не можете гласати за своју поруку",
     "reload-failed": "NodeBB је наишао на проблем док се поново учитавао: \"%1\". NodeBB ће наставити да опслужује постојећа клијентска средства , иако би требало да опозовете оно што сте урадили пре поновног учитавања.",
@@ -148,5 +150,6 @@
     "no-topics-selected": "Нема одабраних тема!",
     "cant-move-to-same-topic": "Није могуће преместити поруку у исту тему!",
     "cannot-block-self": "Не можете блокирати себе!",
-    "cannot-block-privileged": "Не можете блокирати администраторе или глобалне модераторе"
+    "cannot-block-privileged": "Не можете блокирати администраторе или глобалне модераторе",
+    "no-connection": "There seems to be a problem with your internet connection"
 }

@@ -8,5 +8,7 @@
 	"min-rep-flag": "Bayraklı iletiler için minimum itibar",
 	"min-rep-website": "Kullanıcı profiline \"Web Sitesi\" eklemek için gerekli asgari itibar",
 	"min-rep-aboutme": "Kullanıcı profiline \"Hakkımda\" eklemek için gereken asgari itibar",
-	"min-rep-signature": "Kullanıcı profiline \"İmza\" eklemek için gerekli asgari itibar"
+	"min-rep-signature": "Kullanıcı profiline \"İmza\" eklemek için gerekli asgari itibar",
+	"min-rep-profile-picture": "Minimum reputation to add \"Profile Picture\" to user profile",
+	"min-rep-cover-picture": "Minimum reputation to add \"Cover Picture\" to user profile"
 }

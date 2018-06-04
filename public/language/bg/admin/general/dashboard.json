@@ -68,5 +68,6 @@
 	"graphs.unique-visitors": "Уникални посетители",
 	"graphs.registered-users": "Регистрирани потребители",
 	"graphs.anonymous-users": "Анонимни потребители",
-	"last-restarted-by": "Последно рестартиране от"
+	"last-restarted-by": "Последно рестартиране от",
+	"no-users-browsing": "Няма разглеждащи потребители"
 }

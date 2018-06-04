@@ -32,6 +32,7 @@
     "chat.leave-help": "Als je de chat verlaat zul je toekomstige correspondentie in de chat niet meer zien. Als je later weer wordt toegevoegd, dan kun je de chat geschiedenis tot de hertoevoeging niet zien.",
     "chat.in-room": "In deze chat room",
     "chat.kick": "Schop",
+    "chat.show-ip": "Show IP",
     "composer.compose": "Samenstellen",
     "composer.show_preview": "Voorbeeldweergave",
     "composer.hide_preview": "Verberg voorbeeld",

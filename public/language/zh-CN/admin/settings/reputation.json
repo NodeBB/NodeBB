@@ -8,5 +8,7 @@
 	"min-rep-flag": "举报帖子需要的最小声望",
 	"min-rep-website": "设置网站所需要的最小声望",
 	"min-rep-aboutme": "设置关于我所需要的最小声望",
-	"min-rep-signature": "设置签名档所需要的最小声望"
+	"min-rep-signature": "设置签名档所需要的最小声望",
+	"min-rep-profile-picture": "Minimum reputation to add \"Profile Picture\" to user profile",
+	"min-rep-cover-picture": "Minimum reputation to add \"Cover Picture\" to user profile"
 }

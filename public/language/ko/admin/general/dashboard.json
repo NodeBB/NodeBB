@@ -68,5 +68,6 @@
 	"graphs.unique-visitors": "고유 방문자",
 	"graphs.registered-users": "등록된 사용자",
 	"graphs.anonymous-users": "익명의 사용자",
-	"last-restarted-by": "마지막으로 재시작"
+	"last-restarted-by": "마지막으로 재시작",
+	"no-users-browsing": "No users browsing"
 }

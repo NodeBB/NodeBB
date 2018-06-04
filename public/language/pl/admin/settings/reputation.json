@@ -8,5 +8,7 @@
 	"min-rep-flag": "Minimalna reputacja pozwalająca flagować posty",
 	"min-rep-website": "Minimalna reputacja pozwalająca wypełnić sekcję „Strona WWW” w profilu użytkownika",
 	"min-rep-aboutme": "Minimalna reputacja pozwalająca wypełnić sekcję „O mnie” w profilu użytkownika",
-	"min-rep-signature": "Minimalna reputacja pozwalająca wypełnić sekcję „Sygnatura” w profilu użytkownika"
+	"min-rep-signature": "Minimalna reputacja pozwalająca wypełnić sekcję „Sygnatura” w profilu użytkownika",
+	"min-rep-profile-picture": "Minimum reputation to add \"Profile Picture\" to user profile",
+	"min-rep-cover-picture": "Minimum reputation to add \"Cover Picture\" to user profile"
 }

@@ -127,6 +127,8 @@
     "not-enough-reputation-min-rep-website": "У вас недостатньо репутації для додавання веб-сайту",
     "not-enough-reputation-min-rep-aboutme": "Ви не маєте достатньої репутації, щоб додати Про мене",
     "not-enough-reputation-min-rep-signature": "У вас недостатньо репутації, щоб додати підпис",
+    "not-enough-reputation-min-rep-profile-picture": "You do not have enough reputation to add a profile picture",
+    "not-enough-reputation-min-rep-cover-picture": "You do not have enough reputation to add a cover picture",
     "already-flagged": "Ви вже помітили цей пост",
     "self-vote": "Ви не можете проголосувати за власний пост",
     "reload-failed": "У NodeBB виникла проблема при перевантаженні: \"%1\". NodeBB продовжить надавати існуючі клієнтські ресурси, проте радимо вам скасувати те, що було зроблено до перевантаження.",
@@ -148,5 +150,6 @@
     "no-topics-selected": "Не вибрано жодної теми!",
     "cant-move-to-same-topic": "Can't move post to same topic!",
     "cannot-block-self": "You cannot block yourself!",
-    "cannot-block-privileged": "You cannot block administrators or global moderators"
+    "cannot-block-privileged": "You cannot block administrators or global moderators",
+    "no-connection": "There seems to be a problem with your internet connection"
 }

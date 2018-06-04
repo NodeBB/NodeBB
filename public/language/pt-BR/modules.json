@@ -32,6 +32,7 @@
     "chat.leave-help": "Ao sair desta conversa você não recebera mais informações sobre o mesmo. Se você for adicionado novamente no futuro, você não poderá visualizar o histórico da conversa antes de sua re-entrada.",
     "chat.in-room": "Nesta sala",
     "chat.kick": "Expulsar",
+    "chat.show-ip": "Show IP",
     "composer.compose": "Compor",
     "composer.show_preview": "Exibir Pré-visualização",
     "composer.hide_preview": "Esconder Pré-visualização",

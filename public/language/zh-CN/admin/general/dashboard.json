@@ -68,5 +68,6 @@
 	"graphs.unique-visitors": "单一访客",
 	"graphs.registered-users": "已注册用户",
 	"graphs.anonymous-users": "匿名用户",
-	"last-restarted-by": "上次重启管理员/时间"
+	"last-restarted-by": "上次重启管理员/时间",
+	"no-users-browsing": "No users browsing"
 }
