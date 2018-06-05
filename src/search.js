@@ -63,6 +63,7 @@ function searchInContent(data, callback) {
 						matchWords: data.matchWords || 'all',
 						cid: results.searchCids,
 						uid: results.searchUids,
+						searchData: data,
 					}, next);
 				} else {
 					next(null, []);
