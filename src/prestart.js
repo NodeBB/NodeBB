@@ -64,6 +64,8 @@ function loadConfig(configFile) {
 		}
 	});
 	nconf.stores.env.readOnly = true;
+
+	nconf.set('runJobs', nconf.get('isPrimary') && !nconf.get('jobsDisabled'));
 }
 
 function versionCheck() {

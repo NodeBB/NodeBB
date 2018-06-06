@@ -5,6 +5,7 @@ var async = require('async');
 var db = require('../database');
 var plugins = require('../plugins');
 var Meta = require('../meta');
+var pubsub = require('../pubsub');
 
 var Settings = module.exports;
 
@@ -35,7 +36,7 @@ Settings.set = function (hash, values, quiet, callback) {
 				plugin: hash,
 				settings: values,
 			});
-
+			pubsub.publish('action:settings.set.' + hash, values);
 			Meta.reloadRequired = !quiet;
 			next();
 		},
