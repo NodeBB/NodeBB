@@ -101,7 +101,7 @@ define('forum/topic/merge', function () {
 			modal = null;
 		}
 		selectedTids = {};
-		$('[component="category/topic"]').off('click', 'a', onTopicClicked);
+		$('[component="category"]').off('click', '[component="category/topic"] a', onTopicClicked);
 	}
 
 	return Merge;
