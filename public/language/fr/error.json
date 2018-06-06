@@ -127,8 +127,8 @@
     "not-enough-reputation-min-rep-website": "Vous n'avez pas une réputation assez élevée pour ajouter un site internet",
     "not-enough-reputation-min-rep-aboutme": "Vous n'avez pas une réputation assez élevée pour ajouter un à propos",
     "not-enough-reputation-min-rep-signature": "Vous n'avez pas une réputation assez élevée pour ajouter une signature",
-    "not-enough-reputation-min-rep-profile-picture": "You do not have enough reputation to add a profile picture",
-    "not-enough-reputation-min-rep-cover-picture": "You do not have enough reputation to add a cover picture",
+    "not-enough-reputation-min-rep-profile-picture": "Vous n'avez pas assez de réputation pour ajouter une photo de profil",
+    "not-enough-reputation-min-rep-cover-picture": "Vous n'avez pas assez de réputation pour ajouter une photo de couverture",
     "already-flagged": "Vous avez déjà signalé ce message",
     "self-vote": "Vous ne pouvez pas voter sur votre propre message",
     "reload-failed": "NodeBB a rencontré un problème lors du rechargement : \"%1\" . NodeBB continuera de fonctionner côté client, même si vous devriez annuler ce que vous avez fait juste avant de recharger.",
@@ -151,5 +151,5 @@
     "cant-move-to-same-topic": "Impossible de déplacer le message dans le même sujet !",
     "cannot-block-self": "Vous ne pouvez pas vous bloquer !",
     "cannot-block-privileged": "Vous ne pouvez pas bloquer les administrateurs ou les modérateurs global",
-    "no-connection": "There seems to be a problem with your internet connection"
+    "no-connection": "Il semble y avoir un problème avec votre connexion Internet"
 }

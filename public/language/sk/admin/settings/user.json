@@ -30,7 +30,7 @@
 	"registration-type": "Typ registrácie",
 	"registration-type.normal": "Normálne",
 	"registration-type.admin-approval": "Povolenia správcu",
-	"registration-type.admin-approval-ip": "Povolenie správcu podľa IP",
+	"registration-type.admin-approval-ip": "Povolenie správcu podľa IP adries",
 	"registration-type.invite-only": "Iba na pozvanie",
 	"registration-type.admin-invite-only": "Iba pozvaný správcom",
 	"registration-type.disabled": "Bez registrácie",

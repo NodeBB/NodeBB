@@ -4,7 +4,7 @@
 
 	"list.name": "Meno",
 	"list.email": "E-mail",
-	"list.ip": "IP",
+	"list.ip": "IP adresa",
 	"list.time": "Čas",
 	"list.username-spam": "Frekvencia: %1 Zdá sa: %2 Dôveryhodnosť: %3",
 	"list.email-spam": "Frekvencia: %1 zdá sa: %2",

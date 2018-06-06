@@ -32,7 +32,7 @@
     "chat.leave-help": "Den Chat zu verlassen wird dich von weiterem Schriftverkehr in diesem Chat entfernen. Solltest du in der Zukunft wieder hinzugefügt werden, würdest du keinen Chatverlauf sehen können, der in der Zwischenzeit geschrieben wurde.",
     "chat.in-room": "In diesem Chat-Room",
     "chat.kick": "Rauswerfen",
-    "chat.show-ip": "Show IP",
+    "chat.show-ip": "IP anzeigen",
     "composer.compose": "Verfassen",
     "composer.show_preview": "Vorschau zeigen",
     "composer.hide_preview": "Vorschau ausblenden",

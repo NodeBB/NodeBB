@@ -16,7 +16,7 @@
 	"manage/registration": "Registračná fronta",
 	"manage/post-queue": "Fronta príspevkov",
 	"manage/groups": "Skupiny",
-	"manage/ip-blacklist": "Čierny zoznam IP",
+	"manage/ip-blacklist": "Čierny zoznam IP adries",
 	"manage/uploads": "Nahrané",
 
 	"section-settings": "Nastavenia",

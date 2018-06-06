@@ -1,5 +1,5 @@
 {
-	"lead": "Nakonfigurujte si čierny zoznam IP.",
+	"lead": "Nakonfigurujte si čierny zoznam IP adries.",
 	"description": "Príležitostne zákaz používania používateľského účtu nie je dostatočne odradzujúci. Inokedy je obmedzenie prístupu na fórum k určitej IP alebo celej škále IP serverov najlepší spôsob, ako chrániť fórum. V týchto scenároch môžete do tejto čiernej listy pridať nepríjemné IP adresy alebo celé bloky CIDR a zabrániť ich prihláseniu alebo registrácii nového účtu.",
 	"active-rules": "Aktívne pravidlá",
 	"validate": "Potvrdiť čiernu listinu",
@@ -15,5 +15,5 @@
 
 	"analytics.blacklist-hourly": "<strong>Postava 1</strong> - záznamov v čiernom zozname za hodinu",
 	"analytics.blacklist-daily": "<strong>Postava 2</strong>– záznamov v čiernom zozname za deň ",
-	"ip-banned": "Zablokovaná IP"
+	"ip-banned": "Zablokovaná IP adresa"
 }

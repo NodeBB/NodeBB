@@ -9,6 +9,6 @@
 	"min-rep-website": "Minimálna reputácia pre pridanie „Webovej stránky” do používateľského profilu",
 	"min-rep-aboutme": "Minimálna reputácia pre pridanie „O mne” do používateľského profilu",
 	"min-rep-signature": "Minimálna reputácia pre pridanie „Podpisu” do používateľského profilu",
-	"min-rep-profile-picture": "Minimum reputation to add \"Profile Picture\" to user profile",
-	"min-rep-cover-picture": "Minimum reputation to add \"Cover Picture\" to user profile"
+	"min-rep-profile-picture": "Minimálna reputácia pre pridanie „Profilového obrázka” do používateľského profilu ",
+	"min-rep-cover-picture": "Minimálna reputácia pre pridanie „Titulného obrázka”  do používateľského profilu"
 }

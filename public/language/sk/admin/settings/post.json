@@ -48,7 +48,7 @@
 	"composer.show-help": "Zobraziť záložku „Nápoveda”",
 	"composer.enable-plugin-help": "Povoliť zásuvné moduly pre pridanie obsahu do záložky nápovedy",
 	"composer.custom-help": "Používateľský text nápovedy",
-	"ip-tracking": "Sledovanie IP",
+	"ip-tracking": "Sledovanie IP adresy",
 	"ip-tracking.each-post": "Sledovať IP adresu pri každom príspevku",
 	"enable-post-history": "Povoliť históriu príspevkov"
 }

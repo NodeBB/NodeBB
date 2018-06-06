@@ -9,6 +9,6 @@
 	"min-rep-website": "Erforderliche Reputation um eine \"Website\" zum Benutzerprofil hinzuzufügen",
 	"min-rep-aboutme": "Erforderliche Reputation um eine \"Über mich\"-Sektion zum Benutzerprofil hinzuzufügen",
 	"min-rep-signature": "Erforderliche Reputation um eine \"Signatur\" zum Benutzerprofil hinzuzufügen",
-	"min-rep-profile-picture": "Minimum reputation to add \"Profile Picture\" to user profile",
-	"min-rep-cover-picture": "Minimum reputation to add \"Cover Picture\" to user profile"
+	"min-rep-profile-picture": "Minimale Reputation um ein Profilbild hinzuzufügen",
+	"min-rep-cover-picture": "Minimale Reputation um ein Deckbild hinzuzufügen"
 }
