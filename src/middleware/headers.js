@@ -1,6 +1,7 @@
 'use strict';
 
 var os = require('os');
+var winston = require('winston');
 
 var meta = require('../meta');
 
@@ -22,6 +23,25 @@ module.exports = function (middleware) {
 			if (origins.includes(req.get('origin'))) {
 				headers['Access-Control-Allow-Origin'] = encodeURI(req.get('origin'));
 			}
+		}
+
+		if (meta.config['access-control-allow-origin-regex']) {
+			var originsRegex = meta.config['access-control-allow-origin-regex'].split(',');
+			originsRegex = originsRegex.map(function (origin) {
+				try {
+					origin = new RegExp(origin.trim());
+				} catch (err) {
+					winston.error('[middleware.addHeaders] Invalid RegExp For access-control-allow-origin ' + origin);
+					origin = null;
+				}
+				return origin;
+			});
+
+			originsRegex.forEach(function (regex) {
+				if (regex && regex.test(req.get('origin'))) {
+					headers['Access-Control-Allow-Origin'] = encodeURI(req.get('origin'));
+				}
+			});
 		}
 
 		if (meta.config['access-control-allow-credentials']) {

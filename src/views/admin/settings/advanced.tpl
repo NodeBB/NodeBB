@@ -41,6 +41,13 @@
 				</p>
 			</div>
 			<div class="form-group">
+				<label for="access-control-allow-origin-regex">[[admin/settings/advanced:headers.acao-regex]]</label>
+				<input class="form-control" id="access-control-allow-origin-regex" type="text" placeholder="" value="" data-field="access-control-allow-origin-regex" /><br />
+				<p class="help-block">
+					[[admin/settings/advanced:headers.acao-regex-help]]
+				</p>
+			</div>
+			<div class="form-group">
 				<label for="access-control-allow-credentials">[[admin/settings/advanced:headers.acac]]</label>
 				<input class="form-control" id="access-control-allow-credentials" type="text" placeholder="" value="" data-field="access-control-allow-credentials" /><br />
 			</div>
