@@ -42,6 +42,8 @@ function loadConfig(configFile) {
 		nconf.set('isPrimary', 'true');
 		nconf.set('isCluster', 'false');
 	}
+	var isPrimary = nconf.get('isPrimary');
+	nconf.set('isPrimary', isPrimary === undefined ? 'true' : isPrimary);
 
 	// Ensure themes_path is a full filepath
 	nconf.set('themes_path', path.resolve(dirname, nconf.get('themes_path')));
