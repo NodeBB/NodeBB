@@ -60,6 +60,7 @@ module.exports = function (Categories) {
 					'topics:reply',
 					'topics:tag',
 					'posts:edit',
+					'posts:history',
 					'posts:delete',
 					'posts:upvote',
 					'posts:downvote',

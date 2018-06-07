@@ -140,7 +140,7 @@ define('forum/topic/postTools', [
 			}
 		});
 
-		if (config.enablePostHistory) {
+		if (config.enablePostHistory && ajaxify.data.privileges['posts:history']) {
 			postContainer.on('click', '[component="post/view-history"], [component="post/edit-indicator"]', function () {
 				var btn = $(this);
 				diffs.open(getData(btn, 'data-pid'));
