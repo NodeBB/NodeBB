@@ -74,6 +74,7 @@ Blacklist.test = function (clientIp, callback) {
 	try {
 		addr = ipaddr.parse(clientIp);
 	} catch (err) {
+		winston.error('[meta/blacklist] Error parsing client IP : ' + clientIp);
 		return callback(err);
 	}
 
