@@ -461,6 +461,22 @@ describe('Post\'s', function () {
 				done();
 			});
 		});
+
+		it('should not allow guests to view diffs', function (done) {
+			socketPosts.getDiffs({ uid: 0 }, { pid: 1 }, function (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+				done();
+			});
+		});
+
+		it('should allow registered-users group to view diffs', function (done) {
+			socketPosts.getDiffs({ uid: 1 }, { pid: 1 }, function (err, timestamps) {
+				assert.ifError(err);
+				assert.equal(true, Array.isArray(timestamps));
+				assert.strictEqual(1, timestamps.length);
+				done();
+			});
+		});
 	});
 
 	describe('move', function () {
