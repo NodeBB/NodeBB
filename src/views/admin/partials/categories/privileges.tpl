@@ -8,7 +8,7 @@
 								<th class="arrowed" colspan="9">
 									[[admin/manage/categories:privileges.section-posting]]
 								</th>
-								<th class="arrowed" colspan="2">
+								<th class="arrowed" colspan="3">
 									[[admin/manage/categories:privileges.section-moderation]]
 								</th>
 							</tr><tr><!-- zebrastripe reset --></tr>
@@ -64,7 +64,7 @@
 								<th class="arrowed" colspan="9">
 									[[admin/manage/categories:privileges.section-posting]]
 								</th>
-								<th class="arrowed" colspan="2">
+								<th class="arrowed" colspan="3">
 									[[admin/manage/categories:privileges.section-moderation]]
 								</th>
 							</tr><tr><!-- zebrastripe reset --></tr>

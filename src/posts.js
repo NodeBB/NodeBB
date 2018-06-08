@@ -313,8 +313,8 @@ Posts.updatePostVoteCount = function (postData, callback) {
 	});
 };
 
-Posts.modifyPostByPrivilege = function (post, isAdminOrMod) {
-	if (post.deleted && !(isAdminOrMod || post.selfPost)) {
+Posts.modifyPostByPrivilege = function (post, privileges) {
+	if (post.deleted && !(post.selfPost || privileges['posts:view_deleted'])) {
 		post.content = '[[topic:post_is_deleted]]';
 		if (post.user) {
 			post.user.signature = '';

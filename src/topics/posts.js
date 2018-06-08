@@ -150,7 +150,7 @@ module.exports = function (Topics) {
 				post.display_post_menu = topicPrivileges.isAdminOrMod || (post.selfPost && !topicData.locked) || ((loggedIn || topicData.postSharing.length) && !post.deleted);
 				post.ip = topicPrivileges.isAdminOrMod ? post.ip : undefined;
 
-				posts.modifyPostByPrivilege(post, topicPrivileges.isAdminOrMod);
+				posts.modifyPostByPrivilege(post, topicPrivileges);
 			}
 		});
 	};
