@@ -159,16 +159,13 @@ SocketPosts.getReplies = function (socket, pid, callback) {
 		},
 		function (results, next) {
 			postPrivileges = results.privileges;
+			results.posts.forEach(function (postData, index) {
+				posts.modifyPostByPrivilege(postData, postPrivileges[index]);
+			});
 			results.posts = results.posts.filter(function (postData, index) {
 				return postData && postPrivileges[index].read;
 			});
 			topics.addPostData(results.posts, socket.uid, next);
-		},
-		function (postData, next) {
-			postData.forEach(function (postData, index) {
-				posts.modifyPostByPrivilege(postData, postPrivileges[index]);
-			});
-			next(null, postData);
 		},
 	], callback);
 };
