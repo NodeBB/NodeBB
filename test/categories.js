@@ -655,6 +655,7 @@ describe('Categories', function () {
 					'posts:upvote': false,
 					'posts:downvote': false,
 					purge: false,
+					'posts:view_deleted': false,
 					moderate: false,
 				});
 
@@ -697,6 +698,7 @@ describe('Categories', function () {
 					'groups:read': true,
 					'groups:topics:read': true,
 					'groups:purge': false,
+					'groups:posts:view_deleted': false,
 					'groups:moderate': false,
 				});
 
