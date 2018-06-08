@@ -64,7 +64,7 @@ Sockets.init = function (server) {
 };
 
 function onConnection(socket) {
-	socket.ip = socket.request.headers['x-forwarded-for'] || socket.request.connection.remoteAddress;
+	socket.ip = (socket.request.headers['x-forwarded-for'] || socket.request.connection.remoteAddress || '').split(',')[0];
 
 	logger.io_one(socket, socket.uid);
 
@@ -244,7 +244,7 @@ Sockets.reqFromSocket = function (socket, payload, event) {
 		params: data[1],
 		method: event || data[0],
 		body: payload,
-		ip: headers['x-forwarded-for'] || socket.ip,
+		ip: socket.ip,
 		host: host,
 		protocol: encrypted ? 'https' : 'http',
 		secure: encrypted,
