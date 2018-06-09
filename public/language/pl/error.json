@@ -127,8 +127,8 @@
     "not-enough-reputation-min-rep-website": "Masz zbyt niską reputację, aby dodać stronę",
     "not-enough-reputation-min-rep-aboutme": "Masz zbyt niską reputację, aby dodać tekst „O mnie”",
     "not-enough-reputation-min-rep-signature": "Masz zbyt niską reputację, aby dodać sygnaturę.",
-    "not-enough-reputation-min-rep-profile-picture": "You do not have enough reputation to add a profile picture",
-    "not-enough-reputation-min-rep-cover-picture": "You do not have enough reputation to add a cover picture",
+    "not-enough-reputation-min-rep-profile-picture": "Nie masz uprawnień, by dodać zdjęcie profilowe",
+    "not-enough-reputation-min-rep-cover-picture": "Nie masz uprawnień, by dodać zdjęcie w tle",
     "already-flagged": "Ten post został już przez Ciebie oflagowany",
     "self-vote": "Nie możesz głosować na swój własny wpis.",
     "reload-failed": "NodeBB napotkało problem w czasie przeładowywania \"%1\". Forum będzie nadal dostarczać istniejące zasoby strony klienta, jednak powinieneś cofnąć ostatnią akcję.",
@@ -151,5 +151,5 @@
     "cant-move-to-same-topic": "Nie można przenieść wpisu do tego samego tematu!",
     "cannot-block-self": "Nie możesz zablokować samego siebie!",
     "cannot-block-privileged": "Nie możesz blokować administratorów ani globalnych moderatorów",
-    "no-connection": "There seems to be a problem with your internet connection"
+    "no-connection": "Sprawdź swoje połączenie z internetem"
 }

@@ -69,5 +69,5 @@
 	"graphs.registered-users": "已注册用户",
 	"graphs.anonymous-users": "匿名用户",
 	"last-restarted-by": "上次重启管理员/时间",
-	"no-users-browsing": "No users browsing"
+	"no-users-browsing": "没有用户正在浏览"
 }

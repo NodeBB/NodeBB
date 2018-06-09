@@ -50,5 +50,5 @@
 	"composer.custom-help": "Користувацький текст довідки",
 	"ip-tracking": "Відстеження IP",
 	"ip-tracking.each-post": "Відстежувати IP адреси для кожного посту",
-	"enable-post-history": "Enable Post History"
+	"enable-post-history": "Увімкнути Історію Постів"
 }

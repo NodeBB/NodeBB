@@ -3,7 +3,7 @@
     "select-file-to-upload": "Оберіть файл для завантаження!",
     "upload-success": "Файл успішно завантажено!",
     "maximum-file-size": "Максимально %1 кб",
-    "no-uploads-found": "No uploads found",
-    "public-uploads-info": "Uploads are public, all visitors can see them.",
-    "private-uploads-info": "Uploads are private, only logged in users can see them."
+    "no-uploads-found": "Не знайдені завантаження",
+    "public-uploads-info": "Завантаження є публічними, всі користувачі можуть їх бачити.",
+    "private-uploads-info": "Завантаження є приватними, тільки залогінені користувачі можуть їх бачити."
 }

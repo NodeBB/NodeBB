@@ -18,7 +18,7 @@
     "invalid-username-or-password": "Вкажіть, будь ласка, ім'я користувача та пароль",
     "invalid-search-term": "Невірний пошуковий запит",
     "invalid-url": "Недійсна URL-адреса",
-    "local-login-disabled": "Local login system has been disabled for non-privileged accounts.",
+    "local-login-disabled": "Локальний логін вимкнений для акаунтів, які не мають відповідних прав.",
     "csrf-invalid": "Нам не вдалося вас пустити, ймовірно, через прострочену сесію. Будь ласка, спробуйте ще раз",
     "invalid-pagination-value": "Невірне значення сторінки, має бути щонайменше %1 та щонайбільше %2",
     "username-taken": "Це ім'я зайняте",
@@ -127,8 +127,8 @@
     "not-enough-reputation-min-rep-website": "У вас недостатньо репутації для додавання веб-сайту",
     "not-enough-reputation-min-rep-aboutme": "Ви не маєте достатньої репутації, щоб додати Про мене",
     "not-enough-reputation-min-rep-signature": "У вас недостатньо репутації, щоб додати підпис",
-    "not-enough-reputation-min-rep-profile-picture": "You do not have enough reputation to add a profile picture",
-    "not-enough-reputation-min-rep-cover-picture": "You do not have enough reputation to add a cover picture",
+    "not-enough-reputation-min-rep-profile-picture": "У вас недостатньо репутації для того, щоб додати зображення профілю.",
+    "not-enough-reputation-min-rep-cover-picture": "У вас недостатньо репутації для того, щоб додати зображення обкладинки.",
     "already-flagged": "Ви вже помітили цей пост",
     "self-vote": "Ви не можете проголосувати за власний пост",
     "reload-failed": "У NodeBB виникла проблема при перевантаженні: \"%1\". NodeBB продовжить надавати існуючі клієнтські ресурси, проте радимо вам скасувати те, що було зроблено до перевантаження.",
@@ -148,8 +148,8 @@
     "invalid-session": "Сесія не існує",
     "invalid-session-text": "Здається, що ваша сесія більше неактивна або розійшлася з серверною. Оновіть, будь ласка, цю сторінку.",
     "no-topics-selected": "Не вибрано жодної теми!",
-    "cant-move-to-same-topic": "Can't move post to same topic!",
-    "cannot-block-self": "You cannot block yourself!",
-    "cannot-block-privileged": "You cannot block administrators or global moderators",
-    "no-connection": "There seems to be a problem with your internet connection"
+    "cant-move-to-same-topic": "Ви не можете перемістити пост до тієї ж самої теми!",
+    "cannot-block-self": "Ви не можете заблокувати самого себе!",
+    "cannot-block-privileged": "Ви не можете заблокувати адміністраторів або глобальних модераторів",
+    "no-connection": "Схоже, виникла проблема з вашим Інтернет-з'єднанням"
 }

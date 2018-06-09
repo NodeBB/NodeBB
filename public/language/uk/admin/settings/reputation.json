@@ -9,6 +9,6 @@
 	"min-rep-website": "Мінімальна репутація для додавання \"Веб-сайту\" до профілю користувача",
 	"min-rep-aboutme": "Мінімальна репутація для додавання \"Про мене\" до профілю користувача",
 	"min-rep-signature": "Мінімальна репутація для додавання \"Підпис\" до профілю користувача",
-	"min-rep-profile-picture": "Minimum reputation to add \"Profile Picture\" to user profile",
-	"min-rep-cover-picture": "Minimum reputation to add \"Cover Picture\" to user profile"
+	"min-rep-profile-picture": "Мінімальна репутація, щоб додавати \"Зображення Профілю\" до профілю користувача",
+	"min-rep-cover-picture": "Мінімальна репутація, щоб додавати \"Зображення Обкладинки\" до профілю користувача"
 }

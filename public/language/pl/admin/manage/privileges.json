@@ -1,0 +1,28 @@
+{
+	"global": "Globalny",
+	"global.no-users": "Brak globalnych uprawnień zdefiniowanych dla użytkownika",
+
+	"chat": "Czat",
+	"upload-images": "Wgraj zdjęcia",
+	"upload-files": "Wgraj pliki",
+	"signature": "Podpis",
+	"ban": "Ban",
+	"search-content": "Szukaj Treści",
+	"search-users": "Szukaj Użytkowników",
+	"search-tags": "Szukaj Tagów",
+
+	"find-category": "Znajdź Kategorię",
+	"access-category": "Dostęp do Kategorii",
+	"access-topics": "Dostęp do Tematów",
+	"create-topics": "Twórz Tematy",
+	"reply-to-topics": "Odpowiadaj na Tematy",
+	"tag-topics": "Taguj Tematy",
+	"edit-posts": "Edytuj Posty",
+	"view-edit-history": "Zobacz Historię Edycji",
+	"delete-posts": "Usuwaj Posty",
+	"upvote-posts": "Lajkuj Posty",
+	"downvote-posts": "Downvote Posts",
+	"delete-topics": "Usuwaj Tematy",
+	"purge": "Czyść",
+	"moderate": "Moderuj"
+}

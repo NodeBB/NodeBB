@@ -127,8 +127,8 @@
     "not-enough-reputation-min-rep-website": "Je hebt onvoldoende reputatie om een website toe te mogen voegen",
     "not-enough-reputation-min-rep-aboutme": "Je hebt onvoldoende reputatie om een \"Over mij\" toe te mogen voegen",
     "not-enough-reputation-min-rep-signature": "Je hebt onvoldoende reputatie om een handtekening toe te mogen voegen",
-    "not-enough-reputation-min-rep-profile-picture": "You do not have enough reputation to add a profile picture",
-    "not-enough-reputation-min-rep-cover-picture": "You do not have enough reputation to add a cover picture",
+    "not-enough-reputation-min-rep-profile-picture": "Je hebt onvoldoende reputatie om een profielfoto toe te mogen voegen",
+    "not-enough-reputation-min-rep-cover-picture": "Je hebt onvoldoende reputatie om een coverfoto toe te mogen voegen",
     "already-flagged": "Je hebt deze post al gerapporteerd",
     "self-vote": "Het is niet mogelijk om op je eigen bericht te stemmen",
     "reload-failed": "Tijdens het herladen van \"%1\" is NodeBB een fout of probleem tegengekomen. NodeBB blijft operationeel. Echter het is verstandig om de oorzaak te onderzoeken en wellicht de vorige actie, voor het herladen, ongedaan te maken.",
@@ -151,5 +151,5 @@
     "cant-move-to-same-topic": "Een bericht kan niet naar hetzelfde onderwerp worden verplaatst!",
     "cannot-block-self": "Je kan jezelf niet blokkeren!",
     "cannot-block-privileged": "Je kan geen administrators of global moderators blokkeren",
-    "no-connection": "There seems to be a problem with your internet connection"
+    "no-connection": "Er lijkt een probleem te zijn met je internetverbinding"
 }

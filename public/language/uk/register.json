@@ -20,7 +20,7 @@
     "registration-added-to-queue": "Ваша реєстрація була додана в чергу затвердження. Ви отримаєте листа на електронну пошту, коли адміністратор її підтвердить.",
     "interstitial.intro": "Нам потрібна додаткова інформація, перш ніж ми створимо ваш обліковий запис.",
     "interstitial.errors-found": "Нам не вдалося вас зареєструвати:",
-    "gdpr_agree_data": "I consent to the collection and processing of my personal information on this website.",
-    "gdpr_agree_email": "I consent to receive digest and notification emails from this website.",
-    "gdpr_consent_denied": "You must give consent to this site to collect/process your information, and to send you emails."
+    "gdpr_agree_data": "Я надаю згоду на збір та обробку моїх особистих даних на цьому веб-сайті.",
+    "gdpr_agree_email": "Я надаю згоду на отримання дайджесту та поштових повідомлень з цього веб-сайту.",
+    "gdpr_consent_denied": "Ви мусите надати цьому веб-сайту свою згоду на збір/обробку ваших даних та на отримання поштових повідомлень."
 }
