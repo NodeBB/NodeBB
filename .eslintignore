@@ -18,3 +18,4 @@ logs/
 /build
 .eslintrc
 test/files
+*.min.js

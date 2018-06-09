@@ -138,6 +138,8 @@ Plugins.reloadRoutes = function (callback) {
 	});
 };
 
+var themeNamePattern = /^(@.*?\/)?nodebb-theme-.*$/;
+
 // DEPRECATED: remove in v1.8.0
 Plugins.getTemplates = function (callback) {
 	var templates = {};
@@ -151,7 +153,7 @@ Plugins.getTemplates = function (callback) {
 		}
 
 		async.eachSeries(plugins, function (plugin, next) {
-			if (plugin.templates || plugin.id.startsWith('nodebb-theme-')) {
+			if (plugin.templates || themeNamePattern.test(plugin.id)) {
 				winston.verbose('[plugins] Loading templates (' + plugin.id + ')');
 				var templatesPath = path.join(__dirname, '../node_modules', plugin.id, plugin.templates || 'templates');
 				file.walk(templatesPath, function (err, pluginTemplates) {
@@ -261,7 +263,7 @@ Plugins.normalise = function (apiReturn, callback) {
 			pluginMap[plugin.id].description = plugin.description;
 			pluginMap[plugin.id].url = pluginMap[plugin.id].url || plugin.url;
 			pluginMap[plugin.id].installed = true;
-			pluginMap[plugin.id].isTheme = !!plugin.id.match('nodebb-theme-');
+			pluginMap[plugin.id].isTheme = themeNamePattern.test(plugin.id);
 			pluginMap[plugin.id].error = plugin.error || false;
 			pluginMap[plugin.id].active = plugin.active;
 			pluginMap[plugin.id].version = plugin.version;

@@ -34,8 +34,11 @@ function buildTargets() {
 	);
 }
 
+var themeNamePattern = /^(@.*?\/)?nodebb-theme-.*$/;
+var pluginNamePattern = /^(@.*?\/)?nodebb-(theme|plugin|widget|rewards)-.*$/;
+
 function activate(plugin) {
-	if (plugin.startsWith('nodebb-theme-')) {
+	if (themeNamePattern.test(plugin)) {
 		reset.reset({
 			theme: plugin,
 		}, function (err) {
@@ -50,7 +53,7 @@ function activate(plugin) {
 			db.init(next);
 		},
 		function (next) {
-			if (!plugin.startsWith('nodebb-')) {
+			if (!pluginNamePattern.test(plugin)) {
 				// Allow omission of `nodebb-plugin-`
 				plugin = 'nodebb-plugin-' + plugin;
 			}

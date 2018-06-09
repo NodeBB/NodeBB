@@ -45,9 +45,11 @@ function processImports(paths, templatePath, source, callback) {
 }
 Templates.processImports = processImports;
 
+var themeNamePattern = /^(@.*?\/)?nodebb-theme-.*$/;
+
 function getTemplateDirs(activePlugins, callback) {
 	var pluginTemplates = activePlugins.map(function (id) {
-		if (id.startsWith('nodebb-theme-')) {
+		if (themeNamePattern.test(id)) {
 			return nconf.get('theme_templates_path');
 		}
 		if (!plugins.pluginsData[id]) {
