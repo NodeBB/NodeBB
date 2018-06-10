@@ -307,21 +307,19 @@ Categories.flattenCategories = function (allCategories, categoryData) {
  */
 Categories.getTree = function (categories, parentCid) {
 	var tree = [];
-	var i = 0;
-	var len = categories.length;
-	var category;
 
-	for (i; i < len; i += 1) {
-		category = categories[i];
-		if (!category.hasOwnProperty('parentCid') || category.parentCid === null) {
-			category.parentCid = 0;
-		}
+	categories.forEach(function (category) {
+		if (category) {
+			if (!category.hasOwnProperty('parentCid') || category.parentCid === null) {
+				category.parentCid = 0;
+			}
 
-		if (parseInt(category.parentCid, 10) === parseInt(parentCid, 10)) {
-			tree.push(category);
-			category.children = Categories.getTree(categories, category.cid);
+			if (parseInt(category.parentCid, 10) === parseInt(parentCid, 10)) {
+				tree.push(category);
+				category.children = Categories.getTree(categories, category.cid);
+			}
 		}
-	}
+	});
 
 	return tree;
 };
