@@ -96,7 +96,7 @@ $(document).ready(function () {
 			retry = true;
 			app.template = data.template.name;
 
-			renderTemplate(url, data.template.name, data, callback);
+			renderTemplate(url, data.templateToRender || data.template.name, data, callback);
 		});
 
 		return true;
