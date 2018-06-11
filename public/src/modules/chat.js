@@ -87,6 +87,7 @@ define('chat', [
 					if (err) {
 						return app.alertError(err.message);
 					}
+
 					roomData.users = roomData.users.filter(function (user) {
 						return user && parseInt(user.uid, 10) !== parseInt(app.user.uid, 10);
 					});
@@ -236,7 +237,7 @@ define('chat', [
 			});
 
 			Chats.addActionHandlers(chatModal.find('[component="chat/messages"]'), data.roomId);
-			Chats.addRenameHandler(chatModal.attr('data-roomid'), chatModal.find('[data-action="rename"]'), chatModal.attr('data-name'));
+			Chats.addRenameHandler(chatModal.attr('data-roomid'), chatModal.find('[data-action="rename"]'), data.roomName);
 			Chats.addLeaveHandler(chatModal.attr('data-roomid'), chatModal.find('[data-action="leave"]'));
 			Chats.addSendHandlers(chatModal.attr('data-roomid'), chatModal.find('.chat-input'), chatModal.find('[data-action="send"]'));
 			Chats.addMemberHandler(chatModal.attr('data-roomid'), chatModal.find('[data-action="members"]'));
