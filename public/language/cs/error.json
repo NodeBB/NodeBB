@@ -127,8 +127,8 @@
     "not-enough-reputation-min-rep-website": "Pro přidání webové stránky nemáte dostatek reputace",
     "not-enough-reputation-min-rep-aboutme": "Pro přidání „O mně” nemáte dostatek reputace",
     "not-enough-reputation-min-rep-signature": "Pro přidání podpisu nemáte dostatek reputace",
-    "not-enough-reputation-min-rep-profile-picture": "You do not have enough reputation to add a profile picture",
-    "not-enough-reputation-min-rep-cover-picture": "You do not have enough reputation to add a cover picture",
+    "not-enough-reputation-min-rep-profile-picture": "Pro přidání profilového obrázku nemáte dostatek reputace",
+    "not-enough-reputation-min-rep-cover-picture": "Pro přidání obrázku nemáte dostatek reputace",
     "already-flagged": "Tento příspěvek jste již označil",
     "self-vote": "U svého vlastního příspěvku nemůžete hlasovat",
     "reload-failed": "Vyskytla se chyba v NodeBB při znovu načtení: \"%1\". NodeBB bude pokračovat v běhu na straně klienta,  nicméně byste měl/a přenastavit zpět to, co jste udělal/a před opětovným načtením.",
@@ -151,5 +151,5 @@
     "cant-move-to-same-topic": "Není možné přesunout příspěvek do stejného tématu!",
     "cannot-block-self": "Nemůžete zablokovat sebe sama!",
     "cannot-block-privileged": "Nemůžete zablokovat správce nebo hlavní moderátory",
-    "no-connection": "There seems to be a problem with your internet connection"
+    "no-connection": "Zdá se, že nastal problém s připojením k internetu"
 }
