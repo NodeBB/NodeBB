@@ -323,7 +323,7 @@ function addOGImageTagsForPosts(res, posts) {
 
 function addOGImageTag(res, imageUrl) {
 	if (typeof imageUrl === 'string' && !imageUrl.startsWith('http')) {
-		imageUrl = nconf.get('url') + imageUrl;
+		imageUrl = nconf.get('url') + imageUrl.replace(new RegExp('^' + nconf.get('relative_path')), '');
 	}
 	res.locals.metaTags.push({
 		property: 'og:image',
