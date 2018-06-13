@@ -11,6 +11,7 @@ var db = require('./database');
 var Analytics = module.exports;
 
 var counters = {};
+var volatileCounters = {};
 
 var pageViews = 0;
 var uniqueIPCount = 0;
@@ -37,7 +38,9 @@ Analytics.increment = function (keys, callback) {
 
 	keys.forEach(function (key) {
 		counters[key] = counters[key] || 0;
+		volatileCounters[key] = volatileCounters[key] || 0;
 		counters[key] += 1;
+		volatileCounters[key] += 1;
 	});
 
 	if (typeof callback === 'function') {
@@ -226,4 +229,12 @@ Analytics.getBlacklistAnalytics = function (callback) {
 		daily: async.apply(Analytics.getDailyStatsForSet, 'analytics:blacklist', Date.now(), 7),
 		hourly: async.apply(Analytics.getHourlyStatsForSet, 'analytics:blacklist', Date.now(), 24),
 	}, callback);
+};
+
+Analytics.getVolatileCounterKeys = function () {
+	return Object.keys(volatileCounters);
+};
+
+Analytics.getVolatileCounterValue = function (key, defaultValue) {
+	return volatileCounters[key] || defaultValue;
 };
