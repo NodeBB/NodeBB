@@ -7,6 +7,7 @@ var nconf = require('nconf');
 var crypto = require('crypto');
 
 var db = require('./database');
+var plugins = require('./plugins');
 
 var Analytics = module.exports;
 
@@ -34,6 +35,8 @@ new cronJob('*/10 * * * * *', function () {
 
 Analytics.increment = function (keys, callback) {
 	keys = Array.isArray(keys) ? keys : [keys];
+
+	plugins.fireHook('action:analytics.increment', { keys: keys });
 
 	keys.forEach(function (key) {
 		counters[key] = counters[key] || 0;
