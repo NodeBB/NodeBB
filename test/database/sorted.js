@@ -584,6 +584,15 @@ describe('Sorted Set methods', function () {
 				done();
 			});
 		});
+
+		it('should return an array of values and scores from both sorted sets sorted by scores lowest to highest', function (done) {
+			db.getSortedSetUnion({ sets: ['sortedSetTest2', 'sortedSetTest3'], start: 0, stop: -1, withScores: true }, function (err, data) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.deepEqual(data, [{ value: 'value1', score: 1 }, { value: 'value2', score: 2 }, { value: 'value4', score: 8 }]);
+				done();
+			});
+		});
 	});
 
 	describe('getSortedSetRevUnion()', function () {
