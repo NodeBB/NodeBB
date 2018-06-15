@@ -53,7 +53,7 @@ module.exports = function (Topics) {
 			function (topics, next) {
 				tids = topics.filter(function (topic) {
 					return topic && parseInt(topic.deleted, 10) !== 1;
-				}).sort(sortPopular).slice(start, stop !== -1 ? stop - 1 : undefined).map(function (topic) {
+				}).sort(sortPopular).slice(start, stop !== -1 ? stop + 1 : undefined).map(function (topic) {
 					return topic.tid;
 				});
 				privileges.topics.filterTids('read', tids, uid, next);

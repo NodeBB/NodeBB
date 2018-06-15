@@ -1823,4 +1823,20 @@ describe('Topic\'s', function () {
 			], done);
 		});
 	});
+
+	describe('top topics', function () {
+		it('should get top topics in category', function (done) {
+			var filters = ['', 'watched', 'unreplied', 'new'];
+			async.map(filters, function (filter, next) {
+				topics.getTopTopics(topic.categoryId, topic.userId, 0, -1, filter, next);
+			}, function (err, data) {
+				assert.ifError(err);
+				assert(data);
+				data.forEach(function (filterTopics) {
+					assert(Array.isArray(filterTopics.topics));
+				});
+				done();
+			});
+		});
+	});
 });

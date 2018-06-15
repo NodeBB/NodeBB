@@ -33,7 +33,7 @@ module.exports = function (Topics) {
 			},
 			function (tids, next) {
 				topTopics.topicCount = tids.length;
-				tids = tids.slice(start, stop + 1);
+				tids = tids.slice(start, stop !== -1 ? stop + 1 : undefined);
 				Topics.getTopicsByTids(tids, uid, next);
 			},
 			function (topicData, next) {

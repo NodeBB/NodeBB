@@ -57,7 +57,7 @@ module.exports = function (Categories) {
 			function (results, next) {
 				var totalPinnedCount = results.pinnedTids.length;
 
-				pinnedTids = results.pinnedTids.slice(data.start, data.stop === -1 ? undefined : data.stop + 1);
+				pinnedTids = results.pinnedTids.slice(data.start, data.stop !== -1 ? data.stop + 1 : undefined);
 
 				var pinnedCount = pinnedTids.length;
 
