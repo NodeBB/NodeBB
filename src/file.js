@@ -167,7 +167,7 @@ file.delete = function (path, callback) {
 	}
 	fs.unlink(path, function (err) {
 		if (err) {
-			winston.error(err);
+			winston.warn(err);
 		}
 		callback();
 	});

@@ -3,6 +3,7 @@
 var async = require('async');
 var path = require('path');
 var nconf = require('nconf');
+var winston = require('winston');
 
 var db = require('../database');
 var file = require('../file');
@@ -26,7 +27,14 @@ module.exports = function (User) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 
-				file.delete(path.join(nconf.get('upload_path'), uploadName), next);
+				winston.verbose('[user/deleteUpload] Deleting ' + uploadName);
+				async.parallel([
+					async.apply(file.delete, path.join(nconf.get('upload_path'), uploadName)),
+					async.apply(file.delete, path.join(nconf.get('upload_path'), path.dirname(uploadName), path.basename(uploadName, path.extname(uploadName)) + '-resized' + path.extname(uploadName))),
+				], function (err) {
+					// Only return err, not the parallel'd result set
+					next(err);
+				});
 			},
 			function (next) {
 				db.sortedSetRemove('uid:' + uid + ':uploads', uploadName, next);
