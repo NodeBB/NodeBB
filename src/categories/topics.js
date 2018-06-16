@@ -209,11 +209,6 @@ module.exports = function (Categories) {
 		});
 	};
 
-	Categories.getTopicIndex = function (tid, callback) {
-		console.warn('[Categories.getTopicIndex] deprecated');
-		callback(null, 1);
-	};
-
 	Categories.onNewPostMade = function (cid, pinned, postData, callback) {
 		if (!cid || !postData) {
 			return setImmediate(callback);

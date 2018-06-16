@@ -57,11 +57,6 @@ Topics.getPageCount = function (tid, uid, callback) {
 	], callback);
 };
 
-Topics.getTidPage = function (tid, uid, callback) {
-	console.warn('[Topics.getTidPage] deprecated!');
-	callback(null, 1);
-};
-
 Topics.getTopicsFromSet = function (set, uid, start, stop, callback) {
 	async.waterfall([
 		function (next) {
