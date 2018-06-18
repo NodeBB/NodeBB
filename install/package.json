@@ -24,7 +24,7 @@
         "bcryptjs": "2.4.3",
         "benchpressjs": "^1.2.1",
         "body-parser": "^1.18.2",
-        "bootstrap": "^3.3.7",
+        "bootstrap": "^4.0.0",
         "chart.js": "^2.7.1",
         "cli-graph": "^3.2.2",
         "clipboard": "^2.0.1",
