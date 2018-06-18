@@ -1824,11 +1824,18 @@ describe('Topic\'s', function () {
 		});
 	});
 
-	describe('top topics', function () {
-		it('should get top topics in category', function (done) {
+	describe('sorted topics', function () {
+		it('should get sorted topics in category', function (done) {
 			var filters = ['', 'watched', 'unreplied', 'new'];
 			async.map(filters, function (filter, next) {
-				topics.getTopTopics(topic.categoryId, topic.userId, 0, -1, filter, next);
+				topics.getSortedTopics({
+					cids: [topic.categoryId],
+					uid: topic.userId,
+					start: 0,
+					stop: -1,
+					filter: filter,
+					sort: 'votes',
+				}, next);
 			}, function (err, data) {
 				assert.ifError(err);
 				assert(data);

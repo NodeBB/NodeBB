@@ -36,6 +36,7 @@ define('forum/top', ['forum/recent', 'forum/infinitescroll'], function (recent, 
 			after: $('[component="category"]').attr('data-nextstart'),
 			count: config.topicsPerPage,
 			cid: utils.params().cid,
+			term: ajaxify.data.selectedTerm.term,
 			filter: ajaxify.data.selectedFilter.filter,
 		}, function (data, done) {
 			if (data.topics && data.topics.length) {

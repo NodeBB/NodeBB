@@ -20,8 +20,6 @@ require('./topics/create')(Topics);
 require('./topics/delete')(Topics);
 require('./topics/unread')(Topics);
 require('./topics/recent')(Topics);
-require('./topics/popular')(Topics);
-require('./topics/top')(Topics);
 require('./topics/user')(Topics);
 require('./topics/fork')(Topics);
 require('./topics/posts')(Topics);

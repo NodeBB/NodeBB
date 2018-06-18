@@ -88,30 +88,22 @@ module.exports = function (SocketTopics) {
 	};
 
 	SocketTopics.loadMoreUnreadTopics = function (socket, data, callback) {
-		loadData(data, callback, function (start, stop) {
-			topics.getUnreadTopics({ cid: data.cid, uid: socket.uid, start: start, stop: stop, filter: data.filter }, callback);
-		});
+		loadData(socket.uid, data, 'unread', callback);
 	};
 
 	SocketTopics.loadMoreRecentTopics = function (socket, data, callback) {
-		loadData(data, callback, function (start, stop) {
-			topics.getRecentTopics(data.cid, socket.uid, start, stop, data.filter, callback);
-		});
+		loadData(socket.uid, data, 'recent', callback);
 	};
 
 	SocketTopics.loadMorePopularTopics = function (socket, data, callback) {
-		loadData(data, callback, function (start, stop) {
-			topics.getPopularTopics(data.term, socket.uid, start, stop, callback);
-		});
+		loadData(socket.uid, data, 'posts', callback);
 	};
 
 	SocketTopics.loadMoreTopTopics = function (socket, data, callback) {
-		loadData(data, callback, function (start, stop) {
-			topics.getTopTopics(data.cid, socket.uid, start, stop, data.filter, callback);
-		});
+		loadData(socket.uid, data, 'votes', callback);
 	};
 
-	function loadData(data, callback, loadFn) {
+	function loadData(uid, data, sort, callback) {
 		if (!data || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
@@ -123,7 +115,18 @@ module.exports = function (SocketTopics) {
 		var stop = start + Math.max(0, itemsPerPage - 1);
 		start = Math.max(0, start);
 		stop = Math.max(0, stop);
-		loadFn(start, stop);
+		if (sort === 'unread') {
+			return topics.getUnreadTopics({ cid: data.cid, uid: uid, start: start, stop: stop, filter: data.filter }, callback);
+		}
+		topics.getSortedTopics({
+			cids: data.cid,
+			uid: uid,
+			start: start,
+			stop: stop,
+			filter: data.filter,
+			sort: sort,
+			term: data.term,
+		}, callback);
 	}
 
 	SocketTopics.loadMoreFromSet = function (socket, data, callback) {

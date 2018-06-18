@@ -197,11 +197,8 @@ function generateForRecent(req, res, next) {
 			}
 		},
 		function (token, next) {
-			next(null, token && token === req.query.token ? req.query.uid : req.uid);
-		},
-		function (uid, next) {
 			generateForTopics({
-				uid: uid,
+				uid: token && token === req.query.token ? req.query.uid : req.uid,
 				title: 'Recently Active Topics',
 				description: 'A list of topics that have been active within the past 24 hours',
 				feed_url: '/recent.rss',
@@ -225,11 +222,8 @@ function generateForTop(req, res, next) {
 			}
 		},
 		function (token, next) {
-			next(null, token && token === req.query.token ? req.query.uid : req.uid);
-		},
-		function (uid, next) {
 			generateForTopics({
-				uid: uid,
+				uid: token && token === req.query.token ? req.query.uid : req.uid,
 				title: 'Top Voted Topics',
 				description: 'A list of topics that have received the most votes',
 				feed_url: '/top.rss',
@@ -250,14 +244,29 @@ function generateForPopular(req, res, next) {
 		alltime: 'alltime',
 	};
 	var term = terms[req.params.term] || 'day';
-
+	var uid;
 	async.waterfall([
 		function (next) {
-			topics.getPopularTopics(term, req.uid, 0, 19, next);
+			if (req.query.token && req.query.uid) {
+				db.getObjectField('user:' + req.query.uid, 'rss_token', next);
+			} else {
+				next(null, null);
+			}
+		},
+		function (token, next) {
+			uid = token && token === req.query.token ? req.query.uid : req.uid;
+
+			topics.getSortedTopics({
+				uid: uid,
+				start: 0,
+				stop: 19,
+				term: term,
+				sort: 'posts',
+			}, next);
 		},
 		function (result, next) {
 			generateTopicsFeed({
-				uid: req.uid,
+				uid: uid,
 				title: 'Popular Topics',
 				description: 'A list of topics that are sorted by post count',
 				feed_url: '/popular/' + (req.params.term || 'daily') + '.rss',

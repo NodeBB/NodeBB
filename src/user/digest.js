@@ -158,7 +158,13 @@ Digest.send = function (data, callback) {
 	function getTermTopics(term, uid, start, stop, callback) {
 		async.waterfall([
 			function (next) {
-				topics.getPopularTopics(term, uid, start, stop, next);
+				topics.getSortedTopics({
+					uid: uid,
+					start: start,
+					stop: stop,
+					term: term,
+					sort: 'posts',
+				}, next);
 			},
 			function (data, next) {
 				if (!data.topics.length) {

@@ -124,9 +124,11 @@ define('forum/recent', ['forum/infinitescroll', 'components', 'handleBack'], fun
 			});
 
 			if (changed) {
-				var url = ajaxify.data.selectedFilter.url;
+				var url = window.location.pathname;
+				var currentParams = utils.params();
 				if (cids.length) {
-					url += '?' + decodeURIComponent($.param({ cid: cids }));
+					currentParams.cid = cids;
+					url += '?' + decodeURIComponent($.param(currentParams));
 				}
 				ajaxify.go(url);
 			}
