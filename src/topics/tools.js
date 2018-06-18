@@ -186,7 +186,7 @@ module.exports = function (Topics) {
 								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:pinned', tid),
 								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids', topicData.lastposttime, tid),
 								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:posts', topicData.postcount, tid),
-								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:votes', topicData.votes, tid),
+								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:votes', parseInt(topicData.votes, 10) || 0, tid),
 							], next);
 						}
 					},

@@ -74,7 +74,7 @@ module.exports = function (Topics) {
 						db.sortedSetAdd('topics:views', topicData.viewcount, tid, next);
 					},
 					function (next) {
-						db.sortedSetAdd('topics:votes', topicData.votes, tid, next);
+						db.sortedSetAdd('topics:votes', parseInt(topicData.votes, 10) || 0, tid, next);
 					},
 					function (next) {
 						async.waterfall([
