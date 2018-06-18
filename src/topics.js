@@ -228,10 +228,6 @@ Topics.getTopicWithPosts = function (topicData, set, uid, start, stop, reverse, 
 			topicData.locked = parseInt(topicData.locked, 10) === 1;
 			topicData.pinned = parseInt(topicData.pinned, 10) === 1;
 
-			topicData.upvotes = parseInt(topicData.upvotes, 10) || 0;
-			topicData.downvotes = parseInt(topicData.downvotes, 10) || 0;
-			topicData.votes = topicData.upvotes - topicData.downvotes;
-
 			topicData.icons = [];
 
 			plugins.fireHook('filter:topic.get', { topic: topicData, uid: uid }, next);
