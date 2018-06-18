@@ -1,6 +1,6 @@
 {
 	"global": "Verejný",
-	"global.no-users": "No user-specific global privileges.",
+	"global.no-users": "Žiadne všeobecné používateľské nastavenia.",
 
 	"chat": "Konverzácia",
 	"upload-images": "Nahrať obrázky",
@@ -12,16 +12,16 @@
 	"search-tags": "Vyhľadať značky",
 
 	"find-category": "Nájsť kategóriu",
-	"access-category": "Access Category",
-	"access-topics": "Access Topics",
+	"access-category": "Prístup ku kategórií",
+	"access-topics": "Prístup k témam",
 	"create-topics": "Vytvoriť témy",
 	"reply-to-topics": "Odpovedať na témy",
 	"tag-topics": "Značka tém",
 	"edit-posts": "Upraviť príspevky",
 	"view-edit-history": "Zobraziť históriu úprav",
 	"delete-posts": "Odstrániť príspevky",
-	"upvote-posts": "Upvote Posts",
-	"downvote-posts": "Downvote Posts",
+	"upvote-posts": "Súhlasné príspevky",
+	"downvote-posts": "Nesúhlasné príspevky",
 	"delete-topics": "Odstrániť témy",
 	"purge": "Vyčistiť",
 	"moderate": "Moderovať"
