@@ -66,7 +66,7 @@ Upgrade.appendPluginScripts = function (files, callback) {
 					next();
 				} catch (e) {
 					winston.warn('[upgrade/appendPluginScripts] Unable to read plugin.json for plugin `' + plugin + '`. Skipping.');
-					process.nextTick(next);
+					setImmediate(next);
 				}
 			}, function (err) {
 				// Return list of upgrade scripts for continued processing

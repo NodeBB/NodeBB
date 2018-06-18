@@ -82,7 +82,7 @@ module.exports = function (db, module) {
 	module.getObjects = function (keys, callback) {
 		var cachedData = {};
 		function getFromCache() {
-			process.nextTick(callback, null, keys.map(function (key) {
+			setImmediate(callback, null, keys.map(function (key) {
 				return _.clone(cachedData[key]);
 			}));
 		}

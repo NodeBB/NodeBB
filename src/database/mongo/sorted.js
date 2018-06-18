@@ -418,7 +418,7 @@ module.exports = function (db, module) {
 			// https://jira.mongodb.org/browse/SERVER-14322
 			// https://docs.mongodb.org/manual/reference/command/findAndModify/#upsert-and-unique-index
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
-				return process.nextTick(module.sortedSetIncrBy, key, increment, value, callback);
+				return setImmediate(module.sortedSetIncrBy, key, increment, value, callback);
 			}
 			callback(err, result && result.value ? result.value.score : null);
 		});
@@ -521,7 +521,7 @@ module.exports = function (db, module) {
 						}
 
 						if (ids.length < options.batch && (!done || ids.length === 0)) {
-							return process.nextTick(next, null);
+							return setImmediate(next, null);
 						}
 						processFn(ids, function (err) {
 							_next(err);
@@ -532,7 +532,7 @@ module.exports = function (db, module) {
 						if (options.interval) {
 							setTimeout(next, options.interval);
 						} else {
-							process.nextTick(next);
+							setImmediate(next);
 						}
 					},
 				], next);
