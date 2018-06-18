@@ -53,7 +53,7 @@
         "jquery": "^3.2.1",
         "jsesc": "2.5.1",
         "json-2-csv": "^2.1.2",
-        "less": "^2.7.3",
+        "less": "^3.0.0",
         "lodash": "^4.17.10",
         "logrotate-stream": "^0.2.5",
         "lru-cache": "4.1.3",
