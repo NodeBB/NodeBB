@@ -25,7 +25,11 @@ popularController.get = function (req, res, next) {
 				var breadcrumbs = [{ text: '[[global:header.popular]]' }];
 				data.breadcrumbs = helpers.buildBreadcrumbs(breadcrumbs);
 			}
+			var feedQs = data.rssFeedUrl.split('?')[1];
 			data.rssFeedUrl = nconf.get('relative_path') + '/popular/' + (req.query.term || 'alltime') + '.rss';
+			if (req.loggedIn) {
+				data.rssFeedUrl += '?' + feedQs;
+			}
 			res.render('popular', data);
 		},
 	], next);
