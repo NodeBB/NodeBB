@@ -129,8 +129,20 @@ module.exports = function (Topics) {
 	};
 
 	Topics.purge = function (tid, uid, callback) {
+		var deletedTopic;
 		async.waterfall([
 			function (next) {
+				async.parallel({
+					topic: async.apply(Topics.getTopicData, tid),
+					tags: async.apply(Topics.getTopicTags, tid),
+				}, next);
+			},
+			function (results, next) {
+				if (!results.topic) {
+					return callback();
+				}
+				deletedTopic = results.topic;
+				deletedTopic.tags = results.tags;
 				deleteFromFollowersIgnorers(tid, next);
 			},
 			function (next) {
@@ -168,10 +180,7 @@ module.exports = function (Topics) {
 				});
 			},
 			function (next) {
-				Topics.getTopicData(tid, next);
-			},
-			function (topicData, next) {
-				plugins.fireHook('action:topic.purge', { topic: topicData, uid: uid });
+				plugins.fireHook('action:topic.purge', { topic: deletedTopic, uid: uid });
 				db.delete('topic:' + tid, next);
 			},
 		], callback);
