@@ -33,7 +33,7 @@ define('pictureCropper', ['translator', 'cropper', 'benchpress'], function (tran
 	module.handleImageCrop = function (data, callback) {
 		$('#crop-picture-modal').remove();
 		Benchpress.parse('modals/crop_picture', {
-			url: data.url,
+			url: utils.escapeHTML(data.url),
 		}, function (cropperHtml) {
 			translator.translate(cropperHtml, function (translated) {
 				var cropperModal = $(translated);
