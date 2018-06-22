@@ -18,12 +18,10 @@ module.exports = {
 			async.each(ips, function (set, next) {
 				// Short circuit if already processed
 				if (hashed.test(set.value)) {
-					console.log('done already', set);
 					return setImmediate(next);
 				}
 
 				hash = crypto.createHash('sha1').update(set.value + nconf.get('secret')).digest('hex');
-				console.log('processing');
 
 				async.series([
 					async.apply(db.sortedSetAdd, 'ip:recent', set.score, hash),
