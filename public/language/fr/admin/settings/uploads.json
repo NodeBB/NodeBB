@@ -1,8 +1,8 @@
 {
 	"posts": "Sujets",
-	"allow-files": "Autoriser les utilisateurs à télécharger des fichiers standarts",
+	"allow-files": "Autoriser les utilisateurs à télécharger des fichiers standards",
 	"private": "Rendre privés les fichiers téléchargés",
-	"max-image-width": "Redimensionner les images à un largeur spécifique (en pixels)",
+	"max-image-width": "Redimensionner les images à une largeur spécifique (en pixels)",
 	"max-image-width-help": "(En pixels, par défaut : 760 pixels, définir à 0 si désactivé)",
 	"resize-image-quality": "Qualité utilisée des images redimensionnées",
 	"resize-image-quality-help": "Diminuer la qualité des images redimensionnées pour réduire leur taille.",

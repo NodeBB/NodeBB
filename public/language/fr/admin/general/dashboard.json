@@ -40,7 +40,7 @@
 	"rebuild-and-restart": "Régénérer &amp; Redémarrer",
 	"restart": "Redémarrer",
 	"restart-warning": "Régénérer ou redémarrer NodeBB coupera toutes les connexions existantes pendant quelques secondes. ",
-	"restart-disabled": "Régénérer et le redémarrage de votre forum ont été désactivés car vous ne semblez pas les exécuter à l'aide du serveur approprié.",
+	"restart-disabled": "La régénération et le redémarrage de votre forum ont été désactivés car vous ne semblez pas les exécuter à l'aide du serveur approprié.",
 	"maintenance-mode": "Mode maintenance",
 	"maintenance-mode-title": "Cliquez ici pour passer NodeBB en mode maintenance",
 	"realtime-chart-updates": "Mises à jour des graphiques en temps réel",
@@ -58,7 +58,7 @@
 	"user-presence": "Présence des utilisateurs",
 	"on-categories": "Sur la liste des catégories",
 	"reading-posts": "Lit des messages",
-	"browsing-topics": "Parcoure les sujets",
+	"browsing-topics": "Parcourt les sujets",
 	"recent": "Récents",
 	"unread": "Non lus",
 

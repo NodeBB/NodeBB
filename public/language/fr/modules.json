@@ -1,6 +1,6 @@
 {
     "chat.chatting_with": "Discuter avec",
-    "chat.placeholder": "Écrire ici pour envoyer votre message",
+    "chat.placeholder": "Écrivez votre message ici et appuyez sur entrée pour envoyer",
     "chat.send": "Envoyer",
     "chat.no_active": "Vous n'avez aucune discussion en cours.",
     "chat.user_typing": "%1 est en train d'écrire ...",
