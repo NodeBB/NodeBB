@@ -1,19 +1,19 @@
 {
-	"lead": "Configure your IP blacklist here.",
-	"description": "Occasionally, a user account ban is not enough of a deterrant. Other times, restricting access to the forum to a specific IP or a range of IPs is the best way to protect a forum. In these scenarios, you can add troublesome IP addresses or entire CIDR blocks to this blacklist, and they will be prevented from logging in to or registering a new account.",
-	"active-rules": "Active Rules",
-	"validate": "Validate Blacklist",
-	"apply": "Apply Blacklist",
-	"hints": "Syntax Hints",
-	"hint-1": "Define a single IP addresses per line. You can add IP blocks as long as they follow the CIDR format (e.g. <code>192.168.100.0/22</code>).",
-	"hint-2": "You can add in comments by starting lines with the <code>#</code> symbol.",
+	"lead": "Configura tu lista negra de IPs aquí.",
+	"description": "Ocasionalmente, un ban de una cuenta de usuario no es suficiente disuasión. En otras ocasiones, restringir el acceso al foro a una IP concreta o a un rango de IPs es la mejor manera de proteger un foro. En estos escenarios, puedes añadir IP problemáticas o bloques CIDR enteros a esta lista negra, y no podrán acceder, hacer login ni registrarse con cuentas nuevas.",
+	"active-rules": "Reglas Activas",
+	"validate": "Validar Lista Negra",
+	"apply": "Aplicar Lista Negra",
+	"hints": "Pistas de Sintaxis",
+	"hint-1": "Define una única IP por línea. Puedes añadir bloques de IP siempre que tengan el formato CiDR ( por ejemplo: <code>192.168.100.0/22</code>).",
+	"hint-2": "Puedes añadir comentarios comenzando las líneas con el símbolo <code>#</code>.",
 
-	"validate.x-valid": "<strong>%1</strong> out of <strong>%2</strong> rule(s) valid.",
-	"validate.x-invalid": "The following <strong>%1</strong> rules are invalid:",
+	"validate.x-valid": "<strong>%1</strong>de<strong>%2</strong>regla(s) válidas.",
+	"validate.x-invalid": "Las siguientes <strong>%1</strong> reglas son inválidas:",
 
-	"alerts.applied-success": "Blacklist Applied",
+	"alerts.applied-success": "Lista Negra Aplicada",
 
-	"analytics.blacklist-hourly": "<strong>Figure 1</strong> &ndash; Blacklist hits per hour",
-	"analytics.blacklist-daily": "<strong>Figure 2</strong> &ndash; Blacklist hits per day",
-	"ip-banned": "IP banned"
+	"analytics.blacklist-hourly": "<strong>Figura 1</strong>&ndash; notificaciones de Lista Negra por hora.",
+	"analytics.blacklist-daily": "<strong>Figura 2</strong>&ndash; notificaciones de Lista Negra por dia",
+	"ip-banned": "IP baneada"
 }
