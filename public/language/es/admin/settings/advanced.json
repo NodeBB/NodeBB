@@ -15,6 +15,6 @@
 	"traffic.enable": "Habilitar Administración de Tráfico",
 	"traffic.event-lag": "Límite de Lag para el Event Loop (en milisegundos)",
 	"traffic.event-lag-help": "Bajar este valor disminuye los tiempos de espera para cargas de página, pero también mostrará el mensaje \"carga excesiva\" a mas usuarios. (Se requiere Reiniciar)",
-	"traffic.lag-check-interval": "Check Interval (in milliseconds)",
-	"traffic.lag-check-interval-help": "Lowering this value causes NodeBB to become more sensitive to spikes in load, but may also cause the check to become too sensitive. (Restart required)"
+	"traffic.lag-check-interval": "Chequear intervalo (milisegundos)",
+	"traffic.lag-check-interval-help": "Bajar este valor causará que NodeBB sea más sensible a picos de carga, pero también causará que el chequeo sea muy sensible. (Requiere reinicio)"
 }

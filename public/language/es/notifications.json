@@ -58,7 +58,7 @@
     "notificationType_new-chat": "Cuando recibes un mensaje de chat",
     "notificationType_group-invite": "Cuando recibes una invitación a un grupo",
     "notificationType_new-register": "Cuando alguien es añadido a una cola de registro",
-    "notificationType_post-queue": "When a new post is queued",
-    "notificationType_new-post-flag": "When a post is flagged",
-    "notificationType_new-user-flag": "When a user is flagged"
+    "notificationType_post-queue": "Cuando un mensaje nuevo entra en la cola",
+    "notificationType_new-post-flag": "Cuando un mensaje es denunciado",
+    "notificationType_new-user-flag": "Cuando un usuario es denunciado"
 }
