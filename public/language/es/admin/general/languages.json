@@ -1,6 +1,6 @@
 {
-	"language-settings": "Language Settings",
-	"description": "The default language determines the language settings for all users who are visiting your forum. <br />Individual users can override the default language on their account settings page.",
-	"default-language": "Default Language",
-	"auto-detect": "Auto Detect Language Setting for Guests"
+	"language-settings": "Configuración de Idiomas",
+	"description": "El idioma por defecto determina la configuración del idioma usado para todos los usuarios que visiten el foro. <br />Los usuarios, a nivel individual, pueden sobreescribir el idioma por defecto en la página de configuración de su cuenta.",
+	"default-language": "Idioma por defecto",
+	"auto-detect": "Auto Detectar Configuración de Idioma para Visitantes"
 }

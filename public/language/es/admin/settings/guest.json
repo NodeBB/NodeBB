@@ -1,5 +1,5 @@
 {
-	"handles": "Guest Handles",
-	"handles.enabled": "Allow guest handles",
-	"handles.enabled-help": "This option exposes a new field that allows guests to pick a name to associate with each post they make. If disabled, they will simply be called \"Guest\""
+	"handles": "Manejar visitantes",
+	"handles.enabled": "Permitir manejo de visitantes",
+	"handles.enabled-help": "Esta opción expone un nuevo campo que permite a los invitados escoger un nombre para asociarse con cada entrada/respuesta que hagan. Si está desactivado, se les llamará simplemente \"Invitado\"."
 }

@@ -3,7 +3,7 @@
     "select-file-to-upload": "¡Selecciona un archivo para subir!",
     "upload-success": "¡Archivo subido correctamente!",
     "maximum-file-size": "Máximo %1 kb",
-    "no-uploads-found": "No uploads found",
-    "public-uploads-info": "Uploads are public, all visitors can see them.",
-    "private-uploads-info": "Uploads are private, only logged in users can see them."
+    "no-uploads-found": "No se econtraron subidas",
+    "public-uploads-info": "Las subidas son públicas, todos los usuarios pueden verlas.",
+    "private-uploads-info": "Las subidas son privadas, solo los usuarios conectados pueden verlas."
 }

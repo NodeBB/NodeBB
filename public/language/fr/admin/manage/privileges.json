@@ -20,6 +20,7 @@
 	"edit-posts": "Modifier les messages",
 	"view-edit-history": "Historique des modifications",
 	"delete-posts": "Supprimer les messages",
+	"view_deleted": "Voir les messages supprimés",
 	"upvote-posts": "Messages positifs",
 	"downvote-posts": "Messages négatifs",
 	"delete-topics": "Supprimer les sujets",

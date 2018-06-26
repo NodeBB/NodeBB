@@ -97,7 +97,7 @@
     "enter_page_number": "Escribe el número de página",
     "upload_file": "Subir archivo",
     "upload": "Subir",
-    "uploads": "Uploads",
+    "uploads": "Subidas",
     "allowed-file-types": "Los tipos de archivos permitidos son: %1",
     "unsaved-changes": "Tienes cambios sin guardar. Seguro que quieres salir?",
     "reconnecting-message": "Has perdido la conexión. Reconectando a %1.",
@@ -108,5 +108,5 @@
     "edited": "Editado",
     "disabled": "Desahabilitado",
     "select": "Seleccionar",
-    "user-search-prompt": "Type something here to find users..."
+    "user-search-prompt": "Escriba algo aquí para encontrar usuarios..."
 }
