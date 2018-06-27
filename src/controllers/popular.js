@@ -3,7 +3,7 @@
 
 var async = require('async');
 var nconf = require('nconf');
-
+var validator = require('validator');
 
 var helpers = require('./helpers');
 var recentController = require('./recent');
@@ -26,7 +26,7 @@ popularController.get = function (req, res, next) {
 				data.breadcrumbs = helpers.buildBreadcrumbs(breadcrumbs);
 			}
 			var feedQs = data.rssFeedUrl.split('?')[1];
-			data.rssFeedUrl = nconf.get('relative_path') + '/popular/' + (req.query.term || 'alltime') + '.rss';
+			data.rssFeedUrl = nconf.get('relative_path') + '/popular/' + (validator.escape(String(req.query.term)) || 'alltime') + '.rss';
 			if (req.loggedIn) {
 				data.rssFeedUrl += '?' + feedQs;
 			}
