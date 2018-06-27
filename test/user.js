@@ -575,6 +575,30 @@ describe('User', function () {
 				done();
 			});
 		});
+
+		it('should return 0 as uid if username is falsy', function (done) {
+			User.getUidByUsername('', function (err, uid) {
+				assert.ifError(err);
+				assert.strictEqual(uid, 0);
+				done();
+			});
+		});
+
+		it('should get username by userslug', function (done) {
+			User.getUsernameByUserslug('john-smith', function (err, username) {
+				assert.ifError(err);
+				assert.strictEqual('John Smith', username);
+				done();
+			});
+		});
+
+		it('should get uids by emails', function (done) {
+			User.getUidsByEmails(['john@example.com'], function (err, uids) {
+				assert.ifError(err);
+				assert.equal(uids[0], testUid);
+				done();
+			});
+		});
 	});
 
 	describe('not logged in', function () {
@@ -1905,6 +1929,49 @@ describe('User', function () {
 					done();
 				});
 			});
+		});
+	});
+
+	it('should return offline if user is guest', function (done) {
+		var status = User.getStatus({ uid: 0 });
+		assert.strictEqual(status, 'offline');
+		done();
+	});
+
+	describe('isPrivilegedOrSelf', function () {
+		it('should return not error if self', function (done) {
+			User.isPrivilegedOrSelf(1, 1, function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should not error if privileged', function (done) {
+			User.create({ username: 'theadmin' }, function (err, uid) {
+				assert.ifError(err);
+				groups.join('administrators', uid, function (err) {
+					assert.ifError(err);
+					User.isPrivilegedOrSelf(uid, 2, function (err) {
+						assert.ifError(err);
+						done();
+					});
+				});
+			});
+		});
+
+		it('should error if not privileged', function (done) {
+			User.isPrivilegedOrSelf(0, 1, function (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+				done();
+			});
+		});
+	});
+
+	it('should get admins and mods', function (done) {
+		User.getAdminsandGlobalMods(function (err, data) {
+			assert.ifError(err);
+			assert(Array.isArray(data));
+			done();
 		});
 	});
 });
