@@ -200,6 +200,7 @@ module.exports = function (User) {
 				async.series([
 					async.apply(db.sortedSetRemove, 'email:uid', oldEmail.toLowerCase()),
 					async.apply(db.sortedSetRemove, 'email:sorted', oldEmail.toLowerCase() + ':' + uid),
+					async.apply(User.auth.revokeAllSessions, uid),
 				], function (err) {
 					next(err);
 				});
