@@ -339,6 +339,7 @@ module.exports = function (User) {
 					}),
 					async.apply(User.reset.updateExpiry, data.uid),
 					async.apply(User.auth.revokeAllSessions, data.uid),
+					async.apply(plugins.fireHook, 'action:password.change', { uid: uid }),
 				], function (err) {
 					next(err);
 				});

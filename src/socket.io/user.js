@@ -115,6 +115,7 @@ SocketUser.reset.commit = function (socket, data, callback) {
 			async.parallel({
 				uid: async.apply(db.getObjectField, 'reset:uid', data.code),
 				reset: async.apply(user.reset.commit, data.code, data.password),
+				hook: async.apply(plugins.fireHook, 'action:password.reset', { uid: socket.uid }),
 			}, next);
 		},
 		function (results, next) {
