@@ -186,8 +186,9 @@ program
 program
 	.command('build [targets...]')
 	.description('Compile static assets ' + '(JS, CSS, templates, languages, sounds)'.red)
-	.action(function (targets) {
-		require('./manage').build(targets.length ? targets : true);
+	.option('-s, --series', 'Run builds in series without extra processes')
+	.action(function (targets, options) {
+		require('./manage').build(targets.length ? targets : true, options);
 	})
 	.on('--help', function () {
 		require('./manage').buildTargets();
