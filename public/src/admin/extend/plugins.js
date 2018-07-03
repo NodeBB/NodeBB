@@ -268,7 +268,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], functio
 	};
 
 	Plugins.suggest = function (pluginId, callback) {
-		var nbbVersion = app.config.version.match(/^\d\.\d\.\d/);
+		var nbbVersion = app.config.version.match(/^\d+\.\d+\.\d+/);
 		$.ajax((app.config.registry || 'https://packages.nodebb.org') + '/api/v1/suggest', {
 			type: 'GET',
 			data: {
