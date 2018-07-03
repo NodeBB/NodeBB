@@ -1797,6 +1797,30 @@ describe('User', function () {
 			});
 		});
 
+		describe('.toggle()', function () {
+			it('should toggle block', function (done) {
+				socketUser.toggleBlock({ uid: 1 }, { blockerUid: 1, blockeeUid: blockeeUid }, function (err) {
+					assert.ifError(err);
+					User.blocks.is(blockeeUid, 1, function (err, blocked) {
+						assert.ifError(err);
+						assert(blocked);
+						done();
+					});
+				});
+			});
+
+			it('should toggle block', function (done) {
+				socketUser.toggleBlock({ uid: 1 }, { blockerUid: 1, blockeeUid: blockeeUid }, function (err) {
+					assert.ifError(err);
+					User.blocks.is(blockeeUid, 1, function (err, blocked) {
+						assert.ifError(err);
+						assert(!blocked);
+						done();
+					});
+				});
+			});
+		});
+
 		describe('.add()', function () {
 			it('should block a uid', function (done) {
 				User.blocks.add(blockeeUid, 1, function (err, blocked_uids) {
