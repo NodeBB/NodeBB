@@ -1229,7 +1229,6 @@ describe('Controllers', function () {
 				function (res, body, next) {
 					assert.equal(res.statusCode, 200);
 					assert(body);
-					console.log(body);
 					var notif = body.notifications[0];
 					assert.equal(notif.bodyShort, notifData.bodyShort);
 					assert.equal(notif.bodyLong, notifData.bodyLong);
@@ -2152,7 +2151,6 @@ describe('Controllers', function () {
 			request(nconf.get('url') + '/api/compose', { json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
-				console.log(body);
 
 				plugins.unregisterHook('myTestPlugin', 'filter:composer.build', hookMethod);
 				done();

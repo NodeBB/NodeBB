@@ -1965,6 +1965,14 @@ describe('User', function () {
 					done();
 				});
 			});
+
+			it('should filter uids that are blocking targetUid', function (done) {
+				User.blocks.filterUids(blockeeUid, [1, 2], function (err, filtered) {
+					assert.ifError(err);
+					assert.deepEqual(filtered, [2]);
+					done();
+				});
+			});
 		});
 	});
 
