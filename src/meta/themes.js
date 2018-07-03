@@ -104,9 +104,9 @@ Themes.get = function (callback) {
 						// Minor adjustments for API output
 						configObj.type = 'local';
 						if (configObj.screenshot) {
-							configObj.screenshot_url = 'css/previews/' + encodeURIComponent(configObj.id);
+							configObj.screenshot_url = nconf.get('relative_path') + '/css/previews/' + encodeURIComponent(configObj.id);
 						} else {
-							configObj.screenshot_url = 'assets/images/themes/default.png';
+							configObj.screenshot_url = nconf.get('relative_path') + '/assets/images/themes/default.png';
 						}
 						next(null, configObj);
 					} catch (err) {
