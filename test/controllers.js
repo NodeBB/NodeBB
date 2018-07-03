@@ -1229,6 +1229,7 @@ describe('Controllers', function () {
 				function (res, body, next) {
 					assert.equal(res.statusCode, 200);
 					assert(body);
+					console.log(body);
 					var notif = body.notifications[0];
 					assert.equal(notif.bodyShort, notifData.bodyShort);
 					assert.equal(notif.bodyLong, notifData.bodyLong);

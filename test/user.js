@@ -1823,12 +1823,15 @@ describe('User', function () {
 
 		describe('.add()', function () {
 			it('should block a uid', function (done) {
-				User.blocks.add(blockeeUid, 1, function (err, blocked_uids) {
+				User.blocks.add(blockeeUid, 1, function (err) {
 					assert.ifError(err);
-					assert.strictEqual(Array.isArray(blocked_uids), true);
-					assert.strictEqual(blocked_uids.length, 1);
-					assert.strictEqual(blocked_uids.includes(blockeeUid), true);
-					done();
+					User.blocks.list(1, function (err, blocked_uids) {
+						assert.ifError(err);
+						assert.strictEqual(Array.isArray(blocked_uids), true);
+						assert.strictEqual(blocked_uids.length, 1);
+						assert.strictEqual(blocked_uids.includes(blockeeUid), true);
+						done();
+					});
 				});
 			});
 
@@ -1850,11 +1853,14 @@ describe('User', function () {
 
 		describe('.remove()', function () {
 			it('should unblock a uid', function (done) {
-				User.blocks.remove(blockeeUid, 1, function (err, blocked_uids) {
+				User.blocks.remove(blockeeUid, 1, function (err) {
 					assert.ifError(err);
-					assert.strictEqual(Array.isArray(blocked_uids), true);
-					assert.strictEqual(blocked_uids.length, 0);
-					done();
+					User.blocks.list(1, function (err, blocked_uids) {
+						assert.ifError(err);
+						assert.strictEqual(Array.isArray(blocked_uids), true);
+						assert.strictEqual(blocked_uids.length, 0);
+						done();
+					});
 				});
 			});
 

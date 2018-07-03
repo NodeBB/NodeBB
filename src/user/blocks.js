@@ -91,7 +91,7 @@ module.exports = function (User) {
 			set = property;
 			property = 'uid';
 		}
-
+console.log('derp')
 		if (!Array.isArray(set) || !set.length || !set.every((item) => {
 			if (!item) {
 				return false;
@@ -104,15 +104,15 @@ module.exports = function (User) {
 		}
 
 		const isPlain = typeof set[0] !== 'object';
-		User.blocks.list(uid, function (err, blocked_uids) {
+		const values = set.map(function (item) {
+			return parseInt(isPlain ? item : item[property], 10);
+		});
+
+		db.isSortedSetMembers('uid:' + uid + ':blocked_uids', values, function (err, isMembers) {
 			if (err) {
 				return callback(err);
 			}
-
-			set = set.filter(function (item) {
-				return !blocked_uids.includes(parseInt(isPlain ? item : item[property], 10));
-			});
-
+			set = set.filter((item, index) => !isMembers[index]);
 			callback(null, set);
 		});
 	};
