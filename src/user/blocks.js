@@ -58,7 +58,7 @@ module.exports = function (User) {
 			}
 
 			blocked = blocked.map(uid => parseInt(uid, 10)).filter(Boolean);
-			User.blocks._cache.set(uid, blocked);
+			User.blocks._cache.set(parseInt(uid, 10), blocked);
 			callback(null, blocked);
 		});
 	};
