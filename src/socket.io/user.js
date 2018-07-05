@@ -37,6 +37,11 @@ SocketUser.deleteAccount = function (socket, data, callback) {
 
 	async.waterfall([
 		function (next) {
+			user.isPasswordCorrect(socket.uid, data.password, function (err, ok) {
+				next(err || !ok ? new Error('[[error:invalid-password]]') : undefined);
+			});
+		},
+		function (next) {
 			user.isAdministrator(socket.uid, next);
 		},
 		function (isAdmin, next) {
@@ -56,7 +61,15 @@ SocketUser.deleteAccount = function (socket, data, callback) {
 			});
 			next();
 		},
-	], callback);
+	], function (err) {
+		if (err) {
+			return setTimeout(function () {
+				callback(err);
+			}, 2500);
+		}
+
+		callback();
+	});
 };
 
 SocketUser.emailExists = function (socket, data, callback) {
@@ -115,6 +128,7 @@ SocketUser.reset.commit = function (socket, data, callback) {
 			async.parallel({
 				uid: async.apply(db.getObjectField, 'reset:uid', data.code),
 				reset: async.apply(user.reset.commit, data.code, data.password),
+				hook: async.apply(plugins.fireHook, 'action:password.reset', { uid: socket.uid }),
 			}, next);
 		},
 		function (results, next) {

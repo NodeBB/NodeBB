@@ -112,7 +112,7 @@ if (process.env.minifier_child) {
 				if (err) {
 					process.send({
 						type: 'error',
-						message: err.stack,
+						message: err.stack || err.message || 'unknown error',
 					});
 					return;
 				}
@@ -277,7 +277,7 @@ function buildCSS(data, callback) {
 			from: undefined,
 		}).then(function (result) {
 			process.nextTick(callback, null, { code: result.css });
-		}, function (err) {
+		}).catch(function (err) {
 			process.nextTick(callback, err);
 		});
 	});

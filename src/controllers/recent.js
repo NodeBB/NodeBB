@@ -37,7 +37,7 @@ recentController.getData = function (req, url, sort, callback) {
 	var rssToken;
 
 	if (!helpers.validFilters[filter] || (!term && req.query.term)) {
-		return callback();
+		return callback(null, null);
 	}
 	term = term || 'alltime';
 

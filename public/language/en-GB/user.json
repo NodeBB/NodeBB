@@ -33,6 +33,8 @@
 	"following": "Following",
 	"blocks": "Blocks",
 	"block_toggle": "Toggle Block",
+	"block_user": "Block User",
+	"unblock_user": "Unblock User",
 	"aboutme": "About me",
 	"signature": "Signature",
 	"birthday": "Birthday",

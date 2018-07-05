@@ -11,6 +11,7 @@ module.exports = {
 	name: 'Hash all IP addresses stored in Recent IPs zset',
 	timestamp: Date.UTC(2017, 5, 22),
 	method: function (callback) {
+		const progress = this.progress;
 		var hashed = /[a-f0-9]{32}/;
 		let hash;
 
@@ -18,6 +19,7 @@ module.exports = {
 			async.each(ips, function (set, next) {
 				// Short circuit if already processed
 				if (hashed.test(set.value)) {
+					progress.incr();
 					return setImmediate(next);
 				}
 
@@ -26,8 +28,14 @@ module.exports = {
 				async.series([
 					async.apply(db.sortedSetAdd, 'ip:recent', set.score, hash),
 					async.apply(db.sortedSetRemove, 'ip:recent', set.value),
-				], next);
+				], function (err) {
+					progress.incr();
+					next(err);
+				});
 			}, next);
-		}, { withScores: 1 }, callback);
+		}, {
+			withScores: 1,
+			progress: this.progress,
+		}, callback);
 	},
 };

@@ -1,8 +1,11 @@
 'use strict';
 
 var async = require('async');
-var db = require('../database');
 var LRU = require('lru-cache');
+
+
+var db = require('../database');
+var pubsub = require('../pubsub');
 
 module.exports = function (User) {
 	User.blocks = {
@@ -19,9 +22,29 @@ module.exports = function (User) {
 		});
 	};
 
-	User.blocks.can = function (uid, callback) {
+	User.blocks.can = function (callerUid, blockerUid, blockeeUid, callback) {
 		// Administrators and global moderators cannot be blocked
-		User.isAdminOrGlobalMod(uid, (err, can) => callback(err, !can));
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					isCallerAdminOrMod: function (next) {
+						User.isAdminOrGlobalMod(callerUid, next);
+					},
+					isBlockeeAdminOrMod: function (next) {
+						User.isAdminOrGlobalMod(blockeeUid, next);
+					},
+				}, next);
+			},
+			function (results, next) {
+				if (results.isBlockeeAdminOrMod) {
+					return callback(null, false);
+				}
+				if (parseInt(callerUid, 10) !== parseInt(blockerUid, 10) && !results.isCallerAdminOrMod) {
+					return callback(null, false);
+				}
+				next(null, true);
+			},
+		], callback);
 	};
 
 	User.blocks.list = function (uid, callback) {
@@ -35,10 +58,14 @@ module.exports = function (User) {
 			}
 
 			blocked = blocked.map(uid => parseInt(uid, 10)).filter(Boolean);
-			User.blocks._cache.set(uid, blocked);
+			User.blocks._cache.set(parseInt(uid, 10), blocked);
 			callback(null, blocked);
 		});
 	};
+
+	pubsub.on('user:blocks:cache:del', function (uid) {
+		User.blocks._cache.del(uid);
+	});
 
 	User.blocks.add = function (targetUid, uid, callback) {
 		async.waterfall([
@@ -47,9 +74,9 @@ module.exports = function (User) {
 			async.apply(User.incrementUserFieldBy, uid, 'blocksCount', 1),
 			function (_blank, next) {
 				User.blocks._cache.del(uid);
+				pubsub.publish('user:blocks:cache:del', uid);
 				setImmediate(next);
 			},
-			async.apply(User.blocks.list, uid),
 		], callback);
 	};
 
@@ -60,9 +87,9 @@ module.exports = function (User) {
 			async.apply(User.decrementUserFieldBy, uid, 'blocksCount', 1),
 			function (_blank, next) {
 				User.blocks._cache.del(uid);
+				pubsub.publish('user:blocks:cache:del', uid);
 				setImmediate(next);
 			},
-			async.apply(User.blocks.list, uid),
 		], callback);
 	};
 

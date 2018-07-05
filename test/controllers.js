@@ -2151,7 +2151,6 @@ describe('Controllers', function () {
 			request(nconf.get('url') + '/api/compose', { json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
-				console.log(body);
 
 				plugins.unregisterHook('myTestPlugin', 'filter:composer.build', hookMethod);
 				done();

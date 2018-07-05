@@ -109,13 +109,6 @@ module.exports = function (SocketUser) {
 		], callback);
 	}
 
-	SocketUser.checkPassword = function (socket, data, callback) {
-		isPrivilegedOrSelfAndPasswordMatch(socket.uid, data, function (err) {
-			// Return a bool (without delayed response to prevent brute-force checking of password validity)
-			setTimeout(callback.bind(null, null, !err), 1000);
-		});
-	};
-
 	SocketUser.changePassword = function (socket, data, callback) {
 		if (!socket.uid) {
 			return callback(new Error('[[error:invalid-uid]]'));
@@ -208,19 +201,24 @@ module.exports = function (SocketUser) {
 	};
 
 	SocketUser.toggleBlock = function (socket, data, callback) {
+		let current;
+
 		async.waterfall([
 			function (next) {
-				user.blocks.can(data.uid, next);
+				user.blocks.can(socket.uid, data.blockerUid, data.blockeeUid, next);
 			},
 			function (can, next) {
 				if (!can) {
 					return next(new Error('[[error:cannot-block-privileged]]'));
 				}
-				user.blocks.is(data.uid, socket.uid, next);
+				user.blocks.is(data.blockeeUid, data.blockerUid, next);
 			},
 			function (is, next) {
-				user.blocks[is ? 'remove' : 'add'](data.uid, socket.uid, next);
+				current = is;
+				user.blocks[is ? 'remove' : 'add'](data.blockeeUid, data.blockerUid, next);
 			},
-		], callback);
+		], function (err) {
+			callback(err, !current);
+		});
 	};
 };

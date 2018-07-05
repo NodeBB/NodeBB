@@ -17,7 +17,8 @@ define('forum/account/blocks', ['forum/account/header', 'autocomplete'], functio
 		$('.block-edit').on('click', '[data-action="toggle"]', function () {
 			var uid = parseInt(this.getAttribute('data-uid'), 10);
 			socket.emit('user.toggleBlock', {
-				uid: uid,
+				blockeeUid: uid,
+				blockerUid: ajaxify.data.uid,
 			}, Blocks.refreshList);
 		});
 	};

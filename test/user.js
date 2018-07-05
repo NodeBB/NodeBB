@@ -641,30 +641,33 @@ describe('User', function () {
 		});
 
 		it('should update a user\'s profile', function (done) {
-			var data = {
-				uid: uid,
-				username: 'updatedUserName',
-				email: 'updatedEmail@me.com',
-				fullname: 'updatedFullname',
-				website: 'http://nodebb.org',
-				location: 'izmir',
-				groupTitle: 'testGroup',
-				birthday: '01/01/1980',
-				signature: 'nodebb is good',
-			};
-			socketUser.updateProfile({ uid: uid }, data, function (err, result) {
+			User.create({ username: 'justforupdate', email: 'just@for.updated', password: '123456' }, function (err, uid) {
 				assert.ifError(err);
-
-				assert.equal(result.username, 'updatedUserName');
-				assert.equal(result.userslug, 'updatedusername');
-				assert.equal(result.email, 'updatedEmail@me.com');
-
-				db.getObject('user:' + uid, function (err, userData) {
+				var data = {
+					uid: uid,
+					username: 'updatedUserName',
+					email: 'updatedEmail@me.com',
+					fullname: 'updatedFullname',
+					website: 'http://nodebb.org',
+					location: 'izmir',
+					groupTitle: 'testGroup',
+					birthday: '01/01/1980',
+					signature: 'nodebb is good',
+				};
+				socketUser.updateProfile({ uid: uid }, data, function (err, result) {
 					assert.ifError(err);
-					Object.keys(data).forEach(function (key) {
-						assert.equal(data[key], userData[key]);
+
+					assert.equal(result.username, 'updatedUserName');
+					assert.equal(result.userslug, 'updatedusername');
+					assert.equal(result.email, 'updatedEmail@me.com');
+
+					db.getObject('user:' + uid, function (err, userData) {
+						assert.ifError(err);
+						Object.keys(data).forEach(function (key) {
+							assert.equal(data[key], userData[key]);
+						});
+						done();
 					});
-					done();
 				});
 			});
 		});
@@ -699,20 +702,23 @@ describe('User', function () {
 				assert.ifError(err);
 				db.getSortedSetRevRange('user:' + uid + ':usernames', 0, -1, function (err, data) {
 					assert.ifError(err);
+					assert.equal(data.length, 1);
 					assert(data[0].startsWith('updatedAgain'));
-					assert(data[1].startsWith('updatedUserName'));
 					done();
 				});
 			});
 		});
 
 		it('should change email', function (done) {
-			socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, email: 'updatedAgain@me.com', password: '123456' }, function (err) {
+			User.create({ username: 'pooremailupdate', email: 'poor@update.me', password: '123456' }, function (err, uid) {
 				assert.ifError(err);
-				db.getObjectField('user:' + uid, 'email', function (err, email) {
+				socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, email: 'updatedAgain@me.com', password: '123456' }, function (err) {
 					assert.ifError(err);
-					assert.equal(email, 'updatedAgain@me.com');
-					done();
+					db.getObjectField('user:' + uid, 'email', function (err, email) {
+						assert.ifError(err);
+						assert.equal(email, 'updatedAgain@me.com');
+						done();
+					});
 				});
 			});
 		});
@@ -1791,14 +1797,41 @@ describe('User', function () {
 			});
 		});
 
+		describe('.toggle()', function () {
+			it('should toggle block', function (done) {
+				socketUser.toggleBlock({ uid: 1 }, { blockerUid: 1, blockeeUid: blockeeUid }, function (err) {
+					assert.ifError(err);
+					User.blocks.is(blockeeUid, 1, function (err, blocked) {
+						assert.ifError(err);
+						assert(blocked);
+						done();
+					});
+				});
+			});
+
+			it('should toggle block', function (done) {
+				socketUser.toggleBlock({ uid: 1 }, { blockerUid: 1, blockeeUid: blockeeUid }, function (err) {
+					assert.ifError(err);
+					User.blocks.is(blockeeUid, 1, function (err, blocked) {
+						assert.ifError(err);
+						assert(!blocked);
+						done();
+					});
+				});
+			});
+		});
+
 		describe('.add()', function () {
 			it('should block a uid', function (done) {
-				User.blocks.add(blockeeUid, 1, function (err, blocked_uids) {
+				User.blocks.add(blockeeUid, 1, function (err) {
 					assert.ifError(err);
-					assert.strictEqual(Array.isArray(blocked_uids), true);
-					assert.strictEqual(blocked_uids.length, 1);
-					assert.strictEqual(blocked_uids.includes(blockeeUid), true);
-					done();
+					User.blocks.list(1, function (err, blocked_uids) {
+						assert.ifError(err);
+						assert.strictEqual(Array.isArray(blocked_uids), true);
+						assert.strictEqual(blocked_uids.length, 1);
+						assert.strictEqual(blocked_uids.includes(blockeeUid), true);
+						done();
+					});
 				});
 			});
 
@@ -1820,11 +1853,14 @@ describe('User', function () {
 
 		describe('.remove()', function () {
 			it('should unblock a uid', function (done) {
-				User.blocks.remove(blockeeUid, 1, function (err, blocked_uids) {
+				User.blocks.remove(blockeeUid, 1, function (err) {
 					assert.ifError(err);
-					assert.strictEqual(Array.isArray(blocked_uids), true);
-					assert.strictEqual(blocked_uids.length, 0);
-					done();
+					User.blocks.list(1, function (err, blocked_uids) {
+						assert.ifError(err);
+						assert.strictEqual(Array.isArray(blocked_uids), true);
+						assert.strictEqual(blocked_uids.length, 0);
+						done();
+					});
 				});
 			});
 
@@ -1926,6 +1962,14 @@ describe('User', function () {
 					assert.ifError(err);
 					assert.strictEqual(filtered.length, 1);
 					assert.strictEqual(filtered[0], 1);
+					done();
+				});
+			});
+
+			it('should filter uids that are blocking targetUid', function (done) {
+				User.blocks.filterUids(blockeeUid, [1, 2], function (err, filtered) {
+					assert.ifError(err);
+					assert.deepEqual(filtered, [2]);
 					done();
 				});
 			});

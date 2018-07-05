@@ -200,6 +200,7 @@ module.exports = function (User) {
 				async.series([
 					async.apply(db.sortedSetRemove, 'email:uid', oldEmail.toLowerCase()),
 					async.apply(db.sortedSetRemove, 'email:sorted', oldEmail.toLowerCase() + ':' + uid),
+					async.apply(User.auth.revokeAllSessions, uid),
 				], function (err) {
 					next(err);
 				});
@@ -339,6 +340,7 @@ module.exports = function (User) {
 					}),
 					async.apply(User.reset.updateExpiry, data.uid),
 					async.apply(User.auth.revokeAllSessions, data.uid),
+					async.apply(plugins.fireHook, 'action:password.change', { uid: uid }),
 				], function (err) {
 					next(err);
 				});

@@ -1,6 +1,6 @@
 {
-	"language-settings": "Language Settings",
-	"description": "The default language determines the language settings for all users who are visiting your forum. <br />Individual users can override the default language on their account settings page.",
-	"default-language": "Default Language",
-	"auto-detect": "Auto Detect Language Setting for Guests"
+	"language-settings": "語言設定",
+	"description": "所有使用者的預設語言，使用者可以在個人設定內修改",
+	"default-language": "預設語言",
+	"auto-detect": "使用者為訪客時，自動偵測語言設定"
 }

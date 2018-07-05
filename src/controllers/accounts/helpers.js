@@ -91,6 +91,9 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 				canBanUser: function (next) {
 					privileges.users.canBanUser(callerUID, uid, next);
 				},
+				isBlocked: function (next) {
+					user.blocks.is(uid, callerUID, next);
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -129,6 +132,11 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 				userData.moderationNote = undefined;
 			}
 
+			userData.isBlocked = results.isBlocked;
+			if (isAdmin || isSelf) {
+				userData.blocksCount = parseInt(userData.blocksCount, 10) || 0;
+			}
+
 			userData.yourid = callerUID;
 			userData.theirid = userData.uid;
 			userData.isTargetAdmin = results.isTargetAdmin;
@@ -165,7 +173,6 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 			userData.websiteName = userData.website.replace(validator.escape('http://'), '').replace(validator.escape('https://'), '');
 			userData.followingCount = parseInt(userData.followingCount, 10) || 0;
 			userData.followerCount = parseInt(userData.followerCount, 10) || 0;
-			userData.blocksCount = parseInt(userData.blocksCount, 10) || 0;
 
 			userData.email = validator.escape(String(userData.email || ''));
 			userData.fullname = validator.escape(String(userData.fullname || ''));

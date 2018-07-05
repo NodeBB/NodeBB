@@ -8,7 +8,7 @@
 	"headers.acao": "Access-Control-Allow-Origin",
 	"headers.acao-regex": "Access-Control-Allow-Origin Regular Expression",
 	"headers.acao-help": "Pro zakázání přístupu na všechny stránky, zanechte prázdné",
-	"headers.acao-regex-help": "Enter regular expressions here to match dynamic origins. To deny access to all sites, leave empty",
+	"headers.acao-regex-help": "Zde zadejte regulární výrazy, které odpovídají dynamickým originálům. Pro zakázání všech stránek, ponechte prázdné.",
 	"headers.acac": "Access-Control-Allow-Credentials",
 	"headers.acam": "Access-Control-Allow-Methods",
 	"headers.acah": "Access-Control-Allow-Headers",
