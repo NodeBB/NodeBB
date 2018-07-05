@@ -201,6 +201,8 @@ module.exports = function (SocketUser) {
 	};
 
 	SocketUser.toggleBlock = function (socket, data, callback) {
+		let current;
+
 		async.waterfall([
 			function (next) {
 				user.blocks.can(socket.uid, data.blockerUid, data.blockeeUid, next);
@@ -212,8 +214,11 @@ module.exports = function (SocketUser) {
 				user.blocks.is(data.blockeeUid, data.blockerUid, next);
 			},
 			function (is, next) {
+				current = is;
 				user.blocks[is ? 'remove' : 'add'](data.blockeeUid, data.blockerUid, next);
 			},
-		], callback);
+		], function (err) {
+			callback(err, !current);
+		});
 	};
 };
