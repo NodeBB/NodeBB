@@ -48,8 +48,8 @@ module.exports = function (User) {
 	};
 
 	User.blocks.list = function (uid, callback) {
-		if (User.blocks._cache.has(uid)) {
-			return setImmediate(callback, null, User.blocks._cache.get(uid));
+		if (User.blocks._cache.has(parseInt(uid, 10))) {
+			return setImmediate(callback, null, User.blocks._cache.get(parseInt(uid, 10)));
 		}
 
 		db.getSortedSetRange('uid:' + uid + ':blocked_uids', 0, -1, function (err, blocked) {
