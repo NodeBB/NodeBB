@@ -1,6 +1,8 @@
 'use strict';
 
 var async = require('async');
+var url = require('url');
+
 var plugins = require('../plugins');
 var meta = require('../meta');
 var user = require('../user');
@@ -18,7 +20,7 @@ function getUserHomeRoute(uid, callback) {
 			var route = adminHomePageRoute();
 
 			if (settings.homePageRoute !== 'undefined' && settings.homePageRoute !== 'none') {
-				route = settings.homePageRoute || route;
+				route = (settings.homePageRoute || route).replace(/^\/+/, '');
 			}
 
 			next(null, route);
@@ -40,13 +42,21 @@ function rewrite(req, res, next) {
 			}
 		},
 		function (route, next) {
-			var hook = 'action:homepage.get:' + route;
-
-			if (!plugins.hasListeners(hook)) {
-				req.url = req.path + (!req.path.endsWith('/') ? '/' : '') + route;
-			} else {
-				res.locals.homePageRoute = route;
+			var parsedUrl;
+			try {
+				parsedUrl = url.parse(route, true);
+			} catch (err) {
+				return next(err);
 			}
+
+			var pathname = parsedUrl.pathname;
+			var hook = 'action:homepage.get:' + pathname;
+			if (!plugins.hasListeners(hook)) {
+				req.url = req.path + (!req.path.endsWith('/') ? '/' : '') + pathname;
+			} else {
+				res.locals.homePageRoute = pathname;
+			}
+			req.query = Object.assign(parsedUrl.query, req.query);
 
 			next();
 		},
