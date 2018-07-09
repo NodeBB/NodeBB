@@ -148,7 +148,9 @@ settingsController.get = function (req, res, callback) {
 
 			var notifFreqOptions = [
 				'all',
+				'first',
 				'everyTen',
+				'threshold',
 				'logarithmic',
 				'disabled',
 			];
