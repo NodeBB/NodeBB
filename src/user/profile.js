@@ -223,6 +223,8 @@ module.exports = function (User) {
 						if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && newEmail) {
 							User.email.sendValidationEmail(uid, {
 								email: newEmail,
+								subject: '[[email:email.verify-your-email.subject]]',
+								template: 'verify_email',
 							});
 						}
 						User.setUserField(uid, 'email:confirmed', 0, next);
