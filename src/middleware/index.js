@@ -145,8 +145,14 @@ middleware.privateUploads = function (req, res, next) {
 	if (req.loggedIn || parseInt(meta.config.privateUploads, 10) !== 1) {
 		return next();
 	}
+
 	if (req.path.startsWith(nconf.get('relative_path') + '/assets/uploads/files')) {
-		return res.status(403).json('not-allowed');
+		var extensions = (meta.config.privateUploadsExtensions || '').split(',').filter(Boolean);
+		var ext = path.extname(req.path);
+		ext = ext ? ext.replace(/^\./, '') : ext;
+		if (!extensions.length || extensions.includes(ext)) {
+			return res.status(403).json('not-allowed');
+		}
 	}
 	next();
 };
