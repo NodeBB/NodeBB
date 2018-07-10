@@ -73,8 +73,8 @@ module.exports = function (User) {
 			async.apply(db.sortedSetAdd.bind(db), 'uid:' + uid + ':blocked_uids', Date.now(), targetUid),
 			async.apply(User.incrementUserFieldBy, uid, 'blocksCount', 1),
 			function (_blank, next) {
-				User.blocks._cache.del(uid);
-				pubsub.publish('user:blocks:cache:del', uid);
+				User.blocks._cache.del(parseInt(uid, 10));
+				pubsub.publish('user:blocks:cache:del', parseInt(uid, 10));
 				setImmediate(next);
 			},
 		], callback);
@@ -86,8 +86,8 @@ module.exports = function (User) {
 			async.apply(db.sortedSetRemove.bind(db), 'uid:' + uid + ':blocked_uids', targetUid),
 			async.apply(User.decrementUserFieldBy, uid, 'blocksCount', 1),
 			function (_blank, next) {
-				User.blocks._cache.del(uid);
-				pubsub.publish('user:blocks:cache:del', uid);
+				User.blocks._cache.del(parseInt(uid, 10));
+				pubsub.publish('user:blocks:cache:del', parseInt(uid, 10));
 				setImmediate(next);
 			},
 		], callback);
