@@ -445,5 +445,7 @@ postgresModule.close = function (callback) {
 
 postgresModule.socketAdapter = function () {
 	var postgresAdapter = require('socket.io-adapter-postgres');
-	return postgresAdapter(postgresModule.getConnectionOptions());
+	return postgresAdapter(postgresModule.getConnectionOptions(), {
+		pubClient: postgresModule.pool
+	});
 };
