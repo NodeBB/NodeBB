@@ -33,7 +33,16 @@ module.exports = function (User) {
 			function (next) {
 				Password.compare(password, hashedPassword, next);
 			},
-		], callback);
+		], function (err, ok) {
+			if (err) {
+				return callback(err);
+			}
+
+			// Delay return for incorrect current password
+			setTimeout(function () {
+				callback(null, ok);
+			}, ok ? 0 : 2500);
+		});
 	};
 
 	User.hasPassword = function (uid, callback) {
