@@ -203,10 +203,10 @@ function ignoreOrWatch(fn, socket, cid, callback) {
 
 			async.each(cids, function (cid, next) {
 				fn(socket.uid, cid, next);
-			}, next);
+			}, next(null, cids));
 		},
-		function (next) {
-			topics.pushUnreadCount(socket.uid, next);
+		function (cids, next) {
+			topics.pushUnreadCount(socket.uid, next(null, cids));
 		},
 	], callback);
 }
