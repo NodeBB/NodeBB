@@ -152,7 +152,6 @@ module.exports = function (app, middleware, hotswapIds, callback) {
 	}
 
 	app.use(middleware.privateUploads);
-	app.use(relativePath + '/assets/templates', middleware.templatesOnDemand);
 
 	var statics = [
 		{ route: '/assets', path: path.join(__dirname, '../../build/public') },
