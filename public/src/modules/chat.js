@@ -215,7 +215,7 @@ define('chat', [
 				module.minimize(uuid);
 			});
 
-			chatModal.on('click', function () {
+			chatModal.on('click', ':not(.close)', function () {
 				taskbar.updateActive(this.getAttribute('data-uuid'));
 
 				if (dragged) {
