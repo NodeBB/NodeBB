@@ -338,7 +338,7 @@ define('forum/topic/postTools', [
 		}
 
 		if (post.length) {
-			slug = post.attr('data-userslug');
+			slug = utils.slugify(post.attr('data-username'), true);
 		}
 		if (post.length && post.attr('data-uid') !== '0') {
 			slug = '@' + slug;
