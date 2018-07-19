@@ -19,7 +19,7 @@
     "reset.notify.text2": "Jeśli nie wyraziłeś na to zgody, niezwłocznie poinformuj administratora.",
     "digest.notifications": "Masz nowe powiadomienia od %1:",
     "digest.latest_topics": "Ostatnie tematy z %1",
-    "digest.cta": "Kliknij, by odwiedzić %1",
+    "digest.cta": "Kliknij tutaj, by przejść do %1",
     "digest.unsub.info": "To podsumowanie zostało wysłane zgodnie z Twoimi ustawieniami.",
     "digest.no_topics": "Nie było żadnych aktywnych tematów w ciągu ostatnich %1",
     "digest.day": "dni",

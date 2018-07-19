@@ -27,7 +27,7 @@
     "email-not-confirmed-chat": "Nie możesz prowadzić rozmów, dopóki twój email nie zostanie potwierdzony. Kliknij tutaj, aby potwierdzić swój email.",
     "email-not-confirmed-email-sent": "Twój e-mail jeszcze nie został potwierdzony, proszę sprawdzić swoją skrzynkę odbiorczą.",
     "no-email-to-confirm": "To forum wymaga weryfikacji przez email. Proszę kliknąć tutaj, aby wprowadzić adres.",
-    "email-confirm-failed": "Nie byliśmy w stanie potwierdzić twojego email-a. Proszę spróbować później.",
+    "email-confirm-failed": "Nie byliśmy w stanie potwierdzić Twojego adresu e-mail. Spróbuj później.",
     "confirm-email-already-sent": "Email potwierdzający został już wysłany, proszę odczekaj jeszcze %1 minut(y), aby wysłać kolejny.",
     "sendmail-not-found": "Program sendmail nie został znaleziony, proszę upewnij się, że jest zainstalowany i możliwy do uruchomienia przez użytkownika uruchamiającego NodeBB.",
     "username-too-short": "Nazwa użytkownika za krótka",
