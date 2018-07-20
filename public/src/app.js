@@ -124,13 +124,22 @@ app.cacheBuster = null;
 			headers: {
 				'x-csrf-token': config.csrf_token,
 			},
-			success: function () {
+			success: function (data) {
+				app.parseAndTranslate('partials/menu', data.header, function (html) {
+					$('#header-menu .container').html(html);
+				});
 				var payload = {
-					next: config.relative_path + '/',
+					next: undefined,
 				};
 
 				$(window).trigger('action:app.loggedOut', payload);
-				window.location.href = payload.next;
+				app.user = data.header.user;
+				config.csrf_token = data.csrf;
+				if (payload.next) {
+					ajaxify.go(payload.next);
+				} else {
+					ajaxify.refresh();
+				}
 			},
 		});
 	};

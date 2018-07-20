@@ -15,6 +15,7 @@ var utils = require('../utils');
 var Password = require('../password');
 var translator = require('../translator');
 var helpers = require('./helpers');
+var middleware = require('../middleware');
 
 var sockets = require('../socket.io');
 
@@ -273,10 +274,16 @@ function continueLogin(req, res, next) {
 					return helpers.noScriptErrors(req, res, err.message, 403);
 				}
 
-				res.status(200).send(nconf.get('relative_path') + '/reset/' + code);
+				res.status(200).send({
+					next: nconf.get('relative_path') + '/reset/' + code,
+				});
 			});
 		} else {
-			authenticationController.doLogin(req, userData.uid, function (err) {
+			async.parallel({
+				doLogin: async.apply(authenticationController.doLogin, req, userData.uid),
+				header: async.apply(middleware.generateHeader, req, res, {}),
+				config: async.apply(require('./api').loadConfig, req),
+			}, function (err, payload) {
 				if (err) {
 					return helpers.noScriptErrors(req, res, err.message, 403);
 				}
@@ -292,7 +299,12 @@ function continueLogin(req, res, next) {
 				if (req.body.noscript === 'true') {
 					res.redirect(destination + '?loggedin');
 				} else {
-					res.status(200).send(destination);
+					res.status(200).send({
+						next: destination,
+						header: payload.header,
+						config: payload.config,
+						csrf: req.csrfToken,
+					});
 				}
 			});
 		}
@@ -315,6 +327,9 @@ authenticationController.doLogin = function (req, uid, callback) {
 
 authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 	var uuid = utils.generateUUID();
+
+	req.uid = uid;
+	req.loggedIn = true;
 
 	async.waterfall([
 		function (next) {
@@ -448,7 +463,8 @@ authenticationController.logout = function (req, res, next) {
 		},
 		function (next) {
 			req.logout();
-			req.session.destroy(function (err) {
+			req.session.regenerate(function (err) {
+				req.uid = 0;
 				next(err);
 			});
 		},
@@ -464,7 +480,16 @@ authenticationController.logout = function (req, res, next) {
 			if (req.body.noscript === 'true') {
 				res.redirect(nconf.get('relative_path') + '/');
 			} else {
-				res.status(200).send('');
+				middleware.generateHeader(req, res, {}, function (err, header) {
+					if (err) {
+						return res.status(500);
+					}
+
+					res.status(200).send({
+						header: header,
+						csrf: req.csrfToken(),
+					});
+				});
 			}
 		},
 	], next);
