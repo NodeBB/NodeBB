@@ -125,21 +125,26 @@ app.cacheBuster = null;
 				'x-csrf-token': config.csrf_token,
 			},
 			success: function (data) {
-				app.parseAndTranslate('partials/menu', data.header, function (html) {
-					$('#header-menu .container').html(html);
-				});
-				var payload = {
-					next: undefined,
-				};
+				require(['benchpress'], function (Benchpress) {
+					app.user = data.header.user;
+					data.header.config = data.config;
+					config = data.config;
+					Benchpress.setGlobal('config', config);
 
-				$(window).trigger('action:app.loggedOut', payload);
-				app.user = data.header.user;
-				config.csrf_token = data.csrf;
-				if (payload.next) {
-					ajaxify.go(payload.next);
-				} else {
-					ajaxify.refresh();
-				}
+					app.parseAndTranslate('partials/menu', data.header, function (html) {
+						$('#header-menu .container').html(html);
+					});
+					var payload = {
+						next: undefined,
+					};
+
+					$(window).trigger('action:app.loggedOut', payload);
+					if (payload.next) {
+						ajaxify.go(payload.next);
+					} else {
+						ajaxify.refresh();
+					}
+				});
 			},
 		});
 	};

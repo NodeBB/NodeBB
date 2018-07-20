@@ -20,6 +20,7 @@ var middleware = require('../middleware');
 var sockets = require('../socket.io');
 
 var authenticationController = module.exports;
+var apiController = require('./api');
 
 authenticationController.register = function (req, res) {
 	var registrationType = meta.config.registrationType || 'normal';
@@ -282,7 +283,7 @@ function continueLogin(req, res, next) {
 			async.parallel({
 				doLogin: async.apply(authenticationController.doLogin, req, userData.uid),
 				header: async.apply(middleware.generateHeader, req, res, {}),
-				config: async.apply(require('./api').loadConfig, req),
+				config: async.apply(apiController.loadConfig, req),
 			}, function (err, payload) {
 				if (err) {
 					return helpers.noScriptErrors(req, res, err.message, 403);
@@ -480,13 +481,17 @@ authenticationController.logout = function (req, res, next) {
 			if (req.body.noscript === 'true') {
 				res.redirect(nconf.get('relative_path') + '/');
 			} else {
-				middleware.generateHeader(req, res, {}, function (err, header) {
+				async.parallel({
+					header: async.apply(middleware.generateHeader, req, res, {}),
+					config: async.apply(apiController.loadConfig, req),
+				}, function (err, payload) {
 					if (err) {
 						return res.status(500);
 					}
 
 					res.status(200).send({
-						header: header,
+						header: payload.header,
+						config: payload.config,
 						csrf: req.csrfToken(),
 					});
 				});

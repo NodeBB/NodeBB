@@ -44,6 +44,7 @@ define('forum/login', ['benchpress'], function (Benchpress) {
 
 						app.user = data.header.user;
 						data.header.config = data.config;
+						config = data.config;
 						Benchpress.setGlobal('config', config);
 
 						app.parseAndTranslate('partials/menu', data.header, function (html) {
