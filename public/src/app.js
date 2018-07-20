@@ -134,13 +134,13 @@ app.cacheBuster = null;
 					app.parseAndTranslate('partials/menu', data.header, function (html) {
 						$('#header-menu .container').html(html);
 					});
-					var payload = {
-						next: undefined,
-					};
 
-					$(window).trigger('action:app.loggedOut', payload);
-					if (payload.next) {
-						ajaxify.go(payload.next);
+					// Overwrite to redirect elsewhere
+					data.next = undefined;
+
+					$(window).trigger('action:app.loggedOut', data);
+					if (data.next) {
+						ajaxify.go(data.next);
 					} else {
 						ajaxify.refresh();
 					}

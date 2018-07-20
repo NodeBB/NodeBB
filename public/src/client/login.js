@@ -51,6 +51,7 @@ define('forum/login', ['benchpress'], function (Benchpress) {
 							$('#header-menu .container').html(html);
 							ajaxify.go(data.next);
 						});
+						$(window).trigger('action:app.loggedIn', data);
 					},
 					error: function (data) {
 						if (data.status === 403 && data.responseText === 'Forbidden') {
