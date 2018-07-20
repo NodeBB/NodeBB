@@ -1,10 +1,10 @@
 {
 	"reputation": "Ustawienia reputacji",
 	"disable": "Wyłącz system reputacji",
-	"disable-down-voting": "Wyłącz system „głosów przeciwko”",
+	"disable-down-voting": "Wyłącz system głosów przeciw",
 	"votes-are-public": "Wszystkie głosy są publiczne",
 	"thresholds": "Progi aktywności",
-	"min-rep-downvote": "Minimalna reputacja pozwalająca dawać głosy przeciwko",
+	"min-rep-downvote": "Minimalna reputacja pozwalająca głosować przeciw",
 	"min-rep-flag": "Minimalna reputacja pozwalająca flagować posty",
 	"min-rep-website": "Minimalna reputacja pozwalająca wypełnić sekcję „Strona WWW” w profilu użytkownika",
 	"min-rep-aboutme": "Minimalna reputacja pozwalająca wypełnić sekcję „O mnie” w profilu użytkownika",

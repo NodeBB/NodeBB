@@ -122,7 +122,7 @@
     "already-voting-for-this-post": "Już zagłosowałeś na ten post",
     "reputation-system-disabled": "System reputacji jest wyłączony.",
     "downvoting-disabled": "Negatywna ocena postów jest wyłączona",
-    "not-enough-reputation-to-downvote": "Masz zbyt niską reputację, aby negatywnie ocenić ten post",
+    "not-enough-reputation-to-downvote": "Masz zbyt niską reputację, by głosować przeciw postom",
     "not-enough-reputation-to-flag": "Masz zbyt niską reputację, aby oflagować ten post",
     "not-enough-reputation-min-rep-website": "Masz zbyt niską reputację, aby dodać stronę",
     "not-enough-reputation-min-rep-aboutme": "Masz zbyt niską reputację, aby dodać tekst „O mnie”",

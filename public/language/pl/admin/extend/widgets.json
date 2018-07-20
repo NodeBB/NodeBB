@@ -1,8 +1,8 @@
 {
 	"available": "Dostępne Widgety",
 	"explanation": "Wybierz widget z menu rozwijalnego i przeciągnij go na wybrane pole z lewej strony.",
-	"none-installed": "Nie odnaleziono widżetów! Aktywuj wtyczkę \"essential widgets\" w panelu sterowania <a href=\"%1\">wtyczek</a>.",
-	"clone-from": "Sklonuj widżet z",
+	"none-installed": "Nie odnaleziono widgetów! Aktywuj wtyczkę „essential widgets” w panelu sterowania <a href=\"%1\">wtyczek</a>.",
+	"clone-from": "Sklonuj widget z",
 	"containers.available": "Dostępne kontenery",
 	"containers.explanation": "Przeciągnij i upuść na dowolnym, aktywnym widżecie",
 	"containers.none": "Żadna",
@@ -14,9 +14,9 @@
 	"container.alert": "Alarm",
 
 	"alert.confirm-delete": "Czy na pewno chcesz usunąć ten widget?",
-	"alert.updated": "Widżety zaktualizowane",
-	"alert.update-success": "Widżety zostały pomyślnie zaktualizowane",
-	"alert.clone-success": "Widżety zostały pomyślnie sklonowane",
+	"alert.updated": "Widgety zaktualizowane",
+	"alert.update-success": "Widgety zostały zaktualizowane",
+	"alert.clone-success": "Widgety zostały sklonowane",
 
 	"error.select-clone": "Proszę wybrać stronę do sklonowania"
 }
