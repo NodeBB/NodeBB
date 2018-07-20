@@ -95,13 +95,21 @@ Categories.getAllCategories = function (uid, callback) {
 	], callback);
 };
 
-Categories.getCategoriesByPrivilege = function (set, uid, privilege, callback) {
+Categories.getCidsByPrivilege = function (set, uid, privilege, callback) {
 	async.waterfall([
 		function (next) {
 			db.getSortedSetRange(set, 0, -1, next);
 		},
 		function (cids, next) {
 			privileges.categories.filterCids(privilege, cids, uid, next);
+		},
+	], callback);
+};
+
+Categories.getCategoriesByPrivilege = function (set, uid, privilege, callback) {
+	async.waterfall([
+		function (next) {
+			Categories.getCidsByPrivilege(set, uid, privilege, next);
 		},
 		function (cids, next) {
 			Categories.getCategories(cids, uid, next);
