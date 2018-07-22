@@ -4,6 +4,8 @@
     "invite": "Pakvietimas nuo %1",
     "greeting_no_name": "Sveiki",
     "greeting_with_name": "Sveiki %1",
+    "email.verify-your-email.subject": "Please verify your email",
+    "email.verify.text1": "Your email address has changed!",
     "welcome.text1": "Ačiū kad užsiregistravote %1",
     "welcome.text2": "Kad pilnai aktyvuoti jūsų paskira, mums reikia įsitikinti kad jūs tikrai esate el.pašto valdytojas",
     "welcome.text3": "Administratorius priemė jūsų prašymą prisijungti prie mūsų. Dabar galite prisijungti su savo slapyvardžiu/slaptažodžiu",

@@ -28,6 +28,7 @@
     "details.grant": "Выдать/забрать привилегии администратора",
     "details.kick": "Исключить",
     "details.kick_confirm": "Вы уверены, что хотите удалить этого участника из группы?",
+    "details.add-member": "Add Member",
     "details.owner_options": "Настройки группы",
     "details.group_name": "Имя группы",
     "details.member_count": "Количество участников",

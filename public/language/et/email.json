@@ -4,6 +4,8 @@
     "invite": "Kutse %1-lt",
     "greeting_no_name": "Tere",
     "greeting_with_name": "Tere %1",
+    "email.verify-your-email.subject": "Please verify your email",
+    "email.verify.text1": "Your email address has changed!",
     "welcome.text1": "Täname et oled registreerinud %1 foorumisse!",
     "welcome.text2": "Konto täielikuks aktiveerimiseks peame me kinnitama, et registreerimisel kasutatud e-mail kuulub teile.",
     "welcome.text3": "Administraator aktsepteeris teie registreerimise. Te saate nüüd sisse logida oma kasutajanime/parooliga.",

@@ -28,6 +28,7 @@
     "details.grant": "Tulajdonjog megadása/törlése",
     "details.kick": "Kirúgás",
     "details.kick_confirm": "Biztos el akarod távolítani ezt a tagot a csoportból?",
+    "details.add-member": "Add Member",
     "details.owner_options": "Csoportadminisztrátor",
     "details.group_name": "Csoport neve",
     "details.member_count": "Tagok száma",

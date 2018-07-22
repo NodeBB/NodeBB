@@ -4,6 +4,8 @@
     "invite": "邀請來自 %1",
     "greeting_no_name": "你好",
     "greeting_with_name": "%1 你好",
+    "email.verify-your-email.subject": "Please verify your email",
+    "email.verify.text1": "Your email address has changed!",
     "welcome.text1": "感謝註冊 %1!",
     "welcome.text2": "要啟動你的帳戶，我們先要驗證你用作註冊的電子郵件地址",
     "welcome.text3": "管理者已經批準你的註冊申請。你現在可以使用你的帳號/密碼進行登入。",

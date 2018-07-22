@@ -4,6 +4,8 @@
     "invite": "Покана от %1",
     "greeting_no_name": "Здравейте",
     "greeting_with_name": "Здравейте, %1",
+    "email.verify-your-email.subject": "Please verify your email",
+    "email.verify.text1": "Your email address has changed!",
     "welcome.text1": "Благодарим Ви, че се регистрирахте в %1",
     "welcome.text2": "За да активирате напълно акаунта си, трябва да потвърдите е-пощата, с която сте се регистрирали.",
     "welcome.text3": "Вашата заявка за регистрация беше приета от администратор. Вече можете да се впишете със своето потребителско име и парола.",

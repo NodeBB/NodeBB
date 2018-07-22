@@ -4,6 +4,8 @@
     "invite": "%1 님이 초대하였습니다.",
     "greeting_no_name": "안녕하세요",
     "greeting_with_name": "안녕하세요 %1님",
+    "email.verify-your-email.subject": "Please verify your email",
+    "email.verify.text1": "Your email address has changed!",
     "welcome.text1": "%1님 가입해주셔서 감사합니다.",
     "welcome.text2": "계정을 활성화하려면 등록하신 메일 주소가 유효한지 확인이 필요합니다.",
     "welcome.text3": "관리자에 의해 승인되었습니다. 사용자명/비밀번호를 통해 지금 로그인 하실 수 있습니다.",

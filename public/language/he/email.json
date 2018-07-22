@@ -4,6 +4,8 @@
     "invite": "הזמנה מ%1",
     "greeting_no_name": "שלום",
     "greeting_with_name": "שלום %1",
+    "email.verify-your-email.subject": "Please verify your email",
+    "email.verify.text1": "Your email address has changed!",
     "welcome.text1": "תודה שנרשמת ל%1!",
     "welcome.text2": "על מנת להפעיל את החשבון שלך, אנו צריכים לוודא שאתה בעל חשבון המייל שנרשמת איתו.",
     "welcome.text3": "מנהל אישר את ההרשמה שלך.\nאתה יכול להתחבר עם השם משתמש והסיסמא שלך מעכשיו.",

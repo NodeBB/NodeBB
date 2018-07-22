@@ -4,6 +4,8 @@
     "invite": "%1 sizi davet etti",
     "greeting_no_name": "Merhaba",
     "greeting_with_name": "Merhaba %1",
+    "email.verify-your-email.subject": "Please verify your email",
+    "email.verify.text1": "Your email address has changed!",
     "welcome.text1": "Kaydolduğunuz için teşekkürler!",
     "welcome.text2": "Hesabınızı aktif hale getirmek için, kaydolduğunuz e-posta adresinin size ait olduğunu onaylamamız gerekiyor.",
     "welcome.text3": "Yönetici kayıt olma isteğinizi kabul etti. Kullanıcı adı/şifre ile giriş yapabilirsiniz.",

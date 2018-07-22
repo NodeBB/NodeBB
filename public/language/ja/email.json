@@ -4,6 +4,8 @@
     "invite": "%1からの招待です",
     "greeting_no_name": "こんにちは",
     "greeting_with_name": "%1さん、こんにちは",
+    "email.verify-your-email.subject": "Please verify your email",
+    "email.verify.text1": "Your email address has changed!",
     "welcome.text1": "%1に登録していただき、ありがとうございます!",
     "welcome.text2": "あなたのアカウントを完全に有効化するには、アドレスが正しいことを確認する必要があります。",
     "welcome.text3": "管理者があなたの登録申請を承認しました。これから、自分のユーザ名とパスワードでログインできます。",

@@ -28,6 +28,7 @@
     "details.grant": "Cấp/Huỷ quyền trưởng nhóm",
     "details.kick": "Đá ra",
     "details.kick_confirm": "Bạn có chắc muốn xoá thành viên này khỏi nhóm?",
+    "details.add-member": "Add Member",
     "details.owner_options": "Quản trị nhóm",
     "details.group_name": "Tên nhóm",
     "details.member_count": "Số thành viên",

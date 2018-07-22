@@ -28,6 +28,7 @@
     "details.grant": "Přidat/Zrušit vlastnictví",
     "details.kick": "Vyhodit",
     "details.kick_confirm": "Jste si jist/a, že chcete vyjmout tohoto uživatele ze skupiny?",
+    "details.add-member": "Add Member",
     "details.owner_options": "Správa skupiny",
     "details.group_name": "Název skupiny",
     "details.member_count": "Počet členů",

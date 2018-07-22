@@ -4,6 +4,8 @@
     "invite": "Meghívó a(z) %1 oldalra",
     "greeting_no_name": "Helló",
     "greeting_with_name": "Helló %1",
+    "email.verify-your-email.subject": "Please verify your email",
+    "email.verify.text1": "Your email address has changed!",
     "welcome.text1": "Köszönjük a regisztrációt %1!",
     "welcome.text2": "A fiók aktiválásához ellenőriznünk kell, hogy valós e-mail cím lett e megadva.",
     "welcome.text3": "Egy adminisztrátor elfogadta a regisztrációdat. Mostantól a felhasználónév/jelszó párosoddal be tudsz lépni.",

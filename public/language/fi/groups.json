@@ -28,6 +28,7 @@
     "details.grant": "Grant/Rescind Ownership",
     "details.kick": "Potkaise",
     "details.kick_confirm": "Are you sure you want to remove this member from the group?",
+    "details.add-member": "Add Member",
     "details.owner_options": "Group Administration",
     "details.group_name": "Group Name",
     "details.member_count": "Member Count",

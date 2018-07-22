@@ -4,6 +4,8 @@
     "invite": "来自%1的邀请",
     "greeting_no_name": "您好",
     "greeting_with_name": "%1，您好",
+    "email.verify-your-email.subject": "Please verify your email",
+    "email.verify.text1": "Your email address has changed!",
     "welcome.text1": "感谢您注册 %1 帐户！",
     "welcome.text2": "我们需要在校验您注册时填写的电子邮箱地址后，才能激活您的帐户。",
     "welcome.text3": "管理员接受了您的注册请求，请用您的用户名和密码登陆。",

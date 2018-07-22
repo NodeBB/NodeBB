@@ -2,6 +2,8 @@
 	"posts": "Příspěvky",
 	"allow-files": "Povolit uživatelům nahrávat normální soubory",
 	"private": "Nahrané soubory jsou sokromé",
+	"private-extensions": "File extensions to make private",
+	"private-uploads-extensions-help": "Enter comma-separated list of file extensions to make private here (e.g. <code>pdf,xls,doc</code>). An empty list means all files are private.",
 	"max-image-width": "Zmenšit velikost obrázků na potřebné rozlišení (v pixelech)",
 	"max-image-width-help": "(v pixelech, výchozí: 760 pixelů, pro zákaz nastavte 0)",
 	"resize-image-quality": "Kvalita při změně velikosti obrázků",

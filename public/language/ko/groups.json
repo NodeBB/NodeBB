@@ -28,6 +28,7 @@
     "details.grant": "소유권 이전/포기하기",
     "details.kick": "내보내기",
     "details.kick_confirm": "이 사용자를 해당 그룹에서 삭제 하시겠습니까?",
+    "details.add-member": "Add Member",
     "details.owner_options": "그룹 관리",
     "details.group_name": "그룹명",
     "details.member_count": "구성원 수",

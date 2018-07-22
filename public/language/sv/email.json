@@ -4,6 +4,8 @@
     "invite": "Inbjudan ifrån %1",
     "greeting_no_name": "Hej",
     "greeting_with_name": "Hej %1",
+    "email.verify-your-email.subject": "Please verify your email",
+    "email.verify.text1": "Your email address has changed!",
     "welcome.text1": "Tack för att du registerar dig på %1!",
     "welcome.text2": "För att slutföra aktiveringen av ditt konto, behöver vi verifiera att du har tillgång till den e-postadress du registrerade dig med.",
     "welcome.text3": "En administrator har accepterat din registreringsansökan. Du kan logga in med ditt användarnamn och lösenord nu.",

@@ -4,6 +4,8 @@
     "invite": "Povabilo uporabnika %1",
     "greeting_no_name": "Pozdravljeni!",
     "greeting_with_name": "Pozdravljeni, %1!",
+    "email.verify-your-email.subject": "Please verify your email",
+    "email.verify.text1": "Your email address has changed!",
     "welcome.text1": "Hvala, da ste se registrirali na forumu %1!",
     "welcome.text2": "Pred aktiviranjem vašega računa moramo preveriti lastništvo elektronskega naslova, s katerim ste se registrirali.",
     "welcome.text3": "Skrbnik je sprejel vašo registracijo. Sedaj se lahko prijavite s svojim uporabniškim imenom in geslom.",

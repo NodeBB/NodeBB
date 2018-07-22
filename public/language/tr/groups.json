@@ -28,6 +28,7 @@
     "details.grant": "Grup Sahibi Yap/Kaldır",
     "details.kick": "Dışarı at",
     "details.kick_confirm": "Bu üyeyi bu gruptan silmek istediğinden emin misin?",
+    "details.add-member": "Add Member",
     "details.owner_options": "Grup Yöneticisi",
     "details.group_name": "Grup ismi",
     "details.member_count": "Üye Sayısı",

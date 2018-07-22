@@ -28,6 +28,7 @@
     "details.grant": "Outorgar/Rescindir propiedade",
     "details.kick": "Expulsar",
     "details.kick_confirm": "Are you sure you want to remove this member from the group?",
+    "details.add-member": "Add Member",
     "details.owner_options": "Administración do Grupo",
     "details.group_name": "Nome do Grupo",
     "details.member_count": "Conta de Membros",

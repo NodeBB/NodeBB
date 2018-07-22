@@ -97,7 +97,7 @@
     "enter_page_number": "Введите номер страницы",
     "upload_file": "Загрузить файл",
     "upload": "Загрузить",
-    "uploads": "Uploads",
+    "uploads": "Загрузки",
     "allowed-file-types": "Разрешённые форматы файлов %1",
     "unsaved-changes": "У вас есть несохранённые изменения. Вы уверены, что хотите уйти?",
     "reconnecting-message": "Похоже, подключение к %1 было разорвано, подождите, пока мы пытаемся восстановить соединение.",
@@ -108,5 +108,5 @@
     "edited": "Отредактированный",
     "disabled": "Отключено",
     "select": "Выбрать",
-    "user-search-prompt": "Type something here to find users..."
+    "user-search-prompt": "Введите что-нибудь здесь, чтобы найти пользователей ..."
 }
