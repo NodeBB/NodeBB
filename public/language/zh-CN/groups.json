@@ -28,6 +28,7 @@
     "details.grant": "授予/取消管理权",
     "details.kick": "踢出群组",
     "details.kick_confirm": "您确定要将此成员从群组中移除吗？",
+    "details.add-member": "Add Member",
     "details.owner_options": "群组管理",
     "details.group_name": "群组名",
     "details.member_count": "群组成员数",

@@ -2,13 +2,11 @@
 
 var async = require('async');
 var path = require('path');
-var fs = require('fs');
 var csrf = require('csurf');
 var validator = require('validator');
 var nconf = require('nconf');
 var ensureLoggedIn = require('connect-ensure-login');
 var toobusy = require('toobusy-js');
-var Benchpress = require('benchpressjs');
 var LRU = require('lru-cache');
 
 var plugins = require('../plugins');
@@ -145,8 +143,14 @@ middleware.privateUploads = function (req, res, next) {
 	if (req.loggedIn || parseInt(meta.config.privateUploads, 10) !== 1) {
 		return next();
 	}
+
 	if (req.path.startsWith(nconf.get('relative_path') + '/assets/uploads/files')) {
-		return res.status(403).json('not-allowed');
+		var extensions = (meta.config.privateUploadsExtensions || '').split(',').filter(Boolean);
+		var ext = path.extname(req.path);
+		ext = ext ? ext.replace(/^\./, '') : ext;
+		if (!extensions.length || extensions.includes(ext)) {
+			return res.status(403).json('not-allowed');
+		}
 	}
 	next();
 };
@@ -200,59 +204,4 @@ middleware.delayLoading = function (req, res, next) {
 	delayCache.set(req.ip, timesSeen += 1);
 
 	setTimeout(next, 1000);
-};
-
-var viewsDir = nconf.get('views_dir');
-var workingCache = {};
-
-middleware.templatesOnDemand = function (req, res, next) {
-	var filePath = req.filePath || path.join(viewsDir, req.path);
-	if (!filePath.endsWith('.js')) {
-		return next();
-	}
-	var tplPath = filePath.replace(/\.js$/, '.tpl');
-	if (workingCache[filePath]) {
-		workingCache[filePath].push(next);
-		return;
-	}
-
-	async.waterfall([
-		function (cb) {
-			file.exists(filePath, cb);
-		},
-		function (exists, cb) {
-			if (exists) {
-				return next();
-			}
-
-			// need to check here again
-			// because compilation could have started since last check
-			if (workingCache[filePath]) {
-				workingCache[filePath].push(next);
-				return;
-			}
-
-			workingCache[filePath] = [next];
-			fs.readFile(tplPath, 'utf8', cb);
-		},
-		function (source, cb) {
-			Benchpress.precompile({
-				source: source,
-				minify: global.env !== 'development',
-			}, cb);
-		},
-		function (compiled, cb) {
-			if (!compiled) {
-				return cb(new Error('[[error:templatesOnDemand.compiled-template-empty, ' + tplPath + ']]'));
-			}
-			fs.writeFile(filePath, compiled, cb);
-		},
-	], function (err) {
-		var arr = workingCache[filePath];
-		workingCache[filePath] = null;
-
-		arr.forEach(function (callback) {
-			callback(err);
-		});
-	});
 };

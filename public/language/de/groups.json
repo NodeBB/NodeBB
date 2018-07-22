@@ -28,6 +28,7 @@
     "details.grant": "Gewähre/widerrufe Besitz",
     "details.kick": "Kick",
     "details.kick_confirm": "Sind Sie sicher, dass Sie dieses Mitglied aus der Gruppe entfernen möchten?",
+    "details.add-member": "Add Member",
     "details.owner_options": "Gruppenadministration",
     "details.group_name": "Gruppenname",
     "details.member_count": "Mitgliederanzahl",

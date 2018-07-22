@@ -28,6 +28,7 @@
     "details.grant": "اعطاء/خلع مالکیت",
     "details.kick": "بیرون انداختن",
     "details.kick_confirm": "آیا شما مطمئن هستید که می خواهید این عضو از گروه را حذف کنید؟",
+    "details.add-member": "Add Member",
     "details.owner_options": "مدیر گروه",
     "details.group_name": "نام گروه",
     "details.member_count": "تعداد اعضا",

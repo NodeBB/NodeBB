@@ -4,6 +4,8 @@
     "invite": "Invitasjon fra %1",
     "greeting_no_name": "Hei",
     "greeting_with_name": "Hei, %1",
+    "email.verify-your-email.subject": "Please verify your email",
+    "email.verify.text1": "Your email address has changed!",
     "welcome.text1": "Takk for at du registrerte deg hos %1!",
     "welcome.text2": "For å aktivere kontoen din må vi verifisere at du eier e-postadressen du registrerte deg med.",
     "welcome.text3": "En administrator har akseptert din søknad om registering. Du kan nå logge inn med ditt brukernavn og passord.",

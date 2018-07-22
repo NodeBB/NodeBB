@@ -31,7 +31,7 @@
     "user_flagged_post_in_multiple": "Участник <strong>%1</strong> и %2 других пометили ваше сообщение <strong>%3</strong>",
     "user_flagged_user": "Участник <strong> %1 </strong> отметили профиль пользователя (%3)",
     "user_flagged_user_dual": "Участник <strong>%1</strong> и <strong>%2</strong>отметили профиль пользователя (%3)",
-    "user_flagged_user_multiple": "<strong>%1</strong> and %2 others flagged a user profile (%3)",
+    "user_flagged_user_multiple": "<strong>%1</strong> и %2 других отметили профиль пользователя (%3)",
     "user_posted_to": "Участник <strong>%1</strong> ответил на запись: <strong>%2</strong>",
     "user_posted_to_dual": "Участники <strong>%1</strong> и <strong>%2</strong> ответили на вашу запись: <strong>%3</strong>",
     "user_posted_to_multiple": "Участник <strong>%1</strong> и %2 других ответили на вашу запись: <strong>%3</strong>",
@@ -53,12 +53,12 @@
     "notification_and_email": "Уведомление & Электронная почта",
     "notificationType_upvote": "Когда кто-то проголосовал за ваше сообщение",
     "notificationType_new-topic": "Отслеживать сообщения в вашей теме",
-    "notificationType_new-reply": "When a new reply is posted in a topic you are watching",
+    "notificationType_new-reply": "Когда новый ответ отправляется в теме, которую вы смотрите",
     "notificationType_follow": "Когда кто-то подписался на ваши обновления",
     "notificationType_new-chat": "Когда вы получили сообщение",
     "notificationType_group-invite": "Когда вы получили приглашение в группу",
-    "notificationType_new-register": "When someone gets added to registration queue",
-    "notificationType_post-queue": "When a new post is queued",
-    "notificationType_new-post-flag": "When a post is flagged",
-    "notificationType_new-user-flag": "When a user is flagged"
+    "notificationType_new-register": "Когда кто-то добавляется в очередь регистрации",
+    "notificationType_post-queue": "Когда новое сообщение помещается в очередь",
+    "notificationType_new-post-flag": "Когда сообщение помечено",
+    "notificationType_new-user-flag": "Когда пользователь отмечен"
 }

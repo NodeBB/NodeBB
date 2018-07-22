@@ -4,6 +4,8 @@
     "invite": "Kutsu henkilöltä %1",
     "greeting_no_name": "Hei",
     "greeting_with_name": "Hei %1",
+    "email.verify-your-email.subject": "Please verify your email",
+    "email.verify.text1": "Your email address has changed!",
     "welcome.text1": "Kiitos rekisteröitymisestäsi sivustolle %1!",
     "welcome.text2": "Meidän täytyy varmistaa, että omistat sen sähköpostiosoitteen, jolla rekisteröidyit, ennen kuin tilisi voidaan aktivoida kokonaan.",
     "welcome.text3": "Ylläpitäjä hyväksyi rekisteröintipyyntösi. Voit nyt kirjautua käyttäjänimelläsi ja salasanallasi.",

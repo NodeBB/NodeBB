@@ -21,7 +21,7 @@
 
 	"updates": "Aktualizacje",
 	"running-version": "Forum działa dzięki <strong>NodeBB v<span id=\"version\">%1</span></strong>",
-	"keep-updated": "Regularnie aktualizuj NodeBB, by podnosić bezpieczeństwo i wprowadzać poprawki.",
+	"keep-updated": "Aktualizuj NodeBB regularnie, by zwiększać bezpieczeństwa i wprowadzać poprawki.",
 	"up-to-date": "<p>NodeBB <strong>jest aktualny</strong> <i class=\"fa fa-check\"></i></p>",
 	"upgrade-available": "<p>Została wydana nowa wersja (v%1). Rozważ <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">aktualizację NodeBB</a>.</p>",
 	"prerelease-upgrade-available": "<p>To jest nieaktualna przedpremierowa wersja NodeBB. Została wydana nowa wersja (v%1). Rozważ <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">aktualizację NodeBB</a>.</p>",

@@ -28,6 +28,7 @@
     "details.grant": "Giv/ophæv ejerskab",
     "details.kick": "Spark",
     "details.kick_confirm": "Are you sure you want to remove this member from the group?",
+    "details.add-member": "Add Member",
     "details.owner_options": "Gruppe administration",
     "details.group_name": "Gruppe navn",
     "details.member_count": "Medlemsantal",

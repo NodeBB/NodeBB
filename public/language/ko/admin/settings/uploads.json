@@ -2,6 +2,8 @@
 	"posts": "게시물",
 	"allow-files": "사용자가 (이미지가 아닌) 일반 파일을 업로드하는것을 허용",
 	"private": "업로드된 파일들을 개인만 볼 수 있게 바꿉니다.",
+	"private-extensions": "File extensions to make private",
+	"private-uploads-extensions-help": "Enter comma-separated list of file extensions to make private here (e.g. <code>pdf,xls,doc</code>). An empty list means all files are private.",
 	"max-image-width": "이미지를 특정 가로 길이까지 축소 (단위: 픽셀)",
 	"max-image-width-help": "(단위: 픽셀, 기본값: 760 픽셀, 비활성화를 원하시면 0으로 지정하세요)",
 	"resize-image-quality": "Quality to use when resizing images",

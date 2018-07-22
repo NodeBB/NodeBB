@@ -72,15 +72,17 @@ describe('Controllers', function () {
 			});
 		}
 		var message = utils.generateUUID();
-		var tplPath = path.join(nconf.get('views_dir'), 'custom.tpl');
+		var name = 'custom.tpl';
+		var tplPath = path.join(nconf.get('views_dir'), name);
 
-		before(function () {
+		before(function (done) {
 			plugins.registerHook('myTestPlugin', {
 				hook: 'action:homepage.get:custom',
 				method: hookMethod,
 			});
 
 			fs.writeFileSync(tplPath, message);
+			meta.templates.compileTemplate(name, message, done);
 		});
 
 		it('should load default', function (done) {

@@ -8,6 +8,7 @@ var path = require('path');
 var fs = require('fs');
 var nconf = require('nconf');
 var _ = require('lodash');
+var Benchpress = require('benchpressjs');
 
 var plugins = require('../plugins');
 var file = require('../file');
@@ -113,6 +114,34 @@ function getTemplateFiles(dirs, callback) {
 	], callback);
 }
 
+function compileTemplate(filename, source, callback) {
+	async.waterfall([
+		function (next) {
+			file.walk(viewsPath, next);
+		},
+		function (paths, next) {
+			paths = _.fromPairs(paths.map(function (p) {
+				var relative = path.relative(viewsPath, p).replace(/\\/g, '/');
+				return [relative, p];
+			}));
+			async.waterfall([
+				function (next) {
+					processImports(paths, filename, source, next);
+				},
+				function (source, next) {
+					Benchpress.precompile(source, {
+						minify: global.env !== 'development',
+					}, next);
+				},
+				function (compiled, next) {
+					fs.writeFile(path.join(viewsPath, filename.replace(/\.tpl$/, '.js')), compiled, next);
+				},
+			], next);
+		},
+	], callback);
+}
+Templates.compileTemplate = compileTemplate;
+
 function compile(callback) {
 	callback = callback || function () {};
 
@@ -144,8 +173,22 @@ function compile(callback) {
 							next(err, source);
 						});
 					},
-					function (compiled, next) {
-						fs.writeFile(path.join(viewsPath, name), compiled, next);
+					function (imported, next) {
+						async.parallel([
+							function (cb) {
+								fs.writeFile(path.join(viewsPath, name), imported, cb);
+							},
+							function (cb) {
+								Benchpress.precompile(imported, { minify: global.env !== 'development' }, function (err, compiled) {
+									if (err) {
+										cb(err);
+										return;
+									}
+
+									fs.writeFile(path.join(viewsPath, name.replace(/\.tpl$/, '.js')), compiled, cb);
+								});
+							},
+						], next);
 					},
 				], next);
 			}, next);

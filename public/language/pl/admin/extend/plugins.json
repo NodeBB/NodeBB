@@ -11,7 +11,7 @@
 	"plugin-search-placeholder": "Szukaj wtyczki...",
 	"reorder-plugins": "Posortuj wtyczki",
 	"order-active": "Posortuj aktywne wtyczki",
-	"dev-interested": "Zainteresowany pisaniem wtyczek do NodeBB?",
+	"dev-interested": "Chcesz pisać wtyczki do NodeBB?",
 	"docs-info": "Pełna dokumentacja dotycząca tworzenia wtyczek jest dostępna na <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">NodeBB Docs Portal</a>.",
 
 	"order.description": "Niektóre wtyczki działają optymalnie wówczas, gdy są inicjalizowane przed innymi/po innych.",

@@ -4,6 +4,8 @@
     "invite": "Lời mời từ %1",
     "greeting_no_name": "Xin chào",
     "greeting_with_name": "Xin chào %1",
+    "email.verify-your-email.subject": "Please verify your email",
+    "email.verify.text1": "Your email address has changed!",
     "welcome.text1": "Cảm ơn bạn đã đăng ký tại %1!",
     "welcome.text2": "Để kích hoạt đầy đủ tính năng của tài khoản, chúng tôi cần xác nhận bạn là chủ của địa chỉ email mà bạn đã đăng ký.",
     "welcome.text3": "Quản trị viên đã chấp nhận đơn đăng ký của bạn. Bạn có thể đăng nhập với tên đăng nhập/mật khẩu ngay bây giờ.",

@@ -28,6 +28,7 @@
     "details.grant": "Даване/отнемане на собственост",
     "details.kick": "Изгонване",
     "details.kick_confirm": "Наистина ли искате да премахнете този член на групата?",
+    "details.add-member": "Add Member",
     "details.owner_options": "Администрация на групата",
     "details.group_name": "Име на групата",
     "details.member_count": "Брой на членовете",

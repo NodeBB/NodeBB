@@ -58,7 +58,7 @@
 	"create.password-confirm": "Parolayı Onayla",
 
 	"temp-ban.length": "Yasaklama uzunluğu",
-	"temp-ban.reason": "Reason <span class=\"text-muted\">(Optional)</span>",
+	"temp-ban.reason": "Sebep<span class=\"text-muted\">(İsteğe Bağlı)</span>",
 	"temp-ban.hours": "Saat",
 	"temp-ban.days": "Gün",
 	"temp-ban.explanation": "Yasağın süresini girin. 0'lık bir zamanın kalıcı bir yasak olarak sayılacağını unutmayın.",

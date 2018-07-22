@@ -2,6 +2,8 @@
 	"posts": "Sujets",
 	"allow-files": "Autoriser les utilisateurs à télécharger des fichiers standards",
 	"private": "Rendre privés les fichiers téléchargés",
+	"private-extensions": "Rendre privé des extensions de fichier.",
+	"private-uploads-extensions-help": "Renseignez ici une liste d'extensions de fichiers séparées par des virgules pour les rendre privées (par exemple : <code>pdf, xls, doc</code>). Une liste vide signifie que tous les fichiers sont privés.",
 	"max-image-width": "Redimensionner les images à une largeur spécifique (en pixels)",
 	"max-image-width-help": "(En pixels, par défaut : 760 pixels, définir à 0 si désactivé)",
 	"resize-image-quality": "Qualité utilisée des images redimensionnées",

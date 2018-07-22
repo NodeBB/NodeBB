@@ -28,6 +28,7 @@
     "details.grant": "Надати/забрати права адміністратора",
     "details.kick": "Вигнати",
     "details.kick_confirm": "Ви впевнені, що бажаєте видалити цього користувача з групи?",
+    "details.add-member": "Add Member",
     "details.owner_options": "Адміністрація групи",
     "details.group_name": "Назва групи",
     "details.member_count": "Кількість учасників",

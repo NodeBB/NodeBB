@@ -4,6 +4,8 @@
     "invite": "Pozvánka od %1",
     "greeting_no_name": "Dobrý deň",
     "greeting_with_name": "Dobrý deň %1",
+    "email.verify-your-email.subject": "Please verify your email",
+    "email.verify.text1": "Your email address has changed!",
     "welcome.text1": "Ďakujeme Vám za registráciu s %1!",
     "welcome.text2": "Pre úplne aktivovanie Vášho účtu, musíme overiť e-mailovú adresu, ktorú ste zadali pri registrácií.",
     "welcome.text3": "Správca práve potvrdil vašu registráciu. Teraz sa môžete prihlásiť svojím menom a heslom.",

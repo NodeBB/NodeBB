@@ -2,6 +2,8 @@
 	"posts": "Posts",
 	"allow-files": "Permitir usuários de enviar arquivos comuns",
 	"private": "Tornar arquivos enviados particulares",
+	"private-extensions": "File extensions to make private",
+	"private-uploads-extensions-help": "Enter comma-separated list of file extensions to make private here (e.g. <code>pdf,xls,doc</code>). An empty list means all files are private.",
 	"max-image-width": "Redimensionar imagens até a largura especificada (em pixels)",
 	"max-image-width-help": "(em pixels, padrão: 760 pixels, defina como 0 para desligar)",
 	"resize-image-quality": "Quality to use when resizing images",

@@ -211,11 +211,11 @@ define('chat', [
 			chatModal.find('.modal-header').on('dblclick', gotoChats);
 			chatModal.find('button[data-action="maximize"]').on('click', gotoChats);
 			chatModal.find('button[data-action="minimize"]').on('click', function () {
-				var uuid = chatModal.attr('uuid');
+				var uuid = chatModal.attr('data-uuid');
 				module.minimize(uuid);
 			});
 
-			chatModal.on('click', function () {
+			chatModal.on('click', ':not(.close)', function () {
 				taskbar.updateActive(this.getAttribute('data-uuid'));
 
 				if (dragged) {

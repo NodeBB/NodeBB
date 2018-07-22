@@ -315,7 +315,7 @@ function filterByTags(posts, hasTags) {
 			var hasAllTags = false;
 			if (post && post.topic && Array.isArray(post.topic.tags) && post.topic.tags.length) {
 				hasAllTags = hasTags.every(function (tag) {
-					return post.topic.tags.indexOf(tag) !== -1;
+					return post.topic.tags.includes(tag);
 				});
 			}
 			return hasAllTags;
@@ -370,23 +370,15 @@ function getSearchCids(data, callback) {
 		return callback(null, []);
 	}
 
-	if (data.categories.indexOf('all') !== -1) {
-		async.waterfall([
-			function (next) {
-				db.getSortedSetRange('categories:cid', 0, -1, next);
-			},
-			function (cids, next) {
-				privileges.categories.filterCids('read', cids, data.uid, next);
-			},
-		], callback);
-		return;
+	if (data.categories.includes('all')) {
+		return categories.getCidsByPrivilege('categories:cid', data.uid, 'read', callback);
 	}
 
 	async.waterfall([
 		function (next) {
 			async.parallel({
 				watchedCids: function (next) {
-					if (data.categories.indexOf('watched') !== -1) {
+					if (data.categories.includes('watched')) {
 						user.getWatchedCategories(data.uid, next);
 					} else {
 						next(null, []);

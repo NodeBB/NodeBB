@@ -28,7 +28,7 @@
 	"select-category": "Wybierz kategorię",
 	"set-parent-category": "Ustaw nadrzędną kategorie",
 
-	"privileges.description": "W tej sekcji możesz skonfigurować uprawnienia kontroli dostępu dla tej kategorii. Uprawnienia mogą być przyznawane dla każdego użytkownika lub dla poszczególnych grup. Możesz dodać nowego użytkownika do tej tabeli, wyszukując je w formularzu poniżej.",
+	"privileges.description": "W tej sekcji możesz skonfigurować uprawnienia dostępu dla tej kategorii. Uprawnienia mogą być przyznawane konkretnym użytkownikom lub poszczególnym grupom. Możesz dodać nowego użytkownika do tej tabeli, wyszukując go w formularzu poniżej.",
 	"privileges.warning": "<strong>Uwaga</strong>: Uprawnienia zapisują się natychmiastowo. Nie ma potrzeby zapisywania kategorii po zmianie ustawień.",
 	"privileges.section-viewing": "Lista uprawnień",
 	"privileges.section-posting": "Uprawnienia pisania",
@@ -41,7 +41,7 @@
 	"privileges.search-group": "Dodaj grupę",
 	"privileges.copy-to-children": "Skopiuj do podrzędnej",
 	"privileges.copy-from-category": "Skopiuj z kategorii",
-	"privileges.inherit": "W przypadku, gdy grupie <code>registered-users</code> zostaje nadane specyficzne uprawnienia, wszystkie inne grupy otrzymują to <strong>bezwarunkowe uprawnienie</strong>, nawet jeśli ów nie zostało zdefiniowane/zaznaczone. Bezwarunkowe uprawnienie jest wyświetlane ponieważ wszyscy użytkownicy są częścią grupy <code>registered-users</code>, więc uprawnienia dla dodatkowych grup nie mogą się wykluczać.",
+	"privileges.inherit": "Gdy grupie <code>registered-users</code> zostaje nadane określone uprawnienie, to samo <strong>bezwarunkowe uprawnienie</strong> otrzymują też wszystkie inne grupy, nawet jeśli nie zostały zdefiniowane/zaznaczone. Bezwarunkowe uprawnienie jest wyświetlane, ponieważ wszyscy użytkownicy są częścią grupy <code>registered-users</code>, zatem uprawnienia dla dodatkowych grup nie muszą być przyznawane oddzielnie.",
 
 	"analytics.back": "Wróć do listy kategorii",
 	"analytics.title": "Analityka dla \"%1\" kategorii",

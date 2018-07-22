@@ -2,6 +2,8 @@
 	"posts": "پست‌ها",
 	"allow-files": "Allow users to upload regular files",
 	"private": "Make uploaded files private",
+	"private-extensions": "File extensions to make private",
+	"private-uploads-extensions-help": "Enter comma-separated list of file extensions to make private here (e.g. <code>pdf,xls,doc</code>). An empty list means all files are private.",
 	"max-image-width": "Resize images down to specified width (in pixels)",
 	"max-image-width-help": "(in pixels, default: 760 pixels, set to 0 to disable)",
 	"resize-image-quality": "Quality to use when resizing images",

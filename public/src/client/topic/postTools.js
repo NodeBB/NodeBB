@@ -66,6 +66,10 @@ define('forum/topic/postTools', [
 		postEl.find('[component="post/restore"]').toggleClass('hidden', !isDeleted);
 		postEl.find('[component="post/purge"]').toggleClass('hidden', !isDeleted);
 
+		PostTools.removeMenu(postEl);
+	};
+
+	PostTools.removeMenu = function (postEl) {
 		postEl.find('[component="post/tools"] .dropdown-menu').html('');
 	};
 
@@ -338,7 +342,7 @@ define('forum/topic/postTools', [
 		}
 
 		if (post.length) {
-			slug = post.attr('data-userslug');
+			slug = utils.slugify(post.attr('data-username'), true);
 		}
 		if (post.length && post.attr('data-uid') !== '0') {
 			slug = '@' + slug;
