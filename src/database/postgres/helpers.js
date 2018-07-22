@@ -15,10 +15,10 @@ helpers.removeDuplicateValues = function (values) {
 	for (var i = 0; i < values.length; i++) {
 		if (values.lastIndexOf(values[i]) !== i) {
 			values.splice(i, 1);
-			others.forEach(function (o) {
-				o.splice(i, 1);
-			});
-			i--;
+			for (var j = 0; j < others.length; j++) {
+				others[j].splice(i, 1);
+			}
+			i -= 1;
 		}
 	}
 };
