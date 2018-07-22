@@ -11,7 +11,7 @@ helpers.valueToString = function (value) {
 };
 
 helpers.removeDuplicateValues = function (values) {
-	var others = arguments.slice(1);
+	var others = Array.prototype.slice.call(arguments, 1);
 	for (var i = 0; i < values.length; i++) {
 		if (values.lastIndexOf(values[i]) !== i) {
 			values.splice(i, 1);
