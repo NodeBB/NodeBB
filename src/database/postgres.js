@@ -381,6 +381,7 @@ CREATE TABLE IF NOT EXISTS "session" (
 		postgresModule.sessionStore = new sessionStore({
 			pool: db,
 			ttl: ttl,
+			pruneSessionInterval: nconf.get('isPrimary') === 'true' ? 60 : false,
 		});
 
 		callback();
