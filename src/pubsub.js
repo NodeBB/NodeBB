@@ -21,7 +21,7 @@ function get() {
 			process.send({
 				action: 'pubsub',
 				event: event,
-				data: data
+				data: data,
 			});
 		};
 		process.on('message', function (message) {
