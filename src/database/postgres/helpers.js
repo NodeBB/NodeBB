@@ -10,6 +10,19 @@ helpers.valueToString = function (value) {
 	return value.toString();
 };
 
+helpers.removeDuplicateValues = function (values) {
+	var others = arguments.slice(1);
+	for (var i = 0; i < values.length; i++) {
+		if (values.lastIndexOf(values[i]) !== i) {
+			values.splice(i, 1);
+			others.forEach(function (o) {
+				o.splice(i, 1);
+			});
+			i--;
+		}
+	}
+};
+
 helpers.ensureLegacyObjectType = function (db, key, type, callback) {
 	db.query({
 		name: 'ensureLegacyObjectTypeBefore',

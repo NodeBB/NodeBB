@@ -52,6 +52,8 @@ VALUES ($1::TEXT, $2::TEXT, $3::NUMERIC)
 			return parseFloat(score);
 		});
 
+		helpers.removeDuplicateValues(values, scores);
+
 		module.transaction(function (tx, done) {
 			var query = tx.client.query.bind(tx.client);
 

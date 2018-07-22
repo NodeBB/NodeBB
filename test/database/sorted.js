@@ -42,6 +42,21 @@ describe('Sorted Set methods', function () {
 				done();
 			});
 		});
+
+		it('should gracefully handle adding the same element twice', function (done) {
+			db.sortedSetAdd('sorted2', [1, 2], ['value1', 'value1'], function (err) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 1);
+
+				db.sortedSetScore('sorted2', 'value1', function (err, score) {
+					assert.equal(err, null);
+					assert.equal(score, 2);
+					assert.equal(arguments.length, 2);
+
+					done();
+				});
+			});
+		});
 	});
 
 	describe('sortedSetsAdd()', function () {
