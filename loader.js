@@ -36,6 +36,10 @@ Loader.init = function (callback) {
 		};
 	}
 
+	if (nconf.get('singleHostCluster')) {
+		require('socket.io-adapter-cluster/master')();
+	}
+
 	process.on('SIGHUP', Loader.restart);
 	process.on('SIGUSR2', Loader.reload);
 	process.on('SIGTERM', Loader.stop);
@@ -87,6 +91,11 @@ Loader.addWorkerEvents = function (worker) {
 			case 'reload':
 				console.log('[cluster] Reloading...');
 				Loader.reload();
+				break;
+			case 'pubsub':
+				workers.forEach(function (w) {
+					w.send(message);
+				});
 				break;
 			}
 		}

@@ -27,7 +27,7 @@ Sockets.init = function (server) {
 		path: nconf.get('relative_path') + '/socket.io',
 	});
 
-	io.adapter(nconf.get('redis') ? require('../database/redis').socketAdapter() : db.socketAdapter());
+	io.adapter(nconf.get('singleHostCluster') ? require('socket.io-adapter-cluster')() : nconf.get('redis') ? require('../database/redis').socketAdapter() : db.socketAdapter());
 
 	io.use(socketioWildcard);
 	io.use(authorize);
