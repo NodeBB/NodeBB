@@ -106,6 +106,31 @@ app.cacheBuster = null;
 		});
 	};
 
+	app.updateHeader = function (data, callback) {
+		/**
+		 * data:
+		 *   header (obj)
+		 *   config (obj)
+		 *   next (string)
+		 */
+		require(['benchpress'], function (Benchpress) {
+			app.user = data.header.user;
+			data.header.config = data.config;
+			config = data.config;
+			Benchpress.setGlobal('config', config);
+
+			// Manually reconnect socket.io
+			socket.close();
+			socket.open();
+
+			// Re-render top bar menu
+			app.parseAndTranslate('partials/menu', data.header, function (html) {
+				$('#header-menu .container').html(html);
+				callback();
+			});
+		});
+	};
+
 	app.logout = function (e) {
 		if (e) {
 			e.preventDefault();
@@ -125,23 +150,9 @@ app.cacheBuster = null;
 				'x-csrf-token': config.csrf_token,
 			},
 			success: function (data) {
-				require(['benchpress'], function (Benchpress) {
-					app.user = data.header.user;
-					data.header.config = data.config;
-					config = data.config;
-					Benchpress.setGlobal('config', config);
-
-					// Re-render top bar menu
-					app.parseAndTranslate('partials/menu', data.header, function (html) {
-						$('#header-menu .container').html(html);
-					});
-
-					// Manually reconnect socket.io
-					socket.close();
-					socket.open();
-
-					// Overwrite to redirect elsewhere
-					data.next = undefined;
+				app.updateHeader(data, function () {
+					// Overwrite in hook (below) to redirect elsewhere
+					data.next = data.next || undefined;
 
 					$(window).trigger('action:app.loggedOut', data);
 					if (data.next) {

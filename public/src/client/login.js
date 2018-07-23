@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/login', ['benchpress'], function (Benchpress) {
+define('forum/login', [], function () {
 	var	Login = {};
 
 	Login.init = function () {
@@ -36,28 +36,14 @@ define('forum/login', ['benchpress'], function (Benchpress) {
 						'x-csrf-token': config.csrf_token,
 					},
 					success: function (data) {
-						// var pathname = utils.urlToLocation(data.next).pathname;
-
 						var params = utils.params({ url: data.next });
 						params.loggedin = true;
-						// var qs = decodeURIComponent($.param(params));
 
-						app.user = data.header.user;
-						data.header.config = data.config;
-						config = data.config;
-						Benchpress.setGlobal('config', config);
-
-						// Re-render top bar menu
-						app.parseAndTranslate('partials/menu', data.header, function (html) {
-							$('#header-menu .container').html(html);
+						app.updateHeader(data, function () {
 							ajaxify.go(data.next);
+
+							$(window).trigger('action:app.loggedIn', data);
 						});
-
-						// Manually reconnect socket.io
-						socket.close();
-						socket.open();
-
-						$(window).trigger('action:app.loggedIn', data);
 					},
 					error: function (data) {
 						if (data.status === 403 && data.responseText === 'Forbidden') {
