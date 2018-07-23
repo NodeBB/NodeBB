@@ -47,10 +47,16 @@ define('forum/login', ['benchpress'], function (Benchpress) {
 						config = data.config;
 						Benchpress.setGlobal('config', config);
 
+						// Re-render top bar menu
 						app.parseAndTranslate('partials/menu', data.header, function (html) {
 							$('#header-menu .container').html(html);
 							ajaxify.go(data.next);
 						});
+
+						// Manually reconnect socket.io
+						socket.close();
+						socket.open();
+
 						$(window).trigger('action:app.loggedIn', data);
 					},
 					error: function (data) {
