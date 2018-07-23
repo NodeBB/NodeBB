@@ -95,6 +95,7 @@
         "serve-favicon": "^2.4.5",
         "sitemap": "^1.13.0",
         "socket.io": "2.1.1",
+        "socket.io-adapter-cluster": "^1.0.1",
         "socket.io-adapter-mongo": "^2.0.1",
         "socket.io-client": "2.1.1",
         "socket.io-redis": "5.2.0",
