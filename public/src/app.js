@@ -56,9 +56,7 @@ app.cacheBuster = null;
 			app.newTopic();
 		});
 
-		require(['components'], function (components) {
-			components.get('user/logout').on('click', app.logout);
-		});
+		$('#header-menu .container').on('click', '[component="user/logout"]', app.logout);
 
 		Visibility.change(function (event, state) {
 			if (state === 'visible') {

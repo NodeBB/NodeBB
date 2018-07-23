@@ -304,7 +304,6 @@ function continueLogin(req, res, next) {
 						next: destination,
 						header: payload.header,
 						config: payload.config,
-						csrf: req.csrfToken,
 					});
 				}
 			});
@@ -492,7 +491,6 @@ authenticationController.logout = function (req, res, next) {
 					res.status(200).send({
 						header: payload.header,
 						config: payload.config,
-						csrf: req.csrfToken(),
 					});
 				});
 			}
