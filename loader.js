@@ -36,10 +36,6 @@ Loader.init = function (callback) {
 		};
 	}
 
-	if (nconf.get('singleHostCluster')) {
-		require('socket.io-adapter-cluster/master')();
-	}
-
 	process.on('SIGHUP', Loader.restart);
 	process.on('SIGUSR2', Loader.reload);
 	process.on('SIGTERM', Loader.stop);
@@ -95,6 +91,13 @@ Loader.addWorkerEvents = function (worker) {
 			case 'pubsub':
 				workers.forEach(function (w) {
 					w.send(message);
+				});
+				break;
+			case 'socket.io':
+				workers.forEach(function (w) {
+					if (w !== worker) {
+						w.send(message);
+					}
 				});
 				break;
 			}
