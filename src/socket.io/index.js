@@ -28,7 +28,9 @@ Sockets.init = function (server) {
 	});
 
 	if (nconf.get('singleHostCluster')) {
-		io.adapter(require('socket.io-adapter-cluster')());
+		io.adapter(require('socket.io-adapter-cluster')({
+			client: require('./single-host-cluster'),
+		}));
 	} else if (nconf.get('redis')) {
 		io.adapter(require('../database/redis').socketAdapter());
 	} else {
