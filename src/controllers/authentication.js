@@ -12,7 +12,6 @@ var meta = require('../meta');
 var user = require('../user');
 var plugins = require('../plugins');
 var utils = require('../utils');
-var Password = require('../password');
 var translator = require('../translator');
 var helpers = require('./helpers');
 
@@ -398,9 +397,6 @@ authenticationController.localLogin = function (req, username, password, next) {
 			uid = _uid;
 
 			async.parallel({
-				userData: function (next) {
-					db.getObjectFields('user:' + uid, ['password', 'passwordExpiry'], next);
-				},
 				isAdminOrGlobalMod: function (next) {
 					user.isAdminOrGlobalMod(uid, next);
 				},
@@ -410,9 +406,10 @@ authenticationController.localLogin = function (req, username, password, next) {
 			}, next);
 		},
 		function (result, next) {
-			userData = result.userData;
-			userData.uid = uid;
-			userData.isAdminOrGlobalMod = result.isAdminOrGlobalMod;
+			userData = {
+				uid: uid,
+				isAdminOrGlobalMod: result.isAdminOrGlobalMod,
+			};
 
 			if (!result.isAdminOrGlobalMod && parseInt(meta.config.allowLocalLogin, 10) === 0) {
 				return next(new Error('[[error:local-login-disabled]]'));
@@ -425,7 +422,7 @@ authenticationController.localLogin = function (req, username, password, next) {
 			user.auth.logAttempt(uid, req.ip, next);
 		},
 		function (next) {
-			Password.compare(password, userData.password, next);
+			user.isPasswordCorrect(uid, password, next);
 		},
 		function (passwordMatch, next) {
 			if (!passwordMatch) {
