@@ -397,6 +397,7 @@ authenticationController.localLogin = function (req, username, password, next) {
 			uid = _uid;
 
 			async.parallel({
+				userData: async.apply(db.getObjectFields, 'user:' + uid, ['passwordExpiry']),
 				isAdminOrGlobalMod: function (next) {
 					user.isAdminOrGlobalMod(uid, next);
 				},
@@ -406,10 +407,10 @@ authenticationController.localLogin = function (req, username, password, next) {
 			}, next);
 		},
 		function (result, next) {
-			userData = {
+			userData = Object.assign(result.userData, {
 				uid: uid,
 				isAdminOrGlobalMod: result.isAdminOrGlobalMod,
-			};
+			});
 
 			if (!result.isAdminOrGlobalMod && parseInt(meta.config.allowLocalLogin, 10) === 0) {
 				return next(new Error('[[error:local-login-disabled]]'));

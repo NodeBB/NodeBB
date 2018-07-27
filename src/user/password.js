@@ -24,8 +24,11 @@ module.exports = function (User) {
 			},
 			function (_hashedPassword, next) {
 				hashedPassword = _hashedPassword;
-				if (!hashedPassword) {
+				if (uid && !hashedPassword) {
 					return callback(null, true);
+				} else if (!hashedPassword) {
+					// Non-existant user, submit fake hash for comparison
+					hashedPassword = '';
 				}
 
 				User.isPasswordValid(password, 0, next);
