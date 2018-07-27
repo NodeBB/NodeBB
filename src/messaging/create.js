@@ -84,7 +84,6 @@ module.exports = function (Messaging) {
 					async.apply(Messaging.addRoomToUsers, data.roomId, uids, data.timestamp),
 					async.apply(Messaging.addMessageToUsers, data.roomId, uids, mid, data.timestamp),
 					async.apply(Messaging.markUnread, uids, data.roomId),
-					async.apply(Messaging.addUsersToRoom, data.uid, [data.uid], data.roomId),
 				], next);
 			},
 			function (results, next) {
