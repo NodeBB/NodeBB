@@ -60,7 +60,7 @@ module.exports = function (Topics) {
 			function (_postData, next) {
 				_postData = _postData.filter(function (post) {
 					return post && parseInt(post.pid, 10);
-				})
+				});
 				user.blocks.filter(uid, _postData, next);
 			},
 			function (_postData, next) {
