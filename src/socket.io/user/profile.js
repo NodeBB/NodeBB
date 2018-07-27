@@ -205,24 +205,29 @@ module.exports = function (SocketUser) {
 	};
 
 	SocketUser.toggleBlock = function (socket, data, callback) {
-		let current;
+		let isBlocked;
 
 		async.waterfall([
 			function (next) {
-				user.blocks.can(socket.uid, data.blockerUid, data.blockeeUid, next);
+				async.parallel({
+					can: function (next) {
+						user.blocks.can(socket.uid, data.blockerUid, data.blockeeUid, next);
+					},
+					is: function (next) {
+						user.blocks.is(data.blockeeUid, data.blockerUid, next);
+					}
+				}, next);
 			},
-			function (can, next) {
-				if (!can) {
+			function (results, next) {
+				isBlocked = results.is;
+				if (!results.can && !isBlocked) {
 					return next(new Error('[[error:cannot-block-privileged]]'));
 				}
-				user.blocks.is(data.blockeeUid, data.blockerUid, next);
-			},
-			function (is, next) {
-				current = is;
-				user.blocks[is ? 'remove' : 'add'](data.blockeeUid, data.blockerUid, next);
+
+				user.blocks[isBlocked ? 'remove' : 'add'](data.blockeeUid, data.blockerUid, next);
 			},
 		], function (err) {
-			callback(err, !current);
+			callback(err, !isBlocked);
 		});
 	};
 };
