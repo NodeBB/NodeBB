@@ -419,16 +419,13 @@ authenticationController.localLogin = function (req, username, password, next) {
 				return getBanInfo(uid, next);
 			}
 
-			user.auth.logAttempt(uid, req.ip, next);
-		},
-		function (next) {
-			user.isPasswordCorrect(uid, password, next);
+			user.isPasswordCorrect(uid, password, req.ip, next);
 		},
 		function (passwordMatch, next) {
 			if (!passwordMatch) {
 				return next(new Error('[[error:invalid-login-credentials]]'));
 			}
-			user.auth.clearLoginAttempts(uid);
+
 			next(null, userData, '[[success:authentication-successful]]');
 		},
 	], next);

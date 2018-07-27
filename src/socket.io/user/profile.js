@@ -15,7 +15,7 @@ module.exports = function (SocketUser) {
 
 		async.waterfall([
 			function (next) {
-				isPrivilegedOrSelfAndPasswordMatch(socket.uid, data, next);
+				isPrivilegedOrSelfAndPasswordMatch(socket, data, next);
 			},
 			function (next) {
 				SocketUser.updateProfile(socket, data, next);
@@ -72,26 +72,19 @@ module.exports = function (SocketUser) {
 		], callback);
 	};
 
-	function isPrivilegedOrSelfAndPasswordMatch(uid, data, callback) {
+	function isPrivilegedOrSelfAndPasswordMatch(socket, data, callback) {
+		const uid = socket.uid;
+		const isSelf = parseInt(uid, 10) === parseInt(data.uid, 10);
+
 		async.waterfall([
 			function (next) {
 				async.parallel({
 					isAdmin: async.apply(user.isAdministrator, uid),
 					isTargetAdmin: async.apply(user.isAdministrator, data.uid),
 					isGlobalMod: async.apply(user.isGlobalModerator, uid),
-					hasPassword: async.apply(user.hasPassword, data.uid),
-					passwordMatch: function (next) {
-						if (data.password) {
-							user.isPasswordCorrect(data.uid, data.password, next);
-						} else {
-							next(null, false);
-						}
-					},
 				}, next);
 			},
 			function (results, next) {
-				var isSelf = parseInt(uid, 10) === parseInt(data.uid, 10);
-
 				if (results.isTargetAdmin && !results.isAdmin) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
@@ -100,6 +93,17 @@ module.exports = function (SocketUser) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 
+				async.parallel({
+					hasPassword: async.apply(user.hasPassword, data.uid),
+					passwordMatch: function (next) {
+						if (data.password) {
+							user.isPasswordCorrect(data.uid, data.password, socket.ip, next);
+						} else {
+							next(null, false);
+						}
+					},
+				}, next);
+			}, function (results, next) {
 				if (isSelf && results.hasPassword && !results.passwordMatch) {
 					return next(new Error('[[error:invalid-password]]'));
 				}
@@ -119,7 +123,7 @@ module.exports = function (SocketUser) {
 		}
 		async.waterfall([
 			function (next) {
-				user.changePassword(socket.uid, data, next);
+				user.changePassword(socket.uid, Object.assign(data, { ip: socket.ip }), next);
 			},
 			function (next) {
 				events.log({

@@ -37,8 +37,8 @@ SocketUser.deleteAccount = function (socket, data, callback) {
 
 	async.waterfall([
 		function (next) {
-			user.isPasswordCorrect(socket.uid, data.password, function (err, ok) {
-				next(err || !ok ? new Error('[[error:invalid-password]]') : undefined);
+			user.isPasswordCorrect(socket.uid, data.password, socket.ip, function (err, ok) {
+				next(err || (!ok ? new Error('[[error:invalid-password]]') : undefined));
 			});
 		},
 		function (next) {
@@ -61,15 +61,7 @@ SocketUser.deleteAccount = function (socket, data, callback) {
 			});
 			next();
 		},
-	], function (err) {
-		if (err) {
-			return setTimeout(function () {
-				callback(err);
-			}, 2500);
-		}
-
-		callback();
-	});
+	], callback);
 };
 
 SocketUser.emailExists = function (socket, data, callback) {

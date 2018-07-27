@@ -15,7 +15,7 @@ module.exports = function (User) {
 		Password.hash(nconf.get('bcrypt_rounds') || 12, password, callback);
 	};
 
-	User.isPasswordCorrect = function (uid, password, callback) {
+	User.isPasswordCorrect = function (uid, password, ip, callback) {
 		password = password || '';
 		var hashedPassword;
 		async.waterfall([
@@ -30,6 +30,7 @@ module.exports = function (User) {
 
 				User.isPasswordValid(password, 0, next);
 			},
+			async.apply(User.auth.logAttempt, uid, ip),
 			function (next) {
 				Password.compare(password, hashedPassword, next);
 			},
@@ -38,10 +39,11 @@ module.exports = function (User) {
 				return callback(err);
 			}
 
-			// Delay return for incorrect current password
-			setTimeout(function () {
-				callback(null, ok);
-			}, ok ? 0 : 2500);
+			if (ok) {
+				User.auth.clearLoginAttempts(uid);
+			}
+
+			callback(null, ok);
 		});
 	};
 

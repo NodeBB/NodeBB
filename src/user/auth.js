@@ -13,6 +13,7 @@ module.exports = function (User) {
 	User.auth = {};
 
 	User.auth.logAttempt = function (uid, ip, callback) {
+		console.log('attempt logged');
 		if (!parseInt(uid, 10)) {
 			return setImmediate(callback);
 		}

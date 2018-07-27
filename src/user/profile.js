@@ -324,12 +324,12 @@ module.exports = function (User) {
 				if (parseInt(uid, 10) !== parseInt(data.uid, 10)) {
 					User.isAdministrator(uid, next);
 				} else {
-					User.isPasswordCorrect(uid, data.currentPassword, next);
+					User.isPasswordCorrect(uid, data.currentPassword, data.ip, next);
 				}
 			},
 			function (isAdminOrPasswordMatch, next) {
 				if (!isAdminOrPasswordMatch) {
-					return next(new Error('[[error:change_password_error_wrong_current]]'));
+					return next(new Error('[[user:change_password_error_wrong_current]]'));
 				}
 
 				User.hashPassword(data.newPassword, next);
