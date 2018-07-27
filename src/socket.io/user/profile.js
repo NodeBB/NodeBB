@@ -215,7 +215,7 @@ module.exports = function (SocketUser) {
 					},
 					is: function (next) {
 						user.blocks.is(data.blockeeUid, data.blockerUid, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {

@@ -677,7 +677,7 @@ describe('User', function () {
 				assert.ifError(err);
 				socketUser.changePassword({ uid: uid }, { uid: uid, newPassword: '654321', currentPassword: '123456' }, function (err) {
 					assert.ifError(err);
-					User.isPasswordCorrect(uid, '654321', function (err, correct) {
+					User.isPasswordCorrect(uid, '654321', '127.0.0.1', function (err, correct) {
 						assert.ifError(err);
 						assert(correct);
 						done();
