@@ -154,7 +154,9 @@ function generateForCategory(req, res, next) {
 	}
 	var cid = req.params.category_id;
 	var category;
-
+	if (!parseInt(cid, 10)) {
+		return next();
+	}
 	async.waterfall([
 		function (next) {
 			async.parallel({

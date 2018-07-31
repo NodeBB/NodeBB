@@ -83,6 +83,14 @@ describe('feeds', function () {
 		});
 	});
 
+	it('should 404 if category id is not a number', function (done) {
+		request(nconf.get('url') + '/category/invalid.rss', function (err, res) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 404);
+			done();
+		});
+	});
+
 	it('should redirect if we do not have read privilege', function (done) {
 		privileges.categories.rescind(['topics:read'], cid, 'guests', function (err) {
 			assert.ifError(err);
