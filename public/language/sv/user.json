@@ -1,7 +1,7 @@
 {
     "banned": "Bannlyst",
     "offline": "Offline",
-    "deleted": "Deleted",
+    "deleted": "Raderad",
     "username": "Användarnamn",
     "joindate": "Gick med",
     "postcount": "Antal inlägg",
@@ -12,7 +12,7 @@
     "ban_account_confirm": "Vill du verkligen bannlysa den här användaren?",
     "unban_account": "Ta bort bannlysning",
     "delete_account": "Ta bort ämne",
-    "delete_account_confirm": "Are you sure you want to delete your account? <br /><strong>This action is irreversible and you will not be able to recover any of your data</strong><br /><br />Enter your password to confirm that you wish to destroy this account.",
+    "delete_account_confirm": "Är du säker på att du vill radera ditt konto?<br /><strong>Denna åtgärd går inte att ångra och du kommer inte kunna återställa ditt konto</strong><br /><br />Skriv in ditt användarnamn för att bekräfta att du vill radera ditt konto.",
     "delete_this_account_confirm": "Är du säker på att du vill ta bort detta konto? <br /><strong>Detta går ej att ångra - data går förlorad för alltid</strong><br /><br />",
     "account-deleted": "Kontot raderat",
     "fullname": "Hela namnet",
