@@ -25,7 +25,7 @@
     "upvoted_your_post_in_dual": "<strong>%1</strong>さんと<strong>%2</strong>さんが<strong>%3</strong>に高評価をつけました。",
     "upvoted_your_post_in_multiple": "<strong>%1</strong> と%2 などのユーザーが、あなたの投稿 <strong>%3</strong> に高評価をつけました。",
     "moved_your_post": "<strong>%1</strong> は、あなたの投稿 <strong>%2</strong> に移動しました。",
-    "moved_your_topic": "<strong>%1</strong> は <strong>%2</strong> へ移動しました。",
+    "moved_your_topic": "<strong>%1</strong> は <strong>%2</strong> を移動しました。",
     "user_flagged_post_in": "<strong>%1</strong> は <strong>%2</strong> の投稿にフラグを付けました。",
     "user_flagged_post_in_dual": "<strong>%1</strong> と <strong>%2</strong> は <strong>%3</strong> の投稿にフラグを立てました。",
     "user_flagged_post_in_multiple": "<strong>%1</strong> と %2 または他のユーザーが投稿 <strong>%3</strong>にフラグをつけました。",
