@@ -58,6 +58,10 @@ define('forum/chats', [
 		Chats.addScrollHandler(ajaxify.data.roomId, ajaxify.data.uid, $('.chat-content'));
 		Chats.addCharactersLeftHandler($('[component="chat/main-wrapper"]'));
 		Chats.addIPHandler($('[component="chat/main-wrapper"]'));
+
+		$('[data-action="close"]').on('click', function () {
+			Chats.switchChat();
+		});
 	};
 
 	Chats.addIPHandler = function (container) {
@@ -385,6 +389,11 @@ define('forum/chats', [
 	};
 
 	Chats.switchChat = function (roomid) {
+		// Allow empty arg for return to chat list/close chat
+		if (!roomid) {
+			roomid = '';
+		}
+
 		var url = 'user/' + ajaxify.data.userslug + '/chats/' + roomid;
 		if (self.fetch) {
 			fetch(config.relative_path + '/api/' + url, { credentials: 'include' })

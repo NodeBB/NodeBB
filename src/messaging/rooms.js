@@ -229,6 +229,14 @@ module.exports = function (Messaging) {
 			function (uids, next) {
 				user.getUsersFields(uids, ['uid', 'username', 'picture', 'status'], next);
 			},
+			function (users, next) {
+				db.getObjectField('chat:room:' + roomId, 'owner', function (err, ownerId) {
+					next(err, users.map(function (user) {
+						user.isOwner = parseInt(user.uid, 10) === parseInt(ownerId, 10);
+						return user;
+					}));
+				});
+			},
 		], callback);
 	};
 

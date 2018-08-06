@@ -25,7 +25,7 @@ define('forum/topic/merge', function () {
 
 			modal.find('.close,#merge_topics_cancel').on('click', closeModal);
 
-			$('[component="category"]').on('click', '[component="category/topic"] a', onTopicClicked);
+			$('#content').on('click', '[component="category"] [component="category/topic"] a', onTopicClicked);
 
 			showTopicsSelected();
 
@@ -101,7 +101,7 @@ define('forum/topic/merge', function () {
 			modal = null;
 		}
 		selectedTids = {};
-		$('[component="category"]').off('click', '[component="category/topic"] a', onTopicClicked);
+		$('#content').off('click', '[component="category"] [component="category/topic"] a', onTopicClicked);
 	}
 
 	return Merge;

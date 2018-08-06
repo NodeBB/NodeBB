@@ -85,18 +85,18 @@
 						<div class="pointer" style="padding: 20px; border: 1px dotted #dedede; margin-bottom: 20px;" data-container-html=" ">
 							[[admin/extend/widgets:containers.none]]
 						</div>
-						<div class="well pointer" data-container-html='<div class="well">\{{body\}}</div>'>
+						<div class="well pointer" data-container-html='<div class="well">\{{body}}</div>'>
 							[[admin/extend/widgets:container.well]]
 						</div>
-						<div class="jumbotron pointer" data-container-html='<div class="jumbotron">\{{body\}}</div>'>
+						<div class="jumbotron pointer" data-container-html='<div class="jumbotron">\{{body}}</div>'>
 							[[admin/extend/widgets:container.jumbotron]]
 						</div>
-						<div class="panel" data-container-html='<div class="panel panel-default"><div class="panel-body">\{{body\}}</div></div>'>
+						<div class="panel" data-container-html='<div class="panel panel-default"><div class="panel-body">\{{body}}</div></div>'>
 							<div class="panel-body pointer">
 								[[admin/extend/widgets:container.panel]]
 							</div>
 						</div>
-						<div class="panel panel-default pointer" data-container-html='<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">\{{title\}}</h3></div><div class="panel-body">\{{body\}}</div></div>'>
+						<div class="panel panel-default pointer" data-container-html='<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">\{{title}}</h3></div><div class="panel-body">\{{body}}</div></div>'>
 							<div class="panel-heading">
 								[[admin/extend/widgets:container.panel-header]]
 								<div class="pull-right color-selector">
@@ -113,7 +113,7 @@
 							</div>
 						</div>
 
-						<div class="alert alert-info pointer" data-container-html='<div class="alert alert-info">\{{body\}}</div>'>
+						<div class="alert alert-info pointer" data-container-html='<div class="alert alert-info">\{{body}}</div>'>
 							[[admin/extend/widgets:container.alert]]
 							<div class="pull-right color-selector">
 								<button data-class="alert-success" class="btn btn-xs btn-success">&nbsp;&nbsp;</button>
