@@ -25,6 +25,14 @@ databaseController.get = function (req, res, next) {
 						next();
 					}
 				},
+				postgres: function (next) {
+					if (nconf.get('postgres')) {
+						var pdb = require('../../database/postgres');
+						pdb.info(pdb.pool, next);
+					} else {
+						next();
+					}
+				},
 			}, next);
 		},
 		function (results) {

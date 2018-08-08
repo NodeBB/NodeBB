@@ -57,6 +57,19 @@
 		</div>
 		<!-- ENDIF redis -->
 
+		<!-- IF postgres -->
+		<div class="panel panel-default">
+			<div class="panel-heading"><i class="fa fa-hdd-o"></i> [[admin/advanced/database:postgres]]</div>
+			<div class="panel-body">
+				<div class="database-info">
+					<span>[[admin/advanced/database:postgres.version]]</span> <span class="text-right">{postgres.version}</span><br/>
+					<hr/>
+					<span>[[admin/advanced/database:uptime-seconds]]</span> <span class="text-right formatted-number">{postgres.uptime}</span><br/>
+				</div>
+			</div>
+		</div>
+		<!-- ENDIF postgres -->
+
 		<!-- IF mongo -->
 		<div class="panel panel-default">
 			<div class="panel-heading" data-toggle="collapse" data-target=".mongodb-raw">
@@ -84,5 +97,19 @@
 			</div>
 		</div>
 		<!-- ENDIF redis -->
+
+		<!-- IF postgres -->
+		<div class="panel panel-default">
+			<div class="panel-heading" data-toggle="collapse" data-target=".postgresql-raw">
+				<h3 class="panel-title"><i class="fa fa-caret-down"></i> [[admin/advanced/database:postgres.raw-info]]</h3>
+			</div>
+
+			<div class="panel-body postgresql-raw collapse">
+				<div class="highlight">
+					<pre>{postgres.raw}</pre>
+				</div>
+			</div>
+		</div>
+		<!-- ENDIF postgres -->
 	</div>
 </div>

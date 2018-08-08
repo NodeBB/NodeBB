@@ -102,6 +102,7 @@
 						<select class="form-control" name="database">
 							<option value="redis">Redis</option>
 							<option value="mongo">MongoDB</option>
+							<option value="postgres">PostgreSQL</option>
 						</select>
 					</div>
 					<div class="col-sm-5 help-text" data-help="Leave the fields blank to use the default settings."><!-- IF error -->There was an error connecting to your database. Please try again.<!-- ENDIF error --></div>
