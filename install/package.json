@@ -35,7 +35,7 @@
         "connect-flash": "^0.1.1",
         "connect-mongo": "2.0.1",
         "connect-multiparty": "^2.1.0",
-        "connect-pg-simple": "^4.2.1",
+        "connect-pg-simple": "^5.0.0",
         "connect-redis": "3.3.3",
         "continuation-local-storage": "^3.2.1",
         "cookie-parser": "^1.4.3",
