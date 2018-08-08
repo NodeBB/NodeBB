@@ -2,7 +2,8 @@
 
 var util = require('util');
 
-module.exports = function (theModule) {
+module.exports = function (theModule, ignoreKeys) {
+	ignoreKeys = ignoreKeys || [];
 	function isCallbackedFunction(func) {
 		if (typeof func !== 'function') {
 			return false;
@@ -16,6 +17,9 @@ module.exports = function (theModule) {
 		}
 		var keys = Object.keys(module);
 		keys.forEach(function (key) {
+			if (ignoreKeys.includes(key)) {
+				return;
+			}
 			if (isCallbackedFunction(module[key])) {
 				parent[key] = util.promisify(module[key]);
 			} else if (typeof module[key] === 'object') {
