@@ -6,7 +6,7 @@ var nconf = require('nconf');
 module.exports = function (app) {
 	var router = express.Router();
 
-	router.get('/test', function (req, res) {
+	router.get('/test', async function (req, res) {
 		res.redirect(404);
 	});
 

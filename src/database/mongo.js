@@ -119,13 +119,15 @@ mongoModule.init = function (callback) {
 		client = _client;
 		db = client.db();
 
-		mongoModule.client = db;
-
 		require('./mongo/main')(db, mongoModule);
 		require('./mongo/hash')(db, mongoModule);
 		require('./mongo/sets')(db, mongoModule);
 		require('./mongo/sorted')(db, mongoModule);
 		require('./mongo/list')(db, mongoModule);
+		mongoModule.async = require('../promisify')(mongoModule);
+
+		mongoModule.client = db;
+
 		callback();
 	});
 };

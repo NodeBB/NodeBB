@@ -43,14 +43,15 @@ redisModule.init = function (callback) {
 			winston.error('NodeBB could not connect to your Redis database. Redis returned the following error', err);
 			return callback(err);
 		}
-		redisModule.client = redisClient;
 
 		require('./redis/main')(redisClient, redisModule);
 		require('./redis/hash')(redisClient, redisModule);
 		require('./redis/sets')(redisClient, redisModule);
 		require('./redis/sorted')(redisClient, redisModule);
 		require('./redis/list')(redisClient, redisModule);
+		redisModule.async = require('../promisify')(redisModule);
 
+		redisModule.client = redisClient;
 		callback();
 	});
 };
