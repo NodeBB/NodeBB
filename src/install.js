@@ -126,7 +126,8 @@ function setupConfig(next) {
 				var config = {};
 				var redisQuestions = require('./database/redis').questions;
 				var mongoQuestions = require('./database/mongo').questions;
-				var allQuestions = questions.main.concat(questions.optional).concat(redisQuestions).concat(mongoQuestions);
+				var postgresQuestions = require('./database/postgres').questions;
+				var allQuestions = questions.main.concat(questions.optional).concat(redisQuestions).concat(mongoQuestions).concat(postgresQuestions);
 
 				allQuestions.forEach(function (question) {
 					config[question.name] = install.values[question.name] || question.default || undefined;

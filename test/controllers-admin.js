@@ -185,6 +185,8 @@ describe('Admin Controllers', function () {
 				assert(body.redis);
 			} else if (nconf.get('mongo')) {
 				assert(body.mongo);
+			} else if (nconf.get('postgres')) {
+				assert(body.postgres);
 			}
 			done();
 		});

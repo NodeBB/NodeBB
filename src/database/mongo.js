@@ -124,6 +124,7 @@ mongoModule.init = function (callback) {
 		require('./mongo/sets')(db, mongoModule);
 		require('./mongo/sorted')(db, mongoModule);
 		require('./mongo/list')(db, mongoModule);
+		require('./mongo/transaction')(db, mongoModule);
 		mongoModule.async = require('../promisify')(mongoModule);
 
 		mongoModule.client = db;
