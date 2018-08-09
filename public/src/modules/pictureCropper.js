@@ -152,6 +152,7 @@ define('pictureCropper', ['translator', 'cropper', 'benchpress'], function (tran
 			if (type === 'error') {
 				data.uploadModal.find('#fileUploadSubmitBtn').removeClass('disabled');
 			}
+			data.uploadModal.find('#alert-' + type).translateText(message).removeClass('hide');
 		}
 		var fileInput = data.uploadModal.find('#fileInput');
 		if (!fileInput.val()) {
