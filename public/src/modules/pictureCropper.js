@@ -50,6 +50,7 @@ define('pictureCropper', ['translator', 'cropper', 'benchpress'], function (tran
 					aspectRatio: data.aspectRatio,
 					autoCropArea: 1,
 					viewMode: 1,
+					checkCrossOrigin: false,
 					cropmove: function () {
 						if (data.restrictImageDimension) {
 							if (cropperTool.cropBoxData.width > data.imageDimension) {
@@ -96,7 +97,17 @@ define('pictureCropper', ['translator', 'cropper', 'benchpress'], function (tran
 
 						cropperModal.find('.crop-btn').on('click', function () {
 							$(this).addClass('disabled');
-							var imageData = data.imageType ? cropperTool.getCroppedCanvas().toDataURL(data.imageType) : cropperTool.getCroppedCanvas().toDataURL();
+							var imageData;
+							try {
+								imageData = data.imageType ? cropperTool.getCroppedCanvas().toDataURL(data.imageType) : cropperTool.getCroppedCanvas().toDataURL();
+							} catch (err) {
+								if (err.message === 'Failed to execute \'toDataURL\' on \'HTMLCanvasElement\': Tainted canvases may not be exported.') {
+									app.alertError('[[error:cors-error]]');
+								} else {
+									app.alertError(err.message);
+								}
+								return;
+							}
 
 							cropperModal.find('#upload-progress-bar').css('width', '100%');
 							cropperModal.find('#upload-progress-box').show().removeClass('hide');
@@ -138,13 +149,10 @@ define('pictureCropper', ['translator', 'cropper', 'benchpress'], function (tran
 
 	function onSubmit(data, callback) {
 		function showAlert(type, message) {
-			module.hideAlerts(data.uploadModal);
 			if (type === 'error') {
 				data.uploadModal.find('#fileUploadSubmitBtn').removeClass('disabled');
 			}
-			data.uploadModal.find('#alert-' + type).translateText(message).removeClass('hide');
 		}
-
 		var fileInput = data.uploadModal.find('#fileInput');
 		if (!fileInput.val()) {
 			return showAlert('error', '[[uploads:select-file-to-upload]]');
