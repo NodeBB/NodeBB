@@ -121,6 +121,7 @@ define('taskbar', ['benchpress'], function (Benchpress) {
 				'<span component="taskbar/title">' + title + '</span>' +
 				'</a>')
 			.attr({
+				title: title,
 				'data-module': data.module,
 				'data-uuid': data.uuid,
 			})

@@ -74,10 +74,12 @@ define('chat', [
 					app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + username + ']]');
 					sounds.play('chat-incoming', 'chat.incoming:' + data.message.mid);
 
-					taskbar.push('chat', modal.attr('data-uuid'), {
-						title: data.roomName || username,
-						touid: data.message.fromUser.uid,
-						roomId: data.roomId,
+					translator.translate('[[modules:chat.chatting_with]]', function (chattingWith) {
+						taskbar.push('chat', modal.attr('data-uuid'), {
+							title: chattingWith + ' ' + (data.roomName || username),
+							touid: data.message.fromUser.uid,
+							roomId: data.roomId,
+						});
 					});
 				}
 			} else if (!ajaxify.data.template.chats) {
@@ -249,11 +251,13 @@ define('chat', [
 			Chats.addCharactersLeftHandler(chatModal);
 			Chats.addIPHandler(chatModal);
 
-			taskbar.push('chat', chatModal.attr('data-uuid'), {
-				title: data.roomName || (data.users.length ? data.users[0].username : ''),
-				roomId: data.roomId,
-				icon: 'fa-comment',
-				state: '',
+			translator.translate('[[modules:chat.chatting_with]]', function (chattingWith) {
+				taskbar.push('chat', chatModal.attr('data-uuid'), {
+					title: chattingWith + ' ' + (data.roomName || (data.users.length ? data.users[0].username : '')),
+					roomId: data.roomId,
+					icon: 'fa-comment',
+					state: '',
+				});
 			});
 
 			$(window).trigger('action:chat.loaded', chatModal);
