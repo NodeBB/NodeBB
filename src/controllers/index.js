@@ -92,6 +92,7 @@ Controllers.login = function (req, res, next) {
 
 	var allowLoginWith = (meta.config.allowLoginWith || 'username-email');
 	var returnTo = (req.headers['x-return-to'] || '').replace(nconf.get('base_url'), '');
+	console.log('returnTo is', returnTo);
 
 	var errorText;
 	if (req.query.error === 'csrf-invalid') {
