@@ -99,7 +99,10 @@ Flags.get = function (flagId, callback) {
 					target_readable: data.base.type.charAt(0).toUpperCase() + data.base.type.slice(1) + ' ' + data.base.targetId,
 					target: payload.targetObj,
 					history: data.history,
-					notes: data.notes,
+					notes: data.notes.map((note) => {
+						note.content = validator.escape(note.content);
+						return note;
+					}),
 					reporter: payload.userObj,
 				}));
 			});
