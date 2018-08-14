@@ -42,7 +42,7 @@
 	"section-appearance": "Görünüm",
 	"appearance/themes": "Temalar",
 	"appearance/skins": "Deriler",
-	"appearance/customise": "Custom Content (HTML/JS/CSS)",
+	"appearance/customise": "Özelleşmiş İçerik (HTML / JS / CSS)",
 
 	"section-extend": "Genişletme",
 	"extend/plugins": "Eklentiler",
@@ -63,19 +63,19 @@
 	"development/logger": "Kaydedici",
 	"development/info": "bilgi",
 
-	"rebuild-and-restart-forum": "Rebuild & Restart Forum",
+	"rebuild-and-restart-forum": "Forumu Yeniden oluştur &amp; Yeniden Başlat",
 	"restart-forum": "Forumu Yeniden Başlat",
 	"logout": "Çıkış",
 	"view-forum": "Forumu Görüntüle",
 
 	"search.placeholder": "Ayarları ara",
 	"search.no-results": "Sonuç yok...",
-	"search.search-forum": "Search the forum for <strong></strong>",
+	"search.search-forum": "Forumda ara: <strong></strong>",
 	"search.keep-typing": "Sonuçları görmek için daha fazla yazın...",
 	"search.start-typing": "Sonuçları görmek için yazmaya başlayın...",
 
-	"connection-lost": "Connection to %1 has been lost, attempting to reconnect...",
+	"connection-lost": "% 1 ile bağlantı kesildi, yeniden bağlanılmaya çalışılıyor...",
 
-	"alerts.version": "Running <strong>NodeBB v%1</strong>",
-	"alerts.upgrade": "Upgrade to v%1"
+	"alerts.version": "<strong>NodeBB v%1</strong>",
+	"alerts.upgrade": "Güncelle: v%1"
 }

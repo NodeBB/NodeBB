@@ -29,8 +29,8 @@
 	"redis.memory-frag-ratio": "Bellek Parçalanma Oranı",
 	"redis.total-connections-recieved": "Alınan Bağlantılar (Toplam)",
 	"redis.total-commands-processed": "İşlenen Komutlar (Toplam)",
-	"redis.iops": "Instantaneous Ops. Per Second",
-	"redis.keyspace-hits": "Keyspace Hits",
-	"redis.keyspace-misses": "Keyspace Misses",
+	"redis.iops": "Saniyede işlenen komut sayısı (Redis)",
+	"redis.keyspace-hits": "Başarılı anahtar arama sayısı: keyspace_hits (Redis)",
+	"redis.keyspace-misses": "Başarısız anahtar arama sayısı: keyspace_misses (Redis)",
 	"redis.raw-info": "İşlenmemiş Redis Bilgisi"
 }
