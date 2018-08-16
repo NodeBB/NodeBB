@@ -84,10 +84,24 @@ module.exports = function (Categories) {
 				], next);
 			},
 			function (results, next) {
-				if (data.cloneFromCid && parseInt(data.cloneFromCid, 10)) {
-					return Categories.copySettingsFrom(data.cloneFromCid, category.cid, !data.parentCid, next);
-				}
-				next(null, category);
+				async.series([
+					function (next) {
+						if (data.cloneFromCid && parseInt(data.cloneFromCid, 10)) {
+							return Categories.copySettingsFrom(data.cloneFromCid, category.cid, !data.parentCid, next);
+						}
+
+						next();
+					},
+					function (next) {
+						if (data.cloneChildren) {
+							return duplicateCategoriesChildren(category.cid, data.cloneFromCid, data.uid, next);
+						}
+
+						next();
+					},
+				], function (err) {
+					next(err, category);
+				});
 			},
 			function (category, next) {
 				plugins.fireHook('action:category.create', { category: category });
@@ -95,6 +109,25 @@ module.exports = function (Categories) {
 			},
 		], callback);
 	};
+
+	function duplicateCategoriesChildren(parentCid, cid, uid, callback) {
+		Categories.getChildren([cid], uid, function (err, children) {
+			if (err || !children.length) {
+				return callback(err);
+			}
+
+			children = children[0];
+
+			children.forEach(function (child) {
+				child.parentCid = parentCid;
+				child.cloneFromCid = child.cid;
+				child.cloneChildren = true;
+				child.uid = uid;
+			});
+
+			async.each(children, Categories.create, callback);
+		});
+	}
 
 	Categories.assignColours = function () {
 		var backgrounds = ['#AB4642', '#DC9656', '#F7CA88', '#A1B56C', '#86C1B9', '#7CAFC2', '#BA8BAF', '#A16946'];
