@@ -12,6 +12,7 @@ var categories = require('../categories');
 var plugins = require('../plugins');
 var meta = require('../meta');
 var middleware = require('../middleware');
+var utils = require('../utils');
 
 var helpers = module.exports;
 
@@ -227,15 +228,34 @@ helpers.buildTitle = function (pageTitle) {
 	return title;
 };
 
+helpers.getCategories = function (set, uid, privilege, selectedCid, callback) {
+	async.waterfall([
+		function (next) {
+			categories.getCidsByPrivilege(set, uid, privilege, next);
+		},
+		function (cids, next) {
+			getCategoryData(cids, uid, selectedCid, next);
+		},
+	], callback);
+};
+
 helpers.getWatchedCategories = function (uid, selectedCid, callback) {
-	if (selectedCid && !Array.isArray(selectedCid)) {
-		selectedCid = [selectedCid];
-	}
 	async.waterfall([
 		function (next) {
 			user.getWatchedCategories(uid, next);
 		},
 		function (cids, next) {
+			getCategoryData(cids, uid, selectedCid, next);
+		},
+	], callback);
+};
+
+function getCategoryData(cids, uid, selectedCid, callback) {
+	if (selectedCid && !Array.isArray(selectedCid)) {
+		selectedCid = [selectedCid];
+	}
+	async.waterfall([
+		function (next) {
 			privileges.categories.filterCids('read', cids, uid, next);
 		},
 		function (cids, next) {
@@ -249,6 +269,7 @@ helpers.getWatchedCategories = function (uid, selectedCid, callback) {
 			var selectedCids = [];
 			categoryData.forEach(function (category) {
 				category.selected = selectedCid ? selectedCid.indexOf(String(category.cid)) !== -1 : false;
+				category.parentCid = category.hasOwnProperty('parentCid') && utils.isNumber(category.parentCid) ? category.parentCid : 0;
 				if (category.selected) {
 					selectedCategory.push(category);
 					selectedCids.push(parseInt(category.cid, 10));
@@ -280,7 +301,7 @@ helpers.getWatchedCategories = function (uid, selectedCid, callback) {
 			next(null, { categories: categoriesData, selectedCategory: selectedCategory, selectedCids: selectedCids });
 		},
 	], callback);
-};
+}
 
 function recursive(category, categoriesData, level) {
 	category.level = level;
