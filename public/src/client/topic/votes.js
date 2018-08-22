@@ -73,7 +73,7 @@ define('forum/topic/votes', ['components', 'translator', 'benchpress'], function
 				app.alertError(err.message);
 			}
 
-			if (err.message === '[[error:not-logged-in]]') {
+			if (err && err.message === '[[error:not-logged-in]]') {
 				ajaxify.go('login');
 			}
 		});
