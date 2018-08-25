@@ -19,6 +19,7 @@
 	"parent-category-none": "(없음)",
 	"copy-settings": "에서 설정 복사",
 	"optional-clone-settings": "(선택) 게시판에서 설정 복사",
+	"clone-children": "Clone Children Categories And Settings",
 	"purge": "게시판 삭제",
 
 	"enable": "활성화",

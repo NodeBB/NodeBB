@@ -78,6 +78,7 @@
     "still-uploading": "אנא המתן לסיום ההעלאות",
     "file-too-big": "הגודל המקסימלי של הקובץ הוא %1 קילובייט - אנא העלה קובץ קטן יותר",
     "guest-upload-disabled": "העלאת אורחים אינה מאופשרת",
+    "cors-error": "Unable to upload image due to misconfigured CORS",
     "already-bookmarked": "כבר הוספת פוסט זה לרשימת המסומנים",
     "already-unbookmarked": "כבר הסרת פוסט זה מרשימת המסומנים",
     "cant-ban-other-admins": "אינך יכול לחסום מנהלים אחרים!",

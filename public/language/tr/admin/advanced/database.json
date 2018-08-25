@@ -32,5 +32,9 @@
 	"redis.iops": "Saniyede işlenen komut sayısı (Redis)",
 	"redis.keyspace-hits": "Başarılı anahtar arama sayısı: keyspace_hits (Redis)",
 	"redis.keyspace-misses": "Başarısız anahtar arama sayısı: keyspace_misses (Redis)",
-	"redis.raw-info": "İşlenmemiş Redis Bilgisi"
+	"redis.raw-info": "İşlenmemiş Redis Bilgisi",
+
+	"postgres": "Postgres",
+	"postgres.version": "PostgreSQL Sürüm",
+	"postgres.raw-info": "İşlenmemiş Postgres Bilgisi"
 }

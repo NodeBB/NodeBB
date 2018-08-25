@@ -6,6 +6,5 @@
 	"max-posts-per-page": "Maximálne množstvo príspevkov na stránku",
 	"categories": "Stránkovanie kategórií",
 	"topics-per-page": "Tém na stránku",
-	"max-topics-per-page": "Maximálne množstvo tém na stránku",
-	"initial-num-load": "Počiatočný počet tém, ktoré sa majú načítať u neprečítaných, nedávnych a populárnych"
+	"max-topics-per-page": "Maximálne množstvo tém na stránku"
 }

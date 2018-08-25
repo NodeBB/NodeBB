@@ -19,6 +19,7 @@
 	"parent-category-none": "(nič)",
 	"copy-settings": "Kopírovať nastavenia z",
 	"optional-clone-settings": "Klonovať nastavenia z kategórie (odporúčané)",
+	"clone-children": "Clone Children Categories And Settings",
 	"purge": "Vyčistiť kategóriu",
 
 	"enable": "Povoliť",

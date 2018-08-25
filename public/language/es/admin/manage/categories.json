@@ -19,6 +19,7 @@
 	"parent-category-none": "(Ninguna)",
 	"copy-settings": "Copiar Configuración Desde",
 	"optional-clone-settings": "(Opcional) Clonar Configuración De Categoría",
+	"clone-children": "Clone Children Categories And Settings",
 	"purge": "Purgar Categoría",
 
 	"enable": "Activar",

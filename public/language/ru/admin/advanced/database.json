@@ -32,5 +32,9 @@
 	"redis.iops": "Мгновенные операции. в секунду",
 	"redis.keyspace-hits": "Количество ключевых просмотров",
 	"redis.keyspace-misses": "Количество не ключевых просмотров",
-	"redis.raw-info": "Redis необработанная информация"
+	"redis.raw-info": "Redis необработанная информация",
+
+	"postgres": "Postgres",
+	"postgres.version": "PostgreSQL Version",
+	"postgres.raw-info": "Postgres Raw Info"
 }

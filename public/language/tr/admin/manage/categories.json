@@ -19,6 +19,7 @@
 	"parent-category-none": "(Hiçbiri)",
 	"copy-settings": "Ayarları Başka Bir Yerden Kopyala",
 	"optional-clone-settings": "(İsteğe Bağlı) Kategoriden Ayarları Klonla",
+	"clone-children": "Alt Kategori ve Ayarlarını Çoğalt",
 	"purge": "Kategoriyi Temizle",
 
 	"enable": "Etkinleştir",

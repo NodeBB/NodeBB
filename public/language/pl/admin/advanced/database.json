@@ -32,5 +32,9 @@
 	"redis.iops": "Natychmiastowe Operacje Na Sekundę",
 	"redis.keyspace-hits": "Trafione Klucze",
 	"redis.keyspace-misses": "Nietrafione Klucze",
-	"redis.raw-info": "Informacje Redis"
+	"redis.raw-info": "Informacje Redis",
+
+	"postgres": "Postgres",
+	"postgres.version": "PostgreSQL Version",
+	"postgres.raw-info": "Postgres Raw Info"
 }

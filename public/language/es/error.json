@@ -78,6 +78,7 @@
     "still-uploading": "Por favor, espera a que terminen las subidas.",
     "file-too-big": "El tamaño de fichero máximo es de %1 kB - por favor, suba un fichero más pequeño",
     "guest-upload-disabled": "Las subidas están deshabilitadas para los invitados",
+    "cors-error": "Unable to upload image due to misconfigured CORS",
     "already-bookmarked": "Ya marcaste este mensaje",
     "already-unbookmarked": "Ya desmarcarste este mensaje",
     "cant-ban-other-admins": "¡No puedes expulsar a otros administradores!",

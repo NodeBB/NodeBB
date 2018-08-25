@@ -32,5 +32,9 @@
 	"redis.iops": "每秒实时操作数",
 	"redis.keyspace-hits": "Keyspace 命中",
 	"redis.keyspace-misses": "Keyspace 未命中",
-	"redis.raw-info": "Redis 原始信息"
+	"redis.raw-info": "Redis 原始信息",
+
+	"postgres": "Postgres",
+	"postgres.version": "PostgreSQL Version",
+	"postgres.raw-info": "Postgres Raw Info"
 }

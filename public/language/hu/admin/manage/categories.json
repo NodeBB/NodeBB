@@ -19,6 +19,7 @@
 	"parent-category-none": "(Nincs)",
 	"copy-settings": "Beállítások másolása",
 	"optional-clone-settings": "(Nem kötelező) Beállítások klónozása az alábbi kategóriából",
+	"clone-children": "Clone Children Categories And Settings",
 	"purge": "Kategória kitörlése",
 
 	"enable": "Engedélyezés",

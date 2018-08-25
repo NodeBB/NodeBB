@@ -78,6 +78,7 @@
     "still-uploading": "Vyčkejte, než se vše kompletně nahraje.",
     "file-too-big": "Maximální povolená velikost je %1 kB – nahrajte menší soubor",
     "guest-upload-disabled": "Nahrávání od hostů nebylo povoleno",
+    "cors-error": "Unable to upload image due to misconfigured CORS",
     "already-bookmarked": "Již jste tento příspěvek zazáložkoval",
     "already-unbookmarked": "Již jste u tohoto příspěvku odebral záložku",
     "cant-ban-other-admins": "Nemůžete zablokovat jiné správce.",

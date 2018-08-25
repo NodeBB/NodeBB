@@ -78,6 +78,7 @@
     "still-uploading": "Vui lòng chờ upload",
     "file-too-big": "Kích cỡ file được cho phép tối đa là %1 kB - vui lòng tải lên file có dung lượng nhỏ hơn.",
     "guest-upload-disabled": "Khách (chưa có tài khoản) không có quyền tải lên file.",
+    "cors-error": "Unable to upload image due to misconfigured CORS",
     "already-bookmarked": "Bạn đã bookmark chủ đề này rồi",
     "already-unbookmarked": "Bạn đã hủy bookmark chủ đề này rồi",
     "cant-ban-other-admins": "Bạn không thể cấm được các quản trị viên khác",

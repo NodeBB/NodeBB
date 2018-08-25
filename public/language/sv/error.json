@@ -78,6 +78,7 @@
     "still-uploading": "Vänta medan uppladdningen slutförs.",
     "file-too-big": "Den maximalt tillåtna filstorleken är %1 kB - var god ladda upp en mindre fil",
     "guest-upload-disabled": "Uppladdningar av oregistrerade användare har inaktiverats",
+    "cors-error": "Unable to upload image due to misconfigured CORS",
     "already-bookmarked": "Du har redan bokmärkt det här inlägget",
     "already-unbookmarked": "Du har redan tagit bort bokmärket för det här inlägget",
     "cant-ban-other-admins": "Du kan inte bannlysa andra administratörer!",
