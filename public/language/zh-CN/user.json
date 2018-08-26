@@ -52,7 +52,7 @@
     "default_picture": "默认图标",
     "uploaded_picture": "已有头像",
     "upload_new_picture": "上传新头像",
-    "upload_new_picture_from_url": "从 URL 上传新图片",
+    "upload_new_picture_from_url": "上传来自URL的新头像",
     "current_password": "当前密码",
     "change_password": "更改密码",
     "change_password_error": "无效的密码！",

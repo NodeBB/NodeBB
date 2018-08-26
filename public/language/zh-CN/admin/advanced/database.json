@@ -35,6 +35,6 @@
 	"redis.raw-info": "Redis 原始信息",
 
 	"postgres": "Postgres",
-	"postgres.version": "PostgreSQL Version",
-	"postgres.raw-info": "Postgres Raw Info"
+	"postgres.version": "PostgreSQL 版本",
+	"postgres.raw-info": "Postgres 原始信息"
 }

@@ -19,7 +19,7 @@
 	"parent-category-none": "(无)",
 	"copy-settings": "复制设置",
 	"optional-clone-settings": "(可选) 从版块复制设置",
-	"clone-children": "Clone Children Categories And Settings",
+	"clone-children": "克隆子类别并进行设置",
 	"purge": "删除版块",
 
 	"enable": "启用",
