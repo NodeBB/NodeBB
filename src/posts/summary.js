@@ -78,16 +78,13 @@ module.exports = function (Posts) {
 					return results.topics[post.tid];
 				});
 
-				next(null, posts);
+				parsePosts(posts, options, next);
 			},
 			function (posts, next) {
 				plugins.fireHook('filter:post.getPostSummaryByPids', { posts: posts, uid: uid }, next);
 			},
 			function (data, next) {
-				parsePosts(data.posts, options, next);
-			},
-			function (posts, next) {
-				next(null, posts);
+				next(null, data.posts);
 			},
 		], callback);
 	};
