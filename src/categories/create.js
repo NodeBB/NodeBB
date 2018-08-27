@@ -122,6 +122,8 @@ module.exports = function (Categories) {
 				child.parentCid = parentCid;
 				child.cloneFromCid = child.cid;
 				child.cloneChildren = true;
+				child.name = utils.decodeHTMLEntities(child.name);
+				child.description = utils.decodeHTMLEntities(child.description);
 				child.uid = uid;
 			});
 
