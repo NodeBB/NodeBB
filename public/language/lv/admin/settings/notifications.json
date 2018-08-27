@@ -1,0 +1,7 @@
+{
+	"notifications": "Notifications",
+	"welcome-notification": "Welcome Notification",
+	"welcome-notification-link": "Welcome Notification Link",
+	"welcome-notification-uid": "Welcome Notification User (UID)",
+	"notification-alert-timeout": "Notification Alert Timeout"
+}

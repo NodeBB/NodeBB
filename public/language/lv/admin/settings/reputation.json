@@ -1,0 +1,14 @@
+{
+	"reputation": "Reputation Settings",
+	"disable": "Disable Reputation System",
+	"disable-down-voting": "Disable Down Voting",
+	"votes-are-public": "All Votes Are Public",
+	"thresholds": "Activity Thresholds",
+	"min-rep-downvote": "Minimum reputation to downvote posts",
+	"min-rep-flag": "Minimum reputation to flag posts",
+	"min-rep-website": "Minimum reputation to add \"Website\" to user profile",
+	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",
+	"min-rep-signature": "Minimum reputation to add \"Signature\" to user profile",
+	"min-rep-profile-picture": "Minimum reputation to add \"Profile Picture\" to user profile",
+	"min-rep-cover-picture": "Minimum reputation to add \"Cover Picture\" to user profile"
+}

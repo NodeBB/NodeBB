@@ -1,0 +1,29 @@
+{
+	"global": "Global",
+	"global.no-users": "No user-specific global privileges.",
+
+	"chat": "Sarunāties",
+	"upload-images": "Upload Images",
+	"upload-files": "Upload Files",
+	"signature": "Signature",
+	"ban": "Ban",
+	"search-content": "Search Content",
+	"search-users": "Search Users",
+	"search-tags": "Search Tags",
+
+	"find-category": "Find Category",
+	"access-category": "Access Category",
+	"access-topics": "Access Topics",
+	"create-topics": "Create Topics",
+	"reply-to-topics": "Reply to Topics",
+	"tag-topics": "Tag Topics",
+	"edit-posts": "Edit Posts",
+	"view-edit-history": "View Edit History",
+	"delete-posts": "Delete Posts",
+	"view_deleted": "View Deleted Posts",
+	"upvote-posts": "Ziņas, kurām ir balsis par",
+	"downvote-posts": "Downvote Posts",
+	"delete-topics": "Delete Topics",
+	"purge": "Purge",
+	"moderate": "Moderate"
+}

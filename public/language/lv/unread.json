@@ -1,0 +1,15 @@
+{
+    "title": "Unread",
+    "no_unread_topics": "There are no unread topics.",
+    "load_more": "Load More",
+    "mark_as_read": "Atzīmēt kā lasītu",
+    "selected": "Selected",
+    "all": "All",
+    "all_categories": "All categories",
+    "topics_marked_as_read.success": "Temati atzīmēti kā lasīti!",
+    "all-topics": "All Topics",
+    "new-topics": "Jauni temati",
+    "watched-topics": "Watched Topics",
+    "unreplied-topics": "Unreplied Topics",
+    "multiple-categories-selected": "Multiple Selected"
+}
