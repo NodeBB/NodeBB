@@ -127,7 +127,7 @@ mongoModule.init = function (callback) {
 		require('./mongo/list')(db, mongoModule);
 		require('./mongo/transaction')(db, mongoModule);
 
-		mongoModule.async = require('../promisify')(mongoModule, ['client']);
+		mongoModule.async = require('../promisify')(mongoModule, ['client', 'sessionStore']);
 
 		callback();
 	});

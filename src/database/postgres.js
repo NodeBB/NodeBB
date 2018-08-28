@@ -123,7 +123,7 @@ postgresModule.init = function (callback) {
 			require('./postgres/list')(wrappedDB, postgresModule);
 			require('./postgres/transaction')(db, dbNamespace, postgresModule);
 
-			postgresModule.async = require('../promisify')(postgresModule, ['client']);
+			postgresModule.async = require('../promisify')(postgresModule, ['client', 'sessionStore']);
 
 			callback();
 		});

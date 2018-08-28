@@ -52,7 +52,7 @@ redisModule.init = function (callback) {
 		require('./redis/list')(redisClient, redisModule);
 		require('./redis/transaction')(redisClient, redisModule);
 
-		redisModule.async = require('../promisify')(redisModule, ['client']);
+		redisModule.async = require('../promisify')(redisModule, ['client', 'sessionStore']);
 
 		callback();
 	});
