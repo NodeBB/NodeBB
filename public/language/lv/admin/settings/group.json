@@ -1,0 +1,13 @@
+{
+	"general": "General",
+	"private-groups": "Private Groups",
+	"private-groups.help": "If enabled, joining of groups requires the approval of the group owner <em>(Default: enabled)</em>",
+	"private-groups.warning": "<strong>Beware!</strong> If this option is disabled and you have private groups, they automatically become public.",
+	"allow-creation": "Allow Group Creation",
+	"allow-creation-help": "If enabled, users can create groups <em>(Default: disabled)</em>",
+	"allow-multiple-badges-help": "This flag can be used to allow users to select multiple group badges, requires theme support.",
+	"max-name-length": "Maximum Group Name Length",
+	"cover-image": "Group Cover Image",
+	"default-cover": "Default Cover Images",
+	"default-cover-help": "Add comma-separated default cover images for groups that don't have an uploaded cover image"
+}

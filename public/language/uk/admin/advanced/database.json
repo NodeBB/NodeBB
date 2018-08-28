@@ -32,5 +32,9 @@
 	"redis.iops": "Кількість миттєвих операції в секунду",
 	"redis.keyspace-hits": "Попадання в ключах",
 	"redis.keyspace-misses": "Промахи в ключах",
-	"redis.raw-info": "Сирі дані від Redis"
+	"redis.raw-info": "Сирі дані від Redis",
+
+	"postgres": "Postgres",
+	"postgres.version": "PostgreSQL Version",
+	"postgres.raw-info": "Postgres Raw Info"
 }

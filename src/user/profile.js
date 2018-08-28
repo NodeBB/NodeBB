@@ -45,8 +45,6 @@ module.exports = function (User) {
 						return updateUsername(updateUid, data.username, next);
 					} else if (field === 'fullname') {
 						return updateFullname(updateUid, data.fullname, next);
-					} else if (field === 'signature') {
-						data[field] = utils.stripHTMLTags(data[field]);
 					}
 
 					User.setUserField(updateUid, field, data[field], next);

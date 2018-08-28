@@ -78,6 +78,7 @@
     "still-uploading": "Een moment geduld tot alle bestanden overgebracht zijn...",
     "file-too-big": "Maximum toegestane bestandsgrootte is %1 kB - probeer een kleiner bestand te verzenden",
     "guest-upload-disabled": "Uploads voor gasten zijn uitgeschaleld ",
+    "cors-error": "Unable to upload image due to misconfigured CORS",
     "already-bookmarked": "Je hebt dit bericht al als favoriet toegevoegd",
     "already-unbookmarked": "Je hebt dit bericht al verwijderd uit je favorieten",
     "cant-ban-other-admins": "Het is niet toegestaan andere beheerders te verbannen!",

@@ -78,6 +78,7 @@
     "still-uploading": "Sila tunggu muatnaik untuk siap.",
     "file-too-big": "Maksimum saiz fail yang dibenarkan ialah %1 kB - sila muatnaik fail yang lebih kecil",
     "guest-upload-disabled": "Tetamu tidak dibenarkan memuatnaik fail",
+    "cors-error": "Unable to upload image due to misconfigured CORS",
     "already-bookmarked": "You have already bookmarked this post",
     "already-unbookmarked": "You have already unbookmarked this post",
     "cant-ban-other-admins": "Anda tidak boleh haramkan admin / pentadbir!",

@@ -78,6 +78,7 @@
     "still-uploading": "Palun oota, kuni üleslaadimised on laetud.",
     "file-too-big": "Maksimaalne üleslaetava faili suurus on %1 kB - valige väiksema mahuga fail.",
     "guest-upload-disabled": "Külaliste üleslaadimine on keelatud.",
+    "cors-error": "Unable to upload image due to misconfigured CORS",
     "already-bookmarked": "You have already bookmarked this post",
     "already-unbookmarked": "You have already unbookmarked this post",
     "cant-ban-other-admins": "Sa ei saa bannida teisi administraatoreid!",

@@ -78,6 +78,7 @@
     "still-uploading": "Venligst vent til overførslen er færdig",
     "file-too-big": "Maksimum filstørrelse er %1 kB - venligst overfør en mindre fil",
     "guest-upload-disabled": "Gæsteupload er deaktiveret",
+    "cors-error": "Unable to upload image due to misconfigured CORS",
     "already-bookmarked": "You have already bookmarked this post",
     "already-unbookmarked": "You have already unbookmarked this post",
     "cant-ban-other-admins": "Du kan ikke udlukke andre administatrorer!",

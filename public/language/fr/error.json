@@ -78,6 +78,7 @@
     "still-uploading": "Veuillez patienter pendant l'envoi des fichiers.",
     "file-too-big": "La taille maximale autorisée pour un fichier est de %1 ko. Veuillez envoyer un fichier plus petit.",
     "guest-upload-disabled": "L'envoi de fichiers a été désactivé pour les invités",
+    "cors-error": "Impossible d'envoyer l'image en raison d'une erreur de configuration CORS",
     "already-bookmarked": "Vous avez déjà mis un marque-page",
     "already-unbookmarked": "Vous avez déjà retiré un marque-page",
     "cant-ban-other-admins": "Vous ne pouvez pas bannir les autres administrateurs !",

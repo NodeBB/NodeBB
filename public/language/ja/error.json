@@ -78,6 +78,7 @@
     "still-uploading": "アップロードが完成するまでお待ちください。",
     "file-too-big": "%1kBより大きいサイズファイルが許されません－より小さいファイルをアップして下さい。",
     "guest-upload-disabled": "ゲストさんからのアップを無効にしています",
+    "cors-error": "Unable to upload image due to misconfigured CORS",
     "already-bookmarked": "あなたは、この投稿をすでにブックマークしています",
     "already-unbookmarked": "あなたは、この投稿をすでにブックマークから外しています",
     "cant-ban-other-admins": "ほかの管理者を停止することはできません！",

@@ -136,7 +136,8 @@ define('chat', [
 				rooms: rooms,
 			}, function (html) {
 				translator.translate(html, function (translated) {
-					chatsListEl.empty().html(translated);
+					chatsListEl.find('*').not('.navigation-link').remove();
+					chatsListEl.prepend(translated);
 					app.createUserTooltips(chatsListEl, 'right');
 				});
 			});

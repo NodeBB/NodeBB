@@ -320,6 +320,7 @@ Flags.getNotes = function (flagId, callback) {
 
 				next(null, notes.map(function (note, idx) {
 					note.user = users[idx];
+					note.content = validator.escape(note.content);
 					return note;
 				}));
 			});

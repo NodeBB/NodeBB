@@ -78,6 +78,7 @@
     "still-uploading": "Зачекайте, будь ласка, доки завантаження завершиться.",
     "file-too-big": "Максимальний розмір файлу %1 кБ — завантажте менший файл, будь ласка.",
     "guest-upload-disabled": "Гостьове завантаження вимкнено.",
+    "cors-error": "Unable to upload image due to misconfigured CORS",
     "already-bookmarked": "Ви вже додали цей пост собі в закладки",
     "already-unbookmarked": "Ви вже видалили цей пост із закладок",
     "cant-ban-other-admins": "Ви не можете банити інших адмінів!",

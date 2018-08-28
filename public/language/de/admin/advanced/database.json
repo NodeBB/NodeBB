@@ -32,5 +32,9 @@
 	"redis.iops": "Durchschnittliche Anzahl von Ein-/Ausgaben pro Sekunde",
 	"redis.keyspace-hits": "Schlüsselraum Treffer",
 	"redis.keyspace-misses": "Schlüsselraum Verfehlungen",
-	"redis.raw-info": "Redis Rohinfo"
+	"redis.raw-info": "Redis Rohinfo",
+
+	"postgres": "Postgres",
+	"postgres.version": "PostgreSQL Version",
+	"postgres.raw-info": "Postgres Raw Info"
 }

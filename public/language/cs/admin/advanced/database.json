@@ -32,5 +32,9 @@
 	"redis.iops": "Okamžité zpracování za sekundu",
 	"redis.keyspace-hits": "Zpracováno klíčů",
 	"redis.keyspace-misses": "Chyby klíče",
-	"redis.raw-info": "Informace Redis Raw"
+	"redis.raw-info": "Informace Redis Raw",
+
+	"postgres": "Postgres",
+	"postgres.version": "PostgreSQL Version",
+	"postgres.raw-info": "Postgres Raw Info"
 }

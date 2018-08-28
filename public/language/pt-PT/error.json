@@ -78,6 +78,7 @@
     "still-uploading": "Por favor aguarda até todos os uploads estarem completos.",
     "file-too-big": "O tamanho máximo permitido para um ficheiro é de %1 kB - por favor carrega um ficheiro mais pequeno",
     "guest-upload-disabled": "Upload por parte de convidados foi desativado",
+    "cors-error": "Unable to upload image due to misconfigured CORS",
     "already-bookmarked": "Já marcaste esta publicação",
     "already-unbookmarked": "Já desmarcaste esta publicação",
     "cant-ban-other-admins": "Não podes banir outros administradores!",

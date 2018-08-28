@@ -78,6 +78,7 @@
     "still-uploading": "Per favore attendere il completamento degli uploads.",
     "file-too-big": "La dimensione massima consentita è di %1 kB - si prega di caricare un file più piccolo",
     "guest-upload-disabled": "Il caricamento da ospite è stato disattivato",
+    "cors-error": "Unable to upload image due to misconfigured CORS",
     "already-bookmarked": "Hai già aggiunto questa discussione ai preferiti.",
     "already-unbookmarked": "Hai già rimosso questa discussione dai preferiti",
     "cant-ban-other-admins": "Non puoi bannare altri amministratori!",

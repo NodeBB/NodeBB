@@ -78,6 +78,7 @@
     "still-uploading": "Pričekajte da se prijenos završi.",
     "file-too-big": "Maksimalna veličina datoteke je %1 kB - učitajte manju datoteku",
     "guest-upload-disabled": "Učitavanje datoteka za goste je isključeno",
+    "cors-error": "Unable to upload image due to misconfigured CORS",
     "already-bookmarked": "Već ste zabilježili ovu objavu",
     "already-unbookmarked": "Već ste odbilježili ovu objavu",
     "cant-ban-other-admins": "Nemožete blokirati ostale administratore!",

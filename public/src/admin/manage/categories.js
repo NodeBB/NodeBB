@@ -78,11 +78,24 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 					var formData = modal.find('form').serializeObject();
 					formData.description = '';
 					formData.icon = 'fa-comments';
+					formData.uid = app.user.uid;
 
 					Categories.create(formData);
 					modal.modal('hide');
 					return false;
 				}
+
+				$('#cloneChildren').on('change', function () {
+					var check = $(this);
+					var parentSelect = $('#parentCid');
+
+					if (check.prop('checked')) {
+						parentSelect.attr('disabled', 'disabled');
+						parentSelect.val('');
+					} else {
+						parentSelect.removeAttr('disabled');
+					}
+				});
 
 				modal.find('form').on('submit', submit);
 			});

@@ -78,6 +78,7 @@
     "still-uploading": "กรุณารอการอัพโหลดเพื่อเสร็จสิ้น",
     "file-too-big": "ขนาดไฟล์ที่ใหญ่ที่สุดที่ได้รับการอนุญาตคือ  %1 kB - กรุณาอัพโหลดไฟล์ที่เล็กลง",
     "guest-upload-disabled": "การอัพโหลดของ Guest ถูกปิด",
+    "cors-error": "Unable to upload image due to misconfigured CORS",
     "already-bookmarked": "คุณได้ติดบุ๊กมาร์คของโพสต์นี้แล้ว",
     "already-unbookmarked": "คุณได้ลบบุ๊กมาร์คของโพสต์นี้แล้ว",
     "cant-ban-other-admins": "คุณแบนแอดมินไม่ได้!!!",

@@ -1,0 +1,11 @@
+{
+	"chat-settings": "Sarunu iestatījumi",
+	"disable": "Atspējot sarunāšanos",
+	"disable-editing": "Atspējot sarunu rediģēšanu/izdzēšanu",
+	"disable-editing-help": "Administrators and global moderators are exempt from this restriction",
+	"max-length": "Sarunu lielākais garums",
+	"max-room-size": "Maksimālais lietotāju skaits tērzētavā",
+	"delay": "Laiks starp sarunām milisekundēs",
+	"restrictions.seconds-edit-after": "Number of seconds before users are allowed to edit chat messages after posting. (0 disabled)",
+	"restrictions.seconds-delete-after": "Number of seconds before users are allowed to delete chat messages after posting. (0 disabled)"
+}

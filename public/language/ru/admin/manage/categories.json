@@ -19,6 +19,7 @@
 	"parent-category-none": "(None)",
 	"copy-settings": "Копировать настройки из",
 	"optional-clone-settings": "(не обязательно) Копировать настройки из",
+	"clone-children": "Clone Children Categories And Settings",
 	"purge": "Очистить категорию",
 
 	"enable": "Включить",

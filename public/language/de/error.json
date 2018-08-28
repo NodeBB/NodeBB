@@ -78,6 +78,7 @@
     "still-uploading": "Bitte warte bis der Vorgang abgeschlossen ist.",
     "file-too-big": "Die maximale Dateigröße ist %1 kB, bitte lade eine kleinere Datei hoch.",
     "guest-upload-disabled": "Uploads für Gäste wurden deaktiviert.",
+    "cors-error": "Unable to upload image due to misconfigured CORS",
     "already-bookmarked": "Du hast diesen Beitrag bereits als Lesezeichen gespeichert",
     "already-unbookmarked": "Du hast diesen Beitrag bereits aus deinen Lesezeichen entfernt",
     "cant-ban-other-admins": "Du kannst andere Administratoren nicht sperren!",
