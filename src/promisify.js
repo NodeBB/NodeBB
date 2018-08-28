@@ -1,5 +1,8 @@
 'use strict';
 
+// remove once node 6 support is removed
+require('util.promisify/shim')();
+
 var util = require('util');
 var _ = require('lodash');
 
