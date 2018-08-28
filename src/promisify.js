@@ -1,6 +1,7 @@
 'use strict';
 
 var util = require('util');
+var _ = require('lodash');
 
 module.exports = function (theModule, ignoreKeys) {
 	ignoreKeys = ignoreKeys || [];
@@ -11,7 +12,7 @@ module.exports = function (theModule, ignoreKeys) {
 		var str = func.toString().split('\n')[0];
 		return str.includes('callback)');
 	}
-	function promisifyRecursive(parent, module) {
+	function promisifyRecursive(module) {
 		if (!module) {
 			return;
 		}
@@ -21,14 +22,13 @@ module.exports = function (theModule, ignoreKeys) {
 				return;
 			}
 			if (isCallbackedFunction(module[key])) {
-				parent[key] = util.promisify(module[key]);
+				module[key] = util.promisify(module[key]);
 			} else if (typeof module[key] === 'object') {
-				parent[key] = {};
-				promisifyRecursive(parent[key], module[key]);
+				promisifyRecursive(module[key]);
 			}
 		});
 	}
-	const async = {};
-	promisifyRecursive(async, theModule);
-	return async;
+	const asyncModule = _.cloneDeep(theModule);
+	promisifyRecursive(asyncModule);
+	return asyncModule;
 };
