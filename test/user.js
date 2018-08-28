@@ -702,7 +702,7 @@ describe('User', function () {
 				assert.ifError(err);
 				db.getSortedSetRevRange('user:' + uid + ':usernames', 0, -1, function (err, data) {
 					assert.ifError(err);
-					assert.equal(data.length, 1);
+					assert.equal(data.length, 2);
 					assert(data[0].startsWith('updatedAgain'));
 					done();
 				});
