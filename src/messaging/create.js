@@ -30,13 +30,20 @@ module.exports = function (Messaging) {
 		if (!content) {
 			return callback(new Error('[[error:invalid-chat-message]]'));
 		}
-		content = String(content);
 
-		var maximumChatMessageLength = (meta.config.maximumChatMessageLength || 1000);
-		if (content.length > maximumChatMessageLength) {
-			return callback(new Error('[[error:chat-message-too-long, ' + maximumChatMessageLength + ']]'));
-		}
-		callback();
+		plugins.fireHook('filter:messaging.checkContent', { content: content }, function (err, data) {
+			if (err) {
+				return callback(err);
+			}
+
+			content = String(data.content);
+
+			var maximumChatMessageLength = (meta.config.maximumChatMessageLength || 1000);
+			if (content.length > maximumChatMessageLength) {
+				return callback(new Error('[[error:chat-message-too-long, ' + maximumChatMessageLength + ']]'));
+			}
+			callback();
+		});
 	};
 
 	Messaging.addMessage = function (data, callback) {
