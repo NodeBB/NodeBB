@@ -1,7 +1,7 @@
 {
 	"section-general": "General",
 	"general/dashboard": "Dashboard",
-	"general/homepage": "Home Page",
+	"general/homepage": "Sākumlapa",
 	"general/navigation": "Navigation",
 	"general/languages": "Languages",
 	"general/sounds": "Sounds",
@@ -42,7 +42,7 @@
 	"section-appearance": "Appearance",
 	"appearance/themes": "Themes",
 	"appearance/skins": "Skins",
-	"appearance/customise": "Custom Content (HTML/JS/CSS)",
+	"appearance/customise": "Pielāgotais saturs (HTML/JS/CSS)",
 
 	"section-extend": "Extend",
 	"extend/plugins": "Plugins",

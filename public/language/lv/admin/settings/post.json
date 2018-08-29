@@ -33,7 +33,7 @@
 	"teaser.last-post": "Last &ndash; Show the latest post, including the original post, if no replies",
 	"teaser.last-reply": "Last &ndash; Show the latest reply, or a \"No replies\" placeholder if no replies",
 	"teaser.first": "First",
-	"unread": "Unread Settings",
+	"unread": "Nelasītie iestatījumi",
 	"unread.cutoff": "Unread cutoff days",
 	"unread.min-track-last": "Minimum posts in topic before tracking last read",
 	"recent": "Recent Settings",
@@ -47,7 +47,7 @@
 	"composer-help": "The following settings govern the functionality and/or appearance of the post composer shown\n\t\t\t\tto users when they create new topics, or reply to existing topics.",
 	"composer.show-help": "Show \"Help\" tab",
 	"composer.enable-plugin-help": "Allow plugins to add content to the help tab",
-	"composer.custom-help": "Custom Help Text",
+	"composer.custom-help": "Pielāgotais palīdzības teksts",
 	"ip-tracking": "IP Tracking",
 	"ip-tracking.each-post": "Track IP Address for each post",
 	"enable-post-history": "Enable Post History"

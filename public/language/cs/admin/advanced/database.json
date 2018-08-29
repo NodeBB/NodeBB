@@ -35,6 +35,6 @@
 	"redis.raw-info": "Informace Redis Raw",
 
 	"postgres": "Postgres",
-	"postgres.version": "PostgreSQL Version",
-	"postgres.raw-info": "Postgres Raw Info"
+	"postgres.version": "Verze PostgreSQL",
+	"postgres.raw-info": "Informace o Postgres"
 }
