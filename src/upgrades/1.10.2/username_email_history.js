@@ -10,6 +10,8 @@ module.exports = {
 	name: 'Record first entry in username/email history',
 	timestamp: Date.UTC(2018, 7, 28),
 	method: function (callback) {
+		const progress = this.progress;
+
 		batch.processSortedSet('users:joindate', function (ids, next) {
 			async.each(ids, function (uid, next) {
 				async.parallel([
@@ -55,8 +57,13 @@ module.exports = {
 							},
 						], next);
 					},
-				], next);
+				], function (err) {
+					progress.incr();
+					setImmediate(next, err);
+				});
 			}, next);
+		}, {
+			progress: this.progress,
 		}, callback);
 	},
 };
