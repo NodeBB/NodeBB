@@ -10,7 +10,7 @@ var accountsController = {
 	posts: require('./accounts/posts'),
 	notifications: require('./accounts/notifications'),
 	chats: require('./accounts/chats'),
-	session: require('./accounts/session'),
+	sessions: require('./accounts/sessions'),
 	blocks: require('./accounts/blocks'),
 	uploads: require('./accounts/uploads'),
 	consent: require('./accounts/consent'),
