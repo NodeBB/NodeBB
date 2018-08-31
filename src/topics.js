@@ -368,3 +368,5 @@ Topics.search = function (tid, term, callback) {
 		callback(err, Array.isArray(pids) ? pids : []);
 	});
 };
+
+Topics.async = require('./promisify')(Topics);

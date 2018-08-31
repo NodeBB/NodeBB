@@ -118,7 +118,6 @@ mongoModule.init = function (callback) {
 		}
 		client = _client;
 		db = client.db();
-
 		mongoModule.client = db;
 
 		require('./mongo/main')(db, mongoModule);
@@ -127,6 +126,9 @@ mongoModule.init = function (callback) {
 		require('./mongo/sorted')(db, mongoModule);
 		require('./mongo/list')(db, mongoModule);
 		require('./mongo/transaction')(db, mongoModule);
+
+		mongoModule.async = require('../promisify')(mongoModule, ['client', 'sessionStore']);
+
 		callback();
 	});
 };
