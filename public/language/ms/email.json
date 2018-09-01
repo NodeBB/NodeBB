@@ -4,6 +4,8 @@
     "invite": "Jemputan daripada %1",
     "greeting_no_name": "Salam",
     "greeting_with_name": "Salam %1",
+    "email.verify-your-email.subject": "Please verify your email",
+    "email.verify.text1": "Your email address has changed!",
     "welcome.text1": "Terima kasih kerana mendaftar dengan %1!",
     "welcome.text2": "Untuk mengaktifkan akaun anda sepenuhnya, kami perlu mengesahkan bahawa anda memiliki alamat emel yang didaftarkan.",
     "welcome.text3": "An administrator has accepted your registration application. You can login with your username/password now.",

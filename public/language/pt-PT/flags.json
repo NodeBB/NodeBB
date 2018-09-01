@@ -18,6 +18,7 @@
 	"filter-type": "Flag Type",
 	"filter-type-all": "Todo o Conteúdo",
 	"filter-type-post": "Publicação",
+	"filter-type-user": "User",
 	"filter-state": "State",
 	"filter-assignee": "Assignee UID",
 	"filter-cid": "Categoria",

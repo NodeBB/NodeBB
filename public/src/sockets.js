@@ -17,30 +17,36 @@ app.isConnected = false;
 
 	socket = io(config.websocketAddress, ioParams);
 
-	socket.on('connect', onConnect);
+	if (parseInt(app.user.uid, 10) >= 0) {
+		addHandlers();
+	}
 
-	socket.on('reconnecting', onReconnecting);
+	function addHandlers() {
+		socket.on('connect', onConnect);
 
-	socket.on('disconnect', onDisconnect);
+		socket.on('reconnecting', onReconnecting);
 
-	socket.on('reconnect_failed', function () {
-		// Wait ten times the reconnection delay and then start over
-		setTimeout(socket.connect.bind(socket), parseInt(config.reconnectionDelay, 10) * 10);
-	});
+		socket.on('disconnect', onDisconnect);
 
-	socket.on('checkSession', function (uid) {
-		if (parseInt(uid, 10) !== parseInt(app.user.uid, 10)) {
-			app.handleInvalidSession();
-		}
-	});
+		socket.on('reconnect_failed', function () {
+			// Wait ten times the reconnection delay and then start over
+			setTimeout(socket.connect.bind(socket), parseInt(config.reconnectionDelay, 10) * 10);
+		});
 
-	socket.on('setHostname', function (hostname) {
-		app.upstreamHost = hostname;
-	});
+		socket.on('checkSession', function (uid) {
+			if (parseInt(uid, 10) !== parseInt(app.user.uid, 10)) {
+				app.handleInvalidSession();
+			}
+		});
 
-	socket.on('event:banned', onEventBanned);
+		socket.on('setHostname', function (hostname) {
+			app.upstreamHost = hostname;
+		});
 
-	socket.on('event:alert', app.alert);
+		socket.on('event:banned', onEventBanned);
+
+		socket.on('event:alert', app.alert);
+	}
 
 	function onConnect() {
 		app.isConnected = true;

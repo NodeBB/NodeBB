@@ -149,7 +149,7 @@ define('admin/extend/widgets', ['jqueryui'], function () {
 				.addClass(btn.attr('data-class'));
 
 			container.attr('data-container-html', container.attr('data-container-html')
-				.replace(/class="[a-zA-Z0-9-\s]+"/, 'class="' + container[0].className.replace(' pointer ui-draggable', '') + '"'));
+				.replace(/class="[a-zA-Z0-9-\s]+"/, 'class="' + container[0].className.replace(' pointer ui-draggable ui-draggable-handle', '') + '"'));
 		});
 	}
 

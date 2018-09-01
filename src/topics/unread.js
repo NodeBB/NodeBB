@@ -42,11 +42,7 @@ module.exports = function (Topics) {
 					return next(null, []);
 				}
 
-				if (params.stop === -1) {
-					tids = tids.slice(params.start);
-				} else {
-					tids = tids.slice(params.start, params.stop + 1);
-				}
+				tids = tids.slice(params.start, params.stop !== -1 ? params.stop + 1 : undefined);
 
 				Topics.getTopicsByTids(tids, params.uid, next);
 			},

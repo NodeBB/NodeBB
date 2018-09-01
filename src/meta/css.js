@@ -89,7 +89,8 @@ function getImports(files, prefix, extension, callback) {
 function getBundleMetadata(target, callback) {
 	var paths = [
 		path.join(__dirname, '../../node_modules'),
-		path.join(__dirname, '../../public/vendor/forkawesome/less'),
+		path.join(__dirname, '../../public/less'),
+		path.join(__dirname, '../../public/vendor/fontawesome/less'),
 	];
 
 	async.waterfall([

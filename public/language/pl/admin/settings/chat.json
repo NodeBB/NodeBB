@@ -1,11 +1,11 @@
 {
 	"chat-settings": "Ustawienia czatu",
 	"disable": "Wyłącz czat",
-	"disable-editing": "Wyłącz edycję/kasowanie wiadomości czat",
-	"disable-editing-help": "Administratorzy oraz moderatorzy globalni są wyjęci spod tego ograniczenia",
+	"disable-editing": "Wyłącz edycję/usuwanie wiadomości czat",
+	"disable-editing-help": "Ograniczenie to nie dotyczy administratorów i moderatorów globalnych",
 	"max-length": "Maksymalna długość wiadomości czat",
-	"max-room-size": "Maksymalna liczba użytkowników w pokojach czatu.",
+	"max-room-size": "Maksymalna liczba użytkowników w pokojach czatu",
 	"delay": "Czas pomiędzy wiadomościami czat (w milisekundach)",
-	"restrictions.seconds-edit-after": "Number of seconds before users are allowed to edit chat messages after posting. (0 disabled)",
-	"restrictions.seconds-delete-after": "Number of seconds before users are allowed to delete chat messages after posting. (0 disabled)"
+	"restrictions.seconds-edit-after": "Czas w sekundach, jaki musi upłynąć od wysłania wiadomości czat, by możliwa była jej edycja (0 wyłączone)",
+	"restrictions.seconds-delete-after": "Czas w sekundach, jaki musi upłynąć od wysłania wiadomości czat, by możliwe było jej usunięcie (0 wyłączone)"
 }

@@ -60,13 +60,24 @@ Auth.reloadRoutes = function (callback) {
 		function (loginStrategies, next) {
 			loginStrategies.forEach(function (strategy) {
 				if (strategy.url) {
-					router.get(strategy.url, passport.authenticate(strategy.name, {
-						scope: strategy.scope,
-						prompt: strategy.prompt || undefined,
-					}));
+					router.get(strategy.url, Auth.middleware.applyCSRF, function (req, res, next) {
+						req.session.ssoState = req.csrfToken();
+						passport.authenticate(strategy.name, {
+							scope: strategy.scope,
+							prompt: strategy.prompt || undefined,
+							state: req.session.ssoState,
+						})(req, res, next);
+					});
 				}
 
-				router.get(strategy.callbackURL, passport.authenticate(strategy.name, {
+				router.get(strategy.callbackURL, function (req, res, next) {
+					// Ensure the passed-back state value is identical to the saved ssoState
+					next(req.query.state !== req.session.ssoState ? new Error('[[error:csrf-invalid]]') : null);
+				}, function (req, res, next) {
+					// Trigger registration interstitial checks
+					req.session.registration = req.session.registration || {};
+					next();
+				}, passport.authenticate(strategy.name, {
 					successReturnToOrRedirect: nconf.get('relative_path') + (strategy.successUrl !== undefined ? strategy.successUrl : '/'),
 					failureRedirect: nconf.get('relative_path') + (strategy.failureUrl !== undefined ? strategy.failureUrl : '/login'),
 				}));

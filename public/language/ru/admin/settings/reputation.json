@@ -8,5 +8,7 @@
 	"min-rep-flag": "Minimum reputation to flag posts",
 	"min-rep-website": "Минимальная репутация для добавления «Веб-сайта» в профиль пользователя",
 	"min-rep-aboutme": "Минимальная репутация, чтобы добавить «Обо мне» в профиль пользователя",
-	"min-rep-signature": "Минимальная репутация для добавления «Подписи» в профиль пользователя"
+	"min-rep-signature": "Минимальная репутация для добавления «Подписи» в профиль пользователя",
+	"min-rep-profile-picture": "Minimum reputation to add \"Profile Picture\" to user profile",
+	"min-rep-cover-picture": "Minimum reputation to add \"Cover Picture\" to user profile"
 }

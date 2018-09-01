@@ -1,7 +1,7 @@
 {
-	"alert.confirm-reload": "Are you sure you wish to rebuild and restart NodeBB?",
+	"alert.confirm-rebuild-and-restart": "আপনি কি নিশ্চিত যে আপনি NodeBB রিবিল্ড এবং রিস্টার্ট করতে চান ? ",
 	"alert.confirm-restart": "আপনি কি নিশ্চিত যে আপনি NodeBB রিস্টার্ট করতে চান ?",
 
 	"acp-title": "%1 |  NodeBB  এডমিন কন্ট্রোল প্যানেল",
-	"settings-header-contents": "Contents"
+	"settings-header-contents": "কনটেন্টস"
 }

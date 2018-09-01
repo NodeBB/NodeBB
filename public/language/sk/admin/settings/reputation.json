@@ -8,5 +8,7 @@
 	"min-rep-flag": "Minimálna reputácia pre označenie príspevku",
 	"min-rep-website": "Minimálna reputácia pre pridanie „Webovej stránky” do používateľského profilu",
 	"min-rep-aboutme": "Minimálna reputácia pre pridanie „O mne” do používateľského profilu",
-	"min-rep-signature": "Minimálna reputácia pre pridanie „Podpisu” do používateľského profilu"
+	"min-rep-signature": "Minimálna reputácia pre pridanie „Podpisu” do používateľského profilu",
+	"min-rep-profile-picture": "Minimálna reputácia pre pridanie „Profilového obrázka” do používateľského profilu ",
+	"min-rep-cover-picture": "Minimálna reputácia pre pridanie „Titulného obrázka”  do používateľského profilu"
 }

@@ -53,7 +53,7 @@
     "topics": "נושאים",
     "posts": "פוסטים",
     "best": "הגבוה ביותר",
-    "votes": "Votes",
+    "votes": "הצבעות",
     "upvoters": "מצביעי בעד",
     "upvoted": "הוצבע בעד",
     "downvoters": "מצביעי נגד",
@@ -85,6 +85,7 @@
     "language": "שפה",
     "guest": "אורח",
     "guests": "אורחים",
+    "former_user": "A Former User",
     "updated.title": "הפורום עודכן",
     "updated.message": "הפורום עודכן לגרסא האחרונה. נא ללחוץ כאן לעדכון הדף.",
     "privacy": "פרטיות",
@@ -97,6 +98,7 @@
     "enter_page_number": "הכנס מספר עמוד",
     "upload_file": "העלה קובץ",
     "upload": "העלה",
+    "uploads": "Uploads",
     "allowed-file-types": "פורמטי הקבצים המורשים הם %1",
     "unsaved-changes": "יש לך שינויים שאינם נשמרו. האם הנך בטוח שברצונך להמשיך?",
     "reconnecting-message": "נראה שההתחברות שלך אל %1 אבדה, אנא המתן בזמן שהמערכת מנסה לחבר אותך מחדש",
@@ -107,5 +109,5 @@
     "edited": "נערך",
     "disabled": "לא מאופשר",
     "select": "בחר",
-    "user-search-prompt": "Type something here to find users..."
+    "user-search-prompt": "נסה כאן למציאת משתמשים"
 }

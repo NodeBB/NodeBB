@@ -16,11 +16,20 @@ var db = require('../database');
 var utils = require('../utils');
 var controllers404 = require('../controllers/404.js');
 
+var terms = {
+	daily: 'day',
+	weekly: 'week',
+	monthly: 'month',
+	alltime: 'alltime',
+};
+
 module.exports = function (app, middleware) {
 	app.get('/topic/:topic_id.rss', middleware.maintenanceMode, generateForTopic);
 	app.get('/category/:category_id.rss', middleware.maintenanceMode, generateForCategory);
+	app.get('/topics.rss', middleware.maintenanceMode, generateForTopics);
 	app.get('/recent.rss', middleware.maintenanceMode, generateForRecent);
 	app.get('/top.rss', middleware.maintenanceMode, generateForTop);
+	app.get('/top/:term.rss', middleware.maintenanceMode, generateForTop);
 	app.get('/popular.rss', middleware.maintenanceMode, generateForPopular);
 	app.get('/popular/:term.rss', middleware.maintenanceMode, generateForPopular);
 	app.get('/recentposts.rss', middleware.maintenanceMode, generateForRecentPosts);
@@ -145,7 +154,9 @@ function generateForCategory(req, res, next) {
 	}
 	var cid = req.params.category_id;
 	var category;
-
+	if (!parseInt(cid, 10)) {
+		return next();
+	}
 	async.waterfall([
 		function (next) {
 			async.parallel({
@@ -183,6 +194,31 @@ function generateForCategory(req, res, next) {
 	], next);
 }
 
+function generateForTopics(req, res, next) {
+	if (parseInt(meta.config['feeds:disableRSS'], 10) === 1) {
+		return controllers404.send404(req, res);
+	}
+
+	async.waterfall([
+		function (next) {
+			if (req.query.token && req.query.uid) {
+				db.getObjectField('user:' + req.query.uid, 'rss_token', next);
+			} else {
+				next(null, null);
+			}
+		},
+		function (token, next) {
+			sendTopicsFeed({
+				uid: token && token === req.query.token ? req.query.uid : req.uid,
+				title: 'Most recently created topics',
+				description: 'A list of topics that have been created recently',
+				feed_url: '/topics.rss',
+				useMainPost: true,
+			}, 'topics:tid', req, res, next);
+		},
+	], next);
+}
+
 function generateForRecent(req, res, next) {
 	if (parseInt(meta.config['feeds:disableRSS'], 10) === 1) {
 		return controllers404.send404(req, res);
@@ -197,11 +233,8 @@ function generateForRecent(req, res, next) {
 			}
 		},
 		function (token, next) {
-			next(null, token && token === req.query.token ? req.query.uid : req.uid);
-		},
-		function (uid, next) {
-			generateForTopics({
-				uid: uid,
+			sendTopicsFeed({
+				uid: token && token === req.query.token ? req.query.uid : req.uid,
 				title: 'Recently Active Topics',
 				description: 'A list of topics that have been active within the past 24 hours',
 				feed_url: '/recent.rss',
@@ -215,7 +248,8 @@ function generateForTop(req, res, next) {
 	if (parseInt(meta.config['feeds:disableRSS'], 10) === 1) {
 		return controllers404.send404(req, res);
 	}
-
+	var term = terms[req.params.term] || 'day';
+	var uid;
 	async.waterfall([
 		function (next) {
 			if (req.query.token && req.query.uid) {
@@ -225,16 +259,27 @@ function generateForTop(req, res, next) {
 			}
 		},
 		function (token, next) {
-			next(null, token && token === req.query.token ? req.query.uid : req.uid);
+			uid = token && token === req.query.token ? req.query.uid : req.uid;
+
+			topics.getSortedTopics({
+				uid: uid,
+				start: 0,
+				stop: 19,
+				term: term,
+				sort: 'votes',
+			}, next);
 		},
-		function (uid, next) {
-			generateForTopics({
+		function (result, next) {
+			generateTopicsFeed({
 				uid: uid,
 				title: 'Top Voted Topics',
 				description: 'A list of topics that have received the most votes',
-				feed_url: '/top.rss',
-				site_url: '/top',
-			}, 'topics:votes', req, res, next);
+				feed_url: '/top/' + (req.params.term || 'daily') + '.rss',
+				site_url: '/top/' + (req.params.term || 'daily'),
+			}, result.topics, next);
+		},
+		function (feed) {
+			sendFeed(feed, res);
 		},
 	], next);
 }
@@ -243,21 +288,31 @@ function generateForPopular(req, res, next) {
 	if (parseInt(meta.config['feeds:disableRSS'], 10) === 1) {
 		return controllers404.send404(req, res);
 	}
-	var terms = {
-		daily: 'day',
-		weekly: 'week',
-		monthly: 'month',
-		alltime: 'alltime',
-	};
-	var term = terms[req.params.term] || 'day';
 
+	var term = terms[req.params.term] || 'day';
+	var uid;
 	async.waterfall([
 		function (next) {
-			topics.getPopularTopics(term, req.uid, 0, 19, next);
+			if (req.query.token && req.query.uid) {
+				db.getObjectField('user:' + req.query.uid, 'rss_token', next);
+			} else {
+				next(null, null);
+			}
+		},
+		function (token, next) {
+			uid = token && token === req.query.token ? req.query.uid : req.uid;
+
+			topics.getSortedTopics({
+				uid: uid,
+				start: 0,
+				stop: 19,
+				term: term,
+				sort: 'posts',
+			}, next);
 		},
 		function (result, next) {
 			generateTopicsFeed({
-				uid: req.uid,
+				uid: uid,
 				title: 'Popular Topics',
 				description: 'A list of topics that are sorted by post count',
 				feed_url: '/popular/' + (req.params.term || 'daily') + '.rss',
@@ -270,7 +325,7 @@ function generateForPopular(req, res, next) {
 	], next);
 }
 
-function generateForTopics(options, set, req, res, next) {
+function sendTopicsFeed(options, set, req, res, next) {
 	var start = options.hasOwnProperty('start') ? options.start : 0;
 	var stop = options.hasOwnProperty('stop') ? options.stop : 19;
 	async.waterfall([
@@ -299,14 +354,14 @@ function generateTopicsFeed(feedOptions, feedTopics, callback) {
 		feed.pubDate = new Date(parseInt(feedTopics[0].lastposttime, 10)).toUTCString();
 	}
 
-	async.each(feedTopics, function (topicData, next) {
+	async.eachSeries(feedTopics, function (topicData, next) {
 		var feedItem = {
 			title: utils.stripHTMLTags(topicData.title, utils.tags),
 			url: nconf.get('url') + '/topic/' + topicData.slug,
 			date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString(),
 		};
 
-		if (topicData.teaser && topicData.teaser.user) {
+		if (topicData.teaser && topicData.teaser.user && !feedOptions.useMainPost) {
 			feedItem.description = topicData.teaser.content;
 			feedItem.author = topicData.teaser.user.username;
 			feed.item(feedItem);
@@ -437,7 +492,7 @@ function generateForUserTopics(req, res, callback) {
 			user.getUserFields(uid, ['uid', 'username'], next);
 		},
 		function (userData, next) {
-			generateForTopics({
+			sendTopicsFeed({
 				uid: req.uid,
 				title: 'Topics by ' + userData.username,
 				description: 'A list of topics that are posted by ' + userData.username,
@@ -457,7 +512,7 @@ function generateForTag(req, res, next) {
 	var topicsPerPage = meta.config.topicsPerPage || 20;
 	var start = Math.max(0, (page - 1) * topicsPerPage);
 	var stop = start + topicsPerPage - 1;
-	generateForTopics({
+	sendTopicsFeed({
 		uid: req.uid,
 		title: 'Topics tagged with ' + tag,
 		description: 'A list of topics that have been tagged with ' + tag,

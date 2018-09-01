@@ -62,6 +62,7 @@
     "thread_tools.lock": "Fungirana Ikiganiro",
     "thread_tools.unlock": "Fungurira Ikiganiro",
     "thread_tools.move": "Imura Ikiganiro",
+    "thread_tools.move-posts": "Move Posts",
     "thread_tools.move_all": "Byimure Byose",
     "thread_tools.select_category": "Select Category",
     "thread_tools.fork": "Gabanyaho ku Kiganiro",
@@ -96,6 +97,7 @@
     "fork_success": "Umaze kugabanyaho ku kiganiro! Kanda hano ugezwe ku kiganiro cyavutse. ",
     "delete_posts_instruction": "Kanda ku bintu ushaka guhisha/gusiba",
     "merge_topics_instruction": "Click the topics you want to merge",
+    "move_posts_instruction": "Click the posts you want to move",
     "composer.title_placeholder": "Shyira umutwe w'ikiganiro cyawe aha...",
     "composer.handle_placeholder": "Izina",
     "composer.discard": "Byihorere",
@@ -116,8 +118,8 @@
     "sort_by": "Ubigaragaze Ukurikije",
     "oldest_to_newest": "Ibya Kera Ujya ku bya Vuba",
     "newest_to_oldest": "Ibya Vuba Ujya ku bya Kera",
-    "most_votes": "Amajwi yiganje",
-    "most_posts": "Ibyashyizweho byiganje",
+    "most_votes": "Most Votes",
+    "most_posts": "Most Posts",
     "stale.title": "Urashaka gutangiza ahubwo ikiganiro gishya?",
     "stale.warning": "Ikiganiro ushaka kuvugaho cyarashaje. Wahitamo gutangiza ikiganiro gishya ariko wenda ukagaragaza kino mu gisubizo uza gushyiraho?",
     "stale.create": "Tangiza ikiganiro gishya",
@@ -125,5 +127,7 @@
     "link_back": "Igisubizo: [%1](%2)",
     "diffs.title": "Post Edit History",
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
-    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
+    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
+    "diffs.current-revision": "current revision",
+    "diffs.original-revision": "original revision"
 }

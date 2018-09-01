@@ -179,7 +179,7 @@ module.exports = function (db, module) {
 			{ $group: { _id: { _key: '$_key' }, count: { $sum: 1 } } },
 			{ $project: { _id: 1, count: '$count' } },
 		];
-		db.collection('objects').aggregate(pipeline, function (err, results) {
+		db.collection('objects').aggregate(pipeline).toArray(function (err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -499,9 +499,13 @@ module.exports = function (db, module) {
 	module.processSortedSet = function (setKey, processFn, options, callback) {
 		var done = false;
 		var ids = [];
+		var project = { _id: 0, value: 1 };
+		if (options.withScores) {
+			project.score = 1;
+		}
 		var cursor = db.collection('objects').find({ _key: setKey })
 			.sort({ score: 1 })
-			.project({ _id: 0, value: 1 })
+			.project(project)
 			.batchSize(options.batch);
 
 		async.whilst(
@@ -517,7 +521,7 @@ module.exports = function (db, module) {
 						if (item === null) {
 							done = true;
 						} else {
-							ids.push(item.value);
+							ids.push(options.withScores ? item : item.value);
 						}
 
 						if (ids.length < options.batch && (!done || ids.length === 0)) {

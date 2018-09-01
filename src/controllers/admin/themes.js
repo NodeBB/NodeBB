@@ -16,22 +16,26 @@ themesController.get = function (req, res, next) {
 	var screenshotPath;
 	async.waterfall([
 		function (next) {
-			file.exists(themeConfigPath, next);
-		},
-		function (exists, next) {
-			if (!exists) {
-				return next(Error('invalid-data'));
-			}
+			fs.readFile(themeConfigPath, 'utf8', function (err, config) {
+				if (err) {
+					if (err.code === 'ENOENT') {
+						return next(Error('invalid-data'));
+					}
 
-			fs.readFile(themeConfigPath, 'utf8', next);
+					return next(err);
+				}
+
+				return next(null, config);
+			});
 		},
 		function (themeConfig, next) {
 			try {
 				themeConfig = JSON.parse(themeConfig);
-				next(null, themeConfig.screenshot ? path.join(themeDir, themeConfig.screenshot) : defaultScreenshotPath);
 			} catch (e) {
-				next(e);
+				return next(e);
 			}
+
+			next(null, themeConfig.screenshot ? path.join(themeDir, themeConfig.screenshot) : defaultScreenshotPath);
 		},
 		function (_screenshotPath, next) {
 			screenshotPath = _screenshotPath;

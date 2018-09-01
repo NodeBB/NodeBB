@@ -5,6 +5,7 @@ var validator = require('validator');
 
 var user = require('../user');
 var topics = require('../topics');
+var privileges = require('../privileges');
 var pagination = require('../pagination');
 var helpers = require('./helpers');
 
@@ -71,12 +72,20 @@ tagsController.getTag = function (req, res, next) {
 tagsController.getTags = function (req, res, next) {
 	async.waterfall([
 		function (next) {
-			topics.getTags(0, 99, next);
+			async.parallel({
+				canSearch: function (next) {
+					privileges.global.can('search:tags', req.uid, next);
+				},
+				tags: function (next) {
+					topics.getTags(0, 99, next);
+				},
+			}, next);
 		},
-		function (tags) {
-			tags = tags.filter(Boolean);
+		function (results) {
+			results.tags = results.tags.filter(Boolean);
 			var data = {
-				tags: tags,
+				tags: results.tags,
+				displayTagSearch: results.canSearch,
 				nextStart: 100,
 				breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[tags:tags]]' }]),
 				title: '[[pages:tags]]',

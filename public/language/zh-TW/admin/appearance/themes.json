@@ -7,5 +7,5 @@
     "revert-confirm": "你確定要回復預設的主題嗎？",
     "theme-changed": "主題已更換",
     "revert-success": "已經成功回復為預設主題。",
-    "restart-to-activate": "請重新啟動你的NodeBB以啟動主題。"
+    "restart-to-activate": "Please rebuild and restart your NodeBB to fully activate this theme."
 }

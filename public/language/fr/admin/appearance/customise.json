@@ -4,11 +4,11 @@
 	"custom-css.enable": "Activer le CSS/LESS personnalisé",
 
 	"custom-js": "Javascript personnalisé",
-	"custom-js.description": "Entrez votre Javascript ici. Celui-ci sera exécute après le chargement complet de la page.",
+	"custom-js.description": "Entrez votre Javascript ici. Celui-ci sera exécuté après le chargement complet de la page.",
 	"custom-js.enable": "Activer le Javascript personnalisé",
 
 	"custom-header": "En-tête personnalisé",
-	"custom-header.description": "Entrez un code html personnalisé ici ( par exemple : Méta-Tags,...), qui sera rajouté à la section <code>&lt;head&gt;</code> du balisage de votre forum. Les balises de textes sont autorisés, mais sont déconseillés, l'onglet  <a href=\"#custom-header\" data-toggle=\"tab\">Javascript personnalisé</a> étant prévu à cet effet.",
+	"custom-header.description": "Entrez un code html personnalisé ici ( par exemple : Méta-Tags,...), qui sera rajouté à la section <code>&lt;head&gt;</code> du balisage de votre forum. Les balises de script sont autorisées, mais sont déconseillées, l'onglet  <a href=\"#custom-header\" data-toggle=\"tab\">Javascript personnalisé</a> étant prévu à cet effet.",
 	"custom-header.enable": "Activer les en-têtes personnalisés",
 
 	"custom-css.livereload": "Activer le rechargement en direct",

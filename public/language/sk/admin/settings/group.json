@@ -5,6 +5,7 @@
 	"private-groups.warning": "<strong>Ale pozor</strong>, ak je táto možnosť zakázaná a vy máte súkromné ​​skupiny, stanú sa automaticky verejnými.",
 	"allow-creation": "Povoliť vytvorenie skupín",
 	"allow-creation-help": "Ak je povolené, používatelia môžu vytvoriť skupiny <em>(Predvolené: zakázané)</em>",
+	"allow-multiple-badges-help": "Toto označenie môže byť použité, aby používatelia mohli vybrať niekoľko skupinových symbolov, vyžaduj podporu motívov.",
 	"max-name-length": "Maximálna dĺžka názvu skupiny",
 	"cover-image": "Obrázok skupiny",
 	"default-cover": "Predvolený obrázok",

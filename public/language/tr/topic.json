@@ -62,6 +62,7 @@
     "thread_tools.lock": "Başlığı Kitle",
     "thread_tools.unlock": "Başlığı Aç",
     "thread_tools.move": "Başlığı Taşı",
+    "thread_tools.move-posts": "İletiyi Taşı",
     "thread_tools.move_all": "Hepsini Taşı",
     "thread_tools.select_category": "Kategori Seç",
     "thread_tools.fork": "Başlığı Ayır",
@@ -96,6 +97,7 @@
     "fork_success": "Başlık başarıyla ayrıldı!",
     "delete_posts_instruction": "Silmek/temizlemek istediğiniz iletilere tıklayın.",
     "merge_topics_instruction": "Birleştirmek istediğiniz başlıklara tıklayın",
+    "move_posts_instruction": "Taşımak istediğin iletilere tıklayın",
     "composer.title_placeholder": "Başlık ismini buraya girin...",
     "composer.handle_placeholder": "İsim",
     "composer.discard": "Vazgeç",
@@ -116,8 +118,8 @@
     "sort_by": "Sırala",
     "oldest_to_newest": "En eskiden en yeniye",
     "newest_to_oldest": "En yeniden en eskiye",
-    "most_votes": "En çok oy",
-    "most_posts": "En sık yayın",
+    "most_votes": "En Çok Oylanan",
+    "most_posts": "En Çok Yazılan",
     "stale.title": "Bunun yerine yeni bir başlık oluşturun?",
     "stale.warning": "Yanıtlamak istediğin konu oldukca eskidir. Bu konuya referans oluşturacak yeni bir konu oluşturmak ister misin?",
     "stale.create": "Yeni bir başlık yarat",
@@ -125,5 +127,7 @@
     "link_back": "Re: [%1](%2)",
     "diffs.title": "İleti Geçmiş Düzenle",
     "diffs.description": "Bu iletinin <strong>%1</strong>revizyonu var. Zaman içerisinde ileti içeriğinin tamamını görmek için aşağıdaki düzeltmelerden birine tıklayın.",
-    "diffs.no-revisions-description": "Bu iletinin <strong>%1</strong> revizyonu var."
+    "diffs.no-revisions-description": "Bu iletinin <strong>%1</strong> revizyonu var.",
+    "diffs.current-revision": "Mevcut revizyon",
+    "diffs.original-revision": "Orijinal revizyon"
 }

@@ -63,7 +63,7 @@
 	"development/logger": "Логування",
 	"development/info": "Інформація",
 
-	"reload-forum": "Rebuild & Restart Forum",
+	"rebuild-and-restart-forum": "Перебудувати & Перезавантажити Форум",
 	"restart-forum": "Перезавантажити форум",
 	"logout": "Вийти",
 	"view-forum": "Переглянути форум",
@@ -76,6 +76,6 @@
 
 	"connection-lost": "З'єднання з %1 було втрачено, намагаємось під'єднатись знов...",
 
-	"alerts.version": "Running <strong>NodeBB v%1</strong>",
-	"alerts.upgrade": "Upgrade to v%1"
+	"alerts.version": "Працює версія <strong>NodeBB v%1</strong>",
+	"alerts.upgrade": "Оновити до v%1"
 }

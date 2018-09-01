@@ -39,6 +39,9 @@ module.exports = function (SocketPosts) {
 					canDelete: function (next) {
 						privileges.posts.canDelete(data.pid, socket.uid, next);
 					},
+					canPurge: function (next) {
+						privileges.posts.canPurge(data.pid, socket.uid, next);
+					},
 					canFlag: function (next) {
 						privileges.posts.canFlag(data.pid, socket.uid, next);
 					},
@@ -55,20 +58,23 @@ module.exports = function (SocketPosts) {
 				}, next);
 			},
 			function (results, next) {
-				results.posts.tools = results.tools.tools;
-				results.posts.deleted = parseInt(results.posts.deleted, 10) === 1;
-				results.posts.bookmarked = results.bookmarked;
-				results.posts.selfPost = socket.uid && socket.uid === parseInt(results.posts.uid, 10);
-				results.posts.display_edit_tools = results.canEdit.flag;
-				results.posts.display_delete_tools = results.canDelete.flag;
-				results.posts.display_flag_tools = socket.uid && !results.posts.selfPost && results.canFlag.flag;
-				results.posts.display_moderator_tools = results.posts.display_edit_tools || results.posts.display_delete_tools;
-				results.posts.display_move_tools = results.isAdmin || results.isModerator;
-				results.posts.display_ip_ban = (results.isAdmin || results.isGlobalMod) && !results.posts.selfPost;
-				results.posts.display_history = results.history;
+				var posts = results.posts;
+				posts.tools = results.tools.tools;
+				posts.deleted = parseInt(posts.deleted, 10) === 1;
+				posts.bookmarked = results.bookmarked;
+				posts.selfPost = socket.uid && socket.uid === parseInt(posts.uid, 10);
+				posts.display_edit_tools = results.canEdit.flag;
+				posts.display_delete_tools = results.canDelete.flag;
+				posts.display_purge_tools = results.canPurge;
+				posts.display_flag_tools = socket.uid && !posts.selfPost && results.canFlag.flag;
+				posts.display_moderator_tools = posts.display_edit_tools || posts.display_delete_tools;
+				posts.display_move_tools = results.isAdmin || results.isModerator;
+				posts.display_ip_ban = (results.isAdmin || results.isGlobalMod) && !posts.selfPost;
+				posts.display_history = results.history;
+				posts.toolsVisible = posts.tools.length || posts.display_moderator_tools;
 
 				if (!results.isAdmin && !results.isGlobalMod && !results.isModerator) {
-					results.posts.ip = undefined;
+					posts.ip = undefined;
 				}
 				next(null, results);
 			},

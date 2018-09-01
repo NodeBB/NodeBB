@@ -979,7 +979,7 @@ describe('Topic\'s', function () {
 
 	describe('suggested topics', function () {
 		var tid1;
-		var tid2;
+		var tid3;
 		before(function (done) {
 			async.parallel({
 				topic1: function (next) {
@@ -988,16 +988,27 @@ describe('Topic\'s', function () {
 				topic2: function (next) {
 					topics.post({ uid: adminUid, tags: ['nodebb'], title: 'topic title 2', content: 'topic 2 content', cid: topic.categoryId }, next);
 				},
+				topic3: function (next) {
+					topics.post({ uid: adminUid, tags: [], title: 'topic title 3', content: 'topic 3 content', cid: topic.categoryId }, next);
+				},
 			}, function (err, results) {
 				assert.ifError(err);
 				tid1 = results.topic1.topicData.tid;
-				tid2 = results.topic2.topicData.tid;
+				tid3 = results.topic3.topicData.tid;
 				done();
 			});
 		});
 
 		it('should return suggested topics', function (done) {
 			topics.getSuggestedTopics(tid1, adminUid, 0, -1, function (err, topics) {
+				assert.ifError(err);
+				assert(Array.isArray(topics));
+				done();
+			});
+		});
+
+		it('should return suggested topics', function (done) {
+			topics.getSuggestedTopics(tid3, adminUid, 0, 2, function (err, topics) {
 				assert.ifError(err);
 				assert(Array.isArray(topics));
 				done();
@@ -1080,14 +1091,12 @@ describe('Topic\'s', function () {
 		});
 
 		it('should mark topic notifications read', function (done) {
-			var socketPosts = require('../src/socket.io/posts');
-
 			async.waterfall([
 				function (next) {
 					socketTopics.follow({ uid: adminUid }, tid, next);
 				},
 				function (next) {
-					socketPosts.reply({ uid: uid }, { content: 'some content', tid: tid }, next);
+					topics.reply({ uid: uid, timestamp: Date.now(), content: 'some content', tid: tid }, next);
 				},
 				function (data, next) {
 					setTimeout(next, 2500);
@@ -1812,6 +1821,29 @@ describe('Topic\'s', function () {
 					next();
 				},
 			], done);
+		});
+	});
+
+	describe('sorted topics', function () {
+		it('should get sorted topics in category', function (done) {
+			var filters = ['', 'watched', 'unreplied', 'new'];
+			async.map(filters, function (filter, next) {
+				topics.getSortedTopics({
+					cids: [topic.categoryId],
+					uid: topic.userId,
+					start: 0,
+					stop: -1,
+					filter: filter,
+					sort: 'votes',
+				}, next);
+			}, function (err, data) {
+				assert.ifError(err);
+				assert(data);
+				data.forEach(function (filterTopics) {
+					assert(Array.isArray(filterTopics.topics));
+				});
+				done();
+			});
 		});
 	});
 });

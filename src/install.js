@@ -2,6 +2,7 @@
 
 var async = require('async');
 var fs = require('fs');
+var url = require('url');
 var path = require('path');
 var prompt = require('prompt');
 var winston = require('winston');
@@ -16,9 +17,7 @@ questions.main = [
 		name: 'url',
 		description: 'URL used to access this NodeBB',
 		default:
-			nconf.get('url') ||
-			(nconf.get('base_url') ? (nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '')) : null) ||	// backwards compatibility (remove for v0.7.0)
-			'http://localhost:4567',
+			nconf.get('url') || 'http://localhost:4567',
 		pattern: /^http(?:s)?:\/\//,
 		message: 'Base URL must begin with \'http://\' or \'https://\'',
 	},
@@ -127,7 +126,8 @@ function setupConfig(next) {
 				var config = {};
 				var redisQuestions = require('./database/redis').questions;
 				var mongoQuestions = require('./database/mongo').questions;
-				var allQuestions = questions.main.concat(questions.optional).concat(redisQuestions).concat(mongoQuestions);
+				var postgresQuestions = require('./database/postgres').questions;
+				var allQuestions = questions.main.concat(questions.optional).concat(redisQuestions).concat(mongoQuestions).concat(postgresQuestions);
 
 				allQuestions.forEach(function (question) {
 					config[question.name] = install.values[question.name] || question.default || undefined;
@@ -157,6 +157,11 @@ function completeConfigSetup(config, next) {
 		}
 	}
 
+	// Add package_manager object if set
+	if (nconf.get('package_manager')) {
+		config.package_manager = nconf.get('package_manager');
+	}
+
 	nconf.overrides(config);
 	async.waterfall([
 		function (next) {
@@ -166,6 +171,26 @@ function completeConfigSetup(config, next) {
 			require('./database').createIndices(next);
 		},
 		function (next) {
+			// Sanity-check/fix url/port
+			if (!/^http(?:s)?:\/\//.test(config.url)) {
+				config.url = 'http://' + config.url;
+			}
+			var urlObj = url.parse(config.url);
+			if (urlObj.port) {
+				config.port = urlObj.port;
+			}
+
+			// Remove trailing slash from non-subfolder installs
+			if (urlObj.path === '/') {
+				urlObj.path = '';
+				urlObj.pathname = '';
+			}
+
+			config.url = url.format(urlObj);
+
+			// ref: https://github.com/indexzero/nconf/issues/300
+			delete config.type;
+
 			install.save(config, next);
 		},
 	], next);
@@ -356,7 +381,8 @@ function createGlobalModeratorsGroup(next) {
 
 function giveGlobalPrivileges(next) {
 	var privileges = require('./privileges');
-	privileges.global.give(['chat', 'upload:post:image'], 'registered-users', next);
+	var defaultPrivileges = ['chat', 'upload:post:image', 'signature', 'search:content', 'search:users', 'search:tags'];
+	privileges.global.give(defaultPrivileges, 'registered-users', next);
 }
 
 function createCategories(next) {

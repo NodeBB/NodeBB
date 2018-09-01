@@ -62,6 +62,7 @@
     "thread_tools.lock": "Témakör zárolása",
     "thread_tools.unlock": "Témakör feloldása",
     "thread_tools.move": "Témakör áthelyezése",
+    "thread_tools.move-posts": "Move Posts",
     "thread_tools.move_all": "Mind áthelyezése",
     "thread_tools.select_category": "Kategória kiválasztása",
     "thread_tools.fork": "Témakör szétszedése",
@@ -96,6 +97,7 @@
     "fork_success": "Témakör sikeresen szétválasztva! Kattints ide a szétválasztott témakörre ugráshoz.",
     "delete_posts_instruction": "Kattints a törlendő/véglegesen törlendő hozzászólásokra",
     "merge_topics_instruction": "Kattints a összevonandó témakörökre",
+    "move_posts_instruction": "Click the posts you want to move",
     "composer.title_placeholder": "Add meg a témakör címét...",
     "composer.handle_placeholder": "Név",
     "composer.discard": "Elvet",
@@ -116,8 +118,8 @@
     "sort_by": "Rendezés",
     "oldest_to_newest": "Régebbiek elől",
     "newest_to_oldest": "Újabbak elől",
-    "most_votes": "Legtöbb szavazat",
-    "most_posts": "Legtöbb hozzászólás",
+    "most_votes": "Most Votes",
+    "most_posts": "Most Posts",
     "stale.title": "Inkább új témakör létrehozása?",
     "stale.warning": "A témakör, melyre válaszolsz, elég régi. Szeretnél helyette inkább új témakört létrehozni, és erre hivatkozni a válaszodban?",
     "stale.create": "Új témakör létrehozása",
@@ -125,5 +127,7 @@
     "link_back": "Válasz: [%1](%2)",
     "diffs.title": "Post Edit History",
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
-    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
+    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
+    "diffs.current-revision": "current revision",
+    "diffs.original-revision": "original revision"
 }

@@ -4,6 +4,7 @@ var async = require('async');
 
 var posts = require('../posts');
 var privileges = require('../privileges');
+var plugins = require('../plugins');
 var meta = require('../meta');
 var topics = require('../topics');
 var user = require('../user');
@@ -33,6 +34,9 @@ SocketPosts.reply = function (socket, data, callback) {
 
 	async.waterfall([
 		function (next) {
+			meta.blacklist.test(data.req.ip, next);
+		},
+		function (next) {
 			posts.shouldQueue(socket.uid, data, next);
 		},
 		function (shouldQueue, next) {
@@ -59,7 +63,7 @@ function postReply(socket, data, callback) {
 
 			next(null, postData);
 
-			websockets.in('uid_' + socket.uid).emit('event:new_post', result);
+			socket.emit('event:new_post', result);
 
 			user.updateOnlineUsers(socket.uid);
 
@@ -155,14 +159,15 @@ SocketPosts.getReplies = function (socket, pid, callback) {
 		},
 		function (results, next) {
 			postPrivileges = results.privileges;
-			results.posts = results.posts.filter(function (postData, index) {
-				return postData && postPrivileges[index].read;
-			});
+
 			topics.addPostData(results.posts, socket.uid, next);
 		},
 		function (postData, next) {
-			postData.forEach(function (postData) {
-				posts.modifyPostByPrivilege(postData, postPrivileges.isAdminOrMod);
+			postData.forEach(function (postData, index) {
+				posts.modifyPostByPrivilege(postData, postPrivileges[index]);
+			});
+			postData = postData.filter(function (postData, index) {
+				return postData && postPrivileges[index].read;
 			});
 			next(null, postData);
 		},
@@ -181,7 +186,14 @@ SocketPosts.editQueuedContent = function (socket, data, callback) {
 	if (!data || !data.id || !data.content) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
-	posts.editQueuedContent(socket.uid, data.id, data.content, callback);
+	async.waterfall([
+		function (next) {
+			posts.editQueuedContent(socket.uid, data.id, data.content, next);
+		},
+		function (next) {
+			plugins.fireHook('filter:parse.post', { postData: data }, next);
+		},
+	], callback);
 };
 
 function acceptOrReject(method, socket, data, callback) {

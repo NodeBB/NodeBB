@@ -9,7 +9,13 @@ module.exports = {
 	name: 'Delete accidentally long-lived sessions',
 	timestamp: Date.UTC(2017, 3, 16),
 	method: function (callback) {
-		var configJSON = require('../../../config.json');
+		var configJSON;
+		try {
+			configJSON = require('../../../config.json') || { [process.env.database]: true };
+		} catch (err) {
+			configJSON = { [process.env.database]: true };
+		}
+
 		var isRedisSessionStore = configJSON.hasOwnProperty('redis');
 		var progress = this.progress;
 
@@ -39,10 +45,12 @@ module.exports = {
 					], function (err) {
 						next(err);
 					});
-				} else {
+				} else if (db.client && db.client.collection) {
 					db.client.collection('sessions').deleteMany({}, {}, function (err) {
 						next(err);
 					});
+				} else {
+					next();
 				}
 			},
 		], callback);

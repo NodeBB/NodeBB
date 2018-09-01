@@ -1,5 +1,5 @@
 {
-    "latest_users": "最新会员",
+    "latest_users": "最新用户",
     "top_posters": "发帖排行",
     "most_reputation": "声望排行",
     "most_flags": "举报最多",
@@ -11,7 +11,7 @@
     "online-only": "只看在线",
     "invite": "邀请注册",
     "invitation-email-sent": "已发送邀请给 %1",
-    "user_list": "会员列表",
+    "user_list": "用户列表",
     "recent_topics": "最新主题",
     "popular_topics": "热门主题",
     "unread_topics": "未读主题",

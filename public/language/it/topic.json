@@ -62,6 +62,7 @@
     "thread_tools.lock": "Blocca Discussione",
     "thread_tools.unlock": "Sblocca Discussione",
     "thread_tools.move": "Sposta Discussione",
+    "thread_tools.move-posts": "Move Posts",
     "thread_tools.move_all": "Sposta Tutto",
     "thread_tools.select_category": "Seleziona Categoria",
     "thread_tools.fork": "Dividi Discussione",
@@ -96,6 +97,7 @@
     "fork_success": "Topic Diviso con successo ! Clicca qui per andare al Topic Diviso.",
     "delete_posts_instruction": "Clicca sui post che vuoi cancellare/eliminare",
     "merge_topics_instruction": "Clicca sulle discussioni che vuoi unire",
+    "move_posts_instruction": "Click the posts you want to move",
     "composer.title_placeholder": "Inserisci qui il titolo della discussione...",
     "composer.handle_placeholder": "Nome",
     "composer.discard": "Annulla",
@@ -116,8 +118,8 @@
     "sort_by": "Ordina per",
     "oldest_to_newest": "Da Vecchi a Nuovi",
     "newest_to_oldest": "Da Nuovi a Vecchi",
-    "most_votes": "Più votati",
-    "most_posts": "Ulteriori post",
+    "most_votes": "Most Votes",
+    "most_posts": "Most Posts",
     "stale.title": "Preferisci creare una nuova discussione?",
     "stale.warning": "Il topic al quale stai rispondendo è abbastanza vecchio. Vorresti piuttosto creare un nuovo topic in riferimento a questo nella tua risposta?",
     "stale.create": "Crea una nuova discussione",
@@ -125,5 +127,7 @@
     "link_back": "Re: [%1](%2)",
     "diffs.title": "Post Edit History",
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
-    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
+    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
+    "diffs.current-revision": "current revision",
+    "diffs.original-revision": "original revision"
 }

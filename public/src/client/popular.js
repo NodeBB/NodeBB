@@ -7,10 +7,7 @@ define('forum/popular', ['forum/recent', 'components', 'forum/infinitescroll'], 
 	Popular.init = function () {
 		app.enterRoom('popular_topics');
 
-		components.get('popular/tab')
-			.removeClass('active')
-			.find('a[href="' + window.location.pathname + '"]')
-			.parent().addClass('active');
+		recent.handleCategorySelection();
 
 		if (!config.usePagination) {
 			infinitescroll.init(loadMoreTopics);
@@ -25,10 +22,12 @@ define('forum/popular', ['forum/recent', 'components', 'forum/infinitescroll'], 
 		infinitescroll.loadMore('topics.loadMorePopularTopics', {
 			after: $('[component="category"]').attr('data-nextstart'),
 			count: config.topicsPerPage,
-			term: ajaxify.data.term,
+			cid: utils.params().cid,
+			term: ajaxify.data.selectedTerm.term,
+			filter: ajaxify.data.selectedFilter.filter,
 		}, function (data, done) {
 			if (data.topics && data.topics.length) {
-				recent.onTopicsLoaded('popular', data.topics, false, done);
+				recent.onTopicsLoaded('popular', data.topics, false, direction, done);
 				$('[component="category"]').attr('data-nextstart', data.nextStart);
 			} else {
 				done();

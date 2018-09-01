@@ -62,6 +62,7 @@
     "thread_tools.lock": "Заключване на темата",
     "thread_tools.unlock": "Отключване на темата",
     "thread_tools.move": "Преместване на темата",
+    "thread_tools.move-posts": "Преместване на публикациите",
     "thread_tools.move_all": "Преместване на всички",
     "thread_tools.select_category": "Избиране на категория",
     "thread_tools.fork": "Разделяне на темата",
@@ -96,6 +97,7 @@
     "fork_success": "Темата е разделена успешно! Натиснете тук, за да преминете към отделената тема.",
     "delete_posts_instruction": "Натиснете публикациите, които искате да изтриете/изчистите",
     "merge_topics_instruction": "Натиснете темите, които искате да слеете",
+    "move_posts_instruction": "Натиснете публикациите, които искате да преместите",
     "composer.title_placeholder": "Въведете заглавието на темата си тук...",
     "composer.handle_placeholder": "Име",
     "composer.discard": "Отхвърляне",
@@ -116,8 +118,8 @@
     "sort_by": "Подреждане по",
     "oldest_to_newest": "Първо най-старите",
     "newest_to_oldest": "Първо най-новите",
-    "most_votes": "Най-много гласове",
-    "most_posts": "Най-много публикации",
+    "most_votes": "Първо тези с най-много гласове",
+    "most_posts": "Първо тези с най-много публикации",
     "stale.title": "Създаване на нова тема вместо това?",
     "stale.warning": "Темата, в която отговаряте, е доста стара. Искате ли вместо това да създадете нова и да направите препратка към тази в отговора си?",
     "stale.create": "Създаване на нова тема",
@@ -125,5 +127,7 @@
     "link_back": "Отговор: [%1](%2)",
     "diffs.title": "История на редакциите",
     "diffs.description": "Тази публикация има <strong>%1</strong> варианта. Щракнете върху някоя от версиите по-долу, за да видите съдържанието ѝ в съответния момент.",
-    "diffs.no-revisions-description": "Тази публикация има <strong>%1</strong> варианта."
+    "diffs.no-revisions-description": "Тази публикация има <strong>%1</strong> варианта.",
+    "diffs.current-revision": "текуща версия",
+    "diffs.original-revision": "оригинална версия"
 }

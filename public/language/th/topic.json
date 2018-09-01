@@ -62,6 +62,7 @@
     "thread_tools.lock": "ล็อคกระทู้",
     "thread_tools.unlock": "ปลดล็อคกระทู้",
     "thread_tools.move": "ย้ายกระทู้",
+    "thread_tools.move-posts": "Move Posts",
     "thread_tools.move_all": "ย้ายทั้งหมด",
     "thread_tools.select_category": "เลือกประเภท",
     "thread_tools.fork": "แยกกระทู้",
@@ -96,6 +97,7 @@
     "fork_success": "แตกกระทู้สำเร็จแล้ว! คลิกที่นี่เพื่อไปยั้งกระทู้ที่คุณแตกประเด็น",
     "delete_posts_instruction": "คลิกโพสต์ที่คุณต้องการลบ/ล้าง",
     "merge_topics_instruction": "เลือกกระทู้ที่คุณต้องการรวม",
+    "move_posts_instruction": "Click the posts you want to move",
     "composer.title_placeholder": "ป้อนชื่อกระทู้ของคุณที่นี่ ...",
     "composer.handle_placeholder": "ชื่อ",
     "composer.discard": "ยกเลิก",
@@ -116,8 +118,8 @@
     "sort_by": "เรียงตาม",
     "oldest_to_newest": "เก่าสุดไปยังใหม่สุด",
     "newest_to_oldest": "ใหม่สุดไปยังเก่าสุด",
-    "most_votes": "โหวตมากสุด",
-    "most_posts": "โพสต์มากสุด",
+    "most_votes": "Most Votes",
+    "most_posts": "Most Posts",
     "stale.title": "ตั้งกระทู้ใหม่แทนไหม?",
     "stale.warning": "กระทู้ที่คุณกำลังตอบเก่าไปหน่อยนะ อยากจะลองตั้งกระทู้ใหม่แทนไหมล่ะ? แล้วก็อ้างอิงกระทู้นี้ไปยังคำตอบของคุณ",
     "stale.create": "ตั้งกระทู้ใหม่",
@@ -125,5 +127,7 @@
     "link_back": "ตอบกลับ: [%1](%2)",
     "diffs.title": "แก้ไขประวัติโพสต์",
     "diffs.description": "โพสนี้มี <strong>%1</strong> การแก้ไข คลิกที่การแก้ไขด้านล่างเพื่อดูเนื้อหาโพสต์ตามเวลาที่เลือก",
-    "diffs.no-revisions-description": "โพสนี้มี <strong>%1</strong>การแก้ไข"
+    "diffs.no-revisions-description": "โพสนี้มี <strong>%1</strong>การแก้ไข",
+    "diffs.current-revision": "current revision",
+    "diffs.original-revision": "original revision"
 }

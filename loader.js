@@ -88,6 +88,18 @@ Loader.addWorkerEvents = function (worker) {
 				console.log('[cluster] Reloading...');
 				Loader.reload();
 				break;
+			case 'pubsub':
+				workers.forEach(function (w) {
+					w.send(message);
+				});
+				break;
+			case 'socket.io':
+				workers.forEach(function (w) {
+					if (w !== worker) {
+						w.send(message);
+					}
+				});
+				break;
 			}
 		}
 	});
@@ -115,7 +127,7 @@ function forkWorker(index, isPrimary) {
 	}
 
 	process.env.isPrimary = isPrimary;
-	process.env.isCluster = ports.length > 1;
+	process.env.isCluster = nconf.get('isCluster') || ports.length > 1;
 	process.env.port = ports[index];
 
 	var worker = fork(appPath, args, {

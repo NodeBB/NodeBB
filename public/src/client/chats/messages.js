@@ -8,17 +8,13 @@ define('forum/chats/messages', ['components', 'sounds', 'translator', 'benchpres
 		var msg = inputEl.val();
 		var mid = inputEl.attr('data-mid');
 
-		if (msg.length > ajaxify.data.maximumChatMessageLength) {
-			return app.alertError('[[error:chat-message-too-long,' + ajaxify.data.maximumChatMessageLength + ']]');
-		}
-
 		if (!msg.length) {
 			return;
 		}
 
 		inputEl.val('');
 		inputEl.removeAttr('data-mid');
-
+		messages.updateRemainingLength(inputEl.parent());
 		$(window).trigger('action:chat.sent', {
 			roomId: roomId,
 			message: msg,
@@ -32,6 +28,7 @@ define('forum/chats/messages', ['components', 'sounds', 'translator', 'benchpres
 			}, function (err) {
 				if (err) {
 					inputEl.val(msg);
+					messages.updateRemainingLength(inputEl.parent());
 					if (err.message === '[[error:email-not-confirmed-chat]]') {
 						return app.showEmailConfirmWarning(err);
 					}
@@ -56,10 +53,17 @@ define('forum/chats/messages', ['components', 'sounds', 'translator', 'benchpres
 				if (err) {
 					inputEl.val(msg);
 					inputEl.attr('data-mid', mid);
+					messages.updateRemainingLength(inputEl.parent());
 					return app.alertError(err.message);
 				}
 			});
 		}
+	};
+
+	messages.updateRemainingLength = function (parent) {
+		var element = parent.find('[component="chat/input"]');
+		parent.find('[component="chat/message/length"]').text(element.val().length);
+		parent.find('[component="chat/message/remaining"]').text(config.maximumChatMessageLength - element.val().length);
 	};
 
 	messages.appendChatMessage = function (chatContentEl, data) {

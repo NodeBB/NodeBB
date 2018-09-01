@@ -13,6 +13,7 @@ var plugins = require('../plugins');
 var helpers = require('./helpers');
 var pagination = require('../pagination');
 var utils = require('../utils');
+var analytics = require('../analytics');
 
 var topicsController = module.exports;
 
@@ -145,6 +146,7 @@ topicsController.get = function (req, res, callback) {
 			topicData.postEditDuration = parseInt(meta.config.postEditDuration, 10) || 0;
 			topicData.postDeleteDuration = parseInt(meta.config.postDeleteDuration, 10) || 0;
 			topicData.scrollToMyPost = settings.scrollToMyPost;
+			topicData.allowMultipleBadges = parseInt(meta.config.allowMultipleBadges, 10) === 1;
 			topicData.rssFeedUrl = nconf.get('relative_path') + '/topic/' + topicData.tid + '.rss';
 			if (req.loggedIn) {
 				topicData.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
@@ -176,6 +178,8 @@ topicsController.get = function (req, res, callback) {
 					}
 				});
 			}
+
+			analytics.increment(['pageviews:byCid:' + topicData.category.cid]);
 
 			res.render('topic', topicData);
 		},
@@ -319,7 +323,7 @@ function addOGImageTagsForPosts(res, posts) {
 
 function addOGImageTag(res, imageUrl) {
 	if (typeof imageUrl === 'string' && !imageUrl.startsWith('http')) {
-		imageUrl = nconf.get('url') + imageUrl;
+		imageUrl = nconf.get('url') + imageUrl.replace(new RegExp('^' + nconf.get('relative_path')), '');
 	}
 	res.locals.metaTags.push({
 		property: 'og:image',

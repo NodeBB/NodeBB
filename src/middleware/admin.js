@@ -82,6 +82,7 @@ module.exports = function (middleware) {
 
 				var version = nconf.get('version');
 
+				res.locals.config.userLang = res.locals.config.acpLang || res.locals.config.userLang;
 				var templateValues = {
 					config: res.locals.config,
 					configJSON: jsesc(JSON.stringify(res.locals.config), { isScriptContext: true }),

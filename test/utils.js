@@ -53,7 +53,7 @@ describe('Utility Methods', function () {
 		});
 		it('rejects empty string', function () {
 			var username = '';
-			assert.ifError(utils.isUserNameValid(username), 'accepted as valid username');
+			assert.equal(utils.isUserNameValid(username), false, 'accepted as valid username');
 		});
 	});
 
@@ -64,7 +64,7 @@ describe('Utility Methods', function () {
 		});
 		it('rejects empty address', function () {
 			var email = '';
-			assert.ifError(utils.isEmailValid(email), 'accepted as valid email');
+			assert.equal(utils.isEmailValid(email), false, 'accepted as valid email');
 		});
 	});
 

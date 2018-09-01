@@ -1,19 +1,19 @@
 {
-	"none": "Your forum does not have any topics with tags yet.",
-	"bg-color": "Background Colour",
-	"text-color": "Text Colour",
-	"create-modify": "Create & Modify Tags",
-	"description": "Select tags via clicking and/or dragging, use shift to select multiple.",
-	"create": "Create Tag",
-	"modify": "Modify Tags",
-	"rename": "Rename Tags",
-	"delete": "Delete Selected Tags",
-	"search": "Search for tags...",
+	"none": "בפורום שלך אין עדיין נושאים עם תגים.\n",
+	"bg-color": "צבע רקע\n",
+	"text-color": "צבע טקסט\n",
+	"create-modify": "צור ושנה תגים",
+	"description": "בחר תגים באמצעות לחיצה ו/או גרירה, השתמש ב shift על מנת לבחור במספר תגים",
+	"create": "צור תג",
+	"modify": "שנה תג",
+	"rename": "שנה שם של תג",
+	"delete": "מחק תגים שנבחרו",
+	"search": "חפש תג...",
 	"settings": "Click <a href=\"%1\">here</a> to visit the tag settings page.",
-	"name": "Tag Name",
+	"name": "שם תג",
 
-	"alerts.editing-multiple": "Editing multiple tags",
+	"alerts.editing-multiple": "עריכת מספר תגים",
 	"alerts.editing-x": "Editing \"%1\" tag",
-	"alerts.confirm-delete": "Do you want to delete the selected tags?",
-	"alerts.update-success": "Tag Updated!"
+	"alerts.confirm-delete": "האם תרצה למחוק את התגים שנבחרו?",
+	"alerts.update-success": "תג עודכן!"
 }

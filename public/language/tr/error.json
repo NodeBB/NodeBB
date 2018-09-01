@@ -18,6 +18,7 @@
     "invalid-username-or-password": "Lütfen kullanıcı ismi ve parola girin.",
     "invalid-search-term": "Geçersiz arama",
     "invalid-url": "Geçersiz bağlantı",
+    "local-login-disabled": "Ayrıcalıklı-olmayan hesaplar için yerel giriş sistemi devre dışı bırakıldı.",
     "csrf-invalid": "Büyük olasılıkla süresi dolmuş oturum nedeniyle girişinizi geçersiz kıldık. Lütfen tekrar deneyiniz.",
     "invalid-pagination-value": "Geçersiz sayfalama değeri, en az %1 ve en fazla %2 olabilir",
     "username-taken": "Kullanıcı İsmi Alınmış",
@@ -77,6 +78,7 @@
     "still-uploading": "Lütfen yüklemelerin bitmesini bekleyin.",
     "file-too-big": "İzin verilen en büyük dosya boyutu %1 kb - lütfen daha küçük bir dosya yükleyin",
     "guest-upload-disabled": "Ziyaretçilerin yükleme yapması devre dışı bırakıldı",
+    "cors-error": "Yanlış yapılandırılmış CORS nedeniyle resim yüklenemiyor",
     "already-bookmarked": "Bu iletiyi yer imine ekledin",
     "already-unbookmarked": "Bu iletiyi yer iminden çıkardın",
     "cant-ban-other-admins": "Başka yöneticileri yasaklayamazsınız!",
@@ -126,6 +128,8 @@
     "not-enough-reputation-min-rep-website": "Bir website eklemek için yeterli saygınlığa sahip değilsin",
     "not-enough-reputation-min-rep-aboutme": "Hakkında kısmını doldurabilmek için yeterli saygınlığa sahip değilsin",
     "not-enough-reputation-min-rep-signature": "İmza eklemek için yeterli saygınlığa sahip değilsin",
+    "not-enough-reputation-min-rep-profile-picture": "Profil fotoğrafı eklemek için yeterli saygınlığa sahip değilsiniz",
+    "not-enough-reputation-min-rep-cover-picture": "Kapak fotoğrafı eklemek için yeterli saygınlığa sahip değilsiniz",
     "already-flagged": "Bu iletiyi zaten bayrakladınız",
     "self-vote": "Kendi iletinize oy veremezsiniz",
     "reload-failed": "NodeBB tekrar yüklenirken bir sorunla karşılaştı: “%1“. NodeBB varolan dosyaları servis etmeye devam edecek.",
@@ -145,5 +149,8 @@
     "invalid-session": "Oturum Uyuşmazlığı",
     "invalid-session-text": "Senin giriş oturumun pek aktif gözükmüyor, ya da sunucu ile eşleşmiyor. Lütfen sayfayı yenileyiniz.",
     "no-topics-selected": "Hiçbir başlık seçilmedi!",
-    "cant-move-to-same-topic": "İletiyi aynı başlığa taşıyamazsın!"
+    "cant-move-to-same-topic": "İletiyi aynı başlığa taşıyamazsın!",
+    "cannot-block-self": "Kendi kendinizi engelleyemezsiniz!",
+    "cannot-block-privileged": "Yöneticileri veya genel moderatörleri engelleyemezsiniz",
+    "no-connection": "İnternet bağlantınızda sorun var gibi görünüyor"
 }

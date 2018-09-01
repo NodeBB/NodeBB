@@ -4,8 +4,38 @@ var async = require('async');
 
 var db = require('../../database');
 var user = require('../../user');
+var helpers = require('../helpers');
+var accountHelpers = require('./helpers');
 
 var sessionController = {};
+
+sessionController.get = function (req, res, callback) {
+	var userData;
+
+	async.waterfall([
+		function (next) {
+			accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, next);
+		},
+		function (_userData, next) {
+			userData = _userData;
+			if (!userData) {
+				return callback();
+			}
+
+			async.parallel({
+				sessions: async.apply(user.auth.getSessions, userData.uid, req.sessionID),
+			}, next);
+		},
+		function (data) {
+			userData.sessions = data.sessions;
+
+			userData.title = '[[pages:account/sessions]]';
+			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[pages:account/sessions]]' }]);
+
+			res.render('account/sessions', userData);
+		},
+	], callback);
+};
 
 sessionController.revoke = function (req, res, next) {
 	if (!req.params.hasOwnProperty('uuid')) {

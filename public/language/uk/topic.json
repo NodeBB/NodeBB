@@ -62,6 +62,7 @@
     "thread_tools.lock": "Заблокувати тему",
     "thread_tools.unlock": "Розблокувати тему",
     "thread_tools.move": "Перемістити тему",
+    "thread_tools.move-posts": "Перемістити Пости",
     "thread_tools.move_all": "Перемістити всі",
     "thread_tools.select_category": "Обрати Категорію",
     "thread_tools.fork": "Відгалужити тему",
@@ -96,6 +97,7 @@
     "fork_success": "Тему успішно відгалужено. Тисніть тут, щоб перейти до відгалуженої теми.",
     "delete_posts_instruction": "Тисніть пости які ви бажаєте видалити/стерти",
     "merge_topics_instruction": "Натисніть на теми, які потрібно об'єднати",
+    "move_posts_instruction": "Натисніть на пости, які ви хочете перемістити",
     "composer.title_placeholder": "Уведіть заголовок теми...",
     "composer.handle_placeholder": "Ім'я",
     "composer.discard": "Скасувати",
@@ -116,8 +118,8 @@
     "sort_by": "Сортувати за",
     "oldest_to_newest": "Старі > Нові",
     "newest_to_oldest": "Нові > Старі",
-    "most_votes": "Кількість голосів",
-    "most_posts": "Кількість постів",
+    "most_votes": "Найбільше Голосів",
+    "most_posts": "Найбільше Постів",
     "stale.title": "Створити натомість нову тему?",
     "stale.warning": "Тема на котру ви відповідаєте досить стара. Не бажаєте натомість створити новую тему і зіслатися на цю у вашій відповіді?",
     "stale.create": "Так, створити нову тему",
@@ -125,5 +127,7 @@
     "link_back": "Re: [%1](%2)",
     "diffs.title": "Історія редагування посту",
     "diffs.description": "Цей пост має <strong>%1 </strong> версій. Натисніть одну з наведених нижче змін, щоб переглянути вміст публікації в той момент часу.",
-    "diffs.no-revisions-description": "Цей пост має <strong>%1</strong> версій."
+    "diffs.no-revisions-description": "Цей пост має <strong>%1</strong> версій.",
+    "diffs.current-revision": "поточна ревізія",
+    "diffs.original-revision": "початкова ревізія"
 }

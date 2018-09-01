@@ -59,11 +59,7 @@ Messaging.getMessages = function (params, callback) {
 
 			// Filter out deleted messages unless you're the sender of said message
 			messageData = messageData.filter(function (messageData) {
-				if (messageData.deleted && parseInt(messageData.fromuid, 10) !== parseInt(params.uid, 10)) {
-					return false;
-				}
-
-				return true;
+				return (!messageData.deleted || parseInt(messageData.fromuid, 10) === parseInt(params.uid, 10));
 			});
 
 			next(null, messageData);
@@ -86,7 +82,6 @@ Messaging.parse = function (message, fromuid, uid, roomId, isNew, callback) {
 		if (err) {
 			return callback(err);
 		}
-
 
 		var messageData = {
 			message: message,
@@ -218,6 +213,18 @@ Messaging.getTeaser = function (uid, roomId, callback) {
 				return next(null, null);
 			}
 			Messaging.getMessageFields(mids[0], ['fromuid', 'content', 'timestamp'], next);
+		},
+		function (teaser, next) {
+			if (!teaser) {
+				return callback();
+			}
+			user.blocks.is(teaser.fromuid, uid, function (err, blocked) {
+				if (err || blocked) {
+					return callback(err);
+				}
+
+				next(null, teaser);
+			});
 		},
 		function (_teaser, next) {
 			teaser = _teaser;
@@ -376,3 +383,5 @@ Messaging.hasPrivateChat = function (uid, withUid, callback) {
 		},
 	], callback);
 };
+
+Messaging.async = require('./promisify')(Messaging);

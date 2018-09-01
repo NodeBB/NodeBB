@@ -236,6 +236,12 @@
 				<label for="composer:customHelpText">[[admin/settings/post:composer.custom-help]]</label>
 				<textarea class="form-control" id="composer:customHelpText" data-field="composer:customHelpText" rows="5"></textarea>
 			</div>
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="enablePostHistory">
+					<input class="mdl-switch__input" type="checkbox" id="enablePostHistory" data-field="enablePostHistory" checked />
+					<span class="mdl-switch__label">[[admin/settings/post:enable-post-history]]</span>
+				</label>
+			</div>
 		</form>
 	</div>
 </div>

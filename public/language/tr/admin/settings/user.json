@@ -19,8 +19,8 @@
 	"themes": "Temalar",
 	"disable-user-skins": "Kullanıcıların özel bir deri seçmesini engelle",
 	"account-protection": "Hesap Koruma",
-	"admin-relogin-duration": "Admin relogin duration (minutes)",
-	"admin-relogin-duration-help": "After a set amount of time accessing the admin section will require re-login, set to 0 to disable",
+	"admin-relogin-duration": "Yönetici yeniden giriş süresi (dakika)",
+	"admin-relogin-duration-help": "Beliril bir süreden sonra yönetici bölümüne erişmek için yeniden giriş yapılması gerekir, devre dışı bırakmak için 0 olarak ayarlayın",
 	"login-attempts": "Saatlik giriş deneme sayısı",
 	"login-attempts-help": "Bir kullanıcının hesabına giriş denemesi bu sınırı aşarsa, bu hesap önceden belirlenmiş olan bir süre için kilitlenir.",
 	"lockout-duration": "Hesap Kilitleme Süresi (dakika)",
@@ -63,5 +63,5 @@
 	"email-post-notif": "Abone olduğum konulara cevap gelince bana e-posta gönder",
 	"follow-created-topics": "Kendi konularımı takip et",
 	"follow-replied-topics": "Cevap verdiğim konuları takip et",
-	"default-notification-settings": "Default notification settings"
+	"default-notification-settings": "Varsayılan bildirim ayarları"
 }

@@ -51,7 +51,7 @@ function canGenerate(uid, callback) {
 		},
 		function (score, next) {
 			if (score > Date.now() - (1000 * 60)) {
-				return next(new Error('[[error:cant-reset-password-more-than-once-a-minute]]'));
+				return next(new Error('[[error:reset-rate-limited]]'));
 			}
 			next();
 		},

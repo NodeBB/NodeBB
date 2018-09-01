@@ -30,7 +30,7 @@ define('forum/tag', ['forum/recent', 'forum/infinitescroll'], function (recent, 
 				count: config.topicsPerPage,
 			}, function (data, done) {
 				if (data.topics && data.topics.length) {
-					recent.onTopicsLoaded('tag', data.topics, false, done);
+					recent.onTopicsLoaded('tag', data.topics, false, direction, done);
 				} else {
 					done();
 					$('#load-more-btn').hide();

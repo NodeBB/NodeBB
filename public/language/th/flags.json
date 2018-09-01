@@ -18,6 +18,7 @@
 	"filter-type": "ประเภทการปักธง",
 	"filter-type-all": "เนื้อหาทั้งหมด",
 	"filter-type-post": "โพสต์",
+	"filter-type-user": "User",
 	"filter-state": "สถานะ",
 	"filter-assignee": "ผู้ได้รับมอบหมาย",
 	"filter-cid": "หมวดหมู่",

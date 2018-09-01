@@ -18,6 +18,7 @@
 	"filter-type": "举报类型",
 	"filter-type-all": "所有内容",
 	"filter-type-post": "帖子",
+	"filter-type-user": "用户",
 	"filter-state": "状态",
 	"filter-assignee": "受委托人 UID",
 	"filter-cid": "版块",
@@ -59,6 +60,6 @@
 	"modal-submit": "提交举报",
 	"modal-submit-success": "已举报此内容。",
 	"modal-submit-confirm": "确认提交",
-	"modal-submit-confirm-text": "你已经指定了一个自定义原因。 您希望通过快速报告提交吗？",
+	"modal-submit-confirm-text": "您已经指定了一个自定义原因。 您希望通过快速报告提交吗？",
 	"modal-submit-confirm-text-help": "提交快速报告将覆盖任何已定义的自定义原因。"
 }

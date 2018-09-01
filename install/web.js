@@ -25,7 +25,8 @@ winston.add(winston.transports.File, {
 	level: 'verbose',
 });
 
-var web = {};
+var web = module.exports;
+
 var scripts = [
 	'node_modules/jquery/dist/jquery.js',
 	'public/vendor/xregexp/xregexp.js',
@@ -33,6 +34,11 @@ var scripts = [
 	'public/src/utils.js',
 	'public/src/installer/install.js',
 ];
+
+var installing = false;
+var success = false;
+var error = false;
+var launchUrl;
 
 web.install = function (port) {
 	port = port || 4567;
@@ -84,7 +90,7 @@ function ping(req, res) {
 }
 
 function welcome(req, res) {
-	var dbs = ['redis', 'mongo'];
+	var dbs = ['redis', 'mongo', 'postgres'];
 	var databases = dbs.map(function (databaseName) {
 		var questions = require('../src/database/' + databaseName).questions.filter(function (question) {
 			return question && !question.hideOnWebInstall;
@@ -99,17 +105,25 @@ function welcome(req, res) {
 	var defaults = require('./data/defaults');
 
 	res.render('install/index', {
+		url: nconf.get('url') || (req.protocol + '://' + req.get('host')),
+		launchUrl: launchUrl,
+		skipGeneralSetup: !!nconf.get('url'),
 		databases: databases,
 		skipDatabaseSetup: !!nconf.get('database'),
-		error: !!res.locals.error,
-		success: !!res.locals.success,
+		error: error,
+		success: success,
 		values: req.body,
 		minimumPasswordLength: defaults.minimumPasswordLength,
+		installing: installing,
 	});
 }
 
 function install(req, res) {
+	if (installing) {
+		return welcome(req, res);
+	}
 	req.setTimeout(0);
+	installing = true;
 	var setupEnvVars = nconf.get();
 	for (var i in req.body) {
 		if (req.body.hasOwnProperty(i) && !process.env.hasOwnProperty(i)) {
@@ -132,17 +146,16 @@ function install(req, res) {
 
 	winston.info('Starting setup process');
 	winston.info(setupEnvVars);
+	launchUrl = setupEnvVars.url;
 
 	var child = require('child_process').fork('app', ['--setup'], {
 		env: setupEnvVars,
 	});
 
 	child.on('close', function (data) {
-		if (data === 0) {
-			res.locals.success = true;
-		} else {
-			res.locals.error = true;
-		}
+		installing = false;
+		success = data === 0;
+		error = data !== 0;
 
 		welcome(req, res);
 	});
@@ -262,5 +275,3 @@ function loadDefaults(next) {
 		next();
 	});
 }
-
-module.exports = web;

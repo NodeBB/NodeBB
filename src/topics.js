@@ -20,8 +20,6 @@ require('./topics/create')(Topics);
 require('./topics/delete')(Topics);
 require('./topics/unread')(Topics);
 require('./topics/recent')(Topics);
-require('./topics/popular')(Topics);
-require('./topics/top')(Topics);
 require('./topics/user')(Topics);
 require('./topics/fork')(Topics);
 require('./topics/posts')(Topics);
@@ -55,11 +53,6 @@ Topics.getPageCount = function (tid, uid, callback) {
 			next(null, Math.ceil(parseInt(postCount, 10) / settings.postsPerPage));
 		},
 	], callback);
-};
-
-Topics.getTidPage = function (tid, uid, callback) {
-	console.warn('[Topics.getTidPage] deprecated!');
-	callback(null, 1);
 };
 
 Topics.getTopicsFromSet = function (set, uid, start, stop, callback) {
@@ -233,10 +226,6 @@ Topics.getTopicWithPosts = function (topicData, set, uid, start, stop, reverse, 
 			topicData.locked = parseInt(topicData.locked, 10) === 1;
 			topicData.pinned = parseInt(topicData.pinned, 10) === 1;
 
-			topicData.upvotes = parseInt(topicData.upvotes, 10) || 0;
-			topicData.downvotes = parseInt(topicData.downvotes, 10) || 0;
-			topicData.votes = topicData.upvotes - topicData.downvotes;
-
 			topicData.icons = [];
 
 			plugins.fireHook('filter:topic.get', { topic: topicData, uid: uid }, next);
@@ -379,3 +368,5 @@ Topics.search = function (tid, term, callback) {
 		callback(err, Array.isArray(pids) ? pids : []);
 	});
 };
+
+Topics.async = require('./promisify')(Topics);

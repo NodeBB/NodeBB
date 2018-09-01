@@ -19,5 +19,8 @@
     "terms_of_use_error": "S pogoji uporabe se morate strinjati.",
     "registration-added-to-queue": "Registracija uporabniškega profila poteka. Ob potrditvi skrbnika boste v svoj e-poštni predal prejeli sporočilo.",
     "interstitial.intro": "Preden ustvarimo vaš račun, potrebujemo nekaj dodatnih informacij.",
-    "interstitial.errors-found": "Vaše registracije ne moremo dokončati:"
+    "interstitial.errors-found": "Vaše registracije ne moremo dokončati:",
+    "gdpr_agree_data": "I consent to the collection and processing of my personal information on this website.",
+    "gdpr_agree_email": "I consent to receive digest and notification emails from this website.",
+    "gdpr_consent_denied": "You must give consent to this site to collect/process your information, and to send you emails."
 }

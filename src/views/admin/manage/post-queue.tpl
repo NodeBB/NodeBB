@@ -42,7 +42,10 @@
 								<!-- ENDIF posts.data.tid -->
 								{posts.data.title}
 							</td>
-							<td class="col-md-5 post-content" contenteditable="true">{posts.data.content}</td>
+							<td class="col-md-5 post-content">{posts.data.content}</td>
+							<td class="col-md-5 post-content-editable hidden">
+								<textarea>{posts.data.rawContent}</textarea>
+							</td>
 							<td class="col-md-1">
 								<span class="timeago" title={posts.data.timestampISO}></span>
 							</td>

@@ -18,7 +18,6 @@
 			<p>
 				[[admin/manage/categories:privileges.description]]
 			</p>
-			<hr />
 			<div class="privilege-table-container">
 				<!-- IF cid -->
 				<!-- IMPORT admin/partials/categories/privileges.tpl -->

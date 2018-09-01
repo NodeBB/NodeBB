@@ -62,6 +62,7 @@
     "thread_tools.lock": "Lås tråd",
     "thread_tools.unlock": "Lås opp tråd",
     "thread_tools.move": "Flytt tråd",
+    "thread_tools.move-posts": "Move Posts",
     "thread_tools.move_all": "Flytt alle",
     "thread_tools.select_category": "Select Category",
     "thread_tools.fork": "Forgren tråd",
@@ -96,6 +97,7 @@
     "fork_success": "Dette emnet ble forgrenet! Klikk for å gå til forgrenet emne.",
     "delete_posts_instruction": "Click the posts you want to delete/purge",
     "merge_topics_instruction": "Click the topics you want to merge",
+    "move_posts_instruction": "Click the posts you want to move",
     "composer.title_placeholder": "Skriv din tråd-tittel her",
     "composer.handle_placeholder": "Navn",
     "composer.discard": "Forkast",
@@ -116,8 +118,8 @@
     "sort_by": "Sorter etter",
     "oldest_to_newest": "Eldste til nyeste",
     "newest_to_oldest": "Nyeste til eldste",
-    "most_votes": "Flest stemmer",
-    "most_posts": "Flest innlegg",
+    "most_votes": "Most Votes",
+    "most_posts": "Most Posts",
     "stale.title": "Create new topic instead?",
     "stale.warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
     "stale.create": "Create a new topic",
@@ -125,5 +127,7 @@
     "link_back": "Re: [%1](%2)",
     "diffs.title": "Post Edit History",
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
-    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
+    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
+    "diffs.current-revision": "current revision",
+    "diffs.original-revision": "original revision"
 }

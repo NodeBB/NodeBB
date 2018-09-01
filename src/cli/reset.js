@@ -14,6 +14,9 @@ var widgets = require('../widgets');
 
 var dirname = require('./paths').baseDir;
 
+var themeNamePattern = /^(@.*?\/)?nodebb-theme-.*$/;
+var pluginNamePattern = /^(@.*?\/)?nodebb-(theme|plugin|widget|rewards)-.*$/;
+
 exports.reset = function (options, callback) {
 	var map = {
 		theme: function (next) {
@@ -21,7 +24,7 @@ exports.reset = function (options, callback) {
 			if (themeId === true) {
 				resetThemes(next);
 			} else {
-				if (!themeId.startsWith('nodebb-theme-')) {
+				if (!themeNamePattern.test(themeId)) {
 					// Allow omission of `nodebb-theme-`
 					themeId = 'nodebb-theme-' + themeId;
 				}
@@ -34,7 +37,7 @@ exports.reset = function (options, callback) {
 			if (pluginId === true) {
 				resetPlugins(next);
 			} else {
-				if (!pluginId.startsWith('nodebb-plugin-')) {
+				if (!pluginNamePattern.test(pluginId)) {
 					// Allow omission of `nodebb-plugin-`
 					pluginId = 'nodebb-plugin-' + pluginId;
 				}

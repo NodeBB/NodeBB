@@ -53,6 +53,7 @@ define('forum/account/header', [
 		components.get('account/unban').on('click', unbanAccount);
 		components.get('account/delete').on('click', deleteAccount);
 		components.get('account/flag').on('click', flagAccount);
+		components.get('account/block').on('click', toggleBlockAccount);
 	};
 
 	function hidePrivateLinks() {
@@ -189,6 +190,25 @@ define('forum/account/header', [
 				id: ajaxify.data.uid,
 			});
 		});
+	}
+
+	function toggleBlockAccount() {
+		var targetEl = this;
+		socket.emit('user.toggleBlock', {
+			blockeeUid: ajaxify.data.uid,
+			blockerUid: app.user.uid,
+		}, function (err, blocked) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
+			translator.translate('[[user:' + (blocked ? 'unblock' : 'block') + '_user]]', function (label) {
+				$(targetEl).text(label);
+			});
+		});
+
+		// Keep dropdown open
+		return false;
 	}
 
 	function removeCover() {

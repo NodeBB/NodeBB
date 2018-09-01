@@ -17,6 +17,36 @@ var emailer = require('./emailer');
 
 var Notifications = module.exports;
 
+Notifications.baseTypes = [
+	'notificationType_upvote',
+	'notificationType_new-topic',
+	'notificationType_new-reply',
+	'notificationType_follow',
+	'notificationType_new-chat',
+	'notificationType_group-invite',
+];
+
+Notifications.privilegedTypes = [
+	'notificationType_new-register',
+	'notificationType_post-queue',
+	'notificationType_new-post-flag',
+	'notificationType_new-user-flag',
+];
+
+Notifications.getAllNotificationTypes = function (callback) {
+	async.waterfall([
+		function (next) {
+			plugins.fireHook('filter:user.notificationTypes', {
+				types: Notifications.baseTypes.slice(),
+				privilegedTypes: Notifications.privilegedTypes.slice(),
+			}, next);
+		},
+		function (results, next) {
+			next(null, results.types.concat(results.privilegedTypes));
+		},
+	], callback);
+};
+
 Notifications.startJobs = function () {
 	winston.verbose('[notifications.init] Registering jobs.');
 	new cron('*/30 * * * *', Notifications.prune, null, true);
@@ -255,6 +285,10 @@ function pushToUids(uids, notification, callback) {
 
 	async.waterfall([
 		function (next) {
+			// Remove uid from recipients list if they have blocked the user triggering the notification
+			User.blocks.filterUids(notification.from, uids, next);
+		},
+		function (uids, next) {
 			plugins.fireHook('filter:notification.push', { notification: notification, uids: uids }, next);
 		},
 		function (data, next) {
@@ -574,3 +608,5 @@ Notifications.merge = function (notifications, callback) {
 		callback(err, data.notifications);
 	});
 };
+
+Notifications.async = require('./promisify')(Notifications);

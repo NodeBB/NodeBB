@@ -19,5 +19,8 @@
     "terms_of_use_error": "Bạn phải đồng ý với các điều khoản sử dụng",
     "registration-added-to-queue": "Yêu cầu đăng ký của bạn đang chờ được chấp thuận. Bạn sẽ nhận được email khi tài khoản của bạn đã được chấp thuận bởi quản trị viên.",
     "interstitial.intro": "Chúng tôi cần thêm một số thông tin trước khi bạn có thể tạo tài khoản.",
-    "interstitial.errors-found": "Chúng tôi không thể hoàn thành đăng ký của bạn:"
+    "interstitial.errors-found": "Chúng tôi không thể hoàn thành đăng ký của bạn:",
+    "gdpr_agree_data": "I consent to the collection and processing of my personal information on this website.",
+    "gdpr_agree_email": "I consent to receive digest and notification emails from this website.",
+    "gdpr_consent_denied": "You must give consent to this site to collect/process your information, and to send you emails."
 }

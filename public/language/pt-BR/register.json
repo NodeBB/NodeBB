@@ -19,5 +19,8 @@
     "terms_of_use_error": "Você deve concordar com os Termos de Uso",
     "registration-added-to-queue": "O seu cadastro foi adicionado à fila de aprovação. Você receberá um email quando ele for aceito por um administrador.",
     "interstitial.intro": "Nós pedimos alguma informação adicional antes que você possa criar a sua conta.",
-    "interstitial.errors-found": "Nós não pudemos completar o seu cadastro:"
+    "interstitial.errors-found": "Nós não pudemos completar o seu cadastro:",
+    "gdpr_agree_data": "I consent to the collection and processing of my personal information on this website.",
+    "gdpr_agree_email": "I consent to receive digest and notification emails from this website.",
+    "gdpr_consent_denied": "You must give consent to this site to collect/process your information, and to send you emails."
 }

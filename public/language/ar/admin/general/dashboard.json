@@ -37,8 +37,8 @@
 	"search-plugin-tooltip": "نصب إضافة البحث من صفحة الإضافات البرمجية لتنشيط وظيفة البحث",
 
 	"control-panel": "التحكم بالنظام",
-	"reload": "Restart",
-	"restart": "Rebuild &amp; Restart",
+	"rebuild-and-restart": "Rebuild &amp; Restart",
+	"restart": "Restart",
 	"restart-warning": "Rebuilding or Restarting your NodeBB will drop all existing connections for a few seconds.",
 	"restart-disabled": "Rebuilding and Restarting your NodeBB has been disabled as you do not seem to be running it via the appropriate daemon.",
 	"maintenance-mode": "وضع الصيانة",
@@ -67,5 +67,7 @@
 	"graphs.page-views": "مشاهدات الصفحة",
 	"graphs.unique-visitors": "زوار فريدين",
 	"graphs.registered-users": "مستخدمين مسجلين",
-	"graphs.anonymous-users": "مستخدمين مجهولين"
+	"graphs.anonymous-users": "مستخدمين مجهولين",
+	"last-restarted-by": "Last restarted by",
+	"no-users-browsing": "No users browsing"
 }

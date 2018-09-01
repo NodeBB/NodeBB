@@ -21,6 +21,14 @@
 			</div>
 
 			<div class="form-group">
+				<label for="maximumImageWidth">[[admin/settings/uploads:private-extensions]]</label>
+				<input type="text" class="form-control" value="" data-field="privateUploadsExtensions" placeholder="">
+				<p class="help-block">
+					[[admin/settings/uploads:private-uploads-extensions-help]]
+				</p>
+			</div>
+
+			<div class="form-group">
 				<label for="maximumImageWidth">[[admin/settings/uploads:max-image-width]]</label>
 				<input type="text" class="form-control" value="760" data-field="maximumImageWidth" placeholder="760">
 				<p class="help-block">

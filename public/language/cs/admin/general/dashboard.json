@@ -37,8 +37,8 @@
 	"search-plugin-tooltip": "Pro aktivování funkce vyhledávání, nainstalujte rozšíření pro hledání ze stránky rozšíření.",
 
 	"control-panel": "Ovládání systému",
-	"reload": "Restartovat",
-	"restart": "Znovu sestavit a restartovat",
+	"rebuild-and-restart": "Znovu sestavit a restartovat",
+	"restart": "Restartovat",
 	"restart-warning": "Znovu sestavení nebo restartování NodeBB odpojí všechna existující připojení na několik vteřin.",
 	"restart-disabled": "Znovu sestavení a restartování vašeho NodeBB bylo zakázáno, protože se nezdá, že byste byl/a připojena přes příslušného „daemona”.",
 	"maintenance-mode": "Režim údržby",
@@ -67,5 +67,7 @@
 	"graphs.page-views": "Zobrazení stránky",
 	"graphs.unique-visitors": "Jedineční návštěvníci",
 	"graphs.registered-users": "Registrovaní uživatelé",
-	"graphs.anonymous-users": "Anonymní uživatelé"
+	"graphs.anonymous-users": "Anonymní uživatelé",
+	"last-restarted-by": "Poslední restart od",
+	"no-users-browsing": "Nikdo si nic neprohlíží"
 }

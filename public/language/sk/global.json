@@ -53,7 +53,7 @@
     "topics": "Témy",
     "posts": "Príspevky",
     "best": "Najlepšie",
-    "votes": "Votes",
+    "votes": "Počet hlasov",
     "upvoters": "Hlasovali za",
     "upvoted": "Pridaný hlas",
     "downvoters": "Hlasovali proti",
@@ -85,6 +85,7 @@
     "language": "Jazyk",
     "guest": "Hosť",
     "guests": "Hostia",
+    "former_user": "A Former User",
     "updated.title": "Fórum bolo aktualizované",
     "updated.message": "Toto fórum bolo práve aktualizované na najnovšiu verziu. Pre aktualizovanie tejto stránky kliknite sem.",
     "privacy": "Súkromie",
@@ -97,6 +98,7 @@
     "enter_page_number": "Zadajte číslo stránky",
     "upload_file": "Nahrať súbor",
     "upload": "Nahrať",
+    "uploads": "Nahrané",
     "allowed-file-types": "Povolené typy súborov sú %1",
     "unsaved-changes": "Máte neuložené zmeny. Ste si istý, že chcete opustiť stránku?",
     "reconnecting-message": "Vyzerá to tak, že pripojenie k %1 bolo stratené. Prosím chvíľku počkajte, snažíme sa pripojiť znovu.",
@@ -107,5 +109,5 @@
     "edited": "Zmenené",
     "disabled": "Zablokovaný",
     "select": "Vybrať",
-    "user-search-prompt": "Type something here to find users..."
+    "user-search-prompt": "Pre hľadanie používateľov, píšte sem..."
 }

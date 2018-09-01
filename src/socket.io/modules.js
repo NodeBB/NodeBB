@@ -118,7 +118,13 @@ SocketModules.chats.send = function (socket, data, callback) {
 			Messaging.canMessageRoom(socket.uid, data.roomId, next);
 		},
 		function (next) {
-			Messaging.sendMessage(socket.uid, data.roomId, data.message, Date.now(), next);
+			Messaging.sendMessage({
+				uid: socket.uid,
+				roomId: data.roomId,
+				content: data.message,
+				timestamp: Date.now(),
+				ip: socket.ip,
+			}, next);
 		},
 		function (message, next) {
 			Messaging.notifyUsersInRoom(socket.uid, data.roomId, message);
@@ -145,47 +151,7 @@ SocketModules.chats.loadRoom = function (socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	async.waterfall([
-		function (next) {
-			privileges.global.can('chat', socket.uid, next);
-		},
-		function (canChat, next) {
-			if (!canChat) {
-				return next(new Error('[[error:no-privileges]]'));
-			}
-
-			Messaging.isUserInRoom(socket.uid, data.roomId, next);
-		},
-		function (inRoom, next) {
-			if (!inRoom) {
-				return next(new Error('[[error:not-allowed]]'));
-			}
-
-			async.parallel({
-				roomData: async.apply(Messaging.getRoomData, data.roomId),
-				canReply: async.apply(Messaging.canReply, data.roomId, socket.uid),
-				users: async.apply(Messaging.getUsersInRoom, data.roomId, 0, -1),
-				messages: async.apply(Messaging.getMessages, {
-					callerUid: socket.uid,
-					uid: data.uid || socket.uid,
-					roomId: data.roomId,
-					isNew: false,
-				}),
-			}, next);
-		},
-		function (results, next) {
-			results.roomData.users = results.users;
-			results.roomData.canReply = results.canReply;
-			results.roomData.usernames = Messaging.generateUsernames(results.users, socket.uid);
-			results.roomData.messages = results.messages;
-			results.roomData.groupChat = results.roomData.hasOwnProperty('groupChat') ? results.roomData.groupChat : results.users.length > 2;
-			results.roomData.isOwner = parseInt(results.roomData.owner, 10) === socket.uid;
-			results.roomData.maximumUsersInChatRoom = parseInt(meta.config.maximumUsersInChatRoom, 10) || 0;
-			results.roomData.maximumChatMessageLength = parseInt(meta.config.maximumChatMessageLength, 10) || 1000;
-			results.roomData.showUserInput = !results.roomData.maximumUsersInChatRoom || results.roomData.maximumUsersInChatRoom > 2;
-			next(null, results.roomData);
-		},
-	], callback);
+	Messaging.loadRoom(socket.uid, data, callback);
 };
 
 SocketModules.chats.getUsersInRoom = function (socket, data, callback) {
@@ -193,7 +159,21 @@ SocketModules.chats.getUsersInRoom = function (socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	Messaging.getUsersInRoom(data.roomId, 0, -1, callback);
+	async.parallel({
+		users: async.apply(Messaging.getUsersInRoom, data.roomId, 0, -1),
+		isOwner: async.apply(Messaging.isRoomOwner, socket.uid, data.roomId),
+	}, function (err, payload) {
+		if (err) {
+			return callback(err);
+		}
+
+		payload.users = payload.users.map((user) => {
+			user.canKick = (parseInt(user.uid, 10) !== parseInt(socket.uid, 10)) && payload.isOwner;
+			return user;
+		});
+
+		callback(null, payload.users);
+	});
 };
 
 SocketModules.chats.addUserToRoom = function (socket, data, callback) {
@@ -250,16 +230,17 @@ SocketModules.chats.removeUserFromRoom = function (socket, data, callback) {
 	if (!data || !data.roomId) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
+
 	async.waterfall([
 		function (next) {
-			user.getUidByUsername(data.username, next);
+			user.exists(data.uid, next);
 		},
-		function (uid, next) {
-			if (!uid) {
+		function (exists, next) {
+			if (!exists) {
 				return next(new Error('[[error:no-user]]'));
 			}
 
-			Messaging.removeUsersFromRoom(socket.uid, [uid], data.roomId, next);
+			Messaging.removeUsersFromRoom(socket.uid, [data.uid], data.roomId, next);
 		},
 	], callback);
 };
@@ -421,6 +402,20 @@ SocketModules.chats.getMessages = function (socket, data, callback) {
 	};
 
 	Messaging.getMessages(params, callback);
+};
+
+SocketModules.chats.getIP = function (socket, mid, callback) {
+	async.waterfall([
+		function (next) {
+			user.isAdminOrGlobalMod(socket.uid, next);
+		},
+		function (allowed, next) {
+			if (!allowed) {
+				return next(new Error('[[error:no-privilege]]'));
+			}
+			Messaging.getMessageField(mid, 'ip', next);
+		},
+	], callback);
 };
 
 /* Sounds */

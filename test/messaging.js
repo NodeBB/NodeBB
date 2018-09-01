@@ -234,8 +234,8 @@ describe('Messaging Library', function () {
 		});
 
 		it('should fail to remove user from room if user does not exist', function (done) {
-			socketModules.chats.removeUserFromRoom({ uid: fooUid }, { roomId: roomId, username: 'doesnotexist' }, function (err) {
-				assert.equal(err.message, '[[error:no-user]]');
+			socketModules.chats.removeUserFromRoom({ uid: fooUid }, { roomId: roomId, uid: 99 }, function (err) {
+				assert.equal('[[error:no-user]]', err.message);
 				done();
 			});
 		});
@@ -246,11 +246,11 @@ describe('Messaging Library', function () {
 				Messaging.isUserInRoom(herpUid, roomId, function (err, isInRoom) {
 					assert.ifError(err);
 					assert(isInRoom);
-					socketModules.chats.removeUserFromRoom({ uid: fooUid }, { roomId: roomId, username: 'herp' }, function (err) {
+					socketModules.chats.removeUserFromRoom({ uid: fooUid }, { roomId: roomId, uid: herpUid }, function (err) {
 						assert.equal(err.message, '[[error:cant-remove-last-user]]');
 						socketModules.chats.addUserToRoom({ uid: fooUid }, { roomId: roomId, username: 'baz' }, function (err) {
 							assert.ifError(err);
-							socketModules.chats.removeUserFromRoom({ uid: fooUid }, { roomId: roomId, username: 'herp' }, function (err) {
+							socketModules.chats.removeUserFromRoom({ uid: fooUid }, { roomId: roomId, uid: herpUid }, function (err) {
 								assert.ifError(err);
 								Messaging.isUserInRoom(herpUid, roomId, function (err, isInRoom) {
 									assert.ifError(err);

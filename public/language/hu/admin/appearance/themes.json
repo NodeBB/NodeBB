@@ -7,5 +7,5 @@
     "revert-confirm": "Biztos vissza akarod állítani az alapértelmezett NodeBB témát?",
     "theme-changed": "Téma módosítva",
     "revert-success": "Sikeresen visszaállítottad a NodeBB alapértelmezett témáját.",
-    "restart-to-activate": "Kérlek, indítsd újra a NodeBB-t, a téma teljes aktiválásához"
+    "restart-to-activate": "A téma teljes aktiválásához kérlek építsd újra majd indítsd újra a NodeBB-t."
 }

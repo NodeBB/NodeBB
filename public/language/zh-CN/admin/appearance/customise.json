@@ -1,10 +1,10 @@
 {
 	"custom-css": "自定义 CSS/LESS",
-	"custom-css.description": "在这里输入你想应用于所有其他风格的 CSS/LESS,",
+	"custom-css.description": "在这里输入您想应用于所有其他风格的 CSS/LESS,",
 	"custom-css.enable": "启用自定义 CSS/LESS",
 
 	"custom-js": "自定义 Javascript",
-	"custom-js.description": "在这里输入你想在页面加载完成后执行的 Javascript 代码。",
+	"custom-js.description": "在这里输入您想在页面加载完成后执行的 Javascript 代码。",
 	"custom-js.enable": "启用自定义 Javascript",
 
 	"custom-header": "自定义 Header",

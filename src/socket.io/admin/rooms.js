@@ -8,6 +8,7 @@ var winston = require('winston');
 
 var topics = require('../../topics');
 var pubsub = require('../../pubsub');
+var utils = require('../../utils');
 
 var stats = {};
 var totals = {};
@@ -30,25 +31,24 @@ pubsub.on('sync:stats:end', function (data) {
 	stats[data.id] = data.stats;
 });
 
-pubsub.on('sync:stats:guests', function () {
+pubsub.on('sync:stats:guests', function (eventId) {
 	var io = require('../index').server;
-
 	var roomClients = io.sockets.adapter.rooms;
 	var guestCount = roomClients.online_guests ? roomClients.online_guests.length : 0;
-	pubsub.publish('sync:stats:guests:end', guestCount);
+	pubsub.publish(eventId, guestCount);
 });
 
 SocketRooms.getTotalGuestCount = function (callback) {
 	var count = 0;
-
-	pubsub.on('sync:stats:guests:end', function (guestCount) {
+	var eventId = 'sync:stats:guests:end:' + utils.generateUUID();
+	pubsub.on(eventId, function (guestCount) {
 		count += guestCount;
 	});
 
-	pubsub.publish('sync:stats:guests');
+	pubsub.publish('sync:stats:guests', eventId);
 
 	setTimeout(function () {
-		pubsub.removeAllListeners('sync:stats:guests:end');
+		pubsub.removeAllListeners(eventId);
 		callback(null, count);
 	}, 100);
 };

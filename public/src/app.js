@@ -342,7 +342,7 @@ app.cacheBuster = null;
 
 		require(['chat'], function (chat) {
 			function loadAndCenter(chatModal) {
-				chat.load(chatModal.attr('UUID'));
+				chat.load(chatModal.attr('data-uuid'));
 				chat.center(chatModal);
 				chat.focusInput(chatModal);
 			}
@@ -521,7 +521,7 @@ app.cacheBuster = null;
 		}
 
 		searchButton.on('click', function (e) {
-			if (!config.loggedIn && !config.allowGuestSearching) {
+			if (!config.loggedIn && !app.user.privileges['search:content']) {
 				app.alert({
 					message: '[[error:search-requires-login]]',
 					timeout: 3000,

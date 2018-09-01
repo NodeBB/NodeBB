@@ -18,6 +18,7 @@
 	"filter-type": "Typ označenia",
 	"filter-type-all": "Všetok obsah",
 	"filter-type-post": "Príspevok",
+	"filter-type-user": "Používateľ",
 	"filter-state": "Stav",
 	"filter-assignee": "UID nadobúdateľa",
 	"filter-cid": "Kategória",
@@ -42,7 +43,7 @@
 	"back": "Späť do zoznamu príznakov",
 	"no-history": "Žiadna história príznakov.",
 
-	"state-all": "All states",
+	"state-all": "Všetky stavy",
 	"state-open": "Nový/Otvoriť",
 	"state-wip": "Práca prebieha",
 	"state-resolved": "Vyriešené",
@@ -58,7 +59,7 @@
 	"modal-reason-custom": "Dôvod oznamovania tohto obsahu...",
 	"modal-submit": "Odoslať správu",
 	"modal-submit-success": "Obsah bol označený na moderovanie.",
-	"modal-submit-confirm": "Confirm Submission",
-	"modal-submit-confirm-text": "You have a custom reason specified already. Are you sure you wish to submit via quick-report?",
-	"modal-submit-confirm-text-help": "Submitting a quick report will overwrite any custom reasons defined."
+	"modal-submit-confirm": "Potvrdiť hlásenie",
+	"modal-submit-confirm-text": "Už ste zadali určitý dôvod. Ste si istý, že chcete nahlásiť pomocou rýchlej správy?",
+	"modal-submit-confirm-text-help": "Zaslanie rýchlej správy prepíše iné zadané dôvody."
 }

@@ -215,6 +215,9 @@ module.exports = function (middleware) {
 			return next();
 		}
 		if (!req.path.endsWith('/register/complete')) {
+			// Append user data if present
+			req.session.registration.uid = req.uid;
+
 			controllers.helpers.redirect(res, '/register/complete');
 		} else {
 			return next();

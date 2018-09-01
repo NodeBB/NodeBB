@@ -62,6 +62,7 @@
     "thread_tools.lock": "Lukusta teema",
     "thread_tools.unlock": "Taasava teema",
     "thread_tools.move": "Liiguta teema",
+    "thread_tools.move-posts": "Move Posts",
     "thread_tools.move_all": "Liiguta kõik",
     "thread_tools.select_category": "Select Category",
     "thread_tools.fork": "Fork Topic",
@@ -96,6 +97,7 @@
     "fork_success": "Edukalt ''forkisid'' teema! Vajuta siia, et vaadata loodud teemat.",
     "delete_posts_instruction": "Klikka postitustel, mida tahad kustutada/puhastada",
     "merge_topics_instruction": "Click the topics you want to merge",
+    "move_posts_instruction": "Click the posts you want to move",
     "composer.title_placeholder": "Sisesta teema pealkiri siia...",
     "composer.handle_placeholder": "Nimi",
     "composer.discard": "Katkesta",
@@ -116,8 +118,8 @@
     "sort_by": "Sorteeri",
     "oldest_to_newest": "Vanematest uuemateni",
     "newest_to_oldest": "Uuematest vanemateni",
-    "most_votes": "Kõige rohkem hääli",
-    "most_posts": "Kõige rohkem postitusi",
+    "most_votes": "Most Votes",
+    "most_posts": "Most Posts",
     "stale.title": "Loo uus teema selle asemel?",
     "stale.warning": "Teema, millele vastad on küllaltki vana. Kas sooviksid hoopiski uue teema luua ning viidata sellele sinu vastuses?",
     "stale.create": "Loo uus teema/alapealkiri",
@@ -125,5 +127,7 @@
     "link_back": "Re: [%1](%2)",
     "diffs.title": "Post Edit History",
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
-    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
+    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
+    "diffs.current-revision": "current revision",
+    "diffs.original-revision": "original revision"
 }

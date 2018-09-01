@@ -75,6 +75,7 @@ JS.scripts = {
 		'public/src/modules/helpers.js',
 		'public/src/modules/flags.js',
 		'public/src/modules/storage.js',
+		'public/src/modules/handleBack.js',
 	],
 
 	admin: [

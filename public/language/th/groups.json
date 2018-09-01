@@ -28,6 +28,7 @@
     "details.grant": "ให้ / ยกเลิกการเป็นเจ้าของ",
     "details.kick": "เตะออก",
     "details.kick_confirm": "คุณแน่ใจใช่ไหมว่าต้องการลบสมาชิกคนนี้ออกจากกลุ่ม?",
+    "details.add-member": "Add Member",
     "details.owner_options": "การจัดการกลุ่ม",
     "details.group_name": "ชื่อกลุ่ม",
     "details.member_count": "จำนวนสมาชิก",

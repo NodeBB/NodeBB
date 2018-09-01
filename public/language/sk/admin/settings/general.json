@@ -28,8 +28,8 @@
 	"touch-icon": "Ikona domovskej stránky/dotyková",
 	"touch-icon.upload": "Nahrať",
 	"touch-icon.help": "Doporučená veľkosť a formát je: len v *.png 192x192. Ak nebude určená dotyková ikona, NodeBB nepoužije žiadnu z ikôn (favicon).",
-	"outgoing-links": "Outgoing Links",
-	"outgoing-links.warning-page": "Use Outgoing Links Warning Page",
-	"search-default-sort-by": "Search default sort by",
-	"outgoing-links.whitelist": "Domains to whitelist for bypassing the warning page"
+	"outgoing-links": "Odchádzajúce odkazy",
+	"outgoing-links.warning-page": "Použiť stránku s upozornením pri odchádzajúcich odkazoch",
+	"search-default-sort-by": "Predvolené zoradenie pri hľadaní",
+	"outgoing-links.whitelist": "Domény u ktorých bude preskočená upozorňovacia stránka"
 }

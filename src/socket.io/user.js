@@ -37,6 +37,11 @@ SocketUser.deleteAccount = function (socket, data, callback) {
 
 	async.waterfall([
 		function (next) {
+			user.isPasswordCorrect(socket.uid, data.password, socket.ip, function (err, ok) {
+				next(err || (!ok ? new Error('[[error:invalid-password]]') : undefined));
+			});
+		},
+		function (next) {
 			user.isAdministrator(socket.uid, next);
 		},
 		function (isAdmin, next) {
@@ -88,15 +93,20 @@ SocketUser.reset.send = function (socket, email, callback) {
 	}
 
 	user.reset.send(email, function (err) {
-		if (err && err.message !== '[[error:invalid-email]]') {
-			return callback(err);
-		}
-		if (err && err.message === '[[error:invalid-email]]') {
-			winston.verbose('[user/reset] Invalid email attempt: ' + email);
-			return setTimeout(callback, 2500);
+		if (err) {
+			switch (err.message) {
+			case '[[error:invalid-email]]':
+				winston.warn('[user/reset] Invalid email attempt: ' + email + ' by IP ' + socket.ip + (socket.uid ? ' (uid: ' + socket.uid + ')' : ''));
+				err = null;
+				break;
+
+			case '[[error:reset-rate-limited]]':
+				err = null;
+				break;
+			}
 		}
 
-		callback();
+		setTimeout(callback.bind(err), 2500);
 	});
 };
 
@@ -110,6 +120,7 @@ SocketUser.reset.commit = function (socket, data, callback) {
 			async.parallel({
 				uid: async.apply(db.getObjectField, 'reset:uid', data.code),
 				reset: async.apply(user.reset.commit, data.code, data.password),
+				hook: async.apply(plugins.fireHook, 'action:password.reset', { uid: socket.uid }),
 			}, next);
 		},
 		function (results, next) {
@@ -332,6 +343,32 @@ SocketUser.setModerationNote = function (socket, data, callback) {
 				timestamp: Date.now(),
 			};
 			db.sortedSetAdd('uid:' + data.uid + ':moderation:notes', note.timestamp, JSON.stringify(note), next);
+		},
+	], callback);
+};
+
+SocketUser.deleteUpload = function (socket, data, callback) {
+	if (!data || !data.name || !data.uid) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	user.deleteUpload(socket.uid, data.uid, data.name, callback);
+};
+
+SocketUser.gdpr = {};
+
+SocketUser.gdpr.consent = function (socket, data, callback) {
+	user.setUserField(socket.uid, 'gdpr_consent', 1, callback);
+};
+
+SocketUser.gdpr.check = function (socket, data, callback) {
+	async.waterfall([
+		async.apply(user.isAdministrator, socket.uid),
+		function (isAdmin, next) {
+			if (!isAdmin) {
+				data.uid = socket.uid;
+			}
+
+			db.getObjectField('user:' + data.uid, 'gdpr_consent', next);
 		},
 	], callback);
 };

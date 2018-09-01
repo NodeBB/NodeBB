@@ -35,13 +35,7 @@ module.exports = function (Topics) {
 				}
 			},
 			function (categoryTids, next) {
-				tids = _.uniq(tids.concat(categoryTids));
-				if (stop === -1) {
-					tids = tids.slice(start);
-				} else {
-					tids = tids.slice(start, stop + 1);
-				}
-
+				tids = _.uniq(tids.concat(categoryTids)).slice(start, stop !== -1 ? stop + 1 : undefined);
 				Topics.getTopicsByTids(tids, uid, next);
 			},
 		], callback);

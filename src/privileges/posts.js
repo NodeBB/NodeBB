@@ -32,12 +32,16 @@ module.exports = function (privileges) {
 					'topics:read': async.apply(helpers.isUserAllowedTo, 'topics:read', uid, cids),
 					read: async.apply(helpers.isUserAllowedTo, 'read', uid, cids),
 					'posts:edit': async.apply(helpers.isUserAllowedTo, 'posts:edit', uid, cids),
+					'posts:history': async.apply(helpers.isUserAllowedTo, 'posts:history', uid, cids),
+					'posts:view_deleted': async.apply(helpers.isUserAllowedTo, 'posts:view_deleted', uid, cids),
 				}, next);
 			},
 			function (results, next) {
 				var privileges = pids.map(function (pid, i) {
 					var isAdminOrMod = results.isAdmin || results.isModerator[i];
 					var editable = isAdminOrMod || (results.isOwner[i] && results['posts:edit'][i]);
+					var viewDeletedPosts = isAdminOrMod || results.isOwner[i] || results['posts:view_deleted'][i];
+					var viewHistory = isAdminOrMod || results.isOwner[i] || results['posts:history'][i];
 
 					return {
 						editable: editable,
@@ -46,6 +50,8 @@ module.exports = function (privileges) {
 						isAdminOrMod: isAdminOrMod,
 						'topics:read': results['topics:read'][i] || isAdminOrMod,
 						read: results.read[i] || isAdminOrMod,
+						'posts:history': viewHistory,
+						'posts:view_deleted': viewDeletedPosts,
 					};
 				});
 

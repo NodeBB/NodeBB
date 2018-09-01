@@ -5,8 +5,10 @@ var async = require('async');
 var nconf = require('nconf');
 var mime = require('mime');
 var fs = require('fs');
+var jimp = require('jimp');
 
 var meta = require('../../meta');
+var posts = require('../../posts');
 var file = require('../../file');
 var image = require('../../image');
 var plugins = require('../../plugins');
@@ -40,17 +42,37 @@ uploadsController.get = function (req, res, next) {
 
 			filesToData(currentFolder, files, next);
 		},
-		function (files) {
+		function (files, next) {
+			// Float directories to the top
 			files.sort(function (a, b) {
 				if (a.isDirectory && !b.isDirectory) {
 					return -1;
 				} else if (!a.isDirectory && b.isDirectory) {
 					return 1;
+				} else if (!a.isDirectory && !b.isDirectory) {
+					return a.mtime < b.mtime ? -1 : 1;
 				}
+
 				return 0;
 			});
+
+			// Add post usage info if in /files
+			if (req.query.dir === '/files') {
+				posts.uploads.getUsage(files, function (err, usage) {
+					files.forEach(function (file, idx) {
+						file.inPids = usage[idx].map(pid => parseInt(pid, 10));
+					});
+
+					next(err, files);
+				});
+			} else {
+				setImmediate(next, null, files);
+			}
+		},
+		function (files) {
 			res.render('admin/manage/uploads', {
 				currentFolder: currentFolder.replace(nconf.get('upload_path'), ''),
+				showPids: files.length && files[0].hasOwnProperty('inPids'),
 				files: files,
 				breadcrumbs: buildBreadcrumbs(currentFolder),
 				pagination: pagination.create(page, Math.ceil(itemCount / itemsPerPage), req.query),
@@ -67,7 +89,9 @@ function buildBreadcrumbs(currentFolder) {
 		var dir = path.join(currentPath, part);
 		crumbs.push({
 			text: part || 'Uploads',
-			url: part ? '/admin/manage/uploads?dir=' + dir : '/admin/manage/uploads',
+			url: part
+				? (nconf.get('relative_path') + '/admin/manage/uploads?dir=' + dir)
+				: nconf.get('relative_path') + '/admin/manage/uploads',
 		});
 		currentPath = dir;
 	});
@@ -101,6 +125,7 @@ function filesToData(currentDir, files, callback) {
 					sizeHumanReadable: (stat.size / 1024).toFixed(1) + 'KiB',
 					isDirectory: stat.isDirectory(),
 					isFile: stat.isFile(),
+					mtime: stat.mtimeMs,
 				});
 			},
 		], next);
@@ -272,6 +297,17 @@ function uploadImage(filename, folder, uploadedFile, req, res, next) {
 					async.apply(meta.configs.set, 'brand:emailLogo', path.join(nconf.get('upload_url'), 'system/site-logo-x50.png')),
 				], function (err) {
 					next(err, imageData);
+				});
+			} else if (path.basename(filename, path.extname(filename)) === 'og:image' && folder === 'system') {
+				jimp.read(imageData.path).then(function (image) {
+					meta.configs.setMultiple({
+						'og:image:height': image.bitmap.height,
+						'og:image:width': image.bitmap.width,
+					}, function (err) {
+						next(err, imageData);
+					});
+				}).catch(function (err) {
+					next(err);
 				});
 			} else {
 				setImmediate(next, null, imageData);

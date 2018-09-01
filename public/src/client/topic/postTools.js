@@ -66,6 +66,10 @@ define('forum/topic/postTools', [
 		postEl.find('[component="post/restore"]').toggleClass('hidden', !isDeleted);
 		postEl.find('[component="post/purge"]').toggleClass('hidden', !isDeleted);
 
+		PostTools.removeMenu(postEl);
+	};
+
+	PostTools.removeMenu = function (postEl) {
 		postEl.find('[component="post/tools"] .dropdown-menu').html('');
 	};
 
@@ -140,10 +144,12 @@ define('forum/topic/postTools', [
 			}
 		});
 
-		postContainer.on('click', '[component="post/view-history"], [component="post/edit-indicator"]', function () {
-			var btn = $(this);
-			diffs.open(getData(btn, 'data-pid'));
-		});
+		if (config.enablePostHistory && ajaxify.data.privileges['posts:history']) {
+			postContainer.on('click', '[component="post/view-history"], [component="post/edit-indicator"]', function () {
+				var btn = $(this);
+				diffs.open(getData(btn, 'data-pid'));
+			});
+		}
 
 		postContainer.on('click', '[component="post/delete"]', function () {
 			var btn = $(this);
@@ -195,7 +201,7 @@ define('forum/topic/postTools', [
 		});
 
 		postContainer.on('click', '[component="post/move"]', function () {
-			movePost.openMovePostModal($(this));
+			movePost.openMovePostModal($(this).parents('[data-pid]'));
 		});
 
 		postContainer.on('click', '[component="post/ban-ip"]', function () {
@@ -336,7 +342,7 @@ define('forum/topic/postTools', [
 		}
 
 		if (post.length) {
-			slug = post.attr('data-userslug');
+			slug = utils.slugify(post.attr('data-username'), true);
 		}
 		if (post.length && post.attr('data-uid') !== '0') {
 			slug = '@' + slug;

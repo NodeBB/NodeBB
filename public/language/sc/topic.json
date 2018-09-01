@@ -62,6 +62,7 @@
     "thread_tools.lock": "Bloca Arresonada",
     "thread_tools.unlock": "Isbloca Arresonada",
     "thread_tools.move": "Move Arresonada",
+    "thread_tools.move-posts": "Move Posts",
     "thread_tools.move_all": "Move All",
     "thread_tools.select_category": "Select Category",
     "thread_tools.fork": "Partzi Arresonada",
@@ -96,6 +97,7 @@
     "fork_success": "Successfully forked topic! Click here to go to the forked topic.",
     "delete_posts_instruction": "Click the posts you want to delete/purge",
     "merge_topics_instruction": "Click the topics you want to merge",
+    "move_posts_instruction": "Click the posts you want to move",
     "composer.title_placeholder": "Pone su tìtulu de s'arresonada inoghe...",
     "composer.handle_placeholder": "Name",
     "composer.discard": "Lassa a Pèrdere",
@@ -116,8 +118,8 @@
     "sort_by": "Sort by",
     "oldest_to_newest": "Oldest to Newest",
     "newest_to_oldest": "Newest to Oldest",
-    "most_votes": "Most votes",
-    "most_posts": "Most posts",
+    "most_votes": "Most Votes",
+    "most_posts": "Most Posts",
     "stale.title": "Create new topic instead?",
     "stale.warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
     "stale.create": "Create a new topic",
@@ -125,5 +127,7 @@
     "link_back": "Re: [%1](%2)",
     "diffs.title": "Post Edit History",
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
-    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
+    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
+    "diffs.current-revision": "current revision",
+    "diffs.original-revision": "original revision"
 }

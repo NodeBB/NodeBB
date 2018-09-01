@@ -85,7 +85,7 @@ Categories.setPrivilege = function (socket, data, callback) {
 		events.log({
 			uid: socket.uid,
 			ip: socket.ip,
-			privilege: data.privilege,
+			privilege: data.privilege.toString(),
 			action: data.set ? 'grant' : 'rescind',
 			target: data.member,
 		}, callback);

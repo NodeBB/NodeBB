@@ -18,6 +18,7 @@
 	"filter-type": "Typ označení",
 	"filter-type-all": "Všechen obsah",
 	"filter-type-post": "Příspěvek",
+	"filter-type-user": "Uživatel",
 	"filter-state": "Stav",
 	"filter-assignee": "UID nabyvatele",
 	"filter-cid": "Kategorie",

@@ -212,14 +212,32 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 	}
 
 	navigator.scrollUp = function () {
+		var $window = $(window);
+
+		if (config.usePagination) {
+			var atTop = $window.scrollTop() <= 0;
+			if (atTop) {
+				return pagination.previousPage(function () {
+					$('body,html').scrollTop($(document).height() - $window.height());
+				});
+			}
+		}
 		$('body,html').animate({
-			scrollTop: $(window).scrollTop() - $(window).height(),
+			scrollTop: $window.scrollTop() - $window.height(),
 		});
 	};
 
 	navigator.scrollDown = function () {
+		var $window = $(window);
+
+		if (config.usePagination) {
+			var atBottom = $window.scrollTop() >= $(document).height() - $window.height();
+			if (atBottom) {
+				return pagination.nextPage();
+			}
+		}
 		$('body,html').animate({
-			scrollTop: $(window).scrollTop() + $(window).height(),
+			scrollTop: $window.scrollTop() + $window.height(),
 		});
 	};
 
@@ -242,11 +260,6 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			index = parseInt(index, 10) + 1;
 			ajaxify.go(generateUrl(index));
 		}
-	};
-
-	navigator.scrollToPost = function (index, highlight, duration) {
-		console.log('[navigator.scrollToPost] deprecated please use, navigator.scrollToIndex');
-		navigator.scrollToIndex(index, highlight, duration);
 	};
 
 	navigator.scrollToIndex = function (index, highlight, duration) {

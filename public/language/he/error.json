@@ -18,6 +18,7 @@
     "invalid-username-or-password": "אנא הגדר שם משתמש וסיסמה",
     "invalid-search-term": "מילת חיפוש לא תקינה",
     "invalid-url": "שגיאה בכתובת URL",
+    "local-login-disabled": "Local login system has been disabled for non-privileged accounts.",
     "csrf-invalid": "אין באפשרותנו לחבר אותך למערכת, מכיוון שעבר זמן רב מידי. אנא נסה שנית.",
     "invalid-pagination-value": "ערך דף לא חוקי, חייב להיות לפחות %1 ולא מעל %2",
     "username-taken": "שם משתמש תפוס",
@@ -77,6 +78,7 @@
     "still-uploading": "אנא המתן לסיום ההעלאות",
     "file-too-big": "הגודל המקסימלי של הקובץ הוא %1 קילובייט - אנא העלה קובץ קטן יותר",
     "guest-upload-disabled": "העלאת אורחים אינה מאופשרת",
+    "cors-error": "Unable to upload image due to misconfigured CORS",
     "already-bookmarked": "כבר הוספת פוסט זה לרשימת המסומנים",
     "already-unbookmarked": "כבר הסרת פוסט זה מרשימת המסומנים",
     "cant-ban-other-admins": "אינך יכול לחסום מנהלים אחרים!",
@@ -126,6 +128,8 @@
     "not-enough-reputation-min-rep-website": "You do not have enough reputation to add a website",
     "not-enough-reputation-min-rep-aboutme": "You do not have enough reputation to add an about me",
     "not-enough-reputation-min-rep-signature": "You do not have enough reputation to add a signature",
+    "not-enough-reputation-min-rep-profile-picture": "You do not have enough reputation to add a profile picture",
+    "not-enough-reputation-min-rep-cover-picture": "You do not have enough reputation to add a cover picture",
     "already-flagged": "כבר סימנת את הפוסט הזה",
     "self-vote": "אי אפשר להצביע בפרסום שיצרת",
     "reload-failed": "אירעה תקלה ב NodeBB בזמן הטעינה של: \"%1\". המערכת תמשיך להגיש דפים קיימים, אבל כדאי שתשחזר את הפעולות שלך מהפעם האחרונה שהמערכת עבדה כראוי.",
@@ -145,5 +149,8 @@
     "invalid-session": "מושב לא תואם",
     "invalid-session-text": "נראה שסשן ההתחברות שלך כבר לא פעיל. אנא טען מחדש את העמוד.",
     "no-topics-selected": "לא נבחרו נושאים!",
-    "cant-move-to-same-topic": "Can't move post to same topic!"
+    "cant-move-to-same-topic": "Can't move post to same topic!",
+    "cannot-block-self": "You cannot block yourself!",
+    "cannot-block-privileged": "You cannot block administrators or global moderators",
+    "no-connection": "There seems to be a problem with your internet connection"
 }

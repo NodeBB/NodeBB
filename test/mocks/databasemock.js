@@ -59,6 +59,14 @@ if (!testDbConfig) {
 		'    "password": "",\n' +
 		'    "database": "nodebb_test"\n' +
 		'}\n' +
+		' or (postgres):\n' +
+		'"test_database": {\n' +
+		'    "host": "127.0.0.1",\n' +
+		'    "port": "5432",\n' +
+		'    "username": "postgres",\n' +
+		'    "password": "",\n' +
+		'    "database": "nodebb_test"\n' +
+		'}\n' +
 		'==========================================================='
 	);
 	winston.error(errorText);
@@ -205,7 +213,7 @@ function setupDefaultConfigs(meta, next) {
 
 function giveDefaultGlobalPrivileges(next) {
 	var privileges = require('../../src/privileges');
-	privileges.global.give(['chat', 'upload:post:image'], 'registered-users', next);
+	privileges.global.give(['chat', 'upload:post:image', 'signature', 'search:content', 'search:users', 'search:tags'], 'registered-users', next);
 }
 
 function enableDefaultPlugins(callback) {

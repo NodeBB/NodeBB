@@ -37,8 +37,8 @@
 	"search-plugin-tooltip": "検索機能を有効にするには、プラグインページから検索プラグインをインストールしてください",
 
 	"control-panel": "システムコントロール",
-	"reload": "Restart",
-	"restart": "Rebuild &amp; Restart",
+	"rebuild-and-restart": "Rebuild &amp; Restart",
+	"restart": "Restart",
 	"restart-warning": "Rebuilding or Restarting your NodeBB will drop all existing connections for a few seconds.",
 	"restart-disabled": "Rebuilding and Restarting your NodeBB has been disabled as you do not seem to be running it via the appropriate daemon.",
 	"maintenance-mode": "メンテナンスモード",
@@ -67,5 +67,7 @@
 	"graphs.page-views": "ページビュー",
 	"graphs.unique-visitors": "ユニークな訪問者",
 	"graphs.registered-users": "登録したユーザー",
-	"graphs.anonymous-users": "匿名ユーザー"
+	"graphs.anonymous-users": "匿名ユーザー",
+	"last-restarted-by": "Last restarted by",
+	"no-users-browsing": "No users browsing"
 }

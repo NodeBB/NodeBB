@@ -12,7 +12,7 @@
 	"manage/privileges": "权限",
 	"manage/tags": "话题",
 	"manage/users": "用户",
-	"manage/admins-mods": "管理员插件",
+	"manage/admins-mods": "权限分配",
 	"manage/registration": "注册申请",
 	"manage/post-queue": "提交列表",
 	"manage/groups": "群组",
@@ -63,7 +63,7 @@
 	"development/logger": "记录器",
 	"development/info": "信息",
 
-	"reload-forum": "重建并重启论坛",
+	"rebuild-and-restart-forum": "部署并重启论坛",
 	"restart-forum": "重启论坛",
 	"logout": "登出",
 	"view-forum": "查看论坛",

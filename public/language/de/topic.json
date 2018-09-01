@@ -62,6 +62,7 @@
     "thread_tools.lock": "Thema schließen",
     "thread_tools.unlock": "Thema öffnen",
     "thread_tools.move": "Thema verschieben",
+    "thread_tools.move-posts": "Beiträge verschieben",
     "thread_tools.move_all": "Alle verschieben",
     "thread_tools.select_category": "Kategorie auswählen",
     "thread_tools.fork": "Thema aufspalten",
@@ -96,6 +97,7 @@
     "fork_success": "Thema erfolgreich aufgespalten! Klicke hier, um zum abgespaltenen Thema zu gelangen.",
     "delete_posts_instruction": "Wähle die zu löschenden Beiträge aus",
     "merge_topics_instruction": "Wähle die Themen aus, die du vereinen möchtest",
+    "move_posts_instruction": "Klicke auf die Beiträge, die du verschieben möchstest.",
     "composer.title_placeholder": "Hier den Titel des Themas eingeben...",
     "composer.handle_placeholder": "Name",
     "composer.discard": "Verwerfen",
@@ -116,8 +118,8 @@
     "sort_by": "Sortieren nach",
     "oldest_to_newest": "Älteste zuerst",
     "newest_to_oldest": "Neuste zuerst",
-    "most_votes": "Die meisten Stimmen",
-    "most_posts": "Die meisten Beiträge",
+    "most_votes": "Meiste Stimmen",
+    "most_posts": "Meiste Beiträge",
     "stale.title": "Stattdessen ein neues Thema erstellen?",
     "stale.warning": "Das Thema auf das du antworten willst ist ziemlich alt. Möchtest du stattdessen ein neues Thema erstellen und auf dieses in deiner Antwort hinweisen?",
     "stale.create": "Ein neues Thema erstellen",
@@ -125,5 +127,7 @@
     "link_back": "Re: [%1](%2)",
     "diffs.title": "Beitragsänderungsverlauf",
     "diffs.description": "Dieser Beitrag hat <strong>%1</strong> Revisionen. Klicke unten auf eine dieser Revisionen um den Inhalt zu diesem Zeitpunkt zu sehen.",
-    "diffs.no-revisions-description": "Dieser Beitrag ha <strong>%1</strong> Revisionen."
+    "diffs.no-revisions-description": "Dieser Beitrag ha <strong>%1</strong> Revisionen.",
+    "diffs.current-revision": "Aktuelle Revision",
+    "diffs.original-revision": "Ursprüngliche Revision"
 }

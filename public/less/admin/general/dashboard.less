@@ -8,7 +8,43 @@
 	.graph-container {
 		padding-right: 50px;
 		position: relative;
+		background: @body-bg;
 
+		.fa-expand {
+			display: none;
+			position: absolute;
+			right: 20px;
+			padding: 5px;
+			background-color: @gray-lighter;
+			color: @gray-base;
+			cursor: pointer;
+			.transition(all .4s);
+
+			&.active {
+				display: inline;
+			}
+		}
+
+		&:hover {
+			.fa-expand {
+				color: @gray-lighter;
+				background-color: @gray-base;
+			}
+		}
+
+		&.fullscreen {
+			width: 100%;
+			padding: 40px;
+
+			.fa-expand {
+				top: 20px;
+			}
+
+			.graph-legend {
+				top: 7rem;
+				left: 12rem;
+			}
+		}
 
 		&.pie-chart {
 			padding-right: 0px;

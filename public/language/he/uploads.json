@@ -2,5 +2,8 @@
     "uploading-file": "מעלה את הקובץ...",
     "select-file-to-upload": "בחר קובץ להעלאה!",
     "upload-success": "הקובץ הועלה בהצלחה!",
-    "maximum-file-size": "מקסימום %1 קילובייט"
+    "maximum-file-size": "מקסימום %1 קילובייט",
+    "no-uploads-found": "No uploads found",
+    "public-uploads-info": "Uploads are public, all visitors can see them.",
+    "private-uploads-info": "Uploads are private, only logged in users can see them."
 }

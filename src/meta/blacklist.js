@@ -65,12 +65,16 @@ Blacklist.test = function (clientIp, callback) {
 	// clientIp = '2001:db8:85a3:0:0:8a2e:370:7334';	// IPv6
 	// clientIp = '127.0.15.1';	// IPv4
 	// clientIp = '127.0.15.1:3443'; // IPv4 with port strip port to not fail
+	if (!clientIp) {
+		return setImmediate(callback);
+	}
 	clientIp = clientIp.split(':').length === 2 ? clientIp.split(':')[0] : clientIp;
 
 	var addr;
 	try {
 		addr = ipaddr.parse(clientIp);
 	} catch (err) {
+		winston.error('[meta/blacklist] Error parsing client IP : ' + clientIp);
 		return callback(err);
 	}
 

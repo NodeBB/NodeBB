@@ -75,13 +75,6 @@
 				</fieldset>
 
 				<fieldset>
-					<label for="add-member">[[admin/manage/groups:edit.add-user]]</label>
-					<input type="text" class="form-control" id="group-details-search" placeholder="[[admin/manage/groups:edit.add-user-search]]" />
-					<ul class="members user-list" id="group-details-search-results"></ul>
-
-				</fieldset>
-
-				<fieldset>
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h3 class="panel-title"><i class="fa fa-users"></i> [[admin/manage/groups:edit.members]]</h3>

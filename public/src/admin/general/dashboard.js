@@ -48,6 +48,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 			socket.emit('admin.rooms.getAll', Admin.updateRoomUsage);
 			initiateDashboard();
 		});
+		setupFullscreen();
 	};
 
 	Admin.updateRoomUsage = function (err, data) {
@@ -300,6 +301,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 					});
 				});
 			});
+
 			$('[data-action="updateGraph"][data-units="custom"]').on('click', function () {
 				var targetEl = $(this);
 
@@ -314,6 +316,14 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 								callback: submit,
 							},
 						},
+					}).on('shown.bs.modal', function () {
+						var date = new Date();
+						var today = date.toISOString().substr(0, 10);
+						date.setDate(date.getDate() - 1);
+						var yesterday = date.toISOString().substr(0, 10);
+
+						modal.find('#startRange').val(targetEl.attr('data-startRange') || yesterday);
+						modal.find('#endRange').val(targetEl.attr('data-endRange') || today);
 					});
 
 					function submit() {
@@ -344,6 +354,8 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 						targetEl.addClass('active');
 
 						// Update "custom range" label
+						targetEl.attr('data-startRange', formData.startRange);
+						targetEl.attr('data-endRange', formData.endRange);
 						targetEl.html(formData.startRange + ' &ndash; ' + formData.endRange);
 					}
 				});
@@ -432,7 +444,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 	function updateTopicsGraph(topics) {
 		if (!topics.length) {
 			topics = [{
-				title: 'No users browsing',
+				title: '[[admin/general/dashboard:no-users-browsing]]',
 				count: 1,
 			}];
 		}
@@ -451,15 +463,16 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 
 		function buildTopicsLegend() {
 			var legend = $('#topics-legend').html('');
-
+			var html = '';
 			topics.forEach(function (topic, i) {
 				var	label = topic.count === '0' ? topic.title : '<a title="' + topic.title + '"href="' + RELATIVE_PATH + '/topic/' + topic.tid + '" target="_blank"> ' + topic.title + '</a>';
 
-				legend.append('<li>' +
+				html += '<li>' +
 					'<div style="background-color: ' + topicColors[i] + ';"></div>' +
 					'<span>' + label + '</span>' +
-					'</li>');
+					'</li>';
 			});
+			legend.translateHtml(html);
 		}
 
 		buildTopicsLegend();
@@ -494,6 +507,41 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 		intervals.graphs = setInterval(function () {
 			updateTrafficGraph(currentGraph.units, currentGraph.until, currentGraph.amount);
 		}, realtime ? DEFAULTS.realtimeInterval : DEFAULTS.graphInterval);
+	}
+
+	function setupFullscreen() {
+		var container = document.getElementById('analytics-traffic-container');
+		var $container = $(container);
+		var btn = $container.find('.fa-expand');
+		var fsMethod;
+		var exitMethod;
+
+		if (container.requestFullscreen) {
+			fsMethod = 'requestFullscreen';
+			exitMethod = 'exitFullscreen';
+		} else if (container.mozRequestFullScreen) {
+			fsMethod = 'mozRequestFullScreen';
+			exitMethod = 'mozCancelFullScreen';
+		} else if (container.webkitRequestFullscreen) {
+			fsMethod = 'webkitRequestFullscreen';
+			exitMethod = 'webkitCancelFullScreen';
+		} else if (container.msRequestFullscreen) {
+			fsMethod = 'msRequestFullscreen';
+			exitMethod = 'msCancelFullScreen';
+		}
+
+		if (fsMethod) {
+			btn.addClass('active');
+			btn.on('click', function () {
+				if ($container.hasClass('fullscreen')) {
+					document[exitMethod]();
+					$container.removeClass('fullscreen');
+				} else {
+					container[fsMethod]();
+					$container.addClass('fullscreen');
+				}
+			});
+		}
 	}
 
 	return Admin;

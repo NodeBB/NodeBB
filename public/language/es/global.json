@@ -53,7 +53,7 @@
     "topics": "Temas",
     "posts": "Mensajes",
     "best": "Mejor valorados",
-    "votes": "Votes",
+    "votes": "Votos",
     "upvoters": "Positivos",
     "upvoted": "Votado positivamente",
     "downvoters": "Negativos",
@@ -85,6 +85,7 @@
     "language": "Idioma",
     "guest": "Invitado",
     "guests": "Invitados",
+    "former_user": "A Former User",
     "updated.title": "Foro actualizado",
     "updated.message": "El foro acaba de ser actualizado a la última versión. Haz click aquí para refrescar la página.",
     "privacy": "Privacidad",
@@ -97,6 +98,7 @@
     "enter_page_number": "Escribe el número de página",
     "upload_file": "Subir archivo",
     "upload": "Subir",
+    "uploads": "Subidas",
     "allowed-file-types": "Los tipos de archivos permitidos son: %1",
     "unsaved-changes": "Tienes cambios sin guardar. Seguro que quieres salir?",
     "reconnecting-message": "Has perdido la conexión. Reconectando a %1.",
@@ -107,5 +109,5 @@
     "edited": "Editado",
     "disabled": "Desahabilitado",
     "select": "Seleccionar",
-    "user-search-prompt": "Type something here to find users..."
+    "user-search-prompt": "Escriba algo aquí para encontrar usuarios..."
 }

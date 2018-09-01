@@ -27,7 +27,15 @@ Sockets.init = function (server) {
 		path: nconf.get('relative_path') + '/socket.io',
 	});
 
-	io.adapter(nconf.get('redis') ? require('../database/redis').socketAdapter() : db.socketAdapter());
+	if (nconf.get('singleHostCluster')) {
+		io.adapter(require('socket.io-adapter-cluster')({
+			client: require('./single-host-cluster'),
+		}));
+	} else if (nconf.get('redis')) {
+		io.adapter(require('../database/redis').socketAdapter());
+	} else {
+		io.adapter(db.socketAdapter());
+	}
 
 	io.use(socketioWildcard);
 	io.use(authorize);
@@ -64,7 +72,7 @@ Sockets.init = function (server) {
 };
 
 function onConnection(socket) {
-	socket.ip = socket.request.headers['x-forwarded-for'] || socket.request.connection.remoteAddress;
+	socket.ip = (socket.request.headers['x-forwarded-for'] || socket.request.connection.remoteAddress || '').split(',')[0];
 
 	logger.io_one(socket, socket.uid);
 
@@ -244,7 +252,7 @@ Sockets.reqFromSocket = function (socket, payload, event) {
 		params: data[1],
 		method: event || data[0],
 		body: payload,
-		ip: headers['x-forwarded-for'] || socket.ip,
+		ip: socket.ip,
 		host: host,
 		protocol: encrypted ? 'https' : 'http',
 		secure: encrypted,

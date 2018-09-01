@@ -39,10 +39,12 @@ module.exports = function (Messaging) {
 
 				db.getObjects(keys, next);
 			},
+			async.apply(user.blocks.filter, uid, 'fromuid'),
 			function (_messages, next) {
 				messages = _messages.map(function (msg, idx) {
 					if (msg) {
 						msg.messageId = parseInt(mids[idx], 10);
+						msg.ip = undefined;
 					}
 					return msg;
 				}).filter(Boolean);

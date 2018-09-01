@@ -46,6 +46,8 @@ module.exports = function (User) {
 					lastposttime: 0,
 					banned: 0,
 					status: 'online',
+					gdpr_consent: data.gdpr_consent === true ? 1 : 0,
+					acceptTos: data.acceptTos === true ? 1 : 0,
 				};
 
 				User.uniqueUsername(userData, next);
@@ -92,6 +94,9 @@ module.exports = function (User) {
 						db.sortedSetsAdd(['users:postcount', 'users:reputation'], 0, userData.uid, next);
 					},
 					function (next) {
+						db.sortedSetAdd('user:' + userData.uid + ':usernames', timestamp, userData.username, next);
+					},
+					function (next) {
 						groups.join('registered-users', userData.uid, next);
 					},
 					function (next) {
@@ -102,6 +107,7 @@ module.exports = function (User) {
 							async.parallel([
 								async.apply(db.sortedSetAdd, 'email:uid', userData.uid, userData.email.toLowerCase()),
 								async.apply(db.sortedSetAdd, 'email:sorted', 0, userData.email.toLowerCase() + ':' + userData.uid),
+								async.apply(db.sortedSetAdd, 'user:' + userData.uid + ':emails', timestamp, userData.email),
 							], next);
 
 							if (parseInt(userData.uid, 10) !== 1 && parseInt(meta.config.requireEmailConfirmation, 10) === 1) {
@@ -180,7 +186,12 @@ module.exports = function (User) {
 		});
 	};
 
-	User.isPasswordValid = function (password, callback) {
+	User.isPasswordValid = function (password, minStrength, callback) {
+		if (typeof minStrength === 'function' && !callback) {
+			callback = minStrength;
+			minStrength = meta.config.minimumPasswordStrength;
+		}
+
 		// Sanity checks: Checks if defined and is string
 		if (!password || !utils.isPasswordValid(password)) {
 			return callback(new Error('[[error:invalid-password]]'));
@@ -195,7 +206,7 @@ module.exports = function (User) {
 		}
 
 		var strength = zxcvbn(password);
-		if (strength.score < meta.config.minimumPasswordStrength) {
+		if (strength.score < minStrength) {
 			return callback(new Error('[[user:weak_password]]'));
 		}
 

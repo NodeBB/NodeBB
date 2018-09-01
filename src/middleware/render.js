@@ -34,6 +34,7 @@ module.exports = function (middleware) {
 			}
 
 			var ajaxifyData;
+			var templateToRender;
 			async.waterfall([
 				function (next) {
 					options.loggedIn = !!req.uid;
@@ -45,6 +46,7 @@ module.exports = function (middleware) {
 					plugins.fireHook('filter:' + template + '.build', { req: req, res: res, templateData: options }, next);
 				},
 				function (data, next) {
+					templateToRender = data.templateData.templateToRender || template;
 					plugins.fireHook('filter:middleware.render', { req: req, res: res, templateData: data.templateData }, next);
 				},
 				function (data, next) {
@@ -68,7 +70,7 @@ module.exports = function (middleware) {
 						if (req.route && req.route.path === '/api/') {
 							options.title = '[[pages:home]]';
 						}
-
+						req.app.set('json spaces', global.env === 'development' || req.query.pretty ? 4 : 0);
 						return res.json(options);
 					}
 
@@ -79,7 +81,7 @@ module.exports = function (middleware) {
 							renderHeaderFooter('renderHeader', req, res, options, next);
 						},
 						content: function (next) {
-							render.call(self, template, options, next);
+							render.call(self, templateToRender, options, next);
 						},
 						footer: function (next) {
 							renderHeaderFooter('renderFooter', req, res, options, next);

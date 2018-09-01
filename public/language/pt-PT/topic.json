@@ -62,6 +62,7 @@
     "thread_tools.lock": "Bloquear tópico",
     "thread_tools.unlock": "Desbloquear tópico",
     "thread_tools.move": "Mover tópico",
+    "thread_tools.move-posts": "Move Posts",
     "thread_tools.move_all": "Mover todos",
     "thread_tools.select_category": "Select Category",
     "thread_tools.fork": "Clonar tópico",
@@ -96,6 +97,7 @@
     "fork_success": "Clonaste um tópico com sucesso! Carrega aqui para ires para o tópico clonado.",
     "delete_posts_instruction": "Carrega em publicações que queres apagar/purgar",
     "merge_topics_instruction": "Click the topics you want to merge",
+    "move_posts_instruction": "Click the posts you want to move",
     "composer.title_placeholder": "Insere aqui o título do tópico...",
     "composer.handle_placeholder": "Nome",
     "composer.discard": "Descartar",
@@ -116,8 +118,8 @@
     "sort_by": "Dispor por",
     "oldest_to_newest": "Do mais antigo para o mais recente",
     "newest_to_oldest": "Mais recente para mais antigo",
-    "most_votes": "Mais votos",
-    "most_posts": "Mais publicções",
+    "most_votes": "Most Votes",
+    "most_posts": "Most Posts",
     "stale.title": "Em vez disso, criar novo tópico?",
     "stale.warning": "O tópico ao qual estás a responder é bastante antigo. Gostarias antes de criar um novo tópico e referir este na tua resposta?",
     "stale.create": "Criar um novo tópico",
@@ -125,5 +127,7 @@
     "link_back": "Referindo: [%1](%2)",
     "diffs.title": "Post Edit History",
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
-    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions."
+    "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
+    "diffs.current-revision": "current revision",
+    "diffs.original-revision": "original revision"
 }

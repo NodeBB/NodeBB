@@ -23,11 +23,11 @@
 	"running-version": "У вас працює <strong>NodeBB v<span id=\"version\">%1</span></strong>.",
 	"keep-updated": "Регулярно перевіряйте, що ваш NodeBB знаходиться в актуальному стані, щоб мати останні патчі та виправлення.",
 	"up-to-date": "<p>Ваша версія <strong>актуальна</strong> <i class=\"fa fa-check\"></i></p>",
-	"upgrade-available": "<p>A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">upgrading your NodeBB</a>.</p>",
-	"prerelease-upgrade-available": "<p>This is an outdated pre-release version of NodeBB. A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">upgrading your NodeBB</a>.</p>",
+	"upgrade-available": "<p>Було випущено нову версію (v%1). Подумайте про <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">оновлення вашого NodeBB</a>.</p>",
+	"prerelease-upgrade-available": "<p>Це застаріла до-релізна версія NodeBB. Було випущено нову версію (v%1). Подумайте про <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">оновлення вашого NodeBB</a>.</p>",
 	"prerelease-warning": "<p>Це <strong>пре-релізна</strong> версія NodeBB. Можуть виникати неочікувані помилки. <i class=\"fa fa-exclamation-triangle\"></i></p>",
 	"running-in-development": "Форум працює в режимі розробки. Форум потенційно може бути незахищеним, будь-ласка повідомте вашого системного адміністратора.",
-	"latest-lookup-failed": "<p>Failed to look up latest available version of NodeBB</p>",
+	"latest-lookup-failed": "<p>Помилка при спробі перевірки останньої версії NodeBB</p>",
 
 	"notices": "Сповіщення",
 	"restart-not-required": "Перезавантаження не потрібне",
@@ -37,8 +37,8 @@
 	"search-plugin-tooltip": "Встановіть пошуковий плагін зі сторінки плагінів, що активувати пошуковий функціонал",
 
 	"control-panel": "Керування системою",
-	"reload": "Перезавантажити",
-	"restart": "Перебудувати та перезавантажити",
+	"rebuild-and-restart": "Перебудувати &amp; Перезавантажити",
+	"restart": "Перезавантажити",
 	"restart-warning": "Перебудування або перезапуск вашого NodeBB призведе до втрати всіх існуючих з'єднань протягом декількох секунд.",
 	"restart-disabled": "Перебудування та перезапуск вашого NodeBB вимкнено, оскільки ви, здається, не запускаєте його через відповідний демон.",
 	"maintenance-mode": "Режим обслуговування",
@@ -67,5 +67,7 @@
 	"graphs.page-views": "Перегляди сторінок",
 	"graphs.unique-visitors": "Унікальні відвідувачі",
 	"graphs.registered-users": "Зареєстровані користувачі",
-	"graphs.anonymous-users": "Анонімні користувачі"
+	"graphs.anonymous-users": "Анонімні користувачі",
+	"last-restarted-by": "Останнє перезавантаження",
+	"no-users-browsing": "Немає користувачів онлайн"
 }

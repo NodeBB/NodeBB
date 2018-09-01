@@ -19,5 +19,8 @@
     "terms_of_use_error": "Debes aceptar los términos de uso",
     "registration-added-to-queue": "Tu registro se ha añadido a la cola de aprobación,. Recibirás un correo cuando este sea aceptado por un administrador. ",
     "interstitial.intro": "Se requiere de información adicional antes de crear tu cuenta.",
-    "interstitial.errors-found": "No pudimos completar tu registro:"
+    "interstitial.errors-found": "No pudimos completar tu registro:",
+    "gdpr_agree_data": "Consiento la recolección y el procesamiento de mi información personal en este sitio web",
+    "gdpr_agree_email": "Consiento en recibir correos de informes y notificaciones de este sitio web.",
+    "gdpr_consent_denied": "Usted debe dar consentimiento a este sitio para recolectar/procesar su información, así como enviarle correos electrónicos."
 }

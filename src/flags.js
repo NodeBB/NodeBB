@@ -51,6 +51,8 @@ Flags.init = function (callback) {
 			cid: function (sets, orSets, key) {
 				prepareSets(sets, orSets, 'flags:byCid:', key);
 			},
+			page: function () {	/* noop */ },
+			perPage: function () {	/* noop */ },
 			quick: function (sets, orSets, key, uid) {
 				switch (key) {
 				case 'mine':
@@ -121,14 +123,16 @@ Flags.list = function (filters, uid, callback) {
 	var sets = [];
 	var orSets = [];
 
-	if (Object.keys(filters).length > 0) {
-		for (var type in filters) {
-			if (filters.hasOwnProperty(type)) {
-				if (Flags._filters.hasOwnProperty(type)) {
-					Flags._filters[type](sets, orSets, filters[type], uid);
-				} else {
-					winston.warn('[flags/list] No flag filter type found: ' + type);
-				}
+	// Default filter
+	filters.page = filters.hasOwnProperty('page') ? Math.abs(parseInt(filters.page, 10) || 1) : 1;
+	filters.perPage = filters.hasOwnProperty('perPage') ? Math.abs(parseInt(filters.perPage, 10) || 20) : 20;
+
+	for (var type in filters) {
+		if (filters.hasOwnProperty(type)) {
+			if (Flags._filters.hasOwnProperty(type)) {
+				Flags._filters[type](sets, orSets, filters[type], uid);
+			} else {
+				winston.warn('[flags/list] No flag filter type found: ' + type);
 			}
 		}
 	}
@@ -165,6 +169,11 @@ Flags.list = function (filters, uid, callback) {
 			}
 		},
 		function (flagIds, next) {
+			// Create subset for parsing based on page number (n=20)
+			const flagsPerPage = Math.abs(parseInt(filters.perPage, 10) || 1);
+			const pageCount = Math.ceil(flagIds.length / flagsPerPage);
+			flagIds = flagIds.slice((filters.page - 1) * flagsPerPage, filters.page * flagsPerPage);
+
 			async.map(flagIds, function (flagId, next) {
 				async.waterfall([
 					async.apply(db.getObject, 'flag:' + flagId),
@@ -206,13 +215,20 @@ Flags.list = function (filters, uid, callback) {
 						datetimeISO: utils.toISOString(flagObj.datetime),
 					}));
 				});
-			}, next);
+			}, function (err, flags) {
+				next(err, flags, pageCount);
+			});
 		},
-		function (flags, next) {
+		function (flags, pageCount, next) {
 			plugins.fireHook('filter:flags.list', {
 				flags: flags,
+				page: filters.page,
 			}, function (err, data) {
-				next(err, data.flags);
+				next(err, {
+					flags: data.flags,
+					page: data.page,
+					pageCount: pageCount,
+				});
 			});
 		},
 	], callback);
@@ -304,6 +320,7 @@ Flags.getNotes = function (flagId, callback) {
 
 				next(null, notes.map(function (note, idx) {
 					note.user = users[idx];
+					note.content = validator.escape(note.content);
 					return note;
 				}));
 			});
@@ -537,7 +554,6 @@ Flags.update = function (flagId, uid, changeset, callback) {
 			tasks.push(async.apply(Flags.appendHistory, flagId, uid, changeset));
 
 			// Fire plugin hook
-			tasks.push(async.apply(plugins.fireHook, 'action:flag.update', { flagId: flagId, changeset: changeset, uid: uid }));	// delete @ NodeBB v1.6.0
 			tasks.push(async.apply(plugins.fireHook, 'action:flags.update', { flagId: flagId, changeset: changeset, uid: uid }));
 
 			async.parallel(tasks, function (err) {
@@ -683,13 +699,16 @@ Flags.notify = function (flagObj, uid, callback) {
 					return callback(err);
 				}
 
-				plugins.fireHook('action:flag.create', {
-					flag: flagObj,
-				});	// delete @ NodeBB v1.6.0
 				plugins.fireHook('action:flags.create', {
 					flag: flagObj,
 				});
-				notifications.push(notification, results.admins.concat(results.moderators).concat(results.globalMods), callback);
+
+				var uids = results.admins.concat(results.moderators).concat(results.globalMods);
+				uids = uids.filter(function (_uid) {
+					return parseInt(_uid, 10) !== parseInt(uid, 10);
+				});
+
+				notifications.push(notification, uids, callback);
 			});
 		});
 		break;

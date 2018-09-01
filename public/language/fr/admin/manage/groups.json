@@ -29,7 +29,7 @@
 	"control-panel": "Panneau de contrôle des groupes",
 	"revert": "Retour",
 
-	"edit.no-users-found": "Aucun utilisateurs trouvé",
+	"edit.no-users-found": "Aucun utilisateur trouvé",
 	"edit.confirm-remove-user": "Êtes-vous sûr de vouloir retirer cet utilisateur ?",
 	"edit.save-success": "Changements sauvegardés !"
 }

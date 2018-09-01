@@ -1,0 +1,10 @@
+{
+    "administrators": "Administratoren",
+    "global-moderators": "Globale Moderatoren",
+    "no-global-moderators": "Keine globalen Moderatoren",
+    "moderators-of-category": "%1 Moderatoren",
+    "no-moderators": "Keine Moderatoren",
+    "add-administrator": "Administrator hinzufügen",
+    "add-global-moderator": "Globalen Moderator hinzufügen",
+    "add-moderator": "Moderator hinzufügen"
+}

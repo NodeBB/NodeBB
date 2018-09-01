@@ -4,6 +4,8 @@
     "invite": "Invitație de la %1",
     "greeting_no_name": "Salut",
     "greeting_with_name": "Salut %1",
+    "email.verify-your-email.subject": "Please verify your email",
+    "email.verify.text1": "Your email address has changed!",
     "welcome.text1": "îți mulțumim că te-ai Înregistrat cu %1!",
     "welcome.text2": "Pentru a-ți activa cu success contul trebuie să verificăm adresa de email pe care ai folosit-o la înregistrare.",
     "welcome.text3": "An administrator has accepted your registration application. You can login with your username/password now.",

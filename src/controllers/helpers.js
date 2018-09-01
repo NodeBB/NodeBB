@@ -4,6 +4,7 @@ var nconf = require('nconf');
 var async = require('async');
 var validator = require('validator');
 var winston = require('winston');
+var querystring = require('querystring');
 
 var user = require('../user');
 var privileges = require('../privileges');
@@ -11,6 +12,7 @@ var categories = require('../categories');
 var plugins = require('../plugins');
 var meta = require('../meta');
 var middleware = require('../middleware');
+var utils = require('../utils');
 
 var helpers = module.exports;
 
@@ -34,27 +36,75 @@ helpers.noScriptErrors = function (req, res, error, httpStatus) {
 
 helpers.validFilters = { '': true, new: true, watched: true, unreplied: true };
 
-helpers.buildFilters = function (url, filter) {
+helpers.terms = {
+	daily: 'day',
+	weekly: 'week',
+	monthly: 'month',
+};
+
+helpers.buildQueryString = function (cid, filter, term) {
+	var qs = {};
+	if (cid) {
+		qs.cid = cid;
+	}
+	if (filter) {
+		qs.filter = filter;
+	}
+	if (term) {
+		qs.term = term;
+	}
+
+	if (Object.keys(qs).length) {
+		return '?' + querystring.stringify(qs);
+	}
+	return '';
+};
+
+helpers.buildFilters = function (url, filter, query) {
 	return [{
 		name: '[[unread:all-topics]]',
-		url: url,
+		url: url + helpers.buildQueryString(query.cid, '', query.term),
 		selected: filter === '',
 		filter: '',
 	}, {
 		name: '[[unread:new-topics]]',
-		url: url + '/new',
+		url: url + helpers.buildQueryString(query.cid, 'new', query.term),
 		selected: filter === 'new',
 		filter: 'new',
 	}, {
 		name: '[[unread:watched-topics]]',
-		url: url + '/watched',
+		url: url + helpers.buildQueryString(query.cid, 'watched', query.term),
 		selected: filter === 'watched',
 		filter: 'watched',
 	}, {
 		name: '[[unread:unreplied-topics]]',
-		url: url + '/unreplied',
+		url: url + helpers.buildQueryString(query.cid, 'unreplied', query.term),
 		selected: filter === 'unreplied',
 		filter: 'unreplied',
+	}];
+};
+
+helpers.buildTerms = function (url, term, query) {
+	return [{
+		name: '[[recent:alltime]]',
+		url: url + helpers.buildQueryString(query.cid, query.filter, ''),
+		selected: term === 'alltime',
+		term: 'alltime',
+	}, {
+		name: '[[recent:day]]',
+		url: url + helpers.buildQueryString(query.cid, query.filter, 'daily'),
+		selected: term === 'day',
+		term: 'day',
+	}, {
+		name: '[[recent:week]]',
+		url: url + helpers.buildQueryString(query.cid, query.filter, 'weekly'),
+		selected: term === 'week',
+		term: 'week',
+	}, {
+		name: '[[recent:month]]',
+		url: url + helpers.buildQueryString(query.cid, query.filter, 'monthly'),
+		selected: term === 'month',
+		term: 'month',
 	}];
 };
 
@@ -178,15 +228,34 @@ helpers.buildTitle = function (pageTitle) {
 	return title;
 };
 
+helpers.getCategories = function (set, uid, privilege, selectedCid, callback) {
+	async.waterfall([
+		function (next) {
+			categories.getCidsByPrivilege(set, uid, privilege, next);
+		},
+		function (cids, next) {
+			getCategoryData(cids, uid, selectedCid, next);
+		},
+	], callback);
+};
+
 helpers.getWatchedCategories = function (uid, selectedCid, callback) {
-	if (selectedCid && !Array.isArray(selectedCid)) {
-		selectedCid = [selectedCid];
-	}
 	async.waterfall([
 		function (next) {
 			user.getWatchedCategories(uid, next);
 		},
 		function (cids, next) {
+			getCategoryData(cids, uid, selectedCid, next);
+		},
+	], callback);
+};
+
+function getCategoryData(cids, uid, selectedCid, callback) {
+	if (selectedCid && !Array.isArray(selectedCid)) {
+		selectedCid = [selectedCid];
+	}
+	async.waterfall([
+		function (next) {
 			privileges.categories.filterCids('read', cids, uid, next);
 		},
 		function (cids, next) {
@@ -200,6 +269,7 @@ helpers.getWatchedCategories = function (uid, selectedCid, callback) {
 			var selectedCids = [];
 			categoryData.forEach(function (category) {
 				category.selected = selectedCid ? selectedCid.indexOf(String(category.cid)) !== -1 : false;
+				category.parentCid = category.hasOwnProperty('parentCid') && utils.isNumber(category.parentCid) ? category.parentCid : 0;
 				if (category.selected) {
 					selectedCategory.push(category);
 					selectedCids.push(parseInt(category.cid, 10));
@@ -231,7 +301,7 @@ helpers.getWatchedCategories = function (uid, selectedCid, callback) {
 			next(null, { categories: categoriesData, selectedCategory: selectedCategory, selectedCids: selectedCids });
 		},
 	], callback);
-};
+}
 
 function recursive(category, categoriesData, level) {
 	category.level = level;

@@ -18,6 +18,7 @@
 	"filter-type": "Bayrak Tipi",
 	"filter-type-all": "Bütün İçerik",
 	"filter-type-post": "İleti",
+	"filter-type-user": "Kullanıcı",
 	"filter-state": "Bildiri",
 	"filter-assignee": "Vekil UID",
 	"filter-cid": "Kategori",

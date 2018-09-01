@@ -113,6 +113,9 @@ define('forum/register', ['translator', 'zxcvbn'], function (translator, zxcvbn)
 				});
 			});
 		});
+
+		// Set initial focus
+		$('#email').focus();
 	};
 
 	function validateEmail(email, callback) {

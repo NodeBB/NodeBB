@@ -45,8 +45,6 @@ module.exports = function (User) {
 						return updateUsername(updateUid, data.username, next);
 					} else if (field === 'fullname') {
 						return updateFullname(updateUid, data.fullname, next);
-					} else if (field === 'signature') {
-						data[field] = utils.stripHTMLTags(data[field]);
 					}
 
 					User.setUserField(updateUid, field, data[field], next);
@@ -144,7 +142,7 @@ module.exports = function (User) {
 		if (!data.website) {
 			return setImmediate(callback);
 		}
-		checkMinReputation(callerUid, data.uid, 'min:rep:website', callback);
+		User.checkMinReputation(callerUid, data.uid, 'min:rep:website', callback);
 	}
 
 	function isAboutMeValid(callerUid, data, callback) {
@@ -155,7 +153,7 @@ module.exports = function (User) {
 			return callback(new Error('[[error:about-me-too-long, ' + meta.config.maximumAboutMeLength + ']]'));
 		}
 
-		checkMinReputation(callerUid, data.uid, 'min:rep:aboutme', callback);
+		User.checkMinReputation(callerUid, data.uid, 'min:rep:aboutme', callback);
 	}
 
 	function isSignatureValid(callerUid, data, callback) {
@@ -165,10 +163,10 @@ module.exports = function (User) {
 		if (data.signature !== undefined && data.signature.length > meta.config.maximumSignatureLength) {
 			return callback(new Error('[[error:signature-too-long, ' + meta.config.maximumSignatureLength + ']]'));
 		}
-		checkMinReputation(callerUid, data.uid, 'min:rep:signature', callback);
+		User.checkMinReputation(callerUid, data.uid, 'min:rep:signature', callback);
 	}
 
-	function checkMinReputation(callerUid, uid, setting, callback) {
+	User.checkMinReputation = function (callerUid, uid, setting, callback) {
 		var isSelf = parseInt(callerUid, 10) === parseInt(uid, 10);
 		if (!isSelf) {
 			return setImmediate(callback);
@@ -184,7 +182,7 @@ module.exports = function (User) {
 				next();
 			},
 		], callback);
-	}
+	};
 
 	function updateEmail(uid, newEmail, callback) {
 		async.waterfall([
@@ -200,6 +198,7 @@ module.exports = function (User) {
 				async.series([
 					async.apply(db.sortedSetRemove, 'email:uid', oldEmail.toLowerCase()),
 					async.apply(db.sortedSetRemove, 'email:sorted', oldEmail.toLowerCase() + ':' + uid),
+					async.apply(User.auth.revokeAllSessions, uid),
 				], function (err) {
 					next(err);
 				});
@@ -222,6 +221,8 @@ module.exports = function (User) {
 						if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && newEmail) {
 							User.email.sendValidationEmail(uid, {
 								email: newEmail,
+								subject: '[[email:email.verify-your-email.subject]]',
+								template: 'verify_email',
 							});
 						}
 						User.setUserField(uid, 'email:confirmed', 0, next);
@@ -321,12 +322,12 @@ module.exports = function (User) {
 				if (parseInt(uid, 10) !== parseInt(data.uid, 10)) {
 					User.isAdministrator(uid, next);
 				} else {
-					User.isPasswordCorrect(uid, data.currentPassword, next);
+					User.isPasswordCorrect(uid, data.currentPassword, data.ip, next);
 				}
 			},
 			function (isAdminOrPasswordMatch, next) {
 				if (!isAdminOrPasswordMatch) {
-					return next(new Error('[[error:change_password_error_wrong_current]]'));
+					return next(new Error('[[user:change_password_error_wrong_current]]'));
 				}
 
 				User.hashPassword(data.newPassword, next);
@@ -339,6 +340,7 @@ module.exports = function (User) {
 					}),
 					async.apply(User.reset.updateExpiry, data.uid),
 					async.apply(User.auth.revokeAllSessions, data.uid),
+					async.apply(plugins.fireHook, 'action:password.change', { uid: uid }),
 				], function (err) {
 					next(err);
 				});

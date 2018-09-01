@@ -5,7 +5,7 @@
 	"name": "版块名",
 	"description": "版块描述",
 	"bg-color": "背景颜色",
-	"text-color": "文字颜色",
+	"text-color": "图标颜色",
 	"bg-image-size": "背景图片大小",
 	"custom-class": "自定义 Class",
 	"num-recent-replies": "最近回复数",
@@ -19,6 +19,7 @@
 	"parent-category-none": "(无)",
 	"copy-settings": "复制设置",
 	"optional-clone-settings": "(可选) 从版块复制设置",
+	"clone-children": "克隆子类别并进行设置",
 	"purge": "删除版块",
 
 	"enable": "启用",

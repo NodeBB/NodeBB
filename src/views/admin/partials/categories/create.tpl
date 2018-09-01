@@ -21,5 +21,10 @@
 			<option value="{categories.cid}">{categories.name}</option>
 			<!-- END categories -->
 		</select>
+		<label>
+			<input id="cloneChildren" name="cloneChildren" type="checkbox">
+			<strong>[[admin/manage/categories:clone-children]]</strong>
+		</label>
+
 	</div>
 </form>

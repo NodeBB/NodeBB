@@ -5,6 +5,7 @@ var validator = require('validator');
 var _ = require('lodash');
 
 var db = require('../database');
+var meta = require('../meta');
 var topics = require('../topics');
 var user = require('../user');
 var privileges = require('../privileges');
@@ -66,12 +67,17 @@ module.exports = function (Posts) {
 				Posts.setPostFields(data.pid, postData, next);
 			},
 			function (next) {
+				if (parseInt(meta.config.enablePostHistory || 1, 10) !== 1) {
+					return setImmediate(next);
+				}
+
 				Posts.diffs.save(data.pid, oldContent, data.content, next);
 			},
+			async.apply(Posts.uploads.sync, data.pid),
 			function (next) {
 				postData.cid = results.topic.cid;
 				postData.topic = results.topic;
-				plugins.fireHook('action:post.edit', { post: _.clone(postData), uid: data.uid });
+				plugins.fireHook('action:post.edit', { post: _.clone(postData), data: data, uid: data.uid });
 
 				cache.del(String(postData.pid));
 				pubsub.publish('post:edit', String(postData.pid));

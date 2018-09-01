@@ -18,6 +18,7 @@
     "invalid-username-or-password": "Bitte gib sowohl einen Benutzernamen als auch ein Passwort an",
     "invalid-search-term": "Ungültige Suchanfrage",
     "invalid-url": "Ungültige URL",
+    "local-login-disabled": "Lokales Login System wurde für nicht-priviligierte Accounts deaktiviert.",
     "csrf-invalid": "Dein Login war nicht erfolgreich da wahrscheinlich deine Sitzung abgelaufen ist. Bitte versuche es noch einmal",
     "invalid-pagination-value": "Ungültige Seitennummerierung, muss mindestens %1 und maximal %2 sein",
     "username-taken": "Der Benutzername ist bereits vergeben",
@@ -77,6 +78,7 @@
     "still-uploading": "Bitte warte bis der Vorgang abgeschlossen ist.",
     "file-too-big": "Die maximale Dateigröße ist %1 kB, bitte lade eine kleinere Datei hoch.",
     "guest-upload-disabled": "Uploads für Gäste wurden deaktiviert.",
+    "cors-error": "Unable to upload image due to misconfigured CORS",
     "already-bookmarked": "Du hast diesen Beitrag bereits als Lesezeichen gespeichert",
     "already-unbookmarked": "Du hast diesen Beitrag bereits aus deinen Lesezeichen entfernt",
     "cant-ban-other-admins": "Du kannst andere Administratoren nicht sperren!",
@@ -126,6 +128,8 @@
     "not-enough-reputation-min-rep-website": "Deine Reputation um eine \"Website\" zum Benutzerprofil hinzuzufügen ist zu niedrig",
     "not-enough-reputation-min-rep-aboutme": "Deine Reputation um eine \"Über mich\"-Sektion zum Benutzerprofil hinzuzufügen ist zu niedrig",
     "not-enough-reputation-min-rep-signature": "Deine Reputation um eine \"Signatur\" zum Benutzerprofil hinzuzufügen ist zu niedrig",
+    "not-enough-reputation-min-rep-profile-picture": "Deine Reputation ist zu niedrig um ein Profilbild hinzuzufügen.",
+    "not-enough-reputation-min-rep-cover-picture": "Deine Reputation ist zu niedrig um ein Deckbild hinzuzufügen.",
     "already-flagged": "Du hast diesen Beitrag bereits gemeldet",
     "self-vote": "Du kannst deine eigenen Beiträge nicht bewerten",
     "reload-failed": "Es ist ein Problem während des Reloads von NodeBB aufgetreten: \"%1\". NodeBB wird weiterhin clientseitige Assets bereitstellen, allerdings solltest du das, was du vor dem Reload gemacht hast, rückgängig machen.",
@@ -145,5 +149,8 @@
     "invalid-session": "Sitzungsdiskrepanz",
     "invalid-session-text": "Es scheint als wäre deine Login-Sitzung nicht mehr aktiv oder sie passt nicht mehr mit der des Servers. Bitte aktualisiere diese Seite.",
     "no-topics-selected": "Keine Beiträge ausgewählt!",
-    "cant-move-to-same-topic": "Du kannst den Beitrag nicht in das selbe Thema schieben!"
+    "cant-move-to-same-topic": "Du kannst den Beitrag nicht in das selbe Thema schieben!",
+    "cannot-block-self": "Du kannst dich nicht selbst blocken!",
+    "cannot-block-privileged": "Du kannst keine Administratoren bzw. Globale Moderatoren blocken.",
+    "no-connection": "Es scheint als gäbe es ein Problem mit deiner Internetverbindung"
 }

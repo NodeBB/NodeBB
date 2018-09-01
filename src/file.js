@@ -141,8 +141,9 @@ file.exists = function (path, callback) {
 			if (err.code === 'ENOENT') {
 				return callback(null, false);
 			}
+			return callback(err);
 		}
-		callback(err, true);
+		callback(null, true);
 	});
 };
 
@@ -159,14 +160,17 @@ file.existsSync = function (path) {
 	return true;
 };
 
-file.delete = function (path) {
-	if (path) {
-		fs.unlink(path, function (err) {
-			if (err) {
-				winston.error(err);
-			}
-		});
+file.delete = function (path, callback) {
+	callback = callback || function () {};
+	if (!path) {
+		return callback();
 	}
+	fs.unlink(path, function (err) {
+		if (err) {
+			winston.warn(err);
+		}
+		callback();
+	});
 };
 
 file.link = function link(filePath, destPath, relative, callback) {

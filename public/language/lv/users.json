@@ -1,0 +1,21 @@
+{
+    "latest_users": "Latest Users",
+    "top_posters": "Top Posters",
+    "most_reputation": "Most Reputation",
+    "most_flags": "Most Flags",
+    "search": "Search",
+    "enter_username": "Enter a username to search",
+    "load_more": "Load More",
+    "users-found-search-took": "%1 user(s) found! Search took %2 seconds.",
+    "filter-by": "Filter By",
+    "online-only": "Online only",
+    "invite": "Uzaicināt",
+    "invitation-email-sent": "Uzaicinājuma e-pasta ir nosūtīts %1",
+    "user_list": "User List",
+    "recent_topics": "Recent Topics",
+    "popular_topics": "Populārās tēmas",
+    "unread_topics": "Nelasītie temati",
+    "categories": "Categories",
+    "tags": "Tags",
+    "no-users-found": "No users found!"
+}

@@ -6,14 +6,14 @@
 	"description": "Tıklayarak ve/veya sürükleyerek etiketleri seçin, birden çok seçmek için kaydırın.",
 	"create": "Etiket Oluştur",
 	"modify": "Etiketleri Düzenle",
-	"rename": "Rename Tags",
+	"rename": "Etiketleri Yeniden Adlandır",
 	"delete": "Seçili Etiketleri Sil",
 	"search": "Etiketleri ara...",
 	"settings": "Etiket yönetim sayfasını ziyaret etmek için <a href=\"%1\">buraya</a> tıklayın.",
 	"name": "Etiket Adı",
 
 	"alerts.editing-multiple": "Birden çok etiketi düzenle",
-	"alerts.editing-x": "Editing \"%1\" tag",
+	"alerts.editing-x": "\"% 1\" etiketi düzenleniyor",
 	"alerts.confirm-delete": "Seçilen etiketleri gerçekten silmek istiyor musunuz?",
-	"alerts.update-success": "Tag Updated!"
+	"alerts.update-success": "Etiket Güncellendi!"
 }

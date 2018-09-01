@@ -5,23 +5,23 @@ var async = require('async');
 var meta = require('../meta');
 var plugins = require('../plugins');
 var db = require('../database');
-
+var user = require('../user');
 
 module.exports = function (Messaging) {
-	Messaging.sendMessage = function (uid, roomId, content, timestamp, callback) {
+	Messaging.sendMessage = function (data, callback) {
 		async.waterfall([
 			function (next) {
-				Messaging.checkContent(content, next);
+				Messaging.checkContent(data.content, next);
 			},
 			function (next) {
-				Messaging.isUserInRoom(uid, roomId, next);
+				Messaging.isUserInRoom(data.uid, data.roomId, next);
 			},
 			function (inRoom, next) {
 				if (!inRoom) {
 					return next(new Error('[[error:not-allowed]]'));
 				}
 
-				Messaging.addMessage(uid, roomId, content, timestamp, next);
+				Messaging.addMessage(data, next);
 			},
 		], callback);
 	};
@@ -30,23 +30,30 @@ module.exports = function (Messaging) {
 		if (!content) {
 			return callback(new Error('[[error:invalid-chat-message]]'));
 		}
-		content = String(content);
 
-		var maximumChatMessageLength = (meta.config.maximumChatMessageLength || 1000);
-		if (content.length > maximumChatMessageLength) {
-			return callback(new Error('[[error:chat-message-too-long, ' + maximumChatMessageLength + ']]'));
-		}
-		callback();
+		plugins.fireHook('filter:messaging.checkContent', { content: content }, function (err, data) {
+			if (err) {
+				return callback(err);
+			}
+
+			content = String(data.content);
+
+			var maximumChatMessageLength = (meta.config.maximumChatMessageLength || 1000);
+			if (content.length > maximumChatMessageLength) {
+				return callback(new Error('[[error:chat-message-too-long, ' + maximumChatMessageLength + ']]'));
+			}
+			callback();
+		});
 	};
 
-	Messaging.addMessage = function (fromuid, roomId, content, timestamp, callback) {
+	Messaging.addMessage = function (data, callback) {
 		var mid;
 		var message;
 		var isNewSet;
 
 		async.waterfall([
 			function (next) {
-				Messaging.checkContent(content, next);
+				Messaging.checkContent(data.content, next);
 			},
 			function (next) {
 				db.incrObjectField('global', 'nextMid', next);
@@ -54,12 +61,15 @@ module.exports = function (Messaging) {
 			function (_mid, next) {
 				mid = _mid;
 				message = {
-					content: String(content),
-					timestamp: timestamp,
-					fromuid: fromuid,
-					roomId: roomId,
+					content: String(data.content),
+					timestamp: data.timestamp,
+					fromuid: data.uid,
+					roomId: data.roomId,
 					deleted: 0,
 				};
+				if (data.ip) {
+					message.ip = data.ip;
+				}
 
 				plugins.fireHook('filter:messaging.save', message, next);
 			},
@@ -67,24 +77,26 @@ module.exports = function (Messaging) {
 				db.setObject('message:' + mid, message, next);
 			},
 			function (next) {
-				Messaging.isNewSet(fromuid, roomId, timestamp, next);
+				Messaging.isNewSet(data.uid, data.roomId, data.timestamp, next);
 			},
 			function (_isNewSet, next) {
 				isNewSet = _isNewSet;
-				db.getSortedSetRange('chat:room:' + roomId + ':uids', 0, -1, next);
+				db.getSortedSetRange('chat:room:' + data.roomId + ':uids', 0, -1, next);
+			},
+			function (uids, next) {
+				user.blocks.filterUids(data.uid, uids, next);
 			},
 			function (uids, next) {
 				async.parallel([
-					async.apply(Messaging.addRoomToUsers, roomId, uids, timestamp),
-					async.apply(Messaging.addMessageToUsers, roomId, uids, mid, timestamp),
-					async.apply(Messaging.markUnread, uids, roomId),
-					async.apply(Messaging.addUsersToRoom, fromuid, [fromuid], roomId),
+					async.apply(Messaging.addRoomToUsers, data.roomId, uids, data.timestamp),
+					async.apply(Messaging.addMessageToUsers, data.roomId, uids, mid, data.timestamp),
+					async.apply(Messaging.markUnread, uids, data.roomId),
 				], next);
 			},
 			function (results, next) {
 				async.parallel({
-					markRead: async.apply(Messaging.markRead, fromuid, roomId),
-					messages: async.apply(Messaging.getMessagesData, [mid], fromuid, roomId, true),
+					markRead: async.apply(Messaging.markRead, data.uid, data.roomId),
+					messages: async.apply(Messaging.getMessagesData, [mid], data.uid, data.roomId, true),
 				}, next);
 			},
 			function (results, next) {
@@ -94,7 +106,7 @@ module.exports = function (Messaging) {
 
 				results.messages[0].newSet = isNewSet;
 				results.messages[0].mid = mid;
-				results.messages[0].roomId = roomId;
+				results.messages[0].roomId = data.roomId;
 				next(null, results.messages[0]);
 			},
 		], callback);

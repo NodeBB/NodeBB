@@ -1,7 +1,7 @@
 {
-	"alert.confirm-reload": "Are you sure you wish to rebuild and restart NodeBB?",
-	"alert.confirm-restart": "Are you sure you wish to restart NodeBB?",
+	"alert.confirm-rebuild-and-restart": "Adakah anda ingin membina dan memulakan semula NodeBB",
+	"alert.confirm-restart": "Adakan anda ingin memulakan semula NodeBB",
 
-	"acp-title": "%1 | NodeBB Admin Control Panel",
-	"settings-header-contents": "Contents"
+	"acp-title": "%1 | Panel Kawalan dan Kendalian NodeBB",
+	"settings-header-contents": "Isi"
 }

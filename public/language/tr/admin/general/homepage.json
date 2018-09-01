@@ -4,5 +4,5 @@
 	"home-page-route": "Anasayfa Yolu",
 	"custom-route": "Özel Yol",
 	"allow-user-home-pages": "Kullanıcılara anasayfayı özelleştirmeye izin ver",
-	"home-page-title": "Title of the home page (default \"Home\")"
+	"home-page-title": "Ana sayfanın başlığı (varsayılan \"Ana Sayfa\")"
 }

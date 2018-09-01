@@ -1,8 +1,5 @@
 {
 	"handles": "Zaobchádzanie s hosťami",
 	"handles.enabled": "Povoliť upravovanie zaobchádzania s hosťami",
-	"handles.enabled-help": "Táto možnosť odkryje nové pole, ktoré umožňuje hosťom vybrať meno, ktoré sa pripojí ku každému príspevku, ktorý vytvorí. Ak bude zakázané, budú jednoducho nazývaní 'Hosť'",
-	"privileges": "Oprávnenie hostí",
-	"privileges.can-search": "Povoliť hosťom bez prihlásenia používať hľadanie",
-	"privileges.can-search-users": "Povoliť hosťom bez prihlásenia hľadať používateľov"
+	"handles.enabled-help": "Táto možnosť odkryje nové pole, ktoré umožňuje hosťom vybrať meno, ktoré sa pripojí ku každému príspevku, ktorý vytvorí. Ak bude zakázané, budú jednoducho nazývaní 'Hosť'"
 }

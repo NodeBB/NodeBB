@@ -34,13 +34,15 @@ Dependencies.check = function (callback) {
 	});
 };
 
+var pluginNamePattern = /^(@.*?\/)?nodebb-(theme|plugin|widget|rewards)-.*$/;
+
 Dependencies.checkModule = function (moduleName, callback) {
 	fs.readFile(path.join(__dirname, '../../node_modules/', moduleName, 'package.json'), {
 		encoding: 'utf-8',
 	}, function (err, pkgData) {
 		if (err) {
 			// If a bundled plugin/theme is not present, skip the dep check (#3384)
-			if (err.code === 'ENOENT' && (moduleName === 'nodebb-rewards-essentials' || moduleName.startsWith('nodebb-plugin') || moduleName.startsWith('nodebb-theme'))) {
+			if (err.code === 'ENOENT' && pluginNamePattern.test(moduleName)) {
 				winston.warn('[meta/dependencies] Bundled plugin ' + moduleName + ' not found, skipping dependency check.');
 				return callback(null, true);
 			}

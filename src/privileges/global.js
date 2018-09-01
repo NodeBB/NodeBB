@@ -13,15 +13,25 @@ module.exports = function (privileges) {
 	privileges.global = {};
 
 	privileges.global.privilegeLabels = [
-		{ name: 'Chat' },
-		{ name: 'Upload Images' },
-		{ name: 'Upload Files' },
+		{ name: '[[admin/manage/privileges:chat]]' },
+		{ name: '[[admin/manage/privileges:upload-images]]' },
+		{ name: '[[admin/manage/privileges:upload-files]]' },
+		{ name: '[[admin/manage/privileges:signature]]' },
+		{ name: '[[admin/manage/privileges:ban]]' },
+		{ name: '[[admin/manage/privileges:search-content]]' },
+		{ name: '[[admin/manage/privileges:search-users]]' },
+		{ name: '[[admin/manage/privileges:search-tags]]' },
 	];
 
 	privileges.global.userPrivilegeList = [
 		'chat',
 		'upload:post:image',
 		'upload:post:file',
+		'signature',
+		'ban',
+		'search:content',
+		'search:users',
+		'search:tags',
 	];
 
 	privileges.global.groupPrivilegeList = privileges.global.userPrivilegeList.map(function (privilege) {
@@ -77,6 +87,9 @@ module.exports = function (privileges) {
 					chat: privData.chat || isAdminOrMod,
 					'upload:post:image': privData['upload:post:image'] || isAdminOrMod,
 					'upload:post:file': privData['upload:post:file'] || isAdminOrMod,
+					'search:content': privData['search:content'] || isAdminOrMod,
+					'search:users': privData['search:users'] || isAdminOrMod,
+					'search:tags': privData['search:tags'] || isAdminOrMod,
 				}, next);
 			},
 		], callback);

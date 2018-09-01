@@ -1,8 +1,5 @@
 {
 	"handles": "Guest Handles",
 	"handles.enabled": "Allow guest handles",
-	"handles.enabled-help": "This option exposes a new field that allows guests to pick a name to associate with each post they make. If disabled, they will simply be called \"Guest\"",
-	"privileges": "Гостевые Привилегии",
-	"privileges.can-search": "Разрешить гостям выполнять поиск без входа в систему",
-	"privileges.can-search-users": "Разрешить гостям искать пользователей без входа в систему"
+	"handles.enabled-help": "This option exposes a new field that allows guests to pick a name to associate with each post they make. If disabled, they will simply be called \"Guest\""
 }

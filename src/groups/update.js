@@ -168,7 +168,7 @@ module.exports = function (Groups) {
 			function (next) {
 				async.parallel({
 					group: function (next) {
-						db.getObject('group:' + currentName, next);
+						Groups.getGroupData(currentName, next);
 					},
 					exists: function (next) {
 						Groups.existsBySlug(newSlug, next);
@@ -180,7 +180,11 @@ module.exports = function (Groups) {
 					return next(new Error('[[error:group-already-exists]]'));
 				}
 
-				if (parseInt(results.group.system, 10) === 1) {
+				if (!results.group) {
+					return next(new Error('[[error:no-group]]'));
+				}
+
+				if (results.group.system) {
 					return next(new Error('[[error:not-allowed-to-rename-system-group]]'));
 				}
 

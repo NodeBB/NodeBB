@@ -87,6 +87,24 @@ describe('Upload Controllers', function () {
 			});
 		});
 
+		it('should upload an image to a post and then delete the upload', function (done) {
+			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(Array.isArray(body));
+				assert(body[0].url);
+				var name = body[0].url.replace(nconf.get('upload_url'), '');
+				socketUser.deleteUpload({ uid: regularUid }, { uid: regularUid, name: name }, function (err) {
+					assert.ifError(err);
+					db.getSortedSetRange('uid:' + regularUid + ':uploads', 0, -1, function (err, uploads) {
+						assert.ifError(err);
+						assert.equal(uploads.includes(name), false);
+						done();
+					});
+				});
+			});
+		});
+
 		it('should resize and upload an image to a post', function (done) {
 			var oldValue = meta.config.maximumImageWidth;
 			meta.config.maximumImageWidth = 10;
@@ -158,6 +176,41 @@ describe('Upload Controllers', function () {
 				assert.equal(err.message, '[[error:invalid-image]]');
 				done();
 			});
+		});
+
+		it('should delete users uploads if account is deleted', function (done) {
+			var jar;
+			var uid;
+			var url;
+			var file = require('../src/file');
+
+			async.waterfall([
+				function (next) {
+					user.create({ username: 'uploader', password: 'barbar' }, next);
+				},
+				function (_uid, next) {
+					uid = _uid;
+					helpers.loginUser('uploader', 'barbar', next);
+				},
+				function (jar, csrf_token, next) {
+					helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, next);
+				},
+				function (res, body, next) {
+					assert(body);
+					assert(body[0].url);
+					url = body[0].url;
+
+					user.delete(1, uid, next);
+				},
+				function (next) {
+					var filePath = path.join(nconf.get('upload_path'), url.replace('/assets/uploads', ''));
+					file.exists(filePath, next);
+				},
+				function (exists, next) {
+					assert(!exists);
+					done();
+				},
+			], done);
 		});
 	});
 

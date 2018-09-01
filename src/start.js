@@ -47,7 +47,7 @@ start.start = function () {
 			var webserver = require('./webserver');
 			require('./socket.io').init(webserver.server);
 
-			if (nconf.get('isPrimary') === 'true' && !nconf.get('jobsDisabled')) {
+			if (nconf.get('runJobs')) {
 				require('./notifications').startJobs();
 				require('./user').startJobs();
 			}

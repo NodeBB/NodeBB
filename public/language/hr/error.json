@@ -18,6 +18,7 @@
     "invalid-username-or-password": "Upišite oboje, korisničko ime i lozinku",
     "invalid-search-term": "Netočan upit pretraživanja",
     "invalid-url": "Invalid URL",
+    "local-login-disabled": "Local login system has been disabled for non-privileged accounts.",
     "csrf-invalid": "Nismo Vas uspijeli prijaviti, najvjerovatnije zbog istekle sesije. Molimo pokušajte ponovno",
     "invalid-pagination-value": "Netočno numeriranje stranica, mora biti %1 ili %2",
     "username-taken": "Korisničko ime je zauzeto",
@@ -77,6 +78,7 @@
     "still-uploading": "Pričekajte da se prijenos završi.",
     "file-too-big": "Maksimalna veličina datoteke je %1 kB - učitajte manju datoteku",
     "guest-upload-disabled": "Učitavanje datoteka za goste je isključeno",
+    "cors-error": "Unable to upload image due to misconfigured CORS",
     "already-bookmarked": "Već ste zabilježili ovu objavu",
     "already-unbookmarked": "Već ste odbilježili ovu objavu",
     "cant-ban-other-admins": "Nemožete blokirati ostale administratore!",
@@ -126,6 +128,8 @@
     "not-enough-reputation-min-rep-website": "You do not have enough reputation to add a website",
     "not-enough-reputation-min-rep-aboutme": "You do not have enough reputation to add an about me",
     "not-enough-reputation-min-rep-signature": "You do not have enough reputation to add a signature",
+    "not-enough-reputation-min-rep-profile-picture": "You do not have enough reputation to add a profile picture",
+    "not-enough-reputation-min-rep-cover-picture": "You do not have enough reputation to add a cover picture",
     "already-flagged": "Već ste označili zastavicom ovu objavu",
     "self-vote": "You cannot vote on your own post",
     "reload-failed": "Problem kod ponovnog podizanja: \"%1\" will continue to serve the existing client-side assets.",
@@ -145,5 +149,8 @@
     "invalid-session": "Pogreška sesije",
     "invalid-session-text": "Vaša sesija nije više aktivna ili se više ne poklapa sa serverom. Molimo osvježite stranicu.",
     "no-topics-selected": "No topics selected!",
-    "cant-move-to-same-topic": "Can't move post to same topic!"
+    "cant-move-to-same-topic": "Can't move post to same topic!",
+    "cannot-block-self": "You cannot block yourself!",
+    "cannot-block-privileged": "You cannot block administrators or global moderators",
+    "no-connection": "There seems to be a problem with your internet connection"
 }

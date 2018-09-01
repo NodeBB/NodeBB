@@ -4,8 +4,9 @@ var async = require('async');
 var user = require('../user');
 var meta = require('../meta');
 
-var pagination = require('../pagination');
 var db = require('../database');
+var pagination = require('../pagination');
+var privileges = require('../privileges');
 var helpers = require('./helpers');
 
 var usersController = module.exports;
@@ -33,6 +34,12 @@ usersController.index = function (req, res, next) {
 usersController.search = function (req, res, next) {
 	async.waterfall([
 		function (next) {
+			privileges.global.can('search:users', req.uid, next);
+		},
+		function (allowed, next) {
+			if (!allowed) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
 			async.parallel({
 				search: function (next) {
 					user.search({
@@ -56,6 +63,7 @@ usersController.search = function (req, res, next) {
 			results.search.isAdminOrGlobalMod = results.isAdminOrGlobalMod;
 			results.search.pagination = pagination.create(req.query.page, results.search.pageCount, req.query);
 			results.search['section_' + section] = true;
+			results.displayUserSearch = true;
 			render(req, res, results.search, next);
 		},
 	], next);
@@ -171,6 +179,9 @@ usersController.getUsers = function (set, uid, query, callback) {
 				isAdminOrGlobalMod: function (next) {
 					user.isAdminOrGlobalMod(uid, next);
 				},
+				canSearch: function (next) {
+					privileges.global.can('search:users', uid, next);
+				},
 				usersData: function (next) {
 					usersController.getUsersAndCount(set, uid, start, stop, next);
 				},
@@ -185,6 +196,7 @@ usersController.getUsers = function (set, uid, query, callback) {
 				title: setToData[set].title || '[[pages:users/latest]]',
 				breadcrumbs: helpers.buildBreadcrumbs(breadcrumbs),
 				isAdminOrGlobalMod: results.isAdminOrGlobalMod,
+				displayUserSearch: results.canSearch,
 			};
 			userData['section_' + (query.section || 'joindate')] = true;
 			next(null, userData);

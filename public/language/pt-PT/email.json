@@ -4,6 +4,8 @@
     "invite": "Convite enviado por %1",
     "greeting_no_name": "Olá",
     "greeting_with_name": "Olá %1",
+    "email.verify-your-email.subject": "Please verify your email",
+    "email.verify.text1": "Your email address has changed!",
     "welcome.text1": "Obrigado por te teres registado no %1!",
     "welcome.text2": "De forma a finalizar o processo de activação da tua conta, precisamos de verificar que és o legítimo dono da conta de email registada.",
     "welcome.text3": "Um administrador aceitou o teu registo de aplicação. Podes agora fazer login com o teu nome de utilizador/palavra-passe.",

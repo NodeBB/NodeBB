@@ -18,6 +18,7 @@
     "invalid-username-or-password": "Ole hyvä ja anna sekä käyttäjänimi että salasana",
     "invalid-search-term": "Virheellinen hakutermi",
     "invalid-url": "Invalid URL",
+    "local-login-disabled": "Local login system has been disabled for non-privileged accounts.",
     "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "Käyttäjänimi varattu",
@@ -77,6 +78,7 @@
     "still-uploading": "Ole hyvä ja odota tiedostojen lähettämisen valmistumista.",
     "file-too-big": "Maximum allowed file size is %1 kB - please upload a smaller file",
     "guest-upload-disabled": "Guest uploading has been disabled",
+    "cors-error": "Unable to upload image due to misconfigured CORS",
     "already-bookmarked": "You have already bookmarked this post",
     "already-unbookmarked": "You have already unbookmarked this post",
     "cant-ban-other-admins": "Et voi estää muita ylläpitäjiä!",
@@ -126,6 +128,8 @@
     "not-enough-reputation-min-rep-website": "You do not have enough reputation to add a website",
     "not-enough-reputation-min-rep-aboutme": "You do not have enough reputation to add an about me",
     "not-enough-reputation-min-rep-signature": "You do not have enough reputation to add a signature",
+    "not-enough-reputation-min-rep-profile-picture": "You do not have enough reputation to add a profile picture",
+    "not-enough-reputation-min-rep-cover-picture": "You do not have enough reputation to add a cover picture",
     "already-flagged": "You have already flagged this post",
     "self-vote": "You cannot vote on your own post",
     "reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading.",
@@ -145,5 +149,8 @@
     "invalid-session": "Session Mismatch",
     "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page.",
     "no-topics-selected": "No topics selected!",
-    "cant-move-to-same-topic": "Can't move post to same topic!"
+    "cant-move-to-same-topic": "Can't move post to same topic!",
+    "cannot-block-self": "You cannot block yourself!",
+    "cannot-block-privileged": "You cannot block administrators or global moderators",
+    "no-connection": "There seems to be a problem with your internet connection"
 }

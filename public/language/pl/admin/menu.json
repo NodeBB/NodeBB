@@ -5,25 +5,25 @@
 	"general/navigation": "Nawigacja",
 	"general/languages": "Języki",
 	"general/sounds": "Dźwięki",
-	"general/social": "Social",
+	"general/social": "Społecznościowe",
 
 	"section-manage": "Zarządzanie",
 	"manage/categories": "Kategorie",
-	"manage/privileges": "Privileges",
+	"manage/privileges": "Uprawnienia",
 	"manage/tags": "Tagi",
 	"manage/users": "Użytkownicy",
-	"manage/admins-mods": "Admins & Mods",
+	"manage/admins-mods": "Administratorzy i Moderatorzy",
 	"manage/registration": "Kolejka rejestracji",
 	"manage/post-queue": "Kolejka postów",
 	"manage/groups": "Grupy",
 	"manage/ip-blacklist": "Czarna lista IP",
-	"manage/uploads": "Uploads",
+	"manage/uploads": "Przesłane pliki",
 
 	"section-settings": "Ustawienia",
 	"settings/general": "Ogólne",
 	"settings/reputation": "Reputacja",
-	"settings/email": "Email",
-	"settings/user": "Użytkownicy",
+	"settings/email": "E-mail",
+	"settings/user": "Użytkownik",
 	"settings/group": "Grupy",
 	"settings/guest": "Goście",
 	"settings/uploads": "Przesyłanie plików",
@@ -37,12 +37,12 @@
 	"settings/sockets": "Sockety",
 	"settings/advanced": "Zaawansowane",
 
-	"settings.page-title": "%1 Ustawienia",
+	"settings.page-title": "Ustawienia %1",
 
 	"section-appearance": "Wygląd",
 	"appearance/themes": "Motywy",
 	"appearance/skins": "Skórki",
-	"appearance/customise": "Custom Content (HTML/JS/CSS)",
+	"appearance/customise": "Niestandardowy HTML & CSS",
 
 	"section-extend": "Rozszerzenia",
 	"extend/plugins": "Wtyczki",
@@ -63,12 +63,12 @@
 	"development/logger": "Loger",
 	"development/info": "Informacja",
 
-	"reload-forum": "Rebuild & Restart Forum",
+	"rebuild-and-restart-forum": "Odbudowa i restart forum",
 	"restart-forum": "Restartuj forum",
 	"logout": "Wyloguj się",
 	"view-forum": "Zobacz forum",
 
-	"search.placeholder": "Search for settings",
+	"search.placeholder": "Szukaj ustawień",
 	"search.no-results": "Brak wyników...",
 	"search.search-forum": "Szukaj w forum <strong></strong>",
 	"search.keep-typing": "Wpisz więcej, aby zobaczyć wyniki ...",
@@ -76,6 +76,6 @@
 
 	"connection-lost": "Połączenie z %1 zostało utracone, próba ponownego połączenia...",
 
-	"alerts.version": "Running <strong>NodeBB v%1</strong>",
-	"alerts.upgrade": "Upgrade to v%1"
+	"alerts.version": "Forum działa dzięki <strong>NodeBB v%1</strong>",
+	"alerts.upgrade": "Aktualizacja do v%1"
 }

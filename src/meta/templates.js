@@ -8,9 +8,11 @@ var path = require('path');
 var fs = require('fs');
 var nconf = require('nconf');
 var _ = require('lodash');
+var Benchpress = require('benchpressjs');
 
 var plugins = require('../plugins');
 var file = require('../file');
+var db = require('../database');
 
 var viewsPath = nconf.get('views_dir');
 
@@ -44,20 +46,24 @@ function processImports(paths, templatePath, source, callback) {
 }
 Templates.processImports = processImports;
 
-function getTemplateDirs(callback) {
-	var pluginTemplates = _.values(plugins.pluginsData)
-		.filter(function (pluginData) {
-			return !pluginData.id.startsWith('nodebb-theme-');
-		})
-		.map(function (pluginData) {
-			return path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.templates || 'templates');
-		});
+var themeNamePattern = /^(@.*?\/)?nodebb-theme-.*$/;
+
+function getTemplateDirs(activePlugins, callback) {
+	var pluginTemplates = activePlugins.map(function (id) {
+		if (themeNamePattern.test(id)) {
+			return nconf.get('theme_templates_path');
+		}
+		if (!plugins.pluginsData[id]) {
+			return '';
+		}
+		return path.join(__dirname, '../../node_modules/', id, plugins.pluginsData[id].templates || 'templates');
+	}).filter(Boolean);
 
 	var themeConfig = require(nconf.get('theme_config'));
 	var theme = themeConfig.baseTheme;
 
 	var themePath;
-	var themeTemplates = [nconf.get('theme_templates_path')];
+	var themeTemplates = [];
 	while (theme) {
 		themePath = path.join(nconf.get('themes_path'), theme);
 		themeConfig = require(path.join(themePath, 'theme.json'));
@@ -108,6 +114,34 @@ function getTemplateFiles(dirs, callback) {
 	], callback);
 }
 
+function compileTemplate(filename, source, callback) {
+	async.waterfall([
+		function (next) {
+			file.walk(viewsPath, next);
+		},
+		function (paths, next) {
+			paths = _.fromPairs(paths.map(function (p) {
+				var relative = path.relative(viewsPath, p).replace(/\\/g, '/');
+				return [relative, p];
+			}));
+			async.waterfall([
+				function (next) {
+					processImports(paths, filename, source, next);
+				},
+				function (source, next) {
+					Benchpress.precompile(source, {
+						minify: global.env !== 'development',
+					}, next);
+				},
+				function (compiled, next) {
+					fs.writeFile(path.join(viewsPath, filename.replace(/\.tpl$/, '.js')), compiled, next);
+				},
+			], next);
+		},
+	], callback);
+}
+Templates.compileTemplate = compileTemplate;
+
 function compile(callback) {
 	callback = callback || function () {};
 
@@ -117,6 +151,9 @@ function compile(callback) {
 		},
 		function (next) {
 			mkdirp(viewsPath, function (err) { next(err); });
+		},
+		function (next) {
+			db.getSortedSetRange('plugins:active', 0, -1, next);
 		},
 		getTemplateDirs,
 		getTemplateFiles,
@@ -136,8 +173,22 @@ function compile(callback) {
 							next(err, source);
 						});
 					},
-					function (compiled, next) {
-						fs.writeFile(path.join(viewsPath, name), compiled, next);
+					function (imported, next) {
+						async.parallel([
+							function (cb) {
+								fs.writeFile(path.join(viewsPath, name), imported, cb);
+							},
+							function (cb) {
+								Benchpress.precompile(imported, { minify: global.env !== 'development' }, function (err, compiled) {
+									if (err) {
+										cb(err);
+										return;
+									}
+
+									fs.writeFile(path.join(viewsPath, name.replace(/\.tpl$/, '.js')), compiled, cb);
+								});
+							},
+						], next);
 					},
 				], next);
 			}, next);

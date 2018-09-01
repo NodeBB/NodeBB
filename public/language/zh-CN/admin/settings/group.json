@@ -5,6 +5,7 @@
 	"private-groups.warning": "<strong>注意!</strong>如果这个选项未启用并且你有私有群组，那么你的群组将变为公共的。",
 	"allow-creation": "允许创建群组",
 	"allow-creation-help": "如果启用，用户就可以创建群组<em>(默认：不启用)</em>",
+	"allow-multiple-badges-help": "启用此选项后，用户可以选择显示多个群组徽章，需要主题支持。",
 	"max-name-length": "群组名字的最大长度",
 	"cover-image": "群组封面图片",
 	"default-cover": "默认封面图片",

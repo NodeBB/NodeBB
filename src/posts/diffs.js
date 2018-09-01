@@ -5,12 +5,17 @@ var validator = require('validator');
 var diff = require('diff');
 
 var db = require('../database');
+var meta = require('../meta');
 var plugins = require('../plugins');
 var translator = require('../translator');
 
 var Diffs = {};
 
 Diffs.exists = function (pid, callback) {
+	if (parseInt(meta.config.enablePostHistory || 1, 10) !== 1) {
+		return callback(null, 0);
+	}
+
 	db.listLength('post:' + pid + ':diffs', function (err, numDiffs) {
 		return callback(err, !!numDiffs);
 	});
@@ -18,11 +23,13 @@ Diffs.exists = function (pid, callback) {
 
 Diffs.get = function (pid, since, callback) {
 	async.waterfall([
-		async.apply(db.getListRange.bind(db), 'post:' + pid + ':diffs', 0, -1),
+		function (next) {
+			Diffs.list(pid, next);
+		},
 		function (timestamps, next) {
 			// Pass those made after `since`, and create keys
 			const keys = timestamps.filter(function (timestamp) {
-				return (parseInt(timestamp, 10) || 0) > since;
+				return (parseInt(timestamp, 10) || 0) >= since;
 			}).map(function (timestamp) {
 				return 'diff:' + pid + '.' + timestamp;
 			});

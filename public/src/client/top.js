@@ -36,10 +36,11 @@ define('forum/top', ['forum/recent', 'forum/infinitescroll'], function (recent, 
 			after: $('[component="category"]').attr('data-nextstart'),
 			count: config.topicsPerPage,
 			cid: utils.params().cid,
+			term: ajaxify.data.selectedTerm.term,
 			filter: ajaxify.data.selectedFilter.filter,
 		}, function (data, done) {
 			if (data.topics && data.topics.length) {
-				recent.onTopicsLoaded('top', data.topics, true, done);
+				recent.onTopicsLoaded('top', data.topics, true, direction, done);
 				$('[component="category"]').attr('data-nextstart', data.nextStart);
 			} else {
 				done();

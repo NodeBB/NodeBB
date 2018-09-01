@@ -7,5 +7,5 @@
     "revert-confirm": "Varsayılan NodeBB temasını geri yüklemek istediğinizden emin misiniz?",
     "theme-changed": "Tema Değiştirildi",
     "revert-success": "NodeBB'nin varsayılan temasına başarıyla geri dönüş yaptınız.",
-    "restart-to-activate": "Temayı tamamen aktif hale getirebilmek için NodeBB'yi yeniden başlat"
+    "restart-to-activate": "68/5000\nBu temayı tamamen etkinleştirmek için NodeBB'nizi lütfen yeniden oluşturun ve yeniden başlatın."
 }
