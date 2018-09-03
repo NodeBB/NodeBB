@@ -25,8 +25,8 @@ module.exports = function (middleware) {
 				req: req,
 				res: res,
 				next: function (err) {
-					auth.setAuthVars(req, res, function() {next(err);});
-				}
+					auth.setAuthVars(req, res, function () { next(err); });
+				},
 			});
 		}
 
