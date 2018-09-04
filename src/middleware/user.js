@@ -8,6 +8,8 @@ var user = require('../user');
 var privileges = require('../privileges');
 var plugins = require('../plugins');
 
+var auth = require('../routes/authentication');
+
 var controllers = {
 	helpers: require('../controllers/helpers'),
 };
@@ -22,7 +24,9 @@ module.exports = function (middleware) {
 			return plugins.fireHook('action:middleware.authenticate', {
 				req: req,
 				res: res,
-				next: next,
+				next: function (err) {
+					auth.setAuthVars(req, res, function () { next(err); });
+				},
 			});
 		}
 

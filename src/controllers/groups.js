@@ -8,7 +8,7 @@ var groups = require('../groups');
 var user = require('../user');
 var helpers = require('./helpers');
 
-var groupsController = {};
+var groupsController = module.exports;
 
 groupsController.list = function (req, res, next) {
 	var sort = req.query.sort || 'alpha';
@@ -177,5 +177,3 @@ groupsController.uploadCover = function (req, res, next) {
 		res.json([{ url: image.url }]);
 	});
 };
-
-module.exports = groupsController;

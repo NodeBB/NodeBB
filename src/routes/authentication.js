@@ -19,21 +19,23 @@ Auth.initialize = function (app, middleware) {
 	app.use(passport.initialize());
 	app.use(passport.session());
 
-	app.use(function (req, res, next) {
-		var isSpider = req.isSpider();
-		req.loggedIn = !isSpider && !!req.user;
-		if (isSpider) {
-			req.uid = -1;
-		} else if (req.user) {
-			req.uid = parseInt(req.user.uid, 10);
-		} else {
-			req.uid = 0;
-		}
-		next();
-	});
+	app.use(Auth.setAuthVars);
 
 	Auth.app = app;
 	Auth.middleware = middleware;
+};
+
+Auth.setAuthVars = function (req, res, next) {
+	var isSpider = req.isSpider();
+	req.loggedIn = !isSpider && !!req.user;
+	if (isSpider) {
+		req.uid = -1;
+	} else if (req.user) {
+		req.uid = parseInt(req.user.uid, 10);
+	} else {
+		req.uid = 0;
+	}
+	next();
 };
 
 Auth.getLoginStrategies = function () {
