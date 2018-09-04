@@ -81,7 +81,7 @@ function getQueuedPosts(ids, callback) {
 			});
 
 			async.map(postData, function (postData, next) {
-				postData.data.rawContent = postData.data.content;
+				postData.data.rawContent = validator.escape(String(postData.data.content));
 				postData.data.title = validator.escape(String(postData.data.title));
 				async.waterfall([
 					function (next) {
