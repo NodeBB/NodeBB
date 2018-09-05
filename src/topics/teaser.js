@@ -61,7 +61,7 @@ module.exports = function (Topics) {
 				_postData = _postData.filter(function (post) {
 					return post && parseInt(post.pid, 10);
 				});
-				user.blocks.filter(uid, _postData, next);
+				handleBlocks(uid, _postData, next);
 			},
 			function (_postData, next) {
 				postData = _postData;
@@ -76,7 +76,6 @@ module.exports = function (Topics) {
 				usersData.forEach(function (user) {
 					users[user.uid] = user;
 				});
-
 
 				async.each(postData, function (post, next) {
 					// If the post author isn't represented in the retrieved users' data, then it means they were deleted, assume guest.
@@ -111,6 +110,57 @@ module.exports = function (Topics) {
 			},
 		], callback);
 	};
+
+	function handleBlocks(uid, teasers, callback) {
+		async.mapSeries(teasers, function (postData, nextPost) {
+			async.waterfall([
+				function (next) {
+					user.blocks.is(postData.uid, uid, next);
+				},
+				function (isBlocked, next) {
+					if (!isBlocked) {
+						return nextPost(null, postData);
+					}
+					getPreviousNonBlockedPost(postData, uid, next);
+				},
+			], nextPost);
+		}, callback);
+	}
+
+	function getPreviousNonBlockedPost(postData, uid, callback) {
+		let isBlocked = false;
+		let prevPost = postData;
+		Topics.getPids(postData.tid, function (err, pids) {
+			if (err) {
+				return callback(err);
+			}
+
+			async.doWhilst(function (next) {
+				async.waterfall([
+					function (next) {
+						const index = pids.lastIndexOf(String(prevPost.pid));
+						if (index <= 0) {
+							return callback(null, null);
+						}
+
+						posts.getPostFields(pids[index - 1], ['pid', 'uid', 'timestamp', 'tid', 'content'], next);
+					},
+					function (_prevPost, next) {
+						prevPost = _prevPost;
+						user.blocks.is(prevPost.uid, uid, next);
+					},
+					function (_isBlocked, next) {
+						isBlocked = _isBlocked;
+						next();
+					},
+				], next);
+			}, function () {
+				return isBlocked && prevPost && prevPost.pid;
+			}, function (err) {
+				callback(err, prevPost);
+			});
+		});
+	}
 
 	Topics.getTeasersByTids = function (tids, uid, callback) {
 		if (typeof uid === 'function') {
