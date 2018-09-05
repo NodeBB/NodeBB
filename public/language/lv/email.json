@@ -36,9 +36,9 @@
     "notif.cta": "Noklikšķini, lai dotos uz forumu",
     "test.text1": "Šis ir e-pasts, lai pārbaudītu, vai e-pasta sūtītājs ir pareizi iestatīts Tavā NodeBB.",
     "unsub.cta": "Noklikšķini, lai mainītu šos iestatījumus",
-    "banned.subject": "Tev ir aizliegts %1",
-    "banned.text1": "Lietotājs %1 ir aizliegts no %2.",
-    "banned.text2": "Aizliegums ilgs līdz %1.",
-    "banned.text3": "Šis ir iemesls, kāpēc Tu esi aizliegts:",
+    "banned.subject": "Tu esi bloķēts no %1",
+    "banned.text1": "Lietotājs %1 ir bloķēts no %2.",
+    "banned.text2": "Bloķēšana ilgs līdz %1.",
+    "banned.text3": "Šis ir iemesls, kāpēc Tu esi bloķēts:",
     "closing": "Paldies!"
 }
