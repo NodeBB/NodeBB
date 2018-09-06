@@ -308,7 +308,6 @@ describe('authentication', function () {
 			assert.ifError(err);
 			loginUser('hasnopassword', 'doesntmatter', function (err, response, body) {
 				assert.ifError(err);
-				console.log(response.statusCode, body);
 				assert.equal(response.statusCode, 403);
 				assert.equal(body, '[[error:invalid-login-credentials]]');
 				done();
