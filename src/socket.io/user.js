@@ -37,6 +37,12 @@ SocketUser.deleteAccount = function (socket, data, callback) {
 
 	async.waterfall([
 		function (next) {
+			user.hasPassword(socket.uid, next);
+		},
+		function (hasPassword, next) {
+			if (!hasPassword) {
+				return next();
+			}
 			user.isPasswordCorrect(socket.uid, data.password, socket.ip, function (err, ok) {
 				next(err || (!ok ? new Error('[[error:invalid-password]]') : undefined));
 			});

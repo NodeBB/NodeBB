@@ -24,9 +24,7 @@ module.exports = function (User) {
 			},
 			function (_hashedPassword, next) {
 				hashedPassword = _hashedPassword;
-				if (uid && !hashedPassword) {
-					return callback(null, true);
-				} else if (!hashedPassword) {
+				if (!hashedPassword) {
 					// Non-existant user, submit fake hash for comparison
 					hashedPassword = '';
 				}
@@ -37,17 +35,13 @@ module.exports = function (User) {
 			function (next) {
 				Password.compare(password, hashedPassword, next);
 			},
-		], function (err, ok) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (ok) {
-				User.auth.clearLoginAttempts(uid);
-			}
-
-			callback(null, ok);
-		});
+			function (ok, next) {
+				if (ok) {
+					User.auth.clearLoginAttempts(uid);
+				}
+				next(null, ok);
+			},
+		], callback);
 	};
 
 	User.hasPassword = function (uid, callback) {

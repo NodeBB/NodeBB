@@ -303,6 +303,19 @@ describe('authentication', function () {
 		});
 	});
 
+	it('should fail to login if user does not have password field in db', function (done) {
+		user.create({ username: 'hasnopassword', email: 'no@pass.org' }, function (err, uid) {
+			assert.ifError(err);
+			loginUser('hasnopassword', 'doesntmatter', function (err, response, body) {
+				assert.ifError(err);
+				console.log(response.statusCode, body);
+				assert.equal(response.statusCode, 403);
+				assert.equal(body, '[[error:invalid-login-credentials]]');
+				done();
+			});
+		});
+	});
+
 	it('should fail to login if password is longer than 4096', function (done) {
 		var longPassword;
 		for (var i = 0; i < 5000; i++) {
