@@ -64,7 +64,7 @@ module.exports = function (Topics) {
 				handleBlocks(uid, _postData, next);
 			},
 			function (_postData, next) {
-				postData = _postData;
+				postData = _postData.filter(Boolean);
 				var uids = _.uniq(postData.map(function (post) {
 					return post.uid;
 				}));
