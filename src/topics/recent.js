@@ -26,6 +26,7 @@ module.exports = function (Topics) {
 		};
 
 		params.term = params.term || 'alltime';
+		params.sort = params.sort || 'recent';
 		if (params.hasOwnProperty('cids') && params.cids && !Array.isArray(params.cids)) {
 			params.cids = [params.cids];
 		}
