@@ -78,7 +78,7 @@
     "still-uploading": "请等待上传完成",
     "file-too-big": "上传文件的大小限制为 %1 KB - 请缩减文件大小",
     "guest-upload-disabled": "未登录用户不允许上传",
-    "cors-error": "Unable to upload image due to misconfigured CORS",
+    "cors-error": "由于CORS配置错误，无法上传图片。",
     "already-bookmarked": "您已将此贴存为了书签",
     "already-unbookmarked": "您已取消了此贴的书签",
     "cant-ban-other-admins": "您不能封禁其他管理员！",

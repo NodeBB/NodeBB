@@ -1,12 +1,12 @@
 {
     "latest_users": "Latest Users",
     "top_posters": "Top Posters",
-    "most_reputation": "Most Reputation",
+    "most_reputation": "Visvairāk ranga punktu",
     "most_flags": "Visvairāk atzīmju",
-    "search": "Search",
-    "enter_username": "Enter a username to search",
+    "search": "Meklēt",
+    "enter_username": "Ievadi meklējamo lietotājvārdu",
     "load_more": "Load More",
-    "users-found-search-took": "%1 user(s) found! Search took %2 seconds.",
+    "users-found-search-took": "Atrasti %1 lietotājs(-i)! Meklēšana ilga %2 sekundes.",
     "filter-by": "Filter By",
     "online-only": "Online only",
     "invite": "Uzaicināt",
@@ -16,6 +16,6 @@
     "popular_topics": "Populārās tēmas",
     "unread_topics": "Nelasītie temati",
     "categories": "Categories",
-    "tags": "Tags",
+    "tags": "Birkas",
     "no-users-found": "No users found!"
 }

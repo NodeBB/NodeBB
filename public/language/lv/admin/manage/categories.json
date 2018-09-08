@@ -64,9 +64,9 @@
 	"alert.updated-success": "Category IDs %1 successfully updated.",
 	"alert.upload-image": "Upload category image",
 	"alert.find-user": "Find a User",
-	"alert.user-search": "Search for a user here...",
+	"alert.user-search": "Meklēt lietotājus šeit",
 	"alert.find-group": "Find a Group",
-	"alert.group-search": "Search for a group here...",
+	"alert.group-search": "Meklēt grupas šeit...",
 	"collapse-all": "Collapse All",
 	"expand-all": "Expand All"
 }
