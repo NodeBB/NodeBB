@@ -1,7 +1,5 @@
 'use strict';
 
-var async = require('async');
-
 module.exports = function (db, module) {
 	var helpers = module.helpers.postgres;
 
@@ -19,24 +17,13 @@ module.exports = function (db, module) {
 		value = helpers.valueToString(value);
 		score = parseFloat(score);
 
-		module.transaction(function (tx, done) {
-			var query = tx.client.query.bind(tx.client);
-
-			async.series([
-				async.apply(helpers.ensureLegacyObjectType, tx.client, key, 'zset'),
-				async.apply(query, {
-					name: 'sortedSetAdd',
-					text: `
-INSERT INTO "legacy_zset" ("_key", "value", "score")
-VALUES ($1::TEXT, $2::TEXT, $3::NUMERIC)
-    ON CONFLICT ("_key", "value")
-    DO UPDATE SET "score" = $3::NUMERIC`,
-					values: [key, value, score],
-				}),
-			], function (err) {
-				done(err);
-			});
-		}, callback);
+		db.query({
+			name: 'sortedSetAdd',
+			text: `SELECT "zset_addItem"($1::TEXT, $2::TEXT, $3::NUMERIC)`,
+			values: [key, value, score],
+		}, function (err) {
+			callback(err);
+		});
 	};
 
 	function sortedSetAddBulk(key, scores, values, callback) {
@@ -54,25 +41,15 @@ VALUES ($1::TEXT, $2::TEXT, $3::NUMERIC)
 
 		helpers.removeDuplicateValues(values, scores);
 
-		module.transaction(function (tx, done) {
-			var query = tx.client.query.bind(tx.client);
-
-			async.series([
-				async.apply(helpers.ensureLegacyObjectType, tx.client, key, 'zset'),
-				async.apply(query, {
-					name: 'sortedSetAddBulk',
-					text: `
-INSERT INTO "legacy_zset" ("_key", "value", "score")
-SELECT $1::TEXT, v, s
-  FROM UNNEST($2::TEXT[], $3::NUMERIC[]) vs(v, s)
-    ON CONFLICT ("_key", "value")
-    DO UPDATE SET "score" = EXCLUDED."score"`,
-					values: [key, values, scores],
-				}),
-			], function (err) {
-				done(err);
-			});
-		}, callback);
+		db.query({
+			name: 'sortedSetAddBulk',
+			text: `
+SELECT "zset_addItem"($1::TEXT, "value", "score")
+  FROM UNNEST($2::TEXT[], $3::NUMERIC[]) vs("value", "score")`,
+			values: [key, values, scores],
+		}, function (err) {
+			callback(err);
+		});
 	}
 
 	module.sortedSetsAdd = function (keys, score, value, callback) {
@@ -85,24 +62,14 @@ SELECT $1::TEXT, v, s
 		value = helpers.valueToString(value);
 		score = parseFloat(score);
 
-		module.transaction(function (tx, done) {
-			var query = tx.client.query.bind(tx.client);
-
-			async.series([
-				async.apply(helpers.ensureLegacyObjectsType, tx.client, keys, 'zset'),
-				async.apply(query, {
-					name: 'sortedSetsAdd',
-					text: `
-INSERT INTO "legacy_zset" ("_key", "value", "score")
-SELECT k, $2::TEXT, $3::NUMERIC
-  FROM UNNEST($1::TEXT[]) k
-    ON CONFLICT ("_key", "value")
-    DO UPDATE SET "score" = $3::NUMERIC`,
-					values: [keys, value, score],
-				}),
-			], function (err) {
-				done(err);
-			});
-		}, callback);
+		db.query({
+			name: 'sortedSetsAdd',
+			text: `
+SELECT "zset_addItem"("_key", $2::TEXT, $3::NUMERIC)
+  FROM UNNEST($1::TEXT[]) k("_key")`,
+			values: [keys, value, score],
+		}, function (err) {
+			callback(err);
+		});
 	};
 };

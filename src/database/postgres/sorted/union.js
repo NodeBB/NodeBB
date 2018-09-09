@@ -10,11 +10,8 @@ module.exports = function (db, module) {
 			name: 'sortedSetUnionCard',
 			text: `
 SELECT COUNT(DISTINCT z."value") c
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_zset" z
-         ON o."_key" = z."_key"
-        AND o."type" = z."type"
- WHERE o."_key" = ANY($1::TEXT[])`,
+  FROM UNNEST($1::TEXT[]) k("_key")
+ CROSS JOIN "zset_getAllItems"("_key") z`,
 			values: [keys],
 		}, function (err, res) {
 			if (err) {
@@ -60,11 +57,7 @@ SELECT COUNT(DISTINCT z."value") c
 WITH A AS (SELECT z."value",
                   ` + aggregate + `(z."score" * k."weight") "score"
              FROM UNNEST($1::TEXT[], $2::NUMERIC[]) k("_key", "weight")
-            INNER JOIN "legacy_object_live" o
-                    ON o."_key" = k."_key"
-            INNER JOIN "legacy_zset" z
-                    ON o."_key" = z."_key"
-                   AND o."type" = z."type"
+            CROSS JOIN "zset_getAllItems"("_key") z
             GROUP BY z."value")
 SELECT A."value",
        A."score"

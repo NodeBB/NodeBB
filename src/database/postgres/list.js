@@ -5,6 +5,45 @@ var async = require('async');
 module.exports = function (db, module) {
 	var helpers = module.helpers.postgres;
 
+	function listGet(key, callback) {
+		db.query({
+			name: 'listGet',
+			text: `SELECT "list_getValues"($1::TEXT) "l"`,
+			values: [key],
+		}, function (err, res) {
+			if (err) {
+				return callback(err);
+			}
+
+			callback(null, res.rows.length ? res.rows[0].l : null);
+		});
+	}
+
+	function listSub(start, stop, list, callback) {
+		if (list) {
+			if (stop < 0) {
+				stop += list.length;
+			}
+			list = list.slice(start, stop + 1);
+		}
+		callback(null, list);
+	}
+
+	function listSet(key, list, callback) {
+		// making this a no-op makes the rest of the code simpler
+		if (!list) {
+			return callback();
+		}
+
+		db.query({
+			name: 'listSet',
+			text: `SELECT "list_setValues"($1::TEXT, $2::TEXT[])`,
+			values: [key, list],
+		}, function (err) {
+			callback(err);
+		});
+	}
+
 	module.listPrepend = function (key, value, callback) {
 		callback = callback || helpers.noop;
 
@@ -13,19 +52,12 @@ module.exports = function (db, module) {
 		}
 
 		module.transaction(function (tx, done) {
-			var query = tx.client.query.bind(tx.client);
-
-			async.series([
-				async.apply(helpers.ensureLegacyObjectType, tx.client, key, 'list'),
-				async.apply(query, {
-					name: 'listPrepend',
-					text: `
-INSERT INTO "legacy_list" ("_key", "array")
-VALUES ($1::TEXT, ARRAY[$2::TEXT])
-    ON CONFLICT ("_key")
-    DO UPDATE SET "array" = ARRAY[$2::TEXT] || "legacy_list"."array"`,
-					values: [key, value],
-				}),
+			async.waterfall([
+				async.apply(listGet, key),
+				function (list, next) {
+					next(null, [value].concat(list || []));
+				},
+				async.apply(listSet, key),
 			], function (err) {
 				done(err);
 			});
@@ -40,23 +72,16 @@ VALUES ($1::TEXT, ARRAY[$2::TEXT])
 		}
 
 		module.transaction(function (tx, done) {
-			var query = tx.client.query.bind(tx.client);
-
-			async.series([
-				async.apply(helpers.ensureLegacyObjectType, tx.client, key, 'list'),
-				async.apply(query, {
-					name: 'listAppend',
-					text: `
-INSERT INTO "legacy_list" ("_key", "array")
-VALUES ($1::TEXT, ARRAY[$2::TEXT])
-    ON CONFLICT ("_key")
-    DO UPDATE SET "array" = "legacy_list"."array" || ARRAY[$2::TEXT]`,
-					values: [key, value],
-				}),
+			async.waterfall([
+				async.apply(listGet, key),
+				function (list, next) {
+					next(null, (list || []).concat([value]));
+				},
+				async.apply(listSet, key),
 			], function (err) {
 				done(err);
 			});
-		}, callback || helpers.noop);
+		}, callback);
 	};
 
 	module.listRemoveLast = function (key, callback) {
@@ -66,33 +91,23 @@ VALUES ($1::TEXT, ARRAY[$2::TEXT])
 			return callback();
 		}
 
-		db.query({
-			name: 'listRemoveLast',
-			text: `
-WITH A AS (
-	SELECT l.*
-	  FROM "legacy_object_live" o
-	 INNER JOIN "legacy_list" l
-	         ON o."_key" = l."_key"
-	        AND o."type" = l."type"
-	 WHERE o."_key" = $1::TEXT
-	   FOR UPDATE)
-UPDATE "legacy_list" l
-   SET "array" = A."array"[1 : array_length(A."array", 1) - 1]
-  FROM A
- WHERE A."_key" = l."_key"
-RETURNING A."array"[array_length(A."array", 1)] v`,
-			values: [key],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
+		var value = null;
 
-			if (res.rows.length) {
-				return callback(null, res.rows[0].v);
-			}
-
-			callback(null, null);
+		module.transaction(function (tx, done) {
+			async.waterfall([
+				async.apply(listGet, key),
+				function (list, next) {
+					if (list && list.length) {
+						value = list.pop();
+					}
+					next(null, list);
+				},
+				async.apply(listSet, key),
+			], function (err) {
+				done(err);
+			});
+		}, function (err) {
+			callback(err, value);
 		});
 	};
 
@@ -103,19 +118,22 @@ RETURNING A."array"[array_length(A."array", 1)] v`,
 			return callback();
 		}
 
-		db.query({
-			name: 'listRemoveAll',
-			text: `
-UPDATE "legacy_list" l
-   SET "array" = array_remove(l."array", $2::TEXT)
-  FROM "legacy_object_live" o
- WHERE o."_key" = l."_key"
-   AND o."type" = l."type"
-   AND o."_key" = $1::TEXT`,
-			values: [key, value],
-		}, function (err) {
-			callback(err);
-		});
+		module.transaction(function (tx, done) {
+			async.waterfall([
+				async.apply(listGet, key),
+				function (list, next) {
+					if (list) {
+						list = list.filter(function (v) {
+							return v !== value;
+						});
+					}
+					next(null, list);
+				},
+				async.apply(listSet, key),
+			], function (err) {
+				done(err);
+			});
+		}, callback);
 	};
 
 	module.listTrim = function (key, start, stop, callback) {
@@ -125,110 +143,50 @@ UPDATE "legacy_list" l
 			return callback();
 		}
 
-		stop += 1;
-
-		db.query(stop > 0 ? {
-			name: 'listTrim',
-			text: `
-UPDATE "legacy_list" l
-   SET "array" = ARRAY(SELECT m.m
-                         FROM UNNEST(l."array") WITH ORDINALITY m(m, i)
-                        ORDER BY m.i ASC
-                        LIMIT ($3::INTEGER - $2::INTEGER)
-                       OFFSET $2::INTEGER)
-  FROM "legacy_object_live" o
- WHERE o."_key" = l."_key"
-   AND o."type" = l."type"
-   AND o."_key" = $1::TEXT`,
-			values: [key, start, stop],
-		} : {
-			name: 'listTrimBack',
-			text: `
-UPDATE "legacy_list" l
-   SET "array" = ARRAY(SELECT m.m
-                         FROM UNNEST(l."array") WITH ORDINALITY m(m, i)
-                        ORDER BY m.i ASC
-                        LIMIT ($3::INTEGER - $2::INTEGER + array_length(l."array", 1))
-                       OFFSET $2::INTEGER)
-  FROM "legacy_object_live" o
- WHERE o."_key" = l."_key"
-   AND o."type" = l."type"
-   AND o."_key" = $1::TEXT`,
-			values: [key, start, stop],
-		}, function (err) {
-			callback(err);
-		});
+		module.transaction(function (tx, done) {
+			async.waterfall([
+				async.apply(listGet, key),
+				async.apply(listSub, start, stop),
+				async.apply(listSet, key),
+			], function (err) {
+				done(err);
+			});
+		}, callback);
 	};
 
 	module.getListRange = function (key, start, stop, callback) {
+		callback = callback || helpers.noop;
+
 		if (!key) {
 			return callback();
 		}
 
-		stop += 1;
-
-		db.query(stop > 0 ? {
-			name: 'getListRange',
-			text: `
-SELECT ARRAY(SELECT m.m
-               FROM UNNEST(l."array") WITH ORDINALITY m(m, i)
-              ORDER BY m.i ASC
-              LIMIT ($3::INTEGER - $2::INTEGER)
-             OFFSET $2::INTEGER) l
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_list" l
-         ON o."_key" = l."_key"
-        AND o."type" = l."type"
-      WHERE o."_key" = $1::TEXT`,
-			values: [key, start, stop],
-		} : {
-			name: 'getListRangeBack',
-			text: `
-SELECT ARRAY(SELECT m.m
-               FROM UNNEST(l."array") WITH ORDINALITY m(m, i)
-              ORDER BY m.i ASC
-              LIMIT ($3::INTEGER - $2::INTEGER + array_length(l."array", 1))
-             OFFSET $2::INTEGER) l
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_list" l
-         ON o."_key" = l."_key"
-        AND o."type" = l."type"
- WHERE o."_key" = $1::TEXT`,
-			values: [key, start, stop],
-		}, function (err, res) {
+		listGet(key, function (err, list) {
 			if (err) {
 				return callback(err);
 			}
 
-			if (res.rows.length) {
-				return callback(null, res.rows[0].l);
+			if (!list) {
+				list = [];
 			}
 
-			callback(null, []);
+			listSub(start, stop, list, callback);
 		});
 	};
 
 	module.listLength = function (key, callback) {
-		db.query({
-			name: 'listLength',
-			text: `
-SELECT array_length(l."array", 1) l
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_list" l
-         ON o."_key" = l."_key"
-        AND o."type" = l."type"
-      WHERE o."_key" = $1::TEXT`,
-			values: [key],
-		}, function (err, res) {
+		callback = callback || helpers.noop;
+
+		listGet(key, function (err, list) {
 			if (err) {
 				return callback(err);
 			}
 
-			if (res.rows.length) {
-				return callback(null, res.rows[0].l);
+			if (!list) {
+				list = [];
 			}
 
-			callback(null, 0);
+			callback(null, list.length);
 		});
 	};
 };

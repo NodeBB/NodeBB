@@ -1,7 +1,5 @@
 'use strict';
 
-var async = require('async');
-
 module.exports = function (db, module) {
 	var helpers = module.helpers.postgres;
 
@@ -16,24 +14,13 @@ module.exports = function (db, module) {
 			delete data[''];
 		}
 
-		module.transaction(function (tx, done) {
-			var query = tx.client.query.bind(tx.client);
-
-			async.series([
-				async.apply(helpers.ensureLegacyObjectType, tx.client, key, 'hash'),
-				async.apply(query, {
-					name: 'setObject',
-					text: `
-INSERT INTO "legacy_hash" ("_key", "data")
-VALUES ($1::TEXT, $2::TEXT::JSONB)
-    ON CONFLICT ("_key")
-    DO UPDATE SET "data" = "legacy_hash"."data" || $2::TEXT::JSONB`,
-					values: [key, JSON.stringify(data)],
-				}),
-			], function (err) {
-				done(err);
-			});
-		}, callback);
+		db.query({
+			name: 'setObject',
+			text: `SELECT "hash_setObject"($1::TEXT, $2::TEXT::JSONB)`,
+			values: [key, JSON.stringify(data)],
+		}, function (err) {
+			callback(err);
+		});
 	};
 
 	module.setObjectField = function (key, field, value, callback) {
@@ -43,24 +30,13 @@ VALUES ($1::TEXT, $2::TEXT::JSONB)
 			return callback();
 		}
 
-		module.transaction(function (tx, done) {
-			var query = tx.client.query.bind(tx.client);
-
-			async.series([
-				async.apply(helpers.ensureLegacyObjectType, tx.client, key, 'hash'),
-				async.apply(query, {
-					name: 'setObjectField',
-					text: `
-INSERT INTO "legacy_hash" ("_key", "data")
-VALUES ($1::TEXT, jsonb_build_object($2::TEXT, $3::TEXT::JSONB))
-    ON CONFLICT ("_key")
-    DO UPDATE SET "data" = jsonb_set("legacy_hash"."data", ARRAY[$2::TEXT], $3::TEXT::JSONB)`,
-					values: [key, field, JSON.stringify(value)],
-				}),
-			], function (err) {
-				done(err);
-			});
-		}, callback);
+		db.query({
+			name: 'setObjectField',
+			text: `SELECT "hash_setObject"($1::TEXT, JSONB_BUILD_OBJECT($2::TEXT, $3::TEXT::JSONB))`,
+			values: [key, field, JSON.stringify(value)],
+		}, function (err) {
+			callback(err);
+		});
 	};
 
 	module.getObject = function (key, callback) {
@@ -70,14 +46,7 @@ VALUES ($1::TEXT, jsonb_build_object($2::TEXT, $3::TEXT::JSONB))
 
 		db.query({
 			name: 'getObject',
-			text: `
-SELECT h."data"
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_hash" h
-         ON o."_key" = h."_key"
-        AND o."type" = h."type"
- WHERE o."_key" = $1::TEXT
- LIMIT 1`,
+			text: `SELECT "hash_getObject"($1::TEXT) "data"`,
 			values: [key],
 		}, function (err, res) {
 			if (err) {
@@ -100,14 +69,9 @@ SELECT h."data"
 		db.query({
 			name: 'getObjects',
 			text: `
-SELECT h."data"
+SELECT "hash_getObject"("_key") "data"
   FROM UNNEST($1::TEXT[]) WITH ORDINALITY k("_key", i)
-  LEFT OUTER JOIN "legacy_object_live" o
-               ON o."_key" = k."_key"
-  LEFT OUTER JOIN "legacy_hash" h
-               ON o."_key" = h."_key"
-              AND o."type" = h."type"
- ORDER BY k.i ASC`,
+ ORDER BY i ASC`,
 			values: [keys],
 		}, function (err, res) {
 			if (err) {
@@ -127,14 +91,7 @@ SELECT h."data"
 
 		db.query({
 			name: 'getObjectField',
-			text: `
-SELECT h."data"->>$2::TEXT f
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_hash" h
-         ON o."_key" = h."_key"
-        AND o."type" = h."type"
- WHERE o."_key" = $1::TEXT
- LIMIT 1`,
+			text: `SELECT "hash_getObject"($1::TEXT)->>$2::TEXT "f"`,
 			values: [key, field],
 		}, function (err, res) {
 			if (err) {
@@ -156,16 +113,7 @@ SELECT h."data"->>$2::TEXT f
 
 		db.query({
 			name: 'getObjectFields',
-			text: `
-SELECT (SELECT jsonb_object_agg(f, d."value")
-          FROM UNNEST($2::TEXT[]) f
-          LEFT OUTER JOIN jsonb_each(h."data") d
-                       ON d."key" = f) d
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_hash" h
-         ON o."_key" = h."_key"
-        AND o."type" = h."type"
- WHERE o."_key" = $1::TEXT`,
+			text: `SELECT "hash_filterObject"("hash_getObject"($1::TEXT), $2::TEXT[]) "d"`,
 			values: [key, fields],
 		}, function (err, res) {
 			if (err) {
@@ -193,17 +141,9 @@ SELECT (SELECT jsonb_object_agg(f, d."value")
 		db.query({
 			name: 'getObjectsFields',
 			text: `
-SELECT (SELECT jsonb_object_agg(f, d."value")
-          FROM UNNEST($2::TEXT[]) f
-          LEFT OUTER JOIN jsonb_each(h."data") d
-                       ON d."key" = f) d
-  FROM UNNEST($1::text[]) WITH ORDINALITY k("_key", i)
-  LEFT OUTER JOIN "legacy_object_live" o
-               ON o."_key" = k."_key"
-  LEFT OUTER JOIN "legacy_hash" h
-               ON o."_key" = h."_key"
-              AND o."type" = h."type"
- ORDER BY k.i ASC`,
+SELECT "hash_filterObject"("hash_getObject"("_key"), $2::TEXT[]) "d"
+  FROM UNNEST($1::TEXT[]) WITH ORDINALITY k("_key", i)
+ ORDER BY i ASC`,
 			values: [keys, fields],
 		}, function (err, res) {
 			if (err) {
@@ -223,14 +163,7 @@ SELECT (SELECT jsonb_object_agg(f, d."value")
 
 		db.query({
 			name: 'getObjectKeys',
-			text: `
-SELECT ARRAY(SELECT jsonb_object_keys(h."data")) k
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_hash" h
-         ON o."_key" = h."_key"
-        AND o."type" = h."type"
- WHERE o."_key" = $1::TEXT
- LIMIT 1`,
+			text: `SELECT ARRAY(SELECT jsonb_object_keys("hash_getObject"($1::TEXT))) "k"`,
 			values: [key],
 		}, function (err, res) {
 			if (err) {
@@ -272,14 +205,7 @@ SELECT ARRAY(SELECT jsonb_object_keys(h."data")) k
 
 		db.query({
 			name: 'isObjectField',
-			text: `
-SELECT (h."data" ? $2::TEXT AND h."data"->>$2::TEXT IS NOT NULL) b
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_hash" h
-         ON o."_key" = h."_key"
-        AND o."type" = h."type"
- WHERE o."_key" = $1::TEXT
- LIMIT 1`,
+			text: `SELECT ("hash_getObject"($1::TEXT)->>$2::TEXT IS NOT NULL) "b"`,
 			values: [key, field],
 		}, function (err, res) {
 			if (err) {
@@ -328,12 +254,7 @@ SELECT (h."data" ? $2::TEXT AND h."data"->>$2::TEXT IS NOT NULL) b
 
 		db.query({
 			name: 'deleteObjectFields',
-			text: `
-UPDATE "legacy_hash"
-   SET "data" = COALESCE((SELECT jsonb_object_agg("key", "value")
-                            FROM jsonb_each("data")
-                           WHERE "key" <> ALL ($2::TEXT[])), '{}')
- WHERE "_key" = $1::TEXT`,
+			text: `SELECT "hash_deleteObjectFields"($1::TEXT, $2::TEXT[])`,
 			values: [key, fields],
 		}, function (err) {
 			callback(err);
@@ -356,36 +277,27 @@ UPDATE "legacy_hash"
 			return callback(null, null);
 		}
 
-		module.transaction(function (tx, done) {
-			var query = tx.client.query.bind(tx.client);
+		if (!Array.isArray(key)) {
+			return module.incrObjectFieldBy([key], field, value, function (err, res) {
+				callback(err, res && res[0]);
+			});
+		}
 
-			async.waterfall([
-				async.apply(Array.isArray(key) ? helpers.ensureLegacyObjectsType : helpers.ensureLegacyObjectType, tx.client, key, 'hash'),
-				async.apply(query, Array.isArray(key) ? {
-					name: 'incrObjectFieldByMulti',
-					text: `
-INSERT INTO "legacy_hash" ("_key", "data")
-SELECT UNNEST($1::TEXT[]), jsonb_build_object($2::TEXT, $3::NUMERIC)
-    ON CONFLICT ("_key")
-    DO UPDATE SET "data" = jsonb_set("legacy_hash"."data", ARRAY[$2::TEXT], to_jsonb(COALESCE(("legacy_hash"."data"->>$2::TEXT)::NUMERIC, 0) + $3::NUMERIC))
-RETURNING ("data"->>$2::TEXT)::NUMERIC v`,
-					values: [key, field, value],
-				} : {
-					name: 'incrObjectFieldBy',
-					text: `
-INSERT INTO "legacy_hash" ("_key", "data")
-VALUES ($1::TEXT, jsonb_build_object($2::TEXT, $3::NUMERIC))
-    ON CONFLICT ("_key")
-    DO UPDATE SET "data" = jsonb_set("legacy_hash"."data", ARRAY[$2::TEXT], to_jsonb(COALESCE(("legacy_hash"."data"->>$2::TEXT)::NUMERIC, 0) + $3::NUMERIC))
-RETURNING ("data"->>$2::TEXT)::NUMERIC v`,
-					values: [key, field, value],
-				}),
-				function (res, next) {
-					next(null, Array.isArray(key) ? res.rows.map(function (r) {
-						return parseFloat(r.v);
-					}) : parseFloat(res.rows[0].v));
-				},
-			], done);
-		}, callback);
+		db.query({
+			name: 'incrObjectFieldByMulti',
+			text: `
+SELECT "hash_incrObjectField"("_key", $2::TEXT, $3::NUMERIC) "v"
+  FROM UNNEST($1::TEXT[]) WITH ORDINALITY k("_key", i)
+ ORDER BY i ASC`,
+			values: [key, field, value],
+		}, function (err, res) {
+			if (err) {
+				return callback(err);
+			}
+
+			callback(null, res.rows.map(function (r) {
+				return parseFloat(r.v);
+			}));
+		});
 	};
 };

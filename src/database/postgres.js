@@ -5,9 +5,12 @@ var async = require('async');
 var nconf = require('nconf');
 var session = require('express-session');
 var _ = require('lodash');
+var fs = require('fs');
+var path = require('path');
 var semver = require('semver');
 var dbNamespace = require('continuation-local-storage').createNamespace('postgres');
 var db;
+var flushExpiredInterval;
 
 var postgresModule = module.exports;
 
@@ -92,6 +95,7 @@ postgresModule.init = function (callback) {
 			winston.error('NodeBB could not connect to your PostgreSQL database. PostgreSQL returned the following error: ' + err.message);
 			return callback(err);
 		}
+		release();
 
 		postgresModule.pool = db;
 		Object.defineProperty(postgresModule, 'client', {
@@ -110,240 +114,24 @@ postgresModule.init = function (callback) {
 			},
 		};
 
-		checkUpgrade(client, function (err) {
-			release();
-			if (err) {
-				return callback(err);
-			}
+		require('./postgres/main')(wrappedDB, postgresModule);
+		require('./postgres/hash')(wrappedDB, postgresModule);
+		require('./postgres/sets')(wrappedDB, postgresModule);
+		require('./postgres/sorted')(wrappedDB, postgresModule);
+		require('./postgres/list')(wrappedDB, postgresModule);
+		require('./postgres/transaction')(db, dbNamespace, postgresModule);
 
-			require('./postgres/main')(wrappedDB, postgresModule);
-			require('./postgres/hash')(wrappedDB, postgresModule);
-			require('./postgres/sets')(wrappedDB, postgresModule);
-			require('./postgres/sorted')(wrappedDB, postgresModule);
-			require('./postgres/list')(wrappedDB, postgresModule);
-			require('./postgres/transaction')(db, dbNamespace, postgresModule);
+		postgresModule.async = require('../promisify')(postgresModule, ['client', 'sessionStore', 'pool']);
 
-			postgresModule.async = require('../promisify')(postgresModule, ['client', 'sessionStore', 'pool']);
+		if (nconf.get('isPrimary') === 'true') {
+			flushExpiredInterval = setInterval(function () {
+				db.query(`SELECT "object_flushExpired"()`);
+			}, 60 * 1000);
+		}
 
-			callback();
-		});
+		callback();
 	});
 };
-
-function checkUpgrade(client, callback) {
-	client.query(`
-SELECT EXISTS(SELECT *
-                FROM "information_schema"."columns"
-               WHERE "table_schema" = 'public'
-                 AND "table_name" = 'objects'
-                 AND "column_name" = 'data') a,
-       EXISTS(SELECT *
-                FROM "information_schema"."columns"
-               WHERE "table_schema" = 'public'
-                 AND "table_name" = 'legacy_hash'
-                 AND "column_name" = '_key') b`, function (err, res) {
-		if (err) {
-			return callback(err);
-		}
-
-		if (res.rows[0].b) {
-			return callback(null);
-		}
-
-		var query = client.query.bind(client);
-
-		async.series([
-			async.apply(query, `BEGIN`),
-			async.apply(query, `
-CREATE TYPE LEGACY_OBJECT_TYPE AS ENUM (
-	'hash', 'zset', 'set', 'list', 'string'
-)`),
-			async.apply(query, `
-CREATE TABLE "legacy_object" (
-	"_key" TEXT NOT NULL
-		PRIMARY KEY,
-	"type" LEGACY_OBJECT_TYPE NOT NULL,
-	"expireAt" TIMESTAMPTZ DEFAULT NULL,
-	UNIQUE ( "_key", "type" )
-)`),
-			async.apply(query, `
-CREATE TABLE "legacy_hash" (
-	"_key" TEXT NOT NULL
-		PRIMARY KEY,
-	"data" JSONB NOT NULL,
-	"type" LEGACY_OBJECT_TYPE NOT NULL
-		DEFAULT 'hash'::LEGACY_OBJECT_TYPE
-		CHECK ( "type" = 'hash' ),
-	CONSTRAINT "fk__legacy_hash__key"
-		FOREIGN KEY ("_key", "type")
-		REFERENCES "legacy_object"("_key", "type")
-		ON UPDATE CASCADE
-		ON DELETE CASCADE
-)`),
-			async.apply(query, `
-CREATE TABLE "legacy_zset" (
-	"_key" TEXT NOT NULL,
-	"value" TEXT NOT NULL,
-	"score" NUMERIC NOT NULL,
-	"type" LEGACY_OBJECT_TYPE NOT NULL
-		DEFAULT 'zset'::LEGACY_OBJECT_TYPE
-		CHECK ( "type" = 'zset' ),
-	PRIMARY KEY ("_key", "value"),
-	CONSTRAINT "fk__legacy_zset__key"
-		FOREIGN KEY ("_key", "type")
-		REFERENCES "legacy_object"("_key", "type")
-		ON UPDATE CASCADE
-		ON DELETE CASCADE
-)`),
-			async.apply(query, `
-CREATE TABLE "legacy_set" (
-	"_key" TEXT NOT NULL,
-	"member" TEXT NOT NULL,
-	"type" LEGACY_OBJECT_TYPE NOT NULL
-		DEFAULT 'set'::LEGACY_OBJECT_TYPE
-		CHECK ( "type" = 'set' ),
-	PRIMARY KEY ("_key", "member"),
-	CONSTRAINT "fk__legacy_set__key"
-		FOREIGN KEY ("_key", "type")
-		REFERENCES "legacy_object"("_key", "type")
-		ON UPDATE CASCADE
-		ON DELETE CASCADE
-)`),
-			async.apply(query, `
-CREATE TABLE "legacy_list" (
-	"_key" TEXT NOT NULL
-		PRIMARY KEY,
-	"array" TEXT[] NOT NULL,
-	"type" LEGACY_OBJECT_TYPE NOT NULL
-		DEFAULT 'list'::LEGACY_OBJECT_TYPE
-		CHECK ( "type" = 'list' ),
-	CONSTRAINT "fk__legacy_list__key"
-		FOREIGN KEY ("_key", "type")
-		REFERENCES "legacy_object"("_key", "type")
-		ON UPDATE CASCADE
-		ON DELETE CASCADE
-)`),
-			async.apply(query, `
-CREATE TABLE "legacy_string" (
-	"_key" TEXT NOT NULL
-		PRIMARY KEY,
-	"data" TEXT NOT NULL,
-	"type" LEGACY_OBJECT_TYPE NOT NULL
-		DEFAULT 'string'::LEGACY_OBJECT_TYPE
-		CHECK ( "type" = 'string' ),
-	CONSTRAINT "fk__legacy_string__key"
-		FOREIGN KEY ("_key", "type")
-		REFERENCES "legacy_object"("_key", "type")
-		ON UPDATE CASCADE
-		ON DELETE CASCADE
-)`),
-			function (next) {
-				if (!res.rows[0].a) {
-					return next();
-				}
-				async.series([
-					async.apply(query, `
-INSERT INTO "legacy_object" ("_key", "type", "expireAt")
-SELECT DISTINCT "data"->>'_key',
-                CASE WHEN (SELECT COUNT(*)
-                             FROM jsonb_object_keys("data" - 'expireAt')) = 2
-                     THEN CASE WHEN ("data" ? 'value')
-                                 OR ("data" ? 'data')
-                               THEN 'string'
-                               WHEN "data" ? 'array'
-                               THEN 'list'
-                               WHEN "data" ? 'members'
-                               THEN 'set'
-                               ELSE 'hash'
-                          END
-                     WHEN (SELECT COUNT(*)
-                             FROM jsonb_object_keys("data" - 'expireAt')) = 3
-                     THEN CASE WHEN ("data" ? 'value')
-                                AND ("data" ? 'score')
-                               THEN 'zset'
-                               ELSE 'hash'
-                          END
-                     ELSE 'hash'
-                END::LEGACY_OBJECT_TYPE,
-                CASE WHEN ("data" ? 'expireAt')
-                     THEN to_timestamp(("data"->>'expireAt')::double precision / 1000)
-                     ELSE NULL
-                END
-  FROM "objects"`),
-					async.apply(query, `
-INSERT INTO "legacy_hash" ("_key", "data")
-SELECT "data"->>'_key',
-       "data" - '_key' - 'expireAt'
-  FROM "objects"
- WHERE CASE WHEN (SELECT COUNT(*)
-                    FROM jsonb_object_keys("data" - 'expireAt')) = 2
-            THEN NOT (("data" ? 'value')
-                   OR ("data" ? 'data')
-                   OR ("data" ? 'members')
-                   OR ("data" ? 'array'))
-            WHEN (SELECT COUNT(*)
-                    FROM jsonb_object_keys("data" - 'expireAt')) = 3
-            THEN NOT (("data" ? 'value')
-                  AND ("data" ? 'score'))
-            ELSE TRUE
-       END`),
-					async.apply(query, `
-INSERT INTO "legacy_zset" ("_key", "value", "score")
-SELECT "data"->>'_key',
-       "data"->>'value',
-       ("data"->>'score')::NUMERIC
-  FROM "objects"
- WHERE (SELECT COUNT(*)
-          FROM jsonb_object_keys("data" - 'expireAt')) = 3
-   AND ("data" ? 'value')
-   AND ("data" ? 'score')`),
-					async.apply(query, `
-INSERT INTO "legacy_set" ("_key", "member")
-SELECT "data"->>'_key',
-       jsonb_array_elements_text("data"->'members')
-  FROM "objects"
- WHERE (SELECT COUNT(*)
-          FROM jsonb_object_keys("data" - 'expireAt')) = 2
-   AND ("data" ? 'members')`),
-					async.apply(query, `
-INSERT INTO "legacy_list" ("_key", "array")
-SELECT "data"->>'_key',
-       ARRAY(SELECT t
-               FROM jsonb_array_elements_text("data"->'list') WITH ORDINALITY l(t, i)
-              ORDER BY i ASC)
-  FROM "objects"
- WHERE (SELECT COUNT(*)
-          FROM jsonb_object_keys("data" - 'expireAt')) = 2
-   AND ("data" ? 'array')`),
-					async.apply(query, `
-INSERT INTO "legacy_string" ("_key", "data")
-SELECT "data"->>'_key',
-       CASE WHEN "data" ? 'value'
-            THEN "data"->>'value'
-            ELSE "data"->>'data'
-       END
-  FROM "objects"
- WHERE (SELECT COUNT(*)
-          FROM jsonb_object_keys("data" - 'expireAt')) = 2
-   AND (("data" ? 'value')
-     OR ("data" ? 'data'))`),
-					async.apply(query, `DROP TABLE "objects" CASCADE`),
-					async.apply(query, `DROP FUNCTION "fun__objects__expireAt"() CASCADE`),
-				], next);
-			},
-			async.apply(query, `
-CREATE VIEW "legacy_object_live" AS
-SELECT "_key", "type"
-  FROM "legacy_object"
- WHERE "expireAt" IS NULL
-    OR "expireAt" > CURRENT_TIMESTAMP`),
-		], function (err) {
-			query(err ? `ROLLBACK` : `COMMIT`, function (err1) {
-				callback(err1 || err);
-			});
-		});
-	});
-}
 
 postgresModule.initSessionStore = function (callback) {
 	var meta = require('../meta');
@@ -394,25 +182,18 @@ ALTER TABLE "session"
 };
 
 postgresModule.createIndices = function (callback) {
-	if (!postgresModule.pool) {
-		winston.warn('[database/createIndices] database not initialized');
-		return callback();
-	}
+	var scripts = ['0000.legacy.sql', '0001.functions.sql'];
+	async.eachSeries(scripts, function (name, next) {
+		fs.readFile(path.join(__dirname, 'postgres', 'schema', name), 'utf8', function (err, data) {
+			if (err) {
+				return next(err);
+			}
 
-	var query = postgresModule.pool.query.bind(postgresModule.pool);
-
-	winston.info('[database] Checking database indices.');
-	async.series([
-		async.apply(query, `CREATE INDEX IF NOT EXISTS "idx__legacy_zset__key__score" ON "legacy_zset"("_key" ASC, "score" DESC)`),
-		async.apply(query, `CREATE INDEX IF NOT EXISTS "idx__legacy_object__expireAt" ON "legacy_object"("expireAt" ASC)`),
-	], function (err) {
-		if (err) {
-			winston.error('Error creating index ' + err.message);
-			return callback(err);
-		}
-		winston.info('[database] Checking database indices done!');
-		callback();
-	});
+			db.query(data, function (err1) {
+				next(err1);
+			});
+		});
+	}, callback);
 };
 
 postgresModule.checkCompatibility = function (callback) {
@@ -446,6 +227,7 @@ SELECT true "postgres",
 
 postgresModule.close = function (callback) {
 	callback = callback || function () {};
+	clearInterval(flushExpiredInterval);
 	db.end(callback);
 };
 

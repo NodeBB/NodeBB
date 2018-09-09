@@ -20,7 +20,7 @@ module.exports = function (db, module) {
 
 	module.emptydb = function (callback) {
 		callback = callback || helpers.noop;
-		query(`DELETE FROM "legacy_object"`, function (err) {
+		query(`SELECT "delete_all_data_from_database"()`, function (err) {
 			callback(err);
 		});
 	};
@@ -32,11 +32,7 @@ module.exports = function (db, module) {
 
 		query({
 			name: 'exists',
-			text: `
-SELECT EXISTS(SELECT *
-                FROM "legacy_object_live"
-               WHERE "_key" = $1::TEXT
-               LIMIT 1) e`,
+			text: `SELECT "object_exists"($1::TEXT) "e"`,
 			values: [key],
 		}, function (err, res) {
 			if (err) {
@@ -55,9 +51,7 @@ SELECT EXISTS(SELECT *
 
 		query({
 			name: 'delete',
-			text: `
-DELETE FROM "legacy_object"
- WHERE "_key" = $1::TEXT`,
+			text: `SELECT "object_delete"($1::TEXT)`,
 			values: [key],
 		}, function (err) {
 			callback(err);
@@ -74,8 +68,8 @@ DELETE FROM "legacy_object"
 		query({
 			name: 'deleteAll',
 			text: `
-DELETE FROM "legacy_object"
- WHERE "_key" = ANY($1::TEXT[])`,
+SELECT "object_delete"("_key")
+  FROM UNNEST($1::TEXT[]) k("_key")`,
 			values: [keys],
 		}, function (err) {
 			callback(err);
@@ -89,14 +83,7 @@ DELETE FROM "legacy_object"
 
 		query({
 			name: 'get',
-			text: `
-SELECT s."data" t
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_string" s
-         ON o."_key" = s."_key"
-        AND o."type" = s."type"
- WHERE o."_key" = $1::TEXT
- LIMIT 1`,
+			text: `SELECT "string_getValue"($1::TEXT) "t"`,
 			values: [key],
 		}, function (err, res) {
 			if (err) {
@@ -118,22 +105,13 @@ SELECT s."data" t
 			return callback();
 		}
 
-		module.transaction(function (tx, done) {
-			async.series([
-				async.apply(helpers.ensureLegacyObjectType, tx.client, key, 'string'),
-				async.apply(tx.client.query.bind(tx.client), {
-					name: 'set',
-					text: `
-INSERT INTO "legacy_string" ("_key", "data")
-VALUES ($1::TEXT, $2::TEXT)
-    ON CONFLICT ("_key")
-    DO UPDATE SET "data" = $2::TEXT`,
-					values: [key, value],
-				}),
-			], function (err) {
-				done(err);
-			});
-		}, callback);
+		query({
+			name: 'set',
+			text: `SELECT "string_setValue"($1::TEXT, $2::TEXT)`,
+			values: [key, value],
+		}, function (err) {
+			callback(err);
+		});
 	};
 
 	module.increment = function (key, callback) {
@@ -143,27 +121,17 @@ VALUES ($1::TEXT, $2::TEXT)
 			return callback();
 		}
 
-		module.transaction(function (tx, done) {
-			async.waterfall([
-				async.apply(helpers.ensureLegacyObjectType, tx.client, key, 'string'),
-				async.apply(tx.client.query.bind(tx.client), {
-					name: 'increment',
-					text: `
-INSERT INTO "legacy_string" ("_key", "data")
-VALUES ($1::TEXT, '1')
-    ON CONFLICT ("_key")
-    DO UPDATE SET "data" = ("legacy_string"."data"::NUMERIC + 1)::TEXT
-RETURNING "data" d`,
-					values: [key],
-				}),
-			], function (err, res) {
-				if (err) {
-					return done(err);
-				}
+		query({
+			name: 'increment',
+			text: `SELECT "string_incrValue"($1::TEXT, 1) "v"`,
+			values: [key],
+		}, function (err, res) {
+			if (err) {
+				return callback(err);
+			}
 
-				done(null, parseFloat(res.rows[0].d));
-			});
-		}, callback);
+			callback(null, res.rows[0].v);
+		});
 	};
 
 	module.rename = function (oldKey, newKey, callback) {
@@ -172,10 +140,7 @@ RETURNING "data" d`,
 				async.apply(tx.delete, newKey),
 				async.apply(tx.client.query.bind(tx.client), {
 					name: 'rename',
-					text: `
-UPDATE "legacy_object"
-   SET "_key" = $2::TEXT
- WHERE "_key" = $1::TEXT`,
+					text: `SELECT "object_rename"($1::TEXT, $2::TEXT)`,
 					values: [oldKey, newKey],
 				}),
 			], function (err) {
@@ -187,11 +152,7 @@ UPDATE "legacy_object"
 	module.type = function (key, callback) {
 		query({
 			name: 'type',
-			text: `
-SELECT "type"::TEXT t
-  FROM "legacy_object_live"
- WHERE "_key" = $1::TEXT
- LIMIT 1`,
+			text: `SELECT "object_getType"($1::TEXT)::TEXT "t"`,
 			values: [key],
 		}, function (err, res) {
 			if (err) {
@@ -209,11 +170,8 @@ SELECT "type"::TEXT t
 	function doExpire(key, date, callback) {
 		query({
 			name: 'expire',
-			text: `
-UPDATE "legacy_object"
-   SET "expireAt" = $2::TIMESTAMPTZ
- WHERE "_key" = $1::TEXT`,
-			values: [key, date],
+			text: `SELECT "object_expireAt"($1::TEXT, $2::TIMESTAMPTZ)`,
+			values: [key, new Date(date)],
 		}, function (err) {
 			if (callback) {
 				callback(err);
@@ -222,18 +180,18 @@ UPDATE "legacy_object"
 	}
 
 	module.expire = function (key, seconds, callback) {
-		doExpire(key, new Date(((Date.now() / 1000) + seconds) * 1000), callback);
+		doExpire(key, Date.now() + (seconds * 1000), callback);
 	};
 
 	module.expireAt = function (key, timestamp, callback) {
-		doExpire(key, new Date(timestamp * 1000), callback);
+		doExpire(key, timestamp * 1000, callback);
 	};
 
 	module.pexpire = function (key, ms, callback) {
-		doExpire(key, new Date(Date.now() + parseInt(ms, 10)), callback);
+		doExpire(key, Date.now() + parseInt(ms, 10), callback);
 	};
 
 	module.pexpireAt = function (key, timestamp, callback) {
-		doExpire(key, new Date(timestamp), callback);
+		doExpire(key, timestamp, callback);
 	};
 };

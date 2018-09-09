@@ -63,11 +63,8 @@ module.exports = function (db, module) {
 			text: `
 SELECT z."value",
        z."score"
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_zset" z
-         ON o."_key" = z."_key"
-        AND o."type" = z."type"
- WHERE o."_key" = ANY($1::TEXT[])
+  FROM UNNEST($1::TEXT[]) k("_key")
+ CROSS JOIN "zset_getAllItems"("_key") z
  ORDER BY z."score" ` + (sort > 0 ? 'ASC' : 'DESC') + `
  LIMIT $3::INTEGER
 OFFSET $2::INTEGER`,
@@ -139,12 +136,9 @@ OFFSET $2::INTEGER`,
 			text: `
 SELECT z."value",
        z."score"
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_zset" z
-         ON o."_key" = z."_key"
-        AND o."type" = z."type"
- WHERE o."_key" = ANY($1::TEXT[])
-   AND (z."score" >= $4::NUMERIC OR $4::NUMERIC IS NULL)
+  FROM UNNEST($1::TEXT[]) k("_key")
+ CROSS JOIN "zset_getAllItems"("_key") z
+ WHERE (z."score" >= $4::NUMERIC OR $4::NUMERIC IS NULL)
    AND (z."score" <= $5::NUMERIC OR $5::NUMERIC IS NULL)
  ORDER BY z."score" ` + (sort > 0 ? 'ASC' : 'DESC') + `
  LIMIT $3::INTEGER
@@ -187,13 +181,9 @@ OFFSET $2::INTEGER`,
 		query({
 			name: 'sortedSetCount',
 			text: `
-SELECT COUNT(*) c
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_zset" z
-         ON o."_key" = z."_key"
-        AND o."type" = z."type"
- WHERE o."_key" = $1::TEXT
-   AND (z."score" >= $2::NUMERIC OR $2::NUMERIC IS NULL)
+SELECT COUNT(*) "c"
+  FROM "zset_getAllItems"($1::TEXT) z
+ WHERE (z."score" >= $2::NUMERIC OR $2::NUMERIC IS NULL)
    AND (z."score" <= $3::NUMERIC OR $3::NUMERIC IS NULL)`,
 			values: [key, min, max],
 		}, function (err, res) {
@@ -213,12 +203,8 @@ SELECT COUNT(*) c
 		query({
 			name: 'sortedSetCard',
 			text: `
-SELECT COUNT(*) c
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_zset" z
-         ON o."_key" = z."_key"
-        AND o."type" = z."type"
- WHERE o."_key" = $1::TEXT`,
+SELECT COUNT(*) "c"
+  FROM "zset_getAllItems"($1::TEXT)`,
 			values: [key],
 		}, function (err, res) {
 			if (err) {
@@ -237,65 +223,50 @@ SELECT COUNT(*) c
 		query({
 			name: 'sortedSetsCard',
 			text: `
-SELECT o."_key" k,
-       COUNT(*) c
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_zset" z
-         ON o."_key" = z."_key"
-        AND o."type" = z."type"
- WHERE o."_key" = ANY($1::TEXT[])
- GROUP BY o."_key"`,
+SELECT (SELECT COUNT(*) FROM "zset_getAllItems"("_key")) "c"
+  FROM UNNEST($1::TEXT[]) WITH ORDINALITY k("_key", i)
+ ORDER BY i ASC`,
 			values: [keys],
 		}, function (err, res) {
 			if (err) {
 				return callback(err);
 			}
 
-			callback(null, keys.map(function (k) {
-				return parseInt((res.rows.find(function (r) {
-					return r.k === k;
-				}) || { c: 0 }).c, 10);
+			callback(null, res.rows.map(function (r) {
+				return parseInt(r.c, 10);
 			}));
 		});
 	};
 
 	module.sortedSetRank = function (key, value, callback) {
-		getSortedSetRank('ASC', [key], [value], function (err, result) {
+		getSortedSetRank(false, [key], [value], function (err, result) {
 			callback(err, result ? result[0] : null);
 		});
 	};
 
 	module.sortedSetRevRank = function (key, value, callback) {
-		getSortedSetRank('DESC', [key], [value], function (err, result) {
+		getSortedSetRank(true, [key], [value], function (err, result) {
 			callback(err, result ? result[0] : null);
 		});
 	};
 
-	function getSortedSetRank(sort, keys, values, callback) {
+	function getSortedSetRank(desc, keys, values, callback) {
 		values = values.map(helpers.valueToString);
 		query({
-			name: 'getSortedSetRank' + sort,
+			name: 'getSortedSetRank',
 			text: `
-SELECT (SELECT r
-          FROM (SELECT z."value" v,
-                       RANK() OVER (PARTITION BY o."_key"
-                                        ORDER BY z."score" ` + sort + `,
-                                                 z."value" ` + sort + `) - 1 r
-                  FROM "legacy_object_live" o
-                 INNER JOIN "legacy_zset" z
-                         ON o."_key" = z."_key"
-                        AND o."type" = z."type"
-                 WHERE o."_key" = kvi.k) r
-         WHERE v = kvi.v) r
-  FROM UNNEST($1::TEXT[], $2::TEXT[]) WITH ORDINALITY kvi(k, v, i)
- ORDER BY kvi.i ASC`,
-			values: [keys, values],
+SELECT "zset_getRank"("_key", "value", $3::BOOLEAN) "r"
+  FROM UNNEST($1::TEXT[], $2::TEXT[]) WITH ORDINALITY kv("_key", "value", i)
+ ORDER BY i ASC`,
+			values: [keys, values, desc],
 		}, function (err, res) {
 			if (err) {
 				return callback(err);
 			}
 
-			callback(null, res.rows.map(function (r) { return r.r === null ? null : parseFloat(r.r); }));
+			callback(null, res.rows.map(function (r) {
+				return r.r === null ? null : parseFloat(r.r);
+			}));
 		});
 	}
 
@@ -304,7 +275,7 @@ SELECT (SELECT r
 			return callback(null, []);
 		}
 
-		getSortedSetRank('ASC', keys, values, callback);
+		getSortedSetRank(false, keys, values, callback);
 	};
 
 	module.sortedSetRanks = function (key, values, callback) {
@@ -312,7 +283,7 @@ SELECT (SELECT r
 			return callback(null, []);
 		}
 
-		getSortedSetRank('ASC', new Array(values.length).fill(key), values, callback);
+		getSortedSetRank(false, new Array(values.length).fill(key), values, callback);
 	};
 
 	module.sortedSetScore = function (key, value, callback) {
@@ -324,25 +295,14 @@ SELECT (SELECT r
 
 		query({
 			name: 'sortedSetScore',
-			text: `
-SELECT z."score" s
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_zset" z
-         ON o."_key" = z."_key"
-        AND o."type" = z."type"
- WHERE o."_key" = $1::TEXT
-   AND z."value" = $2::TEXT`,
+			text: `SELECT "zset_getScore"($1::TEXT, $2::TEXT) "s"`,
 			values: [key, value],
 		}, function (err, res) {
 			if (err) {
 				return callback(err);
 			}
 
-			if (res.rows.length) {
-				return callback(null, parseFloat(res.rows[0].s));
-			}
-
-			callback(null, null);
+			callback(null, res.rows[0].s === null ? null : parseFloat(res.rows[0].s));
 		});
 	};
 
@@ -356,26 +316,17 @@ SELECT z."score" s
 		query({
 			name: 'sortedSetsScore',
 			text: `
-SELECT o."_key" k,
-       z."score" s
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_zset" z
-         ON o."_key" = z."_key"
-        AND o."type" = z."type"
- WHERE o."_key" = ANY($1::TEXT[])
-   AND z."value" = $2::TEXT`,
+SELECT "zset_getScore"("_key", $2::TEXT) "s"
+  FROM UNNEST($1::TEXT[]) WITH ORDINALITY k("_key", i)
+ ORDER BY i ASC`,
 			values: [keys, value],
 		}, function (err, res) {
 			if (err) {
 				return callback(err);
 			}
 
-			callback(null, keys.map(function (k) {
-				var s = res.rows.find(function (r) {
-					return r.k === k;
-				});
-
-				return s ? parseFloat(s.s) : null;
+			callback(null, res.rows.map(function (r) {
+				return r.s === null ? null : parseFloat(r.s);
 			}));
 		});
 	};
@@ -390,26 +341,17 @@ SELECT o."_key" k,
 		query({
 			name: 'sortedSetScores',
 			text: `
-SELECT z."value" v,
-       z."score" s
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_zset" z
-         ON o."_key" = z."_key"
-        AND o."type" = z."type"
- WHERE o."_key" = $1::TEXT
-   AND z."value" = ANY($2::TEXT[])`,
+SELECT "zset_getScore"($1::TEXT, "value") "s"
+  FROM UNNEST($2::TEXT[]) WITH ORDINALITY v("value", i)
+ ORDER BY i ASC`,
 			values: [key, values],
 		}, function (err, res) {
 			if (err) {
 				return callback(err);
 			}
 
-			callback(null, values.map(function (v) {
-				var s = res.rows.find(function (r) {
-					return r.v === v;
-				});
-
-				return s ? parseFloat(s.s) : null;
+			callback(null, res.rows.map(function (r) {
+				return r.s === null ? null : parseFloat(r.s);
 			}));
 		});
 	};
@@ -423,21 +365,14 @@ SELECT z."value" v,
 
 		query({
 			name: 'isSortedSetMember',
-			text: `
-SELECT 1
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_zset" z
-         ON o."_key" = z."_key"
-        AND o."type" = z."type"
- WHERE o."_key" = $1::TEXT
-   AND z."value" = $2::TEXT`,
+			text: `SELECT ("zset_getScore"($1::TEXT, $2::TEXT) IS NOT NULL) "e"`,
 			values: [key, value],
 		}, function (err, res) {
 			if (err) {
 				return callback(err);
 			}
 
-			callback(null, !!res.rows.length);
+			callback(null, res.rows[0].e);
 		});
 	};
 
@@ -451,23 +386,17 @@ SELECT 1
 		query({
 			name: 'isSortedSetMembers',
 			text: `
-SELECT z."value" v
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_zset" z
-         ON o."_key" = z."_key"
-        AND o."type" = z."type"
- WHERE o."_key" = $1::TEXT
-   AND z."value" = ANY($2::TEXT[])`,
+SELECT ("zset_getScore"($1::TEXT, "value") IS NOT NULL) "e"
+  FROM UNNEST($2::TEXT[]) WITH ORDINALITY v("value", i)
+ ORDER BY i ASC`,
 			values: [key, values],
 		}, function (err, res) {
 			if (err) {
 				return callback(err);
 			}
 
-			callback(null, values.map(function (v) {
-				return res.rows.some(function (r) {
-					return r.v === v;
-				});
+			callback(null, res.rows.map(function (r) {
+				return r.e;
 			}));
 		});
 	};
@@ -482,23 +411,17 @@ SELECT z."value" v
 		query({
 			name: 'isMemberOfSortedSets',
 			text: `
-SELECT o."_key" k
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_zset" z
-         ON o."_key" = z."_key"
-        AND o."type" = z."type"
- WHERE o."_key" = ANY($1::TEXT[])
-   AND z."value" = $2::TEXT`,
+SELECT ("zset_getScore"("_key", $2::TEXT) IS NOT NULL) "e"
+  FROM UNNEST($1::TEXT[]) WITH ORDINALITY k("_key", i)
+ ORDER BY i ASC`,
 			values: [keys, value],
 		}, function (err, res) {
 			if (err) {
 				return callback(err);
 			}
 
-			callback(null, keys.map(function (k) {
-				return res.rows.some(function (r) {
-					return r.k === k;
-				});
+			callback(null, res.rows.map(function (r) {
+				return r.e;
 			}));
 		});
 	};
@@ -511,24 +434,19 @@ SELECT o."_key" k
 		query({
 			name: 'getSortedSetsMembers',
 			text: `
-SELECT o."_key" k,
-       array_agg(z."value" ORDER BY z."score" ASC) m
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_zset" z
-         ON o."_key" = z."_key"
-        AND o."type" = z."type"
- WHERE o."_key" = ANY($1::TEXT[])
- GROUP BY o."_key"`,
+SELECT ARRAY(SELECT z."value"
+               FROM "zset_getAllItems"("_key") z
+              ORDER BY z."score" ASC, z."value" ASC) "m"
+  FROM UNNEST($1::TEXT[]) WITH ORDINALITY k("_key", i)
+ ORDER BY i ASC`,
 			values: [keys],
 		}, function (err, res) {
 			if (err) {
 				return callback(err);
 			}
 
-			callback(null, keys.map(function (k) {
-				return (res.rows.find(function (r) {
-					return r.k === k;
-				}) || { m: [] }).m;
+			callback(null, res.rows.map(function (r) {
+				return r.m;
 			}));
 		});
 	};
@@ -543,24 +461,16 @@ SELECT o."_key" k,
 		value = helpers.valueToString(value);
 		increment = parseFloat(increment);
 
-		module.transaction(function (tx, done) {
-			async.waterfall([
-				async.apply(helpers.ensureLegacyObjectType, tx.client, key, 'zset'),
-				async.apply(tx.client.query.bind(tx.client), {
-					name: 'sortedSetIncrBy',
-					text: `
-INSERT INTO "legacy_zset" ("_key", "value", "score")
-VALUES ($1::TEXT, $2::TEXT, $3::NUMERIC)
-    ON CONFLICT ("_key", "value")
-    DO UPDATE SET "score" = "legacy_zset"."score" + $3::NUMERIC
-RETURNING "score" s`,
-					values: [key, value, increment],
-				}),
-				function (res, next) {
-					next(null, parseFloat(res.rows[0].s));
-				},
-			], done);
-		}, callback);
+		db.query({
+			name: 'sortedSetIncrBy',
+			text: `SELECT "zset_incrItem"($1::TEXT, $2::TEXT, $3::NUMERIC) "s"`,
+			values: [key, value, increment],
+		}, function (err, res) {
+			if (err) {
+				return callback(err);
+			}
+			callback(null, parseFloat(res.rows[0].s));
+		});
 	};
 
 	module.getSortedSetRangeByLex = function (key, min, max, start, count, callback) {
@@ -577,11 +487,8 @@ RETURNING "score" s`,
 		query({
 			name: 'sortedSetLexCount' + q.suffix,
 			text: `
-SELECT COUNT(*) c
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_zset" z
-         ON o."_key" = z."_key"
-        AND o."type" = z."type"
+SELECT COUNT(*) "c"
+  FROM "zset_getAllItems"($1::TEXT) z
  WHERE ` + q.where,
 			values: q.values,
 		}, function (err, res) {
@@ -606,11 +513,8 @@ SELECT COUNT(*) c
 		query({
 			name: 'sortedSetLex' + (sort > 0 ? 'Asc' : 'Desc') + q.suffix,
 			text: `
-SELECT z."value" v
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_zset" z
-         ON o."_key" = z."_key"
-        AND o."type" = z."type"
+SELECT z."value" "v"
+  FROM "zset_getAllItems"($1::TEXT) z
  WHERE ` + q.where + `
  ORDER BY z."value" ` + (sort > 0 ? 'ASC' : 'DESC') + `
  LIMIT $` + q.values.length + `::INTEGER
@@ -634,11 +538,9 @@ OFFSET $` + (q.values.length - 1) + `::INTEGER`,
 		query({
 			name: 'sortedSetRemoveRangeByLex' + q.suffix,
 			text: `
-DELETE FROM "legacy_zset" z
- USING "legacy_object_live" o
- WHERE o."_key" = z."_key"
-   AND o."type" = z."type"
-   AND ` + q.where,
+SELECT "zset_removeItem"($1::TEXT, z."value")
+  FROM "zset_getAllItems"($1::TEXT) z
+ WHERE ` + q.where,
 			values: q.values,
 		}, function (err) {
 			callback(err);
@@ -648,7 +550,7 @@ DELETE FROM "legacy_zset" z
 	function buildLexQuery(key, min, max) {
 		var q = {
 			suffix: '',
-			where: `o."_key" = $1::TEXT`,
+			where: `TRUE`,
 			values: [key],
 		};
 
@@ -697,12 +599,8 @@ DELETE FROM "legacy_zset" z
 
 			var batchSize = (options || {}).batch || 100;
 			var query = client.query(new Cursor(`
-SELECT z."value" v
-  FROM "legacy_object_live" o
- INNER JOIN "legacy_zset" z
-         ON o."_key" = z."_key"
-        AND o."type" = z."type"
- WHERE o."_key" = $1::TEXT
+SELECT z."value" "v"
+  FROM "zset_getAllItems"($1::TEXT) z
  ORDER BY z."score" ASC, z."value" ASC`, [setKey]));
 
 			async.doUntil(function (next) {

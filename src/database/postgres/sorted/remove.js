@@ -4,14 +4,10 @@ module.exports = function (db, module) {
 	var helpers = module.helpers.postgres;
 
 	module.sortedSetRemove = function (key, value, callback) {
-		function done(err) {
-			if (callback) {
-				callback(err);
-			}
-		}
+		callback = callback || helpers.noop;
 
 		if (!key) {
-			return done();
+			return callback();
 		}
 
 		if (!Array.isArray(key)) {
@@ -26,11 +22,13 @@ module.exports = function (db, module) {
 		db.query({
 			name: 'sortedSetRemove',
 			text: `
-DELETE FROM "legacy_zset"
- WHERE "_key" = ANY($1::TEXT[])
-   AND "value" = ANY($2::TEXT[])`,
+SELECT "zset_removeItem"("_key", "value")
+  FROM UNNEST($1::TEXT[]) k("_key")
+ CROSS JOIN UNNEST($2::TEXT[]) v("value")`,
 			values: [key, value],
-		}, done);
+		}, function (err) {
+			callback(err);
+		});
 	};
 
 	module.sortedSetsRemove = function (keys, value, callback) {
@@ -40,18 +38,7 @@ DELETE FROM "legacy_zset"
 			return callback();
 		}
 
-		value = helpers.valueToString(value);
-
-		db.query({
-			name: 'sortedSetsRemove',
-			text: `
-DELETE FROM "legacy_zset"
- WHERE "_key" = ANY($1::TEXT[])
-   AND "value" = $2::TEXT`,
-			values: [keys, value],
-		}, function (err) {
-			callback(err);
-		});
+		module.sortedSetRemove(keys, value, callback);
 	};
 
 	module.sortedSetsRemoveRangeByScore = function (keys, min, max, callback) {
@@ -71,10 +58,8 @@ DELETE FROM "legacy_zset"
 		db.query({
 			name: 'sortedSetsRemoveRangeByScore',
 			text: `
-DELETE FROM "legacy_zset"
- WHERE "_key" = ANY($1::TEXT[])
-   AND ("score" >= $2::NUMERIC OR $2::NUMERIC IS NULL)
-   AND ("score" <= $3::NUMERIC OR $3::NUMERIC IS NULL)`,
+SELECT "zset_removeItemsByScore"("_key", $2::NUMERIC, $3::NUMERIC)
+  FROM UNNEST($1::TEXT[]) k("_key")`,
 			values: [keys, min, max],
 		}, function (err) {
 			callback(err);
