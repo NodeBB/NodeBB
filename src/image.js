@@ -6,6 +6,7 @@ var path = require('path');
 var Jimp = require('jimp');
 var async = require('async');
 var crypto = require('crypto');
+var probe = require('probe-image-size');
 
 var file = require('./file');
 var plugins = require('./plugins');
@@ -117,10 +118,31 @@ image.size = function (path, callback) {
 			callback(err, image);
 		});
 	} else {
-		new Jimp(path, function (err, data) {
-			callback(err, data ? data.bitmap : null);
+		const input = require('fs').createReadStream(path);
+		probe(input, function (err, result) {
+			input.destroy();
+			callback(err, result ? { width: result.width, height: result.height } : null);
 		});
 	}
+};
+
+image.checkDimensions = function (path, callback) {
+	const meta = require('./meta');
+	const input = require('fs').createReadStream(path);
+	probe(input, function (err, result) {
+		input.destroy();
+		if (err) {
+			return callback(err);
+		}
+
+		const maxWidth = parseInt(meta.config.rejectImageWidth, 10) || 5000;
+		const maxHeight = parseInt(meta.config.rejectImageHeight, 10) || 5000;
+		if (result.width > maxWidth || result.height > maxHeight) {
+			return callback(new Error('[[error:invalid-image-dimensions]]'));
+		}
+
+		callback();
+	});
 };
 
 image.convertImageToBase64 = function (path, callback) {

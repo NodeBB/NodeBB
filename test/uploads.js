@@ -133,6 +133,16 @@ describe('Upload Controllers', function () {
 			});
 		});
 
+		it('should fail to upload image to post if image is too big', function (done) {
+			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/toobig.jpg'), {}, jar, csrf_token, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 500);
+				assert(body.error, '[[error:invalid-image-dimensions]]');
+				done();
+			});
+		});
+
+
 		it('should fail if topic thumbs are disabled', function (done) {
 			helpers.uploadFile(nconf.get('url') + '/api/topic/thumb/upload', path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);

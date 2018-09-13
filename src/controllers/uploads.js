@@ -56,6 +56,9 @@ function uploadAsImage(req, uploadedFile, callback) {
 			if (!canUpload) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
+			image.checkDimensions(uploadedFile.path, next);
+		},
+		function (next) {
 			if (plugins.hasListeners('filter:uploadImage')) {
 				return plugins.fireHook('filter:uploadImage', {
 					image: uploadedFile,

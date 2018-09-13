@@ -21,7 +21,7 @@
 			</div>
 
 			<div class="form-group">
-				<label for="maximumImageWidth">[[admin/settings/uploads:private-extensions]]</label>
+				<label for="privateUploadsExtensions">[[admin/settings/uploads:private-extensions]]</label>
 				<input type="text" class="form-control" value="" data-field="privateUploadsExtensions" placeholder="">
 				<p class="help-block">
 					[[admin/settings/uploads:private-uploads-extensions-help]]
@@ -49,6 +49,22 @@
 				<input type="text" class="form-control" value="2048" data-field="maximumFileSize">
 				<p class="help-block">
 					[[admin/settings/uploads:max-file-size-help]]
+				</p>
+			</div>
+
+			<div class="form-group">
+				<label for="rejectImageWidth">[[admin/settings/uploads:reject-image-width]]</label>
+				<input type="text" class="form-control" value="5000" data-field="rejectImageWidth" placeholder="5000">
+				<p class="help-block">
+					[[admin/settings/uploads:reject-image-width-help]]
+				</p>
+			</div>
+
+			<div class="form-group">
+				<label for="rejectImageHeight">[[admin/settings/uploads:reject-image-height]]</label>
+				<input type="text" class="form-control" value="5000" data-field="rejectImageHeight" placeholder="5000">
+				<p class="help-block">
+					[[admin/settings/uploads:reject-image-height-help]]
 				</p>
 			</div>
 
