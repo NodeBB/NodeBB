@@ -17,24 +17,26 @@ define('forum/topic/fork', ['components', 'postSelect'], function (components, p
 	}
 
 	function onForkThreadClicked() {
-		app.parseAndTranslate('partials/fork_thread_modal', {}, function (html) {
-			forkModal = html;
+		if(!$('.fork-topic-card').length) {
+			app.parseAndTranslate('partials/fork_thread_modal', {}, function (html) {
+				forkModal = html;
 
-			forkCommit = forkModal.find('#fork_thread_commit');
+				forkCommit = forkModal.find('#fork_thread_commit');
 
-			$(document.body).append(forkModal);
+				$(document.body).append(forkModal);
 
-			forkModal.find('.close,#fork_thread_cancel').on('click', closeForkModal);
-			forkModal.find('#fork-title').on('keyup', checkForkButtonEnable);
+				forkModal.find('.close,#fork_thread_cancel').on('click', closeForkModal);
+				forkModal.find('#fork-title').on('keyup', checkForkButtonEnable);
 
-			postSelect.init(function () {
-				checkForkButtonEnable();
+				postSelect.init(function () {
+					checkForkButtonEnable();
+					showPostsSelected();
+				});
 				showPostsSelected();
-			});
-			showPostsSelected();
 
-			forkCommit.on('click', createTopicFromPosts);
-		});
+				forkCommit.on('click', createTopicFromPosts);
+			});
+		}
 	}
 
 	function createTopicFromPosts() {
