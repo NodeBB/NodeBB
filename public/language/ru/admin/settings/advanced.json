@@ -1,8 +1,8 @@
 {
-	"maintenance-mode": "Maintenance Mode",
-	"maintenance-mode.help": "When the forum is in maintenance mode, all requests will be redirected to a static holding page. Administrators are exempt from this redirection, and are able to access the site normally.",
+	"maintenance-mode": "Режим обслуживания",
+	"maintenance-mode.help": "Когда форум находится в режиме обслуживания, все запросы будут перенаправляться на статичную страницу. Администраторы освобождены от этого ограничения, и имеют обычный доступ к сайту.",
 	"maintenance-mode.message": "Maintenance Message",
-	"headers": "Headers",
+	"headers": "Заголовки",
 	"headers.allow-from": "Set ALLOW-FROM to Place NodeBB in an iFrame",
 	"headers.powered-by": "Customise the \"Powered By\" header sent by NodeBB",
 	"headers.acao": "Access-Control-Allow-Origin",

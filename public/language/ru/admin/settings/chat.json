@@ -1,11 +1,11 @@
 {
 	"chat-settings": "Настройки Чата",
 	"disable": "Отключить чат",
-	"disable-editing": "Disable chat message editing/deletion",
-	"disable-editing-help": "Administrators and global moderators are exempt from this restriction",
-	"max-length": "Maximum length of chat messages",
+	"disable-editing": "Отключить редактирование/удаление сообщения чата",
+	"disable-editing-help": "Администраторы и общие модераторы освобождены от этого ограничения.",
+	"max-length": "Максимальная длина сообщения чата",
 	"max-room-size": "Максимальное число пользователей в чат комнатах",
 	"delay": "Время между сообщениями чата в милисекундах",
-	"restrictions.seconds-edit-after": "Number of seconds before users are allowed to edit chat messages after posting. (0 disabled)",
-	"restrictions.seconds-delete-after": "Number of seconds before users are allowed to delete chat messages after posting. (0 disabled)"
+	"restrictions.seconds-edit-after": "Секунд перед тем, как пользователю разрешено редактировать сообщение чата после отправки. (0 выключено)",
+	"restrictions.seconds-delete-after": "Секунд перед тем, как пользователю разрешено удалить сообщение чата после отправки. (0 выключено)"
 }
