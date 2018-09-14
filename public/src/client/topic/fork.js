@@ -17,26 +17,28 @@ define('forum/topic/fork', ['components', 'postSelect'], function (components, p
 	}
 
 	function onForkThreadClicked() {
-		if(!$('.fork-topic-card').length) {
-			app.parseAndTranslate('partials/fork_thread_modal', {}, function (html) {
-				forkModal = html;
-
-				forkCommit = forkModal.find('#fork_thread_commit');
-
-				$(document.body).append(forkModal);
-
-				forkModal.find('.close,#fork_thread_cancel').on('click', closeForkModal);
-				forkModal.find('#fork-title').on('keyup', checkForkButtonEnable);
-
-				postSelect.init(function () {
-					checkForkButtonEnable();
-					showPostsSelected();
-				});
-				showPostsSelected();
-
-				forkCommit.on('click', createTopicFromPosts);
-			});
+		if (forkModal) {
+		    return;
 		}
+		
+		app.parseAndTranslate('partials/fork_thread_modal', {}, function (html) {
+			forkModal = html;
+
+			forkCommit = forkModal.find('#fork_thread_commit');
+
+			$(document.body).append(forkModal);
+
+			forkModal.find('.close,#fork_thread_cancel').on('click', closeForkModal);
+			forkModal.find('#fork-title').on('keyup', checkForkButtonEnable);
+
+			postSelect.init(function () {
+				checkForkButtonEnable();
+				showPostsSelected();
+			});
+			showPostsSelected();
+
+			forkCommit.on('click', createTopicFromPosts);
+		});
 	}
 
 	function createTopicFromPosts() {
