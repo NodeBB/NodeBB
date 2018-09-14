@@ -6,6 +6,7 @@ var _ = require('lodash');
 
 var db = require('../database');
 var user = require('../user');
+var posts = require('../posts');
 var notifications = require('../notifications');
 var categories = require('../categories');
 var privileges = require('../privileges');
@@ -150,7 +151,6 @@ module.exports = function (Topics) {
 		], callback);
 	};
 
-
 	function filterTopics(uid, tids, cid, filter, callback) {
 		if (!tids.length) {
 			return callback(null, tids);
@@ -181,15 +181,53 @@ module.exports = function (Topics) {
 			},
 			function (results, next) {
 				var topics = results.topics;
+
 				cid = cid && cid.map(String);
-				tids = topics.filter(function (topic, index) {
+				topics = topics.filter(function (topic, index) {
 					return topic && topic.cid &&
 						(!!results.isTopicsFollowed[index] || results.ignoredCids.indexOf(topic.cid.toString()) === -1) &&
 						(!cid || (cid.length && cid.indexOf(String(topic.cid)) !== -1));
-				}).map(function (topic) {
-					return topic.tid;
 				});
-				next(null, tids);
+
+				user.blocks.filter(uid, topics, next);
+			},
+			function (filteredTopics, next) {
+				tids = filteredTopics.map(function (topic) {
+					return topic && topic.tid;
+				});
+				filterTidsThatHaveBlockedPosts(uid, tids, next);
+			},
+		], callback);
+	}
+
+	function filterTidsThatHaveBlockedPosts(uid, tids, callback) {
+		async.filter(tids, function (tid, next) {
+			doesTidHaveUnblockedUnreadPosts(uid, tid, next);
+		}, callback);
+	}
+
+	function doesTidHaveUnblockedUnreadPosts(uid, tid, callback) {
+		async.waterfall([
+			function (next) {
+				db.sortedSetScore('uid:' + uid + ':tids_read', tid, next);
+			},
+			function (userLastReadTimestamp, next) {
+				if (!userLastReadTimestamp) {
+					return callback(null, true);
+				}
+				db.getSortedSetRevRangeByScore('tid:' + tid + ':posts', 0, -1, '+inf', userLastReadTimestamp, next);
+			},
+			function (pidsSinceLastVisit, next) {
+				if (!pidsSinceLastVisit.length) {
+					return callback(null, false);
+				}
+				posts.getPostsFields(pidsSinceLastVisit, ['pid', 'uid'], next);
+			},
+			function (postData, next) {
+				user.blocks.filter(uid, postData, next);
+			},
+			function (unreadPosts, next) {
+				next(null, unreadPosts.length > 0);
 			},
 		], callback);
 	}
@@ -347,12 +385,26 @@ module.exports = function (Topics) {
 			function (results, next) {
 				var cutoff = Topics.unreadCutoff();
 				var result = tids.map(function (tid, index) {
-					return !results.tids_unread[index] &&
+					var read = !results.tids_unread[index] &&
 						(results.recentScores[index] < cutoff ||
 						!!(results.userScores[index] && results.userScores[index] >= results.recentScores[index]));
+					return { tid: tid, read: read };
 				});
 
-				next(null, result);
+				async.map(result, function (data, next) {
+					if (data.read) {
+						return next(null, true);
+					}
+					doesTidHaveUnblockedUnreadPosts(uid, data.tid, function (err, hasUnblockedUnread) {
+						if (err) {
+							return next(err);
+						}
+						if (!hasUnblockedUnread) {
+							data.read = true;
+						}
+						next(null, data.read);
+					});
+				}, next);
 			},
 		], callback);
 	};
