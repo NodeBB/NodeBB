@@ -17,6 +17,10 @@ define('forum/topic/fork', ['components', 'postSelect'], function (components, p
 	}
 
 	function onForkThreadClicked() {
+		if (forkModal) {
+			return;
+		}
+
 		app.parseAndTranslate('partials/fork_thread_modal', {}, function (html) {
 			forkModal = html;
 
