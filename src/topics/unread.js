@@ -207,11 +207,18 @@ module.exports = function (Topics) {
 	}
 
 	function doesTidHaveUnblockedUnreadPosts(uid, tid, callback) {
+		var topicTimestamp;
+		var userLastReadTimestamp;
 		async.waterfall([
 			function (next) {
-				db.sortedSetScore('uid:' + uid + ':tids_read', tid, next);
+				async.parallel({
+					topicTimestamp: async.apply(db.sortedSetScore, 'topics:recent', tid),
+					userLastReadTimestamp: async.apply(db.sortedSetScore, 'uid:' + uid + ':tids_read', tid),
+				}, next);
 			},
-			function (userLastReadTimestamp, next) {
+			function (results, next) {
+				topicTimestamp = results.topicTimestamp;
+				userLastReadTimestamp = results.userLastReadTimestamp;
 				if (!userLastReadTimestamp) {
 					return callback(null, true);
 				}
@@ -219,7 +226,7 @@ module.exports = function (Topics) {
 			},
 			function (pidsSinceLastVisit, next) {
 				if (!pidsSinceLastVisit.length) {
-					return callback(null, false);
+					return callback(null, topicTimestamp > userLastReadTimestamp);
 				}
 				posts.getPostsFields(pidsSinceLastVisit, ['pid', 'uid'], next);
 			},
