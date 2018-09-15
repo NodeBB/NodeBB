@@ -134,7 +134,7 @@ module.exports = function (Posts) {
 				db.delete('post:queue:' + id, next);
 			},
 			function (next) {
-				notifications.rescind('post-queued-' + id, next);
+				notifications.rescind('post-queue-' + id, next);
 			},
 		], callback);
 	};
