@@ -12,7 +12,7 @@
 <!-- (to find your git hash, execute `git rev-parse HEAD` from the main NodeBB directory) -->
 - **Database type:** mongo, redis, or postgres
 - **Database version:** 
-<!-- `mongod --version` or `redis-server --version` -->
+<!-- `mongod --version`, `redis-server --version`, or `postgres --version` -->
 - **Exact steps to cause this issue:**
 <!--
 	1. First I did this...
