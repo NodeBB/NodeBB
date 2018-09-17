@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('taskbar', ['benchpress'], function (Benchpress) {
+define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator) {
 	var taskbar = {};
 
 	taskbar.init = function () {
@@ -111,32 +111,35 @@ define('taskbar', ['benchpress'], function (Benchpress) {
 	}
 
 	function createTaskbar(data) {
-		var title = $('<div></div>').text(data.options.title || 'NodeBB Task').html();
+		translator.translate(data.options.title, function (taskTitle) {
+			var title = $('<div></div>').text(taskTitle || 'NodeBB Task').html();
 
-		var	taskbarEl = $('<li />')
-			.addClass(data.options.className)
-			.html('<a href="#">' +
-				(data.options.icon ? '<i class="fa ' + data.options.icon + '"></i> ' : '') +
-				(data.options.image ? '<img src="' + data.options.image + '"/> ' : '') +
-				'<span component="taskbar/title">' + title + '</span>' +
-				'</a>')
-			.attr({
-				'data-module': data.module,
-				'data-uuid': data.uuid,
-			})
-			.addClass(data.options.state !== undefined ? data.options.state : 'active');
+			var	taskbarEl = $('<li />')
+				.addClass(data.options.className)
+				.html('<a href="#">' +
+					(data.options.icon ? '<i class="fa ' + data.options.icon + '"></i> ' : '') +
+					(data.options.image ? '<img src="' + data.options.image + '"/> ' : '') +
+					'<span component="taskbar/title">' + title + '</span>' +
+					'</a>')
+				.attr({
+					title: title,
+					'data-module': data.module,
+					'data-uuid': data.uuid,
+				})
+				.addClass(data.options.state !== undefined ? data.options.state : 'active');
 
-		if (!data.options.state || data.options.state === 'active') {
-			minimizeAll();
-		}
+			if (!data.options.state || data.options.state === 'active') {
+				minimizeAll();
+			}
 
-		taskbar.tasklist.append(taskbarEl);
-		update();
+			taskbar.tasklist.append(taskbarEl);
+			update();
 
-		data.element = taskbarEl;
+			data.element = taskbarEl;
 
-		taskbarEl.data(data);
-		$(window).trigger('action:taskbar.pushed', data);
+			taskbarEl.data(data);
+			$(window).trigger('action:taskbar.pushed', data);
+		});
 	}
 
 	taskbar.updateTitle = function (module, uuid, newTitle) {
