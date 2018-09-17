@@ -21,7 +21,7 @@ define('forum/topic/delete-posts', ['components', 'postSelect'], function (compo
 		if (modal) {
 			return;
 		}
-		
+
 		app.parseAndTranslate('partials/delete_posts_modal', {}, function (html) {
 			modal = html;
 
