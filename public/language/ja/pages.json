@@ -52,7 +52,7 @@
     "account/upvoted": "%1が投稿を高評価しました",
     "account/downvoted": "%1が投稿を低評価しました",
     "account/best": "%1のベストな投稿",
-    "account/blocks": "Blocked users for %1",
+    "account/blocks": "%1のユーザーをブロックしました",
     "account/uploads": "Uploads by %1",
     "confirm": "Eメールが確認されました",
     "maintenance.text": "%1 は現在メンテナンスを実行中です。お手数ですが、時間をずらしてお越しください。",
