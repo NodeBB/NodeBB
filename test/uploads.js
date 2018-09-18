@@ -135,7 +135,7 @@ describe('Upload Controllers', function () {
 			});
 		});
 
-		it('should fail to upload image to post if image is too big', function (done) {
+		it('should fail to upload image to post if image dimensions are too big', function (done) {
 			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/toobig.jpg'), {}, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 500);
