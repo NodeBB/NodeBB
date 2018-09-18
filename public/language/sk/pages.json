@@ -54,6 +54,7 @@
     "account/best": "Najlepšie príspevky vytvorené užívateľom %1",
     "account/blocks": "Zablokovaní používatelia z %1",
     "account/uploads": "Nahraté od %1",
+    "account/sessions": "Login Sessions",
     "confirm": "E-mail potvrdený",
     "maintenance.text": "%1 v súčasnej dobe prebieha údržba. Prosíme, vráťte sa neskôr.",
     "maintenance.messageIntro": "Správca, dodatočne zanechal túto správu:",

@@ -54,6 +54,7 @@
     "account/best": "Kiriman Terbaik Oleh %1",
     "account/blocks": "Blocked users for %1",
     "account/uploads": "Uploads by %1",
+    "account/sessions": "Login Sessions",
     "confirm": "Emel Telah Disahkan",
     "maintenance.text": "%1 sedang berada dalam mod pembaikpulihan. Sila cuba lagi nanti.",
     "maintenance.messageIntro": "Tambahan, admin meninggalkan mesej ini :",

@@ -54,6 +54,7 @@
     "account/best": "Najboljše objave uporabnika %1",
     "account/blocks": "Blocked users for %1",
     "account/uploads": "Uploads by %1",
+    "account/sessions": "Login Sessions",
     "confirm": "E-pošta potrjena",
     "maintenance.text": "%1 je trenutno v vzdrževanju.",
     "maintenance.messageIntro": "Dodatno vam je skrbnik pustil tole sporočilo:",

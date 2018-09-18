@@ -54,6 +54,7 @@
     "account/best": "Best posts made by %1",
     "account/blocks": "Blocked users for %1",
     "account/uploads": "Uploads by %1",
+    "account/sessions": "Login Sessions",
     "confirm": "Email Confirmed",
     "maintenance.text": "%1 saat ini sedang dalam masa pemeliharaan. Silahkan kembali lain waktu.",
     "maintenance.messageIntro": "Tambahan, Administrator meninggalkan pesan ini:",

@@ -54,6 +54,7 @@
     "account/best": "Bestbewertete Beiträge von %1",
     "account/blocks": "Für %1 geblockte Benutzer",
     "account/uploads": "Uploads von %1",
+    "account/sessions": "Login Sessions",
     "confirm": "E-Mail bestätigt",
     "maintenance.text": "%1 befindet sich derzeit in der Wartung. Bitte komm später wieder.",
     "maintenance.messageIntro": "Zusätzlich hat der Administrator diese Nachricht hinterlassen:",

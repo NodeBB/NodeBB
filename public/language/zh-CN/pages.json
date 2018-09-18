@@ -54,6 +54,7 @@
     "account/best": "%1 发布的最佳帖子",
     "account/blocks": "%1 屏蔽的用户",
     "account/uploads": "%1 上传的文件",
+    "account/sessions": "Login Sessions",
     "confirm": "电子邮箱已确认",
     "maintenance.text": "%1 正在进行维护。请稍后再来。",
     "maintenance.messageIntro": "此外，管理员留下的消息：",

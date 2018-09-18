@@ -54,6 +54,7 @@
     "account/best": "Bästa inläggen skapade av %1",
     "account/blocks": "Blockerade användare för %1",
     "account/uploads": "Uppladdningar av %1",
+    "account/sessions": "Login Sessions",
     "confirm": "E-postadress bekräftad",
     "maintenance.text": "%1 genomgår underhåll just nu. Vänligen kom tillbaka lite senare.",
     "maintenance.messageIntro": "Utöver det så lämnade administratören följande meddelande:",
