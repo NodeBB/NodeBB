@@ -32,6 +32,9 @@ SocketHelpers.notifyNew = function (uid, type, result) {
 			filterTidCidIgnorers(uids, result.posts[0].topic.tid, result.posts[0].topic.cid, next);
 		},
 		function (uids, next) {
+			user.blocks.filterUids(uid, uids, next);
+		},
+		function (uids, next) {
 			plugins.fireHook('filter:sockets.sendNewPostToUids', { uidsTo: uids, uidFrom: uid, type: type }, next);
 		},
 	], function (err, data) {

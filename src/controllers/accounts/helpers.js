@@ -73,8 +73,8 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 								self: true,
 								other: false,
 								moderator: false,
-								globalMod: true,
-								admin: true,
+								globalMod: false,
+								admin: false,
 							},
 						}, {
 							id: 'consent',

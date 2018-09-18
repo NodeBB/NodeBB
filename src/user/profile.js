@@ -168,7 +168,7 @@ module.exports = function (User) {
 
 	User.checkMinReputation = function (callerUid, uid, setting, callback) {
 		var isSelf = parseInt(callerUid, 10) === parseInt(uid, 10);
-		if (!isSelf) {
+		if (!isSelf || parseInt(meta.config['reputation:disabled'], 10) === 1) {
 			return setImmediate(callback);
 		}
 		async.waterfall([

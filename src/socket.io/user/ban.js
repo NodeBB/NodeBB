@@ -30,6 +30,7 @@ module.exports = function (SocketUser) {
 						uid: socket.uid,
 						targetUid: uid,
 						ip: socket.ip,
+						reason: data.reason || undefined,
 					}, next);
 				},
 				function (next) {
@@ -38,6 +39,7 @@ module.exports = function (SocketUser) {
 						ip: socket.ip,
 						uid: uid,
 						until: data.until > 0 ? data.until : undefined,
+						reason: data.reason || undefined,
 					});
 					next();
 				},
