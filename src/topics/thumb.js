@@ -22,6 +22,7 @@ module.exports = function (Topics) {
 
 		var pathToUpload;
 		var filename;
+
 		async.waterfall([
 			function (next) {
 				request.head(data.thumb, next);
@@ -37,7 +38,7 @@ module.exports = function (Topics) {
 					extension = '.' + mime.getExtension(type);
 				}
 				filename = Date.now() + '-topic-thumb' + extension;
-				pathToUpload = path.join(nconf.get('upload_path'), 'files', Date.now() + '-topic-thumb' + extension);
+				pathToUpload = path.join(nconf.get('upload_path'), 'files', filename);
 
 				request(data.thumb).pipe(fs.createWriteStream(pathToUpload)).on('close', next);
 			},
