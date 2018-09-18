@@ -54,6 +54,7 @@
     "account/best": "Najbolje objave od %1",
     "account/blocks": "Blocked users for %1",
     "account/uploads": "Uploads by %1",
+    "account/sessions": "Login Sessions",
     "confirm": "Email potvrđen!",
     "maintenance.text": "%1 Održavanje u toku. Posjetite nas uskoro.",
     "maintenance.messageIntro": "Poruka administratora:",

@@ -54,6 +54,7 @@
     "account/best": "Mellores mensaxes escritas por %1",
     "account/blocks": "Blocked users for %1",
     "account/uploads": "Uploads by %1",
+    "account/sessions": "Login Sessions",
     "confirm": "Enderezo electrónico confirmado",
     "maintenance.text": "%1 está baixo mantemento. Por favor, volve máis tarde.",
     "maintenance.messageIntro": "A máis, o administrador deixou esta mensaxe: ",

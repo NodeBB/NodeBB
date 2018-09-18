@@ -54,6 +54,7 @@
     "account/best": "I migliori post di %1",
     "account/blocks": "Utenti bloccati per %1",
     "account/uploads": "Uploads by %1",
+    "account/sessions": "Login Sessions",
     "confirm": "Email Confermata",
     "maintenance.text": "%1 è attualmente in manutenzione. Per favore ritorna più tardi.",
     "maintenance.messageIntro": "Inoltre, l'amministratore ha lasciato questo messaggio:",

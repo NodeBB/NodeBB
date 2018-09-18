@@ -54,6 +54,7 @@
     "account/best": "Mejores publicaciones hechas por %1",
     "account/blocks": "Usuarios bloqueados por %1",
     "account/uploads": "Subidas por %1",
+    "account/sessions": "Login Sessions",
     "confirm": "Correo electrónico confirmado",
     "maintenance.text": "%1 está en mantenimiento actualmente. Por favor vuelva en otro momento.",
     "maintenance.messageIntro": "Además, la administración ha dejado este mensaje:",

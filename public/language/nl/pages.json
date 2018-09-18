@@ -54,6 +54,7 @@
     "account/best": "Beste berichten geplaast door %1",
     "account/blocks": "Gebruikers geblokkeerd door %1",
     "account/uploads": "Uploads door %1",
+    "account/sessions": "Login Sessions",
     "confirm": "Email Bevestigd",
     "maintenance.text": "%1 is momenteel in onderhoud. Excuses voor het ongemak en probeer het later nog eens.",
     "maintenance.messageIntro": "Daarnaast heeft de beheerder het volgende bericht achtergelaten:",

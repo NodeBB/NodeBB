@@ -54,6 +54,7 @@
     "account/best": "%1のベストな投稿",
     "account/blocks": "%1のユーザーをブロックしました",
     "account/uploads": "Uploads by %1",
+    "account/sessions": "Login Sessions",
     "confirm": "Eメールが確認されました",
     "maintenance.text": "%1 は現在メンテナンスを実行中です。お手数ですが、時間をずらしてお越しください。",
     "maintenance.messageIntro": "さらに、管理者はこちらのメッセージを残しました:",
