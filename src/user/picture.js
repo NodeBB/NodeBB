@@ -122,11 +122,10 @@ module.exports = function (User) {
 				convertToPNG(path, extension, next);
 			},
 			function (path, next) {
+				picture.path = path;
 				var imageDimension = parseInt(meta.config.profileImageDimension, 10) || 200;
-				picture.path = file.appendToFileName(path, '_resized');
 				image.resizeImage({
-					path: path,
-					target: picture.path,
+					path: picture.path,
 					width: imageDimension,
 					height: imageDimension,
 				}, next);

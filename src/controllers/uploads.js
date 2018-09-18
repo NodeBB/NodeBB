@@ -153,11 +153,8 @@ uploadsController.uploadThumb = function (req, res, next) {
 			},
 			function (next) {
 				var size = parseInt(meta.config.topicThumbSize, 10) || 120;
-				var source = uploadedFile.path;
-				uploadedFile.path = file.appendToFileName(source, '_resized');
 				image.resizeImage({
-					path: source,
-					target: uploadedFile.path,
+					path: uploadedFile.path,
 					width: size,
 					height: size,
 				}, next);

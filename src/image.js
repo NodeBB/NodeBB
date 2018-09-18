@@ -4,6 +4,7 @@ var os = require('os');
 var fs = require('fs');
 var path = require('path');
 var crypto = require('crypto');
+var async = require('async');
 
 var sharp = require('sharp');
 if (os.platform() === 'win32') {
@@ -28,17 +29,24 @@ image.resizeImage = function (data, callback) {
 			callback(err);
 		});
 	} else {
-		var sharpImage = sharp(data.path, {
-			failOnError: true,
-		});
-		sharpImage.rotate(); // auto-orients based on exif data
-		sharpImage.resize(data.hasOwnProperty('width') ? data.width : null, data.hasOwnProperty('height') ? data.height : null);
+		async.waterfall([
+			function (next) {
+				fs.readFile(data.path, next);
+			},
+			function (buffer, next) {
+				var sharpImage = sharp(buffer, {
+					failOnError: true,
+				});
+				sharpImage.rotate(); // auto-orients based on exif data
+				sharpImage.resize(data.hasOwnProperty('width') ? data.width : null, data.hasOwnProperty('height') ? data.height : null);
 
-		if (data.quality) {
-			sharpImage.jpeg({ quality: data.quality });
-		}
+				if (data.quality) {
+					sharpImage.jpeg({ quality: data.quality });
+				}
 
-		sharpImage.toFile(data.target, function (err) {
+				sharpImage.toFile(data.target || data.path, next);
+			},
+		], function (err) {
 			callback(err);
 		});
 	}

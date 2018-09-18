@@ -20,10 +20,8 @@ module.exports = function (Topics) {
 			return callback();
 		}
 
-		var pathToDownload;
-		var pathToThumb;
+		var pathToUpload;
 		var filename;
-		var extension;
 		async.waterfall([
 			function (next) {
 				request.head(data.thumb, next);
@@ -34,46 +32,42 @@ module.exports = function (Topics) {
 					return next(new Error('[[error:invalid-file]]'));
 				}
 
-				extension = path.extname(data.thumb);
+				var extension = path.extname(data.thumb);
 				if (!extension) {
 					extension = '.' + mime.getExtension(type);
 				}
 				filename = Date.now() + '-topic-thumb' + extension;
-				pathToDownload = path.join(nconf.get('upload_path'), 'files', Date.now() + '-topic-thumb-temp' + extension);
-				pathToThumb = path.join(nconf.get('upload_path'), 'files', filename);
+				pathToUpload = path.join(nconf.get('upload_path'), 'files', Date.now() + '-topic-thumb' + extension);
 
-				request(data.thumb).pipe(fs.createWriteStream(pathToDownload)).on('close', next);
+				request(data.thumb).pipe(fs.createWriteStream(pathToUpload)).on('close', next);
 			},
 			function (next) {
-				file.isFileTypeAllowed(pathToDownload, next);
+				file.isFileTypeAllowed(pathToUpload, next);
 			},
 			function (next) {
 				var size = parseInt(meta.config.topicThumbSize, 10) || 120;
 				image.resizeImage({
-					path: pathToDownload,
-					target: pathToThumb,
+					path: pathToUpload,
 					width: size,
 					height: size,
 				}, next);
 			},
 			function (next) {
 				if (!plugins.hasListeners('filter:uploadImage')) {
-					file.delete(pathToDownload);
 					data.thumb = '/assets/uploads/files/' + filename;
 					return callback();
 				}
 
-				plugins.fireHook('filter:uploadImage', { image: { path: pathToThumb, name: '' }, uid: data.uid }, next);
+				plugins.fireHook('filter:uploadImage', { image: { path: pathToUpload, name: '' }, uid: data.uid }, next);
 			},
 			function (uploadedFile, next) {
-				file.delete(pathToThumb);
+				file.delete(pathToUpload);
 				data.thumb = uploadedFile.url;
 				next();
 			},
 		], function (err) {
 			if (err) {
-				file.delete(pathToDownload);
-				file.delete(pathToThumb);
+				file.delete(pathToUpload);
 			}
 			callback(err);
 		});
