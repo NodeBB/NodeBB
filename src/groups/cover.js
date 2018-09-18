@@ -26,7 +26,6 @@ module.exports = function (Groups) {
 		var tempPath = data.file ? data.file : '';
 		var url;
 		var type = data.file ? mime.getType(data.file) : 'image/png';
-		var tempThumbPath;
 		async.waterfall([
 			function (next) {
 				if (tempPath) {
@@ -48,17 +47,15 @@ module.exports = function (Groups) {
 				Groups.setGroupField(data.groupName, 'cover:url', url, next);
 			},
 			function (next) {
-				tempThumbPath = file.appendToFileName(tempPath, '_thumb');
 				image.resizeImage({
 					path: tempPath,
-					target: tempThumbPath,
 					width: 358,
 				}, next);
 			},
 			function (next) {
 				uploadsController.uploadGroupCover(uid, {
 					name: 'groupCoverThumb' + path.extname(tempPath),
-					path: tempThumbPath,
+					path: tempPath,
 					type: type,
 				}, next);
 			},
@@ -74,7 +71,6 @@ module.exports = function (Groups) {
 			},
 		], function (err) {
 			file.delete(tempPath);
-			file.delete(tempThumbPath);
 			callback(err, { url: url });
 		});
 	};
