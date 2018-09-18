@@ -4,7 +4,7 @@ var fs = require('fs');
 var nconf = require('nconf');
 var path = require('path');
 var winston = require('winston');
-var jimp = require('jimp');
+var sharp = require('sharp');
 var mkdirp = require('mkdirp');
 var mime = require('mime');
 var graceful = require('graceful-fs');
@@ -107,10 +107,20 @@ file.isFileTypeAllowed = function (path, callback) {
 		});
 	}
 
-	// Attempt to read the file, if it passes, file type is allowed
-	jimp.read(path, function (err) {
+	sharp(path, {
+		failOnError: true,
+	}).metadata(function (err) {
 		callback(err);
 	});
+};
+
+// https://stackoverflow.com/a/31205878/583363
+file.appendToFileName = function (filename, string) {
+	var dotIndex = filename.lastIndexOf('.');
+	if (dotIndex === -1) {
+		return filename + string;
+	}
+	return filename.substring(0, dotIndex) + string + filename.substring(dotIndex);
 };
 
 file.allowedExtensions = function () {
@@ -163,7 +173,7 @@ file.existsSync = function (path) {
 file.delete = function (path, callback) {
 	callback = callback || function () {};
 	if (!path) {
-		return callback();
+		return setImmediate(callback);
 	}
 	fs.unlink(path, function (err) {
 		if (err) {

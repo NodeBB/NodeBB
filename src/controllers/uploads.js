@@ -25,7 +25,7 @@ uploadsController.upload = function (req, res, filesIterator) {
 		files = files[0];
 	}
 
-	async.map(files, filesIterator, function (err, images) {
+	async.mapSeries(files, filesIterator, function (err, images) {
 		deleteTempFiles(files);
 
 		if (err) {
@@ -116,14 +116,9 @@ function resizeImage(fileObj, callback) {
 				return callback(null, fileObj);
 			}
 
-			var dirname = path.dirname(fileObj.path);
-			var extname = path.extname(fileObj.path);
-			var basename = path.basename(fileObj.path, extname);
-
 			image.resizeImage({
 				path: fileObj.path,
-				target: path.join(dirname, basename + '-resized' + extname),
-				extension: extname,
+				target: file.appendToFileName(fileObj.path, '-resized'),
 				width: parseInt(meta.config.maximumImageWidth, 10) || 760,
 				quality: parseInt(meta.config.resizeImageQuality, 10) || 60,
 			}, next);
@@ -158,9 +153,11 @@ uploadsController.uploadThumb = function (req, res, next) {
 			},
 			function (next) {
 				var size = parseInt(meta.config.topicThumbSize, 10) || 120;
+				var source = uploadedFile.path;
+				uploadedFile.path = file.appendToFileName(source, '_resized');
 				image.resizeImage({
-					path: uploadedFile.path,
-					extension: path.extname(uploadedFile.name),
+					path: source,
+					target: uploadedFile.path,
 					width: size,
 					height: size,
 				}, next);
