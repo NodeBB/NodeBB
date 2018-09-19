@@ -289,21 +289,19 @@ SocketUser.invite = function (socket, email, callback) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
 
-			var max = parseInt(meta.config.maximumInvites, 10);
-			if (!max) {
-				return user.sendInvitationEmail(socket.uid, email, callback);
-			}
-
 			async.waterfall([
 				function (next) {
 					user.getInvitesNumber(socket.uid, next);
 				},
 				function (invites, next) {
-					if (!isAdmin && invites >= max) {
+					var max = parseInt(meta.config.maximumInvites, 10);
+					if (!isAdmin && max && invites >= max) {
 						return next(new Error('[[error:invite-maximum-met, ' + invites + ', ' + max + ']]'));
 					}
-
-					user.sendInvitationEmail(socket.uid, email, next);
+					email = email.split(',').map(email => email.trim()).filter(Boolean);
+					async.eachSeries(email, function (email, next) {
+						user.sendInvitationEmail(socket.uid, email, next);
+					}, next);
 				},
 			], next);
 		},
