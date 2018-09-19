@@ -54,7 +54,7 @@
     "account/best": "Meilleurs messages postés par %1",
     "account/blocks": "Utilisateurs bloqués pour %1",
     "account/uploads": "Envoyé par %1",
-    "account/sessions": "Login Sessions",
+    "account/sessions": "Sessions des connexions",
     "confirm": "Email vérifié",
     "maintenance.text": "%1 est en maintenance. Veuillez revenir un peu plus tard.",
     "maintenance.messageIntro": "De plus, l'administrateur a laissé ce message :",
