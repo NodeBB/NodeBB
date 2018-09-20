@@ -3,9 +3,14 @@
 var os = require('os');
 var fs = require('fs');
 var path = require('path');
-var Jimp = require('jimp');
-var async = require('async');
 var crypto = require('crypto');
+var async = require('async');
+
+var sharp = require('sharp');
+if (os.platform() === 'win32') {
+	// https://github.com/lovell/sharp/issues/1259
+	sharp.cache(false);
+}
 
 var file = require('./file');
 var plugins = require('./plugins');
@@ -17,7 +22,6 @@ image.resizeImage = function (data, callback) {
 		plugins.fireHook('filter:image.resize', {
 			path: data.path,
 			target: data.target,
-			extension: data.extension,
 			width: data.width,
 			height: data.height,
 			quality: data.quality,
@@ -25,64 +29,25 @@ image.resizeImage = function (data, callback) {
 			callback(err);
 		});
 	} else {
-		new Jimp(data.path, function (err, image) {
-			if (err) {
-				return callback(err);
-			}
+		async.waterfall([
+			function (next) {
+				fs.readFile(data.path, next);
+			},
+			function (buffer, next) {
+				var sharpImage = sharp(buffer, {
+					failOnError: true,
+				});
+				sharpImage.rotate(); // auto-orients based on exif data
+				sharpImage.resize(data.hasOwnProperty('width') ? data.width : null, data.hasOwnProperty('height') ? data.height : null);
 
-			var w = image.bitmap.width;
-			var h = image.bitmap.height;
-			var origRatio = w / h;
-			var desiredRatio = data.width && data.height ? data.width / data.height : origRatio;
-			var x = 0;
-			var y = 0;
-			var crop;
-
-			if (image._exif && image._exif.tags && image._exif.tags.Orientation) {
-				image.exifRotate();
-			}
-
-			if (origRatio !== desiredRatio) {
-				if (desiredRatio > origRatio) {
-					desiredRatio = 1 / desiredRatio;
+				if (data.quality) {
+					sharpImage.jpeg({ quality: data.quality });
 				}
-				if (origRatio >= 1) {
-					y = 0;	// height is the smaller dimension here
-					x = Math.floor((w / 2) - (h * desiredRatio / 2));
-					crop = async.apply(image.crop.bind(image), x, y, h * desiredRatio, h);
-				} else {
-					x = 0;	// width is the smaller dimension here
-					y = Math.floor((h / 2) - (w * desiredRatio / 2));
-					crop = async.apply(image.crop.bind(image), x, y, w, w * desiredRatio);
-				}
-			} else {
-				// Simple resize given either width, height, or both
-				crop = async.apply(setImmediate);
-			}
 
-			async.waterfall([
-				crop,
-				function (_image, next) {
-					if (typeof _image === 'function' && !next) {
-						next = _image;
-						_image = image;
-					}
-
-					if ((data.width && data.height) || (w > data.width) || (h > data.height)) {
-						_image.resize(data.width || Jimp.AUTO, data.height || Jimp.AUTO, next);
-					} else {
-						next(null, image);
-					}
-				},
-				function (image, next) {
-					if (data.quality) {
-						image.quality(data.quality);
-					}
-					image.write(data.target || data.path, next);
-				},
-			], function (err) {
-				callback(err);
-			});
+				sharpImage.toFile(data.target || data.path, next);
+			},
+		], function (err) {
+			callback(err);
 		});
 	}
 };
@@ -91,21 +56,13 @@ image.normalise = function (path, extension, callback) {
 	if (plugins.hasListeners('filter:image.normalise')) {
 		plugins.fireHook('filter:image.normalise', {
 			path: path,
-			extension: extension,
 		}, function (err) {
 			callback(err, path + '.png');
 		});
 	} else {
-		async.waterfall([
-			function (next) {
-				new Jimp(path, next);
-			},
-			function (image, next) {
-				image.write(path + '.png', function (err) {
-					next(err, path + '.png');
-				});
-			},
-		], callback);
+		sharp(path, { failOnError: true }).png().toFile(path + '.png', function (err) {
+			callback(err, path + '.png');
+		});
 	}
 };
 
@@ -114,13 +71,30 @@ image.size = function (path, callback) {
 		plugins.fireHook('filter:image.size', {
 			path: path,
 		}, function (err, image) {
-			callback(err, image);
+			callback(err, image ? { width: image.width, height: image.height } : undefined);
 		});
 	} else {
-		new Jimp(path, function (err, data) {
-			callback(err, data ? data.bitmap : null);
+		sharp(path, { failOnError: true }).metadata(function (err, metadata) {
+			callback(err, metadata ? { width: metadata.width, height: metadata.height } : undefined);
 		});
 	}
+};
+
+image.checkDimensions = function (path, callback) {
+	const meta = require('./meta');
+	image.size(path, function (err, result) {
+		if (err) {
+			return callback(err);
+		}
+
+		const maxWidth = parseInt(meta.config.rejectImageWidth, 10) || 5000;
+		const maxHeight = parseInt(meta.config.rejectImageHeight, 10) || 5000;
+		if (result.width > maxWidth || result.height > maxHeight) {
+			return callback(new Error('[[error:invalid-image-dimensions]]'));
+		}
+
+		callback();
+	});
 };
 
 image.convertImageToBase64 = function (path, callback) {

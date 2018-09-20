@@ -15,6 +15,8 @@ var privileges = require('../src/privileges');
 var meta = require('../src/meta');
 var socketUser = require('../src/socket.io/user');
 var helpers = require('./helpers');
+var file = require('../src/file');
+var image = require('../src/image');
 
 describe('Upload Controllers', function () {
 	var tid;
@@ -129,6 +131,38 @@ describe('Upload Controllers', function () {
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
 				assert(body[0].url);
+				done();
+			});
+		});
+
+		it('should fail to upload image to post if image dimensions are too big', function (done) {
+			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/toobig.jpg'), {}, jar, csrf_token, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 500);
+				assert(body.error, '[[error:invalid-image-dimensions]]');
+				done();
+			});
+		});
+
+		it('should fail to upload image to post if image is broken', function (done) {
+			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/brokenimage.png'), {}, jar, csrf_token, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 500);
+				assert(body.error, 'invalid block type');
+				done();
+			});
+		});
+
+		it('should fail if file is not an image', function (done) {
+			file.isFileTypeAllowed(path.join(__dirname, '../test/files/notanimage.png'), function (err) {
+				assert.equal(err.message, 'Input file is missing or of an unsupported image format');
+				done();
+			});
+		});
+
+		it('should fail if file is not an image', function (done) {
+			image.size(path.join(__dirname, '../test/files/notanimage.png'), function (err) {
+				assert.equal(err.message, 'Input file is missing or of an unsupported image format');
 				done();
 			});
 		});

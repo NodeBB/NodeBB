@@ -123,11 +123,9 @@ module.exports = function (User) {
 			},
 			function (path, next) {
 				picture.path = path;
-
 				var imageDimension = parseInt(meta.config.profileImageDimension, 10) || 200;
 				image.resizeImage({
 					path: picture.path,
-					extension: extension,
 					width: imageDimension,
 					height: imageDimension,
 				}, next);

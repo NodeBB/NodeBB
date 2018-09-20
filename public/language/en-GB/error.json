@@ -105,6 +105,7 @@
 	"invalid-image-type": "Invalid image type. Allowed types are: %1",
 	"invalid-image-extension": "Invalid image extension",
 	"invalid-file-type": "Invalid file type. Allowed types are: %1",
+	"invalid-image-dimensions": "Image dimensions are too big",
 
 	"group-name-too-short": "Group name too short",
 	"group-name-too-long": "Group name too long",
