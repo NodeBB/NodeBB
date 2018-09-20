@@ -54,7 +54,7 @@
     "account/best": "Најбоље поруке од %1",
     "account/blocks": "Корисници које је блокирао %1",
     "account/uploads": "Отпремио %1",
-    "account/sessions": "Login Sessions",
+    "account/sessions": "Сесије пријављивања",
     "confirm": "Е-пошта је потврђена.",
     "maintenance.text": "%1 је тренутно у фази одржавања. Молимо, навратите касније.",
     "maintenance.messageIntro": "Додатно, администратор је оставио ову поруку:",
