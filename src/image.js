@@ -125,3 +125,7 @@ image.writeImageDataToTempFile = function (imageData, callback) {
 		callback(err, filepath);
 	});
 };
+
+image.sizeFromBase64 = function (imageData) {
+	return Buffer.from(imageData.slice(imageData.indexOf('base64') + 7), 'base64').length;
+};

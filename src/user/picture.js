@@ -37,7 +37,7 @@ module.exports = function (User) {
 
 		async.waterfall([
 			function (next) {
-				var size = data.file ? data.file.size : data.imageData.length;
+				var size = data.file ? data.file.size : image.sizeFromBase64(data.imageData);
 				meta.config.maximumCoverImageSize = meta.config.maximumCoverImageSize || 2048;
 				if (size > parseInt(meta.config.maximumCoverImageSize, 10) * 1024) {
 					return next(new Error('[[error:file-too-big, ' + meta.config.maximumCoverImageSize + ']]'));
@@ -89,10 +89,10 @@ module.exports = function (User) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
-		var size = data.file ? data.file.size : data.imageData.length;
+		var size = data.file ? data.file.size : image.sizeFromBase64(data.imageData);
 		var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
 		if (size > uploadSize * 1024) {
-			return callback(new Error('[[error:file-too-big, ' + meta.config.maximumProfileImageSize + ']]'));
+			return callback(new Error('[[error:file-too-big, ' + uploadSize + ']]'));
 		}
 
 		var type = data.file ? data.file.type : image.mimeFromBase64(data.imageData);
