@@ -35,7 +35,7 @@ module.exports = function (Categories) {
 					parentCid: parentCid,
 					topic_count: 0,
 					post_count: 0,
-					disabled: 0,
+					disabled: data.disabled ? 1 : 0,
 					order: order,
 					link: data.link || '',
 					numRecentReplies: 1,
