@@ -115,6 +115,7 @@ describe('Upload Controllers', function () {
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
 				assert(body[0].url);
+				assert(body[0].url.match(/\/assets\/uploads\/files\/\d+-test-resized\.png/));
 				meta.config.maximumImageWidth = oldValue;
 				done();
 			});
