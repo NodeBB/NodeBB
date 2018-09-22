@@ -66,7 +66,7 @@ module.exports = function (Topics) {
 
 	Topics.getUnreadTids = function (params, callback) {
 		var uid = parseInt(params.uid, 10);
-		if (uid === 0) {
+		if (uid <= 0) {
 			return callback(null, []);
 		}
 
