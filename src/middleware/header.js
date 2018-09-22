@@ -120,14 +120,17 @@ module.exports = function (middleware) {
 					banned: async.apply(user.isBanned, req.uid),
 					banReason: async.apply(user.getBannedReason, req.uid),
 
+					unreadCounts: async.apply(topics.getUnreadCounts, req.uid),
 					unreadTopicCount: async.apply(topics.getTotalUnread, req.uid),
 					unreadNewTopicCount: async.apply(topics.getTotalUnread, req.uid, 'new'),
 					unreadWatchedTopicCount: async.apply(topics.getTotalUnread, req.uid, 'watched'),
 					unreadChatCount: async.apply(messaging.getUnreadCount, req.uid),
 					unreadNotificationCount: async.apply(user.notifications.getUnreadCount, req.uid),
+
 				}, next);
 			},
 			function (results, next) {
+				console.log('test', results.unreadCounts);
 				if (results.banned) {
 					req.logout();
 					return res.redirect('/');
