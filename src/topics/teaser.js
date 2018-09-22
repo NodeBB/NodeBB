@@ -112,19 +112,18 @@ module.exports = function (Topics) {
 	};
 
 	function handleBlocks(uid, teasers, callback) {
-		async.mapSeries(teasers, function (postData, nextPost) {
-			async.waterfall([
-				function (next) {
-					user.blocks.is(postData.uid, uid, next);
-				},
-				function (isBlocked, next) {
-					if (!isBlocked) {
-						return nextPost(null, postData);
-					}
-					getPreviousNonBlockedPost(postData, uid, next);
-				},
-			], nextPost);
-		}, callback);
+		user.blocks.list(uid, function (err, blockedUids) {
+			if (err || !blockedUids.length) {
+				return callback(err);
+			}
+			async.mapSeries(teasers, function (postData, nextPost) {
+				if (blockedUids.includes(parseInt(postData.uid, 10))) {
+					getPreviousNonBlockedPost(postData, uid, nextPost);
+				} else {
+					setImmediate(nextPost, null, postData);
+				}
+			}, callback);
+		});
 	}
 
 	function getPreviousNonBlockedPost(postData, uid, callback) {

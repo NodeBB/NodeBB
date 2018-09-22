@@ -76,6 +76,8 @@ module.exports = function (Topics) {
 			return callback(null, params.count ? counts : []);
 		}
 
+		params.filter = params.filter || '';
+
 		var cutoff = params.cutoff || Topics.unreadCutoff();
 
 		if (params.cid && !Array.isArray(params.cid)) {
@@ -153,13 +155,7 @@ module.exports = function (Topics) {
 			return !userRead[recentTopic.value] || recentTopic.score > userRead[recentTopic.value];
 		});
 
-		// convert topics to tids
-		tids = tids.map(function (topic) {
-			return topic.value;
-		});
-
-		// make sure tids are unique
-		tids = _.uniq(tids);
+		tids = _.uniq(tids.map(topic => topic.value));
 
 		var cid = params.cid;
 		var uid = params.uid;
@@ -214,7 +210,7 @@ module.exports = function (Topics) {
 							tidsByFilter.watched.push(topic.tid);
 						}
 
-						if (parseInt(topic.postcount, 10) === 1) {
+						if (parseInt(topic.postcount, 10) <= 1) {
 							counts.unreplied += 1;
 							tidsByFilter.unreplied.push(topic.tid);
 						}
