@@ -70,7 +70,7 @@
         "nodebb-plugin-dbsearch": "2.0.21",
         "nodebb-plugin-emoji": "^2.2.5",
         "nodebb-plugin-emoji-android": "2.0.0",
-        "nodebb-plugin-markdown": "8.7.2",
+        "nodebb-plugin-markdown": "8.7.3",
         "nodebb-plugin-mentions": "2.2.8",
         "nodebb-plugin-soundpack-default": "1.0.0",
         "nodebb-plugin-spam-be-gone": "0.5.4",

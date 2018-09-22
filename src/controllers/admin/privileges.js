@@ -2,6 +2,7 @@
 
 var async = require('async');
 
+var db = require('../../database');
 var categories = require('../../categories');
 var privileges = require('../../privileges');
 
@@ -19,7 +20,19 @@ privilegesController.get = function (req, res, callback) {
 						privileges.categories.list(cid, next);
 					}
 				},
-				allCategories: async.apply(categories.buildForSelect, req.uid, 'read'),
+				allCategories: function (next) {
+					async.waterfall([
+						function (next) {
+							db.getSortedSetRange('cid:0:children', 0, -1, next);
+						},
+						function (cids, next) {
+							categories.getCategories(cids, req.uid, next);
+						},
+						function (categoriesData, next) {
+							categories.buildForSelectCategories(categoriesData, next);
+						},
+					], next);
+				},
 			}, next);
 		},
 		function (data) {

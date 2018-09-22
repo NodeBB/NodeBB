@@ -48,6 +48,7 @@
 	"composer.formatting.italic": "Italic",
 	"composer.formatting.list": "List",
 	"composer.formatting.strikethrough": "Strikethrough",
+	"composer.formatting.code": "Code",
 	"composer.formatting.link": "Link",
 	"composer.formatting.picture": "Picture",
 	"composer.upload-picture": "Upload Image",
