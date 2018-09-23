@@ -144,14 +144,14 @@ module.exports = function (middleware) {
 				setBootswatchCSS(templateValues, res.locals.config);
 
 				var unreadCount = {
-					topic: results.unreadCounts['']|| 0,
+					topic: results.unreadCounts[''] || 0,
 					newTopic: results.unreadCounts.new || 0,
 					watchedTopic: results.unreadCounts.watched || 0,
 					unrepliedTopic: results.unreadCounts.unreplied || 0,
 					chat: results.unreadChatCount || 0,
 					notification: results.unreadNotificationCount || 0,
 				};
-				console.log('test', unreadCount, results.unreadCounts);
+
 				Object.keys(unreadCount).forEach(function (key) {
 					if (unreadCount[key] > 99) {
 						unreadCount[key] = '99+';

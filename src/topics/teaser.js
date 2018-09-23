@@ -114,7 +114,7 @@ module.exports = function (Topics) {
 	function handleBlocks(uid, teasers, callback) {
 		user.blocks.list(uid, function (err, blockedUids) {
 			if (err || !blockedUids.length) {
-				return callback(err);
+				return callback(err, teasers);
 			}
 			async.mapSeries(teasers, function (postData, nextPost) {
 				if (blockedUids.includes(parseInt(postData.uid, 10))) {
