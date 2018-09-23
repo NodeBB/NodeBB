@@ -176,6 +176,7 @@ module.exports = function (Topics) {
 			function (_blockedUids, next) {
 				blockedUids = _blockedUids;
 				filterTidsThatHaveBlockedPosts({
+					uid: uid,
 					tids: tids,
 					blockedUids: blockedUids,
 					recentTids: results.recentTids,
