@@ -233,7 +233,11 @@ module.exports = function (Topics) {
 					}
 				});
 
-				next(null, { counts: counts, tids: tidsByFilter[params.filter] });
+				next(null, {
+					counts: counts,
+					tids: tidsByFilter[params.filter],
+					tidsByFilter: tidsByFilter,
+				});
 			},
 		], callback);
 	}
