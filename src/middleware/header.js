@@ -165,15 +165,21 @@ module.exports = function (middleware) {
 							iconClass: item.iconClass + ' unread-count',
 						});
 					}
-					if (item.originalRoute === '/unread/new' && results.unreadCounts.new > 0) {
+					if (item.originalRoute === '/unread?filter=new' && results.unreadCounts.new > 0) {
 						return Object.assign({}, item, {
 							content: unreadCount.newTopic,
 							iconClass: item.iconClass + ' unread-count',
 						});
 					}
-					if (item.originalRoute === '/unread/watched' && results.unreadCounts.watched > 0) {
+					if (item.originalRoute === '/unread?filter=watched' && results.unreadCounts.watched > 0) {
 						return Object.assign({}, item, {
 							content: unreadCount.watchedTopic,
+							iconClass: item.iconClass + ' unread-count',
+						});
+					}
+					if (item.originalRoute === '/unread?filter=unreplied' && results.unreadCounts.unreplied > 0) {
+						return Object.assign({}, item, {
+							content: unreadCount.unrepliedTopic,
 							iconClass: item.iconClass + ' unread-count',
 						});
 					}

@@ -113,6 +113,7 @@ module.exports = function (Topics) {
 					uid: uid,
 					tids: data.tids,
 					counts: data.counts,
+					tidsByFilter: data.tidsByFilter,
 					cid: params.cid,
 					filter: params.filter,
 				}, next);
