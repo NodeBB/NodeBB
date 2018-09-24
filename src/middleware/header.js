@@ -120,9 +120,7 @@ module.exports = function (middleware) {
 					banned: async.apply(user.isBanned, req.uid),
 					banReason: async.apply(user.getBannedReason, req.uid),
 
-					unreadTopicCount: async.apply(topics.getTotalUnread, req.uid),
-					unreadNewTopicCount: async.apply(topics.getTotalUnread, req.uid, 'new'),
-					unreadWatchedTopicCount: async.apply(topics.getTotalUnread, req.uid, 'watched'),
+					unreadCounts: async.apply(topics.getUnreadTids, { uid: req.uid, count: true }),
 					unreadChatCount: async.apply(messaging.getUnreadCount, req.uid),
 					unreadNotificationCount: async.apply(user.notifications.getUnreadCount, req.uid),
 				}, next);
@@ -146,12 +144,14 @@ module.exports = function (middleware) {
 				setBootswatchCSS(templateValues, res.locals.config);
 
 				var unreadCount = {
-					topic: results.unreadTopicCount || 0,
-					newTopic: results.unreadNewTopicCount || 0,
-					watchedTopic: results.unreadWatchedTopicCount || 0,
+					topic: results.unreadCounts[''] || 0,
+					newTopic: results.unreadCounts.new || 0,
+					watchedTopic: results.unreadCounts.watched || 0,
+					unrepliedTopic: results.unreadCounts.unreplied || 0,
 					chat: results.unreadChatCount || 0,
 					notification: results.unreadNotificationCount || 0,
 				};
+
 				Object.keys(unreadCount).forEach(function (key) {
 					if (unreadCount[key] > 99) {
 						unreadCount[key] = '99+';
@@ -159,25 +159,18 @@ module.exports = function (middleware) {
 				});
 
 				results.navigation = results.navigation.map(function (item) {
-					if (item.originalRoute === '/unread' && results.unreadTopicCount > 0) {
-						return Object.assign({}, item, {
-							content: unreadCount.topic,
-							iconClass: item.iconClass + ' unread-count',
-						});
+					function modifyNavItem(item, route, count, content) {
+						if (item && item.originalRoute === route) {
+							item.content = content;
+							if (count > 0) {
+								item.iconClass += ' unread-count';
+							}
+						}
 					}
-					if (item.originalRoute === '/unread/new' && results.unreadNewTopicCount > 0) {
-						return Object.assign({}, item, {
-							content: unreadCount.newTopic,
-							iconClass: item.iconClass + ' unread-count',
-						});
-					}
-					if (item.originalRoute === '/unread/watched' && results.unreadWatchedTopicCount > 0) {
-						return Object.assign({}, item, {
-							content: unreadCount.watchedTopic,
-							iconClass: item.iconClass + ' unread-count',
-						});
-					}
-
+					modifyNavItem(item, '/unread', results.unreadCounts[''], unreadCount.topic);
+					modifyNavItem(item, '/unread?filter=new', results.unreadCounts.new, unreadCount.newTopic);
+					modifyNavItem(item, '/unread?filter=watched', results.unreadCounts.watched, unreadCount.watchedTopic);
+					modifyNavItem(item, '/unread?filter=unreplied', results.unreadCounts.unreplied, unreadCount.unrepliedTopic);
 					return item;
 				});
 
