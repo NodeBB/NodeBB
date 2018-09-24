@@ -110,7 +110,7 @@
         "toobusy-js": "^0.5.1",
         "uglify-es": "^3.3.9",
         "util.promisify": "1.0.0",
-        "validator": "10.7.1",
+        "validator": "10.8.0",
         "winston": "^2.4.0",
         "xml": "^1.0.1",
         "xregexp": "^4.1.1",
