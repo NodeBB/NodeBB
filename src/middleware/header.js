@@ -160,9 +160,11 @@ module.exports = function (middleware) {
 
 				results.navigation = results.navigation.map(function (item) {
 					function modifyNavItem(item, route, count, content) {
-						if (item && item.originalRoute === route && count > 0) {
+						if (item && item.originalRoute === route) {
 							item.content = content;
-							item.iconClass += ' unread-count';
+							if (count > 0) {
+								item.iconClass += ' unread-count';
+							}
 						}
 					}
 					modifyNavItem(item, '/unread', results.unreadCounts[''], unreadCount.topic);

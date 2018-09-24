@@ -85,6 +85,7 @@ define('forum/footer', ['notifications', 'chat', 'components', 'translator'], fu
 		updateUnreadTopicCount('/unread', data.unreadTopicCount);
 		updateUnreadTopicCount('/unread?filter=new', data.unreadNewTopicCount);
 		updateUnreadTopicCount('/unread?filter=watched', data.unreadWatchedTopicCount);
+		updateUnreadTopicCount('/unread?filter=unreplied', data.unreadUnrepliedTopicCount);
 	}
 
 	socket.on('event:unread.updateCount', updateUnreadCounters);
