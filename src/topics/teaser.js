@@ -5,6 +5,7 @@ var async = require('async');
 var _ = require('lodash');
 var winston = require('winston');
 
+var db = require('../database');
 var meta = require('../meta');
 var user = require('../user');
 var posts = require('../posts');
@@ -112,53 +113,54 @@ module.exports = function (Topics) {
 	};
 
 	function handleBlocks(uid, teasers, callback) {
-		async.mapSeries(teasers, function (postData, nextPost) {
-			async.waterfall([
-				function (next) {
-					user.blocks.is(postData.uid, uid, next);
-				},
-				function (isBlocked, next) {
-					if (!isBlocked) {
-						return nextPost(null, postData);
-					}
-					getPreviousNonBlockedPost(postData, uid, next);
-				},
-			], nextPost);
-		}, callback);
+		user.blocks.list(uid, function (err, blockedUids) {
+			if (err || !blockedUids.length) {
+				return callback(err, teasers);
+			}
+			async.mapSeries(teasers, function (postData, nextPost) {
+				if (blockedUids.includes(parseInt(postData.uid, 10))) {
+					getPreviousNonBlockedPost(postData, blockedUids, nextPost);
+				} else {
+					setImmediate(nextPost, null, postData);
+				}
+			}, callback);
+		});
 	}
 
-	function getPreviousNonBlockedPost(postData, uid, callback) {
+	function getPreviousNonBlockedPost(postData, blockedUids, callback) {
 		let isBlocked = false;
 		let prevPost = postData;
-		Topics.getPids(postData.tid, function (err, pids) {
-			if (err) {
-				return callback(err);
-			}
+		const postsPerIteration = 5;
+		let start = 0;
+		let stop = start + postsPerIteration - 1;
 
-			async.doWhilst(function (next) {
-				async.waterfall([
-					function (next) {
-						const index = pids.lastIndexOf(String(prevPost.pid));
-						if (index <= 0) {
-							return callback(null, null);
-						}
+		async.doWhilst(function (next) {
+			async.waterfall([
+				function (next) {
+					db.getSortedSetRevRange('tid:' + postData.tid + ':posts', start, stop, next);
+				},
+				function (pids, next) {
+					if (!pids.length) {
+						return callback(null, null);
+					}
 
-						posts.getPostFields(pids[index - 1], ['pid', 'uid', 'timestamp', 'tid', 'content'], next);
-					},
-					function (_prevPost, next) {
-						prevPost = _prevPost;
-						user.blocks.is(prevPost.uid, uid, next);
-					},
-					function (_isBlocked, next) {
-						isBlocked = _isBlocked;
-						next();
-					},
-				], next);
-			}, function () {
-				return isBlocked && prevPost && prevPost.pid;
-			}, function (err) {
-				callback(err, prevPost);
-			});
+					posts.getPostsFields(pids, ['pid', 'uid', 'timestamp', 'tid', 'content'], next);
+				},
+				function (prevPosts, next) {
+					isBlocked = prevPosts.every(function (post) {
+						const isPostBlocked = blockedUids.includes(parseInt(post.uid, 10));
+						prevPost = !isPostBlocked ? post : prevPost;
+						return isPostBlocked;
+					});
+					start += postsPerIteration;
+					stop = start + postsPerIteration - 1;
+					next();
+				},
+			], next);
+		}, function () {
+			return isBlocked && prevPost && prevPost.pid;
+		}, function (err) {
+			callback(err, prevPost);
 		});
 	}
 

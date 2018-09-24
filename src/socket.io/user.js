@@ -261,12 +261,19 @@ SocketUser.getUnreadCounts = function (socket, data, callback) {
 		return callback(null, {});
 	}
 	async.parallel({
-		unreadTopicCount: async.apply(topics.getTotalUnread, socket.uid),
-		unreadNewTopicCount: async.apply(topics.getTotalUnread, socket.uid, 'new'),
-		unreadWatchedTopicCount: async.apply(topics.getTotalUnread, socket.uid, 'watched'),
+		unreadCounts: async.apply(topics.getUnreadTids, { uid: socket.uid, count: true }),
 		unreadChatCount: async.apply(messaging.getUnreadCount, socket.uid),
 		unreadNotificationCount: async.apply(user.notifications.getUnreadCount, socket.uid),
-	}, callback);
+	}, function (err, results) {
+		if (err) {
+			return callback(err);
+		}
+		results.unreadTopicCount = results.unreadCounts[''];
+		results.unreadNewTopicCount = results.unreadCounts.new;
+		results.unreadWatchedTopicCount = results.unreadCounts.watched;
+		results.unreadUnrepliedTopicCount = results.unreadCounts.unreplied;
+		callback(null, results);
+	});
 };
 
 SocketUser.invite = function (socket, email, callback) {
