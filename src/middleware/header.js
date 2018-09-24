@@ -159,31 +159,16 @@ module.exports = function (middleware) {
 				});
 
 				results.navigation = results.navigation.map(function (item) {
-					if (item.originalRoute === '/unread' && results.unreadCounts[''] > 0) {
-						return Object.assign({}, item, {
-							content: unreadCount.topic,
-							iconClass: item.iconClass + ' unread-count',
-						});
+					function modifyNavItem(item, route, count, content) {
+						if (item && item.originalRoute === route && count > 0) {
+							item.content = content;
+							item.iconClass += ' unread-count';
+						}
 					}
-					if (item.originalRoute === '/unread?filter=new' && results.unreadCounts.new > 0) {
-						return Object.assign({}, item, {
-							content: unreadCount.newTopic,
-							iconClass: item.iconClass + ' unread-count',
-						});
-					}
-					if (item.originalRoute === '/unread?filter=watched' && results.unreadCounts.watched > 0) {
-						return Object.assign({}, item, {
-							content: unreadCount.watchedTopic,
-							iconClass: item.iconClass + ' unread-count',
-						});
-					}
-					if (item.originalRoute === '/unread?filter=unreplied' && results.unreadCounts.unreplied > 0) {
-						return Object.assign({}, item, {
-							content: unreadCount.unrepliedTopic,
-							iconClass: item.iconClass + ' unread-count',
-						});
-					}
-
+					modifyNavItem(item, '/unread', results.unreadCounts[''], unreadCount.topic);
+					modifyNavItem(item, '/unread?filter=new', results.unreadCounts.new, unreadCount.newTopic);
+					modifyNavItem(item, '/unread?filter=watched', results.unreadCounts.watched, unreadCount.watchedTopic);
+					modifyNavItem(item, '/unread?filter=unreplied', results.unreadCounts.unreplied, unreadCount.unrepliedTopic);
 					return item;
 				});
 
