@@ -716,7 +716,7 @@ SELECT z."value", z."score" v
 					}
 
 					rows = rows.map(function (row) {
-						return options.withScores ? row : row.v;
+						return options.withScores ? row : row.value;
 					});
 
 					process(rows, function (err) {
