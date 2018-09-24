@@ -137,7 +137,6 @@ module.exports = function (User) {
 							'uid:' + uid + ':bookmarks',
 							'uid:' + uid + ':followed_tids',
 							'uid:' + uid + ':ignored_tids',
-							'uid:' + uid + ':bans:timestamp',
 							'user:' + uid + ':settings',
 							'uid:' + uid + ':topics', 'uid:' + uid + ':posts',
 							'uid:' + uid + ':chats', 'uid:' + uid + ':chats:unread',
@@ -150,6 +149,9 @@ module.exports = function (User) {
 					},
 					function (next) {
 						deleteUserIps(uid, next);
+					},
+					function (next) {
+						deleteBans(uid, next);
 					},
 					function (next) {
 						deleteUserFromFollowers(uid, next);
@@ -218,6 +220,20 @@ module.exports = function (User) {
 			},
 			function (next) {
 				db.delete('uid:' + uid + ':ip', next);
+			},
+		], callback);
+	}
+
+	function deleteBans(uid, callback) {
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRange('uid:' + uid + ':bans:timestamp', 0, -1, next);
+			},
+			function (bans, next) {
+				db.deleteAll(bans, next);
+			},
+			function (next) {
+				db.delete('uid:' + uid + ':bans:timestamp', next);
 			},
 		], callback);
 	}
