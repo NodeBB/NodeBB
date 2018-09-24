@@ -30,7 +30,7 @@ module.exports = function (User) {
 			async.apply(db.sortedSetAdd, 'uid:' + uid + ':bans', now, until),
 		];
 
-		if (until > 0 && now < until) {
+		if (until > now) {
 			tasks.push(async.apply(db.sortedSetAdd, 'users:banned:expire', until, uid));
 			tasks.push(async.apply(User.setUserField, uid, 'banned:expire', until));
 		} else {
