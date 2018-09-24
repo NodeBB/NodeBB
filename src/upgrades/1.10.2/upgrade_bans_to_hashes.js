@@ -60,15 +60,15 @@ module.exports = {
 								return reasonData.score === score;
 							});
 						}
-						const reason = findReason(ban.score);
+						const reasonData = findReason(ban.score);
 						const banKey = 'uid:' + uid + ':ban:' + ban.score;
 						var data = {
 							uid: uid,
 							timestamp: ban.score,
 							expire: parseInt(ban.value, 10),
 						};
-						if (reason) {
-							data.reason = reason;
+						if (reasonData) {
+							data.reason = reasonData.value;
 						}
 						addBan(banKey, data, next);
 					}, function (err) {
