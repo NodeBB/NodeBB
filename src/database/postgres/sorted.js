@@ -697,7 +697,7 @@ DELETE FROM "legacy_zset" z
 
 			var batchSize = (options || {}).batch || 100;
 			var query = client.query(new Cursor(`
-SELECT z."value" v
+SELECT z."value", z."score" v
   FROM "legacy_object_live" o
  INNER JOIN "legacy_zset" z
          ON o."_key" = z."_key"
@@ -716,7 +716,7 @@ SELECT z."value" v
 					}
 
 					rows = rows.map(function (row) {
-						return row.v;
+						return options.withScores ? row : row.v;
 					});
 
 					process(rows, function (err) {
