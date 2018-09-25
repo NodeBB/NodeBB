@@ -205,10 +205,11 @@ module.exports = function (Topics) {
 			},
 			function (results, next) {
 				cid = cid && cid.map(String);
+				results.readableCids = results.readableCids.map(String);
 
 				topicData.forEach(function (topic, index) {
 					function cidMatch(topicCid) {
-						return (!cid || (cid.length && cid.includes(String(topicCid))));
+						return (!cid || (cid.length && cid.includes(String(topicCid)))) && results.readableCids.includes(String(topicCid));
 					}
 
 					if (topic && topic.cid && cidMatch(topic.cid) && !blockedUids.includes(parseInt(topic.uid, 10))) {
