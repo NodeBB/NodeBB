@@ -13,7 +13,7 @@
 	"name": "Tag Name",
 
 	"alerts.editing-multiple": "Rediģē vairākas birkas",
-	"alerts.editing-x": "Editing \"%1\" tag",
+	"alerts.editing-x": "Rediģē \"%1\" birku",
 	"alerts.confirm-delete": "Vai vēlies izdzēst šīs birkas?",
 	"alerts.update-success": "Tag Updated!"
 }

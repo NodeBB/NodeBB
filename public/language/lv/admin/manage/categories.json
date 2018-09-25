@@ -47,9 +47,9 @@
 	"analytics.back": "Back to Categories List",
 	"analytics.title": "Analytics for \"%1\" category",
 	"analytics.pageviews-hourly": "<strong>Figure 1</strong> &ndash; Hourly page views for this category</small>",
-	"analytics.pageviews-daily": "<strong>Figure 2</strong> &ndash; Daily page views for this category</small>",
-	"analytics.topics-daily": "<strong>Figure 3</strong> &ndash; Daily topics created in this category</small>",
-	"analytics.posts-daily": "<strong>Figure 4</strong> &ndash; Daily posts made in this category</small>",
+	"analytics.pageviews-daily": "<strong>Attēls 2</strong> &ndash; Kategorijas lapas skatījumi dienā</small>",
+	"analytics.topics-daily": "<strong>Attēls 3</strong> &ndash; Kategorijas jauni temati dienā</small>",
+	"analytics.posts-daily": "<strong>Attēls 4</strong> &ndash; Kategorijas publicētās ziņas dienā</small>",
 
 	"alert.created": "Created",
 	"alert.create-success": "Category successfully created!",

@@ -18,13 +18,13 @@
 	"mongo.resident-memory": "Resident Memory",
 	"mongo.virtual-memory": "Virtual Memory",
 	"mongo.mapped-memory": "Mapped Memory",
-	"mongo.raw-info": "MongoDB Raw Info",
+	"mongo.raw-info": "MongoDB neapstrādāta info",
 
 	"redis": "Redis",
 	"redis.version": "Redis Version",
 	"redis.connected-clients": "Connected Clients",
 	"redis.connected-slaves": "Connected Slaves",
-	"redis.blocked-clients": "Blocked Clients",
+	"redis.blocked-clients": "Bloķētie klienti",
 	"redis.used-memory": "Used Memory",
 	"redis.memory-frag-ratio": "Memory Fragmentation Ratio",
 	"redis.total-connections-recieved": "Total Connections Received",
@@ -32,9 +32,9 @@
 	"redis.iops": "Instantaneous Ops. Per Second",
 	"redis.keyspace-hits": "Keyspace Hits",
 	"redis.keyspace-misses": "Keyspace Misses",
-	"redis.raw-info": "Redis Raw Info",
+	"redis.raw-info": "Redis neapstrādāta info",
 
-	"postgres": "Postgres",
-	"postgres.version": "PostgreSQL Version",
-	"postgres.raw-info": "Postgres Raw Info"
+	"postgres": "PostgreSQL",
+	"postgres.version": "PostgreSQL versija",
+	"postgres.raw-info": "PostgreSQL neapstrādāta info"
 }

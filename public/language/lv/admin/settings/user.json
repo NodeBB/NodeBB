@@ -56,11 +56,11 @@
 	"topic-search": "Enable In-Topic Searching",
 	"digest-freq": "Subscribe to Digest",
 	"digest-freq.off": "Off",
-	"digest-freq.daily": "Daily",
+	"digest-freq.daily": "Dienā",
 	"digest-freq.weekly": "Weekly",
 	"digest-freq.monthly": "Monthly",
 	"email-chat-notifs": "Sūtīt e-pastu, ja ierodas jauna saruna un es neesmu tiešsaistē",
-	"email-post-notif": "Send an email when replies are made to topics I am subscribed to",
+	"email-post-notif": "Sūtīt e-pastu, kad kāds atbild uz tēmatiem, kurus esmu abonējis",
 	"follow-created-topics": "Sekot tēmatiem, kurus Tu izveido",
 	"follow-replied-topics": "Sekot tēmatiem, uz kuriem Tu atbildi",
 	"default-notification-settings": "Default notification settings"
