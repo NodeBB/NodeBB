@@ -153,7 +153,6 @@ describe('Admin Controllers', function () {
 			assert(body.history);
 			assert(Array.isArray(body.history.flags));
 			assert(Array.isArray(body.history.bans));
-			assert(Array.isArray(body.history.reasons));
 			assert(Array.isArray(body.sessions));
 			done();
 		});
