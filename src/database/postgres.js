@@ -364,6 +364,21 @@ postgresModule.initSessionStore = function (callback) {
 		return callback();
 	}
 
+	function done() {
+		sessionStore = require('connect-pg-simple')(session);
+		postgresModule.sessionStore = new sessionStore({
+			pool: db,
+			ttl: ttl,
+			pruneSessionInterval: nconf.get('isPrimary') === 'true' ? 60 : false,
+		});
+
+		callback();
+	}
+
+	if (nconf.get('isPrimary') !== 'true') {
+		return done();
+	}
+
 	db.query(`
 CREATE TABLE IF NOT EXISTS "session" (
 	"sid" CHAR(32) NOT NULL
@@ -382,14 +397,7 @@ ALTER TABLE "session"
 			return callback(err);
 		}
 
-		sessionStore = require('connect-pg-simple')(session);
-		postgresModule.sessionStore = new sessionStore({
-			pool: db,
-			ttl: ttl,
-			pruneSessionInterval: nconf.get('isPrimary') === 'true' ? 60 : false,
-		});
-
-		callback();
+		done();
 	});
 };
 
