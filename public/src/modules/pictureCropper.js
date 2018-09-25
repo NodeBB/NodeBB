@@ -164,7 +164,7 @@ define('pictureCropper', ['translator', 'cropper', 'benchpress'], function (tran
 		var imageUrl;
 		var imageType = file.type;
 		var fileSize = data.hasOwnProperty('fileSize') && data.fileSize !== undefined ? parseInt(data.fileSize, 10) : false;
-		if (file.size > fileSize * 1024) {
+		if (fileSize && file.size > fileSize * 1024) {
 			return app.alertError('[[error:file-too-big, ' + fileSize + ']]');
 		}
 		reader.addEventListener('load', function () {
