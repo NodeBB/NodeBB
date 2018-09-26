@@ -1244,14 +1244,14 @@ describe('Topic\'s', function () {
 		var socketAdmin = require('../src/socket.io/admin');
 
 		before(function (done) {
-			async.parallel({
-				topic1: function (next) {
+			async.series([
+				function (next) {
 					topics.post({ uid: adminUid, tags: ['php', 'nosql', 'psql', 'nodebb'], title: 'topic title 1', content: 'topic 1 content', cid: topic.categoryId }, next);
 				},
-				topic2: function (next) {
+				function (next) {
 					topics.post({ uid: adminUid, tags: ['javascript', 'mysql', 'python', 'nodejs'], title: 'topic title 2', content: 'topic 2 content', cid: topic.categoryId }, next);
 				},
-			}, function (err) {
+			], function (err) {
 				assert.ifError(err);
 				done();
 			});

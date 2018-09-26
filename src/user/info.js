@@ -129,7 +129,6 @@ module.exports = function (User) {
 		var banData;
 		async.waterfall([
 			function (next) {
-				console.log(data);
 				db.getObjects(data.bans, next);
 			},
 			function (_banData, next) {
