@@ -23,7 +23,7 @@ module.exports = {
 		var cursor;
 		async.waterfall([
 			function (next) {
-				client.collection('objects').count({
+				client.collection('objects').countDocuments({
 					_key: { $exists: true },
 					value: { $exists: true },
 					score: { $exists: false },
@@ -55,7 +55,7 @@ module.exports = {
 								}
 								delete item.expireAt;
 								if (Object.keys(item).length === 3 && item.hasOwnProperty('_key') && item.hasOwnProperty('value')) {
-									client.collection('objects').update({ _key: item._key }, { $rename: { value: 'data' } }, next);
+									client.collection('objects').updateOne({ _key: item._key }, { $rename: { value: 'data' } }, next);
 								} else {
 									next();
 								}

@@ -12,16 +12,16 @@ module.exports = function (db, module) {
 			return callback();
 		}
 		if (Array.isArray(key) && Array.isArray(value)) {
-			db.collection('objects').remove({ _key: { $in: key }, value: { $in: value } }, done);
+			db.collection('objects').deleteMany({ _key: { $in: key }, value: { $in: value } }, done);
 		} else if (Array.isArray(value)) {
 			value = value.map(helpers.valueToString);
-			db.collection('objects').remove({ _key: key, value: { $in: value } }, done);
+			db.collection('objects').deleteMany({ _key: key, value: { $in: value } }, done);
 		} else if (Array.isArray(key)) {
 			value = helpers.valueToString(value);
-			db.collection('objects').remove({ _key: { $in: key }, value: value }, done);
+			db.collection('objects').deleteMany({ _key: { $in: key }, value: value }, done);
 		} else {
 			value = helpers.valueToString(value);
-			db.collection('objects').remove({ _key: key, value: value }, done);
+			db.collection('objects').deleteOne({ _key: key, value: value }, done);
 		}
 	};
 
@@ -32,7 +32,7 @@ module.exports = function (db, module) {
 		}
 		value = helpers.valueToString(value);
 
-		db.collection('objects').remove({ _key: { $in: keys }, value: value }, function (err) {
+		db.collection('objects').deleteMany({ _key: { $in: keys }, value: value }, function (err) {
 			callback(err);
 		});
 	};
@@ -52,7 +52,7 @@ module.exports = function (db, module) {
 			query.score.$lte = parseFloat(max);
 		}
 
-		db.collection('objects').remove(query, function (err) {
+		db.collection('objects').deleteMany(query, function (err) {
 			callback(err);
 		});
 	};

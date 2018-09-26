@@ -46,7 +46,7 @@ module.exports = function (db, module) {
 		if (data.hasOwnProperty('')) {
 			delete data[''];
 		}
-		db.collection('objects').update({ _key: key }, { $set: data }, { upsert: true, w: 1 }, function (err) {
+		db.collection('objects').updateOne({ _key: key }, { $set: data }, { upsert: true, w: 1 }, function (err) {
 			if (err) {
 				return callback(err);
 			}
@@ -208,8 +208,8 @@ module.exports = function (db, module) {
 		}
 		var data = {};
 		field = helpers.fieldToString(field);
-		data[field] = '';
-		db.collection('objects').findOne({ _key: key }, { fields: data }, function (err, item) {
+		data[field] = 1;
+		db.collection('objects').findOne({ _key: key }, { projection: data }, function (err, item) {
 			callback(err, !!item && item[field] !== undefined && item[field] !== null);
 		});
 	};
@@ -222,10 +222,10 @@ module.exports = function (db, module) {
 		var data = {};
 		fields.forEach(function (field) {
 			field = helpers.fieldToString(field);
-			data[field] = '';
+			data[field] = 1;
 		});
 
-		db.collection('objects').findOne({ _key: key }, { fields: data }, function (err, item) {
+		db.collection('objects').findOne({ _key: key }, { projection: data }, function (err, item) {
 			if (err) {
 				return callback(err);
 			}
@@ -259,7 +259,7 @@ module.exports = function (db, module) {
 			data[field] = '';
 		});
 
-		db.collection('objects').update({ _key: key }, { $unset: data }, function (err) {
+		db.collection('objects').updateOne({ _key: key }, { $unset: data }, function (err) {
 			if (err) {
 				return callback(err);
 			}
@@ -317,7 +317,7 @@ module.exports = function (db, module) {
 		}
 
 
-		db.collection('objects').findAndModify({ _key: key }, {}, { $inc: data }, { new: true, upsert: true }, function (err, result) {
+		db.collection('objects').findOneAndUpdate({ _key: key }, { $inc: data }, { returnOriginal: false, upsert: true }, function (err, result) {
 			if (err) {
 				return callback(err);
 			}
