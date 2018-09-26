@@ -98,6 +98,7 @@ mongoModule.getConnectionOptions = function () {
 		reconnectTries: 3600,
 		reconnectInterval: 1000,
 		autoReconnect: true,
+		useNewUrlParser: true,
 	};
 
 	return _.merge(connOptions, nconf.get('mongo:options') || {});

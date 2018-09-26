@@ -192,6 +192,24 @@ describe('Key methods', function () {
 				});
 			});
 		});
+
+		it('should rename multiple keys', function (done) {
+			db.sortedSetAdd('zsettorename', [1, 2, 3], ['value1', 'value2', 'value3'], function (err) {
+				assert.ifError(err);
+				db.rename('zsettorename', 'newzsetname', function (err) {
+					assert.ifError(err);
+					db.exists('zsettorename', function (err, exists) {
+						assert.ifError(err);
+						assert(!exists);
+						db.getSortedSetRange('newzsetname', 0, -1, function (err, values) {
+							assert.ifError(err);
+							assert.deepEqual(['value1', 'value2', 'value3'], values);
+							done();
+						});
+					});
+				});
+			});
+		});
 	});
 
 	describe('type', function () {
