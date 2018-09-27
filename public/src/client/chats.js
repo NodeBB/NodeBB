@@ -121,6 +121,12 @@ define('forum/chats', [
 				if (!data) {
 					return;
 				}
+				data = data.filter(function (chatMsg) {
+					return !$('[component="chat/message"][data-mid="' + chatMsg.messageId + '"]').length;
+				});
+				if (!data.length) {
+					return;
+				}
 				messages.parseMessage(data, function (html) {
 					var currentScrollTop = el.scrollTop();
 					var previousHeight = el[0].scrollHeight;
