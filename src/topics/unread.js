@@ -248,35 +248,33 @@ module.exports = function (Topics) {
 		if (!params.blockedUids.length) {
 			return setImmediate(callback, null, params.tids);
 		}
-		params.topicScores = {};
-		params.recentTids.forEach(function (topic) {
-			params.topicScores[topic.value] = topic.score;
-		});
+		const topicScores = _.mapValues(_.keyBy(params.recentTids, 'value'), 'score');
 
-		db.sortedSetScores('uid:' + params.uid + ':tids_read', params.tids, function (err, userScores) {
+		db.sortedSetScores('uid:' + params.uid + ':tids_read', params.tids, function (err, results) {
 			if (err) {
 				return callback(err);
 			}
-			params.userScores = {};
-			userScores.forEach(function (score, index) {
-				params.userScores[params.tids[index]] = score;
-			});
+			const userScores = _.zipObject(params.tids, results);
+
 			async.filter(params.tids, function (tid, next) {
-				doesTidHaveUnblockedUnreadPosts(tid, params, next);
+				doesTidHaveUnblockedUnreadPosts(tid, {
+					blockedUids: params.blockedUids,
+					topicTimestamp: topicScores[tid],
+					userLastReadTimestamp: userScores[tid],
+				}, next);
 			}, callback);
 		});
 	}
 
 	function doesTidHaveUnblockedUnreadPosts(tid, params, callback) {
-		var topicTimestamp = params.topicScores[tid];
-		var userLastReadTimestamp = params.userScores[tid];
+		var userLastReadTimestamp = params.userLastReadTimestamp;
 		if (!userLastReadTimestamp) {
 			return setImmediate(callback, null, true);
 		}
 		var start = 0;
-		var count = 5;
+		var count = 3;
 		var done = false;
-		var hasUnblockedUnread = topicTimestamp > userLastReadTimestamp;
+		var hasUnblockedUnread = params.topicTimestamp > userLastReadTimestamp;
 
 		async.whilst(function () {
 			return !done;
@@ -469,14 +467,7 @@ module.exports = function (Topics) {
 					var read = !results.tids_unread[index] &&
 						(results.topicScores[index] < cutoff ||
 						!!(results.userScores[index] && results.userScores[index] >= results.topicScores[index]));
-					return { tid: tid, read: read };
-				});
-
-				var topicScores = {};
-				var userScores = {};
-				tids.forEach(function (tid, index) {
-					topicScores[tid] = results.topicScores[index];
-					userScores[tid] = results.userScores[index];
+					return { tid: tid, read: read, index: index };
 				});
 
 				async.map(result, function (data, next) {
@@ -484,8 +475,8 @@ module.exports = function (Topics) {
 						return next(null, true);
 					}
 					doesTidHaveUnblockedUnreadPosts(data.tid, {
-						topicScores: topicScores,
-						userScores: userScores,
+						topicTimestamp: results.topicScores[data.index],
+						userLastReadTimestamp: results.userScores[data.index],
 						blockedUids: results.blockedUids,
 					}, function (err, hasUnblockedUnread) {
 						if (err) {
