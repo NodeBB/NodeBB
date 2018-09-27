@@ -1,7 +1,7 @@
 {
 	"icon": "Icon:",
-	"change-icon": "change",
-	"route": "Route:",
+	"change-icon": "izmaiņa",
+	"route": "Ceļš:",
 	"tooltip": "Tooltip:",
 	"text": "Text:",
 	"text-class": "Text Class: <small>optional</small>",
@@ -19,7 +19,7 @@
 	"btn.enable": "Enable",
 
 	"available-menu-items": "Available Menu Items",
-	"custom-route": "Pielāgotā adrese",
+	"custom-route": "Pielāgots ceļš",
 	"core": "core",
 	"plugin": "plugin"
 }

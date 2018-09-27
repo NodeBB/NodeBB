@@ -3,7 +3,7 @@
 	"description": "There are no users in the registration queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
 
 	"list.name": "Name",
-	"list.email": "Email",
+	"list.email": "E-pasta adrese",
 	"list.ip": "IP",
 	"list.time": "Time",
 	"list.username-spam": "Frequency: %1 Appears: %2 Confidence: %3",

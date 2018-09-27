@@ -9,7 +9,7 @@
 	"hint-2": "You can add in comments by starting lines with the <code>#</code> symbol.",
 
 	"validate.x-valid": "<strong>%1</strong> out of <strong>%2</strong> rule(s) valid.",
-	"validate.x-invalid": "The following <strong>%1</strong> rules are invalid:",
+	"validate.x-invalid": "Šie <strong>%1</strong> noteikumi nav derīgi:",
 
 	"alerts.applied-success": "Blacklist Applied",
 
