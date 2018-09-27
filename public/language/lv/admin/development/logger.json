@@ -4,7 +4,7 @@
 	"explanation": "Simply check/uncheck the logging settings to enable or disable logging on the fly. No restart needed.",
 	"enable-http": "Enable HTTP logging",
 	"enable-socket": "Enable socket.io event logging",
-	"file-path": "Path to log file",
+	"file-path": "Ceļš uz žurnāla failu",
 	"file-path-placeholder": "/path/to/log/file.log ::: leave blank to log to your terminal",
 
 	"control-panel": "Logger Control Panel",

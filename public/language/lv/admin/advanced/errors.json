@@ -6,7 +6,7 @@
 	"manage-error-log": "Manage Error Log",
 	"export-error-log": "Export Error Log (CSV)",
 	"clear-error-log": "Clear Error Log",
-	"route": "Route",
+	"route": "Ceļš",
 	"count": "Count",
 	"no-routes-not-found": "Hooray! No 404 errors!",
 	"clear404-confirm": "Are you sure you wish to clear the 404 error logs?",

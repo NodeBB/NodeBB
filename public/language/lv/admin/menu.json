@@ -22,7 +22,7 @@
 	"section-settings": "Settings",
 	"settings/general": "General",
 	"settings/reputation": "Ranga punkti",
-	"settings/email": "Email",
+	"settings/email": "E-pasta adrese",
 	"settings/user": "User",
 	"settings/group": "Group",
 	"settings/guest": "Guests",
@@ -57,7 +57,7 @@
 	"section-advanced": "Advanced",
 	"advanced/database": "Database",
 	"advanced/events": "Events",
-	"advanced/logs": "Logs",
+	"advanced/logs": "Žurnāli",
 	"advanced/errors": "Errors",
 	"advanced/cache": "Cache",
 	"development/logger": "Logger",
@@ -65,7 +65,7 @@
 
 	"rebuild-and-restart-forum": "Rebuild & Restart Forum",
 	"restart-forum": "Restart Forum",
-	"logout": "Log out",
+	"logout": "Izlogoties",
 	"view-forum": "View Forum",
 
 	"search.placeholder": "Search for settings",
