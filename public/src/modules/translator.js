@@ -4,7 +4,7 @@
 	function loadClient(language, namespace) {
 		return Promise.resolve(jQuery.getJSON(config.relative_path + '/assets/language/' + language + '/' + namespace + '.json?' + config['cache-buster']));
 	}
-	var warn = console.warn;
+	var warn = function () { console.warn.apply(console, arguments); };
 	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as a named module
 		define('translator', [], function () {
@@ -41,13 +41,11 @@
 	var assign = Object.assign || jQuery.extend;
 
 	function escapeHTML(str) {
-		return utils.decodeHTMLEntities(
+		return utils.escapeHTML(utils.decodeHTMLEntities(
 			String(str)
 				.replace(/[\s\xa0]+/g, ' ')
 				.replace(/^\s+|\s+$/g, '')
-		).replace(/[<>]/g, function (c) {
-			return c === '<' ? '&lt;' : '&gt;';
-		});
+		));
 	}
 
 	var Translator = (function () {

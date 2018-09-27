@@ -13,7 +13,7 @@ module.exports = function (db, module) {
 			array[index] = helpers.valueToString(element);
 		});
 
-		db.collection('objects').update({
+		db.collection('objects').updateOne({
 			_key: key,
 		}, {
 			$addToSet: {
@@ -47,7 +47,7 @@ module.exports = function (db, module) {
 		var bulk = db.collection('objects').initializeUnorderedBulkOp();
 
 		for (var i = 0; i < keys.length; i += 1) {
-			bulk.find({ _key: keys[i] }).upsert().updateOne({	$addToSet: {
+			bulk.find({ _key: keys[i] }).upsert().updateOne({ $addToSet: {
 				members: {
 					$each: value,
 				},
@@ -69,9 +69,15 @@ module.exports = function (db, module) {
 			array[index] = helpers.valueToString(element);
 		});
 
-		db.collection('objects').update({ _key: key }, { $pullAll: { members: value } }, function (err) {
-			callback(err);
-		});
+		if (Array.isArray(key)) {
+			db.collection('objects').updateMany({ _key: { $in: key } }, { $pullAll: { members: value } }, function (err) {
+				callback(err);
+			});
+		} else {
+			db.collection('objects').updateOne({ _key: key }, { $pullAll: { members: value } }, function (err) {
+				callback(err);
+			});
+		}
 	};
 
 	module.setsRemove = function (keys, value, callback) {
@@ -81,15 +87,7 @@ module.exports = function (db, module) {
 		}
 		value = helpers.valueToString(value);
 
-		var bulk = db.collection('objects').initializeUnorderedBulkOp();
-
-		for (var i = 0; i < keys.length; i += 1) {
-			bulk.find({ _key: keys[i] }).updateOne({ $pull: {
-				members: value,
-			} });
-		}
-
-		bulk.execute(function (err) {
+		db.collection('objects').updateMany({ _key: { $in: keys } }, { $pull: { members: value } }, function (err) {
 			callback(err);
 		});
 	};
@@ -100,7 +98,7 @@ module.exports = function (db, module) {
 		}
 		value = helpers.valueToString(value);
 
-		db.collection('objects').findOne({ _key: key, members: value }, { _id: 0, members: 0 }, function (err, item) {
+		db.collection('objects').findOne({ _key: key, members: value }, { projection: { _id: 0, members: 0 } }, function (err, item) {
 			callback(err, item !== null && item !== undefined);
 		});
 	};
@@ -114,7 +112,7 @@ module.exports = function (db, module) {
 			values[i] = helpers.valueToString(values[i]);
 		}
 
-		db.collection('objects').findOne({ _key: key }, { _id: 0, _key: 0 }, function (err, items) {
+		db.collection('objects').findOne({ _key: key }, { projection: { _id: 0, _key: 0 } }, function (err, items) {
 			if (err) {
 				return callback(err);
 			}
@@ -133,7 +131,7 @@ module.exports = function (db, module) {
 		}
 		value = helpers.valueToString(value);
 
-		db.collection('objects').find({ _key: { $in: sets }, members: value }, { _id: 0, members: 0 }).toArray(function (err, result) {
+		db.collection('objects').find({ _key: { $in: sets }, members: value }, { projection: { _id: 0, members: 0 } }).toArray(function (err, result) {
 			if (err) {
 				return callback(err);
 			}
@@ -154,7 +152,8 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback(null, []);
 		}
-		db.collection('objects').findOne({ _key: key }, { members: 1 }, { _id: 0, _key: 0 }, function (err, data) {
+
+		db.collection('objects').findOne({ _key: key }, { projection: { _id: 0, _key: 0 } }, function (err, data) {
 			callback(err, data ? data.members : []);
 		});
 	};
@@ -163,7 +162,7 @@ module.exports = function (db, module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback(null, []);
 		}
-		db.collection('objects').find({ _key: { $in: keys } }, { _id: 0, _key: 1, members: 1 }).toArray(function (err, data) {
+		db.collection('objects').find({ _key: { $in: keys } }, { projection: { _id: 0 } }).toArray(function (err, data) {
 			if (err) {
 				return callback(err);
 			}
@@ -185,7 +184,7 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback(null, 0);
 		}
-		db.collection('objects').findOne({ _key: key }, { _id: 0 }, function (err, data) {
+		db.collection('objects').findOne({ _key: key }, { projection: { _id: 0 } }, function (err, data) {
 			callback(err, data ? data.members.length : 0);
 		});
 	};

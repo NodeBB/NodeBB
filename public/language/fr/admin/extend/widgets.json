@@ -2,6 +2,7 @@
 	"available": "Widgets disponibles",
 	"explanation": "Sélectionnez un widget depuis le menu puis glissez-déposez le dans une zone template du widget à gauche.",
 	"none-installed": "Aucun widget trouvé ! Activez le plugin widgets essentiels dans le panneau de contrôle <a href=\"%1\">plugins</a>.",
+	"clone-from": "Cloner le widget",
 	"containers.available": "Conteneurs disponibles",
 	"containers.explanation": "Glissez-déposez sur n'importe quel widget actif",
 	"containers.none": "Aucun",
@@ -14,6 +15,8 @@
 
 	"alert.confirm-delete": "Êtes-vous sûr de vouloir supprimer ce widget ?",
 	"alert.updated": "Widgets mis à jour",
-	"alert.update-success": "Widgets mis à jour avec succès"
+	"alert.update-success": "Widgets mis à jour avec succès",
+	"alert.clone-success": "Widget cloné avec succès",
 
+	"error.select-clone": "Veuillez sélectionner une page à cloner"
 }

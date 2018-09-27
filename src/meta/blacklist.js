@@ -9,9 +9,8 @@ var pubsub = require('../pubsub');
 var plugins = require('../plugins');
 var analytics = require('../analytics');
 
-var Blacklist = {
-	_rules: [],
-};
+var Blacklist = module.exports;
+Blacklist._rules = [];
 
 Blacklist.load = function (callback) {
 	callback = callback || function () {};
@@ -66,12 +65,16 @@ Blacklist.test = function (clientIp, callback) {
 	// clientIp = '2001:db8:85a3:0:0:8a2e:370:7334';	// IPv6
 	// clientIp = '127.0.15.1';	// IPv4
 	// clientIp = '127.0.15.1:3443'; // IPv4 with port strip port to not fail
+	if (!clientIp) {
+		return setImmediate(callback);
+	}
 	clientIp = clientIp.split(':').length === 2 ? clientIp.split(':')[0] : clientIp;
 
 	var addr;
 	try {
 		addr = ipaddr.parse(clientIp);
 	} catch (err) {
+		winston.error('[meta/blacklist] Error parsing client IP : ' + clientIp);
 		return callback(err);
 	}
 
@@ -182,4 +185,22 @@ Blacklist.validate = function (rules, callback) {
 	});
 };
 
-module.exports = Blacklist;
+Blacklist.addRule = function (rule, callback) {
+	var valid;
+	async.waterfall([
+		function (next) {
+			Blacklist.validate(rule, next);
+		},
+		function (result, next) {
+			valid = result.valid;
+			if (!valid.length) {
+				return next(new Error('[[error:invalid-rule]]'));
+			}
+			Blacklist.get(next);
+		},
+		function (rules, next) {
+			rules = rules + '\n' + valid[0];
+			Blacklist.save(rules, next);
+		},
+	], callback);
+};

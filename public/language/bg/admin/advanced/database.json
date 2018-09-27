@@ -32,5 +32,9 @@
 	"redis.iops": "Едновременни операции в секунда",
 	"redis.keyspace-hits": "Успешни търсения на ключове",
 	"redis.keyspace-misses": "Неуспешни търсения на ключове",
-	"redis.raw-info": "Сурови данни от Redis"
+	"redis.raw-info": "Сурови данни от Redis",
+
+	"postgres": "Postgres",
+	"postgres.version": "Версия на PostgreSQL",
+	"postgres.raw-info": "Сурови данни от Postgres"
 }

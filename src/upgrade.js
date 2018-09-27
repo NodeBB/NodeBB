@@ -33,7 +33,13 @@ Upgrade.getAll = function (callback) {
 				versionA = path.dirname(a).split('/').pop();
 				versionB = path.dirname(b).split('/').pop();
 
-				return semver.compare(versionA, versionB);
+				var semverCompare = semver.compare(versionA, versionB);
+				if (semverCompare) {
+					return semverCompare;
+				}
+				var timestampA = require(a).timestamp;
+				var timestampB = require(b).timestamp;
+				return timestampA - timestampB;
 			}));
 		},
 		async.apply(Upgrade.appendPluginScripts),
@@ -205,7 +211,7 @@ Upgrade.incrementProgress = function (value) {
 	if (this.total) {
 		percentage = Math.floor((this.current / this.total) * 100) + '%';
 		filled = Math.floor((this.current / this.total) * 15);
-		unfilled = Math.min(0, 15 - filled);
+		unfilled = Math.max(0, 15 - filled);
 	}
 
 	readline.cursorTo(process.stdout, 0);

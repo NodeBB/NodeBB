@@ -18,6 +18,7 @@
 	"filter-type": "Тип заставице",
 	"filter-type-all": "Сав садржај",
 	"filter-type-post": "Порука",
+	"filter-type-user": "Корисник",
 	"filter-state": "Стање",
 	"filter-assignee": "UID заступника",
 	"filter-cid": "Категорија",

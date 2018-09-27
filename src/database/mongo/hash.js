@@ -1,11 +1,13 @@
 'use strict';
 
+var async = require('async');
+var pubsub = require('../../pubsub');
+
 module.exports = function (db, module) {
 	var helpers = module.helpers.mongo;
 
 	var LRU = require('lru-cache');
 	var _ = require('lodash');
-	var pubsub = require('../../pubsub');
 
 	var cache = LRU({
 		max: 10000,
@@ -35,6 +37,7 @@ module.exports = function (db, module) {
 		cache.reset();
 	};
 
+
 	module.setObject = function (key, data, callback) {
 		callback = callback || helpers.noop;
 		if (!key || !data) {
@@ -43,7 +46,7 @@ module.exports = function (db, module) {
 		if (data.hasOwnProperty('')) {
 			delete data[''];
 		}
-		db.collection('objects').update({ _key: key }, { $set: data }, { upsert: true, w: 1 }, function (err) {
+		db.collection('objects').updateOne({ _key: key }, { $set: data }, { upsert: true, w: 1 }, function (err) {
 			if (err) {
 				return callback(err);
 			}
@@ -105,7 +108,7 @@ module.exports = function (db, module) {
 			return getFromCache();
 		}
 
-		db.collection('objects').find({ _key: { $in: nonCachedKeys } }, { _id: 0 }).toArray(function (err, data) {
+		db.collection('objects').find({ _key: { $in: nonCachedKeys } }, { projection: { _id: 0 } }).toArray(function (err, data) {
 			if (err) {
 				return callback(err);
 			}
@@ -205,8 +208,8 @@ module.exports = function (db, module) {
 		}
 		var data = {};
 		field = helpers.fieldToString(field);
-		data[field] = '';
-		db.collection('objects').findOne({ _key: key }, { fields: data }, function (err, item) {
+		data[field] = 1;
+		db.collection('objects').findOne({ _key: key }, { projection: data }, function (err, item) {
 			callback(err, !!item && item[field] !== undefined && item[field] !== null);
 		});
 	};
@@ -219,10 +222,10 @@ module.exports = function (db, module) {
 		var data = {};
 		fields.forEach(function (field) {
 			field = helpers.fieldToString(field);
-			data[field] = '';
+			data[field] = 1;
 		});
 
-		db.collection('objects').findOne({ _key: key }, { fields: data }, function (err, item) {
+		db.collection('objects').findOne({ _key: key }, { projection: data }, function (err, item) {
 			if (err) {
 				return callback(err);
 			}
@@ -256,7 +259,7 @@ module.exports = function (db, module) {
 			data[field] = '';
 		});
 
-		db.collection('objects').update({ _key: key }, { $unset: data }, function (err) {
+		db.collection('objects').updateOne({ _key: key }, { $unset: data }, function (err) {
 			if (err) {
 				return callback(err);
 			}
@@ -277,14 +280,44 @@ module.exports = function (db, module) {
 		callback = callback || helpers.noop;
 		value = parseInt(value, 10);
 		if (!key || isNaN(value)) {
-			return callback();
+			return callback(null, null);
 		}
 
 		var data = {};
 		field = helpers.fieldToString(field);
 		data[field] = value;
 
-		db.collection('objects').findAndModify({ _key: key }, {}, { $inc: data }, { new: true, upsert: true }, function (err, result) {
+		if (Array.isArray(key)) {
+			var bulk = db.collection('objects').initializeUnorderedBulkOp();
+			key.forEach(function (key) {
+				bulk.find({ _key: key }).upsert().update({ $inc: data });
+			});
+
+			async.waterfall([
+				function (next) {
+					bulk.execute(function (err) {
+						next(err);
+					});
+				},
+				function (next) {
+					key.forEach(function (key) {
+						module.delObjectCache(key);
+					});
+
+					module.getObjectsFields(key, [field], next);
+				},
+				function (data, next) {
+					data = data.map(function (data) {
+						return data && data[field];
+					});
+					next(null, data);
+				},
+			], callback);
+			return;
+		}
+
+
+		db.collection('objects').findOneAndUpdate({ _key: key }, { $inc: data }, { returnOriginal: false, upsert: true }, function (err, result) {
 			if (err) {
 				return callback(err);
 			}

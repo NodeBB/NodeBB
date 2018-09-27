@@ -8,13 +8,15 @@ var user = require('../user');
 var privileges = require('../privileges');
 var plugins = require('../plugins');
 
+var auth = require('../routes/authentication');
+
 var controllers = {
 	helpers: require('../controllers/helpers'),
 };
 
 module.exports = function (middleware) {
 	middleware.authenticate = function (req, res, next) {
-		if (req.uid) {
+		if (req.loggedIn) {
 			return next();
 		}
 
@@ -22,7 +24,9 @@ module.exports = function (middleware) {
 			return plugins.fireHook('action:middleware.authenticate', {
 				req: req,
 				res: res,
-				next: next,
+				next: function (err) {
+					auth.setAuthVars(req, res, function () { next(err); });
+				},
 			});
 		}
 
@@ -44,7 +48,7 @@ module.exports = function (middleware) {
 		*/
 		async.waterfall([
 			function (next) {
-				if (!req.uid) {
+				if (!req.loggedIn) {
 					return setImmediate(next, null, false);
 				}
 
@@ -64,7 +68,7 @@ module.exports = function (middleware) {
 	}
 
 	middleware.checkGlobalPrivacySettings = function (req, res, next) {
-		if (!req.uid && !!parseInt(meta.config.privateUserInfo, 10)) {
+		if (!req.loggedIn && !!parseInt(meta.config.privateUserInfo, 10)) {
 			return middleware.authenticate(req, res, next);
 		}
 
@@ -177,7 +181,7 @@ module.exports = function (middleware) {
 				var disabled = parseInt(meta.config.adminReloginDuration, 10) === 0;
 				if (disabled || (loginTime && parseInt(loginTime, 10) > Date.now() - adminReloginDuration)) {
 					var timeLeft = parseInt(loginTime, 10) - (Date.now() - adminReloginDuration);
-					if (timeLeft < Math.min(300000, adminReloginDuration)) {
+					if (req.session.meta && timeLeft < Math.min(300000, adminReloginDuration)) {
 						req.session.meta.datetime += Math.min(300000, adminReloginDuration);
 					}
 
@@ -202,7 +206,7 @@ module.exports = function (middleware) {
 	};
 
 	middleware.requireUser = function (req, res, next) {
-		if (req.uid) {
+		if (req.loggedIn) {
 			return next();
 		}
 
@@ -215,6 +219,9 @@ module.exports = function (middleware) {
 			return next();
 		}
 		if (!req.path.endsWith('/register/complete')) {
+			// Append user data if present
+			req.session.registration.uid = req.uid;
+
 			controllers.helpers.redirect(res, '/register/complete');
 		} else {
 			return next();

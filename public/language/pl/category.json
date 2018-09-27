@@ -2,7 +2,7 @@
     "category": "Kategoria",
     "subcategories": "Podkategorie",
     "new_topic_button": "Nowy temat",
-    "guest-login-post": "Zaloguj się, aby napisać.",
+    "guest-login-post": "Zaloguj się, aby napisać post",
     "no_topics": "<strong>W tej kategorii nie ma jeszcze żadnych tematów.</strong><br />Może pora na napisanie pierwszego?",
     "browsing": "przegląda",
     "no_replies": "Nikt jeszcze nie odpowiedział",
@@ -14,7 +14,7 @@
     "ignoring": "Ignorowane",
     "watching.description": "Pokazuj tematy w nieprzeczytanych",
     "ignoring.description": "Nie pokazuj tematów w nieprzeczytanych",
-    "watch.message": "Włączyłeś powiadomienia dla tej kategorii oraz wszystkich podkategorii.",
-    "ignore.message": "Wyłączyłeś powiadomienia dla tej kategorii oraz wszystkich podkategorii.",
+    "watch.message": "Od teraz obserwujesz tę kategorię i wszystkie podkategorie.",
+    "ignore.message": "Od teraz ignorujesz tę kategorię i wszystkie podkategorie.",
     "watched-categories": "Obserwowane kategorie"
 }

@@ -20,8 +20,6 @@ require('./topics/create')(Topics);
 require('./topics/delete')(Topics);
 require('./topics/unread')(Topics);
 require('./topics/recent')(Topics);
-require('./topics/popular')(Topics);
-require('./topics/top')(Topics);
 require('./topics/user')(Topics);
 require('./topics/fork')(Topics);
 require('./topics/posts')(Topics);
@@ -52,14 +50,9 @@ Topics.getPageCount = function (tid, uid, callback) {
 			user.getSettings(uid, next);
 		},
 		function (settings, next) {
-			next(null, Math.ceil((parseInt(postCount, 10) - 1) / settings.postsPerPage));
+			next(null, Math.ceil(parseInt(postCount, 10) / settings.postsPerPage));
 		},
 	], callback);
-};
-
-Topics.getTidPage = function (tid, uid, callback) {
-	console.warn('[Topics.getTidPage] deprecated!');
-	callback(null, 1);
 };
 
 Topics.getTopicsFromSet = function (set, uid, start, stop, callback) {
@@ -198,6 +191,7 @@ Topics.getTopicWithPosts = function (topicData, set, uid, start, stop, reverse, 
 				bookmark: async.apply(Topics.getUserBookmark, topicData.tid, uid),
 				postSharing: async.apply(social.getActivePostSharing),
 				deleter: async.apply(getDeleter, topicData),
+				merger: async.apply(getMerger, topicData),
 				related: function (next) {
 					async.waterfall([
 						function (next) {
@@ -223,16 +217,14 @@ Topics.getTopicWithPosts = function (topicData, set, uid, start, stop, reverse, 
 			topicData.postSharing = results.postSharing;
 			topicData.deleter = results.deleter;
 			topicData.deletedTimestampISO = utils.toISOString(topicData.deletedTimestamp);
+			topicData.merger = results.merger;
+			topicData.mergedTimestampISO = utils.toISOString(topicData.mergedTimestamp);
 			topicData.related = results.related || [];
 
 			topicData.unreplied = parseInt(topicData.postcount, 10) === 1;
 			topicData.deleted = parseInt(topicData.deleted, 10) === 1;
 			topicData.locked = parseInt(topicData.locked, 10) === 1;
 			topicData.pinned = parseInt(topicData.pinned, 10) === 1;
-
-			topicData.upvotes = parseInt(topicData.upvotes, 10) || 0;
-			topicData.downvotes = parseInt(topicData.downvotes, 10) || 0;
-			topicData.votes = topicData.upvotes - topicData.downvotes;
 
 			topicData.icons = [];
 
@@ -288,6 +280,28 @@ function getDeleter(topicData, callback) {
 		return setImmediate(callback, null, null);
 	}
 	user.getUserFields(topicData.deleterUid, ['username', 'userslug', 'picture'], callback);
+}
+
+function getMerger(topicData, callback) {
+	if (!topicData.mergerUid) {
+		return setImmediate(callback, null, null);
+	}
+	async.waterfall([
+		function (next) {
+			async.parallel({
+				merger: function (next) {
+					user.getUserFields(topicData.mergerUid, ['username', 'userslug', 'picture'], next);
+				},
+				mergedIntoTitle: function (next) {
+					Topics.getTopicField(topicData.mergeIntoTid, 'title', next);
+				},
+			}, next);
+		},
+		function (results, next) {
+			results.merger.mergedIntoTitle = results.mergedIntoTitle;
+			next(null, results.merger);
+		},
+	], callback);
 }
 
 Topics.getMainPost = function (tid, uid, callback) {
@@ -354,3 +368,5 @@ Topics.search = function (tid, term, callback) {
 		callback(err, Array.isArray(pids) ? pids : []);
 	});
 };
+
+Topics.async = require('./promisify')(Topics);

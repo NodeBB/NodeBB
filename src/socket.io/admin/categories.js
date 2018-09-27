@@ -76,14 +76,28 @@ Categories.setPrivilege = function (socket, data, callback) {
 	if (Array.isArray(data.privilege)) {
 		async.each(data.privilege, function (privilege, next) {
 			groups[data.set ? 'join' : 'leave']('cid:' + data.cid + ':privileges:' + privilege, data.member, next);
-		}, callback);
+		}, onSetComplete);
 	} else {
-		groups[data.set ? 'join' : 'leave']('cid:' + data.cid + ':privileges:' + data.privilege, data.member, callback);
+		groups[data.set ? 'join' : 'leave']('cid:' + data.cid + ':privileges:' + data.privilege, data.member, onSetComplete);
+	}
+
+	function onSetComplete() {
+		events.log({
+			uid: socket.uid,
+			ip: socket.ip,
+			privilege: data.privilege.toString(),
+			action: data.set ? 'grant' : 'rescind',
+			target: data.member,
+		}, callback);
 	}
 };
 
 Categories.getPrivilegeSettings = function (socket, cid, callback) {
-	privileges.categories.list(cid, callback);
+	if (!parseInt(cid, 10)) {
+		privileges.global.list(callback);
+	} else {
+		privileges.categories.list(cid, callback);
+	}
 };
 
 Categories.copyPrivilegesToChildren = function (socket, cid, callback) {

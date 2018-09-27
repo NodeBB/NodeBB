@@ -33,11 +33,15 @@
 	"locked": "Locked",
 	"pinned": "Pinned",
 	"moved": "Moved",
+	"copy-ip": "Copy IP",
+	"ban-ip": "Ban IP",
+	"view-history": "Edit History",
 
 	"bookmark_instructions" : "Click here to return to the last read post in this thread.",
 
 	"flag_title": "Flag this post for moderation",
 
+	"merged_message": "This topic has been merged into <a href=\"/topic/%1\">%2</a>",
 	"deleted_message": "This topic has been deleted. Only users with topic management privileges can see it.",
 
 	"following_topic.message": "You will now be receiving notifications when somebody posts to this topic.",
@@ -63,12 +67,13 @@
 	"ignoring.description": "Do not notify me of new replies.<br/>Do not show topic in unread.",
 
 	"thread_tools.title": "Topic Tools",
-	"thread_tools.markAsUnreadForAll": "Mark unread for all",
+	"thread_tools.markAsUnreadForAll": "Mark Unread For All",
 	"thread_tools.pin": "Pin Topic",
 	"thread_tools.unpin": "Unpin Topic",
 	"thread_tools.lock": "Lock Topic",
 	"thread_tools.unlock": "Unlock Topic",
 	"thread_tools.move": "Move Topic",
+	"thread_tools.move-posts": "Move Posts",
 	"thread_tools.move_all": "Move All",
 	"thread_tools.select_category": "Select Category",
 	"thread_tools.fork": "Fork Topic",
@@ -108,6 +113,7 @@
 	"fork_success": "Successfully forked topic! Click here to go to the forked topic.",
 	"delete_posts_instruction": "Click the posts you want to delete/purge",
 	"merge_topics_instruction": "Click the topics you want to merge",
+	"move_posts_instruction": "Click the posts you want to move",
 
 	"composer.title_placeholder": "Enter your topic title here...",
 	"composer.handle_placeholder": "Name",
@@ -132,13 +138,19 @@
 	"sort_by": "Sort by",
 	"oldest_to_newest": "Oldest to Newest",
 	"newest_to_oldest": "Newest to Oldest",
-	"most_votes": "Most votes",
-	"most_posts": "Most posts",
+	"most_votes": "Most Votes",
+	"most_posts": "Most Posts",
 
 	"stale.title": "Create new topic instead?",
 	"stale.warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
 	"stale.create": "Create a new topic",
 	"stale.reply_anyway": "Reply to this topic anyway",
 
-	"link_back": "Re: [%1](%2)\n\n"
+	"link_back": "Re: [%1](%2)\n\n",
+
+	"diffs.title": "Post Edit History",
+	"diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
+	"diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
+	"diffs.current-revision": "current revision",
+	"diffs.original-revision": "original revision"
 }

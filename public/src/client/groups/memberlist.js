@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/groups/memberlist', ['components', 'forum/infinitescroll'], function () {
+define('forum/groups/memberlist', ['autocomplete'], function (autocomplete) {
 	var MemberList = {};
 	var searchInterval;
 	var groupName;
@@ -11,9 +11,39 @@ define('forum/groups/memberlist', ['components', 'forum/infinitescroll'], functi
 		templateName = _templateName || 'groups/details';
 		groupName = ajaxify.data.group.name;
 
+		handleMemberAdd();
 		handleMemberSearch();
 		handleMemberInfiniteScroll();
 	};
+
+	function handleMemberAdd() {
+		$('[component="groups/members/add"]').on('click', function () {
+			var modal = bootbox.dialog({
+				title: '[[groups:details.add-member]]',
+				message: '<input class="form-control" type="text" placeholder="[[global:search]]"/>',
+			});
+			autocomplete.user(modal.find('input'), function (ev, ui) {
+				var user = ui.item.user;
+				if (user) {
+					addUserToGroup(user, function () {
+						modal.modal('hide');
+					});
+				}
+			});
+		});
+	}
+
+	function addUserToGroup(user, callback) {
+		socket.emit('groups.addMember', { groupName: groupName, uid: user.uid }, function (err) {
+			if (err) {
+				return app.alertError(err);
+			}
+			parseAndTranslate([user], function (html) {
+				$('[component="groups/members"] tbody').prepend(html);
+			});
+			callback();
+		});
+	}
 
 	function handleMemberSearch() {
 		$('[component="groups/members/search"]').on('keyup', function () {

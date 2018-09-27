@@ -1,0 +1,10 @@
+{
+    "administrators": "Yöneticiler",
+    "global-moderators": "Genel Moderatörler",
+    "no-global-moderators": "Genel Olmayan Moderatörler",
+    "moderators-of-category": "%1 Moderatör",
+    "no-moderators": "Moderatörsüz",
+    "add-administrator": "Yönetici Ekle",
+    "add-global-moderator": "Genel Moderatör Ekle",
+    "add-moderator": "Moderatör Ekle"
+}

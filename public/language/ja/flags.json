@@ -18,6 +18,7 @@
 	"filter-type": "フラグの種類",
 	"filter-type-all": "すべてのコンテンツ",
 	"filter-type-post": "投稿",
+	"filter-type-user": "User",
 	"filter-state": "状態",
 	"filter-assignee": "譲受人のユーザーID",
 	"filter-cid": "カテゴリ",

@@ -16,7 +16,7 @@
 	"user-info-private": "Hide user list and data from guests",
 	"hide-fullname": "Hide fullname from users",
 	"hide-email": "Hide email from users",
-	"themes": "Themes",
+	"themes": "ธีม",
 	"disable-user-skins": "Prevent users from choosing a custom skin",
 	"account-protection": "Account Protection",
 	"admin-relogin-duration": "Admin relogin duration (minutes)",
@@ -56,11 +56,12 @@
 	"topic-search": "Enable In-Topic Searching",
 	"digest-freq": "Subscribe to Digest",
 	"digest-freq.off": "Off",
-	"digest-freq.daily": "Daily",
-	"digest-freq.weekly": "Weekly",
-	"digest-freq.monthly": "Monthly",
+	"digest-freq.daily": "ทุกวัน",
+	"digest-freq.weekly": "ทุกอาทิตย์",
+	"digest-freq.monthly": "ทุกเดือน",
 	"email-chat-notifs": "Send an email if a new chat message arrives and I am not online",
 	"email-post-notif": "Send an email when replies are made to topics I am subscribed to",
 	"follow-created-topics": "Follow topics you create",
-	"follow-replied-topics": "Follow topics that you reply to"
+	"follow-replied-topics": "Follow topics that you reply to",
+	"default-notification-settings": "Default notification settings"
 }

@@ -1,0 +1,10 @@
+{
+    "administrators": "최고관리자",
+    "global-moderators": "Global Moderators",
+    "no-global-moderators": "No Global Moderators",
+    "moderators-of-category": "%1 Moderators",
+    "no-moderators": "No Moderators",
+    "add-administrator": "Add Administrator",
+    "add-global-moderator": "Add Global Moderator",
+    "add-moderator": "Add Moderator"
+}

@@ -50,11 +50,45 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 				ips: function (next) {
 					user.getIPs(uid, 4, next);
 				},
-				profile_links: function (next) {
-					plugins.fireHook('filter:user.profileLinks', [], next);
-				},
 				profile_menu: function (next) {
-					plugins.fireHook('filter:user.profileMenu', { uid: uid, callerUID: callerUID, links: [] }, next);
+					plugins.fireHook('filter:user.profileMenu', {
+						uid: uid,
+						callerUID: callerUID,
+						links: [{
+							id: 'info',
+							route: 'info',
+							name: '[[user:account_info]]',
+							visibility: {
+								self: false,
+								other: false,
+								moderator: true,
+								globalMod: true,
+								admin: true,
+							},
+						}, {
+							id: 'sessions',
+							route: 'sessions',
+							name: '[[pages:account/sessions]]',
+							visibility: {
+								self: true,
+								other: false,
+								moderator: false,
+								globalMod: false,
+								admin: false,
+							},
+						}, {
+							id: 'consent',
+							route: 'consent',
+							name: '[[user:consent.title]]',
+							visibility: {
+								self: true,
+								other: false,
+								moderator: false,
+								globalMod: false,
+								admin: false,
+							},
+						}],
+					}, next);
 				},
 				groups: function (next) {
 					groups.getUserGroups([uid], next);
@@ -62,8 +96,14 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 				sso: function (next) {
 					plugins.fireHook('filter:auth.list', { uid: uid, associations: [] }, next);
 				},
+				canEdit: function (next) {
+					privileges.users.canEdit(callerUID, uid, next);
+				},
 				canBanUser: function (next) {
 					privileges.users.canBanUser(callerUID, uid, next);
+				},
+				isBlocked: function (next) {
+					user.blocks.is(uid, callerUID, next);
 				},
 			}, next);
 		},
@@ -95,7 +135,7 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 				userData.fullname = '';
 			}
 
-			if (isAdmin || isSelf || (isGlobalModerator && !results.isTargetAdmin)) {
+			if (isAdmin || isSelf || ((isGlobalModerator || isModerator) && !results.isTargetAdmin)) {
 				userData.ips = results.ips;
 			}
 
@@ -103,7 +143,11 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 				userData.moderationNote = undefined;
 			}
 
-			userData.uid = userData.uid;
+			userData.isBlocked = results.isBlocked;
+			if (isAdmin || isSelf) {
+				userData.blocksCount = parseInt(userData.blocksCount, 10) || 0;
+			}
+
 			userData.yourid = callerUID;
 			userData.theirid = userData.uid;
 			userData.isTargetAdmin = results.isTargetAdmin;
@@ -113,7 +157,7 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 			userData.isAdminOrGlobalModerator = isAdmin || isGlobalModerator;
 			userData.isAdminOrGlobalModeratorOrModerator = isAdmin || isGlobalModerator || isModerator;
 			userData.isSelfOrAdminOrGlobalModerator = isSelf || isAdmin || isGlobalModerator;
-			userData.canEdit = isAdmin || (isGlobalModerator && !results.isTargetAdmin);
+			userData.canEdit = results.canEdit;
 			userData.canBan = results.canBanUser;
 			userData.canChangePassword = isAdmin || (isSelf && parseInt(meta.config['password:disableEdit'], 10) !== 1);
 			userData.isSelf = isSelf;
@@ -124,7 +168,7 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 			userData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
 			userData['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
 			userData['email:confirmed'] = !!parseInt(userData['email:confirmed'], 10);
-			userData.profile_links = filterLinks(results.profile_links.concat(results.profile_menu.links), {
+			userData.profile_links = filterLinks(results.profile_menu.links, {
 				self: isSelf,
 				other: !isSelf,
 				moderator: isModerator,

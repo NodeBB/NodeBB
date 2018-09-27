@@ -1,17 +1,17 @@
 {
-	"rewards": "Rewards",
-	"condition-if-users": "If User's",
+	"rewards": "פרסים",
+	"condition-if-users": "אם המשתמשים",
 	"condition-is": "Is:",
-	"condition-then": "Then:",
-	"max-claims": "Amount of times reward is claimable",
-	"zero-infinite": "Enter 0 for infinite",
+	"condition-then": "אז:",
+	"max-claims": "מספר הפעמים הניתן לדרוש פרס",
+	"zero-infinite": "הזן 0 לאינסוף",
 	"delete": "מחק",
-	"enable": "Enable",
-	"disable": "Disable",
-	"control-panel": "Rewards Control",
-	"new-reward": "New Reward",
+	"enable": "הפעל",
+	"disable": "בטל",
+	"control-panel": "בקרת פרסים",
+	"new-reward": "פרס חדש",
 
-	"alert.delete-success": "Successfully deleted reward",
-	"alert.no-inputs-found": "Illegal reward - no inputs found!",
-	"alert.save-success": "Successfully saved rewards"
+	"alert.delete-success": "הפרס נמחק בהצלחה",
+	"alert.no-inputs-found": "פרס לא חוקי - לא נמצא מידע!",
+	"alert.save-success": "הפרסים נשמרו בהצלחה"
 }

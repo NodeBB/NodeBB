@@ -8,7 +8,7 @@
 
 	<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="installer.css">
-	
+
 	<script type="text/javascript" async defer src="installer.min.js"></script>
 </head>
 
@@ -26,13 +26,29 @@
 			</ul>
 		</div>
 	</nav>
-
+	<!-- IF !installing -->
 	<div class="container <!-- IF success -->hide<!-- ENDIF success -->">
 		<p>
 			<h1>Welcome to the NodeBB Installer</h1>
 			You are just a few steps away from launching your own NodeBB forum!
 		</p>
 		<form id="install" action="/" method="post">
+			<!-- IF !skipGeneralSetup -->
+			<div class="general">
+				<p>
+					<h1><small>General Instance Setup</small></h1>
+					<hr />
+				</p>
+
+				<div class="row input-row">
+					<div class="col-sm-7 col-xs-12 input-field">
+						<label for="url">Web Address (URL)</label>
+						<input type="text" class="form-control" name="url" value="<!-- IF url -->{url}<!-- ENDIF url -->" placeholder="http://localhost:4567" />
+					</div>
+					<div class="col-sm-5 help-text" data-help="This is the address that resolves to your NodeBB forum. If no port is specified, <code>4567</code> will be used."></div>
+				</div>
+			</div>
+			<!-- END -->
 			<div class="admin">
 				<p>
 					<h1><small>Create an Administrator account</small></h1>
@@ -86,6 +102,7 @@
 						<select class="form-control" name="database">
 							<option value="redis">Redis</option>
 							<option value="mongo">MongoDB</option>
+							<option value="postgres">PostgreSQL</option>
 						</select>
 					</div>
 					<div class="col-sm-5 help-text" data-help="Leave the fields blank to use the default settings."><!-- IF error -->There was an error connecting to your database. Please try again.<!-- ENDIF error --></div>
@@ -98,13 +115,21 @@
 			<button id="submit" type="submit" class="btn btn-lg btn-success">Install NodeBB <i class="working hide"></i></button>
 		</form>
 	</div>
+	<!-- ENDIF !installing -->
 
+	<!-- IF installing -->
+	<div id="installing" class="container">
+		<p>
+			<h1>Hang tight! Your NodeBB is being installed.</h1>
+		</p>
+	</div>
+	<!-- ENDIF installing -->
 
 	<div class="container <!-- IF !success -->hide<!-- ENDIF !success -->">
 		<p>
 			<h1>Congratulations! Your NodeBB has been set-up.</h1>
 
-			<button id="launch" class="btn btn-lg btn-success">Launch NodeBB <i class="working hide"></i></button>
+			<button id="launch" data-url="{launchUrl}" class="btn btn-lg btn-success">Launch NodeBB <i class="working hide"></i></button>
 		</p>
 	</div>
 

@@ -12,12 +12,13 @@ var nconf = require('nconf');
 var url = require('url');
 var errorText;
 
+var packageInfo = require('../../package');
 
 nconf.file({ file: path.join(__dirname, '../../config.json') });
 nconf.defaults({
 	base_dir: path.join(__dirname, '../..'),
 	themes_path: path.join(__dirname, '../../node_modules'),
-	upload_path: 'public/uploads',
+	upload_path: 'test/uploads',
 	views_dir: path.join(__dirname, '../../build/public/templates'),
 	relative_path: '',
 });
@@ -55,6 +56,14 @@ if (!testDbConfig) {
 		'    "host": "127.0.0.1,127.0.0.1,127.0.0.1",\n' +
 		'    "port": "27017,27018,27019",\n' +
 		'    "username": "",\n' +
+		'    "password": "",\n' +
+		'    "database": "nodebb_test"\n' +
+		'}\n' +
+		' or (postgres):\n' +
+		'"test_database": {\n' +
+		'    "host": "127.0.0.1",\n' +
+		'    "port": "5432",\n' +
+		'    "username": "postgres",\n' +
 		'    "password": "",\n' +
 		'    "database": "nodebb_test"\n' +
 		'}\n' +
@@ -120,6 +129,8 @@ before(function (done) {
 			nconf.set('theme_config', path.join(nconf.get('themes_path'), 'nodebb-theme-persona', 'theme.json'));
 			nconf.set('bcrypt_rounds', 1);
 
+			nconf.set('version', packageInfo.version);
+
 			meta.dependencies.check(next);
 		},
 		function (next) {
@@ -155,6 +166,9 @@ function setupMockDefaults(callback) {
 			setupDefaultConfigs(meta, next);
 		},
 		function (next) {
+			giveDefaultGlobalPrivileges(next);
+		},
+		function (next) {
 			meta.configs.init(next);
 		},
 		function (next) {
@@ -170,6 +184,21 @@ function setupMockDefaults(callback) {
 				id: 'nodebb-theme-persona',
 			}, next);
 		},
+		function (next) {
+			var rimraf = require('rimraf');
+			rimraf('test/uploads', next);
+		},
+		function (next) {
+			var mkdirp = require('mkdirp');
+			async.eachSeries([
+				'test/uploads',
+				'test/uploads/category',
+				'test/uploads/files',
+				'test/uploads/system',
+				'test/uploads/sounds',
+				'test/uploads/profile',
+			], mkdirp, next);
+		},
 	], callback);
 }
 db.setupMockDefaults = setupMockDefaults;
@@ -180,6 +209,11 @@ function setupDefaultConfigs(meta, next) {
 	var defaults = require(path.join(nconf.get('base_dir'), 'install/data/defaults.json'));
 
 	meta.configs.setOnEmpty(defaults, next);
+}
+
+function giveDefaultGlobalPrivileges(next) {
+	var privileges = require('../../src/privileges');
+	privileges.global.give(['chat', 'upload:post:image', 'signature', 'search:content', 'search:users', 'search:tags'], 'registered-users', next);
 }
 
 function enableDefaultPlugins(callback) {

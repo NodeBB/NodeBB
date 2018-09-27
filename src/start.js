@@ -47,7 +47,7 @@ start.start = function () {
 			var webserver = require('./webserver');
 			require('./socket.io').init(webserver.server);
 
-			if (nconf.get('isPrimary') === 'true' && !nconf.get('jobsDisabled')) {
+			if (nconf.get('runJobs')) {
 				require('./notifications').startJobs();
 				require('./user').startJobs();
 			}
@@ -153,11 +153,21 @@ function restart() {
 
 function shutdown(code) {
 	winston.info('[app] Shutdown (SIGTERM/SIGINT) Initialised.');
-	require('./database').close();
-	winston.info('[app] Database connection closed.');
-	require('./webserver').server.close();
-	winston.info('[app] Web server closed to connections.');
-
-	winston.info('[app] Shutdown complete.');
-	process.exit(code || 0);
+	async.waterfall([
+		function (next) {
+			require('./webserver').destroy(next);
+		},
+		function (next) {
+			winston.info('[app] Web server closed to connections.');
+			require('./database').close(next);
+		},
+	], function (err) {
+		if (err) {
+			winston.error(err);
+			return process.exit(code || 0);
+		}
+		winston.info('[app] Database connection closed.');
+		winston.info('[app] Shutdown complete.');
+		process.exit(code || 0);
+	});
 }

@@ -48,6 +48,11 @@ describe('Test database', function () {
 					assert.equal(err.message, 'The `mongodb` package is out-of-date, please run `./nodebb setup` again.');
 					done();
 				});
+			} else if (dbName === 'postgres') {
+				db.checkCompatibilityVersion('6.3.0', function (err) {
+					assert.equal(err.message, 'The `pg` package is out-of-date, please run `./nodebb setup` again.');
+					done();
+				});
 			}
 		});
 	});

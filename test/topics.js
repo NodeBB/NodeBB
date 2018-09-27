@@ -979,7 +979,7 @@ describe('Topic\'s', function () {
 
 	describe('suggested topics', function () {
 		var tid1;
-		var tid2;
+		var tid3;
 		before(function (done) {
 			async.parallel({
 				topic1: function (next) {
@@ -988,16 +988,27 @@ describe('Topic\'s', function () {
 				topic2: function (next) {
 					topics.post({ uid: adminUid, tags: ['nodebb'], title: 'topic title 2', content: 'topic 2 content', cid: topic.categoryId }, next);
 				},
+				topic3: function (next) {
+					topics.post({ uid: adminUid, tags: [], title: 'topic title 3', content: 'topic 3 content', cid: topic.categoryId }, next);
+				},
 			}, function (err, results) {
 				assert.ifError(err);
 				tid1 = results.topic1.topicData.tid;
-				tid2 = results.topic2.topicData.tid;
+				tid3 = results.topic3.topicData.tid;
 				done();
 			});
 		});
 
 		it('should return suggested topics', function (done) {
 			topics.getSuggestedTopics(tid1, adminUid, 0, -1, function (err, topics) {
+				assert.ifError(err);
+				assert(Array.isArray(topics));
+				done();
+			});
+		});
+
+		it('should return suggested topics', function (done) {
+			topics.getSuggestedTopics(tid3, adminUid, 0, 2, function (err, topics) {
 				assert.ifError(err);
 				assert(Array.isArray(topics));
 				done();
@@ -1052,14 +1063,12 @@ describe('Topic\'s', function () {
 			});
 		});
 
-
 		it('should fail with invalid data', function (done) {
 			socketTopics.markAsRead({ uid: 0 }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
-
 
 		it('should mark topic read', function (done) {
 			socketTopics.markAsRead({ uid: adminUid }, [tid], function (err) {
@@ -1080,14 +1089,12 @@ describe('Topic\'s', function () {
 		});
 
 		it('should mark topic notifications read', function (done) {
-			var socketPosts = require('../src/socket.io/posts');
-
 			async.waterfall([
 				function (next) {
 					socketTopics.follow({ uid: adminUid }, tid, next);
 				},
 				function (next) {
-					socketPosts.reply({ uid: uid }, { content: 'some content', tid: tid }, next);
+					topics.reply({ uid: uid, timestamp: Date.now(), content: 'some content', tid: tid }, next);
 				},
 				function (data, next) {
 					setTimeout(next, 2500);
@@ -1147,7 +1154,6 @@ describe('Topic\'s', function () {
 			});
 		});
 
-
 		it('should fail with invalid data', function (done) {
 			socketTopics.markAsUnreadForAll({ uid: adminUid }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-tid]]');
@@ -1202,6 +1208,35 @@ describe('Topic\'s', function () {
 				done();
 			});
 		});
+
+		it('should not return topics in category you cant read', function (done) {
+			var privateCid;
+			var privateTid;
+			async.waterfall([
+				function (next) {
+					categories.create({
+						name: 'private category',
+						description: 'private category',
+					}, next);
+				},
+				function (category, next) {
+					privateCid = category.cid;
+					privileges.categories.rescind(['read'], category.cid, 'registered-users', next);
+				},
+				function (next) {
+					topics.post({ uid: adminUid, title: 'topic in private category', content: 'registered-users cant see this', cid: privateCid }, next);
+				},
+				function (data, next) {
+					privateTid = data.topicData.tid;
+					topics.getUnreadTids({ uid: uid }, next);
+				},
+				function (unreadTids, next) {
+					unreadTids = unreadTids.map(String);
+					assert(!unreadTids.includes(String(privateTid)));
+					next();
+				},
+			], done);
+		});
 	});
 
 	describe('tags', function () {
@@ -1209,14 +1244,14 @@ describe('Topic\'s', function () {
 		var socketAdmin = require('../src/socket.io/admin');
 
 		before(function (done) {
-			async.parallel({
-				topic1: function (next) {
+			async.series([
+				function (next) {
 					topics.post({ uid: adminUid, tags: ['php', 'nosql', 'psql', 'nodebb'], title: 'topic title 1', content: 'topic 1 content', cid: topic.categoryId }, next);
 				},
-				topic2: function (next) {
+				function (next) {
 					topics.post({ uid: adminUid, tags: ['javascript', 'mysql', 'python', 'nodejs'], title: 'topic title 2', content: 'topic 2 content', cid: topic.categoryId }, next);
 				},
-			}, function (err) {
+			], function (err) {
 				assert.ifError(err);
 				done();
 			});
@@ -1274,9 +1309,9 @@ describe('Topic\'s', function () {
 				assert.equal(data.matchCount, 3);
 				assert.equal(data.pageCount, 1);
 				var tagData = [
-					{ value: 'nodebb', color: '', bgColor: '', score: 3 },
-					{ value: 'nodejs', color: '', bgColor: '', score: 1 },
-					{ value: 'nosql', color: '', bgColor: '', score: 1 },
+					{ value: 'nodebb', valueEscaped: 'nodebb', color: '', bgColor: '', score: 3 },
+					{ value: 'nodejs', valueEscaped: 'nodejs', color: '', bgColor: '', score: 1 },
+					{ value: 'nosql', valueEscaped: 'nosql', color: '', bgColor: '', score: 1 },
 				];
 				assert.deepEqual(data.tags, tagData);
 
@@ -1350,28 +1385,57 @@ describe('Topic\'s', function () {
 			});
 		});
 
-		it('should error if data.tag is invalid', function (done) {
+		it('should error if data is not an array', function (done) {
 			socketAdmin.tags.update({ uid: adminUid }, {
 				bgColor: '#ff0000',
 				color: '#00ff00',
 			}, function (err) {
-				assert.equal(err.message, '[[error:invalid-tag]]');
+				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('should update tag', function (done) {
-			socketAdmin.tags.update({ uid: adminUid }, {
-				tag: 'emptytag',
+			socketAdmin.tags.update({ uid: adminUid }, [{
+				value: 'emptytag',
 				bgColor: '#ff0000',
 				color: '#00ff00',
-			}, function (err) {
+			}], function (err) {
 				assert.ifError(err);
 				db.getObject('tag:emptytag', function (err, data) {
 					assert.ifError(err);
 					assert.equal(data.bgColor, '#ff0000');
 					assert.equal(data.color, '#00ff00');
 					done();
+				});
+			});
+		});
+
+		it('should rename tags', function (done) {
+			async.parallel({
+				topic1: function (next) {
+					topics.post({ uid: adminUid, tags: ['plugins'], title: 'topic tagged with plugins', content: 'topic 1 content', cid: topic.categoryId }, next);
+				},
+				topic2: function (next) {
+					topics.post({ uid: adminUid, tags: ['plugin'], title: 'topic tagged with plugin', content: 'topic 2 content', cid: topic.categoryId }, next);
+				},
+			}, function (err, result) {
+				assert.ifError(err);
+				socketAdmin.tags.rename({ uid: adminUid }, [{
+					value: 'plugin',
+					newName: 'plugins',
+				}], function (err) {
+					assert.ifError(err);
+					topics.getTagTids('plugins', 0, -1, function (err, tids) {
+						assert.ifError(err);
+						assert.equal(tids.length, 2);
+						topics.getTopicTags(result.topic2.topicData.tid, function (err, tags) {
+							assert.ifError(err);
+							assert.equal(tags.length, 1);
+							assert.equal(tags[0], 'plugins');
+							done();
+						});
+					});
 				});
 			});
 		});
@@ -1783,6 +1847,29 @@ describe('Topic\'s', function () {
 					next();
 				},
 			], done);
+		});
+	});
+
+	describe('sorted topics', function () {
+		it('should get sorted topics in category', function (done) {
+			var filters = ['', 'watched', 'unreplied', 'new'];
+			async.map(filters, function (filter, next) {
+				topics.getSortedTopics({
+					cids: [topic.categoryId],
+					uid: topic.userId,
+					start: 0,
+					stop: -1,
+					filter: filter,
+					sort: 'votes',
+				}, next);
+			}, function (err, data) {
+				assert.ifError(err);
+				assert(data);
+				data.forEach(function (filterTopics) {
+					assert(Array.isArray(filterTopics.topics));
+				});
+				done();
+			});
 		});
 	});
 });

@@ -6,6 +6,8 @@ var validator = require('validator');
 var db = require('../database');
 var user = require('../user');
 var plugins = require('../plugins');
+var privileges = require('../privileges');
+var meta = require('../meta');
 
 module.exports = function (Messaging) {
 	Messaging.getRoomData = function (roomId, callback) {
@@ -177,8 +179,43 @@ module.exports = function (Messaging) {
 				}));
 				db.sortedSetsRemove(keys, roomId, next);
 			},
+			function (next) {
+				updateOwner(roomId, next);
+			},
 		], callback);
 	};
+
+	Messaging.leaveRooms = function (uid, roomIds, callback) {
+		async.waterfall([
+			function (next) {
+				var roomKeys = roomIds.map(function (roomId) {
+					return 'chat:room:' + roomId + ':uids';
+				});
+				db.sortedSetsRemove(roomKeys, uid, next);
+			},
+			function (next) {
+				db.sortedSetRemove('uid:' + uid + ':chat:rooms', roomIds, next);
+			},
+			function (next) {
+				db.sortedSetRemove('uid:' + uid + ':chat:rooms:unread', roomIds, next);
+			},
+			function (next) {
+				async.eachSeries(roomIds, updateOwner, next);
+			},
+		], callback);
+	};
+
+	function updateOwner(roomId, callback) {
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRange('chat:room:' + roomId + ':uids', 0, 0, next);
+			},
+			function (uids, next) {
+				var newOwner = uids[0] || 0;
+				db.setObjectField('chat:room:' + roomId, 'owner', newOwner, next);
+			},
+		], callback);
+	}
 
 	Messaging.getUidsInRoom = function (roomId, start, stop, callback) {
 		db.getSortedSetRevRange('chat:room:' + roomId + ':uids', start, stop, callback);
@@ -191,6 +228,14 @@ module.exports = function (Messaging) {
 			},
 			function (uids, next) {
 				user.getUsersFields(uids, ['uid', 'username', 'picture', 'status'], next);
+			},
+			function (users, next) {
+				db.getObjectField('chat:room:' + roomId, 'owner', function (err, ownerId) {
+					next(err, users.map(function (user) {
+						user.isOwner = parseInt(user.uid, 10) === parseInt(ownerId, 10);
+						return user;
+					}));
+				});
 			},
 		], callback);
 	};
@@ -213,6 +258,10 @@ module.exports = function (Messaging) {
 				}
 				db.setObjectField('chat:room:' + roomId, 'roomName', newName, next);
 			},
+			async.apply(plugins.fireHook, 'action:chat.renameRoom', {
+				roomId: roomId,
+				newName: newName,
+			}),
 		], callback);
 	};
 
@@ -226,6 +275,57 @@ module.exports = function (Messaging) {
 			},
 			function (data, next) {
 				next(null, data.canReply);
+			},
+		], callback);
+	};
+
+	Messaging.loadRoom = function (uid, data, callback) {
+		async.waterfall([
+			function (next) {
+				privileges.global.can('chat', uid, next);
+			},
+			function (canChat, next) {
+				if (!canChat) {
+					return next(new Error('[[error:no-privileges]]'));
+				}
+
+				Messaging.isUserInRoom(uid, data.roomId, next);
+			},
+			function (inRoom, next) {
+				if (!inRoom) {
+					return callback(null, null);
+				}
+
+				async.parallel({
+					roomData: async.apply(Messaging.getRoomData, data.roomId),
+					canReply: async.apply(Messaging.canReply, data.roomId, uid),
+					users: async.apply(Messaging.getUsersInRoom, data.roomId, 0, -1),
+					messages: async.apply(Messaging.getMessages, {
+						callerUid: uid,
+						uid: data.uid || uid,
+						roomId: data.roomId,
+						isNew: false,
+					}),
+					isAdminOrGlobalMod: function (next) {
+						user.isAdminOrGlobalMod(uid, next);
+					},
+				}, next);
+			},
+			function (results, next) {
+				var room = results.roomData;
+				room.messages = results.messages;
+				room.isOwner = parseInt(room.owner, 10) === parseInt(uid, 10);
+				room.users = results.users.filter(function (user) {
+					return user && parseInt(user.uid, 10) && parseInt(user.uid, 10) !== uid;
+				});
+				room.canReply = results.canReply;
+				room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : results.users.length > 2;
+				room.usernames = Messaging.generateUsernames(results.users, uid);
+				room.maximumUsersInChatRoom = parseInt(meta.config.maximumUsersInChatRoom, 10) || 0;
+				room.maximumChatMessageLength = parseInt(meta.config.maximumChatMessageLength, 10) || 1000;
+				room.showUserInput = !room.maximumUsersInChatRoom || room.maximumUsersInChatRoom > 2;
+				room.isAdminOrGlobalMod = results.isAdminOrGlobalMod;
+				next(null, room);
 			},
 		], callback);
 	};

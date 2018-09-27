@@ -18,6 +18,10 @@ define('forum/topic/delete-posts', ['components', 'postSelect'], function (compo
 	}
 
 	function onDeletePostsClicked() {
+		if (modal) {
+			return;
+		}
+
 		app.parseAndTranslate('partials/delete_posts_modal', {}, function (html) {
 			modal = html;
 
@@ -77,17 +81,11 @@ define('forum/topic/delete-posts', ['components', 'postSelect'], function (compo
 	}
 
 	function closeModal() {
-		postSelect.pids.forEach(function (pid) {
-			components.get('post', 'pid', pid).toggleClass('bg-success', false);
-		});
-
 		if (modal) {
 			modal.remove();
 			modal = null;
 		}
-
-		components.get('topic').off('click', '[data-pid]');
-		postSelect.enableClicksOnPosts();
+		postSelect.disable();
 	}
 
 	return DeletePosts;

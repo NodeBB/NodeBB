@@ -14,6 +14,8 @@ var events = require('../events');
 
 var Themes = module.exports;
 
+var themeNamePattern = /^(@.*?\/)?nodebb-theme-.*$/;
+
 Themes.get = function (callback) {
 	var themePath = nconf.get('themes_path');
 	if (typeof themePath !== 'string') {
@@ -24,9 +26,13 @@ Themes.get = function (callback) {
 		function (next) {
 			fs.readdir(themePath, next);
 		},
-		function (files, next) {
-			async.filter(files, function (file, next) {
-				fs.stat(path.join(themePath, file), function (err, fileStat) {
+		function (dirs, next) {
+			async.map(dirs.filter(function (dir) {
+				return themeNamePattern.test(dir) || dir.startsWith('@');
+			}), function (dir, next) {
+				var dirpath = path.join(themePath, dir);
+
+				fs.stat(dirpath, function (err, stat) {
 					if (err) {
 						if (err.code === 'ENOENT') {
 							return next(null, false);
@@ -34,11 +40,54 @@ Themes.get = function (callback) {
 						return next(err);
 					}
 
-					next(null, (fileStat.isDirectory() && file.slice(0, 13) === 'nodebb-theme-'));
+					if (!stat.isDirectory()) {
+						return next(null, null);
+					}
+
+					if (!dir.startsWith('@')) {
+						return next(null, dir);
+					}
+
+					fs.readdir(dirpath, function (err, themes) {
+						if (err) {
+							return next(err);
+						}
+
+						async.filter(themes.filter(function (theme) {
+							return themeNamePattern.test(theme);
+						}), function (theme, next) {
+							fs.stat(path.join(dirpath, theme), function (err, stat) {
+								if (err) {
+									if (err.code === 'ENOENT') {
+										return next(null, false);
+									}
+									return next(err);
+								}
+
+								next(null, stat.isDirectory());
+							});
+						}, function (err, themes) {
+							if (err) {
+								return next(err);
+							}
+
+							next(null, themes.map(function (theme) {
+								return dir + '/' + theme;
+							}));
+						});
+					});
 				});
 			}, next);
 		},
 		function (themes, next) {
+			themes = themes.reduce(function (prev, theme) {
+				if (!theme) {
+					return prev;
+				}
+
+				return prev.concat(theme);
+			}, []);
+
 			async.map(themes, function (theme, next) {
 				var config = path.join(themePath, theme, 'theme.json');
 
@@ -55,7 +104,7 @@ Themes.get = function (callback) {
 						// Minor adjustments for API output
 						configObj.type = 'local';
 						if (configObj.screenshot) {
-							configObj.screenshot_url = nconf.get('relative_path') + '/css/previews/' + configObj.id;
+							configObj.screenshot_url = nconf.get('relative_path') + '/css/previews/' + encodeURIComponent(configObj.id);
 						} else {
 							configObj.screenshot_url = nconf.get('relative_path') + '/assets/images/themes/default.png';
 						}
@@ -150,13 +199,13 @@ Themes.setupPaths = function (callback) {
 		function (data, next) {
 			var themeId = data.currentThemeId || 'nodebb-theme-persona';
 
-			var themeObj = data.themesData.filter(function (themeObj) {
-				return themeObj.id === themeId;
-			})[0];
-
 			if (process.env.NODE_ENV === 'development') {
 				winston.info('[themes] Using theme ' + themeId);
 			}
+
+			var themeObj = data.themesData.find(function (themeObj) {
+				return themeObj.id === themeId;
+			});
 
 			if (!themeObj) {
 				return callback(new Error('[[error:theme-not-found]]'));

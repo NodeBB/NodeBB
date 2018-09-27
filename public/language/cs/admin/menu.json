@@ -9,12 +9,15 @@
 
 	"section-manage": "Spravovat",
 	"manage/categories": "Kategorie",
+	"manage/privileges": "Oprávnění",
 	"manage/tags": "Značky",
 	"manage/users": "Uživatelé",
+	"manage/admins-mods": "Správci a moderátoři",
 	"manage/registration": "Registrační fronta",
 	"manage/post-queue": "Fronta příspěvků",
 	"manage/groups": "Skupiny",
 	"manage/ip-blacklist": "Černá listina IP",
+	"manage/uploads": "Nahráno",
 
 	"section-settings": "Nastavení",
 	"settings/general": "Všeobecné",
@@ -39,7 +42,7 @@
 	"section-appearance": "Vzhled",
 	"appearance/themes": "Motivy",
 	"appearance/skins": "Vzhledy",
-	"appearance/customise": "Custom Content (HTML/JS/CSS)",
+	"appearance/customise": "Uživatelský obsah (HTML/JS/CSS)",
 
 	"section-extend": "Rozšířit",
 	"extend/plugins": "Rozšíření",
@@ -60,16 +63,19 @@
 	"development/logger": "Protokolář",
 	"development/info": "Informace",
 
-	"reload-forum": "Znovu načíst fórum",
+	"rebuild-and-restart-forum": "Znovu sestavit a restartovat fórum",
 	"restart-forum": "Restartovat fórum",
 	"logout": "Odhlásit",
 	"view-forum": "Zobrazit fórum",
 
-	"search.placeholder": "Search for settings",
+	"search.placeholder": "Hledat nastavení",
 	"search.no-results": "Žádné výsledky…",
 	"search.search-forum": "Prohledat fórum pro <strong></strong>",
-	"search.keep-typing": "Pište dále pro zobrazení výsledků…",
-	"search.start-typing": "Začněte psát pro zobrazení výsledků…",
+	"search.keep-typing": "Pište dále pro zobrazení výsledků…",
+	"search.start-typing": "Začněte psát pro zobrazení výsledků…",
 
-	"connection-lost": "Připojení k %1 bylo ztraceno, snaha o opětovné připojení…"
+	"connection-lost": "Připojení k %1 bylo ztraceno, snaha o opětovné připojení…",
+
+	"alerts.version": "Spušteno <strong>NodeBB v%1</strong>",
+	"alerts.upgrade": "Aktualizovat na v%1"
 }

@@ -1,6 +1,6 @@
 {
 	"post-queue": "发布队列",
-	"description": "发布队列没有需要发布内容。<br>启用此功能，请到<a href=\"%1\">设置 &rarr; 发布 &rarr; 发布限制</a>启用<strong>发布队列</strong>",
+	"description": "发布队列为空。<br>若要启用该功能，请到<a href=\"%1\">设置 &rarr; 发布 &rarr; 发布限制</a>中启用<strong>发布队列</strong>",
 	"user": "用户",
 	"category": "版块",
 	"title": "标题",

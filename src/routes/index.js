@@ -63,10 +63,10 @@ function tagRoutes(app, middleware, controllers) {
 
 function categoryRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/categories', middleware, [], controllers.categories.list);
-	setupPageRoute(app, '/popular/:term?', middleware, [], controllers.popular.get);
-	setupPageRoute(app, '/recent/:filter?', middleware, [], controllers.recent.get);
-	setupPageRoute(app, '/top/:filter?', middleware, [], controllers.top.get);
-	setupPageRoute(app, '/unread/:filter?', middleware, [middleware.authenticate], controllers.unread.get);
+	setupPageRoute(app, '/popular', middleware, [], controllers.popular.get);
+	setupPageRoute(app, '/recent', middleware, [], controllers.recent.get);
+	setupPageRoute(app, '/top', middleware, [], controllers.top.get);
+	setupPageRoute(app, '/unread', middleware, [middleware.authenticate], controllers.unread.get);
 
 	setupPageRoute(app, '/category/:category_id/:slug/:topic_index', middleware, [], controllers.category.get);
 	setupPageRoute(app, '/category/:category_id/:slug?', middleware, [], controllers.category.get);
@@ -152,7 +152,6 @@ module.exports = function (app, middleware, hotswapIds, callback) {
 	}
 
 	app.use(middleware.privateUploads);
-	app.use(relativePath + '/assets/templates', middleware.templatesOnDemand);
 
 	var statics = [
 		{ route: '/assets', path: path.join(__dirname, '../../build/public') },

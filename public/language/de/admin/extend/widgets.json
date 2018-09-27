@@ -2,6 +2,7 @@
 	"available": "Verfügbare Widgets",
 	"explanation": "Widget vom Dropdown-Menu auswählen und anschließend links in den Widget-Bereich einer Vorlage ziehen.",
 	"none-installed": "Keine Widgets gefunden! Aktiviere das \"Essential Widgets\"-Plugin in den <a href=\"%1\">Plugin-Einstellungen</a>.",
+	"clone-from": "Klone Widget von",
 	"containers.available": "Verfügbare Container",
 	"containers.explanation": "Auf ein beliebiges aktives Widget ziehen",
 	"containers.none": "Nichts",
@@ -14,6 +15,8 @@
 
 	"alert.confirm-delete": "Sind Sie sicher, dass Sie dieses Widget löschen wollen?",
 	"alert.updated": "Widgets aktualisiert",
-	"alert.update-success": "Widgets erfolgreich aktualisiert"
+	"alert.update-success": "Widgets erfolgreich aktualisiert",
+	"alert.clone-success": "Die Widgets wurden erfolgreich geklont",
 
+	"error.select-clone": "Bitte wähle eine Seite aus von der geklont werden soll"
 }

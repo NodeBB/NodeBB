@@ -75,7 +75,7 @@ app.cacheBuster = null;
 
 		socket.removeAllListeners('event:nodebb.ready');
 		socket.on('event:nodebb.ready', function (data) {
-			if (!app.cacheBuster || app.cacheBuster !== data['cache-buster']) {
+			if ((data.hostname === app.upstreamHost) && (!app.cacheBuster || app.cacheBuster !== data['cache-buster'])) {
 				app.cacheBuster = data['cache-buster'];
 
 				app.alert({
@@ -107,7 +107,9 @@ app.cacheBuster = null;
 	};
 
 	app.logout = function (e) {
-		e.preventDefault();
+		if (e) {
+			e.preventDefault();
+		}
 		$(window).trigger('action:app.logout');
 
 		/*
@@ -224,7 +226,7 @@ app.cacheBuster = null;
 	};
 
 	function highlightNavigationLink() {
-		var path = window.location.pathname;
+		var path = window.location.pathname + window.location.search;
 		$('#main-nav li').removeClass('active');
 		if (path) {
 			$('#main-nav li').removeClass('active').find('a[href="' + path + '"]').parent().addClass('active');
@@ -340,7 +342,7 @@ app.cacheBuster = null;
 
 		require(['chat'], function (chat) {
 			function loadAndCenter(chatModal) {
-				chat.load(chatModal.attr('UUID'));
+				chat.load(chatModal.attr('data-uuid'));
 				chat.center(chatModal);
 				chat.focusInput(chatModal);
 			}
@@ -519,7 +521,7 @@ app.cacheBuster = null;
 		}
 
 		searchButton.on('click', function (e) {
-			if (!config.loggedIn && !config.allowGuestSearching) {
+			if (!config.loggedIn && !app.user.privileges['search:content']) {
 				app.alert({
 					message: '[[error:search-requires-login]]',
 					timeout: 3000,

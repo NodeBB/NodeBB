@@ -40,6 +40,13 @@ module.exports = function (SocketUser) {
 				user.setUserFields(socket.uid, data, next);
 			},
 			function (next) {
+				if (status !== 'offline') {
+					user.updateOnlineUsers(socket.uid, next);
+				} else {
+					next();
+				}
+			},
+			function (next) {
 				var data = {
 					uid: socket.uid,
 					status: status,

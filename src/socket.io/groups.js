@@ -71,14 +71,27 @@ SocketGroups.leave = function (socket, data, callback) {
 	groups.leave(data.groupName, socket.uid, callback);
 };
 
+SocketGroups.addMember = isOwner(function (socket, data, callback) {
+	if (data.groupName === 'administrators' || groups.isPrivilegeGroup(data.groupName)) {
+		return callback(new Error('[[error:not-allowed]]'));
+	}
+	groups.join(data.groupName, data.uid, callback);
+});
+
 function isOwner(next) {
 	return function (socket, data, callback) {
 		async.parallel({
 			isAdmin: async.apply(user.isAdministrator, socket.uid),
+			isGlobalModerator: async.apply(user.isGlobalModerator, socket.uid),
 			isOwner: async.apply(groups.ownership.isOwner, socket.uid, data.groupName),
+			group: async.apply(groups.getGroupData, data.groupName),
 		}, function (err, results) {
-			if (err || (!results.isOwner && !results.isAdmin)) {
-				return callback(err || new Error('[[error:no-privileges]]'));
+			if (err) {
+				return callback(err);
+			}
+			var isOwner = results.isOwner || results.isAdmin || (results.isGlobalModerator && !results.group.system);
+			if (!isOwner) {
+				return callback(new Error('[[error:no-privileges]]'));
 			}
 			next(socket, data, callback);
 		});
@@ -238,6 +251,7 @@ SocketGroups.create = function (socket, data, callback) {
 SocketGroups.delete = isOwner(function (socket, data, callback) {
 	if (data.groupName === 'administrators' ||
 		data.groupName === 'registered-users' ||
+		data.groupName === 'guests' ||
 		data.groupName === 'Global Moderators') {
 		return callback(new Error('[[error:not-allowed]]'));
 	}

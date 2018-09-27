@@ -101,6 +101,32 @@ describe('Admin Controllers', function () {
 		});
 	});
 
+	it('should load global privileges page', function (done) {
+		request(nconf.get('url') + '/admin/manage/privileges', { jar: jar }, function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load privileges page for category 1', function (done) {
+		request(nconf.get('url') + '/admin/manage/privileges/1', { jar: jar }, function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load manage uploads', function (done) {
+		request(nconf.get('url') + '/admin/manage/uploads', { jar: jar }, function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
 
 	it('should load general settings page', function (done) {
 		request(nconf.get('url') + '/admin/settings', { jar: jar }, function (err, res, body) {
@@ -127,7 +153,6 @@ describe('Admin Controllers', function () {
 			assert(body.history);
 			assert(Array.isArray(body.history.flags));
 			assert(Array.isArray(body.history.bans));
-			assert(Array.isArray(body.history.reasons));
 			assert(Array.isArray(body.sessions));
 			done();
 		});
@@ -159,6 +184,8 @@ describe('Admin Controllers', function () {
 				assert(body.redis);
 			} else if (nconf.get('mongo')) {
 				assert(body.mongo);
+			} else if (nconf.get('postgres')) {
+				assert(body.postgres);
 			}
 			done();
 		});
@@ -249,6 +276,14 @@ describe('Admin Controllers', function () {
 
 	it('should load /admin/manage/registration', function (done) {
 		request(nconf.get('url') + '/api/admin/manage/registration', { jar: jar, json: true }, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/manage/admins-mods', function (done) {
+		request(nconf.get('url') + '/api/admin/manage/admins-mods', { jar: jar, json: true }, function (err, res, body) {
 			assert.ifError(err);
 			assert(body);
 			done();
@@ -583,21 +618,21 @@ describe('Admin Controllers', function () {
 
 		it('should error with not enough reputation to flag', function (done) {
 			var socketFlags = require('../src/socket.io/flags');
-			var oldValue = meta.config['privileges:flag'];
-			meta.config['privileges:flag'] = 1000;
+			var oldValue = meta.config['min:rep:flag'];
+			meta.config['min:rep:flag'] = 1000;
 			socketFlags.create({ uid: regularUid }, { id: pid, type: 'post', reason: 'spam' }, function (err) {
 				assert.equal(err.message, '[[error:not-enough-reputation-to-flag]]');
-				meta.config['privileges:flag'] = oldValue;
+				meta.config['min:rep:flag'] = oldValue;
 				done();
 			});
 		});
 
 		it('should return flag details', function (done) {
 			var socketFlags = require('../src/socket.io/flags');
-			var oldValue = meta.config['privileges:flag'];
-			meta.config['privileges:flag'] = 0;
+			var oldValue = meta.config['min:rep:flag'];
+			meta.config['min:rep:flag'] = 0;
 			socketFlags.create({ uid: regularUid }, { id: pid, type: 'post', reason: 'spam' }, function (err, data) {
-				meta.config['privileges:flag'] = oldValue;
+				meta.config['min:rep:flag'] = oldValue;
 				assert.ifError(err);
 				request(nconf.get('url') + '/api/flags/' + data.flagId, { jar: moderatorJar, json: true }, function (err, res, body) {
 					assert.ifError(err);

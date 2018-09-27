@@ -36,6 +36,8 @@ require('./user/invite')(User);
 require('./user/password')(User);
 require('./user/info')(User);
 require('./user/online')(User);
+require('./user/blocks')(User);
+require('./user/uploads')(User);
 
 User.getUidsFromSet = function (set, start, stop, callback) {
 	if (set === 'users:online') {
@@ -110,6 +112,9 @@ User.getUsers = function (uids, uid, callback) {
 };
 
 User.getStatus = function (userData) {
+	if (parseInt(userData.uid, 10) <= 0) {
+		return 'offline';
+	}
 	var isOnline = (Date.now() - parseInt(userData.lastonline, 10)) < 300000;
 	return isOnline ? (userData.status || 'online') : 'offline';
 };
@@ -269,7 +274,7 @@ User.getAdminsandGlobalMods = function (callback) {
 			], next);
 		},
 		function (results, next) {
-			User.getUsersData(_.union(results), next);
+			User.getUsersData(_.union.apply(_, results), next);
 		},
 	], callback);
 };
@@ -345,27 +350,89 @@ User.getModeratedCids = function (uid, callback) {
 User.addInterstitials = function (callback) {
 	plugins.registerHook('core', {
 		hook: 'filter:register.interstitial',
-		method: function (data, callback) {
-			if (meta.config.termsOfUse && !data.userData.acceptTos) {
-				data.interstitials.push({
-					template: 'partials/acceptTos',
-					data: {
-						termsOfUse: meta.config.termsOfUse,
-					},
-					callback: function (userData, formData, next) {
-						if (formData['agree-terms'] === 'on') {
-							userData.acceptTos = true;
-						}
+		method: [
+			// GDPR information collection/processing consent + email consent
+			function (data, callback) {
+				const add = function () {
+					data.interstitials.push({
+						template: 'partials/gdpr_consent',
+						data: {
+							digestFrequency: meta.config.dailyDigestFreq,
+							digestEnabled: meta.config.dailyDigestFreq !== 'off',
+						},
+						callback: function (userData, formData, next) {
+							if (formData.gdpr_agree_data === 'on' && formData.gdpr_agree_email === 'on') {
+								userData.gdpr_consent = true;
+							}
 
-						next(userData.acceptTos ? null : new Error('[[register:terms_of_use_error]]'));
-					},
-				});
-			}
+							next(userData.gdpr_consent ? null : new Error('[[register:gdpr_consent_denied]]'));
+						},
+					});
+				};
 
-			callback(null, data);
-		},
+				if (!data.userData.gdpr_consent) {
+					if (data.userData.uid) {
+						db.getObjectField('user:' + data.userData.uid, 'gdpr_consent', function (err, consented) {
+							if (err) {
+								return callback(err);
+							} else if (!parseInt(consented, 10)) {
+								add();
+							}
+
+							callback(null, data);
+						});
+					} else {
+						add();
+						setImmediate(callback, null, data);
+					}
+				} else {
+					// GDPR consent signed
+					setImmediate(callback, null, data);
+				}
+			},
+
+			// Forum Terms of Use
+			function (data, callback) {
+				const add = function () {
+					data.interstitials.push({
+						template: 'partials/acceptTos',
+						data: {
+							termsOfUse: meta.config.termsOfUse,
+						},
+						callback: function (userData, formData, next) {
+							if (formData['agree-terms'] === 'on') {
+								userData.acceptTos = true;
+							}
+
+							next(userData.acceptTos ? null : new Error('[[register:terms_of_use_error]]'));
+						},
+					});
+				};
+
+				if (meta.config.termsOfUse && !data.userData.acceptTos) {
+					if (data.userData.uid) {
+						db.getObjectField('user:' + data.userData.uid, 'acceptTos', function (err, accepted) {
+							if (err) {
+								return callback(err);
+							} else if (!parseInt(accepted, 10)) {
+								add();
+							}
+
+							callback(null, data);
+						});
+					} else {
+						add();
+						setImmediate(callback, null, data);
+					}
+				} else {
+					// TOS accepted
+					setImmediate(callback, null, data);
+				}
+			},
+		],
 	});
 
 	callback();
 };
 
+User.async = require('./promisify')(User);

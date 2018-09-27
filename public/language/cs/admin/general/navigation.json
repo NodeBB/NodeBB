@@ -14,9 +14,6 @@
 	"only-guest": "Zobrazit jen hostům",
 	"open-new-window": "Otevřít v novém okně",
 
-	"installed-plugins-required": "Vyžadovaná nainstalovaná rozšíření:",
-	"search-plugin": "Hledat rozšíření",
-
 	"btn.delete": "Odstranit",
 	"btn.disable": "Zakázat",
 	"btn.enable": "Povolit",

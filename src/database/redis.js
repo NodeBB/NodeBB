@@ -37,19 +37,25 @@ redisModule.questions = [
 ];
 
 redisModule.init = function (callback) {
-	redisClient = redisModule.connect();
+	callback = callback || function () { };
+	redisClient = redisModule.connect({}, function (err) {
+		if (err) {
+			winston.error('NodeBB could not connect to your Redis database. Redis returned the following error', err);
+			return callback(err);
+		}
+		redisModule.client = redisClient;
 
-	redisModule.client = redisClient;
+		require('./redis/main')(redisClient, redisModule);
+		require('./redis/hash')(redisClient, redisModule);
+		require('./redis/sets')(redisClient, redisModule);
+		require('./redis/sorted')(redisClient, redisModule);
+		require('./redis/list')(redisClient, redisModule);
+		require('./redis/transaction')(redisClient, redisModule);
 
-	require('./redis/main')(redisClient, redisModule);
-	require('./redis/hash')(redisClient, redisModule);
-	require('./redis/sets')(redisClient, redisModule);
-	require('./redis/sorted')(redisClient, redisModule);
-	require('./redis/list')(redisClient, redisModule);
+		redisModule.async = require('../promisify')(redisModule, ['client', 'sessionStore']);
 
-	if (typeof callback === 'function') {
 		callback();
-	}
+	});
 };
 
 redisModule.initSessionStore = function (callback) {
@@ -66,10 +72,11 @@ redisModule.initSessionStore = function (callback) {
 	}
 };
 
-redisModule.connect = function (options) {
+redisModule.connect = function (options, callback) {
+	callback = callback || function () {};
 	var redis_socket_or_host = nconf.get('redis:host');
 	var cxn;
-
+	var callbackCalled = false;
 	options = options || {};
 
 	if (nconf.get('redis:password')) {
@@ -88,7 +95,17 @@ redisModule.connect = function (options) {
 
 	cxn.on('error', function (err) {
 		winston.error(err.stack);
-		process.exit(1);
+		if (!callbackCalled) {
+			callbackCalled = true;
+			callback(err);
+		}
+	});
+
+	cxn.on('ready', function () {
+		if (!callbackCalled) {
+			callbackCalled = true;
+			callback();
+		}
 	});
 
 	if (nconf.get('redis:password')) {
@@ -99,7 +116,7 @@ redisModule.connect = function (options) {
 	if (dbIdx >= 0) {
 		cxn.select(dbIdx, function (err) {
 			if (err) {
-				winston.error('NodeBB could not connect to your Redis database. Redis returned the following error', err);
+				winston.error('NodeBB could not select Redis database. Redis returned the following error', err);
 				throw err;
 			}
 		});
@@ -132,7 +149,9 @@ redisModule.checkCompatibilityVersion = function (version, callback) {
 
 redisModule.close = function (callback) {
 	callback = callback || function () {};
-	redisClient.quit(callback);
+	redisClient.quit(function (err) {
+		callback(err);
+	});
 };
 
 redisModule.info = function (cxn, callback) {
@@ -159,6 +178,17 @@ redisModule.info = function (cxn, callback) {
 			next(null, redisData);
 		},
 	], callback);
+};
+
+redisModule.socketAdapter = function () {
+	var redisAdapter = require('socket.io-redis');
+	var pub = redisModule.connect();
+	var sub = redisModule.connect();
+	return redisAdapter({
+		key: 'db:' + nconf.get('redis:database') + ':adapter_key',
+		pubClient: pub,
+		subClient: sub,
+	});
 };
 
 redisModule.helpers = redisModule.helpers || {};

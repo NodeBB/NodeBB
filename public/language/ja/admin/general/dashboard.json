@@ -23,10 +23,11 @@
 	"running-version": "<strong>NodeBB v<span id=\"version\">%1</span></strong> を実行しています。",
 	"keep-updated": "常に最新のセキュリティパッチとバグ修正のためにNodeBBが最新であることを確認してください。",
 	"up-to-date": "<p>あなたは<strong>最新の状態</strong>です。<i class=\"fa fa-check\"></i></p>",
-	"upgrade-available": "<p>新しいバージョン(v%1) のNodeBBが検出されました。<a href=\"https://docs.nodebb.org/configuring/upgrade/\">アップグレードを検討してください。</a></p>",
-	"prerelease-upgrade-available": "<p>これはNodeBBの旧リリースのバージョンです。新しいバージョン(v%1)がリリースされています。<a href=\"https://docs.nodebb.org/configuring/upgrade/\">アップグレードをご検討ください。</a></p>",
+	"upgrade-available": "<p>A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">upgrading your NodeBB</a>.</p>",
+	"prerelease-upgrade-available": "<p>This is an outdated pre-release version of NodeBB. A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">upgrading your NodeBB</a>.</p>",
 	"prerelease-warning": "<p>これはNodeBBの<strong>プレリリース版</strong>です。意図しないバグが発生することがあります。<i class=\"fa fa-exclamation-triangle\"></i></p>",
 	"running-in-development": "<span>フォーラムが開発モードで動作しています。フォーラムの動作が脆弱かもしれませんので、管理者に問い合わせてください。</span>",
+	"latest-lookup-failed": "<p>Failed to look up latest available version of NodeBB</p>",
 
 	"notices": "通知",
 	"restart-not-required": "再起動は必要ありません",
@@ -36,9 +37,10 @@
 	"search-plugin-tooltip": "検索機能を有効にするには、プラグインページから検索プラグインをインストールしてください",
 
 	"control-panel": "システムコントロール",
-	"reload": "再読み込み",
-	"restart": "再起動",
-	"restart-warning": "NodeBBを再読み込み、または再起動すると、数秒間既存の接続がすべて破棄されます。",
+	"rebuild-and-restart": "Rebuild &amp; Restart",
+	"restart": "Restart",
+	"restart-warning": "Rebuilding or Restarting your NodeBB will drop all existing connections for a few seconds.",
+	"restart-disabled": "Rebuilding and Restarting your NodeBB has been disabled as you do not seem to be running it via the appropriate daemon.",
 	"maintenance-mode": "メンテナンスモード",
 	"maintenance-mode-title": "NodeBBのメンテナンスモードを設定するには、ここをクリックしてください",
 	"realtime-chart-updates": "リアルタイムチャートの更新",
@@ -65,5 +67,7 @@
 	"graphs.page-views": "ページビュー",
 	"graphs.unique-visitors": "ユニークな訪問者",
 	"graphs.registered-users": "登録したユーザー",
-	"graphs.anonymous-users": "匿名ユーザー"
+	"graphs.anonymous-users": "匿名ユーザー",
+	"last-restarted-by": "Last restarted by",
+	"no-users-browsing": "No users browsing"
 }

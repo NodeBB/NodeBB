@@ -14,9 +14,6 @@
 	"only-guest": "Nur Gästen anzeigen",
 	"open-new-window": "In neuem Fenster öffnen",
 
-	"installed-plugins-required": "Benötigte installierte Plugins:",
-	"search-plugin": "Such-Plugin",
-
 	"btn.delete": "Löschen",
 	"btn.disable": "Deaktivieren",
 	"btn.enable": "Aktivieren",

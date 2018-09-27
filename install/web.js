@@ -8,7 +8,7 @@ var path = require('path');
 var childProcess = require('child_process');
 var less = require('less');
 var async = require('async');
-var uglify = require('uglify-js');
+var uglify = require('uglify-es');
 var nconf = require('nconf');
 var Benchpress = require('benchpressjs');
 
@@ -25,7 +25,8 @@ winston.add(winston.transports.File, {
 	level: 'verbose',
 });
 
-var web = {};
+var web = module.exports;
+
 var scripts = [
 	'node_modules/jquery/dist/jquery.js',
 	'public/vendor/xregexp/xregexp.js',
@@ -33,6 +34,11 @@ var scripts = [
 	'public/src/utils.js',
 	'public/src/installer/install.js',
 ];
+
+var installing = false;
+var success = false;
+var error = false;
+var launchUrl;
 
 web.install = function (port) {
 	port = port || 4567;
@@ -55,7 +61,7 @@ web.install = function (port) {
 		extended: true,
 	}));
 
-	async.parallel([compileLess, compileJS, copyCSS], function (err) {
+	async.parallel([compileLess, compileJS, copyCSS, loadDefaults], function (err) {
 		if (err) {
 			winston.error(err);
 		}
@@ -75,10 +81,16 @@ function setupRoutes() {
 	app.get('/', welcome);
 	app.post('/', install);
 	app.post('/launch', launch);
+	app.get('/ping', ping);
+	app.get('/sping', ping);
+}
+
+function ping(req, res) {
+	res.status(200).send(req.path === '/sping' ? 'healthy' : '200');
 }
 
 function welcome(req, res) {
-	var dbs = ['redis', 'mongo'];
+	var dbs = ['redis', 'mongo', 'postgres'];
 	var databases = dbs.map(function (databaseName) {
 		var questions = require('../src/database/' + databaseName).questions.filter(function (question) {
 			return question && !question.hideOnWebInstall;
@@ -93,32 +105,57 @@ function welcome(req, res) {
 	var defaults = require('./data/defaults');
 
 	res.render('install/index', {
+		url: nconf.get('url') || (req.protocol + '://' + req.get('host')),
+		launchUrl: launchUrl,
+		skipGeneralSetup: !!nconf.get('url'),
 		databases: databases,
 		skipDatabaseSetup: !!nconf.get('database'),
-		error: !!res.locals.error,
-		success: !!res.locals.success,
+		error: error,
+		success: success,
 		values: req.body,
 		minimumPasswordLength: defaults.minimumPasswordLength,
+		installing: installing,
 	});
 }
 
 function install(req, res) {
+	if (installing) {
+		return welcome(req, res);
+	}
+	req.setTimeout(0);
+	installing = true;
+	var setupEnvVars = nconf.get();
 	for (var i in req.body) {
 		if (req.body.hasOwnProperty(i) && !process.env.hasOwnProperty(i)) {
-			process.env[i.replace(':', '__')] = req.body[i];
+			setupEnvVars[i.replace(':', '__')] = req.body[i];
 		}
 	}
 
+	// Flatten any objects in setupEnvVars
+	const pushToRoot = function (parentKey, key) {
+		setupEnvVars[parentKey + '__' + key] = setupEnvVars[parentKey][key];
+	};
+	for (var j in setupEnvVars) {
+		if (setupEnvVars.hasOwnProperty(j) && typeof setupEnvVars[j] === 'object' && setupEnvVars[j] !== null && !Array.isArray(setupEnvVars[j])) {
+			Object.keys(setupEnvVars[j]).forEach(pushToRoot.bind(null, j));
+			delete setupEnvVars[j];
+		} else if (Array.isArray(setupEnvVars[j])) {
+			setupEnvVars[j] = JSON.stringify(setupEnvVars[j]);
+		}
+	}
+
+	winston.info('Starting setup process');
+	winston.info(setupEnvVars);
+	launchUrl = setupEnvVars.url;
+
 	var child = require('child_process').fork('app', ['--setup'], {
-		env: process.env,
+		env: setupEnvVars,
 	});
 
 	child.on('close', function (data) {
-		if (data === 0) {
-			res.locals.success = true;
-		} else {
-			res.locals.error = true;
-		}
+		installing = false;
+		success = data === 0;
+		error = data !== 0;
 
 		welcome(req, res);
 	});
@@ -128,15 +165,25 @@ function launch(req, res) {
 	res.json({});
 	server.close();
 
-	var child = childProcess.spawn('node', ['loader.js'], {
-		detached: true,
-		stdio: ['ignore', 'ignore', 'ignore'],
-	});
+	var child;
 
-	console.log('\nStarting NodeBB');
-	console.log('    "./nodebb stop" to stop the NodeBB server');
-	console.log('    "./nodebb log" to view server output');
-	console.log('    "./nodebb restart" to restart NodeBB');
+	if (!nconf.get('launchCmd')) {
+		child = childProcess.spawn('node', ['loader.js'], {
+			detached: true,
+			stdio: ['ignore', 'ignore', 'ignore'],
+		});
+
+		console.log('\nStarting NodeBB');
+		console.log('    "./nodebb stop" to stop the NodeBB server');
+		console.log('    "./nodebb log" to view server output');
+		console.log('    "./nodebb restart" to restart NodeBB');
+	} else {
+		// Use launchCmd instead, if specified
+		child = childProcess.exec(nconf.get('launchCmd'), {
+			detached: true,
+			stdio: ['ignore', 'ignore', 'ignore'],
+		});
+	}
 
 	var filesToDelete = [
 		'installer.css',
@@ -212,4 +259,19 @@ function copyCSS(next) {
 	], next);
 }
 
-module.exports = web;
+function loadDefaults(next) {
+	var setupDefaultsPath = path.join(__dirname, '../setup.json');
+	fs.access(setupDefaultsPath, fs.constants.F_OK | fs.constants.R_OK, function (err) {
+		if (err) {
+			// setup.json not found or inaccessible, proceed with no defaults
+			return setImmediate(next);
+		}
+
+		winston.info('[installer] Found setup.json, populating default values');
+		nconf.file({
+			file: setupDefaultsPath,
+		});
+
+		next();
+	});
+}

@@ -4,11 +4,13 @@ var async = require('async');
 var winston = require('winston');
 var childProcess = require('child_process');
 var _ = require('lodash');
+var CliGraph = require('cli-graph');
 
 var build = require('../meta/build');
 var db = require('../database');
 var plugins = require('../plugins');
 var events = require('../events');
+var analytics = require('../analytics');
 var reset = require('./reset');
 
 function buildTargets() {
@@ -32,8 +34,11 @@ function buildTargets() {
 	);
 }
 
+var themeNamePattern = /^(@.*?\/)?nodebb-theme-.*$/;
+var pluginNamePattern = /^(@.*?\/)?nodebb-(theme|plugin|widget|rewards)-.*$/;
+
 function activate(plugin) {
-	if (plugin.startsWith('nodebb-theme-')) {
+	if (themeNamePattern.test(plugin)) {
 		reset.reset({
 			theme: plugin,
 		}, function (err) {
@@ -48,7 +53,7 @@ function activate(plugin) {
 			db.init(next);
 		},
 		function (next) {
-			if (!plugin.startsWith('nodebb-')) {
+			if (!pluginNamePattern.test(plugin)) {
 				// Allow omission of `nodebb-plugin-`
 				plugin = 'nodebb-plugin-' + plugin;
 			}
@@ -124,8 +129,42 @@ function info() {
 			db.info(db.client, next);
 		},
 		function (info, next) {
-			console.log('        version: ' + info.version);
-			console.log('        engine:  ' + info.storageEngine);
+			var config = require('../../config.json');
+
+			switch (config.database) {
+			case 'redis':
+				console.log('        version: ' + info.redis_version);
+				console.log('        disk sync:  ' + info.rdb_last_bgsave_status);
+				break;
+
+			case 'mongo':
+				console.log('        version: ' + info.version);
+				console.log('        engine:  ' + info.storageEngine);
+				break;
+			}
+
+			next();
+		},
+		async.apply(analytics.getHourlyStatsForSet, 'analytics:pageviews', Date.now(), 24),
+		function (data, next) {
+			var graph = new CliGraph({
+				height: 12,
+				width: 25,
+				center: {
+					x: 0,
+					y: 11,
+				},
+			});
+			var min = Math.min(...data);
+			var max = Math.max(...data);
+
+			data.forEach(function (point, idx) {
+				graph.addPoint(idx + 1, Math.round(point / max * 10));
+			});
+
+			console.log('');
+			console.log(graph.toString());
+			console.log('Pageviews, last 24h (min: ' + min + '  max: ' + max + ')');
 			next();
 		},
 	], function (err) {

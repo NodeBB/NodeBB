@@ -44,16 +44,22 @@ define('forum/footer', ['notifications', 'chat', 'components', 'translator'], fu
 
 			var isNewTopic = post.isMain && parseInt(post.uid, 10) !== parseInt(app.user.uid, 10);
 			if (isNewTopic) {
-				var unreadNewTopicCount = parseInt($('a[href="' + config.relative_path + '/unread/new"].navigation-link i').attr('data-content'), 10) + 1;
-				updateUnreadTopicCount('/unread/new', unreadNewTopicCount);
+				var unreadNewTopicCount = parseInt($('a[href="' + config.relative_path + '/unread?filter=new"].navigation-link i').attr('data-content'), 10) + 1;
+				updateUnreadTopicCount('/unread?filter=new', unreadNewTopicCount);
+			}
+
+			var isUnreplied = parseInt(post.topic.postcount, 10) <= 1;
+			if (isUnreplied) {
+				var unreadUnrepliedTopicCount = parseInt($('a[href="' + config.relative_path + '/unread?filter=unreplied"].navigation-link i').attr('data-content'), 10) + 1;
+				updateUnreadTopicCount('/unread?filter=unreplied', unreadUnrepliedTopicCount);
 			}
 			socket.emit('topics.isFollowed', post.topic.tid, function (err, isFollowed) {
 				if (err) {
 					return app.alertError(err.message);
 				}
 				if (isFollowed) {
-					var unreadWatchedTopicCount = parseInt($('a[href="' + config.relative_path + '/unread/watched"].navigation-link i').attr('data-content'), 10) + 1;
-					updateUnreadTopicCount('/unread/watched', unreadWatchedTopicCount);
+					var unreadWatchedTopicCount = parseInt($('a[href="' + config.relative_path + '/unread?filter=watched"].navigation-link i').attr('data-content'), 10) + 1;
+					updateUnreadTopicCount('/unread?filter=watched', unreadWatchedTopicCount);
 				}
 			});
 		}
@@ -75,24 +81,11 @@ define('forum/footer', ['notifications', 'chat', 'components', 'translator'], fu
 		socket.on('event:new_post', onNewPost);
 	}
 
-	// DEPRECATED: remove in 1.8.0
-	if (app.user.uid) {
-		socket.emit('user.getUnreadCounts', function (err, data) {
-			if (err) {
-				return app.alert(err.message);
-			}
-
-			updateUnreadCounters(data);
-
-			updateUnreadChatCount(data.unreadChatCount);
-			Notifications.updateNotifCount(data.unreadNotificationCount);
-		});
-	}
-
 	function updateUnreadCounters(data) {
 		updateUnreadTopicCount('/unread', data.unreadTopicCount);
-		updateUnreadTopicCount('/unread/new', data.unreadNewTopicCount);
-		updateUnreadTopicCount('/unread/watched', data.unreadWatchedTopicCount);
+		updateUnreadTopicCount('/unread?filter=new', data.unreadNewTopicCount);
+		updateUnreadTopicCount('/unread?filter=watched', data.unreadWatchedTopicCount);
+		updateUnreadTopicCount('/unread?filter=unreplied', data.unreadUnrepliedTopicCount);
 	}
 
 	socket.on('event:unread.updateCount', updateUnreadCounters);

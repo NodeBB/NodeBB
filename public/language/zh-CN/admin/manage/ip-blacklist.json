@@ -14,5 +14,6 @@
 	"alerts.applied-success": "黑名单生效",
 
 	"analytics.blacklist-hourly": "<strong>图 1 </strong> &ndash; 每小时触发黑名单数",
-	"analytics.blacklist-daily": "<strong>图 2</strong>&ndash; 每日触发黑名单数"
+	"analytics.blacklist-daily": "<strong>图 2</strong>&ndash; 每日触发黑名单数",
+	"ip-banned": "已封禁IP"
 }

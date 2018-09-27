@@ -1,6 +1,6 @@
 {
 	"crawlability-settings": "Réglages de navigation",
-	"robots-txt": "Fichier Robots.txt personnalisé <small>Laissez vide pour utiliser le ficher par défaut</small>",
+	"robots-txt": "Fichier Robots.txt personnalisé <small>Laissez vide pour utiliser le fichier par défaut</small>",
 	"sitemap-feed-settings": "Réglages du sitemap et du flux",
 	"disable-rss-feeds": "Désactiver les flux RSS",
 	"disable-sitemap-xml": "Désactiver le fichier sitemap.xml",

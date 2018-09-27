@@ -1,6 +1,6 @@
 {
-	"events": "Events",
-	"no-events": "There are no events",
-	"control-panel": "Events Control Panel",
-	"delete-events": "Delete Events"
+	"events": "ארועים",
+	"no-events": "אין ארועים",
+	"control-panel": "בקרת ארועים",
+	"delete-events": "מחיקת ארועים"
 }

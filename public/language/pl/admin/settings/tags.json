@@ -2,11 +2,11 @@
     "tag": "Ustawienia tagów",
     "min-per-topic": "Minimalna liczba tagów na temat",
     "max-per-topic": "Maksymalna liczba tagów na temat",
-    "min-length": "Minimalna długość taga",
-    "max-length": "Maksymalna długość taga",
-    "goto-manage": "Kliknij tutaj, aby odwiedzić stronę zarządzania tagami.",
+    "min-length": "Minimalna długość tagu",
+    "max-length": "Maksymalna długość tagu",
+    "goto-manage": "Kliknij tutaj, by przejść do strony zarządzania tagami",
     "privacy": "Prywatność",
     "list-private": "Uczyń listę tagów prywatną",
     "related-topics": "Powiązane tematy",
-    "max-related-topics": "Maksymalna liczba powiązanych tematów do wyświetlenia (jeśli wspierane przez szablon)"
+    "max-related-topics": "Maksymalna liczba powiązanych tematów do wyświetlenia (jeśli możliwe w ramach tematu)"
 }

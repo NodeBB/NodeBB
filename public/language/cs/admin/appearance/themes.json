@@ -7,5 +7,5 @@
     "revert-confirm": "Jste si jist/a, že chcete obnovit výchozí motiv NodeBB?",
     "theme-changed": "Motiv byl změněn",
     "revert-success": "Úspěšně jste vrátil/a NodeBB na výchozí motiv",
-    "restart-to-activate": "Restartujte prosím NodeBB, aby mohl být plně aktivován tento motiv"
+    "restart-to-activate": "Pro úplné aktivování tohoto tématu, znovu sestavte a restartujte NodeBB."
 }

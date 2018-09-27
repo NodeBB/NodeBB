@@ -67,7 +67,8 @@ define('admin/general/navigation', ['translator', 'iconSelect', 'benchpress', 'j
 
 		data.enabled = false;
 		data.index = (parseInt($('#enabled').children().last().attr('data-index'), 10) || 0) + 1;
-
+		data.title = translator.escape(data.title);
+		data.text = translator.escape(data.text);
 		Benchpress.parse('admin/general/navigation', 'navigation', { navigation: [data] }, function (li) {
 			translator.translate(li, function (li) {
 				li = $(translator.unescape(li));

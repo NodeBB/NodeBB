@@ -10,6 +10,7 @@ var htmlToText = require('html-to-text');
 var url = require('url');
 var path = require('path');
 var fs = require('fs');
+var _ = require('lodash');
 
 var User = require('./user');
 var Plugins = require('./plugins');
@@ -32,9 +33,9 @@ Emailer.transports = {
 var app;
 
 var viewsDir = nconf.get('views_dir');
-var emailsPath = path.join(viewsDir, 'emails');
 
 Emailer.getTemplates = function (config, cb) {
+	var emailsPath = path.join(viewsDir, 'emails');
 	async.waterfall([
 		function (next) {
 			file.walk(emailsPath, next);
@@ -209,14 +210,31 @@ Emailer.sendToEmail = function (template, email, language, params, callback) {
 
 	var lang = language || meta.config.defaultLang || 'en-GB';
 
+	// Add some default email headers based on local configuration
+	params.headers = Object.assign({
+		'List-Id': '<' + [template, params.uid, getHostname()].join('.') + '>',
+		'List-Unsubscribe': '<' + [nconf.get('url'), 'uid', params.uid, 'settings'].join('/') + '>',
+	}, params.headers);
+
 	async.waterfall([
 		function (next) {
+			Plugins.fireHook('filter:email.params', {
+				template: template,
+				email: email,
+				language: lang,
+				params: params,
+			}, next);
+		},
+		function (result, next) {
+			template = result.template;
+			email = result.email;
+			params = result.params;
 			async.parallel({
 				html: function (next) {
-					Emailer.renderAndTranslate(template, params, lang, next);
+					Emailer.renderAndTranslate(template, params, result.language, next);
 				},
 				subject: function (next) {
-					translator.translate(params.subject, lang, function (translated) {
+					translator.translate(params.subject, result.language, function (translated) {
 						next(null, translated);
 					});
 				},
@@ -228,7 +246,7 @@ Emailer.sendToEmail = function (template, email, language, params, callback) {
 				to: email,
 				from: meta.config['email:from'] || 'no-reply@' + getHostname(),
 				from_name: meta.config['email:from_name'] || 'NodeBB',
-				subject: results.subject,
+				subject: '[' + meta.config.title + '] ' + results.subject,
 				html: results.html,
 				plaintext: htmlToText.fromString(results.html, {
 					ignoreImage: true,
@@ -237,6 +255,7 @@ Emailer.sendToEmail = function (template, email, language, params, callback) {
 				uid: params.uid,
 				pid: params.pid,
 				fromUid: params.fromUid,
+				headers: params.headers,
 			};
 			Plugins.fireHook('filter:email.modify', data, next);
 		},
@@ -277,23 +296,26 @@ Emailer.sendViaFallback = function (data, callback) {
 function buildCustomTemplates(config) {
 	async.waterfall([
 		function (next) {
-			Emailer.getTemplates(config, next);
+			async.parallel({
+				templates: function (cb) {
+					Emailer.getTemplates(config, cb);
+				},
+				paths: function (cb) {
+					file.walk(viewsDir, cb);
+				},
+			}, next);
 		},
-		function (templates, next) {
-			templates = templates.filter(function (template) {
+		function (result, next) {
+			var templates = result.templates.filter(function (template) {
 				return template.isCustom && template.text !== prevConfig['email:custom:' + path];
 			});
+			var paths = _.fromPairs(result.paths.map(function (p) {
+				var relative = path.relative(viewsDir, p).replace(/\\/g, '/');
+				return [relative, p];
+			}));
 			async.each(templates, function (template, next) {
 				async.waterfall([
 					function (next) {
-						file.walk(viewsDir, next);
-					},
-					function (paths, next) {
-						paths = paths.reduce(function (obj, p) {
-							var relative = path.relative(viewsDir, p);
-							obj['/' + relative] = p;
-							return obj;
-						}, {});
 						meta.templates.processImports(paths, template.path, template.text, next);
 					},
 					function (source, next) {

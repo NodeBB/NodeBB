@@ -53,6 +53,7 @@
     "topics": "Tópicos",
     "posts": "Publicações",
     "best": "Melhores",
+    "votes": "Votes",
     "upvoters": "Votantes a favor",
     "upvoted": "Votado favoravelmente",
     "downvoters": "Votantes contra",
@@ -84,6 +85,7 @@
     "language": "Língua",
     "guest": "Convidado",
     "guests": "Convidados",
+    "former_user": "A Former User",
     "updated.title": "Forum atualizado",
     "updated.message": "Este forum acabou de ser atualizado para a última versão. Carrega aqui para atualizares a página.",
     "privacy": "Privacidade",
@@ -96,6 +98,7 @@
     "enter_page_number": "Introduzir número da página",
     "upload_file": "Carregar ficheiro",
     "upload": "Carregar",
+    "uploads": "Uploads",
     "allowed-file-types": "Os tipos de ficheiro permitidos são %1",
     "unsaved-changes": "Tens alterações por salvar. Tens a certeza que pretendes mudar de página?",
     "reconnecting-message": "Parece que a tua conexão com %1 foi perdida. Por favor, espera enquanto tentamos reconectar-te.",
@@ -105,5 +108,6 @@
     "cookies.learn_more": "Aprende mais",
     "edited": "Edited",
     "disabled": "Disabled",
-    "select": "Select"
+    "select": "Select",
+    "user-search-prompt": "Type something here to find users..."
 }

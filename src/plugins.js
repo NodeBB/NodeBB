@@ -9,7 +9,6 @@ var express = require('express');
 var nconf = require('nconf');
 
 var hotswap = require('./hotswap');
-var file = require('./file');
 
 var app;
 var middleware;
@@ -138,51 +137,6 @@ Plugins.reloadRoutes = function (callback) {
 	});
 };
 
-Plugins.getTemplates = function (callback) {
-	var templates = {};
-	var tplName;
-
-	Plugins.data.getActive(function (err, plugins) {
-		if (err) {
-			return callback(err);
-		}
-
-		async.eachSeries(plugins, function (plugin, next) {
-			if (plugin.templates || plugin.id.startsWith('nodebb-theme-')) {
-				winston.verbose('[plugins] Loading templates (' + plugin.id + ')');
-				var templatesPath = path.join(__dirname, '../node_modules', plugin.id, plugin.templates || 'templates');
-				file.walk(templatesPath, function (err, pluginTemplates) {
-					if (pluginTemplates) {
-						pluginTemplates.forEach(function (pluginTemplate) {
-							if (pluginTemplate.endsWith('.tpl')) {
-								tplName = '/' + pluginTemplate.replace(templatesPath, '').substring(1);
-
-								if (templates.hasOwnProperty(tplName)) {
-									winston.verbose('[plugins] ' + tplName + ' replaced by ' + plugin.id);
-								}
-
-								templates[tplName] = pluginTemplate;
-							} else {
-								winston.warn('[plugins] Skipping ' + pluginTemplate + ' by plugin ' + plugin.id);
-							}
-						});
-					} else if (err) {
-						winston.error(err);
-					} else {
-						winston.warn('[plugins/' + plugin.id + '] A templates directory was defined for this plugin, but was not found.');
-					}
-
-					next(false);
-				});
-			} else {
-				next(false);
-			}
-		}, function (err) {
-			callback(err, templates);
-		});
-	});
-};
-
 Plugins.get = function (id, callback) {
 	var url = (nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins/' + id;
 
@@ -213,8 +167,8 @@ Plugins.list = function (matching, callback) {
 	require('request')(url, {
 		json: true,
 	}, function (err, res, body) {
-		if (err) {
-			winston.error('Error parsing plugins', err);
+		if (err || (res && res.statusCode !== 200)) {
+			winston.error('Error loading ' + url, err || body);
 			return Plugins.normalise([], callback);
 		}
 
@@ -223,9 +177,10 @@ Plugins.list = function (matching, callback) {
 };
 
 Plugins.normalise = function (apiReturn, callback) {
+	var themeNamePattern = /^(@.*?\/)?nodebb-theme-.*$/;
 	var pluginMap = {};
 	var dependencies = require(path.join(nconf.get('base_dir'), 'package.json')).dependencies;
-	apiReturn = apiReturn || [];
+	apiReturn = Array.isArray(apiReturn) ? apiReturn : [];
 	for (var i = 0; i < apiReturn.length; i += 1) {
 		apiReturn[i].id = apiReturn[i].name;
 		apiReturn[i].installed = false;
@@ -258,7 +213,7 @@ Plugins.normalise = function (apiReturn, callback) {
 			pluginMap[plugin.id].description = plugin.description;
 			pluginMap[plugin.id].url = pluginMap[plugin.id].url || plugin.url;
 			pluginMap[plugin.id].installed = true;
-			pluginMap[plugin.id].isTheme = !!plugin.id.match('nodebb-theme-');
+			pluginMap[plugin.id].isTheme = themeNamePattern.test(plugin.id);
 			pluginMap[plugin.id].error = plugin.error || false;
 			pluginMap[plugin.id].active = plugin.active;
 			pluginMap[plugin.id].version = plugin.version;

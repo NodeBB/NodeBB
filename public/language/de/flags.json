@@ -18,6 +18,7 @@
 	"filter-type": "Meldungstyp",
 	"filter-type-all": "Gesamter Inhalt",
 	"filter-type-post": "Beitrag",
+	"filter-type-user": "Benutzer",
 	"filter-state": "Status",
 	"filter-assignee": "UID des Zugewiesenen",
 	"filter-cid": "Kategorie",

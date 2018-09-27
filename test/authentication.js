@@ -56,6 +56,7 @@ describe('authentication', function () {
 					username: username,
 					password: password,
 					'password-confirm': password,
+					gdpr_consent: true,
 				},
 				json: true,
 				jar: jar,
@@ -150,6 +151,7 @@ describe('authentication', function () {
 					password: 'adminpwd',
 					'password-confirm': 'adminpwd',
 					userLang: 'it',
+					gdpr_consent: true,
 				},
 				json: true,
 				jar: jar,
@@ -298,6 +300,18 @@ describe('authentication', function () {
 			assert.equal(response.statusCode, 403);
 			assert.equal(body, '[[error:invalid-username-or-password]]');
 			done();
+		});
+	});
+
+	it('should fail to login if user does not have password field in db', function (done) {
+		user.create({ username: 'hasnopassword', email: 'no@pass.org' }, function (err, uid) {
+			assert.ifError(err);
+			loginUser('hasnopassword', 'doesntmatter', function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(response.statusCode, 403);
+				assert.equal(body, '[[error:invalid-login-credentials]]');
+				done();
+			});
 		});
 	});
 

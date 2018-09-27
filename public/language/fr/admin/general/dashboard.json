@@ -23,22 +23,24 @@
 	"running-version": "<strong>NodeBB v<span id=\"version\">%1</span></strong> est actuellement installé.",
 	"keep-updated": "Assurez-vous que votre version de NodeBB est à jour pour les derniers patchs de sécurité et correctifs de bugs.",
 	"up-to-date": "<p>Votre version <strong>est à jour</strong> <i class=\"fa fa-check\"></i></p>",
-	"upgrade-available": "<p>Une nouvelle version (v%1) a été publiée. Merci d’envisager de <a href=\"https://docs.nodebb.org/configuring/upgrade/\">mettre à jour NodeBB</a>.</p>",
-	"prerelease-upgrade-available": "<p>Ceci est une version pre-release obsolète de NodeBB. Une nouvelle version (v%1) a été publiée. Merci d’envisager de <a href=\"https://docs.nodebb.org/configuring/upgrade/\">mettre à jour NodeBB</a>.</p>",
+	"upgrade-available": "<p>Une nouvelle version (v%1) est disponible. Veuillez <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">mettre à jour NodeBB</a>.</p>",
+	"prerelease-upgrade-available": "<p>Votre version est dépassée. Une nouvelle version (v%1) est disponible. Veuillez <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">mettre à jour NodeBB</a>.</p>",
 	"prerelease-warning": "<p>Ceci est une version <strong>préliminaire</strong> de NodeBB. Des bugs inattendus peuvent se produire. <i class=\"fa fa-exclamation-triangle\"></i></p>",
 	"running-in-development": "<span>Le forum est en mode développement. Il peut être sujet à certaines vulnérabilités, veuillez contacter votre administrateur système.</span>",
+	"latest-lookup-failed": "<p>Erreur de vérification de la dernière version disponible de NodeBB</p>",
 
 	"notices": "Informations",
 	"restart-not-required": "Pas de redémarrage nécessaire",
 	"restart-required": "Redémarrage requis",
-	"search-plugin-installed": "Recherche un plugin installé",
-	"search-plugin-not-installed": "Rechercher un plugin non installé",
+	"search-plugin-installed": "Le plugin de recherche est installé",
+	"search-plugin-not-installed": "Le plugin de recherche n'est pas installé",
 	"search-plugin-tooltip": "Installer un plugin de recherche depuis la page des plugins pour activer la fonctionnalité de recherche",
 
 	"control-panel": "Contrôle du système",
-	"reload": "Recharger",
+	"rebuild-and-restart": "Régénérer &amp; Redémarrer",
 	"restart": "Redémarrer",
-	"restart-warning": "Recharger ou redémarrer NodeBB coupera toutes les connexions existantes pendant quelques secondes.",
+	"restart-warning": "Régénérer ou redémarrer NodeBB coupera toutes les connexions existantes pendant quelques secondes. ",
+	"restart-disabled": "La régénération et le redémarrage de votre forum ont été désactivés car vous ne semblez pas les exécuter à l'aide du serveur approprié.",
 	"maintenance-mode": "Mode maintenance",
 	"maintenance-mode-title": "Cliquez ici pour passer NodeBB en mode maintenance",
 	"realtime-chart-updates": "Mises à jour des graphiques en temps réel",
@@ -56,7 +58,7 @@
 	"user-presence": "Présence des utilisateurs",
 	"on-categories": "Sur la liste des catégories",
 	"reading-posts": "Lit des messages",
-	"browsing-topics": "Parcoure les sujets",
+	"browsing-topics": "Parcourt les sujets",
 	"recent": "Récents",
 	"unread": "Non lus",
 
@@ -65,5 +67,7 @@
 	"graphs.page-views": "Pages vues",
 	"graphs.unique-visitors": "Visiteurs uniques",
 	"graphs.registered-users": "Utilisateurs enregistrés",
-	"graphs.anonymous-users": "Utilisateurs anonymes"
+	"graphs.anonymous-users": "Utilisateurs anonymes",
+	"last-restarted-by": "Redémarré par",
+	"no-users-browsing": "Aucun utilisateur connecté"
 }

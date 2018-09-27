@@ -19,5 +19,8 @@
     "terms_of_use_error": "あなたは利用規約に同意する必要があります",
     "registration-added-to-queue": "あなたの登録申請は承認キューに追加されました。管理者によって受け入れられた時に、メールを受信します。",
     "interstitial.intro": "私たちは、あなたのアカウント作成においていくつかの情報をお訪ねします。",
-    "interstitial.errors-found": "私達はあなたの登録を完了できませんでした:"
+    "interstitial.errors-found": "私達はあなたの登録を完了できませんでした:",
+    "gdpr_agree_data": "I consent to the collection and processing of my personal information on this website.",
+    "gdpr_agree_email": "I consent to receive digest and notification emails from this website.",
+    "gdpr_consent_denied": "You must give consent to this site to collect/process your information, and to send you emails."
 }

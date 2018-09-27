@@ -5,6 +5,7 @@ var _ = require('lodash');
 var validator = require('validator');
 
 var db = require('../database');
+var user = require('../user');
 var posts = require('../posts');
 var topics = require('../topics');
 var utils = require('../../public/src/utils');
@@ -12,30 +13,25 @@ var utils = require('../../public/src/utils');
 module.exports = function (User) {
 	User.getLatestBanInfo = function (uid, callback) {
 		// Simply retrieves the last record of the user's ban, even if they've been unbanned since then.
-		var timestamp;
-		var expiry;
-		var reason;
-
 		async.waterfall([
-			async.apply(db.getSortedSetRevRangeWithScores, 'uid:' + uid + ':bans', 0, 0),
+			function (next) {
+				db.getSortedSetRevRange('uid:' + uid + ':bans:timestamp', 0, 0, next);
+			},
 			function (record, next) {
 				if (!record.length) {
 					return next(new Error('no-ban-info'));
 				}
-
-				timestamp = record[0].score;
-				expiry = record[0].value;
-
-				db.getSortedSetRangeByScore('banned:' + uid + ':reasons', 0, -1, timestamp, timestamp, next);
+				db.getObject(record[0], next);
 			},
-			function (_reason, next) {
-				reason = _reason && _reason.length ? _reason[0] : '';
+			function (banInfo, next) {
+				var expiry = banInfo.expire;
+
 				next(null, {
 					uid: uid,
-					timestamp: timestamp,
+					timestamp: banInfo.timestamp,
 					expiry: parseInt(expiry, 10),
 					expiry_readable: new Date(parseInt(expiry, 10)).toString(),
-					reason: validator.escape(String(reason)),
+					reason: validator.escape(String(banInfo.reason || '')),
 				});
 			},
 		], callback);
@@ -46,8 +42,7 @@ module.exports = function (User) {
 			function (next) {
 				async.parallel({
 					flags: async.apply(db.getSortedSetRevRangeWithScores, 'flags:byTargetUid:' + uid, 0, 19),
-					bans: async.apply(db.getSortedSetRevRangeWithScores, 'uid:' + uid + ':bans', 0, 19),
-					reasons: async.apply(db.getSortedSetRevRangeWithScores, 'banned:' + uid + ':reasons', 0, 19),
+					bans: async.apply(db.getSortedSetRevRange, 'uid:' + uid + ':bans:timestamp', 0, 19),
 				}, next);
 			},
 			function (data, next) {
@@ -76,8 +71,7 @@ module.exports = function (User) {
 				});
 			},
 			function (data, next) {
-				formatBanData(data);
-				next(null, data);
+				formatBanData(data, next);
 			},
 		], callback);
 	};
@@ -131,26 +125,31 @@ module.exports = function (User) {
 		], callback);
 	}
 
-	function formatBanData(data) {
-		var reasons = data.reasons.reduce(function (memo, cur) {
-			memo[cur.score] = cur.value;
-			return memo;
-		}, {});
+	function formatBanData(data, callback) {
+		var banData;
+		async.waterfall([
+			function (next) {
+				db.getObjects(data.bans, next);
+			},
+			function (_banData, next) {
+				banData = _banData;
+				var uids = banData.map(banData => banData.fromUid);
 
-		data.bans = data.bans.map(function (banObj) {
-			banObj.until = parseInt(banObj.value, 10);
-			banObj.untilReadable = new Date(banObj.until).toString();
-			banObj.timestamp = parseInt(banObj.score, 10);
-			banObj.timestampReadable = new Date(banObj.score).toString();
-			banObj.timestampISO = new Date(banObj.score).toISOString();
-			banObj.reason = validator.escape(String(reasons[banObj.score] || '')) || '[[user:info.banned-no-reason]]';
-
-			delete banObj.value;
-			delete banObj.score;
-			delete data.reasons;
-
-			return banObj;
-		});
+				user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
+			},
+			function (usersData, next) {
+				data.bans = banData.map(function (banObj, index) {
+					banObj.user = usersData[index];
+					banObj.until = parseInt(banObj.expire, 10);
+					banObj.untilReadable = new Date(banObj.until).toString();
+					banObj.timestampReadable = new Date(banObj.timestamp).toString();
+					banObj.timestampISO = utils.toISOString(banObj.timestamp);
+					banObj.reason = validator.escape(String(banObj.reason || '')) || '[[user:info.banned-no-reason]]';
+					return banObj;
+				});
+				next(null, data);
+			},
+		], callback);
 	}
 
 	User.getModerationNotes = function (uid, start, stop, callback) {

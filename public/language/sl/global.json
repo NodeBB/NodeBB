@@ -53,6 +53,7 @@
     "topics": "Teme",
     "posts": "Objave",
     "best": "Najboljše",
+    "votes": "Votes",
     "upvoters": "Glasovalcev za",
     "upvoted": "Glasov za",
     "downvoters": "Glasovalcev proti",
@@ -84,6 +85,7 @@
     "language": "Jezik",
     "guest": "Gost",
     "guests": "Gosti",
+    "former_user": "A Former User",
     "updated.title": "Forum je posodobljen.",
     "updated.message": "Forum je bil pravkar posodobljen na zadnjo različico. Kliknite tu za osvežitev strani.",
     "privacy": "Zasebnost",
@@ -96,6 +98,7 @@
     "enter_page_number": "Vnesi številko strani",
     "upload_file": "Prenesi datoteko",
     "upload": "Prenos",
+    "uploads": "Uploads",
     "allowed-file-types": "Dovoljene vrste datotek: %1",
     "unsaved-changes": "Nekatere spremembe niso shranjene. A res želite zapustiti stran?",
     "reconnecting-message": "Kaže, da je bila povezava s/z %1 prekinjena. Prosimo, počakajte, ponovno poskušamo vzpostaviti povezavo.",
@@ -105,5 +108,6 @@
     "cookies.learn_more": "Learn More",
     "edited": "Edited",
     "disabled": "Disabled",
-    "select": "Select"
+    "select": "Select",
+    "user-search-prompt": "Type something here to find users..."
 }

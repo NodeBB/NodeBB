@@ -457,18 +457,17 @@ define('settings', function () {
 					return callback(err);
 				}
 
-				// Parse all values. If they are json, return json
-				for (var key in values) {
-					if (values.hasOwnProperty(key)) {
+				// multipe selects are saved as json arrays, parse them here
+				$(formEl).find('select[multiple]').each(function (idx, selectEl) {
+					var key = $(selectEl).attr('name');
+					if (key && values.hasOwnProperty(key)) {
 						try {
-							if (!utils.isNumber(values[key])) {
-								values[key] = JSON.parse(values[key]);
-							}
+							values[key] = JSON.parse(values[key]);
 						} catch (e) {
 							// Leave the value as is
 						}
 					}
-				}
+				});
 
 				// Save loaded settings into ajaxify.data for use client-side
 				ajaxify.data.settings = values;
@@ -492,6 +491,7 @@ define('settings', function () {
 			formEl = $(formEl);
 			if (formEl.length) {
 				var values = formEl.serializeObject();
+
 				// "Fix" checkbox values, so that unchecked options are not omitted
 				formEl.find('input[type="checkbox"]').each(function (idx, inputEl) {
 					inputEl = $(inputEl);
@@ -500,7 +500,7 @@ define('settings', function () {
 					}
 				});
 
-				// Normalizing value of multiple selects
+				// save multiple selects as json arrays
 				formEl.find('select[multiple]').each(function (idx, selectEl) {
 					selectEl = $(selectEl);
 					values[selectEl.attr('name')] = JSON.stringify(selectEl.val());

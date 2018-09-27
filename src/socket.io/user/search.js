@@ -3,8 +3,8 @@
 var async = require('async');
 
 var user = require('../../user');
-var meta = require('../../meta');
 var pagination = require('../../pagination');
+var privileges = require('../../privileges');
 
 module.exports = function (SocketUser) {
 	SocketUser.search = function (socket, data, callback) {
@@ -12,12 +12,14 @@ module.exports = function (SocketUser) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
-		if (!socket.uid && parseInt(meta.config.allowGuestUserSearching, 10) !== 1) {
-			return callback(new Error('[[error:not-logged-in]]'));
-		}
-
 		async.waterfall([
 			function (next) {
+				privileges.global.can('search:users', socket.uid, next);
+			},
+			function (allowed, next) {
+				if (!allowed) {
+					return next(new Error('[[error:no-privileges]]'));
+				}
 				user.search({
 					query: data.query,
 					page: data.page,
@@ -26,6 +28,7 @@ module.exports = function (SocketUser) {
 					onlineOnly: data.onlineOnly,
 					bannedOnly: data.bannedOnly,
 					flaggedOnly: data.flaggedOnly,
+					paginate: data.paginate,
 					uid: socket.uid,
 				}, next);
 			},

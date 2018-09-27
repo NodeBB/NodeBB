@@ -130,7 +130,7 @@ define('forum/users', ['translator', 'benchpress'], function (translator, Benchp
 
 	function handleInvite() {
 		$('[component="user/invite"]').on('click', function () {
-			bootbox.prompt('Email: ', function (email) {
+			bootbox.prompt('[[users:prompt-email]]', function (email) {
 				if (!email) {
 					return;
 				}

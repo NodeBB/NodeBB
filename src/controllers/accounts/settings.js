@@ -1,6 +1,7 @@
 'use strict';
 
 var async = require('async');
+var _ = require('lodash');
 
 var user = require('../../user');
 var languages = require('../../languages');
@@ -8,6 +9,7 @@ var meta = require('../../meta');
 var plugins = require('../../plugins');
 var privileges = require('../../privileges');
 var categories = require('../../categories');
+var notifications = require('../../notifications');
 var db = require('../../database');
 var helpers = require('../helpers');
 var accountHelpers = require('./helpers');
@@ -40,6 +42,9 @@ settingsController.get = function (req, res, callback) {
 		function (results, next) {
 			userData.settings = results.settings;
 			userData.languages = results.languages;
+			if (userData.isAdmin && userData.isSelf) {
+				userData.acpLanguages = _.cloneDeep(results.languages);
+			}
 
 			var types = [
 				'notification',
@@ -135,9 +140,17 @@ settingsController.get = function (req, res, callback) {
 				language.selected = language.code === userData.settings.userLang;
 			});
 
+			if (userData.isAdmin && userData.isSelf) {
+				userData.acpLanguages.forEach(function (language) {
+					language.selected = language.code === userData.settings.acpLang;
+				});
+			}
+
 			var notifFreqOptions = [
 				'all',
+				'first',
 				'everyTen',
+				'threshold',
 				'logarithmic',
 				'disabled',
 			];
@@ -145,7 +158,7 @@ settingsController.get = function (req, res, callback) {
 			userData.upvoteNotifFreq = notifFreqOptions.map(function (name) {
 				return {
 					name: name,
-					selected: name === userData.notifFreqOptions,
+					selected: name === userData.settings.upvoteNotifFreq,
 				};
 			});
 
@@ -170,15 +183,6 @@ settingsController.get = function (req, res, callback) {
 };
 
 function getNotificationSettings(userData, callback) {
-	var types = [
-		'notificationType_upvote',
-		'notificationType_new-topic',
-		'notificationType_new-reply',
-		'notificationType_follow',
-		'notificationType_new-chat',
-		'notificationType_group-invite',
-	];
-
 	var privilegedTypes = [];
 
 	async.waterfall([
@@ -196,14 +200,13 @@ function getNotificationSettings(userData, callback) {
 				privilegedTypes.push('notificationType_new-user-flag');
 			}
 			plugins.fireHook('filter:user.notificationTypes', {
-				userData: userData,
-				types: types,
+				types: notifications.baseTypes.slice(),
 				privilegedTypes: privilegedTypes,
 			}, next);
 		},
 		function (results, next) {
 			function modifyType(type) {
-				var setting = userData.settings[type] || 'notification';
+				var setting = userData.settings[type];
 
 				return {
 					name: type,

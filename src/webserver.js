@@ -3,6 +3,7 @@
 
 var fs = require('fs');
 var path = require('path');
+var os = require('os');
 var nconf = require('nconf');
 var express = require('express');
 var app = express();
@@ -16,6 +17,8 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var useragent = require('express-useragent');
 var favicon = require('serve-favicon');
+var detector = require('spider-detector');
+var helmet = require('helmet');
 
 var db = require('./database');
 var file = require('./file');
@@ -52,6 +55,25 @@ server.on('error', function (err) {
 	throw err;
 });
 
+// see https://github.com/isaacs/server-destroy/blob/master/index.js
+var connections = {};
+server.on('connection', function (conn) {
+	var key = conn.remoteAddress + ':' + conn.remotePort;
+	connections[key] = conn;
+	conn.on('close', function () {
+		delete connections[key];
+	});
+});
+
+module.exports.destroy = function (callback) {
+	server.close(callback);
+	for (var key in connections) {
+		if (connections.hasOwnProperty(key)) {
+			connections[key].destroy();
+		}
+	}
+};
+
 module.exports.listen = function (callback) {
 	callback = callback || function () { };
 	emailer.registerApp(app);
@@ -72,6 +94,7 @@ module.exports.listen = function (callback) {
 
 			require('./socket.io').server.emit('event:nodebb.ready', {
 				'cache-buster': meta.config['cache-buster'],
+				hostname: os.hostname(),
 			});
 
 			plugins.fireHook('action:nodebb.ready');
@@ -116,6 +139,7 @@ function initializeNodeBB(callback) {
 
 function setupExpressApp(app, callback) {
 	var middleware = require('./middleware');
+	var pingController = require('./controllers/ping');
 
 	var relativePath = nconf.get('relative_path');
 	var viewsDir = nconf.get('views_dir');
@@ -123,15 +147,7 @@ function setupExpressApp(app, callback) {
 	app.engine('tpl', function (filepath, data, next) {
 		filepath = filepath.replace(/\.tpl$/, '.js');
 
-		middleware.templatesOnDemand({
-			filePath: filepath,
-		}, null, function (err) {
-			if (err) {
-				return next(err);
-			}
-
-			Benchpress.__express(filepath, data, next);
-		});
+		Benchpress.__express(filepath, data, next);
 	});
 	app.set('view engine', 'tpl');
 	app.set('views', viewsDir);
@@ -147,8 +163,8 @@ function setupExpressApp(app, callback) {
 
 	app.use(compression());
 
-	app.get(relativePath + '/ping', ping);
-	app.get(relativePath + '/sping', ping);
+	app.get(relativePath + '/ping', pingController.ping);
+	app.get(relativePath + '/sping', pingController.ping);
 
 	setupFavicon(app);
 
@@ -158,6 +174,7 @@ function setupExpressApp(app, callback) {
 	app.use(bodyParser.json());
 	app.use(cookieParser());
 	app.use(useragent.express());
+	app.use(detector.middleware());
 
 	app.use(session({
 		store: db.sessionStore,
@@ -168,6 +185,19 @@ function setupExpressApp(app, callback) {
 		saveUninitialized: true,
 	}));
 
+	var hsts_option = {
+		maxAge: parseInt(meta.config['hsts-maxage'], 10) || 31536000,
+		includeSubdomains: !!parseInt(meta.config['hsts-subdomains'], 10),
+		preload: !!parseInt(meta.config['hsts-preload'], 10),
+		setIf: function () {
+			// If not set, default to on - previous and recommended behavior
+			return meta.config['hsts-enabled'] === undefined || !!parseInt(meta.config['hsts-enabled'], 10);
+		},
+	};
+	app.use(helmet({
+		hsts: hsts_option,
+	}));
+	app.use(helmet.referrerPolicy({ policy: 'strict-origin-when-cross-origin' }));
 	app.use(middleware.addHeaders);
 	app.use(middleware.processRender);
 	auth.initialize(app, middleware);
@@ -177,17 +207,6 @@ function setupExpressApp(app, callback) {
 	toobusy.interval(parseInt(meta.config.eventLoopInterval, 10) || 500);
 
 	setupAutoLocale(app, callback);
-}
-
-function ping(req, res, next) {
-	async.waterfall([
-		function (next) {
-			db.getObject('config', next);
-		},
-		function () {
-			res.status(200).send(req.path === '/sping' ? 'healthy' : '200');
-		},
-	], next);
 }
 
 function setupFavicon(app) {
@@ -253,7 +272,7 @@ function setupAutoLocale(app, callback) {
 function listen(callback) {
 	callback = callback || function () { };
 	var port = nconf.get('port');
-	var isSocket = isNaN(port);
+	var isSocket = isNaN(port) && !Array.isArray(port);
 	var socketPath = isSocket ? nconf.get('port') : '';
 
 	if (Array.isArray(port)) {

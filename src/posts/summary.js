@@ -30,7 +30,9 @@ module.exports = function (Posts) {
 			},
 			function (_posts, next) {
 				posts = _posts.filter(Boolean);
-
+				user.blocks.filter(uid, posts, next);
+			},
+			function (_posts, next) {
 				var uids = [];
 				var topicKeys = [];
 

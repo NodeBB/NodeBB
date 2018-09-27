@@ -1,12 +1,13 @@
 {
 	"general": "General",
-	"private-groups": "Private Groups",
-	"private-groups.help": "If enabled, joining of groups requires the approval of the group owner <em>(Default: enabled)</em>",
-	"private-groups.warning": "<strong>Beware!</strong> If this option is disabled and you have private groups, they automatically become public.",
-	"allow-creation": "Allow Group Creation",
-	"allow-creation-help": "If enabled, users can create groups <em>(Default: disabled)</em>",
-	"max-name-length": "Maximum Group Name Length",
-	"cover-image": "Group Cover Image",
-	"default-cover": "Default Cover Images",
-	"default-cover-help": "Add comma-separated default cover images for groups that don't have an uploaded cover image"
+	"private-groups": "Grupos Privados",
+	"private-groups.help": "Si se habilita, unirse a grupos requiere la aprobación del dueño del grupo <em>(Por defecto: habilitado)</em>",
+	"private-groups.warning": "<strong>¡Cuidado!</strong> Si esta opción está deshabilitada y tienes grupos privados, se convertirán en grupos públicos automáticamente.",
+	"allow-creation": "Permitir Creación de Grupos",
+	"allow-creation-help": "Si se encuentra habilitado, los usuarios podrán crear grupos <em>(Por defecto: deshabilitado)</em>",
+	"allow-multiple-badges-help": "Esta opción puede ser usadas para permitir a los usuarios seleccionar múltiples medallas de grupo, requiere de soporte del theme/plantilla.",
+	"max-name-length": "Longitud Máxima de Nombre de Grupo",
+	"cover-image": "Imagen de Portada de Grupo",
+	"default-cover": "Imágenes de Portada por Defecto",
+	"default-cover-help": "Añadir lista separada por comas de imágenes de portada por defecto para grupos que no han subido una imagen de portada"
 }

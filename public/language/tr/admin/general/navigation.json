@@ -14,9 +14,6 @@
 	"only-guest": "Yalnızca ziyaretçiler görüntüleyebilir",
 	"open-new-window": "Yeni pencerede aç",
 
-	"installed-plugins-required": "Yüklü Eklentilerin Gereksinimleri:",
-	"search-plugin": "Eklenti ara",
-
 	"btn.delete": "Sil",
 	"btn.disable": "Devre dışı",
 	"btn.enable": "Etkin",

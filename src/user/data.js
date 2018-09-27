@@ -80,7 +80,7 @@ module.exports = function (User) {
 					fields = fields.filter(function (field) {
 						var isFieldWhitelisted = field && results.whitelist.includes(field);
 						if (!isFieldWhitelisted) {
-							winston.verbose('[user/getUsersFields] ' + field + ' removed because it is not whitelisted, see `filter:user.whietlistFields`');
+							winston.verbose('[user/getUsersFields] ' + field + ' removed because it is not whitelisted, see `filter:user.whitelistFields`');
 						}
 						return isFieldWhitelisted;
 					});
@@ -119,6 +119,11 @@ module.exports = function (User) {
 			return memo;
 		}, {});
 		var users = uids.map(function (uid) {
+			const returnPayload = usersData[ref[uid]];
+			if (uid > 0 && !returnPayload.uid) {
+				returnPayload.oldUid = parseInt(uid, 10);
+			}
+
 			return usersData[ref[uid]];
 		});
 		return users;
@@ -135,14 +140,16 @@ module.exports = function (User) {
 			if (!user) {
 				return;
 			}
-
+			if (user.hasOwnProperty('groupTitle')) {
+				parseGroupTitle(user);
+			}
 			if (user.hasOwnProperty('username')) {
 				user.username = validator.escape(user.username ? user.username.toString() : '');
 			}
 
 			if (!parseInt(user.uid, 10)) {
 				user.uid = 0;
-				user.username = '[[global:guest]]';
+				user.username = (user.hasOwnProperty('oldUid') && parseInt(user.oldUid, 10)) ? '[[global:former_user]]' : '[[global:guest]]';
 				user.userslug = '';
 				user.picture = User.getDefaultAvatar();
 				user['icon:text'] = '?';
@@ -190,6 +197,20 @@ module.exports = function (User) {
 		});
 
 		plugins.fireHook('filter:users.get', users, callback);
+	}
+
+	function parseGroupTitle(user) {
+		try {
+			user.groupTitleArray = JSON.parse(user.groupTitle);
+		} catch (err) {
+			user.groupTitleArray = [user.groupTitle];
+		}
+		if (!Array.isArray(user.groupTitleArray)) {
+			user.groupTitleArray = [user.groupTitleArray];
+		}
+		if (parseInt(meta.config.allowMultipleBadges, 10) !== 1) {
+			user.groupTitleArray = [user.groupTitleArray[0]];
+		}
 	}
 
 	User.getDefaultAvatar = function () {

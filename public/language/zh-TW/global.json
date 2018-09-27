@@ -53,6 +53,7 @@
     "topics": "主題",
     "posts": "張貼",
     "best": "最棒",
+    "votes": "Votes",
     "upvoters": "正向投票",
     "upvoted": "正向投票",
     "downvoters": "負向投票",
@@ -84,6 +85,7 @@
     "language": "語言",
     "guest": "訪客",
     "guests": "訪客",
+    "former_user": "A Former User",
     "updated.title": "討論區已更新",
     "updated.message": "這個討論區最近已更新至最新的版本。點擊此處來重整這個頁面。",
     "privacy": "隱私",
@@ -96,6 +98,7 @@
     "enter_page_number": "輸入頁碼",
     "upload_file": "上傳檔案",
     "upload": "上傳",
+    "uploads": "Uploads",
     "allowed-file-types": "允許的檔案類型是 %1",
     "unsaved-changes": "你還沒有儲存更動。你確定想要離開這個頁面？",
     "reconnecting-message": "看起來你的連線到 %1 已經遺失，請稍等一下我們嘗試重新連線。",
@@ -105,5 +108,6 @@
     "cookies.learn_more": "Learn More",
     "edited": "Edited",
     "disabled": "Disabled",
-    "select": "Select"
+    "select": "Select",
+    "user-search-prompt": "Type something here to find users..."
 }

@@ -6,6 +6,7 @@ var async = require('async');
 var meta = require('../meta');
 var db = require('../database');
 var plugins = require('../plugins');
+var notifications = require('../notifications');
 
 module.exports = function (User) {
 	User.getSettings = function (uid, callback) {
@@ -70,6 +71,7 @@ module.exports = function (User) {
 				settings.topicsPerPage = Math.min(settings.topicsPerPage ? parseInt(settings.topicsPerPage, 10) : defaultTopicsPerPage, defaultTopicsPerPage);
 				settings.postsPerPage = Math.min(settings.postsPerPage ? parseInt(settings.postsPerPage, 10) : defaultPostsPerPage, defaultPostsPerPage);
 				settings.userLang = settings.userLang || meta.config.defaultLang || 'en-GB';
+				settings.acpLang = settings.acpLang || settings.userLang;
 				settings.topicPostSort = getSetting(settings, 'topicPostSort', 'oldest_to_newest');
 				settings.categoryTopicSort = getSetting(settings, 'categoryTopicSort', 'newest_to_oldest');
 				settings.followTopicsOnCreate = parseInt(getSetting(settings, 'followTopicsOnCreate', 1), 10) === 1;
@@ -80,6 +82,14 @@ module.exports = function (User) {
 				settings.delayImageLoading = parseInt(getSetting(settings, 'delayImageLoading', 1), 10) === 1;
 				settings.bootswatchSkin = settings.bootswatchSkin || meta.config.bootswatchSkin || 'default';
 				settings.scrollToMyPost = parseInt(getSetting(settings, 'scrollToMyPost', 1), 10) === 1;
+
+				notifications.getAllNotificationTypes(next);
+			},
+			function (notificationTypes, next) {
+				notificationTypes.forEach(function (notificationType) {
+					settings[notificationType] = getSetting(settings, notificationType, 'notification');
+				});
+
 				next(null, settings);
 			},
 		], callback);
@@ -118,6 +128,7 @@ module.exports = function (User) {
 			topicsPerPage: Math.min(data.topicsPerPage, parseInt(maxTopicsPerPage, 10) || 20),
 			postsPerPage: Math.min(data.postsPerPage, parseInt(maxPostsPerPage, 10) || 20),
 			userLang: data.userLang || meta.config.defaultLang,
+			acpLang: data.acpLang || meta.config.defaultLang,
 			followTopicsOnCreate: data.followTopicsOnCreate,
 			followTopicsOnReply: data.followTopicsOnReply,
 			restrictChat: data.restrictChat,
@@ -129,12 +140,6 @@ module.exports = function (User) {
 			incomingChatSound: data.incomingChatSound,
 			outgoingChatSound: data.outgoingChatSound,
 			upvoteNotifFreq: data.upvoteNotifFreq,
-			notificationType_upvote: data.notificationType_upvote,
-			'notificationType_new-topic': data['notificationType_new-topic'],
-			'notificationType_new-reply': data['notificationType_new-reply'],
-			notificationType_follow: data.notificationType_follow,
-			'notificationType_new-chat': data['notificationType_new-chat'],
-			'notificationType_group-invite': data['notificationType_group-invite'],
 		};
 
 		if (data.bootswatchSkin) {
@@ -143,6 +148,14 @@ module.exports = function (User) {
 
 		async.waterfall([
 			function (next) {
+				notifications.getAllNotificationTypes(next);
+			},
+			function (notificationTypes, next) {
+				notificationTypes.forEach(function (notificationType) {
+					if (data[notificationType]) {
+						settings[notificationType] = data[notificationType];
+					}
+				});
 				plugins.fireHook('filter:user.saveSettings', { settings: settings, data: data }, next);
 			},
 			function (result, next) {

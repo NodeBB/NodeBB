@@ -5,5 +5,7 @@
 	"disable-editing-help": "Yöneticiler ve global moderatörler bu kısıtlamadan muaftır",
 	"max-length": "Maksimum sohbet mesajı uzunluğu",
 	"max-room-size": "Sohbet odalarındaki maksimum kullanıcı sayısı",
-	"delay": "Sohbet mesajları arasındaki süre (milisaniye)"
+	"delay": "Sohbet mesajları arasındaki süre (milisaniye)",
+	"restrictions.seconds-edit-after": "Kullanıcıların sohbet iletilerini yayınladıktan sonra iletilerini değiştirmelerine izin verilen saniye cinsinden süre. (0 devre dışı)",
+	"restrictions.seconds-delete-after": "Kullanıcıların sohbet iletilerini yayınladıktan sonra iletilerini silmelerine izin verilen saniye cinsinden süre. (0 devre dışı)"
 }

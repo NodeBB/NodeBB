@@ -28,6 +28,7 @@
     "details.grant": "准許/撤銷 所有權",
     "details.kick": "剔除",
     "details.kick_confirm": "Are you sure you want to remove this member from the group?",
+    "details.add-member": "Add Member",
     "details.owner_options": "群組管理員",
     "details.group_name": "群組名稱",
     "details.member_count": "成員數",

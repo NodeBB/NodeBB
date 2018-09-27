@@ -53,6 +53,7 @@
     "topics": "Themen",
     "posts": "Beiträge",
     "best": "Bestbewertet",
+    "votes": "Stimmen",
     "upvoters": "Upvoter",
     "upvoted": "Positiv bewertet",
     "downvoters": "Downvoter",
@@ -84,6 +85,7 @@
     "language": "Sprache",
     "guest": "Gast",
     "guests": "Gäste",
+    "former_user": "A Former User",
     "updated.title": "Forum aktualisiert",
     "updated.message": "Dieses Forum wurde gerade auf die neueste Version aktualisiert. Klicke hier, um die Seite  neuzuladen.",
     "privacy": "Privatsphäre",
@@ -96,6 +98,7 @@
     "enter_page_number": "Seitennummer eingeben",
     "upload_file": "Datei hochladen",
     "upload": "Hochladen",
+    "uploads": "Uploads",
     "allowed-file-types": "Erlaubte Dateitypen sind %1",
     "unsaved-changes": "Es gibt ungespeicherte Änderungen. Bist du dir sicher, dass du die Seite verlassen willst?",
     "reconnecting-message": "Es scheint als hättest du die Verbindung zu %1 verloren, bitte warte während wir versuchen sie wieder aufzubauen.",
@@ -105,5 +108,6 @@
     "cookies.learn_more": "Erfahre mehr",
     "edited": "Bearbeitet",
     "disabled": "Deaktiviert",
-    "select": "Auswählen"
+    "select": "Auswählen",
+    "user-search-prompt": "Gib hier etwas ein um Benutzer zu finden..."
 }

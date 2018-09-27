@@ -57,9 +57,6 @@ module.exports = function (Posts) {
 					postData.handle = data.handle;
 				}
 
-				plugins.fireHook('filter:post.save', postData, next);
-			},
-			function (postData, next) {
 				plugins.fireHook('filter:post.create', { post: postData, data: data }, next);
 			},
 			function (data, next) {
@@ -101,6 +98,7 @@ module.exports = function (Posts) {
 					function (next) {
 						db.incrObjectField('global', 'postCount', next);
 					},
+					async.apply(Posts.uploads.sync, postData.pid),
 				], function (err) {
 					next(err);
 				});

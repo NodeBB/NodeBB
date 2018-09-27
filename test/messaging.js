@@ -14,8 +14,8 @@ var helpers = require('./helpers');
 var socketModules = require('../src/socket.io/modules');
 
 describe('Messaging Library', function () {
-	var fooUid;
-	var bazUid;
+	var fooUid;	// the admin
+	var bazUid;	// the user with chat restriction enabled
 	var herpUid;
 	var roomId;
 
@@ -156,7 +156,7 @@ describe('Messaging Library', function () {
 
 		it('should fail to add self to room', function (done) {
 			socketModules.chats.addUserToRoom({ uid: fooUid }, { roomId: roomId, username: 'foo' }, function (err) {
-				assert.equal(err.message, '[[error:cant-add-self-to-chat-room]]');
+				assert.equal(err.message, '[[error:cant-chat-with-yourself]]');
 				done();
 			});
 		});
@@ -177,7 +177,48 @@ describe('Messaging Library', function () {
 				Messaging.isUserInRoom(bazUid, roomId, function (err, isUserInRoom) {
 					assert.ifError(err);
 					assert.equal(isUserInRoom, false);
-					done();
+					Messaging.getRoomData(roomId, function (err, data) {
+						assert.ifError(err);
+						assert.equal(data.owner, fooUid);
+						done();
+					});
+				});
+			});
+		});
+
+		it('should change owner when owner leaves room', function (done) {
+			socketModules.chats.newRoom({ uid: herpUid }, { touid: fooUid }, function (err, roomId) {
+				assert.ifError(err);
+				socketModules.chats.addUserToRoom({ uid: herpUid }, { roomId: roomId, username: 'baz' }, function (err) {
+					assert.ifError(err);
+					socketModules.chats.leave({ uid: herpUid }, roomId, function (err) {
+						assert.ifError(err);
+						Messaging.getRoomData(roomId, function (err, data) {
+							assert.ifError(err);
+							assert.equal(data.owner, fooUid);
+							done();
+						});
+					});
+				});
+			});
+		});
+
+		it('should change owner if owner is deleted', function (done) {
+			User.create({ username: 'deleted_chat_user' }, function (err, sender) {
+				assert.ifError(err);
+				User.create({ username: 'receiver' }, function (err, receiver) {
+					assert.ifError(err);
+					socketModules.chats.newRoom({ uid: sender }, { touid: receiver }, function (err, roomId) {
+						assert.ifError(err);
+						User.deleteAccount(sender, function (err) {
+							assert.ifError(err);
+							Messaging.getRoomData(roomId, function (err, data) {
+								assert.ifError(err);
+								assert.equal(data.owner, receiver);
+								done();
+							});
+						});
+					});
 				});
 			});
 		});
@@ -193,8 +234,8 @@ describe('Messaging Library', function () {
 		});
 
 		it('should fail to remove user from room if user does not exist', function (done) {
-			socketModules.chats.removeUserFromRoom({ uid: fooUid }, { roomId: roomId, username: 'doesnotexist' }, function (err) {
-				assert.equal(err.message, '[[error:no-user]]');
+			socketModules.chats.removeUserFromRoom({ uid: fooUid }, { roomId: roomId, uid: 99 }, function (err) {
+				assert.equal('[[error:no-user]]', err.message);
 				done();
 			});
 		});
@@ -205,11 +246,11 @@ describe('Messaging Library', function () {
 				Messaging.isUserInRoom(herpUid, roomId, function (err, isInRoom) {
 					assert.ifError(err);
 					assert(isInRoom);
-					socketModules.chats.removeUserFromRoom({ uid: fooUid }, { roomId: roomId, username: 'herp' }, function (err) {
+					socketModules.chats.removeUserFromRoom({ uid: fooUid }, { roomId: roomId, uid: herpUid }, function (err) {
 						assert.equal(err.message, '[[error:cant-remove-last-user]]');
 						socketModules.chats.addUserToRoom({ uid: fooUid }, { roomId: roomId, username: 'baz' }, function (err) {
 							assert.ifError(err);
-							socketModules.chats.removeUserFromRoom({ uid: fooUid }, { roomId: roomId, username: 'herp' }, function (err) {
+							socketModules.chats.removeUserFromRoom({ uid: fooUid }, { roomId: roomId, uid: herpUid }, function (err) {
 								assert.ifError(err);
 								Messaging.isUserInRoom(herpUid, roomId, function (err, isInRoom) {
 									assert.ifError(err);
@@ -414,7 +455,7 @@ describe('Messaging Library', function () {
 
 		it('should fail to load room if user is not in', function (done) {
 			socketModules.chats.loadRoom({ uid: 0 }, { roomId: roomId }, function (err) {
-				assert.equal(err.message, '[[error:not-allowed]]');
+				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
 		});
@@ -552,19 +593,69 @@ describe('Messaging Library', function () {
 			});
 		});
 
-
-		it('should delete message', function (done) {
+		it('should mark the message as deleted', function (done) {
 			socketModules.chats.delete({ uid: fooUid }, { messageId: mid, roomId: roomId }, function (err) {
 				assert.ifError(err);
-				db.exists('message:' + mid, function (err, exists) {
+				db.getObjectField('message:' + mid, 'deleted', function (err, value) {
 					assert.ifError(err);
-					assert(!exists);
-					db.isSortedSetMember('uid:' + fooUid + ':chat:room:' + roomId + ':mids', mid, function (err, isMember) {
-						assert.ifError(err);
-						assert(!isMember);
-						done();
-					});
+					assert.strictEqual(1, parseInt(value, 10));
+					done();
 				});
+			});
+		});
+
+		it('should show deleted message to original users', function (done) {
+			socketModules.chats.getMessages({ uid: fooUid }, { uid: fooUid, roomId: roomId, start: 0 }, function (err, messages) {
+				assert.ifError(err);
+
+				// Reduce messages to their mids
+				var mids = messages.reduce(function (mids, cur) {
+					mids.push(cur.messageId);
+					return mids;
+				}, []);
+
+				assert(mids.includes(mid));
+				done();
+			});
+		});
+
+		it('should not show deleted message to other users', function (done) {
+			socketModules.chats.getMessages({ uid: herpUid }, { uid: herpUid, roomId: roomId, start: 0 }, function (err, messages) {
+				assert.ifError(err);
+
+				// Reduce messages to their mids
+				var mids = messages.reduce(function (mids, cur) {
+					mids.push(cur.messageId);
+					return mids;
+				}, []);
+
+				assert(!mids.includes(mid));
+				done();
+			});
+		});
+
+		it('should error out if a message is deleted again', function (done) {
+			socketModules.chats.delete({ uid: fooUid }, { messageId: mid, roomId: roomId }, function (err) {
+				assert.strictEqual('[[error:chat-deleted-already]]', err.message);
+				done();
+			});
+		});
+
+		it('should restore the message', function (done) {
+			socketModules.chats.restore({ uid: fooUid }, { messageId: mid, roomId: roomId }, function (err) {
+				assert.ifError(err);
+				db.getObjectField('message:' + mid, 'deleted', function (err, value) {
+					assert.ifError(err);
+					assert.strictEqual(0, parseInt(value, 10));
+					done();
+				});
+			});
+		});
+
+		it('should error out if a message is restored again', function (done) {
+			socketModules.chats.restore({ uid: fooUid }, { messageId: mid, roomId: roomId }, function (err) {
+				assert.strictEqual('[[error:chat-restored-already]]', err.message);
+				done();
 			});
 		});
 	});
@@ -579,11 +670,12 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should 404 for guest', function (done) {
+		it('should 500 for guest with no privilege error', function (done) {
 			meta.config.disableChat = 0;
-			request(nconf.get('url') + '/user/baz/chats', function (err, response) {
+			request(nconf.get('url') + '/api/user/baz/chats', { json: true }, function (err, response, body) {
 				assert.ifError(err);
-				assert.equal(response.statusCode, 404);
+				assert.equal(response.statusCode, 500);
+				assert.equal(body.error, '[[error:no-privileges]]');
 				done();
 			});
 		});

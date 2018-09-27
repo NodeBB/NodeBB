@@ -45,7 +45,6 @@
 		width: 22px;
 		background: none;
 		border: none;
-		vertical-align: 10%;
 		margin-right: 10px;
 		margin-left: -5px;
 		outline: none !important;
@@ -86,6 +85,23 @@
 
 	.menu-section {
 		margin: 25px 0;
+
+		&.quick-actions {
+			margin: 0;
+
+			.button-group {
+				display: flex;
+				justify-content: center;
+			}
+			
+			.alert {
+				border-radius: 0;
+
+				.span {
+					display: block;
+				}
+			}
+		}
 	}
 
 	.menu-section-title {
@@ -99,9 +115,9 @@
 	}
 
 	.menu-section-list {
-		padding:0;
+		padding: 0;
 		margin: 10px 0;
-		list-style:none;
+		list-style: none;
 
 		a {
 			display: block;

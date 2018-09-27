@@ -13,6 +13,7 @@ var pagination = require('../pagination');
 var helpers = require('./helpers');
 var utils = require('../utils');
 var translator = require('../translator');
+var analytics = require('../analytics');
 
 var categoryController = module.exports;
 
@@ -135,6 +136,7 @@ categoryController.get = function (req, res, callback) {
 			addTags(categoryData, res);
 
 			categoryData['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
+			categoryData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
 			categoryData.title = translator.escape(categoryData.name);
 			pageCount = Math.max(1, Math.ceil(categoryData.topic_count / settings.topicsPerPage));
 			categoryData.pagination = pagination.create(currentPage, pageCount, req.query);
@@ -142,6 +144,8 @@ categoryController.get = function (req, res, callback) {
 				rel.href = nconf.get('url') + '/category/' + categoryData.slug + rel.href;
 				res.locals.linkTags.push(rel);
 			});
+
+			analytics.increment(['pageviews:byCid:' + categoryData.cid]);
 
 			res.render('category', categoryData);
 		},

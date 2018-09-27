@@ -32,5 +32,9 @@
 	"redis.iops": "秒ごとの瞬間操作数",
 	"redis.keyspace-hits": "ヒットしたキー・スペース",
 	"redis.keyspace-misses": "見逃したキー・スペース",
-	"redis.raw-info": "RedisのRaw情報"
+	"redis.raw-info": "RedisのRaw情報",
+
+	"postgres": "Postgres",
+	"postgres.version": "PostgreSQL Version",
+	"postgres.raw-info": "Postgres Raw Info"
 }

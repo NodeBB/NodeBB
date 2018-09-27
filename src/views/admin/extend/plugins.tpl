@@ -1,7 +1,16 @@
 <ul class="nav nav-pills">
-	<li class="active"><a href="#installed" data-toggle="tab">[[admin/extend/plugins:installed]]</a></li>
-	<li><a href="#active" data-toggle="tab">[[admin/extend/plugins:active]]</a></li>
-	<li><a href="#deactive" data-toggle="tab">[[admin/extend/plugins:inactive]]</a></li>
+	<li class="active"><a href="#installed" data-toggle="tab">
+		[[admin/extend/plugins:installed]]
+		<span class="badge">{installedCount}</span>
+	</a></li>
+	<li><a href="#active" data-toggle="tab">
+		[[admin/extend/plugins:active]]
+		<span class="badge">{activeCount}</span>
+	</a></li>
+	<li><a href="#deactive" data-toggle="tab">
+		[[admin/extend/plugins:inactive]]
+		<span class="badge">{inactiveCount}</span>
+	</a></li>
 	<li><a href="#upgrade" data-toggle="tab">
 		[[admin/extend/plugins:out-of-date]]
 		<span class="badge">{upgradeCount}</span>

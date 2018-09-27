@@ -2,5 +2,8 @@
     "uploading-file": "檔案上傳中...",
     "select-file-to-upload": "選擇要上傳的檔案!",
     "upload-success": "檔案已成功上傳!",
-    "maximum-file-size": "最大大小 %1 kb"
+    "maximum-file-size": "最大大小 %1 kb",
+    "no-uploads-found": "No uploads found",
+    "public-uploads-info": "Uploads are public, all visitors can see them.",
+    "private-uploads-info": "Uploads are private, only logged in users can see them."
 }

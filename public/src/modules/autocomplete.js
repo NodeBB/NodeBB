@@ -10,11 +10,16 @@ define('autocomplete', function () {
 			input.autocomplete({
 				delay: 200,
 				open: function () {
-					$(this).autocomplete('widget').css('z-index', 20000);
+					$(this).autocomplete('widget').css('z-index', 100005);
 				},
-				select: onselect,
+				select: function (event, ui) {
+					handleOnSelect(input, onselect, event, ui);
+				},
 				source: function (request, response) {
-					socket.emit('user.search', { query: request.term }, function (err, result) {
+					socket.emit('user.search', {
+						query: request.term,
+						paginate: false,
+					}, function (err, result) {
 						if (err) {
 							return app.alertError(err.message);
 						}
@@ -29,6 +34,11 @@ define('autocomplete', function () {
 										uid: user.uid,
 										name: user.username,
 										slug: user.userslug,
+										username: user.username,
+										userslug: user.userslug,
+										picture: user.picture,
+										'icon:text': user['icon:text'],
+										'icon:bgColor': user['icon:bgColor'],
 									},
 								};
 							});
@@ -82,14 +92,7 @@ define('autocomplete', function () {
 					$(this).autocomplete('widget').css('z-index', 20000);
 				},
 				select: function (event, ui) {
-					onselect = onselect || function () {};
-					var e = jQuery.Event('keypress');
-					e.which = 13;
-					e.keyCode = 13;
-					setTimeout(function () {
-						input.trigger(e);
-					}, 100);
-					onselect(event, ui);
+					handleOnSelect(input, onselect, event, ui);
 				},
 				source: function (request, response) {
 					socket.emit('topics.autocompleteTags', {
@@ -108,6 +111,17 @@ define('autocomplete', function () {
 			});
 		});
 	};
+
+	function handleOnSelect(input, onselect, event, ui) {
+		onselect = onselect || function () {};
+		var e = jQuery.Event('keypress');
+		e.which = 13;
+		e.keyCode = 13;
+		setTimeout(function () {
+			input.trigger(e);
+		}, 100);
+		onselect(event, ui);
+	}
 
 	return module;
 });

@@ -7,5 +7,5 @@
     "revert-confirm": "确认恢复到 NodeBB 默认主题？",
     "theme-changed": "主题已更改",
     "revert-success": "已成功恢复到 NodeBB 默认主题。",
-    "restart-to-activate": "请重启 NodeBB 来完全激活该主题"
+    "restart-to-activate": "请部署并重启您的 NodeBB 以完全激活主题。"
 }

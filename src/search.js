@@ -42,7 +42,7 @@ function searchInContent(data, callback) {
 	var matchCount = 0;
 	var pids;
 	var metadata;
-
+	var itemsPerPage = data.itemsPerPage || 10;
 	async.waterfall([
 		function (next) {
 			async.parallel({
@@ -56,8 +56,15 @@ function searchInContent(data, callback) {
 		},
 		function (results, next) {
 			function doSearch(type, searchIn, next) {
-				if (searchIn.indexOf(data.searchIn) !== -1) {
-					search.searchQuery(type, data.query, results.searchCids, results.searchUids, next);
+				if (searchIn.includes(data.searchIn)) {
+					plugins.fireHook('filter:search.query', {
+						index: type,
+						content: data.query,
+						matchWords: data.matchWords || 'all',
+						cid: results.searchCids,
+						uid: results.searchUids,
+						searchData: data,
+					}, next);
 				} else {
 					next(null, []);
 				}
@@ -99,8 +106,8 @@ function searchInContent(data, callback) {
 			matchCount = metadata.pids.length;
 
 			if (data.page) {
-				var start = Math.max(0, (data.page - 1)) * 10;
-				metadata.pids = metadata.pids.slice(start, start + 10);
+				var start = Math.max(0, (data.page - 1)) * itemsPerPage;
+				metadata.pids = metadata.pids.slice(start, start + itemsPerPage);
 			}
 
 			posts.getPostSummaryByPids(metadata.pids, data.uid, {}, next);
@@ -108,7 +115,11 @@ function searchInContent(data, callback) {
 		function (posts, next) {
 			// Append metadata to returned payload (without pids)
 			delete metadata.pids;
-			next(null, Object.assign({ posts: posts, matchCount: matchCount, pageCount: Math.max(1, Math.ceil(parseInt(matchCount, 10) / 10)) }, metadata));
+			next(null, Object.assign({
+				posts: posts,
+				matchCount: matchCount,
+				pageCount: Math.max(1, Math.ceil(parseInt(matchCount, 10) / 10)),
+			}, metadata));
 		},
 	], callback);
 }
@@ -304,7 +315,7 @@ function filterByTags(posts, hasTags) {
 			var hasAllTags = false;
 			if (post && post.topic && Array.isArray(post.topic.tags) && post.topic.tags.length) {
 				hasAllTags = hasTags.every(function (tag) {
-					return post.topic.tags.indexOf(tag) !== -1;
+					return post.topic.tags.includes(tag);
 				});
 			}
 			return hasAllTags;
@@ -359,23 +370,15 @@ function getSearchCids(data, callback) {
 		return callback(null, []);
 	}
 
-	if (data.categories.indexOf('all') !== -1) {
-		async.waterfall([
-			function (next) {
-				db.getSortedSetRange('categories:cid', 0, -1, next);
-			},
-			function (cids, next) {
-				privileges.categories.filterCids('read', cids, data.uid, next);
-			},
-		], callback);
-		return;
+	if (data.categories.includes('all')) {
+		return categories.getCidsByPrivilege('categories:cid', data.uid, 'read', callback);
 	}
 
 	async.waterfall([
 		function (next) {
 			async.parallel({
 				watchedCids: function (next) {
-					if (data.categories.indexOf('watched') !== -1) {
+					if (data.categories.includes('watched')) {
 						user.getWatchedCategories(data.uid, next);
 					} else {
 						next(null, []);
@@ -426,13 +429,3 @@ function getSearchUids(data, callback) {
 		callback(null, []);
 	}
 }
-
-search.searchQuery = function (index, content, cids, uids, callback) {
-	plugins.fireHook('filter:search.query', {
-		index: index,
-		content: content,
-		cid: cids,
-		uid: uids,
-	}, callback);
-};
-

@@ -18,6 +18,9 @@ module.exports = function (Messaging) {
 				Messaging.getUidsInRoom(roomId, 0, -1, next);
 			},
 			function (uids, next) {
+				user.blocks.filterUids(fromUid, uids, next);
+			},
+			function (uids, next) {
 				var data = {
 					roomId: roomId,
 					fromUid: fromUid,
@@ -76,6 +79,7 @@ module.exports = function (Messaging) {
 
 				notifications.create({
 					type: 'new-chat',
+					subject: '[[email:notif.chat.subject, ' + messageObj.fromUser.username + ']]',
 					bodyShort: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
 					bodyLong: messageObj.content,
 					nid: 'chat_' + fromuid + '_' + roomId,

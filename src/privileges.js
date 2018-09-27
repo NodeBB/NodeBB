@@ -3,19 +3,21 @@
 var privileges = module.exports;
 
 privileges.privilegeLabels = [
-	{ name: 'Find Category' },
-	{ name: 'Access Category' },
-	{ name: 'Access Topics' },
-	{ name: 'Create Topics' },
-	{ name: 'Reply to Topics' },
-	{ name: 'Tag Topics' },
-	{ name: 'Edit Posts' },
-	{ name: 'Delete Posts' },
-	{ name: 'Delete Topics' },
-	{ name: 'Upload Images' },
-	{ name: 'Upload Files' },
-	{ name: 'Purge' },
-	{ name: 'Moderate' },
+	{ name: '[[admin/manage/privileges:find-category]]' },
+	{ name: '[[admin/manage/privileges:access-category]]' },
+	{ name: '[[admin/manage/privileges:access-topics]]' },
+	{ name: '[[admin/manage/privileges:create-topics]]' },
+	{ name: '[[admin/manage/privileges:reply-to-topics]]' },
+	{ name: '[[admin/manage/privileges:tag-topics]]' },
+	{ name: '[[admin/manage/privileges:edit-posts]]' },
+	{ name: '[[admin/manage/privileges:view-edit-history]]' },
+	{ name: '[[admin/manage/privileges:delete-posts]]' },
+	{ name: '[[admin/manage/privileges:upvote-posts]]' },
+	{ name: '[[admin/manage/privileges:downvote-posts]]' },
+	{ name: '[[admin/manage/privileges:delete-topics]]' },
+	{ name: '[[admin/manage/privileges:view_deleted]]' },
+	{ name: '[[admin/manage/privileges:purge]]' },
+	{ name: '[[admin/manage/privileges:moderate]]' },
 ];
 
 privileges.userPrivilegeList = [
@@ -26,10 +28,12 @@ privileges.userPrivilegeList = [
 	'topics:reply',
 	'topics:tag',
 	'posts:edit',
+	'posts:history',
 	'posts:delete',
+	'posts:upvote',
+	'posts:downvote',
 	'topics:delete',
-	'upload:post:image',
-	'upload:post:file',
+	'posts:view_deleted',
 	'purge',
 	'moderate',
 ];
@@ -40,7 +44,10 @@ privileges.groupPrivilegeList = privileges.userPrivilegeList.map(function (privi
 
 privileges.privilegeList = privileges.userPrivilegeList.concat(privileges.groupPrivilegeList);
 
+require('./privileges/global')(privileges);
 require('./privileges/categories')(privileges);
 require('./privileges/topics')(privileges);
 require('./privileges/posts')(privileges);
 require('./privileges/users')(privileges);
+
+privileges.async = require('./promisify')(privileges);

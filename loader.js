@@ -11,8 +11,10 @@ var logrotate = require('logrotate-stream');
 var file = require('./src/file');
 var pkg = require('./package.json');
 
+var pathToConfig = path.resolve(__dirname, process.env.CONFIG || 'config.json');
+
 nconf.argv().env().file({
-	file: path.join(__dirname, 'config.json'),
+	file: pathToConfig,
 });
 
 var	pidFilePath = path.join(__dirname, 'pidfile');
@@ -86,6 +88,18 @@ Loader.addWorkerEvents = function (worker) {
 				console.log('[cluster] Reloading...');
 				Loader.reload();
 				break;
+			case 'pubsub':
+				workers.forEach(function (w) {
+					w.send(message);
+				});
+				break;
+			case 'socket.io':
+				workers.forEach(function (w) {
+					if (w !== worker) {
+						w.send(message);
+					}
+				});
+				break;
 			}
 		}
 	});
@@ -113,7 +127,7 @@ function forkWorker(index, isPrimary) {
 	}
 
 	process.env.isPrimary = isPrimary;
-	process.env.isCluster = ports.length > 1;
+	process.env.isCluster = nconf.get('isCluster') || ports.length > 1;
 	process.env.port = ports[index];
 
 	var worker = fork(appPath, args, {
@@ -152,7 +166,6 @@ function getPorts() {
 Loader.restart = function () {
 	killWorkers();
 
-	var pathToConfig = path.join(__dirname, '/config.json');
 	nconf.remove('file');
 	nconf.use('file', { file: pathToConfig });
 
@@ -212,7 +225,7 @@ Loader.notifyWorkers = function (msg, worker_pid) {
 	});
 };
 
-fs.open(path.join(__dirname, 'config.json'), 'r', function (err) {
+fs.open(pathToConfig, 'r', function (err) {
 	if (!err) {
 		if (nconf.get('daemon') !== 'false' && nconf.get('daemon') !== false) {
 			if (file.existsSync(pidFilePath)) {

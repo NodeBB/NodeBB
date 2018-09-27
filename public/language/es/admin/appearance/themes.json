@@ -7,5 +7,5 @@
     "revert-confirm": "¿Estas seguro/a que quieres restaurar el tema de fabrica de NodeBB?",
     "theme-changed": "Se Cambió el Tema",
     "revert-success": "Has revertido con exito el tema de fabrica de NodeBB.",
-    "restart-to-activate": "Por favor reinicia NodeBB para activar por completo este tema."
+    "restart-to-activate": "Por favor recompila y reinicia NodeBB para activar por completo este tema."
 }

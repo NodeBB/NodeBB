@@ -176,7 +176,7 @@
 			</div>
 			<div class="form-group">
 				<label>[[admin/settings/user:invite-expiration]]</label>
-				<input type="number" class="form-control" data-field="inviteExpiration" placeholder="1">
+				<input type="number" class="form-control" data-field="inviteExpiration" placeholder="7">
 				<p class="help-block">
 					[[admin/settings/user:invite-expiration-help]]
 				</p>
@@ -232,7 +232,6 @@
 	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/user:default-user-settings]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
-
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="showemail">
@@ -291,6 +290,24 @@
 					<span class="mdl-switch__label"><strong>[[admin/settings/user:follow-replied-topics]]</strong></span>
 				</label>
 			</div>
+
+			<label>[[admin/settings/user:default-notification-settings]]</label>
+
+			<!-- BEGIN notificationSettings -->
+			<div class="row">
+				<div class="form-group col-xs-7">
+					<label>{notificationSettings.label}</label>
+				</div>
+				<div class="form-group col-xs-5">
+					<select class="form-control" data-field="{notificationSettings.name}">
+						<option value="none">[[notifications:none]]</option>
+						<option value="notification">[[notifications:notification_only]]</option>
+						<option value="email">[[notifications:email_only]]</option>
+						<option value="notificationemail">[[notifications:notification_and_email]]</option>
+					</select>
+				</div>
+			</div>
+			<!-- END notificationSettings -->
 
 		</form>
 	</div>

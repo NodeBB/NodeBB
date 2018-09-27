@@ -23,10 +23,11 @@
 	"running-version": "Вие използвате <strong>NodeBB версия <span id=\"version\">%1</span></strong>.",
 	"keep-updated": "Стремете се винаги да използвате най-новата версия на NodeBB, за да се възползвате от последните подобрения на сигурността и поправки на проблеми.",
 	"up-to-date": "<p>Вие използвате <strong>най-новата версия</strong> <i class=\"fa fa-check\"></i></p>",
-	"upgrade-available": "<p>Има нова версия (версия %1). Ако имате възможност, <a href=\"https://docs.nodebb.org/configuring/upgrade/\">обновете NodeBB</a>.</p>",
-	"prerelease-upgrade-available": "<p>Това е остаряла предварителна версия на NodeBB. Има нова версия (версия %1). Ако имате възможност, <a href=\"https://docs.nodebb.org/configuring/upgrade/\">обновете NodeBB</a>.</p>",
+	"upgrade-available": "<p>Има нова версия (версия %1). Ако имате възможност, <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">обновете NodeBB</a>.</p>",
+	"prerelease-upgrade-available": "<p>Това е остаряла предварителна версия на NodeBB. Има нова версия (версия %1). Ако имате възможност, <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">обновете NodeBB</a>.</p>",
 	"prerelease-warning": "<p>Това е версия за <strong>предварителен преглед</strong> на NodeBB. Възможно е да има неочаквани неизправности. <i class=\"fa fa-exclamation-triangle\"></i></p>",
 	"running-in-development": "<span>Форумът работи в режим за разработчици, така че може да бъде уязвим. Моля, свържете се със системния си администратор.</span>",
+	"latest-lookup-failed": "<p>Не може да бъде извършена проверка за последната налична версия на NodeBB</p>",
 
 	"notices": "Забележки",
 	"restart-not-required": "Не се изисква рестартиране",
@@ -36,9 +37,10 @@
 	"search-plugin-tooltip": "Инсталирайте добавка за търсене от страницата с добавките, за да включите функционалността за търсене",
 
 	"control-panel": "Системен контрол",
-	"reload": "Презареждане",
+	"rebuild-and-restart": "Повторно изграждане и рестартиране",
 	"restart": "Рестартиране",
-	"restart-warning": "Презареждането и рестартирането на NodeBB ще прекъсне всички връзки за няколко секунди.",
+	"restart-warning": "Повторното изграждане и рестартирането на NodeBB ще прекъснат всички връзки за няколко секунди.",
+	"restart-disabled": "Възможностите за повторно изграждане и рестартиране на NodeBB са изключени, тъй като изглежда, че NodeBB не се изпълнява чрез подходящия демон.",
 	"maintenance-mode": "Режим на профилактика",
 	"maintenance-mode-title": "Щракнете тук, за да зададете режим на профилактика на NodeBB",
 	"realtime-chart-updates": "Актуализации на таблиците в реално време",
@@ -65,5 +67,7 @@
 	"graphs.page-views": "Преглеждания на страниците",
 	"graphs.unique-visitors": "Уникални посетители",
 	"graphs.registered-users": "Регистрирани потребители",
-	"graphs.anonymous-users": "Анонимни потребители"
+	"graphs.anonymous-users": "Анонимни потребители",
+	"last-restarted-by": "Последно рестартиране от",
+	"no-users-browsing": "Няма разглеждащи потребители"
 }

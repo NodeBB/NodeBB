@@ -15,17 +15,13 @@ pubsub.on('admin:navigation:save', function () {
 
 admin.save = function (data, callback) {
 	var order = Object.keys(data);
-	var items = data.map(function (item, idx) {
-		var data = {};
-
+	var items = data.map(function (item) {
 		for (var i in item) {
-			if (item.hasOwnProperty(i)) {
-				item[i] = typeof item[i] === 'string' ? translator.escape(item[i]) : item[i];
+			if (item.hasOwnProperty(i) && typeof item[i] === 'string' && (i === 'title' || i === 'text')) {
+				item[i] = translator.escape(item[i]);
 			}
 		}
-
-		data[idx] = item;
-		return JSON.stringify(data);
+		return JSON.stringify(item);
 	});
 
 	admin.cache = null;
@@ -53,8 +49,8 @@ admin.get = function (callback) {
 			db.getSortedSetRange('navigation:enabled', 0, -1, next);
 		},
 		function (data, next) {
-			data = data.map(function (item, idx) {
-				return JSON.parse(item)[idx];
+			data = data.map(function (item) {
+				return JSON.parse(item);
 			});
 
 			next(null, data);

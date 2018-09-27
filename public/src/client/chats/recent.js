@@ -6,18 +6,8 @@ define('forum/chats/recent', function () {
 
 	recent.init = function () {
 		require(['forum/chats'], function (Chats) {
-			$('[component="chat/recent"]').on('click', '[component="chat/leave"]', function () {
-				Chats.leave($(this).parents('[data-roomid]'));
-				return false;
-			});
-
 			$('[component="chat/recent"]').on('click', '[component="chat/recent/room"]', function () {
-				var env = utils.findBootstrapEnvironment();
-				if (env === 'xs' || env === 'sm') {
-					app.openChat($(this).attr('data-roomid'));
-				} else {
-					Chats.switchChat($(this).attr('data-roomid'));
-				}
+				Chats.switchChat($(this).attr('data-roomid'));
 			});
 
 			$('[component="chat/recent"]').on('scroll', function () {

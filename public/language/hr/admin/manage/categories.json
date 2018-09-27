@@ -19,6 +19,7 @@
 	"parent-category-none": "(Ništa)",
 	"copy-settings": "Kopiraj postavke iz ",
 	"optional-clone-settings": "(Opcionalno) Kloniraj postavke iz kategorije",
+	"clone-children": "Clone Children Categories And Settings",
 	"purge": "Odbaci kategoriju",
 
 	"enable": "Omogući",
@@ -65,5 +66,7 @@
 	"alert.find-user": "Pronađi korisnika",
 	"alert.user-search": "Pretraži korisnika ovdje ...",
 	"alert.find-group": "Pronađi grupu",
-	"alert.group-search": "Pretraži grupu ovdje ..."
+	"alert.group-search": "Pretraži grupu ovdje ...",
+	"collapse-all": "Collapse All",
+	"expand-all": "Expand All"
 }

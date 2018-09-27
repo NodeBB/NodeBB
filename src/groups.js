@@ -22,7 +22,7 @@ require('./groups/posts')(Groups);
 require('./groups/user')(Groups);
 
 
-Groups.ephemeralGroups = ['guests'];
+Groups.ephemeralGroups = ['guests', 'spiders'];
 
 Groups.getEphemeralGroup = function (groupName) {
 	return {
@@ -144,7 +144,7 @@ Groups.get = function (groupName, options, callback) {
 			Groups.escapeGroupData(groupData);
 
 			groupData.descriptionParsed = descriptionParsed;
-			groupData.userTitleEnabled = groupData.userTitleEnabled ? !!parseInt(groupData.userTitleEnabled, 10) : true;
+			groupData.userTitleEnabled = groupData.userTitleEnabled ? parseInt(groupData.userTitleEnabled, 10) === 1 : true;
 			groupData.createtimeISO = utils.toISOString(groupData.createtime);
 			groupData.members = results.members;
 			groupData.membersNextStart = stop + 1;
@@ -301,3 +301,5 @@ Groups.existsBySlug = function (slug, callback) {
 		db.isObjectField('groupslug:groupname', slug, callback);
 	}
 };
+
+Groups.async = require('./promisify')(Groups);

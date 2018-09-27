@@ -2,13 +2,17 @@
 
 var async = require('async');
 var _ = require('lodash');
+var path = require('path');
+var nconf = require('nconf');
 
 var db = require('../database');
 var posts = require('../posts');
 var topics = require('../topics');
 var groups = require('../groups');
+var messaging = require('../messaging');
 var plugins = require('../plugins');
 var batch = require('../batch');
+var file = require('../file');
 
 module.exports = function (User) {
 	User.delete = function (callerUid, uid, callback) {
@@ -22,6 +26,9 @@ module.exports = function (User) {
 			},
 			function (next) {
 				deleteTopics(callerUid, uid, next);
+			},
+			function (next) {
+				deleteUploads(uid, next);
 			},
 			function (next) {
 				User.deleteAccount(uid, next);
@@ -45,19 +52,31 @@ module.exports = function (User) {
 		}, { alwaysStartAt: 0 }, callback);
 	}
 
+	function deleteUploads(uid, callback) {
+		batch.processSortedSet('uid:' + uid + ':uploads', function (uploadNames, next) {
+			async.waterfall([
+				function (next) {
+					async.each(uploadNames, function (uploadName, next) {
+						file.delete(path.join(nconf.get('upload_path'), uploadName), next);
+					}, next);
+				},
+				function (next) {
+					db.sortedSetRemove('uid:' + uid + ':uploads', uploadNames, next);
+				},
+			], next);
+		}, { alwaysStartAt: 0 }, callback);
+	}
+
 	User.deleteAccount = function (uid, callback) {
 		var userData;
 		async.waterfall([
 			function (next) {
-				User.exists(uid, next);
-			},
-			function (exists, next) {
-				if (!exists) {
-					return callback();
-				}
-				User.getUserFields(uid, ['username', 'userslug', 'fullname', 'email'], next);
+				db.getObject('user:' + uid, next);
 			},
 			function (_userData, next) {
+				if (!_userData || !_userData.username) {
+					return callback();
+				}
 				userData = _userData;
 				plugins.fireHook('static:user.delete', { uid: uid }, next);
 			},
@@ -100,6 +119,7 @@ module.exports = function (User) {
 							'users:postcount',
 							'users:reputation',
 							'users:banned',
+							'users:banned:expire',
 							'users:online',
 							'users:notvalidated',
 							'digest:day:uids',
@@ -129,6 +149,9 @@ module.exports = function (User) {
 					},
 					function (next) {
 						deleteUserIps(uid, next);
+					},
+					function (next) {
+						deleteBans(uid, next);
 					},
 					function (next) {
 						deleteUserFromFollowers(uid, next);
@@ -173,12 +196,9 @@ module.exports = function (User) {
 				var userKeys = roomIds.map(function (roomId) {
 					return 'uid:' + uid + ':chat:room:' + roomId + ':mids';
 				});
-				var roomKeys = roomIds.map(function (roomId) {
-					return 'chat:room:' + roomId + ':uids';
-				});
 
 				async.parallel([
-					async.apply(db.sortedSetsRemove, roomKeys, uid),
+					async.apply(messaging.leaveRooms, uid, roomIds),
 					async.apply(db.deleteAll, userKeys),
 				], next);
 			},
@@ -200,6 +220,20 @@ module.exports = function (User) {
 			},
 			function (next) {
 				db.delete('uid:' + uid + ':ip', next);
+			},
+		], callback);
+	}
+
+	function deleteBans(uid, callback) {
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRange('uid:' + uid + ':bans:timestamp', 0, -1, next);
+			},
+			function (bans, next) {
+				db.deleteAll(bans, next);
+			},
+			function (next) {
+				db.delete('uid:' + uid + ':bans:timestamp', next);
 			},
 		], callback);
 	}

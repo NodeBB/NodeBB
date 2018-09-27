@@ -30,11 +30,10 @@ function updatePackageFile() {
 exports.updatePackageFile = updatePackageFile;
 
 function installAll() {
-	process.stdout.write('\n');
-
 	var prod = global.env !== 'development';
 	var command = 'npm install';
 	try {
+		fs.accessSync(path.join(modulesPath, 'nconf/package.json'), fs.constants.R_OK);
 		var packageManager = require('nconf').get('package_manager');
 		if (packageManager === 'yarn') {
 			command = 'yarn';
@@ -42,11 +41,18 @@ function installAll() {
 	} catch (e) {
 		// ignore
 	}
-
-	cproc.execSync(command + (prod ? ' --production' : ''), {
-		cwd: path.join(__dirname, '../../'),
-		stdio: [0, 1, 2],
-	});
+	try {
+		cproc.execSync(command + (prod ? ' --production' : ''), {
+			cwd: path.join(__dirname, '../../'),
+			stdio: [0, 1, 2],
+		});
+	} catch (e) {
+		console.log('Error installing dependencies!');
+		console.log('message: ' + e.message);
+		console.log('stdout: ' + e.stdout);
+		console.log('stderr: ' + e.stderr);
+		throw e;
+	}
 }
 
 exports.installAll = installAll;

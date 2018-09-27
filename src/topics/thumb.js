@@ -49,7 +49,6 @@ module.exports = function (Topics) {
 				var size = parseInt(meta.config.topicThumbSize, 10) || 120;
 				image.resizeImage({
 					path: pathToUpload,
-					extension: path.extname(pathToUpload),
 					width: size,
 					height: size,
 				}, next);

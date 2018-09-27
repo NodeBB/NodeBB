@@ -53,6 +53,7 @@
     "topics": "المواضيع",
     "posts": "المشاركات",
     "best": "الأفضل",
+    "votes": "Votes",
     "upvoters": "الموافقين",
     "upvoted": "مصوت بالموجب",
     "downvoters": "مصوتين بالسالب",
@@ -84,6 +85,7 @@
     "language": "اللغة",
     "guest": "زائر",
     "guests": "الزوار",
+    "former_user": "A Former User",
     "updated.title": "تم تحديث المنتدى",
     "updated.message": "لقد تم تحديث المنتدى إلى آخر نسخة للتو. إضغط هنا لإعادة تحميل الصفحة.",
     "privacy": "الخصوصية",
@@ -96,6 +98,7 @@
     "enter_page_number": "ادخل رقم الصفحة",
     "upload_file": "ارفع ملف",
     "upload": "ارفع",
+    "uploads": "Uploads",
     "allowed-file-types": "صيغ الملفات المدعومة هي 1%",
     "unsaved-changes": "لديك تغييرات لم تحفظ. هل أنت متأكد من رغبتك بمغادرة الصفحة؟",
     "reconnecting-message": "يبدو أن اتصالك لـ %1 قد فقد. رجاءًا أنتظر ثم حاول الإتصال مرة اخرى.",
@@ -105,5 +108,6 @@
     "cookies.learn_more": "أعرف المزيد",
     "edited": "حُرِر",
     "disabled": "معطل",
-    "select": "تحديد"
+    "select": "تحديد",
+    "user-search-prompt": "Type something here to find users..."
 }

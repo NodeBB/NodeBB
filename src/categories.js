@@ -95,13 +95,21 @@ Categories.getAllCategories = function (uid, callback) {
 	], callback);
 };
 
-Categories.getCategoriesByPrivilege = function (set, uid, privilege, callback) {
+Categories.getCidsByPrivilege = function (set, uid, privilege, callback) {
 	async.waterfall([
 		function (next) {
 			db.getSortedSetRange(set, 0, -1, next);
 		},
 		function (cids, next) {
 			privileges.categories.filterCids(privilege, cids, uid, next);
+		},
+	], callback);
+};
+
+Categories.getCategoriesByPrivilege = function (set, uid, privilege, callback) {
+	async.waterfall([
+		function (next) {
+			Categories.getCidsByPrivilege(set, uid, privilege, next);
 		},
 		function (cids, next) {
 			Categories.getCategories(cids, uid, next);
@@ -307,21 +315,19 @@ Categories.flattenCategories = function (allCategories, categoryData) {
  */
 Categories.getTree = function (categories, parentCid) {
 	var tree = [];
-	var i = 0;
-	var len = categories.length;
-	var category;
 
-	for (i; i < len; i += 1) {
-		category = categories[i];
-		if (!category.hasOwnProperty('parentCid') || category.parentCid === null) {
-			category.parentCid = 0;
-		}
+	categories.forEach(function (category) {
+		if (category) {
+			if (!category.hasOwnProperty('parentCid') || category.parentCid === null) {
+				category.parentCid = 0;
+			}
 
-		if (parseInt(category.parentCid, 10) === parseInt(parentCid, 10)) {
-			tree.push(category);
-			category.children = Categories.getTree(categories, category.cid);
+			if (parseInt(category.parentCid, 10) === parseInt(parentCid, 10)) {
+				tree.push(category);
+				category.children = Categories.getTree(categories, category.cid);
+			}
 		}
-	}
+	});
 
 	return tree;
 };
@@ -338,30 +344,27 @@ Categories.buildForSelect = function (uid, privilege, callback) {
 };
 
 Categories.buildForSelectCategories = function (categories, callback) {
-	function recursive(category, categoriesData, level) {
-		if (category.link) {
-			return;
-		}
-
+	function recursive(category, categoriesData, level, depth) {
 		var bullet = level ? '&bull; ' : '';
 		category.value = category.cid;
 		category.level = level;
 		category.text = level + bullet + category.name;
+		category.depth = depth;
 		categoriesData.push(category);
 
 		category.children.forEach(function (child) {
-			recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level);
+			recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level, depth + 1);
 		});
 	}
 
 	var categoriesData = [];
 
 	categories = categories.filter(function (category) {
-		return category && !category.link && !parseInt(category.parentCid, 10);
+		return category && !parseInt(category.parentCid, 10);
 	});
 
 	categories.forEach(function (category) {
-		recursive(category, categoriesData, '');
+		recursive(category, categoriesData, '', 0);
 	});
 	callback(null, categoriesData);
 };
@@ -383,3 +386,5 @@ Categories.filterIgnoringUids = function (cid, uids, callback) {
 		},
 	], callback);
 };
+
+Categories.async = require('./promisify')(Categories);
