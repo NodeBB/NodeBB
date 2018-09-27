@@ -25,7 +25,17 @@ module.exports = function (middleware) {
 				req: req,
 				res: res,
 				next: function (err) {
-					auth.setAuthVars(req, res, function () { next(err); });
+					if (err) {
+						return next(err);
+					}
+
+					auth.setAuthVars(req, res, function () {
+						if (req.loggedIn && req.user && req.user.uid) {
+							return next();
+						}
+
+						controllers.helpers.notAllowed(req, res);
+					});
 				},
 			});
 		}
