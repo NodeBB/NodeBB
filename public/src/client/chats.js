@@ -119,12 +119,14 @@ define('forum/chats', [
 					return app.alertError(err.message);
 				}
 				if (!data) {
+					loading = false;
 					return;
 				}
 				data = data.filter(function (chatMsg) {
 					return !$('[component="chat/message"][data-mid="' + chatMsg.messageId + '"]').length;
 				});
 				if (!data.length) {
+					loading = false;
 					return;
 				}
 				messages.parseMessage(data, function (html) {
