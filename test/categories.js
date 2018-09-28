@@ -675,6 +675,7 @@ describe('Categories', function () {
 					'upload:post:image': false,
 					'upload:post:file': false,
 					signature: false,
+					'local:login': false,
 				});
 
 				done();
@@ -718,6 +719,7 @@ describe('Categories', function () {
 					'groups:upload:post:image': true,
 					'groups:upload:post:file': false,
 					'groups:signature': true,
+					'groups:local:login': true,
 				});
 
 				done();
