@@ -4,7 +4,6 @@ var fs = require('fs');
 var nconf = require('nconf');
 var path = require('path');
 var winston = require('winston');
-var sharp = require('sharp');
 var mkdirp = require('mkdirp');
 var mime = require('mime');
 var graceful = require('graceful-fs');
@@ -107,7 +106,7 @@ file.isFileTypeAllowed = function (path, callback) {
 		});
 	}
 
-	sharp(path, {
+	require('sharp')(path, {
 		failOnError: true,
 	}).metadata(function (err) {
 		callback(err);
