@@ -51,4 +51,17 @@ process.on('message', function (message) {
 	}
 });
 
-module.exports = Client;
+var adapter = require('socket.io-adapter-cluster')({
+	client: Client,
+});
+// Otherwise, every node thinks it is the master node and ignores messages
+// because they are from "itself".
+Object.defineProperty(adapter.prototype, 'id', {
+	get: function () {
+		return process.pid;
+	},
+	set: function (id) {
+		// ignore
+	},
+});
+module.exports = adapter;
