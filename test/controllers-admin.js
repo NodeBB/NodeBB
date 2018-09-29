@@ -23,7 +23,6 @@ describe('Admin Controllers', function () {
 	var jar;
 
 	before(function (done) {
-		groups.resetCache();
 		async.series({
 			category: function (next) {
 				categories.create({

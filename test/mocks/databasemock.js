@@ -162,6 +162,11 @@ function setupMockDefaults(callback) {
 			db.emptydb(next);
 		},
 		function (next) {
+			var groups = require('../../src/groups');
+			groups.resetCache();
+			next();
+		},
+		function (next) {
 			winston.info('test_database flushed');
 			setupDefaultConfigs(meta, next);
 		},

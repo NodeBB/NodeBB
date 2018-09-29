@@ -414,9 +414,7 @@ authenticationController.localLogin = function (req, username, password, next) {
 				uid: uid,
 				isAdminOrGlobalMod: result.isAdminOrGlobalMod,
 			});
-			if (username === 'admin') {
-				console.log(uid, result.hasLoginPrivilege);
-			}
+
 			if (parseInt(uid, 10) && !result.hasLoginPrivilege) {
 				return next(new Error('[[error:local-login-disabled]]'));
 			}
