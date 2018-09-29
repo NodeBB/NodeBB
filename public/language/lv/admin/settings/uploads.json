@@ -18,7 +18,7 @@
 	"allow-profile-image-uploads": "Allow users to upload profile images",
 	"convert-profile-image-png": "Convert profile image uploads to PNG",
 	"default-avatar": "Pielāgotais noklusējuma stilizētais portrets",
-	"upload": "Upload",
+	"upload": "Augšupielādēt",
 	"profile-image-dimension": "Profile Image Dimension",
 	"profile-image-dimension-help": "(in pixels, default: 128 pixels)",
 	"max-profile-image-size": "Maximum Profile Image File Size",

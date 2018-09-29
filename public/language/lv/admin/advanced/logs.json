@@ -2,6 +2,6 @@
 	"logs": "Žurnāli",
 	"control-panel": "Logs Control Panel",
 	"reload": "Pārlādēt žurnālus",
-	"clear": "Clear Logs",
-	"clear-success": "Logs Cleared!"
+	"clear": "Notīrīt žurnālus",
+	"clear-success": "Zurnāli notīrīti!"
 }

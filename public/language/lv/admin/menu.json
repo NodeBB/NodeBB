@@ -17,7 +17,7 @@
 	"manage/post-queue": "Ziņu rinda",
 	"manage/groups": "Groups",
 	"manage/ip-blacklist": "IP adrešu melnais saraksts",
-	"manage/uploads": "Uploads",
+	"manage/uploads": "Augšupielādes",
 
 	"section-settings": "Settings",
 	"settings/general": "General",
@@ -26,7 +26,7 @@
 	"settings/user": "User",
 	"settings/group": "Group",
 	"settings/guest": "Guests",
-	"settings/uploads": "Uploads",
+	"settings/uploads": "Augšupielādes",
 	"settings/post": "Post",
 	"settings/chat": "Sarunāties",
 	"settings/pagination": "Numerācija",

@@ -13,10 +13,10 @@
 	"container.panel-body": "Panel Body",
 	"container.alert": "Alert",
 
-	"alert.confirm-delete": "Are you sure you wish to delete this widget?",
+	"alert.confirm-delete": "Vai tiešām vēlies izdzēst šo logrīku?",
 	"alert.updated": "Widgets Updated",
-	"alert.update-success": "Successfully updated widgets",
-	"alert.clone-success": "Successfully cloned widgets",
+	"alert.update-success": "Veiksmīgi atjaunināti logrīki",
+	"alert.clone-success": "Veiksmīgi nozaroti logrīki",
 
 	"error.select-clone": "Please select a page to clone from"
 }

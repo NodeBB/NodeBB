@@ -45,7 +45,7 @@
     "alert.success": "Veiksme",
     "alert.error": "Kļūda",
     "alert.banned": "Bloķētie",
-    "alert.banned.message": "Tu tikko esi bijis bloķēts, Tu tagad izrakstīsies.",
+    "alert.banned.message": "Tu tikko esi bijis bloķēts, Tu tagad izlogosies.",
     "alert.unfollow": "Tu vairs neseko %1!",
     "alert.follow": "Tu tagad seko %1!",
     "online": "Tiešsaistē",

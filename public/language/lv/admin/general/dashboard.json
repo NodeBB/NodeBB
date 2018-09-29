@@ -17,7 +17,7 @@
 	"stats.day": "Day",
 	"stats.week": "Week",
 	"stats.month": "Month",
-	"stats.all": "All Time",
+	"stats.all": "Visu laiku",
 
 	"updates": "Updates",
 	"running-version": "You are running <strong>NodeBB v<span id=\"version\">%1</span></strong>.",
