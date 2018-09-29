@@ -1,7 +1,7 @@
 {
-    "success": "Success",
-    "topic-post": "You have successfully posted.",
+    "success": "Veiksme",
+    "topic-post": "Veiksmīgi publicēts.",
     "post-queued": "Tava ziņa ir rindā apstiprināšanai.",
-    "authentication-successful": "Authentication Successful",
+    "authentication-successful": "Veiksmīgi autentificējies",
     "settings-saved": "Iestatījumi saglabāti!"
 }

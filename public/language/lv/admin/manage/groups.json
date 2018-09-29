@@ -5,12 +5,12 @@
 	"system": "System Group",
 	"edit": "Edit",
 	"search-placeholder": "Meklēt",
-	"create": "Create Group",
+	"create": "Izveidot grupu",
 	"description-placeholder": "A short description about your group",
-	"create-button": "Create",
+	"create-button": "Izveidot",
 
 	"alerts.create-failure": "<strong>Uh-Oh</strong><p>There was a problem creating your group. Please try again later!</p>",
-	"alerts.confirm-delete": "Are you sure you wish to delete this group?",
+	"alerts.confirm-delete": "Vai tiešām vēlies izdzēst šo grupu?",
 
 	"edit.name": "Name",
 	"edit.description": "Description",
@@ -29,7 +29,7 @@
 	"control-panel": "Groups Control Panel",
 	"revert": "Revert",
 
-	"edit.no-users-found": "No Users Found",
-	"edit.confirm-remove-user": "Are you sure you want to remove this user?",
+	"edit.no-users-found": "Nav lietotāju",
+	"edit.confirm-remove-user": "Vai tiešām vēlies izdzēst šo lietotāju?",
 	"edit.save-success": "Izmaiņas saglabātas"
 }

@@ -5,7 +5,7 @@
 	"error.503": "503 Service Unavailable",
 	"manage-error-log": "Manage Error Log",
 	"export-error-log": "Export Error Log (CSV)",
-	"clear-error-log": "Clear Error Log",
+	"clear-error-log": "Notīrīt kļūdu žurnālu",
 	"route": "Ceļš",
 	"count": "Count",
 	"no-routes-not-found": "Hooray! No 404 errors!",

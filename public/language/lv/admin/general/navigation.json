@@ -10,7 +10,7 @@
 	"properties": "Properties:",
 	"only-admins": "Only display to Admins",
 	"only-global-mods-and-admins": "Only display to Global Moderators and Admins",
-	"only-logged-in": "Only display to logged in users",
+	"only-logged-in": "Rādīt tikai ielogojušiem lietotājiem",
 	"only-guest": "Only display to guests",
 	"open-new-window": "Open in a new window",
 

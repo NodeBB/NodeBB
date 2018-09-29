@@ -1,15 +1,15 @@
 {
     "title": "Nelasītie",
     "no_unread_topics": "Nav nevieni nelasīti temati",
-    "load_more": "Load More",
+    "load_more": "Ielādēt vairāk",
     "mark_as_read": "Atzīmēt kā lasītu",
-    "selected": "Selected",
-    "all": "All",
-    "all_categories": "All categories",
+    "selected": "Atlasītie",
+    "all": "Visi",
+    "all_categories": "Visas kategorijas",
     "topics_marked_as_read.success": "Temati atzīmēti kā lasīti!",
-    "all-topics": "All Topics",
+    "all-topics": "Visi temati",
     "new-topics": "Jauni temati",
     "watched-topics": "Novērotie temati",
-    "unreplied-topics": "Unreplied Topics",
-    "multiple-categories-selected": "Multiple Selected"
+    "unreplied-topics": "Temati bez atbildēm",
+    "multiple-categories-selected": "Vairāki atlasīti"
 }

@@ -1,7 +1,7 @@
 {
     "invalid-data": "Nederīgi dati",
     "invalid-json": "Nederīgs JSON",
-    "not-logged-in": "Šķiet, ka neesi pieteicies.",
+    "not-logged-in": "Šķiet, ka neesi ielogojies.",
     "account-locked": "Jūsu konts ir uz laiku bloķēts",
     "search-requires-login": "Meklēšanai nepieciešams konts - lūdzu, piesakies vai reģistrējies.",
     "goback": "Nospiedi atpakaļ, lai atgrieztos iepriekšējā lapā",
@@ -114,7 +114,7 @@
     "invalid-chat-message": "Nederīga saruna",
     "chat-message-too-long": "Sarunā nevar būt vairāk kā %1 rakstzīmes.",
     "cant-edit-chat-message": "Tev nav atļauts rediģēt šo ziņu",
-    "cant-remove-last-user": "Tu nevari izdzēst pēdējo lietotāju",
+    "cant-remove-last-user": "Tu nevari noņemt pēdējo lietotāju",
     "cant-delete-chat-message": "Tev nav atļauts izdzēst šo ziņu",
     "chat-edit-duration-expired": "Pēc publicēšanas Tev ir atļauts tikai %1 sekundes laika rediģēt sarunu",
     "chat-delete-duration-expired": "Pēc publicēšanas Tev ir atļauts tikai %1 sekundes laika izdzēst sarunu",
