@@ -381,7 +381,10 @@ function createGlobalModeratorsGroup(next) {
 
 function giveGlobalPrivileges(next) {
 	var privileges = require('./privileges');
-	var defaultPrivileges = ['chat', 'upload:post:image', 'signature', 'search:content', 'search:users', 'search:tags'];
+	var defaultPrivileges = [
+		'chat', 'upload:post:image', 'signature', 'search:content',
+		'search:users', 'search:tags', 'local:login',
+	];
 	privileges.global.give(defaultPrivileges, 'registered-users', next);
 }
 

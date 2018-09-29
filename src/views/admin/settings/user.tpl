@@ -6,13 +6,6 @@
 		<form role="form">
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="allowLocalLogin" checked>
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:allow-local-login]]</strong></span>
-				</label>
-			</div>
-
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="requireEmailConfirmation">
 					<span class="mdl-switch__label"><strong>[[admin/settings/user:require-email-confirmation]]</strong></span>
 				</label>

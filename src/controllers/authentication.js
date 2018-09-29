@@ -14,7 +14,7 @@ var plugins = require('../plugins');
 var utils = require('../utils');
 var translator = require('../translator');
 var helpers = require('./helpers');
-
+var privileges = require('../privileges');
 var sockets = require('../socket.io');
 
 var authenticationController = module.exports;
@@ -404,6 +404,9 @@ authenticationController.localLogin = function (req, username, password, next) {
 				banned: function (next) {
 					user.isBanned(uid, next);
 				},
+				hasLoginPrivilege: function (next) {
+					privileges.global.can('local:login', uid, next);
+				},
 			}, next);
 		},
 		function (result, next) {
@@ -412,7 +415,7 @@ authenticationController.localLogin = function (req, username, password, next) {
 				isAdminOrGlobalMod: result.isAdminOrGlobalMod,
 			});
 
-			if (!result.isAdminOrGlobalMod && parseInt(meta.config.allowLocalLogin, 10) === 0) {
+			if (parseInt(uid, 10) && !result.hasLoginPrivilege) {
 				return next(new Error('[[error:local-login-disabled]]'));
 			}
 

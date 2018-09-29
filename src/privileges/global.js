@@ -21,6 +21,7 @@ module.exports = function (privileges) {
 		{ name: '[[admin/manage/privileges:search-content]]' },
 		{ name: '[[admin/manage/privileges:search-users]]' },
 		{ name: '[[admin/manage/privileges:search-tags]]' },
+		{ name: '[[admin/manage/privileges:allow-local-login]]' },
 	];
 
 	privileges.global.userPrivilegeList = [
@@ -32,6 +33,7 @@ module.exports = function (privileges) {
 		'search:content',
 		'search:users',
 		'search:tags',
+		'local:login',
 	];
 
 	privileges.global.groupPrivilegeList = privileges.global.userPrivilegeList.map(function (privilege) {
@@ -109,6 +111,10 @@ module.exports = function (privileges) {
 				user.isAdministrator(uid, next);
 			},
 		], callback);
+	};
+
+	privileges.global.canGroup = function (privilege, groupName, callback) {
+		groups.isMember(groupName, 'cid:0:privileges:groups:' + privilege, callback);
 	};
 
 	privileges.global.give = function (privileges, groupName, callback) {
