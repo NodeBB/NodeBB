@@ -60,7 +60,7 @@ Object.defineProperty(adapter.prototype, 'id', {
 	get: function () {
 		return process.pid;
 	},
-	set: function (id) {
+	set: function () {
 		// ignore
 	},
 });
