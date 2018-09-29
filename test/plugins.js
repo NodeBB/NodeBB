@@ -116,10 +116,9 @@ describe('Plugins', function () {
 		var latest;
 		var pluginName = 'nodebb-plugin-imgur';
 		it('should install a plugin', function (done) {
-			this.timeout(20000);
+			this.timeout(0);
 			plugins.toggleInstall(pluginName, '1.0.16', function (err, pluginData) {
 				assert.ifError(err);
-
 				latest = pluginData.latest;
 
 				assert.equal(pluginData.name, pluginName);
@@ -148,6 +147,7 @@ describe('Plugins', function () {
 		});
 
 		it('should upgrade plugin', function (done) {
+			this.timeout(0);
 			plugins.upgrade(pluginName, 'latest', function (err, isActive) {
 				assert.ifError(err);
 				assert(isActive);
@@ -160,6 +160,7 @@ describe('Plugins', function () {
 		});
 
 		it('should uninstall a plugin', function (done) {
+			this.timeout(0);
 			plugins.toggleInstall(pluginName, 'latest', function (err, pluginData) {
 				assert.ifError(err);
 				assert.equal(pluginData.installed, false);
