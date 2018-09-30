@@ -14,12 +14,11 @@ describe('rewards', function () {
 	var herpUid;
 
 	before(function (done) {
-		Groups.resetCache();
 		// Create 3 users: 1 admin, 2 regular
 		async.series([
-			async.apply(User.create, { username: 'foo', password: 'barbar' }),
-			async.apply(User.create, { username: 'baz', password: 'quuxquux' }),
-			async.apply(User.create, { username: 'herp', password: 'derpderp' }),
+			async.apply(User.create, { username: 'foo' }),
+			async.apply(User.create, { username: 'baz' }),
+			async.apply(User.create, { username: 'herp' }),
 		], function (err, uids) {
 			if (err) {
 				return done(err);

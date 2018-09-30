@@ -20,7 +20,6 @@ describe('feeds', function () {
 	var fooUid;
 	var cid;
 	before(function (done) {
-		groups.resetCache();
 		meta.config['feeds:disableRSS'] = 1;
 		async.series({
 			category: function (next) {

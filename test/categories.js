@@ -19,7 +19,6 @@ describe('Categories', function () {
 	var adminUid;
 
 	before(function (done) {
-		groups.resetCache();
 		async.series({
 			posterUid: function (next) {
 				User.create({ username: 'poster' }, next);

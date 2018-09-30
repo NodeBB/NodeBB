@@ -28,7 +28,6 @@ describe('Controllers', function () {
 	var category;
 
 	before(function (done) {
-		groups.resetCache();
 		async.series({
 			category: function (next) {
 				categories.create({

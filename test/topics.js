@@ -23,7 +23,6 @@ describe('Topic\'s', function () {
 	var adminUid;
 
 	before(function (done) {
-		groups.resetCache();
 		User.create({ username: 'admin', password: '123456' }, function (err, uid) {
 			if (err) {
 				return done(err);

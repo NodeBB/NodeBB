@@ -23,8 +23,6 @@ describe('User', function () {
 	var testCid;
 
 	before(function (done) {
-		groups.resetCache();
-
 		Categories.create({
 			name: 'Test Category',
 			description: 'A test',

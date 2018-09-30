@@ -42,7 +42,7 @@ describe('socket.io', function () {
 			adminUid = data[0];
 			regularUid = data[1];
 			cid = data[2].cid;
-			groups.resetCache();
+
 			groups.join('administrators', data[0], done);
 		});
 	});

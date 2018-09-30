@@ -15,7 +15,6 @@ describe('blacklist', function () {
 	var adminUid;
 
 	before(function (done) {
-		groups.resetCache();
 		user.create({ username: 'admin' }, function (err, uid) {
 			assert.ifError(err);
 			adminUid = uid;
