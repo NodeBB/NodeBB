@@ -38,7 +38,7 @@
 	"unread.min-track-last": "Minimum posts in topic before tracking last read",
 	"recent": "Nesenie iestatījumi",
 	"recent.categoryFilter.disable": "Atspējot tematu filtrēšanu ignorētās kategorijās /recent lapā",
-	"signature": "Signature Settings",
+	"signature": "Parakstu iestatījumi",
 	"signature.disable": "Disable signatures",
 	"signature.no-links": "Disable links in signatures",
 	"signature.no-images": "Disable images in signatures",
@@ -50,5 +50,5 @@
 	"composer.custom-help": "Pielāgotais palīdzības teksts",
 	"ip-tracking": "IP Tracking",
 	"ip-tracking.each-post": "Track IP Address for each post",
-	"enable-post-history": "Enable Post History"
+	"enable-post-history": "Iespējot ziņu vēsturi"
 }

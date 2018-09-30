@@ -150,6 +150,7 @@
     "info.moderation-note": "版主备注",
     "info.moderation-note.success": "版主备注已保存",
     "info.moderation-note.add": "添加备注",
+    "sessions.description": "This page allows you to view any active sessions on this forum and revoke them if necessary. You can revoke your own session by logging out of your account.",
     "consent.title": "您的权利与许可",
     "consent.lead": "本论坛将会收集与处理您的个人信息。",
     "consent.intro": "我们收集这些信息将仅用于个性化您于本社区的体验，和关联您的账户与您所发表的帖子。在注册过程中您需要提供一个用户名和邮箱地址，您也可以选择是否提供额外的个人信息，以完善您的用户资料。<br /><br />在您的用户账户有效期内，我们将保留您的信息。您可以在任何时候通过删除您的账号，以撤回您的许可。您可以在任何时候通过您的权力与许可页面，获取一份您对本论坛的贡献的副本。<br /><br />如果您有任何疑问，我们鼓励您与本论坛管理团队联系。",

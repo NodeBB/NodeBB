@@ -162,6 +162,11 @@ function setupMockDefaults(callback) {
 			db.emptydb(next);
 		},
 		function (next) {
+			var groups = require('../../src/groups');
+			groups.resetCache();
+			next();
+		},
+		function (next) {
 			winston.info('test_database flushed');
 			setupDefaultConfigs(meta, next);
 		},
@@ -213,7 +218,10 @@ function setupDefaultConfigs(meta, next) {
 
 function giveDefaultGlobalPrivileges(next) {
 	var privileges = require('../../src/privileges');
-	privileges.global.give(['chat', 'upload:post:image', 'signature', 'search:content', 'search:users', 'search:tags'], 'registered-users', next);
+	privileges.global.give([
+		'chat', 'upload:post:image', 'signature', 'search:content',
+		'search:users', 'search:tags', 'local:login',
+	], 'registered-users', next);
 }
 
 function enableDefaultPlugins(callback) {

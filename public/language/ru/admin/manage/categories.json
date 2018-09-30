@@ -68,5 +68,6 @@
 	"alert.find-group": "Найти Группу",
 	"alert.group-search": "Искать группу...",
 	"collapse-all": "Свернуть всё",
-	"expand-all": "Развернуть всё"
+	"expand-all": "Развернуть всё",
+	"disable-on-create": "Disable on create"
 }

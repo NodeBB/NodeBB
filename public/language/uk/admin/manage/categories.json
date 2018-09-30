@@ -68,5 +68,6 @@
 	"alert.find-group": "Знайти групу",
 	"alert.group-search": "Шукайте групу тут...",
 	"collapse-all": "Згорнути всі",
-	"expand-all": "Розгорнути всі"
+	"expand-all": "Розгорнути всі",
+	"disable-on-create": "Disable on create"
 }

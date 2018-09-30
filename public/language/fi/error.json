@@ -88,6 +88,7 @@
     "invalid-image-type": "Invalid image type. Allowed types are: %1",
     "invalid-image-extension": "Invalid image extension",
     "invalid-file-type": "Invalid file type. Allowed types are: %1",
+    "invalid-image-dimensions": "Image dimensions are too big",
     "group-name-too-short": "Ryhmän nimi on liian lyhyt",
     "group-name-too-long": "Group name too long",
     "group-already-exists": "Ryhmä on jo olemassa",

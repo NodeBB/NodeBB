@@ -23,7 +23,7 @@
 	"smtp-transport.username-help": "<b>For the Gmail service,</b> enter the full email address here, especially if you are using a Google Apps managed domain.",
 	"smtp-transport.password": "Password",
 
-	"template": "Edit Email Template",
+	"template": "Rediģēt e-pasta veidni",
 	"template.select": "Select Email Template",
 	"template.revert": "Revert to Original",
 	"testing": "Email Testing",

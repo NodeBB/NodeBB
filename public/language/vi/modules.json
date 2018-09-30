@@ -47,6 +47,7 @@
     "composer.formatting.italic": "In nghiêng",
     "composer.formatting.list": "Danh sách",
     "composer.formatting.strikethrough": "Gạch ngang",
+    "composer.formatting.code": "Code",
     "composer.formatting.link": "Đường dẫn",
     "composer.formatting.picture": "Hình ảnh",
     "composer.upload-picture": "Tải ảnh lên",

@@ -10,6 +10,7 @@
 	"search-content": "Meklēt saturā",
 	"search-users": "Meklēt lietotājus",
 	"search-tags": "Meklēt birkās",
+	"allow-local-login": "Local Login",
 
 	"find-category": "Find Category",
 	"access-category": "Access Category",
@@ -17,13 +18,13 @@
 	"create-topics": "Izveidot tematus",
 	"reply-to-topics": "Reply to Topics",
 	"tag-topics": "Tag Topics",
-	"edit-posts": "Edit Posts",
-	"view-edit-history": "View Edit History",
-	"delete-posts": "Delete Posts",
-	"view_deleted": "View Deleted Posts",
+	"edit-posts": "Rediģēt ziņas",
+	"view-edit-history": "Iespējot rediģēšanas vēsturi",
+	"delete-posts": "Izdzēst ziņas",
+	"view_deleted": "Skatīt izdzēstās ziņas",
 	"upvote-posts": "Ziņas, kurām ir balsis par",
 	"downvote-posts": "Ziņas, kurām ir balsis pret",
-	"delete-topics": "Delete Topics",
+	"delete-topics": "Izdzēst tematus",
 	"purge": "Purge",
 	"moderate": "Moderate"
 }

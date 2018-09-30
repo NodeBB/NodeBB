@@ -150,6 +150,7 @@
     "info.moderation-note": "Notatka moderatora",
     "info.moderation-note.success": "Notatka została zapisana",
     "info.moderation-note.add": "Dodaj notatkę",
+    "sessions.description": "This page allows you to view any active sessions on this forum and revoke them if necessary. You can revoke your own session by logging out of your account.",
     "consent.title": "Twoje prawa i zgody",
     "consent.lead": "To forum gromadzi i przetwarza twoje dane osobowe.",
     "consent.intro": "Wykorzystujemy te informacje wyłącznie w celu dostosowania działania forum do Twoich potrzeb, a także powiązania zamieszczanych przez Ciebie postów z Twoim kontem użytkownika. Na etapie rejestracji poprosiliśmy o podanie nazwy użytkownika i adresu e-mail; możesz również zamieścić dodatkowe informacje, by uzupełnić swój profil użytkownika na tej stronie.<br /><br />Będziemy przechowywać te informacje tak długo, jak będzie istniało Twoje konto użytkownika. Możesz wycofać zgodę w dowolnym momencie poprzez usunięcie konta. W każdej chwili możesz też poprosić poprzez stronę „Prawa i zgody” o kopię treści zamieszczonych przez Ciebie na tej stronie.<br /><br />W razie pytań lub wątpliwości zwróć się do administratorów forum.",

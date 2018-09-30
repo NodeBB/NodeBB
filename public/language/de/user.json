@@ -150,6 +150,7 @@
     "info.moderation-note": "Moderationsnotiz",
     "info.moderation-note.success": "Moderationsnotiz gespeichert",
     "info.moderation-note.add": "Notitz hinzufügen",
+    "sessions.description": "This page allows you to view any active sessions on this forum and revoke them if necessary. You can revoke your own session by logging out of your account.",
     "consent.title": "Deine Rechte &amp; Zustimmungen",
     "consent.lead": "Dieses Community-Forum sammelt und verarbeitet deine persönlichen Daten.",
     "consent.intro": "Wir nutzen diese Daten ausschließlich um dein Erlebnis in dieser Community persönlicher zu gestalten, sowie um deine Beiträge mit deinem Account zu verknüpfen. Während der Registration wurdes du nach einem Benutzernamen und einer EMail-Adresse gefragt. Optional kannst du weitere Informationen bereitstellen um dein Profil auf dieser Website zu vervollständigen.<br /><br />Wir behalten diese Informationen für die Lebensdauer deines Accounts, womit du jederzeit in der Lage bist deine Zustimmung durch löschen deines Accounts zu widerrufen. Du kannst jederzeit eine Kopie deiner Daten über deine Rechte &amp; Zustimmungen-Seite anfordern.<br /><br />Solltest du Fragen oder Bedenken haben, melde dich gerne bei den Administratoren dieses Forums.",

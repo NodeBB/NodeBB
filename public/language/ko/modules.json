@@ -47,6 +47,7 @@
     "composer.formatting.italic": "이탤릭체",
     "composer.formatting.list": "목록",
     "composer.formatting.strikethrough": "취소선",
+    "composer.formatting.code": "Code",
     "composer.formatting.link": "링크",
     "composer.formatting.picture": "사진",
     "composer.upload-picture": "이미지 업로드",

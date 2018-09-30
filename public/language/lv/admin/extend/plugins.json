@@ -3,7 +3,7 @@
 	"active": "Active",
 	"inactive": "Inactive",
 	"out-of-date": "Out of Date",
-	"none-found": "No plugins found.",
+	"none-found": "Nav spraudņu",
 	"none-active": "No Active Plugins",
 	"find-plugins": "Find Plugins",
 
@@ -22,7 +22,7 @@
 	"plugin-item.activate": "Activate",
 	"plugin-item.install": "Install",
 	"plugin-item.uninstall": "Uninstall",
-	"plugin-item.settings": "Settings",
+	"plugin-item.settings": "Iestatījumi",
 	"plugin-item.installed": "Installed",
 	"plugin-item.latest": "Latest",
 	"plugin-item.upgrade": "Upgrade",

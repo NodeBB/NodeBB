@@ -47,6 +47,7 @@
     "composer.formatting.italic": "斜体",
     "composer.formatting.list": "一覧",
     "composer.formatting.strikethrough": "取り消し線",
+    "composer.formatting.code": "Code",
     "composer.formatting.link": "リンク",
     "composer.formatting.picture": "画像",
     "composer.upload-picture": "画像をアップロード",

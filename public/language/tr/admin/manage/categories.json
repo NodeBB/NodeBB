@@ -68,5 +68,6 @@
 	"alert.find-group": "Bir Grup Ara",
 	"alert.group-search": "Burada bir grup ara...",
 	"collapse-all": "Hepsini Kapat",
-	"expand-all": "Hepsini Genişlet"
+	"expand-all": "Hepsini Genişlet",
+	"disable-on-create": "Oluşturma sırasında devre dışı bırak"
 }

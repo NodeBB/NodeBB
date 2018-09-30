@@ -1,6 +1,5 @@
 {
 	"authentication": "验证",
-	"allow-local-login": "允许本地登录",
 	"require-email-confirmation": "需要电子邮箱激活",
 	"email-confirm-interval": "用户无法重新发送电子邮箱激活直到",
 	"email-confirm-email2": "分钟已经过",

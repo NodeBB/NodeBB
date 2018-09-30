@@ -1,6 +1,6 @@
 {
 	"lead": "Iestatīt savu IP adrešu melno sarakstu šeit.",
-	"description": "Reizēm lietotāja konta bloķēšana nav pietiekošs preventīvs līdzeklis. Citā gadījumā labākais veids, kā aizsargāt forumu, ir ierobežot piekļuvi forumam konkrētai IP adresei vai vairākām IP adresēm. Šajos scenārijos varat ievietot traucējošas IP adreses vai visus CIDR blokus šajā melnajā sarakstā, un no viņām neļaus pierakstīties vai reģistrēt jaunu kontu.",
+	"description": "Reizēm lietotāja konta bloķēšana nav pietiekošs preventīvs līdzeklis. Citā gadījumā labākais veids, kā aizsargāt forumu, ir ierobežot piekļuvi forumam konkrētai IP adresei vai vairākām IP adresēm. Šajos scenārijos varat ievietot traucējošas IP adreses vai visus CIDR blokus šajā melnajā sarakstā, un no viņām neļaus ielogoties vai reģistrēt jaunu kontu.",
 	"active-rules": "Active Rules",
 	"validate": "Apstiprināt melno sarakstu",
 	"apply": "Apply Blacklist",

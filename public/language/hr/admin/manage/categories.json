@@ -68,5 +68,6 @@
 	"alert.find-group": "Pronađi grupu",
 	"alert.group-search": "Pretraži grupu ovdje ...",
 	"collapse-all": "Collapse All",
-	"expand-all": "Expand All"
+	"expand-all": "Expand All",
+	"disable-on-create": "Disable on create"
 }

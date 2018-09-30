@@ -88,6 +88,7 @@
     "invalid-image-type": "無効なイメージタイプです。許可された種類は: %1",
     "invalid-image-extension": "無効なイメージのエクステンション",
     "invalid-file-type": "無効なファイルタイプです。許可された種類は: %1",
+    "invalid-image-dimensions": "Image dimensions are too big",
     "group-name-too-short": "グループ名は短すぎます。",
     "group-name-too-long": "グループ名が長すぎます",
     "group-already-exists": "グループ名はすでに存在しています",

@@ -150,6 +150,7 @@
     "info.moderation-note": "Moderations anteckning",
     "info.moderation-note.success": "Moderations anteckning sparad",
     "info.moderation-note.add": "Lägg till anteckning",
+    "sessions.description": "This page allows you to view any active sessions on this forum and revoke them if necessary. You can revoke your own session by logging out of your account.",
     "consent.title": "Dina rättigheter och Medgivande",
     "consent.lead": "Detta forum samlar och behandlar din personliga information.",
     "consent.intro": "Vi använder denna information endast i syfte att personligt anpassa din upplevelse i denna gemenskap, och för att associera de inlägg du gör till ditt användarkonto. När du registrerade dig blev du ombedd att ange ett användarnamn och en e-postadress, du kan även frivilligt ange ytterligare infromation för att komplettera din användarprofil på denna webbsida. <br /><br />Vi sparar denna information så länge som du har ett konto hos oss, och du kan dra tillbaks ditt medgivande när som helst genom att radera ditt konto. Du kan är som helst efterfråga en kopia av din information på denna webbplats, genom sidan Rättigheter och Medgivande. <br /><br />Om du har några frågor eller funderingar rekommenderar vi att du tar kontakt med detta forums administrativa team.",

@@ -88,6 +88,7 @@
     "invalid-image-type": "無效的圖像類型。允許的類型：%1",
     "invalid-image-extension": "無效的圖像擴充元件",
     "invalid-file-type": "無效的檔案類型。允許的類型：%1",
+    "invalid-image-dimensions": "Image dimensions are too big",
     "group-name-too-short": "群組名稱太短了",
     "group-name-too-long": "群組名稱太長",
     "group-already-exists": "群組名稱已存在",

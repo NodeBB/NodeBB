@@ -68,5 +68,6 @@
 	"alert.find-group": "Trouver un groupe",
 	"alert.group-search": "Chercher un groupe ici...",
 	"collapse-all": "Tout réduire",
-	"expand-all": "Tout développer"
+	"expand-all": "Tout développer",
+	"disable-on-create": "Disable on create"
 }

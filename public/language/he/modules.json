@@ -47,6 +47,7 @@
     "composer.formatting.italic": "נטוי",
     "composer.formatting.list": "רשימה",
     "composer.formatting.strikethrough": "קו פוסל",
+    "composer.formatting.code": "Code",
     "composer.formatting.link": "לינק",
     "composer.formatting.picture": "תמונה",
     "composer.upload-picture": "העלה תמונה",

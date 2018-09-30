@@ -47,6 +47,7 @@
     "composer.formatting.italic": "Corsivo",
     "composer.formatting.list": "Lista",
     "composer.formatting.strikethrough": "Barrato",
+    "composer.formatting.code": "Code",
     "composer.formatting.link": "Collegamento",
     "composer.formatting.picture": "Immagine",
     "composer.upload-picture": "Carica immagine",

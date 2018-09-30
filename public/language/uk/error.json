@@ -88,6 +88,7 @@
     "invalid-image-type": "Невірний тип зображення. Дозволені типи: %1",
     "invalid-image-extension": "Невірне розширення зображення",
     "invalid-file-type": "Невірний тип файлу. Дозволені типи: %1",
+    "invalid-image-dimensions": "Image dimensions are too big",
     "group-name-too-short": "Ім'я групи занадто коротке",
     "group-name-too-long": "Ім'я групи занадто довге",
     "group-already-exists": "Група вже існує",

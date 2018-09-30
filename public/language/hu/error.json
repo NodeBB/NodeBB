@@ -88,6 +88,7 @@
     "invalid-image-type": "Érvénytelen a kép típusa. Engedett kiterjesztések: %1",
     "invalid-image-extension": "Érvénytelen a kép kiterjesztése",
     "invalid-file-type": "Érvénytelen a fájl típusa. Engedélyezett kiterjesztések: %1",
+    "invalid-image-dimensions": "Image dimensions are too big",
     "group-name-too-short": "A csoport név túl rövid",
     "group-name-too-long": "Group name too long",
     "group-already-exists": "A csoport nem létezik",

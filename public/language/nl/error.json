@@ -88,6 +88,7 @@
     "invalid-image-type": "Ongeldig bestandstype afbeelding. Deze afbeelding is van een bestandstype dat niet ondersteund wordt. Toegestane bestandstypes voor afbeeldingsbestanden zijn: %1",
     "invalid-image-extension": "Ongeldig bestandstype afbeelding",
     "invalid-file-type": "Dit bestandstype wordt niet ondersteund. Toegestane bestandstypen zijn: %1",
+    "invalid-image-dimensions": "Image dimensions are too big",
     "group-name-too-short": "De groepsnaam is te kort",
     "group-name-too-long": "Groepsnaam te lang",
     "group-already-exists": "Een groep met deze naam bestaat al",

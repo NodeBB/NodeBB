@@ -88,6 +88,7 @@
     "invalid-image-type": "Ubwoko bw'ifoto wahisemo ntibwemewe. Hemewe gusa: %1",
     "invalid-image-extension": "Impera itemewe igaragaza foruma y'ifoto",
     "invalid-file-type": "Ubwoko bw'ifayilo ntibwemewe. Hemewe gusa: %1",
+    "invalid-image-dimensions": "Image dimensions are too big",
     "group-name-too-short": "Izina ry'itsinda ni rigufi cyane",
     "group-name-too-long": "Group name too long",
     "group-already-exists": "Itsinda ryitwa gutya risanzweho",

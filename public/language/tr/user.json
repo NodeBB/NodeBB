@@ -150,6 +150,7 @@
     "info.moderation-note": "Moderasyon Notu",
     "info.moderation-note.success": "Moderasyon notu kaydedildi",
     "info.moderation-note.add": "Not ekle",
+    "sessions.description": "Bu sayfa, bu forumdaki tüm aktif oturumları görüntülemenizi ve gerektiğinde iptal etmenizi sağlar. Kendi oturumunuzu hesabınızdan çıkış yaparak iptal edebilirsiniz.",
     "consent.title": "Haklarınız & İzinleriniz",
     "consent.lead": "Bu topluluk forumu kişisel bilgilerinizi toplar ve işler.",
     "consent.intro": "Bu bilgileri kesinlikle bu topluluktaki deneyiminizi kişiselleştirmek ve kullanıcı hesabınıza yaptığınız yayınları ilişkilendirmek için kullanıyoruz. Kayıt adımı sırasında sizden bir kullanıcı adı ve e-posta adresi vermeniz istenmiştir. Ayrıca, kullanıcı profilinizi bu web sitesinde tamamlamak için isteğe bağlı olarak ek bilgi de ekleyebilirsiniz. <br /><br />Bu bilgileri kullanıcı hesabınızın ömrü boyunca saklayabilir ve izinleri geri alabilirsiniz. Hesabınızı istediğiniz zaman silebilirsiniz. Herhangi bir zamanda, bu web sitesine yaptığınız katkıların bir kopyasını Haklar &amp; Onay sayfasını talep edebilirsiniz.<br /><br /> Sorularınız veya endişeleriniz varsa, bu forumun yönetim ekibine ulaşmanızı öneririz.",

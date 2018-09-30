@@ -68,5 +68,6 @@
 	"alert.find-group": "그룹 검색",
 	"alert.group-search": "여기서 그룹을 검색하십시오...",
 	"collapse-all": "Collapse All",
-	"expand-all": "Expand All"
+	"expand-all": "Expand All",
+	"disable-on-create": "Disable on create"
 }

@@ -88,6 +88,7 @@
     "invalid-image-type": "Vigane pildi formaat. Lubatud formaadid on: %1",
     "invalid-image-extension": "Vigane pildi formaat",
     "invalid-file-type": "Vigane faili formaat. Lubatud formaadid on: %1",
+    "invalid-image-dimensions": "Image dimensions are too big",
     "group-name-too-short": "Grupi nimi liiga lühike",
     "group-name-too-long": "Grupi nimi liiga pikk",
     "group-already-exists": "Grupp juba eksisteerib",

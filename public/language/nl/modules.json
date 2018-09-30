@@ -47,6 +47,7 @@
     "composer.formatting.italic": "Cursief",
     "composer.formatting.list": "Lijst",
     "composer.formatting.strikethrough": "Doorhalen",
+    "composer.formatting.code": "Code",
     "composer.formatting.link": "Link",
     "composer.formatting.picture": "Afbeelding",
     "composer.upload-picture": "Upload afbeelding",

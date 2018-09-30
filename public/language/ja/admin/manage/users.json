@@ -93,7 +93,7 @@
 	"alerts.error-x": "<strong>エラー</strong><p>%1</p>",
 	"alerts.create-success": "ユーザーが作成されました!",
 
-	"alerts.prompt-email": "メール:",
+	"alerts.prompt-email": "Emails: ",
 	"alerts.email-sent-to": "招待メールが%1に送られました。",
 	"alerts.x-users-found": "ユーザー(s)％1が見つかりました!検索には％2ミリ秒かかりました。"
 }

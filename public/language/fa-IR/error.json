@@ -88,6 +88,7 @@
     "invalid-image-type": "نوع تصویر نامعتبر است. نوعهای قابل قبول اینها هستند: %1",
     "invalid-image-extension": "پسوند عکس نامعتبر است",
     "invalid-file-type": "نوع پرونده نامعتبر است. نوعهای قابل قبول اینها هستند: %1",
+    "invalid-image-dimensions": "Image dimensions are too big",
     "group-name-too-short": "نام گروه خیلی کوتاه است.",
     "group-name-too-long": "نام گروه بسیار طولانی است.",
     "group-already-exists": "این گروه از پیش وجود دارد.",

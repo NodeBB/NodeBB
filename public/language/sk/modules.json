@@ -47,6 +47,7 @@
     "composer.formatting.italic": "Kurzíva",
     "composer.formatting.list": "Zoznam",
     "composer.formatting.strikethrough": "Prečiarknuté",
+    "composer.formatting.code": "Code",
     "composer.formatting.link": "Odkaz",
     "composer.formatting.picture": "Obrázok",
     "composer.upload-picture": "Nahrať obrázok",

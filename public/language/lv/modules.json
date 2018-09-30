@@ -47,6 +47,7 @@
     "composer.formatting.italic": "Slīprakstā",
     "composer.formatting.list": "Saraksts",
     "composer.formatting.strikethrough": "Svītrots",
+    "composer.formatting.code": "Kods",
     "composer.formatting.link": "Saite",
     "composer.formatting.picture": "Bilde",
     "composer.upload-picture": "Augšupielādēt bildi",

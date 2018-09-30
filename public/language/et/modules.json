@@ -47,6 +47,7 @@
     "composer.formatting.italic": "Kaldkiri",
     "composer.formatting.list": "Nimekiri",
     "composer.formatting.strikethrough": "Läbitõmmatud",
+    "composer.formatting.code": "Code",
     "composer.formatting.link": "Link",
     "composer.formatting.picture": "Pilt",
     "composer.upload-picture": "Lae pilt üles",

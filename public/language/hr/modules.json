@@ -47,6 +47,7 @@
     "composer.formatting.italic": "Italic",
     "composer.formatting.list": "Popis",
     "composer.formatting.strikethrough": "Precrtano",
+    "composer.formatting.code": "Code",
     "composer.formatting.link": "Poveznica",
     "composer.formatting.picture": "Slika",
     "composer.upload-picture": "Učitaj sliku",

@@ -47,6 +47,7 @@
     "composer.formatting.italic": "斜體",
     "composer.formatting.list": "列表項目",
     "composer.formatting.strikethrough": "刪除線",
+    "composer.formatting.code": "Code",
     "composer.formatting.link": "連結",
     "composer.formatting.picture": "圖片",
     "composer.upload-picture": "上傳圖片",
