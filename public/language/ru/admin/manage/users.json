@@ -93,7 +93,7 @@
 	"alerts.error-x": "<strong>Ошибка</strong><p>%1</p>",
 	"alerts.create-success": "Пользователь создан!",
 
-	"alerts.prompt-email": "Email: ",
+	"alerts.prompt-email": "Emails: ",
 	"alerts.email-sent-to": "Приглашение для участника %1 было отправлено по электронной почте",
 	"alerts.x-users-found": "Нашел %1 пользователя(ей)! Поиск занял %2 мс."
 }

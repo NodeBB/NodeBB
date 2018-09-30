@@ -88,6 +88,7 @@
     "invalid-image-type": "ประเภทรูปภาพไม่ถูกต้อง ประเภทที่ได้รับการอนุญาติคือ : %1",
     "invalid-image-extension": "นามสกุลรูปภาพไม่ถูกต้อง",
     "invalid-file-type": "ประเภทไฟล์ไม่ถูกต้อง ประเภทที่ได้รับการอนุญาติคือ : %1",
+    "invalid-image-dimensions": "Image dimensions are too big",
     "group-name-too-short": "ชื่อกลุ่มสั้นเกินไป",
     "group-name-too-long": "ชื่อกลุ่มยาวเกินไป",
     "group-already-exists": "มีกลุ่มนี้อยู่แล้ว",

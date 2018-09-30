@@ -1,6 +1,5 @@
 {
 	"authentication": "Аутентификация",
-	"allow-local-login": "Разрешить локальный вход",
 	"require-email-confirmation": "Требуется подтверждение по электронной почте",
 	"email-confirm-interval": "Пользователь не может повторно отправить письмо с подтверждением до",
 	"email-confirm-email2": "минут прошло",

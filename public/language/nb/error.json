@@ -88,6 +88,7 @@
     "invalid-image-type": "Ugyldig bildetype. Tilatte typer er: %1",
     "invalid-image-extension": "Ugyldig bildefiltype",
     "invalid-file-type": "Ugyldig filtype. Tillatte typer er: %1",
+    "invalid-image-dimensions": "Image dimensions are too big",
     "group-name-too-short": "Gruppenavnet er for kort",
     "group-name-too-long": "Group name too long",
     "group-already-exists": "Gruppe eksisterer allerede",

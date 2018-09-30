@@ -47,6 +47,7 @@
     "composer.formatting.italic": "Kursiv",
     "composer.formatting.list": "Lista",
     "composer.formatting.strikethrough": "Genomstrykning",
+    "composer.formatting.code": "Code",
     "composer.formatting.link": "Länk",
     "composer.formatting.picture": "Bild",
     "composer.upload-picture": "Ladda upp bild",

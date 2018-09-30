@@ -1,6 +1,5 @@
 {
 	"authentication": "Authentifizierung",
-	"allow-local-login": "Erlaube Lokalen Login",
 	"require-email-confirmation": "Benötigt E-Mail Bestätigung",
 	"email-confirm-interval": "Der Benutzer kann für ",
 	"email-confirm-email2": "  Minuten keine Bestätigungsmail erneut senden.",

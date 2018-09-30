@@ -3,11 +3,11 @@
 	"general/dashboard": "Dashboard",
 	"general/homepage": "Sākumlapa",
 	"general/navigation": "Navigation",
-	"general/languages": "Languages",
+	"general/languages": "Valodas",
 	"general/sounds": "Sounds",
 	"general/social": "Social",
 
-	"section-manage": "Manage",
+	"section-manage": "Pārvaldīt",
 	"manage/categories": "Categories",
 	"manage/privileges": "Privileges",
 	"manage/tags": "Birkas",
@@ -19,7 +19,7 @@
 	"manage/ip-blacklist": "IP adrešu melnais saraksts",
 	"manage/uploads": "Augšupielādes",
 
-	"section-settings": "Settings",
+	"section-settings": "Iestatījumi",
 	"settings/general": "General",
 	"settings/reputation": "Ranga punkti",
 	"settings/email": "E-pasta adrese",
@@ -37,7 +37,7 @@
 	"settings/sockets": "Sockets",
 	"settings/advanced": "Advanced",
 
-	"settings.page-title": "%1 Settings",
+	"settings.page-title": "%1 iestatījumi",
 
 	"section-appearance": "Appearance",
 	"appearance/themes": "Themes",
@@ -68,7 +68,7 @@
 	"logout": "Izlogoties",
 	"view-forum": "View Forum",
 
-	"search.placeholder": "Search for settings",
+	"search.placeholder": "Meklēt iestatījumos",
 	"search.no-results": "No results...",
 	"search.search-forum": "Search the forum for <strong></strong>",
 	"search.keep-typing": "Type more to see results...",

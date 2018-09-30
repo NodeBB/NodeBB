@@ -47,6 +47,7 @@
     "composer.formatting.italic": "Ležeče",
     "composer.formatting.list": "Seznam",
     "composer.formatting.strikethrough": "Prečrtano",
+    "composer.formatting.code": "Code",
     "composer.formatting.link": "Povezava",
     "composer.formatting.picture": "Slika",
     "composer.upload-picture": "Prenesi sliko",

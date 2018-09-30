@@ -150,6 +150,7 @@
     "info.moderation-note": "Zmierňujúca poznámka",
     "info.moderation-note.success": "Zmierňujúca poznámka nebola uložená",
     "info.moderation-note.add": "Pridať poznámku",
+    "sessions.description": "This page allows you to view any active sessions on this forum and revoke them if necessary. You can revoke your own session by logging out of your account.",
     "consent.title": "Váš právny súhlas",
     "consent.lead": "Toto komunitné fórum zbiera a spracováva Vaše osobné údaje.",
     "consent.intro": "Tieto informácie používa iba pre úpravu Vašich skúseností v tejto komunite, rovnako tak k rozpoznaniu príspevkov, ktoré ste pod používateľským účtom vytvoril. Behom jednotlivých registračných krokov budete požiadaný o zadanie Vášho používateľského mena a e-mailovej adresy. Môžete taktiež dobrovoľne poskytnúť niektoré dodatočné informácie do Vášho profilu na webovej stránke. Tieto informácie uchovávame po dobu životnosti Vášho používateľského účtu. Kedykoľvek môžete požiadať kópiu svojich príspevkov na tejto webovej stránke pomocou stránky „Práva a súhlas“<br /><br /> Ak máte nejaké otázky alebo obavy, obráťte sa na tím správcov fóra.",

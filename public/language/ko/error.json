@@ -88,6 +88,7 @@
     "invalid-image-type": "올바르지 않은 이미지입니다. 사용가능한 유형: %1",
     "invalid-image-extension": "올바르지 않은 이미지 확장자입니다.",
     "invalid-file-type": "올바르지 않은 파일 유형입니다. 사용가능한 유형: %1",
+    "invalid-image-dimensions": "Image dimensions are too big",
     "group-name-too-short": "그룹 이름이 너무 짧습니다.",
     "group-name-too-long": "그룹 이름이 너무 깁니다.",
     "group-already-exists": "이미 존재하는 그룹입니다.",

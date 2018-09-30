@@ -3,7 +3,7 @@
 	"error-events-per-day": "<code>%1</code> events per day",
 	"error.404": "404 Not Found",
 	"error.503": "503 Service Unavailable",
-	"manage-error-log": "Manage Error Log",
+	"manage-error-log": "Pārvaldīt kļūdu žurnālu",
 	"export-error-log": "Export Error Log (CSV)",
 	"clear-error-log": "Notīrīt kļūdu žurnālu",
 	"route": "Ceļš",

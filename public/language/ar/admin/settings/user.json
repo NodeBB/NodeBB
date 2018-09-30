@@ -1,6 +1,5 @@
 {
 	"authentication": "المصادقة",
-	"allow-local-login": "السماح بتسجيل الدخول المحلي",
 	"require-email-confirmation": "يطلب تأكيد البريد الإلكتروني",
 	"email-confirm-interval": "لا يمكن للمستخدم إعادة إرسال رسالة تأكيد البريد الالكتروني حتى مرور",
 	"email-confirm-email2": "دقائق",

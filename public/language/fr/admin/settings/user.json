@@ -1,6 +1,5 @@
 {
 	"authentication": "Authentification",
-	"allow-local-login": "Autoriser l'identification locale",
 	"require-email-confirmation": "Demander une vérification de l'adresse e-mail",
 	"email-confirm-interval": "Les utilisateurs ne peuvent pas demander un e-mail de vérification avant",
 	"email-confirm-email2": "minutes se sont écoulées",

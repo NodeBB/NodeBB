@@ -88,6 +88,7 @@
     "invalid-image-type": "Neplatný typ obrázku. Povolené typy jsou: %1",
     "invalid-image-extension": "Neplatná přípona obrázku",
     "invalid-file-type": "Neplatný typ souboru. Povolené typy jsou: %1",
+    "invalid-image-dimensions": "Image dimensions are too big",
     "group-name-too-short": "Název skupiny je moc krátký",
     "group-name-too-long": "Název skupiny je moc dlouhý",
     "group-already-exists": "Skupina už existuje",

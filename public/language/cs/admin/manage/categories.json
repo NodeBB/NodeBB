@@ -68,5 +68,6 @@
 	"alert.find-group": "Najít skupinu",
 	"alert.group-search": "Hledat skupinu…",
 	"collapse-all": "Sbalit vše",
-	"expand-all": "Rozbalit vše"
+	"expand-all": "Rozbalit vše",
+	"disable-on-create": "Disable on create"
 }

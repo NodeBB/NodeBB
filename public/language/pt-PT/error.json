@@ -88,6 +88,7 @@
     "invalid-image-type": "Tipo de imagem inválida. Os tipos válidos são: %1",
     "invalid-image-extension": "Extensão de imagem inválida",
     "invalid-file-type": "Tipo de ficheiro inválido. Os tipos válidos são: %1",
+    "invalid-image-dimensions": "Image dimensions are too big",
     "group-name-too-short": "Nome de grupo muito curto",
     "group-name-too-long": "Nome de grupo muito longo",
     "group-already-exists": "Grupo já existente",

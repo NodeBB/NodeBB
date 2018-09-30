@@ -150,6 +150,7 @@
     "info.moderation-note": "Nota di moderazione",
     "info.moderation-note.success": "Nota di moderazione salvata",
     "info.moderation-note.add": "Aggiungi nota",
+    "sessions.description": "This page allows you to view any active sessions on this forum and revoke them if necessary. You can revoke your own session by logging out of your account.",
     "consent.title": "Your Rights &amp; Consent",
     "consent.lead": "Questo forum raccoglie ed elabora i tuoi dati personali.",
     "consent.intro": "Utilizziamo i tuoi dati al solo scopo di personalizzare la tua esperienza in questa Community e di associare al tuo account i post che scrivi.<br /><br />Le informazioni che fornisci verranno conservate fino a quando non deciderai di rimuoverle, chiedendo la cancellazione del tuo profilo. <br /><br />Per qualsiasi dubbio, contatta gli Amministratori del forum. ",

@@ -93,7 +93,7 @@
 	"alerts.error-x": "<strong>Błąd</strong><p>%1</p>",
 	"alerts.create-success": "Utworzono użytkownika!",
 
-	"alerts.prompt-email": "Adres e-mail",
+	"alerts.prompt-email": "Emails: ",
 	"alerts.email-sent-to": "Wysłano zaproszenie do %1",
 	"alerts.x-users-found": "Znaleziono %1 użytkownika(-ów)! Szukanie zajęło %2 ms."
 }

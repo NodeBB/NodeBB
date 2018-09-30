@@ -47,6 +47,7 @@
     "composer.formatting.italic": "Itálico",
     "composer.formatting.list": "Lista",
     "composer.formatting.strikethrough": "Riscado",
+    "composer.formatting.code": "Code",
     "composer.formatting.link": "ligação",
     "composer.formatting.picture": "Fotografia",
     "composer.upload-picture": "Carregar imagem",

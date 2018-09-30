@@ -88,6 +88,7 @@
     "invalid-image-type": "Неважећи тип слике. Дозвољени типови су: %1",
     "invalid-image-extension": "Неважећи тип слике",
     "invalid-file-type": "Неважећи тип датотеке. Дозвољени типови су: %1",
+    "invalid-image-dimensions": "Image dimensions are too big",
     "group-name-too-short": "Име групе је прекратко",
     "group-name-too-long": "Име групе је предугачко",
     "group-already-exists": "Група већ постоји",

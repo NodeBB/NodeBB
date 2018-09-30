@@ -68,5 +68,6 @@
 	"alert.find-group": "Encontre um Grupo",
 	"alert.group-search": "Pesquise por um grupo aqui...",
 	"collapse-all": "Esconder todos",
-	"expand-all": "Expandir todos"
+	"expand-all": "Expandir todos",
+	"disable-on-create": "Disable on create"
 }

@@ -88,6 +88,7 @@
     "invalid-image-type": "Geçersiz resim uzantısı. Izin verilen uzantılar: %1",
     "invalid-image-extension": "Geçersiz resim uzantısı",
     "invalid-file-type": "Geçersiz dosya türü. İzin verilenler şunlar : %1",
+    "invalid-image-dimensions": "Resim boyutları çok büyük",
     "group-name-too-short": "Grup ismi çok kısa",
     "group-name-too-long": "Grup adı çok uzun",
     "group-already-exists": "Grup zaten var",

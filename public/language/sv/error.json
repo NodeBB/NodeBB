@@ -88,6 +88,7 @@
     "invalid-image-type": "Ogiltig bildtyp. Tillåtna typer är: %1",
     "invalid-image-extension": "Ogiltigt bildformat",
     "invalid-file-type": "Ogiltig filtyp. Tillåtna typer är: %1",
+    "invalid-image-dimensions": "Image dimensions are too big",
     "group-name-too-short": "Gruppnamnet är för kort",
     "group-name-too-long": "Gruppnamnet är för långt",
     "group-already-exists": "Gruppen existerar redan",

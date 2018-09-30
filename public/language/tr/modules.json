@@ -47,6 +47,7 @@
     "composer.formatting.italic": "İtalik",
     "composer.formatting.list": "Liste",
     "composer.formatting.strikethrough": "Üstüçizili",
+    "composer.formatting.code": "Kod",
     "composer.formatting.link": "Bağlantı",
     "composer.formatting.picture": "Görsel",
     "composer.upload-picture": "Görsel Yükle",

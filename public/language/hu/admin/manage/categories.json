@@ -68,5 +68,6 @@
 	"alert.find-group": "Csoport keresése",
 	"alert.group-search": "Itt megkereshetsz egy csoportot...",
 	"collapse-all": "Mind összecsukása",
-	"expand-all": "Mind kibontása"
+	"expand-all": "Mind kibontása",
+	"disable-on-create": "Disable on create"
 }

@@ -68,5 +68,6 @@
 	"alert.find-group": "グループを探す",
 	"alert.group-search": "ここでグループを検索する...",
 	"collapse-all": "Collapse All",
-	"expand-all": "Expand All"
+	"expand-all": "Expand All",
+	"disable-on-create": "Disable on create"
 }

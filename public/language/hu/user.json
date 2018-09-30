@@ -150,6 +150,7 @@
     "info.moderation-note": "Moderálási megjegyzés",
     "info.moderation-note.success": "Moderálási megjegyzés elmentve",
     "info.moderation-note.add": "Megjegyzés hozzáadása",
+    "sessions.description": "This page allows you to view any active sessions on this forum and revoke them if necessary. You can revoke your own session by logging out of your account.",
     "consent.title": "Jogaid &amp; hozzájárulásod",
     "consent.lead": "Ezen közösségi fórum összegyűjti és feldolgozza személyes információid.",
     "consent.intro": "Ezen információkat szigorúan csakis arra használjuk, hogy élményedet személyre szólóvá tegyük a közösségben, valamint hogy hozzászólásaidat társítsuk felhasználói fiókoddal. A regisztrációs lépés során egy felhasználónév és email cím megadására kértünk, a weboldalon nem kötelezően megadhatsz még további információkat is felhasználói profilod kiegészítéséhez.<br /><br />Ezen információkat fiókod létezéséig megőrizzük, fiókod törlésével ugyanakkor jóváhagyásodat bármikor visszavonhatod. Bármikor kérelmezhetsz másolatot a weboldalhoz való hozzájárulásodról a Jogok &amp; Jóváhagyás oldalon.<br /><br />Ha bármi kérdésed vagy gondod adódna, azt javasoljuk érd el a fórum adminisztratív csapatát.",

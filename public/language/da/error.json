@@ -88,6 +88,7 @@
     "invalid-image-type": "Invalid billed type. De tilladte typer er: %1",
     "invalid-image-extension": "Forkert billede filnavnsendelse",
     "invalid-file-type": "Invalid fil type. Tilladte typer er: %1",
+    "invalid-image-dimensions": "Image dimensions are too big",
     "group-name-too-short": "Gruppe navn for kort",
     "group-name-too-long": "Group name too long",
     "group-already-exists": "Gruppen eksisterer allerede",

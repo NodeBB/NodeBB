@@ -2,8 +2,8 @@
 	"notifications": "Paziņojumi",
 	"chat-messages": "Sarunas",
 	"play-sound": "Play",
-	"incoming-message": "Incoming Message",
-	"outgoing-message": "Outgoing Message",
+	"incoming-message": "Ienākošā ziņa",
+	"outgoing-message": "Izejošā ziņa",
 	"upload-new-sound": "Augšupielādēt jaunu skaņu",
 	"saved": "Iestatījumi saglabāti"
 }

@@ -93,7 +93,7 @@
 	"alerts.error-x": "<strong>Помилка</strong><p>%1</p>",
 	"alerts.create-success": "Користувача створено!",
 
-	"alerts.prompt-email": "Електронна пошта:",
+	"alerts.prompt-email": "Emails: ",
 	"alerts.email-sent-to": "Запрошення надіслано за адресою %1",
 	"alerts.x-users-found": "%1 користувач(ів) знайдено! Пошук тривав %2 мс."
 }

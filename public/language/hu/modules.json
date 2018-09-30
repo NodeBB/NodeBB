@@ -47,6 +47,7 @@
     "composer.formatting.italic": "Dőlt",
     "composer.formatting.list": "Felsorolás",
     "composer.formatting.strikethrough": "Áthúzás",
+    "composer.formatting.code": "Code",
     "composer.formatting.link": "Hivatkozás",
     "composer.formatting.picture": "Kép",
     "composer.upload-picture": "Kép feltöltése",

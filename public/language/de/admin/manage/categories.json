@@ -68,5 +68,6 @@
 	"alert.find-group": "Gruppe finden",
 	"alert.group-search": "Hier nach einer Gruppe suchen...",
 	"collapse-all": "Alle einklappen",
-	"expand-all": "Alle ausklappen"
+	"expand-all": "Alle ausklappen",
+	"disable-on-create": "Disable on create"
 }

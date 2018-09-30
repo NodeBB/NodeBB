@@ -88,6 +88,7 @@
     "invalid-image-type": "Jenis imej tak sah. Jenis yang dibenarkan ialah: %1",
     "invalid-image-extension": "Sambungan imej tak sah",
     "invalid-file-type": "Jenis fail tak sah. Jenis fail yang dibenarkan ialah: %1",
+    "invalid-image-dimensions": "Image dimensions are too big",
     "group-name-too-short": "Nama kumpulan terlalu pendek",
     "group-name-too-long": "Group name too long",
     "group-already-exists": "Kumpulan telah wujud",

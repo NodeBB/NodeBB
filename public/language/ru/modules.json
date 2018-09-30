@@ -47,6 +47,7 @@
     "composer.formatting.italic": "Курсив",
     "composer.formatting.list": "Список",
     "composer.formatting.strikethrough": "Зачеркнуть",
+    "composer.formatting.code": "Code",
     "composer.formatting.link": "Ссылка",
     "composer.formatting.picture": "Изображение",
     "composer.upload-picture": "Загрузить изображение",

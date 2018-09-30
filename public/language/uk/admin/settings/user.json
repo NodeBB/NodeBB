@@ -1,6 +1,5 @@
 {
 	"authentication": "Аутентифікація",
-	"allow-local-login": "Дозволити локальний вхід",
 	"require-email-confirmation": "Вимагати підтвердження електронної пошти",
 	"email-confirm-interval": "Користувач не може повторно надіслати підтвердження електронної пошти поки не мине",
 	"email-confirm-email2": "хвилин",
