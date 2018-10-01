@@ -52,8 +52,8 @@
     "membership.leave-group": "Atstāt grupu",
     "membership.reject": "Noraidīt",
     "new-group.group_name": "Grupas nosaukums",
-    "upload-group-cover": "Augšupielādēt grupas vāka bildi",
+    "upload-group-cover": "Augšupielādēt grupas galvenes bildi",
     "bulk-invite-instructions": "Ievadi sarakstu ar lietotājvārdiem, atdalītajiem ar komatu, kurus uzaicināt uz šo grupu",
     "bulk-invite": "Lielapjoma uzaicinājums",
-    "remove_group_cover_confirm": "Vai tiešām vēlies noņemt vāka bildi?"
+    "remove_group_cover_confirm": "Vai tiešām vēlies noņemt galvenes bildi?"
 }

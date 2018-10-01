@@ -6,7 +6,7 @@
 	"allow-login-with": "Allow login with",
 	"allow-login-with.username-email": "Lietotājvārds vai e-pasta adrese",
 	"allow-login-with.username": "Username Only",
-	"allow-login-with.email": "Tikai e-pasti",
+	"allow-login-with.email": "E-pasts",
 	"account-settings": "Kontu iestatījumi",
 	"disable-username-changes": "Atspējot lietotājvārda izmaiņas",
 	"disable-email-changes": "Atspējot e-pasta adreses izmaiņas",
@@ -61,6 +61,6 @@
 	"email-chat-notifs": "Sūtīt e-pastu, ja ierodas jauna saruna un es neesmu tiešsaistē",
 	"email-post-notif": "Sūtīt e-pastu, kad kāds atbild uz tēmatiem, kurus esmu abonējis",
 	"follow-created-topics": "Sekot tēmatiem, kurus Tu izveido",
-	"follow-replied-topics": "Sekot tēmatiem, uz kuriem Tu atbildi",
+	"follow-replied-topics": "Sekot tēmatiem, kuros esi atbildējis",
 	"default-notification-settings": "Default notification settings"
 }

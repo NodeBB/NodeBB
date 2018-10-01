@@ -1,6 +1,6 @@
 {
     "latest_users": "Jaunākie lietotāji",
-    "top_posters": "Populārākie publicētāji",
+    "top_posters": "Visvairāk ziņu",
     "most_reputation": "Visvairāk ranga punktu",
     "most_flags": "Visvairāk atzīmju",
     "search": "Meklēt",
@@ -10,7 +10,7 @@
     "filter-by": "Filtrēt pēc",
     "online-only": "Tikai tiešsaistē",
     "invite": "Uzaicināt",
-    "prompt-email": "E-pasti:",
+    "prompt-email": "E-pasta adreses:",
     "invitation-email-sent": "Uzaicinājuma e-pasta ir nosūtīts %1",
     "user_list": "Lietotāju saraksts",
     "recent_topics": "Nesenie temati",

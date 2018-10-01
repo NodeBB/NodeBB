@@ -20,7 +20,7 @@
 	"pills.latest": "Latest Users",
 	"pills.unvalidated": "Not Validated",
 	"pills.no-posts": "No Posts",
-	"pills.top-posters": "Top Posters",
+	"pills.top-posters": "Visvairāk ziņu",
 	"pills.top-rep": "Visvairāk ranga punktu",
 	"pills.inactive": "Inactive",
 	"pills.flagged": "Visvairāk atzīmēto",
@@ -81,7 +81,7 @@
 	"alerts.confirm-remove-moderator": "Vai tiešām vēlies noņemt šo moderatoru?",
 	"alerts.remove-moderator-success": "User is no longer moderator.",
 	"alerts.confirm-validate-email": "Do you want to validate email(s) of these user(s)?",
-	"alerts.validate-email-success": "Emails validated",
+	"alerts.validate-email-success": "E-pasti ir apstiprināti",
 	"alerts.password-reset-confirm": "Vai vēlies nosūtīt paroles atiestatīšanas e-pastu(-s) šim(-iem) lietotājam(-iem)?",
 	"alerts.confirm-delete": "<b>Warning!</b><br/>Do you really want to delete user(s)?<br/> This action is not reversable! Only the user account will be deleted, their posts and topics will remain.",
 	"alerts.delete-success": "Lietotājs(-i) izdzēsts(-i)!",
@@ -93,7 +93,7 @@
 	"alerts.error-x": "<strong>Error</strong><p>%1</p>",
 	"alerts.create-success": "Lietotājs izveidots!",
 
-	"alerts.prompt-email": "Emails: ",
+	"alerts.prompt-email": "E-pasta adreses:",
 	"alerts.email-sent-to": "Uzaicinājuma e-pasta ir nosūtīts %1",
 	"alerts.x-users-found": "Atrasts %1 lietotājs(-i)! Meklēšana ilga 20 ms."
 }

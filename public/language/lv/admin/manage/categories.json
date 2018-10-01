@@ -16,7 +16,7 @@
 	"category-image": "Kategorijas bilde",
 	"parent-category": "Parent Category",
 	"optional-parent-category": "(Optional) Parent Category",
-	"parent-category-none": "(None)",
+	"parent-category-none": "(Nav)",
 	"copy-settings": "Kopēt iestatījumus no",
 	"optional-clone-settings": "(Optional) Clone Settings From Category",
 	"clone-children": "Clone Children Categories And Settings",

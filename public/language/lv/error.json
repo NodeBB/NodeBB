@@ -130,7 +130,7 @@
     "not-enough-reputation-min-rep-aboutme": "Tev nepietiek ranga punktu, lai pievienot 'par mani' rakstu",
     "not-enough-reputation-min-rep-signature": "Tev nepietiek ranga punktu, lai pievienot parakstu",
     "not-enough-reputation-min-rep-profile-picture": "Tev nepietiek ranga punktu, lai pievienot  profila bildi",
-    "not-enough-reputation-min-rep-cover-picture": "Tev nepietiek ranga punktu, lai pievienot vāka bildi",
+    "not-enough-reputation-min-rep-cover-picture": "Tev nepietiek ranga punktu, lai pievienot galvenes bildi",
     "already-flagged": "Tu jau paziņoji par šo ziņu",
     "self-vote": "Tu nevari balsot pats par savu ziņu",
     "reload-failed": "NodeBB radās problēma pārlādēšanas laikā: \"%1\". NodeBB turpinās apkalpot esošos klienta puses failus, lai gan Tev būtu jāatceļ tas, ko Tu veici tieši pirms pārlādēšanas.",

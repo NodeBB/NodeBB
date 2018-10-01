@@ -46,8 +46,8 @@
     "composer.formatting.bold": "Treknrakstā",
     "composer.formatting.italic": "Slīprakstā",
     "composer.formatting.list": "Saraksts",
-    "composer.formatting.strikethrough": "Svītrots",
-    "composer.formatting.code": "Kods",
+    "composer.formatting.strikethrough": "Svītrotā rakstā",
+    "composer.formatting.code": "Koda gabals",
     "composer.formatting.link": "Saite",
     "composer.formatting.picture": "Bilde",
     "composer.upload-picture": "Augšupielādēt bildi",
@@ -57,7 +57,7 @@
     "bootbox.ok": "Labi",
     "bootbox.cancel": "Atcelt",
     "bootbox.confirm": "Apstiprināt",
-    "cover.dragging_title": "Novietot vāka bildi",
-    "cover.dragging_message": "Velc vāka bildi vēlamajā vietā un noklikšķini uz Saglabāt.\n",
-    "cover.saved": "Vāka bilde un vieta saglabāta"
+    "cover.dragging_title": "Novietot galvenes bildi",
+    "cover.dragging_message": "Velc galvenes bildi vēlamajā vietā un noklikšķini uz \"Saglabāt\"",
+    "cover.saved": "Galvenes bilde un vieta saglabāta"
 }

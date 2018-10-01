@@ -31,6 +31,6 @@
 	"max-cover-image-size-help": "(in kibibytes, default: 2,048 KiB)",
 	"keep-all-user-images": "Saglabāt serverī avataru un profila vāku vecās versijas",
 	"profile-covers": "Profilu vāki",
-	"default-covers": "Noklusējama vāka bildes",
+	"default-covers": "Noklusējama galvenes bildes",
 	"default-covers-help": "Add comma-separated default cover images for accounts that don't have an uploaded cover image"
 }

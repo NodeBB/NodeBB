@@ -6,9 +6,9 @@
 	"thresholds": "Activity Thresholds",
 	"min-rep-downvote": "Minimālie ranga punkti, lai balsotu pret ziņām",
 	"min-rep-flag": "Minimālie ranga punkti, lai atzīmēt ziņas",
-	"min-rep-website": "Minimālie ranga punkti, lai lietotāja profilma pievienotu \"Mājaslapu\"",
-	"min-rep-aboutme": "Minimālie ranga punkti, lai lietotāja profilma pievienotu \"Par mani\"",
-	"min-rep-signature": "Minimālie ranga punkti, lai lietotāja profilma pievienotu \"Parakstu\"",
-	"min-rep-profile-picture": "Minimālie ranga punkti, lai lietotāja profilma pievienotu \"Profila bildi\"",
-	"min-rep-cover-picture": "Minimālie ranga punkti, lai lietotāja profilma pievienotu \"Vāka bildi\""
+	"min-rep-website": "Minimālie ranga punkti, lai lietotāja profilam pievienotu \"Mājaslapu\"",
+	"min-rep-aboutme": "Minimālie ranga punkti, lai lietotāja profilam pievienotu \"Par mani\"",
+	"min-rep-signature": "Minimālie ranga punkti, lai lietotāja profilam pievienotu \"Parakstu\"",
+	"min-rep-profile-picture": "Minimālie ranga punkti, lai lietotāja profilam pievienotu \"Profila bildi\"",
+	"min-rep-cover-picture": "Minimālie ranga punkti, lai lietotāja profilam pievienotu \"Galvenes bildi\""
 }
