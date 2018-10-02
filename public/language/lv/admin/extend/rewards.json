@@ -1,17 +1,17 @@
 {
-	"rewards": "Rewards",
-	"condition-if-users": "If User's",
-	"condition-is": "Is:",
-	"condition-then": "Then:",
-	"max-claims": "Amount of times reward is claimable",
-	"zero-infinite": "Enter 0 for infinite",
+	"rewards": "Balvas",
+	"condition-if-users": "Ja lietotāja",
+	"condition-is": "Ir:",
+	"condition-then": "Tad:",
+	"max-claims": "Cik reižu balva ir pieprasāma",
+	"zero-infinite": "Ievadīt 0, lai nebūtu gala",
 	"delete": "Izdzēst",
-	"enable": "Enable",
+	"enable": "Iespējot",
 	"disable": "Disable",
-	"control-panel": "Rewards Control",
-	"new-reward": "New Reward",
+	"control-panel": "Balvu vadības panelis",
+	"new-reward": "Jauna balva",
 
-	"alert.delete-success": "Veiksmīgi izdzēsts atalgojums",
-	"alert.no-inputs-found": "Illegal reward - no inputs found!",
-	"alert.save-success": "Veiksmīgi saglabāts atalgojums"
+	"alert.delete-success": "Veiksmīgi izdzēsta balva",
+	"alert.no-inputs-found": "Nederīga balva - nav ievažu!",
+	"alert.save-success": "Veiksmīgi saglabāta balva"
 }

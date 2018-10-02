@@ -1,10 +1,10 @@
 {
-	"pagination": "Numerācijas iestatījumi",
-	"enable": "Paginate topics and posts instead of using infinite scroll.",
-	"topics": "Tematu numerācija",
-	"posts-per-page": "Ziņas vienā lappusē",
-	"max-posts-per-page": "Maksimālais ziņu skaits vienā lappusē",
-	"categories": "Kategoriju numerācija",
-	"topics-per-page": "Temati vienā lappusē",
-	"max-topics-per-page": "Maksimālais tematu skaits vienā lappusē"
+	"pagination": "Dalīšana pa lapām",
+	"enable": "Dalīt tematus un rakstus pa lapām bezgalīgas ritināšanas vietā.",
+	"topics": "Tematu dalīšana pa lapām",
+	"posts-per-page": "Rakstu skaits lapā",
+	"max-posts-per-page": "Maksimālais rakstu skaits lapā",
+	"categories": "Kategoriju dalīšana pa lapām",
+	"topics-per-page": "Tematu skaits lapā",
+	"max-topics-per-page": "Maksimālais tematu skaits lapā"
 }

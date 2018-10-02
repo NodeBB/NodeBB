@@ -1,9 +1,9 @@
 {
-	"lead": "Iestatīt savu IP adrešu melno sarakstu šeit.",
+	"lead": "Iestatīt IP adrešu melno sarakstu šeit.",
 	"description": "Reizēm lietotāja konta bloķēšana nav pietiekošs preventīvs līdzeklis. Citā gadījumā labākais veids, kā aizsargāt forumu, ir ierobežot piekļuvi forumam konkrētai IP adresei vai vairākām IP adresēm. Šajos scenārijos varat ievietot traucējošas IP adreses vai visus CIDR blokus šajā melnajā sarakstā, un no viņām neļaus ielogoties vai reģistrēt jaunu kontu.",
 	"active-rules": "Active Rules",
 	"validate": "Apstiprināt melno sarakstu",
-	"apply": "Apply Blacklist",
+	"apply": "Izmantot melno sarakstu",
 	"hints": "Syntax Hints",
 	"hint-1": "Define a single IP addresses per line. You can add IP blocks as long as they follow the CIDR format (e.g. <code>192.168.100.0/22</code>).",
 	"hint-2": "You can add in comments by starting lines with the <code>#</code> symbol.",
@@ -11,9 +11,9 @@
 	"validate.x-valid": "<strong>%1</strong> out of <strong>%2</strong> rule(s) valid.",
 	"validate.x-invalid": "Šie <strong>%1</strong> noteikumi nav derīgi:",
 
-	"alerts.applied-success": "Blacklist Applied",
+	"alerts.applied-success": "Melnais saraksts izmantots",
 
-	"analytics.blacklist-hourly": "<strong>Figure 1</strong> &ndash; Blacklist hits per hour",
-	"analytics.blacklist-daily": "<strong>Figure 2</strong> &ndash; Blacklist hits per day",
+	"analytics.blacklist-hourly": "<strong>Attēls 1</strong> &ndash; Melnā saraksta trāpījumi stundā",
+	"analytics.blacklist-daily": "<strong>Attēls 2</strong> &ndash; Melnā saraksta trāpījumi dienā",
 	"ip-banned": "IP adrese bloķēta"
 }

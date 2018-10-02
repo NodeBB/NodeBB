@@ -1,6 +1,6 @@
 {
 	"home-page": "Sākumlapa",
-	"description": "Choose what page is shown when users navigate to the root URL of your forum.",
+	"description": "Izvēlies, kāda lapa tiek rādīta, kad lietotāji izvēlas foruma saknes URL.",
 	"home-page-route": "Sākumlapas ceļš",
 	"custom-route": "Pielāgots ceļš",
 	"allow-user-home-pages": "Atļaut lietotāju mājaslapas",

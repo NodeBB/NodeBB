@@ -8,9 +8,9 @@
 	"containers.none": "Nav",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
-	"container.panel": "Panel",
-	"container.panel-header": "Panel Header",
-	"container.panel-body": "Panel Body",
+	"container.panel": "Panelis",
+	"container.panel-header": "Paneļa galvene",
+	"container.panel-body": "Paneļa korpuss",
 	"container.alert": "Alert",
 
 	"alert.confirm-delete": "Vai tiešām vēlies izdzēst šo logrīku?",

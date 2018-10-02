@@ -7,7 +7,7 @@
 	"text-class": "Text Class: <small>optional</small>",
 	"id": "ID: <small>optional</small>",
 
-	"properties": "Properties:",
+	"properties": "Īpašības:",
 	"only-admins": "Only display to Admins",
 	"only-global-mods-and-admins": "Only display to Global Moderators and Admins",
 	"only-logged-in": "Rādīt tikai ielogojušiem lietotājiem",
@@ -16,10 +16,10 @@
 
 	"btn.delete": "Izdzēst",
 	"btn.disable": "Disable",
-	"btn.enable": "Enable",
+	"btn.enable": "Iespējot",
 
 	"available-menu-items": "Available Menu Items",
 	"custom-route": "Pielāgots ceļš",
 	"core": "core",
-	"plugin": "plugin"
+	"plugin": "spraudnis"
 }

@@ -1,11 +1,11 @@
 {
-	"eu-consent": "EU Consent",
-	"consent.enabled": "Enabled",
+	"eu-consent": "ES piekrišana",
+	"consent.enabled": "Iespējots",
 	"consent.message": "Notifikācija",
 	"consent.acceptance": "Pieņemšanas ziņojums",
 	"consent.link-text": "Policy Link Text",
 	"consent.blank-localised-default": "Leave blank to use NodeBB localised defaults",
 	"settings": "Iestatījumi",
 	"cookie-domain": "Savienojuma sīkfailu domēns",
-	"blank-default": "Leave blank for default"
+	"blank-default": "Atstāt tukšu, lai izvēlētos pēc noklusējuma"
 }

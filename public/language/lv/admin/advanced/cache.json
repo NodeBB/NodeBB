@@ -1,11 +1,11 @@
 {
 	"post-cache": "Post Cache",
 	"posts-in-cache": "Posts in Cache",
-	"average-post-size": "Vidējais ziņu lielums",
+	"average-post-size": "Vidējais rakstu garums",
 	"length-to-max": "Length / Max",
 	"percent-full": "%1% Full",
 	"post-cache-size": "Post Cache Size",
 	"items-in-cache": "Items in Cache",
-	"control-panel": "Control Panel",
+	"control-panel": "Vadības panelis",
 	"update-settings": "Update Cache Settings"
 }

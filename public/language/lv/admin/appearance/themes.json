@@ -4,7 +4,7 @@
     "select-theme": "Atlasīt tēmu",
     "current-theme": "Pašreizējā tēma",
     "no-themes": "Nav instalēto tēmu",
-    "revert-confirm": "Are you sure you wish to restore the default NodeBB theme?",
+    "revert-confirm": "Vai tiešām vēlies atjaunot noklusējamo NodeBB tēmu?",
     "theme-changed": "Tēma ir mainīta",
     "revert-success": "You have successfully reverted your NodeBB back to it's default theme.",
     "restart-to-activate": "Please rebuild and restart your NodeBB to fully activate this theme."

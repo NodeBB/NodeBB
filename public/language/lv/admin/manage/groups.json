@@ -1,12 +1,12 @@
 {
 	"name": "Group Name",
 	"description": "Group Description",
-	"member-count": "Member Count",
+	"member-count": "Biedru skaits",
 	"system": "System Group",
 	"edit": "Rediģēt",
 	"search-placeholder": "Meklēt",
 	"create": "Izveidot grupu",
-	"description-placeholder": "A short description about your group",
+	"description-placeholder": "Īss grupas apraksts",
 	"create-button": "Izveidot",
 
 	"alerts.create-failure": "<strong>Uh-Oh</strong><p>There was a problem creating your group. Please try again later!</p>",
@@ -14,7 +14,7 @@
 
 	"edit.name": "Name",
 	"edit.description": "Description",
-	"edit.user-title": "Title of Members",
+	"edit.user-title": "Biedru virsraksts",
 	"edit.icon": "Group Icon",
 	"edit.label-color": "Group Label Color",
 	"edit.show-badge": "Rādīt nozīmīti",
@@ -25,8 +25,8 @@
 	"edit.hidden-details": "Ja ir iespējota, šī grupa nebūs redzama grupu sarakstā un lietotāji būs jāuzaicina pašrocīgi",
 	"edit.add-user": "Add User to Group",
 	"edit.add-user-search": "Meklēt lietotājus",
-	"edit.members": "Member List",
-	"control-panel": "Groups Control Panel",
+	"edit.members": "Biedru saraksts",
+	"control-panel": "Grupu vadības panelis",
 	"revert": "Revert",
 
 	"edit.no-users-found": "Nav lietotāju",

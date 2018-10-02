@@ -1,10 +1,10 @@
 {
     "latest_users": "Jaunākie lietotāji",
-    "top_posters": "Visvairāk ziņu",
+    "top_posters": "Visvairāk rakstu",
     "most_reputation": "Visvairāk ranga punktu",
     "most_flags": "Visvairāk atzīmju",
     "search": "Meklēt",
-    "enter_username": "Ievadi meklējamo lietotājvārdu",
+    "enter_username": "Meklējamais lietotājvārds",
     "load_more": "Ielādēt vairāk",
     "users-found-search-took": "Atrasti %1 lietotājs(-i)! Meklēšana ilga %2 sekundes.",
     "filter-by": "Filtrēt pēc",

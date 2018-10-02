@@ -1,9 +1,9 @@
 {
 	"notifications": "Paziņojumi",
 	"chat-messages": "Sarunas",
-	"play-sound": "Play",
-	"incoming-message": "Ienākošā ziņa",
-	"outgoing-message": "Izejošā ziņa",
+	"play-sound": "Spēlēt",
+	"incoming-message": "Ienākošs raksts",
+	"outgoing-message": "Izejošs raksts",
 	"upload-new-sound": "Augšupielādēt jaunu skaņu",
 	"saved": "Iestatījumi saglabāti"
 }

@@ -1,9 +1,9 @@
 {
-	"loading": "Loading Skins...",
+	"loading": "Ielādē ādiņas...",
 	"homepage": "Sākumlapa",
-	"select-skin": "Select Skin",
-	"current-skin": "Current Skin",
-	"skin-updated": "Skin Updated",
-	"applied-success": "%1 skin was succesfully applied",
-	"revert-success": "Skin reverted to base colours"
+	"select-skin": "Izvēlēties ādiņu",
+	"current-skin": "Pašreizējā ādiņa",
+	"skin-updated": "Ādiņa atjaunināta",
+	"applied-success": "%1 ādiņa veiksmīgi izmantota",
+	"revert-success": "Ādiņa atgriezta pamata krāsās"
 }

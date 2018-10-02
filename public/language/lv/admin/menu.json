@@ -14,7 +14,7 @@
 	"manage/users": "Users",
 	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "Reģistrāciju rinda",
-	"manage/post-queue": "Ziņu rinda",
+	"manage/post-queue": "Rakstu apstiprināšanas rinda",
 	"manage/groups": "Groups",
 	"manage/ip-blacklist": "IP adrešu melnais saraksts",
 	"manage/uploads": "Augšupielādes",
@@ -41,23 +41,23 @@
 
 	"section-appearance": "Appearance",
 	"appearance/themes": "Themes",
-	"appearance/skins": "Skins",
+	"appearance/skins": "Ādiņas",
 	"appearance/customise": "Pielāgotais saturs (HTML/JS/CSS)",
 
 	"section-extend": "Extend",
-	"extend/plugins": "Plugins",
+	"extend/plugins": "Spraudņi",
 	"extend/widgets": "Widgets",
-	"extend/rewards": "Rewards",
+	"extend/rewards": "Balvas",
 
 	"section-social-auth": "Social Authentication",
 
-	"section-plugins": "Plugins",
-	"extend/plugins.install": "Install Plugins",
+	"section-plugins": "Spraudņi",
+	"extend/plugins.install": "Instalēt spraudņus",
 
 	"section-advanced": "Advanced",
-	"advanced/database": "Database",
-	"advanced/events": "Events",
-	"advanced/logs": "Žurnāli",
+	"advanced/database": "Datu bāze",
+	"advanced/events": "Notikumi",
+	"advanced/logs": "Žurnāls",
 	"advanced/errors": "Errors",
 	"advanced/cache": "Cache",
 	"development/logger": "Logger",
@@ -74,7 +74,7 @@
 	"search.keep-typing": "Type more to see results...",
 	"search.start-typing": "Start typing to see results...",
 
-	"connection-lost": "Connection to %1 has been lost, attempting to reconnect...",
+	"connection-lost": "Savienojums ar %1 ir pārtraukts, mēģina no jauna savienoties...",
 
 	"alerts.version": "Running <strong>NodeBB v%1</strong>",
 	"alerts.upgrade": "Upgrade to v%1"
