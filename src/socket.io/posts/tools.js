@@ -108,6 +108,7 @@ module.exports = function (SocketPosts) {
 					type: 'post-delete',
 					uid: socket.uid,
 					pid: data.pid,
+					tid: postData.tid,
 					ip: socket.ip,
 				});
 
@@ -143,6 +144,7 @@ module.exports = function (SocketPosts) {
 					type: 'post-restore',
 					uid: socket.uid,
 					pid: data.pid,
+					tid: postData.tid,
 					ip: socket.ip,
 				});
 
