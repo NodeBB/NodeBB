@@ -18,8 +18,8 @@
     "posting_restriction_info": "Publicar está neste momento restrito a membros registados, clica aqui para efetuares o login.",
     "welcome_back": "Bem-vindo de volta",
     "you_have_successfully_logged_in": "Realizaste o login com sucesso",
-    "save_changes": "Salvar as alterações",
-    "save": "Salvar",
+    "save_changes": "Guardar as alterações",
+    "save": "Guardar",
     "close": "Fechar",
     "pagination": "Paginação",
     "pagination.out_of": "%1 de %2",
@@ -100,14 +100,14 @@
     "upload": "Carregar",
     "uploads": "Uploads",
     "allowed-file-types": "Os tipos de ficheiro permitidos são %1",
-    "unsaved-changes": "Tens alterações por salvar. Tens a certeza que pretendes mudar de página?",
+    "unsaved-changes": "Tens alterações por guardar. Tens a certeza que pretendes mudar de página?",
     "reconnecting-message": "Parece que a tua conexão com %1 foi perdida. Por favor, espera enquanto tentamos reconectar-te.",
-    "play": "Jogar",
+    "play": "Reproduzir",
     "cookies.message": "Este website utiliza cookies para assegurar que tens a melhor experiência no nosso website.",
     "cookies.accept": "Apontado!",
     "cookies.learn_more": "Aprende mais",
     "edited": "Edited",
     "disabled": "Disabled",
     "select": "Select",
-    "user-search-prompt": "Type something here to find users..."
+    "user-search-prompt": "Digita algo aqui para encontrar utilizadores..."
 }

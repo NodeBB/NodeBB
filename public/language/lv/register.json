@@ -2,7 +2,7 @@
     "register": "Reģistrēties",
     "cancel_registration": "Atcelt reģistrācijas pieteikumu",
     "help.email": "Pēc noklusējuma Tava e-pasta adrese nebūs redzama ārpus NodeBB.",
-    "help.username_restrictions": "Unikāls lietotājvārds starp %1 un %2 rakstzīmēm. Citi var pieminēt Tevi ar @<span id='yourUsername'>lietotājvārds</span>.",
+    "help.username_restrictions": "Unikāls lietotājvārds starp %1 un %2 rakstzīmēm. Citi var pieminēt Tevi izmantojot @<span id='yourUsername'>lietotājvārds</span>.",
     "help.minimum_password_length": "Tavas paroles garumam jābūt vismaz %1 rakstzīmēm.",
     "email_address": "E-pasta adrese",
     "email_address_placeholder": "Ievadīt e-pasta adresi",

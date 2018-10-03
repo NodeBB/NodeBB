@@ -5,7 +5,7 @@
 	"enable-http": "Iespējot HTTP žurnālu",
 	"enable-socket": "Iespējot socket.io notikumu žurnālu",
 	"file-path": "Ceļš uz žurnāla failu",
-	"file-path-placeholder": "/ceļš/uz/žurnāla/failu.log ::: atstāt tukšu, lai izmantotu terminālu",
+	"file-path-placeholder": "/ceļš/uz/žurnāla/failu.log ::: atstāt tukšu, lai rakstītu terminālī",
 
 	"control-panel": "Žurnāla vadības panelis",
 	"update-settings": "Atjaunināt žurnāla iestatījumus"

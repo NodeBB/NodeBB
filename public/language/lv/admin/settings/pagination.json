@@ -1,6 +1,6 @@
 {
 	"pagination": "Dalīšana pa lapām",
-	"enable": "Dalīt tematus un rakstus pa lapām bezgalīgas ritināšanas vietā.",
+	"enable": "Dalīt tematus un rakstus pa lapām un neritināt bezgalīgi.",
 	"topics": "Tematu dalīšana pa lapām",
 	"posts-per-page": "Rakstu skaits lapā",
 	"max-posts-per-page": "Maksimālais rakstu skaits lapā",

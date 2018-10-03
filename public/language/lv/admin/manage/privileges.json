@@ -22,8 +22,8 @@
 	"view-edit-history": "Iespējot rediģēšanas vēsturi",
 	"delete-posts": "Izdzēst rakstus",
 	"view_deleted": "Skatīt izdzēstos rakstus",
-	"upvote-posts": "Raksti, kuriem ir balsis par",
-	"downvote-posts": "Raksti, kuriem ir balsis pret",
+	"upvote-posts": "Raksti, kuriem ir balsis \"par\"",
+	"downvote-posts": "Raksti, kuriem ir balsis \"pret\"",
 	"delete-topics": "Izdzēst tematus",
 	"purge": "Purge",
 	"moderate": "Moderate"

@@ -21,7 +21,7 @@
 	"edit.private-details": "If enabled, joining of groups requires approval from a group owner.",
 	"edit.private-override": "Warning: Private groups is disabled at system level, which overrides this option.",
 	"edit.disable-requests": "Disable join requests",
-	"edit.hidden": "Paslēpts",
+	"edit.hidden": "Paslēpta",
 	"edit.hidden-details": "Ja ir iespējota, šī grupa nebūs redzama grupu sarakstā un lietotāji būs jāuzaicina pašrocīgi",
 	"edit.add-user": "Add User to Group",
 	"edit.add-user-search": "Meklēt lietotājus",
