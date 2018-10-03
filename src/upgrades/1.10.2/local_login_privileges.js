@@ -6,7 +6,7 @@ module.exports = {
 	method: function (callback) {
 		var meta = require('../../meta');
 		var privileges = require('../../privileges');
-		var allowLocalLogin = parseInt(meta.config.allowLocalLogin, 10) === 1;
+		var allowLocalLogin = parseInt(meta.config.allowLocalLogin, 10) !== 0;
 
 		if (allowLocalLogin) {
 			privileges.global.give(['local:login'], 'registered-users', callback);
