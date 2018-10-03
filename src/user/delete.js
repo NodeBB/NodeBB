@@ -15,12 +15,20 @@ var batch = require('../batch');
 var file = require('../file');
 
 module.exports = function (User) {
+	var deletesInProgress = {};
+
 	User.delete = function (callerUid, uid, callback) {
 		if (!parseInt(uid, 10)) {
-			return callback(new Error('[[error:invalid-uid]]'));
+			return setImmediate(callback, new Error('[[error:invalid-uid]]'));
 		}
-
+		if (deletesInProgress[uid]) {
+			return setImmediate(callback);
+		}
+		deletesInProgress[uid] = 'user.delete';
 		async.waterfall([
+			function (next) {
+				removeFromSortedSets(uid, next);
+			},
 			function (next) {
 				deletePosts(callerUid, uid, next);
 			},
@@ -67,14 +75,38 @@ module.exports = function (User) {
 		}, { alwaysStartAt: 0 }, callback);
 	}
 
+	function removeFromSortedSets(uid, callback) {
+		db.sortedSetsRemove([
+			'users:joindate',
+			'users:postcount',
+			'users:reputation',
+			'users:banned',
+			'users:banned:expire',
+			'users:flags',
+			'users:online',
+			'users:notvalidated',
+			'digest:day:uids',
+			'digest:week:uids',
+			'digest:month:uids',
+		], uid, callback);
+	}
+
 	User.deleteAccount = function (uid, callback) {
+		if (deletesInProgress[uid] === 'user.deleteAccount') {
+			return setImmediate(callback);
+		}
+		deletesInProgress[uid] = 'user.deleteAccount';
 		var userData;
 		async.waterfall([
+			function (next) {
+				removeFromSortedSets(uid, next);
+			},
 			function (next) {
 				db.getObject('user:' + uid, next);
 			},
 			function (_userData, next) {
 				if (!_userData || !_userData.username) {
+					delete deletesInProgress[uid];
 					return callback();
 				}
 				userData = _userData;
@@ -114,20 +146,6 @@ module.exports = function (User) {
 						}
 					},
 					function (next) {
-						db.sortedSetsRemove([
-							'users:joindate',
-							'users:postcount',
-							'users:reputation',
-							'users:banned',
-							'users:banned:expire',
-							'users:online',
-							'users:notvalidated',
-							'digest:day:uids',
-							'digest:week:uids',
-							'digest:month:uids',
-						], uid, next);
-					},
-					function (next) {
 						db.decrObjectField('global', 'userCount', next);
 					},
 					function (next) {
@@ -164,7 +182,10 @@ module.exports = function (User) {
 			function (results, next) {
 				db.deleteAll(['followers:' + uid, 'following:' + uid, 'user:' + uid], next);
 			},
-		], callback);
+		], function (err) {
+			delete deletesInProgress[uid];
+			callback(err);
+		});
 	};
 
 	function deleteVotes(uid, callback) {

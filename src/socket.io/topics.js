@@ -2,7 +2,6 @@
 
 var async = require('async');
 
-var db = require('../database');
 var topics = require('../topics');
 var posts = require('../posts');
 var websockets = require('./index');
@@ -73,22 +72,7 @@ SocketTopics.postcount = function (socket, tid, callback) {
 				return next(new Error('[[no-privileges]]'));
 			}
 
-			async.parallel({
-				replyCount: function (next) {
-					db.sortedSetCard('tid:' + tid + ':posts', next);
-				},
-				topicData: function (next) {
-					topics.getTopicFields(tid, ['mainPid', 'postcount'], next);
-				},
-			}, next);
-		},
-		function (results, next) {
-			if (results.topicData.mainPid && parseInt(results.topicData.postcount, 10) === parseInt(results.replyCount, 10) + 1) {
-				return next(null, results.topicData.postcount);
-			}
-			var postcount = results.replyCount + (results.topicData.mainPid ? 1 : 0);
-			topics.setTopicField(tid, 'postcount', postcount);
-			next(null, postcount);
+			topics.getTopicField(tid, 'postcount', next);
 		},
 	], callback);
 };

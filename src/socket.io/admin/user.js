@@ -2,6 +2,7 @@
 
 var async = require('async');
 var validator = require('validator');
+var winston = require('winston');
 
 var db = require('../../database');
 var groups = require('../../groups');
@@ -146,37 +147,46 @@ function deleteUsers(socket, uids, method, callback) {
 	if (!Array.isArray(uids)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
+	async.waterfall([
+		function (next) {
+			groups.isMembers(uids, 'administrators', next);
+		},
+		function (isMembers, next) {
+			if (isMembers.includes(true)) {
+				return callback(new Error('[[error:cant-delete-other-admins]]'));
+			}
 
-	async.each(uids, function (uid, next) {
-		async.waterfall([
-			function (next) {
-				user.isAdministrator(uid, next);
-			},
-			function (isAdmin, next) {
-				if (isAdmin) {
-					return next(new Error('[[error:cant-delete-other-admins]]'));
-				}
+			callback();
 
-				method(uid, next);
-			},
-			function (next) {
-				events.log({
-					type: 'user-delete',
-					uid: socket.uid,
-					targetUid: uid,
-					ip: socket.ip,
-				}, next);
-			},
-			function (next) {
-				plugins.fireHook('action:user.delete', {
-					callerUid: socket.uid,
-					uid: uid,
-					ip: socket.ip,
-				});
-				next();
-			},
-		], next);
-	}, callback);
+			async.each(uids, function (uid, next) {
+				async.waterfall([
+					function (next) {
+						method(uid, next);
+					},
+					function (next) {
+						events.log({
+							type: 'user-delete',
+							uid: socket.uid,
+							targetUid: uid,
+							ip: socket.ip,
+						}, next);
+					},
+					function (next) {
+						plugins.fireHook('action:user.delete', {
+							callerUid: socket.uid,
+							uid: uid,
+							ip: socket.ip,
+						});
+						next();
+					},
+				], next);
+			}, next);
+		},
+	], function (err) {
+		if (err) {
+			winston.error(err);
+		}
+	});
 }
 
 User.search = function (socket, data, callback) {

@@ -198,11 +198,13 @@ describe('socket.io', function () {
 		it('should delete users', function (done) {
 			socketAdmin.user.deleteUsers({ uid: adminUid }, [uid], function (err) {
 				assert.ifError(err);
-				groups.isMember(uid, 'registered-users', function (err, isMember) {
-					assert.ifError(err);
-					assert(!isMember);
-					done();
-				});
+				setTimeout(function () {
+					groups.isMember(uid, 'registered-users', function (err, isMember) {
+						assert.ifError(err);
+						assert(!isMember);
+						done();
+					});
+				}, 500);
 			});
 		});
 
