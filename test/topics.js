@@ -1411,7 +1411,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should rename tags', function (done) {
-			async.parallel({
+			async.series({
 				topic1: function (next) {
 					topics.post({ uid: adminUid, tags: ['plugins'], title: 'topic tagged with plugins', content: 'topic 1 content', cid: topic.categoryId }, next);
 				},
