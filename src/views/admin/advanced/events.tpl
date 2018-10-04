@@ -1,8 +1,13 @@
 <div class="row events">
 	<div class="col-lg-9">
+		<select id="filter" class="form-control">
+			<!-- BEGIN filters -->
+			<option value="{filters.value}" <!-- IF filters.selected -->selected<!-- ENDIF filters.selected -->>{filters.name}</option>
+			<!-- END filters -->
+		</select>
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-calendar-o"></i> [[admin/advanced/events:events]]</div>
-			<div class="panel-body" data-next="{next}">
+			<div class="panel-body">
 				<!-- IF !events.length -->
 				<div class="alert alert-info">[[admin/advanced/events:no-events]]</div>
 				<!-- ENDIF !events.length -->
