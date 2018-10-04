@@ -178,6 +178,14 @@ SocketAdmin.config.setMultiple = function (socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
+	var changes = {};
+	Object.keys(data).forEach(function (key) {
+		if (data[key] !== meta.config[key]) {
+			changes[key] = data[key];
+			changes[key + '_old'] = meta.config[key];
+		}
+	});
+
 	async.waterfall([
 		function (next) {
 			meta.configs.setMultiple(data, next);
@@ -194,10 +202,15 @@ SocketAdmin.config.setMultiple = function (socket, data, callback) {
 					logger.monitorConfig({ io: index.server }, setting);
 				}
 			}
-			data.type = 'config-change';
-			data.uid = socket.uid;
-			data.ip = socket.ip;
-			events.log(data, next);
+
+			if (Object.keys(changes).length) {
+				changes.type = 'config-change';
+				changes.uid = socket.uid;
+				changes.ip = socket.ip;
+				events.log(changes, next);
+			} else {
+				next();
+			}
 		},
 	], callback);
 };
