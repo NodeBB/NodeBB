@@ -36,6 +36,8 @@ events.types = [
 	'password-change',
 	'email-change',
 	'username-change',
+	'ip-blacklist-save',
+	'ip-blacklist-addRule',
 	'registration-approved',
 	'registration-rejected',
 	'accept-membership',
