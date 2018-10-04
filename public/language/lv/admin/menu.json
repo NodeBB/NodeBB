@@ -12,7 +12,7 @@
 	"manage/privileges": "Privileges",
 	"manage/tags": "Birkas",
 	"manage/users": "Users",
-	"manage/admins-mods": "Admins & Mods",
+	"manage/admins-mods": "Administratori & moderatori",
 	"manage/registration": "Reģistrāciju rinda",
 	"manage/post-queue": "Rakstu apstiprināšanas rinda",
 	"manage/groups": "Groups",
@@ -33,7 +33,7 @@
 	"settings/tags": "Birkas",
 	"settings/notifications": "Paziņojumi",
 	"settings/cookies": "Sīkfaili",
-	"settings/web-crawler": "Web Crawler",
+	"settings/web-crawler": "Interneta rāpuļprogramma",
 	"settings/sockets": "Sockets",
 	"settings/advanced": "Advanced",
 
@@ -46,7 +46,7 @@
 
 	"section-extend": "Extend",
 	"extend/plugins": "Spraudņi",
-	"extend/widgets": "Widgets",
+	"extend/widgets": "Logrīki",
 	"extend/rewards": "Balvas",
 
 	"section-social-auth": "Social Authentication",
@@ -63,8 +63,8 @@
 	"development/logger": "Logger",
 	"development/info": "Info",
 
-	"rebuild-and-restart-forum": "Rebuild & Restart Forum",
-	"restart-forum": "Restart Forum",
+	"rebuild-and-restart-forum": "Pārkompilēt & pārstartēt forumu",
+	"restart-forum": "Pārstartēt forumu",
 	"logout": "Izlogoties",
 	"view-forum": "View Forum",
 

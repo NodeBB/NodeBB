@@ -1,9 +1,9 @@
 {
-	"available": "Available Widgets",
+	"available": "Pieejamie logrīki",
 	"explanation": "Select a widget from the dropdown menu and then drag and drop it into a template's widget area on the left.",
 	"none-installed": "No widgets found! Activate the essential widgets plugin in the <a href=\"%1\">plugins</a> control panel.",
-	"clone-from": "Clone widgets from",
-	"containers.available": "Available Containers",
+	"clone-from": "Klonēt logrīkus no",
+	"containers.available": "Pieejamās tvertnes",
 	"containers.explanation": "Drag and drop on top of any active widget",
 	"containers.none": "Nav",
 	"container.well": "Well",
@@ -14,9 +14,9 @@
 	"container.alert": "Alert",
 
 	"alert.confirm-delete": "Vai tiešām vēlies izdzēst šo logrīku?",
-	"alert.updated": "Widgets Updated",
+	"alert.updated": "Logrīki atjaunināti",
 	"alert.update-success": "Veiksmīgi atjaunināti logrīki",
-	"alert.clone-success": "Veiksmīgi nozaroti logrīki",
+	"alert.clone-success": "Veiksmīgi klonēti logrīki",
 
 	"error.select-clone": "Please select a page to clone from"
 }

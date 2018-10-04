@@ -16,7 +16,7 @@
 	"hide-fullname": "Hide fullname from users",
 	"hide-email": "Hide email from users",
 	"themes": "Themes",
-	"disable-user-skins": "Prevent users from choosing a custom skin",
+	"disable-user-skins": "Impedir utilizadores de escolherem uma máscara personalizada",
 	"account-protection": "Account Protection",
 	"admin-relogin-duration": "Admin relogin duration (minutes)",
 	"admin-relogin-duration-help": "After a set amount of time accessing the admin section will require re-login, set to 0 to disable",

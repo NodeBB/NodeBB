@@ -20,7 +20,7 @@
 	"copy-settings": "Copiar Definições de ",
 	"optional-clone-settings": "(Opcional) Clonar Definições da Categoria",
 	"clone-children": "Clone Children Categories And Settings",
-	"purge": "Apagar Categoria",
+	"purge": "Eliminar Categoria",
 
 	"enable": "Ativar",
 	"disable": "Desativar",
@@ -57,17 +57,17 @@
 	"alert.create": "Create a Category",
 	"alert.confirm-moderate": "<strong>Are you sure you wish to grant the moderation privilege to this user group?</strong> This group is public, and any users can join at will.",
 	"alert.confirm-purge": "<p class=\"lead\">Do you really want to purge this category \"%1\"?</p><h5><strong class=\"text-danger\">Warning!</strong> All topics and posts in this category will be purged!</h5> <p class=\"help-block\">Purging a category will remove all topics and posts, and delete the category from the database. If you want to remove a category <em>temporarily</em>, you'll want to \"disable\" the category instead.</p>",
-	"alert.purge-success": "Categoria Apagada!",
+	"alert.purge-success": "Categoria eliminada!",
 	"alert.copy-success": "Settings Copied!",
 	"alert.set-parent-category": "Set Parent Category",
 	"alert.updated": "Updated Categories",
 	"alert.updated-success": "Category IDs %1 successfully updated.",
-	"alert.upload-image": "Upload category image",
+	"alert.upload-image": "Enviar imagem da categoria",
 	"alert.find-user": "Find a User",
 	"alert.user-search": "Procurar por um utilizador aqui...",
 	"alert.find-group": "Procurar um Grupo",
 	"alert.group-search": "Search for a group here...",
 	"collapse-all": "Collapse All",
 	"expand-all": "Expand All",
-	"disable-on-create": "Disable on create"
+	"disable-on-create": "Desabilitar logo ao criar"
 }

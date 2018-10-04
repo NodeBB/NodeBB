@@ -1,12 +1,12 @@
 {
     "tag": "Birku iestatījumi",
-    "min-per-topic": "Maksimālais birku skaits tematā",
+    "min-per-topic": "Minimālais birku skaits tematā",
     "max-per-topic": "Maksimālais birku skaits tematā",
-    "min-length": "Minimum Tag Length",
+    "min-length": "Minimālais birkas garums",
     "max-length": "Maksimālais birkas nosaukuma garums",
-    "goto-manage": "Click here to visit the tag management page.",
+    "goto-manage": "Noklikšķini, lai apmeklētu birku vadības lapu.",
     "privacy": "Privacy",
-    "list-private": "Make the tags list private",
+    "list-private": "Iestatīt birku sarakstu kā privātu",
     "related-topics": "Related Topics",
     "max-related-topics": "Maximum related topics to display (if supported by theme)"
 }

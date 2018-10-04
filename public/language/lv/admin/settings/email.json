@@ -6,7 +6,7 @@
 	"from-help": "The from name to display in the email.",
 
 	"smtp-transport": "SMTP Transport",
-	"smtp-transport.enabled": "Use an external email server to send emails",
+	"smtp-transport.enabled": "Izmantot atsevišķu e-pasta serveri, lai nosūtītu e-pastus",
 	"smtp-transport-help": "You can select from a list of well-known services or enter a custom one.",
 	"smtp-transport.service": "Select a service",
 	"smtp-transport.service-custom": "Pielāgotais serviss",
@@ -19,7 +19,7 @@
 	"smtp-transport.security-encrypted": "Encrypted",
 	"smtp-transport.security-starttls": "StartTLS",
 	"smtp-transport.security-none": "Nav",
-	"smtp-transport.username": "Username",
+	"smtp-transport.username": "Lietotājvārds",
 	"smtp-transport.username-help": "<b>For the Gmail service,</b> enter the full email address here, especially if you are using a Google Apps managed domain.",
 	"smtp-transport.password": "Password",
 

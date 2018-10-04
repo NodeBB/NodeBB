@@ -1,19 +1,19 @@
 {
 	"none": "Your forum does not have any topics with tags yet.",
 	"bg-color": "Fona krāsa",
-	"text-color": "Text Colour",
+	"text-color": "Teksta krāsa",
 	"create-modify": "Izveidot & rediģēt birkas",
 	"description": "Select tags via clicking and/or dragging, use shift to select multiple.",
 	"create": "Izveidot birku",
 	"modify": "Rediģēt birkas",
 	"rename": "Pārdēvēt birkas",
 	"delete": "Izdzēst atlasītās birkas",
-	"search": "Meklēt birkas...",
-	"settings": "Click <a href=\"%1\">here</a> to visit the tag settings page.",
-	"name": "Tag Name",
+	"search": "Meklēt birkās...",
+	"settings": "<a href=\"%1\">Noklikšķini,</a> lai apmeklētu birku iestatījumu lapu.",
+	"name": "Birkas nosaukums",
 
 	"alerts.editing-multiple": "Rediģē vairākas birkas",
 	"alerts.editing-x": "Rediģē \"%1\" birku",
 	"alerts.confirm-delete": "Vai vēlies izdzēst šīs birkas?",
-	"alerts.update-success": "Tag Updated!"
+	"alerts.update-success": "Birka atjaunināta!"
 }

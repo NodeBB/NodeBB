@@ -150,7 +150,7 @@
     "info.moderation-note": "Note de modération",
     "info.moderation-note.success": "Note de modération enregistrée",
     "info.moderation-note.add": "Ajouter une note",
-    "sessions.description": "This page allows you to view any active sessions on this forum and revoke them if necessary. You can revoke your own session by logging out of your account.",
+    "sessions.description": "Cette page vous permet de visualiser et de révoquer si nécessaire, toutes les sessions actives de ce forum. Vous pouvez révoquer votre propre session en vous déconnectant de votre compte.",
     "consent.title": "Vos données personnelles",
     "consent.lead": "Ce forum collecte et traite vos informations personnelles.",
     "consent.intro": "Nous utilisons ces informations strictement pour personnaliser votre expérience dans cette communauté, ainsi que pour associer les messages que vous publiez à votre compte utilisateur. Lors de l'étape d'enregistrement, vous avez été invité à fournir un nom d'utilisateur et une adresse e-mail. Vous pouvez également fournir des informations supplémentaires pour compléter votre profil. <br /><br /> Nous conservons ces informations durant la durée de vie de votre compte utilisateur. À tout moment vous pouvez supprimer votre compte. À tout moment, vous pouvez demander une copie de vos contribution, via la page de vos données personnelles.<br /><br /> Si vous avez des questions ou préoccupations, nous vous encourageons à contacter l'équipe d'administration de ce forum.",

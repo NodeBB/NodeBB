@@ -1,25 +1,25 @@
 {
-	"icon": "Icon:",
+	"icon": "Ikona:",
 	"change-icon": "izmaiņa",
 	"route": "Ceļš:",
 	"tooltip": "Tooltip:",
-	"text": "Text:",
-	"text-class": "Text Class: <small>optional</small>",
-	"id": "ID: <small>optional</small>",
+	"text": "Teksts:",
+	"text-class": "Teksta klase: <small>neobligāts</small>",
+	"id": "ID: <small>neobligāts</small>",
 
 	"properties": "Īpašības:",
-	"only-admins": "Only display to Admins",
-	"only-global-mods-and-admins": "Only display to Global Moderators and Admins",
+	"only-admins": "Rādīt tikai administratoriem",
+	"only-global-mods-and-admins": "Rādīt tikai globāliem moderatoriem un administratoriem",
 	"only-logged-in": "Rādīt tikai ielogojušiem lietotājiem",
-	"only-guest": "Only display to guests",
+	"only-guest": "Rādīt tikai viesiem",
 	"open-new-window": "Open in a new window",
 
 	"btn.delete": "Izdzēst",
-	"btn.disable": "Disable",
+	"btn.disable": "Atspējot",
 	"btn.enable": "Iespējot",
 
-	"available-menu-items": "Available Menu Items",
-	"custom-route": "Pielāgots ceļš",
+	"available-menu-items": "Pieejamās izvēlnes iespējas",
+	"custom-route": "Pielāgotais ceļš",
 	"core": "core",
 	"plugin": "spraudnis"
 }

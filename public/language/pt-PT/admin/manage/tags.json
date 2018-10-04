@@ -1,19 +1,19 @@
 {
-	"none": "Your forum does not have any topics with tags yet.",
+	"none": "O teu fórum não tem nenhum tópico com marcadores ainda.",
 	"bg-color": "Background Colour",
 	"text-color": "Text Colour",
-	"create-modify": "Create & Modify Tags",
-	"description": "Select tags via clicking and/or dragging, use shift to select multiple.",
+	"create-modify": "Criar e Modificar Marcadores",
+	"description": "Seleciona marcadores clicando ou arrastando, utiliza SHIFT para selecionar vários",
 	"create": "Create Tag",
-	"modify": "Modify Tags",
-	"rename": "Rename Tags",
-	"delete": "Delete Selected Tags",
-	"search": "Search for tags...",
+	"modify": "Modificar Marcadores",
+	"rename": "Renomear Marcadores",
+	"delete": "Apagar Marcadores Selecionados",
+	"search": "Procurar por marcadores...",
 	"settings": "Click <a href=\"%1\">here</a> to visit the tag settings page.",
 	"name": "Tag Name",
 
-	"alerts.editing-multiple": "Editing multiple tags",
+	"alerts.editing-multiple": "Editar múltiplos marcadores",
 	"alerts.editing-x": "Editing \"%1\" tag",
-	"alerts.confirm-delete": "Do you want to delete the selected tags?",
+	"alerts.confirm-delete": "Queres mesmo apagar os marcadores selecionados?",
 	"alerts.update-success": "Tag Updated!"
 }

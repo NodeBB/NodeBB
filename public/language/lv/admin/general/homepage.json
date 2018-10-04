@@ -1,8 +1,8 @@
 {
-	"home-page": "Sākumlapa",
-	"description": "Izvēlies, kāda lapa tiek rādīta, kad lietotāji izvēlas foruma saknes URL.",
+	"home-page": "Sākums",
+	"description": "Izvēlies, kādu lapu rādīt, kad lietotājs izvēlas foruma saknes URL.",
 	"home-page-route": "Sākumlapas ceļš",
-	"custom-route": "Pielāgots ceļš",
+	"custom-route": "Pielāgotais ceļš",
 	"allow-user-home-pages": "Atļaut lietotāju mājaslapas",
-	"home-page-title": "Sākumlapas virsraksts (pēc noklusējuma \"Sākumlapa\")"
+	"home-page-title": "Sākumlapas virsraksts (pēc noklusējuma \"Sākums\")"
 }

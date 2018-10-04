@@ -1,5 +1,5 @@
 {
-    "home": "Sākumlapa",
+    "home": "Sākums",
     "search": "Meklēt",
     "buttons.close": "Aizvērt",
     "403.title": "Piekļuve liegta",
@@ -73,7 +73,7 @@
     "guest_posted_ago": "Viesis publicēja %1",
     "last_edited_by": "pēdējoreiz rediģējis %1",
     "norecentposts": "Nav nesenu rakstu",
-    "norecenttopics": "Nav nesenu tematu",
+    "norecenttopics": "Nav neseno tematu",
     "recentposts": "Nesenie raksti",
     "recentips": "Nesen lietotās IP adreses",
     "moderator_tools": "Moderatora rīki",

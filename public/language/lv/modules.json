@@ -2,7 +2,7 @@
     "chat.chatting_with": "Sarunāties ar",
     "chat.placeholder": "Šeit ieraksti sarunu, nospiedi enter, lai nosūtītu",
     "chat.send": "Nosūtīt",
-    "chat.no_active": "Nav aktīvu sarunu.",
+    "chat.no_active": "Nav aktīvo sarunu.",
     "chat.user_typing": "%1 raksta...",
     "chat.user_has_messaged_you": "%1 ir Tev nosūtījis sarunu",
     "chat.see_all": "Skatīt visas sarunas",
@@ -59,5 +59,5 @@
     "bootbox.confirm": "Apstiprināt",
     "cover.dragging_title": "Novietot galvenes bildi",
     "cover.dragging_message": "Velc galvenes bildi vēlamajā vietā un noklikšķini uz \"Saglabāt\"",
-    "cover.saved": "Galvenes bilde un vieta saglabāta"
+    "cover.saved": "Galvenes bilde un novietojums saglabāta"
 }
