@@ -6,16 +6,19 @@ var path = require('path');
 var crypto = require('crypto');
 var async = require('async');
 
-var sharp = require('sharp');
-if (os.platform() === 'win32') {
-	// https://github.com/lovell/sharp/issues/1259
-	sharp.cache(false);
-}
-
 var file = require('./file');
 var plugins = require('./plugins');
 
 var image = module.exports;
+
+function requireSharp() {
+	var sharp = require('sharp');
+	if (os.platform() === 'win32') {
+		// https://github.com/lovell/sharp/issues/1259
+		sharp.cache(false);
+	}
+	return sharp;
+}
 
 image.resizeImage = function (data, callback) {
 	if (plugins.hasListeners('filter:image.resize')) {
@@ -34,6 +37,7 @@ image.resizeImage = function (data, callback) {
 				fs.readFile(data.path, next);
 			},
 			function (buffer, next) {
+				var sharp = requireSharp();
 				var sharpImage = sharp(buffer, {
 					failOnError: true,
 				});
@@ -60,6 +64,7 @@ image.normalise = function (path, extension, callback) {
 			callback(err, path + '.png');
 		});
 	} else {
+		var sharp = requireSharp();
 		sharp(path, { failOnError: true }).png().toFile(path + '.png', function (err) {
 			callback(err, path + '.png');
 		});
@@ -74,6 +79,7 @@ image.size = function (path, callback) {
 			callback(err, image ? { width: image.width, height: image.height } : undefined);
 		});
 	} else {
+		var sharp = requireSharp();
 		sharp(path, { failOnError: true }).metadata(function (err, metadata) {
 			callback(err, metadata ? { width: metadata.width, height: metadata.height } : undefined);
 		});
