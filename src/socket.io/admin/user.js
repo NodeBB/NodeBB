@@ -163,12 +163,14 @@ function deleteUsers(socket, uids, method, callback) {
 					function (next) {
 						method(uid, next);
 					},
-					function (next) {
+					function (userData, next) {
 						events.log({
 							type: 'user-delete',
 							uid: socket.uid,
 							targetUid: uid,
 							ip: socket.ip,
+							username: userData.username,
+							email: userData.email,
 						}, next);
 					},
 					function (next) {

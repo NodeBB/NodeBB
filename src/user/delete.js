@@ -22,7 +22,7 @@ module.exports = function (User) {
 			return setImmediate(callback, new Error('[[error:invalid-uid]]'));
 		}
 		if (deletesInProgress[uid]) {
-			return setImmediate(callback);
+			return setImmediate(callback, new Error('[[error:already-deleting]]'));
 		}
 		deletesInProgress[uid] = 'user.delete';
 		async.waterfall([
@@ -93,7 +93,7 @@ module.exports = function (User) {
 
 	User.deleteAccount = function (uid, callback) {
 		if (deletesInProgress[uid] === 'user.deleteAccount') {
-			return setImmediate(callback);
+			return setImmediate(callback, new Error('[[error:already-deleting]]'));
 		}
 		deletesInProgress[uid] = 'user.deleteAccount';
 		var userData;
@@ -107,7 +107,7 @@ module.exports = function (User) {
 			function (_userData, next) {
 				if (!_userData || !_userData.username) {
 					delete deletesInProgress[uid];
-					return callback();
+					return callback(new Error('[[error:no-user]]'));
 				}
 				userData = _userData;
 				plugins.fireHook('static:user.delete', { uid: uid }, next);
@@ -184,7 +184,7 @@ module.exports = function (User) {
 			},
 		], function (err) {
 			delete deletesInProgress[uid];
-			callback(err);
+			callback(err, userData);
 		});
 	};
 

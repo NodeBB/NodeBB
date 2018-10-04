@@ -237,7 +237,7 @@ describe('Upload Controllers', function () {
 
 					user.delete(1, uid, next);
 				},
-				function (next) {
+				function (userData, next) {
 					var filePath = path.join(nconf.get('upload_path'), url.replace('/assets/uploads', ''));
 					file.exists(filePath, next);
 				},
