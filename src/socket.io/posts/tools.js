@@ -206,6 +206,7 @@ module.exports = function (SocketPosts) {
 					uid: socket.uid,
 					pid: data.pid,
 					ip: socket.ip,
+					tid: postData.tid,
 					title: String(topicData.title),
 				}, next);
 			},
