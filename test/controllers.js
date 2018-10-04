@@ -1074,7 +1074,6 @@ describe('Controllers', function () {
 			});
 		});
 
-
 		it('should load /user/foo/posts', function (done) {
 			request(nconf.get('url') + '/api/user/foo/posts', function (err, res, body) {
 				assert.ifError(err);
@@ -1167,6 +1166,15 @@ describe('Controllers', function () {
 
 		it('should load /user/foo/consent', function (done) {
 			request(nconf.get('url') + '/api/user/foo/consent', { jar: jar }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load /user/foo/sessions', function (done) {
+			request(nconf.get('url') + '/api/user/foo/sessions', { jar: jar }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
