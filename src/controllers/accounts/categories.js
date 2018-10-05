@@ -6,8 +6,7 @@ var user = require('../../user');
 var categories = require('../../categories');
 var accountHelpers = require('./helpers');
 
-var categoriesController = {};
-
+var categoriesController = module.exports;
 
 categoriesController.get = function (req, res, callback) {
 	var userData;
@@ -30,19 +29,14 @@ categoriesController.get = function (req, res, callback) {
 				},
 			}, next);
 		},
-		function (results, next) {
+		function (results) {
 			flattenArray(results);
 			userData.categories = results.all;
-			next();
-		},
-	], function (err) {
-		if (err) {
-			return callback(err);
-		}
 
-		userData.title = '[[pages:account/watched_categories]]';
-		res.render('account/categories', userData);
-	});
+			userData.title = '[[pages:account/watched_categories]]';
+			res.render('account/categories', userData);
+		},
+	], callback);
 };
 
 function moveChildrenToRoot(child) {
@@ -66,5 +60,3 @@ function flattenArray(results) {
 		}
 	}
 }
-
-module.exports = categoriesController;
