@@ -174,6 +174,8 @@ SocketCategories.ignore = function (socket, cid, callback) {
 };
 
 function ignoreOrWatch(fn, socket, cid, callback) {
+	var cids = [parseInt(cid, 10)];
+
 	async.waterfall([
 		function (next) {
 			db.getSortedSetRange('categories:cid', 0, -1, next);
@@ -187,10 +189,7 @@ function ignoreOrWatch(fn, socket, cid, callback) {
 				c.parentCid = parseInt(c.parentCid, 10);
 			});
 
-			var cids = [parseInt(cid, 10)];
-
 			// filter to subcategories of cid
-
 			var cat;
 			do {
 				cat = categoryData.find(function (c) {
@@ -207,6 +206,9 @@ function ignoreOrWatch(fn, socket, cid, callback) {
 		},
 		function (next) {
 			topics.pushUnreadCount(socket.uid, next);
+		},
+		function (next) {
+			next(null, cids);
 		},
 	], callback);
 }
