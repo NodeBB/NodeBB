@@ -4,7 +4,7 @@
 	"route": "Ceļš:",
 	"tooltip": "Tooltip:",
 	"text": "Teksts:",
-	"text-class": "Teksta klase: <small>neobligāts</small>",
+	"text-class": "Teksta klase: <small>neobligāta</small>",
 	"id": "ID: <small>neobligāts</small>",
 
 	"properties": "Īpašības:",
@@ -12,7 +12,7 @@
 	"only-global-mods-and-admins": "Rādīt tikai globāliem moderatoriem un administratoriem",
 	"only-logged-in": "Rādīt tikai ielogojušiem lietotājiem",
 	"only-guest": "Rādīt tikai viesiem",
-	"open-new-window": "Open in a new window",
+	"open-new-window": "Rādīt jaunā logā",
 
 	"btn.delete": "Izdzēst",
 	"btn.disable": "Atspējot",
