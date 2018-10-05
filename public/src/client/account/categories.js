@@ -18,7 +18,7 @@ define('forum/account/categories', ['forum/account/header'], function (header) {
 			var $this = $(this);
 			var command = $this.attr('component') === 'category/watching' ? 'watch' : 'ignore';
 
-			socket.emit('categories.' + command, cid, function (err, modified_cids) {
+			socket.emit('categories.' + command, { cid: cid, uid: ajaxify.data.uid }, function (err, modified_cids) {
 				if (err) {
 					return app.alertError(err.message);
 				}
