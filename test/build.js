@@ -188,6 +188,7 @@ describe('Build', function (done) {
 	});
 
 	it('should build templates', function (done) {
+		this.timeout(0);
 		build.build(['templates'], function (err) {
 			assert.ifError(err);
 			var filename = path.join(__dirname, '../build/public/templates/admin/header.tpl');
