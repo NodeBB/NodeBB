@@ -33,7 +33,7 @@ categoriesController.get = function (req, res, callback) {
 			flattenArray(results);
 			userData.categories = results.all;
 
-			userData.title = '[[pages:account/watched_categories]]';
+			userData.title = '[[pages:account/watched_categories, ' + userData.username + ']]';
 			res.render('account/categories', userData);
 		},
 	], callback);
@@ -49,7 +49,7 @@ function flattenArray(results) {
 		var category = results.all[i];
 
 		category.isIgnored = false;
-		if (results.ignored.includes(category.cid)) {
+		if (results.ignored.includes(String(category.cid))) {
 			category.isIgnored = true;
 		}
 
