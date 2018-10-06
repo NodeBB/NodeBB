@@ -26,7 +26,7 @@ categoriesController.get = function (req, res, callback) {
 				},
 				categories: function (next) {
 					categories.buildForSelect(userData.uid, 'find', next);
-				}
+				},
 			}, next);
 		},
 		function (results) {
