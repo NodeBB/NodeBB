@@ -24,39 +24,20 @@ categoriesController.get = function (req, res, callback) {
 				ignored: function (next) {
 					user.getIgnoredCategories(userData.uid, next);
 				},
-				all: function (next) {
-					categories.getCategoriesByPrivilege('cid:0:children', userData.uid, 'find', next);
-				},
+				categories: function (next) {
+					categories.buildForSelect(userData.uid, 'find', next);
+				}
 			}, next);
 		},
 		function (results) {
-			flattenArray(results);
-			userData.categories = results.all;
-
+			results.categories.forEach(function (category) {
+				if (category) {
+					category.isIgnored = results.ignored.includes(String(category.cid));
+				}
+			});
+			userData.categories = results.categories;
 			userData.title = '[[pages:account/watched_categories, ' + userData.username + ']]';
 			res.render('account/categories', userData);
 		},
 	], callback);
 };
-
-function moveChildrenToRoot(child) {
-	this.results.all.splice(this.i + this.results.j, 0, child);
-	this.results.j = this.results.j + 1;
-}
-
-function flattenArray(results) {
-	for (var i = 0; i < results.all.length; i++) {
-		var category = results.all[i];
-
-		category.isIgnored = false;
-		if (results.ignored.includes(String(category.cid))) {
-			category.isIgnored = true;
-		}
-
-		if (!!category.children && !!category.children.length) {
-			results.j = 1;
-			category.children.forEach(moveChildrenToRoot, { i: i, results: results });
-			category.children = [];
-		}
-	}
-}
