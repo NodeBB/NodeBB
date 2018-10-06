@@ -1,5 +1,5 @@
 {
-	"section-general": "Vispārēji",
+	"section-general": "Vispārējie",
 	"general/dashboard": "Informācijas panelis",
 	"general/homepage": "Sākumlapa",
 	"general/navigation": "Navigācija",
@@ -13,7 +13,7 @@
 	"manage/tags": "Birkas",
 	"manage/users": "Lietotājus",
 	"manage/admins-mods": "Administratorus & moderatorus",
-	"manage/registration": "Reģistrāciju rindu",
+	"manage/registration": "Reģistrēšanas rindu",
 	"manage/post-queue": "Rakstu apstiprināšanas rindu",
 	"manage/groups": "Grupas",
 	"manage/ip-blacklist": "IP adrešu melnajo sarakstu",
