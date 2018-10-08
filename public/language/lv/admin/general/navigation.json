@@ -2,7 +2,7 @@
 	"icon": "Ikona:",
 	"change-icon": "izmaiņa",
 	"route": "Ceļš:",
-	"tooltip": "Tooltip:",
+	"tooltip": "Paskaidre:",
 	"text": "Teksts:",
 	"text-class": "Teksta klase: <small>neobligāta</small>",
 	"id": "ID: <small>neobligāts</small>",
@@ -20,6 +20,6 @@
 
 	"available-menu-items": "Pieejamās izvēlnes iespējas",
 	"custom-route": "Pielāgotais ceļš",
-	"core": "core",
+	"core": "kodols",
 	"plugin": "spraudnis"
 }

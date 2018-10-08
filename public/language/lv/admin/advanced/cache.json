@@ -1,11 +1,11 @@
 {
-	"post-cache": "Post Cache",
-	"posts-in-cache": "Posts in Cache",
+	"post-cache": "Rakstu kešatmiņa",
+	"posts-in-cache": "Rakstu skaits kešatmiņā",
 	"average-post-size": "Vidējais rakstu garums",
-	"length-to-max": "Length / Max",
-	"percent-full": "%1% Full",
-	"post-cache-size": "Post Cache Size",
-	"items-in-cache": "Items in Cache",
+	"length-to-max": "Aizņemts / Maksimums",
+	"percent-full": "%1% Aizņemts",
+	"post-cache-size": "Rakstu kešatmiņas lielums",
+	"items-in-cache": "Rakstu skaits kešatmiņā",
 	"control-panel": "Vadības panelis",
-	"update-settings": "Update Cache Settings"
+	"update-settings": "Atjaunināt kešatmiņas iestatījumus"
 }

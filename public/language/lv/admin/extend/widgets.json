@@ -1,22 +1,22 @@
 {
 	"available": "Pieejamie logrīki",
-	"explanation": "Select a widget from the dropdown menu and then drag and drop it into a template's widget area on the left.",
-	"none-installed": "No widgets found! Activate the essential widgets plugin in the <a href=\"%1\">plugins</a> control panel.",
+	"explanation": "Atlasīt spraudni no nolaižamās izvēlnes, un to vilkt un nomest uz veidnes spraudņa lauku kreisajā pusē.",
+	"none-installed": "Nav logrīku! Aktivizēt nepieciešamo logrīku spraudni <a href=\"%1\">spraudņu</a> vadības panelī.",
 	"clone-from": "Klonēt logrīkus no",
 	"containers.available": "Pieejamās tvertnes",
-	"containers.explanation": "Drag and drop on top of any active widget",
+	"containers.explanation": "Vilkt un nomest uz jebkura aktīvā logrīka",
 	"containers.none": "Nav",
-	"container.well": "Well",
+	"container.well": "Labi",
 	"container.jumbotron": "Jumbotron",
 	"container.panel": "Panelis",
 	"container.panel-header": "Paneļa galvene",
 	"container.panel-body": "Paneļa korpuss",
-	"container.alert": "Alert",
+	"container.alert": "Brīdinājums",
 
 	"alert.confirm-delete": "Vai tiešām vēlies izdzēst šo logrīku?",
 	"alert.updated": "Logrīki atjaunināti",
 	"alert.update-success": "Veiksmīgi atjaunināti logrīki",
 	"alert.clone-success": "Veiksmīgi klonēti logrīki",
 
-	"error.select-clone": "Please select a page to clone from"
+	"error.select-clone": "Lūdzu, izvēlēties lapu klonēšanai"
 }
