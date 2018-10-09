@@ -1,7 +1,7 @@
 {
 	"none": "O teu fórum não tem nenhum tópico com marcadores ainda.",
-	"bg-color": "Background Colour",
-	"text-color": "Text Colour",
+	"bg-color": "Cor de Fundo",
+	"text-color": "Cor do Texto",
 	"create-modify": "Criar e Modificar Marcadores",
 	"description": "Seleciona marcadores clicando ou arrastando, utiliza SHIFT para selecionar vários",
 	"create": "Create Tag",
@@ -10,10 +10,10 @@
 	"delete": "Apagar Marcadores Selecionados",
 	"search": "Procurar por marcadores...",
 	"settings": "Click <a href=\"%1\">here</a> to visit the tag settings page.",
-	"name": "Tag Name",
+	"name": "Nome da Etiqueta",
 
 	"alerts.editing-multiple": "Editar múltiplos marcadores",
 	"alerts.editing-x": "Editing \"%1\" tag",
 	"alerts.confirm-delete": "Queres mesmo apagar os marcadores selecionados?",
-	"alerts.update-success": "Tag Updated!"
+	"alerts.update-success": "Etiqueta Atualizada!"
 }

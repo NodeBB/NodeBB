@@ -9,7 +9,7 @@
 	"description-placeholder": "Īss grupas apraksts",
 	"create-button": "Izveidot",
 
-	"alerts.create-failure": "<strong>Uh-Oh</strong><p>There was a problem creating your group. Please try again later!</p>",
+	"alerts.create-failure": "<strong>Ak, vai</strong><p>Veidojot grupu, radās problēma. Lūdzu, pamēģini vēlreiz vēlāk!</p>",
 	"alerts.confirm-delete": "Vai tiešām vēlies izdzēst šo grupu?",
 
 	"edit.name": "Nosaukums",
@@ -19,7 +19,7 @@
 	"edit.label-color": "Grupas etiķetes krāsa",
 	"edit.show-badge": "Rādīt nozīmīti",
 	"edit.private-details": "Pievienoties grupai nepieciešama grupas īpašnieka apstiprināšana.",
-	"edit.private-override": "Warning: Private groups is disabled at system level, which overrides this option.",
+	"edit.private-override": "Brīdinājums: privātās grupas ir atspējotas sistēmas līmenī, un šo opciju neņems vērā.",
 	"edit.disable-requests": "Atspējot pievienošanās pieteikumus",
 	"edit.hidden": "Paslēpta",
 	"edit.hidden-details": "Grupa nav redzama grupu sarakstā un lietotāji būs jāuzaicina pašrocīgi",

@@ -17,7 +17,7 @@
 	"stats.day": "Dia",
 	"stats.week": "Semana",
 	"stats.month": "Mês",
-	"stats.all": "All Time",
+	"stats.all": "Desde sempre",
 
 	"updates": "Atualizações",
 	"running-version": "Estás a executar <strong>NodeBB v<span id=\"version\">%1</span></strong>.",

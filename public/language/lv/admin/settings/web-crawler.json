@@ -1,6 +1,6 @@
 {
 	"crawlability-settings": "Crawlability Settings",
-	"robots-txt": "Pielāgotais Robots.txt <small>Noklusējuma gadījumā atstāj tukšu</small>",
+	"robots-txt": "Pielāgotais Robots.txt <small>Noklusējuma gadījumā atstāt tukšu</small>",
 	"sitemap-feed-settings": "Sitemap & Feed Settings",
 	"disable-rss-feeds": "Atspējot RSS plūsmu",
 	"disable-sitemap-xml": "Atspējot sitemap.xml",

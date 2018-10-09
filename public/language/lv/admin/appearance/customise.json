@@ -1,10 +1,10 @@
 {
 	"custom-css": "Pielāgotais CSS/LESS",
-	"custom-css.description": "Enter your own CSS/LESS declarations here, which will be applied after all other styles.",
+	"custom-css.description": "Šeit ievadi savas CSS / LESS deklarācijas, kuras piemēros pēc visiem citiem stiliem.",
 	"custom-css.enable": "Iespējot pielāgotu CSS/LESS",
 
 	"custom-js": "Pielāgotais Javascript",
-	"custom-js.description": "Enter your own javascript here. It will be executed after the page is loaded completely.",
+	"custom-js.description": "Šeit ievadi savu javascript. Tas tiks palaists pēc lapas pilnīgas ielādes.",
 	"custom-js.enable": "Iespējot pielāgotu Javascript",
 
 	"custom-header": "Pielāgotā galvene",

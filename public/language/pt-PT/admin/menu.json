@@ -27,7 +27,7 @@
 	"settings/group": "Grupo",
 	"settings/guest": "Convidados",
 	"settings/uploads": "Carregamentos",
-	"settings/post": "Post",
+	"settings/post": "Publicações",
 	"settings/chat": "Conversa",
 	"settings/pagination": "Paginação",
 	"settings/tags": "Marcadores",
@@ -76,6 +76,6 @@
 
 	"connection-lost": "A conexão a %1 foi perdida, tentando reconectar...",
 
-	"alerts.version": "Running <strong>NodeBB v%1</strong>",
+	"alerts.version": "A executar <strong>NodeBB v%1</strong>",
 	"alerts.upgrade": "Upgrade to v%1"
 }
