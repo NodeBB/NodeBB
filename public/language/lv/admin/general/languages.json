@@ -1,6 +1,6 @@
 {
 	"language-settings": "Valodas iestatījumi",
-	"description": "The default language determines the language settings for all users who are visiting your forum. <br />Individual users can override the default language on their account settings page.",
+	"description": "Noklusējuma valoda nosaka valodas iestatījumus visiem lietotājiem, kuri apmeklē forumu. <br />Atsevišķi lietotāji savā konta iestatījumu lapā var ignorēt noklusējuma valodu.",
 	"default-language": "Noklusējama valoda",
-	"auto-detect": "Auto Detect Language Setting for Guests"
+	"auto-detect": "Viesiem automātiski izprast valodas iestatījumus"
 }

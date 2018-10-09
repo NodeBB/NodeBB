@@ -3,6 +3,6 @@
 	"description": "Izvēlies, kādu lapu rādīt, kad lietotājs izvēlas foruma saknes URL.",
 	"home-page-route": "Sākumlapas ceļš",
 	"custom-route": "Pielāgotais ceļš",
-	"allow-user-home-pages": "Atļaut lietotāju mājaslapas",
-	"home-page-title": "Sākumlapas virsraksts (pēc noklusējuma \"Sākums\")"
+	"allow-user-home-pages": "Atļaut lietotājiem mājaslapas",
+	"home-page-title": "Sākumlapas titulis (pēc noklusējuma \"Sākums\")"
 }

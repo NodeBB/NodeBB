@@ -1,6 +1,6 @@
 {
-	"alert.confirm-rebuild-and-restart": "Vai Tu tiešām vēlies pārkompilēt un tad pārstartēt NodeBB?",
-	"alert.confirm-restart": "Vai Tu tiešām vēlies pārstartēt NodeBB?",
+	"alert.confirm-rebuild-and-restart": "Vai tiešām vēlies pārkompilēt un pārstartēt NodeBB?",
+	"alert.confirm-restart": "Vai tiešām vēlies pārstartēt NodeBB?",
 
 	"acp-title": "%1 | NodeBB administrācijas vadības panelis",
 	"settings-header-contents": "Saturs"

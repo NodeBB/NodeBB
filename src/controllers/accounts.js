@@ -4,6 +4,7 @@ var accountsController = {
 	profile: require('./accounts/profile'),
 	edit: require('./accounts/edit'),
 	info: require('./accounts/info'),
+	categories: require('./accounts/categories'),
 	settings: require('./accounts/settings'),
 	groups: require('./accounts/groups'),
 	follow: require('./accounts/follow'),
