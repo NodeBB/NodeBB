@@ -41,6 +41,7 @@ var steps = {
 		handler: function (next) {
 			async.series([
 				db.init,
+				require('../meta').configs.init,
 				upgrade.run,
 			], next);
 		},
