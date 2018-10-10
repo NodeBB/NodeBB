@@ -36,5 +36,5 @@
 
 	"postgres": "Postgres",
 	"postgres.version": "Версия PostgreSQL",
-	"postgres.raw-info": "Postgres Raw Info"
+	"postgres.raw-info": "Информация о PostgreSQL"
 }

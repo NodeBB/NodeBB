@@ -1,6 +1,6 @@
 {
-	"queue": "Reģistrēšanas rinda",
-	"description": "There are no users in the registration queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"queue": "Reģistrācijas rinda",
+	"description": "Reģistrācijas rindā nav lietotāju. <br>Lai iespējotu šo funkciju, doties uz <a href=\"%1\">Iestatījumi &rarr; Lietotāji &rarr; Reģistrācija</a> un iestatīt <strong>Reģistrācijas veidu</strong> uz \"Administratora apstiprināts\".",
 
 	"list.name": "Vārds",
 	"list.email": "E-pasta adrese",
@@ -10,11 +10,11 @@
 	"list.email-spam": "Frequency: %1 Appears: %2",
 	"list.ip-spam": "Frequency: %1 Appears: %2",
 
-	"invitations": "Uzaicinājumi",
-	"invitations.description": "Below is a complete list of invitations sent. Use ctrl-f to search through the list by email or username. <br><br>The username will be displayed to the right of the emails for users who have redeemed their invitations.",
+	"invitations": "Ielūgumi",
+	"invitations.description": "Zemāk skatīt visu izsūtīto ielūgumu saraksts. Izmantot ctrl-f, lai meklētu e-pasta adresi vai lietotājvārdu sarakstā. <br><br>Lietotājvārds tiks parādīts pa labi tām e-pasta adresēm tiem lietotājiem, kas ir atbildējuši saviem ielūgumiem.",
 	"invitations.inviter-username": "Lietotājs, kurš uzaicināja",
 	"invitations.invitee-email": "Uzaicinātā lietotāja e-pasta adrese",
 	"invitations.invitee-username": "Uzaicinātais lietotājvārds (ja ir jau reģistrējies)",
 
-	"invitations.confirm-delete": "Vai tiešām vēlies izdzēst šo uzaicinājumu?"
+	"invitations.confirm-delete": "Vai tiešām vēlies izdzēst šo ielūgumu?"
 } 

@@ -56,8 +56,8 @@
     "notificationType_new-reply": "Kad jauna atbilde tiek pievienota tematam, kuru vēro",
     "notificationType_follow": "Kad kāds sāk Tev sekot",
     "notificationType_new-chat": "Kad saņemi sarunu",
-    "notificationType_group-invite": "Kad saņemi grupas uzaicinājumu",
-    "notificationType_new-register": "Kad kāds tiek ievietots reģistrēšanas rindā",
+    "notificationType_group-invite": "Kad saņemi ielūgumu pievienoties grupai",
+    "notificationType_new-register": "Kad kāds tiek ievietots reģistrācijas rindā",
     "notificationType_post-queue": "Kad raksts tiek ievietots apstiprināšanas rindā",
     "notificationType_new-post-flag": "Kad raksts tiek atzīmēts",
     "notificationType_new-user-flag": "Kad lietotājs tiek atzīmēts"

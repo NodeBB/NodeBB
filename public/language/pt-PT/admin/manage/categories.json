@@ -45,7 +45,7 @@
 	"privileges.inherit": "If the <code>registered-users</code> group is granted a specific privilege, all other groups receive an <strong>implicit privilege</strong>, even if they are not explicitly defined/checked. This implicit privilege is shown to you because all users are part of the <code>registered-users</code> user group, and so, privileges for additional groups need not be explicitly granted.",
 
 	"analytics.back": "Voltar à Lista de Categorias",
-	"analytics.title": "Analytics for \"%1\" category",
+	"analytics.title": "Estatísticas para a categoria \"%1\"",
 	"analytics.pageviews-hourly": "<strong>Figure 1</strong> &ndash; Hourly page views for this category</small>",
 	"analytics.pageviews-daily": "<strong>Figure 2</strong> &ndash; Daily page views for this category</small>",
 	"analytics.topics-daily": "<strong>Figure 3</strong> &ndash; Daily topics created in this category</small>",

@@ -94,6 +94,6 @@
 	"alerts.create-success": "Lietotājs izveidots!",
 
 	"alerts.prompt-email": "E-pasta adreses:",
-	"alerts.email-sent-to": "Uzaicinājuma e-pasta ir nosūtīts %1",
+	"alerts.email-sent-to": "Ielūguma e-pasts ir nosūtīts %1",
 	"alerts.x-users-found": "Atrasts %1 lietotājs(-i)! Meklēšana ilga 20 milisekundes."
 }

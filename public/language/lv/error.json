@@ -138,7 +138,7 @@
     "parse-error": "Radās kļūda parsējot servera atbildi",
     "wrong-login-type-email": "Lūdzu, izmanto savu e-pasta adresi, lai ielogotos",
     "wrong-login-type-username": "Lūdzu, izmanto savu lietotājvārdu, lai ielogotos",
-    "sso-registration-disabled": "Reģistrācija ir atspējota %1 kontos, lūdzu, vispirms reģistrējies ar e-pasta adresi",
+    "sso-registration-disabled": "Reģistrācija ir atspējota %1 kontiem, lūdzu, reģistrējies vispirms ar e-pasta adresi",
     "sso-multiple-association": "Nevar saistīt vairākus kontus no šī pakalpojuma savā NodeBB kontā. Lūdzu, nošķiri savu esošo kontu un mēģini vēlreiz.",
     "invite-maximum-met": "Tu esi uzaicinājis maksimālo cilvēku skaitu (%1 no %2).",
     "no-session-found": "Savienojumu nevarēja atrast!",
