@@ -259,7 +259,7 @@ function getCategoryData(cids, uid, selectedCid, callback) {
 			privileges.categories.filterCids('read', cids, uid, next);
 		},
 		function (cids, next) {
-			categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'link', 'color', 'bgColor', 'parentCid'], next);
+			categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'link', 'color', 'bgColor', 'parentCid', 'image', 'imageClass'], next);
 		},
 		function (categoryData, next) {
 			categoryData = categoryData.filter(function (category) {
