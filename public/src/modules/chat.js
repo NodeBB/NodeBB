@@ -217,7 +217,7 @@ define('chat', [
 			});
 
 			chatModal.on('click', ':not(.close)', function () {
-				taskbar.updateActive(this.getAttribute('data-uuid'));
+				taskbar.updateActive(chatModal.attr('data-uuid'));
 
 				if (dragged) {
 					dragged = false;
