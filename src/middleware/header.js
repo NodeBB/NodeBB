@@ -135,6 +135,7 @@ module.exports = function (middleware) {
 				results.user.isGlobalMod = results.isGlobalMod;
 				results.user.isMod = !!results.isModerator;
 				results.user.privileges = results.privileges;
+				results.user[results.user.status] = true;
 
 				results.user.uid = parseInt(results.user.uid, 10);
 				results.user.email = String(results.user.email);
