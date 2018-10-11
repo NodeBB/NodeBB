@@ -16,9 +16,6 @@ module.exports = function (Topics) {
 	Topics.onNewPostMade = function (postData, callback) {
 		async.series([
 			function (next) {
-				Topics.increasePostCount(postData.tid, next);
-			},
-			function (next) {
 				Topics.updateLastPostTime(postData.tid, postData.timestamp, next);
 			},
 			function (next) {
@@ -288,6 +285,9 @@ module.exports = function (Topics) {
 				}
 			},
 			function (next) {
+				Topics.increasePostCount(tid, next);
+			},
+			function (next) {
 				db.sortedSetIncrBy('tid:' + tid + ':posters', 1, postData.uid, next);
 			},
 			function (count, next) {
@@ -303,6 +303,9 @@ module.exports = function (Topics) {
 					'tid:' + tid + ':posts',
 					'tid:' + tid + ':posts:votes',
 				], postData.pid, next);
+			},
+			function (next) {
+				Topics.decreasePostCount(tid, next);
 			},
 			function (next) {
 				db.sortedSetIncrBy('tid:' + tid + ':posters', -1, postData.uid, next);

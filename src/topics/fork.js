@@ -109,12 +109,6 @@ module.exports = function (Topics) {
 						updateCategory(postData, tid, next);
 					},
 					function (next) {
-						Topics.decreasePostCount(postData.tid, next);
-					},
-					function (next) {
-						Topics.increasePostCount(tid, next);
-					},
-					function (next) {
 						posts.setPostField(pid, 'tid', tid, next);
 					},
 					function (next) {
