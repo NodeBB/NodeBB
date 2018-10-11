@@ -59,8 +59,8 @@ define('forum/topic', [
 		}
 
 		addBlockQuoteHandler();
-
 		addParentHandler();
+		addDropupHandler();
 
 		navigator.init('[component="post"]', ajaxify.data.postcount, Topic.toTop, Topic.toBottom, Topic.navigatorCallback, Topic.calculateIndex);
 
@@ -163,6 +163,17 @@ define('forum/topic', [
 				navigator.scrollToIndex(toPost.attr('data-index'), true);
 				return false;
 			}
+		});
+	}
+
+	function addDropupHandler() {
+		// Locate all dropdowns
+		var target = $('#content .dropdown-menu').parent();
+
+		// Toggle dropup if past 50% of screen
+		$(target).on('show.bs.dropdown', function () {
+			var dropUp = this.getBoundingClientRect().top > ($(window).height() / 2);
+			$(this).toggleClass('dropup', dropUp);
 		});
 	}
 
