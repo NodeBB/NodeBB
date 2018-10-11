@@ -550,6 +550,42 @@ describe('Post\'s', function () {
 				});
 			});
 		});
+
+		it('should has consistent categorite data of topic after moved', function (done) {
+			async.waterfall([
+				function (next) {
+					topics.getTopicFields(tid, ['lastposttime', 'postcount', 'cid'], function (err, topicData) {
+						assert.ifError(err);
+						async.parallel({
+							count: async.apply(db.sortedSetScore, 'cid:' + topicData.cid + ':tids:posts', tid),
+							lastposttime: async.apply(db.sortedSetScore, 'cid:' + topicData.cid + ':tids:lastposttime', tid),
+						}, function (err, results) {
+							assert.ifError(err);
+							assert(topicData.postcount, results.count);
+							assert(topicData.lastposttime, results.lastposttime);
+							next(null);
+						});
+					});
+				},
+				function (next) {
+					topics.getTopicFields(moveTid, ['lastposttime', 'postcount', 'cid'], function (err, topicData) {
+						assert.ifError(err);
+						async.parallel({
+							count: async.apply(db.sortedSetScore, 'cid:' + topicData.cid + ':tids:posts', moveTid),
+							lastposttime: async.apply(db.sortedSetScore, 'cid:' + topicData.cid + ':tids:lastposttime', moveTid),
+						}, function (err, results) {
+							assert.ifError(err);
+							assert(topicData.postcount, results.count);
+							assert(topicData.lastposttime, results.lastposttime);
+							next(null);
+						});
+					});
+				},
+			], function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
 	});
 
 	describe('getPostSummaryByPids', function () {

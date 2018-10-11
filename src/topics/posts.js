@@ -22,7 +22,7 @@ module.exports = function (Topics) {
 				Topics.updateTimestamp(postData.tid, postData.timestamp, next);
 			},
 			function (next) {
-				Topics.addPostToTopic(postData.tid, postData, next);
+				Topics.addPostToTopic(postData.tid, postData, true, next);
 			},
 		], callback);
 	};
@@ -137,6 +137,32 @@ module.exports = function (Topics) {
 				next(null, data.posts);
 			},
 		], callback);
+	};
+
+	Topics.updateLastPostTime = function (tid, callback) {
+		var topicData;
+		async.waterfall([
+			function (next) {
+				Topics.getTopicFields(tid, ['mainPid', 'cid'], next);
+			},
+			function (_topicData, next) {
+				topicData = _topicData;
+				posts.getPidsFromSet('tid:' + tid + ':posts', 0, 1, false, next);
+			},
+			function (pids, next) {
+				var latestPid = pids.length ? pids[0] : topicData.mainPid;
+				posts.getPostField(latestPid, 'timestamp', next);
+			},
+			function (timestamp, next) {
+				async.parallel([
+					async.apply(Topics.setTopicField, tid, 'lastposttime', timestamp),
+					async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids', timestamp, tid),
+					async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:lastposttime', timestamp, tid),
+				], next);
+			},
+		], function (err) {
+			callback(err, topicData);
+		});
 	};
 
 	Topics.modifyPostsByPrivilege = function (topicData, topicPrivileges) {
@@ -263,7 +289,7 @@ module.exports = function (Topics) {
 		);
 	};
 
-	Topics.addPostToTopic = function (tid, postData, callback) {
+	Topics.addPostToTopic = function (tid, postData, isCreate, callback) {
 		async.waterfall([
 			function (next) {
 				Topics.getTopicField(tid, 'mainPid', next);
@@ -293,7 +319,20 @@ module.exports = function (Topics) {
 			function (count, next) {
 				Topics.updateTeaser(tid, next);
 			},
-		], callback);
+		], function (err) {
+			if (err || isCreate) return callback(err);
+
+			async.waterfall([
+				function (next) {
+					Topics.updateLastPostTime(tid, next);
+				},
+				function (topicData, next) {
+					db.sortedSetIncrBy('cid:' + topicData.cid + ':tids:posts', 1, tid, next);
+				},
+			], function (err) {
+				callback(err);
+			});
+		});
 	};
 
 	Topics.removePostFromTopic = function (tid, postData, callback) {
@@ -310,7 +349,15 @@ module.exports = function (Topics) {
 			function (count, next) {
 				Topics.updateTeaser(tid, next);
 			},
-		], callback);
+			function (next) {
+				Topics.updateLastPostTime(tid, next);
+			},
+			function (topicData, next) {
+				db.sortedSetIncrBy('cid:' + topicData.cid + ':tids:posts', -1, tid, next);
+			},
+		], function (err) { // err, count
+			callback(err);
+		});
 	};
 
 	Topics.getPids = function (tid, callback) {
