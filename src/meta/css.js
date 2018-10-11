@@ -99,7 +99,7 @@ function getBundleMetadata(target, callback) {
 				return next(null, null);
 			}
 
-			db.getObjectFields('config', ['theme:type', 'theme:id'], next);
+			db.getObjectFields('config', ['theme:type', 'theme:id', 'bootswatchSkin'], next);
 		},
 		function (themeData, next) {
 			if (target === 'client') {
@@ -143,14 +143,24 @@ function getBundleMetadata(target, callback) {
 						},
 					], cb);
 				},
+				skin: function (cb) {
+					const skinImport = [];
+					if (themeData && themeData.bootswatchSkin) {
+						skinImport.push('\n@import url(https://bootswatch.com/3/' + themeData.bootswatchSkin + '/variables.less);');
+						skinImport.push('\n@import url(https://bootswatch.com/3/' + themeData.bootswatchSkin + '/bootswatch.less);');
+					}
+
+					cb(null, skinImport.join(''));
+				},
 			}, next);
 		},
 		function (result, next) {
+			var skinImport = result.skin;
 			var cssImports = result.css;
 			var lessImports = result.less;
 			var acpLessImports = result.acpLess;
 
-			var imports = cssImports + '\n' + lessImports + '\n' + acpLessImports;
+			var imports = skinImport + '\n' + cssImports + '\n' + lessImports + '\n' + acpLessImports;
 			imports = buildImports[target](imports);
 
 			next(null, { paths: paths, imports: imports });

@@ -80,7 +80,7 @@ module.exports = function (User) {
 				settings.restrictChat = parseInt(getSetting(settings, 'restrictChat', 0), 10) === 1;
 				settings.topicSearchEnabled = parseInt(getSetting(settings, 'topicSearchEnabled', 0), 10) === 1;
 				settings.delayImageLoading = parseInt(getSetting(settings, 'delayImageLoading', 1), 10) === 1;
-				settings.bootswatchSkin = settings.bootswatchSkin || meta.config.bootswatchSkin || 'default';
+				settings.bootswatchSkin = meta.config.bootswatchSkin || 'default';
 				settings.scrollToMyPost = parseInt(getSetting(settings, 'scrollToMyPost', 1), 10) === 1;
 
 				notifications.getAllNotificationTypes(next);
@@ -141,10 +141,6 @@ module.exports = function (User) {
 			outgoingChatSound: data.outgoingChatSound,
 			upvoteNotifFreq: data.upvoteNotifFreq,
 		};
-
-		if (data.bootswatchSkin) {
-			settings.bootswatchSkin = data.bootswatchSkin;
-		}
 
 		async.waterfall([
 			function (next) {

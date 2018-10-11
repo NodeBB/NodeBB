@@ -95,7 +95,6 @@ apiController.loadConfig = function (req, callback) {
 			config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
 			config.topicSearchEnabled = settings.topicSearchEnabled || false;
 			config.delayImageLoading = settings.delayImageLoading !== undefined ? settings.delayImageLoading : true;
-			config.bootswatchSkin = (parseInt(meta.config.disableCustomUserSkins, 10) !== 1 && settings.bootswatchSkin && settings.bootswatchSkin !== 'default') ? settings.bootswatchSkin : config.bootswatchSkin;
 			plugins.fireHook('filter:config.get', config, next);
 		},
 	], callback);
