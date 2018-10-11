@@ -708,9 +708,9 @@ describe('Sorted Set methods', function () {
 				assert.ifError(err);
 				db.sortedSetAdd('multiTest6', [2], ['two'], function (err) {
 					assert.ifError(err);
-					db.sortedSetAdd('multiTest7', [3], ['three'], function (err) {
+					db.sortedSetAdd('multiTest7', [3], [333], function (err) {
 						assert.ifError(err);
-						db.sortedSetRemove(['multiTest5', 'multiTest6', 'multiTest7'], ['one', 'two', 'three'], function (err) {
+						db.sortedSetRemove(['multiTest5', 'multiTest6', 'multiTest7'], ['one', 'two', 333], function (err) {
 							assert.ifError(err);
 							db.getSortedSetsMembers(['multiTest5', 'multiTest6', 'multiTest7'], function (err, members) {
 								assert.ifError(err);

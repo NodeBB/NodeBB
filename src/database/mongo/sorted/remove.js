@@ -11,16 +11,20 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback();
 		}
+
+		if (Array.isArray(value)) {
+			value = value.map(helpers.valueToString);
+		} else {
+			value = helpers.valueToString(value);
+		}
+
 		if (Array.isArray(key) && Array.isArray(value)) {
 			db.collection('objects').deleteMany({ _key: { $in: key }, value: { $in: value } }, done);
 		} else if (Array.isArray(value)) {
-			value = value.map(helpers.valueToString);
 			db.collection('objects').deleteMany({ _key: key, value: { $in: value } }, done);
 		} else if (Array.isArray(key)) {
-			value = helpers.valueToString(value);
 			db.collection('objects').deleteMany({ _key: { $in: key }, value: value }, done);
 		} else {
-			value = helpers.valueToString(value);
 			db.collection('objects').deleteOne({ _key: key, value: value }, done);
 		}
 	};
