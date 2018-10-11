@@ -23,11 +23,11 @@
 	"running-version": "У вас установлен <strong>NodeBB версии <span id=\"version\">%1</span></strong>",
 	"keep-updated": "Всегда проверяйте, что ваш NodeBB обновлен и содержит последнии патчи безопасности и исправления.",
 	"up-to-date": "<p>Вы <strong>обновились</strong> <i class=\"fa fa-check\"></i></p>",
-	"upgrade-available": "<p>A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">upgrading your NodeBB</a>.</p>",
-	"prerelease-upgrade-available": "<p>This is an outdated pre-release version of NodeBB. A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">upgrading your NodeBB</a>.</p>",
-	"prerelease-warning": "<p>This is a <strong>pre-release</strong> version of NodeBB. Unintended bugs may occur. <i class=\"fa fa-exclamation-triangle\"></i></p>",
-	"running-in-development": "<span>Forum is running in development mode. The forum may be open to potential vulnerabilities; please contact your system administrator.</span>",
-	"latest-lookup-failed": "<p>Failed to look up latest available version of NodeBB</p>",
+	"upgrade-available": "<p>Вышла новая версия (v%1). Рассмотрите <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">обновление вашего NodeBB</a></p>",
+	"prerelease-upgrade-available": "<p>Данная версия является предрелизной и уже устарела. Вышла новая версия (v%1). Рассмотрите <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">обновление вашего NodeBB</a>.</p>",
+	"prerelease-warning": "<p>Данная версия NodeBB является <strong>предрелизной</strong>. Возможно вы столкнетесь со случайными багами.<i class=\"fa fa-exclamation-triangle\"></i></p>",
+	"running-in-development": "<span>Форум работает в режиме для разработчиков. Это может привести к уязвимостям; пожалуйста, свяжитесь с вашим сисадмином.</span>",
+	"latest-lookup-failed": "<p>Не удалось проверить наличие обновлений NodeBB</p>",
 
 	"notices": "Уведомления",
 	"restart-not-required": "Перезапуск не необходим",
@@ -68,6 +68,6 @@
 	"graphs.unique-visitors": "Уникальных пользователей",
 	"graphs.registered-users": "Зарегистрированных пользователей",
 	"graphs.anonymous-users": "Анонимных пользователей",
-	"last-restarted-by": "Last restarted by",
-	"no-users-browsing": "No users browsing"
+	"last-restarted-by": "Последний перезапуск:",
+	"no-users-browsing": "Участников нет"
 }

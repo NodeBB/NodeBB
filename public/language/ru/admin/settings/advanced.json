@@ -22,6 +22,6 @@
 	"traffic.enable": "Включить управление траффиком",
 	"traffic.event-lag": "Порог лага Event Loop (в миллисекундах)",
 	"traffic.event-lag-help": "Уменьшение этого значение ускорит загрузку страниц, но также может привести к показу сообщения \"высокая нагрузка\" большому количеству участников. (Необходим перезапуск)",
-	"traffic.lag-check-interval": "Check Interval (in milliseconds)",
-	"traffic.lag-check-interval-help": "Lowering this value causes NodeBB to become more sensitive to spikes in load, but may also cause the check to become too sensitive. (Restart required)"
+	"traffic.lag-check-interval": "Интервал проверки (в миллисекундах)",
+	"traffic.lag-check-interval-help": "Снижение значения этого параметра приведет увеличению чувствительности NodeBB к пикам нагрузки, но также может сделать эту проверку слишком чувствительной. (Необходим перезапуск)"
 }
