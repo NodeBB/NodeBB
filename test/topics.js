@@ -403,6 +403,112 @@ describe('Topic\'s', function () {
 			});
 		});
 
+		it('should properly update sets when post is moved', function (done) {
+			var movedPost;
+			var previousPost;
+			var topic2LastReply;
+			var tid1;
+			var tid2;
+			var cid1 = topic.categoryId;
+			var cid2;
+			function checkCidSets(post1, post2, callback) {
+				async.waterfall([
+					function (next) {
+						async.parallel({
+							topicData: function (next) {
+								topics.getTopicsFields([tid1, tid2], ['lastposttime', 'postcount'], next);
+							},
+							scores1: function (next) {
+								db.sortedSetsScore([
+									'cid:' + cid1 + ':tids',
+									'cid:' + cid1 + ':tids:lastposttime',
+									'cid:' + cid1 + ':tids:posts',
+								], tid1, next);
+							},
+							scores2: function (next) {
+								db.sortedSetsScore([
+									'cid:' + cid2 + ':tids',
+									'cid:' + cid2 + ':tids:lastposttime',
+									'cid:' + cid2 + ':tids:posts',
+								], tid2, next);
+							},
+						}, next);
+					},
+					function (results, next) {
+						assert.equal(results.topicData[0].lastposttime, results.scores1[0]);
+						assert.equal(results.topicData[1].lastposttime, results.scores2[0]);
+						assert.equal(results.topicData[0].lastposttime, results.scores1[1]);
+						assert.equal(results.topicData[1].lastposttime, results.scores2[1]);
+						assert.equal(results.topicData[0].postcount, results.scores1[2]);
+						assert.equal(results.topicData[1].postcount, results.scores2[2]);
+						assert.equal(results.topicData[0].lastposttime, post1.timestamp);
+						assert.equal(results.topicData[1].lastposttime, post2.timestamp);
+						next();
+					},
+				], callback);
+			}
+
+			async.waterfall([
+				function (next) {
+					categories.create({
+						name: 'move to this category',
+						description: 'Test category created by testing script',
+					}, next);
+				},
+				function (category, next) {
+					cid2 = category.cid;
+					topics.post({ uid: adminUid, title: 'topic1', content: 'topic 1 mainPost', cid: cid1 }, next);
+				},
+				function (result, next) {
+					tid1 = result.topicData.tid;
+					topics.reply({ uid: adminUid, content: 'topic 1 reply 1', tid: tid1 }, next);
+				},
+				function (postData, next) {
+					previousPost = postData;
+					topics.reply({ uid: adminUid, content: 'topic 1 reply 2', tid: tid1 }, next);
+				},
+				function (postData, next) {
+					movedPost = postData;
+					topics.post({ uid: adminUid, title: 'topic2', content: 'topic 2 mainpost', cid: cid2 }, next);
+				},
+				function (results, next) {
+					tid2 = results.topicData.tid;
+					topics.reply({ uid: adminUid, content: 'topic 2 reply 1', tid: tid2 }, next);
+				},
+				function (postData, next) {
+					topic2LastReply = postData;
+					checkCidSets(movedPost, postData, next);
+				},
+				function (next) {
+					db.isMemberOfSortedSets(['cid:' + cid1 + ':pids', 'cid:' + cid2 + ':pids'], movedPost.pid, next);
+				},
+				function (isMember, next) {
+					assert.deepEqual(isMember, [true, false]);
+					categories.getCategoriesFields([cid1, cid2], ['post_count'], next);
+				},
+				function (categoryData, next) {
+					assert.equal(categoryData[0].post_count, 4);
+					assert.equal(categoryData[1].post_count, 2);
+					topics.movePostToTopic(movedPost.pid, tid2, next);
+				},
+				function (next) {
+					checkCidSets(previousPost, topic2LastReply, next);
+				},
+				function (next) {
+					db.isMemberOfSortedSets(['cid:' + cid1 + ':pids', 'cid:' + cid2 + ':pids'], movedPost.pid, next);
+				},
+				function (isMember, next) {
+					assert.deepEqual(isMember, [false, true]);
+					categories.getCategoriesFields([cid1, cid2], ['post_count'], next);
+				},
+				function (categoryData, next) {
+					assert.equal(categoryData[0].post_count, 3);
+					assert.equal(categoryData[1].post_count, 3);
+					next();
+				},
+			], done);
+		});
+
 		it('should purge the topic', function (done) {
 			socketTopics.purge({ uid: 1 }, { tids: [newTopic.tid], cid: categoryObj.cid }, function (err) {
 				assert.ifError(err);
@@ -794,8 +900,8 @@ describe('Topic\'s', function () {
 			request(nconf.get('url') + '/api/topic/' + topicData.slug + '/-1', { json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
-				assert.equal(res.headers['x-redirect'], '/topic/13/topic-for-controller-test');
-				assert.equal(body, '/topic/13/topic-for-controller-test');
+				assert.equal(res.headers['x-redirect'], '/topic/15/topic-for-controller-test');
+				assert.equal(body, '/topic/15/topic-for-controller-test');
 				done();
 			});
 		});

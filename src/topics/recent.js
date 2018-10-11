@@ -3,12 +3,14 @@
 'use strict';
 
 var async = require('async');
+var winston = require('winston');
 
 var db = require('../database');
 var plugins = require('../plugins');
 var privileges = require('../privileges');
 var user = require('../user');
 var meta = require('../meta');
+var posts = require('../posts');
 
 module.exports = function (Topics) {
 	var terms = {
@@ -227,32 +229,60 @@ module.exports = function (Topics) {
 		db.getSortedSetRevRangeByScore(set, start, count, '+inf', Date.now() - since, callback);
 	};
 
-	Topics.updateTimestamp = function (tid, timestamp, callback) {
+	Topics.updateLastPostTimeFromLastPid = function (tid, callback) {
+		async.waterfall([
+			function (next) {
+				Topics.getLatestUndeletedPid(tid, next);
+			},
+			function (pid, next) {
+				if (!parseInt(pid, 10)) {
+					return callback();
+				}
+				posts.getPostField(pid, 'timestamp', next);
+			},
+			function (timestamp, next) {
+				if (!parseInt(timestamp, 10)) {
+					return callback();
+				}
+				Topics.updateLastPostTime(tid, timestamp, next);
+			},
+		], callback);
+	};
+
+	Topics.updateLastPostTime = function (tid, lastposttime, callback) {
 		async.parallel([
 			function (next) {
-				var topicData;
 				async.waterfall([
 					function (next) {
-						Topics.getTopicFields(tid, ['cid', 'deleted'], next);
+						Topics.getTopicFields(tid, ['cid', 'deleted', 'pinned'], next);
 					},
-					function (_topicData, next) {
-						topicData = _topicData;
-						db.sortedSetAdd('cid:' + topicData.cid + ':tids:lastposttime', timestamp, tid, next);
-					},
-					function (next) {
-						if (parseInt(topicData.deleted, 10) === 1) {
-							return next();
+					function (topicData, next) {
+						var tasks = [
+							async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:lastposttime', lastposttime, tid),
+						];
+
+						if (parseInt(topicData.deleted, 10) !== 1) {
+							tasks.push(async.apply(Topics.updateRecent, tid, lastposttime));
 						}
-						Topics.updateRecent(tid, timestamp, next);
+
+						if (parseInt(topicData.pinned, 10) !== 1) {
+							tasks.push(async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids', lastposttime, tid));
+						}
+						async.series(tasks, next);
 					},
 				], next);
 			},
 			function (next) {
-				Topics.setTopicField(tid, 'lastposttime', timestamp, next);
+				Topics.setTopicField(tid, 'lastposttime', lastposttime, next);
 			},
 		], function (err) {
 			callback(err);
 		});
+	};
+
+	Topics.updateTimestamp = function (tid, lastposttime, callback) {
+		winston.warn('[deprecated] Topics.updateTimestamp is deprecated please use Topics.updateLastPostTime');
+		Topics.updateLastPostTime(tid, lastposttime, callback);
 	};
 
 	Topics.updateRecent = function (tid, timestamp, callback) {
