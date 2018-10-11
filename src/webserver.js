@@ -108,7 +108,7 @@ function initializeNodeBB(callback) {
 	var middleware = require('./middleware');
 
 	async.waterfall([
-		async.apply(meta.themes.setupPaths),
+		meta.themes.setupPaths,
 		function (next) {
 			plugins.init(app, middleware, next);
 		},
@@ -125,13 +125,9 @@ function initializeNodeBB(callback) {
 		function (hotswapIds, next) {
 			routes(app, middleware, hotswapIds, next);
 		},
-		function (next) {
-			async.series([
-				meta.sounds.addUploads,
-				meta.blacklist.load,
-				flags.init,
-			], next);
-		},
+		meta.sounds.addUploads,
+		meta.blacklist.load,
+		flags.init,
 	], function (err) {
 		callback(err);
 	});
