@@ -19,7 +19,7 @@ module.exports = function (Topics) {
 				Topics.increasePostCount(postData.tid, next);
 			},
 			function (next) {
-				Topics.updateTimestamp(postData.tid, postData.timestamp, next);
+				Topics.updateLastPostTime(postData.tid, postData.timestamp, next);
 			},
 			function (next) {
 				Topics.addPostToTopic(postData.tid, postData, next);
