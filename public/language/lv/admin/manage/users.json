@@ -19,7 +19,7 @@
 
 	"pills.latest": "Jaunākie",
 	"pills.unvalidated": "Neapstiprinātie",
-	"pills.no-posts": "Nav neko rakstījuši",
+	"pills.no-posts": "Nav rakstu",
 	"pills.top-posters": "Visvairāk rakstu",
 	"pills.top-rep": "Visvairāk ranga punktu",
 	"pills.inactive": "Neaktīvie",
@@ -44,12 +44,12 @@
 	"users.uid": "uid",
 	"users.username": "lietotājvārds",
 	"users.email": "e-pasta adrese",
-	"users.postcount": "rakstu skaits",
+	"users.postcount": "raksti",
 	"users.reputation": "ranga punkti",
 	"users.flags": "atzīmes",
 	"users.joined": "reģistrējies",
-	"users.last-online": "pēdējoreiz tiešsaistē",
-	"users.banned": "bloķēts",
+	"users.last-online": "pēdējoreiz redzēts",
+	"users.banned": "bloķēts?",
 
 	"create.username": "Lietotāja vārds",
 	"create.email": "E-pasta adrese",
@@ -61,7 +61,7 @@
 	"temp-ban.reason": "Iemesls <span class=\"text-muted\">(neobligāts)</span>",
 	"temp-ban.hours": "Stundas",
 	"temp-ban.days": "Dienas",
-	"temp-ban.explanation": "Ievadi bloķēšanas termiņu. Ņemi vērā, ka 0 tiks uzskatīts par pastāvīgu bloķēšanu.",
+	"temp-ban.explanation": "Ievadīt bloķēšanas termiņu, ņemot vērā, ka 0 tiks uzskatīts par pastāvīgu bloķēšanu.",
 
 	"alerts.confirm-ban": "Vai tiešām vēlies <strong>pastāvīgi</strong> bloķēt šo lietotāju?",
 	"alerts.confirm-ban-multi": "Vai tiešām vēlies <strong>pastāvīgi</strong> bloķēt šos lietotājus?",

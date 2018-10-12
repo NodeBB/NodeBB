@@ -12,8 +12,8 @@
 	"alerts.create-failure": "<strong>Ak, vai</strong><p>Veidojot grupu, radās problēma. Lūdzu, pamēģini vēlreiz vēlāk!</p>",
 	"alerts.confirm-delete": "Vai tiešām vēlies izdzēst šo grupu?",
 
-	"edit.name": "Nosaukums",
-	"edit.description": "Apraksts",
+	"edit.name": "Grupas nosaukums",
+	"edit.description": "Grupas apraksts",
 	"edit.user-title": "Biedra etiķete",
 	"edit.icon": "Grupas ikona",
 	"edit.label-color": "Grupas etiķetes krāsa",

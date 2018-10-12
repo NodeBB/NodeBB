@@ -56,7 +56,7 @@
     "not-watching.description": "Do not notify me of new replies.<br/>Show topic in unread if category is not ignored.",
     "ignoring.description": "Do not notify me of new replies.<br/>Do not show topic in unread.",
     "thread_tools.title": "Rīkoties",
-    "thread_tools.markAsUnreadForAll": "Atzīmēt kā nelasītu visiem",
+    "thread_tools.markAsUnreadForAll": "Visiem atzīmēt kā nelasītu",
     "thread_tools.pin": "Noenkurot tematu",
     "thread_tools.unpin": "Atenkurot tematu",
     "thread_tools.lock": "Slēgt tematu",

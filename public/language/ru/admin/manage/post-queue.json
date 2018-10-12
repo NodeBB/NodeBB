@@ -1,11 +1,11 @@
 {
-	"post-queue": "Post Queue",
-	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Posting Restrictions</a> and enable <strong>Post Queue</strong>.",
-	"user": "User",
-	"category": "Category",
-	"title": "Title",
-	"content": "Content",
-	"posted": "Posted",
-	"reply-to": "Reply to \"%1\"",
-	"content-editable": "You can click on individual content to edit before posting."
+	"post-queue": "Очередь модерации",
+	"description": "В очереди нет сообщений. <br>Чтобы включить эту модерацию, откройте <a href=\"%1\">Настройки %rarr; Сообщения &rarr; Огрничения сообщений</a> и включите <strong>Модерация сообщений</strong>",
+	"user": "Участник",
+	"category": "Категория",
+	"title": "Название",
+	"content": "Содержимое",
+	"posted": "Время",
+	"reply-to": "Ответ \"%1\"",
+	"content-editable": "Вы можете отредактировать содержимое сообщения перед публикацией"
 }

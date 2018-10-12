@@ -12,8 +12,8 @@
 	"settings": "<a href=\"%1\">Noklikšķini,</a> lai apmeklētu birku iestatījumu lapu.",
 	"name": "Birkas nosaukums",
 
-	"alerts.editing-multiple": "Rediģē vairākas birkas",
-	"alerts.editing-x": "Rediģē \"%1\" birku",
+	"alerts.editing-multiple": "Rediģēt vairākas birkas",
+	"alerts.editing-x": "Rediģēt \"%1\" birku",
 	"alerts.confirm-delete": "Vai vēlies izdzēst šīs birkas?",
 	"alerts.update-success": "Birka atjaunināta!"
 }

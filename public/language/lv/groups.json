@@ -41,7 +41,7 @@
     "details.userTitleEnabled": "Rādīt nozīmīti",
     "details.private_help": "Pievienoties grupai nepieciešama grupas īpašnieka apstiprināšana",
     "details.hidden": "Paslēpta",
-    "details.hidden_help": "Grupa nav redzama grupu sarakstā un lietotāji būs jāuzaicina pašrocīgi",
+    "details.hidden_help": "Grupa nav redzama grupu sarakstā un lietotāji ir jāuzaicina pašrocīgi",
     "details.delete_group": "Izdzēst grupu",
     "details.private_system_help": "Privātās grupas ir atspējotas sistēmas līmenī, šī opcija nedara neko",
     "event.updated": "Grupas informācija ir atjaunināta",
