@@ -432,17 +432,25 @@ describe('Topic\'s', function () {
 									'cid:' + cid2 + ':tids:posts',
 								], tid2, next);
 							},
+							posts1: function (next) {
+								db.getSortedSetRangeWithScores('tid:' + tid1 + ':posts', 0, -1, next);
+							},
+							posts2: function (next) {
+								db.getSortedSetRangeWithScores('tid:' + tid2 + ':posts', 0, -1, next);
+							},
 						}, next);
 					},
 					function (results, next) {
-						assert.equal(results.topicData[0].lastposttime, results.scores1[0]);
-						assert.equal(results.topicData[1].lastposttime, results.scores2[0]);
-						assert.equal(results.topicData[0].lastposttime, results.scores1[1]);
-						assert.equal(results.topicData[1].lastposttime, results.scores2[1]);
-						assert.equal(results.topicData[0].postcount, results.scores1[2]);
-						assert.equal(results.topicData[1].postcount, results.scores2[2]);
-						assert.equal(results.topicData[0].lastposttime, post1.timestamp);
-						assert.equal(results.topicData[1].lastposttime, post2.timestamp);
+						var assertMsg = JSON.stringify(results.posts1) + '\n' + JSON.stringify(results.posts2);
+						assert.equal(results.topicData[0].postcount, results.scores1[2], assertMsg);
+						assert.equal(results.topicData[1].postcount, results.scores2[2], assertMsg);
+						assert.equal(results.topicData[0].lastposttime, post1.timestamp, assertMsg);
+						assert.equal(results.topicData[1].lastposttime, post2.timestamp, assertMsg);
+						assert.equal(results.topicData[0].lastposttime, results.scores1[0], assertMsg);
+						assert.equal(results.topicData[1].lastposttime, results.scores2[0], assertMsg);
+						assert.equal(results.topicData[0].lastposttime, results.scores1[1], assertMsg);
+						assert.equal(results.topicData[1].lastposttime, results.scores2[1], assertMsg);
+
 						next();
 					},
 				], callback);
