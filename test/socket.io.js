@@ -501,6 +501,7 @@ describe('socket.io', function () {
 	});
 
 	it('should upgrade plugin', function (done) {
+		this.timeout(0);
 		socketAdmin.plugins.upgrade({ uid: adminUid }, { id: 'nodebb-plugin-location-to-map', version: 'latest' }, function (err) {
 			assert.ifError(err);
 			done();
