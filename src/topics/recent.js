@@ -250,30 +250,26 @@ module.exports = function (Topics) {
 	};
 
 	Topics.updateLastPostTime = function (tid, lastposttime, callback) {
-		async.parallel([
-			function (next) {
-				async.waterfall([
-					function (next) {
-						Topics.getTopicFields(tid, ['cid', 'deleted', 'pinned'], next);
-					},
-					function (topicData, next) {
-						var tasks = [
-							async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:lastposttime', lastposttime, tid),
-						];
-
-						if (parseInt(topicData.deleted, 10) !== 1) {
-							tasks.push(async.apply(Topics.updateRecent, tid, lastposttime));
-						}
-
-						if (parseInt(topicData.pinned, 10) !== 1) {
-							tasks.push(async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids', lastposttime, tid));
-						}
-						async.series(tasks, next);
-					},
-				], next);
-			},
+		async.waterfall([
 			function (next) {
 				Topics.setTopicField(tid, 'lastposttime', lastposttime, next);
+			},
+			function (next) {
+				Topics.getTopicFields(tid, ['cid', 'deleted', 'pinned'], next);
+			},
+			function (topicData, next) {
+				var tasks = [
+					async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:lastposttime', lastposttime, tid),
+				];
+
+				if (parseInt(topicData.deleted, 10) !== 1) {
+					tasks.push(async.apply(Topics.updateRecent, tid, lastposttime));
+				}
+
+				if (parseInt(topicData.pinned, 10) !== 1) {
+					tasks.push(async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids', lastposttime, tid));
+				}
+				async.series(tasks, next);
 			},
 		], function (err) {
 			callback(err);
