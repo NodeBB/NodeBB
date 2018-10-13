@@ -52,4 +52,7 @@ module.exports = {
 	removeAllListeners: function (event) {
 		get().removeAllListeners(event);
 	},
+	reset: function () {
+		real = null;
+	},
 };

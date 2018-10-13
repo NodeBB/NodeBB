@@ -7,6 +7,12 @@ var db = require('./mocks/databasemock');
 var pubsub = require('../src/pubsub');
 
 describe('pubsub', function () {
+	beforeEach(function () {
+		pubsub.reset();
+	});
+	afterEach(function () {
+		pubsub.reset();
+	});
 	it('should use singleHostCluster', function (done) {
 		var oldValue = nconf.get('singleHostCluster');
 		var isCluster = nconf.get('isCluster');
