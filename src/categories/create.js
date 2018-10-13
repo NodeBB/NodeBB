@@ -75,12 +75,9 @@ module.exports = function (Categories) {
 						}
 						Categories.parseDescription(category.cid, category.description, next);
 					},
-					async.apply(db.sortedSetAdd, 'categories:cid', category.order, category.cid),
-					async.apply(db.sortedSetAdd, 'cid:' + parentCid + ':children', category.order, category.cid),
-					async.apply(privileges.categories.give, defaultPrivileges, category.cid, 'administrators'),
-					async.apply(privileges.categories.give, defaultPrivileges, category.cid, 'registered-users'),
-					async.apply(privileges.categories.give, ['find', 'read', 'topics:read'], category.cid, 'guests'),
-					async.apply(privileges.categories.give, ['find', 'read', 'topics:read'], category.cid, 'spiders'),
+					async.apply(db.sortedSetsAdd, ['categories:cid', 'cid:' + parentCid + ':children'], category.order, category.cid),
+					async.apply(privileges.categories.give, defaultPrivileges, category.cid, ['administrators', 'registered-users']),
+					async.apply(privileges.categories.give, ['find', 'read', 'topics:read'], category.cid, ['guests', 'spiders']),
 				], next);
 			},
 			function (results, next) {
