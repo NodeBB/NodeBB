@@ -18,11 +18,15 @@ function get() {
 	} else if (nconf.get('singleHostCluster')) {
 		pubsub = new EventEmitter();
 		pubsub.publish = function (event, data) {
-			process.send({
-				action: 'pubsub',
-				event: event,
-				data: data,
-			});
+			if (process.send) {
+				process.send({
+					action: 'pubsub',
+					event: event,
+					data: data,
+				});
+			} else {
+				pubsub.emit(event, data);
+			}
 		};
 		process.on('message', function (message) {
 			if (message && typeof message === 'object' && message.action === 'pubsub') {
