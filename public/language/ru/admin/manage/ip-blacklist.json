@@ -1,6 +1,6 @@
 {
 	"lead": "Настройка черного списка IP",
-	"description": "Occasionally, a user account ban is not enough of a deterrant. Other times, restricting access to the forum to a specific IP or a range of IPs is the best way to protect a forum. In these scenarios, you can add troublesome IP addresses or entire CIDR blocks to this blacklist, and they will be prevented from logging in to or registering a new account.",
+	"description": "Иногда блокировка учетной записи является недостаточной. В в этом случае ограничение доступа к форуму по IP-адресу или списку IP-адресов — лучший способ защиты. Здесь вы можете добавить нежелательные IP-адреса или целые блоки IP-адресов в формате CIDR в этот черный список, и им будет запрещено входить в систему или регистрировать новую учетную запись.",
 	"active-rules": "Активные правила",
 	"validate": "Проверить черный список",
 	"apply": "Применить черный список",

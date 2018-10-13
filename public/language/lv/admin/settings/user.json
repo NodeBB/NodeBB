@@ -1,7 +1,7 @@
 {
 	"authentication": "Autentifikācija",
 	"require-email-confirmation": "Pieprasīt apstiprinājuma e-pastu",
-	"email-confirm-interval": "Lietotājs nevar nosūtīt vēl vienu apstiprinājuma e-pastu kamēr",
+	"email-confirm-interval": "Lietotājs nevar atkārtoti nosūtīt apstiprinājuma e-pastu pirms",
 	"email-confirm-email2": "minūtes nav pagājušas",
 	"allow-login-with": "Ielogoties",
 	"allow-login-with.username-email": "Ar lietotājvārdu vai e-pasta adresi",
@@ -44,7 +44,7 @@
 	"min-password-length": "Minimālais paroles garums",
 	"min-password-strength": "Minimālais paroles stiprums",
 	"max-about-me-length": "Maksimālais \"Par mani\" garums",
-	"terms-of-use": "Forum Terms of Use <small>(Leave blank to disable)</small>",
+	"terms-of-use": "Foruma lietošanas noteikumi <small>(funkcija atspējota ja tukšs)</small>",
 	"user-search": "Meklējot lietotājos",
 	"user-search-results-per-page": "Redzamo rezultātu skaits",
 	"default-user-settings": "Noklusējuma lietotāju iestatījumi",
@@ -60,7 +60,7 @@
 	"digest-freq.monthly": "Ik mēnesi",
 	"email-chat-notifs": "Sūtīt e-pastu, ja ierodas jauna saruna un es neesmu tiešsaistē",
 	"email-post-notif": "Sūtīt e-pastu, kad kāds atbild uz tēmatiem, kurus esmu abonējis",
-	"follow-created-topics": "Sekot tēmatiem, kurus Tu izveido",
+	"follow-created-topics": "Sekot tēmatiem, kurus esi izveidojis",
 	"follow-replied-topics": "Sekot tēmatiem, kuros esi atbildējis",
 	"default-notification-settings": "Noklusējuma ziņojumu iestatījumi"
 }

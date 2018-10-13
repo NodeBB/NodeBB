@@ -1,5 +1,5 @@
 {
 	"handles": "Guest Handles",
 	"handles.enabled": "Allow guest handles",
-	"handles.enabled-help": "This option exposes a new field that allows guests to pick a name to associate with each post they make. If disabled, they will simply be called \"Guest\""
+	"handles.enabled-help": "Parādīt jaunu lauku, kas viesiem ļaus izvēlēties savu nosaukumu, kas saistīts ar katru viņu publicēto rakstu. Ja ir atspējots, viņus vienkārši sauks par \"Viesiem\""
 }

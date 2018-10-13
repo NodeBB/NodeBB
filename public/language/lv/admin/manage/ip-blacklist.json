@@ -3,7 +3,7 @@
 	"description": "Reizēm lietotāja konta bloķēšana nav pietiekošs preventīvs līdzeklis. Šādā gadījumā labākais veids, kā aizsargāt forumu, ir ierobežot piekļuvi forumam konkrētai IP adresei vai vairākām IP adresēm. Šajos scenārijos var ievietot traucējošās IP adreses vai veselus CIDR blokus šajā melnajā sarakstā, un no viņām neļaus ielogoties vai reģistrēt jaunu kontu.",
 	"active-rules": "Aktīvās rindiņas",
 	"validate": "Pārbaudīt melno sarakstu",
-	"apply": "Iespējot melno sarakstu",
+	"apply": "Saglabāt melno sarakstu",
 	"hints": "Sintakses padomi",
 	"hint-1": "Noteikt vienu IP adresi katrā rindiņā. Var arī noteikt IP blokus, ja vien tie ievēro CIDR formātu (piemēram, <code>192.168.100.0/22</code>).",
 	"hint-2": "Var pievienot komentārus, sākot rindiņas ar simbolu <code>#</code>.",

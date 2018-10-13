@@ -40,7 +40,7 @@
 	"privileges.section-group": "Grupa",
 	"privileges.group-private": "Grupa ir privāta",
 	"privileges.search-group": "Pievienot grupu",
-	"privileges.copy-to-children": "Kopēt apakškategorijās",
+	"privileges.copy-to-children": "Kopēt uz apakškategorijām",
 	"privileges.copy-from-category": "Kopēt no kategorijas",
 	"privileges.inherit": "If the <code>registered-users</code> group is granted a specific privilege, all other groups receive an <strong>implicit privilege</strong>, even if they are not explicitly defined/checked. This implicit privilege is shown to you because all users are part of the <code>registered-users</code> user group, and so, privileges for additional groups need not be explicitly granted.",
 
@@ -67,7 +67,7 @@
 	"alert.user-search": "Meklēt lietotājus šeit",
 	"alert.find-group": "Meklēt grupās",
 	"alert.group-search": "Meklēt grupas šeit...",
-	"collapse-all": "Sakļaut visus",
-	"expand-all": "Izvērst visus",
+	"collapse-all": "Sakļaut visas",
+	"expand-all": "Izvērst visas",
 	"disable-on-create": "Atiestatīt pie izveidošanas"
 }
