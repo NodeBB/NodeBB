@@ -17,22 +17,22 @@ function get() {
 		pubsub.publish = pubsub.emit.bind(pubsub);
 	} else if (nconf.get('singleHostCluster')) {
 		pubsub = new EventEmitter();
-		pubsub.publish = function (event, data) {
-			if (process.send) {
+		if (!process.send) {
+			pubsub.publish = pubsub.emit.bind(pubsub);
+		} else {
+			pubsub.publish = function (event, data) {
 				process.send({
 					action: 'pubsub',
 					event: event,
 					data: data,
 				});
-			} else {
-				pubsub.emit(event, data);
-			}
-		};
-		process.on('message', function (message) {
-			if (message && typeof message === 'object' && message.action === 'pubsub') {
-				pubsub.emit(message.event, message.data);
-			}
-		});
+			};
+			process.on('message', function (message) {
+				if (message && typeof message === 'object' && message.action === 'pubsub') {
+					pubsub.emit(message.event, message.data);
+				}
+			});
+		}
 	} else if (nconf.get('redis')) {
 		pubsub = require('./database/redis/pubsub');
 	} else if (nconf.get('mongo')) {
@@ -42,7 +42,6 @@ function get() {
 	}
 
 	real = pubsub;
-
 	return pubsub;
 }
 
@@ -55,8 +54,5 @@ module.exports = {
 	},
 	removeAllListeners: function (event) {
 		get().removeAllListeners(event);
-	},
-	reset: function () {
-		real = null;
 	},
 };
