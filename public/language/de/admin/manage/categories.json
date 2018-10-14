@@ -19,7 +19,7 @@
 	"parent-category-none": "(Keine)",
 	"copy-settings": "Kopiere Einstellungen von",
 	"optional-clone-settings": "(Optional) dubliziere Einstellungen von Kategorie",
-	"clone-children": "Clone Children Categories And Settings",
+	"clone-children": "Kopiere Subkategorien und Einstellungen",
 	"purge": "Kategorie löschen",
 
 	"enable": "Aktivieren",
@@ -69,5 +69,5 @@
 	"alert.group-search": "Hier nach einer Gruppe suchen...",
 	"collapse-all": "Alle einklappen",
 	"expand-all": "Alle ausklappen",
-	"disable-on-create": "Disable on create"
+	"disable-on-create": "Deaktiviere beim erstellen"
 }
