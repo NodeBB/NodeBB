@@ -37,7 +37,6 @@ Loader.init = function (callback) {
 	}
 
 	process.on('SIGHUP', Loader.restart);
-	process.on('SIGUSR2', Loader.reload);
 	process.on('SIGTERM', Loader.stop);
 	callback();
 };
@@ -83,10 +82,6 @@ Loader.addWorkerEvents = function (worker) {
 			case 'restart':
 				console.log('[cluster] Restarting...');
 				Loader.restart();
-				break;
-			case 'reload':
-				console.log('[cluster] Reloading...');
-				Loader.reload();
 				break;
 			case 'pubsub':
 				workers.forEach(function (w) {
@@ -185,14 +180,6 @@ Loader.restart = function () {
 			process.env.url = conf.url;
 		}
 		Loader.start();
-	});
-};
-
-Loader.reload = function () {
-	workers.forEach(function (worker) {
-		worker.send({
-			action: 'reload',
-		});
 	});
 };
 

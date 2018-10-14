@@ -118,19 +118,6 @@ function addProcessHandlers() {
 	process.on('SIGTERM', shutdown);
 	process.on('SIGINT', shutdown);
 	process.on('SIGHUP', restart);
-	process.on('message', function (message) {
-		if (typeof message !== 'object') {
-			return;
-		}
-		var meta = require('./meta');
-
-		switch (message.action) {
-		case 'reload':
-			meta.reload();
-			break;
-		}
-	});
-
 	process.on('uncaughtException', function (err) {
 		winston.error(err);
 
