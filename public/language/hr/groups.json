@@ -28,6 +28,7 @@
     "details.grant": "Dozvoli/Ukini vlasništvo",
     "details.kick": "Izbaci",
     "details.kick_confirm": "Jeste li sigurni da želite izbaciti ovog člana iz grupe?",
+    "details.add-member": "Add Member",
     "details.owner_options": "\"Administracija grupe",
     "details.group_name": "Ime grupe",
     "details.member_count": "Broj članova",

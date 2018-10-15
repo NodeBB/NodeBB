@@ -6,6 +6,5 @@
 	"max-posts-per-page": "每页最多帖子数",
 	"categories": "版块分页",
 	"topics-per-page": "每页主题数",
-	"max-topics-per-page": "每页最多主题数",
-	"initial-num-load": "最初加载未读，最新，热门的话题"
+	"max-topics-per-page": "每页最多主题数"
 }

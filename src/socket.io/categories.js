@@ -174,7 +174,17 @@ SocketCategories.ignore = function (socket, cid, callback) {
 };
 
 function ignoreOrWatch(fn, socket, cid, callback) {
+	var targetUid = socket.uid;
+	var cids = [parseInt(cid, 10)];
+	if (typeof cid === 'object') {
+		targetUid = cid.uid;
+		cids = [parseInt(cid.cid, 10)];
+	}
+
 	async.waterfall([
+		function (next) {
+			user.isAdminOrGlobalModOrSelf(socket.uid, targetUid, next);
+		},
 		function (next) {
 			db.getSortedSetRange('categories:cid', 0, -1, next);
 		},
@@ -187,10 +197,7 @@ function ignoreOrWatch(fn, socket, cid, callback) {
 				c.parentCid = parseInt(c.parentCid, 10);
 			});
 
-			var cids = [parseInt(cid, 10)];
-
 			// filter to subcategories of cid
-
 			var cat;
 			do {
 				cat = categoryData.find(function (c) {
@@ -202,11 +209,14 @@ function ignoreOrWatch(fn, socket, cid, callback) {
 			} while (cat);
 
 			async.each(cids, function (cid, next) {
-				fn(socket.uid, cid, next);
+				fn(targetUid, cid, next);
 			}, next);
 		},
 		function (next) {
-			topics.pushUnreadCount(socket.uid, next);
+			topics.pushUnreadCount(targetUid, next);
+		},
+		function (next) {
+			next(null, cids);
 		},
 	], callback);
 }

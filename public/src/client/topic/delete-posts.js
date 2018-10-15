@@ -18,6 +18,10 @@ define('forum/topic/delete-posts', ['components', 'postSelect'], function (compo
 	}
 
 	function onDeletePostsClicked() {
+		if (modal) {
+			return;
+		}
+
 		app.parseAndTranslate('partials/delete_posts_modal', {}, function (html) {
 			modal = html;
 

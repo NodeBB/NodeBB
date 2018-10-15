@@ -19,6 +19,7 @@
 	"parent-category-none": "(なし)",
 	"copy-settings": "設定をコピー",
 	"optional-clone-settings": "カテゴリからのクローン設定(任意)",
+	"clone-children": "Clone Children Categories And Settings",
 	"purge": "カテゴリを切り離す",
 
 	"enable": "有効",
@@ -67,5 +68,6 @@
 	"alert.find-group": "グループを探す",
 	"alert.group-search": "ここでグループを検索する...",
 	"collapse-all": "Collapse All",
-	"expand-all": "Expand All"
+	"expand-all": "Expand All",
+	"disable-on-create": "Disable on create"
 }

@@ -28,6 +28,7 @@
     "details.grant": "Conceder/Rescindir Propiedad",
     "details.kick": "Expulsar",
     "details.kick_confirm": "¿ Estás seguro de que quieres eliminar a este miembro del grupo ?",
+    "details.add-member": "Add Member",
     "details.owner_options": "Administración De Grupo",
     "details.group_name": "Nombre de Grupo",
     "details.member_count": "Numero de Miembros",

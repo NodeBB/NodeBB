@@ -4,6 +4,8 @@
     "invite": "คำเชิญจาก %1",
     "greeting_no_name": "สวัสดี",
     "greeting_with_name": "สวัสดี %1",
+    "email.verify-your-email.subject": "Please verify your email",
+    "email.verify.text1": "Your email address has changed!",
     "welcome.text1": "ขอบคุณที่ลงทะเบียนกับ %1",
     "welcome.text2": "เพื่อให้การบัญชีของคุณใช้งานได้อย่างเสร็จสมบูรณ์ เราจำเป็นต้องยืนยันว่าคุณเป็นเจ้าของที่แท้จริงของอีเมล์ที่ใช้สมัครสมาชิก",
     "welcome.text3": "ผู้ดูแลระบบได้ทำการยอมรับการสมัครสมาชิกของคุณแล้ว คุณสามารถเข้าสู่ระบบด้วย ชื่อผู้ใช้/รหัสผ่าน ได้แล้วตอนนี้",

@@ -1,11 +1,11 @@
 {
-	"post-cache": "Post Cache",
-	"posts-in-cache": "Posts in Cache",
-	"average-post-size": "Average Post Size",
-	"length-to-max": "Length / Max",
-	"percent-full": "%1% Full",
-	"post-cache-size": "Post Cache Size",
-	"items-in-cache": "Items in Cache",
-	"control-panel": "Control Panel",
-	"update-settings": "Update Cache Settings"
+	"post-cache": "Cache de Publicações",
+	"posts-in-cache": "Publicações em Cache",
+	"average-post-size": "Média do Tamanho das Publicações",
+	"length-to-max": "Comprimento / Máximo",
+	"percent-full": "%1% Cheio",
+	"post-cache-size": "Tamanho da Cache de Publicações",
+	"items-in-cache": "Itens em Cache",
+	"control-panel": "Painel de Controlo",
+	"update-settings": "Atualizar Definições de Cache"
 }

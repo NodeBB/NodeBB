@@ -6,6 +6,5 @@
 	"max-posts-per-page": "Mensajes máximos por página",
 	"categories": "Paginación de Categorías",
 	"topics-per-page": "Temas por Página",
-	"max-topics-per-page": "Máximo de temas por página",
-	"initial-num-load": "Número Inicial de Temas para cargar en No Leídos, Recientes, Populares"
+	"max-topics-per-page": "Máximo de temas por página"
 }

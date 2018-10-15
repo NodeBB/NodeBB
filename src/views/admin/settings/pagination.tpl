@@ -30,7 +30,6 @@
 		<form>
 			<strong>[[admin/settings/pagination:topics-per-page]]</strong><br /> <input type="text" class="form-control" value="20" data-field="topicsPerPage"><br />
 			<strong>[[admin/settings/pagination:max-topics-per-page]]</strong><br /> <input type="text" class="form-control" value="20" data-field="maxTopicsPerPage"><br/>
-			<strong>[[admin/settings/pagination:initial-num-load]]</strong><br /> <input type="text" class="form-control" value="20" data-field="topicsPerList">
 		</form>
 	</div>
 </div>

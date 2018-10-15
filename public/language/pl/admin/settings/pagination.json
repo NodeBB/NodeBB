@@ -6,6 +6,5 @@
 	"max-posts-per-page": "Maksymalna liczba postów na stronie",
 	"categories": "Paginacja kategorii",
 	"topics-per-page": "Tematów na stronę",
-	"max-topics-per-page": "Maksymalna liczba tematów na stronie",
-	"initial-num-load": "Początkowa liczba tematów ładowanych w Nieprzeczytanych, Ostatnich i Popularnych"
+	"max-topics-per-page": "Maksymalna liczba tematów na stronie"
 }

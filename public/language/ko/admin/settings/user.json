@@ -1,6 +1,5 @@
 {
 	"authentication": "로그인",
-	"allow-local-login": "로컬 로그인 허용",
 	"require-email-confirmation": "이메일 인증 필수화",
 	"email-confirm-interval": "다음의 경우 사용자는 인증 이메일을 재전송할 수 없습니다:",
 	"email-confirm-email2": "분 후",

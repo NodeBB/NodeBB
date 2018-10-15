@@ -98,6 +98,7 @@ mongoModule.getConnectionOptions = function () {
 		reconnectTries: 3600,
 		reconnectInterval: 1000,
 		autoReconnect: true,
+		useNewUrlParser: true,
 	};
 
 	return _.merge(connOptions, nconf.get('mongo:options') || {});
@@ -118,7 +119,6 @@ mongoModule.init = function (callback) {
 		}
 		client = _client;
 		db = client.db();
-
 		mongoModule.client = db;
 
 		require('./mongo/main')(db, mongoModule);
@@ -126,6 +126,10 @@ mongoModule.init = function (callback) {
 		require('./mongo/sets')(db, mongoModule);
 		require('./mongo/sorted')(db, mongoModule);
 		require('./mongo/list')(db, mongoModule);
+		require('./mongo/transaction')(db, mongoModule);
+
+		mongoModule.async = require('../promisify')(mongoModule, ['client', 'sessionStore']);
+
 		callback();
 	});
 };

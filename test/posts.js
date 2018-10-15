@@ -30,7 +30,6 @@ describe('Post\'s', function () {
 	var cid;
 
 	before(function (done) {
-		groups.resetCache();
 		async.series({
 			voterUid: function (next) {
 				user.create({ username: 'upvoter' }, next);

@@ -28,6 +28,7 @@
     "details.grant": "Promouvoir/rétrograder comme propriétaire",
     "details.kick": "Exclure",
     "details.kick_confirm": "Voulez-vous vraiment supprimer ce membre du groupe ?",
+    "details.add-member": "Ajouter un membre",
     "details.owner_options": "Administration du groupe",
     "details.group_name": "Nom du groupe",
     "details.member_count": "Nombre de membres",

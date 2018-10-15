@@ -28,7 +28,6 @@ describe('Controllers', function () {
 	var category;
 
 	before(function (done) {
-		groups.resetCache();
 		async.series({
 			category: function (next) {
 				categories.create({
@@ -72,15 +71,17 @@ describe('Controllers', function () {
 			});
 		}
 		var message = utils.generateUUID();
-		var tplPath = path.join(nconf.get('views_dir'), 'custom.tpl');
+		var name = 'custom.tpl';
+		var tplPath = path.join(nconf.get('views_dir'), name);
 
-		before(function () {
+		before(function (done) {
 			plugins.registerHook('myTestPlugin', {
 				hook: 'action:homepage.get:custom',
 				method: hookMethod,
 			});
 
 			fs.writeFileSync(tplPath, message);
+			meta.templates.compileTemplate(name, message, done);
 		});
 
 		it('should load default', function (done) {
@@ -433,6 +434,15 @@ describe('Controllers', function () {
 
 	it('should load category rss feed', function (done) {
 		request(nconf.get('url') + '/category/' + cid + '.rss', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load topics rss feed', function (done) {
+		request(nconf.get('url') + '/topics.rss', function (err, res, body) {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
@@ -1064,7 +1074,6 @@ describe('Controllers', function () {
 			});
 		});
 
-
 		it('should load /user/foo/posts', function (done) {
 			request(nconf.get('url') + '/api/user/foo/posts', function (err, res, body) {
 				assert.ifError(err);
@@ -1157,6 +1166,24 @@ describe('Controllers', function () {
 
 		it('should load /user/foo/consent', function (done) {
 			request(nconf.get('url') + '/api/user/foo/consent', { jar: jar }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load /user/foo/sessions', function (done) {
+			request(nconf.get('url') + '/api/user/foo/sessions', { jar: jar }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load /user/foo/categories', function (done) {
+			request(nconf.get('url') + '/api/user/foo/categories', { jar: jar }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);

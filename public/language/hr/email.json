@@ -4,6 +4,8 @@
     "invite": "Poziv s %1",
     "greeting_no_name": "Zdravo",
     "greeting_with_name": "Zdravo %1",
+    "email.verify-your-email.subject": "Please verify your email",
+    "email.verify.text1": "Your email address has changed!",
     "welcome.text1": "Zahvaljujemo na registraciji na %1!",
     "welcome.text2": "Da bi u potpunosti aktivirali Vaš račun, moramo provjeriti da li ste Vi pravi vlasnik email adrese sa kojom ste se registrirali.",
     "welcome.text3": "Administrator je prihvatio vaš zahtjev za registraciju. Možete se prijaviti koristeći svoje korisničko ime i lozinku.",

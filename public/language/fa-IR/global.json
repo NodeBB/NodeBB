@@ -85,6 +85,7 @@
     "language": "زبان",
     "guest": "مهمان",
     "guests": "مهمان‌ها",
+    "former_user": "A Former User",
     "updated.title": "انجمن بروزرسانی شد",
     "updated.message": "این انجمن به آخرین نسخه بروزرسانی شد. برای بارگذاری مجدد صفحه اینجا کلیک کنید.",
     "privacy": "حریم خصوصی",
@@ -97,7 +98,7 @@
     "enter_page_number": "شماره صفحه را وارد کنید",
     "upload_file": "بارگذاری فایل",
     "upload": "بارگذاری",
-    "uploads": "Uploads",
+    "uploads": "آپلود ها",
     "allowed-file-types": "فایل قابل قبول اینها هستند %1",
     "unsaved-changes": "تغییرات شما ذخیره نشده. شما مطمئن هستید که میخواهید از اینجا دور شوید؟",
     "reconnecting-message": "اتصال شما به %1  به نظر می‌رسد از دست رفته. لطفا صبر کنید ما سعی می‌کنیم که دوباره شما را متصل کنیم.",
@@ -107,6 +108,6 @@
     "cookies.learn_more": "بیشتر بدانید",
     "edited": "Edited",
     "disabled": "Disabled",
-    "select": "Select",
-    "user-search-prompt": "Type something here to find users..."
+    "select": "انتخاب",
+    "user-search-prompt": "برای پیدا کردن کاربر اینجا چیزی بنویسید..."
 }

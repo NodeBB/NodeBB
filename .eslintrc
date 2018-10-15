@@ -36,6 +36,10 @@
 		"no-restricted-globals": "off",
 		"function-paren-newline": "off",
 		"import/no-unresolved": "error",
+		"quotes": ["error", "single", {
+			"avoidEscape": true,
+			"allowTemplateLiterals": true
+		}],
 
 		// ES6
 		"prefer-rest-params": "off",

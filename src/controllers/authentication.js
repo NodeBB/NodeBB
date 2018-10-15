@@ -12,10 +12,9 @@ var meta = require('../meta');
 var user = require('../user');
 var plugins = require('../plugins');
 var utils = require('../utils');
-var Password = require('../password');
 var translator = require('../translator');
 var helpers = require('./helpers');
-
+var privileges = require('../privileges');
 var sockets = require('../socket.io');
 
 var authenticationController = module.exports;
@@ -398,23 +397,25 @@ authenticationController.localLogin = function (req, username, password, next) {
 			uid = _uid;
 
 			async.parallel({
-				userData: function (next) {
-					db.getObjectFields('user:' + uid, ['password', 'passwordExpiry'], next);
-				},
+				userData: async.apply(db.getObjectFields, 'user:' + uid, ['passwordExpiry']),
 				isAdminOrGlobalMod: function (next) {
 					user.isAdminOrGlobalMod(uid, next);
 				},
 				banned: function (next) {
 					user.isBanned(uid, next);
 				},
+				hasLoginPrivilege: function (next) {
+					privileges.global.can('local:login', uid, next);
+				},
 			}, next);
 		},
 		function (result, next) {
-			userData = result.userData;
-			userData.uid = uid;
-			userData.isAdminOrGlobalMod = result.isAdminOrGlobalMod;
+			userData = Object.assign(result.userData, {
+				uid: uid,
+				isAdminOrGlobalMod: result.isAdminOrGlobalMod,
+			});
 
-			if (!result.isAdminOrGlobalMod && parseInt(meta.config.allowLocalLogin, 10) === 0) {
+			if (parseInt(uid, 10) && !result.hasLoginPrivilege) {
 				return next(new Error('[[error:local-login-disabled]]'));
 			}
 
@@ -422,16 +423,13 @@ authenticationController.localLogin = function (req, username, password, next) {
 				return getBanInfo(uid, next);
 			}
 
-			user.auth.logAttempt(uid, req.ip, next);
-		},
-		function (next) {
-			Password.compare(password, userData.password, next);
+			user.isPasswordCorrect(uid, password, req.ip, next);
 		},
 		function (passwordMatch, next) {
 			if (!passwordMatch) {
 				return next(new Error('[[error:invalid-login-credentials]]'));
 			}
-			user.auth.clearLoginAttempts(uid);
+
 			next(null, userData, '[[success:authentication-successful]]');
 		},
 	], next);

@@ -15,12 +15,13 @@ pubsub.on('admin:navigation:save', function () {
 
 admin.save = function (data, callback) {
 	var order = Object.keys(data);
-	var items = data.map(function (item) {
+	var items = data.map(function (item, index) {
 		for (var i in item) {
 			if (item.hasOwnProperty(i) && typeof item[i] === 'string' && (i === 'title' || i === 'text')) {
 				item[i] = translator.escape(item[i]);
 			}
 		}
+		item.order = order[index];
 		return JSON.stringify(item);
 	});
 

@@ -28,6 +28,7 @@
     "details.grant": "Grant/Rescind Ownership",
     "details.kick": "Kick",
     "details.kick_confirm": "Are you sure you want to remove this member from the group?",
+    "details.add-member": "Add Member",
     "details.owner_options": "Administrarea grupului",
     "details.group_name": "Numele grupului",
     "details.member_count": "Număr de membrii",

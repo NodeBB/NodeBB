@@ -28,6 +28,7 @@
     "details.grant": "寄贈/取り消す管理権限",
     "details.kick": "キック",
     "details.kick_confirm": "このメンバーをグループから削除",
+    "details.add-member": "Add Member",
     "details.owner_options": "グループの管理",
     "details.group_name": "グループ名",
     "details.member_count": "メンバー数",

@@ -32,5 +32,9 @@
 	"redis.iops": "Operaciones Instantáneas por Segundo",
 	"redis.keyspace-hits": "Pulsaciones de espaciado del teclado",
 	"redis.keyspace-misses": "Fallos de espaciado del teclado",
-	"redis.raw-info": "Fila de Información de Redis"
+	"redis.raw-info": "Fila de Información de Redis",
+
+	"postgres": "Postgres",
+	"postgres.version": "PostgreSQL Version",
+	"postgres.raw-info": "Postgres Raw Info"
 }

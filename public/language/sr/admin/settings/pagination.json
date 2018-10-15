@@ -6,6 +6,5 @@
 	"max-posts-per-page": "Maximum posts per page",
 	"categories": "Category Pagination",
 	"topics-per-page": "Topics per Page",
-	"max-topics-per-page": "Maximum topics per page",
-	"initial-num-load": "Initial Number of Topics to Load on Unread, Recent, and Popular"
+	"max-topics-per-page": "Maximum topics per page"
 }

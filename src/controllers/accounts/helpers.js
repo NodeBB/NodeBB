@@ -66,6 +66,17 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 								admin: true,
 							},
 						}, {
+							id: 'sessions',
+							route: 'sessions',
+							name: '[[pages:account/sessions]]',
+							visibility: {
+								self: true,
+								other: false,
+								moderator: false,
+								globalMod: false,
+								admin: false,
+							},
+						}, {
 							id: 'consent',
 							route: 'consent',
 							name: '[[user:consent.title]]',

@@ -32,5 +32,9 @@
 	"redis.iops": "Instantaneous Ops. Per Second",
 	"redis.keyspace-hits": "Keyspace Hits",
 	"redis.keyspace-misses": "Keyspace Misses",
-	"redis.raw-info": "Redis Raw Info"
+	"redis.raw-info": "Redis Raw Info",
+
+	"postgres": "Postgres",
+	"postgres.version": "PostgreSQL Version",
+	"postgres.raw-info": "Postgres Raw Info"
 }

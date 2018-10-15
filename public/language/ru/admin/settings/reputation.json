@@ -3,12 +3,12 @@
 	"disable": "Отключить Репутационную Систему",
 	"disable-down-voting": "Отключить Понижение Репутации",
 	"votes-are-public": "Все Голоса Общедоступны",
-	"thresholds": "Activity Thresholds",
+	"thresholds": "Пороговые значения",
 	"min-rep-downvote": "Минимальная репутация для понижения рейтинга сообщения",
-	"min-rep-flag": "Minimum reputation to flag posts",
+	"min-rep-flag": "Минимальная репутация для простановки отметки сообщению",
 	"min-rep-website": "Минимальная репутация для добавления «Веб-сайта» в профиль пользователя",
 	"min-rep-aboutme": "Минимальная репутация, чтобы добавить «Обо мне» в профиль пользователя",
 	"min-rep-signature": "Минимальная репутация для добавления «Подписи» в профиль пользователя",
-	"min-rep-profile-picture": "Minimum reputation to add \"Profile Picture\" to user profile",
-	"min-rep-cover-picture": "Minimum reputation to add \"Cover Picture\" to user profile"
+	"min-rep-profile-picture": "Минимальная репутация для добавления \"Картинка профиля\" к профилю участника",
+	"min-rep-cover-picture": "Минимальная репутация для добавления \"Обложка профиля\" к профилю участника"
 }

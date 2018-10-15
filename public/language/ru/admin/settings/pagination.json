@@ -1,11 +1,10 @@
 {
-	"pagination": "Pagination Settings",
-	"enable": "Paginate topics and posts instead of using infinite scroll.",
-	"topics": "Topic Pagination",
-	"posts-per-page": "Posts per Page",
-	"max-posts-per-page": "Maximum posts per page",
-	"categories": "Category Pagination",
-	"topics-per-page": "Topics per Page",
-	"max-topics-per-page": "Maximum topics per page",
-	"initial-num-load": "Initial Number of Topics to Load on Unread, Recent, and Popular"
+	"pagination": "Настройки разбивки на страницы",
+	"enable": "Разбивать темы и записи на страницы вместо бесконечной прокрутки.",
+	"topics": "Разбивка темы на страницы",
+	"posts-per-page": "Записей на страницу",
+	"max-posts-per-page": "Максимальное количество записей на странице",
+	"categories": "Разбивка категорий на страницы",
+	"topics-per-page": "Тем на странице",
+	"max-topics-per-page": "Максимально количество тем на странице"
 }

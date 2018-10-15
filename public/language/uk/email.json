@@ -4,6 +4,8 @@
     "invite": "Запрошення від %1",
     "greeting_no_name": "Привіт",
     "greeting_with_name": "Привіт %1",
+    "email.verify-your-email.subject": "Please verify your email",
+    "email.verify.text1": "Your email address has changed!",
     "welcome.text1": "Дякуємо за реєстрацію з %1!",
     "welcome.text2": "Щоб повністю активувати ваш акаунт, нам потрібно перевірити, що вам належить електронна адреса, яку ви вказали при реєстрації  ",
     "welcome.text3": "Адміністратор схвалив ваш запит на реєстрацію. Ви можете залогінитись, використовуючи свій пароль та назву акаунту",

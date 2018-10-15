@@ -4,6 +4,8 @@
     "invite": "Ubutumire buvuye kuri %1",
     "greeting_no_name": "Mwirwe",
     "greeting_with_name": "Mwiriwe %1",
+    "email.verify-your-email.subject": "Please verify your email",
+    "email.verify.text1": "Your email address has changed!",
     "welcome.text1": "Urakoze kwiyandika nk'ukoresha %1!",
     "welcome.text2": "Kugirango tuguhe uburenganzira busesuye bwo gukoresha konte yawe, tugomba kubanza gusuzuma niba email watanze wiyandikisha ari iyawe. ",
     "welcome.text3": "Umuyobozi w'urubuga yemeye ubusabe bwawe bwo kwandikwa nk'ukoresha urubuga. Ushobora noneho kwinjiramo ukoresheje izina n'ijambobanga byawe.",

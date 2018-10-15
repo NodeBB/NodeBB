@@ -28,9 +28,15 @@ module.exports = function (Categories) {
 			return;
 		}
 
-		category.name = validator.escape(String(category.name || ''));
-		category.disabled = category.hasOwnProperty('disabled') ? parseInt(category.disabled, 10) === 1 : undefined;
-		category.isSection = category.hasOwnProperty('isSection') ? parseInt(category.isSection, 10) === 1 : undefined;
+		if (category.hasOwnProperty('name')) {
+			category.name = validator.escape(String(category.name || ''));
+		}
+		if (category.hasOwnProperty('disabled')) {
+			category.disabled = parseInt(category.disabled, 10) === 1;
+		}
+		if (category.hasOwnProperty('isSection')) {
+			category.isSection = parseInt(category.isSection, 10) === 1;
+		}
 
 		if (category.hasOwnProperty('icon')) {
 			category.icon = category.icon || 'hidden';

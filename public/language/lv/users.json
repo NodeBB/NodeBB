@@ -1,0 +1,22 @@
+{
+    "latest_users": "Jaunākie lietotāji",
+    "top_posters": "Visvairāk rakstu",
+    "most_reputation": "Visvairāk ranga punktu",
+    "most_flags": "Visvairāk atzīmju",
+    "search": "Meklēt",
+    "enter_username": "Meklējamais lietotājvārds",
+    "load_more": "Ielādēt vairāk",
+    "users-found-search-took": "Atrasti %1 lietotājs(-i)! Meklēšana ilga %2 sekundes.",
+    "filter-by": "Filtrēt pēc",
+    "online-only": "Tikai tiešsaistē",
+    "invite": "Uzaicināt",
+    "prompt-email": "E-pasta adreses:",
+    "invitation-email-sent": "Ielūguma e-pasts ir nosūtīts %1",
+    "user_list": "Lietotāju saraksts",
+    "recent_topics": "Nesenie temati",
+    "popular_topics": "Populārie temati",
+    "unread_topics": "Nelasītie temati",
+    "categories": "Kategorijas",
+    "tags": "Birkas",
+    "no-users-found": "Nav lietotāju!"
+}

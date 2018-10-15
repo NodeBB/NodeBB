@@ -1,6 +1,5 @@
 {
 	"authentication": "Kimlik Doğrulama",
-	"allow-local-login": "Yerel girişe izin ver",
 	"require-email-confirmation": "E-posta Onayı Gerektirir",
 	"email-confirm-interval": "Kullanıcı onay e-postasını gönderemez",
 	"email-confirm-email2": "dakika geçti",

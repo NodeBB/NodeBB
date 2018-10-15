@@ -108,7 +108,7 @@ function initializeNodeBB(callback) {
 	var middleware = require('./middleware');
 
 	async.waterfall([
-		async.apply(meta.themes.setupPaths),
+		meta.themes.setupPaths,
 		function (next) {
 			plugins.init(app, middleware, next);
 		},
@@ -125,13 +125,9 @@ function initializeNodeBB(callback) {
 		function (hotswapIds, next) {
 			routes(app, middleware, hotswapIds, next);
 		},
-		function (next) {
-			async.series([
-				meta.sounds.addUploads,
-				meta.blacklist.load,
-				flags.init,
-			], next);
-		},
+		meta.sounds.addUploads,
+		meta.blacklist.load,
+		flags.init,
 	], function (err) {
 		callback(err);
 	});
@@ -147,15 +143,7 @@ function setupExpressApp(app, callback) {
 	app.engine('tpl', function (filepath, data, next) {
 		filepath = filepath.replace(/\.tpl$/, '.js');
 
-		middleware.templatesOnDemand({
-			filePath: filepath,
-		}, null, function (err) {
-			if (err) {
-				return next(err);
-			}
-
-			Benchpress.__express(filepath, data, next);
-		});
+		Benchpress.__express(filepath, data, next);
 	});
 	app.set('view engine', 'tpl');
 	app.set('views', viewsDir);
@@ -193,13 +181,19 @@ function setupExpressApp(app, callback) {
 		saveUninitialized: true,
 	}));
 
-	app.use(helmet());
-	app.use(helmet.referrerPolicy({ policy: 'strict-origin-when-cross-origin' }));
-	app.use(helmet.hsts({
+	var hsts_option = {
 		maxAge: parseInt(meta.config['hsts-maxage'], 10) || 31536000,
 		includeSubdomains: !!parseInt(meta.config['hsts-subdomains'], 10),
 		preload: !!parseInt(meta.config['hsts-preload'], 10),
+		setIf: function () {
+			// If not set, default to on - previous and recommended behavior
+			return meta.config['hsts-enabled'] === undefined || !!parseInt(meta.config['hsts-enabled'], 10);
+		},
+	};
+	app.use(helmet({
+		hsts: hsts_option,
 	}));
+	app.use(helmet.referrerPolicy({ policy: 'strict-origin-when-cross-origin' }));
 	app.use(middleware.addHeaders);
 	app.use(middleware.processRender);
 	auth.initialize(app, middleware);

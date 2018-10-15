@@ -2,7 +2,7 @@
     "administrators": "Administratorzy",
     "global-moderators": "Globalni moderatorzy",
     "no-global-moderators": "Brak globalnych moderatorów",
-    "moderators-of-category": "%1 moderator(ów)",
+    "moderators-of-category": "Moderatorzy %1",
     "no-moderators": "Brak moderatorów",
     "add-administrator": "Dodaj administratora",
     "add-global-moderator": "Dodaj globalnego moderatora",

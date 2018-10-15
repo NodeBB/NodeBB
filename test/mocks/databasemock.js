@@ -25,7 +25,7 @@ nconf.defaults({
 
 if (!nconf.get('isCluster')) {
 	nconf.set('isPrimary', 'true');
-	nconf.set('isCluster', 'false');
+	nconf.set('isCluster', 'true');
 }
 
 var dbType = nconf.get('database');
@@ -56,6 +56,14 @@ if (!testDbConfig) {
 		'    "host": "127.0.0.1,127.0.0.1,127.0.0.1",\n' +
 		'    "port": "27017,27018,27019",\n' +
 		'    "username": "",\n' +
+		'    "password": "",\n' +
+		'    "database": "nodebb_test"\n' +
+		'}\n' +
+		' or (postgres):\n' +
+		'"test_database": {\n' +
+		'    "host": "127.0.0.1",\n' +
+		'    "port": "5432",\n' +
+		'    "username": "postgres",\n' +
 		'    "password": "",\n' +
 		'    "database": "nodebb_test"\n' +
 		'}\n' +
@@ -154,6 +162,11 @@ function setupMockDefaults(callback) {
 			db.emptydb(next);
 		},
 		function (next) {
+			var groups = require('../../src/groups');
+			groups.resetCache();
+			next();
+		},
+		function (next) {
 			winston.info('test_database flushed');
 			setupDefaultConfigs(meta, next);
 		},
@@ -205,7 +218,10 @@ function setupDefaultConfigs(meta, next) {
 
 function giveDefaultGlobalPrivileges(next) {
 	var privileges = require('../../src/privileges');
-	privileges.global.give(['chat', 'upload:post:image', 'signature', 'search:content', 'search:users', 'search:tags'], 'registered-users', next);
+	privileges.global.give([
+		'chat', 'upload:post:image', 'signature', 'search:content',
+		'search:users', 'search:tags', 'local:login',
+	], 'registered-users', next);
 }
 
 function enableDefaultPlugins(callback) {

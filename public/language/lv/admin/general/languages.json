@@ -1,0 +1,6 @@
+{
+	"language-settings": "Valodas iestatījumi",
+	"description": "Noklusējuma valoda nosaka valodas iestatījumus visiem lietotājiem, kuri apmeklē forumu. <br />Lietotājs savā konta iestatījumu lapā var ignorēt noklusējuma valodu.",
+	"default-language": "Noklusējama valoda",
+	"auto-detect": "Viesiem automātiski izprast valodas iestatījumus"
+}

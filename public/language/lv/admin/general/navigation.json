@@ -1,0 +1,25 @@
+{
+	"icon": "Ikona:",
+	"change-icon": "izmaiņa",
+	"route": "Ceļš:",
+	"tooltip": "Paskaidre:",
+	"text": "Teksts:",
+	"text-class": "Teksta klase: <small>neobligāta</small>",
+	"id": "ID: <small>neobligāts</small>",
+
+	"properties": "Īpašības:",
+	"only-admins": "Rādīt tikai administratoriem",
+	"only-global-mods-and-admins": "Rādīt tikai globāliem moderatoriem un administratoriem",
+	"only-logged-in": "Rādīt tikai ielogojušiem lietotājiem",
+	"only-guest": "Rādīt tikai viesiem",
+	"open-new-window": "Rādīt jaunā logā",
+
+	"btn.delete": "Izdzēst",
+	"btn.disable": "Atspējot",
+	"btn.enable": "Iespējot",
+
+	"available-menu-items": "Pieejamās izvēlnes iespējas",
+	"custom-route": "Pielāgotais ceļš",
+	"core": "kodols",
+	"plugin": "spraudnis"
+}

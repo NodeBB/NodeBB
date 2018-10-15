@@ -19,6 +19,7 @@
 	"parent-category-none": "(Aucun)",
 	"copy-settings": "Copier les paramètres de",
 	"optional-clone-settings": "Copier les paramètres de la catégorie (optionnel)",
+	"clone-children": "Copier les catégories et les paramètres",
 	"purge": "Vider la catégorie",
 
 	"enable": "Activer",
@@ -67,5 +68,6 @@
 	"alert.find-group": "Trouver un groupe",
 	"alert.group-search": "Chercher un groupe ici...",
 	"collapse-all": "Tout réduire",
-	"expand-all": "Tout développer"
+	"expand-all": "Tout développer",
+	"disable-on-create": "Désactiver lors de la création"
 }

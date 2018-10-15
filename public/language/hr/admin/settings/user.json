@@ -1,6 +1,5 @@
 {
 	"authentication": "Autentifikacija",
-	"allow-local-login": "Dozvoli lokalnu prijavu",
 	"require-email-confirmation": "Zahtjeva potvrdu email-om",
 	"email-confirm-interval": "Korisnik ne može ponovno poslati potvrdni email do ",
 	"email-confirm-email2": "prošlo je minuta",

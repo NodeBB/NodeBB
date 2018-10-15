@@ -119,6 +119,11 @@ module.exports = function (User) {
 			return memo;
 		}, {});
 		var users = uids.map(function (uid) {
+			const returnPayload = usersData[ref[uid]];
+			if (uid > 0 && !returnPayload.uid) {
+				returnPayload.oldUid = parseInt(uid, 10);
+			}
+
 			return usersData[ref[uid]];
 		});
 		return users;
@@ -144,7 +149,7 @@ module.exports = function (User) {
 
 			if (!parseInt(user.uid, 10)) {
 				user.uid = 0;
-				user.username = '[[global:guest]]';
+				user.username = (user.hasOwnProperty('oldUid') && parseInt(user.oldUid, 10)) ? '[[global:former_user]]' : '[[global:guest]]';
 				user.userslug = '';
 				user.picture = User.getDefaultAvatar();
 				user['icon:text'] = '?';

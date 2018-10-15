@@ -1,0 +1,14 @@
+{
+	"reputation": "Ranga punktu sistēma",
+	"disable": "Atspējot ranga punktu sistēmu",
+	"disable-down-voting": "Atspējot balsot \"pret\"",
+	"votes-are-public": "Visas balsis ir publiskas",
+	"thresholds": "Aktivitātes sliekšņi",
+	"min-rep-downvote": "Minimālie ranga punkti, lai balsotu \"pret\" rakstiem",
+	"min-rep-flag": "Minimālie ranga punkti, lai atzīmētu rakstus",
+	"min-rep-website": "Minimālie ranga punkti, lai lietotāja profilam pievienotu mājaslapu",
+	"min-rep-aboutme": "Minimālie ranga punkti, lai lietotāja profilam pievienotu \"Par mani\"",
+	"min-rep-signature": "Minimālie ranga punkti, lai lietotāja profilam pievienotu parakstu",
+	"min-rep-profile-picture": "Minimālie ranga punkti, lai lietotāja profilam pievienotu profila bildi",
+	"min-rep-cover-picture": "Minimālie ranga punkti, lai lietotāja profilam pievienotu galvenes bildi"
+}

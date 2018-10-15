@@ -47,11 +47,12 @@ categoriesController.list = function (req, res, next) {
 			}
 
 			data.categories.forEach(function (category) {
-				if (category && Array.isArray(category.posts) && category.posts.length) {
+				if (category && Array.isArray(category.posts) && category.posts.length && category.posts[0]) {
 					category.teaser = {
 						url: nconf.get('relative_path') + '/post/' + category.posts[0].pid,
 						timestampISO: category.posts[0].timestampISO,
 						pid: category.posts[0].pid,
+						topic: category.posts[0].topic,
 					};
 				}
 			});

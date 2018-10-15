@@ -12,7 +12,7 @@ module.exports = function (db, module) {
 
 	module.emptydb = function (callback) {
 		callback = callback || helpers.noop;
-		db.collection('objects').remove({}, function (err) {
+		db.collection('objects').deleteMany({}, function (err) {
 			if (err) {
 				return callback(err);
 			}
@@ -35,7 +35,7 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback();
 		}
-		db.collection('objects').remove({ _key: key }, function (err) {
+		db.collection('objects').deleteMany({ _key: key }, function (err) {
 			if (err) {
 				return callback(err);
 			}
@@ -49,7 +49,7 @@ module.exports = function (db, module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback();
 		}
-		db.collection('objects').remove({ _key: { $in: keys } }, function (err) {
+		db.collection('objects').deleteMany({ _key: { $in: keys } }, function (err) {
 			if (err) {
 				return callback(err);
 			}
@@ -97,14 +97,14 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback();
 		}
-		db.collection('objects').findAndModify({ _key: key }, {}, { $inc: { data: 1 } }, { new: true, upsert: true }, function (err, result) {
+		db.collection('objects').findOneAndUpdate({ _key: key }, { $inc: { data: 1 } }, { returnOriginal: false, upsert: true }, function (err, result) {
 			callback(err, result && result.value ? result.value.data : null);
 		});
 	};
 
 	module.rename = function (oldKey, newKey, callback) {
 		callback = callback || helpers.noop;
-		db.collection('objects').update({ _key: oldKey }, { $set: { _key: newKey } }, { multi: true }, function (err) {
+		db.collection('objects').updateMany({ _key: oldKey }, { $set: { _key: newKey } }, function (err) {
 			if (err) {
 				return callback(err);
 			}

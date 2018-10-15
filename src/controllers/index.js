@@ -7,6 +7,7 @@ var validator = require('validator');
 var meta = require('../meta');
 var user = require('../user');
 var plugins = require('../plugins');
+var privileges = require('../privileges');
 var helpers = require('./helpers');
 
 var Controllers = module.exports;
@@ -106,7 +107,6 @@ Controllers.login = function (req, res, next) {
 
 	data.alternate_logins = loginStrategies.length > 0;
 	data.authentication = loginStrategies;
-	data.allowLocalLogin = parseInt(meta.config.allowLocalLogin, 10) === 1 || parseInt(req.query.local, 10) === 1;
 	data.allowRegistration = registrationType === 'normal' || registrationType === 'admin-approval' || registrationType === 'admin-approval-ip';
 	data.allowLoginWith = '[[login:' + allowLoginWith + ']]';
 	data.breadcrumbs = helpers.buildBreadcrumbs([{
@@ -115,26 +115,33 @@ Controllers.login = function (req, res, next) {
 	data.error = req.flash('error')[0] || errorText;
 	data.title = '[[pages:login]]';
 
-	if (!data.allowLocalLogin && !data.allowRegistration && data.alternate_logins && data.authentication.length === 1) {
-		if (res.locals.isAPI) {
-			return helpers.redirect(res, {
-				external: nconf.get('relative_path') + data.authentication[0].url,
-			});
+	privileges.global.canGroup('local:login', 'registered-users', function (err, hasLoginPrivilege) {
+		if (err) {
+			return next(err);
 		}
-		return res.redirect(nconf.get('relative_path') + data.authentication[0].url);
-	}
-	if (req.loggedIn) {
-		user.getUserFields(req.uid, ['username', 'email'], function (err, user) {
-			if (err) {
-				return next(err);
+
+		data.allowLocalLogin = hasLoginPrivilege || parseInt(req.query.local, 10) === 1;
+		if (!data.allowLocalLogin && !data.allowRegistration && data.alternate_logins && data.authentication.length === 1) {
+			if (res.locals.isAPI) {
+				return helpers.redirect(res, {
+					external: nconf.get('relative_path') + data.authentication[0].url,
+				});
 			}
-			data.username = allowLoginWith === 'email' ? user.email : user.username;
-			data.alternate_logins = false;
+			return res.redirect(nconf.get('relative_path') + data.authentication[0].url);
+		}
+		if (req.loggedIn) {
+			user.getUserFields(req.uid, ['username', 'email'], function (err, user) {
+				if (err) {
+					return next(err);
+				}
+				data.username = allowLoginWith === 'email' ? user.email : user.username;
+				data.alternate_logins = false;
+				res.render('login', data);
+			});
+		} else {
 			res.render('login', data);
-		});
-	} else {
-		res.render('login', data);
-	}
+		}
+	});
 };
 
 Controllers.register = function (req, res, next) {

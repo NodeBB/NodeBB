@@ -37,8 +37,14 @@ SocketUser.deleteAccount = function (socket, data, callback) {
 
 	async.waterfall([
 		function (next) {
-			user.isPasswordCorrect(socket.uid, data.password, function (err, ok) {
-				next(err || !ok ? new Error('[[error:invalid-password]]') : undefined);
+			user.hasPassword(socket.uid, next);
+		},
+		function (hasPassword, next) {
+			if (!hasPassword) {
+				return next();
+			}
+			user.isPasswordCorrect(socket.uid, data.password, socket.ip, function (err, ok) {
+				next(err || (!ok ? new Error('[[error:invalid-password]]') : undefined));
 			});
 		},
 		function (next) {
@@ -50,7 +56,7 @@ SocketUser.deleteAccount = function (socket, data, callback) {
 			}
 			user.deleteAccount(socket.uid, next);
 		},
-		function (next) {
+		function (userData, next) {
 			require('./index').server.sockets.emit('event:user_status_change', { uid: socket.uid, status: 'offline' });
 
 			events.log({
@@ -58,18 +64,12 @@ SocketUser.deleteAccount = function (socket, data, callback) {
 				uid: socket.uid,
 				targetUid: socket.uid,
 				ip: socket.ip,
+				username: userData.username,
+				email: userData.email,
 			});
 			next();
 		},
-	], function (err) {
-		if (err) {
-			return setTimeout(function () {
-				callback(err);
-			}, 2500);
-		}
-
-		callback();
-	});
+	], callback);
 };
 
 SocketUser.emailExists = function (socket, data, callback) {
@@ -263,12 +263,19 @@ SocketUser.getUnreadCounts = function (socket, data, callback) {
 		return callback(null, {});
 	}
 	async.parallel({
-		unreadTopicCount: async.apply(topics.getTotalUnread, socket.uid),
-		unreadNewTopicCount: async.apply(topics.getTotalUnread, socket.uid, 'new'),
-		unreadWatchedTopicCount: async.apply(topics.getTotalUnread, socket.uid, 'watched'),
+		unreadCounts: async.apply(topics.getUnreadTids, { uid: socket.uid, count: true }),
 		unreadChatCount: async.apply(messaging.getUnreadCount, socket.uid),
 		unreadNotificationCount: async.apply(user.notifications.getUnreadCount, socket.uid),
-	}, callback);
+	}, function (err, results) {
+		if (err) {
+			return callback(err);
+		}
+		results.unreadTopicCount = results.unreadCounts[''];
+		results.unreadNewTopicCount = results.unreadCounts.new;
+		results.unreadWatchedTopicCount = results.unreadCounts.watched;
+		results.unreadUnrepliedTopicCount = results.unreadCounts.unreplied;
+		callback(null, results);
+	});
 };
 
 SocketUser.invite = function (socket, email, callback) {
@@ -290,24 +297,26 @@ SocketUser.invite = function (socket, email, callback) {
 			if (registrationType === 'admin-invite-only' && !isAdmin) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
-
 			var max = parseInt(meta.config.maximumInvites, 10);
-			if (!max) {
-				return user.sendInvitationEmail(socket.uid, email, callback);
-			}
+			email = email.split(',').map(email => email.trim()).filter(Boolean);
+			async.eachSeries(email, function (email, next) {
+				async.waterfall([
+					function (next) {
+						if (max) {
+							user.getInvitesNumber(socket.uid, next);
+						} else {
+							next(null, 0);
+						}
+					},
+					function (invites, next) {
+						if (!isAdmin && max && invites >= max) {
+							return next(new Error('[[error:invite-maximum-met, ' + invites + ', ' + max + ']]'));
+						}
 
-			async.waterfall([
-				function (next) {
-					user.getInvitesNumber(socket.uid, next);
-				},
-				function (invites, next) {
-					if (!isAdmin && invites >= max) {
-						return next(new Error('[[error:invite-maximum-met, ' + invites + ', ' + max + ']]'));
-					}
-
-					user.sendInvitationEmail(socket.uid, email, next);
-				},
-			], next);
+						user.sendInvitationEmail(socket.uid, email, next);
+					},
+				], next);
+			}, next);
 		},
 	], callback);
 };

@@ -5,6 +5,7 @@ var async = require('async');
 var _ = require('lodash');
 var winston = require('winston');
 
+var db = require('../database');
 var meta = require('../meta');
 var user = require('../user');
 var posts = require('../posts');
@@ -57,9 +58,14 @@ module.exports = function (Topics) {
 			function (next) {
 				posts.getPostsFields(teaserPids, ['pid', 'uid', 'timestamp', 'tid', 'content'], next);
 			},
-			async.apply(user.blocks.filter, uid),
 			function (_postData, next) {
-				postData = _postData;
+				_postData = _postData.filter(function (post) {
+					return post && parseInt(post.pid, 10);
+				});
+				handleBlocks(uid, _postData, next);
+			},
+			function (_postData, next) {
+				postData = _postData.filter(Boolean);
 				var uids = _.uniq(postData.map(function (post) {
 					return post.uid;
 				}));
@@ -71,7 +77,6 @@ module.exports = function (Topics) {
 				usersData.forEach(function (user) {
 					users[user.uid] = user;
 				});
-
 
 				async.each(postData, function (post, next) {
 					// If the post author isn't represented in the retrieved users' data, then it means they were deleted, assume guest.
@@ -106,6 +111,58 @@ module.exports = function (Topics) {
 			},
 		], callback);
 	};
+
+	function handleBlocks(uid, teasers, callback) {
+		user.blocks.list(uid, function (err, blockedUids) {
+			if (err || !blockedUids.length) {
+				return callback(err, teasers);
+			}
+			async.mapSeries(teasers, function (postData, nextPost) {
+				if (blockedUids.includes(parseInt(postData.uid, 10))) {
+					getPreviousNonBlockedPost(postData, blockedUids, nextPost);
+				} else {
+					setImmediate(nextPost, null, postData);
+				}
+			}, callback);
+		});
+	}
+
+	function getPreviousNonBlockedPost(postData, blockedUids, callback) {
+		let isBlocked = false;
+		let prevPost = postData;
+		const postsPerIteration = 5;
+		let start = 0;
+		let stop = start + postsPerIteration - 1;
+
+		async.doWhilst(function (next) {
+			async.waterfall([
+				function (next) {
+					db.getSortedSetRevRange('tid:' + postData.tid + ':posts', start, stop, next);
+				},
+				function (pids, next) {
+					if (!pids.length) {
+						return callback(null, null);
+					}
+
+					posts.getPostsFields(pids, ['pid', 'uid', 'timestamp', 'tid', 'content'], next);
+				},
+				function (prevPosts, next) {
+					isBlocked = prevPosts.every(function (post) {
+						const isPostBlocked = blockedUids.includes(parseInt(post.uid, 10));
+						prevPost = !isPostBlocked ? post : prevPost;
+						return isPostBlocked;
+					});
+					start += postsPerIteration;
+					stop = start + postsPerIteration - 1;
+					next();
+				},
+			], next);
+		}, function () {
+			return isBlocked && prevPost && prevPost.pid;
+		}, function (err) {
+			callback(err, prevPost);
+		});
+	}
 
 	Topics.getTeasersByTids = function (tids, uid, callback) {
 		if (typeof uid === 'function') {

@@ -45,8 +45,6 @@ module.exports = function (User) {
 						return updateUsername(updateUid, data.username, next);
 					} else if (field === 'fullname') {
 						return updateFullname(updateUid, data.fullname, next);
-					} else if (field === 'signature') {
-						data[field] = utils.stripHTMLTags(data[field]);
 					}
 
 					User.setUserField(updateUid, field, data[field], next);
@@ -170,7 +168,7 @@ module.exports = function (User) {
 
 	User.checkMinReputation = function (callerUid, uid, setting, callback) {
 		var isSelf = parseInt(callerUid, 10) === parseInt(uid, 10);
-		if (!isSelf) {
+		if (!isSelf || parseInt(meta.config['reputation:disabled'], 10) === 1) {
 			return setImmediate(callback);
 		}
 		async.waterfall([
@@ -223,6 +221,8 @@ module.exports = function (User) {
 						if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && newEmail) {
 							User.email.sendValidationEmail(uid, {
 								email: newEmail,
+								subject: '[[email:email.verify-your-email.subject]]',
+								template: 'verify_email',
 							});
 						}
 						User.setUserField(uid, 'email:confirmed', 0, next);
@@ -322,12 +322,12 @@ module.exports = function (User) {
 				if (parseInt(uid, 10) !== parseInt(data.uid, 10)) {
 					User.isAdministrator(uid, next);
 				} else {
-					User.isPasswordCorrect(uid, data.currentPassword, next);
+					User.isPasswordCorrect(uid, data.currentPassword, data.ip, next);
 				}
 			},
 			function (isAdminOrPasswordMatch, next) {
 				if (!isAdminOrPasswordMatch) {
-					return next(new Error('[[error:change_password_error_wrong_current]]'));
+					return next(new Error('[[user:change_password_error_wrong_current]]'));
 				}
 
 				User.hashPassword(data.newPassword, next);

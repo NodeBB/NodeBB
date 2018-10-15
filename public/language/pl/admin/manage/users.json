@@ -18,13 +18,13 @@
 	"new": "Nowy użytkownik",
 
 	"pills.latest": "Nowi użytkownicy",
-	"pills.unvalidated": "Niezweryfikowany",
+	"pills.unvalidated": "Niezweryfikowani",
 	"pills.no-posts": "Brak postów",
 	"pills.top-posters": "Najwięcej postów",
 	"pills.top-rep": "Najwyższa reputacja",
-	"pills.inactive": "Nieaktywny",
+	"pills.inactive": "Nieaktywni",
 	"pills.flagged": "Najwięcej flag",
-	"pills.banned": "Zbanowany",
+	"pills.banned": "Zbanowani",
 	"pills.search": "Wyszukiwanie użytkowników",
 
 	"search.uid": "Po ID użytkownika",
@@ -93,7 +93,7 @@
 	"alerts.error-x": "<strong>Błąd</strong><p>%1</p>",
 	"alerts.create-success": "Utworzono użytkownika!",
 
-	"alerts.prompt-email": "Adres e-mail",
+	"alerts.prompt-email": "Emails: ",
 	"alerts.email-sent-to": "Wysłano zaproszenie do %1",
 	"alerts.x-users-found": "Znaleziono %1 użytkownika(-ów)! Szukanie zajęło %2 ms."
 }

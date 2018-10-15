@@ -105,7 +105,7 @@ module.exports = function (Groups) {
 				return callback(err);
 			}
 
-			user.setUserField(uid, 'groupTitle', groupName, callback);
+			user.setUserField(uid, 'groupTitle', JSON.stringify([groupName]), callback);
 		});
 	}
 
@@ -294,13 +294,17 @@ module.exports = function (Groups) {
 		}
 		async.waterfall([
 			function (next) {
-				db.getObjectField('user:' + uid, 'groupTitle', next);
+				user.getUserData(uid, next);
 			},
-			function (groupTitle, next) {
-				if (groupNames.includes(groupTitle)) {
-					db.deleteObjectField('user:' + uid, 'groupTitle', next);
+			function (userData, next) {
+				var newTitleArray = userData.groupTitleArray.filter(function (groupTitle) {
+					return !groupNames.includes(groupTitle);
+				});
+
+				if (newTitleArray.length) {
+					db.setObjectField('user:' + uid, 'groupTitle', JSON.stringify(newTitleArray), next);
 				} else {
-					next();
+					db.deleteObjectField('user:' + uid, 'groupTitle', next);
 				}
 			},
 		], callback);

@@ -25,7 +25,7 @@ uploadsController.upload = function (req, res, filesIterator) {
 		files = files[0];
 	}
 
-	async.map(files, filesIterator, function (err, images) {
+	async.mapSeries(files, filesIterator, function (err, images) {
 		deleteTempFiles(files);
 
 		if (err) {
@@ -56,6 +56,9 @@ function uploadAsImage(req, uploadedFile, callback) {
 			if (!canUpload) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
+			image.checkDimensions(uploadedFile.path, next);
+		},
+		function (next) {
 			if (plugins.hasListeners('filter:uploadImage')) {
 				return plugins.fireHook('filter:uploadImage', {
 					image: uploadedFile,
@@ -113,25 +116,16 @@ function resizeImage(fileObj, callback) {
 				return callback(null, fileObj);
 			}
 
-			var dirname = path.dirname(fileObj.path);
-			var extname = path.extname(fileObj.path);
-			var basename = path.basename(fileObj.path, extname);
-
 			image.resizeImage({
 				path: fileObj.path,
-				target: path.join(dirname, basename + '-resized' + extname),
-				extension: extname,
+				target: file.appendToFileName(fileObj.path, '-resized'),
 				width: parseInt(meta.config.maximumImageWidth, 10) || 760,
 				quality: parseInt(meta.config.resizeImageQuality, 10) || 60,
 			}, next);
 		},
 		function (next) {
 			// Return the resized version to the composer/postData
-			var dirname = path.dirname(fileObj.url);
-			var extname = path.extname(fileObj.url);
-			var basename = path.basename(fileObj.url, extname);
-
-			fileObj.url = dirname + '/' + basename + '-resized' + extname;
+			fileObj.url = file.appendToFileName(fileObj.url, '-resized');
 
 			next(null, fileObj);
 		},
@@ -157,7 +151,6 @@ uploadsController.uploadThumb = function (req, res, next) {
 				var size = parseInt(meta.config.topicThumbSize, 10) || 120;
 				image.resizeImage({
 					path: uploadedFile.path,
-					extension: path.extname(uploadedFile.name),
 					width: size,
 					height: size,
 				}, next);

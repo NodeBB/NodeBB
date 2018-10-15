@@ -1,0 +1,20 @@
+{
+	"queue": "Reģistrācijas rinda",
+	"description": "Reģistrācijas rindā nav lietotāju. <br>Lai iespējotu šo funkciju, doties uz <a href=\"%1\">Iestatījumi &rarr; Lietotāji &rarr; Reģistrācija</a> un iestatīt <strong>Reģistrācijas veidu</strong> uz \"Administratora apstiprināts\".",
+
+	"list.name": "Vārds",
+	"list.email": "E-pasta adrese",
+	"list.ip": "IP adrese",
+	"list.time": "Datums",
+	"list.username-spam": "Frequency: %1 Appears: %2 Confidence: %3",
+	"list.email-spam": "Frequency: %1 Appears: %2",
+	"list.ip-spam": "Frequency: %1 Appears: %2",
+
+	"invitations": "Ielūgumi",
+	"invitations.description": "Zemāk skatīt visu izsūtīto ielūgumu sarakstu. Izmantot ctrl-f, lai meklētu e-pasta adresi vai lietotājvārdu sarakstā. <br><br>Lietotājvārds tiks parādīts pa labi no e-pasta adresēm tiem lietotājiem, kas ir atbildējuši uz saviem ielūgumiem.",
+	"invitations.inviter-username": "Lietotājs, kurš uzaicināja",
+	"invitations.invitee-email": "Uzaicinātā lietotāja e-pasta adrese",
+	"invitations.invitee-username": "Uzaicinātais lietotājvārds (ja ir jau reģistrējies)",
+
+	"invitations.confirm-delete": "Vai tiešām vēlies izdzēst šo ielūgumu?"
+} 

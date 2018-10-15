@@ -14,7 +14,6 @@ describe('Groups', function () {
 	var adminUid;
 	var testUid;
 	before(function (done) {
-		Groups.resetCache();
 		async.series([
 			function (next) {
 				// Create a group to play around with

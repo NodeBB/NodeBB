@@ -1,0 +1,22 @@
+{
+	"available": "Pieejamie logrīki",
+	"explanation": "Atlasīt spraudni no nolaižamās izvēlnes, un to vilkt un nomest uz veidnes spraudņa lauku kreisajā pusē.",
+	"none-installed": "Nav logrīku! Aktivizēt nepieciešamo logrīku spraudni <a href=\"%1\">spraudņu</a> vadības panelī.",
+	"clone-from": "Klonēt logrīkus no",
+	"containers.available": "Pieejamās tvertnes",
+	"containers.explanation": "Vilkt un nomest uz jebkura aktīvā logrīka",
+	"containers.none": "Nav",
+	"container.well": "Labi",
+	"container.jumbotron": "Jumbotron",
+	"container.panel": "Panelis",
+	"container.panel-header": "Paneļa galvene",
+	"container.panel-body": "Paneļa korpuss",
+	"container.alert": "Brīdinājums",
+
+	"alert.confirm-delete": "Vai tiešām vēlies izdzēst šo logrīku?",
+	"alert.updated": "Logrīki atjaunināti",
+	"alert.update-success": "Veiksmīgi atjaunināti logrīki",
+	"alert.clone-success": "Veiksmīgi klonēti logrīki",
+
+	"error.select-clone": "Lūdzu, izvēlēties lapu klonēšanai"
+}

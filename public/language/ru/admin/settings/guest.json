@@ -1,5 +1,5 @@
 {
-	"handles": "Guest Handles",
-	"handles.enabled": "Allow guest handles",
-	"handles.enabled-help": "This option exposes a new field that allows guests to pick a name to associate with each post they make. If disabled, they will simply be called \"Guest\""
+	"handles": "Имена гостей",
+	"handles.enabled": "Разрешить имена гостей",
+	"handles.enabled-help": "Эта настройка включает новое поле, которое позволяет гостям указать имя, которое будет видно в каждом сообщении, которое они оставят. Если выключено, то имя будет просто \"Гость\""
 }

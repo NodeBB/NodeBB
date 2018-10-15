@@ -92,6 +92,7 @@
 	"still-uploading": "Please wait for uploads to complete.",
 	"file-too-big": "Maximum allowed file size is %1 kB - please upload a smaller file",
 	"guest-upload-disabled": "Guest uploading has been disabled",
+	"cors-error": "Unable to upload image due to misconfigured CORS",
 
 	"already-bookmarked": "You have already bookmarked this post",
 	"already-unbookmarked": "You have already unbookmarked this post",
@@ -104,6 +105,7 @@
 	"invalid-image-type": "Invalid image type. Allowed types are: %1",
 	"invalid-image-extension": "Invalid image extension",
 	"invalid-file-type": "Invalid file type. Allowed types are: %1",
+	"invalid-image-dimensions": "Image dimensions are too big",
 
 	"group-name-too-short": "Group name too short",
 	"group-name-too-long": "Group name too long",

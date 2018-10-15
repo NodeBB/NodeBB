@@ -51,6 +51,7 @@ module.exports = function (SocketPosts) {
 						type: 'topic-rename',
 						uid: socket.uid,
 						ip: socket.ip,
+						tid: result.topic.tid,
 						oldTitle: validator.escape(String(result.topic.oldTitle)),
 						newTitle: validator.escape(String(result.topic.title)),
 					});

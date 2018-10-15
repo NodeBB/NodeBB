@@ -9,6 +9,7 @@ var async = require('async');
 var db = require('./mocks/databasemock');
 var user = require('../src/user');
 var meta = require('../src/meta');
+var privileges = require('../src/privileges');
 var helpers = require('./helpers');
 
 describe('authentication', function () {
@@ -303,6 +304,18 @@ describe('authentication', function () {
 		});
 	});
 
+	it('should fail to login if user does not have password field in db', function (done) {
+		user.create({ username: 'hasnopassword', email: 'no@pass.org' }, function (err, uid) {
+			assert.ifError(err);
+			loginUser('hasnopassword', 'doesntmatter', function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(response.statusCode, 403);
+				assert.equal(body, '[[error:invalid-login-credentials]]');
+				done();
+			});
+		});
+	});
+
 	it('should fail to login if password is longer than 4096', function (done) {
 		var longPassword;
 		for (var i = 0; i < 5000; i++) {
@@ -316,15 +329,15 @@ describe('authentication', function () {
 		});
 	});
 
-
 	it('should fail to login if local login is disabled', function (done) {
-		meta.config.allowLocalLogin = 0;
-		loginUser('someuser', 'somepass', function (err, response, body) {
-			meta.config.allowLocalLogin = 1;
+		privileges.global.rescind(['local:login'], 'registered-users', function (err) {
 			assert.ifError(err);
-			assert.equal(response.statusCode, 403);
-			assert.equal(body, '[[error:local-login-disabled]]');
-			done();
+			loginUser('regular', 'regularpwd', function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(response.statusCode, 403);
+				assert.equal(body, '[[error:local-login-disabled]]');
+				privileges.global.give(['local:login'], 'registered-users', done);
+			});
 		});
 	});
 

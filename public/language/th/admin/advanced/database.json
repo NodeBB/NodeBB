@@ -32,5 +32,9 @@
 	"redis.iops": "การทำงานพร้อมกันต่อวินาที",
 	"redis.keyspace-hits": "Keyspace Hits",
 	"redis.keyspace-misses": "Keyspace Misses",
-	"redis.raw-info": "ข้อมูลดิบของ Redis"
+	"redis.raw-info": "ข้อมูลดิบของ Redis",
+
+	"postgres": "Postgres",
+	"postgres.version": "PostgreSQL Version",
+	"postgres.raw-info": "Postgres Raw Info"
 }

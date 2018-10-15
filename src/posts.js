@@ -321,3 +321,5 @@ Posts.modifyPostByPrivilege = function (post, privileges) {
 		}
 	}
 };
+
+Posts.async = require('./promisify')(Posts);

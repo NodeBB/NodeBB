@@ -31,7 +31,7 @@ module.exports = function (Posts) {
 				postData.cid = topicData.cid;
 				async.parallel([
 					function (next) {
-						updateTopicTimestamp(topicData, next);
+						topics.updateLastPostTimeFromLastPid(postData.tid, next);
 					},
 					function (next) {
 						db.sortedSetRemove('cid:' + topicData.cid + ':pids', pid, next);
@@ -68,7 +68,7 @@ module.exports = function (Posts) {
 				postData.cid = topicData.cid;
 				async.parallel([
 					function (next) {
-						updateTopicTimestamp(topicData, next);
+						topics.updateLastPostTimeFromLastPid(topicData.tid, next);
 					},
 					function (next) {
 						db.sortedSetAdd('cid:' + topicData.cid + ':pids', postData.timestamp, pid, next);
@@ -84,35 +84,6 @@ module.exports = function (Posts) {
 			},
 		], callback);
 	};
-
-	function updateTopicTimestamp(topicData, callback) {
-		var timestamp;
-		async.waterfall([
-			function (next) {
-				topics.getLatestUndeletedPid(topicData.tid, next);
-			},
-			function (pid, next) {
-				if (!parseInt(pid, 10)) {
-					return callback();
-				}
-				Posts.getPostField(pid, 'timestamp', next);
-			},
-			function (_timestamp, next) {
-				timestamp = _timestamp;
-				if (!parseInt(timestamp, 10)) {
-					return callback();
-				}
-				topics.updateTimestamp(topicData.tid, timestamp, next);
-			},
-			function (next) {
-				if (parseInt(topicData.pinned, 10) !== 1) {
-					db.sortedSetAdd('cid:' + topicData.cid + ':tids', timestamp, topicData.tid, next);
-				} else {
-					next();
-				}
-			},
-		], callback);
-	}
 
 	Posts.purge = function (pid, uid, callback) {
 		async.waterfall([
@@ -194,10 +165,14 @@ module.exports = function (Posts) {
 						topics.updateTeaser(postData.tid, next);
 					},
 					function (next) {
-						updateTopicTimestamp(topicData, next);
+						topics.updateLastPostTimeFromLastPid(postData.tid, next);
 					},
 					function (next) {
-						db.sortedSetIncrBy('cid:' + topicData.cid + ':tids:posts', -1, postData.tid, next);
+						if (parseInt(topicData.pinned, 10) !== 1) {
+							db.sortedSetIncrBy('cid:' + topicData.cid + ':tids:posts', -1, postData.tid, next);
+						} else {
+							next();
+						}
 					},
 					function (next) {
 						db.sortedSetIncrBy('tid:' + postData.tid + ':posters', -1, postData.uid, next);

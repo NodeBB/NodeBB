@@ -4,6 +4,8 @@
     "invite": "دعوة من %1",
     "greeting_no_name": "مرحبًا",
     "greeting_with_name": "مرحبًا بك يا %1",
+    "email.verify-your-email.subject": "Please verify your email",
+    "email.verify.text1": "Your email address has changed!",
     "welcome.text1": "شكرًا على تسجيلك في %1!",
     "welcome.text2": "لتفعيل حسابك، نحتاج إلى التأكد من صحة عنوان البريد الإلكتروني الذي سجلت به.",
     "welcome.text3": "تم قبول نتسجيلك ، يمكنك الدخول باتسخدام اسم المستخدم و كلمة المرور.",

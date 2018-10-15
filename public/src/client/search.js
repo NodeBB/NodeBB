@@ -138,7 +138,7 @@ define('forum/search', ['search', 'autocomplete', 'storage'], function (searchMo
 		if (!searchQuery) {
 			return;
 		}
-
+		searchQuery = utils.escapeHTML(searchQuery);
 		var regexStr = searchQuery.replace(/^"/, '').replace(/"$/, '').trim().split(' ').join('|');
 		var regex = new RegExp('(' + regexStr + ')', 'gi');
 
@@ -151,11 +151,15 @@ define('forum/search', ['search', 'autocomplete', 'storage'], function (searchMo
 				nested.push($('<div />').append($(this)));
 			});
 
-			result.html(result.html().replace(regex, '<strong>$1</strong>'));
+			result.html(result.html().replace(regex, function (match, p1) {
+				return '<strong>' + p1 + '</strong>';
+			}));
 
-			for (var i = 0, ii = nested.length; i < ii; i += 1) {
-				result.html(result.html().replace('<!-- ' + i + ' -->', nested[i].html()));
-			}
+			nested.forEach(function (nestedEl, i) {
+				result.html(result.html().replace('<!-- ' + i + ' -->', function () {
+					return nestedEl.html();
+				}));
+			});
 		});
 
 		$('.search-result-text').find('img:not(.not-responsive)').addClass('img-responsive');

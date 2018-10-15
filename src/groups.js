@@ -301,3 +301,5 @@ Groups.existsBySlug = function (slug, callback) {
 		db.isObjectField('groupslug:groupname', slug, callback);
 	}
 };
+
+Groups.async = require('./promisify')(Groups);

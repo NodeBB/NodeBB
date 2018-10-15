@@ -32,6 +32,12 @@ SocketHelpers.notifyNew = function (uid, type, result) {
 			filterTidCidIgnorers(uids, result.posts[0].topic.tid, result.posts[0].topic.cid, next);
 		},
 		function (uids, next) {
+			user.blocks.filterUids(uid, uids, next);
+		},
+		function (uids, next) {
+			user.blocks.filterUids(result.posts[0].topic.uid, uids, next);
+		},
+		function (uids, next) {
 			plugins.fireHook('filter:sockets.sendNewPostToUids', { uidsTo: uids, uidFrom: uid, type: type }, next);
 		},
 	], function (err, data) {
@@ -186,8 +192,14 @@ SocketHelpers.upvote = function (data, notification) {
 		all: function () {
 			return votes > 0;
 		},
+		first: function () {
+			return votes === 1;
+		},
 		everyTen: function () {
 			return votes > 0 && votes % 10 === 0;
+		},
+		threshold: function () {
+			return [1, 5, 10, 25].indexOf(votes) !== -1 || (votes >= 50 && votes % 50 === 0);
 		},
 		logarithmic: function () {
 			return votes > 1 && Math.log10(votes) % 1 === 0;

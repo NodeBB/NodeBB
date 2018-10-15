@@ -93,7 +93,7 @@
 	"alerts.error-x": "<strong>Erreur</strong><p>%1</p>",
 	"alerts.create-success": "Utilisateur créé !",
 
-	"alerts.prompt-email": "E-mail :",
+	"alerts.prompt-email": "Emails: ",
 	"alerts.email-sent-to": "Un e-mail d'invitation a été envoyé à %1",
 	"alerts.x-users-found": "%1 utilisateur(s) trouvé(s) ! La recherche a pris %2 ms."
 }

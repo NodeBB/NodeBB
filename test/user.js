@@ -23,8 +23,6 @@ describe('User', function () {
 	var testCid;
 
 	before(function (done) {
-		groups.resetCache();
-
 		Categories.create({
 			name: 'Test Category',
 			description: 'A test',
@@ -677,7 +675,7 @@ describe('User', function () {
 				assert.ifError(err);
 				socketUser.changePassword({ uid: uid }, { uid: uid, newPassword: '654321', currentPassword: '123456' }, function (err) {
 					assert.ifError(err);
-					User.isPasswordCorrect(uid, '654321', function (err, correct) {
+					User.isPasswordCorrect(uid, '654321', '127.0.0.1', function (err, correct) {
 						assert.ifError(err);
 						assert(correct);
 						done();
@@ -702,7 +700,7 @@ describe('User', function () {
 				assert.ifError(err);
 				db.getSortedSetRevRange('user:' + uid + ':usernames', 0, -1, function (err, data) {
 					assert.ifError(err);
-					assert.equal(data.length, 1);
+					assert.equal(data.length, 2);
 					assert(data[0].startsWith('updatedAgain'));
 					done();
 				});

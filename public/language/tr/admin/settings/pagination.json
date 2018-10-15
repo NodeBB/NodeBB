@@ -6,6 +6,5 @@
 	"max-posts-per-page": "Sayfa başına azami gönderi sayısı",
 	"categories": "Kategori Sayfalama",
 	"topics-per-page": "Sayfa başına Konular",
-	"max-topics-per-page": "Sayfa başına azami konu",
-	"initial-num-load": "Okunmamış, Son ve Popülere Başlangıçta Yüklenecek Konu Sayısı"
+	"max-topics-per-page": "Sayfa başına azami konu"
 }

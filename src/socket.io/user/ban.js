@@ -3,6 +3,7 @@
 var async = require('async');
 var winston = require('winston');
 
+var db = require('../../database');
 var user = require('../../user');
 var meta = require('../../meta');
 var websockets = require('../index');
@@ -22,7 +23,7 @@ module.exports = function (SocketUser) {
 		toggleBan(socket.uid, data.uids, function (uid, next) {
 			async.waterfall([
 				function (next) {
-					banUser(uid, data.until || 0, data.reason || '', next);
+					banUser(socket.uid, uid, data.until || 0, data.reason || '', next);
 				},
 				function (next) {
 					events.log({
@@ -30,6 +31,7 @@ module.exports = function (SocketUser) {
 						uid: socket.uid,
 						targetUid: uid,
 						ip: socket.ip,
+						reason: data.reason || undefined,
 					}, next);
 				},
 				function (next) {
@@ -38,6 +40,7 @@ module.exports = function (SocketUser) {
 						ip: socket.ip,
 						uid: uid,
 						until: data.until > 0 ? data.until : undefined,
+						reason: data.reason || undefined,
 					});
 					next();
 				},
@@ -92,7 +95,7 @@ module.exports = function (SocketUser) {
 		], callback);
 	}
 
-	function banUser(uid, until, reason, callback) {
+	function banUser(callerUid, uid, until, reason, callback) {
 		async.waterfall([
 			function (next) {
 				user.isAdministrator(uid, next);
@@ -122,6 +125,9 @@ module.exports = function (SocketUser) {
 			},
 			function (next) {
 				user.ban(uid, until, reason, next);
+			},
+			function (banData, next) {
+				db.setObjectField('uid:' + uid + ':ban:' + banData.timestamp, 'fromUid', callerUid, next);
 			},
 			function (next) {
 				if (!reason) {

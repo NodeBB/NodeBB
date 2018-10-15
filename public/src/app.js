@@ -226,7 +226,7 @@ app.cacheBuster = null;
 	};
 
 	function highlightNavigationLink() {
-		var path = window.location.pathname;
+		var path = window.location.pathname + window.location.search;
 		$('#main-nav li').removeClass('active');
 		if (path) {
 			$('#main-nav li').removeClass('active').find('a[href="' + path + '"]').parent().addClass('active');
@@ -564,7 +564,9 @@ app.cacheBuster = null;
 				$('[data-uid="' + app.user.uid + '"] [component="user/status"], [component="header/profilelink"] [component="user/status"]')
 					.removeClass('away online dnd offline')
 					.addClass(status);
-
+				$('[component="header/usercontrol"] [data-status]').each(function () {
+					$(this).find('span').toggleClass('bold', $(this).attr('data-status') === status);
+				});
 				app.user.status = status;
 			});
 			e.preventDefault();

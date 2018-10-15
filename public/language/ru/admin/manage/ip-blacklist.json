@@ -1,19 +1,19 @@
 {
-	"lead": "Configure your IP blacklist here.",
-	"description": "Occasionally, a user account ban is not enough of a deterrant. Other times, restricting access to the forum to a specific IP or a range of IPs is the best way to protect a forum. In these scenarios, you can add troublesome IP addresses or entire CIDR blocks to this blacklist, and they will be prevented from logging in to or registering a new account.",
-	"active-rules": "Active Rules",
-	"validate": "Validate Blacklist",
-	"apply": "Apply Blacklist",
-	"hints": "Syntax Hints",
-	"hint-1": "Define a single IP addresses per line. You can add IP blocks as long as they follow the CIDR format (e.g. <code>192.168.100.0/22</code>).",
-	"hint-2": "You can add in comments by starting lines with the <code>#</code> symbol.",
+	"lead": "Настройка черного списка IP",
+	"description": "Иногда блокировка учетной записи является недостаточной. В в этом случае ограничение доступа к форуму по IP-адресу или списку IP-адресов — лучший способ защиты. Здесь вы можете добавить нежелательные IP-адреса или целые блоки IP-адресов в формате CIDR в этот черный список, и им будет запрещено входить в систему или регистрировать новую учетную запись.",
+	"active-rules": "Активные правила",
+	"validate": "Проверить черный список",
+	"apply": "Применить черный список",
+	"hints": "Подсказки по синтаксису",
+	"hint-1": "Указывайте один IP адрес в строке. Вы можете добавлять блокировки для подсетей в формате CIDR (например, <code>192.168.100.0/22</code>)",
+	"hint-2": "Вы можете добавить комментарии поставив символ <code>#</code> в начале строки.",
 
-	"validate.x-valid": "<strong>%1</strong> out of <strong>%2</strong> rule(s) valid.",
-	"validate.x-invalid": "The following <strong>%1</strong> rules are invalid:",
+	"validate.x-valid": "<strong>%1</strong> из <strong>%2</strong> правил неверны.",
+	"validate.x-invalid": "Следующие правила <strong>%1</strong> неверны:",
 
-	"alerts.applied-success": "Blacklist Applied",
+	"alerts.applied-success": "Черный список применен",
 
-	"analytics.blacklist-hourly": "<strong>Figure 1</strong> &ndash; Blacklist hits per hour",
-	"analytics.blacklist-daily": "<strong>Figure 2</strong> &ndash; Blacklist hits per day",
-	"ip-banned": "IP banned"
+	"analytics.blacklist-hourly": "<strong>Цыфра 1</strong>  &ndash; количество блокировок в час",
+	"analytics.blacklist-daily": "<strong>Цыфра 2</strong> &ndash; количество блокировок в день",
+	"ip-banned": "IP заблокирован"
 }

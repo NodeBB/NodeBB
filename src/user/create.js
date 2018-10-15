@@ -94,6 +94,9 @@ module.exports = function (User) {
 						db.sortedSetsAdd(['users:postcount', 'users:reputation'], 0, userData.uid, next);
 					},
 					function (next) {
+						db.sortedSetAdd('user:' + userData.uid + ':usernames', timestamp, userData.username, next);
+					},
+					function (next) {
 						groups.join('registered-users', userData.uid, next);
 					},
 					function (next) {
@@ -104,6 +107,7 @@ module.exports = function (User) {
 							async.parallel([
 								async.apply(db.sortedSetAdd, 'email:uid', userData.uid, userData.email.toLowerCase()),
 								async.apply(db.sortedSetAdd, 'email:sorted', 0, userData.email.toLowerCase() + ':' + userData.uid),
+								async.apply(db.sortedSetAdd, 'user:' + userData.uid + ':emails', timestamp, userData.email),
 							], next);
 
 							if (parseInt(userData.uid, 10) !== 1 && parseInt(meta.config.requireEmailConfirmation, 10) === 1) {

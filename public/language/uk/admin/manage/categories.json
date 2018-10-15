@@ -19,6 +19,7 @@
 	"parent-category-none": "(Жодна)",
 	"copy-settings": "Взяти налаштування з",
 	"optional-clone-settings": "(Необов'язково) Взяти налаштування з категорії",
+	"clone-children": "Clone Children Categories And Settings",
 	"purge": "Видалити категорію",
 
 	"enable": "Увімкнути",
@@ -67,5 +68,6 @@
 	"alert.find-group": "Знайти групу",
 	"alert.group-search": "Шукайте групу тут...",
 	"collapse-all": "Згорнути всі",
-	"expand-all": "Розгорнути всі"
+	"expand-all": "Розгорнути всі",
+	"disable-on-create": "Disable on create"
 }

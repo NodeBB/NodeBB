@@ -1,11 +1,11 @@
 {
 	"post-queue": "Kolejka postów",
-	"description": "Brak postów w kolejce. <br> W celu włączenia tej funkcji, odwiedź <a href=\\\"%1\\\">Ustawienia &rarr; Posty &rarr; Ograniczenia pisania </a> i włącz <strong>Kolejkę postów </strong>. ",
+	"description": "Brak postów w kolejce. <br> W celu włączenia tej funkcji, przejdź do <a href=\\\"%1\\\">Ustawienia &rarr; Posty &rarr; Ograniczenia pisania </a> i włącz <strong>Kolejkę postów</strong>. ",
 	"user": "Użytkownik",
 	"category": "Kategoria",
 	"title": "Tytuł",
 	"content": "Zawartość",
 	"posted": "Napisano",
 	"reply-to": "Odpowiedz do \"%1\"",
-	"content-editable": "Przed wysłaniem możesz kliknąć na danej treści aby edytować."
+	"content-editable": "Możesz kliknąć na danej treści, by edytować ją przed publikacją."
 }

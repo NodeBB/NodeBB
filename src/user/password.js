@@ -15,7 +15,7 @@ module.exports = function (User) {
 		Password.hash(nconf.get('bcrypt_rounds') || 12, password, callback);
 	};
 
-	User.isPasswordCorrect = function (uid, password, callback) {
+	User.isPasswordCorrect = function (uid, password, ip, callback) {
 		password = password || '';
 		var hashedPassword;
 		async.waterfall([
@@ -25,13 +25,21 @@ module.exports = function (User) {
 			function (_hashedPassword, next) {
 				hashedPassword = _hashedPassword;
 				if (!hashedPassword) {
-					return callback(null, true);
+					// Non-existant user, submit fake hash for comparison
+					hashedPassword = '';
 				}
 
 				User.isPasswordValid(password, 0, next);
 			},
+			async.apply(User.auth.logAttempt, uid, ip),
 			function (next) {
 				Password.compare(password, hashedPassword, next);
+			},
+			function (ok, next) {
+				if (ok) {
+					User.auth.clearLoginAttempts(uid);
+				}
+				next(null, ok);
 			},
 		], callback);
 	};

@@ -12,5 +12,5 @@
 	"custom-header.enable": "Włącz własny nagłówek",
 
 	"custom-css.livereload": "Włącz dynamiczne przeładowanie",
-	"custom-css.livereload.description": "Włącz to, aby zmusić wszystkie sesje do odświeżenia na każdym urządzeniu na twoim koncie gdziekolwiek klikniesz zapisz."
+	"custom-css.livereload.description": "Włącz, jeśli chcesz wymusić odświeżenie wszystkich sesji na każdym urządzeniu na Twoim koncie zawsze, gdy klikniesz „zapisz”."
 }
