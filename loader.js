@@ -199,19 +199,6 @@ function killWorkers() {
 	});
 }
 
-Loader.notifyWorkers = function (msg, worker_pid) {
-	worker_pid = parseInt(worker_pid, 10);
-	workers.forEach(function (worker) {
-		if (parseInt(worker.pid, 10) !== worker_pid) {
-			try {
-				worker.send(msg);
-			} catch (e) {
-				console.log('[cluster/notifyWorkers] Failed to reach pid ' + worker_pid);
-			}
-		}
-	});
-};
-
 fs.open(pathToConfig, 'r', function (err) {
 	if (!err) {
 		if (nconf.get('daemon') !== 'false' && nconf.get('daemon') !== false) {
