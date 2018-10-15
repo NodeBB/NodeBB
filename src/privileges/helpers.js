@@ -227,8 +227,16 @@ helpers.getGroupPrivileges = function (cid, hookName, groupPrivilegeList, callba
 	], callback);
 };
 
-helpers.giveOrRescind = function (method, privileges, cid, groupName, callback) {
-	async.eachSeries(privileges, function (privilege, next) {
-		method('cid:' + cid + ':privileges:groups:' + privilege, groupName, next);
+helpers.giveOrRescind = function (method, privileges, cids, groupNames, callback) {
+	groupNames = Array.isArray(groupNames) ? groupNames : [groupNames];
+	cids = Array.isArray(cids) ? cids : [cids];
+	async.eachSeries(groupNames, function (groupName, next) {
+		var groupKeys = [];
+		cids.forEach((cid) => {
+			privileges.forEach((privilege) => {
+				groupKeys.push('cid:' + cid + ':privileges:groups:' + privilege);
+			});
+		});
+		method(groupKeys, groupName, next);
 	}, callback);
 };

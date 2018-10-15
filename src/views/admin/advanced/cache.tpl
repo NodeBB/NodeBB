@@ -29,9 +29,6 @@
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-calendar-o"></i> Object Cache</div>
 			<div class="panel-body">
-
-
-
 				<label>[[admin/advanced/cache:length-to-max]]</label><br/>
 				<span>{objectCache.length} / {objectCache.max}</span><br/>
 				<div class="progress">
@@ -62,6 +59,10 @@
 						[[admin/advanced/cache:percent-full, {groupCache.percentFull}]]
 					</div>
 				</div>
+
+				<label>Hits:</label> <span>{groupCache.hits}</span><br/>
+				<label>Misses:</label> <span>{groupCache.misses}</span><br/>
+				<label>Hit Ratio:</label> <span>{groupCache.hitRatio}</span><br/>
 
 				<!-- IF groupCache.dump -->
 				<pre>{groupCache.dump}</pre>

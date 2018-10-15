@@ -486,6 +486,45 @@ describe('Groups', function () {
 				});
 			});
 		});
+
+		it('should add user to multiple groups', function (done) {
+			var groupNames = ['test-hidden1', 'Test', 'test-hidden2', 'empty group'];
+			Groups.create({ name: 'empty group' }, function (err) {
+				assert.ifError(err);
+				Groups.join(groupNames, testUid, function (err) {
+					assert.ifError(err);
+					Groups.isMemberOfGroups(testUid, groupNames, function (err, isMembers) {
+						assert.ifError(err);
+						assert(isMembers.every(Boolean));
+						db.sortedSetScores('groups:visible:memberCount', groupNames, function (err, memberCounts) {
+							assert.ifError(err);
+							// hidden groups are not in "groups:visible:memberCount" so they are null
+							assert.deepEqual(memberCounts, [null, 3, null, 1]);
+							done();
+						});
+					});
+				});
+			});
+		});
+
+		it('should set group title when user joins the group', function (done) {
+			var groupName = 'this will be title';
+			User.create({ username: 'needstitle' }, function (err, uid) {
+				assert.ifError(err);
+				Groups.create({ name: groupName }, function (err) {
+					assert.ifError(err);
+					Groups.join([groupName], uid, function (err) {
+						assert.ifError(err);
+						User.getUserData(uid, function (err, data) {
+							assert.ifError(err);
+							assert.equal(data.groupTitle, '["' + groupName + '"]');
+							assert.deepEqual(data.groupTitleArray, [groupName]);
+							done();
+						});
+					});
+				});
+			});
+		});
 	});
 
 	describe('.leave()', function () {
