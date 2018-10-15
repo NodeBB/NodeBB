@@ -1350,6 +1350,34 @@ describe('Topic\'s', function () {
 				},
 			], done);
 		});
+
+		it('should not return topic as unread if new post is from blocked user', function (done) {
+			var blockedUid;
+			var topic;
+			async.waterfall([
+				function (next) {
+					topics.post({ uid: adminUid, title: 'will not get as unread', content: 'not unread', cid: categoryObj.cid }, next);
+				},
+				function (result, next) {
+					topic = result.topicData;
+					User.create({ username: 'blockedunread' }, next);
+				},
+				function (uid, next) {
+					blockedUid = uid;
+					User.blocks.add(uid, adminUid, next);
+				},
+				function (next) {
+					topics.reply({ uid: blockedUid, content: 'post from blocked user', tid: topic.tid }, next);
+				},
+				function (result, next) {
+					topics.getUnreadTids({ cid: 0, uid: adminUid }, next);
+				},
+				function (unreadTids, next) {
+					assert(!unreadTids.includes(parseInt(topic.tid, 10)));
+					User.blocks.remove(blockedUid, adminUid, next);
+				},
+			], done);
+		});
 	});
 
 	describe('tags', function () {
@@ -1775,7 +1803,7 @@ describe('Topic\'s', function () {
 			});
 		});
 
-		it('should get teasers with first posts', function (done) {
+		it('should get teasers with last posts', function (done) {
 			meta.config.teaserPost = 'last-post';
 			topics.reply({ uid: adminUid, content: 'reply 1 content', tid: topic1.topicData.tid }, function (err, result) {
 				assert.ifError(err);
@@ -1815,6 +1843,29 @@ describe('Topic\'s', function () {
 				assert.equal(teaser.content, 'content 2');
 				done();
 			});
+		});
+
+		it('should not return teaser if user is blocked', function (done) {
+			var blockedUid;
+			async.waterfall([
+				function (next) {
+					User.create({ username: 'blocked' }, next);
+				},
+				function (uid, next) {
+					blockedUid = uid;
+					User.blocks.add(uid, adminUid, next);
+				},
+				function (next) {
+					topics.reply({ uid: blockedUid, content: 'post from blocked user', tid: topic2.topicData.tid }, next);
+				},
+				function (result, next) {
+					topics.getTeaser(topic2.topicData.tid, adminUid, next);
+				},
+				function (teaser, next) {
+					assert.equal(teaser.content, 'content 2');
+					User.blocks.remove(blockedUid, adminUid, next);
+				},
+			], done);
 		});
 	});
 

@@ -133,17 +133,23 @@ module.exports = function (Topics) {
 		const postsPerIteration = 5;
 		let start = 0;
 		let stop = start + postsPerIteration - 1;
-
+		let checkedAllReplies = false;
 		async.doWhilst(function (next) {
 			async.waterfall([
 				function (next) {
 					db.getSortedSetRevRange('tid:' + postData.tid + ':posts', start, stop, next);
 				},
 				function (pids, next) {
-					if (!pids.length) {
-						return callback(null, null);
+					if (pids.length) {
+						return next(null, pids);
 					}
 
+					checkedAllReplies = true;
+					Topics.getTopicField(postData.tid, 'mainPid', function (err, mainPid) {
+						next(err, [mainPid]);
+					});
+				},
+				function (pids, next) {
 					posts.getPostsFields(pids, ['pid', 'uid', 'timestamp', 'tid', 'content'], next);
 				},
 				function (prevPosts, next) {
@@ -158,7 +164,7 @@ module.exports = function (Topics) {
 				},
 			], next);
 		}, function () {
-			return isBlocked && prevPost && prevPost.pid;
+			return isBlocked && prevPost && prevPost.pid && !checkedAllReplies;
 		}, function (err) {
 			callback(err, prevPost);
 		});

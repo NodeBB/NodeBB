@@ -18,7 +18,7 @@
     "invalid-username-or-password": "Lūdzu, norādi gan lietotājvārdu, gan paroli",
     "invalid-search-term": "Nederīga meklēšanas frāze",
     "invalid-url": "Nederīga saite\n",
-    "local-login-disabled": "Ielogošanās ir atspējota nepriviliģētiem kontiem.",
+    "local-login-disabled": "Vietējā ielogošanās ir atspējota nepriviliģētiem kontiem.",
     "csrf-invalid": "Mēs nevarējām Tevi ielogot, iespējams, beigušo savienojuma dēļ. Lūdzu, mēģini vēlreiz",
     "invalid-pagination-value": "Nederīgs vienību skaits, ir jābūt vismaz %1 un ne vairāk kā %2",
     "username-taken": "Lietotājvārds jau izmantots",

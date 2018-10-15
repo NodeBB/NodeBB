@@ -213,6 +213,7 @@ module.exports = function (Topics) {
 					}
 
 					if (topic && topic.cid && cidMatch(topic.cid) && !blockedUids.includes(parseInt(topic.uid, 10))) {
+						topic.tid = parseInt(topic.tid, 10);
 						if ((results.isTopicsFollowed[index] || !results.ignoredCids.includes(String(topic.cid)))) {
 							counts[''] += 1;
 							tidsByFilter[''].push(topic.tid);
