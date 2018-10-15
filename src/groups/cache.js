@@ -13,14 +13,28 @@ cache.misses = 0;
 module.exports = function (Groups) {
 	Groups.cache = cache;
 
+	pubsub.on('group:cache:reset', function () {
+		localReset();
+	});
+
+	pubsub.on('group:cache:del', function (data) {
+		if (data && data.groupNames) {
+			data.groupNames.forEach(function (groupName) {
+				cache.del(data.uid + ':' + groupName);
+			});
+		}
+	});
+
 	Groups.resetCache = function () {
 		pubsub.publish('group:cache:reset');
-		cache.reset();
+		localReset();
 	};
 
-	pubsub.on('group:cache:reset', function () {
+	function localReset() {
 		cache.reset();
-	});
+		cache.hits = 0;
+		cache.misses = 0;
+	}
 
 	Groups.clearCache = function (uid, groupNames) {
 		if (!Array.isArray(groupNames)) {
@@ -31,12 +45,4 @@ module.exports = function (Groups) {
 			cache.del(uid + ':' + groupName);
 		});
 	};
-
-	pubsub.on('group:cache:del', function (data) {
-		if (data && data.groupNames) {
-			data.groupNames.forEach(function (groupName) {
-				cache.del(data.uid + ':' + groupName);
-			});
-		}
-	});
 };

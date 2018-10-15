@@ -146,9 +146,10 @@ module.exports = function (Groups) {
 		var cacheKey = uid + ':' + groupName;
 		var isMember = Groups.cache.get(cacheKey);
 		if (isMember !== undefined) {
+			Groups.cache.hits += 1;
 			return setImmediate(callback, null, isMember);
 		}
-
+		Groups.cache.misses += 1;
 		async.waterfall([
 			function (next) {
 				db.isSortedSetMember('group:' + groupName + ':members', uid, next);
@@ -173,11 +174,7 @@ module.exports = function (Groups) {
 		}
 
 		var nonCachedUids = uids.filter(function (uid) {
-			var isMember = Groups.cache.get(uid + ':' + groupName);
-			if (isMember !== undefined) {
-				cachedData[uid + ':' + groupName] = isMember;
-			}
-			return isMember === undefined;
+			return filterNonCached(cachedData, uid, groupName);
 		});
 
 		if (!nonCachedUids.length) {
@@ -199,6 +196,18 @@ module.exports = function (Groups) {
 		], callback);
 	};
 
+	function filterNonCached(cachedData, uid, groupName) {
+		var isMember = Groups.cache.get(uid + ':' + groupName);
+		var isInCache = isMember !== undefined;
+		if (isInCache) {
+			Groups.cache.hits += 1;
+			cachedData[uid + ':' + groupName] = isMember;
+		} else {
+			Groups.cache.misses += 1;
+		}
+		return !isInCache;
+	}
+
 	Groups.isMemberOfGroups = function (uid, groups, callback) {
 		var cachedData = {};
 		function getFromCache(next) {
@@ -212,11 +221,7 @@ module.exports = function (Groups) {
 		}
 
 		var nonCachedGroups = groups.filter(function (groupName) {
-			var isMember = Groups.cache.get(uid + ':' + groupName);
-			if (isMember !== undefined) {
-				cachedData[uid + ':' + groupName] = isMember;
-			}
-			return isMember === undefined;
+			return filterNonCached(cachedData, uid, groupName);
 		});
 
 		if (!nonCachedGroups.length) {

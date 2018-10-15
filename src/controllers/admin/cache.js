@@ -30,6 +30,9 @@ cacheController.get = function (req, res) {
 			itemCount: groupCache.itemCount,
 			percentFull: ((groupCache.length / groupCache.max) * 100).toFixed(2),
 			dump: req.query.debug ? JSON.stringify(groupCache.dump(), null, 4) : false,
+			hits: utils.addCommas(String(groupCache.hits)),
+			misses: utils.addCommas(String(groupCache.misses)),
+			hitRatio: (groupCache.hits / (groupCache.hits + groupCache.misses)).toFixed(4),
 		},
 	};
 
