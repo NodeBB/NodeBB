@@ -51,7 +51,7 @@
 	"users.last-online": "pēdējoreiz redzēts",
 	"users.banned": "bloķēts?",
 
-	"create.username": "Lietotāja vārds",
+	"create.username": "Vārds",
 	"create.email": "E-pasta adrese",
 	"create.email-placeholder": "E-pasta adrese",
 	"create.password": "Parole",
