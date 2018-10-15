@@ -60,9 +60,9 @@
 					</div>
 				</div>
 
-				<label>Hits:</label> <span>{objectCache.hits}</span><br/>
-				<label>Misses:</label> <span>{objectCache.misses}</span><br/>
-				<label>Hit Ratio:</label> <span>{objectCache.hitRatio}</span><br/>
+				<label>Hits:</label> <span>{groupCache.hits}</span><br/>
+				<label>Misses:</label> <span>{groupCache.misses}</span><br/>
+				<label>Hit Ratio:</label> <span>{groupCache.hitRatio}</span><br/>
 
 				<!-- IF groupCache.dump -->
 				<pre>{groupCache.dump}</pre>
