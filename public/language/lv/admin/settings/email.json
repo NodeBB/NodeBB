@@ -7,7 +7,7 @@
 
 	"smtp-transport": "SMTP transports",
 	"smtp-transport.enabled": "Izmantot atsevišķu e-pasta serveri, lai nosūtītu e-pastus",
-	"smtp-transport-help": "You can select from a list of well-known services or enter a custom one.",
+	"smtp-transport-help": "Izvēlies no labi zināmu pakalpojumu saraksta vai ievadi pielāgotu pakalpojumu.",
 	"smtp-transport.service": "Select a service",
 	"smtp-transport.service-custom": "Pielāgotais serviss",
 	"smtp-transport.service-help": "Select a service name above in order to use the known information about it. Alternatively, select 'Custom Service' and enter the details below.",
