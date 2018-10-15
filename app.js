@@ -45,8 +45,9 @@ var configExists = file.existsSync(configFile) || (nconf.get('url') && nconf.get
 
 var prestart = require('./src/prestart');
 prestart.loadConfig(configFile);
-prestart.versionCheck();
 prestart.setupWinston();
+prestart.versionCheck();
+winston.verbose('* using configuration stored in: %s', configFile);
 
 if (!process.send) {
 	// If run using `node app`, log GNU copyright info along with server info

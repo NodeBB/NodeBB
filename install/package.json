@@ -111,7 +111,7 @@
         "uglify-es": "^3.3.9",
         "util.promisify": "1.0.0",
         "validator": "10.8.0",
-        "winston": "^2.4.0",
+        "winston": "3.1.0",
         "xml": "^1.0.1",
         "xregexp": "^4.1.1",
         "zxcvbn": "^4.4.2"
