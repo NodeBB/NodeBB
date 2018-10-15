@@ -23,6 +23,9 @@ cacheController.get = function (req, res) {
 			itemCount: postCache.itemCount,
 			percentFull: percentFull,
 			avgPostSize: avgPostSize,
+			hits: utils.addCommas(String(postCache.hits)),
+			misses: utils.addCommas(String(postCache.misses)),
+			hitRatio: ((postCache.hits / (postCache.hits + postCache.misses) || 0)).toFixed(4),
 		},
 		groupCache: {
 			length: groupCache.length,

@@ -19,6 +19,11 @@
 						[[admin/advanced/cache:percent-full, {postCache.percentFull}]]
 					</div>
 				</div>
+
+				<label>Hits:</label> <span>{postCache.hits}</span><br/>
+				<label>Misses:</label> <span>{postCache.misses}</span><br/>
+				<label>Hit Ratio:</label> <span>{postCache.hitRatio}</span><br/>
+
 				<div class="form-group">
 					<label for="postCacheSize">[[admin/advanced/cache:post-cache-size]]</label>
 					<input id="postCacheSize" type="text" class="form-control" value="" data-field="postCacheSize">
