@@ -37,7 +37,6 @@ Loader.init = function (callback) {
 	}
 
 	process.on('SIGHUP', Loader.restart);
-	process.on('SIGUSR2', Loader.reload);
 	process.on('SIGTERM', Loader.stop);
 	callback();
 };
@@ -83,10 +82,6 @@ Loader.addWorkerEvents = function (worker) {
 			case 'restart':
 				console.log('[cluster] Restarting...');
 				Loader.restart();
-				break;
-			case 'reload':
-				console.log('[cluster] Reloading...');
-				Loader.reload();
 				break;
 			case 'pubsub':
 				workers.forEach(function (w) {
@@ -188,14 +183,6 @@ Loader.restart = function () {
 	});
 };
 
-Loader.reload = function () {
-	workers.forEach(function (worker) {
-		worker.send({
-			action: 'reload',
-		});
-	});
-};
-
 Loader.stop = function () {
 	killWorkers();
 
@@ -211,19 +198,6 @@ function killWorkers() {
 		worker.kill();
 	});
 }
-
-Loader.notifyWorkers = function (msg, worker_pid) {
-	worker_pid = parseInt(worker_pid, 10);
-	workers.forEach(function (worker) {
-		if (parseInt(worker.pid, 10) !== worker_pid) {
-			try {
-				worker.send(msg);
-			} catch (e) {
-				console.log('[cluster/notifyWorkers] Failed to reach pid ' + worker_pid);
-			}
-		}
-	});
-};
 
 fs.open(pathToConfig, 'r', function (err) {
 	if (!err) {

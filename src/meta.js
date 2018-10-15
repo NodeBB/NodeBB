@@ -39,26 +39,6 @@ Meta.userOrGroupExists = function (slug, callback) {
 	});
 };
 
-/**
- * Reload deprecated as of v1.1.2+, remove in v2.x
- */
-Meta.reload = function (callback) {
-	restart();
-	callback();
-};
-
-Meta.restart = function () {
-	pubsub.publish('meta:restart', { hostname: os.hostname() });
-	restart();
-};
-
-Meta.getSessionTTLSeconds = function () {
-	var ttlDays = 60 * 60 * 24 * (parseInt(Meta.config.loginDays, 10) || 0);
-	var ttlSeconds = (parseInt(Meta.config.loginSeconds, 10) || 0);
-	var ttl = ttlSeconds || ttlDays || 1209600; // Default to 14 days
-	return ttl;
-};
-
 if (nconf.get('isPrimary') === 'true') {
 	pubsub.on('meta:restart', function (data) {
 		if (data.hostname !== os.hostname()) {
@@ -66,6 +46,11 @@ if (nconf.get('isPrimary') === 'true') {
 		}
 	});
 }
+
+Meta.restart = function () {
+	pubsub.publish('meta:restart', { hostname: os.hostname() });
+	restart();
+};
 
 function restart() {
 	if (process.send) {
@@ -76,3 +61,10 @@ function restart() {
 		winston.error('[meta.restart] Could not restart, are you sure NodeBB was started with `./nodebb start`?');
 	}
 }
+
+Meta.getSessionTTLSeconds = function () {
+	var ttlDays = 60 * 60 * 24 * (parseInt(Meta.config.loginDays, 10) || 0);
+	var ttlSeconds = (parseInt(Meta.config.loginSeconds, 10) || 0);
+	var ttl = ttlSeconds || ttlDays || 1209600; // Default to 14 days
+	return ttl;
+};
