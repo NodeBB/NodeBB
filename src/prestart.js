@@ -25,6 +25,7 @@ function setupWinston() {
 			return info;
 		});
 		formats.push(timestampFormat());
+		formats.push(winston.format.splat());
 		formats.push(winston.format.simple());
 	}
 

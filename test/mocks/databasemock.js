@@ -6,13 +6,20 @@
  */
 
 var async = require('async');
-var winston = require('winston');
 var path = require('path');
 var nconf = require('nconf');
 var url = require('url');
 var errorText;
 
 var packageInfo = require('../../package');
+
+var winston = require('winston');
+winston.add(new winston.transports.Console({
+	format: winston.format.combine(
+		winston.format.splat(),
+		winston.format.simple()
+	),
+}));
 
 nconf.file({ file: path.join(__dirname, '../../config.json') });
 nconf.defaults({
@@ -83,9 +90,7 @@ if (testDbConfig.database === productionDbConfig.database &&
 
 nconf.set(dbType, testDbConfig);
 
-winston.info('database config');
-winston.info(dbType);
-winston.info(testDbConfig);
+winston.info('database config %s', dbType, testDbConfig);
 
 var db = require('../../src/database');
 module.exports = db;
