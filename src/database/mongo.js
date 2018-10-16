@@ -77,7 +77,9 @@ mongoModule.getConnectionString = function () {
 	if (!nconf.get('mongo:port')) {
 		nconf.set('mongo:port', 27017);
 	}
+	console.log(nconf.get('mongo:database'), typeof nconf.get('mongo:database'));
 	if (!nconf.get('mongo:database')) {
+		console.log('switching to nodebb database');
 		nconf.set('mongo:database', 'nodebb');
 	}
 
