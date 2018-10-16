@@ -173,6 +173,8 @@ function setupMockDefaults(callback) {
 		function (next) {
 			var groups = require('../../src/groups');
 			groups.resetCache();
+			var posts = require('../../src/posts/cache');
+			posts.cache.reset();
 			next();
 		},
 		function (next) {
