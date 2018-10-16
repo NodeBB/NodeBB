@@ -15,9 +15,10 @@ language: node_js
 sudo: false
 dist: trusty
 env:
-  - CXX=g++-4.8 DB=mongodb
-  - CXX=g++-4.8 DB=redis
-  - CXX=g++-4.8 DB=postgres
+  - CXX=g++-4.8 DB=mongodb NODE_ENV=production
+  - CXX=g++-4.8 DB=mongodb NODE_ENV=development
+  - CXX=g++-4.8 DB=redis NODE_ENV=production
+  - CXX=g++-4.8 DB=postgres NODE_ENV=production
 addons:
   apt:
     sources:

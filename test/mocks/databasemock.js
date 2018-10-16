@@ -5,12 +5,15 @@
  * ATTENTION: testing db is flushed before every use!
  */
 
+
 var async = require('async');
 var path = require('path');
 var nconf = require('nconf');
 var url = require('url');
-var errorText;
 
+global.env = process.env.NODE_ENV || 'production';
+
+var errorText;
 var packageInfo = require('../../package');
 
 var winston = require('winston');
@@ -91,6 +94,7 @@ if (testDbConfig.database === productionDbConfig.database &&
 nconf.set(dbType, testDbConfig);
 
 winston.info('database config %s', dbType, testDbConfig);
+winston.info('environment ' + global.env);
 
 var db = require('../../src/database');
 module.exports = db;
