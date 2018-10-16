@@ -10,11 +10,9 @@ describe('pubsub', function () {
 	it('should use singleHostCluster', function (done) {
 		var oldValue = nconf.get('singleHostCluster');
 		nconf.set('singleHostCluster', true);
-		nconf.set('isCluster', true);
 		pubsub.on('testEvent', function (message) {
 			assert.equal(message.foo, 1);
 			nconf.set('singleHostCluster', oldValue);
-			nconf.set('isCluster', 'false');
 			pubsub.removeAllListeners('testEvent');
 			done();
 		});
@@ -24,11 +22,9 @@ describe('pubsub', function () {
 	it('should use the current database\'s pubsub', function (done) {
 		var oldValue = nconf.get('singleHostCluster');
 		nconf.set('singleHostCluster', false);
-		nconf.set('isCluster', true);
 		pubsub.on('testEvent', function (message) {
 			assert.equal(message.foo, 1);
 			nconf.set('singleHostCluster', oldValue);
-			nconf.set('isCluster', 'false');
 			pubsub.removeAllListeners('testEvent');
 			done();
 		});
