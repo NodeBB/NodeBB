@@ -32,9 +32,12 @@ winston.configure({
 	level: 'verbose',
 	format: winston.format.combine.apply(null, formats),
 	transports: [
-		new winston.transports.Console(),
+		new winston.transports.Console({
+			handleExceptions: true,
+		}),
 		new winston.transports.File({
 			filename: 'logs/webinstall.log',
+			handleExceptions: true,
 		}),
 	],
 });

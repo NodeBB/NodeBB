@@ -33,7 +33,9 @@ function setupWinston() {
 		level: nconf.get('log-level') || (global.env === 'production' ? 'info' : 'verbose'),
 		format: winston.format.combine.apply(null, formats),
 		transports: [
-			new winston.transports.Console(),
+			new winston.transports.Console({
+				handleExceptions: true,
+			}),
 		],
 	});
 }
