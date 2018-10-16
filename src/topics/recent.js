@@ -39,6 +39,7 @@ module.exports = function (Topics) {
 			},
 			function (tids, next) {
 				data.topicCount = tids.length;
+				data.tids = tids;
 				getTopics(tids, params, next);
 			},
 			function (topicData, next) {
