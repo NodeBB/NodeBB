@@ -24,7 +24,14 @@ app.isConnected = false;
 	function addHandlers() {
 		socket.on('connect', onConnect);
 
-		socket.on('reconnecting', onReconnecting);
+		socket.on('reconnecting', function () {
+			// Wait 2s before firing
+			setTimeout(function () {
+				if (socket.disconnected) {
+					onReconnecting();
+				}
+			}, 2000);
+		});
 
 		socket.on('disconnect', onDisconnect);
 
