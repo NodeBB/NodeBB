@@ -11,7 +11,7 @@ var path = require('path');
 var nconf = require('nconf');
 var url = require('url');
 
-global.env = process.env.NODE_ENV || 'production';
+global.env = process.env.TEST_ENV || 'production';
 
 var errorText;
 var packageInfo = require('../../package');
