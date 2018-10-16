@@ -801,7 +801,11 @@ describe('Controllers', function () {
 			}, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 403);
-				assert.equal(body, '{"path":"/user/doesnotexist/session/1112233","loggedIn":true,"title":"[[global:403.title]]"}');
+				assert.deepEqual(JSON.parse(body), {
+					path: '/user/doesnotexist/session/1112233',
+					loggedIn: true,
+					title: '[[global:403.title]]',
+				});
 				done();
 			});
 		});

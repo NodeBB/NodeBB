@@ -9,23 +9,36 @@ var pkg = require('../package.json');
 var dirname = require('./cli/paths').baseDir;
 
 function setupWinston() {
-	winston.remove(winston.transports.Console);
-	winston.add(winston.transports.Console, {
-		colorize: nconf.get('log-colorize') !== 'false',
-		timestamp: function () {
-			var date = new Date();
-			return nconf.get('json-logging') ? date.toJSON() :
-				date.toISOString() + ' [' + global.process.pid + ']';
-		},
+	var formats = [];
+
+	if (nconf.get('log-colorize') !== 'false') {
+		formats.push(winston.format.colorize());
+	}
+
+	if (nconf.get('json-logging')) {
+		formats.push(winston.format.timestamp());
+		formats.push(winston.format.json());
+	} else {
+		const timestampFormat = winston.format((info) => {
+			var dateString = new Date().toISOString() + ' [' + global.process.pid + ']';
+			info.level = dateString + ' - ' + info.level;
+			return info;
+		});
+		formats.push(timestampFormat());
+		formats.push(winston.format.splat());
+		formats.push(winston.format.simple());
+	}
+
+	winston.configure({
 		level: nconf.get('log-level') || (global.env === 'production' ? 'info' : 'verbose'),
-		json: !!nconf.get('json-logging'),
-		stringify: !!nconf.get('json-logging'),
+		format: winston.format.combine.apply(null, formats),
+		transports: [
+			new winston.transports.Console(),
+		],
 	});
 }
 
 function loadConfig(configFile) {
-	winston.verbose('* using configuration stored in: %s', configFile);
-
 	nconf.file({
 		file: configFile,
 	});
