@@ -223,7 +223,7 @@ function setupDefaultConfigs(meta, next) {
 	winston.info('Populating database with default configs, if not already set...\n');
 
 	var defaults = require(path.join(nconf.get('base_dir'), 'install/data/defaults.json'));
-
+	defaults.eventLoopCheckEnabled = 0;
 	meta.configs.setOnEmpty(defaults, next);
 }
 
