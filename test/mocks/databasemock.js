@@ -35,7 +35,7 @@ nconf.defaults({
 
 if (!nconf.get('isCluster')) {
 	nconf.set('isPrimary', 'true');
-	nconf.set('isCluster', 'true');
+	nconf.set('isCluster', 'false');
 }
 
 var dbType = nconf.get('database');
