@@ -20,7 +20,7 @@
     "registration-added-to-queue": "ثبت نام شما به صف تایید اضافه شد. وقتی توسط یک مدیر تایید شد شما ایمیلی دریافت خواهید کرد.",
     "interstitial.intro": "ما نیاز به برخی اطلاعات اضافی شما قبل از ایجاد شناسه کاربری داریم.",
     "interstitial.errors-found": "شما نمی‌توانید ثبت نام خود را تکمیل کنید:",
-    "gdpr_agree_data": "I consent to the collection and processing of my personal information on this website.",
-    "gdpr_agree_email": "I consent to receive digest and notification emails from this website.",
-    "gdpr_consent_denied": "You must give consent to this site to collect/process your information, and to send you emails."
+    "gdpr_agree_data": "من با جمع آوری و پرداز اطلاعات شخصی در این وبسایت موافقم.",
+    "gdpr_agree_email": "من با دریافت ایمیل ها و خلاصه ها از این وبسایت موافقم.",
+    "gdpr_consent_denied": "شما باید رضایت خود را برای جمع آوری/پردازش اطلاعاتتان و دریافت ایمیل را اعلام کنید."
 }

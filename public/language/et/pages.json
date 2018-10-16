@@ -54,6 +54,7 @@
     "account/best": "Parimad postitused %1 poolt",
     "account/blocks": "Blocked users for %1",
     "account/uploads": "Uploads by %1",
+    "account/sessions": "Login Sessions",
     "confirm": "Emaili aadress kinnitatud",
     "maintenance.text": "%1 foorumil on käimas hooldustööd. Palun külastage meid mõne aja pärast uuesti.",
     "maintenance.messageIntro": "Administraator on jätnud ka omaltpoolt sõnumi:",

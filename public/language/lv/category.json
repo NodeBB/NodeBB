@@ -1,0 +1,20 @@
+{
+    "category": "Kategorija",
+    "subcategories": "Apakškategorijas",
+    "new_topic_button": "Izveidot jaunu tematu",
+    "guest-login-post": "Ielogojies lai rakstītu",
+    "no_topics": "<strong>Šinī kategorijā nav rakstu.</strong><br />Vēlies izveidot kādu rakstu?",
+    "browsing": "pārlūko",
+    "no_replies": "Nav atbilžu",
+    "no_new_posts": "Nav jaunu rakstu.",
+    "share_this_category": "Dalīties ar šo kategoriju",
+    "watch": "Novērošana",
+    "ignore": "Ignorēt",
+    "watching": "Novēro",
+    "ignoring": "Ignorē",
+    "watching.description": "Rādīt neizlasītos tematus",
+    "ignoring.description": "Nerādīt neizlasītos tematus",
+    "watch.message": "Tu tagad novēro maiņas šinī kategorijā un visās tās apakškategorijās",
+    "ignore.message": "Tu tagad neievēro maiņas šinī kategorijā un visās tās apakškategorijās",
+    "watched-categories": "Novērotās kategorijas"
+}

@@ -320,6 +320,7 @@ Flags.getNotes = function (flagId, callback) {
 
 				next(null, notes.map(function (note, idx) {
 					note.user = users[idx];
+					note.content = validator.escape(note.content);
 					return note;
 				}));
 			});
@@ -496,7 +497,7 @@ Flags.update = function (flagId, uid, changeset, callback) {
 	var tasks = [];
 	var now = changeset.datetime || Date.now();
 	var notifyAssignee = function (assigneeId, next) {
-		if (assigneeId === '') {
+		if (assigneeId === '' || parseInt(uid, 10) === parseInt(assigneeId, 10)) {
 			// Do nothing
 			return next();
 		}
@@ -688,7 +689,7 @@ Flags.notify = function (flagObj, uid, callback) {
 				bodyShort: '[[notifications:user_flagged_post_in, ' + flagObj.reporter.username + ', ' + titleEscaped + ']]',
 				bodyLong: flagObj.description,
 				pid: flagObj.targetId,
-				path: '/post/' + flagObj.targetId,
+				path: '/flags/' + flagObj.flagId,
 				nid: 'flag:post:' + flagObj.targetId + ':uid:' + uid,
 				from: uid,
 				mergeId: 'notifications:user_flagged_post_in|' + flagObj.targetId,
@@ -725,7 +726,7 @@ Flags.notify = function (flagObj, uid, callback) {
 				type: 'new-user-flag',
 				bodyShort: '[[notifications:user_flagged_user, ' + flagObj.reporter.username + ', ' + flagObj.target.username + ']]',
 				bodyLong: flagObj.description,
-				path: '/uid/' + flagObj.targetId,
+				path: '/flags/' + flagObj.flagId,
 				nid: 'flag:user:' + flagObj.targetId + ':uid:' + uid,
 				from: uid,
 				mergeId: 'notifications:user_flagged_user|' + flagObj.targetId,

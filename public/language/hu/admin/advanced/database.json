@@ -32,5 +32,9 @@
 	"redis.iops": "Pillanatnyi művelet mpercenként",
 	"redis.keyspace-hits": "Kulcstér találatok",
 	"redis.keyspace-misses": "Kulcstér tévesztések",
-	"redis.raw-info": "Redis nyers információ"
+	"redis.raw-info": "Redis nyers információ",
+
+	"postgres": "Postgres",
+	"postgres.version": "PostgreSQL Version",
+	"postgres.raw-info": "Postgres Raw Info"
 }

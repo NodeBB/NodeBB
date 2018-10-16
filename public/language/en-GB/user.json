@@ -27,6 +27,7 @@
 	"profile_views": "Profile views",
 	"reputation": "Reputation",
 	"bookmarks":"Bookmarks",
+	"watched_categories": "Watched categories",
 	"watched": "Watched",
 	"ignored": "Ignored",
 	"followers": "Followers",
@@ -168,6 +169,8 @@
 	"info.moderation-note": "Moderation Note",
 	"info.moderation-note.success": "Moderation note saved",
 	"info.moderation-note.add": "Add note",
+
+	"sessions.description": "This page allows you to view any active sessions on this forum and revoke them if necessary. You can revoke your own session by logging out of your account.",
 
 	"consent.title": "Your Rights &amp; Consent",
 	"consent.lead": "This community forum collects and processes your personal information.",

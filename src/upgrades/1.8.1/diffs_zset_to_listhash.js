@@ -7,7 +7,7 @@ var async = require('async');
 
 module.exports = {
 	name: 'Reformatting post diffs to be stored in lists and hash instead of single zset',
-	timestamp: Date.UTC(2017, 2, 15),
+	timestamp: Date.UTC(2018, 2, 15),
 	method: function (callback) {
 		var progress = this.progress;
 

@@ -1,0 +1,12 @@
+{
+	"logger-settings": "Žurnāla iestatījumi",
+	"description": "By enabling the check boxes, you will receive logs to your terminal. If you specify a path, logs will then be saved to a file instead. HTTP logging is useful for collecting statistics about who, when, and what people access on your forum. In addition to logging HTTP requests, we can also log socket.io events. Socket.io logging, in combination with redis-cli monitor, can be very helpful for learning NodeBB's internals.",
+	"explanation": "Vienkārši atzīmēt / noņemt atzīmi no žūrnāla iestatījumiem, lai aktivizētu vai atspējotu žurnālu reālā laikā. Nav nepieciešams restartēt.",
+	"enable-http": "Iespējot HTTP žurnālu",
+	"enable-socket": "Iespējot socket.io notikumu žurnālu",
+	"file-path": "Ceļš uz žurnāla failu",
+	"file-path-placeholder": "/ceļš/uz/žurnāla/failu.log ::: atstāt tukšu, lai rakstītu terminālī",
+
+	"control-panel": "Žurnāla vadības panelis",
+	"update-settings": "Atjaunināt žurnāla iestatījumus"
+}

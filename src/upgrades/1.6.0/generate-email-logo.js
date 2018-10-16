@@ -34,7 +34,6 @@ module.exports = {
 					image.resizeImage({
 						path: sourcePath,
 						target: uploadPath,
-						extension: 'png',
 						height: 50,
 					}, next);
 				});

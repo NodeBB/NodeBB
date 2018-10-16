@@ -93,7 +93,7 @@
 	"alerts.error-x": "<strong>ผิดพลาด</strong><p>%1</p>",
 	"alerts.create-success": "ผู้ใช้งานถูกสร้าง!",
 
-	"alerts.prompt-email": "อีเมล: ",
+	"alerts.prompt-email": "Emails: ",
 	"alerts.email-sent-to": "อีเมลคำเชิญถูกส่งไปที่ %1",
 	"alerts.x-users-found": "%1 ผู้ใช้งานถูกพบ! การค้นหาใช้เวลา %2 ms."
 }

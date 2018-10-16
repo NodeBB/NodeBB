@@ -35,7 +35,7 @@ module.exports = function (Categories) {
 					parentCid: parentCid,
 					topic_count: 0,
 					post_count: 0,
-					disabled: 0,
+					disabled: data.disabled ? 1 : 0,
 					order: order,
 					link: data.link || '',
 					numRecentReplies: 1,
@@ -75,19 +75,30 @@ module.exports = function (Categories) {
 						}
 						Categories.parseDescription(category.cid, category.description, next);
 					},
-					async.apply(db.sortedSetAdd, 'categories:cid', category.order, category.cid),
-					async.apply(db.sortedSetAdd, 'cid:' + parentCid + ':children', category.order, category.cid),
-					async.apply(privileges.categories.give, defaultPrivileges, category.cid, 'administrators'),
-					async.apply(privileges.categories.give, defaultPrivileges, category.cid, 'registered-users'),
-					async.apply(privileges.categories.give, ['find', 'read', 'topics:read'], category.cid, 'guests'),
-					async.apply(privileges.categories.give, ['find', 'read', 'topics:read'], category.cid, 'spiders'),
+					async.apply(db.sortedSetsAdd, ['categories:cid', 'cid:' + parentCid + ':children'], category.order, category.cid),
+					async.apply(privileges.categories.give, defaultPrivileges, category.cid, ['administrators', 'registered-users']),
+					async.apply(privileges.categories.give, ['find', 'read', 'topics:read'], category.cid, ['guests', 'spiders']),
 				], next);
 			},
 			function (results, next) {
-				if (data.cloneFromCid && parseInt(data.cloneFromCid, 10)) {
-					return Categories.copySettingsFrom(data.cloneFromCid, category.cid, !data.parentCid, next);
-				}
-				next(null, category);
+				async.series([
+					function (next) {
+						if (data.cloneFromCid && parseInt(data.cloneFromCid, 10)) {
+							return Categories.copySettingsFrom(data.cloneFromCid, category.cid, !data.parentCid, next);
+						}
+
+						next();
+					},
+					function (next) {
+						if (data.cloneChildren) {
+							return duplicateCategoriesChildren(category.cid, data.cloneFromCid, data.uid, next);
+						}
+
+						next();
+					},
+				], function (err) {
+					next(err, category);
+				});
 			},
 			function (category, next) {
 				plugins.fireHook('action:category.create', { category: category });
@@ -95,6 +106,27 @@ module.exports = function (Categories) {
 			},
 		], callback);
 	};
+
+	function duplicateCategoriesChildren(parentCid, cid, uid, callback) {
+		Categories.getChildren([cid], uid, function (err, children) {
+			if (err || !children.length) {
+				return callback(err);
+			}
+
+			children = children[0];
+
+			children.forEach(function (child) {
+				child.parentCid = parentCid;
+				child.cloneFromCid = child.cid;
+				child.cloneChildren = true;
+				child.name = utils.decodeHTMLEntities(child.name);
+				child.description = utils.decodeHTMLEntities(child.description);
+				child.uid = uid;
+			});
+
+			async.each(children, Categories.create, callback);
+		});
+	}
 
 	Categories.assignColours = function () {
 		var backgrounds = ['#AB4642', '#DC9656', '#F7CA88', '#A1B56C', '#86C1B9', '#7CAFC2', '#BA8BAF', '#A16946'];

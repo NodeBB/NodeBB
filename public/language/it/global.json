@@ -53,7 +53,7 @@
     "topics": "Discussioni",
     "posts": "Post",
     "best": "Migliore",
-    "votes": "Votes",
+    "votes": "Votazioni",
     "upvoters": "Hanno votato positivamente",
     "upvoted": "Apprezzati",
     "downvoters": "Hanno negato negativamente",
@@ -85,6 +85,7 @@
     "language": "Lingua",
     "guest": "Ospite",
     "guests": "Ospiti",
+    "former_user": "Un Ex Utente",
     "updated.title": "Forum Aggiornato",
     "updated.message": "Questo forum è stato aggiornato all'ultima versione. Clicca qui per ricaricare la pagina.",
     "privacy": "Privacy",
@@ -108,5 +109,5 @@
     "edited": "Modificato",
     "disabled": "Disabilitato",
     "select": "Seleziona",
-    "user-search-prompt": "Type something here to find users..."
+    "user-search-prompt": "Scrivi qui per avviare la ricerca utenti"
 }

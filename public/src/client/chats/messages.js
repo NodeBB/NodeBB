@@ -8,10 +8,6 @@ define('forum/chats/messages', ['components', 'sounds', 'translator', 'benchpres
 		var msg = inputEl.val();
 		var mid = inputEl.attr('data-mid');
 
-		if (msg.length > ajaxify.data.maximumChatMessageLength) {
-			return app.alertError('[[error:chat-message-too-long,' + ajaxify.data.maximumChatMessageLength + ']]');
-		}
-
 		if (!msg.length) {
 			return;
 		}

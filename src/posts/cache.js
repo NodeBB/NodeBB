@@ -8,5 +8,7 @@ var cache = LRU({
 	length: function (n) { return n.length; },
 	maxAge: 0,
 });
+cache.hits = 0;
+cache.misses = 0;
 
 module.exports = cache;

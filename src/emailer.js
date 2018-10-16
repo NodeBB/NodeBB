@@ -210,6 +210,12 @@ Emailer.sendToEmail = function (template, email, language, params, callback) {
 
 	var lang = language || meta.config.defaultLang || 'en-GB';
 
+	// Add some default email headers based on local configuration
+	params.headers = Object.assign({
+		'List-Id': '<' + [template, params.uid, getHostname()].join('.') + '>',
+		'List-Unsubscribe': '<' + [nconf.get('url'), 'uid', params.uid, 'settings'].join('/') + '>',
+	}, params.headers);
+
 	async.waterfall([
 		function (next) {
 			Plugins.fireHook('filter:email.params', {
@@ -249,6 +255,7 @@ Emailer.sendToEmail = function (template, email, language, params, callback) {
 				uid: params.uid,
 				pid: params.pid,
 				fromUid: params.fromUid,
+				headers: params.headers,
 			};
 			Plugins.fireHook('filter:email.modify', data, next);
 		},

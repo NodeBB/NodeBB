@@ -608,3 +608,5 @@ Notifications.merge = function (notifications, callback) {
 		callback(err, data.notifications);
 	});
 };
+
+Notifications.async = require('./promisify')(Notifications);

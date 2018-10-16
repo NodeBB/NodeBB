@@ -51,7 +51,9 @@ widgets.render = function (uid, options, callback) {
 					if (err) {
 						return done(err);
 					}
-					returnData[location] = renderedWidgets.filter(Boolean);
+					renderedWidgets = renderedWidgets.filter(Boolean);
+					returnData[location] = renderedWidgets.length ? renderedWidgets : undefined;
+
 					done();
 				});
 			}, function (err) {

@@ -386,3 +386,5 @@ Categories.filterIgnoringUids = function (cid, uids, callback) {
 		},
 	], callback);
 };
+
+Categories.async = require('./promisify')(Categories);

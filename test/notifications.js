@@ -18,7 +18,6 @@ describe('Notifications', function () {
 	var notification;
 
 	before(function (done) {
-		groups.resetCache();
 		user.create({ username: 'poster' }, function (err, _uid) {
 			if (err) {
 				return done(err);

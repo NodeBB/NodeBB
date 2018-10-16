@@ -1,0 +1,11 @@
+{
+	"post-queue": "Rakstu apstiprināšanas rinda",
+	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Posting Restrictions</a> and enable <strong>Post Queue</strong>.",
+	"user": "Lietotājs",
+	"category": "Kategorija",
+	"title": "Virsraksts",
+	"content": "Saturs",
+	"posted": "Datums",
+	"reply-to": "Atbildēt \"%1\"",
+	"content-editable": "Pirms publicēšanas var klikšķināt uz saturu, lai to rediģētu."
+}

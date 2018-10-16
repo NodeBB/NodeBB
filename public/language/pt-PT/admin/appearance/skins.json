@@ -1,9 +1,9 @@
 {
-	"loading": "Loading Skins...",
-	"homepage": "Homepage",
-	"select-skin": "Select Skin",
-	"current-skin": "Current Skin",
-	"skin-updated": "Skin Updated",
-	"applied-success": "%1 skin was succesfully applied",
-	"revert-success": "Skin reverted to base colours"
+	"loading": "A Carregar Máscaras...",
+	"homepage": "Página principal",
+	"select-skin": "Escolha uma Máscara",
+	"current-skin": "Máscara Atual",
+	"skin-updated": "Máscara Atualizada",
+	"applied-success": "Máscara %1 aplicada com sucesso",
+	"revert-success": "Máscara revertida para as cores base"
 }

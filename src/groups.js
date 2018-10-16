@@ -20,6 +20,9 @@ require('./groups/search')(Groups);
 require('./groups/cover')(Groups);
 require('./groups/posts')(Groups);
 require('./groups/user')(Groups);
+require('./groups/join')(Groups);
+require('./groups/leave')(Groups);
+require('./groups/cache')(Groups);
 
 
 Groups.ephemeralGroups = ['guests', 'spiders'];
@@ -301,3 +304,5 @@ Groups.existsBySlug = function (slug, callback) {
 		db.isObjectField('groupslug:groupname', slug, callback);
 	}
 };
+
+Groups.async = require('./promisify')(Groups);

@@ -1,0 +1,35 @@
+{
+	"name": "Grupas nosaukums",
+	"description": "Grupas apraksts",
+	"member-count": "Biedru skaits",
+	"system": "Sistēmas grupa",
+	"edit": "Rediģēt",
+	"search-placeholder": "Meklēt",
+	"create": "Izveidot grupu",
+	"description-placeholder": "Īss grupas apraksts",
+	"create-button": "Izveidot",
+
+	"alerts.create-failure": "<strong>Ak, vai</strong><p>Veidojot grupu, radās problēma. Lūdzu, pamēģini vēlreiz vēlāk!</p>",
+	"alerts.confirm-delete": "Vai tiešām vēlies izdzēst šo grupu?",
+
+	"edit.name": "Grupas nosaukums",
+	"edit.description": "Grupas apraksts",
+	"edit.user-title": "Biedra etiķete",
+	"edit.icon": "Grupas ikona",
+	"edit.label-color": "Grupas etiķetes krāsa",
+	"edit.show-badge": "Rādīt nozīmīti",
+	"edit.private-details": "Pievienoties grupai nepieciešama grupas īpašnieka apstiprināšana.",
+	"edit.private-override": "Brīdinājums: privātās grupas ir atspējotas sistēmas līmenī, un šo opciju neņems vērā.",
+	"edit.disable-requests": "Atspējot pievienošanās pieteikumus",
+	"edit.hidden": "Paslēpta",
+	"edit.hidden-details": "Grupa nav redzama grupu sarakstā un lietotāji būs jāuzaicina pašrocīgi",
+	"edit.add-user": "Pievienot lietotāju grupai",
+	"edit.add-user-search": "Meklēt lietotājus",
+	"edit.members": "Biedru saraksts",
+	"control-panel": "Grupu vadības panelis",
+	"revert": "Atgriezties",
+
+	"edit.no-users-found": "Nav lietotāju",
+	"edit.confirm-remove-user": "Vai tiešām vēlies izdzēst šo lietotāju?",
+	"edit.save-success": "Izmaiņas saglabātas"
+}

@@ -1,0 +1,14 @@
+{
+	"figure-x": "Attēls %1",
+	"error-events-per-day": "<code>%1</code> notikumi dienā",
+	"error.404": "404 Not Found",
+	"error.503": "503 Service Unavailable",
+	"manage-error-log": "Pārvaldīt kļūdu žurnālu",
+	"export-error-log": "Eksportēt kļūdu žurnālu (.csv)",
+	"clear-error-log": "Notīrīt kļūdu žurnālu",
+	"route": "Ceļš",
+	"count": "Skaits",
+	"no-routes-not-found": "Labi! Nav \"404 Not Found\" kļūdu!",
+	"clear404-confirm": "Vai tiešām vēlies notīrīt \"404 Not Found\" kļūdu žurnālu?",
+	"clear404-success": "\"404 Not Found\" kļūdas notīrītas"
+}

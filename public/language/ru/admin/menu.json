@@ -12,7 +12,7 @@
 	"manage/privileges": "Привилегии",
 	"manage/tags": "Теги",
 	"manage/users": "Пользователи",
-	"manage/admins-mods": "Admins & Mods",
+	"manage/admins-mods": "Админы и Модераторы",
 	"manage/registration": "Очередь на регистрацию",
 	"manage/post-queue": "Очередь публикации",
 	"manage/groups": "Группы",
@@ -22,7 +22,7 @@
 	"section-settings": "Настройки",
 	"settings/general": "Главные",
 	"settings/reputation": "Репутация",
-	"settings/email": "Email",
+	"settings/email": "Электронная почта",
 	"settings/user": "Пользователь",
 	"settings/group": "Группа",
 	"settings/guest": "Гости",
@@ -34,7 +34,7 @@
 	"settings/notifications": "Оповещения",
 	"settings/cookies": "Куки",
 	"settings/web-crawler": "Индексация",
-	"settings/sockets": "Sockets",
+	"settings/sockets": "Сокеты",
 	"settings/advanced": "Продвинутые",
 
 	"settings.page-title": "%1 Настройки",
@@ -42,7 +42,7 @@
 	"section-appearance": "Вид",
 	"appearance/themes": "Темы",
 	"appearance/skins": "Скины",
-	"appearance/customise": "Custom Content (HTML/JS/CSS)",
+	"appearance/customise": "Настройка контента (HTML/JS/CSS)",
 
 	"section-extend": "Расширения",
 	"extend/plugins": "Плагины",
@@ -60,22 +60,22 @@
 	"advanced/logs": "Логи",
 	"advanced/errors": "Ошибки",
 	"advanced/cache": "Кэш",
-	"development/logger": "Logger",
-	"development/info": "Info",
+	"development/logger": "Журнал событий",
+	"development/info": "Инфо",
 
-	"rebuild-and-restart-forum": "Rebuild & Restart Forum",
+	"rebuild-and-restart-forum": "Пересобрать и перезапустить форум",
 	"restart-forum": "Перезапустить Форум",
 	"logout": "Выйти",
 	"view-forum": "Просмотреть Форум",
 
 	"search.placeholder": "Поиск настроек",
 	"search.no-results": "Нет результата...",
-	"search.search-forum": "Search the forum for <strong></strong>",
-	"search.keep-typing": "Type more to see results...",
-	"search.start-typing": "Start typing to see results...",
+	"search.search-forum": "Поиск по форуму <strong></strong>",
+	"search.keep-typing": "Введите больше данных чтобы увидеть результаты...",
+	"search.start-typing": "Начните ввод данных чтобы увидеть результаты...",
 
-	"connection-lost": "Connection to %1 has been lost, attempting to reconnect...",
+	"connection-lost": "Соединение с %1 потеряно, пытаюсь переподключиться...",
 
-	"alerts.version": "Running <strong>NodeBB v%1</strong>",
-	"alerts.upgrade": "Upgrade to v%1"
+	"alerts.version": "Запущена <strong>версия v%1 NodeBB</strong>",
+	"alerts.upgrade": "Обновление до v%1"
 }

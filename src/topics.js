@@ -114,7 +114,7 @@ Topics.getTopicsByTids = function (tids, uid, callback) {
 					user.getMultipleUserSettings(uids, next);
 				},
 				categories: function (next) {
-					categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'image', 'bgColor', 'color', 'disabled'], next);
+					categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'image', 'imageClass', 'bgColor', 'color', 'disabled'], next);
 				},
 				hasRead: function (next) {
 					Topics.hasReadTopics(tids, uid, next);
@@ -368,3 +368,5 @@ Topics.search = function (tid, term, callback) {
 		callback(err, Array.isArray(pids) ? pids : []);
 	});
 };
+
+Topics.async = require('./promisify')(Topics);

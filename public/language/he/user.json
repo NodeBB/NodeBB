@@ -150,6 +150,7 @@
     "info.moderation-note": "הערת מודרטור",
     "info.moderation-note.success": "הערת מודרטור נשמרה",
     "info.moderation-note.add": "הוסף הערה",
+    "sessions.description": "This page allows you to view any active sessions on this forum and revoke them if necessary. You can revoke your own session by logging out of your account.",
     "consent.title": "תנאי השימוש באתר",
     "consent.lead": "אתר זה אוסף ומעבד נתונים הכוללים בחלקם את המידע האישי שלך.",
     "consent.intro": "אנו משתמשים במידע שנאסף כדי להתאים אישית את החוויה שלך, וכן לקשר את ההודעות שאתה מבצע לחשבון המשתמש שלך. במהלך שלב ההרשמה התבקשת לספק שם משתמש וכתובת דוא\"ל, תוכל גם לספק מידע נוסף כדי להשלים את פרופיל המשתמש שלך באתר זה.<br /><br /> אנו שומרים ומעבדים מידע זה. אתה יכול לבטל את הסכמתך בכל עת על ידי מחיקת החשבון שלך. בכל עת תוכל לבקש עותק של חשבונך לאתר זה, באמצעות דף זה.<br /><br /> אם יש לך שאלות או חששות, אנו ממליצים לך ליצור קשר עם צוות הניהול של האתר.",

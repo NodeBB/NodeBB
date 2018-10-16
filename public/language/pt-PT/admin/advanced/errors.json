@@ -1,14 +1,14 @@
 {
 	"figure-x": "Figure %1",
-	"error-events-per-day": "<code>%1</code> events per day",
-	"error.404": "404 Not Found",
-	"error.503": "503 Service Unavailable",
-	"manage-error-log": "Manage Error Log",
-	"export-error-log": "Export Error Log (CSV)",
-	"clear-error-log": "Clear Error Log",
+	"error-events-per-day": "<code>%1</code> eventos por dia",
+	"error.404": "404 Não Encontrado",
+	"error.503": "503 Serviço Indisponível ",
+	"manage-error-log": "Gerir Registo de Erros",
+	"export-error-log": "Exportar Registo de Erros (CSV)",
+	"clear-error-log": "Limpar Registo de Erros",
 	"route": "Route",
 	"count": "Count",
-	"no-routes-not-found": "Hooray! No 404 errors!",
-	"clear404-confirm": "Are you sure you wish to clear the 404 error logs?",
-	"clear404-success": "\"404 Not Found\" errors cleared"
+	"no-routes-not-found": "Boa! Não existem erros 404!",
+	"clear404-confirm": "Tens a certeza que pretendes limpar o registo de erros 404?",
+	"clear404-success": "Erros \"404 Não Encontrado\" limpos"
 }

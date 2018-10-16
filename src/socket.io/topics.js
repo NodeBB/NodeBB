@@ -8,6 +8,7 @@ var websockets = require('./index');
 var user = require('../user');
 var meta = require('../meta');
 var apiController = require('../controllers/api');
+var privileges = require('../privileges');
 var socketHelpers = require('./helpers');
 
 var SocketTopics = module.exports;
@@ -62,7 +63,18 @@ function postTopic(socket, data, callback) {
 }
 
 SocketTopics.postcount = function (socket, tid, callback) {
-	topics.getTopicField(tid, 'postcount', callback);
+	async.waterfall([
+		function (next) {
+			privileges.topics.can('read', tid, socket.uid, next);
+		},
+		function (canRead, next) {
+			if (!canRead) {
+				return next(new Error('[[no-privileges]]'));
+			}
+
+			topics.getTopicField(tid, 'postcount', next);
+		},
+	], callback);
 };
 
 SocketTopics.bookmark = function (socket, data, callback) {

@@ -2,7 +2,6 @@
 
 var async = require('async');
 var path = require('path');
-var Jimp = require('jimp');
 var mime = require('mime');
 
 var db = require('../database');
@@ -27,7 +26,6 @@ module.exports = function (Groups) {
 		var tempPath = data.file ? data.file : '';
 		var url;
 		var type = data.file ? mime.getType(data.file) : 'image/png';
-
 		async.waterfall([
 			function (next) {
 				if (tempPath) {
@@ -49,7 +47,10 @@ module.exports = function (Groups) {
 				Groups.setGroupField(data.groupName, 'cover:url', url, next);
 			},
 			function (next) {
-				resizeCover(tempPath, next);
+				image.resizeImage({
+					path: tempPath,
+					width: 358,
+				}, next);
 			},
 			function (next) {
 				uploadsController.uploadGroupCover(uid, {
@@ -73,22 +74,6 @@ module.exports = function (Groups) {
 			callback(err, { url: url });
 		});
 	};
-
-	function resizeCover(path, callback) {
-		async.waterfall([
-			function (next) {
-				new Jimp(path, next);
-			},
-			function (image, next) {
-				image.resize(358, Jimp.AUTO, next);
-			},
-			function (image, next) {
-				image.write(path, next);
-			},
-		], function (err) {
-			callback(err);
-		});
-	}
 
 	Groups.removeCover = function (data, callback) {
 		db.deleteObjectFields('group:' + data.groupName, ['cover:url', 'cover:thumb:url', 'cover:position'], callback);

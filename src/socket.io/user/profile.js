@@ -15,7 +15,7 @@ module.exports = function (SocketUser) {
 
 		async.waterfall([
 			function (next) {
-				isPrivilegedOrSelfAndPasswordMatch(socket.uid, data, next);
+				isPrivilegedOrSelfAndPasswordMatch(socket, data, next);
 			},
 			function (next) {
 				SocketUser.updateProfile(socket, data, next);
@@ -72,26 +72,19 @@ module.exports = function (SocketUser) {
 		], callback);
 	};
 
-	function isPrivilegedOrSelfAndPasswordMatch(uid, data, callback) {
+	function isPrivilegedOrSelfAndPasswordMatch(socket, data, callback) {
+		const uid = socket.uid;
+		const isSelf = parseInt(uid, 10) === parseInt(data.uid, 10);
+
 		async.waterfall([
 			function (next) {
 				async.parallel({
 					isAdmin: async.apply(user.isAdministrator, uid),
 					isTargetAdmin: async.apply(user.isAdministrator, data.uid),
 					isGlobalMod: async.apply(user.isGlobalModerator, uid),
-					hasPassword: async.apply(user.hasPassword, data.uid),
-					passwordMatch: function (next) {
-						if (data.password) {
-							user.isPasswordCorrect(data.uid, data.password, next);
-						} else {
-							next(null, false);
-						}
-					},
 				}, next);
 			},
 			function (results, next) {
-				var isSelf = parseInt(uid, 10) === parseInt(data.uid, 10);
-
 				if (results.isTargetAdmin && !results.isAdmin) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
@@ -100,6 +93,17 @@ module.exports = function (SocketUser) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 
+				async.parallel({
+					hasPassword: async.apply(user.hasPassword, data.uid),
+					passwordMatch: function (next) {
+						if (data.password) {
+							user.isPasswordCorrect(data.uid, data.password, socket.ip, next);
+						} else {
+							next(null, false);
+						}
+					},
+				}, next);
+			}, function (results, next) {
 				if (isSelf && results.hasPassword && !results.passwordMatch) {
 					return next(new Error('[[error:invalid-password]]'));
 				}
@@ -119,7 +123,7 @@ module.exports = function (SocketUser) {
 		}
 		async.waterfall([
 			function (next) {
-				user.changePassword(socket.uid, data, next);
+				user.changePassword(socket.uid, Object.assign(data, { ip: socket.ip }), next);
 			},
 			function (next) {
 				events.log({
@@ -201,24 +205,29 @@ module.exports = function (SocketUser) {
 	};
 
 	SocketUser.toggleBlock = function (socket, data, callback) {
-		let current;
+		let isBlocked;
 
 		async.waterfall([
 			function (next) {
-				user.blocks.can(socket.uid, data.blockerUid, data.blockeeUid, next);
+				async.parallel({
+					can: function (next) {
+						user.blocks.can(socket.uid, data.blockerUid, data.blockeeUid, next);
+					},
+					is: function (next) {
+						user.blocks.is(data.blockeeUid, data.blockerUid, next);
+					},
+				}, next);
 			},
-			function (can, next) {
-				if (!can) {
+			function (results, next) {
+				isBlocked = results.is;
+				if (!results.can && !isBlocked) {
 					return next(new Error('[[error:cannot-block-privileged]]'));
 				}
-				user.blocks.is(data.blockeeUid, data.blockerUid, next);
-			},
-			function (is, next) {
-				current = is;
-				user.blocks[is ? 'remove' : 'add'](data.blockeeUid, data.blockerUid, next);
+
+				user.blocks[isBlocked ? 'remove' : 'add'](data.blockeeUid, data.blockerUid, next);
 			},
 		], function (err) {
-			callback(err, !current);
+			callback(err, !isBlocked);
 		});
 	};
 };

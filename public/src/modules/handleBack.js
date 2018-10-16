@@ -35,10 +35,14 @@ define('handleBack', [
 
 			storage.removeItem('category:bookmark');
 			storage.removeItem('category:bookmark:clicked');
+			if (!utils.isNumber(bookmarkIndex)) {
+				return;
+			}
 
 			bookmarkIndex = Math.max(0, parseInt(bookmarkIndex, 10) || 0);
 			clickedIndex = Math.max(0, parseInt(clickedIndex, 10) || 0);
-			if (!utils.isNumber(bookmarkIndex)) {
+
+			if (!bookmarkIndex && !clickedIndex) {
 				return;
 			}
 

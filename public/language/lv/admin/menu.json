@@ -1,0 +1,81 @@
+{
+	"section-general": "Vispārējie",
+	"general/dashboard": "Informācijas panelis",
+	"general/homepage": "Sākumlapa",
+	"general/navigation": "Navigācija",
+	"general/languages": "Valoda",
+	"general/sounds": "Skaņas",
+	"general/social": "Rakstu kopīgošana",
+
+	"section-manage": "Pārvaldīt",
+	"manage/categories": "Kategorijas",
+	"manage/privileges": "Privilēģijas",
+	"manage/tags": "Birkas",
+	"manage/users": "Lietotāji",
+	"manage/admins-mods": "Administratori & moderatori",
+	"manage/registration": "Reģistrācijas rinda",
+	"manage/post-queue": "Rakstu apstiprināšanas rinda",
+	"manage/groups": "Grupas",
+	"manage/ip-blacklist": "IP adrešu melnais saraksts",
+	"manage/uploads": "Augšupielādes",
+
+	"section-settings": "Iestatījumi",
+	"settings/general": "Vispārējie",
+	"settings/reputation": "Ranga punkti",
+	"settings/email": "E-pasts",
+	"settings/user": "Lietotāji",
+	"settings/group": "Grupas",
+	"settings/guest": "Viesi",
+	"settings/uploads": "Augšupielādes",
+	"settings/post": "Raksti",
+	"settings/chat": "Sarunas",
+	"settings/pagination": "Dalīšanai pa lapām",
+	"settings/tags": "Birkas",
+	"settings/notifications": "Paziņojumi",
+	"settings/cookies": "Sīkfaili",
+	"settings/web-crawler": "Rāpuļprogrammas",
+	"settings/sockets": "Tīkls",
+	"settings/advanced": "Paplašīnātie",
+
+	"settings.page-title": "%1 &mdash; iestatījumi",
+
+	"section-appearance": "Izskats",
+	"appearance/themes": "Tēmas",
+	"appearance/skins": "Ādiņas",
+	"appearance/customise": "Pielāgotais saturs (HTML/JS/CSS)",
+
+	"section-extend": "Paplašinājumi",
+	"extend/plugins": "Spraudņi",
+	"extend/widgets": "Logrīki",
+	"extend/rewards": "Balvas",
+
+	"section-social-auth": "Sociālo tīklu autentifikācija",
+
+	"section-plugins": "Spraudņi",
+	"extend/plugins.install": "Instalēt spraudņus",
+
+	"section-advanced": "Paplašinātie",
+	"advanced/database": "Datu bāze",
+	"advanced/events": "Notikumu reģistrs",
+	"advanced/logs": "Žurnāls",
+	"advanced/errors": "Kļūdu žurnāls",
+	"advanced/cache": "Kešatmiņa",
+	"development/logger": "Atkļūdošanas žurnāls",
+	"development/info": "Informācija",
+
+	"rebuild-and-restart-forum": "Pārkompilēt & pārstartēt forumu",
+	"restart-forum": "Pārstartēt forumu",
+	"logout": "Izlogoties",
+	"view-forum": "Uz forumu",
+
+	"search.placeholder": "Meklēt iestatījumos",
+	"search.no-results": "Nav rezultātu...",
+	"search.search-forum": "Forumā meklēt <strong></strong>",
+	"search.keep-typing": "Rakstīt vairāk, lai redzētu rezultātus...",
+	"search.start-typing": "Sākt rakstīt, lai redzētu rezultātus...",
+
+	"connection-lost": "Savienojums ar %1 ir pārtraukts, mēģina no jauna savienoties...",
+
+	"alerts.version": "Palaists <strong>NodeBB v%1</strong>",
+	"alerts.upgrade": "Uzlabot uz v%1"
+}

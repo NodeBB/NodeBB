@@ -6,7 +6,7 @@ var async = require('async');
 
 module.exports = {
 	name: 'Revising minimum password strength to 1 (from 0)',
-	timestamp: Date.UTC(2017, 1, 21),
+	timestamp: Date.UTC(2018, 1, 21),
 	method: function (callback) {
 		async.waterfall([
 			async.apply(db.getObjectField.bind(db), 'config', 'minimumPasswordStrength'),

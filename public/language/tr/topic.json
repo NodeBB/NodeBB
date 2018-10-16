@@ -128,6 +128,6 @@
     "diffs.title": "İleti Geçmiş Düzenle",
     "diffs.description": "Bu iletinin <strong>%1</strong>revizyonu var. Zaman içerisinde ileti içeriğinin tamamını görmek için aşağıdaki düzeltmelerden birine tıklayın.",
     "diffs.no-revisions-description": "Bu iletinin <strong>%1</strong> revizyonu var.",
-    "diffs.current-revision": "current revision",
-    "diffs.original-revision": "original revision"
+    "diffs.current-revision": "Mevcut revizyon",
+    "diffs.original-revision": "Orijinal revizyon"
 }

@@ -20,7 +20,6 @@ describe('feeds', function () {
 	var fooUid;
 	var cid;
 	before(function (done) {
-		groups.resetCache();
 		meta.config['feeds:disableRSS'] = 1;
 		async.series({
 			category: function (next) {
@@ -52,6 +51,7 @@ describe('feeds', function () {
 		var feedUrls = [
 			nconf.get('url') + '/topic/' + tid + '.rss',
 			nconf.get('url') + '/category/' + cid + '.rss',
+			nconf.get('url') + '/topics.rss',
 			nconf.get('url') + '/recent.rss',
 			nconf.get('url') + '/top.rss',
 			nconf.get('url') + '/popular.rss',
@@ -76,6 +76,14 @@ describe('feeds', function () {
 
 	it('should 404 if topic does not exist', function (done) {
 		request(nconf.get('url') + '/topic/' + 1000 + '.rss', function (err, res) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 404);
+			done();
+		});
+	});
+
+	it('should 404 if category id is not a number', function (done) {
+		request(nconf.get('url') + '/category/invalid.rss', function (err, res) {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 404);
 			done();

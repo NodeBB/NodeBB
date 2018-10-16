@@ -1,11 +1,11 @@
 {
 	"eu-consent": "Соглашение",
-	"consent.enabled": "Enabled",
-	"consent.message": "Notification message",
-	"consent.acceptance": "Acceptance message",
-	"consent.link-text": "Policy Link Text",
-	"consent.blank-localised-default": "Leave blank to use NodeBB localised defaults",
-	"settings": "Settings",
-	"cookie-domain": "Session cookie domain",
-	"blank-default": "Leave blank for default"
+	"consent.enabled": "Включено",
+	"consent.message": "Уведомление",
+	"consent.acceptance": "Сообщение о принятии",
+	"consent.link-text": "Ссылка на правила",
+	"consent.blank-localised-default": "Оставьте пустым чтобы использовать настройки NodeBB по умолчанию",
+	"settings": "Настройки",
+	"cookie-domain": "Домен для cookie сессии",
+	"blank-default": "Оставьте пустым для настроек по умолчанию"
 }

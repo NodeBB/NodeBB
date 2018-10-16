@@ -93,7 +93,7 @@
 	"alerts.error-x": "<strong>Грешка</strong><p>%1</p>",
 	"alerts.create-success": "Потребителят е създаден!",
 
-	"alerts.prompt-email": "Е-поща:",
+	"alerts.prompt-email": "Е-пощи: ",
 	"alerts.email-sent-to": "Беше изпратено е-писмо за потвърждение до %1",
 	"alerts.x-users-found": "Намерени потребители: %1! Търсенето отне %2 милисекунди."
 }

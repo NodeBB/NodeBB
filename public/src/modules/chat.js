@@ -75,7 +75,7 @@ define('chat', [
 					sounds.play('chat-incoming', 'chat.incoming:' + data.message.mid);
 
 					taskbar.push('chat', modal.attr('data-uuid'), {
-						title: data.roomName || username,
+						title: '[[modules:chat.chatting_with]] ' + (data.roomName || username),
 						touid: data.message.fromUser.uid,
 						roomId: data.roomId,
 					});
@@ -136,7 +136,8 @@ define('chat', [
 				rooms: rooms,
 			}, function (html) {
 				translator.translate(html, function (translated) {
-					chatsListEl.empty().html(translated);
+					chatsListEl.find('*').not('.navigation-link').remove();
+					chatsListEl.prepend(translated);
 					app.createUserTooltips(chatsListEl, 'right');
 				});
 			});
@@ -216,7 +217,7 @@ define('chat', [
 			});
 
 			chatModal.on('click', ':not(.close)', function () {
-				taskbar.updateActive(this.getAttribute('data-uuid'));
+				taskbar.updateActive(chatModal.attr('data-uuid'));
 
 				if (dragged) {
 					dragged = false;
@@ -250,7 +251,7 @@ define('chat', [
 			Chats.addIPHandler(chatModal);
 
 			taskbar.push('chat', chatModal.attr('data-uuid'), {
-				title: data.roomName || (data.users.length ? data.users[0].username : ''),
+				title: '[[modules:chat.chatting_with]] ' + (data.roomName || (data.users.length ? data.users[0].username : '')),
 				roomId: data.roomId,
 				icon: 'fa-comment',
 				state: '',

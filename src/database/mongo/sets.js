@@ -13,7 +13,7 @@ module.exports = function (db, module) {
 			array[index] = helpers.valueToString(element);
 		});
 
-		db.collection('objects').update({
+		db.collection('objects').updateOne({
 			_key: key,
 		}, {
 			$addToSet: {
@@ -74,7 +74,7 @@ module.exports = function (db, module) {
 				callback(err);
 			});
 		} else {
-			db.collection('objects').update({ _key: key }, { $pullAll: { members: value } }, function (err) {
+			db.collection('objects').updateOne({ _key: key }, { $pullAll: { members: value } }, function (err) {
 				callback(err);
 			});
 		}
@@ -87,7 +87,7 @@ module.exports = function (db, module) {
 		}
 		value = helpers.valueToString(value);
 
-		db.collection('objects').update({ _key: { $in: keys } }, { $pull: { members: value } }, { multi: true }, function (err) {
+		db.collection('objects').updateMany({ _key: { $in: keys } }, { $pull: { members: value } }, function (err) {
 			callback(err);
 		});
 	};
@@ -98,7 +98,7 @@ module.exports = function (db, module) {
 		}
 		value = helpers.valueToString(value);
 
-		db.collection('objects').findOne({ _key: key, members: value }, { _id: 0, members: 0 }, function (err, item) {
+		db.collection('objects').findOne({ _key: key, members: value }, { projection: { _id: 0, members: 0 } }, function (err, item) {
 			callback(err, item !== null && item !== undefined);
 		});
 	};
@@ -112,7 +112,7 @@ module.exports = function (db, module) {
 			values[i] = helpers.valueToString(values[i]);
 		}
 
-		db.collection('objects').findOne({ _key: key }, { _id: 0, _key: 0 }, function (err, items) {
+		db.collection('objects').findOne({ _key: key }, { projection: { _id: 0, _key: 0 } }, function (err, items) {
 			if (err) {
 				return callback(err);
 			}
@@ -131,7 +131,7 @@ module.exports = function (db, module) {
 		}
 		value = helpers.valueToString(value);
 
-		db.collection('objects').find({ _key: { $in: sets }, members: value }, { _id: 0, members: 0 }).toArray(function (err, result) {
+		db.collection('objects').find({ _key: { $in: sets }, members: value }, { projection: { _id: 0, members: 0 } }).toArray(function (err, result) {
 			if (err) {
 				return callback(err);
 			}
@@ -184,7 +184,7 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback(null, 0);
 		}
-		db.collection('objects').findOne({ _key: key }, { _id: 0 }, function (err, data) {
+		db.collection('objects').findOne({ _key: key }, { projection: { _id: 0 } }, function (err, data) {
 			callback(err, data ? data.members.length : 0);
 		});
 	};

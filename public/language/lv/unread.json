@@ -1,0 +1,15 @@
+{
+    "title": "Nelasītie",
+    "no_unread_topics": "Nav nevieni nelasīto tematu.",
+    "load_more": "Ielādēt vairāk",
+    "mark_as_read": "Atzīmēt kā lasītu",
+    "selected": "Atlasītie",
+    "all": "Visi",
+    "all_categories": "Visas kategorijas",
+    "topics_marked_as_read.success": "Temati atzīmēti kā lasīti!",
+    "all-topics": "Visi temati",
+    "new-topics": "Jaunie temati",
+    "watched-topics": "Novērotie temati",
+    "unreplied-topics": "Temati bez atbildēm",
+    "multiple-categories-selected": "Vairāki atlasīti"
+}

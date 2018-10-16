@@ -1,0 +1,5 @@
+{
+	"handles": "Guest Handles",
+	"handles.enabled": "Allow guest handles",
+	"handles.enabled-help": "Parādīt jaunu lauku, kas viesiem ļaus izvēlēties savu nosaukumu, kas saistīts ar katru viņu publicēto rakstu. Ja ir atspējots, viņus vienkārši sauks par \"Viesiem\""
+}

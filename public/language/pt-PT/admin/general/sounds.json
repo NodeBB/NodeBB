@@ -1,9 +1,9 @@
 {
-	"notifications": "Notifications",
-	"chat-messages": "Chat Messages",
-	"play-sound": "Play",
-	"incoming-message": "Incoming Message",
-	"outgoing-message": "Outgoing Message",
-	"upload-new-sound": "Upload New Sound",
-	"saved": "Settings Saved"
+	"notifications": "Notificações",
+	"chat-messages": "Mensagens de conversas",
+	"play-sound": "Reproduzir",
+	"incoming-message": "A Receber Mensagem",
+	"outgoing-message": "A Enviar Mensagem",
+	"upload-new-sound": "Enviar Novo Som",
+	"saved": "Definições guardadas"
 }

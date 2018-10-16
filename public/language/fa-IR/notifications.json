@@ -57,7 +57,7 @@
     "notificationType_follow": "هنگامی که کسی شما را دنبال می کند",
     "notificationType_new-chat": "هنگامی که شما پیام چتی دریافت می کنید",
     "notificationType_group-invite": "هنگامی که شما دعوتنامه گروه دریافت می کنید",
-    "notificationType_new-register": "When someone gets added to registration queue",
+    "notificationType_new-register": "وقتی کسی به صف ثبت نام اضافه می شود",
     "notificationType_post-queue": "هنگامی که یک پست جدید در صف قرار می گیرد",
     "notificationType_new-post-flag": "هنگامی که پستی گزارش می شود",
     "notificationType_new-user-flag": "هنگامی که کاربری گزارش می شود"

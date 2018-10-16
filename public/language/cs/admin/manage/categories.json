@@ -19,6 +19,7 @@
 	"parent-category-none": "(nic)",
 	"copy-settings": "Kopírovat nastavení z",
 	"optional-clone-settings": "Klonovat nastavení z kategorie (doporučeno)",
+	"clone-children": "Klonovat podřízené kategorie a nastavení",
 	"purge": "Vyčistit kategorii",
 
 	"enable": "Povolit",
@@ -67,5 +68,6 @@
 	"alert.find-group": "Najít skupinu",
 	"alert.group-search": "Hledat skupinu…",
 	"collapse-all": "Sbalit vše",
-	"expand-all": "Rozbalit vše"
+	"expand-all": "Rozbalit vše",
+	"disable-on-create": "Disable on create"
 }

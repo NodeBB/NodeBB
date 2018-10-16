@@ -10,6 +10,7 @@
     "filter-by": "フィルタ",
     "online-only": "オンラインのみ",
     "invite": "招待",
+    "prompt-email": "Emails:",
     "invitation-email-sent": "招待メールが%1に送られました。",
     "user_list": "ユーザー一覧",
     "recent_topics": "最新スレッド",

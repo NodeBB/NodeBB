@@ -54,6 +54,7 @@
     "account/best": "%1 által írt legjobb hozzászólások",
     "account/blocks": "Blocked users for %1",
     "account/uploads": "Uploads by %1",
+    "account/sessions": "Login Sessions",
     "confirm": "E-mail megerősítve",
     "maintenance.text": "%1 jelenleg karbantartás alatt van. Kérlek, nézz vissza később!",
     "maintenance.messageIntro": "Ezenkívúl, az adminisztrátor ezt az üzenetet hagyta:",

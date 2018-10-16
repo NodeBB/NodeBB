@@ -383,3 +383,5 @@ Messaging.hasPrivateChat = function (uid, withUid, callback) {
 		},
 	], callback);
 };
+
+Messaging.async = require('./promisify')(Messaging);

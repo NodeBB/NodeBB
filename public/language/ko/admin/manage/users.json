@@ -93,7 +93,7 @@
 	"alerts.error-x": "<strong>에러</strong><p>%1</p>",
 	"alerts.create-success": "사용자가 생성됐습니다!",
 
-	"alerts.prompt-email": "이메일:",
+	"alerts.prompt-email": "Emails: ",
 	"alerts.email-sent-to": "%1에게 초대 이메일이 발송됐습니다.",
 	"alerts.x-users-found": "%1명의 사용자를 찾았습니다! 검색에 %2 ms가 소요됐습니다."
 }

@@ -1,12 +1,12 @@
 {
-	"logger-settings": "Logger Settings",
+	"logger-settings": "Настройки логгера",
 	"description": "Включив чек-боксы, вы получите логи на свой терминал. Если вы укажете путь, логи будут сохранены в файле. Протокол HTTP полезен для сбора статистики о том, кто, когда и где посетители получают на вашем форуме. Помимо регистрации HTTP-запросов, мы также можем регистрировать события socket.io. Регистрация Socket.io в сочетании с монитором redis-cli может быть очень полезна для исследования внутреннего состояния NodeBB.",
-	"explanation": "Simply check/uncheck the logging settings to enable or disable logging on the fly. No restart needed.",
+	"explanation": "Просто  установить/снять настройки логирования чтобы включить или отключить логирование на лету. Перезапуск не нужен.",
 	"enable-http": "Включить HTTP логирование",
-	"enable-socket": "Enable socket.io event logging",
+	"enable-socket": "Включить логирование событий socket.io",
 	"file-path": "Путь до файла логов",
-	"file-path-placeholder": "/path/to/log/file.log ::: leave blank to log to your terminal",
+	"file-path-placeholder": "/path/to/log/file.log ::: оставить пустым чтобы смотреть логи в командной строке",
 
-	"control-panel": "Logger Control Panel",
-	"update-settings": "Update Logger Settings"
+	"control-panel": "Контрольная панель логгера",
+	"update-settings": "Применить настройки логгера"
 }

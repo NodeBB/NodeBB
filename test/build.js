@@ -182,12 +182,14 @@ describe('Build', function (done) {
 			assert.ifError(err);
 			var filename = path.join(__dirname, '../build/public/admin.css');
 			assert(file.existsSync(filename));
-			assert(fs.readFileSync(filename).toString().startsWith('@charset "UTF-8";'));
+			var adminCSS = fs.readFileSync(filename).toString();
+			assert(adminCSS.startsWith('@charset "UTF-8";') || adminCSS.startsWith('@import url'));
 			done();
 		});
 	});
 
 	it('should build templates', function (done) {
+		this.timeout(0);
 		build.build(['templates'], function (err) {
 			assert.ifError(err);
 			var filename = path.join(__dirname, '../build/public/templates/admin/header.tpl');

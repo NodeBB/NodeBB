@@ -19,6 +19,7 @@
 	"parent-category-none": "(无)",
 	"copy-settings": "复制设置",
 	"optional-clone-settings": "(可选) 从版块复制设置",
+	"clone-children": "克隆子类别并进行设置",
 	"purge": "删除版块",
 
 	"enable": "启用",
@@ -67,5 +68,6 @@
 	"alert.find-group": "查找群组",
 	"alert.group-search": "在此处搜索群组...",
 	"collapse-all": "全部折叠",
-	"expand-all": "全部展开"
+	"expand-all": "全部展开",
+	"disable-on-create": "Disable on create"
 }

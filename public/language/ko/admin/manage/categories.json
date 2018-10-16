@@ -19,6 +19,7 @@
 	"parent-category-none": "(없음)",
 	"copy-settings": "에서 설정 복사",
 	"optional-clone-settings": "(선택) 게시판에서 설정 복사",
+	"clone-children": "Clone Children Categories And Settings",
 	"purge": "게시판 삭제",
 
 	"enable": "활성화",
@@ -67,5 +68,6 @@
 	"alert.find-group": "그룹 검색",
 	"alert.group-search": "여기서 그룹을 검색하십시오...",
 	"collapse-all": "Collapse All",
-	"expand-all": "Expand All"
+	"expand-all": "Expand All",
+	"disable-on-create": "Disable on create"
 }

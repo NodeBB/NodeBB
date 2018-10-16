@@ -10,6 +10,7 @@
     "filter-by": "過濾依照",
     "online-only": "線上僅有",
     "invite": "邀請",
+    "prompt-email": "Emails:",
     "invitation-email-sent": "所有邀請Email已經被寄送到 %1",
     "user_list": "使用者列表",
     "recent_topics": "最新的主題",

@@ -93,7 +93,7 @@
 	"alerts.error-x": "<strong>טעות</strong><p>%1</p>",
 	"alerts.create-success": "נוצר משתמש!",
 
-	"alerts.prompt-email": "דוא\"ל:",
+	"alerts.prompt-email": "Emails: ",
 	"alerts.email-sent-to": "דואל הזמנה נשלח ל %1",
 	"alerts.x-users-found": "%1 user(s) found! Search took %2 ms."
 }
