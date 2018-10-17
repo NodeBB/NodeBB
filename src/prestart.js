@@ -9,6 +9,10 @@ var pkg = require('../package.json');
 var dirname = require('./cli/paths').baseDir;
 
 function setupWinston() {
+	if (!winston.format) {
+		return;
+	}
+
 	var formats = [];
 
 	if (nconf.get('log-colorize') !== 'false') {
