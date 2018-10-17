@@ -77,9 +77,9 @@ mongoModule.getConnectionString = function () {
 	if (!nconf.get('mongo:port')) {
 		nconf.set('mongo:port', 27017);
 	}
-	console.log(nconf.get('mongo:database'), typeof nconf.get('mongo:database'));
-	if (!nconf.get('mongo:database')) {
-		console.log('switching to nodebb database');
+	const dbName = nconf.get('mongo:database');
+	if (dbName === undefined || dbName === '') {
+		winston.warn('You have no database name, using "nodebb"');
 		nconf.set('mongo:database', 'nodebb');
 	}
 
