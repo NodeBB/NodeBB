@@ -18,6 +18,7 @@ var Topics = module.exports;
 require('./topics/data')(Topics);
 require('./topics/create')(Topics);
 require('./topics/delete')(Topics);
+require('./topics/sorted')(Topics);
 require('./topics/unread')(Topics);
 require('./topics/recent')(Topics);
 require('./topics/user')(Topics);
