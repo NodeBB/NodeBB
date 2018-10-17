@@ -37,25 +37,6 @@ Topics.exists = function (tid, callback) {
 	db.isSortedSetMember('topics:tid', tid, callback);
 };
 
-Topics.getPageCount = function (tid, uid, callback) {
-	var postCount;
-	async.waterfall([
-		function (next) {
-			Topics.getTopicField(tid, 'postcount', next);
-		},
-		function (_postCount, next) {
-			if (!parseInt(_postCount, 10)) {
-				return callback(null, 1);
-			}
-			postCount = _postCount;
-			user.getSettings(uid, next);
-		},
-		function (settings, next) {
-			next(null, Math.ceil(parseInt(postCount, 10) / settings.postsPerPage));
-		},
-	], callback);
-};
-
 Topics.getTopicsFromSet = function (set, uid, start, stop, callback) {
 	async.waterfall([
 		function (next) {

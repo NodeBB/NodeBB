@@ -123,10 +123,6 @@ SocketCategories.loadMore = function (socket, data, callback) {
 	], callback);
 };
 
-SocketCategories.getPageCount = function (socket, cid, callback) {
-	categories.getPageCount(cid, socket.uid, callback);
-};
-
 SocketCategories.getTopicCount = function (socket, cid, callback) {
 	categories.getCategoryField(cid, 'topic_count', callback);
 };

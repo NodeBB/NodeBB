@@ -66,24 +66,6 @@ Categories.isIgnored = function (cids, uid, callback) {
 	db.isSortedSetMembers('uid:' + uid + ':ignored:cids', cids, callback);
 };
 
-Categories.getPageCount = function (cid, uid, callback) {
-	async.waterfall([
-		function (next) {
-			async.parallel({
-				topicCount: async.apply(Categories.getCategoryField, cid, 'topic_count'),
-				settings: async.apply(user.getSettings, uid),
-			}, next);
-		},
-		function (results, next) {
-			if (!parseInt(results.topicCount, 10)) {
-				return next(null, 1);
-			}
-
-			next(null, Math.ceil(parseInt(results.topicCount, 10) / results.settings.topicsPerPage));
-		},
-	], callback);
-};
-
 Categories.getAllCategories = function (uid, callback) {
 	async.waterfall([
 		function (next) {

@@ -238,14 +238,6 @@ describe('Categories', function () {
 			});
 		});
 
-		it('should load page count', function (done) {
-			socketCategories.getPageCount({ uid: posterUid }, categoryObj.cid, function (err, pageCount) {
-				assert.ifError(err);
-				assert.equal(pageCount, 1);
-				done();
-			});
-		});
-
 		it('should load topic count', function (done) {
 			socketCategories.getTopicCount({ uid: posterUid }, categoryObj.cid, function (err, topicCount) {
 				assert.ifError(err);
