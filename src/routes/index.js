@@ -166,6 +166,11 @@ module.exports = function (app, middleware, hotswapIds, callback) {
 		statics.unshift({ route: '/assets/uploads', path: nconf.get('upload_path') });
 	}
 
+	// Skins
+	meta.css.supportedSkins.forEach(function (skin) {
+		app.use(relativePath + '/assets/client-' + skin + '.css', middleware.buildSkinAsset);
+	});
+
 	statics.forEach(function (obj) {
 		app.use(relativePath + obj.route, express.static(obj.path, staticOptions));
 	});
@@ -212,6 +217,16 @@ module.exports = function (app, middleware, hotswapIds, callback) {
 			warned.add(req.path);
 		}
 		res.redirect(relativePath + '/assets/language' + req.path + '.json?' + meta.config['cache-buster']);
+	});
+
+	// DEPRECATED (v1.12.0)
+	app.use(relativePath + '/assets/stylesheet.css', function (req, res) {
+		if (!warned.has(req.path)) {
+			winston.warn('[deprecated] Accessing `/assets/stylesheet.css` is deprecated to be REMOVED in NodeBB v1.12.0. ' +
+			'Use `/assets/client.css` to access this file');
+			warned.add(req.path);
+		}
+		res.redirect(relativePath + '/assets/client.css?' + meta.config['cache-buster']);
 	});
 
 	app.use(relativePath + '/assets/vendor/jquery/timeago/locales', middleware.processTimeagoLocales);
