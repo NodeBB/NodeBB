@@ -193,7 +193,6 @@ describe('Search', function () {
 			query: 'xxxxxxxxxxxxxx',
 		}, function (err, data) {
 			assert.ifError(err);
-			console.log(data);
 			assert(Array.isArray(data.posts));
 			assert(!data.matchCount);
 			done();
