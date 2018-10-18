@@ -12,9 +12,25 @@ function setupWinston() {
 	if (!winston.format) {
 		return;
 	}
+	// https://github.com/winstonjs/winston/issues/1338
+	// error objects are not displayed properly
+	const enumerateErrorFormat = winston.format((info) => {
+		if (info.message instanceof Error) {
+			info.message = Object.assign({
+				message: `${info.message.message}\n${info.message.stack}`,
+			}, info.message);
+		}
 
+		if (info instanceof Error) {
+			return Object.assign({
+				message: `${info.message}\n${info.stack}`,
+			}, info);
+		}
+
+		return info;
+	});
 	var formats = [];
-
+	formats.push(enumerateErrorFormat());
 	if (nconf.get('log-colorize') !== 'false') {
 		formats.push(winston.format.colorize());
 	}
