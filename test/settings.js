@@ -35,4 +35,25 @@ describe('settings v3', function () {
 			}, 500);
 		});
 	});
+
+	it('should set a nested value', function (done) {
+		settings1.set('bar.derp', 5);
+		assert.equal(settings1.get('bar.derp'), 5);
+		done();
+	});
+
+	it('should reset the settings to default', function (done) {
+		settings1.reset(function (err) {
+			assert.ifError(err);
+			assert.equal(settings1.get('foo'), 1);
+			assert.equal(settings1.get('bar.derp'), 2);
+			done();
+		});
+	});
+
+	it('should get value from default value', function (done) {
+		var newSettings = new settings('some-plugin', '1.0', { default: { value: 1 } });
+		assert.equal(newSettings.get('default.value'), 1);
+		done();
+	});
 });
