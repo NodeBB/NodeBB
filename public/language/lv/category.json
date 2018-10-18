@@ -10,11 +10,11 @@
     "share_this_category": "Dalīties ar šo kategoriju",
     "watch": "Novērošana",
     "ignore": "Ignorēt",
-    "watching": "Novēro",
-    "ignoring": "Ignorē",
+    "watching": "Novērots",
+    "ignoring": "Ignorēts",
     "watching.description": "Rādīt neizlasītos tematus",
     "ignoring.description": "Nerādīt neizlasītos tematus",
     "watch.message": "Tu tagad novēro maiņas šinī kategorijā un visās tās apakškategorijās",
-    "ignore.message": "Tu tagad neievēro maiņas šinī kategorijā un visās tās apakškategorijās",
+    "ignore.message": "Tu tagad ignorē maiņas šinī kategorijā un visās tās apakškategorijās",
     "watched-categories": "Novērotās kategorijas"
 }
