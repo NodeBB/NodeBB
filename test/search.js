@@ -24,6 +24,7 @@ describe('Search', function () {
 	var post3Data;
 	var cid1;
 	var cid2;
+	var cid3;
 
 	before(function (done) {
 		async.waterfall([
@@ -57,6 +58,14 @@ describe('Search', function () {
 
 				async.waterfall([
 					function (next) {
+						categories.create({
+							name: 'Child Test Category',
+							description: 'Test category created by testing script',
+							parentCid: cid2,
+						}, next);
+					},
+					function (category, next) {
+						cid3 = category.cid;
 						topics.post({
 							uid: phoebeUid,
 							cid: cid1,
@@ -177,5 +186,46 @@ describe('Search', function () {
 			assert.ifError(err);
 			done();
 		});
+	});
+
+	it('should not find anything', function (done) {
+		search.search({
+			query: 'xxxxxxxxxxxxxx',
+		}, function (err, data) {
+			assert.ifError(err);
+			console.log(data);
+			assert(Array.isArray(data.posts));
+			assert(!data.matchCount);
+			done();
+		});
+	});
+
+	it('should search child categories', function (done) {
+		async.waterfall([
+			function (next) {
+				topics.post({
+					uid: gingerUid,
+					cid: cid3,
+					title: 'child category topic',
+					content: 'avocado cucumber carrot armadillo',
+				}, next);
+			},
+			function (result, next) {
+				search.search({
+					query: 'avocado',
+					searchIn: 'titlesposts',
+					categories: [cid2],
+					searchChildren: true,
+					sortBy: 'topic.timestamp',
+					sortDirection: 'desc',
+				}, next);
+			},
+			function (result, next) {
+				assert(result.posts.length, 2);
+				assert(result.posts[0].topic.title === 'child category topic');
+				assert(result.posts[1].topic.title === 'java mongodb redis');
+				next();
+			},
+		], done);
 	});
 });
