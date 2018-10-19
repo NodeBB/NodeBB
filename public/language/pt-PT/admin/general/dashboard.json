@@ -43,7 +43,7 @@
 	"restart-disabled": "Rebuilding and Restarting your NodeBB has been disabled as you do not seem to be running it via the appropriate daemon.",
 	"maintenance-mode": "Modo de Manutenção",
 	"maintenance-mode-title": "Clica aqui para configurar o modo de manutenção para o teu NodeBB",
-	"realtime-chart-updates": "Realtime Chart Updates",
+	"realtime-chart-updates": "Actualizar Gráfico em Tempo Real",
 
 	"active-users": "Utilizadores Ativos",
 	"active-users.users": "Utilizadores",

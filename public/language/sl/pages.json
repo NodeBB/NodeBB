@@ -45,6 +45,7 @@
     "account/posts": "Objave uporabnika %1",
     "account/topics": "Teme, ki jih je ustvaril uporabnik %1",
     "account/groups": "Skupine uporabnika %1",
+    "account/watched_categories": "%1's Watched Categories",
     "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "Uporabniške nastavitve",
     "account/watched": "Teme, ki jih spremlja %1",

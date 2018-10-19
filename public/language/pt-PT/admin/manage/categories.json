@@ -31,8 +31,8 @@
 
 	"privileges.description": "You can configure the access control privileges for this category in this section. Privileges can be granted on a per-user or a per-group basis. You can add a new user to this table by searching for them in the form below.",
 	"privileges.warning": "<strong>Note</strong>: Privilege settings take effect immediately. It is not necessary to save the category after adjusting these settings.",
-	"privileges.section-viewing": "Viewing Privileges",
-	"privileges.section-posting": "Posting Privileges",
+	"privileges.section-viewing": "Privilégios de Visualização",
+	"privileges.section-posting": "Privilégios de Publicação",
 	"privileges.section-moderation": "Privilégios de Moderação",
 	"privileges.section-user": "Utilizador",
 	"privileges.search-user": "Adicionar Utilizador",

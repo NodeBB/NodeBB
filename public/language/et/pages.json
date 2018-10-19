@@ -45,6 +45,7 @@
     "account/posts": "Postitused, mis on tehtud kasutaja %1 poolt",
     "account/topics": "Teemad on kirjutanud %1",
     "account/groups": "Kasutaja %1 grupid",
+    "account/watched_categories": "%1's Watched Categories",
     "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "Kasutaja sätted",
     "account/watched": "Teemasid jälgib %1 kasutajat",

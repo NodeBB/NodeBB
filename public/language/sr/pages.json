@@ -45,6 +45,7 @@
     "account/posts": "Поруке од %1",
     "account/topics": "Теме од %1",
     "account/groups": "Групе корисника %1",
+    "account/watched_categories": "%1's Watched Categories",
     "account/bookmarks": "Омиљене поруке корисника $1",
     "account/settings": "Корисничка подешавања",
     "account/watched": "Теме које надгледа %1",
