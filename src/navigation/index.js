@@ -2,6 +2,7 @@
 
 var async = require('async');
 var nconf = require('nconf');
+var _ = require('lodash');
 
 var admin = require('./admin');
 var translator = require('../translator');
@@ -10,7 +11,7 @@ var navigation = module.exports;
 
 navigation.get = function (callback) {
 	if (admin.cache) {
-		return callback(null, admin.cache);
+		return callback(null, _.cloneDeep(admin.cache));
 	}
 
 	async.waterfall([
@@ -33,8 +34,7 @@ navigation.get = function (callback) {
 			});
 
 			admin.cache = data;
-
-			next(null, data);
+			next(null, _.cloneDeep(admin.cache));
 		},
 	], callback);
 };

@@ -45,6 +45,7 @@
     "account/posts": "%1 发布的帖子",
     "account/topics": "%1 创建的主题",
     "account/groups": "%1 的群组",
+    "account/watched_categories": "%1's Watched Categories",
     "account/bookmarks": "%1 收藏的帖子",
     "account/settings": "用户设置",
     "account/watched": "主题已被 %1 关注",

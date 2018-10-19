@@ -145,6 +145,15 @@ describe('Admin Controllers', function () {
 		});
 	});
 
+	it('should load user settings page', function (done) {
+		request(nconf.get('url') + '/admin/settings/user', { jar: jar }, function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
 	it('should load info page for a user', function (done) {
 		request(nconf.get('url') + '/api/user/regular/info', { jar: jar, json: true }, function (err, res, body) {
 			assert.ifError(err);

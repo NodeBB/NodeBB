@@ -45,6 +45,7 @@
     "account/posts": "%1さんの投稿",
     "account/topics": "%1がスレッドを作成しました",
     "account/groups": "%1 グループ",
+    "account/watched_categories": "%1's Watched Categories",
     "account/bookmarks": "%1のブックマークされた投稿",
     "account/settings": "ユーザー設定",
     "account/watched": " %1がスレッドをウォッチ済みに設定しました",

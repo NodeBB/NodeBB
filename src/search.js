@@ -16,15 +16,15 @@ var search = module.exports;
 
 search.search = function (data, callback) {
 	var start = process.hrtime();
-	var searchIn = data.searchIn || 'titlesposts';
+	data.searchIn = data.searchIn || 'titlesposts';
 
 	async.waterfall([
 		function (next) {
-			if (searchIn === 'posts' || searchIn === 'titles' || searchIn === 'titlesposts') {
+			if (data.searchIn === 'posts' || data.searchIn === 'titles' || data.searchIn === 'titlesposts') {
 				searchInContent(data, next);
-			} else if (searchIn === 'users') {
+			} else if (data.searchIn === 'users') {
 				user.search(data, next);
-			} else if (searchIn === 'tags') {
+			} else if (data.searchIn === 'tags') {
 				topics.searchAndLoadTags(data, next);
 			} else {
 				next(new Error('[[error:unknown-search-filter]]'));
@@ -80,7 +80,7 @@ function searchInContent(data, callback) {
 		},
 		function (results, next) {
 			pids = results.pids;
-			if (!results || (!results.pids.length && !results.tids.length)) {
+			if (!results.pids.length && !results.tids.length) {
 				return callback(null, { posts: [], matchCount: matchCount, pageCount: 1 });
 			}
 
