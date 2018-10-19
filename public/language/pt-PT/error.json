@@ -148,7 +148,7 @@
     "no-users-selected": "Não existe(m) utilizador(es) selecionado(s)",
     "invalid-home-page-route": "Rota para a página principal inválida",
     "invalid-session": "Sessão incompatível",
-    "invalid-session-text": "Parece que a sua sessão não se encontra mais ativa ou não tem correspondência com o servidor. Por favor recarrega esta página.",
+    "invalid-session-text": "Parece que a tua sessão não se encontra mais ativa ou não tem correspondência com o servidor. Por favor recarrega esta página.",
     "no-topics-selected": "No topics selected!",
     "cant-move-to-same-topic": "Can't move post to same topic!",
     "cannot-block-self": "Não podes bloquear-te a ti próprio!",

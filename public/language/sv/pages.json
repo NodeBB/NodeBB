@@ -45,6 +45,7 @@
     "account/posts": "Inlägg skapade av %1",
     "account/topics": "Ämnen skapade av %1 ",
     "account/groups": "%1's grupper",
+    "account/watched_categories": "%1's Watched Categories",
     "account/bookmarks": "%1'st bokmärkta inlägg",
     "account/settings": "Avnändarinställningar",
     "account/watched": "Ämnen som bevakas av %1",

@@ -45,6 +45,7 @@
     "account/posts": "Publicados por %1",
     "account/topics": "Temas creados por %1",
     "account/groups": "Grupos de %1",
+    "account/watched_categories": "%1's Watched Categories",
     "account/bookmarks": "%1's Mensajes marcados",
     "account/settings": "Preferencias",
     "account/watched": "Temas seguidos por %1",
