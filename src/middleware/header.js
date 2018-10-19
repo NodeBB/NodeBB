@@ -142,7 +142,7 @@ module.exports = function (middleware) {
 				results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
 				results.user.isEmailConfirmSent = !!results.isEmailConfirmSent;
 
-				setBootswatchCSS(templateValues, res.locals.config);
+				templateValues.bootswatchSkin = parseInt(meta.config.disableCustomUserSkins, 10) !== 1 ? res.locals.config.bootswatchSkin || '' : '';
 
 				var unreadCount = {
 					topic: results.unreadCounts[''] || 0,
@@ -264,16 +264,6 @@ module.exports = function (middleware) {
 		}
 
 		return title;
-	}
-
-	function setBootswatchCSS(obj, config) {
-		if (config && config.bootswatchSkin !== 'noskin') {
-			var skinToUse = '';
-
-			if (parseInt(meta.config.disableCustomUserSkins, 10) !== 1) {
-				obj.bootswatchSkin = skinToUse;
-			}
-		}
 	}
 };
 
