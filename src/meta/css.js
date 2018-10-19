@@ -123,9 +123,10 @@ function getBundleMetadata(target, callback) {
 				var themeId = (themeData['theme:id'] || 'nodebb-theme-persona');
 				var baseThemePath = path.join(nconf.get('themes_path'), (themeData['theme:type'] && themeData['theme:type'] === 'local' ? themeId : 'nodebb-theme-vanilla'));
 				paths.unshift(baseThemePath);
+
+				themeData.bootswatchSkin = skin || themeData.bootswatchSkin;
 			}
 
-			themeData.bootswatchSkin = skin || themeData.bootswatchSkin;
 
 			async.parallel({
 				less: function (cb) {

@@ -111,6 +111,30 @@ settingsController.get = function (req, res, callback) {
 				{ value: 'month', name: '[[user:digest_monthly]]', selected: userData.settings.dailyDigestFreq === 'month' },
 			];
 
+			userData.bootswatchSkinOptions = [
+				{ name: 'Default', value: '' },
+				{ name: 'Cerulean', value: 'cerulean' },
+				{ name: 'Cosmo', value: 'cosmo'	},
+				{ name: 'Cyborg', value: 'cyborg' },
+				{ name: 'Darkly', value: 'darkly' },
+				{ name: 'Flatly', value: 'flatly' },
+				{ name: 'Journal', value: 'journal'	},
+				{ name: 'Lumen', value: 'lumen' },
+				{ name: 'Paper', value: 'paper' },
+				{ name: 'Readable', value: 'readable' },
+				{ name: 'Sandstone', value: 'sandstone' },
+				{ name: 'Simplex', value: 'simplex' },
+				{ name: 'Slate', value: 'slate'	},
+				{ name: 'Spacelab', value: 'spacelab' },
+				{ name: 'Superhero', value: 'superhero' },
+				{ name: 'United', value: 'united' },
+				{ name: 'Yeti', value: 'yeti' },
+			];
+
+			userData.bootswatchSkinOptions.forEach(function (skin) {
+				skin.selected = skin.value === userData.settings.bootswatchSkin;
+			});
+
 			userData.languages.forEach(function (language) {
 				language.selected = language.code === userData.settings.userLang;
 			});
@@ -136,6 +160,8 @@ settingsController.get = function (req, res, callback) {
 					selected: name === userData.settings.upvoteNotifFreq,
 				};
 			});
+
+			userData.disableCustomUserSkins = parseInt(meta.config.disableCustomUserSkins, 10) === 1;
 
 			userData.allowUserHomePage = parseInt(meta.config.allowUserHomePage, 10) === 1;
 
