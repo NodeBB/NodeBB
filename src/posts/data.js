@@ -5,98 +5,58 @@ var async = require('async');
 var db = require('../database');
 var plugins = require('../plugins');
 
+const intFields = ['uid', 'pid', 'tid', 'deleted'];
+
 module.exports = function (Posts) {
-	Posts.getPostData = function (pid, callback) {
-		async.waterfall([
-			function (next) {
-				db.getObject('post:' + pid, next);
-			},
-			function (data, next) {
-				plugins.fireHook('filter:post.getPostData', { post: data }, next);
-			},
-			function (data, next) {
-				next(null, data.post);
-			},
-		], callback);
-	};
-
-	Posts.getPostsData = function (pids, callback) {
-		async.waterfall([
-			function (next) {
-				db.getObjects(pids.map(pid => 'post:' + pid), next);
-			},
-			function (data, next) {
-				plugins.fireHook('filter:post.getPostsData', { posts: data }, next);
-			},
-			function (data, next) {
-				next(null, data.posts);
-			},
-		], callback);
-	};
-
-	Posts.getPostField = function (pid, field, callback) {
-		async.waterfall([
-			function (next) {
-				Posts.getPostFields(pid, [field], next);
-			},
-			function (data, next) {
-				next(null, data[field]);
-			},
-		], callback);
-	};
-
-	Posts.getPostFields = function (pid, fields, callback) {
-		async.waterfall([
-			function (next) {
-				db.getObjectFields('post:' + pid, fields, next);
-			},
-			function (data, next) {
-				data.pid = pid;
-
-				plugins.fireHook('filter:post.getFields', { posts: [data], fields: fields }, next);
-			},
-			function (data, next) {
-				next(null, (data && Array.isArray(data.posts) && data.posts.length) ? data.posts[0] : null);
-			},
-		], callback);
-	};
-
 	Posts.getPostsFields = function (pids, fields, callback) {
 		if (!Array.isArray(pids) || !pids.length) {
 			return callback(null, []);
 		}
 
-		var keys = pids.map(function (pid) {
-			return 'post:' + pid;
-		});
+		var keys = pids.map(pid => 'post:' + pid);
 
 		async.waterfall([
 			function (next) {
-				db.getObjectsFields(keys, fields, next);
+				if (fields.length) {
+					db.getObjectsFields(keys, fields, next);
+				} else {
+					db.getObjects(keys, next);
+				}
 			},
 			function (posts, next) {
 				plugins.fireHook('filter:post.getFields', { posts: posts, fields: fields }, next);
 			},
 			function (data, next) {
-				next(null, (data && Array.isArray(data.posts)) ? data.posts : null);
+				data.posts.forEach(modifyPost);
+				next(null, Array.isArray(data.posts) ? data.posts : null);
 			},
 		], callback);
 	};
 
+	Posts.getPostData = function (pid, callback) {
+		Posts.getPostsFields([pid], [], function (err, posts) {
+			callback(err, posts && posts.length ? posts[0] : null);
+		});
+	};
+
+	Posts.getPostsData = function (pids, callback) {
+		Posts.getPostsFields(pids, [], callback);
+	};
+
+	Posts.getPostField = function (pid, field, callback) {
+		Posts.getPostFields(pid, [field], function (err, post) {
+			callback(err, post ? post[field] : null);
+		});
+	};
+
+	Posts.getPostFields = function (pid, fields, callback) {
+		Posts.getPostsFields([pid], fields, function (err, posts) {
+			callback(err, posts ? posts[0] : null);
+		});
+	};
+
 	Posts.setPostField = function (pid, field, value, callback) {
-		async.waterfall([
-			function (next) {
-				db.setObjectField('post:' + pid, field, value, next);
-			},
-			function (next) {
-				var data = {
-					pid: pid,
-				};
-				data[field] = value;
-				plugins.fireHook('action:post.setFields', { data: data });
-				next();
-			},
-		], callback);
+		Posts.setPostFields(pid, { [field]: value }, callback);
 	};
 
 	Posts.setPostFields = function (pid, data, callback) {
@@ -112,3 +72,9 @@ module.exports = function (Posts) {
 		], callback);
 	};
 };
+
+function modifyPost(post) {
+	if (post) {
+		intFields.forEach(field => db.parseIntField(post, field));
+	}
+}

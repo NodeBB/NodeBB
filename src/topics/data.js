@@ -98,7 +98,7 @@ function modifyTopic(topic) {
 		return;
 	}
 
-	intFields.forEach(field => parseIntField(topic, field));
+	intFields.forEach(field => db.parseIntField(topic, field));
 
 	if (topic.hasOwnProperty('title')) {
 		topic.titleRaw = topic.title;
@@ -122,11 +122,5 @@ function modifyTopic(topic) {
 	}
 	if (topic.hasOwnProperty('upvotes') && topic.hasOwnProperty('downvotes')) {
 		topic.votes = topic.upvotes - topic.downvotes;
-	}
-}
-
-function parseIntField(topic, field) {
-	if (topic.hasOwnProperty(field)) {
-		topic[field] = parseInt(topic[field], 10);
 	}
 }
