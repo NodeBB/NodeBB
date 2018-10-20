@@ -26,7 +26,7 @@ module.exports = function (User) {
 				const ignored = new Set(results.ignored);
 
 				var watched = results.all.filter(function (cid) {
-					return cid && !ignored.has(cid);
+					return cid && !ignored.has(String(cid));
 				});
 				next(null, watched);
 			},

@@ -133,8 +133,8 @@ Notifications.findRelated = function (mergeIds, set, callback) {
 			db.getObjectsFields(keys, ['mergeId'], next);
 		},
 		function (sets, next) {
-			sets = sets.map(set => set.mergeId);
-			var mergeSet = new Set(mergeIds);
+			sets = sets.map(set => String(set.mergeId));
+			var mergeSet = new Set(mergeIds.map(id => String(id)));
 			next(null, nids.filter((nid, idx) => mergeSet.has(sets[idx])));
 		},
 	], callback);

@@ -113,25 +113,23 @@ module.exports = function (User) {
 	};
 
 	function uidsToUsers(uids, uniqueUids, usersData) {
-		var ref = uniqueUids.reduce(function (memo, cur, idx) {
-			memo[cur] = idx;
+		var uidToUser = uniqueUids.reduce(function (memo, cur, idx) {
+			memo[cur] = usersData[idx];
 			return memo;
 		}, {});
 		var users = uids.map(function (uid) {
-			const returnPayload = usersData[ref[uid]];
+			const returnPayload = uidToUser[uid];
 			if (uid > 0 && !returnPayload.uid) {
 				returnPayload.oldUid = parseInt(uid, 10);
 			}
 
-			return usersData[ref[uid]];
+			return returnPayload;
 		});
 		return users;
 	}
 
 	function uidsToUserKeys(uids) {
-		return uids.map(function (uid) {
-			return 'user:' + uid;
-		});
+		return uids.map(uid => 'user:' + uid);
 	}
 
 	function modifyUserData(users, fieldsToRemove, callback) {
