@@ -25,7 +25,9 @@ function serialize(config) {
 function deserialize(config) {
 	var deserialized = {};
 	Object.keys(config).forEach(function (key) {
+
 		deserialized[key] = JSON.parse(config[key]);
+		console.log(key, config[key], deserialized[key], typeof deserialized[key])
 	});
 	return deserialized;
 }
@@ -49,50 +51,37 @@ Configs.init = function (callback) {
 };
 
 Configs.list = function (callback) {
-	db.getObject('config', function (err, config) {
-		if (err) {
-			return callback(err);
-		}
-
-		try {
-			config = deserialize(config || {});
-		} catch (e) {
-			return callback(e);
-		}
-		config.version = nconf.get('version');
-		config.registry = nconf.get('registry');
-		callback(null, config);
-	});
+	Configs.getFields([], callback);
 };
 
 Configs.get = function (field, callback) {
-	db.getObjectField('config', field, function (err, value) {
-		if (err) {
-			return callback(err);
-		}
-
-		try {
-			value = JSON.parse(value);
-		} catch (e) {
-			return callback(e);
-		}
-		callback(null, value);
+	Configs.getFields([field], function (err, values) {
+		callback(err, values ? values[field] : null);
 	});
 };
 
 Configs.getFields = function (fields, callback) {
-	db.getObjectFields('config', fields, function (err, values) {
-		if (err) {
-			return callback(err);
-		}
-
-		try {
-			values = deserialize(values || {});
-		} catch (e) {
-			return callback(e);
-		}
-		callback(null, values);
-	});
+	async.waterfall([
+		function (next) {
+			if (fields.length) {
+				db.getObjectFields('config', fields, next);
+			} else {
+				db.getObject('config', next);
+			}
+		},
+		function (values, next) {
+			try {
+				values = deserialize(values || {});
+			} catch (err) {
+				return next(err);
+			}
+			if (!fields.length) {
+				values.version = nconf.get('version');
+				values.registry = nconf.get('registry');
+			}
+			next(null, values);
+		},
+	], callback);
 };
 
 Configs.set = function (field, value, callback) {
@@ -105,7 +94,6 @@ Configs.set = function (field, value, callback) {
 	data[field] = value;
 	Configs.setMultiple(data, callback);
 };
-
 
 Configs.setMultiple = function (data, callback) {
 	async.waterfall([
