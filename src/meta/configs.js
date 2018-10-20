@@ -25,9 +25,7 @@ function serialize(config) {
 function deserialize(config) {
 	var deserialized = {};
 	Object.keys(config).forEach(function (key) {
-
 		deserialized[key] = JSON.parse(config[key]);
-		console.log(key, config[key], deserialized[key], typeof deserialized[key])
 	});
 	return deserialized;
 }
