@@ -37,6 +37,17 @@ SocketUser.deleteAccount = function (socket, data, callback) {
 
 	async.waterfall([
 		function (next) {
+			user.hasPassword(socket.uid, next);
+		},
+		function (hasPassword, next) {
+			if (!hasPassword) {
+				return next();
+			}
+			user.isPasswordCorrect(socket.uid, data.password, socket.ip, function (err, ok) {
+				next(err || (!ok ? new Error('[[error:invalid-password]]') : undefined));
+			});
+		},
+		function (next) {
 			user.isAdministrator(socket.uid, next);
 		},
 		function (isAdmin, next) {
@@ -45,7 +56,7 @@ SocketUser.deleteAccount = function (socket, data, callback) {
 			}
 			user.deleteAccount(socket.uid, next);
 		},
-		function (next) {
+		function (userData, next) {
 			require('./index').server.sockets.emit('event:user_status_change', { uid: socket.uid, status: 'offline' });
 
 			events.log({
@@ -53,6 +64,8 @@ SocketUser.deleteAccount = function (socket, data, callback) {
 				uid: socket.uid,
 				targetUid: socket.uid,
 				ip: socket.ip,
+				username: userData.username,
+				email: userData.email,
 			});
 			next();
 		},
@@ -88,15 +101,20 @@ SocketUser.reset.send = function (socket, email, callback) {
 	}
 
 	user.reset.send(email, function (err) {
-		if (err && err.message !== '[[error:invalid-email]]') {
-			return callback(err);
-		}
-		if (err && err.message === '[[error:invalid-email]]') {
-			winston.verbose('[user/reset] Invalid email attempt: ' + email);
-			return setTimeout(callback, 2500);
+		if (err) {
+			switch (err.message) {
+			case '[[error:invalid-email]]':
+				winston.warn('[user/reset] Invalid email attempt: ' + email + ' by IP ' + socket.ip + (socket.uid ? ' (uid: ' + socket.uid + ')' : ''));
+				err = null;
+				break;
+
+			case '[[error:reset-rate-limited]]':
+				err = null;
+				break;
+			}
 		}
 
-		callback();
+		setTimeout(callback.bind(err), 2500);
 	});
 };
 
@@ -110,6 +128,7 @@ SocketUser.reset.commit = function (socket, data, callback) {
 			async.parallel({
 				uid: async.apply(db.getObjectField, 'reset:uid', data.code),
 				reset: async.apply(user.reset.commit, data.code, data.password),
+				hook: async.apply(plugins.fireHook, 'action:password.reset', { uid: socket.uid }),
 			}, next);
 		},
 		function (results, next) {
@@ -244,12 +263,19 @@ SocketUser.getUnreadCounts = function (socket, data, callback) {
 		return callback(null, {});
 	}
 	async.parallel({
-		unreadTopicCount: async.apply(topics.getTotalUnread, socket.uid),
-		unreadNewTopicCount: async.apply(topics.getTotalUnread, socket.uid, 'new'),
-		unreadWatchedTopicCount: async.apply(topics.getTotalUnread, socket.uid, 'watched'),
+		unreadCounts: async.apply(topics.getUnreadTids, { uid: socket.uid, count: true }),
 		unreadChatCount: async.apply(messaging.getUnreadCount, socket.uid),
 		unreadNotificationCount: async.apply(user.notifications.getUnreadCount, socket.uid),
-	}, callback);
+	}, function (err, results) {
+		if (err) {
+			return callback(err);
+		}
+		results.unreadTopicCount = results.unreadCounts[''];
+		results.unreadNewTopicCount = results.unreadCounts.new;
+		results.unreadWatchedTopicCount = results.unreadCounts.watched;
+		results.unreadUnrepliedTopicCount = results.unreadCounts.unreplied;
+		callback(null, results);
+	});
 };
 
 SocketUser.invite = function (socket, email, callback) {
@@ -271,24 +297,26 @@ SocketUser.invite = function (socket, email, callback) {
 			if (registrationType === 'admin-invite-only' && !isAdmin) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
-
 			var max = parseInt(meta.config.maximumInvites, 10);
-			if (!max) {
-				return user.sendInvitationEmail(socket.uid, email, callback);
-			}
+			email = email.split(',').map(email => email.trim()).filter(Boolean);
+			async.eachSeries(email, function (email, next) {
+				async.waterfall([
+					function (next) {
+						if (max) {
+							user.getInvitesNumber(socket.uid, next);
+						} else {
+							next(null, 0);
+						}
+					},
+					function (invites, next) {
+						if (!isAdmin && max && invites >= max) {
+							return next(new Error('[[error:invite-maximum-met, ' + invites + ', ' + max + ']]'));
+						}
 
-			async.waterfall([
-				function (next) {
-					user.getInvitesNumber(socket.uid, next);
-				},
-				function (invites, next) {
-					if (!isAdmin && invites >= max) {
-						return next(new Error('[[error:invite-maximum-met, ' + invites + ', ' + max + ']]'));
-					}
-
-					user.sendInvitationEmail(socket.uid, email, next);
-				},
-			], next);
+						user.sendInvitationEmail(socket.uid, email, next);
+					},
+				], next);
+			}, next);
 		},
 	], callback);
 };
@@ -332,6 +360,32 @@ SocketUser.setModerationNote = function (socket, data, callback) {
 				timestamp: Date.now(),
 			};
 			db.sortedSetAdd('uid:' + data.uid + ':moderation:notes', note.timestamp, JSON.stringify(note), next);
+		},
+	], callback);
+};
+
+SocketUser.deleteUpload = function (socket, data, callback) {
+	if (!data || !data.name || !data.uid) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	user.deleteUpload(socket.uid, data.uid, data.name, callback);
+};
+
+SocketUser.gdpr = {};
+
+SocketUser.gdpr.consent = function (socket, data, callback) {
+	user.setUserField(socket.uid, 'gdpr_consent', 1, callback);
+};
+
+SocketUser.gdpr.check = function (socket, data, callback) {
+	async.waterfall([
+		async.apply(user.isAdministrator, socket.uid),
+		function (isAdmin, next) {
+			if (!isAdmin) {
+				data.uid = socket.uid;
+			}
+
+			db.getObjectField('user:' + data.uid, 'gdpr_consent', next);
 		},
 	], callback);
 };

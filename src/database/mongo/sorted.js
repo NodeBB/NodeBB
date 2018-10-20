@@ -32,13 +32,29 @@ module.exports = function (db, module) {
 			return callback();
 		}
 
-		var fields = { _id: 0, value: 1 };
-		if (withScores) {
-			fields.score = 1;
+		var fields = { _id: 0, _key: 0 };
+		if (!withScores) {
+			fields.score = 0;
 		}
 
 		if (Array.isArray(key)) {
 			key = { $in: key };
+		}
+
+		if (start < 0 && start > stop) {
+			return callback(null, []);
+		}
+
+		var reverse = false;
+		if (start === 0 && stop < -1) {
+			reverse = true;
+			sort *= -1;
+			start = Math.abs(stop + 1);
+			stop = -1;
+		} else if (start < 0 && stop > start) {
+			var tmp1 = Math.abs(stop + 1);
+			stop = Math.abs(start + 1);
+			start = tmp1;
 		}
 
 		var limit = stop - start + 1;
@@ -46,7 +62,7 @@ module.exports = function (db, module) {
 			limit = 0;
 		}
 
-		db.collection('objects').find({ _key: key }, { fields: fields })
+		db.collection('objects').find({ _key: key }, { projection: fields })
 			.limit(limit)
 			.skip(start)
 			.sort({ score: sort })
@@ -55,6 +71,9 @@ module.exports = function (db, module) {
 					return callback(err);
 				}
 
+				if (reverse) {
+					data.reverse();
+				}
 				if (!withScores) {
 					data = data.map(function (item) {
 						return item.value;
@@ -99,12 +118,12 @@ module.exports = function (db, module) {
 			query.score.$lte = max;
 		}
 
-		var fields = { _id: 0, value: 1 };
-		if (withScores) {
-			fields.score = 1;
+		var fields = { _id: 0, _key: 0 };
+		if (!withScores) {
+			fields.score = 0;
 		}
 
-		db.collection('objects').find(query, { fields: fields })
+		db.collection('objects').find(query, { projection: fields })
 			.limit(count)
 			.skip(start)
 			.sort({ score: sort })
@@ -137,7 +156,7 @@ module.exports = function (db, module) {
 			query.score.$lte = max;
 		}
 
-		db.collection('objects').count(query, function (err, count) {
+		db.collection('objects').countDocuments(query, function (err, count) {
 			callback(err, count || 0);
 		});
 	};
@@ -146,7 +165,7 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback(null, 0);
 		}
-		db.collection('objects').count({ _key: key }, function (err, count) {
+		db.collection('objects').countDocuments({ _key: key }, function (err, count) {
 			count = parseInt(count, 10);
 			callback(err, count || 0);
 		});
@@ -161,7 +180,7 @@ module.exports = function (db, module) {
 			{ $group: { _id: { _key: '$_key' }, count: { $sum: 1 } } },
 			{ $project: { _id: 1, count: '$count' } },
 		];
-		db.collection('objects').aggregate(pipeline, function (err, results) {
+		db.collection('objects').aggregate(pipeline).toArray(function (err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -185,25 +204,36 @@ module.exports = function (db, module) {
 	};
 
 	module.sortedSetRank = function (key, value, callback) {
-		getSortedSetRank(module.getSortedSetRange, key, value, callback);
+		getSortedSetRank(false, key, value, callback);
 	};
 
 	module.sortedSetRevRank = function (key, value, callback) {
-		getSortedSetRank(module.getSortedSetRevRange, key, value, callback);
+		getSortedSetRank(true, key, value, callback);
 	};
 
-	function getSortedSetRank(method, key, value, callback) {
+	function getSortedSetRank(reverse, key, value, callback) {
 		if (!key) {
 			return callback();
 		}
 		value = helpers.valueToString(value);
-		method(key, 0, -1, function (err, result) {
-			if (err) {
-				return callback(err);
+		module.sortedSetScore(key, value, function (err, score) {
+			if (err || score === null) {
+				return callback(err, null);
 			}
 
-			var rank = result.indexOf(value);
-			callback(null, rank !== -1 ? rank : null);
+			db.collection('objects').countDocuments({
+				$or: [
+					{
+						_key: key,
+						score: reverse ? { $gt: score } : { $lt: score },
+					},
+					{
+						_key: key,
+						score: score,
+						value: reverse ? { $gt: value } : { $lt: value },
+					},
+				],
+			}, function (err, rank) { callback(err, rank); });
 		});
 	}
 
@@ -217,7 +247,7 @@ module.exports = function (db, module) {
 		}
 
 		async.map(data, function (item, next) {
-			getSortedSetRank(module.getSortedSetRange, item.key, item.value, next);
+			getSortedSetRank(false, item.key, item.value, next);
 		}, callback);
 	};
 
@@ -244,7 +274,7 @@ module.exports = function (db, module) {
 			return callback(null, null);
 		}
 		value = helpers.valueToString(value);
-		db.collection('objects').findOne({ _key: key, value: value }, { fields: { _id: 0, score: 1 } }, function (err, result) {
+		db.collection('objects').findOne({ _key: key, value: value }, { projection: { _id: 0, _key: 0, value: 0 } }, function (err, result) {
 			callback(err, result ? result.score : null);
 		});
 	};
@@ -254,7 +284,7 @@ module.exports = function (db, module) {
 			return callback();
 		}
 		value = helpers.valueToString(value);
-		db.collection('objects').find({ _key: { $in: keys }, value: value }, { _id: 0, _key: 1, score: 1 }).toArray(function (err, result) {
+		db.collection('objects').find({ _key: { $in: keys }, value: value }, { projection: { _id: 0, value: 0 } }).toArray(function (err, result) {
 			if (err) {
 				return callback(err);
 			}
@@ -277,7 +307,7 @@ module.exports = function (db, module) {
 			return callback(null, null);
 		}
 		values = values.map(helpers.valueToString);
-		db.collection('objects').find({ _key: key, value: { $in: values } }, { _id: 0, value: 1, score: 1 }).toArray(function (err, result) {
+		db.collection('objects').find({ _key: key, value: { $in: values } }, { projection: { _id: 0, _key: 0 } }).toArray(function (err, result) {
 			if (err) {
 				return callback(err);
 			}
@@ -304,7 +334,7 @@ module.exports = function (db, module) {
 			return callback();
 		}
 		value = helpers.valueToString(value);
-		db.collection('objects').findOne({ _key: key, value: value }, { _id: 0, value: 1 }, function (err, result) {
+		db.collection('objects').findOne({ _key: key, value: value }, { projection: { _id: 0, _key: 0, score: 0 } }, function (err, result) {
 			callback(err, !!result);
 		});
 	};
@@ -314,17 +344,19 @@ module.exports = function (db, module) {
 			return callback();
 		}
 		values = values.map(helpers.valueToString);
-		db.collection('objects').find({ _key: key, value: { $in: values } }, { fields: { _id: 0, value: 1 } }).toArray(function (err, results) {
+		db.collection('objects').find({ _key: key, value: { $in: values } }, { projection: { _id: 0, _key: 0, score: 0 } }).toArray(function (err, results) {
 			if (err) {
 				return callback(err);
 			}
-
-			results = results.map(function (item) {
-				return item.value;
+			var isMember = {};
+			results.forEach(function (item) {
+				if (item) {
+					isMember[item.value] = true;
+				}
 			});
 
 			values = values.map(function (value) {
-				return results.indexOf(value) !== -1;
+				return !!isMember[value];
 			});
 			callback(null, values);
 		});
@@ -335,17 +367,19 @@ module.exports = function (db, module) {
 			return callback();
 		}
 		value = helpers.valueToString(value);
-		db.collection('objects').find({ _key: { $in: keys }, value: value }, { fields: { _id: 0, _key: 1, value: 1 } }).toArray(function (err, results) {
+		db.collection('objects').find({ _key: { $in: keys }, value: value }, { projection: { _id: 0, score: 0 } }).toArray(function (err, results) {
 			if (err) {
 				return callback(err);
 			}
-
-			results = results.map(function (item) {
-				return item._key;
+			var isMember = {};
+			results.forEach(function (item) {
+				if (item) {
+					isMember[item._key] = true;
+				}
 			});
 
 			results = keys.map(function (key) {
-				return results.indexOf(key) !== -1;
+				return !!isMember[key];
 			});
 			callback(null, results);
 		});
@@ -355,7 +389,7 @@ module.exports = function (db, module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback(null, []);
 		}
-		db.collection('objects').find({ _key: { $in: keys } }, { _id: 0, _key: 1, value: 1 }).toArray(function (err, data) {
+		db.collection('objects').find({ _key: { $in: keys } }, { projection: { _id: 0, score: 0 } }).sort({ score: 1 }).toArray(function (err, data) {
 			if (err) {
 				return callback(err);
 			}
@@ -383,7 +417,7 @@ module.exports = function (db, module) {
 		value = helpers.valueToString(value);
 		data.score = parseFloat(increment);
 
-		db.collection('objects').findAndModify({ _key: key, value: value }, {}, { $inc: data }, { new: true, upsert: true }, function (err, result) {
+		db.collection('objects').findOneAndUpdate({ _key: key, value: value }, { $inc: data }, { returnOriginal: false, upsert: true }, function (err, result) {
 			// if there is duplicate key error retry the upsert
 			// https://github.com/NodeBB/NodeBB/issues/4467
 			// https://jira.mongodb.org/browse/SERVER-14322
@@ -419,7 +453,7 @@ module.exports = function (db, module) {
 		var query = { _key: key };
 		buildLexQuery(query, min, max);
 
-		db.collection('objects').find(query, { _id: 0, value: 1 })
+		db.collection('objects').find(query, { projection: { _id: 0, _key: 0, score: 0 } })
 			.sort({ value: sort })
 			.skip(start)
 			.limit(count === -1 ? 0 : count)
@@ -440,7 +474,7 @@ module.exports = function (db, module) {
 		var query = { _key: key };
 		buildLexQuery(query, min, max);
 
-		db.collection('objects').remove(query, function (err) {
+		db.collection('objects').deleteMany(query, function (err) {
 			callback(err);
 		});
 	};
@@ -467,12 +501,15 @@ module.exports = function (db, module) {
 		}
 	}
 
-	module.processSortedSet = function (setKey, process, options, callback) {
+	module.processSortedSet = function (setKey, processFn, options, callback) {
 		var done = false;
 		var ids = [];
-		var cursor = db.collection('objects').find({ _key: setKey })
+		var project = { _id: 0, _key: 0 };
+		if (!options.withScores) {
+			project.score = 0;
+		}
+		var cursor = db.collection('objects').find({ _key: setKey }, { projection: project })
 			.sort({ score: 1 })
-			.project({ _id: 0, value: 1 })
 			.batchSize(options.batch);
 
 		async.whilst(
@@ -488,13 +525,13 @@ module.exports = function (db, module) {
 						if (item === null) {
 							done = true;
 						} else {
-							ids.push(item.value);
+							ids.push(options.withScores ? item : item.value);
 						}
 
 						if (ids.length < options.batch && (!done || ids.length === 0)) {
-							return next(null);
+							return process.nextTick(next, null);
 						}
-						process(ids, function (err) {
+						processFn(ids, function (err) {
 							_next(err);
 						});
 					},
@@ -503,7 +540,7 @@ module.exports = function (db, module) {
 						if (options.interval) {
 							setTimeout(next, options.interval);
 						} else {
-							next();
+							process.nextTick(next);
 						}
 					},
 				], next);

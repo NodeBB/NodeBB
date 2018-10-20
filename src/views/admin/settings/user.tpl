@@ -6,13 +6,6 @@
 		<form role="form">
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="allowLocalLogin" checked>
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:allow-local-login]]</strong></span>
-				</label>
-			</div>
-
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="requireEmailConfirmation">
 					<span class="mdl-switch__label"><strong>[[admin/settings/user:require-email-confirmation]]</strong></span>
 				</label>
@@ -106,6 +99,13 @@
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
+				<label for="adminReloginDuration">[[admin/settings/user:admin-relogin-duration]]</label>
+				<input id="adminReloginDuration" type="text" class="form-control" data-field="adminReloginDuration" placeholder="60" />
+				<p class="help-block">
+					[[admin/settings/user:admin-relogin-duration-help]]
+				</p>
+			</div>
+			<div class="form-group">
 				<label for="loginAttempts">[[admin/settings/user:login-attempts]]</label>
 				<input id="loginAttempts" type="text" class="form-control" data-field="loginAttempts" placeholder="5" />
 				<p class="help-block">
@@ -169,7 +169,7 @@
 			</div>
 			<div class="form-group">
 				<label>[[admin/settings/user:invite-expiration]]</label>
-				<input type="number" class="form-control" data-field="inviteExpiration" placeholder="1">
+				<input type="number" class="form-control" data-field="inviteExpiration" placeholder="7">
 				<p class="help-block">
 					[[admin/settings/user:invite-expiration-help]]
 				</p>
@@ -225,7 +225,6 @@
 	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/user:default-user-settings]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
-
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="showemail">
@@ -273,20 +272,6 @@
 
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="sendChatNotifications">
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:email-chat-notifs]]</strong></span>
-				</label>
-			</div>
-
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="sendPostNotifications">
-					<span class="mdl-switch__label"><strong>[[admin/settings/user:email-post-notif]]</strong></span>
-				</label>
-			</div>
-
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="followTopicsOnCreate">
 					<span class="mdl-switch__label"><strong>[[admin/settings/user:follow-created-topics]]</strong></span>
 				</label>
@@ -298,6 +283,24 @@
 					<span class="mdl-switch__label"><strong>[[admin/settings/user:follow-replied-topics]]</strong></span>
 				</label>
 			</div>
+
+			<label>[[admin/settings/user:default-notification-settings]]</label>
+
+			<!-- BEGIN notificationSettings -->
+			<div class="row">
+				<div class="form-group col-xs-7">
+					<label>{notificationSettings.label}</label>
+				</div>
+				<div class="form-group col-xs-5">
+					<select class="form-control" data-field="{notificationSettings.name}">
+						<option value="none">[[notifications:none]]</option>
+						<option value="notification">[[notifications:notification_only]]</option>
+						<option value="email">[[notifications:email_only]]</option>
+						<option value="notificationemail">[[notifications:notification_and_email]]</option>
+					</select>
+				</div>
+			</div>
+			<!-- END notificationSettings -->
 
 		</form>
 	</div>

@@ -1,0 +1,30 @@
+{
+	"global": "Глобальні",
+	"global.no-users": "Відсутні глобальні права, що стосуються користувача.",
+
+	"chat": "Чат",
+	"upload-images": "Завантаження Зображень",
+	"upload-files": "Завантаження Файлів",
+	"signature": "Підпис",
+	"ban": "Бан",
+	"search-content": "Шукати Зміст",
+	"search-users": "Шукати Користувачів",
+	"search-tags": "Шукати Теги",
+	"allow-local-login": "Local Login",
+
+	"find-category": "Знайти Категорію",
+	"access-category": "Доступ до Категорії",
+	"access-topics": "Доступ до Тем",
+	"create-topics": "Створювати Теми",
+	"reply-to-topics": "Відповідати на Теми",
+	"tag-topics": "Тегувати Теми",
+	"edit-posts": "Редагувати Пости",
+	"view-edit-history": "Переглядати Історію Редагування",
+	"delete-posts": "Видаляти Пости",
+	"view_deleted": "View Deleted Posts",
+	"upvote-posts": "Голосувати \"За\" Пости",
+	"downvote-posts": "Голосувати \"Проти\" Постів",
+	"delete-topics": "Видаляти Теми",
+	"purge": "Очищувати",
+	"moderate": "Модерувати"
+}

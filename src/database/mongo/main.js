@@ -12,7 +12,7 @@ module.exports = function (db, module) {
 
 	module.emptydb = function (callback) {
 		callback = callback || helpers.noop;
-		db.collection('objects').remove({}, function (err) {
+		db.collection('objects').deleteMany({}, function (err) {
 			if (err) {
 				return callback(err);
 			}
@@ -35,7 +35,7 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback();
 		}
-		db.collection('objects').remove({ _key: key }, function (err) {
+		db.collection('objects').deleteMany({ _key: key }, function (err) {
 			if (err) {
 				return callback(err);
 			}
@@ -49,7 +49,7 @@ module.exports = function (db, module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback();
 		}
-		db.collection('objects').remove({ _key: { $in: keys } }, function (err) {
+		db.collection('objects').deleteMany({ _key: { $in: keys } }, function (err) {
 			if (err) {
 				return callback(err);
 			}
@@ -66,7 +66,21 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback();
 		}
-		module.getObjectField(key, 'value', callback);
+		module.getObject(key, function (err, objectData) {
+			if (err) {
+				return callback(err);
+			}
+			// fallback to old field name 'value' for backwards compatibility #6340
+			var value = null;
+			if (objectData) {
+				if (objectData.hasOwnProperty('data')) {
+					value = objectData.data;
+				} else if (objectData.hasOwnProperty('value')) {
+					value = objectData.value;
+				}
+			}
+			callback(null, value);
+		});
 	};
 
 	module.set = function (key, value, callback) {
@@ -74,7 +88,7 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback();
 		}
-		var data = { value: value };
+		var data = { data: value };
 		module.setObject(key, data, callback);
 	};
 
@@ -83,14 +97,14 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback();
 		}
-		db.collection('objects').findAndModify({ _key: key }, {}, { $inc: { value: 1 } }, { new: true, upsert: true }, function (err, result) {
-			callback(err, result && result.value ? result.value.value : null);
+		db.collection('objects').findOneAndUpdate({ _key: key }, { $inc: { data: 1 } }, { returnOriginal: false, upsert: true }, function (err, result) {
+			callback(err, result && result.value ? result.value.data : null);
 		});
 	};
 
 	module.rename = function (oldKey, newKey, callback) {
 		callback = callback || helpers.noop;
-		db.collection('objects').update({ _key: oldKey }, { $set: { _key: newKey } }, { multi: true }, function (err) {
+		db.collection('objects').updateMany({ _key: oldKey }, { $set: { _key: newKey } }, function (err) {
 			if (err) {
 				return callback(err);
 			}
@@ -108,6 +122,7 @@ module.exports = function (db, module) {
 			if (!data) {
 				return callback(null, null);
 			}
+			delete data.expireAt;
 			var keys = Object.keys(data);
 			if (keys.length === 4 && data.hasOwnProperty('_key') && data.hasOwnProperty('score') && data.hasOwnProperty('value')) {
 				return callback(null, 'zset');
@@ -115,7 +130,7 @@ module.exports = function (db, module) {
 				return callback(null, 'set');
 			} else if (keys.length === 3 && data.hasOwnProperty('_key') && data.hasOwnProperty('array')) {
 				return callback(null, 'list');
-			} else if (keys.length === 3 && data.hasOwnProperty('_key') && data.hasOwnProperty('value')) {
+			} else if (keys.length === 3 && data.hasOwnProperty('_key') && data.hasOwnProperty('data')) {
 				return callback(null, 'string');
 			}
 			callback(null, 'hash');

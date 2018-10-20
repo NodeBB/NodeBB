@@ -14,6 +14,7 @@ var JS = module.exports;
 
 JS.scripts = {
 	base: [
+		'node_modules/promise-polyfill/dist/polyfill.js',
 		'node_modules/jquery/dist/jquery.js',
 		'node_modules/socket.io-client/dist/socket.io.js',
 		'public/vendor/jquery/timeago/jquery.timeago.js',
@@ -36,7 +37,6 @@ JS.scripts = {
 		'public/src/ajaxify.js',
 		'public/src/overrides.js',
 		'public/src/widgets.js',
-		'node_modules/promise-polyfill/promise.js',
 	],
 
 	// files listed below are only available client-side, or are bundled in to reduce # of network requests on cold load
@@ -49,6 +49,7 @@ JS.scripts = {
 		'public/src/client/unread.js',
 		'public/src/client/topic.js',
 		'public/src/client/topic/events.js',
+		'public/src/client/topic/merge.js',
 		'public/src/client/topic/fork.js',
 		'public/src/client/topic/move.js',
 		'public/src/client/topic/posts.js',
@@ -74,6 +75,19 @@ JS.scripts = {
 		'public/src/modules/helpers.js',
 		'public/src/modules/flags.js',
 		'public/src/modules/storage.js',
+		'public/src/modules/handleBack.js',
+	],
+
+	admin: [
+		'node_modules/material-design-lite/material.js',
+		'public/vendor/jquery/sortable/Sortable.js',
+		'public/vendor/colorpicker/colorpicker.js',
+		'public/src/admin/admin.js',
+		'public/vendor/semver/semver.browser.js',
+		'public/vendor/jquery/serializeObject/jquery.ba-serializeobject.min.js',
+		'public/vendor/jquery/deserialize/jquery.deserialize.min.js',
+		'public/vendor/slideout/slideout.min.js',
+		'public/vendor/nprogress.min.js',
 	],
 
 	// modules listed below are built (/src/modules) so they can be defined anonymously
@@ -84,6 +98,7 @@ JS.scripts = {
 		'jqueryui.js': 'public/vendor/jquery/js/jquery-ui.js',
 		'zxcvbn.js': 'node_modules/zxcvbn/dist/zxcvbn.js',
 		ace: 'node_modules/ace-builds/src-min',
+		'clipboard.js': 'node_modules/clipboard/dist/clipboard.min.js',
 	},
 };
 
@@ -100,13 +115,13 @@ var basePath = path.resolve(__dirname, '../..');
 function minifyModules(modules, fork, callback) {
 	var moduleDirs = modules.reduce(function (prev, mod) {
 		var dir = path.resolve(path.dirname(mod.destPath));
-		if (prev.indexOf(dir) === -1) {
+		if (!prev.includes(dir)) {
 			prev.push(dir);
 		}
 		return prev;
 	}, []);
 
-	async.eachLimit(moduleDirs, 1000, mkdirp, function (err) {
+	async.each(moduleDirs, mkdirp, function (err) {
 		if (err) {
 			return callback(err);
 		}
@@ -126,7 +141,7 @@ function minifyModules(modules, fork, callback) {
 				minifier.js.minifyBatch(filtered.minify, fork, cb);
 			},
 			function (cb) {
-				async.eachLimit(filtered.skip, 500, function (mod, next) {
+				async.each(filtered.skip, function (mod, next) {
 					linkIfLinux(mod.srcPath, mod.destPath, next);
 				}, cb);
 			},
@@ -137,7 +152,7 @@ function minifyModules(modules, fork, callback) {
 function linkModules(callback) {
 	var modules = JS.scripts.modules;
 
-	async.eachLimit(Object.keys(modules), 1000, function (relPath, next) {
+	async.each(Object.keys(modules), function (relPath, next) {
 		var srcPath = path.join(__dirname, '../../', modules[relPath]);
 		var destPath = path.join(__dirname, '../../build/public/src/modules', relPath);
 
@@ -183,7 +198,7 @@ function getModuleList(callback) {
 	modules = modules.concat(coreDirs);
 
 	var moduleFiles = [];
-	async.eachLimit(modules, 1000, function (module, next) {
+	async.each(modules, function (module, next) {
 		var srcPath = module.srcPath;
 		var destPath = module.destPath;
 
@@ -255,7 +270,7 @@ JS.linkStatics = function (callback) {
 		if (err) {
 			return callback(err);
 		}
-		async.eachLimit(Object.keys(plugins.staticDirs), 1000, function (mappedPath, next) {
+		async.each(Object.keys(plugins.staticDirs), function (mappedPath, next) {
 			var sourceDir = plugins.staticDirs[mappedPath];
 			var destDir = path.join(__dirname, '../../build/public/plugins', mappedPath);
 
@@ -299,13 +314,15 @@ function getBundleScriptList(target, callback) {
 			return callback(err);
 		}
 
-		var scripts = JS.scripts.base.concat(pluginScripts);
+		var scripts = JS.scripts.base;
 
 		if (target === 'client' && global.env !== 'development') {
 			scripts = scripts.concat(JS.scripts.rjs);
+		} else if (target === 'acp') {
+			scripts = scripts.concat(JS.scripts.admin);
 		}
 
-		scripts = scripts.map(function (script) {
+		scripts = scripts.concat(pluginScripts).map(function (script) {
 			var srcPath = path.resolve(basePath, script).replace(/\\/g, '/');
 			return {
 				srcPath: srcPath,
@@ -326,6 +343,11 @@ JS.buildBundle = function (target, fork, callback) {
 	async.waterfall([
 		function (next) {
 			getBundleScriptList(target, next);
+		},
+		function (files, next) {
+			mkdirp(path.join(__dirname, '../../build/public'), function (err) {
+				next(err, files);
+			});
 		},
 		function (files, next) {
 			var minify = global.env !== 'development';

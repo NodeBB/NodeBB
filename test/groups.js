@@ -14,7 +14,6 @@ describe('Groups', function () {
 	var adminUid;
 	var testUid;
 	before(function (done) {
-		Groups.resetCache();
 		async.series([
 			function (next) {
 				// Create a group to play around with
@@ -71,9 +70,9 @@ describe('Groups', function () {
 
 	describe('.list()', function () {
 		it('should list the groups present', function (done) {
-			Groups.getGroupsFromSet('groups:createtime', 0, 0, -1, function (err, groups) {
+			Groups.getGroupsFromSet('groups:visible:createtime', 0, 0, -1, function (err, groups) {
 				assert.ifError(err);
-				assert.equal(groups.length, 7);
+				assert.equal(groups.length, 4);
 				done();
 			});
 		});
@@ -265,6 +264,47 @@ describe('Groups', function () {
 			});
 		});
 
+		it('should create a hidden group if hidden is 1', function (done) {
+			Groups.create({
+				name: 'hidden group',
+				hidden: '1',
+			}, function (err) {
+				assert.ifError(err);
+				db.isSortedSetMember('groups:visible:memberCount', 'visible group', function (err, isMember) {
+					assert.ifError(err);
+					assert(!isMember);
+					done();
+				});
+			});
+		});
+
+		it('should create a visible group if hidden is 0', function (done) {
+			Groups.create({
+				name: 'visible group',
+				hidden: '0',
+			}, function (err) {
+				assert.ifError(err);
+				db.isSortedSetMember('groups:visible:memberCount', 'visible group', function (err, isMember) {
+					assert.ifError(err);
+					assert(isMember);
+					done();
+				});
+			});
+		});
+
+		it('should create a visible group if hidden is not passed in', function (done) {
+			Groups.create({
+				name: 'visible group 2',
+			}, function (err) {
+				assert.ifError(err);
+				db.isSortedSetMember('groups:visible:memberCount', 'visible group 2', function (err, isMember) {
+					assert.ifError(err);
+					assert(isMember);
+					done();
+				});
+			});
+		});
+
 		it('should fail to create group with duplicate group name', function (done) {
 			Groups.create({ name: 'foo' }, function (err) {
 				assert(err);
@@ -442,6 +482,45 @@ describe('Groups', function () {
 					Groups.join('Test', undefined, function (err) {
 						assert.equal(err.message, '[[error:invalid-uid]]');
 						done();
+					});
+				});
+			});
+		});
+
+		it('should add user to multiple groups', function (done) {
+			var groupNames = ['test-hidden1', 'Test', 'test-hidden2', 'empty group'];
+			Groups.create({ name: 'empty group' }, function (err) {
+				assert.ifError(err);
+				Groups.join(groupNames, testUid, function (err) {
+					assert.ifError(err);
+					Groups.isMemberOfGroups(testUid, groupNames, function (err, isMembers) {
+						assert.ifError(err);
+						assert(isMembers.every(Boolean));
+						db.sortedSetScores('groups:visible:memberCount', groupNames, function (err, memberCounts) {
+							assert.ifError(err);
+							// hidden groups are not in "groups:visible:memberCount" so they are null
+							assert.deepEqual(memberCounts, [null, 3, null, 1]);
+							done();
+						});
+					});
+				});
+			});
+		});
+
+		it('should set group title when user joins the group', function (done) {
+			var groupName = 'this will be title';
+			User.create({ username: 'needstitle' }, function (err, uid) {
+				assert.ifError(err);
+				Groups.create({ name: groupName }, function (err) {
+					assert.ifError(err);
+					Groups.join([groupName], uid, function (err) {
+						assert.ifError(err);
+						User.getUserData(uid, function (err, data) {
+							assert.ifError(err);
+							assert.equal(data.groupTitle, '["' + groupName + '"]');
+							assert.deepEqual(data.groupTitleArray, [groupName]);
+							done();
+						});
 					});
 				});
 			});
@@ -901,6 +980,29 @@ describe('Groups', function () {
 			});
 		});
 
+		it('should fail to create a group with name guests', function (done) {
+			var oldValue = meta.config.allowGroupCreation;
+			meta.config.allowGroupCreation = 1;
+			socketGroups.create({ uid: adminUid }, { name: 'guests' }, function (err) {
+				meta.config.allowGroupCreation = oldValue;
+				assert.equal(err.message, '[[error:invalid-group-name]]');
+				done();
+			});
+		});
+
+		it('should fail to rename guests group', function (done) {
+			var data = {
+				groupName: 'guests',
+				values: {
+					name: 'guests2',
+				},
+			};
+			socketGroups.update({ uid: adminUid }, data, function (err) {
+				assert.equal(err.message, '[[error:no-group]]');
+				done();
+			});
+		});
+
 		it('should delete group', function (done) {
 			socketGroups.delete({ uid: adminUid }, { groupName: 'renamedupdategroup' }, function (err) {
 				assert.ifError(err);
@@ -928,6 +1030,13 @@ describe('Groups', function () {
 
 		it('should fail to delete group if name is special', function (done) {
 			socketGroups.delete({ uid: adminUid }, { groupName: 'Global Moderators' }, function (err) {
+				assert.equal(err.message, '[[error:not-allowed]]');
+				done();
+			});
+		});
+
+		it('should fail to delete group if name is special', function (done) {
+			socketGroups.delete({ uid: adminUid }, { groupName: 'guests' }, function (err) {
 				assert.equal(err.message, '[[error:not-allowed]]');
 				done();
 			});

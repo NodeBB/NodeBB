@@ -51,7 +51,7 @@ exports.processSortedSet = function (setKey, process, options, callback) {
 		function (next) {
 			async.waterfall([
 				function (next) {
-					db.getSortedSetRange(setKey, start, stop, next);
+					db['getSortedSetRange' + (options.withScores ? 'WithScores' : '')](setKey, start, stop, next);
 				},
 				function (ids, _next) {
 					if (!ids.length || options.doneIf(start, stop, ids)) {

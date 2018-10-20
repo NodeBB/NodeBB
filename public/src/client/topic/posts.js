@@ -68,7 +68,7 @@ define('forum/topic/posts', [
 
 		var posts = data.posts;
 
-		ajaxify.data.pagination.pageCount = Math.max(1, Math.ceil((posts[0].topic.postcount - 1) / config.postsPerPage));
+		ajaxify.data.pagination.pageCount = Math.max(1, Math.ceil(posts[0].topic.postcount / config.postsPerPage));
 		var direction = config.topicPostSort === 'oldest_to_newest' || config.topicPostSort === 'most_votes' ? 1 : -1;
 
 		var isPostVisible = (ajaxify.data.pagination.currentPage === ajaxify.data.pagination.pageCount && direction === 1) ||
@@ -219,7 +219,7 @@ define('forum/topic/posts', [
 		Posts._infiniteScrollTimeout = setTimeout(function () {
 			delete Posts._infiniteScrollTimeout;
 		}, 1000);
-		var replies = components.get('post').not('[data-index=0]').not('.new');
+		var replies = components.get('topic').find(components.get('post').not('[data-index=0]').not('.new'));
 		var afterEl = direction > 0 ? replies.last() : replies.first();
 		var after = parseInt(afterEl.attr('data-index'), 10) || 0;
 

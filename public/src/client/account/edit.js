@@ -37,6 +37,8 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 			aboutme: $('#inputAboutMe').val(),
 		};
 
+		userData.groupTitle = JSON.stringify(Array.isArray(userData.groupTitle) ? userData.groupTitle : [userData.groupTitle]);
+
 		$(window).trigger('action:profile.update', userData);
 
 		socket.emit('user.updateProfile', userData, function (err, data) {
@@ -158,22 +160,35 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 	function handleAccountDelete() {
 		$('#deleteAccountBtn').on('click', function () {
 			translator.translate('[[user:delete_account_confirm]]', function (translated) {
-				var modal = bootbox.confirm(translated + '<p><input type="text" class="form-control" id="confirm-username" /></p>', function (confirm) {
+				var modal = bootbox.confirm(translated + '<p><input type="password" class="form-control" id="confirm-password" /></p>', function (confirm) {
 					if (!confirm) {
 						return;
 					}
 
-					if ($('#confirm-username').val() !== app.user.username) {
-						app.alertError('[[error:invalid-username]]');
-						return false;
-					}
-					socket.emit('user.deleteAccount', {}, function (err) {
+					var confirmBtn = modal.find('.btn-primary');
+					confirmBtn.html('<i class="fa fa-spinner fa-spin"></i>');
+					confirmBtn.prop('disabled', true);
+
+					socket.emit('user.deleteAccount', {
+						password: $('#confirm-password').val(),
+					}, function (err) {
+						function restoreButton() {
+							translator.translate('[[modules:bootbox.confirm]]', function (confirmText) {
+								confirmBtn.text(confirmText);
+								confirmBtn.prop('disabled', false);
+							});
+						}
+
 						if (err) {
+							restoreButton();
 							return app.alertError(err.message);
 						}
 
+						confirmBtn.html('<i class="fa fa-check"></i>');
 						window.location.href = config.relative_path + '/';
 					});
+
+					return false;
 				});
 
 				modal.on('shown.bs.modal', function () {
@@ -239,25 +254,18 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 						if (!url) {
 							return false;
 						}
-						socket.emit('user.uploadProfileImageFromUrl', {
-							uid: ajaxify.data.uid,
+
+						uploadModal.modal('hide');
+
+						pictureCropper.handleImageCrop({
 							url: url,
-						}, function (err, url) {
-							if (err) {
-								return app.alertError(err);
-							}
+							socketMethod: 'user.uploadCroppedPicture',
+							aspectRatio: 1,
+							allowSkippingCrop: false,
+							paramName: 'uid',
+							paramValue: ajaxify.data.theirid,
+						}, onUploadComplete);
 
-							uploadModal.modal('hide');
-
-							pictureCropper.handleImageCrop({
-								url: url,
-								socketMethod: 'user.uploadCroppedPicture',
-								aspectRatio: '1 / 1',
-								allowSkippingCrop: false,
-								paramName: 'uid',
-								paramValue: ajaxify.data.theirid,
-							}, onUploadComplete);
-						});
 						return false;
 					});
 				});

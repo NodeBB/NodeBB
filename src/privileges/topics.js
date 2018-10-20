@@ -15,8 +15,9 @@ module.exports = function (privileges) {
 	privileges.topics = {};
 
 	privileges.topics.get = function (tid, uid, callback) {
+		uid = parseInt(uid, 10);
 		var topic;
-		var privs = ['topics:reply', 'topics:read', 'topics:tag', 'topics:delete', 'posts:edit', 'posts:delete', 'read'];
+		var privs = ['topics:reply', 'topics:read', 'topics:tag', 'topics:delete', 'posts:edit', 'posts:history', 'posts:delete', 'posts:view_deleted', 'read', 'purge'];
 		async.waterfall([
 			async.apply(topics.getTopicFields, tid, ['cid', 'uid', 'locked', 'deleted']),
 			function (_topic, next) {
@@ -30,28 +31,29 @@ module.exports = function (privileges) {
 			},
 			function (results, next) {
 				var privData = _.zipObject(privs, results.privileges);
-				var disabled = parseInt(results.disabled, 10) === 1;
-				var locked = parseInt(topic.locked, 10) === 1;
-				var deleted = parseInt(topic.deleted, 10) === 1;
-				var isOwner = !!parseInt(uid, 10) && parseInt(uid, 10) === parseInt(topic.uid, 10);
+				var isOwner = uid > 0 && uid === topic.uid;
 				var isAdminOrMod = results.isAdministrator || results.isModerator;
 				var editable = isAdminOrMod;
 				var deletable = isAdminOrMod || (isOwner && privData['topics:delete']);
+				var purge = results.isAdministrator || privData.purge;
 
 				plugins.fireHook('filter:privileges.topics.get', {
-					'topics:reply': (privData['topics:reply'] && !locked && !deleted) || isAdminOrMod,
+					'topics:reply': (privData['topics:reply'] && !topic.locked && !topic.deleted) || isAdminOrMod,
 					'topics:read': privData['topics:read'] || isAdminOrMod,
 					'topics:tag': privData['topics:tag'] || isAdminOrMod,
 					'topics:delete': (isOwner && privData['topics:delete']) || isAdminOrMod,
-					'posts:edit': (privData['posts:edit'] && !locked) || isAdminOrMod,
-					'posts:delete': (privData['posts:delete'] && !locked) || isAdminOrMod,
+					'posts:edit': (privData['posts:edit'] && !topic.locked) || isAdminOrMod,
+					'posts:history': privData['posts:history'] || isAdminOrMod,
+					'posts:delete': (privData['posts:delete'] && !topic.locked) || isAdminOrMod,
+					'posts:view_deleted': privData['posts:view_deleted'] || isAdminOrMod,
 					read: privData.read || isAdminOrMod,
 					view_thread_tools: editable || deletable,
 					editable: editable,
 					deletable: deletable,
+					purge: purge,
 					view_deleted: isAdminOrMod || isOwner,
 					isAdminOrMod: isAdminOrMod,
-					disabled: disabled,
+					disabled: results.disabled,
 					tid: tid,
 					uid: uid,
 				}, next);
@@ -82,9 +84,7 @@ module.exports = function (privileges) {
 			},
 			function (_topicsData, next) {
 				topicsData = _topicsData;
-				cids = _.uniq(topicsData.map(function (topic) {
-					return topic.cid;
-				}));
+				cids = _.uniq(topicsData.map(topic => topic.cid));
 
 				privileges.categories.getBase(privilege, cids, uid, next);
 			},
@@ -96,12 +96,12 @@ module.exports = function (privileges) {
 						(results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
 				});
 
+				const cidsSet = new Set(cids);
+
 				tids = topicsData.filter(function (topic) {
-					return cids.indexOf(topic.cid) !== -1 &&
+					return cidsSet.has(topic.cid) &&
 						(parseInt(topic.deleted, 10) !== 1 || results.isAdmin || isModOf[topic.cid]);
-				}).map(function (topic) {
-					return topic.tid;
-				});
+				}).map(topic => topic.tid);
 
 				plugins.fireHook('filter:privileges.topics.filter', {
 					privilege: privilege,
@@ -144,8 +144,8 @@ module.exports = function (privileges) {
 			},
 			function (results, next) {
 				uids = uids.filter(function (uid, index) {
-					return parseInt(results.disabled, 10) !== 1 &&
-						((results.allowedTo[index] && parseInt(topicData.deleted, 10) !== 1) || results.isAdmins[index] || results.isModerators[index]);
+					return !results.disabled &&
+						((results.allowedTo[index] && !topicData.deleted) || results.isAdmins[index] || results.isModerators[index]);
 				});
 
 				next(null, uids);

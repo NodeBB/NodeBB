@@ -100,14 +100,16 @@ UserEmail.sendValidationEmail = function (uid, options, callback) {
 		},
 		function (username, next) {
 			var title = meta.config.title || meta.config.browserTitle || 'NodeBB';
-			translator.translate('[[email:welcome-to, ' + title + ']]', meta.config.defaultLang, function (subject) {
+			var subject = options.subject || '[[email:welcome-to, ' + title + ']]';
+			var template = options.template || 'welcome';
+			translator.translate(subject, meta.config.defaultLang, function (subject) {
 				var data = {
 					username: username,
 					confirm_link: confirm_link,
 					confirm_code: confirm_code,
 
 					subject: subject,
-					template: 'welcome',
+					template: template,
 					uid: uid,
 				};
 
@@ -115,7 +117,7 @@ UserEmail.sendValidationEmail = function (uid, options, callback) {
 					plugins.fireHook('action:user.verify', { uid: uid, data: data });
 					next();
 				} else {
-					emailer.send('welcome', uid, data, next);
+					emailer.send(template, uid, data, next);
 				}
 			});
 		},
@@ -126,14 +128,24 @@ UserEmail.sendValidationEmail = function (uid, options, callback) {
 };
 
 UserEmail.confirm = function (code, callback) {
+	var confirmObj;
 	async.waterfall([
 		function (next) {
 			db.getObject('confirm:' + code, next);
 		},
-		function (confirmObj, next) {
+		function (_confirmObj, next) {
+			confirmObj = _confirmObj;
 			if (!confirmObj || !confirmObj.uid || !confirmObj.email) {
 				return next(new Error('[[error:invalid-data]]'));
 			}
+
+			user.getUserField(confirmObj.uid, 'email', next);
+		},
+		function (currentEmail, next) {
+			if (!currentEmail || currentEmail.toLowerCase() !== confirmObj.email) {
+				return next(new Error('[[error:invalid-email]]'));
+			}
+
 			async.series([
 				async.apply(user.setUserField, confirmObj.uid, 'email:confirmed', 1),
 				async.apply(db.delete, 'confirm:' + code),

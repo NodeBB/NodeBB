@@ -9,6 +9,7 @@ var plugins = require('../plugins');
 var translator = require('../translator');
 var db = require('../database');
 var apiController = require('../controllers/api');
+var meta = require('../meta');
 
 var widgets = module.exports;
 
@@ -31,7 +32,7 @@ widgets.render = function (uid, options, callback) {
 			var returnData = {};
 
 			async.each(locations, function (location, done) {
-				widgetsByLocation[location] = (data.global[location] || []).concat(data[options.template][location] || []);
+				widgetsByLocation[location] = (data[options.template][location] || []).concat(data.global[location] || []);
 
 				if (!widgetsByLocation[location].length) {
 					return done(null, { location: location, widgets: [] });
@@ -50,7 +51,9 @@ widgets.render = function (uid, options, callback) {
 					if (err) {
 						return done(err);
 					}
-					returnData[location] = renderedWidgets.filter(Boolean);
+					renderedWidgets = renderedWidgets.filter(Boolean);
+					returnData[location] = renderedWidgets.length ? renderedWidgets : undefined;
+
 					done();
 				});
 			}, function (err) {
@@ -61,15 +64,17 @@ widgets.render = function (uid, options, callback) {
 };
 
 function renderWidget(widget, uid, options, callback) {
+	var userLang;
 	async.waterfall([
 		function (next) {
 			if (options.res.locals.isAPI) {
 				apiController.loadConfig(options.req, next);
 			} else {
-				next(null, options.res.locals.config);
+				next(null, options.res.locals.config || {});
 			}
 		},
 		function (config, next) {
+			userLang = config.userLang || meta.config.defaultLang || 'en-GB';
 			var templateData = _.assign({ }, options.templateData, { config: config });
 			plugins.fireHook('filter:widget.render:' + widget.widget, {
 				uid: uid,
@@ -95,13 +100,14 @@ function renderWidget(widget, uid, options, callback) {
 				Benchpress.compileParse(widget.data.container, {
 					title: widget.data.title,
 					body: html,
+					template: data.templateData.template,
 				}, next);
 			} else {
 				next(null, html);
 			}
 		},
 		function (html, next) {
-			translator.translate(html, function (translatedHtml) {
+			translator.translate(html, userLang, function (translatedHtml) {
 				next(null, { html: translatedHtml });
 			});
 		},

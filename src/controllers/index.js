@@ -7,10 +7,12 @@ var validator = require('validator');
 var meta = require('../meta');
 var user = require('../user');
 var plugins = require('../plugins');
+var privileges = require('../privileges');
 var helpers = require('./helpers');
 
 var Controllers = module.exports;
 
+Controllers.ping = require('./ping');
 Controllers.home = require('./home');
 Controllers.topics = require('./topics');
 Controllers.posts = require('./posts');
@@ -19,6 +21,7 @@ Controllers.category = require('./category');
 Controllers.unread = require('./unread');
 Controllers.recent = require('./recent');
 Controllers.popular = require('./popular');
+Controllers.top = require('./top');
 Controllers.tags = require('./tags');
 Controllers.search = require('./search');
 Controllers.user = require('./user');
@@ -37,31 +40,41 @@ Controllers.errors = require('./errors');
 Controllers.composer = require('./composer');
 
 Controllers.reset = function (req, res, next) {
+	const renderReset = function (code, valid) {
+		res.render('reset_code', {
+			valid: valid,
+			displayExpiryNotice: req.session.passwordExpired,
+			code: code,
+			minimumPasswordLength: parseInt(meta.config.minimumPasswordLength, 10),
+			minimumPasswordStrength: parseInt(meta.config.minimumPasswordStrength, 10),
+			breadcrumbs: helpers.buildBreadcrumbs([
+				{
+					text: '[[reset_password:reset_password]]',
+					url: '/reset',
+				},
+				{
+					text: '[[reset_password:update_password]]',
+				},
+			]),
+			title: '[[pages:reset]]',
+		});
+		delete req.session.passwordExpired;
+	};
+
 	if (req.params.code) {
-		async.waterfall([
-			function (next) {
-				user.reset.validate(req.params.code, next);
-			},
-			function (valid) {
-				res.render('reset_code', {
-					valid: valid,
-					displayExpiryNotice: req.session.passwordExpired,
-					code: req.params.code,
-					minimumPasswordLength: parseInt(meta.config.minimumPasswordLength, 10),
-					breadcrumbs: helpers.buildBreadcrumbs([
-						{
-							text: '[[reset_password:reset_password]]',
-							url: '/reset',
-						},
-						{
-							text: '[[reset_password:update_password]]',
-						},
-					]),
-					title: '[[pages:reset]]',
-				});
-				delete req.session.passwordExpired;
-			},
-		], next);
+		// Save to session and redirect
+		req.session.reset_code = req.params.code;
+		res.redirect(nconf.get('relative_path') + '/reset');
+	} else if (req.session.reset_code) {
+		// Validate and save to local variable before removing from session
+		user.reset.validate(req.session.reset_code, function (err, valid) {
+			if (err) {
+				return next(err);
+			}
+
+			renderReset(req.session.reset_code, valid);
+			delete req.session.reset_code;
+		});
 	} else {
 		res.render('reset', {
 			code: null,
@@ -94,7 +107,6 @@ Controllers.login = function (req, res, next) {
 
 	data.alternate_logins = loginStrategies.length > 0;
 	data.authentication = loginStrategies;
-	data.allowLocalLogin = meta.config.allowLocalLogin || parseInt(req.query.local, 10) === 1;
 	data.allowRegistration = registrationType === 'normal' || registrationType === 'admin-approval' || registrationType === 'admin-approval-ip';
 	data.allowLoginWith = '[[login:' + allowLoginWith + ']]';
 	data.breadcrumbs = helpers.buildBreadcrumbs([{
@@ -103,26 +115,33 @@ Controllers.login = function (req, res, next) {
 	data.error = req.flash('error')[0] || errorText;
 	data.title = '[[pages:login]]';
 
-	if (!data.allowLocalLogin && !data.allowRegistration && data.alternate_logins && data.authentication.length === 1) {
-		if (res.locals.isAPI) {
-			return helpers.redirect(res, {
-				external: nconf.get('relative_path') + data.authentication[0].url,
-			});
+	privileges.global.canGroup('local:login', 'registered-users', function (err, hasLoginPrivilege) {
+		if (err) {
+			return next(err);
 		}
-		return res.redirect(nconf.get('relative_path') + data.authentication[0].url);
-	}
-	if (req.uid) {
-		user.getUserFields(req.uid, ['username', 'email'], function (err, user) {
-			if (err) {
-				return next(err);
+
+		data.allowLocalLogin = hasLoginPrivilege || parseInt(req.query.local, 10) === 1;
+		if (!data.allowLocalLogin && !data.allowRegistration && data.alternate_logins && data.authentication.length === 1) {
+			if (res.locals.isAPI) {
+				return helpers.redirect(res, {
+					external: nconf.get('relative_path') + data.authentication[0].url,
+				});
 			}
-			data.username = allowLoginWith === 'email' ? user.email : user.username;
-			data.alternate_logins = false;
+			return res.redirect(nconf.get('relative_path') + data.authentication[0].url);
+		}
+		if (req.loggedIn) {
+			user.getUserFields(req.uid, ['username', 'email'], function (err, user) {
+				if (err) {
+					return next(err);
+				}
+				data.username = allowLoginWith === 'email' ? user.email : user.username;
+				data.alternate_logins = false;
+				res.render('login', data);
+			});
+		} else {
 			res.render('login', data);
-		});
-	} else {
-		res.render('login', data);
-	}
+		}
+	});
 };
 
 Controllers.register = function (req, res, next) {
@@ -164,7 +183,7 @@ Controllers.register = function (req, res, next) {
 			data.minimumUsernameLength = parseInt(meta.config.minimumUsernameLength, 10);
 			data.maximumUsernameLength = parseInt(meta.config.maximumUsernameLength, 10);
 			data.minimumPasswordLength = parseInt(meta.config.minimumPasswordLength, 10);
-			data.minimumPasswordStrength = parseInt(meta.config.minimumPasswordStrength || 0, 10);
+			data.minimumPasswordStrength = parseInt(meta.config.minimumPasswordStrength || 1, 10);
 			data.termsOfUse = termsOfUse.postData.content;
 			data.breadcrumbs = helpers.buildBreadcrumbs([{
 				text: '[[register:register]]',
@@ -194,7 +213,7 @@ Controllers.registerInterstitial = function (req, res, next) {
 			if (!data.interstitials.length) {
 				// No interstitials, redirect to home
 				delete req.session.registration;
-				return res.redirect('/');
+				return res.redirect(nconf.get('relative_path') + '/');
 			}
 			var renders = data.interstitials.map(function (interstitial) {
 				return async.apply(req.app.render.bind(req.app), interstitial.template, interstitial.data || {});
@@ -204,7 +223,7 @@ Controllers.registerInterstitial = function (req, res, next) {
 			async.parallel(renders, next);
 		},
 		function (sections) {
-			var errors = req.flash('error');
+			var errors = req.flash('errors');
 			res.render('registerComplete', {
 				title: '[[pages:registration-complete]]',
 				errors: errors,
@@ -231,6 +250,7 @@ Controllers.robots = function (req, res) {
 	} else {
 		res.send('User-agent: *\n' +
 			'Disallow: ' + nconf.get('relative_path') + '/admin/\n' +
+			'Disallow: ' + nconf.get('relative_path') + '/reset/\n' +
 			'Sitemap: ' + nconf.get('url') + '/sitemap.xml');
 	}
 };
@@ -286,7 +306,7 @@ Controllers.outgoing = function (req, res, next) {
 	var allowedProtocols = ['http', 'https', 'ftp', 'ftps', 'mailto', 'news', 'irc', 'gopher', 'nntp', 'feed', 'telnet', 'mms', 'rtsp', 'svn', 'tel', 'fax', 'xmpp', 'webcal'];
 	var parsed = require('url').parse(url);
 
-	if (!url || !allowedProtocols.includes(parsed.protocol.slice(0, -1))) {
+	if (!url || !parsed.protocol || !allowedProtocols.includes(parsed.protocol.slice(0, -1))) {
 		return next();
 	}
 

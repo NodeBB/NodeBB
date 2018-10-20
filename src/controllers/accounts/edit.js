@@ -17,25 +17,43 @@ var editController = module.exports;
 editController.get = function (req, res, callback) {
 	async.waterfall([
 		function (next) {
-			accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, next);
+			async.parallel({
+				userData: function (next) {
+					accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, next);
+				},
+				canUseSignature: function (next) {
+					privileges.global.can('signature', req.uid, next);
+				},
+			}, next);
 		},
-		function (userData, next) {
+		function (results, next) {
+			var userData = results.userData;
 			if (!userData) {
 				return callback();
 			}
-			userData.maximumSignatureLength = parseInt(meta.config.maximumSignatureLength, 10) || 255;
-			userData.maximumAboutMeLength = parseInt(meta.config.maximumAboutMeLength, 10) || 1000;
-			userData.maximumProfileImageSize = parseInt(meta.config.maximumProfileImageSize, 10);
+			userData.maximumSignatureLength = meta.config.maximumSignatureLength || 255;
+			userData.maximumAboutMeLength = meta.config.maximumAboutMeLength || 1000;
+			userData.maximumProfileImageSize = meta.config.maximumProfileImageSize;
+			userData.allowProfilePicture = !userData.isSelf || parseInt(userData.reputation, 10) >= (meta.config['min:rep:profile-picture'] || 0);
+			userData.allowCoverPicture = !userData.isSelf || parseInt(userData.reputation, 10) >= (meta.config['min:rep:cover-picture'] || 0);
 			userData.allowProfileImageUploads = meta.config.allowProfileImageUploads;
+			userData.allowMultipleBadges = meta.config.allowMultipleBadges;
 			userData.allowAccountDelete = meta.config.allowAccountDelete;
-			userData.profileImageDimension = parseInt(meta.config.profileImageDimension, 10) || 200;
+			userData.allowWebsite = !userData.isSelf || parseInt(userData.reputation, 10) >= (meta.config['min:rep:website'] || 0);
+			userData.allowAboutMe = !userData.isSelf || parseInt(userData.reputation, 10) >= (meta.config['min:rep:aboutme'] || 0);
+			userData.allowSignature = results.canUseSignature && (!userData.isSelf || parseInt(userData.reputation, 10) >= (parseInt(meta.config['min:rep:signature'], 10) || 0));
+			userData.profileImageDimension = meta.config.profileImageDimension || 200;
 			userData.defaultAvatar = user.getDefaultAvatar();
 
 			userData.groups = userData.groups.filter(function (group) {
 				return group && group.userTitleEnabled && !groups.isPrivilegeGroup(group.name) && group.name !== 'registered-users';
 			});
+
+			if (!userData.allowMultipleBadges) {
+				userData.groupTitle = userData.groupTitleArray[0];
+			}
 			userData.groups.forEach(function (group) {
-				group.selected = group.name === userData.groupTitle;
+				group.selected = userData.groupTitleArray.includes(group.name);
 			});
 
 			userData.title = '[[pages:account/edit, ' + userData.username + ']]';
@@ -86,7 +104,7 @@ function renderRoute(name, req, res, next) {
 
 			if (name === 'password') {
 				userData.minimumPasswordLength = parseInt(meta.config.minimumPasswordLength, 10);
-				userData.minimumPasswordStrength = parseInt(meta.config.minimumPasswordStrength || 0, 10);
+				userData.minimumPasswordStrength = parseInt(meta.config.minimumPasswordStrength || 1, 10);
 			}
 
 			userData.title = '[[pages:account/edit/' + name + ', ' + userData.username + ']]';
@@ -147,8 +165,13 @@ editController.uploadPicture = function (req, res, next) {
 			if (!isAllowed) {
 				return helpers.notAllowed(req, res);
 			}
-
-			user.uploadPicture(updateUid, userPhoto, next);
+			user.checkMinReputation(req.uid, updateUid, 'min:rep:profile-picture', next);
+		},
+		function (next) {
+			user.uploadCroppedPicture({
+				uid: updateUid,
+				file: userPhoto,
+			}, next);
 		},
 	], function (err, image) {
 		file.delete(userPhoto.path);
@@ -167,15 +190,21 @@ editController.uploadCoverPicture = function (req, res, next) {
 	var params = JSON.parse(req.body.params);
 	var coverPhoto = req.files.files[0];
 
-	user.updateCoverPicture({
-		file: coverPhoto,
-		uid: params.uid,
-	}, function (err, image) {
+	async.waterfall([
+		function (next) {
+			user.checkMinReputation(req.uid, params.uid, 'min:rep:cover-picture', next);
+		},
+		function (next) {
+			user.updateCoverPicture({
+				file: coverPhoto,
+				uid: params.uid,
+			}, next);
+		},
+	], function (err, image) {
 		file.delete(coverPhoto.path);
 		if (err) {
 			return next(err);
 		}
-
 		res.json([{
 			url: image.url,
 		}]);

@@ -1,0 +1,30 @@
+{
+	"global": "Global",
+	"global.no-users": "No hay privilegios globales específicos de usuario.",
+
+	"chat": "Chat",
+	"upload-images": "Subir imágenes",
+	"upload-files": "Subir Archivos",
+	"signature": "Firma",
+	"ban": "Banear",
+	"search-content": "Buscar Contenido",
+	"search-users": "Buscar Usuarios",
+	"search-tags": "Buscar Tags",
+	"allow-local-login": "Local Login",
+
+	"find-category": "Buscar Categoría",
+	"access-category": "Acceder Categoría",
+	"access-topics": "Acceder Temas",
+	"create-topics": "Crear Temas",
+	"reply-to-topics": "Responder a Temas",
+	"tag-topics": "Poner Tags (etiquetas) a Temas",
+	"edit-posts": "Editar Entradas",
+	"view-edit-history": "Ver Historial de Ediciones",
+	"delete-posts": "Borrar Entradas",
+	"view_deleted": "Ver Mensajes Eliminados",
+	"upvote-posts": "Votar Positivo en Entradas",
+	"downvote-posts": "Votar Negativo en Entradas",
+	"delete-topics": "Borrar Temas",
+	"purge": "Purgar",
+	"moderate": "Moderar"
+}

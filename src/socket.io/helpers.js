@@ -13,12 +13,7 @@ var notifications = require('../notifications');
 var plugins = require('../plugins');
 var utils = require('../utils');
 
-var SocketHelpers = {};
-
-SocketHelpers.notifyOnlineUsers = function (uid, result) {
-	winston.warn('[deprecated] SocketHelpers.notifyOnlineUsers, consider using socketHelpers.notifyNew(uid, \'newPost\', result);');
-	SocketHelpers.notifyNew(uid, 'newPost', result);
-};
+var SocketHelpers = module.exports;
 
 SocketHelpers.notifyNew = function (uid, type, result) {
 	async.waterfall([
@@ -30,6 +25,12 @@ SocketHelpers.notifyNew = function (uid, type, result) {
 		},
 		function (uids, next) {
 			filterTidCidIgnorers(uids, result.posts[0].topic.tid, result.posts[0].topic.cid, next);
+		},
+		function (uids, next) {
+			user.blocks.filterUids(uid, uids, next);
+		},
+		function (uids, next) {
+			user.blocks.filterUids(result.posts[0].topic.uid, uids, next);
 		},
 		function (uids, next) {
 			plugins.fireHook('filter:sockets.sendNewPostToUids', { uidsTo: uids, uidFrom: uid, type: type }, next);
@@ -113,6 +114,7 @@ SocketHelpers.sendNotificationToPostOwner = function (pid, fromuid, command, not
 				bodyShort: '[[' + notification + ', ' + results.username + ', ' + titleEscaped + ']]',
 				bodyLong: results.postObj.content,
 				pid: pid,
+				tid: postData.tid,
 				path: '/post/' + pid,
 				nid: command + ':post:' + pid + ':uid:' + fromuid,
 				from: fromuid,
@@ -171,6 +173,57 @@ SocketHelpers.sendNotificationToTopicOwner = function (tid, fromuid, command, no
 	});
 };
 
+SocketHelpers.upvote = function (data, notification) {
+	if (!data || !data.post || !data.post.uid || !data.post.votes || !data.post.pid || !data.fromuid) {
+		return;
+	}
+
+	var votes = data.post.votes;
+	var touid = data.post.uid;
+	var fromuid = data.fromuid;
+	var pid = data.post.pid;
+
+	var shouldNotify = {
+		all: function () {
+			return votes > 0;
+		},
+		first: function () {
+			return votes === 1;
+		},
+		everyTen: function () {
+			return votes > 0 && votes % 10 === 0;
+		},
+		threshold: function () {
+			return [1, 5, 10, 25].includes(votes) || (votes >= 50 && votes % 50 === 0);
+		},
+		logarithmic: function () {
+			return votes > 1 && Math.log10(votes) % 1 === 0;
+		},
+		disabled: function () {
+			return false;
+		},
+	};
+
+	async.waterfall([
+		function (next) {
+			user.getSettings(touid, next);
+		},
+		function (settings, next) {
+			var should = shouldNotify[settings.upvoteNotifFreq] || shouldNotify.all;
+
+			if (should()) {
+				SocketHelpers.sendNotificationToPostOwner(pid, fromuid, 'upvote', notification);
+			}
+
+			next();
+		},
+	], function (err) {
+		if (err) {
+			winston.error(err);
+		}
+	});
+};
+
 SocketHelpers.rescindUpvoteNotification = function (pid, fromuid) {
 	var uid;
 	async.waterfall([
@@ -199,5 +252,3 @@ SocketHelpers.emitToTopicAndCategory = function (event, data) {
 	websockets.in('topic_' + data.tid).emit(event, data);
 	websockets.in('category_' + data.cid).emit(event, data);
 };
-
-module.exports = SocketHelpers;

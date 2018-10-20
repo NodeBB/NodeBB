@@ -1,6 +1,5 @@
 {
 	"authentication": "Kimlik Doğrulama",
-	"allow-local-login": "Yerel girişe izin ver",
 	"require-email-confirmation": "E-posta Onayı Gerektirir",
 	"email-confirm-interval": "Kullanıcı onay e-postasını gönderemez",
 	"email-confirm-email2": "dakika geçti",
@@ -19,6 +18,8 @@
 	"themes": "Temalar",
 	"disable-user-skins": "Kullanıcıların özel bir deri seçmesini engelle",
 	"account-protection": "Hesap Koruma",
+	"admin-relogin-duration": "Yönetici yeniden giriş süresi (dakika)",
+	"admin-relogin-duration-help": "Beliril bir süreden sonra yönetici bölümüne erişmek için yeniden giriş yapılması gerekir, devre dışı bırakmak için 0 olarak ayarlayın",
 	"login-attempts": "Saatlik giriş deneme sayısı",
 	"login-attempts-help": "Bir kullanıcının hesabına giriş denemesi bu sınırı aşarsa, bu hesap önceden belirlenmiş olan bir süre için kilitlenir.",
 	"lockout-duration": "Hesap Kilitleme Süresi (dakika)",
@@ -60,5 +61,6 @@
 	"email-chat-notifs": "Çevrimiçi değilken gelen mesajları e-posta olarak gönder",
 	"email-post-notif": "Abone olduğum konulara cevap gelince bana e-posta gönder",
 	"follow-created-topics": "Kendi konularımı takip et",
-	"follow-replied-topics": "Cevap verdiğim konuları takip et"
+	"follow-replied-topics": "Cevap verdiğim konuları takip et",
+	"default-notification-settings": "Varsayılan bildirim ayarları"
 }

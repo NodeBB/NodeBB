@@ -28,6 +28,7 @@
     "details.grant": "Conceder/Retomar a Posse",
     "details.kick": "Chutar",
     "details.kick_confirm": "Você tem certeza que deseja remover este membro do grupo?",
+    "details.add-member": "Add Member",
     "details.owner_options": "Administração do Grupo",
     "details.group_name": "Nome do Grupo",
     "details.member_count": "Número de Membros",

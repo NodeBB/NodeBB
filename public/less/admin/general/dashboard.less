@@ -8,7 +8,43 @@
 	.graph-container {
 		padding-right: 50px;
 		position: relative;
+		background: @body-bg;
 
+		.fa-expand {
+			display: none;
+			position: absolute;
+			right: 20px;
+			padding: 5px;
+			background-color: @gray-lighter;
+			color: @gray-base;
+			cursor: pointer;
+			.transition(all .4s);
+
+			&.active {
+				display: inline;
+			}
+		}
+
+		&:hover {
+			.fa-expand {
+				color: @gray-lighter;
+				background-color: @gray-base;
+			}
+		}
+
+		&.fullscreen {
+			width: 100%;
+			padding: 40px;
+
+			.fa-expand {
+				top: 20px;
+			}
+
+			.graph-legend {
+				top: 7rem;
+				left: 12rem;
+			}
+		}
 
 		&.pie-chart {
 			padding-right: 0px;
@@ -53,12 +89,16 @@
 
 		.graph-legend {
 			.box-header-font;
-			display: block;
+			display: inline-block;
+			max-width: 100%;
 			position: absolute;
-			top: 19px;
-			left: 50px;
+			top: 2rem;
+			left: 7rem;
 			list-style-type: none;
-			padding: 0;
+			padding: 0.5rem 1rem;
+			margin: 0;
+			background: rgba(255, 255, 255, 0.66);
+			border: 1px solid #ddd;
 
 			li {
 				div {

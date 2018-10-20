@@ -1,0 +1,10 @@
+{
+    "administrators": "管理员",
+    "global-moderators": "全局版主",
+    "no-global-moderators": "没有全局版主",
+    "moderators-of-category": "%1 版主",
+    "no-moderators": "没有版主",
+    "add-administrator": "添加管理员",
+    "add-global-moderator": "添加全局版主",
+    "add-moderator": "添加版主"
+}

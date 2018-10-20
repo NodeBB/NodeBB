@@ -8,6 +8,7 @@ var winston = require('winston');
 var plugins = require('../plugins');
 var translator = require('../translator');
 var widgets = require('../widgets');
+var utils = require('../utils');
 
 module.exports = function (middleware) {
 	middleware.processRender = function (req, res, next) {
@@ -33,18 +34,19 @@ module.exports = function (middleware) {
 			}
 
 			var ajaxifyData;
+			var templateToRender;
 			async.waterfall([
 				function (next) {
 					options.loggedIn = !!req.uid;
 					options.relative_path = nconf.get('relative_path');
 					options.template = { name: template };
 					options.template[template] = true;
-					options.url = (req.baseUrl + req.path).replace(/^\/api/, '');
-					options.bodyClass = buildBodyClass(req);
-
+					options.url = (req.baseUrl + req.path.replace(/^\/api/, ''));
+					options.bodyClass = buildBodyClass(req, res, options);
 					plugins.fireHook('filter:' + template + '.build', { req: req, res: res, templateData: options }, next);
 				},
 				function (data, next) {
+					templateToRender = data.templateData.templateToRender || template;
 					plugins.fireHook('filter:middleware.render', { req: req, res: res, templateData: data.templateData }, next);
 				},
 				function (data, next) {
@@ -68,7 +70,7 @@ module.exports = function (middleware) {
 						if (req.route && req.route.path === '/api/') {
 							options.title = '[[pages:home]]';
 						}
-
+						req.app.set('json spaces', global.env === 'development' || req.query.pretty ? 4 : 0);
 						return res.json(options);
 					}
 
@@ -79,7 +81,7 @@ module.exports = function (middleware) {
 							renderHeaderFooter('renderHeader', req, res, options, next);
 						},
 						content: function (next) {
-							render.call(self, template, options, next);
+							render.call(self, templateToRender, options, next);
 						},
 						footer: function (next) {
 							renderHeaderFooter('renderFooter', req, res, options, next);
@@ -119,18 +121,21 @@ module.exports = function (middleware) {
 
 	function translate(str, req, res, next) {
 		var language = (res.locals.config && res.locals.config.userLang) || 'en-GB';
+		if (res.locals.renderAdminHeader) {
+			language = (res.locals.config && res.locals.config.acpLang) || 'en-GB';
+		}
 		language = req.query.lang ? validator.escape(String(req.query.lang)) : language;
 		translator.translate(str, language, function (translated) {
 			next(null, translator.unescape(translated));
 		});
 	}
 
-	function buildBodyClass(req) {
+	function buildBodyClass(req, res, templateData) {
 		var clean = req.path.replace(/^\/api/, '').replace(/^\/|\/$/g, '');
 		var parts = clean.split('/').slice(0, 3);
 		parts.forEach(function (p, index) {
 			try {
-				p = decodeURIComponent(p);
+				p = utils.slugify(decodeURIComponent(p));
 			} catch (err) {
 				winston.error(err);
 				p = '';
@@ -138,6 +143,13 @@ module.exports = function (middleware) {
 			p = validator.escape(String(p));
 			parts[index] = index ? parts[0] + '-' + p : 'page-' + (p || 'home');
 		});
+
+		if (templateData.template.topic) {
+			parts.push('page-topic-category-' + templateData.category.cid);
+			parts.push('page-topic-category-' + utils.slugify(templateData.category.name));
+		}
+
+		parts.push('page-status-' + res.statusCode);
 		return parts.join(' ');
 	}
 };

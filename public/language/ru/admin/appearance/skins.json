@@ -5,5 +5,5 @@
 	"current-skin": "Текущий стиль",
 	"skin-updated": "Стиль обновлен",
 	"applied-success": "%1 тема была успешно применена",
-	"revert-success": "Skin reverted to base colours"
+	"revert-success": "Тема возвращена к цветам по умолчанию"
 }

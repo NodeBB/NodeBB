@@ -83,6 +83,8 @@ var aliases = {
 	sounds: ['sound'],
 };
 
+exports.aliases = aliases;
+
 aliases = Object.keys(aliases).reduce(function (prev, key) {
 	var arr = aliases[key];
 	arr.forEach(function (alias) {
@@ -94,13 +96,19 @@ aliases = Object.keys(aliases).reduce(function (prev, key) {
 
 function beforeBuild(targets, callback) {
 	var db = require('../database');
-	var plugins = require('../plugins');
-	meta = require('../meta');
+	require('colors');
+	process.stdout.write('  started'.green + '\n'.reset);
 
 	async.series([
 		db.init,
-		meta.themes.setupPaths,
-		async.apply(plugins.prepareForBuild, targets),
+		function (next) {
+			meta = require('../meta');
+			meta.themes.setupPaths(next);
+		},
+		function (next)	{
+			var plugins = require('../plugins');
+			plugins.prepareForBuild(targets, next);
+		},
 	], function (err) {
 		if (err) {
 			winston.error('[build] Encountered error preparing for build', err);
@@ -126,12 +134,21 @@ function buildTargets(targets, parallel, callback) {
 	}, callback);
 }
 
-function build(targets, callback) {
+function build(targets, options, callback) {
+	if (!callback && typeof options === 'function') {
+		callback = options;
+		options = {};
+	} else if (!options) {
+		options = {};
+	}
+
 	if (targets === true) {
 		targets = allTargets;
 	} else if (!Array.isArray(targets)) {
 		targets = targets.split(',');
 	}
+
+	var parallel = !nconf.get('series') && !options.series;
 
 	targets = targets
 		// get full target name
@@ -139,6 +156,11 @@ function build(targets, callback) {
 			target = target.toLowerCase().replace(/-/g, '');
 			if (!aliases[target]) {
 				winston.warn('[build] Unknown target: ' + target);
+				if (target.includes(',')) {
+					winston.warn('[build] Are you specifying multiple targets? Separate them with spaces:');
+					winston.warn('[build]   e.g. `./nodebb build adminjs tpl`');
+				}
+
 				return false;
 			}
 
@@ -187,7 +209,6 @@ function build(targets, callback) {
 				require('./minifier').maxThreads = threads - 1;
 			}
 
-			var parallel = !nconf.get('series');
 			if (parallel) {
 				winston.info('[build] Building in parallel mode');
 			} else {

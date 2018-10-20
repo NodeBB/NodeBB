@@ -19,5 +19,8 @@
     "terms_of_use_error": "Du måste godkänna användarvillkoren",
     "registration-added-to-queue": "Din registrering har lagts till i kön. Du kommer att få ett mail när den accepteras av en administratör.",
     "interstitial.intro": "Vi kräver ytterligare information innan vi kan skapa ditt konto.",
-    "interstitial.errors-found": "Vi kunde inte slutföra din registrering:"
+    "interstitial.errors-found": "Vi kunde inte slutföra din registrering:",
+    "gdpr_agree_data": "Jag ger detta forum mitt medgivande att samla in och behandla min personliga information.",
+    "gdpr_agree_email": "Jag går med på att få sammanfattnignar och notiser från detta forum via e-post.",
+    "gdpr_consent_denied": "Du måste ge ditt medgivande för att detta forum ska kunna samla in och behandla din information, samt skicka dig e-post."
 }

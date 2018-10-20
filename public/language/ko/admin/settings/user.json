@@ -1,8 +1,7 @@
 {
 	"authentication": "로그인",
-	"allow-local-login": "로컬 로그인 허용",
 	"require-email-confirmation": "이메일 인증 필수화",
-	"email-confirm-interval": "유저는 인증 이메일을 전송할 수 없습니다:",
+	"email-confirm-interval": "다음의 경우 사용자는 인증 이메일을 재전송할 수 없습니다:",
 	"email-confirm-email2": "분 후",
 	"allow-login-with": "로그인 허용 수단",
 	"allow-login-with.username-email": "사용자명 또는 이메일",
@@ -19,6 +18,8 @@
 	"themes": "테마",
 	"disable-user-skins": "일반 사용자가 스킨 지정 금지",
 	"account-protection": "계정 보호",
+	"admin-relogin-duration": "Admin relogin duration (minutes)",
+	"admin-relogin-duration-help": "After a set amount of time accessing the admin section will require re-login, set to 0 to disable",
 	"login-attempts": "시간당 가능한 로그인 시도 횟수",
 	"login-attempts-help": "사용자의 로그인 시도가 이 횟수제한을 초과하면 정해진 시간만큼 해당 계정이 잠깁니다.",
 	"lockout-duration": "계정 잠금 기간 (분)",
@@ -60,5 +61,6 @@
 	"email-chat-notifs": "오프라인일 때 채팅 메시지가 도착하면 알림 메일 보내기",
 	"email-post-notif": "내가 구독한 주제에 답글이 달리면 메일 보내기",
 	"follow-created-topics": "작성한 게시물 팔로우",
-	"follow-replied-topics": "답글 단 게시물을 팔로우"
+	"follow-replied-topics": "답글 단 게시물을 팔로우",
+	"default-notification-settings": "Default notification settings"
 }

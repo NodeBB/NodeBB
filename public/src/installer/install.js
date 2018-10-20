@@ -16,6 +16,11 @@ $('document').ready(function () {
 
 	$('#launch').on('click', launchForum);
 
+	if ($('#installing').length) {
+		setTimeout(function () {
+			window.location.reload(true);
+		}, 5000);
+	}
 
 	function setupInputs() {
 		$('form').on('focus', '.form-control', function () {
@@ -46,7 +51,7 @@ $('document').ready(function () {
 
 			return false;
 		}
-		$('#submit .fa-spin').removeClass('hide');
+		$('#submit .working').removeClass('hide');
 	}
 
 	function activate(type, el) {
@@ -112,12 +117,12 @@ $('document').ready(function () {
 	}
 
 	function launchForum() {
-		$('#launch .fa-spin').removeClass('hide');
-
+		$('#launch .working').removeClass('hide');
 		$.post('/launch', function () {
 			var successCount = 0;
+			var url = $('#launch').attr('data-url');
 			setInterval(function () {
-				$.get('/admin').done(function () {
+				$.get(url + '/admin').done(function () {
 					if (successCount >= 5) {
 						window.location = 'admin';
 					} else {

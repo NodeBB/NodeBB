@@ -1,6 +1,6 @@
 {
-	"settings": "Category Settings",
-	"privileges": "Privileges",
+	"settings": "اعدادات القسم",
+	"privileges": "الصلاحيات",
 
 	"name": "Category Name",
 	"description": "Category Description",
@@ -19,6 +19,7 @@
 	"parent-category-none": "(None)",
 	"copy-settings": "Copy Settings From",
 	"optional-clone-settings": "(Optional) Clone Settings From Category",
+	"clone-children": "Clone Children Categories And Settings",
 	"purge": "Purge Category",
 
 	"enable": "Enable",
@@ -65,5 +66,8 @@
 	"alert.find-user": "Find a User",
 	"alert.user-search": "Search for a user here...",
 	"alert.find-group": "Find a Group",
-	"alert.group-search": "Search for a group here..."
+	"alert.group-search": "Search for a group here...",
+	"collapse-all": "Collapse All",
+	"expand-all": "Expand All",
+	"disable-on-create": "Disable on create"
 }

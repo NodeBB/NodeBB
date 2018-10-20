@@ -14,5 +14,6 @@
 	"alerts.applied-success": "Черният списък е приложен",
 
 	"analytics.blacklist-hourly": "<strong>Фигура 1</strong> &ndash; Попадения в черния списък за час",
-	"analytics.blacklist-daily": "<strong>Фигура 2</strong> &ndash; Попадения в черния списък за ден"
+	"analytics.blacklist-daily": "<strong>Фигура 2</strong> &ndash; Попадения в черния списък за ден",
+	"ip-banned": "Блокиран IP адрес"
 }

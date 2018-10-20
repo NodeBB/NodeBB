@@ -1,7 +1,7 @@
 {
-	"logs": "Logs",
-	"control-panel": "Logs Control Panel",
-	"reload": "Reload Logs",
-	"clear": "Clear Logs",
-	"clear-success": "Logs Cleared!"
+	"logs": "日誌",
+	"control-panel": "日誌控制面板",
+	"reload": "重載日誌",
+	"clear": "清除日誌",
+	"clear-success": "清除日誌！"
 }

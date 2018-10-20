@@ -1,8 +1,5 @@
 {
 	"handles": "Podpisywanie się gości",
 	"handles.enabled": "Zezwalaj gościom na podpisywanie się",
-	"handles.enabled-help": "Ta opcja udostępnia gościom nowe pole, które umożliwia wybranie nazwy, pod którą będą publikowane ich posty. Jeśli wyłączone, będą po prostu nazywani \"Gość\"",
-	"privileges": "Uprawnienia gości",
-	"privileges.can-search": "Zezwalaj gościom na szukanie bez logowania",
-	"privileges.can-search-users": "Zezwalaj gościom na szukanie bez logowania"
+	"handles.enabled-help": "Opcja ta udostępnia gościom nowe pole, w którym mogą wybrać nazwę, pod jaką będą publikować posty. Jeśli opcja jest wyłączona, stosowana będzie po prostu nazwa „Gość”"
 }

@@ -13,6 +13,7 @@ var pagination = require('../pagination');
 var helpers = require('./helpers');
 var utils = require('../utils');
 var translator = require('../translator');
+var analytics = require('../analytics');
 
 var categoryController = module.exports;
 
@@ -51,7 +52,7 @@ categoryController.get = function (req, res, callback) {
 			userPrivileges = results.privileges;
 			rssToken = results.rssToken;
 
-			if (!results.categoryData.slug || (results.categoryData && parseInt(results.categoryData.disabled, 10) === 1)) {
+			if (!results.categoryData.slug || (results.categoryData && results.categoryData.disabled)) {
 				return callback();
 			}
 
@@ -109,7 +110,7 @@ categoryController.get = function (req, res, callback) {
 				return helpers.redirect(res, categoryData.link);
 			}
 
-			buildBreadcrumbs(categoryData, next);
+			buildBreadcrumbs(req, categoryData, next);
 		},
 		function (categoryData, next) {
 			if (!categoryData.children.length) {
@@ -135,6 +136,7 @@ categoryController.get = function (req, res, callback) {
 			addTags(categoryData, res);
 
 			categoryData['feeds:disableRSS'] = meta.config['feeds:disableRSS'];
+			categoryData['reputation:disabled'] = meta.config['reputation:disabled'];
 			categoryData.title = translator.escape(categoryData.name);
 			pageCount = Math.max(1, Math.ceil(categoryData.topic_count / settings.topicsPerPage));
 			categoryData.pagination = pagination.create(currentPage, pageCount, req.query);
@@ -143,12 +145,14 @@ categoryController.get = function (req, res, callback) {
 				res.locals.linkTags.push(rel);
 			});
 
+			analytics.increment(['pageviews:byCid:' + categoryData.cid]);
+
 			res.render('category', categoryData);
 		},
 	], callback);
 };
 
-function buildBreadcrumbs(categoryData, callback) {
+function buildBreadcrumbs(req, categoryData, callback) {
 	var breadcrumbs = [
 		{
 			text: categoryData.name,
@@ -160,7 +164,9 @@ function buildBreadcrumbs(categoryData, callback) {
 			helpers.buildCategoryBreadcrumbs(categoryData.parentCid, next);
 		},
 		function (crumbs, next) {
-			categoryData.breadcrumbs = crumbs.concat(breadcrumbs);
+			if (req.originalUrl.startsWith(nconf.get('relative_path') + '/api/category') || req.originalUrl.startsWith(nconf.get('relative_path') + '/category')) {
+				categoryData.breadcrumbs = crumbs.concat(breadcrumbs);
+			}
 			next(null, categoryData);
 		},
 	], callback);
@@ -198,13 +204,16 @@ function addTags(categoryData, res) {
 
 	res.locals.linkTags = [
 		{
-			rel: 'alternate',
-			type: 'application/rss+xml',
-			href: categoryData.rssFeedUrl,
-		},
-		{
 			rel: 'up',
 			href: nconf.get('url'),
 		},
 	];
+
+	if (!categoryData['feeds:disableRSS']) {
+		res.locals.linkTags.push({
+			rel: 'alternate',
+			type: 'application/rss+xml',
+			href: categoryData.rssFeedUrl,
+		});
+	}
 }

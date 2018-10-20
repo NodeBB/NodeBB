@@ -5,13 +5,14 @@ var async = require('async');
 var nconf = require('nconf');
 var validator = require('validator');
 
+var db = require('../database');
 var meta = require('../meta');
 var file = require('../file');
 var plugins = require('../plugins');
 var image = require('../image');
 var privileges = require('../privileges');
 
-var uploadsController = {};
+var uploadsController = module.exports;
 
 uploadsController.upload = function (req, res, filesIterator) {
 	var files = req.files.files;
@@ -24,7 +25,7 @@ uploadsController.upload = function (req, res, filesIterator) {
 		files = files[0];
 	}
 
-	async.map(files, filesIterator, function (err, images) {
+	async.mapSeries(files, filesIterator, function (err, images) {
 		deleteTempFiles(files);
 
 		if (err) {
@@ -37,9 +38,6 @@ uploadsController.upload = function (req, res, filesIterator) {
 
 uploadsController.uploadPost = function (req, res, next) {
 	uploadsController.upload(req, res, function (uploadedFile, next) {
-		if (!parseInt(req.body.cid, 10)) {
-			return next(new Error('[[error:category-not-selected]]'));
-		}
 		var isImage = uploadedFile.type.match(/image./);
 		if (isImage) {
 			uploadAsImage(req, uploadedFile, next);
@@ -52,12 +50,15 @@ uploadsController.uploadPost = function (req, res, next) {
 function uploadAsImage(req, uploadedFile, callback) {
 	async.waterfall([
 		function (next) {
-			privileges.categories.can('upload:post:image', req.body.cid, req.uid, next);
+			privileges.global.can('upload:post:image', req.uid, next);
 		},
 		function (canUpload, next) {
 			if (!canUpload) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
+			image.checkDimensions(uploadedFile.path, next);
+		},
+		function (next) {
 			if (plugins.hasListeners('filter:uploadImage')) {
 				return plugins.fireHook('filter:uploadImage', {
 					image: uploadedFile,
@@ -76,13 +77,16 @@ function uploadAsImage(req, uploadedFile, callback) {
 
 			resizeImage(fileObj, next);
 		},
+		function (fileObj, next) {
+			next(null, { url: fileObj.url });
+		},
 	], callback);
 }
 
 function uploadAsFile(req, uploadedFile, callback) {
 	async.waterfall([
 		function (next) {
-			privileges.categories.can('upload:post:file', req.body.cid, req.uid, next);
+			privileges.global.can('upload:post:file', req.uid, next);
 		},
 		function (canUpload, next) {
 			if (!canUpload) {
@@ -92,6 +96,12 @@ function uploadAsFile(req, uploadedFile, callback) {
 				return next(new Error('[[error:uploads-are-disabled]]'));
 			}
 			uploadsController.uploadFile(req.uid, uploadedFile, next);
+		},
+		function (fileObj, next) {
+			next(null, {
+				url: fileObj.url,
+				name: fileObj.name,
+			});
 		},
 	], callback);
 }
@@ -106,24 +116,16 @@ function resizeImage(fileObj, callback) {
 				return callback(null, fileObj);
 			}
 
-			var dirname = path.dirname(fileObj.path);
-			var extname = path.extname(fileObj.path);
-			var basename = path.basename(fileObj.path, extname);
-
 			image.resizeImage({
 				path: fileObj.path,
-				target: path.join(dirname, basename + '-resized' + extname),
-				extension: extname,
+				target: file.appendToFileName(fileObj.path, '-resized'),
 				width: parseInt(meta.config.maximumImageWidth, 10) || 760,
+				quality: parseInt(meta.config.resizeImageQuality, 10) || 60,
 			}, next);
 		},
 		function (next) {
 			// Return the resized version to the composer/postData
-			var dirname = path.dirname(fileObj.url);
-			var extname = path.extname(fileObj.url);
-			var basename = path.basename(fileObj.url, extname);
-
-			fileObj.url = dirname + '/' + basename + '-resized' + extname;
+			fileObj.url = file.appendToFileName(fileObj.url, '-resized');
 
 			next(null, fileObj);
 		},
@@ -149,7 +151,6 @@ uploadsController.uploadThumb = function (req, res, next) {
 				var size = parseInt(meta.config.topicThumbSize, 10) || 120;
 				image.resizeImage({
 					path: uploadedFile.path,
-					extension: path.extname(uploadedFile.name),
 					width: size,
 					height: size,
 				}, next);
@@ -188,7 +189,7 @@ uploadsController.uploadGroupCover = function (uid, uploadedFile, callback) {
 			file.isFileTypeAllowed(uploadedFile.path, next);
 		},
 		function (next) {
-			saveFileToLocal(uploadedFile, next);
+			saveFileToLocal(uid, uploadedFile, next);
 		},
 	], callback);
 };
@@ -212,31 +213,35 @@ uploadsController.uploadFile = function (uid, uploadedFile, callback) {
 	var allowed = file.allowedExtensions();
 
 	var extension = path.extname(uploadedFile.name).toLowerCase();
-	if (allowed.length > 0 && (!extension || extension === '.' || allowed.indexOf(extension) === -1)) {
+	if (allowed.length > 0 && (!extension || extension === '.' || !allowed.includes(extension))) {
 		return callback(new Error('[[error:invalid-file-type, ' + allowed.join('&#44; ') + ']]'));
 	}
 
-	saveFileToLocal(uploadedFile, callback);
+	saveFileToLocal(uid, uploadedFile, callback);
 };
 
-function saveFileToLocal(uploadedFile, callback) {
+function saveFileToLocal(uid, uploadedFile, callback) {
 	var filename = uploadedFile.name || 'upload';
 	var extension = path.extname(filename) || '';
 
 	filename = Date.now() + '-' + validator.escape(filename.substr(0, filename.length - extension.length)).substr(0, 255) + extension;
-
+	var storedFile;
 	async.waterfall([
 		function (next) {
 			file.saveFileToLocal(filename, 'files', uploadedFile.path, next);
 		},
 		function (upload, next) {
-			var storedFile = {
+			storedFile = {
 				url: nconf.get('relative_path') + upload.url,
 				path: upload.path,
 				name: uploadedFile.name,
 			};
 
-			plugins.fireHook('filter:uploadStored', { uploadedFile: uploadedFile, storedFile: storedFile }, next);
+			var fileKey = upload.url.replace(nconf.get('upload_url'), '');
+			db.sortedSetAdd('uid:' + uid + ':uploads', Date.now(), fileKey, next);
+		},
+		function (next) {
+			plugins.fireHook('filter:uploadStored', { uid: uid, uploadedFile: uploadedFile, storedFile: storedFile }, next);
 		},
 		function (data, next) {
 			next(null, data.storedFile);
@@ -250,5 +255,3 @@ function deleteTempFiles(files) {
 		next();
 	});
 }
-
-module.exports = uploadsController;

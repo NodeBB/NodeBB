@@ -1,0 +1,30 @@
+{
+	"global": "Genel",
+	"global.no-users": "Kullanıcıya özel genel ayrıcalık yok.",
+
+	"chat": "Sohbet",
+	"upload-images": "Resim Yükle",
+	"upload-files": "Dosya Yükle",
+	"signature": "İmza",
+	"ban": "Ban",
+	"search-content": "İçerik Arama",
+	"search-users": "Kullanıcıları Ara",
+	"search-tags": "Etiketleri Ara",
+	"allow-local-login": "Yerel Giriş",
+
+	"find-category": "Kategori Bul",
+	"access-category": "Kategoriye Eriş",
+	"access-topics": "Başlıklara Eriş",
+	"create-topics": "Başlık Oluştur",
+	"reply-to-topics": "Başlığı Cevapla",
+	"tag-topics": "Başlığı etiketle",
+	"edit-posts": "İletiyi düzenle",
+	"view-edit-history": "Düzenleme Geçmişini Görüntüle",
+	"delete-posts": "İletileri Sil",
+	"view_deleted": "Silinen İletileri Görüntüle",
+	"upvote-posts": "İletilere Artı Oy Ver",
+	"downvote-posts": "İletilere Eksi Oy Ver",
+	"delete-topics": "Başlıkları Sil",
+	"purge": "Temizle",
+	"moderate": "Moderasyon"
+}

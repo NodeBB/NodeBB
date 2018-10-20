@@ -19,5 +19,8 @@
     "terms_of_use_error": "Du musst den Nutzungsbedingungen zustimmen",
     "registration-added-to-queue": "Deine Registration wurde abgeschickt. Du wirst eine E-Mail erhalten, sobald sie von einem Administrator akzeptiert wird.",
     "interstitial.intro": "Wir benötigen ein wenig mehr Informationen bevor wir deinen Account erstellen können.",
-    "interstitial.errors-found": "Wir konnten deinen Registrierungsvorgang nicht abschließen:"
+    "interstitial.errors-found": "Wir konnten deinen Registrierungsvorgang nicht abschließen:",
+    "gdpr_agree_data": "Ich stimme der Sammlung und Verarbeitung meiner Persönlichen Daten auf dieser Website zu.",
+    "gdpr_agree_email": "Ich bin damit einverstanden, dass ich Informations und Benachrichtigungs-EMails von dieser Website erhalte.",
+    "gdpr_consent_denied": "Du musst zustimmen, dass diese Seite deine Daten sammeln und verarbeiten darf, und dir Emails senden darf."
 }

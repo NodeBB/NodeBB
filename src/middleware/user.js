@@ -8,13 +8,15 @@ var user = require('../user');
 var privileges = require('../privileges');
 var plugins = require('../plugins');
 
+var auth = require('../routes/authentication');
+
 var controllers = {
 	helpers: require('../controllers/helpers'),
 };
 
 module.exports = function (middleware) {
 	middleware.authenticate = function (req, res, next) {
-		if (req.uid) {
+		if (req.loggedIn) {
 			return next();
 		}
 
@@ -22,7 +24,19 @@ module.exports = function (middleware) {
 			return plugins.fireHook('action:middleware.authenticate', {
 				req: req,
 				res: res,
-				next: next,
+				next: function (err) {
+					if (err) {
+						return next(err);
+					}
+
+					auth.setAuthVars(req, res, function () {
+						if (req.loggedIn && req.user && req.user.uid) {
+							return next();
+						}
+
+						controllers.helpers.notAllowed(req, res);
+					});
+				},
 			});
 		}
 
@@ -44,7 +58,7 @@ module.exports = function (middleware) {
 		*/
 		async.waterfall([
 			function (next) {
-				if (!req.uid) {
+				if (!req.loggedIn) {
 					return setImmediate(next, null, false);
 				}
 
@@ -64,7 +78,7 @@ module.exports = function (middleware) {
 	}
 
 	middleware.checkGlobalPrivacySettings = function (req, res, next) {
-		if (!req.uid && meta.config.privateUserInfo) {
+		if (!req.loggedIn && meta.config.privateUserInfo) {
 			return middleware.authenticate(req, res, next);
 		}
 
@@ -140,6 +154,22 @@ module.exports = function (middleware) {
 		], next);
 	};
 
+	middleware.redirectMeToUserslug = function (req, res, next) {
+		var uid = req.uid;
+		async.waterfall([
+			function (next) {
+				user.getUserField(uid, 'userslug', next);
+			},
+			function (userslug) {
+				if (!userslug) {
+					return controllers.helpers.notAllowed(req, res);
+				}
+				var path = req.path.replace(/^(\/api)?\/me/, '/user/' + userslug);
+				controllers.helpers.redirect(res, path);
+			},
+		], next);
+	};
+
 	middleware.isAdmin = function (req, res, next) {
 		async.waterfall([
 			function (next) {
@@ -157,10 +187,12 @@ module.exports = function (middleware) {
 				}
 
 				var loginTime = req.session.meta ? req.session.meta.datetime : 0;
-				if (loginTime && parseInt(loginTime, 10) > Date.now() - 3600000) {
-					var timeLeft = parseInt(loginTime, 10) - (Date.now() - 3600000);
-					if (timeLeft < 300000) {
-						req.session.meta.datetime += 300000;
+				var adminReloginDuration = (meta.config.adminReloginDuration || 60) * 60000;
+				var disabled = parseInt(meta.config.adminReloginDuration, 10) === 0;
+				if (disabled || (loginTime && parseInt(loginTime, 10) > Date.now() - adminReloginDuration)) {
+					var timeLeft = parseInt(loginTime, 10) - (Date.now() - adminReloginDuration);
+					if (req.session.meta && timeLeft < Math.min(300000, adminReloginDuration)) {
+						req.session.meta.datetime += Math.min(300000, adminReloginDuration);
 					}
 
 					return next();
@@ -184,7 +216,7 @@ module.exports = function (middleware) {
 	};
 
 	middleware.requireUser = function (req, res, next) {
-		if (req.uid) {
+		if (req.loggedIn) {
 			return next();
 		}
 
@@ -197,6 +229,9 @@ module.exports = function (middleware) {
 			return next();
 		}
 		if (!req.path.endsWith('/register/complete')) {
+			// Append user data if present
+			req.session.registration.uid = req.uid;
+
 			controllers.helpers.redirect(res, '/register/complete');
 		} else {
 			return next();

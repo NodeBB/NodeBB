@@ -19,5 +19,8 @@
     "terms_of_use_error": "You must agree to the Terms of Use",
     "registration-added-to-queue": "Icyifuzo cy'iyandikwa ryawe cyakiriwe ariko gitegereje isuzuma. Uzabimenyeshwa biciye muri email niba ubuyobozi bwakwemereye kwandikwa. ",
     "interstitial.intro": "We require some additional information before we can create your account.",
-    "interstitial.errors-found": "We could not complete your registration:"
+    "interstitial.errors-found": "We could not complete your registration:",
+    "gdpr_agree_data": "I consent to the collection and processing of my personal information on this website.",
+    "gdpr_agree_email": "I consent to receive digest and notification emails from this website.",
+    "gdpr_consent_denied": "You must give consent to this site to collect/process your information, and to send you emails."
 }

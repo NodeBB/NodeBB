@@ -20,7 +20,12 @@ module.exports = function (Topics) {
 				}, next);
 			},
 			function (next) {
-				db.sortedSetsRemove(['topics:recent', 'topics:posts', 'topics:views'], tid, next);
+				db.sortedSetsRemove([
+					'topics:recent',
+					'topics:posts',
+					'topics:views',
+					'topics:votes',
+				], tid, next);
 			},
 			function (next) {
 				async.waterfall([
@@ -48,7 +53,7 @@ module.exports = function (Topics) {
 		var topicData;
 		async.waterfall([
 			function (next) {
-				Topics.getTopicFields(tid, ['cid', 'lastposttime', 'postcount', 'viewcount'], next);
+				Topics.getTopicData(tid, next);
 			},
 			function (_topicData, next) {
 				topicData = _topicData;
@@ -67,6 +72,9 @@ module.exports = function (Topics) {
 					},
 					function (next) {
 						db.sortedSetAdd('topics:views', topicData.viewcount, tid, next);
+					},
+					function (next) {
+						db.sortedSetAdd('topics:votes', parseInt(topicData.votes, 10) || 0, tid, next);
 					},
 					function (next) {
 						async.waterfall([
@@ -106,7 +114,7 @@ module.exports = function (Topics) {
 			function (_mainPid, next) {
 				mainPid = _mainPid;
 				batch.processSortedSet('tid:' + tid + ':posts', function (pids, next) {
-					async.eachLimit(pids, 10, function (pid, next) {
+					async.eachSeries(pids, function (pid, next) {
 						posts.purge(pid, uid, next);
 					}, next);
 				}, { alwaysStartAt: 0 }, next);
@@ -121,8 +129,20 @@ module.exports = function (Topics) {
 	};
 
 	Topics.purge = function (tid, uid, callback) {
+		var deletedTopic;
 		async.waterfall([
 			function (next) {
+				async.parallel({
+					topic: async.apply(Topics.getTopicData, tid),
+					tags: async.apply(Topics.getTopicTags, tid),
+				}, next);
+			},
+			function (results, next) {
+				if (!results.topic) {
+					return callback();
+				}
+				deletedTopic = results.topic;
+				deletedTopic.tags = results.tags;
 				deleteFromFollowersIgnorers(tid, next);
 			},
 			function (next) {
@@ -138,7 +158,13 @@ module.exports = function (Topics) {
 						], next);
 					},
 					function (next) {
-						db.sortedSetsRemove(['topics:tid', 'topics:recent', 'topics:posts', 'topics:views'], tid, next);
+						db.sortedSetsRemove([
+							'topics:tid',
+							'topics:recent',
+							'topics:posts',
+							'topics:views',
+							'topics:votes',
+						], tid, next);
 					},
 					function (next) {
 						deleteTopicFromCategoryAndUser(tid, next);
@@ -154,10 +180,7 @@ module.exports = function (Topics) {
 				});
 			},
 			function (next) {
-				Topics.getTopicData(tid, next);
-			},
-			function (topicData, next) {
-				plugins.fireHook('action:topic.purge', { topic: topicData, uid: uid });
+				plugins.fireHook('action:topic.purge', { topic: deletedTopic, uid: uid });
 				db.delete('topic:' + tid, next);
 			},
 		], callback);
@@ -196,6 +219,7 @@ module.exports = function (Topics) {
 							'cid:' + topicData.cid + ':tids:pinned',
 							'cid:' + topicData.cid + ':tids:posts',
 							'cid:' + topicData.cid + ':tids:lastposttime',
+							'cid:' + topicData.cid + ':tids:votes',
 							'cid:' + topicData.cid + ':recent_tids',
 							'cid:' + topicData.cid + ':uid:' + topicData.uid + ':tids',
 							'uid:' + topicData.uid + ':topics',

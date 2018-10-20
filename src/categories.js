@@ -66,24 +66,6 @@ Categories.isIgnored = function (cids, uid, callback) {
 	db.isSortedSetMembers('uid:' + uid + ':ignored:cids', cids, callback);
 };
 
-Categories.getPageCount = function (cid, uid, callback) {
-	async.waterfall([
-		function (next) {
-			async.parallel({
-				topicCount: async.apply(Categories.getCategoryField, cid, 'topic_count'),
-				settings: async.apply(user.getSettings, uid),
-			}, next);
-		},
-		function (results, next) {
-			if (!parseInt(results.topicCount, 10)) {
-				return next(null, 1);
-			}
-
-			next(null, Math.ceil(parseInt(results.topicCount, 10) / results.settings.topicsPerPage));
-		},
-	], callback);
-};
-
 Categories.getAllCategories = function (uid, callback) {
 	async.waterfall([
 		function (next) {
@@ -95,13 +77,21 @@ Categories.getAllCategories = function (uid, callback) {
 	], callback);
 };
 
-Categories.getCategoriesByPrivilege = function (set, uid, privilege, callback) {
+Categories.getCidsByPrivilege = function (set, uid, privilege, callback) {
 	async.waterfall([
 		function (next) {
 			db.getSortedSetRange(set, 0, -1, next);
 		},
 		function (cids, next) {
 			privileges.categories.filterCids(privilege, cids, uid, next);
+		},
+	], callback);
+};
+
+Categories.getCategoriesByPrivilege = function (set, uid, privilege, callback) {
+	async.waterfall([
+		function (next) {
+			Categories.getCidsByPrivilege(set, uid, privilege, next);
 		},
 		function (cids, next) {
 			Categories.getCategories(cids, uid, next);
@@ -153,10 +143,10 @@ Categories.getCategories = function (cids, uid, callback) {
 			uid = parseInt(uid, 10);
 			results.categories.forEach(function (category, i) {
 				if (category) {
-					category['unread-class'] = (parseInt(category.topic_count, 10) === 0 || (results.hasRead[i] && uid !== 0)) ? '' : 'unread';
 					category.children = results.children[i];
 					category.parent = results.parents[i] || undefined;
 					category.tagWhitelist = results.tagWhitelist[i];
+					category['unread-class'] = (parseInt(category.topic_count, 10) === 0 || (results.hasRead[i] && uid !== 0)) ? '' : 'unread';
 					calculateTopicPostCount(category);
 				}
 			});
@@ -259,9 +249,25 @@ function getChildrenRecursive(category, uid, callback) {
 			}
 			Categories.getCategoriesData(children, next);
 		},
-		function (childrenData, next) {
-			childrenData = childrenData.filter(Boolean);
-			category.children = childrenData;
+		function (children, next) {
+			children = children.filter(Boolean);
+			category.children = children;
+
+			var cids = children.map(function (child) {
+				return child.cid;
+			});
+
+			Categories.hasReadCategories(cids, uid, next);
+		},
+		function (hasRead, next) {
+			hasRead.forEach(function (read, i) {
+				var child = category.children[i];
+				child['unread-class'] = (parseInt(child.topic_count, 10) === 0 || (read && uid !== 0)) ? '' : 'unread';
+			});
+
+			next();
+		},
+		function (next) {
 			async.each(category.children, function (child, next) {
 				getChildrenRecursive(child, uid, next);
 			}, next);
@@ -291,21 +297,19 @@ Categories.flattenCategories = function (allCategories, categoryData) {
  */
 Categories.getTree = function (categories, parentCid) {
 	var tree = [];
-	var i = 0;
-	var len = categories.length;
-	var category;
 
-	for (i; i < len; i += 1) {
-		category = categories[i];
-		if (!category.hasOwnProperty('parentCid') || category.parentCid === null) {
-			category.parentCid = 0;
-		}
+	categories.forEach(function (category) {
+		if (category) {
+			if (!category.hasOwnProperty('parentCid') || category.parentCid === null) {
+				category.parentCid = 0;
+			}
 
-		if (parseInt(category.parentCid, 10) === parseInt(parentCid, 10)) {
-			tree.push(category);
-			category.children = Categories.getTree(categories, category.cid);
+			if (parseInt(category.parentCid, 10) === parseInt(parentCid, 10)) {
+				tree.push(category);
+				category.children = Categories.getTree(categories, category.cid);
+			}
 		}
-	}
+	});
 
 	return tree;
 };
@@ -322,30 +326,27 @@ Categories.buildForSelect = function (uid, privilege, callback) {
 };
 
 Categories.buildForSelectCategories = function (categories, callback) {
-	function recursive(category, categoriesData, level) {
-		if (category.link) {
-			return;
-		}
-
+	function recursive(category, categoriesData, level, depth) {
 		var bullet = level ? '&bull; ' : '';
 		category.value = category.cid;
 		category.level = level;
 		category.text = level + bullet + category.name;
+		category.depth = depth;
 		categoriesData.push(category);
 
 		category.children.forEach(function (child) {
-			recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level);
+			recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level, depth + 1);
 		});
 	}
 
 	var categoriesData = [];
 
 	categories = categories.filter(function (category) {
-		return category && !category.link && !parseInt(category.parentCid, 10);
+		return category && !parseInt(category.parentCid, 10);
 	});
 
 	categories.forEach(function (category) {
-		recursive(category, categoriesData, '');
+		recursive(category, categoriesData, '', 0);
 	});
 	callback(null, categoriesData);
 };
@@ -367,3 +368,5 @@ Categories.filterIgnoringUids = function (cid, uids, callback) {
 		},
 	], callback);
 };
+
+Categories.async = require('./promisify')(Categories);

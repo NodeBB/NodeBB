@@ -37,7 +37,7 @@ module.exports = function (grunt) {
 			// Do nothing, just restart
 		}
 
-		if (compiling && incomplete.indexOf(compiling) === -1) {
+		if (compiling && !incomplete.includes(compiling)) {
 			incomplete.push(compiling);
 		}
 

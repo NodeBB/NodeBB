@@ -6,10 +6,13 @@ var jsesc = require('jsesc');
 
 var db = require('../database');
 var user = require('../user');
+var topics = require('../topics');
+var messaging = require('../messaging');
 var meta = require('../meta');
 var plugins = require('../plugins');
 var navigation = require('../navigation');
 var translator = require('../translator');
+var privileges = require('../privileges');
 var utils = require('../utils');
 
 var controllers = {
@@ -75,9 +78,12 @@ module.exports = function (middleware) {
 					isModerator: function (next) {
 						user.isModeratorOfAnyCategory(req.uid, next);
 					},
+					privileges: function (next) {
+						privileges.global.get(req.uid, next);
+					},
 					user: function (next) {
 						var userData = {
-							uid: 0,
+							uid: req.uid,
 							username: '[[global:guest]]',
 							userslug: '',
 							fullname: '[[global:guest]]',
@@ -87,7 +93,7 @@ module.exports = function (middleware) {
 							reputation: 0,
 							'email:confirmed': 0,
 						};
-						if (req.uid) {
+						if (req.loggedIn) {
 							user.getUserFields(req.uid, Object.keys(userData), next);
 						} else {
 							next(null, userData);
@@ -109,10 +115,14 @@ module.exports = function (middleware) {
 							next(null, translated);
 						});
 					},
-					navigation: async.apply(navigation.get),
+					navigation: navigation.get,
 					tags: async.apply(meta.tags.parse, req, data, res.locals.metaTags, res.locals.linkTags),
 					banned: async.apply(user.isBanned, req.uid),
 					banReason: async.apply(user.getBannedReason, req.uid),
+
+					unreadCounts: async.apply(topics.getUnreadTids, { uid: req.uid, count: true }),
+					unreadChatCount: async.apply(messaging.getUnreadCount, req.uid),
+					unreadNotificationCount: async.apply(user.notifications.getUnreadCount, req.uid),
 				}, next);
 			},
 			function (results, next) {
@@ -124,6 +134,9 @@ module.exports = function (middleware) {
 				results.user.isAdmin = results.isAdmin;
 				results.user.isGlobalMod = results.isGlobalMod;
 				results.user.isMod = !!results.isModerator;
+				results.user.privileges = results.privileges;
+				results.user[results.user.status] = true;
+
 				results.user.uid = parseInt(results.user.uid, 10);
 				results.user.email = String(results.user.email);
 				results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
@@ -131,13 +144,46 @@ module.exports = function (middleware) {
 
 				setBootswatchCSS(templateValues, res.locals.config);
 
+				var unreadCount = {
+					topic: results.unreadCounts[''] || 0,
+					newTopic: results.unreadCounts.new || 0,
+					watchedTopic: results.unreadCounts.watched || 0,
+					unrepliedTopic: results.unreadCounts.unreplied || 0,
+					chat: results.unreadChatCount || 0,
+					notification: results.unreadNotificationCount || 0,
+				};
+
+				Object.keys(unreadCount).forEach(function (key) {
+					if (unreadCount[key] > 99) {
+						unreadCount[key] = '99+';
+					}
+				});
+
+				results.navigation = results.navigation.map(function (item) {
+					function modifyNavItem(item, route, count, content) {
+						if (item && item.originalRoute === route) {
+							item.content = content;
+							if (count > 0) {
+								item.iconClass += ' unread-count';
+							}
+						}
+					}
+					modifyNavItem(item, '/unread', results.unreadCounts[''], unreadCount.topic);
+					modifyNavItem(item, '/unread?filter=new', results.unreadCounts.new, unreadCount.newTopic);
+					modifyNavItem(item, '/unread?filter=watched', results.unreadCounts.watched, unreadCount.watchedTopic);
+					modifyNavItem(item, '/unread?filter=unreplied', results.unreadCounts.unreplied, unreadCount.unrepliedTopic);
+					return item;
+				});
+
 				templateValues.browserTitle = results.browserTitle;
 				templateValues.navigation = results.navigation;
+				templateValues.unreadCount = unreadCount;
 				templateValues.metaTags = results.tags.meta;
 				templateValues.linkTags = results.tags.link;
 				templateValues.isAdmin = results.user.isAdmin;
 				templateValues.isGlobalMod = results.user.isGlobalMod;
 				templateValues.showModMenu = results.user.isAdmin || results.user.isGlobalMod || results.user.isMod;
+				templateValues.canChat = results.canChat && parseInt(meta.config.disableChat, 10) !== 1;
 				templateValues.user = results.user;
 				templateValues.userJSON = jsesc(JSON.stringify(results.user), { isScriptContext: true });
 				templateValues.useCustomCSS = meta.config.useCustomCSS && meta.config.customCSS;
@@ -199,14 +245,14 @@ module.exports = function (middleware) {
 
 				data.templateValues.useCustomJS = meta.config.useCustomJS;
 				data.templateValues.customJS = data.templateValues.useCustomJS ? meta.config.customJS : '';
-
+				data.templateValues.isSpider = req.isSpider();
 				req.app.render('footer', data.templateValues, next);
 			},
 		], callback);
 	};
 
 	function modifyTitle(obj) {
-		var title = controllers.helpers.buildTitle('[[pages:home]]');
+		var title = controllers.helpers.buildTitle(meta.config.homePageTitle || '[[pages:home]]');
 		obj.browserTitle = title;
 
 		if (obj.metaTags) {
@@ -231,7 +277,7 @@ module.exports = function (middleware) {
 			}
 
 			if (skinToUse) {
-				obj.bootswatchCSS = '//maxcdn.bootstrapcdn.com/bootswatch/latest/' + skinToUse + '/bootstrap.min.css';
+				obj.bootswatchCSS = '//maxcdn.bootstrapcdn.com/bootswatch/3.3.7/' + skinToUse + '/bootstrap.min.css';
 			}
 		}
 	}

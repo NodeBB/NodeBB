@@ -18,7 +18,6 @@ describe('Notifications', function () {
 	var notification;
 
 	before(function (done) {
-		groups.resetCache();
 		user.create({ username: 'poster' }, function (err, _uid) {
 			if (err) {
 				return done(err);
@@ -357,7 +356,7 @@ describe('Notifications', function () {
 				setTimeout(function () {
 					user.notifications.getAll(uid, 'post', function (err, nids) {
 						assert.ifError(err);
-						assert.notEqual(nids.indexOf(nid), -1);
+						assert(nids.includes(nid));
 						done();
 					});
 				}, 1500);

@@ -42,7 +42,7 @@ describe('socket.io', function () {
 			adminUid = data[0];
 			regularUid = data[1];
 			cid = data[2].cid;
-			groups.resetCache();
+
 			groups.join('administrators', data[0], done);
 		});
 	});
@@ -198,11 +198,13 @@ describe('socket.io', function () {
 		it('should delete users', function (done) {
 			socketAdmin.user.deleteUsers({ uid: adminUid }, [uid], function (err) {
 				assert.ifError(err);
-				groups.isMember(uid, 'registered-users', function (err, isMember) {
-					assert.ifError(err);
-					assert(!isMember);
-					done();
-				});
+				setTimeout(function () {
+					groups.isMember(uid, 'registered-users', function (err, isMember) {
+						assert.ifError(err);
+						assert(!isMember);
+						done();
+					});
+				}, 500);
 			});
 		});
 
@@ -499,6 +501,7 @@ describe('socket.io', function () {
 	});
 
 	it('should upgrade plugin', function (done) {
+		this.timeout(0);
 		socketAdmin.plugins.upgrade({ uid: adminUid }, { id: 'nodebb-plugin-location-to-map', version: 'latest' }, function (err) {
 			assert.ifError(err);
 			done();

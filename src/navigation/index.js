@@ -2,6 +2,7 @@
 
 var async = require('async');
 var nconf = require('nconf');
+var _ = require('lodash');
 
 var admin = require('./admin');
 var translator = require('../translator');
@@ -10,7 +11,7 @@ var navigation = module.exports;
 
 navigation.get = function (callback) {
 	if (admin.cache) {
-		return callback(null, admin.cache);
+		return callback(null, _.cloneDeep(admin.cache));
 	}
 
 	async.waterfall([
@@ -19,24 +20,21 @@ navigation.get = function (callback) {
 			data = data.filter(function (item) {
 				return item && item.enabled;
 			}).map(function (item) {
+				item.originalRoute = item.route;
+
 				if (!item.route.startsWith('http')) {
 					item.route = nconf.get('relative_path') + item.route;
 				}
 
-				for (var i in item) {
-					if (item.hasOwnProperty(i)) {
-						item[i] = translator.unescape(item[i]);
-					}
-				}
+				Object.keys(item).forEach(function (key) {
+					item[key] = translator.unescape(item[key]);
+				});
+
 				return item;
 			});
 
 			admin.cache = data;
-
-			next(null, data);
+			next(null, _.cloneDeep(admin.cache));
 		},
 	], callback);
 };
-
-
-module.exports = navigation;

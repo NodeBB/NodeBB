@@ -6,6 +6,7 @@
 	"description": "태그를 클릭하거나 드래그해서 선택하고, Shift 를 눌러 다중 선택하세요.",
 	"create": "태그 생성",
 	"modify": "태그 수정",
+	"rename": "Rename Tags",
 	"delete": "선택된 태그 삭제",
 	"search": "태그 검색",
 	"settings": "태그 설정 페이지를 방문하시려면 <a href=\"%1\">클릭</a>하세요",

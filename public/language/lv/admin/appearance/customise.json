@@ -1,0 +1,16 @@
+{
+	"custom-css": "Pielāgotais CSS/LESS",
+	"custom-css.description": "Šeit ievadi savas CSS / LESS deklarācijas, kuras piemēros pēc visiem citiem stiliem.",
+	"custom-css.enable": "Iespējot pielāgotu CSS/LESS",
+
+	"custom-js": "Pielāgotais Javascript",
+	"custom-js.description": "Šeit ievadi savu javascript. Tas tiks palaists pēc lapas pilnīgas ielādes.",
+	"custom-js.enable": "Iespējot pielāgotu Javascript",
+
+	"custom-header": "Pielāgotā galvene",
+	"custom-header.description": "Šeit ievadi pielāgoto HTML (piemēram &lt;Meta&gt; tagi), kas tiks pievienots foruma HTML <code>&lt;head&gt;</code> sekcijai. &lt;Script&gt; tagi ir atļauti, bet nav ieteicami, jo to vietā var pielietot <a href=\"#custom-header\" data-toggle=\"tab\">Pielāgoto Javascript</a>.",
+	"custom-header.enable": "Iespējot pielāgotu galveni",
+
+	"custom-css.livereload": "Iespējot dzīvo pārlādēšanu",
+	"custom-css.livereload.description": "Piespiest atsvaidzināt visas aktīvās sesijas ikvienā no Tava konta esošajām ierīcēm katru reizi, kad noklikšķini uz \"Saglabāt\""
+}

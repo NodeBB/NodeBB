@@ -18,6 +18,7 @@ $(document).ready(function () {
 	// When ajaxify is migrated to a require.js module, then this can be merged into the "define" call
 	require(['translator', 'benchpress'], function (_translator, _Benchpress) {
 		translator = _translator;
+		translator.translate('[[error:no-connection]]');
 		Benchpress = _Benchpress;
 	});
 
@@ -37,6 +38,7 @@ $(document).ready(function () {
 		}
 	});
 
+	ajaxify.count = 0;
 	ajaxify.currentPage = null;
 
 	ajaxify.go = function (url, callback, quiet) {
@@ -94,25 +96,27 @@ $(document).ready(function () {
 			retry = true;
 			app.template = data.template.name;
 
-			renderTemplate(url, data.template.name, data, callback);
+			renderTemplate(url, data.templateToRender || data.template.name, data, callback);
 		});
 
 		return true;
 	};
 
+	ajaxify.isCold = function () {
+		return ajaxify.count <= 1;
+	};
+
 	ajaxify.handleRedirects = function (url) {
 		url = ajaxify.removeRelativePath(url.replace(/^\/|\/$/g, '')).toLowerCase();
-		var isClientToAdmin = url.startsWith('admin') && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') !== 0;
-		var isAdminToClient = !url.startsWith('admin') && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') === 0;
-		var uploadsOrApi = url.startsWith('assets/uploads') || url.startsWith('uploads') || url.startsWith('api');
+		var isClientToAdmin = url.startsWith('admin') && window.location.pathname.indexOf(config.relative_path + '/admin') !== 0;
+		var isAdminToClient = !url.startsWith('admin') && window.location.pathname.indexOf(config.relative_path + '/admin') === 0;
 
-		if (isClientToAdmin || isAdminToClient || uploadsOrApi) {
-			window.open(RELATIVE_PATH + '/' + url, '_top');
+		if (isClientToAdmin || isAdminToClient) {
+			window.open(config.relative_path + '/' + url, '_top');
 			return true;
 		}
 		return false;
 	};
-
 
 	ajaxify.start = function (url) {
 		url = ajaxify.removeRelativePath(url.replace(/^\/|\/$/g, ''));
@@ -123,6 +127,8 @@ $(document).ready(function () {
 
 		$(window).trigger('action:ajaxify.start', payload);
 
+		ajaxify.count += 1;
+
 		return payload.url;
 	};
 
@@ -131,7 +137,7 @@ $(document).ready(function () {
 		if (window.history && window.history.pushState) {
 			window.history[!quiet ? 'pushState' : 'replaceState']({
 				url: url,
-			}, url, RELATIVE_PATH + '/' + url);
+			}, url, config.relative_path + '/' + url);
 		}
 	};
 
@@ -197,7 +203,6 @@ $(document).ready(function () {
 
 	ajaxify.end = function (url, tpl_url) {
 		var count = 2;
-
 		function done() {
 			count -= 1;
 			if (count === 0) {
@@ -205,17 +210,11 @@ $(document).ready(function () {
 			}
 		}
 		ajaxify.loadScript(tpl_url, done);
-
 		ajaxify.widgets.render(tpl_url, done);
 
 		$(window).trigger('action:ajaxify.contentLoaded', { url: url, tpl: tpl_url });
 
 		app.processPage();
-
-		var timeElapsed = Date.now() - ajaxifyTimer;
-		if (config.environment === 'development' && !isNaN(timeElapsed)) {
-			console.info('[ajaxify /' + url + '] Time elapsed:', timeElapsed + 'ms');
-		}
 	};
 
 	ajaxify.parseData = function () {
@@ -227,8 +226,8 @@ $(document).ready(function () {
 	};
 
 	ajaxify.removeRelativePath = function (url) {
-		if (url.startsWith(RELATIVE_PATH.slice(1))) {
-			url = url.slice(RELATIVE_PATH.length);
+		if (url.startsWith(config.relative_path.slice(1))) {
+			url = url.slice(config.relative_path.length);
 		}
 		return url;
 	};
@@ -290,7 +289,7 @@ $(document).ready(function () {
 		$(window).trigger('action:ajaxify.loadingData', { url: url });
 
 		apiXHR = $.ajax({
-			url: RELATIVE_PATH + '/api/' + url,
+			url: config.relative_path + '/api/' + url,
 			cache: false,
 			headers: {
 				'X-Return-To': app.previousUrl,
@@ -320,6 +319,8 @@ $(document).ready(function () {
 			error: function (data, textStatus) {
 				if (data.status === 0 && textStatus === 'error') {
 					data.status = 500;
+					data.responseJSON = data.responseJSON || {};
+					data.responseJSON.error = '[[error:no-connection]]';
 				}
 				callback({
 					data: data,
@@ -350,12 +351,12 @@ $(document).ready(function () {
 				return;
 			}
 
-			var internalLink = utils.isInternalURI(this, window.location, RELATIVE_PATH);
+			var internalLink = utils.isInternalURI(this, window.location, config.relative_path);
 
 			var process = function () {
 				if (!e.ctrlKey && !e.shiftKey && !e.metaKey && e.which === 1) {
 					if (internalLink) {
-						var pathname = this.href.replace(rootUrl + RELATIVE_PATH + '/', '');
+						var pathname = this.href.replace(rootUrl + config.relative_path + '/', '');
 
 						// Special handling for urls with hashes
 						if (window.location.pathname === this.pathname && this.hash.length) {
@@ -363,9 +364,11 @@ $(document).ready(function () {
 						} else if (ajaxify.go(pathname)) {
 							e.preventDefault();
 						}
-					} else if (window.location.pathname !== '/outgoing') {
+					} else if (window.location.pathname !== config.relative_path + '/outgoing') {
 						if (config.openOutgoingLinksInNewTab && $.contains(contentEl, this)) {
-							window.open(this.href, '_blank');
+							var externalTab = window.open();
+							externalTab.opener = null;
+							externalTab.location = this.href;
 							e.preventDefault();
 						} else if (config.useOutgoingLinksPage) {
 							var safeUrls = config.outgoingLinksWhitelist.trim().split(/[\s,]+/g).filter(Boolean);
@@ -388,6 +391,13 @@ $(document).ready(function () {
 
 			// Default behaviour for rss feeds
 			if (internalLink && $(this).attr('href') && $(this).attr('href').endsWith('.rss')) {
+				return;
+			}
+
+			// Default behaviour for uploads and direct links to API urls
+			if (internalLink && ['/uploads', '/assets/uploads/', '/api/'].some(function (prefix) {
+				return String(_self.pathname).startsWith(config.relative_path + prefix);
+			})) {
 				return;
 			}
 

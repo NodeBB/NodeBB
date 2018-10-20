@@ -53,6 +53,7 @@
     "topics": "Tópicos",
     "posts": "Posts",
     "best": "Melhor",
+    "votes": "Votes",
     "upvoters": "Votos positivos",
     "upvoted": "Votou positivamente",
     "downvoters": "Votos negativos",
@@ -84,6 +85,7 @@
     "language": "Idioma",
     "guest": "Visitante",
     "guests": "Visitantes",
+    "former_user": "A Former User",
     "updated.title": "Fórum Atualizado",
     "updated.message": "Este fórum foi atualizado para sua última versão. Clique aqui para atualizar a página.",
     "privacy": "Privacidade",
@@ -96,6 +98,7 @@
     "enter_page_number": "Digite o número da página",
     "upload_file": "Fazer upload de arquivo",
     "upload": "Upload",
+    "uploads": "Uploads",
     "allowed-file-types": "Os tipos de arquivo permitidos são %1",
     "unsaved-changes": "Você tem alterações não salvas. Tem certeza que você deseja sair da página?",
     "reconnecting-message": "Parece que sua conexão com %1 caiu, por favor aguarde enquanto tentamos reconectar.",
@@ -105,5 +108,6 @@
     "cookies.learn_more": "Saber Mais",
     "edited": "Editado",
     "disabled": "Desligado",
-    "select": "Escolha"
+    "select": "Escolha",
+    "user-search-prompt": "Type something here to find users..."
 }

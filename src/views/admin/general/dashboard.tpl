@@ -3,7 +3,8 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">[[admin/general/dashboard:forum-traffic]]</div>
 			<div class="panel-body">
-				<div class="graph-container">
+				<div class="graph-container" id="analytics-traffic-container">
+					<i class="fa fa-expand"></i>
 					<ul class="graph-legend">
 						<li><div class="page-views"></div><span>[[admin/general/dashboard:page-views]]</span></li>
 						<li><div class="unique-visitors"></div><span>[[admin/general/dashboard:unique-visitors]]</span></li>
@@ -65,8 +66,27 @@
 				<div class="panel panel-default">
 					<div class="panel-heading">[[admin/general/dashboard:updates]]</div>
 					<div class="panel-body">
-						<div class="alert alert-info version-check">
+						<div class="alert <!-- IF lookupFailed -->alert-danger<!-- ELSE --><!-- IF upgradeAvailable -->alert-warning<!-- ELSE --><!-- IF currentPrerelease -->alert-info<!-- ELSE -->alert-success<!-- END --><!-- END --><!-- END --> version-check">
 							<p>[[admin/general/dashboard:running-version, {version}]]</p>
+							<p>
+							<!-- IF lookupFailed -->
+							[[admin/general/dashboard:latest-lookup-failed]]
+							<!-- ELSE -->
+								<!-- IF upgradeAvailable -->
+									<!-- IF currentPrerelease -->
+									[[admin/general/dashboard:prerelease-upgrade-available, {latestVersion}]]
+									<!-- ELSE -->
+									[[admin/general/dashboard:upgrade-available, {latestVersion}]]
+									<!-- END -->
+								<!-- ELSE -->
+									<!-- IF currentPrerelease -->
+									[[admin/general/dashboard:prerelease-warning]]
+									<!-- ELSE -->
+									[[admin/general/dashboard:up-to-date]]
+									<!-- END -->
+								<!-- END -->
+							<!-- END -->
+							</p>
 						</div>
 						<p>
 							[[admin/general/dashboard:keep-updated]]
@@ -101,13 +121,21 @@
 			<div class="panel-heading">[[admin/general/dashboard:control-panel]]</div>
 			<div class="panel-body text-center">
 				<p>
-					<div class="btn-group">
-						<button class="btn btn-warning reload">[[admin/general/dashboard:reload]]</button>
-						<button class="btn btn-danger restart">[[admin/general/dashboard:restart]]</button>
-					</div>
+					<button class="btn btn-block btn-warning restart"<!-- IF !canRestart --> disabled<!-- END -->>[[admin/general/dashboard:restart]]</button>
+					<button class="btn btn-block btn-danger rebuild-and-restart"<!-- IF !canRestart --> disabled<!-- END -->>[[admin/general/dashboard:rebuild-and-restart]]</button>
 				</p>
-				<p class="help-block">
+				<!-- IF lastrestart -->
+				<p>
+					[[admin/general/dashboard:last-restarted-by]]<br />
+					<a href="{config.relative_path}/uid/{lastrestart.uid}"><span class="label label-info">{lastrestart.user.username}</span></a> <span class="timeago" title="{lastrestart.timestampISO}"></span>
+				</p>
+				<!-- ENDIF lastrestart -->
+				<p class="<!-- IF canRestart -->help-block<!-- ELSE -->alert alert-warning<!-- END -->">
+					<!-- IF canRestart -->
 					[[admin/general/dashboard:restart-warning]]
+					<!-- ELSE -->
+					[[admin/general/dashboard:restart-disabled]]
+					<!-- END -->
 				</p>
 				<p>
 					<a href="{config.relative_path}/admin/settings/advanced" class="btn btn-info btn-block" data-placement="bottom" data-toggle="tooltip" title="[[admin/general/dashboard:maintenance-mode-title]]">[[admin/general/dashboard:maintenance-mode]]</a>

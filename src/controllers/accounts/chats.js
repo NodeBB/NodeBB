@@ -5,6 +5,7 @@ var async = require('async');
 var messaging = require('../../messaging');
 var meta = require('../../meta');
 var user = require('../../user');
+var privileges = require('../../privileges');
 var helpers = require('../helpers');
 
 var chatsController = module.exports;
@@ -26,6 +27,12 @@ chatsController.get = function (req, res, callback) {
 			if (!uid) {
 				return callback();
 			}
+			privileges.global.can('chat', req.uid, next);
+		},
+		function (canChat, next) {
+			if (!canChat) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
 			messaging.getRecentChats(req.uid, uid, 0, 19, next);
 		},
 		function (_recentChats, next) {
@@ -43,45 +50,17 @@ chatsController.get = function (req, res, callback) {
 					title: '[[pages:chats]]',
 				});
 			}
-			messaging.isUserInRoom(req.uid, req.params.roomid, next);
+			messaging.loadRoom(req.uid, { uid: uid, roomId: req.params.roomid }, next);
 		},
-		function (inRoom, next) {
-			if (!inRoom) {
+		function (room) {
+			if (!room) {
 				return callback();
 			}
-			async.parallel({
-				users: async.apply(messaging.getUsersInRoom, req.params.roomid, 0, -1),
-				canReply: async.apply(messaging.canReply, req.params.roomid, req.uid),
-				room: async.apply(messaging.getRoomData, req.params.roomid),
-				messages: async.apply(messaging.getMessages, {
-					callerUid: req.uid,
-					uid: uid,
-					roomId: req.params.roomid,
-					isNew: false,
-				}),
-			}, next);
-		},
-		function (data) {
-			var room = data.room;
-			room.messages = data.messages;
-
-			room.isOwner = parseInt(room.owner, 10) === parseInt(req.uid, 10);
-			room.users = data.users.filter(function (user) {
-				return user && parseInt(user.uid, 10) && parseInt(user.uid, 10) !== req.uid;
-			});
-
-			room.canReply = data.canReply;
-			room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : room.users.length > 2;
 			room.rooms = recentChats.rooms;
+			room.nextStart = recentChats.nextStart;
+			room.title = room.roomName || room.usernames || '[[pages:chats]]';
 			room.uid = uid;
 			room.userslug = req.params.userslug;
-			room.nextStart = recentChats.nextStart;
-			room.usernames = messaging.generateUsernames(room.users, req.uid);
-			room.title = room.roomName || room.usernames || '[[pages:chats]]';
-			room.maximumUsersInChatRoom = parseInt(meta.config.maximumUsersInChatRoom, 10) || 0;
-			room.maximumChatMessageLength = parseInt(meta.config.maximumChatMessageLength, 10) || 1000;
-			room.showUserInput = !room.maximumUsersInChatRoom || room.maximumUsersInChatRoom > 2;
-
 			res.render('chats', room);
 		},
 	], callback);
@@ -89,7 +68,7 @@ chatsController.get = function (req, res, callback) {
 
 chatsController.redirectToChat = function (req, res, next) {
 	var roomid = parseInt(req.params.roomid, 10);
-	if (!req.uid) {
+	if (!req.loggedIn) {
 		return next();
 	}
 	async.waterfall([

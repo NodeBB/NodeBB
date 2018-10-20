@@ -15,7 +15,7 @@ module.exports = function (SocketUser) {
 
 		async.waterfall([
 			function (next) {
-				isAdminOrSelfAndPasswordMatch(socket.uid, data, next);
+				isPrivilegedOrSelfAndPasswordMatch(socket, data, next);
 			},
 			function (next) {
 				SocketUser.updateProfile(socket, data, next);
@@ -29,7 +29,10 @@ module.exports = function (SocketUser) {
 		}
 		async.waterfall([
 			function (next) {
-				user.isAdminOrSelf(socket.uid, data.uid, next);
+				user.isAdminOrGlobalModOrSelf(socket.uid, data.uid, next);
+			},
+			function (next) {
+				user.checkMinReputation(socket.uid, data.uid, 'min:rep:cover-picture', next);
 			},
 			function (next) {
 				user.updateCoverPicture(data, next);
@@ -43,7 +46,10 @@ module.exports = function (SocketUser) {
 		}
 		async.waterfall([
 			function (next) {
-				user.isAdminOrSelf(socket.uid, data.uid, next);
+				user.isAdminOrGlobalModOrSelf(socket.uid, data.uid, next);
+			},
+			function (next) {
+				user.checkMinReputation(socket.uid, data.uid, 'min:rep:profile-picture', next);
 			},
 			function (next) {
 				user.uploadCroppedPicture(data, next);
@@ -58,7 +64,7 @@ module.exports = function (SocketUser) {
 
 		async.waterfall([
 			function (next) {
-				user.isAdminOrSelf(socket.uid, data.uid, next);
+				user.isAdminOrGlobalModOrSelf(socket.uid, data.uid, next);
 			},
 			function (next) {
 				user.removeCoverPicture(data, next);
@@ -66,28 +72,38 @@ module.exports = function (SocketUser) {
 		], callback);
 	};
 
-	function isAdminOrSelfAndPasswordMatch(uid, data, callback) {
+	function isPrivilegedOrSelfAndPasswordMatch(socket, data, callback) {
+		const uid = socket.uid;
+		const isSelf = parseInt(uid, 10) === parseInt(data.uid, 10);
+
 		async.waterfall([
 			function (next) {
 				async.parallel({
 					isAdmin: async.apply(user.isAdministrator, uid),
+					isTargetAdmin: async.apply(user.isAdministrator, data.uid),
+					isGlobalMod: async.apply(user.isGlobalModerator, uid),
+				}, next);
+			},
+			function (results, next) {
+				if (results.isTargetAdmin && !results.isAdmin) {
+					return next(new Error('[[error:no-privileges]]'));
+				}
+
+				if (!isSelf && !(results.isAdmin || results.isGlobalMod)) {
+					return next(new Error('[[error:no-privileges]]'));
+				}
+
+				async.parallel({
 					hasPassword: async.apply(user.hasPassword, data.uid),
 					passwordMatch: function (next) {
 						if (data.password) {
-							user.isPasswordCorrect(data.uid, data.password, next);
+							user.isPasswordCorrect(data.uid, data.password, socket.ip, next);
 						} else {
 							next(null, false);
 						}
 					},
 				}, next);
-			},
-			function (results, next) {
-				var isSelf = parseInt(uid, 10) === parseInt(data.uid, 10);
-
-				if (!results.isAdmin && !isSelf) {
-					return next(new Error('[[error:no-privileges]]'));
-				}
-
+			}, function (results, next) {
 				if (isSelf && results.hasPassword && !results.passwordMatch) {
 					return next(new Error('[[error:invalid-password]]'));
 				}
@@ -107,7 +123,7 @@ module.exports = function (SocketUser) {
 		}
 		async.waterfall([
 			function (next) {
-				user.changePassword(socket.uid, data, next);
+				user.changePassword(socket.uid, Object.assign(data, { ip: socket.ip }), next);
 			},
 			function (next) {
 				events.log({
@@ -186,5 +202,32 @@ module.exports = function (SocketUser) {
 				next(null, userData);
 			},
 		], callback);
+	};
+
+	SocketUser.toggleBlock = function (socket, data, callback) {
+		let isBlocked;
+
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					can: function (next) {
+						user.blocks.can(socket.uid, data.blockerUid, data.blockeeUid, next);
+					},
+					is: function (next) {
+						user.blocks.is(data.blockeeUid, data.blockerUid, next);
+					},
+				}, next);
+			},
+			function (results, next) {
+				isBlocked = results.is;
+				if (!results.can && !isBlocked) {
+					return next(new Error('[[error:cannot-block-privileged]]'));
+				}
+
+				user.blocks[isBlocked ? 'remove' : 'add'](data.blockeeUid, data.blockerUid, next);
+			},
+		], function (err) {
+			callback(err, !isBlocked);
+		});
 	};
 };

@@ -53,6 +53,7 @@
     "topics": "Teemat",
     "posts": "Postitust",
     "best": "Parim",
+    "votes": "Votes",
     "upvoters": "Poolt hääletajad",
     "upvoted": "Kiideti heaks",
     "downvoters": "Vastu hääletajad",
@@ -84,6 +85,7 @@
     "language": "Keel",
     "guest": "Külaline",
     "guests": "Külalised",
+    "former_user": "A Former User",
     "updated.title": "Foorum on uuendatud",
     "updated.message": "See foorum uuendati just kõige uuemale versioonile. Vajuta siia et värskendada veebilehte.",
     "privacy": "Privaatsus",
@@ -96,6 +98,7 @@
     "enter_page_number": "Sisesta lehekülje number",
     "upload_file": "Lae fail üles",
     "upload": "Lae üles",
+    "uploads": "Uploads",
     "allowed-file-types": "Lubatud faili formaadid on %1",
     "unsaved-changes": "Sul on salvestamata muudatusi. Oled kindel, et soovid lahkuda?",
     "reconnecting-message": "Looks like your connection to %1 was lost, please wait while we try to reconnect.",
@@ -105,5 +108,6 @@
     "cookies.learn_more": "Learn More",
     "edited": "Edited",
     "disabled": "Disabled",
-    "select": "Select"
+    "select": "Select",
+    "user-search-prompt": "Type something here to find users..."
 }

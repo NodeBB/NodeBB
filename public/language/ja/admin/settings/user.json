@@ -1,6 +1,5 @@
 {
 	"authentication": "認証",
-	"allow-local-login": "ローカルログインを有効にする",
 	"require-email-confirmation": "Eメールの確認が必要です",
 	"email-confirm-interval": "ユーザーが確認するまでEメールを再送信しない",
 	"email-confirm-email2": "分経過",
@@ -19,6 +18,8 @@
 	"themes": "テーマ",
 	"disable-user-skins": "ユーザーがカスタムスキンを選択できないようにする",
 	"account-protection": "アカウント保護",
+	"admin-relogin-duration": "Admin relogin duration (minutes)",
+	"admin-relogin-duration-help": "After a set amount of time accessing the admin section will require re-login, set to 0 to disable",
 	"login-attempts": "時間ごとのログイン試行",
 	"login-attempts-help": "ユーザのアカウントへのログイン試行数がこの値を超える場合、そのアカウントは予め設定された時間だけロックされます。",
 	"lockout-duration": "アカウントロックアウト期間(分)",
@@ -51,7 +52,7 @@
 	"show-fullname": "フルネームで表示",
 	"restrict-chat": "フォローしたユーザーからのチャットメッセージだけを許可する",
 	"outgoing-new-tab": "外部リンクを新しいタブで開く",
-	"topic-search": "インースレッドの検索を有効にします",
+	"topic-search": "スレッド内検索を有効にする",
 	"digest-freq": "お知らせを購読する",
 	"digest-freq.off": "オフ",
 	"digest-freq.daily": "デイリー",
@@ -60,5 +61,6 @@
 	"email-chat-notifs": "オンラインではない時に新しいチャットメッセージを受信した場合、通知メールを送信する。",
 	"email-post-notif": "購読中のスレッドに返信があった場合、メールで通知する。",
 	"follow-created-topics": "投稿したスレッドをフォローします",
-	"follow-replied-topics": "返信したスレッドをフォローします"
+	"follow-replied-topics": "返信したスレッドをフォローします",
+	"default-notification-settings": "Default notification settings"
 }

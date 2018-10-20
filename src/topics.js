@@ -18,9 +18,9 @@ var Topics = module.exports;
 require('./topics/data')(Topics);
 require('./topics/create')(Topics);
 require('./topics/delete')(Topics);
+require('./topics/sorted')(Topics);
 require('./topics/unread')(Topics);
 require('./topics/recent')(Topics);
-require('./topics/popular')(Topics);
 require('./topics/user')(Topics);
 require('./topics/fork')(Topics);
 require('./topics/posts')(Topics);
@@ -31,33 +31,10 @@ require('./topics/suggested')(Topics);
 require('./topics/tools')(Topics);
 require('./topics/thumb')(Topics);
 require('./topics/bookmarks')(Topics);
+require('./topics/merge')(Topics);
 
 Topics.exists = function (tid, callback) {
 	db.isSortedSetMember('topics:tid', tid, callback);
-};
-
-Topics.getPageCount = function (tid, uid, callback) {
-	var postCount;
-	async.waterfall([
-		function (next) {
-			Topics.getTopicField(tid, 'postcount', next);
-		},
-		function (_postCount, next) {
-			if (!parseInt(_postCount, 10)) {
-				return callback(null, 1);
-			}
-			postCount = _postCount;
-			user.getSettings(uid, next);
-		},
-		function (settings, next) {
-			next(null, Math.ceil((parseInt(postCount, 10) - 1) / settings.postsPerPage));
-		},
-	], callback);
-};
-
-Topics.getTidPage = function (tid, uid, callback) {
-	console.warn('[Topics.getTidPage] deprecated!');
-	callback(null, 1);
 };
 
 Topics.getTopicsFromSet = function (set, uid, start, stop, callback) {
@@ -119,7 +96,7 @@ Topics.getTopicsByTids = function (tids, uid, callback) {
 					user.getMultipleUserSettings(uids, next);
 				},
 				categories: function (next) {
-					categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'image', 'bgColor', 'color', 'disabled'], next);
+					categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'image', 'imageClass', 'bgColor', 'color', 'disabled'], next);
 				},
 				hasRead: function (next) {
 					Topics.hasReadTopics(tids, uid, next);
@@ -164,6 +141,9 @@ Topics.getTopicsByTids = function (tids, uid, callback) {
 					topics[i].bookmark = results.bookmarks[i];
 					topics[i].unreplied = !topics[i].teaser;
 
+					topics[i].upvotes = parseInt(topics[i].upvotes, 10) || 0;
+					topics[i].downvotes = parseInt(topics[i].downvotes, 10) || 0;
+					topics[i].votes = topics[i].upvotes - topics[i].downvotes;
 					topics[i].icons = [];
 				}
 			}
@@ -193,6 +173,7 @@ Topics.getTopicWithPosts = function (topicData, set, uid, start, stop, reverse, 
 				bookmark: async.apply(Topics.getUserBookmark, topicData.tid, uid),
 				postSharing: async.apply(social.getActivePostSharing),
 				deleter: async.apply(getDeleter, topicData),
+				merger: async.apply(getMerger, topicData),
 				related: function (next) {
 					async.waterfall([
 						function (next) {
@@ -218,6 +199,8 @@ Topics.getTopicWithPosts = function (topicData, set, uid, start, stop, reverse, 
 			topicData.postSharing = results.postSharing;
 			topicData.deleter = results.deleter;
 			topicData.deletedTimestampISO = utils.toISOString(topicData.deletedTimestamp);
+			topicData.merger = results.merger;
+			topicData.mergedTimestampISO = utils.toISOString(topicData.mergedTimestamp);
 			topicData.related = results.related || [];
 
 			topicData.unreplied = parseInt(topicData.postcount, 10) === 1;
@@ -252,7 +235,7 @@ function getMainPostAndReplies(topic, set, uid, start, stop, reverse, callback) 
 				return callback(null, []);
 			}
 
-			if (topic.mainPid && start === 0) {
+			if (parseInt(topic.mainPid, 10) && start === 0) {
 				pids.unshift(topic.mainPid);
 			}
 			posts.getPostsByPids(pids, uid, next);
@@ -279,6 +262,28 @@ function getDeleter(topicData, callback) {
 		return setImmediate(callback, null, null);
 	}
 	user.getUserFields(topicData.deleterUid, ['username', 'userslug', 'picture'], callback);
+}
+
+function getMerger(topicData, callback) {
+	if (!topicData.mergerUid) {
+		return setImmediate(callback, null, null);
+	}
+	async.waterfall([
+		function (next) {
+			async.parallel({
+				merger: function (next) {
+					user.getUserFields(topicData.mergerUid, ['username', 'userslug', 'picture'], next);
+				},
+				mergedIntoTitle: function (next) {
+					Topics.getTopicField(topicData.mergeIntoTid, 'title', next);
+				},
+			}, next);
+		},
+		function (results, next) {
+			results.merger.mergedIntoTitle = results.mergedIntoTitle;
+			next(null, results.merger);
+		},
+	], callback);
 }
 
 Topics.getMainPost = function (tid, uid, callback) {
@@ -345,3 +350,5 @@ Topics.search = function (tid, term, callback) {
 		callback(err, Array.isArray(pids) ? pids : []);
 	});
 };
+
+Topics.async = require('./promisify')(Topics);

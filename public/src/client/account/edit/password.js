@@ -23,7 +23,9 @@ define('forum/account/edit/password', ['forum/account/header', 'translator', 'zx
 			var passwordStrength = zxcvbn(password.val());
 			passwordvalid = false;
 			if (password.val().length < ajaxify.data.minimumPasswordLength) {
-				showError(password_notify, '[[user:change_password_error_length]]');
+				showError(password_notify, '[[reset_password:password_too_short]]');
+			} else if (password.val().length > 512) {
+				showError(password_notify, '[[error:password-too-long]]');
 			} else if (!utils.isPasswordValid(password.val())) {
 				showError(password_notify, '[[user:change_password_error]]');
 			} else if (password.val() === ajaxify.data.username) {
@@ -63,7 +65,7 @@ define('forum/account/edit/password', ['forum/account/header', 'translator', 'zx
 			onPasswordConfirmChanged();
 
 			var btn = $(this);
-			if ((passwordvalid && passwordsmatch) || app.user.isAdmin) {
+			if (passwordvalid && passwordsmatch) {
 				btn.addClass('disabled').find('i').removeClass('hide');
 				socket.emit('user.changePassword', {
 					currentPassword: currentPassword.val(),
@@ -82,8 +84,11 @@ define('forum/account/edit/password', ['forum/account/header', 'translator', 'zx
 						onPasswordConfirmChanged();
 						return app.alertError(err.message);
 					}
-
-					window.location.href = config.relative_path + '/login';
+					if (parseInt(app.user.uid, 10) === parseInt(ajaxify.data.uid, 10)) {
+						window.location.href = config.relative_path + '/login';
+					} else {
+						ajaxify.go('user/' + ajaxify.data.userslug + '/edit');
+					}
 				});
 			} else {
 				if (!passwordsmatch) {

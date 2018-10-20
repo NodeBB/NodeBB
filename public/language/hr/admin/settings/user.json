@@ -1,6 +1,5 @@
 {
 	"authentication": "Autentifikacija",
-	"allow-local-login": "Dozvoli lokalnu prijavu",
 	"require-email-confirmation": "Zahtjeva potvrdu email-om",
 	"email-confirm-interval": "Korisnik ne može ponovno poslati potvrdni email do ",
 	"email-confirm-email2": "prošlo je minuta",
@@ -19,6 +18,8 @@
 	"themes": "Predlošci",
 	"disable-user-skins": "Onemogući korisnicima odabir predloška",
 	"account-protection": "Zaštita računa",
+	"admin-relogin-duration": "Admin relogin duration (minutes)",
+	"admin-relogin-duration-help": "After a set amount of time accessing the admin section will require re-login, set to 0 to disable",
 	"login-attempts": "Pokušaji prijave po satu",
 	"login-attempts-help": "U slučaju pokušaja prijave na račun user&apos;s u tolikoj količini da prelazi ovaj prag,račun će biti zaključan na pre-konfigurirano vrijeme",
 	"lockout-duration": "Broj minuta u slučaju zaključavanja računa",
@@ -60,5 +61,6 @@
 	"email-chat-notifs": "Pošalji email ukoliko stigne nova poruka dok nisam na mreži",
 	"email-post-notif": "Pošalji email pri odgovoru u teme na koje pratim",
 	"follow-created-topics": "Prati teme koje kreiram",
-	"follow-replied-topics": "Prati teme na koje odgovorim"
+	"follow-replied-topics": "Prati teme na koje odgovorim",
+	"default-notification-settings": "Default notification settings"
 }

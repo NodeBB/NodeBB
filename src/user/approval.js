@@ -4,6 +4,7 @@
 var async = require('async');
 var request = require('request');
 var winston = require('winston');
+var validator = require('validator');
 
 var db = require('../database');
 var meta = require('../meta');
@@ -49,6 +50,7 @@ module.exports = function (User) {
 		async.waterfall([
 			function (next) {
 				notifications.create({
+					type: 'new-register',
 					bodyShort: '[[notifications:new_register, ' + username + ']]',
 					nid: 'new_register:' + username,
 					path: '/admin/manage/registration',
@@ -167,6 +169,7 @@ module.exports = function (User) {
 			function (users, next) {
 				users = users.filter(Boolean).map(function (user, index) {
 					user.timestampISO = utils.toISOString(data[index].score);
+					user.email = validator.escape(String(user.email));
 					delete user.hashedPassword;
 					return user;
 				});

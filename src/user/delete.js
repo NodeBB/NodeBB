@@ -2,26 +2,41 @@
 
 var async = require('async');
 var _ = require('lodash');
+var path = require('path');
+var nconf = require('nconf');
 
 var db = require('../database');
 var posts = require('../posts');
 var topics = require('../topics');
 var groups = require('../groups');
+var messaging = require('../messaging');
 var plugins = require('../plugins');
 var batch = require('../batch');
+var file = require('../file');
 
 module.exports = function (User) {
+	var deletesInProgress = {};
+
 	User.delete = function (callerUid, uid, callback) {
 		if (!parseInt(uid, 10)) {
-			return callback(new Error('[[error:invalid-uid]]'));
+			return setImmediate(callback, new Error('[[error:invalid-uid]]'));
 		}
-
+		if (deletesInProgress[uid]) {
+			return setImmediate(callback, new Error('[[error:already-deleting]]'));
+		}
+		deletesInProgress[uid] = 'user.delete';
 		async.waterfall([
+			function (next) {
+				removeFromSortedSets(uid, next);
+			},
 			function (next) {
 				deletePosts(callerUid, uid, next);
 			},
 			function (next) {
 				deleteTopics(callerUid, uid, next);
+			},
+			function (next) {
+				deleteUploads(uid, next);
 			},
 			function (next) {
 				User.deleteAccount(uid, next);
@@ -45,19 +60,55 @@ module.exports = function (User) {
 		}, { alwaysStartAt: 0 }, callback);
 	}
 
+	function deleteUploads(uid, callback) {
+		batch.processSortedSet('uid:' + uid + ':uploads', function (uploadNames, next) {
+			async.waterfall([
+				function (next) {
+					async.each(uploadNames, function (uploadName, next) {
+						file.delete(path.join(nconf.get('upload_path'), uploadName), next);
+					}, next);
+				},
+				function (next) {
+					db.sortedSetRemove('uid:' + uid + ':uploads', uploadNames, next);
+				},
+			], next);
+		}, { alwaysStartAt: 0 }, callback);
+	}
+
+	function removeFromSortedSets(uid, callback) {
+		db.sortedSetsRemove([
+			'users:joindate',
+			'users:postcount',
+			'users:reputation',
+			'users:banned',
+			'users:banned:expire',
+			'users:flags',
+			'users:online',
+			'users:notvalidated',
+			'digest:day:uids',
+			'digest:week:uids',
+			'digest:month:uids',
+		], uid, callback);
+	}
+
 	User.deleteAccount = function (uid, callback) {
+		if (deletesInProgress[uid] === 'user.deleteAccount') {
+			return setImmediate(callback, new Error('[[error:already-deleting]]'));
+		}
+		deletesInProgress[uid] = 'user.deleteAccount';
 		var userData;
 		async.waterfall([
 			function (next) {
-				User.exists(uid, next);
+				removeFromSortedSets(uid, next);
 			},
-			function (exists, next) {
-				if (!exists) {
-					return callback();
-				}
-				User.getUserFields(uid, ['username', 'userslug', 'fullname', 'email'], next);
+			function (next) {
+				db.getObject('user:' + uid, next);
 			},
 			function (_userData, next) {
+				if (!_userData || !_userData.username) {
+					delete deletesInProgress[uid];
+					return callback(new Error('[[error:no-user]]'));
+				}
 				userData = _userData;
 				plugins.fireHook('static:user.delete', { uid: uid }, next);
 			},
@@ -95,19 +146,6 @@ module.exports = function (User) {
 						}
 					},
 					function (next) {
-						db.sortedSetsRemove([
-							'users:joindate',
-							'users:postcount',
-							'users:reputation',
-							'users:banned',
-							'users:online',
-							'users:notvalidated',
-							'digest:day:uids',
-							'digest:week:uids',
-							'digest:month:uids',
-						], uid, next);
-					},
-					function (next) {
 						db.decrObjectField('global', 'userCount', next);
 					},
 					function (next) {
@@ -131,6 +169,9 @@ module.exports = function (User) {
 						deleteUserIps(uid, next);
 					},
 					function (next) {
+						deleteBans(uid, next);
+					},
+					function (next) {
 						deleteUserFromFollowers(uid, next);
 					},
 					function (next) {
@@ -141,7 +182,10 @@ module.exports = function (User) {
 			function (results, next) {
 				db.deleteAll(['followers:' + uid, 'following:' + uid, 'user:' + uid], next);
 			},
-		], callback);
+		], function (err) {
+			delete deletesInProgress[uid];
+			callback(err, userData);
+		});
 	};
 
 	function deleteVotes(uid, callback) {
@@ -173,12 +217,9 @@ module.exports = function (User) {
 				var userKeys = roomIds.map(function (roomId) {
 					return 'uid:' + uid + ':chat:room:' + roomId + ':mids';
 				});
-				var roomKeys = roomIds.map(function (roomId) {
-					return 'chat:room:' + roomId + ':uids';
-				});
 
 				async.parallel([
-					async.apply(db.sortedSetsRemove, roomKeys, uid),
+					async.apply(messaging.leaveRooms, uid, roomIds),
 					async.apply(db.deleteAll, userKeys),
 				], next);
 			},
@@ -200,6 +241,20 @@ module.exports = function (User) {
 			},
 			function (next) {
 				db.delete('uid:' + uid + ':ip', next);
+			},
+		], callback);
+	}
+
+	function deleteBans(uid, callback) {
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRange('uid:' + uid + ':bans:timestamp', 0, -1, next);
+			},
+			function (bans, next) {
+				db.deleteAll(bans, next);
+			},
+			function (next) {
+				db.delete('uid:' + uid + ':bans:timestamp', next);
 			},
 		], callback);
 	}

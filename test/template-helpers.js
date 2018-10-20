@@ -87,7 +87,7 @@ describe('helpers', function () {
 			],
 		};
 		var html = helpers.generateChildrenCategories(category);
-		assert.equal(html, '<span class="category-children"><a href="' + nconf.get('relative_path') + '/category/undefined"><span class="fa-stack fa-lg"><i style="color:#ff0000;" class="fa fa-circle fa-stack-2x"></i><i style="color:#00ff00;" class="fa fa-stack-1x undefined"></i></span><small>children</small></a> </span>');
+		assert.equal(html, '<span class="category-children"><span class="category-children-item pull-left"><div class="icon pull-left" style="background-color: #ff0000; color: #00ff00;"><i class="fa fa-fw undefined"></i></div><a href="' + nconf.get('relative_path') + '/category/undefined"><small>children</small></a></span></span>');
 		done();
 	});
 
@@ -164,28 +164,28 @@ describe('helpers', function () {
 	it('should render digest avatar', function (done) {
 		var block = { teaser: { user: { username: 'baris', picture: '/uploads/1.png' } } };
 		var html = helpers.renderDigestAvatar(block);
-		assert.equal(html, '<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 1em;" src="' + block.teaser.user.picture + '" title="' + block.teaser.user.username + '" />');
+		assert.equal(html, '<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 8px;" src="' + block.teaser.user.picture + '" title="' + block.teaser.user.username + '" />');
 		done();
 	});
 
 	it('should render digest avatar', function (done) {
 		var block = { teaser: { user: { username: 'baris', 'icon:text': 'B', 'icon:bgColor': '#ff000' } } };
 		var html = helpers.renderDigestAvatar(block);
-		assert.equal(html, '<div style="width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 1em; background-color: ' + block.teaser.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block;">' + block.teaser.user['icon:text'] + '</div>');
+		assert.equal(html, '<div style="vertical-align: middle; width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 8px; background-color: ' + block.teaser.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block;">' + block.teaser.user['icon:text'] + '</div>');
 		done();
 	});
 
 	it('should render digest avatar', function (done) {
 		var block = { user: { username: 'baris', picture: '/uploads/1.png' } };
 		var html = helpers.renderDigestAvatar(block);
-		assert.equal(html, '<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 1em;" src="' + block.user.picture + '" title="' + block.user.username + '" />');
+		assert.equal(html, '<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 8px;" src="' + block.user.picture + '" title="' + block.user.username + '" />');
 		done();
 	});
 
 	it('should render digest avatar', function (done) {
 		var block = { user: { username: 'baris', 'icon:text': 'B', 'icon:bgColor': '#ff000' } };
 		var html = helpers.renderDigestAvatar(block);
-		assert.equal(html, '<div style="width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 1em; background-color: ' + block.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block;">' + block.user['icon:text'] + '</div>');
+		assert.equal(html, '<div style="vertical-align: middle; width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 8px; background-color: ' + block.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block;">' + block.user['icon:text'] + '</div>');
 		done();
 	});
 

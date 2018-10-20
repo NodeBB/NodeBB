@@ -23,8 +23,6 @@ describe('User', function () {
 	var testCid;
 
 	before(function (done) {
-		groups.resetCache();
-
 		Categories.create({
 			name: 'Test Category',
 			description: 'A test',
@@ -71,7 +69,7 @@ describe('User', function () {
 
 		it('should error with invalid password', function (done) {
 			User.create({ username: 'test', password: '1' }, function (err) {
-				assert.equal(err.message, '[[user:change_password_error_length]]');
+				assert.equal(err.message, '[[reset_password:password_too_short]]');
 				done();
 			});
 		});
@@ -273,9 +271,11 @@ describe('User', function () {
 	});
 
 	describe('.search()', function () {
+		var uid;
 		it('should return an object containing an array of matching users', function (done) {
 			User.search({ query: 'john' }, function (err, searchData) {
 				assert.ifError(err);
+				uid = searchData.users[0].uid;
 				assert.equal(Array.isArray(searchData.users) && searchData.users.length > 0, true);
 				assert.equal(searchData.users[0].username, 'John Smith');
 				done();
@@ -291,10 +291,8 @@ describe('User', function () {
 		});
 
 		it('should error for guest', function (done) {
-			meta.config.allowGuestUserSearching = 0;
 			socketUser.search({ uid: 0 }, { query: 'john' }, function (err) {
-				assert.equal(err.message, '[[error:not-logged-in]]');
-				meta.config.allowGuestUserSearching = 1;
+				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
 		});
@@ -318,6 +316,15 @@ describe('User', function () {
 						done();
 					});
 				});
+			});
+		});
+
+		it('should search users by ip', function (done) {
+			socketUser.search({ uid: testUid }, { query: uid, searchBy: 'uid' }, function (err, data) {
+				assert.ifError(err);
+				assert(Array.isArray(data.users));
+				assert.equal(data.users[0].uid, uid);
+				done();
 			});
 		});
 
@@ -460,6 +467,40 @@ describe('User', function () {
 				});
 			});
 		});
+
+		it('.commit() should invalidate old codes', function (done) {
+			var code1;
+			var code2;
+			var uid;
+			async.waterfall([
+				function (next) {
+					User.create({ username: 'doublereseter', email: 'sorry@forgot.com', password: '123456' }, next);
+				},
+				function (_uid, next) {
+					uid = _uid;
+					User.reset.generate(uid, next);
+				},
+				function (code, next) {
+					code1 = code;
+					User.reset.generate(uid, next);
+				},
+				function (code, next) {
+					code2 = code;
+					User.reset.validate(code1, next);
+				},
+				function (isValid, next) {
+					assert(isValid);
+					User.reset.commit(code2, 'newPwd123', next);
+				},
+				function (next) {
+					User.reset.validate(code1, next);
+				},
+				function (isValid, next) {
+					assert(!isValid);
+					next();
+				},
+			], done);
+		});
 	});
 
 	describe('hash methods', function () {
@@ -490,9 +531,69 @@ describe('User', function () {
 		it('should get user data even if one uid is NaN', function (done) {
 			User.getUsersData([NaN, testUid], function (err, data) {
 				assert.ifError(err);
-				assert.equal(data[0], null);
+				assert(data[0]);
+				assert.equal(data[0].username, '[[global:guest]]');
 				assert(data[1]);
 				assert.equal(data[1].username, userData.username);
+				done();
+			});
+		});
+
+		it('should not return private user data', function (done) {
+			User.setUserFields(testUid, {
+				fb_token: '123123123',
+				another_secret: 'abcde',
+				postcount: '123',
+			}, function (err) {
+				assert.ifError(err);
+				User.getUserData(testUid, function (err, userData) {
+					assert.ifError(err);
+					assert(!userData.hasOwnProperty('fb_token'));
+					assert(!userData.hasOwnProperty('another_secret'));
+					assert(!userData.hasOwnProperty('password'));
+					assert(!userData.hasOwnProperty('rss_token'));
+					assert.equal(userData.postcount, '123');
+					done();
+				});
+			});
+		});
+
+		it('should return private data if field is whitelisted', function (done) {
+			function filterMethod(data, callback) {
+				data.whitelist.push('another_secret');
+				callback(null, data);
+			}
+
+			plugins.registerHook('test-plugin', { hook: 'filter:user.whitelistFields', method: filterMethod });
+			User.getUserData(testUid, function (err, userData) {
+				assert.ifError(err);
+				assert(!userData.hasOwnProperty('fb_token'));
+				assert.equal(userData.another_secret, 'abcde');
+				plugins.unregisterHook('test-plugin', 'filter:user.whitelistFields', filterMethod);
+				done();
+			});
+		});
+
+		it('should return 0 as uid if username is falsy', function (done) {
+			User.getUidByUsername('', function (err, uid) {
+				assert.ifError(err);
+				assert.strictEqual(uid, 0);
+				done();
+			});
+		});
+
+		it('should get username by userslug', function (done) {
+			User.getUsernameByUserslug('john-smith', function (err, username) {
+				assert.ifError(err);
+				assert.strictEqual('John Smith', username);
+				done();
+			});
+		});
+
+		it('should get uids by emails', function (done) {
+			User.getUidsByEmails(['john@example.com'], function (err, uids) {
+				assert.ifError(err);
+				assert.equal(uids[0], testUid);
 				done();
 			});
 		});
@@ -538,30 +639,33 @@ describe('User', function () {
 		});
 
 		it('should update a user\'s profile', function (done) {
-			var data = {
-				uid: uid,
-				username: 'updatedUserName',
-				email: 'updatedEmail@me.com',
-				fullname: 'updatedFullname',
-				website: 'http://nodebb.org',
-				location: 'izmir',
-				groupTitle: 'testGroup',
-				birthday: '01/01/1980',
-				signature: 'nodebb is good',
-			};
-			socketUser.updateProfile({ uid: uid }, data, function (err, result) {
+			User.create({ username: 'justforupdate', email: 'just@for.updated', password: '123456' }, function (err, uid) {
 				assert.ifError(err);
-
-				assert.equal(result.username, 'updatedUserName');
-				assert.equal(result.userslug, 'updatedusername');
-				assert.equal(result.email, 'updatedEmail@me.com');
-
-				db.getObject('user:' + uid, function (err, userData) {
+				var data = {
+					uid: uid,
+					username: 'updatedUserName',
+					email: 'updatedEmail@me.com',
+					fullname: 'updatedFullname',
+					website: 'http://nodebb.org',
+					location: 'izmir',
+					groupTitle: 'testGroup',
+					birthday: '01/01/1980',
+					signature: 'nodebb is good',
+				};
+				socketUser.updateProfile({ uid: uid }, data, function (err, result) {
 					assert.ifError(err);
-					Object.keys(data).forEach(function (key) {
-						assert.equal(data[key], userData[key]);
+
+					assert.equal(result.username, 'updatedUserName');
+					assert.equal(result.userslug, 'updatedusername');
+					assert.equal(result.email, 'updatedEmail@me.com');
+
+					db.getObject('user:' + uid, function (err, userData) {
+						assert.ifError(err);
+						Object.keys(data).forEach(function (key) {
+							assert.equal(data[key], userData[key]);
+						});
+						done();
 					});
-					done();
 				});
 			});
 		});
@@ -571,7 +675,7 @@ describe('User', function () {
 				assert.ifError(err);
 				socketUser.changePassword({ uid: uid }, { uid: uid, newPassword: '654321', currentPassword: '123456' }, function (err) {
 					assert.ifError(err);
-					User.isPasswordCorrect(uid, '654321', function (err, correct) {
+					User.isPasswordCorrect(uid, '654321', '127.0.0.1', function (err, correct) {
 						assert.ifError(err);
 						assert(correct);
 						done();
@@ -591,13 +695,28 @@ describe('User', function () {
 			});
 		});
 
-		it('should change email', function (done) {
-			socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, email: 'updatedAgain@me.com', password: '123456' }, function (err) {
+		it('should not update a user\'s username if it did not change', function (done) {
+			socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, username: 'updatedAgain', password: '123456' }, function (err) {
 				assert.ifError(err);
-				db.getObjectField('user:' + uid, 'email', function (err, email) {
+				db.getSortedSetRevRange('user:' + uid + ':usernames', 0, -1, function (err, data) {
 					assert.ifError(err);
-					assert.equal(email, 'updatedAgain@me.com');
+					assert.equal(data.length, 2);
+					assert(data[0].startsWith('updatedAgain'));
 					done();
+				});
+			});
+		});
+
+		it('should change email', function (done) {
+			User.create({ username: 'pooremailupdate', email: 'poor@update.me', password: '123456' }, function (err, uid) {
+				assert.ifError(err);
+				socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, email: 'updatedAgain@me.com', password: '123456' }, function (err) {
+					assert.ifError(err);
+					db.getObjectField('user:' + uid, 'email', function (err, email) {
+						assert.ifError(err);
+						assert.equal(email, 'updatedAgain@me.com');
+						done();
+					});
 				});
 			});
 		});
@@ -717,10 +836,13 @@ describe('User', function () {
 						name: 'test_copy.png',
 						type: 'image/png',
 					};
-					User.uploadPicture(uid, picture, function (err, uploadedPicture) {
+					User.uploadCroppedPicture({
+						uid: uid,
+						file: picture,
+					}, function (err, uploadedPicture) {
 						assert.ifError(err);
 						assert.equal(uploadedPicture.url, '/assets/uploads/profile/' + uid + '-profileavatar.png');
-						assert.equal(uploadedPicture.path, path.join(nconf.get('base_dir'), 'public', 'uploads', 'profile', uid + '-profileavatar.png'));
+						assert.equal(uploadedPicture.path, path.join(nconf.get('upload_path'), 'profile', uid + '-profileavatar.png'));
 						done();
 					});
 				}
@@ -735,7 +857,10 @@ describe('User', function () {
 				name: 'test.png',
 				type: 'image/png',
 			};
-			User.uploadPicture(uid, picture, function (err) {
+			User.uploadCroppedPicture({
+				uid: uid,
+				file: picture,
+			}, function (err) {
 				assert.equal(err.message, '[[error:profile-image-uploads-disabled]]');
 				done();
 			});
@@ -749,7 +874,11 @@ describe('User', function () {
 				name: 'test.png',
 				type: 'image/png',
 			};
-			User.uploadPicture(uid, picture, function (err) {
+
+			User.uploadCroppedPicture({
+				uid: uid,
+				file: picture,
+			}, function (err) {
 				assert.equal(err.message, '[[error:file-too-big, 256]]');
 				done();
 			});
@@ -761,75 +890,48 @@ describe('User', function () {
 				size: 7189,
 				name: 'test',
 			};
-			User.uploadPicture(uid, picture, function (err) {
+			User.uploadCroppedPicture({
+				uid: uid,
+				file: picture,
+			}, function (err) {
 				assert.equal(err.message, '[[error:invalid-image]]');
 				done();
 			});
 		});
 
-		it('should return error if no plugins listening for filter:uploadImage when uploading from url', function (done) {
-			var url = nconf.get('url') + '/assets/logo.png';
-			User.uploadFromUrl(uid, url, function (err) {
-				assert.equal(err.message, '[[error:no-plugin]]');
-				done();
+		describe('user.uploadCroppedPicture', function () {
+			var goodImage = 'data:image/gif;base64,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';
+			var badImage = 'data:audio/mp3;base64,R0lGODlhPQBEAPeoAJosM//AwO/AwHVYZ/z595kzAP/s7P+goOXMv8+fhw/v739/f+8PD98fH/8mJl+fn/9ZWb8/PzWlwv///6wWGbImAPgTEMImIN9gUFCEm/gDALULDN8PAD6atYdCTX9gUNKlj8wZAKUsAOzZz+UMAOsJAP/Z2ccMDA8PD/95eX5NWvsJCOVNQPtfX/8zM8+QePLl38MGBr8JCP+zs9myn/8GBqwpAP/GxgwJCPny78lzYLgjAJ8vAP9fX/+MjMUcAN8zM/9wcM8ZGcATEL+QePdZWf/29uc/P9cmJu9MTDImIN+/r7+/vz8/P8VNQGNugV8AAF9fX8swMNgTAFlDOICAgPNSUnNWSMQ5MBAQEJE3QPIGAM9AQMqGcG9vb6MhJsEdGM8vLx8fH98AANIWAMuQeL8fABkTEPPQ0OM5OSYdGFl5jo+Pj/+pqcsTE78wMFNGQLYmID4dGPvd3UBAQJmTkP+8vH9QUK+vr8ZWSHpzcJMmILdwcLOGcHRQUHxwcK9PT9DQ0O/v70w5MLypoG8wKOuwsP/g4P/Q0IcwKEswKMl8aJ9fX2xjdOtGRs/Pz+Dg4GImIP8gIH0sKEAwKKmTiKZ8aB/f39Wsl+LFt8dgUE9PT5x5aHBwcP+AgP+WltdgYMyZfyywz78AAAAAAAD///8AAP9mZv///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAKgALAAAAAA9AEQAAAj/AFEJHEiwoMGDCBMqXMiwocAbBww4nEhxoYkUpzJGrMixogkfGUNqlNixJEIDB0SqHGmyJSojM1bKZOmyop0gM3Oe2liTISKMOoPy7GnwY9CjIYcSRYm0aVKSLmE6nfq05QycVLPuhDrxBlCtYJUqNAq2bNWEBj6ZXRuyxZyDRtqwnXvkhACDV+euTeJm1Ki7A73qNWtFiF+/gA95Gly2CJLDhwEHMOUAAuOpLYDEgBxZ4GRTlC1fDnpkM+fOqD6DDj1aZpITp0dtGCDhr+fVuCu3zlg49ijaokTZTo27uG7Gjn2P+hI8+PDPERoUB318bWbfAJ5sUNFcuGRTYUqV/3ogfXp1rWlMc6awJjiAAd2fm4ogXjz56aypOoIde4OE5u/F9x199dlXnnGiHZWEYbGpsAEA3QXYnHwEFliKAgswgJ8LPeiUXGwedCAKABACCN+EA1pYIIYaFlcDhytd51sGAJbo3onOpajiihlO92KHGaUXGwWjUBChjSPiWJuOO/LYIm4v1tXfE6J4gCSJEZ7YgRYUNrkji9P55sF/ogxw5ZkSqIDaZBV6aSGYq/lGZplndkckZ98xoICbTcIJGQAZcNmdmUc210hs35nCyJ58fgmIKX5RQGOZowxaZwYA+JaoKQwswGijBV4C6SiTUmpphMspJx9unX4KaimjDv9aaXOEBteBqmuuxgEHoLX6Kqx+yXqqBANsgCtit4FWQAEkrNbpq7HSOmtwag5w57GrmlJBASEU18ADjUYb3ADTinIttsgSB1oJFfA63bduimuqKB1keqwUhoCSK374wbujvOSu4QG6UvxBRydcpKsav++Ca6G8A6Pr1x2kVMyHwsVxUALDq/krnrhPSOzXG1lUTIoffqGR7Goi2MAxbv6O2kEG56I7CSlRsEFKFVyovDJoIRTg7sugNRDGqCJzJgcKE0ywc0ELm6KBCCJo8DIPFeCWNGcyqNFE06ToAfV0HBRgxsvLThHn1oddQMrXj5DyAQgjEHSAJMWZwS3HPxT/QMbabI/iBCliMLEJKX2EEkomBAUCxRi42VDADxyTYDVogV+wSChqmKxEKCDAYFDFj4OmwbY7bDGdBhtrnTQYOigeChUmc1K3QTnAUfEgGFgAWt88hKA6aCRIXhxnQ1yg3BCayK44EWdkUQcBByEQChFXfCB776aQsG0BIlQgQgE8qO26X1h8cEUep8ngRBnOy74E9QgRgEAC8SvOfQkh7FDBDmS43PmGoIiKUUEGkMEC/PJHgxw0xH74yx/3XnaYRJgMB8obxQW6kL9QYEJ0FIFgByfIL7/IQAlvQwEpnAC7DtLNJCKUoO/w45c44GwCXiAFB/OXAATQryUxdN4LfFiwgjCNYg+kYMIEFkCKDs6PKAIJouyGWMS1FSKJOMRB/BoIxYJIUXFUxNwoIkEKPAgCBZSQHQ1A2EWDfDEUVLyADj5AChSIQW6gu10bE/JG2VnCZGfo4R4d0sdQoBAHhPjhIB94v/wRoRKQWGRHgrhGSQJxCS+0pCZbEhAAOw==';
+			it('should error if both file and imageData are missing', function (done) {
+				User.uploadCroppedPicture({}, function (err) {
+					assert.equal('[[error:invalid-data]]', err.message);
+					done();
+				});
 			});
-		});
 
-		it('should return error if the extension is invalid when uploading from url', function (done) {
-			var url = nconf.get('url') + '/favicon.ico';
+			it('should error if file size is too big', function (done) {
+				var temp = meta.config.maximumProfileImageSize;
+				meta.config.maximumProfileImageSize = 1;
+				User.uploadCroppedPicture({
+					uid: 1,
+					imageData: goodImage,
+				}, function (err) {
+					assert.equal('[[error:file-too-big, 1]]', err.message);
 
-			function filterMethod(data, callback) {
-				callback(null, data);
-			}
-
-			plugins.registerHook('test-plugin', { hook: 'filter:uploadImage', method: filterMethod });
-
-			User.uploadFromUrl(uid, url, function (err) {
-				assert.equal(err.message, '[[error:invalid-image-extension]]');
-				done();
+					// Restore old value
+					meta.config.maximumProfileImageSize = temp;
+					done();
+				});
 			});
-		});
 
-		it('should return error if the file is too big when uploading from url', function (done) {
-			var url = nconf.get('url') + '/assets/logo.png';
-			meta.config.maximumProfileImageSize = 1;
-
-			function filterMethod(data, callback) {
-				callback(null, data);
-			}
-
-			plugins.registerHook('test-plugin', { hook: 'filter:uploadImage', method: filterMethod });
-
-			User.uploadFromUrl(uid, url, function (err) {
-				assert.equal(err.message, '[[error:file-too-big, ' + meta.config.maximumProfileImageSize + ']]');
-				done();
-			});
-		});
-
-		it('should error with invalid data', function (done) {
-			var socketUser = require('../src/socket.io/user');
-
-			socketUser.uploadProfileImageFromUrl({ uid: uid }, { uid: uid, url: '' }, function (err) {
-				assert.equal(err.message, '[[error:invalid-data]]');
-				done();
-			});
-		});
-
-		it('should upload picture when uploading from url', function (done) {
-			var socketUser = require('../src/socket.io/user');
-			var url = nconf.get('url') + '/assets/logo.png';
-			meta.config.maximumProfileImageSize = '';
-
-			function filterMethod(data, callback) {
-				callback(null, { url: url });
-			}
-
-			plugins.registerHook('test-plugin', { hook: 'filter:uploadImage', method: filterMethod });
-
-			socketUser.uploadProfileImageFromUrl({ uid: uid }, { uid: uid, url: url }, function (err, uploadedPicture) {
-				assert.ifError(err);
-				assert.equal(uploadedPicture, url);
-				done();
+			it('should not allow image data with bad MIME type to be passed in', function (done) {
+				User.uploadCroppedPicture({
+					uid: 1,
+					imageData: badImage,
+				}, function (err) {
+					assert.equal('[[error:invalid-image]]', err.message);
+					done();
+				});
 			});
 		});
 
@@ -1030,6 +1132,87 @@ describe('User', function () {
 				assert.equal(err.message, '[[error:ban-expiry-missing]]');
 				done();
 			});
+		});
+	});
+
+	describe('Digest.getSubscribers', function (done) {
+		var uidIndex = {};
+
+		before(function (done) {
+			var testUsers = ['daysub', 'offsub', 'nullsub', 'weeksub'];
+			async.each(testUsers, function (username, next) {
+				async.waterfall([
+					async.apply(User.create, { username: username, email: username + '@example.com' }),
+					function (uid, next) {
+						if (username === 'nullsub') {
+							return setImmediate(next);
+						}
+
+						uidIndex[username] = uid;
+
+						var sub = username.slice(0, -3);
+						async.parallel([
+							async.apply(User.updateDigestSetting, uid, sub),
+							async.apply(User.setSetting, uid, 'dailyDigestFreq', sub),
+						], next);
+					},
+				], next);
+			}, done);
+		});
+
+		it('should accurately build digest list given ACP default "null" (not set)', function (done) {
+			User.digest.getSubscribers('day', function (err, subs) {
+				assert.ifError(err);
+				assert.strictEqual(subs.length, 1);
+
+				done();
+			});
+		});
+
+		it('should accurately build digest list given ACP default "day"', function (done) {
+			async.series([
+				async.apply(meta.configs.set, 'dailyDigestFreq', 'day'),
+				function (next) {
+					User.digest.getSubscribers('day', function (err, subs) {
+						assert.ifError(err);
+						assert.strictEqual(subs.includes(uidIndex.daysub.toString()), true);	// daysub does get emailed
+						assert.strictEqual(subs.includes(uidIndex.weeksub.toString()), false);	// weeksub does not get emailed
+						assert.strictEqual(subs.includes(uidIndex.offsub.toString()), false);	// offsub doesn't get emailed
+
+						next();
+					});
+				},
+			], done);
+		});
+
+		it('should accurately build digest list given ACP default "week"', function (done) {
+			async.series([
+				async.apply(meta.configs.set, 'dailyDigestFreq', 'week'),
+				function (next) {
+					User.digest.getSubscribers('week', function (err, subs) {
+						assert.ifError(err);
+						assert.strictEqual(subs.includes(uidIndex.weeksub.toString()), true);	// weeksub gets emailed
+						assert.strictEqual(subs.includes(uidIndex.daysub.toString()), false);	// daysub gets emailed
+						assert.strictEqual(subs.includes(uidIndex.offsub.toString()), false);	// offsub does not get emailed
+
+						next();
+					});
+				},
+			], done);
+		});
+
+		it('should accurately build digest list given ACP default "off"', function (done) {
+			async.series([
+				async.apply(meta.configs.set, 'dailyDigestFreq', 'off'),
+				function (next) {
+					User.digest.getSubscribers('day', function (err, subs) {
+						assert.ifError(err);
+						assert.strictEqual(subs.length, 1);
+
+						next();
+					});
+				},
+			], done);
 		});
 	});
 
@@ -1276,7 +1459,8 @@ describe('User', function () {
 				username: 'rejectme',
 				password: '123456',
 				'password-confirm': '123456',
-				email: 'reject@me.com',
+				email: '<script>alert("ok")<script>reject@me.com',
+				gdpr_consent: true,
 			}, function (err) {
 				assert.ifError(err);
 				helpers.loginUser('admin', '123456', function (err, jar) {
@@ -1284,7 +1468,7 @@ describe('User', function () {
 					request(nconf.get('url') + '/api/admin/manage/registration', { jar: jar, json: true }, function (err, res, body) {
 						assert.ifError(err);
 						assert.equal(body.users[0].username, 'rejectme');
-						assert.equal(body.users[0].email, 'reject@me.com');
+						assert.equal(body.users[0].email, '&lt;script&gt;alert(&quot;ok&quot;)&lt;script&gt;reject@me.com');
 						done();
 					});
 				});
@@ -1308,6 +1492,7 @@ describe('User', function () {
 				password: '123456',
 				'password-confirm': '123456',
 				email: 'accept@me.com',
+				gdpr_consent: true,
 			}, function (err) {
 				assert.ifError(err);
 				socketAdmin.user.acceptRegistration({ uid: adminUid }, { username: 'acceptme' }, function (err, uid) {
@@ -1471,6 +1656,17 @@ describe('User', function () {
 				});
 			});
 		});
+
+		it('should escape email', function (done) {
+			socketUser.invite({ uid: inviterUid }, '<script>alert("ok");</script>', function (err) {
+				assert.ifError(err);
+				User.getInvites(inviterUid, function (err, data) {
+					assert.ifError(err);
+					assert.equal(data[0], '&lt;script&gt;alert(&quot;ok&quot;);&lt;&#x2F;script&gt;');
+					done();
+				});
+			});
+		});
 	});
 
 	describe('email confirm', function () {
@@ -1583,6 +1779,241 @@ describe('User', function () {
 					});
 				});
 			});
+		});
+	});
+
+	describe('user blocking methods', function (done) {
+		let blockeeUid;
+		before(function (done) {
+			User.create({
+				username: 'blockee',
+				email: 'blockee@example.org',
+				fullname: 'Block me',
+			}, function (err, uid) {
+				blockeeUid = uid;
+				done(err);
+			});
+		});
+
+		describe('.toggle()', function () {
+			it('should toggle block', function (done) {
+				socketUser.toggleBlock({ uid: 1 }, { blockerUid: 1, blockeeUid: blockeeUid }, function (err) {
+					assert.ifError(err);
+					User.blocks.is(blockeeUid, 1, function (err, blocked) {
+						assert.ifError(err);
+						assert(blocked);
+						done();
+					});
+				});
+			});
+
+			it('should toggle block', function (done) {
+				socketUser.toggleBlock({ uid: 1 }, { blockerUid: 1, blockeeUid: blockeeUid }, function (err) {
+					assert.ifError(err);
+					User.blocks.is(blockeeUid, 1, function (err, blocked) {
+						assert.ifError(err);
+						assert(!blocked);
+						done();
+					});
+				});
+			});
+		});
+
+		describe('.add()', function () {
+			it('should block a uid', function (done) {
+				User.blocks.add(blockeeUid, 1, function (err) {
+					assert.ifError(err);
+					User.blocks.list(1, function (err, blocked_uids) {
+						assert.ifError(err);
+						assert.strictEqual(Array.isArray(blocked_uids), true);
+						assert.strictEqual(blocked_uids.length, 1);
+						assert.strictEqual(blocked_uids.includes(blockeeUid), true);
+						done();
+					});
+				});
+			});
+
+			it('should automatically increment corresponding user field', function (done) {
+				db.getObjectField('user:1', 'blocksCount', function (err, count) {
+					assert.ifError(err);
+					assert.strictEqual(parseInt(count, 10), 1);
+					done();
+				});
+			});
+
+			it('should error if you try to block the same uid again', function (done) {
+				User.blocks.add(blockeeUid, 1, function (err) {
+					assert.equal(err.message, '[[error:already-blocked]]');
+					done();
+				});
+			});
+		});
+
+		describe('.remove()', function () {
+			it('should unblock a uid', function (done) {
+				User.blocks.remove(blockeeUid, 1, function (err) {
+					assert.ifError(err);
+					User.blocks.list(1, function (err, blocked_uids) {
+						assert.ifError(err);
+						assert.strictEqual(Array.isArray(blocked_uids), true);
+						assert.strictEqual(blocked_uids.length, 0);
+						done();
+					});
+				});
+			});
+
+			it('should automatically decrement corresponding user field', function (done) {
+				db.getObjectField('user:1', 'blocksCount', function (err, count) {
+					assert.ifError(err);
+					assert.strictEqual(parseInt(count, 10), 0);
+					done();
+				});
+			});
+
+			it('should error if you try to unblock the same uid again', function (done) {
+				User.blocks.remove(blockeeUid, 1, function (err) {
+					assert.equal(err.message, '[[error:already-unblocked]]');
+					done();
+				});
+			});
+		});
+
+		describe('.is()', function () {
+			before(function (done) {
+				User.blocks.add(blockeeUid, 1, done);
+			});
+
+			it('should return a Boolean with blocked status for the queried uid', function (done) {
+				User.blocks.is(blockeeUid, 1, function (err, blocked) {
+					assert.ifError(err);
+					assert.strictEqual(blocked, true);
+					done();
+				});
+			});
+		});
+
+		describe('.list()', function () {
+			it('should return a list of blocked uids', function (done) {
+				User.blocks.list(1, function (err, blocked_uids) {
+					assert.ifError(err);
+					assert.strictEqual(Array.isArray(blocked_uids), true);
+					assert.strictEqual(blocked_uids.length, 1);
+					assert.strictEqual(blocked_uids.includes(blockeeUid), true);
+					done();
+				});
+			});
+		});
+
+		describe('.filter()', function () {
+			it('should remove entries by blocked uids and return filtered set', function (done) {
+				User.blocks.filter(1, [{
+					foo: 'foo',
+					uid: blockeeUid,
+				}, {
+					foo: 'bar',
+					uid: 1,
+				}, {
+					foo: 'baz',
+					uid: blockeeUid,
+				}], function (err, filtered) {
+					assert.ifError(err);
+					assert.strictEqual(Array.isArray(filtered), true);
+					assert.strictEqual(filtered.length, 1);
+					assert.equal(filtered[0].uid, 1);
+					done();
+				});
+			});
+
+			it('should allow property argument to be passed in to customise checked property', function (done) {
+				User.blocks.filter(1, 'fromuid', [{
+					foo: 'foo',
+					fromuid: blockeeUid,
+				}, {
+					foo: 'bar',
+					fromuid: 1,
+				}, {
+					foo: 'baz',
+					fromuid: blockeeUid,
+				}], function (err, filtered) {
+					assert.ifError(err);
+					assert.strictEqual(Array.isArray(filtered), true);
+					assert.strictEqual(filtered.length, 1);
+					assert.equal(filtered[0].fromuid, 1);
+					done();
+				});
+			});
+
+			it('should not process invalid sets', function (done) {
+				User.blocks.filter(1, [{ foo: 'foo' }, { foo: 'bar' }, { foo: 'baz' }], function (err, filtered) {
+					assert.ifError(err);
+					assert.strictEqual(Array.isArray(filtered), true);
+					assert.strictEqual(filtered.length, 3);
+					filtered.forEach(function (obj) {
+						assert.strictEqual(obj.hasOwnProperty('foo'), true);
+					});
+					done();
+				});
+			});
+
+			it('should process plain sets that just contain uids', function (done) {
+				User.blocks.filter(1, [1, blockeeUid], function (err, filtered) {
+					assert.ifError(err);
+					assert.strictEqual(filtered.length, 1);
+					assert.strictEqual(filtered[0], 1);
+					done();
+				});
+			});
+
+			it('should filter uids that are blocking targetUid', function (done) {
+				User.blocks.filterUids(blockeeUid, [1, 2], function (err, filtered) {
+					assert.ifError(err);
+					assert.deepEqual(filtered, [2]);
+					done();
+				});
+			});
+		});
+	});
+
+	it('should return offline if user is guest', function (done) {
+		var status = User.getStatus({ uid: 0 });
+		assert.strictEqual(status, 'offline');
+		done();
+	});
+
+	describe('isPrivilegedOrSelf', function () {
+		it('should return not error if self', function (done) {
+			User.isPrivilegedOrSelf(1, 1, function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should not error if privileged', function (done) {
+			User.create({ username: 'theadmin' }, function (err, uid) {
+				assert.ifError(err);
+				groups.join('administrators', uid, function (err) {
+					assert.ifError(err);
+					User.isPrivilegedOrSelf(uid, 2, function (err) {
+						assert.ifError(err);
+						done();
+					});
+				});
+			});
+		});
+
+		it('should error if not privileged', function (done) {
+			User.isPrivilegedOrSelf(0, 1, function (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+				done();
+			});
+		});
+	});
+
+	it('should get admins and mods', function (done) {
+		User.getAdminsandGlobalMods(function (err, data) {
+			assert.ifError(err);
+			assert(Array.isArray(data));
+			done();
 		});
 	});
 });

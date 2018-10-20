@@ -20,7 +20,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], functio
 		pluginsList.on('click', 'button[data-action="toggleActive"]', function () {
 			var pluginEl = $(this).parents('li');
 			pluginID = pluginEl.attr('data-plugin-id');
-			var btn = $('#' + pluginID + ' [data-action="toggleActive"]');
+			var btn = $('[id="' + pluginID + '"] [data-action="toggleActive"]');
 
 			var pluginData = ajaxify.data.installed[pluginEl.attr('data-plugin-index')];
 
@@ -34,7 +34,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], functio
 						btn.toggleClass('btn-warning', status.active).toggleClass('btn-success', !status.active);
 
 						// clone it to active plugins tab
-						if (status.active && !$('#active #' + pluginID).length) {
+						if (status.active && !$('#active [id="' + pluginID + '"]').length) {
 							$('#active ul').prepend(pluginEl.clone(true));
 						}
 
@@ -49,7 +49,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], functio
 							timeout: 5000,
 							clickfn: function () {
 								require(['admin/modules/instance'], function (instance) {
-									instance.restart();
+									instance.rebuildAndRestart();
 								});
 							},
 						});
@@ -182,6 +182,19 @@ define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], functio
 					return app.alertError(err.message);
 				}
 				$('#order-active-plugins-modal').modal('hide');
+
+				app.alert({
+					alert_id: 'plugin_reordered',
+					title: '[[admin/extend/plugins:alert.reorder]]',
+					message: '[[admin/extend/plugins:alert.reorder-success]]',
+					type: 'success',
+					timeout: 5000,
+					clickfn: function () {
+						require(['admin/modules/instance'], function (instance) {
+							instance.rebuildAndRestart();
+						});
+					},
+				});
 			});
 		});
 
@@ -217,7 +230,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], functio
 					timeout: 5000,
 					clickfn: function () {
 						require(['admin/modules/instance'], function (instance) {
-							instance.reload();
+							instance.rebuildAndRestart();
 						});
 					},
 				});
@@ -255,7 +268,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], functio
 	};
 
 	Plugins.suggest = function (pluginId, callback) {
-		var nbbVersion = app.config.version.match(/^\d\.\d\.\d/);
+		var nbbVersion = app.config.version.match(/^\d+\.\d+\.\d+/);
 		$.ajax((app.config.registry || 'https://packages.nodebb.org') + '/api/v1/suggest', {
 			type: 'GET',
 			data: {

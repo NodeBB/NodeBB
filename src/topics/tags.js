@@ -2,13 +2,14 @@
 'use strict';
 
 var async = require('async');
+var validator = require('validator');
 
 var db = require('../database');
 var meta = require('../meta');
 var _ = require('lodash');
 var plugins = require('../plugins');
 var utils = require('../utils');
-
+var batch = require('../batch');
 
 module.exports = function (Topics) {
 	Topics.createTags = function (tags, tid, timestamp, callback) {
@@ -64,9 +65,8 @@ module.exports = function (Topics) {
 				if (!tagWhitelist.length) {
 					return next(null, tags);
 				}
-				tags = tags.filter(function (tag) {
-					return tagWhitelist.indexOf(tag) !== -1;
-				});
+				var whitelistSet = new Set(tagWhitelist);
+				tags = tags.filter(tag => whitelistSet.has(tag));
 				next(null, tags);
 			},
 		], callback);
@@ -95,12 +95,60 @@ module.exports = function (Topics) {
 		], callback);
 	};
 
-	Topics.updateTag = function (tag, data, callback) {
-		if (!tag) {
-			return setImmediate(callback, new Error('[[error:invalid-tag]]'));
-		}
-		db.setObject('tag:' + tag, data, callback);
+	Topics.updateTags = function (data, callback) {
+		async.eachSeries(data, function (tagData, next) {
+			db.setObject('tag:' + tagData.value, {
+				color: tagData.color,
+				bgColor: tagData.bgColor,
+			}, next);
+		}, callback);
 	};
+
+	Topics.renameTags = function (data, callback) {
+		async.eachSeries(data, function (tagData, next) {
+			renameTag(tagData.value, tagData.newName, next);
+		}, callback);
+	};
+
+	function renameTag(tag, newTagName, callback) {
+		if (!newTagName || tag === newTagName) {
+			return setImmediate(callback);
+		}
+		async.waterfall([
+			function (next) {
+				Topics.createEmptyTag(newTagName, next);
+			},
+			function (next) {
+				batch.processSortedSet('tag:' + tag + ':topics', function (tids, next) {
+					async.waterfall([
+						function (next) {
+							db.sortedSetScores('tag:' + tag + ':topics', tids, next);
+						},
+						function (scores, next) {
+							db.sortedSetAdd('tag:' + newTagName + ':topics', scores, tids, next);
+						},
+						function (next) {
+							var keys = tids.map(function (tid) {
+								return 'topic:' + tid + ':tags';
+							});
+
+							async.series([
+								async.apply(db.sortedSetRemove, 'tag:' + tag + ':topics', tids),
+								async.apply(db.setsRemove, keys, tag),
+								async.apply(db.setsAdd, keys, newTagName),
+							], next);
+						},
+					], next);
+				}, next);
+			},
+			function (next) {
+				Topics.deleteTag(tag, next);
+			},
+			function (next) {
+				updateTagCount(newTagName, next);
+			},
+		], callback);
+	}
 
 	function updateTagCount(tag, callback) {
 		callback = callback || function () {};
@@ -147,7 +195,9 @@ module.exports = function (Topics) {
 					return 'tag:' + tag;
 				}), next);
 			},
-		], callback);
+		], function (err) {
+			callback(err);
+		});
 	};
 
 	function removeTagsFromTopics(tags, callback) {
@@ -191,6 +241,7 @@ module.exports = function (Topics) {
 			},
 			function (tagData, next) {
 				tags.forEach(function (tag, index) {
+					tag.valueEscaped = validator.escape(String(tag.value));
 					tag.color = tagData[index] ? tagData[index].color : '';
 					tag.bgColor = tagData[index] ? tagData[index].bgColor : '';
 				});
@@ -253,6 +304,9 @@ module.exports = function (Topics) {
 				topicTags.forEach(function (tags, index) {
 					if (Array.isArray(tags)) {
 						topicTags[index] = tags.map(function (tag) { return tagData[tag]; });
+						topicTags[index].sort(function (tag1, tag2) {
+							return tag2.score - tag1.score;
+						});
 					}
 				});
 
@@ -261,7 +315,7 @@ module.exports = function (Topics) {
 		], callback);
 	};
 
-	Topics.updateTags = function (tid, tags, callback) {
+	Topics.updateTopicTags = function (tid, tags, callback) {
 		callback = callback || function () {};
 		async.waterfall([
 			function (next) {

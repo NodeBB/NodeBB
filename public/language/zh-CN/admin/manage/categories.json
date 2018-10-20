@@ -5,12 +5,12 @@
 	"name": "版块名",
 	"description": "版块描述",
 	"bg-color": "背景颜色",
-	"text-color": "文字颜色",
+	"text-color": "图标颜色",
 	"bg-image-size": "背景图片大小",
 	"custom-class": "自定义 Class",
 	"num-recent-replies": "最近回复数",
 	"ext-link": "外部链接",
-	"is-section": "将该板块作为段落",
+	"is-section": "将该版块作为段落",
 	"upload-image": "上传图片",
 	"delete-image": "移除",
 	"category-image": "版块图片",
@@ -19,6 +19,7 @@
 	"parent-category-none": "(无)",
 	"copy-settings": "复制设置",
 	"optional-clone-settings": "(可选) 从版块复制设置",
+	"clone-children": "克隆子类别并进行设置",
 	"purge": "删除版块",
 
 	"enable": "启用",
@@ -65,5 +66,8 @@
 	"alert.find-user": "查找用户",
 	"alert.user-search": "在这里查找用户…",
 	"alert.find-group": "查找群组",
-	"alert.group-search": "在此处搜索群组..."
+	"alert.group-search": "在此处搜索群组...",
+	"collapse-all": "全部折叠",
+	"expand-all": "全部展开",
+	"disable-on-create": "Disable on create"
 }

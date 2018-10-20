@@ -18,7 +18,7 @@ module.exports = function (Groups) {
 				// Ephemeral groups and the registered-users groups are searchable
 				groupNames = Groups.ephemeralGroups.concat(groupNames).concat('registered-users');
 				groupNames = groupNames.filter(function (name) {
-					return name.toLowerCase().indexOf(query) !== -1 && name !== 'administrators' && !Groups.isPrivilegeGroup(name);
+					return name.toLowerCase().includes(query) && name !== 'administrators' && !Groups.isPrivilegeGroup(name);
 				});
 				groupNames = groupNames.slice(0, 100);
 				Groups.getGroupsData(groupNames, next);

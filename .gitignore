@@ -29,6 +29,7 @@ pidfile
 
 /public/sounds
 /public/uploads
+/test/uploads
 
 # compiled files
 /public/stylesheet.css
@@ -60,9 +61,8 @@ tx.exe
 coverage
 .nyc_output
 
-build
 *.log
 test/files/normalise.jpg.png
 test/files/normalise-resized.jpg
 package-lock.json
-package.json
+/package.json

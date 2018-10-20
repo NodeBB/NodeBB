@@ -1,8 +1,8 @@
 {
     "register": "Rejestracja",
     "cancel_registration": "Anuluj rejestrację",
-    "help.email": "Domyślnie twój adres e-mail będzie ukryty.",
-    "help.username_restrictions": "Unikalna nazwa użytkownika z min. %1 i maks. %2 znaków. Inni użytkownicy mogą Ciebie zawołać, pisząc @<span id='yourUsername'>nazwa użytkownika</span>.",
+    "help.email": "Domyślnie Twój adres e-mail będzie ukryty.",
+    "help.username_restrictions": "Unikalna nazwa użytkownika licząca od %1 do %2 znaków. Inni użytkownicy mogą Cię zawołać, pisząc @<span id='yourUsername'>nazwa użytkownika</span>.",
     "help.minimum_password_length": "Hasło musi mieć co najmniej %1 znaków.",
     "email_address": "Adres e-mail",
     "email_address_placeholder": "Wpisz swój adres e-mail",
@@ -16,8 +16,11 @@
     "alternative_registration": "Alternatywna rejestracja",
     "terms_of_use": "Warunki korzystania z serwisu",
     "agree_to_terms_of_use": "Zgadzam się na powyższe warunki",
-    "terms_of_use_error": "Musisz zaakceptować Terms of Use",
-    "registration-added-to-queue": "Twoja rejestracja została dodana do kolejki oczekujących na akceptację. Otrzymasz email, kiedy zostanie zatwierdzona przez administratora.",
-    "interstitial.intro": "Potrzebujemy dodatkowych informacji, zanim przejdziemy dalej do utworzenia twojego konta.",
-    "interstitial.errors-found": "Nie mogliśmy ukończyć procesu rejestracji:"
+    "terms_of_use_error": "Musisz zaakceptować warunki korzystania z serwisu",
+    "registration-added-to-queue": "Twoja rejestracja została dodana do kolejki oczekujących na akceptację. Otrzymasz e-mail, kiedy zostanie zatwierdzona przez administratora.",
+    "interstitial.intro": "Do utworzenia Twojego konta potrzebne są dodatkowe informacje.",
+    "interstitial.errors-found": "Nie mogliśmy ukończyć procesu rejestracji:",
+    "gdpr_agree_data": "Wyrażam zgodę na zbieranie i przetwarzanie moich danych przez tę stronę.",
+    "gdpr_agree_email": "Wyrażam zgodę na otrzymywanie e-maili z podsumowaniami i powiadomieniami od tej strony.",
+    "gdpr_consent_denied": "Musisz wyrazić zgodę na zbieranie/przetwarzanie Twoich danych przez tę stronę oraz na otrzymywanie e-maili."
 }

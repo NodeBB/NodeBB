@@ -89,7 +89,7 @@ define('admin/settings', ['uploader'], function (uploader) {
 						alert_id: 'config_status',
 						timeout: 2500,
 						title: 'Changes Not Saved',
-						message: 'NodeBB encountered a problem saving your changes',
+						message: 'NodeBB encountered a problem saving your changes. (' + err.message + ')',
 						type: 'danger',
 					});
 				}

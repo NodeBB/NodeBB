@@ -1,0 +1,6 @@
+{
+    "reconnection": "Savienoties no jauna iestatījumi",
+    "max-attempts": "Maksimālais mēģinājumu skaits savienoties no jauna",
+    "default-placeholder": "Pēc noklusējuma: %1",
+    "delay": "Atlikšana, pirms savienoties no jauna"
+}

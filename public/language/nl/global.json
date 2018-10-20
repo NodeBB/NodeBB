@@ -53,6 +53,7 @@
     "topics": "Onderwerpen",
     "posts": "Berichten",
     "best": "Beste",
+    "votes": "Stemmen",
     "upvoters": "Positieve stemmers",
     "upvoted": "Omhoog gestemd",
     "downvoters": "Negatieve stemmers",
@@ -84,6 +85,7 @@
     "language": "Taal",
     "guest": "Gast",
     "guests": "Gasten",
+    "former_user": "Een ex-gebruiker",
     "updated.title": "Site update",
     "updated.message": "Deze site heeft zojuist een update ontvangen. Klik hier om de pagina te verversen.",
     "privacy": "Privé",
@@ -96,6 +98,7 @@
     "enter_page_number": "Voer paginanummer in",
     "upload_file": "Upload bestand",
     "upload": "Upload",
+    "uploads": "Uploads",
     "allowed-file-types": "Toegestane bestandstypen zijn %1",
     "unsaved-changes": "Je hebt niet opgeslagen wijzigingen aangebracht. Weet je zeker dat je de pagina wilt verlaten?",
     "reconnecting-message": "Het lijkt erop dat je verbinding naar %1 verloren is gegaan, wacht even terwijl we de verbinding proberen te herstellen.",
@@ -105,5 +108,6 @@
     "cookies.learn_more": "Meer",
     "edited": "Bewerkt",
     "disabled": "Uitgeschakeld",
-    "select": "Selecteer"
+    "select": "Selecteer",
+    "user-search-prompt": "Typ hier om gebruikers te vinden..."
 }

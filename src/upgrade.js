@@ -18,7 +18,7 @@ var file = require('../src/file');
  * 3. Add your script under the "method" property
  */
 
-var Upgrade = {};
+var Upgrade = module.exports;
 
 Upgrade.getAll = function (callback) {
 	async.waterfall([
@@ -33,7 +33,13 @@ Upgrade.getAll = function (callback) {
 				versionA = path.dirname(a).split('/').pop();
 				versionB = path.dirname(b).split('/').pop();
 
-				return semver.compare(versionA, versionB);
+				var semverCompare = semver.compare(versionA, versionB);
+				if (semverCompare) {
+					return semverCompare;
+				}
+				var timestampA = require(a).timestamp;
+				var timestampB = require(b).timestamp;
+				return timestampA - timestampB;
 			}));
 		},
 		async.apply(Upgrade.appendPluginScripts),
@@ -81,7 +87,7 @@ Upgrade.check = function (callback) {
 				}
 
 				var remainder = files.filter(function (name) {
-					return executed.indexOf(path.basename(name, '.js')) === -1;
+					return !executed.includes(path.basename(name, '.js'));
 				});
 
 				next(remainder.length > 0 ? new Error('schema-out-of-date') : null);
@@ -91,7 +97,7 @@ Upgrade.check = function (callback) {
 };
 
 Upgrade.run = function (callback) {
-	process.stdout.write('\nParsing upgrade scripts... ');
+	console.log('\nParsing upgrade scripts... ');
 	var queue = [];
 	var skipped = 0;
 
@@ -106,7 +112,7 @@ Upgrade.run = function (callback) {
 		}
 
 		queue = data.available.reduce(function (memo, cur) {
-			if (data.completed.indexOf(path.basename(cur, '.js')) === -1) {
+			if (!data.completed.includes(path.basename(cur, '.js'))) {
 				memo.push(cur);
 			} else {
 				skipped += 1;
@@ -120,13 +126,13 @@ Upgrade.run = function (callback) {
 };
 
 Upgrade.runParticular = function (names, callback) {
-	process.stdout.write('\nParsing upgrade scripts... ');
+	console.log('\nParsing upgrade scripts... ');
 
 	async.waterfall([
 		async.apply(file.walk, path.join(__dirname, './upgrades')),
 		function (files, next) {
 			var upgrades = files.filter(function (file) {
-				return names.indexOf(path.basename(file, '.js')) !== -1;
+				return names.includes(path.basename(file, '.js'));
 			});
 
 			Upgrade.process(upgrades, 0, next);
@@ -135,7 +141,7 @@ Upgrade.runParticular = function (names, callback) {
 };
 
 Upgrade.process = function (files, skipCount, callback) {
-	process.stdout.write('OK'.green + ' | '.reset + String(files.length).cyan + ' script(s) found'.cyan + (skipCount > 0 ? ', '.cyan + String(skipCount).cyan + ' skipped'.cyan : '') + '\n'.reset);
+	console.log('OK'.green + ' | '.reset + String(files.length).cyan + ' script(s) found'.cyan + (skipCount > 0 ? ', '.cyan + String(skipCount).cyan + ' skipped'.cyan : ''));
 
 	async.waterfall([
 		function (next) {
@@ -157,14 +163,14 @@ Upgrade.process = function (files, skipCount, callback) {
 					date: date,
 				};
 
-				process.stdout.write('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '...\n');
+				console.log('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '...');
 
 				// For backwards compatibility, cross-reference with schemaDate (if found). If a script's date is older, skip it
 				if ((!results.schemaDate && !results.schemaLogCount) || (scriptExport.timestamp <= results.schemaDate && semver.lt(version, '1.5.0'))) {
 					readline.clearLine(process.stdout, 0);
 					readline.cursorTo(process.stdout, 0);
 					readline.moveCursor(process.stdout, 0, -1);
-					process.stdout.write('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '... ' + 'skipped\n'.grey);
+					console.log('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '... ' + 'skipped'.grey);
 					db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'), next);
 					return;
 				}
@@ -174,14 +180,14 @@ Upgrade.process = function (files, skipCount, callback) {
 					progress: progress,
 				})(function (err) {
 					if (err) {
-						process.stdout.write('error\n'.red);
+						console.error('Error occurred');
 						return next(err);
 					}
 
 					readline.clearLine(process.stdout, 0);
 					readline.cursorTo(process.stdout, 0);
 					readline.moveCursor(process.stdout, 0, -1);
-					process.stdout.write('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '... ' + 'OK\n'.green);
+					console.log('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '... ' + 'OK'.green);
 
 					// Record success in schemaLog
 					db.sortedSetAdd('schemaLog', Date.now(), path.basename(file, '.js'), next);
@@ -189,7 +195,7 @@ Upgrade.process = function (files, skipCount, callback) {
 			}, next);
 		},
 		function (next) {
-			process.stdout.write('Upgrade complete!\n\n'.green);
+			console.log('Schema update complete!\n'.green);
 			setImmediate(next);
 		},
 	], callback);
@@ -205,11 +211,10 @@ Upgrade.incrementProgress = function (value) {
 	if (this.total) {
 		percentage = Math.floor((this.current / this.total) * 100) + '%';
 		filled = Math.floor((this.current / this.total) * 15);
-		unfilled = 15 - filled;
+		unfilled = Math.max(0, 15 - filled);
 	}
 
 	readline.cursorTo(process.stdout, 0);
 	process.stdout.write('    [' + (filled ? new Array(filled).join('#') : '') + new Array(unfilled).join(' ') + '] (' + this.current + '/' + (this.total || '??') + ') ' + percentage + ' ');
 };
 
-module.exports = Upgrade;

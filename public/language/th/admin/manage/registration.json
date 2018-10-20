@@ -1,20 +1,20 @@
 {
-	"queue": "Queue",
-	"description": "There are no users in the registration queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"queue": "คิว",
+	"description": "ไม่มีผู้ใช้ในคิวการลงทะเบียน <br> เมื่อต้องการเปิดใช้คุณลักษณะนี้ ไปที่<a href=\"%1\"> การตั้งค่า &rarr; ผู้ใช้ &rarr; การลงทะเบียนผู้ใช้</a>และตั้ง<strong>ประเภทการลงทะเบียน</strong>เป็น \"การอนุมัติโดยผู้ดูแลระบบ\"",
 
-	"list.name": "Name",
-	"list.email": "Email",
+	"list.name": "ชื่อ",
+	"list.email": "อีเมล",
 	"list.ip": "IP",
-	"list.time": "Time",
-	"list.username-spam": "Frequency: %1 Appears: %2 Confidence: %3",
-	"list.email-spam": "Frequency: %1 Appears: %2",
-	"list.ip-spam": "Frequency: %1 Appears: %2",
+	"list.time": "เวลา",
+	"list.username-spam": "ความถี่: %1  ปรากฎ: %2 ความมั่นใจ: %3",
+	"list.email-spam": "ความถี่: %1  ปรากฎ: %2",
+	"list.ip-spam": "ความถี่: %1  ปรากฎ: %2",
 
-	"invitations": "Invitations",
-	"invitations.description": "Below is a complete list of invitations sent. Use ctrl-f to search through the list by email or username. <br><br>The username will be displayed to the right of the emails for users who have redeemed their invitations.",
-	"invitations.inviter-username": "Inviter Username",
-	"invitations.invitee-email": "Invitee Email",
-	"invitations.invitee-username": "Invitee Username (if registered)",
+	"invitations": "การเชิญ",
+	"invitations.description": "<br>ด้านล่างนี้เป็นรายการคำเชิญที่ส่งแล้ว ใช้ ctrl-f เพื่อค้นหาผ่านรายการทางอีเมลหรือชื่อผู้ใช้ <br>ชื่อผู้ใช้จะปรากฏทางด้านขวาของอีเมลสำหรับผู้ใช้ที่รับคำเชิญแล้ว",
+	"invitations.inviter-username": "ผู้เชิญผู้ใช้งานนี้",
+	"invitations.invitee-email": "อีเมลที่เชิญ",
+	"invitations.invitee-username": "ชื่อผู้ได้รับเชิญ (ถ้าลงทะเบียน)",
 
-	"invitations.confirm-delete": "Are you sure you wish to delete this invitation?"
+	"invitations.confirm-delete": "คุณแน่ใจหรือไม่ว่าต้องการลบคำเชิญนี้"
 } 

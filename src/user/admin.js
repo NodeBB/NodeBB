@@ -2,21 +2,41 @@
 'use strict';
 
 var async = require('async');
+var winston = require('winston');
+var validator = require('validator');
+
 var db = require('../database');
 var plugins = require('../plugins');
-var winston = require('winston');
 
 module.exports = function (User) {
-	User.logIP = function (uid, ip) {
+	User.logIP = function (uid, ip, callback) {
 		var now = Date.now();
-		db.sortedSetAdd('uid:' + uid + ':ip', now, ip || 'Unknown');
-		if (ip) {
-			db.sortedSetAdd('ip:' + ip + ':uid', now, uid);
-		}
+		async.waterfall([
+			function (next) {
+				db.sortedSetAdd('uid:' + uid + ':ip', now, ip || 'Unknown', next);
+			},
+			function (next) {
+				if (ip) {
+					db.sortedSetAdd('ip:' + ip + ':uid', now, uid, next);
+				} else {
+					next();
+				}
+			},
+		], callback);
 	};
 
 	User.getIPs = function (uid, stop, callback) {
-		db.getSortedSetRevRange('uid:' + uid + ':ip', 0, stop, callback);
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRevRange('uid:' + uid + ':ip', 0, stop, next);
+			},
+			function (ips, next) {
+				ips = ips.map(function (ip) {
+					return validator.escape(String(ip));
+				});
+				next(null, ips);
+			},
+		], callback);
 	};
 
 	User.getUsersCSV = function (callback) {

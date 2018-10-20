@@ -1,8 +1,18 @@
 <nav id="menu" class="hidden-md hidden-lg">
+	<section class="menu-section quick-actions">
+		<ul class="menu-section-list">
+			<div class="button-group">
+				<!-- IMPORT admin/partials/quick_actions/buttons.tpl -->
+			</div>
+
+			<!-- IMPORT admin/partials/quick_actions/alerts.tpl -->
+		</ul>
+	</section>
+	
 	<section class="menu-section">
 		<h3 class="menu-section-title">[[admin/menu:section-general]]</h3>
 		<ul class="menu-section-list">
-			<a href="{relative_path}/admin/general/dashboard">[[admin/menu:general/dashboard]]</a>
+			<li><a href="{relative_path}/admin/general/dashboard">[[admin/menu:general/dashboard]]</a></li>
 			<li><a href="{relative_path}/admin/general/homepage">[[admin/menu:general/homepage]]</a></li>
 			<li><a href="{relative_path}/admin/general/navigation">[[admin/menu:general/navigation]]</a></li>
 			<li><a href="{relative_path}/admin/general/languages">[[admin/menu:general/languages]]</a></li>
@@ -15,12 +25,15 @@
 		<h3 class="menu-section-title">[[admin/menu:section-manage]]</h3>
 		<ul class="menu-section-list">
 			<li><a href="{relative_path}/admin/manage/categories">[[admin/menu:manage/categories]]</a></li>
+			<li><a href="{relative_path}/admin/manage/privileges">[[admin/menu:manage/privileges]]</a></li>
 			<li><a href="{relative_path}/admin/manage/users">[[admin/menu:manage/users]]</a></li>
+			<li><a href="{relative_path}/admin/manage/admins-mods">[[admin/menu:manage/admins-mods]]</a></li>
 			<li><a href="{relative_path}/admin/manage/groups">[[admin/menu:manage/groups]]</a></li>
 			<li><a href="{relative_path}/admin/manage/tags">[[admin/menu:manage/tags]]</a></li>
 			<li><a href="{relative_path}/admin/manage/registration">[[admin/menu:manage/registration]]</a></li>
 			<li><a href="{relative_path}/admin/manage/post-queue">[[admin/menu:manage/post-queue]]</a></li>
 			<li><a href="{relative_path}/admin/manage/ip-blacklist">[[admin/menu:manage/ip-blacklist]]</a></li>
+			<li><a href="{relative_path}/admin/manage/uploads">[[admin/menu:manage/uploads]]</a></li>
 		</ul>
 	</section>
 
@@ -116,37 +129,11 @@
 			<h1 id="main-page-title"></h1>
 		</div>
 
-		<ul id="user_label" class="pull-right">
-			<li class="dropdown pull-right">
-				<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="user_dropdown">
-					<i class="fa fa-fw fa-ellipsis-v"></i>
-				</a>
-				<ul id="user-control-list" class="dropdown-menu" aria-labelledby="user_dropdown">
-					<li>
-						<a href="#" class="reload" title="[[admin/menu:reload-forum]]">
-							[[admin/menu:reload-forum]]
-						</a>
-					</li>
-					<li>
-						<a href="#" class="restart" title="[[admin/menu:restart-forum]]">
-							[[admin/menu:restart-forum]]
-						</a>
-					</li>
-					<li role="presentation" class="divider"></li>
-					<li component="logout">
-						<a href="#">[[admin/menu:logout]]</a>
-					</li>
-				</ul>
-			</li>
-
-			<li class="pull-right">
-				<a href="{config.relative_path}/">
-					<i class="fa fa-fw fa-home" title="[[admin/menu:view-forum]]"></i>
-				</a>
-			</li>
-
-			<form class="pull-right hidden-sm hidden-xs" role="search">
-				<div class="" id="acp-search" >
+		<ul class="quick-actions hidden-xs hidden-sm">
+			<!-- IMPORT admin/partials/quick_actions/buttons.tpl -->
+			
+			<form role="search">
+				<div id="acp-search" >
 					<div class="dropdown">
 						<input type="text" autofocus data-toggle="dropdown" class="form-control" placeholder="[[admin/menu:search.placeholder]]">
 						<ul class="dropdown-menu dropdown-menu-right state-start-typing" role="menu">
@@ -169,7 +156,17 @@
 					</div>
 				</div>
 			</form>
+
+			<!-- IMPORT admin/partials/quick_actions/alerts.tpl -->
+
+			<li class="reconnect-spinner">
+				<a href="#" id="reconnect" class="hide" title="[[admin/menu:connection-lost, {title}]]">
+					<i class="fa fa-check"></i>
+				</a>
+			</li>
 		</ul>
+
+
 		<ul id="main-menu">
 			<li class="menu-item">
 				<a href="{relative_path}/admin/general/dashboard">[[admin/menu:general/dashboard]]</a>
@@ -185,21 +182,24 @@
 				</ul>
 			</li>
 			<li class="dropdown menu-item">
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-manage]]</a>
+				<a id="manage-menu" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-manage]]</a>
 				<ul class="dropdown-menu" role="menu">
-					<li><a href="{relative_path}/admin/manage/categories">[[admin/menu:manage/categories]]</a></li>
-					<li><a href="{relative_path}/admin/manage/users">[[admin/menu:manage/users]]</a></li>
+					<li><a id="manage-categories" href="{relative_path}/admin/manage/categories">[[admin/menu:manage/categories]]</a></li>
+					<li><a href="{relative_path}/admin/manage/privileges">[[admin/menu:manage/privileges]]</a></li>
+					<li><a id="manage-users" href="{relative_path}/admin/manage/users">[[admin/menu:manage/users]]</a></li>
+					<li><a href="{relative_path}/admin/manage/admins-mods">[[admin/menu:manage/admins-mods]]</a></li>
 					<li><a href="{relative_path}/admin/manage/groups">[[admin/menu:manage/groups]]</a></li>
 					<li><a href="{relative_path}/admin/manage/tags">[[admin/menu:manage/tags]]</a></li>
 					<li><a href="{relative_path}/admin/manage/registration">[[admin/menu:manage/registration]]</a></li>
 					<li><a href="{relative_path}/admin/manage/post-queue">[[admin/menu:manage/post-queue]]</a></li>
 					<li><a href="{relative_path}/admin/manage/ip-blacklist">[[admin/menu:manage/ip-blacklist]]</a></li>
+					<li><a href="{relative_path}/admin/manage/uploads">[[admin/menu:manage/uploads]]</a></li>
 				</ul>
 			</li>
 			<li class="dropdown menu-item">
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-settings]]</a>
+				<a id="settings-menu" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-settings]]</a>
 				<ul class="dropdown-menu" role="menu">
-					<li><a href="{relative_path}/admin/settings/general">[[admin/menu:section-general]]</a></li>
+					<li><a id="settings-general" href="{relative_path}/admin/settings/general">[[admin/menu:section-general]]</a></li>
 					<li><a href="{relative_path}/admin/settings/user">[[admin/menu:settings/user]]</a></li>
 					<li><a href="{relative_path}/admin/settings/group">[[admin/menu:settings/group]]</a></li>
 					<li><a href="{relative_path}/admin/settings/tags">[[admin/menu:manage/tags]]</a></li>
@@ -218,11 +218,11 @@
 				</ul>
 			</li>
 			<li class="dropdown menu-item">
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-appearance]]</a>
+				<a id="appearance-menu" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-appearance]]</a>
 				<ul class="dropdown-menu" role="menu">
-					<li><a href="{relative_path}/admin/appearance/themes">[[admin/menu:appearance/themes]]</a></li>
-					<li><a href="{relative_path}/admin/appearance/skins">[[admin/menu:appearance/skins]]</a></li>
-					<li><a href="{relative_path}/admin/appearance/customise">[[admin/menu:appearance/customise]]</a></li>
+					<li><a id="appearance-themes" href="{relative_path}/admin/appearance/themes">[[admin/menu:appearance/themes]]</a></li>
+					<li><a id="appearance-skins" href="{relative_path}/admin/appearance/skins">[[admin/menu:appearance/skins]]</a></li>
+					<li><a id="appearance-customise" href="{relative_path}/admin/appearance/customise">[[admin/menu:appearance/customise]]</a></li>
 				</ul>
 			</li>
 			<li class="dropdown menu-item">
@@ -273,14 +273,6 @@
 					<li><a href="{relative_path}/admin/development/logger">[[admin/menu:development/logger]]</a></li>
 					<!-- ENDIF env -->
 				</ul>
-			</li>
-		</ul>
-
-		<ul class="nav navbar-nav navbar-right hidden-xs reconnect-spinner">
-			<li>
-				<a href="#" id="reconnect" class="hide" title="[[admin/menu:connection-lost, {title}]]">
-					<i class="fa fa-check"></i>
-				</a>
 			</li>
 		</ul>
 	</nav>

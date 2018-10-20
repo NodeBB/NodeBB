@@ -1,0 +1,30 @@
+{
+	"global": "Všeobecné",
+	"global.no-users": "Žádné všeobecné uživatelské nastavení.",
+
+	"chat": "Konverzace",
+	"upload-images": "Nahrát obrázky",
+	"upload-files": "Náhrát soubory",
+	"signature": "Podpis",
+	"ban": "Blokovat",
+	"search-content": "Hledat obsah",
+	"search-users": "Hledat uživatele",
+	"search-tags": "Hledat označení",
+	"allow-local-login": "Local Login",
+
+	"find-category": "Hledat kategorii",
+	"access-category": "Přístup ke kategorii",
+	"access-topics": "Přístup k tématům",
+	"create-topics": "Vytvořit téma",
+	"reply-to-topics": "Odpovědět na téma",
+	"tag-topics": "Označit téma",
+	"edit-posts": "Upravit příspěvek",
+	"view-edit-history": "Zobrazit historii editace",
+	"delete-posts": "Odstranit příspěvky",
+	"view_deleted": "Zobrazit odstraněné příspěvky",
+	"upvote-posts": "Souhlasné příspěvky",
+	"downvote-posts": "Nesouhlasné příspěvky",
+	"delete-topics": "Odstranit témata",
+	"purge": "Vyčistit",
+	"moderate": "Moderace"
+}

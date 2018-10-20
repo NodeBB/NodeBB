@@ -1,12 +1,16 @@
 {
-	"custom-css": "Własny CSS",
-	"custom-css.description": "Wprowadź tu własne deklaracje CSS, będą one zastosowane po wszystkich innych stylach.",
-	"custom-css.enable": "Włącz własne style CSS",
+	"custom-css": "Własny CSS/LESS",
+	"custom-css.description": "Wprowadź tutaj własne deklaracje CSS/LESS, które będą użyte po wszystkich pozostałych stylach.",
+	"custom-css.enable": "Aktywuj własne CSS/LESS",
+
+	"custom-js": "Własny Javascript",
+	"custom-js.description": "Wprowadź własny kod javascript tutaj. Będzie użyty po pełnym załadowaniu strony.",
+	"custom-js.enable": "Aktywuj własny Javascript.",
 
 	"custom-header": "Własny nagłówek",
-	"custom-header.description": "Wpisz tutaj kod HTML (JavaScript, tagi <code>&lt;meta&gt;</code>) który ma być dołączony do sekcji <code>&lt;head&gt;</code> w szablonie forum.",
+	"custom-header.description": "Wprowadź tutaj własny kod HTML (np. meta tagi, itp.), które będą dołączone do sekcji <code>&lt;head&gt;</code> twojego forumowego znacznika. Tagi skryptów są dozwolone, ale niezaleccane jako że zakładka <a href=\"#custom-header\" data-toggle=\"tab\">Własny Javascript</a> jest dostępna. ",
 	"custom-header.enable": "Włącz własny nagłówek",
 
 	"custom-css.livereload": "Włącz dynamiczne przeładowanie",
-	"custom-css.livereload.description": "Włącz to, aby zmusić wszystkie sesje do odświeżenia na każdym urządzeniu na twoim koncie gdziekolwiek klikniesz zapisz."
+	"custom-css.livereload.description": "Włącz, jeśli chcesz wymusić odświeżenie wszystkich sesji na każdym urządzeniu na Twoim koncie zawsze, gdy klikniesz „zapisz”."
 }

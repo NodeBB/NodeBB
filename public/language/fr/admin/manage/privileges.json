@@ -1,0 +1,30 @@
+{
+	"global": "Global",
+	"global.no-users": "Aucun privilège global spécifique à l'utilisateur.",
+
+	"chat": "Chat",
+	"upload-images": "Images envoyées",
+	"upload-files": "Fichiers envoyés",
+	"signature": "Signature",
+	"ban": "Bannir",
+	"search-content": "Rechercher un contenu",
+	"search-users": "Rechercher des utilisateurs",
+	"search-tags": "Rechercher les tags",
+	"allow-local-login": "Identifiant local",
+
+	"find-category": "Rechercher une catégorie",
+	"access-category": "Droits des catégories",
+	"access-topics": "Droits des sujets",
+	"create-topics": "Créer des sujets",
+	"reply-to-topics": "Répondre aux sujets",
+	"tag-topics": "Tag des sujets",
+	"edit-posts": "Modifier les messages",
+	"view-edit-history": "Historique des modifications",
+	"delete-posts": "Supprimer les messages",
+	"view_deleted": "Voir les messages supprimés",
+	"upvote-posts": "Messages positifs",
+	"downvote-posts": "Messages négatifs",
+	"delete-topics": "Supprimer les sujets",
+	"purge": "Purger",
+	"moderate": "Modérer"
+}

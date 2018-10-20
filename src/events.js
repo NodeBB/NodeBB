@@ -4,6 +4,7 @@
 var async = require('async');
 var validator = require('validator');
 var winston = require('winston');
+var _ = require('lodash');
 
 var db = require('./database');
 var batch = require('./batch');
@@ -12,6 +13,45 @@ var utils = require('./utils');
 
 var events = module.exports;
 
+events.types = [
+	'plugin-activate',
+	'plugin-deactivate',
+	'restart',
+	'build',
+	'config-change',
+	'settings-change',
+	'category-purge',
+	'privilege-change',
+	'post-delete',
+	'post-restore',
+	'post-purge',
+	'topic-delete',
+	'topic-restore',
+	'topic-purge',
+	'topic-rename',
+	'password-reset',
+	'user-ban',
+	'user-unban',
+	'user-delete',
+	'password-change',
+	'email-change',
+	'username-change',
+	'ip-blacklist-save',
+	'ip-blacklist-addRule',
+	'registration-approved',
+	'registration-rejected',
+	'accept-membership',
+	'reject-membership',
+	'theme-set',
+	'export:uploads',
+	'account-locked',
+	'getUsersCSV',
+];
+
+/**
+ * Useful options in data: type, uid, ip, targetUid
+ * Everything else gets stringified and shown as pretty JSON string
+ */
 events.log = function (data, callback) {
 	callback = callback || function () {};
 
@@ -28,6 +68,9 @@ events.log = function (data, callback) {
 					db.sortedSetAdd('events:time', data.timestamp, eid, next);
 				},
 				function (next) {
+					db.sortedSetAdd('events:time:' + data.type, data.timestamp, eid, next);
+				},
+				function (next) {
 					db.setObject('event:' + eid, data, next);
 				},
 			], next);
@@ -37,10 +80,10 @@ events.log = function (data, callback) {
 	});
 };
 
-events.getEvents = function (start, stop, callback) {
+events.getEvents = function (filter, start, stop, callback) {
 	async.waterfall([
 		function (next) {
-			db.getSortedSetRevRange('events:time', start, stop, next);
+			db.getSortedSetRevRange('events:time' + (filter ? ':' + filter : ''), start, stop, next);
 		},
 		function (eids, next) {
 			var keys = eids.map(function (eid) {
@@ -77,11 +120,7 @@ events.getEvents = function (start, stop, callback) {
 };
 
 function addUserData(eventsData, field, objectName, callback) {
-	var uids = eventsData.map(function (event) {
-		return event && event[field];
-	}).filter(function (uid, index, array) {
-		return uid && array.indexOf(uid) === index;
-	});
+	var uids = _.uniq(eventsData.map(event => event && event[field]));
 
 	if (!uids.length) {
 		return callback(null, eventsData);
@@ -119,15 +158,24 @@ function addUserData(eventsData, field, objectName, callback) {
 
 events.deleteEvents = function (eids, callback) {
 	callback = callback || function () {};
-	async.parallel([
+	var keys;
+	async.waterfall([
 		function (next) {
-			var keys = eids.map(function (eid) {
+			keys = eids.map(function (eid) {
 				return 'event:' + eid;
 			});
-			db.deleteAll(keys, next);
+			db.getObjectsFields(keys, ['type'], next);
 		},
-		function (next) {
-			db.sortedSetRemove('events:time', eids, next);
+		function (eventData, next) {
+			var sets = _.uniq(['events:time'].concat(eventData.map(e => 'events:time:' + e.type)));
+			async.parallel([
+				function (next) {
+					db.deleteAll(keys, next);
+				},
+				function (next) {
+					db.sortedSetRemove(sets, eids, next);
+				},
+			], next);
 		},
 	], callback);
 };
@@ -141,15 +189,15 @@ events.deleteAll = function (callback) {
 };
 
 events.output = function () {
-	process.stdout.write('\nDisplaying last ten administrative events...\n'.bold);
-	events.getEvents(0, 9, function (err, events) {
+	console.log('\nDisplaying last ten administrative events...'.bold);
+	events.getEvents('', 0, 9, function (err, events) {
 		if (err) {
 			winston.error('Error fetching events', err);
 			throw err;
 		}
 
 		events.forEach(function (event) {
-			process.stdout.write('  * ' + String(event.timestampISO).green + ' ' + String(event.type).yellow + (event.text ? ' ' + event.text : '') + ' (uid: '.reset + (event.uid ? event.uid : 0) + ')\n');
+			console.log('  * ' + String(event.timestampISO).green + ' ' + String(event.type).yellow + (event.text ? ' ' + event.text : '') + ' (uid: '.reset + (event.uid ? event.uid : 0) + ')');
 		});
 
 		process.exit(0);

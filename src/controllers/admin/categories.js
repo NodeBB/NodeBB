@@ -3,7 +3,6 @@
 var async = require('async');
 
 var categories = require('../../categories');
-var privileges = require('../../privileges');
 var analytics = require('../../analytics');
 var plugins = require('../../plugins');
 var translator = require('../../translator');
@@ -14,8 +13,7 @@ categoriesController.get = function (req, res, callback) {
 	async.waterfall([
 		function (next) {
 			async.parallel({
-				category: async.apply(categories.getCategories, [req.params.category_id], req.user.uid),
-				privileges: async.apply(privileges.categories.list, req.params.category_id),
+				category: async.apply(categories.getCategories, [req.params.category_id], req.uid),
 				allCategories: async.apply(categories.buildForSelect, req.uid, 'read'),
 			}, next);
 		},
@@ -36,7 +34,6 @@ categoriesController.get = function (req, res, callback) {
 				req: req,
 				res: res,
 				category: category,
-				privileges: data.privileges,
 				allCategories: data.allCategories,
 			}, next);
 		},
@@ -44,7 +41,6 @@ categoriesController.get = function (req, res, callback) {
 			data.category.name = translator.escape(String(data.category.name));
 			res.render('admin/manage/category', {
 				category: data.category,
-				privileges: data.privileges,
 				allCategories: data.allCategories,
 			});
 		},

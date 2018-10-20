@@ -9,6 +9,7 @@
     "continue_to": "ดำเนินการต่อไปยัง  %1",
     "return_to": "กลับสู่  %1",
     "new_notification": "ข้อความเตือนใหม่",
+    "new_notification_from": "คุณมีคำเตือนใหม่จาก %1",
     "you_have_unread_notifications": "คุณมีคำเตือนที่ยังไม่ได้อ่าน",
     "all": "ทั้งหมด",
     "topics": "กระทู้",
@@ -45,5 +46,19 @@
     "email-confirmed": "Email ได้รับการยืนยันแล้ว",
     "email-confirmed-message": "ขอบคุณที่ยืนยัน Email ของคุณ บัญชีของคุณสามารถใช้งานได้แล้ว",
     "email-confirm-error-message": "มีปัญหาในการยืนยัน Email ของคุณ บางทีรหัสไม่ถูกต้องหรือหมดอายุแล้ว",
-    "email-confirm-sent": "Email เพื่อยืนยันได้ส่งไปแล้ว"
+    "email-confirm-sent": "Email เพื่อยืนยันได้ส่งไปแล้ว",
+    "none": "ไม่มี",
+    "notification_only": "แจ้งเตือนอย่างเดียว",
+    "email_only": "อีเมลอย่างเดียว",
+    "notification_and_email": "การแจ้งเตือนและอีเมล",
+    "notificationType_upvote": "เมื่อมีคนโหวตอัพให้โพสต์คุณ",
+    "notificationType_new-topic": "เมื่อมีคนติดตามโพสต์คุณ",
+    "notificationType_new-reply": "เมื่อมีการตอบกลับในโพสต์ที่คุณกำลังติดตาม",
+    "notificationType_follow": "เมื่อมีคนติดตามคุณ",
+    "notificationType_new-chat": "เมื่อคุณได้รับข้อความใหม่",
+    "notificationType_group-invite": "เมื่อคุณได้รับเชิญเข้ากลุ่ม",
+    "notificationType_new-register": "เมื่อมีคนถูกเพิ่มในคิวลงทะเบียน",
+    "notificationType_post-queue": "เมื่อมีโพสต์ใหม่อยู่ในคิว",
+    "notificationType_new-post-flag": "เมื่อโพสต์ถูกตั้งค่าสถานะ",
+    "notificationType_new-user-flag": "เมื่อผู้ใช้ถูกตั้งค่าสถานะ"
 }

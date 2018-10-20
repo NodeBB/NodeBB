@@ -1,10 +1,14 @@
 {
-	"custom-css": "Uživatelský CSS",
-	"custom-css.description": "Zadejte vlastní deklarace CSS, které budou použity na všechny ostatních styly.",
-	"custom-css.enable": "Povolit uživatelské CSS",
+	"custom-css": "Uživatelský CSS/LESS",
+	"custom-css.description": "Zadejte vlastní definici CSS/LESS, která bude nadřazená ostatním stylům.",
+	"custom-css.enable": "Povolit uživatelský CSS/LESS",
+
+	"custom-js": "Uživatelský Javascript",
+	"custom-js.description": "Zadejte zde váš javascriptový kód. Bude spuštěn, jakmile se stránka plně načte.",
+	"custom-js.enable": "Povolit uživatelský Javascript",
 
 	"custom-header": "Uživatelská hlavička",
-	"custom-header.description": "Zadejte zde uživatelské HTML (např.: javascript, meta značky, atp.), které bude přiřazeno k <code>&lt;head&gt;</code>  části značek vašeho fóra.",
+	"custom-header.description": "Zde zadejte uživatelské HTML (mimo Meta Tags, atd.), které bude připojeno k části značek <code>&lt;head&gt;</code> vašeho fóra.. Značky pro „script” jsou povoleny, ale nedoporučujeme je, neboť je dostupný <a href=\"#custom-header\" data-toggle=\"tab\">Uživatelský Javascript</a> .",
 	"custom-header.enable": "Povolit uživatelskou hlavičku",
 
 	"custom-css.livereload": "Povolit aktuální znovu načtení",

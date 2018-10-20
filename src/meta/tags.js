@@ -1,12 +1,12 @@
 'use strict';
 
 var nconf = require('nconf');
-var validator = require('validator');
 var async = require('async');
 var winston = require('winston');
 
 var plugins = require('../plugins');
 var Meta = require('../meta');
+var utils = require('../utils');
 
 var Tags = module.exports;
 
@@ -56,7 +56,7 @@ Tags.parse = function (req, data, meta, link, callback) {
 			var defaultLinks = [{
 				rel: 'icon',
 				type: 'image/x-icon',
-				href: nconf.get('relative_path') + '/favicon.ico' + (Meta.config['cache-buster'] ? '?' + Meta.config['cache-buster'] : ''),
+				href: nconf.get('relative_path') + nconf.get('upload_url') + '/system/favicon.ico' + (Meta.config['cache-buster'] ? '?' + Meta.config['cache-buster'] : ''),
 			}, {
 				rel: 'manifest',
 				href: nconf.get('relative_path') + '/manifest.json',
@@ -66,7 +66,7 @@ Tags.parse = function (req, data, meta, link, callback) {
 				defaultLinks.push({
 					rel: 'search',
 					type: 'application/opensearchdescription+xml',
-					title: validator.escape(String(Meta.config.title || Meta.config.browserTitle || 'NodeBB')),
+					title: utils.escapeHTML(String(Meta.config.title || Meta.config.browserTitle || 'NodeBB')),
 					href: nconf.get('relative_path') + '/osd.xml',
 				});
 			}
@@ -75,31 +75,31 @@ Tags.parse = function (req, data, meta, link, callback) {
 			if (Meta.config['brand:touchIcon']) {
 				defaultLinks.push({
 					rel: 'apple-touch-icon',
-					href: nconf.get('relative_path') + '/apple-touch-icon',
+					href: nconf.get('relative_path') + nconf.get('upload_url') + '/system/touchicon-orig.png',
 				}, {
 					rel: 'icon',
 					sizes: '36x36',
-					href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-36.png',
+					href: nconf.get('relative_path') + nconf.get('upload_url') + '/system/touchicon-36.png',
 				}, {
 					rel: 'icon',
 					sizes: '48x48',
-					href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-48.png',
+					href: nconf.get('relative_path') + nconf.get('upload_url') + '/system/touchicon-48.png',
 				}, {
 					rel: 'icon',
 					sizes: '72x72',
-					href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-72.png',
+					href: nconf.get('relative_path') + nconf.get('upload_url') + '/system/touchicon-72.png',
 				}, {
 					rel: 'icon',
 					sizes: '96x96',
-					href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-96.png',
+					href: nconf.get('relative_path') + nconf.get('upload_url') + '/system/touchicon-96.png',
 				}, {
 					rel: 'icon',
 					sizes: '144x144',
-					href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-144.png',
+					href: nconf.get('relative_path') + nconf.get('upload_url') + '/system/touchicon-144.png',
 				}, {
 					rel: 'icon',
 					sizes: '192x192',
-					href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-192.png',
+					href: nconf.get('relative_path') + nconf.get('upload_url') + '/system/touchicon-192.png',
 				});
 			}
 			plugins.fireHook('filter:meta.getLinkTags', { req: req, data: data, links: defaultLinks }, next);
@@ -116,7 +116,7 @@ Tags.parse = function (req, data, meta, link, callback) {
 			}
 
 			if (!tag.noEscape) {
-				tag.content = validator.escape(String(tag.content));
+				tag.content = utils.escapeHTML(String(tag.content));
 			}
 
 			return tag;
@@ -124,20 +124,20 @@ Tags.parse = function (req, data, meta, link, callback) {
 
 		addIfNotExists(meta, 'property', 'og:title', Meta.config.title || 'NodeBB');
 
-		var ogUrl = nconf.get('url') + req.path;
+		var ogUrl = nconf.get('url') + (req.originalUrl !== '/' ? stripRelativePath(req.originalUrl) : '');
 		addIfNotExists(meta, 'property', 'og:url', ogUrl);
 
 		addIfNotExists(meta, 'name', 'description', Meta.config.description);
 		addIfNotExists(meta, 'property', 'og:description', Meta.config.description);
 
-		var ogImage = Meta.config['og:image'] || Meta.config['brand:logo'] || '';
+		var ogImage = stripRelativePath(Meta.config['og:image'] || Meta.config['brand:logo'] || '');
 		if (ogImage && !ogImage.startsWith('http')) {
 			ogImage = nconf.get('url') + ogImage;
 		}
 		addIfNotExists(meta, 'property', 'og:image', ogImage);
 		if (ogImage) {
-			addIfNotExists(meta, 'property', 'og:image:width', 200);
-			addIfNotExists(meta, 'property', 'og:image:height', 200);
+			addIfNotExists(meta, 'property', 'og:image:width', Meta.config['og:image:width'] || 200);
+			addIfNotExists(meta, 'property', 'og:image:height', Meta.config['og:image:height'] || 200);
 		}
 
 		link = results.links.links.concat(link || []);
@@ -159,9 +159,17 @@ function addIfNotExists(meta, keyName, tagName, value) {
 
 	if (!exists && value) {
 		var data = {
-			content: validator.escape(String(value)),
+			content: utils.escapeHTML(String(value)),
 		};
 		data[keyName] = tagName;
 		meta.push(data);
 	}
+}
+
+function stripRelativePath(url) {
+	if (url.startsWith(nconf.get('relative_path'))) {
+		return url.slice(nconf.get('relative_path').length);
+	}
+
+	return url;
 }

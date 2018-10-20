@@ -9,6 +9,7 @@
     "continue_to": "Devam et",
     "return_to": "Geri dön.",
     "new_notification": "Yeni bildirim",
+    "new_notification_from": "Yenir bir bildiriminiz var %1",
     "you_have_unread_notifications": "Okunmamış bildirimleriniz var.",
     "all": "Hepsi",
     "topics": "Başlıklar",
@@ -45,5 +46,19 @@
     "email-confirmed": "E-posta onaylandı",
     "email-confirmed-message": "E-postanızı onaylandığınız için teşekkürler. Hesabınız tamamen aktif edildi.",
     "email-confirm-error-message": "E-posta adresinizi onaylarken bir hata oluştu. Kodunuz geçersiz ya da eski olabilir.",
-    "email-confirm-sent": "Onay e-postası gönderildi."
+    "email-confirm-sent": "Onay e-postası gönderildi.",
+    "none": "Hiçbiri",
+    "notification_only": "Sadece Bildirim",
+    "email_only": "Sadece E-posta",
+    "notification_and_email": "Bildirim & E-posta",
+    "notificationType_upvote": "Birisi senin iletine artı oy verdiğinde",
+    "notificationType_new-topic": "Takip ettiğiniz birisi bir başlık gönderdiğinde",
+    "notificationType_new-reply": "İzlediğiniz bir başlığa yeni bir ileti gönderildiğinde",
+    "notificationType_follow": "Birisi seni takip etmeye başlayınca",
+    "notificationType_new-chat": "Bir sohbet mesajı aldığınızda",
+    "notificationType_group-invite": "Bir grup davetiyesi aldığınızda",
+    "notificationType_new-register": "Birisi kayıt kuyruğuna eklendiğinde",
+    "notificationType_post-queue": "Yeni bir ileti sıraya alındığında",
+    "notificationType_new-post-flag": "Bir ileti bayraklandığında",
+    "notificationType_new-user-flag": "Bir kullanıcı bayraklandığında"
 }

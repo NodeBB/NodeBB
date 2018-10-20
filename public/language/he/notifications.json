@@ -9,6 +9,7 @@
     "continue_to": "המשך ל %1",
     "return_to": "חזור ל %1",
     "new_notification": "התראה חדשה",
+    "new_notification_from": "יש לך התראה חדשה מ %1",
     "you_have_unread_notifications": "יש לך התראות שלא נקראו.",
     "all": "הכל",
     "topics": "נושאים",
@@ -45,5 +46,19 @@
     "email-confirmed": "כתובת המייל אושרה",
     "email-confirmed-message": "תודה שאישרת את כתובת המייל שלך. החשבון שלך פעיל כעת.",
     "email-confirm-error-message": "אירעה שגיאה בעת אישור המייל שלך. ייתכן כי הקוד היה שגוי או פג תוקף.",
-    "email-confirm-sent": "מייל אישור נשלח."
+    "email-confirm-sent": "מייל אישור נשלח.",
+    "none": "אף אחד",
+    "notification_only": "התראות בלבד",
+    "email_only": "דוא\"ל בלבד",
+    "notification_and_email": "התראות & דוא\"ל",
+    "notificationType_upvote": "כאשר מישהו מצביע בעד הפוסט שלך",
+    "notificationType_new-topic": "כשמישהו שאתה עוקב אחריו פרסם נושא",
+    "notificationType_new-reply": "כשתגובה חדשה מפורסמת בנושא שאתה צופה בו",
+    "notificationType_follow": "כשמישהו מתחיל לעקוב אחריך",
+    "notificationType_new-chat": "כשאתה מקבל הודעת צאט",
+    "notificationType_group-invite": "כשאתה מקבל הזמנה מקבוצה",
+    "notificationType_new-register": "כאשר מישהו מתווסף לתור הרישום",
+    "notificationType_post-queue": "כשהודעה חדשה נכנסת לתור",
+    "notificationType_new-post-flag": "כאשר פוסט מסומן",
+    "notificationType_new-user-flag": "כאשר משתמש מסומן"
 }

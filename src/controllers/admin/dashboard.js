@@ -2,10 +2,15 @@
 
 var async = require('async');
 var nconf = require('nconf');
+var semver = require('semver');
+var winston = require('winston');
 
+var versions = require('../../admin/versions');
 var db = require('../../database');
 var meta = require('../../meta');
 var plugins = require('../../plugins');
+var user = require('../../user');
+var utils = require('../../utils');
 
 var dashboardController = module.exports;
 
@@ -13,9 +18,7 @@ dashboardController.get = function (req, res, next) {
 	async.waterfall([
 		function (next) {
 			async.parallel({
-				stats: function (next) {
-					getStats(next);
-				},
+				stats: getStats,
 				notices: function (next) {
 					var notices = [
 						{
@@ -41,13 +44,33 @@ dashboardController.get = function (req, res, next) {
 
 					plugins.fireHook('filter:admin.notices', notices, next);
 				},
+				latestVersion: function (next) {
+					versions.getLatestVersion(function (err, result) {
+						if (err) {
+							winston.error('[acp] Failed to fetch latest version', err);
+						}
+
+						next(null, err ? null : result);
+					});
+				},
+				lastrestart: function (next) {
+					getLastRestart(next);
+				},
 			}, next);
 		},
 		function (results) {
+			var version = nconf.get('version');
+
 			res.render('admin/general/dashboard', {
-				version: nconf.get('version'),
+				version: version,
+				lookupFailed: results.latestVersion === null,
+				latestVersion: results.latestVersion,
+				upgradeAvailable: results.latestVersion && semver.gt(results.latestVersion, version),
+				currentPrerelease: versions.isPrerelease.test(version),
 				notices: results.notices,
 				stats: results.stats,
+				canRestart: !!process.send,
+				lastrestart: results.lastrestart,
 			});
 		},
 	], next);
@@ -110,4 +133,25 @@ function getGlobalField(field, callback) {
 	db.getObjectField('global', field, function (err, count) {
 		callback(err, parseInt(count, 10) || 0);
 	});
+}
+
+function getLastRestart(callback) {
+	var lastrestart;
+	async.waterfall([
+		function (next) {
+			db.getObject('lastrestart', next);
+		},
+		function (_lastrestart, next) {
+			lastrestart = _lastrestart;
+			if (!lastrestart) {
+				return callback();
+			}
+			user.getUserData(lastrestart.uid, next);
+		},
+		function (userData, next) {
+			lastrestart.user = userData;
+			lastrestart.timestampISO = utils.toISOString(lastrestart.timestamp);
+			next(null, lastrestart);
+		},
+	], callback);
 }

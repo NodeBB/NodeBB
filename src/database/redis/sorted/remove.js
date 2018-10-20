@@ -13,9 +13,19 @@ module.exports = function (redisClient, module) {
 			value = [value];
 		}
 
-		helpers.multiKeyValues(redisClient, 'zrem', key, value, function (err) {
-			callback(err);
-		});
+		if (Array.isArray(key)) {
+			var multi = redisClient.multi();
+			key.forEach(function (key) {
+				multi.zrem(key, value);
+			});
+			multi.exec(function (err) {
+				callback(err);
+			});
+		} else {
+			helpers.multiKeyValues(redisClient, 'zrem', key, value, function (err) {
+				callback(err);
+			});
+		}
 	};
 
 	module.sortedSetsRemove = function (keys, value, callback) {

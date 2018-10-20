@@ -23,7 +23,7 @@
 	"redis": "Redis",
 	"redis.version": "Versione Redis",
 	"redis.connected-clients": "Clients Connessi",
-	"redis.connected-slaves": "Connected Slaves",
+	"redis.connected-slaves": "Slaves connessi",
 	"redis.blocked-clients": "Clients Bloccati",
 	"redis.used-memory": "Memoria Usata",
 	"redis.memory-frag-ratio": "Rateo della Frammentazione della Memoria",
@@ -32,5 +32,9 @@
 	"redis.iops": "Operazioni Instantanee al Secondo",
 	"redis.keyspace-hits": "Keyspace Hits",
 	"redis.keyspace-misses": "Keyspace Misses",
-	"redis.raw-info": "Redis Raw Info"
+	"redis.raw-info": "Redis Raw Info",
+
+	"postgres": "Postgress",
+	"postgres.version": "Versione di PostgreSQL",
+	"postgres.raw-info": "Postgres Raw Info"
 }

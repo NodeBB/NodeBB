@@ -16,10 +16,7 @@ module.exports = function (Topics) {
 	Topics.onNewPostMade = function (postData, callback) {
 		async.series([
 			function (next) {
-				Topics.increasePostCount(postData.tid, next);
-			},
-			function (next) {
-				Topics.updateTimestamp(postData.tid, postData.timestamp, next);
+				Topics.updateLastPostTime(postData.tid, postData.timestamp, next);
 			},
 			function (next) {
 				Topics.addPostToTopic(postData.tid, postData, next);
@@ -60,24 +57,20 @@ module.exports = function (Topics) {
 		}
 
 		function getPostUserData(field, method, callback) {
-			var uids = [];
+			var uidsMap = {};
 
-			postData.forEach(function (postData) {
-				if (postData && parseInt(postData[field], 10) >= 0 && uids.indexOf(postData[field]) === -1) {
-					uids.push(postData[field]);
+			postData.forEach((post) => {
+				if (post && parseInt(post[field], 10) >= 0) {
+					uidsMap[post[field]] = 1;
 				}
 			});
-
+			const uids = Object.keys(uidsMap);
 			async.waterfall([
 				function (next) {
 					method(uids, next);
 				},
 				function (users, next) {
-					var userData = {};
-					users.forEach(function (user, index) {
-						userData[uids[index]] = user;
-					});
-					next(null, userData);
+					next(null, _.zipObject(uids, users));
 				},
 			], callback);
 		}
@@ -150,7 +143,7 @@ module.exports = function (Topics) {
 				post.display_post_menu = topicPrivileges.isAdminOrMod || (post.selfPost && !topicData.locked) || ((loggedIn || topicData.postSharing.length) && !post.deleted);
 				post.ip = topicPrivileges.isAdminOrMod ? post.ip : undefined;
 
-				posts.modifyPostByPrivilege(post, topicPrivileges.isAdminOrMod);
+				posts.modifyPostByPrivilege(post, topicPrivileges);
 			}
 		});
 	};
@@ -288,6 +281,9 @@ module.exports = function (Topics) {
 				}
 			},
 			function (next) {
+				Topics.increasePostCount(tid, next);
+			},
+			function (next) {
 				db.sortedSetIncrBy('tid:' + tid + ':posters', 1, postData.uid, next);
 			},
 			function (count, next) {
@@ -303,6 +299,9 @@ module.exports = function (Topics) {
 					'tid:' + tid + ':posts',
 					'tid:' + tid + ':posts:votes',
 				], postData.pid, next);
+			},
+			function (next) {
+				Topics.decreasePostCount(tid, next);
 			},
 			function (next) {
 				db.sortedSetIncrBy('tid:' + tid + ':posters', -1, postData.uid, next);
@@ -326,7 +325,7 @@ module.exports = function (Topics) {
 				}, next);
 			},
 			function (results, next) {
-				if (results.mainPid) {
+				if (parseInt(results.mainPid, 10)) {
 					results.pids = [results.mainPid].concat(results.pids);
 				}
 				next(null, results.pids);

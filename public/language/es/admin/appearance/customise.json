@@ -1,10 +1,14 @@
 {
-	"custom-css": "CSS personalizado",
-	"custom-css.description": "Introduce tus propias declaraciones CSS aquí, las cuales serán aplicadas después de otros estilos.",
-	"custom-css.enable": "Activar CSS personalizado",
+	"custom-css": "CSS/LESS personalizado",
+	"custom-css.description": "Ingrese sus propias declaraciones de CSS/LESS aquí, las cuales serán aplicadas después de todos los demás estilos.",
+	"custom-css.enable": "Activar CSS/LESS personalizado",
+
+	"custom-js": "Javascript personalizado",
+	"custom-js.description": "Introduzca su propio javascript aquí. Este será ejecutado cuando la página haya cargado por completo.",
+	"custom-js.enable": "Activar Javascript personalizado",
 
 	"custom-header": "Cabezera personalizada",
-	"custom-header.description": "Introduce HTML personalizado aquí (ej. JavaScript, Meta Etiquetas, etc.), el cual se adjuntará a la sección <code>&lt;head&gt;</code> del código de su foro.",
+	"custom-header.description": "Introduzca su HTML personalizado aquí (ej. Meta Etiquetas, etc.), el cual se adjuntará a la sección <code>&lt;head&gt;</code> del código de su foro.",
 	"custom-header.enable": "Activar cabecera personalizada",
 
 	"custom-css.livereload": "Activar Recargar en Vivo",

@@ -9,15 +9,18 @@
 
 	"section-manage": "Yönet",
 	"manage/categories": "Kategoriler",
+	"manage/privileges": "Yetkiler",
 	"manage/tags": "Etiketler",
 	"manage/users": "Kullanıcılar",
+	"manage/admins-mods": "Yöneticiler ve Modlar",
 	"manage/registration": "Kayıt Kuyruğu",
 	"manage/post-queue": "İleti Kuyruğu",
 	"manage/groups": "Gruplar",
 	"manage/ip-blacklist": "IP Kara Listesi",
+	"manage/uploads": "Yüklemeler",
 
 	"section-settings": "Ayarlar",
-	"settings/general": "General",
+	"settings/general": "Genel",
 	"settings/reputation": "İtibar",
 	"settings/email": "E-posta",
 	"settings/user": "Kullanıcı",
@@ -34,19 +37,19 @@
 	"settings/sockets": "Soketler",
 	"settings/advanced": "Gelişmiş",
 
-	"settings.page-title": "%1 Settings",
+	"settings.page-title": "%1 Ayar",
 
 	"section-appearance": "Görünüm",
 	"appearance/themes": "Temalar",
 	"appearance/skins": "Deriler",
-	"appearance/customise": "Özel HTML & CSS",
+	"appearance/customise": "Özelleşmiş İçerik (HTML / JS / CSS)",
 
 	"section-extend": "Genişletme",
 	"extend/plugins": "Eklentiler",
 	"extend/widgets": "Bileşenler",
 	"extend/rewards": "Ödüller",
 
-	"section-social-auth": "Social Authentication",
+	"section-social-auth": "Sosyal Kimlik Doğrulama",
 
 	"section-plugins": "Eklentiler",
 	"extend/plugins.install": "Eklenti Yükle",
@@ -57,19 +60,22 @@
 	"advanced/logs": "Kayıtlar",
 	"advanced/errors": "Hatalar",
 	"advanced/cache": "Önbellek",
-	"development/logger": "Logger",
-	"development/info": "Info",
+	"development/logger": "Kaydedici",
+	"development/info": "bilgi",
 
-	"reload-forum": "Forumu Yeniden Yükle",
+	"rebuild-and-restart-forum": "Forumu Yeniden oluştur &amp; Yeniden Başlat",
 	"restart-forum": "Forumu Yeniden Başlat",
 	"logout": "Çıkış",
 	"view-forum": "Forumu Görüntüle",
 
-	"search.placeholder": "Search for settings",
-	"search.no-results": "No results...",
-	"search.search-forum": "Search the forum for <strong></strong>",
-	"search.keep-typing": "Type more to see results...",
-	"search.start-typing": "Start typing to see results...",
+	"search.placeholder": "Ayarları ara",
+	"search.no-results": "Sonuç yok...",
+	"search.search-forum": "Forumda ara: <strong></strong>",
+	"search.keep-typing": "Sonuçları görmek için daha fazla yazın...",
+	"search.start-typing": "Sonuçları görmek için yazmaya başlayın...",
 
-	"connection-lost": "Connection to %1 has been lost, attempting to reconnect..."
+	"connection-lost": "%1 ile bağlantı kesildi, yeniden bağlanılmaya çalışılıyor...",
+
+	"alerts.version": "<strong>NodeBB v%1</strong>",
+	"alerts.upgrade": "Güncelle: v%1"
 }

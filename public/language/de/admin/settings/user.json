@@ -1,6 +1,5 @@
 {
 	"authentication": "Authentifizierung",
-	"allow-local-login": "Erlaube Lokalen Login",
 	"require-email-confirmation": "Benötigt E-Mail Bestätigung",
 	"email-confirm-interval": "Der Benutzer kann für ",
 	"email-confirm-email2": "  Minuten keine Bestätigungsmail erneut senden.",
@@ -19,6 +18,8 @@
 	"themes": "Themes",
 	"disable-user-skins": "Verhindere das Benutzer eigene Skins verwenden",
 	"account-protection": "Kontosicherheit",
+	"admin-relogin-duration": "Dauer bis zum erneuten Login (in Minuten)",
+	"admin-relogin-duration-help": "Nach einer gesetzten Zeit erfordert der Zugriff auf die Admin Sektion einen erneuten Login, 0 deaktiviert dies",
 	"login-attempts": "Login-Versuche pro Stunde",
 	"login-attempts-help": "Wenn die loginversuche zu einem Account diese Schwelle überschreiten, wird dieser Account für eine festgelegte Zeit gesperrt",
 	"lockout-duration": "Account Aussperrzeitraum (Minuten)",
@@ -60,5 +61,6 @@
 	"email-chat-notifs": "Sende eine E-Mail, wenn eine neue Chat-Nachricht eingeht und ich nicht online bin",
 	"email-post-notif": "Sende eine E-Mail wenn auf Themen die ich abonniert habe geantwortet wird",
 	"follow-created-topics": "Themen folgen, die du erstellst",
-	"follow-replied-topics": "Themen folgen, auf die du antwortest"
+	"follow-replied-topics": "Themen folgen, auf die du antwortest",
+	"default-notification-settings": "Standardbenachrichtigungseinstellungen"
 }

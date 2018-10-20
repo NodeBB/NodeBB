@@ -19,5 +19,8 @@
     "terms_of_use_error": "您必须同意使用条款",
     "registration-added-to-queue": "您的注册正在等待批准。一旦通过，管理员会发送邮件通知您。",
     "interstitial.intro": "在创建您的账户前我们需要一些额外信息。",
-    "interstitial.errors-found": "我们无法完成您的注册："
+    "interstitial.errors-found": "我们无法完成您的注册：",
+    "gdpr_agree_data": "我同意此网站对我个人信息的收集与处理。",
+    "gdpr_agree_email": "我同意此网站向我发送摘要和通知邮件。",
+    "gdpr_consent_denied": "您需要同意此网站收集与处理您的个人信息，以及向您发送电子邮件。"
 }

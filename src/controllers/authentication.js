@@ -12,10 +12,9 @@ var meta = require('../meta');
 var user = require('../user');
 var plugins = require('../plugins');
 var utils = require('../utils');
-var Password = require('../password');
 var translator = require('../translator');
 var helpers = require('./helpers');
-
+var privileges = require('../privileges');
 var sockets = require('../socket.io');
 
 var authenticationController = module.exports;
@@ -57,18 +56,11 @@ authenticationController.register = function (req, res) {
 			user.isPasswordValid(userData.password, next);
 		},
 		function (next) {
-			user.shouldQueueUser(req.ip, next);
-		},
-		function (queue, next) {
 			res.locals.processLogin = true;	// set it to false in plugin if you wish to just register only
-			plugins.fireHook('filter:register.check', { req: req, res: res, userData: userData, queue: queue }, next);
+			plugins.fireHook('filter:register.check', { req: req, res: res, userData: userData }, next);
 		},
-		function (data, next) {
-			if (data.queue) {
-				addToApprovalQueue(req, userData, next);
-			} else {
-				registerAndLoginUser(req, res, userData, next);
-			}
+		function (result, next) {
+			registerAndLoginUser(req, res, userData, next);
 		},
 	], function (err, data) {
 		if (err) {
@@ -108,7 +100,17 @@ function registerAndLoginUser(req, res, userData, callback) {
 			return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
 		},
 		function (next) {
-			user.create(userData, next);
+			user.shouldQueueUser(req.ip, next);
+		},
+		function (queue, next) {
+			plugins.fireHook('filter:register.shouldQueue', { req: req, res: res, userData: userData, queue: queue }, next);
+		},
+		function (data, next) {
+			if (data.queue) {
+				addToApprovalQueue(req, userData, callback);
+			} else {
+				user.create(userData, next);
+			}
 		},
 		function (_uid, next) {
 			uid = _uid;
@@ -149,15 +151,22 @@ authenticationController.registerComplete = function (req, res, next) {
 
 		var callbacks = data.interstitials.reduce(function (memo, cur) {
 			if (cur.hasOwnProperty('callback') && typeof cur.callback === 'function') {
-				memo.push(async.apply(cur.callback, req.session.registration, req.body));
+				memo.push(function (next) {
+					cur.callback(req.session.registration, req.body, function (err) {
+						// Pass error as second argument so all callbacks are executed
+						next(null, err);
+					});
+				});
 			}
 
 			return memo;
 		}, []);
 
-		var done = function () {
+		var done = function (err, data) {
 			delete req.session.registration;
-
+			if (!err && data && data.message) {
+				return res.redirect(nconf.get('relative_path') + '/?register=' + encodeURIComponent(data.message));
+			}
 			if (req.session.returnTo) {
 				res.redirect(req.session.returnTo);
 			} else {
@@ -165,9 +174,15 @@ authenticationController.registerComplete = function (req, res, next) {
 			}
 		};
 
-		async.parallel(callbacks, function (err) {
-			if (err) {
-				req.flash('error', err.message);
+		async.parallel(callbacks, function (_blank, err) {
+			if (err.length) {
+				err = err.filter(Boolean).map(function (err) {
+					return err.message;
+				});
+			}
+
+			if (err.length) {
+				req.flash('errors', err);
 				return res.redirect(nconf.get('relative_path') + '/register/complete');
 			}
 
@@ -175,8 +190,18 @@ authenticationController.registerComplete = function (req, res, next) {
 				res.locals.processLogin = true;
 				registerAndLoginUser(req, res, req.session.registration, done);
 			} else {
-				// Clear registration data in session
-				done();
+				// Update user hash, clear registration data in session
+				const payload = req.session.registration;
+				const uid = payload.uid;
+				delete payload.uid;
+
+				Object.keys(payload).forEach((prop) => {
+					if (typeof payload[prop] === 'boolean') {
+						payload[prop] = payload[prop] ? 1 : 0;
+					}
+				});
+
+				user.setUserFields(uid, payload, done);
 			}
 		});
 	});
@@ -196,7 +221,7 @@ authenticationController.login = function (req, res, next) {
 
 	var loginWith = meta.config.allowLoginWith || 'username-email';
 
-	if (req.body.username && utils.isEmailValid(req.body.username) && loginWith.indexOf('email') !== -1) {
+	if (req.body.username && utils.isEmailValid(req.body.username) && loginWith.includes('email')) {
 		async.waterfall([
 			function (next) {
 				user.getUsernameByEmail(req.body.username, next);
@@ -206,7 +231,7 @@ authenticationController.login = function (req, res, next) {
 				continueLogin(req, res, next);
 			},
 		], next);
-	} else if (loginWith.indexOf('username') !== -1 && !validator.isEmail(req.body.username)) {
+	} else if (loginWith.includes('username') && !validator.isEmail(req.body.username)) {
 		continueLogin(req, res, next);
 	} else {
 		var err = '[[error:wrong-login-type-' + loginWith + ']]';
@@ -289,26 +314,30 @@ authenticationController.doLogin = function (req, uid, callback) {
 
 authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 	var uuid = utils.generateUUID();
-	req.session.meta = {};
-
-	delete req.session.forceLogin;
-
-	// Associate IP used during login with user account
-	user.logIP(uid, req.ip);
-	req.session.meta.ip = req.ip;
-
-	// Associate metadata retrieved via user-agent
-	req.session.meta = _.extend(req.session.meta, {
-		uuid: uuid,
-		datetime: Date.now(),
-		platform: req.useragent.platform,
-		browser: req.useragent.browser,
-		version: req.useragent.version,
-	});
 
 	async.waterfall([
-		async.apply(meta.blacklist.test, req.ip),
 		function (next) {
+			meta.blacklist.test(req.ip, next);
+		},
+		function (next) {
+			user.logIP(uid, req.ip, next);
+		},
+		function (next) {
+			req.session.meta = {};
+
+			delete req.session.forceLogin;
+			// Associate IP used during login with user account
+			req.session.meta.ip = req.ip;
+
+			// Associate metadata retrieved via user-agent
+			req.session.meta = _.extend(req.session.meta, {
+				uuid: uuid,
+				datetime: Date.now(),
+				platform: req.useragent.platform,
+				browser: req.useragent.browser,
+				version: req.useragent.version,
+			});
+
 			async.parallel([
 				function (next) {
 					user.auth.addSession(uid, req.sessionID, next);
@@ -368,23 +397,25 @@ authenticationController.localLogin = function (req, username, password, next) {
 			uid = _uid;
 
 			async.parallel({
-				userData: function (next) {
-					db.getObjectFields('user:' + uid, ['password', 'passwordExpiry'], next);
-				},
-				isAdmin: function (next) {
-					user.isAdministrator(uid, next);
+				userData: async.apply(db.getObjectFields, 'user:' + uid, ['passwordExpiry']),
+				isAdminOrGlobalMod: function (next) {
+					user.isAdminOrGlobalMod(uid, next);
 				},
 				banned: function (next) {
 					user.isBanned(uid, next);
 				},
+				hasLoginPrivilege: function (next) {
+					privileges.global.can('local:login', uid, next);
+				},
 			}, next);
 		},
 		function (result, next) {
-			userData = result.userData;
-			userData.uid = uid;
-			userData.isAdmin = result.isAdmin;
+			userData = Object.assign(result.userData, {
+				uid: uid,
+				isAdminOrGlobalMod: result.isAdminOrGlobalMod,
+			});
 
-			if (!result.isAdmin && !meta.config.allowLocalLogin) {
+			if (parseInt(uid, 10) && !result.hasLoginPrivilege) {
 				return next(new Error('[[error:local-login-disabled]]'));
 			}
 
@@ -392,23 +423,20 @@ authenticationController.localLogin = function (req, username, password, next) {
 				return getBanInfo(uid, next);
 			}
 
-			user.auth.logAttempt(uid, req.ip, next);
-		},
-		function (next) {
-			Password.compare(password, userData.password, next);
+			user.isPasswordCorrect(uid, password, req.ip, next);
 		},
 		function (passwordMatch, next) {
 			if (!passwordMatch) {
 				return next(new Error('[[error:invalid-login-credentials]]'));
 			}
-			user.auth.clearLoginAttempts(uid);
+
 			next(null, userData, '[[success:authentication-successful]]');
 		},
 	], next);
 };
 
 authenticationController.logout = function (req, res, next) {
-	if (!req.uid || !req.sessionID) {
+	if (!req.loggedIn || !req.sessionID) {
 		return res.status(200).send('not-logged-in');
 	}
 

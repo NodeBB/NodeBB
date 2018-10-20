@@ -10,6 +10,7 @@ var _ = require('lodash');
 var semver = require('semver');
 var prompt = require('prompt');
 var db;
+var client;
 
 var mongoModule = module.exports;
 
@@ -22,6 +23,7 @@ mongoModule.questions = [
 		name: 'mongo:uri',
 		description: 'MongoDB connection URI: (leave blank if you wish to specify host, port, username/password and database individually)\nFormat: mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database][?options]]',
 		default: nconf.get('mongo:uri') || '',
+		hideOnWebInstall: true,
 	},
 	{
 		name: 'mongo:host',
@@ -60,11 +62,7 @@ mongoModule.questions = [
 mongoModule.helpers = mongoModule.helpers || {};
 mongoModule.helpers.mongo = require('./mongo/helpers');
 
-mongoModule.init = function (callback) {
-	callback = callback || function () { };
-
-	var mongoClient = require('mongodb').MongoClient;
-
+mongoModule.getConnectionString = function () {
 	var usernamePassword = '';
 	if (nconf.get('mongo:username') && nconf.get('mongo:password')) {
 		usernamePassword = nconf.get('mongo:username') + ':' + encodeURIComponent(nconf.get('mongo:password')) + '@';
@@ -79,7 +77,9 @@ mongoModule.init = function (callback) {
 	if (!nconf.get('mongo:port')) {
 		nconf.set('mongo:port', 27017);
 	}
-	if (!nconf.get('mongo:database')) {
+	const dbName = nconf.get('mongo:database');
+	if (dbName === undefined || dbName === '') {
+		winston.warn('You have no database name, using "nodebb"');
 		nconf.set('mongo:database', 'nodebb');
 	}
 
@@ -91,25 +91,37 @@ mongoModule.init = function (callback) {
 		servers.push(hosts[i] + ':' + ports[i]);
 	}
 
-	var connString = nconf.get('mongo:uri') || 'mongodb://' + usernamePassword + servers.join() + '/' + nconf.get('mongo:database');
+	return nconf.get('mongo:uri') || 'mongodb://' + usernamePassword + servers.join() + '/' + nconf.get('mongo:database');
+};
 
+mongoModule.getConnectionOptions = function () {
 	var connOptions = {
 		poolSize: 10,
 		reconnectTries: 3600,
 		reconnectInterval: 1000,
 		autoReconnect: true,
+		connectTimeoutMS: 60000,
+		useNewUrlParser: true,
 	};
 
-	connOptions = _.merge(connOptions, nconf.get('mongo:options') || {});
+	return _.merge(connOptions, nconf.get('mongo:options') || {});
+};
 
-	mongoClient.connect(connString, connOptions, function (err, _db) {
+mongoModule.init = function (callback) {
+	callback = callback || function () { };
+
+	var mongoClient = require('mongodb').MongoClient;
+
+	var connString = mongoModule.getConnectionString();
+	var connOptions = mongoModule.getConnectionOptions();
+
+	mongoClient.connect(connString, connOptions, function (err, _client) {
 		if (err) {
 			winston.error('NodeBB could not connect to your Mongo database. Mongo returned the following error', err);
 			return callback(err);
 		}
-
-		db = _db;
-
+		client = _client;
+		db = client.db();
 		mongoModule.client = db;
 
 		require('./mongo/main')(db, mongoModule);
@@ -117,6 +129,10 @@ mongoModule.init = function (callback) {
 		require('./mongo/sets')(db, mongoModule);
 		require('./mongo/sorted')(db, mongoModule);
 		require('./mongo/list')(db, mongoModule);
+		require('./mongo/transaction')(db, mongoModule);
+
+		mongoModule.async = require('../promisify')(mongoModule, ['client', 'sessionStore']);
+
 		callback();
 	});
 };
@@ -259,5 +275,12 @@ function getCollectionStats(db, callback) {
 
 mongoModule.close = function (callback) {
 	callback = callback || function () {};
-	db.close(callback);
+	client.close(function (err) {
+		callback(err);
+	});
+};
+
+mongoModule.socketAdapter = function () {
+	var mongoAdapter = require('socket.io-adapter-mongo');
+	return mongoAdapter(mongoModule.getConnectionString());
 };

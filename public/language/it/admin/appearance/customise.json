@@ -1,12 +1,16 @@
 {
-	"custom-css": "CSS Personalizzato",
-	"custom-css.description": "Inserisci le tue dichiarazioni CSS qui, verranno applicate dopo tutti gli altri stili.",
-	"custom-css.enable": "Abilita CSS Personalizzato",
+	"custom-css": "Codice CSS o LESS personalizzato",
+	"custom-css.description": "Inserisci il tuo codice CSS o LESS di seguito, verrà applicato dopo tutti gli altri stili.",
+	"custom-css.enable": "Abilita personalizzazione di CSS o LESS ",
+
+	"custom-js": "Codice Javascript personalizzato",
+	"custom-js.description": "Inserisci di seguito il tuo codice Javascript che verrà eseguito dopo l'intero caricamento della pagina.",
+	"custom-js.enable": "Abilita personalizzazione codice Javascript ",
 
 	"custom-header": "Intestazione Personalizzata",
-	"custom-header.description": "Inserisci l' HTML personalizzato qui  (es. JavaScript, Meta Tags, ecc.), verrà attaccato al codice  <code>&lt;head&gt;</code> sezione del markup del tuo forum",
+	"custom-header.description": "Inserisci di seguito il tuo codice HTML (come Meta Tags, ecc), che verrà inserito in coda nella sezione <code>&lt;head&gt;</code>del markup del tuo forum. Sono permessi i tags Script, sebbene si preferisca l'utilizzo del codice Javascript personalizzato.",
 	"custom-header.enable": "Abilita l'Intestazione Personalizzata",
 
-	"custom-css.livereload": "Enable Live Reload",
-	"custom-css.livereload.description": "Enable this to force all sessions on every device under your account to refresh whenever you click save"
+	"custom-css.livereload": "Abilita riavvio a caldo (Live Reolad)",
+	"custom-css.livereload.description": "Abilita questa opzione per forzare il refresh di tutte le sessioni dei tuoi account una volta salvate le modifiche."
 }

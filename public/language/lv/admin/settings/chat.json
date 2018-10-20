@@ -1,0 +1,11 @@
+{
+	"chat-settings": "Sarunu iestatījumi",
+	"disable": "Atspējot sarunāšanos",
+	"disable-editing": "Atspējot sarunu rediģēšanu/izdzēšanu",
+	"disable-editing-help": "Administratori un globālie moderatori ir atbrīvoti no šī ierobežojuma",
+	"max-length": "Sarunu lielākais garums",
+	"max-room-size": "Maksimālais lietotāju skaits tērzētavā",
+	"delay": "Laiks starp sarunām milisekundēs",
+	"restrictions.seconds-edit-after": "Sekunžu skaits, pirms lietotājs var rediģēt savas sarunas pēc rakstīšanas. (Atspējots ja 0)",
+	"restrictions.seconds-delete-after": "Sekunžu skaits, pirms lietotājs var izdzēst savas sarunas pēc rakstīšanas. (Atspējots ja 0)"
+}

@@ -49,23 +49,6 @@ module.exports = function (SocketUser) {
 		], callback);
 	};
 
-	SocketUser.uploadProfileImageFromUrl = function (socket, data, callback) {
-		if (!socket.uid || !data.url || !data.uid) {
-			return callback(new Error('[[error:invalid-data]]'));
-		}
-		async.waterfall([
-			function (next) {
-				user.isAdminOrSelf(socket.uid, data.uid, next);
-			},
-			function (next) {
-				user.uploadFromUrl(data.uid, data.url, next);
-			},
-			function (uploadedImage, next) {
-				next(null, uploadedImage ? uploadedImage.url : null);
-			},
-		], callback);
-	};
-
 	SocketUser.removeUploadedPicture = function (socket, data, callback) {
 		if (!socket.uid || !data || !data.uid) {
 			return callback(new Error('[[error:invalid-data]]'));

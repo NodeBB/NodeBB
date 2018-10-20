@@ -9,6 +9,7 @@
     "continue_to": "Continuar a %1",
     "return_to": "Volver a %1",
     "new_notification": "Nova Notificación",
+    "new_notification_from": "You have a new Notification from %1",
     "you_have_unread_notifications": "Tes notificacións non lidas",
     "all": "All",
     "topics": "Topics",
@@ -45,5 +46,19 @@
     "email-confirmed": "Correo confirmado",
     "email-confirmed-message": "Grazas por validar o teu correo. A túa conta agora está activada.",
     "email-confirm-error-message": "Houbo un problema validando o teu correo. Poida que o código fose inválido ou expirase. ",
-    "email-confirm-sent": "Correo de confirmación enviado."
+    "email-confirm-sent": "Correo de confirmación enviado.",
+    "none": "None",
+    "notification_only": "Notification Only",
+    "email_only": "Email Only",
+    "notification_and_email": "Notification & Email",
+    "notificationType_upvote": "When someone upvotes your post",
+    "notificationType_new-topic": "When someone you follow posts a topic",
+    "notificationType_new-reply": "When a new reply is posted in a topic you are watching",
+    "notificationType_follow": "When someone starts following you",
+    "notificationType_new-chat": "When you receive a chat message",
+    "notificationType_group-invite": "When you receive a group invite",
+    "notificationType_new-register": "When someone gets added to registration queue",
+    "notificationType_post-queue": "When a new post is queued",
+    "notificationType_new-post-flag": "When a post is flagged",
+    "notificationType_new-user-flag": "When a user is flagged"
 }

@@ -1,0 +1,19 @@
+{
+	"none": "Forumā vēl nav tematu ar birkām.",
+	"bg-color": "Fona krāsa",
+	"text-color": "Teksta krāsa",
+	"create-modify": "Izveidot & rediģēt birkas",
+	"description": "Atlasīt birkas tās noklikšķinot un/vai velkot, izmantojot Shift, lai atlasītu vairākas vienā reizē.",
+	"create": "Izveidot birku",
+	"modify": "Rediģēt birkas",
+	"rename": "Pārdēvēt birkas",
+	"delete": "Izdzēst atlasītās birkas",
+	"search": "Meklēt birkās...",
+	"settings": "<a href=\"%1\">Noklikšķini,</a> lai apmeklētu birku iestatījumu lapu.",
+	"name": "Birkas nosaukums",
+
+	"alerts.editing-multiple": "Rediģēt vairākas birkas",
+	"alerts.editing-x": "Rediģēt \"%1\" birku",
+	"alerts.confirm-delete": "Vai vēlies izdzēst šīs birkas?",
+	"alerts.update-success": "Birka atjaunināta!"
+}

@@ -1,0 +1,19 @@
+{
+    "title": "Nesenie",
+    "day": "Šodien",
+    "week": "Šonedēļ",
+    "month": "Šomēnes",
+    "year": "Šogad",
+    "alltime": "Visu laiku",
+    "no_recent_topics": "Nav neseno tematu.",
+    "no_popular_topics": "Nav populāro tematu.",
+    "there-is-a-new-topic": "Ir jauns temats.",
+    "there-is-a-new-topic-and-a-new-post": "Ir jauns temats un jauns raksts.",
+    "there-is-a-new-topic-and-new-posts": "Ir jauns temats un %1 jauni raksti.",
+    "there-are-new-topics": "Ir %1 jauni temati.",
+    "there-are-new-topics-and-a-new-post": "Ir %1 jauni temati un jauns raksts.",
+    "there-are-new-topics-and-new-posts": "Ir %1 jauni temati un %2 jauni raksti.",
+    "there-is-a-new-post": "Ir jauns raksts.",
+    "there-are-new-posts": "Ir %1 jauni raksti.",
+    "click-here-to-reload": "Noklikšķini, lai pārlādētu."
+}

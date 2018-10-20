@@ -27,8 +27,10 @@ module.exports = function (Posts) {
 
 		if (postData.pid && cache.has(String(postData.pid))) {
 			postData.content = cache.get(String(postData.pid));
+			cache.hits += 1;
 			return callback(null, postData);
 		}
+		cache.misses += 1;
 
 		async.waterfall([
 			function (next) {

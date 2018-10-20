@@ -1,10 +1,14 @@
 {
-	"custom-css": "Користувацькі CSS",
-	"custom-css.description": "Уведіть власні CSS правила, що будуть примінені після всіх інших стилів.",
-	"custom-css.enable": "Увімкнути користувацькі CSS",
+	"custom-css": "Користувацькі CSS/LESS",
+	"custom-css.description": "Введіть свої власні CSS/LESS тут, які будуть застосовані після всіх інших стилів.",
+	"custom-css.enable": "Увімкнути користувацькі CSS/LESS",
+
+	"custom-js": "Користувацький Javascript",
+	"custom-js.description": "Введіть свій власний код javascript тут. Він буде виконаний після повного завантаження сторінки.",
+	"custom-js.enable": "Увімкнути користувацький Javascript",
 
 	"custom-header": "Користувацький заголовок",
-	"custom-header.description": "Уведіть власний HTML (JavaScript, мета теги, тощо), що буде додано до секції <code>&lt;head&gt;</code> вашого форуму.",
+	"custom-header.description": "Введіть свій користувацький HTML тут (наприклад, Meta Теги тощо), який буде додано до <code>&lt;head&gt;</code> розділу розмітки вашого форуму. Теги скриптів допускаються, але вони не рекомендуються, оскільки доступна вкладка <a href=\"#custom-header\" data-toggle=\"tab\">Користувацькі Javascript</a>.",
 	"custom-header.enable": "Увімкнути користувацький заголовок",
 
 	"custom-css.livereload": "Увімкнути Автоматичне Оновлення",

@@ -13,8 +13,39 @@ var meta = require('./meta');
 var batch = require('./batch');
 var plugins = require('./plugins');
 var utils = require('./utils');
+var emailer = require('./emailer');
 
 var Notifications = module.exports;
+
+Notifications.baseTypes = [
+	'notificationType_upvote',
+	'notificationType_new-topic',
+	'notificationType_new-reply',
+	'notificationType_follow',
+	'notificationType_new-chat',
+	'notificationType_group-invite',
+];
+
+Notifications.privilegedTypes = [
+	'notificationType_new-register',
+	'notificationType_post-queue',
+	'notificationType_new-post-flag',
+	'notificationType_new-user-flag',
+];
+
+Notifications.getAllNotificationTypes = function (callback) {
+	async.waterfall([
+		function (next) {
+			plugins.fireHook('filter:user.notificationTypes', {
+				types: Notifications.baseTypes.slice(),
+				privilegedTypes: Notifications.privilegedTypes.slice(),
+			}, next);
+		},
+		function (results, next) {
+			next(null, results.types.concat(results.privilegedTypes));
+		},
+	], callback);
+};
 
 Notifications.startJobs = function () {
 	winston.verbose('[notifications.init] Registering jobs.');
@@ -91,27 +122,20 @@ Notifications.filterExists = function (nids, callback) {
 
 Notifications.findRelated = function (mergeIds, set, callback) {
 	// A related notification is one in a zset that has the same mergeId
-	var _nids;
+	var nids;
 
 	async.waterfall([
 		async.apply(db.getSortedSetRevRange, set, 0, -1),
-		function (nids, next) {
-			_nids = nids;
+		function (_nids, next) {
+			nids = _nids;
 
-			var keys = nids.map(function (nid) {
-				return 'notifications:' + nid;
-			});
-
+			var keys = nids.map(nid => 'notifications:' + nid);
 			db.getObjectsFields(keys, ['mergeId'], next);
 		},
 		function (sets, next) {
-			sets = sets.map(function (set) {
-				return set.mergeId;
-			});
-
-			next(null, _nids.filter(function (nid, idx) {
-				return mergeIds.indexOf(sets[idx]) !== -1;
-			}));
+			sets = sets.map(set => String(set.mergeId));
+			var mergeSet = new Set(mergeIds.map(id => String(id)));
+			next(null, nids.filter((nid, idx) => mergeSet.has(sets[idx])));
 		},
 	], callback);
 };
@@ -178,47 +202,118 @@ Notifications.push = function (notification, uids, callback) {
 };
 
 function pushToUids(uids, notification, callback) {
-	var oneWeekAgo = Date.now() - 604800000;
-	var unreadKeys = [];
-	var readKeys = [];
+	function sendNotification(uids, callback) {
+		if (!uids.length) {
+			return callback();
+		}
+		var oneWeekAgo = Date.now() - 604800000;
+		var unreadKeys = [];
+		var readKeys = [];
+		async.waterfall([
+			function (next) {
+				uids.forEach(function (uid) {
+					unreadKeys.push('uid:' + uid + ':notifications:unread');
+					readKeys.push('uid:' + uid + ':notifications:read');
+				});
+
+				db.sortedSetsAdd(unreadKeys, notification.datetime, notification.nid, next);
+			},
+			function (next) {
+				db.sortedSetsRemove(readKeys, notification.nid, next);
+			},
+			function (next) {
+				db.sortedSetsRemoveRangeByScore(unreadKeys, '-inf', oneWeekAgo, next);
+			},
+			function (next) {
+				db.sortedSetsRemoveRangeByScore(readKeys, '-inf', oneWeekAgo, next);
+			},
+			function (next) {
+				var websockets = require('./socket.io');
+				if (websockets.server) {
+					uids.forEach(function (uid) {
+						websockets.in('uid_' + uid).emit('event:new_notification', notification);
+					});
+				}
+				next();
+			},
+		], callback);
+	}
+
+	function sendEmail(uids, callback) {
+		async.eachLimit(uids, 3, function (uid, next) {
+			emailer.send('notification', uid, {
+				path: notification.path,
+				subject: utils.stripHTMLTags(notification.subject || '[[notifications:new_notification_from, ' + meta.config.title + ']]'),
+				intro: utils.stripHTMLTags(notification.bodyShort),
+				body: utils.stripHTMLTags(notification.bodyLong || ''),
+				notification: notification,
+				showUnsubscribe: true,
+			}, next);
+		}, callback);
+	}
+
+	function getUidsBySettings(uids, callback) {
+		var uidsToNotify = [];
+		var uidsToEmail = [];
+		async.waterfall([
+			function (next) {
+				User.getMultipleUserSettings(uids, next);
+			},
+			function (usersSettings, next) {
+				usersSettings.forEach(function (userSettings) {
+					var setting = userSettings['notificationType_' + notification.type] || 'notification';
+
+					if (setting === 'notification' || setting === 'notificationemail') {
+						uidsToNotify.push(userSettings.uid);
+					}
+
+					if (setting === 'email' || setting === 'notificationemail') {
+						uidsToEmail.push(userSettings.uid);
+					}
+				});
+				next(null, { uidsToNotify: uidsToNotify, uidsToEmail: uidsToEmail });
+			},
+		], callback);
+	}
 
 	async.waterfall([
 		function (next) {
+			// Remove uid from recipients list if they have blocked the user triggering the notification
+			User.blocks.filterUids(notification.from, uids, next);
+		},
+		function (uids, next) {
 			plugins.fireHook('filter:notification.push', { notification: notification, uids: uids }, next);
 		},
 		function (data, next) {
 			if (!data || !data.notification || !data.uids || !data.uids.length) {
 				return callback();
 			}
-
-			uids = data.uids;
 			notification = data.notification;
-
-			uids.forEach(function (uid) {
-				unreadKeys.push('uid:' + uid + ':notifications:unread');
-				readKeys.push('uid:' + uid + ':notifications:read');
-			});
-
-			db.sortedSetsAdd(unreadKeys, notification.datetime, notification.nid, next);
-		},
-		function (next) {
-			db.sortedSetsRemove(readKeys, notification.nid, next);
-		},
-		function (next) {
-			db.sortedSetsRemoveRangeByScore(unreadKeys, '-inf', oneWeekAgo, next);
-		},
-		function (next) {
-			db.sortedSetsRemoveRangeByScore(readKeys, '-inf', oneWeekAgo, next);
-		},
-		function (next) {
-			var websockets = require('./socket.io');
-			if (websockets.server) {
-				uids.forEach(function (uid) {
-					websockets.in('uid_' + uid).emit('event:new_notification', notification);
-				});
+			if (notification.type) {
+				getUidsBySettings(data.uids, next);
+			} else {
+				next(null, { uidsToNotify: data.uids, uidsToEmail: [] });
 			}
-
-			plugins.fireHook('action:notification.pushed', { notification: notification, uids: uids });
+		},
+		function (results, next) {
+			async.parallel([
+				function (next) {
+					sendNotification(results.uidsToNotify, next);
+				},
+				function (next) {
+					sendEmail(results.uidsToEmail, next);
+				},
+			], function (err) {
+				next(err, results);
+			});
+		},
+		function (results, next) {
+			plugins.fireHook('action:notification.pushed', {
+				notification: notification,
+				uids: results.uidsToNotify,
+				uidsNotified: results.uidsToNotify,
+				uidsEmailed: results.uidsToEmail,
+			});
 			next();
 		},
 	], callback);
@@ -434,7 +529,7 @@ Notifications.merge = function (notifications, callback) {
 		// Each isolated mergeId may have multiple differentiators, so process each separately
 		differentiators = isolated.reduce(function (cur, next) {
 			differentiator = next.mergeId.split('|')[1] || 0;
-			if (cur.indexOf(differentiator) === -1) {
+			if (!cur.includes(differentiator)) {
 				cur.push(differentiator);
 			}
 
@@ -506,3 +601,5 @@ Notifications.merge = function (notifications, callback) {
 		callback(err, data.notifications);
 	});
 };
+
+Notifications.async = require('./promisify')(Notifications);

@@ -4,11 +4,13 @@ var fs = require('fs');
 var nconf = require('nconf');
 var path = require('path');
 var winston = require('winston');
-var jimp = require('jimp');
 var mkdirp = require('mkdirp');
 var mime = require('mime');
+var graceful = require('graceful-fs');
 
 var utils = require('./utils');
+
+graceful.gracefulify(fs);
 
 var file = module.exports;
 
@@ -78,7 +80,7 @@ file.saveFileToLocal = function (filename, folder, tempPath, callback) {
 			}
 
 			callback(null, {
-				url: '/assets/uploads/' + folder + '/' + filename,
+				url: '/assets/uploads/' + (folder ? folder + '/' : '') + filename,
 				path: uploadPath,
 			});
 		});
@@ -104,10 +106,20 @@ file.isFileTypeAllowed = function (path, callback) {
 		});
 	}
 
-	// Attempt to read the file, if it passes, file type is allowed
-	jimp.read(path, function (err) {
+	require('sharp')(path, {
+		failOnError: true,
+	}).metadata(function (err) {
 		callback(err);
 	});
+};
+
+// https://stackoverflow.com/a/31205878/583363
+file.appendToFileName = function (filename, string) {
+	var dotIndex = filename.lastIndexOf('.');
+	if (dotIndex === -1) {
+		return filename + string;
+	}
+	return filename.substring(0, dotIndex) + string + filename.substring(dotIndex);
 };
 
 file.allowedExtensions = function () {
@@ -125,7 +137,7 @@ file.allowedExtensions = function () {
 		return extension.toLowerCase();
 	});
 
-	if (allowedExtensions.indexOf('.jpg') !== -1 && allowedExtensions.indexOf('.jpeg') === -1) {
+	if (allowedExtensions.includes('.jpg') && !allowedExtensions.includes('.jpeg')) {
 		allowedExtensions.push('.jpeg');
 	}
 
@@ -138,8 +150,9 @@ file.exists = function (path, callback) {
 			if (err.code === 'ENOENT') {
 				return callback(null, false);
 			}
+			return callback(err);
 		}
-		callback(err, true);
+		callback(null, true);
 	});
 };
 
@@ -156,14 +169,17 @@ file.existsSync = function (path) {
 	return true;
 };
 
-file.delete = function (path) {
-	if (path) {
-		fs.unlink(path, function (err) {
-			if (err) {
-				winston.error(err);
-			}
-		});
+file.delete = function (path, callback) {
+	callback = callback || function () {};
+	if (!path) {
+		return setImmediate(callback);
 	}
+	fs.unlink(path, function (err) {
+		if (err) {
+			winston.warn(err);
+		}
+		callback();
+	});
 };
 
 file.link = function link(filePath, destPath, relative, callback) {

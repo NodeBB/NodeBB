@@ -35,17 +35,19 @@
 	"alert.upgraded": "插件已升级",
 	"alert.installed": "插件已安装",
 	"alert.uninstalled": "插件已卸载",
-	"alert.activate-success": "请重启 NodeBB 来完全激活此插件",
+	"alert.activate-success": "请 部署 & 重启 NodeBB 来完全激活此插件",
 	"alert.deactivate-success": "插件停用成功",
-	"alert.upgrade-success": "请重新载入 NodeBB 来完成插件升级",
+	"alert.upgrade-success": "请部署并重启您的 NodeBB 来完成更新此插件。",
 	"alert.install-success": "插件安装成功，请启用插件。",
 	"alert.uninstall-success": "插件已成功被停用且卸载。",
 	"alert.suggest-error": "<p>NodeBB 联系不到包管理器， 继续安装最新版本？</p><div class=\"alert alert-danger\"><strong>服务器返回 (%1)</strong>: %2</div>",
 	"alert.package-manager-unreachable": "<p>NodeBB 联系不到包管理器，暂时不建议升级。</p>",
-	"alert.incompatible": "<p>NodeBB 版本(v%1) 只支持到此插件的v%2版本。如需要此插件更加新的版本请先升级 NodeBB。</p>",
+	"alert.incompatible": "<p>您目前安装的 NodeBB 版本(v%1) 只支持到此插件的 v%2 版本。如需要此插件更加新的版本请先升级 NodeBB。</p>",
 	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>未找到兼容性信息</strong></p><p>此插件未注明对应的 NodeBB 版本。可能会产生兼容问题，导致 NodeBB 无法正常启动。</p></div><p> NodeBB 无法正常启动时请运行以下命令：</p> <pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre> <p>是否继续安装此插件的最新版本？</p>",
+	"alert.reorder": "插件已重新排序",
+	"alert.reorder-success": "请部署并重启您的 NodeBB 来完成此流程。",
 
 	"license.title": "插件许可证信息",
-	"license.intro": "插件 <strong>%1</strong> 在 %2 下获得许可。请在激活此插件之前阅读和理解许可条款。",
-	"license.cta": "你希望继续使用这个插件吗？"
+	"license.intro": "插件 <strong>%1</strong> 在 %2 下获得许可。请在激活此插件之前阅读，确认许可条款。",
+	"license.cta": "您希望继续使用此插件吗？"
 }

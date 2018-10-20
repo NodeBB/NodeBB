@@ -9,7 +9,9 @@ app.widgets = {};
 app.cacheBuster = null;
 
 (function () {
-	var showWelcomeMessage = !!utils.params().loggedin;
+	var params = utils.params();
+	var showWelcomeMessage = !!params.loggedin;
+	var registerMessage = params.register;
 
 	require(['benchpress'], function (Benchpress) {
 		Benchpress.setGlobal('config', config);
@@ -73,7 +75,7 @@ app.cacheBuster = null;
 
 		socket.removeAllListeners('event:nodebb.ready');
 		socket.on('event:nodebb.ready', function (data) {
-			if (!app.cacheBuster || app.cacheBuster !== data['cache-buster']) {
+			if ((data.hostname === app.upstreamHost) && (!app.cacheBuster || app.cacheBuster !== data['cache-buster'])) {
 				app.cacheBuster = data['cache-buster'];
 
 				app.alert({
@@ -105,7 +107,9 @@ app.cacheBuster = null;
 	};
 
 	app.logout = function (e) {
-		e.preventDefault();
+		if (e) {
+			e.preventDefault();
+		}
 		$(window).trigger('action:app.logout');
 
 		/*
@@ -222,7 +226,7 @@ app.cacheBuster = null;
 	};
 
 	function highlightNavigationLink() {
-		var path = window.location.pathname;
+		var path = window.location.pathname + window.location.search;
 		$('#main-nav li').removeClass('active');
 		if (path) {
 			$('#main-nav li').removeClass('active').find('a[href="' + path + '"]').parent().addClass('active');
@@ -276,7 +280,9 @@ app.cacheBuster = null;
 		app.replaceSelfLinks();
 
 		// Scroll back to top of page
-		window.scrollTo(0, 0);
+		if (!ajaxify.isCold()) {
+			window.scrollTo(0, 0);
+		}
 	};
 
 	app.showMessages = function () {
@@ -286,9 +292,12 @@ app.cacheBuster = null;
 				title: '[[global:welcome_back]] ' + app.user.username + '!',
 				message: '[[global:you_have_successfully_logged_in]]',
 			},
+			register: {
+				format: 'modal',
+			},
 		};
 
-		function showAlert(type) {
+		function showAlert(type, message) {
 			switch (messages[type].format) {
 			case 'alert':
 				app.alert({
@@ -301,7 +310,7 @@ app.cacheBuster = null;
 
 			case 'modal':
 				require(['translator'], function (translator) {
-					translator.translate(messages[type].message, function (translated) {
+					translator.translate(message || messages[type].message, function (translated) {
 						bootbox.alert({
 							title: messages[type].title,
 							message: translated,
@@ -318,6 +327,12 @@ app.cacheBuster = null;
 				showAlert('login');
 			});
 		}
+		if (registerMessage) {
+			$(document).ready(function () {
+				showAlert('register', decodeURIComponent(registerMessage));
+				registerMessage = false;
+			});
+		}
 	};
 
 	app.openChat = function (roomId, uid) {
@@ -327,7 +342,7 @@ app.cacheBuster = null;
 
 		require(['chat'], function (chat) {
 			function loadAndCenter(chatModal) {
-				chat.load(chatModal.attr('UUID'));
+				chat.load(chatModal.attr('data-uuid'));
 				chat.center(chatModal);
 				chat.focusInput(chatModal);
 			}
@@ -506,7 +521,7 @@ app.cacheBuster = null;
 		}
 
 		searchButton.on('click', function (e) {
-			if (!config.loggedIn && !config.allowGuestSearching) {
+			if (!config.loggedIn && !app.user.privileges['search:content']) {
 				app.alert({
 					message: '[[error:search-requires-login]]',
 					timeout: 3000,
@@ -549,7 +564,9 @@ app.cacheBuster = null;
 				$('[data-uid="' + app.user.uid + '"] [component="user/status"], [component="header/profilelink"] [component="user/status"]')
 					.removeClass('away online dnd offline')
 					.addClass(status);
-
+				$('[component="header/usercontrol"] [data-status]').each(function () {
+					$(this).find('span').toggleClass('bold', $(this).attr('data-status') === status);
+				});
 				app.user.status = status;
 			});
 			e.preventDefault();

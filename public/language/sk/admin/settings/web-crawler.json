@@ -1,10 +1,10 @@
 {
-	"crawlability-settings": "Nastavenia indexového prehľadávania",
-	"robots-txt": "Custom Robots.txt <small>Leave blank for default</small>",
-	"sitemap-feed-settings": "Sitemap & Feed Settings",
-	"disable-rss-feeds": "Disable RSS Feeds",
-	"disable-sitemap-xml": "Disable Sitemap.xml",
-	"sitemap-topics": "Number of Topics to display in the Sitemap",
-	"clear-sitemap-cache": "Clear Sitemap Cache",
-	"view-sitemap": "View Sitemap"
+	"crawlability-settings": "Nastavenia prehľadávania",
+	"robots-txt": "Upraviť Robots.txt <small> Pre predvolené ponechajte prázdne </small>",
+	"sitemap-feed-settings": "Nastaviť zdroj a mapu stránky",
+	"disable-rss-feeds": "Zakázať zdroje RSS",
+	"disable-sitemap-xml": "Zakázať Sitemap.xml",
+	"sitemap-topics": "Počet tém zobrazených na mape stránky",
+	"clear-sitemap-cache": "Zmazať vyrovnávaciu pamäť mapy stránky",
+	"view-sitemap": "Zobraziť mapu stránky"
 }

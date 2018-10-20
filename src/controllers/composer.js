@@ -8,13 +8,13 @@ var plugins = require('../plugins');
 var topics = require('../topics');
 var helpers = require('./helpers');
 
-exports.get = function (req, res, next) {
+exports.get = function (req, res, callback) {
 	async.waterfall([
 		function (next) {
 			plugins.fireHook('filter:composer.build', {
 				req: req,
 				res: res,
-				next: next,
+				next: callback,
 				templateData: {},
 			}, next);
 		},
@@ -28,7 +28,7 @@ exports.get = function (req, res, next) {
 				res.render('compose', data.templateData);
 			}
 		},
-	], next);
+	], callback);
 };
 
 exports.post = function (req, res) {

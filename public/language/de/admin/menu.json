@@ -9,12 +9,15 @@
 
 	"section-manage": "Verwalten",
 	"manage/categories": "Kategorien",
+	"manage/privileges": "Privilegien",
 	"manage/tags": "Tags",
 	"manage/users": "Benutzer",
+	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "Warteliste",
 	"manage/post-queue": "Beitragswarteschlange",
 	"manage/groups": "Gruppen",
 	"manage/ip-blacklist": "IP Blacklist",
+	"manage/uploads": "Uploads",
 
 	"section-settings": "Einstellungen",
 	"settings/general": "Allgemein",
@@ -39,7 +42,7 @@
 	"section-appearance": "Aussehen",
 	"appearance/themes": "Themes",
 	"appearance/skins": "Skins",
-	"appearance/customise": "Benutzerdefiniertes HTML & CSS",
+	"appearance/customise": "Benutzerdefinierter Inhalt (HTML/JS/CSS)",
 
 	"section-extend": "Erweitert",
 	"extend/plugins": "Plugins",
@@ -60,16 +63,19 @@
 	"development/logger": "Logger",
 	"development/info": "Info",
 
-	"reload-forum": "Forum neu laden",
+	"rebuild-and-restart-forum": "Forum regenerieren & neustarten",
 	"restart-forum": "Forum neu starten",
 	"logout": "Abmelden",
 	"view-forum": "Forum anzeigen",
 
-	"search.placeholder": "Search for settings",
+	"search.placeholder": "Nach Einstellungen suchen",
 	"search.no-results": "Keine Ergebnisse...",
 	"search.search-forum": "Suche im Forum nach <strong></strong>",
 	"search.keep-typing": "Gib mehr ein, um die Ergebnisse zu sehen...",
 	"search.start-typing": "Starte die Eingabe, um die Ergebnisse zu sehen...",
 
-	"connection-lost": "Verbindung zu %1 verloren, wird wieder hergestellt..."
+	"connection-lost": "Verbindung zu %1 verloren, wird wieder hergestellt...",
+
+	"alerts.version": "Es läuft <strong>NodeBB v%1</strong>",
+	"alerts.upgrade": "Upgrade auf v%1"
 }

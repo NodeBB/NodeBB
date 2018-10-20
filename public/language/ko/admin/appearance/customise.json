@@ -1,10 +1,14 @@
 {
-	"custom-css": "사용자 정의 CSS",
-	"custom-css.description": "사용자 정의 CSS를 이곳에 입력하세요. 이 스타일들은 맨 마지막에 적용됩니다.",
-	"custom-css.enable": "사용자 정의 CSS 허용",
+	"custom-css": "사용자 정의 CSS/LESS ",
+	"custom-css.description": "사용자 정의 CSS/LESS 코드를 입력하세요. 모든 스타일 다음에 적용됩니다.",
+	"custom-css.enable": "사용자 정의 CSS/LESS 활성화",
+
+	"custom-js": "사용자 정의 javascript",
+	"custom-js.description": "자신의 javascript를 넣으세요. 페이지 로딩이 완료된 후 실행될 것입니다.",
+	"custom-js.enable": "사용자 javascript 활성화",
 
 	"custom-header": "사용자 정의 헤더",
-	"custom-header.description": "이곳에 사용자 정의 HTML을 입력하십시오 (예. JavaScript, Meta Tags, 등등). 당신의 포럼의 <code>&lt;head&gt;1</code> 섹션에 추가됩니다.",
+	"custom-header.description": "사용자의 HTML을 여기에 입력하세요.(메타 태그등) 당신의 포럼 마크업의 <code></code>섹션에 추가될 것입니다. 사용자 탭 사용이 가능하므로 스크립트 태그는 허용되지만 권장하지 않습니다.",
 	"custom-header.enable": "사용자 정의 헤더 허용",
 
 	"custom-css.livereload": "실시간 새로 고침 허용",

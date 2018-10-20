@@ -1,0 +1,9 @@
+{
+    "uploading-file": "Faila augšupielāde...",
+    "select-file-to-upload": "Atlasīt augšupielādējamo failu",
+    "upload-success": "Fails ir veiksmīgi augšupielādēts!",
+    "maximum-file-size": "Maksimālais izmērs %1 kb",
+    "no-uploads-found": "Nav augšupielādes",
+    "public-uploads-info": "Augšupielādes ir publiskas, visi apmeklētāji tās var redzēt.",
+    "private-uploads-info": "Augšupielādes ir privātas, tikai ielogojušies lietotāji tās var redzēt."
+}

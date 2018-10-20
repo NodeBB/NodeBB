@@ -9,12 +9,15 @@
 
 	"section-manage": "관리",
 	"manage/categories": "게시판",
+	"manage/privileges": "Privileges",
 	"manage/tags": "태그",
-	"manage/users": "용자",
+	"manage/users": "사용자",
+	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "회원 가입 승인 대기자",
-	"manage/post-queue": "Post Queue",
+	"manage/post-queue": "게시 대기열",
 	"manage/groups": "그룹",
 	"manage/ip-blacklist": "IP 블랙리스트",
+	"manage/uploads": "Uploads",
 
 	"section-settings": "설정",
 	"settings/general": "일반",
@@ -39,7 +42,7 @@
 	"section-appearance": "스타일",
 	"appearance/themes": "테마",
 	"appearance/skins": "스킨",
-	"appearance/customise": "사용자 정의 HTML & CSS",
+	"appearance/customise": "Custom Content (HTML/JS/CSS)",
 
 	"section-extend": "추가 기능",
 	"extend/plugins": "플러그인",
@@ -60,16 +63,19 @@
 	"development/logger": "로거",
 	"development/info": "정보",
 
-	"reload-forum": "포럼 리로드",
+	"rebuild-and-restart-forum": "Rebuild & Restart Forum",
 	"restart-forum": "포럼 재시작",
 	"logout": "로그아웃",
 	"view-forum": "포럼 보기",
 
-	"search.placeholder": "Search for settings",
+	"search.placeholder": "설정 검색",
 	"search.no-results": "검색 결과가 없습니다...",
 	"search.search-forum": "포럼에서 <strong></strong>를 검색하세요",
 	"search.keep-typing": "검색 결과를 보기 위해 더 입력하세요...",
 	"search.start-typing": "검색 결과를 보기 위해 여기 입력하세요...",
 
-	"connection-lost": "%1과의 연결이 끊어졌습니다. 다시 연결을 시도하는 중입니다..."
+	"connection-lost": "%1과의 연결이 끊어졌습니다. 다시 연결을 시도하는 중입니다...",
+
+	"alerts.version": "Running <strong>NodeBB v%1</strong>",
+	"alerts.upgrade": "Upgrade to v%1"
 }

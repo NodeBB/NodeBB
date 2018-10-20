@@ -1,6 +1,6 @@
 'use strict';
 
-var helpers = {};
+var helpers = module.exports;
 
 helpers.setupPageRoute = function (router, name, middleware, middlewares, controller) {
 	middlewares = [middleware.maintenanceMode, middleware.registrationComplete, middleware.pageView, middleware.pluginHooks].concat(middlewares);
@@ -13,5 +13,3 @@ helpers.setupAdminPageRoute = function (router, name, middleware, middlewares, c
 	router.get(name, middleware.admin.buildHeader, middlewares, controller);
 	router.get('/api' + name, middlewares, controller);
 };
-
-module.exports = helpers;

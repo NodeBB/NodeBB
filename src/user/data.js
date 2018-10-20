@@ -4,15 +4,88 @@ var async = require('async');
 var validator = require('validator');
 var nconf = require('nconf');
 var winston = require('winston');
+var _ = require('lodash');
 
 var db = require('../database');
 var meta = require('../meta');
 var plugins = require('../plugins');
 var utils = require('../utils');
 
+const intFields = ['uid', 'postcount', 'topiccount', 'banned'];
+
 module.exports = function (User) {
-	var iconBackgrounds = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3',
-		'#009688', '#1b5e20', '#33691e', '#827717', '#e65100', '#ff5722', '#795548', '#607d8b'];
+	var iconBackgrounds = [
+		'#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3',
+		'#009688', '#1b5e20', '#33691e', '#827717', '#e65100', '#ff5722',
+		'#795548', '#607d8b',
+	];
+
+	var fieldWhitelist = [
+		'uid', 'username', 'userslug', 'email', 'email:confirmed', 'joindate',
+		'lastonline', 'picture', 'fullname', 'location', 'birthday', 'website',
+		'aboutme', 'signature', 'uploadedpicture', 'profileviews', 'reputation',
+		'postcount', 'topiccount', 'lastposttime', 'banned', 'banned:expire',
+		'status', 'flags', 'followerCount', 'followingCount', 'cover:url',
+		'cover:position', 'groupTitle',
+	];
+
+	User.getUsersFields = function (uids, fields, callback) {
+		if (!Array.isArray(uids) || !uids.length) {
+			return callback(null, []);
+		}
+
+		uids = uids.map(uid => (isNaN(uid) ? 0 : uid));
+
+		var fieldsToRemove = [];
+		function addField(field) {
+			if (!fields.includes(field)) {
+				fields.push(field);
+				fieldsToRemove.push(field);
+			}
+		}
+
+		if (fields.length && !fields.includes('uid')) {
+			fields.push('uid');
+		}
+
+		if (fields.includes('picture')) {
+			addField('uploadedpicture');
+		}
+
+		if (fields.includes('status')) {
+			addField('lastonline');
+		}
+
+		var uniqueUids = _.uniq(uids);
+
+		async.waterfall([
+			function (next) {
+				plugins.fireHook('filter:user.whitelistFields', { uids: uids, whitelist: fieldWhitelist.slice() }, next);
+			},
+			function (results, next) {
+				if (fields.length) {
+					const whitelistSet = new Set(results.whitelist);
+					fields = fields.filter(function (field) {
+						var isFieldWhitelisted = field && whitelistSet.has(field);
+						if (!isFieldWhitelisted) {
+							winston.verbose('[user/getUsersFields] ' + field + ' removed because it is not whitelisted, see `filter:user.whitelistFields`');
+						}
+						return isFieldWhitelisted;
+					});
+				} else {
+					fields = results.whitelist;
+				}
+
+				db.getObjectsFields(uidsToUserKeys(uniqueUids), fields, next);
+			},
+			function (users, next) {
+				users = uidsToUsers(uids, uniqueUids, users);
+
+				modifyUserData(users, fieldsToRemove, next);
+			},
+		], callback);
+	};
+
 
 	User.getUserField = function (uid, field, callback) {
 		User.getUserFields(uid, [field], function (err, user) {
@@ -26,61 +99,6 @@ module.exports = function (User) {
 		});
 	};
 
-	User.getUsersFields = function (uids, fields, callback) {
-		if (!Array.isArray(uids) || !uids.length) {
-			return callback(null, []);
-		}
-
-		uids = uids.map(function (uid) {
-			return isNaN(uid) ? 0 : uid;
-		});
-
-		var fieldsToRemove = [];
-		function addField(field) {
-			if (fields.indexOf(field) === -1) {
-				fields.push(field);
-				fieldsToRemove.push(field);
-			}
-		}
-
-		if (fields.length && fields.indexOf('uid') === -1) {
-			fields.push('uid');
-		}
-
-		if (fields.indexOf('picture') !== -1) {
-			addField('email');
-			addField('uploadedpicture');
-		}
-
-		if (fields.indexOf('status') !== -1) {
-			addField('lastonline');
-		}
-
-		var uniqueUids = uids.filter(function (uid, index) {
-			return index === uids.indexOf(uid);
-		});
-
-		async.waterfall([
-			function (next) {
-				if (fields.length) {
-					db.getObjectsFields(uidsToUserKeys(uniqueUids), fields, next);
-				} else {
-					db.getObjects(uidsToUserKeys(uniqueUids), next);
-				}
-			},
-			function (users, next) {
-				users = uidsToUsers(uids, uniqueUids, users);
-
-				modifyUserData(users, fieldsToRemove, next);
-			},
-		], callback);
-	};
-
-	User.getMultipleUserFields = function (uids, fields, callback) {
-		winston.warn('[deprecated] User.getMultipleUserFields is deprecated please use User.getUsersFields');
-		User.getUsersFields(uids, fields, callback);
-	};
-
 	User.getUserData = function (uid, callback) {
 		User.getUsersData([uid], function (err, users) {
 			callback(err, users ? users[0] : null);
@@ -92,20 +110,23 @@ module.exports = function (User) {
 	};
 
 	function uidsToUsers(uids, uniqueUids, usersData) {
-		var ref = uniqueUids.reduce(function (memo, cur, idx) {
-			memo[cur] = idx;
+		var uidToUser = uniqueUids.reduce(function (memo, cur, idx) {
+			memo[cur] = usersData[idx];
 			return memo;
 		}, {});
 		var users = uids.map(function (uid) {
-			return usersData[ref[uid]];
+			const returnPayload = uidToUser[uid];
+			if (uid > 0 && !returnPayload.uid) {
+				returnPayload.oldUid = parseInt(uid, 10);
+			}
+
+			return returnPayload;
 		});
 		return users;
 	}
 
 	function uidsToUserKeys(uids) {
-		return uids.map(function (uid) {
-			return 'user:' + uid;
-		});
+		return uids.map(uid => 'user:' + uid);
 	}
 
 	function modifyUserData(users, fieldsToRemove, callback) {
@@ -114,21 +135,18 @@ module.exports = function (User) {
 				return;
 			}
 
+			intFields.forEach(field => db.parseIntField(user, field));
+
+			if (user.hasOwnProperty('groupTitle')) {
+				parseGroupTitle(user);
+			}
 			if (user.hasOwnProperty('username')) {
 				user.username = validator.escape(user.username ? user.username.toString() : '');
 			}
 
-			if (user.password) {
-				user.password = undefined;
-			}
-
-			if (user.rss_token) {
-				user.rss_token = undefined;
-			}
-
 			if (!parseInt(user.uid, 10)) {
 				user.uid = 0;
-				user.username = '[[global:guest]]';
+				user.username = (user.hasOwnProperty('oldUid') && parseInt(user.oldUid, 10)) ? '[[global:former_user]]' : '[[global:guest]]';
 				user.userslug = '';
 				user.picture = User.getDefaultAvatar();
 				user['icon:text'] = '?';
@@ -178,6 +196,20 @@ module.exports = function (User) {
 		plugins.fireHook('filter:users.get', users, callback);
 	}
 
+	function parseGroupTitle(user) {
+		try {
+			user.groupTitleArray = JSON.parse(user.groupTitle);
+		} catch (err) {
+			user.groupTitleArray = [user.groupTitle];
+		}
+		if (!Array.isArray(user.groupTitleArray)) {
+			user.groupTitleArray = [user.groupTitleArray];
+		}
+		if (parseInt(meta.config.allowMultipleBadges, 10) !== 1) {
+			user.groupTitleArray = [user.groupTitleArray[0]];
+		}
+	}
+
 	User.getDefaultAvatar = function () {
 		if (!meta.config.defaultAvatar) {
 			return '';
@@ -186,16 +218,7 @@ module.exports = function (User) {
 	};
 
 	User.setUserField = function (uid, field, value, callback) {
-		callback = callback || function () {};
-		async.waterfall([
-			function (next) {
-				db.setObjectField('user:' + uid, field, value, next);
-			},
-			function (next) {
-				plugins.fireHook('action:user.set', { uid: uid, field: field, value: value, type: 'set' });
-				next();
-			},
-		], callback);
+		User.setUserFields(uid, { [field]: value }, callback);
 	};
 
 	User.setUserFields = function (uid, data, callback) {

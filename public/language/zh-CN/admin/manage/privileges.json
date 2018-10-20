@@ -1,0 +1,30 @@
+{
+	"global": "全局",
+	"global.no-users": "没有用户已分配全局权限。",
+
+	"chat": "聊天",
+	"upload-images": "上传图片",
+	"upload-files": "上传文件",
+	"signature": "签名档",
+	"ban": "封禁",
+	"search-content": "搜索内容",
+	"search-users": "搜索用户",
+	"search-tags": "搜索话题",
+	"allow-local-login": "Local Login",
+
+	"find-category": "版块可见",
+	"access-category": "访问版块",
+	"access-topics": "访问主题",
+	"create-topics": "创建主题",
+	"reply-to-topics": "回复主题",
+	"tag-topics": "添加话题",
+	"edit-posts": "修改回复",
+	"view-edit-history": "查看修改历史",
+	"delete-posts": "删除回复",
+	"view_deleted": "查看已删除回复",
+	"upvote-posts": "顶",
+	"downvote-posts": "踩",
+	"delete-topics": "删除主题",
+	"purge": "清除",
+	"moderate": "版主"
+}

@@ -53,11 +53,12 @@
     "topics": "Başlık",
     "posts": "İleti",
     "best": "En İyi",
+    "votes": "Oy",
     "upvoters": "Artı",
     "upvoted": "Artı",
     "downvoters": "Eksi",
     "downvoted": "Eksi",
-    "views": "Görüntülenme",
+    "views": "Bakış",
     "reputation": "İtibar",
     "read_more": "daha fazla oku",
     "more": "Daha Fazla",
@@ -84,6 +85,7 @@
     "language": "Dil",
     "guest": "Ziyaretçi",
     "guests": "Ziyaretçiler",
+    "former_user": "Eski Kullanıcı",
     "updated.title": "Forum güncellendi",
     "updated.message": "Bu forum şu anda güncellendi. Sayfayı tekrar yüklemek için buraya tıklayın.",
     "privacy": "Gizlilik",
@@ -96,6 +98,7 @@
     "enter_page_number": "Sayfa numarasını girin",
     "upload_file": "Dosya yükle",
     "upload": "Yükle",
+    "uploads": "Yüklemeler",
     "allowed-file-types": "İzin verilen dosya tipleri %1",
     "unsaved-changes": "Kaydedilmemiş değişiklikler var. Çıkmak istediğinize emin misiniz?",
     "reconnecting-message": "%1 ile bağlantınız koptu, yeniden bağlanmak için lütfen bekleyiniz.",
@@ -105,5 +108,6 @@
     "cookies.learn_more": "Daha Fazla",
     "edited": "Düzenlendi",
     "disabled": "Devre dışı",
-    "select": "Seç"
+    "select": "Seç",
+    "user-search-prompt": "Kullanıcı bulmak için buraya bir şeyler yazın ..."
 }

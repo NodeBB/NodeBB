@@ -18,6 +18,7 @@
 	"filter-type": "Вид на доклада",
 	"filter-type-all": "Всичко",
 	"filter-type-post": "Публикация",
+	"filter-type-user": "Потребител",
 	"filter-state": "Състояние",
 	"filter-assignee": "Потр. ид. на назначения",
 	"filter-cid": "Категория",

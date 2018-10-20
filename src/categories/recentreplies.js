@@ -121,11 +121,7 @@ module.exports = function (Categories) {
 						topic.teaserPid = topic.teaserPid || topic.mainPid;
 					}
 				});
-				var cids = _topicData.map(function (topic) {
-					return topic && topic.cid;
-				}).filter(function (cid, index, array) {
-					return cid && array.indexOf(cid) === index;
-				});
+				var cids = _.uniq(topicData.map(topic => topic && topic.cid).filter(cid => parseInt(cid, 10)));
 
 				async.parallel({
 					categoryData: async.apply(Categories.getCategoriesFields, cids, ['cid', 'parentCid']),

@@ -5,5 +5,7 @@
 	"disable-editing-help": "Správci a globální moderátoři jsou vyjmuti z tohoto omezení",
 	"max-length": "Maximální délka konverzační zprávy",
 	"max-room-size": "Maximální počet uživatelů v konverzační místnosti",
-	"delay": "Čas mezi konverzačními zprávami v milisekundách"
+	"delay": "Čas mezi konverzačními zprávami v milisekundách",
+	"restrictions.seconds-edit-after": "Počet sekund než je uživateli umožněno upravit zprávy konverzace po jejich odeslání. (0 zákaz)",
+	"restrictions.seconds-delete-after": "Počet sekund než je uživateli umožněno smazat zprávy konverzace po jejich odeslání. (0 zákaz)"
 }

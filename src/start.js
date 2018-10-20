@@ -47,7 +47,7 @@ start.start = function () {
 			var webserver = require('./webserver');
 			require('./socket.io').init(webserver.server);
 
-			if (nconf.get('isPrimary') === 'true' && !nconf.get('jobsDisabled')) {
+			if (nconf.get('runJobs')) {
 				require('./notifications').startJobs();
 				require('./user').startJobs();
 			}
@@ -107,7 +107,7 @@ function printStartupInfo() {
 		winston.info('Initializing NodeBB v%s %s', nconf.get('version'), nconf.get('url'));
 
 		var host = nconf.get(nconf.get('database') + ':host');
-		var storeLocation = host ? 'at ' + host + (host.indexOf('/') === -1 ? ':' + nconf.get(nconf.get('database') + ':port') : '') : '';
+		var storeLocation = host ? 'at ' + host + (!host.includes('/') ? ':' + nconf.get(nconf.get('database') + ':port') : '') : '';
 
 		winston.verbose('* using %s store %s', nconf.get('database'), storeLocation);
 		winston.verbose('* using themes stored in: %s', nconf.get('themes_path'));
@@ -118,19 +118,6 @@ function addProcessHandlers() {
 	process.on('SIGTERM', shutdown);
 	process.on('SIGINT', shutdown);
 	process.on('SIGHUP', restart);
-	process.on('message', function (message) {
-		if (typeof message !== 'object') {
-			return;
-		}
-		var meta = require('./meta');
-
-		switch (message.action) {
-		case 'reload':
-			meta.reload();
-			break;
-		}
-	});
-
 	process.on('uncaughtException', function (err) {
 		winston.error(err);
 
@@ -153,11 +140,21 @@ function restart() {
 
 function shutdown(code) {
 	winston.info('[app] Shutdown (SIGTERM/SIGINT) Initialised.');
-	require('./database').close();
-	winston.info('[app] Database connection closed.');
-	require('./webserver').server.close();
-	winston.info('[app] Web server closed to connections.');
-
-	winston.info('[app] Shutdown complete.');
-	process.exit(code || 0);
+	async.waterfall([
+		function (next) {
+			require('./webserver').destroy(next);
+		},
+		function (next) {
+			winston.info('[app] Web server closed to connections.');
+			require('./database').close(next);
+		},
+	], function (err) {
+		if (err) {
+			winston.error(err);
+			return process.exit(code || 0);
+		}
+		winston.info('[app] Database connection closed.');
+		winston.info('[app] Shutdown complete.');
+		process.exit(code || 0);
+	});
 }

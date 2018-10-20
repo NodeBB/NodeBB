@@ -53,6 +53,7 @@
     "topics": "Topics",
     "posts": "Arresonos",
     "best": "Best",
+    "votes": "Votes",
     "upvoters": "Upvoters",
     "upvoted": "Upvoted",
     "downvoters": "Downvoters",
@@ -84,6 +85,7 @@
     "language": "Language",
     "guest": "Guest",
     "guests": "Guests",
+    "former_user": "A Former User",
     "updated.title": "Forum Updated",
     "updated.message": "This forum has just been updated to the latest version. Click here to refresh the page.",
     "privacy": "Privacy",
@@ -96,6 +98,7 @@
     "enter_page_number": "Enter page number",
     "upload_file": "Upload file",
     "upload": "Upload",
+    "uploads": "Uploads",
     "allowed-file-types": "Allowed file types are %1",
     "unsaved-changes": "You have unsaved changes. Are you sure you wish to navigate away?",
     "reconnecting-message": "Looks like your connection to %1 was lost, please wait while we try to reconnect.",
@@ -105,5 +108,6 @@
     "cookies.learn_more": "Learn More",
     "edited": "Edited",
     "disabled": "Disabled",
-    "select": "Select"
+    "select": "Select",
+    "user-search-prompt": "Type something here to find users..."
 }

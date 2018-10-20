@@ -19,5 +19,8 @@
     "terms_of_use_error": "Kullanım şartlarını kabul etmen gerekiyor",
     "registration-added-to-queue": "Kayıt olma isteğiniz kabul listesine eklenmiştir. Yönetici tarafından kabul edildiğinizde e-posta alacaksınız.",
     "interstitial.intro": "Hesabınızı yaratmadan önce bazı ekstra bilgiler gerekiyor.",
-    "interstitial.errors-found": "Kaydınınız tamamlanmadı:"
+    "interstitial.errors-found": "Kaydınınız tamamlanmadı:",
+    "gdpr_agree_data": "Bu web sitesinde kişisel bilgilerimin toplanmasını ve işlenmesini kabul ediyorum.",
+    "gdpr_agree_email": "Bu web sitesinden özet ve bildirim e-posta almaya izin veriyorum.",
+    "gdpr_consent_denied": "Bilgilerinizi toplamak/işlemek ve size e-posta göndermek için bu siteye onay vermelisiniz."
 }

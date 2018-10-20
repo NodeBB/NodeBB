@@ -1,5 +1,5 @@
 {
-	"you-are-on": "信息 - 你正在　<strong>%1:%2</strong>　上",
+	"you-are-on": "信息 - 您正在　<strong>%1:%2</strong>　上",
 	"nodes-responded": "%1个节点在%2ms内响应！",
 	"host": "主机",
 	"pid": "pid",

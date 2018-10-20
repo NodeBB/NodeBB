@@ -5,26 +5,37 @@
  * ATTENTION: testing db is flushed before every use!
  */
 
+
 var async = require('async');
-var winston = require('winston');
 var path = require('path');
 var nconf = require('nconf');
 var url = require('url');
-var errorText;
 
+global.env = process.env.TEST_ENV || 'production';
+
+var errorText;
+var packageInfo = require('../../package');
+
+var winston = require('winston');
+winston.add(new winston.transports.Console({
+	format: winston.format.combine(
+		winston.format.splat(),
+		winston.format.simple()
+	),
+}));
 
 nconf.file({ file: path.join(__dirname, '../../config.json') });
 nconf.defaults({
 	base_dir: path.join(__dirname, '../..'),
 	themes_path: path.join(__dirname, '../../node_modules'),
-	upload_path: 'public/uploads',
+	upload_path: 'test/uploads',
 	views_dir: path.join(__dirname, '../../build/public/templates'),
 	relative_path: '',
 });
 
 if (!nconf.get('isCluster')) {
 	nconf.set('isPrimary', 'true');
-	nconf.set('isCluster', 'false');
+	nconf.set('isCluster', 'true');
 }
 
 var dbType = nconf.get('database');
@@ -48,13 +59,21 @@ if (!testDbConfig) {
 		'    "host": "127.0.0.1",\n' +
 		'    "port": "27017",\n' +
 		'    "password": "",\n' +
-		'    "database": "1\n' +
+		'    "database": "1"\n' +
 		'}\n' +
 		' or (mongo) in a replicaset\n' +
 		'"test_database": {\n' +
 		'    "host": "127.0.0.1,127.0.0.1,127.0.0.1",\n' +
 		'    "port": "27017,27018,27019",\n' +
 		'    "username": "",\n' +
+		'    "password": "",\n' +
+		'    "database": "nodebb_test"\n' +
+		'}\n' +
+		' or (postgres):\n' +
+		'"test_database": {\n' +
+		'    "host": "127.0.0.1",\n' +
+		'    "port": "5432",\n' +
+		'    "username": "postgres",\n' +
 		'    "password": "",\n' +
 		'    "database": "nodebb_test"\n' +
 		'}\n' +
@@ -74,9 +93,8 @@ if (testDbConfig.database === productionDbConfig.database &&
 
 nconf.set(dbType, testDbConfig);
 
-winston.info('database config');
-winston.info(dbType);
-winston.info(testDbConfig);
+winston.info('database config %s', dbType, testDbConfig);
+winston.info('environment ' + global.env);
 
 var db = require('../../src/database');
 module.exports = db;
@@ -120,6 +138,8 @@ before(function (done) {
 			nconf.set('theme_config', path.join(nconf.get('themes_path'), 'nodebb-theme-persona', 'theme.json'));
 			nconf.set('bcrypt_rounds', 1);
 
+			nconf.set('version', packageInfo.version);
+
 			meta.dependencies.check(next);
 		},
 		function (next) {
@@ -151,8 +171,18 @@ function setupMockDefaults(callback) {
 			db.emptydb(next);
 		},
 		function (next) {
+			var groups = require('../../src/groups');
+			groups.resetCache();
+			var postCache = require('../../src/posts/cache');
+			postCache.reset();
+			next();
+		},
+		function (next) {
 			winston.info('test_database flushed');
 			setupDefaultConfigs(meta, next);
+		},
+		function (next) {
+			giveDefaultGlobalPrivileges(next);
 		},
 		function (next) {
 			meta.configs.init(next);
@@ -170,6 +200,21 @@ function setupMockDefaults(callback) {
 				id: 'nodebb-theme-persona',
 			}, next);
 		},
+		function (next) {
+			var rimraf = require('rimraf');
+			rimraf('test/uploads', next);
+		},
+		function (next) {
+			var mkdirp = require('mkdirp');
+			async.eachSeries([
+				'test/uploads',
+				'test/uploads/category',
+				'test/uploads/files',
+				'test/uploads/system',
+				'test/uploads/sounds',
+				'test/uploads/profile',
+			], mkdirp, next);
+		},
 	], callback);
 }
 db.setupMockDefaults = setupMockDefaults;
@@ -178,8 +223,16 @@ function setupDefaultConfigs(meta, next) {
 	winston.info('Populating database with default configs, if not already set...\n');
 
 	var defaults = require(path.join(nconf.get('base_dir'), 'install/data/defaults.json'));
-
+	defaults.eventLoopCheckEnabled = 0;
 	meta.configs.setOnEmpty(defaults, next);
+}
+
+function giveDefaultGlobalPrivileges(next) {
+	var privileges = require('../../src/privileges');
+	privileges.global.give([
+		'chat', 'upload:post:image', 'signature', 'search:content',
+		'search:users', 'search:tags', 'local:login',
+	], 'registered-users', next);
 }
 
 function enableDefaultPlugins(callback) {

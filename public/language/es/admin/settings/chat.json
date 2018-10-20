@@ -5,5 +5,7 @@
 	"disable-editing-help": "Los administradores y los moderadores globales están exentos de esta restricción",
 	"max-length": "Maxima longitud de mensajes de chat",
 	"max-room-size": "Máximo numero de usuarios en las salas de chat",
-	"delay": "Tiempo entre envío de mensajes de chat en milisegundos"
+	"delay": "Tiempo entre envío de mensajes de chat en milisegundos",
+	"restrictions.seconds-edit-after": "Número de segundos antes de que los usuarios puedan editar los mensajes después de enviarlos. (0 desactivado)",
+	"restrictions.seconds-delete-after": "Número de segundos antes de que los usuarios puedan borrar mensajes de chat después de enviarlos. (0 desactivado)"
 }

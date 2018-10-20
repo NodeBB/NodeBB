@@ -1,18 +1,18 @@
 {
-	"you-are-on": "Info - You are on <strong>%1:%2</strong>",
-	"nodes-responded": "%1 nodes responded within %2ms!",
+	"you-are-on": "Infó - Most épp itt vagy: <strong>%1:%2</strong>",
+	"nodes-responded": "%1 csomópont válaszolt %2mp-n belül!",
 	"host": "host",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "online",
 	"git": "git",
-	"memory": "memory",
-	"load": "load",
-	"uptime": "uptime",
+	"memory": "memória",
+	"load": "terhelés",
+	"uptime": "üzemidő",
 
-	"registered": "Registered",
+	"registered": "Regisztrált",
 	"sockets": "Sockets",
-	"guests": "Guests",
+	"guests": "Vendégek",
 
-	"info": "Info"
+	"info": "Információ"
 }

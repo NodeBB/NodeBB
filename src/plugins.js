@@ -9,7 +9,6 @@ var express = require('express');
 var nconf = require('nconf');
 
 var hotswap = require('./hotswap');
-var file = require('./file');
 
 var app;
 var middleware;
@@ -97,12 +96,12 @@ Plugins.reload = function (callback) {
 		function (next) {
 			// If some plugins are incompatible, throw the warning here
 			if (Plugins.versionWarning.length && nconf.get('isPrimary') === 'true') {
-				process.stdout.write('\n');
+				console.log('');
 				winston.warn('[plugins/load] The following plugins may not be compatible with your version of NodeBB. This may cause unintended behaviour or crashing. In the event of an unresponsive NodeBB caused by this plugin, run `./nodebb reset -p PLUGINNAME` to disable it.');
 				for (var x = 0, numPlugins = Plugins.versionWarning.length; x < numPlugins; x += 1) {
-					process.stdout.write('  * '.yellow + Plugins.versionWarning[x] + '\n');
+					console.log('  * '.yellow + Plugins.versionWarning[x]);
 				}
-				process.stdout.write('\n');
+				console.log('');
 			}
 
 			Object.keys(Plugins.loadedHooks).forEach(function (hook) {
@@ -119,10 +118,6 @@ Plugins.reload = function (callback) {
 
 Plugins.reloadRoutes = function (callback) {
 	var router = express.Router();
-	// var ensureLoggedIn = require('connect-ensure-login');
-
-	// router.all('(/api/admin|/api/admin/*?)', middleware.isAdmin);
-	// router.all('(/admin|/admin/*?)', ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login?local=1'), middleware.applyCSRF, middleware.isAdmin);
 
 	router.hotswapId = 'plugins';
 	router.render = function () {
@@ -139,51 +134,6 @@ Plugins.reloadRoutes = function (callback) {
 		hotswap.replace('plugins', router);
 		winston.verbose('[plugins] All plugins reloaded and rerouted');
 		callback();
-	});
-};
-
-Plugins.getTemplates = function (callback) {
-	var templates = {};
-	var tplName;
-
-	Plugins.data.getActive(function (err, plugins) {
-		if (err) {
-			return callback(err);
-		}
-
-		async.eachSeries(plugins, function (plugin, next) {
-			if (plugin.templates || plugin.id.startsWith('nodebb-theme-')) {
-				winston.verbose('[plugins] Loading templates (' + plugin.id + ')');
-				var templatesPath = path.join(__dirname, '../node_modules', plugin.id, plugin.templates || 'templates');
-				file.walk(templatesPath, function (err, pluginTemplates) {
-					if (pluginTemplates) {
-						pluginTemplates.forEach(function (pluginTemplate) {
-							if (pluginTemplate.endsWith('.tpl')) {
-								tplName = '/' + pluginTemplate.replace(templatesPath, '').substring(1);
-
-								if (templates.hasOwnProperty(tplName)) {
-									winston.verbose('[plugins] ' + tplName + ' replaced by ' + plugin.id);
-								}
-
-								templates[tplName] = pluginTemplate;
-							} else {
-								winston.warn('[plugins] Skipping ' + pluginTemplate + ' by plugin ' + plugin.id);
-							}
-						});
-					} else if (err) {
-						winston.error(err);
-					} else {
-						winston.warn('[plugins/' + plugin.id + '] A templates directory was defined for this plugin, but was not found.');
-					}
-
-					next(false);
-				});
-			} else {
-				next(false);
-			}
-		}, function (err) {
-			callback(err, templates);
-		});
 	});
 };
 
@@ -217,9 +167,9 @@ Plugins.list = function (matching, callback) {
 	require('request')(url, {
 		json: true,
 	}, function (err, res, body) {
-		if (err) {
-			winston.error('Error parsing plugins', err);
-			return callback(err);
+		if (err || (res && res.statusCode !== 200)) {
+			winston.error('Error loading ' + url, err || body);
+			return Plugins.normalise([], callback);
 		}
 
 		Plugins.normalise(body, callback);
@@ -227,9 +177,10 @@ Plugins.list = function (matching, callback) {
 };
 
 Plugins.normalise = function (apiReturn, callback) {
+	var themeNamePattern = /^(@.*?\/)?nodebb-theme-.*$/;
 	var pluginMap = {};
 	var dependencies = require(path.join(nconf.get('base_dir'), 'package.json')).dependencies;
-	apiReturn = apiReturn || [];
+	apiReturn = Array.isArray(apiReturn) ? apiReturn : [];
 	for (var i = 0; i < apiReturn.length; i += 1) {
 		apiReturn[i].id = apiReturn[i].name;
 		apiReturn[i].installed = false;
@@ -262,7 +213,7 @@ Plugins.normalise = function (apiReturn, callback) {
 			pluginMap[plugin.id].description = plugin.description;
 			pluginMap[plugin.id].url = pluginMap[plugin.id].url || plugin.url;
 			pluginMap[plugin.id].installed = true;
-			pluginMap[plugin.id].isTheme = !!plugin.id.match('nodebb-theme-');
+			pluginMap[plugin.id].isTheme = themeNamePattern.test(plugin.id);
 			pluginMap[plugin.id].error = plugin.error || false;
 			pluginMap[plugin.id].active = plugin.active;
 			pluginMap[plugin.id].version = plugin.version;

@@ -1,62 +1,93 @@
 'use strict';
 
 
-define('forum/topic/move-post', [], function () {
+define('forum/topic/move-post', ['components', 'postSelect'], function (components, postSelect) {
 	var MovePost = {};
 
+	var moveModal;
+	var moveCommit;
 
-	MovePost.openMovePostModal = function (button) {
+	MovePost.init = function () {
+		$('.topic').on('click', '[component="topic/move-posts"]', onMovePostsClicked);
+		$(window).on('action:ajaxify.start', onAjaxifyStart);
+	};
+
+	function onAjaxifyStart() {
+		closeMoveModal();
+		$(window).off('action:ajaxify.start', onAjaxifyStart);
+	}
+
+	function onMovePostsClicked() {
+		MovePost.openMovePostModal();
+	}
+
+	function showPostsSelected() {
+		if (postSelect.pids.length) {
+			moveModal.find('#pids').translateHtml('[[topic:fork_pid_count, ' + postSelect.pids.length + ']]');
+		} else {
+			moveModal.find('#pids').translateHtml('[[topic:fork_no_pids]]');
+		}
+	}
+
+	function checkMoveButtonEnable() {
+		if (moveModal.find('#topicId').val().length && postSelect.pids.length) {
+			moveCommit.removeAttr('disabled');
+		} else {
+			moveCommit.attr('disabled', true);
+		}
+	}
+
+	MovePost.openMovePostModal = function (postEl) {
 		app.parseAndTranslate('partials/move_post_modal', {}, function (html) {
-			var moveModal = $(html);
+			moveModal = html;
 
-			var	moveBtn = moveModal.find('#move_post_commit');
-			var topicId = moveModal.find('#topicId');
+			moveCommit = moveModal.find('#move_posts_confirm');
 
-			moveModal.on('hidden.bs.modal', function () {
-				moveModal.remove();
-			});
+			$(document.body).append(moveModal);
 
-			showMoveModal(moveModal);
+			moveModal.find('.close,#move_posts_cancel').on('click', closeMoveModal);
+			moveModal.find('#topicId').on('keyup', checkMoveButtonEnable);
+			postSelect.init(onPostToggled);
+			showPostsSelected();
 
-			moveModal.find('.close, #move_post_cancel').on('click', function () {
-				moveModal.addClass('hide');
-			});
+			if (postEl) {
+				postSelect.togglePostSelection(postEl, onPostToggled);
+			}
 
-			topicId.on('keyup change', function () {
-				moveBtn.attr('disabled', !topicId.val());
-			});
-
-			moveBtn.on('click', function () {
-				movePost(button.parents('[data-pid]'), button.parents('[data-pid]').attr('data-pid'), topicId.val(), function () {
-					moveModal.modal('hide');
-					topicId.val('');
-				});
+			moveCommit.on('click', function () {
+				movePosts();
 			});
 		});
 	};
 
-	function showMoveModal(modal) {
-		modal.modal('show')
-			.css('position', 'fixed')
-			.css('left', Math.max(0, (($(window).width() - modal.outerWidth()) / 2) + $(window).scrollLeft()) + 'px')
-			.css('top', '0px')
-			.css('z-index', '2000');
+	function onPostToggled() {
+		checkMoveButtonEnable();
+		showPostsSelected();
 	}
 
-	function movePost(post, pid, tid, callback) {
-		socket.emit('posts.movePost', { pid: pid, tid: tid }, function (err) {
+	function movePosts() {
+		var tid = moveModal.find('#topicId').val();
+		socket.emit('posts.movePosts', { pids: postSelect.pids, tid: tid }, function (err) {
 			if (err) {
-				app.alertError(err.message);
-				return callback();
+				return app.alertError(err.message);
 			}
-
-			post.fadeOut(500, function () {
-				post.remove();
+			postSelect.pids.forEach(function (pid) {
+				components.get('post', 'pid', pid).fadeOut(500, function () {
+					$(this).remove();
+				});
 			});
 
-			app.alertSuccess('[[topic:post_moved]]');
-			callback();
+			closeMoveModal();
 		});
+	}
+
+	function closeMoveModal() {
+		if (moveModal) {
+			moveModal.remove();
+			moveModal = null;
+		}
+
+		postSelect.disable();
 	}
 
 

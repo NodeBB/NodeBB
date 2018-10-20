@@ -6,6 +6,7 @@
 	"description": "Tags auswählen indem Du klickst und/oder ziehst, drücke die SHIFT-Taste, um mehrere auszuwählen",
 	"create": "Tag erstellen",
 	"modify": "Tag bearbeiten",
+	"rename": "Tags umbenennen",
 	"delete": "Ausgewählte Tags entfernen",
 	"search": "Nach Tags suchen",
 	"settings": "Klicke <a href=\"%1\">hier</a>, um die Tag-Einstellungsseite zu öffnen.",

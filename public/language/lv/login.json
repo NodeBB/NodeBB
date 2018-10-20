@@ -1,0 +1,12 @@
+{
+    "username-email": "Lietotājvārds / e-pasta adrese",
+    "username": "Lietotājvārds",
+    "email": "E-pasta adrese",
+    "remember_me": "Atcerēties mani?",
+    "forgot_password": "Aizmirsi paroli?",
+    "alternative_logins": "Alternatīvie lietotājvārdi",
+    "failed_login_attempt": "Tev ielogoties neveiksmējās",
+    "login_successful": "Tu esi veiksmīgi ielogojies!",
+    "dont_have_account": "Tev nav konta?",
+    "logged-out-due-to-inactivity": "Neaktivitātes dēļ Tu esi bijis izlogots no administrācijas vadības paneļa"
+}

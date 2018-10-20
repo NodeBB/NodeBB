@@ -32,12 +32,16 @@ module.exports = function (privileges) {
 					'topics:read': async.apply(helpers.isUserAllowedTo, 'topics:read', uid, cids),
 					read: async.apply(helpers.isUserAllowedTo, 'read', uid, cids),
 					'posts:edit': async.apply(helpers.isUserAllowedTo, 'posts:edit', uid, cids),
+					'posts:history': async.apply(helpers.isUserAllowedTo, 'posts:history', uid, cids),
+					'posts:view_deleted': async.apply(helpers.isUserAllowedTo, 'posts:view_deleted', uid, cids),
 				}, next);
 			},
 			function (results, next) {
 				var privileges = pids.map(function (pid, i) {
 					var isAdminOrMod = results.isAdmin || results.isModerator[i];
 					var editable = isAdminOrMod || (results.isOwner[i] && results['posts:edit'][i]);
+					var viewDeletedPosts = isAdminOrMod || results.isOwner[i] || results['posts:view_deleted'][i];
+					var viewHistory = isAdminOrMod || results.isOwner[i] || results['posts:history'][i];
 
 					return {
 						editable: editable,
@@ -46,6 +50,8 @@ module.exports = function (privileges) {
 						isAdminOrMod: isAdminOrMod,
 						'topics:read': results['topics:read'][i] || isAdminOrMod,
 						read: results.read[i] || isAdminOrMod,
+						'posts:history': viewHistory,
+						'posts:view_deleted': viewDeletedPosts,
 					};
 				});
 
@@ -82,9 +88,8 @@ module.exports = function (privileges) {
 			},
 			function (_posts, next) {
 				postData = _posts;
-				tids = _.uniq(_posts.map(function (post) {
-					return post && post.tid;
-				}).filter(Boolean));
+
+				tids = _.uniq(_posts.map(post => post && post.tid).filter(Boolean));
 
 				topics.getTopicsFields(tids, ['deleted', 'cid'], next);
 			},
@@ -101,9 +106,9 @@ module.exports = function (privileges) {
 						post.topic = tidToTopic[post.tid];
 					}
 					return tidToTopic[post.tid] && tidToTopic[post.tid].cid;
-				}).filter(function (cid, index, array) {
-					return cid && array.indexOf(cid) === index;
-				});
+				}).filter(cid => parseInt(cid, 10));
+
+				cids = _.uniq(cids);
 
 				privileges.categories.getBase(privilege, cids, uid, next);
 			},
@@ -115,13 +120,12 @@ module.exports = function (privileges) {
 						(results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
 				});
 
+				const cidsSet = new Set(cids);
 
 				pids = postData.filter(function (post) {
-					return post.topic && cids.indexOf(post.topic.cid) !== -1 &&
+					return post.topic && cidsSet.has(post.topic.cid) &&
 						((parseInt(post.topic.deleted, 10) !== 1 && parseInt(post.deleted, 10) !== 1) || results.isAdmin || isModOf[post.cid]);
-				}).map(function (post) {
-					return post.pid;
-				});
+				}).map(post => post.pid);
 
 				plugins.fireHook('filter:privileges.posts.filter', {
 					privilege: privilege,
@@ -200,7 +204,7 @@ module.exports = function (privileges) {
 				}, next);
 			},
 			function (results, next) {
-				var minimumReputation = utils.isNumber(meta.config['privileges:flag']) ? parseInt(meta.config['privileges:flag'], 10) : 1;
+				var minimumReputation = utils.isNumber(meta.config['min:rep:flag']) ? parseInt(meta.config['min:rep:flag'], 10) : 0;
 				var canFlag = results.isAdminOrMod || parseInt(results.userReputation, 10) >= minimumReputation;
 				next(null, { flag: canFlag });
 			},

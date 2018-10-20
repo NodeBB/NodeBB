@@ -7,5 +7,5 @@
     "revert-confirm": "Czy na pewno chcesz przywrócić domyślny styl NodeBB?",
     "theme-changed": "Styl Zmieniony",
     "revert-success": "Pomyślnie przywrócono domyślny styl NodeBB.",
-    "restart-to-activate": "Proszę zrestartować NodeBB, aby styl poprawnie działał."
+    "restart-to-activate": "Proszę odbudować i zrestartować NodeBB aby w pełni aktywować ten styl."
 }

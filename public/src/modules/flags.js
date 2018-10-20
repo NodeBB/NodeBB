@@ -22,7 +22,7 @@ define('flags', ['benchpress'], function (Benchpress) {
 			flagModal.on('click', '.flag-reason', function () {
 				var reportText = $(this).text();
 
-				if (flagReason.length === 0) {
+				if (flagReason.val().length === 0) {
 					return createFlag(data.type, data.id, reportText);
 				}
 

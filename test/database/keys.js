@@ -27,6 +27,14 @@ describe('Key methods', function () {
 		});
 	});
 
+	it('should return null if key does not exist', function (done) {
+		db.get('doesnotexist', function (err, value) {
+			assert.ifError(err);
+			assert.equal(value, null);
+			done();
+		});
+	});
+
 	it('should return true if key exist', function (done) {
 		db.exists('testKey', function (err, exists) {
 			assert.ifError(err);
@@ -149,6 +157,21 @@ describe('Key methods', function () {
 				done();
 			});
 		});
+
+		it('should set then increment a key', function (done) {
+			db.set('myIncrement', 1, function (err) {
+				assert.ifError(err);
+				db.increment('myIncrement', function (err, value) {
+					assert.ifError(err);
+					assert.equal(value, 2);
+					db.get('myIncrement', function (err, value) {
+						assert.ifError(err);
+						assert.equal(value, 2);
+						done();
+					});
+				});
+			});
+		});
 	});
 
 	describe('rename', function () {
@@ -165,6 +188,24 @@ describe('Key methods', function () {
 						assert.ifError(err);
 						assert.equal(value, 'renamedKeyValue');
 						done();
+					});
+				});
+			});
+		});
+
+		it('should rename multiple keys', function (done) {
+			db.sortedSetAdd('zsettorename', [1, 2, 3], ['value1', 'value2', 'value3'], function (err) {
+				assert.ifError(err);
+				db.rename('zsettorename', 'newzsetname', function (err) {
+					assert.ifError(err);
+					db.exists('zsettorename', function (err, exists) {
+						assert.ifError(err);
+						assert(!exists);
+						db.getSortedSetRange('newzsetname', 0, -1, function (err, values) {
+							assert.ifError(err);
+							assert.deepEqual(['value1', 'value2', 'value3'], values);
+							done();
+						});
 					});
 				});
 			});

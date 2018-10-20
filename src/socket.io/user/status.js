@@ -26,7 +26,7 @@ module.exports = function (SocketUser) {
 		}
 
 		var allowedStatus = ['online', 'offline', 'dnd', 'away'];
-		if (allowedStatus.indexOf(status) === -1) {
+		if (!allowedStatus.includes(status)) {
 			return callback(new Error('[[error:invalid-user-status]]'));
 		}
 
@@ -38,6 +38,13 @@ module.exports = function (SocketUser) {
 		async.waterfall([
 			function (next) {
 				user.setUserFields(socket.uid, data, next);
+			},
+			function (next) {
+				if (status !== 'offline') {
+					user.updateOnlineUsers(socket.uid, next);
+				} else {
+					next();
+				}
 			},
 			function (next) {
 				var data = {

@@ -62,7 +62,7 @@ define('forum/topic/votes', ['components', 'translator', 'benchpress'], function
 
 
 	Votes.toggleVote = function (button, className, method) {
-		var post = button.parents('[data-pid]');
+		var post = button.closest('[data-pid]');
 		var currentState = post.find(className).length;
 
 		socket.emit(currentState ? 'posts.unvote' : method, {
@@ -70,11 +70,11 @@ define('forum/topic/votes', ['components', 'translator', 'benchpress'], function
 			room_id: 'topic_' + ajaxify.data.tid,
 		}, function (err) {
 			if (err) {
-				if (err.message === 'self-vote') {
-					Votes.showVotes(post.attr('data-pid'));
-				} else {
-					app.alertError(err.message);
-				}
+				app.alertError(err.message);
+			}
+
+			if (err && err.message === '[[error:not-logged-in]]') {
+				ajaxify.go('login');
 			}
 		});
 

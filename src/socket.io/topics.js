@@ -6,7 +6,9 @@ var topics = require('../topics');
 var posts = require('../posts');
 var websockets = require('./index');
 var user = require('../user');
+var meta = require('../meta');
 var apiController = require('../controllers/api');
+var privileges = require('../privileges');
 var socketHelpers = require('./helpers');
 
 var SocketTopics = module.exports;
@@ -16,6 +18,7 @@ require('./topics/move')(SocketTopics);
 require('./topics/tools')(SocketTopics);
 require('./topics/infinitescroll')(SocketTopics);
 require('./topics/tags')(SocketTopics);
+require('./topics/merge')(SocketTopics);
 
 SocketTopics.post = function (socket, data, callback) {
 	if (!data) {
@@ -27,6 +30,9 @@ SocketTopics.post = function (socket, data, callback) {
 	data.timestamp = Date.now();
 
 	async.waterfall([
+		function (next) {
+			meta.blacklist.test(data.req.ip, next);
+		},
 		function (next) {
 			posts.shouldQueue(socket.uid, data, next);
 		},
@@ -57,7 +63,18 @@ function postTopic(socket, data, callback) {
 }
 
 SocketTopics.postcount = function (socket, tid, callback) {
-	topics.getTopicField(tid, 'postcount', callback);
+	async.waterfall([
+		function (next) {
+			privileges.topics.can('read', tid, socket.uid, next);
+		},
+		function (canRead, next) {
+			if (!canRead) {
+				return next(new Error('[[no-privileges]]'));
+			}
+
+			topics.getTopicField(tid, 'postcount', next);
+		},
+	], callback);
 };
 
 SocketTopics.bookmark = function (socket, data, callback) {
@@ -84,7 +101,7 @@ SocketTopics.changeWatching = function (socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 	var commands = ['follow', 'unfollow', 'ignore'];
-	if (commands.indexOf(data.type) === -1) {
+	if (!commands.includes(data.type)) {
 		return callback(new Error('[[error:invalid-command]]'));
 	}
 	followCommand(topics[data.type], socket, data.tid, callback);

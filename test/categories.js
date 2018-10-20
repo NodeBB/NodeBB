@@ -19,7 +19,6 @@ describe('Categories', function () {
 	var adminUid;
 
 	before(function (done) {
-		groups.resetCache();
 		async.series({
 			posterUid: function (next) {
 				User.create({ username: 'poster' }, next);
@@ -63,6 +62,7 @@ describe('Categories', function () {
 			assert(categoryData);
 			assert.equal(categoryObj.name, categoryData.name);
 			assert.equal(categoryObj.description, categoryData.description);
+			assert.strictEqual(categoryObj.disabled, 0);
 
 			done();
 		});
@@ -235,14 +235,6 @@ describe('Categories', function () {
 				assert.equal(data.topics[0].user.username, 'poster');
 				assert.equal(data.topics[0].tags[0].value, 'nodebb');
 				assert.equal(data.topics[0].category.cid, categoryObj.cid);
-				done();
-			});
-		});
-
-		it('should load page count', function (done) {
-			socketCategories.getPageCount({ uid: posterUid }, categoryObj.cid, function (err, pageCount) {
-				assert.ifError(err);
-				assert.equal(pageCount, 1);
 				done();
 			});
 		});
@@ -638,7 +630,7 @@ describe('Categories', function () {
 			});
 		});
 
-		it('should load user privileges', function (done) {
+		it('should load category user privileges', function (done) {
 			privileges.categories.userPrivileges(categoryObj.cid, 1, function (err, data) {
 				assert.ifError(err);
 				assert.deepEqual(data, {
@@ -651,9 +643,11 @@ describe('Categories', function () {
 					'topics:tag': false,
 					'topics:delete': false,
 					'posts:edit': false,
-					'upload:post:file': false,
-					'upload:post:image': false,
+					'posts:history': false,
+					'posts:upvote': false,
+					'posts:downvote': false,
 					purge: false,
+					'posts:view_deleted': false,
 					moderate: false,
 				});
 
@@ -661,12 +655,34 @@ describe('Categories', function () {
 			});
 		});
 
-		it('should load group privileges', function (done) {
+		it('should load global user privileges', function (done) {
+			privileges.global.userPrivileges(1, function (err, data) {
+				assert.ifError(err);
+				assert.deepEqual(data, {
+					ban: false,
+					chat: false,
+					'search:content': false,
+					'search:users': false,
+					'search:tags': false,
+					'upload:post:image': false,
+					'upload:post:file': false,
+					signature: false,
+					'local:login': false,
+				});
+
+				done();
+			});
+		});
+
+		it('should load category group privileges', function (done) {
 			privileges.categories.groupPrivileges(categoryObj.cid, 'registered-users', function (err, data) {
 				assert.ifError(err);
 				assert.deepEqual(data, {
 					'groups:find': true,
 					'groups:posts:edit': true,
+					'groups:posts:history': true,
+					'groups:posts:upvote': true,
+					'groups:posts:downvote': true,
 					'groups:topics:delete': false,
 					'groups:topics:create': true,
 					'groups:topics:reply': true,
@@ -674,10 +690,28 @@ describe('Categories', function () {
 					'groups:posts:delete': true,
 					'groups:read': true,
 					'groups:topics:read': true,
-					'groups:upload:post:file': false,
-					'groups:upload:post:image': true,
 					'groups:purge': false,
+					'groups:posts:view_deleted': false,
 					'groups:moderate': false,
+				});
+
+				done();
+			});
+		});
+
+		it('should load global group privileges', function (done) {
+			privileges.global.groupPrivileges('registered-users', function (err, data) {
+				assert.ifError(err);
+				assert.deepEqual(data, {
+					'groups:ban': false,
+					'groups:chat': true,
+					'groups:search:content': true,
+					'groups:search:users': true,
+					'groups:search:tags': true,
+					'groups:upload:post:image': true,
+					'groups:upload:post:file': false,
+					'groups:signature': true,
+					'groups:local:login': true,
 				});
 
 				done();

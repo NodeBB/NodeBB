@@ -1,0 +1,30 @@
+{
+	"global": "Глобальные",
+	"global.no-users": "Глобальные права не привязанные в участнику",
+
+	"chat": "Чат",
+	"upload-images": "Загрузка изображений",
+	"upload-files": "Загрузка файлов",
+	"signature": "Подпись",
+	"ban": "Блокировка",
+	"search-content": "Поиск по содержимому",
+	"search-users": "Поиск участников",
+	"search-tags": "Поиск тегов",
+	"allow-local-login": "Локальная авторизация",
+
+	"find-category": "Поиск категории",
+	"access-category": "Доступ к категории",
+	"access-topics": "Доступ к темам",
+	"create-topics": "Создание тем",
+	"reply-to-topics": "Ответы в темах",
+	"tag-topics": "Пометка тем",
+	"edit-posts": "Редактирование записей",
+	"view-edit-history": "Просмотр истории редактирования",
+	"delete-posts": "Удаление записей",
+	"view_deleted": "Просмотр удаленных записей",
+	"upvote-posts": "Голосование за запись",
+	"downvote-posts": "Голосование против записи",
+	"delete-topics": "Удаление тем",
+	"purge": "Очистка всего",
+	"moderate": "Модерирование"
+}

@@ -10,6 +10,7 @@ define('notifications', ['sounds', 'translator', 'components', 'navigator', 'ben
 		var notifContainer = components.get('notifications');
 		var notifTrigger = notifContainer.children('a');
 		var notifList = components.get('notifications/list');
+		var notifDropdownWrapper = notifTrigger.parents('.dropdown');
 
 		notifTrigger.on('click', function (e) {
 			e.preventDefault();
@@ -19,6 +20,10 @@ define('notifications', ['sounds', 'translator', 'components', 'navigator', 'ben
 
 			Notifications.loadNotifications(notifList);
 		});
+
+		if (notifDropdownWrapper.hasClass('open')) {
+			Notifications.loadNotifications(notifList);
+		}
 
 		notifList.on('click', '[data-nid]', function (ev) {
 			var notifEl = $(this);
@@ -33,15 +38,7 @@ define('notifications', ['sounds', 'translator', 'components', 'navigator', 'ben
 				return;
 			}
 			var nid = notifEl.attr('data-nid');
-			socket.emit('notifications.markRead', nid, function (err) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-
-				if (unreadNotifs[nid]) {
-					delete unreadNotifs[nid];
-				}
-			});
+			markNotification(nid, true);
 		});
 
 		notifContainer.on('click', '.mark-all-read', Notifications.markAllRead);
@@ -50,17 +47,8 @@ define('notifications', ['sounds', 'translator', 'components', 'navigator', 'ben
 			var liEl = $(this).parent();
 			var unread = liEl.hasClass('unread');
 			var nid = liEl.attr('data-nid');
-
-			socket.emit('notifications.mark' + (unread ? 'Read' : 'Unread'), nid, function (err) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-
+			markNotification(nid, unread, function () {
 				liEl.toggleClass('unread');
-
-				if (unread && unreadNotifs[nid]) {
-					delete unreadNotifs[nid];
-				}
 			});
 			return false;
 		});
@@ -70,14 +58,15 @@ define('notifications', ['sounds', 'translator', 'components', 'navigator', 'ben
 			var payload = {
 				alert_id: 'new_notif',
 				title: '[[notifications:new_notification]]',
-				timeout: 2000,
+				timeout: parseInt(config.notificationAlertTimeout, 10) || 5000,
 			};
 
 			if (notifData.path) {
 				payload.message = notifData.bodyShort;
 				payload.type = 'info';
 				payload.clickfn = function () {
-					if (notifData.path.startsWith('http') && notifData.path.startsWith('https')) {
+					markNotification(notifData.nid, true);
+					if (notifData.path.startsWith('http') || notifData.path.startsWith('https')) {
 						window.location.href = notifData.path;
 					} else {
 						window.location.href = window.location.protocol + '//' + window.location.host + config.relative_path + notifData.path;
@@ -114,13 +103,27 @@ define('notifications', ['sounds', 'translator', 'components', 'navigator', 'ben
 		});
 	};
 
+	function markNotification(nid, read, callback) {
+		socket.emit('notifications.mark' + (read ? 'Read' : 'Unread'), nid, function (err) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
+			if (read && unreadNotifs[nid]) {
+				delete unreadNotifs[nid];
+			}
+			if (callback) {
+				callback();
+			}
+		});
+	}
+
 	function scrollToPostIndexIfOnPage(notifEl) {
 		// Scroll to index if already in topic (gh#5873)
 		var pid = notifEl.attr('data-pid');
-		var tid = notifEl.attr('data-tid');
 		var path = notifEl.attr('data-path');
 		var postEl = components.get('post', 'pid', pid);
-		if (path.startsWith(config.relative_path + '/post/') && pid && postEl.length && ajaxify.data.template.topic && parseInt(ajaxify.data.tid, 10) === parseInt(tid, 10)) {
+		if (path.startsWith(config.relative_path + '/post/') && pid && postEl.length && ajaxify.data.template.topic) {
 			navigator.scrollToIndex(postEl.attr('data-index'), true);
 			return true;
 		}
@@ -137,14 +140,14 @@ define('notifications', ['sounds', 'translator', 'components', 'navigator', 'ben
 				return parseInt(a.datetime, 10) > parseInt(b.datetime, 10) ? -1 : 1;
 			});
 
-			translator.toggleTimeagoShorthand();
-			for (var i = 0; i < notifs.length; i += 1) {
-				notifs[i].timeago = $.timeago(new Date(parseInt(notifs[i].datetime, 10)));
-			}
-			translator.toggleTimeagoShorthand();
-
-			Benchpress.parse('partials/notifications_list', { notifications: notifs }, function (html) {
-				notifList.translateHtml(html);
+			translator.toggleTimeagoShorthand(function () {
+				for (var i = 0; i < notifs.length; i += 1) {
+					notifs[i].timeago = $.timeago(new Date(parseInt(notifs[i].datetime, 10)));
+				}
+				translator.toggleTimeagoShorthand();
+				Benchpress.parse('partials/notifications_list', { notifications: notifs }, function (html) {
+					notifList.translateHtml(html);
+				});
 			});
 		});
 	};

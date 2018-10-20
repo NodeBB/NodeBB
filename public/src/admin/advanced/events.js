@@ -13,6 +13,11 @@ define('admin/advanced/events', function () {
 				$('.events-list').empty();
 			});
 		});
+
+		$('#filter').on('change', function () {
+			var filter = $(this).val();
+			ajaxify.go('admin/advanced/events' + (filter ? '?filter=' + filter : ''));
+		});
 	};
 
 	return Events;

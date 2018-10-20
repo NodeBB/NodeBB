@@ -122,13 +122,16 @@ module.exports = function (Plugins) {
 		], callback);
 	};
 
+	var themeNamePattern = /(@.*?\/)?nodebb-theme-.*$/;
+
 	Plugins.loadPlugin = function (pluginPath, callback) {
 		Plugins.data.loadPluginInfo(pluginPath, function (err, pluginData) {
 			if (err) {
 				if (err.message === '[[error:parse-error]]') {
 					return callback();
 				}
-				return callback(pluginPath.match('nodebb-theme') ? null : err);
+
+				return callback(themeNamePattern.test(pluginPath) ? null : err);
 			}
 
 			checkVersion(pluginData);
@@ -154,7 +157,7 @@ module.exports = function (Plugins) {
 
 	function checkVersion(pluginData) {
 		function add() {
-			if (Plugins.versionWarning.indexOf(pluginData.id) === -1) {
+			if (!Plugins.versionWarning.includes(pluginData.id)) {
 				Plugins.versionWarning.push(pluginData.id);
 			}
 		}

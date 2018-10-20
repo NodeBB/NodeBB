@@ -8,8 +8,8 @@ define('forum/topic/postTools', [
 	'translator',
 	'forum/topic/votes',
 	'forum/topic/move-post',
-	'benchpress',
-], function (share, navigator, components, translator, votes, movePost, Benchpress) {
+	'forum/topic/diffs',
+], function (share, navigator, components, translator, votes, movePost, diffs) {
 	var PostTools = {};
 
 	var staleReplyAnyway = false;
@@ -45,11 +45,12 @@ define('forum/topic/postTools', [
 				}
 				data.posts.display_move_tools = data.posts.display_move_tools && index !== 0;
 
-				Benchpress.parse('partials/topic/post-menu-list', data, function (html) {
-					translator.translate(html, function (html) {
-						dropdownMenu.html(html);
-						$(window).trigger('action:post.tools.load');
+				app.parseAndTranslate('partials/topic/post-menu-list', data, function (html) {
+					dropdownMenu.html(html);
+					require(['clipboard'], function (clipboard) {
+						new clipboard('[data-clipboard-text]');
 					});
+					$(window).trigger('action:post.tools.load');
 				});
 			});
 		});
@@ -65,6 +66,10 @@ define('forum/topic/postTools', [
 		postEl.find('[component="post/restore"]').toggleClass('hidden', !isDeleted);
 		postEl.find('[component="post/purge"]').toggleClass('hidden', !isDeleted);
 
+		PostTools.removeMenu(postEl);
+	};
+
+	PostTools.removeMenu = function (postEl) {
 		postEl.find('[component="post/tools"] .dropdown-menu').html('');
 	};
 
@@ -139,6 +144,13 @@ define('forum/topic/postTools', [
 			}
 		});
 
+		if (config.enablePostHistory && ajaxify.data.privileges['posts:history']) {
+			postContainer.on('click', '[component="post/view-history"], [component="post/edit-indicator"]', function () {
+				var btn = $(this);
+				diffs.open(getData(btn, 'data-pid'));
+			});
+		}
+
 		postContainer.on('click', '[component="post/delete"]', function () {
 			var btn = $(this);
 			var timestamp = parseInt(getData(btn, 'data-timestamp'), 10);
@@ -189,7 +201,17 @@ define('forum/topic/postTools', [
 		});
 
 		postContainer.on('click', '[component="post/move"]', function () {
-			movePost.openMovePostModal($(this));
+			movePost.openMovePostModal($(this).parents('[data-pid]'));
+		});
+
+		postContainer.on('click', '[component="post/ban-ip"]', function () {
+			var ip = $(this).attr('data-ip');
+			socket.emit('blacklist.addRule', ip, function (err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				app.alertSuccess('[[admin/manage/blacklist:ban-ip]]');
+			});
 		});
 
 		postContainer.on('click', '[component="post/chat"]', function () {
@@ -320,7 +342,7 @@ define('forum/topic/postTools', [
 		}
 
 		if (post.length) {
-			slug = post.attr('data-userslug');
+			slug = utils.slugify(post.attr('data-username'), true);
 		}
 		if (post.length && post.attr('data-uid') !== '0') {
 			slug = '@' + slug;

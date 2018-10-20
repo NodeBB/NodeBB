@@ -1,0 +1,30 @@
+{
+	"global": "Globālās",
+	"global.no-users": "Nav lietotājiem īpašo globālo privilēģiju.",
+
+	"chat": "Sarunāties",
+	"upload-images": "Augšupielādēt bildes",
+	"upload-files": "Augšupielādēt failus",
+	"signature": "Parakstīties",
+	"ban": "Bloķēt",
+	"search-content": "Meklēt saturā",
+	"search-users": "Meklēt lietotājos",
+	"search-tags": "Meklēt birkās",
+	"allow-local-login": "Vietējā ielogošanās",
+
+	"find-category": "Meklēt kategorijās",
+	"access-category": "Piekļūt kategorijām",
+	"access-topics": "Piekļūt tematiem",
+	"create-topics": "Izveidot tematus",
+	"reply-to-topics": "Atbildēt tematos",
+	"tag-topics": "Pievienot birkas",
+	"edit-posts": "Rediģēt rakstus",
+	"view-edit-history": "Skatīt rediģēšanas vēsturi",
+	"delete-posts": "Izdzēst rakstus",
+	"view_deleted": "Skatīt izdzēstos rakstus",
+	"upvote-posts": "Balsot \"par\"",
+	"downvote-posts": "Balsot \"pret\"",
+	"delete-topics": "Izdzēst tematus",
+	"purge": "Iztīrīt",
+	"moderate": "Moderēt"
+}

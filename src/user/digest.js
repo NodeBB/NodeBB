@@ -90,8 +90,9 @@ Digest.getSubscribers = function (interval, callback) {
 };
 
 Digest.send = function (data, callback) {
+	var emailsSent = 0;
 	if (!data || !data.subscribers || !data.subscribers.length) {
-		return callback();
+		return callback(null, emailsSent);
 	}
 	var now = new Date();
 
@@ -105,7 +106,7 @@ Digest.send = function (data, callback) {
 					function (next) {
 						async.parallel({
 							notifications: async.apply(user.notifications.getDailyUnread, userObj.uid),
-							topics: async.apply(topics.getPopular, data.interval, userObj.uid, 10),
+							topics: async.apply(getTermTopics, data.interval, userObj.uid, 0, 9),
 						}, next);
 					},
 					function (data, next) {
@@ -131,14 +132,19 @@ Digest.send = function (data, callback) {
 
 							return topicObj;
 						});
-
+						emailsSent += 1;
 						emailer.send('digest', userObj.uid, {
-							subject: '[' + meta.config.title + '] [[email:digest.subject, ' + (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()) + ']]',
+							subject: '[[email:digest.subject, ' + (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()) + ']]',
 							username: userObj.username,
 							userslug: userObj.userslug,
 							notifications: notifications,
 							recent: data.topics,
 							interval: data.interval,
+							showUnsubscribe: true,
+						}, function (err) {
+							if (err) {
+								winston.error('[user/jobs] Could not send digest email', err);
+							}
 						});
 						next();
 					},
@@ -146,6 +152,30 @@ Digest.send = function (data, callback) {
 			}, next);
 		},
 	], function (err) {
-		callback(err, data.subscribers.length);
+		callback(err, emailsSent);
 	});
+
+	function getTermTopics(term, uid, start, stop, callback) {
+		async.waterfall([
+			function (next) {
+				topics.getSortedTopics({
+					uid: uid,
+					start: start,
+					stop: stop,
+					term: term,
+					sort: 'posts',
+				}, next);
+			},
+			function (data, next) {
+				if (!data.topics.length) {
+					topics.getLatestTopics(uid, start, stop, term, next);
+				} else {
+					next(null, data);
+				}
+			},
+			function (data, next) {
+				next(null, data.topics);
+			},
+		], callback);
+	}
 };

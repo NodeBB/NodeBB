@@ -1,12 +1,12 @@
 # The base image is the latest 8.x node (LTS)
-FROM node:8.9.0
+FROM node:8.11.4@sha256:3422df4f7532b26b55275ad7b6dc17ec35f77192b04ce22e62e43541f3d28eb3
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 ARG NODE_ENV
 ENV NODE_ENV $NODE_ENV
-COPY package.default.json /usr/src/app/package.json
+COPY install/package.json /usr/src/app/package.json
 RUN npm install && npm cache clean --force
 COPY . /usr/src/app
 

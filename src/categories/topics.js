@@ -7,6 +7,7 @@ var db = require('../database');
 var topics = require('../topics');
 var plugins = require('../plugins');
 var meta = require('../meta');
+var user = require('../user');
 
 module.exports = function (Categories) {
 	Categories.getCategoryTopics = function (data, callback) {
@@ -20,6 +21,7 @@ module.exports = function (Categories) {
 			function (tids, next) {
 				topics.getTopicsByTids(tids, data.uid, next);
 			},
+			async.apply(user.blocks.filter, data.uid),
 			function (topics, next) {
 				if (!topics.length) {
 					return next(null, { topics: [], uid: data.uid });
@@ -55,7 +57,7 @@ module.exports = function (Categories) {
 			function (results, next) {
 				var totalPinnedCount = results.pinnedTids.length;
 
-				pinnedTids = results.pinnedTids.slice(data.start, data.stop === -1 ? undefined : data.stop + 1);
+				pinnedTids = results.pinnedTids.slice(data.start, data.stop !== -1 ? data.stop + 1 : undefined);
 
 				var pinnedCount = pinnedTids.length;
 
@@ -90,14 +92,17 @@ module.exports = function (Categories) {
 				var stop = data.stop === -1 ? data.stop : start + normalTidsToGet - 1;
 
 				if (Array.isArray(set)) {
-					db[direction === 'highest-to-lowest' ? 'getSortedSetRevIntersect' : 'getSortedSetIntersect']({ sets: set, start: start, stop: stop }, next);
+					var weights = set.map(function (s, index) {
+						return index ? 0 : 1;
+					});
+					db[direction === 'highest-to-lowest' ? 'getSortedSetRevIntersect' : 'getSortedSetIntersect']({ sets: set, start: start, stop: stop, weights: weights }, next);
 				} else {
 					db[direction === 'highest-to-lowest' ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop, next);
 				}
 			},
 			function (normalTids, next) {
 				normalTids = normalTids.filter(function (tid) {
-					return pinnedTids.indexOf(tid) === -1;
+					return !pinnedTids.includes(tid);
 				});
 
 				next(null, pinnedTids.concat(normalTids));
@@ -135,6 +140,8 @@ module.exports = function (Categories) {
 
 		if (sort === 'most_posts') {
 			set = 'cid:' + cid + ':tids:posts';
+		} else if (sort === 'most_votes') {
+			set = 'cid:' + cid + ':tids:votes';
 		}
 
 		if (data.targetUid) {
@@ -160,7 +167,7 @@ module.exports = function (Categories) {
 
 	Categories.getSortedSetRangeDirection = function (sort, callback) {
 		sort = sort || 'newest_to_oldest';
-		var direction = sort === 'newest_to_oldest' || sort === 'most_posts' ? 'highest-to-lowest' : 'lowest-to-highest';
+		var direction = sort === 'newest_to_oldest' || sort === 'most_posts' || sort === 'most_votes' ? 'highest-to-lowest' : 'lowest-to-highest';
 		plugins.fireHook('filter:categories.getSortedSetRangeDirection', {
 			sort: sort,
 			direction: direction,
@@ -200,11 +207,6 @@ module.exports = function (Categories) {
 				topic.tags = [];
 			}
 		});
-	};
-
-	Categories.getTopicIndex = function (tid, callback) {
-		console.warn('[Categories.getTopicIndex] deprecated');
-		callback(null, 1);
 	};
 
 	Categories.onNewPostMade = function (cid, pinned, postData, callback) {

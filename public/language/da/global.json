@@ -53,6 +53,7 @@
     "topics": "Emner",
     "posts": "Indlæg",
     "best": "Bedste",
+    "votes": "Votes",
     "upvoters": "Upvoters",
     "upvoted": "Syntes godt om",
     "downvoters": "Downvoters",
@@ -84,6 +85,7 @@
     "language": "Sprog",
     "guest": "Gæst",
     "guests": "Gæster",
+    "former_user": "A Former User",
     "updated.title": "Forum opdateret",
     "updated.message": "Dette form er lige blevet opdateret til den seneste version. Klik her for at genindlæse siden.",
     "privacy": "Privatliv",
@@ -96,6 +98,7 @@
     "enter_page_number": "Indsæt sideantal",
     "upload_file": "Upload fil",
     "upload": "Upload",
+    "uploads": "Uploads",
     "allowed-file-types": "Tilladte filtyper er %1",
     "unsaved-changes": "You have unsaved changes. Are you sure you wish to navigate away?",
     "reconnecting-message": "Looks like your connection to %1 was lost, please wait while we try to reconnect.",
@@ -105,5 +108,6 @@
     "cookies.learn_more": "Learn More",
     "edited": "Edited",
     "disabled": "Disabled",
-    "select": "Select"
+    "select": "Select",
+    "user-search-prompt": "Type something here to find users..."
 }

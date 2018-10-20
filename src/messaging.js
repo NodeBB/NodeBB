@@ -56,6 +56,12 @@ Messaging.getMessages = function (params, callback) {
 			messageData.forEach(function (messageData) {
 				messageData.index = indices[messageData.messageId.toString()];
 			});
+
+			// Filter out deleted messages unless you're the sender of said message
+			messageData = messageData.filter(function (messageData) {
+				return (!messageData.deleted || parseInt(messageData.fromuid, 10) === parseInt(params.uid, 10));
+			});
+
 			next(null, messageData);
 		},
 	], callback);
@@ -72,14 +78,10 @@ function canGet(hook, callerUid, uid, callback) {
 }
 
 Messaging.parse = function (message, fromuid, uid, roomId, isNew, callback) {
-	message = utils.decodeHTMLEntities(utils.stripHTMLTags(message));
-	message = validator.escape(String(message));
-
 	plugins.fireHook('filter:parse.raw', message, function (err, parsed) {
 		if (err) {
 			return callback(err);
 		}
-
 
 		var messageData = {
 			message: message,
@@ -212,6 +214,18 @@ Messaging.getTeaser = function (uid, roomId, callback) {
 			}
 			Messaging.getMessageFields(mids[0], ['fromuid', 'content', 'timestamp'], next);
 		},
+		function (teaser, next) {
+			if (!teaser) {
+				return callback();
+			}
+			user.blocks.is(teaser.fromuid, uid, function (err, blocked) {
+				if (err || blocked) {
+					return callback(err);
+				}
+
+				next(null, teaser);
+			});
+		},
 		function (_teaser, next) {
 			teaser = _teaser;
 			if (!teaser) {
@@ -265,11 +279,12 @@ Messaging.canMessageUser = function (uid, toUid, callback) {
 			async.parallel({
 				settings: async.apply(user.getSettings, toUid),
 				isAdmin: async.apply(user.isAdministrator, uid),
+				isModerator: async.apply(user.isModeratorOfAnyCategory, uid),
 				isFollowing: async.apply(user.isFollowing, toUid, uid),
 			}, next);
 		},
 		function (results, next) {
-			if (results.settings.restrictChat && !results.isAdmin && !results.isFollowing) {
+			if (results.settings.restrictChat && !results.isAdmin && !results.isModerator && !results.isFollowing) {
 				return next(new Error('[[error:chat-restricted]]'));
 			}
 
@@ -338,7 +353,7 @@ Messaging.hasPrivateChat = function (uid, withUid, callback) {
 		},
 		function (results, next) {
 			var roomIds = results.myRooms.filter(function (roomId) {
-				return roomId && results.theirRooms.indexOf(roomId) !== -1;
+				return roomId && results.theirRooms.includes(roomId);
 			});
 
 			if (!roomIds.length) {
@@ -368,3 +383,5 @@ Messaging.hasPrivateChat = function (uid, withUid, callback) {
 		},
 	], callback);
 };
+
+Messaging.async = require('./promisify')(Messaging);

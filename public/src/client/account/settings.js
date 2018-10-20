@@ -55,7 +55,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 			if (skinName === 'default') {
 				skinName = config.defaultBootswatchSkin;
 			}
-			var cssSource = '//maxcdn.bootstrapcdn.com/bootswatch/latest/' + skinName + '/bootstrap.min.css';
+			var cssSource = '//maxcdn.bootstrapcdn.com/bootswatch/3.3.7/' + skinName + '/bootstrap.min.css';
 			if (css.length) {
 				css.attr('href', cssSource);
 			} else {

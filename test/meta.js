@@ -2,6 +2,8 @@
 
 var assert = require('assert');
 var async = require('async');
+var request = require('request');
+var nconf = require('nconf');
 
 var db = require('./mocks/databasemock');
 var meta = require('../src/meta');
@@ -298,6 +300,121 @@ describe('meta', function () {
 
 		after(function () {
 			process.execArgv = oldArgv;
+		});
+	});
+
+	describe('Access-Control-Allow-Origin', function () {
+		it('Access-Control-Allow-Origin header should be empty', function (done) {
+			var jar = request.jar();
+			request.get(nconf.get('url') + '/api/search?term=bug', {
+				form: {},
+				json: true,
+				jar: jar,
+			}, function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(response.headers['access-control-allow-origin'], undefined);
+				done();
+			});
+		});
+
+		it('should set proper Access-Control-Allow-Origin header', function (done) {
+			var jar = request.jar();
+			var oldValue = meta.config['access-control-allow-origin'];
+			meta.config['access-control-allow-origin'] = 'test.com, mydomain.com';
+			request.get(nconf.get('url') + '/api/search?term=bug', {
+				form: {
+				},
+				json: true,
+				jar: jar,
+				headers: {
+					origin: 'mydomain.com',
+				},
+			}, function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(response.headers['access-control-allow-origin'], 'mydomain.com');
+				meta.config['access-control-allow-origin'] = oldValue;
+				done(err);
+			});
+		});
+
+		it('Access-Control-Allow-Origin header should be empty if origin does not match', function (done) {
+			var jar = request.jar();
+			var oldValue = meta.config['access-control-allow-origin'];
+			meta.config['access-control-allow-origin'] = 'test.com, mydomain.com';
+			request.get(nconf.get('url') + '/api/search?term=bug', {
+				form: {
+				},
+				json: true,
+				jar: jar,
+				headers: {
+					origin: 'notallowed.com',
+				},
+			}, function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(response.headers['access-control-allow-origin'], undefined);
+				meta.config['access-control-allow-origin'] = oldValue;
+				done(err);
+			});
+		});
+
+		it('should set proper Access-Control-Allow-Origin header', function (done) {
+			var jar = request.jar();
+			var oldValue = meta.config['access-control-allow-origin-regex'];
+			meta.config['access-control-allow-origin-regex'] = 'match\\.this\\..+\\.domain.com, mydomain\\.com';
+			request.get(nconf.get('url') + '/api/search?term=bug', {
+				form: {
+				},
+				json: true,
+				jar: jar,
+				headers: {
+					origin: 'match.this.anything123.domain.com',
+				},
+			}, function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(response.headers['access-control-allow-origin'], 'match.this.anything123.domain.com');
+				meta.config['access-control-allow-origin-regex'] = oldValue;
+				done(err);
+			});
+		});
+
+		it('Access-Control-Allow-Origin header should be empty if origin does not match', function (done) {
+			var jar = request.jar();
+			var oldValue = meta.config['access-control-allow-origin-regex'];
+			meta.config['access-control-allow-origin-regex'] = 'match\\.this\\..+\\.domain.com, mydomain\\.com';
+			request.get(nconf.get('url') + '/api/search?term=bug', {
+				form: {
+				},
+				json: true,
+				jar: jar,
+				headers: {
+					origin: 'notallowed.com',
+				},
+			}, function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(response.headers['access-control-allow-origin'], undefined);
+				meta.config['access-control-allow-origin-regex'] = oldValue;
+				done(err);
+			});
+		});
+
+		it('should not error with invalid regexp', function (done) {
+			var jar = request.jar();
+			var oldValue = meta.config['access-control-allow-origin-regex'];
+			meta.config['access-control-allow-origin-regex'] = '[match\\.this\\..+\\.domain.com, mydomain\\.com';
+			request.get(nconf.get('url') + '/api/search?term=bug', {
+				form: {
+				},
+				json: true,
+				jar: jar,
+				headers: {
+					origin: 'mydomain.com',
+				},
+			}, function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(response.headers['access-control-allow-origin'], 'mydomain.com');
+				meta.config['access-control-allow-origin-regex'] = oldValue;
+				done(err);
+			});
 		});
 	});
 });

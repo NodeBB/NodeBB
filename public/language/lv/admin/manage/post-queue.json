@@ -1,0 +1,11 @@
+{
+	"post-queue": "Rakstu apstiprināšanas rinda",
+	"description": "Apstiprināšanas rinda ir tukša. <br>Lai iespējotu šo funkciju, dodies uz <a href=\"%1\">Iestatījumi &rarr; Raksti &rarr; Jauno lietotāju ierobežojumi</a> un <strong>Iespējo rakstu apstiprināšanas rindu</strong>.",
+	"user": "Lietotājs",
+	"category": "Kategorija",
+	"title": "Virsraksts",
+	"content": "Saturs",
+	"posted": "Datums",
+	"reply-to": "Atbildēt \"%1\"",
+	"content-editable": "Pirms publicēšanas var noklikšķināt uz saturu, lai to rediģētu."
+}

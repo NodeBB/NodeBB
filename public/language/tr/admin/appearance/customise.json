@@ -1,10 +1,14 @@
 {
-	"custom-css": "Özel CSS",
-	"custom-css.description": "Özel CSS kodlarınızı bu alana girin.",
-	"custom-css.enable": "Özel CSS Etkinleştir",
+	"custom-css": "Özel CSS/LESS",
+	"custom-css.description": "Diğer tüm stillerden sonra uygulanacak kendi CSS/LESS kodlarınızı buraya girin.",
+	"custom-css.enable": "Özelleştirilmiş CSS/LESS  kullan",
+
+	"custom-js": "Özel Javascript",
+	"custom-js.description": "Buraya kendi javascript'inizi girin. Sayfa tamamen yüklendikten sonra çalışır.",
+	"custom-js.enable": "Özelleştirilmiş Javascript'i etkinleştir",
 
 	"custom-header": "Özel Header",
-	"custom-header.description": "Forumunuzun biçimlendirmesini sağlayacak  <code>&lt;head&gt;</code> bölümüne eklenecek özel HTML'yi (ör. JavaScript, Meta Etiketler vb.) Girin.",
+	"custom-header.description": "Forumunuzun <code>&lt;head&gt;</code> bölümüne eklenecek özel HTML'yi buraya girin (örn. Meta Etiketler, vb.). Komut dosyası etiketlerine bu alanda izin verilse de, önerilmez <a href=\"#custom-header\" data-toggle=\"tab\">Özelleştirilmiş Javascript</a> bu iş için daha uygundur.",
 	"custom-header.enable": "Özel Header'ı Etkinleştir",
 
 	"custom-css.livereload": "Canlı Yenilemeyi Etkinleştir",

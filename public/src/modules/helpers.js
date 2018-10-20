@@ -20,7 +20,6 @@
 		generateCategoryBackground: generateCategoryBackground,
 		generateChildrenCategories: generateChildrenCategories,
 		generateTopicClass: generateTopicClass,
-		displayUserSearch: displayUserSearch,
 		membershipBtn: membershipBtn,
 		spawnPrivilegeStates: spawnPrivilegeStates,
 		localeToHTML: localeToHTML,
@@ -46,8 +45,7 @@
 			if ((properties.loggedIn && !loggedIn) ||
 				(properties.guestOnly && loggedIn) ||
 				(properties.globalMod && !data.isGlobalMod && !data.isAdmin) ||
-				(properties.adminOnly && !data.isAdmin) ||
-				(properties.searchInstalled && !data.searchEnabled)) {
+				(properties.adminOnly && !data.isAdmin)) {
 				return false;
 			}
 		}
@@ -127,11 +125,11 @@
 		category.children.forEach(function (child) {
 			if (child && !child.isSection) {
 				var link = child.link ? child.link : (relative_path + '/category/' + child.slug);
-				html += '<a href="' + link + '">' +
-						'<span class="fa-stack fa-lg">' +
-						'<i style="color:' + child.bgColor + ';" class="fa fa-circle fa-stack-2x"></i>' +
-						'<i style="color:' + child.color + ';" class="fa fa-stack-1x ' + child.icon + '"></i>' +
-						'</span><small>' + child.name + '</small></a> ';
+				html += '<span class="category-children-item pull-left">' +
+					'<div class="icon pull-left" style="' + generateCategoryBackground(child) + '">' +
+					'<i class="fa fa-fw ' + child.icon + '"></i>' +
+					'</div>' +
+					'<a href="' + link + '"><small>' + child.name + '</small></a></span>';
 			}
 		});
 		html = html ? ('<span class="category-children">' + html + '</span>') : html;
@@ -158,10 +156,6 @@
 		}
 
 		return style.join(' ');
-	}
-
-	function displayUserSearch(data, allowGuestUserSearching) {
-		return data.loggedIn || allowGuestUserSearching === 'true';
 	}
 
 	// Groups helpers
@@ -191,7 +185,10 @@
 			}
 		}
 		return states.map(function (priv) {
-			return '<td class="text-center" data-privilege="' + priv.name + '"><input type="checkbox"' + (priv.state ? ' checked' : '') + (member === 'guests' && priv.name === 'groups:moderate' ? ' disabled="disabled"' : '') + ' /></td>';
+			var guestDisabled = ['groups:moderate', 'groups:posts:upvote', 'groups:posts:downvote'];
+			var disabled = member === 'guests' && guestDisabled.includes(priv.name);
+
+			return '<td class="text-center" data-privilege="' + priv.name + '"><input type="checkbox"' + (priv.state ? ' checked' : '') + (disabled ? ' disabled="disabled"' : '') + ' /></td>';
 		}).join('');
 	}
 
@@ -210,14 +207,14 @@
 	function renderDigestAvatar(block) {
 		if (block.teaser) {
 			if (block.teaser.user.picture) {
-				return '<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 1em;" src="' + block.teaser.user.picture + '" title="' + block.teaser.user.username + '" />';
+				return '<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 8px;" src="' + block.teaser.user.picture + '" title="' + block.teaser.user.username + '" />';
 			}
-			return '<div style="width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 1em; background-color: ' + block.teaser.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block;">' + block.teaser.user['icon:text'] + '</div>';
+			return '<div style="vertical-align: middle; width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 8px; background-color: ' + block.teaser.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block;">' + block.teaser.user['icon:text'] + '</div>';
 		}
 		if (block.user.picture) {
-			return '<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 1em;" src="' + block.user.picture + '" title="' + block.user.username + '" />';
+			return '<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 8px;" src="' + block.user.picture + '" title="' + block.user.username + '" />';
 		}
-		return '<div style="width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 1em; background-color: ' + block.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block;">' + block.user['icon:text'] + '</div>';
+		return '<div style="vertical-align: middle; width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 8px; background-color: ' + block.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block;">' + block.user['icon:text'] + '</div>';
 	}
 
 	function userAgentIcons(data) {

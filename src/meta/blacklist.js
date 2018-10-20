@@ -3,15 +3,15 @@
 var ipaddr = require('ipaddr.js');
 var winston = require('winston');
 var async = require('async');
+var _ = require('lodash');
 
 var db = require('../database');
 var pubsub = require('../pubsub');
 var plugins = require('../plugins');
 var analytics = require('../analytics');
 
-var Blacklist = {
-	_rules: [],
-};
+var Blacklist = module.exports;
+Blacklist._rules = [];
 
 Blacklist.load = function (callback) {
 	callback = callback || function () {};
@@ -66,13 +66,22 @@ Blacklist.test = function (clientIp, callback) {
 	// clientIp = '2001:db8:85a3:0:0:8a2e:370:7334';	// IPv6
 	// clientIp = '127.0.15.1';	// IPv4
 	// clientIp = '127.0.15.1:3443'; // IPv4 with port strip port to not fail
+	if (!clientIp) {
+		return setImmediate(callback);
+	}
 	clientIp = clientIp.split(':').length === 2 ? clientIp.split(':')[0] : clientIp;
 
-	var addr = ipaddr.parse(clientIp);
+	var addr;
+	try {
+		addr = ipaddr.parse(clientIp);
+	} catch (err) {
+		winston.error('[meta/blacklist] Error parsing client IP : ' + clientIp);
+		return callback(err);
+	}
 
 	if (
-		Blacklist._rules.ipv4.indexOf(clientIp) === -1 &&	// not explicitly specified in ipv4 list
-		Blacklist._rules.ipv6.indexOf(clientIp) === -1 &&	// not explicitly specified in ipv6 list
+		!Blacklist._rules.ipv4.includes(clientIp) &&	// not explicitly specified in ipv4 list
+		!Blacklist._rules.ipv6.includes(clientIp) &&	// not explicitly specified in ipv6 list
 		!Blacklist._rules.cidr.some(function (subnet) {
 			var cidr = ipaddr.parseCIDR(subnet);
 			if (addr.kind() !== cidr[0].kind()) {
@@ -88,11 +97,7 @@ Blacklist.test = function (clientIp, callback) {
 				analytics.increment('blacklist');
 			}
 
-			if (typeof callback === 'function') {
-				callback(err);
-			} else {
-				return !!err;
-			}
+			callback(err);
 		});
 	} else {
 		var err = new Error('[[error:blacklisted-ip]]');
@@ -100,11 +105,7 @@ Blacklist.test = function (clientIp, callback) {
 
 		analytics.increment('blacklist');
 
-		if (typeof callback === 'function') {
-			setImmediate(callback, err);
-		} else {
-			return true;
-		}
+		setImmediate(callback, err);
 	}
 };
 
@@ -127,14 +128,9 @@ Blacklist.validate = function (rules, callback) {
 	}).filter(Boolean);
 
 	// Filter out duplicates
-	rules = rules.filter(function (rule, index) {
-		const pass = rules.indexOf(rule) === index;
-		if (!pass) {
-			duplicateCount += 1;
-		}
-
-		return pass;
-	});
+	const uniqRules = _.uniq(rules);
+	duplicateCount += rules.length - uniqRules.length;
+	rules = uniqRules;
 
 	// Filter out invalid rules
 	rules = rules.filter(function (rule) {
@@ -153,7 +149,7 @@ Blacklist.validate = function (rules, callback) {
 			// Do nothing
 		}
 
-		if (!addr || whitelist.indexOf(rule) !== -1) {
+		if (!addr || whitelist.includes(rule)) {
 			invalid.push(rule);
 			return false;
 		}
@@ -185,4 +181,22 @@ Blacklist.validate = function (rules, callback) {
 	});
 };
 
-module.exports = Blacklist;
+Blacklist.addRule = function (rule, callback) {
+	var valid;
+	async.waterfall([
+		function (next) {
+			Blacklist.validate(rule, next);
+		},
+		function (result, next) {
+			valid = result.valid;
+			if (!valid.length) {
+				return next(new Error('[[error:invalid-rule]]'));
+			}
+			Blacklist.get(next);
+		},
+		function (rules, next) {
+			rules = rules + '\n' + valid[0];
+			Blacklist.save(rules, next);
+		},
+	], callback);
+};

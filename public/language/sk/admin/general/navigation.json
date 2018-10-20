@@ -1,28 +1,25 @@
 {
 	"icon": "Ikona:",
-	"change-icon": "change",
-	"route": "Route:",
-	"tooltip": "Tooltip:",
+	"change-icon": "zmeniť",
+	"route": "Cesta:",
+	"tooltip": "Tip:",
 	"text": "Text:",
-	"text-class": "Text Class: <small>optional</small>",
-	"id": "ID: <small>optional</small>",
+	"text-class": "Textová trieda: <small>doporučené</small>",
+	"id": "ID: <small>doporučené</small>",
 
-	"properties": "Properties:",
-	"only-admins": "Only display to Admins",
-	"only-global-mods-and-admins": "Only display to Global Moderators and Admins",
-	"only-logged-in": "Only display to logged in users",
-	"only-guest": "Only display to guests",
-	"open-new-window": "Open in a new window",
+	"properties": "Vlastnosti:",
+	"only-admins": "Zobrazuje sa len správcom",
+	"only-global-mods-and-admins": "Zobrazuje sa iba hlavným moderátorom a správcom",
+	"only-logged-in": "Zobrazuje sa iba prihláseným používateľom",
+	"only-guest": "Zobraziť iba hosťom",
+	"open-new-window": "Otvoriť v novom okne",
 
-	"installed-plugins-required": "Installed Plugins Required:",
-	"search-plugin": "Search plugin",
+	"btn.delete": "Odstrániť",
+	"btn.disable": "Zakázať",
+	"btn.enable": "Povoliť",
 
-	"btn.delete": "Delete",
-	"btn.disable": "Disable",
-	"btn.enable": "Enable",
-
-	"available-menu-items": "Available Menu Items",
-	"custom-route": "Custom Route",
-	"core": "core",
-	"plugin": "plugin"
+	"available-menu-items": "Dostupné položky ponuky",
+	"custom-route": "Upraviť cestu",
+	"core": "jadro",
+	"plugin": "zásuvný modul"
 }
