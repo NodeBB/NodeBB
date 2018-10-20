@@ -13,7 +13,7 @@ var primaryDB = require('./database/' + databaseName);
 
 primaryDB.parseIntField = function (data, field) {
 	if (data.hasOwnProperty(field)) {
-		data[field] = parseInt(data[field], 10);
+		data[field] = parseInt(data[field], 10) || 0;
 	}
 };
 

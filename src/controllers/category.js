@@ -52,7 +52,7 @@ categoryController.get = function (req, res, callback) {
 			userPrivileges = results.privileges;
 			rssToken = results.rssToken;
 
-			if (!results.categoryData.slug || (results.categoryData && parseInt(results.categoryData.disabled, 10) === 1)) {
+			if (!results.categoryData.slug || (results.categoryData && results.categoryData.disabled)) {
 				return callback();
 			}
 

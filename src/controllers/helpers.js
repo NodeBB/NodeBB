@@ -164,7 +164,7 @@ helpers.buildCategoryBreadcrumbs = function (cid, callback) {
 				return next(err);
 			}
 
-			if (!parseInt(data.disabled, 10) && !parseInt(data.isSection, 10)) {
+			if (!data.disabled && !data.isSection) {
 				breadcrumbs.unshift({
 					text: validator.escape(String(data.name)),
 					url: nconf.get('relative_path') + '/category/' + data.slug,
