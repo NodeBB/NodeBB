@@ -105,7 +105,7 @@ module.exports = function (SocketTopics) {
 
 	function logTopicAction(action, socket, tid, title, callback) {
 		var actionsToLog = ['delete', 'restore', 'purge'];
-		if (actionsToLog.indexOf(action) === -1) {
+		if (!actionsToLog.includes(action)) {
 			return setImmediate(callback);
 		}
 		events.log({

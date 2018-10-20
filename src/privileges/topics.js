@@ -86,9 +86,7 @@ module.exports = function (privileges) {
 			},
 			function (_topicsData, next) {
 				topicsData = _topicsData;
-				cids = _.uniq(topicsData.map(function (topic) {
-					return topic.cid;
-				}));
+				cids = _.uniq(topicsData.map(topic => topic.cid));
 
 				privileges.categories.getBase(privilege, cids, uid, next);
 			},
@@ -100,12 +98,12 @@ module.exports = function (privileges) {
 						(results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
 				});
 
+				const cidsSet = new Set(cids);
+
 				tids = topicsData.filter(function (topic) {
-					return cids.indexOf(topic.cid) !== -1 &&
+					return cidsSet.has(topic.cid) &&
 						(parseInt(topic.deleted, 10) !== 1 || results.isAdmin || isModOf[topic.cid]);
-				}).map(function (topic) {
-					return topic.tid;
-				});
+				}).map(topic => topic.tid);
 
 				plugins.fireHook('filter:privileges.topics.filter', {
 					privilege: privilege,

@@ -33,23 +33,20 @@ module.exports = function (Posts) {
 				user.blocks.filter(uid, posts, next);
 			},
 			function (_posts, next) {
-				var uids = [];
-				var topicKeys = [];
+				posts = _posts;
+				var uids = {};
+				var topicKeys = {};
 
-				posts.forEach(function (post, i) {
-					if (uids.indexOf(posts[i].uid) === -1) {
-						uids.push(posts[i].uid);
-					}
-					if (topicKeys.indexOf(posts[i].tid) === -1) {
-						topicKeys.push(posts[i].tid);
-					}
+				posts.forEach(function (post) {
+					uids[post.uid] = 1;
+					topicKeys[post.tid] = 1;
 				});
 				async.parallel({
 					users: function (next) {
-						user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
+						user.getUsersFields(Object.keys(uids), ['uid', 'username', 'userslug', 'picture'], next);
 					},
 					topicsAndCategories: function (next) {
-						getTopicAndCategories(topicKeys, next);
+						getTopicAndCategories(Object.keys(topicKeys), next);
 					},
 				}, next);
 			},

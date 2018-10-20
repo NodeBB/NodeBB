@@ -122,27 +122,20 @@ Notifications.filterExists = function (nids, callback) {
 
 Notifications.findRelated = function (mergeIds, set, callback) {
 	// A related notification is one in a zset that has the same mergeId
-	var _nids;
+	var nids;
 
 	async.waterfall([
 		async.apply(db.getSortedSetRevRange, set, 0, -1),
-		function (nids, next) {
-			_nids = nids;
+		function (_nids, next) {
+			nids = _nids;
 
-			var keys = nids.map(function (nid) {
-				return 'notifications:' + nid;
-			});
-
+			var keys = nids.map(nid => 'notifications:' + nid);
 			db.getObjectsFields(keys, ['mergeId'], next);
 		},
 		function (sets, next) {
-			sets = sets.map(function (set) {
-				return set.mergeId;
-			});
-
-			next(null, _nids.filter(function (nid, idx) {
-				return mergeIds.indexOf(sets[idx]) !== -1;
-			}));
+			sets = sets.map(set => set.mergeId);
+			var mergeSet = new Set(mergeIds);
+			next(null, nids.filter((nid, idx) => mergeSet.has(sets[idx])));
 		},
 	], callback);
 };
@@ -536,7 +529,7 @@ Notifications.merge = function (notifications, callback) {
 		// Each isolated mergeId may have multiple differentiators, so process each separately
 		differentiators = isolated.reduce(function (cur, next) {
 			differentiator = next.mergeId.split('|')[1] || 0;
-			if (cur.indexOf(differentiator) === -1) {
+			if (!cur.includes(differentiator)) {
 				cur.push(differentiator);
 			}
 

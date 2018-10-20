@@ -55,7 +55,7 @@ pluginsController.get = function (req, res, next) {
 					return !plugin.installed;
 				}),
 				incompatible: payload.all.filter(function (plugin) {
-					return compatiblePkgNames.indexOf(plugin.name) === -1;
+					return !compatiblePkgNames.includes(plugin.name);
 				}),
 			});
 		},

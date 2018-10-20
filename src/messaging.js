@@ -353,7 +353,7 @@ Messaging.hasPrivateChat = function (uid, withUid, callback) {
 		},
 		function (results, next) {
 			var roomIds = results.myRooms.filter(function (roomId) {
-				return roomId && results.theirRooms.indexOf(roomId) !== -1;
+				return roomId && results.theirRooms.includes(roomId);
 			});
 
 			if (!roomIds.length) {

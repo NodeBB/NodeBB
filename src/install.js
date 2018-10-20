@@ -7,6 +7,8 @@ var path = require('path');
 var prompt = require('prompt');
 var winston = require('winston');
 var nconf = require('nconf');
+var _ = require('lodash');
+
 var utils = require('./utils.js');
 
 var install = module.exports;
@@ -488,9 +490,7 @@ function enableDefaultPlugins(next) {
 		}
 	}
 
-	defaultEnabled = defaultEnabled.filter(function (plugin, index, array) {
-		return array.indexOf(plugin) === index;
-	});
+	defaultEnabled = _.uniq(defaultEnabled);
 
 	winston.info('[install/enableDefaultPlugins] activating default plugins', defaultEnabled);
 

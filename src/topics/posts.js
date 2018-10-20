@@ -57,24 +57,20 @@ module.exports = function (Topics) {
 		}
 
 		function getPostUserData(field, method, callback) {
-			var uids = [];
+			var uidsMap = {};
 
-			postData.forEach(function (postData) {
-				if (postData && parseInt(postData[field], 10) >= 0 && uids.indexOf(postData[field]) === -1) {
-					uids.push(postData[field]);
+			postData.forEach((post) => {
+				if (post && parseInt(post[field], 10) >= 0) {
+					uidsMap[post[field]] = 1;
 				}
 			});
-
+			const uids = Object.keys(uidsMap);
 			async.waterfall([
 				function (next) {
 					method(uids, next);
 				},
 				function (users, next) {
-					var userData = {};
-					users.forEach(function (user, index) {
-						userData[uids[index]] = user;
-					});
-					next(null, userData);
+					next(null, _.zipObject(uids, users));
 				},
 			], callback);
 		}

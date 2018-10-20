@@ -176,7 +176,7 @@ module.exports = function (User) {
 				db.sortedSetsRemove(['digest:day:uids', 'digest:week:uids', 'digest:month:uids'], uid, next);
 			},
 			function (next) {
-				if (['day', 'week', 'month'].indexOf(dailyDigestFreq) !== -1) {
+				if (['day', 'week', 'month'].includes(dailyDigestFreq)) {
 					db.sortedSetAdd('digest:' + dailyDigestFreq + ':uids', Date.now(), uid, next);
 				} else {
 					next();

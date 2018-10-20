@@ -318,7 +318,7 @@ SocketModules.chats.markRead = function (socket, roomId, callback) {
 			Messaging.pushUnreadCount(socket.uid);
 			server.in('uid_' + socket.uid).emit('event:chats.markedAsRead', { roomId: roomId });
 
-			if (results.uidsInRoom.indexOf(socket.uid.toString()) === -1) {
+			if (!results.uidsInRoom.includes(String(socket.uid))) {
 				return callback();
 			}
 

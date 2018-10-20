@@ -88,9 +88,8 @@ module.exports = function (privileges) {
 			},
 			function (_posts, next) {
 				postData = _posts;
-				tids = _.uniq(_posts.map(function (post) {
-					return post && post.tid;
-				}).filter(Boolean));
+
+				tids = _.uniq(_posts.map(post => post && post.tid).filter(Boolean));
 
 				topics.getTopicsFields(tids, ['deleted', 'cid'], next);
 			},
@@ -107,9 +106,9 @@ module.exports = function (privileges) {
 						post.topic = tidToTopic[post.tid];
 					}
 					return tidToTopic[post.tid] && tidToTopic[post.tid].cid;
-				}).filter(function (cid, index, array) {
-					return cid && array.indexOf(cid) === index;
-				});
+				}).filter(cid => parseInt(cid, 10));
+
+				cids = _.uniq(cids);
 
 				privileges.categories.getBase(privilege, cids, uid, next);
 			},
@@ -121,13 +120,12 @@ module.exports = function (privileges) {
 						(results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
 				});
 
+				const cidsSet = new Set(cids);
 
 				pids = postData.filter(function (post) {
-					return post.topic && cids.indexOf(post.topic.cid) !== -1 &&
+					return post.topic && cidsSet.has(post.topic.cid) &&
 						((parseInt(post.topic.deleted, 10) !== 1 && parseInt(post.deleted, 10) !== 1) || results.isAdmin || isModOf[post.cid]);
-				}).map(function (post) {
-					return post.pid;
-				});
+				}).map(post => post.pid);
 
 				plugins.fireHook('filter:privileges.posts.filter', {
 					privilege: privilege,

@@ -23,8 +23,10 @@ module.exports = function (User) {
 				}, next);
 			},
 			function (results, next) {
+				const ignored = new Set(results.ignored);
+
 				var watched = results.all.filter(function (cid) {
-					return cid && results.ignored.indexOf(cid) === -1;
+					return cid && !ignored.has(cid);
 				});
 				next(null, watched);
 			},

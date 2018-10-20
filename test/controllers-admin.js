@@ -481,9 +481,9 @@ describe('Admin Controllers', function () {
 				body = body.posts.map(function (network) {
 					return network && network.id;
 				});
-				assert(body.indexOf('facebook') !== -1);
-				assert(body.indexOf('twitter') !== -1);
-				assert(body.indexOf('google') !== -1);
+				assert(body.includes('facebook'));
+				assert(body.includes('twitter'));
+				assert(body.includes('google'));
 				done();
 			});
 		});
@@ -665,16 +665,16 @@ describe('Admin Controllers', function () {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
-			assert(body.indexOf('"someValue":"\\\\"foo\\\\""') !== -1);
-			assert(body.indexOf('"otherValue":"\\\'123\\\'"') !== -1);
-			assert(body.indexOf('"script":"<\\/script>"') !== -1);
+			assert(body.includes('"someValue":"\\\\"foo\\\\""'));
+			assert(body.includes('"otherValue":"\\\'123\\\'"'));
+			assert(body.includes('"script":"<\\/script>"'));
 			request(nconf.get('url'), { jar: jar }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
-				assert(body.indexOf('"someValue":"\\\\"foo\\\\""') !== -1);
-				assert(body.indexOf('"otherValue":"\\\'123\\\'"') !== -1);
-				assert(body.indexOf('"script":"<\\/script>"') !== -1);
+				assert(body.includes('"someValue":"\\\\"foo\\\\""'));
+				assert(body.includes('"otherValue":"\\\'123\\\'"'));
+				assert(body.includes('"script":"<\\/script>"'));
 				plugins.unregisterHook('somePlugin', 'filter:config.get', onConfigGet);
 				done();
 			});

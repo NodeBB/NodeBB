@@ -4,6 +4,7 @@ var async = require('async');
 var validator = require('validator');
 var nconf = require('nconf');
 var winston = require('winston');
+var _ = require('lodash');
 
 var db = require('../database');
 var meta = require('../meta');
@@ -49,27 +50,25 @@ module.exports = function (User) {
 
 		var fieldsToRemove = [];
 		function addField(field) {
-			if (fields.indexOf(field) === -1) {
+			if (!fields.includes(field)) {
 				fields.push(field);
 				fieldsToRemove.push(field);
 			}
 		}
 
-		if (fields.length && fields.indexOf('uid') === -1) {
+		if (fields.length && !fields.includes('uid')) {
 			fields.push('uid');
 		}
 
-		if (fields.indexOf('picture') !== -1) {
+		if (fields.includes('picture')) {
 			addField('uploadedpicture');
 		}
 
-		if (fields.indexOf('status') !== -1) {
+		if (fields.includes('status')) {
 			addField('lastonline');
 		}
 
-		var uniqueUids = uids.filter(function (uid, index) {
-			return index === uids.indexOf(uid);
-		});
+		var uniqueUids = _.uniq(uids);
 
 		async.waterfall([
 			function (next) {

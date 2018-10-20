@@ -171,7 +171,7 @@ middleware.applyBlacklist = function (req, res, next) {
 };
 
 middleware.processTimeagoLocales = function (req, res, next) {
-	var fallback = req.path.indexOf('-short') === -1 ? 'jquery.timeago.en.js' : 'jquery.timeago.en-short.js';
+	var fallback = !req.path.includes('-short') ? 'jquery.timeago.en.js' : 'jquery.timeago.en-short.js';
 	var localPath = path.join(__dirname, '../../public/vendor/jquery/timeago/locales', req.path);
 
 	async.waterfall([

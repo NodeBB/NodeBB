@@ -115,7 +115,7 @@ var basePath = path.resolve(__dirname, '../..');
 function minifyModules(modules, fork, callback) {
 	var moduleDirs = modules.reduce(function (prev, mod) {
 		var dir = path.resolve(path.dirname(mod.destPath));
-		if (prev.indexOf(dir) === -1) {
+		if (!prev.includes(dir)) {
 			prev.push(dir);
 		}
 		return prev;

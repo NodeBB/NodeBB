@@ -19,7 +19,7 @@ module.exports = function (Groups) {
 		});
 
 		var ephemeralIdx = groupNames.reduce(function (memo, cur, idx) {
-			if (Groups.ephemeralGroups.indexOf(cur) !== -1) {
+			if (Groups.ephemeralGroups.includes(cur)) {
 				memo.push(idx);
 			}
 			return memo;

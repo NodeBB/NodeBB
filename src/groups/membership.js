@@ -265,14 +265,14 @@ module.exports = function (Groups) {
 			},
 			function (groupNames, next) {
 				groupNames = Groups.removeEphemeralGroups(groupNames);
-				if (groupNames.length === 0) {
+				if (!groupNames.length) {
 					return callback(null, false);
 				}
 
 				Groups.isMemberOfGroups(uid, groupNames, next);
 			},
 			function (isMembers, next) {
-				next(null, isMembers.indexOf(true) !== -1);
+				next(null, isMembers.includes(true));
 			},
 		], callback);
 	};
