@@ -173,47 +173,6 @@ module.exports = function (app, middleware, hotswapIds, callback) {
 		res.redirect(relativePath + '/assets/uploads' + req.path + '?' + meta.config['cache-buster']);
 	});
 
-	// only warn once
-	var warned = new Set();
-
-	// DEPRECATED
-	var deprecatedPaths = [
-		'/nodebb.min.js',
-		'/acp.min.js',
-		'/stylesheet.css',
-		'/js-enabled.css',
-		'/admin.css',
-		'/logo.png',
-		'/favicon.ico',
-		'/vendor/',
-		'/templates/',
-		'/src/',
-		'/images/',
-		'/language/',
-		'/sounds/',
-	];
-	app.use(relativePath, function (req, res, next) {
-		if (deprecatedPaths.some(function (path) { return req.path.startsWith(path); })) {
-			if (!warned.has(req.path)) {
-				winston.warn('[deprecated] Accessing `' + req.path.slice(1) + '` from `/` is deprecated to be REMOVED in NodeBB v1.7.0. ' +
-				'Use `/assets' + req.path + '` to access this file.');
-				warned.add(req.path);
-			}
-			res.redirect(relativePath + '/assets' + req.path + '?' + meta.config['cache-buster']);
-		} else {
-			next();
-		}
-	});
-	// DEPRECATED
-	app.use(relativePath + '/api/language', function (req, res) {
-		if (!warned.has(req.path)) {
-			winston.warn('[deprecated] Accessing language files from `/api/language` is deprecated to be REMOVED in NodeBB v1.7.0. ' +
-			'Use `/assets/language' + req.path + '.json` for prefetch paths.');
-			warned.add(req.path);
-		}
-		res.redirect(relativePath + '/assets/language' + req.path + '.json?' + meta.config['cache-buster']);
-	});
-
 	app.use(relativePath + '/assets/vendor/jquery/timeago/locales', middleware.processTimeagoLocales);
 	app.use(controllers['404'].handle404);
 	app.use(controllers.errors.handleURIErrors);
