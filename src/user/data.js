@@ -11,6 +11,8 @@ var meta = require('../meta');
 var plugins = require('../plugins');
 var utils = require('../utils');
 
+const intFields = ['uid', 'postcount', 'topiccount', 'banned'];
+
 module.exports = function (User) {
 	var iconBackgrounds = [
 		'#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3',
@@ -27,26 +29,12 @@ module.exports = function (User) {
 		'cover:position', 'groupTitle',
 	];
 
-	User.getUserField = function (uid, field, callback) {
-		User.getUserFields(uid, [field], function (err, user) {
-			callback(err, user ? user[field] : null);
-		});
-	};
-
-	User.getUserFields = function (uid, fields, callback) {
-		User.getUsersFields([uid], fields, function (err, users) {
-			callback(err, users ? users[0] : null);
-		});
-	};
-
 	User.getUsersFields = function (uids, fields, callback) {
 		if (!Array.isArray(uids) || !uids.length) {
 			return callback(null, []);
 		}
 
-		uids = uids.map(function (uid) {
-			return isNaN(uid) ? 0 : uid;
-		});
+		uids = uids.map(uid => (isNaN(uid) ? 0 : uid));
 
 		var fieldsToRemove = [];
 		function addField(field) {
@@ -76,8 +64,9 @@ module.exports = function (User) {
 			},
 			function (results, next) {
 				if (fields.length) {
+					const whitelistSet = new Set(results.whitelist);
 					fields = fields.filter(function (field) {
-						var isFieldWhitelisted = field && results.whitelist.includes(field);
+						var isFieldWhitelisted = field && whitelistSet.has(field);
 						if (!isFieldWhitelisted) {
 							winston.verbose('[user/getUsersFields] ' + field + ' removed because it is not whitelisted, see `filter:user.whitelistFields`');
 						}
@@ -95,6 +84,19 @@ module.exports = function (User) {
 				modifyUserData(users, fieldsToRemove, next);
 			},
 		], callback);
+	};
+
+
+	User.getUserField = function (uid, field, callback) {
+		User.getUserFields(uid, [field], function (err, user) {
+			callback(err, user ? user[field] : null);
+		});
+	};
+
+	User.getUserFields = function (uid, fields, callback) {
+		User.getUsersFields([uid], fields, function (err, users) {
+			callback(err, users ? users[0] : null);
+		});
 	};
 
 	User.getMultipleUserFields = function (uids, fields, callback) {
@@ -137,6 +139,9 @@ module.exports = function (User) {
 			if (!user) {
 				return;
 			}
+
+			intFields.forEach(field => db.parseIntField(user, field));
+
 			if (user.hasOwnProperty('groupTitle')) {
 				parseGroupTitle(user);
 			}
@@ -218,16 +223,7 @@ module.exports = function (User) {
 	};
 
 	User.setUserField = function (uid, field, value, callback) {
-		callback = callback || function () {};
-		async.waterfall([
-			function (next) {
-				db.setObjectField('user:' + uid, field, value, next);
-			},
-			function (next) {
-				plugins.fireHook('action:user.set', { uid: uid, field: field, value: value, type: 'set' });
-				next();
-			},
-		], callback);
+		User.setUserFields(uid, { [field]: value }, callback);
 	};
 
 	User.setUserFields = function (uid, data, callback) {
