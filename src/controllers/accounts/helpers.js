@@ -208,12 +208,6 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 	], callback);
 };
 
-
-helpers.getBaseUser = function (userslug, callerUID, callback) {
-	winston.warn('helpers.getBaseUser deprecated please use helpers.getUserDataByUserSlug');
-	helpers.getUserDataByUserSlug(userslug, callerUID, callback);
-};
-
 function filterLinks(links, states) {
 	return links.filter(function (link, index) {
 		// "public" is the old property, if visibility is defined, discard `public`

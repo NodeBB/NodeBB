@@ -2,7 +2,6 @@
 
 var async = require('async');
 var validator = require('validator');
-var winston = require('winston');
 
 var db = require('../database');
 var plugins = require('../plugins');
@@ -78,11 +77,6 @@ module.exports = function (Groups) {
 		db.getObjectsFields(groupNames.map(function (group) {
 			return 'group:' + group;
 		}), fields, callback);
-	};
-
-	Groups.getMultipleGroupFields = function (groups, fields, callback) {
-		winston.warn('[deprecated] Groups.getMultipleGroupFields is deprecated please use Groups.getGroupsFields');
-		Groups.getGroupsFields(groups, fields, callback);
 	};
 
 	Groups.setGroupField = function (groupName, field, value, callback) {

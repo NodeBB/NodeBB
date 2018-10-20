@@ -2,7 +2,6 @@
 
 var async = require('async');
 var validator = require('validator');
-var winston = require('winston');
 
 var db = require('../database');
 
@@ -51,11 +50,6 @@ module.exports = function (Categories) {
 		Categories.getCategoriesFields([cid], fields, function (err, categories) {
 			callback(err, categories ? categories[0] : null);
 		});
-	};
-
-	Categories.getMultipleCategoryFields = function (cids, fields, callback) {
-		winston.warn('[deprecated] Categories.getMultipleCategoryFields is deprecated please use Categories.getCategoriesFields');
-		Categories.getCategoriesFields(cids, fields, callback);
 	};
 
 	Categories.getAllCategoryFields = function (fields, callback) {

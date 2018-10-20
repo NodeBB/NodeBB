@@ -99,11 +99,6 @@ module.exports = function (User) {
 		});
 	};
 
-	User.getMultipleUserFields = function (uids, fields, callback) {
-		winston.warn('[deprecated] User.getMultipleUserFields is deprecated please use User.getUsersFields');
-		User.getUsersFields(uids, fields, callback);
-	};
-
 	User.getUserData = function (uid, callback) {
 		User.getUsersData([uid], function (err, users) {
 			callback(err, users ? users[0] : null);

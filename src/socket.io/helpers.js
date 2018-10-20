@@ -15,11 +15,6 @@ var utils = require('../utils');
 
 var SocketHelpers = module.exports;
 
-SocketHelpers.notifyOnlineUsers = function (uid, result) {
-	winston.warn('[deprecated] SocketHelpers.notifyOnlineUsers, consider using socketHelpers.notifyNew(uid, \'newPost\', result);');
-	SocketHelpers.notifyNew(uid, 'newPost', result);
-};
-
 SocketHelpers.notifyNew = function (uid, type, result) {
 	async.waterfall([
 		function (next) {
