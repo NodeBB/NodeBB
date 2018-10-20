@@ -34,14 +34,14 @@ editController.get = function (req, res, callback) {
 			userData.maximumSignatureLength = meta.config.maximumSignatureLength || 255;
 			userData.maximumAboutMeLength = meta.config.maximumAboutMeLength || 1000;
 			userData.maximumProfileImageSize = meta.config.maximumProfileImageSize;
-			userData.allowProfilePicture = !userData.isSelf || parseInt(userData.reputation, 10) >= (meta.config['min:rep:profile-picture'] || 0);
-			userData.allowCoverPicture = !userData.isSelf || parseInt(userData.reputation, 10) >= (meta.config['min:rep:cover-picture'] || 0);
+			userData.allowProfilePicture = !userData.isSelf || userData.reputation >= (meta.config['min:rep:profile-picture'] || 0);
+			userData.allowCoverPicture = !userData.isSelf || userData.reputation >= (meta.config['min:rep:cover-picture'] || 0);
 			userData.allowProfileImageUploads = meta.config.allowProfileImageUploads;
 			userData.allowMultipleBadges = meta.config.allowMultipleBadges;
 			userData.allowAccountDelete = meta.config.allowAccountDelete;
-			userData.allowWebsite = !userData.isSelf || parseInt(userData.reputation, 10) >= (meta.config['min:rep:website'] || 0);
-			userData.allowAboutMe = !userData.isSelf || parseInt(userData.reputation, 10) >= (meta.config['min:rep:aboutme'] || 0);
-			userData.allowSignature = results.canUseSignature && (!userData.isSelf || parseInt(userData.reputation, 10) >= (parseInt(meta.config['min:rep:signature'], 10) || 0));
+			userData.allowWebsite = !userData.isSelf || userData.reputation >= (meta.config['min:rep:website'] || 0);
+			userData.allowAboutMe = !userData.isSelf || userData.reputation >= (meta.config['min:rep:aboutme'] || 0);
+			userData.allowSignature = results.canUseSignature && (!userData.isSelf || userData.reputation >= (meta.config['min:rep:signature'] || 0));
 			userData.profileImageDimension = meta.config.profileImageDimension || 200;
 			userData.defaultAvatar = user.getDefaultAvatar();
 
@@ -103,8 +103,8 @@ function renderRoute(name, req, res, next) {
 			}
 
 			if (name === 'password') {
-				userData.minimumPasswordLength = parseInt(meta.config.minimumPasswordLength, 10);
-				userData.minimumPasswordStrength = parseInt(meta.config.minimumPasswordStrength || 1, 10);
+				userData.minimumPasswordLength = meta.config.minimumPasswordLength;
+				userData.minimumPasswordStrength = meta.config.minimumPasswordStrength || 1;
 			}
 
 			userData.title = '[[pages:account/edit/' + name + ', ' + userData.username + ']]';

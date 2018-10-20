@@ -43,7 +43,7 @@ profileController.get = function (req, res, callback) {
 
 			req.session.uids_viewed = req.session.uids_viewed || {};
 
-			if (req.uid !== parseInt(userData.uid, 10) && (!req.session.uids_viewed[userData.uid] || req.session.uids_viewed[userData.uid] < Date.now() - 3600000)) {
+			if (req.uid !== userData.uid && (!req.session.uids_viewed[userData.uid] || req.session.uids_viewed[userData.uid] < Date.now() - 3600000)) {
 				user.incrementUserFieldBy(userData.uid, 'profileviews', 1);
 				req.session.uids_viewed[userData.uid] = Date.now();
 			}
@@ -72,19 +72,17 @@ profileController.get = function (req, res, callback) {
 				delete userData.reputation;
 			}
 
-			userData.posts = results.posts.posts.filter(function (p) {
-				return p && parseInt(p.deleted, 10) !== 1;
-			});
+			userData.posts = results.posts.posts.filter(p => p && !p.deleted);
 			userData.hasPrivateChat = results.hasPrivateChat;
 			userData.aboutme = translator.escape(results.aboutme);
 			userData.nextStart = results.posts.nextStart;
 			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username }]);
 			userData.title = userData.username;
-			userData.allowCoverPicture = !userData.isSelf || parseInt(userData.reputation, 10) >= (parseInt(meta.config['min:rep:cover-picture'], 10) || 0);
+			userData.allowCoverPicture = !userData.isSelf || userData.reputation >= (meta.config['min:rep:cover-picture'] || 0);
 			var pageCount = Math.ceil(userData.postcount / itemsPerPage);
 			userData.pagination = pagination.create(page, pageCount, req.query);
 
-			if (!parseInt(userData.profileviews, 10)) {
+			if (!userData.profileviews) {
 				userData.profileviews = 1;
 			}
 
