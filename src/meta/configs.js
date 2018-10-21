@@ -10,20 +10,27 @@ var db = require('../database');
 var pubsub = require('../pubsub');
 var Meta = require('../meta');
 var cacheBuster = require('./cacheBuster');
-var utils = require('../utils');
 const defaults = require('../../install/data/defaults');
 
 var Configs = module.exports;
 
 Meta.config = {};
 
+function serialize(config) {
+	var serialized = {};
+	Object.keys(config).forEach(function (key) {
+		serialized[key] = JSON.stringify(config[key]);
+	});
+	return serialized;
+}
 function deserialize(config) {
 	var deserialized = {};
-
+	// allow for existing string values in database config
+	// also allows for deserialize to be called on an object that isn't serialized
 	Object.keys(config).forEach(function (key) {
-		if (utils.isNumber(config[key])) {
-			deserialized[key] = parseInt(config[key], 10);
-		} else {
+		try {
+			deserialized[key] = JSON.parse(config[key]);
+		} catch (e) {
 			deserialized[key] = config[key];
 		}
 	});
@@ -69,7 +76,7 @@ Configs.getFields = function (fields, callback) {
 		},
 		function (values, next) {
 			try {
-				values = Object.assign({}, defaults, deserialize(values || {}));
+				values = Object.assign({}, defaults, values ? deserialize(values) : {});
 			} catch (err) {
 				return next(err);
 			}
@@ -88,18 +95,21 @@ Configs.set = function (field, value, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	var data = {};
-	data[field] = value;
-	Configs.setMultiple(data, callback);
+	Configs.setMultiple({
+		[field]: value,
+	}, callback);
 };
 
+// data comes from client-side
 Configs.setMultiple = function (data, callback) {
+	data = deserialize(data);
+
 	async.waterfall([
 		function (next) {
 			processConfig(data, next);
 		},
 		function (next) {
-			db.setObject('config', data, next);
+			db.setObject('config', serialize(data), next);
 		},
 		function (next) {
 			updateConfig(data);
@@ -114,8 +124,8 @@ Configs.setOnEmpty = function (values, callback) {
 			db.getObject('config', next);
 		},
 		function (data, next) {
-			var config = Object.assign({}, values, deserialize(data || {}));
-			db.setObject('config', config, next);
+			var config = Object.assign({}, values, data ? deserialize(data) : {});
+			db.setObject('config', serialize(config), next);
 		},
 	], callback);
 };
@@ -180,7 +190,7 @@ function updateConfig(config) {
 }
 
 function updateLocalConfig(config) {
-	Object.assign(Meta.config, deserialize(config));
+	Object.assign(Meta.config, config);
 }
 
 pubsub.on('config:update', function onConfigReceived(config) {
