@@ -5,7 +5,7 @@ var async = require('async');
 var db = require('../database');
 var plugins = require('../plugins');
 
-const intFields = ['uid', 'pid', 'tid', 'deleted'];
+const intFields = ['uid', 'pid', 'tid', 'deleted', 'timestamp'];
 
 module.exports = function (Posts) {
 	Posts.getPostsFields = function (pids, fields, callback) {

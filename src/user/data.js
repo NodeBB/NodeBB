@@ -11,7 +11,10 @@ var meta = require('../meta');
 var plugins = require('../plugins');
 var utils = require('../utils');
 
-const intFields = ['uid', 'postcount', 'topiccount', 'reputation', 'profileviews', 'banned'];
+const intFields = [
+	'uid', 'postcount', 'topiccount', 'reputation', 'profileviews',
+	'banned', 'email:confirmed', 'timestap',
+];
 
 module.exports = function (User) {
 	var iconBackgrounds = [

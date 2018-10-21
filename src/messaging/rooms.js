@@ -321,8 +321,8 @@ module.exports = function (Messaging) {
 				room.canReply = results.canReply;
 				room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : results.users.length > 2;
 				room.usernames = Messaging.generateUsernames(results.users, uid);
-				room.maximumUsersInChatRoom = parseInt(meta.config.maximumUsersInChatRoom, 10) || 0;
-				room.maximumChatMessageLength = parseInt(meta.config.maximumChatMessageLength, 10) || 1000;
+				room.maximumUsersInChatRoom = meta.config.maximumUsersInChatRoom;
+				room.maximumChatMessageLength = meta.config.maximumChatMessageLength;
 				room.showUserInput = !room.maximumUsersInChatRoom || room.maximumUsersInChatRoom > 2;
 				room.isAdminOrGlobalMod = results.isAdminOrGlobalMod;
 				next(null, room);

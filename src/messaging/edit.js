@@ -90,7 +90,7 @@ module.exports = function (Messaging) {
 				if (results.isAdmin) {
 					return callback();
 				}
-				var chatConfigDuration = parseInt(meta.config[durationConfig], 10);
+				var chatConfigDuration = meta.config[durationConfig];
 				if (chatConfigDuration && Date.now() - parseInt(results.messageData.timestamp, 10) > chatConfigDuration * 1000) {
 					return callback(new Error('[[error:chat-' + type + '-duration-expired, ' + meta.config[durationConfig] + ']]'));
 				}
