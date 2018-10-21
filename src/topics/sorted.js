@@ -132,7 +132,7 @@ module.exports = function (Topics) {
 			function (tids, next) {
 				async.parallel({
 					ignoredCids: function (next) {
-						if (filter === 'watched' || parseInt(meta.config.disableRecentCategoryFilter, 10) === 1) {
+						if (filter === 'watched' || meta.config.disableRecentCategoryFilter) {
 							return next(null, []);
 						}
 						user.getIgnoredCategories(uid, next);

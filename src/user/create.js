@@ -110,7 +110,7 @@ module.exports = function (User) {
 								async.apply(db.sortedSetAdd, 'user:' + userData.uid + ':emails', timestamp, userData.email),
 							], next);
 
-							if (parseInt(userData.uid, 10) !== 1 && parseInt(meta.config.requireEmailConfirmation, 10) === 1) {
+							if (userData.uid > 1 && meta.config.requireEmailConfirmation) {
 								User.email.sendValidationEmail(userData.uid, {
 									email: userData.email,
 								});
@@ -206,7 +206,6 @@ module.exports = function (User) {
 		}
 
 		var strength = zxcvbn(password);
-		console.log('str', strength.score, minStrength);
 		if (strength.score < minStrength) {
 			return callback(new Error('[[user:weak_password]]'));
 		}

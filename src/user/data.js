@@ -13,7 +13,8 @@ var utils = require('../utils');
 
 const intFields = [
 	'uid', 'postcount', 'topiccount', 'reputation', 'profileviews',
-	'banned', 'email:confirmed', 'timestap',
+	'banned', 'email:confirmed', 'joindate', 'lastonline', 'lastqueuetime',
+	'lastposttime',
 ];
 
 module.exports = function (User) {
@@ -208,7 +209,7 @@ module.exports = function (User) {
 		if (!Array.isArray(user.groupTitleArray)) {
 			user.groupTitleArray = [user.groupTitleArray];
 		}
-		if (parseInt(meta.config.allowMultipleBadges, 10) !== 1) {
+		if (!meta.config.allowMultipleBadges) {
 			user.groupTitleArray = [user.groupTitleArray[0]];
 		}
 	}

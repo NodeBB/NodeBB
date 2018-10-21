@@ -485,7 +485,7 @@ module.exports = function (Topics) {
 			return plugins.fireHook('filter:topic.getRelatedTopics', { topic: topicData, uid: uid }, callback);
 		}
 
-		var maximumTopics = parseInt(meta.config.maximumRelatedTopics, 10) || 0;
+		var maximumTopics = meta.config.maximumRelatedTopics;
 		if (maximumTopics === 0 || !topicData.tags || !topicData.tags.length) {
 			return callback(null, []);
 		}

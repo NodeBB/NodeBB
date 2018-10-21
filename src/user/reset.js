@@ -138,7 +138,7 @@ UserReset.commit = function (code, password, callback) {
 
 UserReset.updateExpiry = function (uid, callback) {
 	var oneDay = 1000 * 60 * 60 * 24;
-	var expireDays = parseInt(meta.config.passwordExpiryDays || 0, 10);
+	var expireDays = meta.config.passwordExpiryDays;
 	var expiry = Date.now() + (oneDay * expireDays);
 
 	callback = callback || function () {};

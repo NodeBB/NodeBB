@@ -116,7 +116,7 @@ module.exports = function (Topics) {
 						postObj.selfPost = !!parseInt(uid, 10) && parseInt(uid, 10) === parseInt(postObj.uid, 10);
 
 						// Username override for guests, if enabled
-						if (parseInt(meta.config.allowGuestHandles, 10) === 1 && parseInt(postObj.uid, 10) === 0 && postObj.handle) {
+						if (meta.config.allowGuestHandles && postObj.uid === 0 && postObj.handle) {
 							postObj.user.username = validator.escape(String(postObj.handle));
 						}
 					}

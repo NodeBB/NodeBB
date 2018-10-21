@@ -10,7 +10,6 @@ var topics = require('../topics');
 var user = require('../user');
 var helpers = require('./helpers');
 var plugins = require('../plugins');
-var utils = require('../utils');
 
 module.exports = function (privileges) {
 	privileges.posts = {};

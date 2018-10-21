@@ -78,8 +78,8 @@ module.exports = function (SocketTopics) {
 				}
 
 				topicData.privileges = userPrivileges;
-				topicData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
-				topicData['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
+				topicData['reputation:disabled'] = meta.config['reputation:disabled'] === 1;
+				topicData['downvote:disabled'] = meta.config['downvote:disabled'] === 1;
 
 				topics.modifyPostsByPrivilege(topicData, userPrivileges);
 				next(null, topicData);
