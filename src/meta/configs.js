@@ -10,22 +10,20 @@ var db = require('../database');
 var pubsub = require('../pubsub');
 var Meta = require('../meta');
 var cacheBuster = require('./cacheBuster');
+var utils = require('../utils');
+const defaults = require('../../install/data/defaults');
 
 var Configs = module.exports;
 
 Meta.config = {};
 
-function serialize(config) {
-	var serialized = {};
-	Object.keys(config).forEach(function (key) {
-		serialized[key] = JSON.stringify(config[key]);
-	});
-	return serialized;
-}
 function deserialize(config) {
 	var deserialized = {};
+
 	Object.keys(config).forEach(function (key) {
-		deserialized[key] = JSON.parse(config[key]);
+		if (utils.isNumber(config[key])) {
+			deserialized[key] = parseInt(config[key], 10);
+		}
 	});
 	return deserialized;
 }
@@ -69,7 +67,7 @@ Configs.getFields = function (fields, callback) {
 		},
 		function (values, next) {
 			try {
-				values = deserialize(values || {});
+				values = Object.assign({}, defaults, deserialize(values || {}));
 			} catch (err) {
 				return next(err);
 			}
@@ -99,7 +97,7 @@ Configs.setMultiple = function (data, callback) {
 			processConfig(data, next);
 		},
 		function (next) {
-			db.setObject('config', serialize(data), next);
+			db.setObject('config', data, next);
 		},
 		function (next) {
 			updateConfig(data);
@@ -115,7 +113,7 @@ Configs.setOnEmpty = function (values, callback) {
 		},
 		function (data, next) {
 			var config = Object.assign({}, values, deserialize(data || {}));
-			db.setObject('config', serialize(config), next);
+			db.setObject('config', config, next);
 		},
 	], callback);
 };

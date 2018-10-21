@@ -169,7 +169,7 @@ usersController.getUsers = function (set, uid, query, callback) {
 	}
 
 	var page = parseInt(query.page, 10) || 1;
-	var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 50;
+	var resultsPerPage = meta.config.userSearchResultsPerPage;
 	var start = Math.max(0, page - 1) * resultsPerPage;
 	var stop = start + resultsPerPage - 1;
 

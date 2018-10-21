@@ -104,7 +104,7 @@ function renderRoute(name, req, res, next) {
 
 			if (name === 'password') {
 				userData.minimumPasswordLength = meta.config.minimumPasswordLength;
-				userData.minimumPasswordStrength = meta.config.minimumPasswordStrength || 1;
+				userData.minimumPasswordStrength = meta.config.minimumPasswordStrength;
 			}
 
 			userData.title = '[[pages:account/edit/' + name + ', ' + userData.username + ']]';

@@ -171,8 +171,8 @@ settingsController.get = function (req, res, callback) {
 
 			userData.inTopicSearchAvailable = plugins.hasListeners('filter:topic.search');
 
-			userData.maxTopicsPerPage = parseInt(meta.config.maxTopicsPerPage, 10) || 20;
-			userData.maxPostsPerPage = parseInt(meta.config.maxPostsPerPage, 10) || 20;
+			userData.maxTopicsPerPage = meta.config.maxTopicsPerPage;
+			userData.maxPostsPerPage = meta.config.maxPostsPerPage;
 
 			userData.title = '[[pages:account/settings]]';
 			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[user:settings]]' }]);

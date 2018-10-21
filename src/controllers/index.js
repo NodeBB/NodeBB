@@ -45,8 +45,8 @@ Controllers.reset = function (req, res, next) {
 			valid: valid,
 			displayExpiryNotice: req.session.passwordExpired,
 			code: code,
-			minimumPasswordLength: parseInt(meta.config.minimumPasswordLength, 10),
-			minimumPasswordStrength: parseInt(meta.config.minimumPasswordStrength, 10),
+			minimumPasswordLength: meta.config.minimumPasswordLength,
+			minimumPasswordStrength: meta.config.minimumPasswordStrength,
 			breadcrumbs: helpers.buildBreadcrumbs([
 				{
 					text: '[[reset_password:reset_password]]',
@@ -180,10 +180,10 @@ Controllers.register = function (req, res, next) {
 
 			data.authentication = loginStrategies;
 
-			data.minimumUsernameLength = parseInt(meta.config.minimumUsernameLength, 10);
-			data.maximumUsernameLength = parseInt(meta.config.maximumUsernameLength, 10);
-			data.minimumPasswordLength = parseInt(meta.config.minimumPasswordLength, 10);
-			data.minimumPasswordStrength = parseInt(meta.config.minimumPasswordStrength || 1, 10);
+			data.minimumUsernameLength = meta.config.minimumUsernameLength;
+			data.maximumUsernameLength = meta.config.maximumUsernameLength;
+			data.minimumPasswordLength = meta.config.minimumPasswordLength;
+			data.minimumPasswordStrength = meta.config.minimumPasswordStrength;
 			data.termsOfUse = termsOfUse.postData.content;
 			data.breadcrumbs = helpers.buildBreadcrumbs([{
 				text: '[[register:register]]',
