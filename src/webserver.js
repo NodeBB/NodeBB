@@ -120,10 +120,7 @@ function initializeNodeBB(callback) {
 			}, next);
 		},
 		function (next) {
-			plugins.fireHook('filter:hotswap.prepare', [], next);
-		},
-		function (hotswapIds, next) {
-			routes(app, middleware, hotswapIds, next);
+			routes(app, middleware, next);
 		},
 		meta.sounds.addUploads,
 		meta.blacklist.load,
