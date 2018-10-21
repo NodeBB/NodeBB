@@ -8,7 +8,10 @@ var categories = require('../categories');
 var utils = require('../utils');
 var translator = require('../translator');
 
-const intFields = ['tid', 'cid', 'uid', 'mainPid', 'deleted', 'locked', 'pinned'];
+const intFields = [
+	'tid', 'cid', 'uid', 'mainPid', 'deleted', 'locked', 'pinned',
+	'timestamp',
+];
 
 module.exports = function (Topics) {
 	Topics.getTopicsFields = function (tids, fields, callback) {

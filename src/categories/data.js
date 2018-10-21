@@ -5,7 +5,10 @@ var validator = require('validator');
 
 var db = require('../database');
 
-const intFields = ['cid', 'parentCid', 'disabled', 'isSection', 'order', 'topic_count', 'post_count'];
+const intFields = [
+	'cid', 'parentCid', 'disabled', 'isSection', 'order',
+	'topic_count', 'post_count',
+];
 
 module.exports = function (Categories) {
 	Categories.getCategoriesFields = function (cids, fields, callback) {

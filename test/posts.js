@@ -364,7 +364,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should error if title is too long', function (done) {
-			var longTitle = new Array(parseInt(meta.config.maximumTitleLength, 10) + 2).join('a');
+			var longTitle = new Array(meta.config.maximumTitleLength + 2).join('a');
 			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', title: longTitle }, function (err) {
 				assert.equal(err.message, '[[error:title-too-long, ' + meta.config.maximumTitleLength + ']]');
 				done();
@@ -400,7 +400,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should error if content is too long', function (done) {
-			var longContent = new Array(parseInt(meta.config.maximumPostLength, 10) + 2).join('a');
+			var longContent = new Array(meta.config.maximumPostLength + 2).join('a');
 			socketPosts.edit({ uid: voterUid }, { pid: pid, content: longContent }, function (err) {
 				assert.equal(err.message, '[[error:content-too-long, ' + meta.config.maximumPostLength + ']]');
 				done();

@@ -31,9 +31,7 @@ module.exports = function (User) {
 			return callback(null, []);
 		}
 
-		var keys = uids.map(function (uid) {
-			return 'user:' + uid + ':settings';
-		});
+		var keys = uids.map(uid => 'user:' + uid + ':settings');
 
 		async.waterfall([
 			function (next) {
@@ -60,8 +58,8 @@ module.exports = function (User) {
 			function (data, next) {
 				settings = data.settings;
 
-				var defaultTopicsPerPage = parseInt(meta.config.topicsPerPage, 10) || 20;
-				var defaultPostsPerPage = parseInt(meta.config.postsPerPage, 10) || 20;
+				var defaultTopicsPerPage = meta.config.topicsPerPage;
+				var defaultPostsPerPage = meta.config.postsPerPage;
 
 				settings.showemail = parseInt(getSetting(settings, 'showemail', 0), 10) === 1;
 				settings.showfullname = parseInt(getSetting(settings, 'showfullname', 0), 10) === 1;

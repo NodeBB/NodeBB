@@ -37,7 +37,7 @@ sitemapController.getTopicPage = function (req, res, next) {
 };
 
 function sendSitemap(method, res, callback) {
-	if (parseInt(meta.config['feeds:disableSitemap'], 10) === 1) {
+	if (meta.config['feeds:disableSitemap']) {
 		return callback();
 	}
 	async.waterfall([

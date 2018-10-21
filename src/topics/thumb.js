@@ -46,11 +46,10 @@ module.exports = function (Topics) {
 				file.isFileTypeAllowed(pathToUpload, next);
 			},
 			function (next) {
-				var size = parseInt(meta.config.topicThumbSize, 10) || 120;
 				image.resizeImage({
 					path: pathToUpload,
-					width: size,
-					height: size,
+					width: meta.config.topicThumbSize,
+					height: meta.config.topicThumbSize,
 				}, next);
 			},
 			function (next) {

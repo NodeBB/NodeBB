@@ -24,7 +24,7 @@ require('./posts/tools')(SocketPosts);
 require('./posts/diffs')(SocketPosts);
 
 SocketPosts.reply = function (socket, data, callback) {
-	if (!data || !data.tid || (parseInt(meta.config.minimumPostLength, 10) !== 0 && !data.content)) {
+	if (!data || !data.tid || (meta.config.minimumPostLength !== 0 && !data.content)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
@@ -57,8 +57,8 @@ function postReply(socket, data, callback) {
 		function (postData, next) {
 			var result = {
 				posts: [postData],
-				'reputation:disabled': parseInt(meta.config['reputation:disabled'], 10) === 1,
-				'downvote:disabled': parseInt(meta.config['downvote:disabled'], 10) === 1,
+				'reputation:disabled': meta.config['reputation:disabled'] === 1,
+				'downvote:disabled': meta.config['downvote:disabled'] === 1,
 			};
 
 			next(null, postData);

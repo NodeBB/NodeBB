@@ -257,9 +257,8 @@ Flags.validate = function (payload, callback) {
 					return callback(err);
 				}
 
-				var minimumReputation = utils.isNumber(meta.config['min:rep:flag']) ? parseInt(meta.config['min:rep:flag'], 10) : 0;
 				// Check if reporter meets rep threshold (or can edit the target post, in which case threshold does not apply)
-				if (!editable.flag && parseInt(data.reporter.reputation, 10) < minimumReputation) {
+				if (!editable.flag && data.reporter.reputation < meta.config['min:rep:flag']) {
 					return callback(new Error('[[error:not-enough-reputation-to-flag]]'));
 				}
 
@@ -273,9 +272,8 @@ Flags.validate = function (payload, callback) {
 					return callback(err);
 				}
 
-				var minimumReputation = utils.isNumber(meta.config['min:rep:flag']) ? parseInt(meta.config['min:rep:flag'], 10) : 0;
 				// Check if reporter meets rep threshold (or can edit the target user, in which case threshold does not apply)
-				if (!editable && parseInt(data.reporter.reputation, 10) < minimumReputation) {
+				if (!editable && data.reporter.reputation < meta.config['min:rep:flag']) {
 					return callback(new Error('[[error:not-enough-reputation-to-flag]]'));
 				}
 

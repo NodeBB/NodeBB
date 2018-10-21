@@ -63,8 +63,8 @@ function restart() {
 }
 
 Meta.getSessionTTLSeconds = function () {
-	var ttlDays = 60 * 60 * 24 * (parseInt(Meta.config.loginDays, 10) || 0);
-	var ttlSeconds = (parseInt(Meta.config.loginSeconds, 10) || 0);
+	var ttlDays = 60 * 60 * 24 * Meta.config.loginDays;
+	var ttlSeconds = Meta.config.loginSeconds;
 	var ttl = ttlSeconds || ttlDays || 1209600; // Default to 14 days
 	return ttl;
 };

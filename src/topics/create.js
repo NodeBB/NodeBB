@@ -314,7 +314,7 @@ module.exports = function (Topics) {
 				postData.index = parseInt(results.topicInfo.postcount, 10) - 1;
 
 				// Username override for guests, if enabled
-				if (parseInt(meta.config.allowGuestHandles, 10) === 1 && parseInt(postData.uid, 10) === 0 && data.handle) {
+				if (meta.config.allowGuestHandles && postData.uid === 0 && data.handle) {
 					postData.user.username = validator.escape(String(data.handle));
 				}
 
@@ -348,7 +348,7 @@ module.exports = function (Topics) {
 	}
 
 	function guestHandleValid(data, callback) {
-		if (parseInt(meta.config.allowGuestHandles, 10) === 1 && parseInt(data.uid, 10) === 0 && data.handle) {
+		if (meta.config.allowGuestHandles && parseInt(data.uid, 10) === 0 && data.handle) {
 			if (data.handle.length > meta.config.maximumUsernameLength) {
 				return callback(new Error('[[error:guest-handle-invalid]]'));
 			}

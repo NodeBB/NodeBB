@@ -552,7 +552,8 @@ describe('User', function () {
 					assert(!userData.hasOwnProperty('another_secret'));
 					assert(!userData.hasOwnProperty('password'));
 					assert(!userData.hasOwnProperty('rss_token'));
-					assert.equal(userData.postcount, '123');
+					assert.strictEqual(userData.postcount, 123);
+					assert.strictEqual(userData.uid, testUid);
 					done();
 				});
 			});

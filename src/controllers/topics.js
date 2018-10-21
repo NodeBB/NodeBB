@@ -138,15 +138,15 @@ topicsController.get = function (req, res, callback) {
 		},
 		function (topicData) {
 			topicData.privileges = userPrivileges;
-			topicData.topicStaleDays = parseInt(meta.config.topicStaleDays, 10) || 60;
-			topicData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
-			topicData['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
-			topicData['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
-			topicData.bookmarkThreshold = parseInt(meta.config.bookmarkThreshold, 10) || 5;
-			topicData.postEditDuration = parseInt(meta.config.postEditDuration, 10) || 0;
-			topicData.postDeleteDuration = parseInt(meta.config.postDeleteDuration, 10) || 0;
+			topicData.topicStaleDays = meta.config.topicStaleDays;
+			topicData['reputation:disabled'] = meta.config['reputation:disabled'];
+			topicData['downvote:disabled'] = meta.config['downvote:disabled'];
+			topicData['feeds:disableRSS'] = meta.config['feeds:disableRSS'];
+			topicData.bookmarkThreshold = meta.config.bookmarkThreshold;
+			topicData.postEditDuration = meta.config.postEditDuration;
+			topicData.postDeleteDuration = meta.config.postDeleteDuration;
 			topicData.scrollToMyPost = settings.scrollToMyPost;
-			topicData.allowMultipleBadges = parseInt(meta.config.allowMultipleBadges, 10) === 1;
+			topicData.allowMultipleBadges = meta.config.allowMultipleBadges === 1;
 			topicData.rssFeedUrl = nconf.get('relative_path') + '/topic/' + topicData.tid + '.rss';
 			if (req.loggedIn) {
 				topicData.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;

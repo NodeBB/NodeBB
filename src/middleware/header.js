@@ -183,19 +183,19 @@ module.exports = function (middleware) {
 				templateValues.isAdmin = results.user.isAdmin;
 				templateValues.isGlobalMod = results.user.isGlobalMod;
 				templateValues.showModMenu = results.user.isAdmin || results.user.isGlobalMod || results.user.isMod;
-				templateValues.canChat = results.canChat && parseInt(meta.config.disableChat, 10) !== 1;
+				templateValues.canChat = results.canChat && meta.config.disableChat !== 1;
 				templateValues.user = results.user;
 				templateValues.userJSON = jsesc(JSON.stringify(results.user), { isScriptContext: true });
-				templateValues.useCustomCSS = parseInt(meta.config.useCustomCSS, 10) === 1 && meta.config.customCSS;
+				templateValues.useCustomCSS = meta.config.useCustomCSS && meta.config.customCSS;
 				templateValues.customCSS = templateValues.useCustomCSS ? (meta.config.renderedCustomCSS || '') : '';
-				templateValues.useCustomHTML = parseInt(meta.config.useCustomHTML, 10) === 1;
+				templateValues.useCustomHTML = meta.config.useCustomHTML;
 				templateValues.customHTML = templateValues.useCustomHTML ? meta.config.customHTML : '';
-				templateValues.maintenanceHeader = parseInt(meta.config.maintenanceMode, 10) === 1 && !results.isAdmin;
+				templateValues.maintenanceHeader = meta.config.maintenanceMode && !results.isAdmin;
 				templateValues.defaultLang = meta.config.defaultLang || 'en-GB';
 				templateValues.userLang = res.locals.config.userLang;
 				templateValues.languageDirection = results.languageDirection;
-				templateValues.privateUserInfo = parseInt(meta.config.privateUserInfo, 10) === 1;
-				templateValues.privateTagListing = parseInt(meta.config.privateTagListing, 10) === 1;
+				templateValues.privateUserInfo = meta.config.privateUserInfo;
+				templateValues.privateTagListing = meta.config.privateTagListing;
 
 				templateValues.template = { name: res.locals.template };
 				templateValues.template[res.locals.template] = true;
@@ -243,7 +243,7 @@ module.exports = function (middleware) {
 				});
 				addTimeagoLocaleScript(data.templateValues.scripts, res.locals.config.userLang);
 
-				data.templateValues.useCustomJS = parseInt(meta.config.useCustomJS, 10) === 1;
+				data.templateValues.useCustomJS = meta.config.useCustomJS;
 				data.templateValues.customJS = data.templateValues.useCustomJS ? meta.config.customJS : '';
 				data.templateValues.isSpider = req.isSpider();
 				req.app.render('footer', data.templateValues, next);
@@ -270,7 +270,7 @@ module.exports = function (middleware) {
 		if (config && config.bootswatchSkin !== 'noskin') {
 			var skinToUse = '';
 
-			if (parseInt(meta.config.disableCustomUserSkins, 10) !== 1) {
+			if (!meta.config.disableCustomUserSkins) {
 				skinToUse = config.bootswatchSkin;
 			} else if (meta.config.bootswatchSkin) {
 				skinToUse = meta.config.bootswatchSkin;

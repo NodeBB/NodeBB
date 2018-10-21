@@ -224,6 +224,7 @@ function setupDefaultConfigs(meta, next) {
 
 	var defaults = require(path.join(nconf.get('base_dir'), 'install/data/defaults.json'));
 	defaults.eventLoopCheckEnabled = 0;
+	defaults.minimumPasswordStrength = 0;
 	meta.configs.setOnEmpty(defaults, next);
 }
 

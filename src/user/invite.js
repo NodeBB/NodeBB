@@ -60,7 +60,7 @@ module.exports = function (User) {
 		var token = utils.generateUUID();
 		var registerLink = nconf.get('url') + '/register?token=' + token + '&email=' + encodeURIComponent(email);
 
-		var expireDays = (parseInt(meta.config.inviteExpiration, 10) || 7);
+		var expireDays = meta.config.inviteExpiration;
 		var expireIn = expireDays * 86400000;
 
 		async.waterfall([

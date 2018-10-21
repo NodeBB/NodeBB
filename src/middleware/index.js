@@ -109,7 +109,7 @@ middleware.routeTouchIcon = function (req, res) {
 };
 
 middleware.privateTagListing = function (req, res, next) {
-	if (!req.loggedIn && parseInt(meta.config.privateTagListing, 10) === 1) {
+	if (!req.loggedIn && meta.config.privateTagListing) {
 		controllers.helpers.notAllowed(req, res);
 	} else {
 		next();
@@ -140,7 +140,7 @@ function expose(exposedField, method, field, req, res, next) {
 }
 
 middleware.privateUploads = function (req, res, next) {
-	if (req.loggedIn || parseInt(meta.config.privateUploads, 10) !== 1) {
+	if (req.loggedIn || !meta.config.privateUploads) {
 		return next();
 	}
 
@@ -156,7 +156,7 @@ middleware.privateUploads = function (req, res, next) {
 };
 
 middleware.busyCheck = function (req, res, next) {
-	if (global.env === 'production' && (!meta.config.hasOwnProperty('eventLoopCheckEnabled') || parseInt(meta.config.eventLoopCheckEnabled, 10) === 1) && toobusy()) {
+	if (global.env === 'production' && (!meta.config.hasOwnProperty('eventLoopCheckEnabled') || meta.config.eventLoopCheckEnabled) && toobusy()) {
 		analytics.increment('errors:503');
 		res.status(503).type('text/html').sendFile(path.join(__dirname, '../../public/503.html'));
 	} else {

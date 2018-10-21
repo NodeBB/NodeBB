@@ -39,7 +39,7 @@ module.exports = function (User) {
 				searchResult.matchCount = uids.length;
 
 				if (paginate) {
-					var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 20;
+					var resultsPerPage = meta.config.userSearchResultsPerPage;
 					var start = Math.max(0, page - 1) * resultsPerPage;
 					var stop = start + resultsPerPage;
 					searchResult.pageCount = Math.ceil(uids.length / resultsPerPage);
@@ -64,7 +64,7 @@ module.exports = function (User) {
 		var min = query;
 		var max = query.substr(0, query.length - 1) + String.fromCharCode(query.charCodeAt(query.length - 1) + 1);
 
-		var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 20;
+		var resultsPerPage = meta.config.userSearchResultsPerPage;
 		hardCap = hardCap || resultsPerPage * 10;
 
 		async.waterfall([

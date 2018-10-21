@@ -71,7 +71,7 @@ function uploadAsImage(req, uploadedFile, callback) {
 			uploadsController.uploadFile(req.uid, uploadedFile, next);
 		},
 		function (fileObj, next) {
-			if (parseInt(meta.config.maximumImageWidth, 10) === 0) {
+			if (meta.config.maximumImageWidth === 0) {
 				return next(null, fileObj);
 			}
 
@@ -92,7 +92,7 @@ function uploadAsFile(req, uploadedFile, callback) {
 			if (!canUpload) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
-			if (parseInt(meta.config.allowFileUploads, 10) !== 1) {
+			if (!meta.config.allowFileUploads) {
 				return next(new Error('[[error:uploads-are-disabled]]'));
 			}
 			uploadsController.uploadFile(req.uid, uploadedFile, next);
@@ -112,15 +112,15 @@ function resizeImage(fileObj, callback) {
 			image.size(fileObj.path, next);
 		},
 		function (imageData, next) {
-			if (imageData.width < (parseInt(meta.config.maximumImageWidth, 10) || 760)) {
+			if (imageData.width < meta.config.maximumImageWidth) {
 				return callback(null, fileObj);
 			}
 
 			image.resizeImage({
 				path: fileObj.path,
 				target: file.appendToFileName(fileObj.path, '-resized'),
-				width: parseInt(meta.config.maximumImageWidth, 10) || 760,
-				quality: parseInt(meta.config.resizeImageQuality, 10) || 60,
+				width: meta.config.maximumImageWidth,
+				quality: meta.config.resizeImageQuality,
 			}, next);
 		},
 		function (next) {
@@ -133,7 +133,7 @@ function resizeImage(fileObj, callback) {
 }
 
 uploadsController.uploadThumb = function (req, res, next) {
-	if (parseInt(meta.config.allowTopicsThumbnail, 10) !== 1) {
+	if (!meta.config.allowTopicsThumbnail) {
 		deleteTempFiles(req.files.files);
 		return next(new Error('[[error:topic-thumbnails-are-disabled]]'));
 	}
@@ -148,11 +148,10 @@ uploadsController.uploadThumb = function (req, res, next) {
 				file.isFileTypeAllowed(uploadedFile.path, next);
 			},
 			function (next) {
-				var size = parseInt(meta.config.topicThumbSize, 10) || 120;
 				image.resizeImage({
 					path: uploadedFile.path,
-					width: size,
-					height: size,
+					width: meta.config.topicThumbSize,
+					height: meta.config.topicThumbSize,
 				}, next);
 			},
 			function (next) {
@@ -206,7 +205,7 @@ uploadsController.uploadFile = function (uid, uploadedFile, callback) {
 		return callback(new Error('[[error:invalid-file]]'));
 	}
 
-	if (uploadedFile.size > parseInt(meta.config.maximumFileSize, 10) * 1024) {
+	if (uploadedFile.size > meta.config.maximumFileSize * 1024) {
 		return callback(new Error('[[error:file-too-big, ' + meta.config.maximumFileSize + ']]'));
 	}
 
