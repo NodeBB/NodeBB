@@ -6,7 +6,6 @@ var url = require('url');
 var winston = require('winston');
 
 var meta = require('../meta');
-var cache = require('./cache');
 var plugins = require('../plugins');
 var translator = require('../translator');
 var utils = require('../utils');
@@ -24,7 +23,7 @@ module.exports = function (Posts) {
 
 	Posts.parsePost = function (postData, callback) {
 		postData.content = String(postData.content || '');
-
+		var cache = require('./cache');
 		if (postData.pid && cache.has(String(postData.pid))) {
 			postData.content = cache.get(String(postData.pid));
 			cache.hits += 1;
