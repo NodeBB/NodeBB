@@ -22,6 +22,9 @@ module.exports = function (Posts) {
 	};
 
 	Posts.parsePost = function (postData, callback) {
+		if (!postData) {
+			return setImmediate(callback, null, postData);
+		}
 		postData.content = String(postData.content || '');
 		var cache = require('./cache');
 		if (postData.pid && cache.has(String(postData.pid))) {

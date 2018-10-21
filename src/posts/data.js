@@ -4,8 +4,12 @@ var async = require('async');
 
 var db = require('../database');
 var plugins = require('../plugins');
+var utils = require('../utils');
 
-const intFields = ['uid', 'pid', 'tid', 'deleted', 'timestamp'];
+const intFields = [
+	'uid', 'pid', 'tid', 'deleted', 'timestamp',
+	'upvotes', 'downvotes', 'deleterUid', 'edited',
+];
 
 module.exports = function (Posts) {
 	Posts.getPostsFields = function (pids, fields, callback) {
@@ -13,10 +17,9 @@ module.exports = function (Posts) {
 			return callback(null, []);
 		}
 
-		var keys = pids.map(pid => 'post:' + pid);
-
 		async.waterfall([
 			function (next) {
+				const keys = pids.map(pid => 'post:' + pid);
 				if (fields.length) {
 					db.getObjectsFields(keys, fields, next);
 				} else {
@@ -76,5 +79,15 @@ module.exports = function (Posts) {
 function modifyPost(post) {
 	if (post) {
 		intFields.forEach(field => db.parseIntField(post, field));
+
+		if (post.hasOwnProperty('upvotes') && post.hasOwnProperty('downvotes')) {
+			post.votes = post.upvotes - post.downvotes;
+		}
+		if (post.hasOwnProperty('timestamp')) {
+			post.timestampISO = utils.toISOString(post.timestamp);
+		}
+		if (post.hasOwnProperty('edited')) {
+			post.editedISO = post.edited !== 0 ? utils.toISOString(post.edited) : '';
+		}
 	}
 }

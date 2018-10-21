@@ -97,7 +97,7 @@ function generateForTopic(req, res, callback) {
 			}, next);
 		},
 		function (results, next) {
-			if (!results.topic || (parseInt(results.topic.deleted, 10) && !results.privileges.view_deleted)) {
+			if (!results.topic || (results.topic.deleted && !results.privileges.view_deleted)) {
 				return controllers404.send404(req, res);
 			}
 			userPrivileges = results.privileges;

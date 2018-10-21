@@ -100,7 +100,7 @@ module.exports = function (privileges) {
 
 				tids = topicsData.filter(function (topic) {
 					return cidsSet.has(topic.cid) &&
-						(parseInt(topic.deleted, 10) !== 1 || results.isAdmin || isModOf[topic.cid]);
+						(!topic.deleted || results.isAdmin || isModOf[topic.cid]);
 				}).map(topic => topic.tid);
 
 				plugins.fireHook('filter:privileges.topics.filter', {

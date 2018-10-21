@@ -158,7 +158,7 @@ apiController.getTopicData = function (tid, uid, callback) {
 			return callback(err);
 		}
 
-		if (!results.privileges.read || !results.privileges['topics:read'] || (parseInt(results.topic.deleted, 10) && !results.privileges.view_deleted)) {
+		if (!results.privileges.read || !results.privileges['topics:read'] || (results.topic.deleted && !results.privileges.view_deleted)) {
 			return callback();
 		}
 		callback(null, results.topic);

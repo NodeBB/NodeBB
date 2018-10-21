@@ -10,7 +10,7 @@ var translator = require('../translator');
 
 const intFields = [
 	'tid', 'cid', 'uid', 'mainPid', 'deleted', 'locked', 'pinned',
-	'timestamp',
+	'timestamp', 'upvotes', 'downvotes',
 ];
 
 module.exports = function (Topics) {
@@ -88,7 +88,7 @@ module.exports = function (Topics) {
 function escapeTitle(topicData) {
 	if (topicData) {
 		if (topicData.title) {
-			topicData.title = translator.escape(validator.escape(topicData.title.toString()));
+			topicData.title = translator.escape(validator.escape(String(topicData.title)));
 		}
 		if (topicData.titleRaw) {
 			topicData.titleRaw = translator.escape(topicData.titleRaw);
@@ -117,12 +117,6 @@ function modifyTopic(topic) {
 		topic.lastposttimeISO = utils.toISOString(topic.lastposttime);
 	}
 
-	if (topic.hasOwnProperty('upvotes')) {
-		topic.upvotes = parseInt(topic.upvotes, 10) || 0;
-	}
-	if (topic.hasOwnProperty('upvotes')) {
-		topic.downvotes = parseInt(topic.downvotes, 10) || 0;
-	}
 	if (topic.hasOwnProperty('upvotes') && topic.hasOwnProperty('downvotes')) {
 		topic.votes = topic.upvotes - topic.downvotes;
 	}

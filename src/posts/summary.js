@@ -63,11 +63,8 @@ module.exports = function (Posts) {
 					post.user = results.users[post.uid];
 					post.topic = results.topics[post.tid];
 					post.category = post.topic && results.categories[post.topic.cid];
-					post.isMainPost = post.topic && parseInt(post.pid, 10) === parseInt(post.topic.mainPid, 10);
-					post.deleted = parseInt(post.deleted, 10) === 1;
-					post.upvotes = parseInt(post.upvotes, 10) || 0;
-					post.downvotes = parseInt(post.downvotes, 10) || 0;
-					post.votes = post.upvotes - post.downvotes;
+					post.isMainPost = post.topic && post.pid === post.topic.mainPid;
+					post.deleted = post.deleted === 1;
 					post.timestampISO = utils.toISOString(post.timestamp);
 				});
 
@@ -114,16 +111,7 @@ module.exports = function (Posts) {
 			},
 			function (_topicsData, next) {
 				topicsData = _topicsData;
-				var cids = topicsData.map(function (topic) {
-					if (topic) {
-						topic.title = String(topic.title);
-						topic.deleted = parseInt(topic.deleted, 10) === 1;
-					}
-					return topic && parseInt(topic.cid, 10);
-				});
-
-				cids = _.uniq(cids);
-
+				var cids = _.uniq(topicsData.map(topic => topic && topic.cid));
 				categories.getCategoriesFields(cids, ['cid', 'name', 'icon', 'slug', 'parentCid', 'bgColor', 'color'], next);
 			},
 			function (categoriesData, next) {

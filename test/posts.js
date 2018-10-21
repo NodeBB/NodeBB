@@ -251,7 +251,7 @@ describe('Post\'s', function () {
 				assert.ifError(err);
 				posts.getPostField(replyPid, 'deleted', function (err, isDeleted) {
 					assert.ifError(err);
-					assert.equal(parseInt(isDeleted, 10), 1);
+					assert.strictEqual(isDeleted, 1);
 					done();
 				});
 			});
@@ -262,7 +262,7 @@ describe('Post\'s', function () {
 				assert.ifError(err);
 				posts.getPostField(replyPid, 'deleted', function (err, isDeleted) {
 					assert.ifError(err);
-					assert.equal(parseInt(isDeleted, 10), 0);
+					assert.strictEqual(isDeleted, 0);
 					done();
 				});
 			});
@@ -591,6 +591,14 @@ describe('Post\'s', function () {
 	});
 
 	describe('parse', function () {
+		it('should not crash and return falsy if post data is falsy', function (done) {
+			posts.parsePost(null, function (err, postData) {
+				assert.ifError(err);
+				assert.strictEqual(postData, null);
+				done();
+			});
+		});
+
 		it('should store post content in cache', function (done) {
 			var oldValue = global.env;
 			global.env = 'production';

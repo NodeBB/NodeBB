@@ -123,7 +123,7 @@ module.exports = function (privileges) {
 
 				pids = postData.filter(function (post) {
 					return post.topic && cidsSet.has(post.topic.cid) &&
-						((parseInt(post.topic.deleted, 10) !== 1 && parseInt(post.deleted, 10) !== 1) || results.isAdmin || isModOf[post.cid]);
+						((!post.topic.deleted && !post.deleted) || results.isAdmin || isModOf[post.cid]);
 				}).map(post => post.pid);
 
 				plugins.fireHook('filter:privileges.posts.filter', {
@@ -184,11 +184,11 @@ module.exports = function (privileges) {
 				}
 
 				var postDeleteDuration = meta.config.postDeleteDuration;
-				if (postDeleteDuration && (Date.now() - parseInt(postData.timestamp, 10) > postDeleteDuration * 1000)) {
+				if (postDeleteDuration && (Date.now() - postData.timestamp > postDeleteDuration * 1000)) {
 					return next(null, { flag: false, message: '[[error:post-delete-duration-expired, ' + meta.config.postDeleteDuration + ']]' });
 				}
-				var deleterUid = parseInt(postData.deleterUid, 10) || 0;
-				var flag = results.isOwner && (deleterUid === 0 || deleterUid === parseInt(postData.uid, 10));
+				var deleterUid = postData.deleterUid;
+				var flag = results.isOwner && (deleterUid === 0 || deleterUid === postData.uid);
 				next(null, { flag: flag, message: '[[error:no-privileges]]' });
 			},
 		], callback);

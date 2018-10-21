@@ -54,7 +54,7 @@ topicsController.get = function (req, res, callback) {
 			userPrivileges = results.privileges;
 			rssToken = results.rssToken;
 
-			if (!userPrivileges['topics:read'] || (parseInt(results.topic.deleted, 10) && !userPrivileges.view_deleted)) {
+			if (!userPrivileges['topics:read'] || (results.topic.deleted && !userPrivileges.view_deleted)) {
 				return helpers.notAllowed(req, res);
 			}
 
@@ -386,7 +386,7 @@ topicsController.pagination = function (req, res, callback) {
 			return callback(err);
 		}
 
-		if (!results.privileges.read || (parseInt(results.topic.deleted, 10) && !results.privileges.view_deleted)) {
+		if (!results.privileges.read || (results.topic.deleted && !results.privileges.view_deleted)) {
 			return helpers.notAllowed(req, res);
 		}
 
