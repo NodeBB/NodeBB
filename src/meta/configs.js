@@ -23,6 +23,8 @@ function deserialize(config) {
 	Object.keys(config).forEach(function (key) {
 		if (utils.isNumber(config[key])) {
 			deserialized[key] = parseInt(config[key], 10);
+		} else {
+			deserialized[key] = config[key];
 		}
 	});
 	return deserialized;

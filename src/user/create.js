@@ -206,6 +206,7 @@ module.exports = function (User) {
 		}
 
 		var strength = zxcvbn(password);
+		console.log('str', strength.score, minStrength);
 		if (strength.score < minStrength) {
 			return callback(new Error('[[user:weak_password]]'));
 		}

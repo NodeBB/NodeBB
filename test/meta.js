@@ -163,7 +163,7 @@ describe('meta', function () {
 				assert.ifError(err);
 				meta.configs.getFields(['stringField'], function (err, data) {
 					assert.ifError(err);
-					assert.strictEqual(data.stringField, '123');
+					assert.strictEqual(data.stringField, 123);
 					done();
 				});
 			});
