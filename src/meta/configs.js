@@ -24,9 +24,9 @@ function deserialize(config) {
 			return;
 		}
 
-		var parsedFloat = parseFloat(config[key]);
-		if (!isNaN(parsedFloat) && isFinite(config[key])) {
-			deserialized[key] = parsedFloat;
+		var number = parseFloat(config[key]);
+		if (!isNaN(number) && isFinite(config[key])) {
+			deserialized[key] = number;
 		} else if (config[key] === 'true') {
 			deserialized[key] = true;
 		} else if (config[key] === 'false') {
