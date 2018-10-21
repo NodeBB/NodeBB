@@ -1,9 +1,9 @@
 # Save as .codeclimate.yml (note leading .) in project root directory
 version: "2"
 languages:
-  Ruby: true
+  Ruby: false
   JavaScript: true
-  PHP: true
+  PHP: false
 checks:
   file-lines:
     config:
@@ -11,6 +11,12 @@ checks:
   method-lines:
     config:
       threshold: 50
+  method-complexity:
+    config:
+      threshold: 10
+  similar-code:
+    config:
+      threshold: 65
 exclude_paths:
 - "public/vendor/*"
 - "test/*"
