@@ -16,21 +16,22 @@ var Configs = module.exports;
 
 Meta.config = {};
 
-function serialize(config) {
-	var serialized = {};
-	Object.keys(config).forEach(function (key) {
-		serialized[key] = JSON.stringify(config[key]);
-	});
-	return serialized;
-}
 function deserialize(config) {
 	var deserialized = {};
-	// allow for existing string values in database config
-	// also allows for deserialize to be called on an object that isn't serialized
 	Object.keys(config).forEach(function (key) {
-		try {
-			deserialized[key] = JSON.parse(config[key]);
-		} catch (e) {
+		if (typeof config[key] !== 'string') {
+			deserialized[key] = config[key];
+			return;
+		}
+
+		var parsedFloat = parseFloat(config[key]);
+		if (!isNaN(parsedFloat) && isFinite(config[key])) {
+			deserialized[key] = parsedFloat;
+		} else if (config[key] === 'true') {
+			deserialized[key] = true;
+		} else if (config[key] === 'false') {
+			deserialized[key] = false;
+		} else {
 			deserialized[key] = config[key];
 		}
 	});
@@ -109,7 +110,7 @@ Configs.setMultiple = function (data, callback) {
 			processConfig(data, next);
 		},
 		function (next) {
-			db.setObject('config', serialize(data), next);
+			db.setObject('config', data, next);
 		},
 		function (next) {
 			updateConfig(data);
@@ -125,7 +126,7 @@ Configs.setOnEmpty = function (values, callback) {
 		},
 		function (data, next) {
 			var config = Object.assign({}, values, data ? deserialize(data) : {});
-			db.setObject('config', serialize(config), next);
+			db.setObject('config', config, next);
 		},
 	], callback);
 };

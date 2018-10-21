@@ -169,6 +169,17 @@ describe('meta', function () {
 			});
 		});
 
+		it('should set boolean config value', function (done) {
+			meta.configs.set('booleanField', 'true', function (err) {
+				assert.ifError(err);
+				meta.configs.getFields(['booleanField'], function (err, data) {
+					assert.ifError(err);
+					assert.strictEqual(data.booleanField, true);
+					done();
+				});
+			});
+		});
+
 		it('should set string config value', function (done) {
 			meta.configs.set('stringField', '123', function (err) {
 				assert.ifError(err);
