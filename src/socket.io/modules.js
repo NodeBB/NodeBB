@@ -137,8 +137,7 @@ SocketModules.chats.send = function (socket, data, callback) {
 function rateLimitExceeded(socket) {
 	var now = Date.now();
 	socket.lastChatMessageTime = socket.lastChatMessageTime || 0;
-	var delay = meta.config.hasOwnProperty('chatMessageDelay') ? parseInt(meta.config.chatMessageDelay, 10) : 200;
-	if (now - socket.lastChatMessageTime < delay) {
+	if (now - socket.lastChatMessageTime < meta.config.chatMessageDelay) {
 		return true;
 	}
 	socket.lastChatMessageTime = now;
@@ -193,7 +192,7 @@ SocketModules.chats.addUserToRoom = function (socket, data, callback) {
 			Messaging.getUserCountInRoom(data.roomId, next);
 		},
 		function (userCount, next) {
-			var maxUsers = parseInt(meta.config.maximumUsersInChatRoom, 10) || 0;
+			var maxUsers = meta.config.maximumUsersInChatRoom;
 			if (maxUsers && userCount >= maxUsers) {
 				return next(new Error('[[error:cant-add-more-users-to-chat-room]]'));
 			}

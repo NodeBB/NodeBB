@@ -184,7 +184,7 @@ module.exports = function (privileges) {
 					return next(null, { flag: false, message: '[[error:no-privileges]]' });
 				}
 
-				var postDeleteDuration = parseInt(meta.config.postDeleteDuration, 10);
+				var postDeleteDuration = meta.config.postDeleteDuration;
 				if (postDeleteDuration && (Date.now() - parseInt(postData.timestamp, 10) > postDeleteDuration * 1000)) {
 					return next(null, { flag: false, message: '[[error:post-delete-duration-expired, ' + meta.config.postDeleteDuration + ']]' });
 				}
@@ -204,8 +204,8 @@ module.exports = function (privileges) {
 				}, next);
 			},
 			function (results, next) {
-				var minimumReputation = utils.isNumber(meta.config['min:rep:flag']) ? parseInt(meta.config['min:rep:flag'], 10) : 0;
-				var canFlag = results.isAdminOrMod || parseInt(results.userReputation, 10) >= minimumReputation;
+				var minimumReputation = meta.config['min:rep:flag'];
+				var canFlag = results.isAdminOrMod || (results.userReputation >= minimumReputation);
 				next(null, { flag: canFlag });
 			},
 		], callback);
@@ -249,8 +249,8 @@ module.exports = function (privileges) {
 				posts.getPostFields(pid, ['tid', 'timestamp'], next);
 			},
 			function (postData, next) {
-				var postEditDuration = parseInt(meta.config.postEditDuration, 10);
-				if (postEditDuration && Date.now() - parseInt(postData.timestamp, 10) > postEditDuration * 1000) {
+				var postEditDuration = meta.config.postEditDuration;
+				if (postEditDuration && (Date.now() - postData.timestamp > postEditDuration * 1000)) {
 					return callback(null, { flag: false, message: '[[error:post-edit-duration-expired, ' + meta.config.postEditDuration + ']]' });
 				}
 				topics.isLocked(postData.tid, next);

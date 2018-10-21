@@ -14,6 +14,7 @@
     "disableChat": 0,
     "chatEditDuration": 0,
     "chatDeleteDuration": 0,
+    "chatMessageDelay": 200,
     "newbiePostDelayThreshold": 3,
     "minimumPostLength": 8,
     "maximumPostLength": 32767,
@@ -51,6 +52,7 @@
     "allowProfileImageUploads": 1,
     "teaserPost": "last-reply",
     "allowPrivateGroups": 1,
+    "allowGroupCreation": 0,
     "unreadCutoff": 2,
     "bookmarkThreshold": 5,
     "autoDetectLang": 1,
@@ -80,5 +82,8 @@
     "topicsPerPage": 20,
     "postsPerPage": 20,
     "userSearchResultsPerPage": 50,
-    "maximumGroupNameLength": 255
+    "maximumGroupNameLength": 255,
+    "preventTopicDeleteAfterReplies": 0,
+    "sitemapTopics": 500,
+    "maintenanceMode": 0
 }

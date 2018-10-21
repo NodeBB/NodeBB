@@ -78,7 +78,7 @@ function validateTokenIfRequiresLogin(requiresLogin, cid, req, res, callback) {
 }
 
 function generateForTopic(req, res, callback) {
-	if (parseInt(meta.config['feeds:disableRSS'], 10) === 1) {
+	if (meta.config['feeds:disableRSS']) {
 		return controllers404.send404(req, res);
 	}
 
@@ -149,7 +149,7 @@ function generateForTopic(req, res, callback) {
 }
 
 function generateForCategory(req, res, next) {
-	if (parseInt(meta.config['feeds:disableRSS'], 10) === 1) {
+	if (meta.config['feeds:disableRSS']) {
 		return controllers404.send404(req, res);
 	}
 	var cid = req.params.category_id;
@@ -195,7 +195,7 @@ function generateForCategory(req, res, next) {
 }
 
 function generateForTopics(req, res, next) {
-	if (parseInt(meta.config['feeds:disableRSS'], 10) === 1) {
+	if (meta.config['feeds:disableRSS']) {
 		return controllers404.send404(req, res);
 	}
 
@@ -220,7 +220,7 @@ function generateForTopics(req, res, next) {
 }
 
 function generateForRecent(req, res, next) {
-	if (parseInt(meta.config['feeds:disableRSS'], 10) === 1) {
+	if (meta.config['feeds:disableRSS']) {
 		return controllers404.send404(req, res);
 	}
 
@@ -245,7 +245,7 @@ function generateForRecent(req, res, next) {
 }
 
 function generateForTop(req, res, next) {
-	if (parseInt(meta.config['feeds:disableRSS'], 10) === 1) {
+	if (meta.config['feeds:disableRSS']) {
 		return controllers404.send404(req, res);
 	}
 	var term = terms[req.params.term] || 'day';
@@ -285,7 +285,7 @@ function generateForTop(req, res, next) {
 }
 
 function generateForPopular(req, res, next) {
-	if (parseInt(meta.config['feeds:disableRSS'], 10) === 1) {
+	if (meta.config['feeds:disableRSS']) {
 		return controllers404.send404(req, res);
 	}
 
@@ -387,7 +387,7 @@ function generateTopicsFeed(feedOptions, feedTopics, callback) {
 }
 
 function generateForRecentPosts(req, res, next) {
-	if (parseInt(meta.config['feeds:disableRSS'], 10) === 1) {
+	if (meta.config['feeds:disableRSS']) {
 		return controllers404.send404(req, res);
 	}
 
@@ -409,7 +409,7 @@ function generateForRecentPosts(req, res, next) {
 }
 
 function generateForCategoryRecentPosts(req, res, callback) {
-	if (parseInt(meta.config['feeds:disableRSS'], 10) === 1) {
+	if (meta.config['feeds:disableRSS']) {
 		return controllers404.send404(req, res);
 	}
 	var cid = req.params.category_id;
@@ -475,7 +475,7 @@ function generateForPostsFeed(feedOptions, posts) {
 }
 
 function generateForUserTopics(req, res, callback) {
-	if (parseInt(meta.config['feeds:disableRSS'], 10) === 1) {
+	if (meta.config['feeds:disableRSS']) {
 		return controllers404.send404(req, res);
 	}
 
@@ -504,7 +504,7 @@ function generateForUserTopics(req, res, callback) {
 }
 
 function generateForTag(req, res, next) {
-	if (parseInt(meta.config['feeds:disableRSS'], 10) === 1) {
+	if (meta.config['feeds:disableRSS']) {
 		return controllers404.send404(req, res);
 	}
 	var tag = validator.escape(String(req.params.tag));

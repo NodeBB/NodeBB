@@ -85,11 +85,11 @@ module.exports = function (Posts) {
 		signature = translator.escape(signature);
 		var tagsToStrip = [];
 
-		if (parseInt(meta.config['signatures:disableLinks'], 10) === 1) {
+		if (meta.config['signatures:disableLinks']) {
 			tagsToStrip.push('a');
 		}
 
-		if (parseInt(meta.config['signatures:disableImages'], 10) === 1) {
+		if (meta.config['signatures:disableImages']) {
 			tagsToStrip.push('img');
 		}
 
