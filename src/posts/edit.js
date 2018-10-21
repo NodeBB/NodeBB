@@ -66,7 +66,7 @@ module.exports = function (Posts) {
 				Posts.setPostFields(data.pid, postData, next);
 			},
 			function (next) {
-				if (parseInt(meta.config.enablePostHistory || 1, 10) !== 1) {
+				if (meta.config.enablePostHistory !== 1) {
 					return setImmediate(next);
 				}
 

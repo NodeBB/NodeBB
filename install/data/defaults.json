@@ -9,6 +9,7 @@
     "newbiePostDelay": 120,
     "postEditDuration": 0,
     "postDeleteDuration": 0,
+    "enablePostHistory": 1,
     "postCacheSize": 5242880,
     "disableChat": 0,
     "chatEditDuration": 0,

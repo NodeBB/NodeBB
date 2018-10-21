@@ -180,7 +180,7 @@ function updateConfig(config) {
 }
 
 function updateLocalConfig(config) {
-	Object.assign(Meta.config, config);
+	Object.assign(Meta.config, deserialize(config));
 }
 
 pubsub.on('config:update', function onConfigReceived(config) {
