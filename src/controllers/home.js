@@ -35,7 +35,7 @@ function rewrite(req, res, next) {
 
 	async.waterfall([
 		function (next) {
-			if (parseInt(meta.config.allowUserHomePage, 10)) {
+			if (meta.config.allowUserHomePage) {
 				getUserHomeRoute(req.uid, next);
 			} else {
 				next(null, adminHomePageRoute());

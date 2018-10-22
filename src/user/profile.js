@@ -168,7 +168,7 @@ module.exports = function (User) {
 
 	User.checkMinReputation = function (callerUid, uid, setting, callback) {
 		var isSelf = parseInt(callerUid, 10) === parseInt(uid, 10);
-		if (!isSelf || parseInt(meta.config['reputation:disabled'], 10) === 1) {
+		if (!isSelf || meta.config['reputation:disabled']) {
 			return setImmediate(callback);
 		}
 		async.waterfall([
@@ -176,7 +176,7 @@ module.exports = function (User) {
 				User.getUserField(uid, 'reputation', next);
 			},
 			function (reputation, next) {
-				if (parseInt(reputation, 10) < (parseInt(meta.config[setting], 10) || 0)) {
+				if (reputation < meta.config[setting]) {
 					return next(new Error('[[error:not-enough-reputation-' + setting.replace(/:/g, '-') + ']]'));
 				}
 				next();
@@ -218,7 +218,7 @@ module.exports = function (User) {
 						User.setUserField(uid, 'email', newEmail, next);
 					},
 					function (next) {
-						if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && newEmail) {
+						if (meta.config.requireEmailConfirmation && newEmail) {
 							User.email.sendValidationEmail(uid, {
 								email: newEmail,
 								subject: '[[email:email.verify-your-email.subject]]',

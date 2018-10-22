@@ -41,6 +41,7 @@ module.exports = function (Categories) {
 					numRecentReplies: 1,
 					class: (data.class ? data.class : 'col-md-3 col-xs-6'),
 					imageClass: 'cover',
+					isSection: 0,
 				};
 
 				if (data.backgroundImage) {

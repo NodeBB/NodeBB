@@ -84,7 +84,7 @@ SocketUser.emailConfirm = function (socket, data, callback) {
 		return callback(new Error('[[error:no-privileges]]'));
 	}
 
-	if (parseInt(meta.config.requireEmailConfirmation, 10) !== 1) {
+	if (!meta.config.requireEmailConfirmation) {
 		return callback(new Error('[[error:email-confirmations-are-disabled]]'));
 	}
 
@@ -297,7 +297,7 @@ SocketUser.invite = function (socket, email, callback) {
 			if (registrationType === 'admin-invite-only' && !isAdmin) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
-			var max = parseInt(meta.config.maximumInvites, 10);
+			var max = meta.config.maximumInvites;
 			email = email.split(',').map(email => email.trim()).filter(Boolean);
 			async.eachSeries(email, function (email, next) {
 				async.waterfall([

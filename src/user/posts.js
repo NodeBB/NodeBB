@@ -44,20 +44,20 @@ module.exports = function (User) {
 					return next(new Error('[[error:user-banned]]'));
 				}
 
-				if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
+				if (meta.config.requireEmailConfirmation && !userData['email:confirmed']) {
 					return next(new Error('[[error:email-not-confirmed]]'));
 				}
 
 				var now = Date.now();
-				if (now - parseInt(userData.joindate, 10) < parseInt(meta.config.initialPostDelay, 10) * 1000) {
+				if (now - userData.joindate < meta.config.initialPostDelay * 1000) {
 					return next(new Error('[[error:user-too-new, ' + meta.config.initialPostDelay + ']]'));
 				}
 
 				var lasttime = userData[field] || 0;
 
-				if (parseInt(meta.config.newbiePostDelay, 10) > 0 && parseInt(meta.config.newbiePostDelayThreshold, 10) > parseInt(userData.reputation, 10) && now - parseInt(lasttime, 10) < parseInt(meta.config.newbiePostDelay, 10) * 1000) {
+				if (meta.config.newbiePostDelay > 0 && meta.config.newbiePostDelayThreshold > userData.reputation && now - lasttime < meta.config.newbiePostDelay * 1000) {
 					return next(new Error('[[error:too-many-posts-newbie, ' + meta.config.newbiePostDelay + ', ' + meta.config.newbiePostDelayThreshold + ']]'));
-				} else if (now - parseInt(lasttime, 10) < parseInt(meta.config.postDelay, 10) * 1000) {
+				} else if (now - lasttime < meta.config.postDelay * 1000) {
 					return next(new Error('[[error:too-many-posts, ' + meta.config.postDelay + ']]'));
 				}
 

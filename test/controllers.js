@@ -218,7 +218,7 @@ describe('Controllers', function () {
 					assert.equal(res.statusCode, 200);
 					assert.ok(body);
 					assert.ok(body.indexOf('<main id="panel"'));
-					assert.ok(body.indexOf(message) !== -1);
+					assert.ok(body.includes(message));
 
 					done();
 				});
@@ -1056,7 +1056,7 @@ describe('Controllers', function () {
 				request(nconf.get('url') + '/me/bookmarks', { json: true }, function (err, res, body) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
-					assert(body.indexOf('Login to your account') !== -1);
+					assert(body.includes('Login to your account'));
 					done();
 				});
 			});
@@ -1422,7 +1422,7 @@ describe('Controllers', function () {
 						var contents = body.posts.map(function (p) {
 							return p.content;
 						});
-						assert(contents.indexOf('1st reply') === -1);
+						assert(!contents.includes('1st reply'));
 						done();
 					});
 				},
@@ -1770,7 +1770,7 @@ describe('Controllers', function () {
 			request(nconf.get('url') + '/assets/vendor/jquery/timeago/locales/jquery.timeago.af.js', function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
-				assert(body.indexOf('Afrikaans') !== -1);
+				assert(body.includes('Afrikaans'));
 				done();
 			});
 		});
@@ -1779,7 +1779,7 @@ describe('Controllers', function () {
 			request(nconf.get('url') + '/assets/vendor/jquery/timeago/locales/jquery.timeago.404.js', function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
-				assert(body.indexOf('English') !== -1);
+				assert(body.includes('English'));
 				done();
 			});
 		});
@@ -2108,7 +2108,7 @@ describe('Controllers', function () {
 			request(nconf.get('url') + '//admin/advanced/database', { json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
-				assert(body.indexOf('Login to your account') !== -1);
+				assert(body.includes('Login to your account'));
 				done();
 			});
 		});

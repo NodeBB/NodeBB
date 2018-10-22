@@ -7,7 +7,7 @@ var user = require('../user');
 
 module.exports = function (middleware) {
 	middleware.maintenanceMode = function (req, res, callback) {
-		if (parseInt(meta.config.maintenanceMode, 10) !== 1) {
+		if (!meta.config.maintenanceMode) {
 			return callback();
 		}
 		var url = req.url.replace(nconf.get('relative_path'), '');

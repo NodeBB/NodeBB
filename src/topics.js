@@ -117,7 +117,7 @@ Topics.getTopicsByTids = function (tids, uid, callback) {
 		},
 		function (results, next) {
 			results.users.forEach(function (user, index) {
-				if (parseInt(meta.config.hideFullname, 10) === 1 || !results.userSettings[index].showfullname) {
+				if (meta.config.hideFullname || !results.userSettings[index].showfullname) {
 					user.fullname = undefined;
 				}
 			});

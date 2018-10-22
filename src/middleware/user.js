@@ -78,7 +78,7 @@ module.exports = function (middleware) {
 	}
 
 	middleware.checkGlobalPrivacySettings = function (req, res, next) {
-		if (!req.loggedIn && !!parseInt(meta.config.privateUserInfo, 10)) {
+		if (!req.loggedIn && meta.config.privateUserInfo) {
 			return middleware.authenticate(req, res, next);
 		}
 
@@ -187,8 +187,8 @@ module.exports = function (middleware) {
 				}
 
 				var loginTime = req.session.meta ? req.session.meta.datetime : 0;
-				var adminReloginDuration = (meta.config.adminReloginDuration || 60) * 60000;
-				var disabled = parseInt(meta.config.adminReloginDuration, 10) === 0;
+				var adminReloginDuration = meta.config.adminReloginDuration * 60000;
+				var disabled = meta.config.adminReloginDuration === 0;
 				if (disabled || (loginTime && parseInt(loginTime, 10) > Date.now() - adminReloginDuration)) {
 					var timeLeft = parseInt(loginTime, 10) - (Date.now() - adminReloginDuration);
 					if (req.session.meta && timeLeft < Math.min(300000, adminReloginDuration)) {

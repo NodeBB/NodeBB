@@ -27,8 +27,7 @@ module.exports = function (User) {
 				db.increment('loginAttempts:' + uid, next);
 			},
 			function (attemps, next) {
-				var loginAttempts = parseInt(meta.config.loginAttempts, 10) || 5;
-				if (attemps <= loginAttempts) {
+				if (attemps <= meta.config.loginAttempts) {
 					return db.pexpire('loginAttempts:' + uid, 1000 * 60 * 60, callback);
 				}
 				// Lock out the account

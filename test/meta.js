@@ -105,8 +105,8 @@ describe('meta', function () {
 		it('should get config fields', function (done) {
 			meta.configs.getFields(['minimumTagLength', 'maximumTagLength'], function (err, data) {
 				assert.ifError(err);
-				assert.equal(data.minimumTagLength, 3);
-				assert.equal(data.maximumTagLength, 15);
+				assert.strictEqual(data.minimumTagLength, 3);
+				assert.strictEqual(data.maximumTagLength, 15);
 				done();
 			});
 		});
@@ -125,7 +125,7 @@ describe('meta', function () {
 			});
 		});
 
-		it('should set single config value', function (done) {
+		it('should set multiple config values', function (done) {
 			socketAdmin.config.set({ uid: fooUid }, { key: 'someKey', value: 'someValue' }, function (err) {
 				assert.ifError(err);
 				meta.configs.getFields(['someKey'], function (err, data) {
@@ -141,7 +141,51 @@ describe('meta', function () {
 				assert.ifError(err);
 				meta.configs.getFields(['someField'], function (err, data) {
 					assert.ifError(err);
-					assert.equal(data.someField, 'someValue');
+					assert.strictEqual(data.someField, 'someValue');
+					done();
+				});
+			});
+		});
+
+		it('should set numeric config value', function (done) {
+			meta.configs.set('numericField', 123, function (err) {
+				assert.ifError(err);
+				meta.configs.getFields(['numericField'], function (err, data) {
+					assert.ifError(err);
+					assert.strictEqual(data.numericField, 123);
+					done();
+				});
+			});
+		});
+
+		it('should set boolean config value', function (done) {
+			meta.configs.set('booleanField', true, function (err) {
+				assert.ifError(err);
+				meta.configs.getFields(['booleanField'], function (err, data) {
+					assert.ifError(err);
+					assert.strictEqual(data.booleanField, true);
+					done();
+				});
+			});
+		});
+
+		it('should set boolean config value', function (done) {
+			meta.configs.set('booleanField', 'true', function (err) {
+				assert.ifError(err);
+				meta.configs.getFields(['booleanField'], function (err, data) {
+					assert.ifError(err);
+					assert.strictEqual(data.booleanField, true);
+					done();
+				});
+			});
+		});
+
+		it('should set string config value', function (done) {
+			meta.configs.set('stringField', '123', function (err) {
+				assert.ifError(err);
+				meta.configs.getFields(['stringField'], function (err, data) {
+					assert.ifError(err);
+					assert.strictEqual(data.stringField, 123);
 					done();
 				});
 			});
@@ -173,7 +217,7 @@ describe('meta', function () {
 		it('should not set config if not empty', function (done) {
 			meta.configs.setOnEmpty({ someField1: 'foo' }, function (err) {
 				assert.ifError(err);
-				db.getObjectField('config', 'someField1', function (err, value) {
+				meta.configs.get('someField1', function (err, value) {
 					assert.ifError(err);
 					assert.equal(value, 'someValue1');
 					done();

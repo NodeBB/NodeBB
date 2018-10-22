@@ -32,9 +32,7 @@ pagination.create = function (currentPage, pageCount, queryObj) {
 		pagesToShow.push(startPage + i);
 	}
 
-	pagesToShow = pagesToShow.filter(function (page, index, array) {
-		return page > 0 && page <= pageCount && array.indexOf(page) === index;
-	}).sort(function (a, b) {
+	pagesToShow = _.uniq(pagesToShow).filter(page => page > 0 && page <= pageCount).sort(function (a, b) {
 		return a - b;
 	});
 

@@ -67,9 +67,9 @@ modsController.flags.list = function (req, res, next) {
 				} else if (Array.isArray(filters.cid)) {
 					// Remove cids they do not moderate
 					filters.cid = filters.cid.filter(function (cid) {
-						return res.locals.cids.indexOf(String(cid)) !== -1;
+						return res.locals.cids.includes(String(cid));
 					});
-				} else if (res.locals.cids.indexOf(String(filters.cid)) === -1) {
+				} else if (!res.locals.cids.includes(String(filters.cid))) {
 					filters.cid = res.locals.cids;
 					hasFilter = false;
 				}

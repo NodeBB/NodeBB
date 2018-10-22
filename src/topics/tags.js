@@ -65,9 +65,8 @@ module.exports = function (Topics) {
 				if (!tagWhitelist.length) {
 					return next(null, tags);
 				}
-				tags = tags.filter(function (tag) {
-					return tagWhitelist.indexOf(tag) !== -1;
-				});
+				var whitelistSet = new Set(tagWhitelist);
+				tags = tags.filter(tag => whitelistSet.has(tag));
 				next(null, tags);
 			},
 		], callback);
@@ -486,7 +485,7 @@ module.exports = function (Topics) {
 			return plugins.fireHook('filter:topic.getRelatedTopics', { topic: topicData, uid: uid }, callback);
 		}
 
-		var maximumTopics = parseInt(meta.config.maximumRelatedTopics, 10) || 0;
+		var maximumTopics = meta.config.maximumRelatedTopics;
 		if (maximumTopics === 0 || !topicData.tags || !topicData.tags.length) {
 			return callback(null, []);
 		}

@@ -19,7 +19,7 @@ languagesController.get = function (req, res, next) {
 
 			res.render('admin/general/languages', {
 				languages: languages,
-				autoDetectLang: parseInt(meta.config.autoDetectLang, 10) === 1,
+				autoDetectLang: meta.config.autoDetectLang,
 			});
 		},
 	], next);

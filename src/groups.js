@@ -40,7 +40,7 @@ Groups.getEphemeralGroup = function (groupName) {
 
 Groups.removeEphemeralGroups = function (groups) {
 	for (var x = groups.length; x >= 0; x -= 1) {
-		if (Groups.ephemeralGroups.indexOf(groups[x]) !== -1) {
+		if (Groups.ephemeralGroups.includes(groups[x])) {
 			groups.splice(x, 1);
 		}
 	}
@@ -209,7 +209,7 @@ Groups.getOwnersAndMembers = function (groupName, uid, start, stop, callback) {
 			});
 
 			results.members = results.members.filter(function (user) {
-				return user && user.uid && ownerUids.indexOf(user.uid.toString()) === -1;
+				return user && user.uid && !ownerUids.includes(user.uid.toString());
 			});
 			results.members = results.owners.concat(results.members);
 
@@ -266,34 +266,24 @@ function isFieldOn(groupName, field, callback) {
 
 Groups.exists = function (name, callback) {
 	if (Array.isArray(name)) {
-		var slugs = name.map(function (groupName) {
-			return utils.slugify(groupName);
-		});
-		async.parallel([
-			function (next) {
-				next(null, slugs.map(function (slug) {
-					return Groups.ephemeralGroups.indexOf(slug) !== -1;
-				}));
-			},
+		var slugs = name.map(groupName => utils.slugify(groupName));
+		async.waterfall([
 			async.apply(db.isSortedSetMembers, 'groups:createtime', name),
-		], function (err, results) {
-			if (err) {
-				return callback(err);
-			}
-			callback(null, name.map(function (n, index) {
-				return results[0][index] || results[1][index];
-			}));
-		});
+			function (isMembersOfRealGroups, next) {
+				const isMembersOfEphemeralGroups = slugs.map(slug => Groups.ephemeralGroups.includes(slug));
+				const exists = name.map((n, index) => isMembersOfRealGroups[index] || isMembersOfEphemeralGroups[index]);
+				next(null, exists);
+			},
+		], callback);
 	} else {
 		var slug = utils.slugify(name);
-		async.parallel([
-			function (next) {
-				next(null, Groups.ephemeralGroups.indexOf(slug) !== -1);
-			},
+		async.waterfall([
 			async.apply(db.isSortedSetMember, 'groups:createtime', name),
-		], function (err, results) {
-			callback(err, !err ? (results[0] || results[1]) : null);
-		});
+			function (isMemberOfRealGroups, next) {
+				const isMemberOfEphemeralGroups = Groups.ephemeralGroups.includes(slug);
+				next(null, isMemberOfRealGroups || isMemberOfEphemeralGroups);
+			},
+		], callback);
 	}
 };
 

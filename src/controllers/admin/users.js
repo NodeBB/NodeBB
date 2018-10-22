@@ -173,7 +173,7 @@ function getUsers(set, section, min, max, req, res, next) {
 function render(req, res, data) {
 	data.search_display = 'hidden';
 	data.pagination = pagination.create(data.page, data.pageCount, req.query);
-	data.requireEmailConfirmation = parseInt(meta.config.requireEmailConfirmation, 10) === 1;
+	data.requireEmailConfirmation = meta.config.requireEmailConfirmation;
 
 	var registrationType = meta.config.registrationType;
 

@@ -3,7 +3,6 @@
 'use strict';
 
 var async = require('async');
-var winston = require('winston');
 
 var db = require('../database');
 var plugins = require('../plugins');
@@ -99,11 +98,6 @@ module.exports = function (Topics) {
 		], function (err) {
 			callback(err);
 		});
-	};
-
-	Topics.updateTimestamp = function (tid, lastposttime, callback) {
-		winston.warn('[deprecated] Topics.updateTimestamp is deprecated please use Topics.updateLastPostTime');
-		Topics.updateLastPostTime(tid, lastposttime, callback);
 	};
 
 	Topics.updateRecent = function (tid, timestamp, callback) {

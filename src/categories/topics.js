@@ -102,7 +102,7 @@ module.exports = function (Categories) {
 			},
 			function (normalTids, next) {
 				normalTids = normalTids.filter(function (tid) {
-					return pinnedTids.indexOf(tid) === -1;
+					return !pinnedTids.includes(tid);
 				});
 
 				next(null, pinnedTids.concat(normalTids));

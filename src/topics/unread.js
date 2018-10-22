@@ -60,8 +60,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.unreadCutoff = function () {
-		var cutoff = parseInt(meta.config.unreadCutoff, 10) || 2;
-		return Date.now() - (cutoff * 86400000);
+		return Date.now() - (meta.config.unreadCutoff * 86400000);
 	};
 
 	Topics.getUnreadTids = function (params, callback) {

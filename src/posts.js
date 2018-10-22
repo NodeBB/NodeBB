@@ -47,25 +47,14 @@ Posts.getPostsByPids = function (pids, uid, callback) {
 
 	async.waterfall([
 		function (next) {
-			var keys = pids.map(function (pid) {
-				return 'post:' + pid;
-			});
-			db.getObjects(keys, next);
+			Posts.getPostsData(pids, next);
 		},
 		function (posts, next) {
-			async.map(posts, function (post, next) {
-				if (!post) {
-					return next();
-				}
-				post.upvotes = parseInt(post.upvotes, 10) || 0;
-				post.downvotes = parseInt(post.downvotes, 10) || 0;
-				post.votes = post.upvotes - post.downvotes;
-				post.timestampISO = utils.toISOString(post.timestamp);
-				post.editedISO = parseInt(post.edited, 10) !== 0 ? utils.toISOString(post.edited) : '';
-				Posts.parsePost(post, next);
-			}, next);
+			async.map(posts, Posts.parsePost, next);
 		},
-		async.apply(user.blocks.filter, uid),
+		function (posts, next) {
+			user.blocks.filter(uid, posts, next);
+		},
 		function (posts, next) {
 			plugins.fireHook('filter:post.getPosts', { posts: posts, uid: uid }, next);
 		},

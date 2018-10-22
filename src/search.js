@@ -87,9 +87,7 @@ function searchInContent(data, callback) {
 			topics.getMainPids(results.tids, next);
 		},
 		function (mainPids, next) {
-			pids = mainPids.concat(pids).map(function (pid) {
-				return pid && pid.toString();
-			}).filter(Boolean);
+			pids = mainPids.concat(pids).filter(Boolean);
 
 			privileges.posts.filter('read', pids, data.uid, next);
 		},
@@ -144,9 +142,7 @@ function filterAndSort(pids, data, callback) {
 			plugins.fireHook('filter:search.filterAndSort', { pids: pids, posts: posts, data: data }, next);
 		},
 		function (result, next) {
-			pids = result.posts.map(function (post) {
-				return post && post.pid;
-			});
+			pids = result.posts.map(post => post && post.pid);
 
 			next(null, pids);
 		},
@@ -163,25 +159,18 @@ function getMatchedPosts(pids, data, callback) {
 		}
 	}
 
-	var posts;
+	var postsData;
 	async.waterfall([
 		function (next) {
-			var keys = pids.map(function (pid) {
-				return 'post:' + pid;
-			});
-			db.getObjectsFields(keys, postFields, next);
+			posts.getPostsFields(pids, postFields, next);
 		},
-		function (_posts, next) {
-			posts = _posts.filter(function (post) {
-				return post && parseInt(post.deleted, 10) !== 1;
-			});
+		function (_postsData, next) {
+			postsData = _postsData.filter(post => post && !post.deleted);
 
 			async.parallel({
 				users: function (next) {
 					if (data.sortBy && data.sortBy.startsWith('user')) {
-						var uids = posts.map(function (post) {
-							return post.uid;
-						});
+						var uids = postsData.map(post => post.uid);
 						user.getUsersFields(uids, ['username'], next);
 					} else {
 						next();
@@ -189,22 +178,17 @@ function getMatchedPosts(pids, data, callback) {
 				},
 				topics: function (next) {
 					var topicsData;
+					const tids = postsData.map(post => post.tid);
 					async.waterfall([
 						function (next) {
-							var topicKeys = posts.map(function (post) {
-								return 'topic:' + post.tid;
-							});
-							db.getObjects(topicKeys, next);
+							topics.getTopicsData(tids, next);
 						},
 						function (_topics, next) {
 							topicsData = _topics;
-
 							async.parallel({
 								teasers: function (next) {
 									if (data.sortBy && data.sortBy.startsWith('teaser')) {
-										var teaserKeys = topicsData.map(function (topic) {
-											return 'post:' + topic.teaserPid;
-										});
+										var teaserKeys = topicsData.map(topic => 'post:' + topic.teaserPid);
 										db.getObjectsFields(teaserKeys, ['timestamp'], next);
 									} else {
 										next();
@@ -214,16 +198,11 @@ function getMatchedPosts(pids, data, callback) {
 									if (!categoryFields.length) {
 										return next();
 									}
-									var cids = topicsData.map(function (topic) {
-										return 'category:' + topic.cid;
-									});
+									var cids = topicsData.map(topic => 'category:' + topic.cid);
 									db.getObjectsFields(cids, categoryFields, next);
 								},
 								tags: function (next) {
 									if (Array.isArray(data.hasTags) && data.hasTags.length) {
-										var tids = posts.map(function (post) {
-											return post && post.tid;
-										});
 										topics.getTopicsTags(tids, next);
 									} else {
 										setImmediate(next);
@@ -251,7 +230,7 @@ function getMatchedPosts(pids, data, callback) {
 			}, next);
 		},
 		function (results, next) {
-			posts.forEach(function (post, index) {
+			postsData.forEach(function (post, index) {
 				if (results.topics && results.topics[index]) {
 					post.topic = results.topics[index];
 					if (results.topics[index].category) {
@@ -267,11 +246,8 @@ function getMatchedPosts(pids, data, callback) {
 				}
 			});
 
-			posts = posts.filter(function (post) {
-				return post && post.topic && parseInt(post.topic.deleted, 10) !== 1;
-			});
-
-			next(null, posts);
+			postsData = postsData.filter(post => post && post.topic && !post.topic.deleted);
+			next(null, postsData);
 		},
 	], callback);
 }
@@ -412,9 +388,7 @@ function getChildrenCids(cids, uid, callback) {
 
 			childrenCategories.forEach(function (childrens) {
 				categories.flattenCategories(allCategories, childrens);
-				childrenCids = childrenCids.concat(allCategories.map(function (category) {
-					return category && category.cid;
-				}));
+				childrenCids = childrenCids.concat(allCategories.map(category => category && category.cid));
 			});
 
 			next(null, childrenCids);
