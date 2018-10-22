@@ -19,18 +19,24 @@ Meta.config = {};
 function deserialize(config) {
 	var deserialized = {};
 	Object.keys(config).forEach(function (key) {
-		if (typeof config[key] !== 'string') {
-			deserialized[key] = config[key];
-			return;
-		}
+		const defaultType = typeof defaults[key];
+		const type = typeof config[key];
 
-		var number = parseFloat(config[key]);
-		if (!isNaN(number) && isFinite(config[key])) {
-			deserialized[key] = number;
+		if (defaultType === 'string' && type === 'number') {
+			deserialized[key] = String(config[key]);
+		} else if (defaultType === 'number' && type === 'string') {
+			const number = parseFloat(config[key]);
+			if (!isNaN(number) && isFinite(config[key])) {
+				deserialized[key] = number;
+			} else {
+				deserialized[key] = defaults[key];
+			}
 		} else if (config[key] === 'true') {
 			deserialized[key] = true;
 		} else if (config[key] === 'false') {
 			deserialized[key] = false;
+		} else if (config[key] === null) {
+			deserialized[key] = defaults[key];
 		} else {
 			deserialized[key] = config[key];
 		}

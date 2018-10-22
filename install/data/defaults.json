@@ -4,6 +4,7 @@
     "loginDays": 14,
     "loginSeconds": 0,
     "loginAttempts": 5,
+    "lockoutDuration": 60,
     "adminReloginDuration": 60,
     "postDelay": 10,
     "initialPostDelay": 10,
