@@ -7,6 +7,7 @@ var db = require('../database');
 var privileges = require('../privileges');
 var user = require('../user');
 var meta = require('../meta');
+var plugins = require('../plugins');
 
 module.exports = function (Topics) {
 	Topics.getSortedTopics = function (params, callback) {
@@ -18,6 +19,7 @@ module.exports = function (Topics) {
 
 		params.term = params.term || 'alltime';
 		params.sort = params.sort || 'recent';
+		params.query = params.query || {};
 		if (params.hasOwnProperty('cids') && params.cids && !Array.isArray(params.cids)) {
 			params.cids = [params.cids];
 		}
@@ -70,7 +72,7 @@ module.exports = function (Topics) {
 				}
 			},
 			function (tids, next) {
-				filterTids(tids, params.uid, params.filter, params.cids, next);
+				filterTids(tids, params, next);
 			},
 		], callback);
 	}
@@ -113,7 +115,10 @@ module.exports = function (Topics) {
 		return parseInt(b.viewcount, 10) - parseInt(a.viewcount, 10);
 	}
 
-	function filterTids(tids, uid, filter, cids, callback) {
+	function filterTids(tids, params, callback) {
+		const filter = params.filter;
+		const uid = params.uid;
+
 		async.waterfall([
 			function (next) {
 				if (filter === 'watched') {
@@ -153,16 +158,17 @@ module.exports = function (Topics) {
 				});
 			},
 			function (results, next) {
-				cids = cids && cids.map(String);
+				const cids = params.cids && params.cids.map(String);
 				tids = results.topicData.filter(function (topic) {
 					if (topic && topic.cid) {
 						return !results.ignoredCids.includes(topic.cid.toString()) && (!cids || (cids.length && cids.includes(topic.cid.toString())));
 					}
 					return false;
-				}).map(function (topic) {
-					return topic.tid;
-				});
-				next(null, tids);
+				}).map(topic => topic.tid);
+				plugins.fireHook('filter:topics.filterSortedTids', { tids: tids, params: params }, next);
+			},
+			function (data, next) {
+				next(null, data && data.tids);
 			},
 		], callback);
 	}

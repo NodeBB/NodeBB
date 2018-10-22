@@ -71,6 +71,7 @@ recentController.getData = function (req, url, sort, callback) {
 				filter: filter,
 				term: term,
 				sort: sort,
+				query: req.query,
 			}, next);
 		},
 		function (data, next) {

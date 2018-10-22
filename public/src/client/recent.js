@@ -202,11 +202,13 @@ define('forum/recent', ['forum/infinitescroll', 'components', 'handleBack'], fun
 
 	function loadTopicsAfter(after, direction, callback) {
 		callback = callback || function () {};
+		var query = utils.params();
 		infinitescroll.loadMore('topics.loadMoreRecentTopics', {
 			after: after,
 			direction: direction,
 			count: config.topicsPerPage,
-			cid: utils.params().cid,
+			cid: query.cid,
+			query: query,
 			filter: ajaxify.data.selectedFilter.filter,
 			set: $('[component="category"]').attr('data-set') ? $('[component="category"]').attr('data-set') : 'topics:recent',
 		}, function (data, done) {
