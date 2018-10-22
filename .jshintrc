@@ -4,6 +4,8 @@
 
     "maxerr" : 50, // {int} Maximum error before stopping
 
+    "esversion": 6,
+
     // Enforcing
     "bitwise" : true, // true: Prohibit bitwise operators (&, |, ^, etc.)
     "camelcase" : false, // true: Identifiers must be in camelCase
