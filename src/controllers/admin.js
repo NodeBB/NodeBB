@@ -15,6 +15,7 @@ var adminController = {
 		rewards: require('./admin/rewards'),
 	},
 	events: require('./admin/events'),
+	hooks: require('./admin/hooks'),
 	logs: require('./admin/logs'),
 	errors: require('./admin/errors'),
 	database: require('./admin/database'),
