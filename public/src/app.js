@@ -122,8 +122,19 @@ app.cacheBuster = null;
 			socket.open();
 
 			// Re-render top bar menu
-			app.parseAndTranslate('partials/menu', data.header, function (html) {
-				$('#header-menu .container').html(html);
+			var toRender = [
+				['menu', $('#header-menu .container')],
+				['chats-menu', $('#chats-menu')],
+				['slideout-menu', $('.slideout-menu')],
+			];
+			Promise.all(toRender.map(function (set) {
+				return new Promise(function (resolve) {
+					app.parseAndTranslate('partials/' + set[0], data.header, function (html) {
+						set[1].html(html);
+						resolve();
+					});
+				});
+			})).then(function () {
 				callback();
 			});
 		});
