@@ -69,7 +69,7 @@ module.exports = function (Categories) {
 				posts.getPostField(pid, 'tid', next);
 			},
 			function (tid, next) {
-				if (!parseInt(tid, 10)) {
+				if (!tid) {
 					return next();
 				}
 
@@ -85,9 +85,7 @@ module.exports = function (Categories) {
 
 		async.waterfall([
 			function (next) {
-				var keys = categoryData.map(function (category) {
-					return 'cid:' + category.cid + ':recent_tids';
-				});
+				var keys = categoryData.map(category => 'cid:' + category.cid + ':recent_tids');
 				db.getSortedSetsMembers(keys, next);
 			},
 			function (results, next) {
@@ -154,12 +152,9 @@ module.exports = function (Categories) {
 
 	function assignTopicsToCategories(categories, topics) {
 		categories.forEach(function (category) {
-			category.posts = topics.filter(function (topic) {
-				return topic.cid && (parseInt(topic.cid, 10) === parseInt(category.cid, 10) ||
-					parseInt(topic.parentCid, 10) === parseInt(category.cid, 10));
-			}).sort(function (a, b) {
-				return b.pid - a.pid;
-			}).slice(0, parseInt(category.numRecentReplies, 10));
+			category.posts = topics.filter(topic => topic.cid && (topic.cid === category.cid || topic.parentCid === category.cid))
+				.sort((a, b) => b.pid - a.pid)
+				.slice(0, parseInt(category.numRecentReplies, 10));
 		});
 	}
 

@@ -10,22 +10,14 @@ module.exports = function (Categories) {
 		if (!Array.isArray(cids) || !cids.length) {
 			return callback();
 		}
-		var keys = cids.map(function (cid) {
-			return 'cid:' + cid + ':read_by_uid';
-		});
+		var keys = cids.map(cid => 'cid:' + cid + ':read_by_uid');
 
 		async.waterfall([
 			function (next) {
 				db.isMemberOfSets(keys, uid, next);
 			},
 			function (hasRead, next) {
-				keys = keys.filter(function (key, index) {
-					return !hasRead[index];
-				});
-
-				if (!keys.length) {
-					return callback();
-				}
+				keys = keys.filter((key, index) => !hasRead[index]);
 
 				db.setsAdd(keys, uid, next);
 			},
@@ -41,9 +33,7 @@ module.exports = function (Categories) {
 	};
 
 	Categories.hasReadCategories = function (cids, uid, callback) {
-		var sets = cids.map(function (cid) {
-			return 'cid:' + cid + ':read_by_uid';
-		});
+		var sets = cids.map(cid => 'cid:' + cid + ':read_by_uid');
 
 		db.isMemberOfSets(sets, uid, callback);
 	};

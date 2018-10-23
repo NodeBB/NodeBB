@@ -101,9 +101,7 @@ module.exports = function (Categories) {
 				}
 			},
 			function (normalTids, next) {
-				normalTids = normalTids.filter(function (tid) {
-					return !pinnedTids.includes(tid);
-				});
+				normalTids = normalTids.filter(tid => !pinnedTids.includes(tid));
 
 				next(null, pinnedTids.concat(normalTids));
 			},
@@ -150,9 +148,7 @@ module.exports = function (Categories) {
 
 		if (data.tag) {
 			if (Array.isArray(data.tag)) {
-				set = [set].concat(data.tag.map(function (tag) {
-					return 'tag:' + tag + ':topics';
-				}));
+				set = [set].concat(data.tag.map(tag => 'tag:' + tag + ':topics'));
 			} else {
 				set = [set, 'tag:' + data.tag + ':topics'];
 			}
@@ -225,7 +221,7 @@ module.exports = function (Categories) {
 				db.incrObjectField('category:' + cid, 'post_count', next);
 			},
 			function (next) {
-				if (parseInt(pinned, 10) === 1) {
+				if (pinned) {
 					return setImmediate(next);
 				}
 

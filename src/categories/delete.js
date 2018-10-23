@@ -58,9 +58,7 @@ module.exports = function (Categories) {
 				], next);
 			},
 			function (next) {
-				groups.destroy(privileges.privilegeList.map(function (privilege) {
-					return 'cid:' + cid + ':privileges:' + privilege;
-				}), next);
+				groups.destroy(privileges.privilegeList.map(privilege => 'cid:' + cid + ':privileges:' + privilege), next);
 			},
 		], function (err) {
 			callback(err);
@@ -82,7 +80,6 @@ module.exports = function (Categories) {
 			function (results, next) {
 				async.parallel([
 					function (next) {
-						results.parentCid = parseInt(results.parentCid, 10) || 0;
 						db.sortedSetRemove('cid:' + results.parentCid + ':children', cid, next);
 					},
 					function (next) {

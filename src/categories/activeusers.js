@@ -16,7 +16,7 @@ module.exports = function (Categories) {
 				posts.getPostsFields(pids, ['uid'], next);
 			},
 			function (posts, next) {
-				var uids = _.uniq(posts.map(post => post.uid).filter(uid => parseInt(uid, 10)));
+				var uids = _.uniq(posts.map(post => post.uid).filter(uid => uid));
 
 				next(null, uids);
 			},

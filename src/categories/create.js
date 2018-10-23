@@ -82,26 +82,21 @@ module.exports = function (Categories) {
 				], next);
 			},
 			function (results, next) {
-				async.series([
-					function (next) {
-						if (data.cloneFromCid && parseInt(data.cloneFromCid, 10)) {
-							return Categories.copySettingsFrom(data.cloneFromCid, category.cid, !data.parentCid, next);
-						}
+				if (data.cloneFromCid && parseInt(data.cloneFromCid, 10)) {
+					return Categories.copySettingsFrom(data.cloneFromCid, category.cid, !data.parentCid, next);
+				}
 
-						next();
-					},
-					function (next) {
-						if (data.cloneChildren) {
-							return duplicateCategoriesChildren(category.cid, data.cloneFromCid, data.uid, next);
-						}
-
-						next();
-					},
-				], function (err) {
-					next(err, category);
-				});
+				next(null, category);
 			},
-			function (category, next) {
+			function (_category, next) {
+				category = _category;
+				if (data.cloneChildren) {
+					return duplicateCategoriesChildren(category.cid, data.cloneFromCid, data.uid, next);
+				}
+
+				next();
+			},
+			function (next) {
 				plugins.fireHook('action:category.create', { category: category });
 				next(null, category);
 			},
