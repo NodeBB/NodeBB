@@ -45,6 +45,7 @@
     "account/posts": "پست‌های %1",
     "account/topics": "موضوع های %1",
     "account/groups": "گروه‌های %1",
+    "account/watched_categories": "%1's Watched Categories",
     "account/bookmarks": "%1 پست نشانک گذاری شده است",
     "account/settings": "تنظیمات کاربر",
     "account/watched": "موضوع های دیده شده توسط \"%1\"",

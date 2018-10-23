@@ -223,7 +223,7 @@ authenticationController.login = function (req, res, next) {
 
 	var loginWith = meta.config.allowLoginWith || 'username-email';
 
-	if (req.body.username && utils.isEmailValid(req.body.username) && loginWith.indexOf('email') !== -1) {
+	if (req.body.username && utils.isEmailValid(req.body.username) && loginWith.includes('email')) {
 		async.waterfall([
 			function (next) {
 				user.getUsernameByEmail(req.body.username, next);
@@ -233,7 +233,7 @@ authenticationController.login = function (req, res, next) {
 				continueLogin(req, res, next);
 			},
 		], next);
-	} else if (loginWith.indexOf('username') !== -1 && !validator.isEmail(req.body.username)) {
+	} else if (loginWith.includes('username') && !validator.isEmail(req.body.username)) {
 		continueLogin(req, res, next);
 	} else {
 		var err = '[[error:wrong-login-type-' + loginWith + ']]';
@@ -258,7 +258,7 @@ function continueLogin(req, res, next) {
 
 		// Alter user cookie depending on passed-in option
 		if (req.body.remember === 'on') {
-			var duration = 1000 * 60 * 60 * 24 * (parseInt(meta.config.loginDays, 10) || 14);
+			var duration = 1000 * 60 * 60 * 24 * meta.config.loginDays;
 			req.session.cookie.maxAge = duration;
 			req.session.cookie.expires = new Date(Date.now() + duration);
 		} else {

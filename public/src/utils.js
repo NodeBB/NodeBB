@@ -399,6 +399,7 @@
 		},
 
 		isNumber: function (n) {
+			// `isFinite('') === true` so isNan parseFloat check is necessary
 			return !isNaN(parseFloat(n)) && isFinite(n);
 		},
 

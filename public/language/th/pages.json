@@ -45,6 +45,7 @@
     "account/posts": "โพสต์ถูกสร้างโดย  %1",
     "account/topics": "กระทู้ถูกสร้างโดย  %1",
     "account/groups": "กลุ่มของ %1",
+    "account/watched_categories": "%1's Watched Categories",
     "account/bookmarks": "บุ๊กมาร์คโพสต์ของ  %1",
     "account/settings": "การตั้งค่าผู้ใช้",
     "account/watched": "กระทู้ที่ถูกดูโดย  %1",

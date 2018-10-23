@@ -10,10 +10,41 @@ var db = require('../database');
 var pubsub = require('../pubsub');
 var Meta = require('../meta');
 var cacheBuster = require('./cacheBuster');
+const defaults = require('../../install/data/defaults');
 
 var Configs = module.exports;
 
 Meta.config = {};
+
+function deserialize(config) {
+	var deserialized = {};
+	Object.keys(config).forEach(function (key) {
+		const defaultType = typeof defaults[key];
+		const type = typeof config[key];
+		const number = parseFloat(config[key]);
+
+		if (defaultType === 'string' && type === 'number') {
+			deserialized[key] = String(config[key]);
+		} else if (defaultType === 'number' && type === 'string') {
+			if (!isNaN(number) && isFinite(config[key])) {
+				deserialized[key] = number;
+			} else {
+				deserialized[key] = defaults[key];
+			}
+		} else if (config[key] === 'true') {
+			deserialized[key] = true;
+		} else if (config[key] === 'false') {
+			deserialized[key] = false;
+		} else if (config[key] === null) {
+			deserialized[key] = defaults[key];
+		} else if (defaultType === 'undefined' && !isNaN(number) && isFinite(config[key])) {
+			deserialized[key] = number;
+		} else {
+			deserialized[key] = config[key];
+		}
+	});
+	return deserialized;
+}
 
 Configs.init = function (callback) {
 	var config;
@@ -34,20 +65,37 @@ Configs.init = function (callback) {
 };
 
 Configs.list = function (callback) {
-	db.getObject('config', function (err, config) {
-		config = config || {};
-		config.version = nconf.get('version');
-		config.registry = nconf.get('registry');
-		callback(err, config);
-	});
+	Configs.getFields([], callback);
 };
 
 Configs.get = function (field, callback) {
-	db.getObjectField('config', field, callback);
+	Configs.getFields([field], function (err, values) {
+		callback(err, values ? values[field] : null);
+	});
 };
 
 Configs.getFields = function (fields, callback) {
-	db.getObjectFields('config', fields, callback);
+	async.waterfall([
+		function (next) {
+			if (fields.length) {
+				db.getObjectFields('config', fields, next);
+			} else {
+				db.getObject('config', next);
+			}
+		},
+		function (values, next) {
+			try {
+				values = Object.assign({}, defaults, values ? deserialize(values) : {});
+			} catch (err) {
+				return next(err);
+			}
+			if (!fields.length) {
+				values.version = nconf.get('version');
+				values.registry = nconf.get('registry');
+			}
+			next(null, values);
+		},
+	], callback);
 };
 
 Configs.set = function (field, value, callback) {
@@ -56,13 +104,15 @@ Configs.set = function (field, value, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	var data = {};
-	data[field] = value;
-	Configs.setMultiple(data, callback);
+	Configs.setMultiple({
+		[field]: value,
+	}, callback);
 };
 
-
+// data comes from client-side
 Configs.setMultiple = function (data, callback) {
+	data = deserialize(data);
+
 	async.waterfall([
 		function (next) {
 			processConfig(data, next);
@@ -75,6 +125,22 @@ Configs.setMultiple = function (data, callback) {
 			setImmediate(next);
 		},
 	], callback);
+};
+
+Configs.setOnEmpty = function (values, callback) {
+	async.waterfall([
+		function (next) {
+			db.getObject('config', next);
+		},
+		function (data, next) {
+			var config = Object.assign({}, values, data ? deserialize(data) : {});
+			db.setObject('config', config, next);
+		},
+	], callback);
+};
+
+Configs.remove = function (field, callback) {
+	db.deleteObjectField('config', field, callback);
 };
 
 function processConfig(data, callback) {
@@ -141,29 +207,3 @@ pubsub.on('config:update', function onConfigReceived(config) {
 		updateLocalConfig(config);
 	}
 });
-
-Configs.setOnEmpty = function (values, callback) {
-	async.waterfall([
-		function (next) {
-			db.getObject('config', next);
-		},
-		function (data, next) {
-			data = data || {};
-			var empty = {};
-			Object.keys(values).forEach(function (key) {
-				if (!data.hasOwnProperty(key)) {
-					empty[key] = values[key];
-				}
-			});
-			if (Object.keys(empty).length) {
-				db.setObject('config', empty, next);
-			} else {
-				setImmediate(next);
-			}
-		},
-	], callback);
-};
-
-Configs.remove = function (field, callback) {
-	db.deleteObjectField('config', field, callback);
-};

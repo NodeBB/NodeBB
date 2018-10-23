@@ -45,6 +45,7 @@
     "account/posts": "由 %1 發表的張貼",
     "account/topics": "由 %1 建立的主題",
     "account/groups": "%1 的群組",
+    "account/watched_categories": "%1's Watched Categories",
     "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "使用者設定",
     "account/watched": "%1 所觀看的主題",

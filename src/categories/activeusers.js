@@ -1,6 +1,8 @@
 'use strict';
 
 var async = require('async');
+var _ = require('lodash');
+
 var posts = require('../posts');
 var db = require('../database');
 
@@ -14,11 +16,7 @@ module.exports = function (Categories) {
 				posts.getPostsFields(pids, ['uid'], next);
 			},
 			function (posts, next) {
-				var uids = posts.map(function (post) {
-					return post.uid;
-				}).filter(function (uid, index, array) {
-					return parseInt(uid, 10) && array.indexOf(uid) === index;
-				});
+				var uids = _.uniq(posts.map(post => post.uid).filter(uid => uid));
 
 				next(null, uids);
 			},

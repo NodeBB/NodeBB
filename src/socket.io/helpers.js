@@ -15,11 +15,6 @@ var utils = require('../utils');
 
 var SocketHelpers = module.exports;
 
-SocketHelpers.notifyOnlineUsers = function (uid, result) {
-	winston.warn('[deprecated] SocketHelpers.notifyOnlineUsers, consider using socketHelpers.notifyNew(uid, \'newPost\', result);');
-	SocketHelpers.notifyNew(uid, 'newPost', result);
-};
-
 SocketHelpers.notifyNew = function (uid, type, result) {
 	async.waterfall([
 		function (next) {
@@ -199,7 +194,7 @@ SocketHelpers.upvote = function (data, notification) {
 			return votes > 0 && votes % 10 === 0;
 		},
 		threshold: function () {
-			return [1, 5, 10, 25].indexOf(votes) !== -1 || (votes >= 50 && votes % 50 === 0);
+			return [1, 5, 10, 25].includes(votes) || (votes >= 50 && votes % 50 === 0);
 		},
 		logarithmic: function () {
 			return votes > 1 && Math.log10(votes) % 1 === 0;

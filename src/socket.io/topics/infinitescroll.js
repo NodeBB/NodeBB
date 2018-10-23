@@ -78,8 +78,8 @@ module.exports = function (SocketTopics) {
 				}
 
 				topicData.privileges = userPrivileges;
-				topicData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
-				topicData['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
+				topicData['reputation:disabled'] = meta.config['reputation:disabled'] === 1;
+				topicData['downvote:disabled'] = meta.config['downvote:disabled'] === 1;
 
 				topics.modifyPostsByPrivilege(topicData, userPrivileges);
 				next(null, topicData);
@@ -115,18 +115,21 @@ module.exports = function (SocketTopics) {
 		var stop = start + Math.max(0, itemsPerPage - 1);
 		start = Math.max(0, start);
 		stop = Math.max(0, stop);
-		if (sort === 'unread') {
-			return topics.getUnreadTopics({ cid: data.cid, uid: uid, start: start, stop: stop, filter: data.filter }, callback);
-		}
-		topics.getSortedTopics({
-			cids: data.cid,
+		const params = {
 			uid: uid,
 			start: start,
 			stop: stop,
 			filter: data.filter,
-			sort: sort,
-			term: data.term,
-		}, callback);
+			query: data.query,
+		};
+		if (sort === 'unread') {
+			params.cid = data.cid;
+			return topics.getUnreadTopics(params, callback);
+		}
+		params.cids = data.cid;
+		params.sort = sort;
+		params.term = data.term;
+		topics.getSortedTopics(params, callback);
 	}
 
 	SocketTopics.loadMoreFromSet = function (socket, data, callback) {

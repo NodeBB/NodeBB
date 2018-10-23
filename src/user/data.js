@@ -4,11 +4,18 @@ var async = require('async');
 var validator = require('validator');
 var nconf = require('nconf');
 var winston = require('winston');
+var _ = require('lodash');
 
 var db = require('../database');
 var meta = require('../meta');
 var plugins = require('../plugins');
 var utils = require('../utils');
+
+const intFields = [
+	'uid', 'postcount', 'topiccount', 'reputation', 'profileviews',
+	'banned', 'email:confirmed', 'joindate', 'lastonline', 'lastqueuetime',
+	'lastposttime',
+];
 
 module.exports = function (User) {
 	var iconBackgrounds = [
@@ -26,50 +33,34 @@ module.exports = function (User) {
 		'cover:position', 'groupTitle',
 	];
 
-	User.getUserField = function (uid, field, callback) {
-		User.getUserFields(uid, [field], function (err, user) {
-			callback(err, user ? user[field] : null);
-		});
-	};
-
-	User.getUserFields = function (uid, fields, callback) {
-		User.getUsersFields([uid], fields, function (err, users) {
-			callback(err, users ? users[0] : null);
-		});
-	};
-
 	User.getUsersFields = function (uids, fields, callback) {
 		if (!Array.isArray(uids) || !uids.length) {
 			return callback(null, []);
 		}
 
-		uids = uids.map(function (uid) {
-			return isNaN(uid) ? 0 : uid;
-		});
+		uids = uids.map(uid => (isNaN(uid) ? 0 : uid));
 
 		var fieldsToRemove = [];
 		function addField(field) {
-			if (fields.indexOf(field) === -1) {
+			if (!fields.includes(field)) {
 				fields.push(field);
 				fieldsToRemove.push(field);
 			}
 		}
 
-		if (fields.length && fields.indexOf('uid') === -1) {
+		if (fields.length && !fields.includes('uid')) {
 			fields.push('uid');
 		}
 
-		if (fields.indexOf('picture') !== -1) {
+		if (fields.includes('picture')) {
 			addField('uploadedpicture');
 		}
 
-		if (fields.indexOf('status') !== -1) {
+		if (fields.includes('status')) {
 			addField('lastonline');
 		}
 
-		var uniqueUids = uids.filter(function (uid, index) {
-			return index === uids.indexOf(uid);
-		});
+		var uniqueUids = _.uniq(uids);
 
 		async.waterfall([
 			function (next) {
@@ -77,8 +68,9 @@ module.exports = function (User) {
 			},
 			function (results, next) {
 				if (fields.length) {
+					const whitelistSet = new Set(results.whitelist);
 					fields = fields.filter(function (field) {
-						var isFieldWhitelisted = field && results.whitelist.includes(field);
+						var isFieldWhitelisted = field && whitelistSet.has(field);
 						if (!isFieldWhitelisted) {
 							winston.verbose('[user/getUsersFields] ' + field + ' removed because it is not whitelisted, see `filter:user.whitelistFields`');
 						}
@@ -98,9 +90,17 @@ module.exports = function (User) {
 		], callback);
 	};
 
-	User.getMultipleUserFields = function (uids, fields, callback) {
-		winston.warn('[deprecated] User.getMultipleUserFields is deprecated please use User.getUsersFields');
-		User.getUsersFields(uids, fields, callback);
+
+	User.getUserField = function (uid, field, callback) {
+		User.getUserFields(uid, [field], function (err, user) {
+			callback(err, user ? user[field] : null);
+		});
+	};
+
+	User.getUserFields = function (uid, fields, callback) {
+		User.getUsersFields([uid], fields, function (err, users) {
+			callback(err, users ? users[0] : null);
+		});
 	};
 
 	User.getUserData = function (uid, callback) {
@@ -114,25 +114,23 @@ module.exports = function (User) {
 	};
 
 	function uidsToUsers(uids, uniqueUids, usersData) {
-		var ref = uniqueUids.reduce(function (memo, cur, idx) {
-			memo[cur] = idx;
+		var uidToUser = uniqueUids.reduce(function (memo, cur, idx) {
+			memo[cur] = usersData[idx];
 			return memo;
 		}, {});
 		var users = uids.map(function (uid) {
-			const returnPayload = usersData[ref[uid]];
+			const returnPayload = uidToUser[uid];
 			if (uid > 0 && !returnPayload.uid) {
 				returnPayload.oldUid = parseInt(uid, 10);
 			}
 
-			return usersData[ref[uid]];
+			return returnPayload;
 		});
 		return users;
 	}
 
 	function uidsToUserKeys(uids) {
-		return uids.map(function (uid) {
-			return 'user:' + uid;
-		});
+		return uids.map(uid => 'user:' + uid);
 	}
 
 	function modifyUserData(users, fieldsToRemove, callback) {
@@ -140,6 +138,9 @@ module.exports = function (User) {
 			if (!user) {
 				return;
 			}
+
+			intFields.forEach(field => db.parseIntField(user, field));
+
 			if (user.hasOwnProperty('groupTitle')) {
 				parseGroupTitle(user);
 			}
@@ -208,7 +209,7 @@ module.exports = function (User) {
 		if (!Array.isArray(user.groupTitleArray)) {
 			user.groupTitleArray = [user.groupTitleArray];
 		}
-		if (parseInt(meta.config.allowMultipleBadges, 10) !== 1) {
+		if (!meta.config.allowMultipleBadges) {
 			user.groupTitleArray = [user.groupTitleArray[0]];
 		}
 	}
@@ -221,16 +222,7 @@ module.exports = function (User) {
 	};
 
 	User.setUserField = function (uid, field, value, callback) {
-		callback = callback || function () {};
-		async.waterfall([
-			function (next) {
-				db.setObjectField('user:' + uid, field, value, next);
-			},
-			function (next) {
-				plugins.fireHook('action:user.set', { uid: uid, field: field, value: value, type: 'set' });
-				next();
-			},
-		], callback);
+		User.setUserFields(uid, { [field]: value }, callback);
 	};
 
 	User.setUserFields = function (uid, data, callback) {

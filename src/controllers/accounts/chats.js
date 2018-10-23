@@ -11,7 +11,7 @@ var helpers = require('../helpers');
 var chatsController = module.exports;
 
 chatsController.get = function (req, res, callback) {
-	if (parseInt(meta.config.disableChat, 10) === 1) {
+	if (meta.config.disableChat) {
 		return callback();
 	}
 

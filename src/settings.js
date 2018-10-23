@@ -1,6 +1,7 @@
 'use strict';
 
 var meta = require('./meta');
+var pubsub = require('./pubsub');
 
 function expandObjBy(obj1, obj2) {
 	var key;
@@ -68,6 +69,8 @@ function Settings(hash, version, defCfg, callback, forceUpdate, reset) {
 	this.hash = hash;
 	this.version = version || this.version;
 	this.defCfg = defCfg;
+	var self = this;
+
 	if (reset) {
 		this.reset(callback);
 	} else {
@@ -75,6 +78,11 @@ function Settings(hash, version, defCfg, callback, forceUpdate, reset) {
 			this.checkStructure(callback, forceUpdate);
 		});
 	}
+	pubsub.on('action:settings.set.' + hash, function (data) {
+		try {
+			self.cfg._ = JSON.parse(data._);
+		} catch (err) {}
+	});
 }
 
 Settings.prototype.hash = '';

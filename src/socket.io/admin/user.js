@@ -98,7 +98,7 @@ User.sendValidationEmail = function (socket, uids, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	if (parseInt(meta.config.requireEmailConfirmation, 10) !== 1) {
+	if (!meta.config.requireEmailConfirmation) {
 		return callback(new Error('[[error:email-confirmations-are-disabled]]'));
 	}
 

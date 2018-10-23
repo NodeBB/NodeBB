@@ -31,18 +31,18 @@ editController.get = function (req, res, callback) {
 			if (!userData) {
 				return callback();
 			}
-			userData.maximumSignatureLength = parseInt(meta.config.maximumSignatureLength, 10) || 255;
-			userData.maximumAboutMeLength = parseInt(meta.config.maximumAboutMeLength, 10) || 1000;
-			userData.maximumProfileImageSize = parseInt(meta.config.maximumProfileImageSize, 10);
-			userData.allowProfilePicture = !userData.isSelf || parseInt(userData.reputation, 10) >= (parseInt(meta.config['min:rep:profile-picture'], 10) || 0);
-			userData.allowCoverPicture = !userData.isSelf || parseInt(userData.reputation, 10) >= (parseInt(meta.config['min:rep:cover-picture'], 10) || 0);
-			userData.allowProfileImageUploads = parseInt(meta.config.allowProfileImageUploads, 10) === 1;
-			userData.allowMultipleBadges = parseInt(meta.config.allowMultipleBadges, 10) === 1;
-			userData.allowAccountDelete = parseInt(meta.config.allowAccountDelete, 10) === 1;
-			userData.allowWebsite = !userData.isSelf || parseInt(userData.reputation, 10) >= (parseInt(meta.config['min:rep:website'], 10) || 0);
-			userData.allowAboutMe = !userData.isSelf || parseInt(userData.reputation, 10) >= (parseInt(meta.config['min:rep:aboutme'], 10) || 0);
-			userData.allowSignature = results.canUseSignature && (!userData.isSelf || parseInt(userData.reputation, 10) >= (parseInt(meta.config['min:rep:signature'], 10) || 0));
-			userData.profileImageDimension = parseInt(meta.config.profileImageDimension, 10) || 200;
+			userData.maximumSignatureLength = meta.config.maximumSignatureLength;
+			userData.maximumAboutMeLength = meta.config.maximumAboutMeLength;
+			userData.maximumProfileImageSize = meta.config.maximumProfileImageSize;
+			userData.allowProfilePicture = !userData.isSelf || userData.reputation >= meta.config['min:rep:profile-picture'];
+			userData.allowCoverPicture = !userData.isSelf || userData.reputation >= meta.config['min:rep:cover-picture'];
+			userData.allowProfileImageUploads = meta.config.allowProfileImageUploads;
+			userData.allowMultipleBadges = meta.config.allowMultipleBadges === 1;
+			userData.allowAccountDelete = meta.config.allowAccountDelete === 1;
+			userData.allowWebsite = !userData.isSelf || userData.reputation >= meta.config['min:rep:website'];
+			userData.allowAboutMe = !userData.isSelf || userData.reputation >= meta.config['min:rep:aboutme'];
+			userData.allowSignature = results.canUseSignature && (!userData.isSelf || userData.reputation >= meta.config['min:rep:signature']);
+			userData.profileImageDimension = meta.config.profileImageDimension;
 			userData.defaultAvatar = user.getDefaultAvatar();
 
 			userData.groups = userData.groups.filter(function (group) {
@@ -103,8 +103,8 @@ function renderRoute(name, req, res, next) {
 			}
 
 			if (name === 'password') {
-				userData.minimumPasswordLength = parseInt(meta.config.minimumPasswordLength, 10);
-				userData.minimumPasswordStrength = parseInt(meta.config.minimumPasswordStrength || 1, 10);
+				userData.minimumPasswordLength = meta.config.minimumPasswordLength;
+				userData.minimumPasswordStrength = meta.config.minimumPasswordStrength;
 			}
 
 			userData.title = '[[pages:account/edit/' + name + ', ' + userData.username + ']]';

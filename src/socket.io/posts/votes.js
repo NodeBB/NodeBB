@@ -17,7 +17,7 @@ module.exports = function (SocketPosts) {
 
 		async.waterfall([
 			function (next) {
-				if (parseInt(meta.config.votesArePublic, 10) !== 0) {
+				if (meta.config.votesArePublic) {
 					return next(null, true);
 				}
 				privileges.categories.isAdminOrMod(data.cid, socket.uid, next);

@@ -18,11 +18,12 @@ define('forum/popular', ['forum/recent', 'components', 'forum/infinitescroll'], 
 		if (direction < 0 || !$('[component="category"]').length) {
 			return;
 		}
-
+		var query = utils.params();
 		infinitescroll.loadMore('topics.loadMorePopularTopics', {
 			after: $('[component="category"]').attr('data-nextstart'),
 			count: config.topicsPerPage,
-			cid: utils.params().cid,
+			cid: query.cid,
+			query: query,
 			term: ajaxify.data.selectedTerm.term,
 			filter: ajaxify.data.selectedFilter.filter,
 		}, function (data, done) {

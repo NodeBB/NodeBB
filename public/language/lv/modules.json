@@ -1,6 +1,6 @@
 {
     "chat.chatting_with": "Sarunāties ar",
-    "chat.placeholder": "Šeit ieraksti sarunu, nospiedi enter, lai nosūtītu",
+    "chat.placeholder": "Šeit ierakstīt sarunu, tad nospiest \"Enter\", lai to nosūtītu",
     "chat.send": "Nosūtīt",
     "chat.no_active": "Nav aktīvo sarunu.",
     "chat.user_typing": "%1 raksta...",

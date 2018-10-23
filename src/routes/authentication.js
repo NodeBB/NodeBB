@@ -5,11 +5,9 @@ var passport = require('passport');
 var passportLocal = require('passport-local').Strategy;
 var nconf = require('nconf');
 var winston = require('winston');
-var express = require('express');
 
 var controllers = require('../controllers');
 var plugins = require('../plugins');
-var hotswap = require('../hotswap');
 
 var loginStrategies = [];
 
@@ -42,10 +40,7 @@ Auth.getLoginStrategies = function () {
 	return loginStrategies;
 };
 
-Auth.reloadRoutes = function (callback) {
-	var router = express.Router();
-	router.hotswapId = 'auth';
-
+Auth.reloadRoutes = function (router, callback) {
 	loginStrategies.length = 0;
 
 	if (plugins.hasListeners('action:auth.overrideLogin')) {
@@ -87,12 +82,10 @@ Auth.reloadRoutes = function (callback) {
 
 			router.post('/register', Auth.middleware.applyCSRF, Auth.middleware.applyBlacklist, controllers.authentication.register);
 			router.post('/register/complete', Auth.middleware.applyCSRF, Auth.middleware.applyBlacklist, controllers.authentication.registerComplete);
-			// router.get('/register/abort', controllers.authentication.registerAbort);
 			router.post('/register/abort', controllers.authentication.registerAbort);
 			router.post('/login', Auth.middleware.applyCSRF, Auth.middleware.applyBlacklist, controllers.authentication.login);
 			router.post('/logout', Auth.middleware.applyCSRF, controllers.authentication.logout);
 
-			hotswap.replace('auth', router);
 			next();
 		},
 	], callback);

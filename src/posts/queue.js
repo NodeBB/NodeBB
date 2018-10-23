@@ -15,10 +15,10 @@ module.exports = function (Posts) {
 	Posts.shouldQueue = function (uid, data, callback) {
 		async.waterfall([
 			function (next) {
-				user.getUserFields(uid, ['reputation', 'postcount'], next);
+				user.getUserFields(uid, ['uid', 'reputation', 'postcount'], next);
 			},
 			function (userData, next) {
-				var shouldQueue = parseInt(meta.config.postQueue, 10) === 1 && (!parseInt(uid, 10) || (parseInt(userData.reputation, 10) <= 0 && parseInt(userData.postcount, 10) <= 0));
+				var shouldQueue = meta.config.postQueue && (!userData.uid || (userData.reputation <= 0 && userData.postcount <= 0));
 				plugins.fireHook('filter:post.shouldQueue', {
 					shouldQueue: shouldQueue,
 					uid: uid,
@@ -199,8 +199,8 @@ module.exports = function (Posts) {
 			function (postData, next) {
 				var result = {
 					posts: [postData],
-					'reputation:disabled': parseInt(meta.config['reputation:disabled'], 10) === 1,
-					'downvote:disabled': parseInt(meta.config['downvote:disabled'], 10) === 1,
+					'reputation:disabled': !!meta.config['reputation:disabled'],
+					'downvote:disabled': !!meta.config['downvote:disabled'],
 				};
 				socketHelpers.notifyNew(data.uid, 'newPost', result);
 				next();

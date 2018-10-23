@@ -168,7 +168,7 @@ function requireModules() {
 
 function checkMaintenance(socket, callback) {
 	var meta = require('../meta');
-	if (parseInt(meta.config.maintenanceMode, 10) !== 1) {
+	if (!meta.config.maintenanceMode) {
 		return setImmediate(callback);
 	}
 	user.isAdministrator(socket.uid, function (err, isAdmin) {

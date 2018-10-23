@@ -164,7 +164,7 @@ helpers.buildCategoryBreadcrumbs = function (cid, callback) {
 				return next(err);
 			}
 
-			if (!parseInt(data.disabled, 10) && !parseInt(data.isSection, 10)) {
+			if (!data.disabled && !data.isSection) {
 				breadcrumbs.unshift({
 					text: validator.escape(String(data.name)),
 					url: nconf.get('relative_path') + '/category/' + data.slug,
@@ -268,7 +268,7 @@ function getCategoryData(cids, uid, selectedCid, callback) {
 			var selectedCategory = [];
 			var selectedCids = [];
 			categoryData.forEach(function (category) {
-				category.selected = selectedCid ? selectedCid.indexOf(String(category.cid)) !== -1 : false;
+				category.selected = selectedCid ? selectedCid.includes(String(category.cid)) : false;
 				category.parentCid = category.hasOwnProperty('parentCid') && utils.isNumber(category.parentCid) ? category.parentCid : 0;
 				if (category.selected) {
 					selectedCategory.push(category);

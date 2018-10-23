@@ -192,7 +192,7 @@ Themes.setupPaths = function (callback) {
 			async.parallel({
 				themesData: Themes.get,
 				currentThemeId: function (next) {
-					db.getObjectField('config', 'theme:id', next);
+					Meta.configs.get('theme:id', next);
 				},
 			}, next);
 		},

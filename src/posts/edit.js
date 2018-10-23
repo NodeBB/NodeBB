@@ -10,14 +10,13 @@ var topics = require('../topics');
 var user = require('../user');
 var privileges = require('../privileges');
 var plugins = require('../plugins');
-var cache = require('./cache');
 var pubsub = require('../pubsub');
 var utils = require('../utils');
 var translator = require('../translator');
 
 module.exports = function (Posts) {
 	pubsub.on('post:edit', function (pid) {
-		cache.del(pid);
+		require('./cache').del(pid);
 	});
 
 	Posts.edit = function (data, callback) {
@@ -67,7 +66,7 @@ module.exports = function (Posts) {
 				Posts.setPostFields(data.pid, postData, next);
 			},
 			function (next) {
-				if (parseInt(meta.config.enablePostHistory || 1, 10) !== 1) {
+				if (meta.config.enablePostHistory !== 1) {
 					return setImmediate(next);
 				}
 
@@ -79,7 +78,7 @@ module.exports = function (Posts) {
 				postData.topic = results.topic;
 				plugins.fireHook('action:post.edit', { post: _.clone(postData), data: data, uid: data.uid });
 
-				cache.del(String(postData.pid));
+				require('./cache').del(String(postData.pid));
 				pubsub.publish('post:edit', String(postData.pid));
 
 				Posts.parsePost(postData, next);

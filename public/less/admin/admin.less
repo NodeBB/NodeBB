@@ -25,6 +25,7 @@
 @import "./advanced/database";
 @import "./advanced/logs";
 @import "./advanced/errors";
+@import "./advanced/hooks";
 @import "./settings";
 
 @import "../flags";
@@ -236,8 +237,11 @@ body {
 }
 
 .category-dropdown-menu {
-  max-height: 600px;
-  overflow-y: auto;
+	max-height: 600px;
+	overflow-y: auto;
+	.fa-stack {
+		border-radius: 50%;
+	}
 }
 
 .table-reordering {

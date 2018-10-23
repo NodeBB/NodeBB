@@ -52,7 +52,9 @@ postgresModule.getConnectionOptions = function () {
 	if (!nconf.get('postgres:port')) {
 		nconf.set('postgres:port', 5432);
 	}
-	if (!nconf.get('postgres:database')) {
+	const dbName = nconf.get('postgres:database');
+	if (dbName === undefined || dbName === '') {
+		winston.warn('You have no database name, using "nodebb"');
 		nconf.set('postgres:database', 'nodebb');
 	}
 

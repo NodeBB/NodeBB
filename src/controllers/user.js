@@ -84,7 +84,7 @@ userController.getUserDataByField = function (callerUid, field, fieldValue, call
 };
 
 userController.getUserDataByUID = function (callerUid, uid, callback) {
-	if (!parseInt(callerUid, 10) && parseInt(meta.config.privateUserInfo, 10) === 1) {
+	if (!parseInt(callerUid, 10) && meta.config.privateUserInfo) {
 		return callback(new Error('[[error:no-privileges]]'));
 	}
 
@@ -100,8 +100,8 @@ userController.getUserDataByUID = function (callerUid, uid, callback) {
 			return callback(err || new Error('[[error:no-user]]'));
 		}
 
-		results.userData.email = results.settings.showemail && parseInt(meta.config.hideEmail, 10) !== 1 ? results.userData.email : undefined;
-		results.userData.fullname = results.settings.showfullname && parseInt(meta.config.hideFullname, 10) !== 1 ? results.userData.fullname : undefined;
+		results.userData.email = results.settings.showemail && !meta.config.hideEmail ? results.userData.email : undefined;
+		results.userData.fullname = results.settings.showfullname && !meta.config.hideFullname ? results.userData.fullname : undefined;
 
 		callback(null, results.userData);
 	});

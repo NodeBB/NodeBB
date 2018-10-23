@@ -3,7 +3,6 @@
 
 var async = require('async');
 var _ = require('lodash');
-var winston = require('winston');
 
 var db = require('../database');
 var meta = require('../meta');
@@ -16,11 +15,6 @@ module.exports = function (Topics) {
 	var stripTeaserTags = utils.stripTags.concat(['img']);
 
 	Topics.getTeasers = function (topics, uid, callback) {
-		if (typeof uid === 'function') {
-			winston.warn('[Topics.getTeasers] this usage is deprecated please provide uid');
-			callback = uid;
-			uid = 0;
-		}
 		if (!Array.isArray(topics) || !topics.length) {
 			return callback(null, []);
 		}
@@ -171,11 +165,6 @@ module.exports = function (Topics) {
 	}
 
 	Topics.getTeasersByTids = function (tids, uid, callback) {
-		if (typeof uid === 'function') {
-			winston.warn('[Topics.getTeasersByTids] this usage is deprecated please provide uid');
-			callback = uid;
-			uid = 0;
-		}
 		if (!Array.isArray(tids) || !tids.length) {
 			return callback(null, []);
 		}
@@ -190,11 +179,6 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getTeaser = function (tid, uid, callback) {
-		if (typeof uid === 'function') {
-			winston.warn('[Topics.getTeaser] this usage is deprecated please provide uid');
-			callback = uid;
-			uid = 0;
-		}
 		Topics.getTeasersByTids([tid], uid, function (err, teasers) {
 			callback(err, Array.isArray(teasers) && teasers.length ? teasers[0] : null);
 		});

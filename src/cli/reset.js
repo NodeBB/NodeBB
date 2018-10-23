@@ -151,7 +151,7 @@ function resetPlugin(pluginId, callback) {
 		},
 	], function (err) {
 		if (err) {
-			winston.error('[reset] Could not disable plugin: %s encountered error %s', pluginId, err);
+			winston.error('[reset] Could not disable plugin: ' + pluginId + ' encountered error %s', err);
 		} else if (active) {
 			winston.info('[reset] Plugin `%s` disabled', pluginId);
 		} else {

@@ -38,8 +38,7 @@ module.exports = function (User) {
 		async.waterfall([
 			function (next) {
 				var size = data.file ? data.file.size : image.sizeFromBase64(data.imageData);
-				meta.config.maximumCoverImageSize = meta.config.maximumCoverImageSize || 2048;
-				if (size > parseInt(meta.config.maximumCoverImageSize, 10) * 1024) {
+				if (size > meta.config.maximumCoverImageSize * 1024) {
 					return next(new Error('[[error:file-too-big, ' + meta.config.maximumCoverImageSize + ']]'));
 				}
 
@@ -81,7 +80,7 @@ module.exports = function (User) {
 	};
 
 	User.uploadCroppedPicture = function (data, callback) {
-		if (parseInt(meta.config.allowProfileImageUploads, 10) !== 1) {
+		if (!meta.config.allowProfileImageUploads) {
 			return callback(new Error('[[error:profile-image-uploads-disabled]]'));
 		}
 
@@ -90,7 +89,7 @@ module.exports = function (User) {
 		}
 
 		var size = data.file ? data.file.size : image.sizeFromBase64(data.imageData);
-		var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
+		var uploadSize = meta.config.maximumProfileImageSize;
 		if (size > uploadSize * 1024) {
 			return callback(new Error('[[error:file-too-big, ' + uploadSize + ']]'));
 		}
@@ -123,11 +122,10 @@ module.exports = function (User) {
 			},
 			function (path, next) {
 				picture.path = path;
-				var imageDimension = parseInt(meta.config.profileImageDimension, 10) || 200;
 				image.resizeImage({
 					path: picture.path,
-					width: imageDimension,
-					height: imageDimension,
+					width: meta.config.profileImageDimension,
+					height: meta.config.profileImageDimension,
 				}, next);
 			},
 			function (next) {
@@ -149,7 +147,7 @@ module.exports = function (User) {
 	};
 
 	function convertToPNG(path, extension, callback) {
-		var convertToPNG = parseInt(meta.config['profile:convertProfileImageToPNG'], 10) === 1;
+		var convertToPNG = meta.config['profile:convertProfileImageToPNG'] === 1;
 		if (!convertToPNG) {
 			return setImmediate(callback, null, path);
 		}
@@ -176,8 +174,8 @@ module.exports = function (User) {
 	}
 
 	function generateProfileImageFilename(uid, type, extension) {
-		var keepAllVersions = parseInt(meta.config['profile:keepAllUserImages'], 10) === 1;
-		var convertToPNG = parseInt(meta.config['profile:convertProfileImageToPNG'], 10) === 1;
+		var keepAllVersions = meta.config['profile:keepAllUserImages'] === 1;
+		var convertToPNG = meta.config['profile:convertProfileImageToPNG'] === 1;
 		return uid + '-' + type + (keepAllVersions ? '-' + Date.now() : '') + (convertToPNG ? '.png' : extension);
 	}
 

@@ -62,6 +62,7 @@ describe('Categories', function () {
 			assert(categoryData);
 			assert.equal(categoryObj.name, categoryData.name);
 			assert.equal(categoryObj.description, categoryData.description);
+			assert.strictEqual(categoryObj.disabled, 0);
 
 			done();
 		});
@@ -234,14 +235,6 @@ describe('Categories', function () {
 				assert.equal(data.topics[0].user.username, 'poster');
 				assert.equal(data.topics[0].tags[0].value, 'nodebb');
 				assert.equal(data.topics[0].category.cid, categoryObj.cid);
-				done();
-			});
-		});
-
-		it('should load page count', function (done) {
-			socketCategories.getPageCount({ uid: posterUid }, categoryObj.cid, function (err, pageCount) {
-				assert.ifError(err);
-				assert.equal(pageCount, 1);
 				done();
 			});
 		});
@@ -468,6 +461,25 @@ describe('Categories', function () {
 			], done);
 		});
 
+		it('should create category with settings from', function (done) {
+			var child1Cid;
+			var parentCid;
+			async.waterfall([
+				function (next) {
+					Categories.create({ name: 'copy from', description: 'copy me' }, next);
+				},
+				function (category, next) {
+					parentCid = category.cid;
+					Categories.create({ name: 'child1', description: 'will be gone', cloneFromCid: parentCid }, next);
+				},
+				function (category, next) {
+					child1Cid = category.cid;
+					assert.equal(category.description, 'copy me');
+					next();
+				},
+			], done);
+		});
+
 		it('should copy settings from', function (done) {
 			var child1Cid;
 			var parentCid;
@@ -483,7 +495,7 @@ describe('Categories', function () {
 					child1Cid = category.cid;
 					socketCategories.copySettingsFrom({ uid: adminUid }, { fromCid: parentCid, toCid: child1Cid }, next);
 				},
-				function (canDelete, next) {
+				function (destinationCategory, next) {
 					Categories.getCategoryField(child1Cid, 'description', next);
 				},
 				function (description, next) {

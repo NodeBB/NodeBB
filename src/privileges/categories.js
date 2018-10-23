@@ -108,7 +108,7 @@ module.exports = function (privileges) {
 				categories.getCategoryField(cid, 'disabled', next);
 			},
 			function (disabled, next) {
-				if (parseInt(disabled, 10) === 1) {
+				if (disabled) {
 					return callback(null, false);
 				}
 				helpers.some([

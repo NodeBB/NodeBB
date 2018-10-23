@@ -15,9 +15,9 @@ module.exports = function (Topics) {
 			title = title.trim();
 		}
 
-		if (title.length < parseInt(meta.config.minimumTitleLength, 10)) {
+		if (title.length < meta.config.minimumTitleLength) {
 			return callback(new Error('[[error:title-too-short, ' + meta.config.minimumTitleLength + ']]'));
-		} else if (title.length > parseInt(meta.config.maximumTitleLength, 10)) {
+		} else if (title.length > meta.config.maximumTitleLength) {
 			return callback(new Error('[[error:title-too-long, ' + meta.config.maximumTitleLength + ']]'));
 		}
 

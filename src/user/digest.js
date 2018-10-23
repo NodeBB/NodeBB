@@ -17,7 +17,7 @@ var Digest = module.exports;
 Digest.execute = function (payload, callback) {
 	callback = callback || function () {};
 
-	var digestsDisabled = parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
+	var digestsDisabled = meta.config.disableEmailSubscriptions === 1;
 	if (digestsDisabled) {
 		winston.info('[user/jobs] Did not send digests (' + payload.interval + ') because subscription system is disabled.');
 		return callback();

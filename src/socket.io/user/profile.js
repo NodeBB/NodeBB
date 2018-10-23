@@ -171,11 +171,11 @@ module.exports = function (SocketUser) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 
-				if (!results.isAdminOrGlobalMod && parseInt(meta.config['username:disableEdit'], 10) === 1) {
+				if (!results.isAdminOrGlobalMod && meta.config['username:disableEdit']) {
 					data.username = oldUserData.username;
 				}
 
-				if (!results.isAdminOrGlobalMod && parseInt(meta.config['email:disableEdit'], 10) === 1) {
+				if (!results.isAdminOrGlobalMod && meta.config['email:disableEdit']) {
 					data.email = oldUserData.email;
 				}
 

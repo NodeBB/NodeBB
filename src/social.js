@@ -39,8 +39,8 @@ social.getPostSharing = function (callback) {
 			db.getSetMembers('social:posts.activated', next);
 		},
 		function (activated, next) {
-			networks.forEach(function (network, i) {
-				networks[i].activated = (activated.indexOf(network.id) !== -1);
+			networks.forEach(function (network) {
+				network.activated = activated.includes(network.id);
 			});
 
 			social.postSharing = networks;

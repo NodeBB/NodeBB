@@ -57,24 +57,20 @@ module.exports = function (Topics) {
 		}
 
 		function getPostUserData(field, method, callback) {
-			var uids = [];
+			var uidsMap = {};
 
-			postData.forEach(function (postData) {
-				if (postData && parseInt(postData[field], 10) >= 0 && uids.indexOf(postData[field]) === -1) {
-					uids.push(postData[field]);
+			postData.forEach((post) => {
+				if (post && parseInt(post[field], 10) >= 0) {
+					uidsMap[post[field]] = 1;
 				}
 			});
-
+			const uids = Object.keys(uidsMap);
 			async.waterfall([
 				function (next) {
 					method(uids, next);
 				},
 				function (users, next) {
-					var userData = {};
-					users.forEach(function (user, index) {
-						userData[uids[index]] = user;
-					});
-					next(null, userData);
+					next(null, _.zipObject(uids, users));
 				},
 			], callback);
 		}
@@ -120,7 +116,7 @@ module.exports = function (Topics) {
 						postObj.selfPost = !!parseInt(uid, 10) && parseInt(uid, 10) === parseInt(postObj.uid, 10);
 
 						// Username override for guests, if enabled
-						if (parseInt(meta.config.allowGuestHandles, 10) === 1 && parseInt(postObj.uid, 10) === 0 && postObj.handle) {
+						if (meta.config.allowGuestHandles && postObj.uid === 0 && postObj.handle) {
 							postObj.user.username = validator.escape(String(postObj.handle));
 						}
 					}

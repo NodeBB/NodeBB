@@ -50,7 +50,7 @@ UserEmail.sendValidationEmail = function (uid, options, callback) {
 	var confirm_code = utils.generateUUID();
 	var confirm_link = nconf.get('url') + '/confirm/' + confirm_code;
 
-	var emailInterval = meta.config.hasOwnProperty('emailConfirmInterval') ? parseInt(meta.config.emailConfirmInterval, 10) : 10;
+	var emailInterval = meta.config.emailConfirmInterval;
 
 	async.waterfall([
 		function (next) {

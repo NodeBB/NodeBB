@@ -68,7 +68,7 @@ groupsController.get = function (req, res, callback) {
 			res.render('admin/manage/group', {
 				group: result.group,
 				groupNames: result.groupNames,
-				allowPrivateGroups: parseInt(meta.config.allowPrivateGroups, 10) === 1,
+				allowPrivateGroups: meta.config.allowPrivateGroups,
 			});
 		},
 	], callback);

@@ -147,7 +147,7 @@ helpers.getUserPrivileges = function (cid, hookName, userPrivilegeList, callback
 			memberData.forEach(function (member) {
 				member.privileges = {};
 				for (var x = 0, numPrivs = userPrivileges.length; x < numPrivs; x += 1) {
-					member.privileges[userPrivileges[x]] = memberSets[x].indexOf(parseInt(member.uid, 10)) !== -1;
+					member.privileges[userPrivileges[x]] = memberSets[x].includes(parseInt(member.uid, 10));
 				}
 			});
 
@@ -178,7 +178,7 @@ helpers.getGroupPrivileges = function (cid, hookName, groupPrivilegeList, callba
 			var uniqueGroups = _.uniq(_.flatten(memberSets));
 
 			var groupNames = results.groupNames.filter(function (groupName) {
-				return groupName.indexOf(':privileges:') === -1 && uniqueGroups.indexOf(groupName) !== -1;
+				return !groupName.includes(':privileges:') && uniqueGroups.includes(groupName);
 			});
 
 			groupNames = groups.ephemeralGroups.concat(groupNames);
@@ -200,7 +200,7 @@ helpers.getGroupPrivileges = function (cid, hookName, groupPrivilegeList, callba
 				memberPrivs = {};
 
 				for (var x = 0, numPrivs = groupPrivileges.length; x < numPrivs; x += 1) {
-					memberPrivs[groupPrivileges[x]] = memberSets[x].indexOf(member) !== -1;
+					memberPrivs[groupPrivileges[x]] = memberSets[x].includes(member);
 				}
 				return {
 					name: member,
