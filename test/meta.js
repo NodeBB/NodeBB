@@ -218,7 +218,7 @@ describe('meta', function () {
 				assert.ifError(err);
 				meta.configs.getFields(['numericField'], function (err, data) {
 					assert.ifError(err);
-					assert.strictEqual(data.numericField, '123');
+					assert.strictEqual(data.numericField, 123);
 					done();
 				});
 			});
@@ -236,11 +236,11 @@ describe('meta', function () {
 		});
 
 		it('should set boolean config value', function (done) {
-			meta.configs.set('booleanField', 'true', function (err) {
+			meta.configs.set('booleanField', 'false', function (err) {
 				assert.ifError(err);
 				meta.configs.getFields(['booleanField'], function (err, data) {
 					assert.ifError(err);
-					assert.strictEqual(data.booleanField, true);
+					assert.strictEqual(data.booleanField, false);
 					done();
 				});
 			});
@@ -251,7 +251,7 @@ describe('meta', function () {
 				assert.ifError(err);
 				meta.configs.getFields(['stringField'], function (err, data) {
 					assert.ifError(err);
-					assert.strictEqual(data.stringField, '123');
+					assert.strictEqual(data.stringField, 123);
 					done();
 				});
 			});

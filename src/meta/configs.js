@@ -21,11 +21,11 @@ function deserialize(config) {
 	Object.keys(config).forEach(function (key) {
 		const defaultType = typeof defaults[key];
 		const type = typeof config[key];
+		const number = parseFloat(config[key]);
 
-		if ((defaultType === 'string' || defaultType === 'undefined') && type === 'number') {
+		if (defaultType === 'string' && type === 'number') {
 			deserialized[key] = String(config[key]);
 		} else if (defaultType === 'number' && type === 'string') {
-			const number = parseFloat(config[key]);
 			if (!isNaN(number) && isFinite(config[key])) {
 				deserialized[key] = number;
 			} else {
@@ -37,6 +37,8 @@ function deserialize(config) {
 			deserialized[key] = false;
 		} else if (config[key] === null) {
 			deserialized[key] = defaults[key];
+		} else if (defaultType === 'undefined' && !isNaN(number) && isFinite(config[key])) {
+			deserialized[key] = number;
 		} else {
 			deserialized[key] = config[key];
 		}

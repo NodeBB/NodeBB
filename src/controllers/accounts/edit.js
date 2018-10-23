@@ -42,7 +42,7 @@ editController.get = function (req, res, callback) {
 			userData.allowWebsite = !userData.isSelf || userData.reputation >= meta.config['min:rep:website'];
 			userData.allowAboutMe = !userData.isSelf || userData.reputation >= meta.config['min:rep:aboutme'];
 			userData.allowSignature = results.canUseSignature && (!userData.isSelf || userData.reputation >= meta.config['min:rep:signature']);
-			userData.profileImageDimension = meta.config.profileImageDimension || 200;
+			userData.profileImageDimension = meta.config.profileImageDimension;
 			userData.defaultAvatar = user.getDefaultAvatar();
 
 			userData.groups = userData.groups.filter(function (group) {
