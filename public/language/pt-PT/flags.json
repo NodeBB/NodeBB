@@ -1,7 +1,7 @@
 {
 	"state": "State",
-	"reporter": "Reporter",
-	"reported-at": "Reported At",
+	"reporter": "Autor da Denúncia",
+	"reported-at": "Denunciado em",
 	"description": "Descrição",
 	"no-flags": "Hooray! No flags found.",
 	"assignee": "Assignee",
@@ -27,21 +27,21 @@
 	"apply-filters": "Aplicar Filtros",
 
 	"quick-links": "Links Rápidos",
-	"flagged-user": "Utilizador Sinalizado",
+	"flagged-user": "Utilizador Denunciado",
 	"view-profile": "Ver Perfil",
 	"start-new-chat": "Iniciar Nova Conversa",
-	"go-to-target": "Ver Alvo da Sinalização",
+	"go-to-target": "Ver Alvo da Denúncia",
 
 	"user-view": "Ver Perfil",
 	"user-edit": "Editar Perfil",
 
-	"notes": "Sinalizar Notas",
+	"notes": "Notas da Denúncia",
 	"add-note": "Adicionar Nota",
 	"no-notes": "Não existem notas partilhadas.",
 
-	"history": "Histórico de Sinalizações",
-	"back": "Voltar para a Lista de Sinalizações",
-	"no-history": "Não existe histórico de sinalizações.",
+	"history": "Histórico da Denúncia",
+	"back": "Voltar para a Lista de Denúncias",
+	"no-history": "Não existe histórico de denúncias.",
 
 	"state-all": "Todos os estados",
 	"state-open": "Novo/Abrir",
@@ -51,14 +51,14 @@
 	"no-assignee": "Não Atribuído",
 	"note-added": "Nota Adicionada.",
 
-	"modal-title": "Report Inappropriate Content",
+	"modal-title": "Denunciar Conteúdo Impróprio",
 	"modal-body": "Please specify your reason for flagging %1 %2 for review. Alternatively, use one of the quick report buttons if applicable.",
 	"modal-reason-spam": "Spam",
 	"modal-reason-offensive": "Ofensivo",
 	"modal-reason-other": "Other (specify below)",
-	"modal-reason-custom": "Motivo para reportar este conteúdo...",
-	"modal-submit": "Submeter Relatório",
-	"modal-submit-success": "Conteúdo sinalizado para moderação.",
+	"modal-reason-custom": "Motivo para denunciar este conteúdo...",
+	"modal-submit": "Submeter Denúncia",
+	"modal-submit-success": "Este conteúdo foi denunciado para moderação.",
 	"modal-submit-confirm": "Confirm Submission",
 	"modal-submit-confirm-text": "You have a custom reason specified already. Are you sure you wish to submit via quick-report?",
 	"modal-submit-confirm-text-help": "Submitting a quick report will overwrite any custom reasons defined."
