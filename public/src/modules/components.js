@@ -17,19 +17,19 @@ define('components', function () {
 			return $('[component="post"][data-' + name + '="' + value + '"]');
 		},
 		'post/content': function (pid) {
-			return components.core.post('pid', pid).find('[component="post/content"]');
+			return $('[component="post"][data-pid="' + pid + '"] [component="post/content"]');
 		},
 		'post/header': function (pid) {
-			return components.core.post('pid', pid).find('[component="post/header"]');
+			return $('[component="post"][data-pid="' + pid + '"] [component="post/header"]');
 		},
 		'post/anchor': function (index) {
-			return components.core.post('index', index).find('[component="post/anchor"]');
+			return $('[component="post"][data-index="' + index + '"] [component="post/anchor"]');
 		},
 		'post/vote-count': function (pid) {
-			return components.core.post('pid', pid).find('[component="post/vote-count"]');
+			return $('[component="post"][data-pid="' + pid + '"] [component="post/vote-count"]');
 		},
 		'post/bookmark-count': function (pid) {
-			return components.core.post('pid', pid).find('[component="post/bookmark-count"]');
+			return $('[component="post"][data-pid="' + pid + '"] [component="post/bookmark-count"]');
 		},
 
 		'user/postcount': function (uid) {
