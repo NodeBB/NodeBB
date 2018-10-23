@@ -343,6 +343,14 @@ describe('Admin Controllers', function () {
 		});
 	});
 
+	it('should load /admin/advanced/hooks', function (done) {
+		request(nconf.get('url') + '/api/admin/advanced/hooks', { jar: jar, json: true }, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
 	it('should load /admin/advanced/cache', function (done) {
 		request(nconf.get('url') + '/api/admin/advanced/cache', { jar: jar, json: true }, function (err, res, body) {
 			assert.ifError(err);
