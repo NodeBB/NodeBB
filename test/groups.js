@@ -333,6 +333,20 @@ describe('Groups', function () {
 				done();
 			});
 		});
+
+		it('should return falsy for userTitleEnabled', function (done) {
+			Groups.create({ name: 'userTitleEnabledGroup' }, function (err) {
+				assert.ifError(err);
+				Groups.setGroupField('userTitleEnabledGroup', 'userTitleEnabled', 0, function (err) {
+					assert.ifError(err);
+					Groups.getGroupData('userTitleEnabledGroup', function (err, data) {
+						assert.ifError(err);
+						assert.strictEqual(data.userTitleEnabled, 0);
+						done();
+					});
+				});
+			});
+		});
 	});
 
 	describe('.hide()', function () {
@@ -342,7 +356,7 @@ describe('Groups', function () {
 
 				Groups.get('foo', {}, function (err, groupObj) {
 					assert.ifError(err);
-					assert.strictEqual(true, groupObj.hidden);
+					assert.strictEqual(1, groupObj.hidden);
 					done();
 				});
 			});

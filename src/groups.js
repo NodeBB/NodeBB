@@ -1,7 +1,6 @@
 'use strict';
 
 var async = require('async');
-var validator = require('validator');
 
 var user = require('./user');
 var db = require('./database');
@@ -114,7 +113,7 @@ Groups.get = function (groupName, options, callback) {
 		function (next) {
 			async.parallel({
 				base: function (next) {
-					db.getObject('group:' + groupName, next);
+					Groups.getGroupData(groupName, next);
 				},
 				members: function (next) {
 					if (options.truncateUserList) {
@@ -144,29 +143,17 @@ Groups.get = function (groupName, options, callback) {
 		},
 		function (descriptionParsed, next) {
 			var groupData = results.base;
-			Groups.escapeGroupData(groupData);
 
 			groupData.descriptionParsed = descriptionParsed;
-			groupData.userTitleEnabled = groupData.userTitleEnabled ? parseInt(groupData.userTitleEnabled, 10) === 1 : true;
-			groupData.createtimeISO = utils.toISOString(groupData.createtime);
 			groupData.members = results.members;
 			groupData.membersNextStart = stop + 1;
 			groupData.pending = results.pending.filter(Boolean);
 			groupData.invited = results.invited.filter(Boolean);
-			groupData.deleted = !!parseInt(groupData.deleted, 10);
-			groupData.hidden = !!parseInt(groupData.hidden, 10);
-			groupData.system = !!parseInt(groupData.system, 10);
-			groupData.memberCount = parseInt(groupData.memberCount, 10);
-			groupData.private = (groupData.private === null || groupData.private === undefined) ? true : !!parseInt(groupData.private, 10);
-			groupData.disableJoinRequests = parseInt(groupData.disableJoinRequests, 10) === 1;
+
 			groupData.isMember = results.isMember;
 			groupData.isPending = results.isPending;
 			groupData.isInvited = results.isInvited;
 			groupData.isOwner = results.isOwner;
-			groupData['cover:url'] = groupData['cover:url'] || require('./coverPhoto').getDefaultGroupCover(groupName);
-			groupData['cover:position'] = validator.escape(String(groupData['cover:position'] || '50% 50%'));
-			groupData.labelColor = validator.escape(String(groupData.labelColor || '#000000'));
-			groupData.icon = validator.escape(String(groupData.icon || ''));
 
 			plugins.fireHook('filter:group.get', { group: groupData }, next);
 		},
@@ -216,15 +203,6 @@ Groups.getOwnersAndMembers = function (groupName, uid, start, stop, callback) {
 			next(null, results.members);
 		},
 	], callback);
-};
-
-Groups.escapeGroupData = function (group) {
-	if (group) {
-		group.nameEncoded = encodeURIComponent(group.name);
-		group.displayName = validator.escape(String(group.name));
-		group.description = validator.escape(String(group.description || ''));
-		group.userTitle = validator.escape(String(group.userTitle || '')) || group.displayName;
-	}
 };
 
 Groups.getByGroupslug = function (slug, options, callback) {

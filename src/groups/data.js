@@ -7,15 +7,16 @@ var db = require('../database');
 var plugins = require('../plugins');
 var utils = require('../utils');
 
+const intFields = [
+	'createtime', 'memberCount', 'hidden', 'system', 'private',
+	'userTitleEnabled', 'disableJoinRequests',
+];
+
 module.exports = function (Groups) {
-	Groups.getGroupsData = function (groupNames, callback) {
+	Groups.getGroupsFields = function (groupNames, fields, callback) {
 		if (!Array.isArray(groupNames) || !groupNames.length) {
 			return callback(null, []);
 		}
-
-		var keys = groupNames.map(function (groupName) {
-			return 'group:' + groupName;
-		});
 
 		var ephemeralIdx = groupNames.reduce(function (memo, cur, idx) {
 			if (Groups.ephemeralGroups.includes(cur)) {
@@ -26,7 +27,12 @@ module.exports = function (Groups) {
 
 		async.waterfall([
 			function (next) {
-				db.getObjects(keys, next);
+				const keys = groupNames.map(groupName => 'group:' + groupName);
+				if (fields.length) {
+					db.getObjectsFields(keys, fields, callback);
+				} else {
+					db.getObjects(keys, next);
+				}
 			},
 			function (groupData, next) {
 				if (ephemeralIdx.length) {
@@ -35,23 +41,7 @@ module.exports = function (Groups) {
 					});
 				}
 
-				groupData.forEach(function (group) {
-					if (group) {
-						Groups.escapeGroupData(group);
-						group.userTitleEnabled = group.userTitleEnabled ? parseInt(group.userTitleEnabled, 10) === 1 : true;
-						group.labelColor = validator.escape(String(group.labelColor || '#000000'));
-						group.icon = validator.escape(String(group.icon || ''));
-						group.createtimeISO = utils.toISOString(group.createtime);
-						group.hidden = parseInt(group.hidden, 10) === 1;
-						group.system = parseInt(group.system, 10) === 1;
-						group.private = (group.private === null || group.private === undefined) ? true : !!parseInt(group.private, 10);
-						group.disableJoinRequests = parseInt(group.disableJoinRequests, 10) === 1;
-
-						group['cover:url'] = group['cover:url'] || require('../coverPhoto').getDefaultGroupCover(group.name);
-						group['cover:thumb:url'] = group['cover:thumb:url'] || group['cover:url'];
-						group['cover:position'] = validator.escape(String(group['cover:position'] || '50% 50%'));
-					}
-				});
+				groupData.forEach(modifyGroup);
 
 				plugins.fireHook('filter:groups.get', { groups: groupData }, next);
 			},
@@ -59,6 +49,10 @@ module.exports = function (Groups) {
 				next(null, results.groups);
 			},
 		], callback);
+	};
+
+	Groups.getGroupsData = function (groupNames, callback) {
+		Groups.getGroupsFields(groupNames, [], callback);
 	};
 
 	Groups.getGroupData = function (groupName, callback) {
@@ -73,12 +67,6 @@ module.exports = function (Groups) {
 		});
 	};
 
-	Groups.getGroupsFields = function (groupNames, fields, callback) {
-		db.getObjectsFields(groupNames.map(function (group) {
-			return 'group:' + group;
-		}), fields, callback);
-	};
-
 	Groups.setGroupField = function (groupName, field, value, callback) {
 		async.waterfall([
 			function (next) {
@@ -91,3 +79,28 @@ module.exports = function (Groups) {
 		], callback);
 	};
 };
+
+function modifyGroup(group) {
+	if (group) {
+		intFields.forEach(field => db.parseIntField(group, field));
+		escapeGroupData(group);
+		group.userTitleEnabled = ([null, undefined].includes(group.userTitleEnabled)) ? 1 : group.userTitleEnabled;
+		group.labelColor = validator.escape(String(group.labelColor || '#000000'));
+		group.icon = validator.escape(String(group.icon || ''));
+		group.createtimeISO = utils.toISOString(group.createtime);
+		group.private = ([null, undefined].includes(group.private)) ? 1 : group.private;
+
+		group['cover:url'] = group['cover:url'] || require('../coverPhoto').getDefaultGroupCover(group.name);
+		group['cover:thumb:url'] = group['cover:thumb:url'] || group['cover:url'];
+		group['cover:position'] = validator.escape(String(group['cover:position'] || '50% 50%'));
+	}
+}
+
+function escapeGroupData(group) {
+	if (group) {
+		group.nameEncoded = encodeURIComponent(group.name);
+		group.displayName = validator.escape(String(group.name));
+		group.description = validator.escape(String(group.description || ''));
+		group.userTitle = validator.escape(String(group.userTitle || '')) || group.displayName;
+	}
+}
