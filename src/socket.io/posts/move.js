@@ -28,7 +28,7 @@ module.exports = function (SocketPosts) {
 						return next(new Error('[[error:no-privileges]]'));
 					}
 
-					topics.movePostToTopic(pid, data.tid, next);
+					topics.movePostToTopic(socket.uid, pid, data.tid, next);
 				},
 				function (next) {
 					socketHelpers.sendNotificationToPostOwner(pid, socket.uid, 'move', 'notifications:moved_your_post');

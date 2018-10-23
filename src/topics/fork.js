@@ -52,8 +52,8 @@ module.exports = function (Topics) {
 				}
 				Topics.create({ uid: results.postData.uid, title: title, cid: cid }, next);
 			},
-			function (results, next) {
-				Topics.updateTopicBookmarks(fromTid, pids, function () { next(null, results); });
+			function (tid, next) {
+				Topics.updateTopicBookmarks(fromTid, pids, function (err) { next(err, tid); });
 			},
 			function (_tid, next) {
 				tid = _tid;
@@ -63,7 +63,7 @@ module.exports = function (Topics) {
 							return next(err || new Error(canEdit.message));
 						}
 
-						Topics.movePostToTopic(pid, tid, next);
+						Topics.movePostToTopic(uid, pid, tid, next);
 					});
 				}, next);
 			},
@@ -77,7 +77,7 @@ module.exports = function (Topics) {
 		], callback);
 	};
 
-	Topics.movePostToTopic = function (pid, tid, callback) {
+	Topics.movePostToTopic = function (callerUid, pid, tid, callback) {
 		var postData;
 		async.waterfall([
 			function (next) {
@@ -125,7 +125,7 @@ module.exports = function (Topics) {
 				});
 			},
 			function (next) {
-				plugins.fireHook('action:post.move', { post: postData, tid: tid });
+				plugins.fireHook('action:post.move', { uid: callerUid, post: postData, tid: tid });
 				next();
 			},
 		], callback);

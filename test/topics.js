@@ -508,7 +508,7 @@ describe('Topic\'s', function () {
 				function (categoryData, next) {
 					assert.equal(categoryData[0].post_count, 4);
 					assert.equal(categoryData[1].post_count, 2);
-					topics.movePostToTopic(movedPost.pid, tid2, next);
+					topics.movePostToTopic(1, movedPost.pid, tid2, next);
 				},
 				function (next) {
 					checkCidSets(previousPost, topic2LastReply, next);
