@@ -7,8 +7,31 @@ var user = require('../user');
 var utils = require('../utils');
 var plugins = require('../plugins');
 
+const intFields = ['timestamp', 'edited', 'fromuid', 'roomId', 'deleted'];
+
 module.exports = function (Messaging) {
 	Messaging.newMessageCutoff = 1000 * 60 * 3;
+
+	Messaging.getMessagesFields = function (mids, fields, callback) {
+		if (!Array.isArray(mids) || !mids.length) {
+			return callback(null, []);
+		}
+
+		async.waterfall([
+			function (next) {
+				const keys = mids.map(mid => 'message:' + mid);
+				if (fields.length) {
+					db.getObjectsFields(keys, fields, next);
+				} else {
+					db.getObjects(keys, next);
+				}
+			},
+			function (messages, next) {
+				messages.forEach(modifyMessage);
+				next(null, messages);
+			},
+		], callback);
+	};
 
 	Messaging.getMessageField = function (mid, field, callback) {
 		Messaging.getMessageFields(mid, [field], function (err, fields) {
@@ -17,7 +40,9 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.getMessageFields = function (mid, fields, callback) {
-		db.getObjectFields('message:' + mid, fields, callback);
+		Messaging.getMessagesFields([mid], fields, function (err, messages) {
+			callback(err, messages ? messages[0] : null);
+		});
 	};
 
 	Messaging.setMessageField = function (mid, field, content, callback) {
@@ -33,11 +58,7 @@ module.exports = function (Messaging) {
 
 		async.waterfall([
 			function (next) {
-				var keys = mids.map(function (mid) {
-					return 'message:' + mid;
-				});
-
-				db.getObjects(keys, next);
+				Messaging.getMessagesFields(mids, [], next);
 			},
 			async.apply(user.blocks.filter, uid, 'fromuid'),
 			function (_messages, next) {
@@ -49,28 +70,22 @@ module.exports = function (Messaging) {
 					return msg;
 				}).filter(Boolean);
 
-				var uids = messages.map(function (msg) {
-					return msg && msg.fromuid;
-				});
+				const uids = messages.map(msg => msg && msg.fromuid);
 
 				user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'banned'], next);
 			},
 			function (users, next) {
 				messages.forEach(function (message, index) {
 					message.fromUser = users[index];
-					message.fromUser.banned = !!parseInt(message.fromUser.banned, 10);
-					message.fromUser.deleted = parseInt(message.fromuid, 10) !== message.fromUser.uid && message.fromUser.uid === 0;
+					message.fromUser.banned = !!message.fromUser.banned;
+					message.fromUser.deleted = message.fromuid !== message.fromUser.uid && message.fromUser.uid === 0;
 
-					var self = parseInt(message.fromuid, 10) === parseInt(uid, 10);
+					var self = message.fromuid === parseInt(uid, 10);
 					message.self = self ? 1 : 0;
-					message.timestampISO = utils.toISOString(message.timestamp);
+
 					message.newSet = false;
 					message.roomId = String(message.roomId || roomId);
-					if (message.hasOwnProperty('edited')) {
-						message.editedISO = new Date(parseInt(message.edited, 10)).toISOString();
-					}
-
-					message.deleted = !!parseInt(message.deleted, 10);
+					message.deleted = !!message.deleted;
 				});
 
 				async.map(messages, function (message, next) {
@@ -89,7 +104,7 @@ module.exports = function (Messaging) {
 					// Add a spacer in between messages with time gaps between them
 					messages = messages.map(function (message, index) {
 						// Compare timestamps with the previous message, and check if a spacer needs to be added
-						if (index > 0 && parseInt(message.timestamp, 10) > parseInt(messages[index - 1].timestamp, 10) + Messaging.newMessageCutoff) {
+						if (index > 0 && message.timestamp > messages[index - 1] + Messaging.newMessageCutoff) {
 							// If it's been 5 minutes, this is a new set of messages
 							message.newSet = true;
 						} else if (index > 0 && message.fromuid !== messages[index - 1].fromuid) {
@@ -118,21 +133,15 @@ module.exports = function (Messaging) {
 						function (mid, next) {
 							Messaging.getMessageFields(mid, ['fromuid', 'timestamp'], next);
 						},
-					], function (err, fields) {
-						if (err) {
-							return next(err);
-						}
-
-						if (
-							(parseInt(messages[0].timestamp, 10) > parseInt(fields.timestamp, 10) + Messaging.newMessageCutoff) ||
-							(parseInt(messages[0].fromuid, 10) !== parseInt(fields.fromuid, 10))
-						) {
-							// If it's been 5 minutes, this is a new set of messages
-							messages[0].newSet = true;
-						}
-
-						next(undefined, messages);
-					});
+						function (fields, next) {
+							if ((messages[0].timestamp > fields.timestamp + Messaging.newMessageCutoff) ||
+								(messages[0].fromuid !== fields.fromuid)) {
+								// If it's been 5 minutes, this is a new set of messages
+								messages[0].newSet = true;
+							}
+							next(null, messages);
+						},
+					], next);
 				} else {
 					next(null, []);
 				}
@@ -151,3 +160,15 @@ module.exports = function (Messaging) {
 		], callback);
 	};
 };
+
+function modifyMessage(message) {
+	if (message) {
+		intFields.forEach(field => db.parseIntField(message, field));
+		if (message.hasOwnProperty('timestamp')) {
+			message.timestampISO = utils.toISOString(message.timestamp);
+		}
+		if (message.hasOwnProperty('edited')) {
+			message.editedISO = utils.toISOString(message.timestamp);
+		}
+	}
+}

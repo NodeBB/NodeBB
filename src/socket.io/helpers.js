@@ -96,7 +96,7 @@ SocketHelpers.sendNotificationToPostOwner = function (pid, fromuid, command, not
 			}, next);
 		},
 		function (results, next) {
-			if (!results.canRead || results.isIgnoring[0] || !postData.uid || fromuid === parseInt(postData.uid, 10)) {
+			if (!results.canRead || results.isIgnoring[0] || !postData.uid || fromuid === postData.uid) {
 				return;
 			}
 			async.parallel({
@@ -149,7 +149,7 @@ SocketHelpers.sendNotificationToTopicOwner = function (tid, fromuid, command, no
 			}, next);
 		},
 		function (results, next) {
-			if (fromuid === parseInt(results.topicData.uid, 10)) {
+			if (fromuid === results.topicData.uid) {
 				return;
 			}
 			ownerUid = results.topicData.uid;
@@ -167,7 +167,7 @@ SocketHelpers.sendNotificationToTopicOwner = function (tid, fromuid, command, no
 		if (err) {
 			return winston.error(err);
 		}
-		if (notification && parseInt(ownerUid, 10)) {
+		if (notification && ownerUid) {
 			notifications.push(notification, [ownerUid]);
 		}
 	});
