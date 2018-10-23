@@ -36,6 +36,21 @@ Plugins.languageData = {};
 
 Plugins.initialized = false;
 
+var defaultRequire = module.require;
+module.require = function () {
+	try {
+		return defaultRequire.apply(module, arguments);
+	} catch (err) {
+		// if we can't find the module try in parent directory
+		// since plugins.js moved into plugins folder
+		if (err.code === 'MODULE_NOT_FOUND') {
+			winston.warn('[plugins/require] please update module.parent.require("' + arguments[0] + '") in your plugin!\n' + err.stack.split('\n').slice(0, 6).join('\n'));
+			return defaultRequire.apply(module, [path.join('../', arguments[0])]);
+		}
+		throw err;
+	}
+};
+
 Plugins.requireLibrary = function (pluginID, libraryPath) {
 	Plugins.libraries[pluginID] = require(libraryPath);
 	Plugins.libraryPaths.push(libraryPath);
