@@ -22,7 +22,7 @@ function deserialize(config) {
 		const defaultType = typeof defaults[key];
 		const type = typeof config[key];
 
-		if (defaultType === 'string' && type === 'number') {
+		if ((defaultType === 'string' || defaultType === 'undefined') && type === 'number') {
 			deserialized[key] = String(config[key]);
 		} else if (defaultType === 'number' && type === 'string') {
 			const number = parseFloat(config[key]);

@@ -213,12 +213,12 @@ describe('meta', function () {
 			});
 		});
 
-		it('should set numeric config value', function (done) {
+		it('should get back string if field is not in defaults', function (done) {
 			meta.configs.set('numericField', 123, function (err) {
 				assert.ifError(err);
 				meta.configs.getFields(['numericField'], function (err, data) {
 					assert.ifError(err);
-					assert.strictEqual(data.numericField, 123);
+					assert.strictEqual(data.numericField, '123');
 					done();
 				});
 			});
