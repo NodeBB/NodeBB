@@ -88,6 +88,11 @@ module.exports = function (User) {
 				markNotificationRead(username, next);
 			},
 			function (next) {
+				plugins.fireHook('filter:register.complete', { uid: uid }, function (err) {
+					next(err);
+				});
+			},
+			function (next) {
 				var title = meta.config.title || meta.config.browserTitle || 'NodeBB';
 				translator.translate('[[email:welcome-to, ' + title + ']]', meta.config.defaultLang, function (subject) {
 					var data = {
