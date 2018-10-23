@@ -3,35 +3,35 @@
 var async = require('async');
 var _ = require('lodash');
 
-var db = require('./database');
-var posts = require('./posts');
-var utils = require('./utils');
-var plugins = require('./plugins');
-var meta = require('./meta');
-var user = require('./user');
-var categories = require('./categories');
-var privileges = require('./privileges');
-var social = require('./social');
+var db = require('../database');
+var posts = require('../posts');
+var utils = require('../utils');
+var plugins = require('../plugins');
+var meta = require('../meta');
+var user = require('../user');
+var categories = require('../categories');
+var privileges = require('../privileges');
+var social = require('../social');
 
 var Topics = module.exports;
 
-require('./topics/data')(Topics);
-require('./topics/create')(Topics);
-require('./topics/delete')(Topics);
-require('./topics/sorted')(Topics);
-require('./topics/unread')(Topics);
-require('./topics/recent')(Topics);
-require('./topics/user')(Topics);
-require('./topics/fork')(Topics);
-require('./topics/posts')(Topics);
-require('./topics/follow')(Topics);
-require('./topics/tags')(Topics);
-require('./topics/teaser')(Topics);
-require('./topics/suggested')(Topics);
-require('./topics/tools')(Topics);
-require('./topics/thumb')(Topics);
-require('./topics/bookmarks')(Topics);
-require('./topics/merge')(Topics);
+require('./data')(Topics);
+require('./create')(Topics);
+require('./delete')(Topics);
+require('./sorted')(Topics);
+require('./unread')(Topics);
+require('./recent')(Topics);
+require('./user')(Topics);
+require('./fork')(Topics);
+require('./posts')(Topics);
+require('./follow')(Topics);
+require('./tags')(Topics);
+require('./teaser')(Topics);
+require('./suggested')(Topics);
+require('./tools')(Topics);
+require('./thumb')(Topics);
+require('./bookmarks')(Topics);
+require('./merge')(Topics);
 
 Topics.exists = function (tid, callback) {
 	db.isSortedSetMember('topics:tid', tid, callback);
@@ -351,4 +351,4 @@ Topics.search = function (tid, term, callback) {
 	});
 };
 
-Topics.async = require('./promisify')(Topics);
+Topics.async = require('../promisify')(Topics);

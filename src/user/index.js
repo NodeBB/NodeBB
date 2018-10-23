@@ -3,41 +3,41 @@
 var async = require('async');
 var _ = require('lodash');
 
-var groups = require('./groups');
-var plugins = require('./plugins');
-var db = require('./database');
-var privileges = require('./privileges');
-var meta = require('./meta');
+var groups = require('../groups');
+var plugins = require('../plugins');
+var db = require('../database');
+var privileges = require('../privileges');
+var meta = require('../meta');
 
 var User = module.exports;
 
-User.email = require('./user/email');
-User.notifications = require('./user/notifications');
-User.reset = require('./user/reset');
-User.digest = require('./user/digest');
+User.email = require('./email');
+User.notifications = require('./notifications');
+User.reset = require('./reset');
+User.digest = require('./digest');
 
-require('./user/data')(User);
-require('./user/auth')(User);
-require('./user/bans')(User);
-require('./user/create')(User);
-require('./user/posts')(User);
-require('./user/topics')(User);
-require('./user/categories')(User);
-require('./user/follow')(User);
-require('./user/profile')(User);
-require('./user/admin')(User);
-require('./user/delete')(User);
-require('./user/settings')(User);
-require('./user/search')(User);
-require('./user/jobs')(User);
-require('./user/picture')(User);
-require('./user/approval')(User);
-require('./user/invite')(User);
-require('./user/password')(User);
-require('./user/info')(User);
-require('./user/online')(User);
-require('./user/blocks')(User);
-require('./user/uploads')(User);
+require('./data')(User);
+require('./auth')(User);
+require('./bans')(User);
+require('./create')(User);
+require('./posts')(User);
+require('./topics')(User);
+require('./categories')(User);
+require('./follow')(User);
+require('./profile')(User);
+require('./admin')(User);
+require('./delete')(User);
+require('./settings')(User);
+require('./search')(User);
+require('./jobs')(User);
+require('./picture')(User);
+require('./approval')(User);
+require('./invite')(User);
+require('./password')(User);
+require('./info')(User);
+require('./online')(User);
+require('./blocks')(User);
+require('./uploads')(User);
 
 User.getUidsFromSet = function (set, start, stop, callback) {
 	if (set === 'users:online') {
@@ -435,4 +435,4 @@ User.addInterstitials = function (callback) {
 	callback();
 };
 
-User.async = require('./promisify')(User);
+User.async = require('../promisify')(User);

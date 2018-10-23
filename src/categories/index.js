@@ -3,22 +3,22 @@
 
 var async = require('async');
 
-var db = require('./database');
-var user = require('./user');
-var Groups = require('./groups');
-var plugins = require('./plugins');
-var privileges = require('./privileges');
+var db = require('../database');
+var user = require('../user');
+var Groups = require('../groups');
+var plugins = require('../plugins');
+var privileges = require('../privileges');
 
 var Categories = module.exports;
 
-require('./categories/data')(Categories);
-require('./categories/create')(Categories);
-require('./categories/delete')(Categories);
-require('./categories/topics')(Categories);
-require('./categories/unread')(Categories);
-require('./categories/activeusers')(Categories);
-require('./categories/recentreplies')(Categories);
-require('./categories/update')(Categories);
+require('./data')(Categories);
+require('./create')(Categories);
+require('./delete')(Categories);
+require('./topics')(Categories);
+require('./unread')(Categories);
+require('./activeusers')(Categories);
+require('./recentreplies')(Categories);
+require('./update')(Categories);
 
 Categories.exists = function (cid, callback) {
 	db.isSortedSetMember('categories:cid', cid, callback);
@@ -369,4 +369,4 @@ Categories.filterIgnoringUids = function (cid, uids, callback) {
 	], callback);
 };
 
-Categories.async = require('./promisify')(Categories);
+Categories.async = require('../promisify')(Categories);

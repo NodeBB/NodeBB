@@ -9,7 +9,7 @@ if (!databaseName) {
 	process.exit();
 }
 
-var primaryDB = require('./database/' + databaseName);
+var primaryDB = require('./' + databaseName);
 
 primaryDB.parseIntField = function (data, field) {
 	if (data.hasOwnProperty(field)) {

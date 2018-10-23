@@ -3,31 +3,31 @@
 var async = require('async');
 var _ = require('lodash');
 
-var db = require('./database');
-var utils = require('./utils');
-var user = require('./user');
-var topics = require('./topics');
-var privileges = require('./privileges');
-var plugins = require('./plugins');
+var db = require('../database');
+var utils = require('../utils');
+var user = require('../user');
+var topics = require('../topics');
+var privileges = require('../privileges');
+var plugins = require('../plugins');
 
 var Posts = module.exports;
 
-require('./posts/data')(Posts);
-require('./posts/create')(Posts);
-require('./posts/delete')(Posts);
-require('./posts/edit')(Posts);
-require('./posts/parse')(Posts);
-require('./posts/user')(Posts);
-require('./posts/topics')(Posts);
-require('./posts/category')(Posts);
-require('./posts/summary')(Posts);
-require('./posts/recent')(Posts);
-require('./posts/tools')(Posts);
-require('./posts/votes')(Posts);
-require('./posts/bookmarks')(Posts);
-require('./posts/queue')(Posts);
-require('./posts/diffs')(Posts);
-require('./posts/uploads')(Posts);
+require('./data')(Posts);
+require('./create')(Posts);
+require('./delete')(Posts);
+require('./edit')(Posts);
+require('./parse')(Posts);
+require('./user')(Posts);
+require('./topics')(Posts);
+require('./category')(Posts);
+require('./summary')(Posts);
+require('./recent')(Posts);
+require('./tools')(Posts);
+require('./votes')(Posts);
+require('./bookmarks')(Posts);
+require('./queue')(Posts);
+require('./diffs')(Posts);
+require('./uploads')(Posts);
 
 Posts.exists = function (pid, callback) {
 	db.isSortedSetMember('posts:pid', pid, callback);
@@ -206,4 +206,4 @@ Posts.modifyPostByPrivilege = function (post, privileges) {
 	}
 };
 
-Posts.async = require('./promisify')(Posts);
+Posts.async = require('../promisify')(Posts);
