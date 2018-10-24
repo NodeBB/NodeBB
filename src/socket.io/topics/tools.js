@@ -30,7 +30,7 @@ module.exports = function (SocketTopics) {
 			},
 			function (results, next) {
 				if (!results.topic) {
-					return next(new Error('[[error:no-topic]]'))
+					return next(new Error('[[error:no-topic]]'));
 				}
 				topic = results.topic;
 				topic.privileges = results.privileges;
