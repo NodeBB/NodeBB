@@ -216,7 +216,10 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 			trafficCanvas.width = $(trafficCanvas).parent().width();
 
 			data.datasets[0].yAxisID = 'left-y-axis';
-			data.datasets[1].yAxisID = 'right-y-axis';
+			data.datasets[1].yAxisID = 'left-y-axis';
+			data.datasets[2].yAxisID = 'left-y-axis';
+			data.datasets[3].yAxisID = 'left-y-axis';
+			data.datasets[4].yAxisID = 'right-y-axis';
 
 			graphs.traffic = new Chart(trafficCtx, {
 				type: 'line',
