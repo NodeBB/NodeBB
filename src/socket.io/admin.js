@@ -291,22 +291,23 @@ SocketAdmin.analytics.get = function (socket, data, callback) {
 			data.amount = 24;
 		}
 	}
-
+	const getStats = data.units === 'days' ? analytics.getDailyStatsForSet : analytics.getHourlyStatsForSet;
 	if (data.graph === 'traffic') {
 		async.parallel({
 			uniqueVisitors: function (next) {
-				if (data.units === 'days') {
-					analytics.getDailyStatsForSet('analytics:uniquevisitors', data.until || Date.now(), data.amount, next);
-				} else {
-					analytics.getHourlyStatsForSet('analytics:uniquevisitors', data.until || Date.now(), data.amount, next);
-				}
+				getStats('analytics:uniquevisitors', data.until || Date.now(), data.amount, next);
 			},
 			pageviews: function (next) {
-				if (data.units === 'days') {
-					analytics.getDailyStatsForSet('analytics:pageviews', data.until || Date.now(), data.amount, next);
-				} else {
-					analytics.getHourlyStatsForSet('analytics:pageviews', data.until || Date.now(), data.amount, next);
-				}
+				getStats('analytics:pageviews', data.until || Date.now(), data.amount, next);
+			},
+			pageViewsRegistered: function (next) {
+				getStats('analytics:pageviews:registered', data.until || Date.now(), data.amount, next);
+			},
+			pageViewsGuest: function (next) {
+				getStats('analytics:pageviews:guest', data.until || Date.now(), data.amount, next);
+			},
+			pageViewsBot: function (next) {
+				getStats('analytics:pageviews:bot', data.until || Date.now(), data.amount, next);
 			},
 			summary: function (next) {
 				analytics.getSummary(next);
