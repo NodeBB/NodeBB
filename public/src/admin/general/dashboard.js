@@ -172,7 +172,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 					},
 					{
 						label: translations[1],
-						backgroundColor: 'rgba(220,220,220,0.2)',
+						backgroundColor: '#ab464233',
 						borderColor: '#ab4642',
 						pointBackgroundColor: '#ab4642',
 						pointHoverBackgroundColor: '#fff',
@@ -182,7 +182,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 					},
 					{
 						label: translations[2],
-						backgroundColor: 'rgba(220,220,220,0.2)',
+						backgroundColor: '#ba8baf33',
 						borderColor: '#ba8baf',
 						pointBackgroundColor: '#ba8baf',
 						pointHoverBackgroundColor: '#fff',
@@ -192,7 +192,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 					},
 					{
 						label: translations[3],
-						backgroundColor: 'rgba(220,220,220,0.2)',
+						backgroundColor: '#f7ca8833',
 						borderColor: '#f7ca88',
 						pointBackgroundColor: '#f7ca88',
 						pointHoverBackgroundColor: '#fff',
