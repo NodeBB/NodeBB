@@ -29,6 +29,9 @@ module.exports = function (SocketTopics) {
 				}, next);
 			},
 			function (results, next) {
+				if (!results.topic) {
+					return next(new Error('[[error:no-topic]]'))
+				}
 				topic = results.topic;
 				topic.privileges = results.privileges;
 				plugins.fireHook('filter:topic.thread_tools', { topic: results.topic, uid: socket.uid, tools: [] }, next);
