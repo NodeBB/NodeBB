@@ -172,9 +172,9 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 					},
 					{
 						label: translations[1],
-						backgroundColor: 'rgba(220,110,110,0.2)',
-						borderColor: 'rgba(220,110,110,1)',
-						pointBackgroundColor: 'rgba(220,110,110,1)',
+						backgroundColor: 'rgba(220,220,220,0.2)',
+						borderColor: 'rgba(220,220,220,1)',
+						pointBackgroundColor: 'rgba(220,220,220,1)',
 						pointHoverBackgroundColor: '#fff',
 						pointBorderColor: '#fff',
 						pointHoverBorderColor: 'rgba(220,220,220,1)',
@@ -449,8 +449,8 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 
 			graphs.traffic.data.datasets[0].data = data.pageviews;
 			graphs.traffic.data.datasets[1].data = data.pageviewsRegistered;
-			graphs.traffic.data.datasets[2].data = data.pageViewsGuest;
-			graphs.traffic.data.datasets[3].data = data.pageViewsBot;
+			graphs.traffic.data.datasets[2].data = data.pageviewsGuest;
+			graphs.traffic.data.datasets[3].data = data.pageviewsBot;
 			graphs.traffic.data.datasets[4].data = data.uniqueVisitors;
 			graphs.traffic.data.labels = graphs.traffic.data.xLabels;
 

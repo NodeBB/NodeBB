@@ -300,13 +300,13 @@ SocketAdmin.analytics.get = function (socket, data, callback) {
 			pageviews: function (next) {
 				getStats('analytics:pageviews', data.until || Date.now(), data.amount, next);
 			},
-			pageViewsRegistered: function (next) {
+			pageviewsRegistered: function (next) {
 				getStats('analytics:pageviews:registered', data.until || Date.now(), data.amount, next);
 			},
-			pageViewsGuest: function (next) {
+			pageviewsGuest: function (next) {
 				getStats('analytics:pageviews:guest', data.until || Date.now(), data.amount, next);
 			},
-			pageViewsBot: function (next) {
+			pageviewsBot: function (next) {
 				getStats('analytics:pageviews:bot', data.until || Date.now(), data.amount, next);
 			},
 			summary: function (next) {
