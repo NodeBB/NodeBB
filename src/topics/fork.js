@@ -79,6 +79,7 @@ module.exports = function (Topics) {
 
 	Topics.movePostToTopic = function (callerUid, pid, tid, callback) {
 		var postData;
+		tid = parseInt(tid, 10);
 		async.waterfall([
 			function (next) {
 				Topics.exists(tid, next);
@@ -94,7 +95,7 @@ module.exports = function (Topics) {
 					return next(new Error('[[error:no-post]]'));
 				}
 
-				if (parseInt(post.tid, 10) === parseInt(tid, 10)) {
+				if (post.tid === tid) {
 					return next(new Error('[[error:cant-move-to-same-topic]]'));
 				}
 
@@ -143,10 +144,10 @@ module.exports = function (Topics) {
 					return callback();
 				}
 				var tasks = [];
-				if (parseInt(topicData[0].pinned, 10) !== 1) {
+				if (!topicData[0].pinned) {
 					tasks.push(async.apply(db.sortedSetIncrBy, 'cid:' + topicData[0].cid + ':tids:posts', -1, postData.tid));
 				}
-				if (parseInt(topicData[1].pinned, 10) !== 1) {
+				if (!topicData[1].pinned) {
 					tasks.push(async.apply(db.sortedSetIncrBy, 'cid:' + topicData[1].cid + ':tids:posts', 1, toTid));
 				} else {
 					next();
@@ -156,7 +157,7 @@ module.exports = function (Topics) {
 				});
 			},
 			function (next) {
-				if (parseInt(topicData[0].cid, 10) === parseInt(topicData[1].cid, 10)) {
+				if (topicData[0].cid === topicData[1].cid) {
 					return callback();
 				}
 

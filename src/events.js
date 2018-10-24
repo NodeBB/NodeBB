@@ -86,10 +86,7 @@ events.getEvents = function (filter, start, stop, callback) {
 			db.getSortedSetRevRange('events:time' + (filter ? ':' + filter : ''), start, stop, next);
 		},
 		function (eids, next) {
-			var keys = eids.map(function (eid) {
-				return 'event:' + eid;
-			});
-			db.getObjects(keys, next);
+			db.getObjects(eids.map(eid => 'event:' + eid), next);
 		},
 		function (eventsData, next) {
 			eventsData = eventsData.filter(Boolean);

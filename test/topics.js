@@ -685,7 +685,7 @@ describe('Topic\'s', function () {
 					var topic;
 					var i;
 					for (i = 0; i < topics.length; i += 1) {
-						if (parseInt(topics[i].tid, 10) === parseInt(newTid, 10)) {
+						if (topics[i].tid === parseInt(newTid, 10)) {
 							assert.equal(false, topics[i].unread, 'ignored topic was marked as unread in recent list');
 							return done();
 						}
@@ -1384,7 +1384,7 @@ describe('Topic\'s', function () {
 					topics.getUnreadTids({ cid: 0, uid: adminUid }, next);
 				},
 				function (unreadTids, next) {
-					assert(!unreadTids.includes(parseInt(topic.tid, 10)));
+					assert(!unreadTids.includes(topic.tid));
 					User.blocks.remove(blockedUid, adminUid, next);
 				},
 			], done);

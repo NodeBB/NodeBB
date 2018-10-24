@@ -202,8 +202,8 @@ module.exports = function (Topics) {
 				Topics.getLatestUndeletedReply(tid, next);
 			},
 			function (pid, next) {
-				if (parseInt(pid, 10)) {
-					return callback(null, pid.toString());
+				if (pid) {
+					return callback(null, pid);
 				}
 				Topics.getTopicField(tid, 'mainPid', next);
 			},
@@ -211,7 +211,7 @@ module.exports = function (Topics) {
 				posts.getPostFields(mainPid, ['pid', 'deleted'], next);
 			},
 			function (mainPost, next) {
-				next(null, parseInt(mainPost.pid, 10) && parseInt(mainPost.deleted, 10) !== 1 ? mainPost.pid.toString() : null);
+				next(null, mainPost.pid && !mainPost.deleted ? mainPost.pid : null);
 			},
 		], callback);
 	};
@@ -251,7 +251,7 @@ module.exports = function (Topics) {
 				return isDeleted && !done;
 			},
 			function (err) {
-				callback(err, latestPid);
+				callback(err, parseInt(latestPid, 10));
 			}
 		);
 	};

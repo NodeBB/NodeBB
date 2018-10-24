@@ -212,9 +212,7 @@ module.exports = function (Topics) {
 				Topics.getTopicsFields(tids, ['cid'], next);
 			},
 			function (topicData, next) {
-				var uniqueCids = _.uniq(topicData.map(function (topicData) {
-					return topicData && parseInt(topicData.cid, 10);
-				}));
+				var uniqueCids = _.uniq(topicData.map(topicData => topicData && topicData.cid));
 
 				if (uniqueCids.length > 1 || !uniqueCids.length || !uniqueCids[0]) {
 					return next(new Error('[[error:invalid-data]]'));
