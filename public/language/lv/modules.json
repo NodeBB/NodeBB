@@ -4,7 +4,7 @@
     "chat.send": "Nosūtīt",
     "chat.no_active": "Nav aktīvo sarunu.",
     "chat.user_typing": "%1 raksta...",
-    "chat.user_has_messaged_you": "%1 ir Tev nosūtījis sarunu",
+    "chat.user_has_messaged_you": "%1 ir sācis ar Tevi sarunāties",
     "chat.see_all": "Skatīt visas sarunas",
     "chat.mark_all_read": "Atzīmēt visas sarunas kā lasītas",
     "chat.no-messages": "Lūdzu, izvēlies adresātu, lai skatītu sarunu vēsturi",

@@ -39,7 +39,7 @@
     "deleted_message": "This topic has been deleted. Only users with topic management privileges can see it.",
     "following_topic.message": "You will now be receiving notifications when somebody posts to this topic.",
     "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
-    "ignoring_topic.message": "Šis temats vairs nebūs redzams nelasīto tematu sarakstā. Tev paziņos, kad tiksi pieminēts, vai kāds balsos \"par\" Tavu rakstu.",
+    "ignoring_topic.message": "Šis temats vairs nebūs redzams nelasīto tematu sarakstā. Tev paziņos, kad tiksi pieminēts(-ēta), vai kāds balsos \"par\" Tavu rakstu.",
     "login_to_subscribe": "Lūdzu, reģistrēties vai ielogoties, lai abonētu šo tematu.",
     "markAsUnreadForAll.success": "Temats atzīmēts kā nelasīts visiem.",
     "mark_unread": "Atzīmēt kā nelasītu",

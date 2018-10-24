@@ -64,7 +64,7 @@
     "more": "Vairāk",
     "posted_ago_by_guest": "Viesis publicēja %1",
     "posted_ago_by": "%2 publicēja %1",
-    "posted_ago": "publicēts %1",
+    "posted_ago": "publicēts \"%1\"",
     "posted_in": "publicēts kategorijā \"%1\"",
     "posted_in_by": "%2 publicēja kategorijā %1",
     "posted_in_ago": "publicēts kategorijā %1 %2",

@@ -47,8 +47,8 @@
 	"users.postcount": "raksti",
 	"users.reputation": "ranga punkti",
 	"users.flags": "atzīmes",
-	"users.joined": "reģistrējies",
-	"users.last-online": "pēdējoreiz redzēts",
+	"users.joined": "reģistrējies(-jusies)",
+	"users.last-online": "pēdējoreiz redzēts(-ēta)",
 	"users.banned": "bloķēts?",
 
 	"create.username": "Vārds",
