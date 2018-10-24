@@ -10,6 +10,7 @@ var search = require('../search');
 module.exports = function (Topics) {
 	Topics.getSuggestedTopics = function (tid, uid, start, stop, callback) {
 		var tids;
+		tid = parseInt(tid, 10);
 		async.waterfall([
 			function (next) {
 				async.parallel({
@@ -23,9 +24,7 @@ module.exports = function (Topics) {
 			},
 			function (results, next) {
 				tids = results.tagTids.concat(results.searchTids);
-				tids = tids.filter(function (_tid) {
-					return parseInt(_tid, 10) !== parseInt(tid, 10);
-				});
+				tids = tids.filter(_tid => _tid !== tid);
 				tids = _.shuffle(_.uniq(tids));
 
 				if (stop !== -1 && tids.length < stop - start + 1) {
@@ -78,9 +77,7 @@ module.exports = function (Topics) {
 				}, next);
 			},
 			function (data, next) {
-				var tids = data.posts.map(function (post) {
-					return post && parseInt(post.tid, 10);
-				});
+				var tids = data.posts.map(post => post && post.tid);
 				next(null, tids);
 			},
 		], callback);
@@ -96,10 +93,8 @@ module.exports = function (Topics) {
 			},
 			function (data, next) {
 				var tids = data.topics.filter(function (topic) {
-					return topic && !topic.deleted && parseInt(tid, 10) !== parseInt(topic.tid, 10);
-				}).map(function (topic) {
-					return topic && parseInt(topic.tid, 10);
-				});
+					return topic && !topic.deleted && tid !== topic.tid;
+				}).map(topic => topic && topic.tid);
 				next(null, tids);
 			},
 		], callback);

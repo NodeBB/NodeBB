@@ -60,7 +60,7 @@
 	"digest-freq.monthly": "Ik mēnesi",
 	"email-chat-notifs": "Sūtīt e-pastu, ja ierodas jauna saruna un es neesmu tiešsaistē",
 	"email-post-notif": "Sūtīt e-pastu, kad kāds raksta tematā, kuru esmu abonējis",
-	"follow-created-topics": "Sekot tematiem, kurus esi izveidojis",
-	"follow-replied-topics": "Sekot tematiem, kuros esi rakstījis",
+	"follow-created-topics": "Sekot tematiem, kurus esi izveidojis(-jusi)",
+	"follow-replied-topics": "Sekot tematiem, kuros esi rakstījis(-jusi)",
 	"default-notification-settings": "Noklusējuma ziņojumu iestatījumi"
 }

@@ -9,5 +9,5 @@
 	"max-name-length": "Maksimālais grupas nosaukuma garums",
 	"cover-image": "Galvenes bildes",
 	"default-cover": "Noklusējama galvenes bildes",
-	"default-cover-help": "Add comma-separated default cover images for groups that don't have an uploaded cover image"
+	"default-cover-help": "Pievienot ar komatu atdalītu sarakstu no noklusējuma galvenes bildēm tām grupām, kam nav augšupielādēta galvenes bilde"
 }

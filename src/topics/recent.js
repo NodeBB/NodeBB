@@ -59,13 +59,13 @@ module.exports = function (Topics) {
 				Topics.getLatestUndeletedPid(tid, next);
 			},
 			function (pid, next) {
-				if (!parseInt(pid, 10)) {
+				if (!pid) {
 					return callback();
 				}
 				posts.getPostField(pid, 'timestamp', next);
 			},
 			function (timestamp, next) {
-				if (!parseInt(timestamp, 10)) {
+				if (!timestamp) {
 					return callback();
 				}
 				Topics.updateLastPostTime(tid, timestamp, next);

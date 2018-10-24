@@ -32,5 +32,5 @@
 	"keep-all-user-images": "Saglabāt serverī avataru un profila vāku vecās versijas",
 	"profile-covers": "Profilu vāki",
 	"default-covers": "Noklusējama galvenes bildes",
-	"default-covers-help": "Add comma-separated default cover images for accounts that don't have an uploaded cover image"
+	"default-covers-help": "Pievienot ar komatu atdalītu sarakstu no noklusējuma galvenes bildēm tiem kontiem, kam nav augšupielādēta galvenes bilde"
 }

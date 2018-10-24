@@ -18,9 +18,10 @@ module.exports = function (Topics) {
 		if (!Array.isArray(tids) || !tids.length) {
 			return callback(null, []);
 		}
-		var keys = tids.map(tid => 'topic:' + tid);
+
 		async.waterfall([
 			function (next) {
+				const keys = tids.map(tid => 'topic:' + tid);
 				if (fields.length) {
 					db.getObjectsFields(keys, fields, next);
 				} else {

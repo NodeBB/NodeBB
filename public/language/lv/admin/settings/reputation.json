@@ -1,7 +1,7 @@
 {
 	"reputation": "Ranga punktu sistēma",
 	"disable": "Atspējot ranga punktu sistēmu",
-	"disable-down-voting": "Atspējot balsot \"pret\"",
+	"disable-down-voting": "Atspējot balsošanu \"pret\"",
 	"votes-are-public": "Visi balsojumi ir publiski",
 	"thresholds": "Aktivitātes sliekšņi",
 	"min-rep-downvote": "Minimālie ranga punkti, lai balsotu \"pret\" rakstiem",

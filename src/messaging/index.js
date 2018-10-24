@@ -4,21 +4,21 @@
 var async = require('async');
 var validator = require('validator');
 
-var db = require('./database');
-var user = require('./user');
-var plugins = require('./plugins');
-var meta = require('./meta');
-var utils = require('./utils');
+var db = require('../database');
+var user = require('../user');
+var plugins = require('../plugins');
+var meta = require('../meta');
+var utils = require('../utils');
 
 var Messaging = module.exports;
 
-require('./messaging/data')(Messaging);
-require('./messaging/create')(Messaging);
-require('./messaging/delete')(Messaging);
-require('./messaging/edit')(Messaging);
-require('./messaging/rooms')(Messaging);
-require('./messaging/unread')(Messaging);
-require('./messaging/notifications')(Messaging);
+require('./data')(Messaging);
+require('./create')(Messaging);
+require('./delete')(Messaging);
+require('./edit')(Messaging);
+require('./rooms')(Messaging);
+require('./unread')(Messaging);
+require('./notifications')(Messaging);
 
 
 Messaging.getMessages = function (params, callback) {
@@ -59,7 +59,7 @@ Messaging.getMessages = function (params, callback) {
 
 			// Filter out deleted messages unless you're the sender of said message
 			messageData = messageData.filter(function (messageData) {
-				return (!messageData.deleted || parseInt(messageData.fromuid, 10) === parseInt(params.uid, 10));
+				return (!messageData.deleted || messageData.fromuid === parseInt(params.uid, 10));
 			});
 
 			next(null, messageData);
@@ -384,4 +384,4 @@ Messaging.hasPrivateChat = function (uid, withUid, callback) {
 	], callback);
 };
 
-Messaging.async = require('./promisify')(Messaging);
+Messaging.async = require('../promisify')(Messaging);

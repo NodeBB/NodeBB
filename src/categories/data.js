@@ -89,12 +89,10 @@ function modifyCategory(category) {
 	}
 
 	if (category.hasOwnProperty('post_count')) {
-		category.post_count = category.post_count || 0;
 		category.totalPostCount = category.post_count;
 	}
 
 	if (category.hasOwnProperty('topic_count')) {
-		category.topic_count = category.topic_count || 0;
 		category.totalTopicCount = category.topic_count;
 	}
 
