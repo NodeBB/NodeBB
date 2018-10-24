@@ -264,7 +264,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 			graphs.registered = new Chart(registeredCtx, {
 				type: 'doughnut',
 				data: {
-					labels: translations.slice(2, 4),
+					labels: translations.slice(5, 7),
 					datasets: [{
 						data: [1, 1],
 						backgroundColor: ['#F7464A', '#46BFBD'],
@@ -282,7 +282,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 			graphs.presence = new Chart(presenceCtx, {
 				type: 'doughnut',
 				data: {
-					labels: translations.slice(4, 9),
+					labels: translations.slice(7, 12),
 					datasets: [{
 						data: [1, 1, 1, 1, 1],
 						backgroundColor: ['#F7464A', '#46BFBD', '#FDB45C', '#949FB1', '#9FB194'],
