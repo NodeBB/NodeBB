@@ -5,10 +5,6 @@
 			<div class="panel-body">
 				<div class="graph-container" id="analytics-traffic-container">
 					<i class="fa fa-expand"></i>
-					<ul class="graph-legend">
-						<li><div class="page-views"></div><span>[[admin/general/dashboard:page-views]]</span></li>
-						<li><div class="unique-visitors"></div><span>[[admin/general/dashboard:unique-visitors]]</span></li>
-					</ul>
 					<canvas id="analytics-traffic" width="100%" height="400"></canvas>
 				</div>
 				<hr/>

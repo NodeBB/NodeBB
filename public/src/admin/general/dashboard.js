@@ -227,7 +227,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 				options: {
 					responsive: true,
 					legend: {
-						display: false,
+						display: true,
 					},
 					scales: {
 						yAxes: [{
