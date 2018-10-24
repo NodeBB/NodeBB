@@ -246,7 +246,7 @@ module.exports = function (Topics) {
 	topicTools.move = function (tid, data, callback) {
 		var topic;
 		var oldCid;
-		var cid = data.cid;
+		var cid = parseInt(data.cid, 10);
 
 		async.waterfall([
 			function (next) {
@@ -257,7 +257,7 @@ module.exports = function (Topics) {
 				if (!topic) {
 					return next(new Error('[[error:no-topic]]'));
 				}
-				if (parseInt(cid, 10) === parseInt(topic.cid, 10)) {
+				if (cid === topic.cid) {
 					return next(new Error('[[error:cant-move-topic-to-same-category]]'));
 				}
 				db.sortedSetsRemove([
@@ -277,7 +277,7 @@ module.exports = function (Topics) {
 				db.sortedSetAdd('cid:' + cid + ':uid:' + topic.uid + ':tids', topic.timestamp, tid, next);
 			},
 			function (next) {
-				if (parseInt(topic.pinned, 10)) {
+				if (topic.pinned) {
 					db.sortedSetAdd('cid:' + cid + ':tids:pinned', Date.now(), tid, next);
 				} else {
 					async.parallel([

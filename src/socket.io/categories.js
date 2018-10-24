@@ -188,11 +188,6 @@ function ignoreOrWatch(fn, socket, cid, callback) {
 			categories.getCategoriesFields(cids, ['cid', 'parentCid'], next);
 		},
 		function (categoryData, next) {
-			categoryData.forEach(function (c) {
-				c.cid = parseInt(c.cid, 10);
-				c.parentCid = parseInt(c.parentCid, 10);
-			});
-
 			// filter to subcategories of cid
 			var cat;
 			do {
