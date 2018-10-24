@@ -39,13 +39,13 @@ Plugins.initialized = false;
 var defaultRequire = module.require;
 module.require = function () {
 	try {
-		return defaultRequire.apply(module, arguments);
+		return defaultRequire.apply(this, arguments);
 	} catch (err) {
 		// if we can't find the module try in parent directory
 		// since plugins.js moved into plugins folder
 		if (err.code === 'MODULE_NOT_FOUND') {
 			winston.warn('[plugins/require] please update module.parent.require("' + arguments[0] + '") in your plugin!\n' + err.stack.split('\n')[5]);
-			return defaultRequire.apply(module, [path.join('../', arguments[0])]);
+			return defaultRequire.apply(this, [path.join('../', arguments[0])]);
 		}
 		throw err;
 	}
