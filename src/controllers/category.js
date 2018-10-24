@@ -66,7 +66,7 @@ categoryController.get = function (req, res, callback) {
 
 			settings = results.userSettings;
 
-			var topicCount = parseInt(results.categoryData.topic_count, 10);
+			var topicCount = results.categoryData.topic_count;
 			pageCount = Math.max(1, Math.ceil(topicCount / settings.topicsPerPage));
 
 			if (topicIndex < 0 || topicIndex > Math.max(topicCount - 1, 0)) {

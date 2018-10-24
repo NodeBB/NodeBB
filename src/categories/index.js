@@ -146,7 +146,7 @@ Categories.getCategories = function (cids, uid, callback) {
 					category.children = results.children[i];
 					category.parent = results.parents[i] || undefined;
 					category.tagWhitelist = results.tagWhitelist[i];
-					category['unread-class'] = (parseInt(category.topic_count, 10) === 0 || (results.hasRead[i] && uid !== 0)) ? '' : 'unread';
+					category['unread-class'] = (category.topic_count === 0 || (results.hasRead[i] && uid !== 0)) ? '' : 'unread';
 					calculateTopicPostCount(category);
 				}
 			});
@@ -168,8 +168,8 @@ function calculateTopicPostCount(category) {
 		return;
 	}
 
-	var postCount = parseInt(category.post_count, 10) || 0;
-	var topicCount = parseInt(category.topic_count, 10) || 0;
+	var postCount = category.post_count;
+	var topicCount = category.topic_count;
 	if (!Array.isArray(category.children) || !category.children.length) {
 		category.totalPostCount = postCount;
 		category.totalTopicCount = topicCount;
@@ -196,21 +196,17 @@ Categories.getParents = function (cids, callback) {
 		function (_categoriesData, next) {
 			categoriesData = _categoriesData;
 
-			parentCids = categoriesData.filter(function (category) {
-				return category && category.hasOwnProperty('parentCid') && parseInt(category.parentCid, 10);
-			}).map(function (category) {
-				return parseInt(category.parentCid, 10);
-			});
+			parentCids = categoriesData.filter(c => c && c.parentCid).map(c => c.parentCid);
 
 			if (!parentCids.length) {
-				return callback(null, cids.map(function () { return null; }));
+				return callback(null, cids.map(() => null));
 			}
 
 			Categories.getCategoriesData(parentCids, next);
 		},
 		function (parentData, next) {
 			parentData = categoriesData.map(function (category) {
-				return parentData[parentCids.indexOf(parseInt(category.parentCid, 10))];
+				return parentData[parentCids.indexOf(category.parentCid)];
 			});
 			next(null, parentData);
 		},
@@ -253,16 +249,14 @@ function getChildrenRecursive(category, uid, callback) {
 			children = children.filter(Boolean);
 			category.children = children;
 
-			var cids = children.map(function (child) {
-				return child.cid;
-			});
+			var cids = children.map(child => child.cid);
 
 			Categories.hasReadCategories(cids, uid, next);
 		},
 		function (hasRead, next) {
 			hasRead.forEach(function (read, i) {
 				var child = category.children[i];
-				child['unread-class'] = (parseInt(child.topic_count, 10) === 0 || (read && uid !== 0)) ? '' : 'unread';
+				child['unread-class'] = (child.topic_count === 0 || (read && uid !== 0)) ? '' : 'unread';
 			});
 
 			next();
@@ -304,7 +298,7 @@ Categories.getTree = function (categories, parentCid) {
 				category.parentCid = 0;
 			}
 
-			if (parseInt(category.parentCid, 10) === parseInt(parentCid, 10)) {
+			if (category.parentCid === parentCid) {
 				tree.push(category);
 				category.children = Categories.getTree(categories, category.cid);
 			}
@@ -341,9 +335,7 @@ Categories.buildForSelectCategories = function (categories, callback) {
 
 	var categoriesData = [];
 
-	categories = categories.filter(function (category) {
-		return category && !parseInt(category.parentCid, 10);
-	});
+	categories = categories.filter(category => category && !category.parentCid);
 
 	categories.forEach(function (category) {
 		recursive(category, categoriesData, '', 0);
