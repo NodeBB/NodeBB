@@ -28,29 +28,29 @@
 	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/post:length]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
-		<div class="row">
-			<div class="col-xs-6">
-			<div class="form-group">
-				<label for="minimumTitleLength">[[admin/settings/post:restrictions.min-title-length]]</label>
-				<input id="minimumTitleLength" type="text" class="form-control" value="3" data-field="minimumTitleLength">
-			</div>
-			<div class="form-group">
-				<label for="maximumTitleLength">[[admin/settings/post:restrictions.max-title-length]]</label>
-				<input id="maximumTitleLength" type="text" class="form-control" value="255" data-field="maximumTitleLength">
-			</div>
-		</div>
-		<div class="col-xs-6">
-			<div class="form-group">
-				<label for="minimumPostLength">[[admin/settings/post:restrictions.min-post-length]]</label>
-				<input id="minimumPostLength" type="text" class="form-control" value="8" data-field="minimumPostLength">
-			</div>
-			<div class="form-group">
-				<label for="maximumPostLength">[[admin/settings/post:restrictions.max-post-length]]</label>
-				<input id="maximumPostLength" type="text" class="form-control" value="32767" data-field="maximumPostLength">
+			<div class="row">
+				<div class="col-xs-6">
+					<div class="form-group">
+						<label for="minimumTitleLength">[[admin/settings/post:restrictions.min-title-length]]</label>
+						<input id="minimumTitleLength" type="text" class="form-control" value="3" data-field="minimumTitleLength">
+					</div>
+					<div class="form-group">
+						<label for="maximumTitleLength">[[admin/settings/post:restrictions.max-title-length]]</label>
+						<input id="maximumTitleLength" type="text" class="form-control" value="255" data-field="maximumTitleLength">
+					</div>
+				</div>
+				<div class="col-xs-6">
+					<div class="form-group">
+						<label for="minimumPostLength">[[admin/settings/post:restrictions.min-post-length]]</label>
+						<input id="minimumPostLength" type="text" class="form-control" value="8" data-field="minimumPostLength">
+					</div>
+					<div class="form-group">
+						<label for="maximumPostLength">[[admin/settings/post:restrictions.max-post-length]]</label>
+						<input id="maximumPostLength" type="text" class="form-control" value="32767" data-field="maximumPostLength">
+					</div>
+				</div>
 			</div>
 		</form>
-			</div>
-		</div>
 	</div>
 </div>
 
@@ -71,7 +71,7 @@
 				<label for="preventTopicDeleteAfterReplies">[[admin/settings/post:restrictions.replies-no-delete]]</label>
 				<input id="preventTopicDeleteAfterReplies" type="text" class="form-control" value="0" data-field="preventTopicDeleteAfterReplies">
 			</div>
-			
+
 			<div class="form-group">
 				<label for="topicStaleDays">[[admin/settings/post:restrictions.days-until-stale]]</label>
 				<input id="topicStaleDays" type="text" class="form-control" value="60" data-field="topicStaleDays">
@@ -98,7 +98,7 @@
 					<div class="form-group">
 					<label for="initialPostDelay">[[admin/settings/post:restrictions.seconds-defore-new]]</label>
 					<input id="initialPostDelay" type="text" class="form-control" value="10" data-field="initialPostDelay">
-						
+
 					</div>
 				</div>
 			</div>
@@ -113,7 +113,7 @@
 					[[admin/settings/post:restrictions.post-queue-help]]
 				</p>
 			</div>
-			
+
 			<div class="form-group">
 				<label for="newbiePostDelayThreshold">[[admin/settings/post:restrictions.rep-threshold]]</label>
 				<input id="newbiePostDelayThreshold" type="text" class="form-control" value="3" data-field="newbiePostDelayThreshold">
