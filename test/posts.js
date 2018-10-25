@@ -273,10 +273,10 @@ describe('Post\'s', function () {
 				assert.ifError(err);
 				posts.getPostField(replyPid, 'deleted', function (err, deleted) {
 					assert.ifError(err);
-					assert.equal(parseInt(deleted, 10), 1);
+					assert.strictEqual(deleted, 1);
 					posts.getPostField(mainPid, 'deleted', function (err, deleted) {
 						assert.ifError(err);
-						assert.equal(parseInt(deleted, 10), 1);
+						assert.strictEqual(deleted, 1);
 						done();
 					});
 				});
@@ -290,7 +290,7 @@ describe('Post\'s', function () {
 					assert.ifError(err);
 					topics.getTopicField(data.topicData.tid, 'deleted', function (err, deleted) {
 						assert.ifError(err);
-						assert.equal(parseInt(deleted, 10), 1);
+						assert.strictEqual(deleted, 1);
 						done();
 					});
 				});

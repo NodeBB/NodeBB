@@ -65,7 +65,7 @@ module.exports = function (Posts) {
 					userData.userslug = userData.userslug || '';
 					userData.reputation = userData.reputation || 0;
 					userData.postcount = userData.postcount || 0;
-					userData.banned = parseInt(userData.banned, 10) === 1;
+					userData.banned = userData.banned === 1;
 					userData.picture = userData.picture || '';
 					userData.status = user.getStatus(userData);
 					userData.signature = validator.escape(String(userData.signature || ''));

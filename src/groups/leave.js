@@ -47,15 +47,13 @@ module.exports = function (Groups) {
 				var tasks = [];
 
 				var emptyPrivilegeGroups = groupData.filter(function (groupData) {
-					return groupData && Groups.isPrivilegeGroup(groupData.name) && parseInt(groupData.memberCount, 10) === 0;
+					return groupData && Groups.isPrivilegeGroup(groupData.name) && groupData.memberCount === 0;
 				});
 				if (emptyPrivilegeGroups.length) {
 					tasks.push(async.apply(Groups.destroy, emptyPrivilegeGroups));
 				}
 
-				var visibleGroups = groupData.filter(function (groupData) {
-					return groupData && parseInt(groupData.hidden, 10) !== 1;
-				});
+				var visibleGroups = groupData.filter(groupData => groupData && !groupData.hidden);
 				if (visibleGroups.length) {
 					tasks.push(async.apply(db.sortedSetAdd, 'groups:visible:memberCount', visibleGroups.map(groupData => groupData.memberCount), visibleGroups.map(groupData => groupData.name)));
 				}

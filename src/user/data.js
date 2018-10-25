@@ -13,8 +13,8 @@ var utils = require('../utils');
 
 const intFields = [
 	'uid', 'postcount', 'topiccount', 'reputation', 'profileviews',
-	'banned', 'email:confirmed', 'joindate', 'lastonline', 'lastqueuetime',
-	'lastposttime',
+	'banned', 'banned:expire', 'email:confirmed', 'joindate', 'lastonline', 'lastqueuetime',
+	'lastposttime', 'followingCount', 'followerCount',
 ];
 
 module.exports = function (User) {
@@ -167,7 +167,7 @@ module.exports = function (User) {
 				user.picture = User.getDefaultAvatar();
 			}
 
-			if (user.hasOwnProperty('status') && parseInt(user.lastonline, 10)) {
+			if (user.hasOwnProperty('status') && user.lastonline) {
 				user.status = User.getStatus(user);
 			}
 
@@ -192,7 +192,7 @@ module.exports = function (User) {
 			}
 
 			if (user.hasOwnProperty('banned:expire')) {
-				user.banned_until = parseInt(user['banned:expire'], 10) || 0;
+				user.banned_until = user['banned:expire'];
 				user.banned_until_readable = user.banned_until ? new Date(user.banned_until).toString() : 'Not Banned';
 			}
 		});

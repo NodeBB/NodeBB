@@ -27,9 +27,9 @@ module.exports = function (Posts) {
 				Posts.getPostField(pid, 'deleted', next);
 			},
 			function (deleted, next) {
-				if (parseInt(deleted, 10) === 1 && isDelete) {
+				if (deleted && isDelete) {
 					return next(new Error('[[error:post-already-deleted]]'));
-				} else if (parseInt(deleted, 10) !== 1 && !isDelete) {
+				} else if (!deleted && !isDelete) {
 					return next(new Error('[[error:post-already-restored]]'));
 				}
 

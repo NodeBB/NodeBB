@@ -89,9 +89,7 @@ module.exports = function (Topics) {
 				} else if (params.sort === 'votes') {
 					sortFn = sortVotes;
 				}
-				tids = topicData.sort(sortFn).map(function (topic) {
-					return topic && topic.tid;
-				});
+				tids = topicData.sort(sortFn).map(topic => topic && topic.tid);
 				next(null, tids);
 			},
 		], callback);
@@ -102,17 +100,17 @@ module.exports = function (Topics) {
 	}
 
 	function sortVotes(a, b) {
-		if (parseInt(a.votes, 10) !== parseInt(b.votes, 10)) {
+		if (a.votes !== b.votes) {
 			return b.votes - a.votes;
 		}
-		return parseInt(b.postcount, 10) - parseInt(a.postcount, 10);
+		return b.postcount - a.postcount;
 	}
 
 	function sortPopular(a, b) {
-		if (parseInt(a.postcount, 10) !== parseInt(b.postcount, 10)) {
+		if (a.postcount !== b.postcount) {
 			return b.postcount - a.postcount;
 		}
-		return parseInt(b.viewcount, 10) - parseInt(a.viewcount, 10);
+		return b.viewcount - a.viewcount;
 	}
 
 	function filterTids(tids, params, callback) {

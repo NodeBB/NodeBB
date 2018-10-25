@@ -10,7 +10,7 @@ var translator = require('../translator');
 
 const intFields = [
 	'tid', 'cid', 'uid', 'mainPid', 'deleted', 'locked', 'pinned',
-	'timestamp', 'upvotes', 'downvotes',
+	'timestamp', 'upvotes', 'downvotes', 'lastposttime',
 ];
 
 module.exports = function (Topics) {
@@ -114,6 +114,7 @@ function modifyTopic(topic) {
 	if (topic.hasOwnProperty('timestamp')) {
 		topic.timestampISO = utils.toISOString(topic.timestamp);
 	}
+
 	if (topic.hasOwnProperty('lastposttime')) {
 		topic.lastposttimeISO = utils.toISOString(topic.lastposttime);
 	}

@@ -79,9 +79,7 @@ Topics.getTopicsByTids = function (tids, uid, callback) {
 			function mapFilter(array, field) {
 				return array.map(function (topic) {
 					return topic && topic[field] && topic[field].toString();
-				}).filter(function (value) {
-					return utils.isNumber(value);
-				});
+				}).filter(value => utils.isNumber(value));
 			}
 
 			topics = _topics;
@@ -132,25 +130,17 @@ Topics.getTopicsByTids = function (tids, uid, callback) {
 					topics[i].teaser = results.teasers[i];
 					topics[i].tags = results.tags[i];
 
-					topics[i].isOwner = parseInt(topics[i].uid, 10) === parseInt(uid, 10);
-					topics[i].pinned = parseInt(topics[i].pinned, 10) === 1;
-					topics[i].locked = parseInt(topics[i].locked, 10) === 1;
-					topics[i].deleted = parseInt(topics[i].deleted, 10) === 1;
+					topics[i].isOwner = topics[i].uid === parseInt(uid, 10);
 					topics[i].ignored = results.isIgnored[i];
 					topics[i].unread = !results.hasRead[i] && !results.isIgnored[i];
 					topics[i].bookmark = results.bookmarks[i];
 					topics[i].unreplied = !topics[i].teaser;
 
-					topics[i].upvotes = parseInt(topics[i].upvotes, 10) || 0;
-					topics[i].downvotes = parseInt(topics[i].downvotes, 10) || 0;
-					topics[i].votes = topics[i].upvotes - topics[i].downvotes;
 					topics[i].icons = [];
 				}
 			}
 
-			topics = topics.filter(function (topic) {
-				return topic &&	topic.category && !topic.category.disabled;
-			});
+			topics = topics.filter(topic => topic && topic.category && !topic.category.disabled);
 
 			plugins.fireHook('filter:topics.get', { topics: topics, uid: uid }, next);
 		},
@@ -203,10 +193,7 @@ Topics.getTopicWithPosts = function (topicData, set, uid, start, stop, reverse, 
 			topicData.mergedTimestampISO = utils.toISOString(topicData.mergedTimestamp);
 			topicData.related = results.related || [];
 
-			topicData.unreplied = parseInt(topicData.postcount, 10) === 1;
-			topicData.deleted = parseInt(topicData.deleted, 10) === 1;
-			topicData.locked = parseInt(topicData.locked, 10) === 1;
-			topicData.pinned = parseInt(topicData.pinned, 10) === 1;
+			topicData.unreplied = topicData.postcount === 1;
 
 			topicData.icons = [];
 
@@ -338,7 +325,7 @@ function getMainPosts(mainPids, uid, callback) {
 
 Topics.isLocked = function (tid, callback) {
 	Topics.getTopicField(tid, 'locked', function (err, locked) {
-		callback(err, parseInt(locked, 10) === 1);
+		callback(err, locked === 1);
 	});
 };
 

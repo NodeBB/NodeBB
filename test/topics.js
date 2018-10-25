@@ -373,9 +373,9 @@ describe('Topic\'s', function () {
 		it('should pin topic', function (done) {
 			socketTopics.pin({ uid: 1 }, { tids: [newTopic.tid], cid: categoryObj.cid }, function (err) {
 				assert.ifError(err);
-				db.getObjectField('topic:' + newTopic.tid, 'pinned', function (err, pinned) {
+				topics.getTopicField(newTopic.tid, 'pinned', function (err, pinned) {
 					assert.ifError(err);
-					assert.strictEqual(parseInt(pinned, 10), 1);
+					assert.strictEqual(pinned, 1);
 					done();
 				});
 			});
@@ -384,9 +384,9 @@ describe('Topic\'s', function () {
 		it('should unpin topic', function (done) {
 			socketTopics.unpin({ uid: 1 }, { tids: [newTopic.tid], cid: categoryObj.cid }, function (err) {
 				assert.ifError(err);
-				db.getObjectField('topic:' + newTopic.tid, 'pinned', function (err, pinned) {
+				topics.getTopicField(newTopic.tid, 'pinned', function (err, pinned) {
 					assert.ifError(err);
-					assert.strictEqual(parseInt(pinned, 10), 0);
+					assert.strictEqual(pinned, 0);
 					done();
 				});
 			});

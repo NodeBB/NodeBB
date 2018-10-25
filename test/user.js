@@ -456,12 +456,19 @@ describe('User', function () {
 			User.reset.commit(code, 'newpassword', function (err) {
 				assert.ifError(err);
 
-				db.getObject('user:' + uid, function (err, userData) {
+				async.parallel({
+					userData: function (next) {
+						User.getUserData(uid, next);
+					},
+					password: function (next) {
+						db.getObjectField('user:' + uid, 'password', next);
+					},
+				}, function (err, results) {
 					assert.ifError(err);
-					Password.compare('newpassword', userData.password, function (err, match) {
+					Password.compare('newpassword', results.password, function (err, match) {
 						assert.ifError(err);
 						assert(match);
-						assert.equal(parseInt(userData['email:confirmed'], 10), 1);
+						assert.strictEqual(results.userData['email:confirmed'], 1);
 						done();
 					});
 				});

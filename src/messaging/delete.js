@@ -7,7 +7,7 @@ module.exports = function (Messaging) {
 		async.waterfall([
 			async.apply(Messaging.getMessageField, mid, 'deleted'),
 			function (deleted, next) {
-				if (parseInt(deleted, 10)) {
+				if (deleted) {
 					return next(new Error('[[error:chat-deleted-already]]'));
 				}
 
@@ -20,7 +20,7 @@ module.exports = function (Messaging) {
 		async.waterfall([
 			async.apply(Messaging.getMessageField, mid, 'deleted'),
 			function (deleted, next) {
-				if (!parseInt(deleted, 10)) {
+				if (!deleted) {
 					return next(new Error('[[error:chat-restored-already]]'));
 				}
 

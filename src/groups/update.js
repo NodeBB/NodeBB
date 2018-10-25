@@ -131,7 +131,7 @@ module.exports = function (Groups) {
 				Groups.getGroupFields(groupName, ['private'], next);
 			},
 			function (currentValue, next) {
-				var currentlyPrivate = parseInt(currentValue.private, 10) === 1;
+				var currentlyPrivate = currentValue.private === 1;
 				if (!currentlyPrivate || currentlyPrivate === isPrivate) {
 					return callback();
 				}
@@ -142,11 +142,9 @@ module.exports = function (Groups) {
 					return callback();
 				}
 				var now = Date.now();
-				var scores = uids.map(function () { return now; });
-
 				winston.verbose('[groups.update] Group is now public, automatically adding ' + uids.length + ' new members, who were pending prior.');
 				async.series([
-					async.apply(db.sortedSetAdd, 'group:' + groupName + ':members', scores, uids),
+					async.apply(db.sortedSetAdd, 'group:' + groupName + ':members', uids.map(() => now), uids),
 					async.apply(db.delete, 'group:' + groupName + ':pending'),
 				], next);
 			},

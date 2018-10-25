@@ -85,14 +85,6 @@ User.getUsersWithFields = function (uids, fields, uid, callback) {
 					if (user.hasOwnProperty('status')) {
 						user.status = User.getStatus(user);
 					}
-
-					if (user.hasOwnProperty('banned')) {
-						user.banned = parseInt(user.banned, 10) === 1;
-					}
-
-					if (user.hasOwnProperty(['email:confirmed'])) {
-						user['email:confirmed'] = parseInt(user['email:confirmed'], 10) === 1;
-					}
 				}
 			});
 			plugins.fireHook('filter:userlist.get', { users: results.userData, uid: uid }, next);
@@ -112,10 +104,10 @@ User.getUsers = function (uids, uid, callback) {
 };
 
 User.getStatus = function (userData) {
-	if (parseInt(userData.uid, 10) <= 0) {
+	if (userData.uid <= 0) {
 		return 'offline';
 	}
-	var isOnline = (Date.now() - parseInt(userData.lastonline, 10)) < 300000;
+	var isOnline = (Date.now() - userData.lastonline) < 300000;
 	return isOnline ? (userData.status || 'online') : 'offline';
 };
 

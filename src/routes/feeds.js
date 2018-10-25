@@ -351,14 +351,14 @@ function generateTopicsFeed(feedOptions, feedTopics, callback) {
 	var feed = new rss(feedOptions);
 
 	if (feedTopics.length > 0) {
-		feed.pubDate = new Date(parseInt(feedTopics[0].lastposttime, 10)).toUTCString();
+		feed.pubDate = new Date(feedTopics[0].lastposttime).toUTCString();
 	}
 
 	async.eachSeries(feedTopics, function (topicData, next) {
 		var feedItem = {
 			title: utils.stripHTMLTags(topicData.title, utils.tags),
 			url: nconf.get('url') + '/topic/' + topicData.slug,
-			date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString(),
+			date: new Date(topicData.lastposttime).toUTCString(),
 		};
 
 		if (topicData.teaser && topicData.teaser.user && !feedOptions.useMainPost) {

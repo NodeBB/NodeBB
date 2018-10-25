@@ -84,7 +84,7 @@ SocketPosts.getRawPost = function (socket, pid, callback) {
 			posts.getPostFields(pid, ['content', 'deleted'], next);
 		},
 		function (postData, next) {
-			if (parseInt(postData.deleted, 10) === 1) {
+			if (postData.deleted) {
 				return next(new Error('[[error:no-post]]'));
 			}
 			next(null, postData.content);

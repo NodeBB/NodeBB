@@ -37,7 +37,6 @@ module.exports = function (SocketPosts) {
 				return callback(err);
 			}
 
-			payload.deleted = parseInt(payload.deleted, 10);
 			payload.privileges = payload.privileges[0];
 
 			const allowed = payload.privileges['posts:history'] && (payload.deleted ? payload.privileges['posts:view_deleted'] : true);

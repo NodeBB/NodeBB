@@ -268,11 +268,11 @@ Messaging.canMessageUser = function (uid, toUid, callback) {
 			user.getUserFields(uid, ['banned', 'email:confirmed'], next);
 		},
 		function (userData, next) {
-			if (parseInt(userData.banned, 10) === 1) {
+			if (userData.banned) {
 				return callback(new Error('[[error:user-banned]]'));
 			}
 
-			if (meta.config.requireEmailConfirmation && parseInt(userData['email:confirmed'], 10) !== 1) {
+			if (meta.config.requireEmailConfirmation && !userData['email:confirmed']) {
 				return callback(new Error('[[error:email-not-confirmed-chat]]'));
 			}
 
@@ -322,11 +322,11 @@ Messaging.canMessageRoom = function (uid, roomId, callback) {
 			user.getUserFields(uid, ['banned', 'email:confirmed'], next);
 		},
 		function (userData, next) {
-			if (parseInt(userData.banned, 10) === 1) {
+			if (userData.banned) {
 				return next(new Error('[[error:user-banned]]'));
 			}
 
-			if (meta.config.requireEmailConfirmation && parseInt(userData['email:confirmed'], 10) !== 1) {
+			if (meta.config.requireEmailConfirmation && !userData['email:confirmed']) {
 				return next(new Error('[[error:email-not-confirmed-chat]]'));
 			}
 

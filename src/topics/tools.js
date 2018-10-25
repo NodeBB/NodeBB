@@ -42,9 +42,9 @@ module.exports = function (Topics) {
 			function (_topicData, next) {
 				topicData = _topicData;
 
-				if (parseInt(topicData.deleted, 10) === 1 && isDelete) {
+				if (topicData.deleted && isDelete) {
 					return callback(new Error('[[error:topic-already-deleted]]'));
-				} else if (parseInt(topicData.deleted, 10) !== 1 && !isDelete) {
+				} else if (!topicData.deleted && !isDelete) {
 					return callback(new Error('[[error:topic-already-restored]]'));
 				}
 
@@ -289,7 +289,7 @@ module.exports = function (Topics) {
 							db.sortedSetAdd('cid:' + cid + ':tids:posts', topic.postcount, tid, next);
 						},
 						function (next) {
-							var votes = (parseInt(topic.upvotes, 10) || 0) - (parseInt(topic.downvotes, 10) || 0);
+							var votes = topic.upvotes - topic.downvotes;
 							db.sortedSetAdd('cid:' + cid + ':tids:votes', votes, tid, next);
 						},
 					], function (err) {

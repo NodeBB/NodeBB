@@ -86,11 +86,11 @@ module.exports = function (Topics) {
 					async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:lastposttime', lastposttime, tid),
 				];
 
-				if (parseInt(topicData.deleted, 10) !== 1) {
+				if (!topicData.deleted) {
 					tasks.push(async.apply(Topics.updateRecent, tid, lastposttime));
 				}
 
-				if (parseInt(topicData.pinned, 10) !== 1) {
+				if (!topicData.pinned) {
 					tasks.push(async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids', lastposttime, tid));
 				}
 				async.series(tasks, next);
