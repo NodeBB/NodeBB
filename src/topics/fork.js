@@ -149,8 +149,6 @@ module.exports = function (Topics) {
 				}
 				if (!topicData[1].pinned) {
 					tasks.push(async.apply(db.sortedSetIncrBy, 'cid:' + topicData[1].cid + ':tids:posts', 1, toTid));
-				} else {
-					next();
 				}
 				async.series(tasks, function (err) {
 					next(err);
