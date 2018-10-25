@@ -27,7 +27,7 @@ module.exports = function (Messaging) {
 				}
 			},
 			function (messages, next) {
-				messages.forEach(modifyMessage);
+				messages.forEach(message => modifyMessage(message, fields));
 				next(null, messages);
 			},
 		], callback);
@@ -161,9 +161,9 @@ module.exports = function (Messaging) {
 	};
 };
 
-function modifyMessage(message) {
+function modifyMessage(message, fields) {
 	if (message) {
-		intFields.forEach(field => db.parseIntField(message, field));
+		db.parseIntFields(message, intFields, fields);
 		if (message.hasOwnProperty('timestamp')) {
 			message.timestampISO = utils.toISOString(message.timestamp);
 		}

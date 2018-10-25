@@ -85,7 +85,7 @@ module.exports = function (User) {
 			function (users, next) {
 				users = uidsToUsers(uids, uniqueUids, users);
 
-				modifyUserData(users, fieldsToRemove, next);
+				modifyUserData(users, fields, fieldsToRemove, next);
 			},
 		], callback);
 	};
@@ -133,13 +133,13 @@ module.exports = function (User) {
 		return uids.map(uid => 'user:' + uid);
 	}
 
-	function modifyUserData(users, fieldsToRemove, callback) {
+	function modifyUserData(users, requestedFields, fieldsToRemove, callback) {
 		users.forEach(function (user) {
 			if (!user) {
 				return;
 			}
 
-			intFields.forEach(field => db.parseIntField(user, field));
+			db.parseIntFields(user, intFields, requestedFields);
 
 			if (user.hasOwnProperty('groupTitle')) {
 				parseGroupTitle(user);

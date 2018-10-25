@@ -224,10 +224,23 @@ describe('Topic\'s', function () {
 				assert(typeof topicData.uid === 'number');
 				assert(typeof topicData.cid === 'number');
 				assert(typeof topicData.mainPid === 'number');
-				assert(typeof topicData.deleted === 'number');
-				assert(typeof topicData.locked === 'number');
-				assert(typeof topicData.pinned === 'number');
+
 				assert(typeof topicData.timestamp === 'number');
+				assert.strictEqual(topicData.upvotes, 0);
+				assert.strictEqual(topicData.downvotes, 0);
+				assert.strictEqual(topicData.votes, 0);
+				assert.strictEqual(topicData.deleted, 0);
+				assert.strictEqual(topicData.locked, 0);
+				assert.strictEqual(topicData.pinned, 0);
+				done();
+			});
+		});
+
+		it('should get a single field', function (done) {
+			topics.getTopicFields(newTopic.tid, ['slug'], function (err, data) {
+				assert.ifError(err);
+				assert(Object.keys(data).length === 1);
+				assert(data.hasOwnProperty('slug'));
 				done();
 			});
 		});

@@ -30,7 +30,7 @@ module.exports = function (Posts) {
 				plugins.fireHook('filter:post.getFields', { posts: posts, fields: fields }, next);
 			},
 			function (data, next) {
-				data.posts.forEach(modifyPost);
+				data.posts.forEach(post => modifyPost(post, fields));
 				next(null, Array.isArray(data.posts) ? data.posts : null);
 			},
 		], callback);
@@ -76,10 +76,9 @@ module.exports = function (Posts) {
 	};
 };
 
-function modifyPost(post) {
+function modifyPost(post, fields) {
 	if (post) {
-		intFields.forEach(field => db.parseIntField(post, field));
-
+		db.parseIntFields(post, intFields, fields);
 		if (post.hasOwnProperty('upvotes') && post.hasOwnProperty('downvotes')) {
 			post.votes = post.upvotes - post.downvotes;
 		}

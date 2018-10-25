@@ -41,7 +41,7 @@ module.exports = function (Groups) {
 					});
 				}
 
-				groupData.forEach(modifyGroup);
+				groupData.forEach(group => modifyGroup(group, fields));
 
 				plugins.fireHook('filter:groups.get', { groups: groupData }, next);
 			},
@@ -80,9 +80,10 @@ module.exports = function (Groups) {
 	};
 };
 
-function modifyGroup(group) {
+function modifyGroup(group, fields) {
 	if (group) {
-		intFields.forEach(field => db.parseIntField(group, field));
+		db.parseIntFields(group, intFields, fields);
+
 		escapeGroupData(group);
 		group.userTitleEnabled = ([null, undefined].includes(group.userTitleEnabled)) ? 1 : group.userTitleEnabled;
 		group.labelColor = validator.escape(String(group.labelColor || '#000000'));

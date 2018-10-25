@@ -11,10 +11,12 @@ if (!databaseName) {
 
 var primaryDB = require('./' + databaseName);
 
-primaryDB.parseIntField = function (data, field) {
-	if (data.hasOwnProperty(field)) {
-		data[field] = parseInt(data[field], 10) || 0;
-	}
+primaryDB.parseIntFields = function (data, intFields, requestedFields) {
+	intFields.forEach((field) => {
+		if (!requestedFields.length || requestedFields.includes(field)) {
+			data[field] = parseInt(data[field], 10) || 0;
+		}
+	});
 };
 
 module.exports = primaryDB;

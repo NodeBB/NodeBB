@@ -29,7 +29,7 @@ module.exports = function (Topics) {
 				}
 			},
 			function (topics, next) {
-				topics.forEach(modifyTopic);
+				topics.forEach(topic => modifyTopic(topic, fields));
 				next(null, topics);
 			},
 		], callback);
@@ -97,12 +97,12 @@ function escapeTitle(topicData) {
 	}
 }
 
-function modifyTopic(topic) {
+function modifyTopic(topic, fields) {
 	if (!topic) {
 		return;
 	}
 
-	intFields.forEach(field => db.parseIntField(topic, field));
+	db.parseIntFields(topic, intFields, fields);
 
 	if (topic.hasOwnProperty('title')) {
 		topic.titleRaw = topic.title;
