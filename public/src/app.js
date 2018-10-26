@@ -111,7 +111,7 @@ app.cacheBuster = null;
 		 *   config (obj)
 		 *   next (string)
 		 */
-		require(['benchpress'], function (Benchpress) {
+		require(['benchpress', 'translator'], function (Benchpress, translator) {
 			app.user = data.header.user;
 			data.header.config = data.config;
 			config = data.config;
@@ -122,20 +122,20 @@ app.cacheBuster = null;
 			socket.open();
 
 			// Re-render top bar menu
-			var toRender = [
-				['menu', $('#header-menu .container')],
-				['chats-menu', $('#chats-menu')],
-				['slideout-menu', $('.slideout-menu')],
-			];
-			Promise.all(toRender.map(function (set) {
-				return new Promise(function (resolve) {
-					app.parseAndTranslate('partials/' + set[0], data.header, function (html) {
-						set[1].html(html);
-						resolve();
-					});
+			var toRender = {
+				menu: $('#header-menu .container'),
+				'chats-menu': $('#chats-menu'),
+				'slideout-menu': $('.slideout-menu'),
+			};
+			Promise.all(Object.keys(toRender).map(function (tpl) {
+				return Benchpress.render('partials/' + tpl, data.header).then(function (render) {
+					return translator.Translator.create().translate(render);
 				});
-			})).then(function () {
-				callback();
+			})).then(function (html) {
+				Object.values(toRender).forEach(function (element, idx) {
+					element.html(html[idx]);
+					callback();
+				});
 			});
 		});
 	};
