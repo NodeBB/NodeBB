@@ -19,6 +19,9 @@ module.exports = function (redisClient, module) {
 			}
 		});
 
+		if (!Object.keys(data).length) {
+			return callback();
+		}
 		redisClient.hmset(key, data, function (err) {
 			callback(err);
 		});
