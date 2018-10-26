@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/tag', ['forum/recent', 'forum/infinitescroll'], function (recent, infinitescroll) {
+define('forum/tag', ['topicList', 'forum/infinitescroll'], function (topicList, infinitescroll) {
 	var Tag = {};
 
 	Tag.init = function () {
@@ -30,7 +30,7 @@ define('forum/tag', ['forum/recent', 'forum/infinitescroll'], function (recent, 
 				count: config.topicsPerPage,
 			}, function (data, done) {
 				if (data.topics && data.topics.length) {
-					recent.onTopicsLoaded('tag', data.topics, false, direction, done);
+					topicList.onTopicsLoaded('tag', data.topics, false, direction, done);
 				} else {
 					done();
 					$('#load-more-btn').hide();
