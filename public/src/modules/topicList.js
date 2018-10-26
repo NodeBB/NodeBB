@@ -33,6 +33,15 @@ define('topicList', ['forum/infinitescroll', 'handleBack'], function (infinitesc
 		handleBack.init(function (after, cb) {
 			loadTopicsAfter(after, 1, cb);
 		});
+
+		if ($('body').height() <= $(window).height() && $('[component="category"]').children().length >= 20) {
+			$('#load-more-btn').show();
+		}
+
+		$('#load-more-btn').on('click', function () {
+			TopicList.loadMoreTopics(1);
+		});
+
 		$(window).trigger('action:topics.loaded', { topics: ajaxify.data.topics });
 	};
 

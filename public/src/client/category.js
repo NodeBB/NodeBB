@@ -6,13 +6,13 @@ define('forum/category', [
 	'share',
 	'navigator',
 	'forum/category/tools',
-	'forum/recent',
+	'topicList',
 	'sort',
 	'components',
 	'translator',
 	'topicSelect',
 	'handleBack',
-], function (infinitescroll, share, navigator, categoryTools, recent, sort, components, translator, topicSelect, handleBack) {
+], function (infinitescroll, share, navigator, categoryTools, topicList, sort, components, translator, topicSelect, handleBack) {
 	var Category = {};
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
@@ -25,7 +25,7 @@ define('forum/category', [
 
 	function removeListeners() {
 		categoryTools.removeListeners();
-		recent.removeListeners();
+		topicList.removeListeners();
 	}
 
 	Category.init = function () {
@@ -36,7 +36,7 @@ define('forum/category', [
 		share.addShareHandlers(ajaxify.data.name);
 
 		categoryTools.init(cid);
-		recent.watchForNewPosts();
+		topicList.watchForNewPosts();
 
 		sort.handleSort('categoryTopicSort', 'user.setCategorySort', 'category/' + ajaxify.data.slug);
 
