@@ -34,7 +34,7 @@ require('./bookmarks')(Topics);
 require('./merge')(Topics);
 
 Topics.exists = function (tid, callback) {
-	db.isSortedSetMember('topics:tid', tid, callback);
+	db.exists('topic:' + tid, callback);
 };
 
 Topics.getTopicsFromSet = function (set, uid, start, stop, callback) {

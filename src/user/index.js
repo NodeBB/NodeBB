@@ -112,7 +112,7 @@ User.getStatus = function (userData) {
 };
 
 User.exists = function (uid, callback) {
-	db.isSortedSetMember('users:joindate', uid, callback);
+	db.exists('user:' + uid, callback);
 };
 
 User.existsBySlug = function (userslug, callback) {
