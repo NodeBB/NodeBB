@@ -1,6 +1,5 @@
 'use strict';
 
-
 define('topicList', ['forum/infinitescroll', 'handleBack'], function (infinitescroll, handleBack) {
 	var TopicList = {};
 	var templateName = '';
@@ -15,7 +14,7 @@ define('topicList', ['forum/infinitescroll', 'handleBack'], function (infinitesc
 	var newTopicCount = 0;
 	var newPostCount = 0;
 
-	$(window).on('action:ajaxify.start', function (ev, data) {
+	$(window).on('action:ajaxify.start', function () {
 		TopicList.removeListeners();
 	});
 
@@ -280,8 +279,6 @@ define('topicList', ['forum/infinitescroll', 'handleBack'], function (infinitesc
 			callback();
 		});
 	};
-
-
 
 	return TopicList;
 });
