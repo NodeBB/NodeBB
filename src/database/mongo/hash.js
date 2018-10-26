@@ -108,7 +108,11 @@ module.exports = function (db, module) {
 			return getFromCache();
 		}
 
-		db.collection('objects').find({ _key: { $in: nonCachedKeys } }, { projection: { _id: 0 } }).toArray(function (err, data) {
+		var query = { _key: { $in: nonCachedKeys } };
+		if (nonCachedKeys.length === 1) {
+			query._key = nonCachedKeys[0];
+		}
+		db.collection('objects').find(query, { projection: { _id: 0 } }).toArray(function (err, data) {
 			if (err) {
 				return callback(err);
 			}

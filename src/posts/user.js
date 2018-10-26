@@ -72,7 +72,7 @@ module.exports = function (Posts) {
 					userData.fullname = userSettings[index].showfullname ? validator.escape(String(userData.fullname || '')) : undefined;
 					userData.selectedGroups = [];
 
-					if (parseInt(meta.config.hideFullname, 10) === 1) {
+					if (meta.config.hideFullname) {
 						userData.fullname = undefined;
 					}
 				});
@@ -88,7 +88,7 @@ module.exports = function (Posts) {
 									groups.isMemberOfGroups(userData.uid, userData.groupTitleArray, next);
 								},
 								signature: function (next) {
-									if (!userData.signature || !canUseSignature || parseInt(meta.config.disableSignatures, 10) === 1) {
+									if (!userData.signature || !canUseSignature || meta.config.disableSignatures) {
 										userData.signature = '';
 										return next();
 									}

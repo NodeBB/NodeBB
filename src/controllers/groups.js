@@ -39,7 +39,7 @@ groupsController.getGroupsFromSet = function (uid, sort, start, stop, callback) 
 		function (groupsData, next) {
 			next(null, {
 				groups: groupsData,
-				allowGroupCreation: parseInt(meta.config.allowGroupCreation, 10) === 1,
+				allowGroupCreation: meta.config.allowGroupCreation,
 				nextStart: stop + 1,
 			});
 		},
@@ -106,7 +106,7 @@ groupsController.details = function (req, res, callback) {
 			results.group.isOwner = results.group.isOwner || results.isAdmin || (results.isGlobalMod && !results.group.system);
 			results.title = '[[pages:group, ' + results.group.displayName + ']]';
 			results.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[pages:groups]]', url: '/groups' }, { text: results.group.displayName }]);
-			results.allowPrivateGroups = parseInt(meta.config.allowPrivateGroups, 10) === 1;
+			results.allowPrivateGroups = meta.config.allowPrivateGroups;
 
 			res.render('groups/details', results);
 		},

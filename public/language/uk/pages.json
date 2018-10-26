@@ -45,6 +45,7 @@
     "account/posts": "Пости написані %1",
     "account/topics": "Теми створені %1",
     "account/groups": "Групи %1",
+    "account/watched_categories": "%1's Watched Categories",
     "account/bookmarks": "Закладки %1",
     "account/settings": "Налаштування користувача",
     "account/watched": "Теми за якими стежить %1",

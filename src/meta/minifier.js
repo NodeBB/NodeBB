@@ -26,7 +26,9 @@ Object.defineProperty(Minifier, 'maxThreads', {
 	},
 	set: function (val) {
 		maxThreads = val;
-		winston.verbose('[minifier] utilizing a maximum of ' + maxThreads + ' additional threads');
+		if (!process.env.minifier_child) {
+			winston.verbose('[minifier] utilizing a maximum of ' + maxThreads + ' additional threads');
+		}
 	},
 	configurable: true,
 	enumerable: true,
@@ -65,7 +67,9 @@ function freeChild(proc) {
 
 function removeChild(proc) {
 	var i = pool.indexOf(proc);
-	pool.splice(i, 1);
+	if (i !== -1) {
+		pool.splice(i, 1);
+	}
 }
 
 function forkAction(action, callback) {

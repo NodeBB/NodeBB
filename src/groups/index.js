@@ -1,25 +1,27 @@
 'use strict';
 
 var async = require('async');
-var validator = require('validator');
 
-var user = require('./user');
-var db = require('./database');
-var plugins = require('./plugins');
-var utils = require('./utils');
+var user = require('../user');
+var db = require('../database');
+var plugins = require('../plugins');
+var utils = require('../utils');
 
 var Groups = module.exports;
 
-require('./groups/data')(Groups);
-require('./groups/create')(Groups);
-require('./groups/delete')(Groups);
-require('./groups/update')(Groups);
-require('./groups/membership')(Groups);
-require('./groups/ownership')(Groups);
-require('./groups/search')(Groups);
-require('./groups/cover')(Groups);
-require('./groups/posts')(Groups);
-require('./groups/user')(Groups);
+require('./data')(Groups);
+require('./create')(Groups);
+require('./delete')(Groups);
+require('./update')(Groups);
+require('./membership')(Groups);
+require('./ownership')(Groups);
+require('./search')(Groups);
+require('./cover')(Groups);
+require('./posts')(Groups);
+require('./user')(Groups);
+require('./join')(Groups);
+require('./leave')(Groups);
+require('./cache')(Groups);
 
 
 Groups.ephemeralGroups = ['guests', 'spiders'];
@@ -37,7 +39,7 @@ Groups.getEphemeralGroup = function (groupName) {
 
 Groups.removeEphemeralGroups = function (groups) {
 	for (var x = groups.length; x >= 0; x -= 1) {
-		if (Groups.ephemeralGroups.indexOf(groups[x]) !== -1) {
+		if (Groups.ephemeralGroups.includes(groups[x])) {
 			groups.splice(x, 1);
 		}
 	}
@@ -111,7 +113,7 @@ Groups.get = function (groupName, options, callback) {
 		function (next) {
 			async.parallel({
 				base: function (next) {
-					db.getObject('group:' + groupName, next);
+					Groups.getGroupData(groupName, next);
 				},
 				members: function (next) {
 					if (options.truncateUserList) {
@@ -141,29 +143,17 @@ Groups.get = function (groupName, options, callback) {
 		},
 		function (descriptionParsed, next) {
 			var groupData = results.base;
-			Groups.escapeGroupData(groupData);
 
 			groupData.descriptionParsed = descriptionParsed;
-			groupData.userTitleEnabled = groupData.userTitleEnabled ? parseInt(groupData.userTitleEnabled, 10) === 1 : true;
-			groupData.createtimeISO = utils.toISOString(groupData.createtime);
 			groupData.members = results.members;
 			groupData.membersNextStart = stop + 1;
 			groupData.pending = results.pending.filter(Boolean);
 			groupData.invited = results.invited.filter(Boolean);
-			groupData.deleted = !!parseInt(groupData.deleted, 10);
-			groupData.hidden = !!parseInt(groupData.hidden, 10);
-			groupData.system = !!parseInt(groupData.system, 10);
-			groupData.memberCount = parseInt(groupData.memberCount, 10);
-			groupData.private = (groupData.private === null || groupData.private === undefined) ? true : !!parseInt(groupData.private, 10);
-			groupData.disableJoinRequests = parseInt(groupData.disableJoinRequests, 10) === 1;
+
 			groupData.isMember = results.isMember;
 			groupData.isPending = results.isPending;
 			groupData.isInvited = results.isInvited;
 			groupData.isOwner = results.isOwner;
-			groupData['cover:url'] = groupData['cover:url'] || require('./coverPhoto').getDefaultGroupCover(groupName);
-			groupData['cover:position'] = validator.escape(String(groupData['cover:position'] || '50% 50%'));
-			groupData.labelColor = validator.escape(String(groupData.labelColor || '#000000'));
-			groupData.icon = validator.escape(String(groupData.icon || ''));
 
 			plugins.fireHook('filter:group.get', { group: groupData }, next);
 		},
@@ -206,22 +196,13 @@ Groups.getOwnersAndMembers = function (groupName, uid, start, stop, callback) {
 			});
 
 			results.members = results.members.filter(function (user) {
-				return user && user.uid && ownerUids.indexOf(user.uid.toString()) === -1;
+				return user && user.uid && !ownerUids.includes(user.uid.toString());
 			});
 			results.members = results.owners.concat(results.members);
 
 			next(null, results.members);
 		},
 	], callback);
-};
-
-Groups.escapeGroupData = function (group) {
-	if (group) {
-		group.nameEncoded = encodeURIComponent(group.name);
-		group.displayName = validator.escape(String(group.name));
-		group.description = validator.escape(String(group.description || ''));
-		group.userTitle = validator.escape(String(group.userTitle || '')) || group.displayName;
-	}
 };
 
 Groups.getByGroupslug = function (slug, options, callback) {
@@ -263,34 +244,24 @@ function isFieldOn(groupName, field, callback) {
 
 Groups.exists = function (name, callback) {
 	if (Array.isArray(name)) {
-		var slugs = name.map(function (groupName) {
-			return utils.slugify(groupName);
-		});
-		async.parallel([
-			function (next) {
-				next(null, slugs.map(function (slug) {
-					return Groups.ephemeralGroups.indexOf(slug) !== -1;
-				}));
-			},
+		var slugs = name.map(groupName => utils.slugify(groupName));
+		async.waterfall([
 			async.apply(db.isSortedSetMembers, 'groups:createtime', name),
-		], function (err, results) {
-			if (err) {
-				return callback(err);
-			}
-			callback(null, name.map(function (n, index) {
-				return results[0][index] || results[1][index];
-			}));
-		});
+			function (isMembersOfRealGroups, next) {
+				const isMembersOfEphemeralGroups = slugs.map(slug => Groups.ephemeralGroups.includes(slug));
+				const exists = name.map((n, index) => isMembersOfRealGroups[index] || isMembersOfEphemeralGroups[index]);
+				next(null, exists);
+			},
+		], callback);
 	} else {
 		var slug = utils.slugify(name);
-		async.parallel([
-			function (next) {
-				next(null, Groups.ephemeralGroups.indexOf(slug) !== -1);
-			},
+		async.waterfall([
 			async.apply(db.isSortedSetMember, 'groups:createtime', name),
-		], function (err, results) {
-			callback(err, !err ? (results[0] || results[1]) : null);
-		});
+			function (isMemberOfRealGroups, next) {
+				const isMemberOfEphemeralGroups = Groups.ephemeralGroups.includes(slug);
+				next(null, isMemberOfRealGroups || isMemberOfEphemeralGroups);
+			},
+		], callback);
 	}
 };
 
@@ -302,4 +273,4 @@ Groups.existsBySlug = function (slug, callback) {
 	}
 };
 
-Groups.async = require('./promisify')(Groups);
+Groups.async = require('../promisify')(Groups);

@@ -2,7 +2,7 @@
 	"reputation": "Ranga punktu sistēma",
 	"disable": "Atspējot ranga punktu sistēmu",
 	"disable-down-voting": "Atspējot balsot \"pret\"",
-	"votes-are-public": "Visas balsis ir publiskas",
+	"votes-are-public": "Visi balsojumi ir publiski",
 	"thresholds": "Aktivitātes sliekšņi",
 	"min-rep-downvote": "Minimālie ranga punkti, lai balsotu \"pret\" rakstiem",
 	"min-rep-flag": "Minimālie ranga punkti, lai atzīmētu rakstus",

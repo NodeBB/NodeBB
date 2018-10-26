@@ -60,6 +60,13 @@ describe('Set methods', function () {
 				done();
 			});
 		});
+
+		it('should not error if keys is empty array', function (done) {
+			db.setsAdd([], 'value', function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
 	});
 
 	describe('getSetsMembers()', function () {

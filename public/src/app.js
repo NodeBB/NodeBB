@@ -692,6 +692,7 @@ app.cacheBuster = null;
 
 			app.parseAndTranslate('partials/cookie-consent', config.cookies, function (html) {
 				$(document.body).append(html);
+				$(document.body).addClass('cookie-consent-open');
 
 				var warningEl = $('.cookie-consent');
 				var dismissEl = warningEl.find('button');
@@ -699,6 +700,7 @@ app.cacheBuster = null;
 					// Save consent cookie and remove warning element
 					storage.setItem('cookieconsent', '1');
 					warningEl.remove();
+					$(document.body).removeClass('cookie-consent-open');
 				});
 			});
 		});

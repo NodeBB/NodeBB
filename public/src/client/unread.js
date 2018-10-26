@@ -90,11 +90,12 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 			if (direction < 0 || !$('[component="category"]').length) {
 				return;
 			}
-
+			var query = utils.params();
 			infinitescroll.loadMore('topics.loadMoreUnreadTopics', {
 				after: $('[component="category"]').attr('data-nextstart'),
 				count: config.topicsPerPage,
-				cid: utils.params().cid,
+				cid: query.cid,
+				query: query,
 				filter: ajaxify.data.selectedFilter.filter,
 			}, function (data, done) {
 				if (data.topics && data.topics.length) {

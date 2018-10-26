@@ -117,10 +117,8 @@ module.exports = function (db, module) {
 				return callback(err);
 			}
 
-			values = values.map(function (value) {
-				return !!(items && Array.isArray(items.members) && items.members.indexOf(value) !== -1);
-			});
-
+			const membersSet = new Set(items && Array.isArray(items.members) ? items.members : []);
+			values = values.map(value => membersSet.has(value));
 			callback(null, values);
 		});
 	};

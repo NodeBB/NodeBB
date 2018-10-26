@@ -26,7 +26,7 @@ module.exports = function (SocketUser) {
 		}
 
 		var allowedStatus = ['online', 'offline', 'dnd', 'away'];
-		if (allowedStatus.indexOf(status) === -1) {
+		if (!allowedStatus.includes(status)) {
 			return callback(new Error('[[error:invalid-user-status]]'));
 		}
 

@@ -44,10 +44,10 @@ privileges.groupPrivilegeList = privileges.userPrivilegeList.map(function (privi
 
 privileges.privilegeList = privileges.userPrivilegeList.concat(privileges.groupPrivilegeList);
 
-require('./privileges/global')(privileges);
-require('./privileges/categories')(privileges);
-require('./privileges/topics')(privileges);
-require('./privileges/posts')(privileges);
-require('./privileges/users')(privileges);
+require('./global')(privileges);
+require('./categories')(privileges);
+require('./topics')(privileges);
+require('./posts')(privileges);
+require('./users')(privileges);
 
-privileges.async = require('./promisify')(privileges);
+privileges.async = require('../promisify')(privileges);

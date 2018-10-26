@@ -12,7 +12,7 @@ module.exports = function (Posts) {
 	var votesInProgress = {};
 
 	Posts.upvote = function (pid, uid, callback) {
-		if (parseInt(meta.config['reputation:disabled'], 10) === 1) {
+		if (meta.config['reputation:disabled']) {
 			return callback(new Error('[[error:reputation-system-disabled]]'));
 		}
 
@@ -40,11 +40,11 @@ module.exports = function (Posts) {
 	};
 
 	Posts.downvote = function (pid, uid, callback) {
-		if (parseInt(meta.config['reputation:disabled'], 10) === 1) {
+		if (meta.config['reputation:disabled']) {
 			return callback(new Error('[[error:reputation-system-disabled]]'));
 		}
 
-		if (parseInt(meta.config['downvote:disabled'], 10) === 1) {
+		if (meta.config['downvote:disabled']) {
 			return callback(new Error('[[error:downvoting-disabled]]'));
 		}
 
@@ -179,7 +179,7 @@ module.exports = function (Posts) {
 					return callback(new Error('[[error:self-vote]]'));
 				}
 
-				if (command === 'downvote' && parseInt(results.reputation, 10) < parseInt(meta.config['min:rep:downvote'], 10)) {
+				if (command === 'downvote' && results.reputation < meta.config['min:rep:downvote']) {
 					return callback(new Error('[[error:not-enough-reputation-to-downvote]]'));
 				}
 

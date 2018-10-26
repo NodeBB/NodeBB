@@ -36,7 +36,7 @@ function renderEmail(req, res, next) {
 			res.render('admin/settings/email', {
 				emails: results.emails,
 				sendable: results.emails.filter(function (email) {
-					return email.path.indexOf('_plaintext') === -1 && email.path.indexOf('partials') === -1;
+					return !email.path.includes('_plaintext') && !email.path.includes('partials');
 				}),
 				services: results.services,
 			});

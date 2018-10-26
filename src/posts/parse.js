@@ -6,7 +6,6 @@ var url = require('url');
 var winston = require('winston');
 
 var meta = require('../meta');
-var cache = require('./cache');
 var plugins = require('../plugins');
 var translator = require('../translator');
 var utils = require('../utils');
@@ -23,12 +22,17 @@ module.exports = function (Posts) {
 	};
 
 	Posts.parsePost = function (postData, callback) {
+		if (!postData) {
+			return setImmediate(callback, null, postData);
+		}
 		postData.content = String(postData.content || '');
-
+		var cache = require('./cache');
 		if (postData.pid && cache.has(String(postData.pid))) {
 			postData.content = cache.get(String(postData.pid));
+			cache.hits += 1;
 			return callback(null, postData);
 		}
+		cache.misses += 1;
 
 		async.waterfall([
 			function (next) {
@@ -84,11 +88,11 @@ module.exports = function (Posts) {
 		signature = translator.escape(signature);
 		var tagsToStrip = [];
 
-		if (parseInt(meta.config['signatures:disableLinks'], 10) === 1) {
+		if (meta.config['signatures:disableLinks']) {
 			tagsToStrip.push('a');
 		}
 
-		if (parseInt(meta.config['signatures:disableImages'], 10) === 1) {
+		if (meta.config['signatures:disableImages']) {
 			tagsToStrip.push('img');
 		}
 

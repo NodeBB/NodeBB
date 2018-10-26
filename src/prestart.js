@@ -9,23 +9,74 @@ var pkg = require('../package.json');
 var dirname = require('./cli/paths').baseDir;
 
 function setupWinston() {
-	winston.remove(winston.transports.Console);
-	winston.add(winston.transports.Console, {
-		colorize: nconf.get('log-colorize') !== 'false',
-		timestamp: function () {
-			var date = new Date();
-			return nconf.get('json-logging') ? date.toJSON() :
-				date.toISOString() + ' [' + global.process.pid + ']';
-		},
+	if (!winston.format) {
+		return;
+	}
+
+	// allow winton.error to log error objects properly
+	// https://github.com/NodeBB/NodeBB/issues/6848
+	const winstonError = winston.error;
+	winston.error = function (msg, error) {
+		if (msg instanceof Error) {
+			winstonError(msg);
+		} else if (error instanceof Error) {
+			msg = msg + '\n' + error.stack;
+			winstonError(msg);
+		} else {
+			winstonError.apply(null, arguments);
+		}
+	};
+
+
+	// https://github.com/winstonjs/winston/issues/1338
+	// error objects are not displayed properly
+	const enumerateErrorFormat = winston.format((info) => {
+		if (info.message instanceof Error) {
+			info.message = Object.assign({
+				message: `${info.message.message}\n${info.message.stack}`,
+			}, info.message);
+		}
+
+		if (info instanceof Error) {
+			return Object.assign({
+				message: `${info.message}\n${info.stack}`,
+			}, info);
+		}
+
+		return info;
+	});
+	var formats = [];
+	formats.push(enumerateErrorFormat());
+	if (nconf.get('log-colorize') !== 'false') {
+		formats.push(winston.format.colorize());
+	}
+
+	if (nconf.get('json-logging')) {
+		formats.push(winston.format.timestamp());
+		formats.push(winston.format.json());
+	} else {
+		const timestampFormat = winston.format((info) => {
+			var dateString = new Date().toISOString() + ' [' + global.process.pid + ']';
+			info.level = dateString + ' - ' + info.level;
+			return info;
+		});
+		formats.push(timestampFormat());
+		formats.push(winston.format.splat());
+		formats.push(winston.format.simple());
+	}
+
+	winston.configure({
 		level: nconf.get('log-level') || (global.env === 'production' ? 'info' : 'verbose'),
-		json: !!nconf.get('json-logging'),
-		stringify: !!nconf.get('json-logging'),
+		format: winston.format.combine.apply(null, formats),
+		transports: [
+			new winston.transports.Console({
+				handleExceptions: true,
+			}),
+		],
 	});
 }
 
 function loadConfig(configFile) {
-	winston.verbose('* using configuration stored in: %s', configFile);
-
 	nconf.file({
 		file: configFile,
 	});

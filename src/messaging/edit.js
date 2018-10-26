@@ -59,9 +59,9 @@ module.exports = function (Messaging) {
 			durationConfig = 'chatDeleteDuration';
 		}
 
-		if (parseInt(meta.config.disableChat, 10) === 1) {
+		if (meta.config.disableChat) {
 			return callback(new Error('[[error:chat-disabled]]'));
-		} else if (parseInt(meta.config.disableChatMessageEditing, 10) === 1) {
+		} else if (meta.config.disableChatMessageEditing) {
 			return callback(new Error('[[error:chat-message-editing-disabled]]'));
 		}
 
@@ -70,11 +70,11 @@ module.exports = function (Messaging) {
 				user.getUserFields(uid, ['banned', 'email:confirmed'], next);
 			},
 			function (userData, next) {
-				if (parseInt(userData.banned, 10) === 1) {
+				if (userData.banned) {
 					return callback(new Error('[[error:user-banned]]'));
 				}
 
-				if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
+				if (meta.config.requireEmailConfirmation && !userData['email:confirmed']) {
 					return callback(new Error('[[error:email-not-confirmed]]'));
 				}
 				async.parallel({
@@ -90,12 +90,12 @@ module.exports = function (Messaging) {
 				if (results.isAdmin) {
 					return callback();
 				}
-				var chatConfigDuration = parseInt(meta.config[durationConfig], 10);
-				if (chatConfigDuration && Date.now() - parseInt(results.messageData.timestamp, 10) > chatConfigDuration * 1000) {
+				var chatConfigDuration = meta.config[durationConfig];
+				if (chatConfigDuration && Date.now() - results.messageData.timestamp > chatConfigDuration * 1000) {
 					return callback(new Error('[[error:chat-' + type + '-duration-expired, ' + meta.config[durationConfig] + ']]'));
 				}
 
-				if (parseInt(results.messageData.fromuid, 10) === parseInt(uid, 10)) {
+				if (results.messageData.fromuid === parseInt(uid, 10)) {
 					return callback();
 				}
 

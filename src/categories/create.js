@@ -41,6 +41,7 @@ module.exports = function (Categories) {
 					numRecentReplies: 1,
 					class: (data.class ? data.class : 'col-md-3 col-xs-6'),
 					imageClass: 'cover',
+					isSection: 0,
 				};
 
 				if (data.backgroundImage) {
@@ -75,35 +76,27 @@ module.exports = function (Categories) {
 						}
 						Categories.parseDescription(category.cid, category.description, next);
 					},
-					async.apply(db.sortedSetAdd, 'categories:cid', category.order, category.cid),
-					async.apply(db.sortedSetAdd, 'cid:' + parentCid + ':children', category.order, category.cid),
-					async.apply(privileges.categories.give, defaultPrivileges, category.cid, 'administrators'),
-					async.apply(privileges.categories.give, defaultPrivileges, category.cid, 'registered-users'),
-					async.apply(privileges.categories.give, ['find', 'read', 'topics:read'], category.cid, 'guests'),
-					async.apply(privileges.categories.give, ['find', 'read', 'topics:read'], category.cid, 'spiders'),
+					async.apply(db.sortedSetsAdd, ['categories:cid', 'cid:' + parentCid + ':children'], category.order, category.cid),
+					async.apply(privileges.categories.give, defaultPrivileges, category.cid, ['administrators', 'registered-users']),
+					async.apply(privileges.categories.give, ['find', 'read', 'topics:read'], category.cid, ['guests', 'spiders']),
 				], next);
 			},
 			function (results, next) {
-				async.series([
-					function (next) {
-						if (data.cloneFromCid && parseInt(data.cloneFromCid, 10)) {
-							return Categories.copySettingsFrom(data.cloneFromCid, category.cid, !data.parentCid, next);
-						}
+				if (data.cloneFromCid && parseInt(data.cloneFromCid, 10)) {
+					return Categories.copySettingsFrom(data.cloneFromCid, category.cid, !data.parentCid, next);
+				}
 
-						next();
-					},
-					function (next) {
-						if (data.cloneChildren) {
-							return duplicateCategoriesChildren(category.cid, data.cloneFromCid, data.uid, next);
-						}
-
-						next();
-					},
-				], function (err) {
-					next(err, category);
-				});
+				next(null, category);
 			},
-			function (category, next) {
+			function (_category, next) {
+				category = _category;
+				if (data.cloneChildren) {
+					return duplicateCategoriesChildren(category.cid, data.cloneFromCid, data.uid, next);
+				}
+
+				next();
+			},
+			function (next) {
 				plugins.fireHook('action:category.create', { category: category });
 				next(null, category);
 			},

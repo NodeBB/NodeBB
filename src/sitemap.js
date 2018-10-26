@@ -19,7 +19,7 @@ var sitemap = {
 };
 
 sitemap.render = function (callback) {
-	var topicsPerPage = parseInt(meta.config.sitemapTopics, 10) || 500;
+	var topicsPerPage = meta.config.sitemapTopics;
 	var returnData = {
 		url: nconf.get('url'),
 		topics: [],
@@ -119,7 +119,7 @@ sitemap.getTopicPage = function (page, callback) {
 		return callback();
 	}
 
-	var numTopics = parseInt(meta.config.sitemapTopics, 10) || 500;
+	var numTopics = meta.config.sitemapTopics;
 	var min = (parseInt(page, 10) - 1) * numTopics;
 	var max = min + numTopics;
 

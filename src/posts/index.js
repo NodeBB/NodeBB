@@ -3,30 +3,31 @@
 var async = require('async');
 var _ = require('lodash');
 
-var db = require('./database');
-var utils = require('./utils');
-var user = require('./user');
-var topics = require('./topics');
-var privileges = require('./privileges');
-var plugins = require('./plugins');
+var db = require('../database');
+var utils = require('../utils');
+var user = require('../user');
+var topics = require('../topics');
+var privileges = require('../privileges');
+var plugins = require('../plugins');
 
 var Posts = module.exports;
 
-require('./posts/create')(Posts);
-require('./posts/delete')(Posts);
-require('./posts/edit')(Posts);
-require('./posts/parse')(Posts);
-require('./posts/user')(Posts);
-require('./posts/topics')(Posts);
-require('./posts/category')(Posts);
-require('./posts/summary')(Posts);
-require('./posts/recent')(Posts);
-require('./posts/tools')(Posts);
-require('./posts/votes')(Posts);
-require('./posts/bookmarks')(Posts);
-require('./posts/queue')(Posts);
-require('./posts/diffs')(Posts);
-require('./posts/uploads')(Posts);
+require('./data')(Posts);
+require('./create')(Posts);
+require('./delete')(Posts);
+require('./edit')(Posts);
+require('./parse')(Posts);
+require('./user')(Posts);
+require('./topics')(Posts);
+require('./category')(Posts);
+require('./summary')(Posts);
+require('./recent')(Posts);
+require('./tools')(Posts);
+require('./votes')(Posts);
+require('./bookmarks')(Posts);
+require('./queue')(Posts);
+require('./diffs')(Posts);
+require('./uploads')(Posts);
 
 Posts.exists = function (pid, callback) {
 	db.isSortedSetMember('posts:pid', pid, callback);
@@ -46,25 +47,14 @@ Posts.getPostsByPids = function (pids, uid, callback) {
 
 	async.waterfall([
 		function (next) {
-			var keys = pids.map(function (pid) {
-				return 'post:' + pid;
-			});
-			db.getObjects(keys, next);
+			Posts.getPostsData(pids, next);
 		},
 		function (posts, next) {
-			async.map(posts, function (post, next) {
-				if (!post) {
-					return next();
-				}
-				post.upvotes = parseInt(post.upvotes, 10) || 0;
-				post.downvotes = parseInt(post.downvotes, 10) || 0;
-				post.votes = post.upvotes - post.downvotes;
-				post.timestampISO = utils.toISOString(post.timestamp);
-				post.editedISO = parseInt(post.edited, 10) !== 0 ? utils.toISOString(post.edited) : '';
-				Posts.parsePost(post, next);
-			}, next);
+			async.map(posts, Posts.parsePost, next);
 		},
-		async.apply(user.blocks.filter, uid),
+		function (posts, next) {
+			user.blocks.filter(uid, posts, next);
+		},
 		function (posts, next) {
 			plugins.fireHook('filter:post.getPosts', { posts: posts, uid: uid }, next);
 		},
@@ -91,112 +81,6 @@ Posts.getPostSummariesFromSet = function (set, uid, start, stop, callback) {
 		},
 		function (posts, next) {
 			next(null, { posts: posts, nextStart: stop + 1 });
-		},
-	], callback);
-};
-
-Posts.getPostData = function (pid, callback) {
-	async.waterfall([
-		function (next) {
-			db.getObject('post:' + pid, next);
-		},
-		function (data, next) {
-			plugins.fireHook('filter:post.getPostData', { post: data }, next);
-		},
-		function (data, next) {
-			next(null, data.post);
-		},
-	], callback);
-};
-
-Posts.getPostsData = function (pids, callback) {
-	async.waterfall([
-		function (next) {
-			db.getObjects(pids.map(pid => 'post:' + pid), next);
-		},
-		function (data, next) {
-			plugins.fireHook('filter:post.getPostsData', { posts: data }, next);
-		},
-		function (data, next) {
-			next(null, data.posts);
-		},
-	], callback);
-};
-
-Posts.getPostField = function (pid, field, callback) {
-	async.waterfall([
-		function (next) {
-			Posts.getPostFields(pid, [field], next);
-		},
-		function (data, next) {
-			next(null, data[field]);
-		},
-	], callback);
-};
-
-Posts.getPostFields = function (pid, fields, callback) {
-	async.waterfall([
-		function (next) {
-			db.getObjectFields('post:' + pid, fields, next);
-		},
-		function (data, next) {
-			data.pid = pid;
-
-			plugins.fireHook('filter:post.getFields', { posts: [data], fields: fields }, next);
-		},
-		function (data, next) {
-			next(null, (data && Array.isArray(data.posts) && data.posts.length) ? data.posts[0] : null);
-		},
-	], callback);
-};
-
-Posts.getPostsFields = function (pids, fields, callback) {
-	if (!Array.isArray(pids) || !pids.length) {
-		return callback(null, []);
-	}
-
-	var keys = pids.map(function (pid) {
-		return 'post:' + pid;
-	});
-
-	async.waterfall([
-		function (next) {
-			db.getObjectsFields(keys, fields, next);
-		},
-		function (posts, next) {
-			plugins.fireHook('filter:post.getFields', { posts: posts, fields: fields }, next);
-		},
-		function (data, next) {
-			next(null, (data && Array.isArray(data.posts)) ? data.posts : null);
-		},
-	], callback);
-};
-
-Posts.setPostField = function (pid, field, value, callback) {
-	async.waterfall([
-		function (next) {
-			db.setObjectField('post:' + pid, field, value, next);
-		},
-		function (next) {
-			var data = {
-				pid: pid,
-			};
-			data[field] = value;
-			plugins.fireHook('action:post.setFields', { data: data });
-			next();
-		},
-	], callback);
-};
-
-Posts.setPostFields = function (pid, data, callback) {
-	async.waterfall([
-		function (next) {
-			db.setObject('post:' + pid, data, next);
-		},
-		function (next) {
-			data.pid = pid;
-			plugins.fireHook('action:post.setFields', { data: data });
-			next();
 		},
 	], callback);
 };
@@ -322,4 +206,4 @@ Posts.modifyPostByPrivilege = function (post, privileges) {
 	}
 };
 
-Posts.async = require('./promisify')(Posts);
+Posts.async = require('../promisify')(Posts);

@@ -14,12 +14,12 @@ languagesController.get = function (req, res, next) {
 		},
 		function (languages) {
 			languages.forEach(function (language) {
-				language.selected = language.code === (meta.config.defaultLang || 'en-GB');
+				language.selected = language.code === meta.config.defaultLang;
 			});
 
 			res.render('admin/general/languages', {
 				languages: languages,
-				autoDetectLang: parseInt(meta.config.autoDetectLang, 10) === 1,
+				autoDetectLang: meta.config.autoDetectLang,
 			});
 		},
 	], next);

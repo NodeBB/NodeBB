@@ -5,11 +5,11 @@
     "mark_as_read": "Atzīmēt kā lasītu",
     "selected": "Atlasītie",
     "all": "Visi",
-    "all_categories": "Visas kategorijas",
+    "all_categories": "Visās kategorijās",
     "topics_marked_as_read.success": "Temati atzīmēti kā lasīti!",
-    "all-topics": "Visi temati",
-    "new-topics": "Jaunie temati",
-    "watched-topics": "Novērotie temati",
-    "unreplied-topics": "Temati bez atbildēm",
-    "multiple-categories-selected": "Vairāki atlasīti"
+    "all-topics": "Visos tematos",
+    "new-topics": "Jaunos tematos",
+    "watched-topics": "Novērotos tematos",
+    "unreplied-topics": "Tematos, kuriem nav atbildes",
+    "multiple-categories-selected": "Vairākas atlasītas"
 }

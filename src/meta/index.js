@@ -5,31 +5,31 @@ var winston = require('winston');
 var os = require('os');
 var nconf = require('nconf');
 
-var pubsub = require('./pubsub');
-var utils = require('./utils');
+var pubsub = require('../pubsub');
+var utils = require('../utils');
 
 var Meta = module.exports;
 
 Meta.reloadRequired = false;
 
-Meta.configs = require('./meta/configs');
-Meta.themes = require('./meta/themes');
-Meta.js = require('./meta/js');
-Meta.css = require('./meta/css');
-Meta.sounds = require('./meta/sounds');
-Meta.settings = require('./meta/settings');
-Meta.logs = require('./meta/logs');
-Meta.errors = require('./meta/errors');
-Meta.tags = require('./meta/tags');
-Meta.dependencies = require('./meta/dependencies');
-Meta.templates = require('./meta/templates');
-Meta.blacklist = require('./meta/blacklist');
-Meta.languages = require('./meta/languages');
+Meta.configs = require('./configs');
+Meta.themes = require('./themes');
+Meta.js = require('./js');
+Meta.css = require('./css');
+Meta.sounds = require('./sounds');
+Meta.settings = require('./settings');
+Meta.logs = require('./logs');
+Meta.errors = require('./errors');
+Meta.tags = require('./tags');
+Meta.dependencies = require('./dependencies');
+Meta.templates = require('./templates');
+Meta.blacklist = require('./blacklist');
+Meta.languages = require('./languages');
 
 /* Assorted */
 Meta.userOrGroupExists = function (slug, callback) {
-	var user = require('./user');
-	var groups = require('./groups');
+	var user = require('../user');
+	var groups = require('../groups');
 	slug = utils.slugify(slug);
 	async.parallel([
 		async.apply(user.existsBySlug, slug),
@@ -63,8 +63,10 @@ function restart() {
 }
 
 Meta.getSessionTTLSeconds = function () {
-	var ttlDays = 60 * 60 * 24 * (parseInt(Meta.config.loginDays, 10) || 0);
-	var ttlSeconds = (parseInt(Meta.config.loginSeconds, 10) || 0);
+	var ttlDays = 60 * 60 * 24 * Meta.config.loginDays;
+	var ttlSeconds = Meta.config.loginSeconds;
 	var ttl = ttlSeconds || ttlDays || 1209600; // Default to 14 days
 	return ttl;
 };
+
+Meta.async = require('../promisify')(Meta);

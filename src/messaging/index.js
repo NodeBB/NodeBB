@@ -4,21 +4,21 @@
 var async = require('async');
 var validator = require('validator');
 
-var db = require('./database');
-var user = require('./user');
-var plugins = require('./plugins');
-var meta = require('./meta');
-var utils = require('./utils');
+var db = require('../database');
+var user = require('../user');
+var plugins = require('../plugins');
+var meta = require('../meta');
+var utils = require('../utils');
 
 var Messaging = module.exports;
 
-require('./messaging/data')(Messaging);
-require('./messaging/create')(Messaging);
-require('./messaging/delete')(Messaging);
-require('./messaging/edit')(Messaging);
-require('./messaging/rooms')(Messaging);
-require('./messaging/unread')(Messaging);
-require('./messaging/notifications')(Messaging);
+require('./data')(Messaging);
+require('./create')(Messaging);
+require('./delete')(Messaging);
+require('./edit')(Messaging);
+require('./rooms')(Messaging);
+require('./unread')(Messaging);
+require('./notifications')(Messaging);
 
 
 Messaging.getMessages = function (params, callback) {
@@ -59,7 +59,7 @@ Messaging.getMessages = function (params, callback) {
 
 			// Filter out deleted messages unless you're the sender of said message
 			messageData = messageData.filter(function (messageData) {
-				return (!messageData.deleted || parseInt(messageData.fromuid, 10) === parseInt(params.uid, 10));
+				return (!messageData.deleted || messageData.fromuid === parseInt(params.uid, 10));
 			});
 
 			next(null, messageData);
@@ -249,7 +249,7 @@ Messaging.getTeaser = function (uid, roomId, callback) {
 };
 
 Messaging.canMessageUser = function (uid, toUid, callback) {
-	if (parseInt(meta.config.disableChat, 10) === 1 || !uid || uid === toUid) {
+	if (meta.config.disableChat || !uid || uid === toUid) {
 		return callback(new Error('[[error:chat-disabled]]'));
 	}
 
@@ -272,7 +272,7 @@ Messaging.canMessageUser = function (uid, toUid, callback) {
 				return callback(new Error('[[error:user-banned]]'));
 			}
 
-			if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
+			if (meta.config.requireEmailConfirmation && parseInt(userData['email:confirmed'], 10) !== 1) {
 				return callback(new Error('[[error:email-not-confirmed-chat]]'));
 			}
 
@@ -299,7 +299,7 @@ Messaging.canMessageUser = function (uid, toUid, callback) {
 };
 
 Messaging.canMessageRoom = function (uid, roomId, callback) {
-	if (parseInt(meta.config.disableChat, 10) === 1 || !uid) {
+	if (meta.config.disableChat || !uid) {
 		return callback(new Error('[[error:chat-disabled]]'));
 	}
 
@@ -326,7 +326,7 @@ Messaging.canMessageRoom = function (uid, roomId, callback) {
 				return next(new Error('[[error:user-banned]]'));
 			}
 
-			if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
+			if (meta.config.requireEmailConfirmation && parseInt(userData['email:confirmed'], 10) !== 1) {
 				return next(new Error('[[error:email-not-confirmed-chat]]'));
 			}
 
@@ -353,7 +353,7 @@ Messaging.hasPrivateChat = function (uid, withUid, callback) {
 		},
 		function (results, next) {
 			var roomIds = results.myRooms.filter(function (roomId) {
-				return roomId && results.theirRooms.indexOf(roomId) !== -1;
+				return roomId && results.theirRooms.includes(roomId);
 			});
 
 			if (!roomIds.length) {
@@ -384,4 +384,4 @@ Messaging.hasPrivateChat = function (uid, withUid, callback) {
 	], callback);
 };
 
-Messaging.async = require('./promisify')(Messaging);
+Messaging.async = require('../promisify')(Messaging);

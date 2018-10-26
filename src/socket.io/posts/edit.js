@@ -15,24 +15,24 @@ module.exports = function (SocketPosts) {
 	SocketPosts.edit = function (socket, data, callback) {
 		if (!socket.uid) {
 			return callback(new Error('[[error:not-logged-in]]'));
-		} else if (!data || !data.pid || (parseInt(meta.config.minimumPostLength, 10) !== 0 && !data.content)) {
+		} else if (!data || !data.pid || (meta.config.minimumPostLength !== 0 && !data.content)) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
 		// Trim and remove HTML (latter for composers that send in HTML, like redactor)
 		var contentLen = utils.stripHTMLTags(data.content).trim().length;
 
-		if (data.title && data.title.length < parseInt(meta.config.minimumTitleLength, 10)) {
+		if (data.title && data.title.length < meta.config.minimumTitleLength) {
 			return callback(new Error('[[error:title-too-short, ' + meta.config.minimumTitleLength + ']]'));
-		} else if (data.title && data.title.length > parseInt(meta.config.maximumTitleLength, 10)) {
+		} else if (data.title && data.title.length > meta.config.maximumTitleLength) {
 			return callback(new Error('[[error:title-too-long, ' + meta.config.maximumTitleLength + ']]'));
-		} else if (data.tags && data.tags.length < parseInt(meta.config.minimumTagsPerTopic, 10)) {
+		} else if (data.tags && data.tags.length < meta.config.minimumTagsPerTopic) {
 			return callback(new Error('[[error:not-enough-tags, ' + meta.config.minimumTagsPerTopic + ']]'));
-		} else if (data.tags && data.tags.length > parseInt(meta.config.maximumTagsPerTopic, 10)) {
+		} else if (data.tags && data.tags.length > meta.config.maximumTagsPerTopic) {
 			return callback(new Error('[[error:too-many-tags, ' + meta.config.maximumTagsPerTopic + ']]'));
-		} else if (parseInt(meta.config.minimumPostLength, 10) !== 0 && contentLen < parseInt(meta.config.minimumPostLength, 10)) {
+		} else if (meta.config.minimumPostLength !== 0 && contentLen < meta.config.minimumPostLength) {
 			return callback(new Error('[[error:content-too-short, ' + meta.config.minimumPostLength + ']]'));
-		} else if (contentLen > parseInt(meta.config.maximumPostLength, 10)) {
+		} else if (contentLen > meta.config.maximumPostLength) {
 			return callback(new Error('[[error:content-too-long, ' + meta.config.maximumPostLength + ']]'));
 		}
 

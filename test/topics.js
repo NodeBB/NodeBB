@@ -218,7 +218,18 @@ describe('Topic\'s', function () {
 
 
 		it('should not receive errors', function (done) {
-			topics.getTopicData(newTopic.tid, done);
+			topics.getTopicData(newTopic.tid, function (err, topicData) {
+				assert.ifError(err);
+				assert(typeof topicData.tid === 'number');
+				assert(typeof topicData.uid === 'number');
+				assert(typeof topicData.cid === 'number');
+				assert(typeof topicData.mainPid === 'number');
+				assert(typeof topicData.deleted === 'number');
+				assert(typeof topicData.locked === 'number');
+				assert(typeof topicData.pinned === 'number');
+				assert(typeof topicData.timestamp === 'number');
+				done();
+			});
 		});
 
 		it('should get topic title by pid', function (done) {
@@ -497,7 +508,7 @@ describe('Topic\'s', function () {
 				function (categoryData, next) {
 					assert.equal(categoryData[0].post_count, 4);
 					assert.equal(categoryData[1].post_count, 2);
-					topics.movePostToTopic(movedPost.pid, tid2, next);
+					topics.movePostToTopic(1, movedPost.pid, tid2, next);
 				},
 				function (next) {
 					checkCidSets(previousPost, topic2LastReply, next);
@@ -1919,8 +1930,8 @@ describe('Topic\'s', function () {
 						var tags = result.topic.tags.map(function (tag) {
 							return tag.value;
 						});
-						assert(tags.indexOf('tag1') !== -1);
-						assert(tags.indexOf('tag2') !== -1);
+						assert(tags.includes('tag1'));
+						assert(tags.includes('tag2'));
 						done();
 					});
 				});

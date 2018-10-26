@@ -47,7 +47,7 @@
     "composer.formatting.italic": "Курсив",
     "composer.formatting.list": "Список",
     "composer.formatting.strikethrough": "Зачеркнуть",
-    "composer.formatting.code": "Code",
+    "composer.formatting.code": "Код",
     "composer.formatting.link": "Ссылка",
     "composer.formatting.picture": "Изображение",
     "composer.upload-picture": "Загрузить изображение",
@@ -58,6 +58,6 @@
     "bootbox.cancel": "Отмена",
     "bootbox.confirm": "Подтвердить",
     "cover.dragging_title": "Позиционирование обложки",
-    "cover.dragging_message": "Поместите обложку на желаемое положение и нажмите \"Сохранить\"",
+    "cover.dragging_message": "Перетащите обложку на желаемое место и нажмите \"Сохранить\"",
     "cover.saved": "Обложка и расположение сохранены"
 }

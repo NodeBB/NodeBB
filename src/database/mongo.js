@@ -77,7 +77,9 @@ mongoModule.getConnectionString = function () {
 	if (!nconf.get('mongo:port')) {
 		nconf.set('mongo:port', 27017);
 	}
-	if (!nconf.get('mongo:database')) {
+	const dbName = nconf.get('mongo:database');
+	if (dbName === undefined || dbName === '') {
+		winston.warn('You have no database name, using "nodebb"');
 		nconf.set('mongo:database', 'nodebb');
 	}
 
@@ -98,6 +100,7 @@ mongoModule.getConnectionOptions = function () {
 		reconnectTries: 3600,
 		reconnectInterval: 1000,
 		autoReconnect: true,
+		connectTimeoutMS: 60000,
 		useNewUrlParser: true,
 	};
 

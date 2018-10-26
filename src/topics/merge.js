@@ -17,7 +17,7 @@ module.exports = function (Topics) {
 				},
 				function (pids, next) {
 					async.eachSeries(pids, function (pid, next) {
-						Topics.movePostToTopic(pid, mergeIntoTid, next);
+						Topics.movePostToTopic(uid, pid, mergeIntoTid, next);
 					}, next);
 				},
 				function (next) {

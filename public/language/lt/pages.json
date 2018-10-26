@@ -45,6 +45,7 @@
     "account/posts": "Pranešimai, kuriuos parašė %1",
     "account/topics": "Temos, kurias sukūrė %1",
     "account/groups": "%1 Grupės",
+    "account/watched_categories": "%1's Watched Categories",
     "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "Vartotojo nustatymai",
     "account/watched": "Temos stebimos %1",

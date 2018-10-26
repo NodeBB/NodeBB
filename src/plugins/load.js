@@ -157,7 +157,7 @@ module.exports = function (Plugins) {
 
 	function checkVersion(pluginData) {
 		function add() {
-			if (Plugins.versionWarning.indexOf(pluginData.id) === -1) {
+			if (!Plugins.versionWarning.includes(pluginData.id)) {
 				Plugins.versionWarning.push(pluginData.id);
 			}
 		}

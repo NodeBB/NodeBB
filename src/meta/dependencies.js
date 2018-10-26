@@ -72,7 +72,7 @@ Dependencies.doesSatisfy = function (moduleData, packageJSONVersion) {
 		return false;
 	}
 	var versionOk = !semver.validRange(packageJSONVersion) || semver.satisfies(moduleData.version, packageJSONVersion);
-	var githubRepo = moduleData._resolved && moduleData._resolved.indexOf('//github.com') !== -1;
+	var githubRepo = moduleData._resolved && moduleData._resolved.includes('//github.com');
 	var satisfies = versionOk || githubRepo;
 	if (!satisfies) {
 		winston.warn('[' + 'outdated'.yellow + '] ' + moduleData.name.bold + ' installed v' + moduleData.version + ', package.json requires ' + packageJSONVersion + '\n');

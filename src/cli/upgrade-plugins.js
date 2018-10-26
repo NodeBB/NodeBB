@@ -201,7 +201,7 @@ function upgradePlugins(callback) {
 				return callback(err);
 			}
 
-			if (['y', 'Y', 'yes', 'YES'].indexOf(result.upgrade) !== -1) {
+			if (['y', 'Y', 'yes', 'YES'].includes(result.upgrade)) {
 				console.log('\nUpgrading packages...');
 				var args = packageManagerInstallArgs.concat(found.map(function (suggestObj) {
 					return suggestObj.name + '@' + suggestObj.suggested;

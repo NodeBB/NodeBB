@@ -101,7 +101,7 @@ SocketTopics.changeWatching = function (socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 	var commands = ['follow', 'unfollow', 'ignore'];
-	if (commands.indexOf(data.type) === -1) {
+	if (!commands.includes(data.type)) {
 		return callback(new Error('[[error:invalid-command]]'));
 	}
 	followCommand(topics[data.type], socket, data.tid, callback);

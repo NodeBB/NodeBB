@@ -87,7 +87,7 @@ Upgrade.check = function (callback) {
 				}
 
 				var remainder = files.filter(function (name) {
-					return executed.indexOf(path.basename(name, '.js')) === -1;
+					return !executed.includes(path.basename(name, '.js'));
 				});
 
 				next(remainder.length > 0 ? new Error('schema-out-of-date') : null);
@@ -112,7 +112,7 @@ Upgrade.run = function (callback) {
 		}
 
 		queue = data.available.reduce(function (memo, cur) {
-			if (data.completed.indexOf(path.basename(cur, '.js')) === -1) {
+			if (!data.completed.includes(path.basename(cur, '.js'))) {
 				memo.push(cur);
 			} else {
 				skipped += 1;
@@ -132,7 +132,7 @@ Upgrade.runParticular = function (names, callback) {
 		async.apply(file.walk, path.join(__dirname, './upgrades')),
 		function (files, next) {
 			var upgrades = files.filter(function (file) {
-				return names.indexOf(path.basename(file, '.js')) !== -1;
+				return names.includes(path.basename(file, '.js'));
 			});
 
 			Upgrade.process(upgrades, 0, next);

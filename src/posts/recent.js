@@ -1,6 +1,8 @@
 'use strict';
 
 var async = require('async');
+var _ = require('lodash');
+
 var db = require('../database');
 var privileges = require('../privileges');
 
@@ -42,11 +44,8 @@ module.exports = function (Posts) {
 				Posts.getPostsFields(pids, ['uid'], next);
 			},
 			function (postData, next) {
-				var uids = postData.map(function (post) {
-					return post && post.uid;
-				}).filter(function (uid, index, array) {
-					return uid && array.indexOf(uid) === index;
-				});
+				var uids = _.uniq(postData.map(post => post && post.uid).filter(uid => parseInt(uid, 10)));
+
 				next(null, uids);
 			},
 		], callback);

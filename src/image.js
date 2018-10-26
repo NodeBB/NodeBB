@@ -93,8 +93,8 @@ image.checkDimensions = function (path, callback) {
 			return callback(err);
 		}
 
-		const maxWidth = parseInt(meta.config.rejectImageWidth, 10) || 5000;
-		const maxHeight = parseInt(meta.config.rejectImageHeight, 10) || 5000;
+		const maxWidth = meta.config.rejectImageWidth;
+		const maxHeight = meta.config.rejectImageHeight;
 		if (result.width > maxWidth || result.height > maxHeight) {
 			return callback(new Error('[[error:invalid-image-dimensions]]'));
 		}
