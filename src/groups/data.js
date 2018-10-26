@@ -29,7 +29,7 @@ module.exports = function (Groups) {
 			function (next) {
 				const keys = groupNames.map(groupName => 'group:' + groupName);
 				if (fields.length) {
-					db.getObjectsFields(keys, fields, callback);
+					db.getObjectsFields(keys, fields, next);
 				} else {
 					db.getObjects(keys, next);
 				}

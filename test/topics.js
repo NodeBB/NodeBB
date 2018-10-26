@@ -226,6 +226,8 @@ describe('Topic\'s', function () {
 				assert(typeof topicData.mainPid === 'number');
 
 				assert(typeof topicData.timestamp === 'number');
+				assert.strictEqual(topicData.postcount, 1);
+				assert.strictEqual(topicData.viewcount, 0);
 				assert.strictEqual(topicData.upvotes, 0);
 				assert.strictEqual(topicData.downvotes, 0);
 				assert.strictEqual(topicData.votes, 0);

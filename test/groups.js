@@ -1339,7 +1339,7 @@ describe('Groups', function () {
 		it('should remove cover', function (done) {
 			socketGroups.cover.remove({ uid: adminUid }, { groupName: 'Test' }, function (err) {
 				assert.ifError(err);
-				Groups.getGroupFields('Test', ['cover:url'], function (err, groupData) {
+				db.getObjectFields('group:Test', ['cover:url'], function (err, groupData) {
 					assert.ifError(err);
 					assert(!groupData['cover:url']);
 					done();
