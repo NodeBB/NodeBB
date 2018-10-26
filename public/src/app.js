@@ -111,7 +111,7 @@ app.cacheBuster = null;
 		 *   config (obj)
 		 *   next (string)
 		 */
-		require(['benchpress', 'translator'], function (Benchpress, translator) {
+		require(['benchpress', 'translator', 'notifications', 'chat'], function (Benchpress, translator, Notifications, Chat) {
 			app.user = data.header.user;
 			data.header.config = data.config;
 			config = data.config;
@@ -134,6 +134,9 @@ app.cacheBuster = null;
 			})).then(function (html) {
 				Object.values(toRender).forEach(function (element, idx) {
 					element.html(html[idx]);
+
+					Notifications.prepareDOM();
+					Chat.prepareDOM();
 					callback();
 				});
 			});
