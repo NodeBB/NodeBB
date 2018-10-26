@@ -1,10 +1,10 @@
 {
-	"crawlability-settings": "Crawlability Settings",
+	"crawlability-settings": "Rāpuļprogrammas iestatījumi",
 	"robots-txt": "Pielāgotais Robots.txt <small>Noklusējuma gadījumā atstāt tukšu</small>",
-	"sitemap-feed-settings": "Sitemap & Feed Settings",
+	"sitemap-feed-settings": "Vietnes kartes & RSS plūsmas iestatījumi",
 	"disable-rss-feeds": "Atspējot RSS plūsmu",
 	"disable-sitemap-xml": "Atspējot sitemap.xml",
-	"sitemap-topics": "Number of Topics to display in the Sitemap",
-	"clear-sitemap-cache": "Clear Sitemap Cache",
-	"view-sitemap": "View Sitemap"
+	"sitemap-topics": "Cik tematus rādīt vietnes kartē",
+	"clear-sitemap-cache": "Notīrīt vietnes kartes kešatmiņu",
+	"view-sitemap": "Skatīt vietnes karti"
 }

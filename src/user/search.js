@@ -81,9 +81,7 @@ module.exports = function (User) {
 	}
 
 	function filterAndSortUids(uids, data, callback) {
-		uids = uids.filter(function (uid) {
-			return parseInt(uid, 10);
-		});
+		uids = uids.filter(uid => parseInt(uid, 10));
 
 		var fields = [];
 
@@ -111,31 +109,24 @@ module.exports = function (User) {
 				User.getUsersFields(uids, fields, next);
 			},
 			function (userData, next) {
+				userData = userData.filter(Boolean);
 				if (data.onlineOnly) {
-					userData = userData.filter(function (user) {
-						return user && user.status !== 'offline' && (Date.now() - parseInt(user.lastonline, 10) < 300000);
-					});
+					userData = userData.filter(user => user.status !== 'offline' && (Date.now() - user.lastonline < 300000));
 				}
 
 				if (data.bannedOnly) {
-					userData = userData.filter(function (user) {
-						return user && parseInt(user.banned, 10) === 1;
-					});
+					userData = userData.filter(user => user.banned);
 				}
 
 				if (data.flaggedOnly) {
-					userData = userData.filter(function (user) {
-						return user && parseInt(user.flags, 10) > 0;
-					});
+					userData = userData.filter(user => parseInt(user.flags, 10) > 0);
 				}
 
 				if (data.sortBy) {
 					sortUsers(userData, data.sortBy);
 				}
 
-				uids = userData.map(function (user) {
-					return user && user.uid;
-				});
+				uids = userData.map(user => user.uid);
 
 				next(null, uids);
 			},

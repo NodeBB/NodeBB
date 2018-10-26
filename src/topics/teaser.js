@@ -25,7 +25,7 @@ module.exports = function (Topics) {
 		var tidToPost = {};
 
 		topics.forEach(function (topic) {
-			counts.push(topic && (parseInt(topic.postcount, 10) || 0));
+			counts.push(topic && topic.postcount);
 			if (topic) {
 				if (topic.teaserPid === 'null') {
 					delete topic.teaserPid;

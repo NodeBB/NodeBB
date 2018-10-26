@@ -146,6 +146,10 @@ function shutdown(code) {
 		},
 		function (next) {
 			winston.info('[app] Web server closed to connections.');
+			require('./analytics').writeData(next);
+		},
+		function (next) {
+			winston.info('[app] Live analytics saved.');
 			require('./database').close(next);
 		},
 	], function (err) {

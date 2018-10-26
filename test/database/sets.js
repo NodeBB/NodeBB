@@ -156,6 +156,14 @@ describe('Set methods', function () {
 				done();
 			});
 		});
+
+		it('should return 0 if set does not exist', function (done) {
+			db.setCount('doesnotexist', function (err, count) {
+				assert.ifError(err);
+				assert.strictEqual(count, 0);
+				done();
+			});
+		});
 	});
 
 	describe('setsCount()', function () {

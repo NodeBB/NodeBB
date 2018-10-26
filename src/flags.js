@@ -246,7 +246,7 @@ Flags.validate = function (payload, callback) {
 
 		if (data.target.deleted) {
 			return callback(new Error('[[error:post-deleted]]'));
-		} else if (parseInt(data.reporter.banned, 10)) {
+		} else if (data.reporter.banned) {
 			return callback(new Error('[[error:user-banned]]'));
 		}
 

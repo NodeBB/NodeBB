@@ -9,7 +9,7 @@ var privileges = require('../../privileges');
 var privilegesController = module.exports;
 
 privilegesController.get = function (req, res, callback) {
-	var cid = req.params.cid ? req.params.cid : 0;
+	var cid = req.params.cid ? parseInt(req.params.cid, 10) : 0;
 	async.waterfall([
 		function (next) {
 			async.parallel({
@@ -38,7 +38,7 @@ privilegesController.get = function (req, res, callback) {
 		function (data) {
 			data.allCategories.forEach(function (category) {
 				if (category) {
-					category.selected = parseInt(category.cid, 10) === parseInt(cid, 10);
+					category.selected = category.cid === cid;
 				}
 			});
 

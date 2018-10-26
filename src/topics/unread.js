@@ -223,7 +223,7 @@ module.exports = function (Topics) {
 							tidsByFilter.watched.push(topic.tid);
 						}
 
-						if (parseInt(topic.postcount, 10) <= 1) {
+						if (topic.postcount <= 1) {
 							counts.unreplied += 1;
 							tidsByFilter.unreplied.push(topic.tid);
 						}

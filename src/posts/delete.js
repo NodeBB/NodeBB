@@ -168,7 +168,7 @@ module.exports = function (Posts) {
 						topics.updateLastPostTimeFromLastPid(postData.tid, next);
 					},
 					function (next) {
-						if (parseInt(topicData.pinned, 10) !== 1) {
+						if (!topicData.pinned) {
 							db.sortedSetIncrBy('cid:' + topicData.cid + ':tids:posts', -1, postData.tid, next);
 						} else {
 							next();

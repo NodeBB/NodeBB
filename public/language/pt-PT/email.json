@@ -4,10 +4,10 @@
     "invite": "Convite enviado por %1",
     "greeting_no_name": "Olá",
     "greeting_with_name": "Olá %1",
-    "email.verify-your-email.subject": "Por favor verifica o teu email",
-    "email.verify.text1": "O teu endereço de email foi alterado!",
+    "email.verify-your-email.subject": "Por favor verifica o teu e-mail",
+    "email.verify.text1": "O teu endereço de e-mail foi alterado!",
     "welcome.text1": "Obrigado por te teres registado no %1!",
-    "welcome.text2": "De forma a finalizar o processo de activação da tua conta, precisamos de verificar que és o legítimo dono da conta de email registada.",
+    "welcome.text2": "De forma a finalizar o processo de activação da tua conta, precisamos de verificar que és o legítimo dono da conta de e-mail registada.",
     "welcome.text3": "Um administrador aceitou o teu registo. Podes agora iniciar sessão com o teu nome de utilizador/palavra-passe.",
     "welcome.cta": "Clica aqui para confirmares o teu endereço de e-mail",
     "invitation.text1": "%1 convidou-te para te juntares a %2",
@@ -38,7 +38,7 @@
     "unsub.cta": "Clica aqui para alterares essas definições",
     "banned.subject": "You have been banned from %1",
     "banned.text1": "The user %1 has been banned from %2.",
-    "banned.text2": "This ban will last until %1.",
+    "banned.text2": "Este banimento irá durar até %1.",
     "banned.text3": "This is the reason why you have been banned:",
     "closing": "Obrigado!"
 }

@@ -224,10 +224,23 @@ describe('Topic\'s', function () {
 				assert(typeof topicData.uid === 'number');
 				assert(typeof topicData.cid === 'number');
 				assert(typeof topicData.mainPid === 'number');
-				assert(typeof topicData.deleted === 'number');
-				assert(typeof topicData.locked === 'number');
-				assert(typeof topicData.pinned === 'number');
+
 				assert(typeof topicData.timestamp === 'number');
+				assert.strictEqual(topicData.upvotes, 0);
+				assert.strictEqual(topicData.downvotes, 0);
+				assert.strictEqual(topicData.votes, 0);
+				assert.strictEqual(topicData.deleted, 0);
+				assert.strictEqual(topicData.locked, 0);
+				assert.strictEqual(topicData.pinned, 0);
+				done();
+			});
+		});
+
+		it('should get a single field', function (done) {
+			topics.getTopicFields(newTopic.tid, ['slug'], function (err, data) {
+				assert.ifError(err);
+				assert(Object.keys(data).length === 1);
+				assert(data.hasOwnProperty('slug'));
 				done();
 			});
 		});
@@ -373,9 +386,9 @@ describe('Topic\'s', function () {
 		it('should pin topic', function (done) {
 			socketTopics.pin({ uid: 1 }, { tids: [newTopic.tid], cid: categoryObj.cid }, function (err) {
 				assert.ifError(err);
-				db.getObjectField('topic:' + newTopic.tid, 'pinned', function (err, pinned) {
+				topics.getTopicField(newTopic.tid, 'pinned', function (err, pinned) {
 					assert.ifError(err);
-					assert.strictEqual(parseInt(pinned, 10), 1);
+					assert.strictEqual(pinned, 1);
 					done();
 				});
 			});
@@ -384,9 +397,9 @@ describe('Topic\'s', function () {
 		it('should unpin topic', function (done) {
 			socketTopics.unpin({ uid: 1 }, { tids: [newTopic.tid], cid: categoryObj.cid }, function (err) {
 				assert.ifError(err);
-				db.getObjectField('topic:' + newTopic.tid, 'pinned', function (err, pinned) {
+				topics.getTopicField(newTopic.tid, 'pinned', function (err, pinned) {
 					assert.ifError(err);
-					assert.strictEqual(parseInt(pinned, 10), 0);
+					assert.strictEqual(pinned, 0);
 					done();
 				});
 			});
@@ -508,7 +521,7 @@ describe('Topic\'s', function () {
 				function (categoryData, next) {
 					assert.equal(categoryData[0].post_count, 4);
 					assert.equal(categoryData[1].post_count, 2);
-					topics.movePostToTopic(movedPost.pid, tid2, next);
+					topics.movePostToTopic(1, movedPost.pid, tid2, next);
 				},
 				function (next) {
 					checkCidSets(previousPost, topic2LastReply, next);
@@ -685,7 +698,7 @@ describe('Topic\'s', function () {
 					var topic;
 					var i;
 					for (i = 0; i < topics.length; i += 1) {
-						if (parseInt(topics[i].tid, 10) === parseInt(newTid, 10)) {
+						if (topics[i].tid === parseInt(newTid, 10)) {
 							assert.equal(false, topics[i].unread, 'ignored topic was marked as unread in recent list');
 							return done();
 						}
@@ -1384,7 +1397,7 @@ describe('Topic\'s', function () {
 					topics.getUnreadTids({ cid: 0, uid: adminUid }, next);
 				},
 				function (unreadTids, next) {
-					assert(!unreadTids.includes(parseInt(topic.tid, 10)));
+					assert(!unreadTids.includes(topic.tid));
 					User.blocks.remove(blockedUid, adminUid, next);
 				},
 			], done);

@@ -3,35 +3,35 @@
 var async = require('async');
 var _ = require('lodash');
 
-var db = require('./database');
-var posts = require('./posts');
-var utils = require('./utils');
-var plugins = require('./plugins');
-var meta = require('./meta');
-var user = require('./user');
-var categories = require('./categories');
-var privileges = require('./privileges');
-var social = require('./social');
+var db = require('../database');
+var posts = require('../posts');
+var utils = require('../utils');
+var plugins = require('../plugins');
+var meta = require('../meta');
+var user = require('../user');
+var categories = require('../categories');
+var privileges = require('../privileges');
+var social = require('../social');
 
 var Topics = module.exports;
 
-require('./topics/data')(Topics);
-require('./topics/create')(Topics);
-require('./topics/delete')(Topics);
-require('./topics/sorted')(Topics);
-require('./topics/unread')(Topics);
-require('./topics/recent')(Topics);
-require('./topics/user')(Topics);
-require('./topics/fork')(Topics);
-require('./topics/posts')(Topics);
-require('./topics/follow')(Topics);
-require('./topics/tags')(Topics);
-require('./topics/teaser')(Topics);
-require('./topics/suggested')(Topics);
-require('./topics/tools')(Topics);
-require('./topics/thumb')(Topics);
-require('./topics/bookmarks')(Topics);
-require('./topics/merge')(Topics);
+require('./data')(Topics);
+require('./create')(Topics);
+require('./delete')(Topics);
+require('./sorted')(Topics);
+require('./unread')(Topics);
+require('./recent')(Topics);
+require('./user')(Topics);
+require('./fork')(Topics);
+require('./posts')(Topics);
+require('./follow')(Topics);
+require('./tags')(Topics);
+require('./teaser')(Topics);
+require('./suggested')(Topics);
+require('./tools')(Topics);
+require('./thumb')(Topics);
+require('./bookmarks')(Topics);
+require('./merge')(Topics);
 
 Topics.exists = function (tid, callback) {
 	db.isSortedSetMember('topics:tid', tid, callback);
@@ -79,9 +79,7 @@ Topics.getTopicsByTids = function (tids, uid, callback) {
 			function mapFilter(array, field) {
 				return array.map(function (topic) {
 					return topic && topic[field] && topic[field].toString();
-				}).filter(function (value) {
-					return utils.isNumber(value);
-				});
+				}).filter(value => utils.isNumber(value));
 			}
 
 			topics = _topics;
@@ -132,25 +130,17 @@ Topics.getTopicsByTids = function (tids, uid, callback) {
 					topics[i].teaser = results.teasers[i];
 					topics[i].tags = results.tags[i];
 
-					topics[i].isOwner = parseInt(topics[i].uid, 10) === parseInt(uid, 10);
-					topics[i].pinned = parseInt(topics[i].pinned, 10) === 1;
-					topics[i].locked = parseInt(topics[i].locked, 10) === 1;
-					topics[i].deleted = parseInt(topics[i].deleted, 10) === 1;
+					topics[i].isOwner = topics[i].uid === parseInt(uid, 10);
 					topics[i].ignored = results.isIgnored[i];
 					topics[i].unread = !results.hasRead[i] && !results.isIgnored[i];
 					topics[i].bookmark = results.bookmarks[i];
 					topics[i].unreplied = !topics[i].teaser;
 
-					topics[i].upvotes = parseInt(topics[i].upvotes, 10) || 0;
-					topics[i].downvotes = parseInt(topics[i].downvotes, 10) || 0;
-					topics[i].votes = topics[i].upvotes - topics[i].downvotes;
 					topics[i].icons = [];
 				}
 			}
 
-			topics = topics.filter(function (topic) {
-				return topic &&	topic.category && !topic.category.disabled;
-			});
+			topics = topics.filter(topic => topic && topic.category && !topic.category.disabled);
 
 			plugins.fireHook('filter:topics.get', { topics: topics, uid: uid }, next);
 		},
@@ -203,10 +193,7 @@ Topics.getTopicWithPosts = function (topicData, set, uid, start, stop, reverse, 
 			topicData.mergedTimestampISO = utils.toISOString(topicData.mergedTimestamp);
 			topicData.related = results.related || [];
 
-			topicData.unreplied = parseInt(topicData.postcount, 10) === 1;
-			topicData.deleted = parseInt(topicData.deleted, 10) === 1;
-			topicData.locked = parseInt(topicData.locked, 10) === 1;
-			topicData.pinned = parseInt(topicData.pinned, 10) === 1;
+			topicData.unreplied = topicData.postcount === 1;
 
 			topicData.icons = [];
 
@@ -338,7 +325,7 @@ function getMainPosts(mainPids, uid, callback) {
 
 Topics.isLocked = function (tid, callback) {
 	Topics.getTopicField(tid, 'locked', function (err, locked) {
-		callback(err, parseInt(locked, 10) === 1);
+		callback(err, locked === 1);
 	});
 };
 
@@ -351,4 +338,4 @@ Topics.search = function (tid, term, callback) {
 	});
 };
 
-Topics.async = require('./promisify')(Topics);
+Topics.async = require('../promisify')(Topics);

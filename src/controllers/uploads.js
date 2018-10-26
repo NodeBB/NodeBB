@@ -71,7 +71,7 @@ function uploadAsImage(req, uploadedFile, callback) {
 			uploadsController.uploadFile(req.uid, uploadedFile, next);
 		},
 		function (fileObj, next) {
-			if (meta.config.maximumImageWidth === 0) {
+			if (meta.config.resizeImageWidth === 0 || meta.config.resizeImageWidthThreshold === 0) {
 				return next(null, fileObj);
 			}
 
@@ -112,14 +112,14 @@ function resizeImage(fileObj, callback) {
 			image.size(fileObj.path, next);
 		},
 		function (imageData, next) {
-			if (imageData.width < meta.config.maximumImageWidth) {
+			if (imageData.width < meta.config.resizeImageWidthThreshold || meta.config.resizeImageWidth > meta.config.resizeImageWidthThreshold) {
 				return callback(null, fileObj);
 			}
 
 			image.resizeImage({
 				path: fileObj.path,
 				target: file.appendToFileName(fileObj.path, '-resized'),
-				width: meta.config.maximumImageWidth,
+				width: meta.config.resizeImageWidth,
 				quality: meta.config.resizeImageQuality,
 			}, next);
 		},

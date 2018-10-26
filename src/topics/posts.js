@@ -48,9 +48,7 @@ module.exports = function (Topics) {
 		if (!Array.isArray(postData) || !postData.length) {
 			return callback(null, []);
 		}
-		var pids = postData.map(function (post) {
-			return post && post.pid;
-		});
+		var pids = postData.map(post => post && post.pid);
 
 		if (!Array.isArray(pids) || !pids.length) {
 			return callback(null, []);
@@ -105,15 +103,14 @@ module.exports = function (Topics) {
 			function (results, next) {
 				postData.forEach(function (postObj, i) {
 					if (postObj) {
-						postObj.deleted = parseInt(postObj.deleted, 10) === 1;
-						postObj.user = parseInt(postObj.uid, 10) ? results.userData[postObj.uid] : _.clone(results.userData[postObj.uid]);
+						postObj.user = postObj.uid ? results.userData[postObj.uid] : _.clone(results.userData[postObj.uid]);
 						postObj.editor = postObj.editor ? results.editors[postObj.editor] : null;
 						postObj.bookmarked = results.bookmarks[i];
 						postObj.upvoted = results.voteData.upvotes[i];
 						postObj.downvoted = results.voteData.downvotes[i];
 						postObj.votes = postObj.votes || 0;
 						postObj.replies = results.replies[i];
-						postObj.selfPost = !!parseInt(uid, 10) && parseInt(uid, 10) === parseInt(postObj.uid, 10);
+						postObj.selfPost = !!parseInt(uid, 10) && parseInt(uid, 10) === postObj.uid;
 
 						// Username override for guests, if enabled
 						if (meta.config.allowGuestHandles && postObj.uid === 0 && postObj.handle) {
@@ -202,8 +199,8 @@ module.exports = function (Topics) {
 				Topics.getLatestUndeletedReply(tid, next);
 			},
 			function (pid, next) {
-				if (parseInt(pid, 10)) {
-					return callback(null, pid.toString());
+				if (pid) {
+					return callback(null, pid);
 				}
 				Topics.getTopicField(tid, 'mainPid', next);
 			},
@@ -211,7 +208,7 @@ module.exports = function (Topics) {
 				posts.getPostFields(mainPid, ['pid', 'deleted'], next);
 			},
 			function (mainPost, next) {
-				next(null, parseInt(mainPost.pid, 10) && parseInt(mainPost.deleted, 10) !== 1 ? mainPost.pid.toString() : null);
+				next(null, mainPost.pid && !mainPost.deleted ? mainPost.pid : null);
 			},
 		], callback);
 	};
@@ -238,7 +235,7 @@ module.exports = function (Topics) {
 						posts.getPostField(pids[0], 'deleted', _next);
 					},
 					function (deleted, _next) {
-						isDeleted = parseInt(deleted, 10) === 1;
+						isDeleted = deleted;
 						if (!isDeleted) {
 							latestPid = pids[0];
 						}
@@ -251,7 +248,7 @@ module.exports = function (Topics) {
 				return isDeleted && !done;
 			},
 			function (err) {
-				callback(err, latestPid);
+				callback(err, parseInt(latestPid, 10));
 			}
 		);
 	};

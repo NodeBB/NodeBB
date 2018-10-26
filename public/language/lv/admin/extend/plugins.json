@@ -11,7 +11,7 @@
 	"plugin-search-placeholder": "Meklēt spraudni...",
 	"reorder-plugins": "Pārkārtot spraudņus",
 	"order-active": "Kārtot aktīvos spraudņus",
-	"dev-interested": "Vai esi ieinteresēts rakstīt spraudņus NodeBB?",
+	"dev-interested": "Vai esi ieinteresēts(-ēta) rakstīt spraudņus NodeBB?",
 	"docs-info": "Pilna dokumentācija par spraudņu rakstīšanu atrodama <a target=\"_blank\" href=\"https://docs.nodebb.org/development/plugins/\">NodeBB dokumentu portālā</a>.",
 
 	"order.description": "Atsevišķi spraudņi darbojas labāk, kad tie tiek inicializēti pirms / pēc citiem spraudņiem.",

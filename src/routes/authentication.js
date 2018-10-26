@@ -26,10 +26,10 @@ Auth.initialize = function (app, middleware) {
 Auth.setAuthVars = function (req, res, next) {
 	var isSpider = req.isSpider();
 	req.loggedIn = !isSpider && !!req.user;
-	if (isSpider) {
-		req.uid = -1;
-	} else if (req.user) {
+	if (req.user) {
 		req.uid = parseInt(req.user.uid, 10);
+	} else if (isSpider) {
+		req.uid = -1;
 	} else {
 		req.uid = 0;
 	}

@@ -1,7 +1,7 @@
 {
     "banned": "Banido",
     "offline": "Offline",
-    "deleted": "Deleted",
+    "deleted": "Apagar",
     "username": "Nome de utilizador",
     "joindate": "Juntar data",
     "postcount": "Contagem de publicações",
@@ -90,7 +90,7 @@
     "has_no_posts": "Este utilizador ainda não publicou nada.",
     "has_no_topics": "Este utilizar ainda não publicou nenhum tópico.",
     "has_no_watched_topics": "Este utilizador ainda não visualizou qualquer tópico até ao momento.",
-    "has_no_ignored_topics": "This user hasn't ignored any topics yet.",
+    "has_no_ignored_topics": "Este utilizador ainda não ignorou nenhum tópico.",
     "has_no_upvoted_posts": "Este utilizador ainda não votou favoravelmente em nenhuma publicação.",
     "has_no_downvoted_posts": "Este utilizador ainda não votou negativamente em nenhuma publicação.",
     "has_no_voted_posts": "Este utilizador ainda não tem nenhuma publicação com votos",

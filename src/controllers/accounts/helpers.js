@@ -178,12 +178,10 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 
 			userData.sso = results.sso.associations;
 			userData.status = user.getStatus(userData);
-			userData.banned = parseInt(userData.banned, 10) === 1;
+			userData.banned = userData.banned === 1;
 			userData.website = validator.escape(String(userData.website || ''));
 			userData.websiteLink = !userData.website.startsWith('http') ? 'http://' + userData.website : userData.website;
 			userData.websiteName = userData.website.replace(validator.escape('http://'), '').replace(validator.escape('https://'), '');
-			userData.followingCount = parseInt(userData.followingCount, 10) || 0;
-			userData.followerCount = parseInt(userData.followerCount, 10) || 0;
 
 			userData.email = validator.escape(String(userData.email || ''));
 			userData.fullname = validator.escape(String(userData.fullname || ''));

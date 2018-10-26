@@ -85,9 +85,7 @@ module.exports = function (Topics) {
 								posts.getPostsFields(pids, ['pid', 'timestamp', 'deleted'], next);
 							},
 							function (postData, next) {
-								postData = postData.filter(function (post) {
-									return post && parseInt(post.deleted, 10) !== 1;
-								});
+								postData = postData.filter(post => post && !post.deleted);
 								var pidsToAdd = [];
 								var scores = [];
 								postData.forEach(function (post) {
@@ -247,8 +245,6 @@ module.exports = function (Topics) {
 						Topics.getTopicFields(tid, ['cid', 'postcount'], next);
 					},
 					function (topicData, next) {
-						topicData.postcount = parseInt(topicData.postcount, 10);
-						topicData.postcount = topicData.postcount || 0;
 						var postCountChange = incr * topicData.postcount;
 
 						async.parallel([

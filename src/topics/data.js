@@ -10,7 +10,7 @@ var translator = require('../translator');
 
 const intFields = [
 	'tid', 'cid', 'uid', 'mainPid', 'deleted', 'locked', 'pinned',
-	'timestamp', 'upvotes', 'downvotes',
+	'timestamp', 'upvotes', 'downvotes', 'lastposttime',
 ];
 
 module.exports = function (Topics) {
@@ -18,9 +18,10 @@ module.exports = function (Topics) {
 		if (!Array.isArray(tids) || !tids.length) {
 			return callback(null, []);
 		}
-		var keys = tids.map(tid => 'topic:' + tid);
+
 		async.waterfall([
 			function (next) {
+				const keys = tids.map(tid => 'topic:' + tid);
 				if (fields.length) {
 					db.getObjectsFields(keys, fields, next);
 				} else {
@@ -28,7 +29,7 @@ module.exports = function (Topics) {
 				}
 			},
 			function (topics, next) {
-				topics.forEach(modifyTopic);
+				topics.forEach(topic => modifyTopic(topic, fields));
 				next(null, topics);
 			},
 		], callback);
@@ -96,12 +97,12 @@ function escapeTitle(topicData) {
 	}
 }
 
-function modifyTopic(topic) {
+function modifyTopic(topic, fields) {
 	if (!topic) {
 		return;
 	}
 
-	intFields.forEach(field => db.parseIntField(topic, field));
+	db.parseIntFields(topic, intFields, fields);
 
 	if (topic.hasOwnProperty('title')) {
 		topic.titleRaw = topic.title;
@@ -113,6 +114,7 @@ function modifyTopic(topic) {
 	if (topic.hasOwnProperty('timestamp')) {
 		topic.timestampISO = utils.toISOString(topic.timestamp);
 	}
+
 	if (topic.hasOwnProperty('lastposttime')) {
 		topic.lastposttimeISO = utils.toISOString(topic.lastposttime);
 	}

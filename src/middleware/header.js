@@ -137,9 +137,8 @@ module.exports = function (middleware) {
 				results.user.privileges = results.privileges;
 				results.user[results.user.status] = true;
 
-				results.user.uid = parseInt(results.user.uid, 10);
 				results.user.email = String(results.user.email);
-				results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
+				results.user['email:confirmed'] = results.user['email:confirmed'] === 1;
 				results.user.isEmailConfirmSent = !!results.isEmailConfirmSent;
 
 				setBootswatchCSS(templateValues, res.locals.config);

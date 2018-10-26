@@ -2,26 +2,26 @@
 
 var async = require('async');
 
-var user = require('./user');
-var db = require('./database');
-var plugins = require('./plugins');
-var utils = require('./utils');
+var user = require('../user');
+var db = require('../database');
+var plugins = require('../plugins');
+var utils = require('../utils');
 
 var Groups = module.exports;
 
-require('./groups/data')(Groups);
-require('./groups/create')(Groups);
-require('./groups/delete')(Groups);
-require('./groups/update')(Groups);
-require('./groups/membership')(Groups);
-require('./groups/ownership')(Groups);
-require('./groups/search')(Groups);
-require('./groups/cover')(Groups);
-require('./groups/posts')(Groups);
-require('./groups/user')(Groups);
-require('./groups/join')(Groups);
-require('./groups/leave')(Groups);
-require('./groups/cache')(Groups);
+require('./data')(Groups);
+require('./create')(Groups);
+require('./delete')(Groups);
+require('./update')(Groups);
+require('./membership')(Groups);
+require('./ownership')(Groups);
+require('./search')(Groups);
+require('./cover')(Groups);
+require('./posts')(Groups);
+require('./user')(Groups);
+require('./join')(Groups);
+require('./leave')(Groups);
+require('./cache')(Groups);
 
 
 Groups.ephemeralGroups = ['guests', 'spiders'];
@@ -273,4 +273,4 @@ Groups.existsBySlug = function (slug, callback) {
 	}
 };
 
-Groups.async = require('./promisify')(Groups);
+Groups.async = require('../promisify')(Groups);

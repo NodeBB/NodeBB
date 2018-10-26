@@ -227,7 +227,7 @@ module.exports = function (Categories) {
 				topics.getTopicField(tid, 'postcount', next);
 			},
 			function (postCount, next) {
-				if (!parseInt(postCount, 10)) {
+				if (!postCount) {
 					return callback();
 				}
 				async.parallel([
