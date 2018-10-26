@@ -6,7 +6,7 @@ define('forum/recent', ['topicList'], function (topicList) {
 	Recent.init = function () {
 		app.enterRoom('recent_topics');
 
-		topicList.init();
+		topicList.init('recent');
 	};
 
 	return Recent;

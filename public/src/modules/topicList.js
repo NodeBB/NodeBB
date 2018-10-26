@@ -3,16 +3,25 @@
 
 define('topicList', ['forum/infinitescroll', 'handleBack'], function (infinitescroll, handleBack) {
 	var TopicList = {};
+	var templateName = '';
+
+	var tplToSort = {
+		recent: 'recent',
+		unread: 'unread',
+		popular: 'posts',
+		top: 'votes',
+	};
+
 	var newTopicCount = 0;
 	var newPostCount = 0;
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
-		if (ajaxify.currentPage !== data.url) {
-			TopicList.removeListeners();
-		}
+		TopicList.removeListeners();
 	});
 
-	TopicList.init = function () {
+	TopicList.init = function (template) {
+		templateName = template;
+
 		TopicList.watchForNewPosts();
 
 		TopicList.handleCategorySelection();
@@ -188,7 +197,7 @@ define('topicList', ['forum/infinitescroll', 'handleBack'], function (infinitesc
 
 
 	TopicList.loadMoreTopics = function (direction) {
-		if (!$('[component="category"]').length) {
+		if (direction < 0 || !$('[component="category"]').length) {
 			return;
 		}
 		var topics = $('[component="category/topic"]');
@@ -200,21 +209,22 @@ define('topicList', ['forum/infinitescroll', 'handleBack'], function (infinitesc
 	function loadTopicsAfter(after, direction, callback) {
 		callback = callback || function () {};
 		var query = utils.params();
-		infinitescroll.loadMore('topics.loadMoreRecentTopics', {
+		infinitescroll.loadMore('topics.loadMoreSortedTopics', {
 			after: after,
 			direction: direction,
+			sort: tplToSort[templateName],
 			count: config.topicsPerPage,
 			cid: query.cid,
 			query: query,
+			term: ajaxify.data.selectedTerm.term,
 			filter: ajaxify.data.selectedFilter.filter,
 			set: $('[component="category"]').attr('data-set') ? $('[component="category"]').attr('data-set') : 'topics:recent',
 		}, function (data, done) {
 			if (data.topics && data.topics.length) {
-				TopicList.onTopicsLoaded('recent', data.topics, false, direction, done);
+				TopicList.onTopicsLoaded(templateName, data.topics, false, direction, done);
 			} else {
 				done();
 			}
-			$('[component="category"]').attr('data-nextstart', data.nextStart);
 			callback();
 		});
 	}
