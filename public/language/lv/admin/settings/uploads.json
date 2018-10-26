@@ -15,7 +15,7 @@
 	"reject-image-height": "Maksimālais bildes augstums (pikseļos)",
 	"reject-image-height-help": "Images taller than this value will be rejected.",
 	"allow-topic-thumbnails": "Atļaut lietotājiem augšupielādēt tematu sīktēlus",
-	"topic-thumb-size": "Temata sīktēla lielums",
+	"topic-thumb-size": "Tematu sīktēlu lielums",
 	"allowed-file-extensions": "Allowed File Extensions",
 	"allowed-file-extensions-help": "Enter comma-separated list of file extensions here (e.g. <code>pdf,xls,doc</code>). An empty list means all extensions are allowed.",
 	"profile-avatars": "Profila avatari",

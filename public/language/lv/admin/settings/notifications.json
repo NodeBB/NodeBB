@@ -1,7 +1,7 @@
 {
 	"notifications": "Paziņojumi",
-	"welcome-notification": "Welcome Notification",
-	"welcome-notification-link": "Welcome Notification Link",
-	"welcome-notification-uid": "Welcome Notification User (UID)",
-	"notification-alert-timeout": "Notification Alert Timeout"
+	"welcome-notification": "Sveicināšanas paziņojums",
+	"welcome-notification-link": "Sveicināšanas paziņojuma saite",
+	"welcome-notification-uid": "Sveicināšanas paziņojuma lietotājs (UID)",
+	"notification-alert-timeout": "Paziņojuma brīdinājuma ilgums"
 }
