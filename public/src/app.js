@@ -134,11 +134,11 @@ app.cacheBuster = null;
 			})).then(function (html) {
 				Object.values(toRender).forEach(function (element, idx) {
 					element.html(html[idx]);
-
-					Notifications.prepareDOM();
-					Chat.prepareDOM();
-					callback();
 				});
+
+				Notifications.prepareDOM();
+				Chat.prepareDOM();
+				callback();
 			});
 		});
 	};
