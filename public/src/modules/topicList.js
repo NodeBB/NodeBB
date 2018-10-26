@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('topicList', ['infinitescroll', 'handleBack'], function (infinitescroll, handleBack) {
+define('topicList', ['forum/infinitescroll', 'handleBack'], function (infinitescroll, handleBack) {
 	var TopicList = {};
 	var newTopicCount = 0;
 	var newPostCount = 0;
@@ -221,7 +221,7 @@ define('topicList', ['infinitescroll', 'handleBack'], function (infinitescroll, 
 
 	TopicList.onTopicsLoaded = function (templateName, topics, showSelect, direction, callback) {
 		topics = topics.filter(function (topic) {
-			return $('[component="category/topic"][data-tid="' + topic.tid + '"]').length;
+			return !$('[component="category/topic"][data-tid="' + topic.tid + '"]').length;
 		});
 
 		if (!topics.length) {

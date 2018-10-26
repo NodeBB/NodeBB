@@ -112,8 +112,7 @@ Configs.set = function (field, value, callback) {
 // data comes from client-side
 Configs.setMultiple = function (data, callback) {
 	data = deserialize(data);
-console.log(data)
-console.log('\n');
+
 	async.waterfall([
 		function (next) {
 			processConfig(data, next);
