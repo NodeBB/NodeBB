@@ -61,15 +61,9 @@ define('topicList', ['forum/infinitescroll', 'handleBack'], function (infinitesc
 	};
 
 	function onNewTopic(data) {
-		if (ajaxify.data.selectedCids && ajaxify.data.selectedCids.indexOf(parseInt(data.cid, 10)) === -1) {
-			return;
-		}
-
-		if (ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'watched') {
-			return;
-		}
-
-		if (ajaxify.data.template.category && parseInt(ajaxify.data.cid, 10) !== parseInt(data.cid, 10)) {
+		if ((ajaxify.data.selectedCids && ajaxify.data.selectedCids.indexOf(parseInt(data.cid, 10)) === -1) ||
+			(ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'watched') ||
+			(ajaxify.data.template.category && parseInt(ajaxify.data.cid, 10) !== parseInt(data.cid, 10))) {
 			return;
 		}
 
@@ -84,22 +78,11 @@ define('topicList', ['forum/infinitescroll', 'handleBack'], function (infinitesc
 		}
 
 		var post = data.posts[0];
-		if (!post || !post.topic) {
-			return;
-		}
-		if (parseInt(post.topic.mainPid, 10) === parseInt(post.pid, 10)) {
-			return;
-		}
-
-		if (ajaxify.data.selectedCids && ajaxify.data.selectedCids.indexOf(parseInt(post.topic.cid, 10)) === -1) {
-			return;
-		}
-
-		if (ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'new') {
-			return;
-		}
-
-		if (ajaxify.data.template.category && parseInt(ajaxify.data.cid, 10) !== parseInt(post.topic.cid, 10)) {
+		if ((!post || !post.topic) ||
+			(parseInt(post.topic.mainPid, 10) === parseInt(post.pid, 10)) ||
+			(ajaxify.data.selectedCids && ajaxify.data.selectedCids.indexOf(parseInt(post.topic.cid, 10)) === -1) ||
+			(ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'new') ||
+			(ajaxify.data.template.category && parseInt(ajaxify.data.cid, 10) !== parseInt(post.topic.cid, 10))) {
 			return;
 		}
 
@@ -232,6 +215,7 @@ define('topicList', ['forum/infinitescroll', 'handleBack'], function (infinitesc
 				TopicList.onTopicsLoaded(templateName, data.topics, false, direction, done);
 			} else {
 				done();
+				$('#load-more-btn').hide();
 			}
 			callback();
 		});
