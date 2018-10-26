@@ -10,6 +10,11 @@ var accountHelpers = require('./helpers');
 var consentController = module.exports;
 
 consentController.get = function (req, res, next) {
+	if (!meta.config.gdpr_enabled) {
+		// GDPR disabled
+		return next();
+	}
+
 	var userData;
 
 	async.waterfall([
