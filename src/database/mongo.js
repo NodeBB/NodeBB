@@ -100,7 +100,7 @@ mongoModule.getConnectionOptions = function () {
 		reconnectTries: 3600,
 		reconnectInterval: 1000,
 		autoReconnect: true,
-		connectTimeoutMS: 60000,
+		connectTimeoutMS: 90000,
 		useNewUrlParser: true,
 	};
 

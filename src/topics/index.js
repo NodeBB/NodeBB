@@ -46,6 +46,7 @@ Topics.getTopicsFromSet = function (set, uid, start, stop, callback) {
 			Topics.getTopics(tids, uid, next);
 		},
 		function (topics, next) {
+			Topics.calculateTopicIndices(topics, start);
 			next(null, { topics: topics, nextStart: stop + 1 });
 		},
 	], callback);
@@ -237,7 +238,7 @@ function getMainPostAndReplies(topic, set, uid, start, stop, reverse, callback) 
 				replies = posts.slice(1);
 			}
 
-			Topics.calculatePostIndices(replies, start, stop, topic.postcount, reverse);
+			Topics.calculatePostIndices(replies, start, topic.postcount, reverse);
 
 			Topics.addPostData(posts, uid, next);
 		},

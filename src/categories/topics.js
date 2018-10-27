@@ -22,16 +22,13 @@ module.exports = function (Categories) {
 				topics.getTopicsByTids(tids, data.uid, next);
 			},
 			async.apply(user.blocks.filter, data.uid),
-			function (topics, next) {
-				if (!topics.length) {
+			function (topicsData, next) {
+				if (!topicsData.length) {
 					return next(null, { topics: [], uid: data.uid });
 				}
+				topics.calculateTopicIndices(topicsData, data.start);
 
-				for (var i = 0; i < topics.length; i += 1) {
-					topics[i].index = data.start + i;
-				}
-
-				plugins.fireHook('filter:category.topics.get', { cid: data.cid, topics: topics, uid: data.uid }, next);
+				plugins.fireHook('filter:category.topics.get', { cid: data.cid, topics: topicsData, uid: data.uid }, next);
 			},
 			function (results, next) {
 				next(null, { topics: results.topics, nextStart: data.stop + 1 });

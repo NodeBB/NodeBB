@@ -16,7 +16,7 @@ define('forum/infinitescroll', function () {
 			callback = cb;
 			container = el || $('body');
 		}
-
+		previousScrollTop = $(window).scrollTop();
 		$(window).off('scroll', onScroll).on('scroll', onScroll);
 	};
 

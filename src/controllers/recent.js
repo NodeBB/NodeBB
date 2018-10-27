@@ -79,7 +79,6 @@ recentController.getData = function (req, url, sort, callback) {
 			data.allCategoriesUrl = url + helpers.buildQueryString('', filter, '');
 			data.selectedCategory = categoryData.selectedCategory;
 			data.selectedCids = categoryData.selectedCids;
-			data.nextStart = stop + 1;
 			data['feeds:disableRSS'] = meta.config['feeds:disableRSS'];
 			data.rssFeedUrl = nconf.get('relative_path') + '/' + url + '.rss';
 			if (req.loggedIn) {
