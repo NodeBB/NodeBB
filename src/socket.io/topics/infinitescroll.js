@@ -91,14 +91,7 @@ module.exports = function (SocketTopics) {
 		if (!data || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
-		var itemsPerPage = Math.min(meta.config.topicsPerPage || 20, parseInt(data.count, 10) || meta.config.topicsPerPage || 20);
-		var start = Math.max(0, parseInt(data.after, 10));
-		if (data.direction === -1) {
-			start -= itemsPerPage;
-		}
-		var stop = start + Math.max(0, itemsPerPage - 1);
-		start = Math.max(0, start);
-		stop = Math.max(0, stop);
+		const { start, stop } = calculateStartStop(data);
 		const params = {
 			uid: socket.uid,
 			start: start,
@@ -120,10 +113,17 @@ module.exports = function (SocketTopics) {
 		if (!data || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0 || !data.set) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
-
-		var start = parseInt(data.after, 10);
-		var stop = start + Math.max(0, Math.min(meta.config.topicsPerPage || 20, parseInt(data.count, 10) || meta.config.topicsPerPage || 20) - 1);
-
+		const { start, stop } = calculateStartStop(data);
 		topics.getTopicsFromSet(data.set, socket.uid, start, stop, callback);
 	};
+
+	function calculateStartStop(data) {
+		var itemsPerPage = Math.min(meta.config.topicsPerPage || 20, parseInt(data.count, 10) || meta.config.topicsPerPage || 20);
+		var start = Math.max(0, parseInt(data.after, 10));
+		if (data.direction === -1) {
+			start -= itemsPerPage;
+		}
+		var stop = start + Math.max(0, itemsPerPage - 1);
+		return { start: Math.max(0, start), stop: Math.max(0, stop) };
+	}
 };
