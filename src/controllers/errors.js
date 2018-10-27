@@ -52,7 +52,7 @@ exports.handleErrors = function (err, req, res, next) { // eslint-disable-line n
 			return res.locals.isAPI ? res.set('X-Redirect', err.path).status(200).json(err.path) : res.redirect(err.path);
 		}
 
-		winston.error(req.path + '\n', err.stack);
+		winston.error(req.path + '\n', err);
 
 		res.status(status || 500);
 

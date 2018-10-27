@@ -23,15 +23,16 @@ tagsController.getTag = function (req, res, next) {
 	};
 	var settings;
 	var topicCount = 0;
+	var start;
+
 	async.waterfall([
 		function (next) {
 			user.getSettings(req.uid, next);
 		},
 		function (_settings, next) {
 			settings = _settings;
-			var start = Math.max(0, (page - 1) * settings.topicsPerPage);
+			start = Math.max(0, (page - 1) * settings.topicsPerPage);
 			var stop = start + settings.topicsPerPage - 1;
-			templateData.nextStart = stop + 1;
 			async.parallel({
 				topicCount: function (next) {
 					topics.getTagTopicCount(req.params.tag, next);
@@ -48,7 +49,8 @@ tagsController.getTag = function (req, res, next) {
 			topicCount = results.topicCount;
 			topics.getTopics(results.tids, req.uid, next);
 		},
-		function (topics) {
+		function (topicsData) {
+			topics.calculateTopicIndices(topicsData, start);
 			res.locals.metaTags = [
 				{
 					name: 'title',
@@ -59,7 +61,7 @@ tagsController.getTag = function (req, res, next) {
 					content: tag,
 				},
 			];
-			templateData.topics = topics;
+			templateData.topics = topicsData;
 
 			var pageCount =	Math.max(1, Math.ceil(topicCount / settings.topicsPerPage));
 			templateData.pagination = pagination.create(page, pageCount);

@@ -1,18 +1,13 @@
 'use strict';
 
-
 define('forum/category', [
 	'forum/infinitescroll',
 	'share',
 	'navigator',
 	'forum/category/tools',
-	'forum/recent',
+	'topicList',
 	'sort',
-	'components',
-	'translator',
-	'topicSelect',
-	'handleBack',
-], function (infinitescroll, share, navigator, categoryTools, recent, sort, components, translator, topicSelect, handleBack) {
+], function (infinitescroll, share, navigator, categoryTools, topicList, sort) {
 	var Category = {};
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
@@ -25,7 +20,7 @@ define('forum/category', [
 
 	function removeListeners() {
 		categoryTools.removeListeners();
-		recent.removeListeners();
+		topicList.removeListeners();
 	}
 
 	Category.init = function () {
@@ -36,15 +31,16 @@ define('forum/category', [
 		share.addShareHandlers(ajaxify.data.name);
 
 		categoryTools.init(cid);
-		recent.watchForNewPosts();
+
+		topicList.init('category', loadTopicsAfter);
 
 		sort.handleSort('categoryTopicSort', 'user.setCategorySort', 'category/' + ajaxify.data.slug);
 
-		enableInfiniteLoadingOrPagination();
-
-		handleBack.init(function (after, cb) {
-			loadTopicsAfter(after, 1, cb);
-		});
+		if (!config.usePagination) {
+			navigator.init('[component="category/topic"]', ajaxify.data.topic_count, Category.toTop, Category.toBottom, Category.navigatorCallback);
+		} else {
+			navigator.disable();
+		}
 
 		handleScrollToTopicIndex();
 
@@ -104,32 +100,8 @@ define('forum/category', [
 		return bottomIndex;
 	};
 
-	function enableInfiniteLoadingOrPagination() {
-		if (!config.usePagination) {
-			navigator.init('[component="category/topic"]', ajaxify.data.topic_count, Category.toTop, Category.toBottom, Category.navigatorCallback);
-			infinitescroll.init($('[component="category"]'), Category.loadMoreTopics);
-		} else {
-			navigator.disable();
-		}
-	}
-
-	Category.loadMoreTopics = function (direction) {
-		if (!$('[component="category"]').length || !$('[component="category"]').children().length) {
-			return;
-		}
-
-		var topics = $('[component="category/topic"]');
-		var afterEl = direction > 0 ? topics.last() : topics.first();
-		var after = (parseInt(afterEl.attr('data-index'), 10) || 0) + (direction > 0 ? 1 : 0);
-
-		loadTopicsAfter(after, direction);
-	};
-
 	function loadTopicsAfter(after, direction, callback) {
 		callback = callback || function () {};
-		if (!utils.isNumber(after) || (after === 0 && components.get('category/topic', 'index', 0).length)) {
-			return callback();
-		}
 
 		$(window).trigger('action:category.loading');
 		var params = utils.params();
@@ -140,78 +112,10 @@ define('forum/category', [
 			query: params,
 			categoryTopicSort: config.categoryTopicSort,
 		}, function (data, done) {
-			if (data.topics && data.topics.length) {
-				Category.onTopicsLoaded(data, direction, done);
-			} else {
-				done();
-			}
-
 			$(window).trigger('action:category.loaded');
-			callback();
+			callback(data, done);
 		});
 	}
-
-
-	Category.onTopicsLoaded = function (data, direction, callback) {
-		if (!data || !data.topics.length) {
-			return callback();
-		}
-
-		function removeAlreadyAddedTopics(topics) {
-			return topics.filter(function (topic) {
-				return components.get('category/topic', 'tid', topic.tid).length === 0;
-			});
-		}
-
-		data.topics = removeAlreadyAddedTopics(data.topics);
-		if (!data.topics.length) {
-			return callback();
-		}
-
-		data.showSelect = data.privileges.editable;
-
-		var after;
-		var before;
-		var topics = $('[component="category/topic"]');
-
-		if (direction > 0 && topics.length) {
-			after = topics.last();
-		} else if (direction < 0 && topics.length) {
-			before = topics.first();
-		}
-
-		app.parseAndTranslate('category', 'topics', data, function (html) {
-			$('[component="category"]').removeClass('hidden');
-			$('.category-sidebar').removeClass('hidden');
-
-			$('#category-no-topics').remove();
-
-			if (after) {
-				html.insertAfter(after);
-			} else if (before) {
-				var height = $(document).height();
-				var scrollTop = $(window).scrollTop();
-
-				html.insertBefore(before);
-
-				$(window).scrollTop(scrollTop + ($(document).height() - height));
-			} else {
-				$('[component="category"]').append(html);
-			}
-
-			if (!topicSelect.getSelectedTids().length) {
-				infinitescroll.removeExtra($('[component="category/topic"]'), direction, config.topicsPerPage * 3);
-			}
-
-			html.find('.timeago').timeago();
-			app.createUserTooltips();
-			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
-
-			$(window).trigger('action:topics.loaded', { topics: data.topics });
-
-			callback();
-		});
-	};
 
 	return Category;
 });
