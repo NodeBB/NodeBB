@@ -205,7 +205,7 @@ define('topicList', ['forum/infinitescroll', 'handleBack', 'topicSelect'], funct
 		var loadFn = loadTopicsCallback || loadTopicsAfter;
 		loadFn(after, direction, function (data, done) {
 			if (data.topics && data.topics.length) {
-				TopicList.onTopicsLoaded(templateName, data.topics, data.privileges && data.privileges.editable, direction, done);
+				TopicList.onTopicsLoaded(templateName, data.topics, ajaxify.data.showSelect, direction, done);
 			} else {
 				done();
 				$('#load-more-btn').hide();
