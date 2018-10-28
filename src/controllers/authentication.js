@@ -164,6 +164,10 @@ authenticationController.registerComplete = function (req, res, next) {
 
 		var done = function (err, data) {
 			delete req.session.registration;
+			if (err) {
+				return res.redirect(nconf.get('relative_path') + '/?register=' + encodeURIComponent(err.message));
+			}
+
 			if (!err && data && data.message) {
 				return res.redirect(nconf.get('relative_path') + '/?register=' + encodeURIComponent(data.message));
 			}

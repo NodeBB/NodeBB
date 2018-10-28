@@ -9,7 +9,8 @@ var utils = require('../utils');
 var translator = require('../translator');
 
 const intFields = [
-	'tid', 'cid', 'uid', 'mainPid', 'deleted', 'locked', 'pinned',
+	'tid', 'cid', 'uid', 'mainPid', 'postcount',
+	'viewcount', 'deleted', 'locked', 'pinned',
 	'timestamp', 'upvotes', 'downvotes', 'lastposttime',
 ];
 

@@ -67,6 +67,7 @@ JS.scripts = {
 		'public/src/modules/sort.js',
 		'public/src/modules/navigator.js',
 		'public/src/modules/topicSelect.js',
+		'public/src/modules/topicList.js',
 		'public/src/modules/categorySelector.js',
 		'public/src/modules/share.js',
 		'public/src/modules/search.js',

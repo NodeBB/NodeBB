@@ -37,7 +37,7 @@ module.exports = function (Topics) {
 				}, next);
 			},
 			function (results, next) {
-				Topics.calculatePostIndices(results.posts, start, stop, results.postCount, reverse);
+				Topics.calculatePostIndices(results.posts, start, results.postCount, reverse);
 
 				Topics.addPostData(results.posts, uid, next);
 			},
@@ -183,7 +183,7 @@ module.exports = function (Topics) {
 		], callback);
 	};
 
-	Topics.calculatePostIndices = function (posts, start, stop, postCount, reverse) {
+	Topics.calculatePostIndices = function (posts, start, postCount, reverse) {
 		posts.forEach(function (post, index) {
 			if (reverse) {
 				post.index = postCount - (start + index + 1);

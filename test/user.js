@@ -1483,6 +1483,34 @@ describe('User', function () {
 			});
 		});
 
+		it('should fail to add user to queue if username is taken', function (done) {
+			helpers.registerUser({
+				username: 'rejectme',
+				password: '123456',
+				'password-confirm': '123456',
+				email: '<script>alert("ok")<script>reject@me.com',
+				gdpr_consent: true,
+			}, function (err, jar, res, body) {
+				assert.ifError(err);
+				assert.equal(body, '[[error:username-taken]]');
+				done();
+			});
+		});
+
+		it('should fail to add user to queue if email is taken', function (done) {
+			helpers.registerUser({
+				username: 'rejectmenew',
+				password: '123456',
+				'password-confirm': '123456',
+				email: '<script>alert("ok")<script>reject@me.com',
+				gdpr_consent: true,
+			}, function (err, jar, res, body) {
+				assert.ifError(err);
+				assert.equal(body, '[[error:email-taken]]');
+				done();
+			});
+		});
+
 		it('should reject user registration', function (done) {
 			socketAdmin.user.rejectRegistration({ uid: adminUid }, { username: 'rejectme' }, function (err) {
 				assert.ifError(err);

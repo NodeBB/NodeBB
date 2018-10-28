@@ -21,7 +21,7 @@ require('./recentreplies')(Categories);
 require('./update')(Categories);
 
 Categories.exists = function (cid, callback) {
-	db.isSortedSetMember('categories:cid', cid, callback);
+	db.exists('category:' + cid, callback);
 };
 
 Categories.getCategoryById = function (data, callback) {

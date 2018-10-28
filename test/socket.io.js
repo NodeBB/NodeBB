@@ -468,6 +468,7 @@ describe('socket.io', function () {
 	});
 
 	it('should toggle plugin install', function (done) {
+		this.timeout(0);
 		socketAdmin.plugins.toggleInstall({ uid: adminUid }, { id: 'nodebb-plugin-location-to-map', version: 'latest' }, function (err, data) {
 			assert.ifError(err);
 			assert.equal(data.name, 'nodebb-plugin-location-to-map');

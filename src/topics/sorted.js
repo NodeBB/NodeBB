@@ -178,11 +178,17 @@ module.exports = function (Topics) {
 				Topics.getTopicsByTids(tids, params.uid, next);
 			},
 			function (topicData, next) {
-				topicData.forEach(function (topicObj, i) {
-					topicObj.index = params.start + i;
-				});
+				Topics.calculateTopicIndices(topicData, params.start);
 				next(null, topicData);
 			},
 		], callback);
 	}
+
+	Topics.calculateTopicIndices = function (topicData, start) {
+		topicData.forEach((topic, index) => {
+			if (topic) {
+				topic.index = start + index;
+			}
+		});
+	};
 };

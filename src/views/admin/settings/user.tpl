@@ -36,6 +36,13 @@
 		<form>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="gdpr_enabled">
+					<span class="mdl-switch__label"><strong>[[admin/settings/user:gdpr_enabled]]</strong></span>
+				</label>
+				<p class="help-block">[[admin/settings/user:gdpr_enabled_help]]</p>
+			</div>
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="username:disableEdit">
 					<span class="mdl-switch__label"><strong>[[admin/settings/user:disable-username-changes]]</strong></span>
 				</label>

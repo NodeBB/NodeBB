@@ -226,6 +226,8 @@ describe('Topic\'s', function () {
 				assert(typeof topicData.mainPid === 'number');
 
 				assert(typeof topicData.timestamp === 'number');
+				assert.strictEqual(topicData.postcount, 1);
+				assert.strictEqual(topicData.viewcount, 0);
 				assert.strictEqual(topicData.upvotes, 0);
 				assert.strictEqual(topicData.downvotes, 0);
 				assert.strictEqual(topicData.votes, 0);
@@ -1062,7 +1064,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should error with invalid data', function (done) {
-			socketTopics.loadMoreUnreadTopics({ uid: adminUid }, { after: 'invalid' }, function (err) {
+			socketTopics.loadMoreSortedTopics({ uid: adminUid }, { after: 'invalid' }, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
@@ -1071,7 +1073,7 @@ describe('Topic\'s', function () {
 		it('should load more unread topics', function (done) {
 			socketTopics.markUnread({ uid: adminUid }, tid, function (err) {
 				assert.ifError(err);
-				socketTopics.loadMoreUnreadTopics({ uid: adminUid }, { cid: topic.categoryId, after: 0, count: 10 }, function (err, data) {
+				socketTopics.loadMoreSortedTopics({ uid: adminUid }, { cid: topic.categoryId, after: 0, count: 10, sort: 'unread' }, function (err, data) {
 					assert.ifError(err);
 					assert(data);
 					assert(Array.isArray(data.topics));
@@ -1081,7 +1083,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should error with invalid data', function (done) {
-			socketTopics.loadMoreRecentTopics({ uid: adminUid }, { after: 'invalid' }, function (err) {
+			socketTopics.loadMoreSortedTopics({ uid: adminUid }, { after: 'invalid' }, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
@@ -1089,7 +1091,7 @@ describe('Topic\'s', function () {
 
 
 		it('should load more recent topics', function (done) {
-			socketTopics.loadMoreRecentTopics({ uid: adminUid }, { cid: topic.categoryId, after: 0, count: 10 }, function (err, data) {
+			socketTopics.loadMoreSortedTopics({ uid: adminUid }, { cid: topic.categoryId, after: 0, count: 10, sort: 'recent' }, function (err, data) {
 				assert.ifError(err);
 				assert(data);
 				assert(Array.isArray(data.topics));

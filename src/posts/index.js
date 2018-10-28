@@ -30,7 +30,7 @@ require('./diffs')(Posts);
 require('./uploads')(Posts);
 
 Posts.exists = function (pid, callback) {
-	db.isSortedSetMember('posts:pid', pid, callback);
+	db.exists('post:' + pid, callback);
 };
 
 Posts.getPidsFromSet = function (set, start, stop, reverse, callback) {
