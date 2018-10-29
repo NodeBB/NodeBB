@@ -12,37 +12,46 @@ module.exports = function (db, module) {
 	require('./sorted/intersect')(db, module);
 
 	module.getSortedSetRange = function (key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, 1, false, callback);
+		getSortedSetRange(key, start, stop, '-inf', '+inf', 1, false, callback);
 	};
 
 	module.getSortedSetRevRange = function (key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, -1, false, callback);
+		getSortedSetRange(key, start, stop, '-inf', '+inf', -1, false, callback);
 	};
 
 	module.getSortedSetRangeWithScores = function (key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, 1, true, callback);
+		getSortedSetRange(key, start, stop, '-inf', '+inf', 1, true, callback);
 	};
 
 	module.getSortedSetRevRangeWithScores = function (key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, -1, true, callback);
+		getSortedSetRange(key, start, stop, '-inf', '+inf', -1, true, callback);
 	};
 
-	function getSortedSetRange(key, start, stop, sort, withScores, callback) {
+	function getSortedSetRange(key, start, stop, min, max, sort, withScores, callback) {
 		if (!key) {
 			return callback();
 		}
-
-		var fields = { _id: 0, _key: 0 };
-		if (!withScores) {
-			fields.score = 0;
+		if (start < 0 && start > stop) {
+			return callback(null, []);
 		}
 
 		if (Array.isArray(key)) {
 			key = { $in: key };
 		}
 
-		if (start < 0 && start > stop) {
-			return callback(null, []);
+		var query = { _key: key };
+
+		if (min !== '-inf') {
+			query.score = { $gte: min };
+		}
+		if (max !== '+inf') {
+			query.score = query.score || {};
+			query.score.$lte = max;
+		}
+
+		const fields = { _id: 0, _key: 0 };
+		if (!withScores) {
+			fields.score = 0;
 		}
 
 		var reverse = false;
@@ -62,10 +71,10 @@ module.exports = function (db, module) {
 			limit = 0;
 		}
 
-		db.collection('objects').find({ _key: key }, { projection: fields })
-			.limit(limit)
-			.skip(start)
+		db.collection('objects').find(query, { projection: fields })
 			.sort({ score: sort })
+			.skip(start)
+			.limit(limit)
 			.toArray(function (err, data) {
 				if (err || !data) {
 					return callback(err);
@@ -75,9 +84,7 @@ module.exports = function (db, module) {
 					data.reverse();
 				}
 				if (!withScores) {
-					data = data.map(function (item) {
-						return item.value;
-					});
+					data = data.map(item => item.value);
 				}
 
 				callback(null, data);
@@ -101,45 +108,11 @@ module.exports = function (db, module) {
 	};
 
 	function getSortedSetRangeByScore(key, start, count, min, max, sort, withScores, callback) {
-		if (!key) {
-			return callback();
-		}
 		if (parseInt(count, 10) === -1) {
 			count = 0;
 		}
-
-		var query = { _key: key };
-
-		if (min !== '-inf') {
-			query.score = { $gte: min };
-		}
-		if (max !== '+inf') {
-			query.score = query.score || {};
-			query.score.$lte = max;
-		}
-
-		var fields = { _id: 0, _key: 0 };
-		if (!withScores) {
-			fields.score = 0;
-		}
-
-		db.collection('objects').find(query, { projection: fields })
-			.limit(count)
-			.skip(start)
-			.sort({ score: sort })
-			.toArray(function (err, data) {
-				if (err) {
-					return callback(err);
-				}
-
-				if (!withScores) {
-					data = data.map(function (item) {
-						return item.value;
-					});
-				}
-
-				callback(err, data);
-			});
+		var stop = start + count - 1;
+		getSortedSetRange(key, start, stop, min, max, sort, withScores, callback);
 	}
 
 	module.sortedSetCount = function (key, min, max, callback) {
