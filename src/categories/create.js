@@ -176,12 +176,31 @@ module.exports = function (Categories) {
 				async.series(tasks, next);
 			},
 			function (results, next) {
+				copyTagWhitelist(fromCid, toCid, next);
+			},
+			function (next) {
 				Categories.copyPrivilegesFrom(fromCid, toCid, next);
 			},
 		], function (err) {
 			callback(err, destination);
 		});
 	};
+
+	function copyTagWhitelist(fromCid, toCid, callback) {
+		var data;
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRangeWithScores('cid:' + fromCid + ':tag:whitelist', 0, -1, next);
+			},
+			function (_data, next) {
+				data = _data;
+				db.delete('cid:' + toCid + ':tag:whitelist', next);
+			},
+			function (next) {
+				db.sortedSetAdd('cid:' + toCid + ':tag:whitelist', data.map(item => item.score), data.map(item => item.value), next);
+			},
+		], callback);
+	}
 
 	Categories.copyPrivilegesFrom = function (fromCid, toCid, callback) {
 		async.waterfall([
