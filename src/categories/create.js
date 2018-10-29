@@ -149,12 +149,13 @@ module.exports = function (Categories) {
 
 				var tasks = [];
 
-				if (copyParent && utils.isNumber(destination.parentCid)) {
-					tasks.push(async.apply(db.sortedSetRemove, 'cid:' + destination.parentCid + ':children', toCid));
+				const oldParent = parseInt(destination.parentCid, 10) || 0;
+				const newParent = parseInt(results.source.parentCid, 10) || 0;
+				if (copyParent) {
+					tasks.push(async.apply(db.sortedSetRemove, 'cid:' + oldParent + ':children', toCid));
 				}
-
-				if (copyParent && utils.isNumber(results.source.parentCid)) {
-					tasks.push(async.apply(db.sortedSetAdd, 'cid:' + results.source.parentCid + ':children', results.source.order, toCid));
+				if (copyParent) {
+					tasks.push(async.apply(db.sortedSetAdd, 'cid:' + newParent + ':children', results.source.order, toCid));
 				}
 
 				destination.description = results.source.description;
