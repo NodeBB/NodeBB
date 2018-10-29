@@ -144,6 +144,9 @@
 				<input type="text" class="form-control" data-field="loginSeconds" placeholder="Seconds" />
 				<p class="help-block">Note that only one of these values will be used. If there is no <i>seconds</i> value we fall back to <i>days</i>. If
 					there is no <i>days</i> value we default to <i>14 days</i>.</p>
+				<label>[[admin/settings/user:online-cutoff]]</label>
+				<input type="text" class="form-control" data-field="onlineCutoff">
+				<p class="help-block">[[admin/settings/user:online-cutoff-help]]</p>
 			</div>
 		</form>
 	</div>

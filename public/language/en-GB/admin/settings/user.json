@@ -27,6 +27,8 @@
 	"lockout-duration": "Account Lockout Duration (minutes)",
 	"login-days": "Days to remember user login sessions",
 	"password-expiry-days": "Force password reset after a set number of days",
+	"online-cutoff": "Minutes after user is considered inactive",
+	"online-cutoff-help": "If user performs no actions for this duration, they are considered inactive and they do not receive realtime updates.",
 	"registration": "User Registration",
 	"registration-type": "Registration Type",
 	"registration-type.normal": "Normal",

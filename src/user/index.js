@@ -43,7 +43,7 @@ User.getUidsFromSet = function (set, start, stop, callback) {
 	if (set === 'users:online') {
 		var count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
 		var now = Date.now();
-		db.getSortedSetRevRangeByScore(set, start, count, '+inf', now - 300000, callback);
+		db.getSortedSetRevRangeByScore(set, start, count, '+inf', now - (meta.config.onlineCutoff * 60000), callback);
 	} else {
 		db.getSortedSetRevRange(set, start, stop, callback);
 	}

@@ -111,5 +111,6 @@
     "hsts-preload": 0,
     "hsts-enabled": 0,
     "eventLoopLagThreshold": 100,
-    "eventLoopInterval": 500
+    "eventLoopInterval": 500,
+    "onlineCutoff": 30
 }
