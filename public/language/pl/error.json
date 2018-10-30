@@ -115,7 +115,7 @@
     "invalid-chat-message": "Nieprawidłowa wiadomość",
     "chat-message-too-long": "Wiadomości czatu nie mogą być dłuższe niż %1 znaków.",
     "cant-edit-chat-message": "Nie jesteś upoważniony do edycji tej wiadomości",
-    "cant-remove-last-user": "You can't remove the last user",
+    "cant-remove-last-user": "Nie możesz usunąć ostatniego użytkownika",
     "cant-delete-chat-message": "Nie jesteś upoważniony do usunięcia tej wiadomości",
     "chat-edit-duration-expired": "Możesz edytować komunikat czatu tylko przez %1 sekund(y) po napisaniu.",
     "chat-delete-duration-expired": "Możesz skasować komunikat czatu tylko przez %1 sekund(y) po napisaniu.",
