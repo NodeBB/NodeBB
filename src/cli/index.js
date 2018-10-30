@@ -221,6 +221,13 @@ program
 // reset
 var resetCommand = program.command('reset');
 
+program
+	.command('cmd')
+	.description('Call a plugin specified command')
+	.action(function () {
+		require('./cmd').call(program);
+	});
+
 resetCommand
 	.description('Reset plugins, themes, settings, etc')
 	.option('-t, --theme [theme]', 'Reset to [theme] or to the default theme')
