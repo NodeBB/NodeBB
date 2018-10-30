@@ -73,6 +73,14 @@ describe('Post\'s', function () {
 		});
 	});
 
+	it('should return falsy if post does not exist', function (done) {
+		posts.getPostData(9999, function (err, postData) {
+			assert.ifError(err);
+			assert.equal(postData, null);
+			done();
+		});
+	});
+
 	describe('voting', function () {
 		it('should fail to upvote post if group does not have upvote permission', function (done) {
 			privileges.categories.rescind(['posts:upvote', 'posts:downvote'], cid, 'registered-users', function (err) {
