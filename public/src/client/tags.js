@@ -7,7 +7,7 @@ define('forum/tags', ['forum/infinitescroll'], function (infinitescroll) {
 
 	Tags.init = function () {
 		app.enterRoom('tags');
-
+		$('#tag-search').focus();
 		$('#tag-search').on('input propertychange', function () {
 			if (timeoutId) {
 				clearTimeout(timeoutId);
