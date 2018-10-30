@@ -64,9 +64,10 @@ mongoModule.helpers.mongo = require('./mongo/helpers');
 
 mongoModule.getConnectionString = function () {
 	var usernamePassword = '';
+	var uri = nconf.get('mongo:uri');
 	if (nconf.get('mongo:username') && nconf.get('mongo:password')) {
 		usernamePassword = nconf.get('mongo:username') + ':' + encodeURIComponent(nconf.get('mongo:password')) + '@';
-	} else {
+	} else if (!uri.includes('@') || !uri.slice(uri.indexOf('://') + 3, uri.indexOf('@'))) {
 		winston.warn('You have no mongo username/password setup!');
 	}
 
