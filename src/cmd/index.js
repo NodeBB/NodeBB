@@ -9,6 +9,7 @@ var cmdInit = require('./init');
 
 // remove the cmd segment from argvs
 process.argv.splice(2, 1);
+process.argv[2] = process.argv[2].replace('nodebb-plugin-', '');
 
 async.waterfall([
 

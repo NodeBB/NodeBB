@@ -5,6 +5,13 @@ var async = require('async');
 var program = require('commander');
 var plugins = require('../plugins');
 
+
+// error on unknown commands
+program.on('command:*', function () {
+	console.error('Invalid command: %s\nSee --help for a list of available commands.', program.args.join(' '));
+	process.exit(1);
+});
+
 module.exports = {
 
 	loadPluginCommands: function (next) {
@@ -25,8 +32,9 @@ module.exports = {
 					var pluginCommands = pluginData.commands || [];
 
 					pluginCommands.forEach(function (cmdData) {
+						var libraryFile = cmdData.library ? cmdData.library : pluginData.library;
 						var cmdName = pluginName.replace('nodebb-plugin-', '') + ':' + cmdData.cmd;
-						var scriptFile = path.resolve(pluginData.path, cmdData.library);
+						var scriptFile = path.resolve(pluginData.path, libraryFile);
 
 						commands.push({
 							name: cmdName,
@@ -44,7 +52,7 @@ module.exports = {
 	},
 
 	registerCommands: function (commands, callback) {
-		commands.forEach(function (cmd) {
+		commands.forEach((cmd) => {
 			var regCommand = program.command(cmd.name);
 
 			// register options
