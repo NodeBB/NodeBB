@@ -71,7 +71,7 @@ module.exports = {
           // resolve plugin command method
           var method = require(cmd.scriptFile)[cmd.method]
 
-          method(options, function() {
+          method(options || {}, function() {
             callback();
           })
 
