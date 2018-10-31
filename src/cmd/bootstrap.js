@@ -18,6 +18,6 @@ global.env = env;
 prestart.setupWinston();
 
 // Alternate configuration file support
-var	configFile = path.resolve(dirname, 'config.json');
+var configFile = path.resolve(dirname, 'config.json');
 
 prestart.loadConfig(configFile);
