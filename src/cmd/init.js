@@ -15,20 +15,17 @@ function loadPluginCommands(next) {
 	async.waterfall([
 
 		// load NodeBB plugins
-		function (callback) {
-			plugins.init(null, null, callback);
-		},
+		plugins.data.getActive,
 
 		// parse plugins commands
-		function () {
+		function (pluginList) {
 			var commands = [];
-			var pluginList = Object.keys(plugins.pluginsData);
 
-			pluginList.forEach(function (pluginName) {
-				var pluginData = plugins.pluginsData[pluginName];
+			pluginList.forEach(function (pluginData) {
 				var pluginCommands = pluginData.commands || [];
 
 				pluginCommands.forEach(function (cmdData) {
+					var pluginName = pluginData.id;
 					var libraryFile = cmdData.library ? cmdData.library : pluginData.library;
 					var cmdName = pluginName.replace('nodebb-plugin-', '') + ':' + cmdData.cmd;
 					var scriptFile = path.resolve(pluginData.path, libraryFile);
