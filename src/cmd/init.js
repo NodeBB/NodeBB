@@ -31,6 +31,7 @@ function loadPluginCommands(next) {
 					var scriptFile = path.resolve(pluginData.path, libraryFile);
 
 					commands.push({
+						plugin: pluginName,
 						name: cmdName,
 						description: cmdData.description,
 						options: cmdData.options,
