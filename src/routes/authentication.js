@@ -73,17 +73,14 @@ Auth.reloadRoutes = function (router, callback) {
 				}, function (req, res, next) {
 					// Trigger registration interstitial checks
 					req.session.registration = req.session.registration || {};
+					// save returnTo for later usage in /register/complete
+					// passport seems to remove `req.session.returnTo` after it redirects
+					req.session.registration.returnTo = req.session.returnTo;
 					next();
-				}, function (req, res, next) {
-					let successReturnToOrRedirect = nconf.get('relative_path') + (strategy.successUrl !== undefined ? strategy.successUrl : '/');
-					if (req.session && req.session.returnTo) {
-						successReturnToOrRedirect = req.session.returnTo;
-					}
-					passport.authenticate(strategy.name, {
-						successReturnToOrRedirect: successReturnToOrRedirect,
-						failureRedirect: nconf.get('relative_path') + (strategy.failureUrl !== undefined ? strategy.failureUrl : '/login'),
-					})(req, res, next);
-				});
+				}, passport.authenticate(strategy.name, {
+					successReturnToOrRedirect: nconf.get('relative_path') + (strategy.successUrl !== undefined ? strategy.successUrl : '/'),
+					failureRedirect: nconf.get('relative_path') + (strategy.failureUrl !== undefined ? strategy.failureUrl : '/login'),
+				}));
 			});
 
 			router.post('/register', Auth.middleware.applyCSRF, Auth.middleware.applyBlacklist, controllers.authentication.register);
