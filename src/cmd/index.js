@@ -3,44 +3,39 @@
 var program = require('commander');
 var async = require('async');
 
+
+require('./bootstrap');
+
+
 var db = require('../database');
-var plugins = require('../plugins');
+var cmdInit = require('./init');
 
 
+async.waterfall([
 
-program
-	.command('cmd [command]')
-	.description('Launch a plugin command')
-	.action(function () {
+  // Init database
+  db.init,
 
-      async.waterfall([
-      db.init,
-      function(callback) {
-        plugins.init(null, null, callback)
-      },
-
-      function(callback) {
-
-        loadPluginCommands(plugins.pluginsData)
-
-        var arg = program.args[0];
-
-        if(arg === 'list') {
-          printCommandsList();
-          callback();
-        } else {
-          callCommand(program, program.args[0], program.args.slice(1), callback);
-        }
+  // Load installed plugins command
+  cmdInit.loadPluginCommands,
 
 
-  })
+], function(err, data) {
+  console.log('DONE', data);
+  process.exit();
+});
 
 
-  if (process.argv.length === 2) {
-    program.help();
-  }
+// program
+// 	.command('cmd [command]')
+// 	.description('Launch a plugin command')
+// 	.action(function () { })
 
-  program.executables = false;
 
-  program.parse(process.argv);
+// if (process.argv.length === 2) {
+//   program.help();
+// }
 
+// program.executables = false;
+
+// program.parse(process.argv);

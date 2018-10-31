@@ -93,6 +93,8 @@ global.env = env;
 
 prestart.setupWinston();
 
+console.log(program.config);
+
 // Alternate configuration file support
 var	configFile = path.resolve(dirname, program.config);
 var configExists = file.existsSync(configFile) || (nconf.get('url') && nconf.get('secret') && nconf.get('database'));
