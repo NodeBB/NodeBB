@@ -5,12 +5,8 @@
 // This permits to have 2 differents entrypoints
 // with the same interface nodebb
 
-if(process.argv[2] === 'cmd') {
-  require('./src/cmd');
+if (process.argv[2] === 'cmd') {
+	require('./src/cmd');
 } else {
-  require('./src/cli');
+	require('./src/cli');
 }
-
-
-
-

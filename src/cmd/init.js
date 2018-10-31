@@ -7,80 +7,63 @@ var plugins = require('../plugins');
 
 module.exports = {
 
-  loadPluginCommands: function(next) {
+	loadPluginCommands: function (next) {
+		async.waterfall([
 
-    async.waterfall([
+			// load NodeBB plugins
+			function (callback) {
+				plugins.init(null, null, callback);
+			},
 
-      // load NodeBB plugins
-      function(callback) {
-        plugins.init(null, null, callback)
-      },
+			// parse plugins commands
+			function () {
+				var commands = [];
+				var pluginList = Object.keys(plugins.pluginsData);
 
-      // parse plugins commands
-      function(callback) {
+				pluginList.forEach(function (pluginName) {
+					var pluginData = plugins.pluginsData[pluginName];
+					var pluginCommands = pluginData.commands || [];
 
-        var commands = [];
-        var pluginList = Object.keys(plugins.pluginsData);
+					pluginCommands.forEach(function (cmdData) {
+						var cmdName = pluginName.replace('nodebb-plugin-', '') + ':' + cmdData.cmd;
+						var scriptFile = path.resolve(pluginData.path, cmdData.library);
 
-        pluginList.forEach(function(pluginName) {
+						commands.push({
+							name: cmdName,
+							description: cmdData.description,
+							options: cmdData.options,
+							scriptFile: scriptFile,
+							method: cmdData.method,
+						});
+					});
+				});
+				next(null, commands);
+			},
 
-          var pluginData = plugins.pluginsData[pluginName];
-          var pluginCommands = pluginData.commands || [];
+		]);
+	},
 
-          if(pluginCommands.length === 0) {
-            return
-          }
+	registerCommands: function (commands, callback) {
+		commands.forEach(function (cmd) {
+			var regCommand = program.command(cmd.name);
 
-          pluginCommands.forEach(function(cmdData) {
+			// register options
+			cmd.options.forEach(function (opt) {
+				regCommand.option(opt.flags, opt.description || null, null, opt.default || null);
+			});
 
-            var cmdName = pluginName.replace('nodebb-plugin-', '') + ':' + cmdData.cmd;
-            var scriptFile = path.resolve(pluginData.path, cmdData.library);
+			regCommand
+				.description(cmd.description)
+				.action(function (env, options) {
+					// resolve plugin command method
+					var method = require(cmd.scriptFile)[cmd.method];
 
-            commands.push({
-              name: cmdName,
-              description: cmdData.description,
-              options: cmdData.options,
-              scriptFile: scriptFile,
-              method: cmdData.method
-            });
-          });
+					method(options || {}, function () {
+						callback();
+					});
+				});
+		});
+		program.parse(process.argv);
+	},
 
-        });
-
-        next(null, commands);
-      }
-
-    ])
-  },
-
-  registerCommands: function(commands, callback) {
-
-    commands.forEach(cmd => {
-
-      var regCommand = program.command(cmd.name);
-
-      // register options
-      cmd.options.forEach(function(opt) {
-        regCommand.option(opt.flags, opt.description || null, null, opt.default || null);
-      })
-
-      regCommand
-        .description(cmd.description)
-        .action(function (env, options) {
-
-          // resolve plugin command method
-          var method = require(cmd.scriptFile)[cmd.method]
-
-          method(options || {}, function() {
-            callback();
-          })
-
-        })
-
-    });
-
-    program.parse(process.argv);
-
-  },
-
-}
+};

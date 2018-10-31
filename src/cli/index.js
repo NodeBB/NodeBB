@@ -287,14 +287,6 @@ program
 	});
 
 program
-	.command('cmd [command]')
-	.description('Launch a plugin command')
-	.action(function () {
-		require('./cmd').call(program);
-	});
-
-
-program
 	.command('help [command]')
 	.description('Display help for [command]')
 	.action(function (name) {

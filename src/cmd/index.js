@@ -1,7 +1,6 @@
 'use strict';
 
 var async = require('async');
-var path = require('path');
 
 require('./bootstrap');
 
@@ -13,18 +12,15 @@ process.argv.splice(2, 1);
 
 async.waterfall([
 
-  // Init database
-  db.init,
+	// Init database
+	db.init,
 
-  // Load installed plugins commands
-  cmdInit.loadPluginCommands,
+	// Load installed plugins commands
+	cmdInit.loadPluginCommands,
 
-  // Register plugins commands
-  cmdInit.registerCommands,
+	// Register plugins commands
+	cmdInit.registerCommands,
 
-], function(err, commands) {
-  process.exit();
+], function () {
+	process.exit();
 });
-
-
-
