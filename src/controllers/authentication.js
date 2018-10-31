@@ -224,6 +224,7 @@ authenticationController.login = function (req, res, next) {
 	}
 
 	var loginWith = meta.config.allowLoginWith || 'username-email';
+	req.body.username = req.body.username.trim();
 
 	if (req.body.username && utils.isEmailValid(req.body.username) && loginWith.includes('email')) {
 		async.waterfall([
