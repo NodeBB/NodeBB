@@ -5,82 +5,78 @@ var async = require('async');
 var program = require('commander');
 var plugins = require('../plugins');
 
+
+// error on unknown commands
+program.on('command:*', function () {
+	console.error('Invalid command: %s\nSee --help for a list of available commands.', program.args.join(' '));
+	process.exit(1);
+});
+
 module.exports = {
 
-  loadPluginCommands: function(next) {
+	loadPluginCommands: function (next) {
+		async.waterfall([
 
-    async.waterfall([
+			// load NodeBB plugins
+			function (callback) {
+				plugins.init(null, null, callback);
+			},
 
-      // load NodeBB plugins
-      function(callback) {
-        plugins.init(null, null, callback)
-      },
+			// parse plugins commands
+			function () {
+				var commands = [];
+				var pluginList = Object.keys(plugins.pluginsData);
 
-      // parse plugins commands
-      function(callback) {
+				pluginList.forEach(function (pluginName) {
+					var pluginData = plugins.pluginsData[pluginName];
+					var pluginCommands = pluginData.commands || [];
 
-        var commands = [];
-        var pluginList = Object.keys(plugins.pluginsData);
+					if (pluginCommands.length === 0) {
+						return;
+					}
 
-        pluginList.forEach(function(pluginName) {
+					pluginCommands.forEach(function (cmdData) {
+						var cmdName = pluginName.replace('nodebb-plugin-', '') + ':' + cmdData.cmd;
+						var scriptFile = path.resolve(pluginData.path, cmdData.library);
 
-          var pluginData = plugins.pluginsData[pluginName];
-          var pluginCommands = pluginData.commands || [];
+						commands.push({
+							name: cmdName,
+							description: cmdData.description,
+							options: cmdData.options,
+							scriptFile: scriptFile,
+							method: cmdData.method,
+						});
+					});
+				});
 
-          if(pluginCommands.length === 0) {
-            return
-          }
+				next(null, commands);
+			},
 
-          pluginCommands.forEach(function(cmdData) {
+		]);
+	},
 
-            var cmdName = pluginName.replace('nodebb-plugin-', '') + ':' + cmdData.cmd;
-            var scriptFile = path.resolve(pluginData.path, cmdData.library);
+	registerCommands: function (commands, callback) {
+		commands.forEach((cmd) => {
+			var regCommand = program.command(cmd.name);
 
-            commands.push({
-              name: cmdName,
-              description: cmdData.description,
-              options: cmdData.options,
-              scriptFile: scriptFile,
-              method: cmdData.method
-            });
-          });
+			// register options
+			cmd.options.forEach(function (opt) {
+				regCommand.option(opt.flags, opt.description || null, null, opt.default || null);
+			});
 
-        });
+			regCommand
+				.description(cmd.description)
+				.action(function (env, options) {
+					// resolve plugin command method
+					var method = require(cmd.scriptFile)[cmd.method];
 
-        next(null, commands);
-      }
+					method(options || {}, function () {
+						callback();
+					});
+				});
+		});
 
-    ])
-  },
+		program.parse(process.argv);
+	},
 
-  registerCommands: function(commands, callback) {
-
-    commands.forEach(cmd => {
-
-      var regCommand = program.command(cmd.name);
-
-      // register options
-      cmd.options.forEach(function(opt) {
-        regCommand.option(opt.flags, opt.description || null, null, opt.default || null);
-      })
-
-      regCommand
-        .description(cmd.description)
-        .action(function (env, options) {
-
-          // resolve plugin command method
-          var method = require(cmd.scriptFile)[cmd.method]
-
-          method(options || {}, function() {
-            callback();
-          })
-
-        })
-
-    });
-
-    program.parse(process.argv);
-
-  },
-
-}
+};
