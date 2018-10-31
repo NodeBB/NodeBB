@@ -2,6 +2,7 @@
 
 var path = require('path');
 var async = require('async');
+var program = require('commander');
 var plugins = require('../plugins');
 
 module.exports = {
@@ -50,13 +51,35 @@ module.exports = {
       }
 
     ])
-
-
-
-
   },
 
-  registerCommands: function() {
+  registerCommands: function(commands, callback) {
+
+    commands.forEach(cmd => {
+
+      var regCommand = program.command(cmd.name);
+
+      // register options
+      cmd.options.forEach(function(opt) {
+        regCommand.option(opt.flags, opt.description || null, null, opt.default || null);
+      })
+
+      regCommand
+        .description(cmd.description)
+        .action(function (env, options) {
+
+          // resolve plugin command method
+          var method = require(cmd.scriptFile)[cmd.method]
+
+          method(options, function() {
+            callback();
+          })
+
+        })
+
+    });
+
+    program.parse(process.argv);
 
   },
 

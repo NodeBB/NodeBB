@@ -1,6 +1,5 @@
 'use strict';
 
-var program = require('commander');
 var async = require('async');
 var path = require('path');
 
@@ -17,36 +16,14 @@ async.waterfall([
   // Init database
   db.init,
 
-  // Load installed plugins command
+  // Load installed plugins commands
   cmdInit.loadPluginCommands,
 
+  // Register plugins commands
+  cmdInit.registerCommands,
+
 ], function(err, commands) {
-
-  commands.forEach(cmd => {
-
-    var regCommand = program.command(cmd.name);
-
-    // register options
-    cmd.options.forEach(function(opt) {
-      regCommand.option(opt.flags, opt.description || null, null, opt.default || null);
-    })
-
-    regCommand
-      .description(cmd.description)
-      .action(function () {
-
-        // resolve plugin command method
-        var method = require(cmd.scriptFile)[cmd.method]
-
-        method(program, function() {
-          process.exit();
-        })
-
-      })
-
-  });
-
-  program.parse(process.argv);
+  process.exit();
 });
 
 
