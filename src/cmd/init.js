@@ -18,10 +18,10 @@ module.exports = {
       function(callback) {
 
         var commands = [];
-        var pluginList = Object.keys(plugins);
+        var pluginList = Object.keys(plugins.pluginsData);
 
         pluginList.forEach(function(pluginName) {
-          var pluginCommands = (plugins[pluginName].commands || []);
+          var pluginCommands = (plugins.pluginsData[pluginName].commands || []);
 
           pluginCommands.forEach(function(cmdData) {
             commands.push({

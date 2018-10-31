@@ -3,12 +3,13 @@
 var program = require('commander');
 var async = require('async');
 
-
 require('./bootstrap');
-
 
 var db = require('../database');
 var cmdInit = require('./init');
+
+// remove the cmd segment from argvs
+process.argv.splice(2, 1);
 
 
 async.waterfall([
@@ -19,23 +20,32 @@ async.waterfall([
   // Load installed plugins command
   cmdInit.loadPluginCommands,
 
+], function(err, commands) {
 
-], function(err, data) {
-  console.log('DONE', data);
-  process.exit();
+  commands.forEach(cmd => {
+
+    var regCommand = program.command(cmd.name);
+
+    // register options
+    cmd.options.forEach(function(opt) {
+      regCommand.option(opt.flags, opt.description || null, null, opt.default || null);
+    })
+
+    regCommand
+      .description(cmd.description)
+      .action(function () {
+
+        console.log('pippo');
+        process.exit();
+
+      })
+
+  });
+
+
+  //program.executables = false;
+  program.parse(process.argv);
 });
 
 
-// program
-// 	.command('cmd [command]')
-// 	.description('Launch a plugin command')
-// 	.action(function () { })
 
-
-// if (process.argv.length === 2) {
-//   program.help();
-// }
-
-// program.executables = false;
-
-// program.parse(process.argv);
