@@ -31,13 +31,10 @@ module.exports = {
 					var pluginData = plugins.pluginsData[pluginName];
 					var pluginCommands = pluginData.commands || [];
 
-					if (pluginCommands.length === 0) {
-						return;
-					}
-
 					pluginCommands.forEach(function (cmdData) {
+						var libraryFile = cmdData.library ? cmdData.library : pluginData.library;
 						var cmdName = pluginName.replace('nodebb-plugin-', '') + ':' + cmdData.cmd;
-						var scriptFile = path.resolve(pluginData.path, cmdData.library);
+						var scriptFile = path.resolve(pluginData.path, libraryFile);
 
 						commands.push({
 							name: cmdName,
