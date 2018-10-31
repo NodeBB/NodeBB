@@ -5,6 +5,7 @@
  * ATTENTION: testing db is flushed before every use!
  */
 
+require('../../require-main');
 
 var async = require('async');
 var path = require('path');
@@ -13,7 +14,6 @@ var url = require('url');
 
 global.env = process.env.TEST_ENV || 'production';
 
-var errorText;
 var packageInfo = require('../../package');
 
 var winston = require('winston');
@@ -43,7 +43,7 @@ var testDbConfig = nconf.get('test_database');
 var productionDbConfig = nconf.get(dbType);
 
 if (!testDbConfig) {
-	errorText = 'test_database is not defined';
+	const errorText = 'test_database is not defined';
 	winston.info(
 		'\n===========================================================\n' +
 		'Please, add parameters for test database in config.json\n' +
@@ -86,7 +86,7 @@ if (!testDbConfig) {
 if (testDbConfig.database === productionDbConfig.database &&
 	testDbConfig.host === productionDbConfig.host &&
 	testDbConfig.port === productionDbConfig.port) {
-	errorText = 'test_database has the same config as production db';
+	const errorText = 'test_database has the same config as production db';
 	winston.error(errorText);
 	throw new Error(errorText);
 }
