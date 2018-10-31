@@ -2,14 +2,20 @@
 
 var async = require('async');
 
+// remove the cmd segment from argvs
+process.argv.splice(2, 1);
+
+if (!process.argv[2]) {
+	console.error('No command specified! \nSee --help for a list of available commands.');
+	process.exit(1);
+}
+
+process.argv[2] = process.argv[2].replace('nodebb-plugin-', '');
+
 require('./bootstrap');
 
 var db = require('../database');
 var cmdInit = require('./init');
-
-// remove the cmd segment from argvs
-process.argv.splice(2, 1);
-process.argv[2] = process.argv[2].replace('nodebb-plugin-', '');
 
 async.waterfall([
 
