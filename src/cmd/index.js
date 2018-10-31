@@ -2,6 +2,7 @@
 
 var program = require('commander');
 var async = require('async');
+var path = require('path');
 
 require('./bootstrap');
 
@@ -10,7 +11,6 @@ var cmdInit = require('./init');
 
 // remove the cmd segment from argvs
 process.argv.splice(2, 1);
-
 
 async.waterfall([
 
@@ -35,15 +35,17 @@ async.waterfall([
       .description(cmd.description)
       .action(function () {
 
-        console.log('pippo');
-        process.exit();
+        // resolve plugin command method
+        var method = require(cmd.scriptFile)[cmd.method]
+
+        method(program, function() {
+          process.exit();
+        })
 
       })
 
   });
 
-
-  //program.executables = false;
   program.parse(process.argv);
 });
 

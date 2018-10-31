@@ -1,5 +1,6 @@
 'use strict';
 
+var path = require('path');
 var async = require('async');
 var plugins = require('../plugins');
 
@@ -21,13 +22,25 @@ module.exports = {
         var pluginList = Object.keys(plugins.pluginsData);
 
         pluginList.forEach(function(pluginName) {
-          var pluginCommands = (plugins.pluginsData[pluginName].commands || []);
+
+          var pluginData = plugins.pluginsData[pluginName];
+          var pluginCommands = pluginData.commands || [];
+
+          if(pluginCommands.length === 0) {
+            return
+          }
 
           pluginCommands.forEach(function(cmdData) {
+
+            var cmdName = pluginName.replace('nodebb-plugin-', '') + ':' + cmdData.cmd;
+            var scriptFile = path.resolve(pluginData.path, cmdData.library);
+
             commands.push({
-              name:  pluginName.replace('nodebb-plugin-', '') + ':' + cmdData.cmd,
-              description: cmdData.description || cmdData.desc,
-              options: cmdData.options || cmdData.args
+              name: cmdName,
+              description: cmdData.description,
+              options: cmdData.options,
+              scriptFile: scriptFile,
+              method: cmdData.method
             });
           });
 
