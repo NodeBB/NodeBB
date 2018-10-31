@@ -75,34 +75,18 @@ module.exports = function (Posts) {
 				if (!postData) {
 					return callback();
 				}
-				plugins.fireHook('filter:post.purge', { pid: pid, uid: uid }, next);
+				plugins.fireHook('filter:post.purge', { post: postData, pid: pid, uid: uid }, next);
 			},
 			function (data, next) {
 				async.parallel([
-					function (next) {
-						deletePostFromTopicUserNotification(pid, next);
-					},
-					function (next) {
-						deletePostFromCategoryRecentPosts(pid, next);
-					},
-					function (next) {
-						deletePostFromUsersBookmarks(pid, next);
-					},
-					function (next) {
-						deletePostFromUsersVotes(pid, next);
-					},
-					function (next) {
-						deletePostFromReplies(pid, next);
-					},
-					function (next) {
-						deletePostFromGroups(pid, next);
-					},
-					function (next) {
-						db.sortedSetsRemove(['posts:pid', 'posts:votes', 'posts:flagged'], pid, next);
-					},
-				], function (err) {
-					next(err);
-				});
+					async.apply(deletePostFromTopicUserNotification, postData),
+					async.apply(deletePostFromCategoryRecentPosts, pid),
+					async.apply(deletePostFromUsersBookmarks, pid),
+					async.apply(deletePostFromUsersVotes, pid),
+					async.apply(deletePostFromReplies, postData),
+					async.apply(deletePostFromGroups, postData),
+					async.apply(db.sortedSetsRemove, ['posts:pid', 'posts:votes', 'posts:flagged'], pid),
+				], err => next(err));
 			},
 			function (next) {
 				plugins.fireHook('action:post.purge', { post: postData, uid: uid });
@@ -111,57 +95,33 @@ module.exports = function (Posts) {
 		], callback);
 	};
 
-	function deletePostFromTopicUserNotification(pid, callback) {
-		var postData;
+	function deletePostFromTopicUserNotification(postData, callback) {
 		async.waterfall([
 			function (next) {
-				Posts.getPostFields(pid, ['tid', 'uid'], next);
-			},
-			function (_postData, next) {
-				postData = _postData;
 				db.sortedSetsRemove([
 					'tid:' + postData.tid + ':posts',
 					'tid:' + postData.tid + ':posts:votes',
 					'uid:' + postData.uid + ':posts',
-				], pid, next);
+				], postData.pid, next);
 			},
 			function (next) {
 				topics.getTopicFields(postData.tid, ['tid', 'cid', 'pinned'], next);
 			},
 			function (topicData, next) {
-				async.parallel([
-					function (next) {
-						db.decrObjectField('global', 'postCount', next);
-					},
-					function (next) {
-						db.decrObjectField('category:' + topicData.cid, 'post_count', next);
-					},
-					function (next) {
-						topics.decreasePostCount(postData.tid, next);
-					},
-					function (next) {
-						topics.updateTeaser(postData.tid, next);
-					},
-					function (next) {
-						topics.updateLastPostTimeFromLastPid(postData.tid, next);
-					},
-					function (next) {
-						if (!topicData.pinned) {
-							db.sortedSetIncrBy('cid:' + topicData.cid + ':tids:posts', -1, postData.tid, next);
-						} else {
-							next();
-						}
-					},
-					function (next) {
-						db.sortedSetIncrBy('tid:' + postData.tid + ':posters', -1, postData.uid, next);
-					},
-					function (next) {
-						user.incrementUserPostCountBy(postData.uid, -1, next);
-					},
-					function (next) {
-						notifications.rescind('new_post:tid:' + postData.tid + ':pid:' + pid + ':uid:' + postData.uid, next);
-					},
-				], next);
+				const tasks = [
+					async.apply(db.decrObjectField, 'global', 'postCount'),
+					async.apply(db.decrObjectField, 'category:' + topicData.cid, 'post_count'),
+					async.apply(topics.decreasePostCount, postData.tid),
+					async.apply(topics.updateTeaser, postData.tid),
+					async.apply(topics.updateLastPostTimeFromLastPid, postData.tid),
+					async.apply(db.sortedSetIncrBy, 'tid:' + postData.tid + ':posters', -1, postData.uid),
+					async.apply(user.incrementUserPostCountBy, postData.uid, -1),
+					async.apply(notifications.rescind, 'new_post:tid:' + postData.tid + ':pid:' + postData.pid + ':uid:' + postData.uid),
+				];
+				if (!topicData.pinned) {
+					tasks.push(async.apply(db.sortedSetIncrBy, 'cid:' + topicData.cid + ':tids:posts', -1, postData.tid));
+				}
+				async.parallel(tasks, next);
 			},
 		], function (err) {
 			callback(err);
@@ -211,11 +171,8 @@ module.exports = function (Posts) {
 				async.parallel([
 					function (next) {
 						const upvoterSets = results.upvoters.map(uid => 'uid:' + uid + ':upvote');
-						db.sortedSetsRemove(upvoterSets, pid, next);
-					},
-					function (next) {
 						const downvoterSets = results.downvoters.map(uid => 'uid:' + uid + ':downvote');
-						db.sortedSetsRemove(downvoterSets, pid, next);
+						db.sortedSetsRemove(upvoterSets.concat(downvoterSets), pid, next);
 					},
 					function (next) {
 						db.deleteAll(['pid:' + pid + ':upvote', 'pid:' + pid + ':downvote'], next);
@@ -225,38 +182,28 @@ module.exports = function (Posts) {
 		], callback);
 	}
 
-	function deletePostFromReplies(pid, callback) {
-		async.waterfall([
-			function (next) {
-				Posts.getPostField(pid, 'toPid', next);
-			},
-			function (toPid, next) {
-				if (!parseInt(toPid, 10)) {
-					return callback(null);
-				}
-				async.parallel([
-					async.apply(db.sortedSetRemove, 'pid:' + toPid + ':replies', pid),
-					async.apply(db.decrObjectField, 'post:' + toPid, 'replies'),
-				], next);
-			},
+	function deletePostFromReplies(postData, callback) {
+		if (!parseInt(postData.toPid, 10)) {
+			return setImmediate(callback);
+		}
+		async.parallel([
+			async.apply(db.sortedSetRemove, 'pid:' + postData.toPid + ':replies', postData.pid),
+			async.apply(db.decrObjectField, 'post:' + postData.toPid, 'replies'),
 		], callback);
 	}
 
-	function deletePostFromGroups(pid, callback) {
+	function deletePostFromGroups(postData, callback) {
+		if (!parseInt(postData.uid, 10)) {
+			return setImmediate(callback);
+		}
 		async.waterfall([
 			function (next) {
-				Posts.getPostField(pid, 'uid', next);
-			},
-			function (uid, next) {
-				if (!parseInt(uid, 10)) {
-					return callback();
-				}
-				groups.getUserGroupMembership('groups:visible:createtime', [uid], next);
+				groups.getUserGroupMembership('groups:visible:createtime', [postData.uid], next);
 			},
 			function (groupNames, next) {
 				groupNames = groupNames[0];
 				const keys = groupNames.map(groupName => 'group:' + groupName + ':member:pids');
-				db.sortedSetsRemove(keys, pid, next);
+				db.sortedSetsRemove(keys, postData.pid, next);
 			},
 		], callback);
 	}
