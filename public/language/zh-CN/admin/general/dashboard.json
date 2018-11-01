@@ -1,6 +1,6 @@
 {
 	"forum-traffic": "论坛流量",
-	"page-views": "PV 数量",
+	"page-views": "页面浏览量",
 	"unique-visitors": "单一访客",
 	"users": "用户",
 	"posts": "发帖",
@@ -11,7 +11,7 @@
 	"page-views-custom": "自定义日期范围",
 	"page-views-custom-start": "范围开始",
 	"page-views-custom-end": "范围结束",
-	"page-views-custom-help": "输入您要查看的网页浏览日期范围。 如果没有日期选择器可用，则接受的格式是 <code>YYYY-MM-DD</code>",
+	"page-views-custom-help": "输入你要查看的网页浏览日期范围。 如果没有日期选择器可用，则接受的格式是 <code>YYYY-MM-DD</code>",
 	"page-views-custom-error": "请输入 <code>YYYY-MM-DD</code>格式的有效日期范围 ",
 
 	"stats.day": "日",
@@ -64,7 +64,10 @@
 
 	"high-presence-topics": "热门话题",
 
-	"graphs.page-views": "页面察看",
+	"graphs.page-views": "页面浏览量",
+	"graphs.page-views-registered": "注册用户页面浏览量",
+	"graphs.page-views-guest": "游客页面浏览量",
+	"graphs.page-views-bot": "Page Views Bot",
 	"graphs.unique-visitors": "单一访客",
 	"graphs.registered-users": "已注册用户",
 	"graphs.anonymous-users": "匿名用户",

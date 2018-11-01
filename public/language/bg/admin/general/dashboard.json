@@ -65,6 +65,9 @@
 	"high-presence-topics": "Теми с най-голяма присъственост",
 
 	"graphs.page-views": "Преглеждания на страниците",
+	"graphs.page-views-registered": "Преглеждания на страниците от регистрирани потребители",
+	"graphs.page-views-guest": "Преглеждания на страниците от гости",
+	"graphs.page-views-bot": "Преглеждания на страниците от ботове",
 	"graphs.unique-visitors": "Уникални посетители",
 	"graphs.registered-users": "Регистрирани потребители",
 	"graphs.anonymous-users": "Анонимни потребители",

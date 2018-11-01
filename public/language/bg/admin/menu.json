@@ -57,6 +57,7 @@
 	"section-advanced": "Разширени",
 	"advanced/database": "База данни",
 	"advanced/events": "Събития",
+	"advanced/hooks": "Куки",
 	"advanced/logs": "Журнали",
 	"advanced/errors": "Грешки",
 	"advanced/cache": "Кеш",

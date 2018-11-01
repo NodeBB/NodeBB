@@ -57,6 +57,7 @@
 	"section-advanced": "Расширенные",
 	"advanced/database": "База данных",
 	"advanced/events": "События",
+	"advanced/hooks": "Hooks",
 	"advanced/logs": "Логи",
 	"advanced/errors": "Ошибки",
 	"advanced/cache": "Кэш",
