@@ -57,6 +57,7 @@
 	"section-advanced": "Napredno",
 	"advanced/database": "Baza podataka",
 	"advanced/events": "Događanja",
+	"advanced/hooks": "Hooks",
 	"advanced/logs": "Dnevnik",
 	"advanced/errors": "Greške",
 	"advanced/cache": "Cache",

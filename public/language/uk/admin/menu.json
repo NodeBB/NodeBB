@@ -57,6 +57,7 @@
 	"section-advanced": "Розширені",
 	"advanced/database": "База даних",
 	"advanced/events": "Події",
+	"advanced/hooks": "Hooks",
 	"advanced/logs": "Логи",
 	"advanced/errors": "Помилки",
 	"advanced/cache": "Кеш",

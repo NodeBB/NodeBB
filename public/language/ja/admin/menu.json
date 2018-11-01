@@ -57,6 +57,7 @@
 	"section-advanced": "高度",
 	"advanced/database": "データベース",
 	"advanced/events": "イベント",
+	"advanced/hooks": "Hooks",
 	"advanced/logs": "ログ",
 	"advanced/errors": "エラー",
 	"advanced/cache": "キャッシュ",

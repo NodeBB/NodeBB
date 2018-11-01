@@ -65,6 +65,9 @@
 	"high-presence-topics": "Témakörök nagy jelenléttel",
 
 	"graphs.page-views": "Oldal megtekintések",
+	"graphs.page-views-registered": "Page Views Registered",
+	"graphs.page-views-guest": "Page Views Guest",
+	"graphs.page-views-bot": "Page Views Bot",
 	"graphs.unique-visitors": "Egyedi látogatók",
 	"graphs.registered-users": "Regisztrált felhasználók",
 	"graphs.anonymous-users": "Névtelen felhasználók",

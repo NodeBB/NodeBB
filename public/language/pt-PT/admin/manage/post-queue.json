@@ -1,6 +1,6 @@
 {
 	"post-queue": "Publicações por aprovar",
-	"description": "Não há publicações para serem aprovadas. <br> Para ativar esta funcionalidade, vá a <a href=\"%1\"> Settings &rarr; Post &rarr; Posting Restrictions </a>e ative a opção <strong>Post Queue</strong>.",
+	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Posting Restrictions</a> and enable <strong>Post Queue</strong>.",
 	"user": "Utilizador",
 	"category": "Categoria",
 	"title": "Título",

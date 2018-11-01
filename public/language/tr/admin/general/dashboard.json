@@ -65,6 +65,9 @@
 	"high-presence-topics": "Öne Çıkan Başlıklar",
 
 	"graphs.page-views": "Sayfa Gösterimi",
+	"graphs.page-views-registered": "Page Views Registered",
+	"graphs.page-views-guest": "Page Views Guest",
+	"graphs.page-views-bot": "Page Views Bot",
 	"graphs.unique-visitors": "Benzersiz Ziyaretçiler",
 	"graphs.registered-users": "Kayıtlı Kullanıcılar",
 	"graphs.anonymous-users": "Anonim Kullanıcılar",
