@@ -30,20 +30,12 @@ module.exports = function (Topics) {
 				if (topic.teaserPid === 'null') {
 					delete topic.teaserPid;
 				}
-
-				switch (meta.config.teaserPost) {
-				case 'first':
+				if (meta.config.teaserPid === 'first') {
 					teaserPids.push(topic.mainPid);
-					break;
-
-				case 'last-post':
+				} else if (meta.config.teaserPid === 'last-post') {
 					teaserPids.push(topic.teaserPid || topic.mainPid);
-					break;
-
-				case 'last-reply':	// intentional fall-through
-				default:
+				} else if (meta.config.teaserPid === 'last-reply') {
 					teaserPids.push(topic.teaserPid);
-					break;
 				}
 			}
 		});
@@ -53,16 +45,12 @@ module.exports = function (Topics) {
 				posts.getPostsFields(teaserPids, ['pid', 'uid', 'timestamp', 'tid', 'content'], next);
 			},
 			function (_postData, next) {
-				_postData = _postData.filter(function (post) {
-					return post && parseInt(post.pid, 10);
-				});
+				_postData = _postData.filter(post => post && post.pid);
 				handleBlocks(uid, _postData, next);
 			},
 			function (_postData, next) {
 				postData = _postData.filter(Boolean);
-				var uids = _.uniq(postData.map(function (post) {
-					return post.uid;
-				}));
+				const uids = _.uniq(postData.map(post => post.uid));
 
 				user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
 			},
