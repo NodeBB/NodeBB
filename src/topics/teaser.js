@@ -30,11 +30,11 @@ module.exports = function (Topics) {
 				if (topic.teaserPid === 'null') {
 					delete topic.teaserPid;
 				}
-				if (meta.config.teaserPid === 'first') {
+				if (meta.config.teaserPost === 'first') {
 					teaserPids.push(topic.mainPid);
-				} else if (meta.config.teaserPid === 'last-post') {
+				} else if (meta.config.teaserPost === 'last-post') {
 					teaserPids.push(topic.teaserPid || topic.mainPid);
-				} else if (meta.config.teaserPid === 'last-reply') {
+				} else if (meta.config.teaserPost === 'last-reply') {
 					teaserPids.push(topic.teaserPid);
 				}
 			}
