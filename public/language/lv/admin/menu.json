@@ -57,6 +57,7 @@
 	"section-advanced": "Paplašinātie",
 	"advanced/database": "Datu bāze",
 	"advanced/events": "Notikumu reģistrs",
+	"advanced/hooks": "Āķi",
 	"advanced/logs": "Žurnāls",
 	"advanced/errors": "Kļūdu žurnāls",
 	"advanced/cache": "Kešatmiņa",

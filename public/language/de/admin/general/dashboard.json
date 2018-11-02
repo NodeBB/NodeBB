@@ -65,6 +65,9 @@
 	"high-presence-topics": "Meist besuchte Themen",
 
 	"graphs.page-views": "Seitenaufrufe",
+	"graphs.page-views-registered": "Page Views Registered",
+	"graphs.page-views-guest": "Page Views Guest",
+	"graphs.page-views-bot": "Page Views Bot",
 	"graphs.unique-visitors": "Verschiedene Besucher",
 	"graphs.registered-users": "Registrierte Benutzer",
 	"graphs.anonymous-users": "Anonyme Benutzer",

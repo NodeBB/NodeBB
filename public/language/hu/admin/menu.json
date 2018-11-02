@@ -57,6 +57,7 @@
 	"section-advanced": "Haladó",
 	"advanced/database": "Adatbázis",
 	"advanced/events": "Események",
+	"advanced/hooks": "Hooks",
 	"advanced/logs": "Naplók",
 	"advanced/errors": "Hibák",
 	"advanced/cache": "Gyorsítótár",

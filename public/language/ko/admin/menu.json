@@ -57,6 +57,7 @@
 	"section-advanced": "고급",
 	"advanced/database": "데이터베이스",
 	"advanced/events": "이벤트",
+	"advanced/hooks": "Hooks",
 	"advanced/logs": "로그",
 	"advanced/errors": "에러",
 	"advanced/cache": "캐시",

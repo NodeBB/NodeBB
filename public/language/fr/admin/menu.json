@@ -57,6 +57,7 @@
 	"section-advanced": "Avancé",
 	"advanced/database": "Base de données",
 	"advanced/events": "Évènements",
+	"advanced/hooks": "Crochets",
 	"advanced/logs": "Journaux",
 	"advanced/errors": "Erreurs",
 	"advanced/cache": "Cache",

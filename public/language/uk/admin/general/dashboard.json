@@ -65,6 +65,9 @@
 	"high-presence-topics": "Теми з високою присутністю",
 
 	"graphs.page-views": "Перегляди сторінок",
+	"graphs.page-views-registered": "Page Views Registered",
+	"graphs.page-views-guest": "Page Views Guest",
+	"graphs.page-views-bot": "Page Views Bot",
 	"graphs.unique-visitors": "Унікальні відвідувачі",
 	"graphs.registered-users": "Зареєстровані користувачі",
 	"graphs.anonymous-users": "Анонімні користувачі",
