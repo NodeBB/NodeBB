@@ -62,9 +62,9 @@ function start(command, args, program) {
 					.description('Lists all available commands')
 					.action(function () {
 						commands.forEach(function (cmd) {
-							console.log(cmd.name);
-							done();
+							console.log(cmd.name, cmd.description);
 						});
+						done();
 					});
 
 				commands.forEach(function (cmd) {
@@ -73,7 +73,7 @@ function start(command, args, program) {
 						.description(cmd.description);
 
 					// register options
-					cmd.options.forEach(function (opt) {
+					(cmd.options || []).forEach(function (opt) {
 						pluginCommand.option(opt.flags, opt.description, null, opt.default);
 					});
 
