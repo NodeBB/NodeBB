@@ -1,6 +1,7 @@
 'use strict';
 
 var path = require('path');
+var winston = require('winston');
 var async = require('async');
 var db = require('../database');
 var plugins = require('../plugins');
@@ -78,13 +79,24 @@ function start(command, args, program) {
 
 				// register action
 				pluginCommand.action(function (command, args) {
-					cmd.action(args || {}, done);
+					try {
+						cmd.action(args || {}, done);
+					} catch (err) {
+						winston.error('Plugin error [' + cmd.plugin + ']');
+						winston.error(err.stack);
+						process.exit(1);
+					}
 				});
 			});
 
 			subProgram.parse(argv);
-		}], function () {
-		process.exit();
+		}], function (err = null) {
+		if (err) {
+			winston.error(err.stack);
+			process.exit(1);
+		} else {
+			process.exit(0);
+		}
 	});
 }
 
