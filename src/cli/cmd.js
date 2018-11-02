@@ -44,52 +44,48 @@ function start(command, args, program) {
 	var argv = process.argv.slice(0, 2).concat(command, args);
 	command = command.replace(/^nodebb-plugin/, '');
 
-	async.waterfall(
-		[
-			// Init database
-			db.init,
+	async.waterfall([
+		// Init database
+		db.init,
 
-			// load NodeBB plugins
-			plugins.data.getActive,
+		// load NodeBB plugins
+		plugins.data.getActive,
 
-			// parse plugins commands
-			parseCommands,
+		// parse plugins commands
+		parseCommands,
 
-			// Register plugins commands
-			function (commands, done) {
-				subProgram
-					.command('list')
-					.description('Lists all available commands')
-					.action(function () {
-						commands.forEach(function (cmd) {
-							console.log(cmd.name, cmd.description);
-						});
-						done();
+		// Register plugins commands
+		function (commands, done) {
+			subProgram
+				.command('list')
+				.description('Lists all available commands')
+				.action(function () {
+					commands.forEach(function (cmd) {
+						console.log(cmd.name, cmd.description);
 					});
-
-				commands.forEach(function (cmd) {
-					var pluginCommand = subProgram
-						.command(cmd.name)
-						.description(cmd.description);
-
-					// register options
-					(cmd.options || []).forEach(function (opt) {
-						pluginCommand.option(opt.flags, opt.description, null, opt.default);
-					});
-
-					// register action
-					pluginCommand.action(function (command, args) {
-						cmd.action(args || {}, done);
-					});
+					done();
 				});
 
-				subProgram.parse(argv);
-			},
-		],
-		function () {
-			process.exit();
-		}
-	);
+			commands.forEach(function (cmd) {
+				var pluginCommand = subProgram
+					.command(cmd.name)
+					.description(cmd.description);
+
+				// register options
+				(cmd.options || []).forEach(function (opt) {
+					pluginCommand.option(opt.flags, opt.description, null, opt.default);
+				});
+
+				// register action
+				pluginCommand.action(function (command, args) {
+					cmd.action(args || {}, done);
+				});
+			});
+
+			subProgram.parse(argv);
+		}], function () {
+		process.exit();
+	});
 }
 
 module.exports.start = start;
