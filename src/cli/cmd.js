@@ -90,7 +90,8 @@ function start(command, args, program) {
 			});
 
 			subProgram.parse(argv);
-		}], function (err = null) {
+		},
+	], function (err = null) {
 		if (err) {
 			winston.error(err.stack);
 			process.exit(1);
