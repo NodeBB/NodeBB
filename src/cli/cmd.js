@@ -5,6 +5,33 @@ var async = require('async');
 var db = require('../database');
 var plugins = require('../plugins');
 
+function parseCommands(pluginList, callback) {
+	var commands = [];
+
+	pluginList.forEach(function (pluginData) {
+		var pluginCommands = pluginData.commands || [];
+
+		pluginCommands.forEach(function (cmdData) {
+			var pluginName = pluginData.id;
+			var libraryFile = cmdData.library ? cmdData.library : pluginData.library;
+			var cmdName = pluginName.replace('nodebb-plugin-', '') + ':' + cmdData.cmd;
+			var scriptFile = path.resolve(pluginData.path, libraryFile);
+			var action = require(scriptFile)[cmdData.method];
+
+			commands.push({
+				plugin: pluginName,
+				name: cmdName,
+				description: cmdData.description,
+				options: cmdData.options,
+				scriptFile: scriptFile,
+				action: action,
+			});
+		});
+	});
+	callback(null, commands);
+}
+
+
 function start(command, args, program) {
 	var subProgram = new program.Command('cmd');
 
@@ -26,34 +53,10 @@ function start(command, args, program) {
 			plugins.data.getActive,
 
 			// parse plugins commands
-			function (pluginList, callback) {
-				var commands = [];
-
-				pluginList.forEach(function (pluginData) {
-					var pluginCommands = pluginData.commands || [];
-
-					pluginCommands.forEach(function (cmdData) {
-						var pluginName = pluginData.id;
-						var libraryFile = cmdData.library ? cmdData.library : pluginData.library;
-						var cmdName = pluginName.replace('nodebb-plugin-', '') + ':' + cmdData.cmd;
-						var scriptFile = path.resolve(pluginData.path, libraryFile);
-						var action = require(scriptFile)[cmdData.method];
-
-						commands.push({
-							plugin: pluginName,
-							name: cmdName,
-							description: cmdData.description,
-							options: cmdData.options,
-							scriptFile: scriptFile,
-							action: action,
-						});
-					});
-				});
-				callback(null, commands);
-			},
+			parseCommands,
 
 			// Register plugins commands
-			function registerCommands(commands, done) {
+			function (commands, done) {
 				subProgram
 					.command('list')
 					.description('Lists all available commands')
