@@ -9,7 +9,7 @@
 	"resize-image-width": "Samazināt blides izmērus līdz noteiktajam platumam",
 	"resize-image-width-help": "(pikseļos, pēc noklusējuma: 760 pikseļi, iestatīt 0, lai atspējotu)",
 	"resize-image-quality": "Kvalitāte, ko izmantot, pārveidojot bildes",
-	"resize-image-quality-help": "Use a lower quality setting to reduce the file size of resized images.",
+	"resize-image-quality-help": "Izmantot zemākas kvalitātes iestatījumu, lai samazinātu mainīto bildes faila lielumu.",
 	"max-file-size": "Maksimālais faila lielums (KiB)",
 	"max-file-size-help": "(kibibaitos, pēc noklusējuma: 2.048 KiB)",
 	"reject-image-width": "Maksimālais bildes platums (pikseļos)",
