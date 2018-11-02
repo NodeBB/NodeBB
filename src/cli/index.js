@@ -306,7 +306,7 @@ program
 	.command('cmd <plugin:command|list> [args...]')
 	.description('Run a given plugin-provided command')
 	.action(function (command, args) {
-		require('../cmd').start(command, args, program);
+		require('./cmd').start(command, args, program);
 	});
 
 require('./colors');
