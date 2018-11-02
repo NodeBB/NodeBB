@@ -36,8 +36,8 @@ function start(command, args, program) {
 	var subProgram = new program.Command('cmd');
 
 	// remove the cmd segment from argvs
-	var argv = process.argv.slice(0, 2).concat(command, args);
 	command = command.replace(/^nodebb-plugin/, '');
+	var argv = process.argv.slice(0, 2).concat(command, args);
 
 	subProgram.on('command:*', function () {
 		console.error('Invalid command: %s\nSee --help for a list of available commands.', program.args.join(' '));
