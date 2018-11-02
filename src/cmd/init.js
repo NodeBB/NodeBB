@@ -29,6 +29,7 @@ function loadPluginCommands(next) {
 					var libraryFile = cmdData.library ? cmdData.library : pluginData.library;
 					var cmdName = pluginName.replace('nodebb-plugin-', '') + ':' + cmdData.cmd;
 					var scriptFile = path.resolve(pluginData.path, libraryFile);
+					var action = require(scriptFile)[cmdData.method];
 
 					commands.push({
 						plugin: pluginName,
@@ -36,7 +37,7 @@ function loadPluginCommands(next) {
 						description: cmdData.description,
 						options: cmdData.options,
 						scriptFile: scriptFile,
-						method: cmdData.method,
+						action: action,
 					});
 				});
 			});
@@ -46,28 +47,4 @@ function loadPluginCommands(next) {
 	]);
 }
 
-function registerCommands(commands, callback) {
-	commands.forEach((cmd) => {
-		var regCommand = program.command(cmd.name);
-
-		// register options
-		cmd.options.forEach(function (opt) {
-			regCommand.option(opt.flags, opt.description || null, null, opt.default || null);
-		});
-
-		regCommand
-			.description(cmd.description)
-			.action(function (env, options) {
-				// resolve plugin command method
-				var method = require(cmd.scriptFile)[cmd.method];
-
-				method(options || {}, function () {
-					callback();
-				});
-			});
-	});
-	program.parse(process.argv);
-}
-
 module.exports.loadPluginCommands = loadPluginCommands;
-module.exports.registerCommands = registerCommands;

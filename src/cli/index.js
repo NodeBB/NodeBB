@@ -114,6 +114,7 @@ program
 	.action(function () {
 		require('./running').start(program);
 	});
+
 program
 	.command('slog', null, {
 		noHelp: true,
@@ -298,6 +299,14 @@ program
 		} else {
 			program.help();
 		}
+	});
+
+// Plugin Commands
+program
+	.command('cmd <plugin:command|list> [args...]')
+	.description('Run a given plugin-provided command')
+	.action(function (command, args) {
+		require('../cmd').start(command, args, program);
 	});
 
 require('./colors');
