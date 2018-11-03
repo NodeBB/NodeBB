@@ -68,8 +68,9 @@ function start(command, args, program) {
 							console.log('\x1b[32m' + cmd.name + '\x1b[0m \t\t\t ' + cmd.description);
 						});
 					} else {
-						console.log('\x1b[31m No commands available');
+						console.log('\x1b[31m No commands available\x1b[0m');
 					}
+					console.log('\n');
 					done();
 				});
 
