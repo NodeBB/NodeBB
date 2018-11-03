@@ -17,7 +17,10 @@ function parseCommands(pluginList, callback) {
 			var libraryFile = cmdData.library ? cmdData.library : pluginData.library;
 			var cmdName = pluginName.replace('nodebb-plugin-', '') + ':' + cmdData.cmd;
 			var scriptFile = path.resolve(pluginData.path, libraryFile);
-			var action = require(scriptFile)[cmdData.method];
+			var action = function (cmdArgs, done) {
+				var call = require(scriptFile)[cmdData.method];
+				call(cmdArgs, done);
+			};
 
 			commands.push({
 				plugin: pluginName,
@@ -78,9 +81,9 @@ function start(command, args, program) {
 				});
 
 				// register action
-				pluginCommand.action(function (command, args) {
+				pluginCommand.action(function (command, cmdArgs) {
 					try {
-						cmd.action(args || {}, done);
+						cmd.action(cmdArgs || {}, done);
 					} catch (err) {
 						winston.error('Plugin error [' + cmd.plugin + ']');
 						winston.error(err);
