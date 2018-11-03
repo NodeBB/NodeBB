@@ -83,7 +83,7 @@ function start(command, args, program) {
 						cmd.action(args || {}, done);
 					} catch (err) {
 						winston.error('Plugin error [' + cmd.plugin + ']');
-						winston.error(err.stack);
+						winston.error(err);
 						process.exit(1);
 					}
 				});
@@ -91,9 +91,9 @@ function start(command, args, program) {
 
 			subProgram.parse(argv);
 		},
-	], function (err = null) {
+	], function (err) {
 		if (err) {
-			winston.error(err.stack);
+			winston.error(err);
 			process.exit(1);
 		} else {
 			process.exit(0);
