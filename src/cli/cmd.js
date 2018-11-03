@@ -42,7 +42,7 @@ function start(command, args, program) {
 	var argv = process.argv.slice(0, 2).concat(command, args);
 
 	subProgram.on('command:*', function () {
-		console.error('Invalid command: %s\nSee --help for a list of available commands.', program.args.join(' '));
+		winston.error('Invalid command: %s\nUse cmd list for a list of available commands.', program.args[0]);
 		process.exit(1);
 	});
 
@@ -62,9 +62,14 @@ function start(command, args, program) {
 				.command('list')
 				.description('Lists all available commands')
 				.action(function () {
-					commands.forEach(function (cmd) {
-						console.log(cmd.name, cmd.description);
-					});
+					console.log('\n');
+					if (commands.length) {
+						commands.forEach(function (cmd) {
+							console.log('\x1b[32m' + cmd.name + '\x1b[0m \t\t\t ' + cmd.description);
+						});
+					} else {
+						console.log('\x1b[31m No commands available');
+					}
 					done();
 				});
 
@@ -96,9 +101,8 @@ function start(command, args, program) {
 		if (err) {
 			winston.error(err);
 			process.exit(1);
-		} else {
-			process.exit(0);
 		}
+		process.exit(0);
 	});
 }
 
