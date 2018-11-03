@@ -14,21 +14,19 @@ function parseCommands(pluginList, callback) {
 
 		pluginCommands.forEach(function (cmdData) {
 			var pluginName = pluginData.id;
-			var libraryFile = cmdData.library ? cmdData.library : pluginData.library;
 			var cmdName = pluginName.replace('nodebb-plugin-', '') + ':' + cmdData.cmd;
-			var scriptFile = path.resolve(pluginData.path, libraryFile);
-			var action = function (cmdArgs, done) {
-				var call = require(scriptFile)[cmdData.method];
-				call(cmdArgs, done);
-			};
 
 			commands.push({
 				plugin: pluginName,
 				name: cmdName,
 				description: cmdData.description,
 				options: cmdData.options,
-				scriptFile: scriptFile,
-				action: action,
+				action: function (cmdArgs, done) {
+					var libraryFile = cmdData.library ? cmdData.library : pluginData.library;
+					var scriptFile = path.resolve(pluginData.path, libraryFile);
+					var call = require(scriptFile)[cmdData.method];
+					call(cmdArgs, done);
+				},
 			});
 		});
 	});
