@@ -4,7 +4,7 @@ var path = require('path');
 var winston = require('winston');
 var async = require('async');
 var db = require('../database');
-var plugins = require('../plugins');
+var plugins = require('../plugins/data');
 
 function parseCommands(pluginList, callback) {
 	var commands = [];
@@ -47,11 +47,12 @@ function start(command, args, program) {
 	});
 
 	async.waterfall([
+
 		// Init database
 		db.init,
 
 		// load NodeBB plugins
-		plugins.data.getActive,
+		plugins.getActive,
 
 		// parse plugins commands
 		parseCommands,
