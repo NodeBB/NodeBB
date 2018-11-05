@@ -34,13 +34,12 @@ function parseCommands(pluginList, callback) {
 }
 
 function printCommandList(commands) {
-	console.log('\n');
 	if (commands.length) {
 		commands.forEach((cmd) => {
-			console.log('\x1b[32m' + cmd.name + '\x1b[0m \t\t\t ' + cmd.description);
+			console.log(cmd.name.green + '\t\t\t' + cmd.description);
 		});
 	} else {
-		console.log('\x1b[31m No commands available \x1b[0m');
+		console.warn('No commands available'.red);
 	}
 	console.log('\n');
 }
@@ -61,7 +60,7 @@ function registerPluginCommands(subProgram, commands, done) {
 			try {
 				cmd.action(cmdArgs || {}, done);
 			} catch (err) {
-				console.error('\x1b[31m Plugin error [' + cmd.plugin + '] \x1b[0m');
+				console.error('Plugin error [' + cmd.plugin + ']'.red);
 				winston.error(err);
 				process.exit(1);
 			}
@@ -72,13 +71,21 @@ function registerPluginCommands(subProgram, commands, done) {
 
 function registerProgramUtilities(subProgram, commands, done) {
 	subProgram.on('command:*', () => {
-		console.error('\n\x1b[31mInvalid command: %s\x1b[0m', subProgram.args[0]);
-		console.log('\nAvailable commands are:');
+		console.error('\nInvalid command: %s'.red, subProgram.args[0]);
+		if (commands.length) {
+			console.log('\nAvailable commands are:');
+			printCommandList(commands);
+		}
+		process.exit(1);
+	});
+
+	subProgram.on('--help', () => {
 		printCommandList(commands);
 		process.exit(1);
 	});
 
-	subProgram.command('ls').alias('list')
+	subProgram.command('ls')
+		.alias('list')
 		.description('Lists all available commands')
 		.action(() => {
 			printCommandList(commands);
@@ -86,9 +93,7 @@ function registerProgramUtilities(subProgram, commands, done) {
 		});
 }
 
-function start(command, args, program) {
-	var subProgram = new program.Command('cmd');
-
+function bootstrap(callback) {
 	async.waterfall([
 		// Init database
 		db.init,
@@ -96,13 +101,8 @@ function start(command, args, program) {
 		plugins.getActive,
 		// parse plugins commands
 		parseCommands,
-		// Register commands
 		(commands, done) => {
-			registerProgramUtilities(subProgram, commands, done);
-			registerPluginCommands(subProgram, commands, done);
-			command = command.replace(/^nodebb-plugin/, '');
-			var argv = process.argv.slice(0, 2).concat(command, args);
-			subProgram.parse(argv);
+			callback(commands, done);
 		},
 	], (err) => {
 		if (err) {
@@ -110,6 +110,18 @@ function start(command, args, program) {
 			process.exit(1);
 		}
 		process.exit(0);
+	});
+}
+
+function start(command, args, program) {
+	var subProgram = new program.Command('cmd');
+
+	bootstrap((commands, done) => {
+		registerProgramUtilities(subProgram, commands, done);
+		registerPluginCommands(subProgram, commands, done);
+		command = command.replace(/^nodebb-plugin/, '');
+		var argv = process.argv.slice(0, 2).concat(command, args);
+		subProgram.parse(argv);
 	});
 }
 

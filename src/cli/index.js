@@ -304,7 +304,7 @@ program
 // Plugin Commands
 program
 	.command('cmd <plugin:command|ls> [args...]')
-	.description('Run a given plugin-provided command')
+	.description('Run a plugin command')
 	.action(function (command, args) {
 		require('./cmd').start(command, args, program);
 	});
