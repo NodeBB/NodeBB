@@ -77,9 +77,7 @@ User.validateEmail = function (socket, uids, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	uids = uids.filter(function (uid) {
-		return parseInt(uid, 10);
-	});
+	uids = uids.filter(uid => parseInt(uid, 10));
 
 	async.waterfall([
 		function (next) {
@@ -112,9 +110,7 @@ User.sendPasswordResetEmail = function (socket, uids, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	uids = uids.filter(function (uid) {
-		return parseInt(uid, 10);
-	});
+	uids = uids.filter(uid => parseInt(uid, 10));
 
 	async.each(uids, function (uid, next) {
 		async.waterfall([
@@ -207,9 +203,7 @@ User.search = function (socket, data, callback) {
 				return callback(null, searchData);
 			}
 
-			var uids = searchData.users.map(function (user) {
-				return user && user.uid;
-			});
+			var uids = searchData.users.map(user => user && user.uid);
 
 			user.getUsersFields(uids, ['email', 'flags', 'lastonline', 'joindate'], next);
 		},
