@@ -10,7 +10,7 @@
 	"smtp-transport-help": "Izvēlies no labi zināmu pakalpojumu saraksta vai ievadi pielāgotu pakalpojumu.",
 	"smtp-transport.service": "Atlasīt servisu",
 	"smtp-transport.service-custom": "Pielāgotais serviss",
-	"smtp-transport.service-help": "Select a service name above in order to use the known information about it. Alternatively, select 'Custom Service' and enter the details below.",
+	"smtp-transport.service-help": "Izvēlēties pakalpojuma nosaukumu, lai to izmantotu. Citādi izvēlēties 'Pielāgotais serviss' un ievadīt informāciju zemāk.",
 	"smtp-transport.gmail-warning1": "There have been reports of the Gmail service not working on accounts with heightened security. In those scenarios, you will have to <a href=\"https://www.google.com/settings/security/lesssecureapps\">configure your GMail account to allow less secure apps</a>.",
 	"smtp-transport.gmail-warning2": "For more information about this workaround, <a href=\"https://nodemailer.com/usage/using-gmail/\">please consult this NodeMailer article on the issue.</a> An alternative would be to utilise a third-party emailer plugin such as SendGrid, Mailgun, etc. <a href=\"../extend/plugins\">Browse available plugins here</a>.",
 	"smtp-transport.host": "SMTP serveris",
