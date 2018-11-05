@@ -60,7 +60,7 @@ function registerPluginCommands(subProgram, commands, done) {
 			try {
 				cmd.action(cmdArgs || {}, done);
 			} catch (err) {
-				console.error('Plugin error [' + cmd.plugin + ']'.red);
+				console.error(`Plugin error [${cmd.plugin}]`.red);
 				winston.error(err);
 				process.exit(1);
 			}
