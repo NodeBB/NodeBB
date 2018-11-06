@@ -280,6 +280,7 @@ function getChildrenRecursive(category, uid, callback) {
 }
 
 Categories.getChildrenCids = function (rootCid, callback) {
+	var allCids = [];
 	function recursive(currentCid, callback) {
 		db.getSortedSetRange('cid:' + currentCid + ':children', 0, -1, function (err, childrenCids) {
 			if (err) {
@@ -295,11 +296,11 @@ Categories.getChildrenCids = function (rootCid, callback) {
 			}, callback);
 		});
 	}
-	var allCids = [];
+
 	recursive(rootCid, function (err) {
 		callback(err, _.uniq(allCids));
 	});
-}
+};
 
 Categories.flattenCategories = function (allCategories, categoryData) {
 	categoryData.forEach(function (category) {
