@@ -11,7 +11,7 @@
 	"smtp-transport.service": "Atlasīt servisu",
 	"smtp-transport.service-custom": "Pielāgotais serviss",
 	"smtp-transport.service-help": "Izvēlēties pakalpojuma nosaukumu, lai to izmantotu. Citādi izvēlēties 'Pielāgotais serviss' un ievadīt informāciju zemāk.",
-	"smtp-transport.gmail-warning1": "There have been reports of the Gmail service not working on accounts with heightened security. In those scenarios, you will have to <a href=\"https://www.google.com/settings/security/lesssecureapps\">configure your GMail account to allow less secure apps</a>.",
+	"smtp-transport.gmail-warning1": "Ir bijuši ziņojumi par to, ka Gmail pakalpojums nedarbojas kontos ar paaugstinātu drošību. Šajos scenārijos <a href=\"https://www.google.com/settings/security/lesssecureapps\">jākonfigurē Gmail konts, lai varētu izmantot mazāk drošas lietotnes</a>.",
 	"smtp-transport.gmail-warning2": "For more information about this workaround, <a href=\"https://nodemailer.com/usage/using-gmail/\">please consult this NodeMailer article on the issue.</a> An alternative would be to utilise a third-party emailer plugin such as SendGrid, Mailgun, etc. <a href=\"../extend/plugins\">Browse available plugins here</a>.",
 	"smtp-transport.host": "SMTP serveris",
 	"smtp-transport.port": "SMTP ports",
@@ -20,7 +20,7 @@
 	"smtp-transport.security-starttls": "StartTLS",
 	"smtp-transport.security-none": "Nav",
 	"smtp-transport.username": "Lietotājvārds",
-	"smtp-transport.username-help": "<b>For the Gmail service,</b> enter the full email address here, especially if you are using a Google Apps managed domain.",
+	"smtp-transport.username-help": "<b>Gmail pakalpojumam</b> ievadīt šeit visu e-pasta adresi, it īpaši, ja ir izmantots Google Apps pārvaldīts domēns.",
 	"smtp-transport.password": "Parole",
 
 	"template": "Rediģēt e-pasta veidni",
@@ -33,5 +33,5 @@
 	"subscriptions": "E-pasta abonementi",
 	"subscriptions.disable": "Atspējot abonementu paziņojumu e-pastus",
 	"subscriptions.hour": "Kopsavilkumu nosūtīšanas stunda",
-	"subscriptions.hour-help": "Please enter a number representing the hour to send scheduled email digests (e.g. <code>0</code> for midnight, <code>17</code> for 5:00pm). Keep in mind that this is the hour according to the server itself, and may not exactly match your system clock.<br /> The approximate server time is: <span id=\"serverTime\"></span><br /> The next daily digest is scheduled to be sent  <span id=\"nextDigestTime\"></span>"
+	"subscriptions.hour-help": "Ievadīt skaitli, kas norāda stundu, kurā nosūtītu e-pasta rakstu apkopojumu (piemēram, <code>0</code> nozīmē pusnakts, <code>17</code> nozīmē plkst.1700). Paturēt prātā, ka šī ir stunda servera laikā, un tā var neatbilst Tavam pulkstenim. Aptuvens servera laiks ir: <span id=\"serverTime\"></span><br />Nākamais ikdienas apkopojums tiks nosūtīts <span id=\"nextDigestTime\"></span>"
 }
