@@ -2,6 +2,7 @@
 'use strict';
 
 var async = require('async');
+var _ = require('lodash');
 
 var db = require('../database');
 var user = require('../user');
@@ -219,7 +220,13 @@ Categories.getChildren = function (cids, uid, callback) {
 	});
 
 	async.each(categories, function (category, next) {
-		getChildrenRecursive(category, uid, next);
+		Categories.getCategoryField(category.cid, 'parentCid', function (err, parentCid) {
+			if (err) {
+				return next(err);
+			}
+			category.parentCid = parentCid;
+			getChildrenRecursive(category, uid, next);
+		});
 	}, function (err) {
 		callback(err, categories.map(function (c) {
 			return c && c.children;
@@ -263,10 +270,35 @@ function getChildrenRecursive(category, uid, callback) {
 		},
 		function (next) {
 			async.each(category.children, function (child, next) {
+				if (parseInt(category.parentCid, 10) === parseInt(child.cid, 10)) {
+					return next();
+				}
 				getChildrenRecursive(child, uid, next);
 			}, next);
 		},
 	], callback);
+}
+
+Categories.getChildrenCids = function (rootCid, callback) {
+	function recursive(currentCid, callback) {
+		db.getSortedSetRange('cid:' + currentCid + ':children', 0, -1, function (err, childrenCids) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (!childrenCids.length) {
+				return callback();
+			}
+			async.eachSeries(childrenCids, function (childCid, next) {
+				allCids.push(parseInt(childCid, 10));
+				recursive(childCid, next);
+			}, callback);
+		});
+	}
+	var allCids = [];
+	recursive(rootCid, function (err) {
+		callback(err, _.uniq(allCids));
+	});
 }
 
 Categories.flattenCategories = function (allCategories, categoryData) {

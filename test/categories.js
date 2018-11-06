@@ -338,6 +338,31 @@ describe('Categories', function () {
 			});
 		});
 
+		it('should error if you try to set child as parent', function (done) {
+			var child1Cid;
+			var parentCid;
+			async.waterfall([
+				function (next) {
+					Categories.create({ name: 'parent 1', description: 'poor parent' }, next);
+				},
+				function (category, next) {
+					parentCid = category.cid;
+					Categories.create({ name: 'child1', description: 'wanna be parent', parentCid: parentCid }, next);
+				},
+				function (category, next) {
+					child1Cid = category.cid;
+					var updateData = {};
+					updateData[parentCid] = {
+						parentCid: child1Cid,
+					};
+					socketCategories.update({ uid: adminUid }, updateData, function (err) {
+						assert.equal(err.message, '[[error:cant-set-child-as-parent]]');
+						next();
+					});
+				},
+			], done);
+		});
+
 		it('should update category data', function (done) {
 			var updateData = {};
 			updateData[cid] = {
