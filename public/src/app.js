@@ -56,9 +56,7 @@ app.cacheBuster = null;
 			app.newTopic();
 		});
 
-		require(['components'], function (components) {
-			components.get('user/logout').on('click', app.logout);
-		});
+		$('#header-menu .container').on('click', '[component="user/logout"]', app.logout);
 
 		Visibility.change(function (event, state) {
 			if (state === 'visible') {
@@ -106,6 +104,45 @@ app.cacheBuster = null;
 		});
 	};
 
+	app.updateHeader = function (data, callback) {
+		/**
+		 * data:
+		 *   header (obj)
+		 *   config (obj)
+		 *   next (string)
+		 */
+		require(['benchpress', 'translator', 'notifications', 'chat'], function (Benchpress, translator, Notifications, Chat) {
+			app.user = data.header.user;
+			data.header.config = data.config;
+			config = data.config;
+			Benchpress.setGlobal('config', config);
+
+			// Manually reconnect socket.io
+			socket.close();
+			socket.open();
+
+			// Re-render top bar menu
+			var toRender = {
+				menu: $('#header-menu .container'),
+				'chats-menu': $('#chats-menu'),
+				'slideout-menu': $('.slideout-menu'),
+			};
+			Promise.all(Object.keys(toRender).map(function (tpl) {
+				return Benchpress.render('partials/' + tpl, data.header).then(function (render) {
+					return translator.Translator.create().translate(render);
+				});
+			})).then(function (html) {
+				Object.values(toRender).forEach(function (element, idx) {
+					element.html(html[idx]);
+				});
+
+				Notifications.prepareDOM();
+				Chat.prepareDOM();
+				callback();
+			});
+		});
+	};
+
 	app.logout = function (e) {
 		if (e) {
 			e.preventDefault();
@@ -124,13 +161,18 @@ app.cacheBuster = null;
 			headers: {
 				'x-csrf-token': config.csrf_token,
 			},
-			success: function () {
-				var payload = {
-					next: config.relative_path + '/',
-				};
+			success: function (data) {
+				app.updateHeader(data, function () {
+					// Overwrite in hook (below) to redirect elsewhere
+					data.next = data.next || undefined;
 
-				$(window).trigger('action:app.loggedOut', payload);
-				window.location.href = payload.next;
+					$(window).trigger('action:app.loggedOut', data);
+					if (data.next) {
+						ajaxify.go(data.next);
+					} else {
+						ajaxify.refresh();
+					}
+				});
 			},
 		});
 	};

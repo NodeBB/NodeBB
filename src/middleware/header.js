@@ -45,7 +45,7 @@ module.exports = function (middleware) {
 		], next);
 	};
 
-	middleware.renderHeader = function (req, res, data, callback) {
+	middleware.generateHeader = function (req, res, data, callback) {
 		var registrationType = meta.config.registrationType || 'normal';
 		res.locals.config = res.locals.config || {};
 		var templateValues = {
@@ -209,8 +209,16 @@ module.exports = function (middleware) {
 					templateValues: templateValues,
 				}, next);
 			},
-			function (data, next) {
-				req.app.render('header', data.templateValues, next);
+		], function (err, data) {
+			callback(err, data.templateValues);
+		});
+	};
+
+	middleware.renderHeader = function (req, res, data, callback) {
+		async.waterfall([
+			async.apply(middleware.generateHeader, req, res, data),
+			function (templateValues, next) {
+				req.app.render('header', templateValues, next);
 			},
 		], callback);
 	};
