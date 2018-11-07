@@ -200,39 +200,40 @@ function killWorkers() {
 }
 
 fs.open(pathToConfig, 'r', function (err) {
-	if (!err) {
-		if (nconf.get('daemon') !== 'false' && nconf.get('daemon') !== false) {
-			if (file.existsSync(pidFilePath)) {
-				try {
-					var	pid = fs.readFileSync(pidFilePath, { encoding: 'utf-8' });
-					process.kill(pid, 0);
-					process.exit();
-				} catch (e) {
-					fs.unlinkSync(pidFilePath);
-				}
-			}
-
-			require('daemon')({
-				stdout: process.stdout,
-				stderr: process.stderr,
-				cwd: process.cwd(),
-			});
-
-			fs.writeFileSync(pidFilePath, process.pid);
-		}
-
-		async.series([
-			Loader.init,
-			Loader.displayStartupMessages,
-			Loader.start,
-		], function (err) {
-			if (err) {
-				console.error('[loader] Error during startup');
-				throw err;
-			}
-		});
-	} else {
+	if (err) {
 		// No config detected, kickstart web installer
 		fork('app');
+		return;
 	}
+
+	if (nconf.get('daemon') !== 'false' && nconf.get('daemon') !== false) {
+		if (file.existsSync(pidFilePath)) {
+			try {
+				var	pid = fs.readFileSync(pidFilePath, { encoding: 'utf-8' });
+				process.kill(pid, 0);
+				process.exit();
+			} catch (e) {
+				fs.unlinkSync(pidFilePath);
+			}
+		}
+
+		require('daemon')({
+			stdout: process.stdout,
+			stderr: process.stderr,
+			cwd: process.cwd(),
+		});
+
+		fs.writeFileSync(pidFilePath, process.pid);
+	}
+
+	async.series([
+		Loader.init,
+		Loader.displayStartupMessages,
+		Loader.start,
+	], function (err) {
+		if (err) {
+			console.error('[loader] Error during startup');
+			throw err;
+		}
+	});
 });

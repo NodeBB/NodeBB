@@ -294,8 +294,8 @@ module.exports = function (Posts) {
 				}, next);
 			},
 			function (results, next) {
-				postData.upvotes = parseInt(results.upvotes, 10);
-				postData.downvotes = parseInt(results.downvotes, 10);
+				postData.upvotes = results.upvotes;
+				postData.downvotes = results.downvotes;
 				postData.votes = postData.upvotes - postData.downvotes;
 				Posts.updatePostVoteCount(postData, next);
 			},

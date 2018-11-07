@@ -1,9 +1,11 @@
 {
     "title": "NodeBB",
     "showSiteTitle": 1,
+    "defaultLang": "en-GB",
     "loginDays": 14,
     "loginSeconds": 0,
     "loginAttempts": 5,
+    "lockoutDuration": 60,
     "adminReloginDuration": 60,
     "postDelay": 10,
     "initialPostDelay": 10,
@@ -31,10 +33,11 @@
     "allowUserHomePage": 1,
     "allowMultipleBadges": 0,
     "maximumFileSize": 2048,
-    "maximumImageWidth": 760,
+    "resizeImageWidthThreshold": 2000,
+    "resizeImageWidth": 760,
     "rejectImageWidth": 5000,
     "rejectImageHeight": 5000,
-    "resizeImageQuality": 60,
+    "resizeImageQuality": 80,
     "topicThumbSize": 120,
     "minimumTitleLength": 3,
     "maximumTitleLength": 255,
@@ -52,6 +55,7 @@
     "profile:convertProfileImageToPNG": 0,
     "profile:keepAllUserImages": 0,
     "requireEmailConfirmation": 0,
+    "gdpr_enabled": 1,
     "allowProfileImageUploads": 1,
     "teaserPost": "last-reply",
     "allowPrivateGroups": 1,
@@ -107,5 +111,6 @@
     "hsts-preload": 0,
     "hsts-enabled": 0,
     "eventLoopLagThreshold": 100,
-    "eventLoopInterval": 500
+    "eventLoopInterval": 500,
+    "onlineCutoff": 30
 }

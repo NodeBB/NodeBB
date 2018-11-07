@@ -26,10 +26,10 @@ Auth.initialize = function (app, middleware) {
 Auth.setAuthVars = function (req, res, next) {
 	var isSpider = req.isSpider();
 	req.loggedIn = !isSpider && !!req.user;
-	if (isSpider) {
-		req.uid = -1;
-	} else if (req.user) {
+	if (req.user) {
 		req.uid = parseInt(req.user.uid, 10);
+	} else if (isSpider) {
+		req.uid = -1;
 	} else {
 		req.uid = 0;
 	}
@@ -73,6 +73,9 @@ Auth.reloadRoutes = function (router, callback) {
 				}, function (req, res, next) {
 					// Trigger registration interstitial checks
 					req.session.registration = req.session.registration || {};
+					// save returnTo for later usage in /register/complete
+					// passport seems to remove `req.session.returnTo` after it redirects
+					req.session.registration.returnTo = req.session.returnTo;
 					next();
 				}, passport.authenticate(strategy.name, {
 					successReturnToOrRedirect: nconf.get('relative_path') + (strategy.successUrl !== undefined ? strategy.successUrl : '/'),

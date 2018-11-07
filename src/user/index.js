@@ -3,47 +3,47 @@
 var async = require('async');
 var _ = require('lodash');
 
-var groups = require('./groups');
-var plugins = require('./plugins');
-var db = require('./database');
-var privileges = require('./privileges');
-var meta = require('./meta');
+var groups = require('../groups');
+var plugins = require('../plugins');
+var db = require('../database');
+var privileges = require('../privileges');
+var meta = require('../meta');
 
 var User = module.exports;
 
-User.email = require('./user/email');
-User.notifications = require('./user/notifications');
-User.reset = require('./user/reset');
-User.digest = require('./user/digest');
+User.email = require('./email');
+User.notifications = require('./notifications');
+User.reset = require('./reset');
+User.digest = require('./digest');
 
-require('./user/data')(User);
-require('./user/auth')(User);
-require('./user/bans')(User);
-require('./user/create')(User);
-require('./user/posts')(User);
-require('./user/topics')(User);
-require('./user/categories')(User);
-require('./user/follow')(User);
-require('./user/profile')(User);
-require('./user/admin')(User);
-require('./user/delete')(User);
-require('./user/settings')(User);
-require('./user/search')(User);
-require('./user/jobs')(User);
-require('./user/picture')(User);
-require('./user/approval')(User);
-require('./user/invite')(User);
-require('./user/password')(User);
-require('./user/info')(User);
-require('./user/online')(User);
-require('./user/blocks')(User);
-require('./user/uploads')(User);
+require('./data')(User);
+require('./auth')(User);
+require('./bans')(User);
+require('./create')(User);
+require('./posts')(User);
+require('./topics')(User);
+require('./categories')(User);
+require('./follow')(User);
+require('./profile')(User);
+require('./admin')(User);
+require('./delete')(User);
+require('./settings')(User);
+require('./search')(User);
+require('./jobs')(User);
+require('./picture')(User);
+require('./approval')(User);
+require('./invite')(User);
+require('./password')(User);
+require('./info')(User);
+require('./online')(User);
+require('./blocks')(User);
+require('./uploads')(User);
 
 User.getUidsFromSet = function (set, start, stop, callback) {
 	if (set === 'users:online') {
 		var count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
 		var now = Date.now();
-		db.getSortedSetRevRangeByScore(set, start, count, '+inf', now - 300000, callback);
+		db.getSortedSetRevRangeByScore(set, start, count, '+inf', now - (meta.config.onlineCutoff * 60000), callback);
 	} else {
 		db.getSortedSetRevRange(set, start, stop, callback);
 	}
@@ -85,14 +85,6 @@ User.getUsersWithFields = function (uids, fields, uid, callback) {
 					if (user.hasOwnProperty('status')) {
 						user.status = User.getStatus(user);
 					}
-
-					if (user.hasOwnProperty('banned')) {
-						user.banned = parseInt(user.banned, 10) === 1;
-					}
-
-					if (user.hasOwnProperty(['email:confirmed'])) {
-						user['email:confirmed'] = parseInt(user['email:confirmed'], 10) === 1;
-					}
 				}
 			});
 			plugins.fireHook('filter:userlist.get', { users: results.userData, uid: uid }, next);
@@ -112,15 +104,15 @@ User.getUsers = function (uids, uid, callback) {
 };
 
 User.getStatus = function (userData) {
-	if (parseInt(userData.uid, 10) <= 0) {
+	if (userData.uid <= 0) {
 		return 'offline';
 	}
-	var isOnline = (Date.now() - parseInt(userData.lastonline, 10)) < 300000;
+	var isOnline = (Date.now() - userData.lastonline) < 300000;
 	return isOnline ? (userData.status || 'online') : 'offline';
 };
 
 User.exists = function (uid, callback) {
-	db.isSortedSetMember('users:joindate', uid, callback);
+	db.exists('user:' + uid, callback);
 };
 
 User.existsBySlug = function (userslug, callback) {
@@ -353,6 +345,10 @@ User.addInterstitials = function (callback) {
 		method: [
 			// GDPR information collection/processing consent + email consent
 			function (data, callback) {
+				if (!meta.config.gdpr_enabled) {
+					return setImmediate(callback, null, data);
+				}
+
 				const add = function () {
 					data.interstitials.push({
 						template: 'partials/gdpr_consent',
@@ -435,4 +431,4 @@ User.addInterstitials = function (callback) {
 	callback();
 };
 
-User.async = require('./promisify')(User);
+User.async = require('../promisify')(User);

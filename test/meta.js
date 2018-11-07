@@ -111,6 +111,72 @@ describe('meta', function () {
 			});
 		});
 
+		it('should get the correct type and default value', function (done) {
+			meta.configs.set('loginAttempts', '', function (err) {
+				assert.ifError(err);
+				meta.configs.get('loginAttempts', function (err, value) {
+					assert.ifError(err);
+					assert.strictEqual(value, 5);
+					done();
+				});
+			});
+		});
+
+		it('should get the correct type and correct value', function (done) {
+			meta.configs.set('loginAttempts', '0', function (err) {
+				assert.ifError(err);
+				meta.configs.get('loginAttempts', function (err, value) {
+					assert.ifError(err);
+					assert.strictEqual(value, 0);
+					done();
+				});
+			});
+		});
+
+		it('should get the correct value', function (done) {
+			meta.configs.set('title', 123, function (err) {
+				assert.ifError(err);
+				meta.configs.get('title', function (err, value) {
+					assert.ifError(err);
+					assert.strictEqual(value, '123');
+					done();
+				});
+			});
+		});
+
+		it('should get the correct value', function (done) {
+			meta.configs.set('title', 0, function (err) {
+				assert.ifError(err);
+				meta.configs.get('title', function (err, value) {
+					assert.ifError(err);
+					assert.strictEqual(value, '0');
+					done();
+				});
+			});
+		});
+
+		it('should get the correct value', function (done) {
+			meta.configs.set('title', '', function (err) {
+				assert.ifError(err);
+				meta.configs.get('title', function (err, value) {
+					assert.ifError(err);
+					assert.strictEqual(value, '');
+					done();
+				});
+			});
+		});
+
+		it('should use default value if value is null', function (done) {
+			meta.configs.set('teaserPost', null, function (err) {
+				assert.ifError(err);
+				meta.configs.get('teaserPost', function (err, value) {
+					assert.ifError(err);
+					assert.strictEqual(value, 'last-reply');
+					done();
+				});
+			});
+		});
+
 		it('should fail if field is invalid', function (done) {
 			meta.configs.set('', 'someValue', function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
@@ -147,7 +213,7 @@ describe('meta', function () {
 			});
 		});
 
-		it('should set numeric config value', function (done) {
+		it('should get back string if field is not in defaults', function (done) {
 			meta.configs.set('numericField', 123, function (err) {
 				assert.ifError(err);
 				meta.configs.getFields(['numericField'], function (err, data) {
@@ -170,11 +236,11 @@ describe('meta', function () {
 		});
 
 		it('should set boolean config value', function (done) {
-			meta.configs.set('booleanField', 'true', function (err) {
+			meta.configs.set('booleanField', 'false', function (err) {
 				assert.ifError(err);
 				meta.configs.getFields(['booleanField'], function (err, data) {
 					assert.ifError(err);
-					assert.strictEqual(data.booleanField, true);
+					assert.strictEqual(data.booleanField, false);
 					done();
 				});
 			});

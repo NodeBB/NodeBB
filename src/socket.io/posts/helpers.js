@@ -38,7 +38,7 @@ helpers.postCommand = function (socket, command, eventName, notification, data, 
 				return next(new Error('[[error:invalid-pid]]'));
 			}
 
-			if (parseInt(results.deleted, 10) === 1) {
+			if (results.deleted) {
 				return next(new Error('[[error:post-deleted]]'));
 			}
 

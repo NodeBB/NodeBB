@@ -73,6 +73,14 @@ describe('Post\'s', function () {
 		});
 	});
 
+	it('should return falsy if post does not exist', function (done) {
+		posts.getPostData(9999, function (err, postData) {
+			assert.ifError(err);
+			assert.equal(postData, null);
+			done();
+		});
+	});
+
 	describe('voting', function () {
 		it('should fail to upvote post if group does not have upvote permission', function (done) {
 			privileges.categories.rescind(['posts:upvote', 'posts:downvote'], cid, 'registered-users', function (err) {
@@ -273,10 +281,10 @@ describe('Post\'s', function () {
 				assert.ifError(err);
 				posts.getPostField(replyPid, 'deleted', function (err, deleted) {
 					assert.ifError(err);
-					assert.equal(parseInt(deleted, 10), 1);
+					assert.strictEqual(deleted, 1);
 					posts.getPostField(mainPid, 'deleted', function (err, deleted) {
 						assert.ifError(err);
-						assert.equal(parseInt(deleted, 10), 1);
+						assert.strictEqual(deleted, 1);
 						done();
 					});
 				});
@@ -290,7 +298,7 @@ describe('Post\'s', function () {
 					assert.ifError(err);
 					topics.getTopicField(data.topicData.tid, 'deleted', function (err, deleted) {
 						assert.ifError(err);
-						assert.equal(parseInt(deleted, 10), 1);
+						assert.strictEqual(deleted, 1);
 						done();
 					});
 				});

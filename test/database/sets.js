@@ -60,6 +60,13 @@ describe('Set methods', function () {
 				done();
 			});
 		});
+
+		it('should not error if keys is empty array', function (done) {
+			db.setsAdd([], 'value', function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
 	});
 
 	describe('getSetsMembers()', function () {
@@ -146,6 +153,14 @@ describe('Set methods', function () {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.strictEqual(count, 5);
+				done();
+			});
+		});
+
+		it('should return 0 if set does not exist', function (done) {
+			db.setCount('doesnotexist', function (err, count) {
+				assert.ifError(err);
+				assert.strictEqual(count, 0);
 				done();
 			});
 		});

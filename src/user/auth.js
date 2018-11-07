@@ -26,15 +26,15 @@ module.exports = function (User) {
 				}
 				db.increment('loginAttempts:' + uid, next);
 			},
-			function (attemps, next) {
-				if (attemps <= meta.config.loginAttempts) {
+			function (attempts, next) {
+				if (attempts <= meta.config.loginAttempts) {
 					return db.pexpire('loginAttempts:' + uid, 1000 * 60 * 60, callback);
 				}
 				// Lock out the account
 				db.set('lockout:' + uid, '', next);
 			},
 			function (next) {
-				var duration = 1000 * 60 * (meta.config.lockoutDuration || 60);
+				var duration = 1000 * 60 * meta.config.lockoutDuration;
 
 				db.delete('loginAttempts:' + uid);
 				db.pexpire('lockout:' + uid, duration);

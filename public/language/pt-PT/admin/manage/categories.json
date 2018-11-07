@@ -51,7 +51,7 @@
 	"analytics.topics-daily": "<strong>Figure 3</strong> &ndash; Daily topics created in this category</small>",
 	"analytics.posts-daily": "<strong>Figure 4</strong> &ndash; Daily posts made in this category</small>",
 
-	"alert.created": "Created",
+	"alert.created": "Criada",
 	"alert.create-success": "Categoria criada com sucesso!",
 	"alert.none-active": "Não tens categorias ativas.",
 	"alert.create": "Criar uma Categoria",
@@ -67,7 +67,7 @@
 	"alert.user-search": "Procurar por um utilizador aqui...",
 	"alert.find-group": "Procurar um Grupo",
 	"alert.group-search": "Procura por um grupo aqui...",
-	"collapse-all": "Collapse All",
-	"expand-all": "Expand All",
+	"collapse-all": "Recolher Todas",
+	"expand-all": "Expandir Todas",
 	"disable-on-create": "Desativar imediatamente ao criar"
 }

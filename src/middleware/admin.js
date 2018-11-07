@@ -72,7 +72,7 @@ module.exports = function (middleware) {
 			function (results, next) {
 				var userData = results.userData;
 				userData.uid = req.uid;
-				userData['email:confirmed'] = parseInt(userData['email:confirmed'], 10) === 1;
+				userData['email:confirmed'] = userData['email:confirmed'] === 1;
 
 				var acpPath = req.path.slice(1).split('/');
 				acpPath.forEach(function (path, i) {

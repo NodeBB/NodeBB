@@ -45,7 +45,7 @@ module.exports = function (middleware) {
 		], next);
 	};
 
-	middleware.renderHeader = function (req, res, data, callback) {
+	middleware.generateHeader = function (req, res, data, callback) {
 		var registrationType = meta.config.registrationType || 'normal';
 		res.locals.config = res.locals.config || {};
 		var templateValues = {
@@ -137,9 +137,8 @@ module.exports = function (middleware) {
 				results.user.privileges = results.privileges;
 				results.user[results.user.status] = true;
 
-				results.user.uid = parseInt(results.user.uid, 10);
 				results.user.email = String(results.user.email);
-				results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
+				results.user['email:confirmed'] = results.user['email:confirmed'] === 1;
 				results.user.isEmailConfirmSent = !!results.isEmailConfirmSent;
 
 				templateValues.bootswatchSkin = parseInt(meta.config.disableCustomUserSkins, 10) !== 1 ? res.locals.config.bootswatchSkin || '' : '';
@@ -210,8 +209,16 @@ module.exports = function (middleware) {
 					templateValues: templateValues,
 				}, next);
 			},
-			function (data, next) {
-				req.app.render('header', data.templateValues, next);
+		], function (err, data) {
+			callback(err, data.templateValues);
+		});
+	};
+
+	middleware.renderHeader = function (req, res, data, callback) {
+		async.waterfall([
+			async.apply(middleware.generateHeader, req, res, data),
+			function (templateValues, next) {
+				req.app.render('header', templateValues, next);
 			},
 		], callback);
 	};

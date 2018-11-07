@@ -51,32 +51,32 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 					user.getIPs(uid, 4, next);
 				},
 				profile_menu: function (next) {
-					plugins.fireHook('filter:user.profileMenu', {
-						uid: uid,
-						callerUID: callerUID,
-						links: [{
-							id: 'info',
-							route: 'info',
-							name: '[[user:account_info]]',
-							visibility: {
-								self: false,
-								other: false,
-								moderator: true,
-								globalMod: true,
-								admin: true,
-							},
-						}, {
-							id: 'sessions',
-							route: 'sessions',
-							name: '[[pages:account/sessions]]',
-							visibility: {
-								self: true,
-								other: false,
-								moderator: false,
-								globalMod: false,
-								admin: false,
-							},
-						}, {
+					const links = [{
+						id: 'info',
+						route: 'info',
+						name: '[[user:account_info]]',
+						visibility: {
+							self: false,
+							other: false,
+							moderator: true,
+							globalMod: true,
+							admin: true,
+						},
+					}, {
+						id: 'sessions',
+						route: 'sessions',
+						name: '[[pages:account/sessions]]',
+						visibility: {
+							self: true,
+							other: false,
+							moderator: false,
+							globalMod: false,
+							admin: false,
+						},
+					}];
+
+					if (meta.config.gdpr_enabled) {
+						links.push({
 							id: 'consent',
 							route: 'consent',
 							name: '[[user:consent.title]]',
@@ -87,7 +87,13 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 								globalMod: false,
 								admin: false,
 							},
-						}],
+						});
+					}
+
+					plugins.fireHook('filter:user.profileMenu', {
+						uid: uid,
+						callerUID: callerUID,
+						links: links,
 					}, next);
 				},
 				groups: function (next) {
@@ -178,12 +184,10 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 
 			userData.sso = results.sso.associations;
 			userData.status = user.getStatus(userData);
-			userData.banned = parseInt(userData.banned, 10) === 1;
+			userData.banned = userData.banned === 1;
 			userData.website = validator.escape(String(userData.website || ''));
 			userData.websiteLink = !userData.website.startsWith('http') ? 'http://' + userData.website : userData.website;
 			userData.websiteName = userData.website.replace(validator.escape('http://'), '').replace(validator.escape('https://'), '');
-			userData.followingCount = parseInt(userData.followingCount, 10) || 0;
-			userData.followerCount = parseInt(userData.followerCount, 10) || 0;
 
 			userData.email = validator.escape(String(userData.email || ''));
 			userData.fullname = validator.escape(String(userData.fullname || ''));

@@ -27,7 +27,7 @@ module.exports = function (Categories) {
 				}
 			},
 			function (categories, next) {
-				categories.forEach(modifyCategory);
+				categories.forEach(category => modifyCategory(category, fields));
 				next(null, categories);
 			},
 		], callback);
@@ -73,12 +73,12 @@ module.exports = function (Categories) {
 	};
 };
 
-function modifyCategory(category) {
+function modifyCategory(category, fields) {
 	if (!category) {
 		return;
 	}
 
-	intFields.forEach(field => db.parseIntField(category, field));
+	db.parseIntFields(category, intFields, fields);
 
 	if (category.hasOwnProperty('name')) {
 		category.name = validator.escape(String(category.name || ''));
@@ -89,12 +89,10 @@ function modifyCategory(category) {
 	}
 
 	if (category.hasOwnProperty('post_count')) {
-		category.post_count = category.post_count || 0;
 		category.totalPostCount = category.post_count;
 	}
 
 	if (category.hasOwnProperty('topic_count')) {
-		category.topic_count = category.topic_count || 0;
 		category.totalTopicCount = category.topic_count;
 	}
 

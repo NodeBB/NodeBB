@@ -92,12 +92,17 @@ module.exports = function (Categories) {
 		}
 		async.waterfall([
 			function (next) {
+				Categories.getChildrenCids(cid, next);
+			},
+			function (childrenCids, next) {
+				if (childrenCids.includes(parseInt(newParent, 10))) {
+					return next(new Error('[[error:cant-set-child-as-parent]]'));
+				}
 				Categories.getCategoryField(cid, 'parentCid', next);
 			},
 			function (oldParent, next) {
 				async.series([
 					function (next) {
-						oldParent = parseInt(oldParent, 10) || 0;
 						db.sortedSetRemove('cid:' + oldParent + ':children', cid, next);
 					},
 					function (next) {
@@ -125,9 +130,7 @@ module.exports = function (Categories) {
 				db.delete('cid:' + cid + ':tag:whitelist', next);
 			},
 			function (next) {
-				var scores = tags.map(function (tag, index) {
-					return index;
-				});
+				var scores = tags.map((tag, index) => index);
 				db.sortedSetAdd('cid:' + cid + ':tag:whitelist', scores, tags, next);
 			},
 		], callback);
@@ -144,7 +147,6 @@ module.exports = function (Categories) {
 						db.sortedSetAdd('categories:cid', order, cid, next);
 					},
 					function (next) {
-						parentCid = parseInt(parentCid, 10) || 0;
 						db.sortedSetAdd('cid:' + parentCid + ':children', order, cid, next);
 					},
 				], next);

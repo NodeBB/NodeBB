@@ -7,6 +7,7 @@ var db = require('../database');
 var privileges = require('../privileges');
 var user = require('../user');
 var meta = require('../meta');
+var plugins = require('../plugins');
 
 module.exports = function (Topics) {
 	Topics.getSortedTopics = function (params, callback) {
@@ -18,6 +19,7 @@ module.exports = function (Topics) {
 
 		params.term = params.term || 'alltime';
 		params.sort = params.sort || 'recent';
+		params.query = params.query || {};
 		if (params.hasOwnProperty('cids') && params.cids && !Array.isArray(params.cids)) {
 			params.cids = [params.cids];
 		}
@@ -70,7 +72,7 @@ module.exports = function (Topics) {
 				}
 			},
 			function (tids, next) {
-				filterTids(tids, params.uid, params.filter, params.cids, next);
+				filterTids(tids, params, next);
 			},
 		], callback);
 	}
@@ -87,9 +89,7 @@ module.exports = function (Topics) {
 				} else if (params.sort === 'votes') {
 					sortFn = sortVotes;
 				}
-				tids = topicData.sort(sortFn).map(function (topic) {
-					return topic && topic.tid;
-				});
+				tids = topicData.sort(sortFn).map(topic => topic && topic.tid);
 				next(null, tids);
 			},
 		], callback);
@@ -100,20 +100,23 @@ module.exports = function (Topics) {
 	}
 
 	function sortVotes(a, b) {
-		if (parseInt(a.votes, 10) !== parseInt(b.votes, 10)) {
+		if (a.votes !== b.votes) {
 			return b.votes - a.votes;
 		}
-		return parseInt(b.postcount, 10) - parseInt(a.postcount, 10);
+		return b.postcount - a.postcount;
 	}
 
 	function sortPopular(a, b) {
-		if (parseInt(a.postcount, 10) !== parseInt(b.postcount, 10)) {
+		if (a.postcount !== b.postcount) {
 			return b.postcount - a.postcount;
 		}
-		return parseInt(b.viewcount, 10) - parseInt(a.viewcount, 10);
+		return b.viewcount - a.viewcount;
 	}
 
-	function filterTids(tids, uid, filter, cids, callback) {
+	function filterTids(tids, params, callback) {
+		const filter = params.filter;
+		const uid = params.uid;
+
 		async.waterfall([
 			function (next) {
 				if (filter === 'watched') {
@@ -153,16 +156,17 @@ module.exports = function (Topics) {
 				});
 			},
 			function (results, next) {
-				cids = cids && cids.map(String);
+				const cids = params.cids && params.cids.map(String);
 				tids = results.topicData.filter(function (topic) {
 					if (topic && topic.cid) {
 						return !results.ignoredCids.includes(topic.cid.toString()) && (!cids || (cids.length && cids.includes(topic.cid.toString())));
 					}
 					return false;
-				}).map(function (topic) {
-					return topic.tid;
-				});
-				next(null, tids);
+				}).map(topic => topic.tid);
+				plugins.fireHook('filter:topics.filterSortedTids', { tids: tids, params: params }, next);
+			},
+			function (data, next) {
+				next(null, data && data.tids);
 			},
 		], callback);
 	}
@@ -174,11 +178,17 @@ module.exports = function (Topics) {
 				Topics.getTopicsByTids(tids, params.uid, next);
 			},
 			function (topicData, next) {
-				topicData.forEach(function (topicObj, i) {
-					topicObj.index = params.start + i;
-				});
+				Topics.calculateTopicIndices(topicData, params.start);
 				next(null, topicData);
 			},
 		], callback);
 	}
+
+	Topics.calculateTopicIndices = function (topicData, start) {
+		topicData.forEach((topic, index) => {
+			if (topic) {
+				topic.index = start + index;
+			}
+		});
+	};
 };

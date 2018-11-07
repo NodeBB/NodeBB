@@ -59,13 +59,13 @@ module.exports = function (Topics) {
 				Topics.getLatestUndeletedPid(tid, next);
 			},
 			function (pid, next) {
-				if (!parseInt(pid, 10)) {
+				if (!pid) {
 					return callback();
 				}
 				posts.getPostField(pid, 'timestamp', next);
 			},
 			function (timestamp, next) {
-				if (!parseInt(timestamp, 10)) {
+				if (!timestamp) {
 					return callback();
 				}
 				Topics.updateLastPostTime(tid, timestamp, next);
@@ -86,11 +86,11 @@ module.exports = function (Topics) {
 					async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:lastposttime', lastposttime, tid),
 				];
 
-				if (parseInt(topicData.deleted, 10) !== 1) {
+				if (!topicData.deleted) {
 					tasks.push(async.apply(Topics.updateRecent, tid, lastposttime));
 				}
 
-				if (parseInt(topicData.pinned, 10) !== 1) {
+				if (!topicData.pinned) {
 					tasks.push(async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids', lastposttime, tid));
 				}
 				async.series(tasks, next);

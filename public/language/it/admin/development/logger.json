@@ -4,8 +4,8 @@
 	"explanation": "Simply check/uncheck the logging settings to enable or disable logging on the fly. No restart needed.",
 	"enable-http": "Enable HTTP logging",
 	"enable-socket": "Enable socket.io event logging",
-	"file-path": "Path to log file",
-	"file-path-placeholder": "/path/to/log/file.log ::: leave blank to log to your terminal",
+	"file-path": "Percorso per i file di log",
+	"file-path-placeholder": "/path/to/log/file.log ::: lascia in bianco per loggare sul tuo terminale",
 
 	"control-panel": "Logger Control Panel",
 	"update-settings": "Update Logger Settings"

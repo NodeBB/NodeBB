@@ -70,7 +70,7 @@ topicsController.get = function (req, res, callback) {
 			}
 
 			settings = results.settings;
-			var postCount = parseInt(results.topic.postcount, 10);
+			var postCount = results.topic.postcount;
 			pageCount = Math.max(1, Math.ceil(postCount / settings.postsPerPage));
 			results.topic.postcount = postCount;
 
@@ -390,7 +390,7 @@ topicsController.pagination = function (req, res, callback) {
 			return helpers.notAllowed(req, res);
 		}
 
-		var postCount = parseInt(results.topic.postcount, 10);
+		var postCount = results.topic.postcount;
 		var pageCount = Math.max(1, Math.ceil(postCount / results.settings.postsPerPage));
 
 		var paginationData = pagination.create(currentPage, pageCount);

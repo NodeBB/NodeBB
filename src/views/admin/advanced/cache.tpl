@@ -30,7 +30,7 @@
 				</div>
 			</div>
 		</div>
-
+		<!-- IF objectCache -->
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-calendar-o"></i> Object Cache</div>
 			<div class="panel-body">
@@ -51,6 +51,7 @@
 				<!-- ENDIF objectCache.dump -->
 			</div>
 		</div>
+		<!-- ENDIF objectCache -->
 
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-calendar-o"></i> Group Cache</div>

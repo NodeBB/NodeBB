@@ -64,9 +64,7 @@ module.exports = function (Groups) {
 				Groups.getGroupsFields(groupNames, ['name', 'hidden', 'memberCount'], next);
 			},
 			function (groupData, next) {
-				var visibleGroups = groupData.filter(function (groupData) {
-					return groupData && parseInt(groupData.hidden, 10) !== 1;
-				});
+				var visibleGroups = groupData.filter(groupData => groupData && !groupData.hidden);
 
 				if (visibleGroups.length) {
 					db.sortedSetAdd('groups:visible:memberCount', visibleGroups.map(groupData => groupData.memberCount), visibleGroups.map(groupData => groupData.name), next);

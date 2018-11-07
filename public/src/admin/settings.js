@@ -42,35 +42,17 @@ define('admin/settings', ['uploader'], function (uploader) {
 			app.flags = app.flags || {};
 			app.flags._unsaved = true;
 		});
-
+		var defaultInputs = ['text', 'hidden', 'password', 'textarea', 'number'];
 		for (x = 0; x < numFields; x += 1) {
 			field = fields.eq(x);
 			key = field.attr('data-field');
 			inputType = field.attr('type');
-			if (field.is('input')) {
-				if (app.config[key]) {
-					switch (inputType) {
-					case 'text':
-					case 'hidden':
-					case 'password':
-					case 'textarea':
-					case 'number':
-						field.val(app.config[key]);
-						break;
-
-					case 'checkbox':
-						var checked = parseInt(app.config[key], 10) === 1;
-						field.prop('checked', checked);
-						field.parents('.mdl-switch').toggleClass('is-checked', checked);
-						break;
-					}
-				}
-			} else if (field.is('textarea')) {
-				if (app.config.hasOwnProperty(key)) {
-					field.val(app.config[key]);
-				}
-			} else if (field.is('select')) {
-				if (app.config.hasOwnProperty(key)) {
+			if (app.config.hasOwnProperty(key)) {
+				if (field.is('input') && inputType === 'checkbox') {
+					var checked = parseInt(app.config[key], 10) === 1;
+					field.prop('checked', checked);
+					field.parents('.mdl-switch').toggleClass('is-checked', checked);
+				} else if (field.is('textarea') || field.is('select') || (field.is('input') && defaultInputs.indexOf(inputType) !== -1)) {
 					field.val(app.config[key]);
 				}
 			}

@@ -14,10 +14,10 @@
 
 	"edit.name": "Grupas nosaukums",
 	"edit.description": "Grupas apraksts",
-	"edit.user-title": "Biedra etiķete",
+	"edit.user-title": "Grupas etiķete",
 	"edit.icon": "Grupas ikona",
 	"edit.label-color": "Grupas etiķetes krāsa",
-	"edit.show-badge": "Rādīt nozīmīti",
+	"edit.show-badge": "Rādīt etiķeti",
 	"edit.private-details": "Pievienoties grupai nepieciešama grupas īpašnieka apstiprināšana.",
 	"edit.private-override": "Brīdinājums: privātās grupas ir atspējotas sistēmas līmenī, un šo opciju neņems vērā.",
 	"edit.disable-requests": "Atspējot pievienošanās pieteikumus",

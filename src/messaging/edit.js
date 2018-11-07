@@ -70,11 +70,11 @@ module.exports = function (Messaging) {
 				user.getUserFields(uid, ['banned', 'email:confirmed'], next);
 			},
 			function (userData, next) {
-				if (parseInt(userData.banned, 10) === 1) {
+				if (userData.banned) {
 					return callback(new Error('[[error:user-banned]]'));
 				}
 
-				if (meta.config.requireEmailConfirmation && parseInt(userData['email:confirmed'], 10) !== 1) {
+				if (meta.config.requireEmailConfirmation && !userData['email:confirmed']) {
 					return callback(new Error('[[error:email-not-confirmed]]'));
 				}
 				async.parallel({
@@ -91,11 +91,11 @@ module.exports = function (Messaging) {
 					return callback();
 				}
 				var chatConfigDuration = meta.config[durationConfig];
-				if (chatConfigDuration && Date.now() - parseInt(results.messageData.timestamp, 10) > chatConfigDuration * 1000) {
+				if (chatConfigDuration && Date.now() - results.messageData.timestamp > chatConfigDuration * 1000) {
 					return callback(new Error('[[error:chat-' + type + '-duration-expired, ' + meta.config[durationConfig] + ']]'));
 				}
 
-				if (parseInt(results.messageData.fromuid, 10) === parseInt(uid, 10)) {
+				if (results.messageData.fromuid === parseInt(uid, 10)) {
 					return callback();
 				}
 

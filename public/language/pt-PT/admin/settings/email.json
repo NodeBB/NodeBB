@@ -1,5 +1,5 @@
 {
-	"email-settings": "Email Settings",
+	"email-settings": "Definições de E-mail",
 	"address": "Email Address",
 	"address-help": "The following email address refers to the email that the recipient will see in the \"From\" and \"Reply To\" fields.",
 	"from": "From Name",
@@ -26,9 +26,9 @@
 	"template": "Edit Email Template",
 	"template.select": "Select Email Template",
 	"template.revert": "Revert to Original",
-	"testing": "Email Testing",
+	"testing": "Teste de E-mail",
 	"testing.select": "Select Email Template",
-	"testing.send": "Send Test Email",
+	"testing.send": "Enviar E-mail de Teste",
 	"testing.send-help": "The test email will be sent to the currently logged in user's email address.",
 	"subscriptions": "Email Subscriptions",
 	"subscriptions.disable": "Disable subscriber notification emails",

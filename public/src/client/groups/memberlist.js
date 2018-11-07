@@ -34,7 +34,7 @@ define('forum/groups/memberlist', ['autocomplete'], function (autocomplete) {
 	}
 
 	function addUserToGroup(user, callback) {
-		socket.emit('groups.addMember', { groupName: groupName, uid: user.uid }, function (err) {
+		function done(err) {
 			if (err) {
 				return app.alertError(err);
 			}
@@ -42,7 +42,12 @@ define('forum/groups/memberlist', ['autocomplete'], function (autocomplete) {
 				$('[component="groups/members"] tbody').prepend(html);
 			});
 			callback();
-		});
+		}
+		if (groupName === 'administrators') {
+			socket.emit('admin.user.makeAdmins', [user.uid], done);
+		} else {
+			socket.emit('groups.addMember', { groupName: groupName, uid: user.uid }, done);
+		}
 	}
 
 	function handleMemberSearch() {

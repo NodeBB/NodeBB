@@ -30,7 +30,7 @@ module.exports = function (User) {
 				}, next);
 			},
 			function (results, next) {
-				if (!parseInt(results.userData.uid, 10)) {
+				if (!results.userData.uid) {
 					return next(new Error('[[error:no-user]]'));
 				}
 
@@ -40,7 +40,7 @@ module.exports = function (User) {
 
 				var userData = results.userData;
 
-				if (parseInt(userData.banned, 10) === 1) {
+				if (userData.banned) {
 					return next(new Error('[[error:user-banned]]'));
 				}
 

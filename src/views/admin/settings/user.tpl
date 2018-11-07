@@ -36,6 +36,13 @@
 		<form>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="gdpr_enabled">
+					<span class="mdl-switch__label"><strong>[[admin/settings/user:gdpr_enabled]]</strong></span>
+				</label>
+				<p class="help-block">[[admin/settings/user:gdpr_enabled_help]]</p>
+			</div>
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="username:disableEdit">
 					<span class="mdl-switch__label"><strong>[[admin/settings/user:disable-username-changes]]</strong></span>
 				</label>
@@ -126,17 +133,33 @@
 
 <div class="row">
 	<div class="col-sm-2 col-xs-12 settings-header">
-		Session time
+		[[admin/settings/user:session-time]]
 	</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label>[[admin/settings/user:session-time-days]]</label>
+						<input type="text" class="form-control" data-field="loginDays" placeholder="[[admin/settings/user:session-time-days]]" />
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label>[[admin/settings/user:session-time-seconds]]</label>
+						<input type="text" class="form-control" data-field="loginSeconds" placeholder="[[admin/settings/user:session-time-seconds]]" />
+					</div>
+				</div>
+				<div class="col-xs-12">
+					<p class="help-block">
+						[[admin/settings/user:session-time-help]]
+					</p>
+				</div>
+			</div>
 			<div class="form-group">
-				<label>Days: </label>
-				<input type="text" class="form-control" data-field="loginDays" placeholder="Days" />
-				<label>Seconds: </label>
-				<input type="text" class="form-control" data-field="loginSeconds" placeholder="Seconds" />
-				<p class="help-block">Note that only one of these values will be used. If there is no <i>seconds</i> value we fall back to <i>days</i>. If
-					there is no <i>days</i> value we default to <i>14 days</i>.</p>
+				<label>[[admin/settings/user:online-cutoff]]</label>
+				<input type="text" class="form-control" data-field="onlineCutoff">
+				<p class="help-block">[[admin/settings/user:online-cutoff-help]]</p>
 			</div>
 		</form>
 	</div>

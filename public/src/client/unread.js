@@ -1,27 +1,14 @@
 'use strict';
 
 
-define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', 'components'], function (recent, topicSelect, infinitescroll, components) {
+define('forum/unread', ['topicSelect', 'components', 'topicList'], function (topicSelect, components, topicList) {
 	var Unread = {};
-
-	$(window).on('action:ajaxify.start', function (ev, data) {
-		if (ajaxify.currentPage !== data.url) {
-			recent.removeListeners();
-		}
-	});
 
 	Unread.init = function () {
 		app.enterRoom('unread_topics');
 
-		$('#new-topics-alert').on('click', function () {
-			$(this).addClass('hide');
-		});
-
-		recent.watchForNewPosts();
-
-		recent.handleCategorySelection();
-
-		$(window).trigger('action:topics.loaded', { topics: ajaxify.data.topics });
+		topicList.init('unread');
+		topicSelect.init();
 
 		$('#markSelectedRead').on('click', function () {
 			var tids = topicSelect.getSelectedTids();
@@ -71,41 +58,6 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 				doneRemovingTids(tids);
 			});
 		});
-
-		topicSelect.init();
-
-		if ($('body').height() <= $(window).height() && $('[component="category"]').children().length >= 20) {
-			$('#load-more-btn').show();
-		}
-
-		$('#load-more-btn').on('click', function () {
-			loadMoreTopics();
-		});
-
-		if (!config.usePagination) {
-			infinitescroll.init(loadMoreTopics);
-		}
-
-		function loadMoreTopics(direction) {
-			if (direction < 0 || !$('[component="category"]').length) {
-				return;
-			}
-
-			infinitescroll.loadMore('topics.loadMoreUnreadTopics', {
-				after: $('[component="category"]').attr('data-nextstart'),
-				count: config.topicsPerPage,
-				cid: utils.params().cid,
-				filter: ajaxify.data.selectedFilter.filter,
-			}, function (data, done) {
-				if (data.topics && data.topics.length) {
-					recent.onTopicsLoaded('unread', data.topics, true, direction, done);
-					$('[component="category"]').attr('data-nextstart', data.nextStart);
-				} else {
-					done();
-					$('#load-more-btn').hide();
-				}
-			});
-		}
 	};
 
 	function doneRemovingTids(tids) {

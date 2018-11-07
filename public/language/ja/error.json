@@ -152,6 +152,6 @@
     "no-topics-selected": "No topics selected!",
     "cant-move-to-same-topic": "Can't move post to same topic!",
     "cannot-block-self": "You cannot block yourself!",
-    "cannot-block-privileged": "You cannot block administrators or global moderators",
+    "cannot-block-privileged": "管理者またはグローバルモデレーターはブロックできません",
     "no-connection": "There seems to be a problem with your internet connection"
 }
