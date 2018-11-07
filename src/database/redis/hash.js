@@ -168,6 +168,7 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.incrObjectFieldBy = function (key, field, value, callback) {
+		callback = callback || helpers.noop;
 		function done(err, result) {
 			if (err) {
 				return callback(err);
