@@ -1,11 +1,11 @@
 'use strict';
 
-var db = require('../../database');
-var batch = require('../../batch');
 
 var async = require('async');
 var crypto = require('crypto');
 var nconf = require('nconf');
+var batch = require('../../batch');
+var db = require('../../database');
 
 module.exports = {
 	name: 'Hash all IP addresses stored in Recent IPs zset',

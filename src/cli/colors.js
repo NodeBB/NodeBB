@@ -65,9 +65,9 @@ Command.prototype.usage = function () {
 		return humanReadableArgName(arg);
 	});
 
-	var usage = '[options]'[optionColor] +
-		(this.commands.length ? ' [command]' : '')[subCommandColor] +
-		(this._args.length ? ' ' + args.join(' ') : '')[argColor];
+	var usage = '[options]'[optionColor]
+		+ (this.commands.length ? ' [command]' : '')[subCommandColor]
+		+ (this._args.length ? ' ' + args.join(' ') : '')[argColor];
 
 	return usage;
 };
@@ -90,10 +90,10 @@ Command.prototype.commandHelp = function () {
 		}).join(' ');
 
 		return [
-			cmd._name[subCommandColor] +
-				(cmd._alias ? ' | ' + cmd._alias : '')[subCommandColor] +
-				(cmd.options.length ? ' [options]' : '')[subOptionColor] +
-				' ' + args[subArgColor],
+			cmd._name[subCommandColor]
+				+ (cmd._alias ? ' | ' + cmd._alias : '')[subCommandColor]
+				+ (cmd.options.length ? ' [options]' : '')[subOptionColor]
+				+ ' ' + args[subArgColor],
 			cmd._description,
 		];
 	});

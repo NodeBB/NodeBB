@@ -259,4 +259,3 @@ Sockets.reqFromSocket = function (socket, payload, event) {
 		headers: headers,
 	};
 };
-

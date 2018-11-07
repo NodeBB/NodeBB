@@ -244,4 +244,3 @@ module.exports = function (Categories) {
 		], callback);
 	}
 };
-

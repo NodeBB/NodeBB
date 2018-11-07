@@ -464,9 +464,9 @@ module.exports = function (Topics) {
 			function (results, next) {
 				var cutoff = Topics.unreadCutoff();
 				var result = tids.map(function (tid, index) {
-					var read = !results.tids_unread[index] &&
-						(results.topicScores[index] < cutoff ||
-						!!(results.userScores[index] && results.userScores[index] >= results.topicScores[index]));
+					var read = !results.tids_unread[index]
+						&& (results.topicScores[index] < cutoff
+						|| !!(results.userScores[index] && results.userScores[index] >= results.topicScores[index]));
 					return { tid: tid, read: read, index: index };
 				});
 

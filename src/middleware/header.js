@@ -273,4 +273,3 @@ module.exports = function (middleware) {
 		return title;
 	}
 };
-

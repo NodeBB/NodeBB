@@ -117,4 +117,3 @@ define('iconSelect', ['benchpress'], function (Benchpress) {
 
 	return iconSelect;
 });
-

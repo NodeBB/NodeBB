@@ -88,8 +88,8 @@ function runUpgrade(upgrades, options) {
 
 	if (upgrades === true) {
 		var tasks = Object.keys(steps);
-		if (options.package || options.install ||
-				options.plugins || options.schema || options.build) {
+		if (options.package || options.install
+				|| options.plugins || options.schema || options.build) {
 			tasks = tasks.filter(function (key) {
 				return options[key];
 			});

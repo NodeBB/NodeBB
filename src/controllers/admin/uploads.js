@@ -317,4 +317,3 @@ function uploadImage(filename, folder, uploadedFile, req, res, next) {
 		res.json([{ name: uploadedFile.name, url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url }]);
 	});
 }
-

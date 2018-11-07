@@ -1,7 +1,7 @@
 'use strict';
 
-var pubsub = require('../pubsub');
 var LRU = require('lru-cache');
+var pubsub = require('../pubsub');
 
 var cache = LRU({
 	max: 40000,

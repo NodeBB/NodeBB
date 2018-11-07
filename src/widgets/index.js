@@ -39,10 +39,10 @@ widgets.render = function (uid, options, callback) {
 				}
 
 				async.map(widgetsByLocation[location], function (widget, next) {
-					if (!widget || !widget.data ||
-						(!!widget.data['hide-registered'] && uid !== 0) ||
-						(!!widget.data['hide-guests'] && uid === 0) ||
-						(!!widget.data['hide-mobile'] && options.req.useragent.isMobile)) {
+					if (!widget || !widget.data
+						|| (!!widget.data['hide-registered'] && uid !== 0)
+						|| (!!widget.data['hide-guests'] && uid === 0)
+						|| (!!widget.data['hide-mobile'] && options.req.useragent.isMobile)) {
 						return next();
 					}
 

@@ -70,4 +70,3 @@ module.exports = function (Posts) {
 		], callback);
 	};
 };
-
