@@ -178,12 +178,12 @@ describe('Key methods', function () {
 				assert.ifError(err);
 				db.get('testingCache', function (err, value) {
 					assert.ifError(err);
-					assert.strictEqual(value, 1);
+					assert.equal(value, 1);
 					db.increment('testingCache', function (err) {
 						assert.ifError(err);
 						db.get('testingCache', function (err, value) {
 							assert.ifError(err);
-							assert.strictEqual(value, 2);
+							assert.equal(value, 2);
 							done();
 						});
 					});

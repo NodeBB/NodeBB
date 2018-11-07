@@ -80,8 +80,8 @@ module.exports = function (redisClient, module) {
 				}
 			},
 			function (data) {
-				unCachedKeys.forEach(function (key) {
-					cachedData[key] = data[key] || null;
+				unCachedKeys.forEach(function (key, i) {
+					cachedData[key] = data[i] || null;
 					cache.set(key, cachedData[key]);
 				});
 
@@ -168,12 +168,12 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.incrObjectFieldBy = function (key, field, value, callback) {
-		function done(err) {
+		function done(err, result) {
 			if (err) {
 				return callback(err);
 			}
 			cache.delObjectCache(key);
-			callback();
+			callback(null, Array.isArray(result) ? result.map(value => parseInt(value, 10)) : parseInt(result, 10));
 		}
 		value = parseInt(value, 10);
 		if (!key || isNaN(value)) {
