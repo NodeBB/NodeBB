@@ -321,7 +321,7 @@
 
 					if (typeof target === 'number') {
 						return String.fromCharCode(target);
-					} else if (typeof target === 'string') {
+					} if (typeof target === 'string') {
 						return target;
 					}
 
@@ -391,7 +391,7 @@
 		},
 
 		isUserNameValid: function (name) {
-			return (name && name !== '' && (/^['"\s\-+.*0-9\u00BF-\u1FFF\u2C00-\uD7FF\w]+$/.test(name)));
+			return (name && name !== '' && (/^['"\s\-+.*[\]0-9\u00BF-\u1FFF\u2C00-\uD7FF\w]+$/.test(name)));
 		},
 
 		isPasswordValid: function (password) {
@@ -487,7 +487,7 @@
 			}
 			if (n > 999999) {
 				return (n / 1000000).toFixed(1) + 'm';
-			} else if (n > 999) {
+			} if (n > 999) {
 				return (n / 1000).toFixed(1) + 'k';
 			}
 			return n;

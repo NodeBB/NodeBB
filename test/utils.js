@@ -51,9 +51,15 @@ describe('Utility Methods', function () {
 			var username = "John\"'-. Doeäâèéë1234";
 			assert(utils.isUserNameValid(username), 'invalid username');
 		});
+
 		it('rejects empty string', function () {
 			var username = '';
 			assert.equal(utils.isUserNameValid(username), false, 'accepted as valid username');
+		});
+
+		it('accepts square brackets', function () {
+			var username = '[best clan] julian';
+			assert(utils.isUserNameValid(username), 'invalid username');
 		});
 	});
 
