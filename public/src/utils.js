@@ -321,7 +321,7 @@
 
 					if (typeof target === 'number') {
 						return String.fromCharCode(target);
-					} if (typeof target === 'string') {
+					} else if (typeof target === 'string') {
 						return target;
 					}
 
@@ -487,7 +487,7 @@
 			}
 			if (n > 999999) {
 				return (n / 1000000).toFixed(1) + 'm';
-			} if (n > 999) {
+			} else if (n > 999) {
 				return (n / 1000).toFixed(1) + 'k';
 			}
 			return n;
