@@ -4,9 +4,9 @@
 var async = require('async');
 var validator = require('validator');
 
+var _ = require('lodash');
 var db = require('../database');
 var meta = require('../meta');
-var _ = require('lodash');
 var plugins = require('../plugins');
 var utils = require('../utils');
 var batch = require('../batch');

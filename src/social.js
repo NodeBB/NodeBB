@@ -1,8 +1,8 @@
 'use strict';
 
+var async = require('async');
 var plugins = require('./plugins');
 var db = require('./database');
-var async = require('async');
 
 var social = module.exports;
 

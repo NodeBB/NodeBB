@@ -40,6 +40,7 @@
 			"avoidEscape": true,
 			"allowTemplateLiterals": true
 		}],
+		"no-else-return": [ "error", { "allowElseIf": true } ],
 
 		// ES6
 		"prefer-rest-params": "off",

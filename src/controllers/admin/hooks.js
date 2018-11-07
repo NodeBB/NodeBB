@@ -29,4 +29,3 @@ hooksController.get = function (req, res) {
 
 	res.render('admin/advanced/hooks', { hooks: hooks });
 };
-

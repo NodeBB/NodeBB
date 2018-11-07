@@ -20,6 +20,7 @@ var favicon = require('serve-favicon');
 var detector = require('spider-detector');
 var helmet = require('helmet');
 
+var Benchpress = require('benchpressjs');
 var db = require('./database');
 var file = require('./file');
 var emailer = require('./emailer');
@@ -30,7 +31,6 @@ var plugins = require('./plugins');
 var flags = require('./flags');
 var routes = require('./routes');
 var auth = require('./routes/authentication');
-var Benchpress = require('benchpressjs');
 
 var helpers = require('../public/src/modules/helpers');
 
@@ -353,4 +353,3 @@ module.exports.testSocket = function (socketPath, callback) {
 		async.apply(fs.unlink, socketPath),	// The socket was stale, kick it out of the way
 	], callback);
 };
-

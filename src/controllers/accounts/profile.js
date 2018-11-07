@@ -133,4 +133,3 @@ profileController.get = function (req, res, callback) {
 		},
 	], callback);
 };
-

@@ -1,8 +1,8 @@
 'use strict';
 
+var async = require('async');
 var db = require('../../database');
 
-var async = require('async');
 var batch = require('../../batch');
 // var user = require('../../user');
 

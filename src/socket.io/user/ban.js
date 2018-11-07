@@ -148,4 +148,3 @@ module.exports = function (SocketUser) {
 		], callback);
 	}
 };
-

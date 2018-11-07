@@ -1,14 +1,14 @@
 'use strict';
 
 var async = require('async');
+var validator = require('validator');
+var zxcvbn = require('zxcvbn');
 var db = require('../database');
 var utils = require('../utils');
-var validator = require('validator');
 var plugins = require('../plugins');
 var groups = require('../groups');
 var meta = require('../meta');
 
-var zxcvbn = require('zxcvbn');
 
 module.exports = function (User) {
 	User.create = function (data, callback) {

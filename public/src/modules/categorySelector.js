@@ -66,4 +66,3 @@ define('categorySelector', ['benchpress', 'translator'], function (Benchpress, t
 
 	return categorySelector;
 });
-

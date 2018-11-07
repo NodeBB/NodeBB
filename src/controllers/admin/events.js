@@ -47,4 +47,3 @@ eventsController.get = function (req, res, next) {
 		},
 	], next);
 };
-
