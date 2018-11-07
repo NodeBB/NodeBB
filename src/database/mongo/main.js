@@ -16,7 +16,7 @@ module.exports = function (db, module) {
 			if (err) {
 				return callback(err);
 			}
-			module.resetObjectCache();
+			module.objectCache.resetObjectCache();
 			callback();
 		});
 	};
@@ -39,7 +39,7 @@ module.exports = function (db, module) {
 			if (err) {
 				return callback(err);
 			}
-			module.delObjectCache(key);
+			module.objectCache.delObjectCache(key);
 			callback();
 		});
 	};
@@ -54,9 +54,7 @@ module.exports = function (db, module) {
 				return callback(err);
 			}
 
-			keys.forEach(function (key) {
-				module.delObjectCache(key);
-			});
+			module.objectCache.delObjectCache(keys);
 
 			callback(null);
 		});
@@ -66,7 +64,8 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback();
 		}
-		module.getObject(key, function (err, objectData) {
+
+		db.collection('objects').findOne({ _key: key }, { projection: { _id: 0 } }, function (err, objectData) {
 			if (err) {
 				return callback(err);
 			}
@@ -108,8 +107,8 @@ module.exports = function (db, module) {
 			if (err) {
 				return callback(err);
 			}
-			module.delObjectCache(oldKey);
-			module.delObjectCache(newKey);
+			module.objectCache.delObjectCache(oldKey);
+			module.objectCache.delObjectCache(newKey);
 			callback();
 		});
 	};

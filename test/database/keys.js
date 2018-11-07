@@ -172,6 +172,24 @@ describe('Key methods', function () {
 				});
 			});
 		});
+
+		it('should return the correct value', function (done) {
+			db.increment('testingCache', function (err) {
+				assert.ifError(err);
+				db.get('testingCache', function (err, value) {
+					assert.ifError(err);
+					assert.equal(value, 1);
+					db.increment('testingCache', function (err) {
+						assert.ifError(err);
+						db.get('testingCache', function (err, value) {
+							assert.ifError(err);
+							assert.equal(value, 2);
+							done();
+						});
+					});
+				});
+			});
+		});
 	});
 
 	describe('rename', function () {
