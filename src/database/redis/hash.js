@@ -6,7 +6,8 @@ module.exports = function (redisClient, module) {
 	const async = require('async');
 	const _ = require('lodash');
 
-	const cache = require('../cache');
+	const cache = require('../cache').create('redis');
+
 	module.objectCache = cache;
 
 	module.setObject = function (key, data, callback) {

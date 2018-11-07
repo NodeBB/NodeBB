@@ -7,7 +7,7 @@ module.exports = function (db, module) {
 	var helpers = module.helpers.mongo;
 
 	var _ = require('lodash');
-	const cache = require('../cache');
+	const cache = require('../cache').create('mongo');
 
 	module.objectCache = cache;
 
