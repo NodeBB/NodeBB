@@ -149,12 +149,14 @@ module.exports = function (redisClient, module) {
 			return setImmediate(callback);
 		}
 		redisClient.hdel(key, field, function (err) {
+			cache.delObjectCache(key);
 			callback(err);
 		});
 	};
 
 	module.deleteObjectFields = function (key, fields, callback) {
 		helpers.multiKeyValues(redisClient, 'hdel', key, fields, function (err) {
+			cache.delObjectCache(key);
 			callback(err);
 		});
 	};
