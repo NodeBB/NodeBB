@@ -1,10 +1,10 @@
 {
-	"pagination": "Pagination Settings",
-	"enable": "Paginate topics and posts instead of using infinite scroll.",
-	"topics": "Topic Pagination",
-	"posts-per-page": "Posts per Page",
-	"max-posts-per-page": "Maximum posts per page",
-	"categories": "Category Pagination",
-	"topics-per-page": "Topics per Page",
-	"max-topics-per-page": "Maximum topics per page"
+	"pagination": "Impostazioni di paginazione",
+	"enable": "Pagina le discussioni e i post al posto di usale lo scrolling infinito",
+	"topics": "Paginazione della discussione",
+	"posts-per-page": "Post per pagina",
+	"max-posts-per-page": "Numero massimo di post per pagina",
+	"categories": "Categorie per pagina",
+	"topics-per-page": "Discussioni per pagina",
+	"max-topics-per-page": "Discussioni massime per pagina"
 }
