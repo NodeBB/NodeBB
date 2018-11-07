@@ -158,6 +158,7 @@ Themes.set = function (data, callback) {
 				themeData['theme:staticDir'] = config.staticDir ? config.staticDir : '';
 				themeData['theme:templates'] = config.templates ? config.templates : '';
 				themeData['theme:src'] = '';
+				themeData.bootswatchSkin = '';
 
 				Meta.configs.setMultiple(themeData, next);
 

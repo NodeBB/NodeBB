@@ -205,3 +205,15 @@ middleware.delayLoading = function (req, res, next) {
 
 	setTimeout(next, 1000);
 };
+
+middleware.buildSkinAsset = function (req, res, next) {
+	// If this middleware is reached, a skin was requested, so it is built on-demand
+	var target = path.basename(req.originalUrl).match(/(client-[a-z]+)/);
+	if (target) {
+		meta.css.buildBundle(target[0], true, function () {
+			next();
+		});
+	} else {
+		setImmediate(next);
+	}
+};

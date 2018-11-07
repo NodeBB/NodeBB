@@ -141,7 +141,7 @@ module.exports = function (middleware) {
 				results.user['email:confirmed'] = results.user['email:confirmed'] === 1;
 				results.user.isEmailConfirmSent = !!results.isEmailConfirmSent;
 
-				setBootswatchCSS(templateValues, res.locals.config);
+				templateValues.bootswatchSkin = parseInt(meta.config.disableCustomUserSkins, 10) !== 1 ? res.locals.config.bootswatchSkin || '' : '';
 
 				var unreadCount = {
 					topic: results.unreadCounts[''] || 0,
@@ -271,22 +271,6 @@ module.exports = function (middleware) {
 		}
 
 		return title;
-	}
-
-	function setBootswatchCSS(obj, config) {
-		if (config && config.bootswatchSkin !== 'noskin') {
-			var skinToUse = '';
-
-			if (!meta.config.disableCustomUserSkins) {
-				skinToUse = config.bootswatchSkin;
-			} else if (meta.config.bootswatchSkin) {
-				skinToUse = meta.config.bootswatchSkin;
-			}
-
-			if (skinToUse) {
-				obj.bootswatchCSS = '//maxcdn.bootstrapcdn.com/bootswatch/3.3.7/' + skinToUse + '/bootstrap.min.css';
-			}
-		}
 	}
 };
 
