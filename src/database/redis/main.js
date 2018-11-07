@@ -64,7 +64,7 @@ module.exports = function (redisClient, module) {
 	module.rename = function (oldKey, newKey, callback) {
 		callback = callback || function () {};
 		redisClient.rename(oldKey, newKey, function (err) {
-			if (err && err.message !== 'Err no such key') {
+			if (err && err.message !== 'ERR no such key') {
 				return callback(err);
 			}
 			module.objectCache.delObjectCache(oldKey);
