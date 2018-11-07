@@ -13,7 +13,7 @@
     "postEditDuration": 0,
     "postDeleteDuration": 0,
     "enablePostHistory": 1,
-    "postCacheSize": 5242880,
+    "postCacheSize": 10485760,
     "disableChat": 0,
     "chatEditDuration": 0,
     "chatDeleteDuration": 0,
