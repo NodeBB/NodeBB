@@ -16,7 +16,6 @@
 		}],
 		"no-empty": ["error", { "allowEmptyCatch": true }],
 		"no-underscore-dangle": "off",
-		"newline-per-chained-call": "off",
 		"no-console": "off",
 		"no-mixed-operators": ["error", { "allowSamePrecedence": true }],
 		"strict": ["error", "global"],

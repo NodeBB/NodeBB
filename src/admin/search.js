@@ -56,7 +56,8 @@ function simplify(translations) {
 function nsToTitle(namespace) {
 	return namespace.replace('admin/', '').split('/').map(function (str) {
 		return str[0].toUpperCase() + str.slice(1);
-	}).join(' > ').replace(/[^a-zA-Z> ]/g, ' ');
+	}).join(' > ')
+		.replace(/[^a-zA-Z> ]/g, ' ');
 }
 
 var fallbackCacheInProgress = {};
