@@ -118,7 +118,7 @@
         "socket.io-client": "2.1.1",
         "socket.io-redis": "5.2.0",
         "socketio-wildcard": "2.0.0",
-        "spdx-license-list": "^4.0.0",
+        "spdx-license-list": "^5.0.0",
         "spider-detector": "1.0.18",
         "toobusy-js": "^0.5.1",
         "uglify-es": "^3.3.9",
