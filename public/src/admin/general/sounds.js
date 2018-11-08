@@ -9,7 +9,8 @@ define('admin/general/sounds', ['sounds', 'settings', 'admin/settings'], functio
 		$('.sounds').find('button[data-action="play"]').on('click', function (e) {
 			e.preventDefault();
 
-			var	soundName = $(this).parent().parent().find('select').val();
+			var	soundName = $(this).parent().parent().find('select')
+				.val();
 			Sounds.playSound(soundName);
 		});
 

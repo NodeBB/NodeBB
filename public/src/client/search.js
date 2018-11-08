@@ -139,7 +139,8 @@ define('forum/search', ['search', 'autocomplete', 'storage'], function (searchMo
 			return;
 		}
 		searchQuery = utils.escapeHTML(searchQuery);
-		var regexStr = searchQuery.replace(/^"/, '').replace(/"$/, '').trim().split(' ').join('|');
+		var regexStr = searchQuery.replace(/^"/, '').replace(/"$/, '').trim().split(' ')
+			.join('|');
 		var regex = new RegExp('(' + regexStr + ')', 'gi');
 
 		$('.search-result-text p, .search-result-text h4').each(function () {

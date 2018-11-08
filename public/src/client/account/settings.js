@@ -38,7 +38,8 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 		$('.account').find('button[data-action="play"]').on('click', function (e) {
 			e.preventDefault();
 
-			var	soundName = $(this).parent().parent().find('select').val();
+			var	soundName = $(this).parent().parent().find('select')
+				.val();
 			sounds.playSound(soundName);
 		});
 
