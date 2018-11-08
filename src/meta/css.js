@@ -127,7 +127,6 @@ function getBundleMetadata(target, callback) {
 				themeData.bootswatchSkin = skin || themeData.bootswatchSkin;
 			}
 
-
 			async.parallel({
 				less: function (cb) {
 					async.waterfall([

@@ -210,9 +210,10 @@ middleware.buildSkinAsset = function (req, res, next) {
 	// If this middleware is reached, a skin was requested, so it is built on-demand
 	var target = path.basename(req.originalUrl).match(/(client-[a-z]+)/);
 	if (target) {
-		meta.css.buildBundle(target[0], true, function () {
-			next();
-		});
+		async.waterfall([
+			async.apply(plugins.prepareForBuild, ['client side styles']),
+			async.apply(meta.css.buildBundle, target[0], true),
+		], next);
 	} else {
 		setImmediate(next);
 	}
