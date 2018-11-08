@@ -14,8 +14,12 @@
         "lint": "eslint --cache ./nodebb .",
         "pretest": "npm run lint",
         "test": "nyc --reporter=html --reporter=text-summary mocha",
-        "coveralls": "nyc report --reporter=text-lcov | coveralls && rm -r coverage",
-        "precommit": "lint-staged"
+        "coveralls": "nyc report --reporter=text-lcov | coveralls && rm -r coverage"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
     },
     "lint-staged": {
         "*.js": [
