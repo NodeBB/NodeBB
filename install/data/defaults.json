@@ -98,6 +98,7 @@
     "username:disableEdit": 0,
     "email:disableEdit": 0,
     "hideFullname": 0,
+    "showFullnameAsDisplayName": 0,
     "allowGuestHandles": 0,
     "disableRecentCategoryFilter": 0,
     "maximumRelatedTopics": 0,
