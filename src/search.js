@@ -42,7 +42,7 @@ function searchInContent(data, callback) {
 	var matchCount = 0;
 	var pids;
 	var metadata;
-	var itemsPerPage = data.itemsPerPage || 10;
+	var itemsPerPage = Math.min(data.itemsPerPage || 10, 100);
 	async.waterfall([
 		function (next) {
 			async.parallel({
