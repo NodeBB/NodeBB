@@ -2,14 +2,14 @@
 
 (function (factory) {
 	if (typeof module === 'object' && module.exports) {
-		var relative_path = require('nconf').get('relative_path');
-		module.exports = factory(require('../utils'), require('benchpressjs'), relative_path);
+		var config = require('../../../src/meta').config;
+		module.exports = factory(require('../utils'), require('benchpressjs'), config);
 	} else if (typeof define === 'function' && define.amd) {
 		define('helpers', ['benchpress'], function (Benchpress) {
-			return factory(utils, Benchpress, config.relative_path);
+			return factory(utils, Benchpress, window.config);
 		});
 	}
-}(function (utils, Benchpress, relative_path) {
+}(function (utils, Benchpress, config) {
 	var helpers = {
 		displayMenuItem: displayMenuItem,
 		buildMetaTag: buildMetaTag,
@@ -20,6 +20,7 @@
 		generateCategoryBackground: generateCategoryBackground,
 		generateChildrenCategories: generateChildrenCategories,
 		generateTopicClass: generateTopicClass,
+		showDisplayName: showDisplayName,
 		membershipBtn: membershipBtn,
 		spawnPrivilegeStates: spawnPrivilegeStates,
 		localeToHTML: localeToHTML,
@@ -125,7 +126,7 @@
 		}
 		category.children.forEach(function (child) {
 			if (child && !child.isSection) {
-				var link = child.link ? child.link : (relative_path + '/category/' + child.slug);
+				var link = child.link ? child.link : (config.relative_path + '/category/' + child.slug);
 				html += '<span class="category-children-item pull-left">'
 					+ '<div class="icon pull-left" style="' + generateCategoryBackground(child) + '">'
 					+ '<i class="fa fa-fw ' + child.icon + '"></i>'
@@ -157,6 +158,14 @@
 		}
 
 		return style.join(' ');
+	}
+
+	function showDisplayName(userData) {
+		if (config.showFullnameAsDisplayName && userData.fullname) {
+			return userData.fullname;
+		}
+
+		return userData.username;
 	}
 
 	// Groups helpers
