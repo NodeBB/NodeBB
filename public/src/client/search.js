@@ -74,11 +74,9 @@ define('forum/search', ['search', 'autocomplete', 'storage'], function (searchMo
 			if (ajaxify.data.term) {
 				$('#search-input').val(ajaxify.data.term);
 			}
-
-			if (formData.in) {
-				$('#search-in').val(formData.in);
-				updateFormItemVisiblity(formData.in);
-			}
+			formData.in = formData.in || 'posts';
+			$('#search-in').val(formData.in);
+			updateFormItemVisiblity(formData.in);
 
 			if (formData.matchWords) {
 				$('#match-words-filter').val(formData.matchWords);
