@@ -50,6 +50,7 @@ searchController.search = function (req, res, next) {
 				sortBy: req.query.sortBy || meta.config.searchDefaultSortBy || '',
 				sortDirection: req.query.sortDirection,
 				page: page,
+				itemsPerPage: req.query.itemsPerPage,
 				uid: req.uid,
 				qs: req.query,
 			};

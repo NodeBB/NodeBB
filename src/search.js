@@ -116,7 +116,7 @@ function searchInContent(data, callback) {
 			next(null, Object.assign({
 				posts: posts,
 				matchCount: matchCount,
-				pageCount: Math.max(1, Math.ceil(parseInt(matchCount, 10) / 10)),
+				pageCount: Math.max(1, Math.ceil(parseInt(matchCount, 10) / itemsPerPage)),
 			}, metadata));
 		},
 	], callback);
