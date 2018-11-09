@@ -1,11 +1,11 @@
 {
-    "checking-for-installed": "Checking for installed themes...",
-    "homepage": "Homepage",
-    "select-theme": "Select Theme",
-    "current-theme": "Current Theme",
-    "no-themes": "No installed themes found",
-    "revert-confirm": "Are you sure you wish to restore the default NodeBB theme?",
-    "theme-changed": "Theme Changed",
-    "revert-success": "You have successfully reverted your NodeBB back to it's default theme.",
-    "restart-to-activate": "Please rebuild and restart your NodeBB to fully activate this theme."
+    "checking-for-installed": "Đang truy xuất các Theme đã được cài đặt...",
+    "homepage": "Trang chủ",
+    "select-theme": "Lựa chọn Theme",
+    "current-theme": "Theme hiện tại",
+    "no-themes": "Chưa có Theme nào",
+    "revert-confirm": "Bạn chắc chắn bạn muốn khôi phục Theme mặc định của NodeBB?",
+    "theme-changed": "Đã đổi Theme",
+    "revert-success": "Khôi phục thành công Theme mặc định của NodeBB.",
+    "restart-to-activate": "Hãy Áp dụng và Khởi động lại NodeBB."
 }

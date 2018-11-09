@@ -1,9 +1,9 @@
 {
-	"notifications": "Notifications",
-	"chat-messages": "Chat Messages",
+	"notifications": "Thông báo",
+	"chat-messages": "Tin nhắn",
 	"play-sound": "Play",
-	"incoming-message": "Incoming Message",
-	"outgoing-message": "Outgoing Message",
-	"upload-new-sound": "Upload New Sound",
-	"saved": "Settings Saved"
+	"incoming-message": "Tin nhắn đến",
+	"outgoing-message": "Tin nhắn đi",
+	"upload-new-sound": "Tải lên tệp tiếng mới",
+	"saved": "Lưu thành công"
 }

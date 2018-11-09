@@ -26,15 +26,15 @@
 	"redis.connected-slaves": "Connected Slaves",
 	"redis.blocked-clients": "Người dùng vi phạm",
 	"redis.used-memory": "Bộ nhớ đã sử dụng",
-	"redis.memory-frag-ratio": "Memory Fragmentation Ratio",
+	"redis.memory-frag-ratio": "Tỉ lệ phân mảnh bộ nhớ",
 	"redis.total-connections-recieved": "Tổng số kết nối nhận được",
 	"redis.total-commands-processed": "Tổng số kết nối đã thực thi",
 	"redis.iops": "Instantaneous Ops. Per Second",
 	"redis.keyspace-hits": "Keyspace Hits",
 	"redis.keyspace-misses": "Keyspace Misses",
-	"redis.raw-info": "Redis Raw Info",
+	"redis.raw-info": "Thông tin Redis",
 
 	"postgres": "Postgres",
-	"postgres.version": "PostgreSQL Version",
-	"postgres.raw-info": "Postgres Raw Info"
+	"postgres.version": "Phiên bản PostgreSQL",
+	"postgres.raw-info": "Thông tin Postgres"
 }
