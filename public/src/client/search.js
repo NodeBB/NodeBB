@@ -116,8 +116,8 @@ define('forum/search', ['search', 'autocomplete', 'storage'], function (searchMo
 
 			if (formData.sortBy || ajaxify.data.searchDefaultSortBy) {
 				$('#post-sort-by').val(formData.sortBy || ajaxify.data.searchDefaultSortBy);
-				$('#post-sort-direction').val(formData.sortDirection);
 			}
+			$('#post-sort-direction').val(formData.sortDirection || 'desc');
 
 			if (formData.showAs) {
 				var isTopic = formData.showAs === 'topics';

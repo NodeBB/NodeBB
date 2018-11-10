@@ -255,9 +255,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getTopicsTags = function (tids, callback) {
-		var keys = tids.map(function (tid) {
-			return 'topic:' + tid + ':tags';
-		});
+		const keys = tids.map(tid => 'topic:' + tid + ':tags');
 		db.getSetsMembers(keys, callback);
 	};
 
@@ -268,9 +266,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getTopicsTagsObjects = function (tids, callback) {
-		var sets = tids.map(function (tid) {
-			return 'topic:' + tid + ':tags';
-		});
+		const sets = tids.map(tid => 'topic:' + tid + ':tags');
 		var uniqueTopicTags;
 		var topicTags;
 		async.waterfall([
