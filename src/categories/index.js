@@ -158,9 +158,7 @@ Categories.getCategories = function (cids, uid, callback) {
 };
 
 Categories.getTagWhitelist = function (cids, callback) {
-	var keys = cids.map(function (cid) {
-		return 'cid:' + cid + ':tag:whitelist';
-	});
+	const keys = cids.map(cid => 'cid:' + cid + ':tag:whitelist');
 	db.getSortedSetsMembers(keys, callback);
 };
 
@@ -206,9 +204,8 @@ Categories.getParents = function (cids, callback) {
 			Categories.getCategoriesData(parentCids, next);
 		},
 		function (parentData, next) {
-			parentData = categoriesData.map(function (category) {
-				return parentData[parentCids.indexOf(category.parentCid)];
-			});
+			const cidToParent = _.zipObject(parentCids, parentData);
+			parentData = categoriesData.map(category => cidToParent[category.parentCid]);
 			next(null, parentData);
 		},
 	], callback);
@@ -228,9 +225,7 @@ Categories.getChildren = function (cids, uid, callback) {
 			getChildrenRecursive(category, uid, next);
 		});
 	}, function (err) {
-		callback(err, categories.map(function (c) {
-			return c && c.children;
-		}));
+		callback(err, categories.map(c => c && c.children));
 	});
 };
 
@@ -386,9 +381,7 @@ Categories.filterIgnoringUids = function (cid, uids, callback) {
 			db.isSortedSetMembers('cid:' + cid + ':ignorers', uids, next);
 		},
 		function (isIgnoring, next) {
-			var readingUids = uids.filter(function (uid, index) {
-				return uid && !isIgnoring[index];
-			});
+			const readingUids = uids.filter((uid, index) => uid && !isIgnoring[index]);
 			next(null, readingUids);
 		},
 	], callback);
