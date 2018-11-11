@@ -45,7 +45,7 @@ module.require = function (p) {
 		// if we can't find the module try in parent directory
 		// since plugins.js moved into plugins folder
 		if (err.code === 'MODULE_NOT_FOUND') {
-			winston.warn('[plugins/require] ' + err.message + ', please update your plugin!\n' + err.stack.split('\n').slice(4, 7).join('\n'));
+			winston.warn('[plugins/require] ' + err.message + ', please update your plugin!\n' + err.stack.split('\n').slice(5, 7).join('\n'));
 			if (path.isAbsolute(p)) {
 				throw err;
 			}
