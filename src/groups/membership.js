@@ -284,14 +284,11 @@ module.exports = function (Groups) {
 	};
 
 	Groups.isMemberOfGroupsList = function (uid, groupListKeys, callback) {
-		var sets = groupListKeys.map(function (groupName) {
-			return 'group:' + groupName + ':members';
-		});
-
 		var uniqueGroups;
 		var members;
 		async.waterfall([
 			function (next) {
+				const sets = groupListKeys.map(groupName => 'group:' + groupName + ':members');
 				db.getSortedSetsMembers(sets, next);
 			},
 			function (_members, next) {
