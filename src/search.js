@@ -17,7 +17,7 @@ var search = module.exports;
 search.search = function (data, callback) {
 	var start = process.hrtime();
 	data.searchIn = data.searchIn || 'titlesposts';
-
+	data.sortBy = data.sortBy || 'relevance';
 	async.waterfall([
 		function (next) {
 			if (data.searchIn === 'posts' || data.searchIn === 'titles' || data.searchIn === 'titlesposts') {
@@ -39,10 +39,14 @@ search.search = function (data, callback) {
 
 function searchInContent(data, callback) {
 	data.uid = data.uid || 0;
-	var matchCount = 0;
 	var pids;
 	var metadata;
 	var itemsPerPage = Math.min(data.itemsPerPage || 10, 100);
+	const returnData = {
+		posts: [],
+		matchCount: 0,
+		pageCount: 1,
+	};
 	async.waterfall([
 		function (next) {
 			async.parallel({
@@ -72,8 +76,13 @@ function searchInContent(data, callback) {
 		},
 		function (results, next) {
 			pids = results.pids;
+
+			if (data.returnIds) {
+				return callback(null, results);
+			}
+
 			if (!results.pids.length && !results.tids.length) {
-				return callback(null, { posts: [], matchCount: matchCount, pageCount: 1 });
+				return callback(null, returnData);
 			}
 
 			topics.getMainPids(results.tids, next);
@@ -93,28 +102,30 @@ function searchInContent(data, callback) {
 		},
 		function (_metadata, next) {
 			metadata = _metadata;
-			matchCount = metadata.pids.length;
+			returnData.matchCount = metadata.pids.length;
+			returnData.pageCount = Math.max(1, Math.ceil(parseInt(returnData.matchCount, 10) / itemsPerPage));
 
 			if (data.page) {
-				var start = Math.max(0, (data.page - 1)) * itemsPerPage;
+				const start = Math.max(0, (data.page - 1)) * itemsPerPage;
 				metadata.pids = metadata.pids.slice(start, start + itemsPerPage);
 			}
 
 			posts.getPostSummaryByPids(metadata.pids, data.uid, {}, next);
 		},
 		function (posts, next) {
+			returnData.posts = posts;
 			// Append metadata to returned payload (without pids)
 			delete metadata.pids;
-			next(null, Object.assign({
-				posts: posts,
-				matchCount: matchCount,
-				pageCount: Math.max(1, Math.ceil(parseInt(matchCount, 10) / itemsPerPage)),
-			}, metadata));
+			next(null, Object.assign(returnData, metadata));
 		},
 	], callback);
 }
 
 function filterAndSort(pids, data, callback) {
+	if (data.sortBy === 'relevance' && !data.replies && !data.timeRange && !data.hasTags) {
+		return setImmediate(callback, null, pids);
+	}
+
 	async.waterfall([
 		function (next) {
 			getMatchedPosts(pids, data, next);
@@ -135,7 +146,6 @@ function filterAndSort(pids, data, callback) {
 		},
 		function (result, next) {
 			pids = result.posts.map(post => post && post.pid);
-
 			next(null, pids);
 		},
 	], callback);
@@ -145,7 +155,7 @@ function getMatchedPosts(pids, data, callback) {
 	var postFields = ['pid', 'uid', 'tid', 'timestamp', 'deleted', 'upvotes', 'downvotes'];
 	var categoryFields = [];
 
-	if (data.sortBy && data.sortBy.startsWith('category.')) {
+	if (data.sortBy.startsWith('category.')) {
 		categoryFields.push(data.sortBy.split('.')[1]);
 	}
 
@@ -161,7 +171,7 @@ function getMatchedPosts(pids, data, callback) {
 
 			async.parallel({
 				users: function (next) {
-					if (data.sortBy && data.sortBy.startsWith('user')) {
+					if (data.sortBy.startsWith('user')) {
 						uids = _.uniq(postsData.map(post => post.uid));
 						user.getUsersFields(uids, ['username'], next);
 					} else {
@@ -274,7 +284,7 @@ function filterByTags(posts, hasTags) {
 }
 
 function sortPosts(posts, data) {
-	if (!posts.length || !data.sortBy || data.sortBy === 'relevance') {
+	if (!posts.length || data.sortBy === 'relevance') {
 		return;
 	}
 
@@ -322,14 +332,14 @@ function getSearchCids(data, callback) {
 					if (data.categories.includes('watched')) {
 						user.getWatchedCategories(data.uid, next);
 					} else {
-						next(null, []);
+						setImmediate(next, null, []);
 					}
 				},
 				childrenCids: function (next) {
 					if (data.searchChildren) {
 						getChildrenCids(data.categories, data.uid, next);
 					} else {
-						next(null, []);
+						setImmediate(next, null, []);
 					}
 				},
 			}, next);
@@ -356,6 +366,6 @@ function getSearchUids(data, callback) {
 	if (data.postedBy) {
 		user.getUidsByUsernames(Array.isArray(data.postedBy) ? data.postedBy : [data.postedBy], callback);
 	} else {
-		callback(null, []);
+		setImmediate(callback, null, []);
 	}
 }

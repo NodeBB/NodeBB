@@ -289,10 +289,7 @@ Topics.getMainPids = function (tids, callback) {
 			Topics.getTopicsFields(tids, ['mainPid'], next);
 		},
 		function (topicData, next) {
-			var mainPids = topicData.map(function (topic) {
-				return topic && topic.mainPid;
-			});
-			next(null, mainPids);
+			next(null, topicData.map(topic => topic && topic.mainPid));
 		},
 	], callback);
 };

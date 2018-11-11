@@ -5,6 +5,7 @@ var async = require('async');
 var _ = require('lodash');
 
 const db = require('../database');
+const user = require('../user');
 var privileges = require('../privileges');
 var search = require('../search');
 
@@ -16,7 +17,7 @@ module.exports = function (Topics) {
 			function (next) {
 				async.parallel({
 					tagTids: function (next) {
-						getTidsWithSameTags(tid, uid, next);
+						getTidsWithSameTags(tid, next);
 					},
 					searchTids: function (next) {
 						getSearchTids(tid, uid, next);
@@ -29,19 +30,26 @@ module.exports = function (Topics) {
 				tids = _.shuffle(_.uniq(tids));
 
 				if (stop !== -1 && tids.length < stop - start + 1) {
-					getCategoryTids(tid, uid, next);
+					getCategoryTids(tid, next);
 				} else {
 					next(null, []);
 				}
 			},
 			function (categoryTids, next) {
 				tids = _.uniq(tids.concat(categoryTids)).slice(start, stop !== -1 ? stop + 1 : undefined);
+				privileges.topics.filterTids('read', tids, uid, next);
+			},
+			function (tids, next) {
 				Topics.getTopicsByTids(tids, uid, next);
+			},
+			function (topics, next) {
+				topics = topics.filter(topic => topic && !topic.deleted && topic.tid !== tid);
+				user.blocks.filter(uid, topics, next);
 			},
 		], callback);
 	};
 
-	function getTidsWithSameTags(tid, uid, callback) {
+	function getTidsWithSameTags(tid, callback) {
 		async.waterfall([
 			function (next) {
 				Topics.getTopicTags(tid, next);
@@ -50,8 +58,7 @@ module.exports = function (Topics) {
 				db.getSortedSetRevRange(tags.map(tag => 'tag:' + tag + ':topics'), 0, -1, next);
 			},
 			function (tids, next) {
-				tids = _.uniq(tids).map(Number);
-				privileges.topics.filterTids('read', tids, uid, next);
+				next(null, _.uniq(tids).map(Number));
 			},
 		], callback);
 	}
@@ -68,30 +75,25 @@ module.exports = function (Topics) {
 					matchWords: 'any',
 					categories: [topicData.cid],
 					uid: uid,
-					page: 1,
-					itemsPerPage: 20,
+					returnIds: true,
 				}, next);
 			},
 			function (data, next) {
-				var tids = data.posts.map(post => post && post.tid);
-				next(null, tids);
+				next(null, _.shuffle(data.tids).slice(0, 20).map(Number));
 			},
 		], callback);
 	}
 
-	function getCategoryTids(tid, uid, callback) {
+	function getCategoryTids(tid, callback) {
 		async.waterfall([
 			function (next) {
 				Topics.getTopicField(tid, 'cid', next);
 			},
 			function (cid, next) {
-				Topics.getRecentTopics(cid, uid, 0, 9, '', next);
+				db.getSortedSetRevRange('cid:' + cid + ':tids:lastposttime', 0, 9, next);
 			},
-			function (data, next) {
-				var tids = data.topics.filter(function (topic) {
-					return topic && !topic.deleted && tid !== topic.tid;
-				}).map(topic => topic && topic.tid);
-				next(null, tids);
+			function (tids, next) {
+				next(null, tids.map(Number));
 			},
 		], callback);
 	}
