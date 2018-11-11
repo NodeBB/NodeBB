@@ -38,4 +38,3 @@ navigation.get = function (uid, callback) {
 		},
 	], callback);
 };
-
