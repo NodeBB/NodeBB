@@ -12,7 +12,6 @@ module.exports = function (Groups) {
 			groupNames = [groupNames];
 		}
 
-		var groupObj;
 		var groupsData;
 		async.waterfall([
 			function (next) {
@@ -23,8 +22,6 @@ module.exports = function (Groups) {
 				if (!groupsData.length) {
 					return callback();
 				}
-				// backwards compatibility
-				groupObj = groupsData[0];
 
 				async.parallel([
 					function (next) {
@@ -49,19 +46,15 @@ module.exports = function (Groups) {
 						], groupNames, next);
 					},
 					function (next) {
-						var keys = groupNames.map(function (groupName) {
-							return groupName.toLowerCase() + ':' + groupName;
-						});
+						const keys = groupNames.map(groupName => groupName.toLowerCase() + ':' + groupName);
 						db.sortedSetRemove('groups:visible:name', keys, next);
 					},
 					function (next) {
-						var fields = groupNames.map(function (groupName) {
-							return utils.slugify(groupName);
-						});
+						const fields = groupNames.map(groupName => utils.slugify(groupName));
 						db.deleteObjectFields('groupslug:groupname', fields, next);
 					},
 					function (next) {
-						removeGroupsFromOtherGroups(groupNames, next);
+						removeGroupsFromPrivilegeGroups(groupNames, next);
 					},
 				], function (err) {
 					next(err);
@@ -69,18 +62,16 @@ module.exports = function (Groups) {
 			},
 			function (next) {
 				Groups.resetCache();
-				plugins.fireHook('action:group.destroy', { group: groupObj });
 				plugins.fireHook('action:groups.destroy', { groups: groupsData });
 				next();
 			},
 		], callback);
 	};
 
-	function removeGroupsFromOtherGroups(groupNames, callback) {
+	function removeGroupsFromPrivilegeGroups(groupNames, callback) {
 		batch.processSortedSet('groups:createtime', function (otherGroups, next) {
-			var keys = otherGroups.map(function (group) {
-				return 'group:' + group + ':members';
-			});
+			const privilegeGroups = otherGroups.filter(group => Groups.isPrivilegeGroup(group));
+			const keys = privilegeGroups.map(group => 'group:' + group + ':members');
 			db.sortedSetRemove(keys, groupNames, next);
 		}, {
 			batch: 500,
