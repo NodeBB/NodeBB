@@ -6,6 +6,7 @@ var winston = require('winston');
 var plugins = require('../plugins');
 var utils = require('../utils');
 var db = require('../database');
+var user = require('../user');
 
 
 module.exports = function (Groups) {
@@ -213,6 +214,27 @@ module.exports = function (Groups) {
 					return callback(new Error('[[error:group-already-exists]]'));
 				}
 				async.series([
+					// set each member's groupTitle
+					function (next) {
+						async.waterfall([
+							function (next) {
+								Groups.getMembers(oldName, 0, -1, next);
+							},
+							function (uids, next) {
+								async.each(uids, function (uid, next) {
+									async.waterfall([
+										function (next) {
+											user.getUserData(uid, next);
+										},
+										function (userData, next) {
+											var newTitleArray = userData.groupTitleArray.map(oldTitle => (oldTitle === oldName ? newName : oldTitle));
+											user.setUserField(uid, 'groupTitle', JSON.stringify(newTitleArray), next);
+										},
+									], next);
+								}, next);
+							},
+						], next);
+					},
 					async.apply(db.setObjectField, 'group:' + oldName, 'name', newName),
 					async.apply(db.setObjectField, 'group:' + oldName, 'slug', utils.slugify(newName)),
 					async.apply(db.deleteObjectField, 'groupslug:groupname', group.slug),
