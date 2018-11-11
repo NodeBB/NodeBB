@@ -4,9 +4,12 @@ var fs = require('fs');
 var path = require('path');
 var async = require('async');
 var nconf = require('nconf');
-var plugins = require('../plugins');
+var benchpress = require('benchpressjs');
 
-var admin = {};
+var plugins = require('../plugins');
+var groups = require('../groups');
+
+var admin = module.exports;
 
 admin.get = function (callback) {
 	async.parallel({
@@ -26,7 +29,7 @@ admin.get = function (callback) {
 			plugins.fireHook('filter:widgets.getWidgets', [], next);
 		},
 		adminTemplate: function (next) {
-			fs.readFile(path.resolve(nconf.get('views_dir'), 'admin/partials/widget-settings.tpl'), 'utf8', next);
+			renderAdminTemplate(next);
 		},
 	}, function (err, widgetData) {
 		if (err) {
@@ -78,4 +81,17 @@ admin.get = function (callback) {
 	});
 };
 
-module.exports = admin;
+function renderAdminTemplate(callback) {
+	async.waterfall([
+		function (next) {
+			async.parallel({
+				source: async.apply(fs.readFile, path.resolve(nconf.get('views_dir'), 'admin/partials/widget-settings.tpl'), 'utf8'),
+				groups: async.apply(groups.getNonPrivilegeGroups, 'groups:createtime', 0, -1),
+			}, next);
+		},
+		function (results, next) {
+			results.groups.sort((a, b) => b.system - a.system);
+			benchpress.compileParse(results.source, { groups: results.groups }, next);
+		},
+	], callback);
+}

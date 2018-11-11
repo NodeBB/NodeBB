@@ -39,16 +39,8 @@
 		if (!item) {
 			return false;
 		}
-		var properties = item.properties;
+
 		var loggedIn = data.config ? data.config.loggedIn : false;
-		if (properties) {
-			if ((properties.loggedIn && !loggedIn)
-				|| (properties.guestOnly && loggedIn)
-				|| (properties.globalMod && !data.isGlobalMod && !data.isAdmin)
-				|| (properties.adminOnly && !data.isAdmin)) {
-				return false;
-			}
-		}
 
 		if (item.route.match('/users') && data.privateUserInfo && !loggedIn) {
 			return false;

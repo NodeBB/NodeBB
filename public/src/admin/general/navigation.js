@@ -103,6 +103,13 @@ define('admin/general/navigation', ['translator', 'iconSelect', 'benchpress', 'j
 			form.forEach(function (input) {
 				if (input.name.slice(0, 9) === 'property:' && input.value === 'on') {
 					properties[input.name.slice(9)] = true;
+				} else if (data[input.name]) {
+					if (!Array.isArray(data[input.name])) {
+						data[input.name] = [
+							data[input.name],
+						];
+					}
+					data[input.name].push(input.value);
 				} else {
 					data[input.name] = translator.escape(input.value);
 				}

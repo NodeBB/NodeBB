@@ -206,6 +206,22 @@ describe('Groups', function () {
 				done();
 			});
 		});
+
+		it('should return true for uid 0 and guests group', function (done) {
+			Groups.isMembers([1, 0], 'guests', function (err, isMembers) {
+				assert.ifError(err);
+				assert.deepStrictEqual(isMembers, [false, true]);
+				done();
+			});
+		});
+
+		it('should return true for uid 0 and guests group', function (done) {
+			Groups.isMemberOfGroups(0, ['guests', 'registered-users'], function (err, isMembers) {
+				assert.ifError(err);
+				assert.deepStrictEqual(isMembers, [true, false]);
+				done();
+			});
+		});
 	});
 
 	describe('.isMemberOfGroupList', function () {

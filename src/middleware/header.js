@@ -115,7 +115,7 @@ module.exports = function (middleware) {
 							next(null, translated);
 						});
 					},
-					navigation: navigation.get,
+					navigation: async.apply(navigation.get, req.uid),
 					tags: async.apply(meta.tags.parse, req, data, res.locals.metaTags, res.locals.linkTags),
 					banned: async.apply(user.isBanned, req.uid),
 					banReason: async.apply(user.getBannedReason, req.uid),

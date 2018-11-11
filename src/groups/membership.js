@@ -164,18 +164,17 @@ module.exports = function (Groups) {
 	Groups.isMembers = function (uids, groupName, callback) {
 		var cachedData = {};
 		function getFromCache() {
-			setImmediate(callback, null, uids.map(function (uid) {
-				return cachedData[uid + ':' + groupName];
-			}));
+			setImmediate(callback, null, uids.map(uid => cachedData[uid + ':' + groupName]));
 		}
-
 		if (!groupName || !uids.length) {
-			return callback(null, uids.map(function () { return false; }));
+			return setImmediate(callback, null, uids.map(() => false));
 		}
 
-		var nonCachedUids = uids.filter(function (uid) {
-			return filterNonCached(cachedData, uid, groupName);
-		});
+		if (groupName === 'guests') {
+			return setImmediate(callback, null, uids.map(uid => parseInt(uid, 10) === 0));
+		}
+
+		var nonCachedUids = uids.filter(uid => filterNonCached(cachedData, uid, groupName));
 
 		if (!nonCachedUids.length) {
 			return getFromCache(callback);
@@ -187,6 +186,38 @@ module.exports = function (Groups) {
 			},
 			function (isMembers, next) {
 				nonCachedUids.forEach(function (uid, index) {
+					cachedData[uid + ':' + groupName] = isMembers[index];
+					Groups.cache.set(uid + ':' + groupName, isMembers[index]);
+				});
+
+				getFromCache(next);
+			},
+		], callback);
+	};
+
+	Groups.isMemberOfGroups = function (uid, groups, callback) {
+		var cachedData = {};
+		function getFromCache(next) {
+			setImmediate(next, null, groups.map(groupName => cachedData[uid + ':' + groupName]));
+		}
+
+		if (!uid || parseInt(uid, 10) <= 0 || !groups.length) {
+			return callback(null, groups.map(groupName => groupName === 'guests'));
+		}
+
+		var nonCachedGroups = groups.filter(groupName => filterNonCached(cachedData, uid, groupName));
+
+		if (!nonCachedGroups.length) {
+			return getFromCache(callback);
+		}
+
+		async.waterfall([
+			function (next) {
+				const nonCachedGroupsMemberSets = nonCachedGroups.map(groupName => 'group:' + groupName + ':members');
+				db.isMemberOfSortedSets(nonCachedGroupsMemberSets, uid, next);
+			},
+			function (isMembers, next) {
+				nonCachedGroups.forEach(function (groupName, index) {
 					cachedData[uid + ':' + groupName] = isMembers[index];
 					Groups.cache.set(uid + ':' + groupName, isMembers[index]);
 				});
@@ -208,41 +239,16 @@ module.exports = function (Groups) {
 		return !isInCache;
 	}
 
-	Groups.isMemberOfGroups = function (uid, groups, callback) {
-		var cachedData = {};
-		function getFromCache(next) {
-			setImmediate(next, null, groups.map(function (groupName) {
-				return cachedData[uid + ':' + groupName];
-			}));
+	Groups.isMemberOfAny = function (uid, groups, callback) {
+		if (!groups.length) {
+			return setImmediate(callback, null, false);
 		}
-
-		if (!uid || parseInt(uid, 10) <= 0 || !groups.length) {
-			return callback(null, groups.map(function () { return false; }));
-		}
-
-		var nonCachedGroups = groups.filter(function (groupName) {
-			return filterNonCached(cachedData, uid, groupName);
-		});
-
-		if (!nonCachedGroups.length) {
-			return getFromCache(callback);
-		}
-
-		var nonCachedGroupsMemberSets = nonCachedGroups.map(function (groupName) {
-			return 'group:' + groupName + ':members';
-		});
-
 		async.waterfall([
 			function (next) {
-				db.isMemberOfSortedSets(nonCachedGroupsMemberSets, uid, next);
+				Groups.isMemberOfGroups(uid, groups, next);
 			},
 			function (isMembers, next) {
-				nonCachedGroups.forEach(function (groupName, index) {
-					cachedData[uid + ':' + groupName] = isMembers[index];
-					Groups.cache.set(uid + ':' + groupName, isMembers[index]);
-				});
-
-				getFromCache(next);
+				next(null, isMembers.some(isMember => !!isMember));
 			},
 		], callback);
 	};
@@ -318,10 +324,7 @@ module.exports = function (Groups) {
 
 	Groups.isMembersOfGroupList = function (uids, groupListKey, callback) {
 		var groupNames;
-		var results = [];
-		uids.forEach(function () {
-			results.push(false);
-		});
+		var results = uids.map(() => false);
 
 		async.waterfall([
 			function (next) {
