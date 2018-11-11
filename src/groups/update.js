@@ -232,6 +232,7 @@ module.exports = function (Groups) {
 					async.apply(db.rename, 'group:' + oldName + ':owners', 'group:' + newName + ':owners'),
 					async.apply(db.rename, 'group:' + oldName + ':pending', 'group:' + newName + ':pending'),
 					async.apply(db.rename, 'group:' + oldName + ':invited', 'group:' + newName + ':invited'),
+					async.apply(db.rename, 'group:' + oldName + ':member:pids', 'group:' + newName + ':member:pids'),
 
 					async.apply(renameGroupMember, 'groups:createtime', oldName, newName),
 					async.apply(renameGroupMember, 'groups:visible:createtime', oldName, newName),
