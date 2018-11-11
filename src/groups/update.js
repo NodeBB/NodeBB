@@ -227,9 +227,9 @@ module.exports = function (Groups) {
 											user.getUserData(uid, next);
 										},
 										function (userData, next) {
-											var newTitleArray = userData.groupTitleArray.map(oldTitle => oldTitle === oldName ? newName : oldTitle);
+											var newTitleArray = userData.groupTitleArray.map(oldTitle => (oldTitle === oldName ? newName : oldTitle));
 											user.setUserField(uid, 'groupTitle', JSON.stringify(newTitleArray), next);
-										}
+										},
 									], next);
 								}, next);
 							},
