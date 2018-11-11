@@ -214,27 +214,7 @@ module.exports = function (Groups) {
 					return callback(new Error('[[error:group-already-exists]]'));
 				}
 				async.series([
-					// set each member's groupTitle
-					function (next) {
-						async.waterfall([
-							function (next) {
-								Groups.getMembers(oldName, 0, -1, next);
-							},
-							function (uids, next) {
-								async.each(uids, function (uid, next) {
-									async.waterfall([
-										function (next) {
-											user.getUserData(uid, next);
-										},
-										function (userData, next) {
-											var newTitleArray = userData.groupTitleArray.map(oldTitle => (oldTitle === oldName ? newName : oldTitle));
-											user.setUserField(uid, 'groupTitle', JSON.stringify(newTitleArray), next);
-										},
-									], next);
-								}, next);
-							},
-						], next);
-					},
+					async.apply(updateMemberGroupTitles, oldName, newName),
 					async.apply(db.setObjectField, 'group:' + oldName, 'name', newName),
 					async.apply(db.setObjectField, 'group:' + oldName, 'slug', utils.slugify(newName)),
 					async.apply(db.deleteObjectField, 'groupslug:groupname', group.slug),
@@ -274,6 +254,24 @@ module.exports = function (Groups) {
 			callback(err);
 		});
 	};
+
+	function updateMemberGroupTitles(oldName, newName, callback) {
+		const batch = require('../batch');
+		batch.processSortedSet('group:' + oldName + ':members', function (uids, next) {
+			async.waterfall([
+				function (next) {
+					user.getUsersData(uids, next);
+				},
+				function (usersData, next) {
+					usersData = usersData.filter(userData => userData && userData.groupTitleArray.includes(oldName));
+					async.each(usersData, function (userData, next) {
+						const newTitleArray = userData.groupTitleArray.map(oldTitle => (oldTitle === oldName ? newName : oldTitle));
+						user.setUserField(userData.uid, 'groupTitle', JSON.stringify(newTitleArray), next);
+					}, next);
+				},
+			], next);
+		}, callback);
+	}
 
 	function renameGroupMember(group, oldName, newName, callback) {
 		var score;
