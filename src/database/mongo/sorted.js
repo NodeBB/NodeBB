@@ -36,6 +36,9 @@ module.exports = function (db, module) {
 		}
 
 		if (Array.isArray(key)) {
+			if (!key.length) {
+				return setImmediate(callback, null, []);
+			}
 			key = { $in: key };
 		}
 

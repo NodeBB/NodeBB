@@ -4,6 +4,7 @@
 var async = require('async');
 var _ = require('lodash');
 
+const db = require('../database');
 var privileges = require('../privileges');
 var search = require('../search');
 
@@ -46,15 +47,10 @@ module.exports = function (Topics) {
 				Topics.getTopicTags(tid, next);
 			},
 			function (tags, next) {
-				async.map(tags, function (tag, next) {
-					Topics.getTagTids(tag, 0, -1, next);
-				}, next);
-			},
-			function (data, next) {
-				next(null, _.uniq(_.flatten(data)));
+				db.getSortedSetRevRange(tags.map(tag => 'tag:' + tag + ':topics'), 0, -1, next);
 			},
 			function (tids, next) {
-				tids = tids.map(Number);
+				tids = _.uniq(tids).map(Number);
 				privileges.topics.filterTids('read', tids, uid, next);
 			},
 		], callback);

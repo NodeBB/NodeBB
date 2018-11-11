@@ -139,6 +139,14 @@ describe('Sorted Set methods', function () {
 				done();
 			});
 		});
+
+		it('should return empty array if keys is empty array', function (done) {
+			db.getSortedSetRange([], 0, -1, function (err, data) {
+				assert.ifError(err);
+				assert.deepStrictEqual(data, []);
+				done();
+			});
+		});
 	});
 
 	describe('getSortedSetRevRange()', function () {
