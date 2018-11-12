@@ -40,11 +40,16 @@ privilegesController.get = function (req, res, callback) {
 				if (category) {
 					category.selected = category.cid === cid;
 				}
+
+				if (category.selected) {
+					data.selected = category;
+				}
 			});
 
 			res.render('admin/manage/privileges', {
 				privileges: data.privileges,
 				allCategories: data.allCategories,
+				selected: data.selected ? data.selected.name : '[[admin/manage/privileges:global]]',
 				cid: cid,
 			});
 		},
