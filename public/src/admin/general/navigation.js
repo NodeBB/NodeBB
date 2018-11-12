@@ -63,7 +63,7 @@ define('admin/general/navigation', ['translator', 'iconSelect', 'benchpress', 'j
 	function drop(ev, ui) {
 		var id = ui.helper.attr('data-id');
 		var el = $('#active-navigation [data-id="' + id + '"]');
-		var data = id === 'custom' ? { iconClass: 'fa-navicon' } : available[id];
+		var data = id === 'custom' ? { iconClass: 'fa-navicon', groups: available[0].groups } : available[id];
 
 		data.enabled = false;
 		data.index = (parseInt($('#enabled').children().last().attr('data-index'), 10) || 0) + 1;
