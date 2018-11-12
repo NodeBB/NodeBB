@@ -227,4 +227,25 @@ describe('Search', function () {
 			},
 		], done);
 	});
+
+	it('should return json search data with no categories', function (done) {
+		var qs = '/api/search?term=cucumber&in=titlesposts&searchOnly=1';
+		privileges.global.give(['search:content'], 'guests', function (err) {
+			assert.ifError(err);
+			request({
+				url: nconf.get('url') + qs,
+				json: true,
+			}, function (err, response, body) {
+				assert.ifError(err);
+				assert(body);
+				assert(body.hasOwnProperty('matchCount'));
+				assert(body.hasOwnProperty('pagination'));
+				assert(body.hasOwnProperty('pageCount'));
+				assert(body.hasOwnProperty('posts'));
+				assert(!body.hasOwnProperty('categories'));
+
+				privileges.global.rescind(['search:content'], 'guests', done);
+			});
+		});
+	});
 });

@@ -180,6 +180,9 @@ SocketAdmin.config.setMultiple = function (socket, data, callback) {
 
 	var changes = {};
 	Object.keys(data).forEach(function (key) {
+		if (typeof meta.config[key] === 'number') {
+			data[key] = parseInt(data[key], 10);
+		}
 		if (data[key] !== meta.config[key]) {
 			changes[key] = data[key];
 			changes[key + '_old'] = meta.config[key];

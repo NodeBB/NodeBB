@@ -106,16 +106,16 @@ function getStaticDirectories(pluginData, callback) {
 
 	async.each(dirs, function (route, next) {
 		if (!validMappedPath.test(route)) {
-			winston.warn('[plugins/' + pluginData.id + '] Invalid mapped path specified: ' +
-				route + '. Path must adhere to: ' + validMappedPath.toString());
+			winston.warn('[plugins/' + pluginData.id + '] Invalid mapped path specified: '
+				+ route + '. Path must adhere to: ' + validMappedPath.toString());
 			return next();
 		}
 
 		var dirPath = path.join(pluginData.path, pluginData.staticDirs[route]);
 		fs.stat(dirPath, function (err, stats) {
 			if (err && err.code === 'ENOENT') {
-				winston.warn('[plugins/' + pluginData.id + '] Mapped path \'' +
-					route + ' => ' + dirPath + '\' not found.');
+				winston.warn('[plugins/' + pluginData.id + '] Mapped path \''
+					+ route + ' => ' + dirPath + '\' not found.');
 				return next();
 			}
 			if (err) {
@@ -123,8 +123,8 @@ function getStaticDirectories(pluginData, callback) {
 			}
 
 			if (!stats.isDirectory()) {
-				winston.warn('[plugins/' + pluginData.id + '] Mapped path \'' +
-					route + ' => ' + dirPath + '\' is not a directory.');
+				winston.warn('[plugins/' + pluginData.id + '] Mapped path \''
+					+ route + ' => ' + dirPath + '\' is not a directory.');
 				return next();
 			}
 
@@ -135,8 +135,8 @@ function getStaticDirectories(pluginData, callback) {
 		if (err) {
 			return callback(err);
 		}
-		winston.verbose('[plugins] found ' + Object.keys(staticDirs).length +
-			' static directories for ' + pluginData.id);
+		winston.verbose('[plugins] found ' + Object.keys(staticDirs).length
+			+ ' static directories for ' + pluginData.id);
 		callback(null, staticDirs);
 	});
 }

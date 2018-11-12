@@ -46,7 +46,8 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 					hideReplies: true,
 				};
 				app.parseAndTranslate('topic', 'posts', tplData, function (html) {
-					$('<div>', { component: 'post/replies' }).html(html).hide().insertAfter(button).slideDown('fast');
+					$('<div>', { component: 'post/replies' }).html(html).hide().insertAfter(button)
+						.slideDown('fast');
 					posts.processPage(html);
 					$(window).trigger('action:posts.loaded', { posts: data });
 				});

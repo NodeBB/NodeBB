@@ -16,7 +16,6 @@
 		}],
 		"no-empty": ["error", { "allowEmptyCatch": true }],
 		"no-underscore-dangle": "off",
-		"newline-per-chained-call": "off",
 		"no-console": "off",
 		"no-mixed-operators": ["error", { "allowSamePrecedence": true }],
 		"strict": ["error", "global"],
@@ -40,6 +39,7 @@
 			"avoidEscape": true,
 			"allowTemplateLiterals": true
 		}],
+		"no-else-return": [ "error", { "allowElseIf": true } ],
 
 		// ES6
 		"prefer-rest-params": "off",

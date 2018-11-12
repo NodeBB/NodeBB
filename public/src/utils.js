@@ -391,7 +391,7 @@
 		},
 
 		isUserNameValid: function (name) {
-			return (name && name !== '' && (/^['"\s\-+.*0-9\u00BF-\u1FFF\u2C00-\uD7FF\w]+$/.test(name)));
+			return (name && name !== '' && (/^['"\s\-+.*[\]0-9\u00BF-\u1FFF\u2C00-\uD7FF\w]+$/.test(name)));
 		},
 
 		isPasswordValid: function (password) {
@@ -513,7 +513,7 @@
 			timestamp = Math.min(timestamp, 8640000000000000);
 
 			try {
-				return Date.prototype.toISOString ? new Date(parseInt(timestamp, 10)).toISOString() : timestamp;
+				return new Date(parseInt(timestamp, 10)).toISOString();
 			} catch (e) {
 				return timestamp;
 			}
@@ -625,10 +625,10 @@
 			var rect = el.getBoundingClientRect();
 
 			return (
-				rect.top >= 0 &&
-				rect.left >= 0 &&
-				rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /* or $(window).height() */
-				rect.right <= (window.innerWidth || document.documentElement.clientWidth) /* or $(window).width() */
+				rect.top >= 0
+				&& rect.left >= 0
+				&& rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) /* or $(window).height() */
+				&& rect.right <= (window.innerWidth || document.documentElement.clientWidth) /* or $(window).width() */
 			);
 		},
 
@@ -731,10 +731,10 @@
 		},
 
 		isInternalURI: function (targetLocation, referenceLocation, relative_path) {
-			return targetLocation.host === '' ||	// Relative paths are always internal links
-				(
-					targetLocation.host === referenceLocation.host && targetLocation.protocol === referenceLocation.protocol &&	// Otherwise need to check if protocol and host match
-					(relative_path.length > 0 ? targetLocation.pathname.indexOf(relative_path) === 0 : true)	// Subfolder installs need this additional check
+			return targetLocation.host === ''	// Relative paths are always internal links
+				|| (
+					targetLocation.host === referenceLocation.host && targetLocation.protocol === referenceLocation.protocol	// Otherwise need to check if protocol and host match
+					&& (relative_path.length > 0 ? targetLocation.pathname.indexOf(relative_path) === 0 : true)	// Subfolder installs need this additional check
 				);
 		},
 

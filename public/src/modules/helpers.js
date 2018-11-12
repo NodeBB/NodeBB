@@ -39,16 +39,8 @@
 		if (!item) {
 			return false;
 		}
-		var properties = item.properties;
+
 		var loggedIn = data.config ? data.config.loggedIn : false;
-		if (properties) {
-			if ((properties.loggedIn && !loggedIn) ||
-				(properties.guestOnly && loggedIn) ||
-				(properties.globalMod && !data.isGlobalMod && !data.isAdmin) ||
-				(properties.adminOnly && !data.isAdmin)) {
-				return false;
-			}
-		}
 
 		if (item.route.match('/users') && data.privateUserInfo && !loggedIn) {
 			return false;
@@ -82,7 +74,8 @@
 
 	function stringify(obj) {
 		// Turns the incoming object into a JSON string
-		return JSON.stringify(obj).replace(/&/gm, '&amp;').replace(/</gm, '&lt;').replace(/>/gm, '&gt;').replace(/"/g, '&quot;');
+		return JSON.stringify(obj).replace(/&/gm, '&amp;').replace(/</gm, '&lt;').replace(/>/gm, '&gt;')
+			.replace(/"/g, '&quot;');
 	}
 
 	function escape(str) {
@@ -125,11 +118,11 @@
 		category.children.forEach(function (child) {
 			if (child && !child.isSection) {
 				var link = child.link ? child.link : (relative_path + '/category/' + child.slug);
-				html += '<span class="category-children-item pull-left">' +
-					'<div class="icon pull-left" style="' + generateCategoryBackground(child) + '">' +
-					'<i class="fa fa-fw ' + child.icon + '"></i>' +
-					'</div>' +
-					'<a href="' + link + '"><small>' + child.name + '</small></a></span>';
+				html += '<span class="category-children-item pull-left">'
+					+ '<div class="icon pull-left" style="' + generateCategoryBackground(child) + '">'
+					+ '<i class="fa fa-fw ' + child.icon + '"></i>'
+					+ '</div>'
+					+ '<a href="' + link + '"><small>' + child.name + '</small></a></span>';
 			}
 		});
 		html = html ? ('<span class="category-children">' + html + '</span>') : html;

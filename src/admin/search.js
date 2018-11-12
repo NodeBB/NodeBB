@@ -18,10 +18,10 @@ function filterDirectories(directories) {
 		// exclude partials
 		// only include subpaths
 		// exclude category.tpl, group.tpl, category-analytics.tpl
-		return !dir.endsWith('.js') &&
-			!dir.includes('/partials/') &&
-			/\/.*\//.test(dir) &&
-			!/manage\/(category|group|category-analytics)$/.test(dir);
+		return !dir.endsWith('.js')
+			&& !dir.includes('/partials/')
+			&& /\/.*\//.test(dir)
+			&& !/manage\/(category|group|category-analytics)$/.test(dir);
 	});
 }
 
@@ -56,7 +56,8 @@ function simplify(translations) {
 function nsToTitle(namespace) {
 	return namespace.replace('admin/', '').split('/').map(function (str) {
 		return str[0].toUpperCase() + str.slice(1);
-	}).join(' > ').replace(/[^a-zA-Z> ]/g, ' ');
+	}).join(' > ')
+		.replace(/[^a-zA-Z> ]/g, ' ');
 }
 
 var fallbackCacheInProgress = {};
@@ -138,10 +139,10 @@ function initDict(language, callback) {
 						title = '[[admin/menu:general/dashboard]]';
 					} else {
 						title = title.match(/admin\/(.+?)\/(.+?)$/);
-						title = '[[admin/menu:section-' +
-							(title[1] === 'development' ? 'advanced' : title[1]) +
-							']]' + (title[2] ? (' > [[admin/menu:' +
-							title[1] + '/' + title[2] + ']]') : '');
+						title = '[[admin/menu:section-'
+							+ (title[1] === 'development' ? 'advanced' : title[1])
+							+ ']]' + (title[2] ? (' > [[admin/menu:'
+							+ title[1] + '/' + title[2] + ']]') : '');
 					}
 
 					translator.translate(title).then(function (title) {

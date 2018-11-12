@@ -1,20 +1,20 @@
 {
-	"queue": "Queue",
-	"description": "There are no users in the registration queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"queue": "Čakalna vrsta",
+	"description": "V čakalni vrsti za registracijo ni nobenega uporabnika.<br>Da omogočite to funkcionalnost, pojdite na <a href=\"%1\">Nastavitve &rarr; Uporabnik &rarr; Registracija Uporabnika</a> in nastavitev <strong> Tip registracije</strong>v \"Admin Odobravanje\".",
 
-	"list.name": "Name",
-	"list.email": "Email",
+	"list.name": "Ime",
+	"list.email": "E-pošta",
 	"list.ip": "IP",
-	"list.time": "Time",
-	"list.username-spam": "Frequency: %1 Appears: %2 Confidence: %3",
-	"list.email-spam": "Frequency: %1 Appears: %2",
-	"list.ip-spam": "Frequency: %1 Appears: %2",
+	"list.time": "Čas",
+	"list.username-spam": "Pogostost: %1 Pojavitve: %2 Samozavest: %3",
+	"list.email-spam": "Pogostost: %1 Pojavitve: %2",
+	"list.ip-spam": "Pogostost: %1 Pojavitve: %2",
 
-	"invitations": "Invitations",
-	"invitations.description": "Below is a complete list of invitations sent. Use ctrl-f to search through the list by email or username. <br><br>The username will be displayed to the right of the emails for users who have redeemed their invitations.",
-	"invitations.inviter-username": "Inviter Username",
-	"invitations.invitee-email": "Invitee Email",
-	"invitations.invitee-username": "Invitee Username (if registered)",
+	"invitations": "Povabila",
+	"invitations.description": "Spodaj je celotna zbirka poslanih povabil. Uporabite ctrl-f, da iščete skozi zbirko glede na e-poštne naslove in uporabniška imena. <br><br>Uporabniško ime bo prikazano desno od e-poštnih naslovov za uporabnike, ki so unovčili povabila.",
+	"invitations.inviter-username": "Povabil je uporabnik z uporabniškim imenom",
+	"invitations.invitee-email": "Povabljenčev e-poštni naslov",
+	"invitations.invitee-username": "Povabljenčevo Uporabniško ime (če je registriran)",
 
-	"invitations.confirm-delete": "Are you sure you wish to delete this invitation?"
+	"invitations.confirm-delete": "Ste prepričani, da želite izbrisati to povabilo?"
 } 

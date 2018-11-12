@@ -20,10 +20,7 @@ module.exports = function (Groups) {
 			function (_groupNames, next) {
 				groupNames = _groupNames[0];
 
-				var keys = groupNames.map(function (groupName) {
-					return 'group:' + groupName + ':member:pids';
-				});
-
+				const keys = groupNames.map(groupName => 'group:' + groupName + ':member:pids');
 				db.sortedSetsAdd(keys, postData.timestamp, postData.pid, next);
 			},
 			function (next) {

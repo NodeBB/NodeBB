@@ -52,8 +52,8 @@ module.exports = function (Topics) {
 
 	function setWatching(method1, method2, hook, tid, uid, callback) {
 		callback = callback || function () {};
-		if (!parseInt(uid, 10)) {
-			return callback();
+		if (parseInt(uid, 10) <= 0) {
+			return setImmediate(callback);
 		}
 		async.waterfall([
 			function (next) {
@@ -121,16 +121,41 @@ module.exports = function (Topics) {
 		isIgnoringOrFollowing('ignorers', tids, uid, callback);
 	};
 
+	Topics.getFollowData = function (tids, uid, callback) {
+		if (!Array.isArray(tids)) {
+			return setImmediate(callback);
+		}
+		if (parseInt(uid, 10) <= 0) {
+			return setImmediate(callback, null, tids.map(() => ({ following: false, ignoring: false })));
+		}
+		const keys = [];
+		tids.forEach((tid) => {
+			keys.push('tid:' + tid + ':followers', 'tid:' + tid + ':ignorers');
+		});
+
+		db.isMemberOfSets(keys, uid, function (err, data) {
+			if (err) {
+				return callback(err);
+			}
+			const followData = [];
+			for (let i = 0; i < data.length; i += 2) {
+				followData.push({
+					following: data[i],
+					ignoring: data[i + 1],
+				});
+			}
+			callback(null, followData);
+		});
+	};
+
 	function isIgnoringOrFollowing(set, tids, uid, callback) {
 		if (!Array.isArray(tids)) {
-			return callback();
+			return setImmediate(callback);
 		}
-		if (!parseInt(uid, 10)) {
-			return callback(null, tids.map(function () { return false; }));
+		if (parseInt(uid, 10) <= 0) {
+			return setImmediate(callback, null, tids.map(() => false));
 		}
-		var keys = tids.map(function (tid) {
-			return 'tid:' + tid + ':' + set;
-		});
+		var keys = tids.map(tid => 'tid:' + tid + ':' + set);
 		db.isMemberOfSets(keys, uid, callback);
 	}
 

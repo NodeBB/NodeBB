@@ -5,6 +5,7 @@ var async = require('async');
 var winston = require('winston');
 var nconf = require('nconf');
 var crypto = require('crypto');
+var LRU = require('lru-cache');
 
 var db = require('./database');
 var plugins = require('./plugins');
@@ -25,7 +26,6 @@ var uniquevisitors = 0;
  * the cache could be exhausted continuously if there are more than 500 concurrently
  * active users
  */
-var LRU = require('lru-cache');
 var ipCache = LRU({
 	max: 500,
 	length: function () { return 1; },

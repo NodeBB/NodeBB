@@ -62,10 +62,10 @@ middleware.pageView = function (req, res, next) {
 			user.updateOnlineUsers(req.uid, next);
 		} else {
 			user.updateOnlineUsers(req.uid);
-			next();
+			setImmediate(next);
 		}
 	} else {
-		next();
+		setImmediate(next);
 	}
 };
 
@@ -156,11 +156,11 @@ middleware.privateUploads = function (req, res, next) {
 };
 
 middleware.busyCheck = function (req, res, next) {
-	if (global.env === 'production' && (!meta.config.hasOwnProperty('eventLoopCheckEnabled') || meta.config.eventLoopCheckEnabled) && toobusy()) {
+	if (global.env === 'production' && meta.config.eventLoopCheckEnabled && toobusy()) {
 		analytics.increment('errors:503');
 		res.status(503).type('text/html').sendFile(path.join(__dirname, '../../public/503.html'));
 	} else {
-		next();
+		setImmediate(next);
 	}
 };
 
@@ -204,4 +204,17 @@ middleware.delayLoading = function (req, res, next) {
 	delayCache.set(req.ip, timesSeen += 1);
 
 	setTimeout(next, 1000);
+};
+
+middleware.buildSkinAsset = function (req, res, next) {
+	// If this middleware is reached, a skin was requested, so it is built on-demand
+	var target = path.basename(req.originalUrl).match(/(client-[a-z]+)/);
+	if (target) {
+		async.waterfall([
+			async.apply(plugins.prepareForBuild, ['client side styles']),
+			async.apply(meta.css.buildBundle, target[0], true),
+		], next);
+	} else {
+		setImmediate(next);
+	}
 };

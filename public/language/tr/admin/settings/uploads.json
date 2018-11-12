@@ -6,7 +6,7 @@
 	"private-uploads-extensions-help": "Buraya gizli yapılacak dosya uzantıları listesini virgülle ayırarak giriniz. (ör. <code>pdf,xls,doc</code>). Boş bırakmak, tüm dosyaların gizli olacağı anlamına gelir.",
 	"resize-image-width-threshold": "Resize images if they are wider than specified width",
 	"resize-image-width-threshold-help": "(in pixels, default: 1520 pixels, set to 0 to disable)",
-	"resize-image-width": "Resize images down to specified width",
+	"resize-image-width": "Görüntüleri belirtilen genişliğe yeniden boyutlandır",
 	"resize-image-width-help": "(in pixels, default: 760 pixels, set to 0 to disable)",
 	"resize-image-quality": "Resimleri yeniden boyutlandırırken kullanılacak kalite",
 	"resize-image-quality-help": "Yeniden boyutlandırılan görüntülerin dosya boyutunu azaltmak için daha düşük bir kalite ayarı kullan.",

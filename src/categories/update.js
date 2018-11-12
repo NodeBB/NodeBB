@@ -92,6 +92,12 @@ module.exports = function (Categories) {
 		}
 		async.waterfall([
 			function (next) {
+				Categories.getChildrenCids(cid, next);
+			},
+			function (childrenCids, next) {
+				if (childrenCids.includes(parseInt(newParent, 10))) {
+					return next(new Error('[[error:cant-set-child-as-parent]]'));
+				}
 				Categories.getCategoryField(cid, 'parentCid', next);
 			},
 			function (oldParent, next) {

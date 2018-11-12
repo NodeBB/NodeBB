@@ -17,7 +17,11 @@ module.exports = function (privileges) {
 	privileges.topics.get = function (tid, uid, callback) {
 		uid = parseInt(uid, 10);
 		var topic;
-		var privs = ['topics:reply', 'topics:read', 'topics:tag', 'topics:delete', 'posts:edit', 'posts:history', 'posts:delete', 'posts:view_deleted', 'read', 'purge'];
+		var privs = [
+			'topics:reply', 'topics:read', 'topics:tag',
+			'topics:delete', 'posts:edit', 'posts:history',
+			'posts:delete', 'posts:view_deleted', 'read', 'purge',
+		];
 		async.waterfall([
 			async.apply(topics.getTopicFields, tid, ['cid', 'uid', 'locked', 'deleted']),
 			function (_topic, next) {
@@ -92,15 +96,15 @@ module.exports = function (privileges) {
 				var isModOf = {};
 				cids = cids.filter(function (cid, index) {
 					isModOf[cid] = results.isModerators[index];
-					return !results.categories[index].disabled &&
-						(results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
+					return !results.categories[index].disabled
+						&& (results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
 				});
 
 				const cidsSet = new Set(cids);
 
 				tids = topicsData.filter(function (topic) {
-					return cidsSet.has(topic.cid) &&
-						(!topic.deleted || results.isAdmin || isModOf[topic.cid]);
+					return cidsSet.has(topic.cid)
+						&& (!topic.deleted || results.isAdmin || isModOf[topic.cid]);
 				}).map(topic => topic.tid);
 
 				plugins.fireHook('filter:privileges.topics.filter', {
@@ -144,8 +148,8 @@ module.exports = function (privileges) {
 			},
 			function (results, next) {
 				uids = uids.filter(function (uid, index) {
-					return !results.disabled &&
-						((results.allowedTo[index] && !topicData.deleted) || results.isAdmins[index] || results.isModerators[index]);
+					return !results.disabled
+						&& ((results.allowedTo[index] && !topicData.deleted) || results.isAdmins[index] || results.isModerators[index]);
 				});
 
 				next(null, uids);
@@ -193,9 +197,9 @@ module.exports = function (privileges) {
 
 				var preventTopicDeleteAfterReplies = meta.config.preventTopicDeleteAfterReplies;
 				if (preventTopicDeleteAfterReplies && (topicData.postcount - 1) >= preventTopicDeleteAfterReplies) {
-					var langKey = preventTopicDeleteAfterReplies > 1 ?
-						'[[error:cant-delete-topic-has-replies, ' + meta.config.preventTopicDeleteAfterReplies + ']]' :
-						'[[error:cant-delete-topic-has-reply]]';
+					var langKey = preventTopicDeleteAfterReplies > 1
+						? '[[error:cant-delete-topic-has-replies, ' + meta.config.preventTopicDeleteAfterReplies + ']]'
+						: '[[error:cant-delete-topic-has-reply]]';
 					return next(new Error(langKey));
 				}
 

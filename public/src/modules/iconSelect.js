@@ -46,7 +46,8 @@ define('iconSelect', ['benchpress'], function (Benchpress) {
 						className: 'btn-primary',
 						callback: function () {
 							var iconClass = $('.bootbox .selected').attr('class');
-							var categoryIconClass = $('<div/>').addClass(iconClass).removeClass('fa').removeClass('selected').attr('class');
+							var categoryIconClass = $('<div/>').addClass(iconClass).removeClass('fa').removeClass('selected')
+								.attr('class');
 
 							if (categoryIconClass) {
 								el.attr('class', 'fa ' + (doubleSize ? 'fa-2x ' : '') + categoryIconClass);
@@ -117,4 +118,3 @@ define('iconSelect', ['benchpress'], function (Benchpress) {
 
 	return iconSelect;
 });
-

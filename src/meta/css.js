@@ -5,6 +5,7 @@ var nconf = require('nconf');
 var fs = require('fs');
 var path = require('path');
 var async = require('async');
+var rimraf = require('rimraf');
 
 var plugins = require('../plugins');
 var db = require('../database');
@@ -12,6 +13,12 @@ var file = require('../file');
 var minifier = require('./minifier');
 
 var CSS = module.exports;
+
+CSS.supportedSkins = [
+	'cerulean', 'cyborg', 'flatly', 'journal', 'lumen', 'paper', 'simplex',
+	'spacelab', 'united', 'cosmo', 'darkly', 'readable', 'sandstone',
+	'slate', 'superhero', 'yeti',
+];
 
 var buildImports = {
 	client: function (source) {
@@ -93,19 +100,31 @@ function getBundleMetadata(target, callback) {
 		path.join(__dirname, '../../public/vendor/fontawesome/less'),
 	];
 
+	// Skin support
+	let skin;
+	if (target.startsWith('client-')) {
+		skin = target.split('-')[1];
+
+		if (CSS.supportedSkins.includes(skin)) {
+			target = 'client';
+		}
+	}
+
 	async.waterfall([
 		function (next) {
 			if (target !== 'client') {
 				return next(null, null);
 			}
 
-			db.getObjectFields('config', ['theme:type', 'theme:id'], next);
+			db.getObjectFields('config', ['theme:type', 'theme:id', 'bootswatchSkin'], next);
 		},
 		function (themeData, next) {
 			if (target === 'client') {
 				var themeId = (themeData['theme:id'] || 'nodebb-theme-persona');
 				var baseThemePath = path.join(nconf.get('themes_path'), (themeData['theme:type'] && themeData['theme:type'] === 'local' ? themeId : 'nodebb-theme-vanilla'));
 				paths.unshift(baseThemePath);
+
+				themeData.bootswatchSkin = skin || themeData.bootswatchSkin;
 			}
 
 			async.parallel({
@@ -143,14 +162,24 @@ function getBundleMetadata(target, callback) {
 						},
 					], cb);
 				},
+				skin: function (cb) {
+					const skinImport = [];
+					if (themeData && themeData.bootswatchSkin) {
+						skinImport.push('\n@import "./bootswatch/' + themeData.bootswatchSkin + '/variables.less";');
+						skinImport.push('\n@import "./bootswatch/' + themeData.bootswatchSkin + '/bootswatch.less";');
+					}
+
+					cb(null, skinImport.join(''));
+				},
 			}, next);
 		},
 		function (result, next) {
+			var skinImport = result.skin;
 			var cssImports = result.css;
 			var lessImports = result.less;
 			var acpLessImports = result.acpLess;
 
-			var imports = cssImports + '\n' + lessImports + '\n' + acpLessImports;
+			var imports = skinImport + '\n' + cssImports + '\n' + lessImports + '\n' + acpLessImports;
 			imports = buildImports[target](imports);
 
 			next(null, { paths: paths, imports: imports });
@@ -161,6 +190,13 @@ function getBundleMetadata(target, callback) {
 CSS.buildBundle = function (target, fork, callback) {
 	async.waterfall([
 		function (next) {
+			if (target === 'client') {
+				rimraf(path.join(__dirname, '../../build/public/client*'), next);
+			} else {
+				setImmediate(next);
+			}
+		},
+		function (next) {
 			getBundleMetadata(target, next);
 		},
 		function (data, next) {
@@ -168,7 +204,7 @@ CSS.buildBundle = function (target, fork, callback) {
 			minifier.css.bundle(data.imports, data.paths, minify, fork, next);
 		},
 		function (bundle, next) {
-			var filename = (target === 'client' ? 'stylesheet' : 'admin') + '.css';
+			var filename = target + '.css';
 
 			fs.writeFile(path.join(__dirname, '../../build/public', filename), bundle.code, next);
 		},

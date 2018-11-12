@@ -38,7 +38,8 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 		$('.account').find('button[data-action="play"]').on('click', function (e) {
 			e.preventDefault();
 
-			var	soundName = $(this).parent().parent().find('select').val();
+			var	soundName = $(this).parent().parent().find('select')
+				.val();
 			sounds.playSound(soundName);
 		});
 
@@ -48,26 +49,20 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 	};
 
 	function changePageSkin(skinName) {
-		var css = $('#bootswatchCSS');
-		if (skinName === 'noskin' || (skinName === 'default' && config.defaultBootswatchSkin === 'noskin')) {
-			css.remove();
-		} else {
-			if (skinName === 'default') {
-				skinName = config.defaultBootswatchSkin;
-			}
-			var cssSource = '//maxcdn.bootstrapcdn.com/bootswatch/3.3.7/' + skinName + '/bootstrap.min.css';
-			if (css.length) {
-				css.attr('href', cssSource);
-			} else {
-				css = $('<link id="bootswatchCSS" href="' + cssSource + '" rel="stylesheet" media="screen">');
-				$('head').append(css);
-			}
-		}
+		var clientEl = Array.prototype.filter.call(document.querySelectorAll('link[rel="stylesheet"]'), function (el) {
+			return el.href.indexOf(config.relative_path + '/assets/client') !== -1;
+		})[0] || null;
+
+		// Update client.css link element to point to selected skin variant
+		clientEl.href = config.relative_path + '/assets/client' + (skinName ? '-' + skinName : '') + '.css';
 
 		var currentSkinClassName = $('body').attr('class').split(/\s+/).filter(function (className) {
 			return className.startsWith('skin-');
 		});
-		$('body').removeClass(currentSkinClassName.join(' ')).addClass('skin-' + skinName);
+		$('body').removeClass(currentSkinClassName.join(' '));
+		if (skinName) {
+			$('body').addClass('skin-' + skinName);
+		}
 	}
 
 	function loadSettings() {

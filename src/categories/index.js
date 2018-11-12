@@ -2,6 +2,7 @@
 'use strict';
 
 var async = require('async');
+var _ = require('lodash');
 
 var db = require('../database');
 var user = require('../user');
@@ -157,9 +158,7 @@ Categories.getCategories = function (cids, uid, callback) {
 };
 
 Categories.getTagWhitelist = function (cids, callback) {
-	var keys = cids.map(function (cid) {
-		return 'cid:' + cid + ':tag:whitelist';
-	});
+	const keys = cids.map(cid => 'cid:' + cid + ':tag:whitelist');
 	db.getSortedSetsMembers(keys, callback);
 };
 
@@ -205,9 +204,8 @@ Categories.getParents = function (cids, callback) {
 			Categories.getCategoriesData(parentCids, next);
 		},
 		function (parentData, next) {
-			parentData = categoriesData.map(function (category) {
-				return parentData[parentCids.indexOf(category.parentCid)];
-			});
+			const cidToParent = _.zipObject(parentCids, parentData);
+			parentData = categoriesData.map(category => cidToParent[category.parentCid]);
 			next(null, parentData);
 		},
 	], callback);
@@ -219,11 +217,15 @@ Categories.getChildren = function (cids, uid, callback) {
 	});
 
 	async.each(categories, function (category, next) {
-		getChildrenRecursive(category, uid, next);
+		Categories.getCategoryField(category.cid, 'parentCid', function (err, parentCid) {
+			if (err) {
+				return next(err);
+			}
+			category.parentCid = parentCid;
+			getChildrenRecursive(category, uid, next);
+		});
 	}, function (err) {
-		callback(err, categories.map(function (c) {
-			return c && c.children;
-		}));
+		callback(err, categories.map(c => c && c.children));
 	});
 };
 
@@ -263,11 +265,37 @@ function getChildrenRecursive(category, uid, callback) {
 		},
 		function (next) {
 			async.each(category.children, function (child, next) {
+				if (parseInt(category.parentCid, 10) === parseInt(child.cid, 10)) {
+					return next();
+				}
 				getChildrenRecursive(child, uid, next);
 			}, next);
 		},
 	], callback);
 }
+
+Categories.getChildrenCids = function (rootCid, callback) {
+	var allCids = [];
+	function recursive(currentCid, callback) {
+		db.getSortedSetRange('cid:' + currentCid + ':children', 0, -1, function (err, childrenCids) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (!childrenCids.length) {
+				return callback();
+			}
+			async.eachSeries(childrenCids, function (childCid, next) {
+				allCids.push(parseInt(childCid, 10));
+				recursive(childCid, next);
+			}, callback);
+		});
+	}
+
+	recursive(rootCid, function (err) {
+		callback(err, _.uniq(allCids));
+	});
+};
 
 Categories.flattenCategories = function (allCategories, categoryData) {
 	categoryData.forEach(function (category) {
@@ -353,9 +381,7 @@ Categories.filterIgnoringUids = function (cid, uids, callback) {
 			db.isSortedSetMembers('cid:' + cid + ':ignorers', uids, next);
 		},
 		function (isIgnoring, next) {
-			var readingUids = uids.filter(function (uid, index) {
-				return uid && !isIgnoring[index];
-			});
+			const readingUids = uids.filter((uid, index) => uid && !isIgnoring[index]);
 			next(null, readingUids);
 		},
 	], callback);

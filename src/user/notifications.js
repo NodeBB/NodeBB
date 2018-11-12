@@ -13,8 +13,8 @@ var utils = require('../utils');
 var UserNotifications = module.exports;
 
 UserNotifications.get = function (uid, callback) {
-	if (!parseInt(uid, 10)) {
-		return callback(null, { read: [], unread: [] });
+	if (parseInt(uid, 10) <= 0) {
+		return setImmediate(callback, null, { read: [], unread: [] });
 	}
 	async.waterfall([
 		function (next) {
@@ -177,8 +177,8 @@ UserNotifications.getDailyUnread = function (uid, callback) {
 };
 
 UserNotifications.getUnreadCount = function (uid, callback) {
-	if (!parseInt(uid, 10)) {
-		return callback(null, 0);
+	if (parseInt(uid, 10) <= 0) {
+		return setImmediate(callback, null, 0);
 	}
 
 	async.waterfall([
@@ -240,8 +240,8 @@ UserNotifications.getUnreadByField = function (uid, field, values, callback) {
 };
 
 UserNotifications.deleteAll = function (uid, callback) {
-	if (!parseInt(uid, 10)) {
-		return callback();
+	if (parseInt(uid, 10) <= 0) {
+		return setImmediate(callback);
 	}
 	async.parallel([
 		function (next) {

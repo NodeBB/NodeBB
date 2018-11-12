@@ -19,7 +19,7 @@ SocketGroups.before = function (socket, method, data, next) {
 };
 
 SocketGroups.join = function (socket, data, callback) {
-	if (!parseInt(socket.uid, 10)) {
+	if (socket.uid <= 0) {
 		return callback(new Error('[[error:invalid-uid]]'));
 	}
 
@@ -60,7 +60,7 @@ SocketGroups.join = function (socket, data, callback) {
 };
 
 SocketGroups.leave = function (socket, data, callback) {
-	if (!parseInt(socket.uid, 10)) {
+	if (socket.uid <= 0) {
 		return callback(new Error('[[error:invalid-uid]]'));
 	}
 
@@ -249,10 +249,10 @@ SocketGroups.create = function (socket, data, callback) {
 };
 
 SocketGroups.delete = isOwner(function (socket, data, callback) {
-	if (data.groupName === 'administrators' ||
-		data.groupName === 'registered-users' ||
-		data.groupName === 'guests' ||
-		data.groupName === 'Global Moderators') {
+	if (data.groupName === 'administrators'
+		|| data.groupName === 'registered-users'
+		|| data.groupName === 'guests'
+		|| data.groupName === 'Global Moderators') {
 		return callback(new Error('[[error:not-allowed]]'));
 	}
 

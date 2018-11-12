@@ -7,7 +7,7 @@
     "403.login": "Morda bi se raje <a href='%1/login'>prijavili</a>?",
     "404.title": "Tega ni bilo mogoče najti.",
     "404.message": "Kaže, da ste naleteli na stran, ki ne obstaja. Vrnite se na <a href='%1/'>začetno stran</a>.",
-    "500.title": "Internal Error.",
+    "500.title": "Interna napaka",
     "500.message": "Ups! Nekaj je šlo narobe!",
     "400.title": "Napačna zahteva",
     "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a href='%1/'>home page</a>.",

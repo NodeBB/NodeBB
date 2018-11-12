@@ -144,8 +144,8 @@ module.exports = function (Posts) {
 	};
 
 	Posts.isModerator = function (pids, uid, callback) {
-		if (!parseInt(uid, 10)) {
-			return callback(null, pids.map(function () { return false; }));
+		if (parseInt(uid, 10) <= 0) {
+			return setImmediate(callback, null, pids.map(() => false));
 		}
 		Posts.getCidsByPids(pids, function (err, cids) {
 			if (err) {

@@ -54,4 +54,3 @@ function sendSitemap(method, res, callback) {
 		},
 	], callback);
 }
-

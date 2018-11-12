@@ -181,8 +181,8 @@
 						cursor += 1;
 					// a space or comma was found before the name
 					// this isn't a translation string, so back out
-					} else if (!(textBeforeColonFound && colonFound && textAfterColonFound && commaAfterNameFound) &&
-							invalidTextRegex.test(char0)) {
+					} else if (!(textBeforeColonFound && colonFound && textAfterColonFound && commaAfterNameFound)
+							&& invalidTextRegex.test(char0)) {
 						cursor += 1;
 						lastBreak -= 2;
 						// no longer in a token

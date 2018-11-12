@@ -76,8 +76,8 @@ module.exports = function (privileges) {
 	};
 
 	privileges.categories.isAdminOrMod = function (cid, uid, callback) {
-		if (!parseInt(uid, 10)) {
-			return callback(null, false);
+		if (parseInt(uid, 10) <= 0) {
+			return setImmediate(callback, null, false);
 		}
 		helpers.some([
 			function (next) {
@@ -141,8 +141,8 @@ module.exports = function (privileges) {
 			},
 			function (results, next) {
 				cids = cids.filter(function (cid, index) {
-					return !results.categories[index].disabled &&
-						(results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
+					return !results.categories[index].disabled
+						&& (results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
 				});
 
 				next(null, cids.filter(Boolean));

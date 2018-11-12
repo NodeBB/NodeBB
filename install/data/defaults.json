@@ -13,7 +13,7 @@
     "postEditDuration": 0,
     "postDeleteDuration": 0,
     "enablePostHistory": 1,
-    "postCacheSize": 5242880,
+    "postCacheSize": 10485760,
     "disableChat": 0,
     "chatEditDuration": 0,
     "chatDeleteDuration": 0,
@@ -110,6 +110,7 @@
     "hsts-subdomains": 0,
     "hsts-preload": 0,
     "hsts-enabled": 0,
+    "eventLoopCheckEnabled": 1,
     "eventLoopLagThreshold": 100,
     "eventLoopInterval": 500,
     "onlineCutoff": 30

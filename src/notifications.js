@@ -357,16 +357,16 @@ Notifications.rescind = function (nid, callback) {
 
 Notifications.markRead = function (nid, uid, callback) {
 	callback = callback || function () {};
-	if (!parseInt(uid, 10) || !nid) {
-		return callback();
+	if (parseInt(uid, 10) <= 0 || !nid) {
+		return setImmediate(callback);
 	}
 	Notifications.markReadMultiple([nid], uid, callback);
 };
 
 Notifications.markUnread = function (nid, uid, callback) {
 	callback = callback || function () {};
-	if (!parseInt(uid, 10) || !nid) {
-		return callback();
+	if (parseInt(uid, 10) <= 0 || !nid) {
+		return setImmediate(callback);
 	}
 	async.waterfall([
 		function (next) {

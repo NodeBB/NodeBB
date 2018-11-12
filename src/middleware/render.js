@@ -89,11 +89,11 @@ module.exports = function (middleware) {
 					}, next);
 				},
 				function (results, next) {
-					var str = results.header +
-						(res.locals.postHeader || '') +
-						results.content + '<script id="ajaxify-data"></script>' +
-						(res.locals.preFooter || '') +
-						results.footer;
+					var str = results.header
+						+ (res.locals.postHeader || '')
+						+ results.content + '<script id="ajaxify-data"></script>'
+						+ (res.locals.preFooter || '')
+						+ results.footer;
 
 					translate(str, req, res, next);
 				},

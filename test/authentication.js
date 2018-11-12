@@ -518,4 +518,3 @@ describe('authentication', function () {
 		], done);
 	});
 });
-

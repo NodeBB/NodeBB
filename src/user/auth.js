@@ -13,7 +13,7 @@ module.exports = function (User) {
 	User.auth = {};
 
 	User.auth.logAttempt = function (uid, ip, callback) {
-		if (!parseInt(uid, 10)) {
+		if (parseInt(uid, 10) <= 0) {
 			return setImmediate(callback);
 		}
 		async.waterfall([
@@ -49,8 +49,8 @@ module.exports = function (User) {
 	};
 
 	User.auth.getFeedToken = function (uid, callback) {
-		if (!uid) {
-			return callback();
+		if (parseInt(uid, 10) <= 0) {
+			return setImmediate(callback);
 		}
 		var token;
 		async.waterfall([
@@ -109,9 +109,9 @@ module.exports = function (User) {
 				var expired;
 
 				sessions = sessions.filter(function (sessionObj, idx) {
-					expired = !sessionObj || !sessionObj.hasOwnProperty('passport') ||
-						!sessionObj.passport.hasOwnProperty('user')	||
-						parseInt(sessionObj.passport.user, 10) !== parseInt(uid, 10);
+					expired = !sessionObj || !sessionObj.hasOwnProperty('passport')
+						|| !sessionObj.passport.hasOwnProperty('user')
+						||	parseInt(sessionObj.passport.user, 10) !== parseInt(uid, 10);
 
 					if (expired) {
 						expiredSids.push(_sids[idx]);

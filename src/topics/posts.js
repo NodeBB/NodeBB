@@ -63,6 +63,7 @@ module.exports = function (Topics) {
 				}
 			});
 			const uids = Object.keys(uidsMap);
+
 			async.waterfall([
 				function (next) {
 					method(uids, next);
@@ -110,7 +111,7 @@ module.exports = function (Topics) {
 						postObj.downvoted = results.voteData.downvotes[i];
 						postObj.votes = postObj.votes || 0;
 						postObj.replies = results.replies[i];
-						postObj.selfPost = !!parseInt(uid, 10) && parseInt(uid, 10) === postObj.uid;
+						postObj.selfPost = parseInt(uid, 10) > 0 && parseInt(uid, 10) === postObj.uid;
 
 						// Username override for guests, if enabled
 						if (meta.config.allowGuestHandles && postObj.uid === 0 && postObj.handle) {
@@ -130,7 +131,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.modifyPostsByPrivilege = function (topicData, topicPrivileges) {
-		var loggedIn = !!parseInt(topicPrivileges.uid, 10);
+		var loggedIn = parseInt(topicPrivileges.uid, 10) > 0;
 		topicData.posts.forEach(function (post) {
 			if (post) {
 				post.display_edit_tools = topicPrivileges.isAdminOrMod || (post.selfPost && topicPrivileges['posts:edit']);
@@ -151,7 +152,7 @@ module.exports = function (Topics) {
 		}).filter(Boolean);
 
 		if (!parentPids.length) {
-			return callback();
+			return setImmediate(callback);
 		}
 
 		var parentPosts;
@@ -159,9 +160,7 @@ module.exports = function (Topics) {
 			async.apply(posts.getPostsFields, parentPids, ['uid']),
 			function (_parentPosts, next) {
 				parentPosts = _parentPosts;
-				var parentUids = _.uniq(parentPosts.map(function (postObj) {
-					return postObj && parseInt(postObj.uid, 10);
-				}));
+				var parentUids = _.uniq(parentPosts.map(postObj => postObj && postObj.uid));
 
 				user.getUsersFields(parentUids, ['username'], next);
 			},
@@ -391,9 +390,7 @@ module.exports = function (Topics) {
 		var uniquePids;
 		async.waterfall([
 			function (next) {
-				var keys = pids.map(function (pid) {
-					return 'pid:' + pid + ':replies';
-				});
+				const keys = pids.map(pid => 'pid:' + pid + ':replies');
 				db.getSortedSetsMembers(keys, next);
 			},
 			function (arrayOfPids, next) {
@@ -405,9 +402,7 @@ module.exports = function (Topics) {
 			},
 			function (_replyData, next) {
 				replyData = _replyData;
-				var uids = replyData.map(function (replyData) {
-					return replyData && replyData.uid;
-				});
+				const uids = replyData.map(replyData => replyData && replyData.uid);
 
 				uniqueUids = _.uniq(uids);
 

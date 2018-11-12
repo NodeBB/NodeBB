@@ -217,4 +217,3 @@ Upgrade.incrementProgress = function (value) {
 	readline.cursorTo(process.stdout, 0);
 	process.stdout.write('    [' + (filled ? new Array(filled).join('#') : '') + new Array(unfilled).join(' ') + '] (' + this.current + '/' + (this.total || '??') + ') ' + percentage + ' ');
 };
-
