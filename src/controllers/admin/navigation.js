@@ -1,7 +1,6 @@
 'use strict';
 
 var async = require('async');
-const _ = require('lodash');
 
 var navigationAdmin = require('../../navigation/admin');
 const groups = require('../../groups');
