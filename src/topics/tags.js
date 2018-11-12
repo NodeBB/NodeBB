@@ -277,9 +277,7 @@ module.exports = function (Topics) {
 				topicTags = _topicTags;
 				uniqueTopicTags = _.uniq(_.flatten(topicTags));
 
-				var tags = uniqueTopicTags.map(function (tag) {
-					return { value: tag };
-				});
+				var tags = uniqueTopicTags.map(tag => ({ value: tag }));
 
 				async.parallel({
 					tagData: function (next) {

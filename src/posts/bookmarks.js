@@ -15,7 +15,7 @@ module.exports = function (Posts) {
 	};
 
 	function toggleBookmark(type, pid, uid, callback) {
-		if (!parseInt(uid, 10)) {
+		if (parseInt(uid, 10) <= 0) {
 			return callback(new Error('[[error:not-logged-in]]'));
 		}
 
@@ -85,9 +85,9 @@ module.exports = function (Posts) {
 	}
 
 	Posts.hasBookmarked = function (pid, uid, callback) {
-		if (!parseInt(uid, 10)) {
+		if (parseInt(uid, 10) <= 0) {
 			if (Array.isArray(pid)) {
-				callback(null, pid.map(function () { return false; }));
+				callback(null, pid.map(() => false));
 			} else {
 				callback(null, false);
 			}
@@ -95,10 +95,7 @@ module.exports = function (Posts) {
 		}
 
 		if (Array.isArray(pid)) {
-			var sets = pid.map(function (pid) {
-				return 'pid:' + pid + ':users_bookmarked';
-			});
-
+			var sets = pid.map(pid => 'pid:' + pid + ':users_bookmarked');
 			db.isMemberOfSets(sets, uid, callback);
 		} else {
 			db.isSetMember('pid:' + pid + ':users_bookmarked', uid, callback);

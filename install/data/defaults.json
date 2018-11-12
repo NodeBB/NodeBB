@@ -110,6 +110,7 @@
     "hsts-subdomains": 0,
     "hsts-preload": 0,
     "hsts-enabled": 0,
+    "eventLoopCheckEnabled": 1,
     "eventLoopLagThreshold": 100,
     "eventLoopInterval": 500,
     "onlineCutoff": 30

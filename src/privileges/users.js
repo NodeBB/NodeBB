@@ -38,7 +38,7 @@ module.exports = function (privileges) {
 	};
 
 	function isModeratorOfCategories(cids, uid, callback) {
-		if (!parseInt(uid, 10)) {
+		if (parseInt(uid, 10) <= 0) {
 			return filterIsModerator(cids, uid, cids.map(function () { return false; }), callback);
 		}
 		var uniqueCids;

@@ -85,8 +85,8 @@ module.exports = function (Posts) {
 	};
 
 	Posts.hasVoted = function (pid, uid, callback) {
-		if (!parseInt(uid, 10)) {
-			return callback(null, { upvoted: false, downvoted: false });
+		if (parseInt(uid, 10) <= 0) {
+			return setImmediate(callback, null, { upvoted: false, downvoted: false });
 		}
 		async.waterfall([
 			function (next) {
@@ -99,9 +99,9 @@ module.exports = function (Posts) {
 	};
 
 	Posts.getVoteStatusByPostIDs = function (pids, uid, callback) {
-		if (!parseInt(uid, 10)) {
-			var data = pids.map(function () { return false; });
-			return callback(null, { upvotes: data, downvotes: data });
+		if (parseInt(uid, 10) <= 0) {
+			var data = pids.map(() => false);
+			return setImmediate(callback, null, { upvotes: data, downvotes: data });
 		}
 		var upvoteSets = [];
 		var downvoteSets = [];
@@ -110,15 +110,17 @@ module.exports = function (Posts) {
 			upvoteSets.push('pid:' + pids[i] + ':upvote');
 			downvoteSets.push('pid:' + pids[i] + ':downvote');
 		}
-
-		async.parallel({
-			upvotes: function (next) {
-				db.isMemberOfSets(upvoteSets, uid, next);
+		async.waterfall([
+			function (next) {
+				db.isMemberOfSets(upvoteSets.concat(downvoteSets), uid, next);
 			},
-			downvotes: function (next) {
-				db.isMemberOfSets(downvoteSets, uid, next);
+			function (data, next) {
+				next(null, {
+					upvotes: data.slice(0, pids.length),
+					downvotes: data.slice(pids.length, pids.length * 2),
+				});
 			},
-		}, callback);
+		], callback);
 	};
 
 	Posts.getUpvotedUidsByPids = function (pids, callback) {

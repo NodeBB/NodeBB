@@ -62,10 +62,10 @@ middleware.pageView = function (req, res, next) {
 			user.updateOnlineUsers(req.uid, next);
 		} else {
 			user.updateOnlineUsers(req.uid);
-			next();
+			setImmediate(next);
 		}
 	} else {
-		next();
+		setImmediate(next);
 	}
 };
 
@@ -156,11 +156,11 @@ middleware.privateUploads = function (req, res, next) {
 };
 
 middleware.busyCheck = function (req, res, next) {
-	if (global.env === 'production' && (!meta.config.hasOwnProperty('eventLoopCheckEnabled') || meta.config.eventLoopCheckEnabled) && toobusy()) {
+	if (global.env === 'production' && meta.config.eventLoopCheckEnabled && toobusy()) {
 		analytics.increment('errors:503');
 		res.status(503).type('text/html').sendFile(path.join(__dirname, '../../public/503.html'));
 	} else {
-		next();
+		setImmediate(next);
 	}
 };
 

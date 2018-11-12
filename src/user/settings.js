@@ -10,7 +10,7 @@ var notifications = require('../notifications');
 
 module.exports = function (User) {
 	User.getSettings = function (uid, callback) {
-		if (!parseInt(uid, 10)) {
+		if (parseInt(uid, 10) <= 0) {
 			return onSettingsLoaded(0, {}, callback);
 		}
 
@@ -181,7 +181,7 @@ module.exports = function (User) {
 	};
 
 	User.setSetting = function (uid, key, value, callback) {
-		if (!parseInt(uid, 10)) {
+		if (parseInt(uid, 10) <= 0) {
 			return setImmediate(callback);
 		}
 

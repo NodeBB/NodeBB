@@ -18,7 +18,7 @@ module.exports = function (User) {
 	var deletesInProgress = {};
 
 	User.delete = function (callerUid, uid, callback) {
-		if (!parseInt(uid, 10)) {
+		if (parseInt(uid, 10) <= 0) {
 			return setImmediate(callback, new Error('[[error:invalid-uid]]'));
 		}
 		if (deletesInProgress[uid]) {

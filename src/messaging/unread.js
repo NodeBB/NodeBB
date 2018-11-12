@@ -7,14 +7,14 @@ var sockets = require('../socket.io');
 
 module.exports = function (Messaging) {
 	Messaging.getUnreadCount = function (uid, callback) {
-		if (!parseInt(uid, 10)) {
-			return callback(null, 0);
+		if (parseInt(uid, 10) <= 0) {
+			return setImmediate(callback, null, 0);
 		}
 		db.sortedSetCard('uid:' + uid + ':chat:rooms:unread', callback);
 	};
 
 	Messaging.pushUnreadCount = function (uid) {
-		if (!parseInt(uid, 10)) {
+		if (parseInt(uid, 10) <= 0) {
 			return;
 		}
 		Messaging.getUnreadCount(uid, function (err, unreadCount) {

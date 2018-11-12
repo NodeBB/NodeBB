@@ -94,7 +94,7 @@ module.exports = function (User) {
 				User.incrementUserFieldBy(uid, 'postcount', value, next);
 			},
 			function (newpostcount, next) {
-				if (!parseInt(uid, 10)) {
+				if (parseInt(uid, 10) <= 0) {
 					return next();
 				}
 				db.sortedSetAdd('users:postcount', newpostcount, uid, next);

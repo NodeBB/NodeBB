@@ -13,7 +13,7 @@ module.exports = function (User) {
 	User.auth = {};
 
 	User.auth.logAttempt = function (uid, ip, callback) {
-		if (!parseInt(uid, 10)) {
+		if (parseInt(uid, 10) <= 0) {
 			return setImmediate(callback);
 		}
 		async.waterfall([
@@ -49,8 +49,8 @@ module.exports = function (User) {
 	};
 
 	User.auth.getFeedToken = function (uid, callback) {
-		if (!uid) {
-			return callback();
+		if (parseInt(uid, 10) <= 0) {
+			return setImmediate(callback);
 		}
 		var token;
 		async.waterfall([

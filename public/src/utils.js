@@ -513,7 +513,7 @@
 			timestamp = Math.min(timestamp, 8640000000000000);
 
 			try {
-				return Date.prototype.toISOString ? new Date(parseInt(timestamp, 10)).toISOString() : timestamp;
+				return new Date(parseInt(timestamp, 10)).toISOString();
 			} catch (e) {
 				return timestamp;
 			}

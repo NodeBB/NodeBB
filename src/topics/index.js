@@ -159,8 +159,7 @@ Topics.getTopicWithPosts = function (topicData, set, uid, start, stop, reverse, 
 				category: async.apply(categories.getCategoryData, topicData.cid),
 				tagWhitelist: async.apply(categories.getTagWhitelist, [topicData.cid]),
 				threadTools: async.apply(plugins.fireHook, 'filter:topic.thread_tools', { topic: topicData, uid: uid, tools: [] }),
-				isFollowing: async.apply(Topics.isFollowing, [topicData.tid], uid),
-				isIgnoring: async.apply(Topics.isIgnoring, [topicData.tid], uid),
+				followData: async.apply(Topics.getFollowData, [topicData.tid], uid),
 				bookmark: async.apply(Topics.getUserBookmark, topicData.tid, uid),
 				postSharing: async.apply(social.getActivePostSharing),
 				deleter: async.apply(getDeleter, topicData),
@@ -183,9 +182,9 @@ Topics.getTopicWithPosts = function (topicData, set, uid, start, stop, reverse, 
 			topicData.category = results.category;
 			topicData.tagWhitelist = results.tagWhitelist[0];
 			topicData.thread_tools = results.threadTools.tools;
-			topicData.isFollowing = results.isFollowing[0];
-			topicData.isNotFollowing = !results.isFollowing[0] && !results.isIgnoring[0];
-			topicData.isIgnoring = results.isIgnoring[0];
+			topicData.isFollowing = results.followData[0].following;
+			topicData.isNotFollowing = !results.followData[0].following && !results.followData[0].ignoring;
+			topicData.isIgnoring = results.followData[0].ignoring;
 			topicData.bookmark = results.bookmark;
 			topicData.postSharing = results.postSharing;
 			topicData.deleter = results.deleter;
