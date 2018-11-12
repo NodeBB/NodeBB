@@ -39,7 +39,7 @@ module.exports = function (privileges) {
 
 	function isModeratorOfCategories(cids, uid, callback) {
 		if (parseInt(uid, 10) <= 0) {
-			return filterIsModerator(cids, uid, cids.map(function () { return false; }), callback);
+			return filterIsModerator(cids, uid, cids.map(() => false), callback);
 		}
 		var uniqueCids;
 		async.waterfall([
