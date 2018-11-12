@@ -14,7 +14,7 @@ module.exports = {
 			},
 			function (data, next) {
 				data.forEach(function (navItem) {
-					if (navItem) {
+					if (navItem && navItem.properties) {
 						navItem.groups = [];
 						if (navItem.properties.adminOnly) {
 							navItem.groups.push('administrators');
