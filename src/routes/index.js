@@ -110,9 +110,9 @@ module.exports = function (app, middleware, callback) {
 	app.use(middleware.stripLeadingSlashes);
 
 	// handle custom homepage routes
-	app.use(relativePath, controllers.home.rewrite);
+	router.use('/', controllers.home.rewrite);
 	// homepage handled by `action:homepage.get:[route]`
-	setupPageRoute(app, '/', middleware, [], controllers.home.pluginHook);
+	setupPageRoute(router, '/', middleware, [], controllers.home.pluginHook);
 
 	adminRoutes(router, middleware, controllers);
 	metaRoutes(router, middleware, controllers);
