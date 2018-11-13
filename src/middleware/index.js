@@ -28,6 +28,10 @@ var delayCache = LRU({
 
 var middleware = module.exports;
 
+middleware.regexes = {
+	timestampedUpload: /^\d+-.+$/,
+};
+
 middleware.applyCSRF = csrf();
 
 middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login');
@@ -217,4 +221,15 @@ middleware.buildSkinAsset = function (req, res, next) {
 	} else {
 		setImmediate(next);
 	}
+};
+
+middleware.trimUploadTimestamps = (req, res, next) => {
+	// Check match
+	let basename = path.basename(req.path);
+	if (req.path.startsWith('/uploads/files/') && middleware.regexes.timestampedUpload.test(basename)) {
+		basename = basename.slice(14);
+		res.header('Content-Disposition', 'inline; filename="' + basename + '"');
+	}
+
+	return next();
 };

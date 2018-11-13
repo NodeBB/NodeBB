@@ -159,7 +159,7 @@ module.exports = function (app, middleware, callback) {
 	});
 
 	statics.forEach(function (obj) {
-		app.use(relativePath + obj.route, express.static(obj.path, staticOptions));
+		app.use(relativePath + obj.route, middleware.trimUploadTimestamps, express.static(obj.path, staticOptions));
 	});
 	app.use(relativePath + '/uploads', function (req, res) {
 		res.redirect(relativePath + '/assets/uploads' + req.path + '?' + meta.config['cache-buster']);
