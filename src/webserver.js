@@ -44,6 +44,7 @@ if (nconf.get('ssl')) {
 }
 
 module.exports.server = server;
+module.exports.app = app;
 
 server.on('error', function (err) {
 	if (err.code === 'EADDRINUSE') {
