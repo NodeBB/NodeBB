@@ -6,9 +6,9 @@
 			</p>
 
 			<p class="lead">
-				Currently viewing privileges for
+				[[admin/manage/categories:privileges.category-selector]]
 				<button type="button" id="category-selector" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-					{selected}
+					{selected} <i class="fa fa-angle-down"></i>
 				</button>
 
 				<ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="category-selector">
