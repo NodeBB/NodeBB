@@ -4,10 +4,10 @@
 	"private": "Hochgeladene Dateien privatisieren",
 	"private-extensions": "Private Dateiendungen",
 	"private-uploads-extensions-help": "Gib eine Komma-Separierte Liste mit Dateiendungen an, die privatisiert werden sollen (z.B. <code>pdf,xls,doc</code>). Eine leere Liste bedeutet, dass alle Dateien privat sind.",
-	"resize-image-width-threshold": "Resize images if they are wider than specified width",
-	"resize-image-width-threshold-help": "(in pixels, default: 1520 pixels, set to 0 to disable)",
-	"resize-image-width": "Resize images down to specified width",
-	"resize-image-width-help": "(in pixels, default: 760 pixels, set to 0 to disable)",
+	"resize-image-width-threshold": "Bilder zu einer bestimmten Breite runterskalieren wenn sie breiter sind als die angegebene Breite.",
+	"resize-image-width-threshold-help": "(in Pixeln, standardmäßig 1520 Pixel, auf 0 setzen um zu deaktivieren)",
+	"resize-image-width": "Bilder zu einer bestimmten Breite runterskalieren",
+	"resize-image-width-help": "(in Pixeln, standardmäßig 760 Pixel, auf 0 setzen um zu deaktivieren)",
 	"resize-image-quality": "Zu benutzende Qualität beim verändern von Bildauflösungen",
 	"resize-image-quality-help": "Benutze eine niedrigere Qualitätseinstellung um die Dateigröße der gespeicherten Bilder zu minimieren.",
 	"max-file-size": "Maximale Dateigröße (in KiB)",
@@ -34,5 +34,5 @@
 	"keep-all-user-images": "Alte Avatar- und Deckbild-Versionen auf dem Server lassen",
 	"profile-covers": "Profil Deckbilder",
 	"default-covers": "Standard Profil-Deckbilder",
-	"default-covers-help": "Komma-getrennte standard Deckbilder für Accounts, die kein Deckbild hochgeladen haben"
+	"default-covers-help": "Komma-getrennte Standard-Deckbilder für Konten, die kein Deckbild hochgeladen haben"
 }

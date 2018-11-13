@@ -12,5 +12,5 @@
 	"custom-header.enable": "Benutzerdefinierten Header aktivieren",
 
 	"custom-css.livereload": "Live-Aktualisierung aktivieren",
-	"custom-css.livereload.description": "Aktiviere diese Einstellung um alle Sessions auf allen Geräten mit deinem Account dazu zu zwingen Neuzulaladen wenn du Speichern drückst"
+	"custom-css.livereload.description": "Aktiviere diese Einstellung um alle Sitzungen auf allen Geräten mit deinem Konto dazu zu zwingen Neuzuladen sobald du \"Speichern\" drückst"
 }

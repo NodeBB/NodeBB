@@ -1,6 +1,6 @@
 {
 	"lead": "Konfiguriere hier deine IP-Blacklist",
-	"description": "Manchmal ist ein User-Bann nicht abschreckend genug. In vielen Fällen ist es daher sinvoll, den Zugriff auf ein Forum für eine bestimmte Reihe von IP-Adressen zu blockieren. In diesen Fällen können Sie problematische IP-Adressen oder komplette CIDR Blöcke zu dieser Blacklist hinzufügen, welche dann daran gehindert werden sich einzuloggen, oder einen neuen Account zu erstellen.",
+	"description": "Manchmal ist eine User-Sperrung nicht abschreckend genug. In vielen Fällen ist es daher sinnvoll, den Zugriff auf ein Forum für eine bestimmte Reihe von IP-Adressen zu blockieren. In diesen Fällen können Sie problematische IP-Adressen oder komplette CIDR Blöcke zu dieser Blacklist hinzufügen, welche dann daran gehindert werden sich einzuloggen, oder ein neues Konto zu erstellen.",
 	"active-rules": "Aktive Regeln",
 	"validate": "Blacklist validieren",
 	"apply": "Blacklist anwenden",
