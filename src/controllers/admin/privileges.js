@@ -39,10 +39,10 @@ privilegesController.get = function (req, res, callback) {
 			data.allCategories.forEach(function (category) {
 				if (category) {
 					category.selected = category.cid === cid;
-				}
 
-				if (category.selected) {
-					data.selected = category;
+					if (category.selected) {
+						data.selected = category;
+					}
 				}
 			});
 
