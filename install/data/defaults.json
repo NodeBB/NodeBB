@@ -113,5 +113,6 @@
     "eventLoopCheckEnabled": 1,
     "eventLoopLagThreshold": 100,
     "eventLoopInterval": 500,
-    "onlineCutoff": 30
+    "onlineCutoff": 30,
+    "timeagoCutoff": 30
 }

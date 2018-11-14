@@ -5,7 +5,11 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 	var index = 1;
 	var count = 0;
 	var navigatorUpdateTimeoutId;
-	var tooltipEl;
+
+	var touchTooltipEl;
+	var touchIntervalId;
+	var touchX;
+	var touchIndex;
 
 	navigator.scrollActive = false;
 
@@ -58,25 +62,28 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		});
 
 		$('.pagination-block.visible-xs').on('touchstart', function (e) {
-			$(this).tooltip('show');
-			tooltipEl = $(this).next();
-			var x = Math.min($(window).width(), Math.max(0, e.touches[0].clientX));
-			updateTooltip(x);
+			touchTooltipEl = $('.navigator-thumb');
+			touchTooltipEl.removeClass('hidden');
+			touchX = Math.min($(window).width(), Math.max(0, e.touches[0].clientX));
+			updateTooltip();
+			touchIntervalId = setInterval(updateTooltip, 100);
 		}).on('touchmove', function (e) {
 			e.preventDefault();
 			e.stopPropagation();
 			var windowWidth = $(window).width();
-			var x = Math.min(windowWidth, Math.max(0, e.touches[0].clientX));
-			var percent = x / windowWidth;
-			var newIndex = Math.max(1, Math.floor(count * percent));
-			if (newIndex === index) {
-				return;
-			}
-			index = newIndex;
+			touchX = Math.min(windowWidth, Math.max(0, e.touches[0].clientX));
+			var percent = touchX / windowWidth;
+			index = Math.max(1, Math.ceil(count * percent));
+			index = index > count ? count : index;
+
 			navigator.updateTextAndProgressBar();
-			updateTooltip(x);
 		}).on('touchend', function () {
-			$(this).tooltip('hide');
+			if (touchIntervalId) {
+				clearInterval(touchIntervalId);
+				touchIntervalId = 0;
+			}
+
+			touchTooltipEl.addClass('hidden');
 			navigator.scrollToIndex(index - 1, true, 0);
 		});
 
@@ -86,10 +93,28 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		navigator.update(0);
 	};
 
-	function updateTooltip(x) {
-		var relIndex = getRelativeIndex();
-		tooltipEl.find('.tooltip-inner').translateText('[[global:pagination.out_of, ' + relIndex + ', ' + count + ']]');
-		tooltipEl.css({ left: Math.min($(window).width() - tooltipEl.width(), Math.max(x - (tooltipEl.width() / 2), 0)) });
+	function updateTooltip() {
+		if (touchIndex === index) {
+			return;
+		}
+		touchIndex = index;
+		touchTooltipEl.css({ left: Math.min($(window).width() - touchTooltipEl.outerWidth(), Math.max(touchX - (touchTooltipEl.outerWidth() / 2), 0)) });
+
+		socket.emit('posts.getTimestampByIndex', { tid: ajaxify.data.tid, index: index - 1 }, function (err, timestamp) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
+			var relIndex = getRelativeIndex();
+			var date = new Date(timestamp);
+			var ds = date.toLocaleString(config.userLang, { month: 'long' });
+			touchTooltipEl.find('.text').translateText('[[global:pagination.out_of, ' + relIndex + ', ' + count + ']]');
+			if (timestamp > Date.now() - (30 * 24 * 60 * 60 * 1000)) {
+				touchTooltipEl.find('.time').text(ds + ' ' + date.getDate());
+			} else {
+				touchTooltipEl.find('.time').text(ds + ' ' + date.getFullYear());
+			}
+		});
 	}
 
 	function handleKeys() {
