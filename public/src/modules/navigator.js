@@ -77,7 +77,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			updateTooltip(x);
 		}).on('touchend', function () {
 			$(this).tooltip('hide');
-			navigator.scrollToIndex(index - 1, true);
+			navigator.scrollToIndex(index - 1, true, 0);
 		});
 
 		handleKeys();
