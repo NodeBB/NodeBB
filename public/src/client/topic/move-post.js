@@ -9,13 +9,7 @@ define('forum/topic/move-post', ['components', 'postSelect'], function (componen
 
 	MovePost.init = function () {
 		$('.topic').on('click', '[component="topic/move-posts"]', onMovePostsClicked);
-		$(window).on('action:ajaxify.start', onAjaxifyStart);
 	};
-
-	function onAjaxifyStart() {
-		closeMoveModal();
-		$(window).off('action:ajaxify.start', onAjaxifyStart);
-	}
 
 	function onMovePostsClicked() {
 		MovePost.openMovePostModal();
@@ -38,6 +32,9 @@ define('forum/topic/move-post', ['components', 'postSelect'], function (componen
 	}
 
 	MovePost.openMovePostModal = function (postEl) {
+		if (moveModal) {
+			return;
+		}
 		app.parseAndTranslate('partials/move_post_modal', {}, function (html) {
 			moveModal = html;
 
@@ -85,9 +82,8 @@ define('forum/topic/move-post', ['components', 'postSelect'], function (componen
 		if (moveModal) {
 			moveModal.remove();
 			moveModal = null;
+			postSelect.disable();
 		}
-
-		postSelect.disable();
 	}
 
 
