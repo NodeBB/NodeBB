@@ -56,6 +56,17 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			}
 		});
 
+		$('.pagination-block.visible-xs').on('touchmove', function (e) {
+			e.preventDefault();
+			e.stopPropagation();
+			var x = Math.min($(window).width(), Math.max(0, e.touches[0].clientX));
+			var percent = x / $(window).width();
+			index = Math.floor(count * percent);
+			navigator.updateTextAndProgressBar();
+		}).on('touchend', function () {
+			navigator.scrollToIndex(index - 1, true);
+		});
+
 		handleKeys();
 
 		navigator.setCount(count);
