@@ -5,6 +5,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 	var index = 1;
 	var count = 0;
 	var navigatorUpdateTimeoutId;
+	var tooltipEl;
 
 	navigator.scrollActive = false;
 
@@ -56,18 +57,26 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			}
 		});
 
-		$('.pagination-block.visible-xs').on('touchmove', function (e) {
+		$('.pagination-block.visible-xs').on('touchstart', function (e) {
+			$(this).tooltip('show');
+			tooltipEl = $(this).next();
+			var x = Math.min($(window).width(), Math.max(0, e.touches[0].clientX));
+			updateTooltip(x);
+		}).on('touchmove', function (e) {
 			e.preventDefault();
 			e.stopPropagation();
-			var x = Math.min($(window).width(), Math.max(0, e.touches[0].clientX));
-			var percent = x / $(window).width();
-			var newIndex = Math.floor(count * percent);
+			var windowWidth = $(window).width();
+			var x = Math.min(windowWidth, Math.max(0, e.touches[0].clientX));
+			var percent = x / windowWidth;
+			var newIndex = Math.max(1, Math.floor(count * percent));
 			if (newIndex === index) {
 				return;
 			}
 			index = newIndex;
 			navigator.updateTextAndProgressBar();
+			updateTooltip(x);
 		}).on('touchend', function () {
+			$(this).tooltip('hide');
 			navigator.scrollToIndex(index - 1, true);
 		});
 
@@ -76,6 +85,12 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		navigator.setCount(count);
 		navigator.update(0);
 	};
+
+	function updateTooltip(x) {
+		var relIndex = getRelativeIndex();
+		tooltipEl.find('.tooltip-inner').translateText('[[global:pagination.out_of, ' + relIndex + ', ' + count + ']]');
+		tooltipEl.css({ left: Math.min($(window).width() - tooltipEl.width(), Math.max(x - (tooltipEl.width() / 2), 0)) });
+	}
 
 	function handleKeys() {
 		if (!config.usePagination) {
