@@ -61,7 +61,11 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			e.stopPropagation();
 			var x = Math.min($(window).width(), Math.max(0, e.touches[0].clientX));
 			var percent = x / $(window).width();
-			index = Math.floor(count * percent);
+			var newIndex = Math.floor(count * percent);
+			if (newIndex === index) {
+				return;
+			}
+			index = newIndex;
 			navigator.updateTextAndProgressBar();
 		}).on('touchend', function () {
 			navigator.scrollToIndex(index - 1, true);
