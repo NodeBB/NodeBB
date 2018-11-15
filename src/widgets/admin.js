@@ -5,6 +5,7 @@ var path = require('path');
 var async = require('async');
 var nconf = require('nconf');
 var benchpress = require('benchpressjs');
+var winston = require('winston');
 
 var plugins = require('../plugins');
 var groups = require('../groups');
@@ -85,7 +86,7 @@ function renderAdminTemplate(callback) {
 	async.waterfall([
 		function (next) {
 			async.parallel({
-				source: async.apply(fs.readFile, path.resolve(nconf.get('views_dir'), 'admin/partials/widget-settings.tpl'), 'utf8'),
+				source: async.apply(getSource),
 				groups: async.apply(groups.getNonPrivilegeGroups, 'groups:createtime', 0, -1),
 			}, next);
 		},
@@ -94,4 +95,13 @@ function renderAdminTemplate(callback) {
 			benchpress.compileParse(results.source, { groups: results.groups }, next);
 		},
 	], callback);
+}
+
+function getSource(callback) {
+	fs.readFile(path.resolve(nconf.get('views_dir'), 'admin/partials/widget-settings.tpl'), 'utf8', function (err, source) {
+		if (err) {
+			winston.error(err);
+		}
+		callback(null, source || '');
+	});
 }

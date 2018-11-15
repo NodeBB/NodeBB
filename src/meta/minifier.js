@@ -168,7 +168,7 @@ function concat(data, callback) {
 actions.concat = concat;
 
 function minifyJS_batch(data, callback) {
-	async.each(data.files, function (fileObj, next) {
+	async.eachLimit(data.files, 100, function (fileObj, next) {
 		fs.readFile(fileObj.srcPath, 'utf8', function (err, source) {
 			if (err) {
 				return next(err);
