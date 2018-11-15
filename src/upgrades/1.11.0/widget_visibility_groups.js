@@ -10,10 +10,10 @@ module.exports = {
 		const widgets = require('../../widgets');
 		async.waterfall([
 			function (next) {
-				widgetAdmin.get(next);
+				widgetAdmin.getAreas(next);
 			},
-			function (data, next) {
-				async.eachSeries(data.areas, function (area, next) {
+			function (areas, next) {
+				async.eachSeries(areas, function (area, next) {
 					if (area.data.length) {
 						// area.data is actually an array of widgets
 						area.widgets = area.data;
