@@ -55,6 +55,7 @@ Auth.reloadRoutes = function (router, callback) {
 			plugins.fireHook('filter:auth.init', loginStrategies, next);
 		},
 		function (loginStrategies, next) {
+			loginStrategies = loginStrategies || [];
 			loginStrategies.forEach(function (strategy) {
 				if (strategy.url) {
 					router.get(strategy.url, Auth.middleware.applyCSRF, function (req, res, next) {
