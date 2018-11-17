@@ -70,7 +70,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			}
 		});
 
-		paginationBlockEl.find('.visible-xs').on('touchstart', function (e) {
+		$('.pagination-block.visible-xs').on('touchstart', function (e) {
 			touchTooltipEl = $('.navigator-thumb');
 			touchTooltipEl.removeClass('hidden');
 			touchX = Math.min($(window).width(), Math.max(0, e.touches[0].clientX));
