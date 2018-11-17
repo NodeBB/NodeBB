@@ -205,7 +205,7 @@ define('forum/topic/posts', [
 
 			$(window).trigger('action:posts.loaded', { posts: data.posts });
 
-			Posts.processPage(html);
+			Posts.onNewPostsAddedToDom(html);
 
 			callback(html);
 		});
@@ -251,18 +251,22 @@ define('forum/topic/posts', [
 		});
 	};
 
-	Posts.processPage = function (posts) {
+	Posts.onTopicPageLoad = function (posts) {
 		images.unloadImages(posts);
 		Posts.showBottomPostBar();
 		posts.find('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
+		addBlockquoteEllipses(posts.find('[component="post/content"] > blockquote > blockquote'));
+		hidePostToolsForDeletedPosts(posts);
+	};
+
+	Posts.onNewPostsAddedToDom = function (posts) {
+		Posts.onTopicPageLoad(posts);
+
 		app.createUserTooltips(posts);
-		app.replaceSelfLinks(posts.find('a'));
+
 		utils.addCommasToNumbers(posts.find('.formatted-number'));
 		utils.makeNumbersHumanReadable(posts.find('.human-readable-number'));
 		posts.find('.timeago').timeago();
-
-		addBlockquoteEllipses(posts.find('[component="post/content"] > blockquote > blockquote'));
-		hidePostToolsForDeletedPosts(posts);
 	};
 
 	Posts.showBottomPostBar = function () {

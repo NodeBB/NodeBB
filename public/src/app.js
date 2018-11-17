@@ -12,6 +12,7 @@ app.cacheBuster = null;
 	var params = utils.params();
 	var showWelcomeMessage = !!params.loggedin;
 	var registerMessage = params.register;
+	var isTouchDevice = utils.isTouchDevice();
 
 	require(['benchpress'], function (Benchpress) {
 		Benchpress.setGlobal('config', config);
@@ -277,34 +278,25 @@ app.cacheBuster = null;
 	}
 
 	app.createUserTooltips = function (els, placement) {
+		if (isTouchDevice) {
+			return;
+		}
 		els = els || $('body');
 		els.find('.avatar,img[title].teaser-pic,img[title].user-img,div.user-icon,span.user-icon').each(function () {
-			if (!utils.isTouchDevice()) {
-				$(this).tooltip({
-					placement: placement || $(this).attr('title-placement') || 'top',
-					title: $(this).attr('title'),
-				});
-			}
+			$(this).tooltip({
+				placement: placement || $(this).attr('title-placement') || 'top',
+				title: $(this).attr('title'),
+			});
 		});
 	};
 
 	app.createStatusTooltips = function () {
-		if (!utils.isTouchDevice()) {
+		if (!isTouchDevice) {
 			$('body').tooltip({
 				selector: '.fa-circle.status',
 				placement: 'top',
 			});
 		}
-	};
-
-	app.replaceSelfLinks = function (selector) {
-		selector = selector || $('a');
-		selector.each(function () {
-			var href = $(this).attr('href');
-			if (href && app.user.userslug && href.indexOf('user/_self_') !== -1) {
-				$(this).attr('href', href.replace(/user\/_self_/g, 'user/' + app.user.userslug));
-			}
-		});
 	};
 
 	app.processPage = function () {
@@ -319,8 +311,6 @@ app.cacheBuster = null;
 		app.createUserTooltips();
 
 		app.createStatusTooltips();
-
-		app.replaceSelfLinks();
 
 		// Scroll back to top of page
 		if (!ajaxify.isCold()) {
@@ -516,34 +506,30 @@ app.cacheBuster = null;
 
 	function createHeaderTooltips() {
 		var env = utils.findBootstrapEnvironment();
-		if (env === 'xs' || env === 'sm') {
+		if (env === 'xs' || env === 'sm' || isTouchDevice) {
 			return;
 		}
 		$('#header-menu li a[title]').each(function () {
-			if (!utils.isTouchDevice()) {
-				$(this).tooltip({
-					placement: 'bottom',
-					trigger: 'hover',
-					title: $(this).attr('title'),
-				});
-			}
+			$(this).tooltip({
+				placement: 'bottom',
+				trigger: 'hover',
+				title: $(this).attr('title'),
+			});
 		});
 
-		if (!utils.isTouchDevice()) {
-			$('#search-form').parent().tooltip({
-				placement: 'bottom',
-				trigger: 'hover',
-				title: $('#search-button i').attr('title'),
-			});
-		}
 
-		if (!utils.isTouchDevice()) {
-			$('#user_dropdown').tooltip({
-				placement: 'bottom',
-				trigger: 'hover',
-				title: $('#user_dropdown').attr('title'),
-			});
-		}
+		$('#search-form').parent().tooltip({
+			placement: 'bottom',
+			trigger: 'hover',
+			title: $('#search-button i').attr('title'),
+		});
+
+
+		$('#user_dropdown').tooltip({
+			placement: 'bottom',
+			trigger: 'hover',
+			title: $('#user_dropdown').attr('title'),
+		});
 	}
 
 	app.handleSearch = function () {

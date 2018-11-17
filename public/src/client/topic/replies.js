@@ -48,7 +48,7 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 				app.parseAndTranslate('topic', 'posts', tplData, function (html) {
 					$('<div>', { component: 'post/replies' }).html(html).hide().insertAfter(button)
 						.slideDown('fast');
-					posts.processPage(html);
+					posts.onNewPostsAddedToDom(html);
 					$(window).trigger('action:posts.loaded', { posts: data });
 				});
 			});
@@ -73,7 +73,7 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 			var replies = $('[component="post"][data-pid="' + post.toPid + '"] [component="post/replies"]').first();
 			if (replies.length) {
 				replies.append(html);
-				posts.processPage(html);
+				posts.onNewPostsAddedToDom(html);
 			}
 		});
 	};

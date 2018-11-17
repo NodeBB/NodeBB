@@ -45,7 +45,7 @@ define('forum/topic', [
 
 		app.enterRoom('topic_' + tid);
 
-		posts.processPage(components.get('post'));
+		posts.onTopicPageLoad(components.get('post'));
 
 		postTools.init(tid);
 		threadTools.init(tid);

@@ -129,7 +129,6 @@ define('forum/topic/events', [
 		editedPostEl.fadeOut(250, function () {
 			editedPostEl.html(translator.unescape(data.post.content));
 			editedPostEl.find('img:not(.not-responsive)').addClass('img-responsive');
-			app.replaceSelfLinks(editedPostEl.find('a'));
 			images.wrapImagesInLinks(editedPostEl.parent());
 			images.unloadImages(editedPostEl.parent());
 			images.loadImages();

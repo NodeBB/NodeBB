@@ -13,6 +13,12 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 
 	navigator.scrollActive = false;
 
+	var paginationBlockEl = $('.pagination-block');
+	var paginationTextEl = $('.pagination-block .pagination-text');
+	var paginationBlockMeterEl = $('.pagination-block meter');
+	var paginationBlockProgressEl = $('.pagination-block .progress-bar');
+
+
 	$(window).on('action:ajaxify.start', function () {
 		$(window).off('keydown', onKeyDown);
 	});
@@ -26,22 +32,21 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 
 		$(window).off('scroll', navigator.delayedUpdate).on('scroll', navigator.delayedUpdate);
 
-		$('.pagination-block .dropdown-menu').off('click').on('click', function (e) {
+		paginationBlockEl.find('.dropdown-menu').off('click').on('click', function (e) {
 			e.stopPropagation();
 		});
 
-		$('.pagination-block').off('shown.bs.dropdown', '.dropdown').on('shown.bs.dropdown', '.dropdown', function () {
+		paginationBlockEl.off('shown.bs.dropdown', '.dropdown').on('shown.bs.dropdown', '.dropdown', function () {
 			setTimeout(function () {
 				$('.pagination-block input').focus();
 			}, 100);
 		});
+		paginationBlockEl.find('.pageup').off('click').on('click', navigator.scrollUp);
+		paginationBlockEl.find('.pagedown').off('click').on('click', navigator.scrollDown);
+		paginationBlockEl.find('.pagetop').off('click').on('click', navigator.toTop);
+		paginationBlockEl.find('.pagebottom').off('click').on('click', navigator.toBottom);
 
-		$('.pagination-block .pageup').off('click').on('click', navigator.scrollUp);
-		$('.pagination-block .pagedown').off('click').on('click', navigator.scrollDown);
-		$('.pagination-block .pagetop').off('click').on('click', navigator.toTop);
-		$('.pagination-block .pagebottom').off('click').on('click', navigator.toBottom);
-
-		$('.pagination-block input').on('keydown', function (e) {
+		paginationBlockEl.find('input').on('keydown', function (e) {
 			if (e.which === 13) {
 				var input = $(this);
 				if (!utils.isNumber(input.val())) {
@@ -169,7 +174,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			return;
 		}
 
-		$('.pagination-block').toggleClass('ready', flag);
+		paginationBlockEl.toggleClass('ready', flag);
 	}
 
 	navigator.delayedUpdate = function () {
@@ -247,10 +252,10 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		}
 		index = index > count ? count : index;
 		var relIndex = getRelativeIndex();
-		$('.pagination-block .pagination-text').translateHtml('[[global:pagination.out_of, ' + relIndex + ', ' + count + ']]');
+		paginationTextEl.translateHtml('[[global:pagination.out_of, ' + relIndex + ', ' + count + ']]');
 		var fraction = (relIndex - 1) / (count - 1 || 1);
-		$('.pagination-block meter').val(fraction);
-		$('.pagination-block .progress-bar').width((fraction * 100) + '%');
+		paginationBlockMeterEl.val(fraction);
+		paginationBlockProgressEl.width((fraction * 100) + '%');
 	};
 
 	function getRelativeIndex() {
@@ -394,16 +399,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		var done = false;
 
 		function animateScroll() {
-			var scrollTop = 0;
-			if (postHeight < viewportHeight) {
-				scrollTop = (scrollTo.offset().top - (viewportHeight / 2) + (postHeight / 2));
-			} else {
-				scrollTop = scrollTo.offset().top - navbarHeight;
-			}
-
-			$('html, body').animate({
-				scrollTop: scrollTop + 'px',
-			}, duration, function () {
+			function onAnimateComplete() {
 				if (done) {
 					// Re-enable onScroll behaviour
 					$(window).on('scroll', navigator.update);
@@ -417,7 +413,21 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 				highlightPost();
 				$('body').scrollTop($('body').scrollTop() - 1);
 				$('html').scrollTop($('html').scrollTop() - 1);
-			});
+			}
+
+			var scrollTop = 0;
+			if (postHeight < viewportHeight) {
+				scrollTop = (scrollTo.offset().top - (viewportHeight / 2) + (postHeight / 2));
+			} else {
+				scrollTop = scrollTo.offset().top - navbarHeight;
+			}
+			if (duration === 0) {
+				$(window).scrollTop(scrollTop);
+				return onAnimateComplete();
+			}
+			$('html, body').animate({
+				scrollTop: scrollTop + 'px',
+			}, duration, onAnimateComplete);
 		}
 
 		function highlightPost() {
