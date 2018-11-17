@@ -14,9 +14,9 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 	navigator.scrollActive = false;
 
 	var paginationBlockEl = $('.pagination-block');
-	var paginationTextEl = $('.pagination-block .pagination-text');
-	var paginationBlockMeterEl = $('.pagination-block meter');
-	var paginationBlockProgressEl = $('.pagination-block .progress-bar');
+	var paginationTextEl = paginationBlockEl.find('.pagination-text');
+	var paginationBlockMeterEl = paginationBlockEl.find('meter');
+	var paginationBlockProgressEl = paginationBlockEl.find('.progress-bar');
 
 
 	$(window).on('action:ajaxify.start', function () {
