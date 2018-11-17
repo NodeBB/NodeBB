@@ -18,7 +18,6 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 	var paginationBlockMeterEl = paginationBlockEl.find('meter');
 	var paginationBlockProgressEl = paginationBlockEl.find('.progress-bar');
 
-
 	$(window).on('action:ajaxify.start', function () {
 		$(window).off('keydown', onKeyDown);
 	});
@@ -29,6 +28,11 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		navigator.callback = callback;
 		navigator.toTop = toTop || function () {};
 		navigator.toBottom = toBottom || function () {};
+
+		paginationBlockEl = $('.pagination-block');
+		paginationTextEl = paginationBlockEl.find('.pagination-text');
+		paginationBlockMeterEl = paginationBlockEl.find('meter');
+		paginationBlockProgressEl = paginationBlockEl.find('.progress-bar');
 
 		$(window).off('scroll', navigator.delayedUpdate).on('scroll', navigator.delayedUpdate);
 
@@ -66,7 +70,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			}
 		});
 
-		$('.pagination-block.visible-xs').on('touchstart', function (e) {
+		paginationBlockEl.find('.visible-xs').on('touchstart', function (e) {
 			touchTooltipEl = $('.navigator-thumb');
 			touchTooltipEl.removeClass('hidden');
 			touchX = Math.min($(window).width(), Math.max(0, e.touches[0].clientX));
