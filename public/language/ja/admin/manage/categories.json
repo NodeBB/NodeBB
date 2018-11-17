@@ -29,7 +29,8 @@
 	"select-category": "カテゴリを選択",
 	"set-parent-category": "親カテゴリとして設定",
 
-	"privileges.description": "このセクションでは、このカテゴリのアクセス制御権限を設定できます。権限は、ユーザー単位またはグループ単位で付与できます。新しいユーザーをこのテーブルに追加するには、以下のフォームで検索します。",
+	"privileges.description": "You can configure the access control privileges for this category in this section. Privileges can be granted on a per-user or a per-group basis. Select the domain of effect from the dropdown below.",
+	"privileges.category-selector": "Configuring privileges for ",
 	"privileges.warning": "<strong>注</ strong>:特権の設定はすぐに有効になります。これらの設定を調整した後は、カテゴリを保存する必要はありません。",
 	"privileges.section-viewing": "特権の表示",
 	"privileges.section-posting": "権限の譲渡",

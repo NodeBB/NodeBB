@@ -29,7 +29,8 @@
 	"select-category": "Wybierz kategorię",
 	"set-parent-category": "Ustaw nadrzędną kategorie",
 
-	"privileges.description": "W tej sekcji możesz skonfigurować uprawnienia dostępu dla tej kategorii. Uprawnienia mogą być przyznawane konkretnym użytkownikom lub poszczególnym grupom. Możesz dodać nowego użytkownika do tej tabeli, wyszukując go w formularzu poniżej.",
+	"privileges.description": "You can configure the access control privileges for this category in this section. Privileges can be granted on a per-user or a per-group basis. Select the domain of effect from the dropdown below.",
+	"privileges.category-selector": "Configuring privileges for ",
 	"privileges.warning": "<strong>Uwaga</strong>: Uprawnienia zapisują się natychmiastowo. Nie ma potrzeby zapisywania kategorii po zmianie ustawień.",
 	"privileges.section-viewing": "Lista uprawnień",
 	"privileges.section-posting": "Uprawnienia pisania",

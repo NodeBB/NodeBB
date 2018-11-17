@@ -29,7 +29,8 @@
 	"select-category": "Вибрати категорію",
 	"set-parent-category": "Встановити батьківську категорію",
 
-	"privileges.description": "У цьому розділі ви можете налаштувати права доступу до категорії. Права можуть надаватися як користувачу так і групі. Ви можете додати користувача до таблиці використовуючи форму пошуку знизу.",
+	"privileges.description": "You can configure the access control privileges for this category in this section. Privileges can be granted on a per-user or a per-group basis. Select the domain of effect from the dropdown below.",
+	"privileges.category-selector": "Configuring privileges for ",
 	"privileges.warning": "<strong>Увага</strong>: Налаштування прав миттєво вступають у дію. Необов'язкового зберігати категорію після зміни цих налаштувань.",
 	"privileges.section-viewing": "Права перегляду",
 	"privileges.section-posting": "Права постингу",

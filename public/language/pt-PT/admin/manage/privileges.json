@@ -1,6 +1,6 @@
 {
 	"global": "Global",
-	"global.no-users": "Não existem privilégios globais específicos para o utilizador.",
+	"global.no-users": "Não existem privilégios globais específicos para utilizadores.",
 
 	"chat": "Conversa",
 	"upload-images": "Enviar Imagens",
@@ -10,7 +10,7 @@
 	"search-content": "Procurar Conteúdo",
 	"search-users": "Procurar Utilizadores",
 	"search-tags": "Procurar Marcadores",
-	"allow-local-login": "Local Login",
+	"allow-local-login": "Início de Sessão Local",
 
 	"find-category": "Encontrar Categoria",
 	"access-category": "Aceder à Categoria",

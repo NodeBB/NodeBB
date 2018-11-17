@@ -8,10 +8,7 @@
 	"id": "ID: <small>nem kötelező</small>",
 
 	"properties": "Tulajdonságok:",
-	"only-admins": "Megjelenítés csak adminok számára",
-	"only-global-mods-and-admins": "Megjelenítés csak Globális moderátorok és adminok számára",
-	"only-logged-in": "Megjelenítés csak bejelentkezett felhasználók számára",
-	"only-guest": "Megjelenítés csak vendégek számára",
+	"groups": "Groups:",
 	"open-new-window": "Megnyitás új ablakban",
 
 	"btn.delete": "Törlés",

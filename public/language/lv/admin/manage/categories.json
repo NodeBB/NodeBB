@@ -29,7 +29,8 @@
 	"select-category": "Atlasīt kategoriju",
 	"set-parent-category": "Iestatīt virskategoriju",
 
-	"privileges.description": "Šajā sadaļā var konfigurēt šīs kategorijas piekļuves kontroles privilēģijas. Privilēģijas var piešķirt katram lietotājam vai katrai grupai. Šajā tabulā var pievienot jaunu lietotāju, klikšķinojot uz \"Pievienot lietotāju\".",
+	"privileges.description": "You can configure the access control privileges for this category in this section. Privileges can be granted on a per-user or a per-group basis. Select the domain of effect from the dropdown below.",
+	"privileges.category-selector": "Configuring privileges for ",
 	"privileges.warning": "<strong>Piezīme</strong>: Privilēģiju maiņas stājas spēkā uzreiz. Pēc maiņām nav nepieciešams saglabāt kategoriju.",
 	"privileges.section-viewing": "Skatīšanas privilēģijas",
 	"privileges.section-posting": "Publicēšanas privilēģijas",

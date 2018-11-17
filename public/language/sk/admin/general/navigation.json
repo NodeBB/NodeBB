@@ -8,10 +8,7 @@
 	"id": "ID: <small>doporučené</small>",
 
 	"properties": "Vlastnosti:",
-	"only-admins": "Zobrazuje sa len správcom",
-	"only-global-mods-and-admins": "Zobrazuje sa iba hlavným moderátorom a správcom",
-	"only-logged-in": "Zobrazuje sa iba prihláseným používateľom",
-	"only-guest": "Zobraziť iba hosťom",
+	"groups": "Groups:",
 	"open-new-window": "Otvoriť v novom okne",
 
 	"btn.delete": "Odstrániť",

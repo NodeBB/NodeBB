@@ -29,7 +29,8 @@
 	"select-category": "Seleccionar Categoría",
 	"set-parent-category": "Fijar Categoría Superior",
 
-	"privileges.description": "Puedes configurar los privilegios de control de acceso para esta categoría en esta sección. Los privilegios pueden ser otorgados \"por usuario\" o \"por grupo\". Puedes añadir un usuario nuevo a esta table buscándolo en el formulario a continuación.",
+	"privileges.description": "You can configure the access control privileges for this category in this section. Privileges can be granted on a per-user or a per-group basis. Select the domain of effect from the dropdown below.",
+	"privileges.category-selector": "Configuring privileges for ",
 	"privileges.warning": "Nota: La configuracion de los privilegios toma efecto inmediataente. No es necesario guardar la categoría despué de ajustar estas configuraciones.",
 	"privileges.section-viewing": "Privilegios de Visionado",
 	"privileges.section-posting": "Privilegios de Respuesta",
