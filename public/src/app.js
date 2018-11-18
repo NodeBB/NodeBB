@@ -112,7 +112,7 @@ app.cacheBuster = null;
 		 *   config (obj)
 		 *   next (string)
 		 */
-		require(['benchpress', 'translator', 'notifications', 'chat'], function (Benchpress, translator, Notifications, Chat) {
+		require(['benchpress', 'translator', 'forum/header/notifications', 'forum/header/chat'], function (Benchpress, translator, Notifications, Chat) {
 			app.user = data.header.user;
 			data.header.config = data.config;
 			config = data.config;
