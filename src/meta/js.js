@@ -67,7 +67,6 @@ JS.scripts = {
 		'public/src/modules/topicList.js',
 		'public/src/modules/categorySelector.js',
 		'public/src/modules/share.js',
-		'public/src/modules/search.js',
 		'public/src/modules/alerts.js',
 		'public/src/modules/taskbar.js',
 		'public/src/modules/helpers.js',

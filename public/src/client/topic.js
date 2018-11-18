@@ -73,18 +73,21 @@ define('forum/topic', [
 	};
 
 	function handleTopicSearch() {
-		require(['search', 'mousetrap'], function (search, mousetrap) {
-			$('.topic-search').off('click')
-				.on('click', '.prev', function () {
+		$('.topic-search').off('click')
+			.on('click', '.prev', function () {
+				require(['search'], function (search) {
 					search.topicDOM.prev();
-				})
-				.on('click', '.next', function () {
+				});
+			})
+			.on('click', '.next', function () {
+				require(['search'], function (search) {
 					search.topicDOM.next();
 				});
+			});
 
-			mousetrap.bind('ctrl+f', function (e) {
-				if (config.topicSearchEnabled) {
-					// If in topic, open search window and populate, otherwise regular behaviour
+		if (config.topicSearchEnabled) {
+			require(['mousetrap'], function (mousetrap) {
+				mousetrap.bind('ctrl+f', function (e) {
 					var match = ajaxify.currentPage.match(/^topic\/([\d]+)/);
 					var tid;
 					if (match) {
@@ -93,9 +96,9 @@ define('forum/topic', [
 						$('#search-fields input').val('in:topic-' + tid + ' ');
 						app.prepareSearch();
 					}
-				}
+				});
 			});
-		});
+		}
 	}
 
 	Topic.toTop = function () {
