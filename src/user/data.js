@@ -35,7 +35,7 @@ module.exports = function (User) {
 
 	User.getUsersFields = function (uids, fields, callback) {
 		if (!Array.isArray(uids) || !uids.length) {
-			return callback(null, []);
+			return setImmediate(callback, null, []);
 		}
 
 		uids = uids.map(uid => (isNaN(uid) ? 0 : uid));

@@ -217,7 +217,7 @@ module.exports = function (Posts) {
 	function vote(type, unvote, pid, uid, callback) {
 		uid = parseInt(uid, 10);
 
-		if (!uid) {
+		if (uid <= 0) {
 			return callback(new Error('[[error:not-logged-in]]'));
 		}
 		var postData;

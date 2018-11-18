@@ -34,8 +34,8 @@ module.exports = function (User) {
 	};
 
 	User.ignoreCategory = function (uid, cid, callback) {
-		if (!uid) {
-			return callback();
+		if (uid <= 0) {
+			return setImmediate(callback);
 		}
 
 		async.waterfall([
@@ -55,7 +55,7 @@ module.exports = function (User) {
 	};
 
 	User.watchCategory = function (uid, cid, callback) {
-		if (!uid) {
+		if (uid <= 0) {
 			return callback();
 		}
 

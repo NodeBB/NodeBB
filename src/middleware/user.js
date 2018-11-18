@@ -135,7 +135,7 @@ module.exports = function (middleware) {
 
 	middleware.redirectUidToUserslug = function (req, res, next) {
 		var uid = parseInt(req.params.uid, 10);
-		if (!uid) {
+		if (uid <= 0) {
 			return next();
 		}
 		async.waterfall([

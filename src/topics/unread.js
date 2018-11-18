@@ -310,7 +310,7 @@ module.exports = function (Topics) {
 	Topics.pushUnreadCount = function (uid, callback) {
 		callback = callback || function () {};
 
-		if (!uid || parseInt(uid, 10) === 0) {
+		if (!uid || parseInt(uid, 10) <= 0) {
 			return setImmediate(callback);
 		}
 

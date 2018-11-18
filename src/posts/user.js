@@ -121,24 +121,22 @@ module.exports = function (Posts) {
 	Posts.isOwner = function (pid, uid, callback) {
 		uid = parseInt(uid, 10);
 		if (Array.isArray(pid)) {
-			if (!uid) {
-				return callback(null, pid.map(function () { return false; }));
+			if (uid <= 0) {
+				return setImmediate(callback, null, pid.map(() => false));
 			}
 			Posts.getPostsFields(pid, ['uid'], function (err, posts) {
 				if (err) {
 					return callback(err);
 				}
-				posts = posts.map(function (post) {
-					return post && parseInt(post.uid, 10) === uid;
-				});
+				posts = posts.map(post => post && post.uid === uid);
 				callback(null, posts);
 			});
 		} else {
-			if (!uid) {
-				return callback(null, false);
+			if (uid <= 0) {
+				return setImmediate(callback, null, false);
 			}
 			Posts.getPostField(pid, 'uid', function (err, author) {
-				callback(err, parseInt(author, 10) === uid);
+				callback(err, author === uid);
 			});
 		}
 	};

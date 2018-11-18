@@ -381,7 +381,7 @@ SocketModules.chats.getRecentChats = function (socket, data, callback) {
 };
 
 SocketModules.chats.hasPrivateChat = function (socket, uid, callback) {
-	if (!socket.uid || !uid) {
+	if (socket.uid <= 0 || uid <= 0) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 	Messaging.hasPrivateChat(socket.uid, uid, callback);

@@ -7,7 +7,7 @@ var topics = require('../../topics');
 
 module.exports = function (SocketTopics) {
 	SocketTopics.markAsRead = function (socket, tids, callback) {
-		if (!Array.isArray(tids) || !socket.uid) {
+		if (!Array.isArray(tids) || socket.uid <= 0) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 		async.waterfall([
@@ -33,7 +33,7 @@ module.exports = function (SocketTopics) {
 	};
 
 	SocketTopics.markAllRead = function (socket, data, callback) {
-		if (!socket.uid) {
+		if (socket.uid <= 0) {
 			return callback(new Error('[[error:invalid-uid]]'));
 		}
 		async.waterfall([
@@ -59,7 +59,7 @@ module.exports = function (SocketTopics) {
 	};
 
 	SocketTopics.markUnread = function (socket, tid, callback) {
-		if (!tid || !socket.uid) {
+		if (!tid || socket.uid <= 0) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 		async.waterfall([
@@ -78,7 +78,7 @@ module.exports = function (SocketTopics) {
 			return callback(new Error('[[error:invalid-tid]]'));
 		}
 
-		if (!socket.uid) {
+		if (socket.uid <= 0) {
 			return callback(new Error('[[error:no-privileges]]'));
 		}
 
