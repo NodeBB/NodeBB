@@ -7,9 +7,7 @@ define('forum/topic/postTools', [
 	'components',
 	'translator',
 	'forum/topic/votes',
-	'forum/topic/move-post',
-	'forum/topic/diffs',
-], function (share, navigator, components, translator, votes, movePost, diffs) {
+], function (share, navigator, components, translator, votes) {
 	var PostTools = {};
 
 	var staleReplyAnyway = false;
@@ -147,7 +145,9 @@ define('forum/topic/postTools', [
 		if (config.enablePostHistory && ajaxify.data.privileges['posts:history']) {
 			postContainer.on('click', '[component="post/view-history"], [component="post/edit-indicator"]', function () {
 				var btn = $(this);
-				diffs.open(getData(btn, 'data-pid'));
+				require(['forum/topic/diffs'], function (diffs) {
+					diffs.open(getData(btn, 'data-pid'));
+				});
 			});
 		}
 
@@ -201,7 +201,10 @@ define('forum/topic/postTools', [
 		});
 
 		postContainer.on('click', '[component="post/move"]', function () {
-			movePost.openMovePostModal($(this).parents('[data-pid]'));
+			var btn = $(this);
+			require(['forum/topic/move-post'], function (movePost) {
+				movePost.init(btn.parents('[data-pid]'));
+			});
 		});
 
 		postContainer.on('click', '[component="post/ban-ip"]', function () {

@@ -1,7 +1,12 @@
 'use strict';
 
 
-define('forum/footer', ['notifications', 'chat', 'components', 'translator'], function (Notifications, Chat, components, translator) {
+define('forum/footer', [
+	'components',
+	'translator',
+	'forum/header/notifications',
+	'forum/header/chat',
+], function (components, translator, Notifications, Chat) {
 	Notifications.prepareDOM();
 	Chat.prepareDOM();
 	translator.prepareDOM();

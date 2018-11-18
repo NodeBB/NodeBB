@@ -8,12 +8,11 @@ define('forum/topic', [
 	'forum/topic/events',
 	'forum/topic/posts',
 	'forum/topic/images',
-	'forum/topic/replies',
 	'navigator',
 	'sort',
 	'components',
 	'storage',
-], function (infinitescroll, threadTools, postTools, events, posts, images, replies, navigator, sort, components, storage) {
+], function (infinitescroll, threadTools, postTools, events, posts, images, navigator, sort, components, storage) {
 	var	Topic = {};
 	var currentUrl = '';
 
@@ -49,7 +48,6 @@ define('forum/topic', [
 
 		postTools.init(tid);
 		threadTools.init(tid);
-		replies.init(tid);
 		events.init();
 
 		sort.handleSort('topicPostSort', 'user.setTopicSort', 'topic/' + ajaxify.data.slug);
@@ -61,6 +59,7 @@ define('forum/topic', [
 		addBlockQuoteHandler();
 		addParentHandler();
 		addDropupHandler();
+		addRepliesHandler();
 
 		navigator.init('[component="post"]', ajaxify.data.postcount, Topic.toTop, Topic.toBottom, Topic.navigatorCallback, Topic.calculateIndex);
 
@@ -174,6 +173,15 @@ define('forum/topic', [
 		$(target).on('show.bs.dropdown', function () {
 			var dropUp = this.getBoundingClientRect().top > ($(window).height() / 2);
 			$(this).toggleClass('dropup', dropUp);
+		});
+	}
+
+	function addRepliesHandler() {
+		$('[component="topic"]').on('click', '[component="post/reply-count"]', function () {
+			var btn = $(this);
+			require(['forum/topic/replies'], function (replies) {
+				replies.init(btn);
+			});
 		});
 	}
 

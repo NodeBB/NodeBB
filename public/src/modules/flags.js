@@ -1,14 +1,14 @@
 'use strict';
 
 
-define('flags', ['benchpress'], function (Benchpress) {
+define('flags', function () {
 	var Flag = {};
 	var flagModal;
 	var flagCommit;
 	var flagReason;
 
 	Flag.showFlagModal = function (data) {
-		parseModal(data, function (html) {
+		app.parseAndTranslate('partials/modals/flag_modal', data, function (html) {
 			flagModal = $(html);
 
 			flagModal.on('hidden.bs.modal', function () {
@@ -53,14 +53,6 @@ define('flags', ['benchpress'], function (Benchpress) {
 			flagModal.find('#flag-reason-custom').on('keyup blur change', checkFlagButtonEnable);
 		});
 	};
-
-	function parseModal(tplData, callback) {
-		Benchpress.parse('partials/modals/flag_modal', tplData, function (html) {
-			require(['translator'], function (translator) {
-				translator.translate(html, callback);
-			});
-		});
-	}
 
 	function createFlag(type, id, reason) {
 		if (!type || !id || !reason) {
