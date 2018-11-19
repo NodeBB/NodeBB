@@ -1,7 +1,7 @@
 {
-    "title": "NodeBB",
+    "title": "jiumao",
     "showSiteTitle": 1,
-    "defaultLang": "en-GB",
+    "defaultLang": "zh_CN",
     "loginDays": 14,
     "loginSeconds": 0,
     "loginAttempts": 5,

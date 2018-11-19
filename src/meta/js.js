@@ -59,6 +59,8 @@ JS.scripts = {
 		'public/src/client/categories.js',
 		'public/src/client/category.js',
 		'public/src/client/category/tools.js',
+		'public/src/client/ai/index.js',
+		'public/src/client/ai/module.js',
 
 		'public/src/modules/translator.js',
 		'public/src/modules/notifications.js',

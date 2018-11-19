@@ -1,7 +1,7 @@
 [
     {
-        "name": "Announcements",
-        "description": "Announcements regarding our community",
+        "name": "通告",
+        "description": "社区通过",
         "descriptionParsed": "<p>Announcements regarding our community</p>\n",
         "bgColor": "#fda34b",
         "color": "#fff",
@@ -9,8 +9,8 @@
         "order": 1
     },
     {
-        "name": "General Discussion",
-        "description": "A place to talk about whatever you want",
+        "name": "讨论",
+        "description": "一个讨论问题和发表建议的地方",
         "descriptionParsed": "<p>A place to talk about whatever you want</p>\n",
         "bgColor": "#59b3d0",
         "color": "#fff",
@@ -18,8 +18,8 @@
         "order": 2
     },
     {
-        "name": "Blogs",
-        "description": "Blog posts from individual members",
+        "name": "个人板块",
+        "description": "发表个人见解",
         "descriptionParsed": "<p>Blog posts from individual members</p>\n",
         "bgColor": "#86ba4b",
         "color": "#fff",
@@ -27,8 +27,8 @@
         "order": 4
     },
     {
-        "name": "Comments & Feedback",
-        "description": "Got a question? Ask away!",
+        "name": "答疑及需求",
+        "description": "这里提交需要的功能以及疑问解答",
         "descriptionParsed": "<p>Got a question? Ask away!</p>\n",
         "bgColor": "#e95c5a",
         "color": "#fff",
