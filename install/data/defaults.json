@@ -91,6 +91,7 @@
     "userSearchResultsPerPage": 50,
     "maximumGroupNameLength": 255,
     "preventTopicDeleteAfterReplies": 0,
+    "feeds:disableSitemap": 0,
     "sitemapTopics": 500,
     "maintenanceMode": 0,
     "votesArePublic": 0,
