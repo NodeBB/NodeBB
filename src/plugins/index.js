@@ -367,3 +367,5 @@ Plugins.showInstalled = function (callback) {
 		},
 	], callback);
 };
+
+Plugins.async = require('../promisify')(Plugins);
