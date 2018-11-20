@@ -63,7 +63,6 @@ define('forum/topic/posts', [
 	function onNewPostPagination(data) {
 		function scrollToPost() {
 			scrollToPostIfSelf(data.posts[0]);
-			images.loadImages();
 		}
 
 		var posts = data.posts;
@@ -111,7 +110,6 @@ define('forum/topic/posts', [
 				html.addClass('new');
 			}
 			scrollToPostIfSelf(data.posts[0]);
-			images.loadImages();
 		});
 	}
 
@@ -252,7 +250,6 @@ define('forum/topic/posts', [
 	};
 
 	Posts.onTopicPageLoad = function (posts) {
-		images.unloadImages(posts);
 		Posts.showBottomPostBar();
 		posts.find('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
 		addBlockquoteEllipses(posts.find('[component="post/content"] > blockquote > blockquote'));

@@ -207,7 +207,7 @@ define('forum/topic', [
 		return index;
 	};
 
-	Topic.navigatorCallback = function (index, elementCount, threshold) {
+	Topic.navigatorCallback = function (index, elementCount) {
 		var path = ajaxify.removeRelativePath(window.location.pathname.slice(1));
 		if (!path.startsWith('topic')) {
 			return;
@@ -216,8 +216,6 @@ define('forum/topic', [
 		if (navigator.scrollActive) {
 			return;
 		}
-
-		images.loadImages(threshold);
 
 		var newUrl = 'topic/' + ajaxify.data.slug + (index > 1 ? ('/' + index) : '');
 
