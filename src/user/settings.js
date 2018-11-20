@@ -77,7 +77,6 @@ module.exports = function (User) {
 				settings.upvoteNotifFreq = getSetting(settings, 'upvoteNotifFreq', 'all');
 				settings.restrictChat = parseInt(getSetting(settings, 'restrictChat', 0), 10) === 1;
 				settings.topicSearchEnabled = parseInt(getSetting(settings, 'topicSearchEnabled', 0), 10) === 1;
-				settings.delayImageLoading = parseInt(getSetting(settings, 'delayImageLoading', 1), 10) === 1;
 				settings.bootswatchSkin = settings.bootswatchSkin || '';
 				settings.scrollToMyPost = parseInt(getSetting(settings, 'scrollToMyPost', 1), 10) === 1;
 
@@ -131,7 +130,6 @@ module.exports = function (User) {
 			followTopicsOnReply: data.followTopicsOnReply,
 			restrictChat: data.restrictChat,
 			topicSearchEnabled: data.topicSearchEnabled,
-			delayImageLoading: data.delayImageLoading,
 			homePageRoute: ((data.homePageRoute === 'custom' ? data.homePageCustom : data.homePageRoute) || '').replace(/^\//, ''),
 			scrollToMyPost: data.scrollToMyPost,
 			notificationSound: data.notificationSound,

@@ -1384,7 +1384,6 @@ describe('User', function () {
 					homePageCustom: '',
 					openOutgoingLinksInNewTab: 0,
 					scrollToMyPost: 1,
-					delayImageLoading: 1,
 					userLang: 'en-GB',
 					usePagination: 1,
 					topicsPerPage: '10',
