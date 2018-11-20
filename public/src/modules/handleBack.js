@@ -50,10 +50,10 @@ define('handleBack', [
 				var page = Math.ceil((parseInt(bookmarkIndex, 10) + 1) / config.topicsPerPage);
 				if (parseInt(page, 10) !== ajaxify.data.pagination.currentPage) {
 					pagination.loadPage(page, function () {
-						handleBack.scrollToTopic(bookmarkIndex, clickedIndex, 0);
+						handleBack.scrollToTopic(bookmarkIndex, clickedIndex);
 					});
 				} else {
-					handleBack.scrollToTopic(bookmarkIndex, clickedIndex, 0);
+					handleBack.scrollToTopic(bookmarkIndex, clickedIndex);
 				}
 			} else {
 				if (bookmarkIndex === 0) {
@@ -63,9 +63,7 @@ define('handleBack', [
 
 				$('[component="category"]').empty();
 				loadTopicsMethod(Math.max(0, bookmarkIndex - 1) + 1, function () {
-					$(window).one('action:topics.loaded', function () {
-						handleBack.scrollToTopic(bookmarkIndex, clickedIndex, 0);
-					});
+					handleBack.scrollToTopic(bookmarkIndex, clickedIndex);
 				});
 			}
 		}
@@ -82,24 +80,17 @@ define('handleBack', [
 		}
 	};
 
-	handleBack.scrollToTopic = function (bookmarkIndex, clickedIndex, duration, offset) {
+	handleBack.scrollToTopic = function (bookmarkIndex, clickedIndex) {
 		if (!utils.isNumber(bookmarkIndex)) {
 			return;
-		}
-
-		if (!offset) {
-			offset = 0;
 		}
 
 		var scrollTo = components.get('category/topic', 'index', bookmarkIndex);
 
 		if (scrollTo.length) {
-			$('html, body').animate({
-				scrollTop: (scrollTo.offset().top - offset) + 'px',
-			}, duration !== undefined ? duration : 400, function () {
-				handleBack.highlightTopic(clickedIndex);
-				navigator.update();
-			});
+			$(window).scrollTop(scrollTo.offset().top);
+			handleBack.highlightTopic(clickedIndex);
+			navigator.update();
 		}
 	};
 
