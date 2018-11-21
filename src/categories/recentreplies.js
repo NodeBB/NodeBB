@@ -85,7 +85,8 @@ module.exports = function (Categories) {
 
 		async.waterfall([
 			function (next) {
-				var keys = categoryData.map(category => 'cid:' + category.cid + ':recent_tids');
+				const categoriesToLoad = categoryData.filter(category => parseInt(category.numRecentReplies, 10) > 0);
+				const keys = categoriesToLoad.map(category => 'cid:' + category.cid + ':recent_tids');
 				db.getSortedSetsMembers(keys, next);
 			},
 			function (results, next) {
