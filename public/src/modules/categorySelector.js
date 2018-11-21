@@ -1,6 +1,6 @@
 'use strict';
 
-define('categorySelector', ['benchpress', 'translator'], function (Benchpress, translator) {
+define('categorySelector', ['benchpress', 'translator', 'categorySearch'], function (Benchpress, translator, categorySearch) {
 	var categorySelector = {};
 	var selectedCategory;
 	var el;
@@ -14,29 +14,7 @@ define('categorySelector', ['benchpress', 'translator'], function (Benchpress, t
 			callback(selectedCategory);
 		});
 
-		var searchEl = el.find('[component="category-selector-search"]');
-		var categoryEls = el.find('.category-dropdown-menu .category');
-		el.on('show.bs.dropdown', function () {
-			function updateList() {
-				var val = searchEl.find('input').val().toLowerCase();
-				categoryEls.each(function () {
-					var liEl = $(this);
-					liEl.toggleClass('hidden', liEl.attr('data-name').toLowerCase().indexOf(val) === -1);
-				});
-			}
-
-			searchEl.removeClass('hidden').on('click', function (ev) {
-				ev.preventDefault();
-				ev.stopPropagation();
-			});
-			searchEl.find('input').val('').on('keyup', updateList);
-			updateList();
-		});
-
-		el.on('hide.bs.dropdown', function () {
-			searchEl.addClass('hidden').off('click');
-			searchEl.find('input').off('keyup');
-		});
+		categorySearch.init(el);
 	};
 
 	categorySelector.getSelectedCategory = function () {

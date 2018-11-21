@@ -1,6 +1,11 @@
 'use strict';
 
-define('topicList', ['forum/infinitescroll', 'handleBack', 'topicSelect'], function (infinitescroll, handleBack, topicSelect) {
+define('topicList', [
+	'forum/infinitescroll',
+	'handleBack',
+	'topicSelect',
+	'categorySearch',
+], function (infinitescroll, handleBack, topicSelect, categorySearch) {
 	var TopicList = {};
 	var templateName = '';
 
@@ -155,6 +160,8 @@ define('topicList', ['forum/infinitescroll', 'handleBack', 'topicSelect'], funct
 			});
 			return cids;
 		}
+
+		categorySearch.init($('[component="category/dropdown"]'));
 
 		$('[component="category/dropdown"]').on('hidden.bs.dropdown', function () {
 			var cids = getSelectedCids();
