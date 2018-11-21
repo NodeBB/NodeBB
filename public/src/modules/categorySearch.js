@@ -8,6 +8,9 @@ define('categorySearch', function () {
 			return;
 		}
 		var searchEl = el.find('[component="category-selector-search"]');
+		if (!searchEl.length) {
+			return;
+		}
 		var categoryEls = el.find('[component="category/list"] [data-cid]');
 		el.on('show.bs.dropdown', function () {
 			function updateList() {
