@@ -363,7 +363,7 @@ module.exports = function (db, module) {
 
 	module.getSortedSetsMembers = function (keys, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, []);
+			return setImmediate(callback, null, []);
 		}
 		db.collection('objects').find({ _key: { $in: keys } }, { projection: { _id: 0, score: 0 } }).sort({ score: 1 }).toArray(function (err, data) {
 			if (err) {

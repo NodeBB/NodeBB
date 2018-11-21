@@ -172,6 +172,9 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.getSortedSetsMembers = function (keys, callback) {
+		if (!Array.isArray(keys) || !keys.length) {
+			return setImmediate(callback, null, []);
+		}
 		var multi = redisClient.multi();
 		for (var i = 0; i < keys.length; i += 1) {
 			multi.zrange(keys[i], 0, -1);
