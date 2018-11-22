@@ -32,7 +32,7 @@ module.exports = function (db, module) {
 
 		if (Array.isArray(key)) {
 			query({
-				name: 'exists',
+				name: 'existsArray',
 				text: `
 				SELECT o."_key" k
   				FROM "legacy_object_live" o
