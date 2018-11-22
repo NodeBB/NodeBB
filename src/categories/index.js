@@ -64,6 +64,9 @@ Categories.getCategoryById = function (data, callback) {
 };
 
 Categories.isIgnored = function (cids, uid, callback) {
+	if (parseInt(uid, 10) <= 0) {
+		return setImmediate(callback, null, cids.map(() => false));
+	}
 	db.isSortedSetMembers('uid:' + uid + ':ignored:cids', cids, callback);
 };
 
@@ -119,18 +122,13 @@ Categories.getCategories = function (cids, uid, callback) {
 	if (!cids.length) {
 		return callback(null, []);
 	}
-
+	uid = parseInt(uid, 10);
+	let results;
 	async.waterfall([
 		function (next) {
 			async.parallel({
 				categories: function (next) {
 					Categories.getCategoriesData(cids, next);
-				},
-				children: function (next) {
-					Categories.getChildren(cids, uid, next);
-				},
-				parents: function (next) {
-					Categories.getParents(cids, next);
 				},
 				tagWhitelist: function (next) {
 					Categories.getTagWhitelist(cids, next);
@@ -140,19 +138,19 @@ Categories.getCategories = function (cids, uid, callback) {
 				},
 			}, next);
 		},
-		function (results, next) {
-			uid = parseInt(uid, 10);
-			results.categories.forEach(function (category, i) {
+		function (_results, next) {
+			results = _results;
+			Categories.getParentsAndChildren(results.categories, uid, next);
+		},
+		function (categories, next) {
+			categories.forEach(function (category, i) {
 				if (category) {
-					category.children = results.children[i];
-					category.parent = results.parents[i] || undefined;
 					category.tagWhitelist = results.tagWhitelist[i];
 					category['unread-class'] = (category.topic_count === 0 || (results.hasRead[i] && uid !== 0)) ? '' : 'unread';
 					calculateTopicPostCount(category);
 				}
 			});
-
-			next(null, results.categories);
+			next(null, categories);
 		},
 	], callback);
 };
@@ -211,10 +209,33 @@ Categories.getParents = function (cids, callback) {
 	], callback);
 };
 
+Categories.getParentsAndChildren = function (categoryData, uid, callback) {
+	const parentCids = categoryData.filter(c => c && c.parentCid).map(c => c.parentCid);
+	async.waterfall([
+		function (next) {
+			async.parallel({
+				parents: function (next) {
+					Categories.getCategoriesData(parentCids, next);
+				},
+				children: function (next) {
+					async.each(categoryData, function (category, next) {
+						getChildrenRecursive(category, uid, next);
+					}, next);
+				},
+			}, next);
+		},
+		function (results, next) {
+			const cidToParent = _.zipObject(parentCids, results.parents);
+			categoryData.forEach(function (category) {
+				category.parent = cidToParent[category.parentCid];
+			});
+			next(null, categoryData);
+		},
+	], callback);
+};
+
 Categories.getChildren = function (cids, uid, callback) {
-	var categories = cids.map(function (cid) {
-		return { cid: cid };
-	});
+	var categories = cids.map(cid => ({ cid: cid }));
 
 	async.each(categories, function (category, next) {
 		Categories.getCategoryField(category.cid, 'parentCid', function (err, parentCid) {
@@ -238,9 +259,7 @@ function getChildrenRecursive(category, uid, callback) {
 			privileges.categories.filterCids('find', children, uid, next);
 		},
 		function (children, next) {
-			children = children.filter(function (cid) {
-				return parseInt(category.cid, 10) !== parseInt(cid, 10);
-			});
+			children = children.filter(cid => parseInt(category.cid, 10) !== parseInt(cid, 10));
 			if (!children.length) {
 				category.children = [];
 				return callback();
@@ -261,9 +280,6 @@ function getChildrenRecursive(category, uid, callback) {
 				child['unread-class'] = (child.topic_count === 0 || (read && uid !== 0)) ? '' : 'unread';
 			});
 
-			next();
-		},
-		function (next) {
 			async.each(category.children, function (child, next) {
 				if (parseInt(category.parentCid, 10) === parseInt(child.cid, 10)) {
 					return next();

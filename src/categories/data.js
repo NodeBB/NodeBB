@@ -13,7 +13,7 @@ const intFields = [
 module.exports = function (Categories) {
 	Categories.getCategoriesFields = function (cids, fields, callback) {
 		if (!Array.isArray(cids) || !cids.length) {
-			return callback(null, []);
+			return setImmediate(callback, null, []);
 		}
 
 		var keys = cids.map(cid => 'category:' + cid);
