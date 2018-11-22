@@ -122,6 +122,7 @@ if (typeof window !== 'undefined') {
 		var options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
 		var dtFormat = new Intl.DateTimeFormat(userLang, options);
 		var iso;
+		var date;
 		$.fn.timeago = function () {
 			var els = $(this);
 			// Convert "old" format to new format (#5108)
@@ -131,7 +132,10 @@ if (typeof window !== 'undefined') {
 					return;
 				}
 				this.setAttribute('datetime', iso);
-				this.textContent = dtFormat.format(new Date(iso));
+				date = new Date(iso);
+				if (!isNaN(date)) {
+					this.textContent = dtFormat.format(date);
+				}
 			});
 
 			timeagoFn.apply(this, arguments);
