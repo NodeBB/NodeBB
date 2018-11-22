@@ -141,9 +141,6 @@ module.exports = function (User) {
 
 			db.parseIntFields(user, intFields, requestedFields);
 
-			if (user.hasOwnProperty('groupTitle')) {
-				parseGroupTitle(user);
-			}
 			if (user.hasOwnProperty('username')) {
 				user.username = validator.escape(user.username ? user.username.toString() : '');
 			}
@@ -155,6 +152,11 @@ module.exports = function (User) {
 				user.picture = User.getDefaultAvatar();
 				user['icon:text'] = '?';
 				user['icon:bgColor'] = '#aaa';
+				user.groupTitle = '';
+			}
+
+			if (user.hasOwnProperty('groupTitle')) {
+				parseGroupTitle(user);
 			}
 
 			if (user.picture && user.picture === user.uploadedpicture) {
@@ -204,12 +206,20 @@ module.exports = function (User) {
 		try {
 			user.groupTitleArray = JSON.parse(user.groupTitle);
 		} catch (err) {
-			user.groupTitleArray = [user.groupTitle];
+			if (user.groupTitle) {
+				user.groupTitleArray = [user.groupTitle];
+			} else {
+				user.groupTitleArray = [];
+			}
 		}
 		if (!Array.isArray(user.groupTitleArray)) {
-			user.groupTitleArray = [user.groupTitleArray];
+			if (user.groupTitleArray) {
+				user.groupTitleArray = [user.groupTitleArray];
+			} else {
+				user.groupTitleArray = [];
+			}
 		}
-		if (!meta.config.allowMultipleBadges) {
+		if (!meta.config.allowMultipleBadges && user.groupTitleArray.length) {
 			user.groupTitleArray = [user.groupTitleArray[0]];
 		}
 	}

@@ -605,6 +605,15 @@ describe('User', function () {
 				done();
 			});
 		});
+
+		it('should not get groupTitle for guests', function (done) {
+			User.getUserData(0, function (err, userData) {
+				assert.ifError(err);
+				assert.strictEqual(userData.groupTitle, '');
+				assert.deepStrictEqual(userData.groupTitleArray, []);
+				done();
+			});
+		});
 	});
 
 	describe('not logged in', function () {
