@@ -25,9 +25,24 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback();
 		}
-		db.collection('objects').findOne({ _key: key }, function (err, item) {
-			callback(err, item !== undefined && item !== null);
-		});
+		if (Array.isArray(key)) {
+			db.collection('objects').find({ _key: { $in: key } }).toArray(function (err, data) {
+				if (err) {
+					return callback(err);
+				}
+
+				var map = {};
+				data.forEach(function (item) {
+					map[item._key] = true;
+				});
+
+				callback(null, key.map(key => !!map[key]));
+			});
+		} else {
+			db.collection('objects').findOne({ _key: key }, function (err, item) {
+				callback(err, item !== undefined && item !== null);
+			});
+		}
 	};
 
 	module.delete = function (key, callback) {

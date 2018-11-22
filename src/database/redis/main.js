@@ -1,6 +1,8 @@
 'use strict';
 
 module.exports = function (redisClient, module) {
+	var helpers = module.helpers.redis;
+
 	module.flushdb = function (callback) {
 		redisClient.send_command('flushdb', [], function (err) {
 			if (typeof callback === 'function') {
@@ -20,9 +22,15 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.exists = function (key, callback) {
-		redisClient.exists(key, function (err, exists) {
-			callback(err, exists === 1);
-		});
+		if (Array.isArray(key)) {
+			helpers.multiKeys(redisClient, 'exists', key, function (err, data) {
+				callback(err, data && data.map(exists => exists === 1));
+			});
+		} else {
+			redisClient.exists(key, function (err, exists) {
+				callback(err, exists === 1);
+			});
+		}
 	};
 
 	module.delete = function (key, callback) {
