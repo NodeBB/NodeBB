@@ -55,12 +55,10 @@ postQueueController.get = function (req, res, next) {
 };
 
 function getQueuedPosts(ids, callback) {
-	var keys = ids.map(function (id) {
-		return 'post:queue:' + id;
-	});
 	var postData;
 	async.waterfall([
 		function (next) {
+			const keys = ids.map(id => 'post:queue:' + id);
 			db.getObjects(keys, next);
 		},
 		function (data, next) {
@@ -70,9 +68,7 @@ function getQueuedPosts(ids, callback) {
 				data.data.timestampISO = utils.toISOString(data.data.timestamp);
 				return data;
 			});
-			var uids = data.map(function (data) {
-				return data && data.uid;
-			});
+			const uids = data.map(data => data && data.uid);
 			user.getUsersFields(uids, ['username', 'userslug', 'picture'], next);
 		},
 		function (userData, next) {
@@ -82,7 +78,7 @@ function getQueuedPosts(ids, callback) {
 
 			async.map(postData, function (postData, next) {
 				postData.data.rawContent = validator.escape(String(postData.data.content));
-				postData.data.title = validator.escape(String(postData.data.title));
+				postData.data.title = validator.escape(String(postData.data.title || ''));
 				async.waterfall([
 					function (next) {
 						if (postData.data.cid) {
