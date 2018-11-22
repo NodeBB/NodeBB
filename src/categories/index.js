@@ -235,19 +235,21 @@ Categories.getParentsAndChildren = function (categoryData, uid, callback) {
 };
 
 Categories.getChildren = function (cids, uid, callback) {
-	var categories = cids.map(cid => ({ cid: cid }));
-
-	async.each(categories, function (category, next) {
-		Categories.getCategoryField(category.cid, 'parentCid', function (err, parentCid) {
-			if (err) {
-				return next(err);
-			}
-			category.parentCid = parentCid;
-			getChildrenRecursive(category, uid, next);
-		});
-	}, function (err) {
-		callback(err, categories.map(c => c && c.children));
-	});
+	var categories;
+	async.waterfall([
+		function (next) {
+			Categories.getCategoriesFields(cids, ['parentCid'], next);
+		},
+		function (categoryData, next) {
+			categories = categoryData.map((category, index) => ({ cid: cids[index], parentCid: category.parentCid }));
+			async.each(categories, function (category, next) {
+				getChildrenRecursive(category, uid, next);
+			}, next);
+		},
+		function (next) {
+			next(null, categories.map(c => c && c.children));
+		},
+	], callback);
 };
 
 function getChildrenRecursive(category, uid, callback) {

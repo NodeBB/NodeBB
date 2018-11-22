@@ -16,10 +16,9 @@ module.exports = function (Categories) {
 			return setImmediate(callback, null, []);
 		}
 
-		var keys = cids.map(cid => 'category:' + cid);
-
 		async.waterfall([
 			function (next) {
+				const keys = cids.map(cid => 'category:' + cid);
 				if (fields.length) {
 					db.getObjectsFields(keys, fields, next);
 				} else {
