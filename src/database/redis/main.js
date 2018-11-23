@@ -23,7 +23,7 @@ module.exports = function (redisClient, module) {
 
 	module.exists = function (key, callback) {
 		if (Array.isArray(key)) {
-			helpers.multiKeys(redisClient, 'exists', key, function (err, data) {
+			helpers.execKeys(redisClient, 'batch', 'exists', key, function (err, data) {
 				callback(err, data && data.map(exists => exists === 1));
 			});
 		} else {
@@ -43,11 +43,11 @@ module.exports = function (redisClient, module) {
 
 	module.deleteAll = function (keys, callback) {
 		callback = callback || function () {};
-		var multi = redisClient.multi();
+		var batch = redisClient.batch();
 		for (var i = 0; i < keys.length; i += 1) {
-			multi.del(keys[i]);
+			batch.del(keys[i]);
 		}
-		multi.exec(function (err) {
+		batch.exec(function (err) {
 			module.objectCache.delObjectCache(keys);
 			callback(err);
 		});

@@ -18,7 +18,7 @@ module.exports = function (redisClient, module) {
 
 	module.setsAdd = function (keys, value, callback) {
 		callback = callback || function () {};
-		helpers.multiKeysValue(redisClient, 'sadd', keys, value, function (err) {
+		helpers.execKeysValue(redisClient, 'batch', 'sadd', keys, value, function (err) {
 			callback(err);
 		});
 	};
@@ -31,18 +31,19 @@ module.exports = function (redisClient, module) {
 		if (!Array.isArray(key)) {
 			key = [key];
 		}
-		var multi = redisClient.multi();
+
+		var batch = redisClient.batch();
 		key.forEach(function (key) {
-			multi.srem(key, value);
+			batch.srem(key, value);
 		});
-		multi.exec(function (err) {
+		batch.exec(function (err) {
 			callback(err);
 		});
 	};
 
 	module.setsRemove = function (keys, value, callback) {
 		callback = callback || function () {};
-		helpers.multiKeysValue(redisClient, 'srem', keys, value, function (err) {
+		helpers.execKeysValue(redisClient, 'batch', 'srem', keys, value, function (err) {
 			callback(err);
 		});
 	};
@@ -54,13 +55,13 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.isSetMembers = function (key, values, callback) {
-		helpers.multiKeyValues(redisClient, 'sismember', key, values, function (err, results) {
+		helpers.execKeyValues(redisClient, 'batch', 'sismember', key, values, function (err, results) {
 			callback(err, results ? helpers.resultsToBool(results) : null);
 		});
 	};
 
 	module.isMemberOfSets = function (sets, value, callback) {
-		helpers.multiKeysValue(redisClient, 'sismember', sets, value, function (err, results) {
+		helpers.execKeysValue(redisClient, 'batch', 'sismember', sets, value, function (err, results) {
 			callback(err, results ? helpers.resultsToBool(results) : null);
 		});
 	};
@@ -70,7 +71,7 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.getSetsMembers = function (keys, callback) {
-		helpers.multiKeys(redisClient, 'smembers', keys, callback);
+		helpers.execKeys(redisClient, 'batch', 'smembers', keys, callback);
 	};
 
 	module.setCount = function (key, callback) {
@@ -78,7 +79,7 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.setsCount = function (keys, callback) {
-		helpers.multiKeys(redisClient, 'scard', keys, callback);
+		helpers.execKeys(redisClient, 'batch', 'scard', keys, callback);
 	};
 
 	module.setRemoveRandom = function (key, callback) {
