@@ -33,12 +33,26 @@ module.exports = function (User) {
 		'cover:position', 'groupTitle',
 	];
 
+	User.guestData = {
+		uid: 0,
+		username: '[[global:guest]]',
+		userslug: '',
+		fullname: '[[global:guest]]',
+		email: '',
+		'icon:text': '?',
+		'icon:bgColor': '#aaa',
+		groupTitle: '',
+		status: 'offline',
+		reputation: 0,
+		'email:confirmed': 0,
+	};
+
 	User.getUsersFields = function (uids, fields, callback) {
 		if (!Array.isArray(uids) || !uids.length) {
 			return setImmediate(callback, null, []);
 		}
 
-		uids = uids.map(uid => (isNaN(uid) ? 0 : uid));
+		uids = uids.map(uid => (isNaN(uid) ? 0 : parseInt(uid, 10)));
 
 		var fieldsToRemove = [];
 		function addField(field) {
@@ -60,7 +74,7 @@ module.exports = function (User) {
 			addField('lastonline');
 		}
 
-		var uniqueUids = _.uniq(uids);
+		var uniqueUids = _.uniq(uids).filter(uid => uid > 0);
 
 		async.waterfall([
 			function (next) {
@@ -114,12 +128,12 @@ module.exports = function (User) {
 	};
 
 	function uidsToUsers(uids, uniqueUids, usersData) {
-		var uidToUser = uniqueUids.reduce(function (memo, cur, idx) {
-			memo[cur] = usersData[idx];
+		var uidToUser = uniqueUids.reduce(function (memo, uid, idx) {
+			memo[uid] = usersData[idx];
 			return memo;
 		}, {});
 		var users = uids.map(function (uid) {
-			const returnPayload = uidToUser[uid];
+			const returnPayload = uidToUser[uid] || _.clone(User.guestData);
 			if (uid > 0 && !returnPayload.uid) {
 				returnPayload.oldUid = parseInt(uid, 10);
 			}

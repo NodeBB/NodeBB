@@ -82,25 +82,10 @@ module.exports = function (middleware) {
 						privileges.global.get(req.uid, next);
 					},
 					user: function (next) {
-						var userData = {
-							uid: req.uid,
-							username: '[[global:guest]]',
-							userslug: '',
-							fullname: '[[global:guest]]',
-							email: '',
-							picture: user.getDefaultAvatar(),
-							status: 'offline',
-							reputation: 0,
-							'email:confirmed': 0,
-						};
-						if (req.loggedIn) {
-							user.getUserFields(req.uid, Object.keys(userData), next);
-						} else {
-							next(null, userData);
-						}
+						user.getUserData(req.uid, next);
 					},
 					isEmailConfirmSent: function (next) {
-						if (!meta.config.requireEmailConfirmation || !req.uid) {
+						if (!meta.config.requireEmailConfirmation || req.uid <= 0) {
 							return next(null, false);
 						}
 						db.get('uid:' + req.uid + ':confirm:email:sent', next);

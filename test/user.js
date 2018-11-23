@@ -614,6 +614,16 @@ describe('User', function () {
 				done();
 			});
 		});
+
+		it('should load guest data', function (done) {
+			User.getUsersData([1, 0], function (err, data) {
+				assert.ifError(err);
+				assert.strictEqual(data[1].username, '[[global:guest]]');
+				assert.strictEqual(data[1].userslug, '');
+				assert.strictEqual(data[1].uid, 0);
+				done();
+			});
+		});
 	});
 
 	describe('not logged in', function () {
