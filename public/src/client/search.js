@@ -136,9 +136,8 @@ define('forum/search', ['search', 'autocomplete', 'storage'], function (searchMo
 		if (!searchQuery) {
 			return;
 		}
-		searchQuery = utils.escapeHTML(searchQuery);
-		var regexStr = searchQuery.replace(/^"/, '').replace(/"$/, '').trim().split(' ')
-			.join('|');
+		searchQuery = utils.escapeHTML(searchQuery.replace(/^"/, '').replace(/"$/, '').trim());
+		var regexStr = searchQuery.split(' ').join('|');
 		var regex = new RegExp('(' + regexStr + ')', 'gi');
 
 		$('.search-result-text p, .search-result-text h4').each(function () {
@@ -151,7 +150,7 @@ define('forum/search', ['search', 'autocomplete', 'storage'], function (searchMo
 			});
 
 			result.html(result.html().replace(regex, function (match, p1) {
-				return '<strong>' + p1 + '</strong>';
+				return '<strong class="search-match">' + p1 + '</strong>';
 			}));
 
 			nested.forEach(function (nestedEl, i) {
