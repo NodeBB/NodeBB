@@ -138,7 +138,7 @@ define('forum/search', ['search', 'autocomplete', 'storage'], function (searchMo
 		}
 		searchQuery = utils.escapeHTML(searchQuery.replace(/^"/, '').replace(/"$/, '').trim());
 		var regexStr = searchQuery.split(' ').join('|');
-		var regex = new RegExp('(' + regexStr + ')', 'gi');
+		var regex = new RegExp('(' + utils.escapeRegexChars(regexStr) + ')', 'gi');
 
 		$('.search-result-text p, .search-result-text h4').each(function () {
 			var result = $(this);
