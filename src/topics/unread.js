@@ -516,14 +516,15 @@ module.exports = function (Topics) {
 	};
 
 	Topics.filterNewTids = function (tids, uid, callback) {
+		if (parseInt(uid, 10) <= 0) {
+			return setImmediate(callback, null, []);
+		}
 		async.waterfall([
 			function (next) {
 				db.sortedSetScores('uid:' + uid + ':tids_read', tids, next);
 			},
 			function (scores, next) {
-				tids = tids.filter(function (tid, index) {
-					return tid && !scores[index];
-				});
+				tids = tids.filter((tid, index) => tid && !scores[index]);
 				next(null, tids);
 			},
 		], callback);
@@ -535,9 +536,7 @@ module.exports = function (Topics) {
 				db.sortedSetScores('topics:posts', tids, next);
 			},
 			function (scores, next) {
-				tids = tids.filter(function (tid, index) {
-					return tid && scores[index] <= 1;
-				});
+				tids = tids.filter((tid, index) => tid && scores[index] <= 1);
 				next(null, tids);
 			},
 		], callback);

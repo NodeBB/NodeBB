@@ -173,37 +173,37 @@ module.exports = function (Topics) {
 				db.isSetMembers('tid:' + tid + ':ignorers', uids, next);
 			},
 			function (isIgnoring, next) {
-				var readingUids = uids.filter(function (uid, index) {
-					return uid && !isIgnoring[index];
-				});
+				const readingUids = uids.filter((uid, index) => uid && !isIgnoring[index]);
 				next(null, readingUids);
 			},
 		], callback);
 	};
 
 	Topics.filterWatchedTids = function (tids, uid, callback) {
+		if (parseInt(uid, 10) <= 0) {
+			return setImmediate(callback, null, []);
+		}
 		async.waterfall([
 			function (next) {
 				db.sortedSetScores('uid:' + uid + ':followed_tids', tids, next);
 			},
 			function (scores, next) {
-				tids = tids.filter(function (tid, index) {
-					return tid && !!scores[index];
-				});
+				tids = tids.filter((tid, index) => tid && !!scores[index]);
 				next(null, tids);
 			},
 		], callback);
 	};
 
 	Topics.filterNotIgnoredTids = function (tids, uid, callback) {
+		if (parseInt(uid, 10) <= 0) {
+			return setImmediate(callback, null, tids);
+		}
 		async.waterfall([
 			function (next) {
 				db.sortedSetScores('uid:' + uid + ':ignored_tids', tids, next);
 			},
 			function (scores, next) {
-				tids = tids.filter(function (tid, index) {
-					return tid && !scores[index];
-				});
+				tids = tids.filter((tid, index) => tid && !scores[index]);
 				next(null, tids);
 			},
 		], callback);
