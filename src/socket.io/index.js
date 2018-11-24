@@ -55,7 +55,7 @@ Sockets.init = function (server) {
 
 		var originUrl = override;
 		if (!originUrl) {
-			parsedUrl.protocol + '//' + domain;
+			originUrl = parsedUrl.protocol + '//' + domain;
 		}
 		winston.info('[socket.io] Restricting access to origin: ' + originUrl);
 		io.origins((origin, callback) => {
