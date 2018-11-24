@@ -9,7 +9,6 @@ var session = require('express-session');
 var _ = require('lodash');
 var semver = require('semver');
 var prompt = require('prompt');
-var db;
 var client;
 
 var mongoModule = module.exports;
@@ -62,40 +61,42 @@ mongoModule.questions = [
 mongoModule.helpers = mongoModule.helpers || {};
 mongoModule.helpers.mongo = require('./mongo/helpers');
 
-mongoModule.getConnectionString = function () {
+mongoModule.getConnectionString = function (mongo) {
+	mongo = mongo || nconf.get('mongo');
 	var usernamePassword = '';
-	var uri = nconf.get('mongo:uri') || '';
-	if (nconf.get('mongo:username') && nconf.get('mongo:password')) {
+	var uri = mongo.uri || '';
+	if (mongo.username && mongo.password) {
 		usernamePassword = nconf.get('mongo:username') + ':' + encodeURIComponent(nconf.get('mongo:password')) + '@';
 	} else if (!uri.includes('@') || !uri.slice(uri.indexOf('://') + 3, uri.indexOf('@'))) {
 		winston.warn('You have no mongo username/password setup!');
 	}
 
 	// Sensible defaults for Mongo, if not set
-	if (!nconf.get('mongo:host')) {
-		nconf.set('mongo:host', '127.0.0.1');
+	if (!mongo.host) {
+		mongo.host = '127.0.0.1';
 	}
-	if (!nconf.get('mongo:port')) {
-		nconf.set('mongo:port', 27017);
+	if (!mongo.port) {
+		mongo.port = 27017;
 	}
-	const dbName = nconf.get('mongo:database');
+	const dbName = mongo.database;
 	if (dbName === undefined || dbName === '') {
 		winston.warn('You have no database name, using "nodebb"');
-		nconf.set('mongo:database', 'nodebb');
+		mongo.database = 'nodebb';
 	}
 
-	var hosts = nconf.get('mongo:host').split(',');
-	var ports = nconf.get('mongo:port').toString().split(',');
+	var hosts = mongo.host.split(',');
+	var ports = mongo.port.toString().split(',');
 	var servers = [];
 
 	for (var i = 0; i < hosts.length; i += 1) {
 		servers.push(hosts[i] + ':' + ports[i]);
 	}
 
-	return nconf.get('mongo:uri') || 'mongodb://' + usernamePassword + servers.join() + '/' + nconf.get('mongo:database');
+	return uri || 'mongodb://' + usernamePassword + servers.join() + '/' + mongo.database;
 };
 
-mongoModule.getConnectionOptions = function () {
+mongoModule.getConnectionOptions = function (mongo) {
+	mongo = mongo || nconf.get('mongo');
 	var connOptions = {
 		poolSize: 10,
 		reconnectTries: 3600,
@@ -105,24 +106,19 @@ mongoModule.getConnectionOptions = function () {
 		useNewUrlParser: true,
 	};
 
-	return _.merge(connOptions, nconf.get('mongo:options') || {});
+	return _.merge(connOptions, mongo.options || {});
 };
 
 mongoModule.init = function (callback) {
 	callback = callback || function () { };
 
-	var mongoClient = require('mongodb').MongoClient;
-
-	var connString = mongoModule.getConnectionString();
-	var connOptions = mongoModule.getConnectionOptions();
-
-	mongoClient.connect(connString, connOptions, function (err, _client) {
+	mongoModule.connect(nconf.get('mongo'), function (err, _client) {
 		if (err) {
 			winston.error('NodeBB could not connect to your Mongo database. Mongo returned the following error', err);
 			return callback(err);
 		}
 		client = _client;
-		db = client.db();
+		var db = client.db();
 		mongoModule.client = db;
 
 		require('./mongo/main')(db, mongoModule);
@@ -138,30 +134,31 @@ mongoModule.init = function (callback) {
 	});
 };
 
-mongoModule.initSessionStore = function (callback) {
-	var meta = require('../meta');
-	var sessionStore;
+mongoModule.connect = function (options, callback) {
+	callback = callback || function () { };
 
-	var ttl = meta.getSessionTTLSeconds();
+	var mongoClient = require('mongodb').MongoClient;
 
-	if (nconf.get('redis')) {
-		sessionStore = require('connect-redis')(session);
-		var rdb = require('./redis');
-		rdb.client = rdb.connect();
+	var connString = mongoModule.getConnectionString(options);
+	var connOptions = mongoModule.getConnectionOptions(options);
 
-		mongoModule.sessionStore = new sessionStore({
-			client: rdb.client,
-			ttl: ttl,
+	mongoClient.connect(connString, connOptions, callback);
+};
+
+mongoModule.createSessionStore = function (options, callback) {
+	mongoModule.connect(options, function (err, client) {
+		if (err) {
+			return callback(err);
+		}
+		const meta = require('../meta');
+		const sessionStore = require('connect-mongo')(session);
+		const store = new sessionStore({
+			db: client.db(),
+			ttl: meta.getSessionTTLSeconds(),
 		});
-	} else if (nconf.get('mongo')) {
-		sessionStore = require('connect-mongo')(session);
-		mongoModule.sessionStore = new sessionStore({
-			db: db,
-			ttl: ttl,
-		});
-	}
 
-	callback();
+		callback(null, store);
+	});
 };
 
 mongoModule.createIndices = function (callback) {
