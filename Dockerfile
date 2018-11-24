@@ -14,7 +14,14 @@ ENV NODE_ENV=production \
     daemon=false \
     silent=false
 
-CMD ./nodebb start
+# the installer copies the port from the url - in docker, that's wrong
+CMD !test -f config/config.json || sed -i '/{/,/{/{s/\("port": *\).*/\1"4567",/}' config/config.json; \
+    test -d build/public || ./nodebb --config config/config.json build; \
+    ./nodebb --config config/config.json start;
 
 # the default port for NodeBB is exposed outside the container
 EXPOSE 4567
+
+# required volumes: a directory for config.json and the uploads
+VOLUME /usr/src/app/config
+VOLUME /usr/src/app/public/uploads
