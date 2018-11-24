@@ -77,7 +77,7 @@ redisModule.connect = function (options, callback) {
 	var cxn;
 	var callbackCalled = false;
 
-	let connOptions = redisModule.getConnectionOptions(options);
+	const connOptions = redisModule.getConnectionOptions(options);
 
 	if (redis_socket_or_host && redis_socket_or_host.indexOf('/') >= 0) {
 		/* If redis.host contains a path name character, use the unix dom sock connection. ie, /tmp/redis.sock */
@@ -123,7 +123,7 @@ redisModule.createSessionStore = function (options, callback) {
 	const meta = require('../meta');
 	const sessionStore = require('connect-redis')(session);
 	const client = redisModule.connect(options);
-	const store  = new sessionStore({
+	const store = new sessionStore({
 		client: client,
 		ttl: meta.getSessionTTLSeconds(),
 	});

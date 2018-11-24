@@ -37,6 +37,6 @@ primaryDB.initSessionStore = function (callback) {
 		primaryDB.sessionStore = sessionStore;
 		callback();
 	});
-}
+};
 
 module.exports = primaryDB;
