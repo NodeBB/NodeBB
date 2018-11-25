@@ -333,6 +333,10 @@ Categories.flattenCategories = function (allCategories, categoryData) {
  * @param parentCid {number} start from 0 to build full tree
  */
 Categories.getTree = function (categories, parentCid) {
+	const cids = categories.map(category => category.cid);
+	const cidToCategory = _.zipObject(cids, _.cloneDeep(categories));
+	const tree = buildRecursive(categories, parentCid || 0);
+
 	function buildRecursive(categories, parentCid) {
 		var tree = [];
 
@@ -352,9 +356,7 @@ Categories.getTree = function (categories, parentCid) {
 		tree.sort((a, b) => a.order - b.order);
 		return tree;
 	}
-	const cids = categories.map(category => category.cid);
-	const cidToCategory = _.zipObject(cids, _.cloneDeep(categories));
-	const tree = buildRecursive(categories, parentCid || 0);
+
 	categories.forEach(c => calculateTopicPostCount(c));
 	return tree;
 };

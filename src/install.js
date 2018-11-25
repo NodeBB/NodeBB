@@ -392,6 +392,7 @@ function giveGlobalPrivileges(next) {
 
 function createCategories(next) {
 	var Categories = require('./categories');
+	var db = require('./database');
 	db.getSortedSetRange('categories:cid', 0, -1, function (err, cids) {
 		if (err) {
 			return next(err);
