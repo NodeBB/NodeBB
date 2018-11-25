@@ -47,16 +47,25 @@ Categories.getCategoryById = function (data, callback) {
 				isIgnored: function (next) {
 					Categories.isIgnored([data.cid], data.uid, next);
 				},
-				getParentsAndChildren: function (next) {
-					Categories.getParentsAndChildren(categories, data.uid, next);
+				parent: function (next) {
+					if (category.parentCid) {
+						Categories.getCategoryData(category.parentCid, next);
+					} else {
+						next();
+					}
+				},
+				children: function (next) {
+					getChildrenTree(category, data.uid, next);
 				},
 			}, next);
 		},
 		function (results, next) {
 			category.topics = results.topics.topics;
 			category.nextStart = results.topics.nextStart;
-			category.isIgnored = results.isIgnored[0];
 			category.topic_count = results.topicCount;
+			category.isIgnored = results.isIgnored[0];
+			category.parent = results.parent;
+
 			calculateTopicPostCount(category);
 			plugins.fireHook('filter:category.get', { category: category, uid: data.uid }, next);
 		},
@@ -202,31 +211,6 @@ Categories.getParents = function (cids, callback) {
 			const cidToParent = _.zipObject(parentCids, parentData);
 			parentData = categoriesData.map(category => cidToParent[category.parentCid]);
 			next(null, parentData);
-		},
-	], callback);
-};
-
-Categories.getParentsAndChildren = function (categoryData, uid, callback) {
-	const parentCids = categoryData.filter(c => c && c.parentCid).map(c => c.parentCid);
-	async.waterfall([
-		function (next) {
-			async.parallel({
-				parents: function (next) {
-					Categories.getCategoriesData(parentCids, next);
-				},
-				children: function (next) {
-					async.each(categoryData, function (category, next) {
-						getChildrenTree(category, uid, next);
-					}, next);
-				},
-			}, next);
-		},
-		function (results, next) {
-			const cidToParent = _.zipObject(parentCids, results.parents);
-			categoryData.forEach(function (category) {
-				category.parent = cidToParent[category.parentCid];
-			});
-			next(null, categoryData);
 		},
 	], callback);
 };
