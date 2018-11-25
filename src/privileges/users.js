@@ -91,6 +91,9 @@ module.exports = function (privileges) {
 	}
 
 	function isModeratorOfCategory(cid, uid, callback) {
+		if (parseInt(uid, 10) <= 0) {
+			return filterIsModerator(cid, uid, false, callback);
+		}
 		async.waterfall([
 			function (next) {
 				async.parallel([
