@@ -33,22 +33,27 @@ module.exports = function (redisClient, module) {
 			key.forEach((key) => {
 				batch[method]([key, start, stop, 'WITHSCORES']);
 			});
-			batch.exec(function (err, result) {
+			batch.exec(function (err, data) {
 				if (err) {
 					return callback(err);
 				}
-				result = _.flatten(result);
-				result.sort((a, b) => {
+				data = _.flatten(data);
+				var objects = [];
+				for (var i = 0; i < data.length; i += 2) {
+					objects.push({ value: data[i], score: parseFloat(data[i + 1]) });
+				}
+
+				objects.sort((a, b) => {
 					if (method === 'zrange') {
 						return a.score - b.score;
 					}
 					return b.score - a.score;
 				});
 				if (withScores) {
-					return callback(null, result);
+					return callback(null, objects);
 				}
-				result = result.map(item => item.value);
-				callback(null, result);
+				objects = objects.map(item => item.value);
+				callback(null, objects);
 			});
 			return;
 		}

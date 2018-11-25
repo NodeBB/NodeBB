@@ -287,12 +287,11 @@ Categories.getChildrenCids = function (rootCid, callback) {
 	var allCids = [];
 	function recursive(keys, callback) {
 		console.log('zrange', keys);
-		db.getSortedSetsMembers(keys, function (err, childrenCids) {
+		db.getSortedSetRange(keys, 0, -1, function (err, childrenCids) {
 			if (err) {
 				return callback(err);
 			}
-			console.log(childrenCids)
-			childrenCids = _.uniq(_.flatten(childrenCids));
+
 			if (!childrenCids.length) {
 				return callback();
 			}
@@ -302,7 +301,7 @@ Categories.getChildrenCids = function (rootCid, callback) {
 		});
 	}
 
-	recursive(['cid:' + rootCid + ':children'], function (err) {
+	recursive('cid:' + rootCid + ':children', function (err) {
 		callback(err, _.uniq(allCids));
 	});
 };
