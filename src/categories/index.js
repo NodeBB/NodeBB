@@ -57,7 +57,7 @@ Categories.getCategoryById = function (data, callback) {
 			category.nextStart = results.topics.nextStart;
 			category.isIgnored = results.isIgnored[0];
 			category.topic_count = results.topicCount;
-
+			calculateTopicPostCount(category);
 			plugins.fireHook('filter:category.get', { category: category, uid: data.uid }, next);
 		},
 		function (data, next) {
@@ -126,7 +126,6 @@ Categories.getCategories = function (cids, uid, callback) {
 		return callback(null, []);
 	}
 	uid = parseInt(uid, 10);
-	let results;
 	async.waterfall([
 		function (next) {
 			async.parallel({
@@ -141,19 +140,14 @@ Categories.getCategories = function (cids, uid, callback) {
 				},
 			}, next);
 		},
-		function (_results, next) {
-			results = _results;
-			next(null, results.categories);
-		},
-		function (categories, next) {
-			categories.forEach(function (category, i) {
+		function (results, next) {
+			results.categories.forEach(function (category, i) {
 				if (category) {
 					category.tagWhitelist = results.tagWhitelist[i];
 					category['unread-class'] = (category.topic_count === 0 || (results.hasRead[i] && uid !== 0)) ? '' : 'unread';
-					calculateTopicPostCount(category);
 				}
 			});
-			next(null, categories);
+			next(null, results.categories);
 		},
 	], callback);
 };
@@ -360,15 +354,18 @@ Categories.getTree = function (categories, parentCid) {
 	}
 	const cids = categories.map(category => category.cid);
 	const cidToCategory = _.zipObject(cids, _.cloneDeep(categories));
-	return buildRecursive(categories, parentCid);
+	const tree = buildRecursive(categories, parentCid || 0);
+	categories.forEach(c => calculateTopicPostCount(c));
+	return tree;
 };
 
 Categories.buildForSelect = function (uid, privilege, callback) {
 	async.waterfall([
 		function (next) {
-			Categories.getCategoriesByPrivilege('cid:0:children', uid, privilege, next);
+			Categories.getCategoriesByPrivilege('categories:cid', uid, privilege, next);
 		},
 		function (categories, next) {
+			categories = Categories.getTree(categories);
 			Categories.buildForSelectCategories(categories, next);
 		},
 	], callback);

@@ -23,12 +23,13 @@ privilegesController.get = function (req, res, callback) {
 				allCategories: function (next) {
 					async.waterfall([
 						function (next) {
-							db.getSortedSetRange('cid:0:children', 0, -1, next);
+							db.getSortedSetRange('categories:cid', 0, -1, next);
 						},
 						function (cids, next) {
 							categories.getCategories(cids, req.uid, next);
 						},
 						function (categoriesData, next) {
+							categoriesData = categories.getTree(categoriesData);
 							categories.buildForSelectCategories(categoriesData, next);
 						},
 					], next);
