@@ -47,6 +47,9 @@ Categories.getCategoryById = function (data, callback) {
 				isIgnored: function (next) {
 					Categories.isIgnored([data.cid], data.uid, next);
 				},
+				getParentsAndChildren: function (next) {
+					Categories.getParentsAndChildren([category], data.uid, next);
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -352,7 +355,7 @@ Categories.getTree = function (categories, parentCid) {
 				}
 			}
 		});
-
+		tree.sort((a, b) => a.order - b.order);
 		return tree;
 	}
 	const cids = categories.map(category => category.cid);
@@ -379,10 +382,11 @@ Categories.buildForSelectCategories = function (categories, callback) {
 		category.text = level + bullet + category.name;
 		category.depth = depth;
 		categoriesData.push(category);
-
-		category.children.forEach(function (child) {
-			recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level, depth + 1);
-		});
+		if (Array.isArray(category.children)) {
+			category.children.forEach(function (child) {
+				recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level, depth + 1);
+			});
+		}
 	}
 
 	var categoriesData = [];
