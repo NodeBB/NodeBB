@@ -308,9 +308,7 @@ Categories.getChildrenCids = function (rootCid, callback) {
 Categories.flattenCategories = function (allCategories, categoryData) {
 	categoryData.forEach(function (category) {
 		if (category) {
-			if (!category.parent) {
-				allCategories.push(category);
-			}
+			allCategories.push(category);
 
 			if (Array.isArray(category.children) && category.children.length) {
 				Categories.flattenCategories(allCategories, category.children);
