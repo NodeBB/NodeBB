@@ -7,7 +7,7 @@ var db = require('../database');
 
 const intFields = [
 	'cid', 'parentCid', 'disabled', 'isSection', 'order',
-	'topic_count', 'post_count',
+	'topic_count', 'post_count', 'numRecentReplies',
 ];
 
 module.exports = function (Categories) {
