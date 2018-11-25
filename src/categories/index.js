@@ -286,7 +286,6 @@ function getChildrenTree(category, uid, callback) {
 Categories.getChildrenCids = function (rootCid, callback) {
 	var allCids = [];
 	function recursive(keys, callback) {
-		console.log('zrange', keys);
 		db.getSortedSetRange(keys, 0, -1, function (err, childrenCids) {
 			if (err) {
 				return callback(err);
@@ -296,7 +295,7 @@ Categories.getChildrenCids = function (rootCid, callback) {
 				return callback();
 			}
 			const keys = childrenCids.map(cid => 'cid:' + cid + ':children');
-			childrenCids.forEach(cid => allCids.push(cid));
+			childrenCids.forEach(cid => allCids.push(parseInt(cid, 10)));
 			recursive(keys, callback);
 		});
 	}
