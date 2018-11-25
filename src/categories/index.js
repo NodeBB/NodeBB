@@ -140,7 +140,7 @@ Categories.getCategories = function (cids, uid, callback) {
 		},
 		function (_results, next) {
 			results = _results;
-			Categories.getParentsAndChildren(results.categories, uid, next);
+			next(null, results.categories);
 		},
 		function (categories, next) {
 			categories.forEach(function (category, i) {
@@ -336,22 +336,28 @@ Categories.flattenCategories = function (allCategories, categoryData) {
  * @param parentCid {number} start from 0 to build full tree
  */
 Categories.getTree = function (categories, parentCid) {
-	var tree = [];
+	function buildRecursive(categories, parentCid) {
+		var tree = [];
 
-	categories.forEach(function (category) {
-		if (category) {
-			if (!category.hasOwnProperty('parentCid') || category.parentCid === null) {
-				category.parentCid = 0;
+		categories.forEach(function (category) {
+			if (category) {
+				if (!category.hasOwnProperty('parentCid') || category.parentCid === null) {
+					category.parentCid = 0;
+				}
+
+				if (category.parentCid === parentCid) {
+					tree.push(category);
+					category.parent = cidToCategory[parentCid];
+					category.children = buildRecursive(categories, category.cid);
+				}
 			}
+		});
 
-			if (category.parentCid === parentCid) {
-				tree.push(category);
-				category.children = Categories.getTree(categories, category.cid);
-			}
-		}
-	});
-
-	return tree;
+		return tree;
+	}
+	const cids = categories.map(category => category.cid);
+	const cidToCategory = _.zipObject(cids, _.cloneDeep(categories));
+	return buildRecursive(categories, parentCid);
 };
 
 Categories.buildForSelect = function (uid, privilege, callback) {
