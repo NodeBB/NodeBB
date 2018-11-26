@@ -24,7 +24,7 @@ module.exports = function (Posts) {
 						user.getUsersFields(uids, [
 							'uid', 'username', 'fullname', 'userslug',
 							'reputation', 'postcount', 'picture', 'signature',
-							'banned', 'status', 'lastonline', 'groupTitle',
+							'banned', 'banned:expire', 'status', 'lastonline', 'groupTitle',
 						], next);
 					},
 					userSettings: function (next) {
