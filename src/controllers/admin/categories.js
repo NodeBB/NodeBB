@@ -14,7 +14,7 @@ categoriesController.get = function (req, res, callback) {
 		function (next) {
 			async.parallel({
 				category: async.apply(categories.getCategories, [req.params.category_id], req.uid),
-				parent: async.apply(categories.getParent, [req.params.category_id]),
+				parent: async.apply(categories.getParents, [req.params.category_id]),
 				allCategories: async.apply(categories.buildForSelect, req.uid, 'read'),
 			}, next);
 		},
