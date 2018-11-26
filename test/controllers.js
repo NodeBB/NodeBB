@@ -1622,6 +1622,7 @@ describe('Controllers', function () {
 	it('should return osd data', function (done) {
 		request(nconf.get('url') + '/osd.xml', function (err, res, body) {
 			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
 			assert(body);
 			done();
 		});
@@ -1637,6 +1638,7 @@ describe('Controllers', function () {
 		it('should handle topic malformed uri', function (done) {
 			request(nconf.get('url') + '/topic/1/a%AFc', function (err, res, body) {
 				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
 				assert(body);
 				done();
 			});
@@ -1645,6 +1647,7 @@ describe('Controllers', function () {
 		it('should handle category malformed uri', function (done) {
 			request(nconf.get('url') + '/category/1/a%AFc', function (err, res, body) {
 				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
 				assert(body);
 				done();
 			});
