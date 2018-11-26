@@ -47,14 +47,26 @@ Categories.getCategoryById = function (data, callback) {
 				isIgnored: function (next) {
 					Categories.isIgnored([data.cid], data.uid, next);
 				},
+				parent: function (next) {
+					if (category.parentCid) {
+						Categories.getCategoryData(category.parentCid, next);
+					} else {
+						next();
+					}
+				},
+				children: function (next) {
+					getChildrenTree(category, data.uid, next);
+				},
 			}, next);
 		},
 		function (results, next) {
 			category.topics = results.topics.topics;
 			category.nextStart = results.topics.nextStart;
-			category.isIgnored = results.isIgnored[0];
 			category.topic_count = results.topicCount;
+			category.isIgnored = results.isIgnored[0];
+			category.parent = results.parent;
 
+			calculateTopicPostCount(category);
 			plugins.fireHook('filter:category.get', { category: category, uid: data.uid }, next);
 		},
 		function (data, next) {
@@ -123,7 +135,6 @@ Categories.getCategories = function (cids, uid, callback) {
 		return callback(null, []);
 	}
 	uid = parseInt(uid, 10);
-	let results;
 	async.waterfall([
 		function (next) {
 			async.parallel({
@@ -138,19 +149,14 @@ Categories.getCategories = function (cids, uid, callback) {
 				},
 			}, next);
 		},
-		function (_results, next) {
-			results = _results;
-			Categories.getParentsAndChildren(results.categories, uid, next);
-		},
-		function (categories, next) {
-			categories.forEach(function (category, i) {
+		function (results, next) {
+			results.categories.forEach(function (category, i) {
 				if (category) {
 					category.tagWhitelist = results.tagWhitelist[i];
 					category['unread-class'] = (category.topic_count === 0 || (results.hasRead[i] && uid !== 0)) ? '' : 'unread';
-					calculateTopicPostCount(category);
 				}
 			});
-			next(null, categories);
+			next(null, results.categories);
 		},
 	], callback);
 };
@@ -209,31 +215,6 @@ Categories.getParents = function (cids, callback) {
 	], callback);
 };
 
-Categories.getParentsAndChildren = function (categoryData, uid, callback) {
-	const parentCids = categoryData.filter(c => c && c.parentCid).map(c => c.parentCid);
-	async.waterfall([
-		function (next) {
-			async.parallel({
-				parents: function (next) {
-					Categories.getCategoriesData(parentCids, next);
-				},
-				children: function (next) {
-					async.each(categoryData, function (category, next) {
-						getChildrenRecursive(category, uid, next);
-					}, next);
-				},
-			}, next);
-		},
-		function (results, next) {
-			const cidToParent = _.zipObject(parentCids, results.parents);
-			categoryData.forEach(function (category) {
-				category.parent = cidToParent[category.parentCid];
-			});
-			next(null, categoryData);
-		},
-	], callback);
-};
-
 Categories.getChildren = function (cids, uid, callback) {
 	var categories;
 	async.waterfall([
@@ -243,7 +224,7 @@ Categories.getChildren = function (cids, uid, callback) {
 		function (categoryData, next) {
 			categories = categoryData.map((category, index) => ({ cid: cids[index], parentCid: category.parentCid }));
 			async.each(categories, function (category, next) {
-				getChildrenRecursive(category, uid, next);
+				getChildrenTree(category, uid, next);
 			}, next);
 		},
 		function (next) {
@@ -252,10 +233,11 @@ Categories.getChildren = function (cids, uid, callback) {
 	], callback);
 };
 
-function getChildrenRecursive(category, uid, callback) {
+function getChildrenTree(category, uid, callback) {
+	let children;
 	async.waterfall([
 		function (next) {
-			db.getSortedSetRange('cid:' + category.cid + ':children', 0, -1, next);
+			Categories.getChildrenCids(category.cid, next);
 		},
 		function (children, next) {
 			privileges.categories.filterCids('find', children, uid, next);
@@ -268,34 +250,27 @@ function getChildrenRecursive(category, uid, callback) {
 			}
 			Categories.getCategoriesData(children, next);
 		},
-		function (children, next) {
-			children = children.filter(Boolean);
-			category.children = children;
+		function (_children, next) {
+			children = _children.filter(Boolean);
 
-			var cids = children.map(child => child.cid);
-
+			const cids = children.map(child => child.cid);
 			Categories.hasReadCategories(cids, uid, next);
 		},
 		function (hasRead, next) {
 			hasRead.forEach(function (read, i) {
-				var child = category.children[i];
+				const child = children[i];
 				child['unread-class'] = (child.topic_count === 0 || (read && uid !== 0)) ? '' : 'unread';
 			});
-
-			async.each(category.children, function (child, next) {
-				if (parseInt(category.parentCid, 10) === parseInt(child.cid, 10)) {
-					return next();
-				}
-				getChildrenRecursive(child, uid, next);
-			}, next);
+			Categories.getTree([category].concat(children), category.parentCid);
+			next();
 		},
 	], callback);
 }
 
 Categories.getChildrenCids = function (rootCid, callback) {
 	var allCids = [];
-	function recursive(currentCid, callback) {
-		db.getSortedSetRange('cid:' + currentCid + ':children', 0, -1, function (err, childrenCids) {
+	function recursive(keys, callback) {
+		db.getSortedSetRange(keys, 0, -1, function (err, childrenCids) {
 			if (err) {
 				return callback(err);
 			}
@@ -303,14 +278,13 @@ Categories.getChildrenCids = function (rootCid, callback) {
 			if (!childrenCids.length) {
 				return callback();
 			}
-			async.eachSeries(childrenCids, function (childCid, next) {
-				allCids.push(parseInt(childCid, 10));
-				recursive(childCid, next);
-			}, callback);
+			const keys = childrenCids.map(cid => 'cid:' + cid + ':children');
+			childrenCids.forEach(cid => allCids.push(parseInt(cid, 10)));
+			recursive(keys, callback);
 		});
 	}
 
-	recursive(rootCid, function (err) {
+	recursive('cid:' + rootCid + ':children', function (err) {
 		callback(err, _.uniq(allCids));
 	});
 };
@@ -318,9 +292,7 @@ Categories.getChildrenCids = function (rootCid, callback) {
 Categories.flattenCategories = function (allCategories, categoryData) {
 	categoryData.forEach(function (category) {
 		if (category) {
-			if (!category.parent) {
-				allCategories.push(category);
-			}
+			allCategories.push(category);
 
 			if (Array.isArray(category.children) && category.children.length) {
 				Categories.flattenCategories(allCategories, category.children);
@@ -336,30 +308,45 @@ Categories.flattenCategories = function (allCategories, categoryData) {
  * @param parentCid {number} start from 0 to build full tree
  */
 Categories.getTree = function (categories, parentCid) {
-	var tree = [];
+	const cids = categories.map(category => category.cid);
+	const cidToCategory = _.zipObject(cids, _.cloneDeep(categories));
+	const tree = buildRecursive(categories, parentCid || 0);
 
-	categories.forEach(function (category) {
-		if (category) {
-			if (!category.hasOwnProperty('parentCid') || category.parentCid === null) {
-				category.parentCid = 0;
+	function buildRecursive(categories, parentCid) {
+		var tree = [];
+
+		categories.forEach(function (category) {
+			if (category) {
+				category.children = category.children || [];
+				if (!category.cid) {
+					return;
+				}
+				if (!category.hasOwnProperty('parentCid') || category.parentCid === null) {
+					category.parentCid = 0;
+				}
+
+				if (category.parentCid === parentCid) {
+					tree.push(category);
+					category.parent = cidToCategory[parentCid];
+					category.children = buildRecursive(categories, category.cid);
+				}
 			}
+		});
+		tree.sort((a, b) => a.order - b.order);
+		return tree;
+	}
 
-			if (category.parentCid === parentCid) {
-				tree.push(category);
-				category.children = Categories.getTree(categories, category.cid);
-			}
-		}
-	});
-
+	categories.forEach(c => calculateTopicPostCount(c));
 	return tree;
 };
 
 Categories.buildForSelect = function (uid, privilege, callback) {
 	async.waterfall([
 		function (next) {
-			Categories.getCategoriesByPrivilege('cid:0:children', uid, privilege, next);
+			Categories.getCategoriesByPrivilege('categories:cid', uid, privilege, next);
 		},
 		function (categories, next) {
+			categories = Categories.getTree(categories);
 			Categories.buildForSelectCategories(categories, next);
 		},
 	], callback);
@@ -373,10 +360,11 @@ Categories.buildForSelectCategories = function (categories, callback) {
 		category.text = level + bullet + category.name;
 		category.depth = depth;
 		categoriesData.push(category);
-
-		category.children.forEach(function (child) {
-			recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level, depth + 1);
-		});
+		if (Array.isArray(category.children)) {
+			category.children.forEach(function (child) {
+				recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level, depth + 1);
+			});
+		}
 	}
 
 	var categoriesData = [];

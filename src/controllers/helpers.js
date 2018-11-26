@@ -288,7 +288,7 @@ function getCategoryData(cids, uid, selectedCid, callback) {
 			}
 
 			var categoriesData = [];
-			var tree = categories.getTree(categoryData, 0);
+			var tree = categories.getTree(categoryData);
 
 			tree.forEach(function (category) {
 				recursive(category, categoriesData, '');

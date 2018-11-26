@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = function (redisClient, module) {
+	var _ = require('lodash');
 	var utils = require('../../utils');
 
 	var helpers = module.helpers.redis;
@@ -28,7 +29,33 @@ module.exports = function (redisClient, module) {
 
 	function sortedSetRange(method, key, start, stop, withScores, callback) {
 		if (Array.isArray(key)) {
-			return module.sortedSetUnion({ method: method, sets: key, start: start, stop: stop, withScores: withScores }, callback);
+			const batch = redisClient.batch();
+			key.forEach((key) => {
+				batch[method]([key, start, stop, 'WITHSCORES']);
+			});
+			batch.exec(function (err, data) {
+				if (err) {
+					return callback(err);
+				}
+				data = _.flatten(data);
+				var objects = [];
+				for (var i = 0; i < data.length; i += 2) {
+					objects.push({ value: data[i], score: parseFloat(data[i + 1]) });
+				}
+
+				objects.sort((a, b) => {
+					if (method === 'zrange') {
+						return a.score - b.score;
+					}
+					return b.score - a.score;
+				});
+				if (withScores) {
+					return callback(null, objects);
+				}
+				objects = objects.map(item => item.value);
+				callback(null, objects);
+			});
+			return;
 		}
 
 		var params = [key, start, stop];
