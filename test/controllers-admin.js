@@ -383,11 +383,15 @@ describe('Admin Controllers', function () {
 	});
 
 	it('should load /admin/advanced/logs', function (done) {
-		request(nconf.get('url') + '/api/admin/advanced/logs', { jar: jar, json: true }, function (err, res, body) {
+		var fs = require('fs');
+		fs.appendFile(meta.logs.path, 'dummy log', function (err) {
 			assert.ifError(err);
-			assert.equal(res.statusCode, 200);
-			assert(body);
-			done();
+			request(nconf.get('url') + '/api/admin/advanced/logs', { jar: jar, json: true }, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
 		});
 	});
 
