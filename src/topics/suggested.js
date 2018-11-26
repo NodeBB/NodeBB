@@ -93,7 +93,8 @@ module.exports = function (Topics) {
 				db.getSortedSetRevRange('cid:' + cid + ':tids:lastposttime', 0, 9, next);
 			},
 			function (tids, next) {
-				next(null, tids.map(Number));
+				tids = tids.map(Number).filter(_tid => _tid !== tid);
+				next(null, _.shuffle(tids));
 			},
 		], callback);
 	}
