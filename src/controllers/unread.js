@@ -32,7 +32,11 @@ unreadController.get = function (req, res, next) {
 
 			async.parallel({
 				watchedCategories: function (next) {
-					helpers.getWatchedCategories(req.uid, cid, next);
+					if (plugins.hasListeners('filter:unread.categories')) {
+						plugins.fireHook('filter:unread.categories', { uid: req.uid, cid: cid }, next);
+					} else {
+						helpers.getWatchedCategories(req.uid, cid, next);
+					}
 				},
 				settings: function (next) {
 					user.getSettings(req.uid, next);

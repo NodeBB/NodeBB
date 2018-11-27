@@ -245,6 +245,9 @@ helpers.getWatchedCategories = function (uid, selectedCid, callback) {
 			user.getWatchedCategories(uid, next);
 		},
 		function (cids, next) {
+			privileges.categories.filterCids('read', cids, uid, next);
+		},
+		function (cids, next) {
 			getCategoryData(cids, uid, selectedCid, next);
 		},
 	], callback);
@@ -256,9 +259,6 @@ function getCategoryData(cids, uid, selectedCid, callback) {
 	}
 	async.waterfall([
 		function (next) {
-			privileges.categories.filterCids('read', cids, uid, next);
-		},
-		function (cids, next) {
 			categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'link', 'color', 'bgColor', 'parentCid', 'image', 'imageClass'], next);
 		},
 		function (categoryData, next) {
@@ -302,8 +302,9 @@ function getCategoryData(cids, uid, selectedCid, callback) {
 function recursive(category, categoriesData, level) {
 	category.level = level;
 	categoriesData.push(category);
-
-	category.children.forEach(function (child) {
-		recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level);
-	});
+	if (Array.isArray(category.children)) {
+		category.children.forEach(function (child) {
+			recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level);
+		});
+	}
 }
