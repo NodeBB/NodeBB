@@ -10,6 +10,7 @@ var user = require('../user');
 var plugins = require('../plugins');
 var categories = require('../categories');
 var utils = require('../utils');
+var meta = require('../meta');
 
 module.exports = function (Posts) {
 	Posts.getPostSummaryByPids = function (pids, uid, options, callback) {
@@ -41,9 +42,14 @@ module.exports = function (Posts) {
 					uids[post.uid] = 1;
 					topicKeys[post.tid] = 1;
 				});
+				var uidsArray = Object.keys(uids);
+
 				async.parallel({
 					users: function (next) {
-						user.getUsersFields(Object.keys(uids), ['uid', 'username', 'userslug', 'picture'], next);
+						user.getUsersFields(uidsArray, ['uid', 'username', 'userslug', 'picture', 'fullname'], next);
+					},
+					settings: function (next) {
+						user.getMultipleUserSettings(uidsArray, next);
 					},
 					topicsAndCategories: function (next) {
 						getTopicAndCategories(Object.keys(topicKeys), next);
@@ -52,6 +58,7 @@ module.exports = function (Posts) {
 			},
 			function (results, next) {
 				results.users = toObject('uid', results.users);
+				results.settings = toObject('uid', results.settings);
 				results.topics = toObject('tid', results.topicsAndCategories.topics);
 				results.categories = toObject('cid', results.topicsAndCategories.categories);
 
@@ -66,6 +73,10 @@ module.exports = function (Posts) {
 					post.isMainPost = post.topic && post.pid === post.topic.mainPid;
 					post.deleted = post.deleted === 1;
 					post.timestampISO = utils.toISOString(post.timestamp);
+
+					if (!results.settings[post.uid].showfullname || meta.config.hideFullname) {
+						post.user.fullname = '';
+					}
 				});
 
 				posts = posts.filter(function (post) {
