@@ -698,7 +698,7 @@ app.cacheBuster = null;
 	app.loadProgressiveStylesheet = function () {
 		var linkEl = document.createElement('link');
 		linkEl.rel = 'stylesheet';
-		linkEl.href = config.relative_path + '/assets/js-enabled.css';
+		linkEl.href = config.relative_path + '/assets/js-enabled.css?' + app.cacheBuster;
 
 		document.head.appendChild(linkEl);
 	};
