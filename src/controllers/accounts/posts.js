@@ -149,8 +149,8 @@ function getFromUserSet(template, req, res, callback) {
 			userData.pagination = pagination.create(page, pageCount);
 
 			userData.noItemsFoundKey = data.noItemsFoundKey;
-			userData.title = '[[pages:' + data.template + ', ' + userData.username + ']]';
-			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: data.crumb }]);
+			userData.title = '[[pages:' + data.template + ', ' + userData.displayname + ']]';
+			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.displayname, url: '/user/' + userData.userslug }, { text: data.crumb }]);
 
 			res.render(data.template, userData);
 		},

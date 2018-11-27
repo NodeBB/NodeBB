@@ -174,7 +174,7 @@ settingsController.get = function (req, res, callback) {
 			userData.maxPostsPerPage = meta.config.maxPostsPerPage;
 
 			userData.title = '[[pages:account/settings]]';
-			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[user:settings]]' }]);
+			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.displayname, url: '/user/' + userData.userslug }, { text: '[[user:settings]]' }]);
 
 			res.render('account/settings', userData);
 		},

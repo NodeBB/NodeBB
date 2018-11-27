@@ -56,10 +56,10 @@ editController.get = function (req, res, callback) {
 				group.selected = userData.groupTitleArray.includes(group.name);
 			});
 
-			userData.title = '[[pages:account/edit, ' + userData.username + ']]';
+			userData.title = '[[pages:account/edit, ' + userData.displayname + ']]';
 			userData.breadcrumbs = helpers.buildBreadcrumbs([
 				{
-					text: userData.username,
+					text: userData.displayname,
 					url: '/user/' + userData.userslug,
 				},
 				{
@@ -107,10 +107,10 @@ function renderRoute(name, req, res, next) {
 				userData.minimumPasswordStrength = meta.config.minimumPasswordStrength;
 			}
 
-			userData.title = '[[pages:account/edit/' + name + ', ' + userData.username + ']]';
+			userData.title = '[[pages:account/edit/' + name + ', ' + userData.displayname + ']]';
 			userData.breadcrumbs = helpers.buildBreadcrumbs([
 				{
-					text: userData.username,
+					text: userData.displayname,
 					url: '/user/' + userData.userslug,
 				},
 				{

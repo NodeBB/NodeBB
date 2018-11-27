@@ -76,8 +76,8 @@ profileController.get = function (req, res, callback) {
 			userData.hasPrivateChat = results.hasPrivateChat;
 			userData.aboutme = translator.escape(results.aboutme);
 			userData.nextStart = results.posts.nextStart;
-			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username }]);
-			userData.title = userData.username;
+			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.displayname }]);
+			userData.title = userData.displayname;
 			userData.allowCoverPicture = !userData.isSelf || userData.reputation >= (meta.config['min:rep:cover-picture'] || 0);
 			var pageCount = Math.ceil(userData.postcount / itemsPerPage);
 			userData.pagination = pagination.create(page, pageCount, req.query);
@@ -91,7 +91,7 @@ profileController.get = function (req, res, callback) {
 			res.locals.metaTags = [
 				{
 					name: 'title',
-					content: userData.fullname || userData.username,
+					content: userData.displayname,
 				},
 				{
 					name: 'description',
@@ -99,7 +99,7 @@ profileController.get = function (req, res, callback) {
 				},
 				{
 					property: 'og:title',
-					content: userData.fullname || userData.username,
+					content: userData.displayname,
 				},
 				{
 					property: 'og:description',

@@ -43,11 +43,11 @@ blocksController.getBlocks = function (req, res, callback) {
 		},
 		function (users) {
 			userData.users = users;
-			userData.title = '[[pages:account/blocks, ' + userData.username + ']]';
+			userData.title = '[[pages:account/blocks, ' + userData.displayname + ']]';
 			var count = userData.blocksCount;
 			var pageCount = Math.ceil(count / resultsPerPage);
 			userData.pagination = pagination.create(page, pageCount);
-			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[user:blocks]]' }]);
+			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.displayname, url: '/user/' + userData.userslug }, { text: '[[user:blocks]]' }]);
 
 			res.render('account/blocks', userData);
 		},

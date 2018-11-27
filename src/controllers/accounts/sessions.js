@@ -28,7 +28,7 @@ sessionController.get = function (req, res, callback) {
 			userData.sessions = sessions;
 
 			userData.title = '[[pages:account/sessions]]';
-			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[pages:account/sessions]]' }]);
+			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.displayname, url: '/user/' + userData.userslug }, { text: '[[pages:account/sessions]]' }]);
 
 			res.render('account/sessions', userData);
 		},

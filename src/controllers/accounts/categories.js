@@ -36,7 +36,7 @@ categoriesController.get = function (req, res, callback) {
 				}
 			});
 			userData.categories = results.categories;
-			userData.title = '[[pages:account/watched_categories, ' + userData.username + ']]';
+			userData.title = '[[pages:account/watched_categories, ' + userData.displayname + ']]';
 			res.render('account/categories', userData);
 		},
 	], callback);

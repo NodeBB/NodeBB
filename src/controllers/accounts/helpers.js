@@ -197,6 +197,8 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 			userData.birthday = validator.escape(String(userData.birthday || ''));
 			userData.moderationNote = validator.escape(String(userData.moderationNote || ''));
 
+			userData.displayname = (meta.config.showFullnameAsDisplayName && userSettings.showfullname && userData.fullname) ? userData.fullname : userData.username;
+
 			if (userData['cover:url']) {
 				userData['cover:url'] = userData['cover:url'].startsWith('http') ? userData['cover:url'] : (nconf.get('relative_path') + userData['cover:url']);
 			} else {
