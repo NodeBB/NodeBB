@@ -18,7 +18,7 @@ module.exports = function (Posts) {
 				user.getUserFields(uid, ['uid', 'reputation', 'postcount'], next);
 			},
 			function (userData, next) {
-				var shouldQueue = meta.config.postQueue && (!userData.uid || (userData.reputation <= 0 && userData.postcount <= 0));
+				var shouldQueue = meta.config.postQueue && (!userData.uid || userData.reputation < 0 || userData.postcount <= 0);
 				plugins.fireHook('filter:post.shouldQueue', {
 					shouldQueue: shouldQueue,
 					uid: uid,
