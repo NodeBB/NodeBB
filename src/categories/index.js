@@ -302,39 +302,52 @@ Categories.flattenCategories = function (allCategories, categoryData) {
 };
 
 /**
- * Recursively build tree
+ * build tree from flat list of categories
  *
  * @param categories {array} flat list of categories
  * @param parentCid {number} start from 0 to build full tree
  */
 Categories.getTree = function (categories, parentCid) {
+	parentCid = parentCid || 0;
 	const cids = categories.map(category => category.cid);
-	const cidToCategory = _.zipObject(cids, _.cloneDeep(categories));
-	const tree = buildRecursive(categories, parentCid || 0);
+	const cidToCategory = {};
+	const parents = {};
+	cids.forEach((cid, index) => {
+		cidToCategory[cid] = categories[index];
+		parents[cid] = _.clone(categories[index]);
+	});
 
-	function buildRecursive(categories, parentCid) {
-		var tree = [];
+	const tree = [];
 
-		categories.forEach(function (category) {
-			if (category) {
-				category.children = category.children || [];
-				if (!category.cid) {
-					return;
-				}
-				if (!category.hasOwnProperty('parentCid') || category.parentCid === null) {
-					category.parentCid = 0;
-				}
-
-				if (category.parentCid === parentCid) {
-					tree.push(category);
-					category.parent = cidToCategory[parentCid];
-					category.children = buildRecursive(categories, category.cid);
+	categories.forEach(function (category) {
+		if (category) {
+			category.children = category.children || [];
+			if (!category.cid) {
+				return;
+			}
+			if (!category.hasOwnProperty('parentCid') || category.parentCid === null) {
+				category.parentCid = 0;
+			}
+			if (category.parentCid === parentCid) {
+				tree.push(category);
+				category.parent = parents[parentCid];
+			} else {
+				const parent = cidToCategory[category.parentCid];
+				if (parent && parent.cid !== category.cid) {
+					category.parent = parents[category.parentCid];
+					parent.children = parent.children || [];
+					parent.children.push(category);
 				}
 			}
-		});
+		}
+	});
+	function sortTree(tree) {
 		tree.sort((a, b) => a.order - b.order);
-		return tree;
+		if (tree.children) {
+			sortTree(tree.children);
+		}
 	}
+	sortTree(tree);
 
 	categories.forEach(c => calculateTopicPostCount(c));
 	return tree;
