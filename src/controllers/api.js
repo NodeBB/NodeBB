@@ -23,6 +23,7 @@ apiController.loadConfig = function (req, callback) {
 	config.browserTitle = validator.escape(String(meta.config.browserTitle || meta.config.title || 'NodeBB'));
 	config.titleLayout = (meta.config.titleLayout || '{pageTitle} | {browserTitle}').replace(/{/g, '&#123;').replace(/}/g, '&#125;');
 	config.showSiteTitle = meta.config.showSiteTitle === 1;
+	config.showFullnameAsDisplayName = meta.config.showFullnameAsDisplayName === 1;
 	config.minimumTitleLength = meta.config.minimumTitleLength;
 	config.maximumTitleLength = meta.config.maximumTitleLength;
 	config.minimumPostLength = meta.config.minimumPostLength;
