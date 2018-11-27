@@ -10,7 +10,7 @@ social.postSharing = null;
 
 social.getPostSharing = function (callback) {
 	if (social.postSharing) {
-		return callback(null, social.postSharing);
+		return setImmediate(callback, null, social.postSharing);
 	}
 
 	var networks = [
@@ -55,9 +55,7 @@ social.getActivePostSharing = function (callback) {
 			social.getPostSharing(next);
 		},
 		function (networks, next) {
-			networks = networks.filter(function (network) {
-				return network && network.activated;
-			});
+			networks = networks.filter(network => network && network.activated);
 			next(null, networks);
 		},
 	], callback);

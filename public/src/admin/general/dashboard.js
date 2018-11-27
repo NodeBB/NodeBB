@@ -465,12 +465,19 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 	}
 
 	function updateRegisteredGraph(registered, anonymous) {
+		$('#analytics-legend .registered').parent().find('.count').text(registered);
+		$('#analytics-legend .anonymous').parent().find('.count').text(anonymous);
 		graphs.registered.data.datasets[0].data[0] = registered;
 		graphs.registered.data.datasets[0].data[1] = anonymous;
 		graphs.registered.update();
 	}
 
 	function updatePresenceGraph(users) {
+		$('#analytics-presence-legend .on-categories').parent().find('.count').text(users.categories);
+		$('#analytics-presence-legend .reading-posts').parent().find('.count').text(users.topics);
+		$('#analytics-presence-legend .browsing-topics').parent().find('.count').text(users.category);
+		$('#analytics-presence-legend .recent').parent().find('.count').text(users.recent);
+		$('#analytics-presence-legend .unread').parent().find('.count').text(users.unread);
 		graphs.presence.data.datasets[0].data[0] = users.categories;
 		graphs.presence.data.datasets[0].data[1] = users.topics;
 		graphs.presence.data.datasets[0].data[2] = users.category;
@@ -508,7 +515,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 
 				html += '<li>'
 					+ '<div style="background-color: ' + topicColors[i] + ';"></div>'
-					+ '<span>' + label + '</span>'
+					+ '<span> (' + topic.count + ') ' + label + '</span>'
 					+ '</li>';
 			});
 			legend.translateHtml(html);

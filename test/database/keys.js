@@ -53,6 +53,14 @@ describe('Key methods', function () {
 		});
 	});
 
+	it('should work for an array of keys', function (done) {
+		db.exists(['testKey', 'doesnotexist'], function (err, exists) {
+			assert.ifError(err);
+			assert.deepStrictEqual(exists, [true, false]);
+			done();
+		});
+	});
+
 	it('should delete a key without error', function (done) {
 		db.delete('testKey', function (err) {
 			assert.ifError(err);

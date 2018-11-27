@@ -3,12 +3,10 @@
 
 
 define('forum/category/tools', [
-	'forum/topic/move',
-	'forum/topic/merge',
 	'topicSelect',
 	'components',
 	'translator',
-], function (move, merge, topicSelect, components, translator) {
+], function (topicSelect, components, translator) {
 	var CategoryTools = {};
 
 	CategoryTools.init = function (cid) {
@@ -88,26 +86,35 @@ define('forum/category/tools', [
 		});
 
 		components.get('topic/move').on('click', function () {
-			var tids = topicSelect.getSelectedTids();
+			require(['forum/topic/move'], function (move) {
+				var tids = topicSelect.getSelectedTids();
 
-			if (!tids.length) {
-				return app.alertError('[[error:no-topics-selected]]');
-			}
-			move.init(tids, cid, onCommandComplete);
+				if (!tids.length) {
+					return app.alertError('[[error:no-topics-selected]]');
+				}
+				move.init(tids, cid, onCommandComplete);
+			});
+
 			return false;
 		});
 
 		components.get('topic/move-all').on('click', function () {
-			move.init(null, cid, function (err) {
-				if (err) {
-					return app.alertError(err.message);
-				}
+			require(['forum/topic/move'], function (move) {
+				move.init(null, cid, function (err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
 
-				ajaxify.refresh();
+					ajaxify.refresh();
+				});
 			});
 		});
 
-		merge.init();
+		$('.category').on('click', '[component="topic/merge"]', function () {
+			require(['forum/topic/merge'], function (merge) {
+				merge.init();
+			});
+		});
 
 		CategoryTools.removeListeners();
 		socket.on('event:topic_deleted', setDeleteState);

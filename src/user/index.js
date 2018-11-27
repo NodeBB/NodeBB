@@ -107,7 +107,7 @@ User.getStatus = function (userData) {
 	if (userData.uid <= 0) {
 		return 'offline';
 	}
-	var isOnline = (Date.now() - userData.lastonline) < 300000;
+	var isOnline = (Date.now() - userData.lastonline) < (meta.config.onlineCutoff * 60000);
 	return isOnline ? (userData.status || 'online') : 'offline';
 };
 

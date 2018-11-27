@@ -8,10 +8,7 @@
 	"id": "ID: <small>opcional</small>",
 
 	"properties": "Propriedades:",
-	"only-admins": "Mostrar apenas para Administradores",
-	"only-global-mods-and-admins": "Exibir apenas para Moderadores Globais e Administradores",
-	"only-logged-in": "Mostrar apenas para usuários logados",
-	"only-guest": "Mostrar apenas para visitantes",
+	"groups": "Groups:",
 	"open-new-window": "Abrir em uma nova janela",
 
 	"btn.delete": "Deletar",

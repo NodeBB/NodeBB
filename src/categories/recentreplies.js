@@ -85,7 +85,8 @@ module.exports = function (Categories) {
 
 		async.waterfall([
 			function (next) {
-				var keys = categoryData.map(category => 'cid:' + category.cid + ':recent_tids');
+				const categoriesToLoad = categoryData.filter(category => parseInt(category.numRecentReplies, 10) > 0);
+				const keys = categoriesToLoad.map(category => 'cid:' + category.cid + ':recent_tids');
 				db.getSortedSetsMembers(keys, next);
 			},
 			function (results, next) {
@@ -166,9 +167,7 @@ module.exports = function (Categories) {
 			var posts = [];
 			getPostsRecursive(category, posts);
 
-			posts.sort(function (a, b) {
-				return b.pid - a.pid;
-			});
+			posts.sort((a, b) => b.pid - a.pid);
 			if (posts.length) {
 				category.posts = [posts[0]];
 			}
@@ -176,9 +175,11 @@ module.exports = function (Categories) {
 	}
 
 	function getPostsRecursive(category, posts) {
-		category.posts.forEach(function (p) {
-			posts.push(p);
-		});
+		if (Array.isArray(category.posts)) {
+			category.posts.forEach(function (p) {
+				posts.push(p);
+			});
+		}
 
 		category.children.forEach(function (child) {
 			getPostsRecursive(child, posts);

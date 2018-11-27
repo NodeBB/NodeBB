@@ -110,9 +110,9 @@ module.exports = function (app, middleware, callback) {
 	app.use(middleware.stripLeadingSlashes);
 
 	// handle custom homepage routes
-	app.use(relativePath, controllers.home.rewrite);
+	router.use('/', controllers.home.rewrite);
 	// homepage handled by `action:homepage.get:[route]`
-	setupPageRoute(app, '/', middleware, [], controllers.home.pluginHook);
+	setupPageRoute(router, '/', middleware, [], controllers.home.pluginHook);
 
 	adminRoutes(router, middleware, controllers);
 	metaRoutes(router, middleware, controllers);
@@ -159,7 +159,7 @@ module.exports = function (app, middleware, callback) {
 	});
 
 	statics.forEach(function (obj) {
-		app.use(relativePath + obj.route, express.static(obj.path, staticOptions));
+		app.use(relativePath + obj.route, middleware.trimUploadTimestamps, express.static(obj.path, staticOptions));
 	});
 	app.use(relativePath + '/uploads', function (req, res) {
 		res.redirect(relativePath + '/assets/uploads' + req.path + '?' + meta.config['cache-buster']);

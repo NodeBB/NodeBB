@@ -19,7 +19,7 @@ SocketGroups.before = function (socket, method, data, next) {
 };
 
 SocketGroups.join = function (socket, data, callback) {
-	if (!parseInt(socket.uid, 10)) {
+	if (socket.uid <= 0) {
 		return callback(new Error('[[error:invalid-uid]]'));
 	}
 
@@ -60,7 +60,7 @@ SocketGroups.join = function (socket, data, callback) {
 };
 
 SocketGroups.leave = function (socket, data, callback) {
-	if (!parseInt(socket.uid, 10)) {
+	if (socket.uid <= 0) {
 		return callback(new Error('[[error:invalid-uid]]'));
 	}
 

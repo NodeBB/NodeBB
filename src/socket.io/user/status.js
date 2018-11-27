@@ -21,7 +21,7 @@ module.exports = function (SocketUser) {
 	};
 
 	SocketUser.setStatus = function (socket, status, callback) {
-		if (!socket.uid) {
+		if (socket.uid <= 0) {
 			return callback(new Error('[[error:invalid-uid]]'));
 		}
 

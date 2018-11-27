@@ -605,6 +605,25 @@ describe('User', function () {
 				done();
 			});
 		});
+
+		it('should not get groupTitle for guests', function (done) {
+			User.getUserData(0, function (err, userData) {
+				assert.ifError(err);
+				assert.strictEqual(userData.groupTitle, '');
+				assert.deepStrictEqual(userData.groupTitleArray, []);
+				done();
+			});
+		});
+
+		it('should load guest data', function (done) {
+			User.getUsersData([1, 0], function (err, data) {
+				assert.ifError(err);
+				assert.strictEqual(data[1].username, '[[global:guest]]');
+				assert.strictEqual(data[1].userslug, '');
+				assert.strictEqual(data[1].uid, 0);
+				done();
+			});
+		});
 	});
 
 	describe('not logged in', function () {
@@ -1384,7 +1403,6 @@ describe('User', function () {
 					homePageCustom: '',
 					openOutgoingLinksInNewTab: 0,
 					scrollToMyPost: 1,
-					delayImageLoading: 1,
 					userLang: 'en-GB',
 					usePagination: 1,
 					topicsPerPage: '10',

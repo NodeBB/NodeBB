@@ -90,7 +90,7 @@ module.exports = function (Topics) {
 function escapeTitle(topicData) {
 	if (topicData) {
 		if (topicData.title) {
-			topicData.title = translator.escape(validator.escape(String(topicData.title)));
+			topicData.title = translator.escape(validator.escape(topicData.title));
 		}
 		if (topicData.titleRaw) {
 			topicData.titleRaw = translator.escape(topicData.titleRaw);

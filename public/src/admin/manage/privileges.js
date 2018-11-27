@@ -13,11 +13,10 @@ define('admin/manage/privileges', [
 	Privileges.init = function () {
 		cid = ajaxify.data.cid || 0;
 
-		$('#category-selector').on('change', function () {
-			var val = $(this).val();
-			ajaxify.go('admin/manage/privileges/' + (val === 'global' ? '' : $(this).val()));
+		$('ul[for="category-selector"]').on('click', 'li', function () {
+			var val = this.getAttribute('data-cid');
+			ajaxify.go('admin/manage/privileges/' + (val === 'global' ? '' : val));
 		});
-
 
 		Privileges.setupPrivilegeTable();
 	};

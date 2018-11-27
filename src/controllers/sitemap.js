@@ -8,6 +8,9 @@ var meta = require('../meta');
 var sitemapController = module.exports;
 
 sitemapController.render = function (req, res, next) {
+	if (meta.config['feeds:disableSitemap']) {
+		return setImmediate(next);
+	}
 	async.waterfall([
 		function (next) {
 			sitemap.render(next);
@@ -38,7 +41,7 @@ sitemapController.getTopicPage = function (req, res, next) {
 
 function sendSitemap(method, res, callback) {
 	if (meta.config['feeds:disableSitemap']) {
-		return callback();
+		return setImmediate(callback);
 	}
 	async.waterfall([
 		function (next) {

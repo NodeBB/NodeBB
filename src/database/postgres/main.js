@@ -30,21 +30,42 @@ module.exports = function (db, module) {
 			return callback();
 		}
 
-		query({
-			name: 'exists',
-			text: `
-SELECT EXISTS(SELECT *
-                FROM "legacy_object_live"
-               WHERE "_key" = $1::TEXT
-               LIMIT 1) e`,
-			values: [key],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
+		if (Array.isArray(key)) {
+			query({
+				name: 'existsArray',
+				text: `
+				SELECT o."_key" k
+  				FROM "legacy_object_live" o
+ 				WHERE o."_key" = ANY($1::TEXT[])`,
+				values: [key],
+			}, function (err, res) {
+				if (err) {
+					return callback(err);
+				}
 
-			callback(null, res.rows[0].e);
-		});
+				callback(null, key.map(function (k) {
+					return res.rows.some(function (r) {
+						return r.k === k;
+					});
+				}));
+			});
+		} else {
+			query({
+				name: 'exists',
+				text: `
+	SELECT EXISTS(SELECT *
+					FROM "legacy_object_live"
+				   WHERE "_key" = $1::TEXT
+				   LIMIT 1) e`,
+				values: [key],
+			}, function (err, res) {
+				if (err) {
+					return callback(err);
+				}
+
+				callback(null, res.rows[0].e);
+			});
+		}
 	};
 
 	module.delete = function (key, callback) {

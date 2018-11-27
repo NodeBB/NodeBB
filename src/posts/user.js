@@ -24,7 +24,7 @@ module.exports = function (Posts) {
 						user.getUsersFields(uids, [
 							'uid', 'username', 'fullname', 'userslug',
 							'reputation', 'postcount', 'picture', 'signature',
-							'banned', 'status', 'lastonline', 'groupTitle',
+							'banned', 'banned:expire', 'status', 'lastonline', 'groupTitle',
 						], next);
 					},
 					userSettings: function (next) {
@@ -121,31 +121,29 @@ module.exports = function (Posts) {
 	Posts.isOwner = function (pid, uid, callback) {
 		uid = parseInt(uid, 10);
 		if (Array.isArray(pid)) {
-			if (!uid) {
-				return callback(null, pid.map(function () { return false; }));
+			if (uid <= 0) {
+				return setImmediate(callback, null, pid.map(() => false));
 			}
 			Posts.getPostsFields(pid, ['uid'], function (err, posts) {
 				if (err) {
 					return callback(err);
 				}
-				posts = posts.map(function (post) {
-					return post && parseInt(post.uid, 10) === uid;
-				});
+				posts = posts.map(post => post && post.uid === uid);
 				callback(null, posts);
 			});
 		} else {
-			if (!uid) {
-				return callback(null, false);
+			if (uid <= 0) {
+				return setImmediate(callback, null, false);
 			}
 			Posts.getPostField(pid, 'uid', function (err, author) {
-				callback(err, parseInt(author, 10) === uid);
+				callback(err, author === uid);
 			});
 		}
 	};
 
 	Posts.isModerator = function (pids, uid, callback) {
-		if (!parseInt(uid, 10)) {
-			return callback(null, pids.map(function () { return false; }));
+		if (parseInt(uid, 10) <= 0) {
+			return setImmediate(callback, null, pids.map(() => false));
 		}
 		Posts.getCidsByPids(pids, function (err, cids) {
 			if (err) {

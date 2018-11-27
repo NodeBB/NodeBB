@@ -105,12 +105,12 @@ Categories.getPrivilegeSettings = function (socket, cid, callback) {
 Categories.copyPrivilegesToChildren = function (socket, cid, callback) {
 	async.waterfall([
 		function (next) {
-			categories.getCategories([cid], socket.uid, next);
+			categories.getChildren([cid], socket.uid, next);
 		},
-		function (categories, next) {
-			var category = categories[0];
+		function (children, next) {
+			children = children[0];
 
-			async.eachSeries(category.children, function (child, next) {
+			async.eachSeries(children, function (child, next) {
 				copyPrivilegesToChildrenRecursive(cid, child, next);
 			}, next);
 		},

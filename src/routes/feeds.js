@@ -46,7 +46,7 @@ function validateTokenIfRequiresLogin(requiresLogin, cid, req, res, callback) {
 		return callback();
 	}
 
-	if (!uid || !token) {
+	if (uid <= 0 || !token) {
 		return helpers.notAllowed(req, res);
 	}
 

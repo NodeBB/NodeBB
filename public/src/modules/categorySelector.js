@@ -1,6 +1,6 @@
 'use strict';
 
-define('categorySelector', ['benchpress', 'translator'], function (Benchpress, translator) {
+define('categorySelector', ['benchpress', 'translator', 'categorySearch'], function (Benchpress, translator, categorySearch) {
 	var categorySelector = {};
 	var selectedCategory;
 	var el;
@@ -13,6 +13,8 @@ define('categorySelector', ['benchpress', 'translator'], function (Benchpress, t
 			categorySelector.selectCategory(categoryEl.attr('data-cid'));
 			callback(selectedCategory);
 		});
+
+		categorySearch.init(el);
 	};
 
 	categorySelector.getSelectedCategory = function () {

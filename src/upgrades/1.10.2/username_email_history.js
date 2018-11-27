@@ -28,7 +28,7 @@ module.exports = {
 								user.getUserFields(uid, ['username', 'joindate'], next);
 							},
 							(userdata, next) => {
-								if (!userdata) {
+								if (!userdata || !userdata.joindate) {
 									return setImmediate(next);
 								}
 
@@ -49,7 +49,7 @@ module.exports = {
 								user.getUserFields(uid, ['email', 'joindate'], next);
 							},
 							(userdata, next) => {
-								if (!userdata) {
+								if (!userdata || !userdata.joindate) {
 									return setImmediate(next);
 								}
 

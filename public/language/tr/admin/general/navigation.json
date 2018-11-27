@@ -8,10 +8,7 @@
 	"id": "ID: <small>opsiyonel</small>",
 
 	"properties": "Özellikler:",
-	"only-admins": "Yalnızca Yöneticiler görüntüleyebilir",
-	"only-global-mods-and-admins": "Yalnızca Global Moderatörler ve Yöneticiler görüntüleyebilir",
-	"only-logged-in": "Yalnızca giriş yapmış olan kullanıcılar görüntüleyebilir",
-	"only-guest": "Yalnızca ziyaretçiler görüntüleyebilir",
+	"groups": "Groups:",
 	"open-new-window": "Yeni pencerede aç",
 
 	"btn.delete": "Sil",

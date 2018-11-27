@@ -75,7 +75,7 @@ module.exports = function (redisClient, module) {
 		async.waterfall([
 			function (next) {
 				if (unCachedKeys.length > 1) {
-					helpers.multiKeys(redisClient, 'hgetall', unCachedKeys, next);
+					helpers.execKeys(redisClient, 'batch', 'hgetall', unCachedKeys, next);
 				} else {
 					redisClient.hgetall(unCachedKeys[0], (err, data) => next(err, [data]));
 				}
@@ -139,7 +139,7 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.isObjectFields = function (key, fields, callback) {
-		helpers.multiKeyValues(redisClient, 'hexists', key, fields, function (err, results) {
+		helpers.execKeyValues(redisClient, 'batch', 'hexists', key, fields, function (err, results) {
 			callback(err, Array.isArray(results) ? helpers.resultsToBool(results) : null);
 		});
 	};
@@ -156,7 +156,7 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.deleteObjectFields = function (key, fields, callback) {
-		helpers.multiKeyValues(redisClient, 'hdel', key, fields, function (err) {
+		helpers.execKeyValues(redisClient, 'batch', 'hdel', key, fields, function (err) {
 			cache.delObjectCache(key);
 			callback(err);
 		});
@@ -184,11 +184,11 @@ module.exports = function (redisClient, module) {
 			return callback(null, null);
 		}
 		if (Array.isArray(key)) {
-			var multi = redisClient.multi();
+			var batch = redisClient.batch();
 			key.forEach(function (key) {
-				multi.hincrby(key, field, value);
+				batch.hincrby(key, field, value);
 			});
-			multi.exec(done);
+			batch.exec(done);
 		} else {
 			redisClient.hincrby(key, field, value, done);
 		}

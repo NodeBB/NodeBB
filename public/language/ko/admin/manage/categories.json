@@ -29,7 +29,8 @@
 	"select-category": "게시판 선택",
 	"set-parent-category": "상위 게시판 설정",
 
-	"privileges.description": "이 섹션에서 게시판에 대한 접근 권한을 설정할 수 있습니다. 권한은 사용자 별 또는 그룹 별로 부여할 수 있습니다. 아래 양식으로 검색하여 새로운 사용자를 테이블에 추가할 수 있습니다.",
+	"privileges.description": "You can configure the access control privileges for this category in this section. Privileges can be granted on a per-user or a per-group basis. Select the domain of effect from the dropdown below.",
+	"privileges.category-selector": "Configuring privileges for ",
 	"privileges.warning": "<strong>참고</strong>: 권한 설정은 즉시 적용됩니다. 설정을 변경한 후 게시판을 따로 저장할 필요가 없습니다.",
 	"privileges.section-viewing": "권한 보기",
 	"privileges.section-posting": "게시물 작성 권한",

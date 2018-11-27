@@ -39,15 +39,15 @@ module.exports = function (redisClient, module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback();
 		}
-		var multi = redisClient.multi();
+		var batch = redisClient.batch();
 
 		for (var i = 0; i < keys.length; i += 1) {
 			if (keys[i]) {
-				multi.zadd(keys[i], score, value);
+				batch.zadd(keys[i], score, value);
 			}
 		}
 
-		multi.exec(function (err) {
+		batch.exec(function (err) {
 			callback(err);
 		});
 	};

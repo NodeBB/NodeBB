@@ -139,12 +139,13 @@ SocketCategories.getMoveCategories = function (socket, data, callback) {
 				categories: function (next) {
 					async.waterfall([
 						function (next) {
-							db.getSortedSetRange('cid:0:children', 0, -1, next);
+							db.getSortedSetRange('categories:cid', 0, -1, next);
 						},
 						function (cids, next) {
 							categories.getCategories(cids, socket.uid, next);
 						},
 						function (categoriesData, next) {
+							categoriesData = categories.getTree(categoriesData);
 							categories.buildForSelectCategories(categoriesData, next);
 						},
 					], next);

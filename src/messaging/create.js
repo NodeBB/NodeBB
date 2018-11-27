@@ -116,9 +116,7 @@ module.exports = function (Messaging) {
 		if (!uids.length) {
 			return callback();
 		}
-		var keys = uids.map(function (uid) {
-			return 'uid:' + uid + ':chat:rooms';
-		});
+		const keys = uids.map(uid => 'uid:' + uid + ':chat:rooms');
 		db.sortedSetsAdd(keys, timestamp, roomId, callback);
 	};
 
@@ -126,9 +124,7 @@ module.exports = function (Messaging) {
 		if (!uids.length) {
 			return callback();
 		}
-		var keys = uids.map(function (uid) {
-			return 'uid:' + uid + ':chat:room:' + roomId + ':mids';
-		});
+		const keys = uids.map(uid => 'uid:' + uid + ':chat:room:' + roomId + ':mids');
 		db.sortedSetsAdd(keys, timestamp, mid, callback);
 	};
 };

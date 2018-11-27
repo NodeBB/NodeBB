@@ -216,6 +216,11 @@ function getNotificationSettings(userData, callback) {
 					notificationemail: setting === 'notificationemail',
 				};
 			}
+
+			if (meta.config.disableChat) {
+				results.types = results.types.filter(type => type !== 'notificationType_new-chat');
+			}
+
 			var notificationSettings = results.types.map(modifyType).concat(results.privilegedTypes.map(modifyType));
 			next(null, notificationSettings);
 		},

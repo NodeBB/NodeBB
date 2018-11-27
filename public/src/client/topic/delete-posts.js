@@ -6,18 +6,13 @@ define('forum/topic/delete-posts', ['components', 'postSelect'], function (compo
 	var modal;
 	var deleteBtn;
 	var purgeBtn;
+	var tid;
 
 	DeletePosts.init = function () {
-		$('.topic').on('click', '[component="topic/delete/posts"]', onDeletePostsClicked);
-		$(window).on('action:ajaxify.start', onAjaxifyStart);
-	};
+		tid = ajaxify.data.tid;
 
-	function onAjaxifyStart() {
-		closeModal();
-		$(window).off('action:ajaxify.start', onAjaxifyStart);
-	}
+		$(window).off('action:ajaxify.end', onAjaxifyEnd).on('action:ajaxify.end', onAjaxifyEnd);
 
-	function onDeletePostsClicked() {
 		if (modal) {
 			return;
 		}
@@ -45,6 +40,13 @@ define('forum/topic/delete-posts', ['components', 'postSelect'], function (compo
 				deletePosts(purgeBtn, 'posts.purgePosts');
 			});
 		});
+	};
+
+	function onAjaxifyEnd() {
+		if (ajaxify.data.template.name !== 'topic' || ajaxify.data.tid !== tid) {
+			closeModal();
+			$(window).off('action:ajaxify.end', onAjaxifyEnd);
+		}
 	}
 
 	function deletePosts(btn, command) {
@@ -84,8 +86,8 @@ define('forum/topic/delete-posts', ['components', 'postSelect'], function (compo
 		if (modal) {
 			modal.remove();
 			modal = null;
+			postSelect.disable();
 		}
-		postSelect.disable();
 	}
 
 	return DeletePosts;

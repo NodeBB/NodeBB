@@ -135,7 +135,7 @@ module.exports = function (middleware) {
 
 	middleware.redirectUidToUserslug = function (req, res, next) {
 		var uid = parseInt(req.params.uid, 10);
-		if (!uid) {
+		if (uid <= 0) {
 			return next();
 		}
 		async.waterfall([
@@ -226,7 +226,7 @@ module.exports = function (middleware) {
 	middleware.registrationComplete = function (req, res, next) {
 		// If the user's session contains registration data, redirect the user to complete registration
 		if (!req.session.hasOwnProperty('registration')) {
-			return next();
+			return setImmediate(next);
 		}
 		if (!req.path.endsWith('/register/complete')) {
 			// Append user data if present
@@ -234,7 +234,7 @@ module.exports = function (middleware) {
 
 			controllers.helpers.redirect(res, '/register/complete');
 		} else {
-			return next();
+			return setImmediate(next);
 		}
 	};
 };

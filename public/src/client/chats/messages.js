@@ -124,20 +124,23 @@ define('forum/chats/messages', ['components', 'sounds', 'translator', 'benchpres
 	};
 
 	messages.onChatMessageEdit = function () {
-		socket.on('event:chats.edit', function (data) {
-			data.messages.forEach(function (message) {
-				var self = parseInt(message.fromuid, 10) === parseInt(app.user.uid, 10);
-				message.self = self ? 1 : 0;
-				messages.parseMessage(message, function (html) {
-					var body = components.get('chat/message', message.messageId);
-					if (body.length) {
-						body.replaceWith(html);
-						components.get('chat/message', message.messageId).find('.timeago').timeago();
-					}
-				});
+		socket.removeListener('event:chats.edit', onChatMessageEdited);
+		socket.on('event:chats.edit', onChatMessageEdited);
+	};
+
+	function onChatMessageEdited(data) {
+		data.messages.forEach(function (message) {
+			var self = parseInt(message.fromuid, 10) === parseInt(app.user.uid, 10);
+			message.self = self ? 1 : 0;
+			messages.parseMessage(message, function (html) {
+				var body = components.get('chat/message', message.messageId);
+				if (body.length) {
+					body.replaceWith(html);
+					components.get('chat/message', message.messageId).find('.timeago').timeago();
+				}
 			});
 		});
-	};
+	}
 
 	messages.delete = function (messageId, roomId) {
 		translator.translate('[[modules:chat.delete_message_confirm]]', function (translated) {

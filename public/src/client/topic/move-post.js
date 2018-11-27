@@ -7,19 +7,31 @@ define('forum/topic/move-post', ['components', 'postSelect'], function (componen
 	var moveModal;
 	var moveCommit;
 
-	MovePost.init = function () {
-		$('.topic').on('click', '[component="topic/move-posts"]', onMovePostsClicked);
-		$(window).on('action:ajaxify.start', onAjaxifyStart);
+	MovePost.init = function (postEl) {
+		if (moveModal) {
+			return;
+		}
+		app.parseAndTranslate('partials/move_post_modal', {}, function (html) {
+			moveModal = html;
+
+			moveCommit = moveModal.find('#move_posts_confirm');
+
+			$('body').append(moveModal);
+
+			moveModal.find('.close,#move_posts_cancel').on('click', closeMoveModal);
+			moveModal.find('#topicId').on('keyup', checkMoveButtonEnable);
+			postSelect.init(onPostToggled);
+			showPostsSelected();
+
+			if (postEl) {
+				postSelect.togglePostSelection(postEl, onPostToggled);
+			}
+
+			moveCommit.on('click', function () {
+				movePosts();
+			});
+		});
 	};
-
-	function onAjaxifyStart() {
-		closeMoveModal();
-		$(window).off('action:ajaxify.start', onAjaxifyStart);
-	}
-
-	function onMovePostsClicked() {
-		MovePost.openMovePostModal();
-	}
 
 	function showPostsSelected() {
 		if (postSelect.pids.length) {
@@ -36,29 +48,6 @@ define('forum/topic/move-post', ['components', 'postSelect'], function (componen
 			moveCommit.attr('disabled', true);
 		}
 	}
-
-	MovePost.openMovePostModal = function (postEl) {
-		app.parseAndTranslate('partials/move_post_modal', {}, function (html) {
-			moveModal = html;
-
-			moveCommit = moveModal.find('#move_posts_confirm');
-
-			$(document.body).append(moveModal);
-
-			moveModal.find('.close,#move_posts_cancel').on('click', closeMoveModal);
-			moveModal.find('#topicId').on('keyup', checkMoveButtonEnable);
-			postSelect.init(onPostToggled);
-			showPostsSelected();
-
-			if (postEl) {
-				postSelect.togglePostSelection(postEl, onPostToggled);
-			}
-
-			moveCommit.on('click', function () {
-				movePosts();
-			});
-		});
-	};
 
 	function onPostToggled() {
 		checkMoveButtonEnable();
@@ -85,9 +74,8 @@ define('forum/topic/move-post', ['components', 'postSelect'], function (componen
 		if (moveModal) {
 			moveModal.remove();
 			moveModal = null;
+			postSelect.disable();
 		}
-
-		postSelect.disable();
 	}
 
 

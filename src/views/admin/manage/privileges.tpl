@@ -1,23 +1,26 @@
 <div class="row">
 	<form role="form" class="category">
-		<div class="row">
-			<div class="col-md-3 pull-right">
-				<select id="category-selector" class="form-control">
-					<option value="global" <!-- IF !cid --> selected <!-- ENDIF !cid -->>[[admin/manage/privileges:global]]</option>
-					<option disabled>_____________</option>
-					<!-- BEGIN allCategories -->
-					<option value="{allCategories.value}" <!-- IF allCategories.selected -->selected<!-- ENDIF allCategories.selected -->>{allCategories.text}</option>
-					<!-- END allCategories -->
-				</select>
-			</div>
-		</div>
-
-		<br/>
-
 		<div class="">
 			<p>
 				[[admin/manage/categories:privileges.description]]
 			</p>
+
+			<p class="lead">
+				[[admin/manage/categories:privileges.category-selector]]
+				<button type="button" id="category-selector" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+					{selected} <i class="fa fa-angle-down"></i>
+				</button>
+
+				<ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="category-selector">
+					<li class="mdl-menu__item mdl-menu__item--full-bleed-divider" data-cid="global">[[admin/manage/privileges:global]]</li>
+					<!-- BEGIN allCategories -->
+					<li class="mdl-menu__item" data-cid="{../value}">{../text}</li>
+					<!-- END -->
+				</ul>
+			</p>
+
+			<hr />
+
 			<div class="privilege-table-container">
 				<!-- IF cid -->
 				<!-- IMPORT admin/partials/categories/privileges.tpl -->

@@ -8,21 +8,17 @@ var user = require('../user');
 
 module.exports = function (Topics) {
 	Topics.getUserBookmark = function (tid, uid, callback) {
-		if (!parseInt(uid, 10)) {
+		if (parseInt(uid, 10) <= 0) {
 			return callback(null, null);
 		}
 		db.sortedSetScore('tid:' + tid + ':bookmarks', uid, callback);
 	};
 
 	Topics.getUserBookmarks = function (tids, uid, callback) {
-		if (!parseInt(uid, 10)) {
-			return callback(null, tids.map(function () {
-				return null;
-			}));
+		if (parseInt(uid, 10) <= 0) {
+			return callback(null, tids.map(() => null));
 		}
-		db.sortedSetsScore(tids.map(function (tid) {
-			return 'tid:' + tid + ':bookmarks';
-		}), uid, callback);
+		db.sortedSetsScore(tids.map(tid => 'tid:' + tid + ':bookmarks'), uid, callback);
 	};
 
 	Topics.setUserBookmark = function (tid, uid, index, callback) {

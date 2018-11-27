@@ -118,17 +118,24 @@ if (typeof window !== 'undefined') {
 		}
 
 		$.timeago.settings.allowFuture = true;
-
+		var userLang = config.userLang.replace('_', '-');
+		var options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+		var dtFormat = new Intl.DateTimeFormat(userLang, options);
+		var iso;
+		var date;
 		$.fn.timeago = function () {
 			var els = $(this);
-
 			// Convert "old" format to new format (#5108)
-			var options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-			var iso;
 			els.each(function () {
 				iso = this.getAttribute('title');
+				if (!iso) {
+					return;
+				}
 				this.setAttribute('datetime', iso);
-				$(this).text(new Date(iso).toLocaleString(config.userLang.replace('_', '-'), options));
+				date = new Date(iso);
+				if (!isNaN(date)) {
+					this.textContent = dtFormat.format(date);
+				}
 			});
 
 			timeagoFn.apply(this, arguments);

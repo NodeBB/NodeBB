@@ -1,7 +1,12 @@
 'use strict';
 
 
-define('forum/footer', ['notifications', 'chat', 'components', 'translator'], function (Notifications, Chat, components, translator) {
+define('forum/footer', [
+	'components',
+	'translator',
+	'forum/header/notifications',
+	'forum/header/chat',
+], function (components, translator, Notifications, Chat) {
 	Notifications.prepareDOM();
 	Chat.prepareDOM();
 	translator.prepareDOM();
@@ -53,15 +58,17 @@ define('forum/footer', ['notifications', 'chat', 'components', 'translator'], fu
 				var unreadUnrepliedTopicCount = parseInt($('a[href="' + config.relative_path + '/unread?filter=unreplied"].navigation-link i').attr('data-content'), 10) + 1;
 				updateUnreadTopicCount('/unread?filter=unreplied', unreadUnrepliedTopicCount);
 			}
-			socket.emit('topics.isFollowed', post.topic.tid, function (err, isFollowed) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-				if (isFollowed) {
-					var unreadWatchedTopicCount = parseInt($('a[href="' + config.relative_path + '/unread?filter=watched"].navigation-link i').attr('data-content'), 10) + 1;
-					updateUnreadTopicCount('/unread?filter=watched', unreadWatchedTopicCount);
-				}
-			});
+			if ($('a[href="' + config.relative_path + '/unread?filter=watched"].navigation-link i').length) {
+				socket.emit('topics.isFollowed', post.topic.tid, function (err, isFollowed) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					if (isFollowed) {
+						var unreadWatchedTopicCount = parseInt($('a[href="' + config.relative_path + '/unread?filter=watched"].navigation-link i').attr('data-content'), 10) + 1;
+						updateUnreadTopicCount('/unread?filter=watched', unreadWatchedTopicCount);
+					}
+				});
+			}
 		}
 
 		function markTopicsUnread(tid) {
@@ -91,5 +98,7 @@ define('forum/footer', ['notifications', 'chat', 'components', 'translator'], fu
 	socket.on('event:unread.updateCount', updateUnreadCounters);
 	socket.on('event:unread.updateChatCount', updateUnreadChatCount);
 
-	initUnreadTopics();
+	if (app.user.uid > 0) {
+		initUnreadTopics();
+	}
 });

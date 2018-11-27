@@ -7,10 +7,16 @@ var categories = require('../categories');
 
 module.exports = function (User) {
 	User.getIgnoredCategories = function (uid, callback) {
+		if (parseInt(uid, 10) <= 0) {
+			return setImmediate(callback, null, []);
+		}
 		db.getSortedSetRange('uid:' + uid + ':ignored:cids', 0, -1, callback);
 	};
 
 	User.getWatchedCategories = function (uid, callback) {
+		if (parseInt(uid, 10) <= 0) {
+			return setImmediate(callback, null, []);
+		}
 		async.waterfall([
 			function (next) {
 				async.parallel({
@@ -34,8 +40,8 @@ module.exports = function (User) {
 	};
 
 	User.ignoreCategory = function (uid, cid, callback) {
-		if (!uid) {
-			return callback();
+		if (uid <= 0) {
+			return setImmediate(callback);
 		}
 
 		async.waterfall([
@@ -55,7 +61,7 @@ module.exports = function (User) {
 	};
 
 	User.watchCategory = function (uid, cid, callback) {
-		if (!uid) {
+		if (uid <= 0) {
 			return callback();
 		}
 

@@ -29,7 +29,8 @@
 	"select-category": "Escolher Categoria",
 	"set-parent-category": "Definir Categoria Mãe",
 
-	"privileges.description": "Você pode configurar os privilégios de controle de acesso para esta categoria nesta seção. Privilégios podem ser concedidos em uma base por-usuário ou por-grupo. Você pode adicionar um novo usuário à esta tabela ao pesquisar por ele na form abaixo.",
+	"privileges.description": "You can configure the access control privileges for this category in this section. Privileges can be granted on a per-user or a per-group basis. Select the domain of effect from the dropdown below.",
+	"privileges.category-selector": "Configuring privileges for ",
 	"privileges.warning": "<strong>Nota</strong>: Configurações de privilégio entram em efeito imediatamente. Não é necessário salvar a categoria após ajustar estas configurações.",
 	"privileges.section-viewing": "Privilégios de Visualização",
 	"privileges.section-posting": "Privilégios de Postagem",

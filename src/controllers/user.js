@@ -84,7 +84,7 @@ userController.getUserDataByField = function (callerUid, field, fieldValue, call
 };
 
 userController.getUserDataByUID = function (callerUid, uid, callback) {
-	if (!parseInt(callerUid, 10) && meta.config.privateUserInfo) {
+	if (parseInt(callerUid, 10) <= 0 && meta.config.privateUserInfo) {
 		return callback(new Error('[[error:no-privileges]]'));
 	}
 

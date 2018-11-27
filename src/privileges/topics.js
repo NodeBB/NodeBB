@@ -17,7 +17,11 @@ module.exports = function (privileges) {
 	privileges.topics.get = function (tid, uid, callback) {
 		uid = parseInt(uid, 10);
 		var topic;
-		var privs = ['topics:reply', 'topics:read', 'topics:tag', 'topics:delete', 'posts:edit', 'posts:history', 'posts:delete', 'posts:view_deleted', 'read', 'purge'];
+		var privs = [
+			'topics:reply', 'topics:read', 'topics:tag',
+			'topics:delete', 'posts:edit', 'posts:history',
+			'posts:delete', 'posts:view_deleted', 'read', 'purge',
+		];
 		async.waterfall([
 			async.apply(topics.getTopicFields, tid, ['cid', 'uid', 'locked', 'deleted']),
 			function (_topic, next) {

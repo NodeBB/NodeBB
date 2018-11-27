@@ -35,7 +35,7 @@ Posts.exists = function (pid, callback) {
 
 Posts.getPidsFromSet = function (set, start, stop, reverse, callback) {
 	if (isNaN(start) || isNaN(stop)) {
-		return callback(null, []);
+		return setImmediate(callback, null, []);
 	}
 	db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop, callback);
 };

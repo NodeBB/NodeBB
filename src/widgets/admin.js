@@ -4,13 +4,33 @@ var fs = require('fs');
 var path = require('path');
 var async = require('async');
 var nconf = require('nconf');
-var plugins = require('../plugins');
+var benchpress = require('benchpressjs');
 
-var admin = {};
+var plugins = require('../plugins');
+var groups = require('../groups');
+
+var admin = module.exports;
 
 admin.get = function (callback) {
 	async.parallel({
-		areas: function (next) {
+		areas: admin.getAreas,
+		availableWidgets: getAvailableWidgets,
+	}, function (err, widgetData) {
+		if (err) {
+			return callback(err);
+		}
+
+		callback(false, {
+			templates: buildTemplatesFromAreas(widgetData.areas),
+			areas: widgetData.areas,
+			availableWidgets: widgetData.availableWidgets,
+		});
+	});
+};
+
+admin.getAreas = function (callback) {
+	async.waterfall([
+		function (next) {
 			var defaultAreas = [
 				{ name: 'Global Sidebar', template: 'global', location: 'sidebar' },
 				{ name: 'Global Header', template: 'global', location: 'header' },
@@ -22,60 +42,76 @@ admin.get = function (callback) {
 
 			plugins.fireHook('filter:widgets.getAreas', defaultAreas, next);
 		},
-		widgets: function (next) {
+		function (areas, next) {
+			areas.push({ name: 'Draft Zone', template: 'global', location: 'drafts' });
+			async.map(areas, function (area, next) {
+				require('./index').getArea(area.template, area.location, function (err, areaData) {
+					area.data = areaData;
+					next(err, area);
+				});
+			}, next);
+		},
+	], callback);
+};
+
+function getAvailableWidgets(callback) {
+	async.parallel({
+		availableWidgets: function (next) {
 			plugins.fireHook('filter:widgets.getWidgets', [], next);
 		},
 		adminTemplate: function (next) {
-			fs.readFile(path.resolve(nconf.get('views_dir'), 'admin/partials/widget-settings.tpl'), 'utf8', next);
+			renderAdminTemplate(next);
 		},
-	}, function (err, widgetData) {
+	}, function (err, results) {
 		if (err) {
 			return callback(err);
 		}
-		widgetData.areas.push({ name: 'Draft Zone', template: 'global', location: 'drafts' });
+		results.availableWidgets.forEach(function (w) {
+			w.content += results.adminTemplate;
+		});
+		callback(null, results.availableWidgets);
+	});
+}
 
-		async.each(widgetData.areas, function (area, next) {
-			require('./index').getArea(area.template, area.location, function (err, areaData) {
-				area.data = areaData;
-				next(err);
+function renderAdminTemplate(callback) {
+	async.waterfall([
+		function (next) {
+			async.parallel({
+				source: async.apply(getSource),
+				groups: async.apply(groups.getNonPrivilegeGroups, 'groups:createtime', 0, -1),
+			}, next);
+		},
+		function (results, next) {
+			results.groups.sort((a, b) => b.system - a.system);
+			benchpress.compileParse(results.source, { groups: results.groups }, next);
+		},
+	], callback);
+}
+
+function getSource(callback) {
+	fs.readFile(path.resolve(nconf.get('views_dir'), 'admin/partials/widget-settings.tpl'), 'utf8', callback);
+}
+
+function buildTemplatesFromAreas(areas) {
+	const templates = [];
+	var list = {};
+	var index = 0;
+
+	areas.forEach(function (area) {
+		if (typeof list[area.template] === 'undefined') {
+			list[area.template] = index;
+			templates.push({
+				template: area.template,
+				areas: [],
 			});
-		}, function (err) {
-			if (err) {
-				return callback(err);
-			}
 
-			widgetData.widgets.forEach(function (w) {
-				w.content += widgetData.adminTemplate;
-			});
+			index += 1;
+		}
 
-			var templates = [];
-			var list = {};
-			var index = 0;
-
-			widgetData.areas.forEach(function (area) {
-				if (typeof list[area.template] === 'undefined') {
-					list[area.template] = index;
-					templates.push({
-						template: area.template,
-						areas: [],
-					});
-
-					index += 1;
-				}
-
-				templates[list[area.template]].areas.push({
-					name: area.name,
-					location: area.location,
-				});
-			});
-
-			callback(false, {
-				templates: templates,
-				areas: widgetData.areas,
-				availableWidgets: widgetData.widgets,
-			});
+		templates[list[area.template]].areas.push({
+			name: area.name,
+			location: area.location,
 		});
 	});
-};
-
-module.exports = admin;
+	return templates;
+}

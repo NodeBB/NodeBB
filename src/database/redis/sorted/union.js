@@ -4,7 +4,9 @@
 module.exports = function (redisClient, module) {
 	module.sortedSetUnionCard = function (keys, callback) {
 		var tempSetName = 'temp_' + Date.now();
-
+		if (!keys.length) {
+			return setImmediate(callback, null, 0);
+		}
 		var multi = redisClient.multi();
 		multi.zunionstore([tempSetName, keys.length].concat(keys));
 		multi.zcard(tempSetName);
@@ -29,6 +31,10 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.sortedSetUnion = function (params, callback) {
+		if (!params.sets.length) {
+			return setImmediate(callback, null, []);
+		}
+
 		var tempSetName = 'temp_' + Date.now();
 
 		var rangeParams = [tempSetName, params.start, params.stop];

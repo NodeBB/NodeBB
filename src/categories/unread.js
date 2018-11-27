@@ -7,8 +7,8 @@ var db = require('../database');
 module.exports = function (Categories) {
 	Categories.markAsRead = function (cids, uid, callback) {
 		callback = callback || function () {};
-		if (!Array.isArray(cids) || !cids.length) {
-			return callback();
+		if (!Array.isArray(cids) || !cids.length || parseInt(uid, 10) <= 0) {
+			return setImmediate(callback);
 		}
 		var keys = cids.map(cid => 'cid:' + cid + ':read_by_uid');
 
@@ -33,12 +33,18 @@ module.exports = function (Categories) {
 	};
 
 	Categories.hasReadCategories = function (cids, uid, callback) {
-		var sets = cids.map(cid => 'cid:' + cid + ':read_by_uid');
+		if (parseInt(uid, 10) <= 0) {
+			return setImmediate(callback, null, cids.map(() => false));
+		}
 
+		const sets = cids.map(cid => 'cid:' + cid + ':read_by_uid');
 		db.isMemberOfSets(sets, uid, callback);
 	};
 
 	Categories.hasReadCategory = function (cid, uid, callback) {
+		if (parseInt(uid, 10) <= 0) {
+			return setImmediate(callback, null, false);
+		}
 		db.isSetMember('cid:' + cid + ':read_by_uid', uid, callback);
 	};
 };

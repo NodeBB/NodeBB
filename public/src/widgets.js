@@ -3,11 +3,9 @@
 (function (ajaxify) {
 	ajaxify.widgets = {};
 
-	ajaxify.widgets.render = function (template, callback) {
-		callback = callback || function () {};
-
+	ajaxify.widgets.render = function (template) {
 		if (template.match(/^admin/)) {
-			return callback();
+			return;
 		}
 
 		var locations = Object.keys(ajaxify.data.widgets);
@@ -42,6 +40,7 @@
 			area = $('#content [widget-area="' + location + '"]');
 			if (html && area.length) {
 				area.html(html);
+				area.find('img:not(.not-responsive)').addClass('img-responsive');
 			}
 
 			if (widgetsAtLocation.length) {
@@ -49,16 +48,6 @@
 			}
 		});
 
-		var widgetAreas = $('#content [widget-area]');
-		widgetAreas.find('img:not(.not-responsive)').addClass('img-responsive');
-		widgetAreas.find('.timeago').timeago();
-		widgetAreas.find('img[title].teaser-pic,img[title].user-img').each(function () {
-			$(this).tooltip({
-				placement: 'top',
-				title: $(this).attr('title'),
-			});
-		});
 		$(window).trigger('action:widgets.loaded', {});
-		callback();
 	};
 }(ajaxify || {}));

@@ -7,8 +7,7 @@ var groups = require('../../groups');
 var helpers = require('../helpers');
 var accountHelpers = require('./helpers');
 
-var groupsController = {};
-
+var groupsController = module.exports;
 
 groupsController.get = function (req, res, callback) {
 	var userData;
@@ -27,28 +26,18 @@ groupsController.get = function (req, res, callback) {
 		},
 		function (_groupsData, next) {
 			groupsData = _groupsData[0];
-			var groupNames = groupsData.filter(Boolean).map(function (group) {
-				return group.name;
-			});
+			const groupNames = groupsData.filter(Boolean).map(group => group.name);
 
 			groups.getMemberUsers(groupNames, 0, 3, next);
 		},
-		function (members, next) {
+		function (members) {
 			groupsData.forEach(function (group, index) {
 				group.members = members[index];
 			});
-			next();
+			userData.groups = groupsData;
+			userData.title = '[[pages:account/groups, ' + userData.username + ']]';
+			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[global:header.groups]]' }]);
+			res.render('account/groups', userData);
 		},
-	], function (err) {
-		if (err) {
-			return callback(err);
-		}
-
-		userData.groups = groupsData;
-		userData.title = '[[pages:account/groups, ' + userData.username + ']]';
-		userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[global:header.groups]]' }]);
-		res.render('account/groups', userData);
-	});
+	], callback);
 };
-
-module.exports = groupsController;
