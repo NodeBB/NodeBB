@@ -23,6 +23,7 @@ function getLatestVersion(callback) {
 	request('https://api.github.com/repos/NodeBB/NodeBB/tags', {
 		json: true,
 		headers: headers,
+		timeout: 1000,
 	}, function (err, res, releases) {
 		if (err) {
 			return callback(err);
