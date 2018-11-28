@@ -111,6 +111,8 @@ module.exports = function (app, middleware, callback) {
 
 	// handle custom homepage routes
 	router.use('/', controllers.home.rewrite);
+	pluginRouter.use('/', controllers.home.rewrite);
+
 	// homepage handled by `action:homepage.get:[route]`
 	setupPageRoute(router, '/', middleware, [], controllers.home.pluginHook);
 
