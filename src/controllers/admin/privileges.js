@@ -2,7 +2,6 @@
 
 var async = require('async');
 
-var db = require('../../database');
 var categories = require('../../categories');
 var privileges = require('../../privileges');
 
@@ -23,7 +22,7 @@ privilegesController.get = function (req, res, callback) {
 				allCategories: function (next) {
 					async.waterfall([
 						function (next) {
-							db.getSortedSetRange('categories:cid', 0, -1, next);
+							categories.getAllCidsFromSet('categories:cid', next);
 						},
 						function (cids, next) {
 							categories.getCategories(cids, req.uid, next);

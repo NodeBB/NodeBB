@@ -7,6 +7,7 @@ var groups = require('../groups');
 var plugins = require('../plugins');
 var db = require('../database');
 var privileges = require('../privileges');
+var categories = require('../categories');
 var meta = require('../meta');
 
 var User = module.exports;
@@ -288,7 +289,7 @@ User.getAdminsandGlobalModsandModerators = function (callback) {
 
 User.getModeratorUids = function (callback) {
 	async.waterfall([
-		async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
+		async.apply(categories.getAllCidsFromSet, 'categories:cid'),
 		function (cids, next) {
 			var groupNames = cids.reduce(function (memo, cid) {
 				memo.push('cid:' + cid + ':privileges:moderate');
@@ -321,19 +322,20 @@ User.getModeratorUids = function (callback) {
 };
 
 User.getModeratedCids = function (uid, callback) {
+	if (parseInt(uid, 10) <= 0) {
+		return setImmediate(callback, null, []);
+	}
 	var cids;
 	async.waterfall([
 		function (next) {
-			db.getSortedSetRange('categories:cid', 0, -1, next);
+			categories.getAllCidsFromSet('categories:cid', next);
 		},
 		function (_cids, next) {
 			cids = _cids;
 			User.isModerator(uid, cids, next);
 		},
 		function (isMods, next) {
-			cids = cids.filter(function (cid, index) {
-				return cid && isMods[index];
-			});
+			cids = cids.filter((cid, index) => cid && isMods[index]);
 			next(null, cids);
 		},
 	], callback);

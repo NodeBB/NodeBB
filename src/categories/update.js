@@ -1,4 +1,3 @@
-
 'use strict';
 
 var async = require('async');
@@ -8,6 +7,7 @@ var meta = require('../meta');
 var utils = require('../utils');
 var translator = require('../translator');
 var plugins = require('../plugins');
+var cache = require('../cache');
 
 module.exports = function (Categories) {
 	Categories.update = function (modified, callback) {
@@ -112,6 +112,10 @@ module.exports = function (Categories) {
 					function (next) {
 						db.setObjectField('category:' + cid, 'parentCid', newParent, next);
 					},
+					function (next) {
+						cache.del(['cid:' + oldParent + ':children', 'cid:' + newParent + ':children']);
+						next();
+					},
 				], next);
 			},
 		], function (err) {
@@ -148,6 +152,10 @@ module.exports = function (Categories) {
 					},
 					function (next) {
 						db.sortedSetAdd('cid:' + parentCid + ':children', order, cid, next);
+					},
+					function (next) {
+						cache.del(['categories:cid', 'cid:' + parentCid + ':children']);
+						next();
 					},
 				], next);
 			},

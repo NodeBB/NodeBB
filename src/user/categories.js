@@ -14,9 +14,6 @@ module.exports = function (User) {
 	};
 
 	User.getWatchedCategories = function (uid, callback) {
-		if (parseInt(uid, 10) <= 0) {
-			return setImmediate(callback, null, []);
-		}
 		async.waterfall([
 			function (next) {
 				async.parallel({
@@ -24,16 +21,13 @@ module.exports = function (User) {
 						User.getIgnoredCategories(uid, next);
 					},
 					all: function (next) {
-						db.getSortedSetRange('categories:cid', 0, -1, next);
+						categories.getAllCidsFromSet('categories:cid', next);
 					},
 				}, next);
 			},
 			function (results, next) {
 				const ignored = new Set(results.ignored);
-
-				var watched = results.all.filter(function (cid) {
-					return cid && !ignored.has(String(cid));
-				});
+				const watched = results.all.filter(cid => cid && !ignored.has(String(cid)));
 				next(null, watched);
 			},
 		], callback);

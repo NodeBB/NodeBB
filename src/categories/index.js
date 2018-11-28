@@ -9,6 +9,7 @@ var user = require('../user');
 var Groups = require('../groups');
 var plugins = require('../plugins');
 var privileges = require('../privileges');
+const cache = require('../cache');
 
 var Categories = module.exports;
 
@@ -82,10 +83,25 @@ Categories.isIgnored = function (cids, uid, callback) {
 	db.isSortedSetMembers('uid:' + uid + ':ignored:cids', cids, callback);
 };
 
+Categories.getAllCidsFromSet = function (key, callback) {
+	const cids = cache.get(key);
+	if (cids) {
+		return setImmediate(callback, null, cids.slice());
+	}
+
+	db.getSortedSetRange(key, 0, -1, function (err, cids) {
+		if (err) {
+			return callback(err);
+		}
+		cache.set(key, cids);
+		callback(null, cids.slice());
+	});
+};
+
 Categories.getAllCategories = function (uid, callback) {
 	async.waterfall([
 		function (next) {
-			db.getSortedSetRange('categories:cid', 0, -1, next);
+			Categories.getAllCids(next);
 		},
 		function (cids, next) {
 			Categories.getCategories(cids, uid, next);
@@ -96,7 +112,7 @@ Categories.getAllCategories = function (uid, callback) {
 Categories.getCidsByPrivilege = function (set, uid, privilege, callback) {
 	async.waterfall([
 		function (next) {
-			db.getSortedSetRange(set, 0, -1, next);
+			Categories.getAllCidsFromSet(set, next);
 		},
 		function (cids, next) {
 			privileges.categories.filterCids(privilege, cids, uid, next);
@@ -268,7 +284,7 @@ function getChildrenTree(category, uid, callback) {
 }
 
 Categories.getChildrenCids = function (rootCid, callback) {
-	var allCids = [];
+	let allCids = [];
 	function recursive(keys, callback) {
 		db.getSortedSetRange(keys, 0, -1, function (err, childrenCids) {
 			if (err) {
@@ -283,9 +299,19 @@ Categories.getChildrenCids = function (rootCid, callback) {
 			recursive(keys, callback);
 		});
 	}
+	const key = 'cid:' + rootCid + ':children';
+	const childrenCids = cache.get(key);
+	if (childrenCids) {
+		return setImmediate(callback, null, childrenCids.slice());
+	}
 
-	recursive('cid:' + rootCid + ':children', function (err) {
-		callback(err, _.uniq(allCids));
+	recursive(key, function (err) {
+		if (err) {
+			return callback(err);
+		}
+		allCids = _.uniq(allCids);
+		cache.set(key, allCids);
+		callback(null, allCids.slice());
 	});
 };
 

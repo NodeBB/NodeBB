@@ -56,7 +56,7 @@ module.exports = function (Categories) {
 
 	Categories.getAllCategoryFields = function (fields, callback) {
 		async.waterfall([
-			async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
+			async.apply(Categories.getAllCidsFromSet, 'categories:cid'),
 			function (cids, next) {
 				Categories.getCategoriesFields(cids, fields, next);
 			},

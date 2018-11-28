@@ -1,7 +1,7 @@
 'use strict';
 
 var async = require('async');
-var db = require('../database');
+
 var categories = require('../categories');
 var privileges = require('../privileges');
 var user = require('../user');
@@ -21,7 +21,7 @@ SocketCategories.get = function (socket, data, callback) {
 				isAdmin: async.apply(user.isAdministrator, socket.uid),
 				categories: function (next) {
 					async.waterfall([
-						async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
+						async.apply(categories.getAllCidsFromSet, 'categories:cid'),
 						async.apply(categories.getCategoriesData),
 					], next);
 				},
@@ -139,7 +139,7 @@ SocketCategories.getMoveCategories = function (socket, data, callback) {
 				categories: function (next) {
 					async.waterfall([
 						function (next) {
-							db.getSortedSetRange('categories:cid', 0, -1, next);
+							categories.getAllCidsFromSet('categories:cid', next);
 						},
 						function (cids, next) {
 							categories.getCategories(cids, socket.uid, next);
@@ -183,7 +183,7 @@ function ignoreOrWatch(fn, socket, cid, callback) {
 			user.isAdminOrGlobalModOrSelf(socket.uid, targetUid, next);
 		},
 		function (next) {
-			db.getSortedSetRange('categories:cid', 0, -1, next);
+			categories.getAllCidsFromSet('categories:cid', next);
 		},
 		function (cids, next) {
 			categories.getCategoriesFields(cids, ['cid', 'parentCid'], next);
