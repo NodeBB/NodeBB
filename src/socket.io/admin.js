@@ -249,7 +249,7 @@ SocketAdmin.settings.clearSitemapCache = function (socket, data, callback) {
 
 SocketAdmin.email.test = function (socket, data, callback) {
 	var payload = {
-		subject: 'Test Email',
+		subject: '[[email:test-email.subject]]',
 	};
 
 	switch (data.template) {

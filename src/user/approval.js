@@ -1,4 +1,3 @@
-
 'use strict';
 
 var async = require('async');
@@ -11,7 +10,6 @@ var meta = require('../meta');
 var emailer = require('../emailer');
 var notifications = require('../notifications');
 var groups = require('../groups');
-var translator = require('../translator');
 var utils = require('../utils');
 var plugins = require('../plugins');
 
@@ -114,16 +112,14 @@ module.exports = function (User) {
 			},
 			function (next) {
 				var title = meta.config.title || meta.config.browserTitle || 'NodeBB';
-				translator.translate('[[email:welcome-to, ' + title + ']]', meta.config.defaultLang, function (subject) {
-					var data = {
-						username: username,
-						subject: subject,
-						template: 'registration_accepted',
-						uid: uid,
-					};
+				var data = {
+					username: username,
+					subject: '[[email:welcome-to, ' + title + ']]',
+					template: 'registration_accepted',
+					uid: uid,
+				};
 
-					emailer.send('registration_accepted', uid, data, next);
-				});
+				emailer.send('registration_accepted', uid, data, next);
 			},
 			function (next) {
 				next(null, uid);
