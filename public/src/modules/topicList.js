@@ -93,7 +93,7 @@ define('topicList', [
 		var post = data.posts[0];
 		if ((!post || !post.topic)
 			|| (parseInt(post.topic.mainPid, 10) === parseInt(post.pid, 10))
-			|| (ajaxify.data.selectedCids && ajaxify.data.selectedCids.indexOf(parseInt(post.topic.cid, 10)) === -1)
+			|| (ajaxify.data.selectedCids && ajaxify.data.selectedCids.length && ajaxify.data.selectedCids.indexOf(parseInt(post.topic.cid, 10)) === -1)
 			|| (ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'new')
 			|| (ajaxify.data.template.category && parseInt(ajaxify.data.cid, 10) !== parseInt(post.topic.cid, 10))) {
 			return;
