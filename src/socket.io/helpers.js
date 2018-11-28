@@ -70,8 +70,8 @@ function filterTidCidIgnorers(uids, tid, cid, callback) {
 		},
 		function (results, next) {
 			uids = uids.filter(function (uid, index) {
-				return results.topicFollowed[index]
-					|| (!results.topicFollowed[index] && !results.topicIgnored[index] && !results.categoryIgnored[index]);
+				return results.topicFollowed[index] ||
+					(!results.topicFollowed[index] && !results.topicIgnored[index] && !results.categoryIgnored[index]);
 			});
 			next(null, uids);
 		},

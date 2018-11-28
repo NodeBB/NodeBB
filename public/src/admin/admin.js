@@ -99,9 +99,9 @@
 			} else {
 				var matches = url.match(/admin\/(.+?)\/(.+?)$/);
 				mainTitle = '[[admin/menu:' + matches[1] + '/' + matches[2] + ']]';
-				pageTitle = '[[admin/menu:section-'
-					+ (matches[1] === 'development' ? 'advanced' : matches[1])
-					+ ']]' + (matches[2] ? (' > ' + mainTitle) : '');
+				pageTitle = '[[admin/menu:section-' +
+					(matches[1] === 'development' ? 'advanced' : matches[1]) +
+					']]' + (matches[2] ? (' > ' + mainTitle) : '');
 				if (matches[2] === 'settings') {
 					mainTitle = translator.compile('admin/menu:settings.page-title', mainTitle);
 				}
