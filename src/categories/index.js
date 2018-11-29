@@ -335,12 +335,14 @@ Categories.flattenCategories = function (allCategories, categoryData) {
  */
 Categories.getTree = function (categories, parentCid) {
 	parentCid = parentCid || 0;
-	const cids = categories.map(category => category.cid);
+	const cids = categories.map(category => category && category.cid);
 	const cidToCategory = {};
 	const parents = {};
 	cids.forEach((cid, index) => {
-		cidToCategory[cid] = categories[index];
-		parents[cid] = _.clone(categories[index]);
+		if (cid) {
+			cidToCategory[cid] = categories[index];
+			parents[cid] = _.clone(categories[index]);
+		}
 	});
 
 	const tree = [];
