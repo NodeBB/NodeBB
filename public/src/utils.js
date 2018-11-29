@@ -501,7 +501,7 @@
 
 		// takes a string like 1000 and returns 1,000
 		addCommas: function (text) {
-			return text.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
+			return String(text).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
 		},
 
 		toISOString: function (timestamp) {

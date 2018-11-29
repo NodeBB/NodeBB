@@ -179,6 +179,15 @@ redisModule.info = function (cxn, callback) {
 					redisData[parts[0]] = parts[1];
 				}
 			});
+
+			redisData.keys = redisData['db' + nconf.get('redis:database')];
+
+			redisData.instantaneous_input = (redisData.instantaneous_input_kbps / 1024).toFixed(3);
+			redisData.instantaneous_output = (redisData.instantaneous_output_kbps / 1024).toFixed(3);
+
+			redisData.total_net_input = (redisData.total_net_input_bytes / (1024 * 1024 * 1024)).toFixed(3);
+			redisData.total_net_output = (redisData.total_net_output_bytes / (1024 * 1024 * 1024)).toFixed(3);
+
 			redisData.used_memory_human = (redisData.used_memory / (1024 * 1024 * 1024)).toFixed(3);
 			redisData.raw = JSON.stringify(redisData, null, 4);
 			redisData.redis = true;

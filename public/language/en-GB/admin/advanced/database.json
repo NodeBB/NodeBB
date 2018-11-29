@@ -18,6 +18,9 @@
 	"mongo.resident-memory": "Resident Memory",
 	"mongo.virtual-memory": "Virtual Memory",
 	"mongo.mapped-memory": "Mapped Memory",
+	"mongo.bytes-in": "Bytes In",
+	"mongo.bytes-out": "Bytes Out",
+	"mongo.num-requests": "Number of Requests",
 	"mongo.raw-info": "MongoDB Raw Info",
 
 	"redis": "Redis",
@@ -30,6 +33,11 @@
 	"redis.total-connections-recieved": "Total Connections Received",
 	"redis.total-commands-processed": "Total Commands Processed",
 	"redis.iops": "Instantaneous Ops. Per Second",
+	"redis.iinput": "Instantaneous Input Per Second",
+	"redis.ioutput": "Instantaneous Output Per Second",
+	"redis.total-input": "Total Input",
+	"redis.total-output": "Total Ouput",
+
 	"redis.keyspace-hits": "Keyspace Hits",
 	"redis.keyspace-misses": "Keyspace Misses",
 	"redis.raw-info": "Redis Raw Info",

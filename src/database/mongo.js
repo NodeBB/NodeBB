@@ -9,6 +9,7 @@ var session = require('express-session');
 var _ = require('lodash');
 var semver = require('semver');
 var prompt = require('prompt');
+var utils = require('../utils');
 var client;
 
 var mongoModule = module.exports;
@@ -240,6 +241,9 @@ mongoModule.info = function (db, callback) {
 			stats.mem.mapped = (stats.mem.mapped / 1024).toFixed(3);
 			stats.collectionData = results.listCollections;
 			stats.network = results.serverStatus.network;
+			stats.network.bytesIn = (stats.network.bytesIn / scale).toFixed(3);
+			stats.network.bytesOut = (stats.network.bytesOut / scale).toFixed(3);
+			stats.network.numRequests = utils.addCommas(stats.network.numRequests);
 			stats.raw = JSON.stringify(stats, null, 4);
 
 			stats.avgObjSize = stats.avgObjSize.toFixed(2);
