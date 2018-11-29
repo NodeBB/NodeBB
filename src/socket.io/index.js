@@ -46,20 +46,16 @@ Sockets.init = function (server) {
 	 * Can be overridden via config (socket.io:origins)
 	 */
 	if (process.env.NODE_ENV !== 'development') {
-		var domain = nconf.get('cookieDomain');
-		var parsedUrl = url.parse(nconf.get('url'));
-		var override = nconf.get('socket.io:origins');
-		if (!domain) {
-			domain = parsedUrl.hostname;	// cookies don't provide isolation by port: http://stackoverflow.com/a/16328399/122353
-		}
+		const parsedUrl = url.parse(nconf.get('url'));
 
-		if (!override) {
-			io.origins(parsedUrl.protocol + '//' + domain + ':*');
-			winston.info('[socket.io] Restricting access to origin: ' + parsedUrl.protocol + '//' + domain + ':*');
-		} else {
-			io.origins(override);
-			winston.info('[socket.io] Restricting access to origin: ' + override);
-		}
+		// cookies don't provide isolation by port: http://stackoverflow.com/a/16328399/122353
+		const domain = nconf.get('cookieDomain') || parsedUrl.hostname;
+
+		const origins = nconf.get('socket.io:origins') || `${parsedUrl.protocol}//${domain}:*`;
+		nconf.set('socket.io:origins', origins);
+
+		io.origins(origins);
+		winston.info('[socket.io] Restricting access to origin: ' + origins);
 	}
 
 	io.listen(server, {
