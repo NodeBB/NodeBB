@@ -109,9 +109,9 @@ module.exports = function (User) {
 				var expired;
 
 				sessions = sessions.filter(function (sessionObj, idx) {
-					expired = !sessionObj || !sessionObj.hasOwnProperty('passport')
-						|| !sessionObj.passport.hasOwnProperty('user')
-						||	parseInt(sessionObj.passport.user, 10) !== parseInt(uid, 10);
+					expired = !sessionObj || !sessionObj.hasOwnProperty('passport') ||
+						!sessionObj.passport.hasOwnProperty('user')	||
+						parseInt(sessionObj.passport.user, 10) !== parseInt(uid, 10);
 
 					if (expired) {
 						expiredSids.push(_sids[idx]);

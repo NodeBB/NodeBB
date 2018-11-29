@@ -240,11 +240,11 @@ module.exports = function (User) {
 			function (next) {
 				request({
 					method: 'get',
-					url: 'http://api.stopforumspam.org/api'
-						+ '?ip=' + encodeURIComponent(user.ip)
-						+ '&email=' + encodeURIComponent(user.email)
-						+ '&username=' + encodeURIComponent(user.username)
-						+ '&f=json',
+					url: 'http://api.stopforumspam.org/api' +
+						'?ip=' + encodeURIComponent(user.ip) +
+						'&email=' + encodeURIComponent(user.email) +
+						'&username=' + encodeURIComponent(user.username) +
+						'&f=json',
 					json: true,
 				}, next);
 			},
