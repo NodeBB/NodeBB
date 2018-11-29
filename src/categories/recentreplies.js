@@ -85,7 +85,7 @@ module.exports = function (Categories) {
 
 		async.waterfall([
 			function (next) {
-				const categoriesToLoad = categoryData.filter(category => parseInt(category.numRecentReplies, 10) > 0);
+				const categoriesToLoad = categoryData.filter(category => category && category.numRecentReplies && parseInt(category.numRecentReplies, 10) > 0);
 				const keys = categoriesToLoad.map(category => 'cid:' + category.cid + ':recent_tids');
 				db.getSortedSetsMembers(keys, next);
 			},
@@ -153,23 +153,27 @@ module.exports = function (Categories) {
 
 	function assignTopicsToCategories(categories, topics) {
 		categories.forEach(function (category) {
-			category.posts = topics.filter(topic => topic.cid && (topic.cid === category.cid || topic.parentCid === category.cid))
-				.sort((a, b) => b.pid - a.pid)
-				.slice(0, parseInt(category.numRecentReplies, 10));
+			if (category) {
+				category.posts = topics.filter(topic => topic.cid && (topic.cid === category.cid || topic.parentCid === category.cid))
+					.sort((a, b) => b.pid - a.pid)
+					.slice(0, parseInt(category.numRecentReplies, 10));
+			}
 		});
 	}
 
 	function bubbleUpChildrenPosts(categoryData) {
 		categoryData.forEach(function (category) {
-			if (category.posts.length) {
-				return;
-			}
-			var posts = [];
-			getPostsRecursive(category, posts);
+			if (category) {
+				if (category.posts.length) {
+					return;
+				}
+				var posts = [];
+				getPostsRecursive(category, posts);
 
-			posts.sort((a, b) => b.pid - a.pid);
-			if (posts.length) {
-				category.posts = [posts[0]];
+				posts.sort((a, b) => b.pid - a.pid);
+				if (posts.length) {
+					category.posts = [posts[0]];
+				}
 			}
 		});
 	}
