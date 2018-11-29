@@ -173,8 +173,8 @@ module.exports = function (app, middleware, callback) {
 	// DEPRECATED (v1.12.0)
 	app.use(relativePath + '/assets/stylesheet.css', function (req, res) {
 		if (!warned.has(req.path)) {
-			winston.warn('[deprecated] Accessing `/assets/stylesheet.css` is deprecated to be REMOVED in NodeBB v1.12.0. '
-			+ 'Use `/assets/client.css` to access this file');
+			winston.warn('[deprecated] Accessing `/assets/stylesheet.css` is deprecated to be REMOVED in NodeBB v1.12.0. ' +
+			'Use `/assets/client.css` to access this file');
 			warned.add(req.path);
 		}
 		res.redirect(relativePath + '/assets/client.css?' + meta.config['cache-buster']);
