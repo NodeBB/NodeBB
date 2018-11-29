@@ -3,7 +3,7 @@
     "select-file-to-upload": "בחר קובץ להעלאה!",
     "upload-success": "הקובץ הועלה בהצלחה!",
     "maximum-file-size": "מקסימום %1 קילובייט",
-    "no-uploads-found": "No uploads found",
-    "public-uploads-info": "Uploads are public, all visitors can see them.",
-    "private-uploads-info": "Uploads are private, only logged in users can see them."
+    "no-uploads-found": "לא נמצאו העלאות!",
+    "public-uploads-info": "העלאות הינם ציבוריות. כל הגולשים יוכלו לראותם.",
+    "private-uploads-info": "העלאות הינם פרטיות. רק משתמשים מחוברים יוכלו לראותם."
 }
