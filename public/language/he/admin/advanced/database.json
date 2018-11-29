@@ -23,7 +23,7 @@
 	"redis": "Redis",
 	"redis.version": "גרסת Redis",
 	"redis.connected-clients": "לקוחות מחוברים",
-	"redis.connected-slaves": "Connected Slaves",
+	"redis.connected-slaves": "לקוחות מחוברים",
 	"redis.blocked-clients": "לקוחות חסומים",
 	"redis.used-memory": "זכרון בשימוש",
 	"redis.memory-frag-ratio": "יחס פיצול זכרון",
@@ -35,6 +35,6 @@
 	"redis.raw-info": "מידע לא מעובד מRedis",
 
 	"postgres": "Postgres",
-	"postgres.version": "PostgreSQL Version",
-	"postgres.raw-info": "Postgres Raw Info"
+	"postgres.version": "גרסאת PostgreSQL",
+	"postgres.raw-info": "מידע לא מעובד מ Postgres"
 }
