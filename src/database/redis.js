@@ -180,7 +180,10 @@ redisModule.info = function (cxn, callback) {
 				}
 			});
 
-			redisData.keys = redisData['db' + nconf.get('redis:database')];
+			const keyInfo = redisData['db' + nconf.get('redis:database')];
+			redisData.keys = keyInfo.split(',')[0].replace('keys=', '');
+			redisData.expires = keyInfo.split(',')[1].replace('expires=', '');
+			redisData.avg_ttl = keyInfo.split(',')[2].replace('avg_ttl=', '');
 
 			redisData.instantaneous_input = (redisData.instantaneous_input_kbps / 1024).toFixed(3);
 			redisData.instantaneous_output = (redisData.instantaneous_output_kbps / 1024).toFixed(3);

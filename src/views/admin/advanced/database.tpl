@@ -43,6 +43,8 @@
 					<span>[[admin/advanced/database:uptime-days]]</span> <span class="text-right">{redis.uptime_in_days}</span><br/>
 					<hr/>
 					<span>[[admin/advanced/database:redis.keys]]</span> <span class="text-right formatted-number">{redis.keys}</span><br/>
+					<span>[[admin/advanced/database:redis.expires]]</span> <span class="text-right formatted-number">{redis.expires}</span><br/>
+					<span>[[admin/advanced/database:redis.avg-ttl]]</span> <span class="text-right formatted-number">{redis.avg_ttl}</span><br/>
 					<span>[[admin/advanced/database:redis.connected-clients]]</span> <span class="text-right">{redis.connected_clients}</span><br/>
 					<span>[[admin/advanced/database:redis.connected-slaves]]</span> <span class="text-right">{redis.connected_slaves}</span><br/>
 					<span>[[admin/advanced/database:redis.blocked-clients]]</span> <span class="text-right">{redis.blocked_clients}</span><br/>

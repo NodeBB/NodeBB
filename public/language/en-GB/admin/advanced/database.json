@@ -25,6 +25,9 @@
 
 	"redis": "Redis",
 	"redis.version": "Redis Version",
+	"redis.keys": "Keys",
+	"redis.expires": "Expires",
+	"redis.avg-ttl": "Average TTL",
 	"redis.connected-clients": "Connected Clients",
 	"redis.connected-slaves": "Connected Slaves",
 	"redis.blocked-clients": "Blocked Clients",
