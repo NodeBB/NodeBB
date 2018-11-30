@@ -61,10 +61,8 @@ describe('Categories', function () {
 
 			assert(categoryData);
 			assert.equal('Test Category &amp; NodeBB', categoryData.name);
-			console.log(categoryData)
 			assert.equal(categoryObj.description, categoryData.description);
 			assert.strictEqual(categoryObj.disabled, 0);
-
 			done();
 		});
 	});
