@@ -33,6 +33,7 @@ function rewrite(req, res, next) {
 		return next();
 	}
 
+	console.log('fff')
 	async.waterfall([
 		function (next) {
 			if (meta.config.allowUserHomePage) {
