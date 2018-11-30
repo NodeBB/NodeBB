@@ -37,7 +37,7 @@ describe('Categories', function () {
 
 	it('should create a new category', function (done) {
 		Categories.create({
-			name: 'Test Category',
+			name: 'Test Category & NodeBB',
 			description: 'Test category created by testing script',
 			icon: 'fa-check',
 			blockclass: 'category-blue',
@@ -60,7 +60,8 @@ describe('Categories', function () {
 			assert.equal(err, null);
 
 			assert(categoryData);
-			assert.equal(categoryObj.name, categoryData.name);
+			assert.equal('Test Category &amp; NodeBB', categoryData.name);
+			console.log(categoryData)
 			assert.equal(categoryObj.description, categoryData.description);
 			assert.strictEqual(categoryObj.disabled, 0);
 
@@ -70,9 +71,10 @@ describe('Categories', function () {
 
 
 	it('should load a category route', function (done) {
-		request(nconf.get('url') + '/category/' + categoryObj.cid + '/test-category', function (err, response, body) {
+		request(nconf.get('url') + '/api/category/' + categoryObj.cid + '/test-category', { json: true }, function (err, response, body) {
 			assert.ifError(err);
 			assert.equal(response.statusCode, 200);
+			assert.equal(body.name, 'Test Category &amp; NodeBB');
 			assert(body);
 			done();
 		});
