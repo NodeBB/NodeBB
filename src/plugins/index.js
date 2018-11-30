@@ -47,11 +47,11 @@ module.require = function (p) {
 		if (err.code === 'MODULE_NOT_FOUND') {
 			let stackLine = err.stack.split('\n');
 			stackLine = stackLine.find(line => line.includes('nodebb-plugin') || line.includes('nodebb-theme'));
-			winston.warn('[plugins/require] ' + err.message + ', please update your plugin!\n' + stackLine);
+			var deprecatedPath = err.message.replace('Cannot find module ', '');
+			winston.warn('[deprecated] requiring core modules with `module.parent.require(' + deprecatedPath + ')` is deprecated. Please use `require.main.require("./src/<module_name>")` instead.\n' + stackLine);
 			if (path.isAbsolute(p)) {
 				throw err;
 			}
-
 			return defaultRequire.apply(module, [path.join('../', p)]);
 		}
 		throw err;
