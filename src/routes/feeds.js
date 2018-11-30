@@ -39,7 +39,7 @@ module.exports = function (app, middleware) {
 };
 
 function validateTokenIfRequiresLogin(requiresLogin, cid, req, res, callback) {
-	var uid = req.query.uid;
+	var uid = parseInt(req.query.uid, 10) || 0;
 	var token = req.query.token;
 
 	if (!requiresLogin) {
