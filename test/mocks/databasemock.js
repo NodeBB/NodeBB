@@ -33,6 +33,10 @@ nconf.defaults({
 	relative_path: '',
 });
 
+var urlObject = url.parse(nconf.get('url'));
+var relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
+nconf.set('relative_path', relativePath);
+
 if (!nconf.get('isCluster')) {
 	nconf.set('isPrimary', 'true');
 	nconf.set('isCluster', 'true');
