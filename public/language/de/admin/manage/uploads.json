@@ -1,8 +1,8 @@
 {
     "upload-file": "Datei hochladen",
     "filename": "Dateiname",
-    "usage": "Post Usage",
-    "orphaned": "Orphaned",
+    "usage": "Beitragsnutzung",
+    "orphaned": "Verwaist",
     "size/filecount": "Größe / Dateianzahl",
     "confirm-delete": "Bist du sicher, dass du diese Datei löschen willst?",
     "filecount": "%1 Dateien"

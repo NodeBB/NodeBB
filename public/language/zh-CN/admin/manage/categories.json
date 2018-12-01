@@ -29,8 +29,8 @@
 	"select-category": "选择版块",
 	"set-parent-category": "设置父版块",
 
-	"privileges.description": "You can configure the access control privileges for this category in this section. Privileges can be granted on a per-user or a per-group basis. Select the domain of effect from the dropdown below.",
-	"privileges.category-selector": "Configuring privileges for ",
+	"privileges.description": "您可以在此部分中配置此版块的访问控制权限。 可以分别为每个用户或每个群组授予权限。 从下面的下拉列表中选择要配置的版块。",
+	"privileges.category-selector": "为该版块配置权限：",
 	"privileges.warning": "<strong>注意</strong>：权限设置会立即生效。 调整这些设置后，无需保存。",
 	"privileges.section-viewing": "查看权限",
 	"privileges.section-posting": "发帖权限",
