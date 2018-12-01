@@ -57,7 +57,7 @@ describe('Categories', function () {
 			stop: -1,
 			uid: 0,
 		}, function (err, categoryData) {
-			assert.equal(err, null);
+			assert.ifError(err);
 
 			assert(categoryData);
 			assert.equal('Test Category &amp; NodeBB', categoryData.name);
@@ -67,6 +67,17 @@ describe('Categories', function () {
 		});
 	});
 
+	it('should return null if category does not exist', function (done) {
+		Categories.getCategoryById({
+			cid: 123123123,
+			start: 0,
+			stop: -1,
+		}, function (err, categoryData) {
+			assert.ifError(err);
+			assert.strictEqual(categoryData, null);
+			done();
+		});
+	});
 
 	it('should load a category route', function (done) {
 		request(nconf.get('url') + '/api/category/' + categoryObj.cid + '/test-category', { json: true }, function (err, response, body) {

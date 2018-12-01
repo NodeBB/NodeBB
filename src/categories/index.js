@@ -34,7 +34,7 @@ Categories.getCategoryById = function (data, callback) {
 		},
 		function (categories, next) {
 			if (!categories[0]) {
-				return next(new Error('[[error:invalid-cid]]'));
+				return callback(null, null);
 			}
 			category = categories[0];
 			data.category = category;
