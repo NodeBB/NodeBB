@@ -88,7 +88,9 @@ function groupRoutes(app, middleware, controllers) {
 
 module.exports = function (app, middleware, callback) {
 	const router = express.Router();
-
+	router.render = function () {
+		app.render.apply(app, arguments);
+	};
 	var relativePath = nconf.get('relative_path');
 	var ensureLoggedIn = require('connect-ensure-login');
 
