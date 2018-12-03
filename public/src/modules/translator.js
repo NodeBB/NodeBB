@@ -400,7 +400,7 @@
 				lang = utils.params().lang || config.userLang || config.defaultLang || 'en-GB';
 			} else {
 				var meta = require('../../../src/meta');
-				lang = meta.config.defaultLang || 'en-GB';
+				lang = meta.config && meta.config.defaultLang ? meta.config.defaultLang : 'en-GB';
 			}
 
 			return lang;
