@@ -93,9 +93,15 @@ module.exports = function (privileges) {
 		if (!cid) {
 			return callback(null, false);
 		}
-		helpers.isUserAllowedTo(privilege, uid, [cid], function (err, results) {
-			callback(err, Array.isArray(results) && results.length ? results[0] : false);
-		});
+		if (Array.isArray(cid)) {
+			helpers.isUserAllowedTo(privilege, uid, cid, function (err, results) {
+				callback(err, Array.isArray(results) && results.length ? results : false);
+			});
+		} else {
+			helpers.isUserAllowedTo(privilege, uid, [cid], function (err, results) {
+				callback(err, Array.isArray(results) && results.length ? results[0] : false);
+			});
+		}
 	};
 
 	privileges.categories.can = function (privilege, cid, uid, callback) {
