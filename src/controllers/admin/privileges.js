@@ -19,7 +19,7 @@ privilegesController.get = function (req, res, callback) {
 						privileges.categories.list(cid, next);
 					}
 				},
-				allCategories: function (next) {
+				categories: function (next) {
 					async.waterfall([
 						function (next) {
 							categories.getAllCidsFromSet('categories:cid', next);
@@ -36,7 +36,12 @@ privilegesController.get = function (req, res, callback) {
 			}, next);
 		},
 		function (data) {
-			data.allCategories.forEach(function (category) {
+			data.categories.unshift({
+				cid: 0,
+				name: '[[admin/manage/privileges:global]]',
+				icon: 'fa-list',
+			});
+			data.categories.forEach(function (category) {
 				if (category) {
 					category.selected = category.cid === cid;
 
@@ -48,8 +53,8 @@ privilegesController.get = function (req, res, callback) {
 
 			res.render('admin/manage/privileges', {
 				privileges: data.privileges,
-				allCategories: data.allCategories,
-				selected: data.selected ? data.selected.name : '[[admin/manage/privileges:global]]',
+				categories: data.categories,
+				selectedCategory: data.selected,
 				cid: cid,
 			});
 		},

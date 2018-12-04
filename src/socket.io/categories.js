@@ -21,7 +21,7 @@ SocketCategories.get = function (socket, data, callback) {
 				isAdmin: async.apply(user.isAdministrator, socket.uid),
 				categories: function (next) {
 					async.waterfall([
-						async.apply(categories.getAllCidsFromSet, 'categories:cid'),
+						async.apply(categories.getCidsByPrivilege, 'categories:cid', socket.uid, 'find'),
 						async.apply(categories.getCategoriesData),
 					], next);
 				},
@@ -132,23 +132,16 @@ SocketCategories.getCategoriesByPrivilege = function (socket, privilege, callbac
 };
 
 SocketCategories.getMoveCategories = function (socket, data, callback) {
+	SocketCategories.getSelectCategories(socket, data, callback);
+};
+
+SocketCategories.getSelectCategories = function (socket, data, callback) {
 	async.waterfall([
 		function (next) {
 			async.parallel({
 				isAdmin: async.apply(user.isAdministrator, socket.uid),
 				categories: function (next) {
-					async.waterfall([
-						function (next) {
-							categories.getAllCidsFromSet('categories:cid', next);
-						},
-						function (cids, next) {
-							categories.getCategories(cids, socket.uid, next);
-						},
-						function (categoriesData, next) {
-							categoriesData = categories.getTree(categoriesData);
-							categories.buildForSelectCategories(categoriesData, next);
-						},
-					], next);
+					categories.buildForSelect(socket.uid, 'find', next);
 				},
 			}, next);
 		},
