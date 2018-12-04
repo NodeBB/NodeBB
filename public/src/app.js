@@ -139,6 +139,7 @@ app.cacheBuster = null;
 
 				Notifications.prepareDOM();
 				Chat.prepareDOM();
+				app.reskin(data.config.bootswatchSkin);
 				callback();
 			});
 		});
@@ -733,5 +734,22 @@ app.cacheBuster = null;
 				});
 			});
 		});
+	};
+
+	app.reskin = function (skinName) {
+		var clientEl = Array.prototype.filter.call(document.querySelectorAll('link[rel="stylesheet"]'), function (el) {
+			return el.href.indexOf(config.relative_path + '/assets/client') !== -1;
+		})[0] || null;
+
+		// Update client.css link element to point to selected skin variant
+		clientEl.href = config.relative_path + '/assets/client' + (skinName ? '-' + skinName : '') + '.css';
+
+		var currentSkinClassName = $('body').attr('class').split(/\s+/).filter(function (className) {
+			return className.startsWith('skin-');
+		});
+		$('body').removeClass(currentSkinClassName.join(' '));
+		if (skinName) {
+			$('body').addClass('skin-' + skinName);
+		}
 	};
 }());
