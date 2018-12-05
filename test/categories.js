@@ -79,6 +79,15 @@ describe('Categories', function () {
 		});
 	});
 
+	it('should get all categories', function (done) {
+		Categories.getAllCategories(1, function (err, data) {
+			assert.ifError(err);
+			assert(Array.isArray(data));
+			assert.equal(data[0].cid, categoryObj.cid);
+			done();
+		});
+	});
+
 	it('should load a category route', function (done) {
 		request(nconf.get('url') + '/api/category/' + categoryObj.cid + '/test-category', { json: true }, function (err, response, body) {
 			assert.ifError(err);

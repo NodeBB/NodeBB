@@ -101,7 +101,7 @@ Categories.getAllCidsFromSet = function (key, callback) {
 Categories.getAllCategories = function (uid, callback) {
 	async.waterfall([
 		function (next) {
-			Categories.getAllCids(next);
+			Categories.getAllCidsFromSet('categories:cid', next);
 		},
 		function (cids, next) {
 			Categories.getCategories(cids, uid, next);
