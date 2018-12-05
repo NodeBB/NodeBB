@@ -243,7 +243,7 @@ function pushToUids(uids, notification, callback) {
 		async.eachLimit(uids, 3, function (uid, next) {
 			emailer.send('notification', uid, {
 				path: notification.path,
-				subject: utils.stripHTMLTags(notification.subject || '[[notifications:new_notification_from, ' + meta.config.title + ']]'),
+				subject: utils.stripHTMLTags(notification.subject || '[[notifications:new_notification]]'),
 				intro: utils.stripHTMLTags(notification.bodyShort),
 				body: notification.bodyLong || '',
 				notification: notification,
