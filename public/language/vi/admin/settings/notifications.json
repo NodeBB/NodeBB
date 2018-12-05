@@ -1,7 +1,7 @@
 {
-	"notifications": "Notifications",
-	"welcome-notification": "Welcome Notification",
-	"welcome-notification-link": "Welcome Notification Link",
-	"welcome-notification-uid": "Welcome Notification User (UID)",
-	"notification-alert-timeout": "Notification Alert Timeout"
+	"notifications": "Thông báo",
+	"welcome-notification": "Thông báo chào mừng",
+	"welcome-notification-link": "Liên kết thông báo chào mừng",
+	"welcome-notification-uid": "Thông báo chào mừng Người dùng (UID)",
+	"notification-alert-timeout": "Thời hạn của Thông báo"
 }
