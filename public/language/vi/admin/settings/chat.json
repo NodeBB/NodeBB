@@ -1,11 +1,11 @@
 {
-	"chat-settings": "Chat Settings",
-	"disable": "Disable chat",
-	"disable-editing": "Disable chat message editing/deletion",
-	"disable-editing-help": "Administrators and global moderators are exempt from this restriction",
-	"max-length": "Maximum length of chat messages",
-	"max-room-size": "Maximum number of users in chat rooms",
-	"delay": "Time between chat messages in milliseconds",
-	"restrictions.seconds-edit-after": "Number of seconds before users are allowed to edit chat messages after posting. (0 disabled)",
-	"restrictions.seconds-delete-after": "Number of seconds before users are allowed to delete chat messages after posting. (0 disabled)"
+	"chat-settings": "Cài đặt Chat",
+	"disable": "Vô hiệu hóa Chat",
+	"disable-editing": "Vô hiệu hóa tính năng xóa, sửa tin nhắn",
+	"disable-editing-help": "Quản trị viên và Điều hành viên toàn cục không bị ảnh hưởng bởi hạn chế này",
+	"max-length": "Chiều dài tối đa của tin nhắn",
+	"max-room-size": "Số lượng người dùng tối đa trong phòng chat",
+	"delay": "thời gian giữa tin nhắn tính theo mili giây",
+	"restrictions.seconds-edit-after": "Số giây cho phép sửa tin nhắn sau khi gửi. (nếu bằng 0, vô hiệu)",
+	"restrictions.seconds-delete-after": "Số giây cho phép xóa tin nhắn sau khi gửi. (nếu bằng 0, vô hiệu)"
 }

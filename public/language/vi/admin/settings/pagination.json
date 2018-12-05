@@ -1,10 +1,10 @@
 {
-	"pagination": "Pagination Settings",
-	"enable": "Paginate topics and posts instead of using infinite scroll.",
-	"topics": "Topic Pagination",
-	"posts-per-page": "Posts per Page",
-	"max-posts-per-page": "Maximum posts per page",
-	"categories": "Category Pagination",
-	"topics-per-page": "Topics per Page",
-	"max-topics-per-page": "Maximum topics per page"
+	"pagination": "Cài đặt Phân trang",
+	"enable": "Phân trang khi xem Chủ đề và Bài viết thay vì cuộn vô hạn.",
+	"topics": "Phân trang chủ đề",
+	"posts-per-page": "Số bài viết mỗi trang",
+	"max-posts-per-page": "Số bài viết tối đa mỗi trang",
+	"categories": "Phân trang danh sách Phân loại",
+	"topics-per-page": "Số chủ đề mỗi trang",
+	"max-topics-per-page": "Số chủ đề tối đa mỗi trang"
 }

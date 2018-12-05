@@ -1,11 +1,11 @@
 {
-	"post-queue": "Post Queue",
-	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Posting Restrictions</a> and enable <strong>Post Queue</strong>.",
-	"user": "User",
-	"category": "Category",
-	"title": "Title",
-	"content": "Content",
-	"posted": "Posted",
-	"reply-to": "Reply to \"%1\"",
-	"content-editable": "You can click on individual content to edit before posting."
+	"post-queue": "Hàng đợi cho bài viết",
+	"description": "Không có Bài viết nào trong hàng đợi.<br> Để kích hoạt tính năng này, đi đến <a href=\"%1\">Cài đặt &rarr; Post &rarr; Hạn chế bài viết</a> và kích hoạt <strong>Hàng đợi cho bài viết</strong>.",
+	"user": "Người dùng",
+	"category": "Phân loại",
+	"title": "Tên",
+	"content": "Nội dung",
+	"posted": "Đã đăng",
+	"reply-to": "Trả lời cho \"%1\"",
+	"content-editable": "Bạn có thể click vào từng nội dung cụ thể để sửa đổi trước khi đăng."
 }
