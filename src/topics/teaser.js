@@ -34,7 +34,7 @@ module.exports = function (Topics) {
 					teaserPids.push(topic.mainPid);
 				} else if (meta.config.teaserPost === 'last-post') {
 					teaserPids.push(topic.teaserPid || topic.mainPid);
-				} else if (meta.config.teaserPost === 'last-reply') {
+				} else { // last-reply and everything else uses teaserPid like `last` that was used before
 					teaserPids.push(topic.teaserPid);
 				}
 			}
