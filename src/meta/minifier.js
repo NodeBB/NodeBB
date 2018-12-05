@@ -42,6 +42,7 @@ Minifier.killAll = function () {
 	});
 
 	pool.length = 0;
+	free.length = 0;
 };
 
 function getChild() {
