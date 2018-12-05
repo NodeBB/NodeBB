@@ -83,7 +83,7 @@
 	"alerts.confirm-validate-email": "Möchtest Du wirklich die E-Mails dieser Benutzer/dieses Benutzers bestätigen?",
 	"alerts.validate-email-success": "E-Mails bestätigt",
 	"alerts.password-reset-confirm": "Möchtest Du wirklich (eine) Passwort-Reset-Email(s) an diese(n) Benutzer schicken?",
-	"alerts.confirm-delete": "<b>Warnung!</b><br>Möchtest Du wirklich diese(n) Benutzer löschen?<br> Diese Aktion kann nicht rückgängig gemacht werden! Nur der Account wird dabei gelöscht. Deren Themen und Beiträge bleiben dabei erhalten.",
+	"alerts.confirm-delete": "<b>Warnung!</b><br>Möchtest Du wirklich diese(n) Benutzer löschen?<br> Diese Aktion kann nicht rückgängig gemacht werden! Nur das Konto wird dabei gelöscht. Deren Themen und Beiträge bleiben dabei erhalten.",
 	"alerts.delete-success": "Benutzer gelöscht!",
 	"alerts.confirm-purge": "<b>Warnung!</b><br/>Bist Du sicher, dass Du diese Nutzer und deren Beiträge löschen willst?<br/> Diese Aktion kann nicht rückgängig gemacht werden! Alle Nutzerdaten und Beiträge werden dabei gelöscht!",
 	"alerts.create": "Nutzer Erstellen",

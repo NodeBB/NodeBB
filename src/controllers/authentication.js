@@ -14,10 +14,12 @@ var plugins = require('../plugins');
 var utils = require('../utils');
 var translator = require('../translator');
 var helpers = require('./helpers');
+var middleware = require('../middleware');
 var privileges = require('../privileges');
 var sockets = require('../socket.io');
 
 var authenticationController = module.exports;
+var apiController = require('./api');
 
 authenticationController.register = function (req, res) {
 	var registrationType = meta.config.registrationType || 'normal';
@@ -277,10 +279,16 @@ function continueLogin(req, res, next) {
 					return helpers.noScriptErrors(req, res, err.message, 403);
 				}
 
-				res.status(200).send(nconf.get('relative_path') + '/reset/' + code);
+				res.status(200).send({
+					next: nconf.get('relative_path') + '/reset/' + code,
+				});
 			});
 		} else {
-			authenticationController.doLogin(req, userData.uid, function (err) {
+			async.parallel({
+				doLogin: async.apply(authenticationController.doLogin, req, userData.uid),
+				header: async.apply(middleware.generateHeader, req, res, {}),
+				config: async.apply(apiController.loadConfig, req),
+			}, function (err, payload) {
 				if (err) {
 					return helpers.noScriptErrors(req, res, err.message, 403);
 				}
@@ -296,7 +304,11 @@ function continueLogin(req, res, next) {
 				if (req.body.noscript === 'true') {
 					res.redirect(destination + '?loggedin');
 				} else {
-					res.status(200).send(destination);
+					res.status(200).send({
+						next: destination,
+						header: payload.header,
+						config: payload.config,
+					});
 				}
 			});
 		}
@@ -319,6 +331,9 @@ authenticationController.doLogin = function (req, uid, callback) {
 
 authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 	var uuid = utils.generateUUID();
+
+	req.uid = uid;
+	req.loggedIn = true;
 
 	async.waterfall([
 		function (next) {
@@ -451,7 +466,8 @@ authenticationController.logout = function (req, res, next) {
 		},
 		function (next) {
 			req.logout();
-			req.session.destroy(function (err) {
+			req.session.regenerate(function (err) {
+				req.uid = 0;
 				next(err);
 			});
 		},
@@ -467,7 +483,19 @@ authenticationController.logout = function (req, res, next) {
 			if (req.body.noscript === 'true') {
 				res.redirect(nconf.get('relative_path') + '/');
 			} else {
-				res.status(200).send('');
+				async.parallel({
+					header: async.apply(middleware.generateHeader, req, res, {}),
+					config: async.apply(apiController.loadConfig, req),
+				}, function (err, payload) {
+					if (err) {
+						return res.status(500);
+					}
+
+					res.status(200).send({
+						header: payload.header,
+						config: payload.config,
+					});
+				});
 			}
 		},
 	], next);

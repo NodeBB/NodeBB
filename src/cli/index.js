@@ -65,7 +65,9 @@ try {
 }
 
 require('colors');
+// eslint-disable-next-line
 var nconf = require('nconf');
+// eslint-disable-next-line
 var program = require('commander');
 
 var pkg = require('../../package.json');

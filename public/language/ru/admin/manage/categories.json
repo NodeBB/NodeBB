@@ -29,7 +29,8 @@
 	"select-category": "Указать категорию",
 	"set-parent-category": "Указать родительскую категорию",
 
-	"privileges.description": "В этой секции вы можете настроить права на управление доступом. Права могут быть предоставлены как на пользователя, так и на группу. Вы можете добавлять новых пользователей в эту таблицу с помощью формы поиска ниже.",
+	"privileges.description": "You can configure the access control privileges for this category in this section. Privileges can be granted on a per-user or a per-group basis. Select the domain of effect from the dropdown below.",
+	"privileges.category-selector": "Configuring privileges for ",
 	"privileges.warning": "<strong>Замечание</strong>: Настройки прав применяются немедленно. Нет необходимости сохранять категорию после изменения настроек.",
 	"privileges.section-viewing": "Права на просмотр",
 	"privileges.section-posting": "Права на создание поста",

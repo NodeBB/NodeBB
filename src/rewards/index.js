@@ -1,9 +1,9 @@
 'use strict';
 
 
+var async = require('async');
 var db = require('../database');
 var plugins = require('../plugins');
-var async = require('async');
 
 var rewards = module.exports;
 

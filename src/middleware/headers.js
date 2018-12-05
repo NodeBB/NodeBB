@@ -61,4 +61,3 @@ module.exports = function (middleware) {
 		next();
 	};
 };
-

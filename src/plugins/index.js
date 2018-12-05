@@ -45,11 +45,13 @@ module.require = function (p) {
 		// if we can't find the module try in parent directory
 		// since plugins.js moved into plugins folder
 		if (err.code === 'MODULE_NOT_FOUND') {
-			winston.warn('[plugins/require] ' + err.message + ', please update your plugin!\n' + err.stack.split('\n')[5]);
+			let stackLine = err.stack.split('\n');
+			stackLine = stackLine.find(line => line.includes('nodebb-plugin') || line.includes('nodebb-theme'));
+			var deprecatedPath = err.message.replace('Cannot find module ', '');
+			winston.warn('[deprecated] requiring core modules with `module.parent.require(' + deprecatedPath + ')` is deprecated. Please use `require.main.require("./src/<module_name>")` instead.\n' + stackLine);
 			if (path.isAbsolute(p)) {
 				throw err;
 			}
-
 			return defaultRequire.apply(module, [path.join('../', p)]);
 		}
 		throw err;
@@ -365,3 +367,5 @@ Plugins.showInstalled = function (callback) {
 		},
 	], callback);
 };
+
+Plugins.async = require('../promisify')(Plugins);

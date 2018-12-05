@@ -1622,6 +1622,7 @@ describe('Controllers', function () {
 	it('should return osd data', function (done) {
 		request(nconf.get('url') + '/osd.xml', function (err, res, body) {
 			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
 			assert(body);
 			done();
 		});
@@ -1637,6 +1638,7 @@ describe('Controllers', function () {
 		it('should handle topic malformed uri', function (done) {
 			request(nconf.get('url') + '/topic/1/a%AFc', function (err, res, body) {
 				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
 				assert(body);
 				done();
 			});
@@ -1645,6 +1647,7 @@ describe('Controllers', function () {
 		it('should handle category malformed uri', function (done) {
 			request(nconf.get('url') + '/category/1/a%AFc', function (err, res, body) {
 				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
 				assert(body);
 				done();
 			});
@@ -2141,7 +2144,7 @@ describe('Controllers', function () {
 				assert.equal(res.statusCode, 200);
 				assert(body.title);
 				assert(body.template);
-				assert.equal(body.url, '/compose');
+				assert.equal(body.url, nconf.get('relative_path') + '/compose');
 				done();
 			});
 		});
@@ -2162,7 +2165,7 @@ describe('Controllers', function () {
 				assert.equal(res.statusCode, 200);
 				assert(body.title);
 				assert.strictEqual(body.template.name, '');
-				assert.strictEqual(body.url, '/compose');
+				assert.strictEqual(body.url, nconf.get('relative_path') + '/compose');
 
 				plugins.unregisterHook('myTestPlugin', 'filter:composer.build', hookMethod);
 				done();

@@ -1,9 +1,9 @@
 'use strict';
 
+var async = require('async');
 var db = require('../../database');
 const batch = require('../../batch');
 
-var async = require('async');
 
 module.exports = {
 	name: 'Reformatting post diffs to be stored in lists and hash instead of single zset',

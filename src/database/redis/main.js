@@ -1,6 +1,8 @@
 'use strict';
 
 module.exports = function (redisClient, module) {
+	var helpers = module.helpers.redis;
+
 	module.flushdb = function (callback) {
 		redisClient.send_command('flushdb', [], function (err) {
 			if (typeof callback === 'function') {
@@ -10,29 +12,43 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.emptydb = function (callback) {
-		module.flushdb(callback);
+		module.flushdb(function (err) {
+			if (err) {
+				return callback(err);
+			}
+			module.objectCache.resetObjectCache();
+			callback();
+		});
 	};
 
 	module.exists = function (key, callback) {
-		redisClient.exists(key, function (err, exists) {
-			callback(err, exists === 1);
-		});
+		if (Array.isArray(key)) {
+			helpers.execKeys(redisClient, 'batch', 'exists', key, function (err, data) {
+				callback(err, data && data.map(exists => exists === 1));
+			});
+		} else {
+			redisClient.exists(key, function (err, exists) {
+				callback(err, exists === 1);
+			});
+		}
 	};
 
 	module.delete = function (key, callback) {
 		callback = callback || function () {};
 		redisClient.del(key, function (err) {
+			module.objectCache.delObjectCache(key);
 			callback(err);
 		});
 	};
 
 	module.deleteAll = function (keys, callback) {
 		callback = callback || function () {};
-		var multi = redisClient.multi();
+		var batch = redisClient.batch();
 		for (var i = 0; i < keys.length; i += 1) {
-			multi.del(keys[i]);
+			batch.del(keys[i]);
 		}
-		multi.exec(function (err) {
+		batch.exec(function (err) {
+			module.objectCache.delObjectCache(keys);
 			callback(err);
 		});
 	};
@@ -56,7 +72,12 @@ module.exports = function (redisClient, module) {
 	module.rename = function (oldKey, newKey, callback) {
 		callback = callback || function () {};
 		redisClient.rename(oldKey, newKey, function (err) {
-			callback(err && err.message !== 'ERR no such key' ? err : null);
+			if (err && err.message !== 'ERR no such key') {
+				return callback(err);
+			}
+			module.objectCache.delObjectCache(oldKey);
+			module.objectCache.delObjectCache(newKey);
+			callback();
 		});
 	};
 

@@ -392,14 +392,14 @@ function giveGlobalPrivileges(next) {
 
 function createCategories(next) {
 	var Categories = require('./categories');
-
-	Categories.getAllCategories(0, function (err, categoryData) {
+	var db = require('./database');
+	db.getSortedSetRange('categories:cid', 0, -1, function (err, cids) {
 		if (err) {
 			return next(err);
 		}
 
-		if (Array.isArray(categoryData) && categoryData.length) {
-			console.log('Categories OK. Found ' + categoryData.length + ' categories.');
+		if (Array.isArray(cids) && cids.length) {
+			console.log('Categories OK. Found ' + cids.length + ' categories.');
 			return next();
 		}
 

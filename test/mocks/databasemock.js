@@ -14,9 +14,9 @@ var url = require('url');
 
 global.env = process.env.TEST_ENV || 'production';
 
+var winston = require('winston');
 var packageInfo = require('../../package');
 
-var winston = require('winston');
 winston.add(new winston.transports.Console({
 	format: winston.format.combine(
 		winston.format.splat(),
@@ -32,6 +32,10 @@ nconf.defaults({
 	views_dir: path.join(__dirname, '../../build/public/templates'),
 	relative_path: '',
 });
+
+var urlObject = url.parse(nconf.get('url'));
+var relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
+nconf.set('relative_path', relativePath);
 
 if (!nconf.get('isCluster')) {
 	nconf.set('isPrimary', 'true');
@@ -175,6 +179,8 @@ function setupMockDefaults(callback) {
 			groups.resetCache();
 			var postCache = require('../../src/posts/cache');
 			postCache.reset();
+			var localCache = require('../../src/cache');
+			localCache.reset();
 			next();
 		},
 		function (next) {

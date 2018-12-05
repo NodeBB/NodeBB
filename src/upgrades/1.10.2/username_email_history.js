@@ -1,8 +1,8 @@
 'use strict';
 
+var async = require('async');
 var db = require('../../database');
 
-var async = require('async');
 var batch = require('../../batch');
 var user = require('../../user');
 
@@ -28,7 +28,7 @@ module.exports = {
 								user.getUserFields(uid, ['username', 'joindate'], next);
 							},
 							(userdata, next) => {
-								if (!userdata) {
+								if (!userdata || !userdata.joindate) {
 									return setImmediate(next);
 								}
 
@@ -49,7 +49,7 @@ module.exports = {
 								user.getUserFields(uid, ['email', 'joindate'], next);
 							},
 							(userdata, next) => {
-								if (!userdata) {
+								if (!userdata || !userdata.joindate) {
 									return setImmediate(next);
 								}
 

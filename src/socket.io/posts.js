@@ -92,6 +92,40 @@ SocketPosts.getRawPost = function (socket, pid, callback) {
 	], callback);
 };
 
+SocketPosts.getTimestampByIndex = function (socket, data, callback) {
+	var pid;
+	var db = require('../database');
+
+	async.waterfall([
+		function (next) {
+			if (data.index < 0) {
+				data.index = 0;
+			}
+			if (data.index === 0) {
+				topics.getTopicField(data.tid, 'mainPid', next);
+			} else {
+				db.getSortedSetRange('tid:' + data.tid + ':posts', data.index - 1, data.index - 1, next);
+			}
+		},
+		function (_pid, next) {
+			pid = Array.isArray(_pid) ? _pid[0] : _pid;
+			if (!pid) {
+				return callback(null, 0);
+			}
+			privileges.posts.can('read', pid, socket.uid, next);
+		},
+		function (canRead, next) {
+			if (!canRead) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
+			posts.getPostFields(pid, ['timestamp'], next);
+		},
+		function (postData, next) {
+			next(null, postData.timestamp);
+		},
+	], callback);
+};
+
 SocketPosts.getPost = function (socket, pid, callback) {
 	apiController.getPostData(pid, socket.uid, callback);
 };

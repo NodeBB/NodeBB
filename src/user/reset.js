@@ -6,7 +6,6 @@ var winston = require('winston');
 
 var user = require('../user');
 var utils = require('../utils');
-var translator = require('../translator');
 var batch = require('../batch');
 
 var db = require('../database');
@@ -79,15 +78,9 @@ UserReset.send = function (email, callback) {
 			UserReset.generate(uid, next);
 		},
 		function (code, next) {
-			translator.translate('[[email:password-reset-requested, ' + (meta.config.title || 'NodeBB') + ']]', meta.config.defaultLang, function (subject) {
-				next(null, subject, code);
-			});
-		},
-		function (subject, code, next) {
-			var reset_link = nconf.get('url') + '/reset/' + code;
 			emailer.send('reset', uid, {
-				reset_link: reset_link,
-				subject: subject,
+				reset_link: nconf.get('url') + '/reset/' + code,
+				subject: '[[email:password-reset-requested]]',
 				template: 'reset',
 				uid: uid,
 			}, next);

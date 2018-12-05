@@ -8,12 +8,11 @@ define('forum/topic', [
 	'forum/topic/events',
 	'forum/topic/posts',
 	'forum/topic/images',
-	'forum/topic/replies',
 	'navigator',
 	'sort',
 	'components',
 	'storage',
-], function (infinitescroll, threadTools, postTools, events, posts, images, replies, navigator, sort, components, storage) {
+], function (infinitescroll, threadTools, postTools, events, posts, images, navigator, sort, components, storage) {
 	var	Topic = {};
 	var currentUrl = '';
 
@@ -45,11 +44,10 @@ define('forum/topic', [
 
 		app.enterRoom('topic_' + tid);
 
-		posts.processPage(components.get('post'));
+		posts.onTopicPageLoad(components.get('post'));
 
 		postTools.init(tid);
 		threadTools.init(tid);
-		replies.init(tid);
 		events.init();
 
 		sort.handleSort('topicPostSort', 'user.setTopicSort', 'topic/' + ajaxify.data.slug);
@@ -61,6 +59,7 @@ define('forum/topic', [
 		addBlockQuoteHandler();
 		addParentHandler();
 		addDropupHandler();
+		addRepliesHandler();
 
 		navigator.init('[component="post"]', ajaxify.data.postcount, Topic.toTop, Topic.toBottom, Topic.navigatorCallback, Topic.calculateIndex);
 
@@ -74,18 +73,21 @@ define('forum/topic', [
 	};
 
 	function handleTopicSearch() {
-		require(['search', 'mousetrap'], function (search, mousetrap) {
-			$('.topic-search').off('click')
-				.on('click', '.prev', function () {
+		$('.topic-search').off('click')
+			.on('click', '.prev', function () {
+				require(['search'], function (search) {
 					search.topicDOM.prev();
-				})
-				.on('click', '.next', function () {
+				});
+			})
+			.on('click', '.next', function () {
+				require(['search'], function (search) {
 					search.topicDOM.next();
 				});
+			});
 
-			mousetrap.bind('ctrl+f', function (e) {
-				if (config.topicSearchEnabled) {
-					// If in topic, open search window and populate, otherwise regular behaviour
+		if (config.topicSearchEnabled) {
+			require(['mousetrap'], function (mousetrap) {
+				mousetrap.bind('ctrl+f', function (e) {
 					var match = ajaxify.currentPage.match(/^topic\/([\d]+)/);
 					var tid;
 					if (match) {
@@ -94,9 +96,9 @@ define('forum/topic', [
 						$('#search-fields input').val('in:topic-' + tid + ' ');
 						app.prepareSearch();
 					}
-				}
+				});
 			});
-		});
+		}
 	}
 
 	Topic.toTop = function () {
@@ -177,6 +179,15 @@ define('forum/topic', [
 		});
 	}
 
+	function addRepliesHandler() {
+		$('[component="topic"]').on('click', '[component="post/reply-count"]', function () {
+			var btn = $(this);
+			require(['forum/topic/replies'], function (replies) {
+				replies.init(btn);
+			});
+		});
+	}
+
 	function updateTopicTitle() {
 		var span = components.get('navbar/title').find('span');
 		if ($(window).scrollTop() > 50 && span.hasClass('hidden')) {
@@ -196,7 +207,7 @@ define('forum/topic', [
 		return index;
 	};
 
-	Topic.navigatorCallback = function (index, elementCount, threshold) {
+	Topic.navigatorCallback = function (index, elementCount) {
 		var path = ajaxify.removeRelativePath(window.location.pathname.slice(1));
 		if (!path.startsWith('topic')) {
 			return;
@@ -205,8 +216,6 @@ define('forum/topic', [
 		if (navigator.scrollActive) {
 			return;
 		}
-
-		images.loadImages(threshold);
 
 		var newUrl = 'topic/' + ajaxify.data.slug + (index > 1 ? ('/' + index) : '');
 

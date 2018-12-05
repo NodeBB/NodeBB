@@ -170,7 +170,7 @@ describe('Build', function (done) {
 	it('should build client side styles', function (done) {
 		build.build(['client side styles'], function (err) {
 			assert.ifError(err);
-			var filename = path.join(__dirname, '../build/public/stylesheet.css');
+			var filename = path.join(__dirname, '../build/public/client.css');
 			assert(file.existsSync(filename));
 			assert(fs.readFileSync(filename).toString().startsWith('/*! normalize.css'));
 			done();

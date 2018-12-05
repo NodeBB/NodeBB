@@ -9,10 +9,6 @@ define('forum/topic/merge', function () {
 	var selectedTids = {};
 
 	Merge.init = function () {
-		$('.category').on('click', '[component="topic/merge"]', onMergeTopicsClicked);
-	};
-
-	function onMergeTopicsClicked() {
 		if (modal) {
 			return;
 		}
@@ -33,7 +29,7 @@ define('forum/topic/merge', function () {
 				mergeTopics(mergeBtn);
 			});
 		});
-	}
+	};
 
 	function onTopicClicked(ev) {
 		var tid = $(this).parents('[component="category/topic"]').attr('data-tid');

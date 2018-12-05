@@ -14,6 +14,7 @@ categoriesController.get = function (req, res, callback) {
 		function (next) {
 			async.parallel({
 				category: async.apply(categories.getCategories, [req.params.category_id], req.uid),
+				parent: async.apply(categories.getParents, [req.params.category_id]),
 				allCategories: async.apply(categories.buildForSelect, req.uid, 'read'),
 			}, next);
 		},
@@ -23,7 +24,7 @@ categoriesController.get = function (req, res, callback) {
 			if (!category) {
 				return callback();
 			}
-
+			category.parent = data.parent[0];
 			data.allCategories.forEach(function (category) {
 				if (category) {
 					category.selected = parseInt(category.cid, 10) === parseInt(req.params.category_id, 10);

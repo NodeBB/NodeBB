@@ -29,7 +29,8 @@
 	"select-category": "Kategori Seç",
 	"set-parent-category": "Ana Kategori Ayarla",
 
-	"privileges.description": "Bu kategorideki erişim denetimi ayrıcalıklarını bu bölümde yapılandırabilirsiniz. Ayrıcalıklar kullanıcıya veya gruba göre verilebilir. Bu tabloda, aşağıdaki formdan arama yapabilir, yeni bir kullanıcı ekleyebilirsiniz.",
+	"privileges.description": "You can configure the access control privileges for this category in this section. Privileges can be granted on a per-user or a per-group basis. Select the domain of effect from the dropdown below.",
+	"privileges.category-selector": "Configuring privileges for ",
 	"privileges.warning": "<strong>Not</strong>: Ayrıcalık ayarları hemen yürürlüğe girer. Bu ayarları yaptıktan sonra kategoriyi kaydetmek gerekli değildir.",
 	"privileges.section-viewing": "Ayrıcalıkları Görüntüle",
 	"privileges.section-posting": "Gönderme Ayrıcalıkları",

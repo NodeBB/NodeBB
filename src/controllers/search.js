@@ -20,6 +20,8 @@ searchController.search = function (req, res, next) {
 	}
 	var page = Math.max(1, parseInt(req.query.page, 10)) || 1;
 
+	const searchOnly = parseInt(req.query.searchOnly, 10) === 1;
+
 	async.waterfall([
 		function (next) {
 			privileges.global.can('search:content', req.uid, next);
@@ -48,38 +50,53 @@ searchController.search = function (req, res, next) {
 				sortBy: req.query.sortBy || meta.config.searchDefaultSortBy || '',
 				sortDirection: req.query.sortDirection,
 				page: page,
+				itemsPerPage: req.query.itemsPerPage,
 				uid: req.uid,
 				qs: req.query,
 			};
 
 			async.parallel({
-				categories: async.apply(categories.buildForSelect, req.uid, 'read'),
+				categories: async.apply(buildCategories, req.uid, searchOnly),
 				search: async.apply(search.search, data),
 			}, next);
 		},
 		function (results) {
-			results.categories = results.categories.filter(function (category) {
-				return category && !category.link;
-			});
+			var searchData = results.search;
+
+			searchData.pagination = pagination.create(page, searchData.pageCount, req.query);
+			searchData.search_query = validator.escape(String(req.query.term || ''));
+			searchData.term = req.query.term;
+
+			if (searchOnly) {
+				return res.json(searchData);
+			}
+
+			results.categories = results.categories.filter(category => category && !category.link);
 
 			var categoriesData = [
 				{ value: 'all', text: '[[unread:all_categories]]' },
 				{ value: 'watched', text: '[[category:watched-categories]]' },
 			].concat(results.categories);
 
-			var searchData = results.search;
+
 			searchData.categories = categoriesData;
 			searchData.categoriesCount = Math.max(10, Math.min(20, categoriesData.length));
-			searchData.pagination = pagination.create(page, searchData.pageCount, req.query);
+			searchData.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[global:search]]' }]);
+			searchData.expandSearch = !req.query.term;
+
 			searchData.showAsPosts = !req.query.showAs || req.query.showAs === 'posts';
 			searchData.showAsTopics = req.query.showAs === 'topics';
 			searchData.title = '[[global:header.search]]';
-			searchData.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[global:search]]' }]);
-			searchData.expandSearch = !req.query.term;
+
 			searchData.searchDefaultSortBy = meta.config.searchDefaultSortBy || '';
-			searchData.search_query = validator.escape(String(req.query.term || ''));
-			searchData.term = req.query.term;
 			res.render('search', searchData);
 		},
 	], next);
 };
+
+function buildCategories(uid, searchOnly, callback) {
+	if (searchOnly) {
+		return setImmediate(callback, null, []);
+	}
+	categories.buildForSelect(uid, 'read', callback);
+}

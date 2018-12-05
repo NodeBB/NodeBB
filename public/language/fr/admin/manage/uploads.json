@@ -1,0 +1,9 @@
+{
+    "upload-file": "Envoyer un fichier",
+    "filename": "Nom du fichier",
+    "usage": "Utilisé dans le message",
+    "orphaned": "Orphelin",
+    "size/filecount": "Taille / nombre de fichiers",
+    "confirm-delete": "Voulez-vous vraiment supprimer ce fichier?",
+    "filecount": "%1 fichiers"
+}

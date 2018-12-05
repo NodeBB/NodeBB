@@ -7,6 +7,7 @@ var groups = require('../groups');
 var plugins = require('../plugins');
 var privileges = require('../privileges');
 var utils = require('../utils');
+var cache = require('../cache');
 
 module.exports = function (Categories) {
 	Categories.create = function (data, callback) {
@@ -82,6 +83,7 @@ module.exports = function (Categories) {
 				], next);
 			},
 			function (results, next) {
+				cache.del(['categories:cid', 'cid:' + parentCid + ':children']);
 				if (data.cloneFromCid && parseInt(data.cloneFromCid, 10)) {
 					return Categories.copySettingsFrom(data.cloneFromCid, category.cid, !data.parentCid, next);
 				}
@@ -153,9 +155,11 @@ module.exports = function (Categories) {
 				const newParent = parseInt(results.source.parentCid, 10) || 0;
 				if (copyParent) {
 					tasks.push(async.apply(db.sortedSetRemove, 'cid:' + oldParent + ':children', toCid));
-				}
-				if (copyParent) {
 					tasks.push(async.apply(db.sortedSetAdd, 'cid:' + newParent + ':children', results.source.order, toCid));
+					tasks.push(function (next) {
+						cache.del(['cid:' + oldParent + ':children', 'cid:' + newParent + ':children']);
+						setImmediate(next);
+					});
 				}
 
 				destination.description = results.source.description;

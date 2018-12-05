@@ -1,9 +1,9 @@
 'use strict';
 
-var meta = require('../../meta');
 
 var async = require('async');
 var crypto = require('crypto');
+var meta = require('../../meta');
 
 module.exports = {
 	name: 'Clearing stale digest templates that were accidentally saved as custom',

@@ -1,6 +1,11 @@
 'use strict';
 
-define('topicList', ['forum/infinitescroll', 'handleBack', 'topicSelect'], function (infinitescroll, handleBack, topicSelect) {
+define('topicList', [
+	'forum/infinitescroll',
+	'handleBack',
+	'topicSelect',
+	'categorySearch',
+], function (infinitescroll, handleBack, topicSelect, categorySearch) {
 	var TopicList = {};
 	var templateName = '';
 
@@ -18,12 +23,11 @@ define('topicList', ['forum/infinitescroll', 'handleBack', 'topicSelect'], funct
 
 	$(window).on('action:ajaxify.start', function () {
 		TopicList.removeListeners();
-		loadTopicsCallback = null;
 	});
 
 	TopicList.init = function (template, cb) {
 		templateName = template;
-		loadTopicsCallback = cb;
+		loadTopicsCallback = cb || loadTopicsAfter;
 
 		TopicList.watchForNewPosts();
 
@@ -33,8 +37,13 @@ define('topicList', ['forum/infinitescroll', 'handleBack', 'topicSelect'], funct
 			infinitescroll.init(TopicList.loadMoreTopics);
 		}
 
-		handleBack.init(function (after, cb) {
-			loadTopicsAfter(after, 1, cb);
+		handleBack.init(function (after, handleBackCallback) {
+			loadTopicsCallback(after, 1, function (data, loadCallback) {
+				TopicList.onTopicsLoaded(templateName, data.topics, ajaxify.data.showSelect, 1, function () {
+					handleBackCallback();
+					loadCallback();
+				});
+			});
 		});
 
 		if ($('body').height() <= $(window).height() && $('[component="category"]').children().length >= 20) {
@@ -82,11 +91,13 @@ define('topicList', ['forum/infinitescroll', 'handleBack', 'topicSelect'], funct
 		}
 
 		var post = data.posts[0];
-		if ((!post || !post.topic) ||
+		if (
+			(!post || !post.topic) ||
 			(parseInt(post.topic.mainPid, 10) === parseInt(post.pid, 10)) ||
-			(ajaxify.data.selectedCids && ajaxify.data.selectedCids.indexOf(parseInt(post.topic.cid, 10)) === -1) ||
+			(ajaxify.data.selectedCids && ajaxify.data.selectedCids.length && ajaxify.data.selectedCids.indexOf(parseInt(post.topic.cid, 10)) === -1) ||
 			(ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'new') ||
-			(ajaxify.data.template.category && parseInt(ajaxify.data.cid, 10) !== parseInt(post.topic.cid, 10))) {
+			(ajaxify.data.template.category && parseInt(ajaxify.data.cid, 10) !== parseInt(post.topic.cid, 10))
+		) {
 			return;
 		}
 
@@ -152,6 +163,8 @@ define('topicList', ['forum/infinitescroll', 'handleBack', 'topicSelect'], funct
 			return cids;
 		}
 
+		categorySearch.init($('[component="category/dropdown"]'));
+
 		$('[component="category/dropdown"]').on('hidden.bs.dropdown', function () {
 			var cids = getSelectedCids();
 			var changed = ajaxify.data.selectedCids.length !== cids.length;
@@ -202,14 +215,8 @@ define('topicList', ['forum/infinitescroll', 'handleBack', 'topicSelect'], funct
 			return;
 		}
 
-		var loadFn = loadTopicsCallback || loadTopicsAfter;
-		loadFn(after, direction, function (data, done) {
-			if (data.topics && data.topics.length) {
-				TopicList.onTopicsLoaded(templateName, data.topics, ajaxify.data.showSelect, direction, done);
-			} else {
-				done();
-				$('#load-more-btn').hide();
-			}
+		loadTopicsCallback(after, direction, function (data, done) {
+			TopicList.onTopicsLoaded(templateName, data.topics, ajaxify.data.showSelect, direction, done);
 		});
 	};
 
@@ -229,12 +236,21 @@ define('topicList', ['forum/infinitescroll', 'handleBack', 'topicSelect'], funct
 		}, callback);
 	}
 
-	TopicList.onTopicsLoaded = function (templateName, topics, showSelect, direction, callback) {
-		topics = topics.filter(function (topic) {
+	function filterTopicsOnDom(topics) {
+		return topics.filter(function (topic) {
 			return !$('[component="category/topic"][data-tid="' + topic.tid + '"]').length;
 		});
+	}
+
+	TopicList.onTopicsLoaded = function (templateName, topics, showSelect, direction, callback) {
+		if (!topics || !topics.length) {
+			$('#load-more-btn').hide();
+			return callback();
+		}
+		topics = filterTopicsOnDom(topics);
 
 		if (!topics.length) {
+			$('#load-more-btn').hide();
 			return callback();
 		}
 

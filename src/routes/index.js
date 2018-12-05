@@ -87,19 +87,10 @@ function groupRoutes(app, middleware, controllers) {
 }
 
 module.exports = function (app, middleware, callback) {
-	var routers = [
-		express.Router(),	// plugin router
-		express.Router(),	// main app router
-		express.Router(),	// auth router
-	];
-	var pluginRouter = routers[0];
-	pluginRouter.render = function () {
+	const router = express.Router();
+	router.render = function () {
 		app.render.apply(app, arguments);
 	};
-
-	var router = routers[1];
-	var authRouter = routers[2];
-
 	var relativePath = nconf.get('relative_path');
 	var ensureLoggedIn = require('connect-ensure-login');
 
@@ -110,10 +101,26 @@ module.exports = function (app, middleware, callback) {
 	app.use(middleware.stripLeadingSlashes);
 
 	// handle custom homepage routes
-	app.use(relativePath, controllers.home.rewrite);
-	// homepage handled by `action:homepage.get:[route]`
-	setupPageRoute(app, '/', middleware, [], controllers.home.pluginHook);
+	router.use('/', controllers.home.rewrite);
 
+	// homepage handled by `action:homepage.get:[route]`
+	setupPageRoute(router, '/', middleware, [], controllers.home.pluginHook);
+
+	async.series([
+		async.apply(plugins.reloadRoutes, router),
+		async.apply(authRoutes.reloadRoutes, router),
+		async.apply(addCoreRoutes, app, router, middleware),
+		async.apply(user.addInterstitials),
+		function (next) {
+			winston.info('Routes added');
+			next();
+		},
+	], function (err) {
+		callback(err);
+	});
+};
+
+function addCoreRoutes(app, router, middleware, callback) {
 	adminRoutes(router, middleware, controllers);
 	metaRoutes(router, middleware, controllers);
 	apiRoutes(router, middleware, controllers);
@@ -130,9 +137,8 @@ module.exports = function (app, middleware, callback) {
 	userRoutes(router, middleware, controllers);
 	groupRoutes(router, middleware, controllers);
 
-	routers.forEach((router) => {
-		app.use(relativePath || '/', router);
-	});
+	var relativePath = nconf.get('relative_path');
+	app.use(relativePath || '/', router);
 
 	if (process.env.NODE_ENV === 'development') {
 		require('./debug')(app, middleware, controllers);
@@ -153,28 +159,34 @@ module.exports = function (app, middleware, callback) {
 		statics.unshift({ route: '/assets/uploads', path: nconf.get('upload_path') });
 	}
 
+	// Skins
+	meta.css.supportedSkins.forEach(function (skin) {
+		app.use(relativePath + '/assets/client-' + skin + '.css', middleware.buildSkinAsset);
+	});
+
 	statics.forEach(function (obj) {
-		app.use(relativePath + obj.route, express.static(obj.path, staticOptions));
+		app.use(relativePath + obj.route, middleware.trimUploadTimestamps, express.static(obj.path, staticOptions));
 	});
 	app.use(relativePath + '/uploads', function (req, res) {
 		res.redirect(relativePath + '/assets/uploads' + req.path + '?' + meta.config['cache-buster']);
+	});
+
+	// only warn once
+	var warned = new Set();
+
+	// DEPRECATED (v1.12.0)
+	app.use(relativePath + '/assets/stylesheet.css', function (req, res) {
+		if (!warned.has(req.path)) {
+			winston.warn('[deprecated] Accessing `/assets/stylesheet.css` is deprecated to be REMOVED in NodeBB v1.12.0. ' +
+			'Use `/assets/client.css` to access this file');
+			warned.add(req.path);
+		}
+		res.redirect(relativePath + '/assets/client.css?' + meta.config['cache-buster']);
 	});
 
 	app.use(relativePath + '/assets/vendor/jquery/timeago/locales', middleware.processTimeagoLocales);
 	app.use(controllers['404'].handle404);
 	app.use(controllers.errors.handleURIErrors);
 	app.use(controllers.errors.handleErrors);
-
-	// Add plugin routes
-	async.series([
-		async.apply(plugins.reloadRoutes, pluginRouter),
-		async.apply(authRoutes.reloadRoutes, authRouter),
-		async.apply(user.addInterstitials),
-		function (next) {
-			winston.info('Routes added');
-			next();
-		},
-	], function (err) {
-		callback(err);
-	});
-};
+	setImmediate(callback);
+}

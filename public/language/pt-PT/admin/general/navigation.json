@@ -2,16 +2,13 @@
 	"icon": "Ícone:",
 	"change-icon": "alterar",
 	"route": "Caminho:",
-	"tooltip": "Tooltip:",
+	"tooltip": "Título:",
 	"text": "Texto:",
 	"text-class": "Classe: <small>opcional</small>",
 	"id": "ID: <small>opcional</small>",
 
 	"properties": "Propriedades:",
-	"only-admins": "Mostrar apenas para Administradores",
-	"only-global-mods-and-admins": "Mostrar apenas para Moderadores e Administradores",
-	"only-logged-in": "Mostrar apenas para utilizadores com sessão iniciada",
-	"only-guest": "Only display to guests",
+	"groups": "Grupos:",
 	"open-new-window": "Abrir numa nova janela",
 
 	"btn.delete": "Apagar",

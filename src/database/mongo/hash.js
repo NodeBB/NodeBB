@@ -1,42 +1,15 @@
 'use strict';
 
 var async = require('async');
-var pubsub = require('../../pubsub');
+
 
 module.exports = function (db, module) {
 	var helpers = module.helpers.mongo;
 
-	var LRU = require('lru-cache');
 	var _ = require('lodash');
+	const cache = require('../cache').create('mongo');
 
-	var cache = LRU({
-		max: 10000,
-		length: function () { return 1; },
-		maxAge: 0,
-	});
-
-	cache.misses = 0;
-	cache.hits = 0;
 	module.objectCache = cache;
-
-	pubsub.on('mongo:hash:cache:del', function (key) {
-		cache.del(key);
-	});
-
-	pubsub.on('mongo:hash:cache:reset', function () {
-		cache.reset();
-	});
-
-	module.delObjectCache = function (key) {
-		pubsub.publish('mongo:hash:cache:del', key);
-		cache.del(key);
-	};
-
-	module.resetObjectCache = function () {
-		pubsub.publish('mongo:hash:cache:reset');
-		cache.reset();
-	};
-
 
 	module.setObject = function (key, data, callback) {
 		callback = callback || helpers.noop;
@@ -50,7 +23,7 @@ module.exports = function (db, module) {
 			if (err) {
 				return callback(err);
 			}
-			module.delObjectCache(key);
+			cache.delObjectCache(key);
 			callback();
 		});
 	};
@@ -82,35 +55,22 @@ module.exports = function (db, module) {
 	module.getObjects = function (keys, callback) {
 		var cachedData = {};
 		function getFromCache() {
-			process.nextTick(callback, null, keys.map(function (key) {
-				return _.clone(cachedData[key]);
-			}));
+			process.nextTick(callback, null, keys.map(key => _.clone(cachedData[key])));
 		}
 
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback(null, []);
 		}
 
-		var nonCachedKeys = keys.filter(function (key) {
-			var data = cache.get(key);
-			if (data !== undefined) {
-				cachedData[key] = data;
-			}
-			return data === undefined;
-		});
+		const unCachedKeys = cache.getUnCachedKeys(keys, cachedData);
 
-		var hits = keys.length - nonCachedKeys.length;
-		var misses = keys.length - hits;
-		cache.hits += hits;
-		cache.misses += misses;
-
-		if (!nonCachedKeys.length) {
+		if (!unCachedKeys.length) {
 			return getFromCache();
 		}
 
-		var query = { _key: { $in: nonCachedKeys } };
-		if (nonCachedKeys.length === 1) {
-			query._key = nonCachedKeys[0];
+		var query = { _key: { $in: unCachedKeys } };
+		if (unCachedKeys.length === 1) {
+			query._key = unCachedKeys[0];
 		}
 		db.collection('objects').find(query, { projection: { _id: 0 } }).toArray(function (err, data) {
 			if (err) {
@@ -118,7 +78,7 @@ module.exports = function (db, module) {
 			}
 
 			var map = helpers.toMap(data);
-			nonCachedKeys.forEach(function (key) {
+			unCachedKeys.forEach(function (key) {
 				cachedData[key] = map[key] || null;
 				cache.set(key, cachedData[key]);
 			});
@@ -143,16 +103,8 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback();
 		}
-		module.getObject(key, function (err, item) {
-			if (err) {
-				return callback(err);
-			}
-			item = item || {};
-			var result = {};
-			for (var i = 0; i < fields.length; i += 1) {
-				result[fields[i]] = item[fields[i]] !== undefined ? item[fields[i]] : null;
-			}
-			callback(null, result);
+		module.getObjectsFields([key], fields, function (err, data) {
+			callback(err, data ? data[0] : null);
 		});
 	};
 
@@ -168,17 +120,14 @@ module.exports = function (db, module) {
 				items = [];
 			}
 
-			var returnData = [];
-			var item;
-			var result;
-			for (var i = 0; i < keys.length; i += 1) {
-				item = items[i] || {};
-				result = {};
-				for (var k = 0; k < fields.length; k += 1) {
-					result[fields[k]] = item[fields[k]] !== undefined ? item[fields[k]] : null;
-				}
-				returnData.push(result);
-			}
+			const returnData = items.map((item) => {
+				item = item || {};
+				const result = {};
+				fields.forEach((field) => {
+					result[field] = item[field] !== undefined ? item[field] : null;
+				});
+				return result;
+			});
 
 			callback(null, returnData);
 		});
@@ -267,7 +216,7 @@ module.exports = function (db, module) {
 			if (err) {
 				return callback(err);
 			}
-			module.delObjectCache(key);
+			cache.delObjectCache(key);
 			callback();
 		});
 	};
@@ -304,9 +253,7 @@ module.exports = function (db, module) {
 					});
 				},
 				function (next) {
-					key.forEach(function (key) {
-						module.delObjectCache(key);
-					});
+					cache.delObjectCache(key);
 
 					module.getObjectsFields(key, [field], next);
 				},
@@ -325,7 +272,7 @@ module.exports = function (db, module) {
 			if (err) {
 				return callback(err);
 			}
-			module.delObjectCache(key);
+			cache.delObjectCache(key);
 			callback(null, result && result.value ? result.value[field] : null);
 		});
 	};

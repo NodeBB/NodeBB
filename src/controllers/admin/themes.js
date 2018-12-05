@@ -46,4 +46,3 @@ themesController.get = function (req, res, next) {
 		},
 	], next);
 };
-

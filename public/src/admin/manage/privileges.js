@@ -13,12 +13,10 @@ define('admin/manage/privileges', [
 	Privileges.init = function () {
 		cid = ajaxify.data.cid || 0;
 
-		$('#category-selector').on('change', function () {
-			var val = $(this).val();
-			ajaxify.go('admin/manage/privileges/' + (val === 'global' ? '' : $(this).val()));
+		categorySelector.init($('[component="category-selector"]'), function (category) {
+			var cid = parseInt(category.cid, 10);
+			ajaxify.go('admin/manage/privileges/' + (cid || ''));
 		});
-
-
 		Privileges.setupPrivilegeTable();
 	};
 
@@ -180,7 +178,7 @@ define('admin/manage/privileges', [
 	};
 
 	Privileges.copyPrivilegesFromCategory = function () {
-		categorySelector.modal(function (fromCid) {
+		categorySelector.modal(ajaxify.data.categories.slice(1), function (fromCid) {
 			socket.emit('admin.categories.copyPrivilegesFrom', { toCid: cid, fromCid: fromCid }, function (err) {
 				if (err) {
 					return app.alertError(err.message);

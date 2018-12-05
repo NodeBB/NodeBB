@@ -8,10 +8,7 @@
 	"id": "ID: <small>optional</small>",
 
 	"properties": "Thông số:",
-	"only-admins": "Chỉ hiển thị cho Quản trị viên",
-	"only-global-mods-and-admins": "Chỉ hiển thị cho Giám sát viên và Quản trị viên",
-	"only-logged-in": "Chỉ hiển thị cho Người dùng đã đăng nhập",
-	"only-guest": "Chỉ hiển thị cho Khách",
+	"groups": "Các nhóm:",
 	"open-new-window": "Mở trong cửa sổ mới",
 
 	"btn.delete": "Xóa",

@@ -68,8 +68,6 @@ define('forum/topic/diffs', ['forum/topic/images', 'benchpress', 'translator'], 
 				posts: [data],
 			}, function (html) {
 				postContainer.empty().append(html);
-				Images.unloadImages(html);
-				Images.loadImages();
 			});
 		});
 	};

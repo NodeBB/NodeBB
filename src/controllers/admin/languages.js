@@ -24,4 +24,3 @@ languagesController.get = function (req, res, next) {
 		},
 	], next);
 };
-

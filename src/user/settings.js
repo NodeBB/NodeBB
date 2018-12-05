@@ -10,7 +10,7 @@ var notifications = require('../notifications');
 
 module.exports = function (User) {
 	User.getSettings = function (uid, callback) {
-		if (!parseInt(uid, 10)) {
+		if (parseInt(uid, 10) <= 0) {
 			return onSettingsLoaded(0, {}, callback);
 		}
 
@@ -77,8 +77,7 @@ module.exports = function (User) {
 				settings.upvoteNotifFreq = getSetting(settings, 'upvoteNotifFreq', 'all');
 				settings.restrictChat = parseInt(getSetting(settings, 'restrictChat', 0), 10) === 1;
 				settings.topicSearchEnabled = parseInt(getSetting(settings, 'topicSearchEnabled', 0), 10) === 1;
-				settings.delayImageLoading = parseInt(getSetting(settings, 'delayImageLoading', 1), 10) === 1;
-				settings.bootswatchSkin = settings.bootswatchSkin || meta.config.bootswatchSkin || 'default';
+				settings.bootswatchSkin = settings.bootswatchSkin || '';
 				settings.scrollToMyPost = parseInt(getSetting(settings, 'scrollToMyPost', 1), 10) === 1;
 
 				notifications.getAllNotificationTypes(next);
@@ -131,18 +130,14 @@ module.exports = function (User) {
 			followTopicsOnReply: data.followTopicsOnReply,
 			restrictChat: data.restrictChat,
 			topicSearchEnabled: data.topicSearchEnabled,
-			delayImageLoading: data.delayImageLoading,
 			homePageRoute: ((data.homePageRoute === 'custom' ? data.homePageCustom : data.homePageRoute) || '').replace(/^\//, ''),
 			scrollToMyPost: data.scrollToMyPost,
 			notificationSound: data.notificationSound,
 			incomingChatSound: data.incomingChatSound,
 			outgoingChatSound: data.outgoingChatSound,
 			upvoteNotifFreq: data.upvoteNotifFreq,
+			bootswatchSkin: data.bootswatchSkin,
 		};
-
-		if (data.bootswatchSkin) {
-			settings.bootswatchSkin = data.bootswatchSkin;
-		}
 
 		async.waterfall([
 			function (next) {
@@ -184,7 +179,7 @@ module.exports = function (User) {
 	};
 
 	User.setSetting = function (uid, key, value, callback) {
-		if (!parseInt(uid, 10)) {
+		if (parseInt(uid, 10) <= 0) {
 			return setImmediate(callback);
 		}
 

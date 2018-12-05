@@ -15,8 +15,6 @@ define('forum/notifications', ['components'], function (components) {
 			});
 		});
 
-		$('.timeago').timeago();
-
 		components.get('notifications/mark_all').on('click', function () {
 			socket.emit('notifications.markAllRead', function (err) {
 				if (err) {

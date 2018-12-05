@@ -15,7 +15,7 @@ module.exports = function (User) {
 	};
 
 	function toggleFollow(type, uid, theiruid, callback) {
-		if (!parseInt(uid, 10) || !parseInt(theiruid, 10)) {
+		if (parseInt(uid, 10) <= 0 || parseInt(theiruid, 10) <= 0) {
 			return callback(new Error('[[error:invalid-uid]]'));
 		}
 
@@ -71,8 +71,8 @@ module.exports = function (User) {
 	};
 
 	function getFollow(uid, type, start, stop, callback) {
-		if (!parseInt(uid, 10)) {
-			return callback(null, []);
+		if (parseInt(uid, 10) <= 0) {
+			return setImmediate(callback, null, []);
 		}
 		async.waterfall([
 			function (next) {
@@ -93,8 +93,8 @@ module.exports = function (User) {
 	}
 
 	User.isFollowing = function (uid, theirid, callback) {
-		if (!parseInt(uid, 10) || !parseInt(theirid, 10)) {
-			return callback(null, false);
+		if (parseInt(uid, 10) <= 0 || parseInt(theirid, 10) <= 0) {
+			return setImmediate(callback, null, false);
 		}
 		db.isSortedSetMember('following:' + uid, theirid, callback);
 	};

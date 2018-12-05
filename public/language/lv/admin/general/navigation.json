@@ -8,10 +8,7 @@
 	"id": "ID: <small>neobligāts</small>",
 
 	"properties": "Īpašības:",
-	"only-admins": "Rādīt tikai administratoriem",
-	"only-global-mods-and-admins": "Rādīt tikai globāliem moderatoriem un administratoriem",
-	"only-logged-in": "Rādīt tikai ielogojušiem lietotājiem",
-	"only-guest": "Rādīt tikai viesiem",
+	"groups": "Grupas:",
 	"open-new-window": "Rādīt jaunā logā",
 
 	"btn.delete": "Izdzēst",

@@ -1,12 +1,11 @@
 'use strict';
 
-
-define('pictureCropper', ['translator', 'cropper', 'benchpress'], function (translator, Cropper, Benchpress) {
+define('pictureCropper', ['cropper'], function (Cropper) {
 	var module = {};
 
 	module.show = function (data, callback) {
 		var fileSize = data.hasOwnProperty('fileSize') && data.fileSize !== undefined ? parseInt(data.fileSize, 10) : false;
-		parseModal({
+		app.parseAndTranslate('partials/modals/upload_file_modal', {
 			showHelp: data.hasOwnProperty('showHelp') && data.showHelp !== undefined ? data.showHelp : true,
 			fileSize: fileSize,
 			title: data.title || '[[global:upload_file]]',
@@ -14,8 +13,6 @@ define('pictureCropper', ['translator', 'cropper', 'benchpress'], function (tran
 			button: data.button || '[[global:upload]]',
 			accept: data.accept ? data.accept.replace(/,/g, '&#44; ') : '',
 		}, function (uploadModal) {
-			uploadModal = $(uploadModal);
-
 			uploadModal.modal('show');
 			uploadModal.on('hidden.bs.modal', function () {
 				uploadModal.remove();
@@ -32,120 +29,131 @@ define('pictureCropper', ['translator', 'cropper', 'benchpress'], function (tran
 
 	module.handleImageCrop = function (data, callback) {
 		$('#crop-picture-modal').remove();
-		Benchpress.parse('modals/crop_picture', {
+		app.parseAndTranslate('modals/crop_picture', {
 			url: utils.escapeHTML(data.url),
-		}, function (cropperHtml) {
-			translator.translate(cropperHtml, function (translated) {
-				var cropperModal = $(translated);
-				cropperModal.modal({
-					backdrop: 'static',
-				}).modal('show');
+		}, function (cropperModal) {
+			cropperModal.modal({
+				backdrop: 'static',
+			}).modal('hide');
 
-				// Set cropper image max-height based on viewport
-				var cropBoxHeight = parseInt($(window).height() / 2, 10);
-				var img = document.getElementById('cropped-image');
-				$(img).css('max-height', cropBoxHeight);
+			// Set cropper image max-height based on viewport
+			var cropBoxHeight = parseInt($(window).height() / 2, 10);
+			var img = document.getElementById('cropped-image');
+			$(img).css('max-height', cropBoxHeight);
 
-				var cropperTool = new Cropper(img, {
-					aspectRatio: data.aspectRatio,
-					autoCropArea: 1,
-					viewMode: 1,
-					checkCrossOrigin: false,
-					cropmove: function () {
-						if (data.restrictImageDimension) {
-							if (cropperTool.cropBoxData.width > data.imageDimension) {
-								cropperTool.setCropBoxData({
-									width: data.imageDimension,
-								});
-							}
-							if (cropperTool.cropBoxData.height > data.imageDimension) {
-								cropperTool.setCropBoxData({
-									height: data.imageDimension,
-								});
-							}
-						}
-					},
-					ready: function () {
-						if (data.restrictImageDimension) {
-							var origDimension = (img.width < img.height) ? img.width : img.height;
-							var dimension = (origDimension > data.imageDimension) ? data.imageDimension : origDimension;
+			var cropperTool = new Cropper(img, {
+				aspectRatio: data.aspectRatio,
+				autoCropArea: 1,
+				viewMode: 1,
+				checkCrossOrigin: false,
+				cropmove: function () {
+					if (data.restrictImageDimension) {
+						if (cropperTool.cropBoxData.width > data.imageDimension) {
 							cropperTool.setCropBoxData({
-								width: dimension,
-								height: dimension,
+								width: data.imageDimension,
 							});
 						}
-
-						cropperModal.find('.rotate').on('click', function () {
-							var degrees = this.getAttribute('data-degrees');
-							cropperTool.rotate(degrees);
-						});
-
-						cropperModal.find('.flip').on('click', function () {
-							var option = this.getAttribute('data-option');
-							var method = this.getAttribute('data-method');
-							if (method === 'scaleX') {
-								cropperTool.scaleX(option);
-							} else {
-								cropperTool.scaleY(option);
-							}
-							this.setAttribute('data-option', option * -1);
-						});
-
-						cropperModal.find('.reset').on('click', function () {
-							cropperTool.reset();
-						});
-
-						cropperModal.find('.crop-btn').on('click', function () {
-							$(this).addClass('disabled');
-							var imageData;
-							try {
-								imageData = data.imageType ? cropperTool.getCroppedCanvas().toDataURL(data.imageType) : cropperTool.getCroppedCanvas().toDataURL();
-							} catch (err) {
-								if (err.message === 'Failed to execute \'toDataURL\' on \'HTMLCanvasElement\': Tainted canvases may not be exported.') {
-									app.alertError('[[error:cors-error]]');
-								} else {
-									app.alertError(err.message);
-								}
-								return;
-							}
-
-							cropperModal.find('#upload-progress-bar').css('width', '100%');
-							cropperModal.find('#upload-progress-box').show().removeClass('hide');
-
-							var socketData = {};
-							socketData[data.paramName] = data.paramValue;
-							socketData.imageData = imageData;
-
-							socket.emit(data.socketMethod, socketData, function (err, imageData) {
-								if (err) {
-									cropperModal.find('#upload-progress-box').hide();
-									cropperModal.find('.upload-btn').removeClass('disabled');
-									cropperModal.find('.crop-btn').removeClass('disabled');
-									return app.alertError(err.message);
-								}
-
-								callback(imageData.url);
-								cropperModal.modal('hide');
+						if (cropperTool.cropBoxData.height > data.imageDimension) {
+							cropperTool.setCropBoxData({
+								height: data.imageDimension,
 							});
-						});
+						}
+					}
+				},
+				ready: function () {
+					if (!checkCORS(cropperTool, data)) {
+						return;
+					}
 
-						cropperModal.find('.upload-btn').on('click', function () {
-							$(this).addClass('disabled');
-							cropperTool.destroy();
+					cropperModal.modal('show');
 
-							cropperTool = new Cropper(img, {
-								viewMode: 1,
-								autoCropArea: 1,
-								ready: function () {
-									cropperModal.find('.crop-btn').trigger('click');
-								},
-							});
+					if (data.restrictImageDimension) {
+						var origDimension = (img.width < img.height) ? img.width : img.height;
+						var dimension = (origDimension > data.imageDimension) ? data.imageDimension : origDimension;
+						cropperTool.setCropBoxData({
+							width: dimension,
+							height: dimension,
 						});
-					},
-				});
+					}
+
+					cropperModal.find('.rotate').on('click', function () {
+						var degrees = this.getAttribute('data-degrees');
+						cropperTool.rotate(degrees);
+					});
+
+					cropperModal.find('.flip').on('click', function () {
+						var option = this.getAttribute('data-option');
+						var method = this.getAttribute('data-method');
+						if (method === 'scaleX') {
+							cropperTool.scaleX(option);
+						} else {
+							cropperTool.scaleY(option);
+						}
+						this.setAttribute('data-option', option * -1);
+					});
+
+					cropperModal.find('.reset').on('click', function () {
+						cropperTool.reset();
+					});
+
+					cropperModal.find('.crop-btn').on('click', function () {
+						$(this).addClass('disabled');
+						var imageData = checkCORS(cropperTool, data);
+						if (!imageData) {
+							return;
+						}
+
+						cropperModal.find('#upload-progress-bar').css('width', '100%');
+						cropperModal.find('#upload-progress-box').show().removeClass('hide');
+
+						var socketData = {};
+						socketData[data.paramName] = data.paramValue;
+						socketData.imageData = imageData;
+
+						socket.emit(data.socketMethod, socketData, function (err, imageData) {
+							if (err) {
+								cropperModal.find('#upload-progress-box').hide();
+								cropperModal.find('.upload-btn').removeClass('disabled');
+								cropperModal.find('.crop-btn').removeClass('disabled');
+								return app.alertError(err.message);
+							}
+
+							callback(imageData.url);
+							cropperModal.modal('hide');
+						});
+					});
+
+					cropperModal.find('.upload-btn').on('click', function () {
+						$(this).addClass('disabled');
+						cropperTool.destroy();
+
+						cropperTool = new Cropper(img, {
+							viewMode: 1,
+							autoCropArea: 1,
+							ready: function () {
+								cropperModal.find('.crop-btn').trigger('click');
+							},
+						});
+					});
+				},
 			});
 		});
 	};
+
+	function checkCORS(cropperTool, data) {
+		var imageData;
+		try {
+			imageData = data.imageType ? cropperTool.getCroppedCanvas().toDataURL(data.imageType) : cropperTool.getCroppedCanvas().toDataURL();
+		} catch (err) {
+			if (err.message === 'Failed to execute \'toDataURL\' on \'HTMLCanvasElement\': Tainted canvases may not be exported.') {
+				app.alertError('[[error:cors-error]]');
+			} else {
+				app.alertError(err.message);
+			}
+			return;
+		}
+		return imageData;
+	}
 
 	function onSubmit(data, callback) {
 		function showAlert(type, message) {
@@ -188,12 +196,6 @@ define('pictureCropper', ['translator', 'cropper', 'benchpress'], function (tran
 		if (file) {
 			reader.readAsDataURL(file);
 		}
-	}
-
-	function parseModal(tplVals, callback) {
-		Benchpress.parse('partials/modals/upload_file_modal', tplVals, function (html) {
-			translator.translate(html, callback);
-		});
 	}
 
 	return module;

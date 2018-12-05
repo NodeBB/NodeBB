@@ -30,6 +30,7 @@
 	"set-parent-category": "Cài đặt Phân loại cha",
 
 	"privileges.description": "Bạn có thể cấu hình quyền truy cập cho Phân loại này tại đây. Các quyền hạn có thể được trao cho từng Người dùng hoặc từng Nhóm người dùng. Bạn có thể thêm người dùng vào bảng này bằng cách tìm kiếm trong form dưới đây.",
+	"privileges.category-selector": "Cấu hình quyền hạn cho ",
 	"privileges.warning": "<strong>Ghi chú</strong>: Cài đặt quyền hạn sẽ có tác dụng ngay lập tức. Không cần thiết lưu thông tin Phân loại sau khi cấu hình.",
 	"privileges.section-viewing": "Quyền xem bài",
 	"privileges.section-posting": "Quyền đăng bài",

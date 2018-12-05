@@ -6,7 +6,6 @@ var nconf = require('nconf');
 
 var user = require('../user');
 var utils = require('../utils');
-var translator = require('../translator');
 var plugins = require('../plugins');
 var db = require('../database');
 var meta = require('../meta');
@@ -100,26 +99,24 @@ UserEmail.sendValidationEmail = function (uid, options, callback) {
 		},
 		function (username, next) {
 			var title = meta.config.title || meta.config.browserTitle || 'NodeBB';
-			var subject = options.subject || '[[email:welcome-to, ' + title + ']]';
 			var template = options.template || 'welcome';
-			translator.translate(subject, meta.config.defaultLang, function (subject) {
-				var data = {
-					username: username,
-					confirm_link: confirm_link,
-					confirm_code: confirm_code,
 
-					subject: subject,
-					template: template,
-					uid: uid,
-				};
+			var data = {
+				username: username,
+				confirm_link: confirm_link,
+				confirm_code: confirm_code,
 
-				if (plugins.hasListeners('action:user.verify')) {
-					plugins.fireHook('action:user.verify', { uid: uid, data: data });
-					next();
-				} else {
-					emailer.send(template, uid, data, next);
-				}
-			});
+				subject: options.subject || '[[email:welcome-to, ' + title + ']]',
+				template: template,
+				uid: uid,
+			};
+
+			if (plugins.hasListeners('action:user.verify')) {
+				plugins.fireHook('action:user.verify', { uid: uid, data: data });
+				next();
+			} else {
+				emailer.send(template, uid, data, next);
+			}
 		},
 		function (next) {
 			next(null, confirm_code);

@@ -73,6 +73,18 @@ Groups.getGroupsFromSet = function (set, uid, start, stop, callback) {
 	], callback);
 };
 
+Groups.getNonPrivilegeGroups = function (set, start, stop, callback) {
+	async.waterfall([
+		function (next) {
+			db.getSortedSetRevRange(set, start, stop, next);
+		},
+		function (groupNames, next) {
+			groupNames = groupNames.concat(Groups.ephemeralGroups).filter(groupName => !Groups.isPrivilegeGroup(groupName));
+			Groups.getGroupsData(groupNames, next);
+		},
+	], callback);
+};
+
 Groups.getGroups = function (set, start, stop, callback) {
 	db.getSortedSetRevRange(set, start, stop, callback);
 };

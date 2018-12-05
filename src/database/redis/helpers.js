@@ -4,31 +4,31 @@ var helpers = module.exports;
 
 helpers.noop = function () {};
 
-helpers.multiKeys = function (redisClient, command, keys, callback) {
+helpers.execKeys = function (redisClient, type, command, keys, callback) {
 	callback = callback || function () {};
-	var multi = redisClient.multi();
+	var queue = redisClient[type]();
 	for (var i = 0; i < keys.length; i += 1) {
-		multi[command](keys[i]);
+		queue[command](keys[i]);
 	}
-	multi.exec(callback);
+	queue.exec(callback);
 };
 
-helpers.multiKeysValue = function (redisClient, command, keys, value, callback) {
+helpers.execKeysValue = function (redisClient, type, command, keys, value, callback) {
 	callback = callback || function () {};
-	var multi = redisClient.multi();
+	var queue = redisClient[type]();
 	for (var i = 0; i < keys.length; i += 1) {
-		multi[command](String(keys[i]), String(value));
+		queue[command](String(keys[i]), String(value));
 	}
-	multi.exec(callback);
+	queue.exec(callback);
 };
 
-helpers.multiKeyValues = function (redisClient, command, key, values, callback) {
+helpers.execKeyValues = function (redisClient, type, command, key, values, callback) {
 	callback = callback || function () {};
-	var multi = redisClient.multi();
+	var queue = redisClient[type]();
 	for (var i = 0; i < values.length; i += 1) {
-		multi[command](String(key), String(values[i]));
+		queue[command](String(key), String(values[i]));
 	}
-	multi.exec(callback);
+	queue.exec(callback);
 };
 
 helpers.resultsToBool = function (results) {

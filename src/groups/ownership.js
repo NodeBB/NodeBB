@@ -8,15 +8,15 @@ module.exports = function (Groups) {
 	Groups.ownership = {};
 
 	Groups.ownership.isOwner = function (uid, groupName, callback) {
-		if (!uid) {
-			return callback(null, false);
+		if (uid <= 0) {
+			return setImmediate(callback, null, false);
 		}
 		db.isSetMember('group:' + groupName + ':owners', uid, callback);
 	};
 
 	Groups.ownership.isOwners = function (uids, groupName, callback) {
 		if (!Array.isArray(uids)) {
-			return callback(null, []);
+			return setImmediate(callback, null, []);
 		}
 
 		db.isSetMembers('group:' + groupName + ':owners', uids, callback);

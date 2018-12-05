@@ -74,11 +74,9 @@ define('forum/search', ['search', 'autocomplete', 'storage'], function (searchMo
 			if (ajaxify.data.term) {
 				$('#search-input').val(ajaxify.data.term);
 			}
-
-			if (formData.in) {
-				$('#search-in').val(formData.in);
-				updateFormItemVisiblity(formData.in);
-			}
+			formData.in = formData.in || 'posts';
+			$('#search-in').val(formData.in);
+			updateFormItemVisiblity(formData.in);
 
 			if (formData.matchWords) {
 				$('#match-words-filter').val(formData.matchWords);
@@ -118,8 +116,8 @@ define('forum/search', ['search', 'autocomplete', 'storage'], function (searchMo
 
 			if (formData.sortBy || ajaxify.data.searchDefaultSortBy) {
 				$('#post-sort-by').val(formData.sortBy || ajaxify.data.searchDefaultSortBy);
-				$('#post-sort-direction').val(formData.sortDirection);
 			}
+			$('#post-sort-direction').val(formData.sortDirection || 'desc');
 
 			if (formData.showAs) {
 				var isTopic = formData.showAs === 'topics';
@@ -138,9 +136,9 @@ define('forum/search', ['search', 'autocomplete', 'storage'], function (searchMo
 		if (!searchQuery) {
 			return;
 		}
-		searchQuery = utils.escapeHTML(searchQuery);
-		var regexStr = searchQuery.replace(/^"/, '').replace(/"$/, '').trim().split(' ').join('|');
-		var regex = new RegExp('(' + regexStr + ')', 'gi');
+		searchQuery = utils.escapeHTML(searchQuery.replace(/^"/, '').replace(/"$/, '').trim());
+		var regexStr = searchQuery.split(' ').join('|');
+		var regex = new RegExp('(' + utils.escapeRegexChars(regexStr) + ')', 'gi');
 
 		$('.search-result-text p, .search-result-text h4').each(function () {
 			var result = $(this);
@@ -152,7 +150,7 @@ define('forum/search', ['search', 'autocomplete', 'storage'], function (searchMo
 			});
 
 			result.html(result.html().replace(regex, function (match, p1) {
-				return '<strong>' + p1 + '</strong>';
+				return '<strong class="search-match">' + p1 + '</strong>';
 			}));
 
 			nested.forEach(function (nestedEl, i) {

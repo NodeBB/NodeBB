@@ -10,4 +10,3 @@ SocketRewards.save = function (socket, data, callback) {
 SocketRewards.delete = function (socket, data, callback) {
 	rewardsAdmin.delete(data, callback);
 };
-

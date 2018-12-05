@@ -5,18 +5,13 @@ define('forum/topic/fork', ['components', 'postSelect'], function (components, p
 	var Fork = {};
 	var forkModal;
 	var forkCommit;
+	var fromTid;
 
 	Fork.init = function () {
-		$('.topic').on('click', '[component="topic/fork"]', onForkThreadClicked);
-		$(window).on('action:ajaxify.start', onAjaxifyStart);
-	};
+		fromTid = ajaxify.data.tid;
 
-	function onAjaxifyStart() {
-		closeForkModal();
-		$(window).off('action:ajaxify.start', onAjaxifyStart);
-	}
+		$(window).off('action:ajaxify.end', onAjaxifyEnd).on('action:ajaxify.end', onAjaxifyEnd);
 
-	function onForkThreadClicked() {
 		if (forkModal) {
 			return;
 		}
@@ -26,7 +21,7 @@ define('forum/topic/fork', ['components', 'postSelect'], function (components, p
 
 			forkCommit = forkModal.find('#fork_thread_commit');
 
-			$(document.body).append(forkModal);
+			$('body').append(forkModal);
 
 			forkModal.find('.close,#fork_thread_cancel').on('click', closeForkModal);
 			forkModal.find('#fork-title').on('keyup', checkForkButtonEnable);
@@ -39,6 +34,13 @@ define('forum/topic/fork', ['components', 'postSelect'], function (components, p
 
 			forkCommit.on('click', createTopicFromPosts);
 		});
+	};
+
+	function onAjaxifyEnd() {
+		if (ajaxify.data.template.name !== 'topic' || ajaxify.data.tid !== fromTid) {
+			closeForkModal();
+			$(window).off('action:ajaxify.end', onAjaxifyEnd);
+		}
 	}
 
 	function createTopicFromPosts() {
@@ -46,7 +48,7 @@ define('forum/topic/fork', ['components', 'postSelect'], function (components, p
 		socket.emit('topics.createTopicFromPosts', {
 			title: forkModal.find('#fork-title').val(),
 			pids: postSelect.pids,
-			fromTid: ajaxify.data.tid,
+			fromTid: fromTid,
 		}, function (err, newTopic) {
 			function fadeOutAndRemove(pid) {
 				components.get('post', 'pid', pid).fadeOut(500, function () {
@@ -96,9 +98,8 @@ define('forum/topic/fork', ['components', 'postSelect'], function (components, p
 		if (forkModal) {
 			forkModal.remove();
 			forkModal = null;
+			postSelect.disable();
 		}
-
-		postSelect.disable();
 	}
 
 	return Fork;

@@ -40,6 +40,7 @@ apiController.loadConfig = function (req, callback) {
 	config.disableChatMessageEditing = meta.config.disableChatMessageEditing === 1;
 	config.maximumChatMessageLength = meta.config.maximumChatMessageLength || 1000;
 	config.socketioTransports = nconf.get('socket.io:transports') || ['polling', 'websocket'];
+	config.socketioOrigins = nconf.get('socket.io:origins');
 	config.websocketAddress = nconf.get('socket.io:address') || '';
 	config.maxReconnectionAttempts = meta.config.maxReconnectionAttempts || 5;
 	config.reconnectionDelay = meta.config.reconnectionDelay || 1500;
@@ -58,8 +59,7 @@ apiController.loadConfig = function (req, callback) {
 	config.categoryTopicSort = meta.config.categoryTopicSort || 'newest_to_oldest';
 	config.csrf_token = req.csrfToken && req.csrfToken();
 	config.searchEnabled = plugins.hasListeners('filter:search.query');
-	config.bootswatchSkin = meta.config.bootswatchSkin || 'noskin';
-	config.defaultBootswatchSkin = meta.config.bootswatchSkin || 'noskin';
+	config.bootswatchSkin = meta.config.bootswatchSkin || '';
 	config.enablePostHistory = (meta.config.enablePostHistory || 1) === 1;
 	config.notificationAlertTimeout = meta.config.notificationAlertTimeout || 5000;
 
@@ -85,6 +85,10 @@ apiController.loadConfig = function (req, callback) {
 			user.getSettings(req.uid, next);
 		},
 		function (settings, next) {
+			// Handle old skin configs
+			const oldSkins = ['noskin', 'default'];
+			settings.bootswatchSkin = oldSkins.includes(settings.bootswatchSkin) ? '' : settings.bootswatchSkin;
+
 			config.usePagination = settings.usePagination;
 			config.topicsPerPage = settings.topicsPerPage;
 			config.postsPerPage = settings.postsPerPage;
@@ -94,8 +98,7 @@ apiController.loadConfig = function (req, callback) {
 			config.topicPostSort = settings.topicPostSort || config.topicPostSort;
 			config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
 			config.topicSearchEnabled = settings.topicSearchEnabled || false;
-			config.delayImageLoading = settings.delayImageLoading !== undefined ? settings.delayImageLoading : true;
-			config.bootswatchSkin = (meta.config.disableCustomUserSkins !== 1 && settings.bootswatchSkin && settings.bootswatchSkin !== 'default') ? settings.bootswatchSkin : config.bootswatchSkin;
+			config.bootswatchSkin = (meta.config.disableCustomUserSkins !== 1 && settings.bootswatchSkin && settings.bootswatchSkin !== '') ? settings.bootswatchSkin : '';
 			plugins.fireHook('filter:config.get', config, next);
 		},
 	], callback);

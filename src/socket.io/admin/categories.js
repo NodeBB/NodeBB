@@ -2,7 +2,6 @@
 
 var async = require('async');
 
-var db = require('../../database');
 var groups = require('../../groups');
 var categories = require('../../categories');
 var privileges = require('../../privileges');
@@ -21,7 +20,7 @@ Categories.create = function (socket, data, callback) {
 
 Categories.getAll = function (socket, data, callback) {
 	async.waterfall([
-		async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
+		async.apply(categories.getAllCidsFromSet, 'categories:cid'),
 		async.apply(categories.getCategoriesData),
 		function (categories, next) {
 			// Hook changes, there is no req, and res
@@ -105,12 +104,12 @@ Categories.getPrivilegeSettings = function (socket, cid, callback) {
 Categories.copyPrivilegesToChildren = function (socket, cid, callback) {
 	async.waterfall([
 		function (next) {
-			categories.getCategories([cid], socket.uid, next);
+			categories.getChildren([cid], socket.uid, next);
 		},
-		function (categories, next) {
-			var category = categories[0];
+		function (children, next) {
+			children = children[0];
 
-			async.eachSeries(category.children, function (child, next) {
+			async.eachSeries(children, function (child, next) {
 				copyPrivilegesToChildrenRecursive(cid, child, next);
 			}, next);
 		},

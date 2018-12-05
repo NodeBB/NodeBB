@@ -139,6 +139,32 @@ describe('Sorted Set methods', function () {
 				done();
 			});
 		});
+
+		it('should return empty array if keys is empty array', function (done) {
+			db.getSortedSetRange([], 0, -1, function (err, data) {
+				assert.ifError(err);
+				assert.deepStrictEqual(data, []);
+				done();
+			});
+		});
+
+		it('should return duplicates if two sets have same elements', function (done) {
+			async.waterfall([
+				function (next) {
+					db.sortedSetAdd('dupezset1', [1, 2], ['value 1', 'value 2'], next);
+				},
+				function (next) {
+					db.sortedSetAdd('dupezset2', [2, 3], ['value 2', 'value 3'], next);
+				},
+				function (next) {
+					db.getSortedSetRange(['dupezset1', 'dupezset2'], 0, -1, next);
+				},
+				function (data, next) {
+					assert.deepStrictEqual(data, ['value 1', 'value 2', 'value 2', 'value 3']);
+					next();
+				},
+			], done);
+		});
 	});
 
 	describe('getSortedSetRevRange()', function () {

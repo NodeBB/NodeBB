@@ -6,6 +6,7 @@ var _ = require('lodash');
 var Benchpress = require('benchpressjs');
 
 var plugins = require('../plugins');
+var groups = require('../groups');
 var translator = require('../translator');
 var db = require('../database');
 var apiController = require('../controllers/api');
@@ -39,13 +40,6 @@ widgets.render = function (uid, options, callback) {
 				}
 
 				async.map(widgetsByLocation[location], function (widget, next) {
-					if (!widget || !widget.data ||
-						(!!widget.data['hide-registered'] && uid !== 0) ||
-						(!!widget.data['hide-guests'] && uid === 0) ||
-						(!!widget.data['hide-mobile'] && options.req.useragent.isMobile)) {
-						return next();
-					}
-
 					renderWidget(widget, uid, options, next);
 				}, function (err, renderedWidgets) {
 					if (err) {
@@ -65,8 +59,23 @@ widgets.render = function (uid, options, callback) {
 
 function renderWidget(widget, uid, options, callback) {
 	var userLang;
+
+	if (!widget || !widget.data || (!!widget.data['hide-mobile'] && options.req.useragent.isMobile)) {
+		return setImmediate(callback);
+	}
+
 	async.waterfall([
 		function (next) {
+			if (!widget.data.groups.length) {
+				return next(null, true);
+			}
+			groups.isMemberOfAny(uid, widget.data.groups, next);
+		},
+		function (isVisible, next) {
+			if (!isVisible) {
+				return callback();
+			}
+
 			if (options.res.locals.isAPI) {
 				apiController.loadConfig(options.req, next);
 			} else {
@@ -115,12 +124,9 @@ function renderWidget(widget, uid, options, callback) {
 }
 
 widgets.getWidgetDataForTemplates = function (templates, callback) {
-	var keys = templates.map(function (tpl) {
-		return 'widgets:' + tpl;
-	});
-
 	async.waterfall([
 		function (next) {
+			const keys = templates.map(tpl => 'widgets:' + tpl);
 			db.getObjects(keys, next);
 		},
 		function (data, next) {
@@ -136,6 +142,15 @@ widgets.getWidgetDataForTemplates = function (templates, callback) {
 					if (templateWidgetData && templateWidgetData[location]) {
 						try {
 							returnData[template][location] = JSON.parse(templateWidgetData[location]);
+							returnData[template][location] = returnData[template][location].map(function (widget) {
+								if (widget) {
+									widget.data.groups = widget.data.groups || [];
+									if (widget.data.groups && !Array.isArray(widget.data.groups)) {
+										widget.data.groups = [widget.data.groups];
+									}
+								}
+								return widget;
+							});
 						} catch (err) {
 							winston.error('can not parse widget data. template:  ' + template + ' location: ' + location);
 							returnData[template][location] = [];
@@ -250,5 +265,3 @@ widgets.resetTemplate = function (template, callback) {
 widgets.resetTemplates = function (templates, callback) {
 	async.eachSeries(templates, widgets.resetTemplate, callback);
 };
-
-module.exports = widgets;

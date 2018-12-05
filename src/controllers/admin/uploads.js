@@ -88,9 +88,9 @@ function buildBreadcrumbs(currentFolder) {
 		var dir = path.join(currentPath, part);
 		crumbs.push({
 			text: part || 'Uploads',
-			url: part
-				? (nconf.get('relative_path') + '/admin/manage/uploads?dir=' + dir)
-				: nconf.get('relative_path') + '/admin/manage/uploads',
+			url: part ?
+				(nconf.get('relative_path') + '/admin/manage/uploads?dir=' + dir) :
+				nconf.get('relative_path') + '/admin/manage/uploads',
 		});
 		currentPath = dir;
 	});
@@ -317,4 +317,3 @@ function uploadImage(filename, folder, uploadedFile, req, res, next) {
 		res.json([{ name: uploadedFile.name, url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url }]);
 	});
 }
-

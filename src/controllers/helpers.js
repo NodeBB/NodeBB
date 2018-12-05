@@ -166,7 +166,7 @@ helpers.buildCategoryBreadcrumbs = function (cid, callback) {
 
 			if (!data.disabled && !data.isSection) {
 				breadcrumbs.unshift({
-					text: validator.escape(String(data.name)),
+					text: String(data.name),
 					url: nconf.get('relative_path') + '/category/' + data.slug,
 				});
 			}
@@ -245,6 +245,9 @@ helpers.getWatchedCategories = function (uid, selectedCid, callback) {
 			user.getWatchedCategories(uid, next);
 		},
 		function (cids, next) {
+			privileges.categories.filterCids('read', cids, uid, next);
+		},
+		function (cids, next) {
 			getCategoryData(cids, uid, selectedCid, next);
 		},
 	], callback);
@@ -256,9 +259,6 @@ function getCategoryData(cids, uid, selectedCid, callback) {
 	}
 	async.waterfall([
 		function (next) {
-			privileges.categories.filterCids('read', cids, uid, next);
-		},
-		function (cids, next) {
 			categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'link', 'color', 'bgColor', 'parentCid', 'image', 'imageClass'], next);
 		},
 		function (categoryData, next) {
@@ -288,7 +288,7 @@ function getCategoryData(cids, uid, selectedCid, callback) {
 			}
 
 			var categoriesData = [];
-			var tree = categories.getTree(categoryData, 0);
+			var tree = categories.getTree(categoryData);
 
 			tree.forEach(function (category) {
 				recursive(category, categoriesData, '');
@@ -302,8 +302,9 @@ function getCategoryData(cids, uid, selectedCid, callback) {
 function recursive(category, categoriesData, level) {
 	category.level = level;
 	categoriesData.push(category);
-
-	category.children.forEach(function (child) {
-		recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level);
-	});
+	if (Array.isArray(category.children)) {
+		category.children.forEach(function (child) {
+			recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level);
+		});
+	}
 }

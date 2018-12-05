@@ -179,6 +179,7 @@ SocketAdmin.config.setMultiple = function (socket, data, callback) {
 	}
 
 	var changes = {};
+	data = meta.configs.deserialize(data);
 	Object.keys(data).forEach(function (key) {
 		if (data[key] !== meta.config[key]) {
 			changes[key] = data[key];
@@ -246,7 +247,7 @@ SocketAdmin.settings.clearSitemapCache = function (socket, data, callback) {
 
 SocketAdmin.email.test = function (socket, data, callback) {
 	var payload = {
-		subject: 'Test Email',
+		subject: '[[email:test-email.subject]]',
 	};
 
 	switch (data.template) {

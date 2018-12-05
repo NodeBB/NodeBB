@@ -33,12 +33,26 @@ module.exports = function (User) {
 		'cover:position', 'groupTitle',
 	];
 
+	User.guestData = {
+		uid: 0,
+		username: '[[global:guest]]',
+		userslug: '',
+		fullname: '[[global:guest]]',
+		email: '',
+		'icon:text': '?',
+		'icon:bgColor': '#aaa',
+		groupTitle: '',
+		status: 'offline',
+		reputation: 0,
+		'email:confirmed': 0,
+	};
+
 	User.getUsersFields = function (uids, fields, callback) {
 		if (!Array.isArray(uids) || !uids.length) {
-			return callback(null, []);
+			return setImmediate(callback, null, []);
 		}
 
-		uids = uids.map(uid => (isNaN(uid) ? 0 : uid));
+		uids = uids.map(uid => (isNaN(uid) ? 0 : parseInt(uid, 10)));
 
 		var fieldsToRemove = [];
 		function addField(field) {
@@ -60,7 +74,7 @@ module.exports = function (User) {
 			addField('lastonline');
 		}
 
-		var uniqueUids = _.uniq(uids);
+		var uniqueUids = _.uniq(uids).filter(uid => uid > 0);
 
 		async.waterfall([
 			function (next) {
@@ -114,12 +128,12 @@ module.exports = function (User) {
 	};
 
 	function uidsToUsers(uids, uniqueUids, usersData) {
-		var uidToUser = uniqueUids.reduce(function (memo, cur, idx) {
-			memo[cur] = usersData[idx];
+		var uidToUser = uniqueUids.reduce(function (memo, uid, idx) {
+			memo[uid] = usersData[idx];
 			return memo;
 		}, {});
 		var users = uids.map(function (uid) {
-			const returnPayload = uidToUser[uid];
+			const returnPayload = uidToUser[uid] || _.clone(User.guestData);
 			if (uid > 0 && !returnPayload.uid) {
 				returnPayload.oldUid = parseInt(uid, 10);
 			}
@@ -141,9 +155,6 @@ module.exports = function (User) {
 
 			db.parseIntFields(user, intFields, requestedFields);
 
-			if (user.hasOwnProperty('groupTitle')) {
-				parseGroupTitle(user);
-			}
 			if (user.hasOwnProperty('username')) {
 				user.username = validator.escape(user.username ? user.username.toString() : '');
 			}
@@ -155,6 +166,11 @@ module.exports = function (User) {
 				user.picture = User.getDefaultAvatar();
 				user['icon:text'] = '?';
 				user['icon:bgColor'] = '#aaa';
+				user.groupTitle = '';
+			}
+
+			if (user.hasOwnProperty('groupTitle')) {
+				parseGroupTitle(user);
 			}
 
 			if (user.picture && user.picture === user.uploadedpicture) {
@@ -204,12 +220,20 @@ module.exports = function (User) {
 		try {
 			user.groupTitleArray = JSON.parse(user.groupTitle);
 		} catch (err) {
-			user.groupTitleArray = [user.groupTitle];
+			if (user.groupTitle) {
+				user.groupTitleArray = [user.groupTitle];
+			} else {
+				user.groupTitleArray = [];
+			}
 		}
 		if (!Array.isArray(user.groupTitleArray)) {
-			user.groupTitleArray = [user.groupTitleArray];
+			if (user.groupTitleArray) {
+				user.groupTitleArray = [user.groupTitleArray];
+			} else {
+				user.groupTitleArray = [];
+			}
 		}
-		if (!meta.config.allowMultipleBadges) {
+		if (!meta.config.allowMultipleBadges && user.groupTitleArray.length) {
 			user.groupTitleArray = [user.groupTitleArray[0]];
 		}
 	}

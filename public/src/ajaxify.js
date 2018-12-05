@@ -202,15 +202,10 @@ $(document).ready(function () {
 	}
 
 	ajaxify.end = function (url, tpl_url) {
-		var count = 2;
-		function done() {
-			count -= 1;
-			if (count === 0) {
-				$(window).trigger('action:ajaxify.end', { url: url, tpl_url: tpl_url, title: ajaxify.data.title });
-			}
-		}
-		ajaxify.loadScript(tpl_url, done);
-		ajaxify.widgets.render(tpl_url, done);
+		ajaxify.loadScript(tpl_url, function done() {
+			$(window).trigger('action:ajaxify.end', { url: url, tpl_url: tpl_url, title: ajaxify.data.title });
+		});
+		ajaxify.widgets.render(tpl_url);
 
 		$(window).trigger('action:ajaxify.contentLoaded', { url: url, tpl: tpl_url });
 

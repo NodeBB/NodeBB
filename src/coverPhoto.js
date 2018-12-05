@@ -1,8 +1,8 @@
 'use strict';
 
 
-var meta = require('./meta');
 var nconf = require('nconf');
+var meta = require('./meta');
 
 var coverPhoto = module.exports;
 

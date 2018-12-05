@@ -8,10 +8,7 @@
 	"id": "ID: <small>opcionalno</small>",
 
 	"properties": "Postavke",
-	"only-admins": "Prikaži samo administratorima",
-	"only-global-mods-and-admins": "Prikazuj samo globalnim moderatorima i administratorima",
-	"only-logged-in": "Prikaži samo prijavljenim korisnicima",
-	"only-guest": "Only display to guests",
+	"groups": "Groups:",
 	"open-new-window": "Otvori u novom prozoru",
 
 	"btn.delete": "Obriši",

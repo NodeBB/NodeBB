@@ -4,19 +4,7 @@
 define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], function (navigator, components, posts) {
 	var Replies = {};
 
-	Replies.init = function (tid) {
-		addPostHandlers(tid);
-	};
-
-	function addPostHandlers(tid) {
-		var postContainer = components.get('topic');
-
-		postContainer.on('click', '[component="post/reply-count"]', function () {
-			onRepliesClicked($(this), tid);
-		});
-	}
-
-	function onRepliesClicked(button) {
+	Replies.init = function (button) {
 		var post = button.closest('[data-pid]');
 		var pid = post.data('pid');
 		var open = button.find('[component="post/replies/open"]');
@@ -46,8 +34,9 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 					hideReplies: true,
 				};
 				app.parseAndTranslate('topic', 'posts', tplData, function (html) {
-					$('<div>', { component: 'post/replies' }).html(html).hide().insertAfter(button).slideDown('fast');
-					posts.processPage(html);
+					$('<div>', { component: 'post/replies' }).html(html).hide().insertAfter(button)
+						.slideDown('fast');
+					posts.onNewPostsAddedToDom(html);
 					$(window).trigger('action:posts.loaded', { posts: data });
 				});
 			});
@@ -59,7 +48,7 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 				$(this).remove();
 			});
 		}
-	}
+	};
 
 	Replies.onNewPost = function (data) {
 		var post = data.posts[0];
@@ -72,7 +61,7 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 			var replies = $('[component="post"][data-pid="' + post.toPid + '"] [component="post/replies"]').first();
 			if (replies.length) {
 				replies.append(html);
-				posts.processPage(html);
+				posts.onNewPostsAddedToDom(html);
 			}
 		});
 	};

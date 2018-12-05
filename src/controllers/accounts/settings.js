@@ -112,8 +112,7 @@ settingsController.get = function (req, res, callback) {
 			];
 
 			userData.bootswatchSkinOptions = [
-				{ name: 'No skin', value: 'noskin' },
-				{ name: 'Default', value: 'default' },
+				{ name: 'Default', value: '' },
 				{ name: 'Cerulean', value: 'cerulean' },
 				{ name: 'Cosmo', value: 'cosmo'	},
 				{ name: 'Cyborg', value: 'cyborg' },
@@ -217,6 +216,11 @@ function getNotificationSettings(userData, callback) {
 					notificationemail: setting === 'notificationemail',
 				};
 			}
+
+			if (meta.config.disableChat) {
+				results.types = results.types.filter(type => type !== 'notificationType_new-chat');
+			}
+
 			var notificationSettings = results.types.map(modifyType).concat(results.privilegedTypes.map(modifyType));
 			next(null, notificationSettings);
 		},

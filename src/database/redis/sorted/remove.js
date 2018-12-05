@@ -14,33 +14,33 @@ module.exports = function (redisClient, module) {
 		}
 
 		if (Array.isArray(key)) {
-			var multi = redisClient.multi();
+			var batch = redisClient.batch();
 			key.forEach(function (key) {
-				multi.zrem(key, value);
+				batch.zrem(key, value);
 			});
-			multi.exec(function (err) {
+			batch.exec(function (err) {
 				callback(err);
 			});
 		} else {
-			helpers.multiKeyValues(redisClient, 'zrem', key, value, function (err) {
+			helpers.execKeyValues(redisClient, 'batch', 'zrem', key, value, function (err) {
 				callback(err);
 			});
 		}
 	};
 
 	module.sortedSetsRemove = function (keys, value, callback) {
-		helpers.multiKeysValue(redisClient, 'zrem', keys, value, function (err) {
+		helpers.execKeysValue(redisClient, 'batch', 'zrem', keys, value, function (err) {
 			callback(err);
 		});
 	};
 
 	module.sortedSetsRemoveRangeByScore = function (keys, min, max, callback) {
 		callback = callback || function () {};
-		var multi = redisClient.multi();
+		var batch = redisClient.batch();
 		for (var i = 0; i < keys.length; i += 1) {
-			multi.zremrangebyscore(keys[i], min, max);
+			batch.zremrangebyscore(keys[i], min, max);
 		}
-		multi.exec(function (err) {
+		batch.exec(function (err) {
 			callback(err);
 		});
 	};

@@ -36,9 +36,20 @@ redisModule.questions = [
 	},
 ];
 
+redisModule.getConnectionOptions = function (redis) {
+	redis = redis || nconf.get('redis');
+	let connOptions = {};
+	if (redis.password) {
+		connOptions.auth_pass = redis.password;
+	}
+
+	connOptions = _.merge(connOptions, redis.options || {});
+	return connOptions;
+};
+
 redisModule.init = function (callback) {
 	callback = callback || function () { };
-	redisClient = redisModule.connect({}, function (err) {
+	redisClient = redisModule.connect(nconf.get('redis'), function (err) {
 		if (err) {
 			winston.error('NodeBB could not connect to your Redis database. Redis returned the following error', err);
 			return callback(err);
@@ -58,39 +69,22 @@ redisModule.init = function (callback) {
 	});
 };
 
-redisModule.initSessionStore = function (callback) {
-	var meta = require('../meta');
-	var sessionStore = require('connect-redis')(session);
-
-	redisModule.sessionStore = new sessionStore({
-		client: redisModule.client,
-		ttl: meta.getSessionTTLSeconds(),
-	});
-
-	if (typeof callback === 'function') {
-		callback();
-	}
-};
 
 redisModule.connect = function (options, callback) {
 	callback = callback || function () {};
-	var redis_socket_or_host = nconf.get('redis:host');
+	options = options || nconf.get('redis');
+	var redis_socket_or_host = options.host;
 	var cxn;
 	var callbackCalled = false;
-	options = options || {};
 
-	if (nconf.get('redis:password')) {
-		options.auth_pass = nconf.get('redis:password');
-	}
-
-	options = _.merge(options, nconf.get('redis:options') || {});
+	const connOptions = redisModule.getConnectionOptions(options);
 
 	if (redis_socket_or_host && redis_socket_or_host.indexOf('/') >= 0) {
 		/* If redis.host contains a path name character, use the unix dom sock connection. ie, /tmp/redis.sock */
-		cxn = redis.createClient(nconf.get('redis:host'), options);
+		cxn = redis.createClient(options.host, connOptions);
 	} else {
 		/* Else, connect over tcp/ip */
-		cxn = redis.createClient(nconf.get('redis:port'), nconf.get('redis:host'), options);
+		cxn = redis.createClient(options.port, options.host, connOptions);
 	}
 
 	cxn.on('error', function (err) {
@@ -108,11 +102,11 @@ redisModule.connect = function (options, callback) {
 		}
 	});
 
-	if (nconf.get('redis:password')) {
-		cxn.auth(nconf.get('redis:password'));
+	if (options.password) {
+		cxn.auth(options.password);
 	}
 
-	var dbIdx = parseInt(nconf.get('redis:database'), 10);
+	var dbIdx = parseInt(options.database, 10);
 	if (dbIdx >= 0) {
 		cxn.select(dbIdx, function (err) {
 			if (err) {
@@ -123,6 +117,20 @@ redisModule.connect = function (options, callback) {
 	}
 
 	return cxn;
+};
+
+redisModule.createSessionStore = function (options, callback) {
+	const meta = require('../meta');
+	const sessionStore = require('connect-redis')(session);
+	const client = redisModule.connect(options);
+	const store = new sessionStore({
+		client: client,
+		ttl: meta.getSessionTTLSeconds(),
+	});
+
+	if (typeof callback === 'function') {
+		callback(null, store);
+	}
 };
 
 redisModule.createIndices = function (callback) {
@@ -171,6 +179,18 @@ redisModule.info = function (cxn, callback) {
 					redisData[parts[0]] = parts[1];
 				}
 			});
+
+			const keyInfo = redisData['db' + nconf.get('redis:database')];
+			redisData.keys = keyInfo.split(',')[0].replace('keys=', '');
+			redisData.expires = keyInfo.split(',')[1].replace('expires=', '');
+			redisData.avg_ttl = keyInfo.split(',')[2].replace('avg_ttl=', '');
+
+			redisData.instantaneous_input = (redisData.instantaneous_input_kbps / 1024).toFixed(3);
+			redisData.instantaneous_output = (redisData.instantaneous_output_kbps / 1024).toFixed(3);
+
+			redisData.total_net_input = (redisData.total_net_input_bytes / (1024 * 1024 * 1024)).toFixed(3);
+			redisData.total_net_output = (redisData.total_net_output_bytes / (1024 * 1024 * 1024)).toFixed(3);
+
 			redisData.used_memory_human = (redisData.used_memory / (1024 * 1024 * 1024)).toFixed(3);
 			redisData.raw = JSON.stringify(redisData, null, 4);
 			redisData.redis = true;
@@ -182,8 +202,8 @@ redisModule.info = function (cxn, callback) {
 
 redisModule.socketAdapter = function () {
 	var redisAdapter = require('socket.io-redis');
-	var pub = redisModule.connect();
-	var sub = redisModule.connect();
+	var pub = redisModule.connect(nconf.get('redis'));
+	var sub = redisModule.connect(nconf.get('redis'));
 	return redisAdapter({
 		key: 'db:' + nconf.get('redis:database') + ':adapter_key',
 		pubClient: pub,

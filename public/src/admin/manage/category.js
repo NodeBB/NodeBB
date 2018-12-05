@@ -240,8 +240,13 @@ define('admin/manage/category', [
 	}
 
 	Category.launchParentSelector = function () {
+		var parents = [parseInt(ajaxify.data.category.cid, 10)];
 		var categories = ajaxify.data.allCategories.filter(function (category) {
-			return category && !category.disabled && parseInt(category.cid, 10) !== parseInt(ajaxify.data.category.cid, 10);
+			var isChild = parents.includes(parseInt(category.parentCid, 10));
+			if (isChild) {
+				parents.push(parseInt(category.cid, 10));
+			}
+			return category && !category.disabled && parseInt(category.cid, 10) !== parseInt(ajaxify.data.category.cid, 10) && !isChild;
 		});
 
 		categorySelector.modal(categories, function (parentCid) {

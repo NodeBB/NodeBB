@@ -8,10 +8,7 @@
 	"id": "ID: <small>선택 사항</small>",
 
 	"properties": "속성:",
-	"only-admins": "관리자에게만 보이기",
-	"only-global-mods-and-admins": "(준)관리자와 관리자에게만 보이기",
-	"only-logged-in": "로그인한 사용자에게만 보이기",
-	"only-guest": "게스트에게만 보이기",
+	"groups": "Groups:",
 	"open-new-window": "새 창에서 열기",
 
 	"btn.delete": "삭제",

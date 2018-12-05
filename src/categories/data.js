@@ -7,19 +7,18 @@ var db = require('../database');
 
 const intFields = [
 	'cid', 'parentCid', 'disabled', 'isSection', 'order',
-	'topic_count', 'post_count',
+	'topic_count', 'post_count', 'numRecentReplies',
 ];
 
 module.exports = function (Categories) {
 	Categories.getCategoriesFields = function (cids, fields, callback) {
 		if (!Array.isArray(cids) || !cids.length) {
-			return callback(null, []);
+			return setImmediate(callback, null, []);
 		}
-
-		var keys = cids.map(cid => 'category:' + cid);
 
 		async.waterfall([
 			function (next) {
+				const keys = cids.map(cid => 'category:' + cid);
 				if (fields.length) {
 					db.getObjectsFields(keys, fields, next);
 				} else {
@@ -57,7 +56,7 @@ module.exports = function (Categories) {
 
 	Categories.getAllCategoryFields = function (fields, callback) {
 		async.waterfall([
-			async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
+			async.apply(Categories.getAllCidsFromSet, 'categories:cid'),
 			function (cids, next) {
 				Categories.getCategoriesFields(cids, fields, next);
 			},

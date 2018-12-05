@@ -63,7 +63,7 @@ define('admin/general/navigation', ['translator', 'iconSelect', 'benchpress', 'j
 	function drop(ev, ui) {
 		var id = ui.helper.attr('data-id');
 		var el = $('#active-navigation [data-id="' + id + '"]');
-		var data = id === 'custom' ? { iconClass: 'fa-navicon' } : available[id];
+		var data = id === 'custom' ? { iconClass: 'fa-navicon', groups: available[0].groups } : available[id];
 
 		data.enabled = false;
 		data.index = (parseInt($('#enabled').children().last().attr('data-index'), 10) || 0) + 1;
@@ -103,6 +103,13 @@ define('admin/general/navigation', ['translator', 'iconSelect', 'benchpress', 'j
 			form.forEach(function (input) {
 				if (input.name.slice(0, 9) === 'property:' && input.value === 'on') {
 					properties[input.name.slice(9)] = true;
+				} else if (data[input.name]) {
+					if (!Array.isArray(data[input.name])) {
+						data[input.name] = [
+							data[input.name],
+						];
+					}
+					data[input.name].push(input.value);
 				} else {
 					data[input.name] = translator.escape(input.value);
 				}

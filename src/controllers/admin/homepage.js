@@ -2,7 +2,6 @@
 
 var async = require('async');
 
-var db = require('../../database');
 var categories = require('../../categories');
 var privileges = require('../../privileges');
 var plugins = require('../../plugins');
@@ -12,7 +11,7 @@ var homePageController = module.exports;
 homePageController.get = function (req, res, next) {
 	async.waterfall([
 		function (next) {
-			db.getSortedSetRange('categories:cid', 0, -1, next);
+			categories.getAllCidsFromSet('categories:cid', next);
 		},
 		function (cids, next) {
 			privileges.categories.filterCids('find', cids, 0, next);

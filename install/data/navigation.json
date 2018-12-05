@@ -15,9 +15,7 @@
 		"iconClass": "fa-inbox",
 		"textClass": "visible-xs-inline",
 		"text": "[[global:header.unread]]",
-		"properties": {
-			"loggedIn": true
-		}
+		"groups": ["registered-users"]
 	},
 	{
 		"route": "/recent",
@@ -66,9 +64,9 @@
 		"iconClass": "fa-cogs",
 		"textClass": "visible-xs-inline",
 		"text": "[[global:header.admin]]",
+		"groups": ["administrators"],
 		"properties": {
-			"targetBlank": false,
-			"adminOnly": true
+			"targetBlank": false
 		}
 	}
 ]

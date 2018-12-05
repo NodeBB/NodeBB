@@ -19,22 +19,21 @@ categoriesController.list = function (req, res, next) {
 	}];
 
 	var categoryData;
+	let tree;
 	async.waterfall([
 		function (next) {
-			categories.getCategoriesByPrivilege('cid:0:children', req.uid, 'find', next);
+			categories.getCategoriesByPrivilege('categories:cid', req.uid, 'find', next);
 		},
 		function (_categoryData, next) {
 			categoryData = _categoryData;
 
-			var allCategories = [];
-			categories.flattenCategories(allCategories, categoryData);
-
-			categories.getRecentTopicReplies(allCategories, req.uid, next);
+			tree = categories.getTree(categoryData, 0);
+			categories.getRecentTopicReplies(categoryData, req.uid, next);
 		},
 		function () {
 			var data = {
 				title: meta.config.homePageTitle || '[[pages:home]]',
-				categories: categoryData,
+				categories: tree,
 			};
 
 			if (req.originalUrl.startsWith(nconf.get('relative_path') + '/api/categories') || req.originalUrl.startsWith(nconf.get('relative_path') + '/categories')) {

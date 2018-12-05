@@ -8,10 +8,7 @@
 	"id": "ID: <small>任意</small>",
 
 	"properties": "プロパティ:",
-	"only-admins": "管理者にのみ表示する",
-	"only-global-mods-and-admins": "グローバルモデレーターおよび管理者のみに表示",
-	"only-logged-in": "ログインしたユーザーのみに表示",
-	"only-guest": "ゲストにのみ表示する",
+	"groups": "Groups:",
 	"open-new-window": "新しいウィンドウで開く",
 
 	"btn.delete": "削除",

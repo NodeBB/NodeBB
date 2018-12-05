@@ -1,9 +1,9 @@
 'use strict';
 
+var async = require('async');
 var db = require('../../database');
 var batch = require('../../batch');
 
-var async = require('async');
 
 module.exports = {
 	name: 'Remove relative_path from uploaded profile cover urls',

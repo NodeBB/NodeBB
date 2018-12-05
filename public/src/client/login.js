@@ -35,14 +35,14 @@ define('forum/login', [], function () {
 					headers: {
 						'x-csrf-token': config.csrf_token,
 					},
-					success: function (returnTo) {
-						var pathname = utils.urlToLocation(returnTo).pathname;
-
-						var params = utils.params({ url: returnTo });
+					success: function (data) {
+						var params = utils.params({ url: data.next });
 						params.loggedin = true;
-						var qs = decodeURIComponent($.param(params));
 
-						window.location.href = pathname + '?' + qs;
+						app.updateHeader(data, function () {
+							ajaxify.go(data.next);
+							$(window).trigger('action:app.loggedIn', data);
+						});
 					},
 					error: function (data) {
 						if (data.status === 403 && data.responseText === 'Forbidden') {

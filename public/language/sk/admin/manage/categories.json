@@ -29,7 +29,8 @@
 	"select-category": "Vyberte kategóriu",
 	"set-parent-category": "Nastaviť nadradenú kategóriu",
 
-	"privileges.description": "Môžete nastaviť povolenia ovládanie prístupu ku kategórii v tejto sekcii. Oprávnenia sa môžu prideliť na používateľa alebo na celú skupinu. Používateľa môžete pridať jeho vyhľadaním zo spodného formulára.",
+	"privileges.description": "You can configure the access control privileges for this category in this section. Privileges can be granted on a per-user or a per-group basis. Select the domain of effect from the dropdown below.",
+	"privileges.category-selector": "Configuring privileges for ",
 	"privileges.warning": "<strong>Poznámka:</strong> nastavenie oprávnení má okamžitý vplyv. Nie je teda nutné uložiť kategóriu pre upravenie týchto nastavení",
 	"privileges.section-viewing": "Oprávnenie prehliadania",
 	"privileges.section-posting": "Oprávnenie príspevkov",

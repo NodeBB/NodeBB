@@ -45,7 +45,7 @@ module.exports = function (middleware) {
 		], next);
 	};
 
-	middleware.renderHeader = function (req, res, data, callback) {
+	middleware.generateHeader = function (req, res, data, callback) {
 		var registrationType = meta.config.registrationType || 'normal';
 		res.locals.config = res.locals.config || {};
 		var templateValues = {
@@ -82,25 +82,10 @@ module.exports = function (middleware) {
 						privileges.global.get(req.uid, next);
 					},
 					user: function (next) {
-						var userData = {
-							uid: req.uid,
-							username: '[[global:guest]]',
-							userslug: '',
-							fullname: '[[global:guest]]',
-							email: '',
-							picture: user.getDefaultAvatar(),
-							status: 'offline',
-							reputation: 0,
-							'email:confirmed': 0,
-						};
-						if (req.loggedIn) {
-							user.getUserFields(req.uid, Object.keys(userData), next);
-						} else {
-							next(null, userData);
-						}
+						user.getUserData(req.uid, next);
 					},
 					isEmailConfirmSent: function (next) {
-						if (!meta.config.requireEmailConfirmation || !req.uid) {
+						if (!meta.config.requireEmailConfirmation || req.uid <= 0) {
 							return next(null, false);
 						}
 						db.get('uid:' + req.uid + ':confirm:email:sent', next);
@@ -115,7 +100,7 @@ module.exports = function (middleware) {
 							next(null, translated);
 						});
 					},
-					navigation: navigation.get,
+					navigation: async.apply(navigation.get, req.uid),
 					tags: async.apply(meta.tags.parse, req, data, res.locals.metaTags, res.locals.linkTags),
 					banned: async.apply(user.isBanned, req.uid),
 					banReason: async.apply(user.getBannedReason, req.uid),
@@ -141,7 +126,7 @@ module.exports = function (middleware) {
 				results.user['email:confirmed'] = results.user['email:confirmed'] === 1;
 				results.user.isEmailConfirmSent = !!results.isEmailConfirmSent;
 
-				setBootswatchCSS(templateValues, res.locals.config);
+				templateValues.bootswatchSkin = parseInt(meta.config.disableCustomUserSkins, 10) !== 1 ? res.locals.config.bootswatchSkin || '' : '';
 
 				var unreadCount = {
 					topic: results.unreadCounts[''] || 0,
@@ -209,8 +194,16 @@ module.exports = function (middleware) {
 					templateValues: templateValues,
 				}, next);
 			},
-			function (data, next) {
-				req.app.render('header', data.templateValues, next);
+		], function (err, data) {
+			callback(err, data.templateValues);
+		});
+	};
+
+	middleware.renderHeader = function (req, res, data, callback) {
+		async.waterfall([
+			async.apply(middleware.generateHeader, req, res, data),
+			function (templateValues, next) {
+				req.app.render('header', templateValues, next);
 			},
 		], callback);
 	};
@@ -264,21 +257,4 @@ module.exports = function (middleware) {
 
 		return title;
 	}
-
-	function setBootswatchCSS(obj, config) {
-		if (config && config.bootswatchSkin !== 'noskin') {
-			var skinToUse = '';
-
-			if (!meta.config.disableCustomUserSkins) {
-				skinToUse = config.bootswatchSkin;
-			} else if (meta.config.bootswatchSkin) {
-				skinToUse = meta.config.bootswatchSkin;
-			}
-
-			if (skinToUse) {
-				obj.bootswatchCSS = '//maxcdn.bootstrapcdn.com/bootswatch/3.3.7/' + skinToUse + '/bootstrap.min.css';
-			}
-		}
-	}
 };
-

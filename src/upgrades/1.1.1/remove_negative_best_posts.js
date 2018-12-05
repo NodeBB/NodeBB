@@ -1,9 +1,9 @@
 'use strict';
 
-var db = require('../../database');
 
 var async = require('async');
 var winston = require('winston');
+var db = require('../../database');
 
 module.exports = {
 	name: 'Removing best posts with negative scores',
