@@ -1,18 +1,18 @@
 {
-	"you-are-on": "Info - You are on <strong>%1:%2</strong>",
-	"nodes-responded": "%1 nodes responded within %2ms!",
+	"you-are-on": "Thông tin - Bạn đang ở <strong>%1:%2</strong>",
+	"nodes-responded": "%1 node đã trả lời trong %2ms!",
 	"host": "host",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "online",
 	"git": "git",
-	"memory": "memory",
-	"load": "load",
-	"uptime": "uptime",
+	"memory": "bộ nhớ",
+	"load": "tải",
+	"uptime": "thòi gian bật",
 
-	"registered": "Registered",
+	"registered": "Đã đăng ký",
 	"sockets": "Sockets",
-	"guests": "Guests",
+	"guests": "Khách",
 
-	"info": "Info"
+	"info": "Thông tin"
 }

@@ -11,8 +11,8 @@
 	"page-views-custom": "Tự chọn quãng thời gian",
 	"page-views-custom-start": "Bắt đầu",
 	"page-views-custom-end": "Kết thúc",
-	"page-views-custom-help": "Enter a date range of page views you would like to view. If no date picker is available, the accepted format is <code>YYYY-MM-DD</code>",
-	"page-views-custom-error": "Please enter a valid date range in the format <code>YYYY-MM-DD</code>",
+	"page-views-custom-help": "Nhập một khoảng thời gian từ ngày đến ngày mà bạn muốn xem. Nếu không có công cụ chọn ngày tháng, định dạng nhận là <code>YYYY-MM-DD</code>",
+	"page-views-custom-error": "Hãy nhập khoảng thời gian hợp lý theo định dạng <code>YYYY-MM-DD</code>",
 
 	"stats.day": "Ngày",
 	"stats.week": "Tuần",
@@ -23,11 +23,11 @@
 	"running-version": "Bạn đang sử dụng " <strong>NodeBB phiên bản <span id=\"version\">%1</span></strong>.",
 	"keep-updated": "Luôn luôn đảm bảo bạn đang sử dụng NodeBB phiên bản mới nhất để có các bản vá bảo mật và sửa lỗi.",
 	"up-to-date": "<p>Hệ thống đã ở <strong>phiên bản mới nhất</strong> <i class=\"fa fa-check\"></i></p>",
-	"upgrade-available": "<p>A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">upgrading your NodeBB</a>.</p>",
-	"prerelease-upgrade-available": "<p>This is an outdated pre-release version of NodeBB. A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">upgrading your NodeBB</a>.</p>",
-	"prerelease-warning": "<p>This is a <strong>pre-release</strong> version of NodeBB. Unintended bugs may occur. <i class=\"fa fa-exclamation-triangle\"></i></p>",
-	"running-in-development": "<span>Forum is running in development mode. The forum may be open to potential vulnerabilities; please contact your system administrator.</span>",
-	"latest-lookup-failed": "<p>Failed to look up latest available version of NodeBB</p>",
+	"upgrade-available": "<p>Phiên bản mới (v%1) đã sẵn sàng. Hãy cân nhắc <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\"> nâng cấp cập nhật NodeBB của bạn</a>.</p>",
+	"prerelease-upgrade-available": "<p>Đây là phiên bản dùng trước của NodeBB và đã lạc hậu. Phiên bản mới (v%1) đã sẵn sàng. Hãy cân nhắc <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\"> nâng cấp cập nhật NodeBB của bạn</a>.</p>",
+	"prerelease-warning": "<p>Đây là <strong>phiên bản dùng thử</strong> của NodeBB. Lỗi có thể xảy ra. <i class=\"fa fa-exclamation-triangle\"></i></p>",
+	"running-in-development": "<span>Diễn đàn đang hoạt động ở ché độ tìm lỗi. Diễn đàn có thể bị ảnh hưởng/chịu tác động bởi các lỗ  hổng tiềm tàng; hãy liên lạc với Quản trị hệ thống của bạn.</span>",
+	"latest-lookup-failed": "<p>Truy xuất thông tin phiên bản mới nhất của NodeBB thất bại</p>",
 
 	"notices": "Thông báo",
 	"restart-not-required": "Không cần khởi động lại",
@@ -68,9 +68,9 @@
 	"graphs.page-views-registered": "Page Views Registered",
 	"graphs.page-views-guest": "Page Views Guest",
 	"graphs.page-views-bot": "Page Views Bot",
-	"graphs.unique-visitors": "Unique Visitors",
-	"graphs.registered-users": "Registered Users",
-	"graphs.anonymous-users": "Anonymous Users",
-	"last-restarted-by": "Last restarted by",
-	"no-users-browsing": "No users browsing"
+	"graphs.unique-visitors": "Người dùng duy nhất",
+	"graphs.registered-users": "Người dùng đã đăng ký",
+	"graphs.anonymous-users": "Người dùng ẩn danh",
+	"last-restarted-by": "Lần khởi động lại gần nhất",
+	"no-users-browsing": "Không có người dùng nào đang truy cập"
 }
