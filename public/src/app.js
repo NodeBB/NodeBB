@@ -164,6 +164,13 @@ app.cacheBuster = null;
 				'x-csrf-token': config.csrf_token,
 			},
 			success: function (data) {
+				// ACP logouts go to frontend via page load, not ajaxify
+				if (ajaxify.data.template.name.startsWith('admin/')) {
+					$(window).trigger('action:app.loggedOut', data);
+					window.location.href = config.relative_path + (data.next || '/');
+					return;
+				}
+
 				app.updateHeader(data, function () {
 					// Overwrite in hook (below) to redirect elsewhere
 					data.next = data.next || undefined;
