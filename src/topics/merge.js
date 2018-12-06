@@ -1,6 +1,7 @@
 'use strict';
 
-var async = require('async');
+const async = require('async');
+const plugins = require('../plugins');
 
 module.exports = function (Topics) {
 	Topics.merge = function (tids, uid, callback) {
@@ -34,7 +35,13 @@ module.exports = function (Topics) {
 					}, next);
 				},
 			], next);
-		}, callback);
+		}, function (err) {
+			if (err) {
+				return callback(err);
+			}
+			plugins.fireHook('action:topic.merge', { uid: uid, tids: tids, mergeIntoTid: mergeIntoTid, otherTids: otherTids });
+			callback();
+		});
 	};
 
 	function findOldestTopic(tids) {
