@@ -159,16 +159,16 @@ function addCoreRoutes(app, router, middleware, callback) {
 		statics.unshift({ route: '/assets/uploads', path: nconf.get('upload_path') });
 	}
 
-	// Skins
-	meta.css.supportedSkins.forEach(function (skin) {
-		app.use(relativePath + '/assets/client-' + skin + '.css', middleware.buildSkinAsset);
-	});
-
 	statics.forEach(function (obj) {
 		app.use(relativePath + obj.route, middleware.trimUploadTimestamps, express.static(obj.path, staticOptions));
 	});
 	app.use(relativePath + '/uploads', function (req, res) {
 		res.redirect(relativePath + '/assets/uploads' + req.path + '?' + meta.config['cache-buster']);
+	});
+
+	// Skins
+	meta.css.supportedSkins.forEach(function (skin) {
+		app.use(relativePath + '/assets/client-' + skin + '.css', middleware.buildSkinAsset);
 	});
 
 	// only warn once
