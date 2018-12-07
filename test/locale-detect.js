@@ -9,17 +9,20 @@ var meta = require('../src/meta');
 
 describe('Language detection', function () {
 	it('should detect the language for a guest', function (done) {
-		meta.config.autoDetectLang = 1;
-		request(nconf.get('url') + '/api/config', {
-			headers: {
-				'Accept-Language': 'de-DE,de;q=0.5',
-			},
-		}, function (err, res, body) {
+		meta.configs.set('autoDetectLang', 1, function (err) {
 			assert.ifError(err);
-			assert.ok(body);
+			request(nconf.get('url') + '/api/config', {
+				headers: {
+					'Accept-Language': 'de-DE,de;q=0.5',
+				},
+				json: true,
+			}, function (err, res, body) {
+				assert.ifError(err);
+				assert.ok(body);
 
-			assert.strictEqual(JSON.parse(body).userLang, 'de');
-			done();
+				assert.strictEqual(body.userLang, 'de');
+				done();
+			});
 		});
 	});
 
@@ -30,11 +33,12 @@ describe('Language detection', function () {
 				headers: {
 					'Accept-Language': 'de-DE,de;q=0.5',
 				},
+				json: true,
 			}, function (err, res, body) {
 				assert.ifError(err);
 				assert.ok(body);
 
-				assert.strictEqual(JSON.parse(body).userLang, 'en-GB');
+				assert.strictEqual(body.userLang, 'en-GB');
 				done();
 			});
 		});

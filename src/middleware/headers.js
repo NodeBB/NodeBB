@@ -2,6 +2,7 @@
 
 var os = require('os');
 var winston = require('winston');
+var _ = require('lodash');
 
 var meta = require('../meta');
 var languages = require('../languages');
@@ -85,8 +86,6 @@ module.exports = function (middleware) {
 		winston.verbose('[middleware/autoLocale] Retrieves languages list for middleware');
 		var defaultLang = meta.config.defaultLang || 'en-GB';
 
-		langs = [defaultLang].concat(codes).filter(function (el, i, arr) {
-			return arr.indexOf(el) === i;
-		});
+		langs = _.uniq([defaultLang, ...codes]);
 	});
 };
