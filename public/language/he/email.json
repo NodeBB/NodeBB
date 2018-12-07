@@ -1,5 +1,6 @@
 {
-    "password-reset-requested": "בקשת איפוס הסיסמה נשלחה - %1!",
+    "test-email.subject": "Test Email",
+    "password-reset-requested": "Password Reset Requested!",
     "welcome-to": "ברוכים הבאים ל%1",
     "invite": "הזמנה מ%1",
     "greeting_no_name": "שלום",

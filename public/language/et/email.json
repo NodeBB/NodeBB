@@ -1,5 +1,6 @@
 {
-    "password-reset-requested": "Parooli muutmise taotlus - %1",
+    "test-email.subject": "Test Email",
+    "password-reset-requested": "Password Reset Requested!",
     "welcome-to": "Tere tulemast %1 foorumisse",
     "invite": "Kutse %1-lt",
     "greeting_no_name": "Tere",

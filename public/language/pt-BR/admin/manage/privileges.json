@@ -9,7 +9,7 @@
 	"ban": "Ban",
 	"search-content": "Search Content",
 	"search-users": "Search Users",
-	"search-tags": "Search Tags",
+	"search-tags": "Pesquisar Tags",
 	"allow-local-login": "Local Login",
 
 	"find-category": "Find Category",
@@ -17,7 +17,7 @@
 	"access-topics": "Access Topics",
 	"create-topics": "Create Topics",
 	"reply-to-topics": "Reply to Topics",
-	"tag-topics": "Tag Topics",
+	"tag-topics": "Definir tag em tópicos",
 	"edit-posts": "Edit Posts",
 	"view-edit-history": "View Edit History",
 	"delete-posts": "Delete Posts",

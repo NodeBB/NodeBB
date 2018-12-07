@@ -1,5 +1,6 @@
 {
-    "password-reset-requested": "Demande de réinitialisation du mot de passe - %1!",
+    "test-email.subject": "Test Email",
+    "password-reset-requested": "Password Reset Requested!",
     "welcome-to": "Bienvenue sur %1",
     "invite": "Invitation de %1",
     "greeting_no_name": "Bonjour",

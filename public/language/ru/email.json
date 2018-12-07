@@ -1,5 +1,6 @@
 {
-    "password-reset-requested": "Запрошен сброс пароля: %1",
+    "test-email.subject": "Test Email",
+    "password-reset-requested": "Password Reset Requested!",
     "welcome-to": "Добро пожаловать на сайт %1",
     "invite": "Приглашение от %1",
     "greeting_no_name": "Здравствуйте!",

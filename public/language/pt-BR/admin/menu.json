@@ -14,7 +14,7 @@
 	"manage/users": "Usuários",
 	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "Fila de Registro",
-	"manage/post-queue": "Fileira da Posts",
+	"manage/post-queue": "File de Posts",
 	"manage/groups": "Grupos",
 	"manage/ip-blacklist": "Lista Negra de IPs",
 	"manage/uploads": "Uploads",
@@ -69,7 +69,7 @@
 	"logout": "Sair da Conta",
 	"view-forum": "Ver Fórum",
 
-	"search.placeholder": "Search for settings",
+	"search.placeholder": "Pesquisar configurações",
 	"search.no-results": "Sem resultados...",
 	"search.search-forum": "Pesquisar o fórum por <strong></strong>",
 	"search.keep-typing": "Digite para ver mais resultados...",

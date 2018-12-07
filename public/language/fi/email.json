@@ -1,5 +1,6 @@
 {
-    "password-reset-requested": "Pyydetty salasanan palautuskoodia - %1!",
+    "test-email.subject": "Test Email",
+    "password-reset-requested": "Password Reset Requested!",
     "welcome-to": "%1 - Tervetuloa",
     "invite": "Kutsu henkilöltä %1",
     "greeting_no_name": "Hei",

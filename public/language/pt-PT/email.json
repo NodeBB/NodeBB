@@ -1,5 +1,6 @@
 {
-    "password-reset-requested": "Pedido de reposição de palavra-passe - %1!",
+    "test-email.subject": "Testar E-mail",
+    "password-reset-requested": "Reposição de palavra-passe solicitada!",
     "welcome-to": "Bem-vindo ao %1",
     "invite": "Convite enviado por %1",
     "greeting_no_name": "Olá",
@@ -11,7 +12,7 @@
     "welcome.text3": "Um administrador aceitou o teu registo. Podes agora iniciar sessão com o teu nome de utilizador/palavra-passe.",
     "welcome.cta": "Clica aqui para confirmares o teu endereço de e-mail",
     "invitation.text1": "%1 convidou-te para te juntares a %2",
-    "invitation.text2": "Your invitation will expire in %1 days.",
+    "invitation.text2": "O teu convite vai expirar em %1 dias.",
     "invitation.ctr": "Clica aqui para criares a tua conta.",
     "reset.text1": "Recebemos um pedido para repôr a tua palavra-passe, possivelmente porque te esqueceste dela. Se este não é o caso, por favor ignora este e-mail.",
     "reset.text2": "Para continuares com a reposição da tua palavra-passe, clica no seguinte link:",
@@ -33,12 +34,12 @@
     "notif.chat.unsub.info": "Esta notificação de chat foi enviada devido às suas definições de subscrição",
     "notif.post.cta": "Clique aqui para ler o tópico completo",
     "notif.post.unsub.info": "Esta notificação foi envidada devido às tuas definições de subscrição.",
-    "notif.cta": "Click here to go to forum",
+    "notif.cta": "Clica aqui para ires para o fórum",
     "test.text1": "Este é um e-mail de teste para verificar que o emailer está configurado corretamente para o teu NodeBB.",
     "unsub.cta": "Clica aqui para alterares essas definições",
-    "banned.subject": "You have been banned from %1",
-    "banned.text1": "The user %1 has been banned from %2.",
+    "banned.subject": "Foste banido de %1",
+    "banned.text1": "O utilizador %1 foi banido de %2.",
     "banned.text2": "Este banimento irá durar até %1.",
-    "banned.text3": "This is the reason why you have been banned:",
+    "banned.text3": "Esta é a razão porque foste banido:",
     "closing": "Obrigado!"
 }

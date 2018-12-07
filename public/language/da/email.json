@@ -1,5 +1,6 @@
 {
-    "password-reset-requested": "Vi skal anmode dig om at nulstille dit kodeord - %1!",
+    "test-email.subject": "Test Email",
+    "password-reset-requested": "Password Reset Requested!",
     "welcome-to": "Velkommen til %1",
     "invite": "Invitation fra %1",
     "greeting_no_name": "Hej",

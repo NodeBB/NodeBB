@@ -1,5 +1,6 @@
 {
-    "password-reset-requested": "تم طلب إعادة تعيين كلمة المرور - %1!",
+    "test-email.subject": "Test Email",
+    "password-reset-requested": "Password Reset Requested!",
     "welcome-to": "مرحبًا بك في %1",
     "invite": "دعوة من %1",
     "greeting_no_name": "مرحبًا",

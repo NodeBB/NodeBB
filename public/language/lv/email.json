@@ -1,5 +1,6 @@
 {
-    "password-reset-requested": "Paroles atiestatīšana pieprasīta - %1!",
+    "test-email.subject": "Test Email",
+    "password-reset-requested": "Password Reset Requested!",
     "welcome-to": "Sveiks %1",
     "invite": "Uzaicinājums no %1",
     "greeting_no_name": "Sveiki",

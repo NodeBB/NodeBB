@@ -119,8 +119,6 @@
     "open_links_in_new_tab": "Öppna utgående länkar i ny flik",
     "enable_topic_searching": "Aktivera sökning inom ämne",
     "topic_search_help": "Om aktiverat kommer sökning inom ämne överskrida webbläsarens vanliga funktionen för sökning bland sidor och tillåta dig att söka genom hela ämnet istället för det som endast visas på skärmen.",
-    "delay_image_loading": "Fördröj inladdning av bilder",
-    "image_load_delay_help": "Aktivera för att hindra bilder ifrån att ladda in, innan de skrollats fram på skärmen. ",
     "scroll_to_my_post": "Visa det nya inlägget när ett svar har postats",
     "follow_topics_you_reply_to": "Bevaka ämnen som du svarat på",
     "follow_topics_you_create": "Bevaka ämnen som du skapat",

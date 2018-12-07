@@ -9,7 +9,7 @@
 	"length": "Post Length",
 	"restrictions": "Posting Restrictions",
 	"restrictions-new": "New User Restrictions",
-	"restrictions.post-queue": "Enable post queue",
+	"restrictions.post-queue": "Ativar publicações em fila de espera",
 	"restrictions-new.post-queue": "Enable new user restrictions",
 	"restrictions.post-queue-help": "Ativar publicações em fila de espera vai colocar as publicações de novos utilizadores numa fila de espera para serem aprovadas.",
 	"restrictions-new.post-queue-help": "Enabling new user restrictions will set restrictions on posts created by new users.",

@@ -1,5 +1,6 @@
 {
-    "password-reset-requested": "Отриманий запит на відновлення паролю - %1!",
+    "test-email.subject": "Test Email",
+    "password-reset-requested": "Password Reset Requested!",
     "welcome-to": "Ласкаво просимо до %1",
     "invite": "Запрошення від %1",
     "greeting_no_name": "Привіт",

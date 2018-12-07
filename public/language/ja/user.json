@@ -119,8 +119,6 @@
     "open_links_in_new_tab": "外部リンクを新しいタブで開く",
     "enable_topic_searching": "スレッド内検索を有効にする",
     "topic_search_help": "有効にしたら、インースレッドの検索はブラウザの既定機能を無視して、スクリーンに示したよりスレッド内からの全部を検索します",
-    "delay_image_loading": "画像読み込みを遅延させる",
-    "image_load_delay_help": "有効の場合、スレッド内の画像はスクロールされるまで読み込みません",
     "scroll_to_my_post": "返信を投稿した後、新しい投稿を表示する",
     "follow_topics_you_reply_to": "あなたが返信したスレッドをウォッチする",
     "follow_topics_you_create": "あなたが作成したスレッドをウォッチする",
