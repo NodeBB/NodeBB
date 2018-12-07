@@ -545,7 +545,7 @@ describe('Sorted Set methods', function () {
 				assert.deepStrictEqual(scores, [0, 1.1, null]);
 				done();
 			});
-		})
+		});
 	});
 
 	describe('isSortedSetMember()', function () {
