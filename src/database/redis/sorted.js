@@ -167,11 +167,27 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.sortedSetsScore = function (keys, value, callback) {
-		helpers.execKeysValue(redisClient, 'batch', 'zscore', keys, value, callback);
+		helpers.execKeysValue(redisClient, 'batch', 'zscore', keys, value, function (err, scores) {
+			if (err) {
+				return callback(err);
+			}
+			scores = scores.map(function (d) {
+				return d === null ? d : parseFloat(d);
+			});
+			callback(null, scores);
+		});
 	};
 
 	module.sortedSetScores = function (key, values, callback) {
-		helpers.execKeyValues(redisClient, 'batch', 'zscore', key, values, callback);
+		helpers.execKeyValues(redisClient, 'batch', 'zscore', key, values, function (err, scores) {
+			if (err) {
+				return callback(err);
+			}
+			scores = scores.map(function (d) {
+				return d === null ? d : parseFloat(d);
+			});
+			callback(null, scores);
+		});
 	};
 
 	module.isSortedSetMember = function (key, value, callback) {

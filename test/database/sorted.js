@@ -465,7 +465,7 @@ describe('Sorted Set methods', function () {
 			db.sortedSetScore('sortedSetTest1', 'value2', function (err, score) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.equal(score, 1.2);
+				assert.strictEqual(score, 1.2);
 				done();
 			});
 		});
@@ -515,28 +515,37 @@ describe('Sorted Set methods', function () {
 		it('should return 0 if score is 0', function (done) {
 			db.sortedSetScores('zeroScore', ['value1'], function (err, scores) {
 				assert.ifError(err);
-				assert.equal(0, scores[0]);
+				assert.strictEqual(0, scores[0]);
 				done();
 			});
 		});
 
 		it('should return the scores of value in sorted sets', function (done) {
 			db.sortedSetScores('sortedSetTest1', ['value2', 'value1', 'doesnotexist'], function (err, scores) {
-				assert.equal(err, null);
+				assert.ifError(err);
 				assert.equal(arguments.length, 2);
-				assert.deepEqual(scores, [1.2, 1.1, null]);
+				assert.deepStrictEqual(scores, [1.2, 1.1, null]);
 				done();
 			});
 		});
 
 		it('should return scores even if some values are undefined', function (done) {
 			db.sortedSetScores('sortedSetTest1', ['value2', undefined, 'doesnotexist'], function (err, scores) {
-				assert.equal(err, null);
+				assert.ifError(err);
 				assert.equal(arguments.length, 2);
-				assert.deepEqual(scores, [1.2, null, null]);
+				assert.deepStrictEqual(scores, [1.2, null, null]);
 				done();
 			});
 		});
+
+		it('should return scores properly', function (done) {
+			db.sortedSetsScore(['zeroScore', 'sortedSetTest1', 'doesnotexist'], 'value1', function (err, scores) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 2);
+				assert.deepStrictEqual(scores, [0, 1.1, null]);
+				done();
+			});
+		})
 	});
 
 	describe('isSortedSetMember()', function () {
@@ -775,7 +784,7 @@ describe('Sorted Set methods', function () {
 				assert.equal(arguments.length, 1);
 				db.sortedSetsScore(['sorted4', 'sorted5'], 'value1', function (err, scores) {
 					assert.equal(err, null);
-					assert.deepEqual(scores, [null, null]);
+					assert.deepStrictEqual(scores, [null, null]);
 					done();
 				});
 			});
