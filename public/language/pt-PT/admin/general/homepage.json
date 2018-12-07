@@ -4,5 +4,5 @@
 	"home-page-route": "Caminho da Página Principal",
 	"custom-route": "Caminho personalizado",
 	"allow-user-home-pages": "Permitir página principal personalizada para os utilizadores",
-	"home-page-title": "Title of the home page (default \"Home\")"
+	"home-page-title": "Título da página inicial (predefinido \"Página inicial\")"
 }

@@ -20,7 +20,7 @@
     "chat.thirty_days": "30 dias",
     "chat.three_months": "3 meses",
     "chat.delete_message_confirm": "Tens a certeza que desejas apagar esta mensagem?",
-    "chat.retrieving-users": "Retrieving users...",
+    "chat.retrieving-users": "A recuperar utilizadores...",
     "chat.manage-room": "Gerir sala de conversa",
     "chat.add-user-help": "Encontra utilizadores aqui. Quando selecionado, o utilizador vai ser adicionado à conversa. O novo utilizador não conseguirá ver mensagens que foram enviadas antes de ele entrar na sala. Apenas os donos das salas (<i class=\"fa fa-star text-warning\"></i>) poderão remover participantes das salas de conversa",
     "chat.confirm-chat-with-dnd-user": "This user has set their status to DnD(Do not disturb). Do you still want to chat with them?",

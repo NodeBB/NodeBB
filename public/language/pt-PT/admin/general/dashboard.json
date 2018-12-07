@@ -29,14 +29,14 @@
 	"running-in-development": "<span>Forum is running in development mode. The forum may be open to potential vulnerabilities; please contact your system administrator.</span>",
 	"latest-lookup-failed": "<p>Ocorreu uma falha a obter a versão mais recente disponível para o NodeBB</p>",
 
-	"notices": "Notices",
+	"notices": "Avisos",
 	"restart-not-required": "Não é necessário reiniciar",
 	"restart-required": "É necessário reiniciar",
 	"search-plugin-installed": "Plugin de pesquisa instalado",
 	"search-plugin-not-installed": "Plugin de pesquisa não instalado",
 	"search-plugin-tooltip": "Instala um plugin de pesquisa a partir da página de Plugins para conseguires ativar a funcionalidade de pesquisa",
 
-	"control-panel": "Sistema de Controlo",
+	"control-panel": "Controlo do Sistema",
 	"rebuild-and-restart": "Reconstruir e Reiniciar",
 	"restart": "Reiniciar",
 	"restart-warning": "Reconstruir ou Reiniciar o teu NodeBB irá terminar todas as conexões existentes por alguns segundos.",
