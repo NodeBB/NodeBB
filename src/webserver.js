@@ -25,7 +25,6 @@ var db = require('./database');
 var file = require('./file');
 var emailer = require('./emailer');
 var meta = require('./meta');
-var languages = require('./languages');
 var logger = require('./logger');
 var plugins = require('./plugins');
 var flags = require('./flags');
@@ -194,12 +193,13 @@ function setupExpressApp(app, callback) {
 	app.use(middleware.addHeaders);
 	app.use(middleware.processRender);
 	auth.initialize(app, middleware);
+	app.use(middleware.autoLocale);	// must be added after auth middlewares are added
 
 	var toobusy = require('toobusy-js');
 	toobusy.maxLag(meta.config.eventLoopLagThreshold);
 	toobusy.interval(meta.config.eventLoopInterval);
 
-	setupAutoLocale(app, callback);
+	callback();
 }
 
 function setupFavicon(app) {
@@ -231,35 +231,6 @@ function setupCookie() {
 	}
 
 	return cookie;
-}
-
-function setupAutoLocale(app, callback) {
-	languages.listCodes(function (err, codes) {
-		if (err) {
-			return callback(err);
-		}
-
-		var defaultLang = meta.config.defaultLang || 'en-GB';
-
-		var langs = [defaultLang].concat(codes).filter(function (el, i, arr) {
-			return arr.indexOf(el) === i;
-		});
-
-		app.use(function (req, res, next) {
-			if (parseInt(req.uid, 10) > 0 || !meta.config.autoDetectLang) {
-				return next();
-			}
-
-			var lang = req.acceptsLanguages(langs);
-			if (!lang) {
-				return next();
-			}
-			req.query.lang = lang;
-			next();
-		});
-
-		callback();
-	});
 }
 
 function listen(callback) {

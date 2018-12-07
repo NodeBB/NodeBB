@@ -596,6 +596,15 @@
 				toggle();
 			}
 		},
+
+		switchTimeagoLanguage: function switchTimeagoLanguage(callback) {
+			// Delete the cached shorthand strings if present
+			delete adaptor.timeagoShort;
+
+			var languageCode = utils.userLangToTimeagoCode(config.userLang);
+			jQuery.getScript(config.relative_path + '/assets/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').done(callback);
+		},
+
 		prepareDOM: function prepareDOM() {
 			// Add directional code if necessary
 			adaptor.translate('[[language:dir]]', function (value) {

@@ -284,6 +284,8 @@ function continueLogin(req, res, next) {
 				});
 			});
 		} else {
+			delete req.query.lang;
+
 			async.parallel({
 				doLogin: async.apply(authenticationController.doLogin, req, userData.uid),
 				header: async.apply(middleware.generateHeader, req, res, {}),

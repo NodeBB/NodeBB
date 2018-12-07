@@ -140,7 +140,7 @@ app.cacheBuster = null;
 				Notifications.prepareDOM();
 				Chat.prepareDOM();
 				app.reskin(data.config.bootswatchSkin);
-				callback();
+				translator.switchTimeagoLanguage(callback);
 			});
 		});
 	};
