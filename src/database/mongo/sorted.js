@@ -149,7 +149,7 @@ module.exports = function (db, module) {
 
 	module.sortedSetsCard = function (keys, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback();
+			return callback(null, []);
 		}
 		var pipeline = [
 			{ $match: { _key: { $in: keys } } },

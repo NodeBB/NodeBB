@@ -116,7 +116,7 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.sortedSetsCard = function (keys, callback) {
-		if (Array.isArray(keys) && !keys.length) {
+		if (!Array.isArray(keys) || !keys.length) {
 			return callback(null, []);
 		}
 		var batch = redisClient.batch();

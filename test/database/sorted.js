@@ -331,6 +331,24 @@ describe('Sorted Set methods', function () {
 				done();
 			});
 		});
+
+		it('should return empty array if keys is falsy', function (done) {
+			db.sortedSetsCard(undefined, function (err, counts) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 2);
+				assert.deepEqual(counts, []);
+				done();
+			});
+		});
+
+		it('should return empty array if keys is empty array', function (done) {
+			db.sortedSetsCard([], function (err, counts) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 2);
+				assert.deepEqual(counts, []);
+				done();
+			});
+		});
 	});
 
 	describe('sortedSetRank()', function () {
