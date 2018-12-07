@@ -89,7 +89,6 @@
 	"digest_daily": "Daily",
 	"digest_weekly": "Weekly",
 	"digest_monthly": "Monthly",
-	"settings-require-reload": "Some setting changes require a reload. Click here to reload the page.",
 
 	"has_no_follower": "This user doesn't have any followers :(",
 	"follows_no_one": "This user isn't following anyone :(",

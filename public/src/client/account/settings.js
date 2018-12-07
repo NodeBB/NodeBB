@@ -96,15 +96,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 			sounds.loadMap();
 
 			if (requireReload && parseInt(app.user.uid, 10) === parseInt(ajaxify.data.theirid, 10)) {
-				app.alert({
-					id: 'setting-change',
-					message: '[[user:settings-require-reload]]',
-					type: 'warning',
-					timeout: 5000,
-					clickfn: function () {
-						ajaxify.refresh();
-					},
-				});
+				ajaxify.refresh();
 			}
 		});
 	}
