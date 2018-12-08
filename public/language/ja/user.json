@@ -84,7 +84,6 @@
     "digest_daily": "デイリー",
     "digest_weekly": "ウィークリー",
     "digest_monthly": "マンスリー",
-    "settings-require-reload": "設定を変更するにはページを更新する必要があります。ここを押して、ページを更新します。",
     "has_no_follower": "フォロワーはまだいません :(",
     "follows_no_one": "フォロー中のユーザーはまだいません :(",
     "has_no_posts": "このユーザーはまだ一つも投稿していません",
