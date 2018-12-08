@@ -122,7 +122,6 @@
         "spider-detector": "1.0.18",
         "toobusy-js": "^0.5.1",
         "uglify-es": "^3.3.9",
-        "util.promisify": "1.0.0",
         "validator": "10.9.0",
         "winston": "3.1.0",
         "xml": "^1.0.1",
@@ -150,7 +149,7 @@
         "url": "https://github.com/NodeBB/NodeBB/issues"
     },
     "engines": {
-        "node": ">=6"
+        "node": ">=8"
     },
     "maintainers": [
         {
