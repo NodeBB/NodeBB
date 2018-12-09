@@ -168,7 +168,7 @@ function modifyMessage(message, fields) {
 			message.timestampISO = utils.toISOString(message.timestamp);
 		}
 		if (message.hasOwnProperty('edited')) {
-			message.editedISO = utils.toISOString(message.timestamp);
+			message.editedISO = utils.toISOString(message.edited);
 		}
 	}
 }
