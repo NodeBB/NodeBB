@@ -104,6 +104,7 @@ module.exports = function (Categories) {
 						'cid:0:children',
 						'cid:' + results.parentCid + ':children',
 						'cid:' + cid + ':children',
+						'cid:' + cid + ':tag:whitelist',
 					]);
 					next();
 				});

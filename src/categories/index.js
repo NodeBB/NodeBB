@@ -178,8 +178,32 @@ Categories.getCategories = function (cids, uid, callback) {
 };
 
 Categories.getTagWhitelist = function (cids, callback) {
-	const keys = cids.map(cid => 'cid:' + cid + ':tag:whitelist');
-	db.getSortedSetsMembers(keys, callback);
+	const cachedData = {};
+
+	const nonCachedCids = cids.filter((cid) => {
+		const data = cache.get('cid:' + cid + ':tag:whitelist');
+		const isInCache = data !== undefined;
+		if (isInCache) {
+			cachedData[cid] = data;
+		}
+		return !isInCache;
+	});
+
+	if (!nonCachedCids.length) {
+		return setImmediate(callback, null, _.clone(cids.map(cid => cachedData[cid])));
+	}
+
+	const keys = nonCachedCids.map(cid => 'cid:' + cid + ':tag:whitelist');
+	db.getSortedSetsMembers(keys, function (err, data) {
+		if (err) {
+			return callback(err);
+		}
+		nonCachedCids.forEach((cid, index) => {
+			cachedData[cid] = data[index];
+			cache.set('cid:' + cid + ':tag:whitelist', data[index]);
+		});
+		callback(null, _.clone(cids.map(cid => cachedData[cid])));
+	});
 };
 
 function calculateTopicPostCount(category) {

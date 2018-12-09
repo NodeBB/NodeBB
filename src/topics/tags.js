@@ -7,6 +7,7 @@ var validator = require('validator');
 var _ = require('lodash');
 var db = require('../database');
 var meta = require('../meta');
+var categories = require('../categories');
 var plugins = require('../plugins');
 var utils = require('../utils');
 var batch = require('../batch');
@@ -59,13 +60,13 @@ module.exports = function (Topics) {
 				Topics.getTopicField(tid, 'cid', next);
 			},
 			function (cid, next) {
-				db.getSortedSetRange('cid:' + cid + ':tag:whitelist', 0, -1, next);
+				categories.getTagWhitelist([cid], next);
 			},
 			function (tagWhitelist, next) {
-				if (!tagWhitelist.length) {
+				if (!Array.isArray(tagWhitelist[0]) || !tagWhitelist[0].length) {
 					return next(null, tags);
 				}
-				var whitelistSet = new Set(tagWhitelist);
+				const whitelistSet = new Set(tagWhitelist[0]);
 				tags = tags.filter(tag => whitelistSet.has(tag));
 				next(null, tags);
 			},
@@ -398,14 +399,14 @@ module.exports = function (Topics) {
 		async.waterfall([
 			function (next) {
 				if (parseInt(cid, 10)) {
-					db.getSortedSetRange('cid:' + cid + ':tag:whitelist', 0, -1, next);
+					categories.getTagWhitelist([cid], next);
 				} else {
 					setImmediate(next, null, []);
 				}
 			},
 			function (tagWhitelist, next) {
-				if (tagWhitelist.length) {
-					setImmediate(next, null, tagWhitelist);
+				if (Array.isArray(tagWhitelist[0]) && tagWhitelist[0].length) {
+					setImmediate(next, null, tagWhitelist[0]);
 				} else {
 					db.getSortedSetRevRange('tags:topic:count', 0, -1, next);
 				}
