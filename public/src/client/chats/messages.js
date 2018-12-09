@@ -8,7 +8,7 @@ define('forum/chats/messages', ['components', 'sounds', 'translator', 'benchpres
 		var msg = inputEl.val();
 		var mid = inputEl.attr('data-mid');
 
-		if (!msg.length) {
+		if (!msg.trim().length) {
 			return;
 		}
 
