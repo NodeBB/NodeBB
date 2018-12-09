@@ -236,7 +236,6 @@ Flags.list = function (filters, uid, callback) {
 
 Flags.validate = function (payload, callback) {
 	async.parallel({
-		targetExists: async.apply(Flags.targetExists, payload.type, payload.id),
 		target: async.apply(Flags.getTarget, payload.type, payload.id, payload.uid),
 		reporter: async.apply(user.getUserData, payload.uid),
 	}, function (err, data) {
@@ -244,8 +243,12 @@ Flags.validate = function (payload, callback) {
 			return callback(err);
 		}
 
-		if (data.target.deleted) {
+		if (!data.target) {
+			return callback(new Error('[[error:invalid-data]]'));
+		} else if (data.target.deleted) {
 			return callback(new Error('[[error:post-deleted]]'));
+		} else if (!data.reporter || !data.reporter.userslug) {
+			return callback(new Error('[[error:no-user]]'));
 		} else if (data.reporter.banned) {
 			return callback(new Error('[[error:user-banned]]'));
 		}
@@ -422,13 +425,18 @@ Flags.getTarget = function (type, id, uid, callback) {
 				switch (type) {
 				case 'post':
 					async.waterfall([
-						async.apply(posts.getPostsByPids, [id], uid),
-						function (posts, next) {
-							topics.addPostData(posts, uid, next);
+						async.apply(posts.getPostsData, [id]),
+						function (postData, next) {
+							async.map(postData, posts.parsePost, next);
 						},
-					], function (err, posts) {
-						next(err, posts[0]);
-					});
+						function (postData, next) {
+							postData = postData.filter(Boolean);
+							topics.addPostData(postData, uid, next);
+						},
+						function (postData, next) {
+							next(null, postData[0]);
+						},
+					], callback);
 					break;
 
 				case 'user':
