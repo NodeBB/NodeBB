@@ -98,7 +98,7 @@ redisModule.connect = function (options, callback) {
 	cxn.on('ready', function () {
 		if (!callbackCalled) {
 			callbackCalled = true;
-			callback();
+			callback(null, cxn);
 		}
 	});
 
@@ -163,11 +163,16 @@ redisModule.close = function (callback) {
 };
 
 redisModule.info = function (cxn, callback) {
-	if (!cxn) {
-		return callback();
-	}
 	async.waterfall([
 		function (next) {
+			if (cxn) {
+				return setImmediate(next, null, cxn);
+			}
+			redisModule.connect(nconf.get('redis'), next);
+		},
+		function (cxn, next) {
+			redisModule.client = redisModule.client || cxn;
+
 			cxn.info(next);
 		},
 		function (data, next) {

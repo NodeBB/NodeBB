@@ -201,11 +201,18 @@ mongoModule.checkCompatibilityVersion = function (version, callback) {
 };
 
 mongoModule.info = function (db, callback) {
-	if (!db) {
-		return callback();
-	}
 	async.waterfall([
 		function (next) {
+			if (db) {
+				return setImmediate(next, null, db);
+			}
+			mongoModule.connect(nconf.get('mongo'), function (err, client) {
+				next(err, client ? client.db() : undefined);
+			});
+		},
+		function (db, next) {
+			mongoModule.client = mongoModule.client || db;
+
 			async.parallel({
 				serverStatus: function (next) {
 					db.command({ serverStatus: 1 }, next);
