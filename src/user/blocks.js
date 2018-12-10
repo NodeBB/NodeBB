@@ -23,7 +23,15 @@ module.exports = function (User) {
 	};
 
 	User.blocks.can = function (callerUid, blockerUid, blockeeUid, callback) {
+		// Guests can't block
+		if (blockerUid === 0 || blockeeUid === 0) {
+			return setImmediate(callback, new Error('[[error:cannot-block-guest]]'));
+		} else if (blockerUid === blockeeUid) {
+			return setImmediate(callback, new Error('[[error:cannot-block-self]]'));
+		}
+
 		// Administrators and global moderators cannot be blocked
+		// Only admins/mods can block users as another user
 		async.waterfall([
 			function (next) {
 				async.parallel({
@@ -37,12 +45,13 @@ module.exports = function (User) {
 			},
 			function (results, next) {
 				if (results.isBlockeeAdminOrMod) {
-					return callback(null, false);
+					return callback(new Error('[[error:cannot-block-privileged]]'));
 				}
 				if (parseInt(callerUid, 10) !== parseInt(blockerUid, 10) && !results.isCallerAdminOrMod) {
-					return callback(null, false);
+					return callback(new Error());
 				}
-				next(null, true);
+
+				next();
 			},
 		], callback);
 	};
@@ -94,12 +103,14 @@ module.exports = function (User) {
 	};
 
 	User.blocks.applyChecks = function (block, targetUid, uid, callback) {
-		if (parseInt(targetUid, 10) === parseInt(uid, 10)) {
-			return setImmediate(callback, new Error('[[error:cannot-block-self]]'));
-		}
+		User.blocks.can(uid, uid, targetUid, function (err) {
+			if (err) {
+				return callback(err);
+			}
 
-		User.blocks.is(targetUid, uid, function (err, is) {
-			callback(err || (is === block ? new Error('[[error:already-' + (block ? 'blocked' : 'unblocked') + ']]') : null));
+			User.blocks.is(targetUid, uid, function (err, is) {
+				callback(err || (is === block ? new Error('[[error:already-' + (block ? 'blocked' : 'unblocked') + ']]') : null));
+			});
 		});
 	};
 
