@@ -13,7 +13,7 @@ module.exports = function (User) {
 	User.auth = {};
 
 	User.auth.logAttempt = function (uid, ip, callback) {
-		if (parseInt(uid, 10) <= 0) {
+		if (!(parseInt(uid, 10) > 0)) {
 			return setImmediate(callback);
 		}
 		async.waterfall([
