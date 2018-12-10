@@ -185,5 +185,8 @@
 
 	"cannot-block-self": "You cannot block yourself!",
 	"cannot-block-privileged": "You cannot block administrators or global moderators",
+	"cannot-block-guest": "Guest are not able to block other users",
+	"already-blocked": "This user is already blocked",
+	"already-unblocked": "This user is already unblocked",
 	"no-connection": "There seems to be a problem with your internet connection"
 }

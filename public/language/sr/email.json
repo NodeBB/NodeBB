@@ -1,6 +1,6 @@
 {
-    "test-email.subject": "Test Email",
-    "password-reset-requested": "Password Reset Requested!",
+    "test-email.subject": "Пробна е-пошта",
+    "password-reset-requested": "Захтевано је поништавање лозинке!",
     "welcome-to": "Добродошли на %1",
     "invite": "Позивница од %1",
     "greeting_no_name": "Здраво",
