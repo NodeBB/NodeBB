@@ -44,8 +44,6 @@ app.isConnected = false;
 		});
 
 		socket.on('event:banned', onEventBanned);
-
-		socket.on('event:alert', app.alert);
 	}
 
 	function onConnect() {
