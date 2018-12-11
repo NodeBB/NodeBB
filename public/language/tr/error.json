@@ -120,7 +120,7 @@
     "chat-edit-duration-expired": "Gönderildikten sonra yalnızca %1 saniye mesajı(ları) düzenlemene izin verilir",
     "chat-delete-duration-expired": "Gönderildikten sonra yalnızca %1 saniye mesajı(ları) silmene izin verilir",
     "chat-deleted-already": "Bu sohbet mesajı zaten silinmiş.",
-    "chat-restored'already": "Bu sohbet mesajı zaten geri yüklendi.",
+    "chat-restored-already": "This chat message has already been restored.",
     "already-voting-for-this-post": "Bu gönderi için zaten oy verdin.",
     "reputation-system-disabled": "İtibar sistemi devre dışı.",
     "downvoting-disabled": "Aşagı oylama kapatılmış",
@@ -153,5 +153,8 @@
     "cant-move-to-same-topic": "İletiyi aynı başlığa taşıyamazsın!",
     "cannot-block-self": "Kendi kendinizi engelleyemezsiniz!",
     "cannot-block-privileged": "Yöneticileri veya genel moderatörleri engelleyemezsiniz",
+    "cannot-block-guest": "Guest are not able to block other users",
+    "already-blocked": "This user is already blocked",
+    "already-unblocked": "This user is already unblocked",
     "no-connection": "İnternet bağlantınızda sorun var gibi görünüyor"
 }

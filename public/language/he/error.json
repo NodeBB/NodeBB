@@ -120,7 +120,7 @@
     "chat-edit-duration-expired": "You are only allowed to edit chat messages for %1 second(s) after posting",
     "chat-delete-duration-expired": "You are only allowed to delete chat messages for %1 second(s) after posting",
     "chat-deleted-already": "This chat message has already been deleted.",
-    "chat-restored'already": "This chat message has already been restored.",
+    "chat-restored-already": "This chat message has already been restored.",
     "already-voting-for-this-post": "הצבעת כבר בנושא זה",
     "reputation-system-disabled": "מערכת המוניטין לא פעילה.",
     "downvoting-disabled": "היכולת להצביע נגד לא פעילה",
@@ -153,5 +153,8 @@
     "cant-move-to-same-topic": "Can't move post to same topic!",
     "cannot-block-self": "You cannot block yourself!",
     "cannot-block-privileged": "You cannot block administrators or global moderators",
+    "cannot-block-guest": "Guest are not able to block other users",
+    "already-blocked": "This user is already blocked",
+    "already-unblocked": "This user is already unblocked",
     "no-connection": "There seems to be a problem with your internet connection"
 }

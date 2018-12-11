@@ -120,7 +120,7 @@
     "chat-edit-duration-expired": "Bạn chỉ được phép sửa cuộc trò chuyện này sau %1 giây(s) sau khi viết bài.",
     "chat-delete-duration-expired": "Bạn chỉ được phép xóa cuộc trò chuyện này sau %1 giây(s) sau khi viết bài.",
     "chat-deleted-already": "Cuộc trò chuyện này đã được xóa.",
-    "chat-restored'already": "Cuộc trò chuyện này đã được lưu trữ.",
+    "chat-restored-already": "This chat message has already been restored.",
     "already-voting-for-this-post": "Bạn đã bỏ phiếu cho bài viết này",
     "reputation-system-disabled": "Hệ thống tín nhiệm đã bị vô hiệu hóa.",
     "downvoting-disabled": "Downvote đã bị tắt",
@@ -153,5 +153,8 @@
     "cant-move-to-same-topic": "Bạn không thể di chuyển bài viết vào cùng chủ đề hiện tại!",
     "cannot-block-self": "Bạn không thể tự khóa tài khoản của bạn!",
     "cannot-block-privileged": "Bạn không thể khóa người quản trị hoặc là người quản lý chung.",
+    "cannot-block-guest": "Guest are not able to block other users",
+    "already-blocked": "This user is already blocked",
+    "already-unblocked": "This user is already unblocked",
     "no-connection": "Kết nối internet của bạn có vấn đề."
 }

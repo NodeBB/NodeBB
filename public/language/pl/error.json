@@ -120,7 +120,7 @@
     "chat-edit-duration-expired": "Możesz edytować komunikat czatu tylko przez %1 sekund(y) po napisaniu.",
     "chat-delete-duration-expired": "Możesz skasować komunikat czatu tylko przez %1 sekund(y) po napisaniu.",
     "chat-deleted-already": "Ten komunikat czatu jest już skasowany",
-    "chat-restored'already": "Ten komunikat czatu jest już odzyskany.",
+    "chat-restored-already": "This chat message has already been restored.",
     "already-voting-for-this-post": "Już zagłosowałeś na ten post",
     "reputation-system-disabled": "System reputacji jest wyłączony.",
     "downvoting-disabled": "Negatywna ocena postów jest wyłączona",
@@ -153,5 +153,8 @@
     "cant-move-to-same-topic": "Nie można przenieść wpisu do tego samego tematu!",
     "cannot-block-self": "Nie możesz zablokować samego siebie!",
     "cannot-block-privileged": "Nie możesz blokować administratorów ani globalnych moderatorów",
+    "cannot-block-guest": "Guest are not able to block other users",
+    "already-blocked": "This user is already blocked",
+    "already-unblocked": "This user is already unblocked",
     "no-connection": "Sprawdź swoje połączenie z internetem"
 }

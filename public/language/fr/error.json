@@ -120,7 +120,7 @@
     "chat-edit-duration-expired": "Vous n'êtes autorisé à modifier des messages que pendant %1 seconde(s) après les avoir postés",
     "chat-delete-duration-expired": "Vous n'êtes autorisé à supprimer des messages que pendant %1 seconde(s) après les avoir postés",
     "chat-deleted-already": "Ce message a déjà été supprimé.",
-    "chat-restored'already": "Ce message a déjà été restauré.",
+    "chat-restored-already": "This chat message has already been restored.",
     "already-voting-for-this-post": "Vous avez déjà voté pour ce message.",
     "reputation-system-disabled": "Le système de réputation est désactivé",
     "downvoting-disabled": "Les votes négatifs ne sont pas autorisés",
@@ -153,5 +153,8 @@
     "cant-move-to-same-topic": "Impossible de déplacer le message dans le même sujet !",
     "cannot-block-self": "Vous ne pouvez pas vous bloquer !",
     "cannot-block-privileged": "Vous ne pouvez pas bloquer les administrateurs ou les modérateurs global",
+    "cannot-block-guest": "Guest are not able to block other users",
+    "already-blocked": "This user is already blocked",
+    "already-unblocked": "This user is already unblocked",
     "no-connection": "Il semble y avoir un problème avec votre connexion Internet"
 }

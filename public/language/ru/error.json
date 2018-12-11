@@ -120,7 +120,7 @@
     "chat-edit-duration-expired": "Вам разрешено редактировать сообщения чата за %1 секунд после публикации",
     "chat-delete-duration-expired": "Вам разрешено удалять сообщения чата за% 1 секунду после публикации",
     "chat-deleted-already": "Это сообщение чата уже удалено.",
-    "chat-restored'already": "Это сообщение чата уже восстановлено.",
+    "chat-restored-already": "This chat message has already been restored.",
     "already-voting-for-this-post": "Спасибо, вы уже проголосовали за это сообщение.",
     "reputation-system-disabled": "Система репутации отключена.",
     "downvoting-disabled": "Понижение оценки отключено",
@@ -153,5 +153,8 @@
     "cant-move-to-same-topic": "Невозможно переместить посты в эту же тему!",
     "cannot-block-self": "Вы не можете заблокировать себя!",
     "cannot-block-privileged": "Вы не можете заблокировать администраторов или глобальных модераторов",
+    "cannot-block-guest": "Guest are not able to block other users",
+    "already-blocked": "This user is already blocked",
+    "already-unblocked": "This user is already unblocked",
     "no-connection": "Кажется, что проблема с вашим подключением к Интернету"
 }

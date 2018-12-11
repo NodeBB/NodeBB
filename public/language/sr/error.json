@@ -120,7 +120,7 @@
     "chat-edit-duration-expired": "Време у којем вам је дозвољено уређивање порука ћаскања након објављивања: %1 сек.",
     "chat-delete-duration-expired": "Време у којем вам је дозвољено брисање порука ћаскања након објављивања: %1 сек.",
     "chat-deleted-already": "Ова порука ћаскања је већ избрисана.",
-    "chat-restored'already": "Ова порука ћаскања је већ обновљена.",
+    "chat-restored-already": "This chat message has already been restored.",
     "already-voting-for-this-post": "Већ сте гласали за ову поруку.",
     "reputation-system-disabled": "Угледи су онемогућени.",
     "downvoting-disabled": "Негативно гласање је онемогућено",
@@ -153,5 +153,8 @@
     "cant-move-to-same-topic": "Није могуће преместити поруку у исту тему!",
     "cannot-block-self": "Не можете блокирати себе!",
     "cannot-block-privileged": "Не можете блокирати администраторе или глобалне модераторе",
+    "cannot-block-guest": "Guest are not able to block other users",
+    "already-blocked": "This user is already blocked",
+    "already-unblocked": "This user is already unblocked",
     "no-connection": "Изгледа да постоји проблем са вашом интернет везом"
 }

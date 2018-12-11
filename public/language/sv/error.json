@@ -120,7 +120,7 @@
     "chat-edit-duration-expired": "Du kan endast redigera chattmeddelanden %1 sekunder efter att du skrivit dem",
     "chat-delete-duration-expired": "Du kan endast radera chattmeddelanden %1 sekunder efter att du skrivit dem",
     "chat-deleted-already": "Detta chattmeddelande har redan raderats.",
-    "chat-restored'already": "Detta chattmeddelande har redan återställts.",
+    "chat-restored-already": "This chat message has already been restored.",
     "already-voting-for-this-post": "Du har redan röstat på det här inlägget.",
     "reputation-system-disabled": "Ryktessystemet är inaktiverat.",
     "downvoting-disabled": "Nedröstning är inaktiverat",
@@ -153,5 +153,8 @@
     "cant-move-to-same-topic": "Kan inte flytta inlägg till samma ämne!",
     "cannot-block-self": "Du kan inte blockera dig själv!",
     "cannot-block-privileged": "Du kan inte blockera administratörer eller globala moderatorer",
+    "cannot-block-guest": "Guest are not able to block other users",
+    "already-blocked": "This user is already blocked",
+    "already-unblocked": "This user is already unblocked",
     "no-connection": "Det verkar vara något problem med din internetanslutning"
 }

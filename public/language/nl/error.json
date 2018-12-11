@@ -120,7 +120,7 @@
     "chat-edit-duration-expired": "Het is slechts toegestaan om binnen %1 seconde(n) na plaatsen van het chat bericht, deze te bewerken.",
     "chat-delete-duration-expired": "Het is slechts toegestaan om binnen %1 seconde(n) na plaatsen van het chat bericht, deze te verwijderen.",
     "chat-deleted-already": "Dit chat bericht is al verwijderd.",
-    "chat-restored'already": "Dit chat bericht is al hersteld.",
+    "chat-restored-already": "This chat message has already been restored.",
     "already-voting-for-this-post": "Je hebt al gestemd voor deze post.",
     "reputation-system-disabled": "Reputatie systeem is uitgeschakeld.",
     "downvoting-disabled": "Negatief stemmen is uitgeschakeld",
@@ -153,5 +153,8 @@
     "cant-move-to-same-topic": "Een bericht kan niet naar hetzelfde onderwerp worden verplaatst!",
     "cannot-block-self": "Je kan jezelf niet blokkeren!",
     "cannot-block-privileged": "Je kan geen administrators of global moderators blokkeren",
+    "cannot-block-guest": "Guest are not able to block other users",
+    "already-blocked": "This user is already blocked",
+    "already-unblocked": "This user is already unblocked",
     "no-connection": "Er lijkt een probleem te zijn met je internetverbinding"
 }
