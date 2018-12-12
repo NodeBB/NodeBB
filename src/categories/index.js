@@ -80,7 +80,8 @@ Categories.isIgnored = function (cids, uid, callback) {
 	if (parseInt(uid, 10) <= 0) {
 		return setImmediate(callback, null, cids.map(() => false));
 	}
-	db.isSortedSetMembers('uid:' + uid + ':ignored:cids', cids, callback);
+	const keys = cids.map(cid => 'cid:' + cid + ':ignorers');
+	db.isMemberOfSortedSets(keys, uid, callback);
 };
 
 Categories.getAllCidsFromSet = function (key, callback) {

@@ -627,6 +627,15 @@ describe('Sorted Set methods', function () {
 				done();
 			});
 		});
+
+		it('should return empty array if keys is empty array', function (done) {
+			db.isMemberOfSortedSets([], 'value2', function (err, isMembers) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 2);
+				assert.deepEqual(isMembers, []);
+				done();
+			});
+		});
 	});
 
 	describe('getSortedSetsMembers', function () {

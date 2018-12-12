@@ -195,7 +195,7 @@ module.exports = function (Topics) {
 						db.sortedSetScores('uid:' + uid + ':followed_tids', tids, next);
 					},
 					ignoredCids: function (next) {
-						user.getIgnoredCategories(uid, next);
+						categories.isIgnored(cids, uid, next);
 					},
 					readableCids: function (next) {
 						privileges.categories.filterCids('read', cids, uid, next);
@@ -205,6 +205,7 @@ module.exports = function (Topics) {
 			function (results, next) {
 				cid = cid && cid.map(String);
 				results.readableCids = results.readableCids.map(String);
+				const isCidIgnored = _.zipObject(cids, results.ignoredCids);
 
 				topicData.forEach(function (topic, index) {
 					function cidMatch(topicCid) {
@@ -213,7 +214,7 @@ module.exports = function (Topics) {
 
 					if (topic && topic.cid && cidMatch(topic.cid) && !blockedUids.includes(parseInt(topic.uid, 10))) {
 						topic.tid = parseInt(topic.tid, 10);
-						if ((results.isTopicsFollowed[index] || !results.ignoredCids.includes(String(topic.cid)))) {
+						if ((results.isTopicsFollowed[index] || !isCidIgnored[topic.cid])) {
 							counts[''] += 1;
 							tidsByFilter[''].push(topic.tid);
 						}

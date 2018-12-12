@@ -10,7 +10,19 @@ module.exports = function (User) {
 		if (parseInt(uid, 10) <= 0) {
 			return setImmediate(callback, null, []);
 		}
-		db.getSortedSetRange('uid:' + uid + ':ignored:cids', 0, -1, callback);
+		let cids;
+		async.waterfall([
+			function (next) {
+				categories.getAllCidsFromSet('categories:cid', next);
+			},
+			function (_cids, next) {
+				cids = _cids;
+				db.isMemberOfSortedSets(cids.map(cid => 'cid:' + cid + ':ignorers'), uid, next);
+			},
+			function (isMembers, next) {
+				next(null, cids.filter((cid, index) => isMembers[index]));
+			},
+		], callback);
 	};
 
 	User.getWatchedCategories = function (uid, callback) {
@@ -46,9 +58,7 @@ module.exports = function (User) {
 				if (!exists) {
 					return next(new Error('[[error:no-category]]'));
 				}
-				db.sortedSetAdd('uid:' + uid + ':ignored:cids', Date.now(), cid, next);
-			},
-			function (next) {
+
 				db.sortedSetAdd('cid:' + cid + ':ignorers', Date.now(), uid, next);
 			},
 		], callback);
@@ -67,9 +77,7 @@ module.exports = function (User) {
 				if (!exists) {
 					return next(new Error('[[error:no-category]]'));
 				}
-				db.sortedSetRemove('uid:' + uid + ':ignored:cids', cid, next);
-			},
-			function (next) {
+
 				db.sortedSetRemove('cid:' + cid + ':ignorers', uid, next);
 			},
 		], callback);

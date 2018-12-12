@@ -1,13 +1,15 @@
 
 'use strict';
 
-var async = require('async');
+const async = require('async');
+const _ = require('lodash');
 
-var db = require('../database');
-var privileges = require('../privileges');
-var user = require('../user');
-var meta = require('../meta');
-var plugins = require('../plugins');
+const db = require('../database');
+const privileges = require('../privileges');
+const user = require('../user');
+const categories = require('../categories');
+const meta = require('../meta');
+const plugins = require('../plugins');
 
 module.exports = function (Topics) {
 	Topics.getSortedTopics = function (params, callback) {
@@ -117,6 +119,8 @@ module.exports = function (Topics) {
 		const filter = params.filter;
 		const uid = params.uid;
 
+		let topicData;
+		let topicCids;
 		async.waterfall([
 			function (next) {
 				if (filter === 'watched') {
@@ -133,35 +137,29 @@ module.exports = function (Topics) {
 				privileges.topics.filterTids('read', tids, uid, next);
 			},
 			function (tids, next) {
+				Topics.getTopicsFields(tids, ['uid', 'tid', 'cid'], next);
+			},
+			function (_topicData, next) {
+				topicData = _topicData;
+				topicCids = _.uniq(topicData.map(topic => topic.cid)).filter(Boolean);
+
 				async.parallel({
 					ignoredCids: function (next) {
 						if (filter === 'watched' || meta.config.disableRecentCategoryFilter) {
 							return next(null, []);
 						}
-						user.getIgnoredCategories(uid, next);
+						categories.isIgnored(topicCids, uid, next);
 					},
-					topicData: function (next) {
-						Topics.getTopicsFields(tids, ['uid', 'tid', 'cid'], next);
-					},
+					filtered: async.apply(user.blocks.filter, uid, topicData),
 				}, next);
 			},
 			function (results, next) {
-				user.blocks.filter(uid, results.topicData, function (err, filtered) {
-					if (err) {
-						return next(err);
-					}
+				const isCidIgnored = _.zipObject(topicCids, results.ignoredCids);
+				topicData = results.filtered;
 
-					results.topicData = filtered;
-					next(null, results);
-				});
-			},
-			function (results, next) {
 				const cids = params.cids && params.cids.map(String);
-				tids = results.topicData.filter(function (topic) {
-					if (topic && topic.cid) {
-						return !results.ignoredCids.includes(topic.cid.toString()) && (!cids || (cids.length && cids.includes(topic.cid.toString())));
-					}
-					return false;
+				tids = topicData.filter(function (topic) {
+					return topic && topic.cid && !isCidIgnored[topic.cid] && (!cids || (cids.length && cids.includes(topic.cid.toString())));
 				}).map(topic => topic.tid);
 				plugins.fireHook('filter:topics.filterSortedTids', { tids: tids, params: params }, next);
 			},
