@@ -206,6 +206,9 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.isMemberOfSortedSets = function (keys, value, callback) {
+		if (!Array.isArray(keys) || !keys.length) {
+			return setImmediate(callback, null, []);
+		}
 		helpers.execKeysValue(redisClient, 'batch', 'zscore', keys, value, function (err, results) {
 			if (err) {
 				return callback(err);
