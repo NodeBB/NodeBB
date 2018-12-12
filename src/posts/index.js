@@ -157,7 +157,7 @@ Posts.updatePostVoteCount = function (postData, callback) {
 		function (next) {
 			async.waterfall([
 				function (next) {
-					topics.getTopicFields(postData.tid, ['mainPid', 'cid'], next);
+					topics.getTopicFields(postData.tid, ['mainPid', 'cid', 'pinned'], next);
 				},
 				function (topicData, next) {
 					if (parseInt(topicData.mainPid, 10) === parseInt(postData.pid, 10)) {
@@ -172,7 +172,11 @@ Posts.updatePostVoteCount = function (postData, callback) {
 								db.sortedSetAdd('topics:votes', postData.votes, postData.tid, next);
 							},
 							function (next) {
-								db.sortedSetAdd('cid:' + topicData.cid + ':tids:votes', postData.votes, postData.tid, next);
+								if (!topicData.pinned) {
+									db.sortedSetAdd('cid:' + topicData.cid + ':tids:votes', postData.votes, postData.tid, next);
+								} else {
+									next();
+								}
 							},
 						], function (err) {
 							next(err);
