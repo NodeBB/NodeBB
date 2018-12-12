@@ -39,7 +39,11 @@ module.exports = function (db, module) {
 			if (!key.length) {
 				return setImmediate(callback, null, []);
 			}
-			key = { $in: key };
+			if (key.length > 1) {
+				key = { $in: key };
+			} else {
+				key = key[0];
+			}
 		}
 
 		var query = { _key: key };

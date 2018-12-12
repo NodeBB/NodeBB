@@ -49,16 +49,7 @@ module.exports = function (Topics) {
 				if (params.term === 'alltime') {
 					var key = 'topics:' + params.sort;
 					if (params.cids) {
-						key = params.cids.map(function (cid) {
-							if (params.sort === 'recent') {
-								return 'cid:' + cid + ':tids:lastposttime';
-							} else if (params.sort === 'votes') {
-								return 'cid:' + cid + ':tids:votes';
-							} else if (params.sort === 'posts') {
-								return 'cid:' + cid + ':tids:posts';
-							}
-							return 'cid:' + cid + ':tids';
-						});
+						key = getCidSets(params.cids, params.sort);
 					}
 
 					db.getSortedSetRevRange(key, 0, 199, next);
@@ -67,7 +58,7 @@ module.exports = function (Topics) {
 				}
 			},
 			function (tids, next) {
-				if (params.term !== 'alltime') {
+				if (params.term !== 'alltime' || (params.cids && params.sort !== 'recent')) {
 					sortTids(tids, params, next);
 				} else {
 					next(null, tids);
@@ -77,6 +68,19 @@ module.exports = function (Topics) {
 				filterTids(tids, params, next);
 			},
 		], callback);
+	}
+
+	function getCidSets(cids, sort) {
+		const keys = [];
+		cids.forEach(function (cid) {
+			if (sort === 'recent') {
+				keys.push('cid:' + cid + ':tids:lastposttime');
+				return;
+			}
+			keys.push('cid:' + cid + ':tids' + (sort ? ':' + sort : ''));
+			keys.push('cid:' + cid + ':tids:pinned');
+		});
+		return keys;
 	}
 
 	function sortTids(tids, params, callback) {
