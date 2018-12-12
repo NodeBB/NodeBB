@@ -747,7 +747,9 @@ app.cacheBuster = null;
 		var clientEl = Array.prototype.filter.call(document.querySelectorAll('link[rel="stylesheet"]'), function (el) {
 			return el.href.indexOf(config.relative_path + '/assets/client') !== -1;
 		})[0] || null;
-
+		if (!clientEl) {
+			return;
+		}
 		// Update client.css link element to point to selected skin variant
 		clientEl.href = config.relative_path + '/assets/client' + (skinName ? '-' + skinName : '') + '.css';
 
