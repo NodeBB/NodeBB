@@ -29,6 +29,9 @@ module.exports = function (redisClient, module) {
 
 	function sortedSetRange(method, key, start, stop, withScores, callback) {
 		if (Array.isArray(key)) {
+			if (!key.length) {
+				return setImmediate(callback, null, []);
+			}
 			const batch = redisClient.batch();
 			key.forEach((key) => {
 				batch[method]([key, start, stop, 'WITHSCORES']);

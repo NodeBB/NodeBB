@@ -47,12 +47,11 @@ module.exports = function (Topics) {
 		async.waterfall([
 			function (next) {
 				if (params.term === 'alltime') {
-					var key = 'topics:' + params.sort;
 					if (params.cids) {
-						key = getCidSets(params.cids, params.sort);
+						getCidTids(params.cids, params.sort, next);
+					} else {
+						db.getSortedSetRevRange('topics:' + params.sort, 0, 199, next);
 					}
-
-					db.getSortedSetRevRange(key, 0, 199, next);
 				} else {
 					Topics.getLatestTidsFromSet('topics:tid', 0, -1, params.term, next);
 				}
@@ -70,17 +69,28 @@ module.exports = function (Topics) {
 		], callback);
 	}
 
-	function getCidSets(cids, sort) {
-		const keys = [];
+	function getCidTids(cids, sort, callback) {
+		const sets = [];
+		const pinnedSets = [];
 		cids.forEach(function (cid) {
 			if (sort === 'recent') {
-				keys.push('cid:' + cid + ':tids:lastposttime');
+				sets.push('cid:' + cid + ':tids:lastposttime');
 				return;
 			}
-			keys.push('cid:' + cid + ':tids' + (sort ? ':' + sort : ''));
-			keys.push('cid:' + cid + ':tids:pinned');
+			sets.push('cid:' + cid + ':tids' + (sort ? ':' + sort : ''));
+			pinnedSets.push('cid:' + cid + ':tids:pinned');
 		});
-		return keys;
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					tids: async.apply(db.getSortedSetRevRange, sets, 0, 199),
+					pinnedTids: async.apply(db.getSortedSetRevRange, pinnedSets, 0, -1),
+				}, next);
+			},
+			function (results, next) {
+				next(null, results.pinnedTids.concat(results.tids));
+			},
+		], callback);
 	}
 
 	function sortTids(tids, params, callback) {
