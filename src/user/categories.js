@@ -1,9 +1,10 @@
 'use strict';
 
-var async = require('async');
+const async = require('async');
+const _ = require('lodash');
 
-var db = require('../database');
-var categories = require('../categories');
+const db = require('../database');
+const categories = require('../categories');
 
 module.exports = function (User) {
 	User.setCategoryWatchState = function (uid, cid, state, callback) {
@@ -24,6 +25,32 @@ module.exports = function (User) {
 				}
 
 				db.sortedSetAdd('cid:' + cid + ':uid:watch:state', state, uid, next);
+			},
+		], callback);
+	};
+
+	User.getCategoryWatchState = function (uid, callback) {
+		if (parseInt(uid, 10) <= 0) {
+			return setImmediate(callback, null, []);
+		}
+		let userSettings;
+		let cids;
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					userSettings: async.apply(User.getSettings, uid),
+					cids: async.apply(categories.getAllCidsFromSet, 'categories:cid'),
+				}, next);
+			},
+			function (results, next) {
+				cids = results.cids;
+				userSettings = results.userSettings;
+				db.sortedSetsScore(results.cids.map(cid => 'cid:' + cid + ':uid:watch:state'), uid, next);
+			},
+			function (states, next) {
+				states = states.map(state => state || userSettings.categoryWatchState);
+				const data = _.zipObject(cids, states);
+				next(null, data);
 			},
 		], callback);
 	};

@@ -24,7 +24,7 @@ module.exports = function (Categories) {
 			},
 			function (states, next) {
 				next(null, states.map(state => state === Categories.watchStates.ignoring));
-			}
+			},
 		], callback);
 	};
 
