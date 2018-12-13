@@ -46,8 +46,8 @@ Categories.getCategoryById = function (data, callback) {
 				topicCount: function (next) {
 					Categories.getTopicCount(data, next);
 				},
-				isIgnored: function (next) {
-					Categories.isIgnored([data.cid], data.uid, next);
+				watchState: function (next) {
+					Categories.getWatchState([data.cid], data.uid, next);
 				},
 				parent: function (next) {
 					if (category.parentCid) {
@@ -65,7 +65,9 @@ Categories.getCategoryById = function (data, callback) {
 			category.topics = results.topics.topics;
 			category.nextStart = results.topics.nextStart;
 			category.topic_count = results.topicCount;
-			category.isIgnored = results.isIgnored[0];
+			category.isWatched = results.watchState[0] === Categories.watchStates.watching;
+			category.isNotWatched = results.watchState[0] === Categories.watchStates.notwatching;
+			category.isIgnored = results.watchState[0] === Categories.watchStates.ignoring;
 			category.parent = results.parent;
 
 			calculateTopicPostCount(category);

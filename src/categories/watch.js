@@ -1,9 +1,10 @@
 'use strict';
 
-var async = require('async');
+const async = require('async');
 
-var db = require('../database');
-var user = require('../user');
+const db = require('../database');
+const user = require('../user');
+const meta = require('../meta');
 
 module.exports = function (Categories) {
 	Categories.watchStates = {
@@ -17,6 +18,20 @@ module.exports = function (Categories) {
 		if (parseInt(uid, 10) <= 0) {
 			return setImmediate(callback, null, cids.map(() => false));
 		}
+		async.waterfall([
+			function (next) {
+				Categories.getWatchState(cids, uid, next);
+			},
+			function (states, next) {
+				next(null, states.map(state => state === Categories.watchStates.ignoring));
+			}
+		], callback);
+	};
+
+	Categories.getWatchState = function (cids, uid, callback) {
+		if (parseInt(uid, 10) <= 0) {
+			return setImmediate(callback, null, cids.map(() => meta.config.categoryWatchState));
+		}
 
 		const keys = cids.map(cid => 'cid:' + cid + ':uid:watch:state');
 		async.waterfall([
@@ -27,11 +42,7 @@ module.exports = function (Categories) {
 				}, next);
 			},
 			function (results, next) {
-				cids = cids.map((cid, index) => {
-					results.states[index] = results.states[index] || results.userSettings.categoryWatchState;
-					return results.states[index] === Categories.watchStates.ignoring;
-				});
-				next(null, cids);
+				next(null, results.states.map(state => state || results.userSettings.categoryWatchState));
 			},
 		], callback);
 	};
