@@ -21,6 +21,7 @@ require('./unread')(Categories);
 require('./activeusers')(Categories);
 require('./recentreplies')(Categories);
 require('./update')(Categories);
+require('./watch')(Categories);
 
 Categories.exists = function (cid, callback) {
 	db.exists('category:' + cid, callback);
@@ -74,14 +75,6 @@ Categories.getCategoryById = function (data, callback) {
 			next(null, data.category);
 		},
 	], callback);
-};
-
-Categories.isIgnored = function (cids, uid, callback) {
-	if (parseInt(uid, 10) <= 0) {
-		return setImmediate(callback, null, cids.map(() => false));
-	}
-	const keys = cids.map(cid => 'cid:' + cid + ':ignorers');
-	db.isMemberOfSortedSets(keys, uid, callback);
 };
 
 Categories.getAllCidsFromSet = function (key, callback) {
@@ -441,22 +434,6 @@ Categories.buildForSelectCategories = function (categories, callback) {
 		recursive(category, categoriesData, '', 0);
 	});
 	callback(null, categoriesData);
-};
-
-Categories.getIgnorers = function (cid, start, stop, callback) {
-	db.getSortedSetRevRange('cid:' + cid + ':ignorers', start, stop, callback);
-};
-
-Categories.filterIgnoringUids = function (cid, uids, callback) {
-	async.waterfall([
-		function (next) {
-			db.isSortedSetMembers('cid:' + cid + ':ignorers', uids, next);
-		},
-		function (isIgnoring, next) {
-			const readingUids = uids.filter((uid, index) => uid && !isIgnoring[index]);
-			next(null, readingUids);
-		},
-	], callback);
 };
 
 Categories.async = require('../promisify')(Categories);

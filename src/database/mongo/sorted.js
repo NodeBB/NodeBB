@@ -56,6 +56,10 @@ module.exports = function (db, module) {
 			query.score.$lte = max;
 		}
 
+		if (max === min) {
+			query.score = max;
+		}
+
 		const fields = { _id: 0, _key: 0 };
 		if (!withScores) {
 			fields.score = 0;

@@ -64,6 +64,7 @@ function filterTidCidIgnorers(uids, tid, cid, callback) {
 					db.isSetMembers('tid:' + tid + ':ignorers', uids, next);
 				},
 				categoryIgnored: function (next) {
+					// TODO: replace
 					db.sortedSetScores('cid:' + cid + ':ignorers', uids, next);
 				},
 			}, next);

@@ -155,6 +155,15 @@ SocketCategories.getSelectCategories = function (socket, data, callback) {
 	], callback);
 };
 
+SocketCategories.setWatchState = function (socket, data, callback) {
+	if (!data || !data.cid || !data.state) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	ignoreOrWatch(function (uid, cid, next) {
+		user.setCategoryWatchState(uid, cid, data.state, next);
+	}, socket, data.cid, callback);
+};
+
 SocketCategories.watch = function (socket, cid, callback) {
 	ignoreOrWatch(user.watchCategory, socket, cid, callback);
 };

@@ -289,7 +289,11 @@ describe('Categories', function () {
 				Categories.isIgnored([categoryObj.cid], posterUid, function (err, isIgnored) {
 					assert.ifError(err);
 					assert.equal(isIgnored[0], true);
-					done();
+					Categories.getIgnorers(categoryObj.cid, 0, -1, function (err, ignorers) {
+						assert.ifError(err);
+						assert.deepEqual(ignorers, [posterUid]);
+						done();
+					});
 				});
 			});
 		});
@@ -302,6 +306,13 @@ describe('Categories', function () {
 					assert.equal(isIgnored[0], false);
 					done();
 				});
+			});
+		});
+
+		it('should error if watch state does not exist', function (done) {
+			socketCategories.setWatchState({ uid: posterUid }, { cid: categoryObj.cid, state: 'invalid-state' }, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
 			});
 		});
 
