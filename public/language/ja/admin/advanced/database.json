@@ -18,16 +18,16 @@
 	"mongo.resident-memory": "常駐メモリ",
 	"mongo.virtual-memory": "仮想メモリ",
 	"mongo.mapped-memory": "マップされたメモリ",
-	"mongo.bytes-in": "Bytes In",
-	"mongo.bytes-out": "Bytes Out",
-	"mongo.num-requests": "Number of Requests",
+	"mongo.bytes-in": "バイト数",
+	"mongo.bytes-out": "バイトアウト",
+	"mongo.num-requests": "リクエスト数",
 	"mongo.raw-info": "MongoDBのRaw情報",
 
 	"redis": "Redis",
 	"redis.version": "Redisのバージョン",
-	"redis.keys": "Keys",
-	"redis.expires": "Expires",
-	"redis.avg-ttl": "Average TTL",
+	"redis.keys": "キー",
+	"redis.expires": "期限切れ",
+	"redis.avg-ttl": "平均TTL",
 	"redis.connected-clients": "接続されたクライアント",
 	"redis.connected-slaves": "接続されたスレーヴ",
 	"redis.blocked-clients": "ブロックされたクライアント",
@@ -36,10 +36,10 @@
 	"redis.total-connections-recieved": "受け取った総接続数",
 	"redis.total-commands-processed": "処理された総コマンド数",
 	"redis.iops": "秒ごとの瞬間操作数",
-	"redis.iinput": "Instantaneous Input Per Second",
-	"redis.ioutput": "Instantaneous Output Per Second",
-	"redis.total-input": "Total Input",
-	"redis.total-output": "Total Ouput",
+	"redis.iinput": "瞬時入力/秒",
+	"redis.ioutput": "瞬時出力/秒",
+	"redis.total-input": "合計入力",
+	"redis.total-output": "合計出力",
 
 	"redis.keyspace-hits": "ヒットしたキー・スペース",
 	"redis.keyspace-misses": "見逃したキー・スペース",
@@ -47,5 +47,5 @@
 
 	"postgres": "Postgres",
 	"postgres.version": "PostgreSQL Version",
-	"postgres.raw-info": "Postgres Raw Info"
+	"postgres.raw-info": "Postgres のRaw情報"
 }
