@@ -62,22 +62,25 @@ define('forum/category', [
 	}
 
 	function handleIgnoreWatch(cid) {
-		$('[component="category/watching"], [component="category/ignoring"]').on('click', function () {
+		$('[component="category/watching"], [component="category/ignoring"], [component="category/notwatching"]').on('click', function () {
 			var $this = $(this);
-			var command = $this.attr('component') === 'category/watching' ? 'watch' : 'ignore';
+			var state = $this.attr('data-state');
 
-			socket.emit('categories.' + command, cid, function (err) {
+			socket.emit('categories.setWatchState', { cid: cid, state: state }, function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
 
-				$('[component="category/watching/menu"]').toggleClass('hidden', command !== 'watch');
-				$('[component="category/watching/check"]').toggleClass('fa-check', command === 'watch');
+				$('[component="category/watching/menu"]').toggleClass('hidden', state !== 'watching');
+				$('[component="category/watching/check"]').toggleClass('fa-check', state === 'watching');
 
-				$('[component="category/ignoring/menu"]').toggleClass('hidden', command !== 'ignore');
-				$('[component="category/ignoring/check"]').toggleClass('fa-check', command === 'ignore');
+				$('[component="category/notwatching/menu"]').toggleClass('hidden', state !== 'notwatching');
+				$('[component="category/notwatching/check"]').toggleClass('fa-check', state === 'notwatching');
 
-				app.alertSuccess('[[category:' + command + '.message]]');
+				$('[component="category/ignoring/menu"]').toggleClass('hidden', state !== 'ignoring');
+				$('[component="category/ignoring/check"]').toggleClass('fa-check', state === 'ignoring');
+
+				app.alertSuccess('[[category:' + state + '.message]]');
 			});
 		});
 	}

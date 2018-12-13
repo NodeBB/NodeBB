@@ -12,7 +12,7 @@ module.exports = function (User) {
 		}
 		const isStateValid = Object.keys(categories.watchStates).some(key => categories.watchStates[key] === parseInt(state, 10));
 		if (!isStateValid) {
-			return setImmediate(callback, new Error('[[error:invalid-data]]'));
+			return setImmediate(callback, new Error('[[error:invalid-watch-state]]'));
 		}
 		async.waterfall([
 			function (next) {

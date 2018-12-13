@@ -160,7 +160,7 @@ SocketCategories.setWatchState = function (socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 	ignoreOrWatch(function (uid, cid, next) {
-		user.setCategoryWatchState(uid, cid, data.state, next);
+		user.setCategoryWatchState(uid, cid, categories.watchStates[data.state], next);
 	}, socket, data.cid, callback);
 };
 
