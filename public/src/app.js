@@ -112,7 +112,13 @@ app.cacheBuster = null;
 		 *   config (obj)
 		 *   next (string)
 		 */
-		require(['benchpress', 'translator', 'forum/header/notifications', 'forum/header/chat'], function (Benchpress, translator, Notifications, Chat) {
+		require([
+			'benchpress',
+			'translator',
+			'forum/unread',
+			'forum/header/notifications',
+			'forum/header/chat',
+		], function (Benchpress, translator, Unread, Notifications, Chat) {
 			app.user = data.header.user;
 			data.header.config = data.config;
 			config = data.config;
@@ -136,7 +142,7 @@ app.cacheBuster = null;
 				Object.values(toRender).forEach(function (element, idx) {
 					element.html(html[idx]);
 				});
-
+				Unread.initUnreadTopics();
 				Notifications.prepareDOM();
 				Chat.prepareDOM();
 				app.reskin(data.config.bootswatchSkin);
