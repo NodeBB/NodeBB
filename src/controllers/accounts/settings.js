@@ -161,6 +161,8 @@ settingsController.get = function (req, res, callback) {
 				};
 			});
 
+			userData.categoryWatchState = { [userData.settings.categoryWatchState]: true };
+
 			userData.disableCustomUserSkins = meta.config.disableCustomUserSkins;
 
 			userData.allowUserHomePage = meta.config.allowUserHomePage;

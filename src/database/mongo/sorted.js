@@ -56,6 +56,10 @@ module.exports = function (db, module) {
 			query.score.$lte = max;
 		}
 
+		if (max === min) {
+			query.score = max;
+		}
+
 		const fields = { _id: 0, _key: 0 };
 		if (!withScores) {
 			fields.score = 0;
@@ -115,10 +119,12 @@ module.exports = function (db, module) {
 	};
 
 	function getSortedSetRangeByScore(key, start, count, min, max, sort, withScores, callback) {
-		if (parseInt(count, 10) === -1) {
-			count = 0;
+		if (parseInt(count, 10) === 0) {
+			return setImmediate(callback, null, []);
 		}
-		var stop = start + count - 1;
+		const stop = (parseInt(count, 10) === -1) ? -1 : (start + count - 1);
+
+		console.log(key, start, stop);
 		getSortedSetRange(key, start, stop, min, max, sort, withScores, callback);
 	}
 
@@ -261,7 +267,7 @@ module.exports = function (db, module) {
 
 	module.sortedSetsScore = function (keys, value, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback();
+			return callback(null, []);
 		}
 		value = helpers.valueToString(value);
 		db.collection('objects').find({ _key: { $in: keys }, value: value }, { projection: { _id: 0, value: 0 } }).toArray(function (err, result) {

@@ -21,6 +21,7 @@ require('./unread')(Categories);
 require('./activeusers')(Categories);
 require('./recentreplies')(Categories);
 require('./update')(Categories);
+require('./watch')(Categories);
 
 Categories.exists = function (cid, callback) {
 	db.exists('category:' + cid, callback);
@@ -45,8 +46,8 @@ Categories.getCategoryById = function (data, callback) {
 				topicCount: function (next) {
 					Categories.getTopicCount(data, next);
 				},
-				isIgnored: function (next) {
-					Categories.isIgnored([data.cid], data.uid, next);
+				watchState: function (next) {
+					Categories.getWatchState([data.cid], data.uid, next);
 				},
 				parent: function (next) {
 					if (category.parentCid) {
@@ -64,7 +65,9 @@ Categories.getCategoryById = function (data, callback) {
 			category.topics = results.topics.topics;
 			category.nextStart = results.topics.nextStart;
 			category.topic_count = results.topicCount;
-			category.isIgnored = results.isIgnored[0];
+			category.isWatched = results.watchState[0] === Categories.watchStates.watching;
+			category.isNotWatched = results.watchState[0] === Categories.watchStates.notwatching;
+			category.isIgnored = results.watchState[0] === Categories.watchStates.ignoring;
 			category.parent = results.parent;
 
 			calculateTopicPostCount(category);
@@ -74,14 +77,6 @@ Categories.getCategoryById = function (data, callback) {
 			next(null, data.category);
 		},
 	], callback);
-};
-
-Categories.isIgnored = function (cids, uid, callback) {
-	if (parseInt(uid, 10) <= 0) {
-		return setImmediate(callback, null, cids.map(() => false));
-	}
-	const keys = cids.map(cid => 'cid:' + cid + ':ignorers');
-	db.isMemberOfSortedSets(keys, uid, callback);
 };
 
 Categories.getAllCidsFromSet = function (key, callback) {
@@ -441,22 +436,6 @@ Categories.buildForSelectCategories = function (categories, callback) {
 		recursive(category, categoriesData, '', 0);
 	});
 	callback(null, categoriesData);
-};
-
-Categories.getIgnorers = function (cid, start, stop, callback) {
-	db.getSortedSetRevRange('cid:' + cid + ':ignorers', start, stop, callback);
-};
-
-Categories.filterIgnoringUids = function (cid, uids, callback) {
-	async.waterfall([
-		function (next) {
-			db.isSortedSetMembers('cid:' + cid + ':ignorers', uids, next);
-		},
-		function (isIgnoring, next) {
-			const readingUids = uids.filter((uid, index) => uid && !isIgnoring[index]);
-			next(null, readingUids);
-		},
-	], callback);
 };
 
 Categories.async = require('../promisify')(Categories);

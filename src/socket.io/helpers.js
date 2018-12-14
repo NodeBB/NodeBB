@@ -8,6 +8,7 @@ var websockets = require('./index');
 var user = require('../user');
 var posts = require('../posts');
 var topics = require('../topics');
+var categories = require('../categories');
 var privileges = require('../privileges');
 var notifications = require('../notifications');
 var plugins = require('../plugins');
@@ -63,15 +64,15 @@ function filterTidCidIgnorers(uids, tid, cid, callback) {
 				topicIgnored: function (next) {
 					db.isSetMembers('tid:' + tid + ':ignorers', uids, next);
 				},
-				categoryIgnored: function (next) {
-					db.sortedSetScores('cid:' + cid + ':ignorers', uids, next);
+				categoryWatchStates: function (next) {
+					categories.getUidsWatchStates(cid, uids, next);
 				},
 			}, next);
 		},
 		function (results, next) {
 			uids = uids.filter(function (uid, index) {
 				return results.topicFollowed[index] ||
-					(!results.topicFollowed[index] && !results.topicIgnored[index] && !results.categoryIgnored[index]);
+					(!results.topicIgnored[index] && results.categoryWatchStates[index] !== categories.watchStates.ignoring);
 			});
 			next(null, uids);
 		},

@@ -30,6 +30,7 @@
 	"watched_categories": "Watched categories",
 	"watched": "Watched",
 	"ignored": "Ignored",
+	"default-category-watch-state": "Default category watch state",
 	"followers": "Followers",
 	"following": "Following",
 	"blocks": "Blocks",

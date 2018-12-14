@@ -170,6 +170,9 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.sortedSetsScore = function (keys, value, callback) {
+		if (!Array.isArray(keys) || !keys.length) {
+			return callback(null, []);
+		}
 		helpers.execKeysValue(redisClient, 'batch', 'zscore', keys, value, function (err, scores) {
 			if (err) {
 				return callback(err);

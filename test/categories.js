@@ -284,24 +284,35 @@ describe('Categories', function () {
 		});
 
 		it('should ignore category', function (done) {
-			socketCategories.ignore({ uid: posterUid }, categoryObj.cid, function (err) {
+			socketCategories.ignore({ uid: posterUid }, { cid: categoryObj.cid }, function (err) {
 				assert.ifError(err);
 				Categories.isIgnored([categoryObj.cid], posterUid, function (err, isIgnored) {
 					assert.ifError(err);
 					assert.equal(isIgnored[0], true);
-					done();
+					Categories.getIgnorers(categoryObj.cid, 0, -1, function (err, ignorers) {
+						assert.ifError(err);
+						assert.deepEqual(ignorers, [posterUid]);
+						done();
+					});
 				});
 			});
 		});
 
 		it('should watch category', function (done) {
-			socketCategories.watch({ uid: posterUid }, categoryObj.cid, function (err) {
+			socketCategories.watch({ uid: posterUid }, { cid: categoryObj.cid }, function (err) {
 				assert.ifError(err);
 				Categories.isIgnored([categoryObj.cid], posterUid, function (err, isIgnored) {
 					assert.ifError(err);
 					assert.equal(isIgnored[0], false);
 					done();
 				});
+			});
+		});
+
+		it('should error if watch state does not exist', function (done) {
+			socketCategories.setWatchState({ uid: posterUid }, { cid: categoryObj.cid, state: 'invalid-state' }, function (err) {
+				assert.equal(err.message, '[[error:invalid-watch-state]]');
+				done();
 			});
 		});
 

@@ -330,7 +330,7 @@ function getSearchCids(data, callback) {
 			async.parallel({
 				watchedCids: function (next) {
 					if (data.categories.includes('watched')) {
-						user.getWatchedCategories(data.uid, next);
+						user.getCategoriesByStates(data.uid, [categories.watchStates.watching], next);
 					} else {
 						setImmediate(next, null, []);
 					}
