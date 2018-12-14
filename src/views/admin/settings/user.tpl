@@ -307,6 +307,15 @@
 				</label>
 			</div>
 
+			<div class="form-group">
+				<label>[[admin/settings/user:categoryWatchState]]</label>
+				<select class="form-control" data-field="categoryWatchState">
+					<option value="3">[[admin/settings/user:categoryWatchState.watching]]</option>
+					<option value="2">[[admin/settings/user:categoryWatchState.notwatching]]</option>
+					<option value="1">[[admin/settings/user:categoryWatchState.ignoring]]</option>
+				</select>
+			</div>
+
 			<label>[[admin/settings/user:default-notification-settings]]</label>
 
 			<!-- BEGIN notificationSettings -->
