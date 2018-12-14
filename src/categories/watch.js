@@ -13,7 +13,7 @@ module.exports = function (Categories) {
 	};
 
 	Categories.isIgnored = function (cids, uid, callback) {
-		if (parseInt(uid, 10) <= 0) {
+		if (!(parseInt(uid, 10) > 0)) {
 			return setImmediate(callback, null, cids.map(() => false));
 		}
 		async.waterfall([
@@ -27,7 +27,7 @@ module.exports = function (Categories) {
 	};
 
 	Categories.getWatchState = function (cids, uid, callback) {
-		if (parseInt(uid, 10) <= 0) {
+		if (!(parseInt(uid, 10) > 0)) {
 			return setImmediate(callback, null, cids.map(() => Categories.watchStates.notwatching));
 		}
 
