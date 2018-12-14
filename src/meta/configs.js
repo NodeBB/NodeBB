@@ -46,6 +46,8 @@ function deserialize(config) {
 	return deserialized;
 }
 
+Configs.deserialize = deserialize;
+
 Configs.init = function (callback) {
 	var config;
 	async.waterfall([

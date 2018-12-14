@@ -501,7 +501,7 @@
 
 		// takes a string like 1000 and returns 1,000
 		addCommas: function (text) {
-			return text.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
+			return String(text).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
 		},
 
 		toISOString: function (timestamp) {
@@ -625,10 +625,10 @@
 			var rect = el.getBoundingClientRect();
 
 			return (
-				rect.top >= 0
-				&& rect.left >= 0
-				&& rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) /* or $(window).height() */
-				&& rect.right <= (window.innerWidth || document.documentElement.clientWidth) /* or $(window).width() */
+				rect.top >= 0 &&
+				rect.left >= 0 &&
+				rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /* or $(window).height() */
+				rect.right <= (window.innerWidth || document.documentElement.clientWidth) /* or $(window).width() */
 			);
 		},
 
@@ -731,10 +731,10 @@
 		},
 
 		isInternalURI: function (targetLocation, referenceLocation, relative_path) {
-			return targetLocation.host === ''	// Relative paths are always internal links
-				|| (
-					targetLocation.host === referenceLocation.host && targetLocation.protocol === referenceLocation.protocol	// Otherwise need to check if protocol and host match
-					&& (relative_path.length > 0 ? targetLocation.pathname.indexOf(relative_path) === 0 : true)	// Subfolder installs need this additional check
+			return targetLocation.host === '' ||	// Relative paths are always internal links
+				(
+					targetLocation.host === referenceLocation.host && targetLocation.protocol === referenceLocation.protocol &&	// Otherwise need to check if protocol and host match
+					(relative_path.length > 0 ? targetLocation.pathname.indexOf(relative_path) === 0 : true)	// Subfolder installs need this additional check
 				);
 		},
 

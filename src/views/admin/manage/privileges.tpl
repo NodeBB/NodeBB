@@ -5,19 +5,10 @@
 				[[admin/manage/categories:privileges.description]]
 			</p>
 
-			<p class="lead">
+			<div class="lead">
 				[[admin/manage/categories:privileges.category-selector]]
-				<button type="button" id="category-selector" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-					{selected} <i class="fa fa-angle-down"></i>
-				</button>
-
-				<ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="category-selector">
-					<li class="mdl-menu__item mdl-menu__item--full-bleed-divider" data-cid="global">[[admin/manage/privileges:global]]</li>
-					<!-- BEGIN allCategories -->
-					<li class="mdl-menu__item" data-cid="{../value}">{../text}</li>
-					<!-- END -->
-				</ul>
-			</p>
+				<!-- IMPORT partials/category-selector.tpl -->
+			</div>
 
 			<hr />
 

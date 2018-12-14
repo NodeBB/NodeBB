@@ -120,7 +120,7 @@
     "chat-edit-duration-expired": "Je vám umožněno upravit konverzační zprávy pod dobu %1 sekund/y po jejich odeslání",
     "chat-delete-duration-expired": "Je vám umožněno odstranit konverzační zprávy pod dobu %1 sekund/y po jejich odeslání",
     "chat-deleted-already": "Tato konverzační zpráva již byla odstraněna.",
-    "chat-restored'already": "Tato konverzační zpráva byla obnovena.",
+    "chat-restored-already": "This chat message has already been restored.",
     "already-voting-for-this-post": "Již jste v tomto příspěvku hlasoval.",
     "reputation-system-disabled": "Systém reputací je zakázán.",
     "downvoting-disabled": "Systém nesouhlasu je zakázán",
@@ -153,5 +153,8 @@
     "cant-move-to-same-topic": "Není možné přesunout příspěvek do stejného tématu!",
     "cannot-block-self": "Nemůžete zablokovat sebe sama!",
     "cannot-block-privileged": "Nemůžete zablokovat správce nebo hlavní moderátory",
+    "cannot-block-guest": "Guest are not able to block other users",
+    "already-blocked": "This user is already blocked",
+    "already-unblocked": "This user is already unblocked",
     "no-connection": "Zdá se, že nastal problém s připojením k internetu"
 }

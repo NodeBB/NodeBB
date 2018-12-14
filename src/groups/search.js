@@ -13,10 +13,10 @@ module.exports = function (Groups) {
 		}
 		query = query.toLowerCase();
 		async.waterfall([
-			async.apply(db.getObjectValues, 'groupslug:groupname'),
+			async.apply(db.getSortedSetRange, 'groups:createtime', 0, -1),
 			function (groupNames, next) {
 				// Ephemeral groups and the registered-users groups are searchable
-				groupNames = Groups.ephemeralGroups.concat(groupNames).concat('registered-users');
+				groupNames = Groups.ephemeralGroups.concat(groupNames);
 				groupNames = groupNames.filter(function (name) {
 					return name.toLowerCase().includes(query) && name !== 'administrators' && !Groups.isPrivilegeGroup(name);
 				});

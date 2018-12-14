@@ -4,11 +4,11 @@
 	"host": "host",
 	"pid": "pid",
 	"nodejs": "nodejs",
-	"online": "online",
+	"online": "dostępny",
 	"git": "git",
 	"memory": "pamięć",
 	"load": "obciążenie",
-	"uptime": "uptime",
+	"uptime": "czas działania",
 
 	"registered": "Zarejestrowane",
 	"sockets": "Sockety",

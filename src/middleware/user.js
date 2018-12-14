@@ -15,7 +15,7 @@ var controllers = {
 };
 
 module.exports = function (middleware) {
-	middleware.authenticate = function (req, res, next) {
+	function authenticate(req, res, next, callback) {
 		if (req.loggedIn) {
 			return next();
 		}
@@ -34,13 +34,23 @@ module.exports = function (middleware) {
 							return next();
 						}
 
-						controllers.helpers.notAllowed(req, res);
+						callback();
 					});
 				},
 			});
 		}
 
-		controllers.helpers.notAllowed(req, res);
+		callback();
+	}
+
+	middleware.authenticate = function (req, res, next) {
+		authenticate(req, res, next, function () {
+			controllers.helpers.notAllowed(req, res, next);
+		});
+	};
+
+	middleware.authenticateOrGuest = function (req, res, next) {
+		authenticate(req, res, next, next);
 	};
 
 	middleware.ensureSelfOrGlobalPrivilege = function (req, res, next) {

@@ -1,5 +1,6 @@
 {
-    "password-reset-requested": "Password Reset Requested - %1!",
+    "test-email.subject": "Test Email",
+    "password-reset-requested": "Password Reset Requested!",
     "welcome-to": "Ahoy thar %1!",
     "invite": "Ye be invited by %1",
     "greeting_no_name": "Hello",

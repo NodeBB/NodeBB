@@ -29,6 +29,9 @@ module.exports = function (redisClient, module) {
 
 	function sortedSetRange(method, key, start, stop, withScores, callback) {
 		if (Array.isArray(key)) {
+			if (!key.length) {
+				return setImmediate(callback, null, []);
+			}
 			const batch = redisClient.batch();
 			key.forEach((key) => {
 				batch[method]([key, start, stop, 'WITHSCORES']);
@@ -116,7 +119,7 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.sortedSetsCard = function (keys, callback) {
-		if (Array.isArray(keys) && !keys.length) {
+		if (!Array.isArray(keys) || !keys.length) {
 			return callback(null, []);
 		}
 		var batch = redisClient.batch();
@@ -167,11 +170,27 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.sortedSetsScore = function (keys, value, callback) {
-		helpers.execKeysValue(redisClient, 'batch', 'zscore', keys, value, callback);
+		helpers.execKeysValue(redisClient, 'batch', 'zscore', keys, value, function (err, scores) {
+			if (err) {
+				return callback(err);
+			}
+			scores = scores.map(function (d) {
+				return d === null ? d : parseFloat(d);
+			});
+			callback(null, scores);
+		});
 	};
 
 	module.sortedSetScores = function (key, values, callback) {
-		helpers.execKeyValues(redisClient, 'batch', 'zscore', key, values, callback);
+		helpers.execKeyValues(redisClient, 'batch', 'zscore', key, values, function (err, scores) {
+			if (err) {
+				return callback(err);
+			}
+			scores = scores.map(function (d) {
+				return d === null ? d : parseFloat(d);
+			});
+			callback(null, scores);
+		});
 	};
 
 	module.isSortedSetMember = function (key, value, callback) {
@@ -190,6 +209,9 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.isMemberOfSortedSets = function (keys, value, callback) {
+		if (!Array.isArray(keys) || !keys.length) {
+			return setImmediate(callback, null, []);
+		}
 		helpers.execKeysValue(redisClient, 'batch', 'zscore', keys, value, function (err, results) {
 			if (err) {
 				return callback(err);

@@ -56,7 +56,7 @@ function setupWinston() {
 		formats.push(winston.format.json());
 	} else {
 		const timestampFormat = winston.format((info) => {
-			var dateString = new Date().toISOString() + ' [' + global.process.pid + ']';
+			var dateString = new Date().toISOString() + ' [' + nconf.get('port') + '/' + global.process.pid + ']';
 			info.level = dateString + ' - ' + info.level;
 			return info;
 		});

@@ -120,7 +120,7 @@
     "chat-edit-duration-expired": "Você só pode editar mensagens de chat %1 segundo(s) após postar",
     "chat-delete-duration-expired": "Você só pode deletar mensagens de chat %1 segundo(s) após postar",
     "chat-deleted-already": "Essa mensagem de chat já foi deletada",
-    "chat-restored'already": "Essa mensagem de chat já foi restaurada",
+    "chat-restored-already": "This chat message has already been restored.",
     "already-voting-for-this-post": "Você já votou neste post.",
     "reputation-system-disabled": "O sistema de reputação está desabilitado.",
     "downvoting-disabled": "Negativação está desabilitada",
@@ -129,8 +129,8 @@
     "not-enough-reputation-min-rep-website": "Você não possui reputação suficiente para adicionar um site",
     "not-enough-reputation-min-rep-aboutme": "Você não possui reputação suficiente para adicionar um sobre mim",
     "not-enough-reputation-min-rep-signature": "Você não possui reputação suficiente para adicionar uma assinatura",
-    "not-enough-reputation-min-rep-profile-picture": "You do not have enough reputation to add a profile picture",
-    "not-enough-reputation-min-rep-cover-picture": "You do not have enough reputation to add a cover picture",
+    "not-enough-reputation-min-rep-profile-picture": "Você não possui reputação suficiente para adicionar uma imagem de perfil",
+    "not-enough-reputation-min-rep-cover-picture": "Você não possui reputação suficiente para adicionar uma imagem de capa",
     "already-flagged": "Você já sinalizou esse post",
     "self-vote": "Você não pode votar no seu próprio post",
     "reload-failed": "O NodeBB encontrou um problema ao recarregar: \"%1\". O NodeBB continuará a servir os assets existentes no lado do cliente, apesar de que você deve desfazer o que você fez antes de recarregar.",
@@ -153,5 +153,8 @@
     "cant-move-to-same-topic": "Não é possível mover um post para o mesmo tópico!",
     "cannot-block-self": "You cannot block yourself!",
     "cannot-block-privileged": "Você não pode bloquear administradores e moderadores globais",
+    "cannot-block-guest": "Guest are not able to block other users",
+    "already-blocked": "This user is already blocked",
+    "already-unblocked": "This user is already unblocked",
     "no-connection": "There seems to be a problem with your internet connection"
 }

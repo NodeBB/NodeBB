@@ -8,8 +8,9 @@ var plugins = require('../plugins');
 exports.handleURIErrors = function (err, req, res, next) {
 	// Handle cases where malformed URIs are passed in
 	if (err instanceof URIError) {
-		var tidMatch = req.path.match(/^\/topic\/(\d+)\//);
-		var cidMatch = req.path.match(/^\/category\/(\d+)\//);
+		const cleanPath = req.path.replace(new RegExp('^' + nconf.get('relative_path')), '');
+		var tidMatch = cleanPath.match(/^\/topic\/(\d+)\//);
+		var cidMatch = cleanPath.match(/^\/category\/(\d+)\//);
 
 		if (tidMatch) {
 			res.redirect(nconf.get('relative_path') + tidMatch[0]);
@@ -49,7 +50,7 @@ exports.handleErrors = function (err, req, res, next) { // eslint-disable-line n
 		// Display NodeBB error page
 		var status = parseInt(err.status, 10);
 		if ((status === 302 || status === 308) && err.path) {
-			return res.locals.isAPI ? res.set('X-Redirect', err.path).status(200).json(err.path) : res.redirect(err.path);
+			return res.locals.isAPI ? res.set('X-Redirect', err.path).status(200).json(err.path) : res.redirect(nconf.get('relative_path') + err.path);
 		}
 
 		winston.error(req.path + '\n', err);

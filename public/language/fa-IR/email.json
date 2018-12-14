@@ -1,5 +1,6 @@
 {
-    "password-reset-requested": "درخواست بازیابی گذرواژه- %1!",
+    "test-email.subject": "Test Email",
+    "password-reset-requested": "Password Reset Requested!",
     "welcome-to": "به %1 خوش آمدید",
     "invite": "دعوتنامه از %1",
     "greeting_no_name": "سلام",

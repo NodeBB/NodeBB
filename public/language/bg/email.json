@@ -1,5 +1,6 @@
 {
-    "password-reset-requested": "Изпратена е заявка за подновяване на паролата – %1!",
+    "test-email.subject": "Пробно е-писмо",
+    "password-reset-requested": "Изпратена е заявка за подновяване на паролата!",
     "welcome-to": "Добре дошли в %1",
     "invite": "Покана от %1",
     "greeting_no_name": "Здравейте",

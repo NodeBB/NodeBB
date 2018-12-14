@@ -2,8 +2,10 @@
 
 var os = require('os');
 var winston = require('winston');
+var _ = require('lodash');
 
 var meta = require('../meta');
+var languages = require('../languages');
 
 module.exports = function (middleware) {
 	middleware.addHeaders = function (req, res, next) {
@@ -60,4 +62,30 @@ module.exports = function (middleware) {
 
 		next();
 	};
+
+	let langs = [];
+	middleware.autoLocale = function (req, res, next) {
+		if (parseInt(req.uid, 10) > 0 || !meta.config.autoDetectLang) {
+			return next();
+		}
+
+		var lang = req.acceptsLanguages(langs);
+		if (!lang) {
+			return next();
+		}
+		req.query.lang = lang;
+		next();
+	};
+
+	languages.listCodes(function (err, codes) {
+		if (err) {
+			winston.error('[middleware/autoLocale] Could not retrieve languages codes list!');
+			codes = [];
+		}
+
+		winston.verbose('[middleware/autoLocale] Retrieves languages list for middleware');
+		var defaultLang = meta.config.defaultLang || 'en-GB';
+
+		langs = _.uniq([defaultLang, ...codes]);
+	});
 };

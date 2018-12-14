@@ -40,6 +40,7 @@ apiController.loadConfig = function (req, callback) {
 	config.disableChatMessageEditing = meta.config.disableChatMessageEditing === 1;
 	config.maximumChatMessageLength = meta.config.maximumChatMessageLength || 1000;
 	config.socketioTransports = nconf.get('socket.io:transports') || ['polling', 'websocket'];
+	config.socketioOrigins = nconf.get('socket.io:origins');
 	config.websocketAddress = nconf.get('socket.io:address') || '';
 	config.maxReconnectionAttempts = meta.config.maxReconnectionAttempts || 5;
 	config.reconnectionDelay = meta.config.reconnectionDelay || 1500;

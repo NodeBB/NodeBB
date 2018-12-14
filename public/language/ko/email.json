@@ -1,5 +1,6 @@
 {
-    "password-reset-requested": "비밀번호 재설정을 요청했습니다 - %1!",
+    "test-email.subject": "Test Email",
+    "password-reset-requested": "Password Reset Requested!",
     "welcome-to": "%1에 오신 것을 환영합니다.",
     "invite": "%1 님이 초대하였습니다.",
     "greeting_no_name": "안녕하세요",

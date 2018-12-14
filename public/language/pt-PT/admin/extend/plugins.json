@@ -18,7 +18,7 @@
 	"order.explanation": "Aqui os plugins carregam numa ordem específica, desde o topo até ao fundo",
 
 	"plugin-item.themes": "Temas",
-	"plugin-item.deactivate": "Desativados",
+	"plugin-item.deactivate": "Desativar",
 	"plugin-item.activate": "Ativar",
 	"plugin-item.install": "Instalar",
 	"plugin-item.uninstall": "Desinstalar",
@@ -28,7 +28,7 @@
 	"plugin-item.upgrade": "Atualizar",
 	"plugin-item.more-info": "Para mais informações:",
 	"plugin-item.unknown": "Desconhecido",
-	"plugin-item.unknown-explanation": "The state of this plugin could not be determined, possibly due to a misconfiguration error.",
+	"plugin-item.unknown-explanation": "Não foi possível determinar o estado deste plugin, possivelmente devido a um erro de configuração incorreta.",
 
 	"alert.enabled": "Plugin Ativado",
 	"alert.disabled": "Plugin Desativado",

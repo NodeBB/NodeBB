@@ -39,7 +39,11 @@ module.exports = function (db, module) {
 			if (!key.length) {
 				return setImmediate(callback, null, []);
 			}
-			key = { $in: key };
+			if (key.length > 1) {
+				key = { $in: key };
+			} else {
+				key = key[0];
+			}
 		}
 
 		var query = { _key: key };
@@ -149,7 +153,7 @@ module.exports = function (db, module) {
 
 	module.sortedSetsCard = function (keys, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback();
+			return callback(null, []);
 		}
 		var pipeline = [
 			{ $match: { _key: { $in: keys } } },
@@ -339,8 +343,8 @@ module.exports = function (db, module) {
 	};
 
 	module.isMemberOfSortedSets = function (keys, value, callback) {
-		if (!Array.isArray(keys)) {
-			return callback();
+		if (!Array.isArray(keys) || !keys.length) {
+			return setImmediate(callback, null, []);
 		}
 		value = helpers.valueToString(value);
 		db.collection('objects').find({ _key: { $in: keys }, value: value }, { projection: { _id: 0, score: 0 } }).toArray(function (err, results) {

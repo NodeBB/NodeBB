@@ -120,7 +120,7 @@
     "chat-edit-duration-expired": "您只能在发布 %1 秒后修改聊天信息",
     "chat-delete-duration-expired": "您只能在发布 %1 秒后删除聊天信息",
     "chat-deleted-already": "聊天消息已经被删除",
-    "chat-restored'already": "聊天消息已经恢复",
+    "chat-restored-already": "This chat message has already been restored.",
     "already-voting-for-this-post": "您已为此帖回复投过票了。",
     "reputation-system-disabled": "声望系统已禁用。",
     "downvoting-disabled": "踩已被禁用",
@@ -153,5 +153,8 @@
     "cant-move-to-same-topic": "无法将帖子移动到相同的主题中！",
     "cannot-block-self": "您不能把自己屏蔽！",
     "cannot-block-privileged": "您不能屏蔽管理员或者全局版主",
+    "cannot-block-guest": "Guest are not able to block other users",
+    "already-blocked": "This user is already blocked",
+    "already-unblocked": "This user is already unblocked",
     "no-connection": "您的网络连接似乎存在问题"
 }

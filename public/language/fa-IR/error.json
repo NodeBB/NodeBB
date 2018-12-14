@@ -120,7 +120,7 @@
     "chat-edit-duration-expired": "شما قادر هستید پیام های چت را فقط بعد از %1 ثانیه ویرایش کنید",
     "chat-delete-duration-expired": "شما قادر هستید پیام های چت را فقط بعد از %1 ثانیه پاک کنید",
     "chat-deleted-already": "این پیام قبلا حذف شده است",
-    "chat-restored'already": "این پیام قبلا بازگردانده شده است",
+    "chat-restored-already": "This chat message has already been restored.",
     "already-voting-for-this-post": "شما قبلا به این پست رای داده اید.",
     "reputation-system-disabled": "سیستم اعتبار غیر فعال شده است",
     "downvoting-disabled": "رأی منفی غیر فعال شده است",
@@ -153,5 +153,8 @@
     "cant-move-to-same-topic": "نمی توان پست یک تاپیک را به همان تاپیک انتقال داد !",
     "cannot-block-self": "شما نمی توانید خودتان را بلاک کنید!",
     "cannot-block-privileged": "شما نمی توانید ادمین ها یا مدیر ها را بلاک کنید",
+    "cannot-block-guest": "Guest are not able to block other users",
+    "already-blocked": "This user is already blocked",
+    "already-unblocked": "This user is already unblocked",
     "no-connection": "به نظر می رسد اینترنت شما مشکل دارد"
 }

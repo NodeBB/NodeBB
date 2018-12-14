@@ -36,7 +36,10 @@ module.exports = function (Messaging) {
 				return callback(err);
 			}
 
-			content = String(data.content);
+			content = String(data.content).trim();
+			if (!content) {
+				return callback(new Error('[[error:invalid-chat-message]]'));
+			}
 
 			var maximumChatMessageLength = (meta.config.maximumChatMessageLength || 1000);
 			if (content.length > maximumChatMessageLength) {

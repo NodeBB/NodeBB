@@ -1,5 +1,6 @@
 {
-    "password-reset-requested": "已要求重設密碼 - %1!",
+    "test-email.subject": "Test Email",
+    "password-reset-requested": "Password Reset Requested!",
     "welcome-to": "歡迎來到 %1",
     "invite": "邀請來自 %1",
     "greeting_no_name": "你好",

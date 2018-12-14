@@ -166,7 +166,7 @@ helpers.buildCategoryBreadcrumbs = function (cid, callback) {
 
 			if (!data.disabled && !data.isSection) {
 				breadcrumbs.unshift({
-					text: validator.escape(String(data.name)),
+					text: String(data.name),
 					url: nconf.get('relative_path') + '/category/' + data.slug,
 				});
 			}

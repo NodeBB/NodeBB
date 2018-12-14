@@ -1,5 +1,6 @@
 {
-    "password-reset-requested": "Parola Değiştirme İsteği Gönderildi",
+    "test-email.subject": "Test Email",
+    "password-reset-requested": "Password Reset Requested!",
     "welcome-to": "Hoş geldin %1",
     "invite": "%1 sizi davet etti",
     "greeting_no_name": "Merhaba",

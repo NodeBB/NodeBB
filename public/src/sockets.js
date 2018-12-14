@@ -150,4 +150,16 @@ app.isConnected = false;
 			},
 		});
 	}
+
+	if (
+		config.socketioOrigins &&
+		config.socketioOrigins !== '*' &&
+		config.socketioOrigins.indexOf(location.hostname) === -1
+	) {
+		console.error(
+			'You are accessing the forum from an unknown origin. This will likely result in websockets failing to connect. \n' +
+			'To fix this, set the `"url"` value in `config.json` to the URL at which you access the site. \n' +
+			'For more information, see this FAQ topic: https://community.nodebb.org/topic/13388'
+		);
+	}
 }());

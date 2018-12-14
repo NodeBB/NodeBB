@@ -37,7 +37,7 @@ describe('Categories', function () {
 
 	it('should create a new category', function (done) {
 		Categories.create({
-			name: 'Test Category',
+			name: 'Test Category & NodeBB',
 			description: 'Test category created by testing script',
 			icon: 'fa-check',
 			blockclass: 'category-blue',
@@ -57,22 +57,42 @@ describe('Categories', function () {
 			stop: -1,
 			uid: 0,
 		}, function (err, categoryData) {
-			assert.equal(err, null);
+			assert.ifError(err);
 
 			assert(categoryData);
-			assert.equal(categoryObj.name, categoryData.name);
+			assert.equal('Test Category &amp; NodeBB', categoryData.name);
 			assert.equal(categoryObj.description, categoryData.description);
 			assert.strictEqual(categoryObj.disabled, 0);
-
 			done();
 		});
 	});
 
+	it('should return null if category does not exist', function (done) {
+		Categories.getCategoryById({
+			cid: 123123123,
+			start: 0,
+			stop: -1,
+		}, function (err, categoryData) {
+			assert.ifError(err);
+			assert.strictEqual(categoryData, null);
+			done();
+		});
+	});
+
+	it('should get all categories', function (done) {
+		Categories.getAllCategories(1, function (err, data) {
+			assert.ifError(err);
+			assert(Array.isArray(data));
+			assert.equal(data[0].cid, categoryObj.cid);
+			done();
+		});
+	});
 
 	it('should load a category route', function (done) {
-		request(nconf.get('url') + '/category/' + categoryObj.cid + '/test-category', function (err, response, body) {
+		request(nconf.get('url') + '/api/category/' + categoryObj.cid + '/test-category', { json: true }, function (err, response, body) {
 			assert.ifError(err);
 			assert.equal(response.statusCode, 200);
+			assert.equal(body.name, 'Test Category &amp; NodeBB');
 			assert(body);
 			done();
 		});

@@ -41,16 +41,16 @@ describe('minifier', function () {
 
 			assert.strictEqual(
 				fs.readFileSync(destPath).toString().replace(/\r\n/g, '\n'),
-				'(function (window, document) {'
-				+ '\n\twindow.doStuff = function () {'
-				+ '\n\t\tdocument.body.innerHTML = \'Stuff has been done\';'
-				+ '\n\t};'
-				+ '\n})(window, document);'
-				+ '\n'
-				+ '\n;function foo(name, age) {'
-				+ '\n\treturn \'The person known as "\' + name + \'" is \' + age + \' years old\';'
-				+ '\n}'
-				+ '\n'
+				'(function (window, document) {' +
+				'\n\twindow.doStuff = function () {' +
+				'\n\t\tdocument.body.innerHTML = \'Stuff has been done\';' +
+				'\n\t};' +
+				'\n})(window, document);' +
+				'\n' +
+				'\n;function foo(name, age) {' +
+				'\n\treturn \'The person known as "\' + name + \'" is \' + age + \' years old\';' +
+				'\n}' +
+				'\n'
 			);
 			done();
 		});
@@ -69,8 +69,8 @@ describe('minifier', function () {
 
 			assert.strictEqual(
 				fs.readFileSync(destPath).toString(),
-				'(function(n,o){n.doStuff=function(){o.body.innerHTML="Stuff has been done"}})(window,document);function foo(n,o){return\'The person known as "\'+n+\'" is \'+o+" years old"}'
-				+ '\n//# sourceMappingURL=minified.js.map'
+				'(function(n,o){n.doStuff=function(){o.body.innerHTML="Stuff has been done"}})(window,document);function foo(n,o){return\'The person known as "\'+n+\'" is \'+o+" years old"}' +
+				'\n//# sourceMappingURL=minified.js.map'
 			);
 			done();
 		});
@@ -87,8 +87,8 @@ describe('minifier', function () {
 				assert.ifError(err);
 				assert.strictEqual(
 					buffer.toString(),
-					'(function(n,o){n.doStuff=function(){o.body.innerHTML="Stuff has been done"}})(window,document);'
-					+ '\n//# sourceMappingURL=1.js.map'
+					'(function(n,o){n.doStuff=function(){o.body.innerHTML="Stuff has been done"}})(window,document);' +
+					'\n//# sourceMappingURL=1.js.map'
 				);
 				done();
 			});

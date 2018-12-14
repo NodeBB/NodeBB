@@ -284,6 +284,8 @@ function continueLogin(req, res, next) {
 				});
 			});
 		} else {
+			delete req.query.lang;
+
 			async.parallel({
 				doLogin: async.apply(authenticationController.doLogin, req, userData.uid),
 				header: async.apply(middleware.generateHeader, req, res, {}),
@@ -363,7 +365,11 @@ authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 					user.auth.addSession(uid, req.sessionID, next);
 				},
 				function (next) {
-					db.setObjectField('uid:' + uid + ':sessionUUID:sessionId', uuid, req.sessionID, next);
+					if (uid > 0) {
+						db.setObjectField('uid:' + uid + ':sessionUUID:sessionId', uuid, req.sessionID, next);
+					} else {
+						next();
+					}
 				},
 				function (next) {
 					user.updateLastOnlineTime(uid, next);

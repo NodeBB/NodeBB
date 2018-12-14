@@ -231,7 +231,7 @@ SELECT COUNT(*) c
 
 	module.sortedSetsCard = function (keys, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback();
+			return callback(null, []);
 		}
 
 		query({
@@ -473,8 +473,8 @@ SELECT z."value" v
 	};
 
 	module.isMemberOfSortedSets = function (keys, value, callback) {
-		if (!Array.isArray(keys)) {
-			return callback();
+		if (!Array.isArray(keys) || !keys.length) {
+			return setImmediate(callback, null, []);
 		}
 
 		value = helpers.valueToString(value);

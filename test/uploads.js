@@ -95,7 +95,7 @@ describe('Upload Controllers', function () {
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
 				assert(body[0].url);
-				var name = body[0].url.replace(nconf.get('upload_url'), '');
+				var name = body[0].url.replace(nconf.get('relative_path') + nconf.get('upload_url'), '');
 				socketUser.deleteUpload({ uid: regularUid }, { uid: regularUid, name: name }, function (err) {
 					assert.ifError(err);
 					db.getSortedSetRange('uid:' + regularUid + ':uploads', 0, -1, function (err, uploads) {

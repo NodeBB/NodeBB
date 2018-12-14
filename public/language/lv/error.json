@@ -120,7 +120,7 @@
     "chat-edit-duration-expired": "Pēc publicēšanas ir atļauts tikai %1 sekundes laika rediģēt sarunu",
     "chat-delete-duration-expired": "Pēc publicēšanas ir atļauts tikai %1 sekundes laika izdzēst sarunu",
     "chat-deleted-already": "Saruna jau ir izdzēsta.",
-    "chat-restored'already": "Saruna jau ir atjaunota.",
+    "chat-restored-already": "This chat message has already been restored.",
     "already-voting-for-this-post": "Tu jau balsoji par šo rakstu.",
     "reputation-system-disabled": "Ranga punktu sistēma ir atspējota.",
     "downvoting-disabled": "Balsošana \"pret\" ir atspējota",
@@ -153,5 +153,8 @@
     "cant-move-to-same-topic": "Nevar pārnest uz savu pašu tematu!",
     "cannot-block-self": "Nevar pats sevi bloķēt!",
     "cannot-block-privileged": "Nevar bloķēt administratorus vai globālos moderatorus",
+    "cannot-block-guest": "Guest are not able to block other users",
+    "already-blocked": "This user is already blocked",
+    "already-unblocked": "This user is already unblocked",
     "no-connection": "Šķiet, ka pastāv problēma ar Tavu interneta savienojumu"
 }

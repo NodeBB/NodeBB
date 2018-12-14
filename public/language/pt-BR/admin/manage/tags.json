@@ -6,7 +6,7 @@
 	"description": "Escolha tags clicando e/ou arrastando, use shift para escolher diversas.",
 	"create": "Criar Tag",
 	"modify": "Modificar Tags",
-	"rename": "Rename Tags",
+	"rename": "Renomear Tags",
 	"delete": "Excluir Tags Selecionadas",
 	"search": "Pesquisar por tags...",
 	"settings": "Clique <a href=\"%1\">aqui</a> para visitar a página de configurações de tag.",

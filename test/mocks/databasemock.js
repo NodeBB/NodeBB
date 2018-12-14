@@ -33,6 +33,10 @@ nconf.defaults({
 	relative_path: '',
 });
 
+var urlObject = url.parse(nconf.get('url'));
+var relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
+nconf.set('relative_path', relativePath);
+
 if (!nconf.get('isCluster')) {
 	nconf.set('isPrimary', 'true');
 	nconf.set('isCluster', 'true');
@@ -45,47 +49,47 @@ var productionDbConfig = nconf.get(dbType);
 if (!testDbConfig) {
 	const errorText = 'test_database is not defined';
 	winston.info(
-		'\n===========================================================\n'
-		+ 'Please, add parameters for test database in config.json\n'
-		+ 'For example (redis):\n'
-		+ '"test_database": {\n'
-		+ '    "host": "127.0.0.1",\n'
-		+ '    "port": "6379",\n'
-		+ '    "password": "",\n'
-		+ '    "database": "1"\n'
-		+ '}\n'
-		+ ' or (mongo):\n'
-		+ '"test_database": {\n'
-		+ '    "host": "127.0.0.1",\n'
-		+ '    "port": "27017",\n'
-		+ '    "password": "",\n'
-		+ '    "database": "1"\n'
-		+ '}\n'
-		+ ' or (mongo) in a replicaset\n'
-		+ '"test_database": {\n'
-		+ '    "host": "127.0.0.1,127.0.0.1,127.0.0.1",\n'
-		+ '    "port": "27017,27018,27019",\n'
-		+ '    "username": "",\n'
-		+ '    "password": "",\n'
-		+ '    "database": "nodebb_test"\n'
-		+ '}\n'
-		+ ' or (postgres):\n'
-		+ '"test_database": {\n'
-		+ '    "host": "127.0.0.1",\n'
-		+ '    "port": "5432",\n'
-		+ '    "username": "postgres",\n'
-		+ '    "password": "",\n'
-		+ '    "database": "nodebb_test"\n'
-		+ '}\n'
-		+ '==========================================================='
+		'\n===========================================================\n' +
+		'Please, add parameters for test database in config.json\n' +
+		'For example (redis):\n' +
+		'"test_database": {\n' +
+		'    "host": "127.0.0.1",\n' +
+		'    "port": "6379",\n' +
+		'    "password": "",\n' +
+		'    "database": "1"\n' +
+		'}\n' +
+		' or (mongo):\n' +
+		'"test_database": {\n' +
+		'    "host": "127.0.0.1",\n' +
+		'    "port": "27017",\n' +
+		'    "password": "",\n' +
+		'    "database": "1"\n' +
+		'}\n' +
+		' or (mongo) in a replicaset\n' +
+		'"test_database": {\n' +
+		'    "host": "127.0.0.1,127.0.0.1,127.0.0.1",\n' +
+		'    "port": "27017,27018,27019",\n' +
+		'    "username": "",\n' +
+		'    "password": "",\n' +
+		'    "database": "nodebb_test"\n' +
+		'}\n' +
+		' or (postgres):\n' +
+		'"test_database": {\n' +
+		'    "host": "127.0.0.1",\n' +
+		'    "port": "5432",\n' +
+		'    "username": "postgres",\n' +
+		'    "password": "",\n' +
+		'    "database": "nodebb_test"\n' +
+		'}\n' +
+		'==========================================================='
 	);
 	winston.error(errorText);
 	throw new Error(errorText);
 }
 
-if (testDbConfig.database === productionDbConfig.database
-	&& testDbConfig.host === productionDbConfig.host
-	&& testDbConfig.port === productionDbConfig.port) {
+if (testDbConfig.database === productionDbConfig.database &&
+	testDbConfig.host === productionDbConfig.host &&
+	testDbConfig.port === productionDbConfig.port) {
 	const errorText = 'test_database has the same config as production db';
 	winston.error(errorText);
 	throw new Error(errorText);

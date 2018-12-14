@@ -2,32 +2,45 @@
 
 define('categorySelector', ['benchpress', 'translator', 'categorySearch'], function (Benchpress, translator, categorySearch) {
 	var categorySelector = {};
-	var selectedCategory;
-	var el;
-	categorySelector.init = function (_el, callback) {
+
+	categorySelector.init = function (el, callback) {
 		callback = callback || function () {};
-		el = _el;
-		selectedCategory = null;
+		var selector = {
+			el: el,
+			selectedCategory: null,
+		};
+
 		el.on('click', '[data-cid]', function () {
 			var categoryEl = $(this);
-			categorySelector.selectCategory(categoryEl.attr('data-cid'));
-			callback(selectedCategory);
+			if (categoryEl.hasClass('disabled')) {
+				return false;
+			}
+			selector.selectCategory(categoryEl.attr('data-cid'));
+			callback(selector.selectedCategory);
 		});
 
 		categorySearch.init(el);
-	};
 
-	categorySelector.getSelectedCategory = function () {
-		return selectedCategory;
-	};
+		selector.selectCategory = function (cid) {
+			var categoryEl = selector.el.find('[data-cid="' + cid + '"]');
+			selector.selectedCategory = {
+				cid: cid,
+				name: categoryEl.attr('data-name'),
+			};
 
-	categorySelector.selectCategory = function (cid) {
-		var categoryEl = el.find('[data-cid="' + cid + '"]');
-		selectedCategory = {
-			cid: cid,
-			name: categoryEl.attr('data-name'),
+			if (categoryEl.length) {
+				selector.el.find('[component="category-selector-selected"]').html(categoryEl.find('[component="category-markup"]').html());
+			} else {
+				selector.el.find('[component="category-selector-selected"]').translateHtml('[[topic:thread_tools.select_category]]');
+			}
 		};
-		el.find('[component="category-selector-selected"]').html(categoryEl.find('[component="category-markup"]').html());
+		selector.getSelectedCategory = function () {
+			return selector.selectedCategory;
+		};
+		selector.getSelectedCid = function () {
+			return selector.selectedCategory ? selector.selectedCategory.cid : 0;
+		};
+		return selector;
 	};
 
 	categorySelector.modal = function (categories, callback) {
@@ -50,12 +63,11 @@ define('categorySelector', ['benchpress', 'translator', 'categorySearch'], funct
 						},
 					},
 				});
-				categorySelector.init(modal.find('[component="category-selector"]'));
+				var selector = categorySelector.init(modal.find('[component="category-selector"]'));
 				function submit(ev) {
 					ev.preventDefault();
-					var selectedCategory = categorySelector.getSelectedCategory();
-					if (selectedCategory) {
-						callback(selectedCategory.cid);
+					if (selector.selectedCategory) {
+						callback(selector.selectedCategory.cid);
 						modal.modal('hide');
 					}
 					return false;

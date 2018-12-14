@@ -38,7 +38,7 @@
 
 	"control-panel": "Controle do Sistema",
 	"rebuild-and-restart": "Rebuild &amp; Restart",
-	"restart": "Restart",
+	"restart": "Reiniciar",
 	"restart-warning": "Rebuilding or Restarting your NodeBB will drop all existing connections for a few seconds.",
 	"restart-disabled": "Rebuilding and Restarting your NodeBB has been disabled as you do not seem to be running it via the appropriate daemon.",
 	"maintenance-mode": "Modo de Manutenção",

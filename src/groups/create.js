@@ -77,9 +77,9 @@ module.exports = function (Groups) {
 	};
 
 	function isSystemGroup(data) {
-		return data.system === true || parseInt(data.system, 10) === 1
-			|| data.name === 'administrators' || data.name === 'registered-users' || data.name === 'Global Moderators'
-			|| Groups.isPrivilegeGroup(data.name);
+		return data.system === true || parseInt(data.system, 10) === 1 ||
+			data.name === 'administrators' || data.name === 'registered-users' || data.name === 'Global Moderators' ||
+			Groups.isPrivilegeGroup(data.name);
 	}
 
 	function validateGroupName(name, callback) {

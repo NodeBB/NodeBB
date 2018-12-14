@@ -1,5 +1,6 @@
 {
-    "password-reset-requested": "Zurücksetzung des Passworts beantragt - %1!",
+    "test-email.subject": "Test E-Mail",
+    "password-reset-requested": "Zurücksetzung des Passworts beantragt!",
     "welcome-to": "Willkommen bei %1",
     "invite": "Einladung von %1",
     "greeting_no_name": "Hallo",

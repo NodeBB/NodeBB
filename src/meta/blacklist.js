@@ -80,9 +80,9 @@ Blacklist.test = function (clientIp, callback) {
 	}
 
 	if (
-		!Blacklist._rules.ipv4.includes(clientIp)	// not explicitly specified in ipv4 list
-		&& !Blacklist._rules.ipv6.includes(clientIp)	// not explicitly specified in ipv6 list
-		&& !Blacklist._rules.cidr.some(function (subnet) {
+		!Blacklist._rules.ipv4.includes(clientIp) &&	// not explicitly specified in ipv4 list
+		!Blacklist._rules.ipv6.includes(clientIp) &&	// not explicitly specified in ipv6 list
+		!Blacklist._rules.cidr.some(function (subnet) {
 			var cidr = ipaddr.parseCIDR(subnet);
 			if (addr.kind() !== cidr[0].kind()) {
 				return false;

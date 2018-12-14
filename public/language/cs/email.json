@@ -1,5 +1,6 @@
 {
-    "password-reset-requested": "Požadována obnova hesla – %1!",
+    "test-email.subject": "Test Email",
+    "password-reset-requested": "Password Reset Requested!",
     "welcome-to": "Vítejte v %1",
     "invite": "Pozvánka od %1",
     "greeting_no_name": "Dobrý den",

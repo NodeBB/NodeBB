@@ -115,15 +115,15 @@ module.exports = function (privileges) {
 				var isModOf = {};
 				cids = cids.filter(function (cid, index) {
 					isModOf[cid] = results.isModerators[index];
-					return !results.categories[index].disabled
-						&& (results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
+					return !results.categories[index].disabled &&
+						(results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
 				});
 
 				const cidsSet = new Set(cids);
 
 				pids = postData.filter(function (post) {
-					return post.topic && cidsSet.has(post.topic.cid)
-						&& ((!post.topic.deleted && !post.deleted) || results.isAdmin || isModOf[post.cid]);
+					return post.topic && cidsSet.has(post.topic.cid) &&
+						((!post.topic.deleted && !post.deleted) || results.isAdmin || isModOf[post.cid]);
 				}).map(post => post.pid);
 
 				plugins.fireHook('filter:privileges.posts.filter', {

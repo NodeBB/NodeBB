@@ -217,7 +217,14 @@ middleware.buildSkinAsset = function (req, res, next) {
 		async.waterfall([
 			async.apply(plugins.prepareForBuild, ['client side styles']),
 			async.apply(meta.css.buildBundle, target[0], true),
-		], next);
+		], function (err, css) {
+			if (err) {
+				return next();
+			}
+
+			require('../meta/minifier').killAll();
+			res.status(200).type('text/css').send(css);
+		});
 	} else {
 		setImmediate(next);
 	}

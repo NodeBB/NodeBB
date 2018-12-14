@@ -62,22 +62,22 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 
 		graphData.rooms = data;
 
-		var html = '<div class="text-center pull-left">'
-						+ '<span class="formatted-number">' + data.onlineRegisteredCount + '</span>'
-						+ '<div class="stat">[[admin/general/dashboard:active-users.users]]</div>'
-					+ '</div>'
-					+ '<div class="text-center pull-left">'
-						+ '<span class="formatted-number">' + data.onlineGuestCount + '</span>'
-						+ '<div class="stat">[[admin/general/dashboard:active-users.guests]]</div>'
-					+ '</div>'
-					+ '<div class="text-center pull-left">'
-						+ '<span class="formatted-number">' + (data.onlineRegisteredCount + data.onlineGuestCount) + '</span>'
-						+ '<div class="stat">[[admin/general/dashboard:active-users.total]]</div>'
-					+ '</div>'
-					+ '<div class="text-center pull-left">'
-						+ '<span class="formatted-number">' + data.socketCount + '</span>'
-						+ '<div class="stat">[[admin/general/dashboard:active-users.connections]]</div>'
-					+ '</div>';
+		var html = '<div class="text-center pull-left">' +
+						'<span class="formatted-number">' + data.onlineRegisteredCount + '</span>' +
+						'<div class="stat">[[admin/general/dashboard:active-users.users]]</div>' +
+					'</div>' +
+					'<div class="text-center pull-left">' +
+						'<span class="formatted-number">' + data.onlineGuestCount + '</span>' +
+						'<div class="stat">[[admin/general/dashboard:active-users.guests]]</div>' +
+					'</div>' +
+					'<div class="text-center pull-left">' +
+						'<span class="formatted-number">' + (data.onlineRegisteredCount + data.onlineGuestCount) + '</span>' +
+						'<div class="stat">[[admin/general/dashboard:active-users.total]]</div>' +
+					'</div>' +
+					'<div class="text-center pull-left">' +
+						'<span class="formatted-number">' + data.socketCount + '</span>' +
+						'<div class="stat">[[admin/general/dashboard:active-users.connections]]</div>' +
+					'</div>';
 
 		updateRegisteredGraph(data.onlineRegisteredCount, data.onlineGuestCount);
 		updatePresenceGraph(data.users);
@@ -513,10 +513,10 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 			topics.forEach(function (topic, i) {
 				var	label = topic.count === '0' ? topic.title : '<a title="' + topic.title + '"href="' + RELATIVE_PATH + '/topic/' + topic.tid + '" target="_blank"> ' + topic.title + '</a>';
 
-				html += '<li>'
-					+ '<div style="background-color: ' + topicColors[i] + ';"></div>'
-					+ '<span> (' + topic.count + ') ' + label + '</span>'
-					+ '</li>';
+				html += '<li>' +
+					'<div style="background-color: ' + topicColors[i] + ';"></div>' +
+					'<span> (' + topic.count + ') ' + label + '</span>' +
+					'</li>';
 			});
 			legend.translateHtml(html);
 		}

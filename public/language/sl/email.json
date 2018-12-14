@@ -1,5 +1,6 @@
 {
-    "password-reset-requested": "Zahtevana je bila ponastavitev gesla - %1!",
+    "test-email.subject": "Test Email",
+    "password-reset-requested": "Password Reset Requested!",
     "welcome-to": "Dobrodošli na forumu %1!",
     "invite": "Povabilo uporabnika %1",
     "greeting_no_name": "Pozdravljeni!",

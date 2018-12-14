@@ -18,23 +18,34 @@
 	"mongo.resident-memory": "זכרון קיים",
 	"mongo.virtual-memory": "זיכרון וירטואלי",
 	"mongo.mapped-memory": "זיכרון ממופה",
+	"mongo.bytes-in": "Bytes In",
+	"mongo.bytes-out": "Bytes Out",
+	"mongo.num-requests": "Number of Requests",
 	"mongo.raw-info": "מידע לא מעובד מMongoDB",
 
 	"redis": "Redis",
 	"redis.version": "גרסת Redis",
+	"redis.keys": "Keys",
+	"redis.expires": "Expires",
+	"redis.avg-ttl": "Average TTL",
 	"redis.connected-clients": "לקוחות מחוברים",
-	"redis.connected-slaves": "Connected Slaves",
+	"redis.connected-slaves": "לקוחות מחוברים",
 	"redis.blocked-clients": "לקוחות חסומים",
 	"redis.used-memory": "זכרון בשימוש",
 	"redis.memory-frag-ratio": "יחס פיצול זכרון",
 	"redis.total-connections-recieved": "סך כל החיבורים שהתקבלו",
 	"redis.total-commands-processed": "סך כל הפקודות שעובדו",
 	"redis.iops": "Instantaneous Ops. Per Second",
+	"redis.iinput": "Instantaneous Input Per Second",
+	"redis.ioutput": "Instantaneous Output Per Second",
+	"redis.total-input": "Total Input",
+	"redis.total-output": "Total Ouput",
+
 	"redis.keyspace-hits": "Keyspace Hits",
 	"redis.keyspace-misses": "Keyspace Misses",
 	"redis.raw-info": "מידע לא מעובד מRedis",
 
 	"postgres": "Postgres",
-	"postgres.version": "PostgreSQL Version",
-	"postgres.raw-info": "Postgres Raw Info"
+	"postgres.version": "גרסאת PostgreSQL",
+	"postgres.raw-info": "מידע לא מעובד מ Postgres"
 }

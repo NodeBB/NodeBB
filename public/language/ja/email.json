@@ -1,5 +1,6 @@
 {
-    "password-reset-requested": "パスワードのリセットをリクエストしました - %1!",
+    "test-email.subject": "Test Email",
+    "password-reset-requested": "Password Reset Requested!",
     "welcome-to": "%1へようこそ！",
     "invite": "%1からの招待です",
     "greeting_no_name": "こんにちは",

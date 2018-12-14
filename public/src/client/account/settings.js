@@ -4,9 +4,10 @@
 define('forum/account/settings', ['forum/account/header', 'components', 'sounds'], function (header, components, sounds) {
 	var	AccountSettings = {};
 
+	// If page skin is changed but not saved, switch the skin back
 	$(window).on('action:ajaxify.start', function () {
 		if (ajaxify.data.template.name === 'account/settings' && $('#bootswatchSkin').val() !== config.bootswatchSkin) {
-			changePageSkin(config.bootswatchSkin);
+			app.reskin(config.bootswatchSkin);
 		}
 	});
 
@@ -30,7 +31,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 		});
 
 		$('#bootswatchSkin').on('change', function () {
-			changePageSkin($(this).val());
+			app.reskin($(this).val());
 		});
 
 		$('[data-property="homePageRoute"]').on('change', toggleCustomRoute);
@@ -47,23 +48,6 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 
 		components.get('user/sessions').find('.timeago').timeago();
 	};
-
-	function changePageSkin(skinName) {
-		var clientEl = Array.prototype.filter.call(document.querySelectorAll('link[rel="stylesheet"]'), function (el) {
-			return el.href.indexOf(config.relative_path + '/assets/client') !== -1;
-		})[0] || null;
-
-		// Update client.css link element to point to selected skin variant
-		clientEl.href = config.relative_path + '/assets/client' + (skinName ? '-' + skinName : '') + '.css';
-
-		var currentSkinClassName = $('body').attr('class').split(/\s+/).filter(function (className) {
-			return className.startsWith('skin-');
-		});
-		$('body').removeClass(currentSkinClassName.join(' '));
-		if (skinName) {
-			$('body').addClass('skin-' + skinName);
-		}
-	}
 
 	function loadSettings() {
 		var settings = {};
@@ -112,15 +96,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 			sounds.loadMap();
 
 			if (requireReload && parseInt(app.user.uid, 10) === parseInt(ajaxify.data.theirid, 10)) {
-				app.alert({
-					id: 'setting-change',
-					message: '[[user:settings-require-reload]]',
-					type: 'warning',
-					timeout: 5000,
-					clickfn: function () {
-						ajaxify.refresh();
-					},
-				});
+				ajaxify.refresh();
 			}
 		});
 	}

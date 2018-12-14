@@ -65,9 +65,9 @@
 	"high-presence-topics": "Sujets populaires",
 
 	"graphs.page-views": "Pages vues",
-	"graphs.page-views-registered": "Pages vues par les membres",
-	"graphs.page-views-guest": "Pages vues par les invités",
-	"graphs.page-views-bot": "Pages vues par les Bots",
+	"graphs.page-views-registered": "Membres",
+	"graphs.page-views-guest": "Invités",
+	"graphs.page-views-bot": "Robots",
 	"graphs.unique-visitors": "Visiteurs uniques",
 	"graphs.registered-users": "Utilisateurs enregistrés",
 	"graphs.anonymous-users": "Utilisateurs anonymes",

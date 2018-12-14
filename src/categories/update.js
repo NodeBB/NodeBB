@@ -137,6 +137,10 @@ module.exports = function (Categories) {
 				var scores = tags.map((tag, index) => index);
 				db.sortedSetAdd('cid:' + cid + ':tag:whitelist', scores, tags, next);
 			},
+			function (next) {
+				cache.del('cid:' + cid + ':tag:whitelist');
+				next();
+			},
 		], callback);
 	}
 

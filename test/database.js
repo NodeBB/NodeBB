@@ -22,10 +22,10 @@ describe('Test database', function () {
 			});
 		});
 
-		it('should not error and return null if client is falsy', function (done) {
+		it('should not error and return info if client is falsy', function (done) {
 			db.info(null, function (err, info) {
 				assert.ifError(err);
-				assert.equal(info, null);
+				assert(info);
 				done();
 			});
 		});

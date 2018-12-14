@@ -2,6 +2,6 @@
 	"notifications": "Notifications",
 	"welcome-notification": "Welcome Notification",
 	"welcome-notification-link": "Welcome Notification Link",
-	"welcome-notification-uid": "Welcome Notification User (UID)",
+	"welcome-notification-uid": "Notificação de boas-vindas ao utilizador (UID)",
 	"notification-alert-timeout": "Notification Alert Timeout"
 }

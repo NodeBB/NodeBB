@@ -112,7 +112,13 @@ app.cacheBuster = null;
 		 *   config (obj)
 		 *   next (string)
 		 */
-		require(['benchpress', 'translator', 'forum/header/notifications', 'forum/header/chat'], function (Benchpress, translator, Notifications, Chat) {
+		require([
+			'benchpress',
+			'translator',
+			'forum/unread',
+			'forum/header/notifications',
+			'forum/header/chat',
+		], function (Benchpress, translator, Unread, Notifications, Chat) {
 			app.user = data.header.user;
 			data.header.config = data.config;
 			config = data.config;
@@ -136,10 +142,11 @@ app.cacheBuster = null;
 				Object.values(toRender).forEach(function (element, idx) {
 					element.html(html[idx]);
 				});
-
+				Unread.initUnreadTopics();
 				Notifications.prepareDOM();
 				Chat.prepareDOM();
-				callback();
+				app.reskin(data.config.bootswatchSkin);
+				translator.switchTimeagoLanguage(callback);
 			});
 		});
 	};
@@ -163,6 +170,13 @@ app.cacheBuster = null;
 				'x-csrf-token': config.csrf_token,
 			},
 			success: function (data) {
+				// ACP logouts go to frontend via page load, not ajaxify
+				if (ajaxify.data.template.name.startsWith('admin/')) {
+					$(window).trigger('action:app.loggedOut', data);
+					window.location.href = config.relative_path + (data.next || '/');
+					return;
+				}
+
 				app.updateHeader(data, function () {
 					// Overwrite in hook (below) to redirect elsewhere
 					data.next = data.next || undefined;
@@ -733,5 +747,24 @@ app.cacheBuster = null;
 				});
 			});
 		});
+	};
+
+	app.reskin = function (skinName) {
+		var clientEl = Array.prototype.filter.call(document.querySelectorAll('link[rel="stylesheet"]'), function (el) {
+			return el.href.indexOf(config.relative_path + '/assets/client') !== -1;
+		})[0] || null;
+		if (!clientEl) {
+			return;
+		}
+		// Update client.css link element to point to selected skin variant
+		clientEl.href = config.relative_path + '/assets/client' + (skinName ? '-' + skinName : '') + '.css';
+
+		var currentSkinClassName = $('body').attr('class').split(/\s+/).filter(function (className) {
+			return className.startsWith('skin-');
+		});
+		$('body').removeClass(currentSkinClassName.join(' '));
+		if (skinName) {
+			$('body').addClass('skin-' + skinName);
+		}
 	};
 }());

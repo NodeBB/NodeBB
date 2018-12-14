@@ -77,7 +77,7 @@ module.exports = function (Groups) {
 	};
 
 	function inviteOrRequestMembership(groupName, uid, type, callback) {
-		if (!parseInt(uid, 10)) {
+		if (!(parseInt(uid, 10) > 0)) {
 			return callback(new Error('[[error:not-logged-in]]'));
 		}
 		var hookName = type === 'invite' ? 'action:group.inviteMember' : 'action:group.requestMembership';
