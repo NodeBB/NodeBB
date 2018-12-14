@@ -123,8 +123,6 @@ module.exports = function (db, module) {
 			return setImmediate(callback, null, []);
 		}
 		const stop = (parseInt(count, 10) === -1) ? -1 : (start + count - 1);
-
-		console.log(key, start, stop);
 		getSortedSetRange(key, start, stop, min, max, sort, withScores, callback);
 	}
 
