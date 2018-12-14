@@ -3,7 +3,7 @@
 var LRU = require('lru-cache');
 var meta = require('../meta');
 
-var cache = LRU({
+var cache = new LRU({
 	max: meta.config.postCacheSize,
 	length: function (n) { return n.length; },
 	maxAge: 0,

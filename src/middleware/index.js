@@ -22,7 +22,7 @@ var controllers = {
 	helpers: require('../controllers/helpers'),
 };
 
-var delayCache = LRU({
+var delayCache = new LRU({
 	maxAge: 1000 * 60,
 });
 
