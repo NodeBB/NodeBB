@@ -284,7 +284,7 @@ describe('Categories', function () {
 		});
 
 		it('should ignore category', function (done) {
-			socketCategories.ignore({ uid: posterUid }, categoryObj.cid, function (err) {
+			socketCategories.ignore({ uid: posterUid }, { cid: categoryObj.cid }, function (err) {
 				assert.ifError(err);
 				Categories.isIgnored([categoryObj.cid], posterUid, function (err, isIgnored) {
 					assert.ifError(err);
@@ -299,7 +299,7 @@ describe('Categories', function () {
 		});
 
 		it('should watch category', function (done) {
-			socketCategories.watch({ uid: posterUid }, categoryObj.cid, function (err) {
+			socketCategories.watch({ uid: posterUid }, { cid: categoryObj.cid }, function (err) {
 				assert.ifError(err);
 				Categories.isIgnored([categoryObj.cid], posterUid, function (err, isIgnored) {
 					assert.ifError(err);
