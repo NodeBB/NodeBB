@@ -10,6 +10,9 @@ var plugins = require('../plugins');
 
 module.exports = function (User) {
 	User.logIP = function (uid, ip, callback) {
+		if (!(parseInt(uid, 10) > 0)) {
+			return setImmediate(callback);
+		}
 		var now = Date.now();
 		async.waterfall([
 			function (next) {
@@ -31,10 +34,7 @@ module.exports = function (User) {
 				db.getSortedSetRevRange('uid:' + uid + ':ip', 0, stop, next);
 			},
 			function (ips, next) {
-				ips = ips.map(function (ip) {
-					return validator.escape(String(ip));
-				});
-				next(null, ips);
+				next(null, ips.map(ip => validator.escape(String(ip))));
 			},
 		], callback);
 	};
@@ -48,9 +48,7 @@ module.exports = function (User) {
 				db.getSortedSetRangeWithScores('username:uid', 0, -1, next);
 			},
 			function (users, next) {
-				uids = users.map(function (user) {
-					return user.score;
-				});
+				uids = users.map(user => user.score);
 				plugins.fireHook('filter:user.csvFields', { fields: ['uid', 'email', 'username'] }, next);
 			},
 			function (data, next) {
