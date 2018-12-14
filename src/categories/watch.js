@@ -48,7 +48,11 @@ module.exports = function (Categories) {
 	};
 
 	Categories.getIgnorers = function (cid, start, stop, callback) {
-		db.getSortedSetRevRangeByScore('cid:' + cid + ':uid:watch:state', start, stop - start + 1, Categories.watchStates.ignoring, Categories.watchStates.ignoring, callback);
+		let count = stop - start + 1;
+		if (stop === -1) {
+			count = -1;
+		}
+		db.getSortedSetRevRangeByScore('cid:' + cid + ':uid:watch:state', start, count, Categories.watchStates.ignoring, Categories.watchStates.ignoring, callback);
 	};
 
 	Categories.filterIgnoringUids = function (cid, uids, callback) {
