@@ -4,7 +4,6 @@ const async = require('async');
 
 const db = require('../database');
 const user = require('../user');
-const meta = require('../meta');
 
 module.exports = function (Categories) {
 	Categories.watchStates = {
@@ -29,12 +28,12 @@ module.exports = function (Categories) {
 
 	Categories.getWatchState = function (cids, uid, callback) {
 		if (parseInt(uid, 10) <= 0) {
-			return setImmediate(callback, null, cids.map(() => Categories.watchStates[meta.config.categoryWatchState]));
+			return setImmediate(callback, null, cids.map(() => Categories.watchStates.notwatching));
 		}
 
-		const keys = cids.map(cid => 'cid:' + cid + ':uid:watch:state');
 		async.waterfall([
 			function (next) {
+				const keys = cids.map(cid => 'cid:' + cid + ':uid:watch:state');
 				async.parallel({
 					userSettings: async.apply(user.getSettings, uid),
 					states: async.apply(db.sortedSetsScore, keys, uid),

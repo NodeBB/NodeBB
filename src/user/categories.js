@@ -31,26 +31,20 @@ module.exports = function (User) {
 
 	User.getCategoryWatchState = function (uid, callback) {
 		if (parseInt(uid, 10) <= 0) {
-			return setImmediate(callback, null, []);
+			return setImmediate(callback, null, {});
 		}
-		let userSettings;
+
 		let cids;
 		async.waterfall([
 			function (next) {
-				async.parallel({
-					userSettings: async.apply(User.getSettings, uid),
-					cids: async.apply(categories.getAllCidsFromSet, 'categories:cid'),
-				}, next);
+				categories.getAllCidsFromSet('categories:cid', next);
 			},
-			function (results, next) {
-				cids = results.cids;
-				userSettings = results.userSettings;
-				db.sortedSetsScore(results.cids.map(cid => 'cid:' + cid + ':uid:watch:state'), uid, next);
+			function (_cids, next) {
+				cids = _cids;
+				categories.getWatchState(cids, uid, next);
 			},
 			function (states, next) {
-				states = states.map(state => state || categories.watchStates[userSettings.categoryWatchState]);
-				const data = _.zipObject(cids, states);
-				next(null, data);
+				next(null, _.zipObject(cids, states));
 			},
 		], callback);
 	};
@@ -73,28 +67,14 @@ module.exports = function (User) {
 		if (!(parseInt(uid, 10) > 0)) {
 			return categories.getAllCidsFromSet('categories:cid', callback);
 		}
-		let cids;
-		let userSettings;
-		states = states.map(Number);
+
 		async.waterfall([
 			function (next) {
-				async.parallel({
-					userSettings: async.apply(User.getSettings, uid),
-					cids: async.apply(categories.getAllCidsFromSet, 'categories:cid'),
-				}, next);
-			},
-			function (results, next) {
-				cids = results.cids;
-				userSettings = results.userSettings;
-
-				db.sortedSetsScore(cids.map(cid => 'cid:' + cid + ':uid:watch:state'), uid, next);
+				User.getCategoryWatchState(uid, next);
 			},
 			function (userState, next) {
-				cids = cids.filter((cid, index) => {
-					userState[index] = userState[index] || categories.watchStates[userSettings.categoryWatchState];
-					return states.includes(userState[index]);
-				});
-				next(null, cids);
+				const cids = Object.keys(userState);
+				next(null, cids.filter(cid => states.includes(userState[cid])));
 			},
 		], callback);
 	};
