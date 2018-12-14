@@ -14,7 +14,7 @@ module.exports = {
 		let keys;
 		async.waterfall([
 			function (next) {
-				db.getSortedSetRange('categories:cids', 0, -1, next);
+				db.getSortedSetRange('categories:cid', 0, -1, next);
 			},
 			function (cids, next) {
 				keys = cids.map(cid => 'cid:' + cid + ':ignorers');
