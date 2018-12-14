@@ -523,6 +523,15 @@ describe('Sorted Set methods', function () {
 				done();
 			});
 		});
+
+		it('should return empty array if keys is empty array', function (done) {
+			db.sortedSetsScore([], 'value1', function (err, scores) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.deepEqual(scores, []);
+				done();
+			});
+		});
 	});
 
 	describe('sortedSetScores()', function () {

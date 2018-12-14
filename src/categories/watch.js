@@ -30,7 +30,9 @@ module.exports = function (Categories) {
 		if (!(parseInt(uid, 10) > 0)) {
 			return setImmediate(callback, null, cids.map(() => Categories.watchStates.notwatching));
 		}
-
+		if (!Array.isArray(cids) || !cids.length) {
+			return setImmediate(callback, null, []);
+		}
 		async.waterfall([
 			function (next) {
 				const keys = cids.map(cid => 'cid:' + cid + ':uid:watch:state');

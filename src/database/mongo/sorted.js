@@ -265,7 +265,7 @@ module.exports = function (db, module) {
 
 	module.sortedSetsScore = function (keys, value, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback();
+			return callback(null, []);
 		}
 		value = helpers.valueToString(value);
 		db.collection('objects').find({ _key: { $in: keys }, value: value }, { projection: { _id: 0, value: 0 } }).toArray(function (err, result) {
