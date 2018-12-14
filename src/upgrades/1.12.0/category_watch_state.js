@@ -35,7 +35,7 @@ module.exports = {
 						});
 					}, next);
 				}, {
-					progress: this.progress,
+					progress: progress,
 				}, next);
 			},
 			function (next) {
