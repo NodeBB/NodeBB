@@ -59,8 +59,23 @@ module.exports = function (User) {
 		if (parseInt(uid, 10) <= 0) {
 			return setImmediate(callback, null, []);
 		}
+		User.getCategoriesByStates(uid, [categories.watchStates.ignoring], callback);
+	};
+
+	User.getWatchedCategories = function (uid, callback) {
+		if (parseInt(uid, 10) <= 0) {
+			return setImmediate(callback, null, []);
+		}
+		User.getCategoriesByStates(uid, [categories.watchStates.watching], callback);
+	};
+
+	User.getCategoriesByStates = function (uid, states, callback) {
+		if (!(parseInt(uid, 10) > 0)) {
+			return categories.getAllCidsFromSet('categories:cid', callback);
+		}
 		let cids;
 		let userSettings;
+		states = states.map(Number);
 		async.waterfall([
 			function (next) {
 				async.parallel({
@@ -74,32 +89,12 @@ module.exports = function (User) {
 
 				db.sortedSetsScore(cids.map(cid => 'cid:' + cid + ':uid:watch:state'), uid, next);
 			},
-			function (scores, next) {
+			function (userState, next) {
 				cids = cids.filter((cid, index) => {
-					scores[index] = scores[index] || categories.watchStates[userSettings.categoryWatchState];
-					return scores[index] === categories.watchStates.ignoring;
+					userState[index] = userState[index] || categories.watchStates[userSettings.categoryWatchState];
+					return states.includes(userState[index]);
 				});
 				next(null, cids);
-			},
-		], callback);
-	};
-
-	User.getWatchedCategories = function (uid, callback) {
-		async.waterfall([
-			function (next) {
-				async.parallel({
-					ignored: function (next) {
-						User.getIgnoredCategories(uid, next);
-					},
-					all: function (next) {
-						categories.getAllCidsFromSet('categories:cid', next);
-					},
-				}, next);
-			},
-			function (results, next) {
-				const ignored = new Set(results.ignored);
-				const watched = results.all.filter(cid => cid && !ignored.has(String(cid)));
-				next(null, watched);
 			},
 		], callback);
 	};

@@ -239,6 +239,20 @@ helpers.getCategories = function (set, uid, privilege, selectedCid, callback) {
 	], callback);
 };
 
+helpers.getCategoriesByStates = function (uid, selectedCid, states, callback) {
+	async.waterfall([
+		function (next) {
+			user.getCategoriesByStates(uid, states, next);
+		},
+		function (cids, next) {
+			privileges.categories.filterCids('read', cids, uid, next);
+		},
+		function (cids, next) {
+			getCategoryData(cids, uid, selectedCid, next);
+		},
+	], callback);
+};
+
 helpers.getWatchedCategories = function (uid, selectedCid, callback) {
 	async.waterfall([
 		function (next) {

@@ -53,12 +53,25 @@ module.exports = function (Categories) {
 	Categories.filterIgnoringUids = function (cid, uids, callback) {
 		async.waterfall([
 			function (next) {
-				// TODO:
-				db.sortedSetScores('cid:' + cid + ':uid:watch:state', uids, next);
+				Categories.getUidsWatchStates(cid, uids, next);
 			},
-			function (isIgnoring, next) {
-				const readingUids = uids.filter((uid, index) => uid && !isIgnoring[index]);
+			function (states, next) {
+				const readingUids = uids.filter((uid, index) => uid && states[index] !== Categories.watchStates.ignoring);
 				next(null, readingUids);
+			},
+		], callback);
+	};
+
+	Categories.getUidsWatchStates = function (cid, uids, callback) {
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					userSettings: async.apply(user.getMultipleUserSettings, uids),
+					states: async.apply(db.sortedSetScores, 'cid:' + cid + ':uid:watch:state', uids),
+				}, next);
+			},
+			function (results, next) {
+				next(null, results.states.map((state, index) => state || Categories.watchStates[results.userSettings[index].categoryWatchState]));
 			},
 		], callback);
 	};
