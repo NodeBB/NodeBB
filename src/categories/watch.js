@@ -48,10 +48,7 @@ module.exports = function (Categories) {
 	};
 
 	Categories.getIgnorers = function (cid, start, stop, callback) {
-		let count = stop - start + 1;
-		if (stop === -1) {
-			count = -1;
-		}
+		const count = (stop === -1) ? -1 : (stop - start + 1);
 		db.getSortedSetRevRangeByScore('cid:' + cid + ':uid:watch:state', start, count, Categories.watchStates.ignoring, Categories.watchStates.ignoring, callback);
 	};
 

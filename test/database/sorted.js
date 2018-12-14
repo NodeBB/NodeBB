@@ -228,6 +228,22 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
+		it('should return empty array if count is 0', function (done) {
+			db.getSortedSetRevRangeByScore('sortedSetTest1', 0, 0, '+inf', '-inf', function (err, values) {
+				assert.ifError(err);
+				assert.deepEqual(values, []);
+				done();
+			});
+		});
+
+		it('should return elements from 1 to end', function (done) {
+			db.getSortedSetRevRangeByScore('sortedSetTest1', 1, -1, '+inf', '-inf', function (err, values) {
+				assert.ifError(err);
+				assert.deepEqual(values, ['value2', 'value1']);
+				done();
+			});
+		});
+
 		it('should return elements from 3 to last', function (done) {
 			db.sortedSetAdd('partialZset', [1, 2, 3, 4, 5], ['value1', 'value2', 'value3', 'value4', 'value5'], function (err) {
 				assert.ifError(err);
