@@ -45,9 +45,9 @@
 	"signature.max-length": "Maximum Signature Length",
 	"composer": "Composer Settings",
 	"composer-help": "The following settings govern the functionality and/or appearance of the post composer shown\n\t\t\t\tto users when they create new topics, or reply to existing topics.",
-	"composer.show-help": "Show \"Help\" tab",
+	"composer.show-help": "Mostrar separador \"Ajuda\"",
 	"composer.enable-plugin-help": "Permitir aos plugins adicionarem conteúdo ao separador de ajuda",
-	"composer.custom-help": "Custom Help Text",
+	"composer.custom-help": "Texto de ajuda personalizado",
 	"ip-tracking": "IP Tracking",
 	"ip-tracking.each-post": "Track IP Address for each post",
 	"enable-post-history": "Ativar histórico de publicações"
