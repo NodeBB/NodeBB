@@ -7,7 +7,6 @@ var meta = require('../meta');
 var db = require('../database');
 var plugins = require('../plugins');
 var notifications = require('../notifications');
-var categories = require('../categories');
 
 module.exports = function (User) {
 	User.getSettings = function (uid, callback) {
@@ -80,7 +79,7 @@ module.exports = function (User) {
 				settings.topicSearchEnabled = parseInt(getSetting(settings, 'topicSearchEnabled', 0), 10) === 1;
 				settings.bootswatchSkin = settings.bootswatchSkin || '';
 				settings.scrollToMyPost = parseInt(getSetting(settings, 'scrollToMyPost', 1), 10) === 1;
-				settings.categoryWatchState = parseInt(getSetting(settings, 'categoryWatchState', categories.watchStates.notwatching), 10);
+				settings.categoryWatchState = getSetting(settings, 'categoryWatchState', 'notwatching');
 
 				notifications.getAllNotificationTypes(next);
 			},
@@ -139,6 +138,7 @@ module.exports = function (User) {
 			outgoingChatSound: data.outgoingChatSound,
 			upvoteNotifFreq: data.upvoteNotifFreq,
 			bootswatchSkin: data.bootswatchSkin,
+			categoryWatchState: data.categoryWatchState,
 		};
 
 		async.waterfall([

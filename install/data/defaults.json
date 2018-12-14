@@ -117,5 +117,5 @@
     "eventLoopInterval": 500,
     "onlineCutoff": 30,
     "timeagoCutoff": 30,
-    "categoryWatchState": 3
+    "categoryWatchState": "watching"
 }

@@ -311,7 +311,7 @@ describe('Categories', function () {
 
 		it('should error if watch state does not exist', function (done) {
 			socketCategories.setWatchState({ uid: posterUid }, { cid: categoryObj.cid, state: 'invalid-state' }, function (err) {
-				assert.equal(err.message, '[[error:invalid-data]]');
+				assert.equal(err.message, '[[error:invalid-watch-state]]');
 				done();
 			});
 		});

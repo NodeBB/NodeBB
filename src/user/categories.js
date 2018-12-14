@@ -48,7 +48,7 @@ module.exports = function (User) {
 				db.sortedSetsScore(results.cids.map(cid => 'cid:' + cid + ':uid:watch:state'), uid, next);
 			},
 			function (states, next) {
-				states = states.map(state => state || userSettings.categoryWatchState);
+				states = states.map(state => state || categories.watchStates[userSettings.categoryWatchState]);
 				const data = _.zipObject(cids, states);
 				next(null, data);
 			},
@@ -76,7 +76,7 @@ module.exports = function (User) {
 			},
 			function (scores, next) {
 				cids = cids.filter((cid, index) => {
-					scores[index] = scores[index] || userSettings.categoryWatchState;
+					scores[index] = scores[index] || categories.watchStates[userSettings.categoryWatchState];
 					return scores[index] === categories.watchStates.ignoring;
 				});
 				next(null, cids);

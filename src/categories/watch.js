@@ -8,7 +8,6 @@ const meta = require('../meta');
 
 module.exports = function (Categories) {
 	Categories.watchStates = {
-		default: 0,
 		ignoring: 1,
 		notwatching: 2,
 		watching: 3,
@@ -30,7 +29,7 @@ module.exports = function (Categories) {
 
 	Categories.getWatchState = function (cids, uid, callback) {
 		if (parseInt(uid, 10) <= 0) {
-			return setImmediate(callback, null, cids.map(() => meta.config.categoryWatchState));
+			return setImmediate(callback, null, cids.map(() => Categories.watchStates[meta.config.categoryWatchState]));
 		}
 
 		const keys = cids.map(cid => 'cid:' + cid + ':uid:watch:state');
@@ -42,7 +41,7 @@ module.exports = function (Categories) {
 				}, next);
 			},
 			function (results, next) {
-				next(null, results.states.map(state => state || results.userSettings.categoryWatchState));
+				next(null, results.states.map(state => state || Categories.watchStates[results.userSettings.categoryWatchState]));
 			},
 		], callback);
 	};
