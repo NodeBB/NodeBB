@@ -26,7 +26,11 @@ module.exports = function (middleware) {
 		res.locals.isAPI = false;
 		async.waterfall([
 			function (next) {
-				middleware.applyCSRF(req, res, next);
+				if (!req.isSpider()) {
+					middleware.applyCSRF(req, res, next);
+				} else {
+					setImmediate(next);
+				}
 			},
 			function (next) {
 				async.parallel({

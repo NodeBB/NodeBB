@@ -32,15 +32,7 @@ middleware.regexes = {
 	timestampedUpload: /^\d+-.+$/,
 };
 
-const csrfMiddleware = csrf();
-
-middleware.applyCSRF = function (req, res, next) {
-	if (req.uid >= 0) {
-		csrfMiddleware(req, res, next);
-	} else {
-		setImmediate(next);
-	}
-};
+middleware.applyCSRF = csrf();
 
 middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login');
 
