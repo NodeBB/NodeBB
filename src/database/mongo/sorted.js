@@ -273,16 +273,18 @@ module.exports = function (db, module) {
 				return callback(err);
 			}
 
-			var map = helpers.toMap(result);
-			var returnData = [];
-			var item;
+			var map = {};
+			result.forEach(function (item) {
+				if (item) {
+					map[item._key] = item;
+				}
+			});
 
-			for (var i = 0; i < keys.length; i += 1) {
-				item = map[keys[i]];
-				returnData.push(item ? item.score : null);
-			}
+			result = keys.map(function (key) {
+				return map[key] ? map[key].score : null;
+			});
 
-			callback(null, returnData);
+			callback(null, result);
 		});
 	};
 
