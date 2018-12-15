@@ -34,7 +34,7 @@ middleware.regexes = {
 
 const csrfMiddleware = csrf();
 
-middleware.applyCSRF = function(req, res, next) {
+middleware.applyCSRF = function (req, res, next) {
 	if (req.uid >= 0) {
 		csrfMiddleware(req, res, next);
 	} else {
