@@ -82,10 +82,19 @@ define('topicList', [
 		socket.removeListener('event:new_post', onNewPost);
 	};
 
+	function isCategoryVisible(cid) {
+		return ajaxify.data.categories && ajaxify.data.categories.length && ajaxify.data.categories.some(function (c) {
+			return parseInt(c.cid, 10) === parseInt(cid, 10);
+		});
+	}
+
 	function onNewTopic(data) {
-		if ((ajaxify.data.selectedCids && ajaxify.data.selectedCids.length && ajaxify.data.selectedCids.indexOf(parseInt(data.cid, 10)) === -1) ||
+		if (
+			(ajaxify.data.selectedCids && ajaxify.data.selectedCids.length && ajaxify.data.selectedCids.indexOf(parseInt(data.cid, 10)) === -1) ||
 			(ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'watched') ||
-			(ajaxify.data.template.category && parseInt(ajaxify.data.cid, 10) !== parseInt(data.cid, 10))) {
+			(ajaxify.data.template.category && parseInt(ajaxify.data.cid, 10) !== parseInt(data.cid, 10)) ||
+			(!isCategoryVisible(data.cid))
+		) {
 			return;
 		}
 
@@ -94,35 +103,23 @@ define('topicList', [
 	}
 
 	function onNewPost(data) {
-		function showAlert() {
-			newPostCount += 1;
-			updateAlertText();
-		}
-
 		var post = data.posts[0];
-		if (
-			(!post || !post.topic) ||
+		if (!post || !post.topic) {
+			return;
+		}
+		if (!post.topic.isFollowing && (
 			(parseInt(post.topic.mainPid, 10) === parseInt(post.pid, 10)) ||
 			(ajaxify.data.selectedCids && ajaxify.data.selectedCids.length && ajaxify.data.selectedCids.indexOf(parseInt(post.topic.cid, 10)) === -1) ||
 			(ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'new') ||
-			(ajaxify.data.template.category && parseInt(ajaxify.data.cid, 10) !== parseInt(post.topic.cid, 10))
-		) {
+			(ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'watched' && !post.topic.isFollowing) ||
+			(ajaxify.data.template.category && parseInt(ajaxify.data.cid, 10) !== parseInt(post.topic.cid, 10)) ||
+			(!isCategoryVisible(post.topic.cid))
+		)) {
 			return;
 		}
 
-		if (ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'watched') {
-			socket.emit('topics.isFollowed', post.tid, function (err, isFollowed) {
-				if (err) {
-					app.alertError(err.message);
-				}
-				if (isFollowed) {
-					showAlert();
-				}
-			});
-			return;
-		}
-
-		showAlert();
+		newPostCount += 1;
+		updateAlertText();
 	}
 
 	function updateAlertText() {

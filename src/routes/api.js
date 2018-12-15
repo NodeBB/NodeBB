@@ -9,7 +9,7 @@ module.exports = function (app, middleware, controllers) {
 	app.use('/api', router);
 
 	router.get('/config', function (req, res, next) {
-		if (!req.isSpider()) {
+		if (req.uid >= 0) {
 			middleware.applyCSRF(req, res, next);
 		} else {
 			setImmediate(next);

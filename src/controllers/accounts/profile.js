@@ -41,7 +41,7 @@ profileController.get = function (req, res, callback) {
 			}
 			userData = _userData;
 
-			if (!req.isSpider()) {
+			if (req.uid >= 0) {
 				req.session.uids_viewed = req.session.uids_viewed || {};
 
 				if (req.uid !== userData.uid && (!req.session.uids_viewed[userData.uid] || req.session.uids_viewed[userData.uid] < Date.now() - 3600000)) {

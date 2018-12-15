@@ -2,6 +2,7 @@
 
 var async = require('async');
 var winston = require('winston');
+var _ = require('lodash');
 
 var db = require('../database');
 var websockets = require('./index');
@@ -17,21 +18,32 @@ var utils = require('../utils');
 var SocketHelpers = module.exports;
 
 SocketHelpers.notifyNew = function (uid, type, result) {
+	let watchStateUids;
+	let categoryWatchStates;
+	let topicFollowState;
+	const post = result.posts[0];
+	const tid = post.topic.tid;
+	const cid = post.topic.cid;
 	async.waterfall([
 		function (next) {
 			user.getUidsFromSet('users:online', 0, -1, next);
 		},
 		function (uids, next) {
-			privileges.topics.filterUids('read', result.posts[0].topic.tid, uids, next);
+			uids = uids.filter(uid => parseInt(uid, 10) !== uid);
+			privileges.topics.filterUids('read', tid, uids, next);
 		},
 		function (uids, next) {
-			filterTidCidIgnorers(uids, result.posts[0].topic.tid, result.posts[0].topic.cid, next);
+			watchStateUids = uids;
+			getWatchStates(watchStateUids, tid, cid, next);
 		},
-		function (uids, next) {
+		function (watchStates, next) {
+			categoryWatchStates = _.zipObject(watchStateUids, watchStates.categoryWatchStates);
+			topicFollowState = _.zipObject(watchStateUids, watchStates.topicFollowed);
+			const uids = filterTidCidIgnorers(watchStateUids, watchStates);
 			user.blocks.filterUids(uid, uids, next);
 		},
 		function (uids, next) {
-			user.blocks.filterUids(result.posts[0].topic.uid, uids, next);
+			user.blocks.filterUids(post.topic.uid, uids, next);
 		},
 		function (uids, next) {
 			plugins.fireHook('filter:sockets.sendNewPostToUids', { uidsTo: uids, uidFrom: uid, type: type }, next);
@@ -41,42 +53,38 @@ SocketHelpers.notifyNew = function (uid, type, result) {
 			return winston.error(err.stack);
 		}
 
-		result.posts[0].ip = undefined;
+		post.ip = undefined;
 
 		data.uidsTo.forEach(function (toUid) {
-			if (parseInt(toUid, 10) !== uid) {
-				websockets.in('uid_' + toUid).emit('event:new_post', result);
-				if (result.topic && type === 'newTopic') {
-					websockets.in('uid_' + toUid).emit('event:new_topic', result.topic);
-				}
+			post.categoryWatchState = categoryWatchStates[toUid];
+			post.topic.isFollowing = topicFollowState[toUid];
+			websockets.in('uid_' + toUid).emit('event:new_post', result);
+			if (result.topic && type === 'newTopic') {
+				websockets.in('uid_' + toUid).emit('event:new_topic', result.topic);
 			}
 		});
 	});
 };
 
-function filterTidCidIgnorers(uids, tid, cid, callback) {
-	async.waterfall([
-		function (next) {
-			async.parallel({
-				topicFollowed: function (next) {
-					db.isSetMembers('tid:' + tid + ':followers', uids, next);
-				},
-				topicIgnored: function (next) {
-					db.isSetMembers('tid:' + tid + ':ignorers', uids, next);
-				},
-				categoryWatchStates: function (next) {
-					categories.getUidsWatchStates(cid, uids, next);
-				},
-			}, next);
+function getWatchStates(uids, tid, cid, callback) {
+	async.parallel({
+		topicFollowed: function (next) {
+			db.isSetMembers('tid:' + tid + ':followers', uids, next);
 		},
-		function (results, next) {
-			uids = uids.filter(function (uid, index) {
-				return results.topicFollowed[index] ||
-					(!results.topicIgnored[index] && results.categoryWatchStates[index] !== categories.watchStates.ignoring);
-			});
-			next(null, uids);
+		topicIgnored: function (next) {
+			db.isSetMembers('tid:' + tid + ':ignorers', uids, next);
 		},
-	], callback);
+		categoryWatchStates: function (next) {
+			categories.getUidsWatchStates(cid, uids, next);
+		},
+	}, callback);
+}
+
+function filterTidCidIgnorers(uids, watchStates) {
+	return uids.filter(function (uid, index) {
+		return watchStates.topicFollowed[index] ||
+			(!watchStates.topicIgnored[index] && watchStates.categoryWatchStates[index] !== categories.watchStates.ignoring);
+	});
 }
 
 SocketHelpers.sendNotificationToPostOwner = function (pid, fromuid, command, notification) {

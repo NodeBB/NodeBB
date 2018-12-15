@@ -4,6 +4,12 @@
 define('forum/unread', ['topicSelect', 'components', 'topicList'], function (topicSelect, components, topicList) {
 	var Unread = {};
 
+	var watchStates = {
+		ignoring: 1,
+		notwatching: 2,
+		watching: 3,
+	};
+
 	Unread.init = function () {
 		app.enterRoom('unread_topics');
 
@@ -95,8 +101,11 @@ define('forum/unread', ['topicSelect', 'components', 'topicList'], function (top
 		function onNewPost(data) {
 			if (data && data.posts && data.posts.length) {
 				var post = data.posts[0];
-
-				if (parseInt(post.uid, 10) !== parseInt(app.user.uid, 10) && !unreadTopics[post.topic.tid]) {
+				if (
+					parseInt(post.uid, 10) !== parseInt(app.user.uid, 10) &&
+					!unreadTopics[post.topic.tid] &&
+					(post.topic.isFollowing || post.categoryWatchState === watchStates.watching)
+				) {
 					increaseUnreadCount(post);
 					markTopicsUnread(post.topic.tid);
 					unreadTopics[post.topic.tid] = true;
@@ -119,16 +128,10 @@ define('forum/unread', ['topicSelect', 'components', 'topicList'], function (top
 				var unreadUnrepliedTopicCount = parseInt($('a[href="' + config.relative_path + '/unread?filter=unreplied"].navigation-link i').attr('data-content'), 10) + 1;
 				updateUnreadTopicCount('/unread?filter=unreplied', unreadUnrepliedTopicCount);
 			}
-			if ($('a[href="' + config.relative_path + '/unread?filter=watched"].navigation-link i').length) {
-				socket.emit('topics.isFollowed', post.topic.tid, function (err, isFollowed) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-					if (isFollowed) {
-						var unreadWatchedTopicCount = parseInt($('a[href="' + config.relative_path + '/unread?filter=watched"].navigation-link i').attr('data-content'), 10) + 1;
-						updateUnreadTopicCount('/unread?filter=watched', unreadWatchedTopicCount);
-					}
-				});
+
+			if (post.topic.isFollowing) {
+				var unreadWatchedTopicCount = parseInt($('a[href="' + config.relative_path + '/unread?filter=watched"].navigation-link i').attr('data-content'), 10) + 1;
+				updateUnreadTopicCount('/unread?filter=watched', unreadWatchedTopicCount);
 			}
 		}
 

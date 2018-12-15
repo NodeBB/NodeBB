@@ -57,7 +57,7 @@ apiController.loadConfig = function (req, callback) {
 	config.requireEmailConfirmation = meta.config.requireEmailConfirmation === 1;
 	config.topicPostSort = meta.config.topicPostSort || 'oldest_to_newest';
 	config.categoryTopicSort = meta.config.categoryTopicSort || 'newest_to_oldest';
-	config.csrf_token = !req.isSpider() && req.csrfToken && req.csrfToken();
+	config.csrf_token = req.uid >= 0 && req.csrfToken && req.csrfToken();
 	config.searchEnabled = plugins.hasListeners('filter:search.query');
 	config.bootswatchSkin = meta.config.bootswatchSkin || '';
 	config.enablePostHistory = (meta.config.enablePostHistory || 1) === 1;

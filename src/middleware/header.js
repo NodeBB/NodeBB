@@ -26,7 +26,7 @@ module.exports = function (middleware) {
 		res.locals.isAPI = false;
 		async.waterfall([
 			function (next) {
-				if (!req.isSpider()) {
+				if (req.uid >= 0) {
 					middleware.applyCSRF(req, res, next);
 				} else {
 					setImmediate(next);
@@ -241,7 +241,7 @@ module.exports = function (middleware) {
 
 				data.templateValues.useCustomJS = meta.config.useCustomJS;
 				data.templateValues.customJS = data.templateValues.useCustomJS ? meta.config.customJS : '';
-				data.templateValues.isSpider = req.isSpider();
+				data.templateValues.isSpider = req.uid === -1;
 				req.app.render('footer', data.templateValues, next);
 			},
 		], callback);
