@@ -174,8 +174,8 @@ function setupExpressApp(app, callback) {
 		secret: nconf.get('secret'),
 		key: nconf.get('sessionKey'),
 		cookie: setupCookie(),
-		resave: true,
-		saveUninitialized: true,
+		resave: nconf.get('sessionResave') || false,
+		saveUninitialized: nconf.get('sessionSaveUninitialized') || false,
 	}));
 
 	var hsts_option = {
