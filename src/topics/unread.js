@@ -64,15 +64,37 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getUnreadTids = function (params, callback) {
-		var uid = parseInt(params.uid, 10);
-		var counts = {
+		async.waterfall([
+			function (next) {
+				Topics.getUnreadData(params, next);
+			},
+			function (results, next) {
+				next(null, params.count ? results.counts : results.tids);
+			},
+		], callback);
+	};
+
+	Topics.getUnreadData = function (params, callback) {
+		const uid = parseInt(params.uid, 10);
+		const counts = {
 			'': 0,
 			new: 0,
 			watched: 0,
 			unreplied: 0,
 		};
+		const noUnreadData = {
+			tids: [],
+			counts: counts,
+			tidsByFilter: {
+				'': [],
+				new: [],
+				watched: [],
+				unreplied: [],
+			},
+		};
+
 		if (uid <= 0) {
-			return callback(null, params.count ? counts : []);
+			return setImmediate(callback, null, noUnreadData);
 		}
 
 		params.filter = params.filter || '';
@@ -102,7 +124,7 @@ module.exports = function (Topics) {
 			},
 			function (results, next) {
 				if (results.recentTids && !results.recentTids.length && !results.tids_unread.length) {
-					return callback(null, params.count ? counts : []);
+					return callback(null, noUnreadData);
 				}
 
 				filterTopics(params, results, next);
@@ -116,9 +138,6 @@ module.exports = function (Topics) {
 					cid: params.cid,
 					filter: params.filter,
 				}, next);
-			},
-			function (results, next) {
-				next(null, params.count ? results.counts : results.tids);
 			},
 		], callback);
 	};
@@ -166,7 +185,7 @@ module.exports = function (Topics) {
 		tids = tids.slice(0, 200);
 
 		if (!tids.length) {
-			return callback(null, { counts: counts, tids: tids });
+			return callback(null, { counts: counts, tids: tids, tidsByFilter: tidsByFilter });
 		}
 
 		async.waterfall([
