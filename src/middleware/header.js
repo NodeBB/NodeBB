@@ -15,6 +15,7 @@ var navigation = require('../navigation');
 var translator = require('../translator');
 var privileges = require('../privileges');
 var utils = require('../utils');
+var cache = require('../cache');
 
 var controllers = {
 	api: require('../controllers/api'),
@@ -22,7 +23,7 @@ var controllers = {
 };
 
 module.exports = function (middleware) {
-	middleware.buildHeader = function (req, res, next) {
+	middleware.buildHeader = function buildHeader(req, res, next) {
 		res.locals.renderHeader = true;
 		res.locals.isAPI = false;
 		async.waterfall([
@@ -50,7 +51,7 @@ module.exports = function (middleware) {
 		], next);
 	};
 
-	middleware.generateHeader = function (req, res, data, callback) {
+	middleware.generateHeader = function generateHeader(req, res, data, callback) {
 		var registrationType = meta.config.registrationType || 'normal';
 		res.locals.config = res.locals.config || {};
 		var templateValues = {
@@ -214,11 +215,24 @@ module.exports = function (middleware) {
 		});
 	};
 
-	middleware.renderHeader = function (req, res, data, callback) {
+	middleware.renderHeader = function renderHeader(req, res, data, callback) {
+		if (req.uid <= 0) {
+			const headerHtml = cache.get('uid:' + req.uid + ':header');
+			if (headerHtml) {
+				return setImmediate(callback, null, headerHtml);
+			}
+		}
 		async.waterfall([
 			async.apply(middleware.generateHeader, req, res, data),
 			function (templateValues, next) {
 				req.app.render('header', templateValues, next);
+			},
+			function (html, next) {
+				if (req.uid <= 0) {
+					cache.set('uid:' + req.uid + ':header', html, 1000 * 60 * 60);
+				}
+
+				next(null, html);
 			},
 		], callback);
 	};
@@ -228,7 +242,13 @@ module.exports = function (middleware) {
 		scripts.push({ src: nconf.get('relative_path') + '/assets/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js' });
 	}
 
-	middleware.renderFooter = function (req, res, data, callback) {
+	middleware.renderFooter = function renderFooter(req, res, data, callback) {
+		if (req.uid <= 0) {
+			const footerHtml = cache.get('uid:' + req.uid + ':footer');
+			if (footerHtml) {
+				return setImmediate(callback, null, footerHtml);
+			}
+		}
 		async.waterfall([
 			function (next) {
 				plugins.fireHook('filter:middleware.renderFooter', {
@@ -254,6 +274,13 @@ module.exports = function (middleware) {
 				data.templateValues.customJS = data.templateValues.useCustomJS ? meta.config.customJS : '';
 				data.templateValues.isSpider = req.uid === -1;
 				req.app.render('footer', data.templateValues, next);
+			},
+			function (html, next) {
+				if (req.uid <= 0) {
+					cache.set('uid:' + req.uid + ':footer', html, 1000 * 60 * 60);
+				}
+
+				next(null, html);
 			},
 		], callback);
 	};
