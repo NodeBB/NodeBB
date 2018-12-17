@@ -232,13 +232,13 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getTagData = function (tags, callback) {
-		var keys = tags.map(function (tag) {
-			return 'tag:' + tag.value;
-		});
+		if (!tags.length) {
+			return setImmediate(callback, null, []);
+		}
 
 		async.waterfall([
 			function (next) {
-				db.getObjects(keys, next);
+				db.getObjects(tags.map(tag => 'tag:' + tag.value), next);
 			},
 			function (tagData, next) {
 				tags.forEach(function (tag, index) {

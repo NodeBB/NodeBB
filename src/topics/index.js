@@ -188,13 +188,15 @@ Topics.getTopicWithPosts = function (topicData, set, uid, start, stop, reverse, 
 			topicData.bookmark = results.bookmark;
 			topicData.postSharing = results.postSharing;
 			topicData.deleter = results.deleter;
-			topicData.deletedTimestampISO = utils.toISOString(topicData.deletedTimestamp);
+			if (results.deleter) {
+				topicData.deletedTimestampISO = utils.toISOString(topicData.deletedTimestamp);
+			}
 			topicData.merger = results.merger;
-			topicData.mergedTimestampISO = utils.toISOString(topicData.mergedTimestamp);
+			if (results.merger) {
+				topicData.mergedTimestampISO = utils.toISOString(topicData.mergedTimestamp);
+			}
 			topicData.related = results.related || [];
-
 			topicData.unreplied = topicData.postcount === 1;
-
 			topicData.icons = [];
 
 			plugins.fireHook('filter:topic.get', { topic: topicData, uid: uid }, next);
@@ -245,14 +247,14 @@ function getMainPostAndReplies(topic, set, uid, start, stop, reverse, callback) 
 }
 
 function getDeleter(topicData, callback) {
-	if (!topicData.deleterUid) {
+	if (!parseInt(topicData.deleterUid, 10)) {
 		return setImmediate(callback, null, null);
 	}
 	user.getUserFields(topicData.deleterUid, ['username', 'userslug', 'picture'], callback);
 }
 
 function getMerger(topicData, callback) {
-	if (!topicData.mergerUid) {
+	if (!parseInt(topicData.mergerUid, 10)) {
 		return setImmediate(callback, null, null);
 	}
 	async.waterfall([

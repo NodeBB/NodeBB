@@ -581,6 +581,15 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
+		it('should return empty array if values is an empty array', function (done) {
+			db.sortedSetScores('sortedSetTest1', [], function (err, scores) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 2);
+				assert.deepStrictEqual(scores, []);
+				done();
+			});
+		});
+
 		it('should return scores properly', function (done) {
 			db.sortedSetsScore(['zeroScore', 'sortedSetTest1', 'doesnotexist'], 'value1', function (err, scores) {
 				assert.ifError(err);

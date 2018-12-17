@@ -86,12 +86,7 @@ module.exports = function (Posts) {
 
 	Posts.hasBookmarked = function (pid, uid, callback) {
 		if (parseInt(uid, 10) <= 0) {
-			if (Array.isArray(pid)) {
-				callback(null, pid.map(() => false));
-			} else {
-				callback(null, false);
-			}
-			return;
+			return callback(null, Array.isArray(pid) ? pid.map(() => false) : false);
 		}
 
 		if (Array.isArray(pid)) {

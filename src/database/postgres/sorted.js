@@ -382,9 +382,11 @@ SELECT o."_key" k,
 
 	module.sortedSetScores = function (key, values, callback) {
 		if (!key) {
-			return callback(null, null);
+			return setImmediate(callback, null, null);
 		}
-
+		if (!values.length) {
+			return setImmediate(callback, null, []);
+		}
 		values = values.map(helpers.valueToString);
 
 		query({

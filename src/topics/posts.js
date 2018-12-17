@@ -154,7 +154,7 @@ module.exports = function (Topics) {
 		if (!parentPids.length) {
 			return setImmediate(callback);
 		}
-
+		parentPids = _.uniq(parentPids);
 		var parentPosts;
 		async.waterfall([
 			async.apply(posts.getPostsFields, parentPids, ['uid']),

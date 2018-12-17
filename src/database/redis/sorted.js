@@ -185,6 +185,9 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.sortedSetScores = function (key, values, callback) {
+		if (!values.length) {
+			return setImmediate(callback, null, []);
+		}
 		helpers.execKeyValues(redisClient, 'batch', 'zscore', key, values, function (err, scores) {
 			if (err) {
 				return callback(err);
