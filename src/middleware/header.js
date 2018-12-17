@@ -15,7 +15,6 @@ var navigation = require('../navigation');
 var translator = require('../translator');
 var privileges = require('../privileges');
 var utils = require('../utils');
-var cache = require('../cache');
 
 var controllers = {
 	api: require('../controllers/api'),
@@ -216,23 +215,10 @@ module.exports = function (middleware) {
 	};
 
 	middleware.renderHeader = function renderHeader(req, res, data, callback) {
-		if (req.uid <= 0) {
-			const headerHtml = cache.get('uid:' + req.uid + ':header');
-			if (headerHtml) {
-				return setImmediate(callback, null, headerHtml);
-			}
-		}
 		async.waterfall([
 			async.apply(middleware.generateHeader, req, res, data),
 			function (templateValues, next) {
 				req.app.render('header', templateValues, next);
-			},
-			function (html, next) {
-				if (req.uid <= 0) {
-					cache.set('uid:' + req.uid + ':header', html, 1000 * 60 * 60);
-				}
-
-				next(null, html);
 			},
 		], callback);
 	};
@@ -243,12 +229,6 @@ module.exports = function (middleware) {
 	}
 
 	middleware.renderFooter = function renderFooter(req, res, data, callback) {
-		if (req.uid <= 0) {
-			const footerHtml = cache.get('uid:' + req.uid + ':footer');
-			if (footerHtml) {
-				return setImmediate(callback, null, footerHtml);
-			}
-		}
 		async.waterfall([
 			function (next) {
 				plugins.fireHook('filter:middleware.renderFooter', {
@@ -274,13 +254,6 @@ module.exports = function (middleware) {
 				data.templateValues.customJS = data.templateValues.useCustomJS ? meta.config.customJS : '';
 				data.templateValues.isSpider = req.uid === -1;
 				req.app.render('footer', data.templateValues, next);
-			},
-			function (html, next) {
-				if (req.uid <= 0) {
-					cache.set('uid:' + req.uid + ':footer', html, 1000 * 60 * 60);
-				}
-
-				next(null, html);
 			},
 		], callback);
 	};
