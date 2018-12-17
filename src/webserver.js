@@ -166,8 +166,14 @@ function setupExpressApp(app, callback) {
 	app.use(bodyParser.urlencoded({ extended: true }));
 	app.use(bodyParser.json());
 	app.use(cookieParser());
-	app.use(useragent.express());
-	app.use(detector.middleware());
+	const userAgentMiddleware = useragent.express();
+	app.use(function userAgent(req, res, next) {
+		userAgentMiddleware(req, res, next);
+	});
+	const spiderDetectorMiddleware = detector.middleware();
+	app.use(function spiderDetector(req, res, next) {
+		spiderDetectorMiddleware(req, res, next);
+	});
 
 	app.use(session({
 		store: db.sessionStore,

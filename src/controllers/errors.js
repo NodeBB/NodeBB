@@ -5,7 +5,7 @@ var winston = require('winston');
 var validator = require('validator');
 var plugins = require('../plugins');
 
-exports.handleURIErrors = function (err, req, res, next) {
+exports.handleURIErrors = function handleURIErrors(err, req, res, next) {
 	// Handle cases where malformed URIs are passed in
 	if (err instanceof URIError) {
 		const cleanPath = req.path.replace(new RegExp('^' + nconf.get('relative_path')), '');
@@ -36,7 +36,7 @@ exports.handleURIErrors = function (err, req, res, next) {
 
 // this needs to have four arguments or express treats it as `(req, res, next)`
 // don't remove `next`!
-exports.handleErrors = function (err, req, res, next) { // eslint-disable-line no-unused-vars
+exports.handleErrors = function handleErrors(err, req, res, next) { // eslint-disable-line no-unused-vars
 	var cases = {
 		EBADCSRFTOKEN: function () {
 			winston.error(req.path + '\n', err.message);
