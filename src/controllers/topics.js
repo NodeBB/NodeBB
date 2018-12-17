@@ -17,7 +17,7 @@ var analytics = require('../analytics');
 
 var topicsController = module.exports;
 
-topicsController.get = function (req, res, callback) {
+topicsController.get = function getTopic(req, res, callback) {
 	var tid = req.params.topic_id;
 	var currentPage = parseInt(req.query.page, 10) || 1;
 	var pageCount = 1;
