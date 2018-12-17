@@ -43,7 +43,7 @@ require('./maintenance')(middleware);
 require('./user')(middleware);
 require('./headers')(middleware);
 
-middleware.stripLeadingSlashes = function (req, res, next) {
+middleware.stripLeadingSlashes = function stripLeadingSlashes(req, res, next) {
 	var target = req.originalUrl.replace(nconf.get('relative_path'), '');
 	if (target.startsWith('//')) {
 		res.redirect(nconf.get('relative_path') + target.replace(/^\/+/, '/'));
@@ -83,7 +83,7 @@ middleware.pluginHooks = function pluginHooks(req, res, next) {
 	});
 };
 
-middleware.validateFiles = function (req, res, next) {
+middleware.validateFiles = function validateFiles(req, res, next) {
 	if (!Array.isArray(req.files.files) || !req.files.files.length) {
 		return next(new Error(['[[error:invalid-files]]']));
 	}
@@ -91,12 +91,12 @@ middleware.validateFiles = function (req, res, next) {
 	next();
 };
 
-middleware.prepareAPI = function (req, res, next) {
+middleware.prepareAPI = function prepareAPI(req, res, next) {
 	res.locals.isAPI = true;
 	next();
 };
 
-middleware.routeTouchIcon = function (req, res) {
+middleware.routeTouchIcon = function routeTouchIcon(req, res) {
 	if (meta.config['brand:touchIcon'] && validator.isURL(meta.config['brand:touchIcon'])) {
 		return res.redirect(meta.config['brand:touchIcon']);
 	}
@@ -112,7 +112,7 @@ middleware.routeTouchIcon = function (req, res) {
 	});
 };
 
-middleware.privateTagListing = function (req, res, next) {
+middleware.privateTagListing = function privateTagListing(req, res, next) {
 	if (!req.loggedIn && meta.config.privateTagListing) {
 		controllers.helpers.notAllowed(req, res);
 	} else {
@@ -120,11 +120,11 @@ middleware.privateTagListing = function (req, res, next) {
 	}
 };
 
-middleware.exposeGroupName = function (req, res, next) {
+middleware.exposeGroupName = function exposeGroupName(req, res, next) {
 	expose('groupName', groups.getGroupNameByGroupSlug, 'slug', req, res, next);
 };
 
-middleware.exposeUid = function (req, res, next) {
+middleware.exposeUid = function exposeUid(req, res, next) {
 	expose('uid', user.getUidByUserslug, 'userslug', req, res, next);
 };
 
@@ -143,7 +143,7 @@ function expose(exposedField, method, field, req, res, next) {
 	], next);
 }
 
-middleware.privateUploads = function (req, res, next) {
+middleware.privateUploads = function privateUploads(req, res, next) {
 	if (req.loggedIn || !meta.config.privateUploads) {
 		return next();
 	}
@@ -168,13 +168,13 @@ middleware.busyCheck = function busyCheck(req, res, next) {
 	}
 };
 
-middleware.applyBlacklist = function (req, res, next) {
+middleware.applyBlacklist = function applyBlacklist(req, res, next) {
 	meta.blacklist.test(req.ip, function (err) {
 		next(err);
 	});
 };
 
-middleware.processTimeagoLocales = function (req, res, next) {
+middleware.processTimeagoLocales = function processTimeagoLocales(req, res, next) {
 	var fallback = !req.path.includes('-short') ? 'jquery.timeago.en.js' : 'jquery.timeago.en-short.js';
 	var localPath = path.join(__dirname, '../../public/vendor/jquery/timeago/locales', req.path);
 
@@ -197,7 +197,7 @@ middleware.processTimeagoLocales = function (req, res, next) {
 	], next);
 };
 
-middleware.delayLoading = function (req, res, next) {
+middleware.delayLoading = function delayLoading(req, res, next) {
 	// Introduces an artificial delay during load so that brute force attacks are effectively mitigated
 
 	// Add IP to cache so if too many requests are made, subsequent requests are blocked for a minute
@@ -210,7 +210,7 @@ middleware.delayLoading = function (req, res, next) {
 	setTimeout(next, 1000);
 };
 
-middleware.buildSkinAsset = function (req, res, next) {
+middleware.buildSkinAsset = function buildSkinAsset(req, res, next) {
 	// If this middleware is reached, a skin was requested, so it is built on-demand
 	var target = path.basename(req.originalUrl).match(/(client-[a-z]+)/);
 	if (target) {
@@ -230,7 +230,7 @@ middleware.buildSkinAsset = function (req, res, next) {
 	}
 };
 
-middleware.trimUploadTimestamps = (req, res, next) => {
+middleware.trimUploadTimestamps = function trimUploadTimestamps(req, res, next) {
 	// Check match
 	let basename = path.basename(req.path);
 	if (req.path.startsWith('/uploads/files/') && middleware.regexes.timestampedUpload.test(basename)) {
@@ -238,5 +238,5 @@ middleware.trimUploadTimestamps = (req, res, next) => {
 		res.header('Content-Disposition', 'inline; filename="' + basename + '"');
 	}
 
-	return next();
+	next();
 };
