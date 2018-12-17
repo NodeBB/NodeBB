@@ -52,7 +52,7 @@ middleware.stripLeadingSlashes = function (req, res, next) {
 	}
 };
 
-middleware.pageView = function (req, res, next) {
+middleware.pageView = function pageView(req, res, next) {
 	analytics.pageView({
 		ip: req.ip,
 		uid: req.uid,
@@ -74,7 +74,7 @@ middleware.pageView = function (req, res, next) {
 };
 
 
-middleware.pluginHooks = function (req, res, next) {
+middleware.pluginHooks = function pluginHooks(req, res, next) {
 	async.each(plugins.loadedHooks['filter:router.page'] || [], function (hookObj, next) {
 		hookObj.method(req, res, next);
 	}, function (err) {
@@ -159,7 +159,7 @@ middleware.privateUploads = function (req, res, next) {
 	next();
 };
 
-middleware.busyCheck = function (req, res, next) {
+middleware.busyCheck = function busyCheck(req, res, next) {
 	if (global.env === 'production' && meta.config.eventLoopCheckEnabled && toobusy()) {
 		analytics.increment('errors:503');
 		res.status(503).type('text/html').sendFile(path.join(__dirname, '../../public/503.html'));

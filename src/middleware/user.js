@@ -129,7 +129,7 @@ module.exports = function (middleware) {
 	};
 
 	middleware.redirectToAccountIfLoggedIn = function (req, res, next) {
-		if (req.session.forceLogin || !req.uid) {
+		if (req.session.forceLogin || req.uid <= 0) {
 			return next();
 		}
 
@@ -233,7 +233,7 @@ module.exports = function (middleware) {
 		res.status(403).render('403', { title: '[[global:403.title]]' });
 	};
 
-	middleware.registrationComplete = function (req, res, next) {
+	middleware.registrationComplete = function registrationComplete(req, res, next) {
 		// If the user's session contains registration data, redirect the user to complete registration
 		if (!req.session.hasOwnProperty('registration')) {
 			return setImmediate(next);
@@ -244,7 +244,7 @@ module.exports = function (middleware) {
 
 			controllers.helpers.redirect(res, '/register/complete');
 		} else {
-			return setImmediate(next);
+			setImmediate(next);
 		}
 	};
 };

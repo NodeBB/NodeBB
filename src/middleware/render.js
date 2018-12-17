@@ -37,7 +37,7 @@ module.exports = function (middleware) {
 			var templateToRender;
 			async.waterfall([
 				function (next) {
-					options.loggedIn = !!req.uid;
+					options.loggedIn = req.uid > 0;
 					options.relative_path = nconf.get('relative_path');
 					options.template = { name: template };
 					options.template[template] = true;
