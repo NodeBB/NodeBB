@@ -43,7 +43,7 @@ module.exports = function (middleware) {
 		callback();
 	}
 
-	middleware.authenticate = function authenticate(req, res, next) {
+	middleware.authenticate = function middlewareAuthenticate(req, res, next) {
 		authenticate(req, res, next, function () {
 			controllers.helpers.notAllowed(req, res, next);
 		});
