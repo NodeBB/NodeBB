@@ -43,21 +43,21 @@ module.exports = function (middleware) {
 		callback();
 	}
 
-	middleware.authenticate = function (req, res, next) {
+	middleware.authenticate = function authenticate(req, res, next) {
 		authenticate(req, res, next, function () {
 			controllers.helpers.notAllowed(req, res, next);
 		});
 	};
 
-	middleware.authenticateOrGuest = function (req, res, next) {
+	middleware.authenticateOrGuest = function authenticateOrGuest(req, res, next) {
 		authenticate(req, res, next, next);
 	};
 
-	middleware.ensureSelfOrGlobalPrivilege = function (req, res, next) {
+	middleware.ensureSelfOrGlobalPrivilege = function ensureSelfOrGlobalPrivilege(req, res, next) {
 		ensureSelfOrMethod(user.isAdminOrGlobalMod, req, res, next);
 	};
 
-	middleware.ensureSelfOrPrivileged = function (req, res, next) {
+	middleware.ensureSelfOrPrivileged = function ensureSelfOrPrivileged(req, res, next) {
 		ensureSelfOrMethod(user.isPrivileged, req, res, next);
 	};
 
@@ -87,7 +87,7 @@ module.exports = function (middleware) {
 		], next);
 	}
 
-	middleware.checkGlobalPrivacySettings = function (req, res, next) {
+	middleware.checkGlobalPrivacySettings = function checkGlobalPrivacySettings(req, res, next) {
 		if (!req.loggedIn && meta.config.privateUserInfo) {
 			return middleware.authenticate(req, res, next);
 		}
@@ -95,7 +95,7 @@ module.exports = function (middleware) {
 		next();
 	};
 
-	middleware.checkAccountPermissions = function (req, res, next) {
+	middleware.checkAccountPermissions = function checkAccountPermissions(req, res, next) {
 		// This middleware ensures that only the requested user and admins can pass
 		async.waterfall([
 			function (next) {
@@ -128,7 +128,7 @@ module.exports = function (middleware) {
 		], next);
 	};
 
-	middleware.redirectToAccountIfLoggedIn = function (req, res, next) {
+	middleware.redirectToAccountIfLoggedIn = function redirectToAccountIfLoggedIn(req, res, next) {
 		if (req.session.forceLogin || req.uid <= 0) {
 			return next();
 		}
@@ -143,7 +143,7 @@ module.exports = function (middleware) {
 		], next);
 	};
 
-	middleware.redirectUidToUserslug = function (req, res, next) {
+	middleware.redirectUidToUserslug = function redirectUidToUserslug(req, res, next) {
 		var uid = parseInt(req.params.uid, 10);
 		if (uid <= 0) {
 			return next();
@@ -164,7 +164,7 @@ module.exports = function (middleware) {
 		], next);
 	};
 
-	middleware.redirectMeToUserslug = function (req, res, next) {
+	middleware.redirectMeToUserslug = function redirectMeToUserslug(req, res, next) {
 		var uid = req.uid;
 		async.waterfall([
 			function (next) {
@@ -180,7 +180,7 @@ module.exports = function (middleware) {
 		], next);
 	};
 
-	middleware.isAdmin = function (req, res, next) {
+	middleware.isAdmin = function isAdmin(req, res, next) {
 		async.waterfall([
 			function (next) {
 				user.isAdministrator(req.uid, next);

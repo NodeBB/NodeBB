@@ -11,10 +11,10 @@ var widgets = require('../widgets');
 var utils = require('../utils');
 
 module.exports = function (middleware) {
-	middleware.processRender = function (req, res, next) {
+	middleware.processRender = function processRender(req, res, next) {
 		// res.render post-processing, modified from here: https://gist.github.com/mrlannigan/5051687
 		var render = res.render;
-		res.render = function (template, options, fn) {
+		res.render = function renderOverride(template, options, fn) {
 			var self = this;
 			var req = this.req;
 			var defaultFn = function (err, str) {
