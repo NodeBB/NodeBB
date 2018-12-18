@@ -23,7 +23,7 @@ define('admin/advanced/events', function () {
 				}
 				parentEl.remove();
 			});
-		})
+		});
 
 		$('#filter').on('change', function () {
 			var filter = $(this).val();
