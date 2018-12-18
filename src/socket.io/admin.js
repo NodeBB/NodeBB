@@ -333,6 +333,10 @@ SocketAdmin.errors.clear = function (socket, data, callback) {
 	meta.errors.clear(callback);
 };
 
+SocketAdmin.deleteEvents = function (socket, eids, callback) {
+	events.deleteEvents(eids, callback);
+};
+
 SocketAdmin.deleteAllEvents = function (socket, data, callback) {
 	events.deleteAll(callback);
 };
