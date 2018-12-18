@@ -1,6 +1,6 @@
 {
-    "test-email.subject": "Test Email",
-    "password-reset-requested": "Password Reset Requested!",
+    "test-email.subject": "Test e-mail",
+    "password-reset-requested": "Wachtwoord Reset Aangevraagd!",
     "welcome-to": "Welkom bij %1",
     "invite": "Uitnodiging van %1 ",
     "greeting_no_name": "Hallo",
