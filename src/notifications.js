@@ -24,6 +24,7 @@ Notifications.baseTypes = [
 	'notificationType_follow',
 	'notificationType_new-chat',
 	'notificationType_group-invite',
+	'notificationType_group-request-membership',
 ];
 
 Notifications.privilegedTypes = [

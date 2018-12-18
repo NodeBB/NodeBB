@@ -20,6 +20,7 @@ module.exports = function (Groups) {
 				async.parallel({
 					notification: function (next) {
 						notifications.create({
+							type: 'group-request-membership',
 							bodyShort: '[[groups:request.notification_title, ' + username + ']]',
 							bodyLong: '[[groups:request.notification_text, ' + username + ', ' + groupName + ']]',
 							nid: 'group:' + groupName + ':uid:' + uid + ':request',
