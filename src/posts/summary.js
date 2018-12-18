@@ -49,6 +49,10 @@ module.exports = function (Posts) {
 						user.getUsersFields(uidsArray, ['uid', 'username', 'userslug', 'picture', 'fullname'], next);
 					},
 					settings: function (next) {
+						if (!meta.config.showFullnameAsDisplayName) {
+							return next(null, []);
+						}
+
 						user.getMultipleUserSettings(uidsArray, next);
 					},
 					topicsAndCategories: function (next) {
@@ -74,7 +78,7 @@ module.exports = function (Posts) {
 					post.deleted = post.deleted === 1;
 					post.timestampISO = utils.toISOString(post.timestamp);
 
-					if (!results.settings[post.uid].showfullname || meta.config.hideFullname) {
+					if (!meta.config.showFullnameAsDisplayName || !results.settings[post.uid] || !results.settings[post.uid].showfullname) {
 						post.user.fullname = '';
 					}
 				});
