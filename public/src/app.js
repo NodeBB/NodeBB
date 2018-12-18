@@ -283,10 +283,10 @@ app.cacheBuster = null;
 	};
 
 	function highlightNavigationLink() {
-		var path = window.location.pathname + window.location.search;
+		var path = window.location.pathname;
 		$('#main-nav li').removeClass('active');
 		if (path) {
-			$('#main-nav li').removeClass('active').find('a[href="' + path + '"]').parent()
+			$('#main-nav li').removeClass('active').find('a[href^="' + path + '"]').parent()
 				.addClass('active');
 		}
 	}
