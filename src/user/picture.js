@@ -3,7 +3,6 @@
 var async = require('async');
 var winston = require('winston');
 
-var plugins = require('../plugins');
 var file = require('../file');
 var image = require('../image');
 var meta = require('../meta');
@@ -58,7 +57,7 @@ module.exports = function (User) {
 
 				var extension = file.typeToExtension(type);
 				var filename = generateProfileImageFilename(data.uid, 'profilecover', extension);
-				uploadProfileOrCover(filename, picture, next);
+				image.uploadImage(filename, 'profile', picture, next);
 			},
 			function (uploadData, next) {
 				url = uploadData.url;
@@ -130,7 +129,7 @@ module.exports = function (User) {
 			},
 			function (next) {
 				var filename = generateProfileImageFilename(data.uid, 'profileavatar', extension);
-				uploadProfileOrCover(filename, picture, next);
+				image.uploadImage(filename, 'profile', picture, next);
 			},
 			function (_uploadedImage, next) {
 				uploadedImage = _uploadedImage;
@@ -162,39 +161,10 @@ module.exports = function (User) {
 		], callback);
 	}
 
-	function uploadProfileOrCover(filename, image, callback) {
-		if (plugins.hasListeners('filter:uploadImage')) {
-			return plugins.fireHook('filter:uploadImage', {
-				image: image,
-				uid: image.uid,
-			}, callback);
-		}
-
-		saveFileToLocal(filename, image, callback);
-	}
-
 	function generateProfileImageFilename(uid, type, extension) {
 		var keepAllVersions = meta.config['profile:keepAllUserImages'] === 1;
 		var convertToPNG = meta.config['profile:convertProfileImageToPNG'] === 1;
 		return uid + '-' + type + (keepAllVersions ? '-' + Date.now() : '') + (convertToPNG ? '.png' : extension);
-	}
-
-	function saveFileToLocal(filename, image, callback) {
-		async.waterfall([
-			function (next) {
-				file.isFileTypeAllowed(image.path, next);
-			},
-			function (next) {
-				file.saveFileToLocal(filename, 'profile', image.path, next);
-			},
-			function (upload, next) {
-				next(null, {
-					url: upload.url,
-					path: upload.path,
-					name: image.name,
-				});
-			},
-		], callback);
 	}
 
 	User.removeCoverPicture = function (data, callback) {
