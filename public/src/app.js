@@ -283,12 +283,12 @@ app.cacheBuster = null;
 	};
 
 	function highlightNavigationLink() {
-		var path = window.location.pathname + window.location.search;
-		$('#main-nav li').removeClass('active');
-		if (path) {
-			$('#main-nav li').removeClass('active').find('a[href="' + path + '"]').parent()
-				.addClass('active');
-		}
+		$('#main-nav li')
+			.removeClass('active')
+			.find('a')
+			.filter(function (i, x) { return window.location.pathname.startsWith(x.getAttribute('href')); })
+			.parent()
+			.addClass('active');
 	}
 
 	app.createUserTooltips = function (els, placement) {
