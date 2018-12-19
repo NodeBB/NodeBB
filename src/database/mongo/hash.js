@@ -16,10 +16,9 @@ module.exports = function (db, module) {
 		if (!key || !data) {
 			return callback();
 		}
-		if (data.hasOwnProperty('')) {
-			delete data[''];
-		}
-		db.collection('objects').updateOne({ _key: key }, { $set: data }, { upsert: true, w: 1 }, function (err) {
+
+		const writeData = helpers.serializeData(data);
+		db.collection('objects').updateOne({ _key: key }, { $set: writeData }, { upsert: true, w: 1 }, function (err) {
 			if (err) {
 				return callback(err);
 			}
@@ -34,7 +33,6 @@ module.exports = function (db, module) {
 			return callback();
 		}
 		var data = {};
-		field = helpers.fieldToString(field);
 		data[field] = value;
 		module.setObject(key, data, callback);
 	};
@@ -76,7 +74,7 @@ module.exports = function (db, module) {
 			if (err) {
 				return callback(err);
 			}
-
+			data = data.map(helpers.deserializeData);
 			var map = helpers.toMap(data);
 			unCachedKeys.forEach(function (key) {
 				cachedData[key] = map[key] || null;
