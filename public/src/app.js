@@ -284,10 +284,10 @@ app.cacheBuster = null;
 
 	function highlightNavigationLink() {
 		var path = window.location.pathname;
-		$('#main-nav li').removeClass('active');
-		if (path) {
-			$('#main-nav li').removeClass('active').find('a[href^="' + path + '"]').parent()
-				.addClass('active');
+		var nav = $('#main-nav li').removeClass('active');
+
+		if (path !== config.relative_path + '/') {
+			nav.find('a[href^="' + path + '"]').parent().addClass('active');
 		}
 	}
 
