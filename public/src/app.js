@@ -287,7 +287,8 @@ app.cacheBuster = null;
 		var nav = $('#main-nav li').removeClass('active');
 
 		if (path !== config.relative_path + '/') {
-			nav.find('a[href^="' + path + '"]').parent().addClass('active');
+			var url = config.relative_path + '/' + path.replace(config.relative_path, '').split('/')[1];
+			nav.find('a[href="' + url + '"]').parent().addClass('active');
 		}
 	}
 
