@@ -286,10 +286,10 @@ app.cacheBuster = null;
 		var path = window.location.pathname;
 		var nav = $('#main-nav li').removeClass('active');
 
-		if (path !== config.relative_path + '/') {
-			var url = config.relative_path + '/' + path.replace(config.relative_path, '').split('/')[1];
-			nav.find('a[href="' + url + '"]').parent().addClass('active');
-		}
+		nav
+			.find('a')
+			.filter(function (i, x) { return path.startsWith(x.getAttribute('href')); })
+			.parent().addClass('active');
 	}
 
 	app.createUserTooltips = function (els, placement) {
