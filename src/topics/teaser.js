@@ -52,11 +52,26 @@ module.exports = function (Topics) {
 				postData = _postData.filter(Boolean);
 				const uids = _.uniq(postData.map(post => post.uid));
 
-				user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
+				async.parallel({
+					usersData: function (next) {
+						user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'picture'], next);
+					},
+					settings: function (next) {
+						if (!meta.config.showFullnameAsDisplayName) {
+							return next(null, []);
+						}
+
+						user.getMultipleUserSettings(uids, next);
+					},
+				}, next);
 			},
-			function (usersData, next) {
+			function (results, next) {
 				var users = {};
-				usersData.forEach(function (user) {
+				results.usersData.forEach(function (user, index) {
+					if (!meta.config.showFullnameAsDisplayName || !results.settings[index] || !results.settings[index].showfullname) {
+						user.fullname = '';
+					}
+
 					users[user.uid] = user;
 				});
 
