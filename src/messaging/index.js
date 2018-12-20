@@ -145,7 +145,29 @@ Messaging.getRecentChats = function (callerUid, uid, start, stop, callback) {
 							uids = uids.filter(function (value) {
 								return value && parseInt(value, 10) !== parseInt(uid, 10);
 							});
-							user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline'], next);
+
+							async.parallel({
+								settings: function (next) {
+									user.getMultipleUserSettings(uids, next);
+								},
+								fields: function (next) {
+									user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'picture', 'status', 'lastonline'], next);
+								},
+							}, function (err, users) {
+								if (err) {
+									return next(err);
+								}
+
+								users.fields.forEach(function (field, i) {
+									if (!meta.config.showFullnameAsDisplayName || !users.settings[i].showfullname) {
+										users.fields[i].fullname = '';
+									}
+
+									users.fields[i].displayname = users.fields[i].fullname || users.fields[i].username;
+								});
+
+								next(null, users.fields);
+							});
 						});
 					}, next);
 				},
@@ -198,7 +220,7 @@ Messaging.generateUsernames = function (users, excludeUid) {
 		return user && parseInt(user.uid, 10) !== excludeUid;
 	});
 	return users.map(function (user) {
-		return user.username;
+		return user.displayname;
 	}).join(', ');
 };
 

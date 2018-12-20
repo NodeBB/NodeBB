@@ -6,6 +6,7 @@ var db = require('../database');
 var user = require('../user');
 var utils = require('../utils');
 var plugins = require('../plugins');
+var meta = require('../meta');
 
 const intFields = ['timestamp', 'edited', 'fromuid', 'roomId', 'deleted'];
 
@@ -72,11 +73,24 @@ module.exports = function (Messaging) {
 
 				const uids = messages.map(msg => msg && msg.fromuid);
 
-				user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'banned'], next);
+				async.parallel({
+					users: function (next) {
+						user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'picture', 'status', 'banned'], next);
+					},
+					settings: function (next) {
+						user.getMultipleUserSettings(uids, next);
+					},
+				}, next);
 			},
-			function (users, next) {
+			function (data, next) {
+				data.users.forEach(function (user, index) {
+					if (!meta.config.showFullnameAsDisplayName || !data.settings[index].showfullname) {
+						user.fullname = '';
+					}
+				});
+
 				messages.forEach(function (message, index) {
-					message.fromUser = users[index];
+					message.fromUser = data.users[index];
 					message.fromUser.banned = !!message.fromUser.banned;
 					message.fromUser.deleted = message.fromuid !== message.fromUser.uid && message.fromUser.uid === 0;
 
