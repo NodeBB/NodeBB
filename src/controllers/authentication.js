@@ -483,6 +483,7 @@ authenticationController.logout = function (req, res, next) {
 		function (next) {
 			plugins.fireHook('static:user.loggedOut', { req: req, res: res, uid: req.uid }, next);
 		},
+		async.apply(middleware.autoLocale, req, res),
 		function () {
 			// Force session check for all connected socket.io clients with the same session id
 			sockets.in('sess_' + req.sessionID).emit('checkSession', 0);

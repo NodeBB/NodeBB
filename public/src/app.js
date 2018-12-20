@@ -147,6 +147,8 @@ app.cacheBuster = null;
 				Chat.prepareDOM();
 				app.reskin(data.config.bootswatchSkin);
 				translator.switchTimeagoLanguage(callback);
+				bootbox.setLocale(config.userLang);
+				$(window).trigger('action:app.updateHeader');
 			});
 		});
 	};
