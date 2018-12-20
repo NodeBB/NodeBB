@@ -1,7 +1,11 @@
 'use strict';
 
-
-define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-serializeobject.min', 'translator', 'benchpress'], function (serialize, translator, Benchpress) {
+define('admin/manage/categories', [
+	'vendor/jquery/serializeObject/jquery.ba-serializeobject.min',
+	'translator',
+	'benchpress',
+	'categorySelector',
+], function (serialize, translator, Benchpress, categorySelector) {
 	var	Categories = {};
 	var newCategoryId = -1;
 	var sortables;
@@ -54,11 +58,16 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 	};
 
 	Categories.throwCreateModal = function () {
-		socket.emit('admin.categories.getNames', {}, function (err, categories) {
+		socket.emit('categories.getSelectCategories', {}, function (err, categories) {
 			if (err) {
 				return app.alertError(err.message);
 			}
 
+			categories.unshift({
+				cid: 0,
+				name: '[[admin/manage/categories:parent-category-none]]',
+				icon: 'fa-none',
+			});
 			Benchpress.parse('admin/partials/categories/create', {
 				categories: categories,
 			}, function (html) {
@@ -74,11 +83,15 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 					},
 				});
 
+				var parentSelector = categorySelector.init(modal.find('#parentCidGroup [component="category-selector"]'));
+				var cloneFromSelector = categorySelector.init(modal.find('#cloneFromCidGroup [component="category-selector"]'));
 				function submit() {
 					var formData = modal.find('form').serializeObject();
 					formData.description = '';
 					formData.icon = 'fa-comments';
 					formData.uid = app.user.uid;
+					formData.parentCid = parentSelector.getSelectedCid();
+					formData.cloneFromCid = cloneFromSelector.getSelectedCid();
 
 					Categories.create(formData);
 					modal.modal('hide');
@@ -87,11 +100,11 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 
 				$('#cloneChildren').on('change', function () {
 					var check = $(this);
-					var parentSelect = $('#parentCid');
+					var parentSelect = modal.find('#parentCidGroup [component="category-selector"] .dropdown-toggle');
 
 					if (check.prop('checked')) {
 						parentSelect.attr('disabled', 'disabled');
-						parentSelect.val('');
+						parentSelector.selectCategory(0);
 					} else {
 						parentSelect.removeAttr('disabled');
 					}

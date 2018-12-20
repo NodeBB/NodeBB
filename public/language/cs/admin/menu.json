@@ -57,7 +57,7 @@
 	"section-advanced": "Pokročilé",
 	"advanced/database": "Databáze",
 	"advanced/events": "Události",
-	"advanced/hooks": "Hooks",
+	"advanced/hooks": "Háky",
 	"advanced/logs": "Protokoly",
 	"advanced/errors": "Chyby",
 	"advanced/cache": "Mezipamě",

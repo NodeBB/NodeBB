@@ -67,7 +67,7 @@
 	"graphs.page-views": "页面浏览量",
 	"graphs.page-views-registered": "注册用户页面浏览量",
 	"graphs.page-views-guest": "游客页面浏览量",
-	"graphs.page-views-bot": "Page Views Bot",
+	"graphs.page-views-bot": "爬虫页面浏览量",
 	"graphs.unique-visitors": "单一访客",
 	"graphs.registered-users": "已注册用户",
 	"graphs.anonymous-users": "匿名用户",

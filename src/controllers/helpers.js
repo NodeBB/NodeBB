@@ -166,7 +166,7 @@ helpers.buildCategoryBreadcrumbs = function (cid, callback) {
 
 			if (!data.disabled && !data.isSection) {
 				breadcrumbs.unshift({
-					text: validator.escape(String(data.name)),
+					text: String(data.name),
 					url: nconf.get('relative_path') + '/category/' + data.slug,
 				});
 			}
@@ -239,10 +239,27 @@ helpers.getCategories = function (set, uid, privilege, selectedCid, callback) {
 	], callback);
 };
 
+helpers.getCategoriesByStates = function (uid, selectedCid, states, callback) {
+	async.waterfall([
+		function (next) {
+			user.getCategoriesByStates(uid, states, next);
+		},
+		function (cids, next) {
+			privileges.categories.filterCids('read', cids, uid, next);
+		},
+		function (cids, next) {
+			getCategoryData(cids, uid, selectedCid, next);
+		},
+	], callback);
+};
+
 helpers.getWatchedCategories = function (uid, selectedCid, callback) {
 	async.waterfall([
 		function (next) {
 			user.getWatchedCategories(uid, next);
+		},
+		function (cids, next) {
+			privileges.categories.filterCids('read', cids, uid, next);
 		},
 		function (cids, next) {
 			getCategoryData(cids, uid, selectedCid, next);
@@ -256,9 +273,6 @@ function getCategoryData(cids, uid, selectedCid, callback) {
 	}
 	async.waterfall([
 		function (next) {
-			privileges.categories.filterCids('read', cids, uid, next);
-		},
-		function (cids, next) {
 			categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'link', 'color', 'bgColor', 'parentCid', 'image', 'imageClass'], next);
 		},
 		function (categoryData, next) {
@@ -302,8 +316,9 @@ function getCategoryData(cids, uid, selectedCid, callback) {
 function recursive(category, categoriesData, level) {
 	category.level = level;
 	categoriesData.push(category);
-
-	category.children.forEach(function (child) {
-		recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level);
-	});
+	if (Array.isArray(category.children)) {
+		category.children.forEach(function (child) {
+			recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level);
+		});
+	}
 }

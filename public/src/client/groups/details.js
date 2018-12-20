@@ -40,6 +40,7 @@ define('forum/groups/details', [
 						paramName: 'groupName',
 						paramValue: groupName,
 					}, function (imageUrlOnServer) {
+						imageUrlOnServer = (!imageUrlOnServer.startsWith('http') ? config.relative_path : '') + imageUrlOnServer + '?' + Date.now();
 						components.get('groups/cover').css('background-image', 'url(' + imageUrlOnServer + ')');
 					});
 				},

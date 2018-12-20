@@ -276,6 +276,13 @@ describe('Messaging Library', function () {
 			});
 		});
 
+		it('should fail to send chat if content is empty', function (done) {
+			socketModules.chats.send({ uid: fooUid }, { roomId: roomId, message: ' ' }, function (err) {
+				assert.equal(err.message, '[[error:invalid-chat-message]]');
+				done();
+			});
+		});
+
 		it('should send a message to a room', function (done) {
 			socketModules.chats.send({ uid: fooUid }, { roomId: roomId, message: 'first chat message' }, function (err, messageData) {
 				assert.ifError(err);
@@ -551,6 +558,13 @@ describe('Messaging Library', function () {
 						done();
 					});
 				});
+			});
+		});
+
+		it('should fail to edit message if new content is empty string', function (done) {
+			socketModules.chats.edit({ uid: fooUid }, { mid: 5, roomId: roomId, message: ' ' }, function (err) {
+				assert.equal(err.message, '[[error:invalid-chat-message]]');
+				done();
 			});
 		});
 

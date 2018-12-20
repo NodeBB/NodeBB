@@ -41,6 +41,7 @@ apiController.loadConfig = function (req, callback) {
 	config.disableChatMessageEditing = meta.config.disableChatMessageEditing === 1;
 	config.maximumChatMessageLength = meta.config.maximumChatMessageLength || 1000;
 	config.socketioTransports = nconf.get('socket.io:transports') || ['polling', 'websocket'];
+	config.socketioOrigins = nconf.get('socket.io:origins');
 	config.websocketAddress = nconf.get('socket.io:address') || '';
 	config.maxReconnectionAttempts = meta.config.maxReconnectionAttempts || 5;
 	config.reconnectionDelay = meta.config.reconnectionDelay || 1500;
@@ -57,7 +58,7 @@ apiController.loadConfig = function (req, callback) {
 	config.requireEmailConfirmation = meta.config.requireEmailConfirmation === 1;
 	config.topicPostSort = meta.config.topicPostSort || 'oldest_to_newest';
 	config.categoryTopicSort = meta.config.categoryTopicSort || 'newest_to_oldest';
-	config.csrf_token = req.csrfToken && req.csrfToken();
+	config.csrf_token = req.uid >= 0 && req.csrfToken && req.csrfToken();
 	config.searchEnabled = plugins.hasListeners('filter:search.query');
 	config.bootswatchSkin = meta.config.bootswatchSkin || '';
 	config.enablePostHistory = (meta.config.enablePostHistory || 1) === 1;

@@ -220,10 +220,6 @@ module.exports = function (SocketUser) {
 			},
 			function (results, next) {
 				isBlocked = results.is;
-				if (!results.can && !isBlocked) {
-					return next(new Error('[[error:cannot-block-privileged]]'));
-				}
-
 				user.blocks[isBlocked ? 'remove' : 'add'](data.blockeeUid, data.blockerUid, next);
 			},
 		], function (err) {

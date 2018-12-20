@@ -246,7 +246,7 @@ Emailer.sendToEmail = function (template, email, language, params, callback) {
 				to: email,
 				from: meta.config['email:from'] || 'no-reply@' + getHostname(),
 				from_name: meta.config['email:from_name'] || 'NodeBB',
-				subject: '[' + meta.config.title + '] ' + results.subject,
+				subject: '[' + meta.config.title + '] ' + _.unescape(results.subject),
 				html: results.html,
 				plaintext: htmlToText.fromString(results.html, {
 					ignoreImage: true,

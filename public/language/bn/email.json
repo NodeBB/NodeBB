@@ -1,5 +1,6 @@
 {
-    "password-reset-requested": "পাসওয়ার্ড রিসেটের জন্য অনুরোধ করা হয়েছে - %1!",
+    "test-email.subject": "Test Email",
+    "password-reset-requested": "Password Reset Requested!",
     "welcome-to": "%1 এ স্বাগতম",
     "invite": "%1 থেকে আমন্ত্রণ",
     "greeting_no_name": "স্বাগতম",

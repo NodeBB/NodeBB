@@ -450,19 +450,26 @@ postgresModule.checkCompatibilityVersion = function (version, callback) {
 };
 
 postgresModule.info = function (db, callback) {
-	if (!db) {
-		return callback();
-	}
+	async.waterfall([
+		function (next) {
+			if (db) {
+				setImmediate(next, null, db);
+			} else {
+				postgresModule.connect(nconf.get('postgres'), next);
+			}
+		},
+		function (db, next) {
+			postgresModule.pool = postgresModule.pool || db;
 
-	db.query(`
-SELECT true "postgres",
-       current_setting('server_version') "version",
-       EXTRACT(EPOCH FROM NOW() - pg_postmaster_start_time()) * 1000 "uptime"`, function (err, res) {
-		if (err) {
-			return callback(err);
-		}
-		callback(null, res.rows[0]);
-	});
+			db.query(`
+			SELECT true "postgres",
+				   current_setting('server_version') "version",
+				   EXTRACT(EPOCH FROM NOW() - pg_postmaster_start_time()) * 1000 "uptime"`, next);
+		},
+		function (res, next) {
+			next(null, res.rows[0]);
+		},
+	], callback);
 };
 
 postgresModule.close = function (callback) {

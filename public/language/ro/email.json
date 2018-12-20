@@ -1,5 +1,6 @@
 {
-    "password-reset-requested": "Cererea de resetare a parolei a fost efectuată - %1!",
+    "test-email.subject": "Test Email",
+    "password-reset-requested": "Password Reset Requested!",
     "welcome-to": "Salutare lui %1",
     "invite": "Invitație de la %1",
     "greeting_no_name": "Salut",

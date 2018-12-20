@@ -39,7 +39,7 @@ module.exports = function (app, middleware) {
 };
 
 function validateTokenIfRequiresLogin(requiresLogin, cid, req, res, callback) {
-	var uid = req.query.uid;
+	var uid = parseInt(req.query.uid, 10) || 0;
 	var token = req.query.token;
 
 	if (!requiresLogin) {
@@ -148,14 +148,14 @@ function generateForTopic(req, res, callback) {
 	], callback);
 }
 
-function generateForCategory(req, res, next) {
+function generateForCategory(req, res, callback) {
 	if (meta.config['feeds:disableRSS']) {
 		return controllers404.send404(req, res);
 	}
 	var cid = req.params.category_id;
 	var category;
 	if (!parseInt(cid, 10)) {
-		return next();
+		return setImmediate(callback);
 	}
 	async.waterfall([
 		function (next) {
@@ -177,6 +177,9 @@ function generateForCategory(req, res, next) {
 		},
 		function (results, next) {
 			category = results.category;
+			if (!category) {
+				return callback();
+			}
 			validateTokenIfRequiresLogin(!results.privileges.read, cid, req, res, next);
 		},
 		function (next) {
@@ -191,7 +194,7 @@ function generateForCategory(req, res, next) {
 		function (feed) {
 			sendFeed(feed, res);
 		},
-	], next);
+	], callback);
 }
 
 function generateForTopics(req, res, next) {

@@ -103,6 +103,9 @@ categoryController.get = function (req, res, callback) {
 			}, next);
 		},
 		function (categoryData, next) {
+			if (!categoryData) {
+				return callback();
+			}
 			categories.modifyTopicsByPrivilege(categoryData.topics, userPrivileges);
 
 			if (categoryData.link) {

@@ -6,7 +6,7 @@ var meta = require('../meta');
 var user = require('../user');
 
 module.exports = function (middleware) {
-	middleware.maintenanceMode = function (req, res, callback) {
+	middleware.maintenanceMode = function maintenanceMode(req, res, callback) {
 		if (!meta.config.maintenanceMode) {
 			return setImmediate(callback);
 		}

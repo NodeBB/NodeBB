@@ -66,6 +66,7 @@
     "reputation:disabled": 0,
     "downvote:disabled": 0,
     "disableSignatures": 0,
+    "min:rep:downvote": 0,
     "min:rep:flag": 0,
     "min:rep:profile-picture": 0,
     "min:rep:cover-picture": 0,
@@ -116,5 +117,6 @@
     "eventLoopLagThreshold": 100,
     "eventLoopInterval": 500,
     "onlineCutoff": 30,
-    "timeagoCutoff": 30
+    "timeagoCutoff": 30,
+    "categoryWatchState": "watching"
 }

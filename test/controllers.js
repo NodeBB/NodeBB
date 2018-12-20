@@ -60,6 +60,35 @@ describe('Controllers', function () {
 		});
 	});
 
+	it('should load /config with csrf_token', function (done) {
+		request({
+			url: nconf.get('url') + '/api/config',
+			json: true,
+		}, function (err, response, body) {
+			assert.ifError(err);
+			assert.equal(response.statusCode, 200);
+			assert(body.csrf_token);
+			done();
+		});
+	});
+
+	it('should load /config with no csrf_token as spider', function (done) {
+		request({
+			url: nconf.get('url') + '/api/config',
+			json: true,
+			headers: {
+				'user-agent': 'yandex',
+			},
+		}, function (err, response, body) {
+			assert.ifError(err);
+			assert.equal(response.statusCode, 200);
+			assert.strictEqual(body.csrf_token, false);
+			assert.strictEqual(body.uid, -1);
+			assert.strictEqual(body.loggedIn, false);
+			done();
+		});
+	});
+
 	describe('homepage', function () {
 		function hookMethod(hookData) {
 			assert(hookData.req);
@@ -2144,7 +2173,7 @@ describe('Controllers', function () {
 				assert.equal(res.statusCode, 200);
 				assert(body.title);
 				assert(body.template);
-				assert.equal(body.url, '/compose');
+				assert.equal(body.url, nconf.get('relative_path') + '/compose');
 				done();
 			});
 		});
@@ -2165,7 +2194,7 @@ describe('Controllers', function () {
 				assert.equal(res.statusCode, 200);
 				assert(body.title);
 				assert.strictEqual(body.template.name, '');
-				assert.strictEqual(body.url, '/compose');
+				assert.strictEqual(body.url, nconf.get('relative_path') + '/compose');
 
 				plugins.unregisterHook('myTestPlugin', 'filter:composer.build', hookMethod);
 				done();

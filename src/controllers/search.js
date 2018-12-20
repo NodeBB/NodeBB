@@ -34,6 +34,9 @@ searchController.search = function (req, res, next) {
 			if (req.query.categories && !Array.isArray(req.query.categories)) {
 				req.query.categories = [req.query.categories];
 			}
+			if (req.query.hasTags && !Array.isArray(req.query.hasTags)) {
+				req.query.hasTags = [req.query.hasTags];
+			}
 
 			var data = {
 				query: req.query.term,

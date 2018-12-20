@@ -1,0 +1,9 @@
+{
+    "upload-file": "Dosya yükle",
+    "filename": "Dosya adı",
+    "usage": "İleti Kullanımı",
+    "orphaned": "Sahipsiz",
+    "size/filecount": "Boyut / Dosya sayısı",
+    "confirm-delete": "Bu dosyayı silmek istediğinden emin misin?",
+    "filecount": "%1 dosya"
+}

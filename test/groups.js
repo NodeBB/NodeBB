@@ -1297,7 +1297,11 @@ describe('Groups', function () {
 				assert.ifError(err);
 				Groups.getGroupFields('Test', ['cover:url'], function (err, groupData) {
 					assert.ifError(err);
-					assert.equal(data.url, groupData['cover:url']);
+					assert.equal(nconf.get('relative_path') + data.url, groupData['cover:url']);
+					if (nconf.get('relative_path')) {
+						assert(!data.url.startsWith(nconf.get('relative_path')));
+						assert(groupData['cover:url'].startsWith(nconf.get('relative_path')), groupData['cover:url']);
+					}
 					done();
 				});
 			});
@@ -1313,7 +1317,7 @@ describe('Groups', function () {
 				assert.ifError(err);
 				Groups.getGroupFields('Test', ['cover:url'], function (err, groupData) {
 					assert.ifError(err);
-					assert.equal(data.url, groupData['cover:url']);
+					assert.equal(nconf.get('relative_path') + data.url, groupData['cover:url']);
 					done();
 				});
 			});
@@ -1361,7 +1365,7 @@ describe('Groups', function () {
 					assert.equal(res.statusCode, 200);
 					Groups.getGroupFields('Test', ['cover:url'], function (err, groupData) {
 						assert.ifError(err);
-						assert.equal(body[0].url, groupData['cover:url']);
+						assert.equal(nconf.get('relative_path') + body[0].url, groupData['cover:url']);
 						done();
 					});
 				});

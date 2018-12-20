@@ -179,10 +179,8 @@ SocketAdmin.config.setMultiple = function (socket, data, callback) {
 	}
 
 	var changes = {};
+	data = meta.configs.deserialize(data);
 	Object.keys(data).forEach(function (key) {
-		if (typeof meta.config[key] === 'number') {
-			data[key] = parseInt(data[key], 10);
-		}
 		if (data[key] !== meta.config[key]) {
 			changes[key] = data[key];
 			changes[key + '_old'] = meta.config[key];
@@ -249,7 +247,7 @@ SocketAdmin.settings.clearSitemapCache = function (socket, data, callback) {
 
 SocketAdmin.email.test = function (socket, data, callback) {
 	var payload = {
-		subject: 'Test Email',
+		subject: '[[email:test-email.subject]]',
 	};
 
 	switch (data.template) {
@@ -333,6 +331,10 @@ SocketAdmin.logs.clear = function (socket, data, callback) {
 
 SocketAdmin.errors.clear = function (socket, data, callback) {
 	meta.errors.clear(callback);
+};
+
+SocketAdmin.deleteEvents = function (socket, eids, callback) {
+	events.deleteEvents(eids, callback);
 };
 
 SocketAdmin.deleteAllEvents = function (socket, data, callback) {

@@ -20,6 +20,7 @@ module.exports = function (Groups) {
 				async.parallel({
 					notification: function (next) {
 						notifications.create({
+							type: 'group-request-membership',
 							bodyShort: '[[groups:request.notification_title, ' + username + ']]',
 							bodyLong: '[[groups:request.notification_text, ' + username + ', ' + groupName + ']]',
 							nid: 'group:' + groupName + ':uid:' + uid + ':request',
@@ -77,7 +78,7 @@ module.exports = function (Groups) {
 	};
 
 	function inviteOrRequestMembership(groupName, uid, type, callback) {
-		if (!parseInt(uid, 10)) {
+		if (!(parseInt(uid, 10) > 0)) {
 			return callback(new Error('[[error:not-logged-in]]'));
 		}
 		var hookName = type === 'invite' ? 'action:group.inviteMember' : 'action:group.requestMembership';

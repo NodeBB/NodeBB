@@ -19,7 +19,9 @@ module.exports = function (Messaging) {
 				if (raw === content) {
 					return callback();
 				}
-
+				if (!String(content).trim()) {
+					return callback(new Error('[[error:invalid-chat-message]]'));
+				}
 				Messaging.setMessageFields(mid, {
 					content: content,
 					edited: Date.now(),

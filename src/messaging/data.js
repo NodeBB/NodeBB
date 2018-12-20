@@ -104,7 +104,7 @@ module.exports = function (Messaging) {
 					// Add a spacer in between messages with time gaps between them
 					messages = messages.map(function (message, index) {
 						// Compare timestamps with the previous message, and check if a spacer needs to be added
-						if (index > 0 && message.timestamp > messages[index - 1] + Messaging.newMessageCutoff) {
+						if (index > 0 && message.timestamp > messages[index - 1].timestamp + Messaging.newMessageCutoff) {
 							// If it's been 5 minutes, this is a new set of messages
 							message.newSet = true;
 						} else if (index > 0 && message.fromuid !== messages[index - 1].fromuid) {
@@ -134,8 +134,8 @@ module.exports = function (Messaging) {
 							Messaging.getMessageFields(mid, ['fromuid', 'timestamp'], next);
 						},
 						function (fields, next) {
-							if ((messages[0].timestamp > fields.timestamp + Messaging.newMessageCutoff)
-								|| (messages[0].fromuid !== fields.fromuid)) {
+							if ((messages[0].timestamp > fields.timestamp + Messaging.newMessageCutoff) ||
+								(messages[0].fromuid !== fields.fromuid)) {
 								// If it's been 5 minutes, this is a new set of messages
 								messages[0].newSet = true;
 							}
@@ -168,7 +168,7 @@ function modifyMessage(message, fields) {
 			message.timestampISO = utils.toISOString(message.timestamp);
 		}
 		if (message.hasOwnProperty('edited')) {
-			message.editedISO = utils.toISOString(message.timestamp);
+			message.editedISO = utils.toISOString(message.edited);
 		}
 	}
 }

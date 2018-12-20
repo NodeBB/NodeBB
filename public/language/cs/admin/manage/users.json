@@ -93,7 +93,7 @@
 	"alerts.error-x": "<strong>Chyba</strong><p>%1</p>",
 	"alerts.create-success": "Uživatel byl vytvořen.",
 
-	"alerts.prompt-email": "Emails: ",
+	"alerts.prompt-email": "E-maily:",
 	"alerts.email-sent-to": "E-mail s pozvánkou byl odeslán na %1",
 	"alerts.x-users-found": "Počet nalezených uživatelů: %1 (hledání trvalo %2 ms)"
 }

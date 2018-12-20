@@ -120,7 +120,7 @@
     "chat-edit-duration-expired": "You are only allowed to edit chat messages for %1 second(s) after posting",
     "chat-delete-duration-expired": "You are only allowed to delete chat messages for %1 second(s) after posting",
     "chat-deleted-already": "This chat message has already been deleted.",
-    "chat-restored'already": "This chat message has already been restored.",
+    "chat-restored-already": "This chat message has already been restored.",
     "already-voting-for-this-post": "你已經對這個張貼投過票了",
     "reputation-system-disabled": "信譽系統已停用。",
     "downvoting-disabled": "反向投票已停用",
@@ -153,5 +153,8 @@
     "cant-move-to-same-topic": "Can't move post to same topic!",
     "cannot-block-self": "You cannot block yourself!",
     "cannot-block-privileged": "您無法封鎖管理者或討論區管理員",
+    "cannot-block-guest": "Guest are not able to block other users",
+    "already-blocked": "This user is already blocked",
+    "already-unblocked": "This user is already unblocked",
     "no-connection": "There seems to be a problem with your internet connection"
 }

@@ -9,6 +9,7 @@ var user = require('../user');
 var Groups = require('../groups');
 var plugins = require('../plugins');
 var privileges = require('../privileges');
+const cache = require('../cache');
 
 var Categories = module.exports;
 
@@ -20,6 +21,7 @@ require('./unread')(Categories);
 require('./activeusers')(Categories);
 require('./recentreplies')(Categories);
 require('./update')(Categories);
+require('./watch')(Categories);
 
 Categories.exists = function (cid, callback) {
 	db.exists('category:' + cid, callback);
@@ -33,7 +35,7 @@ Categories.getCategoryById = function (data, callback) {
 		},
 		function (categories, next) {
 			if (!categories[0]) {
-				return next(new Error('[[error:invalid-cid]]'));
+				return callback(null, null);
 			}
 			category = categories[0];
 			data.category = category;
@@ -44,8 +46,8 @@ Categories.getCategoryById = function (data, callback) {
 				topicCount: function (next) {
 					Categories.getTopicCount(data, next);
 				},
-				isIgnored: function (next) {
-					Categories.isIgnored([data.cid], data.uid, next);
+				watchState: function (next) {
+					Categories.getWatchState([data.cid], data.uid, next);
 				},
 				parent: function (next) {
 					if (category.parentCid) {
@@ -63,7 +65,9 @@ Categories.getCategoryById = function (data, callback) {
 			category.topics = results.topics.topics;
 			category.nextStart = results.topics.nextStart;
 			category.topic_count = results.topicCount;
-			category.isIgnored = results.isIgnored[0];
+			category.isWatched = results.watchState[0] === Categories.watchStates.watching;
+			category.isNotWatched = results.watchState[0] === Categories.watchStates.notwatching;
+			category.isIgnored = results.watchState[0] === Categories.watchStates.ignoring;
 			category.parent = results.parent;
 
 			calculateTopicPostCount(category);
@@ -75,17 +79,25 @@ Categories.getCategoryById = function (data, callback) {
 	], callback);
 };
 
-Categories.isIgnored = function (cids, uid, callback) {
-	if (parseInt(uid, 10) <= 0) {
-		return setImmediate(callback, null, cids.map(() => false));
+Categories.getAllCidsFromSet = function (key, callback) {
+	const cids = cache.get(key);
+	if (cids) {
+		return setImmediate(callback, null, cids.slice());
 	}
-	db.isSortedSetMembers('uid:' + uid + ':ignored:cids', cids, callback);
+
+	db.getSortedSetRange(key, 0, -1, function (err, cids) {
+		if (err) {
+			return callback(err);
+		}
+		cache.set(key, cids);
+		callback(null, cids.slice());
+	});
 };
 
 Categories.getAllCategories = function (uid, callback) {
 	async.waterfall([
 		function (next) {
-			db.getSortedSetRange('categories:cid', 0, -1, next);
+			Categories.getAllCidsFromSet('categories:cid', next);
 		},
 		function (cids, next) {
 			Categories.getCategories(cids, uid, next);
@@ -96,7 +108,7 @@ Categories.getAllCategories = function (uid, callback) {
 Categories.getCidsByPrivilege = function (set, uid, privilege, callback) {
 	async.waterfall([
 		function (next) {
-			db.getSortedSetRange(set, 0, -1, next);
+			Categories.getAllCidsFromSet(set, next);
 		},
 		function (cids, next) {
 			privileges.categories.filterCids(privilege, cids, uid, next);
@@ -162,8 +174,32 @@ Categories.getCategories = function (cids, uid, callback) {
 };
 
 Categories.getTagWhitelist = function (cids, callback) {
-	const keys = cids.map(cid => 'cid:' + cid + ':tag:whitelist');
-	db.getSortedSetsMembers(keys, callback);
+	const cachedData = {};
+
+	const nonCachedCids = cids.filter((cid) => {
+		const data = cache.get('cid:' + cid + ':tag:whitelist');
+		const isInCache = data !== undefined;
+		if (isInCache) {
+			cachedData[cid] = data;
+		}
+		return !isInCache;
+	});
+
+	if (!nonCachedCids.length) {
+		return setImmediate(callback, null, _.clone(cids.map(cid => cachedData[cid])));
+	}
+
+	const keys = nonCachedCids.map(cid => 'cid:' + cid + ':tag:whitelist');
+	db.getSortedSetsMembers(keys, function (err, data) {
+		if (err) {
+			return callback(err);
+		}
+		nonCachedCids.forEach((cid, index) => {
+			cachedData[cid] = data[index];
+			cache.set('cid:' + cid + ':tag:whitelist', data[index]);
+		});
+		callback(null, _.clone(cids.map(cid => cachedData[cid])));
+	});
 };
 
 function calculateTopicPostCount(category) {
@@ -268,7 +304,7 @@ function getChildrenTree(category, uid, callback) {
 }
 
 Categories.getChildrenCids = function (rootCid, callback) {
-	var allCids = [];
+	let allCids = [];
 	function recursive(keys, callback) {
 		db.getSortedSetRange(keys, 0, -1, function (err, childrenCids) {
 			if (err) {
@@ -283,9 +319,19 @@ Categories.getChildrenCids = function (rootCid, callback) {
 			recursive(keys, callback);
 		});
 	}
+	const key = 'cid:' + rootCid + ':children';
+	const childrenCids = cache.get(key);
+	if (childrenCids) {
+		return setImmediate(callback, null, childrenCids.slice());
+	}
 
-	recursive('cid:' + rootCid + ':children', function (err) {
-		callback(err, _.uniq(allCids));
+	recursive(key, function (err) {
+		if (err) {
+			return callback(err);
+		}
+		allCids = _.uniq(allCids);
+		cache.set(key, allCids);
+		callback(null, allCids.slice());
 	});
 };
 
@@ -309,12 +355,14 @@ Categories.flattenCategories = function (allCategories, categoryData) {
  */
 Categories.getTree = function (categories, parentCid) {
 	parentCid = parentCid || 0;
-	const cids = categories.map(category => category.cid);
+	const cids = categories.map(category => category && category.cid);
 	const cidToCategory = {};
 	const parents = {};
 	cids.forEach((cid, index) => {
-		cidToCategory[cid] = categories[index];
-		parents[cid] = _.clone(categories[index]);
+		if (cid) {
+			cidToCategory[cid] = categories[index];
+			parents[cid] = _.clone(categories[index]);
+		}
 	});
 
 	const tree = [];
@@ -388,22 +436,6 @@ Categories.buildForSelectCategories = function (categories, callback) {
 		recursive(category, categoriesData, '', 0);
 	});
 	callback(null, categoriesData);
-};
-
-Categories.getIgnorers = function (cid, start, stop, callback) {
-	db.getSortedSetRevRange('cid:' + cid + ':ignorers', start, stop, callback);
-};
-
-Categories.filterIgnoringUids = function (cid, uids, callback) {
-	async.waterfall([
-		function (next) {
-			db.isSortedSetMembers('cid:' + cid + ':ignorers', uids, next);
-		},
-		function (isIgnoring, next) {
-			const readingUids = uids.filter((uid, index) => uid && !isIgnoring[index]);
-			next(null, readingUids);
-		},
-	], callback);
 };
 
 Categories.async = require('../promisify')(Categories);

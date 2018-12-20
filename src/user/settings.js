@@ -79,6 +79,7 @@ module.exports = function (User) {
 				settings.topicSearchEnabled = parseInt(getSetting(settings, 'topicSearchEnabled', 0), 10) === 1;
 				settings.bootswatchSkin = settings.bootswatchSkin || '';
 				settings.scrollToMyPost = parseInt(getSetting(settings, 'scrollToMyPost', 1), 10) === 1;
+				settings.categoryWatchState = getSetting(settings, 'categoryWatchState', 'notwatching');
 
 				notifications.getAllNotificationTypes(next);
 			},
@@ -137,6 +138,7 @@ module.exports = function (User) {
 			outgoingChatSound: data.outgoingChatSound,
 			upvoteNotifFreq: data.upvoteNotifFreq,
 			bootswatchSkin: data.bootswatchSkin,
+			categoryWatchState: data.categoryWatchState,
 		};
 
 		async.waterfall([

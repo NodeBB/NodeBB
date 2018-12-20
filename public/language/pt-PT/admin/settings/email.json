@@ -19,7 +19,7 @@
 	"smtp-transport.security-encrypted": "Encrypted",
 	"smtp-transport.security-starttls": "StartTLS",
 	"smtp-transport.security-none": "None",
-	"smtp-transport.username": "Username",
+	"smtp-transport.username": "Nome de utilizador",
 	"smtp-transport.username-help": "<b>For the Gmail service,</b> enter the full email address here, especially if you are using a Google Apps managed domain.",
 	"smtp-transport.password": "Palavra-passe",
 

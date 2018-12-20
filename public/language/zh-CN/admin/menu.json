@@ -57,7 +57,7 @@
 	"section-advanced": "高级",
 	"advanced/database": "数据库",
 	"advanced/events": "事件",
-	"advanced/hooks": "Hooks",
+	"advanced/hooks": "插件钩子",
 	"advanced/logs": "日志",
 	"advanced/errors": "错误",
 	"advanced/cache": "缓存",

@@ -1,5 +1,6 @@
 {
-    "password-reset-requested": "Ζητήθηκε Επαναφορά Κωδικου - %1!",
+    "test-email.subject": "Test Email",
+    "password-reset-requested": "Password Reset Requested!",
     "welcome-to": "Καλωσόρισες στο %1",
     "invite": "Invitation from %1",
     "greeting_no_name": "Γειά σου",

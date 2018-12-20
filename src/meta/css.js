@@ -206,7 +206,9 @@ CSS.buildBundle = function (target, fork, callback) {
 		function (bundle, next) {
 			var filename = target + '.css';
 
-			fs.writeFile(path.join(__dirname, '../../build/public', filename), bundle.code, next);
+			fs.writeFile(path.join(__dirname, '../../build/public', filename), bundle.code, function (err) {
+				next(err, bundle.code);
+			});
 		},
 	], callback);
 };

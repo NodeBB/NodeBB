@@ -23,8 +23,10 @@ function getCover(type, id) {
 		} else {
 			id %= covers.length;
 		}
-
-		return covers[id];
+		if (!covers[id].startsWith('http')) {
+			covers = nconf.get('relative_path') + covers[id];
+		}
+		return covers;
 	}
 
 	return nconf.get('relative_path') + '/assets/images/cover-default.png';

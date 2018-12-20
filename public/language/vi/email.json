@@ -1,5 +1,6 @@
 {
-    "password-reset-requested": "Yêu cầu phục hồi mật khẩu - %1!",
+    "test-email.subject": "Test Email",
+    "password-reset-requested": "Password Reset Requested!",
     "welcome-to": "Chào mừng bạn đến với %1",
     "invite": "Lời mời từ %1",
     "greeting_no_name": "Xin chào",

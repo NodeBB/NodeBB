@@ -1,5 +1,6 @@
 {
-    "password-reset-requested": "Permintaan atur ulang Kata Sandi - %1!",
+    "test-email.subject": "Test Email",
+    "password-reset-requested": "Password Reset Requested!",
     "welcome-to": "Selamat datang di %1",
     "invite": "Undangan dari %1",
     "greeting_no_name": "Hai",

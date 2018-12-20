@@ -52,6 +52,17 @@ describe('Hash methods', function () {
 				});
 			});
 		});
+
+		it('should work for field names with "." in them', function (done) {
+			db.setObject('dotObject', { 'my.dot.field': 'foo' }, function (err) {
+				assert.ifError(err);
+				db.getObject('dotObject', function (err, data) {
+					assert.ifError(err);
+					assert.equal(data['my.dot.field'], 'foo');
+					done();
+				});
+			});
+		});
 	});
 
 	describe('setObjectField()', function () {
@@ -68,6 +79,17 @@ describe('Hash methods', function () {
 				assert.ifError(err, null);
 				assert(arguments.length < 2);
 				done();
+			});
+		});
+
+		it('should work for field names with "." in them', function (done) {
+			db.setObjectField('dotObject2', 'my.dot.field', 'foo2', function (err) {
+				assert.ifError(err);
+				db.getObjectField('dotObject2', 'my.dot.field', function (err, value) {
+					assert.ifError(err);
+					assert.equal(value, 'foo2');
+					done();
+				});
 			});
 		});
 	});

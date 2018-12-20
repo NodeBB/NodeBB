@@ -1,0 +1,9 @@
+{
+    "upload-file": "Wyślij plik",
+    "filename": "Nazwa pliku",
+    "usage": "Wykorzystany w poście",
+    "orphaned": "Osierocone",
+    "size/filecount": "Rozmiar / Liczba plików",
+    "confirm-delete": "Czy na pewno chcesz usunąć ten plik?",
+    "filecount": "%1 plików"
+}

@@ -20,12 +20,15 @@ define('topicList', [
 	var newPostCount = 0;
 
 	var loadTopicsCallback;
+	var topicListEl;
 
 	$(window).on('action:ajaxify.start', function () {
 		TopicList.removeListeners();
 	});
 
 	TopicList.init = function (template, cb) {
+		topicListEl = findTopicListElement();
+
 		templateName = template;
 		loadTopicsCallback = cb || loadTopicsAfter;
 
@@ -46,7 +49,7 @@ define('topicList', [
 			});
 		});
 
-		if ($('body').height() <= $(window).height() && $('[component="category"]').children().length >= 20) {
+		if ($('body').height() <= $(window).height() && topicListEl.children().length >= 20) {
 			$('#load-more-btn').show();
 		}
 
@@ -56,6 +59,12 @@ define('topicList', [
 
 		$(window).trigger('action:topics.loaded', { topics: ajaxify.data.topics });
 	};
+
+	function findTopicListElement() {
+		return $('[component="category"]').filter(function (i, e) {
+			return !$(e).parents('[widget-area]').length;
+		});
+	}
 
 	TopicList.watchForNewPosts = function () {
 		$('#new-topics-alert').on('click', function () {
@@ -73,10 +82,19 @@ define('topicList', [
 		socket.removeListener('event:new_post', onNewPost);
 	};
 
+	function isCategoryVisible(cid) {
+		return ajaxify.data.categories && ajaxify.data.categories.length && ajaxify.data.categories.some(function (c) {
+			return parseInt(c.cid, 10) === parseInt(cid, 10);
+		});
+	}
+
 	function onNewTopic(data) {
-		if ((ajaxify.data.selectedCids && ajaxify.data.selectedCids.indexOf(parseInt(data.cid, 10)) === -1)
-			|| (ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'watched')
-			|| (ajaxify.data.template.category && parseInt(ajaxify.data.cid, 10) !== parseInt(data.cid, 10))) {
+		if (
+			(ajaxify.data.selectedCids && ajaxify.data.selectedCids.length && ajaxify.data.selectedCids.indexOf(parseInt(data.cid, 10)) === -1) ||
+			(ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'watched') ||
+			(ajaxify.data.template.category && parseInt(ajaxify.data.cid, 10) !== parseInt(data.cid, 10)) ||
+			(!isCategoryVisible(data.cid))
+		) {
 			return;
 		}
 
@@ -85,33 +103,23 @@ define('topicList', [
 	}
 
 	function onNewPost(data) {
-		function showAlert() {
-			newPostCount += 1;
-			updateAlertText();
-		}
-
 		var post = data.posts[0];
-		if ((!post || !post.topic)
-			|| (parseInt(post.topic.mainPid, 10) === parseInt(post.pid, 10))
-			|| (ajaxify.data.selectedCids && ajaxify.data.selectedCids.indexOf(parseInt(post.topic.cid, 10)) === -1)
-			|| (ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'new')
-			|| (ajaxify.data.template.category && parseInt(ajaxify.data.cid, 10) !== parseInt(post.topic.cid, 10))) {
+		if (!post || !post.topic) {
+			return;
+		}
+		if (!post.topic.isFollowing && (
+			(parseInt(post.topic.mainPid, 10) === parseInt(post.pid, 10)) ||
+			(ajaxify.data.selectedCids && ajaxify.data.selectedCids.length && ajaxify.data.selectedCids.indexOf(parseInt(post.topic.cid, 10)) === -1) ||
+			(ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'new') ||
+			(ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'watched' && !post.topic.isFollowing) ||
+			(ajaxify.data.template.category && parseInt(ajaxify.data.cid, 10) !== parseInt(post.topic.cid, 10)) ||
+			(!isCategoryVisible(post.topic.cid))
+		)) {
 			return;
 		}
 
-		if (ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'watched') {
-			socket.emit('topics.isFollowed', post.tid, function (err, isFollowed) {
-				if (err) {
-					app.alertError(err.message);
-				}
-				if (isFollowed) {
-					showAlert();
-				}
-			});
-			return;
-		}
-
-		showAlert();
+		newPostCount += 1;
+		updateAlertText();
 	}
 
 	function updateAlertText() {
@@ -202,14 +210,14 @@ define('topicList', [
 	};
 
 	TopicList.loadMoreTopics = function (direction) {
-		if (!$('[component="category"]').length || !$('[component="category"]').children().length) {
+		if (!topicListEl.length || !topicListEl.children().length) {
 			return;
 		}
-		var topics = $('[component="category/topic"]');
+		var topics = topicListEl.find('[component="category/topic"]');
 		var afterEl = direction > 0 ? topics.last() : topics.first();
 		var after = (parseInt(afterEl.attr('data-index'), 10) || 0) + (direction > 0 ? 1 : 0);
 
-		if (!utils.isNumber(after) || (after === 0 && $('[component="category/topic"][data-index="0"]').length)) {
+		if (!utils.isNumber(after) || (after === 0 && topicListEl.find('[component="category/topic"][data-index="0"]').length)) {
 			return;
 		}
 
@@ -228,15 +236,15 @@ define('topicList', [
 			count: config.topicsPerPage,
 			cid: query.cid,
 			query: query,
-			term: ajaxify.data.selectedTerm.term,
+			term: ajaxify.data.selectedTerm && ajaxify.data.selectedTerm.term,
 			filter: ajaxify.data.selectedFilter.filter,
-			set: $('[component="category"]').attr('data-set') ? $('[component="category"]').attr('data-set') : 'topics:recent',
+			set: topicListEl.attr('data-set') ? topicListEl.attr('data-set') : 'topics:recent',
 		}, callback);
 	}
 
 	function filterTopicsOnDom(topics) {
 		return topics.filter(function (topic) {
-			return !$('[component="category/topic"][data-tid="' + topic.tid + '"]').length;
+			return !topicListEl.find('[component="category/topic"][data-tid="' + topic.tid + '"]').length;
 		});
 	}
 
@@ -254,12 +262,12 @@ define('topicList', [
 
 		var after;
 		var before;
-		var topicsList = $('[component="category/topic"]');
+		var topicEls = topicListEl.find('[component="category/topic"]');
 
 		if (direction > 0 && topics.length) {
-			after = topicsList.last();
+			after = topicEls.last();
 		} else if (direction < 0 && topics.length) {
-			before = topicsList.first();
+			before = topicEls.first();
 		}
 
 		var tplData = {
@@ -272,7 +280,7 @@ define('topicList', [
 		tplData.template[templateName] = true;
 
 		app.parseAndTranslate(templateName, 'topics', tplData, function (html) {
-			$('[component="category"]').removeClass('hidden');
+			topicListEl.removeClass('hidden');
 			$('#category-no-topics').remove();
 
 			if (after && after.length) {
@@ -285,15 +293,15 @@ define('topicList', [
 
 				$(window).scrollTop(scrollTop + ($(document).height() - height));
 			} else {
-				$('[component="category"]').append(html);
+				topicListEl.append(html);
 			}
 
 			if (!topicSelect.getSelectedTids().length) {
-				infinitescroll.removeExtra($('[component="category/topic"]'), direction, config.topicsPerPage * 3);
+				infinitescroll.removeExtra(topicListEl.find('[component="category/topic"]'), direction, config.topicsPerPage * 3);
 			}
 
 			html.find('.timeago').timeago();
-			app.createUserTooltips();
+			app.createUserTooltips(html);
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 			$(window).trigger('action:topics.loaded', { topics: topics, template: templateName });
 			callback();

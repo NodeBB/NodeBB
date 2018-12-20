@@ -1,5 +1,6 @@
 {
-    "password-reset-requested": "Reconfiguração de Senha Solicitada - %1!",
+    "test-email.subject": "Test Email",
+    "password-reset-requested": "Password Reset Requested!",
     "welcome-to": "Bem vindo a %1",
     "invite": "Convite de %1",
     "greeting_no_name": "Olá",

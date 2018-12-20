@@ -2,12 +2,10 @@
 
 var async = require('async');
 var path = require('path');
-var mime = require('mime');
 
 var db = require('../database');
 var image = require('../image');
 var file = require('../file');
-var uploadsController = require('../controllers/uploads');
 
 module.exports = function (Groups) {
 	Groups.updateCoverPosition = function (groupName, position, callback) {
@@ -25,7 +23,7 @@ module.exports = function (Groups) {
 
 		var tempPath = data.file ? data.file : '';
 		var url;
-		var type = data.file ? mime.getType(data.file) : 'image/png';
+
 		async.waterfall([
 			function (next) {
 				if (tempPath) {
@@ -36,10 +34,10 @@ module.exports = function (Groups) {
 			function (_tempPath, next) {
 				tempPath = _tempPath;
 
-				uploadsController.uploadGroupCover(uid, {
-					name: 'groupCover' + path.extname(tempPath),
+				const filename = 'groupCover-' + data.groupName + path.extname(tempPath);
+				image.uploadImage(filename, 'files', {
 					path: tempPath,
-					type: type,
+					uid: uid,
 				}, next);
 			},
 			function (uploadData, next) {
@@ -53,10 +51,9 @@ module.exports = function (Groups) {
 				}, next);
 			},
 			function (next) {
-				uploadsController.uploadGroupCover(uid, {
-					name: 'groupCoverThumb' + path.extname(tempPath),
+				image.uploadImage('groupCoverThumb-' + data.groupName + path.extname(tempPath), 'files', {
 					path: tempPath,
-					type: type,
+					uid: uid,
 				}, next);
 			},
 			function (uploadData, next) {

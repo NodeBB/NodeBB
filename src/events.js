@@ -158,9 +158,7 @@ events.deleteEvents = function (eids, callback) {
 	var keys;
 	async.waterfall([
 		function (next) {
-			keys = eids.map(function (eid) {
-				return 'event:' + eid;
-			});
+			keys = eids.map(eid => 'event:' + eid);
 			db.getObjectsFields(keys, ['type'], next);
 		},
 		function (eventData, next) {

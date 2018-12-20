@@ -284,6 +284,8 @@ function continueLogin(req, res, next) {
 				});
 			});
 		} else {
+			delete req.query.lang;
+
 			async.parallel({
 				doLogin: async.apply(authenticationController.doLogin, req, userData.uid),
 				header: async.apply(middleware.generateHeader, req, res, {}),
@@ -363,7 +365,11 @@ authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 					user.auth.addSession(uid, req.sessionID, next);
 				},
 				function (next) {
-					db.setObjectField('uid:' + uid + ':sessionUUID:sessionId', uuid, req.sessionID, next);
+					if (uid > 0) {
+						db.setObjectField('uid:' + uid + ':sessionUUID:sessionId', uuid, req.sessionID, next);
+					} else {
+						next();
+					}
 				},
 				function (next) {
 					user.updateLastOnlineTime(uid, next);
@@ -477,6 +483,7 @@ authenticationController.logout = function (req, res, next) {
 		function (next) {
 			plugins.fireHook('static:user.loggedOut', { req: req, res: res, uid: req.uid }, next);
 		},
+		async.apply(middleware.autoLocale, req, res),
 		function () {
 			// Force session check for all connected socket.io clients with the same session id
 			sockets.in('sess_' + req.sessionID).emit('checkSession', 0);

@@ -98,7 +98,7 @@ redisModule.connect = function (options, callback) {
 	cxn.on('ready', function () {
 		if (!callbackCalled) {
 			callbackCalled = true;
-			callback();
+			callback(null, cxn);
 		}
 	});
 
@@ -163,11 +163,16 @@ redisModule.close = function (callback) {
 };
 
 redisModule.info = function (cxn, callback) {
-	if (!cxn) {
-		return callback();
-	}
 	async.waterfall([
 		function (next) {
+			if (cxn) {
+				return setImmediate(next, null, cxn);
+			}
+			redisModule.connect(nconf.get('redis'), next);
+		},
+		function (cxn, next) {
+			redisModule.client = redisModule.client || cxn;
+
 			cxn.info(next);
 		},
 		function (data, next) {
@@ -179,6 +184,18 @@ redisModule.info = function (cxn, callback) {
 					redisData[parts[0]] = parts[1];
 				}
 			});
+
+			const keyInfo = redisData['db' + nconf.get('redis:database')];
+			redisData.keys = keyInfo.split(',')[0].replace('keys=', '');
+			redisData.expires = keyInfo.split(',')[1].replace('expires=', '');
+			redisData.avg_ttl = keyInfo.split(',')[2].replace('avg_ttl=', '');
+
+			redisData.instantaneous_input = (redisData.instantaneous_input_kbps / 1024).toFixed(3);
+			redisData.instantaneous_output = (redisData.instantaneous_output_kbps / 1024).toFixed(3);
+
+			redisData.total_net_input = (redisData.total_net_input_bytes / (1024 * 1024 * 1024)).toFixed(3);
+			redisData.total_net_output = (redisData.total_net_output_bytes / (1024 * 1024 * 1024)).toFixed(3);
+
 			redisData.used_memory_human = (redisData.used_memory / (1024 * 1024 * 1024)).toFixed(3);
 			redisData.raw = JSON.stringify(redisData, null, 4);
 			redisData.redis = true;

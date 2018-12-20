@@ -1,0 +1,9 @@
+{
+    "upload-file": "Nahrát soubor",
+    "filename": "Název souboru",
+    "usage": "Použito v příspěvku",
+    "orphaned": "Nevyužito",
+    "size/filecount": "Velikost / Počet souborů",
+    "confirm-delete": "Opravdu chcete odstranit tento soubor?",
+    "filecount": "%1 souborů"
+}

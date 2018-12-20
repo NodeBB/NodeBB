@@ -14,8 +14,14 @@ var loginStrategies = [];
 var Auth = module.exports;
 
 Auth.initialize = function (app, middleware) {
-	app.use(passport.initialize());
-	app.use(passport.session());
+	const passwortInitMiddleware = passport.initialize();
+	app.use(function passportInitialize(req, res, next) {
+		passwortInitMiddleware(req, res, next);
+	});
+	const passportSessionMiddleware = passport.session();
+	app.use(function passportSession(req, res, next) {
+		passportSessionMiddleware(req, res, next);
+	});
 
 	app.use(Auth.setAuthVars);
 
@@ -23,7 +29,7 @@ Auth.initialize = function (app, middleware) {
 	Auth.middleware = middleware;
 };
 
-Auth.setAuthVars = function (req, res, next) {
+Auth.setAuthVars = function setAuthVars(req, res, next) {
 	var isSpider = req.isSpider();
 	req.loggedIn = !isSpider && !!req.user;
 	if (req.user) {

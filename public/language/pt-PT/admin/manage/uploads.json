@@ -1,0 +1,9 @@
+{
+    "upload-file": "Enviar Ficheiro",
+    "filename": "Nome do Ficheiro",
+    "usage": "Uso em Publicações",
+    "orphaned": "Órfão",
+    "size/filecount": "Tamanho / Contador de Ficheiros",
+    "confirm-delete": "Tens a certeza que pretendes apagar este ficheiro?",
+    "filecount": "%1 ficheiros"
+}

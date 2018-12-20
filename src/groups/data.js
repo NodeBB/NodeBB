@@ -2,6 +2,7 @@
 
 var async = require('async');
 var validator = require('validator');
+var nconf = require('nconf');
 
 var db = require('../database');
 var plugins = require('../plugins');
@@ -91,8 +92,20 @@ function modifyGroup(group, fields) {
 		group.createtimeISO = utils.toISOString(group.createtime);
 		group.private = ([null, undefined].includes(group.private)) ? 1 : group.private;
 
-		group['cover:url'] = group['cover:url'] || require('../coverPhoto').getDefaultGroupCover(group.name);
 		group['cover:thumb:url'] = group['cover:thumb:url'] || group['cover:url'];
+
+		if (group['cover:url']) {
+			group['cover:url'] = group['cover:url'].startsWith('http') ? group['cover:url'] : (nconf.get('relative_path') + group['cover:url']);
+		} else {
+			group['cover:url'] = require('../coverPhoto').getDefaultGroupCover(group.name);
+		}
+
+		if (group['cover:thumb:url']) {
+			group['cover:thumb:url'] = group['cover:thumb:url'].startsWith('http') ? group['cover:thumb:url'] : (nconf.get('relative_path') + group['cover:thumb:url']);
+		} else {
+			group['cover:thumb:url'] = require('../coverPhoto').getDefaultGroupCover(group.name);
+		}
+
 		group['cover:position'] = validator.escape(String(group['cover:position'] || '50% 50%'));
 	}
 }

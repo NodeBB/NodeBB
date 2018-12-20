@@ -32,15 +32,15 @@ define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 				'$1<span class="search-match">$2</span>$3'
 			);
 
-			return '<li role="presentation" class="result">'
-				+ '<a role= "menuitem" href= "' + config.relative_path + '/' + namespace + '" >'
-					+ title
-					+ '<br>' + (!results ? ''
-				: ('<small><code>'
-						+ results
-					+ '</small></code>'))
-				+ '</a>'
-			+ '</li>';
+			return '<li role="presentation" class="result">' +
+				'<a role= "menuitem" href= "' + config.relative_path + '/' + namespace + '" >' +
+					title +
+					'<br>' + (!results ? '' :
+				('<small><code>' +
+						results +
+					'</small></code>')) +
+				'</a>' +
+			'</li>';
 		}).join('');
 		return html;
 	}

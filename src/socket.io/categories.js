@@ -1,7 +1,7 @@
 'use strict';
 
 var async = require('async');
-var db = require('../database');
+
 var categories = require('../categories');
 var privileges = require('../privileges');
 var user = require('../user');
@@ -21,7 +21,7 @@ SocketCategories.get = function (socket, data, callback) {
 				isAdmin: async.apply(user.isAdministrator, socket.uid),
 				categories: function (next) {
 					async.waterfall([
-						async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
+						async.apply(categories.getCidsByPrivilege, 'categories:cid', socket.uid, 'find'),
 						async.apply(categories.getCategoriesData),
 					], next);
 				},
@@ -132,23 +132,16 @@ SocketCategories.getCategoriesByPrivilege = function (socket, privilege, callbac
 };
 
 SocketCategories.getMoveCategories = function (socket, data, callback) {
+	SocketCategories.getSelectCategories(socket, data, callback);
+};
+
+SocketCategories.getSelectCategories = function (socket, data, callback) {
 	async.waterfall([
 		function (next) {
 			async.parallel({
 				isAdmin: async.apply(user.isAdministrator, socket.uid),
 				categories: function (next) {
-					async.waterfall([
-						function (next) {
-							db.getSortedSetRange('categories:cid', 0, -1, next);
-						},
-						function (cids, next) {
-							categories.getCategories(cids, socket.uid, next);
-						},
-						function (categoriesData, next) {
-							categoriesData = categories.getTree(categoriesData);
-							categories.buildForSelectCategories(categoriesData, next);
-						},
-					], next);
+					categories.buildForSelect(socket.uid, 'find', next);
 				},
 			}, next);
 		},
@@ -162,20 +155,28 @@ SocketCategories.getMoveCategories = function (socket, data, callback) {
 	], callback);
 };
 
-SocketCategories.watch = function (socket, cid, callback) {
-	ignoreOrWatch(user.watchCategory, socket, cid, callback);
+SocketCategories.setWatchState = function (socket, data, callback) {
+	if (!data || !data.cid || !data.state) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	ignoreOrWatch(function (uid, cid, next) {
+		user.setCategoryWatchState(uid, cid, categories.watchStates[data.state], next);
+	}, socket, data, callback);
 };
 
-SocketCategories.ignore = function (socket, cid, callback) {
-	ignoreOrWatch(user.ignoreCategory, socket, cid, callback);
+SocketCategories.watch = function (socket, data, callback) {
+	ignoreOrWatch(user.watchCategory, socket, data, callback);
 };
 
-function ignoreOrWatch(fn, socket, cid, callback) {
+SocketCategories.ignore = function (socket, data, callback) {
+	ignoreOrWatch(user.ignoreCategory, socket, data, callback);
+};
+
+function ignoreOrWatch(fn, socket, data, callback) {
 	var targetUid = socket.uid;
-	var cids = [parseInt(cid, 10)];
-	if (typeof cid === 'object') {
-		targetUid = cid.uid;
-		cids = [parseInt(cid.cid, 10)];
+	var cids = [parseInt(data.cid, 10)];
+	if (data.hasOwnProperty('uid')) {
+		targetUid = data.uid;
 	}
 
 	async.waterfall([
@@ -183,7 +184,7 @@ function ignoreOrWatch(fn, socket, cid, callback) {
 			user.isAdminOrGlobalModOrSelf(socket.uid, targetUid, next);
 		},
 		function (next) {
-			db.getSortedSetRange('categories:cid', 0, -1, next);
+			categories.getAllCidsFromSet('categories:cid', next);
 		},
 		function (cids, next) {
 			categories.getCategoriesFields(cids, ['cid', 'parentCid'], next);

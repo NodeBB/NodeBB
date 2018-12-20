@@ -2,18 +2,18 @@
 	"icon": "İkon:",
 	"change-icon": "değiştir",
 	"route": "Yol:",
-	"tooltip": "Araç Bilgisi:",
+	"tooltip": "Araç ipucu:",
 	"text": "Yazı:",
 	"text-class": "Metin Sınıfı: <small>opsiyonel</small>",
 	"id": "ID: <small>opsiyonel</small>",
 
 	"properties": "Özellikler:",
-	"groups": "Groups:",
+	"groups": "Gruplar",
 	"open-new-window": "Yeni pencerede aç",
 
 	"btn.delete": "Sil",
-	"btn.disable": "Devre dışı",
-	"btn.enable": "Etkin",
+	"btn.disable": "Kapalı",
+	"btn.enable": "Açık",
 
 	"available-menu-items": "Kullanılabilir Menü Öğeleri",
 	"custom-route": "Özel Yol",

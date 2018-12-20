@@ -181,8 +181,8 @@
 						cursor += 1;
 					// a space or comma was found before the name
 					// this isn't a translation string, so back out
-					} else if (!(textBeforeColonFound && colonFound && textAfterColonFound && commaAfterNameFound)
-							&& invalidTextRegex.test(char0)) {
+					} else if (!(textBeforeColonFound && colonFound && textAfterColonFound && commaAfterNameFound) &&
+							invalidTextRegex.test(char0)) {
 						cursor += 1;
 						lastBreak -= 2;
 						// no longer in a token
@@ -400,7 +400,7 @@
 				lang = utils.params().lang || config.userLang || config.defaultLang || 'en-GB';
 			} else {
 				var meta = require('../../../src/meta');
-				lang = meta.config.defaultLang || 'en-GB';
+				lang = meta.config && meta.config.defaultLang ? meta.config.defaultLang : 'en-GB';
 			}
 
 			return lang;
@@ -596,6 +596,15 @@
 				toggle();
 			}
 		},
+
+		switchTimeagoLanguage: function switchTimeagoLanguage(callback) {
+			// Delete the cached shorthand strings if present
+			delete adaptor.timeagoShort;
+
+			var languageCode = utils.userLangToTimeagoCode(config.userLang);
+			jQuery.getScript(config.relative_path + '/assets/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').done(callback);
+		},
+
 		prepareDOM: function prepareDOM() {
 			// Add directional code if necessary
 			adaptor.translate('[[language:dir]]', function (value) {

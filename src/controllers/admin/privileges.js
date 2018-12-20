@@ -2,7 +2,6 @@
 
 var async = require('async');
 
-var db = require('../../database');
 var categories = require('../../categories');
 var privileges = require('../../privileges');
 
@@ -20,10 +19,10 @@ privilegesController.get = function (req, res, callback) {
 						privileges.categories.list(cid, next);
 					}
 				},
-				allCategories: function (next) {
+				categories: function (next) {
 					async.waterfall([
 						function (next) {
-							db.getSortedSetRange('categories:cid', 0, -1, next);
+							categories.getAllCidsFromSet('categories:cid', next);
 						},
 						function (cids, next) {
 							categories.getCategories(cids, req.uid, next);
@@ -37,7 +36,12 @@ privilegesController.get = function (req, res, callback) {
 			}, next);
 		},
 		function (data) {
-			data.allCategories.forEach(function (category) {
+			data.categories.unshift({
+				cid: 0,
+				name: '[[admin/manage/privileges:global]]',
+				icon: 'fa-list',
+			});
+			data.categories.forEach(function (category) {
 				if (category) {
 					category.selected = category.cid === cid;
 
@@ -49,8 +53,8 @@ privilegesController.get = function (req, res, callback) {
 
 			res.render('admin/manage/privileges', {
 				privileges: data.privileges,
-				allCategories: data.allCategories,
-				selected: data.selected ? data.selected.name : '[[admin/manage/privileges:global]]',
+				categories: data.categories,
+				selectedCategory: data.selected,
 				cid: cid,
 			});
 		},

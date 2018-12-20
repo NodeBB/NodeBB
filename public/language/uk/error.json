@@ -120,7 +120,7 @@
     "chat-edit-duration-expired": "Ви можете редагувати повідомлення чату лише через %1 секунд після публікації",
     "chat-delete-duration-expired": "Ви можете видаляти повідомлення чату лише через %1 секунд після публікації",
     "chat-deleted-already": "Це повідомлення чату вже було видалено.",
-    "chat-restored'already": "Це повідомлення чату вже відновлено.",
+    "chat-restored-already": "This chat message has already been restored.",
     "already-voting-for-this-post": "Ви вже проголосували за цей пост.",
     "reputation-system-disabled": "Система репутацій вимкнена.",
     "downvoting-disabled": "Голосування проти вимкнено",
@@ -153,5 +153,8 @@
     "cant-move-to-same-topic": "Ви не можете перемістити пост до тієї ж самої теми!",
     "cannot-block-self": "Ви не можете заблокувати самого себе!",
     "cannot-block-privileged": "Ви не можете заблокувати адміністраторів або глобальних модераторів",
+    "cannot-block-guest": "Guest are not able to block other users",
+    "already-blocked": "This user is already blocked",
+    "already-unblocked": "This user is already unblocked",
     "no-connection": "Схоже, виникла проблема з вашим Інтернет-з'єднанням"
 }

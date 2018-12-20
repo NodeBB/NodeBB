@@ -3,6 +3,7 @@
 var async = require('async');
 var nconf = require('nconf');
 var jsesc = require('jsesc');
+var _ = require('lodash');
 
 var db = require('../database');
 var user = require('../user');
@@ -21,12 +22,16 @@ var controllers = {
 };
 
 module.exports = function (middleware) {
-	middleware.buildHeader = function (req, res, next) {
+	middleware.buildHeader = function buildHeader(req, res, next) {
 		res.locals.renderHeader = true;
 		res.locals.isAPI = false;
 		async.waterfall([
 			function (next) {
-				middleware.applyCSRF(req, res, next);
+				if (req.uid >= 0) {
+					middleware.applyCSRF(req, res, next);
+				} else {
+					setImmediate(next);
+				}
 			},
 			function (next) {
 				async.parallel({
@@ -45,7 +50,7 @@ module.exports = function (middleware) {
 		], next);
 	};
 
-	middleware.generateHeader = function (req, res, data, callback) {
+	middleware.generateHeader = function generateHeader(req, res, data, callback) {
 		var registrationType = meta.config.registrationType || 'normal';
 		res.locals.config = res.locals.config || {};
 		var templateValues = {
@@ -105,7 +110,7 @@ module.exports = function (middleware) {
 					banned: async.apply(user.isBanned, req.uid),
 					banReason: async.apply(user.getBannedReason, req.uid),
 
-					unreadCounts: async.apply(topics.getUnreadTids, { uid: req.uid, count: true }),
+					unreadData: async.apply(topics.getUnreadData, { uid: req.uid }),
 					unreadChatCount: async.apply(messaging.getUnreadCount, req.uid),
 					unreadNotificationCount: async.apply(user.notifications.getUnreadCount, req.uid),
 				}, next);
@@ -116,6 +121,14 @@ module.exports = function (middleware) {
 					return res.redirect('/');
 				}
 
+				const unreadData = {
+					'': {},
+					new: {},
+					watched: {},
+					unreplied: {},
+				};
+
+				results.user.unreadData = unreadData;
 				results.user.isAdmin = results.isAdmin;
 				results.user.isGlobalMod = results.isGlobalMod;
 				results.user.isMod = !!results.isModerator;
@@ -127,12 +140,12 @@ module.exports = function (middleware) {
 				results.user.isEmailConfirmSent = !!results.isEmailConfirmSent;
 
 				templateValues.bootswatchSkin = parseInt(meta.config.disableCustomUserSkins, 10) !== 1 ? res.locals.config.bootswatchSkin || '' : '';
-
+				const unreadCounts = results.unreadData.counts;
 				var unreadCount = {
-					topic: results.unreadCounts[''] || 0,
-					newTopic: results.unreadCounts.new || 0,
-					watchedTopic: results.unreadCounts.watched || 0,
-					unrepliedTopic: results.unreadCounts.unreplied || 0,
+					topic: unreadCounts[''] || 0,
+					newTopic: unreadCounts.new || 0,
+					watchedTopic: unreadCounts.watched || 0,
+					unrepliedTopic: unreadCounts.unreplied || 0,
 					chat: results.unreadChatCount || 0,
 					notification: results.unreadNotificationCount || 0,
 				};
@@ -143,19 +156,21 @@ module.exports = function (middleware) {
 					}
 				});
 
+				const tidsByFilter = results.unreadData.tidsByFilter;
 				results.navigation = results.navigation.map(function (item) {
-					function modifyNavItem(item, route, count, content) {
+					function modifyNavItem(item, route, filter, content) {
 						if (item && item.originalRoute === route) {
+							unreadData[filter] = _.zipObject(tidsByFilter[filter], tidsByFilter[filter].map(() => true));
 							item.content = content;
-							if (count > 0) {
+							if (unreadCounts[filter] > 0) {
 								item.iconClass += ' unread-count';
 							}
 						}
 					}
-					modifyNavItem(item, '/unread', results.unreadCounts[''], unreadCount.topic);
-					modifyNavItem(item, '/unread?filter=new', results.unreadCounts.new, unreadCount.newTopic);
-					modifyNavItem(item, '/unread?filter=watched', results.unreadCounts.watched, unreadCount.watchedTopic);
-					modifyNavItem(item, '/unread?filter=unreplied', results.unreadCounts.unreplied, unreadCount.unrepliedTopic);
+					modifyNavItem(item, '/unread', '', unreadCount.topic);
+					modifyNavItem(item, '/unread?filter=new', 'new', unreadCount.newTopic);
+					modifyNavItem(item, '/unread?filter=watched', 'watched', unreadCount.watchedTopic);
+					modifyNavItem(item, '/unread?filter=unreplied', 'unreplied', unreadCount.unrepliedTopic);
 					return item;
 				});
 
@@ -199,7 +214,7 @@ module.exports = function (middleware) {
 		});
 	};
 
-	middleware.renderHeader = function (req, res, data, callback) {
+	middleware.renderHeader = function renderHeader(req, res, data, callback) {
 		async.waterfall([
 			async.apply(middleware.generateHeader, req, res, data),
 			function (templateValues, next) {
@@ -213,7 +228,7 @@ module.exports = function (middleware) {
 		scripts.push({ src: nconf.get('relative_path') + '/assets/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js' });
 	}
 
-	middleware.renderFooter = function (req, res, data, callback) {
+	middleware.renderFooter = function renderFooter(req, res, data, callback) {
 		async.waterfall([
 			function (next) {
 				plugins.fireHook('filter:middleware.renderFooter', {
@@ -237,7 +252,7 @@ module.exports = function (middleware) {
 
 				data.templateValues.useCustomJS = meta.config.useCustomJS;
 				data.templateValues.customJS = data.templateValues.useCustomJS ? meta.config.customJS : '';
-				data.templateValues.isSpider = req.isSpider();
+				data.templateValues.isSpider = req.uid === -1;
 				req.app.render('footer', data.templateValues, next);
 			},
 		], callback);

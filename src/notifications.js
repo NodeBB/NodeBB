@@ -24,6 +24,7 @@ Notifications.baseTypes = [
 	'notificationType_follow',
 	'notificationType_new-chat',
 	'notificationType_group-invite',
+	'notificationType_group-request-membership',
 ];
 
 Notifications.privilegedTypes = [
@@ -243,9 +244,9 @@ function pushToUids(uids, notification, callback) {
 		async.eachLimit(uids, 3, function (uid, next) {
 			emailer.send('notification', uid, {
 				path: notification.path,
-				subject: utils.stripHTMLTags(notification.subject || '[[notifications:new_notification_from, ' + meta.config.title + ']]'),
+				subject: utils.stripHTMLTags(notification.subject || '[[notifications:new_notification]]'),
 				intro: utils.stripHTMLTags(notification.bodyShort),
-				body: utils.stripHTMLTags(notification.bodyLong || ''),
+				body: notification.bodyLong || '',
 				notification: notification,
 				showUnsubscribe: true,
 			}, next);

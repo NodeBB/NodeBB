@@ -21,8 +21,8 @@ categoriesController.get = function (req, res, callback) {
 			}
 
 			async.parallel({
-				ignored: function (next) {
-					user.getIgnoredCategories(userData.uid, next);
+				states: function (next) {
+					user.getCategoryWatchState(userData.uid, next);
 				},
 				categories: function (next) {
 					categories.buildForSelect(userData.uid, 'find', next);
@@ -32,7 +32,9 @@ categoriesController.get = function (req, res, callback) {
 		function (results) {
 			results.categories.forEach(function (category) {
 				if (category) {
-					category.isIgnored = results.ignored.includes(String(category.cid));
+					category.isIgnored = results.states[category.cid] === categories.watchStates.ignoring;
+					category.isWatched = results.states[category.cid] === categories.watchStates.watching;
+					category.isNotWatched = results.states[category.cid] === categories.watchStates.notwatching;
 				}
 			});
 			userData.categories = results.categories;

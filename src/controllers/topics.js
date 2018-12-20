@@ -17,7 +17,7 @@ var analytics = require('../analytics');
 
 var topicsController = module.exports;
 
-topicsController.get = function (req, res, callback) {
+topicsController.get = function getTopic(req, res, callback) {
 	var tid = req.params.topic_id;
 	var currentPage = parseInt(req.query.page, 10) || 1;
 	var pageCount = 1;
@@ -161,10 +161,12 @@ topicsController.get = function (req, res, callback) {
 				res.locals.linkTags.push(rel);
 			});
 
-			req.session.tids_viewed = req.session.tids_viewed || {};
-			if (!req.session.tids_viewed[tid] || req.session.tids_viewed[tid] < Date.now() - 3600000) {
-				topics.increaseViewCount(tid);
-				req.session.tids_viewed[tid] = Date.now();
+			if (req.uid >= 0) {
+				req.session.tids_viewed = req.session.tids_viewed || {};
+				if (!req.session.tids_viewed[tid] || req.session.tids_viewed[tid] < Date.now() - 3600000) {
+					topics.increaseViewCount(tid);
+					req.session.tids_viewed[tid] = Date.now();
+				}
 			}
 
 			if (req.loggedIn) {

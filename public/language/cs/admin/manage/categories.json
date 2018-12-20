@@ -29,8 +29,8 @@
 	"select-category": "Vyberte kategorii",
 	"set-parent-category": "Nastavit nadřazenou kategorii",
 
-	"privileges.description": "You can configure the access control privileges for this category in this section. Privileges can be granted on a per-user or a per-group basis. Select the domain of effect from the dropdown below.",
-	"privileges.category-selector": "Configuring privileges for ",
+	"privileges.description": "Můžete upravit oprávnění přístupu pro kategorii ve v této části. Oprávnění může být uděleno na uživatele nebo na celou skupinu. Vyberte si z vysouvacího seznamu.",
+	"privileges.category-selector": "Konfigurace oprávnění pro",
 	"privileges.warning": "<strong>Poznámka:</strong> nastavení oprávnění má okamžitý vliv. Není tedy nutné uložit kategorii pro upravení těchto nastavení",
 	"privileges.section-viewing": "Oprávnění prohlížení",
 	"privileges.section-posting": "Oprávnění příspěvků",
@@ -70,5 +70,5 @@
 	"alert.group-search": "Hledat skupinu…",
 	"collapse-all": "Sbalit vše",
 	"expand-all": "Rozbalit vše",
-	"disable-on-create": "Disable on create"
+	"disable-on-create": "Zakázat při vytvoření"
 }

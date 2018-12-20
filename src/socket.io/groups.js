@@ -249,10 +249,10 @@ SocketGroups.create = function (socket, data, callback) {
 };
 
 SocketGroups.delete = isOwner(function (socket, data, callback) {
-	if (data.groupName === 'administrators'
-		|| data.groupName === 'registered-users'
-		|| data.groupName === 'guests'
-		|| data.groupName === 'Global Moderators') {
+	if (data.groupName === 'administrators' ||
+		data.groupName === 'registered-users' ||
+		data.groupName === 'guests' ||
+		data.groupName === 'Global Moderators') {
 		return callback(new Error('[[error:not-allowed]]'));
 	}
 
