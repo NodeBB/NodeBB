@@ -2,7 +2,7 @@
 
 (function (factory) {
 	if (typeof module === 'object' && module.exports) {
-		var config = require('../../../src/meta').config;
+		var config = require.main.require('./src/meta').config;
 		module.exports = factory(require('../utils'), require('benchpressjs'), config);
 	} else if (typeof define === 'function' && define.amd) {
 		define('helpers', ['benchpress'], function (Benchpress) {
