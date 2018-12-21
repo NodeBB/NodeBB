@@ -141,7 +141,7 @@
     "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
     "sso-multiple-association": "You cannot associate multiple accounts from this service to your NodeBB account. Please dissociate your existing account and try again.",
     "invite-maximum-met": "Convidaste o máximo de pessoas (%1 em %2).",
-    "no-session-found": "Não foram encontradas sessões iniciadas!",
+    "no-session-found": "Não foram encontradas sessões ativas!",
     "not-in-room": "Utilizador não se encontra na sala",
     "no-users-in-room": "Não existem utilizadores nesta sala",
     "cant-kick-self": "Não te podes expulsar a ti próprio do grupo",
