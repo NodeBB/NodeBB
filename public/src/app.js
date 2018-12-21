@@ -242,6 +242,8 @@ app.cacheBuster = null;
 		app.flags = app.flags || {};
 		app.flags._sessionRefresh = true;
 
+		socket.disconnect();
+
 		require(['translator'], function (translator) {
 			translator.translate('[[error:invalid-session-text]]', function (translated) {
 				bootbox.alert({
