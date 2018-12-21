@@ -124,6 +124,10 @@ app.cacheBuster = null;
 			config = data.config;
 			Benchpress.setGlobal('config', config);
 
+			var htmlEl = $('html');
+			htmlEl.attr('data-dir', data.header.languageDirection);
+			htmlEl.css('direction', data.header.languageDirection);
+
 			// Manually reconnect socket.io
 			socket.close();
 			socket.open();

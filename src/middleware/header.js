@@ -44,8 +44,8 @@ module.exports = function (middleware) {
 				}, next);
 			},
 			function (results, next) {
-				res.locals.config = results.config;
-				next();
+				// Return no arguments
+				setImmediate(next);
 			},
 		], next);
 	};

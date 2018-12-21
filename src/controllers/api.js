@@ -101,6 +101,10 @@ apiController.loadConfig = function (req, callback) {
 			config.bootswatchSkin = (meta.config.disableCustomUserSkins !== 1 && settings.bootswatchSkin && settings.bootswatchSkin !== '') ? settings.bootswatchSkin : '';
 			plugins.fireHook('filter:config.get', config, next);
 		},
+		function (config, next) {
+			req.res.locals.config = config;
+			process.nextTick(next, null, config);
+		},
 	], callback);
 };
 
