@@ -70,5 +70,9 @@
 	"email-post-notif": "購読中のスレッドに返信があった場合、メールで通知する。",
 	"follow-created-topics": "投稿したスレッドをフォローします",
 	"follow-replied-topics": "返信したスレッドをフォローします",
-	"default-notification-settings": "Default notification settings"
+	"default-notification-settings": "Default notification settings",
+	"categoryWatchState": "Default category watch state",
+	"categoryWatchState.watching": "Watching",
+	"categoryWatchState.notwatching": "Not Watching",
+	"categoryWatchState.ignoring": "Ignoring"
 }

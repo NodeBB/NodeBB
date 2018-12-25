@@ -70,5 +70,9 @@
 	"email-post-notif": "Изпращане на е-писмо, когато се появи отговор в темите, за които съм абониран(а).",
 	"follow-created-topics": "Следване на темите, които създавате",
 	"follow-replied-topics": "Следване на темите, на които отговаряте",
-	"default-notification-settings": "Настройки по подразбиране за известията"
+	"default-notification-settings": "Настройки по подразбиране за известията",
+	"categoryWatchState": "Състояние по подразбиране за следенето на категории",
+	"categoryWatchState.watching": "Да се следят",
+	"categoryWatchState.notwatching": "Да не се следят",
+	"categoryWatchState.ignoring": "Да се пренебрегват"
 }

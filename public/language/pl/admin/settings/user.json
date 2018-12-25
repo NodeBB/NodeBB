@@ -70,5 +70,9 @@
 	"email-post-notif": "Wyślij wiadomość email, kiedy w tematach, które subskrybuję, pojawią się odpowiedzi",
 	"follow-created-topics": "Obserwuj tematy, które stworzyłeś",
 	"follow-replied-topics": "Obserwuj tematy, w których się wypowiedziałeś ",
-	"default-notification-settings": "Domyślne ustawienia powiadomień"
+	"default-notification-settings": "Domyślne ustawienia powiadomień",
+	"categoryWatchState": "Default category watch state",
+	"categoryWatchState.watching": "Watching",
+	"categoryWatchState.notwatching": "Not Watching",
+	"categoryWatchState.ignoring": "Ignoring"
 }

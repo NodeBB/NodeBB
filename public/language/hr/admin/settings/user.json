@@ -70,5 +70,9 @@
 	"email-post-notif": "Pošalji email pri odgovoru u teme na koje pratim",
 	"follow-created-topics": "Prati teme koje kreiram",
 	"follow-replied-topics": "Prati teme na koje odgovorim",
-	"default-notification-settings": "Default notification settings"
+	"default-notification-settings": "Default notification settings",
+	"categoryWatchState": "Default category watch state",
+	"categoryWatchState.watching": "Watching",
+	"categoryWatchState.notwatching": "Not Watching",
+	"categoryWatchState.ignoring": "Ignoring"
 }
