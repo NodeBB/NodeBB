@@ -120,7 +120,18 @@ if (typeof window !== 'undefined') {
 		$.timeago.settings.allowFuture = true;
 		var userLang = config.userLang.replace('_', '-');
 		var options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-		var dtFormat = new Intl.DateTimeFormat(userLang, options);
+		var formatFn;
+		if (typeof Intl === 'undefined') {
+			formatFn = function (date) {
+				return date.toLocaleString(userLang, options);
+			};
+		} else {
+			var dtFormat = new Intl.DateTimeFormat(userLang, options);
+			formatFn = function (date) {
+				return dtFormat.format(date);
+			};
+		}
+
 		var iso;
 		var date;
 		$.fn.timeago = function () {
@@ -134,7 +145,7 @@ if (typeof window !== 'undefined') {
 				this.setAttribute('datetime', iso);
 				date = new Date(iso);
 				if (!isNaN(date)) {
-					this.textContent = dtFormat.format(date);
+					this.textContent = formatFn(date);
 				}
 			});
 
