@@ -127,9 +127,7 @@ if (typeof window !== 'undefined') {
 			};
 		} else {
 			var dtFormat = new Intl.DateTimeFormat(userLang, options);
-			formatFn = function (date) {
-				return dtFormat.format(date);
-			};
+			formatFn = dtFormat.format;
 		}
 
 		var iso;
