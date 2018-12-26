@@ -71,8 +71,8 @@
 	"follow-created-topics": "Obserwuj tematy, które stworzyłeś",
 	"follow-replied-topics": "Obserwuj tematy, w których się wypowiedziałeś ",
 	"default-notification-settings": "Domyślne ustawienia powiadomień",
-	"categoryWatchState": "Default category watch state",
-	"categoryWatchState.watching": "Watching",
-	"categoryWatchState.notwatching": "Not Watching",
-	"categoryWatchState.ignoring": "Ignoring"
+	"categoryWatchState": "Domyślny stan oglądania kategorii",
+	"categoryWatchState.watching": "Obserwowane",
+	"categoryWatchState.notwatching": "Nie obserwowane",
+	"categoryWatchState.ignoring": "Ignorowane"
 }
