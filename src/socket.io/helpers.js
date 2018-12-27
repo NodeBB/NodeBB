@@ -29,7 +29,7 @@ SocketHelpers.notifyNew = function (uid, type, result) {
 			user.getUidsFromSet('users:online', 0, -1, next);
 		},
 		function (uids, next) {
-			uids = uids.filter(uid => parseInt(uid, 10) !== uid);
+			uids = uids.filter(toUid => parseInt(toUid, 10) !== uid);
 			privileges.topics.filterUids('read', tid, uids, next);
 		},
 		function (uids, next) {

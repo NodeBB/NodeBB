@@ -70,5 +70,9 @@
 	"email-post-notif": "Abone olduğum konulara cevap gelince bana e-posta gönder",
 	"follow-created-topics": "Kendi konularımı takip et",
 	"follow-replied-topics": "Cevap verdiğim konuları takip et",
-	"default-notification-settings": "Varsayılan bildirim ayarları"
+	"default-notification-settings": "Varsayılan bildirim ayarları",
+	"categoryWatchState": "Default category watch state",
+	"categoryWatchState.watching": "Watching",
+	"categoryWatchState.notwatching": "Not Watching",
+	"categoryWatchState.ignoring": "Ignoring"
 }
