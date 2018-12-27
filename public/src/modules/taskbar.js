@@ -34,6 +34,42 @@ define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator
 				return false;
 			});
 		});
+
+		$(window).on('action:app.loggedOut', function () {
+			taskbar.closeAll();
+		});
+	};
+
+	taskbar.close = function (module, uuid) {
+		// Sends signal to the appropriate module's .close() fn (if present)
+		var btnEl = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
+		var fnName = 'close';
+
+		// TODO: Refactor chat module to not take uuid in close instead of by jQuery element
+		if (module === 'chat') {
+			fnName = 'closeByUUID';
+		}
+
+		if (btnEl.length) {
+			require([module], function (module) {
+				if (typeof module[fnName] === 'function') {
+					module[fnName](uuid);
+				}
+			});
+		}
+	};
+
+	taskbar.closeAll = function (module) {
+		// module is optional
+		var selector = '[data-uuid]';
+
+		if (module) {
+			selector = '[data-module="' + module + '"]' + selector;
+		}
+
+		taskbar.tasklist.find(selector).each(function (idx, el) {
+			taskbar.close(module || el.getAttribute('data-module'), el.getAttribute('data-uuid'));
+		});
 	};
 
 	taskbar.discard = function (module, uuid) {

@@ -258,6 +258,12 @@ define('chat', [
 		}
 	};
 
+	// TODO: see taskbar.js:44
+	module.closeByUUID = function (uuid) {
+		var chatModal = $('.chat-modal[data-uuid="' + uuid + '"]');
+		module.close(chatModal);
+	};
+
 	module.center = function (chatModal) {
 		var hideAfter = false;
 		if (chatModal.hasClass('hide')) {
