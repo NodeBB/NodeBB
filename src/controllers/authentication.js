@@ -472,7 +472,8 @@ authenticationController.logout = function (req, res, next) {
 		function (next) {
 			req.logout();
 			req.session.regenerate(function (err) {
-				delete req.uid;
+				req.uid = 0;
+				req.headers['x-csrf-token'] = req.csrfToken();
 				next(err);
 			});
 		},
