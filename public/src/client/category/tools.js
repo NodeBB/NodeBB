@@ -259,12 +259,15 @@ define('forum/category/tools', [
 			return;
 		}
 		app.loadJQueryUI(function () {
-			$('[component="category"]').sortable({
+			var topicListEl = $('[component="category"]').filter(function (i, e) {
+				return !$(e).parents('[widget-area]').length;
+			});
+			topicListEl.sortable({
 				items: '[component="category/topic"].pinned',
 				update: function () {
 					var data = [];
 
-					var pinnedTopics = $('[component="category/topic"].pinned');
+					var pinnedTopics = topicListEl.find('[component="category/topic"].pinned');
 					pinnedTopics.each(function (index, element) {
 						data.push({ tid: $(element).attr('data-tid'), order: pinnedTopics.length - index - 1 });
 					});
