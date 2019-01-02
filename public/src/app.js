@@ -764,15 +764,24 @@ app.cacheBuster = null;
 		if (!clientEl) {
 			return;
 		}
-		// Update client.css link element to point to selected skin variant
-		clientEl.href = config.relative_path + '/assets/client' + (skinName ? '-' + skinName : '') + '.css';
 
-		var currentSkinClassName = $('body').attr('class').split(/\s+/).filter(function (className) {
-			return className.startsWith('skin-');
-		});
-		$('body').removeClass(currentSkinClassName.join(' '));
-		if (skinName) {
-			$('body').addClass('skin-' + skinName);
-		}
+		var linkEl = document.createElement('link');
+		linkEl.rel = 'stylesheet';
+		linkEl.type = 'text/css';
+		linkEl.href = config.relative_path + '/assets/client' + (skinName ? '-' + skinName : '') + '.css';
+		linkEl.onload = function () {
+			clientEl.parentNode.removeChild(clientEl);
+
+			// Update body class with proper skin name
+			var currentSkinClassName = $('body').attr('class').split(/\s+/).filter(function (className) {
+				return className.startsWith('skin-');
+			});
+			$('body').removeClass(currentSkinClassName.join(' '));
+			if (skinName) {
+				$('body').addClass('skin-' + skinName);
+			}
+		};
+
+		document.head.appendChild(linkEl);
 	};
 }());
