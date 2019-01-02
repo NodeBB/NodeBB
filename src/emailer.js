@@ -110,7 +110,7 @@ Emailer.setupFallbackTransport = function (config) {
 				smtpOptions.ignoreTLS = false;
 			}
 		} else {
-			smtpOptions.service = config['email:smtpTransport:service'];
+			smtpOptions.service = String(config['email:smtpTransport:service']);
 		}
 
 		Emailer.transports.smtp = nodemailer.createTransport(smtpOptions);
