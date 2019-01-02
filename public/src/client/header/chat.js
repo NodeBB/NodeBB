@@ -18,18 +18,27 @@ define('forum/header/chat', ['components'], function (components) {
 			requireAndCall('loadChatsDropdown', chatsListEl);
 		}
 
-		socket.on('event:chats.receive', function (data) {
-			requireAndCall('onChatMessageReceived', data);
-		});
+		socket.removeListener('event:chats.receive', onChatMessageReceived);
+		socket.on('event:chats.receive', onChatMessageReceived);
 
-		socket.on('event:user_status_change', function (data) {
-			requireAndCall('onUserStatusChange', data);
-		});
+		socket.removeListener('event:user_status_change', onUserStatusChange);
+		socket.on('event:user_status_change', onUserStatusChange);
 
-		socket.on('event:chats.roomRename', function (data) {
-			requireAndCall('onRoomRename', data);
-		});
+		socket.removeListener('event:chats.roomRename', onRoomRename);
+		socket.on('event:chats.roomRename', onRoomRename);
 	};
+
+	function onChatMessageReceived(data) {
+		requireAndCall('onChatMessageReceived', data);
+	}
+
+	function onUserStatusChange(data) {
+		requireAndCall('onUserStatusChange', data);
+	}
+
+	function onRoomRename(data) {
+		requireAndCall('onRoomRename', data);
+	}
 
 	function requireAndCall(method, param) {
 		require(['chat'], function (chat) {
