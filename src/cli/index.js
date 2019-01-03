@@ -3,6 +3,8 @@
 var fs = require('fs');
 var path = require('path');
 
+require('../../require-main');
+
 var packageInstall = require('./package-install');
 var dirname = require('./paths').baseDir;
 
