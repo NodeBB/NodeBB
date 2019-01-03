@@ -1,4 +1,4 @@
-<form role="form" class="category" data-cid="{category.cid}">
+<div class="category" data-cid="{category.cid}">
 	<div class="row">
 		<div class="col-md-3 pull-right">
 			<select id="category-selector" class="form-control">
@@ -163,7 +163,7 @@
 			</div>
 		</div>
 	</div>
-</form>
+</div>
 
 <button id="save" class="floating-button mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
     <i class="material-icons">save</i>
