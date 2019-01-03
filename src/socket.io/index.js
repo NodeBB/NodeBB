@@ -10,6 +10,7 @@ var cookieParser = require('cookie-parser')(nconf.get('secret'));
 var db = require('../database');
 var user = require('../user');
 var logger = require('../logger');
+var plugins = require('../plugins');
 var ratelimit = require('../middleware/ratelimit');
 
 
@@ -179,13 +180,20 @@ function validateSession(socket, callback) {
 	if (!req.signedCookies || !req.signedCookies[nconf.get('sessionKey')]) {
 		return callback();
 	}
-	db.sessionStore.get(req.signedCookies[nconf.get('sessionKey')], function (err, sessionData) {
-		if (err || !sessionData) {
-			return callback(err || new Error('[[error:invalid-session]]'));
-		}
 
-		callback();
-	});
+	async.waterfall([
+		async.apply(db.sessionStore.get.bind(db), req.signedCookies[nconf.get('sessionKey')]),
+		function (sessionData, next) {
+			if (!sessionData) {
+				return next(new Error('[[error:invalid-session]]'));
+			}
+
+			plugins.fireHook('static:sockets.validateSession', {
+				socket: socket,
+				session: sessionData,
+			}, next);
+		},
+	], callback);
 }
 
 function authorize(socket, callback) {
