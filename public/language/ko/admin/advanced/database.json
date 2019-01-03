@@ -2,8 +2,8 @@
 	"x-b": "%1 B",
 	"x-mb": "%1 MB",
 	"x-gb": "%1 GB",
-	"uptime-seconds": "Uptime (초)",
-	"uptime-days": "Uptime (일)",
+	"uptime-seconds": "초 단위의 가동 시간",
+	"uptime-days": "일간 가동시간",
 
 	"mongo": "Mongo",
 	"mongo.version": "MongoDB 버젼",

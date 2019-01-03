@@ -28,7 +28,7 @@
 	"pills.search": "사용자 검색",
 
 	"search.uid": "By User ID",
-	"search.uid-placeholder": "Enter a user ID to search",
+	"search.uid-placeholder": "검색 할 사용자 ID를 입력하십시오",
 	"search.username": "이름으로",
 	"search.username-placeholder": "검색할 사용자명을 입력하세요",
 	"search.email": "이메일로",
@@ -71,7 +71,7 @@
 	"alerts.lockout-reset-success": "락아웃이 리셋됐습니다!",
 	"alerts.flag-reset-success": "신고가 리셋됐습니다!",
 	"alerts.no-remove-yourself-admin": "관리자이기 때문에 본인을 삭제할 수 없습니다!",
-	"alerts.make-admin-success": "User is now administrator.",
+	"alerts.make-admin-success": "이 사용자는 이제 최고관리자 입니다.",
 	"alerts.confirm-remove-admin": "Do you really want to remove this administrator?",
 	"alerts.remove-admin-success": "User is no longer administrator.",
 	"alerts.make-global-mod-success": "User is now global moderator.",
@@ -93,7 +93,7 @@
 	"alerts.error-x": "<strong>에러</strong><p>%1</p>",
 	"alerts.create-success": "사용자가 생성됐습니다!",
 
-	"alerts.prompt-email": "Emails: ",
+	"alerts.prompt-email": "이메일:",
 	"alerts.email-sent-to": "%1에게 초대 이메일이 발송됐습니다.",
 	"alerts.x-users-found": "%1명의 사용자를 찾았습니다! 검색에 %2 ms가 소요됐습니다."
 }
