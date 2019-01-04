@@ -119,7 +119,7 @@ module.exports = function (Posts) {
 			},
 			function (results, next) {
 				if (results.notification) {
-					notifications.push(results.uids, next);
+					notifications.push(results.notification, results.uids, next);
 				} else {
 					next();
 				}
