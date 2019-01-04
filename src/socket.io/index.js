@@ -181,20 +181,17 @@ function validateSession(socket, callback) {
 		return callback();
 	}
 
-	async.waterfall([
-		async.apply(db.sessionStore.get.bind(db.sessionStore), req.signedCookies[nconf.get('sessionKey')]),
-		function (sessionData, next) {
-			if (!sessionData) {
-				return next(new Error('[[error:invalid-session]]'));
-			}
+	db.sessionStore.get(req.signedCookies[nconf.get('sessionKey')], function (err, sessionData) {
+		if (err || !sessionData) {
+			return callback(err || new Error('[[error:invalid-session]]'));
+		}
 
-			plugins.fireHook('static:sockets.validateSession', {
-				req: req,
-				socket: socket,
-				session: sessionData,
-			}, next);
-		},
-	], callback);
+		plugins.fireHook('static:sockets.validateSession', {
+			req: req,
+			socket: socket,
+			session: sessionData,
+		}, callback);
+	});
 }
 
 function authorize(socket, callback) {
