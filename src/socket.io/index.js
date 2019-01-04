@@ -10,6 +10,7 @@ var cookieParser = require('cookie-parser')(nconf.get('secret'));
 var db = require('../database');
 var user = require('../user');
 var logger = require('../logger');
+var plugins = require('../plugins');
 var ratelimit = require('../middleware/ratelimit');
 
 
@@ -179,12 +180,17 @@ function validateSession(socket, callback) {
 	if (!req.signedCookies || !req.signedCookies[nconf.get('sessionKey')]) {
 		return callback();
 	}
+
 	db.sessionStore.get(req.signedCookies[nconf.get('sessionKey')], function (err, sessionData) {
 		if (err || !sessionData) {
 			return callback(err || new Error('[[error:invalid-session]]'));
 		}
 
-		callback();
+		plugins.fireHook('static:sockets.validateSession', {
+			req: req,
+			socket: socket,
+			session: sessionData,
+		}, callback);
 	});
 }
 
