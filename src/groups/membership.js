@@ -134,9 +134,7 @@ module.exports = function (Groups) {
 	};
 
 	Groups.getMembersOfGroups = function (groupNames, callback) {
-		db.getSortedSetsMembers(groupNames.map(function (name) {
-			return 'group:' + name + ':members';
-		}), callback);
+		db.getSortedSetsMembers(groupNames.map(name => 'group:' + name + ':members'), callback);
 	};
 
 	Groups.isMember = function (uid, groupName, callback) {

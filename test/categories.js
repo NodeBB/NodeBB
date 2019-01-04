@@ -800,6 +800,33 @@ describe('Categories', function () {
 				done();
 			});
 		});
+
+		describe('Categories.getModeratorUids', function () {
+			before(function (done) {
+				async.series([
+					async.apply(groups.create, { name: 'testGroup' }),
+					async.apply(groups.join, 'cid:1:privileges:groups:moderate', 'testGroup'),
+					async.apply(groups.join, 'testGroup', 1),
+				], done);
+			});
+
+			it('should retrieve all users with moderator bit in category privilege', function (done) {
+				Categories.getModeratorUids([1, 2], function (err, uids) {
+					assert.ifError(err);
+					assert.strictEqual(2, uids.length);
+					assert.strictEqual(1, parseInt(uids[0], 10));
+					assert.strictEqual(0, uids[1].length);
+					done();
+				});
+			});
+
+			after(function (done) {
+				async.series([
+					async.apply(groups.leave, 'cid:1:privileges:groups:moderate', 'testGroup'),
+					async.apply(groups.destroy, 'testGroup'),
+				], done);
+			});
+		});
 	});
 
 

@@ -6,7 +6,7 @@ var _ = require('lodash');
 
 var db = require('../database');
 var user = require('../user');
-var Groups = require('../groups');
+var groups = require('../groups');
 var plugins = require('../plugins');
 var privileges = require('../privileges');
 const cache = require('../cache');
@@ -130,10 +130,45 @@ Categories.getCategoriesByPrivilege = function (set, uid, privilege, callback) {
 Categories.getModerators = function (cid, callback) {
 	async.waterfall([
 		function (next) {
-			Groups.getMembers('cid:' + cid + ':privileges:moderate', 0, -1, next);
+			Categories.getModeratorUids([cid], next);
 		},
 		function (uids, next) {
-			user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
+			user.getUsersFields(uids[0], ['uid', 'username', 'userslug', 'picture'], next);
+		},
+	], callback);
+};
+
+Categories.getModeratorUids = function (cids, callback) {
+	var sets;
+	async.waterfall([
+		function (next) {
+			var groupNames = cids.reduce(function (memo, cid) {
+				memo.push('cid:' + cid + ':privileges:moderate');
+				memo.push('cid:' + cid + ':privileges:groups:moderate');
+				return memo;
+			}, []);
+
+			groups.getMembersOfGroups(groupNames, next);
+		},
+		function (memberSets, next) {
+			// Every other set is actually a list of user groups, not uids, so convert those to members
+			sets = memberSets.reduce(function (memo, set, idx) {
+				if (idx % 2) {
+					memo.groupNames.push(set);
+				} else {
+					memo.uids.push(set);
+				}
+
+				return memo;
+			}, { groupNames: [], uids: [] });
+
+			groups.getMembersOfGroups(sets.groupNames, next);
+		},
+		function (groupUids, next) {
+			const moderatorUids = cids.map(function (cid, index) {
+				return _.union(sets.uids[index].concat(groupUids[index]));
+			});
+			next(null, moderatorUids);
 		},
 	], callback);
 };
