@@ -4,7 +4,7 @@
 	"disable-down-voting": "비추천 비활성화",
 	"votes-are-public": "모든 투표는 공개적입니다.",
 	"thresholds": "포럼 활동 기준선",
-	"min-rep-downvote": "평판이 낮아 이 게시물을 다운보트할 수 없습니다.",
+	"min-rep-downvote": "평판이 낮아 이 게시물을 다운로드 할 수 없습니다.",
 	"min-rep-flag": "평판이 낮아 이 게시물을 신고할 수 없습니다.",
 	"min-rep-website": "Minimum reputation to add \"Website\" to user profile",
 	"min-rep-aboutme": "Minimum reputation to add \"About me\" to user profile",

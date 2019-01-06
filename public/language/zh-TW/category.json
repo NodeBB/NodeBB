@@ -10,7 +10,7 @@
     "watch": "關注",
     "ignore": "忽略",
     "watching": "關注",
-    "not-watching": "Not Watching",
+    "not-watching": "未關注",
     "ignoring": "忽略",
     "watching.description": "Show topics in unread and recent",
     "not-watching.description": "Do not show topics in unread, show in recent",
