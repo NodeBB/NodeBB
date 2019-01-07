@@ -464,7 +464,7 @@ describe('Post\'s', function () {
 		it('should load diffs and reconstruct post', function (done) {
 			posts.diffs.load(replyPid, 0, voterUid, function (err, data) {
 				assert.ifError(err);
-				assert.equal(data.content, 'A reply to edit\n');
+				assert.equal(data.content, 'A reply to edit');
 				done();
 			});
 		});
