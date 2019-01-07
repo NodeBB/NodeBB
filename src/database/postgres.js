@@ -39,6 +39,11 @@ postgresModule.questions = [
 		description: 'PostgreSQL database name',
 		default: nconf.get('postgres:database') || 'nodebb',
 	},
+	{
+		name: 'postgres:ssl',
+		description: 'Enable SSL for PostgreSQL database access',
+		default: nconf.get('postgres:ssl') || false,
+	},
 ];
 
 postgresModule.helpers = postgresModule.helpers || {};
@@ -65,6 +70,7 @@ postgresModule.getConnectionOptions = function (postgres) {
 		user: postgres.username,
 		password: postgres.password,
 		database: postgres.database,
+		ssl: postgres.ssl,
 	};
 
 	return _.merge(connOptions, postgres.options || {});
