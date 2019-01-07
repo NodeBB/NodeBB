@@ -214,7 +214,7 @@ settingsController.unsubscribe = function (req, res) {
 			async.waterfall([
 				async.apply(db.getObjectField, 'user:' + payload.uid + ':settings', 'notificationType_' + payload.type),
 				(current, next) => {
-					user.setSetting(payload.uid, 'notificationType_' + payload.type, (current === 'notificationemail' ? 'notifcation' : 'none'), next);
+					user.setSetting(payload.uid, 'notificationType_' + payload.type, (current === 'notificationemail' ? 'notification' : 'none'), next);
 				},
 			], function (err) {
 				if (err) {
