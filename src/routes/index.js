@@ -35,6 +35,7 @@ function mainRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/tos', middleware, [], controllers.termsOfUse);
 
 	app.post('/compose', middleware.applyCSRF, controllers.composer.post);
+	app.post('/email/unsubscribe/:token', controllers.accounts.settings.unsubscribe);
 }
 
 function modRoutes(app, middleware, controllers) {

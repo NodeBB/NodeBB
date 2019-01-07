@@ -11,6 +11,7 @@ var url = require('url');
 var path = require('path');
 var fs = require('fs');
 var _ = require('lodash');
+var jwt = require('jsonwebtoken');
 
 var User = require('./user');
 var Plugins = require('./plugins');
@@ -215,6 +216,31 @@ Emailer.sendToEmail = function (template, email, language, params, callback) {
 		'List-Id': '<' + [template, params.uid, getHostname()].join('.') + '>',
 		'List-Unsubscribe': '<' + [nconf.get('url'), 'uid', params.uid, 'settings'].join('/') + '>',
 	}, params.headers);
+
+	// Digests and notifications can be one-click unsubbed
+	let payload = {
+		template: template,
+		uid: params.uid,
+	};
+
+	switch (template) {
+	case 'digest':
+		payload = jwt.sign(payload, nconf.get('secret'), {
+			expiresIn: '30d',
+		});
+		params.headers['List-Unsubscribe'] = '<' + [nconf.get('url'), 'email', 'unsubscribe', payload].join('/') + '>';
+		params.headers['List-Unsubscribe-Post'] = 'List-Unsubscribe=One-Click';
+		break;
+
+	case 'notification':
+		payload.type = params.notification.type;
+		payload = jwt.sign(payload, nconf.get('secret'), {
+			expiresIn: '30d',
+		});
+		params.headers['List-Unsubscribe'] = '<' + [nconf.get('url'), 'email', 'unsubscribe', payload].join('/') + '>';
+		params.headers['List-Unsubscribe-Post'] = 'List-Unsubscribe=One-Click';
+		break;
+	}
 
 	async.waterfall([
 		function (next) {
