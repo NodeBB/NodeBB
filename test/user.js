@@ -1278,44 +1278,105 @@ describe('User', function () {
 			});
 		});
 
-		it('should unsubscribe from digest if one-click unsubscribe is POSTed', function (done) {
-			const token = jwt.sign({
-				template: 'digest',
-				uid: uid,
-			}, nconf.get('secret'));
+		describe('unsubscribe via POST', function () {
+			it('should unsubscribe from digest if one-click unsubscribe is POSTed', function (done) {
+				const token = jwt.sign({
+					template: 'digest',
+					uid: uid,
+				}, nconf.get('secret'));
 
-			request({
-				method: 'post',
-				url: nconf.get('url') + '/email/unsubscribe/' + token,
-			}, function (err, res) {
-				assert.ifError(err);
-				assert.strictEqual(res.statusCode, 200);
-
-				db.getObjectField('user:' + uid + ':settings', 'dailyDigestFreq', function (err, value) {
+				request({
+					method: 'post',
+					url: nconf.get('url') + '/email/unsubscribe/' + token,
+				}, function (err, res) {
 					assert.ifError(err);
-					assert.strictEqual(value, 'off');
+					assert.strictEqual(res.statusCode, 200);
+
+					db.getObjectField('user:' + uid + ':settings', 'dailyDigestFreq', function (err, value) {
+						assert.ifError(err);
+						assert.strictEqual(value, 'off');
+						done();
+					});
+				});
+			});
+
+			it('should unsubscribe from notifications if one-click unsubscribe is POSTed', function (done) {
+				const token = jwt.sign({
+					template: 'notification',
+					type: 'test',
+					uid: uid,
+				}, nconf.get('secret'));
+
+				request({
+					method: 'post',
+					url: nconf.get('url') + '/email/unsubscribe/' + token,
+				}, function (err, res) {
+					assert.ifError(err);
+					assert.strictEqual(res.statusCode, 200);
+
+					db.getObjectField('user:' + uid + ':settings', 'notificationType_test', function (err, value) {
+						assert.ifError(err);
+						assert.strictEqual(value, 'notification');
+						done();
+					});
+				});
+			});
+
+			it('should return errors on missing template in token', function (done) {
+				const token = jwt.sign({
+					uid: uid,
+				}, nconf.get('secret'));
+
+				request({
+					method: 'post',
+					url: nconf.get('url') + '/email/unsubscribe/' + token,
+				}, function (err, res) {
+					assert.ifError(err);
+					assert.strictEqual(res.statusCode, 404);
 					done();
 				});
 			});
-		});
 
-		it('should unsubscribe from notifications if one-click unsubscribe is POSTed', function (done) {
-			const token = jwt.sign({
-				template: 'notification',
-				type: 'test',
-				uid: uid,
-			}, nconf.get('secret'));
+			it('should return errors on wrong template in token', function (done) {
+				const token = jwt.sign({
+					template: 'user',
+					uid: uid,
+				}, nconf.get('secret'));
 
-			request({
-				method: 'post',
-				url: nconf.get('url') + '/email/unsubscribe/' + token,
-			}, function (err, res) {
-				assert.ifError(err);
-				assert.strictEqual(res.statusCode, 200);
-
-				db.getObjectField('user:' + uid + ':settings', 'notificationType_test', function (err, value) {
+				request({
+					method: 'post',
+					url: nconf.get('url') + '/email/unsubscribe/' + token,
+				}, function (err, res) {
 					assert.ifError(err);
-					assert.strictEqual(value, 'notification');
+					assert.strictEqual(res.statusCode, 404);
+					done();
+				});
+			});
+
+			it('should return errors on missing token', function (done) {
+				request({
+					method: 'post',
+					url: nconf.get('url') + '/email/unsubscribe/',
+				}, function (err, res) {
+					assert.ifError(err);
+					assert.strictEqual(res.statusCode, 404);
+					done();
+				});
+			});
+
+			it('should return errors on token signed with wrong secret (verify-failure)', function (done) {
+				const token = jwt.sign({
+					template: 'notification',
+					type: 'test',
+					uid: uid,
+				}, nconf.get('secret') + 'aababacaba');
+
+				request({
+					method: 'post',
+					url: nconf.get('url') + '/email/unsubscribe/' + token,
+				}, function (err, res) {
+					assert.ifError(err);
+					assert.strictEqual(res.statusCode, 403);
 					done();
 				});
 			});
