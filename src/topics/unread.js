@@ -51,7 +51,7 @@ module.exports = function (Topics) {
 				if (!topicData.length) {
 					return next(null, unreadTopics);
 				}
-
+				Topics.calculateTopicIndices(topicData, params.start);
 				unreadTopics.topics = topicData;
 				unreadTopics.nextStart = params.stop + 1;
 				next(null, unreadTopics);
