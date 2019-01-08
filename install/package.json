@@ -67,6 +67,7 @@
         "jquery": "^3.2.1",
         "jsesc": "2.5.2",
         "json-2-csv": "^3.0.0",
+        "jsonwebtoken": "^8.4.0",
         "less": "^2.7.3",
         "lodash": "^4.17.10",
         "logrotate-stream": "^0.2.5",
