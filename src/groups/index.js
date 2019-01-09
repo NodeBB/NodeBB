@@ -105,7 +105,7 @@ Groups.getGroupsAndMembers = function (groupNames, callback) {
 			data.groups.forEach(function (group, index) {
 				if (group) {
 					group.members = data.members[index] || [];
-					group.truncated = group.memberCount > data.members.length;
+					group.truncated = group.memberCount > group.members.length;
 				}
 			});
 			next(null, data.groups);
