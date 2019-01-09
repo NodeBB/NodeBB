@@ -81,14 +81,30 @@ module.exports = function (Plugins) {
 	}
 
 	Plugins.prepareForBuild = function (targets, callback) {
-		Plugins.cssFiles.length = 0;
-		Plugins.lessFiles.length = 0;
-		Plugins.acpLessFiles.length = 0;
-		Plugins.clientScripts.length = 0;
-		Plugins.acpScripts.length = 0;
-		Plugins.soundpacks.length = 0;
-		Plugins.languageData.languages = [];
-		Plugins.languageData.namespaces = [];
+		if (targets.includes('client js bundle')) {
+			Plugins.clientScripts.length = 0;
+		}
+
+		if (targets.includes('admin js bundle')) {
+			Plugins.acpScripts.length = 0;
+		}
+
+		if (targets.includes('client side styles') || targets.includes('admin control panel styles')) {
+			Plugins.cssFiles.length = 0;
+			Plugins.lessFiles.length = 0;
+			if (targets.includes('admin control panel styles')) {
+				Plugins.acpLessFiles.length = 0;
+			}
+		}
+
+		if (targets.includes('sounds')) {
+			Plugins.soundpacks.length = 0;
+		}
+
+		if (targets.includes('languages')) {
+			Plugins.languageData.languages = [];
+			Plugins.languageData.namespaces = [];
+		}
 
 		var map = {
 			'plugin static dirs': ['staticDirs'],
