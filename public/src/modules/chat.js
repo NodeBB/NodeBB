@@ -297,6 +297,7 @@ define('chat', [
 
 	module.enableMobileBehaviour = function (modalEl) {
 		app.toggleNavbar(false);
+		taskbar.toggleVisibility(false);
 		modalEl.attr('data-mobile', '1');
 		var messagesEl = modalEl.find('.modal-body');
 		messagesEl.css('height', module.calculateChatListHeight(modalEl));
@@ -308,6 +309,7 @@ define('chat', [
 
 	module.disableMobileBehaviour = function () {
 		app.toggleNavbar(true);
+		taskbar.toggleVisibility(true);
 	};
 
 	module.calculateChatListHeight = function (modalEl) {
