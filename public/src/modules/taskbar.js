@@ -182,9 +182,5 @@ define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator
 		taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"] [component="taskbar/title"]').text(newTitle);
 	};
 
-	taskbar.toggleVisibility = function (visible) {
-		taskbar.taskbar.toggleClass('hidden', !visible);
-	};
-
 	return taskbar;
 });
