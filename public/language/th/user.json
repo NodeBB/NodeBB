@@ -28,6 +28,7 @@
     "watched_categories": "Watched categories",
     "watched": "ดูแล้ว",
     "ignored": "ยกเว้นแล้ว",
+    "default-category-watch-state": "Default category watch state",
     "followers": "คนติดตาม",
     "following": "ติดตาม",
     "blocks": "Blocks",

@@ -56,6 +56,7 @@
     "notificationType_follow": "เมื่อมีคนติดตามคุณ",
     "notificationType_new-chat": "เมื่อคุณได้รับข้อความใหม่",
     "notificationType_group-invite": "เมื่อคุณได้รับเชิญเข้ากลุ่ม",
+    "notificationType_group-request-membership": "When someone requests to join a group you own",
     "notificationType_new-register": "เมื่อมีคนถูกเพิ่มในคิวลงทะเบียน",
     "notificationType_post-queue": "เมื่อมีโพสต์ใหม่อยู่ในคิว",
     "notificationType_new-post-flag": "เมื่อโพสต์ถูกตั้งค่าสถานะ",

@@ -56,6 +56,7 @@
     "notificationType_follow": "Когда кто-то подписался на ваши обновления",
     "notificationType_new-chat": "Когда вы получили сообщение",
     "notificationType_group-invite": "Когда вы получили приглашение в группу",
+    "notificationType_group-request-membership": "When someone requests to join a group you own",
     "notificationType_new-register": "Когда кто-то добавляется в очередь регистрации",
     "notificationType_post-queue": "Когда новое сообщение помещается в очередь",
     "notificationType_new-post-flag": "Когда сообщение помечено",

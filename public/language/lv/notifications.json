@@ -56,6 +56,7 @@
     "notificationType_follow": "Kad kāds sāk Tev sekot",
     "notificationType_new-chat": "Kad saņemi sarunu",
     "notificationType_group-invite": "Kad saņemi ielūgumu pievienoties grupai",
+    "notificationType_group-request-membership": "When someone requests to join a group you own",
     "notificationType_new-register": "Kad kāds tiek ievietots reģistrācijas rindā",
     "notificationType_post-queue": "Kad raksts tiek ievietots apstiprināšanas rindā",
     "notificationType_new-post-flag": "Kad raksts tiek atzīmēts",

@@ -28,6 +28,7 @@
     "watched_categories": "주시중인 카테고리",
     "watched": "관심있는 게시물",
     "ignored": "무시됨",
+    "default-category-watch-state": "Default category watch state",
     "followers": "팔로워",
     "following": "팔로잉",
     "blocks": "차단",

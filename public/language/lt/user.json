@@ -28,6 +28,7 @@
     "watched_categories": "Watched categories",
     "watched": "Peržiūrėjo",
     "ignored": "Ignoruojami",
+    "default-category-watch-state": "Default category watch state",
     "followers": "Sekėjai",
     "following": "Seka",
     "blocks": "Blocks",

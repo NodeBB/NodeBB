@@ -56,6 +56,7 @@
     "notificationType_follow": "누군가 사용자님을 팔로우 하면",
     "notificationType_new-chat": "채팅 메시지를 받으면",
     "notificationType_group-invite": "그룹 초대를 받으면",
+    "notificationType_group-request-membership": "When someone requests to join a group you own",
     "notificationType_new-register": "When someone gets added to registration queue",
     "notificationType_post-queue": "When a new post is queued",
     "notificationType_new-post-flag": "게시글이 신고되면",

@@ -56,6 +56,7 @@
     "notificationType_follow": "Когато някой започне да Ви следва",
     "notificationType_new-chat": "Когато получите съобщение в разговор",
     "notificationType_group-invite": "Когато получите покана за група",
+    "notificationType_group-request-membership": "Когато някой поиска да се включи в група, на която Вие сте собственик",
     "notificationType_new-register": "Когато някой бъде добавен в опашката за регистрация",
     "notificationType_post-queue": "Когато бъде добавена нова публикация в опашката",
     "notificationType_new-post-flag": "Когато публикация бъде докладвана",

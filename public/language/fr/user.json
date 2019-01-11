@@ -28,6 +28,7 @@
     "watched_categories": "Catégories surveillées",
     "watched": "Abonnements",
     "ignored": "Ignorés",
+    "default-category-watch-state": "Abonnement par da catégorie",
     "followers": "Abonnés",
     "following": "Abonnements",
     "blocks": "Bloqués",

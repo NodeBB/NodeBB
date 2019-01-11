@@ -28,6 +28,7 @@
     "watched_categories": "Watched categories",
     "watched": "Đã quan tâm",
     "ignored": "Phớt lờ",
+    "default-category-watch-state": "Default category watch state",
     "followers": "Số người theo dõi",
     "following": "Đang theo dõi",
     "blocks": "Khóa",

@@ -28,6 +28,7 @@
     "watched_categories": "已关注的版块",
     "watched": "已关注",
     "ignored": "忽略",
+    "default-category-watch-state": "Default category watch state",
     "followers": "粉丝",
     "following": "关注",
     "blocks": "屏蔽",

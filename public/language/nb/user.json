@@ -28,6 +28,7 @@
     "watched_categories": "Watched categories",
     "watched": "Overvåkede",
     "ignored": "Ignored",
+    "default-category-watch-state": "Default category watch state",
     "followers": "Følgere",
     "following": "Følger",
     "blocks": "Blocks",

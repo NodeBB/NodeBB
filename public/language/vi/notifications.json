@@ -56,6 +56,7 @@
     "notificationType_follow": "Khi ai đó theo dõi bạn",
     "notificationType_new-chat": "Khi bạn nhận được thông điệp chat",
     "notificationType_group-invite": "Khi bạn nhận được lời mời gia nhập nhóm",
+    "notificationType_group-request-membership": "When someone requests to join a group you own",
     "notificationType_new-register": "Khi ai đó được thêm vào lượt chờ đăng ký",
     "notificationType_post-queue": "Khi bài đăng được thêm vào lượt chờ",
     "notificationType_new-post-flag": "Khi bài đăng được cảnh báo",

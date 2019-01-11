@@ -28,6 +28,7 @@
     "watched_categories": "ウォッチ中のカテゴリ",
     "watched": "ウォッチ済み",
     "ignored": "無視済み",
+    "default-category-watch-state": "Default category watch state",
     "followers": "フォロワー",
     "following": "フォロー中",
     "blocks": "ブロックの設定",

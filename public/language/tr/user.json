@@ -28,6 +28,7 @@
     "watched_categories": "Takip edilen kategoriler",
     "watched": "Takip edildi",
     "ignored": "Susturuldu",
+    "default-category-watch-state": "Default category watch state",
     "followers": "Takipçiler",
     "following": "Takip Ediyor",
     "blocks": "Blok",

@@ -28,6 +28,7 @@
     "watched_categories": "Watched categories",
     "watched": "Gledano",
     "ignored": "Ignored",
+    "default-category-watch-state": "Default category watch state",
     "followers": "Pratitelji",
     "following": "Prati",
     "blocks": "Blocks",

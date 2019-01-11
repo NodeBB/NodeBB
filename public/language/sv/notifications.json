@@ -56,6 +56,7 @@
     "notificationType_follow": "När någon börjar följa dig",
     "notificationType_new-chat": "När du får ett chattmeddelande",
     "notificationType_group-invite": "När du får en gruppinbjudan",
+    "notificationType_group-request-membership": "When someone requests to join a group you own",
     "notificationType_new-register": "När någon läggs till i registreringskön",
     "notificationType_post-queue": "När ett nytt inlägg läggs i kön",
     "notificationType_new-post-flag": "När ett nytt inlägg flaggas",

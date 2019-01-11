@@ -56,6 +56,7 @@
     "notificationType_follow": "כשמישהו מתחיל לעקוב אחריך",
     "notificationType_new-chat": "כשאתה מקבל הודעת צאט",
     "notificationType_group-invite": "כשאתה מקבל הזמנה מקבוצה",
+    "notificationType_group-request-membership": "When someone requests to join a group you own",
     "notificationType_new-register": "כאשר מישהו מתווסף לתור הרישום",
     "notificationType_post-queue": "כשהודעה חדשה נכנסת לתור",
     "notificationType_new-post-flag": "כאשר פוסט מסומן",

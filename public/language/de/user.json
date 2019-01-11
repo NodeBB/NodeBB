@@ -28,6 +28,7 @@
     "watched_categories": "Beobachtete Kategorien",
     "watched": "Beobachtet",
     "ignored": "Ignoriert",
+    "default-category-watch-state": "Default category watch state",
     "followers": "Follower",
     "following": "Folge ich",
     "blocks": "Blockiert",

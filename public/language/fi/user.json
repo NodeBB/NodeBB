@@ -28,6 +28,7 @@
     "watched_categories": "Watched categories",
     "watched": "Seurattu",
     "ignored": "Ignored",
+    "default-category-watch-state": "Default category watch state",
     "followers": "Seuraajat",
     "following": "Seuratut",
     "blocks": "Blocks",

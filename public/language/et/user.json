@@ -28,6 +28,7 @@
     "watched_categories": "Watched categories",
     "watched": "Vaadatud",
     "ignored": "Ignored",
+    "default-category-watch-state": "Default category watch state",
     "followers": "Jälgijad",
     "following": "Jälgimised",
     "blocks": "Blocks",
