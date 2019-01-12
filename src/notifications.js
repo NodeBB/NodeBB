@@ -558,11 +558,9 @@ Notifications.merge = function (notifications, callback) {
 			case 'notifications:user_posted_to':
 			case 'notifications:user_flagged_post_in':
 			case 'notifications:user_flagged_user':
-				var usernames = set.map(function (notifObj) {
+				var usernames = _.uniq(set.map(function (notifObj) {
 					return notifObj && notifObj.user && notifObj.user.username;
-				}).filter(function (username, idx, array) {
-					return array.indexOf(username) === idx;
-				});
+				}));
 				var numUsers = usernames.length;
 
 				var title = utils.decodeHTMLEntities(notifications[modifyIndex].topicTitle || '');

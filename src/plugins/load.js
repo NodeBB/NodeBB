@@ -81,31 +81,6 @@ module.exports = function (Plugins) {
 	}
 
 	Plugins.prepareForBuild = function (targets, callback) {
-		if (targets.includes('client js bundle')) {
-			Plugins.clientScripts.length = 0;
-		}
-
-		if (targets.includes('admin js bundle')) {
-			Plugins.acpScripts.length = 0;
-		}
-
-		if (targets.includes('client side styles') || targets.includes('admin control panel styles')) {
-			Plugins.cssFiles.length = 0;
-			Plugins.lessFiles.length = 0;
-			if (targets.includes('admin control panel styles')) {
-				Plugins.acpLessFiles.length = 0;
-			}
-		}
-
-		if (targets.includes('sounds')) {
-			Plugins.soundpacks.length = 0;
-		}
-
-		if (targets.includes('languages')) {
-			Plugins.languageData.languages = [];
-			Plugins.languageData.namespaces = [];
-		}
-
 		var map = {
 			'plugin static dirs': ['staticDirs'],
 			'requirejs modules': ['modules'],
@@ -117,13 +92,27 @@ module.exports = function (Plugins) {
 			languages: ['languageData'],
 		};
 
-		var fields = targets.reduce(function (prev, target) {
-			if (!map[target]) {
-				return prev;
+		var fields = _.uniq(_.flatMap(targets, target => map[target] || []));
+
+		// clear old data before build
+		fields.forEach((field) => {
+			switch (field) {
+			case 'clientScripts':
+			case 'acpScripts':
+			case 'cssFiles':
+			case 'lessFiles':
+			case 'acpLessFiles':
+				Plugins[field].length = 0;
+				break;
+			case 'soundpack':
+				Plugins.soundpacks.length = 0;
+				break;
+			case 'languageData':
+				Plugins.languageData.languages = [];
+				Plugins.languageData.namespaces = [];
+				break;
+			// do nothing for modules and staticDirs
 			}
-			return prev.concat(map[target]);
-		}, []).filter(function (field, i, arr) {
-			return arr.indexOf(field) === i;
 		});
 
 		winston.verbose('[plugins] loading the following fields from plugin data: ' + fields.join(', '));
