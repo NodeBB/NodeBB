@@ -152,6 +152,11 @@ app.cacheBuster = null;
 				app.reskin(data.config.bootswatchSkin);
 				translator.switchTimeagoLanguage(callback);
 				bootbox.setLocale(config.userLang);
+
+				if (config.searchEnabled) {
+					app.handleSearch();
+				}
+
 				$(window).trigger('action:app.updateHeader');
 			});
 		});
