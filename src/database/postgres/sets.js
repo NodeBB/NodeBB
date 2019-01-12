@@ -1,6 +1,7 @@
 'use strict';
 
 var async = require('async');
+var _ = require('lodash');
 
 module.exports = function (db, module) {
 	var helpers = module.helpers.postgres;
@@ -44,9 +45,7 @@ SELECT $1::TEXT, m
 			value = [value];
 		}
 
-		keys = keys.filter(function (k, i, a) {
-			return a.indexOf(k) === i;
-		});
+		keys = _.uniq(keys);
 
 		module.transaction(function (tx, done) {
 			var query = tx.client.query.bind(tx.client);
