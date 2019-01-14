@@ -49,6 +49,7 @@
     "change_picture": "Změnit obrázek",
     "change_username": "Změnit uživatelské jméno",
     "change_email": "Změnit e-mail",
+    "email_same_as_password": "Please enter your current password to continue &ndash; you've entered your new email again",
     "edit": "Upravit",
     "edit-profile": "Upravit profil",
     "default_picture": "Výchozí ikonka",

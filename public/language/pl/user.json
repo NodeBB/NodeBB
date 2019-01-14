@@ -49,6 +49,7 @@
     "change_picture": "Zmień zdjęcie",
     "change_username": "Zmień nazwę użytkownika",
     "change_email": "Zmień adres e-mail",
+    "email_same_as_password": "Please enter your current password to continue &ndash; you've entered your new email again",
     "edit": "Edytuj",
     "edit-profile": "Edytuj profil",
     "default_picture": "Domyślna ikona",

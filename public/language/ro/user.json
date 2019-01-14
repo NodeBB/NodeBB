@@ -49,6 +49,7 @@
     "change_picture": "Schimbă Poza",
     "change_username": "Change Username",
     "change_email": "Change Email",
+    "email_same_as_password": "Please enter your current password to continue &ndash; you've entered your new email again",
     "edit": "Editează",
     "edit-profile": "Edit Profile",
     "default_picture": "Default Icon",

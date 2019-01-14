@@ -49,6 +49,7 @@
     "change_picture": "사진 변경",
     "change_username": "사용자명 변경",
     "change_email": "이메일 변경",
+    "email_same_as_password": "Please enter your current password to continue &ndash; you've entered your new email again",
     "edit": "수정",
     "edit-profile": "프로필 수정",
     "default_picture": "기본 아이콘",

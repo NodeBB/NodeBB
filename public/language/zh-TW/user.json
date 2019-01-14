@@ -49,6 +49,7 @@
     "change_picture": "改變頭像",
     "change_username": "更改帳號",
     "change_email": "更改電子郵件",
+    "email_same_as_password": "Please enter your current password to continue &ndash; you've entered your new email again",
     "edit": "編輯",
     "edit-profile": "編輯個人資料",
     "default_picture": "預設圖示",

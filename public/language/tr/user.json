@@ -49,6 +49,7 @@
     "change_picture": "Resmi Değiştir",
     "change_username": "Kullanıcı Adı Değiştir",
     "change_email": "E-posta Değiştir",
+    "email_same_as_password": "Please enter your current password to continue &ndash; you've entered your new email again",
     "edit": "Düzenle",
     "edit-profile": "Profil Düzenle",
     "default_picture": "Varsayılan İkon",

@@ -49,6 +49,7 @@
     "change_picture": "Profilbild ändern",
     "change_username": "Benutzernamen ändern",
     "change_email": "E-Mail ändern",
+    "email_same_as_password": "Please enter your current password to continue &ndash; you've entered your new email again",
     "edit": "Ändern",
     "edit-profile": "Profil ändern",
     "default_picture": "Standardsymbol",

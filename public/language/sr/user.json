@@ -49,6 +49,7 @@
     "change_picture": "Промена слике",
     "change_username": "Промена корисничког имена",
     "change_email": "Промена е-поште",
+    "email_same_as_password": "Please enter your current password to continue &ndash; you've entered your new email again",
     "edit": "Уреди",
     "edit-profile": "Уреди профил",
     "default_picture": "Подразумевана икона",

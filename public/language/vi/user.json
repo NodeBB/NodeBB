@@ -49,6 +49,7 @@
     "change_picture": "Thay đổi hình ảnh",
     "change_username": "Đổi tên đăng nhập",
     "change_email": "Đổi email",
+    "email_same_as_password": "Please enter your current password to continue &ndash; you've entered your new email again",
     "edit": "Chỉnh sửa",
     "edit-profile": "Sửa thông tin cá nhân",
     "default_picture": "Icon mặc định",
