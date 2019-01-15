@@ -67,7 +67,7 @@ module.exports = function (Posts) {
 				], next);
 			},
 			function (results, next) {
-				next(null, _.union(results));
+				next(null, _.uniq(_.flattenDeep(results)));
 			},
 		], callback);
 	}

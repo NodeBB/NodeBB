@@ -103,7 +103,7 @@ define('admin/manage/admins-mods', ['translator', 'benchpress', 'autocomplete'],
 					return;
 				}
 
-				app.parseAndTranslate('admin/manage/admins-mods', 'globalMods', { globalMods: [ui.item.user] }, function (html) {
+				app.parseAndTranslate('admin/manage/admins-mods', 'globalMods.members', { globalMods: { members: [ui.item.user] } }, function (html) {
 					$('.moderator-area[data-cid="' + cid + '"]').prepend(html);
 					$('.no-moderator-warning[data-cid="' + cid + '"]').addClass('hidden');
 				});
