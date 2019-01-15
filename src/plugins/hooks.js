@@ -91,7 +91,7 @@ module.exports = function (Plugins) {
 			if (hook !== 'action:plugins.firehook') {
 				Plugins.fireHook('action:plugins.firehook', { hook: hook, params: params });
 			}
-			if (result) {
+			if (result !== undefined) {
 				callback(null, result);
 			} else {
 				callback();
