@@ -84,19 +84,31 @@ module.exports = function (Plugins) {
 
 	Plugins.fireHook = function (hook, params, callback) {
 		callback = typeof callback === 'function' ? callback : function () {};
-
+		function done(err, result) {
+			if (err) {
+				return callback(err);
+			}
+			if (hook !== 'action:plugins.firehook') {
+				Plugins.fireHook('action:plugins.firehook', { hook: hook, params: params });
+			}
+			if (result) {
+				callback(null, result);
+			} else {
+				callback();
+			}
+		}
 		var hookList = Plugins.loadedHooks[hook];
 		var hookType = hook.split(':')[0];
 		winston.verbose('[plugins/fireHook]', hook);
 		switch (hookType) {
 		case 'filter':
-			fireFilterHook(hook, hookList, params, callback);
+			fireFilterHook(hook, hookList, params, done);
 			break;
 		case 'action':
-			fireActionHook(hook, hookList, params, callback);
+			fireActionHook(hook, hookList, params, done);
 			break;
 		case 'static':
-			fireStaticHook(hook, hookList, params, callback);
+			fireStaticHook(hook, hookList, params, done);
 			break;
 		default:
 			winston.warn('[plugins] Unknown hookType: ' + hookType + ', hook : ' + hook);
