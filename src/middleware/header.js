@@ -240,10 +240,12 @@ module.exports = function (middleware) {
 					scripts: async.apply(plugins.fireHook, 'filter:scripts.get', []),
 					timeagoLocale: (next) => {
 						languages.list(function (err, languages) {
+							// 1. Verify userLang is a nodebb supported language
 							if (err || !languages.some(obj => obj.code === res.locals.config.userLang)) {
 								return next(err);
 							}
 
+							// 2. If appropriate timeago translation exists on disk, allow script injection
 							const pathToLocaleFile = '/vendor/jquery/timeago/locales/jquery.timeago.' + utils.userLangToTimeagoCode(res.locals.config.userLang) + '.js';
 							file.exists(path.join(__dirname, '../../public', pathToLocaleFile), function (err, exists) {
 								next(err, exists ? (nconf.get('relative_path') + '/assets' + pathToLocaleFile) : null);
