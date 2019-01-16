@@ -16,6 +16,7 @@ var plugins = require('../plugins');
 var navigation = require('../navigation');
 var translator = require('../translator');
 var privileges = require('../privileges');
+var languages = require('../languages');
 var utils = require('../utils');
 
 var controllers = {
@@ -238,9 +239,20 @@ module.exports = function (middleware) {
 				async.parallel({
 					scripts: async.apply(plugins.fireHook, 'filter:scripts.get', []),
 					timeagoLocale: (next) => {
-						const pathToLocaleFile = '/vendor/jquery/timeago/locales/jquery.timeago.' + utils.userLangToTimeagoCode(res.locals.config.userLang) + '.js';
-						fs.access(path.join(__dirname, '../../public', pathToLocaleFile), function (err) {
-							next(null, !err ? (nconf.get('relative_path') + '/assets' + pathToLocaleFile) : null);
+						languages.list(function (err, languages) {
+							if (err) {
+								return next(err);
+							}
+
+							const valid = languages.map(obj => obj.code);
+							if (!valid.includes(res.locals.config.userLang)) {
+								return next();
+							}
+
+							const pathToLocaleFile = '/vendor/jquery/timeago/locales/jquery.timeago.' + utils.userLangToTimeagoCode(res.locals.config.userLang) + '.js';
+							fs.access(path.join(__dirname, '../../public', pathToLocaleFile), function (err) {
+								next(null, !err ? (nconf.get('relative_path') + '/assets' + pathToLocaleFile) : null);
+							});
 						});
 					},
 				}, function (err, results) {
