@@ -1,7 +1,6 @@
 'use strict';
 
 var path = require('path');
-var fs = require('fs');
 var async = require('async');
 var nconf = require('nconf');
 var jsesc = require('jsesc');
@@ -18,6 +17,7 @@ var translator = require('../translator');
 var privileges = require('../privileges');
 var languages = require('../languages');
 var utils = require('../utils');
+var file = require('../file');
 
 var controllers = {
 	api: require('../controllers/api'),
@@ -240,18 +240,13 @@ module.exports = function (middleware) {
 					scripts: async.apply(plugins.fireHook, 'filter:scripts.get', []),
 					timeagoLocale: (next) => {
 						languages.list(function (err, languages) {
-							if (err) {
+							if (err || !languages.some(obj => obj.code === res.locals.config.userLang)) {
 								return next(err);
 							}
 
-							const valid = languages.map(obj => obj.code);
-							if (!valid.includes(res.locals.config.userLang)) {
-								return next();
-							}
-
 							const pathToLocaleFile = '/vendor/jquery/timeago/locales/jquery.timeago.' + utils.userLangToTimeagoCode(res.locals.config.userLang) + '.js';
-							fs.access(path.join(__dirname, '../../public', pathToLocaleFile), function (err) {
-								next(null, !err ? (nconf.get('relative_path') + '/assets' + pathToLocaleFile) : null);
+							file.exists(path.join(__dirname, '../../public', pathToLocaleFile), function (err, exists) {
+								next(err, exists ? (nconf.get('relative_path') + '/assets' + pathToLocaleFile) : null);
 							});
 						});
 					},
