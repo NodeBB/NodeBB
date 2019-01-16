@@ -187,7 +187,6 @@ function addCoreRoutes(app, router, middleware, callback) {
 		res.redirect(relativePath + '/assets/client.css?' + meta.config['cache-buster']);
 	});
 
-	app.use(relativePath + '/assets/vendor/jquery/timeago/locales', middleware.processTimeagoLocales);
 	app.use(controllers['404'].handle404);
 	app.use(controllers.errors.handleURIErrors);
 	app.use(controllers.errors.handleErrors);

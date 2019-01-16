@@ -13,7 +13,6 @@ var plugins = require('../plugins');
 var meta = require('../meta');
 var user = require('../user');
 var groups = require('../groups');
-var file = require('../file');
 
 var analytics = require('../analytics');
 
@@ -172,29 +171,6 @@ middleware.applyBlacklist = function applyBlacklist(req, res, next) {
 	meta.blacklist.test(req.ip, function (err) {
 		next(err);
 	});
-};
-
-middleware.processTimeagoLocales = function processTimeagoLocales(req, res, next) {
-	var fallback = !req.path.includes('-short') ? 'jquery.timeago.en.js' : 'jquery.timeago.en-short.js';
-	var localPath = path.join(__dirname, '../../public/vendor/jquery/timeago/locales', req.path);
-
-	async.waterfall([
-		function (next) {
-			file.exists(localPath, next);
-		},
-		function (exists, next) {
-			if (exists) {
-				next(null, localPath);
-			} else {
-				next(null, path.join(__dirname, '../../public/vendor/jquery/timeago/locales', fallback));
-			}
-		},
-		function (path) {
-			res.status(200).sendFile(path, {
-				maxAge: req.app.enabled('cache') ? 5184000000 : 0,
-			});
-		},
-	], next);
 };
 
 middleware.delayLoading = function delayLoading(req, res, next) {

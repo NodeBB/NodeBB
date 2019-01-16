@@ -1,5 +1,7 @@
 'use strict';
 
+var path = require('path');
+var fs = require('fs');
 var async = require('async');
 var nconf = require('nconf');
 var jsesc = require('jsesc');
@@ -223,11 +225,6 @@ module.exports = function (middleware) {
 		], callback);
 	};
 
-	function addTimeagoLocaleScript(scripts, userLang) {
-		var languageCode = utils.userLangToTimeagoCode(userLang);
-		scripts.push({ src: nconf.get('relative_path') + '/assets/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js' });
-	}
-
 	middleware.renderFooter = function renderFooter(req, res, data, callback) {
 		async.waterfall([
 			function (next) {
@@ -240,15 +237,23 @@ module.exports = function (middleware) {
 			function (data, next) {
 				async.parallel({
 					scripts: async.apply(plugins.fireHook, 'filter:scripts.get', []),
+					timeagoLocale: (next) => {
+						const pathToLocaleFile = '/vendor/jquery/timeago/locales/jquery.timeago.' + utils.userLangToTimeagoCode(res.locals.config.userLang) + '.js';
+						fs.access(path.join(__dirname, '../../public', pathToLocaleFile), function (err) {
+							next(null, !err ? (nconf.get('relative_path') + '/assets' + pathToLocaleFile) : null);
+						});
+					},
 				}, function (err, results) {
 					next(err, data, results);
 				});
 			},
 			function (data, results, next) {
+				if (results.timeagoLocale) {
+					results.scripts.push(results.timeagoLocale);
+				}
 				data.templateValues.scripts = results.scripts.map(function (script) {
 					return { src: script };
 				});
-				addTimeagoLocaleScript(data.templateValues.scripts, res.locals.config.userLang);
 
 				data.templateValues.useCustomJS = meta.config.useCustomJS;
 				data.templateValues.customJS = data.templateValues.useCustomJS ? meta.config.customJS : '';
