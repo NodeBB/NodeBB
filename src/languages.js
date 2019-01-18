@@ -7,6 +7,14 @@ var async = require('async');
 var Languages = module.exports;
 var languagesPath = path.join(__dirname, '../build/public/language');
 
+Languages.timeagoCodes = [
+	'af', 'ar', 'az-short', 'az', 'bg', 'bs', 'ca', 'cs', 'cy', 'da', 'de-short', 'de', 'dv',
+	'el', 'en-short', 'en', 'es-short', 'es', 'et', 'eu', 'fa-short', 'fa', 'fi', 'fr-short', 'fr',
+	'gl', 'he', 'hr', 'hu', 'hy', 'id', 'is', 'it-short', 'it', 'ja', 'jv', 'ko', 'ky', 'lt', 'lv',
+	'mk', 'nl', 'no', 'pl', 'pt-br-short', 'pt-br', 'pt-short', 'pt', 'ro', 'rs', 'ru', 'rw', 'si',
+	'sk', 'sl', 'sr', 'sv', 'th', 'tr-short', 'tr', 'uk', 'uz', 'vi', 'zh-CN', 'zh-TW',
+];
+
 Languages.get = function (language, namespace, callback) {
 	fs.readFile(path.join(languagesPath, language, namespace + '.json'), { encoding: 'utf-8' }, function (err, data) {
 		if (err) {

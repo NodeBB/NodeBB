@@ -1,6 +1,5 @@
 'use strict';
 
-var path = require('path');
 var async = require('async');
 var nconf = require('nconf');
 var jsesc = require('jsesc');
@@ -17,7 +16,6 @@ var translator = require('../translator');
 var privileges = require('../privileges');
 var languages = require('../languages');
 var utils = require('../utils');
-var file = require('../file');
 
 var controllers = {
 	api: require('../controllers/api'),
@@ -239,20 +237,18 @@ module.exports = function (middleware) {
 				async.parallel({
 					scripts: async.apply(plugins.fireHook, 'filter:scripts.get', []),
 					timeagoLocale: (next) => {
-						const userLang = res.locals.config.userLang;
-						const pathToLocaleFile = '/vendor/jquery/timeago/locales/jquery.timeago.' + utils.userLangToTimeagoCode(userLang) + '.js';
-
 						async.waterfall([
-							async.apply(languages.list),
-							(languages, next) => {
-								if (!languages.some(obj => obj.code === userLang)) {
-									return next(null, false);
-								}
+							async.apply(languages.listCodes),
+							(languageCodes, next) => {
+								const userLang = res.locals.config.userLang;
+								const timeagoCode = utils.userLangToTimeagoCode(userLang);
 
-								file.exists(path.join(__dirname, '../../public', pathToLocaleFile), next);
-							},
-							(exists, next) => {
-								next(null, exists ? (nconf.get('relative_path') + '/assets' + pathToLocaleFile) : null);
+								if (languageCodes.includes(userLang) && languages.timeagoCodes.includes(timeagoCode)) {
+									const pathToLocaleFile = '/vendor/jquery/timeago/locales/jquery.timeago.' + timeagoCode + '.js';
+									next(null, (nconf.get('relative_path') + '/assets' + pathToLocaleFile));
+								} else {
+									next(null, false);
+								}
 							},
 						], next);
 					},
