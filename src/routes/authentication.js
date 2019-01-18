@@ -74,8 +74,12 @@ Auth.reloadRoutes = function (router, callback) {
 					});
 				}
 
-				router.get(strategy.callbackURL, function (req, res, next) {
-					// Ensure the passed-back state value is identical to the saved ssoState
+				router[strategy.callbackMethod || 'get'](strategy.callbackURL, function (req, res, next) {
+					// Ensure the passed-back state value is identical to the saved ssoState (unless explicitly skipped)
+					if (strategy.checkState === false) {
+						return next();
+					}
+
 					next(req.query.state !== req.session.ssoState ? new Error('[[error:csrf-invalid]]') : null);
 				}, function (req, res, next) {
 					// Trigger registration interstitial checks
