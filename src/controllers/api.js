@@ -12,6 +12,7 @@ var categories = require('../categories');
 var privileges = require('../privileges');
 var plugins = require('../plugins');
 var translator = require('../translator');
+var languages = require('../languages');
 
 var apiController = module.exports;
 
@@ -62,6 +63,7 @@ apiController.loadConfig = function (req, callback) {
 	config.bootswatchSkin = meta.config.bootswatchSkin || '';
 	config.enablePostHistory = (meta.config.enablePostHistory || 1) === 1;
 	config.notificationAlertTimeout = meta.config.notificationAlertTimeout || 5000;
+	config.timeagoCodes = languages.timeagoCodes;
 
 	if (config.useOutgoingLinksPage) {
 		config.outgoingLinksWhitelist = meta.config['outgoingLinks:whitelist'];
