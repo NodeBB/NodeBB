@@ -3,10 +3,10 @@
 var async = require('async');
 var passport = require('passport');
 var passportLocal = require('passport-local').Strategy;
-var nconf = require('nconf');
 var winston = require('winston');
 
 var controllers = require('../controllers');
+var helpers = require('../controllers/helpers');
 var plugins = require('../plugins');
 
 var loginStrategies = [];
@@ -88,10 +88,27 @@ Auth.reloadRoutes = function (router, callback) {
 					// passport seems to remove `req.session.returnTo` after it redirects
 					req.session.registration.returnTo = req.session.returnTo;
 					next();
-				}, passport.authenticate(strategy.name, {
-					successReturnToOrRedirect: nconf.get('relative_path') + (strategy.successUrl !== undefined ? strategy.successUrl : '/'),
-					failureRedirect: nconf.get('relative_path') + (strategy.failureUrl !== undefined ? strategy.failureUrl : '/login'),
-				}));
+				}, function (req, res, next) {
+					passport.authenticate(strategy.name, function (err, user) {
+						if (err) {
+							delete req.session.registration;
+							return next(err);
+						}
+
+						if (!user) {
+							delete req.session.registration;
+							return helpers.redirect(res, strategy.failureUrl !== undefined ? strategy.failureUrl : '/login');
+						}
+
+						req.login(user, function (err) {
+							if (err) {
+								return next(err);
+							}
+
+							helpers.redirect(res, strategy.successUrl !== undefined ? strategy.successUrl : '/');
+						});
+					})(req, res, next);
+				});
 			});
 
 			router.post('/register', Auth.middleware.applyCSRF, Auth.middleware.applyBlacklist, controllers.authentication.register);
