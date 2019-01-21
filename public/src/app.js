@@ -149,7 +149,7 @@ app.cacheBuster = null;
 				Unread.initUnreadTopics();
 				Notifications.prepareDOM();
 				Chat.prepareDOM();
-				app.reskin(data.config.bootswatchSkin);
+				app.reskin(data.header.bootswatchSkin);
 				translator.switchTimeagoLanguage(callback);
 				bootbox.setLocale(config.userLang);
 
@@ -770,6 +770,17 @@ app.cacheBuster = null;
 			return;
 		}
 
+		var currentSkinClassName = $('body').attr('class').split(/\s+/).filter(function (className) {
+			return className.startsWith('skin-');
+		});
+		var currentSkin = currentSkinClassName[0].slice(5);
+		currentSkin = currentSkin !== 'noskin' ? currentSkin : '';
+
+		// Stop execution if skin didn't change
+		if (skinName === currentSkin) {
+			return;
+		}
+
 		var linkEl = document.createElement('link');
 		linkEl.rel = 'stylesheet';
 		linkEl.type = 'text/css';
@@ -778,13 +789,8 @@ app.cacheBuster = null;
 			clientEl.parentNode.removeChild(clientEl);
 
 			// Update body class with proper skin name
-			var currentSkinClassName = $('body').attr('class').split(/\s+/).filter(function (className) {
-				return className.startsWith('skin-');
-			});
 			$('body').removeClass(currentSkinClassName.join(' '));
-			if (skinName) {
-				$('body').addClass('skin-' + skinName);
-			}
+			$('body').addClass('skin-' + (skinName || 'noskin'));
 		};
 
 		document.head.appendChild(linkEl);
