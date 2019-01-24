@@ -77,11 +77,11 @@
 								<div class="btn-group pull-right">
 									<button class="btn btn-success btn-xs" data-action="accept"><i class="fa fa-check"></i></button>
 									<button class="btn btn-danger btn-xs" data-action="delete"><i class="fa fa-times"></i></button>
-                                    <!-- BEGIN users.customActions -->
-                                    <button id="{users.customActions.id}" title="{users.customActions.title}" class="btn btn-xs {users.customActions.class}">
-                                        <i class="fa {users.customActions.icon}"></i>
-                                    </button>
-                                    <!-- END users.customActions -->
+									<!-- BEGIN users.customActions -->
+									<button id="{users.customActions.id}" title="{users.customActions.title}" class="btn btn-xs {users.customActions.class}">
+										<i class="fa {users.customActions.icon}"></i>
+									</button>
+									<!-- END users.customActions -->
 								</div>
 							</td>
 						</tr>
