@@ -19,9 +19,8 @@ module.exports = function (middleware) {
 		if (req.loggedIn) {
 			return next();
 		}
-
-		if (plugins.hasListeners('action:middleware.authenticate')) {
-			return plugins.fireHook('action:middleware.authenticate', {
+		if (plugins.hasListeners('response:middleware.authenticate')) {
+			return plugins.fireHook('response:middleware.authenticate', {
 				req: req,
 				res: res,
 				next: function (err) {
