@@ -498,10 +498,12 @@ authenticationController.logout = function (req, res, next) {
 						return res.status(500);
 					}
 
-					res.status(200).send({
+					payload = {
 						header: payload.header,
 						config: res.locals.config,
-					});
+					};
+					plugins.fireHook('filter:user.logout', payload);
+					res.status(200).send(payload);
 				});
 			}
 		},

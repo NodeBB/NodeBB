@@ -194,6 +194,11 @@ app.cacheBuster = null;
 
 					$(window).trigger('action:app.loggedOut', data);
 					if (data.next) {
+						if (data.next.startsWith('http')) {
+							window.location.href = data.next;
+							return;
+						}
+
 						ajaxify.go(data.next);
 					} else {
 						ajaxify.refresh();
