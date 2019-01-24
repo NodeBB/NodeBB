@@ -3,6 +3,7 @@
 
 var async = require('async');
 var nconf = require('nconf');
+var winston = require('winston');
 
 var user = require('../user');
 var meta = require('../meta');
@@ -172,7 +173,7 @@ topicsController.get = function getTopic(req, res, callback) {
 			if (req.loggedIn) {
 				topics.markAsRead([tid], req.uid, function (err, markedRead) {
 					if (err) {
-						return callback(err);
+						return winston.error(err);
 					}
 					if (markedRead) {
 						topics.pushUnreadCount(req.uid);
