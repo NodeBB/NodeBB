@@ -478,7 +478,10 @@ authenticationController.logout = function (req, res, next) {
 			});
 		},
 		function (next) {
-			user.setUserField(req.uid, 'lastonline', Date.now() - 300000, next);
+			user.setUserField(req.uid, 'lastonline', Date.now() - (meta.config.onlineCutoff * 60000), next);
+		},
+		function (next) {
+			db.sortedSetRemove('users:online', req.uid, next);
 		},
 		function (next) {
 			plugins.fireHook('static:user.loggedOut', { req: req, res: res, uid: req.uid }, next);
