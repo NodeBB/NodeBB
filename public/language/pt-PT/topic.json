@@ -101,7 +101,7 @@
     "composer.title_placeholder": "Insere aqui o título do tópico...",
     "composer.handle_placeholder": "Nome",
     "composer.discard": "Descartar",
-    "composer.submit": "Submeter",
+    "composer.submit": "Publicar",
     "composer.replying_to": "Respondendo a %1",
     "composer.new_topic": "Novo tópico",
     "composer.uploading": "carregando...",

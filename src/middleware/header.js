@@ -140,7 +140,9 @@ module.exports = function (middleware) {
 				results.user['email:confirmed'] = results.user['email:confirmed'] === 1;
 				results.user.isEmailConfirmSent = !!results.isEmailConfirmSent;
 
-				templateValues.bootswatchSkin = parseInt(meta.config.disableCustomUserSkins, 10) !== 1 ? res.locals.config.bootswatchSkin || '' : '';
+				templateValues.bootswatchSkin = (parseInt(meta.config.disableCustomUserSkins, 10) !== 1 ? res.locals.config.bootswatchSkin : '') || meta.config.bootswatchSkin || '';
+				templateValues.config.bootswatchSkin = templateValues.bootswatchSkin || 'noskin';	// TODO remove in v1.12.0+
+
 				const unreadCounts = results.unreadData.counts;
 				var unreadCount = {
 					topic: unreadCounts[''] || 0,
