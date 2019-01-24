@@ -8,6 +8,7 @@ var querystring = require('querystring');
 var meta = require('../meta');
 var pagination = require('../pagination');
 var user = require('../user');
+var categories = require('../categories');
 var topics = require('../topics');
 var plugins = require('../plugins');
 var helpers = require('./helpers');
@@ -35,7 +36,7 @@ unreadController.get = function (req, res, next) {
 					if (plugins.hasListeners('filter:unread.categories')) {
 						plugins.fireHook('filter:unread.categories', { uid: req.uid, cid: cid }, next);
 					} else {
-						helpers.getWatchedCategories(req.uid, cid, next);
+						helpers.getCategoriesByStates(req.uid, cid, [categories.watchStates.watching], next);
 					}
 				},
 				settings: function (next) {

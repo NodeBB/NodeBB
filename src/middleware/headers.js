@@ -8,7 +8,7 @@ var meta = require('../meta');
 var languages = require('../languages');
 
 module.exports = function (middleware) {
-	middleware.addHeaders = function (req, res, next) {
+	middleware.addHeaders = function addHeaders(req, res, next) {
 		var headers = {
 			'X-Powered-By': encodeURI(meta.config['powered-by'] || 'NodeBB'),
 			'X-Frame-Options': meta.config['allow-from-uri'] ? 'ALLOW-FROM ' + encodeURI(meta.config['allow-from-uri']) : 'SAMEORIGIN',
@@ -64,7 +64,7 @@ module.exports = function (middleware) {
 	};
 
 	let langs = [];
-	middleware.autoLocale = function (req, res, next) {
+	middleware.autoLocale = function autoLocale(req, res, next) {
 		if (parseInt(req.uid, 10) > 0 || !meta.config.autoDetectLang) {
 			return next();
 		}

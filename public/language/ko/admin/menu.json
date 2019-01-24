@@ -9,15 +9,15 @@
 
 	"section-manage": "관리",
 	"manage/categories": "게시판",
-	"manage/privileges": "Privileges",
+	"manage/privileges": "권한",
 	"manage/tags": "태그",
 	"manage/users": "사용자",
-	"manage/admins-mods": "Admins & Mods",
+	"manage/admins-mods": "관리 & 모드",
 	"manage/registration": "회원 가입 승인 대기자",
 	"manage/post-queue": "게시 대기열",
 	"manage/groups": "그룹",
 	"manage/ip-blacklist": "IP 블랙리스트",
-	"manage/uploads": "Uploads",
+	"manage/uploads": "업로드",
 
 	"section-settings": "설정",
 	"settings/general": "일반",
@@ -42,7 +42,7 @@
 	"section-appearance": "스타일",
 	"appearance/themes": "테마",
 	"appearance/skins": "스킨",
-	"appearance/customise": "Custom Content (HTML/JS/CSS)",
+	"appearance/customise": "사용자 정의 콘텐츠 ((HTML/JS/CSS)",
 
 	"section-extend": "추가 기능",
 	"extend/plugins": "플러그인",
@@ -64,7 +64,7 @@
 	"development/logger": "로거",
 	"development/info": "정보",
 
-	"rebuild-and-restart-forum": "Rebuild & Restart Forum",
+	"rebuild-and-restart-forum": "리빌드 & 포럼 재시작",
 	"restart-forum": "포럼 재시작",
 	"logout": "로그아웃",
 	"view-forum": "포럼 보기",
@@ -78,5 +78,5 @@
 	"connection-lost": "%1과의 연결이 끊어졌습니다. 다시 연결을 시도하는 중입니다...",
 
 	"alerts.version": "Running <strong>NodeBB v%1</strong>",
-	"alerts.upgrade": "Upgrade to v%1"
+	"alerts.upgrade": "v%1 로 업그레이드"
 }

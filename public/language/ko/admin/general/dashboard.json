@@ -14,7 +14,7 @@
 	"page-views-custom-help": "페이지 뷰를 확인하고 싶은 기간을 입력하세요. 만약 데이트 피커를 사용할 수 없다면, YYYY-MM-DD 포맷으로 입력해주세요.",
 	"page-views-custom-error": "유효한 기간을 다음과 같은 포맷으로 입력하세요 <code>YYYY-MM-DD</code>",
 
-	"stats.day": "날",
+	"stats.day": "일",
 	"stats.week": "주",
 	"stats.month": "월",
 	"stats.all": "항상",
@@ -65,12 +65,12 @@
 	"high-presence-topics": "활동량이 많은 토픽",
 
 	"graphs.page-views": "페이지 뷰",
-	"graphs.page-views-registered": "Page Views Registered",
-	"graphs.page-views-guest": "Page Views Guest",
-	"graphs.page-views-bot": "Page Views Bot",
+	"graphs.page-views-registered": "가입한 사용자의 페이지 조회",
+	"graphs.page-views-guest": "손님의 페이지 조회",
+	"graphs.page-views-bot": "봇의 페이지 조회",
 	"graphs.unique-visitors": "고유 방문자",
 	"graphs.registered-users": "등록된 사용자",
 	"graphs.anonymous-users": "익명의 사용자",
 	"last-restarted-by": "마지막으로 재시작",
-	"no-users-browsing": "No users browsing"
+	"no-users-browsing": "보고있는 사용자가 없습니다"
 }

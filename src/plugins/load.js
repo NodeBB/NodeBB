@@ -81,15 +81,6 @@ module.exports = function (Plugins) {
 	}
 
 	Plugins.prepareForBuild = function (targets, callback) {
-		Plugins.cssFiles.length = 0;
-		Plugins.lessFiles.length = 0;
-		Plugins.acpLessFiles.length = 0;
-		Plugins.clientScripts.length = 0;
-		Plugins.acpScripts.length = 0;
-		Plugins.soundpacks.length = 0;
-		Plugins.languageData.languages = [];
-		Plugins.languageData.namespaces = [];
-
 		var map = {
 			'plugin static dirs': ['staticDirs'],
 			'requirejs modules': ['modules'],
@@ -101,13 +92,27 @@ module.exports = function (Plugins) {
 			languages: ['languageData'],
 		};
 
-		var fields = targets.reduce(function (prev, target) {
-			if (!map[target]) {
-				return prev;
+		var fields = _.uniq(_.flatMap(targets, target => map[target] || []));
+
+		// clear old data before build
+		fields.forEach((field) => {
+			switch (field) {
+			case 'clientScripts':
+			case 'acpScripts':
+			case 'cssFiles':
+			case 'lessFiles':
+			case 'acpLessFiles':
+				Plugins[field].length = 0;
+				break;
+			case 'soundpack':
+				Plugins.soundpacks.length = 0;
+				break;
+			case 'languageData':
+				Plugins.languageData.languages = [];
+				Plugins.languageData.namespaces = [];
+				break;
+			// do nothing for modules and staticDirs
 			}
-			return prev.concat(map[target]);
-		}, []).filter(function (field, i, arr) {
-			return arr.indexOf(field) === i;
 		});
 
 		winston.verbose('[plugins] loading the following fields from plugin data: ' + fields.join(', '));

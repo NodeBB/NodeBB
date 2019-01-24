@@ -23,7 +23,7 @@
 	"plugin-item.install": "Instalar",
 	"plugin-item.uninstall": "Desinstalar",
 	"plugin-item.settings": "Definições",
-	"plugin-item.installed": "Instalado",
+	"plugin-item.installed": "Versão Instalada",
 	"plugin-item.latest": "Última Versão",
 	"plugin-item.upgrade": "Atualizar",
 	"plugin-item.more-info": "Para mais informações:",
@@ -44,7 +44,7 @@
 	"alert.package-manager-unreachable": "<p>NodeBB could not reach the package manager, an upgrade is not suggested at this time.</p>",
 	"alert.incompatible": "<p>Your version of NodeBB (v%1) is only cleared to upgrade to v%2 of this plugin. Please update your NodeBB if you wish to install a newer version of this plugin.</p>",
 	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>No Compatibility Information Found</strong></p><p>This plugin did not specify a specific version for installation given your NodeBB version. Full compatibility cannot be guaranteed, and may cause your NodeBB to no longer start properly.</p></div><p>In the event that NodeBB cannot boot properly:</p><pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre><p>Continue installation of latest version of this plugin?</p>",
-	"alert.reorder": "Plugins Re-ordered",
+	"alert.reorder": "Plugins reordenados",
 	"alert.reorder-success": "Por favor reconstrói e reinicia o teu NodeBB para completar totalmente o processo.",
 
 	"license.title": "Plugin License Information",

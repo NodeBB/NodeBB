@@ -39,16 +39,9 @@ define('admin/manage/category', [
 
 		handleTags();
 
-		$('#category-settings input, #category-settings select').not($('.privilege-table-container input'))
-			.on('change', function (ev) {
-				modified(ev.target);
-			})
-			.on('keydown', function (ev) {
-				if (ev.which === 13) {
-					ev.preventDefault();
-					return false;
-				}
-			});
+		$('#category-settings input, #category-settings select').on('change', function (ev) {
+			modified(ev.target);
+		});
 
 		$('[data-name="imageClass"]').on('change', function () {
 			$('.category-preview').css('background-size', $(this).val());

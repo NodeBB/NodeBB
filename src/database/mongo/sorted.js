@@ -56,6 +56,10 @@ module.exports = function (db, module) {
 			query.score.$lte = max;
 		}
 
+		if (max === min) {
+			query.score = max;
+		}
+
 		const fields = { _id: 0, _key: 0 };
 		if (!withScores) {
 			fields.score = 0;
@@ -115,10 +119,10 @@ module.exports = function (db, module) {
 	};
 
 	function getSortedSetRangeByScore(key, start, count, min, max, sort, withScores, callback) {
-		if (parseInt(count, 10) === -1) {
-			count = 0;
+		if (parseInt(count, 10) === 0) {
+			return setImmediate(callback, null, []);
 		}
-		var stop = start + count - 1;
+		const stop = (parseInt(count, 10) === -1) ? -1 : (start + count - 1);
 		getSortedSetRange(key, start, stop, min, max, sort, withScores, callback);
 	}
 
@@ -261,7 +265,7 @@ module.exports = function (db, module) {
 
 	module.sortedSetsScore = function (keys, value, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback();
+			return callback(null, []);
 		}
 		value = helpers.valueToString(value);
 		db.collection('objects').find({ _key: { $in: keys }, value: value }, { projection: { _id: 0, value: 0 } }).toArray(function (err, result) {
@@ -269,22 +273,27 @@ module.exports = function (db, module) {
 				return callback(err);
 			}
 
-			var map = helpers.toMap(result);
-			var returnData = [];
-			var item;
+			var map = {};
+			result.forEach(function (item) {
+				if (item) {
+					map[item._key] = item;
+				}
+			});
 
-			for (var i = 0; i < keys.length; i += 1) {
-				item = map[keys[i]];
-				returnData.push(item ? item.score : null);
-			}
+			result = keys.map(function (key) {
+				return map[key] ? map[key].score : null;
+			});
 
-			callback(null, returnData);
+			callback(null, result);
 		});
 	};
 
 	module.sortedSetScores = function (key, values, callback) {
 		if (!key) {
-			return callback(null, null);
+			return setImmediate(callback, null, null);
+		}
+		if (!values.length) {
+			return setImmediate(callback, null, []);
 		}
 		values = values.map(helpers.valueToString);
 		db.collection('objects').find({ _key: key, value: { $in: values } }, { projection: { _id: 0, _key: 0 } }).toArray(function (err, result) {

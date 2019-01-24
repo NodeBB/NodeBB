@@ -65,9 +65,9 @@
 	"high-presence-topics": "Témata s vysokou účastí",
 
 	"graphs.page-views": "Zobrazení stránky",
-	"graphs.page-views-registered": "Page Views Registered",
-	"graphs.page-views-guest": "Page Views Guest",
-	"graphs.page-views-bot": "Page Views Bot",
+	"graphs.page-views-registered": "Zobrazených stránek/registrovaní",
+	"graphs.page-views-guest": "Zobrazených stránek/hosté",
+	"graphs.page-views-bot": "Zobrazených stránek/bot",
 	"graphs.unique-visitors": "Jedineční návštěvníci",
 	"graphs.registered-users": "Registrovaní uživatelé",
 	"graphs.anonymous-users": "Anonymní uživatelé",

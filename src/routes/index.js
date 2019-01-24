@@ -35,6 +35,7 @@ function mainRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/tos', middleware, [], controllers.termsOfUse);
 
 	app.post('/compose', middleware.applyCSRF, controllers.composer.post);
+	app.post('/email/unsubscribe/:token', controllers.accounts.settings.unsubscribe);
 }
 
 function modRoutes(app, middleware, controllers) {
@@ -53,7 +54,9 @@ function topicRoutes(app, middleware, controllers) {
 }
 
 function postRoutes(app, middleware, controllers) {
-	setupPageRoute(app, '/post/:pid', middleware, [], controllers.posts.redirectToPost);
+	const middlewares = [middleware.maintenanceMode, middleware.registrationComplete, middleware.pluginHooks];
+	app.get('/post/:pid', middleware.busyCheck, middleware.buildHeader, middlewares, controllers.posts.redirectToPost);
+	app.get('/api/post/:pid', middlewares, controllers.posts.redirectToPost);
 }
 
 function tagRoutes(app, middleware, controllers) {

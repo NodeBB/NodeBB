@@ -20,6 +20,7 @@ module.exports = function (Groups) {
 				async.parallel({
 					notification: function (next) {
 						notifications.create({
+							type: 'group-request-membership',
 							bodyShort: '[[groups:request.notification_title, ' + username + ']]',
 							bodyLong: '[[groups:request.notification_text, ' + username + ', ' + groupName + ']]',
 							nid: 'group:' + groupName + ':uid:' + uid + ':request',
@@ -133,9 +134,7 @@ module.exports = function (Groups) {
 	};
 
 	Groups.getMembersOfGroups = function (groupNames, callback) {
-		db.getSortedSetsMembers(groupNames.map(function (name) {
-			return 'group:' + name + ':members';
-		}), callback);
+		db.getSortedSetsMembers(groupNames.map(name => 'group:' + name + ':members'), callback);
 	};
 
 	Groups.isMember = function (uid, groupName, callback) {

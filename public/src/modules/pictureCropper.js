@@ -34,7 +34,7 @@ define('pictureCropper', ['cropper'], function (Cropper) {
 		}, function (cropperModal) {
 			cropperModal.modal({
 				backdrop: 'static',
-			}).modal('hide');
+			}).modal('show');
 
 			// Set cropper image max-height based on viewport
 			var cropBoxHeight = parseInt($(window).height() / 2, 10);
@@ -62,10 +62,8 @@ define('pictureCropper', ['cropper'], function (Cropper) {
 				},
 				ready: function () {
 					if (!checkCORS(cropperTool, data)) {
-						return;
+						return cropperModal.modal('hide');
 					}
-
-					cropperModal.modal('show');
 
 					if (data.restrictImageDimension) {
 						var origDimension = (img.width < img.height) ? img.width : img.height;

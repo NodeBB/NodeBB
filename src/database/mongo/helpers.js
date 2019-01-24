@@ -22,8 +22,27 @@ helpers.fieldToString = function (field) {
 		field = field.toString();
 	}
 	// if there is a '.' in the field name it inserts subdocument in mongo, replace '.'s with \uff0E
-	field = field.replace(/\./g, '\uff0E');
-	return field;
+	return field.replace(/\./g, '\uff0E');
+};
+
+helpers.serializeData = function (data) {
+	const serialized = {};
+	for (const field in data) {
+		if (data.hasOwnProperty(field) && field !== '') {
+			serialized[helpers.fieldToString(field)] = data[field];
+		}
+	}
+	return serialized;
+};
+
+helpers.deserializeData = function (data) {
+	const deserialized = {};
+	for (const field in data) {
+		if (data.hasOwnProperty(field)) {
+			deserialized[field.replace(/\uff0E/g, '.')] = data[field];
+		}
+	}
+	return deserialized;
 };
 
 helpers.valueToString = function (value) {

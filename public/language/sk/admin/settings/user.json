@@ -70,5 +70,9 @@
 	"email-post-notif": "Poslať e-mail, ak sa objaví odpoveď v téme, ktorú sledujem",
 	"follow-created-topics": "Sledovať mnou vytvorené témy",
 	"follow-replied-topics": "Sledovať témy, na ktoré ste odpovedal",
-	"default-notification-settings": "Predvolené nastavenia oznámení"
+	"default-notification-settings": "Predvolené nastavenia oznámení",
+	"categoryWatchState": "Default category watch state",
+	"categoryWatchState.watching": "Watching",
+	"categoryWatchState.notwatching": "Not Watching",
+	"categoryWatchState.ignoring": "Ignoring"
 }

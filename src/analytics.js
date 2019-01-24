@@ -26,7 +26,7 @@ var uniquevisitors = 0;
  * the cache could be exhausted continuously if there are more than 500 concurrently
  * active users
  */
-var ipCache = LRU({
+var ipCache = new LRU({
 	max: 500,
 	length: function () { return 1; },
 	maxAge: 0,

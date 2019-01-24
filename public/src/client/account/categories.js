@@ -14,25 +14,28 @@ define('forum/account/categories', ['forum/account/header'], function (header) {
 
 	function handleIgnoreWatch(cid) {
 		var category = $('[data-cid="' + cid + '"]');
-		category.find('[component="category/watching"], [component="category/ignoring"]').on('click', function () {
+		category.find('[component="category/watching"], [component="category/ignoring"], [component="category/notwatching"]').on('click', function () {
 			var $this = $(this);
-			var command = $this.attr('component') === 'category/watching' ? 'watch' : 'ignore';
+			var state = $this.attr('data-state');
 
-			socket.emit('categories.' + command, { cid: cid, uid: ajaxify.data.uid }, function (err, modified_cids) {
+			socket.emit('categories.setWatchState', { cid: cid, state: state, uid: ajaxify.data.uid }, function (err, modified_cids) {
 				if (err) {
 					return app.alertError(err.message);
 				}
 
 				modified_cids.forEach(function (cid) {
 					var category = $('[data-cid="' + cid + '"]');
-					category.find('[component="category/watching/menu"]').toggleClass('hidden', command !== 'watch');
-					category.find('[component="category/watching/check"]').toggleClass('fa-check', command === 'watch');
+					category.find('[component="category/watching/menu"]').toggleClass('hidden', state !== 'watching');
+					category.find('[component="category/watching/check"]').toggleClass('fa-check', state === 'watching');
 
-					category.find('[component="category/ignoring/menu"]').toggleClass('hidden', command !== 'ignore');
-					category.find('[component="category/ignoring/check"]').toggleClass('fa-check', command === 'ignore');
+					category.find('[component="category/notwatching/menu"]').toggleClass('hidden', state !== 'notwatching');
+					category.find('[component="category/notwatching/check"]').toggleClass('fa-check', state === 'notwatching');
+
+					category.find('[component="category/ignoring/menu"]').toggleClass('hidden', state !== 'ignoring');
+					category.find('[component="category/ignoring/check"]').toggleClass('fa-check', state === 'ignoring');
 				});
 
-				app.alertSuccess('[[category:' + command + '.message]]');
+				app.alertSuccess('[[category:' + state + '.message]]');
 			});
 		});
 	}

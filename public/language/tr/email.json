@@ -1,6 +1,6 @@
 {
-    "test-email.subject": "Test Email",
-    "password-reset-requested": "Password Reset Requested!",
+    "test-email.subject": "Test E-posta",
+    "password-reset-requested": "Şifre Sıfırlama İstendi!",
     "welcome-to": "Hoş geldin %1",
     "invite": "%1 sizi davet etti",
     "greeting_no_name": "Merhaba",

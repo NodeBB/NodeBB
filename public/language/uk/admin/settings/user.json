@@ -70,5 +70,9 @@
 	"email-post-notif": "Надсилати листа, коли в темах на які я підписаний з'являються відповіді",
 	"follow-created-topics": "Стежити за темами які ви створюєте",
 	"follow-replied-topics": "Стежити за темами в котрих ви відповідаєте",
-	"default-notification-settings": "Стандартні налаштування сповіщень"
+	"default-notification-settings": "Стандартні налаштування сповіщень",
+	"categoryWatchState": "Default category watch state",
+	"categoryWatchState.watching": "Watching",
+	"categoryWatchState.notwatching": "Not Watching",
+	"categoryWatchState.ignoring": "Ignoring"
 }

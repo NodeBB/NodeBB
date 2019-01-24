@@ -158,14 +158,21 @@ describe('Upload Controllers', function () {
 
 		it('should fail if file is not an image', function (done) {
 			file.isFileTypeAllowed(path.join(__dirname, '../test/files/notanimage.png'), function (err) {
-				assert.equal(err.message, 'Input file is missing or of an unsupported image format');
+				assert.equal(err.message, 'Input file contains unsupported image format');
 				done();
 			});
 		});
 
 		it('should fail if file is not an image', function (done) {
 			image.size(path.join(__dirname, '../test/files/notanimage.png'), function (err) {
-				assert.equal(err.message, 'Input file is missing or of an unsupported image format');
+				assert.equal(err.message, 'Input file contains unsupported image format');
+				done();
+			});
+		});
+
+		it('should fail if file is missing', function (done) {
+			image.size(path.join(__dirname, '../test/files/doesnotexist.png'), function (err) {
+				assert.equal(err.message, 'Input file is missing');
 				done();
 			});
 		});

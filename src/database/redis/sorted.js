@@ -170,6 +170,9 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.sortedSetsScore = function (keys, value, callback) {
+		if (!Array.isArray(keys) || !keys.length) {
+			return callback(null, []);
+		}
 		helpers.execKeysValue(redisClient, 'batch', 'zscore', keys, value, function (err, scores) {
 			if (err) {
 				return callback(err);
@@ -182,6 +185,9 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.sortedSetScores = function (key, values, callback) {
+		if (!values.length) {
+			return setImmediate(callback, null, []);
+		}
 		helpers.execKeyValues(redisClient, 'batch', 'zscore', key, values, function (err, scores) {
 			if (err) {
 				return callback(err);

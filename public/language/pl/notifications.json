@@ -56,6 +56,7 @@
     "notificationType_follow": "Kiedy ktoś zacznie Cię obserwować",
     "notificationType_new-chat": "Kiedy otrzymasz wiadomość na czacie",
     "notificationType_group-invite": "Kiedy otrzymasz grupowe zaproszenie",
+    "notificationType_group-request-membership": "Kiedy ktoś prosi o dołączenie do grupy, którą posiadasz",
     "notificationType_new-register": "Kiedy ktoś zostaje dodany do kolejki rejestracyjnej",
     "notificationType_post-queue": "Kiedy nowy post jest kolejkowany",
     "notificationType_new-post-flag": "Kiedy post zostanie oflagowany",

@@ -1,7 +1,10 @@
 'use strict';
 
 var async = require('async');
+var nconf = require('nconf');
+var winston = require('winston');
 var _ = require('lodash');
+var jwt = require('jsonwebtoken');
 
 var user = require('../../user');
 var languages = require('../../languages');
@@ -161,6 +164,8 @@ settingsController.get = function (req, res, callback) {
 				};
 			});
 
+			userData.categoryWatchState = { [userData.settings.categoryWatchState]: true };
+
 			userData.disableCustomUserSkins = meta.config.disableCustomUserSkins;
 
 			userData.allowUserHomePage = meta.config.allowUserHomePage;
@@ -179,6 +184,52 @@ settingsController.get = function (req, res, callback) {
 			res.render('account/settings', userData);
 		},
 	], callback);
+};
+
+settingsController.unsubscribe = function (req, res) {
+	if (!req.params.token) {
+		return res.sendStatus(404);
+	}
+
+	jwt.verify(req.params.token, nconf.get('secret'), function (err, payload) {
+		if (err) {
+			return res.sendStatus(403);
+		}
+
+		switch (payload.template) {
+		case 'digest':
+			async.parallel([
+				async.apply(user.setSetting, payload.uid, 'dailyDigestFreq', 'off'),
+				async.apply(user.updateDigestSetting, payload.uid, 'off'),
+			], function (err) {
+				if (err) {
+					winston.error('[settings/unsubscribe] One-click unsubscribe failed with error: ' + err.message);
+					return res.sendStatus(500);
+				}
+
+				return res.sendStatus(200);
+			});
+			break;
+		case 'notification':
+			async.waterfall([
+				async.apply(db.getObjectField, 'user:' + payload.uid + ':settings', 'notificationType_' + payload.type),
+				(current, next) => {
+					user.setSetting(payload.uid, 'notificationType_' + payload.type, (current === 'notificationemail' ? 'notification' : 'none'), next);
+				},
+			], function (err) {
+				if (err) {
+					winston.error('[settings/unsubscribe] One-click unsubscribe failed with error: ' + err.message);
+					return res.sendStatus(500);
+				}
+
+				return res.sendStatus(200);
+			});
+			break;
+		default:
+			res.sendStatus(404);
+			break;
+		}
+	});
 };
 
 function getNotificationSettings(userData, callback) {

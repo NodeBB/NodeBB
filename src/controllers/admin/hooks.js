@@ -1,5 +1,6 @@
 'use strict';
 
+const validator = require('validator');
 var plugins = require('../../plugins');
 
 var hooksController = module.exports;
@@ -18,7 +19,7 @@ hooksController.get = function (req, res) {
 			current.methods.push({
 				id: hookData.id,
 				priority: hookData.priority,
-				method: hookData.method ? hookData.method.toString() : 'No plugin function!',
+				method: hookData.method ? validator.escape(hookData.method.toString()) : 'No plugin function!',
 				index: hookIndex + '-code-' + methodIndex,
 			});
 		});

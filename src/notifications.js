@@ -24,6 +24,7 @@ Notifications.baseTypes = [
 	'notificationType_follow',
 	'notificationType_new-chat',
 	'notificationType_group-invite',
+	'notificationType_group-request-membership',
 ];
 
 Notifications.privilegedTypes = [
@@ -557,11 +558,9 @@ Notifications.merge = function (notifications, callback) {
 			case 'notifications:user_posted_to':
 			case 'notifications:user_flagged_post_in':
 			case 'notifications:user_flagged_user':
-				var usernames = set.map(function (notifObj) {
+				var usernames = _.uniq(set.map(function (notifObj) {
 					return notifObj && notifObj.user && notifObj.user.username;
-				}).filter(function (username, idx, array) {
-					return array.indexOf(username) === idx;
-				});
+				}));
 				var numUsers = usernames.length;
 
 				var title = utils.decodeHTMLEntities(notifications[modifyIndex].topicTitle || '');

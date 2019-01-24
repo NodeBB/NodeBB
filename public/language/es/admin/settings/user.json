@@ -70,5 +70,9 @@
 	"email-post-notif": "Enviar un correo electrónico cuando se hacen respuestas a temas a los que estoy suscrito/a",
 	"follow-created-topics": "Seguir los temas que tu crees",
 	"follow-replied-topics": "Seguir los temas a los que contestas",
-	"default-notification-settings": "Configuración de notificación por defecto"
+	"default-notification-settings": "Configuración de notificación por defecto",
+	"categoryWatchState": "Default category watch state",
+	"categoryWatchState.watching": "Watching",
+	"categoryWatchState.notwatching": "Not Watching",
+	"categoryWatchState.ignoring": "Ignoring"
 }

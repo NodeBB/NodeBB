@@ -92,7 +92,7 @@ Controllers.login = function (req, res, next) {
 	var registrationType = meta.config.registrationType || 'normal';
 
 	var allowLoginWith = (meta.config.allowLoginWith || 'username-email');
-	var returnTo = (req.headers['x-return-to'] || '').replace(nconf.get('base_url'), '');
+	var returnTo = (req.headers['x-return-to'] || '').replace(nconf.get('base_url') + nconf.get('relative_path'), '');
 
 	var errorText;
 	if (req.query.error === 'csrf-invalid') {
@@ -214,7 +214,7 @@ Controllers.registerInterstitial = function (req, res, next) {
 				// No interstitials, redirect to home
 				const returnTo = req.session.returnTo || req.session.registration.returnTo;
 				delete req.session.registration;
-				return helpers.redirect(res, returnTo || nconf.get('relative_path') + '/');
+				return helpers.redirect(res, returnTo || '/');
 			}
 			var renders = data.interstitials.map(function (interstitial) {
 				return async.apply(req.app.render.bind(req.app), interstitial.template, interstitial.data || {});
@@ -252,6 +252,7 @@ Controllers.robots = function (req, res) {
 		res.send('User-agent: *\n' +
 			'Disallow: ' + nconf.get('relative_path') + '/admin/\n' +
 			'Disallow: ' + nconf.get('relative_path') + '/reset/\n' +
+			'Disallow: ' + nconf.get('relative_path') + '/compose\n' +
 			'Sitemap: ' + nconf.get('url') + '/sitemap.xml');
 	}
 };

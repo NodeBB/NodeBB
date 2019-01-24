@@ -178,7 +178,7 @@
 			<p class="help-block">
 				[[admin/settings/uploads:default-covers-help]]
 			</p>
-			<input type="text" class="form-control input-lg" id="profile:defaultCovers" data-field="profile:defaultCovers" data-field-type="tagsinput" value="{config.relative_path}/assets/images/cover-default.png" placeholder="https://example.com/group1.png, https://example.com/group2.png" />
+			<input type="text" class="form-control input-lg" id="profile:defaultCovers" data-field="profile:defaultCovers" data-field-type="tagsinput" value="/assets/images/cover-default.png" placeholder="https://example.com/group1.png, https://example.com/group2.png" />
 		</form>
 	</div>
 </div>

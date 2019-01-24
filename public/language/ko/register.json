@@ -20,7 +20,7 @@
     "registration-added-to-queue": "회원가입이 요청되었습니다. 관리자의 승인 후 메일이 발송됩니다.",
     "interstitial.intro": "계정을 생성하기 전 추가 정보가 더 필요합니다.",
     "interstitial.errors-found": "회원가입을 완료하지 못했습니다.",
-    "gdpr_agree_data": "I consent to the collection and processing of my personal information on this website.",
-    "gdpr_agree_email": "I consent to receive digest and notification emails from this website.",
-    "gdpr_consent_denied": "You must give consent to this site to collect/process your information, and to send you emails."
+    "gdpr_agree_data": "나는 이 웹 사이트에서 개인 정보를 수집하고 처리하는데 동의합니다.",
+    "gdpr_agree_email": "나는 이 웹 사이트에서 다이제스트 및 알림 메일을 수신하는데 동의합니다.",
+    "gdpr_consent_denied": "사용자님은 이 사이트가 사용자님의 정보를 수집/처리하고 이메일을 보내는것에 동의해야합니다."
 }

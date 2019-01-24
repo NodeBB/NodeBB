@@ -232,7 +232,7 @@ function minifyAndSave(data, callback) {
 	var minified = uglify.minify(scripts, {
 		sourceMap: {
 			filename: data.filename,
-			url: data.filename + '.map',
+			url: String(data.filename).split(/[/\\]/).pop() + '.map',
 			includeSources: true,
 		},
 		compress: false,

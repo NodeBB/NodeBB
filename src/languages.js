@@ -7,6 +7,9 @@ var async = require('async');
 var Languages = module.exports;
 var languagesPath = path.join(__dirname, '../build/public/language');
 
+const files = fs.readdirSync(path.join(__dirname, '../public/vendor/jquery/timeago/locales'));
+Languages.timeagoCodes = files.filter(f => f.startsWith('jquery.timeago')).map(f => f.split('.')[2]);
+
 Languages.get = function (language, namespace, callback) {
 	fs.readFile(path.join(languagesPath, language, namespace + '.json'), { encoding: 'utf-8' }, function (err, data) {
 		if (err) {

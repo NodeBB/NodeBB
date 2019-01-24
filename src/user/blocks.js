@@ -9,7 +9,7 @@ var pubsub = require('../pubsub');
 
 module.exports = function (User) {
 	User.blocks = {
-		_cache: LRU({
+		_cache: new LRU({
 			max: 100,
 			length: function () { return 1; },
 			maxAge: 0,

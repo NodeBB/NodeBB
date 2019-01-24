@@ -8,10 +8,11 @@ define('forum/account/edit/email', ['forum/account/header'], function (header) {
 		header.init();
 
 		$('#submitBtn').on('click', function () {
+			var curPasswordEl = $('#inputCurrentPassword');
 			var userData = {
 				uid: $('#inputUID').val(),
 				email: $('#inputNewEmail').val(),
-				password: $('#inputCurrentPassword').val(),
+				password: curPasswordEl.val(),
 			};
 
 			if (!userData.email) {
@@ -19,6 +20,7 @@ define('forum/account/edit/email', ['forum/account/header'], function (header) {
 			}
 
 			if (userData.email === userData.password) {
+				curPasswordEl.parents('.control-group').toggleClass('has-error', true);
 				return app.alertError('[[user:email_same_as_password]]');
 			}
 

@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/account/settings', ['forum/account/header', 'components', 'sounds'], function (header, components, sounds) {
+define('forum/account/settings', ['forum/account/header', 'components', 'sounds', 'translator'], function (header, components, sounds, translator) {
 	var	AccountSettings = {};
 
 	// If page skin is changed but not saved, switch the skin back
@@ -96,6 +96,11 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 			sounds.loadMap();
 
 			if (requireReload && parseInt(app.user.uid, 10) === parseInt(ajaxify.data.theirid, 10)) {
+				translator.translate('[[language:dir]]', config.userLang, function (translated) {
+					var htmlEl = $('html');
+					htmlEl.attr('data-dir', translated);
+					htmlEl.css('direction', translated);
+				});
 				ajaxify.refresh();
 			}
 		});

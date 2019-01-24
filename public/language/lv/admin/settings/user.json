@@ -70,5 +70,9 @@
 	"email-post-notif": "Sūtīt e-pastu, kad kāds raksta tematā, kuru esmu abonējis",
 	"follow-created-topics": "Sekot tematiem, kurus esi izveidojis(-jusi)",
 	"follow-replied-topics": "Sekot tematiem, kuros esi rakstījis(-jusi)",
-	"default-notification-settings": "Noklusējuma ziņojumu iestatījumi"
+	"default-notification-settings": "Noklusējuma ziņojumu iestatījumi",
+	"categoryWatchState": "Default category watch state",
+	"categoryWatchState.watching": "Watching",
+	"categoryWatchState.notwatching": "Not Watching",
+	"categoryWatchState.ignoring": "Ignoring"
 }

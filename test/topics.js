@@ -1377,6 +1377,38 @@ describe('Topic\'s', function () {
 			], done);
 		});
 
+		it('should not return topics in category you ignored/not watching', function (done) {
+			var ignoredCid;
+			var tid;
+			async.waterfall([
+				function (next) {
+					categories.create({
+						name: 'ignored category',
+						description: 'ignored category',
+					}, next);
+				},
+				function (category, next) {
+					ignoredCid = category.cid;
+					privileges.categories.rescind(['read'], category.cid, 'registered-users', next);
+				},
+				function (next) {
+					topics.post({ uid: adminUid, title: 'topic in private category', content: 'registered-users cant see this', cid: ignoredCid }, next);
+				},
+				function (data, next) {
+					tid = data.topicData.tid;
+					User.ignoreCategory(uid, ignoredCid, next);
+				},
+				function (next) {
+					topics.getUnreadTids({ uid: uid }, next);
+				},
+				function (unreadTids, next) {
+					unreadTids = unreadTids.map(String);
+					assert(!unreadTids.includes(String(tid)));
+					next();
+				},
+			], done);
+		});
+
 		it('should not return topic as unread if new post is from blocked user', function (done) {
 			var blockedUid;
 			var topic;

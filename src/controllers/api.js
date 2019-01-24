@@ -12,6 +12,7 @@ var categories = require('../categories');
 var privileges = require('../privileges');
 var plugins = require('../plugins');
 var translator = require('../translator');
+var languages = require('../languages');
 
 var apiController = module.exports;
 
@@ -57,11 +58,12 @@ apiController.loadConfig = function (req, callback) {
 	config.requireEmailConfirmation = meta.config.requireEmailConfirmation === 1;
 	config.topicPostSort = meta.config.topicPostSort || 'oldest_to_newest';
 	config.categoryTopicSort = meta.config.categoryTopicSort || 'newest_to_oldest';
-	config.csrf_token = req.csrfToken && req.csrfToken();
+	config.csrf_token = req.uid >= 0 && req.csrfToken && req.csrfToken();
 	config.searchEnabled = plugins.hasListeners('filter:search.query');
 	config.bootswatchSkin = meta.config.bootswatchSkin || '';
 	config.enablePostHistory = (meta.config.enablePostHistory || 1) === 1;
 	config.notificationAlertTimeout = meta.config.notificationAlertTimeout || 5000;
+	config.timeagoCodes = languages.timeagoCodes;
 
 	if (config.useOutgoingLinksPage) {
 		config.outgoingLinksWhitelist = meta.config['outgoingLinks:whitelist'];
@@ -100,6 +102,10 @@ apiController.loadConfig = function (req, callback) {
 			config.topicSearchEnabled = settings.topicSearchEnabled || false;
 			config.bootswatchSkin = (meta.config.disableCustomUserSkins !== 1 && settings.bootswatchSkin && settings.bootswatchSkin !== '') ? settings.bootswatchSkin : '';
 			plugins.fireHook('filter:config.get', config, next);
+		},
+		function (config, next) {
+			req.res.locals.config = config;
+			process.nextTick(next, null, config);
 		},
 	], callback);
 };

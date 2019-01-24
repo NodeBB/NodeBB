@@ -55,9 +55,9 @@
     "account/best": "Melhores publicações feitas por %1",
     "account/blocks": "Utilizadores bloqueados para %1",
     "account/uploads": "Carregamentos feitos por %1",
-    "account/sessions": "Login Sessions",
+    "account/sessions": "Sessões ativas",
     "confirm": "E-mail confirmado",
-    "maintenance.text": "%1 está atualmente sobre manutenção. Por favor, volta noutra altura.",
+    "maintenance.text": "%1 está atualmente sobre manutenção.<br>Por favor, volta noutra altura.",
     "maintenance.messageIntro": "Adicionalmente, o administrador deixou esta mensagem:",
     "throttled.text": "%1 não está disponível de momento devido a um carregamento excesso. Por favor, volta mais tarde."
 }

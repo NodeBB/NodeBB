@@ -4,6 +4,12 @@
 define('forum/unread', ['topicSelect', 'components', 'topicList'], function (topicSelect, components, topicList) {
 	var Unread = {};
 
+	var watchStates = {
+		ignoring: 1,
+		notwatching: 2,
+		watching: 3,
+	};
+
 	Unread.init = function () {
 		app.enterRoom('unread_topics');
 
@@ -90,46 +96,49 @@ define('forum/unread', ['topicSelect', 'components', 'topicList'], function (top
 	}
 
 	Unread.initUnreadTopics = function () {
-		var unreadTopics = {};
+		var unreadTopics = app.user.unreadData;
 
 		function onNewPost(data) {
 			if (data && data.posts && data.posts.length) {
 				var post = data.posts[0];
+				if (parseInt(post.uid, 10) === parseInt(app.user.uid, 10) ||
+					(!post.topic.isFollowing && post.categoryWatchState !== watchStates.watching)
+				) {
+					return;
+				}
 
-				if (parseInt(post.uid, 10) !== parseInt(app.user.uid, 10) && !unreadTopics[post.topic.tid]) {
-					increaseUnreadCount(post);
-					markTopicsUnread(post.topic.tid);
-					unreadTopics[post.topic.tid] = true;
+				var tid = post.topic.tid;
+				if (!unreadTopics[''][tid] || !unreadTopics.new[tid] ||
+					!unreadTopics.watched[tid] || !unreadTopics.unreplied[tid]) {
+					markTopicsUnread(tid);
+				}
+
+				if (!unreadTopics[''][tid]) {
+					increaseUnreadCount('');
+					unreadTopics[''][tid] = true;
+				}
+				var isNewTopic = post.isMain && parseInt(post.uid, 10) !== parseInt(app.user.uid, 10);
+				if (isNewTopic && !unreadTopics.new[tid]) {
+					increaseUnreadCount('new');
+					unreadTopics.new[tid] = true;
+				}
+				var isUnreplied = parseInt(post.topic.postcount, 10) <= 1;
+				if (isUnreplied && !unreadTopics.unreplied[tid]) {
+					increaseUnreadCount('unreplied');
+					unreadTopics.unreplied[tid] = true;
+				}
+
+				if (post.topic.isFollowing && !unreadTopics.watched[tid]) {
+					increaseUnreadCount('watched');
+					unreadTopics.watched[tid] = true;
 				}
 			}
 		}
 
-		function increaseUnreadCount(post) {
-			var unreadTopicCount = parseInt($('a[href="' + config.relative_path + '/unread"].navigation-link i').attr('data-content'), 10) + 1;
-			updateUnreadTopicCount('/unread', unreadTopicCount);
-
-			var isNewTopic = post.isMain && parseInt(post.uid, 10) !== parseInt(app.user.uid, 10);
-			if (isNewTopic) {
-				var unreadNewTopicCount = parseInt($('a[href="' + config.relative_path + '/unread?filter=new"].navigation-link i').attr('data-content'), 10) + 1;
-				updateUnreadTopicCount('/unread?filter=new', unreadNewTopicCount);
-			}
-
-			var isUnreplied = parseInt(post.topic.postcount, 10) <= 1;
-			if (isUnreplied) {
-				var unreadUnrepliedTopicCount = parseInt($('a[href="' + config.relative_path + '/unread?filter=unreplied"].navigation-link i').attr('data-content'), 10) + 1;
-				updateUnreadTopicCount('/unread?filter=unreplied', unreadUnrepliedTopicCount);
-			}
-			if ($('a[href="' + config.relative_path + '/unread?filter=watched"].navigation-link i').length) {
-				socket.emit('topics.isFollowed', post.topic.tid, function (err, isFollowed) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-					if (isFollowed) {
-						var unreadWatchedTopicCount = parseInt($('a[href="' + config.relative_path + '/unread?filter=watched"].navigation-link i').attr('data-content'), 10) + 1;
-						updateUnreadTopicCount('/unread?filter=watched', unreadWatchedTopicCount);
-					}
-				});
-			}
+		function increaseUnreadCount(filter) {
+			var unreadUrl = '/unread' + (filter ? '?filter=' + filter : '');
+			var newCount = 1 + parseInt($('a[href="' + config.relative_path + unreadUrl + '"].navigation-link i').attr('data-content'), 10);
+			updateUnreadTopicCount(unreadUrl, newCount);
 		}
 
 		function markTopicsUnread(tid) {
@@ -138,7 +147,9 @@ define('forum/unread', ['topicSelect', 'components', 'topicList'], function (top
 
 		$(window).on('action:ajaxify.end', function () {
 			if (ajaxify.data.template.topic) {
-				delete unreadTopics[ajaxify.data.tid];
+				['', 'new', 'watched', 'unreplied'].forEach(function (filter) {
+					delete unreadTopics[filter][ajaxify.data.tid];
+				});
 			}
 		});
 		socket.removeListener('event:new_post', onNewPost);

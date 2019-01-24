@@ -1,9 +1,9 @@
 {
-	"lead": "Configure your IP blacklist here.",
+	"lead": "Configura a tua lista negra de IPs aqui.",
 	"description": "Occasionally, a user account ban is not enough of a deterrant. Other times, restricting access to the forum to a specific IP or a range of IPs is the best way to protect a forum. In these scenarios, you can add troublesome IP addresses or entire CIDR blocks to this blacklist, and they will be prevented from logging in to or registering a new account.",
 	"active-rules": "Regras Ativas",
-	"validate": "Validate Blacklist",
-	"apply": "Apply Blacklist",
+	"validate": "Validar Lista Negra",
+	"apply": "Aplicar Lista Negra",
 	"hints": "Dicas de Sintaxe",
 	"hint-1": "Define a single IP addresses per line. You can add IP blocks as long as they follow the CIDR format (e.g. <code>192.168.100.0/22</code>).",
 	"hint-2": "Podes adicionar comentários começando linhas com o símbolo <code>#</code>.",
@@ -11,9 +11,9 @@
 	"validate.x-valid": "<strong>%1</strong> out of <strong>%2</strong> rule(s) valid.",
 	"validate.x-invalid": "The following <strong>%1</strong> rules are invalid:",
 
-	"alerts.applied-success": "Blacklist Applied",
+	"alerts.applied-success": "Lista Negra Aplicada",
 
 	"analytics.blacklist-hourly": "<strong>Figure 1</strong> &ndash; Blacklist hits per hour",
 	"analytics.blacklist-daily": "<strong>Figure 2</strong> &ndash; Blacklist hits per day",
-	"ip-banned": "IP banned"
+	"ip-banned": "IP banido"
 }

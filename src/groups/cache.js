@@ -3,7 +3,7 @@
 var LRU = require('lru-cache');
 var pubsub = require('../pubsub');
 
-var cache = LRU({
+var cache = new LRU({
 	max: 40000,
 	maxAge: 0,
 });

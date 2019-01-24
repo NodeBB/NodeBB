@@ -167,19 +167,14 @@ function build(targets, options, callback) {
 			return aliases[target];
 		})
 		// filter nonexistent targets
-		.filter(Boolean)
-		// map multitargets to their sets
-		.reduce(function (prev, target) {
-			if (Array.isArray(targetHandlers[target])) {
-				return prev.concat(targetHandlers[target]);
-			}
+		.filter(Boolean);
 
-			return prev.concat(target);
-		}, [])
-		// unique
-		.filter(function (target, i, arr) {
-			return arr.indexOf(target) === i;
-		});
+	// map multitargets to their sets
+	targets = _.uniq(_.flatMap(targets, target => (
+		Array.isArray(targetHandlers[target]) ?
+			targetHandlers[target] :
+			target
+	)));
 
 	winston.verbose('[build] building the following targets: ' + targets.join(', '));
 

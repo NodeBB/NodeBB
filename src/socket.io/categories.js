@@ -155,20 +155,28 @@ SocketCategories.getSelectCategories = function (socket, data, callback) {
 	], callback);
 };
 
-SocketCategories.watch = function (socket, cid, callback) {
-	ignoreOrWatch(user.watchCategory, socket, cid, callback);
+SocketCategories.setWatchState = function (socket, data, callback) {
+	if (!data || !data.cid || !data.state) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	ignoreOrWatch(function (uid, cid, next) {
+		user.setCategoryWatchState(uid, cid, categories.watchStates[data.state], next);
+	}, socket, data, callback);
 };
 
-SocketCategories.ignore = function (socket, cid, callback) {
-	ignoreOrWatch(user.ignoreCategory, socket, cid, callback);
+SocketCategories.watch = function (socket, data, callback) {
+	ignoreOrWatch(user.watchCategory, socket, data, callback);
 };
 
-function ignoreOrWatch(fn, socket, cid, callback) {
+SocketCategories.ignore = function (socket, data, callback) {
+	ignoreOrWatch(user.ignoreCategory, socket, data, callback);
+};
+
+function ignoreOrWatch(fn, socket, data, callback) {
 	var targetUid = socket.uid;
-	var cids = [parseInt(cid, 10)];
-	if (typeof cid === 'object') {
-		targetUid = cid.uid;
-		cids = [parseInt(cid.cid, 10)];
+	var cids = [parseInt(data.cid, 10)];
+	if (data.hasOwnProperty('uid')) {
+		targetUid = data.uid;
 	}
 
 	async.waterfall([

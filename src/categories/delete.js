@@ -52,7 +52,7 @@ module.exports = function (Categories) {
 					'cid:' + cid + ':tids:posts',
 					'cid:' + cid + ':pids',
 					'cid:' + cid + ':read_by_uid',
-					'cid:' + cid + ':ignorers',
+					'cid:' + cid + ':uid:watch:state',
 					'cid:' + cid + ':children',
 					'cid:' + cid + ':tag:whitelist',
 					'category:' + cid,

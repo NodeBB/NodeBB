@@ -21,14 +21,20 @@ define('forum/header/notifications', ['components'], function (components) {
 			requireAndCall('loadNotifications', notifList);
 		}
 
-		socket.on('event:new_notification', function (data) {
-			requireAndCall('onNewNotification', data);
-		});
+		socket.removeListener('event:new_notification', onNewNotification);
+		socket.on('event:new_notification', onNewNotification);
 
-		socket.on('event:notifications.updateCount', function (data) {
-			requireAndCall('updateNotifCount', data);
-		});
+		socket.removeListener('event:notifications.updateCount', onUpdateCount);
+		socket.on('event:notifications.updateCount', onUpdateCount);
 	};
+
+	function onNewNotification(data) {
+		requireAndCall('onNewNotification', data);
+	}
+
+	function onUpdateCount(data) {
+		requireAndCall('updateNotifCount', data);
+	}
 
 	function requireAndCall(method, param) {
 		require(['notifications'], function (notifications) {

@@ -57,7 +57,7 @@
 	"section-advanced": "Gelişmiş",
 	"advanced/database": "Veritabanı",
 	"advanced/events": "Olaylar",
-	"advanced/hooks": "Hooks",
+	"advanced/hooks": "Kancalar",
 	"advanced/logs": "Kayıtlar",
 	"advanced/errors": "Hatalar",
 	"advanced/cache": "Önbellek",

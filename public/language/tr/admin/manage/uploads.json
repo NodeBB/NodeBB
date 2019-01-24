@@ -1,9 +1,9 @@
 {
-    "upload-file": "Upload File",
-    "filename": "Filename",
-    "usage": "Post Usage",
-    "orphaned": "Orphaned",
-    "size/filecount": "Size / Filecount",
-    "confirm-delete": "Do you really want to delete this file?",
-    "filecount": "%1 files"
+    "upload-file": "Dosya yükle",
+    "filename": "Dosya adı",
+    "usage": "İleti Kullanımı",
+    "orphaned": "Sahipsiz",
+    "size/filecount": "Boyut / Dosya sayısı",
+    "confirm-delete": "Bu dosyayı silmek istediğinden emin misin?",
+    "filecount": "%1 dosya"
 }

@@ -56,6 +56,7 @@
     "notificationType_follow": "Коли хтось починає слідкувати за вами",
     "notificationType_new-chat": "Коли ви отримуєте повідомлення чату",
     "notificationType_group-invite": "Коли ви отримуєте запрошення до групи",
+    "notificationType_group-request-membership": "When someone requests to join a group you own",
     "notificationType_new-register": "Коли когось додано до черги на реєстрацію",
     "notificationType_post-queue": "Коли новий пост знаходиться в черзі",
     "notificationType_new-post-flag": "Коли повідомлення позначено",

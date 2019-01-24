@@ -1,1 +1,1 @@
-@echo off && cd %~dp0 && node ./src/cli %*
+@echo off && cd %~dp0 && node ./nodebb %*
