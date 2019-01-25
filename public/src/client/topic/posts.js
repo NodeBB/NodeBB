@@ -253,7 +253,7 @@ define('forum/topic/posts', [
 		images.wrapImagesInLinks(posts);
 		Posts.showBottomPostBar();
 		posts.find('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
-		addBlockquoteEllipses(posts.find('[component="post/content"] > blockquote > blockquote'));
+		Posts.addBlockquoteEllipses(posts);
 		hidePostToolsForDeletedPosts(posts);
 	};
 
@@ -287,14 +287,15 @@ define('forum/topic/posts', [
 		});
 	}
 
-	function addBlockquoteEllipses(blockquotes) {
+	Posts.addBlockquoteEllipses = function (posts) {
+		var blockquotes = posts.find('[component="post/content"] > blockquote > blockquote');
 		blockquotes.each(function () {
 			var $this = $(this);
 			if ($this.find(':hidden:not(br)').length && !$this.find('.toggle').length) {
 				$this.append('<i class="fa fa-angle-down pointer toggle"></i>');
 			}
 		});
-	}
+	};
 
 	return Posts;
 });
