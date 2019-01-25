@@ -30,9 +30,9 @@
 								<!-- IF users.usernameSpam -->
 								<i class="fa fa-times-circle text-danger" title="[[admin/manage/registration:list.username-spam, {users.spamData.username.frequency}, {users.spamData.username.appears}, {users.spamData.username.confidence}]]"></i>
 								<!-- ELSE -->
-                                    <!-- IF users.spamChecked -->
-                                    <i class="fa fa-check text-success"></i>
-                                    <!-- ENDIF users.spamChecked -->
+								<!-- IF users.spamChecked -->
+								<i class="fa fa-check text-success"></i>
+								<!-- ENDIF users.spamChecked -->
 								<!-- ENDIF users.usernameSpam -->
 								{users.username}
 							</td>
@@ -40,9 +40,9 @@
 								<!-- IF users.emailSpam -->
 								<i class="fa fa-times-circle text-danger" title="[[admin/manage/registration:list.email-spam, {users.spamData.email.frequency}, {users.spamData.email.appears}]]"></i>
 								<!-- ELSE -->
-                                    <!-- IF users.spamChecked -->
-                                    <i class="fa fa-check text-success"></i>
-                                    <!-- ENDIF users.spamChecked -->
+								<!-- IF users.spamChecked -->
+								<i class="fa fa-check text-success"></i>
+								<!-- ENDIF users.spamChecked -->
 								<!-- ENDIF users.emailSpam -->
 								{users.email}
 							</td>
@@ -50,9 +50,9 @@
 								<!-- IF users.ipSpam -->
 								<i class="fa fa-times-circle text-danger" title="[[admin/manage/registration:list.ip-spam, {users.spamData.ip.frequency}, {users.spamData.ip.appears}]]"></i>
 								<!-- ELSE -->
-                                    <!-- IF users.spamChecked -->
-                                    <i class="fa fa-check text-success"></i>
-                                    <!-- ENDIF users.spamChecked -->
+								<!-- IF users.spamChecked -->
+								<i class="fa fa-check text-success"></i>
+								<!-- ENDIF users.spamChecked -->
 								<!-- ENDIF users.ipSpam -->
 								{users.ip}
 								<!-- BEGIN users.ipMatch -->

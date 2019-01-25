@@ -200,6 +200,16 @@ module.exports = function (User) {
 					getIPMatchedUsers(user, function (err) {
 						next(err, user);
 					});
+					user.customActions = [].concat(user.customActions);
+					/*
+						// then spam prevention plugins, using the "filter:user.getRegistrationQueue" hook can be like:
+						user.customActions.push({
+							title: '[[spam-be-gone:report-user]]',
+							id: 'report-spam-user-' + user.username,
+							class: 'btn-warning report-spam-user',
+							icon: 'fa-flag'
+						});
+					 */
 				}, next);
 			},
 			function (users, next) {
