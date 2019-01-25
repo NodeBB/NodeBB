@@ -19,8 +19,7 @@
 			<li data-index="{enabled.index}" class="well <!-- IF !enabled.selected -->hidden<!-- ENDIF !enabled.selected -->">
 				<form>
 					<div class="row">
-						<div class="col-sm-6">
-
+						<div class="col-sm-1">
 							<div class="form-group">
 								<label>[[admin/general/navigation:icon]]</label>
 								<br/>
@@ -29,36 +28,50 @@
 									<input class="form-control" type="hidden" name="iconClass" value="{enabled.iconClass}" />
 								</span>
 							</div>
+						</div>
 
+						<div class="col-sm-3">
 							<div class="form-group">
 								<label>[[admin/general/navigation:route]]</label>
 								<input class="form-control" type="text" name="route" value="{enabled.route}" />
 							</div>
+						</div>
 
+						<div class="col-sm-4">
 							<div class="form-group">
-								<label>[[admin/general/navigation:tooltip]]</label>
-								<input class="form-control unescape" type="text" name="title" value="{enabled.title}" />
+								<label>[[admin/general/navigation:class]]</label>
+								<input class="form-control" type="text" name="class" value="{enabled.class}" />
 							</div>
 						</div>
 
-						<div class="col-sm-6">
-							<div class="form-group">
-								<label>[[admin/general/navigation:text]]</label>
-								<input class="form-control unescape" type="text" name="text" value="{enabled.text}" />
-							</div>
-
-							<div class="form-group">
-								<label>[[admin/general/navigation:text-class]]</label>
-								<input class="form-control" type="text" name="textClass" value="{enabled.textClass}" />
-							</div>
-
+						<div class="col-sm-4">
 							<div class="form-group">
 								<label>[[admin/general/navigation:id]]</label>
 								<input class="form-control" type="text" name="id" value="{enabled.id}" />
 							</div>
 						</div>
 					</div>
+					<div class="row">
+						<div class="col-sm-4">
+							<div class="form-group">
+								<label>[[admin/general/navigation:text]]</label>
+								<input class="form-control unescape" type="text" name="text" value="{enabled.text}" />
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="form-group">
+								<label>[[admin/general/navigation:text-class]]</label>
+								<input class="form-control" type="text" name="textClass" value="{enabled.textClass}" />
+							</div>
+						</div>
 
+						<div class="col-sm-4">
+							<div class="form-group">
+								<label>[[admin/general/navigation:tooltip]]</label>
+								<input class="form-control unescape" type="text" name="title" value="{enabled.title}" />
+							</div>
+						</div>
+					</div>
 
 					<strong>[[admin/general/navigation:groups]]</strong>
 					<div>
