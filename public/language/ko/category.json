@@ -10,7 +10,7 @@
     "watch": "관심 주제",
     "ignore": "관심 해제",
     "watching": "관심있음",
-    "not-watching": "Not Watching",
+    "not-watching": "주시하지 않기",
     "ignoring": "무시하기",
     "watching.description": "읽지 않은 글 및 최근 글 보기",
     "not-watching.description": "읽지 않은 글 및 최근 글 보지 않기",

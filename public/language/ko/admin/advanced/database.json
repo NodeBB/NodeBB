@@ -27,7 +27,7 @@
 	"redis.version": "Redis 버젼",
 	"redis.keys": "Keys",
 	"redis.expires": "Expires",
-	"redis.avg-ttl": "Average TTL",
+	"redis.avg-ttl": "평균 TTL",
 	"redis.connected-clients": "연결된 클라이언트",
 	"redis.connected-slaves": "연결된 slaves",
 	"redis.blocked-clients": "차단된 클라이언트",
