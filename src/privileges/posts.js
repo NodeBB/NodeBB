@@ -264,6 +264,14 @@ module.exports = function (privileges) {
 					edit: async.apply(privileges.posts.can, 'posts:edit', pid, uid),
 				}, next);
 			},
+			(result, next) => {
+				Object.assign(result, {
+					pid: parseInt(pid, 10),
+					uid: uid,
+				});
+
+				plugins.fireHook('filter:privileges.posts.edit', result, next);
+			},
 			function (result, next) {
 				next(null, { flag: result.owner && result.edit, message: '[[error:no-privileges]]' });
 			},
