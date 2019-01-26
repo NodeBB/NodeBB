@@ -35,6 +35,7 @@
 	"privileges.section-viewing": "Viewing Privileges",
 	"privileges.section-posting": "Posting Privileges",
 	"privileges.section-moderation": "Moderation Privileges",
+	"privileges.section-other": "Other",
 	"privileges.section-user": "User",
 	"privileges.search-user": "Add User",
 	"privileges.no-users": "No user-specific privileges in this category.",
