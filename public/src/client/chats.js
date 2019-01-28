@@ -9,7 +9,8 @@ define('forum/chats', [
 	'forum/chats/search',
 	'forum/chats/messages',
 	'benchpress',
-], function (components, translator, mousetrap, recentChats, search, messages, Benchpress) {
+	'composer/autocomplete',
+], function (components, translator, mousetrap, recentChats, search, messages, Benchpress, autocomplete) {
 	var Chats = {
 		initialised: false,
 	};
@@ -361,18 +362,18 @@ define('forum/chats', [
 			element: element,
 			strategies: [],
 			options: {
-				zIndex: 20000,
-				listPosition: function (position) {
-					this.$el.css(this._applyPlacement(position));
-					this.$el.css('position', 'absolute');
-					return this;
+				style: {
+					'z-index': 20000,
+					flex: 0,
+					top: 'inherit',
 				},
+				placement: 'top',
 			},
 		};
 
 		$(window).trigger('chat:autocomplete:init', data);
 		if (data.strategies.length) {
-			data.element.textcomplete(data.strategies, data.options);
+			autocomplete.setup(data);
 		}
 	};
 
