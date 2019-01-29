@@ -56,7 +56,7 @@
     "notificationType_follow": "Wenn dir jemand neues folgt",
     "notificationType_new-chat": "Wenn du eine Chat Nachricht erhältst",
     "notificationType_group-invite": "Wenn du eine Gruppeneinladung erhältst",
-    "notificationType_group-request-membership": "When someone requests to join a group you own",
+    "notificationType_group-request-membership": "Wenn jemand einer Gruppe beitreten möchte, die dir gehört",
     "notificationType_new-register": "Wenn jemand der Registrierungswarteschlange hinzugefügt wird",
     "notificationType_post-queue": "Wenn ein neuer Beitrag eingereiht wird",
     "notificationType_new-post-flag": "Wenn ein Beitrag gemeldet wird",

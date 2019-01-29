@@ -3,14 +3,14 @@
 	"custom-css.description": "Insere aqui as tuas próprias declarações de CSS/LESS, que serão aplicadas depois de todos os outros estilos.",
 	"custom-css.enable": "Ativar CSS/LESS Personalizado",
 
-	"custom-js": "Custom Javascript",
+	"custom-js": "Javascript Personalizado",
 	"custom-js.description": "Enter your own javascript here. It will be executed after the page is loaded completely.",
-	"custom-js.enable": "Enable Custom Javascript",
+	"custom-js.enable": "Ativar Javascript Personalizado",
 
 	"custom-header": "Cabeçalho Personalizado",
 	"custom-header.description": "Insere aqui HTML personalizado (ex. Meta Tags, etc.), que será acrescentado à secção <code>&lt;head&gt;</code> do teu fórum. Script Tags também são permitidas, mas não recomendados usar, uma vez que já existe o separador <a href=\"#custom-header\" data-toggle=\"tab\">Custom Javascript</a> exatamente para essa função.",
 	"custom-header.enable": "Ativar Cabeçalho Personalizado",
 
-	"custom-css.livereload": "Enable Live Reload",
-	"custom-css.livereload.description": "Enable this to force all sessions on every device under your account to refresh whenever you click save"
+	"custom-css.livereload": "Ativar recarregar ao vivo",
+	"custom-css.livereload.description": "Ativa isto para forçar todas as sessões da tua conta a serem atualizadas em todos os dispositivos sempre que clicares em guardar"
 }

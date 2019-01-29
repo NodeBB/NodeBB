@@ -7,5 +7,5 @@
 	"consent.blank-localised-default": "Leave blank to use NodeBB localised defaults",
 	"settings": "Settings",
 	"cookie-domain": "Session cookie domain",
-	"blank-default": "Leave blank for default"
+	"blank-default": "Deixa em branco para a predefinir"
 }
