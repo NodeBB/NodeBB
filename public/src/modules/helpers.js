@@ -178,12 +178,11 @@
 			}
 		}
 		return states.map(function (priv) {
-			var guestDisabled = ['groups:moderate', 'groups:posts:upvote', 'groups:posts:downvote'];
+			var guestDisabled = ['groups:moderate', 'groups:posts:upvote', 'groups:posts:downvote', 'groups:local:login'];
 			var spidersEnabled = ['groups:find', 'groups:read', 'groups:topics:read'];
 			var disabled =
 				(member === 'guests' && guestDisabled.includes(priv.name)) ||
-				(member === 'spiders' && !spidersEnabled.includes(priv.name)) ||
-				(member !== 'registered-users' && priv.name === 'groups:local:login');
+				(member === 'spiders' && !spidersEnabled.includes(priv.name));
 
 			return '<td class="text-center" data-privilege="' + priv.name + '"><input type="checkbox"' + (priv.state ? ' checked' : '') + (disabled ? ' disabled="disabled"' : '') + ' /></td>';
 		}).join('');
