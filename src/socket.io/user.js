@@ -22,6 +22,7 @@ require('./user/search')(SocketUser);
 require('./user/status')(SocketUser);
 require('./user/picture')(SocketUser);
 require('./user/ban')(SocketUser);
+require('./user/registration')(SocketUser);
 
 SocketUser.exists = function (socket, data, callback) {
 	if (!data || !data.username) {

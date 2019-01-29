@@ -46,6 +46,7 @@ function modRoutes(app, middleware, controllers) {
 
 function globalModRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/ip-blacklist', middleware, [], controllers.globalMods.ipBlacklist);
+	setupPageRoute(app, '/registration-queue', middleware, [], controllers.globalMods.registrationQueue);
 }
 
 function topicRoutes(app, middleware, controllers) {

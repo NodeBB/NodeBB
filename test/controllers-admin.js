@@ -300,6 +300,24 @@ describe('Admin Controllers', function () {
 		});
 	});
 
+	it('should 404 if users is not privileged', function (done) {
+		request(nconf.get('url') + '/api/registration-queue', { json: true }, function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 404);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /api/registration-queue', function (done) {
+		request(nconf.get('url') + '/api/registration-queue', { jar: jar, json: true }, function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
 	it('should load /admin/manage/admins-mods', function (done) {
 		request(nconf.get('url') + '/api/admin/manage/admins-mods', { jar: jar, json: true }, function (err, res, body) {
 			assert.ifError(err);

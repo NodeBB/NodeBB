@@ -221,44 +221,6 @@ User.search = function (socket, data, callback) {
 	], callback);
 };
 
-User.deleteInvitation = function (socket, data, callback) {
-	user.deleteInvitation(data.invitedBy, data.email, callback);
-};
-
-User.acceptRegistration = function (socket, data, callback) {
-	async.waterfall([
-		function (next) {
-			user.acceptRegistration(data.username, next);
-		},
-		function (uid, next) {
-			events.log({
-				type: 'registration-approved',
-				uid: socket.uid,
-				ip: socket.ip,
-				targetUid: uid,
-			});
-			next(null, uid);
-		},
-	], callback);
-};
-
-User.rejectRegistration = function (socket, data, callback) {
-	async.waterfall([
-		function (next) {
-			user.rejectRegistration(data.username, next);
-		},
-		function (next) {
-			events.log({
-				type: 'registration-rejected',
-				uid: socket.uid,
-				ip: socket.ip,
-				username: data.username,
-			});
-			next();
-		},
-	], callback);
-};
-
 User.restartJobs = function (socket, data, callback) {
 	user.startJobs(callback);
 };
