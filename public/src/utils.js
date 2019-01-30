@@ -649,7 +649,7 @@
 			params.forEach(function (param) {
 				var val = param.split('=');
 				var key = decodeURI(val[0]);
-				var value = options.skipToType[key] ? decodeURI(val[1]) : utils.toType(decodeURI(val[1]));
+				var value = options.disableToType || options.skipToType[key] ? decodeURI(val[1]) : utils.toType(decodeURI(val[1]));
 
 				if (key) {
 					if (key.substr(-2, 2) === '[]') {
