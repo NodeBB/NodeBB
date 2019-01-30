@@ -31,7 +31,7 @@
 	"max-profile-image-size-help": "(in kibibytes, default: 256 KiB)",
 	"max-cover-image-size": "Maximum Cover Image File Size",
 	"max-cover-image-size-help": "(in kibibytes, default: 2,048 KiB)",
-	"keep-all-user-images": "Keep old versions of avatars and profile covers on the server",
+	"keep-all-user-images": "Manter versões antigas das fotos de perfil e das fotos de capa no servidor",
 	"profile-covers": "Profile Covers",
 	"default-covers": "Default Cover Images",
 	"default-covers-help": "Add comma-separated default cover images for accounts that don't have an uploaded cover image"
