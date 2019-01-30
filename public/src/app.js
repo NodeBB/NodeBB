@@ -778,6 +778,9 @@ app.cacheBuster = null;
 		var currentSkinClassName = $('body').attr('class').split(/\s+/).filter(function (className) {
 			return className.startsWith('skin-');
 		});
+		if (!currentSkinClassName[0]) {
+			return;
+		}
 		var currentSkin = currentSkinClassName[0].slice(5);
 		currentSkin = currentSkin !== 'noskin' ? currentSkin : '';
 
