@@ -60,7 +60,12 @@
 							<label for="cid-{category.cid}-class">
 								[[admin/manage/categories:custom-class]]
 							</label>
-							<input id="cid-{category.cid}-class" type="text" class="form-control" placeholder="col-md-6 col-xs-6" data-name="class" value="{category.class}" />
+							<input list="customClasses" id="cid-{category.cid}-class" type="text" class="form-control" placeholder="<!-- IF customClasses.length --><!-- BEGIN customClasses --><!-- IF @first -->{@value}<!-- ENDIF --><!-- END --><!-- ELSE -->col-md-6 col-xs-6<!-- ENDIF -->" data-name="class" value="{category.class}" />
+							<datalist id="customClasses">
+								<!-- BEGIN customClasses -->
+								<option>{@value}</option>
+								<!-- END customClasses -->
+							</datalist>
 						</div>
 					</div>
 					<div class="col-sm-4 col-xs-12">

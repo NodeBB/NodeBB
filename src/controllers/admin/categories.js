@@ -35,14 +35,17 @@ categoriesController.get = function (req, res, callback) {
 				req: req,
 				res: res,
 				category: category,
+				customClasses: [],
 				allCategories: data.allCategories,
 			}, next);
 		},
 		function (data) {
 			data.category.name = translator.escape(String(data.category.name));
+
 			res.render('admin/manage/category', {
 				category: data.category,
 				allCategories: data.allCategories,
+				customClasses: data.customClasses,
 			});
 		},
 	], callback);
