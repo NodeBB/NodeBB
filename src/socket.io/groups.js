@@ -8,6 +8,7 @@ var user = require('../user');
 var utils = require('../utils');
 var groupsController = require('../controllers/groups');
 var events = require('../events');
+var privileges = require('../privileges');
 
 var SocketGroups = module.exports;
 
@@ -238,14 +239,22 @@ SocketGroups.kick = isOwner(function (socket, data, callback) {
 SocketGroups.create = function (socket, data, callback) {
 	if (!socket.uid) {
 		return callback(new Error('[[error:no-privileges]]'));
-	} else if (!meta.config.allowGroupCreation) {
-		return callback(new Error('[[error:group-creation-disabled]]'));
 	} else if (groups.isPrivilegeGroup(data.name)) {
 		return callback(new Error('[[error:invalid-group-name]]'));
 	}
 
-	data.ownerUid = socket.uid;
-	groups.create(data, callback);
+	async.waterfall([
+		function (next) {
+			privileges.global.can('group:create', socket.uid, next);
+		},
+		function (canCreate, next) {
+			if (!canCreate) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
+			data.ownerUid = socket.uid;
+			groups.create(data, next);
+		},
+	], callback);
 };
 
 SocketGroups.delete = isOwner(function (socket, data, callback) {

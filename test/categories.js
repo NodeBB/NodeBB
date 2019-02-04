@@ -743,6 +743,7 @@ describe('Categories', function () {
 					'upload:post:file': false,
 					signature: false,
 					'local:login': false,
+					'group:create': false,
 				});
 
 				done();
@@ -787,6 +788,7 @@ describe('Categories', function () {
 					'groups:upload:post:file': false,
 					'groups:signature': true,
 					'groups:local:login': true,
+					'groups:group:create': false,
 				});
 
 				done();

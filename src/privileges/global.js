@@ -22,6 +22,7 @@ module.exports = function (privileges) {
 		{ name: '[[admin/manage/privileges:search-users]]' },
 		{ name: '[[admin/manage/privileges:search-tags]]' },
 		{ name: '[[admin/manage/privileges:allow-local-login]]' },
+		{ name: '[[admin/manage/privileges:allow-group-creation]]' },
 	];
 
 	privileges.global.userPrivilegeList = [
@@ -34,6 +35,7 @@ module.exports = function (privileges) {
 		'search:users',
 		'search:tags',
 		'local:login',
+		'group:create',
 	];
 
 	privileges.global.groupPrivilegeList = privileges.global.userPrivilegeList.map(function (privilege) {

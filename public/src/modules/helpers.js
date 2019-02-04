@@ -178,7 +178,7 @@
 			}
 		}
 		return states.map(function (priv) {
-			var guestDisabled = ['groups:moderate', 'groups:posts:upvote', 'groups:posts:downvote', 'groups:local:login'];
+			var guestDisabled = ['groups:moderate', 'groups:posts:upvote', 'groups:posts:downvote', 'groups:local:login', 'groups:group:create'];
 			var spidersEnabled = ['groups:find', 'groups:read', 'groups:topics:read'];
 			var disabled =
 				(member === 'guests' && guestDisabled.includes(priv.name)) ||
