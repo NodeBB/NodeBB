@@ -325,13 +325,9 @@ SocketGroups.cover.update = function (socket, data, callback) {
 
 	async.waterfall([
 		function (next) {
-			groups.ownership.isOwner(socket.uid, data.groupName, next);
+			canModifyGroup(socket.uid, data.groupName, next);
 		},
-		function (isOwner, next) {
-			if (!isOwner) {
-				return next(new Error('[[error:no-privileges]]'));
-			}
-
+		function (next) {
 			groups.updateCover(socket.uid, data, next);
 		},
 	], callback);
@@ -344,14 +340,27 @@ SocketGroups.cover.remove = function (socket, data, callback) {
 
 	async.waterfall([
 		function (next) {
-			groups.ownership.isOwner(socket.uid, data.groupName, next);
+			canModifyGroup(socket.uid, data.groupName, next);
 		},
-		function (isOwner, next) {
-			if (!isOwner) {
-				return next(new Error('[[error:no-privileges]]'));
-			}
-
+		function (next) {
 			groups.removeCover(data, next);
 		},
 	], callback);
 };
+
+function canModifyGroup(uid, groupName, callback) {
+	async.waterfall([
+		function (next) {
+			async.parallel({
+				isOwner: async.apply(groups.ownership.isOwner, uid, groupName),
+				isAdminOrGlobalMod: async.apply(user.isAdminOrGlobalMod, uid),
+			}, next);
+		},
+		function (results, next) {
+			if (!results.isOwner && !results.isAdminOrGlobalMod) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
+			next();
+		},
+	], callback);
+}
