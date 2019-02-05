@@ -1336,14 +1336,15 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should return 401 if privateUserInfo is turned on', function (done) {
-			meta.config.privateUserInfo = 1;
-			request(nconf.get('url') + '/api/user/foo', { json: true }, function (err, res, body) {
-				meta.config.privateUserInfo = 0;
+		it('should return 401 if user does not have view:users privilege', function (done) {
+			privileges.global.rescind(['view:users'], 'guests', function (err) {
 				assert.ifError(err);
-				assert.equal(res.statusCode, 401);
-				assert.equal(body, 'not-authorized');
-				done();
+				request(nconf.get('url') + '/api/user/foo', { json: true }, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 401);
+					assert.equal(body, 'not-authorized');
+					privileges.global.give(['view:users'], 'guests', done);
+				});
 			});
 		});
 

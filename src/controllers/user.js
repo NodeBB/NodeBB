@@ -13,6 +13,7 @@ var meta = require('../meta');
 var posts = require('../posts');
 var batch = require('../batch');
 var events = require('../events');
+var privileges = require('../privileges');
 var accountHelpers = require('./accounts/helpers');
 
 var userController = module.exports;
@@ -84,27 +85,33 @@ userController.getUserDataByField = function (callerUid, field, fieldValue, call
 };
 
 userController.getUserDataByUID = function (callerUid, uid, callback) {
-	if (parseInt(callerUid, 10) <= 0 && meta.config.privateUserInfo) {
-		return callback(new Error('[[error:no-privileges]]'));
-	}
-
 	if (!parseInt(uid, 10)) {
 		return callback(new Error('[[error:no-user]]'));
 	}
+	async.waterfall([
+		function (next) {
+			privileges.global.can('view:users', callerUid, next);
+		},
+		function (canView, next) {
+			if (!canView) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
+			async.parallel({
+				userData: async.apply(user.getUserData, uid),
+				settings: async.apply(user.getSettings, uid),
+			}, next);
+		},
+		function (results, next) {
+			if (!results.userData) {
+				return next(new Error('[[error:no-user]]'));
+			}
 
-	async.parallel({
-		userData: async.apply(user.getUserData, uid),
-		settings: async.apply(user.getSettings, uid),
-	}, function (err, results) {
-		if (err || !results.userData) {
-			return callback(err || new Error('[[error:no-user]]'));
-		}
+			results.userData.email = results.settings.showemail && !meta.config.hideEmail ? results.userData.email : undefined;
+			results.userData.fullname = results.settings.showfullname && !meta.config.hideFullname ? results.userData.fullname : undefined;
 
-		results.userData.email = results.settings.showemail && !meta.config.hideEmail ? results.userData.email : undefined;
-		results.userData.fullname = results.settings.showfullname && !meta.config.hideFullname ? results.userData.fullname : undefined;
-
-		callback(null, results.userData);
-	});
+			next(null, results.userData);
+		},
+	], callback);
 };
 
 userController.exportPosts = function (req, res, next) {

@@ -744,6 +744,9 @@ describe('Categories', function () {
 					signature: false,
 					'local:login': false,
 					'group:create': false,
+					'view:users': false,
+					'view:tags': false,
+					'view:groups': false,
 				});
 
 				done();
@@ -784,6 +787,9 @@ describe('Categories', function () {
 					'groups:search:content': true,
 					'groups:search:users': true,
 					'groups:search:tags': true,
+					'groups:view:users': true,
+					'groups:view:tags': true,
+					'groups:view:groups': true,
 					'groups:upload:post:image': true,
 					'groups:upload:post:file': false,
 					'groups:signature': true,

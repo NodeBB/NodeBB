@@ -77,13 +77,13 @@ function categoryRoutes(app, middleware, controllers) {
 }
 
 function userRoutes(app, middleware, controllers) {
-	var middlewares = [middleware.checkGlobalPrivacySettings];
+	var middlewares = [middleware.canViewUsers];
 
 	setupPageRoute(app, '/users', middleware, middlewares, controllers.users.index);
 }
 
 function groupRoutes(app, middleware, controllers) {
-	var middlewares = [middleware.checkGlobalPrivacySettings];
+	var middlewares = [middleware.canViewGroups];
 
 	setupPageRoute(app, '/groups', middleware, middlewares, controllers.groups.list);
 	setupPageRoute(app, '/groups/:slug', middleware, middlewares, controllers.groups.details);

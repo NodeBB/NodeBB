@@ -40,13 +40,15 @@
 			return false;
 		}
 
-		var loggedIn = data.config ? data.config.loggedIn : false;
-
-		if (item.route.match('/users') && data.privateUserInfo && !loggedIn) {
+		if (item.route.match('/users') && data.user && !data.user.privileges['view:users']) {
 			return false;
 		}
 
-		if (item.route.match('/tags') && data.privateTagListing && !loggedIn) {
+		if (item.route.match('/tags') && data.user && !data.user.privileges['view:tags']) {
+			return false;
+		}
+
+		if (item.route.match('/groups') && data.user && !data.user.privileges['view:groups']) {
 			return false;
 		}
 
@@ -179,7 +181,7 @@
 		}
 		return states.map(function (priv) {
 			var guestDisabled = ['groups:moderate', 'groups:posts:upvote', 'groups:posts:downvote', 'groups:local:login', 'groups:group:create'];
-			var spidersEnabled = ['groups:find', 'groups:read', 'groups:topics:read'];
+			var spidersEnabled = ['groups:find', 'groups:read', 'groups:topics:read', 'groups:view:users', 'groups:view:tags', 'groups:view:groups'];
 			var disabled =
 				(member === 'guests' && guestDisabled.includes(priv.name)) ||
 				(member === 'spiders' && !spidersEnabled.includes(priv.name));

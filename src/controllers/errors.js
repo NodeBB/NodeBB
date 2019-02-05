@@ -39,7 +39,7 @@ exports.handleURIErrors = function handleURIErrors(err, req, res, next) {
 exports.handleErrors = function handleErrors(err, req, res, next) { // eslint-disable-line no-unused-vars
 	var cases = {
 		EBADCSRFTOKEN: function () {
-			winston.error(req.path + '\n', err.message);
+			winston.error(req.path + '\n' + err.message);
 			res.sendStatus(403);
 		},
 		'blacklisted-ip': function () {

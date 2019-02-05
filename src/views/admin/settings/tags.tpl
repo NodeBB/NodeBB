@@ -25,21 +25,6 @@
 	</div>
 </div>
 
-
-<div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/tags:privacy]]</div>
-	<div class="col-sm-10 col-xs-12">
-		<form>
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="privateTagListing">
-					<span class="mdl-switch__label">[[admin/settings/tags:list-private]]</span>
-				</label>
-			</div>
-		</form>
-	</div>
-</div>
-
 <div class="row">
 	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/tags:related-topics]]</div>
 	<div class="col-sm-10 col-xs-12">

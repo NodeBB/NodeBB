@@ -3,7 +3,7 @@
 var privileges = require('../../privileges');
 
 module.exports = {
-	name: 'Update category watch data',
+	name: 'Group create global privilege',
 	timestamp: Date.UTC(2019, 0, 4),
 	method: function (callback) {
 		var meta = require('../../meta');

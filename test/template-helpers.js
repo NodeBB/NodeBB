@@ -13,24 +13,39 @@ describe('helpers', function () {
 		done();
 	});
 
-	it('should return false if route is /users and privateUserInfo is on and user is not logged in', function (done) {
+	it('should return false if route is /users and user does not have view:users privilege', function (done) {
 		var flag = helpers.displayMenuItem({
 			navigation: [{ route: '/users' }],
-			privateUserInfo: true,
-			config: {
-				loggedIn: false,
+			user: {
+				privileges: {
+					'view:users': false,
+				},
 			},
 		}, 0);
 		assert(!flag);
 		done();
 	});
 
-	it('should return false if route is /tags and privateTagListing is on and user is not logged in', function (done) {
+	it('should return false if route is /tags and user does not have view:tags privilege', function (done) {
 		var flag = helpers.displayMenuItem({
 			navigation: [{ route: '/tags' }],
-			privateTagListing: true,
-			config: {
-				loggedIn: false,
+			user: {
+				privileges: {
+					'view:tags': false,
+				},
+			},
+		}, 0);
+		assert(!flag);
+		done();
+	});
+
+	it('should return false if route is /groups and user does not have view:groups privilege', function (done) {
+		var flag = helpers.displayMenuItem({
+			navigation: [{ route: '/groups' }],
+			user: {
+				privileges: {
+					'view:groups': false,
+				},
 			},
 		}, 0);
 		assert(!flag);

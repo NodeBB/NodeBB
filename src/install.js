@@ -385,7 +385,8 @@ function giveGlobalPrivileges(next) {
 	var privileges = require('./privileges');
 	var defaultPrivileges = [
 		'chat', 'upload:post:image', 'signature', 'search:content',
-		'search:users', 'search:tags', 'local:login',
+		'search:users', 'search:tags', 'view:users', 'view:tags', 'view:groups',
+		'local:login',
 	];
 	privileges.global.give(defaultPrivileges, 'registered-users', next);
 }
