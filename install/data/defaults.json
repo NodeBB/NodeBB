@@ -59,7 +59,6 @@
     "allowProfileImageUploads": 1,
     "teaserPost": "last-reply",
     "allowPrivateGroups": 1,
-    "allowGroupCreation": 0,
     "unreadCutoff": 2,
     "bookmarkThreshold": 5,
     "autoDetectLang": 1,

@@ -388,7 +388,17 @@ function giveGlobalPrivileges(next) {
 		'search:users', 'search:tags', 'view:users', 'view:tags', 'view:groups',
 		'local:login',
 	];
-	privileges.global.give(defaultPrivileges, 'registered-users', next);
+	async.waterfall([
+		function (next) {
+			privileges.global.give(defaultPrivileges, 'registered-users', next);
+		},
+		function (next) {
+			privileges.global.give(['view:users', 'view:tags', 'view:groups'], 'guests', next);
+		},
+		function (next) {
+			privileges.global.give(['view:users', 'view:tags', 'view:groups'], 'spiders', next);
+		},
+	], next);
 }
 
 function createCategories(next) {
