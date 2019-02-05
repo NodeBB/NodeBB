@@ -273,6 +273,10 @@
 				return Promise.resolve(self.modules[namespace](key, args));
 			}
 
+			if (namespace && result.length === 1) {
+				return Promise.resolve('[[' + namespace + ']]');
+			}
+
 			if (namespace && !key) {
 				warn('Missing key in translation token "' + name + '"');
 				return Promise.resolve('[[' + namespace + ']]');

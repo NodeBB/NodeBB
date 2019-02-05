@@ -150,6 +150,13 @@ describe('new Translator(language)', function () {
 			});
 		});
 
+		it('should not translate [[derp]] some text', function () {
+			var translator = Translator.create('en-GB');
+			return translator.translate('[[derp]] some text').then(function (translated) {
+				assert.strictEqual('[[derp]] some text', translated);
+			});
+		});
+
 		it('should not translate [[derp:xyz] some text', function () {
 			var translator = Translator.create('en-GB');
 			return translator.translate('[[derp:xyz] some text').then(function (translated) {
