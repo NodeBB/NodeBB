@@ -248,7 +248,7 @@ define('forum/topic/postTools', [
 					tid: tid,
 					pid: toPid,
 					topicName: ajaxify.data.titleRaw,
-					text: username ? username + ' ' : '',
+					text: username ? username + ' ' : ($('[component="topic/quickreply/text"]').val() || ''),
 				});
 			}
 		});
