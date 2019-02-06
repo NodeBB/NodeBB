@@ -90,6 +90,7 @@
     "postsPerPage": 20,
     "userSearchResultsPerPage": 50,
     "maximumGroupNameLength": 255,
+    "maximumGroupTitleLength": 40,
     "preventTopicDeleteAfterReplies": 0,
     "feeds:disableSitemap": 0,
     "sitemapTopics": 500,

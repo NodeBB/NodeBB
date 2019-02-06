@@ -4,7 +4,7 @@
 			<div class="group-settings-form">
 				<fieldset>
 					<label for="change-group-name">[[admin/manage/groups:edit.name]]</label>
-					<input type="text" class="form-control" id="change-group-name" placeholder="Group Name" value="{group.displayName}" <!-- IF group.system -->readonly<!-- ENDIF group.system -->/><br />
+					<input type="text" class="form-control" id="change-group-name" placeholder="Group Name" value="{group.displayName}" maxlength="{maximumGroupNameLength}" <!-- IF group.system -->readonly<!-- ENDIF group.system -->/><br />
 				</fieldset>
 
 				<fieldset>
@@ -14,7 +14,7 @@
 
 				<fieldset>
 					<label for="change-group-user-title">[[admin/manage/groups:edit.user-title]]</label>
-					<input type="text" class="form-control" id="change-group-user-title" placeholder="The title of users if they are a member of this group" value="{group.userTitle}" maxlength="40" /><br />
+					<input type="text" class="form-control" id="change-group-user-title" placeholder="The title of users if they are a member of this group" value="{group.userTitle}" maxlength="{maximumGroupTitleLength}" /><br />
 				</fieldset>
 
 				<fieldset>
