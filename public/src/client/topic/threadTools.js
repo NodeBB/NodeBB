@@ -212,6 +212,16 @@ define('forum/topic/threadTools', [
 		components.get('topic/purge').toggleClass('hidden', !data.isDelete).parent().attr('hidden', !data.isDelete ? '' : null);
 		components.get('topic/deleted/message').toggleClass('hidden', !data.isDelete);
 
+		if (data.isDelete) {
+			app.parseAndTranslate('partials/topic/deleted-message', {
+				deleter: data.user,
+				deleted: true,
+				deletedTimestampISO: utils.toISOString(Date.now()),
+			}, function (html) {
+				components.get('topic/deleted/message').replaceWith(html);
+				html.find('.timeago').timeago();
+			});
+		}
 		var hideReply = data.isDelete && !ajaxify.data.privileges.isAdminOrMod;
 
 		components.get('topic/reply/container').toggleClass('hidden', hideReply);
