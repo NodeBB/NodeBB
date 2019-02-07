@@ -52,6 +52,8 @@ define('alerts', ['translator', 'components', 'benchpress'], function (translato
 							fadeOut(alert);
 						});
 				}
+				
+				$(window).trigger('action:alert.new', { alert: alert, params: params });
 			});
 		});
 	}
@@ -88,6 +90,8 @@ define('alerts', ['translator', 'components', 'benchpress'], function (translato
 					fadeOut(alert);
 				});
 		}
+		
+		$(window).trigger('action:alert.update', { alert: alert, params: params });
 	}
 
 	function fadeOut(alert) {
