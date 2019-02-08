@@ -78,6 +78,13 @@ Digest.getSubscribers = function (interval, callback) {
 			});
 		},
 		function (subscribers, next) {
+			async.filter(subscribers, function (uid, next) {
+				user.isBanned(uid, function (err, banned) {
+					next(err, !banned);
+				});
+			}, next);
+		},
+		function (subscribers, next) {
 			plugins.fireHook('filter:digest.subscribers', {
 				interval: interval,
 				subscribers: subscribers,
