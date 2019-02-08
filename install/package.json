@@ -122,7 +122,7 @@
         "spdx-license-list": "^5.0.0",
         "spider-detector": "1.0.19",
         "textcomplete": "^0.17.1",
-        "textcomplete.contenteditable": "^0.1.0",
+        "textcomplete.contenteditable": "^0.1.1",
         "toobusy-js": "^0.5.1",
         "uglify-es": "^3.3.9",
         "validator": "10.11.0",
