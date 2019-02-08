@@ -1,7 +1,6 @@
 'use strict';
 
 var async = require('async');
-var winston = require('winston');
 
 var user = require('../user');
 var topics = require('../topics');
@@ -102,17 +101,17 @@ SocketUser.reset.send = function (socket, email, callback) {
 	}
 
 	user.reset.send(email, function (err) {
-		if (err) {
-			switch (err.message) {
-			case '[[error:invalid-email]]':
-				winston.warn('[user/reset] Invalid email attempt: ' + email + ' by IP ' + socket.ip + (socket.uid ? ' (uid: ' + socket.uid + ')' : ''));
-				err = null;
-				break;
+		events.log({
+			type: 'password-reset',
+			text: err ? err.message : '[[success:success]]',
+			ip: socket.ip,
+			uid: socket.uid,
+			email: email,
+		});
 
-			case '[[error:reset-rate-limited]]':
-				err = null;
-				break;
-			}
+		const internalErrors = ['[[error:invalid-email]]', '[[error:reset-rate-limited]]'];
+		if (err && internalErrors.includes(err.message)) {
+			err = null;
 		}
 
 		setTimeout(callback.bind(err), 2500);

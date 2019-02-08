@@ -17,6 +17,7 @@ var groups = require('../src/groups');
 var categories = require('../src/categories');
 var helpers = require('./helpers');
 var meta = require('../src/meta');
+const events = require('../src/events');
 
 var socketAdmin = require('../src/socket.io/admin');
 
@@ -632,6 +633,74 @@ describe('socket.io', function () {
 			meta.config.loggerStatus = 0;
 			meta.config.loggerIOStatus = 0;
 			done();
+		});
+	});
+
+	describe('password reset', function () {
+		const socketUser = require('../src/socket.io/user');
+
+		it('should not error on valid email', function (done) {
+			socketUser.reset.send({ uid: 0 }, 'regular@test.com', function (err) {
+				assert.ifError(err);
+
+				async.parallel({
+					count: async.apply(db.sortedSetCount.bind(db), 'reset:issueDate', 0, Date.now()),
+					event: async.apply(events.getEvents, '', 0, 0),
+				}, function (err, data) {
+					assert.ifError(err);
+					assert.strictEqual(data.count, 1);
+
+					// Event validity
+					assert.strictEqual(data.event.length, 1);
+					const event = data.event[0];
+					assert.strictEqual(event.type, 'password-reset');
+					assert.strictEqual(event.text, '[[success:success]]');
+
+					done();
+				});
+			});
+		});
+
+		it('should not generate code if rate limited', function (done) {
+			socketUser.reset.send({ uid: 0 }, 'regular@test.com', function (err) {
+				assert.ifError(err);
+
+				async.parallel({
+					count: async.apply(db.sortedSetCount.bind(db), 'reset:issueDate', 0, Date.now()),
+					event: async.apply(events.getEvents, '', 0, 0),
+				}, function (err, data) {
+					assert.ifError(err);
+					assert.strictEqual(data.count, 1);	// should still equal 1
+
+					// Event validity
+					assert.strictEqual(data.event.length, 1);
+					const event = data.event[0];
+					assert.strictEqual(event.type, 'password-reset');
+					assert.strictEqual(event.text, '[[error:reset-rate-limited]]');
+
+					done();
+				});
+			});
+		});
+
+		it('should not error on invalid email (but not generate reset code)', function (done) {
+			socketUser.reset.send({ uid: 0 }, 'irregular@test.com', function (err) {
+				assert.ifError(err);
+
+				db.sortedSetCount('reset:issueDate', 0, Date.now(), function (err, count) {
+					assert.ifError(err);
+					assert.strictEqual(count, 1);
+					done();
+				});
+			});
+		});
+
+		it('should error on no email', function (done) {
+			socketUser.reset.send({ uid: 0 }, '', function (err) {
+				assert(err instanceof Error);
+				assert.strictEqual(err.message, '[[error:invalid-data]]');
+				done();
+			});
 		});
 	});
 });
