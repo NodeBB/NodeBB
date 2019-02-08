@@ -24,7 +24,8 @@ module.exports = {
 						if (parseInt(topicData.pinned, 10) === 1) {
 							return setImmediate(next);
 						}
-
+						
+						topicData.postcount = parseInt(topicData.postcount, 10) || 0;
 						db.sortedSetAdd('cid:' + topicData.cid + ':tids:posts', topicData.postcount, tid, next);
 					},
 					function (next) {
