@@ -57,6 +57,31 @@ describe('Sorted Set methods', function () {
 				});
 			});
 		});
+
+		it('should error if score is null', function (done) {
+			db.sortedSetAdd('errorScore', null, 'value1', function (err) {
+				assert.equal(err.message, '[[error:invalid-score, null]]');
+				done();
+			});
+		});
+
+		it('should error if any score is undefined', function (done) {
+			db.sortedSetAdd('errorScore', [1, undefined], ['value1', 'value2'], function (err) {
+				assert.equal(err.message, '[[error:invalid-score, undefined]]');
+				done();
+			});
+		});
+
+		it('should add null value as `null` string', function (done) {
+			db.sortedSetAdd('nullValueZSet', 1, null, function (err) {
+				assert.ifError(err);
+				db.getSortedSetRange('nullValueZSet', 0, -1, function (err, values) {
+					assert.ifError(err);
+					assert.strictEqual(values[0], 'null');
+					done();
+				});
+			});
+		});
 	});
 
 	describe('sortedSetsAdd()', function () {
@@ -64,6 +89,14 @@ describe('Sorted Set methods', function () {
 			db.sortedSetsAdd(['sorted1', 'sorted2'], 3, 'value3', function (err) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 1);
+				done();
+			});
+		});
+
+
+		it('should error if score is null', function (done) {
+			db.sortedSetsAdd(['sorted1', 'sorted2'], null, 'value1', function (err) {
+				assert.equal(err.message, '[[error:invalid-score, null]]');
 				done();
 			});
 		});
