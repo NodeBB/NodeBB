@@ -102,11 +102,11 @@ define('admin/manage/group', [
 				var newName = $('#change-group-name').val();
 
 				// If the group name changed, change url
-				if (groupName === newName) {
-					app.alertSuccess('[[admin/manage/groups:edit.save-success]]');
-				} else {
+				if (groupName !== newName) {
 					ajaxify.go('admin/manage/groups/' + encodeURIComponent(newName), undefined, true);
 				}
+
+				app.alertSuccess('[[admin/manage/groups:edit.save-success]]');
 			});
 			return false;
 		});
