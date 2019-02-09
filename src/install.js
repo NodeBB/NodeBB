@@ -165,6 +165,9 @@ function completeConfigSetup(config, next) {
 	}
 
 	nconf.overrides(config);
+
+	console.log(config, nconf.get('redis'));
+
 	async.waterfall([
 		function (next) {
 			require('./database').init(next);
