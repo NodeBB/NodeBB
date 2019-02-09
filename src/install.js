@@ -163,10 +163,10 @@ function completeConfigSetup(config, next) {
 	if (nconf.get('package_manager')) {
 		config.package_manager = nconf.get('package_manager');
 	}
-
+	console.log('before override', config, nconf.get('redis'));
 	nconf.overrides(config);
 
-	console.log(config, nconf.get('redis'));
+	console.log('after override', config, nconf.get('redis'));
 
 	async.waterfall([
 		function (next) {
