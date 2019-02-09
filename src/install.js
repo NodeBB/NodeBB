@@ -132,7 +132,13 @@ function setupConfig(next) {
 				var allQuestions = questions.main.concat(questions.optional).concat(redisQuestions).concat(mongoQuestions).concat(postgresQuestions);
 
 				allQuestions.forEach(function (question) {
-					config[question.name] = install.values[question.name] || question.default || undefined;
+					if (install.values.hasOwnProperty(question.name)) {
+						config[question.name] = install.values[question.name];
+					} else if (question.hasOwnProperty('default')) {
+						config[question.name] = question.default;
+					} else {
+						config[question.name] = undefined;
+					}
 				});
 				setImmediate(next, null, config);
 			} else {
