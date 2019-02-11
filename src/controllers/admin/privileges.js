@@ -62,7 +62,7 @@ privilegesController.get = function (req, res, callback) {
 				}
 			});
 
-			res.render('admin/manage/privileges', {
+			res.render('admin/privileges', {
 				privileges: data.privileges,
 				categories: data.categories,
 				selectedCategory: data.selected,

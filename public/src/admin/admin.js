@@ -93,9 +93,12 @@
 			if (/admin\/general\/dashboard$/.test(url)) {
 				pageTitle = '[[admin/menu:general/dashboard]]';
 				mainTitle = pageTitle;
+			} else if (/admin\/privileges\/?(\d+|acp)?/.test(url)) {
+				pageTitle = '[[admin/menu:section-privileges]]';
+				mainTitle = pageTitle;
 			} else if (/admin\/plugins\//.test(url)) {
 				mainTitle = fallback;
-				pageTitle = '[[admin/menu:section-plugins]] > ' + mainTitle;
+				pageTitle = '[[admin/menu:section-plugins]] &rarr; ' + mainTitle;
 			} else {
 				var matches = url.match(/admin\/(.+?)\/(.+?)$/);
 				mainTitle = '[[admin/menu:' + matches[1] + '/' + matches[2] + ']]';

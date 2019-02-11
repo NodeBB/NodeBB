@@ -87,7 +87,7 @@ define('admin/manage/admins-mods', ['translator', 'benchpress', 'autocomplete'],
 		autocomplete.user($('.moderator-search'), function (ev, ui) {
 			var input = $(ev.target);
 			var cid = $(ev.target).attr('data-cid');
-			socket.emit('admin.categories.setPrivilege', {
+			socket.emit('admin.privileges.setPrivilege', {
 				cid: cid,
 				privilege: ['moderate'],
 				set: true,
@@ -118,7 +118,7 @@ define('admin/manage/admins-mods', ['translator', 'benchpress', 'autocomplete'],
 
 			bootbox.confirm('[[admin/manage/users:alerts.confirm-remove-moderator]]', function (confirm) {
 				if (confirm) {
-					socket.emit('admin.categories.setPrivilege', {
+					socket.emit('admin.privileges.setPrivilege', {
 						cid: cid,
 						privilege: ['moderate'],
 						set: false,

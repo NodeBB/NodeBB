@@ -201,7 +201,6 @@
 				<a id="manage-menu" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-manage]]</a>
 				<ul class="dropdown-menu" role="menu">
 					<li><a id="manage-categories" href="{relative_path}/admin/manage/categories">[[admin/menu:manage/categories]]</a></li>
-					<li><a href="{relative_path}/admin/manage/privileges">[[admin/menu:manage/privileges]]</a></li>
 					<li><a id="manage-users" href="{relative_path}/admin/manage/users">[[admin/menu:manage/users]]</a></li>
 					<li><a href="{relative_path}/admin/manage/admins-mods">[[admin/menu:manage/admins-mods]]</a></li>
 					<li><a href="{relative_path}/admin/manage/groups">[[admin/menu:manage/groups]]</a></li>
@@ -234,6 +233,11 @@
 					<li><a href="{relative_path}/admin/settings/sockets">[[admin/menu:settings/sockets]]</a></li>
 					<li><a href="{relative_path}/admin/settings/advanced">[[admin/menu:settings/advanced]]</a></li>
 				</ul>
+			</li>
+			<!-- END -->
+			<!-- IF privileges.acp:privileges -->
+			<li class="menu-item">
+				<a href="{relative_path}/admin/privileges">[[admin/menu:section-privileges]]</a>
 			</li>
 			<!-- END -->
 			<!-- IF privileges.acp:appearance -->

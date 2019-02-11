@@ -1,6 +1,6 @@
 'use strict';
 
-define('admin/manage/privileges', [
+define('admin/privileges', [
 	'autocomplete',
 	'translator',
 	'benchpress',
@@ -18,7 +18,7 @@ define('admin/manage/privileges', [
 			if (category.cid === 'acp') {
 				cid = 'acp';
 			}
-			ajaxify.go('admin/manage/privileges/' + (cid || ''));
+			ajaxify.go('admin/privileges/' + (cid || ''));
 		});
 		Privileges.setupPrivilegeTable();
 	};
@@ -59,7 +59,7 @@ define('admin/manage/privileges', [
 	};
 
 	Privileges.refreshPrivilegeTable = function () {
-		socket.emit('admin.categories.getPrivilegeSettings', cid, function (err, privileges) {
+		socket.emit('admin.privileges.getPrivilegeSettings', cid, function (err, privileges) {
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -97,7 +97,7 @@ define('admin/manage/privileges', [
 	};
 
 	Privileges.setPrivilege = function (member, privilege, state, checkboxEl) {
-		socket.emit('admin.categories.setPrivilege', {
+		socket.emit('admin.privileges.setPrivilege', {
 			cid: cid,
 			privilege: privilege,
 			set: state,
@@ -128,7 +128,7 @@ define('admin/manage/privileges', [
 					defaultPrivileges = ['acp:general'];
 				}
 
-				socket.emit('admin.categories.setPrivilege', {
+				socket.emit('admin.privileges.setPrivilege', {
 					cid: cid,
 					privilege: defaultPrivileges,
 					set: true,
@@ -161,7 +161,7 @@ define('admin/manage/privileges', [
 					defaultPrivileges = 'acp:general';
 				}
 
-				socket.emit('admin.categories.setPrivilege', {
+				socket.emit('admin.privileges.setPrivilege', {
 					cid: cid,
 					privilege: defaultPrivileges,
 					set: true,
@@ -179,7 +179,7 @@ define('admin/manage/privileges', [
 	};
 
 	Privileges.copyPrivilegesToChildren = function () {
-		socket.emit('admin.categories.copyPrivilegesToChildren', cid, function (err) {
+		socket.emit('admin.privileges.copyPrivilegesToChildren', cid, function (err) {
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -189,7 +189,7 @@ define('admin/manage/privileges', [
 
 	Privileges.copyPrivilegesFromCategory = function () {
 		categorySelector.modal(ajaxify.data.categories.slice(1), function (fromCid) {
-			socket.emit('admin.categories.copyPrivilegesFrom', { toCid: cid, fromCid: fromCid }, function (err) {
+			socket.emit('admin.privileges.copyPrivilegesFrom', { toCid: cid, fromCid: fromCid }, function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}

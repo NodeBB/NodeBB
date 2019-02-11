@@ -9,7 +9,6 @@
 
 	"section-manage": "Manage",
 	"manage/categories": "Categories",
-	"manage/privileges": "Privileges",
 	"manage/tags": "Tags",
 	"manage/users": "Users",
 	"manage/admins-mods": "Admins & Mods",
@@ -38,6 +37,8 @@
 	"settings/advanced": "Advanced",
 
 	"settings.page-title": "%1 Settings",
+
+	"section-privileges": "Privileges",
 
 	"section-appearance": "Appearance",
 	"appearance/themes": "Themes",
