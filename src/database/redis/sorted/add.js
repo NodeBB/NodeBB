@@ -14,7 +14,7 @@ module.exports = function (redisClient, module) {
 		if (!utils.isNumber(score)) {
 			return setImmediate(callback, new Error('[[error:invalid-score, ' + score + ']]'));
 		}
-		redisClient.zadd(key, score, value, function (err) {
+		redisClient.zadd(key, score, String(value), function (err) {
 			callback(err);
 		});
 	};
@@ -35,7 +35,7 @@ module.exports = function (redisClient, module) {
 		var args = [key];
 
 		for (var i = 0; i < scores.length; i += 1) {
-			args.push(scores[i], values[i]);
+			args.push(scores[i], String(values[i]));
 		}
 
 		redisClient.zadd(args, function (err) {
@@ -55,7 +55,7 @@ module.exports = function (redisClient, module) {
 
 		for (var i = 0; i < keys.length; i += 1) {
 			if (keys[i]) {
-				batch.zadd(keys[i], score, value);
+				batch.zadd(keys[i], score, String(value));
 			}
 		}
 
