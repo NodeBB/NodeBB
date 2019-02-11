@@ -10,6 +10,7 @@ var user = require('../user');
 var meta = require('../meta');
 var plugins = require('../plugins');
 var versions = require('../admin/versions');
+const privileges = require('../privileges');
 
 var controllers = {
 	api: require('../controllers/api'),
@@ -67,6 +68,7 @@ module.exports = function (middleware) {
 							next(null, err ? null : result);
 						});
 					},
+					privileges: async.apply(privileges.admin.get, req.uid),
 				}, next);
 			},
 			function (results, next) {
@@ -100,6 +102,7 @@ module.exports = function (middleware) {
 					version: version,
 					latestVersion: results.latestVersion,
 					upgradeAvailable: results.latestVersion && semver.gt(results.latestVersion, version),
+					privileges: results.privileges,
 				};
 
 				templateValues.template = { name: res.locals.template };

@@ -9,6 +9,7 @@
 		</ul>
 	</section>
 
+	<!-- IF privileges.acp:general -->
 	<section class="menu-section">
 		<h3 class="menu-section-title">[[admin/menu:section-general]]</h3>
 		<ul class="menu-section-list">
@@ -20,7 +21,9 @@
 			<li><a href="{relative_path}/admin/general/social">[[admin/menu:general/social]]</a></li>
 		</ul>
 	</section>
+	<!-- END -->
 
+	<!-- IF privileges.acp:manage -->
 	<section class="menu-section">
 		<h3 class="menu-section-title">[[admin/menu:section-manage]]</h3>
 		<ul class="menu-section-list">
@@ -36,7 +39,9 @@
 			<li><a href="{relative_path}/admin/manage/uploads">[[admin/menu:manage/uploads]]</a></li>
 		</ul>
 	</section>
+	<!-- END -->
 
+	<!-- IF privileges.acp:settings -->
 	<section class="menu-section">
 		<h3 class="menu-section-title">[[admin/menu:section-settings]]</h3>
 		<ul class="menu-section-list">
@@ -58,7 +63,9 @@
 			<li><a href="{relative_path}/admin/settings/advanced">[[admin/menu:settings/advanced]]</a></li>
 		</ul>
 	</section>
+	<!-- END -->
 
+	<!-- IF privileges.acp:appearance -->
 	<section class="menu-section">
 		<h3 class="menu-section-title">[[admin/menu:section-appearance]]</h3>
 		<ul class="menu-section-list">
@@ -67,7 +74,9 @@
 			<li><a href="{relative_path}/admin/appearance/customise">[[admin/menu:appearance/customise]]</a></li>
 		</ul>
 	</section>
+	<!-- END -->
 
+	<!-- IF privileges.acp:extend -->
 	<section class="menu-section">
 		<h3 class="menu-section-title">[[admin/menu:section-extend]]</h3>
 		<ul class="menu-section-list">
@@ -102,7 +111,9 @@
 		</ul>
 	</section>
 	<!-- ENDIF plugins.length -->
+	<!-- END -->
 
+	<!-- IF privileges.acp:advanced -->
 	<section class="menu-section">
 		<h3 class="menu-section-title">[[admin/menu:section-advanced]]</h3>
 		<ul class="menu-section-list">
@@ -117,6 +128,7 @@
 			<!-- ENDIF env -->
 		</ul>
 	</section>
+	<!-- END -->
 </nav>
 
 <main id="panel">
@@ -169,6 +181,7 @@
 
 
 		<ul id="main-menu">
+			<!-- IF privileges.acp:general -->
 			<li class="menu-item">
 				<a href="{relative_path}/admin/general/dashboard">[[admin/menu:general/dashboard]]</a>
 			</li>
@@ -182,6 +195,8 @@
 					<li><a href="{relative_path}/admin/general/social">[[admin/menu:general/social]]</a></li>
 				</ul>
 			</li>
+			<!-- END -->
+			<!-- IF privileges.acp:manage -->
 			<li class="dropdown menu-item">
 				<a id="manage-menu" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-manage]]</a>
 				<ul class="dropdown-menu" role="menu">
@@ -197,6 +212,8 @@
 					<li><a href="{relative_path}/admin/manage/uploads">[[admin/menu:manage/uploads]]</a></li>
 				</ul>
 			</li>
+			<!-- END -->
+			<!-- IF privileges.acp:settings -->
 			<li class="dropdown menu-item">
 				<a id="settings-menu" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-settings]]</a>
 				<ul class="dropdown-menu" role="menu">
@@ -218,6 +235,8 @@
 					<li><a href="{relative_path}/admin/settings/advanced">[[admin/menu:settings/advanced]]</a></li>
 				</ul>
 			</li>
+			<!-- END -->
+			<!-- IF privileges.acp:appearance -->
 			<li class="dropdown menu-item">
 				<a id="appearance-menu" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-appearance]]</a>
 				<ul class="dropdown-menu" role="menu">
@@ -226,6 +245,8 @@
 					<li><a id="appearance-customise" href="{relative_path}/admin/appearance/customise">[[admin/menu:appearance/customise]]</a></li>
 				</ul>
 			</li>
+			<!-- END -->
+			<!-- IF privileges.acp:extend -->
 			<li class="dropdown menu-item">
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-extend]]</a>
 				<ul class="dropdown-menu" role="menu">
@@ -262,6 +283,8 @@
 				</ul>
 			</li>
 			<!-- ENDIF plugins.length -->
+			<!-- END -->
+			<!-- IF privileges.acp:advanced -->
 			<li class="dropdown menu-item">
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">[[admin/menu:section-advanced]]</a>
 				<ul class="dropdown-menu" role="menu">
@@ -276,5 +299,6 @@
 					<!-- ENDIF env -->
 				</ul>
 			</li>
+			<!-- END -->
 		</ul>
 	</nav>

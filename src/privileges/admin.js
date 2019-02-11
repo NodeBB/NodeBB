@@ -2,8 +2,9 @@
 'use strict';
 
 var async = require('async');
-const user = require('../user');
+const _ = require('lodash');
 
+const user = require('../user');
 var helpers = require('./helpers');
 var plugins = require('../plugins');
 
@@ -55,6 +56,30 @@ module.exports = function (privileges) {
 				payload.columnCountUser = payload.labels.users.length + 2;
 				payload.columnCountGroup = payload.labels.groups.length + 2;
 				next(null, payload);
+			},
+		], callback);
+	};
+
+	privileges.admin.get = function (uid, callback) {
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					privileges: function (next) {
+						helpers.isUserAllowedTo(privileges.admin.userPrivilegeList, uid, 'acp', next);
+					},
+					isAdministrator: function (next) {
+						user.isAdministrator(uid, next);
+					},
+				}, next);
+			},
+			function (results, next) {
+				var privData = _.zipObject(privileges.admin.userPrivilegeList, results.privileges);
+				const payload = {};
+				privileges.admin.userPrivilegeList.forEach((privilege) => {
+					payload[privilege] = privData[privilege] || results.isAdministrator;
+				});
+
+				plugins.fireHook('filter:privileges.admin.get', payload, next);
 			},
 		], callback);
 	};
