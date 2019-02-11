@@ -85,7 +85,7 @@ define('admin/manage/privileges', [
 			}
 		});
 		for (var x = 0, numPrivs = privs.length; x < numPrivs; x += 1) {
-			var inputs = $('.privilege-table tr[data-group-name]:not([data-group-name="registered-users"],[data-group-name="guests"]) td[data-privilege="' + privs[x] + '"] input');
+			var inputs = $('.privilege-table tr[data-group-name]:not([data-group-name="registered-users"],[data-group-name="guests"],[data-group-name="spiders"]) td[data-privilege="' + privs[x] + '"] input');
 			inputs.each(function (idx, el) {
 				if (!el.checked) {
 					el.indeterminate = true;
