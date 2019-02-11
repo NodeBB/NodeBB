@@ -351,14 +351,14 @@ module.exports = function (Groups) {
 	};
 
 	Groups.isInvited = function (uid, groupName, callback) {
-		if (uid <= 0) {
+		if (!(parseInt(uid, 10) > 0)) {
 			return setImmediate(callback, null, false);
 		}
 		db.isSetMember('group:' + groupName + ':invited', uid, callback);
 	};
 
 	Groups.isPending = function (uid, groupName, callback) {
-		if (uid <= 0) {
+		if (!(parseInt(uid, 10) > 0)) {
 			return setImmediate(callback, null, false);
 		}
 		db.isSetMember('group:' + groupName + ':pending', uid, callback);
