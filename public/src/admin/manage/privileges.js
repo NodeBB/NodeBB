@@ -11,10 +11,13 @@ define('admin/manage/privileges', [
 	var cid;
 
 	Privileges.init = function () {
-		cid = ajaxify.data.cid || 0;
+		cid = ajaxify.data.cid !== 'acp' ? parseInt(ajaxify.data.cid, 10) : 'acp';
 
 		categorySelector.init($('[component="category-selector"]'), function (category) {
 			var cid = parseInt(category.cid, 10);
+			if (category.cid === 'acp') {
+				cid = 'acp';
+			}
 			ajaxify.go('admin/manage/privileges/' + (cid || ''));
 		});
 		Privileges.setupPrivilegeTable();
@@ -60,8 +63,7 @@ define('admin/manage/privileges', [
 			if (err) {
 				return app.alertError(err.message);
 			}
-			var tpl = cid ? 'admin/partials/categories/privileges' : 'admin/partials/global/privileges';
-			Benchpress.parse(tpl, {
+			Benchpress.parse('admin/partials/privilege-table', {
 				privileges: privileges,
 			}, function (html) {
 				translator.translate(html, function (html) {
@@ -122,6 +124,10 @@ define('admin/manage/privileges', [
 
 			autocomplete.user(inputEl, function (ev, ui) {
 				var defaultPrivileges = cid ? ['find', 'read', 'topics:read'] : ['chat'];
+				if (cid === 'acp') {
+					defaultPrivileges = ['acp:general'];
+				}
+
 				socket.emit('admin.categories.setPrivilege', {
 					cid: cid,
 					privilege: defaultPrivileges,

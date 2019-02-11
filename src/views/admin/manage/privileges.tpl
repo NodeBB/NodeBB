@@ -13,11 +13,7 @@
 			<hr />
 
 			<div class="privilege-table-container">
-				<!-- IF cid -->
-				<!-- IMPORT admin/partials/categories/privileges.tpl -->
-				<!-- ELSE -->
-				<!-- IMPORT admin/partials/global/privileges.tpl -->
-				<!-- ENDIF cid -->
+				<!-- IMPORT admin/partials/privilege-table.tpl -->
 			</div>
 		</div>
 	</form>

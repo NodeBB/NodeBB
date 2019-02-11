@@ -9,14 +9,20 @@ var privilegesController = module.exports;
 
 privilegesController.get = function (req, res, callback) {
 	var cid = req.params.cid ? parseInt(req.params.cid, 10) : 0;
+	if (req.params.cid === 'acp') {
+		cid = 'acp';
+	}
+
 	async.waterfall([
 		function (next) {
 			async.parallel({
 				privileges: function (next) {
 					if (!cid) {
 						privileges.global.list(next);
-					} else {
+					} else if (!isNaN(cid)) {
 						privileges.categories.list(cid, next);
+					} else {
+						privileges.admin.list(next);
 					}
 				},
 				categories: function (next) {
@@ -37,6 +43,11 @@ privilegesController.get = function (req, res, callback) {
 		},
 		function (data) {
 			data.categories.unshift({
+				cid: 'acp',
+				name: '[[admin/manage/privileges:acp]]',
+				icon: 'fa-key',
+			});
+			data.categories.unshift({
 				cid: 0,
 				name: '[[admin/manage/privileges:global]]',
 				icon: 'fa-list',
@@ -56,6 +67,7 @@ privilegesController.get = function (req, res, callback) {
 				categories: data.categories,
 				selectedCategory: data.selected,
 				cid: cid,
+				isCategory: cid !== 'acp' ? parseInt(cid, 10) : false,	// 'acp' or 0, not a category
 			});
 		},
 	], callback);

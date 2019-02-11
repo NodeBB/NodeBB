@@ -38,7 +38,7 @@
 	"privileges.section-other": "Other",
 	"privileges.section-user": "User",
 	"privileges.search-user": "Add User",
-	"privileges.no-users": "No user-specific privileges in this category.",
+	"privileges.no-users": "No user-specific privileges.",
 	"privileges.section-group": "Group",
 	"privileges.group-private": "This group is private",
 	"privileges.search-group": "Add Group",

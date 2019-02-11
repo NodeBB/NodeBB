@@ -45,6 +45,7 @@ privileges.groupPrivilegeList = privileges.userPrivilegeList.map(function (privi
 privileges.privilegeList = privileges.userPrivilegeList.concat(privileges.groupPrivilegeList);
 
 require('./global')(privileges);
+require('./admin')(privileges);
 require('./categories')(privileges);
 require('./topics')(privileges);
 require('./posts')(privileges);

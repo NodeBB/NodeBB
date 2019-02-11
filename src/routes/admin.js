@@ -42,7 +42,7 @@ function apiRouter(middleware, controllers) {
 }
 
 function addRoutes(router, middleware, controllers) {
-	var middlewares = [middleware.pluginHooks];
+	var middlewares = [middleware.pluginHooks, middleware.admin.checkPrivileges];
 
 	router.get('/', middlewares, controllers.admin.dashboard.get);
 	router.get('/general/dashboard', middlewares, controllers.admin.dashboard.get);

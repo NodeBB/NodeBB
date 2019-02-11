@@ -1,6 +1,6 @@
 {
 	"global": "Global",
-	"global.no-users": "No user-specific global privileges.",
+	"acp": "Administrative Control Panel",
 
 	"chat": "Chat",
 	"upload-images": "Upload Images",
@@ -30,5 +30,7 @@
 	"downvote-posts": "Downvote Posts",
 	"delete-topics": "Delete Topics",
 	"purge": "Purge",
-	"moderate": "Moderate"
+	"moderate": "Moderate",
+
+	"acp.general": "General"
 }
