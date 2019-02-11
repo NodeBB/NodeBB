@@ -63,7 +63,7 @@ SocketAdmin.before = function (socket, method, data, next) {
 			const parts = method.split('.');
 			let privilege = 'general';
 			if (parts.length > 2) {
-				privilege = SocketAdmin._getPrivilegeFromNamespace(parts[1]);
+				privilege = SocketAdmin._getPrivilegeFromNamespace(parts[1])[0] || '';
 			}
 			privileges.admin.can('acp:' + privilege, socket.uid, next);
 		},
