@@ -1,7 +1,6 @@
 'use strict';
 
 var async = require('async');
-var validator = require('validator');
 var zxcvbn = require('zxcvbn');
 var db = require('../database');
 var utils = require('../utils');
@@ -15,7 +14,7 @@ module.exports = function (User) {
 		data.username = data.username.trim();
 		data.userslug = utils.slugify(data.username);
 		if (data.email !== undefined) {
-			data.email = validator.escape(String(data.email).trim());
+			data.email = String(data.email).trim();
 		}
 		var timestamp = data.timestamp || Date.now();
 		var userData;

@@ -180,9 +180,7 @@ module.exports = function (User) {
 			},
 			function (_data, next) {
 				data = _data;
-				var keys = data.filter(Boolean).map(function (user) {
-					return 'registration:queue:name:' + user.value;
-				});
+				var keys = data.filter(Boolean).map(user => 'registration:queue:name:' + user.value);
 				db.getObjects(keys, next);
 			},
 			function (users, next) {

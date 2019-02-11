@@ -159,6 +159,10 @@ module.exports = function (User) {
 				user.username = validator.escape(user.username ? user.username.toString() : '');
 			}
 
+			if (user.hasOwnProperty('email')) {
+				user.email = validator.escape(user.email ? user.email.toString() : '');
+			}
+
 			if (!parseInt(user.uid, 10)) {
 				user.uid = 0;
 				user.username = (user.hasOwnProperty('oldUid') && parseInt(user.oldUid, 10)) ? '[[global:former_user]]' : '[[global:guest]]';

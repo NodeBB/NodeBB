@@ -60,6 +60,17 @@ describe('User', function () {
 			});
 		});
 
+		it('should be created properly', function (done) {
+			User.create({ username: 'weirdemail', email: '<h1>test</h1>@gmail.com' }, function (err, uid) {
+				assert.ifError(err);
+				User.getUserData(uid, function (err, data) {
+					assert.ifError(err);
+					assert.equal(data.email, '&lt;h1&gt;test&lt;&#x2F;h1&gt;@gmail.com');
+					done();
+				});
+			});
+		});
+
 		it('should have a valid email, if using an email', function (done) {
 			User.create({ username: userData.username, password: userData.password, email: 'fakeMail' }, function (err) {
 				assert(err);
