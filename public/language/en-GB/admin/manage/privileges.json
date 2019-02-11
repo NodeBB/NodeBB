@@ -32,5 +32,10 @@
 	"purge": "Purge",
 	"moderate": "Moderate",
 
-	"acp.general": "General"
+	"acp.general": "General",
+	"acp.manage": "Manage",
+	"acp.settings": "Settings",
+	"acp.appearance": "Appearance",
+	"acp.extend": "Extend",
+	"acp.advanced": "Advanced"
 }

@@ -23,6 +23,8 @@ var index = require('./index');
 var getAdminSearchDict = require('../admin/search').getDictionary;
 var utils = require('../../public/src/utils');
 
+const privileges = require('../privileges');
+
 var SocketAdmin = {
 	user: require('./admin/user'),
 	categories: require('./admin/categories'),
@@ -42,12 +44,28 @@ var SocketAdmin = {
 	logs: {},
 	errors: {},
 	uploads: {},
+
+	// ACP routes don't necessarily correspond to socket.io namespaces. A mapping is maintained here.
+	_namespaceMap: {
+		general: new Set(['analytics', 'rooms', 'navigation', 'social']),
+		manage: new Set(['user', 'categories', 'groups', 'tags', 'uploads']),
+		settings: new Set(['rewards', 'widgets', 'config', 'settings', 'email']),
+		appearance: new Set(['themes']),
+		extend: new Set(['plugins']),
+		advanced: new Set(['logs', 'errors']),
+	},
+	_getPrivilegeFromNamespace: namespace => Object.keys(SocketAdmin._namespaceMap).filter(privilege => SocketAdmin._namespaceMap[privilege].has(namespace)),
 };
 
 SocketAdmin.before = function (socket, method, data, next) {
 	async.waterfall([
 		function (next) {
-			user.isAdministrator(socket.uid, next);
+			const parts = method.split('.');
+			let privilege = 'general';
+			if (parts.length > 2) {
+				privilege = SocketAdmin._getPrivilegeFromNamespace(parts[1]);
+			}
+			privileges.admin.can('acp:' + privilege, socket.uid, next);
 		},
 		function (isAdmin) {
 			if (isAdmin) {

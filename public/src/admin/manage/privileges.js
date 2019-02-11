@@ -157,6 +157,10 @@ define('admin/manage/privileges', [
 
 			autocomplete.group(inputEl, function (ev, ui) {
 				var defaultPrivileges = cid ? ['groups:find', 'groups:read', 'groups:topics:read'] : ['groups:chat'];
+				if (cid === 'acp') {
+					defaultPrivileges = 'acp:general';
+				}
+
 				socket.emit('admin.categories.setPrivilege', {
 					cid: cid,
 					privilege: defaultPrivileges,

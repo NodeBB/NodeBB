@@ -6,7 +6,7 @@ var winston = require('winston');
 
 var meta = require('../meta');
 var user = require('../user');
-var privileges = require('../privileges');
+const privileges = require('../privileges');
 var plugins = require('../plugins');
 
 var auth = require('../routes/authentication');
@@ -198,10 +198,12 @@ module.exports = function (middleware) {
 	middleware.isAdmin = function isAdmin(req, res, next) {
 		async.waterfall([
 			function (next) {
-				user.isAdministrator(req.uid, next);
+				const privMatch = new RegExp('^' + nconf.get('relative_path') + '(?:/api)?/admin/(\\w+)');
+				const matches = req.path.match(privMatch);
+				privileges.admin.can('acp:' + (matches ? matches[1] : 'general'), req.uid, next);
 			},
-			function (isAdmin, next) {
-				if (!isAdmin) {
+			function (allowed, next) {
+				if (!allowed) {
 					return controllers.helpers.notAllowed(req, res);
 				}
 				user.hasPassword(req.uid, next);

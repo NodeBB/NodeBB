@@ -126,10 +126,4 @@ module.exports = function (middleware) {
 	middleware.admin.renderFooter = function (req, res, data, next) {
 		req.app.render('admin/footer', data, next);
 	};
-
-	middleware.admin.checkPrivileges = function (req, res, next) {
-		// console.log(req.path);
-		return next();
-		// res.status(403).render('403', { title: '[[global:403.title]]' });
-	};
 };

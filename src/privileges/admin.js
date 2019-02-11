@@ -2,6 +2,7 @@
 'use strict';
 
 var async = require('async');
+const user = require('../user');
 
 var helpers = require('./helpers');
 var plugins = require('../plugins');
@@ -11,10 +12,20 @@ module.exports = function (privileges) {
 
 	privileges.admin.privilegeLabels = [
 		{ name: '[[admin/manage/privileges:acp.general]]' },
+		{ name: '[[admin/manage/privileges:acp.manage]]' },
+		{ name: '[[admin/manage/privileges:acp.settings]]' },
+		{ name: '[[admin/manage/privileges:acp.appearance]]' },
+		{ name: '[[admin/manage/privileges:acp.extend]]' },
+		{ name: '[[admin/manage/privileges:acp.advanced]]' },
 	];
 
 	privileges.admin.userPrivilegeList = [
 		'acp:general',
+		'acp:manage',
+		'acp:settings',
+		'acp:appearance',
+		'acp:extend',
+		'acp:advanced',
 	];
 
 	privileges.admin.groupPrivilegeList = privileges.admin.userPrivilegeList.map(function (privilege) {
@@ -82,21 +93,18 @@ module.exports = function (privileges) {
 	// 	], callback);
 	// };
 
-	// privileges.global.can = function (privilege, uid, callback) {
-	// 	helpers.some([
-	// 		function (next) {
-	// 			helpers.isUserAllowedTo(privilege, uid, [0], function (err, results) {
-	// 				next(err, Array.isArray(results) && results.length ? results[0] : false);
-	// 			});
-	// 		},
-	// 		function (next) {
-	// 			user.isGlobalModerator(uid, next);
-	// 		},
-	// 		function (next) {
-	// 			user.isAdministrator(uid, next);
-	// 		},
-	// 	], callback);
-	// };
+	privileges.admin.can = function (privilege, uid, callback) {
+		helpers.some([
+			function (next) {
+				helpers.isUserAllowedTo(privilege, uid, ['acp'], function (err, results) {
+					next(err, Array.isArray(results) && results.length ? results[0] : false);
+				});
+			},
+			function (next) {
+				user.isAdministrator(uid, next);
+			},
+		], callback);
+	};
 
 	// privileges.global.canGroup = function (privilege, groupName, callback) {
 	// 	groups.isMember(groupName, 'cid:0:privileges:groups:' + privilege, callback);
