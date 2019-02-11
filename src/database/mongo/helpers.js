@@ -46,9 +46,5 @@ helpers.deserializeData = function (data) {
 };
 
 helpers.valueToString = function (value) {
-	if (value === null || value === undefined) {
-		return value;
-	}
-
-	return value.toString();
+	return String(value);
 };
