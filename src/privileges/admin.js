@@ -5,6 +5,7 @@ var async = require('async');
 const _ = require('lodash');
 
 const user = require('../user');
+const groups = require('../groups');
 var helpers = require('./helpers');
 var plugins = require('../plugins');
 
@@ -97,5 +98,9 @@ module.exports = function (privileges) {
 				user.isAdministrator(uid, next);
 			},
 		], callback);
+	};
+
+	privileges.admin.canGroup = function (privilege, groupName, callback) {
+		groups.isMember(groupName, 'cid:acp:privileges:groups:' + privilege, callback);
 	};
 };

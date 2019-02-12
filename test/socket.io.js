@@ -9,7 +9,9 @@ var assert = require('assert');
 var async = require('async');
 var nconf = require('nconf');
 var request = require('request');
+var util = require('util');
 var cookies = request.jar();
+var regularCookies = request.jar();
 
 var db = require('./mocks/databasemock');
 var user = require('../src/user');
@@ -18,6 +20,7 @@ var categories = require('../src/categories');
 var helpers = require('./helpers');
 var meta = require('../src/meta');
 const events = require('../src/events');
+const privileges = require('../src/privileges');
 
 var socketAdmin = require('../src/socket.io/admin');
 
@@ -701,6 +704,268 @@ describe('socket.io', function () {
 				assert.strictEqual(err.message, '[[error:invalid-data]]');
 				done();
 			});
+		});
+	});
+
+	describe('privileges socket methods', function () {
+		let categoryObj;
+
+		before(function (done) {
+			// Create a new category to play around with
+			async.parallel([
+				(done) => {
+					categories.create({
+						name: 'Privilege testing category',
+						description: 'Test category for privilege testing',
+						icon: 'fa-check',
+						blockclass: 'category-blue',
+						order: '5',
+					}, function (err, category) {
+						assert.ifError(err);
+
+						categoryObj = category;
+						done();
+					});
+				},
+				(done) => {
+					request.get({
+						url: nconf.get('url') + '/api/config',
+						jar: regularCookies,
+						json: true,
+					}, function (err, res, body) {
+						assert.ifError(err);
+
+						request.post(nconf.get('url') + '/login', {
+							jar: regularCookies,
+							form: {
+								username: 'regular',
+								password: 'regularpwd',
+							},
+							headers: {
+								'x-csrf-token': body.csrf_token,
+							},
+							json: true,
+						}, done);
+					});
+				},
+			], done);
+		});
+
+		it('should give privilege to a single user', function (done) {
+			socketAdmin.privileges.setPrivilege({ uid: adminUid }, { cid: categoryObj.cid, privilege: ['posts:view_deleted'], set: true, member: regularUid }, function (err) {
+				assert.ifError(err);
+				privileges.categories.can('posts:view_deleted', categoryObj.cid, regularUid, function (err, allowed) {
+					assert.ifError(err);
+					assert(allowed);
+					done();
+				});
+			});
+		});
+
+		it('should remove privilege to a single user', function (done) {
+			socketAdmin.privileges.setPrivilege({ uid: adminUid }, { cid: categoryObj.cid, privilege: 'posts:view_deleted', set: false, member: regularUid }, function (err) {
+				assert.ifError(err);
+				privileges.categories.can('posts:view_deleted', categoryObj.cid, regularUid, function (err, allowed) {
+					assert.ifError(err);
+					assert(!allowed);
+					done();
+				});
+			});
+		});
+
+		it('should give privilege to a group', function (done) {
+			socketAdmin.privileges.setPrivilege({ uid: adminUid }, { cid: categoryObj.cid, privilege: ['groups:topics:delete'], set: true, member: 'registered-users' }, function (err) {
+				assert.ifError(err);
+				privileges.categories.can('topics:delete', categoryObj.cid, regularUid, function (err, allowed) {
+					assert.ifError(err);
+					assert(allowed);
+					done();
+				});
+			});
+		});
+
+		it('should remove privilege from a group', function (done) {
+			socketAdmin.privileges.setPrivilege({ uid: adminUid }, { cid: categoryObj.cid, privilege: 'groups:topics:delete', set: false, member: 'registered-users' }, function (err) {
+				assert.ifError(err);
+				privileges.categories.can('topics:delete', categoryObj.cid, regularUid, function (err, allowed) {
+					assert.ifError(err);
+					assert(!allowed);
+					done();
+				});
+			});
+		});
+
+		it('should get privilege settings', function (done) {
+			socketAdmin.privileges.getPrivilegeSettings({ uid: adminUid }, categoryObj.cid, function (err, data) {
+				assert.ifError(err);
+				assert(data);
+				done();
+			});
+		});
+
+		it('should copy privileges to children', function (done) {
+			var parentCid;
+			var child1Cid;
+			var child2Cid;
+			async.waterfall([
+				function (next) {
+					categories.create({ name: 'parent' }, next);
+				},
+				function (category, next) {
+					parentCid = category.cid;
+					categories.create({ name: 'child1', parentCid: parentCid }, next);
+				},
+				function (category, next) {
+					child1Cid = category.cid;
+					categories.create({ name: 'child2', parentCid: child1Cid }, next);
+				},
+				function (category, next) {
+					child2Cid = category.cid;
+					socketAdmin.privileges.setPrivilege({ uid: adminUid }, { cid: parentCid, privilege: 'groups:topics:delete', set: true, member: 'registered-users' }, next);
+				},
+				function (next) {
+					socketAdmin.privileges.copyPrivilegesToChildren({ uid: adminUid }, parentCid, next);
+				},
+				function (next) {
+					privileges.categories.can('topics:delete', child2Cid, regularUid, next);
+				},
+				function (canDelete, next) {
+					assert(canDelete);
+					next();
+				},
+			], done);
+		});
+
+		it('should copy privileges from', function (done) {
+			var child1Cid;
+			var parentCid;
+			async.waterfall([
+				function (next) {
+					categories.create({ name: 'parent', description: 'copy me' }, next);
+				},
+				function (category, next) {
+					parentCid = category.cid;
+					categories.create({ name: 'child1' }, next);
+				},
+				function (category, next) {
+					child1Cid = category.cid;
+					socketAdmin.privileges.setPrivilege({ uid: adminUid }, { cid: parentCid, privilege: 'groups:topics:delete', set: true, member: 'registered-users' }, next);
+				},
+				function (next) {
+					socketAdmin.privileges.copyPrivilegesFrom({ uid: adminUid }, { fromCid: parentCid, toCid: child1Cid }, next);
+				},
+				function (next) {
+					privileges.categories.can('topics:delete', child1Cid, regularUid, next);
+				},
+				function (canDelete, next) {
+					assert(canDelete);
+					next();
+				},
+			], done);
+		});
+
+		const testAccess = util.promisify(function testAccess(done) {
+			request.get({
+				url: nconf.get('url') + '/api/admin/general/dashboard',
+				jar: regularCookies,
+				json: true,
+			}, function (err, res, body) {
+				done(err, body);
+			});
+		});
+
+		it('should allow ACP access to a single user', (done) => {
+			socketAdmin.privileges.setPrivilege({ uid: adminUid }, { cid: 'acp', privilege: 'acp:general', set: true, member: regularUid }, function (err) {
+				assert.ifError(err);
+				privileges.admin.can('acp:general', regularUid, async function (err, allowed) {
+					assert.ifError(err);
+					assert(allowed);
+					done();
+				});
+			});
+		});
+
+		it('should allow ACP access to a single user (browsing test)', async () => {
+			try {
+				const body = await testAccess();
+				assert(body);
+				assert.strictEqual(body.template.name, 'admin/general/dashboard');
+			} catch (e) {
+				assert.ifError(e);
+			}
+		});
+
+		it('should deny ACP access to a single user', (done) => {
+			socketAdmin.privileges.setPrivilege({ uid: adminUid }, { cid: 'acp', privilege: 'acp:general', set: false, member: regularUid }, function (err) {
+				assert.ifError(err);
+				privileges.admin.can('acp:general', regularUid, function (err, allowed) {
+					assert.ifError(err);
+					assert(!allowed);
+					done();
+				});
+			});
+		});
+
+		it('should deny ACP access to a single user (browsing test)', async () => {
+			try {
+				const body = await testAccess();
+				assert(body);
+				assert.strictEqual(body.path, '/admin/general/dashboard');
+				assert.strictEqual(body.loggedIn, true);
+				assert.strictEqual(body.title, '[[global:403.title]]');
+			} catch (e) {
+				assert.ifError(e);
+			}
+		});
+
+		it('should allow ACP access to a group', (done) => {
+			socketAdmin.privileges.setPrivilege({ uid: adminUid }, { cid: 'acp', privilege: 'groups:acp:general', set: true, member: 'registered-users' }, function (err) {
+				assert.ifError(err);
+				async.parallel([
+					async.apply(privileges.admin.canGroup, 'acp:general', 'registered-users'),
+					async.apply(privileges.admin.can, 'acp:general', regularUid),
+				], (err, allowed) => {
+					assert.ifError(err);
+					assert(allowed.every(Boolean));
+					done();
+				});
+			});
+		});
+
+		it('should allow ACP access to a group (browsing test)', async () => {
+			try {
+				const body = await testAccess();
+				assert(body);
+				assert.strictEqual(body.template.name, 'admin/general/dashboard');
+			} catch (e) {
+				assert.ifError(e);
+			}
+		});
+
+		it('should deny ACP access to a group', (done) => {
+			socketAdmin.privileges.setPrivilege({ uid: adminUid }, { cid: 'acp', privilege: 'groups:acp:general', set: false, member: 'registered-users' }, function (err) {
+				assert.ifError(err);
+				async.parallel([
+					async.apply(privileges.admin.canGroup, 'acp:general', 'registered-users'),
+					async.apply(privileges.admin.can, 'acp:general', regularUid),
+				], (err, allowed) => {
+					assert.ifError(err);
+					assert(!allowed.every(Boolean));
+					done();
+				});
+			});
+		});
+
+		it('should deny ACP access to a group (browsing test)', async () => {
+			try {
+				const body = await testAccess();
+				assert(body);
+				assert.strictEqual(body.path, '/admin/general/dashboard');
+				assert.strictEqual(body.loggedIn, true);
+				assert.strictEqual(body.title, '[[global:403.title]]');
+			} catch (e) {
+				assert.ifError(e);
+			}
 		});
 	});
 });
