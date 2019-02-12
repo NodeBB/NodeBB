@@ -47,7 +47,7 @@ Groups.removeEphemeralGroups = function (groups) {
 	return groups;
 };
 
-var isPrivilegeGroupRegex = /^cid:([\d]+|acp):privileges:[\w:]+$/;
+var isPrivilegeGroupRegex = /^cid:(\d+|acp):privileges:[\w:]+$/;
 Groups.isPrivilegeGroup = function (groupName) {
 	return isPrivilegeGroupRegex.test(groupName);
 };
