@@ -28,7 +28,6 @@ define('forum/chats', [
 		recentChats.init();
 
 		Chats.addEventListeners();
-		Chats.createAutoComplete($('[component="chat/input"]'));
 		Chats.resizeMainWindow();
 
 		if (env === 'md' || env === 'lg') {
@@ -59,6 +58,7 @@ define('forum/chats', [
 		Chats.addScrollHandler(ajaxify.data.roomId, ajaxify.data.uid, $('.chat-content'));
 		Chats.addCharactersLeftHandler($('[component="chat/main-wrapper"]'));
 		Chats.addIPHandler($('[component="chat/main-wrapper"]'));
+		Chats.createAutoComplete($('[component="chat/input"]'));
 
 		$('[data-action="close"]').on('click', function () {
 			Chats.switchChat();
