@@ -358,6 +358,10 @@ define('forum/chats', [
 	};
 
 	Chats.createAutoComplete = function (element) {
+		if (!element.length) {
+			return;
+		}
+
 		var data = {
 			element: element,
 			strategies: [],
