@@ -32,7 +32,6 @@
 	"digest.latest_topics": "Latest topics from %1",
 	"digest.cta": "Click here to visit %1",
 	"digest.unsub.info": "This digest was sent to you due to your subscription settings.",
-	"digest.no_topics": "There have been no active topics in the past %1",
 	"digest.day": "day",
 	"digest.week": "week",
 	"digest.month": "month",

@@ -153,8 +153,8 @@
 
 </head>
 
-<body width="100%" bgcolor="#222222" style="margin: 0; mso-line-height-rule: exactly;">
-	<center style="width: 100%; background: #222222; text-align: left;">
+<body width="100%" bgcolor="#f6f6f6" style="margin: 0; mso-line-height-rule: exactly;">
+	<center style="width: 100%; background: #f6f6f6; text-align: left;">
 
 		<!--
 			Set the email width. Defined in two places:
