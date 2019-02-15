@@ -20,7 +20,7 @@
 				<!-- IF notifications.length -->
 				<tr>
 					<td style="padding: 0px 40px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 15px; line-height: 20px; color: #555555;">
-						<ul style="margin: 0;">
+						<ul style="margin: 0; padding: 0;">
 							<!-- BEGIN notifications -->
 							<li style="text-decoration: none; list-style-type: none; padding-bottom: 0.5em;">
 								<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
@@ -47,7 +47,7 @@
 				<tr>
 					<td style="padding: 0px 40px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 15px; line-height: 20px; color: #555555;">
 						<h1 style="margin: 16px 0 24px 0; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 18px; line-height: 21px; color: #aaaaaa; font-weight: normal;">[[email:digest.latest_topics, {site_title}]]</h1>
-						<ul style="margin: 0;">
+						<ul style="margin: 0; padding: 0;">
 							<!-- BEGIN recent -->
 							<li style="text-decoration: none; list-style-type: none; padding-bottom: 0.5em;">
 								<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
@@ -62,7 +62,7 @@
 										<td colspan="2" style="padding: 8px 16px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; line-height: 16px; color: #333333;">
 											<p style="margin: 0; padding: 6px 0px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 13px; line-height: 26px; color: #666666;">{recent.teaser.content}</p>
 											<p style="margin: 0; padding: 6px 0px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 12px; line-height: 16px;">
-												<a style="text-decoration:none !important; text-decoration:none; color: #666666; font-size: 12px; line-height: 16px;" href="{url}/{recent.slug}">
+												<a style="text-decoration:none !important; text-decoration:none; text-transform: capitalize; color: #666666; font-size: 12px; line-height: 16px;" href="{url}/{recent.slug}">
 													<strong><span style="color: #aaaaaa;">&rsaquo;</span> [[global:read_more]]</strong>
 												</a>
 											</p>
