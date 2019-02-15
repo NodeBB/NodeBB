@@ -5,7 +5,7 @@
 
 	<!-- 1 Column Text + Button : BEGIN -->
 	<tr>
-		<td bgcolor="#fff">
+		<td bgcolor="#ffffff">
 			<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
 				<tr>
 					<td style="padding: 40px 40px 6px 40px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 15px; line-height: 20px; color: #555555;">
