@@ -55,14 +55,14 @@
 										<td style="padding: 6px 16px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; width: 32px; vertical-align: top;">{function.renderDigestAvatar}</td>
 										<td style="padding: 6px 16px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; line-height: 16px; color: #333333;">
 											<p style="margin: 0;"><a style="text-decoration:none !important; text-decoration:none; color: #333333;" href="{url}/uid/{recent.user.uid}"><strong>{recent.teaser.user.username}</strong></a></p>
-											<p style="margin: 0;"><a style="text-decoration:none !important; text-decoration:none; color: #aaaaaa; font-size: 12px; line-height: 16px;" href="{url}/{recent.slug}"><strong>{recent.title}</strong></a></p>
+											<p style="margin: 0;"><a style="text-decoration:none !important; text-decoration:none; color: #aaaaaa; font-size: 12px; line-height: 16px;" href="{url}/topic/{recent.slug}"><strong>{recent.title}</strong></a></p>
 										</td>
 									</tr>
 									<tr>
 										<td colspan="2" style="padding: 8px 16px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; line-height: 16px; color: #333333;">
 											<p style="margin: 0; padding: 6px 0px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 13px; line-height: 26px; color: #666666;">{recent.teaser.content}</p>
 											<p style="margin: 0; padding: 6px 0px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 12px; line-height: 16px;">
-												<a style="text-decoration:none !important; text-decoration:none; text-transform: capitalize; color: #666666; font-size: 12px; line-height: 16px;" href="{url}/{recent.slug}">
+												<a style="text-decoration:none !important; text-decoration:none; text-transform: capitalize; color: #666666; font-size: 12px; line-height: 16px;" href="{url}/topic/{recent.slug}">
 													<strong><span style="color: #aaaaaa;">&rsaquo;</span> [[global:read_more]]</strong>
 												</a>
 											</p>
