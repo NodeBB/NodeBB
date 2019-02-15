@@ -296,8 +296,9 @@ SocketAdmin.email.test = function (socket, data, callback) {
 					showUnsubscribe: true,
 				}, next);
 			},
-		]);
+		], callback);
 		break;
+
 	default:
 		emailer.send(data.template, socket.uid, payload, callback);
 		break;
