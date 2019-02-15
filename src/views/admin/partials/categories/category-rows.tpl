@@ -1,7 +1,7 @@
 <ul data-cid="{cid}">
 <!-- BEGIN categories -->
     <li data-cid="{categories.cid}" <!-- IF categories.disabled -->class="disabled"<!-- ENDIF categories.disabled -->>
-        <div class="row">
+        <div class="row category-row">
             <div class="col-md-9">
                 <div class="clearfix">
                     <div class="toggle">
