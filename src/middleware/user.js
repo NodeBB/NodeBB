@@ -229,7 +229,7 @@ module.exports = function (middleware) {
 				}
 				returnTo = returnTo.replace(/^\/api/, '');
 
-				req.session.returnTo = nconf.get('relative_path') + returnTo;
+				req.session.returnTo = returnTo;
 				req.session.forceLogin = 1;
 				if (res.locals.isAPI) {
 					res.status(401).json({});
