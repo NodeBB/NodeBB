@@ -153,8 +153,8 @@
     "cant-move-to-same-topic": "无法将帖子移动到相同的主题中！",
     "cannot-block-self": "您不能把自己屏蔽！",
     "cannot-block-privileged": "您不能屏蔽管理员或者全局版主",
-    "cannot-block-guest": "Guest are not able to block other users",
-    "already-blocked": "This user is already blocked",
-    "already-unblocked": "This user is already unblocked",
+    "cannot-block-guest": "游客无法屏蔽其他用户",
+    "already-blocked": "此用户已被屏蔽",
+    "already-unblocked": "此用户已被取消屏蔽",
     "no-connection": "您的网络连接似乎存在问题"
 }
