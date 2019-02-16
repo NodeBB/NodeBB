@@ -568,6 +568,7 @@ app.cacheBuster = null;
 		var searchButton = $('#search-button');
 		var searchFields = $('#search-fields');
 		var searchInput = $('#search-fields input');
+		var quickSearchResults = $('#quick-search-results');
 
 		$('#search-form .advanced-search-link').on('mousedown', function () {
 			ajaxify.go('/search');
@@ -575,10 +576,47 @@ app.cacheBuster = null;
 
 		$('#search-form').on('submit', dismissSearch);
 		searchInput.on('blur', dismissSearch);
+		searchInput.on('focus', function () {
+			if (searchInput.val() && quickSearchResults.children().length) {
+				quickSearchResults.removeClass('hidden').show();
+			}
+		});
+
+		var searchTimeoutId = 0;
+		searchInput.on('keyup', function () {
+			if (searchTimeoutId) {
+				clearTimeout(searchTimeoutId);
+				searchTimeoutId = 0;
+			}
+			if (searchInput.val().length < 3) {
+				return;
+			}
+
+			searchTimeoutId = setTimeout(function () {
+				require(['search'], function (search) {
+					var data = search.getSearchPreferences();
+					data.term = searchInput.val();
+					data.in = 'titles';
+					data.searchOnly = 1;
+					search.api(data, function (data) {
+						if (!data.matchCount) {
+							return;
+						}
+
+						app.parseAndTranslate('partials/quick-search-results', data, function (html) {
+							quickSearchResults.html(html).removeClass('hidden').show();
+						});
+					});
+				});
+			}, 400);
+		});
 
 		function dismissSearch() {
 			searchFields.addClass('hidden');
 			searchButton.removeClass('hidden');
+			setTimeout(function () {
+				quickSearchResults.addClass('hidden');
+			}, 100);
 		}
 
 		searchButton.on('click', function (e) {
