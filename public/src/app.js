@@ -564,6 +564,41 @@ app.cacheBuster = null;
 		});
 	}
 
+	app.enableTopicSearch = function (options) {
+		var quickSearchResults = options.resultEl;
+		var inputEl = options.inputEl;
+		var template = options.template || 'partials/quick-search-results';
+		var searchTimeoutId = 0;
+		inputEl.on('keyup', function () {
+			if (searchTimeoutId) {
+				clearTimeout(searchTimeoutId);
+				searchTimeoutId = 0;
+			}
+			if (inputEl.val().length < 3) {
+				return;
+			}
+
+			searchTimeoutId = setTimeout(function () {
+				require(['search'], function (search) {
+					var data = search.getSearchPreferences();
+					data.term = inputEl.val();
+					data.in = 'titles';
+					data.searchOnly = 1;
+					search.api(data, function (data) {
+						if (!data.matchCount) {
+							quickSearchResults.html('').addClass('hidden');
+							return;
+						}
+
+						app.parseAndTranslate(template, data, function (html) {
+							quickSearchResults.html(html).removeClass('hidden').show();
+						});
+					});
+				});
+			}, 400);
+		});
+	};
+
 	app.handleSearch = function () {
 		var searchButton = $('#search-button');
 		var searchFields = $('#search-fields');
@@ -582,33 +617,9 @@ app.cacheBuster = null;
 			}
 		});
 
-		var searchTimeoutId = 0;
-		searchInput.on('keyup', function () {
-			if (searchTimeoutId) {
-				clearTimeout(searchTimeoutId);
-				searchTimeoutId = 0;
-			}
-			if (searchInput.val().length < 3) {
-				return;
-			}
-
-			searchTimeoutId = setTimeout(function () {
-				require(['search'], function (search) {
-					var data = search.getSearchPreferences();
-					data.term = searchInput.val();
-					data.in = 'titles';
-					data.searchOnly = 1;
-					search.api(data, function (data) {
-						if (!data.matchCount) {
-							return;
-						}
-
-						app.parseAndTranslate('partials/quick-search-results', data, function (html) {
-							quickSearchResults.html(html).removeClass('hidden').show();
-						});
-					});
-				});
-			}, 400);
+		app.enableTopicSearch({
+			inputEl: searchInput,
+			resultEl: quickSearchResults,
 		});
 
 		function dismissSearch() {
