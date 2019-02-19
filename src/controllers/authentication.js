@@ -173,7 +173,7 @@ authenticationController.registerComplete = function (req, res, next) {
 				return res.redirect(nconf.get('relative_path') + '/?register=' + encodeURIComponent(data.message));
 			}
 			if (req.session.returnTo) {
-				res.redirect(req.session.returnTo);
+				res.redirect(nconf.get('relative_path') + req.session.returnTo);
 			} else {
 				res.redirect(nconf.get('relative_path') + '/');
 			}
