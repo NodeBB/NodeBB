@@ -133,14 +133,16 @@ apiController.getPostData = function (pid, uid, callback) {
 		post: function (next) {
 			posts.getPostData(pid, next);
 		},
+		voted: async.apply(posts.hasVoted, pid, uid),
 	}, function (err, results) {
 		if (err || !results.post) {
 			return callback(err);
 		}
 
 		var post = results.post;
-		var privileges = results.privileges[0];
+		Object.assign(post, results.voted);
 
+		var privileges = results.privileges[0];
 		if (!privileges.read || !privileges['topics:read']) {
 			return callback();
 		}
