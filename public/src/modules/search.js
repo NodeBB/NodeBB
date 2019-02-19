@@ -24,9 +24,9 @@ define('search', ['navigator', 'translator', 'storage'], function (nav, translat
 	};
 
 	Search.api = function (data, callback) {
-		var apiURL = '/api/search?' + createQueryString(data);
+		var apiURL = config.relative_path + '/api/search?' + createQueryString(data);
 		data.searchOnly = undefined;
-		var searchURL = '/search?' + createQueryString(data);
+		var searchURL = config.relative_path + '/search?' + createQueryString(data);
 		$.get(apiURL, function (result) {
 			result.url = searchURL;
 			callback(result);
