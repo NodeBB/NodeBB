@@ -39,7 +39,7 @@ databaseController.get = function (req, res) {
 		Object.assign(results, { error: err });
 
 		// Override mongo error with more human-readable error
-		if (err.name === 'MongoError' && err.codeName === 'Unauthorized') {
+		if (err && err.name === 'MongoError' && err.codeName === 'Unauthorized') {
 			err.friendlyMessage = '[[admin/advanced/database:mongo.unauthorized]]';
 			delete results.mongo;
 		}
