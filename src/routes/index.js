@@ -95,12 +95,11 @@ module.exports = function (app, middleware, callback) {
 	router.render = function () {
 		app.render.apply(app, arguments);
 	};
-	var relativePath = nconf.get('relative_path');
 	var ensureLoggedIn = require('connect-ensure-login');
 
-	app.all(relativePath + '(/+api|/+api/*?)', middleware.prepareAPI);
-	app.all(relativePath + '(/+api/admin|/+api/admin/*?)', middleware.isAdmin);
-	app.all(relativePath + '(/+admin|/+admin/*?)', ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login?local=1'), middleware.applyCSRF, middleware.isAdmin);
+	router.all('(/+api|/+api/*?)', middleware.prepareAPI);
+	router.all('(/+api/admin|/+api/admin/*?)', middleware.isAdmin);
+	router.all('(/+admin|/+admin/*?)', ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login?local=1'), middleware.applyCSRF, middleware.isAdmin);
 
 	app.use(middleware.stripLeadingSlashes);
 
