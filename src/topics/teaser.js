@@ -23,6 +23,7 @@ module.exports = function (Topics) {
 		var teaserPids = [];
 		var postData;
 		var tidToPost = {};
+		const teaserPost = this ? this.teaserPost : meta.config.teaserPost;
 
 		topics.forEach(function (topic) {
 			counts.push(topic && topic.postcount);
@@ -30,9 +31,9 @@ module.exports = function (Topics) {
 				if (topic.teaserPid === 'null') {
 					delete topic.teaserPid;
 				}
-				if (meta.config.teaserPost === 'first') {
+				if (teaserPost === 'first') {
 					teaserPids.push(topic.mainPid);
-				} else if (meta.config.teaserPost === 'last-post') {
+				} else if (teaserPost === 'last-post') {
 					teaserPids.push(topic.teaserPid || topic.mainPid);
 				} else { // last-reply and everything else uses teaserPid like `last` that was used before
 					teaserPids.push(topic.teaserPid);

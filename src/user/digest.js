@@ -180,8 +180,24 @@ Digest.send = function (data, callback) {
 					next(null, data);
 				}
 			},
-			function (data, next) {
-				next(null, data.topics);
+			(data, next) => {
+				// Re-generate teasers with different teaserPost option
+				topics.getTeasers.bind({ teaserPost: 'last-post' })(data.topics, uid, function (err, teasers) {
+					if (err) {
+						return next(err);
+					}
+
+					data.topics.map(function (topicObj, i) {
+						if (teasers[i].content.length > 255) {
+							teasers[i].content = teasers[i].content.slice(0, 255) + '...';
+						}
+
+						topicObj.teaser = teasers[i];
+						return topicObj;
+					});
+
+					next(null, data.topics);
+				});
 			},
 		], callback);
 	}
