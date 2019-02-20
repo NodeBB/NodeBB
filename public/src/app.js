@@ -580,17 +580,21 @@ app.cacheBuster = null;
 
 			searchTimeoutId = setTimeout(function () {
 				require(['search'], function (search) {
-					var data = search.getSearchPreferences();
-					data.term = inputEl.val();
-					data.in = 'titles';
-					data.searchOnly = 1;
+					var data = {
+						term: inputEl.val(),
+						in: 'titles',
+						searchOnly: 1,
+					};
 					search.api(data, function (data) {
 						if (!data.matchCount) {
 							quickSearchResults.html('').addClass('hidden');
 							return;
 						}
-
+						data.posts.forEach(function (p) {
+							p.snippet = $(p.content).text().slice(0, 80) + '...';
+						});
 						app.parseAndTranslate(template, data, function (html) {
+							html.find('.timeago').timeago();
 							quickSearchResults.html(html).removeClass('hidden').show();
 						});
 					});
