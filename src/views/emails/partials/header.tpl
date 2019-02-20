@@ -161,7 +161,7 @@
 			1. max-width for all clients except Desktop Windows Outlook, allowing the email to squish on narrow but never go wider than 600px.
 			2. MSO tags for Desktop Windows Outlook enforce a 600px width.
 		-->
-		<div style="max-width: 600px; margin: auto;" class="email-container">
+		<div style="max-width: 600px; margin: auto;<!-- IF rtl --> text-align: right; direction: rtl;<!-- END -->" class="email-container">
 			<!--[if mso]>
 			<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" align="center">
 			<tr>
