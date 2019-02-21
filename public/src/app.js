@@ -579,6 +579,9 @@ app.cacheBuster = null;
 			}
 
 			searchTimeoutId = setTimeout(function () {
+				if (!inputEl.is(':focus')) {
+					return quickSearchResults.addClass('hidden');
+				}
 				require(['search'], function (search) {
 					var data = {
 						term: inputEl.val(),
@@ -613,7 +616,9 @@ app.cacheBuster = null;
 			ajaxify.go('/search');
 		});
 
-		$('#search-form').on('submit', dismissSearch);
+		$('#search-form').on('submit', function () {
+			searchInput.blur();
+		});
 		searchInput.on('blur', dismissSearch);
 		searchInput.on('focus', function () {
 			if (searchInput.val() && quickSearchResults.children().length) {
