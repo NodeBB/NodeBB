@@ -195,14 +195,14 @@ Emailer.send = function (template, uid, params, callback) {
 				settings: async.apply(User.getSettings, uid),
 			}, next);
 		},
-		async function (results, next) {
+		async function (results) {
 			if (!results.email) {
 				winston.warn('uid : ' + uid + ' has no email, not sending.');
-				return next();
+				return;
 			}
 			params.uid = uid;
 			params.rtl = await translator.translate('[[language:dir]]', results.settings.userLang) === 'rtl';
-			Emailer.sendToEmail(template, results.email, results.settings.userLang, params, next);
+			Emailer.sendToEmail(template, results.email, results.settings.userLang, params, function () {});
 		},
 	], callback);
 };
