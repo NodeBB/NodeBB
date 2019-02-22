@@ -204,7 +204,9 @@ Emailer.send = function (template, uid, params, callback) {
 			params.rtl = await translator.translate('[[language:dir]]', results.settings.userLang) === 'rtl';
 			Emailer.sendToEmail(template, results.email, results.settings.userLang, params, function () {});
 		},
-	], callback);
+	], function (err) {
+		return callback(err);
+	});
 };
 
 Emailer.sendToEmail = function (template, email, language, params, callback) {
