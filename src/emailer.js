@@ -142,7 +142,7 @@ Emailer.registerApp = function (expressApp) {
 	app = expressApp;
 
 	var logo = null;
-	if (meta.configs.hasOwnProperty('brand:emailLogo')) {
+	if (meta.config.hasOwnProperty('brand:emailLogo')) {
 		logo = (!meta.config['brand:emailLogo'].startsWith('http') ? nconf.get('url') : '') + meta.config['brand:emailLogo'];
 	}
 
