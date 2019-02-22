@@ -294,7 +294,7 @@ User.getModeratorUids = function (callback) {
 			categories.getModeratorUids(cids, next);
 		},
 		function (uids, next) {
-			next(null, _.union(uids));
+			next(null, _.union(...uids));
 		},
 	], callback);
 };
