@@ -23,7 +23,7 @@ module.exports = function (Topics) {
 		var teaserPids = [];
 		var postData;
 		var tidToPost = {};
-		const teaserPost = this ? this.teaserPost : meta.config.teaserPost;
+		const teaserPost = this.teaserPost ? this.teaserPost : meta.config.teaserPost;
 
 		topics.forEach(function (topic) {
 			counts.push(topic && topic.postcount);
