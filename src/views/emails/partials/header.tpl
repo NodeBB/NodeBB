@@ -134,7 +134,7 @@
             /* What it does: Adjust typography on small screens to improve readability */
 			.email-container p {
 				font-size: 17px !important;
-				line-height: 22px !important;
+				line-height: 26px !important;
 			}
 
 		}
