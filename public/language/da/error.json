@@ -33,6 +33,7 @@
     "username-too-short": "Brugernavn er for kort",
     "username-too-long": "Brugernavn er for langt",
     "password-too-long": "Kodeord er for langt",
+    "reset-rate-limited": "Too many password reset requests (rate limited)",
     "user-banned": "Bruger er bortvist",
     "user-banned-reason": "Sorry, this account has been banned (Reason: %1)",
     "user-banned-reason-until": "Sorry, this account has been banned until %1 (Reason: %2)",

@@ -5,6 +5,7 @@
 	"tooltip": "Tooltip:",
 	"text": "Testo:",
 	"text-class": "Text Class: <small>optional</small>",
+	"class": "Class: <small>optional</small>",
 	"id": "ID: <small>optional</small>",
 
 	"properties": "Proprietà:",

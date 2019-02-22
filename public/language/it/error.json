@@ -33,6 +33,7 @@
     "username-too-short": "Nome utente troppo corto",
     "username-too-long": "Nome utente troppo lungo",
     "password-too-long": "Password troppo lunga",
+    "reset-rate-limited": "Too many password reset requests (rate limited)",
     "user-banned": "Utente bannato",
     "user-banned-reason": "Spiacente, questo account è stato bannato (Motivazione: %1)",
     "user-banned-reason-until": "Spiacente, questo account è stato bannato fino a %1 (Motivazione: %2)",

@@ -33,6 +33,7 @@
     "username-too-short": "Kullanıcı ismi çok kısa",
     "username-too-long": "Kullanıcı ismi çok uzun.",
     "password-too-long": "Parola çok uzun",
+    "reset-rate-limited": "Too many password reset requests (rate limited)",
     "user-banned": "Kullanıcı Yasaklı",
     "user-banned-reason": "Maalesef, bu hesap yasaklandı (Sebep: %1)",
     "user-banned-reason-until": "Maalesef, bu hesap %1 kadar yasaklandı (Sebep:  %2)",

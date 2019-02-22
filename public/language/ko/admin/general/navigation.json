@@ -5,6 +5,7 @@
 	"tooltip": "툴팁:",
 	"text": "텍스트:",
 	"text-class": "텍스트 클래스: <small>선택 사항</small>",
+	"class": "Class: <small>optional</small>",
 	"id": "ID: <small>선택 사항</small>",
 
 	"properties": "속성:",

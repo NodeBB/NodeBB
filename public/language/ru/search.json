@@ -43,5 +43,6 @@
     "clear-preferences": "Очистить настройки",
     "search-preferences-saved": "Настройки поиска сохранены",
     "search-preferences-cleared": "Настройки поиска очищены",
-    "show-results-as": "Показать результаты как:"
+    "show-results-as": "Показать результаты как:",
+    "see-more-results": "See more results (%1)"
 }

@@ -33,6 +33,7 @@
     "username-too-short": "Käyttäjänimi on liian lyhyt",
     "username-too-long": "Käyttäjänimi on liian pitkä",
     "password-too-long": "Password too long",
+    "reset-rate-limited": "Too many password reset requests (rate limited)",
     "user-banned": "Käyttäjä on estetty",
     "user-banned-reason": "Sorry, this account has been banned (Reason: %1)",
     "user-banned-reason-until": "Sorry, this account has been banned until %1 (Reason: %2)",

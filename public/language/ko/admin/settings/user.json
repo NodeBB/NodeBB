@@ -14,7 +14,6 @@
 	"disable-email-changes": "이메일 주소 변경 비활성화",
 	"disable-password-changes": "패스워드 변경 비활성화",
 	"allow-account-deletion": "계정 삭제 허용",
-	"user-info-private": "Hide user list and data from guests",
 	"hide-fullname": "사용자에게서 이름 숨기기",
 	"hide-email": "사용자에게서 이메일 숨기기",
 	"themes": "테마",

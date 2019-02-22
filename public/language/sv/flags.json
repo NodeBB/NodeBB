@@ -9,6 +9,7 @@
 	"updated": "Uppdatering",
 	"target-purged": "Innehållet denna flagga refererar till har rensats bort och är inte längre tillgängligt.",
 
+	"graph-label": "Daily Flags",
 	"quick-filters": "Snabbfilter",
 	"filter-active": "Ett eller flera filter är aktiva i denna lista med flaggor",
 	"filter-reset": "Ta bort filter",

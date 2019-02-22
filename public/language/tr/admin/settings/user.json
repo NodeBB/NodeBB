@@ -14,7 +14,6 @@
 	"disable-email-changes": "E-posta değişikliklerini devre dışı bırak",
 	"disable-password-changes": "Parola değişikliği kapalı",
 	"allow-account-deletion": "Hesap silmeye izin ver",
-	"user-info-private": "Kullanıcı listesini ve verilerini ziyaretçilerden gizle",
 	"hide-fullname": "Kullanıcı adını gizle",
 	"hide-email": "E-posta adresini kullanıcılardan gizle",
 	"themes": "Temalar",

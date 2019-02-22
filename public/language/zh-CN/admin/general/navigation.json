@@ -5,6 +5,7 @@
 	"tooltip": "提示：",
 	"text": "文本：",
 	"text-class": "文本分类“<small>可选</small>",
+	"class": "Class: <small>optional</small>",
 	"id": "ID：<small>可选</small>",
 
 	"properties": "属性：",

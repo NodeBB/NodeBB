@@ -9,6 +9,7 @@
 	"updated": "Aggiornato",
 	"target-purged": "Il contenuto a cui si riferisce questa flag è stato eliminato e non è più disponibile.",
 
+	"graph-label": "Daily Flags",
 	"quick-filters": "Filtri rapidi",
 	"filter-active": "Ci sono uno o più filtri attivi in questa lista di flag",
 	"filter-reset": "Rimuovi filtri",

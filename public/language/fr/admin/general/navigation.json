@@ -5,6 +5,7 @@
 	"tooltip": "Info-bulle :",
 	"text": "Texte :",
 	"text-class": "Classe de texte : <small>optionnel</small>",
+	"class": "Classe: <small>facultatif</small>",
 	"id": "ID : <small>optionnel</small>",
 
 	"properties": "Propriétés :",

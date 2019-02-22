@@ -43,5 +43,6 @@
     "clear-preferences": "ล้างการตั้งค่า",
     "search-preferences-saved": "ค้นหาการตั้งค่าที่บันทึกไว้",
     "search-preferences-cleared": "ค้นหาการตั้งค่าที่ลบล้างไป",
-    "show-results-as": "แสดงผลลัพธ์แบบ"
+    "show-results-as": "แสดงผลลัพธ์แบบ",
+    "see-more-results": "See more results (%1)"
 }

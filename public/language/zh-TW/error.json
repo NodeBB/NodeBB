@@ -33,6 +33,7 @@
     "username-too-short": "帳號太短",
     "username-too-long": "帳號太長",
     "password-too-long": "密碼太長",
+    "reset-rate-limited": "Too many password reset requests (rate limited)",
     "user-banned": "該使用者已被停用",
     "user-banned-reason": "Sorry, this account has been banned (Reason: %1)",
     "user-banned-reason-until": "Sorry, this account has been banned until %1 (Reason: %2)",

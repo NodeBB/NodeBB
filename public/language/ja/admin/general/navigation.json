@@ -5,6 +5,7 @@
 	"tooltip": "ツールチップ:",
 	"text": "テキスト:",
 	"text-class": " テキストのClass:<small>任意</small>",
+	"class": "Class: <small>optional</small>",
 	"id": "ID: <small>任意</small>",
 
 	"properties": "プロパティ:",

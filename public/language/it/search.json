@@ -43,5 +43,6 @@
     "clear-preferences": "Pulisci preferenze",
     "search-preferences-saved": "Cerca nelle preferenze salvate",
     "search-preferences-cleared": "Cerca nelle preferenze pulite",
-    "show-results-as": "Visualizza risultati come"
+    "show-results-as": "Visualizza risultati come",
+    "see-more-results": "See more results (%1)"
 }

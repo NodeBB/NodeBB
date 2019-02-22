@@ -14,7 +14,6 @@
 	"disable-email-changes": "禁用修改邮箱",
 	"disable-password-changes": "禁用修改密码",
 	"allow-account-deletion": "允许消除帐号",
-	"user-info-private": "使用户信息私有化",
 	"hide-fullname": "隐藏用户的全名",
 	"hide-email": "隐藏用户的电子邮箱",
 	"themes": "主题",

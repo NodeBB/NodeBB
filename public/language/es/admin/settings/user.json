@@ -14,7 +14,6 @@
 	"disable-email-changes": "Desactivar cambios de email",
 	"disable-password-changes": "Desactivar cambios de contraseña",
 	"allow-account-deletion": "Permitir borrar cuenta",
-	"user-info-private": "Esconder lista de usuarios y datos de invitados",
 	"hide-fullname": "Esconder nombre completo de los usuarios",
 	"hide-email": "Esconder email de los usuarios",
 	"themes": "Plantillas",

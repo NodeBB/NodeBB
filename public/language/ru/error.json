@@ -33,6 +33,7 @@
     "username-too-short": "Слишком короткое имя пользователя",
     "username-too-long": "Имя пользователя слишком длинное",
     "password-too-long": "Пароль слишком длинный",
+    "reset-rate-limited": "Too many password reset requests (rate limited)",
     "user-banned": "Участник заблокирован",
     "user-banned-reason": "Учетная запись заблокирована (Причина: %1)",
     "user-banned-reason-until": "Извините, этот аккаунт забанен до %1 (Причина: %2)",

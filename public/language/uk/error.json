@@ -33,6 +33,7 @@
     "username-too-short": "Ім'я користувача закоротке",
     "username-too-long": "Ім'я користувача задовге",
     "password-too-long": "Пароль задовгий",
+    "reset-rate-limited": "Too many password reset requests (rate limited)",
     "user-banned": "Користувача забанено",
     "user-banned-reason": "Вибачте, але цей акаунт було забанено (Причина: %1)",
     "user-banned-reason-until": "Вибачте, цей акаунт забанений до %1 (Причина: %2)",

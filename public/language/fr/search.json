@@ -43,5 +43,6 @@
     "clear-preferences": "Réinitialiser les préférences",
     "search-preferences-saved": "Préférences de recherche enregistrées",
     "search-preferences-cleared": "Préférences de recherche réinitialisées",
-    "show-results-as": "Affichez les résultats comme"
+    "show-results-as": "Affichez les résultats comme",
+    "see-more-results": "Voir plus de résultats (%1)"
 }

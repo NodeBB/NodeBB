@@ -49,7 +49,7 @@
     "change_picture": "更改头像",
     "change_username": "更改用户名",
     "change_email": "更改电子邮箱",
-    "email_same_as_password": "Please enter your current password to continue &ndash; you've entered your new email again",
+    "email_same_as_password": "请输入您当前的密码以继续 &ndash;您已经再次输入了您的新电子邮箱",
     "edit": "编辑",
     "edit-profile": "编辑资料",
     "default_picture": "默认图标",

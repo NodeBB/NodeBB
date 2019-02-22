@@ -22,6 +22,7 @@
 	"mongo.bytes-out": "字节输出",
 	"mongo.num-requests": "请求数量",
 	"mongo.raw-info": "MongoDB 原始信息",
+	"mongo.unauthorized": "NodeBB was unable to query the MongoDB database for relevant statistics. Please ensure that the user in use by NodeBB contains the &quot;clusterMonitor&quot; role for the &quot;admin&quot; database.",
 
 	"redis": "Redis",
 	"redis.version": "Redis 版本",

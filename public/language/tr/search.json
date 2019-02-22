@@ -43,5 +43,6 @@
     "clear-preferences": "Tercihleri Sil",
     "search-preferences-saved": "Arama tercihleri kaydedildi",
     "search-preferences-cleared": "Arama tercihleri temizlendi",
-    "show-results-as": "Sonuçları göster : "
+    "show-results-as": "Sonuçları göster : ",
+    "see-more-results": "See more results (%1)"
 }
