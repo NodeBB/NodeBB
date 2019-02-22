@@ -14,16 +14,21 @@ var utils = require('../utils');
 module.exports = function (Topics) {
 	var stripTeaserTags = utils.stripTags.concat(['img']);
 
-	Topics.getTeasers = function (topics, uid, callback) {
+	Topics.getTeasers = function (topics, options, callback) {
 		if (!Array.isArray(topics) || !topics.length) {
 			return callback(null, []);
+		}
+		let uid = options;
+		let teaserPost = meta.config.teaserPost;
+		if (typeof options === 'object') {
+			uid = options.uid;
+			teaserPost = options.teaserPost || meta.config.teaserPost;
 		}
 
 		var counts = [];
 		var teaserPids = [];
 		var postData;
 		var tidToPost = {};
-		const teaserPost = this.teaserPost ? this.teaserPost : meta.config.teaserPost;
 
 		topics.forEach(function (topic) {
 			counts.push(topic && topic.postcount);

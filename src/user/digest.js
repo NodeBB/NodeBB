@@ -163,41 +163,34 @@ Digest.send = function (data, callback) {
 	});
 
 	function getTermTopics(term, uid, start, stop, callback) {
+		const options = {
+			uid: uid,
+			start: start,
+			stop: stop,
+			term: term,
+			sort: 'posts',
+			teaserPost: 'last-post',
+		};
+
 		async.waterfall([
 			function (next) {
-				topics.getSortedTopics({
-					uid: uid,
-					start: start,
-					stop: stop,
-					term: term,
-					sort: 'posts',
-				}, next);
+				topics.getSortedTopics(options, next);
 			},
 			function (data, next) {
 				if (!data.topics.length) {
-					topics.getLatestTopics(uid, start, stop, term, next);
+					topics.getLatestTopics(options, next);
 				} else {
 					next(null, data);
 				}
 			},
 			(data, next) => {
-				// Re-generate teasers with different teaserPost option
-				topics.getTeasers.bind({ teaserPost: 'last-post' })(data.topics, uid, function (err, teasers) {
-					if (err) {
-						return next(err);
+				data.topics.forEach(function (topicObj) {
+					if (topicObj && topicObj.teaser && topicObj.teaser.content && topicObj.teaser.content.length > 255) {
+						topicObj.teaser.content = topicObj.teaser.content.slice(0, 255) + '...';
 					}
-
-					data.topics.map(function (topicObj, i) {
-						if (teasers[i].content.length > 255) {
-							teasers[i].content = teasers[i].content.slice(0, 255) + '...';
-						}
-
-						topicObj.teaser = teasers[i];
-						return topicObj;
-					});
-
-					next(null, data.topics);
 				});
+
+				next(null, data.topics);
 			},
 		], callback);
 	}

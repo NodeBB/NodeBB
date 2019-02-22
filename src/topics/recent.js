@@ -28,16 +28,17 @@ module.exports = function (Topics) {
 	};
 
 	/* not an orphan method, used in widget-essentials */
-	Topics.getLatestTopics = function (uid, start, stop, term, callback) {
+	Topics.getLatestTopics = function (options, callback) {
+		// uid, start, stop, term
 		async.waterfall([
 			function (next) {
-				Topics.getLatestTidsFromSet('topics:recent', start, stop, term, next);
+				Topics.getLatestTidsFromSet('topics:recent', options.start, options.stop, options.term, next);
 			},
 			function (tids, next) {
-				Topics.getTopics(tids, uid, next);
+				Topics.getTopics(tids, options, next);
 			},
 			function (topics, next) {
-				next(null, { topics: topics, nextStart: stop + 1 });
+				next(null, { topics: topics, nextStart: options.stop + 1 });
 			},
 		], callback);
 	};

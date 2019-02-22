@@ -693,7 +693,12 @@ describe('Topic\'s', function () {
 					topics.ignore(newTid, uid, done);
 				},
 				function (done) {
-					topics.getLatestTopics(uid, 0, -1, 'year', done);
+					topics.getLatestTopics({
+						uid: uid,
+						start: 0,
+						stop: -1,
+						term: 'year',
+					}, done);
 				},
 				function (results, done) {
 					var topics = results.topics;
