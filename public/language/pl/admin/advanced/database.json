@@ -22,7 +22,7 @@
 	"mongo.bytes-out": "Bajtów wyjścia",
 	"mongo.num-requests": "Liczba żądań",
 	"mongo.raw-info": "Informacje MongoDB",
-	"mongo.unauthorized": "NodeBB was unable to query the MongoDB database for relevant statistics. Please ensure that the user in use by NodeBB contains the &quot;clusterMonitor&quot; role for the &quot;admin&quot; database.",
+	"mongo.unauthorized": "NodeBB nie był w stanie przetworzyć bazy danych MongoDB dla odpowiednich statystyk. Upewnij się, że użytkownik w użyciu przez NodeBB zawiera &quot;clusterMonitor&quot dla &quot;admin&quot; bazy danych.",
 
 	"redis": "Redis",
 	"redis.version": "Wersja Redis",

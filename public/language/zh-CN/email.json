@@ -1,6 +1,6 @@
 {
     "test-email.subject": "测试邮件",
-    "password-reset-requested": "Password Reset Requested!",
+    "password-reset-requested": "已申请密码重置!",
     "welcome-to": "欢迎来到 %1",
     "invite": "来自%1的邀请",
     "greeting_no_name": "您好",
