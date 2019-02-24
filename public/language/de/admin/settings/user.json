@@ -70,8 +70,8 @@
 	"follow-created-topics": "Themen folgen, die du erstellst",
 	"follow-replied-topics": "Themen folgen, auf die du antwortest",
 	"default-notification-settings": "Standardbenachrichtigungseinstellungen",
-	"categoryWatchState": "Default category watch state",
-	"categoryWatchState.watching": "Watching",
-	"categoryWatchState.notwatching": "Not Watching",
-	"categoryWatchState.ignoring": "Ignoring"
+	"categoryWatchState": "Standardmäßige Beobachtung",
+	"categoryWatchState.watching": "Beobachtet",
+	"categoryWatchState.notwatching": "Nicht beobachtet",
+	"categoryWatchState.ignoring": "Ignoriert"
 }
