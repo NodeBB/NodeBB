@@ -4,7 +4,7 @@
     "not-logged-in": "Não tens sessão iniciada.",
     "account-locked": "A sua conta foi bloqueada temporariamente",
     "search-requires-login": "A pesquisa requer uma conta de utilizador - por favor inicia sessão ou cria uma conta.",
-    "goback": "Press back to return to the previous page",
+    "goback": "Pressione Voltar para retornar à página anterior",
     "invalid-cid": "ID de categoria inválido",
     "invalid-tid": "ID de tópico inválido",
     "invalid-pid": "ID de post inválido",
@@ -154,7 +154,7 @@
     "cant-move-to-same-topic": "Não podes mover publicações para o mesmo tópico!",
     "cannot-block-self": "Não podes bloquear-te a ti próprio!",
     "cannot-block-privileged": "Não podes bloquear administradores ou moderadores globais",
-    "cannot-block-guest": "Guest are not able to block other users",
+    "cannot-block-guest": "Convidados não podem bloquear outros utilizadores",
     "already-blocked": "Este utilizador já está bloqueado",
     "already-unblocked": "Este utilizador já está desbloqueado",
     "no-connection": "Parece haver um problema com a tua conexão à Internet"
