@@ -162,8 +162,12 @@ module.exports = function (User) {
 							'uid:' + uid + ':upvote', 'uid:' + uid + ':downvote',
 							'uid:' + uid + ':flag:pids',
 							'uid:' + uid + ':sessions', 'uid:' + uid + ':sessionUUID:sessionId',
+							'invitation:uid:' + uid,
 						];
 						db.deleteAll(keys, next);
+					},
+					function (next) {
+						db.setRemove('invitation:uids', uid, next);
 					},
 					function (next) {
 						deleteUserIps(uid, next);
