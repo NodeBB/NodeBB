@@ -1,8 +1,12 @@
 {
 	"name": "Group Name",
+	"badge": "Badge",
+	"properties": "Properties",
 	"description": "Group Description",
 	"member-count": "Member Count",
-	"system": "System Group",
+	"system": "System",
+	"hidden": "Hidden",
+	"private": "Private",
 	"edit": "Edit",
 	"search-placeholder": "Search",
 	"create": "Create Group",
