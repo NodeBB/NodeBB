@@ -1,5 +1,5 @@
 # The base image is the latest 8.x node (LTS)
-FROM node:8.15.1@sha256:8e0bdf3310a24a30c10ded88ba5b8a8ad3c4049efa05cdd8ccea17924c56b8f6
+FROM node:8.15.1@sha256:287b8a533675e0c72cb374b5e5ab580961b2a203600e1758b95c475390bd9f9a
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
