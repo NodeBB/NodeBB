@@ -59,6 +59,9 @@ function uploadAsImage(req, uploadedFile, callback) {
 			image.checkDimensions(uploadedFile.path, next);
 		},
 		function (next) {
+			image.stripEXIF(uploadedFile.path, next);
+		},
+		function (next) {
 			if (plugins.hasListeners('filter:uploadImage')) {
 				return plugins.fireHook('filter:uploadImage', {
 					image: uploadedFile,
