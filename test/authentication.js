@@ -238,7 +238,7 @@ describe('authentication', function () {
 		});
 	});
 
-	it('should fail to login if ip address if invalid', function (done) {
+	it('should fail to login if ip address is invalid', function (done) {
 		var jar = request.jar();
 		request({
 			url: nconf.get('url') + '/api/config',
