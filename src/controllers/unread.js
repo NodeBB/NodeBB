@@ -36,7 +36,11 @@ unreadController.get = function (req, res, next) {
 					if (plugins.hasListeners('filter:unread.categories')) {
 						plugins.fireHook('filter:unread.categories', { uid: req.uid, cid: cid }, next);
 					} else {
-						helpers.getCategoriesByStates(req.uid, cid, [categories.watchStates.watching], next);
+						const states = [categories.watchStates.watching];
+						if (filter === 'watched') {
+							states.push(categories.watchStates.notwatching, categories.watchStates.ignoring);
+						}
+						helpers.getCategoriesByStates(req.uid, cid, states, next);
 					}
 				},
 				settings: function (next) {
