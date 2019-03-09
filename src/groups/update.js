@@ -33,6 +33,7 @@ module.exports = function (Groups) {
 					description: values.description || '',
 					icon: values.icon || '',
 					labelColor: values.labelColor || '#000000',
+					textColor: values.textColor || '#ffffff',
 				};
 
 				if (values.hasOwnProperty('userTitle')) {
