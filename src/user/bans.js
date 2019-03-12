@@ -43,8 +43,6 @@ module.exports = function (User) {
 		if (until > now) {
 			tasks.push(async.apply(db.sortedSetAdd, 'users:banned:expire', until, uid));
 			tasks.push(async.apply(User.setUserField, uid, 'banned:expire', until));
-		} else {
-			until = 0;
 		}
 
 		async.series(tasks, function (err) {
@@ -63,33 +61,47 @@ module.exports = function (User) {
 		], callback);
 	};
 
+	User.getBannedAndExpired = function (uid, callback) {
+		if (parseInt(uid, 10) <= 0) {
+			return setImmediate(callback, null, false);
+		}
+		User.getUserFields(uid, ['banned', 'banned:expire'], function (err, userData) {
+			if (err) {
+				return callback(err);
+			}
+			callback(null, User.calcBanExpiredFromUserData(userData));
+		});
+	};
+
+	User.calcBanExpiredFromUserData = function (userData) {
+		return {
+			banned: !!userData.banned,
+			'banned:expire': userData['banned:expire'],
+			banExpired: userData['banned:expire'] <= Date.now() && userData['banned:expire'] !== 0,
+		};
+	};
+
+	User.unbanIfBanExpired = function (uid, callback) {
+		User.getBannedAndExpired(uid, function (err, result) {
+			if (err) {
+				return callback(err);
+			}
+			if (result.banned && result.banExpired) {
+				return User.unban(uid, function (err) {
+					callback(err, { banned: false, banExpired: true, 'banned:expire': 0 });
+				});
+			}
+			callback(null, result);
+		});
+	};
+
 	User.isBanned = function (uid, callback) {
 		if (parseInt(uid, 10) <= 0) {
 			return setImmediate(callback, null, false);
 		}
-		async.waterfall([
-			async.apply(User.getUserFields, uid, ['banned', 'banned:expire']),
-			function (userData, next) {
-				var banned = userData && userData.banned;
-				if (!banned) {
-					return next(null, banned);
-				}
-
-				// If they are banned, see if the ban has expired
-				var stillBanned = !userData['banned:expire'] || Date.now() < userData['banned:expire'];
-
-				if (stillBanned) {
-					return next(null, true);
-				}
-				async.parallel([
-					async.apply(db.sortedSetRemove.bind(db), 'users:banned:expire', uid),
-					async.apply(db.sortedSetRemove.bind(db), 'users:banned', uid),
-					async.apply(User.setUserFields, uid, { banned: 0, 'banned:expire': 0 }),
-				], function (err) {
-					next(err, false);
-				});
-			},
-		], callback);
+		User.unbanIfBanExpired(uid, function (err, result) {
+			callback(err, result.banned);
+		});
 	};
 
 	User.getBannedReason = function (uid, callback) {
