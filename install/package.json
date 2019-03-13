@@ -49,7 +49,7 @@
         "connect-mongo": "2.0.3",
         "connect-multiparty": "^2.1.0",
         "connect-pg-simple": "^5.0.0",
-        "connect-redis": "3.4.0",
+        "connect-redis": "3.4.1",
         "continuation-local-storage": "^3.2.1",
         "cookie-parser": "^1.4.3",
         "cron": "^1.3.0",
