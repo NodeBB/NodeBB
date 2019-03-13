@@ -295,7 +295,9 @@ module.exports = function (Topics) {
 		var count = 3;
 		var done = false;
 		var hasUnblockedUnread = params.topicTimestamp > userLastReadTimestamp;
-
+		if (!params.blockedUids.length) {
+			return setImmediate(callback, null, hasUnblockedUnread);
+		}
 		async.whilst(function () {
 			return !done;
 		}, function (_next) {
