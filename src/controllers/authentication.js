@@ -331,6 +331,15 @@ authenticationController.doLogin = function (req, uid, callback) {
 };
 
 authenticationController.onSuccessfulLogin = function (req, uid, callback) {
+	// If already called once, return prematurely
+	if (req.res.locals.user) {
+		if (typeof callback === 'function') {
+			return setImmediate(callback);
+		}
+
+		return true;
+	}
+
 	var uuid = utils.generateUUID();
 
 	req.uid = uid;
@@ -392,7 +401,7 @@ authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 		if (typeof callback === 'function') {
 			callback(err);
 		} else {
-			return false;
+			return !!err;
 		}
 	});
 };

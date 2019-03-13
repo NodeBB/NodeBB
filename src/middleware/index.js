@@ -217,3 +217,20 @@ middleware.trimUploadTimestamps = function trimUploadTimestamps(req, res, next) 
 
 	next();
 };
+
+middleware.validateAuth = function validateAuth(req, res, next) {
+	plugins.fireHook('static:auth.validate', {
+		user: res.locals.user,
+		strategy: res.locals.strategy,
+	}, function (err) {
+		if (err) {
+			return req.session.regenerate(function () {
+				req.uid = 0;
+				req.loggedIn = false;
+				next(err);
+			});
+		}
+
+		next();
+	});
+};
