@@ -80,7 +80,7 @@ module.exports = function (redisClient, module) {
 					redisClient.hgetall(unCachedKeys[0], (err, data) => next(err, [data]));
 				}
 			},
-			function (data) {
+			function (data, next) {
 				unCachedKeys.forEach(function (key, i) {
 					cachedData[key] = data[i] || null;
 					cache.set(key, cachedData[key]);
