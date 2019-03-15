@@ -8,7 +8,7 @@ var winston = require('winston');
 var user = require('../user');
 var meta = require('../meta');
 var topics = require('../topics');
-var posts = require('../posts');
+var posts = require('../posts').async;
 var privileges = require('../privileges');
 var plugins = require('../plugins');
 var helpers = require('./helpers');
@@ -211,7 +211,7 @@ function buildBreadcrumbs(topicData, callback) {
 	], callback);
 }
 
-function addTags(topicData, req, res) {
+async function addTags(topicData, req, res) {
 	var postAtIndex = topicData.posts.find(function (postData) {
 		return parseInt(postData.index, 10) === parseInt(Math.max(0, req.params.post_index - 1), 10);
 	});
@@ -261,7 +261,7 @@ function addTags(topicData, req, res) {
 		},
 	];
 
-	addOGImageTags(res, topicData, postAtIndex);
+	await addOGImageTags(res, topicData, postAtIndex);
 
 	res.locals.linkTags = [
 		{
@@ -286,41 +286,29 @@ function addTags(topicData, req, res) {
 	}
 }
 
-function addOGImageTags(res, topicData, postAtIndex) {
-	var ogImageUrl = '';
-	if (topicData.thumb) {
-		ogImageUrl = topicData.thumb;
-	} else if (topicData.category.backgroundImage && (!postAtIndex || !postAtIndex.index)) {
-		ogImageUrl = topicData.category.backgroundImage;
-	} else if (postAtIndex && postAtIndex.user && postAtIndex.user.picture) {
-		ogImageUrl = postAtIndex.user.picture;
-	} else if (meta.config['og:image']) {
-		ogImageUrl = meta.config['og:image'];
-	} else if (meta.config['brand:logo']) {
-		ogImageUrl = meta.config['brand:logo'];
-	} else {
-		ogImageUrl = '/logo.png';
-	}
+async function addOGImageTags(res, topicData, postAtIndex) {
+	const images = [];
 
-	addOGImageTag(res, ogImageUrl);
-	addOGImageTagsForPosts(res, topicData.posts);
-}
-
-function addOGImageTagsForPosts(res, posts) {
-	posts.forEach(function (postData) {
-		var regex = /src\s*=\s*"(.+?)"/g;
-		var match = regex.exec(postData.content);
-		while (match !== null) {
-			var image = match[1];
-
-			if (image.startsWith(nconf.get('url') + '/plugins')) {
-				return;
+	async.series([
+		async function () {
+			const uploads = await posts.uploads.list(postAtIndex.pid);
+			uploads.forEach(url => images.push(nconf.get('relative_path') + nconf.get('upload_url') + '/files/' + url));
+		},
+		function (next) {
+			if (topicData.thumb) {
+				images.push(topicData.thumb);
+			}
+			if (topicData.category.backgroundImage && (!postAtIndex || !postAtIndex.index)) {
+				images.push(topicData.category.backgroundImage);
+			}
+			if (postAtIndex && postAtIndex.user && postAtIndex.user.picture) {
+				images.push(postAtIndex.user.picture);
 			}
 
-			addOGImageTag(res, image);
-
-			match = regex.exec(postData.content);
-		}
+			process.nextTick(next);
+		},
+	], function () {
+		images.forEach(path => addOGImageTag(res, path));
 	});
 }
 

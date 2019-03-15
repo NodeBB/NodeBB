@@ -171,23 +171,42 @@ function addSiteOGImage(meta) {
 		ogImage = nconf.get('url') + ogImage;
 	}
 
-	meta.push({
-		property: 'og:image',
-		content: ogImage,
-		noEscape: true,
-	}, {
-		property: 'og:image:url',
-		content: ogImage,
-		noEscape: true,
-	});
-
-	if (Meta.config[key + ':width'] && Meta.config[key + ':height']) {
+	if (ogImage) {
 		meta.push({
+			property: 'og:image',
+			content: ogImage,
+			noEscape: true,
+		}, {
+			property: 'og:image:url',
+			content: ogImage,
+			noEscape: true,
+		});
+
+		if (Meta.config[key + ':width'] && Meta.config[key + ':height']) {
+			meta.push({
+				property: 'og:image:width',
+				content: String(Meta.config[key + ':width']),
+			}, {
+				property: 'og:image:height',
+				content: String(Meta.config[key + ':height']),
+			});
+		}
+	} else {
+		// Push fallback logo
+		meta.push({
+			property: 'og:image',
+			content: nconf.get('url') + '/assets/logo.png',
+			noEscape: true,
+		}, {
+			property: 'og:image:url',
+			content: nconf.get('url') + '/assets/logo.png',
+			noEscape: true,
+		}, {
 			property: 'og:image:width',
-			content: String(Meta.config[key + ':width']),
+			content: '128',
 		}, {
 			property: 'og:image:height',
-			content: String(Meta.config[key + ':height']),
+			content: '128',
 		});
 	}
 }
