@@ -63,13 +63,13 @@ module.exports = function (redisClient, module) {
 
 	module.getObjects = function (keys, callback) {
 		var cachedData = {};
-		function getFromCache() {
-			process.nextTick(callback, null, keys.map(key => _.clone(cachedData[key])));
+		function getFromCache(next) {
+			process.nextTick(next, null, keys.map(key => _.clone(cachedData[key])));
 		}
 
 		const unCachedKeys = cache.getUnCachedKeys(keys, cachedData);
 		if (!unCachedKeys.length) {
-			return getFromCache();
+			return getFromCache(callback);
 		}
 
 		async.waterfall([
@@ -86,7 +86,7 @@ module.exports = function (redisClient, module) {
 					cache.set(key, cachedData[key]);
 				});
 
-				getFromCache();
+				getFromCache(next);
 			},
 		], callback);
 	};
