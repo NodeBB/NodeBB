@@ -18,6 +18,8 @@ module.exports = function (redisClient, module) {
 
 	module.setsAdd = function (keys, value, callback) {
 		callback = callback || function () {};
+		if (!Array.isArray(keys) || !keys.length) {
+		}
 		helpers.execKeysValue(redisClient, 'batch', 'sadd', keys, value, function (err) {
 			callback(err);
 		});
