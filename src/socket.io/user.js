@@ -219,7 +219,7 @@ function toggleFollow(method, uid, theiruid, callback) {
 }
 
 SocketUser.saveSettings = function (socket, data, callback) {
-	if (!socket.uid || !data) {
+	if (!socket.uid || !data || !data.settings) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
