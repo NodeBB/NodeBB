@@ -340,10 +340,10 @@ function addOGImageTag(res, image) {
 	if (typeof image === 'object' && image.width && image.height) {
 		res.locals.metaTags.push({
 			property: 'og:image:width',
-			content: image.width,
+			content: String(image.width),
 		}, {
 			property: 'og:image:height',
-			content: image.height,
+			content: String(image.height),
 		});
 	}
 }
