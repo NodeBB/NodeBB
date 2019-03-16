@@ -295,7 +295,7 @@ async function addOGImageTags(res, topicData, postAtIndex) {
 		async function () {
 			const uploads = await posts.uploads.listWithSizes(postAtIndex.pid);
 			uploads.forEach((upload) => {
-				upload.name = nconf.get('relative_path') + nconf.get('upload_url') + '/files/' + upload.name;
+				upload.name = nconf.get('url') + nconf.get('upload_url') + '/files/' + upload.name;
 				images.push(upload);
 			});
 		},
