@@ -225,7 +225,7 @@ module.exports = function (Topics) {
 					followers.splice(index, 1);
 				}
 
-				privileges.topics.filterUids('read', postData.topic.tid, followers, next);
+				privileges.topics.filterUids('topics:read', postData.topic.tid, followers, next);
 			},
 			function (_followers, next) {
 				followers = _followers;
