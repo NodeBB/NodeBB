@@ -291,8 +291,11 @@ async function addOGImageTags(res, topicData, postAtIndex) {
 
 	async.series([
 		async function () {
-			const uploads = await posts.uploads.list(postAtIndex.pid);
-			uploads.forEach(url => images.push(nconf.get('relative_path') + nconf.get('upload_url') + '/files/' + url));
+			const uploads = await posts.uploads.listWithSizes(postAtIndex.pid);
+			uploads.forEach((upload) => {
+				upload.name = nconf.get('relative_path') + nconf.get('upload_url') + '/files/' + upload.name;
+				images.push(upload);
+			});
 		},
 		function (next) {
 			if (topicData.thumb) {
@@ -312,20 +315,35 @@ async function addOGImageTags(res, topicData, postAtIndex) {
 	});
 }
 
-function addOGImageTag(res, imageUrl) {
-	if (typeof imageUrl === 'string' && !imageUrl.startsWith('http')) {
-		imageUrl = nconf.get('url') + imageUrl.replace(new RegExp('^' + nconf.get('relative_path')), '');
+function addOGImageTag(res, image) {
+	let imageUrl;
+	if (typeof image === 'string' && !image.startsWith('http')) {
+		imageUrl = nconf.get('url') + image.replace(new RegExp('^' + nconf.get('relative_path')), '');
+	} else if (typeof image === 'object') {
+		imageUrl = image.name;
+	} else {
+		imageUrl = image;
 	}
+
 	res.locals.metaTags.push({
 		property: 'og:image',
 		content: imageUrl,
 		noEscape: true,
-	});
-	res.locals.metaTags.push({
+	}, {
 		property: 'og:image:url',
 		content: imageUrl,
 		noEscape: true,
 	});
+
+	if (typeof image === 'object' && image.width && image.height) {
+		res.locals.metaTags.push({
+			property: 'og:image:width',
+			content: image.width,
+		}, {
+			property: 'og:image:height',
+			content: image.height,
+		});
+	}
 }
 
 topicsController.teaser = function (req, res, next) {
