@@ -669,7 +669,7 @@ describe('Post\'s', function () {
 			}, function (err, postData) {
 				assert.ifError(err);
 				pid = postData.pid;
-				privileges.categories.rescind(['read'], cid, 'guests', done);
+				privileges.categories.rescind(['topics:read'], cid, 'guests', done);
 			});
 		});
 
