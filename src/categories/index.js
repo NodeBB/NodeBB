@@ -345,7 +345,7 @@ Categories.getChildrenCids = function (rootCid, callback) {
 			if (err) {
 				return callback(err);
 			}
-
+			childrenCids = childrenCids.filter(cid => !allCids.includes(parseInt(cid, 10)));
 			if (!childrenCids.length) {
 				return callback();
 			}

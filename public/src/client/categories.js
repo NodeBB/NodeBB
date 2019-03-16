@@ -33,6 +33,9 @@ define('forum/categories', ['components'], function (components) {
 		if (!numRecentReplies || !parseInt(numRecentReplies, 10)) {
 			return;
 		}
+		if (!category.find('[component="topic/teaser"]').length) {
+			return;
+		}
 
 		var recentPosts = category.find('[component="category/posts"]');
 

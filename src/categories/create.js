@@ -153,7 +153,7 @@ module.exports = function (Categories) {
 
 				const oldParent = parseInt(destination.parentCid, 10) || 0;
 				const newParent = parseInt(results.source.parentCid, 10) || 0;
-				if (copyParent) {
+				if (copyParent && newParent !== parseInt(toCid, 10)) {
 					tasks.push(async.apply(db.sortedSetRemove, 'cid:' + oldParent + ':children', toCid));
 					tasks.push(async.apply(db.sortedSetAdd, 'cid:' + newParent + ':children', results.source.order, toCid));
 					tasks.push(function (next) {

@@ -51,7 +51,11 @@ recentController.getData = function (req, url, sort, callback) {
 					user.getSettings(req.uid, next);
 				},
 				categories: function (next) {
-					helpers.getCategoriesByStates(req.uid, cid, [categories.watchStates.watching, categories.watchStates.notwatching], next);
+					const states = [categories.watchStates.watching, categories.watchStates.notwatching];
+					if (filter === 'watched') {
+						states.push(categories.watchStates.ignoring);
+					}
+					helpers.getCategoriesByStates(req.uid, cid, states, next);
 				},
 				rssToken: function (next) {
 					user.auth.getFeedToken(req.uid, next);
