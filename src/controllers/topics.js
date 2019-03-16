@@ -137,6 +137,10 @@ topicsController.get = function getTopic(req, res, callback) {
 		function (data, next) {
 			buildBreadcrumbs(data.topicData, next);
 		},
+		async function (topicData) {
+			await addTags(topicData, req, res);
+			return topicData;
+		},
 		function (topicData) {
 			topicData.privileges = userPrivileges;
 			topicData.topicStaleDays = meta.config.topicStaleDays;
@@ -152,8 +156,6 @@ topicsController.get = function getTopic(req, res, callback) {
 			if (req.loggedIn) {
 				topicData.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
 			}
-
-			addTags(topicData, req, res);
 
 			topicData.postIndex = req.params.post_index;
 			topicData.pagination = pagination.create(currentPage, pageCount, req.query);
