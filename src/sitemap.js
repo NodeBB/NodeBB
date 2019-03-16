@@ -137,7 +137,7 @@ sitemap.getTopicPage = function (page, callback) {
 			db.getSortedSetRevRange('topics:recent', min, max, next);
 		},
 		function (tids, next) {
-			privileges.topics.filterTids('read', tids, 0, next);
+			privileges.topics.filterTids('topics:read', tids, 0, next);
 		},
 		function (tids, next) {
 			topics.getTopicsFields(tids, ['tid', 'title', 'slug', 'lastposttime'], next);

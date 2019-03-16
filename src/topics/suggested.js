@@ -37,7 +37,7 @@ module.exports = function (Topics) {
 			},
 			function (categoryTids, next) {
 				tids = _.uniq(tids.concat(categoryTids)).slice(start, stop !== -1 ? stop + 1 : undefined);
-				privileges.topics.filterTids('read', tids, uid, next);
+				privileges.topics.filterTids('topics:read', tids, uid, next);
 			},
 			function (tids, next) {
 				Topics.getTopicsByTids(tids, uid, next);

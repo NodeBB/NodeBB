@@ -349,7 +349,7 @@ topicsController.teaser = function (req, res, next) {
 
 	async.waterfall([
 		function (next) {
-			privileges.topics.can('read', tid, req.uid, next);
+			privileges.topics.can('topics:read', tid, req.uid, next);
 		},
 		function (canRead, next) {
 			if (!canRead) {
