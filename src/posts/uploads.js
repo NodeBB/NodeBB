@@ -8,7 +8,7 @@ var path = require('path');
 var util = require('util');
 var winston = require('winston');
 
-var db = require('../database').async;
+var db = require('../database');
 const image = require('../image');
 
 module.exports = function (Posts) {
@@ -51,14 +51,14 @@ module.exports = function (Posts) {
 		});
 	};
 
-	Posts.uploads.list = async function (pid, callback) {
+	Posts.uploads.list = function (pid, callback) {
 		// Returns array of this post's uploads
 		db.getSortedSetRange('post:' + pid + ':uploads', 0, -1, callback);
 	};
 
 	Posts.uploads.listWithSizes = async function (pid) {
 		const paths = await Posts.async.uploads.list(pid);
-		const sizes = await db.getObjects(paths.map(path => 'upload:' + md5(path)));
+		const sizes = await db.async.getObjects(paths.map(path => 'upload:' + md5(path)));
 
 		return sizes.map((sizeObj, idx) => {
 			sizeObj.name = paths[idx];
