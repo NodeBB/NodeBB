@@ -531,7 +531,7 @@ function getBanInfo(uid, callback) {
 			});
 		},
 		function (next) {
-			next(new Error(banInfo.expiry ? '[[error:user-banned-reason-until, ' + banInfo.expiry_readable + ', ' + banInfo.reason + ']]' : '[[error:user-banned-reason, ' + banInfo.reason + ']]'));
+			next(new Error(banInfo.banned_until ? '[[error:user-banned-reason-until, ' + banInfo.banned_until_readable + ', ' + banInfo.reason + ']]' : '[[error:user-banned-reason, ' + banInfo.reason + ']]'));
 		},
 	], function (err) {
 		if (err) {

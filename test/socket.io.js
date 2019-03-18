@@ -132,8 +132,8 @@ describe('socket.io', function () {
 				assert.ifError(err);
 				assert(data.uid);
 				assert(data.timestamp);
-				assert(data.hasOwnProperty('expiry'));
-				assert(data.hasOwnProperty('expiry_readable'));
+				assert(data.hasOwnProperty('banned_until'));
+				assert(data.hasOwnProperty('banned_until_readable'));
 				assert.equal(data.reason, 'spammer');
 				done();
 			});

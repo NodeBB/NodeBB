@@ -8,6 +8,7 @@ var async = require('async');
 
 var db = require('./mocks/databasemock');
 var user = require('../src/user');
+var utils = require('../src/utils');
 var meta = require('../src/meta');
 var privileges = require('../src/privileges');
 var helpers = require('./helpers');
@@ -470,7 +471,7 @@ describe('authentication', function () {
 							loginUser('banme', '123456', function (err, res, body) {
 								assert.ifError(err);
 								assert.equal(res.statusCode, 403);
-								assert.equal(body, '[[error:user-banned-reason-until, ' + (new Date(parseInt(expiry, 10)).toString()) + ', No reason given.]]');
+								assert.equal(body, '[[error:user-banned-reason-until, ' + utils.toISOString(expiry) + ', No reason given.]]');
 								done();
 							});
 						});
