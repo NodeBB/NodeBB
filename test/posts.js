@@ -936,7 +936,7 @@ describe('Post\'s', function () {
 		before(function (done) {
 			// Create stub files for testing
 			['abracadabra.png', 'shazam.jpg', 'whoa.gif', 'amazeballs.jpg', 'wut.txt', 'test.bmp']
-				.forEach(filename => fs.closeSync(fs.openSync(path.join(__dirname, '../public/uploads/files', filename), 'w')));
+				.forEach(filename => fs.closeSync(fs.openSync(path.join(nconf.get('upload_path'), 'files', filename), 'w')));
 
 			topics.post({
 				uid: 1,
@@ -957,7 +957,7 @@ describe('Post\'s', function () {
 
 					db.sortedSetCard('post:' + pid + ':uploads', function (err, length) {
 						assert.ifError(err);
-						assert.strictEqual(2, length);
+						assert.strictEqual(length, 2);
 						done();
 					});
 				});
