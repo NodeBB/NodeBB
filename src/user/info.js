@@ -31,7 +31,9 @@ module.exports = function (User) {
 					uid: uid,
 					timestamp: banInfo.timestamp,
 					banned_until: expire,
+					expiry: expire, /* backward compatible alias */
 					banned_until_readable: expire_readable,
+					expiry_readable: expire_readable, /* backward compatible alias */
 					reason: validator.escape(String(banInfo.reason || '')),
 				});
 			},
