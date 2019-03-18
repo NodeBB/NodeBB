@@ -105,7 +105,9 @@ module.exports = function (Posts) {
 			let methods = [async.apply(db.sortedSetAdd.bind(db), 'post:' + pid + ':uploads', scores, filePaths)];
 
 			methods = methods.concat(filePaths.map(path => async.apply(db.sortedSetAdd.bind(db), 'upload:' + md5(path) + ':pids', now, pid)));
-			methods = methods.concat(async.apply(Posts.uploads.saveSize, filePaths));
+			methods = methods.concat(async function () {
+				await Posts.uploads.saveSize(filePaths);
+			});
 			async.parallel(methods, function (err) {
 				// Strictly return only err
 				callback(err);
@@ -131,16 +133,25 @@ module.exports = function (Posts) {
 	Posts.uploads.saveSize = async (filePaths) => {
 		const getSize = util.promisify(image.size);
 		const sizes = await Promise.all(filePaths.map(async function (fileName) {
-			return getSize(path.join(pathPrefix, fileName));
+			try {
+				return await getSize(path.join(pathPrefix, fileName));
+			} catch (e) {
+				// Error returned by getSize, do not save size in database
+				return null;
+			}
 		}));
 
 		const methods = filePaths.map((filePath, idx) => {
+			if (!sizes[idx]) {
+				return null;
+			}
+
 			winston.verbose('[posts/uploads/' + filePath + '] Saving size');
 			return async.apply(db.setObject, 'upload:' + md5(filePath), {
 				width: sizes[idx].width,
 				height: sizes[idx].height,
 			});
-		});
+		}).filter(Boolean);
 		async.parallel(methods, function (err) {
 			if (err) {
 				winston.error('[posts/uploads] Error while saving post upload sizes: ', err.message);
