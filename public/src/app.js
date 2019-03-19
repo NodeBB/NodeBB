@@ -134,9 +134,9 @@ app.cacheBuster = null;
 
 			// Re-render top bar menu
 			var toRender = {
+				'slideout-menu': $('.slideout-menu'),
 				menu: $('#header-menu .container'),
 				'chats-menu': $('#chats-menu'),
-				'slideout-menu': $('.slideout-menu'),
 			};
 			Promise.all(Object.keys(toRender).map(function (tpl) {
 				return Benchpress.render('partials/' + tpl, data.header).then(function (render) {
