@@ -1029,6 +1029,8 @@ describe('Topic\'s', function () {
 				assert.deepEqual(body, {
 					prev: { page: 1, active: false },
 					next: { page: 1, active: false },
+					first: { page: 1, active: true },
+					last: { page: 1, active: true },
 					rel: [],
 					pages: [],
 					currentPage: 1,
