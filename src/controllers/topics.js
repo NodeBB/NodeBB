@@ -289,32 +289,21 @@ async function addTags(topicData, req, res) {
 }
 
 async function addOGImageTags(res, topicData, postAtIndex) {
-	const images = [];
-
-	async.series([
-		async function () {
-			const uploads = await posts.uploads.listWithSizes(postAtIndex.pid);
-			uploads.forEach((upload) => {
-				upload.name = nconf.get('url') + nconf.get('upload_url') + '/files/' + upload.name;
-				images.push(upload);
-			});
-		},
-		function (next) {
-			if (topicData.thumb) {
-				images.push(topicData.thumb);
-			}
-			if (topicData.category.backgroundImage && (!postAtIndex || !postAtIndex.index)) {
-				images.push(topicData.category.backgroundImage);
-			}
-			if (postAtIndex && postAtIndex.user && postAtIndex.user.picture) {
-				images.push(postAtIndex.user.picture);
-			}
-
-			process.nextTick(next);
-		},
-	], function () {
-		images.forEach(path => addOGImageTag(res, path));
+	const uploads = postAtIndex ? await posts.uploads.listWithSizes(postAtIndex.pid) : [];
+	const images = uploads.map((upload) => {
+		upload.name = nconf.get('url') + nconf.get('upload_url') + '/files/' + upload.name;
+		return upload;
 	});
+	if (topicData.thumb) {
+		images.push(topicData.thumb);
+	}
+	if (topicData.category.backgroundImage && (!postAtIndex || !postAtIndex.index)) {
+		images.push(topicData.category.backgroundImage);
+	}
+	if (postAtIndex && postAtIndex.user && postAtIndex.user.picture) {
+		images.push(postAtIndex.user.picture);
+	}
+	images.forEach(path => addOGImageTag(res, path));
 }
 
 function addOGImageTag(res, image) {
