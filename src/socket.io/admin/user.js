@@ -126,6 +126,25 @@ User.sendPasswordResetEmail = function (socket, uids, callback) {
 	}, callback);
 };
 
+User.forcePasswordReset = function (socket, uids, callback) {
+	if (!Array.isArray(uids)) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	uids = uids.filter(uid => parseInt(uid, 10));
+
+	async.each(uids, function (uid, next) {
+		async.waterfall([
+			function (next) {
+				user.setUserField(uid, 'passwordExpiry', Date.now(), next);
+			},
+			function (next) {
+				user.auth.revokeAllSessions(uid, next);
+			},
+		], next);
+	}, callback);
+};
+
 User.deleteUsers = function (socket, uids, callback) {
 	deleteUsers(socket, uids, function (uid, next) {
 		user.deleteAccount(uid, next);
