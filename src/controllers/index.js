@@ -62,7 +62,6 @@ Controllers.reset = function (req, res, next) {
 	};
 
 	if (req.params.code) {
-		// Save to session
 		req.session.reset_code = req.params.code;
 	}
 
