@@ -20,7 +20,32 @@
 <br />
 
 <div class="plugins row">
-	<div class="col-lg-9">
+	<div class="acp-sidebar col-lg-3 col-lg-push-9">
+		<div class="panel panel-default">
+			<div class="panel-heading">[[admin/extend/plugins:plugin-search]]</div>
+			<div class="panel-body">
+				<input autofocus class="form-control" type="text" id="plugin-search" placeholder="[[admin/extend/plugins:plugin-search-placeholder]]"/><br/>
+			</div>
+		</div>
+
+		<div class="panel panel-default">
+			<div class="panel-heading">[[admin/extend/plugins:reorder-plugins]]</div>
+			<div class="panel-body">
+				<button class="btn btn-default btn-block" id="plugin-order"><i class="fa fa-exchange"></i> [[admin/extend/plugins:order-active]]</button>
+			</div>
+		</div>
+
+		<div class="panel panel-default">
+			<div class="panel-heading">[[admin/extend/plugins:dev-interested]]</div>
+			<div class="panel-body">
+				<p>
+					[[admin/extend/plugins:docs-info]]
+				</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-lg-9 col-lg-pull-3">
 		<div class="tab-content">
 			<div class="tab-pane fade active in" id="installed">
 				<ul class="installed">
@@ -47,32 +72,6 @@
 			</div>
 		</div>
 	</div>
-
-	<div class="col-lg-3 acp-sidebar">
-		<div class="panel panel-default">
-			<div class="panel-heading">[[admin/extend/plugins:plugin-search]]</div>
-			<div class="panel-body">
-				<input autofocus class="form-control" type="text" id="plugin-search" placeholder="[[admin/extend/plugins:plugin-search-placeholder]]"/><br/>
-			</div>
-		</div>
-
-		<div class="panel panel-default">
-			<div class="panel-heading">[[admin/extend/plugins:reorder-plugins]]</div>
-			<div class="panel-body">
-				<button class="btn btn-default btn-block" id="plugin-order"><i class="fa fa-exchange"></i> [[admin/extend/plugins:order-active]]</button>
-			</div>
-		</div>
-
-		<div class="panel panel-default">
-			<div class="panel-heading">[[admin/extend/plugins:dev-interested]]</div>
-			<div class="panel-body">
-				<p>
-					[[admin/extend/plugins:docs-info]]
-				</p>
-			</div>
-		</div>
-	</div>
-
 
 	<div class="modal fade" id="order-active-plugins-modal">
 		<div class="modal-dialog">
