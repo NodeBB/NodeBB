@@ -157,6 +157,8 @@ app.cacheBuster = null;
 					app.handleSearch();
 				}
 
+				handleStatusChange();
+
 				$(window).trigger('action:app.updateHeader');
 			});
 		});
