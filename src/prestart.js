@@ -69,6 +69,7 @@ function loadConfig(configFile) {
 	nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-persona/templates'));
 
 	nconf.set('upload_path', path.resolve(nconf.get('base_dir'), nconf.get('upload_path')));
+	nconf.set('upload_url', '/assets/uploads');
 
 	if (nconf.get('url')) {
 		nconf.set('url_parsed', url.parse(nconf.get('url')));

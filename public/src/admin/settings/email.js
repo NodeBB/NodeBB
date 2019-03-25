@@ -87,18 +87,20 @@ define('admin/settings/email', ['ace/ace', 'admin/settings'], function (ace) {
 				return app.alertError(err.message);
 			}
 
-			now = new Date(now);
+			var date = new Date(now.timestamp);
+			var offset = (new Date().getTimezoneOffset() - now.offset) / 60;
+			date.setHours(date.getHours() + offset);
 
-			$('#serverTime').text(now.toString());
+			$('#serverTime').text(date.toLocaleTimeString());
 
-			now.setHours(parseInt(hour, 10), 0, 0, 0);
+			date.setHours(parseInt(hour, 10) - offset, 0, 0, 0);
 
 			// If adjusted time is in the past, move to next day
-			if (now.getTime() < Date.now()) {
-				now.setDate(now.getDate() + 1);
+			if (date.getTime() < Date.now()) {
+				date.setDate(date.getDate() + 1);
 			}
 
-			$('#nextDigestTime').text(now.toString());
+			$('#nextDigestTime').text(date.toLocaleString());
 		});
 	}
 
