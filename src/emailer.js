@@ -27,7 +27,8 @@ Emailer.transports = {
 		sendmail: true,
 		newline: 'unix',
 		pool: true,
-		rateLimit: 2,
+		rateLimit: meta.config['email:sendmail:rateLimit'],
+		rateDelta: meta.config['email:sendmail:rateDelta'],
 	}),
 	smtp: undefined,
 };
