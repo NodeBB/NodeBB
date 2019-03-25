@@ -26,9 +26,10 @@ Emailer.transports = {
 	sendmail: nodemailer.createTransport({
 		sendmail: true,
 		newline: 'unix',
+		pool: true,
+		rateLimit: 2,
 	}),
 	smtp: undefined,
-	// gmail: undefined,
 };
 
 var app;
