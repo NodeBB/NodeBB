@@ -494,12 +494,17 @@ var winston;
 			}
 			return function () {
 				clearTimeout(timeoutId);
+				var repeated = options.times && options.times > 0 && called >= options.times;
+				var warningPrepend;
+				if (repeated || timedout) {
+					warningPrepend = 'Function named: \'' + (func.name || func.constructor.name) + '\', arguments:[\'' + Array.from(arguments).join('\', \'') + '\']';
+				}
 				if (timedout) {
-					winston.warn('Function named:\'' + (func.name || func.constructor.name) + '\', arguments:[\'' + Array.from(arguments).join('\', \'') + '\'], timed out after ' + options.timeout + 'ms');
+					winston.warn(warningPrepend + ', timed out after ' + options.timeout + 'ms');
 					return;
 				}
-				if (options.times && options.times > 0 && called >= options.times) {
-					winston.warn('Function named:\'' + (func.name || func.constructor.name) + '\', arguments:[\'' + Array.from(arguments).join('\', \'') + '\'], was called more than ' + options.times + ' time(s), this, and all subsequent calls, will be ignored');
+				if (repeated) {
+					winston.warn(warningPrepend + ', was called more than ' + options.times + ' time(s), this, and all subsequent calls, will be ignored');
 					return;
 				}
 				called += 1;
