@@ -1,5 +1,6 @@
 'use strict';
 
+/* global zxcvbn */
 
 $('document').ready(function () {
 	setupInputs();
@@ -75,6 +76,9 @@ $('document').ready(function () {
 			} else if (field.length < $('[name="admin:password"]').attr('data-minimum-length')) {
 				parent.addClass('error');
 				help.html('Password is too short.');
+			} else if (zxcvbn(field).score < parseInt($('[name="admin:password"]').attr('data-minimum-strength'), 10)) {
+				parent.addClass('error');
+				help.html('Password is too weak.');
 			} else {
 				parent.removeClass('error');
 			}

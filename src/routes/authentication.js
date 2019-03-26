@@ -100,14 +100,23 @@ Auth.reloadRoutes = function (router, callback) {
 							return helpers.redirect(res, strategy.failureUrl !== undefined ? strategy.failureUrl : '/login');
 						}
 
-						req.login(user, function (err) {
-							if (err) {
-								return next(err);
-							}
-
-							helpers.redirect(res, strategy.successUrl !== undefined ? strategy.successUrl : '/');
-						});
+						res.locals.user = user;
+						res.locals.strategy = strategy;
+						next();
 					})(req, res, next);
+				},
+				Auth.middleware.validateAuth,
+				(req, res, next) => {
+					async.waterfall([
+						async.apply(req.login.bind(req), res.locals.user),
+						async.apply(controllers.authentication.onSuccessfulLogin, req, req.uid),
+					], function (err) {
+						if (err) {
+							return next(err);
+						}
+
+						helpers.redirect(res, strategy.successUrl !== undefined ? strategy.successUrl : '/');
+					});
 				});
 			});
 

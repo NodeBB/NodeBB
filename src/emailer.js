@@ -26,9 +26,11 @@ Emailer.transports = {
 	sendmail: nodemailer.createTransport({
 		sendmail: true,
 		newline: 'unix',
+		pool: true,
+		rateLimit: meta.config['email:sendmail:rateLimit'],
+		rateDelta: meta.config['email:sendmail:rateDelta'],
 	}),
 	smtp: undefined,
-	// gmail: undefined,
 };
 
 var app;
@@ -162,9 +164,15 @@ Emailer.registerApp = function (expressApp) {
 	// Update default payload if new logo is uploaded
 	pubsub.on('config:update', function (config) {
 		if (config) {
-			Emailer._defaultPayload.logo.src = config['brand:emailLogo'];
-			Emailer._defaultPayload.logo.height = config['brand:emailLogo:height'];
-			Emailer._defaultPayload.logo.width = config['brand:emailLogo:width'];
+			if (config['brand:emailLogo']) {
+				Emailer._defaultPayload.logo.src = config['brand:emailLogo'];
+			}
+			if (config['brand:emailLogo:height']) {
+				Emailer._defaultPayload.logo.height = config['brand:emailLogo:height'];
+			}
+			if (config['brand:emailLogo:width']) {
+				Emailer._defaultPayload.logo.width = config['brand:emailLogo:width'];
+			}
 
 			if (smtpSettingsChanged(config)) {
 				Emailer.setupFallbackTransport(config);

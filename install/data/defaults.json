@@ -99,6 +99,8 @@
     "maximumInvites": 0,
     "username:disableEdit": 0,
     "email:disableEdit": 0,
+    "email:sendmail:rateLimit": 2,
+    "email:sendmail:rateDelta": 1000,
     "hideFullname": 0,
     "allowGuestHandles": 0,
     "disableRecentCategoryFilter": 0,

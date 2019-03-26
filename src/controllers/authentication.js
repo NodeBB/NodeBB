@@ -273,13 +273,20 @@ function continueLogin(req, res, next) {
 		if (passwordExpiry && passwordExpiry < Date.now()) {
 			winston.verbose('[auth] Triggering password reset for uid ' + userData.uid + ' due to password policy');
 			req.session.passwordExpired = true;
-			user.reset.generate(userData.uid, function (err, code) {
+
+			async.series({
+				code: async.apply(user.reset.generate, userData.uid),
+				buildHeader: async.apply(middleware.buildHeader, req, res),
+				header: async.apply(middleware.generateHeader, req, res, {}),
+			}, function (err, payload) {
 				if (err) {
 					return helpers.noScriptErrors(req, res, err.message, 403);
 				}
 
 				res.status(200).send({
-					next: nconf.get('relative_path') + '/reset/' + code,
+					next: nconf.get('relative_path') + '/reset/' + payload.code,
+					header: payload.header,
+					config: res.locals.config,
 				});
 			});
 		} else {
@@ -331,6 +338,15 @@ authenticationController.doLogin = function (req, uid, callback) {
 };
 
 authenticationController.onSuccessfulLogin = function (req, uid, callback) {
+	// If already called once, return prematurely
+	if (req.res.locals.user) {
+		if (typeof callback === 'function') {
+			return setImmediate(callback);
+		}
+
+		return true;
+	}
+
 	var uuid = utils.generateUUID();
 
 	req.uid = uid;
@@ -392,7 +408,7 @@ authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 		if (typeof callback === 'function') {
 			callback(err);
 		} else {
-			return false;
+			return !!err;
 		}
 	});
 };

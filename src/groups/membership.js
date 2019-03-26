@@ -162,8 +162,8 @@ module.exports = function (Groups) {
 
 	Groups.isMembers = function (uids, groupName, callback) {
 		var cachedData = {};
-		function getFromCache() {
-			setImmediate(callback, null, uids.map(uid => cachedData[uid + ':' + groupName]));
+		function getFromCache(next) {
+			setImmediate(next, null, uids.map(uid => cachedData[uid + ':' + groupName]));
 		}
 		if (!groupName || !uids.length) {
 			return setImmediate(callback, null, uids.map(() => false));

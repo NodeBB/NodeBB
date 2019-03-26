@@ -65,7 +65,7 @@ function postTopic(socket, data, callback) {
 SocketTopics.postcount = function (socket, tid, callback) {
 	async.waterfall([
 		function (next) {
-			privileges.topics.can('read', tid, socket.uid, next);
+			privileges.topics.can('topics:read', tid, socket.uid, next);
 		},
 		function (canRead, next) {
 			if (!canRead) {

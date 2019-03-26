@@ -21,6 +21,7 @@
 	"edit.user-title": "Title of Members",
 	"edit.icon": "Group Icon",
 	"edit.label-color": "Group Label Color",
+	"edit.text-color": "Group Text Color",
 	"edit.show-badge": "Show Badge",
 	"edit.private-details": "If enabled, joining of groups requires approval from a group owner.",
 	"edit.private-override": "Warning: Private groups is disabled at system level, which overrides this option.",

@@ -148,7 +148,7 @@ module.exports = function (Topics) {
 				}
 			},
 			function (tids, next) {
-				privileges.topics.filterTids('read', tids, uid, next);
+				privileges.topics.filterTids('topics:read', tids, uid, next);
 			},
 			function (tids, next) {
 				Topics.getTopicsFields(tids, ['uid', 'tid', 'cid'], next);

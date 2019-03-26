@@ -90,7 +90,7 @@ function searchInContent(data, callback) {
 		function (mainPids, next) {
 			pids = mainPids.concat(pids).filter(Boolean);
 
-			privileges.posts.filter('read', pids, data.uid, next);
+			privileges.posts.filter('topics:read', pids, data.uid, next);
 		},
 		function (pids, next) {
 			filterAndSort(pids, data, next);
