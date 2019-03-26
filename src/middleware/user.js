@@ -93,6 +93,9 @@ module.exports = function (middleware) {
 	};
 
 	middleware.canViewUsers = function canViewUsers(req, res, next) {
+		if (parseInt(res.locals.uid, 10) === req.uid) {
+			return next();
+		}
 		privileges.global.can('view:users', req.uid, function (err, canView) {
 			if (err || canView) {
 				return next(err);

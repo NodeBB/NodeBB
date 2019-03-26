@@ -16,7 +16,7 @@ module.exports = function (app, middleware, controllers) {
 		}
 	}, controllers.api.getConfig);
 
-	router.get('/me', middleware.canViewUsers, controllers.user.getCurrentUser);
+	router.get('/me', controllers.user.getCurrentUser);
 	router.get('/user/uid/:uid', middleware.canViewUsers, controllers.user.getUserByUID);
 	router.get('/user/username/:username', middleware.canViewUsers, controllers.user.getUserByUsername);
 	router.get('/user/email/:email', middleware.canViewUsers, controllers.user.getUserByEmail);
@@ -40,8 +40,8 @@ module.exports = function (app, middleware, controllers) {
 	var middlewares = [middleware.maintenanceMode, multipartMiddleware, middleware.validateFiles, middleware.applyCSRF];
 	router.post('/post/upload', middlewares, uploadsController.uploadPost);
 	router.post('/topic/thumb/upload', middlewares, uploadsController.uploadThumb);
-	router.post('/user/:userslug/uploadpicture', middlewares.concat([middleware.authenticate, middleware.canViewUsers, middleware.checkAccountPermissions]), controllers.accounts.edit.uploadPicture);
+	router.post('/user/:userslug/uploadpicture', middlewares.concat([middleware.exposeUid, middleware.authenticate, middleware.canViewUsers, middleware.checkAccountPermissions]), controllers.accounts.edit.uploadPicture);
 
-	router.post('/user/:userslug/uploadcover', middlewares.concat([middleware.authenticate, middleware.canViewUsers, middleware.checkAccountPermissions]), controllers.accounts.edit.uploadCoverPicture);
+	router.post('/user/:userslug/uploadcover', middlewares.concat([middleware.exposeUid, middleware.authenticate, middleware.canViewUsers, middleware.checkAccountPermissions]), controllers.accounts.edit.uploadCoverPicture);
 	router.post('/groups/uploadpicture', middlewares.concat([middleware.authenticate]), controllers.groups.uploadCover);
 };
