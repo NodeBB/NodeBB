@@ -1,9 +1,9 @@
 'use strict';
 
+var winston;
 (function (factory) {
 	if (typeof module === 'object' && module.exports) {
-		var winston = require('winston');
-
+		winston = require('winston');
 
 		module.exports = factory(require('xregexp'));
 		module.exports.walk = function (dir, done) {
@@ -22,6 +22,7 @@
 			return (diff[0] * 1e3) + (diff[1] / 1e6);
 		};
 	} else {
+		winston = console;
 		window.utils = factory(window.XRegExp);
 	}
 }(function (XRegExp) {
@@ -467,6 +468,43 @@
 
 		extensionToMimeType: function (extension) {
 			return utils.extensionMimeTypeMap[extension] || '*';
+		},
+
+		isPromise: function (object) {
+			// https://stackoverflow.com/questions/27746304/how-do-i-tell-if-an-object-is-a-promise#comment97339131_27746324
+			return object && typeof object.then === 'function';
+		},
+
+		// todo: use js template literals in 2030
+		// todo: use js yield* in 2040
+		callable: function (func, options) {
+			options = options || {};
+			options.times = parseInt(options.times, 10) || null;
+			options.timeout = parseInt(options.timeout, 10) || null;
+			options.onTimeout = typeof options.onTimeout === 'function' ? options.onTimeout : function () {};
+			var called = 0;
+			var timeoutId;
+			var timedout = false;
+			if (options.timeout) {
+				timeoutId = setTimeout(function () {
+					timedout = true;
+					clearTimeout(timeoutId);
+					options.onTimeout();
+				}, options.timeout);
+			}
+			return function () {
+				clearTimeout(timeoutId);
+				if (timedout) {
+					winston.warn('Function named:\'' + (func.name || func.constructor.name) + '\', arguments:[\'' + Array.from(arguments).join('\', \'') + '\'], timed out after ' + options.timeout + 'ms');
+					return;
+				}
+				if (options.times && options.times > 0 && called >= options.times) {
+					winston.warn('Function named:\'' + (func.name || func.constructor.name) + '\', arguments:[\'' + Array.from(arguments).join('\', \'') + '\'], was called more than ' + options.times + ' time(s), this, and all subsequent calls, will be ignored');
+					return;
+				}
+				called += 1;
+				return func.apply(this, arguments);
+			};
 		},
 
 		isRelativeUrl: function (url) {
