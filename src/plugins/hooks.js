@@ -1,7 +1,8 @@
 'use strict';
 
-var winston = require('winston');
-var async = require('async');
+const winston = require('winston');
+const async = require('async');
+const utils = require('../utils');
 
 module.exports = function (Plugins) {
 	Plugins.deprecatedHooks = {
@@ -132,8 +133,13 @@ module.exports = function (Plugins) {
 				}
 				return next(null, params);
 			}
-
-			hookObj.method(params, next);
+			const nextOnce = utils.callable(next, { times: 1 });
+			const returned = hookObj.method(params, nextOnce);
+			if (utils.isPromise(returned)) {
+				returned.then((payload) => {
+					nextOnce(null, payload);
+				}).catch(nextOnce);
+			}
 		}, callback);
 	}
 
@@ -160,26 +166,33 @@ module.exports = function (Plugins) {
 		}
 		async.each(hookList, function (hookObj, next) {
 			if (typeof hookObj.method === 'function') {
-				var timedOut = false;
+				const nextOnce = utils.callable(next, {
+					times: 1,
+					timeout: 5000,
+					onTimeout: function () {
+						winston.warn('[plugins] Callback timed out, hook \'' + hook + '\' in plugin \'' + hookObj.id + '\'');
+						next();
+					},
+				});
 
-				var timeoutId = setTimeout(function () {
-					winston.warn('[plugins] Callback timed out, hook \'' + hook + '\' in plugin \'' + hookObj.id + '\'');
-					timedOut = true;
-					next();
-				}, 5000);
-
-				try {
-					hookObj.method(params, function () {
-						clearTimeout(timeoutId);
-						if (!timedOut) {
-							next.apply(null, arguments);
-						}
-					});
-				} catch (err) {
+				const onError = utils.callable(function onError(err) {
 					winston.error('[plugins] Error executing \'' + hook + '\' in plugin \'' + hookObj.id + '\'');
 					winston.error(err);
-					clearTimeout(timeoutId);
-					next();
+					nextOnce();
+				}, { times: 1 });
+
+
+				try {
+					const returned = hookObj.method(params, nextOnce);
+					if (utils.isPromise(returned)) {
+						returned
+							.then((payload) => {
+								nextOnce(null, payload);
+							})
+							.catch(onError);
+					}
+				} catch (err) {
+					onError(err);
 				}
 			} else {
 				next();
