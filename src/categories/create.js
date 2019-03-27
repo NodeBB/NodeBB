@@ -170,6 +170,7 @@ module.exports = function (Categories) {
 				destination.link = results.source.link;
 				destination.numRecentReplies = results.source.numRecentReplies;
 				destination.class = results.source.class;
+				destination.image = results.source.image;
 				destination.imageClass = results.source.imageClass;
 
 				if (copyParent) {
