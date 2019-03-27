@@ -157,6 +157,7 @@ define('admin/manage/category', [
 
 		$('#category-image').on('change', function () {
 			$('.category-preview').css('background-image', $(this).val() ? ('url("' + $(this).val() + '")') : '');
+			modified($('#category-image'));
 		});
 
 		$('.delete-image').on('click', function (e) {
