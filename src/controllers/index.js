@@ -40,6 +40,12 @@ Controllers.errors = require('./errors');
 Controllers.composer = require('./composer');
 
 Controllers.reset = function (req, res, next) {
+	res.locals.metaTags = {
+		...res.locals.metaTags,
+		name: 'robots',
+		content: 'noindex',
+	};
+
 	const renderReset = function (code, valid) {
 		res.render('reset_code', {
 			valid: valid,
