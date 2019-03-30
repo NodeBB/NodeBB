@@ -427,7 +427,7 @@ authenticationController.localLogin = function (req, username, password, next) {
 					user.isAdminOrGlobalMod(uid, next);
 				},
 				banned: function (next) {
-					user.isBanned(uid, next);
+					user.bans.isBanned(uid, next);
 				},
 				hasLoginPrivilege: function (next) {
 					privileges.global.can('local:login', uid, next);

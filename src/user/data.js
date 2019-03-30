@@ -216,12 +216,12 @@ module.exports = function (User) {
 			}
 
 			if (user.hasOwnProperty('banned') || user.hasOwnProperty('banned:expire')) {
-				var result = User.calcBanExpiredFromUserData(user);
+				var result = User.bans.calcExpiredFromUserData(user);
 				var unban = result.banned && result.banExpired;
 				user.banned_until = unban ? 0 : user['banned:expire'];
 				user.banned_until_readable = user.banned_until && !unban ? utils.toISOString(user.banned_until) : 'Not Banned';
 				if (unban) {
-					return User.unban(user.uid, function (err) {
+					return User.bans.unban(user.uid, function (err) {
 						if (err) {
 							return next(err);
 						}

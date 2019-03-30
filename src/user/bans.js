@@ -1,11 +1,13 @@
 'use strict';
 
-var async = require('async');
-
-var db = require('../database');
+const async = require('async');
+const winston = require('winston');
+const db = require('../database');
 
 module.exports = function (User) {
-	User.ban = function (uid, until, reason, callback) {
+	User.bans = {};
+
+	User.bans.ban = function (uid, until, reason, callback) {
 		// "until" (optional) is unix timestamp in milliseconds
 		// "reason" (optional) is a string
 		if (!callback && typeof until === 'function') {
@@ -50,7 +52,7 @@ module.exports = function (User) {
 		});
 	};
 
-	User.unban = function (uid, callback) {
+	User.bans.unban = function (uid, callback) {
 		async.waterfall([
 			function (next) {
 				User.setUserFields(uid, { banned: 0, 'banned:expire': 0 }, next);
@@ -61,7 +63,7 @@ module.exports = function (User) {
 		], callback);
 	};
 
-	User.getBannedAndExpired = function (uid, callback) {
+	User.bans.getBannedAndExpired = function (uid, callback) {
 		if (parseInt(uid, 10) <= 0) {
 			return setImmediate(callback, null, false);
 		}
@@ -69,11 +71,11 @@ module.exports = function (User) {
 			if (err) {
 				return callback(err);
 			}
-			callback(null, User.calcBanExpiredFromUserData(userData));
+			callback(null, User.bans.calcExpiredFromUserData(userData));
 		});
 	};
 
-	User.calcBanExpiredFromUserData = function (userData) {
+	User.bans.calcExpiredFromUserData = function (userData) {
 		return {
 			banned: !!userData.banned,
 			'banned:expire': userData['banned:expire'],
@@ -81,13 +83,13 @@ module.exports = function (User) {
 		};
 	};
 
-	User.unbanIfBanExpired = function (uid, callback) {
-		User.getBannedAndExpired(uid, function (err, result) {
+	User.bans.unbanIfExpired = function (uid, callback) {
+		User.bans.getBannedAndExpired(uid, function (err, result) {
 			if (err) {
 				return callback(err);
 			}
 			if (result.banned && result.banExpired) {
-				return User.unban(uid, function (err) {
+				return User.bans.unban(uid, function (err) {
 					callback(err, { banned: false, banExpired: true, 'banned:expire': 0 });
 				});
 			}
@@ -95,16 +97,16 @@ module.exports = function (User) {
 		});
 	};
 
-	User.isBanned = function (uid, callback) {
+	User.bans.isBanned = function (uid, callback) {
 		if (parseInt(uid, 10) <= 0) {
 			return setImmediate(callback, null, false);
 		}
-		User.unbanIfBanExpired(uid, function (err, result) {
+		User.bans.unbanIfExpired(uid, function (err, result) {
 			callback(err, result.banned);
 		});
 	};
 
-	User.getBannedReason = function (uid, callback) {
+	User.bans.getReason = function (uid, callback) {
 		if (parseInt(uid, 10) <= 0) {
 			return setImmediate(callback, null, '');
 		}
@@ -123,4 +125,19 @@ module.exports = function (User) {
 			},
 		], callback);
 	};
+
+	const deprecate = function (func, oldPath, newPath) {
+		return function () {
+			winston.warn(`function ${oldPath} is deprecated, please use ${newPath} instead`);
+			return func.apply(User.bans, arguments);
+		};
+	};
+
+	User.ban = deprecate(User.bans.ban, 'User.ban', 'User.bans.ban');
+	User.unban = deprecate(User.bans.unban, 'User.unban', 'User.bans.unban');
+	User.getBannedAndExpired = deprecate(User.bans.getBannedAndExpired, 'User.getBannedAndExpired', 'User.bans.getBannedAndExpired');
+	User.calcBanExpiredFromUserData = deprecate(User.bans.calcExpiredFromUserData, 'User.calcBanExpiredFromUserData', 'User.bans.calcExpiredFromUserData');
+	User.unbanIfBanExpired = deprecate(User.bans.unbanIfExpired, 'User.unbanIfBanExpired', 'User.bans.unbanIfExpired');
+	User.isBanned = deprecate(User.bans.isBanned, 'User.isBanned', 'User.bans.isBanned');
+	User.getBannedReason = deprecate(User.bans.getReason, 'User.getBannedReason', 'User.bans.getReason');
 };

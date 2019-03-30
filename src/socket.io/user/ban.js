@@ -55,7 +55,7 @@ module.exports = function (SocketUser) {
 		toggleBan(socket.uid, uids, function (uid, next) {
 			async.waterfall([
 				function (next) {
-					user.unban(uid, next);
+					user.bans.unban(uid, next);
 				},
 				function (next) {
 					events.log({
@@ -124,7 +124,7 @@ module.exports = function (SocketUser) {
 				});
 			},
 			function (next) {
-				user.ban(uid, until, reason, next);
+				user.bans.ban(uid, until, reason, next);
 			},
 			function (banData, next) {
 				db.setObjectField('uid:' + uid + ':ban:' + banData.timestamp, 'fromUid', callerUid, next);
