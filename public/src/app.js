@@ -596,7 +596,7 @@ app.cacheBuster = null;
 							return;
 						}
 						data.posts.forEach(function (p) {
-							p.snippet = $(p.content).text().slice(0, 80) + '...';
+							p.snippet = utils.escapeHTML($(p.content).text().slice(0, 80) + '...');
 						});
 						app.parseAndTranslate(template, data, function (html) {
 							html.find('.timeago').timeago();
