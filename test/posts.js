@@ -928,6 +928,13 @@ describe('Post\'s', function () {
 				},
 			], done);
 		});
+
+		it('should not crash if id does not exist', function (done) {
+			socketPosts.reject({ uid: globalModUid }, { id: '123123123' }, function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
 	});
 
 	describe('upload methods', function () {
