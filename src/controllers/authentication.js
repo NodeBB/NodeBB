@@ -480,10 +480,11 @@ authenticationController.logout = function (req, res, next) {
 	if (!req.loggedIn || !req.sessionID) {
 		return res.status(200).send('not-logged-in');
 	}
-
+	const uid = req.uid;
+	const sessionID = req.sessionID;
 	async.waterfall([
 		function (next) {
-			user.auth.revokeSession(req.sessionID, req.uid, next);
+			user.auth.revokeSession(sessionID, uid, next);
 		},
 		function (next) {
 			req.logout();
@@ -494,18 +495,18 @@ authenticationController.logout = function (req, res, next) {
 			});
 		},
 		function (next) {
-			user.setUserField(req.uid, 'lastonline', Date.now() - (meta.config.onlineCutoff * 60000), next);
+			user.setUserField(uid, 'lastonline', Date.now() - (meta.config.onlineCutoff * 60000), next);
 		},
 		function (next) {
-			db.sortedSetRemove('users:online', req.uid, next);
+			db.sortedSetRemove('users:online', uid, next);
 		},
 		function (next) {
-			plugins.fireHook('static:user.loggedOut', { req: req, res: res, uid: req.uid }, next);
+			plugins.fireHook('static:user.loggedOut', { req: req, res: res, uid: uid }, next);
 		},
 		async.apply(middleware.autoLocale, req, res),
 		function () {
 			// Force session check for all connected socket.io clients with the same session id
-			sockets.in('sess_' + req.sessionID).emit('checkSession', 0);
+			sockets.in('sess_' + sessionID).emit('checkSession', 0);
 			if (req.body.noscript === 'true') {
 				res.redirect(nconf.get('relative_path') + '/');
 			} else {
