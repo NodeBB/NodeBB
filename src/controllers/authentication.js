@@ -501,7 +501,7 @@ authenticationController.logout = function (req, res, next) {
 			db.sortedSetRemove('users:online', uid, next);
 		},
 		function (next) {
-			plugins.fireHook('static:user.loggedOut', { req: req, res: res, uid: uid }, next);
+			plugins.fireHook('static:user.loggedOut', { req: req, res: res, uid: uid, sessionID: sessionID }, next);
 		},
 		async.apply(middleware.autoLocale, req, res),
 		function () {
