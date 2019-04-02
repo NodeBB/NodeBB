@@ -549,7 +549,7 @@ describe('Categories', function () {
 				},
 				function (category, next) {
 					child1Cid = category.cid;
-					socketCategories.copySettingsFrom({ uid: adminUid }, { fromCid: parentCid, toCid: child1Cid }, next);
+					socketCategories.copySettingsFrom({ uid: adminUid }, { fromCid: parentCid, toCid: child1Cid, copyParent: true }, next);
 				},
 				function (destinationCategory, next) {
 					Categories.getCategoryField(child1Cid, 'description', next);
