@@ -139,6 +139,9 @@
 
 		}
 
+        [role="presentation"] img {
+            max-width: 100%;
+        }
 	</style>
 
 	<!-- What it does: Makes background images in 72ppi Outlook render at correct size. -->
