@@ -23,9 +23,7 @@ describe('Topic\'s', function () {
 	var adminUid;
 
 	before(function (done) {
-		console.log('before User.create');
 		User.create({ username: 'admin', password: '123456' }, function (err, uid) {
-			console.log('before User.create, err, uid', err, uid);
 			if (err) {
 				return done(err);
 			}
@@ -36,7 +34,6 @@ describe('Topic\'s', function () {
 				name: 'Test Category',
 				description: 'Test category created by testing script',
 			}, function (err, category) {
-				console.log('before User.create categories.create, err, category', err, category);
 				if (err) {
 					return done(err);
 				}
@@ -877,7 +874,6 @@ describe('Topic\'s', function () {
 		var topicData;
 
 		before(function (done) {
-			this.timeout(120000);
 			topics.post({
 				uid: topic.userId,
 				title: 'topic for controller test',

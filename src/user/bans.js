@@ -126,13 +126,13 @@ module.exports = function (User) {
 		], callback);
 	};
 
+	// TODO Remove in v1.13.0
 	const deprecate = function (func, oldPath, newPath) {
 		return function () {
 			winston.warn(`function ${oldPath} is deprecated, please use ${newPath} instead`);
 			return func.apply(User.bans, arguments);
 		};
 	};
-
 	User.ban = deprecate(User.bans.ban, 'User.ban', 'User.bans.ban');
 	User.unban = deprecate(User.bans.unban, 'User.unban', 'User.bans.unban');
 	User.getBannedAndExpired = deprecate(User.bans.getBannedAndExpired, 'User.getBannedAndExpired', 'User.bans.getBannedAndExpired');
