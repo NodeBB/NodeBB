@@ -344,9 +344,13 @@ function buildCustomTemplates(config) {
 			}, next);
 		},
 		function (result, next) {
-			var templates = result.templates.filter(function (template) {
-				return template.isCustom && template.text !== prevConfig['email:custom:' + path];
-			});
+			// If the new config contains any email override values, re-compile those templates
+			var toBuild = Object
+				.keys(config)
+				.filter(prop => prop.startsWith('email:custom:'))
+				.map(key => key.split(':')[2]);
+
+			var templates = result.templates.filter(template => toBuild.includes(template.path));
 			var paths = _.fromPairs(result.paths.map(function (p) {
 				var relative = path.relative(viewsDir, p).replace(/\\/g, '/');
 				return [relative, p];
