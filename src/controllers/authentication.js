@@ -389,6 +389,9 @@ authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 				function (next) {
 					user.updateLastOnlineTime(uid, next);
 				},
+				function (next) {
+					user.updateOnlineUsers(uid, next);
+				}
 			], function (err) {
 				next(err);
 			});
@@ -498,7 +501,7 @@ authenticationController.logout = function (req, res, next) {
 			user.setUserField(uid, 'lastonline', Date.now() - (meta.config.onlineCutoff * 60000), next);
 		},
 		function (next) {
-			db.sortedSetRemove('users:online', uid, next);
+			db.sortedSetAdd('users:online', Date.now() - (meta.config.onlineCutoff * 60000), uid, next);
 		},
 		function (next) {
 			plugins.fireHook('static:user.loggedOut', { req: req, res: res, uid: uid, sessionID: sessionID }, next);
