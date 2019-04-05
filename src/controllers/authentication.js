@@ -391,7 +391,7 @@ authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 				},
 				function (next) {
 					user.updateOnlineUsers(uid, next);
-				}
+				},
 			], function (err) {
 				next(err);
 			});
