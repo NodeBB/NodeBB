@@ -1,5 +1,6 @@
 'use strict';
 
+const util = require('util');
 const async = require('async');
 const winston = require('winston');
 const db = require('../database');
@@ -127,17 +128,12 @@ module.exports = function (User) {
 	};
 
 	// TODO Remove in v1.13.0
-	const deprecate = function (func, oldPath, newPath) {
-		return function () {
-			winston.warn(`function ${oldPath} is deprecated, please use ${newPath} instead`);
-			return func.apply(User.bans, arguments);
-		};
-	};
-	User.ban = deprecate(User.bans.ban, 'User.ban', 'User.bans.ban');
-	User.unban = deprecate(User.bans.unban, 'User.unban', 'User.bans.unban');
-	User.getBannedAndExpired = deprecate(User.bans.getBannedAndExpired, 'User.getBannedAndExpired', 'User.bans.getBannedAndExpired');
-	User.calcBanExpiredFromUserData = deprecate(User.bans.calcExpiredFromUserData, 'User.calcBanExpiredFromUserData', 'User.bans.calcExpiredFromUserData');
-	User.unbanIfBanExpired = deprecate(User.bans.unbanIfExpired, 'User.unbanIfBanExpired', 'User.bans.unbanIfExpired');
-	User.isBanned = deprecate(User.bans.isBanned, 'User.isBanned', 'User.bans.isBanned');
-	User.getBannedReason = deprecate(User.bans.getReason, 'User.getBannedReason', 'User.bans.getReason');
+	const deprecatedMessage = (oldPath, newPath) => `function ${oldPath} is deprecated, please use ${newPath} instead`;
+	User.ban = util.deprecate(User.bans.ban, deprecatedMessage('User.ban', 'User.bans.ban'));
+	User.unban = util.deprecate(User.bans.unban, deprecatedMessage('User.unban', 'User.bans.unban'));
+	User.getBannedAndExpired = util.deprecate(User.bans.getBannedAndExpired, deprecatedMessage('User.getBannedAndExpired', 'User.bans.getBannedAndExpired'));
+	User.calcBanExpiredFromUserData = util.deprecate(User.bans.calcExpiredFromUserData, deprecatedMessage('User.calcBanExpiredFromUserData', 'User.bans.calcExpiredFromUserData'));
+	User.unbanIfBanExpired = util.deprecate(User.bans.unbanIfExpired, deprecatedMessage('User.unbanIfBanExpired', 'User.bans.unbanIfExpired'));
+	User.isBanned = util.deprecate(User.bans.isBanned, deprecatedMessage('User.isBanned', 'User.bans.isBanned'));
+	User.getBannedReason = util.deprecate(User.bans.getReason, deprecatedMessage('User.getBannedReason', 'User.bans.getReason'));
 };
