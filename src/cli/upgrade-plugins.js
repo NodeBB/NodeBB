@@ -12,7 +12,7 @@ var nconf = require('nconf');
 var paths = require('./paths');
 
 var packageManager = nconf.get('package_manager');
-var packageManagerExecutable = packageManager === 'yarn' ? 'yarn' : 'npm';
+var packageManagerExecutable = packageManager;
 var packageManagerInstallArgs = packageManager === 'yarn' ? ['add'] : ['install', '--save'];
 
 if (process.platform === 'win32') {
