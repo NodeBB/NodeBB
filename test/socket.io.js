@@ -132,8 +132,8 @@ describe('socket.io', function () {
 				assert.ifError(err);
 				assert(data.uid);
 				assert(data.timestamp);
-				assert(data.hasOwnProperty('expiry'));
-				assert(data.hasOwnProperty('expiry_readable'));
+				assert(data.hasOwnProperty('banned_until'));
+				assert(data.hasOwnProperty('banned_until_readable'));
 				assert.equal(data.reason, 'spammer');
 				done();
 			});
@@ -141,7 +141,7 @@ describe('socket.io', function () {
 	});
 
 	it('should return ban reason', function (done) {
-		user.getBannedReason(regularUid, function (err, reason) {
+		user.bans.getReason(regularUid, function (err, reason) {
 			assert.ifError(err);
 			assert.equal(reason, 'spammer');
 			done();
@@ -152,7 +152,7 @@ describe('socket.io', function () {
 		var socketUser = require('../src/socket.io/user');
 		socketUser.unbanUsers({ uid: adminUid }, [regularUid], function (err) {
 			assert.ifError(err);
-			user.isBanned(regularUid, function (err, isBanned) {
+			user.bans.isBanned(regularUid, function (err, isBanned) {
 				assert.ifError(err);
 				assert(!isBanned);
 				done();

@@ -879,7 +879,7 @@ describe('Topic\'s', function () {
 				title: 'topic for controller test',
 				content: 'topic content',
 				cid: topic.categoryId,
-				thumb: 'http://i.imgur.com/64iBdBD.jpg',
+				// thumb: 'http://i.imgur.com/64iBdBD.jpg',
 			}, function (err, result) {
 				assert.ifError(err);
 				assert.ok(result);

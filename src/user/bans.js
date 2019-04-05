@@ -1,11 +1,13 @@
 'use strict';
 
-var async = require('async');
-
-var db = require('../database');
+const util = require('util');
+const async = require('async');
+const db = require('../database');
 
 module.exports = function (User) {
-	User.ban = function (uid, until, reason, callback) {
+	User.bans = {};
+
+	User.bans.ban = function (uid, until, reason, callback) {
 		// "until" (optional) is unix timestamp in milliseconds
 		// "reason" (optional) is a string
 		if (!callback && typeof until === 'function') {
@@ -43,8 +45,6 @@ module.exports = function (User) {
 		if (until > now) {
 			tasks.push(async.apply(db.sortedSetAdd, 'users:banned:expire', until, uid));
 			tasks.push(async.apply(User.setUserField, uid, 'banned:expire', until));
-		} else {
-			until = 0;
 		}
 
 		async.series(tasks, function (err) {
@@ -52,7 +52,7 @@ module.exports = function (User) {
 		});
 	};
 
-	User.unban = function (uid, callback) {
+	User.bans.unban = function (uid, callback) {
 		async.waterfall([
 			function (next) {
 				User.setUserFields(uid, { banned: 0, 'banned:expire': 0 }, next);
@@ -63,36 +63,50 @@ module.exports = function (User) {
 		], callback);
 	};
 
-	User.isBanned = function (uid, callback) {
+	User.bans.getBannedAndExpired = function (uid, callback) {
 		if (parseInt(uid, 10) <= 0) {
 			return setImmediate(callback, null, false);
 		}
-		async.waterfall([
-			async.apply(User.getUserFields, uid, ['banned', 'banned:expire']),
-			function (userData, next) {
-				var banned = userData && userData.banned;
-				if (!banned) {
-					return next(null, banned);
-				}
-
-				// If they are banned, see if the ban has expired
-				var stillBanned = !userData['banned:expire'] || Date.now() < userData['banned:expire'];
-
-				if (stillBanned) {
-					return next(null, true);
-				}
-				async.parallel([
-					async.apply(db.sortedSetRemove.bind(db), 'users:banned:expire', uid),
-					async.apply(db.sortedSetRemove.bind(db), 'users:banned', uid),
-					async.apply(User.setUserFields, uid, { banned: 0, 'banned:expire': 0 }),
-				], function (err) {
-					next(err, false);
-				});
-			},
-		], callback);
+		User.getUserFields(uid, ['banned', 'banned:expire'], function (err, userData) {
+			if (err) {
+				return callback(err);
+			}
+			callback(null, User.bans.calcExpiredFromUserData(userData));
+		});
 	};
 
-	User.getBannedReason = function (uid, callback) {
+	User.bans.calcExpiredFromUserData = function (userData) {
+		return {
+			banned: !!userData.banned,
+			'banned:expire': userData['banned:expire'],
+			banExpired: userData['banned:expire'] <= Date.now() && userData['banned:expire'] !== 0,
+		};
+	};
+
+	User.bans.unbanIfExpired = function (uid, callback) {
+		User.bans.getBannedAndExpired(uid, function (err, result) {
+			if (err) {
+				return callback(err);
+			}
+			if (result.banned && result.banExpired) {
+				return User.bans.unban(uid, function (err) {
+					callback(err, { banned: false, banExpired: true, 'banned:expire': 0 });
+				});
+			}
+			callback(null, result);
+		});
+	};
+
+	User.bans.isBanned = function (uid, callback) {
+		if (parseInt(uid, 10) <= 0) {
+			return setImmediate(callback, null, false);
+		}
+		User.bans.unbanIfExpired(uid, function (err, result) {
+			callback(err, result.banned);
+		});
+	};
+
+	User.bans.getReason = function (uid, callback) {
 		if (parseInt(uid, 10) <= 0) {
 			return setImmediate(callback, null, '');
 		}
@@ -111,4 +125,14 @@ module.exports = function (User) {
 			},
 		], callback);
 	};
+
+	// TODO Remove in v1.13.0
+	const deprecatedMessage = (oldPath, newPath) => `function ${oldPath} is deprecated, please use ${newPath} instead`;
+	User.ban = util.deprecate(User.bans.ban, deprecatedMessage('User.ban', 'User.bans.ban'));
+	User.unban = util.deprecate(User.bans.unban, deprecatedMessage('User.unban', 'User.bans.unban'));
+	User.getBannedAndExpired = util.deprecate(User.bans.getBannedAndExpired, deprecatedMessage('User.getBannedAndExpired', 'User.bans.getBannedAndExpired'));
+	User.calcBanExpiredFromUserData = util.deprecate(User.bans.calcExpiredFromUserData, deprecatedMessage('User.calcBanExpiredFromUserData', 'User.bans.calcExpiredFromUserData'));
+	User.unbanIfBanExpired = util.deprecate(User.bans.unbanIfExpired, deprecatedMessage('User.unbanIfBanExpired', 'User.bans.unbanIfExpired'));
+	User.isBanned = util.deprecate(User.bans.isBanned, deprecatedMessage('User.isBanned', 'User.bans.isBanned'));
+	User.getBannedReason = util.deprecate(User.bans.getReason, deprecatedMessage('User.getBannedReason', 'User.bans.getReason'));
 };

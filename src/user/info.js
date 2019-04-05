@@ -24,13 +24,16 @@ module.exports = function (User) {
 				db.getObject(record[0], next);
 			},
 			function (banInfo, next) {
-				var expiry = banInfo.expire;
+				const expire = parseInt(banInfo.expire, 10);
+				const expire_readable = utils.toISOString(expire);
 
 				next(null, {
 					uid: uid,
 					timestamp: banInfo.timestamp,
-					expiry: parseInt(expiry, 10),
-					expiry_readable: new Date(parseInt(expiry, 10)).toString(),
+					banned_until: expire,
+					expiry: expire, /* backward compatible alias */
+					banned_until_readable: expire_readable,
+					expiry_readable: expire_readable, /* backward compatible alias */
 					reason: validator.escape(String(banInfo.reason || '')),
 				});
 			},

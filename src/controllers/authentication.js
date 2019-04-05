@@ -446,7 +446,7 @@ authenticationController.localLogin = function (req, username, password, next) {
 					user.isAdminOrGlobalMod(uid, next);
 				},
 				banned: function (next) {
-					user.isBanned(uid, next);
+					user.bans.isBanned(uid, next);
 				},
 				hasLoginPrivilege: function (next) {
 					privileges.global.can('local:login', uid, next);
@@ -551,7 +551,7 @@ function getBanInfo(uid, callback) {
 			});
 		},
 		function (next) {
-			next(new Error(banInfo.expiry ? '[[error:user-banned-reason-until, ' + banInfo.expiry_readable + ', ' + banInfo.reason + ']]' : '[[error:user-banned-reason, ' + banInfo.reason + ']]'));
+			next(new Error(banInfo.banned_until ? '[[error:user-banned-reason-until, ' + banInfo.banned_until_readable + ', ' + banInfo.reason + ']]' : '[[error:user-banned-reason, ' + banInfo.reason + ']]'));
 		},
 	], function (err) {
 		if (err) {
