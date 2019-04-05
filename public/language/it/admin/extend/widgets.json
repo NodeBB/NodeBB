@@ -1,22 +1,22 @@
 {
-	"available": "Available Widgets",
-	"explanation": "Select a widget from the dropdown menu and then drag and drop it into a template's widget area on the left.",
-	"none-installed": "No widgets found! Activate the essential widgets plugin in the <a href=\"%1\">plugins</a> control panel.",
-	"clone-from": "Clone widgets from",
-	"containers.available": "Available Containers",
-	"containers.explanation": "Drag and drop on top of any active widget",
-	"containers.none": "None",
-	"container.well": "Well",
+	"available": "Widget disponibili",
+	"explanation": "Selezionare un widget dal menu a discesa e poi trascinalo e rilascialo nell'area widget di un modello a sinistra.",
+	"none-installed": "Nessun widget trovato! Attivare il plugin essenziale dei widget nel pannello di controllo <a href=\"%1\">plugin</a>.",
+	"clone-from": "Clona i widget da",
+	"containers.available": "Contenitori disponibili",
+	"containers.explanation": "Trascina e rilascia su qualsiasi widget attivo",
+	"containers.none": "Nessuno",
+	"container.well": "Bene",
 	"container.jumbotron": "Jumbotron",
 	"container.panel": "Pannello",
-	"container.panel-header": "Panel Header",
-	"container.panel-body": "Panel Body",
-	"container.alert": "Alert",
+	"container.panel-header": "Intestazione Pannello",
+	"container.panel-body": "Corpo Pannello",
+	"container.alert": "Avviso",
 
-	"alert.confirm-delete": "Are you sure you wish to delete this widget?",
-	"alert.updated": "Widgets Updated",
-	"alert.update-success": "Successfully updated widgets",
-	"alert.clone-success": "Successfully cloned widgets",
+	"alert.confirm-delete": "Sei sicuro di voler eliminare questo widget?",
+	"alert.updated": "Widget aggiornati",
+	"alert.update-success": "Widget aggiornati con successo",
+	"alert.clone-success": "Widget clonati con successo",
 
-	"error.select-clone": "Please select a page to clone from"
+	"error.select-clone": "Si prega di selezionare una pagina da clonare da"
 }

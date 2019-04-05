@@ -2,7 +2,7 @@
     "home": "Home",
     "search": "Cerca",
     "buttons.close": "Chiudi",
-    "403.title": "Accesso Proibito",
+    "403.title": "Accesso Negato",
     "403.message": "Sembra tu sia arrivato ad una pagina a cui non hai accesso.",
     "403.login": "Forse dovresti <a href='%1/login'>effettuare l'accesso</a>?",
     "404.title": "Non trovato",

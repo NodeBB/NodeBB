@@ -1,10 +1,10 @@
 {
-	"pagination": "Impostazioni di paginazione",
-	"enable": "Pagina le discussioni e i post al posto di usale lo scrolling infinito",
-	"topics": "Paginazione della discussione",
+	"pagination": "Impostazioni di impaginazione",
+	"enable": "Impaginare discussioni e post al posto di usare lo scorrimento infinito",
+	"topics": "Impaginazione Discussione",
 	"posts-per-page": "Post per pagina",
 	"max-posts-per-page": "Numero massimo di post per pagina",
-	"categories": "Categorie per pagina",
+	"categories": "Categoria Impaginazione",
 	"topics-per-page": "Discussioni per pagina",
-	"max-topics-per-page": "Discussioni massime per pagina"
+	"max-topics-per-page": "Numero massimo di Discussioni per pagina"
 }
