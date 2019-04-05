@@ -2,7 +2,6 @@
 
 const util = require('util');
 const async = require('async');
-const winston = require('winston');
 const db = require('../database');
 
 module.exports = function (User) {
