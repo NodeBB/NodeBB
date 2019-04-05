@@ -337,7 +337,11 @@ SocketUser.setModerationNote = function (socket, data, callback) {
 	if (!socket.uid || !data || !data.uid || !data.note) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
-
+	const noteData = {
+		uid: socket.uid,
+		note: data.note,
+		timestamp: Date.now(),
+	};
 	async.waterfall([
 		function (next) {
 			privileges.users.canEdit(socket.uid, data.uid, next);
@@ -354,12 +358,10 @@ SocketUser.setModerationNote = function (socket, data, callback) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
 
-			var note = {
-				uid: socket.uid,
-				note: data.note,
-				timestamp: Date.now(),
-			};
-			db.sortedSetAdd('uid:' + data.uid + ':moderation:notes', note.timestamp, JSON.stringify(note), next);
+			db.sortedSetAdd('uid:' + data.uid + ':moderation:notes', noteData.timestamp, noteData.timestamp, next);
+		},
+		function (next) {
+			db.setObject('uid:' + data.uid + ':moderation:note:' + noteData.timestamp, noteData, next);
 		},
 	], callback);
 };

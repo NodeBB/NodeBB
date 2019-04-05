@@ -158,18 +158,19 @@ module.exports = function (User) {
 			function (next) {
 				db.getSortedSetRevRange('uid:' + uid + ':moderation:notes', start, stop, next);
 			},
+			function (noteIds, next) {
+				const keys = noteIds.map(id => 'uid:' + uid + ':moderation:note:' + id);
+				db.getObjects(keys, next);
+			},
 			function (notes, next) {
 				var uids = [];
 				noteData = notes.map(function (note) {
-					try {
-						var data = JSON.parse(note);
-						uids.push(data.uid);
-						data.timestampISO = utils.toISOString(data.timestamp);
-						data.note = validator.escape(String(data.note));
-						return data;
-					} catch (err) {
-						return next(err);
+					if (note) {
+						uids.push(note.uid);
+						note.timestampISO = utils.toISOString(note.timestamp);
+						note.note = validator.escape(String(note.note));
 					}
+					return note;
 				});
 
 				User.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
