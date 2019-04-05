@@ -4,6 +4,7 @@ var nconf = require('nconf');
 var url = require('url');
 var winston = require('winston');
 var path = require('path');
+var fs = require('fs');
 
 var pkg = require('../package.json');
 var dirname = require('./cli/paths').baseDir;
@@ -54,6 +55,7 @@ function loadConfig(configFile) {
 		upload_path: 'public/uploads',
 		views_dir: path.join(dirname, 'build/public/templates'),
 		version: pkg.version,
+		package_manager: 'npm',
 	});
 
 	if (!nconf.get('isCluster')) {
@@ -87,6 +89,19 @@ function loadConfig(configFile) {
 	nconf.stores.env.readOnly = true;
 
 	nconf.set('runJobs', nconf.get('isPrimary') === 'true' && !nconf.get('jobsDisabled'));
+
+	// Determine whether it is appropriate to use yarn
+	let npmLock = true;
+	try { fs.statSync(path.join(__dirname, '../package-lock.json')); } catch (e) { npmLock = false; }
+
+	try {
+		fs.accessSync(path.normalize('/usr/bin/yarn'), fs.constants.F_OK);
+		if (!npmLock) {
+			nconf.set('package_manager', 'yarn');
+		}
+	} catch (e) {
+		// Yarn executable not found, likely not installed
+	}
 }
 
 function versionCheck() {

@@ -13,7 +13,7 @@ var meta = require('../meta');
 var pubsub = require('../pubsub');
 var events = require('../events');
 
-var packageManager = nconf.get('package_manager') === 'yarn' ? 'yarn' : 'npm';
+var packageManager = nconf.get('package_manager');
 var packageManagerExecutable = packageManager;
 var packageManagerCommands = {
 	yarn: {
