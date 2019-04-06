@@ -7,7 +7,7 @@ var batch = require('../../batch');
 
 module.exports = {
 	name: 'Update moderation notes to hashes',
-	timestamp: Date.UTC(2018, 3, 5),
+	timestamp: Date.UTC(2019, 3, 5),
 	method: function (callback) {
 		var progress = this.progress;
 
