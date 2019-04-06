@@ -5,7 +5,7 @@
 	"private-groups.warning": "<strong>¡Cuidado!</strong> Si esta opción está deshabilitada y tienes grupos privados, se convertirán en grupos públicos automáticamente.",
 	"allow-multiple-badges-help": "Esta opción puede ser usadas para permitir a los usuarios seleccionar múltiples medallas de grupo, requiere de soporte del theme/plantilla.",
 	"max-name-length": "Longitud Máxima de Nombre de Grupo",
-	"max-title-length": "Maximum Group Title Length",
+	"max-title-length": "Longitud máxima del título del grupo",
 	"cover-image": "Imagen de Portada de Grupo",
 	"default-cover": "Imágenes de Portada por Defecto",
 	"default-cover-help": "Añadir lista separada por comas de imágenes de portada por defecto para grupos que no han subido una imagen de portada"

@@ -12,7 +12,7 @@
 	"headers.acac": "Credenciales-Control-Permitir-Acceso",
 	"headers.acam": "Access-Control-Allow-Methods",
 	"headers.acah": "Access-Control-Allow-Headers",
-	"hsts": "Strict Transport Security",
+	"hsts": "Seguridad estricta del transporte",
 	"hsts.enabled": "Enabled HSTS (recommended)",
 	"hsts.subdomains": "Include subdomains in HSTS header",
 	"hsts.preload": "Allow preloading of HSTS header",

@@ -18,7 +18,7 @@
 	"filter-targetUid": "UID segnalato",
 	"filter-type": "Tipo Segnalazione",
 	"filter-type-all": "Tutto il Contenuto",
-	"filter-type-post": "Discussione",
+	"filter-type-post": "Post",
 	"filter-type-user": "Utente",
 	"filter-state": "Stato",
 	"filter-assignee": "UID assegnato",
@@ -61,6 +61,6 @@
 	"modal-submit": "Invia Segnalazione",
 	"modal-submit-success": "Il contenuto è stato segnalato per la moderazione.",
 	"modal-submit-confirm": "Conferma Richiesta",
-	"modal-submit-confirm-text": "È già stato specificato un motivo personalizzato. Sei sicuro di voler inviare un rapporto veloce?",
-	"modal-submit-confirm-text-help": "Submitting a quick report will overwrite any custom reasons defined."
+	"modal-submit-confirm-text": "Hai già specificato un motivo personalizzato. Sei sicuro di voler inviare una segnalazione rapida?",
+	"modal-submit-confirm-text-help": "L'invio di una segnalazione rapida sovrascrive qualsiasi motivo personalizzato definito."
 }
