@@ -395,6 +395,7 @@ Categories.getTree = function (categories, parentCid) {
 	const parents = {};
 	cids.forEach((cid, index) => {
 		if (cid) {
+			categories[index].children = undefined;
 			cidToCategory[cid] = categories[index];
 			parents[cid] = _.clone(categories[index]);
 		}
