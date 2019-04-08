@@ -10,7 +10,11 @@
 	"search-content": "Procurar Conteúdo",
 	"search-users": "Procurar Utilizadores",
 	"search-tags": "Procurar Marcadores",
+	"view-users": "Ver Utilizadores",
+	"view-tags": "Ver Etiquetas",
+	"view-groups": "Ver Grupos",
 	"allow-local-login": "Início de Sessão Local",
+	"allow-group-creation": "Criar Grupos",
 
 	"find-category": "Encontrar Categoria",
 	"access-category": "Aceder à Categoria",

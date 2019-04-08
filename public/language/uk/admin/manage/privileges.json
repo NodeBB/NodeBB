@@ -10,7 +10,11 @@
 	"search-content": "Шукати Зміст",
 	"search-users": "Шукати Користувачів",
 	"search-tags": "Шукати Теги",
+	"view-users": "View Users",
+	"view-tags": "View Tags",
+	"view-groups": "View Groups",
 	"allow-local-login": "Local Login",
+	"allow-group-creation": "Group Create",
 
 	"find-category": "Знайти Категорію",
 	"access-category": "Доступ до Категорії",

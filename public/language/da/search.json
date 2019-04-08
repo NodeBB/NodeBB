@@ -43,5 +43,6 @@
     "clear-preferences": "Slet præferencer",
     "search-preferences-saved": "Søgnings præferencer gemt",
     "search-preferences-cleared": "Søgnings præferencer slettet",
-    "show-results-as": "Vis resultater som"
+    "show-results-as": "Vis resultater som",
+    "see-more-results": "See more results (%1)"
 }

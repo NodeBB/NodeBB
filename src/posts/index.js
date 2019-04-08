@@ -74,7 +74,7 @@ Posts.getPostSummariesFromSet = function (set, uid, start, stop, callback) {
 			db.getSortedSetRevRange(set, start, stop, next);
 		},
 		function (pids, next) {
-			privileges.posts.filter('read', pids, uid, next);
+			privileges.posts.filter('topics:read', pids, uid, next);
 		},
 		function (pids, next) {
 			Posts.getPostSummaryByPids(pids, uid, { stripTags: false }, next);

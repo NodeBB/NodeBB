@@ -30,7 +30,7 @@ SocketHelpers.notifyNew = function (uid, type, result) {
 		},
 		function (uids, next) {
 			uids = uids.filter(toUid => parseInt(toUid, 10) !== uid);
-			privileges.topics.filterUids('read', tid, uids, next);
+			privileges.topics.filterUids('topics:read', tid, uids, next);
 		},
 		function (uids, next) {
 			watchStateUids = uids;
@@ -100,7 +100,7 @@ SocketHelpers.sendNotificationToPostOwner = function (pid, fromuid, command, not
 		function (_postData, next) {
 			postData = _postData;
 			async.parallel({
-				canRead: async.apply(privileges.posts.can, 'read', pid, postData.uid),
+				canRead: async.apply(privileges.posts.can, 'topics:read', pid, postData.uid),
 				isIgnoring: async.apply(topics.isIgnoring, [postData.tid], postData.uid),
 			}, next);
 		},

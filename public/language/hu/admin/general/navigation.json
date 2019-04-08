@@ -5,6 +5,7 @@
 	"tooltip": "Elemleírás:",
 	"text": "Szöveg:",
 	"text-class": "Szövegosztály: <small>nem kötelező</small>",
+	"class": "Class: <small>optional</small>",
 	"id": "ID: <small>nem kötelező</small>",
 
 	"properties": "Tulajdonságok:",

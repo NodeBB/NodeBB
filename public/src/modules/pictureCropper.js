@@ -45,7 +45,7 @@ define('pictureCropper', ['cropper'], function (Cropper) {
 				aspectRatio: data.aspectRatio,
 				autoCropArea: 1,
 				viewMode: 1,
-				checkCrossOrigin: false,
+				checkCrossOrigin: true,
 				cropmove: function () {
 					if (data.restrictImageDimension) {
 						if (cropperTool.cropBoxData.width > data.imageDimension) {
@@ -143,7 +143,11 @@ define('pictureCropper', ['cropper'], function (Cropper) {
 		try {
 			imageData = data.imageType ? cropperTool.getCroppedCanvas().toDataURL(data.imageType) : cropperTool.getCroppedCanvas().toDataURL();
 		} catch (err) {
-			if (err.message === 'Failed to execute \'toDataURL\' on \'HTMLCanvasElement\': Tainted canvases may not be exported.') {
+			var corsErrors = [
+				'The operation is insecure.',
+				'Failed to execute \'toDataURL\' on \'HTMLCanvasElement\': Tainted canvases may not be exported.',
+			];
+			if (corsErrors.indexOf(err.message) !== -1) {
 				app.alertError('[[error:cors-error]]');
 			} else {
 				app.alertError(err.message);

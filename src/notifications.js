@@ -507,6 +507,7 @@ Notifications.merge = function (notifications, callback) {
 		'notifications:user_flagged_post_in',
 		'notifications:user_flagged_user',
 		'new_register',
+		'post-queue',
 	];
 	var isolated;
 	var differentiators;

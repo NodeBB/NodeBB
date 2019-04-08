@@ -1,9 +1,9 @@
 {
-    "upload-file": "Upload File",
-    "filename": "Filename",
-    "usage": "Post Usage",
-    "orphaned": "Orphaned",
-    "size/filecount": "Size / Filecount",
-    "confirm-delete": "Do you really want to delete this file?",
-    "filecount": "%1 files"
+    "upload-file": "Subir archivo",
+    "filename": "Nombre del archivo",
+    "usage": "Uso de Publicaciones",
+    "orphaned": "Huérfano",
+    "size/filecount": "Tamaño / Recuento de archivos",
+    "confirm-delete": "¿Realmente quieres borrar este archivo?",
+    "filecount": "%1 archivos"
 }

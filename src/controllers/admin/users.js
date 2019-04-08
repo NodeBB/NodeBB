@@ -1,7 +1,6 @@
 'use strict';
 
 var async = require('async');
-var validator = require('validator');
 var nconf = require('nconf');
 
 var user = require('../../user');
@@ -156,7 +155,6 @@ function getUsers(set, section, min, max, req, res, next) {
 		},
 		function (results) {
 			results.users = results.users.filter(function (user) {
-				user.email = validator.escape(String(user.email || ''));
 				return user && parseInt(user.uid, 10);
 			});
 			var data = {

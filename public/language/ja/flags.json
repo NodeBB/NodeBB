@@ -9,6 +9,7 @@
 	"updated": "更新されました",
 	"target-purged": "このフラグが参照しているコンテンツは切り離されており、利用できません。",
 
+	"graph-label": "Daily Flags",
 	"quick-filters": "クイックフィルター",
 	"filter-active": "このフラグのリストには1つまたは複数のフィルタが有効です。",
 	"filter-reset": "フィルターを削除",

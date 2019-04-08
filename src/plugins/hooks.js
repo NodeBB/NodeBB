@@ -99,7 +99,7 @@ module.exports = function (Plugins) {
 		}
 		var hookList = Plugins.loadedHooks[hook];
 		var hookType = hook.split(':')[0];
-		winston.verbose('[plugins/fireHook]', hook);
+		winston.verbose('[plugins/fireHook] ' + hook);
 		switch (hookType) {
 		case 'filter':
 			fireFilterHook(hook, hookList, params, done);

@@ -14,9 +14,15 @@ var utils = require('../utils');
 module.exports = function (Topics) {
 	var stripTeaserTags = utils.stripTags.concat(['img']);
 
-	Topics.getTeasers = function (topics, uid, callback) {
+	Topics.getTeasers = function (topics, options, callback) {
 		if (!Array.isArray(topics) || !topics.length) {
 			return callback(null, []);
+		}
+		let uid = options;
+		let teaserPost = meta.config.teaserPost;
+		if (typeof options === 'object') {
+			uid = options.uid;
+			teaserPost = options.teaserPost || meta.config.teaserPost;
 		}
 
 		var counts = [];
@@ -30,9 +36,9 @@ module.exports = function (Topics) {
 				if (topic.teaserPid === 'null') {
 					delete topic.teaserPid;
 				}
-				if (meta.config.teaserPost === 'first') {
+				if (teaserPost === 'first') {
 					teaserPids.push(topic.mainPid);
-				} else if (meta.config.teaserPost === 'last-post') {
+				} else if (teaserPost === 'last-post') {
 					teaserPids.push(topic.teaserPid || topic.mainPid);
 				} else { // last-reply and everything else uses teaserPid like `last` that was used before
 					teaserPids.push(topic.teaserPid);

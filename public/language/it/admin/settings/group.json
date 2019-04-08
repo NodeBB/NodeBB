@@ -1,13 +1,12 @@
 {
-	"general": "General",
-	"private-groups": "Private Groups",
-	"private-groups.help": "If enabled, joining of groups requires the approval of the group owner <em>(Default: enabled)</em>",
-	"private-groups.warning": "<strong>Beware!</strong> If this option is disabled and you have private groups, they automatically become public.",
-	"allow-creation": "Allow Group Creation",
-	"allow-creation-help": "If enabled, users can create groups <em>(Default: disabled)</em>",
-	"allow-multiple-badges-help": "This flag can be used to allow users to select multiple group badges, requires theme support.",
-	"max-name-length": "Maximum Group Name Length",
-	"cover-image": "Group Cover Image",
-	"default-cover": "Default Cover Images",
-	"default-cover-help": "Add comma-separated default cover images for groups that don't have an uploaded cover image"
+	"general": "Generale",
+	"private-groups": "Gruppi Privati",
+	"private-groups.help": "Se abilitato, l'ingresso ai gruppi richiede l'approvazione del proprietario del gruppo <em>(Predefinito: abilitato)</em>",
+	"private-groups.warning": "<strong>Attenzione!</strong> Se questa opzione è disattivata e si hanno gruppi privati, questi diventano automaticamente pubblici.",
+	"allow-multiple-badges-help": "Questo flag può essere utilizzato per consentire agli utenti di selezionare più badge di gruppo, richiede il supporto del tema.",
+	"max-name-length": "Lunghezza massima Nome Gruppo",
+	"max-title-length": "Lunghezza massima Titolo Gruppo",
+	"cover-image": "Immagine Copertina Gruppo",
+	"default-cover": "Immagini Copertina Predefinite",
+	"default-cover-help": "Aggiungi immagini di copertina separate da virgole per i gruppi che non hanno caricato un'immagine copertina."
 }

@@ -33,6 +33,7 @@
     "username-too-short": "用户名太短",
     "username-too-long": "用户名太长",
     "password-too-long": "密码太长",
+    "reset-rate-limited": "Too many password reset requests (rate limited)",
     "user-banned": "用户已禁止",
     "user-banned-reason": "抱歉，此帐号已经被封禁 (原因：%1)",
     "user-banned-reason-until": "抱歉，此帐户已被封禁，直到%1（原因：%2）",
@@ -120,7 +121,7 @@
     "chat-edit-duration-expired": "您只能在发布 %1 秒后修改聊天信息",
     "chat-delete-duration-expired": "您只能在发布 %1 秒后删除聊天信息",
     "chat-deleted-already": "聊天消息已经被删除",
-    "chat-restored-already": "This chat message has already been restored.",
+    "chat-restored-already": "此聊天消息已经恢复。\n",
     "already-voting-for-this-post": "您已为此帖回复投过票了。",
     "reputation-system-disabled": "声望系统已禁用。",
     "downvoting-disabled": "踩已被禁用",
@@ -153,8 +154,8 @@
     "cant-move-to-same-topic": "无法将帖子移动到相同的主题中！",
     "cannot-block-self": "您不能把自己屏蔽！",
     "cannot-block-privileged": "您不能屏蔽管理员或者全局版主",
-    "cannot-block-guest": "Guest are not able to block other users",
-    "already-blocked": "This user is already blocked",
-    "already-unblocked": "This user is already unblocked",
+    "cannot-block-guest": "游客无法屏蔽其他用户",
+    "already-blocked": "此用户已被屏蔽",
+    "already-unblocked": "此用户已被取消屏蔽",
     "no-connection": "您的网络连接似乎存在问题"
 }

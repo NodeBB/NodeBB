@@ -10,7 +10,11 @@
 	"search-content": "搜索内容",
 	"search-users": "搜索用户",
 	"search-tags": "搜索话题",
+	"view-users": "浏览用户",
+	"view-tags": "浏览话题",
+	"view-groups": "浏览群组",
 	"allow-local-login": "本地登录",
+	"allow-group-creation": "新建群组",
 
 	"find-category": "版块可见",
 	"access-category": "访问版块",

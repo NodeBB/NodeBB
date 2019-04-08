@@ -43,5 +43,6 @@
     "clear-preferences": "Очистити налаштування",
     "search-preferences-saved": "Налаштування пошуку збережено",
     "search-preferences-cleared": "Налаштування пошуку очищені",
-    "show-results-as": "Показати результати як"
+    "show-results-as": "Показати результати як",
+    "see-more-results": "See more results (%1)"
 }

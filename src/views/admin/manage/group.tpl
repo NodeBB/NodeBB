@@ -4,7 +4,7 @@
 			<div class="group-settings-form">
 				<fieldset>
 					<label for="change-group-name">[[admin/manage/groups:edit.name]]</label>
-					<input type="text" class="form-control" id="change-group-name" placeholder="Group Name" value="{group.displayName}" <!-- IF group.system -->readonly<!-- ENDIF group.system -->/><br />
+					<input type="text" class="form-control" id="change-group-name" placeholder="Group Name" value="{group.displayName}" maxlength="{maximumGroupNameLength}" <!-- IF group.system -->readonly<!-- ENDIF group.system -->/><br />
 				</fieldset>
 
 				<fieldset>
@@ -12,22 +12,34 @@
 					<input type="text" class="form-control" id="change-group-desc" placeholder="A short description about your group" value="{group.description}" maxlength="255" /><br />
 				</fieldset>
 
-				<fieldset>
-					<label for="change-group-user-title">[[admin/manage/groups:edit.user-title]]</label>
-					<input type="text" class="form-control" id="change-group-user-title" placeholder="The title of users if they are a member of this group" value="{group.userTitle}" maxlength="40" /><br />
-				</fieldset>
+				<div class="row">
+					<div class="col-md-4">
+						<fieldset>
+							<label for="change-group-user-title">[[admin/manage/groups:edit.user-title]]</label>
+							<span id="group-label-preview" class="label label-default" style="color:<!-- IF group.textColor -->{group.textColor}<!-- ELSE -->#ffffff<!-- ENDIF group.textColor -->; background:<!-- IF group.labelColor -->{group.labelColor}<!-- ELSE -->#000000<!-- ENDIF group.labelColor -->;"><i id="group-icon-preview" class="fa fa-fw {group.icon} <!-- IF !group.icon -->hidden<!-- ENDIF -->"></i> {group.userTitle}</span>
+							<input type="text" class="form-control" id="change-group-user-title" placeholder="The title of users if they are a member of this group" value="{group.userTitle}" maxlength="{maximumGroupTitleLength}" /><br />
+						</fieldset>
+					</div>
+					<div class="col-md-2">
+						<fieldset>
+							<label id="group-icon-label" for="change-group-icon">[[admin/manage/groups:edit.icon]]</label><br/>
+							<i id="group-icon" class="fa fa-2x <!-- IF group.icon -->{group.icon}<!-- ENDIF group.icon -->" value="{group.icon}"></i><br />
+						</fieldset>
+					</div>
+					<div class="col-md-3">
+						<fieldset>
+							<label for="change-group-label-color">[[admin/manage/groups:edit.label-color]]</label>
 
-				<fieldset>
-					<label for="change-group-icon">[[admin/manage/groups:edit.icon]]</label><br/>
-					<i id="group-icon" class="fa fa-2x <!-- IF group.icon -->{group.icon}<!-- ELSE -->fa-shield<!-- ENDIF group.icon -->" value="{group.icon}"></i><br />
-				</fieldset>
-
-				<fieldset>
-					<label for="change-group-label-color">[[admin/manage/groups:edit.label-color]]</label>
-					<span id="group-label-preview" class="label label-default" style="background:<!-- IF group.labelColor -->{group.labelColor}<!-- ELSE -->#000000<!-- ENDIF group.labelColor -->;">{group.userTitle}</span>
-					<input id="change-group-label-color" placeholder="#0059b2" data-name="bgColor" value="{group.labelColor}" class="form-control" /><br />
-				</fieldset>
-
+							<input id="change-group-label-color" placeholder="#0059b2" data-name="bgColor" value="{group.labelColor}" class="form-control" /><br />
+						</fieldset>
+					</div>
+					<div class="col-md-3">
+						<fieldset>
+							<label for="change-group-text-color">[[admin/manage/groups:edit.text-color]]</label>
+							<input id="change-group-text-color" placeholder="#ffffff" data-name="textColor" value="{group.textColor}" class="form-control" /><br />
+						</fieldset>
+					</div>
+				</div>
 				<fieldset>
 					<div class="checkbox">
 						<label>

@@ -294,7 +294,7 @@ User.getModeratorUids = function (callback) {
 			categories.getModeratorUids(cids, next);
 		},
 		function (uids, next) {
-			next(null, _.union(uids));
+			next(null, _.union(...uids));
 		},
 	], callback);
 };
@@ -328,7 +328,9 @@ User.addInterstitials = function (callback) {
 				if (!meta.config.gdpr_enabled) {
 					return setImmediate(callback, null, data);
 				}
-
+				if (!data.userData) {
+					return setImmediate(callback, new Error('[[error:invalid-data]]'));
+				}
 				const add = function () {
 					data.interstitials.push({
 						template: 'partials/gdpr_consent',
@@ -369,6 +371,10 @@ User.addInterstitials = function (callback) {
 
 			// Forum Terms of Use
 			function (data, callback) {
+				if (!data.userData) {
+					return setImmediate(callback, new Error('[[error:invalid-data]]'));
+				}
+
 				const add = function () {
 					data.interstitials.push({
 						template: 'partials/acceptTos',

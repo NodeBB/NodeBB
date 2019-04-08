@@ -3,10 +3,9 @@
 	"private-groups": "Privatne grupe",
 	"private-groups.help": "Ako je uključeno,ulazak u grupe zahtjevati će odobrenje vlasnika grupe <em>(Default: enabled)</em>",
 	"private-groups.warning": "<strong>Pazi!</strong> Ako je ova opcija isključena,a imate privatne grupe,automatski će postati javne.",
-	"allow-creation": "Dozvoli kreiranje grupe",
-	"allow-creation-help": "Ako je uključeno,korisnicima će biti omogućeno stvaranje grupa <em>(Default: disabled)</em>",
 	"allow-multiple-badges-help": "This flag can be used to allow users to select multiple group badges, requires theme support.",
 	"max-name-length": "Maksimalna dužina imena grupe",
+	"max-title-length": "Maximum Group Title Length",
 	"cover-image": "Slika grupe",
 	"default-cover": " ",
 	"default-cover-help": "Dodaj slike sa zarezima između za grupe koje nemaju učitanu naslovnu sliku"

@@ -10,7 +10,11 @@
 	"search-content": "Meklēt saturā",
 	"search-users": "Meklēt lietotājos",
 	"search-tags": "Meklēt birkās",
+	"view-users": "View Users",
+	"view-tags": "View Tags",
+	"view-groups": "View Groups",
 	"allow-local-login": "Vietējā ielogošanās",
+	"allow-group-creation": "Group Create",
 
 	"find-category": "Meklēt kategorijās",
 	"access-category": "Piekļūt kategorijām",

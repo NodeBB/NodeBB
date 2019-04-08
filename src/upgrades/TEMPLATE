@@ -10,7 +10,7 @@ module.exports = {
 	// the underscores are there so you can double click to select the whole thing
 	name: 'User_friendly_upgrade_script_name',
 	// remember, month is zero-indexed (so January is 0, December is 11)
-	timestamp: Date.UTC(2017, 0, 1),
+	timestamp: Date.UTC(2019, 0, 1),
 	method: function (callback) {
 		// Do stuff here...
 	},

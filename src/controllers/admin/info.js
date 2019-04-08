@@ -65,6 +65,7 @@ function getNodeInfo(callback) {
 			version: process.version,
 			memoryUsage: process.memoryUsage(),
 			uptime: process.uptime(),
+			cpuUsage: process.cpuUsage(),
 		},
 		os: {
 			hostname: os.hostname(),
@@ -75,7 +76,10 @@ function getNodeInfo(callback) {
 			load: os.loadavg().map(function (load) { return load.toFixed(2); }).join(', '),
 		},
 	};
-
+	data.process.cpuUsage.user /= 1000000;
+	data.process.cpuUsage.user = data.process.cpuUsage.user.toFixed(2);
+	data.process.cpuUsage.system /= 1000000;
+	data.process.cpuUsage.system = data.process.cpuUsage.system.toFixed(2);
 	data.process.memoryUsage.humanReadable = (data.process.memoryUsage.rss / (1024 * 1024)).toFixed(2);
 
 	async.waterfall([

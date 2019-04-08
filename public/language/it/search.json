@@ -8,7 +8,7 @@
     "match-words": "Parole corrispondenti",
     "all": "Tutti",
     "any": "Nessuno",
-    "posted-by": "Pubblicato da",
+    "posted-by": "Postato da",
     "in-categories": "In Categorie",
     "search-child-categories": "Cerca nelle sottocategorie",
     "has-tags": "Ha i tag",
@@ -16,7 +16,7 @@
     "at-least": "Almeno",
     "at-most": "Al massimo",
     "relevance": "Rilevanza",
-    "post-time": "Ora invio",
+    "post-time": "Ora Post",
     "votes": "Votes",
     "newer-than": "Più nuovi di",
     "older-than": "Più vecchi di",
@@ -43,5 +43,6 @@
     "clear-preferences": "Pulisci preferenze",
     "search-preferences-saved": "Cerca nelle preferenze salvate",
     "search-preferences-cleared": "Cerca nelle preferenze pulite",
-    "show-results-as": "Visualizza risultati come"
+    "show-results-as": "Visualizza risultati come",
+    "see-more-results": "See more results (%1)"
 }

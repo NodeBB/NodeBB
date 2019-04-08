@@ -12,6 +12,7 @@ var categories = require('../categories');
 var privileges = require('../privileges');
 var plugins = require('../plugins');
 var translator = require('../translator');
+var languages = require('../languages');
 
 var apiController = module.exports;
 
@@ -62,6 +63,7 @@ apiController.loadConfig = function (req, callback) {
 	config.bootswatchSkin = meta.config.bootswatchSkin || '';
 	config.enablePostHistory = (meta.config.enablePostHistory || 1) === 1;
 	config.notificationAlertTimeout = meta.config.notificationAlertTimeout || 5000;
+	config.timeagoCodes = languages.timeagoCodes;
 
 	if (config.useOutgoingLinksPage) {
 		config.outgoingLinksWhitelist = meta.config['outgoingLinks:whitelist'];
@@ -131,14 +133,16 @@ apiController.getPostData = function (pid, uid, callback) {
 		post: function (next) {
 			posts.getPostData(pid, next);
 		},
+		voted: async.apply(posts.hasVoted, pid, uid),
 	}, function (err, results) {
 		if (err || !results.post) {
 			return callback(err);
 		}
 
 		var post = results.post;
-		var privileges = results.privileges[0];
+		Object.assign(post, results.voted);
 
+		var privileges = results.privileges[0];
 		if (!privileges.read || !privileges['topics:read']) {
 			return callback();
 		}

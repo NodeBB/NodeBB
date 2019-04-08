@@ -8,8 +8,10 @@
 			<thead>
 				<tr>
 					<th>[[admin/manage/groups:name]]</th>
+					<th>[[admin/manage/groups:badge]]</th>
+					<th>[[admin/manage/groups:properties]]</th>
 					<th class="hidden-xs">[[admin/manage/groups:description]]</th>
-					<th class="hidden-xs">[[admin/manage/groups:member-count]]</th>
+					<th class="hidden-xs text-right">[[admin/manage/groups:member-count]]</th>
 					<th></th>
 				</tr>
 			</thead>
@@ -18,9 +20,20 @@
 				<tr data-groupname="{groups.displayName}">
 					<td>
 						{groups.displayName}
+					</td>
+					<td>
+						<span class="label label-default" style="background-color: {groups.labelColor};"><!-- IF groups.icon --><i class="fa {groups.icon}"></i> <!-- ENDIF groups.icon -->{groups.userTitle}</span>
+					</td>
+					<td>
 						<!-- IF groups.system -->
-						<span class="badge">[[admin/manage/groups:system]]</span>
+						<span class="label label-danger">[[admin/manage/groups:system]]</span>
 						<!-- ENDIF groups.system -->
+						<!-- IF groups.private -->
+						<span class="label label-primary">[[admin/manage/groups:private]]</span>
+						<!-- ENDIF groups.private -->
+						<!-- IF groups.hidden -->
+						<span class="label label-default">[[admin/manage/groups:hidden]]</span>
+						<!-- ENDIF groups.hidden -->
 					</td>
 					<td class="hidden-xs">
 						<p class="description">{groups.description}</p>

@@ -1,12 +1,10 @@
 {
-    "tag": "Tag Settings",
-    "min-per-topic": "Mínimo de Marcadores por Tópico",
-    "max-per-topic": "Máximo de Marcadores por Tópico",
-    "min-length": "Minimum Tag Length",
-    "max-length": "Maximum Tag Length",
-    "goto-manage": "Click here to visit the tag management page.",
-    "privacy": "Privacy",
-    "list-private": "Tornar a lista de marcadores privada",
+    "tag": "Definições das Etiquetas",
+    "min-per-topic": "Mínimo de Etiquetas por Tópico",
+    "max-per-topic": "Máximo de Etiquetas por Tópico",
+    "min-length": "Comprimento Mínimo da Etiqueta",
+    "max-length": "Comprimento Máximo da Etiqueta",
+    "goto-manage": "Clica aqui para visitares a página de gestão das etiquetas. ",
     "related-topics": "Tópicos Relacionados",
-    "max-related-topics": "Maximum related topics to display (if supported by theme)"
+    "max-related-topics": "Máximo de tópicos relacionados a mostrar (se for suportado pelo tema)"
 }

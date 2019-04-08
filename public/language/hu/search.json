@@ -43,5 +43,6 @@
     "clear-preferences": "Beállítások törlése",
     "search-preferences-saved": "Keresési beállítások mentve",
     "search-preferences-cleared": "Keresési beállítások törölve",
-    "show-results-as": "Megjelenő találatok"
+    "show-results-as": "Megjelenő találatok",
+    "see-more-results": "See more results (%1)"
 }

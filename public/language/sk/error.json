@@ -33,6 +33,7 @@
     "username-too-short": "Užívateľské meno je príliš krátke",
     "username-too-long": "Užívateľské meno je príliš dlhé",
     "password-too-long": "Heslo je príliš dlhé",
+    "reset-rate-limited": "Too many password reset requests (rate limited)",
     "user-banned": "Užívateľ je zablokovaný",
     "user-banned-reason": "Prepáčte, tento účet bol zablokovaný (Dôvod: %1)",
     "user-banned-reason-until": "Ospravedlňujeme sa, tento účet bol zablokovaný do %1 (Dôvod: %2)",

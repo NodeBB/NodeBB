@@ -10,7 +10,11 @@
 	"search-content": "İçerik Arama",
 	"search-users": "Kullanıcıları Ara",
 	"search-tags": "Etiketleri Ara",
+	"view-users": "View Users",
+	"view-tags": "View Tags",
+	"view-groups": "View Groups",
 	"allow-local-login": "Yerel Giriş",
+	"allow-group-creation": "Group Create",
 
 	"find-category": "Kategori Bul",
 	"access-category": "Kategoriye Eriş",

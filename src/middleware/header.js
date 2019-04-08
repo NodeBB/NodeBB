@@ -108,8 +108,8 @@ module.exports = function (middleware) {
 					},
 					navigation: async.apply(navigation.get, req.uid),
 					tags: async.apply(meta.tags.parse, req, data, res.locals.metaTags, res.locals.linkTags),
-					banned: async.apply(user.isBanned, req.uid),
-					banReason: async.apply(user.getBannedReason, req.uid),
+					banned: async.apply(user.bans.isBanned, req.uid),
+					banReason: async.apply(user.bans.getReason, req.uid),
 
 					unreadData: async.apply(topics.getUnreadData, { uid: req.uid }),
 					unreadChatCount: async.apply(messaging.getUnreadCount, req.uid),
@@ -196,8 +196,6 @@ module.exports = function (middleware) {
 				templateValues.defaultLang = meta.config.defaultLang || 'en-GB';
 				templateValues.userLang = res.locals.config.userLang;
 				templateValues.languageDirection = results.languageDirection;
-				templateValues.privateUserInfo = meta.config.privateUserInfo;
-				templateValues.privateTagListing = meta.config.privateTagListing;
 
 				templateValues.template = { name: res.locals.template };
 				templateValues.template[res.locals.template] = true;

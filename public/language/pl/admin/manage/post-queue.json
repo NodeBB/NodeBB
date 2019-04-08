@@ -1,6 +1,6 @@
 {
 	"post-queue": "Kolejka postów",
-	"description": "Brak postów w kolejce. <br> W celu włączenia tej funkcji, przejdź do <a href=\\\"%1\\\">Ustawienia &rarr; Posty &rarr; Ograniczenia pisania </a> i włącz <strong>Kolejkę postów</strong>. ",
+	"description": "Brak postów w kolejce. <br> W celu włączenia tej funkcji, przejdź do <a href=\"%1\">Ustawienia &rarr; Posty &rarr; Ograniczenia pisania </a> i włącz <strong>Kolejkę postów</strong>. ",
 	"user": "Użytkownik",
 	"category": "Kategoria",
 	"title": "Tytuł",

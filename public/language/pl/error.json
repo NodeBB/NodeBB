@@ -33,6 +33,7 @@
     "username-too-short": "Nazwa użytkownika za krótka",
     "username-too-long": "Zbyt długa nazwa użytkownika",
     "password-too-long": "Hasło jest za długie",
+    "reset-rate-limited": "Zbyt wiele żądań resetowania hasła (ograniczona ilość)",
     "user-banned": "Użytkownik zbanowany",
     "user-banned-reason": "Twoje konto zostało zablokowane (Powód: %1)",
     "user-banned-reason-until": "Przepraszamy, to konto zostało zbanowane do %1 (Powód: %2)",

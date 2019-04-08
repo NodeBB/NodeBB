@@ -33,6 +33,7 @@
     "username-too-short": "ユーザー名が短すぎます",
     "username-too-long": "ユーザー名が長すぎます",
     "password-too-long": "パスワードが長すぎます",
+    "reset-rate-limited": "Too many password reset requests (rate limited)",
     "user-banned": "ユーザーは停止されています",
     "user-banned-reason": "申し訳ありませんが、このアカウントは停止されています。 (理由: %1)",
     "user-banned-reason-until": "申し訳ありませんが、このアカウントは％1(理由：％2)まで禁止されています。",

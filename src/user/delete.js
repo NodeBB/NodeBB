@@ -156,14 +156,20 @@ module.exports = function (User) {
 							'uid:' + uid + ':followed_tids',
 							'uid:' + uid + ':ignored_tids',
 							'user:' + uid + ':settings',
+							'user:' + uid + ':usernames',
+							'user:' + uid + ':emails',
 							'uid:' + uid + ':topics', 'uid:' + uid + ':posts',
 							'uid:' + uid + ':chats', 'uid:' + uid + ':chats:unread',
 							'uid:' + uid + ':chat:rooms', 'uid:' + uid + ':chat:rooms:unread',
 							'uid:' + uid + ':upvote', 'uid:' + uid + ':downvote',
 							'uid:' + uid + ':flag:pids',
 							'uid:' + uid + ':sessions', 'uid:' + uid + ':sessionUUID:sessionId',
+							'invitation:uid:' + uid,
 						];
 						db.deleteAll(keys, next);
+					},
+					function (next) {
+						db.setRemove('invitation:uids', uid, next);
 					},
 					function (next) {
 						deleteUserIps(uid, next);

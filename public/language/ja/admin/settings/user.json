@@ -14,7 +14,6 @@
 	"disable-email-changes": "Eメールの変更を無効にする",
 	"disable-password-changes": "パスワードの変更を無効にする",
 	"allow-account-deletion": "アカウントが解除されました",
-	"user-info-private": "ゲストから、ユーザーリストとデータが見えないようにする。",
 	"hide-fullname": "ユーザーから、フルネームが見えないようにする。",
 	"hide-email": "ユーザーから、Emailが見えないようにする。",
 	"themes": "テーマ",

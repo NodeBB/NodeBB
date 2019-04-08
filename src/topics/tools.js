@@ -5,6 +5,7 @@ var _ = require('lodash');
 
 var db = require('../database');
 var categories = require('../categories');
+var user = require('../user');
 var plugins = require('../plugins');
 var privileges = require('../privileges');
 
@@ -61,15 +62,16 @@ module.exports = function (Topics) {
 				} else {
 					plugins.fireHook('action:topic.restore', { topic: topicData, uid: uid });
 				}
-
-				var data = {
+				user.getUserFields(uid, ['username', 'userslug'], next);
+			},
+			function (userData, next) {
+				next(null, {
 					tid: tid,
 					cid: topicData.cid,
 					isDelete: isDelete,
 					uid: uid,
-				};
-
-				next(null, data);
+					user: userData,
+				});
 			},
 		], callback);
 	}

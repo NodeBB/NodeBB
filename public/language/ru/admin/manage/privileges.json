@@ -10,7 +10,11 @@
 	"search-content": "Поиск по содержимому",
 	"search-users": "Поиск участников",
 	"search-tags": "Поиск тегов",
+	"view-users": "View Users",
+	"view-tags": "View Tags",
+	"view-groups": "View Groups",
 	"allow-local-login": "Локальная авторизация",
+	"allow-group-creation": "Group Create",
 
 	"find-category": "Поиск категории",
 	"access-category": "Доступ к категории",

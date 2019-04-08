@@ -18,6 +18,19 @@
 				</p>
 				<input type="text" class="form-control input-lg" id="email:from_name" data-field="email:from_name" placeholder="NodeBB" /><br />
 			</div>
+			<div class="row">
+				<div class="form-group col-sm-6">
+					<label for="email:sendmail:rateLimit">[[admin/settings/email:sendmail-rate-limit]]</label>
+					<input type="number" data-field="email:sendmail:rateLimit" id="email:sendmail:rateLimit" class="form-control" placeholder="2" />
+				</div>
+				<div class="form-group col-sm-6">
+					<label for="email:sendmail:rateDelta">[[admin/settings/email:sendmail-rate-delta]]</label>
+					<input type="number" data-field="email:sendmail:rateDelta" id="email:sendmail:rateDelta" class="form-control" placeholder="1000" />
+				</div>
+				<p class="col-xs-12 help-block">
+					[[admin/settings/email:sendmail-rate-help]]
+				</p>
+			</div>
 		</form>
 	</div>
 </div>

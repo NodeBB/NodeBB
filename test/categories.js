@@ -549,7 +549,7 @@ describe('Categories', function () {
 				},
 				function (category, next) {
 					child1Cid = category.cid;
-					socketCategories.copySettingsFrom({ uid: adminUid }, { fromCid: parentCid, toCid: child1Cid }, next);
+					socketCategories.copySettingsFrom({ uid: adminUid }, { fromCid: parentCid, toCid: child1Cid, copyParent: true }, next);
 				},
 				function (destinationCategory, next) {
 					Categories.getCategoryField(child1Cid, 'description', next);
@@ -743,6 +743,10 @@ describe('Categories', function () {
 					'upload:post:file': false,
 					signature: false,
 					'local:login': false,
+					'group:create': false,
+					'view:users': false,
+					'view:tags': false,
+					'view:groups': false,
 				});
 
 				done();
@@ -783,10 +787,14 @@ describe('Categories', function () {
 					'groups:search:content': true,
 					'groups:search:users': true,
 					'groups:search:tags': true,
+					'groups:view:users': true,
+					'groups:view:tags': true,
+					'groups:view:groups': true,
 					'groups:upload:post:image': true,
 					'groups:upload:post:file': false,
 					'groups:signature': true,
 					'groups:local:login': true,
+					'groups:group:create': false,
 				});
 
 				done();

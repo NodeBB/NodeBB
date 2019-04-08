@@ -175,6 +175,19 @@ define('admin/manage/users', ['translator', 'benchpress'], function (translator,
 			});
 		});
 
+		$('.force-password-reset').on('click', function () {
+			var uids = getSelectedUids();
+			if (!uids.length) {
+				return;
+			}
+
+			bootbox.confirm('[[admin/manage/users:alerts.confirm-force-password-reset]]', function (confirm) {
+				if (confirm) {
+					socket.emit('admin.user.forcePasswordReset', uids, done('[[admin/manage/users:alerts.validate-force-password-reset-success]]'));
+				}
+			});
+		});
+
 		$('.delete-user').on('click', function () {
 			var uids = getSelectedUids();
 			if (!uids.length) {

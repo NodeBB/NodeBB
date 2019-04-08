@@ -22,6 +22,7 @@
 	"mongo.bytes-out": "gönderilen bayt",
 	"mongo.num-requests": "İsteklerin Sayısı",
 	"mongo.raw-info": "İşlenmemiş MongoDB Bilgisi",
+	"mongo.unauthorized": "NodeBB was unable to query the MongoDB database for relevant statistics. Please ensure that the user in use by NodeBB contains the &quot;clusterMonitor&quot; role for the &quot;admin&quot; database.",
 
 	"redis": "Redis",
 	"redis.version": "Redis Versiyonu",

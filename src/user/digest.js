@@ -78,6 +78,13 @@ Digest.getSubscribers = function (interval, callback) {
 			});
 		},
 		function (subscribers, next) {
+			async.filter(subscribers, function (uid, next) {
+				user.bans.isBanned(uid, function (err, banned) {
+					next(err, !banned);
+				});
+			}, next);
+		},
+		function (subscribers, next) {
 			plugins.fireHook('filter:digest.subscribers', {
 				interval: interval,
 				subscribers: subscribers,
@@ -156,24 +163,33 @@ Digest.send = function (data, callback) {
 	});
 
 	function getTermTopics(term, uid, start, stop, callback) {
+		const options = {
+			uid: uid,
+			start: start,
+			stop: stop,
+			term: term,
+			sort: 'posts',
+			teaserPost: 'last-post',
+		};
+
 		async.waterfall([
 			function (next) {
-				topics.getSortedTopics({
-					uid: uid,
-					start: start,
-					stop: stop,
-					term: term,
-					sort: 'posts',
-				}, next);
+				topics.getSortedTopics(options, next);
 			},
 			function (data, next) {
 				if (!data.topics.length) {
-					topics.getLatestTopics(uid, start, stop, term, next);
+					topics.getLatestTopics(options, next);
 				} else {
 					next(null, data);
 				}
 			},
-			function (data, next) {
+			(data, next) => {
+				data.topics.forEach(function (topicObj) {
+					if (topicObj && topicObj.teaser && topicObj.teaser.content && topicObj.teaser.content.length > 255) {
+						topicObj.teaser.content = topicObj.teaser.content.slice(0, 255) + '...';
+					}
+				});
+
 				next(null, data.topics);
 			},
 		], callback);

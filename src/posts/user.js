@@ -53,6 +53,7 @@ module.exports = function (Posts) {
 							name: group.name,
 							slug: group.slug,
 							labelColor: group.labelColor,
+							textColor: group.textColor,
 							icon: group.icon,
 							userTitle: group.userTitle,
 						};

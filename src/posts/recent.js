@@ -27,7 +27,7 @@ module.exports = function (Posts) {
 				db.getSortedSetRevRangeByScore('posts:pid', start, count, '+inf', min, next);
 			},
 			function (pids, next) {
-				privileges.posts.filter('read', pids, uid, next);
+				privileges.posts.filter('topics:read', pids, uid, next);
 			},
 			function (pids, next) {
 				Posts.getPostSummaryByPids(pids, uid, { stripTags: true }, next);

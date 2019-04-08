@@ -67,6 +67,7 @@ searchController.search = function (req, res, next) {
 			var searchData = results.search;
 
 			searchData.pagination = pagination.create(page, searchData.pageCount, req.query);
+			searchData.multiplePages = searchData.pageCount > 1;
 			searchData.search_query = validator.escape(String(req.query.term || ''));
 			searchData.term = req.query.term;
 

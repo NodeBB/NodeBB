@@ -43,5 +43,6 @@
     "clear-preferences": "Voorkeuren verwijderen",
     "search-preferences-saved": "Zoek voorkeuren opgeslagen",
     "search-preferences-cleared": "Zoek voorkeuren verwijderd",
-    "show-results-as": "Toon resultaten als"
+    "show-results-as": "Toon resultaten als",
+    "see-more-results": "Meer resultaten zien (%1)"
 }

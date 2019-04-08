@@ -9,6 +9,7 @@
 	"updated": "Güncellendi",
 	"target-purged": "İlgili bayrağın içeriği temizlendi ve artık mevcut değil.",
 
+	"graph-label": "Daily Flags",
 	"quick-filters": "Akıllı Filtre",
 	"filter-active": "Bayraklar listesinde etkin olan bir veya daha fazla filtre var",
 	"filter-reset": "Filtreleri Kaldır",

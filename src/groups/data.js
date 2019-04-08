@@ -88,6 +88,7 @@ function modifyGroup(group, fields) {
 		escapeGroupData(group);
 		group.userTitleEnabled = ([null, undefined].includes(group.userTitleEnabled)) ? 1 : group.userTitleEnabled;
 		group.labelColor = validator.escape(String(group.labelColor || '#000000'));
+		group.textColor = validator.escape(String(group.textColor || '#ffffff'));
 		group.icon = validator.escape(String(group.icon || ''));
 		group.createtimeISO = utils.toISOString(group.createtime);
 		group.private = ([null, undefined].includes(group.private)) ? 1 : group.private;

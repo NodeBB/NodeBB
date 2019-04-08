@@ -74,6 +74,10 @@ module.exports = function (User) {
 			addField('lastonline');
 		}
 
+		if (fields.includes('banned') && !fields.includes('banned:expire')) {
+			addField('banned:expire');
+		}
+
 		var uniqueUids = _.uniq(uids).filter(uid => uid > 0);
 
 		async.waterfall([
@@ -148,15 +152,19 @@ module.exports = function (User) {
 	}
 
 	function modifyUserData(users, requestedFields, fieldsToRemove, callback) {
-		users.forEach(function (user) {
+		async.map(users, function (user, next) {
 			if (!user) {
-				return;
+				return next(null, user);
 			}
 
 			db.parseIntFields(user, intFields, requestedFields);
 
 			if (user.hasOwnProperty('username')) {
 				user.username = validator.escape(user.username ? user.username.toString() : '');
+			}
+
+			if (user.hasOwnProperty('email')) {
+				user.email = validator.escape(user.email ? user.email.toString() : '');
 			}
 
 			if (!parseInt(user.uid, 10)) {
@@ -207,13 +215,28 @@ module.exports = function (User) {
 				user.lastonlineISO = utils.toISOString(user.lastonline) || user.joindateISO;
 			}
 
-			if (user.hasOwnProperty('banned:expire')) {
-				user.banned_until = user['banned:expire'];
-				user.banned_until_readable = user.banned_until ? new Date(user.banned_until).toString() : 'Not Banned';
+			if (user.hasOwnProperty('banned') || user.hasOwnProperty('banned:expire')) {
+				var result = User.bans.calcExpiredFromUserData(user);
+				var unban = result.banned && result.banExpired;
+				user.banned_until = unban ? 0 : user['banned:expire'];
+				user.banned_until_readable = user.banned_until && !unban ? utils.toISOString(user.banned_until) : 'Not Banned';
+				if (unban) {
+					return User.bans.unban(user.uid, function (err) {
+						if (err) {
+							return next(err);
+						}
+						user.banned = false;
+						next(null, user);
+					});
+				}
 			}
+			next(null, user);
+		}, function (err, users) {
+			if (err) {
+				return callback(err);
+			}
+			plugins.fireHook('filter:users.get', users, callback);
 		});
-
-		plugins.fireHook('filter:users.get', users, callback);
 	}
 
 	function parseGroupTitle(user) {

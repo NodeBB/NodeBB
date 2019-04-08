@@ -9,6 +9,12 @@ var topics = require('../topics');
 var helpers = require('./helpers');
 
 exports.get = function (req, res, callback) {
+	res.locals.metaTags = {
+		...res.locals.metaTags,
+		name: 'robots',
+		content: 'noindex',
+	};
+
 	async.waterfall([
 		function (next) {
 			plugins.fireHook('filter:composer.build', {

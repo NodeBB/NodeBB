@@ -10,7 +10,11 @@
 	"search-content": "콘텐츠 검색",
 	"search-users": "사용자 검색",
 	"search-tags": "태그 검색",
+	"view-users": "View Users",
+	"view-tags": "View Tags",
+	"view-groups": "View Groups",
 	"allow-local-login": "로컬 로그인",
+	"allow-group-creation": "Group Create",
 
 	"find-category": "카테고리 찾기",
 	"access-category": "카테고리 접근",

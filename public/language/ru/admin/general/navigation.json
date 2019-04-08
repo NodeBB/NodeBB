@@ -5,6 +5,7 @@
 	"tooltip": "Подсказка:",
 	"text": "Текст:",
 	"text-class": "Класс текста: <small>опциоально</small>",
+	"class": "Class: <small>optional</small>",
 	"id": "ID: <small>опциоанально</small>",
 
 	"properties": "Свойства:",

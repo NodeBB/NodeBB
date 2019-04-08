@@ -3,11 +3,7 @@
 var helpers = {};
 
 helpers.valueToString = function (value) {
-	if (value === null || value === undefined) {
-		return value;
-	}
-
-	return value.toString();
+	return String(value);
 };
 
 helpers.removeDuplicateValues = function (values) {

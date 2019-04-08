@@ -52,22 +52,29 @@ Topics.getTopicsFromSet = function (set, uid, start, stop, callback) {
 	], callback);
 };
 
-Topics.getTopics = function (tids, uid, callback) {
+Topics.getTopics = function (tids, options, callback) {
+	let uid = options;
+	if (typeof options === 'object') {
+		uid = options.uid;
+	}
 	async.waterfall([
 		function (next) {
-			privileges.topics.filterTids('read', tids, uid, next);
+			privileges.topics.filterTids('topics:read', tids, uid, next);
 		},
 		function (tids, next) {
-			Topics.getTopicsByTids(tids, uid, next);
+			Topics.getTopicsByTids(tids, options, next);
 		},
 	], callback);
 };
 
-Topics.getTopicsByTids = function (tids, uid, callback) {
+Topics.getTopicsByTids = function (tids, options, callback) {
 	if (!Array.isArray(tids) || !tids.length) {
 		return callback(null, []);
 	}
-
+	let uid = options;
+	if (typeof options === 'object') {
+		uid = options.uid;
+	}
 	var uids;
 	var cids;
 	var topics;
@@ -107,7 +114,7 @@ Topics.getTopicsByTids = function (tids, uid, callback) {
 					Topics.getUserBookmarks(tids, uid, next);
 				},
 				teasers: function (next) {
-					Topics.getTeasers(topics, uid, next);
+					Topics.getTeasers(topics, options, next);
 				},
 				tags: function (next) {
 					Topics.getTopicsTagsObjects(tids, next);

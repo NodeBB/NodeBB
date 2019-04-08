@@ -14,7 +14,6 @@
 	"disable-email-changes": "Отключить изменение email пользователя",
 	"disable-password-changes": "Отключить изменение пароля",
 	"allow-account-deletion": "Разрешить удаление аккаунта",
-	"user-info-private": "Спрятать список пользователей и их данные от гостей",
 	"hide-fullname": "Спрятать полные имена от пользователей",
 	"hide-email": "Спрятать email от пользователей",
 	"themes": "Темы",

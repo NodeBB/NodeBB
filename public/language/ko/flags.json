@@ -9,6 +9,7 @@
 	"updated": "업데이트 되었습니다.",
 	"target-purged": "해당 신고된 컨텐츠는 완전 삭제 되었으며, 더이상 존재하지 않습니다.",
 
+	"graph-label": "Daily Flags",
 	"quick-filters": "간편 필터",
 	"filter-active": "적용된 하나 이상의 필터가 있습니다.",
 	"filter-reset": "필터 제거",

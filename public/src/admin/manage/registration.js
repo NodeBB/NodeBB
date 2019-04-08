@@ -9,7 +9,7 @@ define('admin/manage/registration', function () {
 			var parent = $(this).parents('[data-username]');
 			var action = $(this).attr('data-action');
 			var username = parent.attr('data-username');
-			var method = action === 'accept' ? 'admin.user.acceptRegistration' : 'admin.user.rejectRegistration';
+			var method = action === 'accept' ? 'user.acceptRegistration' : 'user.rejectRegistration';
 
 			socket.emit(method, { username: username }, function (err) {
 				if (err) {
@@ -25,7 +25,7 @@ define('admin/manage/registration', function () {
 			var email = parent.attr('data-invitation-mail');
 			var invitedBy = parent.attr('data-invited-by');
 			var action = $(this).attr('data-action');
-			var method = 'admin.user.deleteInvitation';
+			var method = 'user.deleteInvitation';
 
 			var removeRow = function () {
 				var nextRow = parent.next();

@@ -300,6 +300,24 @@ describe('Admin Controllers', function () {
 		});
 	});
 
+	it('should 404 if users is not privileged', function (done) {
+		request(nconf.get('url') + '/api/registration-queue', { json: true }, function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 404);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /api/registration-queue', function (done) {
+		request(nconf.get('url') + '/api/registration-queue', { jar: jar, json: true }, function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
 	it('should load /admin/manage/admins-mods', function (done) {
 		request(nconf.get('url') + '/api/admin/manage/admins-mods', { jar: jar, json: true }, function (err, res, body) {
 			assert.ifError(err);
@@ -503,7 +521,7 @@ describe('Admin Controllers', function () {
 
 	it('should load /admin/general/social', function (done) {
 		var socketAdmin = require('../src/socket.io/admin');
-		socketAdmin.social.savePostSharingNetworks({ uid: adminUid }, ['facebook', 'twitter', 'google'], function (err) {
+		socketAdmin.social.savePostSharingNetworks({ uid: adminUid }, ['facebook', 'twitter'], function (err) {
 			assert.ifError(err);
 			request(nconf.get('url') + '/api/admin/general/social', { jar: jar, json: true }, function (err, res, body) {
 				assert.ifError(err);
@@ -513,7 +531,6 @@ describe('Admin Controllers', function () {
 				});
 				assert(body.includes('facebook'));
 				assert(body.includes('twitter'));
-				assert(body.includes('google'));
 				done();
 			});
 		});

@@ -134,11 +134,14 @@
             /* What it does: Adjust typography on small screens to improve readability */
 			.email-container p {
 				font-size: 17px !important;
-				line-height: 22px !important;
+				line-height: 26px !important;
 			}
 
 		}
 
+        [role="presentation"] img {
+            max-width: 100%;
+        }
 	</style>
 
 	<!-- What it does: Makes background images in 72ppi Outlook render at correct size. -->
@@ -153,15 +156,15 @@
 
 </head>
 
-<body width="100%" bgcolor="#222222" style="margin: 0; mso-line-height-rule: exactly;">
-	<center style="width: 100%; background: #222222; text-align: left;">
+<body width="100%" bgcolor="#f6f6f6" style="margin: 0; mso-line-height-rule: exactly;">
+	<center style="width: 100%; background: #f6f6f6; text-align: left;">
 
 		<!--
 			Set the email width. Defined in two places:
 			1. max-width for all clients except Desktop Windows Outlook, allowing the email to squish on narrow but never go wider than 600px.
 			2. MSO tags for Desktop Windows Outlook enforce a 600px width.
 		-->
-		<div style="max-width: 600px; margin: auto;" class="email-container">
+		<div style="max-width: 600px; margin: auto;<!-- IF rtl --> text-align: right; direction: rtl;<!-- END -->" class="email-container">
 			<!--[if mso]>
 			<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" align="center">
 			<tr>
@@ -173,7 +176,7 @@
 				<tr>
 					<td style="padding: 20px 0; text-align: center">
 						<!-- IF logo.src -->
-						<img src="{logo.src}" height="{logo.height}" width="{logo.width}" alt="{site_title}" border="0" style="height: {logo.height}px; width: {logo.width}px; background: #222222; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
+						<img src="{logo.src}" height="{logo.height}" width="{logo.width}" alt="{site_title}" border="0" style="height: {logo.height}px; width: {logo.width}px; background: #f6f6f6; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 15px; line-height: 20px; color: #333333;">
 						<!-- ELSE -->
 						&nbsp;
 						<!-- ENDIF logo.src -->

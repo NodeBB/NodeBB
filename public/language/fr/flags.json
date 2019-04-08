@@ -9,6 +9,7 @@
 	"updated": "Mis à jour",
 	"target-purged": "Le contenu référencé par ce signalement a été supprimé et n'est plus accessible",
 
+	"graph-label": "Résumé des signalements",
 	"quick-filters": "Filtres rapides",
 	"filter-active": "Il y a un ou plusieurs filtres actifs dans cette liste de signalements",
 	"filter-reset": "Supprimer les filtres",

@@ -33,6 +33,7 @@
     "username-too-short": "שם משתמש קצר מדי",
     "username-too-long": "שם משתמש ארוך מדי",
     "password-too-long": "הסיסמה ארוכה מדי",
+    "reset-rate-limited": "Too many password reset requests (rate limited)",
     "user-banned": "המשתמש מושעה",
     "user-banned-reason": "מצטערים, חשבון זה הורחק (סיבה: %1)",
     "user-banned-reason-until": "מצטערים, חשבון זה הורחק עד %1 (סיבה: %2)",

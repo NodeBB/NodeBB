@@ -154,7 +154,7 @@ app.isConnected = false;
 
 	if (
 		config.socketioOrigins &&
-		config.socketioOrigins !== '*' &&
+		config.socketioOrigins !== '*:*' &&
 		config.socketioOrigins.indexOf(location.hostname) === -1
 	) {
 		console.error(

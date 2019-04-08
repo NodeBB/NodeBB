@@ -33,6 +33,7 @@
     "username-too-short": "Numele de utilizator este prea scurt",
     "username-too-long": "Numele de utilizator este prea lung",
     "password-too-long": "Parola prea lunga.",
+    "reset-rate-limited": "Too many password reset requests (rate limited)",
     "user-banned": "Utilizator banat",
     "user-banned-reason": "Sorry, this account has been banned (Reason: %1)",
     "user-banned-reason-until": "Sorry, this account has been banned until %1 (Reason: %2)",

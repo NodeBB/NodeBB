@@ -148,7 +148,7 @@ module.exports = function (Topics) {
 				}
 			},
 			function (tids, next) {
-				privileges.topics.filterTids('read', tids, uid, next);
+				privileges.topics.filterTids('topics:read', tids, uid, next);
 			},
 			function (tids, next) {
 				Topics.getTopicsFields(tids, ['uid', 'tid', 'cid'], next);
@@ -187,7 +187,7 @@ module.exports = function (Topics) {
 		async.waterfall([
 			function (next) {
 				tids = tids.slice(params.start, params.stop !== -1 ? params.stop + 1 : undefined);
-				Topics.getTopicsByTids(tids, params.uid, next);
+				Topics.getTopicsByTids(tids, params, next);
 			},
 			function (topicData, next) {
 				Topics.calculateTopicIndices(topicData, params.start);

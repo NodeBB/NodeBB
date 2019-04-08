@@ -69,6 +69,8 @@ groupsController.get = function (req, res, callback) {
 				group: result.group,
 				groupNames: result.groupNames,
 				allowPrivateGroups: meta.config.allowPrivateGroups,
+				maximumGroupNameLength: meta.config.maximumGroupNameLength,
+				maximumGroupTitleLength: meta.config.maximumGroupTitleLength,
 			});
 		},
 	], callback);

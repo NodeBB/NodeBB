@@ -1,16 +1,16 @@
 {
-	"custom-css": "Codice CSS o LESS personalizzato",
-	"custom-css.description": "Inserisci il tuo codice CSS o LESS di seguito, verrà applicato dopo tutti gli altri stili.",
-	"custom-css.enable": "Abilita personalizzazione di CSS o LESS ",
+	"custom-css": "CSS/LESS personalizzato",
+	"custom-css.description": "Inserisci qui le tue dichiarazioni CSS /LESS, che saranno applicate dopo tutti gli altri stili.",
+	"custom-css.enable": "Abilita CSS/LESS personalizzati",
 
-	"custom-js": "Codice Javascript personalizzato",
-	"custom-js.description": "Inserisci di seguito il tuo codice Javascript che verrà eseguito dopo l'intero caricamento della pagina.",
-	"custom-js.enable": "Abilita personalizzazione codice Javascript ",
+	"custom-js": "Javascript personalizzato",
+	"custom-js.description": "Inserisci qui il tuo javascript. Sarà eseguito dopo che la pagina è stata caricata completamente.",
+	"custom-js.enable": "Abilita Javascript personalizzato",
 
-	"custom-header": "Intestazione Personalizzata",
-	"custom-header.description": "Inserisci di seguito il tuo codice HTML (come Meta Tags, ecc), che verrà inserito in coda nella sezione <code>&lt;head&gt;</code>del markup del tuo forum. Sono permessi i tags Script, sebbene si preferisca l'utilizzo del codice Javascript personalizzato.",
-	"custom-header.enable": "Abilita l'Intestazione Personalizzata",
+	"custom-header": "Intestazione personalizzata",
+	"custom-header.description": "Inserire l'HTML personalizzato qui (es. Meta Tags, ecc), che sarà aggiunto alla sezione <code>&lt;head&gt;</code>del markup del tuo forum. I tag degli script sono permessi, ma sono sconsigliati, in quanto è disponibile la scheda <a href=\"#custom-header\" data-toggle=\"tab\">Javascript personalizzato</a>.",
+	"custom-header.enable": "Abilita Intestazione personalizzata",
 
 	"custom-css.livereload": "Abilita riavvio a caldo (Live Reolad)",
-	"custom-css.livereload.description": "Abilita questa opzione per forzare il refresh di tutte le sessioni dei tuoi account una volta salvate le modifiche."
+	"custom-css.livereload.description": "Abilitala per forzare tutte le sessioni su ogni dispositivo sotto il tuo account ad aggiornarsi ogni volta che si fa clic su Salva"
 }

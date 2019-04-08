@@ -5,6 +5,7 @@
 	"tooltip": "Paskaidre:",
 	"text": "Teksts:",
 	"text-class": "Teksta klase: <small>neobligāta</small>",
+	"class": "Class: <small>optional</small>",
 	"id": "ID: <small>neobligāts</small>",
 
 	"properties": "Īpašības:",

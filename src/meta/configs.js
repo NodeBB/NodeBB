@@ -163,6 +163,7 @@ function processConfig(data, callback) {
 						return next(err);
 					}
 
+					data['brand:emailLogo'] = nconf.get('url') + path.join(nconf.get('upload_url'), 'system', 'site-logo-x50.png');
 					data['brand:emailLogo:height'] = size.height;
 					data['brand:emailLogo:width'] = size.width;
 					next();

@@ -5,6 +5,7 @@
 	"tooltip": "Napomena:",
 	"text": "Tekst:",
 	"text-class": "Text Class: <small>opcija</small>",
+	"class": "Class: <small>optional</small>",
 	"id": "ID: <small>opcionalno</small>",
 
 	"properties": "Postavke",

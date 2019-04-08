@@ -13,24 +13,39 @@ describe('helpers', function () {
 		done();
 	});
 
-	it('should return false if route is /users and privateUserInfo is on and user is not logged in', function (done) {
+	it('should return false if route is /users and user does not have view:users privilege', function (done) {
 		var flag = helpers.displayMenuItem({
 			navigation: [{ route: '/users' }],
-			privateUserInfo: true,
-			config: {
-				loggedIn: false,
+			user: {
+				privileges: {
+					'view:users': false,
+				},
 			},
 		}, 0);
 		assert(!flag);
 		done();
 	});
 
-	it('should return false if route is /tags and privateTagListing is on and user is not logged in', function (done) {
+	it('should return false if route is /tags and user does not have view:tags privilege', function (done) {
 		var flag = helpers.displayMenuItem({
 			navigation: [{ route: '/tags' }],
-			privateTagListing: true,
-			config: {
-				loggedIn: false,
+			user: {
+				privileges: {
+					'view:tags': false,
+				},
+			},
+		}, 0);
+		assert(!flag);
+		done();
+	});
+
+	it('should return false if route is /groups and user does not have view:groups privilege', function (done) {
+		var flag = helpers.displayMenuItem({
+			navigation: [{ route: '/groups' }],
+			user: {
+				privileges: {
+					'view:groups': false,
+				},
 			},
 		}, 0);
 		assert(!flag);
@@ -164,28 +179,28 @@ describe('helpers', function () {
 	it('should render digest avatar', function (done) {
 		var block = { teaser: { user: { username: 'baris', picture: '/uploads/1.png' } } };
 		var html = helpers.renderDigestAvatar(block);
-		assert.equal(html, '<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 8px;" src="' + block.teaser.user.picture + '" title="' + block.teaser.user.username + '" />');
+		assert.equal(html, '<img style="vertical-align: middle; width: 32px; height: 32px; border-radius: 50%;" src="' + block.teaser.user.picture + '" title="' + block.teaser.user.username + '" />');
 		done();
 	});
 
 	it('should render digest avatar', function (done) {
 		var block = { teaser: { user: { username: 'baris', 'icon:text': 'B', 'icon:bgColor': '#ff000' } } };
 		var html = helpers.renderDigestAvatar(block);
-		assert.equal(html, '<div style="vertical-align: middle; width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 8px; background-color: ' + block.teaser.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block;">' + block.teaser.user['icon:text'] + '</div>');
+		assert.equal(html, '<div style="vertical-align: middle; width: 32px; height: 32px; line-height: 32px; font-size: 16px; background-color: ' + block.teaser.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block; border-radius: 50%;">' + block.teaser.user['icon:text'] + '</div>');
 		done();
 	});
 
 	it('should render digest avatar', function (done) {
 		var block = { user: { username: 'baris', picture: '/uploads/1.png' } };
 		var html = helpers.renderDigestAvatar(block);
-		assert.equal(html, '<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 8px;" src="' + block.user.picture + '" title="' + block.user.username + '" />');
+		assert.equal(html, '<img style="vertical-align: middle; width: 32px; height: 32px; border-radius: 50%;" src="' + block.user.picture + '" title="' + block.user.username + '" />');
 		done();
 	});
 
 	it('should render digest avatar', function (done) {
 		var block = { user: { username: 'baris', 'icon:text': 'B', 'icon:bgColor': '#ff000' } };
 		var html = helpers.renderDigestAvatar(block);
-		assert.equal(html, '<div style="vertical-align: middle; width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 8px; background-color: ' + block.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block;">' + block.user['icon:text'] + '</div>');
+		assert.equal(html, '<div style="vertical-align: middle; width: 32px; height: 32px; line-height: 32px; font-size: 16px; background-color: ' + block.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block; border-radius: 50%;">' + block.user['icon:text'] + '</div>');
 		done();
 	});
 

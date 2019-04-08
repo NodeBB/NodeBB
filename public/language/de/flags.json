@@ -9,6 +9,7 @@
 	"updated": "Aktualisiert",
 	"target-purged": "Der Inhalt auf den diese Meldung hingewiesen hat, wurde gelöscht und ist nicht mehr verfügbar.",
 
+	"graph-label": "Tägliche Meldungen",
 	"quick-filters": "Schnell-Filter",
 	"filter-active": "Ein oder mehrere Filter sind in dieser Meldungs-Liste aktiv",
 	"filter-reset": "Filter Entfernen",

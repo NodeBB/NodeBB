@@ -24,10 +24,10 @@
 	"smtp-transport.password": "Palavra-passe",
 
 	"template": "Edit Email Template",
-	"template.select": "Select Email Template",
-	"template.revert": "Revert to Original",
+	"template.select": "Escolher Modelo de E-mail",
+	"template.revert": "Reverter para o Original",
 	"testing": "Teste de E-mail",
-	"testing.select": "Select Email Template",
+	"testing.select": "Escolher Modelo de E-mail",
 	"testing.send": "Enviar E-mail de Teste",
 	"testing.send-help": "The test email will be sent to the currently logged in user's email address.",
 	"subscriptions": "Email Subscriptions",

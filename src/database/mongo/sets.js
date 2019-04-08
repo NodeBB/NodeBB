@@ -55,6 +55,9 @@ module.exports = function (db, module) {
 		}
 
 		bulk.execute(function (err) {
+			if (err && err.message.startsWith('E11000 duplicate key error')) {
+				return process.nextTick(module.setsAdd, keys, value, callback);
+			}
 			callback(err);
 		});
 	};

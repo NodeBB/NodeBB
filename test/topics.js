@@ -693,7 +693,12 @@ describe('Topic\'s', function () {
 					topics.ignore(newTid, uid, done);
 				},
 				function (done) {
-					topics.getLatestTopics(uid, 0, -1, 'year', done);
+					topics.getLatestTopics({
+						uid: uid,
+						start: 0,
+						stop: -1,
+						term: 'year',
+					}, done);
 				},
 				function (results, done) {
 					var topics = results.topics;
@@ -874,7 +879,7 @@ describe('Topic\'s', function () {
 				title: 'topic for controller test',
 				content: 'topic content',
 				cid: topic.categoryId,
-				thumb: 'http://i.imgur.com/64iBdBD.jpg',
+				// thumb: 'http://i.imgur.com/64iBdBD.jpg',
 			}, function (err, result) {
 				assert.ifError(err);
 				assert.ok(result);
@@ -1024,6 +1029,8 @@ describe('Topic\'s', function () {
 				assert.deepEqual(body, {
 					prev: { page: 1, active: false },
 					next: { page: 1, active: false },
+					first: { page: 1, active: true },
+					last: { page: 1, active: true },
 					rel: [],
 					pages: [],
 					currentPage: 1,

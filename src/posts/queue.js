@@ -215,7 +215,7 @@ module.exports = function (Posts) {
 			},
 			function (data, next) {
 				if (!data) {
-					return callback();
+					return callback(null, null);
 				}
 				try {
 					data.data = JSON.parse(data.data);

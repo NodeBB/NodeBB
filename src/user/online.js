@@ -5,6 +5,7 @@ var async = require('async');
 var db = require('../database');
 var topics = require('../topics');
 var plugins = require('../plugins');
+var meta = require('../meta');
 
 module.exports = function (User) {
 	User.updateLastOnlineTime = function (uid, callback) {
@@ -52,7 +53,7 @@ module.exports = function (User) {
 			},
 			function (lastonline, next) {
 				function checkOnline(lastonline) {
-					return now - lastonline < 300000;
+					return (now - lastonline) < (meta.config.onlineCutoff * 60000);
 				}
 
 				var isOnline;

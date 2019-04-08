@@ -22,6 +22,7 @@
 	"mongo.bytes-out": "Байтове ИЗХ",
 	"mongo.num-requests": "Брой заявки",
 	"mongo.raw-info": "Сурови данни от MongoDB",
+	"mongo.unauthorized": "NodeBB не успя да получи нужните статистики от MongoDB. Моля, уверете се, че потребителят, който се използва от NodeBB, включва ролята „clusterMonitor“ за базата данни „admin“.",
 
 	"redis": "Redis",
 	"redis.version": "Версия на Redis",

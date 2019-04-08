@@ -30,7 +30,9 @@
 								<!-- IF users.usernameSpam -->
 								<i class="fa fa-times-circle text-danger" title="[[admin/manage/registration:list.username-spam, {users.spamData.username.frequency}, {users.spamData.username.appears}, {users.spamData.username.confidence}]]"></i>
 								<!-- ELSE -->
+								<!-- IF users.spamChecked -->
 								<i class="fa fa-check text-success"></i>
+								<!-- ENDIF users.spamChecked -->
 								<!-- ENDIF users.usernameSpam -->
 								{users.username}
 							</td>
@@ -38,7 +40,9 @@
 								<!-- IF users.emailSpam -->
 								<i class="fa fa-times-circle text-danger" title="[[admin/manage/registration:list.email-spam, {users.spamData.email.frequency}, {users.spamData.email.appears}]]"></i>
 								<!-- ELSE -->
+								<!-- IF users.spamChecked -->
 								<i class="fa fa-check text-success"></i>
+								<!-- ENDIF users.spamChecked -->
 								<!-- ENDIF users.emailSpam -->
 								{users.email}
 							</td>
@@ -46,7 +50,9 @@
 								<!-- IF users.ipSpam -->
 								<i class="fa fa-times-circle text-danger" title="[[admin/manage/registration:list.ip-spam, {users.spamData.ip.frequency}, {users.spamData.ip.appears}]]"></i>
 								<!-- ELSE -->
+								<!-- IF users.spamChecked -->
 								<i class="fa fa-check text-success"></i>
+								<!-- ENDIF users.spamChecked -->
 								<!-- ENDIF users.ipSpam -->
 								{users.ip}
 								<!-- BEGIN users.ipMatch -->
@@ -71,6 +77,11 @@
 								<div class="btn-group pull-right">
 									<button class="btn btn-success btn-xs" data-action="accept"><i class="fa fa-check"></i></button>
 									<button class="btn btn-danger btn-xs" data-action="delete"><i class="fa fa-times"></i></button>
+									<!-- BEGIN users.customActions -->
+									<button id="{users.customActions.id}" title="{users.customActions.title}" class="btn btn-xs {users.customActions.class}">
+										<i class="fa {users.customActions.icon}"></i>
+									</button>
+									<!-- END users.customActions -->
 								</div>
 							</td>
 						</tr>

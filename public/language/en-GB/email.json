@@ -28,15 +28,14 @@
 	"reset.notify.text1": "We are notifying you that on %1, your password was changed successfully.",
 	"reset.notify.text2": "If you did not authorise this, please notify an administrator immediately.",
 
-	"digest.notifications": "You have unread notifications from %1:",
 	"digest.latest_topics": "Latest topics from %1",
 	"digest.cta": "Click here to visit %1",
 	"digest.unsub.info": "This digest was sent to you due to your subscription settings.",
-	"digest.no_topics": "There have been no active topics in the past %1",
 	"digest.day": "day",
 	"digest.week": "week",
 	"digest.month": "month",
 	"digest.subject": "Digest for %1",
+	"digest.title": "Your Daily Digest",
 
 	"notif.chat.subject": "New chat message received from %1",
 	"notif.chat.cta": "Click here to continue the conversation",

@@ -65,7 +65,9 @@ define('forum/search', ['search', 'autocomplete', 'storage'], function (searchMo
 	}
 
 	function fillOutForm() {
-		var params = utils.params();
+		var params = utils.params({
+			disableToType: true,
+		});
 
 		var searchData = searchModule.getSearchPreferences();
 		var formData = utils.merge(searchData, params);

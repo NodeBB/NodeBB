@@ -189,7 +189,6 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 			userData.websiteLink = !userData.website.startsWith('http') ? 'http://' + userData.website : userData.website;
 			userData.websiteName = userData.website.replace(validator.escape('http://'), '').replace(validator.escape('https://'), '');
 
-			userData.email = validator.escape(String(userData.email || ''));
 			userData.fullname = validator.escape(String(userData.fullname || ''));
 			userData.location = validator.escape(String(userData.location || ''));
 			userData.signature = validator.escape(String(userData.signature || ''));

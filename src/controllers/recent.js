@@ -10,6 +10,7 @@ var topics = require('../topics');
 var meta = require('../meta');
 var helpers = require('./helpers');
 var pagination = require('../pagination');
+var privileges = require('../privileges');
 
 var recentController = module.exports;
 
@@ -36,6 +37,7 @@ recentController.getData = function (req, url, sort, callback) {
 	var filter = req.query.filter || '';
 	var categoryData;
 	var rssToken;
+	var canPost;
 
 	if (!helpers.validFilters[filter] || (!term && req.query.term)) {
 		return callback(null, null);
@@ -49,10 +51,17 @@ recentController.getData = function (req, url, sort, callback) {
 					user.getSettings(req.uid, next);
 				},
 				categories: function (next) {
-					helpers.getCategoriesByStates(req.uid, cid, [categories.watchStates.watching, categories.watchStates.notwatching], next);
+					const states = [categories.watchStates.watching, categories.watchStates.notwatching];
+					if (filter === 'watched') {
+						states.push(categories.watchStates.ignoring);
+					}
+					helpers.getCategoriesByStates(req.uid, cid, states, next);
 				},
 				rssToken: function (next) {
 					user.auth.getFeedToken(req.uid, next);
+				},
+				canPost: function (next) {
+					canPostTopic(req.uid, next);
 				},
 			}, next);
 		},
@@ -60,6 +69,7 @@ recentController.getData = function (req, url, sort, callback) {
 			rssToken = results.rssToken;
 			settings = results.settings;
 			categoryData = results.categories;
+			canPost = results.canPost;
 
 			var start = Math.max(0, (page - 1) * settings.topicsPerPage);
 			stop = start + settings.topicsPerPage - 1;
@@ -76,6 +86,7 @@ recentController.getData = function (req, url, sort, callback) {
 			}, next);
 		},
 		function (data, next) {
+			data.canPost = canPost;
 			data.categories = categoryData.categories;
 			data.allCategoriesUrl = url + helpers.buildQueryString('', filter, '');
 			data.selectedCategory = categoryData.selectedCategory;
@@ -88,13 +99,9 @@ recentController.getData = function (req, url, sort, callback) {
 			data.title = meta.config.homePageTitle || '[[pages:home]]';
 
 			data.filters = helpers.buildFilters(url, filter, req.query);
-			data.selectedFilter = data.filters.find(function (filter) {
-				return filter && filter.selected;
-			});
+			data.selectedFilter = data.filters.find(filter => filter && filter.selected);
 			data.terms = helpers.buildTerms(url, term, req.query);
-			data.selectedTerm = data.terms.find(function (term) {
-				return term && term.selected;
-			});
+			data.selectedTerm = data.terms.find(term => term && term.selected);
 
 			var pageCount = Math.max(1, Math.ceil(data.topicCount / settings.topicsPerPage));
 			data.pagination = pagination.create(page, pageCount, req.query);
@@ -108,3 +115,17 @@ recentController.getData = function (req, url, sort, callback) {
 		},
 	], callback);
 };
+
+function canPostTopic(uid, callback) {
+	async.waterfall([
+		function (next) {
+			categories.getAllCidsFromSet('categories:cid', next);
+		},
+		function (cids, next) {
+			privileges.categories.filterCids('topics:create', cids, uid, next);
+		},
+		function (cids, next) {
+			next(null, cids.length > 0);
+		},
+	], callback);
+}

@@ -21,7 +21,11 @@ module.exports = function (privileges) {
 		{ name: '[[admin/manage/privileges:search-content]]' },
 		{ name: '[[admin/manage/privileges:search-users]]' },
 		{ name: '[[admin/manage/privileges:search-tags]]' },
+		{ name: '[[admin/manage/privileges:view-users]]' },
+		{ name: '[[admin/manage/privileges:view-tags]]' },
+		{ name: '[[admin/manage/privileges:view-groups]]' },
 		{ name: '[[admin/manage/privileges:allow-local-login]]' },
+		{ name: '[[admin/manage/privileges:allow-group-creation]]' },
 	];
 
 	privileges.global.userPrivilegeList = [
@@ -33,7 +37,11 @@ module.exports = function (privileges) {
 		'search:content',
 		'search:users',
 		'search:tags',
+		'view:users',
+		'view:tags',
+		'view:groups',
 		'local:login',
+		'group:create',
 	];
 
 	privileges.global.groupPrivilegeList = privileges.global.userPrivilegeList.map(function (privilege) {
@@ -92,6 +100,9 @@ module.exports = function (privileges) {
 					'search:content': privData['search:content'] || isAdminOrMod,
 					'search:users': privData['search:users'] || isAdminOrMod,
 					'search:tags': privData['search:tags'] || isAdminOrMod,
+					'view:users': privData['view:users'] || isAdminOrMod,
+					'view:tags': privData['view:tags'] || isAdminOrMod,
+					'view:groups': privData['view:groups'] || isAdminOrMod,
 				}, next);
 			},
 		], callback);

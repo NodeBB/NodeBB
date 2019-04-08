@@ -20,8 +20,9 @@
 	"mongo.mapped-memory": "Memoria Mapeada",
 	"mongo.bytes-in": "Bytes In",
 	"mongo.bytes-out": "Bytes Out",
-	"mongo.num-requests": "Number of Requests",
+	"mongo.num-requests": "Número de solicitudes",
 	"mongo.raw-info": "Fila de Información MongoDB",
+	"mongo.unauthorized": "NodeBB was unable to query the MongoDB database for relevant statistics. Please ensure that the user in use by NodeBB contains the &quot;clusterMonitor&quot; role for the &quot;admin&quot; database.",
 
 	"redis": "Redis",
 	"redis.version": "Versión de Redis",

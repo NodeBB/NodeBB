@@ -16,20 +16,25 @@ UserNotifications.get = function (uid, callback) {
 	if (parseInt(uid, 10) <= 0) {
 		return setImmediate(callback, null, { read: [], unread: [] });
 	}
+
+	let unread;
 	async.waterfall([
 		function (next) {
-			getNotifications(uid, 0, 9, next);
+			getNotificationsFromSet('uid:' + uid + ':notifications:unread', uid, 0, 29, next);
 		},
-		function (notifications, next) {
-			notifications.read = notifications.read.filter(Boolean);
-			notifications.unread = notifications.unread.filter(Boolean);
-
-			var maxNotifs = 15;
-			if (notifications.read.length + notifications.unread.length > maxNotifs) {
-				notifications.read.length = maxNotifs - notifications.unread.length;
+		function (_unread, next) {
+			unread = _unread.filter(Boolean);
+			if (unread.length < 30) {
+				getNotificationsFromSet('uid:' + uid + ':notifications:read', uid, 0, 29 - unread.length, next);
+			} else {
+				next(null, []);
 			}
-
-			next(null, notifications);
+		},
+		function (read, next) {
+			next(null, {
+				read: read.filter(Boolean),
+				unread: unread,
+			});
 		},
 	], callback);
 };
@@ -102,18 +107,7 @@ function deleteUserNids(nids, uid, callback) {
 	], nids, callback);
 }
 
-function getNotifications(uid, start, stop, callback) {
-	async.parallel({
-		unread: function (next) {
-			getNotificationsFromSet('uid:' + uid + ':notifications:unread', false, uid, start, stop, next);
-		},
-		read: function (next) {
-			getNotificationsFromSet('uid:' + uid + ':notifications:read', true, uid, start, stop, next);
-		},
-	}, callback);
-}
-
-function getNotificationsFromSet(set, read, uid, start, stop, callback) {
+function getNotificationsFromSet(set, uid, start, stop, callback) {
 	async.waterfall([
 		function (next) {
 			db.getSortedSetRevRange(set, start, stop, next);

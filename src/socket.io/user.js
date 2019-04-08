@@ -1,7 +1,6 @@
 'use strict';
 
 var async = require('async');
-var winston = require('winston');
 
 var user = require('../user');
 var topics = require('../topics');
@@ -22,6 +21,7 @@ require('./user/search')(SocketUser);
 require('./user/status')(SocketUser);
 require('./user/picture')(SocketUser);
 require('./user/ban')(SocketUser);
+require('./user/registration')(SocketUser);
 
 SocketUser.exists = function (socket, data, callback) {
 	if (!data || !data.username) {
@@ -101,17 +101,17 @@ SocketUser.reset.send = function (socket, email, callback) {
 	}
 
 	user.reset.send(email, function (err) {
-		if (err) {
-			switch (err.message) {
-			case '[[error:invalid-email]]':
-				winston.warn('[user/reset] Invalid email attempt: ' + email + ' by IP ' + socket.ip + (socket.uid ? ' (uid: ' + socket.uid + ')' : ''));
-				err = null;
-				break;
+		events.log({
+			type: 'password-reset',
+			text: err ? err.message : '[[success:success]]',
+			ip: socket.ip,
+			uid: socket.uid,
+			email: email,
+		});
 
-			case '[[error:reset-rate-limited]]':
-				err = null;
-				break;
-			}
+		const internalErrors = ['[[error:invalid-email]]', '[[error:reset-rate-limited]]'];
+		if (err && internalErrors.includes(err.message)) {
+			err = null;
 		}
 
 		setTimeout(callback.bind(err), 2500);
@@ -219,7 +219,7 @@ function toggleFollow(method, uid, theiruid, callback) {
 }
 
 SocketUser.saveSettings = function (socket, data, callback) {
-	if (!socket.uid || !data) {
+	if (!socket.uid || !data || !data.settings) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
@@ -337,7 +337,11 @@ SocketUser.setModerationNote = function (socket, data, callback) {
 	if (!socket.uid || !data || !data.uid || !data.note) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
-
+	const noteData = {
+		uid: socket.uid,
+		note: data.note,
+		timestamp: Date.now(),
+	};
 	async.waterfall([
 		function (next) {
 			privileges.users.canEdit(socket.uid, data.uid, next);
@@ -354,12 +358,10 @@ SocketUser.setModerationNote = function (socket, data, callback) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
 
-			var note = {
-				uid: socket.uid,
-				note: data.note,
-				timestamp: Date.now(),
-			};
-			db.sortedSetAdd('uid:' + data.uid + ':moderation:notes', note.timestamp, JSON.stringify(note), next);
+			db.sortedSetAdd('uid:' + data.uid + ':moderation:notes', noteData.timestamp, noteData.timestamp, next);
+		},
+		function (next) {
+			db.setObject('uid:' + data.uid + ':moderation:note:' + noteData.timestamp, noteData, next);
 		},
 	], callback);
 };

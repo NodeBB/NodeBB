@@ -75,7 +75,7 @@ function postReply(socket, data, callback) {
 SocketPosts.getRawPost = function (socket, pid, callback) {
 	async.waterfall([
 		function (next) {
-			privileges.posts.can('read', pid, socket.uid, next);
+			privileges.posts.can('topics:read', pid, socket.uid, next);
 		},
 		function (canRead, next) {
 			if (!canRead) {
@@ -112,7 +112,7 @@ SocketPosts.getTimestampByIndex = function (socket, data, callback) {
 			if (!pid) {
 				return callback(null, 0);
 			}
-			privileges.posts.can('read', pid, socket.uid, next);
+			privileges.posts.can('topics:read', pid, socket.uid, next);
 		},
 		function (canRead, next) {
 			if (!canRead) {

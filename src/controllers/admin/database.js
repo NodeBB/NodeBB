@@ -5,7 +5,7 @@ var nconf = require('nconf');
 
 var databaseController = module.exports;
 
-databaseController.get = function (req, res, next) {
+databaseController.get = function (req, res) {
 	async.waterfall([
 		function (next) {
 			async.parallel({
@@ -35,8 +35,15 @@ databaseController.get = function (req, res, next) {
 				},
 			}, next);
 		},
-		function (results) {
-			res.render('admin/advanced/database', results);
-		},
-	], next);
+	], function (err, results) {
+		Object.assign(results, { error: err });
+
+		// Override mongo error with more human-readable error
+		if (err && err.name === 'MongoError' && err.codeName === 'Unauthorized') {
+			err.friendlyMessage = '[[admin/advanced/database:mongo.unauthorized]]';
+			delete results.mongo;
+		}
+
+		res.render('admin/advanced/database', results);
+	});
 };

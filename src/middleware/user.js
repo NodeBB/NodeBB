@@ -2,6 +2,7 @@
 
 var async = require('async');
 var nconf = require('nconf');
+var winston = require('winston');
 
 var meta = require('../meta');
 var user = require('../user');
@@ -87,11 +88,29 @@ module.exports = function (middleware) {
 	}
 
 	middleware.checkGlobalPrivacySettings = function checkGlobalPrivacySettings(req, res, next) {
-		if (!req.loggedIn && meta.config.privateUserInfo) {
-			return middleware.authenticate(req, res, next);
-		}
+		winston.warn('[middleware], checkGlobalPrivacySettings deprecated, use canViewUsers or canViewGroups');
+		middleware.canViewUsers(req, res, next);
+	};
 
-		next();
+	middleware.canViewUsers = function canViewUsers(req, res, next) {
+		if (parseInt(res.locals.uid, 10) === req.uid) {
+			return next();
+		}
+		privileges.global.can('view:users', req.uid, function (err, canView) {
+			if (err || canView) {
+				return next(err);
+			}
+			controllers.helpers.notAllowed(req, res);
+		});
+	};
+
+	middleware.canViewGroups = function canViewGroups(req, res, next) {
+		privileges.global.can('view:groups', req.uid, function (err, canView) {
+			if (err || canView) {
+				return next(err);
+			}
+			controllers.helpers.notAllowed(req, res);
+		});
 	};
 
 	middleware.checkAccountPermissions = function checkAccountPermissions(req, res, next) {
@@ -213,7 +232,7 @@ module.exports = function (middleware) {
 				}
 				returnTo = returnTo.replace(/^\/api/, '');
 
-				req.session.returnTo = nconf.get('relative_path') + returnTo;
+				req.session.returnTo = returnTo;
 				req.session.forceLogin = 1;
 				if (res.locals.isAPI) {
 					res.status(401).json({});

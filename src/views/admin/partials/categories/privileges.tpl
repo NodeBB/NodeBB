@@ -11,6 +11,11 @@
 								<th class="arrowed" colspan="3">
 									[[admin/manage/categories:privileges.section-moderation]]
 								</th>
+								<!-- IF privileges.columnCountUserOther -->
+								<th class="arrowed" colspan="{privileges.columnCountUserOther}">
+									[[admin/manage/categories:privileges.section-other]]
+								</th>
+								<!-- END -->
 							</tr><tr><!-- zebrastripe reset --></tr>
 							<tr>
 								<th colspan="2">[[admin/manage/categories:privileges.section-user]]</th>
@@ -35,7 +40,7 @@
 							</tr>
 							<!-- END privileges.users -->
 							<tr>
-								<td colspan="{privileges.columnCount}">
+								<td colspan="{privileges.columnCountUser}">
 									<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.user">
 										[[admin/manage/categories:privileges.search-user]]
 									</button>
@@ -43,7 +48,7 @@
 							</tr>
 							<!-- ELSE -->
 							<tr>
-								<td colspan="{privileges.columnCount}">
+								<td colspan="{privileges.columnCountUser}">
 									[[admin/manage/categories:privileges.no-users]]
 									<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.user">
 										[[admin/manage/categories:privileges.search-user]]
@@ -67,6 +72,11 @@
 								<th class="arrowed" colspan="3">
 									[[admin/manage/categories:privileges.section-moderation]]
 								</th>
+								<!-- IF privileges.columnCountGroupOther -->
+								<th class="arrowed" colspan="{privileges.columnCountGroupOther}">
+									[[admin/manage/categories:privileges.section-other]]
+								</th>
+								<!-- END -->
 							</tr><tr><!-- zebrastripe reset --></tr>
 							<tr>
 								<th colspan="2">[[admin/manage/categories:privileges.section-group]]</th>
@@ -89,7 +99,7 @@
 							</tr>
 							<!-- END privileges.groups -->
 							<tr>
-								<td colspan="{privileges.columnCount}">
+								<td colspan="{privileges.columnCountGroup}">
 									<div class="btn-toolbar">
 										<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.group">
 											[[admin/manage/categories:privileges.search-group]]

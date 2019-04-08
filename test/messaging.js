@@ -349,7 +349,7 @@ describe('Messaging Library', function () {
 		it('should notify offline users of message', function (done) {
 			Messaging.notificationSendDelay = 100;
 
-			db.sortedSetAdd('users:online', Date.now() - 350000, herpUid, function (err) {
+			db.sortedSetAdd('users:online', Date.now() - ((meta.config.onlineCutoff * 60000) + 50000), herpUid, function (err) {
 				assert.ifError(err);
 				socketModules.chats.send({ uid: fooUid }, { roomId: roomId, message: 'second chat message' }, function (err) {
 					assert.ifError(err);

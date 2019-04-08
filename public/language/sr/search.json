@@ -43,5 +43,6 @@
     "clear-preferences": "Очисти поставке",
     "search-preferences-saved": "Поставке претраге су сачуване",
     "search-preferences-cleared": "Поставке претраге су очишћене",
-    "show-results-as": "Прикажи резултате као"
+    "show-results-as": "Прикажи резултате као",
+    "see-more-results": "Прикажи више резултата (%1)"
 }

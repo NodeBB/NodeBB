@@ -14,7 +14,6 @@
 	"disable-email-changes": "Deaktiviere Änderungen der E-Mail Adresse",
 	"disable-password-changes": "Deaktiviere Änderungen des Passwortes",
 	"allow-account-deletion": "Erlaube löschen des Kontos",
-	"user-info-private": "Die Benutzerliste mit Informationen vor Gästen verstecken",
 	"hide-fullname": "Den 'Kompletten Namen' von Benutzern verstecken",
 	"hide-email": "Die Email-Adresse von Benutzern verstecken",
 	"themes": "Themes",
@@ -71,8 +70,8 @@
 	"follow-created-topics": "Themen folgen, die du erstellst",
 	"follow-replied-topics": "Themen folgen, auf die du antwortest",
 	"default-notification-settings": "Standardbenachrichtigungseinstellungen",
-	"categoryWatchState": "Default category watch state",
-	"categoryWatchState.watching": "Watching",
-	"categoryWatchState.notwatching": "Not Watching",
-	"categoryWatchState.ignoring": "Ignoring"
+	"categoryWatchState": "Standardmäßige Beobachtung",
+	"categoryWatchState.watching": "Beobachtet",
+	"categoryWatchState.notwatching": "Nicht beobachtet",
+	"categoryWatchState.ignoring": "Ignoriert"
 }

@@ -46,6 +46,7 @@ function modRoutes(app, middleware, controllers) {
 
 function globalModRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/ip-blacklist', middleware, [], controllers.globalMods.ipBlacklist);
+	setupPageRoute(app, '/registration-queue', middleware, [], controllers.globalMods.registrationQueue);
 }
 
 function topicRoutes(app, middleware, controllers) {
@@ -76,13 +77,13 @@ function categoryRoutes(app, middleware, controllers) {
 }
 
 function userRoutes(app, middleware, controllers) {
-	var middlewares = [middleware.checkGlobalPrivacySettings];
+	var middlewares = [middleware.canViewUsers];
 
 	setupPageRoute(app, '/users', middleware, middlewares, controllers.users.index);
 }
 
 function groupRoutes(app, middleware, controllers) {
-	var middlewares = [middleware.checkGlobalPrivacySettings];
+	var middlewares = [middleware.canViewGroups];
 
 	setupPageRoute(app, '/groups', middleware, middlewares, controllers.groups.list);
 	setupPageRoute(app, '/groups/:slug', middleware, middlewares, controllers.groups.details);
@@ -94,12 +95,11 @@ module.exports = function (app, middleware, callback) {
 	router.render = function () {
 		app.render.apply(app, arguments);
 	};
-	var relativePath = nconf.get('relative_path');
 	var ensureLoggedIn = require('connect-ensure-login');
 
-	app.all(relativePath + '(/+api|/+api/*?)', middleware.prepareAPI);
-	app.all(relativePath + '(/+api/admin|/+api/admin/*?)', middleware.isAdmin);
-	app.all(relativePath + '(/+admin|/+admin/*?)', ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login?local=1'), middleware.applyCSRF, middleware.isAdmin);
+	router.all('(/+api|/+api/*?)', middleware.prepareAPI);
+	router.all('(/+api/admin|/+api/admin/*?)', middleware.isAdmin);
+	router.all('(/+admin|/+admin/*?)', ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login?local=1'), middleware.applyCSRF, middleware.isAdmin);
 
 	app.use(middleware.stripLeadingSlashes);
 

@@ -33,6 +33,7 @@
     "username-too-short": "Izina ni rigufi cyane",
     "username-too-long": "Izina ni rirerire cyane",
     "password-too-long": "Password too long",
+    "reset-rate-limited": "Too many password reset requests (rate limited)",
     "user-banned": "Umuntu wirukanwe",
     "user-banned-reason": "Sorry, this account has been banned (Reason: %1)",
     "user-banned-reason-until": "Sorry, this account has been banned until %1 (Reason: %2)",

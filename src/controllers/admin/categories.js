@@ -15,7 +15,20 @@ categoriesController.get = function (req, res, callback) {
 			async.parallel({
 				category: async.apply(categories.getCategories, [req.params.category_id], req.uid),
 				parent: async.apply(categories.getParents, [req.params.category_id]),
-				allCategories: async.apply(categories.buildForSelect, req.uid, 'read'),
+				allCategories: function (next) {
+					async.waterfall([
+						function (next) {
+							categories.getAllCidsFromSet('categories:cid', next);
+						},
+						function (cids, next) {
+							categories.getCategories(cids, req.uid, next);
+						},
+						function (categoryData, next) {
+							categoryData = categories.getTree(categoryData);
+							categories.buildForSelectCategories(categoryData, next);
+						},
+					], next);
+				},
 			}, next);
 		},
 		function (data, next) {
@@ -35,14 +48,17 @@ categoriesController.get = function (req, res, callback) {
 				req: req,
 				res: res,
 				category: category,
+				customClasses: [],
 				allCategories: data.allCategories,
 			}, next);
 		},
 		function (data) {
 			data.category.name = translator.escape(String(data.category.name));
+
 			res.render('admin/manage/category', {
 				category: data.category,
 				allCategories: data.allCategories,
+				customClasses: data.customClasses,
 			});
 		},
 	], callback);

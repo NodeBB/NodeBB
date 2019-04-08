@@ -13,40 +13,7 @@ function setupWinston() {
 		return;
 	}
 
-	// allow winton.error to log error objects properly
-	// https://github.com/NodeBB/NodeBB/issues/6848
-	const winstonError = winston.error;
-	winston.error = function (msg, error) {
-		if (msg instanceof Error) {
-			winstonError(msg);
-		} else if (error instanceof Error) {
-			msg = msg + '\n' + error.stack;
-			winstonError(msg);
-		} else {
-			winstonError.apply(null, arguments);
-		}
-	};
-
-
-	// https://github.com/winstonjs/winston/issues/1338
-	// error objects are not displayed properly
-	const enumerateErrorFormat = winston.format((info) => {
-		if (info.message instanceof Error) {
-			info.message = Object.assign({
-				message: `${info.message.message}\n${info.message.stack}`,
-			}, info.message);
-		}
-
-		if (info instanceof Error) {
-			return Object.assign({
-				message: `${info.message}\n${info.stack}`,
-			}, info);
-		}
-
-		return info;
-	});
 	var formats = [];
-	formats.push(enumerateErrorFormat());
 	if (nconf.get('log-colorize') !== 'false') {
 		formats.push(winston.format.colorize());
 	}
@@ -102,6 +69,7 @@ function loadConfig(configFile) {
 	nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-persona/templates'));
 
 	nconf.set('upload_path', path.resolve(nconf.get('base_dir'), nconf.get('upload_path')));
+	nconf.set('upload_url', '/assets/uploads');
 
 	if (nconf.get('url')) {
 		nconf.set('url_parsed', url.parse(nconf.get('url')));

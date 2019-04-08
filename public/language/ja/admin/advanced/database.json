@@ -22,6 +22,7 @@
 	"mongo.bytes-out": "バイトアウト",
 	"mongo.num-requests": "リクエスト数",
 	"mongo.raw-info": "MongoDBのRaw情報",
+	"mongo.unauthorized": "NodeBB was unable to query the MongoDB database for relevant statistics. Please ensure that the user in use by NodeBB contains the &quot;clusterMonitor&quot; role for the &quot;admin&quot; database.",
 
 	"redis": "Redis",
 	"redis.version": "Redisのバージョン",

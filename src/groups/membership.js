@@ -162,8 +162,8 @@ module.exports = function (Groups) {
 
 	Groups.isMembers = function (uids, groupName, callback) {
 		var cachedData = {};
-		function getFromCache() {
-			setImmediate(callback, null, uids.map(uid => cachedData[uid + ':' + groupName]));
+		function getFromCache(next) {
+			setImmediate(next, null, uids.map(uid => cachedData[uid + ':' + groupName]));
 		}
 		if (!groupName || !uids.length) {
 			return setImmediate(callback, null, uids.map(() => false));
@@ -351,14 +351,14 @@ module.exports = function (Groups) {
 	};
 
 	Groups.isInvited = function (uid, groupName, callback) {
-		if (uid <= 0) {
+		if (!(parseInt(uid, 10) > 0)) {
 			return setImmediate(callback, null, false);
 		}
 		db.isSetMember('group:' + groupName + ':invited', uid, callback);
 	};
 
 	Groups.isPending = function (uid, groupName, callback) {
-		if (uid <= 0) {
+		if (!(parseInt(uid, 10) > 0)) {
 			return setImmediate(callback, null, false);
 		}
 		db.isSetMember('group:' + groupName + ':pending', uid, callback);

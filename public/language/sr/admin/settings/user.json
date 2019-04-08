@@ -14,7 +14,6 @@
 	"disable-email-changes": "Onemogući promenu email-a",
 	"disable-password-changes": "Onemogući promenu šifre",
 	"allow-account-deletion": "Dozvoli brisanje naloga",
-	"user-info-private": "Hide user list and data from guests",
 	"hide-fullname": "Hide fullname from users",
 	"hide-email": "Hide email from users",
 	"themes": "Teme",

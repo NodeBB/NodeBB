@@ -4,6 +4,7 @@ var async = require('async');
 
 module.exports = function (db, module) {
 	var helpers = module.helpers.postgres;
+	var utils = require('../../../utils');
 
 	module.sortedSetAdd = function (key, score, value, callback) {
 		callback = callback || helpers.noop;
@@ -15,7 +16,9 @@ module.exports = function (db, module) {
 		if (Array.isArray(score) && Array.isArray(value)) {
 			return sortedSetAddBulk(key, score, value, callback);
 		}
-
+		if (!utils.isNumber(score)) {
+			return setImmediate(callback, new Error('[[error:invalid-score, ' + score + ']]'));
+		}
 		value = helpers.valueToString(value);
 		score = parseFloat(score);
 
@@ -46,7 +49,11 @@ VALUES ($1::TEXT, $2::TEXT, $3::NUMERIC)
 		if (scores.length !== values.length) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
-
+		for (let i = 0; i < scores.length; i += 1) {
+			if (!utils.isNumber(scores[i])) {
+				return setImmediate(callback, new Error('[[error:invalid-score, ' + scores[i] + ']]'));
+			}
+		}
 		values = values.map(helpers.valueToString);
 		scores = scores.map(function (score) {
 			return parseFloat(score);
@@ -81,7 +88,9 @@ SELECT $1::TEXT, v, s
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback();
 		}
-
+		if (!utils.isNumber(score)) {
+			return setImmediate(callback, new Error('[[error:invalid-score, ' + score + ']]'));
+		}
 		value = helpers.valueToString(value);
 		score = parseFloat(score);
 

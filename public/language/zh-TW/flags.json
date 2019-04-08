@@ -9,6 +9,7 @@
 	"updated": "更新完成",
 	"target-purged": "The content this flag referred to has been purged and is no longer available.",
 
+	"graph-label": "Daily Flags",
 	"quick-filters": "快速篩選",
 	"filter-active": "There are one or more filters active in this list of flags",
 	"filter-reset": "移除篩選",

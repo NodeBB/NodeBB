@@ -1,17 +1,21 @@
 'use strict';
 
 var async = require('async');
+var nconf = require('nconf');
 var crypto = require('crypto');
 var fs = require('fs');
 var path = require('path');
+var util = require('util');
+var winston = require('winston');
 
 var db = require('../database');
+const image = require('../image');
 
 module.exports = function (Posts) {
 	Posts.uploads = {};
 
 	const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
-	const pathPrefix = path.join(__dirname, '../../public/uploads/files');
+	const pathPrefix = path.join(nconf.get('upload_path'), 'files');
 	const searchRegex = /\/assets\/uploads\/files\/([^\s")]+\.?[\w]*)/g;
 
 	Posts.uploads.sync = function (pid, callback) {
@@ -50,6 +54,16 @@ module.exports = function (Posts) {
 	Posts.uploads.list = function (pid, callback) {
 		// Returns array of this post's uploads
 		db.getSortedSetRange('post:' + pid + ':uploads', 0, -1, callback);
+	};
+
+	Posts.uploads.listWithSizes = async function (pid) {
+		const paths = await Posts.async.uploads.list(pid);
+		const sizes = await db.async.getObjects(paths.map(path => 'upload:' + md5(path))) || [];
+
+		return sizes.map((sizeObj, idx) => ({
+			...sizeObj,
+			name: paths[idx],
+		}));
 	};
 
 	Posts.uploads.isOrphan = function (filePath, callback) {
@@ -91,6 +105,9 @@ module.exports = function (Posts) {
 			let methods = [async.apply(db.sortedSetAdd.bind(db), 'post:' + pid + ':uploads', scores, filePaths)];
 
 			methods = methods.concat(filePaths.map(path => async.apply(db.sortedSetAdd.bind(db), 'upload:' + md5(path) + ':pids', now, pid)));
+			methods = methods.concat(async function () {
+				await Posts.uploads.saveSize(filePaths);
+			});
 			async.parallel(methods, function (err) {
 				// Strictly return only err
 				callback(err);
@@ -110,6 +127,37 @@ module.exports = function (Posts) {
 		async.parallel(methods, function (err) {
 			// Strictly return only err
 			callback(err);
+		});
+	};
+
+	Posts.uploads.saveSize = async (filePaths) => {
+		const getSize = util.promisify(image.size);
+		const sizes = await Promise.all(filePaths.map(async function (fileName) {
+			try {
+				return await getSize(path.join(pathPrefix, fileName));
+			} catch (e) {
+				// Error returned by getSize, do not save size in database
+				return null;
+			}
+		}));
+
+		const methods = filePaths.map((filePath, idx) => {
+			if (!sizes[idx]) {
+				return null;
+			}
+
+			winston.verbose('[posts/uploads/' + filePath + '] Saving size');
+			return async.apply(db.setObject, 'upload:' + md5(filePath), {
+				width: sizes[idx].width,
+				height: sizes[idx].height,
+			});
+		}).filter(Boolean);
+		async.parallel(methods, function (err) {
+			if (err) {
+				winston.error('[posts/uploads] Error while saving post upload sizes: ', err.message);
+			} else {
+				winston.verbose('[posts/uploads] Finished saving post upload sizes.');
+			}
 		});
 	};
 };

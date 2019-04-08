@@ -226,7 +226,8 @@ mongoModule.info = function (db, callback) {
 			}, next);
 		},
 		function (results, next) {
-			var stats = results.stats;
+			var stats = results.stats || {};
+			results.serverStatus = results.serverStatus || {};
 			var scale = 1024 * 1024 * 1024;
 
 			results.listCollections = results.listCollections.map(function (collectionInfo) {
@@ -241,13 +242,12 @@ mongoModule.info = function (db, callback) {
 				};
 			});
 
-			stats.mem = results.serverStatus.mem;
-			stats.mem = results.serverStatus.mem;
+			stats.mem = results.serverStatus.mem || {};
 			stats.mem.resident = (stats.mem.resident / 1024).toFixed(3);
 			stats.mem.virtual = (stats.mem.virtual / 1024).toFixed(3);
 			stats.mem.mapped = (stats.mem.mapped / 1024).toFixed(3);
 			stats.collectionData = results.listCollections;
-			stats.network = results.serverStatus.network;
+			stats.network = results.serverStatus.network || {};
 			stats.network.bytesIn = (stats.network.bytesIn / scale).toFixed(3);
 			stats.network.bytesOut = (stats.network.bytesOut / scale).toFixed(3);
 			stats.network.numRequests = utils.addCommas(stats.network.numRequests);

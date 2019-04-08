@@ -8,6 +8,7 @@ var groups = require('../groups');
 var user = require('../user');
 var helpers = require('./helpers');
 var pagination = require('../pagination');
+var privileges = require('../privileges');
 
 var groupsController = module.exports;
 
@@ -34,12 +35,15 @@ groupsController.getGroupsFromSet = function (uid, sort, start, stop, callback) 
 
 	async.waterfall([
 		function (next) {
-			groups.getGroupsFromSet(set, uid, start, stop, next);
+			async.parallel({
+				groupsData: async.apply(groups.getGroupsFromSet, set, uid, start, stop),
+				allowGroupCreation: async.apply(privileges.global.can, 'group:create', uid),
+			}, next);
 		},
-		function (groupsData, next) {
+		function (results, next) {
 			next(null, {
-				groups: groupsData,
-				allowGroupCreation: meta.config.allowGroupCreation,
+				groups: results.groupsData,
+				allowGroupCreation: results.allowGroupCreation,
 				nextStart: stop + 1,
 			});
 		},

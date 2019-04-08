@@ -14,7 +14,6 @@
 	"disable-email-changes": "Disable email changes",
 	"disable-password-changes": "Disable password changes",
 	"allow-account-deletion": "Allow account deletion",
-	"user-info-private": "Hide user list and data from guests",
 	"hide-fullname": "Hide fullname from users",
 	"hide-email": "Hide email from users",
 	"themes": "Themes",

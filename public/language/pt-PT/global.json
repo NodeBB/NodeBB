@@ -75,7 +75,7 @@
     "norecentposts": "Não existen publicações recentes",
     "norecenttopics": "Não existem tópicos recentes",
     "recentposts": "Publicações recentes",
-    "recentips": "Recentemente logged em IPs",
+    "recentips": "Recentemente com sessões iniciadas em IPs",
     "moderator_tools": "Ferramentas de moderador",
     "away": "Ausente",
     "dnd": "Não perturbar",
@@ -108,6 +108,6 @@
     "cookies.learn_more": "Aprende Mais",
     "edited": "Edited",
     "disabled": "Desativado",
-    "select": "Select",
+    "select": "Selecionar",
     "user-search-prompt": "Digita algo aqui para encontrar utilizadores..."
 }

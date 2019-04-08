@@ -43,5 +43,6 @@
     "clear-preferences": "清除我的最愛",
     "search-preferences-saved": "搜尋我的最愛已儲存",
     "search-preferences-cleared": "搜尋我的最愛已清除",
-    "show-results-as": "結果顯示"
+    "show-results-as": "結果顯示",
+    "see-more-results": "See more results (%1)"
 }
