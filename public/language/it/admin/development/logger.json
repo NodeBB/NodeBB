@@ -7,6 +7,6 @@
 	"file-path": "Percorso del file di registro",
 	"file-path-placeholder": "/path/to/log/file.log ::: lascia vuoto per accedere al tuo terminale",
 
-	"control-panel": "Pannello di Controllo Registratore",
-	"update-settings": "Aggiornare Impostazioni Registratore"
+	"control-panel": "Pannello di controllo registratore",
+	"update-settings": "Aggiornare impostazioni registratore"
 }

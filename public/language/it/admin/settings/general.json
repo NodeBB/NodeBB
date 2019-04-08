@@ -29,7 +29,7 @@
 	"touch-icon.upload": "Carica",
 	"touch-icon.help": "Dimensioni e formato consigliati: 192x192, solo formato PNG. Se nessuna icona touch è specificata, NodeBB tornerà a usare la favicon.",
 	"outgoing-links": "Collegamenti in uscita",
-	"outgoing-links.warning-page": "Usa Pagina di Avviso Collegamenti in Uscita",
+	"outgoing-links.warning-page": "Usa pagina di avviso collegamenti in uscita",
 	"search-default-sort-by": "Ricerca predefinita ordinata per",
 	"outgoing-links.whitelist": "Domini nella whitelist per aggirare la pagina di avviso"
 }

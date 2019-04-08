@@ -10,7 +10,7 @@
     "watch": "Segui",
     "ignore": "Ignora",
     "watching": "Seguito",
-    "not-watching": "Non Seguito",
+    "not-watching": "Non seguito",
     "ignoring": "Ignorato",
     "watching.description": "Mostra discussioni in non letti e recenti",
     "not-watching.description": "Non mostrare discussioni in non letti, mostra in recenti",

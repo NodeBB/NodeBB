@@ -79,7 +79,7 @@
     "still-uploading": "Por favor, espera a que terminen las subidas.",
     "file-too-big": "El tamaño de fichero máximo es de %1 kB - por favor, suba un fichero más pequeño",
     "guest-upload-disabled": "Las subidas están deshabilitadas para los invitados",
-    "cors-error": "Unable to upload image due to misconfigured CORS",
+    "cors-error": "No se puede subir la imágen debido a CORS mal configurado",
     "already-bookmarked": "Ya marcaste este mensaje",
     "already-unbookmarked": "Ya desmarcarste este mensaje",
     "cant-ban-other-admins": "¡No puedes expulsar a otros administradores!",
@@ -154,7 +154,7 @@
     "cant-move-to-same-topic": "¡No puedes mover el mensaje al mismo tema!",
     "cannot-block-self": "¡No puedes bloquearte a tí mismo!",
     "cannot-block-privileged": "No puedes bloquear administradores o moderadores globales",
-    "cannot-block-guest": "Guest are not able to block other users",
+    "cannot-block-guest": "Los invitados no pueden bloquear a otros usuarios",
     "already-blocked": "Este usuario ya está bloqueado.",
     "already-unblocked": "Este usuario ya está desbloqueado.",
     "no-connection": "Parece haber un problema con tu conexión a internet"

@@ -2,6 +2,6 @@
 	"alert.confirm-rebuild-and-restart": "Sei sicuro di voler riorganizza e riavviare NodeBB?",
 	"alert.confirm-restart": "Sei sicuro di voler riavviare NodeBB?",
 
-	"acp-title": "%1 | Pannello di Controllo Amministratore NodeBB",
+	"acp-title": "%1 | Pannello di controllo amministratore NodeBB",
 	"settings-header-contents": "Contenuti"
 }

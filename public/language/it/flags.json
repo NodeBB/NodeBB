@@ -41,16 +41,16 @@
 	"no-notes": "Nessuna nota condivisa",
 
 	"history": "Cronologia Segnalazione",
-	"back": "Torna all'Elenco Segnalazioni",
+	"back": "Torna all'elenco Segnalazioni",
 	"no-history": "Nessuna cronologia segnalazione.",
 
 	"state-all": "Tutti gli stati",
 	"state-open": "Nuovo/Apri",
-	"state-wip": "Lavori in Corso",
+	"state-wip": "Lavori in corso",
 	"state-resolved": "Risolto",
 	"state-rejected": "Rifiutato",
-	"no-assignee": "Non Assegnato",
-	"note-added": "Nota Aggiunta",
+	"no-assignee": "Non assegnato",
+	"note-added": "Nota aggiunta",
 
 	"modal-title": "Segnala Contenuto Inappropriato",
 	"modal-body": "Specifica il motivo per cui contrassegni %1 %2 per la revisione. In alternativa, utilizza uno dei pulsanti di segnalazione rapida, se applicabile.",
@@ -58,9 +58,9 @@
 	"modal-reason-offensive": "Offensivo",
 	"modal-reason-other": "Altro (specifica di seguito)",
 	"modal-reason-custom": "Motivo per cui segnali questo contenuto...",
-	"modal-submit": "Invia Segnalazione",
+	"modal-submit": "Invia segnalazione",
 	"modal-submit-success": "Il contenuto è stato segnalato per la moderazione.",
-	"modal-submit-confirm": "Conferma Richiesta",
+	"modal-submit-confirm": "Conferma richiesta",
 	"modal-submit-confirm-text": "Hai già specificato un motivo personalizzato. Sei sicuro di voler inviare una segnalazione rapida?",
 	"modal-submit-confirm-text-help": "L'invio di una segnalazione rapida sovrascrive qualsiasi motivo personalizzato definito."
 }
