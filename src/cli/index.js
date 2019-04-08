@@ -242,7 +242,10 @@ resetCommand
 		}
 
 		require('./reset').reset(options, function (err) {
-			if (err) { throw err; }
+			if (err) {
+				return process.exit(1);
+			}
+
 			require('../meta/build').buildAll(function (err) {
 				if (err) { throw err; }
 
