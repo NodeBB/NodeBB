@@ -17,6 +17,7 @@
 	"parent-category": "Kategoria nadrzędna",
 	"optional-parent-category": "(Opcjonalne) Kategoria nadrzędna",
 	"parent-category-none": "(Żadna)",
+	"copy-parent": "Copy Parent",
 	"copy-settings": "Skopiuj ustawienia z",
 	"optional-clone-settings": "(Opcjonalnie) Skopiowanie ustawień z kategorii",
 	"clone-children": "Sklonuj podrzędne kategorie i ustawienia",

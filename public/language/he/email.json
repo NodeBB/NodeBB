@@ -20,7 +20,6 @@
     "reset.notify.subject": "הסיסמה שונתה בהצלחה.",
     "reset.notify.text1": "אנו מודיעים לך שב%1, סיסמתך שונתה בהצלחה.",
     "reset.notify.text2": "אם לא אישרת בקשה זו, אנא הודע למנהל מיד.",
-    "digest.notifications": "יש לך התראה שלא נקראה מ%1:",
     "digest.latest_topics": "נושאים אחרונים מ%1",
     "digest.cta": "לחץ כאן כדי לבקר ב %1",
     "digest.unsub.info": "תקציר זה נשלח אליך על-פי הגדרות החשבון שלך.",

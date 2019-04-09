@@ -7,7 +7,8 @@
 	"online": "online",
 	"git": "git",
 	"memory": "пам'ять",
-	"load": "load",
+	"load": "system load",
+	"cpu-usage": "cpu usage",
 	"uptime": "uptime",
 
 	"registered": "Зареєстровано",

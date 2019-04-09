@@ -17,6 +17,7 @@
 	"parent-category": "상위 카테고리",
 	"optional-parent-category": "(선택) 상위 게시판",
 	"parent-category-none": "(없음)",
+	"copy-parent": "Copy Parent",
 	"copy-settings": "에서 설정 복사",
 	"optional-clone-settings": "(선택) 게시판에서 설정 복사",
 	"clone-children": "하위 카테고리 및 설정 복사",

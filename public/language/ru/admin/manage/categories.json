@@ -17,6 +17,7 @@
 	"parent-category": "Родительская категория",
 	"optional-parent-category": "(не обязательно) Родительская категория\n",
 	"parent-category-none": "(Пусто)",
+	"copy-parent": "Copy Parent",
 	"copy-settings": "Копировать настройки из",
 	"optional-clone-settings": "(не обязательно) Копировать настройки из",
 	"clone-children": "Дублировать вложенные категориии настройки",

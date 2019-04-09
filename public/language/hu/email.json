@@ -20,7 +20,6 @@
     "reset.notify.subject": "Jelszó sikeresen módosítva",
     "reset.notify.text1": "Értesítünk, hogy a(z) %1 névhez tartozó jelszavad sikeresen megváltozott.",
     "reset.notify.text2": "Ha nem te voltál az, kérlek, azonnal értesíts egy adminisztrátort.",
-    "digest.notifications": "Olvasatlan értesítéseid vannak a következőtől: %1",
     "digest.latest_topics": "Legutóbbi témakörök a következőből: %1",
     "digest.cta": "Kattints ide a(z) %1 meglátogatásához",
     "digest.unsub.info": "Ez a hírlevél a feliratkozási beállításaid miatt lett kiküldve.",

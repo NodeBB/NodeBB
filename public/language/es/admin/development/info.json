@@ -7,7 +7,8 @@
 	"online": "en-linea",
 	"git": "git",
 	"memory": "memoria",
-	"load": "cargar",
+	"load": "system load",
+	"cpu-usage": "cpu usage",
 	"uptime": "tiempo de actividad",
 
 	"registered": "Registrado",

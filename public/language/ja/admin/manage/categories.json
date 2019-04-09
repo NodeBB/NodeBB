@@ -17,6 +17,7 @@
 	"parent-category": "親カテゴリ",
 	"optional-parent-category": "(任意)親カテゴリ",
 	"parent-category-none": "(なし)",
+	"copy-parent": "Copy Parent",
 	"copy-settings": "設定をコピー",
 	"optional-clone-settings": "カテゴリからのクローン設定(任意)",
 	"clone-children": "Clone Children Categories And Settings",

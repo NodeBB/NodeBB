@@ -17,6 +17,7 @@
 	"parent-category": "Nadriadená kategória",
 	"optional-parent-category": "Nadriadená kategória (odporúčané)",
 	"parent-category-none": "(nič)",
+	"copy-parent": "Copy Parent",
 	"copy-settings": "Kopírovať nastavenia z",
 	"optional-clone-settings": "Klonovať nastavenia z kategórie (odporúčané)",
 	"clone-children": "Duplikovať podružné kategórie a nastavenia",

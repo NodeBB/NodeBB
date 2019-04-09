@@ -4,6 +4,9 @@
 	"address-help": "Отримувачі будуть бачити цю адресу в полях \"From\" та \"Reply To\".",
 	"from": "Ім'я відправника",
 	"from-help": "Ім'я відправника, що буде показано в електронних листах",
+	"sendmail-rate-limit": "Send <em>X</em> emails...",
+	"sendmail-rate-delta": "... every <em>X</em> milliseconds",
+	"sendmail-rate-help": "Instructs the NodeBB mailer to limit the number of messages sent at once in order to not overwhelm email receiving services. These options do not apply if SMTP Transport is enabled (below).",
 
 	"smtp-transport": "Протокол SMTP",
 	"smtp-transport.enabled": "Використовувати зовнішній поштовий сервер для відправлення повідомлень",

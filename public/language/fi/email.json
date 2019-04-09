@@ -20,7 +20,6 @@
     "reset.notify.subject": "Salasana onnistuneesti vaihdettu",
     "reset.notify.text1": "Ilmoitamme sinua että %1, salasanasi vaihdettiin onnistuneesti.",
     "reset.notify.text2": "Jos et tunnista tätä toimintoa, ilmoita välittömästi ylläpitäjälle.",
-    "digest.notifications": "Sinulla on lukemattomia ilmoituksia: %1:",
     "digest.latest_topics": "Viimeisimmät viestiketjut henkilöltä %1",
     "digest.cta": "Click here to visit %1",
     "digest.unsub.info": "This digest was sent to you due to your subscription settings.",

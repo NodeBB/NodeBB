@@ -4,6 +4,9 @@
 	"address-help": "Die folgende E-Mail Adresse ist die E-Mail Adresse, welche dem Empfänger im \"Von\" und \"Antworten\" Bereich sehen wird.",
 	"from": "Name des Absenders",
 	"from-help": "Der Name des Absenders, welcher in der E-Mail angezeigt werden soll.",
+	"sendmail-rate-limit": "Send <em>X</em> emails...",
+	"sendmail-rate-delta": "... every <em>X</em> milliseconds",
+	"sendmail-rate-help": "Instructs the NodeBB mailer to limit the number of messages sent at once in order to not overwhelm email receiving services. These options do not apply if SMTP Transport is enabled (below).",
 
 	"smtp-transport": "SMTP Konfiguration",
 	"smtp-transport.enabled": "Benutze einen externen Email-Server",

@@ -4,6 +4,9 @@
 	"address-help": "The following email address refers to the email that the recipient will see in the \"From\" and \"Reply To\" fields.",
 	"from": "From Name",
 	"from-help": "The from name to display in the email.",
+	"sendmail-rate-limit": "Send <em>X</em> emails...",
+	"sendmail-rate-delta": "... every <em>X</em> milliseconds",
+	"sendmail-rate-help": "Instructs the NodeBB mailer to limit the number of messages sent at once in order to not overwhelm email receiving services. These options do not apply if SMTP Transport is enabled (below).",
 
 	"smtp-transport": "SMTP Transport",
 	"smtp-transport.enabled": "Use an external email server to send emails",

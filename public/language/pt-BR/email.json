@@ -20,7 +20,6 @@
     "reset.notify.subject": "Senha alterada com sucesso",
     "reset.notify.text1": "Nós estamos notificando você que em %1, sua senha foi alterada com sucesso.",
     "reset.notify.text2": "Se você não autorizou isso, por favor notifique um administrador imediatamente.",
-    "digest.notifications": "Você tem notificações não lidas de %1:",
     "digest.latest_topics": "Últimos tópicos de %1",
     "digest.cta": "Clique aqui para visitar %1",
     "digest.unsub.info": "Este resumo foi enviado para você devido às suas configurações de assinatura.",

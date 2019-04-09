@@ -4,6 +4,9 @@
 	"address-help": "Sljedeća email adresa je adresa koju će primatelj vidjeti u \"Od\" i \"Odgovori na\" poljima.",
 	"from": "Od imena",
 	"from-help": "Ime prikazano u dolaznom emailu.",
+	"sendmail-rate-limit": "Send <em>X</em> emails...",
+	"sendmail-rate-delta": "... every <em>X</em> milliseconds",
+	"sendmail-rate-help": "Instructs the NodeBB mailer to limit the number of messages sent at once in order to not overwhelm email receiving services. These options do not apply if SMTP Transport is enabled (below).",
 
 	"smtp-transport": "SMTP Transport",
 	"smtp-transport.enabled": "Use an external email server to send emails",

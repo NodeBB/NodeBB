@@ -4,6 +4,9 @@
 	"address-help": "Ten adres e-mail odbiorca zobaczy w polach „Od” i „Odpowiedz”.",
 	"from": "Pole „Od”",
 	"from-help": "Nazwa „Od” widoczna w e-mailach",
+	"sendmail-rate-limit": "Send <em>X</em> emails...",
+	"sendmail-rate-delta": "... every <em>X</em> milliseconds",
+	"sendmail-rate-help": "Instructs the NodeBB mailer to limit the number of messages sent at once in order to not overwhelm email receiving services. These options do not apply if SMTP Transport is enabled (below).",
 
 	"smtp-transport": "Transport SMTP",
 	"smtp-transport.enabled": "Używaj zewnętrznego serwera e-mail do wysyłania e-maili.",

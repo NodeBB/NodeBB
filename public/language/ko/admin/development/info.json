@@ -7,7 +7,8 @@
 	"online": "온라인",
 	"git": "git",
 	"memory": "메모리",
-	"load": "로드",
+	"load": "system load",
+	"cpu-usage": "cpu usage",
 	"uptime": "Uptime",
 
 	"registered": "등록됨",

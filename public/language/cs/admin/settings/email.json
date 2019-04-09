@@ -4,6 +4,9 @@
 	"address-help": "Následující e-mailové adresy budou zobrazeny  příjemci v políčkách „Od” a „Odpovědět”.",
 	"from": "Jméno – od",
 	"from-help": "Zobrazené jméno v e-mailu v – Od",
+	"sendmail-rate-limit": "Send <em>X</em> emails...",
+	"sendmail-rate-delta": "... every <em>X</em> milliseconds",
+	"sendmail-rate-help": "Instructs the NodeBB mailer to limit the number of messages sent at once in order to not overwhelm email receiving services. These options do not apply if SMTP Transport is enabled (below).",
 
 	"smtp-transport": "Přenos SMTP",
 	"smtp-transport.enabled": "Pro odesílání e-mailů použít externí e-mailový server ",
