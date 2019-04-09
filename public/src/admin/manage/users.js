@@ -12,6 +12,12 @@ define('admin/manage/users', ['translator', 'benchpress'], function (translator,
 		}
 		navPills.removeClass('active').find('a[href="' + pathname + '"]').parent().addClass('active');
 
+		$('#results-per-page').val(ajaxify.data.resultsPerPage).on('change', function () {
+			var query = utils.params();
+			query.resultsPerPage = $('#results-per-page').val();
+			ajaxify.go(window.location.pathname + '?' + $.param(query));
+		});
+
 		function getSelectedUids() {
 			var uids = [];
 
