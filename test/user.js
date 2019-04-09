@@ -578,6 +578,14 @@ describe('User', function () {
 			});
 		});
 
+		it('should not return password even if explicitly requested', function (done) {
+			User.getUserFields(testUid, ['password'], function (err, payload) {
+				assert.ifError(err);
+				assert(!payload.hasOwnProperty('password'));
+				done();
+			});
+		});
+
 		it('should return private data if field is whitelisted', function (done) {
 			function filterMethod(data, callback) {
 				data.whitelist.push('another_secret');

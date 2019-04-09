@@ -86,6 +86,9 @@ module.exports = function (User) {
 			function (results, next) {
 				if (!fields.length) {
 					fields = results.whitelist;
+				} else {
+					// Never allow password retrieval via this method
+					fields = fields.filter(value => value !== 'password');
 				}
 
 				db.getObjectsFields(uidsToUserKeys(uniqueUids), fields, next);
