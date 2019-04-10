@@ -40,6 +40,12 @@ Controllers.errors = require('./errors');
 Controllers.composer = require('./composer');
 
 Controllers.reset = function (req, res, next) {
+	res.locals.metaTags = {
+		...res.locals.metaTags,
+		name: 'robots',
+		content: 'noindex',
+	};
+
 	const renderReset = function (code, valid) {
 		res.render('reset_code', {
 			valid: valid,
@@ -62,10 +68,10 @@ Controllers.reset = function (req, res, next) {
 	};
 
 	if (req.params.code) {
-		// Save to session and redirect
 		req.session.reset_code = req.params.code;
-		res.redirect(nconf.get('relative_path') + '/reset');
-	} else if (req.session.reset_code) {
+	}
+
+	if (req.session.reset_code) {
 		// Validate and save to local variable before removing from session
 		user.reset.validate(req.session.reset_code, function (err, valid) {
 			if (err) {

@@ -10,6 +10,8 @@ pagination.create = function (currentPage, pageCount, queryObj) {
 		return {
 			prev: { page: 1, active: currentPage > 1 },
 			next: { page: 1, active: currentPage < pageCount },
+			first: { page: 1, active: currentPage === 1 },
+			last: { page: 1, active: currentPage === pageCount },
 			rel: [],
 			pages: [],
 			currentPage: 1,
@@ -58,6 +60,11 @@ pagination.create = function (currentPage, pageCount, queryObj) {
 	data.prev = { page: previous, active: currentPage > 1, qs: qs.stringify(queryObj) };
 	queryObj.page = next;
 	data.next = { page: next, active: currentPage < pageCount, qs: qs.stringify(queryObj) };
+
+	queryObj.page = 1;
+	data.first = { page: 1, active: currentPage === 1, qs: qs.stringify(queryObj) };
+	queryObj.page = pageCount;
+	data.last = { page: pageCount, active: currentPage === pageCount, qs: qs.stringify(queryObj) };
 
 	if (currentPage < pageCount) {
 		data.rel.push({

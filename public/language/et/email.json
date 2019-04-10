@@ -20,7 +20,6 @@
     "reset.notify.subject": "Parool edukalt muudetud",
     "reset.notify.text1": "Teatame, et sinu parooli muutmine kuupäeval %1 oli edukas.",
     "reset.notify.text2": "Kui te ei ole lubanud seda, siis teavitage koheselt administraatorit.",
-    "digest.notifications": "Sul on lugemata teateid %1 poolt:",
     "digest.latest_topics": "Viimased teemad %1 poolt",
     "digest.cta": "Vajuta siia et külastada %1",
     "digest.unsub.info": "See uudiskiri on saadetud teile tellimuse seadistuse tõttu.",

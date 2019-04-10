@@ -104,7 +104,7 @@ Tags.parse = function (req, data, meta, link, callback) {
 			}
 			plugins.fireHook('filter:meta.getLinkTags', { req: req, data: data, links: defaultLinks }, next);
 		},
-	}, function (err, results) {
+	}, async function (err, results) {
 		if (err) {
 			return callback(err);
 		}
@@ -122,23 +122,13 @@ Tags.parse = function (req, data, meta, link, callback) {
 			return tag;
 		});
 
-		addIfNotExists(meta, 'property', 'og:title', Meta.config.title || 'NodeBB');
+		addSiteOGImage(meta);
 
+		addIfNotExists(meta, 'property', 'og:title', Meta.config.title || 'NodeBB');
 		var ogUrl = nconf.get('url') + (req.originalUrl !== '/' ? stripRelativePath(req.originalUrl) : '');
 		addIfNotExists(meta, 'property', 'og:url', ogUrl);
-
 		addIfNotExists(meta, 'name', 'description', Meta.config.description);
 		addIfNotExists(meta, 'property', 'og:description', Meta.config.description);
-
-		var ogImage = stripRelativePath(Meta.config['og:image'] || Meta.config['brand:logo'] || '');
-		if (ogImage && !ogImage.startsWith('http')) {
-			ogImage = nconf.get('url') + ogImage;
-		}
-		addIfNotExists(meta, 'property', 'og:image', ogImage);
-		if (ogImage) {
-			addIfNotExists(meta, 'property', 'og:image:width', Meta.config['og:image:width'] || 200);
-			addIfNotExists(meta, 'property', 'og:image:height', Meta.config['og:image:height'] || 200);
-		}
 
 		link = results.links.links.concat(link || []);
 
@@ -172,4 +162,51 @@ function stripRelativePath(url) {
 	}
 
 	return url;
+}
+
+function addSiteOGImage(meta) {
+	const key = Meta.config['og:image'] ? 'og:image' : 'brand:logo';
+	var ogImage = stripRelativePath(Meta.config[key] || '');
+	if (ogImage && !ogImage.startsWith('http')) {
+		ogImage = nconf.get('url') + ogImage;
+	}
+
+	if (ogImage) {
+		meta.push({
+			property: 'og:image',
+			content: ogImage,
+			noEscape: true,
+		}, {
+			property: 'og:image:url',
+			content: ogImage,
+			noEscape: true,
+		});
+
+		if (Meta.config[key + ':width'] && Meta.config[key + ':height']) {
+			meta.push({
+				property: 'og:image:width',
+				content: String(Meta.config[key + ':width']),
+			}, {
+				property: 'og:image:height',
+				content: String(Meta.config[key + ':height']),
+			});
+		}
+	} else {
+		// Push fallback logo
+		meta.push({
+			property: 'og:image',
+			content: nconf.get('url') + '/assets/logo.png',
+			noEscape: true,
+		}, {
+			property: 'og:image:url',
+			content: nconf.get('url') + '/assets/logo.png',
+			noEscape: true,
+		}, {
+			property: 'og:image:width',
+			content: '128',
+		}, {
+			property: 'og:image:height',
+			content: '128',
+		});
+	}
 }

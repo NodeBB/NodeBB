@@ -1,11 +1,11 @@
 {
-	"eu-consent": "EU Consent",
-	"consent.enabled": "Enabled",
-	"consent.message": "Notification message",
-	"consent.acceptance": "Acceptance message",
-	"consent.link-text": "Policy Link Text",
-	"consent.blank-localised-default": "Leave blank to use NodeBB localised defaults",
-	"settings": "Settings",
-	"cookie-domain": "Session cookie domain",
-	"blank-default": "Leave blank for default"
+	"eu-consent": "Consenso UE",
+	"consent.enabled": "Abilitato",
+	"consent.message": "Messaggio di notifica",
+	"consent.acceptance": "Messaggio di accettazione",
+	"consent.link-text": "Testo del link all'informativa sulla privacy",
+	"consent.blank-localised-default": "Lascia vuoto per usare i valori predefiniti localizzati di NodeBB",
+	"settings": "Impostazioni",
+	"cookie-domain": "Dominio cookie di sessione",
+	"blank-default": "Lascia vuoto per predefinito"
 }

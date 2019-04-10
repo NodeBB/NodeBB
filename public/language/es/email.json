@@ -1,6 +1,6 @@
 {
     "test-email.subject": "Test Email",
-    "password-reset-requested": "Password Reset Requested!",
+    "password-reset-requested": "¡Restablecimiento de contraseña solicitada!",
     "welcome-to": "Bienvenido a %1",
     "invite": "Invitación de %1",
     "greeting_no_name": "Hola",
@@ -20,7 +20,6 @@
     "reset.notify.subject": "Se ha modificado correctamente la contraseña.",
     "reset.notify.text1": "Te estamos notificando que en %1, tu contraseña ha sido cambiada correctamente.",
     "reset.notify.text2": "Si no has sido tú, por favor notifica al administrador inmediatamente.",
-    "digest.notifications": "Tiene notificaciones sin leer de %1:",
     "digest.latest_topics": "Últimos temas de %1",
     "digest.cta": "Cliquea aquí para visitar %1",
     "digest.unsub.info": "Este compendio te fue enviado debido a tus ajustes de subscripción.",

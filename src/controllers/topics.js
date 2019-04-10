@@ -8,7 +8,7 @@ var winston = require('winston');
 var user = require('../user');
 var meta = require('../meta');
 var topics = require('../topics');
-var posts = require('../posts');
+var posts = require('../posts').async;
 var privileges = require('../privileges');
 var plugins = require('../plugins');
 var helpers = require('./helpers');
@@ -137,6 +137,10 @@ topicsController.get = function getTopic(req, res, callback) {
 		function (data, next) {
 			buildBreadcrumbs(data.topicData, next);
 		},
+		async function (topicData) {
+			await addTags(topicData, req, res);
+			return topicData;
+		},
 		function (topicData) {
 			topicData.privileges = userPrivileges;
 			topicData.topicStaleDays = meta.config.topicStaleDays;
@@ -152,8 +156,6 @@ topicsController.get = function getTopic(req, res, callback) {
 			if (req.loggedIn) {
 				topicData.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
 			}
-
-			addTags(topicData, req, res);
 
 			topicData.postIndex = req.params.post_index;
 			topicData.pagination = pagination.create(currentPage, pageCount, req.query);
@@ -211,7 +213,7 @@ function buildBreadcrumbs(topicData, callback) {
 	], callback);
 }
 
-function addTags(topicData, req, res) {
+async function addTags(topicData, req, res) {
 	var postAtIndex = topicData.posts.find(function (postData) {
 		return parseInt(postData.index, 10) === parseInt(Math.max(0, req.params.post_index - 1), 10);
 	});
@@ -261,7 +263,7 @@ function addTags(topicData, req, res) {
 		},
 	];
 
-	addOGImageTags(res, topicData, postAtIndex);
+	await addOGImageTags(res, topicData, postAtIndex);
 
 	res.locals.linkTags = [
 		{
@@ -286,58 +288,53 @@ function addTags(topicData, req, res) {
 	}
 }
 
-function addOGImageTags(res, topicData, postAtIndex) {
-	var ogImageUrl = '';
-	if (topicData.thumb) {
-		ogImageUrl = topicData.thumb;
-	} else if (topicData.category.backgroundImage && (!postAtIndex || !postAtIndex.index)) {
-		ogImageUrl = topicData.category.backgroundImage;
-	} else if (postAtIndex && postAtIndex.user && postAtIndex.user.picture) {
-		ogImageUrl = postAtIndex.user.picture;
-	} else if (meta.config['og:image']) {
-		ogImageUrl = meta.config['og:image'];
-	} else if (meta.config['brand:logo']) {
-		ogImageUrl = meta.config['brand:logo'];
-	} else {
-		ogImageUrl = '/logo.png';
-	}
-
-	addOGImageTag(res, ogImageUrl);
-	addOGImageTagsForPosts(res, topicData.posts);
-}
-
-function addOGImageTagsForPosts(res, posts) {
-	posts.forEach(function (postData) {
-		var regex = /src\s*=\s*"(.+?)"/g;
-		var match = regex.exec(postData.content);
-		while (match !== null) {
-			var image = match[1];
-
-			if (image.startsWith(nconf.get('url') + '/plugins')) {
-				return;
-			}
-
-			addOGImageTag(res, image);
-
-			match = regex.exec(postData.content);
-		}
+async function addOGImageTags(res, topicData, postAtIndex) {
+	const uploads = postAtIndex ? await posts.uploads.listWithSizes(postAtIndex.pid) : [];
+	const images = uploads.map((upload) => {
+		upload.name = nconf.get('url') + nconf.get('upload_url') + '/files/' + upload.name;
+		return upload;
 	});
+	if (topicData.thumb) {
+		images.push(topicData.thumb);
+	}
+	if (topicData.category.backgroundImage && (!postAtIndex || !postAtIndex.index)) {
+		images.push(topicData.category.backgroundImage);
+	}
+	if (postAtIndex && postAtIndex.user && postAtIndex.user.picture) {
+		images.push(postAtIndex.user.picture);
+	}
+	images.forEach(path => addOGImageTag(res, path));
 }
 
-function addOGImageTag(res, imageUrl) {
-	if (typeof imageUrl === 'string' && !imageUrl.startsWith('http')) {
-		imageUrl = nconf.get('url') + imageUrl.replace(new RegExp('^' + nconf.get('relative_path')), '');
+function addOGImageTag(res, image) {
+	let imageUrl;
+	if (typeof image === 'string' && !image.startsWith('http')) {
+		imageUrl = nconf.get('url') + image.replace(new RegExp('^' + nconf.get('relative_path')), '');
+	} else if (typeof image === 'object') {
+		imageUrl = image.name;
+	} else {
+		imageUrl = image;
 	}
+
 	res.locals.metaTags.push({
 		property: 'og:image',
 		content: imageUrl,
 		noEscape: true,
-	});
-	res.locals.metaTags.push({
+	}, {
 		property: 'og:image:url',
 		content: imageUrl,
 		noEscape: true,
 	});
+
+	if (typeof image === 'object' && image.width && image.height) {
+		res.locals.metaTags.push({
+			property: 'og:image:width',
+			content: String(image.width),
+		}, {
+			property: 'og:image:height',
+			content: String(image.height),
+		});
+	}
 }
 
 topicsController.teaser = function (req, res, next) {
@@ -349,7 +346,7 @@ topicsController.teaser = function (req, res, next) {
 
 	async.waterfall([
 		function (next) {
-			privileges.topics.can('read', tid, req.uid, next);
+			privileges.topics.can('topics:read', tid, req.uid, next);
 		},
 		function (canRead, next) {
 			if (!canRead) {

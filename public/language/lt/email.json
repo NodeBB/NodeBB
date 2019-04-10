@@ -20,7 +20,6 @@
     "reset.notify.subject": "Slaptažodis sėkmingai pakeistas",
     "reset.notify.text1": "Mes tikriname ar jūs tikrai esate %1, jūsų slaptažodis buvo pakeistas sėkmingai",
     "reset.notify.text2": "Jeigu jūs neprašėte šito, prašome perspėti administratoriu nedelsiant",
-    "digest.notifications": "Turite neskaitytų pranešimų nuo %1:",
     "digest.latest_topics": "Paskutinės temos iš %1",
     "digest.cta": "Kad aplankyti %1, spauskite čia",
     "digest.unsub.info": "Ši santrauka buvo išsiųsta į tavo prenumeratos nustatymus",

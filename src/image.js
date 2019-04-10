@@ -5,6 +5,7 @@ var fs = require('fs');
 var path = require('path');
 var crypto = require('crypto');
 var async = require('async');
+var winston = require('winston');
 
 var file = require('./file');
 var plugins = require('./plugins');
@@ -88,6 +89,26 @@ image.size = function (path, callback) {
 			callback(err, metadata ? { width: metadata.width, height: metadata.height } : undefined);
 		});
 	}
+};
+
+image.stripEXIF = function (path, callback) {
+	async.waterfall([
+		function (next) {
+			fs.readFile(path, next);
+		},
+		function (buffer, next) {
+			const sharp = requireSharp();
+			const sharpImage = sharp(buffer, {
+				failOnError: true,
+			});
+			sharpImage.rotate().toFile(path, next);
+		},
+	], function (err) {
+		if (err) {
+			winston.error(err);
+		}
+		callback();
+	});
 };
 
 image.checkDimensions = function (path, callback) {

@@ -1,17 +1,18 @@
 {
 	"you-are-on": "Informazione - Tu sei su <strong>%1:%2</strong>",
-	"nodes-responded": "%1 nodes responded within %2ms!",
+	"nodes-responded": "%1 nodi hanno risposto entro %2ms!",
 	"host": "host",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "online",
 	"git": "git",
-	"memory": "memory",
-	"load": "carica",
+	"memory": "memoria",
+	"load": "carico sistema",
+	"cpu-usage": "uso CPU",
 	"uptime": "tempo di caricamento",
 
 	"registered": "Registrato",
-	"sockets": "Sockets",
+	"sockets": "Socket",
 	"guests": "Ospiti",
 
 	"info": "Informazioni"

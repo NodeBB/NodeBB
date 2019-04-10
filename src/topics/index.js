@@ -59,7 +59,7 @@ Topics.getTopics = function (tids, options, callback) {
 	}
 	async.waterfall([
 		function (next) {
-			privileges.topics.filterTids('read', tids, uid, next);
+			privileges.topics.filterTids('topics:read', tids, uid, next);
 		},
 		function (tids, next) {
 			Topics.getTopicsByTids(tids, options, next);

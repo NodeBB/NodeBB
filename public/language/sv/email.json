@@ -20,7 +20,6 @@
     "reset.notify.subject": "Lösenordet ändrat",
     "reset.notify.text1": "Vi vill uppmärksamma dig på att ditt lösenord ändrades den %1.",
     "reset.notify.text2": "Om du inte godkänt det här så vänligen kontakta en administratör snarast. ",
-    "digest.notifications": "Du har olästa notiser från %1:",
     "digest.latest_topics": "Senaste ämnen från %1",
     "digest.cta": "Klicka här för att besöka %1",
     "digest.unsub.info": "Det här meddelandet fick du på grund av dina inställningar för prenumeration. ",

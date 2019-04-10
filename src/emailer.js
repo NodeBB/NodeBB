@@ -26,9 +26,11 @@ Emailer.transports = {
 	sendmail: nodemailer.createTransport({
 		sendmail: true,
 		newline: 'unix',
+		pool: true,
+		rateLimit: meta.config['email:sendmail:rateLimit'],
+		rateDelta: meta.config['email:sendmail:rateDelta'],
 	}),
 	smtp: undefined,
-	// gmail: undefined,
 };
 
 var app;
@@ -162,9 +164,15 @@ Emailer.registerApp = function (expressApp) {
 	// Update default payload if new logo is uploaded
 	pubsub.on('config:update', function (config) {
 		if (config) {
-			Emailer._defaultPayload.logo.src = config['brand:emailLogo'];
-			Emailer._defaultPayload.logo.height = config['brand:emailLogo:height'];
-			Emailer._defaultPayload.logo.width = config['brand:emailLogo:width'];
+			if (config['brand:emailLogo']) {
+				Emailer._defaultPayload.logo.src = config['brand:emailLogo'];
+			}
+			if (config['brand:emailLogo:height']) {
+				Emailer._defaultPayload.logo.height = config['brand:emailLogo:height'];
+			}
+			if (config['brand:emailLogo:width']) {
+				Emailer._defaultPayload.logo.width = config['brand:emailLogo:width'];
+			}
 
 			if (smtpSettingsChanged(config)) {
 				Emailer.setupFallbackTransport(config);
@@ -336,9 +344,13 @@ function buildCustomTemplates(config) {
 			}, next);
 		},
 		function (result, next) {
-			var templates = result.templates.filter(function (template) {
-				return template.isCustom && template.text !== prevConfig['email:custom:' + path];
-			});
+			// If the new config contains any email override values, re-compile those templates
+			var toBuild = Object
+				.keys(config)
+				.filter(prop => prop.startsWith('email:custom:'))
+				.map(key => key.split(':')[2]);
+
+			var templates = result.templates.filter(template => toBuild.includes(template.path));
 			var paths = _.fromPairs(result.paths.map(function (p) {
 				var relative = path.relative(viewsDir, p).replace(/\\/g, '/');
 				return [relative, p];

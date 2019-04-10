@@ -669,7 +669,7 @@ describe('Post\'s', function () {
 			}, function (err, postData) {
 				assert.ifError(err);
 				pid = postData.pid;
-				privileges.categories.rescind(['read'], cid, 'guests', done);
+				privileges.categories.rescind(['topics:read'], cid, 'guests', done);
 			});
 		});
 
@@ -928,6 +928,13 @@ describe('Post\'s', function () {
 				},
 			], done);
 		});
+
+		it('should not crash if id does not exist', function (done) {
+			socketPosts.reject({ uid: globalModUid }, { id: '123123123' }, function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
 	});
 
 	describe('upload methods', function () {
@@ -936,7 +943,7 @@ describe('Post\'s', function () {
 		before(function (done) {
 			// Create stub files for testing
 			['abracadabra.png', 'shazam.jpg', 'whoa.gif', 'amazeballs.jpg', 'wut.txt', 'test.bmp']
-				.forEach(filename => fs.closeSync(fs.openSync(path.join(__dirname, '../public/uploads/files', filename), 'w')));
+				.forEach(filename => fs.closeSync(fs.openSync(path.join(nconf.get('upload_path'), 'files', filename), 'w')));
 
 			topics.post({
 				uid: 1,
@@ -957,7 +964,7 @@ describe('Post\'s', function () {
 
 					db.sortedSetCard('post:' + pid + ':uploads', function (err, length) {
 						assert.ifError(err);
-						assert.strictEqual(2, length);
+						assert.strictEqual(length, 2);
 						done();
 					});
 				});

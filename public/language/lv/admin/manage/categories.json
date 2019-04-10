@@ -17,6 +17,7 @@
 	"parent-category": "Virskategorija",
 	"optional-parent-category": "(Neobligāts) virskategorija",
 	"parent-category-none": "(Nav)",
+	"copy-parent": "Copy Parent",
 	"copy-settings": "Kopēt iestatījumus no",
 	"optional-clone-settings": "(Neobligāts) klonēt iestatījumus no kategorijas",
 	"clone-children": "Klonēt apakškategorijas un iestatījumus",

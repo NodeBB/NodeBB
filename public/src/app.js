@@ -134,9 +134,9 @@ app.cacheBuster = null;
 
 			// Re-render top bar menu
 			var toRender = {
+				'slideout-menu': $('.slideout-menu'),
 				menu: $('#header-menu .container'),
 				'chats-menu': $('#chats-menu'),
-				'slideout-menu': $('.slideout-menu'),
 			};
 			Promise.all(Object.keys(toRender).map(function (tpl) {
 				return Benchpress.render('partials/' + tpl, data.header).then(function (render) {
@@ -156,6 +156,8 @@ app.cacheBuster = null;
 				if (config.searchEnabled) {
 					app.handleSearch();
 				}
+
+				handleStatusChange();
 
 				$(window).trigger('action:app.updateHeader');
 			});
@@ -594,7 +596,7 @@ app.cacheBuster = null;
 							return;
 						}
 						data.posts.forEach(function (p) {
-							p.snippet = $(p.content).text().slice(0, 80) + '...';
+							p.snippet = utils.escapeHTML($(p.content).text().slice(0, 80) + '...');
 						});
 						app.parseAndTranslate(template, data, function (html) {
 							html.find('.timeago').timeago();

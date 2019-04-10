@@ -20,7 +20,6 @@
     "reset.notify.subject": "密碼修改成功",
     "reset.notify.text1": "我們要通知你在 %1 的密碼已成功更改",
     "reset.notify.text2": "如果你未允許此動作, 請立即通知系統管理者",
-    "digest.notifications": "你有來自 %1 的未讀通知:",
     "digest.latest_topics": "來自 %1 的最新主題",
     "digest.cta": "點擊這裡訪問 %1",
     "digest.unsub.info": "本摘要依照你的訂閱設置發送給你。",

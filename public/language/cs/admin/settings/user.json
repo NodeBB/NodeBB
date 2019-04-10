@@ -70,8 +70,8 @@
 	"follow-created-topics": "Sledovat mnou vytvořená témata",
 	"follow-replied-topics": "Sledovat témata, na které jste odpověděl",
 	"default-notification-settings": "Nastavení výchozího oznámení",
-	"categoryWatchState": "Default category watch state",
-	"categoryWatchState.watching": "Watching",
-	"categoryWatchState.notwatching": "Not Watching",
-	"categoryWatchState.ignoring": "Ignoring"
+	"categoryWatchState": "Stav sledování výchozí kategorie",
+	"categoryWatchState.watching": "Sledování",
+	"categoryWatchState.notwatching": "Nesleduji",
+	"categoryWatchState.ignoring": "Ignorace"
 }

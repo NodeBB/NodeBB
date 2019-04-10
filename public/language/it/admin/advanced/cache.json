@@ -1,11 +1,11 @@
 {
-	"post-cache": "Post nella Cache",
+	"post-cache": "Cache Post",
 	"posts-in-cache": "Post nella Cache",
-	"average-post-size": "Grandezza media Post",
+	"average-post-size": "Dimensione media Post",
 	"length-to-max": "Lunghezza / Max",
 	"percent-full": "%1% Pieno",
-	"post-cache-size": "Grandezza Cache dei Post",
+	"post-cache-size": "Dimensione Cache dei Post",
 	"items-in-cache": "Elementi nella Cache",
 	"control-panel": "Pannello di controllo",
-	"update-settings": "Aggiorna le impostazioni della Cache"
+	"update-settings": "Aggiorna impostazioni Cache"
 }

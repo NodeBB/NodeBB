@@ -17,6 +17,7 @@
 	"parent-category": "Übergeordnete Kategorie",
 	"optional-parent-category": "(Optional) Übergeordnete Kategorie",
 	"parent-category-none": "(Keine)",
+	"copy-parent": "Copy Parent",
 	"copy-settings": "Kopiere Einstellungen von",
 	"optional-clone-settings": "(Optional) dubliziere Einstellungen von Kategorie",
 	"clone-children": "Kopiere Subkategorien und Einstellungen",

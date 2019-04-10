@@ -56,7 +56,7 @@
     "notificationType_follow": "Začne-li vás někdo sledovat",
     "notificationType_new-chat": "Obdržíte-li novou konverzační zprávu",
     "notificationType_group-invite": "Obdržíte-li pozvání ke skupině",
-    "notificationType_group-request-membership": "When someone requests to join a group you own",
+    "notificationType_group-request-membership": "Pokud někdo požaduje připojení se do vaší skupiny",
     "notificationType_new-register": "Bude-li někdo přidán do registrační fronty",
     "notificationType_post-queue": "Bude-li přidán nový příspěvek do fronty",
     "notificationType_new-post-flag": "Bude-li příspěvek označen",

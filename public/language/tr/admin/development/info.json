@@ -7,7 +7,8 @@
 	"online": "çevrimiçi",
 	"git": "git",
 	"memory": "hafıza",
-	"load": "yükle",
+	"load": "system load",
+	"cpu-usage": "cpu usage",
 	"uptime": "kesintisiz çalışma süresi",
 
 	"registered": "Kayıtlı",

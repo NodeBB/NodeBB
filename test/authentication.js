@@ -8,6 +8,7 @@ var async = require('async');
 
 var db = require('./mocks/databasemock');
 var user = require('../src/user');
+var utils = require('../src/utils');
 var meta = require('../src/meta');
 var privileges = require('../src/privileges');
 var helpers = require('./helpers');
@@ -238,7 +239,7 @@ describe('authentication', function () {
 		});
 	});
 
-	it('should fail to login if ip address if invalid', function (done) {
+	it('should fail to login if ip address is invalid', function (done) {
 		var jar = request.jar();
 		request({
 			url: nconf.get('url') + '/api/config',
@@ -456,21 +457,21 @@ describe('authentication', function () {
 	it('should prevent banned user from logging in', function (done) {
 		user.create({ username: 'banme', password: '123456', email: 'ban@me.com' }, function (err, uid) {
 			assert.ifError(err);
-			user.ban(uid, 0, 'spammer', function (err) {
+			user.bans.ban(uid, 0, 'spammer', function (err) {
 				assert.ifError(err);
 				loginUser('banme', '123456', function (err, res, body) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 403);
 					assert.equal(body, '[[error:user-banned-reason, spammer]]');
-					user.unban(uid, function (err) {
+					user.bans.unban(uid, function (err) {
 						assert.ifError(err);
 						var expiry = Date.now() + 10000;
-						user.ban(uid, expiry, '', function (err) {
+						user.bans.ban(uid, expiry, '', function (err) {
 							assert.ifError(err);
 							loginUser('banme', '123456', function (err, res, body) {
 								assert.ifError(err);
 								assert.equal(res.statusCode, 403);
-								assert.equal(body, '[[error:user-banned-reason-until, ' + (new Date(parseInt(expiry, 10)).toString()) + ', No reason given.]]');
+								assert.equal(body, '[[error:user-banned-reason-until, ' + utils.toISOString(expiry) + ', No reason given.]]');
 								done();
 							});
 						});

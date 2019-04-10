@@ -20,7 +20,6 @@
     "reset.notify.subject": "Parola a fost schimbată cu succes",
     "reset.notify.text1": "We are notifying you that on %1, your password was changed successfully.",
     "reset.notify.text2": "If you did not authorise this, please notify an administrator immediately.",
-    "digest.notifications": "You have unread notifications from %1:",
     "digest.latest_topics": "Ultimele mesaje de la %1",
     "digest.cta": "Apasă aici pentru a vizita %1",
     "digest.unsub.info": "This digest was sent to you due to your subscription settings.",

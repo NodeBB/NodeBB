@@ -4,6 +4,9 @@
 	"address-help": "下面的电子邮件地址代表收件人在“发件人”和“回复”中所看到的地址。",
 	"from": "发送者",
 	"from-help": "用于邮件中显示的发送者",
+	"sendmail-rate-limit": "Send <em>X</em> emails...",
+	"sendmail-rate-delta": "... every <em>X</em> milliseconds",
+	"sendmail-rate-help": "Instructs the NodeBB mailer to limit the number of messages sent at once in order to not overwhelm email receiving services. These options do not apply if SMTP Transport is enabled (below).",
 
 	"smtp-transport": "SMTP 通信",
 	"smtp-transport.enabled": "使用一个外部电子邮箱系统来发送邮件",

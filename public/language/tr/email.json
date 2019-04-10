@@ -20,7 +20,6 @@
     "reset.notify.subject": "Şifre başarıyla değiştirildi",
     "reset.notify.text1": "Şifrenizin %1 zamanında  başarı ile değiştirildiğini bildirmek isteriz.",
     "reset.notify.text2": "Bunu siz yetkilendirmediyseniz, lütfen hiç vakit kaybetmeden site yöneticisine bu durumu bildiriniz.",
-    "digest.notifications": "Okunmamış bazı bildirimleriniz var",
     "digest.latest_topics": "En güncel konular",
     "digest.cta": "Ziyaret etmek için buraya tıklayın",
     "digest.unsub.info": "Bu e-posta seçtiğiniz ayarlar nedeniyle gönderildi.",

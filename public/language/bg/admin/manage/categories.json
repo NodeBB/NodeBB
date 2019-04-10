@@ -17,6 +17,7 @@
 	"parent-category": "Базова категория",
 	"optional-parent-category": "(Незадължително) Базова категория",
 	"parent-category-none": "(Няма)",
+	"copy-parent": "Копиране на базовата",
 	"copy-settings": "Копиране на настройките от",
 	"optional-clone-settings": "(Незадължително) Копиране на настройките от категория",
 	"clone-children": "Клониране на дъщерните категории и настройки",

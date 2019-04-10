@@ -55,7 +55,7 @@ module.exports = function (Groups) {
 				db.getSortedSetRevRange('group:' + groupName + ':member:pids', 0, max - 1, next);
 			},
 			function (pids, next) {
-				privileges.posts.filter('read', pids, uid, next);
+				privileges.posts.filter('topics:read', pids, uid, next);
 			},
 			function (pids, next) {
 				posts.getPostSummaryByPids(pids, uid, { stripTags: false }, next);

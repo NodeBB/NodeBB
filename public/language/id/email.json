@@ -20,7 +20,6 @@
     "reset.notify.subject": "Kata Sandi berhasil diganti",
     "reset.notify.text1": "Kami beritahukan bahwa pada %1 password anda berhasil diubah.",
     "reset.notify.text2": "Jika ini bukan kehendak anda, silakan segera hubungi administrator.",
-    "digest.notifications": "Anda mempunyai notifikasi yang belum terbaca dari %1:",
     "digest.latest_topics": "Topik-topik terbaru dari %1",
     "digest.cta": "Klik di sini untuk mengunjungi %1",
     "digest.unsub.info": "Sesuai  pengaturan langganan anda, maka ringkasan ini di kirimkan untuk anda ",

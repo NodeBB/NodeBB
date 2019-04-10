@@ -4,11 +4,9 @@ define('admin/manage/category', [
 	'uploader',
 	'iconSelect',
 	'admin/modules/colorpicker',
-	'autocomplete',
-	'translator',
 	'categorySelector',
 	'benchpress',
-], function (uploader, iconSelect, colorpicker, autocomplete, translator, categorySelector, Benchpress) {
+], function (uploader, iconSelect, colorpicker, categorySelector, Benchpress) {
 	var	Category = {};
 	var modified_categories = {};
 
@@ -126,13 +124,46 @@ define('admin/manage/category', [
 		});
 
 		$('.copy-settings').on('click', function () {
-			categorySelector.modal(function (cid) {
-				socket.emit('admin.categories.copySettingsFrom', { fromCid: cid, toCid: ajaxify.data.category.cid }, function (err) {
-					if (err) {
-						return app.alertError(err.message);
+			Benchpress.parse('admin/partials/categories/copy-settings', {
+				categories: ajaxify.data.allCategories,
+			}, function (html) {
+				var selectedCid;
+				var modal = bootbox.dialog({
+					title: '[[modules:composer.select_category]]',
+					message: html,
+					buttons: {
+						save: {
+							label: '[[modules:bootbox.confirm]]',
+							className: 'btn-primary',
+							callback: function () {
+								if (!selectedCid) {
+									return;
+								}
+
+								socket.emit('admin.categories.copySettingsFrom', {
+									fromCid: selectedCid,
+									toCid: ajaxify.data.category.cid,
+									copyParent: modal.find('#copyParent').prop('checked'),
+								}, function (err) {
+									if (err) {
+										return app.alertError(err.message);
+									}
+
+									modal.modal('hide');
+									app.alertSuccess('[[admin/manage/categories:alert.copy-success]]');
+									ajaxify.refresh();
+								});
+								return false;
+							},
+						},
+					},
+				});
+				modal.find('.modal-footer button').prop('disabled', true);
+				categorySelector.init(modal.find('[component="category-selector"]'), function (selectedCategory) {
+					selectedCid = selectedCategory && selectedCategory.cid;
+					if (selectedCid) {
+						modal.find('.modal-footer button').prop('disabled', false);
 					}
-					app.alertSuccess('[[admin/manage/categories:alert.copy-success]]');
-					ajaxify.refresh();
 				});
 			});
 			return false;
@@ -157,6 +188,7 @@ define('admin/manage/category', [
 
 		$('#category-image').on('change', function () {
 			$('.category-preview').css('background-image', $(this).val() ? ('url("' + $(this).val() + '")') : '');
+			modified($('#category-image'));
 		});
 
 		$('.delete-image').on('click', function (e) {

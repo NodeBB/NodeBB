@@ -132,8 +132,10 @@ define('forum/groups/details', [
 
 	Details.prepareSettings = function () {
 		var settingsFormEl = components.get('groups/settings');
-		var colorBtn = settingsFormEl.find('[data-action="color-select"]');
-		var colorValueEl = settingsFormEl.find('[name="labelColor"]');
+		var labelColorBtn = settingsFormEl.find('[data-action="label-color-select"]');
+		var textColorBtn = settingsFormEl.find('[data-action="text-color-select"]');
+		var labelColorValueEl = settingsFormEl.find('[name="labelColor"]');
+		var textColorValueEl = settingsFormEl.find('[name="textColor"]');
 		var iconBtn = settingsFormEl.find('[data-action="icon-select"]');
 		var previewEl = settingsFormEl.find('.label');
 		var previewIcon = previewEl.find('i');
@@ -142,11 +144,22 @@ define('forum/groups/details', [
 		var iconValueEl = settingsFormEl.find('[name="icon"]');
 
 		// Add color picker to settings form
-		colorBtn.ColorPicker({
-			color: colorValueEl.val() || '#000',
+		labelColorBtn.ColorPicker({
+			color: labelColorValueEl.val() || '#000',
 			onChange: function (hsb, hex) {
-				colorValueEl.val('#' + hex);
+				labelColorValueEl.val('#' + hex);
 				previewEl.css('background-color', '#' + hex);
+			},
+			onShow: function (colpkr) {
+				$(colpkr).css('z-index', 1051);
+			},
+		});
+
+		textColorBtn.ColorPicker({
+			color: textColorValueEl.val() || '#fff',
+			onChange: function (hsb, hex) {
+				textColorValueEl.val('#' + hex);
+				previewEl.css('color', '#' + hex);
 			},
 			onShow: function (colpkr) {
 				$(colpkr).css('z-index', 1051);

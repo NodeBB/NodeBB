@@ -33,7 +33,7 @@
     "username-too-short": "Uživatelské jméno je moc krátké",
     "username-too-long": "Uživatelské jméno je moc dlouhé",
     "password-too-long": "Heslo je moc dlouhé",
-    "reset-rate-limited": "Too many password reset requests (rate limited)",
+    "reset-rate-limited": "Moc požadavků na reset hesla (omezený počet)",
     "user-banned": "Uživatel byl zablokován",
     "user-banned-reason": "Omlouváme se, ale tento účet byl zablokován (důvod: %1)",
     "user-banned-reason-until": "Omlouváme se, ale tento účet je zablokován do %1 (důvod: %2)",

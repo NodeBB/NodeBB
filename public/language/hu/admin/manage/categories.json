@@ -17,6 +17,7 @@
 	"parent-category": "Szülő kategória",
 	"optional-parent-category": "(Nem kötelező) Szülő kategória",
 	"parent-category-none": "(Nincs)",
+	"copy-parent": "Copy Parent",
 	"copy-settings": "Beállítások másolása",
 	"optional-clone-settings": "(Nem kötelező) Beállítások klónozása az alábbi kategóriából",
 	"clone-children": "Clone Children Categories And Settings",

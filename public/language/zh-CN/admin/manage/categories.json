@@ -17,6 +17,7 @@
 	"parent-category": "父版块",
 	"optional-parent-category": "(可选)父版块",
 	"parent-category-none": "(无)",
+	"copy-parent": "Copy Parent",
 	"copy-settings": "复制设置",
 	"optional-clone-settings": "(可选) 从版块复制设置",
 	"clone-children": "克隆子类别并进行设置",

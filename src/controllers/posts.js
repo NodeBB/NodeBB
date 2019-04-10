@@ -18,7 +18,7 @@ postsController.redirectToPost = function (req, res, next) {
 		function (next) {
 			async.parallel({
 				canRead: function (next) {
-					privileges.posts.can('read', pid, req.uid, next);
+					privileges.posts.can('topics:read', pid, req.uid, next);
 				},
 				path: function (next) {
 					posts.generatePostPath(pid, req.uid, next);

@@ -20,7 +20,6 @@
     "reset.notify.subject": "Thay đổi mật khẩu thành công",
     "reset.notify.text1": "Xin thông báo với bạn: mật khẩu của bạn trên %1 đã được thay đổi thành công.",
     "reset.notify.text2": "Nếu bạn không cho phép điều này, vui lòng thông báo cho quản trị viên ngay lập tức.",
-    "digest.notifications": "Bạn có thông báo chưa đọc từ %1:",
     "digest.latest_topics": "Chủ đề mới nhất từ %1",
     "digest.cta": "Click vào đây để truy cập %1",
     "digest.unsub.info": "Tập san này được gửi đến bạn dựa theo cài đặt theo dõi của bạn.",

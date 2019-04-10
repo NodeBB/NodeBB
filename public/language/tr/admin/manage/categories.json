@@ -17,6 +17,7 @@
 	"parent-category": "Ana Kategori",
 	"optional-parent-category": "(Opsiyonel) Ana Kategori",
 	"parent-category-none": "(Hiçbiri)",
+	"copy-parent": "Copy Parent",
 	"copy-settings": "Ayarları Başka Bir Yerden Kopyala",
 	"optional-clone-settings": "(İsteğe Bağlı) Kategoriden Ayarları Klonla",
 	"clone-children": "Alt Kategori ve Ayarlarını Çoğalt",

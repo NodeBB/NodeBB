@@ -17,6 +17,7 @@
 	"parent-category": "Roditeljska kategorija",
 	"optional-parent-category": "(Opcionalno) Roditeljska kategorija",
 	"parent-category-none": "(Ništa)",
+	"copy-parent": "Copy Parent",
 	"copy-settings": "Kopiraj postavke iz ",
 	"optional-clone-settings": "(Opcionalno) Kloniraj postavke iz kategorije",
 	"clone-children": "Clone Children Categories And Settings",

@@ -20,6 +20,10 @@ define('admin/modules/colorpicker', function () {
 					$(colpkr).css('z-index', 1051);
 				},
 			});
+
+			$(window).one('action:ajaxify.start', function () {
+				$this.ColorPickerHide();
+			});
 		});
 	};
 

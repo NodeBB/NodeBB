@@ -6,13 +6,14 @@
 	"nodejs": "nodejs",
 	"online": "online",
 	"git": "git",
-	"memory": "memory",
-	"load": "load",
+	"memory": "memória",
+	"load": "system load",
+	"cpu-usage": "uso cpu",
 	"uptime": "uptime",
 
-	"registered": "Registered",
+	"registered": "Registados",
 	"sockets": "Sockets",
-	"guests": "Guests",
+	"guests": "Convidados",
 
-	"info": "Info"
+	"info": "Informação"
 }

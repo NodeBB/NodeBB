@@ -7,7 +7,8 @@
 	"online": "מקוון",
 	"git": "git",
 	"memory": "זיכרון",
-	"load": "טען",
+	"load": "system load",
+	"cpu-usage": "cpu usage",
 	"uptime": "uptime",
 
 	"registered": "רשום",

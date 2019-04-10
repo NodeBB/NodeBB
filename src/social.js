@@ -24,11 +24,6 @@ social.getPostSharing = function (callback) {
 			name: 'Twitter',
 			class: 'fa-twitter',
 		},
-		{
-			id: 'google',
-			name: 'Google+',
-			class: 'fa-google-plus',
-		},
 	];
 
 	async.waterfall([

@@ -21,7 +21,7 @@ module.exports = function (Categories) {
 				db.getSortedSetRevRange('cid:' + cid + ':pids', 0, count - 1, next);
 			},
 			function (pids, next) {
-				privileges.posts.filter('read', pids, uid, next);
+				privileges.posts.filter('topics:read', pids, uid, next);
 			},
 			function (pids, next) {
 				posts.getPostSummaryByPids(pids, uid, { stripTags: true }, next);
@@ -92,7 +92,7 @@ module.exports = function (Categories) {
 			function (results, next) {
 				var tids = _.uniq(_.flatten(results).filter(Boolean));
 
-				privileges.topics.filterTids('read', tids, uid, next);
+				privileges.topics.filterTids('topics:read', tids, uid, next);
 			},
 			function (tids, next) {
 				getTopics(tids, uid, next);
