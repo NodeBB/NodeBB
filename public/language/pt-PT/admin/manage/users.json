@@ -1,8 +1,8 @@
 {
 	"users": "Utilizadores",
 	"edit": "Editar",
-	"make-admin": "Make Admin",
-	"remove-admin": "Remove Admin",
+	"make-admin": "Tornar Administrador",
+	"remove-admin": "Remover Administrador",
 	"validate-email": "Validar E-mail",
 	"send-validation-email": "Enviar Validação de E-mail",
 	"password-reset-email": "Enviar E-mail de Reposição de Palavra-passe",
@@ -11,7 +11,7 @@
 	"temp-ban": "Banir Utilizador(es) Temporariamente",
 	"unban": "Desbanir Utilizador(es)",
 	"reset-lockout": "Reset Lockout",
-	"reset-flags": "Reset Flags",
+	"reset-flags": "Redefinir Denúncias",
 	"delete": "Eliminar Utilizador(es)",
 	"purge": "Apagar Utilizador(es) e Conteúdo",
 	"download-csv": "Transferir CSV",
@@ -70,8 +70,8 @@
 	"alerts.button-ban-x": "Banir %1 utilizador(es)",
 	"alerts.unban-success": "Utilizador(es) desbanidos!",
 	"alerts.lockout-reset-success": "Lockout(s) reset!",
-	"alerts.flag-reset-success": "Flags(s) reset!",
-	"alerts.no-remove-yourself-admin": "You can't remove yourself as Administrator!",
+	"alerts.flag-reset-success": "Denúncia(s) redefinida(s)!",
+	"alerts.no-remove-yourself-admin": "Não podes remover a ti próprio como Administrador!",
 	"alerts.make-admin-success": "O utilizador é agora um administrador.",
 	"alerts.confirm-remove-admin": "Tens a certeza que queres remover este administrador?",
 	"alerts.remove-admin-success": "Este utilizador já não é mais um administrador.",
@@ -97,6 +97,6 @@
 	"alerts.create-success": "Utilizador criado!",
 
 	"alerts.prompt-email": "E-mails:",
-	"alerts.email-sent-to": "An invitation email has been sent to %1",
+	"alerts.email-sent-to": "Foi enviado um e-mail de convite para %1",
 	"alerts.x-users-found": "%1 utilizador(es) encontrado(s)! A procura demorou %2 ms."
 }

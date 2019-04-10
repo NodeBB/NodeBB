@@ -36,7 +36,7 @@
 	"privileges.section-viewing": "Privilégios de Visualização",
 	"privileges.section-posting": "Privilégios de Publicação",
 	"privileges.section-moderation": "Privilégios de Moderação",
-	"privileges.section-other": "Other",
+	"privileges.section-other": "Outra",
 	"privileges.section-user": "Utilizador",
 	"privileges.search-user": "Adicionar Utilizador",
 	"privileges.no-users": "Não existem privilégios específicos para utilizadores nesta categoria.",
