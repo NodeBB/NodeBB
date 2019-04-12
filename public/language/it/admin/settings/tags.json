@@ -1,10 +1,10 @@
 {
-    "tag": "Tag Settings",
-    "min-per-topic": "Minimum Tags per Topic",
-    "max-per-topic": "Maximum Tags per Topic",
-    "min-length": "Minimum Tag Length",
-    "max-length": "Maximum Tag Length",
-    "goto-manage": "Click here to visit the tag management page.",
-    "related-topics": "Related Topics",
-    "max-related-topics": "Maximum related topics to display (if supported by theme)"
+    "tag": "Impostazioni Tag",
+    "min-per-topic": "Tag minimi per discussione",
+    "max-per-topic": "Tag massimi per discussione",
+    "min-length": "Lunghezza minima tag",
+    "max-length": "Lunghezza massima tag",
+    "goto-manage": "Clicca qui per visitare la pagina di gestione tag.",
+    "related-topics": "Discussioni correlate",
+    "max-related-topics": "Numero massimo di discussioni correlate da visualizzare (se supportati dal tema)"
 }
