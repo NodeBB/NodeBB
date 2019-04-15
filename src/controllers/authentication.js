@@ -152,6 +152,7 @@ authenticationController.registerComplete = function (req, res, next) {
 
 		var callbacks = data.interstitials.reduce(function (memo, cur) {
 			if (cur.hasOwnProperty('callback') && typeof cur.callback === 'function') {
+				req.body.files = req.files;
 				memo.push(function (next) {
 					cur.callback(req.session.registration, req.body, function (err) {
 						// Pass error as second argument so all callbacks are executed
