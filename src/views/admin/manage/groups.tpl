@@ -22,7 +22,7 @@
 						{groups.displayName}
 					</td>
 					<td>
-						<span class="label label-default" style="background-color: {groups.labelColor};"><!-- IF groups.icon --><i class="fa {groups.icon}"></i> <!-- ENDIF groups.icon -->{groups.userTitle}</span>
+						<span class="label label-default" style="color:{groups.textColor}; background-color: {groups.labelColor};"><!-- IF groups.icon --><i class="fa {groups.icon}"></i> <!-- ENDIF groups.icon -->{groups.userTitle}</span>
 					</td>
 					<td>
 						<!-- IF groups.system -->
