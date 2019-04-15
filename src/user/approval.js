@@ -111,7 +111,7 @@ module.exports = function (User) {
 			function (next) {
 				plugins.fireHook('filter:register.complete', { uid: uid }, next);
 			},
-			function (next) {
+			function (result, next) {
 				var title = meta.config.title || meta.config.browserTitle || 'NodeBB';
 				var data = {
 					username: username,
