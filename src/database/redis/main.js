@@ -16,7 +16,6 @@ module.exports = function (redisClient, module) {
 			if (err) {
 				return callback(err);
 			}
-			module.objectCache.resetObjectCache();
 			callback();
 		});
 	};
@@ -36,7 +35,6 @@ module.exports = function (redisClient, module) {
 	module.delete = function (key, callback) {
 		callback = callback || function () {};
 		redisClient.del(key, function (err) {
-			module.objectCache.delObjectCache(key);
 			callback(err);
 		});
 	};
@@ -48,7 +46,6 @@ module.exports = function (redisClient, module) {
 			batch.del(keys[i]);
 		}
 		batch.exec(function (err) {
-			module.objectCache.delObjectCache(keys);
 			callback(err);
 		});
 	};
@@ -75,8 +72,6 @@ module.exports = function (redisClient, module) {
 			if (err && err.message !== 'ERR no such key') {
 				return callback(err);
 			}
-			module.objectCache.delObjectCache(oldKey);
-			module.objectCache.delObjectCache(newKey);
 			callback();
 		});
 	};

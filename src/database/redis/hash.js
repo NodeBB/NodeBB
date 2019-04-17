@@ -3,13 +3,6 @@
 module.exports = function (redisClient, module) {
 	var helpers = module.helpers.redis;
 
-	const async = require('async');
-	const _ = require('lodash');
-
-	const cache = require('../cache').create('redis');
-
-	module.objectCache = cache;
-
 	module.setObject = function (key, data, callback) {
 		callback = callback || function () {};
 		if (!key || !data) {
@@ -30,11 +23,7 @@ module.exports = function (redisClient, module) {
 			return callback();
 		}
 		redisClient.hmset(key, data, function (err) {
-			if (err) {
-				return callback(err);
-			}
-			cache.delObjectCache(key);
-			callback();
+			callback(err);
 		});
 	};
 
@@ -44,51 +33,23 @@ module.exports = function (redisClient, module) {
 			return callback();
 		}
 		redisClient.hset(key, field, value, function (err) {
-			if (err) {
-				return callback(err);
-			}
-			cache.delObjectCache(key);
-			callback();
+			callback(err);
 		});
 	};
 
 	module.getObject = function (key, callback) {
-		module.getObjects([key], function (err, data) {
-			if (err) {
-				return callback(err);
-			}
-			callback(null, data && data.length ? data[0] : null);
-		});
+		redisClient.hgetall(key, callback);
 	};
 
 	module.getObjects = function (keys, callback) {
-		var cachedData = {};
-		function getFromCache(next) {
-			process.nextTick(next, null, keys.map(key => _.clone(cachedData[key])));
+		if (!Array.isArray(keys) || !keys.length) {
+			return setImmediate(callback, null, []);
 		}
-
-		const unCachedKeys = cache.getUnCachedKeys(keys, cachedData);
-		if (!unCachedKeys.length) {
-			return getFromCache(callback);
+		if (keys.length > 1) {
+			helpers.execKeys(redisClient, 'batch', 'hgetall', keys, callback);
+		} else {
+			redisClient.hgetall(keys[0], (err, data) => callback(err, [data]));
 		}
-
-		async.waterfall([
-			function (next) {
-				if (unCachedKeys.length > 1) {
-					helpers.execKeys(redisClient, 'batch', 'hgetall', unCachedKeys, next);
-				} else {
-					redisClient.hgetall(unCachedKeys[0], (err, data) => next(err, [data]));
-				}
-			},
-			function (data, next) {
-				unCachedKeys.forEach(function (key, i) {
-					cachedData[key] = data[i] || null;
-					cache.set(key, cachedData[key]);
-				});
-
-				getFromCache(next);
-			},
-		], callback);
 	};
 
 	module.getObjectField = function (key, field, callback) {
@@ -107,20 +68,25 @@ module.exports = function (redisClient, module) {
 		if (!Array.isArray(fields) || !fields.length) {
 			return callback(null, keys.map(function () { return {}; }));
 		}
-		module.getObjects(keys, function (err, items) {
+		var batch = redisClient.batch();
+
+		for (var x = 0; x < keys.length; x += 1) {
+			batch.hmget.apply(batch, [keys[x]].concat(fields));
+		}
+
+		batch.exec(function (err, results) {
 			if (err) {
 				return callback(err);
 			}
-			const returnData = items.map((item) => {
-				item = item || {};
-				const result = {};
-				fields.forEach((field) => {
-					result[field] = item[field] !== undefined ? item[field] : null;
-				});
-				return result;
-			});
 
-			callback(null, returnData);
+			results = results.map(function makeObject(array) {
+				var obj = {};
+				for (var i = 0, ii = fields.length; i < ii; i += 1) {
+					obj[fields[i]] = array[i];
+				}
+				return obj;
+			});
+			callback(null, results);
 		});
 	};
 
@@ -150,14 +116,12 @@ module.exports = function (redisClient, module) {
 			return setImmediate(callback);
 		}
 		redisClient.hdel(key, field, function (err) {
-			cache.delObjectCache(key);
 			callback(err);
 		});
 	};
 
 	module.deleteObjectFields = function (key, fields, callback) {
 		helpers.execKeyValues(redisClient, 'batch', 'hdel', key, fields, function (err) {
-			cache.delObjectCache(key);
 			callback(err);
 		});
 	};
@@ -176,7 +140,6 @@ module.exports = function (redisClient, module) {
 			if (err) {
 				return callback(err);
 			}
-			cache.delObjectCache(key);
 			callback(null, Array.isArray(result) ? result.map(value => parseInt(value, 10)) : parseInt(result, 10));
 		}
 		value = parseInt(value, 10);
