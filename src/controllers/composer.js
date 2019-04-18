@@ -6,6 +6,7 @@ var nconf = require('nconf');
 var user = require('../user');
 var plugins = require('../plugins');
 var topics = require('../topics');
+var posts = require('../posts');
 var helpers = require('./helpers');
 
 exports.get = function (req, res, callback) {
@@ -53,21 +54,38 @@ exports.post = function (req, res) {
 
 	async.waterfall([
 		function (next) {
+			function queueOrPost(postFn, data, next) {
+				async.waterfall([
+					function (next) {
+						posts.shouldQueue(req.uid, data, next);
+					},
+					function (shouldQueue, next) {
+						if (shouldQueue) {
+							delete data.req;
+							posts.addToQueue(data, next);
+						} else {
+							postFn(data, next);
+						}
+					},
+				], next);
+			}
 			if (body.tid) {
 				data.tid = body.tid;
-				topics.reply(data, next);
+				queueOrPost(topics.reply, data, next);
 			} else if (body.cid) {
 				data.cid = body.cid;
 				data.title = body.title;
 				data.tags = [];
 				data.thumb = '';
-
-				topics.post(data, next);
+				queueOrPost(topics.post, data, next);
 			} else {
 				next(new Error('[[error:invalid-data]]'));
 			}
 		},
 		function (result, next) {
+			if (result.queued) {
+				return res.redirect((nconf.get('relative_path') || '/'));
+			}
 			var uid = result.uid ? result.uid : result.topicData.uid;
 			user.updateOnlineUsers(uid);
 			next(null, result.pid ? '/post/' + result.pid : '/topic/' + result.topicData.slug);

@@ -64,8 +64,10 @@ function getQueuedPosts(ids, callback) {
 		function (data, next) {
 			postData = data;
 			data.forEach(function (data) {
-				data.data = JSON.parse(data.data);
-				data.data.timestampISO = utils.toISOString(data.data.timestamp);
+				if (data) {
+					data.data = JSON.parse(data.data);
+					data.data.timestampISO = utils.toISOString(data.data.timestamp);
+				}
 				return data;
 			});
 			const uids = data.map(data => data && data.uid);
@@ -73,10 +75,15 @@ function getQueuedPosts(ids, callback) {
 		},
 		function (userData, next) {
 			postData.forEach(function (postData, index) {
-				postData.user = userData[index];
+				if (postData) {
+					postData.user = userData[index];
+				}
 			});
 
 			async.map(postData, function (postData, next) {
+				if (!postData) {
+					return next(null, postData);
+				}
 				postData.data.rawContent = validator.escape(String(postData.data.content));
 				postData.data.title = validator.escape(String(postData.data.title || ''));
 				async.waterfall([
