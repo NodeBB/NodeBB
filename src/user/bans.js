@@ -45,6 +45,9 @@ module.exports = function (User) {
 		if (until > now) {
 			tasks.push(async.apply(db.sortedSetAdd, 'users:banned:expire', until, uid));
 			tasks.push(async.apply(User.setUserField, uid, 'banned:expire', until));
+		} else {
+			tasks.push(async.apply(db.sortedSetRemove, 'users:banned:expire', uid));
+			tasks.push(async.apply(User.setUserField, uid, 'banned:expire', 0));
 		}
 
 		async.series(tasks, function (err) {
