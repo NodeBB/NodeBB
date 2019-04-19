@@ -59,6 +59,9 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.getObjectFields = function (key, fields, callback) {
+		if (!key) {
+			return setImmediate(callback, null, null);
+		}
 		module.getObjectsFields([key], fields, function (err, results) {
 			callback(err, results ? results[0] : null);
 		});
