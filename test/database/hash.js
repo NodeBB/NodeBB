@@ -92,6 +92,20 @@ describe('Hash methods', function () {
 				});
 			});
 		});
+
+		it('should work for field names with "." in them when they are cached', function (done) {
+			db.setObjectField('dotObject3', 'my.dot.field', 'foo2', function (err) {
+				assert.ifError(err);
+				db.getObject('dotObject3', function (err, data) {
+					assert.ifError(err);
+					db.getObjectField('dotObject3', 'my.dot.field', function (err, value) {
+						assert.ifError(err);
+						assert.equal(value, 'foo2');
+						done();
+					});
+				});
+			});
+		});
 	});
 
 	describe('getObject()', function () {
@@ -110,6 +124,15 @@ describe('Hash methods', function () {
 				assert.equal(data.name, testData.name);
 				assert.equal(data.age, testData.age);
 				assert.equal(data.lastname, 'usakli');
+				done();
+			});
+		});
+
+		it('should return null if key is falsy', function (done) {
+			db.getObject(null, function (err, data) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 2);
+				assert.equal(data, null);
 				done();
 			});
 		});
@@ -163,6 +186,15 @@ describe('Hash methods', function () {
 				done();
 			});
 		});
+
+		it('should return null if key is falsy', function (done) {
+			db.getObjectField(null, 'test', function (err, data) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 2);
+				assert.equal(data, null);
+				done();
+			});
+		});
 	});
 
 	describe('getObjectFields()', function () {
@@ -185,6 +217,15 @@ describe('Hash methods', function () {
 				assert.equal(object.lastname, 'usakli');
 				assert.equal(object.age, 99);
 				assert.equal(!!object.field1, false);
+				done();
+			});
+		});
+
+		it('should return null if key is falsy', function (done) {
+			db.getObjectFields(null, ['test', 'foo'], function (err, data) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 2);
+				assert.equal(data, null);
 				done();
 			});
 		});

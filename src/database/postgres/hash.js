@@ -65,7 +65,7 @@ VALUES ($1::TEXT, jsonb_build_object($2::TEXT, $3::TEXT::JSONB))
 
 	module.getObject = function (key, callback) {
 		if (!key) {
-			return callback();
+			return callback(null, null);
 		}
 
 		db.query({
@@ -122,7 +122,7 @@ SELECT h."data"
 
 	module.getObjectField = function (key, field, callback) {
 		if (!key) {
-			return callback();
+			return setImmediate(callback, null, null);
 		}
 
 		db.query({
@@ -151,7 +151,7 @@ SELECT h."data"->>$2::TEXT f
 
 	module.getObjectFields = function (key, fields, callback) {
 		if (!key) {
-			return callback();
+			return setImmediate(callback, null, null);
 		}
 
 		db.query({
