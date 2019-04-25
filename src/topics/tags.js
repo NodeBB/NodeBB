@@ -424,9 +424,7 @@ module.exports = function (Topics) {
 					}
 				}
 
-				matches = matches.sort(function (a, b) {
-					return a > b;
-				});
+				matches.sort();
 				next(null, { matches: matches });
 			},
 		], callback);
