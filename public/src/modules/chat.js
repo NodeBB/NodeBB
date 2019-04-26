@@ -73,6 +73,7 @@ define('chat', [
 						title: '[[modules:chat.chatting_with]] ' + (data.roomName || username),
 						touid: data.message.fromUser.uid,
 						roomId: data.roomId,
+						isSelf: false,
 					});
 				}
 			});
@@ -89,8 +90,8 @@ define('chat', [
 				});
 				roomData.silent = true;
 				roomData.uid = app.user.uid;
-				module.createModal(roomData, function (modal) {
-					module.toggleNew(modal.attr('data-uuid'), !isSelf, true);
+				roomData.isSelf = isSelf;
+				module.createModal(roomData, function () {
 					if (!isSelf) {
 						updateTitleAndPlaySound(data.message.mid, username);
 					}
@@ -231,13 +232,15 @@ define('chat', [
 					roomId: data.roomId,
 					icon: 'fa-comment',
 					state: '',
+					isSelf: data.isSelf,
+				}, function () {
+					taskbar.toggleNew(chatModal.attr('data-uuid'), !data.isSelf);
+					$(window).trigger('action:chat.loaded', chatModal);
+
+					if (typeof callback === 'function') {
+						callback(chatModal);
+					}
 				});
-
-				$(window).trigger('action:chat.loaded', chatModal);
-
-				if (typeof callback === 'function') {
-					callback(chatModal);
-				}
 			});
 		});
 	};

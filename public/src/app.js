@@ -425,6 +425,7 @@ app.cacheBuster = null;
 						return user && parseInt(user.uid, 10) !== parseInt(app.user.uid, 10);
 					});
 					roomData.uid = uid || app.user.uid;
+					roomData.isSelf = true;
 					chat.createModal(roomData, loadAndCenter);
 				});
 			}
