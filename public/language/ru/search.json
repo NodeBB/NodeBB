@@ -17,7 +17,7 @@
     "at-most": "Максимум",
     "relevance": "Релевантность",
     "post-time": "Время публикации",
-    "votes": "Votes",
+    "votes": "Голосов",
     "newer-than": "Ранее чем",
     "older-than": "Позже чем",
     "any-date": "Любая дата",
@@ -31,7 +31,7 @@
     "sort-by": "Сортировать по",
     "last-reply-time": "Время последнего ответа",
     "topic-title": "Название темы",
-    "topic-votes": "Topic votes",
+    "topic-votes": "Голосов темы",
     "number-of-replies": "Количество ответов",
     "number-of-views": "Количество просмотров",
     "topic-start-date": "Время создания темы",
@@ -44,5 +44,5 @@
     "search-preferences-saved": "Настройки поиска сохранены",
     "search-preferences-cleared": "Настройки поиска очищены",
     "show-results-as": "Показать результаты как:",
-    "see-more-results": "See more results (%1)"
+    "see-more-results": "Показать больше результатов (%1)"
 }
