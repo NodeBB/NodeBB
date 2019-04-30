@@ -50,10 +50,9 @@ module.exports = function (SocketPosts) {
 					downvoteCount: function (next) {
 						next(null, results.downvoteUids.length);
 					},
-					showDownvotes: function (next) { 
+					showDownvotes: function (next) {
 						next(null, !meta.config['downvote:disabled'] || Boolean(results.downvoteUids.length));
-					}
-
+					},
 				}, next);
 			},
 		], callback);
