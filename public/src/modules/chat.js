@@ -318,6 +318,9 @@ define('chat', [
 
 		$(window).on('resize', function () {
 			messagesEl.css('height', module.calculateChatListHeight(modalEl));
+			require(['forum/chats/messages'], function (ChatsMessages) {
+				ChatsMessages.scrollToBottom(modalEl.find('.chat-content'));
+			});
 		});
 	};
 
