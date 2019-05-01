@@ -38,6 +38,7 @@ module.exports = function (Groups) {
 				image.uploadImage(filename, 'files', {
 					path: tempPath,
 					uid: uid,
+					name: 'groupCover',
 				}, next);
 			},
 			function (uploadData, next) {
@@ -54,6 +55,7 @@ module.exports = function (Groups) {
 				image.uploadImage('groupCoverThumb-' + data.groupName + path.extname(tempPath), 'files', {
 					path: tempPath,
 					uid: uid,
+					name: 'groupCover',
 				}, next);
 			},
 			function (uploadData, next) {
