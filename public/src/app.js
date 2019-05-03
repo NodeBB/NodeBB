@@ -864,4 +864,20 @@ app.cacheBuster = null;
 
 		document.head.appendChild(linkEl);
 	};
+
+	app.updateTags = function () {
+		var metaWhitelist = ['title', 'description', /og:.+/, /article:.+/];
+
+		// Delete the old meta tags
+		var metaEls = Array.prototype.slice
+			.call(document.querySelectorAll('head meta'))
+			.filter(function (el) {
+				var name = el.getAttribute('property') || el.getAttribute('name');
+				return metaWhitelist.some(function (exp) {
+					console.log('checking', exp, name);
+					return !!exp.match(name);
+				});
+			});
+		console.log(ajaxify.data._header, metaEls);
+	};
 }());
