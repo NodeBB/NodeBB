@@ -36,6 +36,7 @@ module.exports = {
 					}, next);
 				}, {
 					progress: progress,
+					batch: 500,
 				}, next);
 			},
 			function (next) {
