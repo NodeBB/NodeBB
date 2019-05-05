@@ -7,13 +7,13 @@
 	"online": "online",
 	"git": "git",
 	"memory": "memória",
-	"load": "system load",
-	"cpu-usage": "cpu usage",
-	"uptime": "tempo rodando",
+	"load": "carga do sistema",
+	"cpu-usage": "uso da cpu",
+	"uptime": "tempo de atividade",
 
 	"registered": "Registrado",
 	"sockets": "Sockets",
 	"guests": "Visitantes",
 
-	"info": "Info"
+	"info": "Informação"
 }
