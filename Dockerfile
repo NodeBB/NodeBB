@@ -12,7 +12,9 @@ COPY . /usr/src/app
 
 ENV NODE_ENV=production \
     daemon=false \
-    silent=false
+    silent=false \
+    redis__host=${redis__host} \
+    mongo__host=${mongo__host}
 
 CMD ./nodebb start
 

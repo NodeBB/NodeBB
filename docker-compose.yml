@@ -1,0 +1,33 @@
+# https://docs.docker.com/compose/compose-file/
+
+version: '3'
+services:
+  node_bb:
+    build:
+     context: .
+     dockerfile: Dockerfile
+    links:
+     - redis
+     - mongo
+    image: node_bb
+    ports:
+     - "4567:4567"
+    hostname: node_bb
+    container_name: node_bb
+    environment:
+     - redis__host=redis
+     - mongo__host=mongo
+    volumes:
+     - ./logs:/usr/src/app/logs
+  redis:
+    image: redis:5
+    command: ["redis-server", "--appendonly", "yes"]
+    hostname: redis
+    logging:
+      driver: none
+  mongo:
+    image: mongo:4
+    command: ["mongod"]
+    hostname: mongo
+    logging:
+      driver: none
