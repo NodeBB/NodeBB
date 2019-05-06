@@ -1,6 +1,6 @@
 {
 	"lead": "Configure a sua lista negra de IPs aqui.",
-	"description": "Ocasionalmente, um banimento de conta de usuário não é suficientemente impeditivo. Outras vezes, restringir acesso ao fórum para um IP específico ou uma faixa de endereços IPs é o melhor jeito de proteger um fórum. Nestes cenários, você pode adicionar endereços IPs problemáticos ou blocos CIDR inteiros à está lista negra, e eles serão impedidos de logar ou registrar uma nova conta.",
+	"description": "Ocasionalmente, um banimento de conta de usuário não é suficientemente impeditivo. Outras vezes, restringir acesso ao fórum para um IP específico ou uma faixa de endereços IPs é o melhor jeito de proteger um fórum. Nestes cenários, você pode adicionar endereços IPs problemáticos ou blocos CIDR inteiros a esta lista negra, e eles serão impedidos de logar ou registrar uma nova conta.",
 	"active-rules": "Regras Ativas",
 	"validate": "Validar Lista Negra",
 	"apply": "Aplicar Lista Negra",
@@ -13,7 +13,7 @@
 
 	"alerts.applied-success": "Lista Negra Aplicada",
 
-	"analytics.blacklist-hourly": "<strong>Figura 1</strong> &ndash; Acessos na lista de bloqueio pot hora",
+	"analytics.blacklist-hourly": "<strong>Figura 1</strong> &ndash; Acessos na lista de bloqueio por hora",
 	"analytics.blacklist-daily": "<strong>Figura 2</strong> &ndash; Acessos na lista de bloqueio por dia",
-	"ip-banned": "IP banned"
+	"ip-banned": "IP banido"
 }

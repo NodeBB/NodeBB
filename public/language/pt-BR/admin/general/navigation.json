@@ -13,8 +13,8 @@
 	"open-new-window": "Abrir em uma nova janela",
 
 	"btn.delete": "Deletar",
-	"btn.disable": "Desabilitar",
-	"btn.enable": "Habilitar",
+	"btn.disable": "Desativar",
+	"btn.enable": "Ativar",
 
 	"available-menu-items": "Itens Disponíveis no Menu",
 	"custom-route": "Rota Personalizada",

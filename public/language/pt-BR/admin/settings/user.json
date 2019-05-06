@@ -1,7 +1,7 @@
 {
 	"authentication": "Autenticação",
-	"require-email-confirmation": "Exigir Confirmação de Email",
-	"email-confirm-interval": "O usuário não pode reenviar um email de confirmação até",
+	"require-email-confirmation": "Exigir Confirmação de E-mail",
+	"email-confirm-interval": "O usuário não pode reenviar um e-mail de confirmação até",
 	"email-confirm-email2": "minutos se passaram",
 	"allow-login-with": "Permitir login com",
 	"allow-login-with.username-email": "Nome de Usuário ou E-mail",

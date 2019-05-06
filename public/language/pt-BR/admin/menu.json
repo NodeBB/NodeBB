@@ -1,6 +1,6 @@
 {
 	"section-general": "Geral",
-	"general/dashboard": "Painel",
+	"general/dashboard": "Painel de Controle",
 	"general/homepage": "Página Inicial",
 	"general/navigation": "Navegação",
 	"general/languages": "Idiomas",
@@ -9,12 +9,12 @@
 
 	"section-manage": "Administrar",
 	"manage/categories": "Categorias",
-	"manage/privileges": "Privileges",
+	"manage/privileges": "Privilégios",
 	"manage/tags": "Tags",
 	"manage/users": "Usuários",
 	"manage/admins-mods": "Admins & Mods",
 	"manage/registration": "Fila de Registro",
-	"manage/post-queue": "File de Posts",
+	"manage/post-queue": "Fila de Posts",
 	"manage/groups": "Grupos",
 	"manage/ip-blacklist": "Lista Negra de IPs",
 	"manage/uploads": "Uploads",
@@ -22,7 +22,7 @@
 	"section-settings": "Configurações",
 	"settings/general": "Geral",
 	"settings/reputation": "Reputação",
-	"settings/email": "Email",
+	"settings/email": "E-mail",
 	"settings/user": "Usuário",
 	"settings/group": "Grupo",
 	"settings/guest": "Visitantes",
@@ -42,12 +42,12 @@
 	"section-appearance": "Aparência",
 	"appearance/themes": "Temas",
 	"appearance/skins": "Skins",
-	"appearance/customise": "Custom Content (HTML/JS/CSS)",
+	"appearance/customise": "Conteúdo Personalizado (HTML/JS/CSS)",
 
-	"section-extend": "Extenda",
+	"section-extend": "Personalizar",
 	"extend/plugins": "Plugins",
 	"extend/widgets": "Widgets",
-	"extend/rewards": "Prêmios",
+	"extend/rewards": "Recompensas",
 
 	"section-social-auth": "Autenticação Social",
 
@@ -64,8 +64,8 @@
 	"development/logger": "Logger",
 	"development/info": "Informação",
 
-	"rebuild-and-restart-forum": "Rebuild & Restart Forum",
-	"restart-forum": "Reiniciar o Fórum",
+	"rebuild-and-restart-forum": "Recompilar & Reiniciar Fórum",
+	"restart-forum": "Reiniciar Fórum",
 	"logout": "Sair da Conta",
 	"view-forum": "Ver Fórum",
 
@@ -77,6 +77,6 @@
 
 	"connection-lost": "A conexão com %1 foi perdida, tentando reconectar...",
 
-	"alerts.version": "Running <strong>NodeBB v%1</strong>",
-	"alerts.upgrade": "Upgrade to v%1"
+	"alerts.version": "Usando <strong>NodeBB v%1</strong>",
+	"alerts.upgrade": "Atualizar para v%1"
 }

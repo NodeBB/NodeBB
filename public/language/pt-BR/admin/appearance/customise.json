@@ -11,6 +11,6 @@
 	"custom-header.description": "Insira HTML personalizado aqui ( Meta Tags, etc.) para que seja adicionado ao <code>&lt;head&gt;</code> do seu fórum. Tags de script são permitidas, porém são desaconselhadas uma vez que a tab de Javascript Personalizado está disponível.",
 	"custom-header.enable": "Habilitar Cabeçalho Personalizado",
 
-	"custom-css.livereload": "Habilitar Recarregamento Automático",
-	"custom-css.livereload.description": "Habilite esta opção para forçar todas as sessões em todos os dispositivos que estão conectados a sua conta a serem atualizados sempre que você clicar em salvar"
+	"custom-css.livereload": "Ativar Recarregamento Automático",
+	"custom-css.livereload.description": "Ative esta opção para forçar todas as sessões em todos os dispositivos que estão conectados a sua conta a serem atualizados sempre que você clicar em salvar"
 }
