@@ -52,7 +52,6 @@ module.exports = function (middleware) {
 				},
 				function parseTags(data, next) {
 					meta.tags.parse(req, data, res.locals.metaTags, res.locals.linkTags, function (err, tags) {
-						// res.locals.parsedTags = tags;
 						options._header = {
 							tags: tags,
 						};
