@@ -2,7 +2,7 @@
 	"authentication": "Autenticação",
 	"require-email-confirmation": "Exigir Confirmação de E-mail",
 	"email-confirm-interval": "O usuário não pode reenviar um e-mail de confirmação até",
-	"email-confirm-email2": "minutos se passaram",
+	"email-confirm-email2": "minutos decorridos",
 	"allow-login-with": "Permitir login com",
 	"allow-login-with.username-email": "Nome de Usuário ou E-mail",
 	"allow-login-with.username": "Apenas Nome de Usuário",
@@ -70,7 +70,7 @@
 	"follow-created-topics": "Seguir tópicos que você criar",
 	"follow-replied-topics": "Seguir os tópicos que você responder",
 	"default-notification-settings": "Configurações Padrão de Notificações",
-	"categoryWatchState": "Estado padrão em relação a acompanhar as categorias",
+	"categoryWatchState": "Configuração padrão em relação a acompanhar as novidades das categorias",
 	"categoryWatchState.watching": "Acompanhando",
 	"categoryWatchState.notwatching": "Não Acompanhar",
 	"categoryWatchState.ignoring": "Ignorar"
