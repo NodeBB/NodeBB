@@ -98,8 +98,8 @@ function renderRoute(name, req, res, next) {
 				return next();
 			}
 
-			if ((name === 'username' && userData['username:disableEdit']) || (name === 'email' && userData['email:disableEdit'])) {
-				return next();
+			if (meta.config[name + ':disableEdit'] && !userData.isAdmin) {
+				return helpers.notAllowed(req, res);
 			}
 
 			if (name === 'password') {
