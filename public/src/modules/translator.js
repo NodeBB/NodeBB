@@ -610,9 +610,6 @@
 			delete adaptor.timeagoShort;
 
 			var languageCode = utils.userLangToTimeagoCode(config.userLang);
-			if (!config.timeagoCodes.includes(languageCode + '-short')) {
-				languageCode = 'en';
-			}
 			jQuery.getScript(config.relative_path + '/assets/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').done(callback);
 		},
 
