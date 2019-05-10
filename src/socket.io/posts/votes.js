@@ -54,7 +54,7 @@ module.exports = function (SocketPosts) {
 				results.downvoteCount = results.downvoters.length;
 				results.showDownvotes = showDownvotes;
 				next(null, results);
-			}
+			},
 		], callback);
 	};
 
