@@ -49,8 +49,23 @@ define('admin/manage/privileges', [
 
 		$('.privilege-table-container').on('click', '[data-action="search.user"]', Privileges.addUserToPrivilegeTable);
 		$('.privilege-table-container').on('click', '[data-action="search.group"]', Privileges.addGroupToPrivilegeTable);
-		$('.privilege-table-container').on('click', '[data-action="copyToChildren"]', Privileges.copyPrivilegesToChildren);
+		$('.privilege-table-container').on('click', '[data-action="copyToChildren"]', function () {
+			Privileges.copyPrivilegesToChildren(cid, '');
+		});
+		$('.privilege-table-container').on('click', '[data-action="copyToChildrenGroup"]', function () {
+			var groupName = $(this).parents('[data-group-name]').attr('data-group-name');
+			Privileges.copyPrivilegesToChildren(cid, groupName);
+		});
+
 		$('.privilege-table-container').on('click', '[data-action="copyPrivilegesFrom"]', Privileges.copyPrivilegesFromCategory);
+		$('.privilege-table-container').on('click', '[data-action="copyToAllGroup"]', function () {
+			var groupName = $(this).parents('[data-group-name]').attr('data-group-name');
+			Privileges.copyPrivilegesToAllCategories(cid, groupName);
+		});
+
+		$('.privilege-table-container').on('click', '[data-action="copyPrivilegesToAllCategories"]', function () {
+			Privileges.copyPrivilegesToAllCategories(cid, '');
+		});
 
 		Privileges.exposeAssumedPrivileges();
 	};
@@ -168,12 +183,12 @@ define('admin/manage/privileges', [
 		});
 	};
 
-	Privileges.copyPrivilegesToChildren = function () {
-		socket.emit('admin.categories.copyPrivilegesToChildren', cid, function (err) {
+	Privileges.copyPrivilegesToChildren = function (cid, group) {
+		socket.emit('admin.categories.copyPrivilegesToChildren', { cid: cid, group: group }, function (err) {
 			if (err) {
 				return app.alertError(err.message);
 			}
-			app.alertSuccess('Privileges copied!');
+			app.alertSuccess('[[admin/manage/categories:privileges.copy-success]]');
 		});
 	};
 
@@ -185,6 +200,15 @@ define('admin/manage/privileges', [
 				}
 				ajaxify.refresh();
 			});
+		});
+	};
+
+	Privileges.copyPrivilegesToAllCategories = function (cid, group) {
+		socket.emit('admin.categories.copyPrivilegesToAllCategories', { cid: cid, group: group }, function (err) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+			app.alertSuccess('[[admin/manage/categories:privileges.copy-success]]');
 		});
 	};
 

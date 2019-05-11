@@ -94,7 +94,10 @@
 									<!-- ENDIF privileges.groups.isPrivate -->
 									{privileges.groups.name}
 								</td>
-								<td></td>
+								<td>
+									<i data-action="copyToChildrenGroup" title="[[admin/manage/categories:privileges.copy-group-privileges-to-children]]" role="button" class="fa fa-copy"></i>
+									<i data-action="copyToAllGroup" title="[[admin/manage/categories:privileges.copy-group-privileges-to-all-categories]]" role="button" class="fa fa-list"></i>
+								</td>
 								{function.spawnPrivilegeStates, privileges.groups.name, ../privileges}
 							</tr>
 							<!-- END privileges.groups -->
@@ -109,6 +112,9 @@
 										</button>
 										<button type="button" class="btn btn-info pull-right" data-ajaxify="false" data-action="copyPrivilegesFrom">
 											[[admin/manage/categories:privileges.copy-from-category]]
+										</button>
+										<button type="button" class="btn btn-info pull-right" data-ajaxify="false" data-action="copyPrivilegesToAllCategories">
+											[[admin/manage/categories:privileges.copy-privileges-to-all-categories]]
 										</button>
 									</div>
 								</td>
