@@ -116,8 +116,8 @@
 											[[admin/manage/categories:privileges.search-group]]
 										</button>
 										<button type="button" class="btn btn-info pull-right" data-ajaxify="false" data-action="copyPrivilegesFrom">
-												[[admin/manage/categories:privileges.copy-from-category]]
-											</button>
+											[[admin/manage/categories:privileges.copy-from-category]]
+										</button>
 										<button type="button" class="btn btn-info pull-right" data-ajaxify="false" data-action="copyToChildren">
 											[[admin/manage/categories:privileges.copy-to-children]]
 										</button>
