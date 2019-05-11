@@ -57,14 +57,20 @@ define('admin/manage/privileges', [
 			Privileges.copyPrivilegesToChildren(cid, groupName);
 		});
 
-		$('.privilege-table-container').on('click', '[data-action="copyPrivilegesFrom"]', Privileges.copyPrivilegesFromCategory);
+		$('.privilege-table-container').on('click', '[data-action="copyPrivilegesFrom"]', function () {
+			Privileges.copyPrivilegesFromCategory(cid, '');
+		});
+		$('.privilege-table-container').on('click', '[data-action="copyPrivilegesFromGroup"]', function () {
+			var groupName = $(this).parents('[data-group-name]').attr('data-group-name');
+			Privileges.copyPrivilegesFromCategory(cid, groupName);
+		});
+
+		$('.privilege-table-container').on('click', '[data-action="copyToAll"]', function () {
+			Privileges.copyPrivilegesToAllCategories(cid, '');
+		});
 		$('.privilege-table-container').on('click', '[data-action="copyToAllGroup"]', function () {
 			var groupName = $(this).parents('[data-group-name]').attr('data-group-name');
 			Privileges.copyPrivilegesToAllCategories(cid, groupName);
-		});
-
-		$('.privilege-table-container').on('click', '[data-action="copyPrivilegesToAllCategories"]', function () {
-			Privileges.copyPrivilegesToAllCategories(cid, '');
 		});
 
 		Privileges.exposeAssumedPrivileges();
@@ -192,9 +198,9 @@ define('admin/manage/privileges', [
 		});
 	};
 
-	Privileges.copyPrivilegesFromCategory = function () {
+	Privileges.copyPrivilegesFromCategory = function (cid, group) {
 		categorySelector.modal(ajaxify.data.categories.slice(1), function (fromCid) {
-			socket.emit('admin.categories.copyPrivilegesFrom', { toCid: cid, fromCid: fromCid }, function (err) {
+			socket.emit('admin.categories.copyPrivilegesFrom', { toCid: cid, fromCid: fromCid, group: group }, function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
