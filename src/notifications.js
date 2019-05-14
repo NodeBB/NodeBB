@@ -242,7 +242,7 @@ function pushToUids(uids, notification, callback) {
 
 	function sendEmail(uids, callback) {
 		// Update CTA messaging (as not all notification types need custom text)
-		if (['new-reply', 'new-chat'].some(type => notification.type === type)) {
+		if (['new-reply', 'new-chat'].includes(notification.type)) {
 			notification['cta-type'] = notification.type;
 		}
 
