@@ -1,3 +1,87 @@
+#### 1.12.2 (2019-05-15)
+
+##### Chores
+
+*  incrementing version number - v1.12.2 (22db818e)
+*  bump themes #7576 (d349754d)
+*  bump themes (59bdc970)
+*  bump themes (abcca134)
+*  bump themes (551b18cd)
+*  incrementing version number - v1.12.1 (dd973abe)
+* **deps:**
+  *  update dependency lint-staged to v8.1.7 (dc6b49ca)
+  *  update commitlint monorepo (9998e86b)
+  *  update dependency jsdom to v15.1.0 (fcd6dc88)
+  *  update dependency mocha to v6.1.4 (3ff8154b)
+  *  update node:8.16.0 docker digest to b5484d1 (6421f10f)
+  *  update dependency husky to v2.3.0 (c20e3313)
+  *  update dependency nyc to v14.1.1 (#7584) (9047210c)
+  *  update dependency eslint to v5.16.0 (692e2ead)
+  *  update dependency nyc to v14 (9210baf5)
+  *  update dependency husky to v2.2.0 (8a018a5f)
+  *  update dependency lint-staged to v8.1.6 (4e39caf8)
+  *  update dependency husky to v2.1.0 (65ff0bbd)
+  *  update dependency husky to v2 (e81a1dbb)
+  *  update dependency eslint-plugin-import to v2.17.2 (#7546) (c1fb17f9)
+  *  update dependency jsdom to v15 (#7556) (d4d8d98f)
+  *  update dependency jsdom to v14.1.0 (#7555) (ca694fd1)
+  *  update node.js to v8.16.0 (#7554) (f10708e7)
+  *  update dependency eslint-plugin-import to v2.17.1 (69dd8e4d)
+  *  update dependency mocha to v6.1.2 (b7169772)
+
+##### Documentation Changes
+
+*  updated changelog (93b688d0)
+
+##### New Features
+
+*  let theme know downvoting is disabled, closes https://github.com/NodeBB/NodeBB/pull/7568 (bd94fbc2)
+*  closes #7583 (cf5aeace)
+*  #7319 (9385c8e3)
+*  add node12 to travis (1a7036a6)
+*  allow file uploading on registration interstitial (ddffc904)
+*  #7527 (ba5e1eaa)
+*  #7515 (c38db4f7)
+
+##### Bug Fixes
+
+*  #7599 image size measurement erroring out on missing path (0d86781c)
+*  #7590 updated chat and post edit and delete timeout labels in ACP (4f0dc443)
+*  tests (3a7e99a5)
+*  #7586, switchTimeagoLanguage shouldn't discriminate against languages w/o shorthands (1703233f)
+*  #7576 "Disable password changes" can be sidestepped (50260e13)
+*  if editing password is disabled in ACP, prevent direct access via route/socket  (related: #7576) (e114b16d)
+*  #7582 (c9ca72d0)
+*  #7461 (96cb29aa)
+*  increase batch size (3d938e7b)
+*  #7564 (bf6fc502)
+*  group cover upload not working for s3 upload (#7571) (8945ebcb)
+*  test (b9903120)
+*  #7539 (c940a733)
+*  #7565 (07e9b67e)
+*  #7464 (32cf07d7)
+*  #7147 (fe6d64cc)
+*  #7424 (f86d74d8)
+*  #7562 (09681e6c)
+*  node12 tests (8775e7e6)
+*  add post queue to /compose POST route (c6cd6c57)
+*  remove redis object cache (4df925e7)
+*  #7545 (74038849)
+*  failing test from 00552d7183f0416a0caa113fe2f1e658659648f7 (9bf3517d)
+*  fire filter:register.complete for users approved via registration queue (00552d71)
+*  #7540 (8778f00b)
+*  more graceful error handling and output for cli/reset (d3ebda73)
+*  #6438 only apply whitelist when fields request empty (#7528) (808c4909)
+* **deps:**
+  *  update dependency nodebb-theme-vanilla to v10.1.31 (#7589) (a9f9d19b)
+  *  update dependency nodebb-theme-persona to v9.1.36 (#7588) (bd86e58d)
+  *  update dependency mongodb to v3.2.4 (#7581) (26d6d0be)
+  *  update dependency postcss to v7.0.16 (10a47a29)
+  *  update dependency nodebb-theme-persona to v9.1.33 (#7563) (7c4201f2)
+  *  update dependency sharp to v0.22.1 (#7561) (288a25f0)
+  *  update dependency nodebb-plugin-composer-default to v6.2.12 (#7538) (a54f8f00)
+  *  update dependency mongodb to v3.2.3 (97a7f02f)
+
 #### 1.12.1 (2019-04-10)
 
 ##### Chores
