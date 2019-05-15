@@ -58,7 +58,10 @@
 	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/post:restrictions]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
-
+			<div class="form-group">
+				<label for="postDelay">[[admin/settings/post:restrictions.seconds-between]]</label>
+				<input id="postDelay" type="text" class="form-control" value="10" data-field="postDelay">
+			</div>
 			<div class="form-group">
 				<label for="postEditDuration">[[admin/settings/post:restrictions.seconds-edit-after]]</label>
 				<input id="postEditDuration" type="text" class="form-control" value="0" data-field="postEditDuration">

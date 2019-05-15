@@ -24,7 +24,7 @@ module.exports = function (middleware) {
 				if (isAdmin) {
 					return callback();
 				}
-				res.status(503);
+				res.status(meta.config.maintenanceModeStatus);
 				data = {
 					site_title: meta.config.title || 'NodeBB',
 					message: meta.config.maintenanceModeMessage,

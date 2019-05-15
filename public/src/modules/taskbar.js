@@ -79,7 +79,8 @@ define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator
 		update();
 	};
 
-	taskbar.push = function (module, uuid, options) {
+	taskbar.push = function (module, uuid, options, callback) {
+		callback = callback || function () {};
 		var element = taskbar.tasklist.find('li[data-uuid="' + uuid + '"]');
 
 		var data = {
@@ -92,7 +93,9 @@ define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator
 		$(window).trigger('filter:taskbar.push', data);
 
 		if (!element.length && data.module) {
-			createTaskbar(data);
+			createTaskbarItem(data, callback);
+		} else {
+			callback(element);
 		}
 	};
 
@@ -146,7 +149,7 @@ define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator
 		taskbar.tasklist.find('.active').removeClass('active');
 	}
 
-	function createTaskbar(data) {
+	function createTaskbarItem(data, callback) {
 		translator.translate(data.options.title, function (taskTitle) {
 			var title = $('<div></div>').text(taskTitle || 'NodeBB Task').html();
 
@@ -175,6 +178,7 @@ define('taskbar', ['benchpress', 'translator'], function (Benchpress, translator
 
 			taskbarEl.data(data);
 			$(window).trigger('action:taskbar.pushed', data);
+			callback(taskbarEl);
 		});
 	}
 

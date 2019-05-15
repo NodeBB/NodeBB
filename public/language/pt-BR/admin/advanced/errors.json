@@ -9,6 +9,6 @@
 	"route": "Rota",
 	"count": "Contagem",
 	"no-routes-not-found": "Ihuul! Sem erros 404!",
-	"clear404-confirm": "Você tem certeza que deseja limpar todos os logs de erro 404?",
+	"clear404-confirm": "Você tem certeza de que deseja limpar todos os logs de erro 404?",
 	"clear404-success": "Erros de \"404 Não Encontrada\" apagados"
 }

@@ -9,7 +9,10 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 	var touchTooltipEl;
 	var touchIntervalId;
 	var touchX;
+	var touchY;
 	var touchIndex;
+	var isNavigating = false;
+	var firstMove = true;
 
 	navigator.scrollActive = false;
 
@@ -72,28 +75,45 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 
 		$('.pagination-block.visible-xs').on('touchstart', function (e) {
 			touchTooltipEl = $('.navigator-thumb');
-			touchTooltipEl.removeClass('hidden');
 			touchX = Math.min($(window).width(), Math.max(0, e.touches[0].clientX));
-			updateTooltip();
-			touchIntervalId = setInterval(updateTooltip, 100);
+			touchY = Math.min($(window).height(), Math.max(0, e.touches[0].clientY));
+			firstMove = true;
 		}).on('touchmove', function (e) {
-			e.preventDefault();
-			e.stopPropagation();
 			var windowWidth = $(window).width();
+			var windowHeight = $(window).height();
+			var deltaX = Math.abs(touchX - Math.min(windowWidth, Math.max(0, e.touches[0].clientX)));
+			var deltaY = Math.abs(touchY - Math.min(windowHeight, Math.max(0, e.touches[0].clientY)));
 			touchX = Math.min(windowWidth, Math.max(0, e.touches[0].clientX));
-			var percent = touchX / windowWidth;
-			index = Math.max(1, Math.ceil(count * percent));
-			index = index > count ? count : index;
-
-			navigator.updateTextAndProgressBar();
+			touchY = Math.min(windowHeight, Math.max(0, e.touches[0].clientY));
+			if (deltaX >= deltaY && firstMove) {
+				isNavigating = true;
+				touchIntervalId = setInterval(updateTooltip, 100);
+			}
+			if (isNavigating) {
+				e.preventDefault();
+				e.stopPropagation();
+				var percent = touchX / windowWidth;
+				index = Math.max(1, Math.ceil(count * percent));
+				index = index > count ? count : index;
+				if (firstMove) {
+					updateTooltip(function () {
+						touchTooltipEl.removeClass('hidden');
+					});
+				}
+				navigator.updateTextAndProgressBar();
+			}
+			firstMove = false;
 		}).on('touchend', function () {
 			if (touchIntervalId) {
 				clearInterval(touchIntervalId);
 				touchIntervalId = 0;
 			}
 
-			touchTooltipEl.addClass('hidden');
-			navigator.scrollToIndex(index - 1, true, 0);
+			if (isNavigating) {
+				touchTooltipEl.addClass('hidden');
+				navigator.scrollToIndex(index - 1, true, 0);
+				isNavigating = false;
+			}
 		});
 
 		handleKeys();
@@ -102,7 +122,8 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		navigator.update(0);
 	};
 
-	function updateTooltip() {
+	function updateTooltip(callback) {
+		callback = callback || function () {};
 		if (touchIndex === index) {
 			return;
 		}
@@ -123,6 +144,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			} else {
 				touchTooltipEl.find('.time').text(ds + ' ' + date.getFullYear());
 			}
+			callback();
 		});
 	}
 

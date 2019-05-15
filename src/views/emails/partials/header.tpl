@@ -139,7 +139,7 @@
 
 		}
 
-        [role="presentation"] img {
+        .notification-body img {
             max-width: 100%;
         }
 	</style>

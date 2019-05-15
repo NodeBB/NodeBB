@@ -92,6 +92,9 @@ image.size = function (path, callback) {
 };
 
 image.stripEXIF = function (path, callback) {
+	if (path.endsWith('.gif')) {
+		return setImmediate(callback);
+	}
 	async.waterfall([
 		function (next) {
 			fs.readFile(path, next);

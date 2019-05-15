@@ -5,9 +5,9 @@
     "in": "Em",
     "titles": "Títulos",
     "titles-posts": "Títulos e Posts",
-    "match-words": "Match words",
-    "all": "All",
-    "any": "Any",
+    "match-words": "Palavras correspondentes",
+    "all": "Todos",
+    "any": "Qualquer",
     "posted-by": "Postado por",
     "in-categories": "Nas Categorias",
     "search-child-categories": "Pesquisar subcategorias",
@@ -31,7 +31,7 @@
     "sort-by": "Ordenar por",
     "last-reply-time": "Data da última resposta",
     "topic-title": "Título do tópico",
-    "topic-votes": "Topic votes",
+    "topic-votes": "Votos do Tópico",
     "number-of-replies": "Número de respostas",
     "number-of-views": "Número de visualizações",
     "topic-start-date": "Data do início do tópico",
@@ -44,5 +44,5 @@
     "search-preferences-saved": "Preferências de pesquisa salvas",
     "search-preferences-cleared": "Preferências de pesquisa limpas",
     "show-results-as": "Mostrar resultados como",
-    "see-more-results": "See more results (%1)"
+    "see-more-results": "Veja mais resultados (%1)"
 }

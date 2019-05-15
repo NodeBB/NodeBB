@@ -30,6 +30,8 @@ events.types = [
 	'topic-purge',
 	'topic-rename',
 	'password-reset',
+	'user-makeAdmin',
+	'user-removeAdmin',
 	'user-ban',
 	'user-unban',
 	'user-delete',

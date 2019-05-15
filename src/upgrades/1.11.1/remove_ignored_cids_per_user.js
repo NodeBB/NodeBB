@@ -16,6 +16,7 @@ module.exports = {
 			db.deleteAll(keys, next);
 		}, {
 			progress: this.progress,
+			batch: 500,
 		}, callback);
 	},
 };

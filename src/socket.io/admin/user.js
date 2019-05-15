@@ -28,8 +28,20 @@ User.makeAdmins = function (socket, uids, callback) {
 				}
 			}
 
-			async.each(uids, function (uid, next) {
-				groups.join('administrators', uid, next);
+			async.eachSeries(uids, function (uid, next) {
+				async.waterfall([
+					function (next) {
+						groups.join('administrators', uid, next);
+					},
+					function (next) {
+						events.log({
+							type: 'user-makeAdmin',
+							uid: socket.uid,
+							targetUid: uid,
+							ip: socket.ip,
+						}, next);
+					},
+				], next);
 			}, next);
 		},
 	], callback);
@@ -51,6 +63,14 @@ User.removeAdmins = function (socket, uids, callback) {
 				}
 
 				groups.leave('administrators', uid, next);
+			},
+			function (next) {
+				events.log({
+					type: 'user-removeAdmin',
+					uid: socket.uid,
+					targetUid: uid,
+					ip: socket.ip,
+				}, next);
 			},
 		], next);
 	}, callback);

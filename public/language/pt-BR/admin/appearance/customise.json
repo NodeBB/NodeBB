@@ -1,16 +1,16 @@
 {
-	"custom-css": "CSS/LESS personalizado.",
+	"custom-css": "CSS/LESS personalizado",
 	"custom-css.description": "Insira suas próprias declarações CSS/LESS aqui, elas serão aplicadas após todos os outros estilos.",
-	"custom-css.enable": "Habilitar CSS/LESS personalizado.",
+	"custom-css.enable": "Habilitar CSS/LESS personalizado",
 
 	"custom-js": "Javascript personalizado.",
 	"custom-js.description": "Insira seu javascript aqui. Ele será executado após a pagina ter sido completamente carregada.",
 	"custom-js.enable": "Habilitar javascript personalizado.",
 
 	"custom-header": "Cabeçalho Personalizado",
-	"custom-header.description": "Insira HTML personalizado aqui ( Meta Tags, etc...) para que seja adicionado ao <code>&lt;head&gt;</code> do seu fórum. Tags de script são permitidas, porém são desaconselhadas uma vez que a tab de Javascript Personalizado está disponível.",
-	"custom-header.enable": "Ligar o Cabeçalho Personalizado",
+	"custom-header.description": "Insira HTML personalizado aqui ( Meta Tags, etc.) para que seja adicionado ao <code>&lt;head&gt;</code> do seu fórum. Tags de script são permitidas, porém são desaconselhadas uma vez que a tab de Javascript Personalizado está disponível.",
+	"custom-header.enable": "Habilitar Cabeçalho Personalizado",
 
-	"custom-css.livereload": "Habilitar Recarregamento Automático",
-	"custom-css.livereload.description": "Ligue isso para forçar com que todas as sessões em todos os dispositivos em tua conta atualizem quando quer que você clique em salvar"
+	"custom-css.livereload": "Ativar Recarregamento Automático",
+	"custom-css.livereload.description": "Ative esta opção para forçar todas as sessões em todos os dispositivos que estão conectados a sua conta a serem atualizados sempre que você clicar em salvar"
 }

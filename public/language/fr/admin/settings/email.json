@@ -4,9 +4,9 @@
 	"address-help": "L'adresse e-mail suivante fait référence à l'adresse que le destinataire verra dans les champs \"De :\" et \"Répondre à :\". ",
 	"from": "Nom de l’expéditeur",
 	"from-help": "Le nom de l’expéditeur à afficher dans l'e-mail",
-	"sendmail-rate-limit": "Send <em>X</em> emails...",
-	"sendmail-rate-delta": "... every <em>X</em> milliseconds",
-	"sendmail-rate-help": "Instructs the NodeBB mailer to limit the number of messages sent at once in order to not overwhelm email receiving services. These options do not apply if SMTP Transport is enabled (below).",
+	"sendmail-rate-limit": "Envoyer <em>X</em> emails...",
+	"sendmail-rate-delta": ".... toutes les <em>X</em> millisecondes",
+	"sendmail-rate-help": "Indique à NodeBB la limite du nombre de mails envoyés en une seule fois afin de ne pas surcharger les services de réception d’e-mails. Ces options ne s'appliquent pas si le transport SMTP est activé (ci-dessous).",
 
 	"smtp-transport": "Protocole SMTP",
 	"smtp-transport.enabled": "Utiliser un server extérieur pour envoyer les emails",

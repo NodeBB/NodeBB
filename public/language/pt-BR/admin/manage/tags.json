@@ -3,7 +3,7 @@
 	"bg-color": "Cor de Fundo",
 	"text-color": "Cor do Text",
 	"create-modify": "Criar & Modificar Tags",
-	"description": "Escolha tags clicando e/ou arrastando, use shift para escolher diversas.",
+	"description": "Escolha tags clicando e/ou arrastando. Use o SHIFT para escolher várias ao mesmo tempo.",
 	"create": "Criar Tag",
 	"modify": "Modificar Tags",
 	"rename": "Renomear Tags",

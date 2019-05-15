@@ -45,7 +45,7 @@
     "account/posts": "Сообщение от участника %1",
     "account/topics": "Тема создана участником %1",
     "account/groups": "%1 групп",
-    "account/watched_categories": "%1's Watched Categories",
+    "account/watched_categories": "%1 просмотренных категорий",
     "account/bookmarks": "%1 сообщений в закладках",
     "account/settings": "Настройки учётной записи",
     "account/watched": "Тему просмотрели %1",

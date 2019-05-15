@@ -100,6 +100,10 @@ SocketUser.reset.send = function (socket, email, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
+	if (meta.config['password:disableEdit']) {
+		return callback(new Error('[[error:no-privileges]]'));
+	}
+
 	user.reset.send(email, function (err) {
 		events.log({
 			type: 'password-reset',

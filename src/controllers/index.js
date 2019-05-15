@@ -40,6 +40,10 @@ Controllers.errors = require('./errors');
 Controllers.composer = require('./composer');
 
 Controllers.reset = function (req, res, next) {
+	if (meta.config['password:disableEdit']) {
+		return helpers.notAllowed(req, res);
+	}
+
 	res.locals.metaTags = {
 		...res.locals.metaTags,
 		name: 'robots',
@@ -120,6 +124,7 @@ Controllers.login = function (req, res, next) {
 	}]);
 	data.error = req.flash('error')[0] || errorText;
 	data.title = '[[pages:login]]';
+	data.allowPasswordReset = !meta.config['password:disableEdit'];
 
 	privileges.global.canGroup('local:login', 'registered-users', function (err, hasLoginPrivilege) {
 		if (err) {

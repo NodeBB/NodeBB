@@ -77,8 +77,8 @@ exports.reset = function (options, callback) {
 
 	async.series([db.init].concat(tasks), function (err) {
 		if (err) {
-			winston.error('[reset] Errors were encountered during reset', err);
-			throw err;
+			winston.error('[reset] Errors were encountered during reset -- ' + err.message);
+			return callback(err);
 		}
 
 		winston.info('[reset] Reset complete');

@@ -3,7 +3,6 @@
 var async = require('async');
 var validator = require('validator');
 var nconf = require('nconf');
-var winston = require('winston');
 var _ = require('lodash');
 
 var db = require('../database');
@@ -85,17 +84,11 @@ module.exports = function (User) {
 				plugins.fireHook('filter:user.whitelistFields', { uids: uids, whitelist: fieldWhitelist.slice() }, next);
 			},
 			function (results, next) {
-				if (fields.length) {
-					const whitelistSet = new Set(results.whitelist);
-					fields = fields.filter(function (field) {
-						var isFieldWhitelisted = field && whitelistSet.has(field);
-						if (!isFieldWhitelisted) {
-							winston.verbose('[user/getUsersFields] ' + field + ' removed because it is not whitelisted, see `filter:user.whitelistFields`');
-						}
-						return isFieldWhitelisted;
-					});
-				} else {
+				if (!fields.length) {
 					fields = results.whitelist;
+				} else {
+					// Never allow password retrieval via this method
+					fields = fields.filter(value => value !== 'password');
 				}
 
 				db.getObjectsFields(uidsToUserKeys(uniqueUids), fields, next);

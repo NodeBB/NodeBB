@@ -1,11 +1,11 @@
 {
-	"post-queue": "Post Queue",
-	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Posting Restrictions</a> and enable <strong>Post Queue</strong>.",
-	"user": "User",
-	"category": "Category",
-	"title": "Title",
-	"content": "Content",
-	"posted": "Posted",
-	"reply-to": "Reply to \"%1\"",
-	"content-editable": "You can click on individual content to edit before posting."
+	"post-queue": "Post in attesa",
+	"description": "Non ci sono post nei post in attesa. <br> Per abilitare questa funzione, vai in <a href=\"%1\">Impostazioni &rarr; Post &rarr; Restrizioni pubblicazione</a> e abilita Post in attesa",
+	"user": "Utente",
+	"category": "Categoria",
+	"title": "Titolo",
+	"content": "Contenuto",
+	"posted": "Pubblicato",
+	"reply-to": "Rispondi a \"%1\"",
+	"content-editable": "Puoi cliccare su singoli contenuti per modificarli prima della pubblicazione."
 }

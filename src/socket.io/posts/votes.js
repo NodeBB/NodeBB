@@ -14,7 +14,7 @@ module.exports = function (SocketPosts) {
 		if (!data || !data.pid || !data.cid) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
-
+		const showDownvotes = !meta.config['downvote:disabled'];
 		async.waterfall([
 			function (next) {
 				if (meta.config.votesArePublic) {
@@ -32,6 +32,9 @@ module.exports = function (SocketPosts) {
 						db.getSetMembers('pid:' + data.pid + ':upvote', next);
 					},
 					downvoteUids: function (next) {
+						if (!showDownvotes) {
+							return setImmediate(next, null, []);
+						}
 						db.getSetMembers('pid:' + data.pid + ':downvote', next);
 					},
 				}, next);
@@ -41,16 +44,16 @@ module.exports = function (SocketPosts) {
 					upvoters: function (next) {
 						user.getUsersFields(results.upvoteUids, ['username', 'userslug', 'picture'], next);
 					},
-					upvoteCount: function (next) {
-						next(null, results.upvoteUids.length);
-					},
 					downvoters: function (next) {
 						user.getUsersFields(results.downvoteUids, ['username', 'userslug', 'picture'], next);
 					},
-					downvoteCount: function (next) {
-						next(null, results.downvoteUids.length);
-					},
 				}, next);
+			},
+			function (results, next) {
+				results.upvoteCount = results.upvoters.length;
+				results.downvoteCount = results.downvoters.length;
+				results.showDownvotes = showDownvotes;
+				next(null, results);
 			},
 		], callback);
 	};

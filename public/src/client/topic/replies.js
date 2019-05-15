@@ -31,7 +31,7 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 					'downvote:disabled': ajaxify.data['downvote:disabled'],
 					'reputation:disabled': ajaxify.data['reputation:disabled'],
 					loggedIn: !!app.user.uid,
-					hideReplies: true,
+					hideReplies: config.hasOwnProperty('showNestedReplies') ? !config.showNestedReplies : true,
 				};
 				app.parseAndTranslate('topic', 'posts', tplData, function (html) {
 					$('<div>', { component: 'post/replies' }).html(html).hide().insertAfter(button)
@@ -56,7 +56,7 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 			return;
 		}
 		incrementCount(post, 1);
-		data.hideReplies = true;
+		data.hideReplies = config.hasOwnProperty('showNestedReplies') ? !config.showNestedReplies : true;
 		app.parseAndTranslate('topic', 'posts', data, function (html) {
 			var replies = $('[component="post"][data-pid="' + post.toPid + '"] [component="post/replies"]').first();
 			if (replies.length) {

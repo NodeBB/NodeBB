@@ -319,11 +319,18 @@ module.exports = function (User) {
 				User.isPasswordValid(data.newPassword, next);
 			},
 			function (next) {
-				if (parseInt(uid, 10) !== parseInt(data.uid, 10)) {
-					User.isAdministrator(uid, next);
-				} else {
-					User.isPasswordCorrect(uid, data.currentPassword, data.ip, next);
+				User.isAdministrator(uid, next);
+			},
+			function (isAdmin, next) {
+				if (meta.config['password:disableEdit'] && !isAdmin) {
+					return next(new Error('[[error:no-privileges]]'));
 				}
+
+				if (isAdmin && parseInt(uid, 10) !== parseInt(data.uid, 10)) {
+					return next(null, true);
+				}
+
+				User.isPasswordCorrect(uid, data.currentPassword, data.ip, next);
 			},
 			function (isAdminOrPasswordMatch, next) {
 				if (!isAdminOrPasswordMatch) {

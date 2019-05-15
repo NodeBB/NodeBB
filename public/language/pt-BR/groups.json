@@ -27,8 +27,8 @@
     "details.disableJoinRequests": "Desabilitar pedidos de participação",
     "details.grant": "Conceder/Retomar a Posse",
     "details.kick": "Chutar",
-    "details.kick_confirm": "Você tem certeza que deseja remover este membro do grupo?",
-    "details.add-member": "Add Member",
+    "details.kick_confirm": "Você tem certeza de que deseja remover este membro do grupo?",
+    "details.add-member": "Adicionar Membro",
     "details.owner_options": "Administração do Grupo",
     "details.group_name": "Nome do Grupo",
     "details.member_count": "Número de Membros",
@@ -36,8 +36,8 @@
     "details.description": "Descrição",
     "details.badge_preview": "Visualização do Distintivo",
     "details.change_icon": "Mudar Ícone",
-    "details.change_label_colour": "Change Label Colour",
-    "details.change_text_colour": "Change Text Colour",
+    "details.change_label_colour": "Alterar Cor do Rótulo",
+    "details.change_text_colour": "Alterar Cor do Texto",
     "details.badge_text": "Texto da Badge",
     "details.userTitleEnabled": "Mostrar Badge",
     "details.private_help": "Se habilitado, a entrada nos grupos requer aprovação de um dos donos do grupo",
@@ -54,7 +54,7 @@
     "membership.reject": "Rejeitar",
     "new-group.group_name": "Nome do Grupo:",
     "upload-group-cover": "Fazer upload de capa do grupo",
-    "bulk-invite-instructions": "Entre uma lista separada por vírgulas de nome usuários para convidar à este grupo",
-    "bulk-invite": "Convite em Lote",
-    "remove_group_cover_confirm": "Tem certeza que deseja remover a imagem de capa?"
+    "bulk-invite-instructions": "Digite uma lista, separada por vírgulas, de nomes usuários para convidar para este grupo",
+    "bulk-invite": "Convite em Massa",
+    "remove_group_cover_confirm": "Tem certeza de que deseja remover a imagem de capa?"
 }
