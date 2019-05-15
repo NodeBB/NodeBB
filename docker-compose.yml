@@ -2,18 +2,18 @@
 
 version: '3'
 services:
-  node_bb:
+  nodebb:
     build:
      context: .
      dockerfile: Dockerfile
     links:
      - redis
      - mongo
-    image: node_bb
+    image: nodebb
     ports:
      - "4567:4567"
-    hostname: node_bb
-    container_name: node_bb
+    hostname: nodebb
+    container_name: nodebb
     environment:
      - redis__host=redis
      - mongo__host=mongo
