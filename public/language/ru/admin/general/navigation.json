@@ -5,11 +5,11 @@
 	"tooltip": "Подсказка:",
 	"text": "Текст:",
 	"text-class": "Класс текста: <small>опциоально</small>",
-	"class": "Class: <small>optional</small>",
+	"class": "Класс: <small>опционально</small>",
 	"id": "ID: <small>опциоанально</small>",
 
 	"properties": "Свойства:",
-	"groups": "Groups:",
+	"groups": "Группы:",
 	"open-new-window": "Открывать в новом окне",
 
 	"btn.delete": "Удалить",
