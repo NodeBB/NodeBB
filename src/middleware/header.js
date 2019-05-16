@@ -107,7 +107,6 @@ module.exports = function (middleware) {
 						});
 					},
 					navigation: async.apply(navigation.get, req.uid),
-					tags: async.apply(meta.tags.parse, req, data, res.locals.metaTags, res.locals.linkTags),
 					banned: async.apply(user.bans.isBanned, req.uid),
 					banReason: async.apply(user.bans.getReason, req.uid),
 
@@ -180,8 +179,8 @@ module.exports = function (middleware) {
 				templateValues.browserTitle = results.browserTitle;
 				templateValues.navigation = results.navigation;
 				templateValues.unreadCount = unreadCount;
-				templateValues.metaTags = results.tags.meta;
-				templateValues.linkTags = results.tags.link;
+				templateValues.metaTags = data._header.tags.meta;
+				templateValues.linkTags = data._header.tags.link;
 				templateValues.isAdmin = results.user.isAdmin;
 				templateValues.isGlobalMod = results.user.isGlobalMod;
 				templateValues.showModMenu = results.user.isAdmin || results.user.isGlobalMod || results.user.isMod;
