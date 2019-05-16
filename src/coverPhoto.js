@@ -28,8 +28,8 @@ function getCover(type, id) {
 		} else {
 			id %= covers.length;
 		}
-		if (covers[id] && !covers[id].startsWith('http')) {
-			coverPhoto = nconf.get('relative_path') + covers[id];
+		if (covers[id]) {
+			coverPhoto = covers[id].startsWith('http') ? covers[id] : (nconf.get('relative_path') + covers[id]);
 		}
 		return coverPhoto;
 	}
