@@ -196,7 +196,9 @@ $(document).ready(function () {
 
 				$('#content, #footer').removeClass('ajaxifying');
 
+				// Only executed on ajaxify. Otherwise these'd be in ajaxify.end()
 				app.refreshTitle(data.title);
+				app.updateTags();
 			});
 		});
 	}

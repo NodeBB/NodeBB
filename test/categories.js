@@ -505,7 +505,7 @@ describe('Categories', function () {
 					socketCategories.setPrivilege({ uid: adminUid }, { cid: parentCid, privilege: 'groups:topics:delete', set: true, member: 'registered-users' }, next);
 				},
 				function (next) {
-					socketCategories.copyPrivilegesToChildren({ uid: adminUid }, parentCid, next);
+					socketCategories.copyPrivilegesToChildren({ uid: adminUid }, { cid: parentCid, group: '' }, next);
 				},
 				function (next) {
 					privileges.categories.can('topics:delete', child2Cid, posterUid, next);
@@ -561,7 +561,7 @@ describe('Categories', function () {
 			], done);
 		});
 
-		it('should copy privileges from', function (done) {
+		it('should copy privileges from another category', function (done) {
 			var child1Cid;
 			var parentCid;
 			async.waterfall([
@@ -584,6 +584,34 @@ describe('Categories', function () {
 				},
 				function (canDelete, next) {
 					assert(canDelete);
+					next();
+				},
+			], done);
+		});
+
+		it('should copy privileges from another category for a single group', function (done) {
+			var child1Cid;
+			var parentCid;
+			async.waterfall([
+				function (next) {
+					Categories.create({ name: 'parent', description: 'copy me' }, next);
+				},
+				function (category, next) {
+					parentCid = category.cid;
+					Categories.create({ name: 'child1' }, next);
+				},
+				function (category, next) {
+					child1Cid = category.cid;
+					socketCategories.setPrivilege({ uid: adminUid }, { cid: parentCid, privilege: 'groups:topics:delete', set: true, member: 'registered-users' }, next);
+				},
+				function (next) {
+					socketCategories.copyPrivilegesFrom({ uid: adminUid }, { fromCid: parentCid, toCid: child1Cid, group: 'registered-users' }, next);
+				},
+				function (next) {
+					privileges.categories.can('topics:delete', child1Cid, 0, next);
+				},
+				function (canDelete, next) {
+					assert(!canDelete);
 					next();
 				},
 			], done);
