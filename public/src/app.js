@@ -864,4 +864,68 @@ app.cacheBuster = null;
 
 		document.head.appendChild(linkEl);
 	};
+
+	app.updateTags = function () {
+		var metaWhitelist = ['title', 'description', /og:.+/, /article:.+/].map(function (val) {
+			return new RegExp(val);
+		});
+		var linkWhitelist = ['canonical', 'alternate', 'up'];
+
+		// Delete the old meta tags
+		Array.prototype.slice
+			.call(document.querySelectorAll('head meta'))
+			.filter(function (el) {
+				var name = el.getAttribute('property') || el.getAttribute('name');
+				return metaWhitelist.some(function (exp) {
+					return !!exp.test(name);
+				});
+			})
+			.forEach(function (el) {
+				document.head.removeChild(el);
+			});
+
+		// Add new meta tags
+		ajaxify.data._header.tags.meta
+			.filter(function (tagObj) {
+				var name = tagObj.name || tagObj.property;
+				return metaWhitelist.some(function (exp) {
+					return !!exp.test(name);
+				});
+			})
+			.forEach(function (tagObj) {
+				var metaEl = document.createElement('meta');
+				Object.keys(tagObj).forEach(function (prop) {
+					metaEl.setAttribute(prop, tagObj[prop]);
+				});
+				document.head.appendChild(metaEl);
+			});
+
+		// Delete the old link tags
+		Array.prototype.slice
+			.call(document.querySelectorAll('head link'))
+			.filter(function (el) {
+				var name = el.getAttribute('rel');
+				return linkWhitelist.some(function (item) {
+					return item === name;
+				});
+			})
+			.forEach(function (el) {
+				document.head.removeChild(el);
+			});
+
+		// Add new link tags
+		ajaxify.data._header.tags.link
+			.filter(function (tagObj) {
+				return linkWhitelist.some(function (item) {
+					return item === tagObj.rel;
+				});
+			})
+			.forEach(function (tagObj) {
+				var linkEl = document.createElement('link');
+				Object.keys(tagObj).forEach(function (prop) {
+					linkEl.setAttribute(prop, tagObj[prop]);
+				});
+				document.head.appendChild(linkEl);
+			});
+	};
 }());

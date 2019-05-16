@@ -208,18 +208,28 @@ module.exports = function (Categories) {
 		], callback);
 	}
 
-	Categories.copyPrivilegesFrom = function (fromCid, toCid, callback) {
+	Categories.copyPrivilegesFrom = function (fromCid, toCid, group, callback) {
+		if (typeof group === 'function') {
+			callback = group;
+			group = '';
+		}
+
 		async.waterfall([
 			function (next) {
 				plugins.fireHook('filter:categories.copyPrivilegesFrom', {
 					privileges: privileges.privilegeList.slice(),
 					fromCid: fromCid,
 					toCid: toCid,
+					group: group,
 				}, next);
 			},
 			function (data, next) {
 				async.each(data.privileges, function (privilege, next) {
-					copyPrivilege(privilege, data.fromCid, data.toCid, next);
+					if (group) {
+						copyPrivilegeByGroup(privilege, data.fromCid, data.toCid, group, next);
+					} else {
+						copyPrivilege(privilege, data.fromCid, data.toCid, next);
+					}
 				}, next);
 			},
 		], callback);
@@ -246,6 +256,24 @@ module.exports = function (Categories) {
 				async.eachSeries(members, function (member, next) {
 					groups.join('cid:' + toCid + ':privileges:' + privilege, member, next);
 				}, next);
+			},
+		], callback);
+	}
+
+	function copyPrivilegeByGroup(privilege, fromCid, toCid, group, callback) {
+		async.waterfall([
+			function (next) {
+				groups.leave('cid:' + toCid + ':privileges:' + privilege, group, next);
+			},
+			function (next) {
+				db.isSortedSetMember('group:cid:' + fromCid + ':privileges:' + privilege + ':members', group, next);
+			},
+			function (isMember, next) {
+				if (!isMember) {
+					return callback();
+				}
+
+				groups.join('cid:' + toCid + ':privileges:' + privilege, group, next);
 			},
 		], callback);
 	}

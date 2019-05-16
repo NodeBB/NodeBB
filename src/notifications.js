@@ -241,6 +241,11 @@ function pushToUids(uids, notification, callback) {
 	}
 
 	function sendEmail(uids, callback) {
+		// Update CTA messaging (as not all notification types need custom text)
+		if (['new-reply', 'new-chat'].includes(notification.type)) {
+			notification['cta-type'] = notification.type;
+		}
+
 		async.eachLimit(uids, 3, function (uid, next) {
 			emailer.send('notification', uid, {
 				path: notification.path,

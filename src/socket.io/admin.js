@@ -279,8 +279,8 @@ SocketAdmin.email.test = function (socket, data, callback) {
 			function (next) {
 				notifications.create({
 					type: 'test',
-					bodyShort: '[[admin-settings-email:testing]]',
-					bodyLong: '[[admin-settings-email:testing.send-help]]',
+					bodyShort: '[[email:notif.test.short]]',
+					bodyLong: '[[email:notif.test.long]]',
 					nid: 'uid:' + socket.uid + ':test',
 					path: '/',
 					from: socket.uid,
