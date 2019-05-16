@@ -25,6 +25,7 @@ module.exports = {
 							function (next) {
 								try {
 									noteData = JSON.parse(note);
+									noteData.timestamp = noteData.timestamp || Date.now();
 									setImmediate(next);
 								} catch (err) {
 									next(err);
