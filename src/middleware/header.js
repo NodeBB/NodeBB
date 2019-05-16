@@ -179,8 +179,6 @@ module.exports = function (middleware) {
 				templateValues.browserTitle = results.browserTitle;
 				templateValues.navigation = results.navigation;
 				templateValues.unreadCount = unreadCount;
-				templateValues.metaTags = data._header.tags.meta;
-				templateValues.linkTags = data._header.tags.link;
 				templateValues.isAdmin = results.user.isAdmin;
 				templateValues.isGlobalMod = results.user.isGlobalMod;
 				templateValues.showModMenu = results.user.isAdmin || results.user.isGlobalMod || results.user.isMod;
@@ -198,6 +196,11 @@ module.exports = function (middleware) {
 
 				templateValues.template = { name: res.locals.template };
 				templateValues.template[res.locals.template] = true;
+
+				if (data.hasOwnProperty('_header')) {
+					templateValues.metaTags = data._header.tags.meta;
+					templateValues.linkTags = data._header.tags.link;
+				}
 
 				if (req.route && req.route.path === '/') {
 					modifyTitle(templateValues);
