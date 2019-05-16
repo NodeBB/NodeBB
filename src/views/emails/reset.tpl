@@ -31,7 +31,7 @@
 							<tr>
 								<td style="border-radius: 3px; background: #222222; text-align: center;" class="button-td">
 									<a href="{reset_link}" style="background: #222222; border: 15px solid #222222; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; font-size: 13px; line-height: 1.1; text-align: center; text-decoration: none; display: block; border-radius: 3px; font-weight: bold;" class="button-a">
-										<span style="color:#ffffff;" class="button-link">&nbsp;&nbsp;&nbsp;&nbsp;[[email:reset.cta]]&nbsp;&nbsp;&nbsp;&nbsp;</span>
+										<span style="color:#ffffff;" class="button-link">[[email:reset.cta]] &rarr;</span>
 									</a>
 								</td>
 							</tr>
