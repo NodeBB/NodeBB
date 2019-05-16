@@ -94,7 +94,18 @@
 									<!-- ENDIF privileges.groups.isPrivate -->
 									{privileges.groups.name}
 								</td>
-								<td></td>
+								<td>
+									<div class="dropdown">
+										<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+											<i class="fa fa-copy"></i>
+										</button>
+										<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+											<li data-action="copyToAllGroup"><a href="#">[[admin/manage/categories:privileges.copy-group-privileges-to-all-categories]]</a></li>
+											<li data-action="copyToChildrenGroup"><a href="#">[[admin/manage/categories:privileges.copy-group-privileges-to-children]]</a></li>
+											<li data-action="copyPrivilegesFromGroup"><a href="#">[[admin/manage/categories:privileges.copy-group-privileges-from]]</a></li>
+										</ul>
+									</div>
+								</td>
 								{function.spawnPrivilegeStates, privileges.groups.name, ../privileges}
 							</tr>
 							<!-- END privileges.groups -->
@@ -104,11 +115,14 @@
 										<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.group">
 											[[admin/manage/categories:privileges.search-group]]
 										</button>
+										<button type="button" class="btn btn-info pull-right" data-ajaxify="false" data-action="copyPrivilegesFrom">
+											[[admin/manage/categories:privileges.copy-from-category]]
+										</button>
 										<button type="button" class="btn btn-info pull-right" data-ajaxify="false" data-action="copyToChildren">
 											[[admin/manage/categories:privileges.copy-to-children]]
 										</button>
-										<button type="button" class="btn btn-info pull-right" data-ajaxify="false" data-action="copyPrivilegesFrom">
-											[[admin/manage/categories:privileges.copy-from-category]]
+										<button type="button" class="btn btn-info pull-right" data-ajaxify="false" data-action="copyToAll">
+											[[admin/manage/categories:privileges.copy-privileges-to-all-categories]]
 										</button>
 									</div>
 								</td>
