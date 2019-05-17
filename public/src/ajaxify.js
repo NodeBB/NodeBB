@@ -71,7 +71,7 @@ $(document).ready(function () {
 			apiXHR.abort();
 		}
 
-		app.previousUrl = !['reset'].includes(ajaxify.currentPage) ? window.location.href : app.previousUrl;
+		app.previousUrl = !['reset'].includes(ajaxify.currentPage) ? window.location.pathname : app.previousUrl;
 
 		url = ajaxify.start(url);
 
