@@ -98,9 +98,11 @@ function postDiffLoad(data) {
 
 	// Replace content with re-constructed content from that point in time
 	data.post.content = data.diffs.reduce(function (content, currentDiff) {
-		return diff.applyPatch(content, currentDiff.patch, {
+		const result = diff.applyPatch(content, currentDiff.patch, {
 			fuzzFactor: 1,
 		});
+
+		return typeof result === 'string' ? result : content;
 	}, data.post.content);
 
 	// Clear editor data (as it is outdated for this content)
