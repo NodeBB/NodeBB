@@ -22,11 +22,13 @@ topicsController.get = function getTopic(req, res, callback) {
 	var tid = req.params.topic_id;
 	var currentPage = parseInt(req.query.page, 10) || 1;
 	var pageCount = 1;
+	var postCount = 0;
+	var topicData;
 	var userPrivileges;
 	var settings;
 	var rssToken;
 
-	if ((req.params.post_index && !utils.isNumber(req.params.post_index)) || !utils.isNumber(tid)) {
+	if ((req.params.post_index && !utils.isNumber(req.params.post_index) && req.params.post_index !== 'unread') || !utils.isNumber(tid)) {
 		return callback();
 	}
 
@@ -48,7 +50,8 @@ topicsController.get = function getTopic(req, res, callback) {
 			}, next);
 		},
 		function (results, next) {
-			if (!results.topic) {
+			topicData = results.topic;
+			if (!topicData) {
 				return callback();
 			}
 
@@ -71,9 +74,8 @@ topicsController.get = function getTopic(req, res, callback) {
 			}
 
 			settings = results.settings;
-			var postCount = results.topic.postcount;
+			postCount = results.topic.postcount;
 			pageCount = Math.max(1, Math.ceil(postCount / settings.postsPerPage));
-			results.topic.postcount = postCount;
 
 			if (utils.isNumber(req.params.post_index) && (req.params.post_index < 1 || req.params.post_index > postCount)) {
 				return helpers.redirect(res, '/topic/' + req.params.topic_id + '/' + req.params.slug + (req.params.post_index > postCount ? '/' + postCount : ''));
@@ -82,6 +84,15 @@ topicsController.get = function getTopic(req, res, callback) {
 			if (settings.usePagination && (currentPage < 1 || currentPage > pageCount)) {
 				return callback();
 			}
+
+			if (req.params.post_index === 'unread') {
+				topics.getUserBookmark(tid, req.uid, next);
+			} else {
+				next(null, req.params.post_index);
+			}
+		},
+		function (post_index, next) {
+			req.params.post_index = post_index;
 
 			var set = 'tid:' + tid + ':posts';
 			var reverse = false;
@@ -123,7 +134,7 @@ topicsController.get = function getTopic(req, res, callback) {
 			var start = ((currentPage - 1) * settings.postsPerPage) + postIndex;
 			var stop = start + settings.postsPerPage - 1;
 
-			topics.getTopicWithPosts(results.topic, set, req.uid, start, stop, reverse, next);
+			topics.getTopicWithPosts(topicData, set, req.uid, start, stop, reverse, next);
 		},
 		function (topicData, next) {
 			if (topicData.category.disabled) {
