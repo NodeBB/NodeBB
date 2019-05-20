@@ -75,7 +75,7 @@
 	"search.keep-typing": "Digite para ver mais resultados...",
 	"search.start-typing": "Comece a digitar para ver resultados...",
 
-	"connection-lost": "A conexão com %1 foi perdida, tentando reconectar...",
+	"connection-lost": "A conexão com o %1 foi perdida, tentando reconectar...",
 
 	"alerts.version": "Usando <strong>NodeBB v%1</strong>",
 	"alerts.upgrade": "Atualizar para v%1"

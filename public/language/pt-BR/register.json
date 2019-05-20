@@ -1,7 +1,7 @@
 {
     "register": "Cadastrar",
     "cancel_registration": "Cancelar Cadastro",
-    "help.email": "Por padrão seu email ficará invisível para o publico.",
+    "help.email": "Por padrão, seu e-mail ficará oculto ao público.",
     "help.username_restrictions": "Um nome de usuário único entre %1 e %2 caracteres. Os outros poderão te mencionar digitando @<span id='yourUsername'>usuário</span>.",
     "help.minimum_password_length": "Sua senha tem que ter no mínimo %1 caracteres.",
     "email_address": "Endereço de Email",
