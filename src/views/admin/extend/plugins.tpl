@@ -32,7 +32,7 @@
 			<div class="panel-body">
 				<div class="checkbox">
 					<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-						<input class="mdl-switch__input" type="checkbox" data-field="submitPluginUsage" <!-- IF submitPluginUsage -->checked<!-- ENDIF submitPluginUsage -->/>
+						<input id="plugin-submit-usage" class="mdl-switch__input" type="checkbox" data-field="submitPluginUsage" <!-- IF submitPluginUsage -->checked<!-- ENDIF submitPluginUsage -->/>
 						<span class="mdl-switch__label">[[admin/extend/plugins:submit-anonymous-usage]]</span>
 					</label>
 				</div>

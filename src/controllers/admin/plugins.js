@@ -2,6 +2,7 @@
 
 var async = require('async');
 var plugins = require('../../plugins');
+var meta = require('../../meta');
 
 var pluginsController = module.exports;
 
@@ -57,6 +58,7 @@ pluginsController.get = function (req, res, next) {
 				incompatible: payload.all.filter(function (plugin) {
 					return !compatiblePkgNames.includes(plugin.name);
 				}),
+				submitPluginUsage: meta.config.submitPluginUsage,
 			});
 		},
 	], next);

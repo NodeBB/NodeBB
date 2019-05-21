@@ -150,8 +150,17 @@ module.exports = function (Plugins) {
 				},
 			], function (err) {
 				if (err) {
+					winston.error(err.stack);
 					winston.verbose('[plugins] Could not load plugin : ' + pluginData.id);
-					return callback(err);
+					return callback();
+				}
+
+				if (!pluginData.private) {
+					Plugins.loadedPlugins.push({
+						id: pluginData.id,
+						version: pluginData.version,
+						url: pluginData.url || (pluginData && pluginData.repository ? pluginData.repository.url : '') || '',
+					});
 				}
 
 				winston.verbose('[plugins] Loaded plugin: ' + pluginData.id);
@@ -196,9 +205,8 @@ module.exports = function (Plugins) {
 				callback();
 			}
 		} catch (err) {
-			winston.error(err.stack);
 			winston.warn('[plugins] Unable to parse library for: ' + pluginData.id);
-			callback();
+			callback(err);
 		}
 	}
 };

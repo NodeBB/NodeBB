@@ -15,6 +15,7 @@ var Plugins = module.exports;
 require('./install')(Plugins);
 require('./load')(Plugins);
 require('./hooks')(Plugins);
+require('./usage')(Plugins);
 Plugins.data = require('./data');
 
 Plugins.getPluginPaths = Plugins.data.getPluginPaths;
@@ -33,6 +34,7 @@ Plugins.libraryPaths = [];
 Plugins.versionWarning = [];
 Plugins.soundpacks = [];
 Plugins.languageData = {};
+Plugins.loadedPlugins = [];
 
 Plugins.initialized = false;
 
@@ -105,6 +107,7 @@ Plugins.reload = function (callback) {
 	Plugins.clientScripts.length = 0;
 	Plugins.acpScripts.length = 0;
 	Plugins.libraryPaths.length = 0;
+	Plugins.loadedPlugins.length = 0;
 
 	async.waterfall([
 		Plugins.getPluginPaths,
