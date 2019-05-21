@@ -9,6 +9,7 @@
 
 	"plugin-search": "Plugin Search",
 	"plugin-search-placeholder": "Search for plugin...",
+	"submit-anonymous-usage": "Submit anonymous plugin usage data.",
 	"reorder-plugins": "Re-order Plugins",
 	"order-active": "Order Active Plugins",
 	"dev-interested": "Interested in writing plugins for NodeBB?",
