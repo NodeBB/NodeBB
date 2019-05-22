@@ -199,18 +199,19 @@ Emailer.send = function (template, uid, params, callback) {
 	async.waterfall([
 		function (next) {
 			async.parallel({
-				email: async.apply(User.getUserField, uid, 'email'),
+				userData: async.apply(User.getUserFields, uid, ['email', 'username']),
 				settings: async.apply(User.getSettings, uid),
 			}, next);
 		},
 		async function (results) {
-			if (!results.email) {
+			if (!results.userData || !results.userData.email) {
 				winston.warn('uid : ' + uid + ' has no email, not sending.');
 				return;
 			}
 			params.uid = uid;
+			params.username = results.userData.username;
 			params.rtl = await translator.translate('[[language:dir]]', results.settings.userLang) === 'rtl';
-			Emailer.sendToEmail(template, results.email, results.settings.userLang, params, function () {});
+			Emailer.sendToEmail(template, results.userData.email, results.settings.userLang, params, function () {});
 		},
 	], function (err) {
 		return callback(err);
