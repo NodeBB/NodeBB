@@ -58,7 +58,12 @@ Auth.reloadRoutes = function (router, callback) {
 
 	async.waterfall([
 		function (next) {
-			plugins.fireHook('filter:auth.init', loginStrategies, next);
+			plugins.fireHook('filter:auth.init', loginStrategies, function (err) {
+				if (err) {
+					winston.error('[authentication] ' + err.stack);
+				}
+				next(null, loginStrategies);
+			});
 		},
 		function (loginStrategies, next) {
 			loginStrategies = loginStrategies || [];
