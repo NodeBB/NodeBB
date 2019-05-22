@@ -211,7 +211,11 @@ Emailer.send = function (template, uid, params, callback) {
 			params.uid = uid;
 			params.username = results.userData.username;
 			params.rtl = await translator.translate('[[language:dir]]', results.settings.userLang) === 'rtl';
-			Emailer.sendToEmail(template, results.userData.email, results.settings.userLang, params, function () {});
+			Emailer.sendToEmail(template, results.userData.email, results.settings.userLang, params, function (err) {
+				if (err) {
+					winston.error(err);
+				}
+			});
 		},
 	], function (err) {
 		return callback(err);
