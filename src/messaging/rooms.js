@@ -250,6 +250,13 @@ module.exports = function (Messaging) {
 		}
 		async.waterfall([
 			function (next) {
+				plugins.fireHook('filter:chat.renameRoom', {
+					uid: uid,
+					roomId: roomId,
+					newName: newName,
+				}, next);
+			},
+			function (result, next) {
 				Messaging.isRoomOwner(uid, roomId, next);
 			},
 			function (isOwner, next) {
