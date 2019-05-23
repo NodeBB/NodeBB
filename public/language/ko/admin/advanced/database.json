@@ -39,8 +39,8 @@
 	"redis.iops": "초당 Instantaneous Ops",
 	"redis.iinput": "Instantaneous Input Per Second",
 	"redis.ioutput": "Instantaneous Output Per Second",
-	"redis.total-input": "Total Input",
-	"redis.total-output": "Total Ouput",
+	"redis.total-input": "총 입력",
+	"redis.total-output": "총 출력",
 
 	"redis.keyspace-hits": "Keyspace 히트",
 	"redis.keyspace-misses": "Keyspace 미스",
