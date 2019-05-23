@@ -60,11 +60,14 @@ middleware.pageView = function pageView(req, res, next) {
 	plugins.fireHook('action:middleware.pageView', { req: req });
 
 	if (req.loggedIn) {
-		user.updateLastOnlineTime(req.uid);
 		if (req.path.startsWith('/api/users') || req.path.startsWith('/users')) {
-			user.updateOnlineUsers(req.uid, next);
+			async.parallel([
+				async.apply(user.updateOnlineUsers, req.uid),
+				async.apply(user.updateLastOnlineTime, req.uid),
+			], next);
 		} else {
 			user.updateOnlineUsers(req.uid);
+			user.updateLastOnlineTime(req.uid);
 			setImmediate(next);
 		}
 	} else {
