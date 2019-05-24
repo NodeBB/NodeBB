@@ -298,8 +298,8 @@ module.exports = function (Topics) {
 		if (!params.blockedUids.length) {
 			return setImmediate(callback, null, hasUnblockedUnread);
 		}
-		async.whilst(function () {
-			return !done;
+		async.whilst(function (next) {
+			next(null, !done);
 		}, function (_next) {
 			async.waterfall([
 				function (next) {

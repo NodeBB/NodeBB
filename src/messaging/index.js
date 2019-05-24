@@ -362,8 +362,8 @@ Messaging.hasPrivateChat = function (uid, withUid, callback) {
 
 			var index = 0;
 			var roomId = 0;
-			async.whilst(function () {
-				return index < roomIds.length && !roomId;
+			async.whilst(function (next) {
+				next(null, index < roomIds.length && !roomId);
 			}, function (next) {
 				Messaging.getUserCountInRoom(roomIds[index], function (err, count) {
 					if (err) {
