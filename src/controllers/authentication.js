@@ -9,7 +9,7 @@ var _ = require('lodash');
 
 var db = require('../database');
 var meta = require('../meta');
-var user = require('../user').async;
+var user = require('../user');
 var plugins = require('../plugins');
 var utils = require('../utils');
 var translator = require('../translator');
@@ -208,7 +208,7 @@ authenticationController.registerComplete = function (req, res, next) {
 					}
 				});
 
-				await user.setUserFields(uid, payload);
+				await user.async.setUserFields(uid, payload);
 				done();
 			}
 		});
