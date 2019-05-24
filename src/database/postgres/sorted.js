@@ -707,14 +707,19 @@ SELECT z."value", z."score"
  WHERE o."_key" = $1::TEXT
  ORDER BY z."score" ASC, z."value" ASC`, [setKey]));
 
-			async.doUntil(function (next) {
+			var isDone = false;
+
+			async.whilst(function (next) {
+				next(null, !isDone);
+			}, function (next) {
 				query.read(batchSize, function (err, rows) {
 					if (err) {
 						return next(err);
 					}
 
 					if (!rows.length) {
-						return next(null, true);
+						isDone = true;
+						return next();
 					}
 
 					rows = rows.map(function (row) {
@@ -729,14 +734,12 @@ SELECT z."value", z."score"
 						}
 
 						if (options.interval) {
-							setTimeout(next, options.interval, null);
+							setTimeout(next, options.interval);
 						} else {
-							next(null);
+							next();
 						}
 					});
 				});
-			}, function (stop, next) {
-				next(null, stop);
 			}, function (err) {
 				done();
 				callback(err);
