@@ -729,14 +729,14 @@ SELECT z."value", z."score"
 						}
 
 						if (options.interval) {
-							setTimeout(next, options.interval);
+							setTimeout(next, options.interval, null);
 						} else {
-							next();
+							next(null);
 						}
 					});
 				});
-			}, function (stop) {
-				return stop;
+			}, function (stop, next) {
+				next(null, stop);
 			}, function (err) {
 				done();
 				callback(err);
