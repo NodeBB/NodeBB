@@ -33,6 +33,7 @@
     "allowUserHomePage": 1,
     "allowMultipleBadges": 0,
     "maximumFileSize": 2048,
+    "stripEXIFData": 1,
     "resizeImageWidthThreshold": 2000,
     "resizeImageWidth": 760,
     "rejectImageWidth": 5000,
