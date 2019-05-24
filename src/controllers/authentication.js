@@ -9,7 +9,7 @@ var _ = require('lodash');
 
 var db = require('../database');
 var meta = require('../meta');
-var user = require('../user');
+var user = require('../user').async;
 var plugins = require('../plugins');
 var utils = require('../utils');
 var translator = require('../translator');
@@ -180,7 +180,7 @@ authenticationController.registerComplete = function (req, res, next) {
 			}
 		};
 
-		async.parallel(callbacks, function (_blank, err) {
+		async.parallel(callbacks, async function (_blank, err) {
 			if (err.length) {
 				err = err.filter(Boolean).map(function (err) {
 					return err.message;
@@ -200,6 +200,7 @@ authenticationController.registerComplete = function (req, res, next) {
 				const payload = req.session.registration;
 				const uid = payload.uid;
 				delete payload.uid;
+				delete payload.returnTo;
 
 				Object.keys(payload).forEach((prop) => {
 					if (typeof payload[prop] === 'boolean') {
@@ -207,7 +208,8 @@ authenticationController.registerComplete = function (req, res, next) {
 					}
 				});
 
-				user.setUserFields(uid, payload, done);
+				await user.setUserFields(uid, payload);
+				done();
 			}
 		});
 	});
