@@ -4,7 +4,6 @@ const nconf = require('nconf');
 const request = require('request');
 const winston = require('winston');
 const crypto = require('crypto');
-const hash = crypto.createHash('sha256');
 const cronJob = require('cron').CronJob;
 
 const pkg = require('../../package.json');
@@ -23,6 +22,7 @@ module.exports = function (Plugins) {
 			return;
 		}
 
+		const hash = crypto.createHash('sha256');
 		hash.update(nconf.get('url'));
 		request.post((nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugin/usage', {
 			form: {
@@ -35,7 +35,7 @@ module.exports = function (Plugins) {
 			if (err) {
 				return winston.error(err);
 			}
-			if (res.status !== 200) {
+			if (res.statusCode !== 200) {
 				winston.error('[plugins.submitUsageData] received ' + res.statusCode + ' ' + body);
 			}
 		});
