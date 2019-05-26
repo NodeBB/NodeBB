@@ -159,7 +159,6 @@ module.exports = function (Plugins) {
 					Plugins.loadedPlugins.push({
 						id: pluginData.id,
 						version: pluginData.version,
-						url: pluginData.url || (pluginData && pluginData.repository ? pluginData.repository.url : '') || '',
 					});
 				}
 
