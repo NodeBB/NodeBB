@@ -39,22 +39,22 @@ module.exports = function (privileges) {
 				var isAdminOrMod = results.isAdministrator || results.isModerator;
 				var editable = isAdminOrMod;
 				var deletable = isAdminOrMod || (isOwner && privData['topics:delete']);
-				var purge = results.isAdministrator || privData.purge;
 
 				plugins.fireHook('filter:privileges.topics.get', {
-					'topics:reply': (privData['topics:reply'] && !topic.locked && !topic.deleted) || isAdminOrMod,
-					'topics:read': privData['topics:read'] || isAdminOrMod,
-					'topics:tag': privData['topics:tag'] || isAdminOrMod,
-					'topics:delete': (isOwner && privData['topics:delete']) || isAdminOrMod,
-					'posts:edit': (privData['posts:edit'] && !topic.locked) || isAdminOrMod,
-					'posts:history': privData['posts:history'] || isAdminOrMod,
-					'posts:delete': (privData['posts:delete'] && !topic.locked) || isAdminOrMod,
-					'posts:view_deleted': privData['posts:view_deleted'] || isAdminOrMod,
-					read: privData.read || isAdminOrMod,
+					'topics:reply': (privData['topics:reply'] && !topic.locked && !topic.deleted) || results.isAdministrator,
+					'topics:read': privData['topics:read'] || results.isAdministrator,
+					'topics:tag': privData['topics:tag'] || results.isAdministrator,
+					'topics:delete': (privData['topics:delete'] && (isOwner || results.isModerator)) || results.isAdministrator,
+					'posts:edit': (privData['posts:edit'] && !topic.locked) || results.isAdministrator,
+					'posts:history': privData['posts:history'] || results.isAdministrator,
+					'posts:delete': (privData['posts:delete'] && !topic.locked) || results.isAdministrator,
+					'posts:view_deleted': privData['posts:view_deleted'] || results.isAdministrator,
+					read: privData.read || results.isAdministrator,
+					purge: privData.purge || results.isAdministrator,
+
 					view_thread_tools: editable || deletable,
 					editable: editable,
 					deletable: deletable,
-					purge: purge,
 					view_deleted: isAdminOrMod || isOwner,
 					isAdminOrMod: isAdminOrMod,
 					disabled: results.disabled,
@@ -93,18 +93,16 @@ module.exports = function (privileges) {
 				privileges.categories.getBase(privilege, cids, uid, next);
 			},
 			function (results, next) {
-				var isModOf = {};
 				cids = cids.filter(function (cid, index) {
-					isModOf[cid] = results.isModerators[index];
 					return !results.categories[index].disabled &&
-						(results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
+						(results.allowedTo[index] || results.isAdmin);
 				});
 
 				const cidsSet = new Set(cids);
 
 				tids = topicsData.filter(function (topic) {
 					return cidsSet.has(topic.cid) &&
-						(!topic.deleted || results.isAdmin || isModOf[topic.cid]);
+						(!topic.deleted || results.isAdmin);
 				}).map(topic => topic.tid);
 
 				plugins.fireHook('filter:privileges.topics.filter', {

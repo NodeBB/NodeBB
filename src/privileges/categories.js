@@ -64,10 +64,10 @@ module.exports = function (privileges) {
 				var isAdminOrMod = results.isAdministrator || results.isModerator;
 
 				plugins.fireHook('filter:privileges.categories.get', {
-					'topics:create': privData['topics:create'] || isAdminOrMod,
-					'topics:read': privData['topics:read'] || isAdminOrMod,
-					'topics:tag': privData['topics:tag'] || isAdminOrMod,
-					read: privData.read || isAdminOrMod,
+					'topics:create': privData['topics:create'] || results.isAdministrator,
+					'topics:read': privData['topics:read'] || results.isAdministrator,
+					'topics:tag': privData['topics:tag'] || results.isAdministrator,
+					read: privData.read || results.isAdministrator,
 					cid: cid,
 					uid: uid,
 					editable: isAdminOrMod,
@@ -151,7 +151,7 @@ module.exports = function (privileges) {
 			function (results, next) {
 				cids = cids.filter(function (cid, index) {
 					return !results.categories[index].disabled &&
-						(results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
+						(results.allowedTo[index] || results.isAdmin);
 				});
 
 				next(null, cids.filter(Boolean));
