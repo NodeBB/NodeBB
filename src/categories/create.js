@@ -68,6 +68,11 @@ module.exports = function (Categories) {
 					'posts:downvote',
 					'topics:delete',
 				];
+				const modPrivileges = defaultPrivileges.concat([
+					'posts:view_deleted',
+					'purge',
+					'moderate',
+				]);
 
 				async.series([
 					async.apply(db.setObject, 'category:' + category.cid, category),
@@ -78,7 +83,8 @@ module.exports = function (Categories) {
 						Categories.parseDescription(category.cid, category.description, next);
 					},
 					async.apply(db.sortedSetsAdd, ['categories:cid', 'cid:' + parentCid + ':children'], category.order, category.cid),
-					async.apply(privileges.categories.give, defaultPrivileges, category.cid, ['administrators', 'registered-users']),
+					async.apply(privileges.categories.give, defaultPrivileges, category.cid, 'registered-users'),
+					async.apply(privileges.categories.give, modPrivileges, category.cid, ['administrators', 'Global Moderators']),
 					async.apply(privileges.categories.give, ['find', 'read', 'topics:read'], category.cid, ['guests', 'spiders']),
 				], next);
 			},
