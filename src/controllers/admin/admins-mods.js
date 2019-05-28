@@ -4,6 +4,7 @@ var async = require('async');
 
 var groups = require('../../groups');
 var categories = require('../../categories');
+var privileges = require('../../privileges');
 
 var AdminsMods = module.exports;
 
@@ -23,6 +24,7 @@ AdminsMods.get = function (req, res, next) {
 			}, next);
 		},
 		function (results) {
+			results.allPrivileges = privileges.userPrivilegeList;
 			res.render('admin/manage/admins-mods', results);
 		},
 	], next);

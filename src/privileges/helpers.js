@@ -182,12 +182,8 @@ helpers.getGroupPrivileges = function (cid, hookName, groupPrivilegeList, callba
 			});
 
 			groupNames = groups.ephemeralGroups.concat(groupNames);
-			var registeredUsersIndex = groupNames.indexOf('registered-users');
-			if (registeredUsersIndex !== -1) {
-				groupNames.splice(0, 0, groupNames.splice(registeredUsersIndex, 1)[0]);
-			} else {
-				groupNames = ['registered-users'].concat(groupNames);
-			}
+			moveToFront(groupNames, 'Global Moderators');
+			moveToFront(groupNames, 'registered-users');
 
 			var adminIndex = groupNames.indexOf('administrators');
 			if (adminIndex !== -1) {
@@ -226,6 +222,15 @@ helpers.getGroupPrivileges = function (cid, hookName, groupPrivilegeList, callba
 		},
 	], callback);
 };
+
+function moveToFront(groupNames, groupToMove) {
+	const index = groupNames.indexOf(groupToMove);
+	if (index !== -1) {
+		groupNames.splice(0, 0, groupNames.splice(index, 1)[0]);
+	} else {
+		groupNames.unshift(groupToMove);
+	}
+}
 
 helpers.giveOrRescind = function (method, privileges, cids, groupNames, callback) {
 	groupNames = Array.isArray(groupNames) ? groupNames : [groupNames];
