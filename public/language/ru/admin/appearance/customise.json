@@ -8,7 +8,7 @@
 	"custom-js.enable": "Включить пользовательский Javascript",
 
 	"custom-header": "Пользовательский Заголовок",
-	"custom-header.description": "Введите HTML здесь (напр.. Мететеги и т.д.), для добавления в <code>&lt;head&gt;</code> секцию разметки форума. Теги скриптов разрешены, но не рекомендуются т.к. доступна вкладка<a href=\"#custom-header\" data-toggle=\"tab\">Custom Javascript</a>.",
+	"custom-header.description": "Введите HTML здесь (напр.. Мететеги и т.д.), для добавления в <code>&lt;head&gt;</code> секцию разметки форума. Теги скриптов разрешены, но не рекомендуются т.к. доступна вкладка<a href=\"#custom-js\" data-toggle=\"tab\">Custom Javascript</a>.",
 	"custom-header.enable": "Включить Пользовательский заголовок",
 
 	"custom-css.livereload": "Включить автоматическую перезагрузку страниц",

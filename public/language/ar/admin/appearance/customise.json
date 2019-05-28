@@ -8,7 +8,7 @@
 	"custom-js.enable": "تفعيل Javascript المخصصة",
 
 	"custom-header": "ترويسة مخصصة",
-	"custom-header.description": "أدخل HTML الخاصة بك هنا (مثل العلامات الوصفية، وما إلى ذلك)، والتي سيتم إلحاقها الى<code>&lt;head&gt;</code> في تصميم المنتدى. يسمح باستخدام علامات النص البرمجي، ولكن سيتم تعطيلها؛ لتوفر تبويبة\n<a href=\"#custom-header\" data-toggle=\"tab\">Javascript المخصصة</a>",
+	"custom-header.description": "أدخل HTML الخاصة بك هنا (مثل العلامات الوصفية، وما إلى ذلك)، والتي سيتم إلحاقها الى<code>&lt;head&gt;</code> في تصميم المنتدى. يسمح باستخدام علامات النص البرمجي، ولكن سيتم تعطيلها؛ لتوفر تبويبة\n<a href=\"#custom-js\" data-toggle=\"tab\">Javascript المخصصة</a>",
 	"custom-header.enable": "تفعيل الترويسة المخصصة",
 
 	"custom-css.livereload": "تفعيل إعادة التحميل المباشرة",

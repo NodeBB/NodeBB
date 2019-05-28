@@ -8,7 +8,7 @@
 	"custom-js.enable": "Iespējot pielāgotu Javascript",
 
 	"custom-header": "Pielāgotā galvene",
-	"custom-header.description": "Šeit ievadi pielāgoto HTML (piemēram &lt;Meta&gt; tagi), kas tiks pievienots foruma HTML <code>&lt;head&gt;</code> sekcijai. &lt;Script&gt; tagi ir atļauti, bet nav ieteicami, jo to vietā var pielietot <a href=\"#custom-header\" data-toggle=\"tab\">Pielāgoto Javascript</a>.",
+	"custom-header.description": "Šeit ievadi pielāgoto HTML (piemēram &lt;Meta&gt; tagi), kas tiks pievienots foruma HTML <code>&lt;head&gt;</code> sekcijai. &lt;Script&gt; tagi ir atļauti, bet nav ieteicami, jo to vietā var pielietot <a href=\"#custom-js\" data-toggle=\"tab\">Pielāgoto Javascript</a>.",
 	"custom-header.enable": "Iespējot pielāgotu galveni",
 
 	"custom-css.livereload": "Iespējot dzīvo pārlādēšanu",

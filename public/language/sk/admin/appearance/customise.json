@@ -8,7 +8,7 @@
 	"custom-js.enable": "Povoliť používateľský Javascript",
 
 	"custom-header": "Používateľská hlavička",
-	"custom-header.description": "Sem zadajte používateľské HTML (mimo Meta Tags, atď.), Ktoré bude pripojené k časti značiek <code>&lt;head&gt;</code> vášho fóra. Značky pre 'script' sú povolené, ale neodporúčame ich, lebo je dostupný <a href=\"#custom-header\" data-toggle=\"tab\">Používateľský Javascript</a>.",
+	"custom-header.description": "Sem zadajte používateľské HTML (mimo Meta Tags, atď.), Ktoré bude pripojené k časti značiek <code>&lt;head&gt;</code> vášho fóra. Značky pre 'script' sú povolené, ale neodporúčame ich, lebo je dostupný <a href=\"#custom-js\" data-toggle=\"tab\">Používateľský Javascript</a>.",
 	"custom-header.enable": "Povoliť používateľskú hlavičku",
 
 	"custom-css.livereload": "Povoliť aktuálne znovu načítanie",

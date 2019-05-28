@@ -8,7 +8,7 @@
 	"custom-js.enable": "Egyéni Javascript engedélyezése",
 
 	"custom-header": "Egyéni fejléc",
-	"custom-header.description": "Itt adhatsz meg egyéni HTML-t (pl. Meta címkék, stb.), ami fórumod jelölőjének <code>&lt;head&gt;</code> részéhez lesz hozzácsatolva. Megengedettek a szkript címkék is, ám ellenjavalltak, mivel rendelkezésre áll az <a href=\"#custom-header\" data-toggle=\"tab\">Egyéni Javascript</a> lap.",
+	"custom-header.description": "Itt adhatsz meg egyéni HTML-t (pl. Meta címkék, stb.), ami fórumod jelölőjének <code>&lt;head&gt;</code> részéhez lesz hozzácsatolva. Megengedettek a szkript címkék is, ám ellenjavalltak, mivel rendelkezésre áll az <a href=\"#custom-js\" data-toggle=\"tab\">Egyéni Javascript</a> lap.",
 	"custom-header.enable": "Egyéni fejléc engedélyezése",
 
 	"custom-css.livereload": "Élő újratöltés engedélyezése",

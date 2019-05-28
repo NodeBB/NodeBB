@@ -8,7 +8,7 @@
 	"custom-js.enable": "Abilita Javascript personalizzato",
 
 	"custom-header": "Intestazione personalizzata",
-	"custom-header.description": "Inserire l'HTML personalizzato qui (es. Meta Tags, ecc), che sarà aggiunto alla sezione <code>&lt;head&gt;</code>del markup del tuo forum. I tag degli script sono permessi, ma sono sconsigliati, in quanto è disponibile la scheda <a href=\"#custom-header\" data-toggle=\"tab\">Javascript personalizzato</a>.",
+	"custom-header.description": "Inserire l'HTML personalizzato qui (es. Meta Tags, ecc), che sarà aggiunto alla sezione <code>&lt;head&gt;</code>del markup del tuo forum. I tag degli script sono permessi, ma sono sconsigliati, in quanto è disponibile la scheda <a href=\"#custom-js\" data-toggle=\"tab\">Javascript personalizzato</a>.",
 	"custom-header.enable": "Abilita Intestazione personalizzata",
 
 	"custom-css.livereload": "Abilita riavvio a caldo (Live Reolad)",
