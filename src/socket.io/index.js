@@ -146,7 +146,11 @@ function onMessage(socket, payload) {
 			}
 		},
 		function (next) {
-			methodToCall(socket, params, next);
+			if (methodToCall[Symbol.toStringTag] === 'AsyncFunction') {
+				methodToCall(socket, params).then(result => next(null, result), err => next(err));
+			} else {
+				methodToCall(socket, params, next);
+			}
 		},
 	], function (err, result) {
 		callback(err ? { message: err.message } : null, result);
