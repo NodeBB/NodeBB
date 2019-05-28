@@ -29,6 +29,21 @@ module.exports = {
 			'moderate',
 		]);
 
+		const globalModPrivs = [
+			'chat',
+			'upload:post:image',
+			'upload:post:file',
+			'signature',
+			'ban',
+			'search:content',
+			'search:users',
+			'search:tags',
+			'view:users',
+			'view:tags',
+			'view:groups',
+			'local:login',
+		];
+
 		async.waterfall([
 			function (next) {
 				db.getSortedSetRevRange('categories:cid', 0, -1, next);
@@ -47,6 +62,9 @@ module.exports = {
 						},
 					], next);
 				}, next);
+			},
+			function (next) {
+				privileges.global.give(globalModPrivs, 'Global Moderators', next);
 			},
 		], callback);
 

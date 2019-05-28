@@ -116,9 +116,6 @@ module.exports = function (privileges) {
 				});
 			},
 			function (next) {
-				user.isGlobalModerator(uid, next);
-			},
-			function (next) {
 				user.isAdministrator(uid, next);
 			},
 		], callback);
