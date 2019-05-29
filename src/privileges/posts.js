@@ -159,6 +159,7 @@ module.exports = function (privileges) {
 			},
 			function (_results, next) {
 				results = _results;
+				results.isMod = results.isMod[0];
 				if (results.isAdmin) {
 					return callback(null, { flag: true });
 				}
@@ -193,31 +194,29 @@ module.exports = function (privileges) {
 			function (_postData, next) {
 				postData = _postData;
 				async.parallel({
-					isAdminOrMod: async.apply(isAdminOrMod, pid, uid),
+					isAdmin: async.apply(privileges.users.isAdministrator, uid),
+					isMod: async.apply(posts.isModerator, [pid], uid),
 					isLocked: async.apply(topics.isLocked, postData.tid),
 					isOwner: async.apply(posts.isOwner, pid, uid),
 					'posts:delete': async.apply(privileges.posts.can, 'posts:delete', pid, uid),
 				}, next);
 			},
 			function (results, next) {
-				if (results.isAdminOrMod) {
+				results.isMod = results.isMod[0];
+				if (results.isAdmin) {
 					return next(null, { flag: true });
 				}
 
-				if (results.isLocked) {
+				if (!results.isMod && results.isLocked) {
 					return next(null, { flag: false, message: '[[error:topic-locked]]' });
 				}
 
-				if (!results['posts:delete']) {
-					return next(null, { flag: false, message: '[[error:no-privileges]]' });
-				}
-
 				var postDeleteDuration = meta.config.postDeleteDuration;
-				if (postDeleteDuration && (Date.now() - postData.timestamp > postDeleteDuration * 1000)) {
+				if (!results.isMod && postDeleteDuration && (Date.now() - postData.timestamp > postDeleteDuration * 1000)) {
 					return next(null, { flag: false, message: '[[error:post-delete-duration-expired, ' + meta.config.postDeleteDuration + ']]' });
 				}
 				var deleterUid = postData.deleterUid;
-				var flag = results.isOwner && (deleterUid === 0 || deleterUid === postData.uid);
+				var flag = results['posts:delete'] && ((results.isOwner && (deleterUid === 0 || deleterUid === postData.uid)) || results.isMod);
 				next(null, { flag: flag, message: '[[error:no-privileges]]' });
 			},
 		], callback);
