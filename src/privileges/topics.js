@@ -186,23 +186,19 @@ module.exports = function (privileges) {
 				}, next);
 			},
 			function (results, next) {
-				if (results.isModerator || results.isAdministrator) {
+				if (results.isAdministrator) {
 					return next(null, true);
 				}
 
 				var preventTopicDeleteAfterReplies = meta.config.preventTopicDeleteAfterReplies;
-				if (preventTopicDeleteAfterReplies && (topicData.postcount - 1) >= preventTopicDeleteAfterReplies) {
+				if (!results.isModerator && preventTopicDeleteAfterReplies && (topicData.postcount - 1) >= preventTopicDeleteAfterReplies) {
 					var langKey = preventTopicDeleteAfterReplies > 1 ?
 						'[[error:cant-delete-topic-has-replies, ' + meta.config.preventTopicDeleteAfterReplies + ']]' :
 						'[[error:cant-delete-topic-has-reply]]';
 					return next(new Error(langKey));
 				}
 
-				if (!results['topics:delete'][0]) {
-					return next(null, false);
-				}
-
-				next(null, results.isOwner);
+				next(null, results['topics:delete'][0] && (results.isOwner || results.isModerator));
 			},
 		], callback);
 	};
