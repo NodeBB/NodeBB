@@ -146,19 +146,40 @@ module.exports = function (privileges) {
 	};
 
 	privileges.posts.canEdit = function (pid, uid, callback) {
+		let results;
 		async.waterfall([
 			function (next) {
 				async.parallel({
-					isEditable: async.apply(isPostEditable, pid, uid),
-					isAdminOrMod: async.apply(isAdminOrMod, pid, uid),
+					isAdmin: async.apply(privileges.users.isAdministrator, uid),
+					isMod: async.apply(posts.isModerator, [pid], uid),
+					owner: async.apply(posts.isOwner, pid, uid),
+					edit: async.apply(privileges.posts.can, 'posts:edit', pid, uid),
+					postData: async.apply(posts.getPostFields, pid, ['tid', 'timestamp']),
 				}, next);
 			},
-			function (results, next) {
-				if (results.isAdminOrMod) {
-					return next(null, { flag: true });
+			function (_results, next) {
+				results = _results;
+				if (results.isAdmin) {
+					return callback(null, { flag: true });
 				}
 
-				next(null, results.isEditable);
+				if (!results.isMod && meta.config.postEditDuration && (Date.now() - results.postData.timestamp > meta.config.postEditDuration * 1000)) {
+					return callback(null, { flag: false, message: '[[error:post-edit-duration-expired, ' + meta.config.postEditDuration + ']]' });
+				}
+				topics.isLocked(results.postData.tid, next);
+			},
+			function (isLocked, next) {
+				if (!results.isMod && isLocked) {
+					return callback(null, { flag: false, message: '[[error:topic-locked]]' });
+				}
+
+				results.pid = parseInt(pid, 10);
+				results.uid = uid;
+
+				plugins.fireHook('filter:privileges.posts.edit', results, next);
+			},
+			function (result, next) {
+				next(null, { flag: result.edit && (result.owner || result.isMod), message: '[[error:no-privileges]]' });
 			},
 		], callback);
 	};
@@ -250,42 +271,6 @@ module.exports = function (privileges) {
 			},
 		], callback);
 	};
-
-	function isPostEditable(pid, uid, callback) {
-		async.waterfall([
-			function (next) {
-				posts.getPostFields(pid, ['tid', 'timestamp'], next);
-			},
-			function (postData, next) {
-				var postEditDuration = meta.config.postEditDuration;
-				if (postEditDuration && (Date.now() - postData.timestamp > postEditDuration * 1000)) {
-					return callback(null, { flag: false, message: '[[error:post-edit-duration-expired, ' + meta.config.postEditDuration + ']]' });
-				}
-				topics.isLocked(postData.tid, next);
-			},
-			function (isLocked, next) {
-				if (isLocked) {
-					return callback(null, { flag: false, message: '[[error:topic-locked]]' });
-				}
-
-				async.parallel({
-					owner: async.apply(posts.isOwner, pid, uid),
-					edit: async.apply(privileges.posts.can, 'posts:edit', pid, uid),
-				}, next);
-			},
-			(result, next) => {
-				Object.assign(result, {
-					pid: parseInt(pid, 10),
-					uid: uid,
-				});
-
-				plugins.fireHook('filter:privileges.posts.edit', result, next);
-			},
-			function (result, next) {
-				next(null, { flag: result.owner && result.edit, message: '[[error:no-privileges]]' });
-			},
-		], callback);
-	}
 
 	function isAdminOrMod(pid, uid, callback) {
 		helpers.some([
