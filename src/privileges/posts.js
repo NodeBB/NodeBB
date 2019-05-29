@@ -16,7 +16,7 @@ module.exports = function (privileges) {
 
 	privileges.posts.get = function (pids, uid, callback) {
 		if (!Array.isArray(pids) || !pids.length) {
-			return callback(null, []);
+			return setImmediate(callback, null, []);
 		}
 
 		async.waterfall([
@@ -38,17 +38,17 @@ module.exports = function (privileges) {
 			function (results, next) {
 				var privileges = pids.map(function (pid, i) {
 					var isAdminOrMod = results.isAdmin || results.isModerator[i];
-					var editable = isAdminOrMod || (results.isOwner[i] && results['posts:edit'][i]);
-					var viewDeletedPosts = isAdminOrMod || results.isOwner[i] || results['posts:view_deleted'][i];
-					var viewHistory = isAdminOrMod || results.isOwner[i] || results['posts:history'][i];
+					var editable = (results.isOwner[i] && results['posts:edit'][i]) || results.isAdmin;
+					var viewDeletedPosts = results.isOwner[i] || results['posts:view_deleted'][i] || results.isAdmin;
+					var viewHistory = results.isOwner[i] || results['posts:history'][i] || results.isAdmin;
 
 					return {
 						editable: editable,
 						view_deleted: editable,
 						move: isAdminOrMod,
 						isAdminOrMod: isAdminOrMod,
-						'topics:read': results['topics:read'][i] || isAdminOrMod,
-						read: results.read[i] || isAdminOrMod,
+						'topics:read': results['topics:read'][i] || results.isAdmin,
+						read: results.read[i] || results.isAdmin,
 						'posts:history': viewHistory,
 						'posts:view_deleted': viewDeletedPosts,
 					};
@@ -72,7 +72,7 @@ module.exports = function (privileges) {
 
 	privileges.posts.filter = function (privilege, pids, uid, callback) {
 		if (!Array.isArray(pids) || !pids.length) {
-			return callback(null, []);
+			return setImmediate(callback, null, []);
 		}
 		var cids;
 		var postData;
@@ -112,18 +112,16 @@ module.exports = function (privileges) {
 				privileges.categories.getBase(privilege, cids, uid, next);
 			},
 			function (results, next) {
-				var isModOf = {};
 				cids = cids.filter(function (cid, index) {
-					isModOf[cid] = results.isModerators[index];
 					return !results.categories[index].disabled &&
-						(results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
+						(results.allowedTo[index] || results.isAdmin);
 				});
 
 				const cidsSet = new Set(cids);
 
 				pids = postData.filter(function (post) {
 					return post.topic && cidsSet.has(post.topic.cid) &&
-						((!post.topic.deleted && !post.deleted) || results.isAdmin || isModOf[post.cid]);
+						((!post.topic.deleted && !post.deleted) || results.isAdmin);
 				}).map(post => post.pid);
 
 				plugins.fireHook('filter:privileges.posts.filter', {

@@ -94,7 +94,7 @@ module.exports = function (privileges) {
 
 	privileges.categories.isUserAllowedTo = function (privilege, cid, uid, callback) {
 		if (!cid) {
-			return callback(null, false);
+			return setImmediate(callback, null, false);
 		}
 		if (Array.isArray(cid)) {
 			helpers.isUserAllowedTo(privilege, uid, cid, function (err, results) {
@@ -109,7 +109,7 @@ module.exports = function (privileges) {
 
 	privileges.categories.can = function (privilege, cid, uid, callback) {
 		if (!cid) {
-			return callback(null, false);
+			return setImmediate(callback, null, false);
 		}
 
 		async.waterfall([
@@ -125,9 +125,6 @@ module.exports = function (privileges) {
 						helpers.isUserAllowedTo(privilege, uid, [cid], function (err, results) {
 							next(err, Array.isArray(results) && results.length ? results[0] : false);
 						});
-					},
-					function (next) {
-						user.isModerator(uid, cid, next);
 					},
 					function (next) {
 						user.isAdministrator(uid, next);
@@ -167,9 +164,6 @@ module.exports = function (privileges) {
 			allowedTo: function (next) {
 				helpers.isUserAllowedTo(privilege, uid, cids, next);
 			},
-			isModerators: function (next) {
-				user.isModerator(uid, cids, next);
-			},
 			isAdmin: function (next) {
 				user.isAdministrator(uid, next);
 			},
@@ -178,7 +172,7 @@ module.exports = function (privileges) {
 
 	privileges.categories.filterUids = function (privilege, cid, uids, callback) {
 		if (!uids.length) {
-			return callback(null, []);
+			return setImmediate(callback, null, []);
 		}
 
 		uids = _.uniq(uids);
@@ -189,9 +183,6 @@ module.exports = function (privileges) {
 					allowedTo: function (next) {
 						helpers.isUsersAllowedTo(privilege, uids, cid, next);
 					},
-					isModerators: function (next) {
-						user.isModerator(uids, cid, next);
-					},
 					isAdmins: function (next) {
 						user.isAdministrator(uids, next);
 					},
@@ -199,7 +190,7 @@ module.exports = function (privileges) {
 			},
 			function (results, next) {
 				uids = uids.filter(function (uid, index) {
-					return results.allowedTo[index] || results.isModerators[index] || results.isAdmins[index];
+					return results.allowedTo[index] || results.isAdmins[index];
 				});
 				next(null, uids);
 			},

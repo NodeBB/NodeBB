@@ -118,7 +118,7 @@ module.exports = function (privileges) {
 
 	privileges.topics.filterUids = function (privilege, tid, uids, callback) {
 		if (!Array.isArray(uids) || !uids.length) {
-			return callback(null, []);
+			return setImmediate(callback, null, []);
 		}
 
 		uids = _.uniq(uids);
@@ -136,9 +136,6 @@ module.exports = function (privileges) {
 					allowedTo: function (next) {
 						helpers.isUsersAllowedTo(privilege, uids, topicData.cid, next);
 					},
-					isModerators: function (next) {
-						user.isModerator(uids, topicData.cid, next);
-					},
 					isAdmins: function (next) {
 						user.isAdministrator(uids, next);
 					},
@@ -147,7 +144,7 @@ module.exports = function (privileges) {
 			function (results, next) {
 				uids = uids.filter(function (uid, index) {
 					return !results.disabled &&
-						((results.allowedTo[index] && !topicData.deleted) || results.isAdmins[index] || results.isModerators[index]);
+						((results.allowedTo[index] && !topicData.deleted) || results.isAdmins[index]);
 				});
 
 				next(null, uids);
