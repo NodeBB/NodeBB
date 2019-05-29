@@ -48,7 +48,7 @@ module.exports = function (privileges) {
 			},
 			function (isGlobalModerator, next) {
 				if (isGlobalModerator) {
-					return filterIsModerator(cids, uid, cids.map(function () { return true; }), callback);
+					return filterIsModerator(cids, uid, cids.map(() => true), callback);
 				}
 
 				uniqueCids = _.uniq(cids);
@@ -56,16 +56,8 @@ module.exports = function (privileges) {
 				helpers.isUserAllowedTo('moderate', uid, uniqueCids, next);
 			},
 			function (isAllowed, next) {
-				var map = {};
-
-				uniqueCids.forEach(function (cid, index) {
-					map[cid] = isAllowed[index];
-				});
-
-				var isModerator = cids.map(function (cid) {
-					return map[cid];
-				});
-
+				const map = _.zipObject(uniqueCids, isAllowed);
+				const isModerator = cids.map(cid => map[cid]);
 				filterIsModerator(cids, uid, isModerator, next);
 			},
 		], callback);
