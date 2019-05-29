@@ -140,6 +140,7 @@ Categories.getModerators = function (cid, callback) {
 
 Categories.getModeratorUids = function (cids, callback) {
 	var sets;
+	var uniqGroups;
 	async.waterfall([
 		function (next) {
 			var groupNames = cids.reduce(function (memo, cid) {
@@ -162,11 +163,13 @@ Categories.getModeratorUids = function (cids, callback) {
 				return memo;
 			}, { groupNames: [], uids: [] });
 
-			groups.getMembersOfGroups(sets.groupNames, next);
+			uniqGroups = _.uniq(_.flatten(sets.groupNames));
+			groups.getMembersOfGroups(uniqGroups, next);
 		},
 		function (groupUids, next) {
+			var map = _.zipObject(uniqGroups, groupUids);
 			const moderatorUids = cids.map(function (cid, index) {
-				return _.union(sets.uids[index].concat(groupUids[index]));
+				return _.uniq(sets.uids[index].concat(_.flatten(sets.groupNames[index].map(g => map[g]))));
 			});
 			next(null, moderatorUids);
 		},
