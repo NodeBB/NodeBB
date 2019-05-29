@@ -64,7 +64,6 @@ module.exports = function (SocketPosts) {
 				posts.selfPost = socket.uid && socket.uid === posts.uid;
 				posts.display_edit_tools = results.canEdit.flag;
 				posts.display_delete_tools = results.canDelete.flag;
-				console.log(results);
 				posts.display_purge_tools = results.canPurge;
 				posts.display_flag_tools = socket.uid && !posts.selfPost && results.canFlag.flag;
 				posts.display_moderator_tools = posts.display_edit_tools || posts.display_delete_tools;

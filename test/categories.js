@@ -850,8 +850,8 @@ describe('Categories', function () {
 				Categories.getModeratorUids([1, 2], function (err, uids) {
 					assert.ifError(err);
 					assert.strictEqual(2, uids.length);
-					assert.strictEqual(1, parseInt(uids[0], 10));
-					assert.strictEqual(0, uids[1].length);
+					assert(uids[0].includes('1'));
+					assert.strictEqual(1, uids[1].length);
 					done();
 				});
 			});
