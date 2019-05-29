@@ -18,37 +18,47 @@ module.exports = function (privileges) {
 		if (!Array.isArray(pids) || !pids.length) {
 			return setImmediate(callback, null, []);
 		}
-
+		let uniqueCids;
+		let cids;
 		async.waterfall([
 			function (next) {
 				posts.getCidsByPids(pids, next);
 			},
-			function (cids, next) {
+			function (_cids, next) {
+				cids = _cids;
+				uniqueCids = _.uniq(cids);
 				async.parallel({
 					isAdmin: async.apply(user.isAdministrator, uid),
-					isModerator: async.apply(user.isModerator, uid, cids),
+					isModerator: async.apply(user.isModerator, uid, uniqueCids),
 					isOwner: async.apply(posts.isOwner, pids, uid),
-					'topics:read': async.apply(helpers.isUserAllowedTo, 'topics:read', uid, cids),
-					read: async.apply(helpers.isUserAllowedTo, 'read', uid, cids),
-					'posts:edit': async.apply(helpers.isUserAllowedTo, 'posts:edit', uid, cids),
-					'posts:history': async.apply(helpers.isUserAllowedTo, 'posts:history', uid, cids),
-					'posts:view_deleted': async.apply(helpers.isUserAllowedTo, 'posts:view_deleted', uid, cids),
+					'topics:read': async.apply(helpers.isUserAllowedTo, 'topics:read', uid, uniqueCids),
+					read: async.apply(helpers.isUserAllowedTo, 'read', uid, uniqueCids),
+					'posts:edit': async.apply(helpers.isUserAllowedTo, 'posts:edit', uid, uniqueCids),
+					'posts:history': async.apply(helpers.isUserAllowedTo, 'posts:history', uid, uniqueCids),
+					'posts:view_deleted': async.apply(helpers.isUserAllowedTo, 'posts:view_deleted', uid, uniqueCids),
 				}, next);
 			},
 			function (results, next) {
-				var privileges = pids.map(function (pid, i) {
-					var isAdminOrMod = results.isAdmin || results.isModerator[i];
-					var editable = (results.isOwner[i] && results['posts:edit'][i]) || results.isAdmin;
-					var viewDeletedPosts = results.isOwner[i] || results['posts:view_deleted'][i] || results.isAdmin;
-					var viewHistory = results.isOwner[i] || results['posts:history'][i] || results.isAdmin;
+				const isModerator = _.zipObject(uniqueCids, results.isModerator);
+				const privData = {};
+				privData['topics:read'] = _.zipObject(uniqueCids, results['topics:read']);
+				privData.read = _.zipObject(uniqueCids, results.read);
+				privData['posts:edit'] = _.zipObject(uniqueCids, results['posts:edit']);
+				privData['posts:history'] = _.zipObject(uniqueCids, results['posts:history']);
+				privData['posts:view_deleted'] = _.zipObject(uniqueCids, results['posts:view_deleted']);
+
+				var privileges = cids.map(function (cid, i) {
+					var isAdminOrMod = results.isAdmin || isModerator[cid];
+					var editable = (privData['posts:edit'][cid] && (results.isOwner[i] || results.isModerator)) || results.isAdmin;
+					var viewDeletedPosts = results.isOwner[i] || privData['posts:view_deleted'][cid] || results.isAdmin;
+					var viewHistory = results.isOwner[i] || privData['posts:history'][cid] || results.isAdmin;
 
 					return {
 						editable: editable,
-						view_deleted: editable,
 						move: isAdminOrMod,
 						isAdminOrMod: isAdminOrMod,
-						'topics:read': results['topics:read'][i] || results.isAdmin,
-						read: results.read[i] || results.isAdmin,
+						'topics:read': privData['topics:read'][cid] || results.isAdmin,
+						read: privData.read[cid] || results.isAdmin,
 						'posts:history': viewHistory,
 						'posts:view_deleted': viewDeletedPosts,
 					};
@@ -231,11 +241,12 @@ module.exports = function (privileges) {
 				async.parallel({
 					purge: async.apply(privileges.categories.isUserAllowedTo, 'purge', cid, uid),
 					owner: async.apply(posts.isOwner, pid, uid),
-					isAdminOrMod: async.apply(privileges.categories.isAdminOrMod, cid, uid),
+					isAdmin: async.apply(privileges.users.isAdministrator, uid),
+					isModerator: async.apply(privileges.users.isModerator, uid, cid),
 				}, next);
 			},
 			function (results, next) {
-				next(null, results.isAdminOrMod || (results.purge && results.owner));
+				next(null, (results.purge && (results.owner || results.isModerator)) || results.isAdmin);
 			},
 		], callback);
 	};

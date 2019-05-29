@@ -38,19 +38,19 @@ module.exports = function (privileges) {
 				var isOwner = uid > 0 && uid === topic.uid;
 				var isAdminOrMod = results.isAdministrator || results.isModerator;
 				var editable = isAdminOrMod;
-				var deletable = isAdminOrMod || (isOwner && privData['topics:delete']);
+				var deletable = (privData['topics:delete'] && (isOwner || results.isModerator)) || results.isAdministrator;
 
 				plugins.fireHook('filter:privileges.topics.get', {
-					'topics:reply': (privData['topics:reply'] && !topic.locked && !topic.deleted) || results.isAdministrator,
+					'topics:reply': (privData['topics:reply'] && ((!topic.locked && !topic.deleted) || results.isModerator)) || results.isAdministrator,
 					'topics:read': privData['topics:read'] || results.isAdministrator,
 					'topics:tag': privData['topics:tag'] || results.isAdministrator,
 					'topics:delete': (privData['topics:delete'] && (isOwner || results.isModerator)) || results.isAdministrator,
-					'posts:edit': (privData['posts:edit'] && !topic.locked) || results.isAdministrator,
+					'posts:edit': (privData['posts:edit'] && (!topic.locked || results.isModerator)) || results.isAdministrator,
 					'posts:history': privData['posts:history'] || results.isAdministrator,
-					'posts:delete': (privData['posts:delete'] && !topic.locked) || results.isAdministrator,
+					'posts:delete': (privData['posts:delete'] && (!topic.locked || results.isModerator)) || results.isAdministrator,
 					'posts:view_deleted': privData['posts:view_deleted'] || results.isAdministrator,
 					read: privData.read || results.isAdministrator,
-					purge: privData.purge || results.isAdministrator,
+					purge: (privData.purge && (isOwner || results.isModerator)) || results.isAdministrator,
 
 					view_thread_tools: editable || deletable,
 					editable: editable,
@@ -161,11 +161,12 @@ module.exports = function (privileges) {
 				async.parallel({
 					purge: async.apply(privileges.categories.isUserAllowedTo, 'purge', cid, uid),
 					owner: async.apply(topics.isOwner, tid, uid),
-					isAdminOrMod: async.apply(privileges.categories.isAdminOrMod, cid, uid),
+					isAdmin: async.apply(privileges.users.isAdministrator, uid),
+					isModerator: async.apply(privileges.users.isModerator, uid, cid),
 				}, next);
 			},
 			function (results, next) {
-				next(null, results.isAdminOrMod || (results.purge && results.owner));
+				next(null, (results.purge && (results.owner || results.isModerator)) || results.isAdmin);
 			},
 		], callback);
 	};
