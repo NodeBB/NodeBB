@@ -111,25 +111,16 @@ module.exports = function (privileges) {
 		if (!cid) {
 			return setImmediate(callback, null, false);
 		}
-
 		async.waterfall([
 			function (next) {
-				categories.getCategoryField(cid, 'disabled', next);
+				async.parallel({
+					disabled: async.apply(categories.getCategoryField, cid, 'disabled'),
+					isAdmin: async.apply(user.isAdministrator, uid),
+					isAllowed: async.apply(privileges.categories.isUserAllowedTo, privilege, cid, uid),
+				}, next);
 			},
-			function (disabled, next) {
-				if (disabled) {
-					return callback(null, false);
-				}
-				helpers.some([
-					function (next) {
-						helpers.isUserAllowedTo(privilege, uid, [cid], function (err, results) {
-							next(err, Array.isArray(results) && results.length ? results[0] : false);
-						});
-					},
-					function (next) {
-						user.isAdministrator(uid, next);
-					},
-				], next);
+			function (results, next) {
+				next(null, !results.disabled && (results.isAllowed || results.isAdmin));
 			},
 		], callback);
 	};
@@ -209,19 +200,12 @@ module.exports = function (privileges) {
 		async.waterfall([
 			function (next) {
 				async.parallel({
-					isAdministrator: function (next) {
-						user.isAdministrator(uid, next);
-					},
-					moderatorOfCurrent: function (next) {
-						user.isModerator(uid, currentCid, next);
-					},
-					moderatorOfTarget: function (next) {
-						user.isModerator(uid, targetCid, next);
-					},
+					isAdmin: async.apply(user.isAdministrator, uid),
+					isModerators: async.apply(user.isModerator, uid, [currentCid, targetCid]),
 				}, next);
 			},
 			function (results, next) {
-				next(null, results.isAdministrator || (results.moderatorOfCurrent && results.moderatorOfTarget));
+				next(null, results.isAdmin || !results.isModerators.includes(false));
 			},
 		], callback);
 	};
