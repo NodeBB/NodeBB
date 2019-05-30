@@ -146,7 +146,7 @@ function onMessage(socket, payload) {
 			}
 		},
 		function (next) {
-			if (methodToCall[Symbol.toStringTag] === 'AsyncFunction') {
+			if (methodToCall && typeof methodToCall.then === 'function') {
 				methodToCall(socket, params).then(result => next(null, result), err => next(err));
 			} else {
 				methodToCall(socket, params, next);
