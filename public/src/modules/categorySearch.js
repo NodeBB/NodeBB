@@ -14,7 +14,7 @@ define('categorySearch', function () {
 		var categoryEls = el.find('[component="category/list"] [data-cid]');
 		el.on('show.bs.dropdown', function () {
 			function revealParents(cid) {
-				var parentCid = el.find('[component="category/list"] [data-cid="' + cid + '"]').attr('data-parentCid');
+				var parentCid = el.find('[component="category/list"] [data-cid="' + cid + '"]').attr('data-parent-cid');
 				if (parentCid) {
 					el.find('[component="category/list"] [data-cid="' + parentCid + '"]').removeClass('hidden');
 					revealParents(parentCid);
@@ -22,7 +22,7 @@ define('categorySearch', function () {
 			}
 
 			function revealChildren(cid) {
-				var els = el.find('[component="category/list"] [data-parentCid="' + cid + '"]');
+				var els = el.find('[component="category/list"] [data-parent-cid="' + cid + '"]');
 				els.each(function (index, el) {
 					var $el = $(el);
 					$el.removeClass('hidden');
