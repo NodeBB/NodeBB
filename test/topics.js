@@ -620,7 +620,10 @@ describe('Topic\'s', function () {
 						topics.tools.pin(tid1, adminUid, next);
 					},
 					function (next) {
-						topics.tools.pin(tid2, adminUid, next);
+						// artificial timeout so pin time is different on redis sometimes scores are indentical
+						setTimeout(function () {
+							topics.tools.pin(tid2, adminUid, next);
+						}, 5);
 					},
 				], done);
 			});
