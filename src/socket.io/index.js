@@ -131,6 +131,7 @@ function onMessage(socket, payload) {
 		return socket.disconnect();
 	}
 
+	var cbCalled = false;
 	async.waterfall([
 		function (next) {
 			checkMaintenance(socket, next);
@@ -146,13 +147,19 @@ function onMessage(socket, payload) {
 			}
 		},
 		function (next) {
-			if (methodToCall && typeof methodToCall.then === 'function') {
-				methodToCall(socket, params).then(result => next(null, result), err => next(err));
-			} else {
-				methodToCall(socket, params, next);
+			const returned = methodToCall(socket, params, next);
+			if (returned && typeof returned.then === 'function') {
+				returned.then((payload) => {
+					next(null, payload);
+				}, next);
 			}
 		},
 	], function (err, result) {
+		if (cbCalled) {
+			return;
+		}
+
+		cbCalled = true;
 		callback(err ? { message: err.message } : null, result);
 	});
 }
