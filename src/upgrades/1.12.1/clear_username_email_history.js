@@ -15,8 +15,8 @@ module.exports = {
 				return callback(err);
 			}
 			progress.total = nextUid;
-			async.whilst(function () {
-				return currentUid < nextUid;
+			async.whilst(function (next) {
+				next(null, currentUid < nextUid);
 			},
 			function (next) {
 				progress.incr();

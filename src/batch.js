@@ -45,8 +45,8 @@ exports.processSortedSet = function (setKey, process, options, callback) {
 	var done = false;
 
 	async.whilst(
-		function () {
-			return !done;
+		function (next) {
+			next(null, !done);
 		},
 		function (next) {
 			async.waterfall([
@@ -99,8 +99,8 @@ exports.processArray = function (array, process, options, callback) {
 	var done = false;
 
 	async.whilst(
-		function () {
-			return !done;
+		function (next) {
+			next(null, !done);
 		},
 		function (next) {
 			var currentBatch = array.slice(start, start + batch);
