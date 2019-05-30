@@ -543,6 +543,38 @@ describe('Topic\'s', function () {
 			], done);
 		});
 
+		it('should fail to purge topic if user does not have privilege', function (done) {
+			var globalModUid;
+			var tid;
+			async.waterfall([
+				function (next) {
+					topics.post({
+						uid: adminUid,
+						title: 'topic for purge test',
+						content: 'topic content',
+						cid: categoryObj.cid,
+					}, next);
+				},
+				function (result, next) {
+					tid = result.topicData.tid;
+					User.create({ username: 'global mod' }, next);
+				},
+				function (uid, next) {
+					globalModUid = uid;
+					groups.join('Global Moderators', uid, next);
+				},
+				function (next) {
+					privileges.categories.rescind(['purge'], categoryObj.cid, 'Global Moderators', next);
+				},
+				function (next) {
+					socketTopics.purge({ uid: globalModUid }, { tids: [tid], cid: categoryObj.cid }, function (err) {
+						assert.equal(err.message, '[[error:no-privileges]]');
+						privileges.categories.give(['purge'], categoryObj.cid, 'Global Moderators', next);
+					});
+				},
+			], done);
+		});
+
 		it('should purge the topic', function (done) {
 			socketTopics.purge({ uid: 1 }, { tids: [newTopic.tid], cid: categoryObj.cid }, function (err) {
 				assert.ifError(err);
@@ -939,8 +971,8 @@ describe('Topic\'s', function () {
 			request(nconf.get('url') + '/api/topic/' + topicData.slug + '/-1', { json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
-				assert.equal(res.headers['x-redirect'], '/topic/15/topic-for-controller-test');
-				assert.equal(body, '/topic/15/topic-for-controller-test');
+				assert.equal(res.headers['x-redirect'], '/topic/' + topicData.tid + '/topic-for-controller-test');
+				assert.equal(body, '/topic/' + topicData.tid + '/topic-for-controller-test');
 				done();
 			});
 		});
