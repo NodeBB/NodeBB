@@ -20,7 +20,7 @@ admin.get = function (callback) {
 			return callback(err);
 		}
 
-		callback(false, {
+		callback(null, {
 			templates: buildTemplatesFromAreas(widgetData.areas),
 			areas: widgetData.areas,
 			availableWidgets: widgetData.availableWidgets,

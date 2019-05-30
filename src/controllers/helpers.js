@@ -156,8 +156,8 @@ helpers.redirect = function (res, url) {
 helpers.buildCategoryBreadcrumbs = function (cid, callback) {
 	var breadcrumbs = [];
 
-	async.whilst(function () {
-		return parseInt(cid, 10);
+	async.whilst(function (next) {
+		next(null, parseInt(cid, 10));
 	}, function (next) {
 		categories.getCategoryFields(cid, ['name', 'slug', 'parentCid', 'disabled', 'isSection'], function (err, data) {
 			if (err) {
