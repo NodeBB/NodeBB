@@ -28,9 +28,7 @@ module.exports = function (Posts) {
 			},
 			function (_postData, next) {
 				postData = _postData;
-				tids = _.uniq(postData.map(function (post) {
-					return post && post.tid;
-				}).filter(Boolean));
+				tids = _.uniq(postData.map(post => post && post.tid).filter(Boolean));
 
 				topics.getTopicsFields(tids, ['cid'], next);
 			},
@@ -42,9 +40,7 @@ module.exports = function (Posts) {
 					}
 				});
 
-				var cids = postData.map(function (post) {
-					return map[post.tid];
-				});
+				var cids = postData.map(post => map[post.tid]);
 				next(null, cids);
 			},
 		], callback);

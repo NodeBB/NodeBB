@@ -106,18 +106,12 @@ helpers.isUsersAllowedTo = function (privilege, uids, cid, callback) {
 };
 
 function isSystemGroupAllowedToCids(privilege, uid, cids, callback) {
-	var groupKeys = cids.map(function (cid) {
-		return 'cid:' + cid + ':privileges:groups:' + privilege;
-	});
-
+	const groupKeys = cids.map(cid => 'cid:' + cid + ':privileges:groups:' + privilege);
 	groups.isMemberOfGroups(uidToSystemGroup[uid], groupKeys, callback);
 }
 
 function isSystemGroupAllowedToPrivileges(privileges, uid, cid, callback) {
-	var groupKeys = privileges.map(function (privilege) {
-		return 'cid:' + cid + ':privileges:groups:' + privilege;
-	});
-
+	const groupKeys = privileges.map(privilege => 'cid:' + cid + ':privileges:groups:' + privilege);
 	groups.isMemberOfGroups(uidToSystemGroup[uid], groupKeys, callback);
 }
 
@@ -128,15 +122,11 @@ helpers.getUserPrivileges = function (cid, hookName, userPrivilegeList, callback
 		async.apply(plugins.fireHook, hookName, userPrivilegeList.slice()),
 		function (_privs, next) {
 			userPrivileges = _privs;
-			groups.getMembersOfGroups(userPrivileges.map(function (privilege) {
-				return 'cid:' + cid + ':privileges:' + privilege;
-			}), next);
+			groups.getMembersOfGroups(userPrivileges.map(privilege => 'cid:' + cid + ':privileges:' + privilege), next);
 		},
 		function (_memberSets, next) {
 			memberSets = _memberSets.map(function (set) {
-				return set.map(function (uid) {
-					return parseInt(uid, 10);
-				});
+				return set.map(uid => parseInt(uid, 10));
 			});
 
 			var members = _.uniq(_.flatten(memberSets));
@@ -164,9 +154,7 @@ helpers.getGroupPrivileges = function (cid, hookName, groupPrivilegeList, callba
 			groupPrivileges = _privs;
 			async.parallel({
 				memberSets: function (next) {
-					groups.getMembersOfGroups(groupPrivileges.map(function (privilege) {
-						return 'cid:' + cid + ':privileges:' + privilege;
-					}), next);
+					groups.getMembersOfGroups(groupPrivileges.map(privilege => 'cid:' + cid + ':privileges:' + privilege), next);
 				},
 				groupNames: function (next) {
 					groups.getGroups('groups:createtime', 0, -1, next);
@@ -177,17 +165,11 @@ helpers.getGroupPrivileges = function (cid, hookName, groupPrivilegeList, callba
 			var memberSets = results.memberSets;
 			var uniqueGroups = _.uniq(_.flatten(memberSets));
 
-			var groupNames = results.groupNames.filter(function (groupName) {
-				return !groupName.includes(':privileges:') && uniqueGroups.includes(groupName);
-			});
+			var groupNames = results.groupNames.filter(groupName => !groupName.includes(':privileges:') && uniqueGroups.includes(groupName));
 
 			groupNames = groups.ephemeralGroups.concat(groupNames);
-			var registeredUsersIndex = groupNames.indexOf('registered-users');
-			if (registeredUsersIndex !== -1) {
-				groupNames.splice(0, 0, groupNames.splice(registeredUsersIndex, 1)[0]);
-			} else {
-				groupNames = ['registered-users'].concat(groupNames);
-			}
+			moveToFront(groupNames, 'Global Moderators');
+			moveToFront(groupNames, 'registered-users');
 
 			var adminIndex = groupNames.indexOf('administrators');
 			if (adminIndex !== -1) {
@@ -226,6 +208,15 @@ helpers.getGroupPrivileges = function (cid, hookName, groupPrivilegeList, callba
 		},
 	], callback);
 };
+
+function moveToFront(groupNames, groupToMove) {
+	const index = groupNames.indexOf(groupToMove);
+	if (index !== -1) {
+		groupNames.splice(0, 0, groupNames.splice(index, 1)[0]);
+	} else {
+		groupNames.unshift(groupToMove);
+	}
+}
 
 helpers.giveOrRescind = function (method, privileges, cids, groupNames, callback) {
 	groupNames = Array.isArray(groupNames) ? groupNames : [groupNames];
