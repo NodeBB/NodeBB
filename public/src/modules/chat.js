@@ -315,12 +315,17 @@ define('chat', [
 		modalEl.attr('data-mobile', '1');
 		var messagesEl = modalEl.find('.modal-body');
 		messagesEl.css('height', module.calculateChatListHeight(modalEl));
-
-		$(window).on('resize', function () {
+		function resize() {
 			messagesEl.css('height', module.calculateChatListHeight(modalEl));
 			require(['forum/chats/messages'], function (ChatsMessages) {
 				ChatsMessages.scrollToBottom(modalEl.find('.chat-content'));
 			});
+		}
+
+		$(window).on('resize', resize);
+		$(window).one('action:ajaxify.start', function () {
+			module.close(modalEl);
+			$(window).off('resize', resize);
 		});
 	};
 
