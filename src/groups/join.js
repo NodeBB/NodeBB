@@ -14,7 +14,9 @@ module.exports = function (Groups) {
 		if (!groupNames) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
-
+		if (Array.isArray(groupNames) && !groupNames.length) {
+			return setImmediate(callback);
+		}
 		if (!Array.isArray(groupNames)) {
 			groupNames = [groupNames];
 		}
