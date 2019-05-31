@@ -106,7 +106,7 @@ SELECT $1::TEXT, v, s
 			async.series([
 				async.apply(helpers.ensureLegacyObjectsType, tx.client, keys, 'zset'),
 				async.apply(query, {
-					name: 'sortedSetsAdd',
+					name: isArrayOfScores ? 'sortedSetsAddScores' : 'sortedSetsAdd',
 					text: isArrayOfScores ? `
 INSERT INTO "legacy_zset" ("_key", "value", "score")
 SELECT k, $2::TEXT, s
