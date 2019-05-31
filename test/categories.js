@@ -849,9 +849,9 @@ describe('Categories', function () {
 			it('should retrieve all users with moderator bit in category privilege', function (done) {
 				Categories.getModeratorUids([1, 2], function (err, uids) {
 					assert.ifError(err);
-					assert.strictEqual(2, uids.length);
+					assert.strictEqual(uids.length, 2);
 					assert(uids[0].includes('1'));
-					assert.strictEqual(1, uids[1].length);
+					assert.strictEqual(uids[1].length, 0);
 					done();
 				});
 			});

@@ -26,7 +26,6 @@ module.exports = {
 		const modPrivileges = defaultPrivileges.concat([
 			'posts:view_deleted',
 			'purge',
-			'moderate',
 		]);
 
 		const globalModPrivs = [

@@ -71,7 +71,6 @@ module.exports = function (Categories) {
 				const modPrivileges = defaultPrivileges.concat([
 					'posts:view_deleted',
 					'purge',
-					'moderate',
 				]);
 
 				async.series([
