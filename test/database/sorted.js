@@ -93,6 +93,24 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
+		it('should add an element to two sorted sets with different scores', function (done) {
+			db.sortedSetsAdd(['sorted1', 'sorted2'], [4, 5], 'value4', function (err) {
+				assert.ifError(err);
+				db.sortedSetsScore(['sorted1', 'sorted2'], 'value4', function (err, scores) {
+					assert.ifError(err);
+					assert.deepStrictEqual(scores, [4, 5]);
+					done();
+				});
+			});
+		});
+
+
+		it('should error if keys.length is different than scores.length', function (done) {
+			db.sortedSetsAdd(['sorted1', 'sorted2'], [4], 'value4', function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
 
 		it('should error if score is null', function (done) {
 			db.sortedSetsAdd(['sorted1', 'sorted2'], null, 'value1', function (err) {

@@ -82,17 +82,23 @@ SELECT $1::TEXT, v, s
 		}, callback);
 	}
 
-	module.sortedSetsAdd = function (keys, score, value, callback) {
+	module.sortedSetsAdd = function (keys, scores, value, callback) {
 		callback = callback || helpers.noop;
 
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback();
 		}
-		if (!utils.isNumber(score)) {
-			return setImmediate(callback, new Error('[[error:invalid-score, ' + score + ']]'));
+		const isArrayOfScores = Array.isArray(scores);
+		if (!isArrayOfScores && !utils.isNumber(scores)) {
+			return setImmediate(callback, new Error('[[error:invalid-score, ' + scores + ']]'));
 		}
+
+		if (isArrayOfScores && scores.length !== keys.length) {
+			return setImmediate(callback, new Error('[[error:invalid-data]]'));
+		}
+
 		value = helpers.valueToString(value);
-		score = parseFloat(score);
+		scores = isArrayOfScores ? scores.map(score => parseFloat(score)) : parseFloat(scores);
 
 		module.transaction(function (tx, done) {
 			var query = tx.client.query.bind(tx.client);
@@ -107,7 +113,7 @@ SELECT k, $2::TEXT, $3::NUMERIC
   FROM UNNEST($1::TEXT[]) k
     ON CONFLICT ("_key", "value")
     DO UPDATE SET "score" = $3::NUMERIC`,
-					values: [keys, value, score],
+					values: [keys, value, scores],
 				}),
 			], function (err) {
 				done(err);
