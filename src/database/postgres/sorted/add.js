@@ -107,12 +107,17 @@ SELECT $1::TEXT, v, s
 				async.apply(helpers.ensureLegacyObjectsType, tx.client, keys, 'zset'),
 				async.apply(query, {
 					name: 'sortedSetsAdd',
-					text: `
+					text: isArrayOfScores ? `
 INSERT INTO "legacy_zset" ("_key", "value", "score")
-SELECT k, $2::TEXT, $3::NUMERIC
-  FROM UNNEST($1::TEXT[]) k
+SELECT k, $2::TEXT, s
+  FROM UNNEST($1::TEXT[], $3::NUMERIC[]) vs(k, s)
     ON CONFLICT ("_key", "value")
-    DO UPDATE SET "score" = $3::NUMERIC`,
+		DO UPDATE SET "score" = EXCLUDED."score"` : `
+INSERT INTO "legacy_zset" ("_key", "value", "score")
+		SELECT k, $2::TEXT, $3::NUMERIC
+			FROM UNNEST($1::TEXT[]) k
+				ON CONFLICT ("_key", "value")
+				DO UPDATE SET "score" = $3::NUMERIC`,
 					values: [keys, value, scores],
 				}),
 			], function (err) {
