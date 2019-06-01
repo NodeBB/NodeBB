@@ -216,6 +216,8 @@ module.exports = function (Groups) {
 				}
 				async.series([
 					async.apply(updateMemberGroupTitles, oldName, newName),
+					async.apply(updateNavigationItems, oldName, newName),
+					async.apply(updateWidgets, oldName, newName),
 					async.apply(db.setObjectField, 'group:' + oldName, 'name', newName),
 					async.apply(db.setObjectField, 'group:' + oldName, 'slug', utils.slugify(newName)),
 					async.apply(db.deleteObjectField, 'groupslug:groupname', group.slug),
@@ -290,6 +292,46 @@ module.exports = function (Groups) {
 			},
 			function (next) {
 				db.sortedSetsAdd(keys, scores, newName, next);
+			},
+		], callback);
+	}
+
+	function updateNavigationItems(oldName, newName, callback) {
+		const navigation = require('../navigation/admin');
+
+		async.waterfall([
+			navigation.get,
+			function (navItems, next) {
+				navItems.forEach(function (navItem) {
+					if (navItem && Array.isArray(navItem.groups) && navItem.groups.includes(oldName)) {
+						navItem.groups.splice(navItem.groups.indexOf(oldName), 1, newName);
+					}
+				});
+
+				navigation.save(navItems, next);
+			},
+		], callback);
+	}
+
+	function updateWidgets(oldName, newName, callback) {
+		const admin = require('../widgets/admin');
+		const widgets = require('../widgets');
+		async.waterfall([
+			admin.get,
+			function (data, next) {
+				async.eachSeries(data.areas, function (area, next) {
+					if (!area.data.length) {
+						return setImmediate(next);
+					}
+					area.widgets = area.data;
+					area.widgets.forEach(function (widget) {
+						if (widget && widget.data && Array.isArray(widget.data.groups) && widget.data.groups.includes(oldName)) {
+							widget.data.groups.splice(widget.data.groups.indexOf(oldName), 1, newName);
+						}
+					});
+
+					widgets.setArea(area, next);
+				}, next);
 			},
 		], callback);
 	}
