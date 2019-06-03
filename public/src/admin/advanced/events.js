@@ -25,10 +25,14 @@ define('admin/advanced/events', function () {
 			});
 		});
 
-		$('#filter').on('change', function () {
-			var filter = $(this).val();
-			ajaxify.go('admin/advanced/events' + (filter ? '?filter=' + filter : ''));
-		});
+		$('#apply').on('click', Events.refresh);
+	};
+
+	Events.refresh = function (event) {
+		event.preventDefault();
+
+		var formEl = $('#filters');
+		ajaxify.go('admin/advanced/events?' + formEl.serialize());
 	};
 
 	return Events;

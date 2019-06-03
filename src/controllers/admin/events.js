@@ -14,7 +14,7 @@ eventsController.get = function (req, res, next) {
 	var start = (page - 1) * itemsPerPage;
 	var stop = start + itemsPerPage - 1;
 
-	var currentFilter = req.query.filter || '';
+	var currentFilter = req.query.type || '';
 
 	async.waterfall([
 		function (next) {
