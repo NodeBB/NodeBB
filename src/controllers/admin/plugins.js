@@ -1,6 +1,7 @@
 'use strict';
 
 var async = require('async');
+var nconf = require('nconf');
 var plugins = require('../../plugins');
 var meta = require('../../meta');
 
@@ -59,6 +60,7 @@ pluginsController.get = function (req, res, next) {
 					return !compatiblePkgNames.includes(plugin.name);
 				}),
 				submitPluginUsage: meta.config.submitPluginUsage,
+				version: nconf.get('version'),
 			});
 		},
 	], next);

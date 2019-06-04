@@ -30,6 +30,8 @@
 	"plugin-item.more-info": "For more information:",
 	"plugin-item.unknown": "Unknown",
 	"plugin-item.unknown-explanation": "The state of this plugin could not be determined, possibly due to a misconfiguration error.",
+	"plugin-item.compatible": "This plugin works on NodeBB %1",
+	"plugin-item.not-compatible": "This plugin has no compatibility data, make sure it works before installing on your production environment.",
 
 	"alert.enabled": "Plugin Enabled",
 	"alert.disabled": "Plugin Disabled",
