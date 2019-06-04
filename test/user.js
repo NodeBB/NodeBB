@@ -1588,13 +1588,11 @@ describe('User', function () {
 	});
 
 	describe('approval queue', function () {
-		var socketAdmin = require('../src/socket.io/admin');
-
-		var oldRegistrationType;
+		var oldRegistrationApprovalType;
 		var adminUid;
 		before(function (done) {
-			oldRegistrationType = meta.config.registrationType;
-			meta.config.registrationType = 'admin-approval';
+			oldRegistrationApprovalType = meta.config.registrationApprovalType;
+			meta.config.registrationApprovalType = 'admin-approval';
 			User.create({ username: 'admin', password: '123456' }, function (err, uid) {
 				assert.ifError(err);
 				adminUid = uid;
@@ -1603,7 +1601,7 @@ describe('User', function () {
 		});
 
 		after(function (done) {
-			meta.config.registrationType = oldRegistrationType;
+			meta.config.registrationApprovalType = oldRegistrationApprovalType;
 			done();
 		});
 

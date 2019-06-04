@@ -27,6 +27,7 @@
     "maximumTagLength": 15,
     "allowTopicsThumbnail": 0,
     "registrationType": "normal",
+    "registrationApprovalType": "normal",
     "allowAccountDelete": 1,
     "allowFileUploads": 0,
     "allowedFileExtensions": "png,jpg,bmp",

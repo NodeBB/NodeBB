@@ -163,15 +163,15 @@ module.exports = function (User) {
 	}
 
 	User.shouldQueueUser = function (ip, callback) {
-		var registrationType = meta.config.registrationType || 'normal';
-		if (registrationType === 'normal' || registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
-			setImmediate(callback, null, false);
-		} else if (registrationType === 'admin-approval') {
+		const registrationApprovalType = meta.config.registrationApprovalType;
+		if (registrationApprovalType === 'admin-approval') {
 			setImmediate(callback, null, true);
-		} else if (registrationType === 'admin-approval-ip') {
+		} else if (registrationApprovalType === 'admin-approval-ip') {
 			db.sortedSetCard('ip:' + ip + ':uid', function (err, count) {
 				callback(err, !!count);
 			});
+		} else {
+			setImmediate(callback, null, false);
 		}
 	};
 
