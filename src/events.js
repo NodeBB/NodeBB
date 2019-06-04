@@ -85,8 +85,11 @@ events.log = function (data, callback) {
 
 events.getEvents = function (filter, start, stop, from, to, callback) {
 	// from/to optional
-	from = parseInt(from, 10) || '-inf';
-	to = parseInt(to, 10) || '+inf';
+	if (typeof from === 'function' && !to && !callback) {
+		callback = from;
+		from = 0;
+		to = Date.now();
+	}
 
 	async.waterfall([
 		function (next) {
