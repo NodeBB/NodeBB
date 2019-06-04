@@ -38,23 +38,23 @@ module.exports = function (privileges) {
 				var isOwner = uid > 0 && uid === topic.uid;
 				var isAdminOrMod = results.isAdministrator || results.isModerator;
 				var editable = isAdminOrMod;
-				var deletable = isAdminOrMod || (isOwner && privData['topics:delete']);
-				var purge = results.isAdministrator || privData.purge;
+				var deletable = (privData['topics:delete'] && (isOwner || results.isModerator)) || results.isAdministrator;
 
 				plugins.fireHook('filter:privileges.topics.get', {
-					'topics:reply': (privData['topics:reply'] && !topic.locked && !topic.deleted) || isAdminOrMod,
-					'topics:read': privData['topics:read'] || isAdminOrMod,
-					'topics:tag': privData['topics:tag'] || isAdminOrMod,
-					'topics:delete': (isOwner && privData['topics:delete']) || isAdminOrMod,
-					'posts:edit': (privData['posts:edit'] && !topic.locked) || isAdminOrMod,
-					'posts:history': privData['posts:history'] || isAdminOrMod,
-					'posts:delete': (privData['posts:delete'] && !topic.locked) || isAdminOrMod,
-					'posts:view_deleted': privData['posts:view_deleted'] || isAdminOrMod,
-					read: privData.read || isAdminOrMod,
+					'topics:reply': (privData['topics:reply'] && ((!topic.locked && !topic.deleted) || results.isModerator)) || results.isAdministrator,
+					'topics:read': privData['topics:read'] || results.isAdministrator,
+					'topics:tag': privData['topics:tag'] || results.isAdministrator,
+					'topics:delete': (privData['topics:delete'] && (isOwner || results.isModerator)) || results.isAdministrator,
+					'posts:edit': (privData['posts:edit'] && (!topic.locked || results.isModerator)) || results.isAdministrator,
+					'posts:history': privData['posts:history'] || results.isAdministrator,
+					'posts:delete': (privData['posts:delete'] && (!topic.locked || results.isModerator)) || results.isAdministrator,
+					'posts:view_deleted': privData['posts:view_deleted'] || results.isAdministrator,
+					read: privData.read || results.isAdministrator,
+					purge: (privData.purge && (isOwner || results.isModerator)) || results.isAdministrator,
+
 					view_thread_tools: editable || deletable,
 					editable: editable,
 					deletable: deletable,
-					purge: purge,
 					view_deleted: isAdminOrMod || isOwner,
 					isAdminOrMod: isAdminOrMod,
 					disabled: results.disabled,
@@ -93,18 +93,16 @@ module.exports = function (privileges) {
 				privileges.categories.getBase(privilege, cids, uid, next);
 			},
 			function (results, next) {
-				var isModOf = {};
 				cids = cids.filter(function (cid, index) {
-					isModOf[cid] = results.isModerators[index];
 					return !results.categories[index].disabled &&
-						(results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
+						(results.allowedTo[index] || results.isAdmin);
 				});
 
 				const cidsSet = new Set(cids);
 
 				tids = topicsData.filter(function (topic) {
 					return cidsSet.has(topic.cid) &&
-						(!topic.deleted || results.isAdmin || isModOf[topic.cid]);
+						(!topic.deleted || results.isAdmin);
 				}).map(topic => topic.tid);
 
 				plugins.fireHook('filter:privileges.topics.filter', {
@@ -120,7 +118,7 @@ module.exports = function (privileges) {
 
 	privileges.topics.filterUids = function (privilege, tid, uids, callback) {
 		if (!Array.isArray(uids) || !uids.length) {
-			return callback(null, []);
+			return setImmediate(callback, null, []);
 		}
 
 		uids = _.uniq(uids);
@@ -138,9 +136,6 @@ module.exports = function (privileges) {
 					allowedTo: function (next) {
 						helpers.isUsersAllowedTo(privilege, uids, topicData.cid, next);
 					},
-					isModerators: function (next) {
-						user.isModerator(uids, topicData.cid, next);
-					},
 					isAdmins: function (next) {
 						user.isAdministrator(uids, next);
 					},
@@ -149,7 +144,7 @@ module.exports = function (privileges) {
 			function (results, next) {
 				uids = uids.filter(function (uid, index) {
 					return !results.disabled &&
-						((results.allowedTo[index] && !topicData.deleted) || results.isAdmins[index] || results.isModerators[index]);
+						((results.allowedTo[index] && !topicData.deleted) || results.isAdmins[index]);
 				});
 
 				next(null, uids);
@@ -166,11 +161,12 @@ module.exports = function (privileges) {
 				async.parallel({
 					purge: async.apply(privileges.categories.isUserAllowedTo, 'purge', cid, uid),
 					owner: async.apply(topics.isOwner, tid, uid),
-					isAdminOrMod: async.apply(privileges.categories.isAdminOrMod, cid, uid),
+					isAdmin: async.apply(privileges.users.isAdministrator, uid),
+					isModerator: async.apply(privileges.users.isModerator, uid, cid),
 				}, next);
 			},
 			function (results, next) {
-				next(null, results.isAdminOrMod || (results.purge && results.owner));
+				next(null, (results.purge && (results.owner || results.isModerator)) || results.isAdmin);
 			},
 		], callback);
 	};
@@ -191,23 +187,19 @@ module.exports = function (privileges) {
 				}, next);
 			},
 			function (results, next) {
-				if (results.isModerator || results.isAdministrator) {
+				if (results.isAdministrator) {
 					return next(null, true);
 				}
 
 				var preventTopicDeleteAfterReplies = meta.config.preventTopicDeleteAfterReplies;
-				if (preventTopicDeleteAfterReplies && (topicData.postcount - 1) >= preventTopicDeleteAfterReplies) {
+				if (!results.isModerator && preventTopicDeleteAfterReplies && (topicData.postcount - 1) >= preventTopicDeleteAfterReplies) {
 					var langKey = preventTopicDeleteAfterReplies > 1 ?
 						'[[error:cant-delete-topic-has-replies, ' + meta.config.preventTopicDeleteAfterReplies + ']]' :
 						'[[error:cant-delete-topic-has-reply]]';
 					return next(new Error(langKey));
 				}
 
-				if (!results['topics:delete'][0]) {
-					return next(null, false);
-				}
-
-				next(null, results.isOwner);
+				next(null, results['topics:delete'][0] && (results.isOwner || results.isModerator));
 			},
 		], callback);
 	};

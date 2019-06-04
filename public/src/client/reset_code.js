@@ -14,13 +14,17 @@ define('forum/reset_code', ['zxcvbn'], function (zxcvbn) {
 		resetEl.on('click', function () {
 			var strength = zxcvbn(password.val());
 			if (password.val().length < ajaxify.data.minimumPasswordLength) {
-				app.alertError('[[reset_password:password_too_short]]');
+				$('#notice').removeClass('hidden');
+				$('#notice strong').translateText('[[reset_password:password_too_short]]');
 			} else if (password.val().length > 512) {
-				app.alertError('[[error:password-too-long]]');
+				$('#notice').removeClass('hidden');
+				$('#notice strong').translateText('[[error:password-too-long]]');
 			} else if (password.val() !== repeat.val()) {
-				app.alertError('[[reset_password:passwords_do_not_match]]');
+				$('#notice').removeClass('hidden');
+				$('#notice strong').translateText('[[reset_password:passwords_do_not_match]]');
 			} else if (strength.score < ajaxify.data.minimumPasswordStrength) {
-				app.alertError('[[user:weak_password]]');
+				$('#notice').removeClass('hidden');
+				$('#notice strong').translateText('[[user:weak_password]]');
 			} else {
 				resetEl.prop('disabled', true).html('<i class="fa fa-spin fa-refresh"></i> Changing Password');
 				socket.emit('user.reset.commit', {

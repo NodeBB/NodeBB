@@ -10,6 +10,9 @@ module.exports = function (Groups) {
 	Groups.leave = function (groupNames, uid, callback) {
 		callback = callback || function () {};
 
+		if (Array.isArray(groupNames) && !groupNames.length) {
+			return setImmediate(callback);
+		}
 		if (!Array.isArray(groupNames)) {
 			groupNames = [groupNames];
 		}

@@ -849,17 +849,34 @@ describe('Categories', function () {
 			it('should retrieve all users with moderator bit in category privilege', function (done) {
 				Categories.getModeratorUids([1, 2], function (err, uids) {
 					assert.ifError(err);
-					assert.strictEqual(2, uids.length);
-					assert.strictEqual(1, parseInt(uids[0], 10));
-					assert.strictEqual(0, uids[1].length);
+					assert.strictEqual(uids.length, 2);
+					assert(uids[0].includes('1'));
+					assert.strictEqual(uids[1].length, 0);
 					done();
 				});
+			});
+
+			it('should not fail when there are multiple groups', function (done) {
+				async.series([
+					async.apply(groups.create, { name: 'testGroup2' }),
+					async.apply(groups.join, 'cid:1:privileges:groups:moderate', 'testGroup2'),
+					async.apply(groups.join, 'testGroup2', 1),
+					function (next) {
+						Categories.getModeratorUids([1, 2], function (err, uids) {
+							assert.ifError(err);
+							assert(uids[0].includes('1'));
+							next();
+						});
+					},
+				], done);
 			});
 
 			after(function (done) {
 				async.series([
 					async.apply(groups.leave, 'cid:1:privileges:groups:moderate', 'testGroup'),
+					async.apply(groups.leave, 'cid:1:privileges:groups:moderate', 'testGroup2'),
 					async.apply(groups.destroy, 'testGroup'),
+					async.apply(groups.destroy, 'testGroup2'),
 				], done);
 			});
 		});

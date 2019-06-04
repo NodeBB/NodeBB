@@ -342,7 +342,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should load topic tools', function (done) {
-			socketTopics.loadTopicTools({ uid: 1 }, { tid: newTopic.tid }, function (err, data) {
+			socketTopics.loadTopicTools({ uid: adminUid }, { tid: newTopic.tid }, function (err, data) {
 				assert.ifError(err);
 				assert(data);
 				done();
@@ -350,21 +350,21 @@ describe('Topic\'s', function () {
 		});
 
 		it('should delete the topic', function (done) {
-			socketTopics.delete({ uid: 1 }, { tids: [newTopic.tid], cid: categoryObj.cid }, function (err) {
+			socketTopics.delete({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid }, function (err) {
 				assert.ifError(err);
 				done();
 			});
 		});
 
 		it('should restore the topic', function (done) {
-			socketTopics.restore({ uid: 1 }, { tids: [newTopic.tid], cid: categoryObj.cid }, function (err) {
+			socketTopics.restore({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid }, function (err) {
 				assert.ifError(err);
 				done();
 			});
 		});
 
 		it('should lock topic', function (done) {
-			socketTopics.lock({ uid: 1 }, { tids: [newTopic.tid], cid: categoryObj.cid }, function (err) {
+			socketTopics.lock({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid }, function (err) {
 				assert.ifError(err);
 				topics.isLocked(newTopic.tid, function (err, isLocked) {
 					assert.ifError(err);
@@ -375,7 +375,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should unlock topic', function (done) {
-			socketTopics.unlock({ uid: 1 }, { tids: [newTopic.tid], cid: categoryObj.cid }, function (err) {
+			socketTopics.unlock({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid }, function (err) {
 				assert.ifError(err);
 				topics.isLocked(newTopic.tid, function (err, isLocked) {
 					assert.ifError(err);
@@ -386,7 +386,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should pin topic', function (done) {
-			socketTopics.pin({ uid: 1 }, { tids: [newTopic.tid], cid: categoryObj.cid }, function (err) {
+			socketTopics.pin({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid }, function (err) {
 				assert.ifError(err);
 				topics.getTopicField(newTopic.tid, 'pinned', function (err, pinned) {
 					assert.ifError(err);
@@ -397,7 +397,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should unpin topic', function (done) {
-			socketTopics.unpin({ uid: 1 }, { tids: [newTopic.tid], cid: categoryObj.cid }, function (err) {
+			socketTopics.unpin({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid }, function (err) {
 				assert.ifError(err);
 				topics.getTopicField(newTopic.tid, 'pinned', function (err, pinned) {
 					assert.ifError(err);
@@ -408,7 +408,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should move all topics', function (done) {
-			socketTopics.moveAll({ uid: 1 }, { cid: moveCid, currentCid: categoryObj.cid }, function (err) {
+			socketTopics.moveAll({ uid: adminUid }, { cid: moveCid, currentCid: categoryObj.cid }, function (err) {
 				assert.ifError(err);
 				topics.getTopicField(newTopic.tid, 'cid', function (err, cid) {
 					assert.ifError(err);
@@ -419,7 +419,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should move a topic', function (done) {
-			socketTopics.move({ uid: 1 }, { cid: categoryObj.cid, tids: [newTopic.tid] }, function (err) {
+			socketTopics.move({ uid: adminUid }, { cid: categoryObj.cid, tids: [newTopic.tid] }, function (err) {
 				assert.ifError(err);
 				topics.getTopicField(newTopic.tid, 'cid', function (err, cid) {
 					assert.ifError(err);
@@ -543,8 +543,40 @@ describe('Topic\'s', function () {
 			], done);
 		});
 
+		it('should fail to purge topic if user does not have privilege', function (done) {
+			var globalModUid;
+			var tid;
+			async.waterfall([
+				function (next) {
+					topics.post({
+						uid: adminUid,
+						title: 'topic for purge test',
+						content: 'topic content',
+						cid: categoryObj.cid,
+					}, next);
+				},
+				function (result, next) {
+					tid = result.topicData.tid;
+					User.create({ username: 'global mod' }, next);
+				},
+				function (uid, next) {
+					globalModUid = uid;
+					groups.join('Global Moderators', uid, next);
+				},
+				function (next) {
+					privileges.categories.rescind(['purge'], categoryObj.cid, 'Global Moderators', next);
+				},
+				function (next) {
+					socketTopics.purge({ uid: globalModUid }, { tids: [tid], cid: categoryObj.cid }, function (err) {
+						assert.equal(err.message, '[[error:no-privileges]]');
+						privileges.categories.give(['purge'], categoryObj.cid, 'Global Moderators', next);
+					});
+				},
+			], done);
+		});
+
 		it('should purge the topic', function (done) {
-			socketTopics.purge({ uid: 1 }, { tids: [newTopic.tid], cid: categoryObj.cid }, function (err) {
+			socketTopics.purge({ uid: adminUid }, { tids: [newTopic.tid], cid: categoryObj.cid }, function (err) {
 				assert.ifError(err);
 				db.isSortedSetMember('uid:' + followerUid + ':followed_tids', newTopic.tid, function (err, isMember) {
 					assert.ifError(err);
@@ -588,7 +620,10 @@ describe('Topic\'s', function () {
 						topics.tools.pin(tid1, adminUid, next);
 					},
 					function (next) {
-						topics.tools.pin(tid2, adminUid, next);
+						// artificial timeout so pin time is different on redis sometimes scores are indentical
+						setTimeout(function () {
+							topics.tools.pin(tid2, adminUid, next);
+						}, 5);
 					},
 				], done);
 			});
@@ -822,7 +857,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should fail with invalid data', function (done) {
-			socketTopics.createTopicFromPosts({ uid: 1 }, null, function (err) {
+			socketTopics.createTopicFromPosts({ uid: adminUid }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
@@ -939,8 +974,8 @@ describe('Topic\'s', function () {
 			request(nconf.get('url') + '/api/topic/' + topicData.slug + '/-1', { json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
-				assert.equal(res.headers['x-redirect'], '/topic/15/topic-for-controller-test');
-				assert.equal(body, '/topic/15/topic-for-controller-test');
+				assert.equal(res.headers['x-redirect'], '/topic/' + topicData.tid + '/topic-for-controller-test');
+				assert.equal(body, '/topic/' + topicData.tid + '/topic-for-controller-test');
 				done();
 			});
 		});

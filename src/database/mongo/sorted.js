@@ -502,8 +502,8 @@ module.exports = function (db, module) {
 			.batchSize(options.batch);
 
 		async.whilst(
-			function () {
-				return !done;
+			function (next) {
+				next(null, !done);
 			},
 			function (next) {
 				async.waterfall([

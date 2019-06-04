@@ -216,6 +216,8 @@ module.exports = function (Groups) {
 				}
 				async.series([
 					async.apply(updateMemberGroupTitles, oldName, newName),
+					async.apply(updateNavigationItems, oldName, newName),
+					async.apply(updateWidgets, oldName, newName),
 					async.apply(db.setObjectField, 'group:' + oldName, 'name', newName),
 					async.apply(db.setObjectField, 'group:' + oldName, 'slug', utils.slugify(newName)),
 					async.apply(db.deleteObjectField, 'groupslug:groupname', group.slug),
@@ -225,9 +227,8 @@ module.exports = function (Groups) {
 							if (err) {
 								return next(err);
 							}
-							async.each(groups, function (group, next) {
-								renameGroupMember('group:' + group + ':members', oldName, newName, next);
-							}, next);
+							const keys = groups.map(group => 'group:' + group + ':members');
+							renameGroupsMember(keys, oldName, newName, next);
 						});
 					},
 					async.apply(db.rename, 'group:' + oldName, 'group:' + newName),
@@ -237,10 +238,8 @@ module.exports = function (Groups) {
 					async.apply(db.rename, 'group:' + oldName + ':invited', 'group:' + newName + ':invited'),
 					async.apply(db.rename, 'group:' + oldName + ':member:pids', 'group:' + newName + ':member:pids'),
 
-					async.apply(renameGroupMember, 'groups:createtime', oldName, newName),
-					async.apply(renameGroupMember, 'groups:visible:createtime', oldName, newName),
-					async.apply(renameGroupMember, 'groups:visible:memberCount', oldName, newName),
-					async.apply(renameGroupMember, 'groups:visible:name', oldName.toLowerCase() + ':' + oldName, newName.toLowerCase() + ':' + newName),
+					async.apply(renameGroupsMember, ['groups:createtime', 'groups:visible:createtime', 'groups:visible:memberCount'], oldName, newName),
+					async.apply(renameGroupsMember, ['groups:visible:name'], oldName.toLowerCase() + ':' + oldName, newName.toLowerCase() + ':' + newName),
 					function (next) {
 						plugins.fireHook('action:group.rename', {
 							old: oldName,
@@ -274,25 +273,65 @@ module.exports = function (Groups) {
 		}, callback);
 	}
 
-	function renameGroupMember(group, oldName, newName, callback) {
-		var score;
+	function renameGroupsMember(keys, oldName, newName, callback) {
+		var scores;
 		async.waterfall([
 			function (next) {
-				db.isSortedSetMember(group, oldName, next);
+				db.isMemberOfSortedSets(keys, oldName, next);
 			},
-			function (isMember, next) {
-				if (!isMember) {
+			function (isMembers, next) {
+				keys = keys.filter((key, index) => isMembers[index]);
+				if (!keys.length) {
 					return callback();
 				}
-
-				db.sortedSetScore(group, oldName, next);
+				db.sortedSetsScore(keys, oldName, next);
 			},
-			function (_score, next) {
-				score = _score;
-				db.sortedSetRemove(group, oldName, next);
+			function (_scores, next) {
+				scores = _scores;
+				db.sortedSetsRemove(keys, oldName, next);
 			},
 			function (next) {
-				db.sortedSetAdd(group, score, newName, next);
+				db.sortedSetsAdd(keys, scores, newName, next);
+			},
+		], callback);
+	}
+
+	function updateNavigationItems(oldName, newName, callback) {
+		const navigation = require('../navigation/admin');
+
+		async.waterfall([
+			navigation.get,
+			function (navItems, next) {
+				navItems.forEach(function (navItem) {
+					if (navItem && Array.isArray(navItem.groups) && navItem.groups.includes(oldName)) {
+						navItem.groups.splice(navItem.groups.indexOf(oldName), 1, newName);
+					}
+				});
+
+				navigation.save(navItems, next);
+			},
+		], callback);
+	}
+
+	function updateWidgets(oldName, newName, callback) {
+		const admin = require('../widgets/admin');
+		const widgets = require('../widgets');
+		async.waterfall([
+			admin.get,
+			function (data, next) {
+				async.eachSeries(data.areas, function (area, next) {
+					if (!area.data.length) {
+						return setImmediate(next);
+					}
+					area.widgets = area.data;
+					area.widgets.forEach(function (widget) {
+						if (widget && widget.data && Array.isArray(widget.data.groups) && widget.data.groups.includes(oldName)) {
+							widget.data.groups.splice(widget.data.groups.indexOf(oldName), 1, newName);
+						}
+					});
+
+					widgets.setArea(area, next);
+				}, next);
 			},
 		], callback);
 	}

@@ -6,7 +6,7 @@
 	"validate-email": "Zweryfikuj e-mail",
 	"send-validation-email": "Wyślij e-mail weryfikacyjny",
 	"password-reset-email": "Wyślij e-mail do resetu hasła",
-	"force-password-reset": "Force Password Reset & Log User Out",
+	"force-password-reset": "Wymuś Zmianę Hasła i Wyloguj Użytkownika",
 	"ban": "Zbanuj użytkownika(-ów)",
 	"temp-ban": "Tymczasowo zbanuj użytkownika(-ów)",
 	"unban": "Odbanuj użytkownika(-ów)",

@@ -84,25 +84,21 @@ module.exports = function (privileges) {
 					isAdministrator: function (next) {
 						user.isAdministrator(uid, next);
 					},
-					isGlobalModerator: function (next) {
-						user.isGlobalModerator(uid, next);
-					},
 				}, next);
 			},
 			function (results, next) {
 				var privData = _.zipObject(privileges.global.userPrivilegeList, results.privileges);
-				var isAdminOrMod = results.isAdministrator || results.isGlobalModerator;
 
 				plugins.fireHook('filter:privileges.global.get', {
-					chat: privData.chat || isAdminOrMod,
-					'upload:post:image': privData['upload:post:image'] || isAdminOrMod,
-					'upload:post:file': privData['upload:post:file'] || isAdminOrMod,
-					'search:content': privData['search:content'] || isAdminOrMod,
-					'search:users': privData['search:users'] || isAdminOrMod,
-					'search:tags': privData['search:tags'] || isAdminOrMod,
-					'view:users': privData['view:users'] || isAdminOrMod,
-					'view:tags': privData['view:tags'] || isAdminOrMod,
-					'view:groups': privData['view:groups'] || isAdminOrMod,
+					chat: privData.chat || results.isAdministrator,
+					'upload:post:image': privData['upload:post:image'] || results.isAdministrator,
+					'upload:post:file': privData['upload:post:file'] || results.isAdministrator,
+					'search:content': privData['search:content'] || results.isAdministrator,
+					'search:users': privData['search:users'] || results.isAdministrator,
+					'search:tags': privData['search:tags'] || results.isAdministrator,
+					'view:users': privData['view:users'] || results.isAdministrator,
+					'view:tags': privData['view:tags'] || results.isAdministrator,
+					'view:groups': privData['view:groups'] || results.isAdministrator,
 				}, next);
 			},
 		], callback);
@@ -114,9 +110,6 @@ module.exports = function (privileges) {
 				helpers.isUserAllowedTo(privilege, uid, [0], function (err, results) {
 					next(err, Array.isArray(results) && results.length ? results[0] : false);
 				});
-			},
-			function (next) {
-				user.isGlobalModerator(uid, next);
 			},
 			function (next) {
 				user.isAdministrator(uid, next);

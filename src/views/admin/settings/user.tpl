@@ -167,14 +167,23 @@
 				<label>[[admin/settings/user:registration-type]]</label>
 				<select class="form-control" data-field="registrationType">
 					<option value="normal">[[admin/settings/user:registration-type.normal]]</option>
-					<option value="admin-approval">[[admin/settings/user:registration-type.admin-approval]]</option>
-					<option value="admin-approval-ip">[[admin/settings/user:registration-type.admin-approval-ip]]</option>
 					<option value="invite-only">[[admin/settings/user:registration-type.invite-only]]</option>
 					<option value="admin-invite-only">[[admin/settings/user:registration-type.admin-invite-only]]</option>
 					<option value="disabled">[[admin/settings/user:registration-type.disabled]]</option>
 				</select>
 				<p class="help-block">
 					[[admin/settings/user:registration-type.help, {config.relative_path}]]
+				</p>
+			</div>
+			<div class="form-group">
+				<label>[[admin/settings/user:registration-approval-type]]</label>
+				<select class="form-control" data-field="registrationApprovalType">
+					<option value="normal">[[admin/settings/user:registration-type.normal]]</option>
+					<option value="admin-approval">[[admin/settings/user:registration-type.admin-approval]]</option>
+					<option value="admin-approval-ip">[[admin/settings/user:registration-type.admin-approval-ip]]</option>
+				</select>
+				<p class="help-block">
+					[[admin/settings/user:registration-approval-type.help, {config.relative_path}]]
 				</p>
 			</div>
 			<div class="form-group">

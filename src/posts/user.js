@@ -21,11 +21,7 @@ module.exports = function (Posts) {
 			function (next) {
 				async.parallel({
 					userData: function (next) {
-						user.getUsersFields(uids, [
-							'uid', 'username', 'fullname', 'userslug',
-							'reputation', 'postcount', 'picture', 'signature',
-							'banned', 'banned:expire', 'status', 'lastonline', 'groupTitle',
-						], next);
+						getUserData(uids, uid, next);
 					},
 					userSettings: function (next) {
 						user.getMultipleUserSettings(uids, next);
@@ -118,6 +114,27 @@ module.exports = function (Posts) {
 			},
 		], callback);
 	};
+
+	function getUserData(uids, uid, callback) {
+		const fields = [
+			'uid', 'username', 'fullname', 'userslug',
+			'reputation', 'postcount', 'topiccount', 'picture',
+			'signature', 'banned', 'banned:expire', 'status',
+			'lastonline', 'groupTitle',
+		];
+		async.waterfall([
+			function (next) {
+				plugins.fireHook('filter:posts.addUserFields', {
+					fields: fields,
+					uid: uid,
+					uids: uids,
+				}, next);
+			},
+			function (result, next) {
+				user.getUsersFields(result.uids, _.uniq(result.fields), next);
+			},
+		], callback);
+	}
 
 	Posts.isOwner = function (pid, uid, callback) {
 		uid = parseInt(uid, 10);

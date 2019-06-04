@@ -30,7 +30,7 @@
 	"session-time-days": "天",
 	"session-time-seconds": "秒",
 	"session-time-help": "这些值将用于控制用户在登录时选中&quot;记住我&quot;后能够保持登录的时长。注意以下数值中只有一个将被使用。若<i>秒</i>值为空我们将回退使用<i>天</i>。若<i>天</i>值为空我们将使用默认值<i>14天</i>。",
-	"online-cutoff": "Minutes after user is considered inactive",
+	"online-cutoff": "分钟后认为用户已离线",
 	"online-cutoff-help": "若用户在此时间后未作出任何动作，他们将被视为不活跃状态且不会收到实时更新。",
 	"registration": "用户注册",
 	"registration-type": "注册方式",
@@ -71,7 +71,7 @@
 	"follow-replied-topics": "关注您回复的主题",
 	"default-notification-settings": "默认通知设置",
 	"categoryWatchState": "Default category watch state",
-	"categoryWatchState.watching": "Watching",
-	"categoryWatchState.notwatching": "Not Watching",
-	"categoryWatchState.ignoring": "Ignoring"
+	"categoryWatchState.watching": "已关注",
+	"categoryWatchState.notwatching": "未关注",
+	"categoryWatchState.ignoring": "已忽略"
 }

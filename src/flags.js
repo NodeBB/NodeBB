@@ -93,7 +93,9 @@ Flags.get = function (flagId, callback) {
 				targetObj: async.apply(Flags.getTarget, data.base.type, data.base.targetId, 0),
 			}, function (err, payload) {
 				// Final object return construction
-				next(err, Object.assign(data.base, {
+				next(err, Object.assign({
+					state: 'open',
+				}, data.base, {
 					description: validator.escape(data.base.description),
 					datetimeISO: utils.toISOString(data.base.datetime),
 					target_readable: data.base.type.charAt(0).toUpperCase() + data.base.type.slice(1) + ' ' + data.base.targetId,
@@ -179,7 +181,9 @@ Flags.list = function (filters, uid, callback) {
 					async.apply(db.getObject, 'flag:' + flagId),
 					function (flagObj, next) {
 						user.getUserFields(flagObj.uid, ['username', 'picture'], function (err, userObj) {
-							next(err, Object.assign(flagObj, {
+							next(err, Object.assign({
+								state: 'open',
+							}, flagObj, {
 								reporter: {
 									username: userObj.username,
 									picture: userObj.picture,

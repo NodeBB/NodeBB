@@ -64,10 +64,10 @@ module.exports = function (privileges) {
 				var isAdminOrMod = results.isAdministrator || results.isModerator;
 
 				plugins.fireHook('filter:privileges.categories.get', {
-					'topics:create': privData['topics:create'] || isAdminOrMod,
-					'topics:read': privData['topics:read'] || isAdminOrMod,
-					'topics:tag': privData['topics:tag'] || isAdminOrMod,
-					read: privData.read || isAdminOrMod,
+					'topics:create': privData['topics:create'] || results.isAdministrator,
+					'topics:read': privData['topics:read'] || results.isAdministrator,
+					'topics:tag': privData['topics:tag'] || results.isAdministrator,
+					read: privData.read || results.isAdministrator,
 					cid: cid,
 					uid: uid,
 					editable: isAdminOrMod,
@@ -94,7 +94,7 @@ module.exports = function (privileges) {
 
 	privileges.categories.isUserAllowedTo = function (privilege, cid, uid, callback) {
 		if (!cid) {
-			return callback(null, false);
+			return setImmediate(callback, null, false);
 		}
 		if (Array.isArray(cid)) {
 			helpers.isUserAllowedTo(privilege, uid, cid, function (err, results) {
@@ -109,30 +109,18 @@ module.exports = function (privileges) {
 
 	privileges.categories.can = function (privilege, cid, uid, callback) {
 		if (!cid) {
-			return callback(null, false);
+			return setImmediate(callback, null, false);
 		}
-
 		async.waterfall([
 			function (next) {
-				categories.getCategoryField(cid, 'disabled', next);
+				async.parallel({
+					disabled: async.apply(categories.getCategoryField, cid, 'disabled'),
+					isAdmin: async.apply(user.isAdministrator, uid),
+					isAllowed: async.apply(privileges.categories.isUserAllowedTo, privilege, cid, uid),
+				}, next);
 			},
-			function (disabled, next) {
-				if (disabled) {
-					return callback(null, false);
-				}
-				helpers.some([
-					function (next) {
-						helpers.isUserAllowedTo(privilege, uid, [cid], function (err, results) {
-							next(err, Array.isArray(results) && results.length ? results[0] : false);
-						});
-					},
-					function (next) {
-						user.isModerator(uid, cid, next);
-					},
-					function (next) {
-						user.isAdministrator(uid, next);
-					},
-				], next);
+			function (results, next) {
+				next(null, !results.disabled && (results.isAllowed || results.isAdmin));
 			},
 		], callback);
 	};
@@ -151,7 +139,7 @@ module.exports = function (privileges) {
 			function (results, next) {
 				cids = cids.filter(function (cid, index) {
 					return !results.categories[index].disabled &&
-						(results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
+						(results.allowedTo[index] || results.isAdmin);
 				});
 
 				next(null, cids.filter(Boolean));
@@ -167,9 +155,6 @@ module.exports = function (privileges) {
 			allowedTo: function (next) {
 				helpers.isUserAllowedTo(privilege, uid, cids, next);
 			},
-			isModerators: function (next) {
-				user.isModerator(uid, cids, next);
-			},
 			isAdmin: function (next) {
 				user.isAdministrator(uid, next);
 			},
@@ -178,7 +163,7 @@ module.exports = function (privileges) {
 
 	privileges.categories.filterUids = function (privilege, cid, uids, callback) {
 		if (!uids.length) {
-			return callback(null, []);
+			return setImmediate(callback, null, []);
 		}
 
 		uids = _.uniq(uids);
@@ -189,9 +174,6 @@ module.exports = function (privileges) {
 					allowedTo: function (next) {
 						helpers.isUsersAllowedTo(privilege, uids, cid, next);
 					},
-					isModerators: function (next) {
-						user.isModerator(uids, cid, next);
-					},
 					isAdmins: function (next) {
 						user.isAdministrator(uids, next);
 					},
@@ -199,7 +181,7 @@ module.exports = function (privileges) {
 			},
 			function (results, next) {
 				uids = uids.filter(function (uid, index) {
-					return results.allowedTo[index] || results.isModerators[index] || results.isAdmins[index];
+					return results.allowedTo[index] || results.isAdmins[index];
 				});
 				next(null, uids);
 			},
@@ -218,19 +200,12 @@ module.exports = function (privileges) {
 		async.waterfall([
 			function (next) {
 				async.parallel({
-					isAdministrator: function (next) {
-						user.isAdministrator(uid, next);
-					},
-					moderatorOfCurrent: function (next) {
-						user.isModerator(uid, currentCid, next);
-					},
-					moderatorOfTarget: function (next) {
-						user.isModerator(uid, targetCid, next);
-					},
+					isAdmin: async.apply(user.isAdministrator, uid),
+					isModerators: async.apply(user.isModerator, uid, [currentCid, targetCid]),
 				}, next);
 			},
 			function (results, next) {
-				next(null, results.isAdministrator || (results.moderatorOfCurrent && results.moderatorOfTarget));
+				next(null, results.isAdmin || !results.isModerators.includes(false));
 			},
 		], callback);
 	};

@@ -182,9 +182,11 @@
 		return states.map(function (priv) {
 			var guestDisabled = ['groups:moderate', 'groups:posts:upvote', 'groups:posts:downvote', 'groups:local:login', 'groups:group:create'];
 			var spidersEnabled = ['groups:find', 'groups:read', 'groups:topics:read', 'groups:view:users', 'groups:view:tags', 'groups:view:groups'];
+			var globalModDisabled = ['groups:moderate'];
 			var disabled =
 				(member === 'guests' && guestDisabled.includes(priv.name)) ||
-				(member === 'spiders' && !spidersEnabled.includes(priv.name));
+				(member === 'spiders' && !spidersEnabled.includes(priv.name)) ||
+				(member === 'Global Moderators' && globalModDisabled.includes(priv.name));
 
 			return '<td class="text-center" data-privilege="' + priv.name + '"><input type="checkbox"' + (priv.state ? ' checked' : '') + (disabled ? ' disabled="disabled"' : '') + ' /></td>';
 		}).join('');

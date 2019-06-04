@@ -265,6 +265,32 @@ describe('Post\'s', function () {
 			});
 		});
 
+		it('should not see post content if global mod does not have posts:view_deleted privilege', function (done) {
+			async.waterfall([
+				function (next) {
+					user.create({ username: 'global mod', password: '123456' }, next);
+				},
+				function (uid, next) {
+					groups.join('Global Moderators', uid, next);
+				},
+				function (next) {
+					privileges.categories.rescind(['posts:view_deleted'], cid, 'Global Moderators', next);
+				},
+				function (next) {
+					helpers.loginUser('global mod', '123456', function (err, _jar) {
+						assert.ifError(err);
+						var jar = _jar;
+
+						request(nconf.get('url') + '/api/topic/' + tid, { jar: jar, json: true }, function (err, res, body) {
+							assert.ifError(err);
+							assert.equal(body.posts[1].content, '[[topic:post_is_deleted]]');
+							privileges.categories.give(['posts:view_deleted'], cid, 'Global Moderators', next);
+						});
+					});
+				},
+			], done);
+		});
+
 		it('should restore a post', function (done) {
 			socketPosts.restore({ uid: voterUid }, { pid: replyPid, tid: tid }, function (err) {
 				assert.ifError(err);

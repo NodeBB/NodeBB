@@ -141,16 +141,7 @@ widgets.getWidgetDataForTemplates = function (templates, callback) {
 				locations.forEach(function (location) {
 					if (templateWidgetData && templateWidgetData[location]) {
 						try {
-							returnData[template][location] = JSON.parse(templateWidgetData[location]);
-							returnData[template][location] = returnData[template][location].map(function (widget) {
-								if (widget) {
-									widget.data.groups = widget.data.groups || [];
-									if (widget.data.groups && !Array.isArray(widget.data.groups)) {
-										widget.data.groups = [widget.data.groups];
-									}
-								}
-								return widget;
-							});
+							returnData[template][location] = parseWidgetData(templateWidgetData[location]);
 						} catch (err) {
 							winston.error('can not parse widget data. template:  ' + template + ' location: ' + location);
 							returnData[template][location] = [];
@@ -176,7 +167,7 @@ widgets.getArea = function (template, location, callback) {
 				return callback(null, []);
 			}
 			try {
-				result = JSON.parse(result);
+				result = parseWidgetData(result);
 			} catch (err) {
 				return callback(err);
 			}
@@ -185,6 +176,19 @@ widgets.getArea = function (template, location, callback) {
 		},
 	], callback);
 };
+
+function parseWidgetData(data) {
+	const widgets = JSON.parse(data);
+	widgets.forEach(function (widget) {
+		if (widget) {
+			widget.data.groups = widget.data.groups || [];
+			if (widget.data.groups && !Array.isArray(widget.data.groups)) {
+				widget.data.groups = [widget.data.groups];
+			}
+		}
+	});
+	return widgets;
+}
 
 widgets.setArea = function (area, callback) {
 	if (!area.location || !area.template) {

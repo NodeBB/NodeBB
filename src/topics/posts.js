@@ -243,8 +243,8 @@ module.exports = function (Topics) {
 					},
 				], next);
 			},
-			function () {
-				return isDeleted && !done;
+			function (next) {
+				next(null, isDeleted && !done);
 			},
 			function (err) {
 				callback(err, parseInt(latestPid, 10));

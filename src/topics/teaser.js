@@ -151,8 +151,8 @@ module.exports = function (Topics) {
 					next();
 				},
 			], next);
-		}, function () {
-			return isBlocked && prevPost && prevPost.pid && !checkedAllReplies;
+		}, function (next) {
+			next(null, isBlocked && prevPost && prevPost.pid && !checkedAllReplies);
 		}, function (err) {
 			callback(err, prevPost);
 		});

@@ -639,7 +639,7 @@ app.cacheBuster = null;
 			searchButton.removeClass('hidden');
 			setTimeout(function () {
 				quickSearchResults.addClass('hidden');
-			}, 100);
+			}, 200);
 		}
 
 		searchButton.on('click', function (e) {
