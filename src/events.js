@@ -84,6 +84,10 @@ events.log = function (data, callback) {
 };
 
 events.getEvents = function (filter, start, stop, from, to, callback) {
+	// from/to optional
+	from = parseInt(from, 10) || '-inf';
+	to = parseInt(to, 10) || 'inf';
+
 	async.waterfall([
 		function (next) {
 			db.getSortedSetRevRangeByScore('events:time' + (filter ? ':' + filter : ''), start, stop - start + 1, to, from, next);
