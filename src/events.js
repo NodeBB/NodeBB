@@ -48,6 +48,7 @@ events.types = [
 	'export:uploads',
 	'account-locked',
 	'getUsersCSV',
+	// To add new types from plugins, just Array.push() to this array
 ];
 
 /**
@@ -82,10 +83,17 @@ events.log = function (data, callback) {
 	});
 };
 
-events.getEvents = function (filter, start, stop, callback) {
+events.getEvents = function (filter, start, stop, from, to, callback) {
+	// from/to optional
+	if (typeof from === 'function' && !to && !callback) {
+		callback = from;
+		from = 0;
+		to = Date.now();
+	}
+
 	async.waterfall([
 		function (next) {
-			db.getSortedSetRevRange('events:time' + (filter ? ':' + filter : ''), start, stop, next);
+			db.getSortedSetRevRangeByScore('events:time' + (filter ? ':' + filter : ''), start, stop - start + 1, to, from, next);
 		},
 		function (eids, next) {
 			db.getObjects(eids.map(eid => 'event:' + eid), next);
