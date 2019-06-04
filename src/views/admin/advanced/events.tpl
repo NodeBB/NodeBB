@@ -52,6 +52,10 @@
 						<label for="end">[[admin/advanced/events:filter-end]]</label>
 						<input type="date" id="end" name="end" class="form-control" />
 					</div>
+					<div class="form-group">
+						<label for="perPage">[[admin/advanced/events:filter-perPage]]</label>
+						<input type="text" id="perPage" name="perPage" class="form-control" />
+					</div>
 					<button type="submit" class="btn btn-primary btn-block" id="apply">[[admin/advanced/events:filters-apply]]</button>
 				</form>
 			</div>

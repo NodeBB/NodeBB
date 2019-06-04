@@ -82,10 +82,10 @@ events.log = function (data, callback) {
 	});
 };
 
-events.getEvents = function (filter, start, stop, callback) {
+events.getEvents = function (filter, start, stop, from, to, callback) {
 	async.waterfall([
 		function (next) {
-			db.getSortedSetRevRange('events:time' + (filter ? ':' + filter : ''), start, stop, next);
+			db.getSortedSetRevRangeByScore('events:time' + (filter ? ':' + filter : ''), start, stop - start, to, from, next);
 		},
 		function (eids, next) {
 			db.getObjects(eids.map(eid => 'event:' + eid), next);
