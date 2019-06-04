@@ -34,8 +34,7 @@ eventsController.get = function (req, res, next) {
 			}, next);
 		},
 		function (results) {
-			var types = [''].concat(events.types);
-			var filters = types.map(function (type) {
+			var types = [''].concat(events.types).map(function (type) {
 				return {
 					value: type,
 					name: type || 'all',
@@ -48,7 +47,8 @@ eventsController.get = function (req, res, next) {
 			res.render('admin/advanced/events', {
 				events: results.events,
 				pagination: pagination.create(page, pageCount, req.query),
-				filters: filters,
+				types: types,
+				query: req.query,
 			});
 		},
 	], next);

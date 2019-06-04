@@ -39,22 +39,22 @@
 					<div class="form-group">
 						<label for="type">[[admin/advanced/events:filter-type]]</label>
 						<select class="form-control" id="type" name="type" class="form-control">
-							<!-- BEGIN filters -->
-							<option value="{filters.value}" <!-- IF filters.selected -->selected<!-- ENDIF filters.selected -->>{filters.name}</option>
-							<!-- END filters -->
+							<!-- BEGIN types -->
+							<option value="{types.value}" <!-- IF types.selected -->selected<!-- ENDIF types.selected -->>{types.name}</option>
+							<!-- END types -->
 						</select>
 					</div>
 					<div class="form-group">
 						<label for="start">[[admin/advanced/events:filter-start]]</label>
-						<input type="date" id="start" name="start" class="form-control" />
+						<input type="date" id="start" name="start" value="{query.start}" class="form-control" />
 					</div>
 					<div class="form-group">
 						<label for="end">[[admin/advanced/events:filter-end]]</label>
-						<input type="date" id="end" name="end" class="form-control" />
+						<input type="date" id="end" name="end" value="{query.end}" class="form-control" />
 					</div>
 					<div class="form-group">
 						<label for="perPage">[[admin/advanced/events:filter-perPage]]</label>
-						<input type="text" id="perPage" name="perPage" class="form-control" />
+						<input type="text" id="perPage" name="perPage" value="{query.perPage}" class="form-control" />
 					</div>
 					<button type="submit" class="btn btn-primary btn-block" id="apply">[[admin/advanced/events:filters-apply]]</button>
 				</form>
