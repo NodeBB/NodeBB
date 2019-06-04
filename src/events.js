@@ -86,7 +86,7 @@ events.log = function (data, callback) {
 events.getEvents = function (filter, start, stop, from, to, callback) {
 	async.waterfall([
 		function (next) {
-			db.getSortedSetRevRangeByScore('events:time' + (filter ? ':' + filter : ''), start, stop - start, to, from, next);
+			db.getSortedSetRevRangeByScore('events:time' + (filter ? ':' + filter : ''), start, stop - start + 1, to, from, next);
 		},
 		function (eids, next) {
 			db.getObjects(eids.map(eid => 'event:' + eid), next);
