@@ -2,5 +2,11 @@
 	"events": "Ereignisse",
 	"no-events": "Es gibt keine Ereignisse",
 	"control-panel": "Ereignis-Steuerung",
-	"delete-events": "Ereignisse löschen"
+	"delete-events": "Ereignisse löschen",
+	"filters": "Filters",
+	"filters-apply": "Apply Filters",
+	"filter-type": "Event Type",
+	"filter-start": "Start Date",
+	"filter-end": "End Date",
+	"filter-perPage": "Per Page"
 }

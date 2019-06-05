@@ -2,5 +2,11 @@
 	"events": "ארועים",
 	"no-events": "אין ארועים",
 	"control-panel": "בקרת ארועים",
-	"delete-events": "מחיקת ארועים"
+	"delete-events": "מחיקת ארועים",
+	"filters": "Filters",
+	"filters-apply": "Apply Filters",
+	"filter-type": "Event Type",
+	"filter-start": "Start Date",
+	"filter-end": "End Date",
+	"filter-perPage": "Per Page"
 }
