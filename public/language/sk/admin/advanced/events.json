@@ -2,5 +2,11 @@
 	"events": "Udalosti",
 	"no-events": "Žiadne nové udalosti",
 	"control-panel": "Ovládací panel udalostí",
-	"delete-events": "Odstrániť udalosť"
+	"delete-events": "Odstrániť udalosť",
+	"filters": "Filters",
+	"filters-apply": "Apply Filters",
+	"filter-type": "Event Type",
+	"filter-start": "Start Date",
+	"filter-end": "End Date",
+	"filter-perPage": "Per Page"
 }

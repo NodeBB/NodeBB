@@ -2,5 +2,11 @@
 	"events": "Events",
 	"no-events": "There are no events",
 	"control-panel": "Kontrol Panel for Begivenheder",
-	"delete-events": "Slet Begivenheder"
+	"delete-events": "Slet Begivenheder",
+	"filters": "Filters",
+	"filters-apply": "Apply Filters",
+	"filter-type": "Event Type",
+	"filter-start": "Start Date",
+	"filter-end": "End Date",
+	"filter-perPage": "Per Page"
 }

@@ -2,5 +2,11 @@
 	"events": "이벤트",
 	"no-events": "이벤트가 없습니다",
 	"control-panel": "이벤트 제어판",
-	"delete-events": "이벤트 삭제"
+	"delete-events": "이벤트 삭제",
+	"filters": "Filters",
+	"filters-apply": "Apply Filters",
+	"filter-type": "Event Type",
+	"filter-start": "Start Date",
+	"filter-end": "End Date",
+	"filter-perPage": "Per Page"
 }

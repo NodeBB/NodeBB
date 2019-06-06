@@ -2,5 +2,11 @@
 	"events": "Notikumi",
 	"no-events": "Nav notikumu",
 	"control-panel": "Notikumu vadības panelis",
-	"delete-events": "Izdzēst notikumus"
+	"delete-events": "Izdzēst notikumus",
+	"filters": "Filters",
+	"filters-apply": "Apply Filters",
+	"filter-type": "Event Type",
+	"filter-start": "Start Date",
+	"filter-end": "End Date",
+	"filter-perPage": "Per Page"
 }
