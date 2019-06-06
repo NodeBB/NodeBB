@@ -6,6 +6,6 @@
 	"max-length": "Sarunu lielākais garums",
 	"max-room-size": "Maksimālais lietotāju skaits tērzētavā",
 	"delay": "Laiks starp sarunām milisekundēs",
-	"restrictions.seconds-edit-after": "Sekunžu skaits, pirms lietotājs var rediģēt savas sarunas pēc rakstīšanas. (Atspējots ja 0)",
-	"restrictions.seconds-delete-after": "Sekunžu skaits, pirms lietotājs var izdzēst savas sarunas pēc rakstīšanas. (Atspējots ja 0)"
+	"restrictions.seconds-edit-after": "Number of seconds a chat message will remain editable. (0 disabled)",
+	"restrictions.seconds-delete-after": "Number of seconds a chat message will remain deletable. (0 disabled)"
 }

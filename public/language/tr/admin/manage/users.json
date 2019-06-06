@@ -28,6 +28,11 @@
 	"pills.banned": "Yasaklandı",
 	"pills.search": "Kullanıcı Ara",
 
+	"50-per-page": "50 per page",
+	"100-per-page": "100 per page",
+	"250-per-page": "250 per page",
+	"500-per-page": "500 per page",
+
 	"search.uid": "Kullanıcı Kimliğiyle",
 	"search.uid-placeholder": "Aramak için bir kullanıcı kimliği girin",
 	"search.username": "Kullanıcı Adına Göre",

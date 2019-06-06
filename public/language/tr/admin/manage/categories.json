@@ -45,7 +45,12 @@
 	"privileges.search-group": "Grup Ekle",
 	"privileges.copy-to-children": "Alttakilere Kopyala",
 	"privileges.copy-from-category": "Kategoriden Kopyala",
+	"privileges.copy-privileges-to-all-categories": "Copy to All Categories",
+	"privileges.copy-group-privileges-to-children": "Copy this group's privileges to the children of this category.",
+	"privileges.copy-group-privileges-to-all-categories": "Copy this group's privileges to all categories.",
+	"privileges.copy-group-privileges-from": "Copy this group's privileges from another category.",
 	"privileges.inherit": "<code>Kayıtlı kullanıcı</code> grubuna belirli bir ayrıcalık tanınması durumunda, diğer tüm gruplar açıkça tanımlanmamış / kontrol edilmemiş olsalar bile <strong>örtük bir ayrıcalık</strong> alırlar. Bu örtük ayrıcalık size gösterilir. Tüm kullanıcılar <code>kayıtlı kullanıcılar</code> grubunun bir parçasıdır. Bu nedenle ek gruplara yönelik ayrıcalıkların açıkça verilmesine gerek yoktur.",
+	"privileges.copy-success": "Privileges copied!",
 
 	"analytics.back": "Kategori listesine geri dön",
 	"analytics.title": "\"%1\" kategorisi için analiz",

@@ -45,7 +45,12 @@
 	"privileges.search-group": "Pievienot grupu",
 	"privileges.copy-to-children": "Kopēt uz apakškategorijām",
 	"privileges.copy-from-category": "Kopēt no kategorijas",
+	"privileges.copy-privileges-to-all-categories": "Copy to All Categories",
+	"privileges.copy-group-privileges-to-children": "Copy this group's privileges to the children of this category.",
+	"privileges.copy-group-privileges-to-all-categories": "Copy this group's privileges to all categories.",
+	"privileges.copy-group-privileges-from": "Copy this group's privileges from another category.",
 	"privileges.inherit": "Ja <code>registered-users</code> grupai tiek piešķirta īpaša privilēģija, visas pārējās grupas saņem <strong>netiešu privilēģiju</strong>, pat ja tā nav tieši piešķirta. Šī netiešā privilēģija tiek parādīta, jo visi lietotāji ir daļa no <code>registered-users</code> grupas, tādēļ šī privilēģija pārējām grupām nav papildus jāpiešķir.",
+	"privileges.copy-success": "Privileges copied!",
 
 	"analytics.back": "Atpakaļ uz kategoriju sarakstu",
 	"analytics.title": "\"%1\" kategorijas analītika",

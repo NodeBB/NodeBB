@@ -45,7 +45,12 @@
 	"privileges.search-group": "Csoport hozzáadása",
 	"privileges.copy-to-children": "Másolás utódokra",
 	"privileges.copy-from-category": "Másolás kategóriűból",
+	"privileges.copy-privileges-to-all-categories": "Copy to All Categories",
+	"privileges.copy-group-privileges-to-children": "Copy this group's privileges to the children of this category.",
+	"privileges.copy-group-privileges-to-all-categories": "Copy this group's privileges to all categories.",
+	"privileges.copy-group-privileges-from": "Copy this group's privileges from another category.",
 	"privileges.inherit": "If the <code>registered-users</code> group is granted a specific privilege, all other groups receive an <strong>implicit privilege</strong>, even if they are not explicitly defined/checked. This implicit privilege is shown to you because all users are part of the <code>registered-users</code> user group, and so, privileges for additional groups need not be explicitly granted.",
+	"privileges.copy-success": "Privileges copied!",
 
 	"analytics.back": "Visszatérés a kategórialistához",
 	"analytics.title": "Elemzés \"%1\" kategóriához",

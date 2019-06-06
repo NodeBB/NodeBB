@@ -28,6 +28,11 @@
 	"pills.banned": "被封禁",
 	"pills.search": "搜寻用户",
 
+	"50-per-page": "50 per page",
+	"100-per-page": "100 per page",
+	"250-per-page": "250 per page",
+	"500-per-page": "500 per page",
+
 	"search.uid": "通过用户ID",
 	"search.uid-placeholder": "搜索用户ID",
 	"search.username": "通过用户名",

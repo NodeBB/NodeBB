@@ -28,6 +28,11 @@
 	"pills.banned": "แบน",
 	"pills.search": "ค้นหาผู้ใช้งาน",
 
+	"50-per-page": "50 per page",
+	"100-per-page": "100 per page",
+	"250-per-page": "250 per page",
+	"500-per-page": "500 per page",
+
 	"search.uid": "ตามรหัสผู้ใช้",
 	"search.uid-placeholder": "ป้อนหมายเลขผู้ใช้เพื่อค้นหา",
 	"search.username": "โดยชื่อผู้ใช้งาน",

@@ -28,6 +28,11 @@
 	"pills.banned": "Banni",
 	"pills.search": "Recherche d'utilisateur",
 
+	"50-per-page": "50 par page",
+	"100-per-page": "100 par page",
+	"250-per-page": "250 par page",
+	"500-per-page": "500 par page",
+
 	"search.uid": "Par ID",
 	"search.uid-placeholder": "Rechercher avec l'ID",
 	"search.username": "Par nom d'utilisateur",

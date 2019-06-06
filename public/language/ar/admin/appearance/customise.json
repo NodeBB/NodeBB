@@ -8,7 +8,7 @@
 	"custom-js.enable": "تفعيل Javascript المخصصة",
 
 	"custom-header": "ترويسة مخصصة",
-	"custom-header.description": "أدخل HTML الخاصة بك هنا (مثل العلامات الوصفية، وما إلى ذلك)، والتي سيتم إلحاقها الى<code>&lt;head&gt;</code> في تصميم المنتدى. يسمح باستخدام علامات النص البرمجي، ولكن سيتم تعطيلها؛ لتوفر تبويبة\n<a href=\"#custom-header\" data-toggle=\"tab\">Javascript المخصصة</a>",
+	"custom-header.description": "Enter custom HTML here (ex. Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup. Script tags are allowed, but are discouraged, as the <a href=\"#custom-js\" data-toggle=\"tab\">Custom Javascript</a> tab is available.",
 	"custom-header.enable": "تفعيل الترويسة المخصصة",
 
 	"custom-css.livereload": "تفعيل إعادة التحميل المباشرة",

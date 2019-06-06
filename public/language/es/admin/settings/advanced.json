@@ -1,6 +1,7 @@
 {
 	"maintenance-mode": "Modo de Mantenimiento",
 	"maintenance-mode.help": "Cuando este foro están en Modo de Mantenimiento, todas las peticiones serán redirigidas a una página estática de mantenimiento. Los administradores están exentos de esta redirección, y pueden acceder al sitio normalmente.",
+	"maintenance-mode.status": "Maintenance Mode Status Code",
 	"maintenance-mode.message": "Mensaje de Mantenimiento",
 	"headers": "Cabeceras",
 	"headers.allow-from": "Establecer ALLOW-FROM para poner NodeBB en un iFrame",

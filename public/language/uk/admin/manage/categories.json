@@ -45,7 +45,12 @@
 	"privileges.search-group": "Додати групу",
 	"privileges.copy-to-children": "Копіювати під-категоріям",
 	"privileges.copy-from-category": "Копіювати з категорії",
+	"privileges.copy-privileges-to-all-categories": "Copy to All Categories",
+	"privileges.copy-group-privileges-to-children": "Copy this group's privileges to the children of this category.",
+	"privileges.copy-group-privileges-to-all-categories": "Copy this group's privileges to all categories.",
+	"privileges.copy-group-privileges-from": "Copy this group's privileges from another category.",
 	"privileges.inherit": "Надаючи права групі <code>registered-users</code> ви неявно надаєте ті ж самі права всім іншим групам, навіть якщо вони явно не відмічені. Це трапляється тому, що всі користувачі входять до групи <code>registered-users</code>.",
+	"privileges.copy-success": "Privileges copied!",
 
 	"analytics.back": "Повернутися до списку категорій",
 	"analytics.title": "Аналітика по категорії \"%1\"",

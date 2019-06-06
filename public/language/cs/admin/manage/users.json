@@ -28,6 +28,11 @@
 	"pills.banned": "Zakázán",
 	"pills.search": "Hledat uživatele",
 
+	"50-per-page": "50 per page",
+	"100-per-page": "100 per page",
+	"250-per-page": "250 per page",
+	"500-per-page": "500 per page",
+
 	"search.uid": "Dle ID uživatele",
 	"search.uid-placeholder": "Pro hledání, zadejte ID uživatele",
 	"search.username": "Dle jména uživatele",

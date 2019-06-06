@@ -1,6 +1,7 @@
 {
 	"maintenance-mode": "Режим обслуживания",
 	"maintenance-mode.help": "Когда форум находится в режиме обслуживания, все запросы будут перенаправляться на статичную страницу. Администраторы освобождены от этого ограничения, и имеют обычный доступ к сайту.",
+	"maintenance-mode.status": "Maintenance Mode Status Code",
 	"maintenance-mode.message": "Сообщение форума в режиме обслуживания",
 	"headers": "Заголовки",
 	"headers.allow-from": "Установить ALLOW-FROM для размещения NodeBB в iFrame",

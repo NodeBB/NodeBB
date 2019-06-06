@@ -6,6 +6,6 @@
 	"max-length": "Chat üzenetek maximális hossza",
 	"max-room-size": "A chat szobákban lévő felhasználók maximális száma",
 	"delay": "Chat üzenetek közötti idő ezredmásodpercben",
-	"restrictions.seconds-edit-after": "Hozzászólást követő, a felhasználók számára a chat üzenetek szerkesztésének engedélyezését megelőző másodpercek száma. (0 letiltva)",
-	"restrictions.seconds-delete-after": "Hozzászólást követő, a felhasználók számára a chat üzenetek törlésének engedélyezését megelőző másodpercek száma. (0 letiltva)"
+	"restrictions.seconds-edit-after": "Number of seconds a chat message will remain editable. (0 disabled)",
+	"restrictions.seconds-delete-after": "Number of seconds a chat message will remain deletable. (0 disabled)"
 }

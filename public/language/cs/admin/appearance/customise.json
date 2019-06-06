@@ -8,7 +8,7 @@
 	"custom-js.enable": "Povolit uživatelský Javascript",
 
 	"custom-header": "Uživatelská hlavička",
-	"custom-header.description": "Zde zadejte uživatelské HTML (mimo Meta Tags, atd.), které bude připojeno k části značek <code>&lt;head&gt;</code> vašeho fóra.. Značky pro „script” jsou povoleny, ale nedoporučujeme je, neboť je dostupný <a href=\"#custom-header\" data-toggle=\"tab\">Uživatelský Javascript</a> .",
+	"custom-header.description": "Enter custom HTML here (ex. Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup. Script tags are allowed, but are discouraged, as the <a href=\"#custom-js\" data-toggle=\"tab\">Custom Javascript</a> tab is available.",
 	"custom-header.enable": "Povolit uživatelskou hlavičku",
 
 	"custom-css.livereload": "Povolit aktuální znovu načtení",

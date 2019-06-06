@@ -28,6 +28,11 @@
 	"pills.banned": "Bloķētie",
 	"pills.search": "Meklēt lietotājos",
 
+	"50-per-page": "50 per page",
+	"100-per-page": "100 per page",
+	"250-per-page": "250 per page",
+	"500-per-page": "500 per page",
+
 	"search.uid": "Pēc lietotāja ID",
 	"search.uid-placeholder": "Meklējamais lietotāja ID",
 	"search.username": "Pēc lietotājvārda",

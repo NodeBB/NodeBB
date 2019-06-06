@@ -6,6 +6,6 @@
 	"max-length": "Максимальная длина сообщения чата",
 	"max-room-size": "Максимальное число пользователей в чат комнатах",
 	"delay": "Время между сообщениями чата в милисекундах",
-	"restrictions.seconds-edit-after": "Секунд перед тем, как пользователю разрешено редактировать сообщение чата после отправки. (0 выключено)",
-	"restrictions.seconds-delete-after": "Секунд перед тем, как пользователю разрешено удалить сообщение чата после отправки. (0 выключено)"
+	"restrictions.seconds-edit-after": "Number of seconds a chat message will remain editable. (0 disabled)",
+	"restrictions.seconds-delete-after": "Number of seconds a chat message will remain deletable. (0 disabled)"
 }

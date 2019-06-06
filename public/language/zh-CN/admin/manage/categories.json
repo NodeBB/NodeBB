@@ -45,7 +45,12 @@
 	"privileges.search-group": "添加群组",
 	"privileges.copy-to-children": "复制到子版块",
 	"privileges.copy-from-category": "从版块复制",
+	"privileges.copy-privileges-to-all-categories": "Copy to All Categories",
+	"privileges.copy-group-privileges-to-children": "Copy this group's privileges to the children of this category.",
+	"privileges.copy-group-privileges-to-all-categories": "Copy this group's privileges to all categories.",
+	"privileges.copy-group-privileges-from": "Copy this group's privileges from another category.",
 	"privileges.inherit": "如果 <code>registered-users</code> 组被授予特定权限，所有其他组都会收到<strong>隐式权限</strong>，即使它们未被明确定义/检查。 将显示此隐式权限，因为所有用户都是 <code>registered-users</code> 群组的一部分，因此无需显式授予其他组的权限。",
+	"privileges.copy-success": "Privileges copied!",
 
 	"analytics.back": "返回版块列表",
 	"analytics.title": "“%1”版块的统计",

@@ -2,6 +2,7 @@
 	"posts": "게시물",
 	"allow-files": "사용자가 (이미지가 아닌) 일반 파일을 업로드하는것을 허용",
 	"private": "업로드된 파일들을 개인만 볼 수 있게 바꿉니다.",
+	"strip-exif-data": "Strip EXIF Data",
 	"private-extensions": "파일 확장자를 비밀로 만들기",
 	"private-uploads-extensions-help": "여기에서 비공개로 설정하려면 쉼표로 구분 된 파일 확장명 목록을 입력하세요. (예: pdf, xls, doc). 빈 목록은 모든 파일이 비공개임을 의미합니다.",
 	"resize-image-width-threshold": "Resize images if they are wider than specified width",

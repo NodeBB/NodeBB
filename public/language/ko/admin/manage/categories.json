@@ -45,7 +45,12 @@
 	"privileges.search-group": "그룹 추가",
 	"privileges.copy-to-children": "하위로 복사",
 	"privileges.copy-from-category": "게시판에서 복사",
+	"privileges.copy-privileges-to-all-categories": "Copy to All Categories",
+	"privileges.copy-group-privileges-to-children": "Copy this group's privileges to the children of this category.",
+	"privileges.copy-group-privileges-to-all-categories": "Copy this group's privileges to all categories.",
+	"privileges.copy-group-privileges-from": "Copy this group's privileges from another category.",
 	"privileges.inherit": "만약 <code>registered-users</code>그룹이 특정 권한을 허가 받는다면 모든 다른 그룹들 또한 따로 추가하거나 체크하지 않더라도 <strong>암시적 권한</strong>을 얻게 됩니다. 모든 유저가 <code>registered-users</code> 그룹의 멤버이기 때문에 다른 추가적인 그룹에 대한 권한은 따로 허가 받을 필요가 없습니다.",
+	"privileges.copy-success": "Privileges copied!",
 
 	"analytics.back": "게시판 목록으로 돌아가기",
 	"analytics.title": "\"%1\" 게시판 분석 결과",

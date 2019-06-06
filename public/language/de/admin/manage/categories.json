@@ -45,7 +45,12 @@
 	"privileges.search-group": "Gruppe hinzufügen",
 	"privileges.copy-to-children": "In Untergeordnete kopieren",
 	"privileges.copy-from-category": "Kopiere von Kategorie",
+	"privileges.copy-privileges-to-all-categories": "Copy to All Categories",
+	"privileges.copy-group-privileges-to-children": "Copy this group's privileges to the children of this category.",
+	"privileges.copy-group-privileges-to-all-categories": "Copy this group's privileges to all categories.",
+	"privileges.copy-group-privileges-from": "Copy this group's privileges from another category.",
 	"privileges.inherit": "Wenn der Gruppe <code>registered-users</code> eine bestimmte Berechtigung erteilt wird, erhalten alle anderen Gruppen eine <strong>implizite Berechtigung</strong>, auch wenn sie nicht explizit definiert / ausgewählt werden. Diese implizite Berechtigung wird dir angezeigt, da alle Benutzer Teil der Gruppe <code>registered-users</code> sind und daher keine Berechtigungen für zusätzliche Gruppen explizit erteilt werden müssen.",
+	"privileges.copy-success": "Privileges copied!",
 
 	"analytics.back": "Zurück zur Kategorien Übersicht",
 	"analytics.title": "Analyse für \"%1\" Kategorie",

@@ -2,6 +2,7 @@
 	"posts": "Записи",
 	"allow-files": "Разрешить участникам загружать обычные файлы",
 	"private": "Делать загруженные файлы приватными",
+	"strip-exif-data": "Strip EXIF Data",
 	"private-extensions": "Расширения файлов, которые следует делать приватными",
 	"private-uploads-extensions-help": "Введите через запятую список расширений файлов, например <code>pdf,xls,doc</code>. Чтобы все файлы были приватными — оставьте пустое значение.",
 	"resize-image-width-threshold": "Resize images if they are wider than specified width",

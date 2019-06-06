@@ -28,6 +28,11 @@
 	"pills.banned": "Kitiltottak",
 	"pills.search": "Keresés",
 
+	"50-per-page": "50 per page",
+	"100-per-page": "100 per page",
+	"250-per-page": "250 per page",
+	"500-per-page": "500 per page",
+
 	"search.uid": "ID alapján",
 	"search.uid-placeholder": "Írj be egy ID-t a kereséshez",
 	"search.username": "Felhasználónév szerint",

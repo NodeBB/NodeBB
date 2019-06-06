@@ -3,10 +3,10 @@
 	"no-events": "Няма събития",
 	"control-panel": "Контролен панел за събитията",
 	"delete-events": "Изтриване на събитията",
-	"filters": "Filters",
-	"filters-apply": "Apply Filters",
-	"filter-type": "Event Type",
-	"filter-start": "Start Date",
-	"filter-end": "End Date",
-	"filter-perPage": "Per Page"
+	"filters": "Филтри",
+	"filters-apply": "Прилагане на филтрите",
+	"filter-type": "Вид събитие",
+	"filter-start": "Начална дата",
+	"filter-end": "Крайна дата",
+	"filter-perPage": "На страница"
 }

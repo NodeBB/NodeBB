@@ -45,7 +45,12 @@
 	"privileges.search-group": "グループを追加",
 	"privileges.copy-to-children": "子要素にコピーする",
 	"privileges.copy-from-category": "カテゴリからのコピー",
+	"privileges.copy-privileges-to-all-categories": "Copy to All Categories",
+	"privileges.copy-group-privileges-to-children": "Copy this group's privileges to the children of this category.",
+	"privileges.copy-group-privileges-to-all-categories": "Copy this group's privileges to all categories.",
+	"privileges.copy-group-privileges-from": "Copy this group's privileges from another category.",
 	"privileges.inherit": "<code>登録済ユーザー</ code>グループに特定の権限が与えられている場合、他のすべてのグループはたとえ明示的に定義/検査されていなくても<strong>暗黙の特権</ strong>があります。すべてのユーザーは<code>登録済ユーザー</code>のユーザーグループの一部で、この暗黙の特権が表示されるため、追加グループの特権を明示的に付与する必要はありません。",
+	"privileges.copy-success": "Privileges copied!",
 
 	"analytics.back": "カテゴリ一覧に戻る",
 	"analytics.title": "カテゴリ\"%1\"のアナリティクス",

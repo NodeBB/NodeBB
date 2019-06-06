@@ -28,6 +28,11 @@
 	"pills.banned": "차단됨",
 	"pills.search": "사용자 검색",
 
+	"50-per-page": "50 per page",
+	"100-per-page": "100 per page",
+	"250-per-page": "250 per page",
+	"500-per-page": "500 per page",
+
 	"search.uid": "By User ID",
 	"search.uid-placeholder": "검색 할 사용자 ID를 입력하십시오",
 	"search.username": "이름으로",
