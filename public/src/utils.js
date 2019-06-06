@@ -1,7 +1,7 @@
 'use strict';
 
-var winston;
 (function (factory) {
+	var winston;
 	if (typeof module === 'object' && module.exports) {
 		winston = require('winston');
 
@@ -14,7 +14,7 @@ var winston;
 		};
 
 		process.profile = function (operation, start) {
-			console.log('%s took %d milliseconds', operation, process.elapsedTimeSince(start));
+			winston.log('%s took %d milliseconds', operation, process.elapsedTimeSince(start));
 		};
 
 		process.elapsedTimeSince = function (start) {
@@ -23,7 +23,7 @@ var winston;
 		};
 	} else {
 		winston = console;
-		window.utils = factory(window.XRegExp);
+		window.utils = factory(window.XRegExp, winston);
 	}
 }(function (XRegExp) {
 	var freeze = Object.freeze || function (obj) { return obj; };
@@ -473,43 +473,6 @@ var winston;
 		isPromise: function (object) {
 			// https://stackoverflow.com/questions/27746304/how-do-i-tell-if-an-object-is-a-promise#comment97339131_27746324
 			return object && typeof object.then === 'function';
-		},
-
-		// todo: use js template literals in 2030
-		// todo: use js yield* in 2040
-		callable: function (func, options) {
-			options = options || {};
-			options.times = parseInt(options.times, 10) || null;
-			options.timeout = parseInt(options.timeout, 10) || null;
-			options.onTimeout = typeof options.onTimeout === 'function' ? options.onTimeout : function () {};
-			var called = 0;
-			var timeoutId;
-			var timedout = false;
-			if (options.timeout) {
-				timeoutId = setTimeout(function () {
-					timedout = true;
-					clearTimeout(timeoutId);
-					options.onTimeout();
-				}, options.timeout);
-			}
-			return function () {
-				clearTimeout(timeoutId);
-				var repeated = options.times && options.times > 0 && called >= options.times;
-				var warningPrepend;
-				if (repeated || timedout) {
-					warningPrepend = 'Function named: \'' + (func.name || func.constructor.name) + '\', arguments:[\'' + Array.from(arguments).join('\', \'') + '\']';
-				}
-				if (timedout) {
-					winston.warn(warningPrepend + ', timed out after ' + options.timeout + 'ms');
-					return;
-				}
-				if (repeated) {
-					winston.warn(warningPrepend + ', was called more than ' + options.times + ' time(s), this, and all subsequent calls, will be ignored');
-					return;
-				}
-				called += 1;
-				return func.apply(this, arguments);
-			};
 		},
 
 		isRelativeUrl: function (url) {

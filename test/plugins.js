@@ -83,27 +83,6 @@ describe('Plugins', function () {
 		});
 	});
 
-	it('should register and fire a filter hook that returns a promise, resolve it, then call the callback, should only be called once', function (done) {
-		function method(data, callback) {
-			return new Promise(function (resolve) {
-				data.foo += 5;
-				resolve(data);
-				callback(null, data);
-			});
-		}
-		let callbackCalled = 0;
-		plugins.registerHook('test-plugin', { hook: 'filter:test.hook4', method: method });
-		plugins.fireHook('filter:test.hook4', { foo: 1 }, function (err, data) {
-			callbackCalled += 1;
-			assert.ifError(err);
-			assert.equal(data.foo, 6);
-		});
-		setTimeout(function () {
-			assert.equal(callbackCalled, 1);
-			done();
-		}, 1000);
-	});
-
 	it('should register and fire an action hook', function (done) {
 		function method(data) {
 			assert.equal(data.bar, 'test');
