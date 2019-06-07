@@ -1,9 +1,9 @@
 'use strict';
 
 (function (factory) {
+	var winston;
 	if (typeof module === 'object' && module.exports) {
-		var winston = require('winston');
-
+		winston = require('winston');
 
 		module.exports = factory(require('xregexp'));
 		module.exports.walk = function (dir, done) {
@@ -14,7 +14,7 @@
 		};
 
 		process.profile = function (operation, start) {
-			console.log('%s took %d milliseconds', operation, process.elapsedTimeSince(start));
+			winston.log('%s took %d milliseconds', operation, process.elapsedTimeSince(start));
 		};
 
 		process.elapsedTimeSince = function (start) {
@@ -22,7 +22,8 @@
 			return (diff[0] * 1e3) + (diff[1] / 1e6);
 		};
 	} else {
-		window.utils = factory(window.XRegExp);
+		winston = console;
+		window.utils = factory(window.XRegExp, winston);
 	}
 }(function (XRegExp) {
 	var freeze = Object.freeze || function (obj) { return obj; };
@@ -467,6 +468,11 @@
 
 		extensionToMimeType: function (extension) {
 			return utils.extensionMimeTypeMap[extension] || '*';
+		},
+
+		isPromise: function (object) {
+			// https://stackoverflow.com/questions/27746304/how-do-i-tell-if-an-object-is-a-promise#comment97339131_27746324
+			return object && typeof object.then === 'function';
 		},
 
 		isRelativeUrl: function (url) {

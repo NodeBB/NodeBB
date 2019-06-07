@@ -1,7 +1,8 @@
 'use strict';
 
-var winston = require('winston');
-var async = require('async');
+const winston = require('winston');
+const async = require('async');
+const utils = require('../utils');
 
 module.exports = function (Plugins) {
 	Plugins.deprecatedHooks = {
@@ -132,8 +133,12 @@ module.exports = function (Plugins) {
 				}
 				return next(null, params);
 			}
-
-			hookObj.method(params, next);
+			const returned = hookObj.method(params, next);
+			if (utils.isPromise(returned)) {
+				returned.then((payload) => {
+					next(null, payload);
+				}).catch(next);
+			}
 		}, callback);
 	}
 
@@ -160,26 +165,35 @@ module.exports = function (Plugins) {
 		}
 		async.each(hookList, function (hookObj, next) {
 			if (typeof hookObj.method === 'function') {
-				var timedOut = false;
-
-				var timeoutId = setTimeout(function () {
+				let timedOut = false;
+				const timeoutId = setTimeout(function () {
 					winston.warn('[plugins] Callback timed out, hook \'' + hook + '\' in plugin \'' + hookObj.id + '\'');
 					timedOut = true;
 					next();
 				}, 5000);
 
-				try {
-					hookObj.method(params, function () {
-						clearTimeout(timeoutId);
-						if (!timedOut) {
-							next.apply(null, arguments);
-						}
-					});
-				} catch (err) {
+				const onError = function (err) {
 					winston.error('[plugins] Error executing \'' + hook + '\' in plugin \'' + hookObj.id + '\'');
 					winston.error(err);
 					clearTimeout(timeoutId);
 					next();
+				};
+				const callback = function () {
+					clearTimeout(timeoutId);
+					if (!timedOut) {
+						next.apply(null, arguments);
+					}
+				};
+				try {
+					const returned = hookObj.method(params, callback);
+					if (utils.isPromise(returned)) {
+						returned
+							.then((...args) => {
+								callback(null, ...args);
+							}).catch(onError);
+					}
+				} catch (err) {
+					onError(err);
 				}
 			} else {
 				next();

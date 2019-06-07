@@ -47,6 +47,42 @@ describe('Plugins', function () {
 		});
 	});
 
+	it('should register and fire a filter hook having 2 methods, one returning a promise and the other calling the callback', function (done) {
+		function method1(data, callback) {
+			data.foo += 1;
+			callback(null, data);
+		}
+		function method2(data) {
+			return new Promise(function (resolve) {
+				data.foo += 5;
+				resolve(data);
+			});
+		}
+
+		plugins.registerHook('test-plugin', { hook: 'filter:test.hook2', method: method1 });
+		plugins.registerHook('test-plugin', { hook: 'filter:test.hook2', method: method2 });
+
+		plugins.fireHook('filter:test.hook2', { foo: 1 }, function (err, data) {
+			assert.ifError(err);
+			assert.equal(data.foo, 7);
+			done();
+		});
+	});
+
+	it('should register and fire a filter hook that returns a promise that gets rejected', function (done) {
+		function method(data) {
+			return new Promise(function (resolve, reject) {
+				data.foo += 5;
+				reject(new Error('nope'));
+			});
+		}
+		plugins.registerHook('test-plugin', { hook: 'filter:test.hook3', method: method });
+		plugins.fireHook('filter:test.hook3', { foo: 1 }, function (err) {
+			assert(err);
+			done();
+		});
+	});
+
 	it('should register and fire an action hook', function (done) {
 		function actionMethod(data) {
 			assert.equal(data.bar, 'test');
@@ -64,6 +100,48 @@ describe('Plugins', function () {
 		}
 
 		plugins.registerHook('test-plugin', { hook: 'static:test.hook', method: actionMethod });
+		plugins.fireHook('static:test.hook', { bar: 'test' }, function (err) {
+			assert.ifError(err);
+			done();
+		});
+	});
+
+	it('should register and fire a static hook returning a promise', function (done) {
+		function method(data) {
+			assert.equal(data.bar, 'test');
+			return new Promise((resolve) => {
+				resolve();
+			});
+		}
+		plugins.registerHook('test-plugin', { hook: 'static:test.hook', method: method });
+		plugins.fireHook('static:test.hook', { bar: 'test' }, function (err) {
+			assert.ifError(err);
+			done();
+		});
+	});
+
+	it('should register and fire a static hook returning a promise that gets rejected with a warning only', function (done) {
+		function method(data) {
+			assert.equal(data.bar, 'test');
+			return new Promise(function (resolve, reject) {
+				reject(new Error('just because'));
+			});
+		}
+		plugins.registerHook('test-plugin', { hook: 'static:test.hook', method: method });
+		plugins.fireHook('static:test.hook', { bar: 'test' }, function (err) {
+			assert.ifError(err);
+			done();
+		});
+	});
+
+	it('should register and timeout a static hook returning a promise but takes too long', function (done) {
+		function method(data) {
+			assert.equal(data.bar, 'test');
+			return new Promise(function (resolve) {
+				setTimeout(resolve, 6000);
+			});
+		}
+		plugins.registerHook('test-plugin', { hook: 'static:test.hook', method: method });
 		plugins.fireHook('static:test.hook', { bar: 'test' }, function (err) {
 			assert.ifError(err);
 			done();
