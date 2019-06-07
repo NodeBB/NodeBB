@@ -50,6 +50,7 @@ start.start = function () {
 			if (nconf.get('runJobs')) {
 				require('./notifications').startJobs();
 				require('./user').startJobs();
+				require('./plugins').startJobs();
 			}
 
 			webserver.listen(next);

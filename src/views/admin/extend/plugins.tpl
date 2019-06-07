@@ -29,6 +29,17 @@
 		</div>
 
 		<div class="panel panel-default">
+			<div class="panel-body">
+				<div class="checkbox">
+					<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+						<input id="plugin-submit-usage" class="mdl-switch__input" type="checkbox" data-field="submitPluginUsage" <!-- IF submitPluginUsage -->checked<!-- ENDIF submitPluginUsage -->/>
+						<span class="mdl-switch__label">[[admin/extend/plugins:submit-anonymous-usage]]</span>
+					</label>
+				</div>
+			</div>
+		</div>
+
+		<div class="panel panel-default">
 			<div class="panel-heading">[[admin/extend/plugins:reorder-plugins]]</div>
 			<div class="panel-body">
 				<button class="btn btn-default btn-block" id="plugin-order"><i class="fa fa-exchange"></i> [[admin/extend/plugins:order-active]]</button>

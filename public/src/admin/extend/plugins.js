@@ -150,6 +150,16 @@ define('admin/extend/plugins', ['jqueryui', 'translator', 'benchpress'], functio
 			});
 		});
 
+		$('#plugin-submit-usage').on('click', function () {
+			socket.emit('admin.config.setMultiple', {
+				submitPluginUsage: $(this).prop('checked') ? '1' : '0',
+			}, function (err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+			});
+		});
+
 		$('#plugin-order').on('click', function () {
 			$('#order-active-plugins-modal').modal('show');
 			socket.emit('admin.plugins.getActive', function (err, activePlugins) {

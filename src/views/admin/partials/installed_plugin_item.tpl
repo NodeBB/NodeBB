@@ -24,9 +24,18 @@
 						<!-- ENDIF installed.description -->
 						<!-- IF installed.outdated --><i class="fa fa-exclamation-triangle text-danger"></i> <!-- ENDIF installed.outdated -->
 						<small>[[admin/extend/plugins:plugin-item.installed]] <strong class="currentVersion">{installed.version}</strong> | [[admin/extend/plugins:plugin-item.latest]] <strong class="latestVersion">{installed.latest}</strong></small>
+
 						<!-- IF installed.outdated -->
-							<button data-action="upgrade" class="btn btn-success btn-xs"><i class="fa fa-download"></i> [[admin/extend/plugins:plugin-item.upgrade]]</button>
+						<button data-action="upgrade" class="btn btn-success btn-xs"><i class="fa fa-download"></i> [[admin/extend/plugins:plugin-item.upgrade]]</button>
+						<p>
+							<!-- IF installed.isCompatible -->
+							<i class="fa fa-check text-success"></i> [[admin/extend/plugins:plugin-item.compatible, {version}]]
+							<!-- ELSE -->
+							<i class="fa fa-question text-warning"></i> [[admin/extend/plugins:plugin-item.not-compatible]]
+							<!-- ENDIF -->
+						</p>
 						<!-- ENDIF installed.outdated -->
+
 						<!-- IF installed.url -->
 						<p>[[admin/extend/plugins:plugin-item.more-info]] <a target="_blank" href="{installed.url}">{installed.url}</a></p>
 						<!-- ENDIF installed.url -->
