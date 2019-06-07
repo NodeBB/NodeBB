@@ -29,6 +29,11 @@ questions.main = [
 		default: nconf.get('secret') || utils.generateUUID(),
 	},
 	{
+		name: 'submitPluginUsage',
+		description: 'Would you like to submit anonymous plugin usage to nbbpm?',
+		default: 'yes',
+	},
+	{
 		name: 'database',
 		description: 'Which database to use',
 		default: nconf.get('database') || 'mongo',
@@ -197,6 +202,14 @@ function completeConfigSetup(config, next) {
 
 			// ref: https://github.com/indexzero/nconf/issues/300
 			delete config.type;
+
+			var meta = require('./meta');
+			meta.configs.set('submitPluginUsage', config.submitPluginUsage === 'yes' ? 1 : 0, function (err) {
+				next(err, config);
+			});
+		},
+		function (config, next) {
+			delete config.submitPluginUsage;
 
 			install.save(config, next);
 		},
