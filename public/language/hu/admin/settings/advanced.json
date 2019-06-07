@@ -1,6 +1,7 @@
 {
 	"maintenance-mode": "Karbantartási mód",
 	"maintenance-mode.help": "Amikor a fórum karbantartási módban van, minden kérés átirányításra kerül egy statikus feltartóztató oldalra. Az adminisztrátorok kivételnek számítanak ez alól, és szokásos módon hozzáférhetnek az oldalhoz.",
+	"maintenance-mode.status": "Maintenance Mode Status Code",
 	"maintenance-mode.message": "A karbantartás üzenete",
 	"headers": "Fejlécek",
 	"headers.allow-from": "Set ALLOW-FROM to Place NodeBB in an iFrame",

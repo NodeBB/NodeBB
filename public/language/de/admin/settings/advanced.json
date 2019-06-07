@@ -1,6 +1,7 @@
 {
 	"maintenance-mode": "Wartungsmodus",
 	"maintenance-mode.help": "Während das Forum im Wartungsmodus ist werden alle Anfragen zu einer statischen Seite weitergeleitet. Administratoren sind von dieser Weiterleitung ausgenommen und können die Seite normal aufrufen.",
+	"maintenance-mode.status": "Maintenance Mode Status Code",
 	"maintenance-mode.message": "Wartungsnachricht",
 	"headers": "Headers",
 	"headers.allow-from": "ALLOW-FROM setzen um NodeBB in einem iFrame zu platzieren",

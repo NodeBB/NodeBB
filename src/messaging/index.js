@@ -206,30 +206,24 @@ Messaging.getTeaser = function (uid, roomId, callback) {
 	var teaser;
 	async.waterfall([
 		function (next) {
-			db.getSortedSetRevRange('uid:' + uid + ':chat:room:' + roomId + ':mids', 0, 0, next);
+			Messaging.getLatestUndeletedMessage(uid, roomId, next);
 		},
-		function (mids, next) {
-			if (!mids || !mids.length) {
-				return next(null, null);
+		function (mid, next) {
+			if (!mid) {
+				return callback(null, null);
 			}
-			Messaging.getMessageFields(mids[0], ['fromuid', 'content', 'timestamp'], next);
-		},
-		function (teaser, next) {
-			if (!teaser) {
-				return callback();
-			}
-			user.blocks.is(teaser.fromuid, uid, function (err, blocked) {
-				if (err || blocked) {
-					return callback(err);
-				}
-
-				next(null, teaser);
-			});
+			Messaging.getMessageFields(mid, ['fromuid', 'content', 'timestamp'], next);
 		},
 		function (_teaser, next) {
 			teaser = _teaser;
-			if (!teaser) {
-				return callback();
+			if (!teaser.fromuid) {
+				return callback(null, null);
+			}
+			user.blocks.is(teaser.fromuid, uid, next);
+		},
+		function (blocked, next) {
+			if (blocked) {
+				return callback(null, null);
 			}
 			if (teaser.content) {
 				teaser.content = utils.stripHTMLTags(utils.decodeHTMLEntities(teaser.content));
@@ -246,6 +240,44 @@ Messaging.getTeaser = function (uid, roomId, callback) {
 			});
 		},
 	], callback);
+};
+
+Messaging.getLatestUndeletedMessage = function (uid, roomId, callback) {
+	var done = false;
+	var latestMid = null;
+	var index = 0;
+	var mids;
+	async.doWhilst(
+		function (next) {
+			async.waterfall([
+				function (_next) {
+					db.getSortedSetRevRange('uid:' + uid + ':chat:room:' + roomId + ':mids', index, index, _next);
+				},
+				function (_mids, _next) {
+					mids = _mids;
+					if (!mids.length) {
+						done = true;
+						return next();
+					}
+					Messaging.getMessageField(mids[0], 'deleted', _next);
+				},
+				function (deleted, _next) {
+					done = !deleted;
+					if (!deleted) {
+						latestMid = mids[0];
+					}
+					index += 1;
+					_next();
+				},
+			], next);
+		},
+		function (next) {
+			next(null, !done);
+		},
+		function (err) {
+			callback(err, parseInt(latestMid, 10));
+		}
+	);
 };
 
 Messaging.canMessageUser = function (uid, toUid, callback) {

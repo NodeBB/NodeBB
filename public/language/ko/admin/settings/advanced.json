@@ -1,6 +1,7 @@
 {
 	"maintenance-mode": "점검 모드",
 	"maintenance-mode.help": "포럼이 점검 모드일 경우 모든 요청은 정적 페이지로 라다이렉트될 것입니다. 관리자는 이 리다이렉션의 예외가 되고 사이트에 접속하는 것이 가능합니다.",
+	"maintenance-mode.status": "Maintenance Mode Status Code",
 	"maintenance-mode.message": "점검 메세지",
 	"headers": "헤더",
 	"headers.allow-from": "NodeBB를 iFrame에 삽입할 수 있게 하시려면, ALLOW-FROM(NodeBB Embedding할 수 있는 도메인)을 설정하세요",

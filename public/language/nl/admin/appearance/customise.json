@@ -8,7 +8,7 @@
 	"custom-js.enable": "Activeer aangepast javascript",
 
 	"custom-header": "Aangepaste header",
-	"custom-header.description": "Voer hier aangepaste HTML in (bijv. metatags, etc.), die zullen worden toegevoegd aan de <code>&lt;head&gt;</code> sectie van de Forum pagina. Script-tags zijn toegestaan, maar worden afgeraden omdat de <a href=\"#custom-header\" data-toggle=\"tab\">Aangepast Javascript</a> tab daarvoor beschikbaar is.",
+	"custom-header.description": "Enter custom HTML here (ex. Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup. Script tags are allowed, but are discouraged, as the <a href=\"#custom-js\" data-toggle=\"tab\">Custom Javascript</a> tab is available.",
 	"custom-header.enable": "Activeer aangepaste header",
 
 	"custom-css.livereload": "Activeer Live Reload",

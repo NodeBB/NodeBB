@@ -28,6 +28,11 @@
 	"pills.banned": "מורחק",
 	"pills.search": "חיפוש משתמשים",
 
+	"50-per-page": "50 per page",
+	"100-per-page": "100 per page",
+	"250-per-page": "250 per page",
+	"500-per-page": "500 per page",
+
 	"search.uid": "על פי זהות משתמש",
 	"search.uid-placeholder": "הזן מספר משתמש לחיפוש",
 	"search.username": "על פי שם משתמש",

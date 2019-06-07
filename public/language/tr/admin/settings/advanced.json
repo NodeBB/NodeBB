@@ -1,6 +1,7 @@
 {
 	"maintenance-mode": "Bakım Modu",
 	"maintenance-mode.help": "Forum bakım modundayken, tüm istekler statik bir bekletme sayfasına yönlendirilir. Yöneticiler bu yönlendirmeden muaftır ve siteye normal olarak erişebilirler.",
+	"maintenance-mode.status": "Maintenance Mode Status Code",
 	"maintenance-mode.message": "Bakım Mesajı",
 	"headers": "Başlıklar",
 	"headers.allow-from": "NodeBB'yi bir iFrame'e yerleştirmek için ALLOW-FROM'u ayarla",

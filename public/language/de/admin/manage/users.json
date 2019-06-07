@@ -28,6 +28,11 @@
 	"pills.banned": "Gebannt",
 	"pills.search": "Benutzer Suche",
 
+	"50-per-page": "50 per page",
+	"100-per-page": "100 per page",
+	"250-per-page": "250 per page",
+	"500-per-page": "500 per page",
+
 	"search.uid": "Nach Benutzer-ID",
 	"search.uid-placeholder": "Gib eine Benutzer-ID ein um danach zu suchen",
 	"search.username": "Nach Nutzernamen",

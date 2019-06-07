@@ -45,7 +45,12 @@
 	"privileges.search-group": "Dodaj grupę",
 	"privileges.copy-to-children": "Skopiuj do podrzędnej",
 	"privileges.copy-from-category": "Skopiuj z kategorii",
+	"privileges.copy-privileges-to-all-categories": "Copy to All Categories",
+	"privileges.copy-group-privileges-to-children": "Copy this group's privileges to the children of this category.",
+	"privileges.copy-group-privileges-to-all-categories": "Copy this group's privileges to all categories.",
+	"privileges.copy-group-privileges-from": "Copy this group's privileges from another category.",
 	"privileges.inherit": "Gdy grupie <code>registered-users</code> zostaje nadane określone uprawnienie, to samo <strong>bezwarunkowe uprawnienie</strong> otrzymują też wszystkie inne grupy, nawet jeśli nie zostały zdefiniowane/zaznaczone. Bezwarunkowe uprawnienie jest wyświetlane, ponieważ wszyscy użytkownicy są częścią grupy <code>registered-users</code>, zatem uprawnienia dla dodatkowych grup nie muszą być przyznawane oddzielnie.",
+	"privileges.copy-success": "Privileges copied!",
 
 	"analytics.back": "Wróć do listy kategorii",
 	"analytics.title": "Analityka dla \"%1\" kategorii",

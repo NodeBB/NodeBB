@@ -45,7 +45,12 @@
 	"privileges.search-group": "Pridať skupinu",
 	"privileges.copy-to-children": "Kopírovať do podradených",
 	"privileges.copy-from-category": "Kopírovať z kategórie",
+	"privileges.copy-privileges-to-all-categories": "Copy to All Categories",
+	"privileges.copy-group-privileges-to-children": "Copy this group's privileges to the children of this category.",
+	"privileges.copy-group-privileges-to-all-categories": "Copy this group's privileges to all categories.",
+	"privileges.copy-group-privileges-from": "Copy this group's privileges from another category.",
 	"privileges.inherit": "Ak má skupina <code>registrovaných používateľov</code> určité oprávnenia, ostatné skupiny budú mať <strong>rovnaké oprávnenia</strong>, aj keď nie sú výslovne definované/zaškrtnuté. Tieto zdedené oprávnenia Vám sú zobrazené, lebo všetci používatelia sú súčasťou skupiny <code>registrovaných používateľov</code>. Takže oprávnenia pre ďalšie skupiny nemusia byť dodatočne nastavované.",
+	"privileges.copy-success": "Privileges copied!",
 
 	"analytics.back": "Späť do zoznamu kategórií",
 	"analytics.title": "Analýza pre kategóriu „%1“",

@@ -8,7 +8,7 @@
 	"custom-js.enable": "เปิดการปรับแต่งจาวาสคริปต์",
 
 	"custom-header": "ปรับแต่งส่วนหัว",
-	"custom-header.description": "ใส่การปรับแต่ง HTML ที่นี่ (เช่น Meta Tags หรืออื่นๆ) , มันจะถูกเพิ่มใน <code>&lt;head&gt;</code>ของส่วนฟอรั่มของคุณ อนุญาตให้ใช้ Script tags แต่ไม่แนะนำให้ทำ เพราะหน้า<a href=\"#custom-header\" data-toggle=\"tab\">การปรับแต่งจาวาสคริปต์ </a>มีอยู่แล้ว",
+	"custom-header.description": "Enter custom HTML here (ex. Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup. Script tags are allowed, but are discouraged, as the <a href=\"#custom-js\" data-toggle=\"tab\">Custom Javascript</a> tab is available.",
 	"custom-header.enable": "เปิดการปรับแต่งส่วนหัว",
 
 	"custom-css.livereload": "เปิดการบังคับให้มีผลในทันที",

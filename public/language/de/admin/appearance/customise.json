@@ -8,7 +8,7 @@
 	"custom-js.enable": "Benutzerdefiniertes Javascript aktivieren",
 
 	"custom-header": "Benutzerdefinierter Header",
-	"custom-header.description": "Füge dein benutzerdefiniertes HTML hier ein (wie z.B. meta Tags etc.), welche in die <code>&lt;head&gt;</code> Sektion im Markup des Forums eingefügt werden. script Tags sind erlaubt, es wird aber davon abgeraten, da es den <a href=\"#custom-header\" data-toggle=\"tab\">Benutzerdefiniertes Javascript</a> Tab gibt.",
+	"custom-header.description": "Enter custom HTML here (ex. Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup. Script tags are allowed, but are discouraged, as the <a href=\"#custom-js\" data-toggle=\"tab\">Custom Javascript</a> tab is available.",
 	"custom-header.enable": "Benutzerdefinierten Header aktivieren",
 
 	"custom-css.livereload": "Live-Aktualisierung aktivieren",

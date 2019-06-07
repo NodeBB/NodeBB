@@ -1,6 +1,7 @@
 {
 	"maintenance-mode": "Mode maintenance",
 	"maintenance-mode.help": "Quand le forum est en mode maintenance, toutes les requêtes sont redirigées vers une page de garde statique. Les administrateurs sont exemptés de cette redirection et peuvent accéder normalement au site. ",
+	"maintenance-mode.status": "Mode maintenance",
 	"maintenance-mode.message": "Message de maintenance",
 	"headers": "En-têtes",
 	"headers.allow-from": "Définissez ALLOW-FROM pour afficher NodeBB dans un iFrame",

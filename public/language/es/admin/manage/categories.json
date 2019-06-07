@@ -45,7 +45,12 @@
 	"privileges.search-group": "Añadir Grupo",
 	"privileges.copy-to-children": "Copiar a categorías inferiores",
 	"privileges.copy-from-category": "Copiar de Categoría",
+	"privileges.copy-privileges-to-all-categories": "Copy to All Categories",
+	"privileges.copy-group-privileges-to-children": "Copy this group's privileges to the children of this category.",
+	"privileges.copy-group-privileges-to-all-categories": "Copy this group's privileges to all categories.",
+	"privileges.copy-group-privileges-from": "Copy this group's privileges from another category.",
 	"privileges.inherit": "Si al grupo de los <code> usuarios registrados </code> se le otorga un privilegio específico, todos los otros grupos reciben un <strong> privilegio implícito </strong>, incluso si no están definidos/asignados de forma explícita. Este privilegio implícito se te muestra por que todos los usuarios son parte del grupo de usuarios <code>usuarios registrados</code> y, por tanto, los privilegios para grupos adicionales no deben de ser garantizados explícitamente.",
+	"privileges.copy-success": "Privileges copied!",
 
 	"analytics.back": "Volver a lista de Categorías",
 	"analytics.title": "Analíticas para \"%1\" categoría",
