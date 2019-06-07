@@ -26,6 +26,7 @@
 		renderTopicImage: renderTopicImage,
 		renderDigestAvatar: renderDigestAvatar,
 		userAgentIcons: userAgentIcons,
+		buildAvatar: buildAvatar,
 		register: register,
 		__escape: identity,
 	};
@@ -267,6 +268,15 @@
 		}
 
 		return icons;
+	}
+
+	function buildAvatar(userObj, size, rounded) {
+		rounded = !!parseInt(rounded, 10);
+		if (userObj.picture) {
+			return '<img class="avatar avatar-' + size + (rounded ? ' avatar-rounded' : '') + '" src="' + userObj.picture + '" />';
+		}
+
+		return '<div class="avatar avatar-' + size + (rounded ? ' avatar-rounded' : '') + '" style="background-color: ' + userObj['icon:bgColor'] + ';">' + userObj['icon:text'] + '</div>';
 	}
 
 	function register() {
