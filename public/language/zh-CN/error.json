@@ -33,7 +33,7 @@
     "username-too-short": "用户名太短",
     "username-too-long": "用户名太长",
     "password-too-long": "密码太长",
-    "reset-rate-limited": "Too many password reset requests (rate limited)",
+    "reset-rate-limited": "太多密码重置请求（总数有限）",
     "user-banned": "用户已禁止",
     "user-banned-reason": "抱歉，此帐号已经被封禁 (原因：%1)",
     "user-banned-reason-until": "抱歉，此帐户已被封禁，直到%1（原因：%2）",

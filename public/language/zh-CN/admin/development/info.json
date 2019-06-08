@@ -7,8 +7,8 @@
 	"online": "在线",
 	"git": "git",
 	"memory": "内存",
-	"load": "system load",
-	"cpu-usage": "cpu usage",
+	"load": "系统负载",
+	"cpu-usage": "CPU 使用情况",
 	"uptime": "运行时间",
 
 	"registered": "已注册",
