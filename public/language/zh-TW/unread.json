@@ -6,10 +6,10 @@
     "selected": "已選擇",
     "all": "全部",
     "all_categories": "所有類別",
-    "topics_marked_as_read.success": "標記主題成已讀!",
+    "topics_marked_as_read.success": "主題皆標記為已讀!",
     "all-topics": "所有主題",
     "new-topics": "新主題",
     "watched-topics": "已觀看主題",
-    "unreplied-topics": "Unreplied Topics",
-    "multiple-categories-selected": "Multiple Selected"
+    "unreplied-topics": "為回覆的主題",
+    "multiple-categories-selected": "多選"
 }
