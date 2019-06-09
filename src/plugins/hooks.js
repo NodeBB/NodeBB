@@ -135,9 +135,10 @@ module.exports = function (Plugins) {
 			}
 			const returned = hookObj.method(params, next);
 			if (utils.isPromise(returned)) {
-				returned.then((payload) => {
-					next(null, payload);
-				}).catch(next);
+				returned.then(
+					payload => setImmediate(next, null, payload),
+					err => setImmediate(next, err)
+				);
 			}
 		}, callback);
 	}
@@ -178,19 +179,19 @@ module.exports = function (Plugins) {
 					clearTimeout(timeoutId);
 					next();
 				};
-				const callback = function () {
+				const callback = function (...args) {
 					clearTimeout(timeoutId);
 					if (!timedOut) {
-						next.apply(null, arguments);
+						next(...args);
 					}
 				};
 				try {
 					const returned = hookObj.method(params, callback);
 					if (utils.isPromise(returned)) {
-						returned
-							.then((...args) => {
-								callback(null, ...args);
-							}).catch(onError);
+						returned.then(
+							...args => setImmediate(callback, ...args),
+							err => setImmediate(onError, err)
+						);
 					}
 				} catch (err) {
 					onError(err);
