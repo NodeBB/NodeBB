@@ -1,11 +1,10 @@
 'use strict';
 
 (function (factory) {
-	var winston;
 	if (typeof module === 'object' && module.exports) {
-		winston = require('winston');
+		var winston = require('winston');
 
-		module.exports = factory(require('xregexp'));
+		module.exports = factory(require('xregexp'), winston);
 		module.exports.walk = function (dir, done) {
 			// DEPRECATED
 			var file = require('../../src/file');
@@ -22,10 +21,10 @@
 			return (diff[0] * 1e3) + (diff[1] / 1e6);
 		};
 	} else {
-		winston = console;
-		window.utils = factory(window.XRegExp, winston);
+		window.utils = factory(window.XRegExp, console);
 	}
-}(function (XRegExp) {
+	// eslint-disable-next-line
+}(function (XRegExp, console) {
 	var freeze = Object.freeze || function (obj) { return obj; };
 
 	// add default escape function for escaping HTML entities

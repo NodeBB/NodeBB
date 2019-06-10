@@ -173,13 +173,13 @@ module.exports = function (Plugins) {
 					next();
 				}, 5000);
 
-				const onError = function (err) {
+				const onError = (err) => {
 					winston.error('[plugins] Error executing \'' + hook + '\' in plugin \'' + hookObj.id + '\'');
 					winston.error(err);
 					clearTimeout(timeoutId);
 					next();
 				};
-				const callback = function (...args) {
+				const callback = (...args) => {
 					clearTimeout(timeoutId);
 					if (!timedOut) {
 						next(...args);
@@ -189,7 +189,7 @@ module.exports = function (Plugins) {
 					const returned = hookObj.method(params, callback);
 					if (utils.isPromise(returned)) {
 						returned.then(
-							...args => setImmediate(callback, ...args),
+							...args => setImmediate(callback, null, ...args),
 							err => setImmediate(onError, err)
 						);
 					}
