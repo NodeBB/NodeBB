@@ -10,6 +10,9 @@
 		});
 	}
 }(function (utils, Benchpress, relative_path) {
+	Benchpress.setGlobal('true', true);
+	Benchpress.setGlobal('false', false);
+
 	var helpers = {
 		displayMenuItem: displayMenuItem,
 		buildMetaTag: buildMetaTag,
@@ -270,13 +273,27 @@
 		return icons;
 	}
 
-	function buildAvatar(userObj, size, rounded) {
-		rounded = !!parseInt(rounded, 10);
+	function buildAvatar(userObj, size, rounded, classNames, componentPrefix) {
+		/**
+		 * userObj requires:
+		 *   - picture, icon:bgColor, icon:text (getUserField w/ "picture" should return all 3), username
+		 * size: one of "xs", "sm", "md", "lg", or "xl" (required)
+		 * rounded: true or false (optional, default false)
+		 * classNames: additional class names to prepend (optional, default none)
+		 * componentPrefix: string prepended to the generated component value (optional, default none)
+		 */
+
+		var attributes = [
+			'class="' + (classNames || '') + ' avatar avatar-' + size + (rounded ? ' avatar-rounded' : '') + '"',
+			'alt="' + userObj.username + '"',
+			'title="' + userObj.username + '"',
+			'component="' + (componentPrefix ? componentPrefix + '/' : '') + 'avatar/' + (userObj.picture ? 'picture' : 'icon') + '"',
+		];
 		if (userObj.picture) {
-			return '<img class="avatar avatar-' + size + (rounded ? ' avatar-rounded' : '') + '" src="' + userObj.picture + '" />';
+			return '<img ' + attributes.join(' ') + ' src="' + userObj.picture + '" />';
 		}
 
-		return '<div class="avatar avatar-' + size + (rounded ? ' avatar-rounded' : '') + '" style="background-color: ' + userObj['icon:bgColor'] + ';">' + userObj['icon:text'] + '</div>';
+		return '<div ' + attributes.join(' ') + ' style="background-color: ' + userObj['icon:bgColor'] + ';">' + userObj['icon:text'] + '</div>';
 	}
 
 	function register() {
