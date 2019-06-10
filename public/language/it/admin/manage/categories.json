@@ -72,9 +72,9 @@
 	"alert.updated-success": "Category IDs %1 successfully updated.",
 	"alert.upload-image": "Upload category image",
 	"alert.find-user": "Find a User",
-	"alert.user-search": "Search for a user here...",
+	"alert.user-search": "Cerca un utente qui...",
 	"alert.find-group": "Find a Group",
-	"alert.group-search": "Search for a group here...",
+	"alert.group-search": "Cerca un gruppo qui...",
 	"collapse-all": "Collapse All",
 	"expand-all": "Expand All",
 	"disable-on-create": "Disable on create"

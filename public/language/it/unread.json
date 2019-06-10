@@ -1,15 +1,15 @@
 {
     "title": "Non letto",
-    "no_unread_topics": "Non ci sono discussioni nuove.",
-    "load_more": "Carica Altro",
+    "no_unread_topics": "Non ci sono discussioni non lette.",
+    "load_more": "Carica di più",
     "mark_as_read": "Segna come Letto",
-    "selected": "Selezionati",
+    "selected": "Selezionato",
     "all": "Tutti",
     "all_categories": "Tutte le categorie",
     "topics_marked_as_read.success": "Discussione marcata come letta!",
     "all-topics": "Tutte le Discussioni",
     "new-topics": "Nuova Discussione",
     "watched-topics": "Discussioni seguite",
-    "unreplied-topics": "Discussioni Senza Risposta",
-    "multiple-categories-selected": "Più Categorie"
+    "unreplied-topics": "Discussioni senza risposta",
+    "multiple-categories-selected": "Selezione multipla"
 }

@@ -3,10 +3,10 @@
 	"no-events": "Não há eventos",
 	"control-panel": "Painel de Controle de Eventos",
 	"delete-events": "Excluir Eventos",
-	"filters": "Filters",
-	"filters-apply": "Apply Filters",
-	"filter-type": "Event Type",
-	"filter-start": "Start Date",
-	"filter-end": "End Date",
-	"filter-perPage": "Per Page"
+	"filters": "Filtros",
+	"filters-apply": "Aplicar Filtros",
+	"filter-type": "Tipo de Evento",
+	"filter-start": "Data de Início",
+	"filter-end": "Data de Fim",
+	"filter-perPage": "Por Página"
 }

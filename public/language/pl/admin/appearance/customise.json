@@ -8,7 +8,7 @@
 	"custom-js.enable": "Aktywuj własny Javascript.",
 
 	"custom-header": "Własny nagłówek",
-	"custom-header.description": "Enter custom HTML here (ex. Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup. Script tags are allowed, but are discouraged, as the <a href=\"#custom-js\" data-toggle=\"tab\">Custom Javascript</a> tab is available.",
+	"custom-header.description": "Wpisz tutaj niestandardowy kod HTML (np. Metatagi, itp.), który zostanie dołączony do sekcji <code>&lt;head&gt;</code> Twojego forum. Dozwolone są tagi skryptów, ale są one odradzane, ponieważ dostępna jest <a href=\"#custom-js\" data-toggle=\"tab\">niestandardowa karta JavaScript</a>.",
 	"custom-header.enable": "Włącz własny nagłówek",
 
 	"custom-css.livereload": "Włącz dynamiczne przeładowanie",

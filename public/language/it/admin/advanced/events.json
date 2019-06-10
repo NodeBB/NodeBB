@@ -1,12 +1,12 @@
 {
 	"events": "Eventi",
 	"no-events": "Non ci sono eventi",
-	"control-panel": "Pannello di controllo dei registri",
+	"control-panel": "Pannello di controllo eventi",
 	"delete-events": "Cancella eventi",
-	"filters": "Filters",
-	"filters-apply": "Apply Filters",
-	"filter-type": "Event Type",
-	"filter-start": "Start Date",
-	"filter-end": "End Date",
-	"filter-perPage": "Per Page"
+	"filters": "Filtri",
+	"filters-apply": "Applica filtri",
+	"filter-type": "Tipo evento",
+	"filter-start": "Data d'inizio",
+	"filter-end": "Data di fine",
+	"filter-perPage": "Per pagina"
 }
