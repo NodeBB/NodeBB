@@ -4,8 +4,7 @@
 	if (typeof module === 'object' && module.exports) {
 		var winston = require('winston');
 
-
-		module.exports = factory(require('xregexp'));
+		module.exports = factory(require('xregexp'), winston);
 		module.exports.walk = function (dir, done) {
 			// DEPRECATED
 			var file = require('../../src/file');
@@ -14,7 +13,7 @@
 		};
 
 		process.profile = function (operation, start) {
-			console.log('%s took %d milliseconds', operation, process.elapsedTimeSince(start));
+			winston.log('%s took %d milliseconds', operation, process.elapsedTimeSince(start));
 		};
 
 		process.elapsedTimeSince = function (start) {
@@ -22,9 +21,10 @@
 			return (diff[0] * 1e3) + (diff[1] / 1e6);
 		};
 	} else {
-		window.utils = factory(window.XRegExp);
+		window.utils = factory(window.XRegExp, console);
 	}
-}(function (XRegExp) {
+	// eslint-disable-next-line
+}(function (XRegExp, console) {
 	var freeze = Object.freeze || function (obj) { return obj; };
 
 	// add default escape function for escaping HTML entities
@@ -467,6 +467,11 @@
 
 		extensionToMimeType: function (extension) {
 			return utils.extensionMimeTypeMap[extension] || '*';
+		},
+
+		isPromise: function (object) {
+			// https://stackoverflow.com/questions/27746304/how-do-i-tell-if-an-object-is-a-promise#comment97339131_27746324
+			return object && typeof object.then === 'function';
 		},
 
 		isRelativeUrl: function (url) {
