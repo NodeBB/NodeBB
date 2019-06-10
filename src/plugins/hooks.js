@@ -189,7 +189,7 @@ module.exports = function (Plugins) {
 					const returned = hookObj.method(params, callback);
 					if (utils.isPromise(returned)) {
 						returned.then(
-							...args => setImmediate(callback, null, ...args),
+							payload => setImmediate(callback, null, payload),
 							err => setImmediate(onError, err)
 						);
 					}
