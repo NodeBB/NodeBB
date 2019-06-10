@@ -65,10 +65,10 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 		if (!picture && ajaxify.data.defaultAvatar) {
 			picture = ajaxify.data.defaultAvatar;
 		}
-		components.get('header/userpicture')[picture ? 'show' : 'hide']();
-		components.get('header/usericon')[!picture ? 'show' : 'hide']();
+		$('#header [component="avatar/picture"]')[picture ? 'show' : 'hide']();
+		$('#header [component="avatar/icon"]')[!picture ? 'show' : 'hide']();
 		if (picture) {
-			components.get('header/userpicture').attr('src', picture);
+			$('#header [component="avatar/picture"]').attr('src', picture);
 		}
 	}
 

@@ -273,21 +273,20 @@
 		return icons;
 	}
 
-	function buildAvatar(userObj, size, rounded, classNames, componentPrefix) {
+	function buildAvatar(userObj, size, rounded, classNames) {
 		/**
 		 * userObj requires:
 		 *   - picture, icon:bgColor, icon:text (getUserField w/ "picture" should return all 3), username
 		 * size: one of "xs", "sm", "md", "lg", or "xl" (required)
 		 * rounded: true or false (optional, default false)
 		 * classNames: additional class names to prepend (optional, default none)
-		 * componentPrefix: string prepended to the generated component value (optional, default none)
 		 */
 
 		var attributes = [
 			'class="' + (classNames || '') + ' avatar avatar-' + size + (rounded ? ' avatar-rounded' : '') + '"',
 			'alt="' + userObj.username + '"',
 			'title="' + userObj.username + '"',
-			'component="' + (componentPrefix ? componentPrefix + '/' : '') + 'avatar/' + (userObj.picture ? 'picture' : 'icon') + '"',
+			'component="avatar/' + (userObj.picture ? 'picture' : 'icon') + '"',
 		];
 		if (userObj.picture) {
 			return '<img ' + attributes.join(' ') + ' src="' + userObj.picture + '" />';
