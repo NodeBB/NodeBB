@@ -109,6 +109,9 @@ module.exports = function (grunt) {
 				db.getSortedSetRange('plugins:active', 0, -1, next);
 			},
 			function (plugins, next) {
+				addBaseThemes(plugins, next);
+			},
+			function (plugins, next) {
 				if (!plugins.includes('nodebb-plugin-composer-default')) {
 					plugins.push('nodebb-plugin-composer-default');
 				}
@@ -215,3 +218,25 @@ module.exports = function (grunt) {
 
 	grunt.event.on('watch', update);
 };
+
+function addBaseThemes(plugins, callback) {
+	const themeId = plugins.find(p => p.startsWith('nodebb-theme-'));
+	if (!themeId) {
+		return setImmediate(callback, null, plugins);
+	}
+	function getBaseRecursive(themeId) {
+		try {
+			const baseTheme = require(themeId + '/theme').baseTheme;
+
+			if (baseTheme) {
+				plugins.push(baseTheme);
+				getBaseRecursive(baseTheme);
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	}
+
+	getBaseRecursive(themeId);
+	callback(null, plugins);
+}
