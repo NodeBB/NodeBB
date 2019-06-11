@@ -165,7 +165,6 @@ module.exports = function (grunt) {
 						files: [
 							'src/views/**/*.tpl',
 							...templatesUpdated,
-							'!**/node_modules/**',
 							'!node_modules/nodebb-*/node_modules/**',
 							'!node_modules/nodebb-*/.git/**',
 						],
