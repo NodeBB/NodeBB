@@ -159,7 +159,7 @@ module.exports = function (grunt) {
 						},
 					},
 					serverUpdated: {
-						files: ['*.js', 'install/*.js', 'src/**/*.js'],
+						files: ['*.js', 'install/*.js', 'src/**/*.js', '!src/upgrades/**'],
 						options: {
 							interval: 1000,
 						},
