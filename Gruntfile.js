@@ -100,7 +100,6 @@ module.exports = function (grunt) {
 	grunt.registerTask('default', ['watch']);
 
 	grunt.registerTask('init', function () {
-		console.log('running init');
 		var done = this.async();
 		async.waterfall([
 			function (next) {
