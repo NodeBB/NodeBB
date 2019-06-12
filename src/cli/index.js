@@ -210,10 +210,10 @@ program
 	})
 	.description('List all installed plugins');
 program
-	.command('events')
-	.description('Outputs the last ten (10) administrative events recorded by NodeBB')
-	.action(function () {
-		require('./manage').listEvents();
+	.command('events [count]')
+	.description('Outputs the most recent administrative events recorded by NodeBB')
+	.action(function (count) {
+		require('./manage').listEvents(count);
 	});
 program
 	.command('info')

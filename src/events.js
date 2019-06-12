@@ -193,9 +193,14 @@ events.deleteAll = function (callback) {
 	}, { alwaysStartAt: 0 }, callback);
 };
 
-events.output = function () {
-	console.log('\nDisplaying last ten administrative events...'.bold);
-	events.getEvents('', 0, 9, function (err, events) {
+events.output = function (numEvents) {
+	numEvents = parseInt(numEvents, 10);
+	if (isNaN(numEvents)) {
+		numEvents = 10;
+	}
+
+	console.log(('\nDisplaying last ' + numEvents + ' administrative events...').bold);
+	events.getEvents('', 0, numEvents - 1, function (err, events) {
 		if (err) {
 			winston.error('Error fetching events', err);
 			throw err;

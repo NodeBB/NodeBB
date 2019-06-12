@@ -97,10 +97,10 @@ function listPlugins() {
 	});
 }
 
-function listEvents() {
+function listEvents(count) {
 	async.series([
 		db.init,
-		events.output,
+		async.apply(events.output, count),
 	]);
 }
 
