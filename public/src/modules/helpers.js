@@ -276,7 +276,7 @@
 	function buildAvatar(userObj, size, rounded, classNames, component) {
 		/**
 		 * userObj requires:
-		 *   - picture, icon:bgColor, icon:text (getUserField w/ "picture" should return all 3), username
+		 *   - uid, picture, icon:bgColor, icon:text (getUserField w/ "picture" should return all 4), username
 		 * size: one of "xs", "sm", "md", "lg", or "xl" (required), or an integer
 		 * rounded: true or false (optional, default false)
 		 * classNames: additional class names to prepend (optional, default none)
