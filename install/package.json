@@ -31,7 +31,7 @@
     "dependencies": {
         "ace-builds": "^1.2.9",
         "archiver": "^3.0.0",
-        "async": "3.0.1",
+        "async": "^3.0.1",
         "autoprefixer": "^9.4.6",
         "bcryptjs": "2.4.3",
         "benchpressjs": "^1.2.5",
