@@ -75,6 +75,7 @@
 	text-align: center;
 	color: @gray-lighter;
 	font-weight: normal;
+	overflow: hidden;	/* stops alt text from overflowing past boundaries if image does not load */
 
 	&:before {
 		content: '';
@@ -117,12 +118,6 @@
 		height: 128px;
 		.user-icon-style(128px, 7.5rem);
 	}
-	
-	&.avatar-xl {
-		width: 128px;
-		height: 128px;
-		.user-icon-style(128px, 7.5rem);
-	}
 
 	&.avatar-rounded {
 		border-radius: 50%;
@@ -147,7 +142,7 @@
 	#cropped-image {
 		max-width: 100%;
 	}
-	
+
 	.cropper-container.cropper-bg {
 		max-width: 100%;
 	}
