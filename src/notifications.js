@@ -63,22 +63,18 @@ Notifications.getMultiple = function (nids, callback) {
 	if (!Array.isArray(nids) || !nids.length) {
 		return setImmediate(callback, null, []);
 	}
-	var keys = nids.map(function (nid) {
-		return 'notifications:' + nid;
-	});
 
 	var notifications;
 
 	async.waterfall([
 		function (next) {
+			const keys = nids.map(nid => 'notifications:' + nid);
 			db.getObjects(keys, next);
 		},
 		function (_notifications, next) {
 			notifications = _notifications;
-			var userKeys = notifications.map(function (notification) {
-				return notification && notification.from;
-			});
 
+			const userKeys = notifications.map(n => n && n.from);
 			User.getUsersFields(userKeys, ['username', 'userslug', 'picture'], next);
 		},
 		function (usersData, next) {

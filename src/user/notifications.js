@@ -9,6 +9,7 @@ var db = require('../database');
 var meta = require('../meta');
 var notifications = require('../notifications');
 var privileges = require('../privileges');
+var plugins = require('../plugins');
 var utils = require('../utils');
 
 var UserNotifications = module.exports;
@@ -111,7 +112,7 @@ function getNotificationsFromSet(set, uid, start, stop, callback) {
 
 UserNotifications.getNotifications = function (nids, uid, callback) {
 	if (!Array.isArray(nids) || !nids.length) {
-		return callback(null, []);
+		return setImmediate(callback, null, []);
 	}
 
 	var notificationData = [];
@@ -144,6 +145,14 @@ UserNotifications.getNotifications = function (nids, uid, callback) {
 		},
 		function (next) {
 			notifications.merge(notificationData, next);
+		},
+		function (notifications, next) {
+			plugins.fireHook('filter:user.notifications.getNotifications', {
+				uid: uid,
+				notifications: notifications,
+			}, function (err, result) {
+				next(err, result && result.notifications);
+			});
 		},
 	], callback);
 };
