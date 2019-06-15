@@ -14,9 +14,9 @@ var loginStrategies = [];
 var Auth = module.exports;
 
 Auth.initialize = function (app, middleware) {
-	const passwortInitMiddleware = passport.initialize();
+	const passportInitMiddleware = passport.initialize();
 	app.use(function passportInitialize(req, res, next) {
-		passwortInitMiddleware(req, res, next);
+		passportInitMiddleware(req, res, next);
 	});
 	const passportSessionMiddleware = passport.session();
 	app.use(function passportSession(req, res, next) {
