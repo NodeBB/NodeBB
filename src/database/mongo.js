@@ -154,7 +154,7 @@ mongoModule.createSessionStore = function (options, callback) {
 		const meta = require('../meta');
 		const sessionStore = require('connect-mongo')(session);
 		const store = new sessionStore({
-			db: client.db(),
+			client: client,
 			ttl: meta.getSessionTTLSeconds(),
 		});
 
