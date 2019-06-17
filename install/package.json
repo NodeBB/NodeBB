@@ -46,7 +46,7 @@
         "compression": "^1.7.1",
         "connect-ensure-login": "^0.1.1",
         "connect-flash": "^0.1.1",
-        "connect-mongo": "2.0.3",
+        "connect-mongo": "3.0.0",
         "connect-multiparty": "^2.1.0",
         "connect-pg-simple": "^5.0.0",
         "connect-redis": "3.4.1",
