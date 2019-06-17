@@ -32,8 +32,8 @@
 	"notices": "Уведомления",
 	"restart-not-required": "Перезапуск не необходим",
 	"restart-required": "Перезапуск необходим",
-	"search-plugin-installed": "Поиск установленного плагина",
-	"search-plugin-not-installed": "Поиск не установленного плагина",
+	"search-plugin-installed": "Поисковой плагин установлен",
+	"search-plugin-not-installed": "Поисковой плагин не установлен",
 	"search-plugin-tooltip": "Установите поисковый плагин на странице плагинов чтобы включить функцию поиска",
 
 	"control-panel": "Управление",
