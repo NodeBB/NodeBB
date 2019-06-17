@@ -45,10 +45,10 @@ module.exports = function (User) {
 		var uids;
 		async.waterfall([
 			function (next) {
-				db.getSortedSetRangeWithScores('username:uid', 0, -1, next);
+				db.getSortedSetRange('users:joindate', 0, -1, next);
 			},
-			function (users, next) {
-				uids = users.map(user => user.score);
+			function (_uids, next) {
+				uids = _uids;
 				plugins.fireHook('filter:user.csvFields', { fields: ['uid', 'email', 'username'] }, next);
 			},
 			function (data, next) {
