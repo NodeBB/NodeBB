@@ -179,16 +179,24 @@ module.exports = function (Topics) {
 						if (pin) {
 							async.parallel([
 								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:pinned', Date.now(), tid),
-								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids', tid),
-								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:posts', tid),
-								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:votes', tid),
+								async.apply(db.sortedSetsRemove, [
+									'cid:' + topicData.cid + ':tids',
+									'cid:' + topicData.cid + ':tids:posts',
+									'cid:' + topicData.cid + ':tids:votes',
+								], tid),
 							], next);
 						} else {
 							async.parallel([
 								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:pinned', tid),
-								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids', topicData.lastposttime, tid),
-								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:posts', topicData.postcount, tid),
-								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:votes', parseInt(topicData.votes, 10) || 0, tid),
+								async.apply(db.sortedSetsAdd, [
+									'cid:' + topicData.cid + ':tids',
+									'cid:' + topicData.cid + ':tids:posts',
+									'cid:' + topicData.cid + ':tids:votes',
+								], [
+									topicData.lastposttime,
+									topicData.postcount,
+									parseInt(topicData.votes, 10) || 0,
+								], tid),
 							], next);
 						}
 					},
@@ -208,9 +216,7 @@ module.exports = function (Topics) {
 		var cid;
 		async.waterfall([
 			function (next) {
-				var tids = data.map(function (topic) {
-					return topic && topic.tid;
-				});
+				const tids = data.map(topic => topic && topic.tid);
 				Topics.getTopicsFields(tids, ['cid'], next);
 			},
 			function (topicData, next) {
@@ -273,31 +279,17 @@ module.exports = function (Topics) {
 				], tid, next);
 			},
 			function (next) {
-				db.sortedSetAdd('cid:' + cid + ':tids:lastposttime', topic.lastposttime, tid, next);
-			},
-			function (next) {
-				db.sortedSetAdd('cid:' + cid + ':uid:' + topic.uid + ':tids', topic.timestamp, tid, next);
-			},
-			function (next) {
-				if (topic.pinned) {
-					db.sortedSetAdd('cid:' + cid + ':tids:pinned', Date.now(), tid, next);
-				} else {
-					async.parallel([
-						function (next) {
-							db.sortedSetAdd('cid:' + cid + ':tids', topic.lastposttime, tid, next);
-						},
-						function (next) {
-							topic.postcount = topic.postcount || 0;
-							db.sortedSetAdd('cid:' + cid + ':tids:posts', topic.postcount, tid, next);
-						},
-						function (next) {
-							var votes = topic.upvotes - topic.downvotes;
-							db.sortedSetAdd('cid:' + cid + ':tids:votes', votes, tid, next);
-						},
-					], function (err) {
-						next(err);
-					});
-				}
+				topic.postcount = topic.postcount || 0;
+				const votes = topic.upvotes - topic.downvotes;
+				db.sortedSetsAdd([
+					'cid:' + cid + ':tids:lastposttime',
+					'cid:' + cid + ':uid:' + topic.uid + ':tids',
+					...(topic.pinned ? ['cid:' + cid + ':tids:pinned'] : ['cid:' + cid + ':tids', 'cid:' + cid + ':tids:posts', 'cid:' + cid + ':tids:votes']),
+				], [
+					topic.lastposttime,
+					topic.timestamp,
+					...(topic.pinned ? [Date.now()] : [topic.lastposttime, topic.postcount, votes]),
+				], tid, next);
 			},
 			function (next) {
 				oldCid = topic.cid;
