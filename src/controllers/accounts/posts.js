@@ -156,5 +156,3 @@ function getFromUserSet(template, req, res, callback) {
 		},
 	], callback);
 }
-
-module.exports = postsController;
