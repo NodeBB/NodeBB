@@ -74,7 +74,9 @@ module.exports = function (User) {
 						db.incrObjectField('global', 'userCount', next);
 					},
 					function (next) {
-						db.sortedSetAdd('username:uid', userData.uid, userData.username, next);
+						db.sortedSetsAdd([
+							'username:uid', 'user:' + userData.uid + ':usernames',
+						], [userData.uid, timestamp], userData.username, next);
 					},
 					function (next) {
 						db.sortedSetAdd('username:sorted', 0, userData.username.toLowerCase() + ':' + userData.uid, next);
@@ -91,9 +93,6 @@ module.exports = function (User) {
 					},
 					function (next) {
 						db.sortedSetsAdd(['users:postcount', 'users:reputation'], 0, userData.uid, next);
-					},
-					function (next) {
-						db.sortedSetAdd('user:' + userData.uid + ':usernames', timestamp, userData.username, next);
 					},
 					function (next) {
 						groups.join('registered-users', userData.uid, next);

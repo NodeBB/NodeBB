@@ -261,19 +261,12 @@ module.exports = function (Topics) {
 				if (!parseInt(mainPid, 10)) {
 					Topics.setTopicField(tid, 'mainPid', postData.pid, next);
 				} else {
-					async.parallel([
-						function (next) {
-							db.sortedSetAdd('tid:' + tid + ':posts', postData.timestamp, postData.pid, next);
-						},
-						function (next) {
-							var upvotes = parseInt(postData.upvotes, 10) || 0;
-							var downvotes = parseInt(postData.downvotes, 10) || 0;
-							var votes = upvotes - downvotes;
-							db.sortedSetAdd('tid:' + tid + ':posts:votes', votes, postData.pid, next);
-						},
-					], function (err) {
-						next(err);
-					});
+					const upvotes = parseInt(postData.upvotes, 10) || 0;
+					const downvotes = parseInt(postData.downvotes, 10) || 0;
+					const votes = upvotes - downvotes;
+					db.sortedSetsAdd([
+						'tid:' + tid + ':posts', 'tid:' + tid + ':posts:votes',
+					], [postData.timestamp, votes], postData.pid, next);
 				}
 			},
 			function (next) {

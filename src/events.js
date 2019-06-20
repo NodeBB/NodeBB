@@ -68,10 +68,10 @@ events.log = function (data, callback) {
 
 			async.parallel([
 				function (next) {
-					db.sortedSetAdd('events:time', data.timestamp, eid, next);
-				},
-				function (next) {
-					db.sortedSetAdd('events:time:' + data.type, data.timestamp, eid, next);
+					db.sortedSetsAdd([
+						'events:time',
+						'events:time:' + data.type,
+					], data.timestamp, eid, next);
 				},
 				function (next) {
 					db.setObject('event:' + eid, data, next);
