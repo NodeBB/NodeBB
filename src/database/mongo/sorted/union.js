@@ -6,16 +6,12 @@ module.exports = function (db, module) {
 			return callback(null, 0);
 		}
 
-		var pipeline = [
+		db.collection('objects').aggregate([
 			{ $match: { _key: { $in: keys } } },
 			{ $group: { _id: { value: '$value' } } },
 			{ $group: { _id: null, count: { $sum: 1 } } },
-		];
-
-		var project = { _id: 0, count: '$count' };
-		pipeline.push({	$project: project });
-
-		db.collection('objects').aggregate(pipeline).toArray(function (err, data) {
+			{ $project: { _id: 0, count: '$count' } },
+		]).toArray(function (err, data) {
 			callback(err, Array.isArray(data) && data.length ? data[0].count : 0);
 		});
 	};
