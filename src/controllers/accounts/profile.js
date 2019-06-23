@@ -3,13 +3,14 @@
 var nconf = require('nconf');
 var async = require('async');
 
+const db = require('../../database');
+const privileges = require('../../privileges');
 var user = require('../../user');
 var posts = require('../../posts');
 var plugins = require('../../plugins');
 var meta = require('../../meta');
 var accountHelpers = require('./helpers');
 var helpers = require('../helpers');
-var pagination = require('../../pagination');
 var messaging = require('../../messaging');
 var translator = require('../../translator');
 var utils = require('../../utils');
@@ -26,10 +27,7 @@ profileController.get = function (req, res, callback) {
 			return res.redirect(nconf.get('relative_path') + '/user/' + lowercaseSlug);
 		}
 	}
-	var page = Math.max(1, parseInt(req.query.page, 10) || 1);
-	var itemsPerPage = 10;
-	var start = (page - 1) * itemsPerPage;
-	var stop = start + itemsPerPage - 1;
+
 	var userData;
 	async.waterfall([
 		function (next) {
@@ -54,8 +52,11 @@ profileController.get = function (req, res, callback) {
 				hasPrivateChat: function (next) {
 					messaging.hasPrivateChat(req.uid, userData.uid, next);
 				},
-				posts: function (next) {
-					posts.getPostSummariesFromSet('uid:' + userData.theirid + ':posts', req.uid, start, stop, next);
+				latestPosts: function (next) {
+					getLatestPosts(req.uid, userData, next);
+				},
+				bestPosts: function (next) {
+					getBestPosts(req.uid, userData, next);
 				},
 				signature: function (next) {
 					posts.parseSignature(userData, req.uid, next);
@@ -74,55 +75,20 @@ profileController.get = function (req, res, callback) {
 				delete userData.reputation;
 			}
 
-			userData.posts = results.posts.posts.filter(p => p && !p.deleted);
+			userData.posts = results.latestPosts; // for backwards compat.
+			userData.latestPosts = results.latestPosts;
+			userData.bestPosts = results.bestPosts;
 			userData.hasPrivateChat = results.hasPrivateChat;
 			userData.aboutme = translator.escape(results.aboutme);
-			userData.nextStart = results.posts.nextStart;
 			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username }]);
 			userData.title = userData.username;
 			userData.allowCoverPicture = !userData.isSelf || userData.reputation >= (meta.config['min:rep:cover-picture'] || 0);
-			var pageCount = Math.ceil(userData.postcount / itemsPerPage);
-			userData.pagination = pagination.create(page, pageCount, req.query);
 
 			if (!userData.profileviews) {
 				userData.profileviews = 1;
 			}
 
-			var plainAboutMe = userData.aboutme ? utils.stripHTMLTags(utils.decodeHTMLEntities(userData.aboutme)) : '';
-
-			res.locals.metaTags = [
-				{
-					name: 'title',
-					content: userData.fullname || userData.username,
-				},
-				{
-					name: 'description',
-					content: plainAboutMe,
-				},
-				{
-					property: 'og:title',
-					content: userData.fullname || userData.username,
-				},
-				{
-					property: 'og:description',
-					content: plainAboutMe,
-				},
-			];
-
-			if (userData.picture) {
-				res.locals.metaTags.push(
-					{
-						property: 'og:image',
-						content: userData.picture,
-						noEscape: true,
-					},
-					{
-						property: 'og:image:url',
-						content: userData.picture,
-						noEscape: true,
-					}
-				);
-			}
+			addMetaTags(res, userData);
 
 			userData.selectedGroup = userData.groups.filter(function (group) {
 				return group && userData.groupTitleArray.includes(group.name);
@@ -135,3 +101,74 @@ profileController.get = function (req, res, callback) {
 		},
 	], callback);
 };
+
+function getLatestPosts(callerUid, userData, callback) {
+	async.waterfall([
+		function (next) {
+			db.getSortedSetRevRange('uid:' + userData.uid + ':posts', 0, 99, next);
+		},
+		function (pids, next) {
+			getPosts(callerUid, pids, next);
+		},
+	], callback);
+}
+
+function getBestPosts(callerUid, userData, callback) {
+	async.waterfall([
+		function (next) {
+			db.getSortedSetRevRange('uid:' + userData.uid + ':posts:votes', 0, 99, next);
+		},
+		function (pids, next) {
+			getPosts(callerUid, pids, next);
+		},
+	], callback);
+}
+
+function getPosts(callerUid, pids, callback) {
+	async.waterfall([
+		function (next) {
+			privileges.posts.filter('topics:read', pids, callerUid, next);
+		},
+		function (pids, next) {
+			pids = pids.slice(0, 10);
+			posts.getPostSummaryByPids(pids, callerUid, { stripTags: false }, next);
+		},
+	], callback);
+}
+
+function addMetaTags(res, userData) {
+	var plainAboutMe = userData.aboutme ? utils.stripHTMLTags(utils.decodeHTMLEntities(userData.aboutme)) : '';
+	res.locals.metaTags = [
+		{
+			name: 'title',
+			content: userData.fullname || userData.username,
+		},
+		{
+			name: 'description',
+			content: plainAboutMe,
+		},
+		{
+			property: 'og:title',
+			content: userData.fullname || userData.username,
+		},
+		{
+			property: 'og:description',
+			content: plainAboutMe,
+		},
+	];
+
+	if (userData.picture) {
+		res.locals.metaTags.push(
+			{
+				property: 'og:image',
+				content: userData.picture,
+				noEscape: true,
+			},
+			{
+				property: 'og:image:url',
+				content: userData.picture,
+				noEscape: true,
+			}
+		);
+	}
+}

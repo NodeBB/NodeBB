@@ -13,7 +13,7 @@
 		};
 
 		process.profile = function (operation, start) {
-			winston.log('%s took %d milliseconds', operation, process.elapsedTimeSince(start));
+			console.log('%s took %d milliseconds', operation, process.elapsedTimeSince(start));
 		};
 
 		process.elapsedTimeSince = function (start) {
