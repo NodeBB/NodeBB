@@ -1,7 +1,7 @@
 'use strict';
 
 
-var app = window.app || {};
+app = window.app || {};
 
 app.isFocused = true;
 app.currentRoom = null;

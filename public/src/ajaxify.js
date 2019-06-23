@@ -1,7 +1,7 @@
 'use strict';
 
 
-var ajaxify = window.ajaxify || {};
+ajaxify = window.ajaxify || {};
 
 $(document).ready(function () {
 	var location = document.location || window.location;

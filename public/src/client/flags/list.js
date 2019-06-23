@@ -1,7 +1,5 @@
 'use strict';
 
-/* globals define */
-
 define('forum/flags/list', ['components', 'Chart'], function (components, Chart) {
 	var Flags = {};
 
