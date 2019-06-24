@@ -69,7 +69,7 @@ module.exports = function (User) {
 	User.onNewPostMade = function (postData, callback) {
 		async.series([
 			function (next) {
-				User.addPostIdToUser(postData.uid, postData.pid, postData.timestamp, next);
+				User.addPostIdToUser(postData, next);
 			},
 			function (next) {
 				User.incrementUserPostCountBy(postData.uid, 1, next);
@@ -83,8 +83,11 @@ module.exports = function (User) {
 		], callback);
 	};
 
-	User.addPostIdToUser = function (uid, pid, timestamp, callback) {
-		db.sortedSetAdd('uid:' + uid + ':posts', timestamp, pid, callback);
+	User.addPostIdToUser = function (postData, callback) {
+		db.sortedSetsAdd([
+			'uid:' + postData.uid + ':posts',
+			'cid:' + postData.cid + ':uid:' + postData.uid + ':pids',
+		], postData.timestamp, postData.pid, callback);
 	};
 
 	User.incrementUserPostCountBy = function (uid, value, callback) {

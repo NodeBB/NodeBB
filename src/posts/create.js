@@ -64,6 +64,10 @@ module.exports = function (Posts) {
 				db.setObject('post:' + postData.pid, postData, next);
 			},
 			function (next) {
+				topics.getTopicFields(tid, ['cid', 'pinned'], next);
+			},
+			function (topicData, next) {
+				postData.cid = topicData.cid;
 				async.parallel([
 					function (next) {
 						user.onNewPostMade(postData, next);
@@ -72,13 +76,7 @@ module.exports = function (Posts) {
 						topics.onNewPostMade(postData, next);
 					},
 					function (next) {
-						topics.getTopicFields(tid, ['cid', 'pinned'], function (err, topicData) {
-							if (err) {
-								return next(err);
-							}
-							postData.cid = topicData.cid;
-							categories.onNewPostMade(topicData.cid, topicData.pinned, postData, next);
-						});
+						categories.onNewPostMade(topicData.cid, topicData.pinned, postData, next);
 					},
 					function (next) {
 						groups.onNewPostMade(postData, next);
