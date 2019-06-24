@@ -125,4 +125,37 @@ INSERT INTO "legacy_zset" ("_key", "value", "score")
 			});
 		}, callback);
 	};
+
+	module.sortedSetAddBulk = function (data, callback) {
+		if (!Array.isArray(data) || !data.length) {
+			return setImmediate(callback);
+		}
+		const keys = [];
+		const values = [];
+		const scores = [];
+		data.forEach(function (item) {
+			keys.push(item[0]);
+			scores.push(item[1]);
+			values.push(item[2]);
+		});
+		module.transaction(function (tx, done) {
+			var query = tx.client.query.bind(tx.client);
+
+			async.series([
+				async.apply(helpers.ensureLegacyObjectsType, tx.client, keys, 'zset'),
+				async.apply(query, {
+					name: 'sortedSetAddBulk2',
+					text: `
+INSERT INTO "legacy_zset" ("_key", "value", "score")
+SELECT k, v, s
+  FROM UNNEST($1::TEXT[], $2::TEXT[], $3::NUMERIC[]) vs(k, v, s)
+    ON CONFLICT ("_key", "value")
+    DO UPDATE SET "score" = EXCLUDED."score"`,
+					values: [keys, values, scores],
+				}),
+			], function (err) {
+				done(err);
+			});
+		}, callback);
+	};
 };

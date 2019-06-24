@@ -120,6 +120,34 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
+	describe('sortedSetAddMulti()', function () {
+		it('should add elements into multiple sorted sets with different scores', function (done) {
+			db.sortedSetAddBulk([
+				['bulk1', 1, 'item1'],
+				['bulk2', 2, 'item1'],
+				['bulk2', 3, 'item2'],
+				['bulk3', 4, 'item3'],
+			], function (err) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 1);
+				db.getSortedSetRevRangeWithScores(['bulk1', 'bulk2', 'bulk3'], 0, -1, function (err, data) {
+					assert.ifError(err);
+					assert.deepStrictEqual(data, [{ value: 'item3', score: 4 },
+						{ value: 'item2', score: 3 },
+						{ value: 'item1', score: 2 },
+						{ value: 'item1', score: 1 }]);
+					done();
+				});
+			});
+		});
+		it('should not error if data is undefined', function (done) {
+			db.sortedSetAddBulk(undefined, function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+	});
+
 	describe('getSortedSetRange()', function () {
 		it('should return the lowest scored element', function (done) {
 			db.getSortedSetRange('sortedSetTest1', 0, 0, function (err, value) {

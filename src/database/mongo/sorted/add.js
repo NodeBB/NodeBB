@@ -72,8 +72,17 @@ module.exports = function (db, module) {
 			bulk.find({ _key: keys[i], value: value }).upsert().updateOne({ $set: { score: parseFloat(isArrayOfScores ? scores[i] : scores) } });
 		}
 
-		bulk.execute(function (err) {
-			callback(err);
+		bulk.execute(err =>	callback(err));
+	};
+
+	module.sortedSetAddBulk = function (data, callback) {
+		if (!Array.isArray(data) || !data.length) {
+			return setImmediate(callback);
+		}
+		var bulk = db.collection('objects').initializeUnorderedBulkOp();
+		data.forEach(function (item) {
+			bulk.find({ _key: item[0], value: String(item[2]) }).upsert().updateOne({ $set: { score: parseFloat(item[1]) } });
 		});
+		bulk.execute(err => callback(err));
 	};
 };

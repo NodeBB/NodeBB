@@ -74,25 +74,26 @@ module.exports = function (User) {
 						db.incrObjectField('global', 'userCount', next);
 					},
 					function (next) {
-						db.sortedSetsAdd([
-							'username:uid', 'user:' + userData.uid + ':usernames',
-						], [userData.uid, timestamp], userData.username, next);
-					},
-					function (next) {
-						db.sortedSetAdd('username:sorted', 0, userData.username.toLowerCase() + ':' + userData.uid, next);
-					},
-					function (next) {
-						db.sortedSetAdd('userslug:uid', userData.uid, userData.userslug, next);
-					},
-					function (next) {
-						var sets = ['users:joindate', 'users:online'];
+						const bulk = [
+							['username:uid', userData.uid, userData.username],
+							['user:' + userData.uid + ':usernames', timestamp, userData.username],
+							['username:sorted', 0, userData.username.toLowerCase() + ':' + userData.uid],
+							['userslug:uid', userData.uid, userData.userslug],
+							['users:joindate', timestamp, userData.uid],
+							['users:online', timestamp, userData.uid],
+							['users:postcount', 0, userData.uid],
+							['users:reputation', 0, userData.uid],
+						];
+
 						if (parseInt(userData.uid, 10) !== 1) {
-							sets.push('users:notvalidated');
+							bulk.push(['users:notvalidated', timestamp, userData.uid]);
 						}
-						db.sortedSetsAdd(sets, timestamp, userData.uid, next);
-					},
-					function (next) {
-						db.sortedSetsAdd(['users:postcount', 'users:reputation'], 0, userData.uid, next);
+						if (userData.email) {
+							bulk.push(['email:uid', userData.uid, userData.email.toLowerCase()]);
+							bulk.push(['email:sorted', 0, userData.email.toLowerCase() + ':' + userData.uid]);
+							bulk.push(['user:' + userData.uid + ':emails', timestamp, userData.email]);
+						}
+						db.sortedSetAddBulk(bulk, next);
 					},
 					function (next) {
 						groups.join('registered-users', userData.uid, next);
@@ -101,23 +102,12 @@ module.exports = function (User) {
 						User.notifications.sendWelcomeNotification(userData.uid, next);
 					},
 					function (next) {
-						if (userData.email) {
-							async.parallel([
-								async.apply(db.sortedSetAdd, 'email:uid', userData.uid, userData.email.toLowerCase()),
-								async.apply(db.sortedSetAdd, 'email:sorted', 0, userData.email.toLowerCase() + ':' + userData.uid),
-								async.apply(db.sortedSetAdd, 'user:' + userData.uid + ':emails', timestamp, userData.email),
-							], next);
-
-							if (userData.uid > 1 && meta.config.requireEmailConfirmation) {
-								User.email.sendValidationEmail(userData.uid, {
-									email: userData.email,
-								});
-							}
-						} else {
-							next();
+						if (userData.email && userData.uid > 1 && meta.config.requireEmailConfirmation) {
+							User.email.sendValidationEmail(userData.uid, {
+								email: userData.email,
+							});
 						}
-					},
-					function (next) {
+
 						if (!data.password) {
 							return next();
 						}

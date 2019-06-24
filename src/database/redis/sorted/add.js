@@ -69,4 +69,15 @@ module.exports = function (redisClient, module) {
 			callback(err);
 		});
 	};
+
+	module.sortedSetAddBulk = function (data, callback) {
+		if (!Array.isArray(data) || !data.length) {
+			return setImmediate(callback);
+		}
+		var batch = redisClient.batch();
+		data.forEach(function (item) {
+			batch.zadd(item[0], item[1], item[2]);
+		});
+		batch.exec(err => callback(err));
+	};
 };
