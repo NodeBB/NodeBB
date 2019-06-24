@@ -7,6 +7,7 @@ var privileges = require('../privileges');
 var plugins = require('../plugins');
 var meta = require('../meta');
 var topics = require('../topics');
+const categories = require('../categories');
 var user = require('../user');
 var websockets = require('./index');
 var socketHelpers = require('./helpers');
@@ -135,11 +136,27 @@ SocketPosts.loadMoreBookmarks = function (socket, data, callback) {
 };
 
 SocketPosts.loadMoreUserPosts = function (socket, data, callback) {
-	loadMorePosts('uid:' + data.uid + ':posts', socket.uid, data, callback);
+	async.waterfall([
+		function (next) {
+			categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read', next);
+		},
+		function (cids, next) {
+			const keys = cids.map(c => 'cid:' + c + ':uid:' + data.uid + ':pids');
+			loadMorePosts(keys, socket.uid, data, next);
+		},
+	], callback);
 };
 
 SocketPosts.loadMoreBestPosts = function (socket, data, callback) {
-	loadMorePosts('uid:' + data.uid + ':posts:votes', socket.uid, data, callback);
+	async.waterfall([
+		function (next) {
+			categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read', next);
+		},
+		function (cids, next) {
+			const keys = cids.map(c => 'cid:' + c + ':uid:' + data.uid + ':pids:votes');
+			loadMorePosts(keys, socket.uid, data, next);
+		},
+	], callback);
 };
 
 SocketPosts.loadMoreUpVotedPosts = function (socket, data, callback) {

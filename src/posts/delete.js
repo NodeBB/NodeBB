@@ -111,6 +111,8 @@ module.exports = function (Posts) {
 				const tasks = [
 					async.apply(db.decrObjectField, 'global', 'postCount'),
 					async.apply(db.decrObjectField, 'category:' + topicData.cid, 'post_count'),
+					async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':uid:' + postData.uid + ':pids', postData.pid),
+					async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':uid:' + postData.uid + ':pids:votes', postData.pid),
 					async.apply(topics.decreasePostCount, postData.tid),
 					async.apply(topics.updateTeaser, postData.tid),
 					async.apply(topics.updateLastPostTimeFromLastPid, postData.tid),

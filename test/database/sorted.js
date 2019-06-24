@@ -392,7 +392,7 @@ describe('Sorted Set methods', function () {
 	describe('sortedSetsCard()', function () {
 		it('should return the number of elements in sorted sets', function (done) {
 			db.sortedSetsCard(['sortedSetTest1', 'sortedSetTest2', 'doesnotexist'], function (err, counts) {
-				assert.equal(err, null);
+				assert.ifError(err);
 				assert.equal(arguments.length, 2);
 				assert.deepEqual(counts, [3, 2, 0]);
 				done();
@@ -413,6 +413,44 @@ describe('Sorted Set methods', function () {
 				assert.ifError(err);
 				assert.equal(arguments.length, 2);
 				assert.deepEqual(counts, []);
+				done();
+			});
+		});
+	});
+
+	describe('sortedSetsCardSum()', function () {
+		it('should return the total number of elements in sorted sets', function (done) {
+			db.sortedSetsCardSum(['sortedSetTest1', 'sortedSetTest2', 'doesnotexist'], function (err, sum) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 2);
+				assert.equal(sum, 5);
+				done();
+			});
+		});
+
+		it('should return 0 if keys is falsy', function (done) {
+			db.sortedSetsCardSum(undefined, function (err, counts) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 2);
+				assert.deepEqual(counts, 0);
+				done();
+			});
+		});
+
+		it('should return 0 if keys is empty array', function (done) {
+			db.sortedSetsCardSum([], function (err, counts) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 2);
+				assert.deepEqual(counts, 0);
+				done();
+			});
+		});
+
+		it('should return the total number of elements in sorted set', function (done) {
+			db.sortedSetsCardSum('sortedSetTest1', function (err, sum) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 2);
+				assert.equal(sum, 3);
 				done();
 			});
 		});

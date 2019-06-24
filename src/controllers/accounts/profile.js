@@ -4,9 +4,9 @@ var nconf = require('nconf');
 var async = require('async');
 
 const db = require('../../database');
-const privileges = require('../../privileges');
 var user = require('../../user');
 var posts = require('../../posts');
+const categories = require('../../categories');
 var plugins = require('../../plugins');
 var meta = require('../../meta');
 var accountHelpers = require('./helpers');
@@ -103,34 +103,23 @@ profileController.get = function (req, res, callback) {
 };
 
 function getLatestPosts(callerUid, userData, callback) {
-	async.waterfall([
-		function (next) {
-			db.getSortedSetRevRange('uid:' + userData.uid + ':posts', 0, 99, next);
-		},
-		function (pids, next) {
-			getPosts(callerUid, pids, next);
-		},
-	], callback);
+	getPosts(callerUid, userData, 'pids', callback);
 }
 
 function getBestPosts(callerUid, userData, callback) {
-	async.waterfall([
-		function (next) {
-			db.getSortedSetRevRange('uid:' + userData.uid + ':posts:votes', 0, 99, next);
-		},
-		function (pids, next) {
-			getPosts(callerUid, pids, next);
-		},
-	], callback);
+	getPosts(callerUid, userData, 'pids:votes', callback);
 }
 
-function getPosts(callerUid, pids, callback) {
+function getPosts(callerUid, userData, setSuffix, callback) {
 	async.waterfall([
 		function (next) {
-			privileges.posts.filter('topics:read', pids, callerUid, next);
+			categories.getCidsByPrivilege('categories:cid', callerUid, 'topics:read', next);
+		},
+		function (cids, next) {
+			const keys = cids.map(c => 'cid:' + c + ':uid:' + userData.uid + ':' + setSuffix);
+			db.getSortedSetRevRange(keys, 0, 9, next);
 		},
 		function (pids, next) {
-			pids = pids.slice(0, 10);
 			posts.getPostSummaryByPids(pids, callerUid, { stripTags: false }, next);
 		},
 	], callback);

@@ -259,6 +259,22 @@ SELECT o."_key" k,
 		});
 	};
 
+	module.sortedSetsCardSum = function (keys, callback) {
+		if (!keys || (Array.isArray(keys) && !keys.length)) {
+			return callback(null, 0);
+		}
+		if (!Array.isArray(keys)) {
+			keys = [keys];
+		}
+		module.sortedSetsCard(keys, function (err, counts) {
+			if (err) {
+				return callback(err);
+			}
+			const sum = counts.reduce(function (acc, val) { return acc + val; }, 0);
+			callback(null, sum);
+		});
+	};
+
 	module.sortedSetRank = function (key, value, callback) {
 		getSortedSetRank('ASC', [key], [value], function (err, result) {
 			callback(err, result ? result[0] : null);

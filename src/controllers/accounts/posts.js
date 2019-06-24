@@ -7,6 +7,7 @@ var db = require('../../database');
 var user = require('../../user');
 var posts = require('../../posts');
 var topics = require('../../topics');
+var categories = require('../../categories');
 var pagination = require('../../pagination');
 var helpers = require('../helpers');
 var accountHelpers = require('./helpers');
@@ -15,52 +16,89 @@ var postsController = module.exports;
 
 var templateToData = {
 	'account/bookmarks': {
-		set: 'bookmarks',
 		type: 'posts',
 		noItemsFoundKey: '[[topic:bookmarks.has_no_bookmarks]]',
 		crumb: '[[user:bookmarks]]',
+		getSets: function (callerUid, userData, calback) {
+			setImmediate(calback, null, 'uid:' + userData.uid + ':bookmarks');
+		},
 	},
 	'account/posts': {
-		set: 'posts',
 		type: 'posts',
 		noItemsFoundKey: '[[user:has_no_posts]]',
 		crumb: '[[global:posts]]',
+		getSets: function (callerUid, userData, callback) {
+			async.waterfall([
+				function (next) {
+					categories.getCidsByPrivilege('categories:cid', callerUid, 'topics:read', next);
+				},
+				function (cids, next) {
+					next(null, cids.map(c => 'cid:' + c + ':uid:' + userData.uid + ':pids'));
+				},
+			], callback);
+		},
 	},
 	'account/upvoted': {
-		set: 'upvote',
 		type: 'posts',
 		noItemsFoundKey: '[[user:has_no_upvoted_posts]]',
 		crumb: '[[global:upvoted]]',
+		getSets: function (callerUid, userData, calback) {
+			setImmediate(calback, null, 'uid:' + userData.uid + ':upvote');
+		},
 	},
 	'account/downvoted': {
-		set: 'downvote',
 		type: 'posts',
 		noItemsFoundKey: '[[user:has_no_downvoted_posts]]',
 		crumb: '[[global:downvoted]]',
+		getSets: function (callerUid, userData, calback) {
+			setImmediate(calback, null, 'uid:' + userData.uid + ':downvote');
+		},
 	},
 	'account/best': {
-		set: 'posts:votes',
 		type: 'posts',
 		noItemsFoundKey: '[[user:has_no_voted_posts]]',
 		crumb: '[[global:best]]',
+		getSets: function (callerUid, userData, callback) {
+			async.waterfall([
+				function (next) {
+					categories.getCidsByPrivilege('categories:cid', callerUid, 'topics:read', next);
+				},
+				function (cids, next) {
+					next(null, cids.map(c => 'cid:' + c + ':uid:' + userData.uid + ':pids:votes'));
+				},
+			], callback);
+		},
 	},
 	'account/watched': {
-		set: 'followed_tids',
 		type: 'topics',
 		noItemsFoundKey: '[[user:has_no_watched_topics]]',
 		crumb: '[[user:watched]]',
+		getSets: function (callerUid, userData, calback) {
+			setImmediate(calback, null, 'uid:' + userData.uid + ':followed_tids');
+		},
 	},
 	'account/ignored': {
-		set: 'ignored_tids',
 		type: 'topics',
 		noItemsFoundKey: '[[user:has_no_ignored_topics]]',
 		crumb: '[[user:ignored]]',
+		getSets: function (callerUid, userData, calback) {
+			setImmediate(calback, null, 'uid:' + userData.uid + ':ignored_tids');
+		},
 	},
 	'account/topics': {
-		set: 'topics',
 		type: 'topics',
 		noItemsFoundKey: '[[user:has_no_topics]]',
 		crumb: '[[global:topics]]',
+		getSets: function (callerUid, userData, callback) {
+			async.waterfall([
+				function (next) {
+					categories.getCidsByPrivilege('categories:cid', callerUid, 'topics:read', next);
+				},
+				function (cids, next) {
+					next(null, cids.map(c => 'cid:' + c + ':uid:' + userData.uid + ':tids'));
+				},
+			], callback);
+		},
 	},
 };
 
@@ -98,9 +136,8 @@ postsController.getTopics = function (req, res, next) {
 
 function getFromUserSet(template, req, res, callback) {
 	var data = templateToData[template];
-	data.template = template;
-	data.method = data.type === 'posts' ? posts.getPostSummariesFromSet : topics.getTopicsFromSet;
 	var userData;
+	var settings;
 	var itemsPerPage;
 	var page = Math.max(1, parseInt(req.query.page, 10) || 1);
 
@@ -121,15 +158,16 @@ function getFromUserSet(template, req, res, callback) {
 			}
 
 			userData = results.userData;
+			settings = results.settings;
+			itemsPerPage = data.type === 'topics' ? settings.topicsPerPage : settings.postsPerPage;
 
-			var setName = 'uid:' + userData.uid + ':' + data.set;
-
-			itemsPerPage = (data.template === 'account/topics' || data.template === 'account/watched') ? results.settings.topicsPerPage : results.settings.postsPerPage;
-
+			data.getSets(req.uid, userData, next);
+		},
+		function (sets, next) {
 			async.parallel({
 				itemCount: function (next) {
-					if (results.settings.usePagination) {
-						db.sortedSetCard(setName, next);
+					if (settings.usePagination) {
+						db.sortedSetsCardSum(sets, next);
 					} else {
 						next(null, 0);
 					}
@@ -137,7 +175,8 @@ function getFromUserSet(template, req, res, callback) {
 				data: function (next) {
 					var start = (page - 1) * itemsPerPage;
 					var stop = start + itemsPerPage - 1;
-					data.method(setName, req.uid, start, stop, next);
+					const method = data.type === 'topics' ? topics.getTopicsFromSet : posts.getPostSummariesFromSet;
+					method(sets, req.uid, start, stop, next);
 				},
 			}, next);
 		},
@@ -149,10 +188,10 @@ function getFromUserSet(template, req, res, callback) {
 			userData.pagination = pagination.create(page, pageCount);
 
 			userData.noItemsFoundKey = data.noItemsFoundKey;
-			userData.title = '[[pages:' + data.template + ', ' + userData.username + ']]';
+			userData.title = '[[pages:' + template + ', ' + userData.username + ']]';
 			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: data.crumb }]);
 
-			res.render(data.template, userData);
+			res.render(template, userData);
 		},
 	], callback);
 }

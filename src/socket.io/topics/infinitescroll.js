@@ -3,6 +3,7 @@
 var async = require('async');
 
 var topics = require('../../topics');
+const categories = require('../../categories');
 var privileges = require('../../privileges');
 var meta = require('../../meta');
 var utils = require('../../utils');
@@ -115,6 +116,18 @@ module.exports = function (SocketTopics) {
 		}
 		const { start, stop } = calculateStartStop(data);
 		topics.getTopicsFromSet(data.set, socket.uid, start, stop, callback);
+	};
+
+	SocketTopics.loadMoreUserTopics = function (socket, data, callback) {
+		async.waterfall([
+			function (next) {
+				categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read', next);
+			},
+			function (cids, next) {
+				data.set = cids.map(c => 'cid:' + c + ':uid:' + data.uid + ':tids');
+				SocketTopics.loadMoreFromSet(socket, data, next);
+			},
+		], callback);
 	};
 
 	function calculateStartStop(data) {

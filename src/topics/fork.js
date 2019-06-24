@@ -158,13 +158,22 @@ module.exports = function (Topics) {
 				if (topicData[0].cid === topicData[1].cid) {
 					return callback();
 				}
-
-				async.parallel([
+				const removeFrom = [
+					'cid:' + topicData[0].cid + ':pids',
+					'cid:' + topicData[0].cid + ':uid:' + postData.uid + ':pids',
+					'cid:' + topicData[0].cid + ':uid:' + postData.uid + ':pids:votes',
+				];
+				const tasks = [
 					async.apply(db.incrObjectFieldBy, 'category:' + topicData[0].cid, 'post_count', -1),
 					async.apply(db.incrObjectFieldBy, 'category:' + topicData[1].cid, 'post_count', 1),
-					async.apply(db.sortedSetRemove, 'cid:' + topicData[0].cid + ':pids', postData.pid),
+					async.apply(db.sortedSetRemove, removeFrom, postData.pid),
 					async.apply(db.sortedSetAdd, 'cid:' + topicData[1].cid + ':pids', postData.timestamp, postData.pid),
-				], next);
+					async.apply(db.sortedSetAdd, 'cid:' + topicData[1].cid + ':uid:' + postData.uid + ':pids', postData.timestamp, postData.pid),
+				];
+				if (postData.votes > 0) {
+					tasks.push(async.apply(db.sortedSetAdd, 'cid:' + topicData[1].cid + ':uid:' + postData.uid + ':pids:votes', postData.votes, postData.pid));
+				}
+				async.parallel(tasks, next);
 			},
 		], callback);
 	}

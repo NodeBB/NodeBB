@@ -204,12 +204,10 @@ module.exports = function (Categories) {
 				batch.processArray(pids, function (pids, next) {
 					async.waterfall([
 						function (next) {
-							posts.getPostsFields(pids, ['timestamp'], next);
+							posts.getPostsFields(pids, ['pid', 'uid', 'timestamp', 'upvotes', 'downvotes'], next);
 						},
 						function (postData, next) {
-							var timestamps = postData.map(function (post) {
-								return post && post.timestamp;
-							});
+							var timestamps = postData.map(p => p && p.timestamp);
 
 							async.parallel([
 								function (next) {
@@ -217,6 +215,25 @@ module.exports = function (Categories) {
 								},
 								function (next) {
 									db.sortedSetAdd('cid:' + cid + ':pids', timestamps, pids, next);
+								},
+								function (next) {
+									async.each(postData, function (post, next) {
+										db.sortedSetRemove([
+											'cid:' + oldCid + ':uid:' + post.uid + ':pids',
+											'cid:' + oldCid + ':uid:' + post.uid + ':pids:votes',
+										], post.pid, next);
+									}, next);
+								},
+								function (next) {
+									async.each(postData, function (post, next) {
+										const keys = ['cid:' + cid + ':uid:' + post.uid + ':pids'];
+										const scores = [post.timestamp];
+										if (post.votes > 0) {
+											keys.push('cid:' + cid + ':uid:' + post.uid + ':pids:votes');
+											scores.push(post.votes);
+										}
+										db.sortedSetsAdd(keys, scores, post.pid, next);
+									}, next);
 								},
 							], next);
 						},

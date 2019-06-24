@@ -162,6 +162,17 @@ module.exports = function (db, module) {
 		async.map(keys, module.sortedSetCard, callback);
 	};
 
+	module.sortedSetsCardSum = function (keys, callback) {
+		if (!keys || (Array.isArray(keys) && !keys.length)) {
+			return callback(null, 0);
+		}
+
+		db.collection('objects').countDocuments({ _key: Array.isArray(keys) ? { $in: keys } : keys }, function (err, count) {
+			count = parseInt(count, 10);
+			callback(err, count || 0);
+		});
+	};
+
 	module.sortedSetRank = function (key, value, callback) {
 		getSortedSetRank(false, key, value, callback);
 	};
