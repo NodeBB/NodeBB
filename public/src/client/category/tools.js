@@ -259,7 +259,7 @@ define('forum/category/tools', [
 		}
 		app.loadJQueryUI(function () {
 			var topicListEl = $('[component="category"]').filter(function (i, e) {
-				return !$(e).parents('[widget-area]').length;
+				return !$(e).parents('[widget-area],[data-widget-area]').length;
 			});
 			topicListEl.sortable({
 				handle: '[component="topic/pinned"]',
