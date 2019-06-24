@@ -122,6 +122,10 @@ function getPosts(callerUid, userData, setSuffix, callback) {
 		function (pids, next) {
 			posts.getPostSummaryByPids(pids, callerUid, { stripTags: false }, next);
 		},
+		function (posts, next) {
+			posts = posts.filter(p => p && !p.deleted);
+			next(null, posts);
+		},
 	], callback);
 }
 
