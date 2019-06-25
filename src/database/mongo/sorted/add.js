@@ -83,6 +83,11 @@ module.exports = function (db, module) {
 		data.forEach(function (item) {
 			bulk.find({ _key: item[0], value: String(item[2]) }).upsert().updateOne({ $set: { score: parseFloat(item[1]) } });
 		});
-		bulk.execute(err => callback(err));
+		bulk.execute(function (err) {
+			if (err) {
+				console.log(data);
+			}
+			callback(err);
+		});
 	};
 };
