@@ -108,10 +108,7 @@ Notifications.filterExists = function (nids, callback) {
 			db.isSortedSetMembers('notifications', nids, next);
 		},
 		function (exists, next) {
-			nids = nids.filter(function (notifId, idx) {
-				return exists[idx];
-			});
-
+			nids = nids.filter((notifId, idx) => exists[idx]);
 			next(null, nids);
 		},
 	], callback);
@@ -397,52 +394,32 @@ Notifications.markReadMultiple = function (nids, uid, callback) {
 		return callback();
 	}
 
-	var notificationKeys = nids.map(function (nid) {
-		return 'notifications:' + nid;
-	});
+	let notificationKeys = nids.map(nid => 'notifications:' + nid);
 
 	async.waterfall([
 		async.apply(db.getObjectsFields, notificationKeys, ['mergeId']),
 		function (mergeIds, next) {
 			// Isolate mergeIds and find related notifications
-			mergeIds = mergeIds.map(function (set) {
-				return set.mergeId;
-			}).reduce(function (memo, mergeId, idx, arr) {
-				if (mergeId && idx === arr.indexOf(mergeId)) {
-					memo.push(mergeId);
-				}
-				return memo;
-			}, []);
+			mergeIds = _.uniq(mergeIds.map(set => set.mergeId));
 
 			Notifications.findRelated(mergeIds, 'uid:' + uid + ':notifications:unread', next);
 		},
 		function (relatedNids, next) {
-			notificationKeys = _.union(nids, relatedNids).map(function (nid) {
-				return 'notifications:' + nid;
-			});
+			notificationKeys = _.union(nids, relatedNids).map(nid => 'notifications:' + nid);
 
 			db.getObjectsFields(notificationKeys, ['nid', 'datetime'], next);
 		},
 		function (notificationData, next) {
-			// Filter out notifications that didn't exist
-			notificationData = notificationData.filter(function (notification) {
-				return notification && notification.nid;
-			});
+			notificationData = notificationData.filter(n => n && n.nid);
 
-			// Extract nid
-			nids = notificationData.map(function (notification) {
-				return notification.nid;
-			});
-
-			var datetimes = notificationData.map(function (notification) {
-				return (notification && notification.datetime) || Date.now();
-			});
+			nids = notificationData.map(n => n.nid);
 
 			async.parallel([
 				function (next) {
 					db.sortedSetRemove('uid:' + uid + ':notifications:unread', nids, next);
 				},
 				function (next) {
+					const datetimes = notificationData.map(n => (n && n.datetime) || Date.now());
 					db.sortedSetAdd('uid:' + uid + ':notifications:read', datetimes, nids, next);
 				},
 			], next);
@@ -465,12 +442,11 @@ Notifications.markAllRead = function (uid, callback) {
 
 Notifications.prune = function (callback) {
 	callback = callback || function () {};
-	var week = 604800000;
-
-	var cutoffTime = Date.now() - week;
 
 	async.waterfall([
 		function (next) {
+			const week = 604800000;
+			const cutoffTime = Date.now() - week;
 			db.getSortedSetRangeByScore('notifications', 0, 500, '-inf', cutoffTime, next);
 		},
 		function (nids, next) {
@@ -478,15 +454,12 @@ Notifications.prune = function (callback) {
 				return callback();
 			}
 
-			var keys = nids.map(function (nid) {
-				return 'notifications:' + nid;
-			});
-
 			async.parallel([
 				function (next) {
 					db.sortedSetRemove('notifications', nids, next);
 				},
 				function (next) {
+					const keys = nids.map(nid => 'notifications:' + nid);
 					db.deleteAll(keys, next);
 				},
 			], next);

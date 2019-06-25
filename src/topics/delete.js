@@ -68,13 +68,11 @@ module.exports = function (Topics) {
 						Topics.updateRecent(tid, topicData.lastposttime, next);
 					},
 					function (next) {
-						db.sortedSetAdd('topics:posts', topicData.postcount, tid, next);
-					},
-					function (next) {
-						db.sortedSetAdd('topics:views', topicData.viewcount, tid, next);
-					},
-					function (next) {
-						db.sortedSetAdd('topics:votes', parseInt(topicData.votes, 10) || 0, tid, next);
+						db.sortedSetAddBulk([
+							['topics:posts', topicData.postcount, tid],
+							['topics:views', topicData.viewcount, tid],
+							['topics:votes', parseInt(topicData.votes, 10) || 0, tid],
+						], next);
 					},
 					function (next) {
 						async.waterfall([

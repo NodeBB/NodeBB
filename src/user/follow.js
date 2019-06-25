@@ -40,8 +40,10 @@ module.exports = function (User) {
 					}
 					var now = Date.now();
 					async.parallel([
-						async.apply(db.sortedSetAdd, 'following:' + uid, now, theiruid),
-						async.apply(db.sortedSetAdd, 'followers:' + theiruid, now, uid),
+						async.apply(db.sortedSetAddBulk, [
+							['following:' + uid, now, theiruid],
+							['followers:' + theiruid, now, uid],
+						]),
 						async.apply(User.incrementUserFieldBy, uid, 'followingCount', 1),
 						async.apply(User.incrementUserFieldBy, theiruid, 'followerCount', 1),
 					], next);

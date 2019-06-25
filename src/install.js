@@ -527,9 +527,7 @@ function enableDefaultPlugins(next) {
 	winston.info('[install/enableDefaultPlugins] activating default plugins', defaultEnabled);
 
 	var db = require('./database');
-	var order = defaultEnabled.map(function (plugin, index) {
-		return index;
-	});
+	var order = defaultEnabled.map((plugin, index) => index);
 	db.sortedSetAdd('plugins:active', order, defaultEnabled, next);
 }
 

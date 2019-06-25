@@ -14,18 +14,13 @@ module.exports = function (User) {
 			return setImmediate(callback);
 		}
 		var now = Date.now();
-		async.waterfall([
-			function (next) {
-				db.sortedSetAdd('uid:' + uid + ':ip', now, ip || 'Unknown', next);
-			},
-			function (next) {
-				if (ip) {
-					db.sortedSetAdd('ip:' + ip + ':uid', now, uid, next);
-				} else {
-					next();
-				}
-			},
-		], callback);
+		const bulk = [
+			['uid:' + uid + ':ip', now, ip || 'Unknown'],
+		];
+		if (ip) {
+			bulk.push(['ip:' + ip + ':uid', now, uid]);
+		}
+		db.sortedSetAddBulk(bulk, callback);
 	};
 
 	User.getIPs = function (uid, stop, callback) {

@@ -150,22 +150,12 @@ module.exports = function (Categories) {
 				Categories.getCategoryField(cid, 'parentCid', next);
 			},
 			function (parentCid, next) {
-				async.parallel([
-					function (next) {
-						db.sortedSetAdd('categories:cid', order, cid, next);
-					},
-					function (next) {
-						db.sortedSetAdd('cid:' + parentCid + ':children', order, cid, next);
-					},
-					function (next) {
-						cache.del(['categories:cid', 'cid:' + parentCid + ':children']);
-						next();
-					},
-				], next);
+				db.sortedSetsAdd(['categories:cid', 'cid:' + parentCid + ':children'], order, cid, function (err) {
+					cache.del(['categories:cid', 'cid:' + parentCid + ':children']);
+					next(err);
+				});
 			},
-		], function (err) {
-			callback(err);
-		});
+		], err => callback(err));
 	}
 
 	Categories.parseDescription = function (cid, description, callback) {

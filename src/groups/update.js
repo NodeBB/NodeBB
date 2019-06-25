@@ -88,8 +88,7 @@ module.exports = function (Groups) {
 	function updateVisibility(groupName, hidden, callback) {
 		if (hidden) {
 			async.parallel([
-				async.apply(db.sortedSetRemove, 'groups:visible:createtime', groupName),
-				async.apply(db.sortedSetRemove, 'groups:visible:memberCount', groupName),
+				async.apply(db.sortedSetsRemove, ['groups:visible:createtime', 'groups:visible:memberCount'], groupName),
 				async.apply(db.sortedSetRemove, 'groups:visible:name', groupName.toLowerCase() + ':' + groupName),
 			], callback);
 		} else {
@@ -98,10 +97,10 @@ module.exports = function (Groups) {
 					db.getObjectFields('group:' + groupName, ['createtime', 'memberCount'], next);
 				},
 				function (groupData, next) {
-					async.parallel([
-						async.apply(db.sortedSetAdd, 'groups:visible:createtime', groupData.createtime, groupName),
-						async.apply(db.sortedSetAdd, 'groups:visible:memberCount', groupData.memberCount, groupName),
-						async.apply(db.sortedSetAdd, 'groups:visible:name', 0, groupName.toLowerCase() + ':' + groupName),
+					db.sortedSetAddBulk([
+						['groups:visible:createtime', groupData.createtime, groupName],
+						['groups:visible:memberCount', groupData.memberCount, groupName],
+						['groups:visible:name', 0, groupName.toLowerCase() + ':' + groupName],
 					], next);
 				},
 			], callback);

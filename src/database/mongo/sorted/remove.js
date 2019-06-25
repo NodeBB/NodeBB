@@ -18,15 +18,10 @@ module.exports = function (db, module) {
 			value = helpers.valueToString(value);
 		}
 
-		if (Array.isArray(key) && Array.isArray(value)) {
-			db.collection('objects').deleteMany({ _key: { $in: key }, value: { $in: value } }, done);
-		} else if (Array.isArray(value)) {
-			db.collection('objects').deleteMany({ _key: key, value: { $in: value } }, done);
-		} else if (Array.isArray(key)) {
-			db.collection('objects').deleteMany({ _key: { $in: key }, value: value }, done);
-		} else {
-			db.collection('objects').deleteOne({ _key: key, value: value }, done);
-		}
+		db.collection('objects').deleteMany({
+			_key: Array.isArray(key) ? { $in: key } : key,
+			value: Array.isArray(value) ? { $in: value } : value,
+		}, done);
 	};
 
 	module.sortedSetsRemove = function (keys, value, callback) {

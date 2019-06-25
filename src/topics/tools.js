@@ -188,15 +188,11 @@ module.exports = function (Topics) {
 						} else {
 							async.parallel([
 								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:pinned', tid),
-								async.apply(db.sortedSetsAdd, [
-									'cid:' + topicData.cid + ':tids',
-									'cid:' + topicData.cid + ':tids:posts',
-									'cid:' + topicData.cid + ':tids:votes',
-								], [
-									topicData.lastposttime,
-									topicData.postcount,
-									parseInt(topicData.votes, 10) || 0,
-								], tid),
+								async.apply(db.sortedSetAddBulk, [
+									['cid:' + topicData.cid + ':tids', topicData.lastposttime, tid],
+									['cid:' + topicData.cid + ':tids:posts', topicData.postcount, tid],
+									['cid:' + topicData.cid + ':tids:votes', parseInt(topicData.votes, 10) || 0, tid],
+								]),
 							], next);
 						}
 					},

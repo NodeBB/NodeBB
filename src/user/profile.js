@@ -206,13 +206,12 @@ module.exports = function (User) {
 			function (next) {
 				async.parallel([
 					function (next) {
-						db.sortedSetAdd('email:uid', uid, newEmail.toLowerCase(), next);
-					},
-					function (next) {
-						db.sortedSetAdd('email:sorted', 0, newEmail.toLowerCase() + ':' + uid, next);
-					},
-					function (next) {
-						db.sortedSetAdd('user:' + uid + ':emails', Date.now(), newEmail + ':' + Date.now(), next);
+						db.sortedSetAddBulk([
+							['email:uid', uid, newEmail.toLowerCase()],
+							['email:sorted', 0, newEmail.toLowerCase() + ':' + uid],
+							['user:' + uid + ':emails', Date.now(), newEmail + ':' + Date.now()],
+							['users:notvalidated', Date.now(), uid],
+						], next);
 					},
 					function (next) {
 						User.setUserField(uid, 'email', newEmail, next);
@@ -226,9 +225,6 @@ module.exports = function (User) {
 							});
 						}
 						User.setUserField(uid, 'email:confirmed', 0, next);
-					},
-					function (next) {
-						db.sortedSetAdd('users:notvalidated', Date.now(), uid, next);
 					},
 					function (next) {
 						User.reset.cleanByUid(uid, next);
