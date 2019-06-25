@@ -14,39 +14,30 @@ module.exports = {
 		const progress = this.progress;
 
 		batch.processSortedSet('posts:pid', function (pids, next) {
-			async.eachSeries(pids, function (pid, _next) {
-				progress.incr();
-				let postData;
-
-				async.waterfall([
-					function (next) {
-						posts.getPostFields(pid, ['uid', 'tid', 'upvotes', 'downvotes', 'timestamp'], next);
-					},
-					function (_postData, next) {
-						if (!_postData.uid || !_postData.tid) {
-							return _next();
+			progress.incr(pids.length);
+			let postData;
+			async.waterfall([
+				function (next) {
+					posts.getPostsFields(pids, ['uid', 'tid', 'upvotes', 'downvotes', 'timestamp'], next);
+				},
+				function (_postData, next) {
+					postData = _postData;
+					const tids = postData.map(p => p.tid);
+					topics.getTopicsFields(tids, ['cid'], next);
+				},
+				function (topicData, next) {
+					const bulk = [];
+					postData.forEach(function (p, index) {
+						if (p && p.uid && p.tid) {
+							bulk.push(['cid:' + topicData[index].cid + ':uid:' + p.uid + ':pids', p.timestamp, p.pid]);
+							if (p.votes > 0) {
+								bulk.push(['cid:' + topicData[index].cid + ':uid:' + p.uid + ':pids:votes', p.votes, p.pid]);
+							}
 						}
-						postData = _postData;
-						topics.getTopicField(postData.tid, 'cid', next);
-					},
-					function (cid, next) {
-						const keys = [
-							'cid:' + cid + ':uid:' + postData.uid + ':pids',
-						];
-						const scores = [
-							postData.timestamp,
-						];
-						if (postData.votes > 0) {
-							keys.push('cid:' + cid + ':uid:' + postData.uid + ':pids:votes');
-							scores.push(postData.votes);
-						}
-						db.sortedSetsAdd(keys, scores, pid, next);
-					},
-					function (next) {
-						db.sortedSetRemove('uid:' + postData.uid + ':posts:votes', pid, next);
-					},
-				], _next);
-			}, next);
+					});
+					db.sortedSetAddBulk(bulk, next);
+				},
+			], next);
 		}, {
 			progress: progress,
 		}, callback);
