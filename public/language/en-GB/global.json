@@ -61,7 +61,6 @@
 	"alert.unfollow": "You are no longer following %1!",
 	"alert.follow": "You are now following %1!",
 
-	"online": "Online",
 	"users": "Users",
 	"topics": "Topics",
 	"posts": "Posts",
@@ -73,6 +72,8 @@
 	"downvoted": "Downvoted",
 	"views": "Views",
 	"reputation": "Reputation",
+	"lastpost": "Last post",
+	"firstpost": "First post",
 
 	"read_more": "read more",
 	"more": "More",

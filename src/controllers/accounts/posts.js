@@ -76,6 +76,43 @@ var templateToData = {
 		getSets: function (callerUid, userData, calback) {
 			setImmediate(calback, null, 'uid:' + userData.uid + ':followed_tids');
 		},
+		getTopics: function (set, req, start, stop, callback) {
+			const sort = req.query.sort;
+			const map = {
+				votes: 'topics:votes',
+				posts: 'topics:posts',
+				views: 'topics:views',
+				lastpost: 'topics:recent',
+				firstpost: 'topics:tid',
+			};
+
+			if (!sort || !map[sort]) {
+				return topics.getTopicsFromSet(set, req.uid, start, stop, callback);
+			}
+			const sortSet = map[sort];
+			let tids;
+			async.waterfall([
+				function (next) {
+					db.getSortedSetRevRange(set, 0, -1, next);
+				},
+				function (_tids, next) {
+					tids = _tids;
+					db.sortedSetScores(sortSet, tids, next);
+				},
+				function (scores, next) {
+					tids = tids.map((tid, i) => ({ tid: tid, score: scores[i] }))
+						.sort((a, b) => b.score - a.score)
+						.slice(start, stop + 1)
+						.map(t => t.tid);
+
+					topics.getTopics(tids, req.uid, next);
+				},
+				function (topicsData, next) {
+					topics.calculateTopicIndices(topicsData, start);
+					next(null, { topics: topicsData, nextStart: stop + 1 });
+				},
+			], callback);
+		},
 	},
 	'account/ignored': {
 		type: 'topics',
@@ -176,6 +213,9 @@ function getFromUserSet(template, req, res, callback) {
 					var start = (page - 1) * itemsPerPage;
 					var stop = start + itemsPerPage - 1;
 					const method = data.type === 'topics' ? topics.getTopicsFromSet : posts.getPostSummariesFromSet;
+					if (data.getTopics) {
+						return data.getTopics(sets, req, start, stop, next);
+					}
 					method(sets, req.uid, start, stop, next);
 				},
 			}, next);
@@ -185,11 +225,23 @@ function getFromUserSet(template, req, res, callback) {
 			userData.nextStart = results.data.nextStart;
 
 			var pageCount = Math.ceil(results.itemCount / itemsPerPage);
-			userData.pagination = pagination.create(page, pageCount);
+			userData.pagination = pagination.create(page, pageCount, req.query);
 
 			userData.noItemsFoundKey = data.noItemsFoundKey;
 			userData.title = '[[pages:' + template + ', ' + userData.username + ']]';
 			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: data.crumb }]);
+			userData.showSort = template === 'account/watched';
+			const baseUrl = (req.baseUrl + req.path.replace(/^\/api/, ''));
+			userData.sortOptions = [
+				{ url: baseUrl + '?sort=votes', name: '[[global:votes]]' },
+				{ url: baseUrl + '?sort=posts', name: '[[global:posts]]' },
+				{ url: baseUrl + '?sort=views', name: '[[global:views]]' },
+				{ url: baseUrl + '?sort=lastpost', name: '[[global:lastpost]]' },
+				{ url: baseUrl + '?sort=firstpost', name: '[[global:firstpost]]' },
+			];
+			userData.sortOptions.forEach(function (option) {
+				option.selected = option.url.includes('sort=' + req.query.sort);
+			});
 
 			res.render(template, userData);
 		},
