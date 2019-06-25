@@ -204,16 +204,18 @@ Upgrade.process = function (files, skipCount, callback) {
 Upgrade.incrementProgress = function (value) {
 	this.current += value || 1;
 
-	// Redraw the progress bar
-	var percentage = 0;
-	var filled = 0;
-	var unfilled = 15;
-	if (this.total) {
-		percentage = Math.floor((this.current / this.total) * 100) + '%';
-		filled = Math.floor((this.current / this.total) * 15);
-		unfilled = Math.max(0, 15 - filled);
-	}
+	// Redraw the progress bar every 100 units
+	if (this.current % 100 === 0) {
+		var percentage = 0;
+		var filled = 0;
+		var unfilled = 15;
+		if (this.total) {
+			percentage = Math.floor((this.current / this.total) * 100) + '%';
+			filled = Math.floor((this.current / this.total) * 15);
+			unfilled = Math.max(0, 15 - filled);
+		}
 
-	readline.cursorTo(process.stdout, 0);
-	process.stdout.write('    [' + (filled ? new Array(filled).join('#') : '') + new Array(unfilled).join(' ') + '] (' + this.current + '/' + (this.total || '??') + ') ' + percentage + ' ');
+		readline.cursorTo(process.stdout, 0);
+		process.stdout.write('    [' + (filled ? new Array(filled).join('#') : '') + new Array(unfilled).join(' ') + '] (' + this.current + '/' + (this.total || '??') + ') ' + percentage + ' ');
+	}
 };
