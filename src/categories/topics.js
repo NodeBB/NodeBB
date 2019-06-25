@@ -209,14 +209,7 @@ module.exports = function (Categories) {
 
 		async.parallel([
 			function (next) {
-				const bulk = [
-					['cid:' + cid + ':pids', postData.timestamp, postData.pid],
-					['cid:' + cid + ':tids:lastposttime', postData.timestamp, postData.tid],
-				];
-				if (!pinned) {
-					bulk.push(['cid:' + cid + ':tids', postData.timestamp, postData.tid]);
-				}
-				db.sortedSetAddBulk(bulk, next);
+				db.sortedSetAdd('cid:' + cid + ':pids', postData.timestamp, postData.pid, next);
 			},
 			function (next) {
 				db.incrObjectField('category:' + cid, 'post_count', next);
