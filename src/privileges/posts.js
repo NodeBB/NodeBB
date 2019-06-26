@@ -154,7 +154,7 @@ module.exports = function (privileges) {
 					isMod: async.apply(posts.isModerator, [pid], uid),
 					owner: async.apply(posts.isOwner, pid, uid),
 					edit: async.apply(privileges.posts.can, 'posts:edit', pid, uid),
-					postData: async.apply(posts.getPostFields, pid, ['tid', 'timestamp']),
+					postData: async.apply(posts.getPostFields, pid, ['tid', 'timestamp', 'deleted', 'deleterUid']),
 				}, next);
 			},
 			function (_results, next) {
@@ -172,6 +172,10 @@ module.exports = function (privileges) {
 			function (isLocked, next) {
 				if (!results.isMod && isLocked) {
 					return callback(null, { flag: false, message: '[[error:topic-locked]]' });
+				}
+
+				if (!results.isMod && results.postData.deleted && parseInt(uid, 10) !== parseInt(results.postData.deleterUid, 10)) {
+					return callback(null, { flag: false, message: '[[error:post-deleted]]' });
 				}
 
 				results.pid = parseInt(pid, 10);
