@@ -7,8 +7,6 @@ define('forum/recent', ['topicList'], function (topicList) {
 		app.enterRoom('recent_topics');
 
 		topicList.init('recent');
-		$('#new_topic').removeAttr('data-toggle');
-		$('#new_topic span.caret').remove();
 	};
 
 	return Recent;
