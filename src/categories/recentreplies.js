@@ -138,7 +138,6 @@ module.exports = function (Categories) {
 						teaser.parentCid = parseInt(parentCids[teaser.cid], 10) || 0;
 						teaser.tid = undefined;
 						teaser.uid = undefined;
-						teaser.user.uid = undefined;
 						teaser.topic = {
 							slug: topicData[index].slug,
 							title: topicData[index].title,
