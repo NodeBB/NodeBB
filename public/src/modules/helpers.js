@@ -313,7 +313,7 @@
 		}
 
 		styles.push('background-color: ' + userObj['icon:bgColor'] + ';');
-		return '<div ' + attributes.join(' ') + ' style="' + styles.join(' ') + '">' + userObj['icon:text'] + '</div>';
+		return '<span ' + attributes.join(' ') + ' style="' + styles.join(' ') + '">' + userObj['icon:text'] + '</span>';
 	}
 
 	function register() {
