@@ -255,7 +255,32 @@ define('forum/topic/posts', [
 		posts.find('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
 		Posts.addBlockquoteEllipses(posts);
 		hidePostToolsForDeletedPosts(posts);
+
+		addNecroPostMessage();
 	};
+
+	function addNecroPostMessage() {
+		var necroThreshold = 7 * 24 * 60 * 60 * 1000;
+		$('[component="post"]').each(function () {
+			var post = $(this);
+			var prev = post.prev('[component="post"]');
+			if (post.is(':has(.necro-post)') || !prev.length) {
+				return;
+			}
+
+			var diff = post.attr('data-timestamp') - prev.attr('data-timestamp');
+			if (diff >= necroThreshold) {
+				var ago = $.timeago.settings.strings.suffixAgo;
+				$.timeago.settings.strings.suffixAgo = '';
+				$('<aside>').addClass('necro-post')
+					.append($('<span>').translateText('[[topic:timeago_later,' + $.timeago.inWords(diff) + ']]'))
+					.append($('<hr>'))
+					.prependTo(post);
+
+				$.timeago.settings.strings.suffixAgo = ago;
+			}
+		});
+	}
 
 	Posts.onNewPostsAddedToDom = function (posts) {
 		Posts.onTopicPageLoad(posts);
