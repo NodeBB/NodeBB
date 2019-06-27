@@ -4,6 +4,7 @@ var async = require('async');
 var nconf = require('nconf');
 var semver = require('semver');
 var winston = require('winston');
+const _ = require('lodash');
 
 var versions = require('../../admin/versions');
 var db = require('../../database');
@@ -83,12 +84,22 @@ dashboardController.getAnalytics = async (req, res, next) => {
 	const validSets = ['uniquevisitors', 'pageviews', 'pageviews:registered', 'pageviews:bot', 'pageviews:guest'];
 	const start = req.query.start ? new Date(req.query.start) : Date.now();
 	const count = req.query.count || 10;
-	if (!req.query.set || isNaN(start) || !validTypes.includes(req.query.type) || !validSets.includes(req.query.set)) {
+	if (isNaN(start) || !validTypes.includes(req.query.type)) {
 		return next(new Error('[[error:invalid-data]]'));
 	}
 
+	// Filter out invalid sets, if no sets, assume all sets
+	let sets;
+	if (req.query.sets) {
+		sets = Array.isArray(req.query.sets) ? req.query.sets : [req.query.sets];
+		sets = sets.filter(set => validSets.includes(set));
+	} else {
+		sets = validSets;
+	}
+
 	const method = req.query.type === 'daily' ? analytics.getDailyStatsForSet : analytics.getHourlyStatsForSet;
-	const payload = await method('analytics:' + req.query.set, start, count);
+	let payload = await Promise.all(sets.map(async set => method('analytics:' + set, start, count)));
+	payload = _.zipObject(sets, payload);
 
 	res.json({
 		query: {
@@ -97,7 +108,7 @@ dashboardController.getAnalytics = async (req, res, next) => {
 			start: start,
 			count: count,
 		},
-		data: payload,
+		result: payload,
 	});
 };
 
