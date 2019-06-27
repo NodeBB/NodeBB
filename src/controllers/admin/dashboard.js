@@ -8,6 +8,7 @@ var winston = require('winston');
 var versions = require('../../admin/versions');
 var db = require('../../database');
 var meta = require('../../meta');
+const analytics = require('../../analytics').async;
 var plugins = require('../../plugins');
 var user = require('../../user');
 var utils = require('../../utils');
@@ -74,6 +75,30 @@ dashboardController.get = function (req, res, next) {
 			});
 		},
 	], next);
+};
+
+dashboardController.getAnalytics = async (req, res, next) => {
+	// Basic validation
+	const validTypes = ['daily', 'hourly'];
+	const validSets = ['uniquevisitors', 'pageviews', 'pageviews:registered', 'pageviews:bot', 'pageviews:guest'];
+	const start = req.query.start ? new Date(req.query.start) : Date.now();
+	const count = req.query.count || 10;
+	if (!req.query.set || isNaN(start) || !validTypes.includes(req.query.type) || !validSets.includes(req.query.set)) {
+		return next(new Error('[[error:invalid-data]]'));
+	}
+
+	const method = req.query.type === 'daily' ? analytics.getDailyStatsForSet : analytics.getHourlyStatsForSet;
+	const payload = await method('analytics:' + req.query.set, start, count);
+
+	res.json({
+		query: {
+			set: req.query.set,
+			type: req.query.type,
+			start: start,
+			count: count,
+		},
+		data: payload,
+	});
 };
 
 function getStats(callback) {
