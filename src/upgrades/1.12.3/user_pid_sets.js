@@ -18,7 +18,7 @@ module.exports = {
 			let postData;
 			async.waterfall([
 				function (next) {
-					posts.getPostsFields(pids, ['uid', 'tid', 'upvotes', 'downvotes', 'timestamp'], next);
+					posts.getPostsFields(pids, ['pid', 'uid', 'tid', 'upvotes', 'downvotes', 'timestamp'], next);
 				},
 				function (_postData, next) {
 					postData = _postData;
@@ -28,7 +28,7 @@ module.exports = {
 				function (topicData, next) {
 					const bulk = [];
 					postData.forEach(function (p, index) {
-						if (p && p.uid && p.tid) {
+						if (p && p.uid && p.pid && p.tid && p.timestamp) {
 							bulk.push(['cid:' + topicData[index].cid + ':uid:' + p.uid + ':pids', p.timestamp, p.pid]);
 							if (p.votes > 0) {
 								bulk.push(['cid:' + topicData[index].cid + ':uid:' + p.uid + ':pids:votes', p.votes, p.pid]);
