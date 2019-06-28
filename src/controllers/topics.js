@@ -25,143 +25,139 @@ topicsController.get = async function getTopic(req, res, callback) {
 	if ((req.params.post_index && !utils.isNumber(req.params.post_index) && req.params.post_index !== 'unread') || !utils.isNumber(tid)) {
 		return callback();
 	}
-	try {
-		const [
-			userPrivileges,
-			settings,
-			topicData,
-			rssToken,
-		] = await Promise.all([
-			privileges.async.topics.get(tid, req.uid),
-			user.getSettings(req.uid),
-			topics.async.getTopicData(tid),
-			user.async.auth.getFeedToken(req.uid),
-		]);
 
+	const [
+		userPrivileges,
+		settings,
+		topicData,
+		rssToken,
+	] = await Promise.all([
+		privileges.async.topics.get(tid, req.uid),
+		user.async.getSettings(req.uid),
+		topics.async.getTopicData(tid),
+		user.async.auth.getFeedToken(req.uid),
+	]);
 
-		const pageCount = Math.max(1, Math.ceil(topicData.postcount / settings.postsPerPage));
-		if (!topicData || (settings.usePagination && (currentPage < 1 || currentPage > pageCount))) {
-			return callback();
-		}
-
-		if (!userPrivileges['topics:read'] || (topicData.deleted && !userPrivileges.view_deleted)) {
-			return helpers.notAllowed(req, res);
-		}
-
-		if (!res.locals.isAPI && (!req.params.slug || topicData.slug !== tid + '/' + req.params.slug) && (topicData.slug && topicData.slug !== tid + '/')) {
-			return helpers.redirect(res, '/topic/' + topicData.slug + (req.params.post_index ? '/' + req.params.post_index : '') + (currentPage > 1 ? '?page=' + currentPage : ''));
-		}
-
-		if (utils.isNumber(req.params.post_index) && (req.params.post_index < 1 || req.params.post_index > topicData.postcount)) {
-			return helpers.redirect(res, '/topic/' + req.params.topic_id + '/' + req.params.slug + (req.params.post_index > topicData.postcount ? '/' + topicData.postcount : ''));
-		}
-
-		if (req.params.post_index === 'unread') {
-			req.params.post_index = await topics.async.getUserBookmark(tid, req.uid);
-		}
-
-		var set = 'tid:' + tid + ':posts';
-		var reverse = false;
-		// `sort` qs has priority over user setting
-		var sort = req.query.sort || settings.topicPostSort;
-		if (sort === 'newest_to_oldest') {
-			reverse = true;
-		} else if (sort === 'most_votes') {
-			reverse = true;
-			set = 'tid:' + tid + ':posts:votes';
-		}
-
-		var postIndex = 0;
-
-		req.params.post_index = parseInt(req.params.post_index, 10) || 0;
-		if (reverse && req.params.post_index === 1) {
-			req.params.post_index = 0;
-		}
-		if (!settings.usePagination) {
-			if (req.params.post_index !== 0) {
-				currentPage = 1;
-			}
-			if (reverse) {
-				postIndex = Math.max(0, topicData.postcount - (req.params.post_index || topicData.postcount) - Math.ceil(settings.postsPerPage / 2));
-			} else {
-				postIndex = Math.max(0, (req.params.post_index || 1) - Math.ceil(settings.postsPerPage / 2));
-			}
-		} else if (!req.query.page) {
-			var index;
-			if (reverse) {
-				index = Math.max(0, topicData.postcount - (req.params.post_index || topicData.postcount) + 2);
-			} else {
-				index = Math.max(0, req.params.post_index) || 0;
-			}
-
-			currentPage = Math.max(1, Math.ceil(index / settings.postsPerPage));
-		}
-
-		var start = ((currentPage - 1) * settings.postsPerPage) + postIndex;
-		var stop = start + settings.postsPerPage - 1;
-
-		await topics.async.getTopicWithPosts(topicData, set, req.uid, start, stop, reverse);
-
-		if (topicData.category.disabled) {
-			return callback();
-		}
-
-		topics.modifyPostsByPrivilege(topicData, userPrivileges);
-
-		const hookData = await plugins.async.fireHook('filter:controllers.topic.get', { topicData: topicData, uid: req.uid });
-		await Promise.all([
-			buildBreadcrumbs(hookData.topicData),
-			addTags(topicData, req, res),
-		]);
-
-		topicData.privileges = userPrivileges;
-		topicData.topicStaleDays = meta.config.topicStaleDays;
-		topicData['reputation:disabled'] = meta.config['reputation:disabled'];
-		topicData['downvote:disabled'] = meta.config['downvote:disabled'];
-		topicData['feeds:disableRSS'] = meta.config['feeds:disableRSS'];
-		topicData.bookmarkThreshold = meta.config.bookmarkThreshold;
-		topicData.postEditDuration = meta.config.postEditDuration;
-		topicData.postDeleteDuration = meta.config.postDeleteDuration;
-		topicData.scrollToMyPost = settings.scrollToMyPost;
-		topicData.allowMultipleBadges = meta.config.allowMultipleBadges === 1;
-		topicData.rssFeedUrl = nconf.get('relative_path') + '/topic/' + topicData.tid + '.rss';
-		if (req.loggedIn) {
-			topicData.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
-		}
-
-		topicData.postIndex = req.params.post_index;
-		topicData.pagination = pagination.create(currentPage, pageCount, req.query);
-		topicData.pagination.rel.forEach(function (rel) {
-			rel.href = nconf.get('url') + '/topic/' + topicData.slug + rel.href;
-			res.locals.linkTags.push(rel);
-		});
-
-		if (req.uid >= 0) {
-			req.session.tids_viewed = req.session.tids_viewed || {};
-			if (!req.session.tids_viewed[tid] || req.session.tids_viewed[tid] < Date.now() - 3600000) {
-				topics.increaseViewCount(tid);
-				req.session.tids_viewed[tid] = Date.now();
-			}
-		}
-
-		if (req.loggedIn) {
-			topics.markAsRead([tid], req.uid, function (err, markedRead) {
-				if (err) {
-					return winston.error(err);
-				}
-				if (markedRead) {
-					topics.pushUnreadCount(req.uid);
-					topics.markTopicNotificationsRead([tid], req.uid);
-				}
-			});
-		}
-
-		analytics.increment(['pageviews:byCid:' + topicData.category.cid]);
-
-		res.render('topic', topicData);
-	} catch (err) {
-		return callback(err);
+	const pageCount = Math.max(1, Math.ceil(topicData.postcount / settings.postsPerPage));
+	if (!topicData || (settings.usePagination && (currentPage < 1 || currentPage > pageCount))) {
+		return callback();
 	}
+
+	if (!userPrivileges['topics:read'] || (topicData.deleted && !userPrivileges.view_deleted)) {
+		return helpers.notAllowed(req, res);
+	}
+
+	if (!res.locals.isAPI && (!req.params.slug || topicData.slug !== tid + '/' + req.params.slug) && (topicData.slug && topicData.slug !== tid + '/')) {
+		return helpers.redirect(res, '/topic/' + topicData.slug + (req.params.post_index ? '/' + req.params.post_index : '') + (currentPage > 1 ? '?page=' + currentPage : ''));
+	}
+
+	if (utils.isNumber(req.params.post_index) && (req.params.post_index < 1 || req.params.post_index > topicData.postcount)) {
+		return helpers.redirect(res, '/topic/' + req.params.topic_id + '/' + req.params.slug + (req.params.post_index > topicData.postcount ? '/' + topicData.postcount : ''));
+	}
+
+	if (req.params.post_index === 'unread') {
+		req.params.post_index = await topics.async.getUserBookmark(tid, req.uid);
+	}
+
+	var set = 'tid:' + tid + ':posts';
+	var reverse = false;
+	// `sort` qs has priority over user setting
+	var sort = req.query.sort || settings.topicPostSort;
+	if (sort === 'newest_to_oldest') {
+		reverse = true;
+	} else if (sort === 'most_votes') {
+		reverse = true;
+		set = 'tid:' + tid + ':posts:votes';
+	}
+
+	var postIndex = 0;
+
+	req.params.post_index = parseInt(req.params.post_index, 10) || 0;
+	if (reverse && req.params.post_index === 1) {
+		req.params.post_index = 0;
+	}
+	if (!settings.usePagination) {
+		if (req.params.post_index !== 0) {
+			currentPage = 1;
+		}
+		if (reverse) {
+			postIndex = Math.max(0, topicData.postcount - (req.params.post_index || topicData.postcount) - Math.ceil(settings.postsPerPage / 2));
+		} else {
+			postIndex = Math.max(0, (req.params.post_index || 1) - Math.ceil(settings.postsPerPage / 2));
+		}
+	} else if (!req.query.page) {
+		var index;
+		if (reverse) {
+			index = Math.max(0, topicData.postcount - (req.params.post_index || topicData.postcount) + 2);
+		} else {
+			index = Math.max(0, req.params.post_index) || 0;
+		}
+
+		currentPage = Math.max(1, Math.ceil(index / settings.postsPerPage));
+	}
+
+	var start = ((currentPage - 1) * settings.postsPerPage) + postIndex;
+	var stop = start + settings.postsPerPage - 1;
+
+	await topics.async.getTopicWithPosts(topicData, set, req.uid, start, stop, reverse);
+
+	if (topicData.category.disabled) {
+		return callback();
+	}
+
+	topics.modifyPostsByPrivilege(topicData, userPrivileges);
+
+	const hookData = await plugins.async.fireHook('filter:controllers.topic.get', { topicData: topicData, uid: req.uid });
+	await Promise.all([
+		buildBreadcrumbs(hookData.topicData),
+		addTags(topicData, req, res),
+	]);
+
+	topicData.privileges = userPrivileges;
+	topicData.topicStaleDays = meta.config.topicStaleDays;
+	topicData['reputation:disabled'] = meta.config['reputation:disabled'];
+	topicData['downvote:disabled'] = meta.config['downvote:disabled'];
+	topicData['feeds:disableRSS'] = meta.config['feeds:disableRSS'];
+	topicData.bookmarkThreshold = meta.config.bookmarkThreshold;
+	topicData.postEditDuration = meta.config.postEditDuration;
+	topicData.postDeleteDuration = meta.config.postDeleteDuration;
+	topicData.scrollToMyPost = settings.scrollToMyPost;
+	topicData.allowMultipleBadges = meta.config.allowMultipleBadges === 1;
+	topicData.rssFeedUrl = nconf.get('relative_path') + '/topic/' + topicData.tid + '.rss';
+	if (req.loggedIn) {
+		topicData.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
+	}
+
+	topicData.postIndex = req.params.post_index;
+	topicData.pagination = pagination.create(currentPage, pageCount, req.query);
+	topicData.pagination.rel.forEach(function (rel) {
+		rel.href = nconf.get('url') + '/topic/' + topicData.slug + rel.href;
+		res.locals.linkTags.push(rel);
+	});
+
+	if (req.uid >= 0) {
+		req.session.tids_viewed = req.session.tids_viewed || {};
+		if (!req.session.tids_viewed[tid] || req.session.tids_viewed[tid] < Date.now() - 3600000) {
+			topics.increaseViewCount(tid);
+			req.session.tids_viewed[tid] = Date.now();
+		}
+	}
+
+	if (req.loggedIn) {
+		topics.markAsRead([tid], req.uid, function (err, markedRead) {
+			if (err) {
+				return winston.error(err);
+			}
+			if (markedRead) {
+				topics.pushUnreadCount(req.uid);
+				topics.markTopicNotificationsRead([tid], req.uid);
+			}
+		});
+	}
+
+	analytics.increment(['pageviews:byCid:' + topicData.category.cid]);
+
+	res.render('topic', topicData);
 };
 
 async function buildBreadcrumbs(topicData) {

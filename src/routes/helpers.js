@@ -5,9 +5,9 @@ var helpers = module.exports;
 helpers.setupPageRoute = function (router, name, middleware, middlewares, controller) {
 	middlewares = [middleware.maintenanceMode, middleware.registrationComplete, middleware.pageView, middleware.pluginHooks].concat(middlewares);
 
-	function tryRoute(req, res, next) {
+	async function tryRoute(req, res, next) {
 		try {
-			controller(req, res, next);
+			await controller(req, res, next);
 		} catch (err) {
 			next(err);
 		}
