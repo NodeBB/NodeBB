@@ -80,11 +80,11 @@ dashboardController.get = function (req, res, next) {
 
 dashboardController.getAnalytics = async (req, res, next) => {
 	// Basic validation
-	const validTypes = ['daily', 'hourly'];
+	const validUnits = ['days', 'hours'];
 	const validSets = ['uniquevisitors', 'pageviews', 'pageviews:registered', 'pageviews:bot', 'pageviews:guest'];
-	const start = req.query.start ? new Date(req.query.start) : Date.now();
+	const until = req.query.until ? new Date(parseInt(req.query.until, 10)) : Date.now();
 	const count = req.query.count || 10;
-	if (isNaN(start) || !validTypes.includes(req.query.type)) {
+	if (isNaN(until) || !validUnits.includes(req.query.units)) {
 		return next(new Error('[[error:invalid-data]]'));
 	}
 
@@ -97,15 +97,15 @@ dashboardController.getAnalytics = async (req, res, next) => {
 		sets = validSets;
 	}
 
-	const method = req.query.type === 'daily' ? analytics.getDailyStatsForSet : analytics.getHourlyStatsForSet;
-	let payload = await Promise.all(sets.map(async set => method('analytics:' + set, start, count)));
+	const method = req.query.units === 'days' ? analytics.getDailyStatsForSet : analytics.getHourlyStatsForSet;
+	let payload = await Promise.all(sets.map(async set => method('analytics:' + set, until, count)));
 	payload = _.zipObject(sets, payload);
 
 	res.json({
 		query: {
 			set: req.query.set,
-			type: req.query.type,
-			start: start,
+			units: req.query.units,
+			until: until,
 			count: count,
 		},
 		result: payload,
