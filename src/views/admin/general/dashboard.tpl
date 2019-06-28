@@ -1,10 +1,15 @@
 <div class="row dashboard">
 	<div class="col-lg-9">
-		<div class="panel panel-default">
-			<div class="panel-heading">[[admin/general/dashboard:forum-traffic]]</div>
+		<div class="panel panel-default" id="analytics-panel">
+			<div class="panel-heading">
+				[[admin/general/dashboard:forum-traffic]]
+				<div class="pull-right">
+					<a id="view-as-json" href="{config.relative_path}/api/admin/analytics&type=hourly"><i class="fa fa-terminal"></i></a>
+					<i class="fa fa-expand"></i>
+				</div>
+			</div>
 			<div class="panel-body">
 				<div class="graph-container" id="analytics-traffic-container">
-					<i class="fa fa-expand"></i>
 					<canvas id="analytics-traffic" width="100%" height="400"></canvas>
 				</div>
 				<hr/>

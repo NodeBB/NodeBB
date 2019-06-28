@@ -556,7 +556,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 	}
 
 	function setupFullscreen() {
-		var container = document.getElementById('analytics-traffic-container');
+		var container = document.getElementById('analytics-panel');
 		var $container = $(container);
 		var btn = $container.find('.fa-expand');
 		var fsMethod;
