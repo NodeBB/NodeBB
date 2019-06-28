@@ -135,6 +135,16 @@ topicsController.get = async function getTopic(req, res, callback) {
 		res.locals.linkTags.push(rel);
 	});
 
+	incrementViewCount();
+
+	markAsRead(req, tid);
+
+	analytics.increment(['pageviews:byCid:' + topicData.category.cid]);
+
+	res.render('topic', topicData);
+};
+
+function incrementViewCount(req, tid) {
 	if (req.uid >= 0) {
 		req.session.tids_viewed = req.session.tids_viewed || {};
 		if (!req.session.tids_viewed[tid] || req.session.tids_viewed[tid] < Date.now() - 3600000) {
@@ -142,7 +152,9 @@ topicsController.get = async function getTopic(req, res, callback) {
 			req.session.tids_viewed[tid] = Date.now();
 		}
 	}
+}
 
+function markAsRead(req, tid) {
 	if (req.loggedIn) {
 		topics.markAsRead([tid], req.uid, function (err, markedRead) {
 			if (err) {
@@ -154,11 +166,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 			}
 		});
 	}
-
-	analytics.increment(['pageviews:byCid:' + topicData.category.cid]);
-
-	res.render('topic', topicData);
-};
+}
 
 async function buildBreadcrumbs(topicData) {
 	var breadcrumbs = [
