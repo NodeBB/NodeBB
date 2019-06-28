@@ -19,8 +19,7 @@ var analytics = require('../analytics');
 var topicsController = module.exports;
 
 topicsController.get = async function getTopic(req, res, callback) {
-	var tid = req.params.topic_id;
-	var currentPage = parseInt(req.query.page, 10) || 1;
+	const tid = req.params.topic_id;
 
 	if ((req.params.post_index && !utils.isNumber(req.params.post_index) && req.params.post_index !== 'unread') || !utils.isNumber(tid)) {
 		return callback();
@@ -38,6 +37,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 		user.async.auth.getFeedToken(req.uid),
 	]);
 
+	var currentPage = parseInt(req.query.page, 10) || 1;
 	const pageCount = Math.max(1, Math.ceil(topicData.postcount / settings.postsPerPage));
 	if (!topicData || (settings.usePagination && (currentPage < 1 || currentPage > pageCount))) {
 		return callback();
