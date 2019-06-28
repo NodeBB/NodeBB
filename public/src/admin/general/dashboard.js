@@ -461,6 +461,15 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 			currentGraph.units = units;
 			currentGraph.until = until;
 			currentGraph.amount = amount;
+
+			// Update the View as JSON button url
+			var apiEl = $('#view-as-json');
+			var newHref = $.param({
+				units: units,
+				until: until,
+				count: amount,
+			});
+			apiEl.attr('href', config.relative_path + '/api/admin/analytics?' + newHref);
 		});
 	}
 
