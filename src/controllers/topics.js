@@ -38,7 +38,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 	]);
 
 	var currentPage = parseInt(req.query.page, 10) || 1;
-	const pageCount = Math.max(1, Math.ceil(topicData.postcount / settings.postsPerPage));
+	const pageCount = Math.max(1, Math.ceil((topicData && topicData.postcount) / settings.postsPerPage));
 	if (!topicData || userPrivileges.disabled || (settings.usePagination && (currentPage < 1 || currentPage > pageCount))) {
 		return callback();
 	}
