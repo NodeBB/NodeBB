@@ -4,10 +4,12 @@ var async = require('async');
 var nconf = require('nconf');
 var semver = require('semver');
 var winston = require('winston');
+const _ = require('lodash');
 
 var versions = require('../../admin/versions');
 var db = require('../../database');
 var meta = require('../../meta');
+const analytics = require('../../analytics').async;
 var plugins = require('../../plugins');
 var user = require('../../user');
 var utils = require('../../utils');
@@ -74,6 +76,40 @@ dashboardController.get = function (req, res, next) {
 			});
 		},
 	], next);
+};
+
+dashboardController.getAnalytics = async (req, res, next) => {
+	// Basic validation
+	const validUnits = ['days', 'hours'];
+	const validSets = ['uniquevisitors', 'pageviews', 'pageviews:registered', 'pageviews:bot', 'pageviews:guest'];
+	const until = req.query.until ? new Date(parseInt(req.query.until, 10)) : Date.now();
+	const count = req.query.count || (req.query.units === 'hours' ? 24 : 30);
+	if (isNaN(until) || !validUnits.includes(req.query.units)) {
+		return next(new Error('[[error:invalid-data]]'));
+	}
+
+	// Filter out invalid sets, if no sets, assume all sets
+	let sets;
+	if (req.query.sets) {
+		sets = Array.isArray(req.query.sets) ? req.query.sets : [req.query.sets];
+		sets = sets.filter(set => validSets.includes(set));
+	} else {
+		sets = validSets;
+	}
+
+	const method = req.query.units === 'days' ? analytics.getDailyStatsForSet : analytics.getHourlyStatsForSet;
+	let payload = await Promise.all(sets.map(async set => method('analytics:' + set, until, count)));
+	payload = _.zipObject(sets, payload);
+
+	res.json({
+		query: {
+			set: req.query.set,
+			units: req.query.units,
+			until: until,
+			count: count,
+		},
+		result: payload,
+	});
 };
 
 function getStats(callback) {

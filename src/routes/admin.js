@@ -5,6 +5,7 @@ var express = require('express');
 
 function apiRoutes(router, middleware, controllers) {
 	router.get('/users/csv', middleware.authenticate, controllers.admin.users.getCSV);
+	router.get('/analytics', middleware.authenticate, controllers.admin.dashboard.getAnalytics);
 
 	var multipart = require('connect-multiparty');
 	var multipartMiddleware = multipart();

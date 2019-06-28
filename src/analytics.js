@@ -259,3 +259,5 @@ Analytics.getBlacklistAnalytics = function (callback) {
 		hourly: async.apply(Analytics.getHourlyStatsForSet, 'analytics:blacklist', Date.now(), 24),
 	}, callback);
 };
+
+Analytics.async = require('./promisify')(Analytics);
