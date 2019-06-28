@@ -4,6 +4,7 @@ var async = require('async');
 var validator = require('validator');
 
 var user = require('../user');
+var categories = require('../categories');
 var topics = require('../topics');
 var privileges = require('../privileges');
 var pagination = require('../pagination');
@@ -40,12 +41,19 @@ tagsController.getTag = function (req, res, next) {
 				tids: function (next) {
 					topics.getTagTids(req.params.tag, start, stop, next);
 				},
+				categories: function (next) {
+					const states = [categories.watchStates.watching, categories.watchStates.notwatching, categories.watchStates.ignoring];
+					helpers.getCategoriesByStates(req.uid, '', states, next);
+				},
 			}, next);
 		},
 		function (results, next) {
 			if (Array.isArray(results.tids) && !results.tids.length) {
 				return res.render('tag', templateData);
 			}
+
+			templateData.categories = results.categories.categories;
+
 			topicCount = results.topicCount;
 			topics.getTopics(results.tids, req.uid, next);
 		},
