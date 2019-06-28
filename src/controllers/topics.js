@@ -39,7 +39,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 
 	var currentPage = parseInt(req.query.page, 10) || 1;
 	const pageCount = Math.max(1, Math.ceil(topicData.postcount / settings.postsPerPage));
-	if (!topicData || (settings.usePagination && (currentPage < 1 || currentPage > pageCount))) {
+	if (!topicData || userPrivileges.disabled || (settings.usePagination && (currentPage < 1 || currentPage > pageCount))) {
 		return callback();
 	}
 
@@ -59,51 +59,12 @@ topicsController.get = async function getTopic(req, res, callback) {
 		req.params.post_index = await topics.async.getUserBookmark(tid, req.uid);
 	}
 
-	var set = 'tid:' + tid + ':posts';
-	var reverse = false;
-	// `sort` qs has priority over user setting
-	var sort = req.query.sort || settings.topicPostSort;
-	if (sort === 'newest_to_oldest') {
-		reverse = true;
-	} else if (sort === 'most_votes') {
-		reverse = true;
-		set = 'tid:' + tid + ':posts:votes';
-	}
-
-	var postIndex = 0;
-
-	req.params.post_index = parseInt(req.params.post_index, 10) || 0;
-	if (reverse && req.params.post_index === 1) {
-		req.params.post_index = 0;
-	}
-	if (!settings.usePagination) {
-		if (req.params.post_index !== 0) {
-			currentPage = 1;
-		}
-		if (reverse) {
-			postIndex = Math.max(0, topicData.postcount - (req.params.post_index || topicData.postcount) - Math.ceil(settings.postsPerPage / 2));
-		} else {
-			postIndex = Math.max(0, (req.params.post_index || 1) - Math.ceil(settings.postsPerPage / 2));
-		}
-	} else if (!req.query.page) {
-		var index;
-		if (reverse) {
-			index = Math.max(0, topicData.postcount - (req.params.post_index || topicData.postcount) + 2);
-		} else {
-			index = Math.max(0, req.params.post_index) || 0;
-		}
-
-		currentPage = Math.max(1, Math.ceil(index / settings.postsPerPage));
-	}
-
-	var start = ((currentPage - 1) * settings.postsPerPage) + postIndex;
-	var stop = start + settings.postsPerPage - 1;
+	const sort = req.query.sort || settings.topicPostSort;
+	const set = sort === 'most_votes' ? 'tid:' + tid + ':posts:votes' : 'tid:' + tid + ':posts';
+	const reverse = sort === 'newest_to_oldest' || sort === 'most_votes';
+	const { start, stop } = calculateStartStop(topicData, req, currentPage, reverse, settings);
 
 	await topics.async.getTopicWithPosts(topicData, set, req.uid, start, stop, reverse);
-
-	if (topicData.category.disabled) {
-		return callback();
-	}
 
 	topics.modifyPostsByPrivilege(topicData, userPrivileges);
 
@@ -135,7 +96,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 		res.locals.linkTags.push(rel);
 	});
 
-	incrementViewCount();
+	incrementViewCount(req, tid);
 
 	markAsRead(req, tid);
 
@@ -143,6 +104,39 @@ topicsController.get = async function getTopic(req, res, callback) {
 
 	res.render('topic', topicData);
 };
+
+function calculateStartStop(topicData, req, page, reverse, settings) {
+	var postIndex = 0;
+
+	req.params.post_index = parseInt(req.params.post_index, 10) || 0;
+	if (reverse && req.params.post_index === 1) {
+		req.params.post_index = 0;
+	}
+
+	if (!settings.usePagination) {
+		if (req.params.post_index !== 0) {
+			page = 1;
+		}
+		if (reverse) {
+			postIndex = Math.max(0, topicData.postcount - (req.params.post_index || topicData.postcount) - Math.ceil(settings.postsPerPage / 2));
+		} else {
+			postIndex = Math.max(0, (req.params.post_index || 1) - Math.ceil(settings.postsPerPage / 2));
+		}
+	} else if (!req.query.page) {
+		var index;
+		if (reverse) {
+			index = Math.max(0, topicData.postcount - (req.params.post_index || topicData.postcount) + 2);
+		} else {
+			index = Math.max(0, req.params.post_index) || 0;
+		}
+
+		page = Math.max(1, Math.ceil(index / settings.postsPerPage));
+	}
+
+	const start = ((page - 1) * settings.postsPerPage) + postIndex;
+	const stop = start + settings.postsPerPage - 1;
+	return { start: Math.max(0, start), stop: Math.max(0, stop) };
+}
 
 function incrementViewCount(req, tid) {
 	if (req.uid >= 0) {
