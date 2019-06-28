@@ -9,21 +9,24 @@ var plugins = require('../plugins');
 var notifications = require('../notifications');
 
 module.exports = function (User) {
-	User.getSettings = function (uid, callback) {
+	User.getSettings = async function (uid, callback) {
 		if (parseInt(uid, 10) <= 0) {
 			return onSettingsLoaded(0, {}, callback);
 		}
-
-		async.waterfall([
-			function (next) {
-				db.getObject('user:' + uid + ':settings', next);
-			},
-			function (settings, next) {
-				settings = settings || {};
-				settings.uid = uid;
-				onSettingsLoaded(uid, settings, next);
-			},
-		], callback);
+		await db.async.getObject('user:' + uid + ':settings');
+		throw new Error('error testing');
+		// return settings;
+		// async.waterfall([
+		// 	function (next) {
+		// 		db.getObject('user:' + uid + ':settings', next);
+		// 	},
+		// 	function (settings, next) {
+		// 		throw new Error('oopa');
+		// 		settings = settings || {};
+		// 		settings.uid = uid;
+		// 		onSettingsLoaded(uid, settings, next);
+		// 	},
+		// ], callback);
 	};
 
 	User.getMultipleUserSettings = function (uids, callback) {
