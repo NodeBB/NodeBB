@@ -199,7 +199,7 @@ define('forum/topic/posts', [
 				components.get('topic').append(html);
 			}
 
-			infinitescroll.removeExtra($('[component="post"]'), direction, config.postsPerPage * 2);
+			infinitescroll.removeExtra($('[component="post"]'), direction, Math.max(20, config.postsPerPage * 2));
 
 			$(window).trigger('action:posts.loaded', { posts: data.posts });
 

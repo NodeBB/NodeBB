@@ -589,6 +589,15 @@ describe('Sorted Set methods', function () {
 				done();
 			});
 		});
+
+		it('should return the ranks of values in a sorted set in reverse', function (done) {
+			db.sortedSetRevRanks('sortedSetTest1', ['value2', 'value1', 'value3', 'value4'], function (err, ranks) {
+				assert.equal(err, null);
+				assert.equal(arguments.length, 2);
+				assert.deepEqual(ranks, [1, 2, 0, null]);
+				done();
+			});
+		});
 	});
 
 	describe('sortedSetScore()', function () {

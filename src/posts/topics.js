@@ -60,10 +60,7 @@ module.exports = function (Posts) {
 						Posts.getPostIndices(postData, uid, next);
 					},
 					topics: function (next) {
-						var tids = postData.map(function (post) {
-							return post ? post.tid : null;
-						});
-
+						const tids = postData.map(post => post && post.tid);
 						topics.getTopicsFields(tids, ['slug'], next);
 					},
 				}, next);

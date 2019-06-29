@@ -24,7 +24,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 	if ((req.params.post_index && !utils.isNumber(req.params.post_index) && req.params.post_index !== 'unread') || !utils.isNumber(tid)) {
 		return callback();
 	}
-
+	let postIndex = parseInt(req.params.post_index, 10) || 1;
 	const [
 		userPrivileges,
 		settings,
@@ -48,21 +48,24 @@ topicsController.get = async function getTopic(req, res, callback) {
 	}
 
 	if (!res.locals.isAPI && (!req.params.slug || topicData.slug !== tid + '/' + req.params.slug) && (topicData.slug && topicData.slug !== tid + '/')) {
-		return helpers.redirect(res, '/topic/' + topicData.slug + (req.params.post_index ? '/' + req.params.post_index : '') + (currentPage > 1 ? '?page=' + currentPage : ''));
+		return helpers.redirect(res, '/topic/' + topicData.slug + (postIndex ? '/' + postIndex : '') + (currentPage > 1 ? '?page=' + currentPage : ''));
 	}
 
-	if (utils.isNumber(req.params.post_index) && (req.params.post_index < 1 || req.params.post_index > topicData.postcount)) {
-		return helpers.redirect(res, '/topic/' + req.params.topic_id + '/' + req.params.slug + (req.params.post_index > topicData.postcount ? '/' + topicData.postcount : ''));
+	if (postIndex === 'unread') {
+		postIndex = await topics.async.getUserBookmark(tid, req.uid);
 	}
 
-	if (req.params.post_index === 'unread') {
-		req.params.post_index = await topics.async.getUserBookmark(tid, req.uid);
+	if (utils.isNumber(postIndex) && (postIndex < 1 || postIndex > topicData.postcount)) {
+		return helpers.redirect(res, '/topic/' + req.params.topic_id + '/' + req.params.slug + (postIndex > topicData.postcount ? '/' + topicData.postcount : ''));
 	}
-
+	postIndex = Math.max(1, postIndex);
 	const sort = req.query.sort || settings.topicPostSort;
 	const set = sort === 'most_votes' ? 'tid:' + tid + ':posts:votes' : 'tid:' + tid + ':posts';
 	const reverse = sort === 'newest_to_oldest' || sort === 'most_votes';
-	const { start, stop } = calculateStartStop(topicData, req, currentPage, reverse, settings);
+	if (settings.usePagination && !req.query.page) {
+		currentPage = calculatePageFromIndex(postIndex, settings);
+	}
+	const { start, stop } = calculateStartStop(currentPage, postIndex, settings);
 
 	await topics.async.getTopicWithPosts(topicData, set, req.uid, start, stop, reverse);
 
@@ -89,7 +92,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 		topicData.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
 	}
 
-	topicData.postIndex = req.params.post_index;
+	topicData.postIndex = postIndex;
 	topicData.pagination = pagination.create(currentPage, pageCount, req.query);
 	topicData.pagination.rel.forEach(function (rel) {
 		rel.href = nconf.get('url') + '/topic/' + topicData.slug + rel.href;
@@ -105,35 +108,21 @@ topicsController.get = async function getTopic(req, res, callback) {
 	res.render('topic', topicData);
 };
 
-function calculateStartStop(topicData, req, page, reverse, settings) {
-	var postIndex = 0;
+function calculatePageFromIndex(postIndex, settings) {
+	return 1 + Math.floor((postIndex - 1) / settings.postsPerPage);
+}
 
-	req.params.post_index = parseInt(req.params.post_index, 10) || 0;
-	if (reverse && req.params.post_index === 1) {
-		req.params.post_index = 0;
-	}
+function calculateStartStop(page, postIndex, settings) {
+	var startSkip = 0;
 
 	if (!settings.usePagination) {
-		if (req.params.post_index !== 0) {
+		if (postIndex !== 0) {
 			page = 1;
 		}
-		if (reverse) {
-			postIndex = Math.max(0, topicData.postcount - (req.params.post_index || topicData.postcount) - Math.ceil(settings.postsPerPage / 2));
-		} else {
-			postIndex = Math.max(0, (req.params.post_index || 1) - Math.ceil(settings.postsPerPage / 2));
-		}
-	} else if (!req.query.page) {
-		var index;
-		if (reverse) {
-			index = Math.max(0, topicData.postcount - (req.params.post_index || topicData.postcount) + 2);
-		} else {
-			index = Math.max(0, req.params.post_index) || 0;
-		}
-
-		page = Math.max(1, Math.ceil(index / settings.postsPerPage));
+		startSkip = Math.max(0, postIndex - Math.ceil(settings.postsPerPage / 2));
 	}
 
-	const start = ((page - 1) * settings.postsPerPage) + postIndex;
+	const start = ((page - 1) * settings.postsPerPage) + startSkip;
 	const stop = start + settings.postsPerPage - 1;
 	return { start: Math.max(0, start), stop: Math.max(0, stop) };
 }
