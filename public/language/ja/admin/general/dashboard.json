@@ -37,10 +37,10 @@
 	"search-plugin-tooltip": "検索機能を有効にするには、プラグインページから検索プラグインをインストールしてください",
 
 	"control-panel": "システムコントロール",
-	"rebuild-and-restart": "Rebuild &amp; Restart",
-	"restart": "Restart",
-	"restart-warning": "Rebuilding or Restarting your NodeBB will drop all existing connections for a few seconds.",
-	"restart-disabled": "Rebuilding and Restarting your NodeBB has been disabled as you do not seem to be running it via the appropriate daemon.",
+	"rebuild-and-restart": "再構築 &amp; 再起動",
+	"restart": "再起動",
+	"restart-warning": "NodeBBを再構築または再起動すると、数秒間既存の接続がすべて切断されます。",
+	"restart-disabled": "適切なデーモンを介してNodeBBを実行しているようには見えないため、NodeBBの再構築および再起動は無効になっています。",
 	"maintenance-mode": "メンテナンスモード",
 	"maintenance-mode-title": "NodeBBのメンテナンスモードを設定するには、ここをクリックしてください",
 	"realtime-chart-updates": "リアルタイムチャートの更新",
@@ -65,12 +65,12 @@
 	"high-presence-topics": "ハイプレゼンススレッド",
 
 	"graphs.page-views": "ページビュー",
-	"graphs.page-views-registered": "Page Views Registered",
-	"graphs.page-views-guest": "Page Views Guest",
-	"graphs.page-views-bot": "Page Views Bot",
+	"graphs.page-views-registered": "ページビュー登録済み",
+	"graphs.page-views-guest": "ページビューゲスト",
+	"graphs.page-views-bot": "ページビューBot",
 	"graphs.unique-visitors": "ユニークな訪問者",
 	"graphs.registered-users": "登録したユーザー",
 	"graphs.anonymous-users": "匿名ユーザー",
-	"last-restarted-by": "Last restarted by",
-	"no-users-browsing": "No users browsing"
+	"last-restarted-by": "最後に再起動された順",
+	"no-users-browsing": "閲覧中のユーザーなし"
 }
