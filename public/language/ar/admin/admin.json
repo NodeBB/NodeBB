@@ -1,5 +1,5 @@
 {
-	"alert.confirm-rebuild-and-restart": "Are you sure you wish to rebuild and restart NodeBB?",
+	"alert.confirm-rebuild-and-restart": "هل أنت متأكد إنك تريد إعادة بناء وتشغيل الـ NodeBB؟",
 	"alert.confirm-restart": "هل تريد بالتأكيد إعادة تشغيل NodeBB؟",
 
 	"acp-title": "لوحة تحكم إدارة NodeBB | %1",
