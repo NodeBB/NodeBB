@@ -111,7 +111,7 @@
         "semver": "^6.0.0",
         "serve-favicon": "^2.4.5",
         "sharp": "0.22.1",
-        "sitemap": "^2.0.0",
+        "sitemap": "^3.0.0",
         "socket.io": "2.2.0",
         "socket.io-adapter-cluster": "^1.0.1",
         "socket.io-adapter-mongo": "^2.0.1",
