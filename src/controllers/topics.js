@@ -8,7 +8,7 @@ var winston = require('winston');
 var user = require('../user');
 var meta = require('../meta');
 var topics = require('../topics');
-var posts = require('../posts').async;
+var posts = require('../posts');
 var privileges = require('../privileges');
 var plugins = require('../plugins');
 var helpers = require('./helpers');
@@ -239,7 +239,7 @@ async function addTags(topicData, req, res) {
 }
 
 async function addOGImageTags(res, topicData, postAtIndex) {
-	const uploads = postAtIndex ? await posts.uploads.listWithSizes(postAtIndex.pid) : [];
+	const uploads = postAtIndex ? await posts.async.uploads.listWithSizes(postAtIndex.pid) : [];
 	const images = uploads.map((upload) => {
 		upload.name = nconf.get('url') + nconf.get('upload_url') + '/files/' + upload.name;
 		return upload;
