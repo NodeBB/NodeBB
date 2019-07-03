@@ -5,16 +5,8 @@ var helpers = module.exports;
 helpers.setupPageRoute = function (router, name, middleware, middlewares, controller) {
 	middlewares = [middleware.maintenanceMode, middleware.registrationComplete, middleware.pageView, middleware.pluginHooks].concat(middlewares);
 
-	async function tryRoute(req, res, next) {
-		try {
-			await controller(req, res, next);
-		} catch (err) {
-			next(err);
-		}
-	}
-
-	router.get(name, middleware.busyCheck, middleware.buildHeader, middlewares, tryRoute);
-	router.get('/api' + name, middlewares, tryRoute);
+	router.get(name, middleware.busyCheck, middleware.buildHeader, middlewares, controller);
+	router.get('/api' + name, middlewares, controller);
 };
 
 helpers.setupAdminPageRoute = function (router, name, middleware, middlewares, controller) {
