@@ -184,18 +184,16 @@ function setupExpressApp(app, callback) {
 		saveUninitialized: nconf.get('sessionSaveUninitialized') || false,
 	}));
 
-	var hsts_option = {
-		maxAge: meta.config['hsts-maxage'],
-		includeSubdomains: !!meta.config['hsts-subdomains'],
-		preload: !!meta.config['hsts-preload'],
-		setIf: function () {
-			return !!meta.config['hsts-enabled'];
-		},
-	};
-	app.use(helmet({
-		hsts: hsts_option,
-	}));
+	app.use(helmet());
 	app.use(helmet.referrerPolicy({ policy: 'strict-origin-when-cross-origin' }));
+	if (meta.config['hsts-enabled']) {
+		app.use(helmet.hsts({
+			maxAge: meta.config['hsts-maxage'],
+			includeSubDomains: !!meta.config['hsts-subdomains'],
+			preload: !!meta.config['hsts-preload'],
+		}));
+	}
+
 	app.use(middleware.addHeaders);
 	app.use(middleware.processRender);
 	auth.initialize(app, middleware);
