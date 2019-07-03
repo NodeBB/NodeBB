@@ -34,26 +34,17 @@ module.exports = function (SocketTopics) {
 
 				userPrivileges = results.privileges;
 
-				var set = 'tid:' + data.tid + ':posts';
-				if (data.topicPostSort === 'most_votes') {
-					set = 'tid:' + data.tid + ':posts:votes';
-				}
+				var set = data.topicPostSort === 'most_votes' ? 'tid:' + data.tid + ':posts:votes' : 'tid:' + data.tid + ':posts';
 				var reverse = data.topicPostSort === 'newest_to_oldest' || data.topicPostSort === 'most_votes';
 				var start = Math.max(0, parseInt(data.after, 10));
 
-				var infScrollPostsPerPage = Math.max(0, Math.min(meta.config.postsPerPage || 20, parseInt(data.count, 10) || meta.config.postsPerPage || 20) - 1);
+				var infScrollPostsPerPage = Math.max(0, Math.min(meta.config.postsPerPage || 20, parseInt(data.count, 10) || meta.config.postsPerPage || 20));
 
-				if (data.direction > 0) {
-					if (reverse) {
-						start = results.topic.postcount - start;
-					}
-				} else if (reverse) {
-					start = results.topic.postcount - start - infScrollPostsPerPage;
-				} else {
-					start -= infScrollPostsPerPage;
+				if (data.direction === -1) {
+					start -= (infScrollPostsPerPage + 1);
 				}
 
-				var stop = start + (infScrollPostsPerPage);
+				var stop = start + infScrollPostsPerPage - 1;
 
 				start = Math.max(0, start);
 				stop = Math.max(0, stop);

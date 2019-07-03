@@ -88,8 +88,9 @@ Posts.getPostSummariesFromSet = function (set, uid, start, stop, callback) {
 Posts.getPidIndex = function (pid, tid, topicPostSort, callback) {
 	async.waterfall([
 		function (next) {
-			var set = topicPostSort === 'most_votes' ? 'tid:' + tid + ':posts:votes' : 'tid:' + tid + ':posts';
-			db.sortedSetRank(set, pid, next);
+			const set = topicPostSort === 'most_votes' ? 'tid:' + tid + ':posts:votes' : 'tid:' + tid + ':posts';
+			const reverse = topicPostSort === 'newest_to_oldest' || topicPostSort === 'most_votes';
+			db[reverse ? 'sortedSetRevRank' : 'sortedSetRank'](set, pid, next);
 		},
 		function (index, next) {
 			if (!utils.isNumber(index)) {
@@ -111,21 +112,17 @@ Posts.getPostIndices = function (posts, uid, callback) {
 		},
 		function (settings, next) {
 			var byVotes = settings.topicPostSort === 'most_votes';
-			var sets = posts.map(function (post) {
-				return byVotes ? 'tid:' + post.tid + ':posts:votes' : 'tid:' + post.tid + ':posts';
-			});
+			var sets = posts.map(p => (byVotes ? 'tid:' + p.tid + ':posts:votes' : 'tid:' + p.tid + ':posts'));
+			const reverse = settings.topicPostSort === 'newest_to_oldest' || settings.topicPostSort === 'most_votes';
 
 			var uniqueSets = _.uniq(sets);
-			var method = 'sortedSetsRanks';
+			var method = reverse ? 'sortedSetsRevRanks' : 'sortedSetsRanks';
 			if (uniqueSets.length === 1) {
-				method = 'sortedSetRanks';
+				method = reverse ? 'sortedSetRevRanks' : 'sortedSetRanks';
 				sets = uniqueSets[0];
 			}
 
-			var pids = posts.map(function (post) {
-				return post.pid;
-			});
-
+			const pids = posts.map(post => post.pid);
 			db[method](sets, pids, next);
 		},
 		function (indices, next) {

@@ -246,7 +246,7 @@ function getMainPostAndReplies(topic, set, uid, start, stop, reverse, callback) 
 				replies = posts.slice(1);
 			}
 
-			Topics.calculatePostIndices(replies, start, topic.postcount, reverse);
+			Topics.calculatePostIndices(replies, start);
 
 			Topics.addPostData(posts, uid, next);
 		},

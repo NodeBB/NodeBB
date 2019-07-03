@@ -25,7 +25,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		$(window).off('keydown', onKeyDown);
 	});
 
-	navigator.init = function (selector, count, toTop, toBottom, callback, calculateIndex) {
+	navigator.init = function (selector, count, toTop, toBottom, callback) {
 		index = 1;
 		navigator.selector = selector;
 		navigator.callback = callback;
@@ -62,10 +62,6 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 				}
 
 				var index = parseInt(input.val(), 10);
-				if (typeof calculateIndex === 'function') {
-					index = calculateIndex(index, count);
-				}
-
 				var url = generateUrl(index);
 				input.val('');
 				$('.pagination-block .dropdown-toggle').trigger('click');
@@ -135,10 +131,9 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 				return app.alertError(err.message);
 			}
 
-			var relIndex = getRelativeIndex();
 			var date = new Date(timestamp);
 			var ds = date.toLocaleString(config.userLang, { month: 'long' });
-			touchTooltipEl.find('.text').translateText('[[global:pagination.out_of, ' + relIndex + ', ' + count + ']]');
+			touchTooltipEl.find('.text').translateText('[[global:pagination.out_of, ' + index + ', ' + count + ']]');
 			if (timestamp > Date.now() - (30 * 24 * 60 * 60 * 1000)) {
 				touchTooltipEl.find('.time').text(ds + ' ' + date.getDate());
 			} else {
@@ -277,25 +272,11 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			return;
 		}
 		index = index > count ? count : index;
-		var relIndex = getRelativeIndex();
-		paginationTextEl.translateHtml('[[global:pagination.out_of, ' + relIndex + ', ' + count + ']]');
-		var fraction = (relIndex - 1) / (count - 1 || 1);
+		paginationTextEl.translateHtml('[[global:pagination.out_of, ' + index + ', ' + count + ']]');
+		var fraction = (index - 1) / (count - 1 || 1);
 		paginationBlockMeterEl.val(fraction);
 		paginationBlockProgressEl.width((fraction * 100) + '%');
 	};
-
-	function getRelativeIndex() {
-		var relIndex = index;
-		if (relIndex === 1) {
-			return 1;
-		}
-		if (ajaxify.data.template.topic) {
-			if (config.topicPostSort === 'most_votes' || config.topicPostSort === 'newest_to_oldest') {
-				relIndex = ajaxify.data.postcount - index + 2;
-			}
-		}
-		return relIndex;
-	}
 
 	navigator.scrollUp = function () {
 		var $window = $(window);
@@ -377,18 +358,8 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		}
 
 		var scrollMethod = inTopic ? navigator.scrollToPostIndex : navigator.scrollToTopicIndex;
-		if (inTopic) {
-			if (config.topicPostSort === 'most_votes' || config.topicPostSort === 'newest_to_oldest') {
-				index = ajaxify.data.postcount - index;
-			}
-		} else if (inCategory) {
-			if (config.categoryTopicSort === 'most_posts' || config.categoryTopicSort === 'oldest_to_newest') {
-				index = ajaxify.data.topic_count - index;
-			}
-		}
 
-		var page = Math.max(1, Math.ceil((index + 1) / config.postsPerPage));
-
+		var page = 1 + Math.floor(index / config.postsPerPage);
 		if (parseInt(page, 10) !== ajaxify.data.pagination.currentPage) {
 			pagination.loadPage(page, function () {
 				scrollMethod(index, highlight, duration);

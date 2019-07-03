@@ -208,6 +208,14 @@ module.exports = function (db, module) {
 	}
 
 	module.sortedSetsRanks = function (keys, values, callback) {
+		sortedSetsRanks(module.sortedSetRank, keys, values, callback);
+	};
+
+	module.sortedSetsRevRanks = function (keys, values, callback) {
+		sortedSetsRanks(module.sortedSetRevRank, keys, values, callback);
+	};
+
+	function sortedSetsRanks(method, keys, values, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback(null, []);
 		}
@@ -217,12 +225,20 @@ module.exports = function (db, module) {
 		}
 
 		async.map(data, function (item, next) {
-			getSortedSetRank(false, item.key, item.value, next);
+			method(item.key, item.value, next);
 		}, callback);
-	};
+	}
 
 	module.sortedSetRanks = function (key, values, callback) {
-		module.getSortedSetRange(key, 0, -1, function (err, sortedSet) {
+		sortedSetRanks(module.getSortedSetRange, key, values, callback);
+	};
+
+	module.sortedSetRevRanks = function (key, values, callback) {
+		sortedSetRanks(module.getSortedSetRevRange, key, values, callback);
+	};
+
+	function sortedSetRanks(method, key, values, callback) {
+		method(key, 0, -1, function (err, sortedSet) {
 			if (err) {
 				return callback(err);
 			}
@@ -237,7 +253,7 @@ module.exports = function (db, module) {
 
 			callback(null, result);
 		});
-	};
+	}
 
 	module.sortedSetScore = function (key, value, callback) {
 		if (!key) {

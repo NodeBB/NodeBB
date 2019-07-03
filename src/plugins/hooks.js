@@ -6,7 +6,7 @@ const utils = require('../utils');
 
 module.exports = function (Plugins) {
 	Plugins.deprecatedHooks = {
-
+		'filter:controllers.topic.get': 'filter:topic.build',
 	};
 
 	Plugins.internals = {
@@ -34,7 +34,7 @@ module.exports = function (Plugins) {
 
 		var method;
 
-		if (Object.keys(Plugins.deprecatedHooks).includes(data.hook)) {
+		if (Plugins.deprecatedHooks[data.hook]) {
 			winston.warn('[plugins/' + id + '] Hook `' + data.hook + '` is deprecated, ' +
 				(Plugins.deprecatedHooks[data.hook] ?
 					'please use `' + Plugins.deprecatedHooks[data.hook] + '` instead.' :

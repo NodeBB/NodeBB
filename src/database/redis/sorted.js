@@ -149,10 +149,22 @@ module.exports = function (redisClient, module) {
 		redisClient.zrank(key, value, callback);
 	};
 
+	module.sortedSetRevRank = function (key, value, callback) {
+		redisClient.zrevrank(key, value, callback);
+	};
+
 	module.sortedSetsRanks = function (keys, values, callback) {
 		var batch = redisClient.batch();
 		for (var i = 0; i < values.length; i += 1) {
 			batch.zrank(keys[i], values[i]);
+		}
+		batch.exec(callback);
+	};
+
+	module.sortedSetsRevRanks = function (keys, values, callback) {
+		var batch = redisClient.batch();
+		for (var i = 0; i < values.length; i += 1) {
+			batch.zrevrank(keys[i], values[i]);
 		}
 		batch.exec(callback);
 	};
@@ -165,8 +177,12 @@ module.exports = function (redisClient, module) {
 		batch.exec(callback);
 	};
 
-	module.sortedSetRevRank = function (key, value, callback) {
-		redisClient.zrevrank(key, value, callback);
+	module.sortedSetRevRanks = function (key, values, callback) {
+		var batch = redisClient.batch();
+		for (var i = 0; i < values.length; i += 1) {
+			batch.zrevrank(key, values[i]);
+		}
+		batch.exec(callback);
 	};
 
 	module.sortedSetScore = function (key, value, callback) {

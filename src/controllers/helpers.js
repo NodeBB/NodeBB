@@ -322,3 +322,5 @@ function recursive(category, categoriesData, level) {
 		});
 	}
 }
+
+helpers.async = require('../promisify')(helpers);

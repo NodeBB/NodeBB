@@ -124,7 +124,7 @@ describe('Categories', function () {
 				start: 0,
 				stop: 10,
 				uid: 0,
-				sort: 'oldest-to-newest',
+				sort: 'oldest_to_newest',
 			}, function (err, result) {
 				assert.equal(err, null);
 
@@ -144,7 +144,7 @@ describe('Categories', function () {
 				stop: 10,
 				uid: 0,
 				targetUid: 1,
-				sort: 'oldest-to-newest',
+				sort: 'oldest_to_newest',
 			}, function (err, result) {
 				assert.equal(err, null);
 				assert(Array.isArray(result.topics));

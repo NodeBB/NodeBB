@@ -27,19 +27,12 @@ module.exports = function (Topics) {
 	Topics.getTopicPosts = function (tid, set, start, stop, uid, reverse, callback) {
 		async.waterfall([
 			function (next) {
-				async.parallel({
-					posts: function (next) {
-						posts.getPostsFromSet(set, start, stop, uid, reverse, next);
-					},
-					postCount: function (next) {
-						Topics.getTopicField(tid, 'postcount', next);
-					},
-				}, next);
+				posts.getPostsFromSet(set, start, stop, uid, reverse, next);
 			},
-			function (results, next) {
-				Topics.calculatePostIndices(results.posts, start, results.postCount, reverse);
+			function (posts, next) {
+				Topics.calculatePostIndices(posts, start);
 
-				Topics.addPostData(results.posts, uid, next);
+				Topics.addPostData(posts, uid, next);
 			},
 		], callback);
 	};
@@ -185,11 +178,9 @@ module.exports = function (Topics) {
 		], callback);
 	};
 
-	Topics.calculatePostIndices = function (posts, start, postCount, reverse) {
+	Topics.calculatePostIndices = function (posts, start) {
 		posts.forEach(function (post, index) {
-			if (reverse) {
-				post.index = postCount - (start + index + 1);
-			} else {
+			if (post) {
 				post.index = start + index + 1;
 			}
 		});

@@ -323,12 +323,28 @@ SELECT (SELECT r
 		getSortedSetRank('ASC', keys, values, callback);
 	};
 
+	module.sortedSetsRevRanks = function (keys, values, callback) {
+		if (!Array.isArray(keys) || !keys.length) {
+			return callback(null, []);
+		}
+
+		getSortedSetRank('DESC', keys, values, callback);
+	};
+
 	module.sortedSetRanks = function (key, values, callback) {
 		if (!Array.isArray(values) || !values.length) {
 			return callback(null, []);
 		}
 
 		getSortedSetRank('ASC', new Array(values.length).fill(key), values, callback);
+	};
+
+	module.sortedSetRevRanks = function (key, values, callback) {
+		if (!Array.isArray(values) || !values.length) {
+			return callback(null, []);
+		}
+
+		getSortedSetRank('DESC', new Array(values.length).fill(key), values, callback);
 	};
 
 	module.sortedSetScore = function (key, value, callback) {
