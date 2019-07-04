@@ -38,8 +38,8 @@ Topics.exists = function (tid, callback) {
 };
 
 Topics.getTopicsFromSet = async function (set, uid, start, stop) {
-	const tids = await db.async.getSortedSetRange(set, start, stop);
-	const topics = await Topics.async.getTopics(tids, uid);
+	const tids = await db.getSortedSetRange(set, start, stop);
+	const topics = await Topics.getTopics(tids, uid);
 	Topics.calculateTopicIndices(topics, start);
 	return { topics: topics, nextStart: stop + 1 };
 };
@@ -337,4 +337,3 @@ Topics.search = function (tid, term, callback) {
 };
 
 Topics.async = require('../promisify')(Topics);
-Topics.callbacks = require('../callbackify')(Topics);
