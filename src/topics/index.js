@@ -37,19 +37,11 @@ Topics.exists = function (tid, callback) {
 	db.exists('topic:' + tid, callback);
 };
 
-Topics.getTopicsFromSet = function (set, uid, start, stop, callback) {
-	async.waterfall([
-		function (next) {
-			db.getSortedSetRevRange(set, start, stop, next);
-		},
-		function (tids, next) {
-			Topics.getTopics(tids, uid, next);
-		},
-		function (topics, next) {
-			Topics.calculateTopicIndices(topics, start);
-			next(null, { topics: topics, nextStart: stop + 1 });
-		},
-	], callback);
+Topics.getTopicsFromSet = async function (set, uid, start, stop) {
+	const tids = await db.async.getSortedSetRange(set, start, stop);
+	const topics = await Topics.async.getTopics(tids, uid);
+	Topics.calculateTopicIndices(topics, start);
+	return { topics: topics, nextStart: stop + 1 };
 };
 
 Topics.getTopics = function (tids, options, callback) {
@@ -345,3 +337,4 @@ Topics.search = function (tid, term, callback) {
 };
 
 Topics.async = require('../promisify')(Topics);
+Topics.callbacks = require('../callbackify')(Topics);
