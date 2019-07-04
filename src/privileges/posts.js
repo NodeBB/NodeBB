@@ -155,6 +155,7 @@ module.exports = function (privileges) {
 					owner: async.apply(posts.isOwner, pid, uid),
 					edit: async.apply(privileges.posts.can, 'posts:edit', pid, uid),
 					postData: async.apply(posts.getPostFields, pid, ['tid', 'timestamp', 'deleted', 'deleterUid']),
+					userData: async.apply(user.getUserFields, uid, ['reputation']),
 				}, next);
 			},
 			function (_results, next) {
@@ -167,6 +168,10 @@ module.exports = function (privileges) {
 				if (!results.isMod && meta.config.postEditDuration && (Date.now() - results.postData.timestamp > meta.config.postEditDuration * 1000)) {
 					return callback(null, { flag: false, message: '[[error:post-edit-duration-expired, ' + meta.config.postEditDuration + ']]' });
 				}
+				if (!results.isMod && meta.config.newbiePostEditDuration > 0 && meta.config.newbiePostDelayThreshold > _results.userData.reputation && Date.now() - _results.postData.timestamp > meta.config.newbiePostEditDuration * 1000) {
+					return callback(null, { flag: false, message: '[[error:post-edit-duration-expired, ' + meta.config.newbiePostEditDuration + ']]' });
+				}
+
 				topics.isLocked(results.postData.tid, next);
 			},
 			function (isLocked, next) {

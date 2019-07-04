@@ -11,6 +11,7 @@
     "initialPostDelay": 10,
     "newbiePostDelay": 120,
     "postEditDuration": 0,
+    "newbiePostEditDuration": 3600000,
     "postDeleteDuration": 0,
     "enablePostHistory": 1,
     "postCacheSize": 10485760,
