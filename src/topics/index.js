@@ -44,19 +44,15 @@ Topics.getTopicsFromSet = async function (set, uid, start, stop) {
 	return { topics: topics, nextStart: stop + 1 };
 };
 
-Topics.getTopics = function (tids, options, callback) {
+Topics.getTopics = async function (tids, options) {
 	let uid = options;
 	if (typeof options === 'object') {
 		uid = options.uid;
 	}
-	async.waterfall([
-		function (next) {
-			privileges.topics.filterTids('topics:read', tids, uid, next);
-		},
-		function (tids, next) {
-			Topics.getTopicsByTids(tids, options, next);
-		},
-	], callback);
+
+	tids = await privileges.async.topics.filterTids('topics:read', tids, uid);
+	const topics = await Topics.async.getTopicsByTids(tids, options);
+	return topics;
 };
 
 Topics.getTopicsByTids = function (tids, options, callback) {
