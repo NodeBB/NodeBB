@@ -63,7 +63,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 		uid = options.uid;
 	}
 
-	let topics = await Topics.async.getTopicsData(tids);
+	let topics = await Topics.getTopicsData(tids);
 
 	const uids = _.uniq(topics.map(t => t && t.uid && t.uid.toString()).filter(v => utils.isNumber(v)));
 	const cids = _.uniq(topics.map(t => t && t.cid && t.cid.toString()).filter(v => utils.isNumber(v)));
@@ -216,7 +216,7 @@ async function getMerger(topicData) {
 		mergedIntoTitle,
 	] = await Promise.all([
 		user.async.getUserFields(topicData.mergerUid, ['username', 'userslug', 'picture']),
-		Topics.async.getTopicField(topicData.mergeIntoTid, 'title'),
+		Topics.getTopicField(topicData.mergeIntoTid, 'title'),
 	]);
 	merger.mergedIntoTitle = mergedIntoTitle;
 	return merger;
@@ -237,7 +237,7 @@ Topics.getMainPids = async function (tids) {
 	if (!Array.isArray(tids) || !tids.length) {
 		return [];
 	}
-	const topicData = await Topics.async.getTopicsFields(tids, ['mainPid']);
+	const topicData = await Topics.getTopicsFields(tids, ['mainPid']);
 	return topicData.map(topic => topic && topic.mainPid);
 };
 
@@ -257,7 +257,7 @@ async function getMainPosts(mainPids, uid) {
 }
 
 Topics.isLocked = async function (tid) {
-	const locked = await Topics.async.getTopicField(tid, 'locked');
+	const locked = await Topics.getTopicField(tid, 'locked');
 	return locked === 1;
 };
 

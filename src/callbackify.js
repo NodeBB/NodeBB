@@ -29,9 +29,20 @@ module.exports = function (theModule, ignoreKeys) {
 		});
 	}
 	function wrapIt(origFn, callbackFn) {
-		return async function wrapper() {
+		return async function wrapper(...args) {
 			if (arguments.length && typeof arguments[arguments.length - 1] === 'function') {
-				return callbackFn.apply(null, arguments);
+				const cb = args.pop();
+				args.push(function (err, res) {
+					if (err) {
+						return cb(err);
+					}
+					// fixes callbackified functions used in async.waterfall
+					if (res !== undefined) {
+						return cb(err, res);
+					}
+					return cb(err);
+				});
+				return callbackFn.apply(null, args);
 			}
 			return origFn.apply(null, arguments);
 		};
