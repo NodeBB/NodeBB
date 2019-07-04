@@ -100,7 +100,7 @@ module.exports = function (Plugins) {
 		}
 		var hookList = Plugins.loadedHooks[hook];
 		var hookType = hook.split(':')[0];
-		if (hook !== 'action:plugins.fireHook') {
+		if (hook !== 'action:plugins.firehook') {
 			winston.verbose('[plugins/fireHook] ' + hook);
 		}
 		switch (hookType) {
