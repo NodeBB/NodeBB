@@ -12,25 +12,25 @@ module.exports = function (db, module) {
 	require('./sorted/union')(db, module);
 	require('./sorted/intersect')(db, module);
 
-	module.getSortedSetRange = function (key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, 1, false, callback);
+	module.getSortedSetRange = async function (key, start, stop) {
+		return await getSortedSetRange(key, start, stop, 1, false);
 	};
 
-	module.getSortedSetRevRange = function (key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, -1, false, callback);
+	module.getSortedSetRevRange = async function (key, start, stop) {
+		return await getSortedSetRange(key, start, stop, -1, false);
 	};
 
-	module.getSortedSetRangeWithScores = function (key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, 1, true, callback);
+	module.getSortedSetRangeWithScores = async function (key, start, stop) {
+		return await getSortedSetRange(key, start, stop, 1, true);
 	};
 
-	module.getSortedSetRevRangeWithScores = function (key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, -1, true, callback);
+	module.getSortedSetRevRangeWithScores = async function (key, start, stop) {
+		return await getSortedSetRange(key, start, stop, -1, true);
 	};
 
-	function getSortedSetRange(key, start, stop, sort, withScores, callback) {
+	async function getSortedSetRange(key, start, stop, sort, withScores) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
 		if (!Array.isArray(key)) {
@@ -38,7 +38,7 @@ module.exports = function (db, module) {
 		}
 
 		if (start < 0 && start > stop) {
-			return callback(null, []);
+			return [];
 		}
 
 		var reverse = false;
@@ -58,7 +58,7 @@ module.exports = function (db, module) {
 			limit = null;
 		}
 
-		query({
+		const res = await query({
 			name: 'getSortedSetRangeWithScores' + (sort > 0 ? 'Asc' : 'Desc'),
 			text: `
 SELECT z."value",
@@ -72,51 +72,47 @@ SELECT z."value",
  LIMIT $3::INTEGER
 OFFSET $2::INTEGER`,
 			values: [key, start, limit],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (reverse) {
-				res.rows.reverse();
-			}
-
-			if (withScores) {
-				res.rows = res.rows.map(function (r) {
-					return {
-						value: r.value,
-						score: parseFloat(r.score),
-					};
-				});
-			} else {
-				res.rows = res.rows.map(function (r) {
-					return r.value;
-				});
-			}
-
-			callback(null, res.rows);
 		});
+
+		if (reverse) {
+			res.rows.reverse();
+		}
+
+		if (withScores) {
+			res.rows = res.rows.map(function (r) {
+				return {
+					value: r.value,
+					score: parseFloat(r.score),
+				};
+			});
+		} else {
+			res.rows = res.rows.map(function (r) {
+				return r.value;
+			});
+		}
+
+		return res.rows;
 	}
 
-	module.getSortedSetRangeByScore = function (key, start, count, min, max, callback) {
-		getSortedSetRangeByScore(key, start, count, min, max, 1, false, callback);
+	module.getSortedSetRangeByScore = async function (key, start, count, min, max) {
+		return await getSortedSetRangeByScore(key, start, count, min, max, 1, false);
 	};
 
-	module.getSortedSetRevRangeByScore = function (key, start, count, max, min, callback) {
-		getSortedSetRangeByScore(key, start, count, min, max, -1, false, callback);
+	module.getSortedSetRevRangeByScore = async function (key, start, count, max, min) {
+		return await getSortedSetRangeByScore(key, start, count, min, max, -1, false);
 	};
 
-	module.getSortedSetRangeByScoreWithScores = function (key, start, count, min, max, callback) {
-		getSortedSetRangeByScore(key, start, count, min, max, 1, true, callback);
+	module.getSortedSetRangeByScoreWithScores = async function (key, start, count, min, max) {
+		return await getSortedSetRangeByScore(key, start, count, min, max, 1, true);
 	};
 
-	module.getSortedSetRevRangeByScoreWithScores = function (key, start, count, max, min, callback) {
-		getSortedSetRangeByScore(key, start, count, min, max, -1, true, callback);
+	module.getSortedSetRevRangeByScoreWithScores = async function (key, start, count, max, min) {
+		return await getSortedSetRangeByScore(key, start, count, min, max, -1, true);
 	};
 
-	function getSortedSetRangeByScore(key, start, count, min, max, sort, withScores, callback) {
+	async function getSortedSetRangeByScore(key, start, count, min, max, sort, withScores) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
 		if (!Array.isArray(key)) {
@@ -134,7 +130,7 @@ OFFSET $2::INTEGER`,
 			max = null;
 		}
 
-		query({
+		const res = await query({
 			name: 'getSortedSetRangeByScoreWithScores' + (sort > 0 ? 'Asc' : 'Desc'),
 			text: `
 SELECT z."value",
@@ -150,26 +146,22 @@ SELECT z."value",
  LIMIT $3::INTEGER
 OFFSET $2::INTEGER`,
 			values: [key, start, count, min, max],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (withScores) {
-				res.rows = res.rows.map(function (r) {
-					return {
-						value: r.value,
-						score: parseFloat(r.score),
-					};
-				});
-			} else {
-				res.rows = res.rows.map(function (r) {
-					return r.value;
-				});
-			}
-
-			return callback(null, res.rows);
 		});
+
+		if (withScores) {
+			res.rows = res.rows.map(function (r) {
+				return {
+					value: r.value,
+					score: parseFloat(r.score),
+				};
+			});
+		} else {
+			res.rows = res.rows.map(function (r) {
+				return r.value;
+			});
+		}
+
+		return res.rows;
 	}
 
 	module.sortedSetCount = function (key, min, max, callback) {

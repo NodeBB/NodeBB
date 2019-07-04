@@ -25,47 +25,34 @@ module.exports = function (db, module) {
 		});
 	};
 
-	module.exists = function (key, callback) {
+	module.exists = async function (key) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
 		if (Array.isArray(key)) {
-			query({
+			const res = await query({
 				name: 'existsArray',
 				text: `
 				SELECT o."_key" k
   				FROM "legacy_object_live" o
  				WHERE o."_key" = ANY($1::TEXT[])`,
 				values: [key],
-			}, function (err, res) {
-				if (err) {
-					return callback(err);
-				}
-
-				callback(null, key.map(function (k) {
-					return res.rows.some(function (r) {
-						return r.k === k;
-					});
-				}));
 			});
-		} else {
-			query({
-				name: 'exists',
-				text: `
-	SELECT EXISTS(SELECT *
+			return key.map(function (k) {
+				return res.rows.some(r => r.k === k);
+			});
+		}
+		const res =	await query({
+			name: 'exists',
+			text: `
+			SELECT EXISTS(SELECT *
 					FROM "legacy_object_live"
 				   WHERE "_key" = $1::TEXT
 				   LIMIT 1) e`,
-				values: [key],
-			}, function (err, res) {
-				if (err) {
-					return callback(err);
-				}
-
-				callback(null, res.rows[0].e);
-			});
-		}
+			values: [key],
+		});
+		return res.rows[0].e;
 	};
 
 	module.delete = function (key, callback) {
