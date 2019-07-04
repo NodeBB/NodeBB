@@ -118,7 +118,7 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group">
-						<label for="initialPostDelay">[[admin/settings/post:restrictions.seconds-defore-new]]</label>
+						<label for="initialPostDelay">[[admin/settings/post:restrictions.seconds-before-new]]</label>
 						<input id="initialPostDelay" type="text" class="form-control" value="10" data-field="initialPostDelay">
 					</div>
 				</div>

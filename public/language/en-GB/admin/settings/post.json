@@ -16,7 +16,7 @@
 	"restrictions.seconds-between": "Number of seconds between posts",
 	"restrictions.seconds-between-new": "Seconds between posts for new users",
 	"restrictions.rep-threshold": "Reputation threshold before these restrictions are lifted",
-	"restrictions.seconds-defore-new": "Seconds before a new user can make their first post",
+	"restrictions.seconds-before-new": "Seconds before a new user can make their first post",
 	"restrictions.seconds-edit-after": "Number of seconds a post remains editable (set to 0 to disable)",
 	"restrictions.seconds-delete-after": "Number of seconds a post remains deletable (set to 0 to disable)",
 	"restrictions.replies-no-delete": "Number of replies after users are disallowed to delete their own topics (set to 0 to disable)",
