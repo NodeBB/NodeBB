@@ -21,28 +21,21 @@ module.exports = function (db, module) {
 		});
 	};
 
-	module.exists = function (key, callback) {
+	module.exists = async function (key) {
 		if (!key) {
-			return callback();
+			return;
 		}
 		if (Array.isArray(key)) {
-			db.collection('objects').find({ _key: { $in: key } }).toArray(function (err, data) {
-				if (err) {
-					return callback(err);
-				}
-
-				var map = {};
-				data.forEach(function (item) {
-					map[item._key] = true;
-				});
-
-				callback(null, key.map(key => !!map[key]));
+			const data = await db.collection('objects').find({ _key: { $in: key } }).toArray();
+			var map = {};
+			data.forEach(function (item) {
+				map[item._key] = true;
 			});
-		} else {
-			db.collection('objects').findOne({ _key: key }, function (err, item) {
-				callback(err, item !== undefined && item !== null);
-			});
+
+			return key.map(key => !!map[key]);
 		}
+		const item = await db.collection('objects').findOne({ _key: key });
+		return item !== undefined && item !== null;
 	};
 
 	module.delete = function (key, callback) {
