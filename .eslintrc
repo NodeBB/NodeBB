@@ -14,6 +14,7 @@
 			"exports": "always-multiline",
 			"functions": "never"
 		}],
+		"no-return-await": "off",
 		"no-empty": ["error", { "allowEmptyCatch": true }],
 		"no-underscore-dangle": "off",
 		"no-console": "off",

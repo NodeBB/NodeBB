@@ -11,33 +11,33 @@ module.exports = function (db, module) {
 	require('./sorted/union')(db, module);
 	require('./sorted/intersect')(db, module);
 
-	module.getSortedSetRange = function (key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, '-inf', '+inf', 1, false, callback);
+	module.getSortedSetRange = async function (key, start, stop) {
+		return await getSortedSetRange(key, start, stop, '-inf', '+inf', 1, false);
 	};
 
-	module.getSortedSetRevRange = function (key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, '-inf', '+inf', -1, false, callback);
+	module.getSortedSetRevRange = async function (key, start, stop) {
+		return await getSortedSetRange(key, start, stop, '-inf', '+inf', -1, false);
 	};
 
-	module.getSortedSetRangeWithScores = function (key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, '-inf', '+inf', 1, true, callback);
+	module.getSortedSetRangeWithScores = async function (key, start, stop) {
+		return await getSortedSetRange(key, start, stop, '-inf', '+inf', 1, true);
 	};
 
-	module.getSortedSetRevRangeWithScores = function (key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, '-inf', '+inf', -1, true, callback);
+	module.getSortedSetRevRangeWithScores = async function (key, start, stop) {
+		return await getSortedSetRange(key, start, stop, '-inf', '+inf', -1, true);
 	};
 
-	function getSortedSetRange(key, start, stop, min, max, sort, withScores, callback) {
+	async function getSortedSetRange(key, start, stop, min, max, sort, withScores) {
 		if (!key) {
-			return callback();
+			return;
 		}
 		if (start < 0 && start > stop) {
-			return callback(null, []);
+			return [];
 		}
 
 		if (Array.isArray(key)) {
 			if (!key.length) {
-				return setImmediate(callback, null, []);
+				return [];
 			}
 			if (key.length > 1) {
 				key = { $in: key };
@@ -82,24 +82,24 @@ module.exports = function (db, module) {
 			limit = 0;
 		}
 
-		db.collection('objects').find(query, { projection: fields })
+		let data = await db.collection('objects').find(query, { projection: fields })
 			.sort({ score: sort })
 			.skip(start)
 			.limit(limit)
-			.toArray(function (err, data) {
-				if (err || !data) {
-					return callback(err);
-				}
+			.toArray();
 
-				if (reverse) {
-					data.reverse();
-				}
-				if (!withScores) {
-					data = data.map(item => item.value);
-				}
+		if (!data) {
+			return;
+		}
 
-				callback(null, data);
-			});
+		if (reverse) {
+			data.reverse();
+		}
+		if (!withScores) {
+			data = data.map(item => item.value);
+		}
+
+		return data;
 	}
 
 	module.getSortedSetRangeByScore = function (key, start, count, min, max, callback) {
