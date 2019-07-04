@@ -31,14 +31,12 @@ module.exports = function (db, module) {
 		if (!key) {
 			return;
 		}
-		if (start < 0 && start > stop) {
+		const isArray = Array.isArray(key);
+		if ((start < 0 && start > stop) || (isArray && !key.length)) {
 			return [];
 		}
 
-		if (Array.isArray(key)) {
-			if (!key.length) {
-				return [];
-			}
+		if (isArray) {
 			if (key.length > 1) {
 				key = { $in: key };
 			} else {
@@ -87,10 +85,6 @@ module.exports = function (db, module) {
 			.skip(start)
 			.limit(limit)
 			.toArray();
-
-		if (!data) {
-			return;
-		}
 
 		if (reverse) {
 			data.reverse();
