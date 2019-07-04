@@ -452,6 +452,17 @@ describe('Post\'s', function () {
 			});
 		});
 
+		it('should disallow post editing for new users if post was made past the threshold for editing', function (done) {
+			meta.config.newbiePostEditDuration = 1;
+			setTimeout(function () {
+				socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content again', title: 'edited title again', tags: ['edited-twice'] }, function (err, data) {
+					assert.equal(err.message, '[[error:post-edit-duration-expired, 1]]');
+					meta.config.newbiePostEditDuration = 3600000;
+					done();
+				});
+			}, 1000);
+		});
+
 		it('should edit a deleted post', function (done) {
 			socketPosts.delete({ uid: voterUid }, { pid: pid, tid: tid }, function (err) {
 				assert.ifError(err);
