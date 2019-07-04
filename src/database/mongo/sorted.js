@@ -102,28 +102,28 @@ module.exports = function (db, module) {
 		return data;
 	}
 
-	module.getSortedSetRangeByScore = function (key, start, count, min, max, callback) {
-		getSortedSetRangeByScore(key, start, count, min, max, 1, false, callback);
+	module.getSortedSetRangeByScore = async function (key, start, count, min, max) {
+		return await getSortedSetRangeByScore(key, start, count, min, max, 1, false);
 	};
 
-	module.getSortedSetRevRangeByScore = function (key, start, count, max, min, callback) {
-		getSortedSetRangeByScore(key, start, count, min, max, -1, false, callback);
+	module.getSortedSetRevRangeByScore = async function (key, start, count, max, min) {
+		return await getSortedSetRangeByScore(key, start, count, min, max, -1, false);
 	};
 
-	module.getSortedSetRangeByScoreWithScores = function (key, start, count, min, max, callback) {
-		getSortedSetRangeByScore(key, start, count, min, max, 1, true, callback);
+	module.getSortedSetRangeByScoreWithScores = async function (key, start, count, min, max) {
+		return await getSortedSetRangeByScore(key, start, count, min, max, 1, true);
 	};
 
-	module.getSortedSetRevRangeByScoreWithScores = function (key, start, count, max, min, callback) {
-		getSortedSetRangeByScore(key, start, count, min, max, -1, true, callback);
+	module.getSortedSetRevRangeByScoreWithScores = async function (key, start, count, max, min) {
+		return await getSortedSetRangeByScore(key, start, count, min, max, -1, true);
 	};
 
-	function getSortedSetRangeByScore(key, start, count, min, max, sort, withScores, callback) {
+	async function getSortedSetRangeByScore(key, start, count, min, max, sort, withScores) {
 		if (parseInt(count, 10) === 0) {
-			return setImmediate(callback, null, []);
+			return [];
 		}
 		const stop = (parseInt(count, 10) === -1) ? -1 : (start + count - 1);
-		getSortedSetRange(key, start, stop, min, max, sort, withScores, callback);
+		return await getSortedSetRange(key, start, stop, min, max, sort, withScores);
 	}
 
 	module.sortedSetCount = function (key, min, max, callback) {
