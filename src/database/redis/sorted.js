@@ -185,7 +185,7 @@ module.exports = function (redisClient, module) {
 			return [];
 		}
 		const batch = redisClient.batch();
-		keys.forEach(key => batch.zscore(key, value));
+		keys.forEach(key => batch.zscore(String(key), String(value)));
 		const scores = await helpers.execBatch(batch);
 		return scores.map(d => (d === null ? d : parseFloat(d)));
 	};
@@ -195,7 +195,7 @@ module.exports = function (redisClient, module) {
 			return [];
 		}
 		const batch = redisClient.batch();
-		values.forEach(value => batch.zscore(key, value));
+		values.forEach(value => batch.zscore(String(key), String(value)));
 		const scores = await helpers.execBatch(batch);
 		return scores.map(d => (d === null ? d : parseFloat(d)));
 	};
