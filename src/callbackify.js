@@ -1,7 +1,6 @@
 'use strict';
 
 var util = require('util');
-var _ = require('lodash');
 
 module.exports = function (theModule, ignoreKeys) {
 	ignoreKeys = ignoreKeys || [];
@@ -12,8 +11,8 @@ module.exports = function (theModule, ignoreKeys) {
 		return fn && fn.constructor && fn.constructor.name === 'AsyncFunction';
 	}
 
-	function callbackifyRecursive(module, origModule) {
-		if (!module || !origModule) {
+	function callbackifyRecursive(module) {
+		if (!module) {
 			return;
 		}
 		var keys = Object.keys(module);
@@ -23,10 +22,9 @@ module.exports = function (theModule, ignoreKeys) {
 			}
 
 			if (isAsyncFunction(module[key])) {
-				module[key] = util.callbackify(module[key]);
-				origModule[key] = wrapIt(origModule[key], module[key]);
+				module[key] = wrapIt(module[key], util.callbackify(module[key]));
 			} else if (typeof module[key] === 'object') {
-				callbackifyRecursive(module[key], origModule[key]);
+				callbackifyRecursive(module[key], module[key]);
 			}
 		});
 	}
@@ -39,7 +37,5 @@ module.exports = function (theModule, ignoreKeys) {
 		};
 	}
 
-	const newModule = _.cloneDeep(theModule);
-	callbackifyRecursive(newModule, theModule);
-	return newModule;
+	callbackifyRecursive(theModule);
 };
