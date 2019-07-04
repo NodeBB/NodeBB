@@ -5,9 +5,6 @@ var _ = require('lodash');
 
 module.exports = function (theModule, ignoreKeys) {
 	ignoreKeys = ignoreKeys || [];
-	if (!ignoreKeys.includes('async')) {
-		ignoreKeys.push('async');
-	}
 	function isCallbackedFunction(func) {
 		if (typeof func !== 'function') {
 			return false;
@@ -15,13 +12,8 @@ module.exports = function (theModule, ignoreKeys) {
 		var str = func.toString().split('\n')[0];
 		return str.includes('callback)');
 	}
-
-	function isAsyncFunction(fn) {
-		return fn && fn.constructor && fn.constructor.name === 'AsyncFunction';
-	}
-
-	function callbackifyRecursive(module, origModule) {
-		if (!module || !origModule) {
+	function promisifyRecursive(module) {
+		if (!module) {
 			return;
 		}
 		var keys = Object.keys(module);
@@ -29,28 +21,14 @@ module.exports = function (theModule, ignoreKeys) {
 			if (ignoreKeys.includes(key)) {
 				return;
 			}
-
-			if (isAsyncFunction(module[key])) {
-				module[key] = util.callbackify(module[key]);
-				origModule[key] = wrapIt(origModule[key], module[key]);
-			} else if (isCallbackedFunction(module[key])) {
+			if (isCallbackedFunction(module[key])) {
 				module[key] = util.promisify(module[key]);
-				origModule[key] = module[key];
 			} else if (typeof module[key] === 'object') {
-				callbackifyRecursive(module[key], origModule[key]);
+				promisifyRecursive(module[key]);
 			}
 		});
 	}
-	function wrapIt(origFn, callbackFn) {
-		return async function wrapper() {
-			if (arguments.length && typeof arguments[arguments.length - 1] === 'function') {
-				return callbackFn.apply(null, arguments);
-			}
-			return origFn.apply(null, arguments);
-		};
-	}
-
-	const newModule = _.cloneDeep(theModule);
-	callbackifyRecursive(newModule, theModule);
-	return newModule;
+	const asyncModule = _.cloneDeep(theModule);
+	promisifyRecursive(asyncModule);
+	return asyncModule;
 };
