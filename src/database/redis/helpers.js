@@ -1,8 +1,15 @@
 'use strict';
 
+const util = require('util');
+
 var helpers = module.exports;
 
 helpers.noop = function () {};
+
+helpers.execBatch = async function (batch) {
+	const proFn = util.promisify(batch.exec).bind(batch);
+	return await proFn();
+};
 
 helpers.execKeys = function (redisClient, type, command, keys, callback) {
 	callback = callback || function () {};

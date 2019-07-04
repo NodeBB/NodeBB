@@ -56,6 +56,8 @@ redisModule.init = function (callback) {
 		}
 		redisModule.client = redisClient;
 
+		require('./redis/promisify')(redisClient);
+
 		require('./redis/main')(redisClient, redisModule);
 		require('./redis/hash')(redisClient, redisModule);
 		require('./redis/sets')(redisClient, redisModule);

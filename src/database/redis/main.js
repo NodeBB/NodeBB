@@ -21,16 +21,15 @@ module.exports = function (redisClient, module) {
 		});
 	};
 
-	module.exists = function (key, callback) {
+	module.exists = async function (key) {
 		if (Array.isArray(key)) {
-			helpers.execKeys(redisClient, 'batch', 'exists', key, function (err, data) {
-				callback(err, data && data.map(exists => exists === 1));
-			});
-		} else {
-			redisClient.exists(key, function (err, exists) {
-				callback(err, exists === 1);
-			});
+			const batch = redisClient.batch();
+			key.forEach(key => batch.exists(key));
+			const data = await helpers.execBatch(batch);
+			return data.map(exists => exists === 1);
 		}
+		const exists = await redisClient.async.exists(key);
+		return exists === 1;
 	};
 
 	module.delete = function (key, callback) {
