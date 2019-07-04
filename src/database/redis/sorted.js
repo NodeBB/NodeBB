@@ -171,50 +171,33 @@ module.exports = function (redisClient, module) {
 		batch.exec(callback);
 	};
 
-	module.sortedSetScore = function (key, value, callback) {
+	module.sortedSetScore = async function (key, value) {
 		if (!key || value === undefined) {
-			return callback(null, null);
+			return null;
 		}
 
-		redisClient.zscore(key, value, function (err, score) {
-			if (err) {
-				return callback(err);
-			}
-			if (score === null) {
-				return callback(null, score);
-			}
-			callback(null, parseFloat(score));
-		});
+		const score = await redisClient.async.zscore(key, value);
+		return score === null ? score : parseFloat(score);
 	};
 
-	module.sortedSetsScore = function (keys, value, callback) {
+	module.sortedSetsScore = async function (keys, value) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, []);
+			return [];
 		}
-		helpers.execKeysValue(redisClient, 'batch', 'zscore', keys, value, function (err, scores) {
-			if (err) {
-				return callback(err);
-			}
-			scores = scores.map(function (d) {
-				return d === null ? d : parseFloat(d);
-			});
-			callback(null, scores);
-		});
+		const batch = redisClient.batch();
+		keys.forEach(key => batch.zscore(key, value));
+		const scores = await helpers.execBatch(batch);
+		return scores.map(d => (d === null ? d : parseFloat(d)));
 	};
 
-	module.sortedSetScores = function (key, values, callback) {
+	module.sortedSetScores = async function (key, values) {
 		if (!values.length) {
-			return setImmediate(callback, null, []);
+			return [];
 		}
-		helpers.execKeyValues(redisClient, 'batch', 'zscore', key, values, function (err, scores) {
-			if (err) {
-				return callback(err);
-			}
-			scores = scores.map(function (d) {
-				return d === null ? d : parseFloat(d);
-			});
-			callback(null, scores);
-		});
+		const batch = redisClient.batch();
+		values.forEach(value => batch.zscore(key, value));
+		const scores = await helpers.execBatch(batch);
+		return scores.map(d => (d === null ? d : parseFloat(d)));
 	};
 
 	module.isSortedSetMember = function (key, value, callback) {

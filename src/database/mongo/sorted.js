@@ -249,69 +249,49 @@ module.exports = function (db, module) {
 		});
 	}
 
-	module.sortedSetScore = function (key, value, callback) {
+	module.sortedSetScore = async function (key, value) {
 		if (!key) {
-			return callback(null, null);
+			return null;
 		}
 		value = helpers.valueToString(value);
-		db.collection('objects').findOne({ _key: key, value: value }, { projection: { _id: 0, _key: 0, value: 0 } }, function (err, result) {
-			callback(err, result ? result.score : null);
-		});
+		const result = await db.collection('objects').findOne({ _key: key, value: value }, { projection: { _id: 0, _key: 0, value: 0 } });
+		return result ? result.score : null;
 	};
 
-	module.sortedSetsScore = function (keys, value, callback) {
+	module.sortedSetsScore = async function (keys, value) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, []);
+			return [];
 		}
 		value = helpers.valueToString(value);
-		db.collection('objects').find({ _key: { $in: keys }, value: value }, { projection: { _id: 0, value: 0 } }).toArray(function (err, result) {
-			if (err) {
-				return callback(err);
+		const result = await db.collection('objects').find({ _key: { $in: keys }, value: value }, { projection: { _id: 0, value: 0 } }).toArray();
+		var map = {};
+		result.forEach(function (item) {
+			if (item) {
+				map[item._key] = item;
 			}
-
-			var map = {};
-			result.forEach(function (item) {
-				if (item) {
-					map[item._key] = item;
-				}
-			});
-
-			result = keys.map(function (key) {
-				return map[key] ? map[key].score : null;
-			});
-
-			callback(null, result);
 		});
+
+		return keys.map(key => (map[key] ? map[key].score : null));
 	};
 
-	module.sortedSetScores = function (key, values, callback) {
+	module.sortedSetScores = async function (key, values) {
 		if (!key) {
-			return setImmediate(callback, null, null);
+			return null;
 		}
 		if (!values.length) {
-			return setImmediate(callback, null, []);
+			return [];
 		}
 		values = values.map(helpers.valueToString);
-		db.collection('objects').find({ _key: key, value: { $in: values } }, { projection: { _id: 0, _key: 0 } }).toArray(function (err, result) {
-			if (err) {
-				return callback(err);
+		const result = await db.collection('objects').find({ _key: key, value: { $in: values } }, { projection: { _id: 0, _key: 0 } }).toArray();
+
+		var valueToScore = {};
+		result.forEach(function (item) {
+			if (item) {
+				valueToScore[item.value] = item.score;
 			}
-
-			var map = {};
-			result.forEach(function (item) {
-				map[item.value] = item.score;
-			});
-
-			var returnData = new Array(values.length);
-			var score;
-
-			for (var i = 0; i < values.length; i += 1) {
-				score = map[values[i]];
-				returnData[i] = utils.isNumber(score) ? score : null;
-			}
-
-			callback(null, returnData);
 		});
+
+		return values.map(v => (utils.isNumber(valueToScore[v]) ? valueToScore[v] : null));
 	};
 
 	module.isSortedSetMember = function (key, value, callback) {

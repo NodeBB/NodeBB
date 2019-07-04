@@ -684,7 +684,7 @@ describe('Sorted Set methods', function () {
 		it('should return 0 if score is 0', function (done) {
 			db.sortedSetScores('zeroScore', ['value1'], function (err, scores) {
 				assert.ifError(err);
-				assert.strictEqual(0, scores[0]);
+				assert.strictEqual(scores[0], 0);
 				done();
 			});
 		});

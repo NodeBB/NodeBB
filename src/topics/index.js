@@ -138,7 +138,7 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 		categories.async.getTagWhitelist([topicData.cid]),
 		plugins.async.fireHook('filter:topic.thread_tools', { topic: topicData, uid: uid, tools: [] }),
 		Topics.async.getFollowData([topicData.tid], uid),
-		Topics.async.getUserBookmark(topicData.tid, uid),
+		Topics.getUserBookmark(topicData.tid, uid),
 		social.getActivePostSharing(),
 		getDeleter(topicData),
 		getMerger(topicData),

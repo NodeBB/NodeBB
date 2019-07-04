@@ -15,5 +15,6 @@ module.exports = function (redisClient) {
 		zrangebyscore: util.promisify(redisClient.zrangebyscore).bind(redisClient),
 		zrevrangebyscore: util.promisify(redisClient.zrevrangebyscore).bind(redisClient),
 
+		zscore: util.promisify(redisClient.zscore).bind(redisClient),
 	};
 };

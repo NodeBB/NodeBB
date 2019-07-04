@@ -33,7 +33,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 	] = await Promise.all([
 		privileges.async.topics.get(tid, req.uid),
 		user.async.getSettings(req.uid),
-		topics.async.getTopicData(tid),
+		topics.getTopicData(tid),
 		user.async.auth.getFeedToken(req.uid),
 	]);
 
@@ -52,7 +52,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 	}
 
 	if (postIndex === 'unread') {
-		postIndex = await topics.async.getUserBookmark(tid, req.uid);
+		postIndex = await topics.getUserBookmark(tid, req.uid);
 	}
 
 	if (utils.isNumber(postIndex) && (postIndex < 1 || postIndex > topicData.postcount)) {
@@ -67,7 +67,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 	}
 	const { start, stop } = calculateStartStop(currentPage, postIndex, settings);
 
-	await topics.async.getTopicWithPosts(topicData, set, req.uid, start, stop, reverse);
+	await topics.getTopicWithPosts(topicData, set, req.uid, start, stop, reverse);
 
 	topics.modifyPostsByPrivilege(topicData, userPrivileges);
 

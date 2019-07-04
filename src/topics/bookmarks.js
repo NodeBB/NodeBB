@@ -7,18 +7,18 @@ var db = require('../database');
 var user = require('../user');
 
 module.exports = function (Topics) {
-	Topics.getUserBookmark = function (tid, uid, callback) {
+	Topics.getUserBookmark = async function (tid, uid) {
 		if (parseInt(uid, 10) <= 0) {
-			return callback(null, null);
+			return null;
 		}
-		db.sortedSetScore('tid:' + tid + ':bookmarks', uid, callback);
+		return await db.sortedSetScore('tid:' + tid + ':bookmarks', uid);
 	};
 
-	Topics.getUserBookmarks = function (tids, uid, callback) {
+	Topics.getUserBookmarks = async function (tids, uid) {
 		if (parseInt(uid, 10) <= 0) {
-			return callback(null, tids.map(() => null));
+			return tids.map(() => null);
 		}
-		db.sortedSetsScore(tids.map(tid => 'tid:' + tid + ':bookmarks'), uid, callback);
+		return await db.sortedSetsScore(tids.map(tid => 'tid:' + tid + ':bookmarks'), uid);
 	};
 
 	Topics.setUserBookmark = function (tid, uid, index, callback) {

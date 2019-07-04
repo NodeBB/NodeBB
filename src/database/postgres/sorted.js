@@ -339,14 +339,14 @@ SELECT (SELECT r
 		getSortedSetRank('DESC', new Array(values.length).fill(key), values, callback);
 	};
 
-	module.sortedSetScore = function (key, value, callback) {
+	module.sortedSetScore = async function (key, value) {
 		if (!key) {
-			return callback(null, null);
+			return null;
 		}
 
 		value = helpers.valueToString(value);
 
-		query({
+		const res = await query({
 			name: 'sortedSetScore',
 			text: `
 SELECT z."score" s
@@ -357,27 +357,21 @@ SELECT z."score" s
  WHERE o."_key" = $1::TEXT
    AND z."value" = $2::TEXT`,
 			values: [key, value],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (res.rows.length) {
-				return callback(null, parseFloat(res.rows[0].s));
-			}
-
-			callback(null, null);
 		});
+		if (res.rows.length) {
+			return parseFloat(res.rows[0].s);
+		}
+		return null;
 	};
 
-	module.sortedSetsScore = function (keys, value, callback) {
+	module.sortedSetsScore = async function (keys, value) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, []);
+			return [];
 		}
 
 		value = helpers.valueToString(value);
 
-		query({
+		const res = await query({
 			name: 'sortedSetsScore',
 			text: `
 SELECT o."_key" k,
@@ -389,31 +383,24 @@ SELECT o."_key" k,
  WHERE o."_key" = ANY($1::TEXT[])
    AND z."value" = $2::TEXT`,
 			values: [keys, value],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
+		});
 
-			callback(null, keys.map(function (k) {
-				var s = res.rows.find(function (r) {
-					return r.k === k;
-				});
-
-				return s ? parseFloat(s.s) : null;
-			}));
+		return keys.map(function (k) {
+			var s = res.rows.find(r => r.k === k);
+			return s ? parseFloat(s.s) : null;
 		});
 	};
 
-	module.sortedSetScores = function (key, values, callback) {
+	module.sortedSetScores = async function (key, values) {
 		if (!key) {
-			return setImmediate(callback, null, null);
+			return null;
 		}
 		if (!values.length) {
-			return setImmediate(callback, null, []);
+			return [];
 		}
 		values = values.map(helpers.valueToString);
 
-		query({
+		const res = await query({
 			name: 'sortedSetScores',
 			text: `
 SELECT z."value" v,
@@ -425,18 +412,11 @@ SELECT z."value" v,
  WHERE o."_key" = $1::TEXT
    AND z."value" = ANY($2::TEXT[])`,
 			values: [key, values],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
+		});
 
-			callback(null, values.map(function (v) {
-				var s = res.rows.find(function (r) {
-					return r.v === v;
-				});
-
-				return s ? parseFloat(s.s) : null;
-			}));
+		return values.map(function (v) {
+			var s = res.rows.find(r => r.v === v);
+			return s ? parseFloat(s.s) : null;
 		});
 	};
 
