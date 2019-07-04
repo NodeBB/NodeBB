@@ -5,7 +5,9 @@ var _ = require('lodash');
 
 module.exports = function (theModule, ignoreKeys) {
 	ignoreKeys = ignoreKeys || [];
-
+	if (!ignoreKeys.includes('async')) {
+		ignoreKeys.push('async');
+	}
 	function isAsyncFunction(fn) {
 		return fn && fn.constructor && fn.constructor.name === 'AsyncFunction';
 	}
