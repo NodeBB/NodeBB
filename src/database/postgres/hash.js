@@ -96,7 +96,7 @@ SELECT h."data"
 			return null;
 		}
 
-		const res = db.query({
+		const res = await db.query({
 			name: 'getObjectField',
 			text: `
 SELECT h."data"->>$2::TEXT f
