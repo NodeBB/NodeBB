@@ -1,34 +1,33 @@
 'use strict';
 
 module.exports = function (db, module) {
-	module.sortedSetUnionCard = function (keys, callback) {
+	module.sortedSetUnionCard = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, 0);
+			return 0;
 		}
 
-		db.collection('objects').aggregate([
+		const data = await db.collection('objects').aggregate([
 			{ $match: { _key: { $in: keys } } },
 			{ $group: { _id: { value: '$value' } } },
 			{ $group: { _id: null, count: { $sum: 1 } } },
 			{ $project: { _id: 0, count: '$count' } },
-		]).toArray(function (err, data) {
-			callback(err, Array.isArray(data) && data.length ? data[0].count : 0);
-		});
+		]).toArray();
+		return Array.isArray(data) && data.length ? data[0].count : 0;
 	};
 
-	module.getSortedSetUnion = function (params, callback) {
+	module.getSortedSetUnion = async function (params) {
 		params.sort = 1;
-		getSortedSetUnion(params, callback);
+		return await getSortedSetUnion(params);
 	};
 
-	module.getSortedSetRevUnion = function (params, callback) {
+	module.getSortedSetRevUnion = async function (params) {
 		params.sort = -1;
-		getSortedSetUnion(params, callback);
+		return await getSortedSetUnion(params);
 	};
 
-	function getSortedSetUnion(params, callback) {
+	async function getSortedSetUnion(params) {
 		if (!Array.isArray(params.sets) || !params.sets.length) {
-			return callback();
+			return;
 		}
 		var limit = params.stop - params.start + 1;
 		if (limit <= 0) {
@@ -62,18 +61,10 @@ module.exports = function (db, module) {
 		}
 		pipeline.push({	$project: project });
 
-		db.collection('objects').aggregate(pipeline).toArray(function (err, data) {
-			if (err || !data) {
-				return callback(err);
-			}
-
-			if (!params.withScores) {
-				data = data.map(function (item) {
-					return item.value;
-				});
-			}
-
-			callback(null, data);
-		});
+		let data = await db.collection('objects').aggregate(pipeline).toArray();
+		if (!params.withScores) {
+			data = data.map(item => item.value);
+		}
+		return data;
 	}
 };
