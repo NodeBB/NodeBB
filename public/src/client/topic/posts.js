@@ -250,14 +250,13 @@ define('forum/topic/posts', [
 	};
 
 	Posts.onTopicPageLoad = function (posts) {
+		handlePrivateUploads(posts);
 		images.wrapImagesInLinks(posts);
 		Posts.showBottomPostBar();
 		posts.find('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
 		Posts.addBlockquoteEllipses(posts);
-
 		hidePostToolsForDeletedPosts(posts);
 		addNecroPostMessage();
-		handlePrivateUploads(posts);
 	};
 
 	function addNecroPostMessage() {
