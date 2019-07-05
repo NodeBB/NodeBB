@@ -20,7 +20,9 @@ module.exports = function (db, dbNamespace, module) {
 		const client = await db.connect();
 		console.log('transaction', client, client.query, '--');
 		try {
+			console.log('calling begin', client.query);
 			await client.query(`BEGIN`);
+			console.log('calling perform');
 			res = await perform(client);
 			await client.query('COMMIT');
 			// dbNamespace.set('db', null);
