@@ -18,7 +18,7 @@ module.exports = function (db, dbNamespace, module) {
 		}
 
 		const client = await db.connect();
-
+		console.log('transaction', client, client.query, '--');
 		try {
 			await client.query(`BEGIN`);
 			res = await perform(client);
