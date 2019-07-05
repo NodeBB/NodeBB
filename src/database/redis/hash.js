@@ -111,8 +111,8 @@ module.exports = function (redisClient, module) {
 		return mapped;
 	};
 
-	module.getObjectKeys = function (key, callback) {
-		redisClient.hkeys(key, callback);
+	module.getObjectKeys = async function (key) {
+		return await redisClient.async.hkeys(key);
 	};
 
 	module.getObjectValues = function (key, callback) {

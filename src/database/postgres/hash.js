@@ -169,12 +169,12 @@ SELECT (SELECT jsonb_object_agg(f, d."value")
 		return res.rows.map(row => row.d);
 	};
 
-	module.getObjectKeys = function (key, callback) {
+	module.getObjectKeys = async function (key) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
-		db.query({
+		const res = await db.query({
 			name: 'getObjectKeys',
 			text: `
 SELECT ARRAY(SELECT jsonb_object_keys(h."data")) k
@@ -185,17 +185,9 @@ SELECT ARRAY(SELECT jsonb_object_keys(h."data")) k
  WHERE o."_key" = $1::TEXT
  LIMIT 1`,
 			values: [key],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (res.rows.length) {
-				return callback(null, res.rows[0].k);
-			}
-
-			callback(null, []);
 		});
+
+		return res.rows.length ? res.rows[0].k : [];
 	};
 
 	module.getObjectValues = function (key, callback) {

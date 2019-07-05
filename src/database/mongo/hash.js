@@ -111,10 +111,9 @@ module.exports = function (db, module) {
 		return returnData();
 	};
 
-	module.getObjectKeys = function (key, callback) {
-		module.getObject(key, function (err, data) {
-			callback(err, data ? Object.keys(data) : []);
-		});
+	module.getObjectKeys = async function (key) {
+		const data = await module.getObject(key);
+		return data ? Object.keys(data) : [];
 	};
 
 	module.getObjectValues = function (key, callback) {
