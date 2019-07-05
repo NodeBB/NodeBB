@@ -22,7 +22,7 @@ module.exports = function (db, dbNamespace, module) {
 		try {
 			console.log('calling begin', client.query);
 			await client.query(`BEGIN`);
-			console.log('calling perform', client.query);
+			console.log('calling perform', client.query, perform, typeof perform);
 			res = await perform(client);
 			console.log('returned from perform');
 			await client.query('COMMIT');
