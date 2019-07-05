@@ -21,60 +21,56 @@ module.exports = function (db, module) {
 		cache.delObjectCache(key);
 	};
 
-	module.setObjectField = function (key, field, value, callback) {
-		callback = callback || helpers.noop;
+	module.setObjectField = async function (key, field, value) {
 		if (!field) {
-			return callback();
+			return;
 		}
 		var data = {};
 		data[field] = value;
-		module.setObject(key, data, callback);
+		await module.setObject(key, data);
 	};
 
-	module.getObject = function (key, callback) {
+	module.getObject = async function (key) {
 		if (!key) {
-			return setImmediate(callback, null, null);
+			return null;
 		}
 
-		module.getObjects([key], function (err, data) {
-			callback(err, data && data.length ? data[0] : null);
-		});
+		const data = await module.getObjects([key]);
+		return data && data.length ? data[0] : null;
 	};
 
-	module.getObjects = function (keys, callback) {
-		module.getObjectsFields(keys, [], callback);
+	module.getObjects = async function (keys) {
+		return await module.getObjectsFields(keys, []);
 	};
 
-	module.getObjectField = function (key, field, callback) {
+	module.getObjectField = async function (key, field) {
 		if (!key) {
-			return setImmediate(callback, null, null);
+			return null;
 		}
 		const cachedData = {};
 		cache.getUnCachedKeys([key], cachedData);
 		if (cachedData[key]) {
-			return setImmediate(callback, null, cachedData[key].hasOwnProperty(field) ? cachedData[key][field] : null);
+			return cachedData[key].hasOwnProperty(field) ? cachedData[key][field] : null;
 		}
 		field = helpers.fieldToString(field);
-		db.collection('objects').findOne({ _key: key }, { projection: { _id: 0, [field]: 1 } }, function (err, item) {
-			if (err || !item) {
-				return callback(err, null);
-			}
-			callback(null, item.hasOwnProperty(field) ? item[field] : null);
-		});
-	};
-
-	module.getObjectFields = function (key, fields, callback) {
-		if (!key) {
-			return setImmediate(callback, null, null);
+		const item = await db.collection('objects').findOne({ _key: key }, { projection: { _id: 0, [field]: 1 } });
+		if (!item) {
+			return null;
 		}
-		module.getObjectsFields([key], fields, function (err, data) {
-			callback(err, data ? data[0] : null);
-		});
+		return item.hasOwnProperty(field) ? item[field] : null;
 	};
 
-	module.getObjectsFields = function (keys, fields, callback) {
+	module.getObjectFields = async function (key, fields) {
+		if (!key) {
+			return null;
+		}
+		const data = await module.getObjectsFields([key], fields);
+		return data ? data[0] : null;
+	};
+
+	module.getObjectsFields = async function (keys, fields) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return setImmediate(callback, null, []);
+			return [];
 		}
 		const cachedData = {};
 		function returnData() {
@@ -91,31 +87,28 @@ module.exports = function (db, module) {
 				return result;
 			});
 
-			callback(null, mapped);
+			return mapped;
 		}
 
 		const unCachedKeys = cache.getUnCachedKeys(keys, cachedData);
 		if (!unCachedKeys.length) {
-			return process.nextTick(returnData);
+			return returnData();
 		}
 
 		var query = { _key: { $in: unCachedKeys } };
 		if (unCachedKeys.length === 1) {
 			query._key = unCachedKeys[0];
 		}
-		db.collection('objects').find(query, { projection: { _id: 0 } }).toArray(function (err, data) {
-			if (err) {
-				return callback(err);
-			}
-			data = data.map(helpers.deserializeData);
-			var map = helpers.toMap(data);
-			unCachedKeys.forEach(function (key) {
-				cachedData[key] = map[key] || null;
-				cache.set(key, cachedData[key]);
-			});
+		let data = await db.collection('objects').find(query, { projection: { _id: 0 } }).toArray();
 
-			returnData();
+		data = data.map(helpers.deserializeData);
+		var map = helpers.toMap(data);
+		unCachedKeys.forEach(function (key) {
+			cachedData[key] = map[key] || null;
+			cache.set(key, cachedData[key]);
 		});
+
+		return returnData();
 	};
 
 	module.getObjectKeys = function (key, callback) {

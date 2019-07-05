@@ -3,7 +3,6 @@
 module.exports = function (redisClient, module) {
 	var helpers = module.helpers.redis;
 
-	const async = require('async');
 	const _ = require('lodash');
 
 	const cache = require('../cache').create('redis');
@@ -32,96 +31,84 @@ module.exports = function (redisClient, module) {
 		cache.delObjectCache(key);
 	};
 
-	module.setObjectField = function (key, field, value, callback) {
-		callback = callback || function () {};
+	module.setObjectField = async function (key, field, value) {
 		if (!field) {
-			return callback();
+			return;
 		}
-		redisClient.hset(key, field, value, function (err) {
-			if (err) {
-				return callback(err);
-			}
-			cache.delObjectCache(key);
-			callback();
-		});
+		await redisClient.async.hset(key, field, value);
+		cache.delObjectCache(key);
 	};
 
-	module.getObject = function (key, callback) {
+	module.getObject = async function (key) {
 		if (!key) {
-			return setImmediate(callback, null, null);
+			return null;
 		}
 
-		module.getObjectsFields([key], [], function (err, data) {
-			callback(err, data && data.length ? data[0] : null);
-		});
+		const data = await module.getObjectsFields([key], []);
+		return data && data.length ? data[0] : null;
 	};
 
-	module.getObjects = function (keys, callback) {
-		module.getObjectsFields(keys, [], callback);
+	module.getObjects = async function (keys) {
+		return await module.getObjectsFields(keys, []);
 	};
 
-	module.getObjectField = function (key, field, callback) {
+	module.getObjectField = async function (key, field) {
 		if (!key) {
-			return setImmediate(callback, null, null);
+			return null;
 		}
 		const cachedData = {};
 		cache.getUnCachedKeys([key], cachedData);
 		if (cachedData[key]) {
-			return setImmediate(callback, null, cachedData[key].hasOwnProperty(field) ? cachedData[key][field] : null);
+			return cachedData[key].hasOwnProperty(field) ? cachedData[key][field] : null;
 		}
-		redisClient.hget(key, field, callback);
+		return await redisClient.async.hget(key, field);
 	};
 
-	module.getObjectFields = function (key, fields, callback) {
+	module.getObjectFields = async function (key, fields) {
 		if (!key) {
-			return setImmediate(callback, null, null);
+			return null;
 		}
-		module.getObjectsFields([key], fields, function (err, results) {
-			callback(err, results ? results[0] : null);
-		});
+		const results = await module.getObjectsFields([key], fields);
+		return results ? results[0] : null;
 	};
 
-	module.getObjectsFields = function (keys, fields, callback) {
+	module.getObjectsFields = async function (keys, fields) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return setImmediate(callback, null, []);
+			return [];
 		}
 		if (!Array.isArray(fields)) {
-			return callback(null, keys.map(function () { return {}; }));
+			return keys.map(function () { return {}; });
 		}
 		const cachedData = {};
 		const unCachedKeys = cache.getUnCachedKeys(keys, cachedData);
 
-		async.waterfall([
-			function (next) {
-				if (unCachedKeys.length > 1) {
-					helpers.execKeys(redisClient, 'batch', 'hgetall', unCachedKeys, next);
-				} else if (unCachedKeys.length === 1) {
-					redisClient.hgetall(unCachedKeys[0], (err, data) => next(err, [data]));
-				} else {
-					next(null, []);
-				}
-			},
-			function (data, next) {
-				unCachedKeys.forEach(function (key, i) {
-					cachedData[key] = data[i] || null;
-					cache.set(key, cachedData[key]);
-				});
+		let data = [];
+		if (unCachedKeys.length > 1) {
+			const batch = redisClient.batch();
+			keys.forEach(k => batch.hgetall(k));
+			data = await helpers.execBatch(batch);
+		} else if (unCachedKeys.length === 1) {
+			data = [await redisClient.async.hgetall(unCachedKeys[0])];
+		}
 
-				var mapped = keys.map(function (key) {
-					if (!fields.length) {
-						return _.clone(cachedData[key]);
-					}
+		unCachedKeys.forEach(function (key, i) {
+			cachedData[key] = data[i] || null;
+			cache.set(key, cachedData[key]);
+		});
 
-					const item = cachedData[key] || {};
-					const result = {};
-					fields.forEach((field) => {
-						result[field] = item[field] !== undefined ? item[field] : null;
-					});
-					return result;
-				});
-				next(null, mapped);
-			},
-		], callback);
+		const mapped = keys.map(function (key) {
+			if (!fields.length) {
+				return _.clone(cachedData[key]);
+			}
+
+			const item = cachedData[key] || {};
+			const result = {};
+			fields.forEach((field) => {
+				result[field] = item[field] !== undefined ? item[field] : null;
+			});
+			return result;
+		});
+		return mapped;
 	};
 
 	module.getObjectKeys = function (key, callback) {

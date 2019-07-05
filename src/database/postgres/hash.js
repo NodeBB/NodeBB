@@ -48,12 +48,12 @@ DO UPDATE SET "data" = jsonb_set("legacy_hash"."data", ARRAY[$2::TEXT], $3::TEXT
 		});
 	};
 
-	module.getObject = function (key, callback) {
+	module.getObject = async function (key) {
 		if (!key) {
-			return callback(null, null);
+			return null;
 		}
 
-		db.query({
+		const res = await db.query({
 			name: 'getObject',
 			text: `
 SELECT h."data"
@@ -64,25 +64,17 @@ SELECT h."data"
  WHERE o."_key" = $1::TEXT
  LIMIT 1`,
 			values: [key],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (res.rows.length) {
-				return callback(null, res.rows[0].data);
-			}
-
-			callback(null, null);
 		});
+
+		return res.rows.length ? res.rows[0].data : null;
 	};
 
-	module.getObjects = function (keys, callback) {
+	module.getObjects = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, []);
+			return [];
 		}
 
-		db.query({
+		const res = await db.query({
 			name: 'getObjects',
 			text: `
 SELECT h."data"
@@ -94,23 +86,17 @@ SELECT h."data"
               AND o."type" = h."type"
  ORDER BY k.i ASC`,
 			values: [keys],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, res.rows.map(function (row) {
-				return row.data;
-			}));
 		});
+
+		return res.rows.map(row => row.data);
 	};
 
-	module.getObjectField = function (key, field, callback) {
+	module.getObjectField = async function (key, field) {
 		if (!key) {
-			return setImmediate(callback, null, null);
+			return null;
 		}
 
-		db.query({
+		const res = db.query({
 			name: 'getObjectField',
 			text: `
 SELECT h."data"->>$2::TEXT f
@@ -121,25 +107,17 @@ SELECT h."data"->>$2::TEXT f
  WHERE o."_key" = $1::TEXT
  LIMIT 1`,
 			values: [key, field],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (res.rows.length) {
-				return callback(null, res.rows[0].f);
-			}
-
-			callback(null, null);
 		});
+
+		return res.rows.length ? res.rows[0].f : null;
 	};
 
-	module.getObjectFields = function (key, fields, callback) {
+	module.getObjectFields = async function (key, fields) {
 		if (!key) {
-			return setImmediate(callback, null, null);
+			return null;
 		}
 
-		db.query({
+		const res = await db.query({
 			name: 'getObjectFields',
 			text: `
 SELECT (SELECT jsonb_object_agg(f, d."value")
@@ -152,30 +130,26 @@ SELECT (SELECT jsonb_object_agg(f, d."value")
         AND o."type" = h."type"
  WHERE o."_key" = $1::TEXT`,
 			values: [key, fields],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (res.rows.length) {
-				return callback(null, res.rows[0].d);
-			}
-
-			var obj = {};
-			fields.forEach(function (f) {
-				obj[f] = null;
-			});
-
-			callback(null, obj);
 		});
-	};
 
-	module.getObjectsFields = function (keys, fields, callback) {
-		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, []);
+		if (res.rows.length) {
+			return res.rows[0].d;
 		}
 
-		db.query({
+		var obj = {};
+		fields.forEach(function (f) {
+			obj[f] = null;
+		});
+
+		return obj;
+	};
+
+	module.getObjectsFields = async function (keys, fields) {
+		if (!Array.isArray(keys) || !keys.length) {
+			return [];
+		}
+
+		const res = await db.query({
 			name: 'getObjectsFields',
 			text: `
 SELECT (SELECT jsonb_object_agg(f, d."value")
@@ -190,15 +164,9 @@ SELECT (SELECT jsonb_object_agg(f, d."value")
               AND o."type" = h."type"
  ORDER BY k.i ASC`,
 			values: [keys, fields],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, res.rows.map(function (row) {
-				return row.d;
-			}));
 		});
+
+		return res.rows.map(row => row.d);
 	};
 
 	module.getObjectKeys = function (key, callback) {
