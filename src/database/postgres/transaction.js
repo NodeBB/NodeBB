@@ -18,19 +18,18 @@ module.exports = function (db, dbNamespace, module) {
 		}
 		// see https://node-postgres.com/features/transactions#a-pooled-client-with-async-await
 		const client = await db.connect();
-		console.log('transaction', client, client.query, '--');
+
 		try {
-			console.log('calling begin', client.query);
-			await client.query(`BEGIN`);
-			console.log('calling perform', client.query, perform, typeof perform);
+			await client.query('BEGIN');
 			res = await perform(client);
-			console.log('returned from perform');
 			await client.query('COMMIT');
 			// dbNamespace.set('db', null);
 		} catch (err) {
 			await client.query('ROLLBACK');
 			// dbNamespace.set('db', null);
 			throw err;
+		} finally {
+			client.release();
 		}
 		return res;
 	};
