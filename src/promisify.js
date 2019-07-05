@@ -26,6 +26,10 @@ module.exports = function (theModule, ignoreKeys) {
 			} else if (typeof module[key] === 'object') {
 				promisifyRecursive(module[key]);
 			}
+
+			if (typeof module[key] === 'function') {
+				module[key] = require('util').deprecate(module[key], '.async.' + key + ' usage is deprecated use .' + key + ' directly!');
+			}
 		});
 	}
 	const asyncModule = _.cloneDeep(theModule);
