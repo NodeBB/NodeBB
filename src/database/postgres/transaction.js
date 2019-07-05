@@ -16,7 +16,7 @@ module.exports = function (db, dbNamespace, module) {
 			await txClient.query(`RELEASE SAVEPOINT nodebb_subtx`);
 			return res;
 		}
-
+		// see https://node-postgres.com/features/transactions#a-pooled-client-with-async-await
 		const client = await db.connect();
 		console.log('transaction', client, client.query, '--');
 		try {
