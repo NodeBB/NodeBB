@@ -21,12 +21,12 @@ module.exports = function (Topics) {
 		return await db.sortedSetsScore(tids.map(tid => 'tid:' + tid + ':bookmarks'), uid);
 	};
 
-	Topics.setUserBookmark = function (tid, uid, index, callback) {
-		db.sortedSetAdd('tid:' + tid + ':bookmarks', index, uid, callback);
+	Topics.setUserBookmark = async function (tid, uid, index) {
+		await db.sortedSetAdd('tid:' + tid + ':bookmarks', index, uid);
 	};
 
-	Topics.getTopicBookmarks = function (tid, callback) {
-		db.getSortedSetRangeWithScores('tid:' + tid + ':bookmarks', 0, -1, callback);
+	Topics.getTopicBookmarks = async function (tid) {
+		return await db.getSortedSetRangeWithScores('tid:' + tid + ':bookmarks', 0, -1);
 	};
 
 	Topics.updateTopicBookmarks = function (tid, pids, callback) {

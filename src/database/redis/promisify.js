@@ -10,6 +10,7 @@ module.exports = function (redisClient) {
 		get: util.promisify(redisClient.get).bind(redisClient),
 		set: util.promisify(redisClient.set).bind(redisClient),
 
+		zadd: util.promisify(redisClient.zadd).bind(redisClient),
 		zrange: util.promisify(redisClient.zrange).bind(redisClient),
 		zrevrange: util.promisify(redisClient.zrevrange).bind(redisClient),
 		zrangebyscore: util.promisify(redisClient.zrangebyscore).bind(redisClient),
