@@ -200,20 +200,23 @@ describe('authentication', function () {
 	});
 
 	it('should login a user', function (done) {
+		console.log('1');
 		loginUser('regular', 'regularpwd', function (err, response, body, jar) {
 			assert.ifError(err);
 			assert(body);
-
+			console.log('2');
 			request({
 				url: nconf.get('url') + '/api/me',
 				json: true,
 				jar: jar,
 			}, function (err, response, body) {
+				console.log('3');
 				assert.ifError(err);
 				assert(body);
 				assert.equal(body.username, 'regular');
 				assert.equal(body.email, 'regular@nodebb.org');
 				db.getObject('uid:' + regularUid + ':sessionUUID:sessionId', function (err, sessions) {
+					console.log('4');
 					assert.ifError(err);
 					assert(sessions);
 					assert(Object.keys(sessions).length > 0);
