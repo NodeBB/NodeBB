@@ -79,16 +79,16 @@ postgresModule.init = function (callback) {
 
 	const db = new Pool(connOptions);
 
-	db.on('connect', function (client) {
-		var realQuery = client.query;
-		client.query = function () {
-			var args = Array.prototype.slice.call(arguments, 0);
-			if (dbNamespace.active && typeof args[args.length - 1] === 'function') {
-				args[args.length - 1] = dbNamespace.bind(args[args.length - 1]);
-			}
-			return realQuery.apply(client, args);
-		};
-	});
+	// db.on('connect', function (client) {
+	// 	var realQuery = client.query;
+	// 	client.query = function () {
+	// 		var args = Array.prototype.slice.call(arguments, 0);
+	// 		if (dbNamespace.active && typeof args[args.length - 1] === 'function') {
+	// 			args[args.length - 1] = dbNamespace.bind(args[args.length - 1]);
+	// 		}
+	// 		return realQuery.apply(client, args);
+	// 	};
+	// });
 
 	db.connect(function (err, client, release) {
 		if (err) {
@@ -99,7 +99,8 @@ postgresModule.init = function (callback) {
 		postgresModule.pool = db;
 		Object.defineProperty(postgresModule, 'client', {
 			get: function () {
-				return (dbNamespace.active && dbNamespace.get('db')) || db;
+				// return (dbNamespace.active && dbNamespace.get('db')) || db;
+				return db;
 			},
 			configurable: true,
 		});
@@ -140,16 +141,16 @@ postgresModule.connect = function (options, callback) {
 
 	const db = new Pool(connOptions);
 
-	db.on('connect', function (client) {
-		var realQuery = client.query;
-		client.query = function () {
-			var args = Array.prototype.slice.call(arguments, 0);
-			if (dbNamespace.active && typeof args[args.length - 1] === 'function') {
-				args[args.length - 1] = dbNamespace.bind(args[args.length - 1]);
-			}
-			return realQuery.apply(client, args);
-		};
-	});
+	// db.on('connect', function (client) {
+	// 	var realQuery = client.query;
+	// 	client.query = function () {
+	// 		var args = Array.prototype.slice.call(arguments, 0);
+	// 		if (dbNamespace.active && typeof args[args.length - 1] === 'function') {
+	// 			args[args.length - 1] = dbNamespace.bind(args[args.length - 1]);
+	// 		}
+	// 		return realQuery.apply(client, args);
+	// 	};
+	// });
 
 	db.connect(function (err) {
 		callback(err, db);

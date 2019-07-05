@@ -31,8 +31,6 @@ addons:
   postgresql: "9.5"
 node_js:
   - "12"
-  - "10"
-  - "8"
 branches:
   only:
     - master

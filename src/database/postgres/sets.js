@@ -1,44 +1,34 @@
 'use strict';
 
-var async = require('async');
 var _ = require('lodash');
 
 module.exports = function (db, module) {
 	var helpers = module.helpers.postgres;
 
-	module.setAdd = function (key, value, callback) {
-		callback = callback || helpers.noop;
-
+	module.setAdd = async function (key, value) {
 		if (!Array.isArray(value)) {
 			value = [value];
 		}
 
-		module.transaction(function (tx, done) {
-			var query = tx.client.query.bind(tx.client);
-
-			async.series([
-				async.apply(helpers.ensureLegacyObjectType, tx.client, key, 'set'),
-				async.apply(query, {
-					name: 'setAdd',
-					text: `
+		await module.transaction(async function (client) {
+			var query = client.query.bind(client);
+			await helpers.ensureLegacyObjectType(client, key, 'set');
+			await query({
+				name: 'setAdd',
+				text: `
 INSERT INTO "legacy_set" ("_key", "member")
 SELECT $1::TEXT, m
-  FROM UNNEST($2::TEXT[]) m
-    ON CONFLICT ("_key", "member")
-    DO NOTHING`,
-					values: [key, value],
-				}),
-			], function (err) {
-				done(err);
+FROM UNNEST($2::TEXT[]) m
+ON CONFLICT ("_key", "member")
+DO NOTHING`,
+				values: [key, value],
 			});
-		}, callback);
+		});
 	};
 
-	module.setsAdd = function (keys, value, callback) {
-		callback = callback || helpers.noop;
-
+	module.setsAdd = async function (keys, value) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback();
+			return;
 		}
 
 		if (!Array.isArray(value)) {
@@ -47,26 +37,21 @@ SELECT $1::TEXT, m
 
 		keys = _.uniq(keys);
 
-		module.transaction(function (tx, done) {
-			var query = tx.client.query.bind(tx.client);
-
-			async.series([
-				async.apply(helpers.ensureLegacyObjectsType, tx.client, keys, 'set'),
-				async.apply(query, {
-					name: 'setsAdd',
-					text: `
+		await module.transaction(async function (client) {
+			var query = client.query.bind(client);
+			await helpers.ensureLegacyObjectsType(client, keys, 'set');
+			await query({
+				name: 'setsAdd',
+				text: `
 INSERT INTO "legacy_set" ("_key", "member")
 SELECT k, m
-  FROM UNNEST($1::TEXT[]) k
- CROSS JOIN UNNEST($2::TEXT[]) m
-    ON CONFLICT ("_key", "member")
-    DO NOTHING`,
-					values: [keys, value],
-				}),
-			], function (err) {
-				done(err);
+FROM UNNEST($1::TEXT[]) k
+CROSS JOIN UNNEST($2::TEXT[]) m
+ON CONFLICT ("_key", "member")
+DO NOTHING`,
+				values: [keys, value],
 			});
-		}, callback);
+		});
 	};
 
 	module.setRemove = function (key, value, callback) {

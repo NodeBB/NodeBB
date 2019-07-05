@@ -539,34 +539,29 @@ SELECT o."_key" k,
 		});
 	};
 
-	module.sortedSetIncrBy = function (key, increment, value, callback) {
-		callback = callback || helpers.noop;
-
+	module.sortedSetIncrBy = async function (key, increment, value) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
 		value = helpers.valueToString(value);
 		increment = parseFloat(increment);
 
-		module.transaction(function (tx, done) {
-			async.waterfall([
-				async.apply(helpers.ensureLegacyObjectType, tx.client, key, 'zset'),
-				async.apply(tx.client.query.bind(tx.client), {
-					name: 'sortedSetIncrBy',
-					text: `
+		return await module.transaction(async function (client) {
+			var query = client.query.bind(client);
+			await helpers.ensureLegacyObjectType(client, key, 'zset');
+			const res = await query({
+				name: 'sortedSetIncrBy',
+				text: `
 INSERT INTO "legacy_zset" ("_key", "value", "score")
 VALUES ($1::TEXT, $2::TEXT, $3::NUMERIC)
-    ON CONFLICT ("_key", "value")
-    DO UPDATE SET "score" = "legacy_zset"."score" + $3::NUMERIC
+ON CONFLICT ("_key", "value")
+DO UPDATE SET "score" = "legacy_zset"."score" + $3::NUMERIC
 RETURNING "score" s`,
-					values: [key, value, increment],
-				}),
-				function (res, next) {
-					next(null, parseFloat(res.rows[0].s));
-				},
-			], done);
-		}, callback);
+				values: [key, value, increment],
+			});
+			return parseFloat(res.rows[0].s);
+		});
 	};
 
 	module.getSortedSetRangeByLex = function (key, min, max, start, count, callback) {

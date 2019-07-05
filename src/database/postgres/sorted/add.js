@@ -18,10 +18,10 @@ module.exports = function (db, module) {
 		value = helpers.valueToString(value);
 		score = parseFloat(score);
 
-		await module.transaction(async function (tx) {
-			var query = tx.client.query.bind(tx.client);
+		await module.transaction(async function (client) {
+			var query = client.query.bind(client);
 
-			await helpers.ensureLegacyObjectType(tx.client, key, 'zset');
+			await helpers.ensureLegacyObjectType(client, key, 'zset');
 			await query({
 				name: 'sortedSetAdd',
 				text: `
@@ -51,9 +51,9 @@ module.exports = function (db, module) {
 
 		helpers.removeDuplicateValues(values, scores);
 
-		await module.transaction(async function (tx) {
-			var query = tx.client.query.bind(tx.client);
-			await helpers.ensureLegacyObjectType(tx.client, key, 'zset');
+		await module.transaction(async function (client) {
+			var query = client.query.bind(client);
+			await helpers.ensureLegacyObjectType(client, key, 'zset');
 			await query({
 				name: 'sortedSetAddBulk',
 				text: `
@@ -83,9 +83,9 @@ DO UPDATE SET "score" = EXCLUDED."score"`,
 		value = helpers.valueToString(value);
 		scores = isArrayOfScores ? scores.map(score => parseFloat(score)) : parseFloat(scores);
 
-		module.transaction(async function (tx) {
-			var query = tx.client.query.bind(tx.client);
-			await helpers.ensureLegacyObjectsType(tx.client, keys, 'zset');
+		await module.transaction(async function (client) {
+			var query = client.query.bind(client);
+			await helpers.ensureLegacyObjectsType(client, keys, 'zset');
 			await query({
 				name: isArrayOfScores ? 'sortedSetsAddScores' : 'sortedSetsAdd',
 				text: isArrayOfScores ? `
@@ -116,9 +116,9 @@ INSERT INTO "legacy_zset" ("_key", "value", "score")
 			scores.push(item[1]);
 			values.push(item[2]);
 		});
-		module.transaction(async function (tx) {
-			var query = tx.client.query.bind(tx.client);
-			await helpers.ensureLegacyObjectsType(tx.client, keys, 'zset');
+		await module.transaction(async function (client) {
+			var query = client.query.bind(client);
+			await helpers.ensureLegacyObjectsType(client, keys, 'zset');
 			await query({
 				name: 'sortedSetAddBulk2',
 				text: `

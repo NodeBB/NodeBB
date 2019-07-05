@@ -1,62 +1,46 @@
 'use strict';
 
-var async = require('async');
-
 module.exports = function (db, module) {
 	var helpers = module.helpers.postgres;
 
-	module.listPrepend = function (key, value, callback) {
-		callback = callback || helpers.noop;
-
+	module.listPrepend = async function (key, value) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
-		module.transaction(function (tx, done) {
-			var query = tx.client.query.bind(tx.client);
-
-			async.series([
-				async.apply(helpers.ensureLegacyObjectType, tx.client, key, 'list'),
-				async.apply(query, {
-					name: 'listPrepend',
-					text: `
+		await module.transaction(async function (client) {
+			var query = client.query.bind(client);
+			await helpers.ensureLegacyObjectType(client, key, 'list');
+			await query({
+				name: 'listPrepend',
+				text: `
 INSERT INTO "legacy_list" ("_key", "array")
 VALUES ($1::TEXT, ARRAY[$2::TEXT])
-    ON CONFLICT ("_key")
-    DO UPDATE SET "array" = ARRAY[$2::TEXT] || "legacy_list"."array"`,
-					values: [key, value],
-				}),
-			], function (err) {
-				done(err);
+ON CONFLICT ("_key")
+DO UPDATE SET "array" = ARRAY[$2::TEXT] || "legacy_list"."array"`,
+				values: [key, value],
 			});
-		}, callback);
+		});
 	};
 
-	module.listAppend = function (key, value, callback) {
-		callback = callback || helpers.noop;
-
+	module.listAppend = async function (key, value) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
-		module.transaction(function (tx, done) {
-			var query = tx.client.query.bind(tx.client);
-
-			async.series([
-				async.apply(helpers.ensureLegacyObjectType, tx.client, key, 'list'),
-				async.apply(query, {
-					name: 'listAppend',
-					text: `
+		await module.transaction(async function (client) {
+			var query = client.query.bind(client);
+			await helpers.ensureLegacyObjectType(client, key, 'list');
+			await query({
+				name: 'listAppend',
+				text: `
 INSERT INTO "legacy_list" ("_key", "array")
 VALUES ($1::TEXT, ARRAY[$2::TEXT])
-    ON CONFLICT ("_key")
-    DO UPDATE SET "array" = "legacy_list"."array" || ARRAY[$2::TEXT]`,
-					values: [key, value],
-				}),
-			], function (err) {
-				done(err);
+ON CONFLICT ("_key")
+DO UPDATE SET "array" = "legacy_list"."array" || ARRAY[$2::TEXT]`,
+				values: [key, value],
 			});
-		}, callback || helpers.noop);
+		});
 	};
 
 	module.listRemoveLast = function (key, callback) {

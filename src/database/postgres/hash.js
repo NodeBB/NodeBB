@@ -1,66 +1,50 @@
 'use strict';
 
-var async = require('async');
-
 module.exports = function (db, module) {
 	var helpers = module.helpers.postgres;
 
-	module.setObject = function (key, data, callback) {
-		callback = callback || helpers.noop;
-
+	module.setObject = async function (key, data) {
 		if (!key || !data) {
-			return callback();
+			return;
 		}
 
 		if (data.hasOwnProperty('')) {
 			delete data[''];
 		}
 
-		module.transaction(function (tx, done) {
-			var query = tx.client.query.bind(tx.client);
-
-			async.series([
-				async.apply(helpers.ensureLegacyObjectType, tx.client, key, 'hash'),
-				async.apply(query, {
-					name: 'setObject',
-					text: `
+		await module.transaction(async function (client) {
+			var query = client.query.bind(client);
+			await helpers.ensureLegacyObjectType(client, key, 'hash');
+			await query({
+				name: 'setObject',
+				text: `
 INSERT INTO "legacy_hash" ("_key", "data")
 VALUES ($1::TEXT, $2::TEXT::JSONB)
-    ON CONFLICT ("_key")
-    DO UPDATE SET "data" = "legacy_hash"."data" || $2::TEXT::JSONB`,
-					values: [key, JSON.stringify(data)],
-				}),
-			], function (err) {
-				done(err);
+ON CONFLICT ("_key")
+DO UPDATE SET "data" = "legacy_hash"."data" || $2::TEXT::JSONB`,
+				values: [key, JSON.stringify(data)],
 			});
-		}, callback);
+		});
 	};
 
-	module.setObjectField = function (key, field, value, callback) {
-		callback = callback || helpers.noop;
-
+	module.setObjectField = async function (key, field, value) {
 		if (!field) {
-			return callback();
+			return;
 		}
 
-		module.transaction(function (tx, done) {
-			var query = tx.client.query.bind(tx.client);
-
-			async.series([
-				async.apply(helpers.ensureLegacyObjectType, tx.client, key, 'hash'),
-				async.apply(query, {
-					name: 'setObjectField',
-					text: `
+		await module.transaction(async function (client) {
+			var query = client.query.bind(client);
+			await helpers.ensureLegacyObjectType(client, key, 'hash');
+			await query({
+				name: 'setObjectField',
+				text: `
 INSERT INTO "legacy_hash" ("_key", "data")
 VALUES ($1::TEXT, jsonb_build_object($2::TEXT, $3::TEXT::JSONB))
-    ON CONFLICT ("_key")
-    DO UPDATE SET "data" = jsonb_set("legacy_hash"."data", ARRAY[$2::TEXT], $3::TEXT::JSONB)`,
-					values: [key, field, JSON.stringify(value)],
-				}),
-			], function (err) {
-				done(err);
+ON CONFLICT ("_key")
+DO UPDATE SET "data" = jsonb_set("legacy_hash"."data", ARRAY[$2::TEXT], $3::TEXT::JSONB)`,
+				values: [key, field, JSON.stringify(value)],
 			});
-		}, callback);
+		});
 	};
 
 	module.getObject = function (key, callback) {
@@ -348,44 +332,41 @@ UPDATE "legacy_hash"
 		module.incrObjectFieldBy(key, field, -1, callback);
 	};
 
-	module.incrObjectFieldBy = function (key, field, value, callback) {
-		callback = callback || helpers.noop;
+	module.incrObjectFieldBy = async function (key, field, value) {
 		value = parseInt(value, 10);
 
 		if (!key || isNaN(value)) {
-			return callback(null, null);
+			return null;
 		}
 
-		module.transaction(function (tx, done) {
-			var query = tx.client.query.bind(tx.client);
+		return await module.transaction(async function (client) {
+			var query = client.query.bind(client);
+			if (Array.isArray(key)) {
+				await helpers.ensureLegacyObjectsType(client, key, 'hash');
+			} else {
+				await helpers.ensureLegacyObjectType(client, key, 'hash');
+			}
 
-			async.waterfall([
-				async.apply(Array.isArray(key) ? helpers.ensureLegacyObjectsType : helpers.ensureLegacyObjectType, tx.client, key, 'hash'),
-				async.apply(query, Array.isArray(key) ? {
-					name: 'incrObjectFieldByMulti',
-					text: `
+			const res = await query(Array.isArray(key) ? {
+				name: 'incrObjectFieldByMulti',
+				text: `
 INSERT INTO "legacy_hash" ("_key", "data")
 SELECT UNNEST($1::TEXT[]), jsonb_build_object($2::TEXT, $3::NUMERIC)
-    ON CONFLICT ("_key")
-    DO UPDATE SET "data" = jsonb_set("legacy_hash"."data", ARRAY[$2::TEXT], to_jsonb(COALESCE(("legacy_hash"."data"->>$2::TEXT)::NUMERIC, 0) + $3::NUMERIC))
+ON CONFLICT ("_key")
+DO UPDATE SET "data" = jsonb_set("legacy_hash"."data", ARRAY[$2::TEXT], to_jsonb(COALESCE(("legacy_hash"."data"->>$2::TEXT)::NUMERIC, 0) + $3::NUMERIC))
 RETURNING ("data"->>$2::TEXT)::NUMERIC v`,
-					values: [key, field, value],
-				} : {
-					name: 'incrObjectFieldBy',
-					text: `
+				values: [key, field, value],
+			} : {
+				name: 'incrObjectFieldBy',
+				text: `
 INSERT INTO "legacy_hash" ("_key", "data")
 VALUES ($1::TEXT, jsonb_build_object($2::TEXT, $3::NUMERIC))
-    ON CONFLICT ("_key")
-    DO UPDATE SET "data" = jsonb_set("legacy_hash"."data", ARRAY[$2::TEXT], to_jsonb(COALESCE(("legacy_hash"."data"->>$2::TEXT)::NUMERIC, 0) + $3::NUMERIC))
+ON CONFLICT ("_key")
+DO UPDATE SET "data" = jsonb_set("legacy_hash"."data", ARRAY[$2::TEXT], to_jsonb(COALESCE(("legacy_hash"."data"->>$2::TEXT)::NUMERIC, 0) + $3::NUMERIC))
 RETURNING ("data"->>$2::TEXT)::NUMERIC v`,
-					values: [key, field, value],
-				}),
-				function (res, next) {
-					next(null, Array.isArray(key) ? res.rows.map(function (r) {
-						return parseFloat(r.v);
-					}) : parseFloat(res.rows[0].v));
-				},
-			], done);
-		}, callback);
+				values: [key, field, value],
+			});
+			return Array.isArray(key) ? res.rows.map(r => parseFloat(r.v)) : parseFloat(res.rows[0].v);
+		});
 	};
 };
