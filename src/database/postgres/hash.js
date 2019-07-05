@@ -13,7 +13,9 @@ module.exports = function (db, module) {
 		}
 
 		await module.transaction(async function (client) {
+			console.log('setObject', client.query, typeof client.query, typeof client.query.bind);
 			var query = client.query.bind(client);
+
 			await helpers.ensureLegacyObjectType(client, key, 'hash');
 			await query({
 				name: 'setObject',
