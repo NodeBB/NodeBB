@@ -4,7 +4,6 @@ module.exports = function (db, module) {
 	module.transaction = async function (perform, txClient) {
 		let res;
 		if (txClient) {
-			console.log('wtf', perform, txClient, txClient.query);
 			await txClient.query(`SAVEPOINT nodebb_subtx`);
 			try {
 				res = await perform(txClient);
