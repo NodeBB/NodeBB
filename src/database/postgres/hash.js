@@ -190,24 +190,17 @@ SELECT ARRAY(SELECT jsonb_object_keys(h."data")) k
 		return res.rows.length ? res.rows[0].k : [];
 	};
 
-	module.getObjectValues = function (key, callback) {
-		module.getObject(key, function (err, data) {
-			if (err) {
-				return callback(err);
-			}
-
-			var values = [];
-
-			if (data) {
-				for (var key in data) {
-					if (data.hasOwnProperty(key)) {
-						values.push(data[key]);
-					}
+	module.getObjectValues = async function (key) {
+		const data = await module.getObject(key);
+		const values = [];
+		if (data) {
+			for (const k in data) {
+				if (data.hasOwnProperty(k)) {
+					values.push(data[k]);
 				}
 			}
-
-			callback(null, values);
-		});
+		}
+		return values;
 	};
 
 	module.isObjectField = function (key, field, callback) {

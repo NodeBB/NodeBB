@@ -115,8 +115,8 @@ module.exports = function (redisClient, module) {
 		return await redisClient.async.hkeys(key);
 	};
 
-	module.getObjectValues = function (key, callback) {
-		redisClient.hvals(key, callback);
+	module.getObjectValues = async function (key) {
+		return await redisClient.async.hvals(key);
 	};
 
 	module.isObjectField = function (key, field, callback) {
