@@ -165,7 +165,7 @@ RETURNING "data" d`,
 		await module.transaction(async function (client) {
 			var query = client.query.bind(client);
 			await query({
-				name: 'delete',
+				name: 'deleteRename',
 				text: `
 	DELETE FROM "legacy_object"
 	 WHERE "_key" = $1::TEXT`,
