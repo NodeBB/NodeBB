@@ -12,15 +12,13 @@ module.exports = function (redisClient, module) {
 			value = [value];
 		}
 
+		const batch = redisClient.batch();
 		if (Array.isArray(key)) {
-			const batch = redisClient.batch();
 			key.forEach(k => batch.zrem(k, value));
-			await helpers.execBatch(batch);
 		} else {
-			const batch = redisClient.batch();
-			value.forEach(v => batch.zrem(key, v));
-			await helpers.execBatch(batch);
+			batch.zrem(key, value);
 		}
+		await helpers.execBatch(batch);
 	};
 
 	module.sortedSetsRemove = async function (keys, value) {
