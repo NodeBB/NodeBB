@@ -119,77 +119,67 @@ SELECT s."data" t
 		});
 	};
 
-	module.set = function (key, value, callback) {
-		callback = callback || helpers.noop;
-
+	module.set = async function (key, value) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
-		module.transaction(function (tx, done) {
-			async.series([
-				async.apply(helpers.ensureLegacyObjectType, tx.client, key, 'string'),
-				async.apply(tx.client.query.bind(tx.client), {
-					name: 'set',
-					text: `
+		await module.transaction(async function (client) {
+			var query = client.query.bind(client);
+			await helpers.ensureLegacyObjectType(client, key, 'string');
+			await query({
+				name: 'set',
+				text: `
 INSERT INTO "legacy_string" ("_key", "data")
 VALUES ($1::TEXT, $2::TEXT)
-    ON CONFLICT ("_key")
-    DO UPDATE SET "data" = $2::TEXT`,
-					values: [key, value],
-				}),
-			], function (err) {
-				done(err);
+ON CONFLICT ("_key")
+DO UPDATE SET "data" = $2::TEXT`,
+				values: [key, value],
 			});
-		}, callback);
+		});
 	};
 
-	module.increment = function (key, callback) {
-		callback = callback || helpers.noop;
-
+	module.increment = async function (key) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
-		module.transaction(function (tx, done) {
-			async.waterfall([
-				async.apply(helpers.ensureLegacyObjectType, tx.client, key, 'string'),
-				async.apply(tx.client.query.bind(tx.client), {
-					name: 'increment',
-					text: `
+		await module.transaction(async function (client) {
+			var query = client.query.bind(client);
+			await helpers.ensureLegacyObjectType(client, key, 'string');
+			const res = await query({
+				name: 'increment',
+				text: `
 INSERT INTO "legacy_string" ("_key", "data")
 VALUES ($1::TEXT, '1')
-    ON CONFLICT ("_key")
-    DO UPDATE SET "data" = ("legacy_string"."data"::NUMERIC + 1)::TEXT
+ON CONFLICT ("_key")
+DO UPDATE SET "data" = ("legacy_string"."data"::NUMERIC + 1)::TEXT
 RETURNING "data" d`,
-					values: [key],
-				}),
-			], function (err, res) {
-				if (err) {
-					return done(err);
-				}
-
-				done(null, parseFloat(res.rows[0].d));
+				values: [key],
 			});
-		}, callback);
+			return parseFloat(res.rows[0].d);
+		});
 	};
 
-	module.rename = function (oldKey, newKey, callback) {
-		module.transaction(function (tx, done) {
-			async.series([
-				async.apply(tx.delete, newKey),
-				async.apply(tx.client.query.bind(tx.client), {
-					name: 'rename',
-					text: `
-UPDATE "legacy_object"
-   SET "_key" = $2::TEXT
- WHERE "_key" = $1::TEXT`,
-					values: [oldKey, newKey],
-				}),
-			], function (err) {
-				done(err);
+	module.rename = async function (oldKey, newKey) {
+		await module.transaction(async function (client) {
+			var query = client.query.bind(client);
+			await query({
+				name: 'delete',
+				text: `
+	DELETE FROM "legacy_object"
+	 WHERE "_key" = $1::TEXT`,
+				values: [newKey],
 			});
-		}, callback || helpers.noop);
+			await query({
+				name: 'rename',
+				text: `
+UPDATE "legacy_object"
+SET "_key" = $2::TEXT
+WHERE "_key" = $1::TEXT`,
+				values: [oldKey, newKey],
+			});
+		});
 	};
 
 	module.type = function (key, callback) {

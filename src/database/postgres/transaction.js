@@ -5,6 +5,7 @@ module.exports = function (db, dbNamespace, module) {
 		// if (dbNamespace.active && dbNamespace.get('db')) {
 		let res;
 		if (txClient) {
+			console.log('wtf', perform, txClient, txClient.query);
 			// const client = dbNamespace.get('db');
 			await txClient.query(`SAVEPOINT nodebb_subtx`);
 			try {
