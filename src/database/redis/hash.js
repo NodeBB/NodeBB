@@ -85,7 +85,7 @@ module.exports = function (redisClient, module) {
 		let data = [];
 		if (unCachedKeys.length > 1) {
 			const batch = redisClient.batch();
-			keys.forEach(k => batch.hgetall(k));
+			unCachedKeys.forEach(k => batch.hgetall(k));
 			data = await helpers.execBatch(batch);
 		} else if (unCachedKeys.length === 1) {
 			data = [await redisClient.async.hgetall(unCachedKeys[0])];
