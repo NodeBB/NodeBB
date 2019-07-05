@@ -144,7 +144,7 @@ DO UPDATE SET "data" = $2::TEXT`,
 			return;
 		}
 
-		await module.transaction(async function (client) {
+		return await module.transaction(async function (client) {
 			var query = client.query.bind(client);
 			await helpers.ensureLegacyObjectType(client, key, 'string');
 			const res = await query({
