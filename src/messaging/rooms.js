@@ -186,16 +186,14 @@ module.exports = function (Messaging) {
 	Messaging.leaveRooms = function (uid, roomIds, callback) {
 		async.waterfall([
 			function (next) {
-				var roomKeys = roomIds.map(function (roomId) {
-					return 'chat:room:' + roomId + ':uids';
-				});
+				const roomKeys = roomIds.map(roomId => 'chat:room:' + roomId + ':uids');
 				db.sortedSetsRemove(roomKeys, uid, next);
 			},
 			function (next) {
-				db.sortedSetRemove('uid:' + uid + ':chat:rooms', roomIds, next);
-			},
-			function (next) {
-				db.sortedSetRemove('uid:' + uid + ':chat:rooms:unread', roomIds, next);
+				db.sortedSetRemove([
+					'uid:' + uid + ':chat:rooms',
+					'uid:' + uid + ':chat:rooms:unread',
+				], roomIds, next);
 			},
 			function (next) {
 				async.eachSeries(roomIds, updateOwner, next);

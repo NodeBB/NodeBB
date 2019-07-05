@@ -10,10 +10,9 @@ module.exports = function (redisClient, module) {
 
 	module.objectCache = cache;
 
-	module.setObject = function (key, data, callback) {
-		callback = callback || function () {};
+	module.setObject = async function (key, data) {
 		if (!key || !data) {
-			return callback();
+			return;
 		}
 
 		if (data.hasOwnProperty('')) {
@@ -27,15 +26,10 @@ module.exports = function (redisClient, module) {
 		});
 
 		if (!Object.keys(data).length) {
-			return callback();
+			return;
 		}
-		redisClient.hmset(key, data, function (err) {
-			if (err) {
-				return callback(err);
-			}
-			cache.delObjectCache(key);
-			callback();
-		});
+		await redisClient.async.hmset(key, data);
+		cache.delObjectCache(key);
 	};
 
 	module.setObjectField = function (key, field, value, callback) {

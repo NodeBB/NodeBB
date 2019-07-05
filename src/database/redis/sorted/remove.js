@@ -5,20 +5,24 @@ module.exports = function (redisClient, module) {
 	var helpers = module.helpers.redis;
 
 	module.sortedSetRemove = async function (key, value) {
-		if (!value) {
+		if (!key) {
 			return;
 		}
-		if (!Array.isArray(value)) {
+		const isValueArray = Array.isArray(value);
+		if (!value || (isValueArray && !value.length)) {
+			return;
+		}
+		if (!isValueArray) {
 			value = [value];
 		}
 
-		const batch = redisClient.batch();
 		if (Array.isArray(key)) {
+			const batch = redisClient.batch();
 			key.forEach(k => batch.zrem(k, value));
+			await helpers.execBatch(batch);
 		} else {
-			batch.zrem(key, value);
+			await redisClient.async.zrem(key, value);
 		}
-		await helpers.execBatch(batch);
 	};
 
 	module.sortedSetsRemove = async function (keys, value) {

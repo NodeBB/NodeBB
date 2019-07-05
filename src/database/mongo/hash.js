@@ -11,20 +11,14 @@ module.exports = function (db, module) {
 
 	module.objectCache = cache;
 
-	module.setObject = function (key, data, callback) {
-		callback = callback || helpers.noop;
+	module.setObject = async function (key, data) {
 		if (!key || !data) {
-			return callback();
+			return;
 		}
 
 		const writeData = helpers.serializeData(data);
-		db.collection('objects').updateOne({ _key: key }, { $set: writeData }, { upsert: true, w: 1 }, function (err) {
-			if (err) {
-				return callback(err);
-			}
-			cache.delObjectCache(key);
-			callback();
-		});
+		await db.collection('objects').updateOne({ _key: key }, { $set: writeData }, { upsert: true, w: 1 });
+		cache.delObjectCache(key);
 	};
 
 	module.setObjectField = function (key, field, value, callback) {

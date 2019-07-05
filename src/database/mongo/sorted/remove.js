@@ -7,8 +7,12 @@ module.exports = function (db, module) {
 		if (!key) {
 			return;
 		}
+		const isValueArray = Array.isArray(value);
+		if (!value || (isValueArray && !value.length)) {
+			return;
+		}
 
-		if (Array.isArray(value)) {
+		if (isValueArray) {
 			value = value.map(helpers.valueToString);
 		} else {
 			value = helpers.valueToString(value);
@@ -16,7 +20,7 @@ module.exports = function (db, module) {
 
 		await db.collection('objects').deleteMany({
 			_key: Array.isArray(key) ? { $in: key } : key,
-			value: Array.isArray(value) ? { $in: value } : value,
+			value: isValueArray ? { $in: value } : value,
 		});
 	};
 

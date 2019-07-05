@@ -10,6 +10,8 @@ module.exports = function (redisClient) {
 		get: util.promisify(redisClient.get).bind(redisClient),
 		set: util.promisify(redisClient.set).bind(redisClient),
 
+		hmset: util.promisify(redisClient.hmset).bind(redisClient),
+
 		zadd: util.promisify(redisClient.zadd).bind(redisClient),
 
 		zrem: util.promisify(redisClient.zrem).bind(redisClient),

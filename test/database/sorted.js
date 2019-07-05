@@ -955,6 +955,20 @@ describe('Sorted Set methods', function () {
 				});
 			});
 		});
+
+		it('should not remove anything if values is empty array', function (done) {
+			db.sortedSetAdd('removeNothing', [1, 2, 3], ['val1', 'val2', 'val3'], function (err) {
+				assert.ifError(err);
+				db.sortedSetRemove('removeNothing', [], function (err) {
+					assert.ifError(err);
+					db.getSortedSetRange('removeNothing', 0, -1, function (err, data) {
+						assert.ifError(err);
+						assert.deepStrictEqual(data, ['val1', 'val2', 'val3']);
+						done();
+					});
+				});
+			});
+		});
 	});
 
 	describe('sortedSetsRemove()', function () {
