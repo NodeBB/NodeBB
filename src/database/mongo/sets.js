@@ -3,17 +3,14 @@
 module.exports = function (db, module) {
 	var helpers = require('./helpers');
 
-	module.setAdd = function (key, value, callback) {
-		callback = callback || helpers.noop;
+	module.setAdd = async function (key, value) {
 		if (!Array.isArray(value)) {
 			value = [value];
 		}
 
-		value.forEach(function (element, index, array) {
-			array[index] = helpers.valueToString(element);
-		});
+		value = value.map(v => helpers.valueToString(v));
 
-		db.collection('objects').updateOne({
+		await db.collection('objects').updateOne({
 			_key: key,
 		}, {
 			$addToSet: {
@@ -24,25 +21,19 @@ module.exports = function (db, module) {
 		}, {
 			upsert: true,
 			w: 1,
-		}, function (err) {
-			callback(err);
 		});
 	};
 
-	module.setsAdd = function (keys, value, callback) {
-		callback = callback || helpers.noop;
-
+	module.setsAdd = async function (keys, value) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback();
+			return;
 		}
 
 		if (!Array.isArray(value)) {
 			value = [value];
 		}
 
-		value.forEach(function (element, index, array) {
-			array[index] = helpers.valueToString(element);
-		});
+		value = value.map(v => helpers.valueToString(v));
 
 		var bulk = db.collection('objects').initializeUnorderedBulkOp();
 
@@ -53,13 +44,14 @@ module.exports = function (db, module) {
 				},
 			} });
 		}
-
-		bulk.execute(function (err) {
+		try {
+			await bulk.execute();
+		} catch (err) {
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
-				return process.nextTick(module.setsAdd, keys, value, callback);
+				return module.setsAdd(keys, value);
 			}
-			callback(err);
-		});
+			throw err;
+		}
 	};
 
 	module.setRemove = function (key, value, callback) {

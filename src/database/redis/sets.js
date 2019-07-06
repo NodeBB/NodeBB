@@ -3,27 +3,23 @@
 module.exports = function (redisClient, module) {
 	var helpers = require('./helpers');
 
-	module.setAdd = function (key, value, callback) {
-		callback = callback || function () {};
+	module.setAdd = async function (key, value) {
 		if (!Array.isArray(value)) {
 			value = [value];
 		}
 		if (!value.length) {
-			return callback();
+			return;
 		}
-		redisClient.sadd(key, value, function (err) {
-			callback(err);
-		});
+		await redisClient.async.sadd(key, value);
 	};
 
-	module.setsAdd = function (keys, value, callback) {
-		callback = callback || function () {};
+	module.setsAdd = async function (keys, value) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return setImmediate(callback);
+			return;
 		}
-		helpers.execKeysValue(redisClient, 'batch', 'sadd', keys, value, function (err) {
-			callback(err);
-		});
+		const batch = redisClient.batch();
+		keys.forEach(k => batch.sadd(k, value));
+		await helpers.execBatch(batch);
 	};
 
 	module.setRemove = function (key, value, callback) {
