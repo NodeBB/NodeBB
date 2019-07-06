@@ -27,5 +27,14 @@ module.exports = function (redisClient) {
 		zrangebyscore: util.promisify(redisClient.zrangebyscore).bind(redisClient),
 		zrevrangebyscore: util.promisify(redisClient.zrevrangebyscore).bind(redisClient),
 		zscore: util.promisify(redisClient.zscore).bind(redisClient),
+
+		lpush: util.promisify(redisClient.lpush).bind(redisClient),
+		rpush: util.promisify(redisClient.rpush).bind(redisClient),
+		rpop: util.promisify(redisClient.rpop).bind(redisClient),
+		lrem: util.promisify(redisClient.lrem).bind(redisClient),
+		ltrim: util.promisify(redisClient.ltrim).bind(redisClient),
+		lrange: util.promisify(redisClient.lrange).bind(redisClient),
+		llen: util.promisify(redisClient.llen).bind(redisClient),
+
 	};
 };

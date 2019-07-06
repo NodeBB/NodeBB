@@ -115,8 +115,7 @@ module.exports = function (db, module) {
 			if (err) {
 				return callback(err);
 			}
-			module.objectCache.delObjectCache(oldKey);
-			module.objectCache.delObjectCache(newKey);
+			module.objectCache.delObjectCache([oldKey, newKey]);
 			callback();
 		});
 	};
