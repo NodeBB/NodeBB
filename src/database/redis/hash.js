@@ -119,16 +119,16 @@ module.exports = function (redisClient, module) {
 		return await redisClient.async.hvals(key);
 	};
 
-	module.isObjectField = function (key, field, callback) {
-		redisClient.hexists(key, field, function (err, exists) {
-			callback(err, exists === 1);
-		});
+	module.isObjectField = async function (key, field) {
+		const exists = await redisClient.async.hexists(key, field);
+		return exists === 1;
 	};
 
-	module.isObjectFields = function (key, fields, callback) {
-		helpers.execKeyValues(redisClient, 'batch', 'hexists', key, fields, function (err, results) {
-			callback(err, Array.isArray(results) ? helpers.resultsToBool(results) : null);
-		});
+	module.isObjectFields = async function (key, fields) {
+		const batch = redisClient.batch();
+		fields.forEach(f => batch.hexists(key, f));
+		const results = await helpers.execBatch(batch);
+		return Array.isArray(results) ? helpers.resultsToBool(results) : null;
 	};
 
 	module.deleteObjectField = function (key, field, callback) {

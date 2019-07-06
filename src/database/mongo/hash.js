@@ -118,50 +118,28 @@ module.exports = function (db, module) {
 
 	module.getObjectValues = async function (key) {
 		const data = await module.getObject(key);
-		const values = [];
-		for (const k in data) {
-			if (data && data.hasOwnProperty(k)) {
-				values.push(data[k]);
-			}
-		}
-		return values;
+		return data ? Object.values(data) : [];
 	};
 
-	module.isObjectField = function (key, field, callback) {
-		if (!key) {
-			return callback();
-		}
-		var data = {};
-		field = helpers.fieldToString(field);
-		data[field] = 1;
-		db.collection('objects').findOne({ _key: key }, { projection: data }, function (err, item) {
-			callback(err, !!item && item[field] !== undefined && item[field] !== null);
-		});
+	module.isObjectField = async function (key, field) {
+		const data = await module.isObjectFields(key, [field]);
+		return Array.isArray(data) && data.length ? data[0] : false;
 	};
 
-	module.isObjectFields = function (key, fields, callback) {
+	module.isObjectFields = async function (key, fields) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
-		var data = {};
+		const data = {};
 		fields.forEach(function (field) {
 			field = helpers.fieldToString(field);
 			data[field] = 1;
 		});
 
-		db.collection('objects').findOne({ _key: key }, { projection: data }, function (err, item) {
-			if (err) {
-				return callback(err);
-			}
-			var results = [];
-
-			fields.forEach(function (field, index) {
-				results[index] = !!item && item[field] !== undefined && item[field] !== null;
-			});
-
-			callback(null, results);
-		});
+		const item = await db.collection('objects').findOne({ _key: key }, { projection: data });
+		const results = fields.map(f => !!item && item[f] !== undefined && item[f] !== null);
+		return results;
 	};
 
 	module.deleteObjectField = function (key, field, callback) {

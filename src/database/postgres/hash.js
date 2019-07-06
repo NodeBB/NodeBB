@@ -192,23 +192,15 @@ SELECT ARRAY(SELECT jsonb_object_keys(h."data")) k
 
 	module.getObjectValues = async function (key) {
 		const data = await module.getObject(key);
-		const values = [];
-		if (data) {
-			for (const k in data) {
-				if (data.hasOwnProperty(k)) {
-					values.push(data[k]);
-				}
-			}
-		}
-		return values;
+		return data ? Object.values(data) : [];
 	};
 
-	module.isObjectField = function (key, field, callback) {
+	module.isObjectField = async function (key, field) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
-		db.query({
+		const res = await db.query({
 			name: 'isObjectField',
 			text: `
 SELECT (h."data" ? $2::TEXT AND h."data"->>$2::TEXT IS NOT NULL) b
@@ -219,39 +211,23 @@ SELECT (h."data" ? $2::TEXT AND h."data"->>$2::TEXT IS NOT NULL) b
  WHERE o."_key" = $1::TEXT
  LIMIT 1`,
 			values: [key, field],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (res.rows.length) {
-				return callback(null, res.rows[0].b);
-			}
-
-			callback(null, false);
 		});
+
+		return res.rows.length ? res.rows[0].b : false;
 	};
 
-	module.isObjectFields = function (key, fields, callback) {
+	module.isObjectFields = async function (key, fields) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
-		module.getObjectFields(key, fields, function (err, data) {
-			if (err) {
-				return callback(err);
-			}
+		const data = await module.getObjectFields(key, fields);
 
-			if (!data) {
-				return callback(null, fields.map(function () {
-					return false;
-				}));
-			}
+		if (!data) {
+			return fields.map(() => false);
+		}
 
-			callback(null, fields.map(function (field) {
-				return data.hasOwnProperty(field) && data[field] !== null;
-			}));
-		});
+		fields.map(field => data.hasOwnProperty(field) && data[field] !== null);
 	};
 
 	module.deleteObjectField = function (key, field, callback) {

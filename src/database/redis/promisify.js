@@ -16,6 +16,7 @@ module.exports = function (redisClient) {
 		hgetall: util.promisify(redisClient.hgetall).bind(redisClient),
 		hkeys: util.promisify(redisClient.hkeys).bind(redisClient),
 		hvals: util.promisify(redisClient.hvals).bind(redisClient),
+		hexists: util.promisify(redisClient.hexists).bind(redisClient),
 
 		zadd: util.promisify(redisClient.zadd).bind(redisClient),
 		zrem: util.promisify(redisClient.zrem).bind(redisClient),
