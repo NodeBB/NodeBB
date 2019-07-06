@@ -29,16 +29,11 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.deleteAll = async function (keys) {
+		if (!Array.isArray(keys) || !keys.length) {
+			return;
+		}
 		await redisClient.async.del(keys);
 		module.objectCache.delObjectCache(keys);
-		// var batch = redisClient.batch();
-		// for (var i = 0; i < keys.length; i += 1) {
-		// 	batch.del(keys[i]);
-		// }
-		// batch.exec(function (err) {
-		// 	module.objectCache.delObjectCache(keys);
-		// 	callback(err);
-		// });
 	};
 
 	module.get = function (key, callback) {
