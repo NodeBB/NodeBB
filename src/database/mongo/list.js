@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function (db, module) {
-	var helpers = module.helpers.mongo;
+	var helpers = require('./helpers');
 
 	module.listPrepend = function (key, value, callback) {
 		callback = callback || helpers.noop;

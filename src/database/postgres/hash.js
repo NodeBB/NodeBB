@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function (db, module) {
-	var helpers = module.helpers.postgres;
+	var helpers = require('./helpers');
 
 	module.setObject = async function (key, data) {
 		if (!key || !data) {

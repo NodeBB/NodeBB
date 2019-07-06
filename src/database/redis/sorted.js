@@ -3,8 +3,7 @@
 module.exports = function (redisClient, module) {
 	var _ = require('lodash');
 	var utils = require('../../utils');
-
-	var helpers = module.helpers.redis;
+	var helpers = require('./helpers');
 
 	require('./sorted/add')(redisClient, module);
 	require('./sorted/remove')(redisClient, module);

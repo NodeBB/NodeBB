@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function (redisClient, module) {
-	var helpers = module.helpers.redis;
+	var helpers = require('./helpers');
 
 	module.setAdd = function (key, value, callback) {
 		callback = callback || function () {};

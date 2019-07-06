@@ -59,9 +59,6 @@ mongoModule.questions = [
 	},
 ];
 
-mongoModule.helpers = mongoModule.helpers || {};
-mongoModule.helpers.mongo = require('./mongo/helpers');
-
 mongoModule.getConnectionString = function (mongo) {
 	mongo = mongo || nconf.get('mongo');
 	var usernamePassword = '';

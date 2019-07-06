@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function (redisClient, module) {
-	var helpers = module.helpers.redis;
+	var helpers = require('./helpers');
 
 	module.flushdb = function (callback) {
 		redisClient.send_command('flushdb', [], function (err) {

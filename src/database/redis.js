@@ -222,6 +222,3 @@ redisModule.socketAdapter = function () {
 		subClient: sub,
 	});
 };
-
-redisModule.helpers = redisModule.helpers || {};
-redisModule.helpers.redis = require('./redis/helpers');

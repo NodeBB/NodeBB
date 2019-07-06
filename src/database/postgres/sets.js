@@ -3,7 +3,7 @@
 var _ = require('lodash');
 
 module.exports = function (db, module) {
-	var helpers = module.helpers.postgres;
+	var helpers = require('./helpers');
 
 	module.setAdd = async function (key, value) {
 		if (!Array.isArray(value)) {

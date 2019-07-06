@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function (db, module) {
-	var helpers = module.helpers.mongo;
+	var helpers = require('./helpers');
 
 	var _ = require('lodash');
 	const cache = require('../cache').create('mongo');

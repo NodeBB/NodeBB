@@ -3,7 +3,7 @@
 var async = require('async');
 
 module.exports = function (db, module) {
-	var helpers = module.helpers.postgres;
+	var helpers = require('./helpers');
 
 	var query = db.query.bind(db);
 

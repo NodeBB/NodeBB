@@ -39,9 +39,6 @@ postgresModule.questions = [
 	},
 ];
 
-postgresModule.helpers = postgresModule.helpers || {};
-postgresModule.helpers.postgres = require('./postgres/helpers');
-
 postgresModule.getConnectionOptions = function (postgres) {
 	postgres = postgres || nconf.get('postgres');
 	// Sensible defaults for PostgreSQL, if not set

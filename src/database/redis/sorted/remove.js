@@ -2,7 +2,7 @@
 'use strict';
 
 module.exports = function (redisClient, module) {
-	var helpers = module.helpers.redis;
+	var helpers = require('../helpers');
 
 	module.sortedSetRemove = async function (key, value) {
 		if (!key) {

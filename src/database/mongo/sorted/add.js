@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function (db, module) {
-	var helpers = module.helpers.mongo;
+	var helpers = require('../helpers');
 	var utils = require('../../../utils');
 
 	module.sortedSetAdd = async function (key, score, value) {
