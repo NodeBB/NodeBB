@@ -14,6 +14,10 @@ module.exports = function (redisClient) {
 		incr: util.promisify(redisClient.incr).bind(redisClient),
 		rename: util.promisify(redisClient.rename).bind(redisClient),
 		type: util.promisify(redisClient.type).bind(redisClient),
+		expire: util.promisify(redisClient.expire).bind(redisClient),
+		expireat: util.promisify(redisClient.expireat).bind(redisClient),
+		pexpire: util.promisify(redisClient.pexpire).bind(redisClient),
+		pexpireat: util.promisify(redisClient.pexpireat).bind(redisClient),
 
 		hmset: util.promisify(redisClient.hmset).bind(redisClient),
 		hset: util.promisify(redisClient.hset).bind(redisClient),

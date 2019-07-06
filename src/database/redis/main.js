@@ -65,31 +65,19 @@ module.exports = function (redisClient, module) {
 		return type !== 'none' ? type : null;
 	};
 
-	module.expire = function (key, seconds, callback) {
-		callback = callback || function () {};
-		redisClient.expire(key, seconds, function (err) {
-			callback(err);
-		});
+	module.expire = async function (key, seconds) {
+		await redisClient.async.expire(key, seconds);
 	};
 
-	module.expireAt = function (key, timestamp, callback) {
-		callback = callback || function () {};
-		redisClient.expireat(key, timestamp, function (err) {
-			callback(err);
-		});
+	module.expireAt = async function (key, timestamp) {
+		await redisClient.async.expireat(key, timestamp);
 	};
 
-	module.pexpire = function (key, ms, callback) {
-		callback = callback || function () {};
-		redisClient.pexpire(key, ms, function (err) {
-			callback(err);
-		});
+	module.pexpire = async function (key, ms) {
+		await redisClient.async.pexpire(key, ms);
 	};
 
-	module.pexpireAt = function (key, timestamp, callback) {
-		callback = callback || function () {};
-		redisClient.pexpireat(key, timestamp, function (err) {
-			callback(err);
-		});
+	module.pexpireAt = async function (key, timestamp) {
+		await redisClient.async.pexpireat(key, timestamp);
 	};
 };

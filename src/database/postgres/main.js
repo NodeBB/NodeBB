@@ -170,34 +170,30 @@ SELECT "type"::TEXT t
 		return res.rows.length ? res.rows[0].t : null;
 	};
 
-	function doExpire(key, date, callback) {
-		query({
+	async function doExpire(key, date) {
+		await query({
 			name: 'expire',
 			text: `
 UPDATE "legacy_object"
    SET "expireAt" = $2::TIMESTAMPTZ
  WHERE "_key" = $1::TEXT`,
 			values: [key, date],
-		}, function (err) {
-			if (callback) {
-				callback(err);
-			}
 		});
 	}
 
-	module.expire = function (key, seconds, callback) {
-		doExpire(key, new Date(((Date.now() / 1000) + seconds) * 1000), callback);
+	module.expire = async function (key, seconds) {
+		await doExpire(key, new Date(((Date.now() / 1000) + seconds) * 1000));
 	};
 
-	module.expireAt = function (key, timestamp, callback) {
-		doExpire(key, new Date(timestamp * 1000), callback);
+	module.expireAt = async function (key, timestamp) {
+		await doExpire(key, new Date(timestamp * 1000));
 	};
 
-	module.pexpire = function (key, ms, callback) {
-		doExpire(key, new Date(Date.now() + parseInt(ms, 10)), callback);
+	module.pexpire = async function (key, ms) {
+		await doExpire(key, new Date(Date.now() + parseInt(ms, 10)));
 	};
 
-	module.pexpireAt = function (key, timestamp, callback) {
-		doExpire(key, new Date(timestamp), callback);
+	module.pexpireAt = async function (key, timestamp) {
+		await doExpire(key, new Date(timestamp));
 	};
 };

@@ -102,20 +102,20 @@ module.exports = function (db, module) {
 		return 'hash';
 	};
 
-	module.expire = function (key, seconds, callback) {
-		module.expireAt(key, Math.round(Date.now() / 1000) + seconds, callback);
+	module.expire = async function (key, seconds) {
+		await module.expireAt(key, Math.round(Date.now() / 1000) + seconds);
 	};
 
-	module.expireAt = function (key, timestamp, callback) {
-		module.setObjectField(key, 'expireAt', new Date(timestamp * 1000), callback);
+	module.expireAt = async function (key, timestamp) {
+		await module.setObjectField(key, 'expireAt', new Date(timestamp * 1000));
 	};
 
-	module.pexpire = function (key, ms, callback) {
-		module.pexpireAt(key, Date.now() + parseInt(ms, 10), callback);
+	module.pexpire = async function (key, ms) {
+		await module.pexpireAt(key, Date.now() + parseInt(ms, 10));
 	};
 
-	module.pexpireAt = function (key, timestamp, callback) {
+	module.pexpireAt = async function (key, timestamp) {
 		timestamp = Math.min(timestamp, 8640000000000000);
-		module.setObjectField(key, 'expireAt', new Date(timestamp), callback);
+		await module.setObjectField(key, 'expireAt', new Date(timestamp));
 	};
 };
