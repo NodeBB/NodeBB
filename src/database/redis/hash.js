@@ -131,22 +131,19 @@ module.exports = function (redisClient, module) {
 		return Array.isArray(results) ? helpers.resultsToBool(results) : null;
 	};
 
-	module.deleteObjectField = function (key, field, callback) {
-		callback = callback || function () {};
+	module.deleteObjectField = async function (key, field) {
 		if (key === undefined || key === null || field === undefined || field === null) {
-			return setImmediate(callback);
+			return;
 		}
-		redisClient.hdel(key, field, function (err) {
-			cache.delObjectCache(key);
-			callback(err);
-		});
+		await redisClient.async.hdel(key, field);
+		cache.delObjectCache(key);
 	};
 
-	module.deleteObjectFields = function (key, fields, callback) {
-		helpers.execKeyValues(redisClient, 'batch', 'hdel', key, fields, function (err) {
-			cache.delObjectCache(key);
-			callback(err);
-		});
+	module.deleteObjectFields = async function (key, fields) {
+		const batch = redisClient.batch();
+		fields.forEach(f => batch.hdel(String(f)));
+		await helpers.execBatch(batch);
+		cache.delObjectCache(key);
 	};
 
 	module.incrObjectField = function (key, field, callback) {

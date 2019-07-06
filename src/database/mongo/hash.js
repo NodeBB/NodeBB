@@ -142,18 +142,17 @@ module.exports = function (db, module) {
 		return results;
 	};
 
-	module.deleteObjectField = function (key, field, callback) {
-		module.deleteObjectFields(key, [field], callback);
+	module.deleteObjectField = async function (key, field) {
+		return await module.deleteObjectFields(key, [field]);
 	};
 
-	module.deleteObjectFields = function (key, fields, callback) {
-		callback = callback || helpers.noop;
+	module.deleteObjectFields = async function (key, fields) {
 		if (!key || !Array.isArray(fields) || !fields.length) {
-			return callback();
+			return;
 		}
 		fields = fields.filter(Boolean);
 		if (!fields.length) {
-			return callback();
+			return;
 		}
 
 		var data = {};
@@ -162,13 +161,8 @@ module.exports = function (db, module) {
 			data[field] = '';
 		});
 
-		db.collection('objects').updateOne({ _key: key }, { $unset: data }, function (err) {
-			if (err) {
-				return callback(err);
-			}
-			cache.delObjectCache(key);
-			callback();
-		});
+		await db.collection('objects').updateOne({ _key: key }, { $unset: data });
+		cache.delObjectCache(key);
 	};
 
 	module.incrObjectField = function (key, field, callback) {

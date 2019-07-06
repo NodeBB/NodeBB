@@ -228,17 +228,16 @@ SELECT (h."data" ? $2::TEXT AND h."data"->>$2::TEXT IS NOT NULL) b
 		return fields.map(field => data.hasOwnProperty(field) && data[field] !== null);
 	};
 
-	module.deleteObjectField = function (key, field, callback) {
-		module.deleteObjectFields(key, [field], callback);
+	module.deleteObjectField = async function (key, field) {
+		return await module.deleteObjectFields(key, [field]);
 	};
 
-	module.deleteObjectFields = function (key, fields, callback) {
-		callback = callback || helpers.noop;
+	module.deleteObjectFields = async function (key, fields) {
 		if (!key || !Array.isArray(fields) || !fields.length) {
-			return callback();
+			return;
 		}
 
-		db.query({
+		await db.query({
 			name: 'deleteObjectFields',
 			text: `
 UPDATE "legacy_hash"
@@ -247,8 +246,6 @@ UPDATE "legacy_hash"
                            WHERE "key" <> ALL ($2::TEXT[])), '{}')
  WHERE "_key" = $1::TEXT`,
 			values: [key, fields],
-		}, function (err) {
-			callback(err);
 		});
 	};
 
