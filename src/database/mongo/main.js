@@ -1,8 +1,6 @@
 'use strict';
 
 module.exports = function (db, module) {
-	var helpers = require('./helpers');
-
 	module.flushdb = async function () {
 		await db.dropDatabase();
 	};
@@ -72,25 +70,17 @@ module.exports = function (db, module) {
 		await module.setObject(key, data);
 	};
 
-	module.increment = function (key, callback) {
-		callback = callback || helpers.noop;
+	module.increment = async function (key) {
 		if (!key) {
-			return callback();
+			return;
 		}
-		db.collection('objects').findOneAndUpdate({ _key: key }, { $inc: { data: 1 } }, { returnOriginal: false, upsert: true }, function (err, result) {
-			callback(err, result && result.value ? result.value.data : null);
-		});
+		const result = await db.collection('objects').findOneAndUpdate({ _key: key }, { $inc: { data: 1 } }, { returnOriginal: false, upsert: true });
+		return result && result.value ? result.value.data : null;
 	};
 
-	module.rename = function (oldKey, newKey, callback) {
-		callback = callback || helpers.noop;
-		db.collection('objects').updateMany({ _key: oldKey }, { $set: { _key: newKey } }, function (err) {
-			if (err) {
-				return callback(err);
-			}
-			module.objectCache.delObjectCache([oldKey, newKey]);
-			callback();
-		});
+	module.rename = async function (oldKey, newKey) {
+		await db.collection('objects').updateMany({ _key: oldKey }, { $set: { _key: newKey } });
+		module.objectCache.delObjectCache([oldKey, newKey]);
 	};
 
 	module.type = function (key, callback) {

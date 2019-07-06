@@ -44,21 +44,20 @@ module.exports = function (redisClient, module) {
 		await redisClient.async.set(key, value);
 	};
 
-	module.increment = function (key, callback) {
-		callback = callback || function () {};
-		redisClient.incr(key, callback);
+	module.increment = async function (key) {
+		return await redisClient.async.incr(key);
 	};
 
-	module.rename = function (oldKey, newKey, callback) {
-		callback = callback || function () {};
-		redisClient.rename(oldKey, newKey, function (err) {
+	module.rename = async function (oldKey, newKey) {
+		try {
+			await redisClient.async.rename(oldKey, newKey);
+		} catch (err) {
 			if (err && err.message !== 'ERR no such key') {
-				return callback(err);
+				throw err;
 			}
-			module.objectCache.delObjectCache(oldKey);
-			module.objectCache.delObjectCache(newKey);
-			callback();
-		});
+		}
+
+		module.objectCache.delObjectCache([oldKey, newKey]);
 	};
 
 	module.type = function (key, callback) {
