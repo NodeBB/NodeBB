@@ -159,12 +159,12 @@ SELECT o."_key" k
 		});
 	};
 
-	module.getSetMembers = function (key, callback) {
+	module.getSetMembers = async function (key) {
 		if (!key) {
-			return callback(null, []);
+			return [];
 		}
 
-		db.query({
+		const res = await db.query({
 			name: 'getSetMembers',
 			text: `
 SELECT s."member" m
@@ -174,23 +174,17 @@ SELECT s."member" m
         AND o."type" = s."type"
  WHERE o."_key" = $1::TEXT`,
 			values: [key],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, res.rows.map(function (r) {
-				return r.m;
-			}));
 		});
+
+		return res.rows.map(r => r.m);
 	};
 
-	module.getSetsMembers = function (keys, callback) {
+	module.getSetsMembers = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, []);
+			return [];
 		}
 
-		db.query({
+		const res = await db.query({
 			name: 'getSetsMembers',
 			text: `
 SELECT o."_key" k,
@@ -202,16 +196,10 @@ SELECT o."_key" k,
  WHERE o."_key" = ANY($1::TEXT[])
  GROUP BY o."_key"`,
 			values: [keys],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
+		});
 
-			callback(null, keys.map(function (k) {
-				return (res.rows.find(function (r) {
-					return r.k === k;
-				}) || { m: [] }).m;
-			}));
+		return keys.map(function (k) {
+			return (res.rows.find(r => r.k === k) || { m: [] }).m;
 		});
 	};
 

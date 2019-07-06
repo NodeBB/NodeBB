@@ -32,6 +32,7 @@ module.exports = function (redisClient) {
 		sadd: util.promisify(redisClient.sadd).bind(redisClient),
 		srem: util.promisify(redisClient.srem).bind(redisClient),
 		sismember: util.promisify(redisClient.sismember).bind(redisClient),
+		smembers: util.promisify(redisClient.smembers).bind(redisClient),
 
 		zadd: util.promisify(redisClient.zadd).bind(redisClient),
 		zrem: util.promisify(redisClient.zrem).bind(redisClient),

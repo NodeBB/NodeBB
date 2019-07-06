@@ -110,36 +110,27 @@ module.exports = function (db, module) {
 		return sets.map(set => !!map[set]);
 	};
 
-	module.getSetMembers = function (key, callback) {
+	module.getSetMembers = async function (key) {
 		if (!key) {
-			return callback(null, []);
+			return [];
 		}
 
-		db.collection('objects').findOne({ _key: key }, { projection: { _id: 0, _key: 0 } }, function (err, data) {
-			callback(err, data ? data.members : []);
-		});
+		const data = await db.collection('objects').findOne({ _key: key }, { projection: { _id: 0, _key: 0 } });
+		return data ? data.members : [];
 	};
 
-	module.getSetsMembers = function (keys, callback) {
+	module.getSetsMembers = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, []);
+			return [];
 		}
-		db.collection('objects').find({ _key: { $in: keys } }, { projection: { _id: 0 } }).toArray(function (err, data) {
-			if (err) {
-				return callback(err);
-			}
+		const data = await db.collection('objects').find({ _key: { $in: keys } }, { projection: { _id: 0 } }).toArray();
 
-			var sets = {};
-			data.forEach(function (set) {
-				sets[set._key] = set.members || [];
-			});
-
-			var returnData = new Array(keys.length);
-			for (var i = 0; i < keys.length; i += 1) {
-				returnData[i] = sets[keys[i]] || [];
-			}
-			callback(null, returnData);
+		var sets = {};
+		data.forEach(function (set) {
+			sets[set._key] = set.members || [];
 		});
+
+		return keys.map(k => sets[k] || []);
 	};
 
 	module.setCount = function (key, callback) {

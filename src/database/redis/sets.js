@@ -60,12 +60,14 @@ module.exports = function (redisClient, module) {
 		return results ? helpers.resultsToBool(results) : null;
 	};
 
-	module.getSetMembers = function (key, callback) {
-		redisClient.smembers(key, callback);
+	module.getSetMembers = async function (key) {
+		return await redisClient.async.smembers(key);
 	};
 
-	module.getSetsMembers = function (keys, callback) {
-		helpers.execKeys(redisClient, 'batch', 'smembers', keys, callback);
+	module.getSetsMembers = async function (keys) {
+		const batch = redisClient.batch();
+		keys.forEach(k => batch.smembers(String(k)));
+		return await helpers.execBatch(batch);
 	};
 
 	module.setCount = function (key, callback) {
