@@ -1,28 +1,17 @@
 'use strict';
 
-var async = require('async');
-
 module.exports = function (db, module) {
 	var helpers = require('./helpers');
 
 	var query = db.query.bind(db);
 
-	module.flushdb = function (callback) {
-		callback = callback || helpers.noop;
-
-		async.series([
-			async.apply(query, `DROP SCHEMA "public" CASCADE`),
-			async.apply(query, `CREATE SCHEMA "public"`),
-		], function (err) {
-			callback(err);
-		});
+	module.flushdb = async function () {
+		await query(`DROP SCHEMA "public" CASCADE`);
+		await query(`CREATE SCHEMA "public"`);
 	};
 
-	module.emptydb = function (callback) {
-		callback = callback || helpers.noop;
-		query(`DELETE FROM "legacy_object"`, function (err) {
-			callback(err);
-		});
+	module.emptydb = async function () {
+		await query(`DELETE FROM "legacy_object"`);
 	};
 
 	module.exists = async function (key) {

@@ -3,22 +3,13 @@
 module.exports = function (db, module) {
 	var helpers = require('./helpers');
 
-	module.flushdb = function (callback) {
-		callback = callback || helpers.noop;
-		db.dropDatabase(function (err) {
-			callback(err);
-		});
+	module.flushdb = async function () {
+		await db.dropDatabase();
 	};
 
-	module.emptydb = function (callback) {
-		callback = callback || helpers.noop;
-		db.collection('objects').deleteMany({}, function (err) {
-			if (err) {
-				return callback(err);
-			}
-			module.objectCache.resetObjectCache();
-			callback();
-		});
+	module.emptydb = async function () {
+		await db.collection('objects').deleteMany({});
+		module.objectCache.resetObjectCache();
 	};
 
 	module.exists = async function (key) {

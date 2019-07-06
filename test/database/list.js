@@ -219,7 +219,6 @@ describe('List methods', function () {
 		it('should return 0 if list does not have any elements', function (done) {
 			db.listLength('doesnotexist', function (err, length) {
 				assert.ifError(err);
-				console.log(length);
 				assert.strictEqual(length, 0);
 				done();
 			});

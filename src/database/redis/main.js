@@ -3,22 +3,13 @@
 module.exports = function (redisClient, module) {
 	var helpers = require('./helpers');
 
-	module.flushdb = function (callback) {
-		redisClient.send_command('flushdb', [], function (err) {
-			if (typeof callback === 'function') {
-				callback(err);
-			}
-		});
+	module.flushdb = async function () {
+		await redisClient.async.send_command('flushdb', []);
 	};
 
-	module.emptydb = function (callback) {
-		module.flushdb(function (err) {
-			if (err) {
-				return callback(err);
-			}
-			module.objectCache.resetObjectCache();
-			callback();
-		});
+	module.emptydb = async function () {
+		await module.flushdb();
+		module.objectCache.resetObjectCache();
 	};
 
 	module.exists = async function (key) {
