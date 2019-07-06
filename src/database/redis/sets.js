@@ -41,22 +41,23 @@ module.exports = function (redisClient, module) {
 		await helpers.execBatch(batch);
 	};
 
-	module.isSetMember = function (key, value, callback) {
-		redisClient.sismember(key, value, function (err, result) {
-			callback(err, result === 1);
-		});
+	module.isSetMember = async function (key, value) {
+		const result = await redisClient.async.sismember(key, value);
+		return result === 1;
 	};
 
-	module.isSetMembers = function (key, values, callback) {
-		helpers.execKeyValues(redisClient, 'batch', 'sismember', key, values, function (err, results) {
-			callback(err, results ? helpers.resultsToBool(results) : null);
-		});
+	module.isSetMembers = async function (key, values) {
+		const batch = redisClient.batch();
+		values.forEach(v => batch.sismember(String(key), String(v)));
+		const results = await helpers.execBatch(batch);
+		return results ? helpers.resultsToBool(results) : null;
 	};
 
-	module.isMemberOfSets = function (sets, value, callback) {
-		helpers.execKeysValue(redisClient, 'batch', 'sismember', sets, value, function (err, results) {
-			callback(err, results ? helpers.resultsToBool(results) : null);
-		});
+	module.isMemberOfSets = async function (sets, value) {
+		const batch = redisClient.batch();
+		sets.forEach(s => batch.sismember(String(s), String(value)));
+		const results = await helpers.execBatch(batch);
+		return results ? helpers.resultsToBool(results) : null;
 	};
 
 	module.getSetMembers = function (key, callback) {

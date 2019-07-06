@@ -73,58 +73,41 @@ module.exports = function (db, module) {
 		await db.collection('objects').updateMany({ _key: { $in: keys } }, { $pull: { members: value } });
 	};
 
-	module.isSetMember = function (key, value, callback) {
+	module.isSetMember = async function (key, value) {
 		if (!key) {
-			return callback(null, false);
+			return false;
 		}
 		value = helpers.valueToString(value);
 
-		db.collection('objects').findOne({ _key: key, members: value }, { projection: { _id: 0, members: 0 } }, function (err, item) {
-			callback(err, item !== null && item !== undefined);
-		});
+		const item = await db.collection('objects').findOne({ _key: key, members: value }, { projection: { _id: 0, members: 0 } });
+		return item !== null && item !== undefined;
 	};
 
-	module.isSetMembers = function (key, values, callback) {
+	module.isSetMembers = async function (key, values) {
 		if (!key || !Array.isArray(values) || !values.length) {
-			return callback(null, []);
+			return [];
 		}
+		values = values.map(v => helpers.valueToString(v));
 
-		for (var i = 0; i < values.length; i += 1) {
-			values[i] = helpers.valueToString(values[i]);
-		}
-
-		db.collection('objects').findOne({ _key: key }, { projection: { _id: 0, _key: 0 } }, function (err, items) {
-			if (err) {
-				return callback(err);
-			}
-
-			const membersSet = new Set(items && Array.isArray(items.members) ? items.members : []);
-			values = values.map(value => membersSet.has(value));
-			callback(null, values);
-		});
+		const result = await db.collection('objects').findOne({ _key: key }, { projection: { _id: 0, _key: 0 } });
+		const membersSet = new Set(result && Array.isArray(result.members) ? result.members : []);
+		return values.map(v => membersSet.has(v));
 	};
 
-	module.isMemberOfSets = function (sets, value, callback) {
+	module.isMemberOfSets = async function (sets, value) {
 		if (!Array.isArray(sets) || !sets.length) {
-			return callback(null, []);
+			return [];
 		}
 		value = helpers.valueToString(value);
 
-		db.collection('objects').find({ _key: { $in: sets }, members: value }, { projection: { _id: 0, members: 0 } }).toArray(function (err, result) {
-			if (err) {
-				return callback(err);
-			}
-			var map = {};
-			result.forEach(function (item) {
-				map[item._key] = true;
-			});
+		const result = await db.collection('objects').find({ _key: { $in: sets }, members: value }, { projection: { _id: 0, members: 0 } }).toArray();
 
-			result = sets.map(function (set) {
-				return !!map[set];
-			});
-
-			callback(null, result);
+		var map = {};
+		result.forEach(function (item) {
+			map[item._key] = true;
 		});
+
+		return sets.map(set => !!map[set]);
 	};
 
 	module.getSetMembers = function (key, callback) {

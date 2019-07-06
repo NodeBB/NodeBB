@@ -88,12 +88,12 @@ DELETE FROM "legacy_set"
 		});
 	};
 
-	module.isSetMember = function (key, value, callback) {
+	module.isSetMember = async function (key, value) {
 		if (!key) {
-			return callback(null, false);
+			return false;
 		}
 
-		db.query({
+		const res = await db.query({
 			name: 'isSetMember',
 			text: `
 SELECT 1
@@ -104,23 +104,19 @@ SELECT 1
  WHERE o."_key" = $1::TEXT
    AND s."member" = $2::TEXT`,
 			values: [key, value],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, !!res.rows.length);
 		});
+
+		return !!res.rows.length;
 	};
 
-	module.isSetMembers = function (key, values, callback) {
+	module.isSetMembers = async function (key, values) {
 		if (!key || !Array.isArray(values) || !values.length) {
-			return callback(null, []);
+			return [];
 		}
 
 		values = values.map(helpers.valueToString);
 
-		db.query({
+		const res = await db.query({
 			name: 'isSetMembers',
 			text: `
 SELECT s."member" m
@@ -131,27 +127,21 @@ SELECT s."member" m
  WHERE o."_key" = $1::TEXT
    AND s."member" = ANY($2::TEXT[])`,
 			values: [key, values],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
+		});
 
-			callback(null, values.map(function (v) {
-				return res.rows.some(function (r) {
-					return r.m === v;
-				});
-			}));
+		return values.map(function (v) {
+			return res.rows.some(r => r.m === v);
 		});
 	};
 
-	module.isMemberOfSets = function (sets, value, callback) {
+	module.isMemberOfSets = async function (sets, value) {
 		if (!Array.isArray(sets) || !sets.length) {
-			return callback(null, []);
+			return [];
 		}
 
 		value = helpers.valueToString(value);
 
-		db.query({
+		const res = await db.query({
 			name: 'isMemberOfSets',
 			text: `
 SELECT o."_key" k
@@ -162,16 +152,10 @@ SELECT o."_key" k
  WHERE o."_key" = ANY($1::TEXT[])
    AND s."member" = $2::TEXT`,
 			values: [sets, value],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
+		});
 
-			callback(null, sets.map(function (s) {
-				return res.rows.some(function (r) {
-					return r.k === s;
-				});
-			}));
+		return sets.map(function (s) {
+			return res.rows.some(r => r.k === s);
 		});
 	};
 
