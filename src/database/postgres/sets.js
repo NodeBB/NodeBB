@@ -203,12 +203,12 @@ SELECT o."_key" k,
 		});
 	};
 
-	module.setCount = function (key, callback) {
+	module.setCount = async function (key) {
 		if (!key) {
-			return callback(null, 0);
+			return 0;
 		}
 
-		db.query({
+		const res = await db.query({
 			name: 'setCount',
 			text: `
 SELECT COUNT(*) c
@@ -218,17 +218,13 @@ SELECT COUNT(*) c
         AND o."type" = s."type"
  WHERE o."_key" = $1::TEXT`,
 			values: [key],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, parseInt(res.rows[0].c, 10));
 		});
+
+		return parseInt(res.rows[0].c, 10);
 	};
 
-	module.setsCount = function (keys, callback) {
-		db.query({
+	module.setsCount = async function (keys) {
+		const res = await db.query({
 			name: 'setsCount',
 			text: `
 SELECT o."_key" k,
@@ -240,23 +236,15 @@ SELECT o."_key" k,
  WHERE o."_key" = ANY($1::TEXT[])
  GROUP BY o."_key"`,
 			values: [keys],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
+		});
 
-			callback(null, keys.map(function (k) {
-				return (res.rows.find(function (r) {
-					return r.k === k;
-				}) || { c: 0 }).c;
-			}));
+		return keys.map(function (k) {
+			return (res.rows.find(r => r.k === k) || { c: 0 }).c;
 		});
 	};
 
-	module.setRemoveRandom = function (key, callback) {
-		callback = callback || helpers.noop;
-
-		db.query({
+	module.setRemoveRandom = async function (key) {
+		const res = await db.query({
 			name: 'setRemoveRandom',
 			text: `
 WITH A AS (
@@ -275,16 +263,7 @@ DELETE FROM "legacy_set" s
    AND s."member" = A."member"
 RETURNING A."member" m`,
 			values: [key],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (res.rows.length) {
-				return callback(null, res.rows[0].m);
-			}
-
-			callback(null, null);
 		});
+		return res.rows.length ? res.rows[0].m : null;
 	};
 };

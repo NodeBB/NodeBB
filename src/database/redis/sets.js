@@ -70,17 +70,18 @@ module.exports = function (redisClient, module) {
 		return await helpers.execBatch(batch);
 	};
 
-	module.setCount = function (key, callback) {
-		redisClient.scard(key, callback);
+	module.setCount = async function (key) {
+		return await redisClient.async.scard(key);
 	};
 
-	module.setsCount = function (keys, callback) {
-		helpers.execKeys(redisClient, 'batch', 'scard', keys, callback);
+	module.setsCount = async function (keys) {
+		const batch = redisClient.batch();
+		keys.forEach(k => batch.scard(String(k)));
+		return await helpers.execBatch(batch);
 	};
 
-	module.setRemoveRandom = function (key, callback) {
-		callback = callback || function () {};
-		redisClient.spop(key, callback);
+	module.setRemoveRandom = async function (key) {
+		return await redisClient.async.spop(key);
 	};
 
 	return module;

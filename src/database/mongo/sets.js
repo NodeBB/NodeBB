@@ -133,40 +133,29 @@ module.exports = function (db, module) {
 		return keys.map(k => sets[k] || []);
 	};
 
-	module.setCount = function (key, callback) {
+	module.setCount = async function (key) {
 		if (!key) {
-			return callback(null, 0);
+			return 0;
 		}
-		db.collection('objects').findOne({ _key: key }, { projection: { _id: 0 } }, function (err, data) {
-			callback(err, data ? data.members.length : 0);
-		});
+		const data = await db.collection('objects').findOne({ _key: key }, { projection: { _id: 0 } });
+		return data ? data.members.length : 0;
 	};
 
-	module.setsCount = function (keys, callback) {
-		module.getSetsMembers(keys, function (err, setsMembers) {
-			if (err) {
-				return callback(err);
-			}
-
-			var counts = setsMembers.map(function (members) {
-				return (members && members.length) || 0;
-			});
-			callback(null, counts);
-		});
+	module.setsCount = async function (keys) {
+		const setsMembers = await module.getSetsMembers(keys);
+		var counts = setsMembers.map(members => (members && members.length) || 0);
+		return counts;
 	};
 
-	module.setRemoveRandom = function (key, callback) {
-		callback = callback || function () {};
-		db.collection('objects').findOne({ _key: key }, function (err, data) {
-			if (err || !data) {
-				return callback(err);
-			}
+	module.setRemoveRandom = async function (key) {
+		const data = await db.collection('objects').findOne({ _key: key });
+		if (!data) {
+			return;
+		}
 
-			var randomIndex = Math.floor(Math.random() * data.members.length);
-			var value = data.members[randomIndex];
-			module.setRemove(data._key, value, function (err) {
-				callback(err, value);
-			});
-		});
+		var randomIndex = Math.floor(Math.random() * data.members.length);
+		var value = data.members[randomIndex];
+		await module.setRemove(data._key, value);
+		return value;
 	};
 };
