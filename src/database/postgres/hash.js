@@ -229,7 +229,7 @@ SELECT (h."data" ? $2::TEXT AND h."data"->>$2::TEXT IS NOT NULL) b
 	};
 
 	module.deleteObjectField = async function (key, field) {
-		return await module.deleteObjectFields(key, [field]);
+		await module.deleteObjectFields(key, [field]);
 	};
 
 	module.deleteObjectFields = async function (key, fields) {
@@ -249,12 +249,12 @@ UPDATE "legacy_hash"
 		});
 	};
 
-	module.incrObjectField = function (key, field, callback) {
-		module.incrObjectFieldBy(key, field, 1, callback);
+	module.incrObjectField = async function (key, field) {
+		return await module.incrObjectFieldBy(key, field, 1);
 	};
 
-	module.decrObjectField = function (key, field, callback) {
-		module.incrObjectFieldBy(key, field, -1, callback);
+	module.decrObjectField = async function (key, field) {
+		return await module.incrObjectFieldBy(key, field, -1);
 	};
 
 	module.incrObjectFieldBy = async function (key, field, value) {

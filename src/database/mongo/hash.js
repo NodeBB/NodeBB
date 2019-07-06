@@ -1,8 +1,5 @@
 'use strict';
 
-var async = require('async');
-
-
 module.exports = function (db, module) {
 	var helpers = module.helpers.mongo;
 
@@ -143,7 +140,7 @@ module.exports = function (db, module) {
 	};
 
 	module.deleteObjectField = async function (key, field) {
-		return await module.deleteObjectFields(key, [field]);
+		await module.deleteObjectFields(key, [field]);
 	};
 
 	module.deleteObjectFields = async function (key, fields) {
@@ -165,59 +162,37 @@ module.exports = function (db, module) {
 		cache.delObjectCache(key);
 	};
 
-	module.incrObjectField = function (key, field, callback) {
-		module.incrObjectFieldBy(key, field, 1, callback);
+	module.incrObjectField = async function (key, field) {
+		return await module.incrObjectFieldBy(key, field, 1);
 	};
 
-	module.decrObjectField = function (key, field, callback) {
-		module.incrObjectFieldBy(key, field, -1, callback);
+	module.decrObjectField = async function (key, field) {
+		return await module.incrObjectFieldBy(key, field, -1);
 	};
 
-	module.incrObjectFieldBy = function (key, field, value, callback) {
-		callback = callback || helpers.noop;
+	module.incrObjectFieldBy = async function (key, field, value) {
 		value = parseInt(value, 10);
 		if (!key || isNaN(value)) {
-			return callback(null, null);
+			return null;
 		}
 
-		var data = {};
+		var increment = {};
 		field = helpers.fieldToString(field);
-		data[field] = value;
+		increment[field] = value;
 
 		if (Array.isArray(key)) {
 			var bulk = db.collection('objects').initializeUnorderedBulkOp();
 			key.forEach(function (key) {
-				bulk.find({ _key: key }).upsert().update({ $inc: data });
+				bulk.find({ _key: key }).upsert().update({ $inc: increment });
 			});
-
-			async.waterfall([
-				function (next) {
-					bulk.execute(function (err) {
-						next(err);
-					});
-				},
-				function (next) {
-					cache.delObjectCache(key);
-
-					module.getObjectsFields(key, [field], next);
-				},
-				function (data, next) {
-					data = data.map(function (data) {
-						return data && data[field];
-					});
-					next(null, data);
-				},
-			], callback);
-			return;
+			await bulk.execute();
+			cache.delObjectCache(key);
+			const result = await module.getObjectsFields(key, [field]);
+			return result.map(data => data && data[field]);
 		}
 
-
-		db.collection('objects').findOneAndUpdate({ _key: key }, { $inc: data }, { returnOriginal: false, upsert: true }, function (err, result) {
-			if (err) {
-				return callback(err);
-			}
-			cache.delObjectCache(key);
-			callback(null, result && result.value ? result.value[field] : null);
-		});
+		const result = await db.collection('objects').findOneAndUpdate({ _key: key }, { $inc: increment }, { returnOriginal: false, upsert: true });
+		cache.delObjectCache(key);
+		return result && result.value ? result.value[field] : null;
 	};
 };

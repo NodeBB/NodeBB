@@ -140,41 +140,32 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.deleteObjectFields = async function (key, fields) {
-		const batch = redisClient.batch();
-		fields.forEach(f => batch.hdel(String(f)));
-		await helpers.execBatch(batch);
+		await redisClient.async.hdel(key, fields);
 		cache.delObjectCache(key);
 	};
 
-	module.incrObjectField = function (key, field, callback) {
-		module.incrObjectFieldBy(key, field, 1, callback);
+	module.incrObjectField = async function (key, field) {
+		return await module.incrObjectFieldBy(key, field, 1);
 	};
 
-	module.decrObjectField = function (key, field, callback) {
-		module.incrObjectFieldBy(key, field, -1, callback);
+	module.decrObjectField = async function (key, field) {
+		return await module.incrObjectFieldBy(key, field, -1);
 	};
 
-	module.incrObjectFieldBy = function (key, field, value, callback) {
-		callback = callback || helpers.noop;
-		function done(err, result) {
-			if (err) {
-				return callback(err);
-			}
-			cache.delObjectCache(key);
-			callback(null, Array.isArray(result) ? result.map(value => parseInt(value, 10)) : parseInt(result, 10));
-		}
+	module.incrObjectFieldBy = async function (key, field, value) {
 		value = parseInt(value, 10);
 		if (!key || isNaN(value)) {
-			return callback(null, null);
+			return null;
 		}
+		let result;
 		if (Array.isArray(key)) {
 			var batch = redisClient.batch();
-			key.forEach(function (key) {
-				batch.hincrby(key, field, value);
-			});
-			batch.exec(done);
+			key.forEach(k => batch.hincrby(k, field, value));
+			result = await helpers.execBatch(batch);
 		} else {
-			redisClient.hincrby(key, field, value, done);
+			result = redisClient.async.hincrby(key, field, value);
 		}
+		cache.delObjectCache(key);
+		return Array.isArray(result) ? result.map(value => parseInt(value, 10)) : parseInt(result, 10);
 	};
 };
