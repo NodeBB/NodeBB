@@ -43,6 +43,8 @@ module.exports = function (redisClient) {
 		zrangebyscore: util.promisify(redisClient.zrangebyscore).bind(redisClient),
 		zrevrangebyscore: util.promisify(redisClient.zrevrangebyscore).bind(redisClient),
 		zscore: util.promisify(redisClient.zscore).bind(redisClient),
+		zcount: util.promisify(redisClient.zcount).bind(redisClient),
+		zcard: util.promisify(redisClient.zcard).bind(redisClient),
 
 		lpush: util.promisify(redisClient.lpush).bind(redisClient),
 		rpush: util.promisify(redisClient.rpush).bind(redisClient),

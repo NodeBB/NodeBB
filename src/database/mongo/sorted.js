@@ -120,9 +120,9 @@ module.exports = function (db, module) {
 		return await getSortedSetRange(key, start, stop, min, max, sort, withScores);
 	}
 
-	module.sortedSetCount = function (key, min, max, callback) {
+	module.sortedSetCount = async function (key, min, max) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
 		var query = { _key: key };
@@ -134,37 +134,33 @@ module.exports = function (db, module) {
 			query.score.$lte = max;
 		}
 
-		db.collection('objects').countDocuments(query, function (err, count) {
-			callback(err, count || 0);
-		});
+		const count = await db.collection('objects').countDocuments(query);
+		return count || 0;
 	};
 
-	module.sortedSetCard = function (key, callback) {
+	module.sortedSetCard = async function (key) {
 		if (!key) {
-			return callback(null, 0);
+			return 0;
 		}
-		db.collection('objects').countDocuments({ _key: key }, function (err, count) {
-			count = parseInt(count, 10);
-			callback(err, count || 0);
-		});
+		const count = await db.collection('objects').countDocuments({ _key: key });
+		return parseInt(count, 10) || 0;
 	};
 
-	module.sortedSetsCard = function (keys, callback) {
+	module.sortedSetsCard = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, []);
+			return [];
 		}
-		async.map(keys, module.sortedSetCard, callback);
+		const promises = keys.map(k => module.sortedSetCard(k));
+		return await Promise.all(promises);
 	};
 
-	module.sortedSetsCardSum = function (keys, callback) {
+	module.sortedSetsCardSum = async function (keys) {
 		if (!keys || (Array.isArray(keys) && !keys.length)) {
-			return callback(null, 0);
+			return 0;
 		}
 
-		db.collection('objects').countDocuments({ _key: Array.isArray(keys) ? { $in: keys } : keys }, function (err, count) {
-			count = parseInt(count, 10);
-			callback(err, count || 0);
-		});
+		const count = await db.collection('objects').countDocuments({ _key: Array.isArray(keys) ? { $in: keys } : keys });
+		return parseInt(count, 10) || 0;
 	};
 
 	module.sortedSetRank = function (key, value, callback) {

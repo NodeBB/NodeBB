@@ -164,9 +164,9 @@ OFFSET $2::INTEGER`,
 		return res.rows;
 	}
 
-	module.sortedSetCount = function (key, min, max, callback) {
+	module.sortedSetCount = async function (key, min, max) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
 		if (min === '-inf') {
@@ -176,7 +176,7 @@ OFFSET $2::INTEGER`,
 			max = null;
 		}
 
-		query({
+		const res = await query({
 			name: 'sortedSetCount',
 			text: `
 SELECT COUNT(*) c
@@ -188,21 +188,17 @@ SELECT COUNT(*) c
    AND (z."score" >= $2::NUMERIC OR $2::NUMERIC IS NULL)
    AND (z."score" <= $3::NUMERIC OR $3::NUMERIC IS NULL)`,
 			values: [key, min, max],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, parseInt(res.rows[0].c, 10));
 		});
+
+		return parseInt(res.rows[0].c, 10);
 	};
 
-	module.sortedSetCard = function (key, callback) {
+	module.sortedSetCard = async function (key) {
 		if (!key) {
-			return callback(null, 0);
+			return 0;
 		}
 
-		query({
+		const res = await query({
 			name: 'sortedSetCard',
 			text: `
 SELECT COUNT(*) c
@@ -212,21 +208,17 @@ SELECT COUNT(*) c
         AND o."type" = z."type"
  WHERE o."_key" = $1::TEXT`,
 			values: [key],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, parseInt(res.rows[0].c, 10));
 		});
+
+		return parseInt(res.rows[0].c, 10);
 	};
 
-	module.sortedSetsCard = function (keys, callback) {
+	module.sortedSetsCard = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, []);
+			return [];
 		}
 
-		query({
+		const res = await query({
 			name: 'sortedSetsCard',
 			text: `
 SELECT o."_key" k,
@@ -238,33 +230,23 @@ SELECT o."_key" k,
  WHERE o."_key" = ANY($1::TEXT[])
  GROUP BY o."_key"`,
 			values: [keys],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
+		});
 
-			callback(null, keys.map(function (k) {
-				return parseInt((res.rows.find(function (r) {
-					return r.k === k;
-				}) || { c: 0 }).c, 10);
-			}));
+		return keys.map(function (k) {
+			return parseInt((res.rows.find(r => r.k === k) || { c: 0 }).c, 10);
 		});
 	};
 
-	module.sortedSetsCardSum = function (keys, callback) {
+	module.sortedSetsCardSum = async function (keys) {
 		if (!keys || (Array.isArray(keys) && !keys.length)) {
-			return callback(null, 0);
+			return 0;
 		}
 		if (!Array.isArray(keys)) {
 			keys = [keys];
 		}
-		module.sortedSetsCard(keys, function (err, counts) {
-			if (err) {
-				return callback(err);
-			}
-			const sum = counts.reduce(function (acc, val) { return acc + val; }, 0);
-			callback(null, sum);
-		});
+		const counts = await module.sortedSetsCard(keys);
+		const sum = counts.reduce((acc, val) => acc + val, 0);
+		return sum;
 	};
 
 	module.sortedSetRank = function (key, value, callback) {

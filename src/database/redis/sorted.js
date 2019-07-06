@@ -95,39 +95,33 @@ module.exports = function (redisClient, module) {
 		return objects;
 	}
 
-	module.sortedSetCount = function (key, min, max, callback) {
-		redisClient.zcount(key, min, max, callback);
+	module.sortedSetCount = async function (key, min, max) {
+		return await redisClient.async.zcount(key, min, max);
 	};
 
-	module.sortedSetCard = function (key, callback) {
-		redisClient.zcard(key, callback);
+	module.sortedSetCard = async function (key) {
+		return await redisClient.async.zcard(key);
 	};
 
-	module.sortedSetsCard = function (keys, callback) {
+	module.sortedSetsCard = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, []);
+			return [];
 		}
 		var batch = redisClient.batch();
-		for (var i = 0; i < keys.length; i += 1) {
-			batch.zcard(keys[i]);
-		}
-		batch.exec(callback);
+		keys.forEach(k => batch.zcard(String(k)));
+		return await helpers.execBatch(batch);
 	};
 
-	module.sortedSetsCardSum = function (keys, callback) {
+	module.sortedSetsCardSum = async function (keys) {
 		if (!keys || (Array.isArray(keys) && !keys.length)) {
-			return callback(null, 0);
+			return 0;
 		}
 		if (!Array.isArray(keys)) {
 			keys = [keys];
 		}
-		module.sortedSetsCard(keys, function (err, counts) {
-			if (err) {
-				return callback(err);
-			}
-			const sum = counts.reduce(function (acc, val) { return acc + val; }, 0);
-			callback(null, sum);
-		});
+		const counts = await module.sortedSetsCard(keys);
+		const sum = counts.reduce((acc, val) => acc + val, 0);
+		return sum;
 	};
 
 	module.sortedSetRank = function (key, value, callback) {
