@@ -45,35 +45,31 @@ module.exports = function (db, module) {
 		module.objectCache.delObjectCache(keys);
 	};
 
-	module.get = function (key, callback) {
+	module.get = async function (key) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
-		db.collection('objects').findOne({ _key: key }, { projection: { _id: 0 } }, function (err, objectData) {
-			if (err) {
-				return callback(err);
+		const objectData = await db.collection('objects').findOne({ _key: key }, { projection: { _id: 0 } });
+
+		// fallback to old field name 'value' for backwards compatibility #6340
+		var value = null;
+		if (objectData) {
+			if (objectData.hasOwnProperty('data')) {
+				value = objectData.data;
+			} else if (objectData.hasOwnProperty('value')) {
+				value = objectData.value;
 			}
-			// fallback to old field name 'value' for backwards compatibility #6340
-			var value = null;
-			if (objectData) {
-				if (objectData.hasOwnProperty('data')) {
-					value = objectData.data;
-				} else if (objectData.hasOwnProperty('value')) {
-					value = objectData.value;
-				}
-			}
-			callback(null, value);
-		});
+		}
+		return value;
 	};
 
-	module.set = function (key, value, callback) {
-		callback = callback || helpers.noop;
+	module.set = async function (key, value) {
 		if (!key) {
-			return callback();
+			return;
 		}
 		var data = { data: value };
-		module.setObject(key, data, callback);
+		await module.setObject(key, data);
 	};
 
 	module.increment = function (key, callback) {

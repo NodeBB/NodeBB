@@ -36,15 +36,12 @@ module.exports = function (redisClient, module) {
 		module.objectCache.delObjectCache(keys);
 	};
 
-	module.get = function (key, callback) {
-		redisClient.get(key, callback);
+	module.get = async function (key) {
+		return await redisClient.async.get(key);
 	};
 
-	module.set = function (key, value, callback) {
-		callback = callback || function () {};
-		redisClient.set(key, value, function (err) {
-			callback(err);
-		});
+	module.set = async function (key, value) {
+		await redisClient.async.set(key, value);
 	};
 
 	module.increment = function (key, callback) {

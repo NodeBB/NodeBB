@@ -72,12 +72,12 @@ DELETE FROM "legacy_object"
 		});
 	};
 
-	module.get = function (key, callback) {
+	module.get = async function (key) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
-		query({
+		const res = await query({
 			name: 'get',
 			text: `
 SELECT s."data" t
@@ -88,17 +88,9 @@ SELECT s."data" t
  WHERE o."_key" = $1::TEXT
  LIMIT 1`,
 			values: [key],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (res.rows.length) {
-				return callback(null, res.rows[0].t);
-			}
-
-			callback(null, null);
 		});
+
+		return res.rows.length ? res.rows[0].t : null;
 	};
 
 	module.set = async function (key, value) {
