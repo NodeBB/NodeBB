@@ -163,7 +163,7 @@ module.exports = function (redisClient, module) {
 			key.forEach(k => batch.hincrby(k, field, value));
 			result = await helpers.execBatch(batch);
 		} else {
-			result = redisClient.async.hincrby(key, field, value);
+			result = await redisClient.async.hincrby(key, field, value);
 		}
 		cache.delObjectCache(key);
 		return Array.isArray(result) ? result.map(value => parseInt(value, 10)) : parseInt(result, 10);
