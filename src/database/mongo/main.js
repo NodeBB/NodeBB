@@ -83,27 +83,23 @@ module.exports = function (db, module) {
 		module.objectCache.delObjectCache([oldKey, newKey]);
 	};
 
-	module.type = function (key, callback) {
-		db.collection('objects').findOne({ _key: key }, function (err, data) {
-			if (err) {
-				return callback(err);
-			}
-			if (!data) {
-				return callback(null, null);
-			}
-			delete data.expireAt;
-			var keys = Object.keys(data);
-			if (keys.length === 4 && data.hasOwnProperty('_key') && data.hasOwnProperty('score') && data.hasOwnProperty('value')) {
-				return callback(null, 'zset');
-			} else if (keys.length === 3 && data.hasOwnProperty('_key') && data.hasOwnProperty('members')) {
-				return callback(null, 'set');
-			} else if (keys.length === 3 && data.hasOwnProperty('_key') && data.hasOwnProperty('array')) {
-				return callback(null, 'list');
-			} else if (keys.length === 3 && data.hasOwnProperty('_key') && data.hasOwnProperty('data')) {
-				return callback(null, 'string');
-			}
-			callback(null, 'hash');
-		});
+	module.type = async function (key) {
+		const data = await db.collection('objects').findOne({ _key: key });
+		if (!data) {
+			return null;
+		}
+		delete data.expireAt;
+		var keys = Object.keys(data);
+		if (keys.length === 4 && data.hasOwnProperty('_key') && data.hasOwnProperty('score') && data.hasOwnProperty('value')) {
+			return 'zset';
+		} else if (keys.length === 3 && data.hasOwnProperty('_key') && data.hasOwnProperty('members')) {
+			return 'set';
+		} else if (keys.length === 3 && data.hasOwnProperty('_key') && data.hasOwnProperty('array')) {
+			return 'list';
+		} else if (keys.length === 3 && data.hasOwnProperty('_key') && data.hasOwnProperty('data')) {
+			return 'string';
+		}
+		return 'hash';
 	};
 
 	module.expire = function (key, seconds, callback) {

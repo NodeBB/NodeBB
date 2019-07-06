@@ -60,10 +60,9 @@ module.exports = function (redisClient, module) {
 		module.objectCache.delObjectCache([oldKey, newKey]);
 	};
 
-	module.type = function (key, callback) {
-		redisClient.type(key, function (err, type) {
-			callback(err, type !== 'none' ? type : null);
-		});
+	module.type = async function (key) {
+		const type = await redisClient.async.type(key);
+		return type !== 'none' ? type : null;
 	};
 
 	module.expire = function (key, seconds, callback) {

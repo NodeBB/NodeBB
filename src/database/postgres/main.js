@@ -156,8 +156,8 @@ WHERE "_key" = $1::TEXT`,
 		});
 	};
 
-	module.type = function (key, callback) {
-		query({
+	module.type = async function (key) {
+		const res = await query({
 			name: 'type',
 			text: `
 SELECT "type"::TEXT t
@@ -165,17 +165,9 @@ SELECT "type"::TEXT t
  WHERE "_key" = $1::TEXT
  LIMIT 1`,
 			values: [key],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (res.rows.length) {
-				return callback(null, res.rows[0].t);
-			}
-
-			callback(null, null);
 		});
+
+		return res.rows.length ? res.rows[0].t : null;
 	};
 
 	function doExpire(key, date, callback) {
