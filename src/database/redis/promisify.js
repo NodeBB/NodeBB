@@ -8,6 +8,7 @@ module.exports = function (redisClient) {
 
 		exists: util.promisify(redisClient.exists).bind(redisClient),
 
+		del: util.promisify(redisClient.del).bind(redisClient),
 		get: util.promisify(redisClient.get).bind(redisClient),
 		set: util.promisify(redisClient.set).bind(redisClient),
 

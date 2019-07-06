@@ -29,34 +29,20 @@ module.exports = function (db, module) {
 		return item !== undefined && item !== null;
 	};
 
-	module.delete = function (key, callback) {
-		callback = callback || helpers.noop;
+	module.delete = async function (key) {
 		if (!key) {
-			return callback();
+			return;
 		}
-		db.collection('objects').deleteMany({ _key: key }, function (err) {
-			if (err) {
-				return callback(err);
-			}
-			module.objectCache.delObjectCache(key);
-			callback();
-		});
+		await db.collection('objects').deleteMany({ _key: key });
+		module.objectCache.delObjectCache(key);
 	};
 
-	module.deleteAll = function (keys, callback) {
-		callback = callback || helpers.noop;
+	module.deleteAll = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback();
+			return;
 		}
-		db.collection('objects').deleteMany({ _key: { $in: keys } }, function (err) {
-			if (err) {
-				return callback(err);
-			}
-
-			module.objectCache.delObjectCache(keys);
-
-			callback(null);
-		});
+		await db.collection('objects').deleteMany({ _key: { $in: keys } });
+		module.objectCache.delObjectCache(keys);
 	};
 
 	module.get = function (key, callback) {

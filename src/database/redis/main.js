@@ -23,24 +23,22 @@ module.exports = function (redisClient, module) {
 		return exists === 1;
 	};
 
-	module.delete = function (key, callback) {
-		callback = callback || function () {};
-		redisClient.del(key, function (err) {
-			module.objectCache.delObjectCache(key);
-			callback(err);
-		});
+	module.delete = async function (key) {
+		await redisClient.async.del(key);
+		module.objectCache.delObjectCache(key);
 	};
 
-	module.deleteAll = function (keys, callback) {
-		callback = callback || function () {};
-		var batch = redisClient.batch();
-		for (var i = 0; i < keys.length; i += 1) {
-			batch.del(keys[i]);
-		}
-		batch.exec(function (err) {
-			module.objectCache.delObjectCache(keys);
-			callback(err);
-		});
+	module.deleteAll = async function (keys) {
+		await redisClient.async.del(keys);
+		module.objectCache.delObjectCache(keys);
+		// var batch = redisClient.batch();
+		// for (var i = 0; i < keys.length; i += 1) {
+		// 	batch.del(keys[i]);
+		// }
+		// batch.exec(function (err) {
+		// 	module.objectCache.delObjectCache(keys);
+		// 	callback(err);
+		// });
 	};
 
 	module.get = function (key, callback) {

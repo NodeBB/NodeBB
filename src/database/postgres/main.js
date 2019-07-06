@@ -44,38 +44,31 @@ module.exports = function (db, module) {
 		return res.rows[0].e;
 	};
 
-	module.delete = function (key, callback) {
-		callback = callback || helpers.noop;
+	module.delete = async function (key) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
-		query({
+		await query({
 			name: 'delete',
 			text: `
 DELETE FROM "legacy_object"
  WHERE "_key" = $1::TEXT`,
 			values: [key],
-		}, function (err) {
-			callback(err);
 		});
 	};
 
-	module.deleteAll = function (keys, callback) {
-		callback = callback || helpers.noop;
-
+	module.deleteAll = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback();
+			return;
 		}
 
-		query({
+		await query({
 			name: 'deleteAll',
 			text: `
 DELETE FROM "legacy_object"
  WHERE "_key" = ANY($1::TEXT[])`,
 			values: [keys],
-		}, function (err) {
-			callback(err);
 		});
 	};
 
