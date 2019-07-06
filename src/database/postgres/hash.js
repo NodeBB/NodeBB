@@ -222,12 +222,10 @@ SELECT (h."data" ? $2::TEXT AND h."data"->>$2::TEXT IS NOT NULL) b
 		}
 
 		const data = await module.getObjectFields(key, fields);
-
 		if (!data) {
 			return fields.map(() => false);
 		}
-
-		fields.map(field => data.hasOwnProperty(field) && data[field] !== null);
+		return fields.map(field => data.hasOwnProperty(field) && data[field] !== null);
 	};
 
 	module.deleteObjectField = function (key, field, callback) {
