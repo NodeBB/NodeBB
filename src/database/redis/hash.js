@@ -126,7 +126,7 @@ module.exports = function (redisClient, module) {
 
 	module.isObjectFields = async function (key, fields) {
 		const batch = redisClient.batch();
-		fields.forEach(f => batch.hexists(key, f));
+		fields.forEach(f => batch.hexists(String(key), String(f)));
 		const results = await helpers.execBatch(batch);
 		return Array.isArray(results) ? helpers.resultsToBool(results) : null;
 	};

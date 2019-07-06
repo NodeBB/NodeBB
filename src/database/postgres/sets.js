@@ -54,9 +54,7 @@ DO NOTHING`,
 		});
 	};
 
-	module.setRemove = function (key, value, callback) {
-		callback = callback || helpers.noop;
-
+	module.setRemove = async function (key, value) {
 		if (!Array.isArray(key)) {
 			key = [key];
 		}
@@ -65,34 +63,28 @@ DO NOTHING`,
 			value = [value];
 		}
 
-		db.query({
+		await db.query({
 			name: 'setRemove',
 			text: `
 DELETE FROM "legacy_set"
  WHERE "_key" = ANY($1::TEXT[])
    AND "member" = ANY($2::TEXT[])`,
 			values: [key, value],
-		}, function (err) {
-			callback(err);
 		});
 	};
 
-	module.setsRemove = function (keys, value, callback) {
-		callback = callback || helpers.noop;
-
+	module.setsRemove = async function (keys, value) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback();
+			return;
 		}
 
-		db.query({
+		await db.query({
 			name: 'setsRemove',
 			text: `
 DELETE FROM "legacy_set"
  WHERE "_key" = ANY($1::TEXT[])
    AND "member" = $2::TEXT`,
 			values: [keys, value],
-		}, function (err) {
-			callback(err);
 		});
 	};
 

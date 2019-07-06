@@ -18,12 +18,11 @@ module.exports = function (redisClient, module) {
 			return;
 		}
 		const batch = redisClient.batch();
-		keys.forEach(k => batch.sadd(k, value));
+		keys.forEach(k => batch.sadd(String(k), String(value)));
 		await helpers.execBatch(batch);
 	};
 
-	module.setRemove = function (key, value, callback) {
-		callback = callback || function () {};
+	module.setRemove = async function (key, value) {
 		if (!Array.isArray(value)) {
 			value = [value];
 		}
@@ -32,19 +31,14 @@ module.exports = function (redisClient, module) {
 		}
 
 		var batch = redisClient.batch();
-		key.forEach(function (key) {
-			batch.srem(key, value);
-		});
-		batch.exec(function (err) {
-			callback(err);
-		});
+		key.forEach(k => batch.srem(String(k), value));
+		await helpers.execBatch(batch);
 	};
 
-	module.setsRemove = function (keys, value, callback) {
-		callback = callback || function () {};
-		helpers.execKeysValue(redisClient, 'batch', 'srem', keys, value, function (err) {
-			callback(err);
-		});
+	module.setsRemove = async function (keys, value) {
+		var batch = redisClient.batch();
+		keys.forEach(k => batch.srem(String(k), value));
+		await helpers.execBatch(batch);
 	};
 
 	module.isSetMember = function (key, value, callback) {

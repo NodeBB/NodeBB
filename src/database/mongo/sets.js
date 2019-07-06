@@ -54,37 +54,23 @@ module.exports = function (db, module) {
 		}
 	};
 
-	module.setRemove = function (key, value, callback) {
-		callback = callback || helpers.noop;
+	module.setRemove = async function (key, value) {
 		if (!Array.isArray(value)) {
 			value = [value];
 		}
 
-		value.forEach(function (element, index, array) {
-			array[index] = helpers.valueToString(element);
-		});
+		value = value.map(v => helpers.valueToString(v));
 
-		if (Array.isArray(key)) {
-			db.collection('objects').updateMany({ _key: { $in: key } }, { $pullAll: { members: value } }, function (err) {
-				callback(err);
-			});
-		} else {
-			db.collection('objects').updateOne({ _key: key }, { $pullAll: { members: value } }, function (err) {
-				callback(err);
-			});
-		}
+		await db.collection('objects').updateMany({ _key: Array.isArray(key) ? { $in: key } : key }, { $pullAll: { members: value } });
 	};
 
-	module.setsRemove = function (keys, value, callback) {
-		callback = callback || helpers.noop;
+	module.setsRemove = async function (keys, value) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback();
+			return;
 		}
 		value = helpers.valueToString(value);
 
-		db.collection('objects').updateMany({ _key: { $in: keys } }, { $pull: { members: value } }, function (err) {
-			callback(err);
-		});
+		await db.collection('objects').updateMany({ _key: { $in: keys } }, { $pull: { members: value } });
 	};
 
 	module.isSetMember = function (key, value, callback) {
