@@ -49,7 +49,11 @@ module.exports = function (Topics) {
 					return callback(new Error('[[error:topic-already-restored]]'));
 				}
 
-				Topics[isDelete ? 'delete' : 'restore'](tid, uid, next);
+				if (isDelete) {
+					Topics.delete(tid, uid, next);
+				} else {
+					Topics.restore(tid, next);
+				}
 			},
 			function (next) {
 				categories.updateRecentTidForCid(topicData.cid, next);

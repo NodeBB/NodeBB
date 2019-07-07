@@ -35,56 +35,35 @@ module.exports = function (Topics) {
 		await db.sortedSetRemove('cid:' + cid + ':pids', pids);
 	}
 
-	Topics.restore = function (tid, uid, callback) {
-		var topicData;
-		async.waterfall([
-			function (next) {
-				Topics.getTopicData(tid, next);
-			},
-			function (_topicData, next) {
-				topicData = _topicData;
-				async.parallel([
-					function (next) {
-						Topics.setTopicField(tid, 'deleted', 0, next);
-					},
-					function (next) {
-						Topics.deleteTopicFields(tid, ['deleterUid', 'deletedTimestamp'], next);
-					},
-					function (next) {
-						Topics.updateRecent(tid, topicData.lastposttime, next);
-					},
-					function (next) {
-						db.sortedSetAddBulk([
-							['topics:posts', topicData.postcount, tid],
-							['topics:views', topicData.viewcount, tid],
-							['topics:votes', parseInt(topicData.votes, 10) || 0, tid],
-						], next);
-					},
-					function (next) {
-						async.waterfall([
-							function (next) {
-								Topics.getPids(tid, next);
-							},
-							function (pids, next) {
-								posts.getPostsFields(pids, ['pid', 'timestamp', 'deleted'], next);
-							},
-							function (postData, next) {
-								postData = postData.filter(post => post && !post.deleted);
-								var pidsToAdd = [];
-								var scores = [];
-								postData.forEach(function (post) {
-									pidsToAdd.push(post.pid);
-									scores.push(post.timestamp);
-								});
-								db.sortedSetAdd('cid:' + topicData.cid + ':pids', scores, pidsToAdd, next);
-							},
-						], next);
-					},
-				], function (err) {
-					next(err);
-				});
-			},
-		], callback);
+	async function addTopicPidsToCid(tid) {
+		const [cid, pids] = await Promise.all([
+			Topics.getTopicField(tid, 'cid'),
+			Topics.getPids(tid),
+		]);
+		let postData = await posts.async.getPostsFields(pids, ['pid', 'timestamp', 'deleted']);
+		postData = postData.filter(post => post && !post.deleted);
+		var pidsToAdd = [];
+		var scores = [];
+		postData.forEach(function (post) {
+			pidsToAdd.push(post.pid);
+			scores.push(post.timestamp);
+		});
+		await db.sortedSetAdd('cid:' + cid + ':pids', scores, pidsToAdd);
+	}
+
+	Topics.restore = async function (tid) {
+		const topicData = await Topics.getTopicData(tid);
+		await Promise.all([
+			Topics.setTopicField(tid, 'deleted', 0),
+			Topics.deleteTopicFields(tid, ['deleterUid', 'deletedTimestamp']),
+			Topics.updateRecent(tid, topicData.lastposttime),
+			db.sortedSetAddBulk([
+				['topics:posts', topicData.postcount, tid],
+				['topics:views', topicData.viewcount, tid],
+				['topics:votes', parseInt(topicData.votes, 10) || 0, tid],
+			]),
+			addTopicPidsToCid(tid),
+		]);
 	};
 
 	Topics.purgePostsAndTopic = function (tid, uid, callback) {

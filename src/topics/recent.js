@@ -101,24 +101,13 @@ module.exports = function (Topics) {
 		});
 	};
 
-	Topics.updateRecent = function (tid, timestamp, callback) {
-		callback = callback || function () {};
-
-		async.waterfall([
-			function (next) {
-				if (plugins.hasListeners('filter:topics.updateRecent')) {
-					plugins.fireHook('filter:topics.updateRecent', { tid: tid, timestamp: timestamp }, next);
-				} else {
-					next(null, { tid: tid, timestamp: timestamp });
-				}
-			},
-			function (data, next) {
-				if (data && data.tid && data.timestamp) {
-					db.sortedSetAdd('topics:recent', data.timestamp, data.tid, next);
-				} else {
-					next();
-				}
-			},
-		], callback);
+	Topics.updateRecent = async function (tid, timestamp) {
+		let data = { tid: tid, timestamp: timestamp };
+		if (plugins.hasListeners('filter:topics.updateRecent')) {
+			data = await plugins.async.fireHook('filter:topics.updateRecent', { tid: tid, timestamp: timestamp });
+		}
+		if (data && data.tid && data.timestamp) {
+			await db.sortedSetAdd('topics:recent', data.timestamp, data.tid);
+		}
 	};
 };
