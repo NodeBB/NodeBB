@@ -396,14 +396,14 @@ SELECT z."value" v,
 		});
 	};
 
-	module.isSortedSetMember = function (key, value, callback) {
+	module.isSortedSetMember = async function (key, value) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
 		value = helpers.valueToString(value);
 
-		query({
+		const res = await query({
 			name: 'isSortedSetMember',
 			text: `
 SELECT 1
@@ -414,23 +414,19 @@ SELECT 1
  WHERE o."_key" = $1::TEXT
    AND z."value" = $2::TEXT`,
 			values: [key, value],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, !!res.rows.length);
 		});
+
+		return !!res.rows.length;
 	};
 
-	module.isSortedSetMembers = function (key, values, callback) {
+	module.isSortedSetMembers = async function (key, values) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
 		values = values.map(helpers.valueToString);
 
-		query({
+		const res = await query({
 			name: 'isSortedSetMembers',
 			text: `
 SELECT z."value" v
@@ -441,27 +437,21 @@ SELECT z."value" v
  WHERE o."_key" = $1::TEXT
    AND z."value" = ANY($2::TEXT[])`,
 			values: [key, values],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
+		});
 
-			callback(null, values.map(function (v) {
-				return res.rows.some(function (r) {
-					return r.v === v;
-				});
-			}));
+		return values.map(function (v) {
+			return res.rows.some(r => r.v === v);
 		});
 	};
 
-	module.isMemberOfSortedSets = function (keys, value, callback) {
+	module.isMemberOfSortedSets = async function (keys, value) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return setImmediate(callback, null, []);
+			return [];
 		}
 
 		value = helpers.valueToString(value);
 
-		query({
+		const res = await query({
 			name: 'isMemberOfSortedSets',
 			text: `
 SELECT o."_key" k
@@ -472,25 +462,19 @@ SELECT o."_key" k
  WHERE o."_key" = ANY($1::TEXT[])
    AND z."value" = $2::TEXT`,
 			values: [keys, value],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
+		});
 
-			callback(null, keys.map(function (k) {
-				return res.rows.some(function (r) {
-					return r.k === k;
-				});
-			}));
+		return keys.map(function (k) {
+			return res.rows.some(r => r.k === k);
 		});
 	};
 
-	module.getSortedSetsMembers = function (keys, callback) {
+	module.getSortedSetsMembers = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, []);
+			return [];
 		}
 
-		query({
+		const res = await query({
 			name: 'getSortedSetsMembers',
 			text: `
 SELECT o."_key" k,
@@ -502,16 +486,10 @@ SELECT o."_key" k,
  WHERE o."_key" = ANY($1::TEXT[])
  GROUP BY o."_key"`,
 			values: [keys],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
+		});
 
-			callback(null, keys.map(function (k) {
-				return (res.rows.find(function (r) {
-					return r.k === k;
-				}) || { m: [] }).m;
-			}));
+		return keys.map(function (k) {
+			return (res.rows.find(r => r.k === k) || { m: [] }).m;
 		});
 	};
 

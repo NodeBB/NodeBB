@@ -758,7 +758,7 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return true if element is in sorted set with sre 0', function (done) {
+		it('should return true if element is in sorted set with score 0', function (done) {
 			db.isSortedSetMember('zeroscore', 'itemwithzeroscore', function (err, isMember) {
 				assert.ifError(err);
 				assert.strictEqual(isMember, true);
@@ -773,6 +773,15 @@ describe('Sorted Set methods', function () {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.deepEqual(isMembers, [true, true, false]);
+				done();
+			});
+		});
+
+		it('should return true if element is in sorted set with score 0', function (done) {
+			db.isSortedSetMembers('zeroscore', ['itemwithzeroscore'], function (err, isMembers) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 2);
+				assert.deepEqual(isMembers, [true]);
 				done();
 			});
 		});

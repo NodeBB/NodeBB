@@ -282,83 +282,62 @@ module.exports = function (db, module) {
 		return values.map(v => (utils.isNumber(valueToScore[v]) ? valueToScore[v] : null));
 	};
 
-	module.isSortedSetMember = function (key, value, callback) {
+	module.isSortedSetMember = async function (key, value) {
 		if (!key) {
-			return callback();
+			return;
 		}
 		value = helpers.valueToString(value);
-		db.collection('objects').findOne({ _key: key, value: value }, { projection: { _id: 0, _key: 0, score: 0 } }, function (err, result) {
-			callback(err, !!result);
-		});
+		const result = await db.collection('objects').findOne({ _key: key, value: value }, { projection: { _id: 0, _key: 0, score: 0 } });
+		return !!result;
 	};
 
-	module.isSortedSetMembers = function (key, values, callback) {
+	module.isSortedSetMembers = async function (key, values) {
 		if (!key) {
-			return callback();
+			return;
 		}
 		values = values.map(helpers.valueToString);
-		db.collection('objects').find({ _key: key, value: { $in: values } }, { projection: { _id: 0, _key: 0, score: 0 } }).toArray(function (err, results) {
-			if (err) {
-				return callback(err);
-			}
-			var isMember = {};
-			results.forEach(function (item) {
-				if (item) {
-					isMember[item.value] = true;
-				}
-			});
+		const results = await db.collection('objects').find({ _key: key, value: { $in: values } }, { projection: { _id: 0, _key: 0, score: 0 } }).toArray();
 
-			values = values.map(function (value) {
-				return !!isMember[value];
-			});
-			callback(null, values);
+		var isMember = {};
+		results.forEach(function (item) {
+			if (item) {
+				isMember[item.value] = true;
+			}
 		});
+
+		return values.map(value => !!isMember[value]);
 	};
 
-	module.isMemberOfSortedSets = function (keys, value, callback) {
+	module.isMemberOfSortedSets = async function (keys, value) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return setImmediate(callback, null, []);
+			return [];
 		}
 		value = helpers.valueToString(value);
-		db.collection('objects').find({ _key: { $in: keys }, value: value }, { projection: { _id: 0, score: 0 } }).toArray(function (err, results) {
-			if (err) {
-				return callback(err);
-			}
-			var isMember = {};
-			results.forEach(function (item) {
-				if (item) {
-					isMember[item._key] = true;
-				}
-			});
+		const results = await db.collection('objects').find({ _key: { $in: keys }, value: value }, { projection: { _id: 0, score: 0 } }).toArray();
 
-			results = keys.map(function (key) {
-				return !!isMember[key];
-			});
-			callback(null, results);
+		var isMember = {};
+		results.forEach(function (item) {
+			if (item) {
+				isMember[item._key] = true;
+			}
 		});
+
+		return keys.map(key => !!isMember[key]);
 	};
 
-	module.getSortedSetsMembers = function (keys, callback) {
+	module.getSortedSetsMembers = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return setImmediate(callback, null, []);
+			return [];
 		}
-		db.collection('objects').find({ _key: { $in: keys } }, { projection: { _id: 0, score: 0 } }).sort({ score: 1 }).toArray(function (err, data) {
-			if (err) {
-				return callback(err);
-			}
+		const data = await db.collection('objects').find({ _key: { $in: keys } }, { projection: { _id: 0, score: 0 } }).sort({ score: 1 }).toArray();
 
-			var sets = {};
-			data.forEach(function (set) {
-				sets[set._key] = sets[set._key] || [];
-				sets[set._key].push(set.value);
-			});
-
-			var returnData = new Array(keys.length);
-			for (var i = 0; i < keys.length; i += 1) {
-				returnData[i] = sets[keys[i]] || [];
-			}
-			callback(null, returnData);
+		var sets = {};
+		data.forEach(function (set) {
+			sets[set._key] = sets[set._key] || [];
+			sets[set._key].push(set.value);
 		});
+
+		return keys.map(k => sets[k] || []);
 	};
 
 	module.sortedSetIncrBy = function (key, increment, value, callback) {

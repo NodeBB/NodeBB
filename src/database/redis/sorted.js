@@ -193,42 +193,35 @@ module.exports = function (redisClient, module) {
 		return scores.map(d => (d === null ? d : parseFloat(d)));
 	};
 
-	module.isSortedSetMember = function (key, value, callback) {
-		module.sortedSetScore(key, value, function (err, score) {
-			callback(err, utils.isNumber(score));
-		});
+	module.isSortedSetMember = async function (key, value) {
+		const score = await module.sortedSetScore(key, value);
+		return utils.isNumber(score);
 	};
 
-	module.isSortedSetMembers = function (key, values, callback) {
-		helpers.execKeyValues(redisClient, 'batch', 'zscore', key, values, function (err, results) {
-			if (err) {
-				return callback(err);
-			}
-			callback(null, results.map(Boolean));
-		});
+	module.isSortedSetMembers = async function (key, values) {
+		const batch = redisClient.batch();
+		values.forEach(v => batch.zscore(key, String(v)));
+		const results = await helpers.execBatch(batch);
+		return results.map(utils.isNumber);
 	};
 
-	module.isMemberOfSortedSets = function (keys, value, callback) {
+	module.isMemberOfSortedSets = async function (keys, value) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return setImmediate(callback, null, []);
+			return [];
 		}
-		helpers.execKeysValue(redisClient, 'batch', 'zscore', keys, value, function (err, results) {
-			if (err) {
-				return callback(err);
-			}
-			callback(null, results.map(Boolean));
-		});
+		const batch = redisClient.batch();
+		keys.forEach(k => batch.zscore(k, String(value)));
+		const results = await helpers.execBatch(batch);
+		return results.map(utils.isNumber);
 	};
 
-	module.getSortedSetsMembers = function (keys, callback) {
+	module.getSortedSetsMembers = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return setImmediate(callback, null, []);
+			return [];
 		}
 		var batch = redisClient.batch();
-		for (var i = 0; i < keys.length; i += 1) {
-			batch.zrange(keys[i], 0, -1);
-		}
-		batch.exec(callback);
+		keys.forEach(k => batch.zrange(k, 0, -1));
+		return await helpers.execBatch(batch);
 	};
 
 	module.sortedSetIncrBy = function (key, increment, value, callback) {
