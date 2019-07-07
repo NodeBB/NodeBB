@@ -29,70 +29,38 @@ module.exports = function (Topics) {
 		return await db.getSortedSetRangeWithScores('tid:' + tid + ':bookmarks', 0, -1);
 	};
 
-	Topics.updateTopicBookmarks = function (tid, pids, callback) {
-		var minIndex;
-		var maxIndex;
-		var postIndices;
+	Topics.updateTopicBookmarks = async function (tid, pids) {
+		const maxIndex = await Topics.getPostCount(tid);
+		const indices = await db.sortedSetRanks('tid:' + tid + ':posts', pids);
+		const postIndices = indices.map(i => (i === null ? 0 : i + 1));
+		const minIndex = Math.min.apply(Math, postIndices);
 
-		async.waterfall([
-			function (next) {
-				Topics.getPostCount(tid, next);
-			},
-			function (postcount, next) {
-				maxIndex = postcount;
+		const bookmarks = await Topics.getTopicBookmarks(tid);
 
-				db.sortedSetRanks('tid:' + tid + ':posts', pids, next);
-			},
-			function (indices, next) {
-				postIndices = indices.map(function (i) {
-					return i === null ? 0 : i + 1;
-				});
-				minIndex = Math.min.apply(Math, postIndices);
+		var uidData = bookmarks.map(b => ({ uid: b.value, bookmark: parseInt(b.score, 10) }))
+			.filter(data => data.bookmark >= minIndex);
 
-				Topics.getTopicBookmarks(tid, next);
-			},
-			function (bookmarks, next) {
-				var uidData = bookmarks.map(function (bookmark) {
-					return {
-						uid: bookmark.value,
-						bookmark: parseInt(bookmark.score, 10),
-					};
-				}).filter(function (data) {
-					return data.bookmark >= minIndex;
-				});
+		await async.eachLimit(uidData, 50, async function (data) {
+			var bookmark = Math.min(data.bookmark, maxIndex);
 
-				async.eachLimit(uidData, 50, function (data, next) {
-					var bookmark = data.bookmark;
-					bookmark = Math.min(bookmark, maxIndex);
+			postIndices.forEach(function (i) {
+				if (i < data.bookmark) {
+					bookmark -= 1;
+				}
+			});
 
-					postIndices.forEach(function (i) {
-						if (i < data.bookmark) {
-							bookmark -= 1;
-						}
-					});
+			// make sure the bookmark is valid if we removed the last post
+			bookmark = Math.min(bookmark, maxIndex - pids.length);
+			if (bookmark === data.bookmark) {
+				return;
+			}
 
-					// make sure the bookmark is valid if we removed the last post
-					bookmark = Math.min(bookmark, maxIndex - pids.length);
+			const settings = await user.async.getSettings(data.uid);
+			if (settings.topicPostSort === 'most_votes') {
+				return;
+			}
 
-					if (bookmark === data.bookmark) {
-						return next();
-					}
-
-					user.getSettings(data.uid, function (err, settings) {
-						if (err) {
-							return next(err);
-						}
-
-						if (settings.topicPostSort === 'most_votes') {
-							return next();
-						}
-
-						Topics.setUserBookmark(tid, data.uid, bookmark, next);
-					});
-				}, next);
-			},
-		], function (err) {
-			callback(err);
+			await Topics.setUserBookmark(tid, data.uid, bookmark);
 		});
 	};
 };

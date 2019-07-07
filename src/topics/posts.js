@@ -355,19 +355,13 @@ module.exports = function (Topics) {
 		], callback);
 	};
 
-	Topics.getTopicDataByPid = function (pid, callback) {
-		async.waterfall([
-			function (next) {
-				posts.getPostField(pid, 'tid', next);
-			},
-			function (tid, next) {
-				Topics.getTopicData(tid, next);
-			},
-		], callback);
+	Topics.getTopicDataByPid = async function (pid) {
+		const tid = await posts.async.getPostField(pid, 'tid');
+		return await Topics.getTopicData(tid);
 	};
 
-	Topics.getPostCount = function (tid, callback) {
-		db.getObjectField('topic:' + tid, 'postcount', callback);
+	Topics.getPostCount = async function (tid) {
+		return await db.getObjectField('topic:' + tid, 'postcount');
 	};
 
 	function getPostReplies(pids, callerUid, callback) {
