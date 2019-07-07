@@ -91,9 +91,7 @@ OFFSET $2::INTEGER`,
 				};
 			});
 		} else {
-			res.rows = res.rows.map(function (r) {
-				return r.value;
-			});
+			res.rows = res.rows.map(r => r.value);
 		}
 
 		return res.rows;
@@ -654,17 +652,25 @@ SELECT z."value", z."score"
 				next(null, !isDone);
 			},
 			async function () {
-				const rows = await cursor.readAsync(batchSize);
+				let rows = await cursor.readAsync(batchSize);
 				console.log('b', rows);
 				if (!rows.length) {
 					isDone = true;
 					return;
 				}
 
-				const data = rows.map(row => (options.withScores ? row : row.value));
-
+				if (options.withScores) {
+					rows = rows.map(function (r) {
+						return {
+							value: r.value,
+							score: parseFloat(r.score),
+						};
+					});
+				} else {
+					rows = rows.map(r => r.value);
+				}
 				try {
-					await process(data);
+					await process(rows);
 				} catch (err) {
 					await query.close();
 					throw err;
