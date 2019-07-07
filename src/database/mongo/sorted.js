@@ -340,25 +340,27 @@ module.exports = function (db, module) {
 		return keys.map(k => sets[k] || []);
 	};
 
-	module.sortedSetIncrBy = function (key, increment, value, callback) {
-		callback = callback || helpers.noop;
+	module.sortedSetIncrBy = async function (key, increment, value) {
 		if (!key) {
-			return callback();
+			return;
 		}
 		var data = {};
 		value = helpers.valueToString(value);
 		data.score = parseFloat(increment);
 
-		db.collection('objects').findOneAndUpdate({ _key: key, value: value }, { $inc: data }, { returnOriginal: false, upsert: true }, function (err, result) {
+		try {
+			const result = await db.collection('objects').findOneAndUpdate({ _key: key, value: value }, { $inc: data }, { returnOriginal: false, upsert: true });
+			return result && result.value ? result.value.score : null;
+		} catch (err) {
 			// if there is duplicate key error retry the upsert
 			// https://github.com/NodeBB/NodeBB/issues/4467
 			// https://jira.mongodb.org/browse/SERVER-14322
 			// https://docs.mongodb.org/manual/reference/command/findAndModify/#upsert-and-unique-index
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
-				return process.nextTick(module.sortedSetIncrBy, key, increment, value, callback);
+				return await module.sortedSetIncrBy(key, increment, value);
 			}
-			callback(err, result && result.value ? result.value.score : null);
-		});
+			throw err;
+		}
 	};
 
 	module.getSortedSetRangeByLex = function (key, min, max, start, count, callback) {

@@ -20,8 +20,9 @@ module.exports = function (db, module) {
 			await db.collection('objects').updateOne({ _key: key, value: value }, { $set: { score: parseFloat(score) } }, { upsert: true, w: 1 });
 		} catch (err) {
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
-				await module.sortedSetAdd(key, score, value);
+				return await module.sortedSetAdd(key, score, value);
 			}
+			throw err;
 		}
 	};
 

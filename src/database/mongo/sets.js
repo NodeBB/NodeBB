@@ -48,7 +48,7 @@ module.exports = function (db, module) {
 			await bulk.execute();
 		} catch (err) {
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
-				return module.setsAdd(keys, value);
+				return await module.setsAdd(keys, value);
 			}
 			throw err;
 		}

@@ -224,11 +224,9 @@ module.exports = function (redisClient, module) {
 		return await helpers.execBatch(batch);
 	};
 
-	module.sortedSetIncrBy = function (key, increment, value, callback) {
-		callback = callback || helpers.noop;
-		redisClient.zincrby(key, increment, value, function (err, newValue) {
-			callback(err, !err ? parseFloat(newValue) : undefined);
-		});
+	module.sortedSetIncrBy = async function (key, increment, value) {
+		const newValue = await redisClient.async.zincrby(key, increment, value);
+		return parseFloat(newValue);
 	};
 
 	module.getSortedSetRangeByLex = function (key, min, max, start, count, callback) {
