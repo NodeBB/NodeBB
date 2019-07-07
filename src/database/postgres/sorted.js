@@ -5,6 +5,8 @@ var async = require('async');
 module.exports = function (db, module) {
 	var helpers = require('./helpers');
 	const util = require('util');
+	var Cursor = require('pg-cursor');
+	Cursor.prototype.readAsync = util.promisify(Cursor.prototype.read);
 	const asyncWhilstAsync = util.promisify(async.whilst);
 	const sleep = util.promisify(setTimeout);
 
@@ -629,12 +631,10 @@ DELETE FROM "legacy_zset" z
 	}
 
 	module.processSortedSet = async function (setKey, process, options) {
-		var Cursor = require('pg-cursor');
-
 		const client = await db.connect();
 
 		var batchSize = (options || {}).batch || 100;
-		var query = client.query(new Cursor(`
+		var cursor = client.query(new Cursor(`
 SELECT z."value", z."score"
   FROM "legacy_object_live" o
  INNER JOIN "legacy_zset" z
@@ -654,8 +654,8 @@ SELECT z."value", z."score"
 				next(null, !isDone);
 			},
 			async function () {
-				const [rows, test] = await query.read(batchSize);
-				console.log('b', rows, test);
+				const rows = await cursor.readAsync(batchSize);
+				console.log('b', rows);
 				if (!rows.length) {
 					isDone = true;
 					return;
