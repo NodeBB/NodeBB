@@ -231,13 +231,13 @@ module.exports = function (Topics) {
 		], callback);
 	};
 
-	Topics.getTopicTags = function (tid, callback) {
-		db.getSetMembers('topic:' + tid + ':tags', callback);
+	Topics.getTopicTags = async function (tid) {
+		return await db.getSetMembers('topic:' + tid + ':tags');
 	};
 
-	Topics.getTopicsTags = function (tids, callback) {
+	Topics.getTopicsTags = async function (tids) {
 		const keys = tids.map(tid => 'topic:' + tid + ':tags');
-		db.getSetsMembers(keys, callback);
+		return await db.getSetsMembers(keys);
 	};
 
 	Topics.getTopicTagsObjects = function (tid, callback) {
@@ -302,28 +302,14 @@ module.exports = function (Topics) {
 		], callback);
 	};
 
-	Topics.deleteTopicTags = function (tid, callback) {
-		async.waterfall([
-			function (next) {
-				Topics.getTopicTags(tid, next);
-			},
-			function (tags, next) {
-				async.series([
-					function (next) {
-						db.delete('topic:' + tid + ':tags', next);
-					},
-					function (next) {
-						const sets = tags.map(tag => 'tag:' + tag + ':topics');
-						db.sortedSetsRemove(sets, tid, next);
-					},
-					function (next) {
-						async.each(tags, function (tag, next) {
-							updateTagCount(tag, next);
-						}, next);
-					},
-				], next);
-			},
-		], err => callback(err));
+	Topics.deleteTopicTags = async function (tid) {
+		const tags = await Topics.getTopicTags(tid);
+		await db.delete('topic:' + tid + ':tags');
+		const sets = tags.map(tag => 'tag:' + tag + ':topics');
+		await db.sortedSetsRemove(sets, tid);
+		await async.each(tags, function (tag, next) {
+			updateTagCount(tag, next);
+		});
 	};
 
 	Topics.searchTags = function (data, callback) {
