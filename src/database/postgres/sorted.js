@@ -84,12 +84,7 @@ OFFSET $2::INTEGER`,
 		}
 
 		if (withScores) {
-			res.rows = res.rows.map(function (r) {
-				return {
-					value: r.value,
-					score: parseFloat(r.score),
-				};
-			});
+			res.rows = res.rows.map(r => ({ value: r.value, score: parseFloat(r.score) }));
 		} else {
 			res.rows = res.rows.map(r => r.value);
 		}
@@ -646,26 +641,19 @@ SELECT z."value", z."score"
 		if (process && process.constructor && process.constructor.name !== 'AsyncFunction') {
 			process = util.promisify(process);
 		}
-		console.log('a');
 		await asyncWhilstAsync(
 			function (next) {
 				next(null, !isDone);
 			},
 			async function () {
 				let rows = await cursor.readAsync(batchSize);
-				console.log('b', rows);
 				if (!rows.length) {
 					isDone = true;
 					return;
 				}
 
 				if (options.withScores) {
-					rows = rows.map(function (r) {
-						return {
-							value: r.value,
-							score: parseFloat(r.score),
-						};
-					});
+					rows = rows.map(r => ({ value: r.value, score: parseFloat(r.score) }));
 				} else {
 					rows = rows.map(r => r.value);
 				}
@@ -675,13 +663,11 @@ SELECT z."value", z."score"
 					await query.close();
 					throw err;
 				}
-				console.log('c');
 				if (options.interval) {
 					sleep(options.interval);
 				}
 			}
 		);
-		console.log('d');
 		client.release();
 	};
 };

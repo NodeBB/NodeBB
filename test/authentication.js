@@ -227,12 +227,9 @@ describe('authentication', function () {
 		db.sortedSetCard('uid:' + regularUid + ':sessions', function (err, count) {
 			assert.ifError(err);
 			assert(count);
-			console.log('delete ' + Date.now());
 			socketAdmin.deleteAllSessions({ uid: 1 }, {}, function (err) {
-				console.log('delete complete' + Date.now());
 				assert.ifError(err);
 				db.sortedSetCard('uid:' + regularUid + ':sessions', function (err, count) {
-					console.log('count' + Date.now(), count);
 					assert.ifError(err);
 					assert(!count);
 					done();
