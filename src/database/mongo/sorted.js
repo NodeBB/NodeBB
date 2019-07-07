@@ -363,54 +363,39 @@ module.exports = function (db, module) {
 		}
 	};
 
-	module.getSortedSetRangeByLex = function (key, min, max, start, count, callback) {
-		sortedSetLex(key, min, max, 1, start, count, callback);
+	module.getSortedSetRangeByLex = async function (key, min, max, start, count) {
+		return await sortedSetLex(key, min, max, 1, start, count);
 	};
 
-	module.getSortedSetRevRangeByLex = function (key, max, min, start, count, callback) {
-		sortedSetLex(key, min, max, -1, start, count, callback);
+	module.getSortedSetRevRangeByLex = async function (key, max, min, start, count) {
+		return await sortedSetLex(key, min, max, -1, start, count);
 	};
 
-	module.sortedSetLexCount = function (key, min, max, callback) {
-		sortedSetLex(key, min, max, 1, 0, 0, function (err, data) {
-			callback(err, data ? data.length : null);
-		});
+	module.sortedSetLexCount = async function (key, min, max) {
+		const data = await sortedSetLex(key, min, max, 1, 0, 0);
+		return data ? data.length : null;
 	};
 
-	function sortedSetLex(key, min, max, sort, start, count, callback) {
-		if (!callback) {
-			callback = start;
-			start = 0;
-			count = 0;
-		}
-
+	async function sortedSetLex(key, min, max, sort, start, count) {
 		var query = { _key: key };
+		start = start !== undefined ? start : 0;
+		count = count !== undefined ? count : 0;
 		buildLexQuery(query, min, max);
 
-		db.collection('objects').find(query, { projection: { _id: 0, _key: 0, score: 0 } })
+		const data = await db.collection('objects').find(query, { projection: { _id: 0, _key: 0, score: 0 } })
 			.sort({ value: sort })
 			.skip(start)
 			.limit(count === -1 ? 0 : count)
-			.toArray(function (err, data) {
-				if (err) {
-					return callback(err);
-				}
-				data = data.map(function (item) {
-					return item && item.value;
-				});
-				callback(err, data);
-			});
+			.toArray();
+
+		return data.map(item => item && item.value);
 	}
 
-	module.sortedSetRemoveRangeByLex = function (key, min, max, callback) {
-		callback = callback || helpers.noop;
-
+	module.sortedSetRemoveRangeByLex = async function (key, min, max) {
 		var query = { _key: key };
 		buildLexQuery(query, min, max);
 
-		db.collection('objects').deleteMany(query, function (err) {
-			callback(err);
-		});
+		await db.collection('objects').deleteMany(query);
 	};
 
 	function buildLexQuery(query, min, max) {

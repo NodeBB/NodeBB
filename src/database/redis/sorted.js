@@ -229,28 +229,23 @@ module.exports = function (redisClient, module) {
 		return parseFloat(newValue);
 	};
 
-	module.getSortedSetRangeByLex = function (key, min, max, start, count, callback) {
-		sortedSetLex('zrangebylex', false, key, min, max, start, count, callback);
+	module.getSortedSetRangeByLex = async function (key, min, max, start, count) {
+		return await sortedSetLex('zrangebylex', false, key, min, max, start, count);
 	};
 
-	module.getSortedSetRevRangeByLex = function (key, max, min, start, count, callback) {
-		sortedSetLex('zrevrangebylex', true, key, max, min, start, count, callback);
+	module.getSortedSetRevRangeByLex = async function (key, max, min, start, count) {
+		return await sortedSetLex('zrevrangebylex', true, key, max, min, start, count);
 	};
 
-	module.sortedSetRemoveRangeByLex = function (key, min, max, callback) {
-		callback = callback || helpers.noop;
-		sortedSetLex('zremrangebylex', false, key, min, max, function (err) {
-			callback(err);
-		});
+	module.sortedSetRemoveRangeByLex = async function (key, min, max) {
+		await sortedSetLex('zremrangebylex', false, key, min, max);
 	};
 
-	module.sortedSetLexCount = function (key, min, max, callback) {
-		sortedSetLex('zlexcount', false, key, min, max, callback);
+	module.sortedSetLexCount = async function (key, min, max) {
+		return await sortedSetLex('zlexcount', false, key, min, max);
 	};
 
-	function sortedSetLex(method, reverse, key, min, max, start, count, callback) {
-		callback = callback || start;
-
+	async function sortedSetLex(method, reverse, key, min, max, start, count) {
 		var minmin;
 		var maxmax;
 		if (reverse) {
@@ -267,11 +262,10 @@ module.exports = function (redisClient, module) {
 		if (max !== maxmax && !max.match(/^[[(]/)) {
 			max = '[' + max;
 		}
-
+		const args = [key, min, max];
 		if (count) {
-			redisClient[method]([key, min, max, 'LIMIT', start, count], callback);
-		} else {
-			redisClient[method]([key, min, max], callback);
+			args.push('LIMIT', start, count);
 		}
+		return await redisClient.async[method](args);
 	}
 };

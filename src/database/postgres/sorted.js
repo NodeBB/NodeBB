@@ -518,18 +518,18 @@ RETURNING "score" s`,
 		});
 	};
 
-	module.getSortedSetRangeByLex = function (key, min, max, start, count, callback) {
-		sortedSetLex(key, min, max, 1, start, count, callback);
+	module.getSortedSetRangeByLex = async function (key, min, max, start, count) {
+		return await sortedSetLex(key, min, max, 1, start, count);
 	};
 
-	module.getSortedSetRevRangeByLex = function (key, max, min, start, count, callback) {
-		sortedSetLex(key, min, max, -1, start, count, callback);
+	module.getSortedSetRevRangeByLex = async function (key, max, min, start, count) {
+		return await sortedSetLex(key, min, max, -1, start, count);
 	};
 
-	module.sortedSetLexCount = function (key, min, max, callback) {
+	module.sortedSetLexCount = async function (key, min, max) {
 		var q = buildLexQuery(key, min, max);
 
-		query({
+		const res = await query({
 			name: 'sortedSetLexCount' + q.suffix,
 			text: `
 SELECT COUNT(*) c
@@ -539,26 +539,19 @@ SELECT COUNT(*) c
         AND o."type" = z."type"
  WHERE ` + q.where,
 			values: q.values,
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, parseInt(res.rows[0].c, 10));
 		});
+
+		return parseInt(res.rows[0].c, 10);
 	};
 
-	function sortedSetLex(key, min, max, sort, start, count, callback) {
-		if (!callback) {
-			callback = start;
-			start = 0;
-			count = 0;
-		}
+	async function sortedSetLex(key, min, max, sort, start, count) {
+		start = start !== undefined ? start : 0;
+		count = count !== undefined ? count : 0;
 
 		var q = buildLexQuery(key, min, max);
 		q.values.push(start);
 		q.values.push(count <= 0 ? null : count);
-		query({
+		const res = await query({
 			name: 'sortedSetLex' + (sort > 0 ? 'Asc' : 'Desc') + q.suffix,
 			text: `
 SELECT z."value" v
@@ -571,22 +564,14 @@ SELECT z."value" v
  LIMIT $` + q.values.length + `::INTEGER
 OFFSET $` + (q.values.length - 1) + `::INTEGER`,
 			values: q.values,
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, res.rows.map(function (r) {
-				return r.v;
-			}));
 		});
+
+		return res.rows.map(r => r.v);
 	}
 
-	module.sortedSetRemoveRangeByLex = function (key, min, max, callback) {
-		callback = callback || helpers.noop;
-
+	module.sortedSetRemoveRangeByLex = async function (key, min, max) {
 		var q = buildLexQuery(key, min, max);
-		query({
+		await query({
 			name: 'sortedSetRemoveRangeByLex' + q.suffix,
 			text: `
 DELETE FROM "legacy_zset" z
@@ -595,8 +580,6 @@ DELETE FROM "legacy_zset" z
    AND o."type" = z."type"
    AND ` + q.where,
 			values: q.values,
-		}, function (err) {
-			callback(err);
 		});
 	};
 

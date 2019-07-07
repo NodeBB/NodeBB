@@ -49,6 +49,11 @@ module.exports = function (redisClient) {
 		zrevrank: util.promisify(redisClient.zrevrank).bind(redisClient),
 		zincrby: util.promisify(redisClient.zincrby).bind(redisClient),
 
+		zrangebylex: util.promisify(redisClient.zrangebylex).bind(redisClient),
+		zrevrangebylex: util.promisify(redisClient.zrevrangebylex).bind(redisClient),
+		zremrangebylex: util.promisify(redisClient.zremrangebylex).bind(redisClient),
+		zlexcount: util.promisify(redisClient.zlexcount).bind(redisClient),
+
 		lpush: util.promisify(redisClient.lpush).bind(redisClient),
 		rpush: util.promisify(redisClient.rpush).bind(redisClient),
 		rpop: util.promisify(redisClient.rpop).bind(redisClient),
