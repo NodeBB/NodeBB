@@ -7,7 +7,6 @@ module.exports = function (db, module) {
 	const util = require('util');
 	var Cursor = require('pg-cursor');
 	Cursor.prototype.readAsync = util.promisify(Cursor.prototype.read);
-	const asyncWhilstAsync = util.promisify(async.whilst);
 	const sleep = util.promisify(setTimeout);
 
 	var query = db.query.bind(db);
@@ -147,16 +146,9 @@ OFFSET $2::INTEGER`,
 		});
 
 		if (withScores) {
-			res.rows = res.rows.map(function (r) {
-				return {
-					value: r.value,
-					score: parseFloat(r.score),
-				};
-			});
+			res.rows = res.rows.map(r => ({ value: r.value, score: parseFloat(r.score) }));
 		} else {
-			res.rows = res.rows.map(function (r) {
-				return r.value;
-			});
+			res.rows = res.rows.map(r => r.value);
 		}
 
 		return res.rows;
@@ -641,7 +633,7 @@ SELECT z."value", z."score"
 		if (process && process.constructor && process.constructor.name !== 'AsyncFunction') {
 			process = util.promisify(process);
 		}
-		await asyncWhilstAsync(
+		await async.whilst(
 			function (next) {
 				next(null, !isDone);
 			},

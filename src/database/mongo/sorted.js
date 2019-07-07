@@ -6,7 +6,6 @@ var utils = require('../../utils');
 module.exports = function (db, module) {
 	var helpers = require('./helpers');
 	const util = require('util');
-	const asyncWhilstAsync = util.promisify(async.whilst);
 	const sleep = util.promisify(setTimeout);
 
 	require('./sorted/add')(db, module);
@@ -438,7 +437,7 @@ module.exports = function (db, module) {
 			processFn = util.promisify(processFn);
 		}
 
-		await asyncWhilstAsync(
+		await async.whilst(
 			function (next) {
 				next(null, !done);
 			},

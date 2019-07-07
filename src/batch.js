@@ -10,8 +10,6 @@ var utils = require('./utils');
 
 var DEFAULT_BATCH_SIZE = 100;
 
-
-const asyncWhilstAsync = util.promisify(async.whilst);
 const sleep = util.promisify(setTimeout);
 
 exports.processSortedSet = async function (setKey, process, options) {
@@ -44,7 +42,7 @@ exports.processSortedSet = async function (setKey, process, options) {
 		process = util.promisify(process);
 	}
 
-	await asyncWhilstAsync(
+	await async.whilst(
 		function (next) {
 			next(null, !done);
 		},
@@ -82,7 +80,7 @@ exports.processArray = async function (array, process, options) {
 	if (process && process.constructor && process.constructor.name !== 'AsyncFunction') {
 		process = util.promisify(process);
 	}
-	await asyncWhilstAsync(
+	await async.whilst(
 		function (next) {
 			next(null, !done);
 		},
