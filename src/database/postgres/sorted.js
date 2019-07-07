@@ -648,14 +648,14 @@ SELECT z."value", z."score"
 		if (process && process.constructor && process.constructor.name !== 'AsyncFunction') {
 			process = util.promisify(process);
 		}
-
+		console.log('a');
 		await asyncWhilstAsync(
 			function (next) {
 				next(null, !isDone);
 			},
 			async function () {
 				let rows = await query.read(batchSize);
-
+				console.log('b');
 				if (!rows.length) {
 					isDone = true;
 					return;
@@ -669,12 +669,13 @@ SELECT z."value", z."score"
 					await query.close();
 					throw err;
 				}
-
+				console.log('c');
 				if (options.interval) {
 					sleep(options.interval);
 				}
 			}
 		);
+		console.log('d');
 		client.release();
 	};
 };
