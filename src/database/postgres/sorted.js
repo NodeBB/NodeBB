@@ -631,7 +631,7 @@ DELETE FROM "legacy_zset" z
 	module.processSortedSet = async function (setKey, process, options) {
 		var Cursor = require('pg-cursor');
 
-		const client = db.connect();
+		const client = await db.connect();
 
 		var batchSize = (options || {}).batch || 100;
 		var query = await client.query(new Cursor(`
