@@ -634,7 +634,7 @@ DELETE FROM "legacy_zset" z
 		const client = await db.connect();
 
 		var batchSize = (options || {}).batch || 100;
-		var query = client.client.query(new Cursor(`
+		var query = client.query(new Cursor(`
 SELECT z."value", z."score"
   FROM "legacy_object_live" o
  INNER JOIN "legacy_zset" z
@@ -654,17 +654,17 @@ SELECT z."value", z."score"
 				next(null, !isDone);
 			},
 			async function () {
-				let rows = await query.read(batchSize);
-				console.log('b', rows);
+				const [rows, test] = await query.read(batchSize);
+				console.log('b', rows, test);
 				if (!rows.length) {
 					isDone = true;
 					return;
 				}
 
-				rows = rows.map(row => (options.withScores ? row : row.value));
+				const data = rows.map(row => (options.withScores ? row : row.value));
 
 				try {
-					await process(rows);
+					await process(data);
 				} catch (err) {
 					await query.close();
 					throw err;
