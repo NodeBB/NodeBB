@@ -45,6 +45,8 @@ module.exports = function (redisClient) {
 		zscore: util.promisify(redisClient.zscore).bind(redisClient),
 		zcount: util.promisify(redisClient.zcount).bind(redisClient),
 		zcard: util.promisify(redisClient.zcard).bind(redisClient),
+		zrank: util.promisify(redisClient.zrank).bind(redisClient),
+		zrevrank: util.promisify(redisClient.zrevrank).bind(redisClient),
 
 		lpush: util.promisify(redisClient.lpush).bind(redisClient),
 		rpush: util.promisify(redisClient.rpush).bind(redisClient),

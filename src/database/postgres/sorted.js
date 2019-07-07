@@ -249,21 +249,19 @@ SELECT o."_key" k,
 		return sum;
 	};
 
-	module.sortedSetRank = function (key, value, callback) {
-		getSortedSetRank('ASC', [key], [value], function (err, result) {
-			callback(err, result ? result[0] : null);
-		});
+	module.sortedSetRank = async function (key, value) {
+		const result = await getSortedSetRank('ASC', [key], [value]);
+		return result ? result[0] : null;
 	};
 
-	module.sortedSetRevRank = function (key, value, callback) {
-		getSortedSetRank('DESC', [key], [value], function (err, result) {
-			callback(err, result ? result[0] : null);
-		});
+	module.sortedSetRevRank = async function (key, value) {
+		const result = await getSortedSetRank('DESC', [key], [value]);
+		return result ? result[0] : null;
 	};
 
-	function getSortedSetRank(sort, keys, values, callback) {
+	async function getSortedSetRank(sort, keys, values) {
 		values = values.map(helpers.valueToString);
-		query({
+		const res = await query({
 			name: 'getSortedSetRank' + sort,
 			text: `
 SELECT (SELECT r
@@ -280,45 +278,41 @@ SELECT (SELECT r
   FROM UNNEST($1::TEXT[], $2::TEXT[]) WITH ORDINALITY kvi(k, v, i)
  ORDER BY kvi.i ASC`,
 			values: [keys, values],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, res.rows.map(function (r) { return r.r === null ? null : parseFloat(r.r); }));
 		});
+
+		return res.rows.map(r => (r.r === null ? null : parseFloat(r.r)));
 	}
 
-	module.sortedSetsRanks = function (keys, values, callback) {
+	module.sortedSetsRanks = async function (keys, values) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, []);
+			return [];
 		}
 
-		getSortedSetRank('ASC', keys, values, callback);
+		return await getSortedSetRank('ASC', keys, values);
 	};
 
-	module.sortedSetsRevRanks = function (keys, values, callback) {
+	module.sortedSetsRevRanks = async function (keys, values) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, []);
+			return [];
 		}
 
-		getSortedSetRank('DESC', keys, values, callback);
+		return await getSortedSetRank('DESC', keys, values);
 	};
 
-	module.sortedSetRanks = function (key, values, callback) {
+	module.sortedSetRanks = async function (key, values) {
 		if (!Array.isArray(values) || !values.length) {
-			return callback(null, []);
+			return [];
 		}
 
-		getSortedSetRank('ASC', new Array(values.length).fill(key), values, callback);
+		return await getSortedSetRank('ASC', new Array(values.length).fill(key), values);
 	};
 
-	module.sortedSetRevRanks = function (key, values, callback) {
+	module.sortedSetRevRanks = async function (key, values) {
 		if (!Array.isArray(values) || !values.length) {
-			return callback(null, []);
+			return [];
 		}
 
-		getSortedSetRank('DESC', new Array(values.length).fill(key), values, callback);
+		return await getSortedSetRank('DESC', new Array(values.length).fill(key), values);
 	};
 
 	module.sortedSetScore = async function (key, value) {

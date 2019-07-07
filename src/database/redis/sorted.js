@@ -124,44 +124,44 @@ module.exports = function (redisClient, module) {
 		return sum;
 	};
 
-	module.sortedSetRank = function (key, value, callback) {
-		redisClient.zrank(key, value, callback);
+	module.sortedSetRank = async function (key, value) {
+		return await redisClient.async.zrank(key, value);
 	};
 
-	module.sortedSetRevRank = function (key, value, callback) {
-		redisClient.zrevrank(key, value, callback);
+	module.sortedSetRevRank = async function (key, value) {
+		return await redisClient.async.zrevrank(key, value);
 	};
 
-	module.sortedSetsRanks = function (keys, values, callback) {
-		var batch = redisClient.batch();
+	module.sortedSetsRanks = async function (keys, values) {
+		const batch = redisClient.batch();
 		for (var i = 0; i < values.length; i += 1) {
-			batch.zrank(keys[i], values[i]);
+			batch.zrank(keys[i], String(values[i]));
 		}
-		batch.exec(callback);
+		return await helpers.execBatch(batch);
 	};
 
-	module.sortedSetsRevRanks = function (keys, values, callback) {
-		var batch = redisClient.batch();
+	module.sortedSetsRevRanks = async function (keys, values) {
+		const batch = redisClient.batch();
 		for (var i = 0; i < values.length; i += 1) {
-			batch.zrevrank(keys[i], values[i]);
+			batch.zrevrank(keys[i], String(values[i]));
 		}
-		batch.exec(callback);
+		return await helpers.execBatch(batch);
 	};
 
-	module.sortedSetRanks = function (key, values, callback) {
-		var batch = redisClient.batch();
+	module.sortedSetRanks = async function (key, values) {
+		const batch = redisClient.batch();
 		for (var i = 0; i < values.length; i += 1) {
-			batch.zrank(key, values[i]);
+			batch.zrank(key, String(values[i]));
 		}
-		batch.exec(callback);
+		return await helpers.execBatch(batch);
 	};
 
-	module.sortedSetRevRanks = function (key, values, callback) {
-		var batch = redisClient.batch();
+	module.sortedSetRevRanks = async function (key, values) {
+		const batch = redisClient.batch();
 		for (var i = 0; i < values.length; i += 1) {
-			batch.zrevrank(key, values[i]);
+			batch.zrevrank(key, String(values[i]));
 		}
-		batch.exec(callback);
+		return await helpers.execBatch(batch);
 	};
 
 	module.sortedSetScore = async function (key, value) {

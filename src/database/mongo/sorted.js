@@ -163,86 +163,78 @@ module.exports = function (db, module) {
 		return parseInt(count, 10) || 0;
 	};
 
-	module.sortedSetRank = function (key, value, callback) {
-		getSortedSetRank(false, key, value, callback);
+	module.sortedSetRank = async function (key, value) {
+		return await getSortedSetRank(false, key, value);
 	};
 
-	module.sortedSetRevRank = function (key, value, callback) {
-		getSortedSetRank(true, key, value, callback);
+	module.sortedSetRevRank = async function (key, value) {
+		return await getSortedSetRank(true, key, value);
 	};
 
-	function getSortedSetRank(reverse, key, value, callback) {
+	async function getSortedSetRank(reverse, key, value) {
 		if (!key) {
-			return callback();
+			return;
 		}
 		value = helpers.valueToString(value);
-		module.sortedSetScore(key, value, function (err, score) {
-			if (err || score === null) {
-				return callback(err, null);
-			}
+		const score = await module.sortedSetScore(key, value);
+		if (score === null) {
+			return null;
+		}
 
-			db.collection('objects').countDocuments({
-				$or: [
-					{
-						_key: key,
-						score: reverse ? { $gt: score } : { $lt: score },
-					},
-					{
-						_key: key,
-						score: score,
-						value: reverse ? { $gt: value } : { $lt: value },
-					},
-				],
-			}, function (err, rank) { callback(err, rank); });
+		return await db.collection('objects').countDocuments({
+			$or: [
+				{
+					_key: key,
+					score: reverse ? { $gt: score } : { $lt: score },
+				},
+				{
+					_key: key,
+					score: score,
+					value: reverse ? { $gt: value } : { $lt: value },
+				},
+			],
 		});
 	}
 
-	module.sortedSetsRanks = function (keys, values, callback) {
-		sortedSetsRanks(module.sortedSetRank, keys, values, callback);
+	module.sortedSetsRanks = async function (keys, values) {
+		return await sortedSetsRanks(module.sortedSetRank, keys, values);
 	};
 
-	module.sortedSetsRevRanks = function (keys, values, callback) {
-		sortedSetsRanks(module.sortedSetRevRank, keys, values, callback);
+	module.sortedSetsRevRanks = async function (keys, values) {
+		return await sortedSetsRanks(module.sortedSetRevRank, keys, values);
 	};
 
-	function sortedSetsRanks(method, keys, values, callback) {
+	async function sortedSetsRanks(method, keys, values) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, []);
+			return [];
 		}
 		var data = new Array(values.length);
 		for (var i = 0; i < values.length; i += 1) {
 			data[i] = { key: keys[i], value: values[i] };
 		}
-
-		async.map(data, function (item, next) {
-			method(item.key, item.value, next);
-		}, callback);
+		const promises = data.map(item => method(item.key, item.value));
+		return await Promise.all(promises);
 	}
 
-	module.sortedSetRanks = function (key, values, callback) {
-		sortedSetRanks(module.getSortedSetRange, key, values, callback);
+	module.sortedSetRanks = async function (key, values) {
+		return await sortedSetRanks(module.getSortedSetRange, key, values);
 	};
 
-	module.sortedSetRevRanks = function (key, values, callback) {
-		sortedSetRanks(module.getSortedSetRevRange, key, values, callback);
+	module.sortedSetRevRanks = async function (key, values) {
+		return await sortedSetRanks(module.getSortedSetRevRange, key, values);
 	};
 
-	function sortedSetRanks(method, key, values, callback) {
-		method(key, 0, -1, function (err, sortedSet) {
-			if (err) {
-				return callback(err);
+	async function sortedSetRanks(method, key, values) {
+		const sortedSet = await method(key, 0, -1);
+
+		var result = values.map(function (value) {
+			if (!value) {
+				return null;
 			}
-
-			var result = values.map(function (value) {
-				if (!value) {
-					return null;
-				}
-				var index = sortedSet.indexOf(value.toString());
-				return index !== -1 ? index : null;
-			});
-
-			callback(null, result);
+			var index = sortedSet.indexOf(value.toString());
+			return index !== -1 ? index : null;
 		});
+		return result;
 	}
 
 	module.sortedSetScore = async function (key, value) {
