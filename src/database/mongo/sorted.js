@@ -5,6 +5,9 @@ var utils = require('../../utils');
 
 module.exports = function (db, module) {
 	var helpers = require('./helpers');
+	const util = require('util');
+	const asyncWhilstAsync = util.promisify(async.whilst);
+	const sleep = util.promisify(setTimeout);
 
 	require('./sorted/add')(db, module);
 	require('./sorted/remove')(db, module);
@@ -420,51 +423,42 @@ module.exports = function (db, module) {
 		}
 	}
 
-	module.processSortedSet = function (setKey, processFn, options, callback) {
+	module.processSortedSet = async function (setKey, processFn, options) {
 		var done = false;
 		var ids = [];
 		var project = { _id: 0, _key: 0 };
 		if (!options.withScores) {
 			project.score = 0;
 		}
-		var cursor = db.collection('objects').find({ _key: setKey }, { projection: project })
+		var cursor = await db.collection('objects').find({ _key: setKey }, { projection: project })
 			.sort({ score: 1 })
 			.batchSize(options.batch);
 
-		async.whilst(
+		if (processFn && processFn.constructor && processFn.constructor.name !== 'AsyncFunction') {
+			processFn = util.promisify(processFn);
+		}
+
+		await asyncWhilstAsync(
 			function (next) {
 				next(null, !done);
 			},
-			function (next) {
-				async.waterfall([
-					function (next) {
-						cursor.next(next);
-					},
-					function (item, _next) {
-						if (item === null) {
-							done = true;
-						} else {
-							ids.push(options.withScores ? item : item.value);
-						}
+			async function () {
+				const item = await cursor.next();
+				if (item === null) {
+					done = true;
+				} else {
+					ids.push(options.withScores ? item : item.value);
+				}
+				if (ids.length < options.batch && (!done || ids.length === 0)) {
+					return;
+				}
 
-						if (ids.length < options.batch && (!done || ids.length === 0)) {
-							return process.nextTick(next, null);
-						}
-						processFn(ids, function (err) {
-							_next(err);
-						});
-					},
-					function (next) {
-						ids = [];
-						if (options.interval) {
-							setTimeout(next, options.interval);
-						} else {
-							process.nextTick(next);
-						}
-					},
-				], next);
-			},
-			callback
+				await processFn(ids);
+				ids.length = 0;
+				if (options.interval) {
+					await sleep(options.interval);
+				}
+			}
 		);
 	};
 };

@@ -4,6 +4,9 @@ var async = require('async');
 
 module.exports = function (db, module) {
 	var helpers = require('./helpers');
+	const util = require('util');
+	const asyncWhilstAsync = util.promisify(async.whilst);
+	const sleep = util.promisify(setTimeout);
 
 	var query = db.query.bind(db);
 
@@ -625,16 +628,13 @@ DELETE FROM "legacy_zset" z
 		return q;
 	}
 
-	module.processSortedSet = function (setKey, process, options, callback) {
+	module.processSortedSet = async function (setKey, process, options) {
 		var Cursor = require('pg-cursor');
 
-		db.connect(function (err, client, done) {
-			if (err) {
-				return callback(err);
-			}
+		const client = db.connect();
 
-			var batchSize = (options || {}).batch || 100;
-			var query = client.query(new Cursor(`
+		var batchSize = (options || {}).batch || 100;
+		var query = await client.query(new Cursor(`
 SELECT z."value", z."score"
   FROM "legacy_object_live" o
  INNER JOIN "legacy_zset" z
@@ -643,43 +643,38 @@ SELECT z."value", z."score"
  WHERE o."_key" = $1::TEXT
  ORDER BY z."score" ASC, z."value" ASC`, [setKey]));
 
-			var isDone = false;
+		var isDone = false;
 
-			async.whilst(function (next) {
+		if (process && process.constructor && process.constructor.name !== 'AsyncFunction') {
+			process = util.promisify(process);
+		}
+
+		await asyncWhilstAsync(
+			function (next) {
 				next(null, !isDone);
-			}, function (next) {
-				query.read(batchSize, function (err, rows) {
-					if (err) {
-						return next(err);
-					}
+			},
+			async function () {
+				let rows = await query.read(batchSize);
 
-					if (!rows.length) {
-						isDone = true;
-						return next();
-					}
+				if (!rows.length) {
+					isDone = true;
+					return;
+				}
 
-					rows = rows.map(function (row) {
-						return options.withScores ? row : row.value;
-					});
+				rows = rows.map(row => (options.withScores ? row : row.value));
 
-					process(rows, function (err) {
-						if (err) {
-							return query.close(function () {
-								next(err);
-							});
-						}
+				try {
+					await process(rows);
+				} catch (err) {
+					await query.close();
+					throw err;
+				}
 
-						if (options.interval) {
-							setTimeout(next, options.interval);
-						} else {
-							next();
-						}
-					});
-				});
-			}, function (err) {
-				done();
-				callback(err);
-			});
-		});
+				if (options.interval) {
+					sleep(options.interval);
+				}
+			}
+		);
+		client.release();
 	};
 };
