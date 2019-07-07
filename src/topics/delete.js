@@ -10,44 +10,30 @@ var batch = require('../batch');
 
 
 module.exports = function (Topics) {
-	Topics.delete = function (tid, uid, callback) {
-		async.parallel([
-			function (next) {
-				Topics.setTopicFields(tid, {
-					deleted: 1,
-					deleterUid: uid,
-					deletedTimestamp: Date.now(),
-				}, next);
-			},
-			function (next) {
-				db.sortedSetsRemove([
-					'topics:recent',
-					'topics:posts',
-					'topics:views',
-					'topics:votes',
-				], tid, next);
-			},
-			function (next) {
-				async.waterfall([
-					function (next) {
-						async.parallel({
-							cid: function (next) {
-								Topics.getTopicField(tid, 'cid', next);
-							},
-							pids: function (next) {
-								Topics.getPids(tid, next);
-							},
-						}, next);
-					},
-					function (results, next) {
-						db.sortedSetRemove('cid:' + results.cid + ':pids', results.pids, next);
-					},
-				], next);
-			},
-		], function (err) {
-			callback(err);
-		});
+	Topics.delete = async function (tid, uid) {
+		await Promise.all([
+			Topics.setTopicFields(tid, {
+				deleted: 1,
+				deleterUid: uid,
+				deletedTimestamp: Date.now(),
+			}),
+			db.sortedSetsRemove([
+				'topics:recent',
+				'topics:posts',
+				'topics:views',
+				'topics:votes',
+			], tid),
+			removeTopicPidsFromCid(tid),
+		]);
 	};
+
+	async function removeTopicPidsFromCid(tid) {
+		const [cid, pids] = await Promise.all([
+			Topics.getTopicField(tid, 'cid'),
+			Topics.getPids(tid),
+		]);
+		await db.sortedSetRemove('cid:' + cid + ':pids', pids);
+	}
 
 	Topics.restore = function (tid, uid, callback) {
 		var topicData;

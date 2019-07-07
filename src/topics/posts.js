@@ -295,25 +295,15 @@ module.exports = function (Topics) {
 		], callback);
 	};
 
-	Topics.getPids = function (tid, callback) {
-		async.waterfall([
-			function (next) {
-				async.parallel({
-					mainPid: function (next) {
-						Topics.getTopicField(tid, 'mainPid', next);
-					},
-					pids: function (next) {
-						db.getSortedSetRange('tid:' + tid + ':posts', 0, -1, next);
-					},
-				}, next);
-			},
-			function (results, next) {
-				if (parseInt(results.mainPid, 10)) {
-					results.pids = [results.mainPid].concat(results.pids);
-				}
-				next(null, results.pids);
-			},
-		], callback);
+	Topics.getPids = async function (tid) {
+		var [mainPid, pids] = await Promise.all([
+			Topics.getTopicField(tid, 'mainPid'),
+			db.getSortedSetRange('tid:' + tid + ':posts', 0, -1),
+		]);
+		if (parseInt(mainPid, 10)) {
+			pids = [mainPid].concat(pids);
+		}
+		return pids;
 	};
 
 	Topics.increasePostCount = function (tid, callback) {
