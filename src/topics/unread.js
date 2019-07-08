@@ -352,65 +352,46 @@ module.exports = function (Topics) {
 		], callback);
 	};
 
-	Topics.markAsUnreadForAll = function (tid, callback) {
-		Topics.markCategoryUnreadForAll(tid, callback);
+	Topics.markAsUnreadForAll = async function (tid) {
+		await Topics.markCategoryUnreadForAll(tid);
 	};
 
-	Topics.markAsRead = function (tids, uid, callback) {
-		callback = callback || function () {};
+	Topics.markAsRead = async function (tids, uid) {
 		if (!Array.isArray(tids) || !tids.length) {
-			return setImmediate(callback, null, false);
+			return false;
 		}
 
-		tids = _.uniq(tids).filter(function (tid) {
-			return tid && utils.isNumber(tid);
+		tids = _.uniq(tids).filter(tid => tid && utils.isNumber(tid));
+
+		if (!tids.length) {
+			return false;
+		}
+		const [topicScores, userScores] = await Promise.all([
+			db.sortedSetScores('topics:recent', tids),
+			db.sortedSetScores('uid:' + uid + ':tids_read', tids),
+		]);
+
+		tids = tids.filter(function (tid, index) {
+			return topicScores[index] && (!userScores[index] || userScores[index] < topicScores[index]);
 		});
 
 		if (!tids.length) {
-			return setImmediate(callback, null, false);
+			return false;
 		}
 
-		async.waterfall([
-			function (next) {
-				async.parallel({
-					topicScores: async.apply(db.sortedSetScores, 'topics:recent', tids),
-					userScores: async.apply(db.sortedSetScores, 'uid:' + uid + ':tids_read', tids),
-				}, next);
-			},
-			function (results, next) {
-				tids = tids.filter(function (tid, index) {
-					return results.topicScores[index] && (!results.userScores[index] || results.userScores[index] < results.topicScores[index]);
-				});
+		var now = Date.now();
+		var scores = tids.map(() => now);
+		const [topicData] = await Promise.all([
+			Topics.getTopicsFields(tids, ['cid']),
+			db.sortedSetAdd('uid:' + uid + ':tids_read', scores, tids),
+			db.sortedSetRemove('uid:' + uid + ':tids_unread', tids),
+		]);
 
-				if (!tids.length) {
-					return callback(null, false);
-				}
+		var cids = _.uniq(topicData.map(t => t && t.cid).filter(Boolean));
+		await categories.async.markAsRead(cids, uid);
 
-				var now = Date.now();
-				var scores = tids.map(function () {
-					return now;
-				});
-
-				async.parallel({
-					markRead: async.apply(db.sortedSetAdd, 'uid:' + uid + ':tids_read', scores, tids),
-					markUnread: async.apply(db.sortedSetRemove, 'uid:' + uid + ':tids_unread', tids),
-					topicData: async.apply(Topics.getTopicsFields, tids, ['cid']),
-				}, next);
-			},
-			function (results, next) {
-				var cids = results.topicData.map(function (topic) {
-					return topic && topic.cid;
-				}).filter(Boolean);
-
-				cids = _.uniq(cids);
-
-				categories.markAsRead(cids, uid, next);
-			},
-			function (next) {
-				plugins.fireHook('action:topics.markAsRead', { uid: uid, tids: tids });
-				next(null, true);
-			},
-		], callback);
+		plugins.fireHook('action:topics.markAsRead', { uid: uid, tids: tids });
+		return true;
 	};
 
 	Topics.markAllRead = function (uid, callback) {
@@ -448,15 +429,9 @@ module.exports = function (Topics) {
 		], callback);
 	};
 
-	Topics.markCategoryUnreadForAll = function (tid, callback) {
-		async.waterfall([
-			function (next) {
-				Topics.getTopicField(tid, 'cid', next);
-			},
-			function (cid, next) {
-				categories.markAsUnreadForAll(cid, next);
-			},
-		], callback);
+	Topics.markCategoryUnreadForAll = async function (tid) {
+		const cid = await Topics.getTopicField(tid, 'cid');
+		await categories.async.markAsUnreadForAll(cid);
 	};
 
 	Topics.hasReadTopics = function (tids, uid, callback) {

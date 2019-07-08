@@ -142,40 +142,31 @@ module.exports = function (Topics) {
 		});
 	};
 
-	Topics.addParentPosts = function (postData, callback) {
+	Topics.addParentPosts = async function (postData) {
 		var parentPids = postData.map(function (postObj) {
 			return postObj && postObj.hasOwnProperty('toPid') ? parseInt(postObj.toPid, 10) : null;
 		}).filter(Boolean);
 
 		if (!parentPids.length) {
-			return setImmediate(callback);
+			return;
 		}
 		parentPids = _.uniq(parentPids);
-		var parentPosts;
-		async.waterfall([
-			async.apply(posts.getPostsFields, parentPids, ['uid']),
-			function (_parentPosts, next) {
-				parentPosts = _parentPosts;
-				var parentUids = _.uniq(parentPosts.map(postObj => postObj && postObj.uid));
+		const parentPosts = await posts.async.getPostsFields(parentPids, ['uid']);
+		const parentUids = _.uniq(parentPosts.map(postObj => postObj && postObj.uid));
+		const userData = await user.async.getUsersFields(parentUids, ['username']);
 
-				user.getUsersFields(parentUids, ['username'], next);
-			},
-			function (userData, next) {
-				var usersMap = {};
-				userData.forEach(function (user) {
-					usersMap[user.uid] = user.username;
-				});
-				var parents = {};
-				parentPosts.forEach(function (post, i) {
-					parents[parentPids[i]] = { username: usersMap[post.uid] };
-				});
+		var usersMap = {};
+		userData.forEach(function (user) {
+			usersMap[user.uid] = user.username;
+		});
+		var parents = {};
+		parentPosts.forEach(function (post, i) {
+			parents[parentPids[i]] = { username: usersMap[post.uid] };
+		});
 
-				postData.forEach(function (post) {
-					post.parent = parents[post.toPid];
-				});
-				next();
-			},
-		], callback);
+		postData.forEach(function (post) {
+			post.parent = parents[post.toPid];
+		});
 	};
 
 	Topics.calculatePostIndices = function (posts, start) {

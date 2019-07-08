@@ -38,79 +38,55 @@ module.exports = function (Topics) {
 		], callback);
 	};
 
-	Topics.follow = function (tid, uid, callback) {
-		setWatching(follow, unignore, 'action:topic.follow', tid, uid, callback);
+	Topics.follow = async function (tid, uid) {
+		await setWatching(follow, unignore, 'action:topic.follow', tid, uid);
 	};
 
-	Topics.unfollow = function (tid, uid, callback) {
-		setWatching(unfollow, unignore, 'action:topic.unfollow', tid, uid, callback);
+	Topics.unfollow = async function (tid, uid) {
+		await setWatching(unfollow, unignore, 'action:topic.unfollow', tid, uid);
 	};
 
-	Topics.ignore = function (tid, uid, callback) {
-		setWatching(ignore, unfollow, 'action:topic.ignore', tid, uid, callback);
+	Topics.ignore = async function (tid, uid) {
+		await setWatching(ignore, unfollow, 'action:topic.ignore', tid, uid);
 	};
 
-	function setWatching(method1, method2, hook, tid, uid, callback) {
-		callback = callback || function () {};
+	async function setWatching(method1, method2, hook, tid, uid) {
 		if (parseInt(uid, 10) <= 0) {
-			return setImmediate(callback);
+			return;
 		}
-		async.waterfall([
-			function (next) {
-				Topics.exists(tid, next);
-			},
-			function (exists, next) {
-				if (!exists) {
-					return next(new Error('[[error:no-topic]]'));
-				}
-				method1(tid, uid, next);
-			},
-			function (next) {
-				method2(tid, uid, next);
-			},
-			function (next) {
-				plugins.fireHook(hook, { uid: uid, tid: tid });
-				next();
-			},
-		], callback);
+		const exists = await Topics.exists(tid);
+		if (!exists) {
+			throw new Error('[[error:no-topic]]');
+		}
+		await method1(tid, uid);
+		await method2(tid, uid);
+		plugins.fireHook(hook, { uid: uid, tid: tid });
 	}
 
-	function follow(tid, uid, callback) {
-		addToSets('tid:' + tid + ':followers', 'uid:' + uid + ':followed_tids', tid, uid, callback);
+	async function follow(tid, uid) {
+		await addToSets('tid:' + tid + ':followers', 'uid:' + uid + ':followed_tids', tid, uid);
 	}
 
-	function unfollow(tid, uid, callback) {
-		removeFromSets('tid:' + tid + ':followers', 'uid:' + uid + ':followed_tids', tid, uid, callback);
+	async function unfollow(tid, uid) {
+		await removeFromSets('tid:' + tid + ':followers', 'uid:' + uid + ':followed_tids', tid, uid);
 	}
 
-	function ignore(tid, uid, callback) {
-		addToSets('tid:' + tid + ':ignorers', 'uid:' + uid + ':ignored_tids', tid, uid, callback);
+	async function ignore(tid, uid) {
+		await addToSets('tid:' + tid + ':ignorers', 'uid:' + uid + ':ignored_tids', tid, uid);
 	}
 
-	function unignore(tid, uid, callback) {
-		removeFromSets('tid:' + tid + ':ignorers', 'uid:' + uid + ':ignored_tids', tid, uid, callback);
+	async function unignore(tid, uid) {
+		await removeFromSets('tid:' + tid + ':ignorers', 'uid:' + uid + ':ignored_tids', tid, uid);
 	}
 
-	function addToSets(set1, set2, tid, uid, callback) {
-		async.waterfall([
-			function (next) {
-				db.setAdd(set1, uid, next);
-			},
-			function (next) {
-				db.sortedSetAdd(set2, Date.now(), tid, next);
-			},
-		], callback);
+	async function addToSets(set1, set2, tid, uid) {
+		await db.setAdd(set1, uid);
+		await db.sortedSetAdd(set2, Date.now(), tid);
 	}
 
-	function removeFromSets(set1, set2, tid, uid, callback) {
-		async.waterfall([
-			function (next) {
-				db.setRemove(set1, uid, next);
-			},
-			function (next) {
-				db.sortedSetRemove(set2, tid, next);
-			},
-		], callback);
+	async function removeFromSets(set1, set2, tid, uid) {
+		await db.setRemove(set1, uid);
+		await db.sortedSetRemove(set2, tid);
 	}
 
 	Topics.isFollowing = function (tids, uid, callback) {
