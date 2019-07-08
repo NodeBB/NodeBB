@@ -177,113 +177,59 @@ module.exports = function (Topics) {
 		});
 	};
 
-	Topics.getLatestUndeletedPid = function (tid, callback) {
-		async.waterfall([
-			function (next) {
-				Topics.getLatestUndeletedReply(tid, next);
-			},
-			function (pid, next) {
-				if (pid) {
-					return callback(null, pid);
-				}
-				Topics.getTopicField(tid, 'mainPid', next);
-			},
-			function (mainPid, next) {
-				posts.getPostFields(mainPid, ['pid', 'deleted'], next);
-			},
-			function (mainPost, next) {
-				next(null, mainPost.pid && !mainPost.deleted ? mainPost.pid : null);
-			},
-		], callback);
+	Topics.getLatestUndeletedPid = async function (tid) {
+		const pid = await Topics.getLatestUndeletedReply(tid);
+		if (pid) {
+			return pid;
+		}
+		const mainPid = await Topics.getTopicField(tid, 'mainPid');
+		const mainPost = await posts.async.getPostFields(mainPid, ['pid', 'deleted']);
+		return mainPost.pid && !mainPost.deleted ? mainPost.pid : null;
 	};
 
-	Topics.getLatestUndeletedReply = function (tid, callback) {
+	Topics.getLatestUndeletedReply = async function (tid) {
 		var isDeleted = false;
-		var done = false;
-		var latestPid = null;
 		var index = 0;
-		var pids;
-		async.doWhilst(
-			function (next) {
-				async.waterfall([
-					function (_next) {
-						db.getSortedSetRevRange('tid:' + tid + ':posts', index, index, _next);
-					},
-					function (_pids, _next) {
-						pids = _pids;
-						if (!pids.length) {
-							done = true;
-							return next();
-						}
-
-						posts.getPostField(pids[0], 'deleted', _next);
-					},
-					function (deleted, _next) {
-						isDeleted = deleted;
-						if (!isDeleted) {
-							latestPid = pids[0];
-						}
-						index += 1;
-						_next();
-					},
-				], next);
-			},
-			function (next) {
-				next(null, isDeleted && !done);
-			},
-			function (err) {
-				callback(err, parseInt(latestPid, 10));
+		do {
+			/* eslint-disable no-await-in-loop */
+			const pids = await db.getSortedSetRevRange('tid:' + tid + ':posts', index, index);
+			if (!pids.length) {
+				return null;
 			}
-		);
+			isDeleted = await posts.async.getPostField(pids[0], 'deleted');
+			if (!isDeleted) {
+				return parseInt(pids[0], 10);
+			}
+			index += 1;
+			/* eslint-enable no-await-in-loop */
+		} while (isDeleted);
 	};
 
-	Topics.addPostToTopic = function (tid, postData, callback) {
-		async.waterfall([
-			function (next) {
-				Topics.getTopicField(tid, 'mainPid', next);
-			},
-			function (mainPid, next) {
-				if (!parseInt(mainPid, 10)) {
-					Topics.setTopicField(tid, 'mainPid', postData.pid, next);
-				} else {
-					const upvotes = parseInt(postData.upvotes, 10) || 0;
-					const downvotes = parseInt(postData.downvotes, 10) || 0;
-					const votes = upvotes - downvotes;
-					db.sortedSetsAdd([
-						'tid:' + tid + ':posts', 'tid:' + tid + ':posts:votes',
-					], [postData.timestamp, votes], postData.pid, next);
-				}
-			},
-			function (next) {
-				Topics.increasePostCount(tid, next);
-			},
-			function (next) {
-				db.sortedSetIncrBy('tid:' + tid + ':posters', 1, postData.uid, next);
-			},
-			function (count, next) {
-				Topics.updateTeaser(tid, next);
-			},
-		], callback);
+	Topics.addPostToTopic = async function (tid, postData) {
+		const mainPid = await Topics.getTopicField(tid, 'mainPid');
+		if (!parseInt(mainPid, 10)) {
+			await Topics.setTopicField(tid, 'mainPid', postData.pid);
+		} else {
+			const upvotes = parseInt(postData.upvotes, 10) || 0;
+			const downvotes = parseInt(postData.downvotes, 10) || 0;
+			const votes = upvotes - downvotes;
+			await db.sortedSetsAdd([
+				'tid:' + tid + ':posts', 'tid:' + tid + ':posts:votes',
+			], [postData.timestamp, votes], postData.pid);
+		}
+		await Topics.increasePostCount(tid);
+		await db.sortedSetIncrBy('tid:' + tid + ':posters', 1, postData.uid);
+		await Topics.updateTeaser(tid);
 	};
 
-	Topics.removePostFromTopic = function (tid, postData, callback) {
-		async.waterfall([
-			function (next) {
-				db.sortedSetsRemove([
-					'tid:' + tid + ':posts',
-					'tid:' + tid + ':posts:votes',
-				], postData.pid, next);
-			},
-			function (next) {
-				Topics.decreasePostCount(tid, next);
-			},
-			function (next) {
-				db.sortedSetIncrBy('tid:' + tid + ':posters', -1, postData.uid, next);
-			},
-			function (count, next) {
-				Topics.updateTeaser(tid, next);
-			},
-		], callback);
+	Topics.removePostFromTopic = async function (tid, postData) {
+		await db.sortedSetsRemove([
+			'tid:' + tid + ':posts',
+			'tid:' + tid + ':posts:votes',
+		], postData.pid);
+		await Topics.decreasePostCount(tid);
+		await db.sortedSetIncrBy('tid:' + tid + ':posters', -1, postData.uid);
+		await Topics.updateTeaser(tid);
 	};
 
 	Topics.getPids = async function (tid) {
@@ -297,28 +243,21 @@ module.exports = function (Topics) {
 		return pids;
 	};
 
-	Topics.increasePostCount = function (tid, callback) {
-		incrementFieldAndUpdateSortedSet(tid, 'postcount', 1, 'topics:posts', callback);
+	Topics.increasePostCount = async function (tid) {
+		incrementFieldAndUpdateSortedSet(tid, 'postcount', 1, 'topics:posts');
 	};
 
-	Topics.decreasePostCount = function (tid, callback) {
-		incrementFieldAndUpdateSortedSet(tid, 'postcount', -1, 'topics:posts', callback);
+	Topics.decreasePostCount = async function (tid) {
+		incrementFieldAndUpdateSortedSet(tid, 'postcount', -1, 'topics:posts');
 	};
 
-	Topics.increaseViewCount = function (tid, callback) {
-		incrementFieldAndUpdateSortedSet(tid, 'viewcount', 1, 'topics:views', callback);
+	Topics.increaseViewCount = async function (tid) {
+		incrementFieldAndUpdateSortedSet(tid, 'viewcount', 1, 'topics:views');
 	};
 
-	function incrementFieldAndUpdateSortedSet(tid, field, by, set, callback) {
-		callback = callback || function () {};
-		async.waterfall([
-			function (next) {
-				db.incrObjectFieldBy('topic:' + tid, field, by, next);
-			},
-			function (value, next) {
-				db.sortedSetAdd(set, value, tid, next);
-			},
-		], callback);
+	async function incrementFieldAndUpdateSortedSet(tid, field, by, set) {
+		const value = await db.incrObjectFieldBy('topic:' + tid, field, by);
+		await db.sortedSetAdd(set, value, tid);
 	}
 
 	Topics.getTitleByPid = function (pid, callback) {
