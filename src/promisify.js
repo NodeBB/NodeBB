@@ -12,9 +12,13 @@ module.exports = function (theModule, ignoreKeys) {
 		var str = func.toString().split('\n')[0];
 		return str.includes('callback)');
 	}
-	function promisifyRecursive(module) {
+	var parts = [];
+	function promisifyRecursive(module, key) {
 		if (!module) {
 			return;
+		}
+		if (key) {
+			parts.push(key);
 		}
 		var keys = Object.keys(module);
 		keys.forEach(function (key) {
@@ -24,15 +28,16 @@ module.exports = function (theModule, ignoreKeys) {
 			if (isCallbackedFunction(module[key])) {
 				module[key] = util.promisify(module[key]);
 			} else if (typeof module[key] === 'object') {
-				promisifyRecursive(module[key]);
+				promisifyRecursive(module[key], key);
 			}
 
 			if (typeof module[key] === 'function') {
-				module[key] = require('util').deprecate(module[key], '.async.' + key + ' usage is deprecated use .' + key + ' directly!');
+				module[key] = require('util').deprecate(module[key], '.async.' + (parts.concat([key]).join('.')) + ' usage is deprecated use .' + key + ' directly!');
 			}
 		});
+		parts.pop();
 	}
 	const asyncModule = _.cloneDeep(theModule);
-	promisifyRecursive(asyncModule);
+	promisifyRecursive(asyncModule, '');
 	return asyncModule;
 };

@@ -83,9 +83,9 @@ Topics.getTopicsByTids = async function (tids, options) {
 		categories.async.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'image', 'imageClass', 'bgColor', 'color', 'disabled']),
 		Topics.async.hasReadTopics(tids, uid),
 		Topics.async.isIgnoring(tids, uid),
-		Topics.async.getUserBookmarks(tids, uid),
+		Topics.getUserBookmarks(tids, uid),
 		Topics.async.getTeasers(topics, options),
-		Topics.async.getTopicsTagsObjects(tids),
+		Topics.getTopicsTagsObjects(tids),
 	]);
 
 	users.forEach(function (user, index) {
