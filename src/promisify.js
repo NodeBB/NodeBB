@@ -31,9 +31,10 @@ module.exports = function (theModule, ignoreKeys) {
 				promisifyRecursive(module[key], key);
 			}
 
-			if (typeof module[key] === 'function') {
-				module[key] = require('util').deprecate(module[key], '.async.' + (parts.concat([key]).join('.')) + ' usage is deprecated use .' + key + ' directly!');
-			}
+			// add this back once all modules are converted to async/await
+			// if (typeof module[key] === 'function') {
+			// 	module[key] = require('util').deprecate(module[key], '.async.' + (parts.concat([key]).join('.')) + ' usage is deprecated use .' + key + ' directly!');
+			// }
 		});
 		parts.pop();
 	}
