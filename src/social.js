@@ -25,7 +25,7 @@ social.getPostSharing = async function () {
 		},
 	];
 	networks = await plugins.async.fireHook('filter:social.posts', networks);
-	const activated = await db.async.getSetMembers('social:posts.activated');
+	const activated = await db.getSetMembers('social:posts.activated');
 	networks.forEach(function (network) {
 		network.activated = activated.includes(network.id);
 	});
@@ -40,11 +40,11 @@ social.getActivePostSharing = async function () {
 };
 
 social.setActivePostSharingNetworks = async function (networkIDs) {
-	await db.async.delete('social:posts.activated');
+	await db.delete('social:posts.activated');
 	if (!networkIDs.length) {
 		return;
 	}
-	await db.async.setAdd('social:posts.activated', networkIDs);
+	await db.setAdd('social:posts.activated', networkIDs);
 	social.postSharing = null;
 };
 
