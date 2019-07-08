@@ -223,9 +223,9 @@ async function getMerger(topicData) {
 }
 
 async function getRelated(topicData, uid) {
-	const tags = await Topics.async.getTopicTagsObjects(topicData.tid);
+	const tags = await Topics.getTopicTagsObjects(topicData.tid);
 	topicData.tags = tags;
-	return await Topics.async.getRelatedTopics(topicData, uid);
+	return await Topics.getRelatedTopics(topicData, uid);
 }
 
 Topics.getMainPost = async function (tid, uid) {

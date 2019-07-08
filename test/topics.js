@@ -152,7 +152,7 @@ describe('Topic\'s', function () {
 				assert.ok(result);
 
 				socketPosts.getReplies({ uid: 0 }, newPost.pid, function (err, postData) {
-					assert.equal(err, null, 'posts.getReplies returned error');
+					assert.ifError(err);
 
 					assert.ok(postData);
 
