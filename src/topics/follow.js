@@ -1,8 +1,6 @@
 
 'use strict';
 
-var async = require('async');
-
 var db = require('../database');
 var posts = require('../posts');
 var notifications = require('../notifications');
@@ -11,31 +9,18 @@ var plugins = require('../plugins');
 var utils = require('../utils');
 
 module.exports = function (Topics) {
-	Topics.toggleFollow = function (tid, uid, callback) {
-		callback = callback || function () {};
-		var isFollowing;
-		async.waterfall([
-			function (next) {
-				Topics.exists(tid, next);
-			},
-			function (exists, next) {
-				if (!exists) {
-					return next(new Error('[[error:no-topic]]'));
-				}
-				Topics.isFollowing([tid], uid, next);
-			},
-			function (_isFollowing, next) {
-				isFollowing = _isFollowing[0];
-				if (isFollowing) {
-					Topics.unfollow(tid, uid, next);
-				} else {
-					Topics.follow(tid, uid, next);
-				}
-			},
-			function (next) {
-				next(null, !isFollowing);
-			},
-		], callback);
+	Topics.toggleFollow = async function (tid, uid) {
+		const exists = await Topics.exists(tid);
+		if (!exists) {
+			throw new Error('[[error:no-topic]]');
+		}
+		const isFollowing = await Topics.isFollowing([tid], uid);
+		if (isFollowing[0]) {
+			await Topics.unfollow(tid, uid);
+		} else {
+			await Topics.follow(tid, uid);
+		}
+		return !isFollowing[0];
 	};
 
 	Topics.follow = async function (tid, uid) {
@@ -89,156 +74,122 @@ module.exports = function (Topics) {
 		await db.sortedSetRemove(set2, tid);
 	}
 
-	Topics.isFollowing = function (tids, uid, callback) {
-		isIgnoringOrFollowing('followers', tids, uid, callback);
+	Topics.isFollowing = async function (tids, uid) {
+		return await isIgnoringOrFollowing('followers', tids, uid);
 	};
 
-	Topics.isIgnoring = function (tids, uid, callback) {
-		isIgnoringOrFollowing('ignorers', tids, uid, callback);
+	Topics.isIgnoring = async function (tids, uid) {
+		return await isIgnoringOrFollowing('ignorers', tids, uid);
 	};
 
-	Topics.getFollowData = function (tids, uid, callback) {
+	Topics.getFollowData = async function (tids, uid) {
 		if (!Array.isArray(tids)) {
-			return setImmediate(callback);
+			return;
 		}
 		if (parseInt(uid, 10) <= 0) {
-			return setImmediate(callback, null, tids.map(() => ({ following: false, ignoring: false })));
+			return tids.map(() => ({ following: false, ignoring: false }));
 		}
 		const keys = [];
 		tids.forEach((tid) => {
 			keys.push('tid:' + tid + ':followers', 'tid:' + tid + ':ignorers');
 		});
 
-		db.isMemberOfSets(keys, uid, function (err, data) {
-			if (err) {
-				return callback(err);
-			}
-			const followData = [];
-			for (let i = 0; i < data.length; i += 2) {
-				followData.push({
-					following: data[i],
-					ignoring: data[i + 1],
-				});
-			}
-			callback(null, followData);
-		});
+		const data = await db.isMemberOfSets(keys, uid);
+
+		const followData = [];
+		for (let i = 0; i < data.length; i += 2) {
+			followData.push({
+				following: data[i],
+				ignoring: data[i + 1],
+			});
+		}
+		return followData;
 	};
 
-	function isIgnoringOrFollowing(set, tids, uid, callback) {
+	async function isIgnoringOrFollowing(set, tids, uid) {
 		if (!Array.isArray(tids)) {
-			return setImmediate(callback);
+			return;
 		}
 		if (parseInt(uid, 10) <= 0) {
-			return setImmediate(callback, null, tids.map(() => false));
+			return tids.map(() => false);
 		}
 		var keys = tids.map(tid => 'tid:' + tid + ':' + set);
-		db.isMemberOfSets(keys, uid, callback);
+		return await db.isMemberOfSets(keys, uid);
 	}
 
-	Topics.getFollowers = function (tid, callback) {
-		db.getSetMembers('tid:' + tid + ':followers', callback);
+	Topics.getFollowers = async function (tid) {
+		return await db.getSetMembers('tid:' + tid + ':followers');
 	};
 
-	Topics.getIgnorers = function (tid, callback) {
-		db.getSetMembers('tid:' + tid + ':ignorers', callback);
+	Topics.getIgnorers = async function (tid) {
+		return await db.getSetMembers('tid:' + tid + ':ignorers');
 	};
 
-	Topics.filterIgnoringUids = function (tid, uids, callback) {
-		async.waterfall([
-			function (next) {
-				db.isSetMembers('tid:' + tid + ':ignorers', uids, next);
-			},
-			function (isIgnoring, next) {
-				const readingUids = uids.filter((uid, index) => uid && !isIgnoring[index]);
-				next(null, readingUids);
-			},
-		], callback);
+	Topics.filterIgnoringUids = async function (tid, uids) {
+		const isIgnoring = await db.isSetMembers('tid:' + tid + ':ignorers', uids);
+		const readingUids = uids.filter((uid, index) => uid && !isIgnoring[index]);
+		return readingUids;
 	};
 
-	Topics.filterWatchedTids = function (tids, uid, callback) {
+	Topics.filterWatchedTids = async function (tids, uid) {
 		if (parseInt(uid, 10) <= 0) {
-			return setImmediate(callback, null, []);
+			return [];
 		}
-		async.waterfall([
-			function (next) {
-				db.sortedSetScores('uid:' + uid + ':followed_tids', tids, next);
-			},
-			function (scores, next) {
-				tids = tids.filter((tid, index) => tid && !!scores[index]);
-				next(null, tids);
-			},
-		], callback);
+		const scores = await db.sortedSetScores('uid:' + uid + ':followed_tids', tids);
+		tids = tids.filter((tid, index) => tid && !!scores[index]);
+		return tids;
 	};
 
-	Topics.filterNotIgnoredTids = function (tids, uid, callback) {
+	Topics.filterNotIgnoredTids = async function (tids, uid) {
 		if (parseInt(uid, 10) <= 0) {
-			return setImmediate(callback, null, tids);
+			return tids;
 		}
-		async.waterfall([
-			function (next) {
-				db.sortedSetScores('uid:' + uid + ':ignored_tids', tids, next);
-			},
-			function (scores, next) {
-				tids = tids.filter((tid, index) => tid && !scores[index]);
-				next(null, tids);
-			},
-		], callback);
+		const scores = await db.sortedSetScores('uid:' + uid + ':ignored_tids', tids);
+		tids = tids.filter((tid, index) => tid && !scores[index]);
+		return tids;
 	};
 
-	Topics.notifyFollowers = function (postData, exceptUid, callback) {
-		callback = callback || function () {};
-		var followers;
+	Topics.notifyFollowers = async function (postData, exceptUid) {
 		var title;
 		var titleEscaped;
 
-		async.waterfall([
-			function (next) {
-				Topics.getFollowers(postData.topic.tid, next);
-			},
-			function (followers, next) {
-				var index = followers.indexOf(exceptUid.toString());
-				if (index !== -1) {
-					followers.splice(index, 1);
-				}
+		let followers = await Topics.getFollowers(postData.topic.tid);
 
-				privileges.topics.filterUids('topics:read', postData.topic.tid, followers, next);
-			},
-			function (_followers, next) {
-				followers = _followers;
-				if (!followers.length) {
-					return callback();
-				}
-				title = postData.topic.title;
+		var index = followers.indexOf(exceptUid.toString());
+		if (index !== -1) {
+			followers.splice(index, 1);
+		}
 
-				if (title) {
-					title = utils.decodeHTMLEntities(title);
-					titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
-				}
+		followers = await privileges.async.topics.filterUids('topics:read', postData.topic.tid, followers);
 
-				postData.content = posts.relativeToAbsolute(postData.content, posts.urlRegex);
-				postData.content = posts.relativeToAbsolute(postData.content, posts.imgRegex);
+		if (!followers.length) {
+			return;
+		}
+		title = postData.topic.title;
 
-				notifications.create({
-					type: 'new-reply',
-					subject: title,
-					bodyShort: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + titleEscaped + ']]',
-					bodyLong: postData.content,
-					pid: postData.pid,
-					path: '/post/' + postData.pid,
-					nid: 'new_post:tid:' + postData.topic.tid + ':pid:' + postData.pid + ':uid:' + exceptUid,
-					tid: postData.topic.tid,
-					from: exceptUid,
-					mergeId: 'notifications:user_posted_to|' + postData.topic.tid,
-					topicTitle: title,
-				}, next);
-			},
-			function (notification, next) {
-				if (notification) {
-					notifications.push(notification, followers);
-				}
+		if (title) {
+			title = utils.decodeHTMLEntities(title);
+			titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+		}
 
-				next();
-			},
-		], callback);
+		postData.content = posts.relativeToAbsolute(postData.content, posts.urlRegex);
+		postData.content = posts.relativeToAbsolute(postData.content, posts.imgRegex);
+
+		const notification = await notifications.async.create({
+			type: 'new-reply',
+			subject: title,
+			bodyShort: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + titleEscaped + ']]',
+			bodyLong: postData.content,
+			pid: postData.pid,
+			path: '/post/' + postData.pid,
+			nid: 'new_post:tid:' + postData.topic.tid + ':pid:' + postData.pid + ':uid:' + exceptUid,
+			tid: postData.topic.tid,
+			from: exceptUid,
+			mergeId: 'notifications:user_posted_to|' + postData.topic.tid,
+			topicTitle: title,
+		});
+		if (notification) {
+			notifications.push(notification, followers);
+		}
 	};
 };
