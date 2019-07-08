@@ -14,15 +14,15 @@ module.exports = function (Topics) {
 		year: 31104000000,
 	};
 
-	Topics.getRecentTopics = function (cid, uid, start, stop, filter, callback) {
-		Topics.getSortedTopics({
+	Topics.getRecentTopics = async function (cid, uid, start, stop, filter) {
+		return await Topics.getSortedTopics({
 			cids: cid,
 			uid: uid,
 			start: start,
 			stop: stop,
 			filter: filter,
 			sort: 'recent',
-		}, callback);
+		});
 	};
 
 	/* not an orphan method, used in widget-essentials */
