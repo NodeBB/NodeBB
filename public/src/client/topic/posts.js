@@ -250,12 +250,12 @@ define('forum/topic/posts', [
 	};
 
 	Posts.onTopicPageLoad = function (posts) {
+		handlePrivateUploads(posts);
 		images.wrapImagesInLinks(posts);
 		Posts.showBottomPostBar();
 		posts.find('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
 		Posts.addBlockquoteEllipses(posts);
 		hidePostToolsForDeletedPosts(posts);
-
 		addNecroPostMessage();
 	};
 
@@ -279,6 +279,27 @@ define('forum/topic/posts', [
 
 				$.timeago.settings.strings.suffixAgo = ago;
 			}
+		});
+	}
+
+	function handlePrivateUploads(posts) {
+		if (app.user.uid) {
+			return;
+		}
+
+		// Replace all requests for uploaded images/files with a login link
+		var loginEl = document.createElement('a');
+		loginEl.className = 'login-required';
+		loginEl.href = config.relative_path + '/login';
+		loginEl.appendChild(document.createTextNode('🔒 Log in to view'));
+
+		posts.each(function (idx, postEl) {
+			$(postEl).find('[component="post/content"] img').each(function (idx, imgEl) {
+				imgEl = $(imgEl);
+				if (imgEl.attr('src').startsWith(config.relative_path + config.upload_url)) {
+					imgEl.replaceWith(loginEl.cloneNode(true));
+				}
+			});
 		});
 	}
 
