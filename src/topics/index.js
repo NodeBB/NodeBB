@@ -81,10 +81,10 @@ Topics.getTopicsByTids = async function (tids, options) {
 		user.async.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status']),
 		user.async.getMultipleUserSettings(uids),
 		categories.async.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'image', 'imageClass', 'bgColor', 'color', 'disabled']),
-		Topics.async.hasReadTopics(tids, uid),
-		Topics.async.isIgnoring(tids, uid),
+		Topics.hasReadTopics(tids, uid),
+		Topics.isIgnoring(tids, uid),
 		Topics.getUserBookmarks(tids, uid),
-		Topics.async.getTeasers(topics, options),
+		Topics.getTeasers(topics, options),
 		Topics.getTopicsTagsObjects(tids),
 	]);
 
@@ -137,7 +137,7 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 		categories.async.getCategoryData(topicData.cid),
 		categories.async.getTagWhitelist([topicData.cid]),
 		plugins.async.fireHook('filter:topic.thread_tools', { topic: topicData, uid: uid, tools: [] }),
-		Topics.async.getFollowData([topicData.tid], uid),
+		Topics.getFollowData([topicData.tid], uid),
 		Topics.getUserBookmark(topicData.tid, uid),
 		social.getActivePostSharing(),
 		getDeleter(topicData),
@@ -197,7 +197,7 @@ async function getMainPostAndReplies(topic, set, uid, start, stop, reverse) {
 
 	Topics.calculatePostIndices(replies, start);
 
-	return await Topics.async.addPostData(postData, uid);
+	return await Topics.addPostData(postData, uid);
 }
 
 async function getDeleter(topicData) {
@@ -253,7 +253,7 @@ async function getMainPosts(mainPids, uid) {
 			post.index = 0;
 		}
 	});
-	return await Topics.async.addPostData(postData, uid);
+	return await Topics.addPostData(postData, uid);
 }
 
 Topics.isLocked = async function (tid) {
