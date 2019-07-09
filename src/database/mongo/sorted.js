@@ -1,6 +1,5 @@
 'use strict';
 
-var async = require('async');
 var utils = require('../../utils');
 
 module.exports = function (db, module) {
@@ -426,6 +425,7 @@ module.exports = function (db, module) {
 		var done = false;
 		var ids = [];
 		var project = { _id: 0, _key: 0 };
+
 		if (!options.withScores) {
 			project.score = 0;
 		}
@@ -437,27 +437,23 @@ module.exports = function (db, module) {
 			processFn = util.promisify(processFn);
 		}
 
-		await async.whilst(
-			function (next) {
-				next(null, !done);
-			},
-			async function () {
-				const item = await cursor.next();
-				if (item === null) {
-					done = true;
-				} else {
-					ids.push(options.withScores ? item : item.value);
-				}
-				if (ids.length < options.batch && (!done || ids.length === 0)) {
-					return;
-				}
+		while (!done) {
+			/* eslint-disable no-await-in-loop */
+			const item = await cursor.next();
+			if (item === null) {
+				done = true;
+			} else {
+				ids.push(options.withScores ? item : item.value);
+			}
 
+			if (ids.length >= options.batch || (done && ids.length !== 0)) {
 				await processFn(ids);
+
 				ids.length = 0;
 				if (options.interval) {
 					await sleep(options.interval);
 				}
 			}
-		);
+		}
 	};
 };

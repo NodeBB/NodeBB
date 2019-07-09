@@ -270,4 +270,3 @@ Topics.search = async function (tid, term) {
 };
 
 Topics.async = require('../promisify')(Topics);
-require('../callbackify')(Topics);

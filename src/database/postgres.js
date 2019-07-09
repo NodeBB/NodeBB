@@ -111,7 +111,6 @@ postgresModule.init = function (callback) {
 			require('./postgres/transaction')(db, postgresModule);
 
 			postgresModule.async = require('../promisify')(postgresModule, ['client', 'sessionStore', 'pool']);
-			require('../callbackify')(postgresModule, ['client', 'sessionStore', 'pool', 'transaction']);
 			callback();
 		});
 	});

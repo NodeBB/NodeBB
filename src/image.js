@@ -180,4 +180,4 @@ image.uploadImage = function (filename, folder, image, callback) {
 	], callback);
 };
 
-require('./callbackify')(image);
+require('./promisify')(image);

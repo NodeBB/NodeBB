@@ -1,7 +1,5 @@
 'use strict';
 
-var async = require('async');
-
 module.exports = function (db, module) {
 	var helpers = require('./helpers');
 	const util = require('util');
@@ -633,33 +631,30 @@ SELECT z."value", z."score"
 		if (process && process.constructor && process.constructor.name !== 'AsyncFunction') {
 			process = util.promisify(process);
 		}
-		await async.whilst(
-			function (next) {
-				next(null, !isDone);
-			},
-			async function () {
-				let rows = await cursor.readAsync(batchSize);
-				if (!rows.length) {
-					isDone = true;
-					return;
-				}
-
-				if (options.withScores) {
-					rows = rows.map(r => ({ value: r.value, score: parseFloat(r.score) }));
-				} else {
-					rows = rows.map(r => r.value);
-				}
-				try {
-					await process(rows);
-				} catch (err) {
-					await query.close();
-					throw err;
-				}
-				if (options.interval) {
-					sleep(options.interval);
-				}
+		while (!isDone) {
+			/* eslint-disable no-await-in-loop */
+			let rows = await cursor.readAsync(batchSize);
+			if (!rows.length) {
+				isDone = true;
+				return;
 			}
-		);
+
+			if (options.withScores) {
+				rows = rows.map(r => ({ value: r.value, score: parseFloat(r.score) }));
+			} else {
+				rows = rows.map(r => r.value);
+			}
+			try {
+				await process(rows);
+			} catch (err) {
+				await query.close();
+				throw err;
+			}
+			if (options.interval) {
+				await sleep(options.interval);
+			}
+		}
+
 		client.release();
 	};
 };

@@ -260,4 +260,4 @@ file.walk = function (dir, done) {
 	});
 };
 
-require('./callbackify')(file);
+require('./promisify')(file);

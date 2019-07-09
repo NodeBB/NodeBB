@@ -48,4 +48,4 @@ social.setActivePostSharingNetworks = async function (networkIDs) {
 	social.postSharing = null;
 };
 
-require('./callbackify')(social);
+require('./promisify')(social);

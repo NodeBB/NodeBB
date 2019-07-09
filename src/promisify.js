@@ -12,6 +12,11 @@ module.exports = function (theModule, ignoreKeys) {
 		var str = func.toString().split('\n')[0];
 		return str.includes('callback)');
 	}
+
+	function isAsyncFunction(fn) {
+		return fn && fn.constructor && fn.constructor.name === 'AsyncFunction';
+	}
+
 	var parts = [];
 	function promisifyRecursive(module, key) {
 		if (!module) {
@@ -25,8 +30,10 @@ module.exports = function (theModule, ignoreKeys) {
 			if (ignoreKeys.includes(key)) {
 				return;
 			}
-			if (isCallbackedFunction(module[key])) {
-				module[key] = util.promisify(module[key]);
+			if (isAsyncFunction(module[key])) {
+				module[key] = wrapIt(module[key], util.callbackify(module[key]));
+			} else if (isCallbackedFunction(module[key])) {
+				module[key] = wrapTwo(module[key], util.promisify(module[key]));
 			} else if (typeof module[key] === 'object') {
 				promisifyRecursive(module[key], key);
 			}
@@ -38,7 +45,38 @@ module.exports = function (theModule, ignoreKeys) {
 		});
 		parts.pop();
 	}
-	const asyncModule = _.cloneDeep(theModule);
-	promisifyRecursive(asyncModule, '');
-	return asyncModule;
+
+	function wrapTwo(origFn, promiseFn) {
+		return function wrapper2(...args) {
+			if (arguments.length && typeof arguments[arguments.length - 1] === 'function') {
+				return origFn.apply(null, args);
+			}
+
+			return promiseFn.apply(null, arguments);
+		};
+	}
+
+	function wrapIt(origFn, callbackFn) {
+		return async function wrapper(...args) {
+			if (arguments.length && typeof arguments[arguments.length - 1] === 'function') {
+				const cb = args.pop();
+				args.push(function (err, res) {
+					if (err) {
+						return cb(err);
+					}
+
+					// fixes callbackified functions used in async.waterfall
+					if (res !== undefined) {
+						return cb(err, res);
+					}
+					return cb(err);
+				});
+				return callbackFn.apply(null, args);
+			}
+			return origFn.apply(null, arguments);
+		};
+	}
+
+	promisifyRecursive(theModule, '');
+	return _.cloneDeep(theModule);
 };

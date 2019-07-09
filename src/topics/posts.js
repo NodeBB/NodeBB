@@ -157,7 +157,6 @@ module.exports = function (Topics) {
 				return parseInt(pids[0], 10);
 			}
 			index += 1;
-			/* eslint-enable no-await-in-loop */
 		} while (isDeleted);
 	};
 
