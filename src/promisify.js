@@ -37,11 +37,6 @@ module.exports = function (theModule, ignoreKeys) {
 			} else if (typeof module[key] === 'object') {
 				promisifyRecursive(module[key], key);
 			}
-
-			// add this back once all modules are converted to async/await
-			// if (typeof module[key] === 'function') {
-			// 	module[key] = require('util').deprecate(module[key], '.async.' + (parts.concat([key]).join('.')) + ' usage is deprecated use .' + key + ' directly!');
-			// }
 		});
 		parts.pop();
 	}
@@ -77,6 +72,33 @@ module.exports = function (theModule, ignoreKeys) {
 		};
 	}
 
-	promisifyRecursive(theModule, '');
-	return _.cloneDeep(theModule);
+	function deprecateRecursive(module, key) {
+		if (!module) {
+			return;
+		}
+		if (key) {
+			parts.push(key);
+		}
+		var keys = Object.keys(module);
+		keys.forEach(function (key) {
+			if (ignoreKeys.includes(key)) {
+				return;
+			}
+
+			if (typeof module[key] === 'object') {
+				deprecateRecursive(module[key], key);
+			}
+
+			if (typeof module[key] === 'function') {
+				module[key] = require('util').deprecate(module[key], '.async.' + (parts.concat([key]).join('.')) + ' usage is deprecated use .' + (parts.concat([key]).join('.')) + ' directly!');
+			}
+		});
+		parts.pop();
+	}
+
+	promisifyRecursive(theModule);
+	const asyncModule = _.cloneDeep(theModule);
+	deprecateRecursive(asyncModule);
+
+	return asyncModule;
 };
