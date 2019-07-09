@@ -1,6 +1,5 @@
 'use strict';
 
-var async = require('async');
 var validator = require('validator');
 
 var db = require('../database');
@@ -15,75 +14,54 @@ const intFields = [
 ];
 
 module.exports = function (Topics) {
-	Topics.getTopicsFields = function (tids, fields, callback) {
+	Topics.getTopicsFields = async function (tids, fields) {
 		if (!Array.isArray(tids) || !tids.length) {
-			return callback(null, []);
+			return [];
 		}
-
-		async.waterfall([
-			function (next) {
-				const keys = tids.map(tid => 'topic:' + tid);
-				if (fields.length) {
-					db.getObjectsFields(keys, fields, next);
-				} else {
-					db.getObjects(keys, next);
-				}
-			},
-			function (topics, next) {
-				topics.forEach(topic => modifyTopic(topic, fields));
-				next(null, topics);
-			},
-		], callback);
+		const keys = tids.map(tid => 'topic:' + tid);
+		const topics = await (fields.length ? db.getObjectsFields(keys, fields) : db.getObjects(keys));
+		topics.forEach(topic => modifyTopic(topic, fields));
+		return topics;
 	};
 
-	Topics.getTopicField = function (tid, field, callback) {
-		Topics.getTopicFields(tid, [field], function (err, topic) {
-			callback(err, topic ? topic[field] : null);
-		});
+	Topics.getTopicField = async function (tid, field) {
+		const topic = await Topics.getTopicFields(tid, [field]);
+		return topic ? topic[field] : null;
 	};
 
-	Topics.getTopicFields = function (tid, fields, callback) {
-		Topics.getTopicsFields([tid], fields, function (err, topics) {
-			callback(err, topics ? topics[0] : null);
-		});
+	Topics.getTopicFields = async function (tid, fields) {
+		const topics = await Topics.getTopicsFields([tid], fields);
+		return topics ? topics[0] : null;
 	};
 
-	Topics.getTopicData = function (tid, callback) {
-		Topics.getTopicsFields([tid], [], function (err, topics) {
-			callback(err, topics && topics.length ? topics[0] : null);
-		});
+	Topics.getTopicData = async function (tid) {
+		const topics = await Topics.getTopicsFields([tid], []);
+		return topics && topics.length ? topics[0] : null;
 	};
 
-	Topics.getTopicsData = function (tids, callback) {
-		Topics.getTopicsFields(tids, [], callback);
+	Topics.getTopicsData = async function (tids) {
+		return await Topics.getTopicsFields(tids, []);
 	};
 
-	Topics.getCategoryData = function (tid, callback) {
-		async.waterfall([
-			function (next) {
-				Topics.getTopicField(tid, 'cid', next);
-			},
-			function (cid, next) {
-				categories.getCategoryData(cid, next);
-			},
-		], callback);
+	Topics.getCategoryData = async function (tid) {
+		const cid = await Topics.getTopicField(tid, 'cid');
+		return await categories.getCategoryData(cid);
 	};
 
-	Topics.setTopicField = function (tid, field, value, callback) {
-		db.setObjectField('topic:' + tid, field, value, callback);
+	Topics.setTopicField = async function (tid, field, value) {
+		await db.setObjectField('topic:' + tid, field, value);
 	};
 
-	Topics.setTopicFields = function (tid, data, callback) {
-		callback = callback || function () {};
-		db.setObject('topic:' + tid, data, callback);
+	Topics.setTopicFields = async function (tid, data) {
+		await db.setObject('topic:' + tid, data);
 	};
 
-	Topics.deleteTopicField = function (tid, field, callback) {
-		db.deleteObjectField('topic:' + tid, field, callback);
+	Topics.deleteTopicField = async function (tid, field) {
+		await db.deleteObjectField('topic:' + tid, field);
 	};
 
-	Topics.deleteTopicFields = function (tid, fields, callback) {
-		db.deleteObjectFields('topic:' + tid, fields, callback);
+	Topics.deleteTopicFields = async function (tid, fields) {
+		await db.deleteObjectFields('topic:' + tid, fields);
 	};
 };
 

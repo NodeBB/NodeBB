@@ -152,7 +152,7 @@ describe('Topic\'s', function () {
 				assert.ok(result);
 
 				socketPosts.getReplies({ uid: 0 }, newPost.pid, function (err, postData) {
-					assert.equal(err, null, 'posts.getReplies returned error');
+					assert.ifError(err);
 
 					assert.ok(postData);
 
@@ -914,7 +914,7 @@ describe('Topic\'s', function () {
 				title: 'topic for controller test',
 				content: 'topic content',
 				cid: topic.categoryId,
-				// thumb: 'http://i.imgur.com/64iBdBD.jpg',
+				thumb: 'http://i.imgur.com/64iBdBD.jpg',
 			}, function (err, result) {
 				assert.ifError(err);
 				assert.ok(result);

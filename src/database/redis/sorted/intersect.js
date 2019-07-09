@@ -2,9 +2,10 @@
 'use strict';
 
 module.exports = function (redisClient, module) {
-	module.sortedSetIntersectCard = function (keys, callback) {
+	const helpers = require('../helpers');
+	module.sortedSetIntersectCard = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, 0);
+			return 0;
 		}
 		var tempSetName = 'temp_' + Date.now();
 
@@ -14,26 +15,21 @@ module.exports = function (redisClient, module) {
 		multi.zinterstore(interParams);
 		multi.zcard(tempSetName);
 		multi.del(tempSetName);
-		multi.exec(function (err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, results[1] || 0);
-		});
+		const results = await helpers.execBatch(multi);
+		return results[1] || 0;
 	};
 
-	module.getSortedSetIntersect = function (params, callback) {
+	module.getSortedSetIntersect = async function (params) {
 		params.method = 'zrange';
-		getSortedSetRevIntersect(params, callback);
+		return await getSortedSetRevIntersect(params);
 	};
 
-	module.getSortedSetRevIntersect = function (params, callback) {
+	module.getSortedSetRevIntersect = async function (params) {
 		params.method = 'zrevrange';
-		getSortedSetRevIntersect(params, callback);
+		return await getSortedSetRevIntersect(params);
 	};
 
-	function getSortedSetRevIntersect(params, callback) {
+	async function getSortedSetRevIntersect(params) {
 		var sets = params.sets;
 		var start = params.hasOwnProperty('start') ? params.start : 0;
 		var stop = params.hasOwnProperty('stop') ? params.stop : -1;
@@ -59,20 +55,16 @@ module.exports = function (redisClient, module) {
 		multi.zinterstore(interParams);
 		multi[params.method](rangeParams);
 		multi.del(tempSetName);
-		multi.exec(function (err, results) {
-			if (err) {
-				return callback(err);
-			}
+		let results = await helpers.execBatch(multi);
 
-			if (!params.withScores) {
-				return callback(null, results ? results[1] : null);
-			}
-			results = results[1] || [];
-			var objects = [];
-			for (var i = 0; i < results.length; i += 2) {
-				objects.push({ value: results[i], score: parseFloat(results[i + 1]) });
-			}
-			callback(null, objects);
-		});
+		if (!params.withScores) {
+			return results ? results[1] : null;
+		}
+		results = results[1] || [];
+		var objects = [];
+		for (var i = 0; i < results.length; i += 2) {
+			objects.push({ value: results[i], score: parseFloat(results[i + 1]) });
+		}
+		return objects;
 	}
 };

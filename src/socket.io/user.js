@@ -252,7 +252,7 @@ SocketUser.getUnreadCount = function (socket, data, callback) {
 	if (!socket.uid) {
 		return callback(null, 0);
 	}
-	topics.getTotalUnread(socket.uid, callback);
+	topics.getTotalUnread(socket.uid, '', callback);
 };
 
 SocketUser.getUnreadChatCount = function (socket, data, callback) {

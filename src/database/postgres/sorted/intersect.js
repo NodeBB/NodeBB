@@ -1,12 +1,12 @@
 'use strict';
 
 module.exports = function (db, module) {
-	module.sortedSetIntersectCard = function (keys, callback) {
+	module.sortedSetIntersectCard = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, 0);
+			return 0;
 		}
 
-		db.query({
+		const res = await db.query({
 			name: 'sortedSetIntersectCard',
 			text: `
 WITH A AS (SELECT z."value" v,
@@ -21,27 +21,22 @@ SELECT COUNT(*) c
   FROM A
  WHERE A.c = array_length($1::TEXT[], 1)`,
 			values: [keys],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, parseInt(res.rows[0].c, 10));
 		});
+
+		return parseInt(res.rows[0].c, 10);
 	};
 
-
-	module.getSortedSetIntersect = function (params, callback) {
+	module.getSortedSetIntersect = async function (params) {
 		params.sort = 1;
-		getSortedSetIntersect(params, callback);
+		return await getSortedSetIntersect(params);
 	};
 
-	module.getSortedSetRevIntersect = function (params, callback) {
+	module.getSortedSetRevIntersect = async function (params) {
 		params.sort = -1;
-		getSortedSetIntersect(params, callback);
+		return await getSortedSetIntersect(params);
 	};
 
-	function getSortedSetIntersect(params, callback) {
+	async function getSortedSetIntersect(params) {
 		var sets = params.sets;
 		var start = params.hasOwnProperty('start') ? params.start : 0;
 		var stop = params.hasOwnProperty('stop') ? params.stop : -1;
@@ -60,7 +55,7 @@ SELECT COUNT(*) c
 			limit = null;
 		}
 
-		db.query({
+		const res = await db.query({
 			name: 'getSortedSetIntersect' + aggregate + (params.sort > 0 ? 'Asc' : 'Desc') + 'WithScores',
 			text: `
 WITH A AS (SELECT z."value",
@@ -81,25 +76,19 @@ SELECT A."value",
  LIMIT $4::INTEGER
 OFFSET $3::INTEGER`,
 			values: [sets, weights, start, limit],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (params.withScores) {
-				res.rows = res.rows.map(function (r) {
-					return {
-						value: r.value,
-						score: parseFloat(r.score),
-					};
-				});
-			} else {
-				res.rows = res.rows.map(function (r) {
-					return r.value;
-				});
-			}
-
-			callback(null, res.rows);
 		});
+
+		if (params.withScores) {
+			res.rows = res.rows.map(function (r) {
+				return {
+					value: r.value,
+					score: parseFloat(r.score),
+				};
+			});
+		} else {
+			res.rows = res.rows.map(r => r.value);
+		}
+
+		return res.rows;
 	}
 };

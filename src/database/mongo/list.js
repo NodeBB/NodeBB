@@ -1,112 +1,75 @@
 'use strict';
 
 module.exports = function (db, module) {
-	var helpers = module.helpers.mongo;
+	var helpers = require('./helpers');
 
-	module.listPrepend = function (key, value, callback) {
-		callback = callback || helpers.noop;
-
+	module.listPrepend = async function (key, value) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
 		value = helpers.valueToString(value);
 
-		module.isObjectField(key, 'array', function (err, exists) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (exists) {
-				db.collection('objects').updateOne({ _key: key }, { $push: { array: { $each: [value], $position: 0 } } }, { upsert: true, w: 1 }, function (err) {
-					callback(err);
-				});
-			} else {
-				module.listAppend(key, value, callback);
-			}
-		});
+		const exists = await module.isObjectField(key, 'array');
+		if (exists) {
+			await db.collection('objects').updateOne({ _key: key }, { $push: { array: { $each: [value], $position: 0 } } }, { upsert: true, w: 1 });
+		} else {
+			await module.listAppend(key, value);
+		}
 	};
 
-	module.listAppend = function (key, value, callback) {
-		callback = callback || helpers.noop;
+	module.listAppend = async function (key, value) {
 		if (!key) {
-			return callback();
+			return;
 		}
 		value = helpers.valueToString(value);
-		db.collection('objects').updateOne({ _key: key }, { $push: { array: value } }, { upsert: true, w: 1 }, function (err) {
-			callback(err);
-		});
+		await db.collection('objects').updateOne({ _key: key }, { $push: { array: value } }, { upsert: true, w: 1 });
 	};
 
-	module.listRemoveLast = function (key, callback) {
-		callback = callback || helpers.noop;
+	module.listRemoveLast = async function (key) {
 		if (!key) {
-			return callback();
+			return;
 		}
-		module.getListRange(key, -1, -1, function (err, value) {
-			if (err) {
-				return callback(err);
-			}
-
-			db.collection('objects').updateOne({ _key: key }, { $pop: { array: 1 } }, function (err) {
-				callback(err, (value && value.length) ? value[0] : null);
-			});
-		});
+		const value = await module.getListRange(key, -1, -1);
+		db.collection('objects').updateOne({ _key: key }, { $pop: { array: 1 } });
+		return (value && value.length) ? value[0] : null;
 	};
 
-	module.listRemoveAll = function (key, value, callback) {
-		callback = callback || helpers.noop;
+	module.listRemoveAll = async function (key, value) {
 		if (!key) {
-			return callback();
+			return;
 		}
 		value = helpers.valueToString(value);
 
-		db.collection('objects').updateOne({ _key: key }, { $pull: { array: value } }, function (err) {
-			callback(err);
-		});
+		await db.collection('objects').updateOne({ _key: key }, { $pull: { array: value } });
 	};
 
-	module.listTrim = function (key, start, stop, callback) {
-		callback = callback || helpers.noop;
+	module.listTrim = async function (key, start, stop) {
 		if (!key) {
-			return callback();
+			return;
 		}
-		module.getListRange(key, start, stop, function (err, value) {
-			if (err) {
-				return callback(err);
-			}
-
-			db.collection('objects').updateOne({ _key: key }, { $set: { array: value } }, function (err) {
-				callback(err);
-			});
-		});
+		const value = await module.getListRange(key, start, stop);
+		await db.collection('objects').updateOne({ _key: key }, { $set: { array: value } });
 	};
 
-	module.getListRange = function (key, start, stop, callback) {
+	module.getListRange = async function (key, start, stop) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
-		db.collection('objects').findOne({ _key: key }, { array: 1 }, function (err, data) {
-			if (err || !(data && data.array)) {
-				return callback(err, []);
-			}
+		const data = await db.collection('objects').findOne({ _key: key }, { array: 1 });
+		if (!(data && data.array)) {
+			return [];
+		}
 
-			if (stop === -1) {
-				data.array = data.array.slice(start);
-			} else {
-				data.array = data.array.slice(start, stop + 1);
-			}
-			callback(null, data.array);
-		});
+		return data.array.slice(start, stop !== -1 ? stop + 1 : undefined);
 	};
 
-	module.listLength = function (key, callback) {
-		db.collection('objects').aggregate([
+	module.listLength = async function (key) {
+		const result = await db.collection('objects').aggregate([
 			{ $match: { _key: key } },
 			{ $project: { count: { $size: '$array' } } },
-		]).toArray(function (err, result) {
-			callback(err, Array.isArray(result) && result.length && result[0].count);
-		});
+		]).toArray();
+		return Array.isArray(result) && result.length && result[0].count;
 	};
 };

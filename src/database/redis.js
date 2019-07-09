@@ -56,6 +56,8 @@ redisModule.init = function (callback) {
 		}
 		redisModule.client = redisClient;
 
+		require('./redis/promisify')(redisClient);
+
 		require('./redis/main')(redisClient, redisModule);
 		require('./redis/hash')(redisClient, redisModule);
 		require('./redis/sets')(redisClient, redisModule);
@@ -63,8 +65,7 @@ redisModule.init = function (callback) {
 		require('./redis/list')(redisClient, redisModule);
 		require('./redis/transaction')(redisClient, redisModule);
 
-		redisModule.async = require('../promisify')(redisModule, ['client', 'sessionStore']);
-
+		redisModule.async = require('../promisify')(redisModule, ['client', 'sessionStore', 'connect']);
 		callback();
 	});
 };
@@ -220,6 +221,3 @@ redisModule.socketAdapter = function () {
 		subClient: sub,
 	});
 };
-
-redisModule.helpers = redisModule.helpers || {};
-redisModule.helpers.redis = require('./redis/helpers');

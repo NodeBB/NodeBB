@@ -98,19 +98,15 @@ file.base64ToLocal = function (imageData, uploadPath, callback) {
 	});
 };
 
-file.isFileTypeAllowed = function (path, callback) {
+file.isFileTypeAllowed = async function (path) {
 	var plugins = require('./plugins');
 	if (plugins.hasListeners('filter:file.isFileTypeAllowed')) {
-		return plugins.fireHook('filter:file.isFileTypeAllowed', path, function (err) {
-			callback(err);
-		});
+		return await plugins.fireHook('filter:file.isFileTypeAllowed', path);
 	}
-
-	require('sharp')(path, {
+	const sharp = require('sharp');
+	await sharp(path, {
 		failOnError: true,
-	}).metadata(function (err) {
-		callback(err);
-	});
+	}).metadata();
 };
 
 // https://stackoverflow.com/a/31205878/583363
@@ -263,3 +259,5 @@ file.walk = function (dir, done) {
 		});
 	});
 };
+
+require('./promisify')(file);

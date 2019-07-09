@@ -1,9 +1,9 @@
 'use strict';
 
 module.exports = function (db, module) {
-	module.sortedSetIntersectCard = function (keys, callback) {
+	module.sortedSetIntersectCard = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, 0);
+			return 0;
 		}
 
 		var pipeline = [
@@ -13,23 +13,22 @@ module.exports = function (db, module) {
 			{ $group: { _id: null, count: { $sum: 1 } } },
 		];
 
-		db.collection('objects').aggregate(pipeline).toArray(function (err, data) {
-			callback(err, Array.isArray(data) && data.length ? data[0].count : 0);
-		});
+		const data = await db.collection('objects').aggregate(pipeline).toArray();
+		return Array.isArray(data) && data.length ? data[0].count : 0;
 	};
 
 
-	module.getSortedSetIntersect = function (params, callback) {
+	module.getSortedSetIntersect = async function (params) {
 		params.sort = 1;
-		getSortedSetRevIntersect(params, callback);
+		return await getSortedSetRevIntersect(params);
 	};
 
-	module.getSortedSetRevIntersect = function (params, callback) {
+	module.getSortedSetRevIntersect = async function (params) {
 		params.sort = -1;
-		getSortedSetRevIntersect(params, callback);
+		return await getSortedSetRevIntersect(params);
 	};
 
-	function getSortedSetRevIntersect(params, callback) {
+	async function getSortedSetRevIntersect(params) {
 		var sets = params.sets;
 		var start = params.hasOwnProperty('start') ? params.start : 0;
 		var stop = params.hasOwnProperty('stop') ? params.stop : -1;
@@ -88,18 +87,11 @@ module.exports = function (db, module) {
 		}
 		pipeline.push({ $project: project });
 
-		db.collection('objects').aggregate(pipeline).toArray(function (err, data) {
-			if (err || !data) {
-				return callback(err);
-			}
+		let data = await db.collection('objects').aggregate(pipeline).toArray();
 
-			if (!params.withScores) {
-				data = data.map(function (item) {
-					return item.value;
-				});
-			}
-
-			callback(null, data);
-		});
+		if (!params.withScores) {
+			data = data.map(item => item.value);
+		}
+		return data;
 	}
 };

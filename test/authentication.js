@@ -203,7 +203,6 @@ describe('authentication', function () {
 		loginUser('regular', 'regularpwd', function (err, response, body, jar) {
 			assert.ifError(err);
 			assert(body);
-
 			request({
 				url: nconf.get('url') + '/api/me',
 				json: true,

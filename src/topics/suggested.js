@@ -1,7 +1,6 @@
 
 'use strict';
 
-var async = require('async');
 var _ = require('lodash');
 
 const db = require('../database');
@@ -10,92 +9,52 @@ var privileges = require('../privileges');
 var search = require('../search');
 
 module.exports = function (Topics) {
-	Topics.getSuggestedTopics = function (tid, uid, start, stop, callback) {
-		var tids;
+	Topics.getSuggestedTopics = async function (tid, uid, start, stop) {
+		let tids;
 		tid = parseInt(tid, 10);
-		async.waterfall([
-			function (next) {
-				async.parallel({
-					tagTids: function (next) {
-						getTidsWithSameTags(tid, next);
-					},
-					searchTids: function (next) {
-						getSearchTids(tid, uid, next);
-					},
-				}, next);
-			},
-			function (results, next) {
-				tids = results.tagTids.concat(results.searchTids);
-				tids = tids.filter(_tid => _tid !== tid);
-				tids = _.shuffle(_.uniq(tids));
+		const [tagTids, searchTids] = await Promise.all([
+			getTidsWithSameTags(tid),
+			getSearchTids(tid, uid),
+		]);
 
-				if (stop !== -1 && tids.length < stop - start + 1) {
-					getCategoryTids(tid, next);
-				} else {
-					next(null, []);
-				}
-			},
-			function (categoryTids, next) {
-				tids = _.uniq(tids.concat(categoryTids)).slice(start, stop !== -1 ? stop + 1 : undefined);
-				privileges.topics.filterTids('topics:read', tids, uid, next);
-			},
-			function (tids, next) {
-				Topics.getTopicsByTids(tids, uid, next);
-			},
-			function (topics, next) {
-				topics = topics.filter(topic => topic && !topic.deleted && topic.tid !== tid);
-				user.blocks.filter(uid, topics, next);
-			},
-		], callback);
+		tids = tagTids.concat(searchTids);
+		tids = tids.filter(_tid => _tid !== tid);
+		tids = _.shuffle(_.uniq(tids));
+		let categoryTids = [];
+		if (stop !== -1 && tids.length < stop - start + 1) {
+			categoryTids = await getCategoryTids(tid);
+		}
+		tids = _.uniq(tids.concat(categoryTids)).slice(start, stop !== -1 ? stop + 1 : undefined);
+		tids = await privileges.topics.filterTids('topics:read', tids, uid);
+
+		let topicData = await Topics.getTopicsByTids(tids, uid);
+		topicData = topicData.filter(topic => topic && !topic.deleted && topic.tid !== tid);
+		topicData = await user.blocks.filter(uid, topicData);
+		return topicData;
 	};
 
-	function getTidsWithSameTags(tid, callback) {
-		async.waterfall([
-			function (next) {
-				Topics.getTopicTags(tid, next);
-			},
-			function (tags, next) {
-				db.getSortedSetRevRange(tags.map(tag => 'tag:' + tag + ':topics'), 0, -1, next);
-			},
-			function (tids, next) {
-				next(null, _.uniq(tids).map(Number));
-			},
-		], callback);
+	async function getTidsWithSameTags(tid) {
+		const tags = await Topics.getTopicTags(tid);
+		const tids = await db.getSortedSetRevRange(tags.map(tag => 'tag:' + tag + ':topics'), 0, -1);
+		return _.uniq(tids).map(Number);
 	}
 
-	function getSearchTids(tid, uid, callback) {
-		async.waterfall([
-			function (next) {
-				Topics.getTopicFields(tid, ['title', 'cid'], next);
-			},
-			function (topicData, next) {
-				search.search({
-					query: topicData.title,
-					searchIn: 'titles',
-					matchWords: 'any',
-					categories: [topicData.cid],
-					uid: uid,
-					returnIds: true,
-				}, next);
-			},
-			function (data, next) {
-				next(null, _.shuffle(data.tids).slice(0, 20).map(Number));
-			},
-		], callback);
+	async function getSearchTids(tid, uid) {
+		const topicData = await Topics.getTopicFields(tid, ['title', 'cid']);
+		const data = await search.search({
+			query: topicData.title,
+			searchIn: 'titles',
+			matchWords: 'any',
+			categories: [topicData.cid],
+			uid: uid,
+			returnIds: true,
+		});
+		return _.shuffle(data.tids).slice(0, 20).map(Number);
 	}
 
-	function getCategoryTids(tid, callback) {
-		async.waterfall([
-			function (next) {
-				Topics.getTopicField(tid, 'cid', next);
-			},
-			function (cid, next) {
-				db.getSortedSetRevRange('cid:' + cid + ':tids:lastposttime', 0, 9, next);
-			},
-			function (tids, next) {
-				tids = tids.map(Number).filter(_tid => _tid !== tid);
-				next(null, _.shuffle(tids));
-			},
-		], callback);
+	async function getCategoryTids(tid) {
+		const cid = await Topics.getTopicField(tid, 'cid');
+		const tids = await db.getSortedSetRevRange('cid:' + cid + ':tids:lastposttime', 0, 9);
+		return _.shuffle(tids.map(Number).filter(_tid => _tid !== tid));
 	}
 };

@@ -369,3 +369,5 @@ function getSearchUids(data, callback) {
 		setImmediate(callback, null, []);
 	}
 }
+
+search.async = require('./promisify')(search);

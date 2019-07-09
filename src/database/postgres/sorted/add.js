@@ -1,134 +1,112 @@
 'use strict';
 
-var async = require('async');
-
 module.exports = function (db, module) {
-	var helpers = module.helpers.postgres;
+	var helpers = require('../helpers');
 	var utils = require('../../../utils');
 
-	module.sortedSetAdd = function (key, score, value, callback) {
-		callback = callback || helpers.noop;
-
+	module.sortedSetAdd = async function (key, score, value) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
 		if (Array.isArray(score) && Array.isArray(value)) {
-			return sortedSetAddBulk(key, score, value, callback);
+			return await sortedSetAddBulk(key, score, value);
 		}
 		if (!utils.isNumber(score)) {
-			return setImmediate(callback, new Error('[[error:invalid-score, ' + score + ']]'));
+			throw new Error('[[error:invalid-score, ' + score + ']]');
 		}
 		value = helpers.valueToString(value);
 		score = parseFloat(score);
 
-		module.transaction(function (tx, done) {
-			var query = tx.client.query.bind(tx.client);
+		await module.transaction(async function (client) {
+			var query = client.query.bind(client);
 
-			async.series([
-				async.apply(helpers.ensureLegacyObjectType, tx.client, key, 'zset'),
-				async.apply(query, {
-					name: 'sortedSetAdd',
-					text: `
-INSERT INTO "legacy_zset" ("_key", "value", "score")
-VALUES ($1::TEXT, $2::TEXT, $3::NUMERIC)
-    ON CONFLICT ("_key", "value")
-    DO UPDATE SET "score" = $3::NUMERIC`,
-					values: [key, value, score],
-				}),
-			], function (err) {
-				done(err);
+			await helpers.ensureLegacyObjectType(client, key, 'zset');
+			await query({
+				name: 'sortedSetAdd',
+				text: `
+	INSERT INTO "legacy_zset" ("_key", "value", "score")
+	VALUES ($1::TEXT, $2::TEXT, $3::NUMERIC)
+	ON CONFLICT ("_key", "value")
+	DO UPDATE SET "score" = $3::NUMERIC`,
+				values: [key, value, score],
 			});
-		}, callback);
+		});
 	};
 
-	function sortedSetAddBulk(key, scores, values, callback) {
+	async function sortedSetAddBulk(key, scores, values) {
 		if (!scores.length || !values.length) {
-			return callback();
+			return;
 		}
 		if (scores.length !== values.length) {
-			return callback(new Error('[[error:invalid-data]]'));
+			throw new Error('[[error:invalid-data]]');
 		}
 		for (let i = 0; i < scores.length; i += 1) {
 			if (!utils.isNumber(scores[i])) {
-				return setImmediate(callback, new Error('[[error:invalid-score, ' + scores[i] + ']]'));
+				throw new Error('[[error:invalid-score, ' + scores[i] + ']]');
 			}
 		}
 		values = values.map(helpers.valueToString);
-		scores = scores.map(function (score) {
-			return parseFloat(score);
-		});
+		scores = scores.map(score => parseFloat(score));
 
 		helpers.removeDuplicateValues(values, scores);
 
-		module.transaction(function (tx, done) {
-			var query = tx.client.query.bind(tx.client);
-
-			async.series([
-				async.apply(helpers.ensureLegacyObjectType, tx.client, key, 'zset'),
-				async.apply(query, {
-					name: 'sortedSetAddBulk',
-					text: `
+		await module.transaction(async function (client) {
+			var query = client.query.bind(client);
+			await helpers.ensureLegacyObjectType(client, key, 'zset');
+			await query({
+				name: 'sortedSetAddBulk',
+				text: `
 INSERT INTO "legacy_zset" ("_key", "value", "score")
 SELECT $1::TEXT, v, s
-  FROM UNNEST($2::TEXT[], $3::NUMERIC[]) vs(v, s)
-    ON CONFLICT ("_key", "value")
-    DO UPDATE SET "score" = EXCLUDED."score"`,
-					values: [key, values, scores],
-				}),
-			], function (err) {
-				done(err);
+FROM UNNEST($2::TEXT[], $3::NUMERIC[]) vs(v, s)
+ON CONFLICT ("_key", "value")
+DO UPDATE SET "score" = EXCLUDED."score"`,
+				values: [key, values, scores],
 			});
-		}, callback);
+		});
 	}
 
-	module.sortedSetsAdd = function (keys, scores, value, callback) {
-		callback = callback || helpers.noop;
-
+	module.sortedSetsAdd = async function (keys, scores, value) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback();
+			return;
 		}
 		const isArrayOfScores = Array.isArray(scores);
 		if (!isArrayOfScores && !utils.isNumber(scores)) {
-			return setImmediate(callback, new Error('[[error:invalid-score, ' + scores + ']]'));
+			throw new Error('[[error:invalid-score, ' + scores + ']]');
 		}
 
 		if (isArrayOfScores && scores.length !== keys.length) {
-			return setImmediate(callback, new Error('[[error:invalid-data]]'));
+			throw new Error('[[error:invalid-data]]');
 		}
 
 		value = helpers.valueToString(value);
 		scores = isArrayOfScores ? scores.map(score => parseFloat(score)) : parseFloat(scores);
 
-		module.transaction(function (tx, done) {
-			var query = tx.client.query.bind(tx.client);
-
-			async.series([
-				async.apply(helpers.ensureLegacyObjectsType, tx.client, keys, 'zset'),
-				async.apply(query, {
-					name: isArrayOfScores ? 'sortedSetsAddScores' : 'sortedSetsAdd',
-					text: isArrayOfScores ? `
+		await module.transaction(async function (client) {
+			var query = client.query.bind(client);
+			await helpers.ensureLegacyObjectsType(client, keys, 'zset');
+			await query({
+				name: isArrayOfScores ? 'sortedSetsAddScores' : 'sortedSetsAdd',
+				text: isArrayOfScores ? `
 INSERT INTO "legacy_zset" ("_key", "value", "score")
 SELECT k, $2::TEXT, s
-  FROM UNNEST($1::TEXT[], $3::NUMERIC[]) vs(k, s)
-    ON CONFLICT ("_key", "value")
-		DO UPDATE SET "score" = EXCLUDED."score"` : `
+FROM UNNEST($1::TEXT[], $3::NUMERIC[]) vs(k, s)
+ON CONFLICT ("_key", "value")
+	DO UPDATE SET "score" = EXCLUDED."score"` : `
 INSERT INTO "legacy_zset" ("_key", "value", "score")
-		SELECT k, $2::TEXT, $3::NUMERIC
-			FROM UNNEST($1::TEXT[]) k
-				ON CONFLICT ("_key", "value")
-				DO UPDATE SET "score" = $3::NUMERIC`,
-					values: [keys, value, scores],
-				}),
-			], function (err) {
-				done(err);
+	SELECT k, $2::TEXT, $3::NUMERIC
+		FROM UNNEST($1::TEXT[]) k
+			ON CONFLICT ("_key", "value")
+			DO UPDATE SET "score" = $3::NUMERIC`,
+				values: [keys, value, scores],
 			});
-		}, callback);
+		});
 	};
 
-	module.sortedSetAddBulk = function (data, callback) {
+	module.sortedSetAddBulk = async function (data) {
 		if (!Array.isArray(data) || !data.length) {
-			return setImmediate(callback);
+			return;
 		}
 		const keys = [];
 		const values = [];
@@ -138,24 +116,19 @@ INSERT INTO "legacy_zset" ("_key", "value", "score")
 			scores.push(item[1]);
 			values.push(item[2]);
 		});
-		module.transaction(function (tx, done) {
-			var query = tx.client.query.bind(tx.client);
-
-			async.series([
-				async.apply(helpers.ensureLegacyObjectsType, tx.client, keys, 'zset'),
-				async.apply(query, {
-					name: 'sortedSetAddBulk2',
-					text: `
+		await module.transaction(async function (client) {
+			var query = client.query.bind(client);
+			await helpers.ensureLegacyObjectsType(client, keys, 'zset');
+			await query({
+				name: 'sortedSetAddBulk2',
+				text: `
 INSERT INTO "legacy_zset" ("_key", "value", "score")
 SELECT k, v, s
-  FROM UNNEST($1::TEXT[], $2::TEXT[], $3::NUMERIC[]) vs(k, v, s)
-    ON CONFLICT ("_key", "value")
-    DO UPDATE SET "score" = EXCLUDED."score"`,
-					values: [keys, values, scores],
-				}),
-			], function (err) {
-				done(err);
+FROM UNNEST($1::TEXT[], $2::TEXT[], $3::NUMERIC[]) vs(k, v, s)
+ON CONFLICT ("_key", "value")
+DO UPDATE SET "score" = EXCLUDED."score"`,
+				values: [keys, values, scores],
 			});
-		}, callback);
+		});
 	};
 };
