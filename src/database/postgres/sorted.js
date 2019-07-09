@@ -614,9 +614,7 @@ DELETE FROM "legacy_zset" z
 	}
 
 	module.processSortedSet = async function (setKey, process, options) {
-		const conn = db.connect();
-		console.log(typeof conn, conn);
-		const client = await conn;
+		const client = await db.connect();
 		var batchSize = (options || {}).batch || 100;
 		var cursor = client.query(new Cursor(`
 SELECT z."value", z."score"
@@ -632,14 +630,12 @@ SELECT z."value", z."score"
 		if (process && process.constructor && process.constructor.name !== 'AsyncFunction') {
 			process = util.promisify(process);
 		}
-		console.log('processing', setKey);
+
 		while (!isDone) {
 			/* eslint-disable no-await-in-loop */
 			let rows = await cursor.readAsync(batchSize);
-			console.log('rows', rows.length);
 			if (!rows.length) {
 				isDone = true;
-				console.log('release', setKey);
 				client.release();
 				return;
 			}
@@ -659,8 +655,5 @@ SELECT z."value", z."score"
 				await sleep(options.interval);
 			}
 		}
-
-		client.release();
-		console.log('released', setKey);
 	};
 };

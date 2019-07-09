@@ -15,11 +15,9 @@ module.exports = function (Groups) {
 		var groupsData;
 		async.waterfall([
 			function (next) {
-				console.log(1);
 				Groups.getGroupsData(groupNames, next);
 			},
 			function (_groupsData, next) {
-				console.log(2);
 				groupsData = _groupsData.filter(Boolean);
 				if (!groupsData.length) {
 					return callback();
@@ -38,49 +36,31 @@ module.exports = function (Groups) {
 							);
 						});
 
-						db.deleteAll(keys, function (err) {
-							console.log(3);
-							next(err);
-						});
+						db.deleteAll(keys, next);
 					},
 					function (next) {
 						db.sortedSetRemove([
 							'groups:createtime',
 							'groups:visible:createtime',
 							'groups:visible:memberCount',
-						], groupNames, function (err) {
-							console.log(4);
-							next(err);
-						});
+						], groupNames, next);
 					},
 					function (next) {
 						const keys = groupNames.map(groupName => groupName.toLowerCase() + ':' + groupName);
-						db.sortedSetRemove('groups:visible:name', keys, function (err) {
-							console.log(5);
-							next(err);
-						});
+						db.sortedSetRemove('groups:visible:name', keys, next);
 					},
 					function (next) {
 						const fields = groupNames.map(groupName => utils.slugify(groupName));
-						db.deleteObjectFields('groupslug:groupname', fields, function (err) {
-							console.log(6);
-							next(err);
-						});
+						db.deleteObjectFields('groupslug:groupname', fields, next);
 					},
 					function (next) {
-						console.log('batch', groupNames);
-						removeGroupsFromPrivilegeGroups(groupNames, function (err) {
-							console.log(7);
-							next(err);
-						});
+						removeGroupsFromPrivilegeGroups(groupNames, next);
 					},
 				], function (err) {
-					console.log(8);
 					next(err);
 				});
 			},
 			function (next) {
-				console.log(9);
 				Groups.resetCache();
 				plugins.fireHook('action:groups.destroy', { groups: groupsData });
 				next();
