@@ -625,17 +625,14 @@ SELECT z."value", z."score"
  WHERE o."_key" = $1::TEXT
  ORDER BY z."score" ASC, z."value" ASC`, [setKey]));
 
-		var isDone = false;
-
 		if (process && process.constructor && process.constructor.name !== 'AsyncFunction') {
 			process = util.promisify(process);
 		}
 
-		while (!isDone) {
+		while (true) {
 			/* eslint-disable no-await-in-loop */
 			let rows = await cursor.readAsync(batchSize);
 			if (!rows.length) {
-				isDone = true;
 				client.release();
 				return;
 			}

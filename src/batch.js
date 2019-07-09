@@ -35,17 +35,15 @@ exports.processSortedSet = async function (setKey, process, options) {
 
 	var start = 0;
 	var stop = options.batch;
-	var done = false;
 
 	if (process && process.constructor && process.constructor.name !== 'AsyncFunction') {
 		process = util.promisify(process);
 	}
 
-	while (!done) {
+	while (true) {
 		/* eslint-disable no-await-in-loop */
 		const ids = await db['getSortedSetRange' + (options.withScores ? 'WithScores' : '')](setKey, start, stop);
 		if (!ids.length || options.doneIf(start, stop, ids)) {
-			done = true;
 			return;
 		}
 		await process(ids);
@@ -71,17 +69,15 @@ exports.processArray = async function (array, process, options) {
 
 	var batch = options.batch || DEFAULT_BATCH_SIZE;
 	var start = 0;
-	var done = false;
 	if (process && process.constructor && process.constructor.name !== 'AsyncFunction') {
 		process = util.promisify(process);
 	}
 
-	while (!done) {
+	while (true) {
 		var currentBatch = array.slice(start, start + batch);
 
 		if (!currentBatch.length) {
-			done = true;
-			break;
+			return;
 		}
 
 		await process(currentBatch);

@@ -15,6 +15,7 @@
 			"functions": "never"
 		}],
 		"no-return-await": "off",
+		"no-constant-condition": "off",
 		"no-empty": ["error", { "allowEmptyCatch": true }],
 		"no-underscore-dangle": "off",
 		"no-console": "off",
