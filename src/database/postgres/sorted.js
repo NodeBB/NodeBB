@@ -639,6 +639,8 @@ SELECT z."value", z."score"
 			console.log('rows', rows.length);
 			if (!rows.length) {
 				isDone = true;
+				console.log('release', setKey);
+				client.release();
 				return;
 			}
 
@@ -657,7 +659,7 @@ SELECT z."value", z."score"
 				await sleep(options.interval);
 			}
 		}
-		console.log('out of loop', setKey);
+
 		client.release();
 		console.log('released', setKey);
 	};
