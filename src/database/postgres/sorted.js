@@ -617,7 +617,6 @@ DELETE FROM "legacy_zset" z
 		const conn = db.connect();
 		console.log(typeof conn, conn);
 		const client = await conn;
-		console.log(client);
 		var batchSize = (options || {}).batch || 100;
 		var cursor = client.query(new Cursor(`
 SELECT z."value", z."score"
@@ -637,6 +636,7 @@ SELECT z."value", z."score"
 		while (!isDone) {
 			/* eslint-disable no-await-in-loop */
 			let rows = await cursor.readAsync(batchSize);
+			console.log('rows', rows.length);
 			if (!rows.length) {
 				isDone = true;
 				return;
