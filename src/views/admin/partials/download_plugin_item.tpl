@@ -12,7 +12,7 @@
 
 						<small>[[admin/extend/plugins:plugin-item.latest]] <strong class="latestVersion">{download.latest}</strong></small>
 						<p>
-							<!-- IF installed.isCompatible -->
+							<!-- IF download.isCompatible -->
 							<i class="fa fa-check text-success"></i> [[admin/extend/plugins:plugin-item.compatible, {version}]]
 							<!-- ELSE -->
 							<i class="fa fa-question text-warning"></i> [[admin/extend/plugins:plugin-item.not-compatible]]
