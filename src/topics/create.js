@@ -40,7 +40,7 @@ module.exports = function (Topics) {
 		if (data.thumb) {
 			topicData.thumb = data.thumb;
 		}
-		const result = await plugins.async.fireHook('filter:topic.create', { topic: topicData, data: data });
+		const result = await plugins.fireHook('filter:topic.create', { topic: topicData, data: data });
 		topicData = result.topic;
 		await db.setObject('topic:' + topicData.tid, topicData);
 
@@ -51,8 +51,8 @@ module.exports = function (Topics) {
 				'cid:' + topicData.cid + ':uid:' + topicData.uid + ':tids',
 			], timestamp, topicData.tid),
 			db.sortedSetAdd('cid:' + topicData.cid + ':tids:votes', 0, topicData.tid),
-			categories.async.updateRecentTid(topicData.cid, topicData.tid),
-			user.async.addTopicIdToUser(topicData.uid, topicData.tid, timestamp),
+			categories.updateRecentTid(topicData.cid, topicData.tid),
+			user.addTopicIdToUser(topicData.uid, topicData.tid, timestamp),
 			db.incrObjectField('category:' + topicData.cid, 'topic_count'),
 			db.incrObjectField('global', 'topicCount'),
 			Topics.createTags(data.tags, topicData.tid, timestamp),
@@ -74,9 +74,9 @@ module.exports = function (Topics) {
 		check(data.content, meta.config.minimumPostLength, meta.config.maximumPostLength, 'content-too-short', 'content-too-long');
 
 		const [categoryExists, canCreate, canTag] = await Promise.all([
-			categories.async.exists(data.cid),
-			privileges.async.categories.can('topics:create', data.cid, data.uid),
-			privileges.async.categories.can('topics:tag', data.cid, data.uid),
+			categories.exists(data.cid),
+			privileges.categories.can('topics:create', data.cid, data.uid),
+			privileges.categories.can('topics:tag', data.cid, data.uid),
 		]);
 
 		if (!categoryExists) {
@@ -88,8 +88,8 @@ module.exports = function (Topics) {
 		}
 
 		await guestHandleValid(data);
-		await user.async.isReadyToPost(data.uid, data.cid);
-		const filteredData = await plugins.async.fireHook('filter:topic.post', data);
+		await user.isReadyToPost(data.uid, data.cid);
+		const filteredData = await plugins.fireHook('filter:topic.post', data);
 		data = filteredData;
 		const tid = await Topics.create(data);
 
@@ -97,11 +97,11 @@ module.exports = function (Topics) {
 		postData.tid = tid;
 		postData.ip = data.req ? data.req.ip : null;
 		postData.isMain = true;
-		postData = await posts.async.create(postData);
+		postData = await posts.create(postData);
 		postData = await onNewPost(postData, data);
 
 		const [settings, topics] = await Promise.all([
-			user.async.getSettings(uid),
+			user.getSettings(uid),
 			Topics.getTopicsByTids([postData.tid], uid),
 		]);
 
@@ -142,8 +142,8 @@ module.exports = function (Topics) {
 		data.cid = topicData.cid;
 
 		const [canReply, isAdminOrMod] = await Promise.all([
-			privileges.async.topics.can('topics:reply', tid, uid),
-			privileges.async.categories.isAdminOrMod(data.cid, uid),
+			privileges.topics.can('topics:reply', tid, uid),
+			privileges.categories.isAdminOrMod(data.cid, uid),
 		]);
 
 		if (topicData.locked && !isAdminOrMod) {
@@ -159,18 +159,18 @@ module.exports = function (Topics) {
 		}
 
 		await guestHandleValid(data);
-		await user.async.isReadyToPost(uid, data.cid);
-		await plugins.async.fireHook('filter:topic.reply', data);
+		await user.isReadyToPost(uid, data.cid);
+		await plugins.fireHook('filter:topic.reply', data);
 		if (data.content) {
 			data.content = utils.rtrim(data.content);
 		}
 		check(data.content, meta.config.minimumPostLength, meta.config.maximumPostLength, 'content-too-short', 'content-too-long');
 
 		data.ip = data.req ? data.req.ip : null;
-		let postData = await posts.async.create(data);
+		let postData = await posts.create(data);
 		postData = await onNewPost(postData, data);
 
-		const settings = await user.async.getSettings(uid);
+		const settings = await user.getSettings(uid);
 		if (settings.followTopicsOnReply) {
 			await Topics.follow(postData.tid, uid);
 		}
@@ -195,10 +195,10 @@ module.exports = function (Topics) {
 			userInfo,
 			topicInfo,
 		] = await Promise.all([
-			posts.async.getUserInfoForPosts([postData.uid], uid),
+			posts.getUserInfoForPosts([postData.uid], uid),
 			Topics.getTopicFields(tid, ['tid', 'uid', 'title', 'slug', 'cid', 'postcount', 'mainPid']),
 			Topics.addParentPosts([postData]),
-			posts.async.parsePost(postData),
+			posts.parsePost(postData),
 		]);
 
 		postData.user = userInfo[0];
@@ -241,7 +241,7 @@ module.exports = function (Topics) {
 			if (data.handle.length > meta.config.maximumUsernameLength) {
 				throw new Error('[[error:guest-handle-invalid]]');
 			}
-			const exists = await user.async.existsBySlug(utils.slugify(data.handle));
+			const exists = await user.existsBySlug(utils.slugify(data.handle));
 			if (exists) {
 				throw new Error('[[error:username-taken]]');
 			}

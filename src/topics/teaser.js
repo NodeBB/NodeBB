@@ -45,13 +45,13 @@ module.exports = function (Topics) {
 			}
 		});
 
-		let postData = await posts.async.getPostsFields(teaserPids, ['pid', 'uid', 'timestamp', 'tid', 'content']);
+		let postData = await posts.getPostsFields(teaserPids, ['pid', 'uid', 'timestamp', 'tid', 'content']);
 		postData = postData.filter(post => post && post.pid);
 		postData = await handleBlocks(uid, postData);
 		postData = postData.filter(Boolean);
 		const uids = _.uniq(postData.map(post => post.uid));
 
-		const usersData = await user.async.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture']);
+		const usersData = await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture']);
 
 		var users = {};
 		usersData.forEach(function (user) {
@@ -67,7 +67,7 @@ module.exports = function (Topics) {
 			post.timestampISO = utils.toISOString(post.timestamp);
 			tidToPost[post.tid] = post;
 		});
-		await Promise.all(postData.map(p => posts.async.parsePost(p)));
+		await Promise.all(postData.map(p => posts.parsePost(p)));
 
 		var teasers = topics.map(function (topic, index) {
 			if (!topic) {
@@ -82,12 +82,12 @@ module.exports = function (Topics) {
 			return tidToPost[topic.tid];
 		});
 
-		const result = await plugins.async.fireHook('filter:teasers.get', { teasers: teasers, uid: uid });
+		const result = await plugins.fireHook('filter:teasers.get', { teasers: teasers, uid: uid });
 		return result.teasers;
 	};
 
 	async function handleBlocks(uid, teasers) {
-		const blockedUids = await user.async.blocks.list(uid);
+		const blockedUids = await user.blocks.list(uid);
 		if (!blockedUids.length) {
 			return teasers;
 		}
@@ -122,7 +122,7 @@ module.exports = function (Topics) {
 				const mainPid = await Topics.getTopicField(postData.tid, 'mainPid');
 				pids = [mainPid];
 			}
-			const prevPosts = await posts.async.getPostsFields(pids, ['pid', 'uid', 'timestamp', 'tid', 'content']);
+			const prevPosts = await posts.getPostsFields(pids, ['pid', 'uid', 'timestamp', 'tid', 'content']);
 			isBlocked = prevPosts.every(checkBlocked);
 			start += postsPerIteration;
 			stop = start + postsPerIteration - 1;

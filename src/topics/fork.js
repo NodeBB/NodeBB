@@ -28,11 +28,11 @@ module.exports = function (Topics) {
 		pids.sort((a, b) => a - b);
 
 		var mainPid = pids[0];
-		var cid = await posts.async.getCidByPid(mainPid);
+		var cid = await posts.getCidByPid(mainPid);
 
 		const [postData, isAdminOrMod] = await Promise.all([
-			posts.async.getPostData(mainPid),
-			privileges.async.categories.isAdminOrMod(cid, uid),
+			posts.getPostData(mainPid),
+			privileges.categories.isAdminOrMod(cid, uid),
 		]);
 
 		if (!isAdminOrMod) {
@@ -42,7 +42,7 @@ module.exports = function (Topics) {
 		await Topics.updateTopicBookmarks(fromTid, pids);
 
 		await async.eachSeries(pids, async function (pid) {
-			const canEdit = await privileges.async.posts.canEdit(pid, uid);
+			const canEdit = await privileges.posts.canEdit(pid, uid);
 			if (!canEdit.flag) {
 				throw new Error(canEdit.message);
 			}
@@ -63,7 +63,7 @@ module.exports = function (Topics) {
 		if (!exists) {
 			throw new Error('[[error:no-topic]]');
 		}
-		const post = await posts.async.getPostFields(pid, ['tid', 'uid', 'timestamp', 'upvotes', 'downvotes']);
+		const post = await posts.getPostFields(pid, ['tid', 'uid', 'timestamp', 'upvotes', 'downvotes']);
 		if (!post || !post.tid) {
 			throw new Error('[[error:no-post]]');
 		}
@@ -78,7 +78,7 @@ module.exports = function (Topics) {
 		await Topics.removePostFromTopic(postData.tid, postData);
 		await Promise.all([
 			updateCategory(postData, tid),
-			posts.async.setPostField(pid, 'tid', tid),
+			posts.setPostField(pid, 'tid', tid),
 			Topics.addPostToTopic(tid, postData),
 		]);
 

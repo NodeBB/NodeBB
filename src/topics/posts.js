@@ -18,7 +18,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getTopicPosts = async function (tid, set, start, stop, uid, reverse) {
-		const postData = await posts.async.getPostsFromSet(set, start, stop, uid, reverse);
+		const postData = await posts.getPostsFromSet(set, start, stop, uid, reverse);
 		Topics.calculatePostIndices(postData, start);
 
 		return await Topics.addPostData(postData, uid);
@@ -42,13 +42,13 @@ module.exports = function (Topics) {
 			editors,
 			replies,
 		] = await Promise.all([
-			posts.async.hasBookmarked(pids, uid),
-			posts.async.getVoteStatusByPostIDs(pids, uid),
+			posts.hasBookmarked(pids, uid),
+			posts.getVoteStatusByPostIDs(pids, uid),
 			getPostUserData('uid', async function (uids) {
-				return await posts.async.getUserInfoForPosts(uids, uid);
+				return await posts.getUserInfoForPosts(uids, uid);
 			}),
 			getPostUserData('editor', async function (uids) {
-				return await user.async.getUsersFields(uids, ['uid', 'username', 'userslug']);
+				return await user.getUsersFields(uids, ['uid', 'username', 'userslug']);
 			}),
 			getPostReplies(pids, uid),
 			Topics.addParentPosts(postData),
@@ -72,7 +72,7 @@ module.exports = function (Topics) {
 			}
 		});
 
-		const result = await plugins.async.fireHook('filter:topics.addPostData', {
+		const result = await plugins.fireHook('filter:topics.addPostData', {
 			posts: postData,
 			uid: uid,
 		});
@@ -107,9 +107,9 @@ module.exports = function (Topics) {
 			return;
 		}
 		parentPids = _.uniq(parentPids);
-		const parentPosts = await posts.async.getPostsFields(parentPids, ['uid']);
+		const parentPosts = await posts.getPostsFields(parentPids, ['uid']);
 		const parentUids = _.uniq(parentPosts.map(postObj => postObj && postObj.uid));
-		const userData = await user.async.getUsersFields(parentUids, ['username']);
+		const userData = await user.getUsersFields(parentUids, ['username']);
 
 		var usersMap = {};
 		userData.forEach(function (user) {
@@ -139,7 +139,7 @@ module.exports = function (Topics) {
 			return pid;
 		}
 		const mainPid = await Topics.getTopicField(tid, 'mainPid');
-		const mainPost = await posts.async.getPostFields(mainPid, ['pid', 'deleted']);
+		const mainPost = await posts.getPostFields(mainPid, ['pid', 'deleted']);
 		return mainPost.pid && !mainPost.deleted ? mainPost.pid : null;
 	};
 
@@ -152,7 +152,7 @@ module.exports = function (Topics) {
 			if (!pids.length) {
 				return null;
 			}
-			isDeleted = await posts.async.getPostField(pids[0], 'deleted');
+			isDeleted = await posts.getPostField(pids[0], 'deleted');
 			if (!isDeleted) {
 				return parseInt(pids[0], 10);
 			}
@@ -220,12 +220,12 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getTopicFieldByPid = async function (field, pid) {
-		const tid = await posts.async.getPostField(pid, 'tid');
+		const tid = await posts.getPostField(pid, 'tid');
 		return await Topics.getTopicField(tid, field);
 	};
 
 	Topics.getTopicDataByPid = async function (pid) {
-		const tid = await posts.async.getPostField(pid, 'tid');
+		const tid = await posts.getPostField(pid, 'tid');
 		return await Topics.getTopicData(tid);
 	};
 
@@ -239,13 +239,13 @@ module.exports = function (Topics) {
 
 		const uniquePids = _.uniq(_.flatten(arrayOfReplyPids));
 
-		const replyData = await posts.async.getPostsFields(uniquePids, ['pid', 'uid', 'timestamp']);
+		const replyData = await posts.getPostsFields(uniquePids, ['pid', 'uid', 'timestamp']);
 
 		const uids = replyData.map(replyData => replyData && replyData.uid);
 
 		const uniqueUids = _.uniq(uids);
 
-		const userData = await user.async.getUsersWithFields(uniqueUids, ['uid', 'username', 'userslug', 'picture'], callerUid);
+		const userData = await user.getUsersWithFields(uniqueUids, ['uid', 'username', 'userslug', 'picture'], callerUid);
 
 		var uidMap = _.zipObject(uniqueUids, userData);
 		var pidMap = _.zipObject(uniquePids, replyData);

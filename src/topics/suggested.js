@@ -25,11 +25,11 @@ module.exports = function (Topics) {
 			categoryTids = await getCategoryTids(tid);
 		}
 		tids = _.uniq(tids.concat(categoryTids)).slice(start, stop !== -1 ? stop + 1 : undefined);
-		tids = await privileges.async.topics.filterTids('topics:read', tids, uid);
+		tids = await privileges.topics.filterTids('topics:read', tids, uid);
 
 		let topicData = await Topics.getTopicsByTids(tids, uid);
 		topicData = topicData.filter(topic => topic && !topic.deleted && topic.tid !== tid);
-		topicData = await user.async.blocks.filter(uid, topicData);
+		topicData = await user.blocks.filter(uid, topicData);
 		return topicData;
 	};
 
@@ -41,7 +41,7 @@ module.exports = function (Topics) {
 
 	async function getSearchTids(tid, uid) {
 		const topicData = await Topics.getTopicFields(tid, ['title', 'cid']);
-		const data = await search.async.search({
+		const data = await search.search({
 			query: topicData.title,
 			searchIn: 'titles',
 			matchWords: 'any',

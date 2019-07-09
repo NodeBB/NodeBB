@@ -27,7 +27,7 @@ module.exports = function (Topics) {
 		if (!exists) {
 			throw new Error('[[error:no-topic]]');
 		}
-		const canDelete = await privileges.async.topics.canDelete(tid, uid);
+		const canDelete = await privileges.topics.canDelete(tid, uid);
 		if (!canDelete) {
 			throw new Error('[[error:no-privileges]]');
 		}
@@ -43,7 +43,7 @@ module.exports = function (Topics) {
 		} else {
 			await Topics.restore(tid);
 		}
-		await categories.async.updateRecentTidForCid(topicData.cid);
+		await categories.updateRecentTidForCid(topicData.cid);
 
 		topicData.deleted = isDelete ? 1 : 0;
 
@@ -52,7 +52,7 @@ module.exports = function (Topics) {
 		} else {
 			plugins.fireHook('action:topic.restore', { topic: topicData, uid: uid });
 		}
-		const userData = await user.async.getUserFields(uid, ['username', 'userslug']);
+		const userData = await user.getUserFields(uid, ['username', 'userslug']);
 		return {
 			tid: tid,
 			cid: topicData.cid,
@@ -67,7 +67,7 @@ module.exports = function (Topics) {
 		if (!exists) {
 			return;
 		}
-		const canPurge = await privileges.async.topics.canPurge(tid, uid);
+		const canPurge = await privileges.topics.canPurge(tid, uid);
 		if (!canPurge) {
 			throw new Error('[[error:no-privileges]]');
 		}
@@ -89,7 +89,7 @@ module.exports = function (Topics) {
 		if (!topicData || !topicData.cid) {
 			throw new Error('[[error:no-topic]]');
 		}
-		const isAdminOrMod = await privileges.async.categories.isAdminOrMod(topicData.cid, uid);
+		const isAdminOrMod = await privileges.categories.isAdminOrMod(topicData.cid, uid);
 		if (!isAdminOrMod) {
 			throw new Error('[[error:no-privileges]]');
 		}
@@ -113,7 +113,7 @@ module.exports = function (Topics) {
 		if (!topicData) {
 			throw new Error('[[error:no-topic]]');
 		}
-		const isAdminOrMod = await privileges.async.categories.isAdminOrMod(topicData.cid, uid);
+		const isAdminOrMod = await privileges.categories.isAdminOrMod(topicData.cid, uid);
 		if (!isAdminOrMod) {
 			throw new Error('[[error:no-privileges]]');
 		}
@@ -157,7 +157,7 @@ module.exports = function (Topics) {
 
 		const cid = uniqueCids[0];
 
-		const isAdminOrMod = await privileges.async.categories.isAdminOrMod(cid, uid);
+		const isAdminOrMod = await privileges.categories.isAdminOrMod(cid, uid);
 		if (!isAdminOrMod) {
 			throw new Error('[[error:no-privileges]]');
 		}
@@ -206,13 +206,13 @@ module.exports = function (Topics) {
 		await db.sortedSetAddBulk(bulk);
 
 		const oldCid = topicData.cid;
-		await categories.async.moveRecentReplies(tid, oldCid, cid);
+		await categories.moveRecentReplies(tid, oldCid, cid);
 
 		await Promise.all([
-			categories.async.incrementCategoryFieldBy(oldCid, 'topic_count', -1),
-			categories.async.incrementCategoryFieldBy(cid, 'topic_count', 1),
-			categories.async.updateRecentTid(cid, tid),
-			categories.async.updateRecentTidForCid(oldCid),
+			categories.incrementCategoryFieldBy(oldCid, 'topic_count', -1),
+			categories.incrementCategoryFieldBy(cid, 'topic_count', 1),
+			categories.updateRecentTid(cid, tid),
+			categories.updateRecentTidForCid(oldCid),
 			Topics.setTopicFields(tid, {
 				cid: cid,
 				oldCid: oldCid,

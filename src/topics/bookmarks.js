@@ -55,7 +55,7 @@ module.exports = function (Topics) {
 				return;
 			}
 
-			const settings = await user.async.getSettings(data.uid);
+			const settings = await user.getSettings(data.uid);
 			if (settings.topicPostSort === 'most_votes') {
 				return;
 			}

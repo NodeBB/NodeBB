@@ -160,7 +160,7 @@ module.exports = function (Topics) {
 			followers.splice(index, 1);
 		}
 
-		followers = await privileges.async.topics.filterUids('topics:read', postData.topic.tid, followers);
+		followers = await privileges.topics.filterUids('topics:read', postData.topic.tid, followers);
 
 		if (!followers.length) {
 			return;
@@ -175,7 +175,7 @@ module.exports = function (Topics) {
 		postData.content = posts.relativeToAbsolute(postData.content, posts.urlRegex);
 		postData.content = posts.relativeToAbsolute(postData.content, posts.imgRegex);
 
-		const notification = await notifications.async.create({
+		const notification = await notifications.create({
 			type: 'new-reply',
 			subject: title,
 			bodyShort: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + titleEscaped + ']]',

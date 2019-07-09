@@ -110,7 +110,7 @@ module.exports = function (Topics) {
 			tids = await Topics.filterNotIgnoredTids(tids, uid);
 		}
 
-		tids = await privileges.async.topics.filterTids('topics:read', tids, uid);
+		tids = await privileges.topics.filterTids('topics:read', tids, uid);
 		let topicData = await Topics.getTopicsFields(tids, ['uid', 'tid', 'cid']);
 		const topicCids = _.uniq(topicData.map(topic => topic.cid)).filter(Boolean);
 
@@ -118,11 +118,11 @@ module.exports = function (Topics) {
 			if (filter === 'watched' || meta.config.disableRecentCategoryFilter) {
 				return [];
 			}
-			return await categories.async.isIgnored(topicCids, uid);
+			return await categories.isIgnored(topicCids, uid);
 		}
 		const [ignoredCids, filtered] = await Promise.all([
 			getIgnoredCids(),
-			user.async.blocks.filter(uid, topicData),
+			user.blocks.filter(uid, topicData),
 		]);
 
 		const isCidIgnored = _.zipObject(topicCids, ignoredCids);
@@ -133,7 +133,7 @@ module.exports = function (Topics) {
 			return topic && topic.cid && !isCidIgnored[topic.cid] && (!cids || (cids.length && cids.includes(topic.cid.toString())));
 		}).map(topic => topic.tid);
 
-		const result = await plugins.async.fireHook('filter:topics.filterSortedTids', { tids: tids, params: params });
+		const result = await plugins.fireHook('filter:topics.filterSortedTids', { tids: tids, params: params });
 		return result.tids;
 	}
 

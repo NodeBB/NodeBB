@@ -49,7 +49,7 @@ Topics.getTopics = async function (tids, options) {
 		uid = options.uid;
 	}
 
-	tids = await privileges.async.topics.filterTids('topics:read', tids, uid);
+	tids = await privileges.topics.filterTids('topics:read', tids, uid);
 	const topics = await Topics.getTopicsByTids(tids, options);
 	return topics;
 };
@@ -78,9 +78,9 @@ Topics.getTopicsByTids = async function (tids, options) {
 		teasers,
 		tags,
 	] = await Promise.all([
-		user.async.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status']),
-		user.async.getMultipleUserSettings(uids),
-		categories.async.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'image', 'imageClass', 'bgColor', 'color', 'disabled']),
+		user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status']),
+		user.getMultipleUserSettings(uids),
+		categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'image', 'imageClass', 'bgColor', 'color', 'disabled']),
 		Topics.hasReadTopics(tids, uid),
 		Topics.isIgnoring(tids, uid),
 		Topics.getUserBookmarks(tids, uid),
@@ -116,7 +116,7 @@ Topics.getTopicsByTids = async function (tids, options) {
 
 	topics = topics.filter(topic => topic && topic.category && !topic.category.disabled);
 
-	const result = await plugins.async.fireHook('filter:topics.get', { topics: topics, uid: uid });
+	const result = await plugins.fireHook('filter:topics.get', { topics: topics, uid: uid });
 	return result.topics;
 };
 
@@ -134,9 +134,9 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 		related,
 	] = await Promise.all([
 		getMainPostAndReplies(topicData, set, uid, start, stop, reverse),
-		categories.async.getCategoryData(topicData.cid),
-		categories.async.getTagWhitelist([topicData.cid]),
-		plugins.async.fireHook('filter:topic.thread_tools', { topic: topicData, uid: uid, tools: [] }),
+		categories.getCategoryData(topicData.cid),
+		categories.getTagWhitelist([topicData.cid]),
+		plugins.fireHook('filter:topic.thread_tools', { topic: topicData, uid: uid, tools: [] }),
 		Topics.getFollowData([topicData.tid], uid),
 		Topics.getUserBookmark(topicData.tid, uid),
 		social.getActivePostSharing(),
@@ -166,7 +166,7 @@ Topics.getTopicWithPosts = async function (topicData, set, uid, start, stop, rev
 	topicData.unreplied = topicData.postcount === 1;
 	topicData.icons = [];
 
-	const result = await plugins.async.fireHook('filter:topic.get', { topic: topicData, uid: uid });
+	const result = await plugins.fireHook('filter:topic.get', { topic: topicData, uid: uid });
 	return result.topic;
 };
 
@@ -177,7 +177,7 @@ async function getMainPostAndReplies(topic, set, uid, start, stop, reverse) {
 			start -= 1;
 		}
 	}
-	const pids = await posts.async.getPidsFromSet(set, start, stop, reverse);
+	const pids = await posts.getPidsFromSet(set, start, stop, reverse);
 	if (!pids.length && !topic.mainPid) {
 		return [];
 	}
@@ -185,7 +185,7 @@ async function getMainPostAndReplies(topic, set, uid, start, stop, reverse) {
 	if (parseInt(topic.mainPid, 10) && start === 0) {
 		pids.unshift(topic.mainPid);
 	}
-	const postData = await posts.async.getPostsByPids(pids, uid);
+	const postData = await posts.getPostsByPids(pids, uid);
 	if (!postData.length) {
 		return [];
 	}
@@ -204,7 +204,7 @@ async function getDeleter(topicData) {
 	if (!parseInt(topicData.deleterUid, 10)) {
 		return null;
 	}
-	return await user.async.getUserFields(topicData.deleterUid, ['username', 'userslug', 'picture']);
+	return await user.getUserFields(topicData.deleterUid, ['username', 'userslug', 'picture']);
 }
 
 async function getMerger(topicData) {
@@ -215,7 +215,7 @@ async function getMerger(topicData) {
 		merger,
 		mergedIntoTitle,
 	] = await Promise.all([
-		user.async.getUserFields(topicData.mergerUid, ['username', 'userslug', 'picture']),
+		user.getUserFields(topicData.mergerUid, ['username', 'userslug', 'picture']),
 		Topics.getTopicField(topicData.mergeIntoTid, 'title'),
 	]);
 	merger.mergedIntoTitle = mergedIntoTitle;
@@ -247,7 +247,7 @@ Topics.getMainPosts = async function (tids, uid) {
 };
 
 async function getMainPosts(mainPids, uid) {
-	const postData = await posts.async.getPostsByPids(mainPids, uid);
+	const postData = await posts.getPostsByPids(mainPids, uid);
 	postData.forEach(function (post) {
 		if (post) {
 			post.index = 0;
@@ -262,7 +262,7 @@ Topics.isLocked = async function (tid) {
 };
 
 Topics.search = async function (tid, term) {
-	const pids = await plugins.async.fireHook('filter:topic.search', {
+	const pids = await plugins.fireHook('filter:topic.search', {
 		tid: tid,
 		term: term,
 	});

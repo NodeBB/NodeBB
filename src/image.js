@@ -26,7 +26,7 @@ function requireSharp() {
 
 image.resizeImage = async function (data) {
 	if (plugins.hasListeners('filter:image.resize')) {
-		await plugins.async.fireHook('filter:image.resize', {
+		await plugins.fireHook('filter:image.resize', {
 			path: data.path,
 			target: data.target,
 			width: data.width,

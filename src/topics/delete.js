@@ -40,7 +40,7 @@ module.exports = function (Topics) {
 			Topics.getTopicField(tid, 'cid'),
 			Topics.getPids(tid),
 		]);
-		let postData = await posts.async.getPostsFields(pids, ['pid', 'timestamp', 'deleted']);
+		let postData = await posts.getPostsFields(pids, ['pid', 'timestamp', 'deleted']);
 		postData = postData.filter(post => post && !post.deleted);
 		var pidsToAdd = [];
 		var scores = [];
@@ -73,7 +73,7 @@ module.exports = function (Topics) {
 				posts.purge(pid, uid, next);
 			}, next);
 		}, { alwaysStartAt: 0 });
-		await posts.async.purge(mainPid, uid);
+		await posts.purge(mainPid, uid);
 		await Topics.purge(tid, uid);
 	};
 
@@ -135,7 +135,7 @@ module.exports = function (Topics) {
 				'cid:' + topicData.cid + ':uid:' + topicData.uid + ':tids',
 				'uid:' + topicData.uid + ':topics',
 			], tid),
-			user.async.decrementUserFieldBy(topicData.uid, 'topiccount', 1),
+			user.decrementUserFieldBy(topicData.uid, 'topiccount', 1),
 		]);
 	}
 

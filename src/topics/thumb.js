@@ -57,7 +57,7 @@ module.exports = function (Topics) {
 				return;
 			}
 
-			const uploadedFile = await plugins.async.fireHook('filter:uploadImage', { image: { path: pathToUpload, name: '' }, uid: data.uid });
+			const uploadedFile = await plugins.fireHook('filter:uploadImage', { image: { path: pathToUpload, name: '' }, uid: data.uid });
 			file.delete(pathToUpload);
 			data.thumb = uploadedFile.url;
 		} catch (err) {

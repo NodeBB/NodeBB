@@ -101,7 +101,7 @@ file.base64ToLocal = function (imageData, uploadPath, callback) {
 file.isFileTypeAllowed = async function (path) {
 	var plugins = require('./plugins');
 	if (plugins.hasListeners('filter:file.isFileTypeAllowed')) {
-		return await plugins.async.fireHook('filter:file.isFileTypeAllowed', path);
+		return await plugins.fireHook('filter:file.isFileTypeAllowed', path);
 	}
 	const sharp = require('sharp');
 	await sharp(path, {

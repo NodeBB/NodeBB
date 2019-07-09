@@ -48,7 +48,7 @@ module.exports = function (Topics) {
 		if (!pid) {
 			return;
 		}
-		const timestamp = await posts.async.getPostField(pid, 'timestamp');
+		const timestamp = await posts.getPostField(pid, 'timestamp');
 		if (!timestamp) {
 			return;
 		}
@@ -73,7 +73,7 @@ module.exports = function (Topics) {
 	Topics.updateRecent = async function (tid, timestamp) {
 		let data = { tid: tid, timestamp: timestamp };
 		if (plugins.hasListeners('filter:topics.updateRecent')) {
-			data = await plugins.async.fireHook('filter:topics.updateRecent', { tid: tid, timestamp: timestamp });
+			data = await plugins.fireHook('filter:topics.updateRecent', { tid: tid, timestamp: timestamp });
 		}
 		if (data && data.tid && data.timestamp) {
 			await db.sortedSetAdd('topics:recent', data.timestamp, data.tid);

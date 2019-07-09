@@ -17,7 +17,7 @@ module.exports = function (Topics) {
 		if (!Array.isArray(tags) || !tags.length) {
 			return;
 		}
-		const result = await plugins.async.fireHook('filter:tags.filter', { tags: tags, tid: tid });
+		const result = await plugins.fireHook('filter:tags.filter', { tags: tags, tid: tid });
 		tags = _.uniq(result.tags).slice(0, meta.config.maximumTagsPerTopic || 5)
 			.map(tag => utils.cleanUpTag(tag, meta.config.maximumTagLength))
 			.filter(tag => tag && tag.length >= (meta.config.minimumTagLength || 3));
@@ -33,7 +33,7 @@ module.exports = function (Topics) {
 
 	async function filterCategoryTags(tags, tid) {
 		const cid = await Topics.getTopicField(tid, 'cid');
-		const tagWhitelist = await categories.async.getTagWhitelist([cid]);
+		const tagWhitelist = await categories.getTagWhitelist([cid]);
 		if (!Array.isArray(tagWhitelist[0]) || !tagWhitelist[0].length) {
 			return tags;
 		}
@@ -206,11 +206,11 @@ module.exports = function (Topics) {
 		}
 		let result;
 		if (plugins.hasListeners('filter:topics.searchTags')) {
-			result = await plugins.async.fireHook('filter:topics.searchTags', { data: data });
+			result = await plugins.fireHook('filter:topics.searchTags', { data: data });
 		} else {
 			result = await findMatches(data.query, 0);
 		}
-		result = await plugins.async.fireHook('filter:tags.search', { data: data, matches: result.matches });
+		result = await plugins.fireHook('filter:tags.search', { data: data, matches: result.matches });
 		return result.matches;
 	};
 
@@ -220,7 +220,7 @@ module.exports = function (Topics) {
 		}
 		let result;
 		if (plugins.hasListeners('filter:topics.autocompleteTags')) {
-			result = await plugins.async.fireHook('filter:topics.autocompleteTags', { data: data });
+			result = await plugins.fireHook('filter:topics.autocompleteTags', { data: data });
 		} else {
 			result = await findMatches(data.query, data.cid);
 		}
@@ -230,7 +230,7 @@ module.exports = function (Topics) {
 	async function findMatches(query, cid) {
 		let tagWhitelist = [];
 		if (parseInt(cid, 10)) {
-			tagWhitelist = await categories.async.getTagWhitelist([cid]);
+			tagWhitelist = await categories.getTagWhitelist([cid]);
 		}
 		let tags = [];
 		if (Array.isArray(tagWhitelist[0]) && tagWhitelist[0].length) {
@@ -282,7 +282,7 @@ module.exports = function (Topics) {
 
 	Topics.getRelatedTopics = async function (topicData, uid) {
 		if (plugins.hasListeners('filter:topic.getRelatedTopics')) {
-			return await plugins.async.fireHook('filter:topic.getRelatedTopics', { topic: topicData, uid: uid });
+			return await plugins.fireHook('filter:topic.getRelatedTopics', { topic: topicData, uid: uid });
 		}
 
 		var maximumTopics = meta.config.maximumRelatedTopics;

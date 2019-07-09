@@ -45,7 +45,7 @@ module.exports = function (Topics) {
 
 	Topics.getCategoryData = async function (tid) {
 		const cid = await Topics.getTopicField(tid, 'cid');
-		return await categories.async.getCategoryData(cid);
+		return await categories.getCategoryData(cid);
 	};
 
 	Topics.setTopicField = async function (tid, field, value) {
