@@ -20,7 +20,6 @@ module.exports = function (db, module) {
 			value = [value];
 		}
 		value = value.map(helpers.valueToString);
-		console.log(key, value);
 		await db.query({
 			name: 'sortedSetRemove',
 			text: `

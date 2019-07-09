@@ -25,10 +25,10 @@ exports.processSortedSet = async function (setKey, process, options) {
 
 	options.batch = options.batch || DEFAULT_BATCH_SIZE;
 
-	// // use the fast path if possible
-	// if (db.processSortedSet && typeof options.doneIf !== 'function' && !utils.isNumber(options.alwaysStartAt)) {
-	// 	return await db.processSortedSet(setKey, process, options);
-	// }
+	// use the fast path if possible
+	if (db.processSortedSet && typeof options.doneIf !== 'function' && !utils.isNumber(options.alwaysStartAt)) {
+		return await db.processSortedSet(setKey, process, options);
+	}
 
 	// custom done condition
 	options.doneIf = typeof options.doneIf === 'function' ? options.doneIf : function () {};
