@@ -15,9 +15,11 @@ module.exports = function (Groups) {
 		var groupsData;
 		async.waterfall([
 			function (next) {
+				console.log(1);
 				Groups.getGroupsData(groupNames, next);
 			},
 			function (_groupsData, next) {
+				console.log(2);
 				groupsData = _groupsData.filter(Boolean);
 				if (!groupsData.length) {
 					return callback();
@@ -36,31 +38,48 @@ module.exports = function (Groups) {
 							);
 						});
 
-						db.deleteAll(keys, next);
+						db.deleteAll(keys, function (err) {
+							console.log(3);
+							next(err);
+						});
 					},
 					function (next) {
 						db.sortedSetRemove([
 							'groups:createtime',
 							'groups:visible:createtime',
 							'groups:visible:memberCount',
-						], groupNames, next);
+						], groupNames, function (err) {
+							console.log(4);
+							next(err);
+						});
 					},
 					function (next) {
 						const keys = groupNames.map(groupName => groupName.toLowerCase() + ':' + groupName);
-						db.sortedSetRemove('groups:visible:name', keys, next);
+						db.sortedSetRemove('groups:visible:name', keys, function (err) {
+							console.log(5);
+							next(err);
+						});
 					},
 					function (next) {
 						const fields = groupNames.map(groupName => utils.slugify(groupName));
-						db.deleteObjectFields('groupslug:groupname', fields, next);
+						db.deleteObjectFields('groupslug:groupname', fields, function (err) {
+							console.log(6);
+							next(err);
+						});
 					},
 					function (next) {
-						removeGroupsFromPrivilegeGroups(groupNames, next);
+						removeGroupsFromPrivilegeGroups(groupNames, function (err) {
+							console.log(7);
+							next(err);
+						});
 					},
 				], function (err) {
+					console.log(8);
 					next(err);
 				});
 			},
 			function (next) {
+				console.log(9);
 				Groups.resetCache();
 				plugins.fireHook('action:groups.destroy', { groups: groupsData });
 				next();

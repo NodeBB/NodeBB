@@ -1051,12 +1051,9 @@ describe('Groups', function () {
 		});
 
 		it('should delete group', function (done) {
-			console.log('1');
 			socketGroups.delete({ uid: adminUid }, { groupName: 'renamedupdategroup' }, function (err) {
-				console.log('2');
 				assert.ifError(err);
 				Groups.exists('renamedupdategroup', function (err, exists) {
-					console.log('3');
 					assert.ifError(err);
 					assert(!exists);
 					done();
