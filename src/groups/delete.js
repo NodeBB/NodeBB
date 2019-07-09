@@ -68,6 +68,7 @@ module.exports = function (Groups) {
 						});
 					},
 					function (next) {
+						console.log('batch', groupNames);
 						removeGroupsFromPrivilegeGroups(groupNames, function (err) {
 							console.log(7);
 							next(err);
