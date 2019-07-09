@@ -1,19 +1,16 @@
 'use strict';
 
 module.exports = function (db, module) {
-	var helpers = module.helpers.mongo;
+	var helpers = require('./helpers');
 
-	module.setAdd = function (key, value, callback) {
-		callback = callback || helpers.noop;
+	module.setAdd = async function (key, value) {
 		if (!Array.isArray(value)) {
 			value = [value];
 		}
 
-		value.forEach(function (element, index, array) {
-			array[index] = helpers.valueToString(element);
-		});
+		value = value.map(v => helpers.valueToString(v));
 
-		db.collection('objects').updateOne({
+		await db.collection('objects').updateOne({
 			_key: key,
 		}, {
 			$addToSet: {
@@ -24,25 +21,19 @@ module.exports = function (db, module) {
 		}, {
 			upsert: true,
 			w: 1,
-		}, function (err) {
-			callback(err);
 		});
 	};
 
-	module.setsAdd = function (keys, value, callback) {
-		callback = callback || helpers.noop;
-
+	module.setsAdd = async function (keys, value) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback();
+			return;
 		}
 
 		if (!Array.isArray(value)) {
 			value = [value];
 		}
 
-		value.forEach(function (element, index, array) {
-			array[index] = helpers.valueToString(element);
-		});
+		value = value.map(v => helpers.valueToString(v));
 
 		var bulk = db.collection('objects').initializeUnorderedBulkOp();
 
@@ -53,168 +44,118 @@ module.exports = function (db, module) {
 				},
 			} });
 		}
-
-		bulk.execute(function (err) {
+		try {
+			await bulk.execute();
+		} catch (err) {
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
-				return process.nextTick(module.setsAdd, keys, value, callback);
+				return await module.setsAdd(keys, value);
 			}
-			callback(err);
-		});
+			throw err;
+		}
 	};
 
-	module.setRemove = function (key, value, callback) {
-		callback = callback || helpers.noop;
+	module.setRemove = async function (key, value) {
 		if (!Array.isArray(value)) {
 			value = [value];
 		}
 
-		value.forEach(function (element, index, array) {
-			array[index] = helpers.valueToString(element);
-		});
+		value = value.map(v => helpers.valueToString(v));
 
-		if (Array.isArray(key)) {
-			db.collection('objects').updateMany({ _key: { $in: key } }, { $pullAll: { members: value } }, function (err) {
-				callback(err);
-			});
-		} else {
-			db.collection('objects').updateOne({ _key: key }, { $pullAll: { members: value } }, function (err) {
-				callback(err);
-			});
-		}
+		await db.collection('objects').updateMany({ _key: Array.isArray(key) ? { $in: key } : key }, { $pullAll: { members: value } });
 	};
 
-	module.setsRemove = function (keys, value, callback) {
-		callback = callback || helpers.noop;
+	module.setsRemove = async function (keys, value) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback();
+			return;
 		}
 		value = helpers.valueToString(value);
 
-		db.collection('objects').updateMany({ _key: { $in: keys } }, { $pull: { members: value } }, function (err) {
-			callback(err);
-		});
+		await db.collection('objects').updateMany({ _key: { $in: keys } }, { $pull: { members: value } });
 	};
 
-	module.isSetMember = function (key, value, callback) {
+	module.isSetMember = async function (key, value) {
 		if (!key) {
-			return callback(null, false);
+			return false;
 		}
 		value = helpers.valueToString(value);
 
-		db.collection('objects').findOne({ _key: key, members: value }, { projection: { _id: 0, members: 0 } }, function (err, item) {
-			callback(err, item !== null && item !== undefined);
-		});
+		const item = await db.collection('objects').findOne({ _key: key, members: value }, { projection: { _id: 0, members: 0 } });
+		return item !== null && item !== undefined;
 	};
 
-	module.isSetMembers = function (key, values, callback) {
+	module.isSetMembers = async function (key, values) {
 		if (!key || !Array.isArray(values) || !values.length) {
-			return callback(null, []);
+			return [];
 		}
+		values = values.map(v => helpers.valueToString(v));
 
-		for (var i = 0; i < values.length; i += 1) {
-			values[i] = helpers.valueToString(values[i]);
-		}
-
-		db.collection('objects').findOne({ _key: key }, { projection: { _id: 0, _key: 0 } }, function (err, items) {
-			if (err) {
-				return callback(err);
-			}
-
-			const membersSet = new Set(items && Array.isArray(items.members) ? items.members : []);
-			values = values.map(value => membersSet.has(value));
-			callback(null, values);
-		});
+		const result = await db.collection('objects').findOne({ _key: key }, { projection: { _id: 0, _key: 0 } });
+		const membersSet = new Set(result && Array.isArray(result.members) ? result.members : []);
+		return values.map(v => membersSet.has(v));
 	};
 
-	module.isMemberOfSets = function (sets, value, callback) {
+	module.isMemberOfSets = async function (sets, value) {
 		if (!Array.isArray(sets) || !sets.length) {
-			return callback(null, []);
+			return [];
 		}
 		value = helpers.valueToString(value);
 
-		db.collection('objects').find({ _key: { $in: sets }, members: value }, { projection: { _id: 0, members: 0 } }).toArray(function (err, result) {
-			if (err) {
-				return callback(err);
-			}
-			var map = {};
-			result.forEach(function (item) {
-				map[item._key] = true;
-			});
+		const result = await db.collection('objects').find({ _key: { $in: sets }, members: value }, { projection: { _id: 0, members: 0 } }).toArray();
 
-			result = sets.map(function (set) {
-				return !!map[set];
-			});
-
-			callback(null, result);
+		var map = {};
+		result.forEach(function (item) {
+			map[item._key] = true;
 		});
+
+		return sets.map(set => !!map[set]);
 	};
 
-	module.getSetMembers = function (key, callback) {
+	module.getSetMembers = async function (key) {
 		if (!key) {
-			return callback(null, []);
+			return [];
 		}
 
-		db.collection('objects').findOne({ _key: key }, { projection: { _id: 0, _key: 0 } }, function (err, data) {
-			callback(err, data ? data.members : []);
-		});
+		const data = await db.collection('objects').findOne({ _key: key }, { projection: { _id: 0, _key: 0 } });
+		return data ? data.members : [];
 	};
 
-	module.getSetsMembers = function (keys, callback) {
+	module.getSetsMembers = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, []);
+			return [];
 		}
-		db.collection('objects').find({ _key: { $in: keys } }, { projection: { _id: 0 } }).toArray(function (err, data) {
-			if (err) {
-				return callback(err);
-			}
+		const data = await db.collection('objects').find({ _key: { $in: keys } }, { projection: { _id: 0 } }).toArray();
 
-			var sets = {};
-			data.forEach(function (set) {
-				sets[set._key] = set.members || [];
-			});
-
-			var returnData = new Array(keys.length);
-			for (var i = 0; i < keys.length; i += 1) {
-				returnData[i] = sets[keys[i]] || [];
-			}
-			callback(null, returnData);
+		var sets = {};
+		data.forEach(function (set) {
+			sets[set._key] = set.members || [];
 		});
+
+		return keys.map(k => sets[k] || []);
 	};
 
-	module.setCount = function (key, callback) {
+	module.setCount = async function (key) {
 		if (!key) {
-			return callback(null, 0);
+			return 0;
 		}
-		db.collection('objects').findOne({ _key: key }, { projection: { _id: 0 } }, function (err, data) {
-			callback(err, data ? data.members.length : 0);
-		});
+		const data = await db.collection('objects').findOne({ _key: key }, { projection: { _id: 0 } });
+		return data ? data.members.length : 0;
 	};
 
-	module.setsCount = function (keys, callback) {
-		module.getSetsMembers(keys, function (err, setsMembers) {
-			if (err) {
-				return callback(err);
-			}
-
-			var counts = setsMembers.map(function (members) {
-				return (members && members.length) || 0;
-			});
-			callback(null, counts);
-		});
+	module.setsCount = async function (keys) {
+		const setsMembers = await module.getSetsMembers(keys);
+		var counts = setsMembers.map(members => (members && members.length) || 0);
+		return counts;
 	};
 
-	module.setRemoveRandom = function (key, callback) {
-		callback = callback || function () {};
-		db.collection('objects').findOne({ _key: key }, function (err, data) {
-			if (err || !data) {
-				return callback(err);
-			}
+	module.setRemoveRandom = async function (key) {
+		const data = await db.collection('objects').findOne({ _key: key });
+		if (!data) {
+			return;
+		}
 
-			var randomIndex = Math.floor(Math.random() * data.members.length);
-			var value = data.members[randomIndex];
-			module.setRemove(data._key, value, function (err) {
-				callback(err, value);
-			});
-		});
+		var randomIndex = Math.floor(Math.random() * data.members.length);
+		var value = data.members[randomIndex];
+		await module.setRemove(data._key, value);
+		return value;
 	};
 };

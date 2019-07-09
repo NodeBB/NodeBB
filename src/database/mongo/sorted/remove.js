@@ -1,45 +1,41 @@
 'use strict';
 
 module.exports = function (db, module) {
-	var helpers = module.helpers.mongo;
+	var helpers = require('../helpers');
 
-	module.sortedSetRemove = function (key, value, callback) {
-		function done(err) {
-			callback(err);
-		}
-		callback = callback || helpers.noop;
+	module.sortedSetRemove = async function (key, value) {
 		if (!key) {
-			return callback();
+			return;
+		}
+		const isValueArray = Array.isArray(value);
+		if (!value || (isValueArray && !value.length)) {
+			return;
 		}
 
-		if (Array.isArray(value)) {
+		if (isValueArray) {
 			value = value.map(helpers.valueToString);
 		} else {
 			value = helpers.valueToString(value);
 		}
 
-		db.collection('objects').deleteMany({
+		await db.collection('objects').deleteMany({
 			_key: Array.isArray(key) ? { $in: key } : key,
-			value: Array.isArray(value) ? { $in: value } : value,
-		}, done);
-	};
-
-	module.sortedSetsRemove = function (keys, value, callback) {
-		callback = callback || helpers.noop;
-		if (!Array.isArray(keys) || !keys.length) {
-			return callback();
-		}
-		value = helpers.valueToString(value);
-
-		db.collection('objects').deleteMany({ _key: { $in: keys }, value: value }, function (err) {
-			callback(err);
+			value: isValueArray ? { $in: value } : value,
 		});
 	};
 
-	module.sortedSetsRemoveRangeByScore = function (keys, min, max, callback) {
-		callback = callback || helpers.noop;
+	module.sortedSetsRemove = async function (keys, value) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback();
+			return;
+		}
+		value = helpers.valueToString(value);
+
+		await db.collection('objects').deleteMany({ _key: { $in: keys }, value: value });
+	};
+
+	module.sortedSetsRemoveRangeByScore = async function (keys, min, max) {
+		if (!Array.isArray(keys) || !keys.length) {
+			return;
 		}
 		var query = { _key: { $in: keys } };
 
@@ -51,8 +47,6 @@ module.exports = function (db, module) {
 			query.score.$lte = parseFloat(max);
 		}
 
-		db.collection('objects').deleteMany(query, function (err) {
-			callback(err);
-		});
+		await db.collection('objects').deleteMany(query);
 	};
 };

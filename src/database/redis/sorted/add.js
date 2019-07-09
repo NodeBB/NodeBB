@@ -1,83 +1,72 @@
 'use strict';
 
 module.exports = function (redisClient, module) {
+	const helpers = require('../helpers');
 	const utils = require('../../../utils');
 
-	module.sortedSetAdd = function (key, score, value, callback) {
-		callback = callback || function () {};
+	module.sortedSetAdd = async function (key, score, value) {
 		if (!key) {
-			return setImmediate(callback);
+			return;
 		}
 		if (Array.isArray(score) && Array.isArray(value)) {
-			return sortedSetAddMulti(key, score, value, callback);
+			return await sortedSetAddMulti(key, score, value);
 		}
 		if (!utils.isNumber(score)) {
-			return setImmediate(callback, new Error('[[error:invalid-score, ' + score + ']]'));
+			throw new Error('[[error:invalid-score, ' + score + ']]');
 		}
-		redisClient.zadd(key, score, String(value), function (err) {
-			callback(err);
-		});
+		await redisClient.async.zadd(key, score, String(value));
 	};
 
-	function sortedSetAddMulti(key, scores, values, callback) {
+	async function sortedSetAddMulti(key, scores, values) {
 		if (!scores.length || !values.length) {
-			return callback();
+			return;
 		}
 
 		if (scores.length !== values.length) {
-			return callback(new Error('[[error:invalid-data]]'));
+			throw new Error('[[error:invalid-data]]');
 		}
 		for (let i = 0; i < scores.length; i += 1) {
 			if (!utils.isNumber(scores[i])) {
-				return setImmediate(callback, new Error('[[error:invalid-score, ' + scores[i] + ']]'));
+				throw new Error('[[error:invalid-score, ' + scores[i] + ']]');
 			}
 		}
 		var args = [key];
-
 		for (var i = 0; i < scores.length; i += 1) {
 			args.push(scores[i], String(values[i]));
 		}
-
-		redisClient.zadd(args, function (err) {
-			callback(err);
-		});
+		await redisClient.async.zadd(args);
 	}
 
-	module.sortedSetsAdd = function (keys, scores, value, callback) {
-		callback = callback || function () {};
+	module.sortedSetsAdd = async function (keys, scores, value) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return setImmediate(callback);
+			return;
 		}
 		const isArrayOfScores = Array.isArray(scores);
 		if (!isArrayOfScores && !utils.isNumber(scores)) {
-			return setImmediate(callback, new Error('[[error:invalid-score, ' + scores + ']]'));
+			throw new Error('[[error:invalid-score, ' + scores + ']]');
 		}
 
 		if (isArrayOfScores && scores.length !== keys.length) {
-			return setImmediate(callback, new Error('[[error:invalid-data]]'));
+			throw new Error('[[error:invalid-data]]');
 		}
 
 		var batch = redisClient.batch();
-
 		for (var i = 0; i < keys.length; i += 1) {
 			if (keys[i]) {
 				batch.zadd(keys[i], isArrayOfScores ? scores[i] : scores, String(value));
 			}
 		}
-
-		batch.exec(function (err) {
-			callback(err);
-		});
+		await helpers.execBatch(batch);
 	};
 
-	module.sortedSetAddBulk = function (data, callback) {
+	module.sortedSetAddBulk = async function (data) {
 		if (!Array.isArray(data) || !data.length) {
-			return setImmediate(callback);
+			return;
 		}
 		var batch = redisClient.batch();
 		data.forEach(function (item) {
 			batch.zadd(item[0], item[1], item[2]);
 		});
-		batch.exec(err => callback(err));
+		await helpers.execBatch(batch);
 	};
 };

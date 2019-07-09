@@ -31,10 +31,10 @@ topicsController.get = async function getTopic(req, res, callback) {
 		topicData,
 		rssToken,
 	] = await Promise.all([
-		privileges.async.topics.get(tid, req.uid),
-		user.async.getSettings(req.uid),
-		topics.async.getTopicData(tid),
-		user.async.auth.getFeedToken(req.uid),
+		privileges.topics.get(tid, req.uid),
+		user.getSettings(req.uid),
+		topics.getTopicData(tid),
+		user.auth.getFeedToken(req.uid),
 	]);
 
 	var currentPage = parseInt(req.query.page, 10) || 1;
@@ -52,7 +52,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 	}
 
 	if (postIndex === 'unread') {
-		postIndex = await topics.async.getUserBookmark(tid, req.uid);
+		postIndex = await topics.getUserBookmark(tid, req.uid);
 	}
 
 	if (utils.isNumber(postIndex) && (postIndex < 1 || postIndex > topicData.postcount)) {
@@ -67,11 +67,11 @@ topicsController.get = async function getTopic(req, res, callback) {
 	}
 	const { start, stop } = calculateStartStop(currentPage, postIndex, settings);
 
-	await topics.async.getTopicWithPosts(topicData, set, req.uid, start, stop, reverse);
+	await topics.getTopicWithPosts(topicData, set, req.uid, start, stop, reverse);
 
 	topics.modifyPostsByPrivilege(topicData, userPrivileges);
 
-	const hookData = await plugins.async.fireHook('filter:controllers.topic.get', { topicData: topicData, uid: req.uid });
+	const hookData = await plugins.fireHook('filter:controllers.topic.get', { topicData: topicData, uid: req.uid });
 	await Promise.all([
 		buildBreadcrumbs(hookData.topicData),
 		addTags(topicData, req, res),
@@ -161,7 +161,7 @@ async function buildBreadcrumbs(topicData) {
 			text: topicData.title,
 		},
 	];
-	const parentCrumbs = await helpers.async.buildCategoryBreadcrumbs(topicData.category.parentCid);
+	const parentCrumbs = await helpers.buildCategoryBreadcrumbs(topicData.category.parentCid);
 	topicData.breadcrumbs = parentCrumbs.concat(breadcrumbs);
 }
 
@@ -239,7 +239,7 @@ async function addTags(topicData, req, res) {
 }
 
 async function addOGImageTags(res, topicData, postAtIndex) {
-	const uploads = postAtIndex ? await posts.async.uploads.listWithSizes(postAtIndex.pid) : [];
+	const uploads = postAtIndex ? await posts.uploads.listWithSizes(postAtIndex.pid) : [];
 	const images = uploads.map((upload) => {
 		upload.name = nconf.get('url') + nconf.get('upload_url') + '/files/' + upload.name;
 		return upload;

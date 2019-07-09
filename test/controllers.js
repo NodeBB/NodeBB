@@ -1395,11 +1395,13 @@ describe('Controllers', function () {
 			request(nconf.get('url') + '/api/user/foo', { }, function (err, res) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
-				user.getUserField(fooUid, 'profileviews', function (err, viewcount) {
-					assert.ifError(err);
-					assert(viewcount > 0);
-					done();
-				});
+				setTimeout(function () {
+					user.getUserField(fooUid, 'profileviews', function (err, viewcount) {
+						assert.ifError(err);
+						assert(viewcount > 0);
+						done();
+					});
+				}, 500);
 			});
 		});
 

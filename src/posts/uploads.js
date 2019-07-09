@@ -57,8 +57,8 @@ module.exports = function (Posts) {
 	};
 
 	Posts.uploads.listWithSizes = async function (pid) {
-		const paths = await Posts.async.uploads.list(pid);
-		const sizes = await db.async.getObjects(paths.map(path => 'upload:' + md5(path))) || [];
+		const paths = await Posts.uploads.list(pid);
+		const sizes = await db.getObjects(paths.map(path => 'upload:' + md5(path))) || [];
 
 		return sizes.map((sizeObj, idx) => ({
 			...sizeObj,

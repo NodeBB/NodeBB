@@ -2,8 +2,6 @@
 
 'use strict';
 
-var async = require('async');
-
 var db = require('../database');
 var plugins = require('../plugins');
 var posts = require('../posts');
@@ -16,109 +14,69 @@ module.exports = function (Topics) {
 		year: 31104000000,
 	};
 
-	Topics.getRecentTopics = function (cid, uid, start, stop, filter, callback) {
-		Topics.getSortedTopics({
+	Topics.getRecentTopics = async function (cid, uid, start, stop, filter) {
+		return await Topics.getSortedTopics({
 			cids: cid,
 			uid: uid,
 			start: start,
 			stop: stop,
 			filter: filter,
 			sort: 'recent',
-		}, callback);
+		});
 	};
 
 	/* not an orphan method, used in widget-essentials */
-	Topics.getLatestTopics = function (options, callback) {
+	Topics.getLatestTopics = async function (options) {
 		// uid, start, stop, term
-		async.waterfall([
-			function (next) {
-				Topics.getLatestTidsFromSet('topics:recent', options.start, options.stop, options.term, next);
-			},
-			function (tids, next) {
-				Topics.getTopics(tids, options, next);
-			},
-			function (topics, next) {
-				next(null, { topics: topics, nextStart: options.stop + 1 });
-			},
-		], callback);
+		const tids = await Topics.getLatestTidsFromSet('topics:recent', options.start, options.stop, options.term);
+		const topics = await Topics.getTopics(tids, options);
+		return { topics: topics, nextStart: options.stop + 1 };
 	};
 
-	Topics.getLatestTidsFromSet = function (set, start, stop, term, callback) {
+	Topics.getLatestTidsFromSet = async function (set, start, stop, term) {
 		var since = terms.day;
 		if (terms[term]) {
 			since = terms[term];
 		}
 
 		var count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
-
-		db.getSortedSetRevRangeByScore(set, start, count, '+inf', Date.now() - since, callback);
+		return await db.getSortedSetRevRangeByScore(set, start, count, '+inf', Date.now() - since);
 	};
 
-	Topics.updateLastPostTimeFromLastPid = function (tid, callback) {
-		async.waterfall([
-			function (next) {
-				Topics.getLatestUndeletedPid(tid, next);
-			},
-			function (pid, next) {
-				if (!pid) {
-					return callback();
-				}
-				posts.getPostField(pid, 'timestamp', next);
-			},
-			function (timestamp, next) {
-				if (!timestamp) {
-					return callback();
-				}
-				Topics.updateLastPostTime(tid, timestamp, next);
-			},
-		], callback);
+	Topics.updateLastPostTimeFromLastPid = async function (tid) {
+		const pid = await Topics.getLatestUndeletedPid(tid);
+		if (!pid) {
+			return;
+		}
+		const timestamp = await posts.getPostField(pid, 'timestamp');
+		if (!timestamp) {
+			return;
+		}
+		await Topics.updateLastPostTime(tid, timestamp);
 	};
 
-	Topics.updateLastPostTime = function (tid, lastposttime, callback) {
-		async.waterfall([
-			function (next) {
-				Topics.setTopicField(tid, 'lastposttime', lastposttime, next);
-			},
-			function (next) {
-				Topics.getTopicFields(tid, ['cid', 'deleted', 'pinned'], next);
-			},
-			function (topicData, next) {
-				var tasks = [
-					async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:lastposttime', lastposttime, tid),
-				];
+	Topics.updateLastPostTime = async function (tid, lastposttime) {
+		await Topics.setTopicField(tid, 'lastposttime', lastposttime);
+		const topicData = await Topics.getTopicFields(tid, ['cid', 'deleted', 'pinned']);
 
-				if (!topicData.deleted) {
-					tasks.push(async.apply(Topics.updateRecent, tid, lastposttime));
-				}
+		await db.sortedSetAdd('cid:' + topicData.cid + ':tids:lastposttime', lastposttime, tid);
 
-				if (!topicData.pinned) {
-					tasks.push(async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids', lastposttime, tid));
-				}
-				async.series(tasks, next);
-			},
-		], function (err) {
-			callback(err);
-		});
+		if (!topicData.deleted) {
+			await Topics.updateRecent(tid, lastposttime);
+		}
+
+		if (!topicData.pinned) {
+			await db.sortedSetAdd('cid:' + topicData.cid + ':tids', lastposttime, tid);
+		}
 	};
 
-	Topics.updateRecent = function (tid, timestamp, callback) {
-		callback = callback || function () {};
-
-		async.waterfall([
-			function (next) {
-				if (plugins.hasListeners('filter:topics.updateRecent')) {
-					plugins.fireHook('filter:topics.updateRecent', { tid: tid, timestamp: timestamp }, next);
-				} else {
-					next(null, { tid: tid, timestamp: timestamp });
-				}
-			},
-			function (data, next) {
-				if (data && data.tid && data.timestamp) {
-					db.sortedSetAdd('topics:recent', data.timestamp, data.tid, next);
-				} else {
-					next();
-				}
-			},
-		], callback);
+	Topics.updateRecent = async function (tid, timestamp) {
+		let data = { tid: tid, timestamp: timestamp };
+		if (plugins.hasListeners('filter:topics.updateRecent')) {
+			data = await plugins.fireHook('filter:topics.updateRecent', { tid: tid, timestamp: timestamp });
+		}
+		if (data && data.tid && data.timestamp) {
+			await db.sortedSetAdd('topics:recent', data.timestamp, data.tid);
+		}
 	};
 };

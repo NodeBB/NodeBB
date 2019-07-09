@@ -1,12 +1,12 @@
 'use strict';
 
 module.exports = function (db, module) {
-	module.sortedSetUnionCard = function (keys, callback) {
+	module.sortedSetUnionCard = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, 0);
+			return 0;
 		}
 
-		db.query({
+		const res = await db.query({
 			name: 'sortedSetUnionCard',
 			text: `
 SELECT COUNT(DISTINCT z."value") c
@@ -16,26 +16,21 @@ SELECT COUNT(DISTINCT z."value") c
         AND o."type" = z."type"
  WHERE o."_key" = ANY($1::TEXT[])`,
 			values: [keys],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, parseInt(res.rows[0].c, 10));
 		});
+		return res.rows[0].c;
 	};
 
-	module.getSortedSetUnion = function (params, callback) {
+	module.getSortedSetUnion = async function (params) {
 		params.sort = 1;
-		getSortedSetUnion(params, callback);
+		return await getSortedSetUnion(params);
 	};
 
-	module.getSortedSetRevUnion = function (params, callback) {
+	module.getSortedSetRevUnion = async function (params) {
 		params.sort = -1;
-		getSortedSetUnion(params, callback);
+		return await getSortedSetUnion(params);
 	};
 
-	function getSortedSetUnion(params, callback) {
+	async function getSortedSetUnion(params) {
 		var sets = params.sets;
 		var start = params.hasOwnProperty('start') ? params.start : 0;
 		var stop = params.hasOwnProperty('stop') ? params.stop : -1;
@@ -54,7 +49,7 @@ SELECT COUNT(DISTINCT z."value") c
 			limit = null;
 		}
 
-		db.query({
+		const res = await db.query({
 			name: 'getSortedSetUnion' + aggregate + (params.sort > 0 ? 'Asc' : 'Desc') + 'WithScores',
 			text: `
 WITH A AS (SELECT z."value",
@@ -73,25 +68,18 @@ SELECT A."value",
  LIMIT $4::INTEGER
 OFFSET $3::INTEGER`,
 			values: [sets, weights, start, limit],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (params.withScores) {
-				res.rows = res.rows.map(function (r) {
-					return {
-						value: r.value,
-						score: parseFloat(r.score),
-					};
-				});
-			} else {
-				res.rows = res.rows.map(function (r) {
-					return r.value;
-				});
-			}
-
-			callback(null, res.rows);
 		});
+
+		if (params.withScores) {
+			res.rows = res.rows.map(function (r) {
+				return {
+					value: r.value,
+					score: parseFloat(r.score),
+				};
+			});
+		} else {
+			res.rows = res.rows.map(r => r.value);
+		}
+		return res.rows;
 	}
 };

@@ -6,6 +6,8 @@ var path = require('path');
 var crypto = require('crypto');
 var async = require('async');
 var winston = require('winston');
+const util = require('util');
+const readFileAsync = util.promisify(fs.readFile);
 
 var file = require('./file');
 var plugins = require('./plugins');
@@ -22,43 +24,31 @@ function requireSharp() {
 	return sharp;
 }
 
-image.resizeImage = function (data, callback) {
+image.resizeImage = async function (data) {
 	if (plugins.hasListeners('filter:image.resize')) {
-		plugins.fireHook('filter:image.resize', {
+		await plugins.fireHook('filter:image.resize', {
 			path: data.path,
 			target: data.target,
 			width: data.width,
 			height: data.height,
 			quality: data.quality,
-		}, function (err) {
-			callback(err);
 		});
 	} else {
-		var sharpImage;
-		async.waterfall([
-			function (next) {
-				fs.readFile(data.path, next);
-			},
-			function (buffer, next) {
-				var sharp = requireSharp();
-				sharpImage = sharp(buffer, {
-					failOnError: true,
-				});
-				sharpImage.metadata(next);
-			},
-			function (metadata, next) {
-				sharpImage.rotate(); // auto-orients based on exif data
-				sharpImage.resize(data.hasOwnProperty('width') ? data.width : null, data.hasOwnProperty('height') ? data.height : null);
-
-				if (data.quality && metadata.format === 'jpeg') {
-					sharpImage.jpeg({ quality: data.quality });
-				}
-
-				sharpImage.toFile(data.target || data.path, next);
-			},
-		], function (err) {
-			callback(err);
+		const sharp = requireSharp();
+		const buffer = await readFileAsync(data.path);
+		const sharpImage = sharp(buffer, {
+			failOnError: true,
 		});
+		const metadata = await sharpImage.metadata();
+
+		sharpImage.rotate(); // auto-orients based on exif data
+		sharpImage.resize(data.hasOwnProperty('width') ? data.width : null, data.hasOwnProperty('height') ? data.height : null);
+
+		if (data.quality && metadata.format === 'jpeg') {
+			sharpImage.jpeg({ quality: data.quality });
+		}
+
+		await sharpImage.toFile(data.target || data.path);
 	}
 };
 
@@ -189,3 +179,5 @@ image.uploadImage = function (filename, folder, image, callback) {
 		},
 	], callback);
 };
+
+require('./promisify')(image);

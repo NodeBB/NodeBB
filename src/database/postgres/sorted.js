@@ -1,9 +1,11 @@
 'use strict';
 
-var async = require('async');
-
 module.exports = function (db, module) {
-	var helpers = module.helpers.postgres;
+	var helpers = require('./helpers');
+	const util = require('util');
+	var Cursor = require('pg-cursor');
+	Cursor.prototype.readAsync = util.promisify(Cursor.prototype.read);
+	const sleep = util.promisify(setTimeout);
 
 	var query = db.query.bind(db);
 
@@ -12,25 +14,25 @@ module.exports = function (db, module) {
 	require('./sorted/union')(db, module);
 	require('./sorted/intersect')(db, module);
 
-	module.getSortedSetRange = function (key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, 1, false, callback);
+	module.getSortedSetRange = async function (key, start, stop) {
+		return await getSortedSetRange(key, start, stop, 1, false);
 	};
 
-	module.getSortedSetRevRange = function (key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, -1, false, callback);
+	module.getSortedSetRevRange = async function (key, start, stop) {
+		return await getSortedSetRange(key, start, stop, -1, false);
 	};
 
-	module.getSortedSetRangeWithScores = function (key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, 1, true, callback);
+	module.getSortedSetRangeWithScores = async function (key, start, stop) {
+		return await getSortedSetRange(key, start, stop, 1, true);
 	};
 
-	module.getSortedSetRevRangeWithScores = function (key, start, stop, callback) {
-		getSortedSetRange(key, start, stop, -1, true, callback);
+	module.getSortedSetRevRangeWithScores = async function (key, start, stop) {
+		return await getSortedSetRange(key, start, stop, -1, true);
 	};
 
-	function getSortedSetRange(key, start, stop, sort, withScores, callback) {
+	async function getSortedSetRange(key, start, stop, sort, withScores) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
 		if (!Array.isArray(key)) {
@@ -38,7 +40,7 @@ module.exports = function (db, module) {
 		}
 
 		if (start < 0 && start > stop) {
-			return callback(null, []);
+			return [];
 		}
 
 		var reverse = false;
@@ -58,7 +60,7 @@ module.exports = function (db, module) {
 			limit = null;
 		}
 
-		query({
+		const res = await query({
 			name: 'getSortedSetRangeWithScores' + (sort > 0 ? 'Asc' : 'Desc'),
 			text: `
 SELECT z."value",
@@ -72,51 +74,40 @@ SELECT z."value",
  LIMIT $3::INTEGER
 OFFSET $2::INTEGER`,
 			values: [key, start, limit],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (reverse) {
-				res.rows.reverse();
-			}
-
-			if (withScores) {
-				res.rows = res.rows.map(function (r) {
-					return {
-						value: r.value,
-						score: parseFloat(r.score),
-					};
-				});
-			} else {
-				res.rows = res.rows.map(function (r) {
-					return r.value;
-				});
-			}
-
-			callback(null, res.rows);
 		});
+
+		if (reverse) {
+			res.rows.reverse();
+		}
+
+		if (withScores) {
+			res.rows = res.rows.map(r => ({ value: r.value, score: parseFloat(r.score) }));
+		} else {
+			res.rows = res.rows.map(r => r.value);
+		}
+
+		return res.rows;
 	}
 
-	module.getSortedSetRangeByScore = function (key, start, count, min, max, callback) {
-		getSortedSetRangeByScore(key, start, count, min, max, 1, false, callback);
+	module.getSortedSetRangeByScore = async function (key, start, count, min, max) {
+		return await getSortedSetRangeByScore(key, start, count, min, max, 1, false);
 	};
 
-	module.getSortedSetRevRangeByScore = function (key, start, count, max, min, callback) {
-		getSortedSetRangeByScore(key, start, count, min, max, -1, false, callback);
+	module.getSortedSetRevRangeByScore = async function (key, start, count, max, min) {
+		return await getSortedSetRangeByScore(key, start, count, min, max, -1, false);
 	};
 
-	module.getSortedSetRangeByScoreWithScores = function (key, start, count, min, max, callback) {
-		getSortedSetRangeByScore(key, start, count, min, max, 1, true, callback);
+	module.getSortedSetRangeByScoreWithScores = async function (key, start, count, min, max) {
+		return await getSortedSetRangeByScore(key, start, count, min, max, 1, true);
 	};
 
-	module.getSortedSetRevRangeByScoreWithScores = function (key, start, count, max, min, callback) {
-		getSortedSetRangeByScore(key, start, count, min, max, -1, true, callback);
+	module.getSortedSetRevRangeByScoreWithScores = async function (key, start, count, max, min) {
+		return await getSortedSetRangeByScore(key, start, count, min, max, -1, true);
 	};
 
-	function getSortedSetRangeByScore(key, start, count, min, max, sort, withScores, callback) {
+	async function getSortedSetRangeByScore(key, start, count, min, max, sort, withScores) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
 		if (!Array.isArray(key)) {
@@ -134,7 +125,7 @@ OFFSET $2::INTEGER`,
 			max = null;
 		}
 
-		query({
+		const res = await query({
 			name: 'getSortedSetRangeByScoreWithScores' + (sort > 0 ? 'Asc' : 'Desc'),
 			text: `
 SELECT z."value",
@@ -150,31 +141,20 @@ SELECT z."value",
  LIMIT $3::INTEGER
 OFFSET $2::INTEGER`,
 			values: [key, start, count, min, max],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (withScores) {
-				res.rows = res.rows.map(function (r) {
-					return {
-						value: r.value,
-						score: parseFloat(r.score),
-					};
-				});
-			} else {
-				res.rows = res.rows.map(function (r) {
-					return r.value;
-				});
-			}
-
-			return callback(null, res.rows);
 		});
+
+		if (withScores) {
+			res.rows = res.rows.map(r => ({ value: r.value, score: parseFloat(r.score) }));
+		} else {
+			res.rows = res.rows.map(r => r.value);
+		}
+
+		return res.rows;
 	}
 
-	module.sortedSetCount = function (key, min, max, callback) {
+	module.sortedSetCount = async function (key, min, max) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
 		if (min === '-inf') {
@@ -184,7 +164,7 @@ OFFSET $2::INTEGER`,
 			max = null;
 		}
 
-		query({
+		const res = await query({
 			name: 'sortedSetCount',
 			text: `
 SELECT COUNT(*) c
@@ -196,21 +176,17 @@ SELECT COUNT(*) c
    AND (z."score" >= $2::NUMERIC OR $2::NUMERIC IS NULL)
    AND (z."score" <= $3::NUMERIC OR $3::NUMERIC IS NULL)`,
 			values: [key, min, max],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, parseInt(res.rows[0].c, 10));
 		});
+
+		return parseInt(res.rows[0].c, 10);
 	};
 
-	module.sortedSetCard = function (key, callback) {
+	module.sortedSetCard = async function (key) {
 		if (!key) {
-			return callback(null, 0);
+			return 0;
 		}
 
-		query({
+		const res = await query({
 			name: 'sortedSetCard',
 			text: `
 SELECT COUNT(*) c
@@ -220,21 +196,17 @@ SELECT COUNT(*) c
         AND o."type" = z."type"
  WHERE o."_key" = $1::TEXT`,
 			values: [key],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, parseInt(res.rows[0].c, 10));
 		});
+
+		return parseInt(res.rows[0].c, 10);
 	};
 
-	module.sortedSetsCard = function (keys, callback) {
+	module.sortedSetsCard = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, []);
+			return [];
 		}
 
-		query({
+		const res = await query({
 			name: 'sortedSetsCard',
 			text: `
 SELECT o."_key" k,
@@ -246,50 +218,38 @@ SELECT o."_key" k,
  WHERE o."_key" = ANY($1::TEXT[])
  GROUP BY o."_key"`,
 			values: [keys],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
+		});
 
-			callback(null, keys.map(function (k) {
-				return parseInt((res.rows.find(function (r) {
-					return r.k === k;
-				}) || { c: 0 }).c, 10);
-			}));
+		return keys.map(function (k) {
+			return parseInt((res.rows.find(r => r.k === k) || { c: 0 }).c, 10);
 		});
 	};
 
-	module.sortedSetsCardSum = function (keys, callback) {
+	module.sortedSetsCardSum = async function (keys) {
 		if (!keys || (Array.isArray(keys) && !keys.length)) {
-			return callback(null, 0);
+			return 0;
 		}
 		if (!Array.isArray(keys)) {
 			keys = [keys];
 		}
-		module.sortedSetsCard(keys, function (err, counts) {
-			if (err) {
-				return callback(err);
-			}
-			const sum = counts.reduce(function (acc, val) { return acc + val; }, 0);
-			callback(null, sum);
-		});
+		const counts = await module.sortedSetsCard(keys);
+		const sum = counts.reduce((acc, val) => acc + val, 0);
+		return sum;
 	};
 
-	module.sortedSetRank = function (key, value, callback) {
-		getSortedSetRank('ASC', [key], [value], function (err, result) {
-			callback(err, result ? result[0] : null);
-		});
+	module.sortedSetRank = async function (key, value) {
+		const result = await getSortedSetRank('ASC', [key], [value]);
+		return result ? result[0] : null;
 	};
 
-	module.sortedSetRevRank = function (key, value, callback) {
-		getSortedSetRank('DESC', [key], [value], function (err, result) {
-			callback(err, result ? result[0] : null);
-		});
+	module.sortedSetRevRank = async function (key, value) {
+		const result = await getSortedSetRank('DESC', [key], [value]);
+		return result ? result[0] : null;
 	};
 
-	function getSortedSetRank(sort, keys, values, callback) {
+	async function getSortedSetRank(sort, keys, values) {
 		values = values.map(helpers.valueToString);
-		query({
+		const res = await query({
 			name: 'getSortedSetRank' + sort,
 			text: `
 SELECT (SELECT r
@@ -306,55 +266,51 @@ SELECT (SELECT r
   FROM UNNEST($1::TEXT[], $2::TEXT[]) WITH ORDINALITY kvi(k, v, i)
  ORDER BY kvi.i ASC`,
 			values: [keys, values],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, res.rows.map(function (r) { return r.r === null ? null : parseFloat(r.r); }));
 		});
+
+		return res.rows.map(r => (r.r === null ? null : parseFloat(r.r)));
 	}
 
-	module.sortedSetsRanks = function (keys, values, callback) {
+	module.sortedSetsRanks = async function (keys, values) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, []);
+			return [];
 		}
 
-		getSortedSetRank('ASC', keys, values, callback);
+		return await getSortedSetRank('ASC', keys, values);
 	};
 
-	module.sortedSetsRevRanks = function (keys, values, callback) {
+	module.sortedSetsRevRanks = async function (keys, values) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, []);
+			return [];
 		}
 
-		getSortedSetRank('DESC', keys, values, callback);
+		return await getSortedSetRank('DESC', keys, values);
 	};
 
-	module.sortedSetRanks = function (key, values, callback) {
+	module.sortedSetRanks = async function (key, values) {
 		if (!Array.isArray(values) || !values.length) {
-			return callback(null, []);
+			return [];
 		}
 
-		getSortedSetRank('ASC', new Array(values.length).fill(key), values, callback);
+		return await getSortedSetRank('ASC', new Array(values.length).fill(key), values);
 	};
 
-	module.sortedSetRevRanks = function (key, values, callback) {
+	module.sortedSetRevRanks = async function (key, values) {
 		if (!Array.isArray(values) || !values.length) {
-			return callback(null, []);
+			return [];
 		}
 
-		getSortedSetRank('DESC', new Array(values.length).fill(key), values, callback);
+		return await getSortedSetRank('DESC', new Array(values.length).fill(key), values);
 	};
 
-	module.sortedSetScore = function (key, value, callback) {
+	module.sortedSetScore = async function (key, value) {
 		if (!key) {
-			return callback(null, null);
+			return null;
 		}
 
 		value = helpers.valueToString(value);
 
-		query({
+		const res = await query({
 			name: 'sortedSetScore',
 			text: `
 SELECT z."score" s
@@ -365,27 +321,21 @@ SELECT z."score" s
  WHERE o."_key" = $1::TEXT
    AND z."value" = $2::TEXT`,
 			values: [key, value],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (res.rows.length) {
-				return callback(null, parseFloat(res.rows[0].s));
-			}
-
-			callback(null, null);
 		});
+		if (res.rows.length) {
+			return parseFloat(res.rows[0].s);
+		}
+		return null;
 	};
 
-	module.sortedSetsScore = function (keys, value, callback) {
+	module.sortedSetsScore = async function (keys, value) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, []);
+			return [];
 		}
 
 		value = helpers.valueToString(value);
 
-		query({
+		const res = await query({
 			name: 'sortedSetsScore',
 			text: `
 SELECT o."_key" k,
@@ -397,31 +347,24 @@ SELECT o."_key" k,
  WHERE o."_key" = ANY($1::TEXT[])
    AND z."value" = $2::TEXT`,
 			values: [keys, value],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
+		});
 
-			callback(null, keys.map(function (k) {
-				var s = res.rows.find(function (r) {
-					return r.k === k;
-				});
-
-				return s ? parseFloat(s.s) : null;
-			}));
+		return keys.map(function (k) {
+			var s = res.rows.find(r => r.k === k);
+			return s ? parseFloat(s.s) : null;
 		});
 	};
 
-	module.sortedSetScores = function (key, values, callback) {
+	module.sortedSetScores = async function (key, values) {
 		if (!key) {
-			return setImmediate(callback, null, null);
+			return null;
 		}
 		if (!values.length) {
-			return setImmediate(callback, null, []);
+			return [];
 		}
 		values = values.map(helpers.valueToString);
 
-		query({
+		const res = await query({
 			name: 'sortedSetScores',
 			text: `
 SELECT z."value" v,
@@ -433,29 +376,22 @@ SELECT z."value" v,
  WHERE o."_key" = $1::TEXT
    AND z."value" = ANY($2::TEXT[])`,
 			values: [key, values],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
+		});
 
-			callback(null, values.map(function (v) {
-				var s = res.rows.find(function (r) {
-					return r.v === v;
-				});
-
-				return s ? parseFloat(s.s) : null;
-			}));
+		return values.map(function (v) {
+			var s = res.rows.find(r => r.v === v);
+			return s ? parseFloat(s.s) : null;
 		});
 	};
 
-	module.isSortedSetMember = function (key, value, callback) {
+	module.isSortedSetMember = async function (key, value) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
 		value = helpers.valueToString(value);
 
-		query({
+		const res = await query({
 			name: 'isSortedSetMember',
 			text: `
 SELECT 1
@@ -466,23 +402,19 @@ SELECT 1
  WHERE o."_key" = $1::TEXT
    AND z."value" = $2::TEXT`,
 			values: [key, value],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, !!res.rows.length);
 		});
+
+		return !!res.rows.length;
 	};
 
-	module.isSortedSetMembers = function (key, values, callback) {
+	module.isSortedSetMembers = async function (key, values) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
 		values = values.map(helpers.valueToString);
 
-		query({
+		const res = await query({
 			name: 'isSortedSetMembers',
 			text: `
 SELECT z."value" v
@@ -493,27 +425,21 @@ SELECT z."value" v
  WHERE o."_key" = $1::TEXT
    AND z."value" = ANY($2::TEXT[])`,
 			values: [key, values],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
+		});
 
-			callback(null, values.map(function (v) {
-				return res.rows.some(function (r) {
-					return r.v === v;
-				});
-			}));
+		return values.map(function (v) {
+			return res.rows.some(r => r.v === v);
 		});
 	};
 
-	module.isMemberOfSortedSets = function (keys, value, callback) {
+	module.isMemberOfSortedSets = async function (keys, value) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return setImmediate(callback, null, []);
+			return [];
 		}
 
 		value = helpers.valueToString(value);
 
-		query({
+		const res = await query({
 			name: 'isMemberOfSortedSets',
 			text: `
 SELECT o."_key" k
@@ -524,25 +450,19 @@ SELECT o."_key" k
  WHERE o."_key" = ANY($1::TEXT[])
    AND z."value" = $2::TEXT`,
 			values: [keys, value],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
+		});
 
-			callback(null, keys.map(function (k) {
-				return res.rows.some(function (r) {
-					return r.k === k;
-				});
-			}));
+		return keys.map(function (k) {
+			return res.rows.some(r => r.k === k);
 		});
 	};
 
-	module.getSortedSetsMembers = function (keys, callback) {
+	module.getSortedSetsMembers = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
-			return callback(null, []);
+			return [];
 		}
 
-		query({
+		const res = await query({
 			name: 'getSortedSetsMembers',
 			text: `
 SELECT o."_key" k,
@@ -554,61 +474,50 @@ SELECT o."_key" k,
  WHERE o."_key" = ANY($1::TEXT[])
  GROUP BY o."_key"`,
 			values: [keys],
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
+		});
 
-			callback(null, keys.map(function (k) {
-				return (res.rows.find(function (r) {
-					return r.k === k;
-				}) || { m: [] }).m;
-			}));
+		return keys.map(function (k) {
+			return (res.rows.find(r => r.k === k) || { m: [] }).m;
 		});
 	};
 
-	module.sortedSetIncrBy = function (key, increment, value, callback) {
-		callback = callback || helpers.noop;
-
+	module.sortedSetIncrBy = async function (key, increment, value) {
 		if (!key) {
-			return callback();
+			return;
 		}
 
 		value = helpers.valueToString(value);
 		increment = parseFloat(increment);
 
-		module.transaction(function (tx, done) {
-			async.waterfall([
-				async.apply(helpers.ensureLegacyObjectType, tx.client, key, 'zset'),
-				async.apply(tx.client.query.bind(tx.client), {
-					name: 'sortedSetIncrBy',
-					text: `
+		return await module.transaction(async function (client) {
+			var query = client.query.bind(client);
+			await helpers.ensureLegacyObjectType(client, key, 'zset');
+			const res = await query({
+				name: 'sortedSetIncrBy',
+				text: `
 INSERT INTO "legacy_zset" ("_key", "value", "score")
 VALUES ($1::TEXT, $2::TEXT, $3::NUMERIC)
-    ON CONFLICT ("_key", "value")
-    DO UPDATE SET "score" = "legacy_zset"."score" + $3::NUMERIC
+ON CONFLICT ("_key", "value")
+DO UPDATE SET "score" = "legacy_zset"."score" + $3::NUMERIC
 RETURNING "score" s`,
-					values: [key, value, increment],
-				}),
-				function (res, next) {
-					next(null, parseFloat(res.rows[0].s));
-				},
-			], done);
-		}, callback);
+				values: [key, value, increment],
+			});
+			return parseFloat(res.rows[0].s);
+		});
 	};
 
-	module.getSortedSetRangeByLex = function (key, min, max, start, count, callback) {
-		sortedSetLex(key, min, max, 1, start, count, callback);
+	module.getSortedSetRangeByLex = async function (key, min, max, start, count) {
+		return await sortedSetLex(key, min, max, 1, start, count);
 	};
 
-	module.getSortedSetRevRangeByLex = function (key, max, min, start, count, callback) {
-		sortedSetLex(key, min, max, -1, start, count, callback);
+	module.getSortedSetRevRangeByLex = async function (key, max, min, start, count) {
+		return await sortedSetLex(key, min, max, -1, start, count);
 	};
 
-	module.sortedSetLexCount = function (key, min, max, callback) {
+	module.sortedSetLexCount = async function (key, min, max) {
 		var q = buildLexQuery(key, min, max);
 
-		query({
+		const res = await query({
 			name: 'sortedSetLexCount' + q.suffix,
 			text: `
 SELECT COUNT(*) c
@@ -618,26 +527,19 @@ SELECT COUNT(*) c
         AND o."type" = z."type"
  WHERE ` + q.where,
 			values: q.values,
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, parseInt(res.rows[0].c, 10));
 		});
+
+		return parseInt(res.rows[0].c, 10);
 	};
 
-	function sortedSetLex(key, min, max, sort, start, count, callback) {
-		if (!callback) {
-			callback = start;
-			start = 0;
-			count = 0;
-		}
+	async function sortedSetLex(key, min, max, sort, start, count) {
+		start = start !== undefined ? start : 0;
+		count = count !== undefined ? count : 0;
 
 		var q = buildLexQuery(key, min, max);
 		q.values.push(start);
 		q.values.push(count <= 0 ? null : count);
-		query({
+		const res = await query({
 			name: 'sortedSetLex' + (sort > 0 ? 'Asc' : 'Desc') + q.suffix,
 			text: `
 SELECT z."value" v
@@ -650,22 +552,14 @@ SELECT z."value" v
  LIMIT $` + q.values.length + `::INTEGER
 OFFSET $` + (q.values.length - 1) + `::INTEGER`,
 			values: q.values,
-		}, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, res.rows.map(function (r) {
-				return r.v;
-			}));
 		});
+
+		return res.rows.map(r => r.v);
 	}
 
-	module.sortedSetRemoveRangeByLex = function (key, min, max, callback) {
-		callback = callback || helpers.noop;
-
+	module.sortedSetRemoveRangeByLex = async function (key, min, max) {
 		var q = buildLexQuery(key, min, max);
-		query({
+		await query({
 			name: 'sortedSetRemoveRangeByLex' + q.suffix,
 			text: `
 DELETE FROM "legacy_zset" z
@@ -674,8 +568,6 @@ DELETE FROM "legacy_zset" z
    AND o."type" = z."type"
    AND ` + q.where,
 			values: q.values,
-		}, function (err) {
-			callback(err);
 		});
 	};
 
@@ -721,16 +613,10 @@ DELETE FROM "legacy_zset" z
 		return q;
 	}
 
-	module.processSortedSet = function (setKey, process, options, callback) {
-		var Cursor = require('pg-cursor');
-
-		db.connect(function (err, client, done) {
-			if (err) {
-				return callback(err);
-			}
-
-			var batchSize = (options || {}).batch || 100;
-			var query = client.query(new Cursor(`
+	module.processSortedSet = async function (setKey, process, options) {
+		const client = await db.connect();
+		var batchSize = (options || {}).batch || 100;
+		var cursor = client.query(new Cursor(`
 SELECT z."value", z."score"
   FROM "legacy_object_live" o
  INNER JOIN "legacy_zset" z
@@ -739,43 +625,32 @@ SELECT z."value", z."score"
  WHERE o."_key" = $1::TEXT
  ORDER BY z."score" ASC, z."value" ASC`, [setKey]));
 
-			var isDone = false;
+		if (process && process.constructor && process.constructor.name !== 'AsyncFunction') {
+			process = util.promisify(process);
+		}
 
-			async.whilst(function (next) {
-				next(null, !isDone);
-			}, function (next) {
-				query.read(batchSize, function (err, rows) {
-					if (err) {
-						return next(err);
-					}
+		while (true) {
+			/* eslint-disable no-await-in-loop */
+			let rows = await cursor.readAsync(batchSize);
+			if (!rows.length) {
+				client.release();
+				return;
+			}
 
-					if (!rows.length) {
-						isDone = true;
-						return next();
-					}
-
-					rows = rows.map(function (row) {
-						return options.withScores ? row : row.value;
-					});
-
-					process(rows, function (err) {
-						if (err) {
-							return query.close(function () {
-								next(err);
-							});
-						}
-
-						if (options.interval) {
-							setTimeout(next, options.interval);
-						} else {
-							next();
-						}
-					});
-				});
-			}, function (err) {
-				done();
-				callback(err);
-			});
-		});
+			if (options.withScores) {
+				rows = rows.map(r => ({ value: r.value, score: parseFloat(r.score) }));
+			} else {
+				rows = rows.map(r => r.value);
+			}
+			try {
+				await process(rows);
+			} catch (err) {
+				await query.close();
+				throw err;
+			}
+			if (options.interval) {
+				await sleep(options.interval);
+			}
+		}
 	};
 };

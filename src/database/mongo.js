@@ -59,9 +59,6 @@ mongoModule.questions = [
 	},
 ];
 
-mongoModule.helpers = mongoModule.helpers || {};
-mongoModule.helpers.mongo = require('./mongo/helpers');
-
 mongoModule.getConnectionString = function (mongo) {
 	mongo = mongo || nconf.get('mongo');
 	var usernamePassword = '';
@@ -130,7 +127,6 @@ mongoModule.init = function (callback) {
 		require('./mongo/transaction')(db, mongoModule);
 
 		mongoModule.async = require('../promisify')(mongoModule, ['client', 'sessionStore']);
-
 		callback();
 	});
 };

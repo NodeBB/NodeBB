@@ -6,8 +6,6 @@ var nconf = require('nconf');
 var session = require('express-session');
 var _ = require('lodash');
 var semver = require('semver');
-var dbNamespace = require('continuation-local-storage').createNamespace('postgres');
-
 
 var postgresModule = module.exports;
 
@@ -40,9 +38,6 @@ postgresModule.questions = [
 		default: nconf.get('postgres:database') || 'nodebb',
 	},
 ];
-
-postgresModule.helpers = postgresModule.helpers || {};
-postgresModule.helpers.postgres = require('./postgres/helpers');
 
 postgresModule.getConnectionOptions = function (postgres) {
 	postgres = postgres || nconf.get('postgres');
@@ -79,17 +74,6 @@ postgresModule.init = function (callback) {
 
 	const db = new Pool(connOptions);
 
-	db.on('connect', function (client) {
-		var realQuery = client.query;
-		client.query = function () {
-			var args = Array.prototype.slice.call(arguments, 0);
-			if (dbNamespace.active && typeof args[args.length - 1] === 'function') {
-				args[args.length - 1] = dbNamespace.bind(args[args.length - 1]);
-			}
-			return realQuery.apply(client, args);
-		};
-	});
-
 	db.connect(function (err, client, release) {
 		if (err) {
 			winston.error('NodeBB could not connect to your PostgreSQL database. PostgreSQL returned the following error: ' + err.message);
@@ -99,7 +83,7 @@ postgresModule.init = function (callback) {
 		postgresModule.pool = db;
 		Object.defineProperty(postgresModule, 'client', {
 			get: function () {
-				return (dbNamespace.active && dbNamespace.get('db')) || db;
+				return db;
 			},
 			configurable: true,
 		});
@@ -124,10 +108,9 @@ postgresModule.init = function (callback) {
 			require('./postgres/sets')(wrappedDB, postgresModule);
 			require('./postgres/sorted')(wrappedDB, postgresModule);
 			require('./postgres/list')(wrappedDB, postgresModule);
-			require('./postgres/transaction')(db, dbNamespace, postgresModule);
+			require('./postgres/transaction')(db, postgresModule);
 
-			postgresModule.async = require('../promisify')(postgresModule, ['client', 'sessionStore', 'pool']);
-
+			postgresModule.async = require('../promisify')(postgresModule, ['client', 'sessionStore', 'pool', 'transaction']);
 			callback();
 		});
 	});
@@ -139,17 +122,6 @@ postgresModule.connect = function (options, callback) {
 	var connOptions = postgresModule.getConnectionOptions(options);
 
 	const db = new Pool(connOptions);
-
-	db.on('connect', function (client) {
-		var realQuery = client.query;
-		client.query = function () {
-			var args = Array.prototype.slice.call(arguments, 0);
-			if (dbNamespace.active && typeof args[args.length - 1] === 'function') {
-				args[args.length - 1] = dbNamespace.bind(args[args.length - 1]);
-			}
-			return realQuery.apply(client, args);
-		};
-	});
 
 	db.connect(function (err) {
 		callback(err, db);

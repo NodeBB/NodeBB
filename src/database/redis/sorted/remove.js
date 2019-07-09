@@ -2,46 +2,36 @@
 'use strict';
 
 module.exports = function (redisClient, module) {
-	var helpers = module.helpers.redis;
+	var helpers = require('../helpers');
 
-	module.sortedSetRemove = function (key, value, callback) {
-		callback = callback || function () {};
-		if (!value) {
-			return callback();
+	module.sortedSetRemove = async function (key, value) {
+		if (!key) {
+			return;
 		}
-		if (!Array.isArray(value)) {
+		const isValueArray = Array.isArray(value);
+		if (!value || (isValueArray && !value.length)) {
+			return;
+		}
+		if (!isValueArray) {
 			value = [value];
 		}
 
 		if (Array.isArray(key)) {
-			var batch = redisClient.batch();
-			key.forEach(function (key) {
-				batch.zrem(key, value);
-			});
-			batch.exec(function (err) {
-				callback(err);
-			});
+			const batch = redisClient.batch();
+			key.forEach(k => batch.zrem(k, value));
+			await helpers.execBatch(batch);
 		} else {
-			helpers.execKeyValues(redisClient, 'batch', 'zrem', key, value, function (err) {
-				callback(err);
-			});
+			await redisClient.async.zrem(key, value);
 		}
 	};
 
-	module.sortedSetsRemove = function (keys, value, callback) {
-		helpers.execKeysValue(redisClient, 'batch', 'zrem', keys, value, function (err) {
-			callback(err);
-		});
+	module.sortedSetsRemove = async function (keys, value) {
+		await module.sortedSetRemove(keys, value);
 	};
 
-	module.sortedSetsRemoveRangeByScore = function (keys, min, max, callback) {
-		callback = callback || function () {};
+	module.sortedSetsRemoveRangeByScore = async function (keys, min, max) {
 		var batch = redisClient.batch();
-		for (var i = 0; i < keys.length; i += 1) {
-			batch.zremrangebyscore(keys[i], min, max);
-		}
-		batch.exec(function (err) {
-			callback(err);
-		});
+		keys.forEach(k => batch.zremrangebyscore(k, min, max));
+		await helpers.execBatch(batch);
 	};
 };

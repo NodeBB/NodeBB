@@ -14,9 +14,9 @@ var utils = require('../utils');
 module.exports = function (Topics) {
 	var stripTeaserTags = utils.stripTags.concat(['img']);
 
-	Topics.getTeasers = function (topics, options, callback) {
+	Topics.getTeasers = async function (topics, options) {
 		if (!Array.isArray(topics) || !topics.length) {
-			return callback(null, []);
+			return [];
 		}
 		let uid = options;
 		let teaserPost = meta.config.teaserPost;
@@ -27,7 +27,6 @@ module.exports = function (Topics) {
 
 		var counts = [];
 		var teaserPids = [];
-		var postData;
 		var tidToPost = {};
 
 		topics.forEach(function (topic) {
@@ -46,151 +45,112 @@ module.exports = function (Topics) {
 			}
 		});
 
-		async.waterfall([
-			function (next) {
-				posts.getPostsFields(teaserPids, ['pid', 'uid', 'timestamp', 'tid', 'content'], next);
-			},
-			function (_postData, next) {
-				_postData = _postData.filter(post => post && post.pid);
-				handleBlocks(uid, _postData, next);
-			},
-			function (_postData, next) {
-				postData = _postData.filter(Boolean);
-				const uids = _.uniq(postData.map(post => post.uid));
+		let postData = await posts.getPostsFields(teaserPids, ['pid', 'uid', 'timestamp', 'tid', 'content']);
+		postData = postData.filter(post => post && post.pid);
+		postData = await handleBlocks(uid, postData);
+		postData = postData.filter(Boolean);
+		const uids = _.uniq(postData.map(post => post.uid));
 
-				user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
-			},
-			function (usersData, next) {
-				var users = {};
-				usersData.forEach(function (user) {
-					users[user.uid] = user;
-				});
+		const usersData = await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture']);
 
-				async.each(postData, function (post, next) {
-					// If the post author isn't represented in the retrieved users' data, then it means they were deleted, assume guest.
-					if (!users.hasOwnProperty(post.uid)) {
-						post.uid = 0;
-					}
+		var users = {};
+		usersData.forEach(function (user) {
+			users[user.uid] = user;
+		});
+		postData.forEach(function (post) {
+			// If the post author isn't represented in the retrieved users' data, then it means they were deleted, assume guest.
+			if (!users.hasOwnProperty(post.uid)) {
+				post.uid = 0;
+			}
 
-					post.user = users[post.uid];
-					post.timestampISO = utils.toISOString(post.timestamp);
-					tidToPost[post.tid] = post;
-					posts.parsePost(post, next);
-				}, next);
-			},
-			function (next) {
-				var teasers = topics.map(function (topic, index) {
-					if (!topic) {
-						return null;
-					}
-					if (tidToPost[topic.tid]) {
-						tidToPost[topic.tid].index = meta.config.teaserPost === 'first' ? 1 : counts[index];
-						if (tidToPost[topic.tid].content) {
-							tidToPost[topic.tid].content = utils.stripHTMLTags(tidToPost[topic.tid].content, stripTeaserTags);
-						}
-					}
-					return tidToPost[topic.tid];
-				});
+			post.user = users[post.uid];
+			post.timestampISO = utils.toISOString(post.timestamp);
+			tidToPost[post.tid] = post;
+		});
+		await Promise.all(postData.map(p => posts.parsePost(p)));
 
-				plugins.fireHook('filter:teasers.get', { teasers: teasers, uid: uid }, next);
-			},
-			function (data, next) {
-				next(null, data.teasers);
-			},
-		], callback);
+		var teasers = topics.map(function (topic, index) {
+			if (!topic) {
+				return null;
+			}
+			if (tidToPost[topic.tid]) {
+				tidToPost[topic.tid].index = meta.config.teaserPost === 'first' ? 1 : counts[index];
+				if (tidToPost[topic.tid].content) {
+					tidToPost[topic.tid].content = utils.stripHTMLTags(tidToPost[topic.tid].content, stripTeaserTags);
+				}
+			}
+			return tidToPost[topic.tid];
+		});
+
+		const result = await plugins.fireHook('filter:teasers.get', { teasers: teasers, uid: uid });
+		return result.teasers;
 	};
 
-	function handleBlocks(uid, teasers, callback) {
-		user.blocks.list(uid, function (err, blockedUids) {
-			if (err || !blockedUids.length) {
-				return callback(err, teasers);
+	async function handleBlocks(uid, teasers) {
+		const blockedUids = await user.blocks.list(uid);
+		if (!blockedUids.length) {
+			return teasers;
+		}
+
+		return await async.mapSeries(teasers, async function (postData) {
+			if (blockedUids.includes(parseInt(postData.uid, 10))) {
+				return await getPreviousNonBlockedPost(postData, blockedUids);
 			}
-			async.mapSeries(teasers, function (postData, nextPost) {
-				if (blockedUids.includes(parseInt(postData.uid, 10))) {
-					getPreviousNonBlockedPost(postData, blockedUids, nextPost);
-				} else {
-					setImmediate(nextPost, null, postData);
-				}
-			}, callback);
+			return postData;
 		});
 	}
 
-	function getPreviousNonBlockedPost(postData, blockedUids, callback) {
+	async function getPreviousNonBlockedPost(postData, blockedUids) {
 		let isBlocked = false;
 		let prevPost = postData;
 		const postsPerIteration = 5;
 		let start = 0;
 		let stop = start + postsPerIteration - 1;
 		let checkedAllReplies = false;
-		async.doWhilst(function (next) {
-			async.waterfall([
-				function (next) {
-					db.getSortedSetRevRange('tid:' + postData.tid + ':posts', start, stop, next);
-				},
-				function (pids, next) {
-					if (pids.length) {
-						return next(null, pids);
-					}
 
-					checkedAllReplies = true;
-					Topics.getTopicField(postData.tid, 'mainPid', function (err, mainPid) {
-						next(err, [mainPid]);
-					});
-				},
-				function (pids, next) {
-					posts.getPostsFields(pids, ['pid', 'uid', 'timestamp', 'tid', 'content'], next);
-				},
-				function (prevPosts, next) {
-					isBlocked = prevPosts.every(function (post) {
-						const isPostBlocked = blockedUids.includes(parseInt(post.uid, 10));
-						prevPost = !isPostBlocked ? post : prevPost;
-						return isPostBlocked;
-					});
-					start += postsPerIteration;
-					stop = start + postsPerIteration - 1;
-					next();
-				},
-			], next);
-		}, function (next) {
-			next(null, isBlocked && prevPost && prevPost.pid && !checkedAllReplies);
-		}, function (err) {
-			callback(err, prevPost);
-		});
+		function checkBlocked(post) {
+			const isPostBlocked = blockedUids.includes(parseInt(post.uid, 10));
+			prevPost = !isPostBlocked ? post : prevPost;
+			return isPostBlocked;
+		}
+
+		do {
+			/* eslint-disable no-await-in-loop */
+			let pids = await db.getSortedSetRevRange('tid:' + postData.tid + ':posts', start, stop);
+			if (!pids.length) {
+				checkedAllReplies = true;
+				const mainPid = await Topics.getTopicField(postData.tid, 'mainPid');
+				pids = [mainPid];
+			}
+			const prevPosts = await posts.getPostsFields(pids, ['pid', 'uid', 'timestamp', 'tid', 'content']);
+			isBlocked = prevPosts.every(checkBlocked);
+			start += postsPerIteration;
+			stop = start + postsPerIteration - 1;
+		} while (isBlocked && prevPost && prevPost.pid && !checkedAllReplies);
+
+		return prevPost;
 	}
 
-	Topics.getTeasersByTids = function (tids, uid, callback) {
+	Topics.getTeasersByTids = async function (tids, uid) {
 		if (!Array.isArray(tids) || !tids.length) {
-			return callback(null, []);
+			return [];
 		}
-		async.waterfall([
-			function (next) {
-				Topics.getTopicsFields(tids, ['tid', 'postcount', 'teaserPid', 'mainPid'], next);
-			},
-			function (topics, next) {
-				Topics.getTeasers(topics, uid, next);
-			},
-		], callback);
+		const topics = await Topics.getTopicsFields(tids, ['tid', 'postcount', 'teaserPid', 'mainPid']);
+		return await Topics.getTeasers(topics, uid);
 	};
 
-	Topics.getTeaser = function (tid, uid, callback) {
-		Topics.getTeasersByTids([tid], uid, function (err, teasers) {
-			callback(err, Array.isArray(teasers) && teasers.length ? teasers[0] : null);
-		});
+	Topics.getTeaser = async function (tid, uid) {
+		const teasers = await Topics.getTeasersByTids([tid], uid);
+		return Array.isArray(teasers) && teasers.length ? teasers[0] : null;
 	};
 
-	Topics.updateTeaser = function (tid, callback) {
-		async.waterfall([
-			function (next) {
-				Topics.getLatestUndeletedReply(tid, next);
-			},
-			function (pid, next) {
-				pid = pid || null;
-				if (pid) {
-					Topics.setTopicField(tid, 'teaserPid', pid, next);
-				} else {
-					Topics.deleteTopicField(tid, 'teaserPid', next);
-				}
-			},
-		], callback);
+	Topics.updateTeaser = async function (tid) {
+		let pid = await Topics.getLatestUndeletedReply(tid);
+		pid = pid || null;
+		if (pid) {
+			await Topics.setTopicField(tid, 'teaserPid', pid);
+		} else {
+			await Topics.deleteTopicField(tid, 'teaserPid');
+		}
 	};
 };

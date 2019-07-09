@@ -201,17 +201,26 @@ describe('List methods', function () {
 		});
 	});
 
-
-	it('should get the length of a list', function (done) {
-		db.listAppend('getLengthList', 1, function (err) {
-			assert.ifError(err);
-			db.listAppend('getLengthList', 2, function (err) {
+	describe('listLength', function () {
+		it('should get the length of a list', function (done) {
+			db.listAppend('getLengthList', 1, function (err) {
 				assert.ifError(err);
-				db.listLength('getLengthList', function (err, length) {
+				db.listAppend('getLengthList', 2, function (err) {
 					assert.ifError(err);
-					assert.equal(length, 2);
-					done();
+					db.listLength('getLengthList', function (err, length) {
+						assert.ifError(err);
+						assert.equal(length, 2);
+						done();
+					});
 				});
+			});
+		});
+
+		it('should return 0 if list does not have any elements', function (done) {
+			db.listLength('doesnotexist', function (err, length) {
+				assert.ifError(err);
+				assert.strictEqual(length, 0);
+				done();
 			});
 		});
 	});
