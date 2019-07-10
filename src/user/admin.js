@@ -1,7 +1,6 @@
 
 'use strict';
 
-var async = require('async');
 var winston = require('winston');
 var validator = require('validator');
 
@@ -9,9 +8,9 @@ var db = require('../database');
 var plugins = require('../plugins');
 
 module.exports = function (User) {
-	User.logIP = function (uid, ip, callback) {
+	User.logIP = async function (uid, ip) {
 		if (!(parseInt(uid, 10) > 0)) {
-			return setImmediate(callback);
+			return;
 		}
 		var now = Date.now();
 		const bulk = [
@@ -20,44 +19,25 @@ module.exports = function (User) {
 		if (ip) {
 			bulk.push(['ip:' + ip + ':uid', now, uid]);
 		}
-		db.sortedSetAddBulk(bulk, callback);
+		await db.sortedSetAddBulk(bulk);
 	};
 
-	User.getIPs = function (uid, stop, callback) {
-		async.waterfall([
-			function (next) {
-				db.getSortedSetRevRange('uid:' + uid + ':ip', 0, stop, next);
-			},
-			function (ips, next) {
-				next(null, ips.map(ip => validator.escape(String(ip))));
-			},
-		], callback);
+	User.getIPs = async function (uid, stop) {
+		const ips = await db.getSortedSetRevRange('uid:' + uid + ':ip', 0, stop);
+		return ips.map(ip => validator.escape(String(ip)));
 	};
 
-	User.getUsersCSV = function (callback) {
+	User.getUsersCSV = async function () {
 		winston.verbose('[user/getUsersCSV] Compiling User CSV data');
 		var csvContent = '';
-		var uids;
-		async.waterfall([
-			function (next) {
-				db.getSortedSetRange('users:joindate', 0, -1, next);
-			},
-			function (_uids, next) {
-				uids = _uids;
-				plugins.fireHook('filter:user.csvFields', { fields: ['uid', 'email', 'username'] }, next);
-			},
-			function (data, next) {
-				User.getUsersFields(uids, data.fields, next);
-			},
-			function (usersData, next) {
-				usersData.forEach(function (user) {
-					if (user) {
-						csvContent += user.email + ',' + user.username + ',' + user.uid + '\n';
-					}
-				});
-
-				next(null, csvContent);
-			},
-		], callback);
+		var uids = await db.getSortedSetRange('users:joindate', 0, -1);
+		const data = await plugins.fireHook('filter:user.csvFields', { fields: ['uid', 'email', 'username'] });
+		const usersData = await User.getUsersFields(uids, data.fields);
+		usersData.forEach(function (user) {
+			if (user) {
+				csvContent += user.email + ',' + user.username + ',' + user.uid + '\n';
+			}
+		});
+		return csvContent;
 	};
 };
