@@ -6,7 +6,6 @@ var _ = require('lodash');
 var db = require('../database');
 var utils = require('../utils');
 var user = require('../user');
-var topics = require('../topics');
 var privileges = require('../privileges');
 var plugins = require('../plugins');
 
@@ -29,174 +28,71 @@ require('./queue')(Posts);
 require('./diffs')(Posts);
 require('./uploads')(Posts);
 
-Posts.exists = function (pid, callback) {
-	db.exists('post:' + pid, callback);
+Posts.exists = async function (pids) {
+	const isArray = Array.isArray(pids);
+	pids = isArray ? pids : [pids];
+	const exists = await db.exists(pids.map(pid => 'post:' + pid));
+	return isArray ? exists : exists[0];
 };
 
-Posts.getPidsFromSet = function (set, start, stop, reverse, callback) {
+Posts.getPidsFromSet = async function (set, start, stop, reverse) {
 	if (isNaN(start) || isNaN(stop)) {
-		return setImmediate(callback, null, []);
+		return [];
 	}
-	db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop, callback);
+	return await db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop);
 };
 
-Posts.getPostsByPids = function (pids, uid, callback) {
+Posts.getPostsByPids = async function (pids, uid) {
 	if (!Array.isArray(pids) || !pids.length) {
-		return callback(null, []);
+		return [];
 	}
-
-	async.waterfall([
-		function (next) {
-			Posts.getPostsData(pids, next);
-		},
-		function (posts, next) {
-			async.map(posts, Posts.parsePost, next);
-		},
-		function (posts, next) {
-			user.blocks.filter(uid, posts, next);
-		},
-		function (posts, next) {
-			plugins.fireHook('filter:post.getPosts', { posts: posts, uid: uid }, next);
-		},
-		function (data, next) {
-			if (!data || !Array.isArray(data.posts)) {
-				return next(null, []);
-			}
-			data.posts = data.posts.filter(Boolean);
-			next(null, data.posts);
-		},
-	], callback);
+	let posts = await Posts.getPostsData(pids);
+	posts = await async.map(posts, Posts.parsePost);
+	posts = await user.blocks.filter(uid, posts);
+	const data = await plugins.fireHook('filter:post.getPosts', { posts: posts, uid: uid });
+	if (!data || !Array.isArray(data.posts)) {
+		return [];
+	}
+	return data.posts.filter(Boolean);
 };
 
-Posts.getPostSummariesFromSet = function (set, uid, start, stop, callback) {
-	async.waterfall([
-		function (next) {
-			db.getSortedSetRevRange(set, start, stop, next);
-		},
-		function (pids, next) {
-			privileges.posts.filter('topics:read', pids, uid, next);
-		},
-		function (pids, next) {
-			Posts.getPostSummaryByPids(pids, uid, { stripTags: false }, next);
-		},
-		function (posts, next) {
-			next(null, { posts: posts, nextStart: stop + 1 });
-		},
-	], callback);
+Posts.getPostSummariesFromSet = async function (set, uid, start, stop) {
+	let pids = await db.getSortedSetRevRange(set, start, stop);
+	pids = await privileges.posts.filter('topics:read', pids, uid);
+	const posts = await Posts.getPostSummaryByPids(pids, uid, { stripTags: false });
+	return { posts: posts, nextStart: stop + 1 };
 };
 
-Posts.getPidIndex = function (pid, tid, topicPostSort, callback) {
-	async.waterfall([
-		function (next) {
-			const set = topicPostSort === 'most_votes' ? 'tid:' + tid + ':posts:votes' : 'tid:' + tid + ':posts';
-			const reverse = topicPostSort === 'newest_to_oldest' || topicPostSort === 'most_votes';
-			db[reverse ? 'sortedSetRevRank' : 'sortedSetRank'](set, pid, next);
-		},
-		function (index, next) {
-			if (!utils.isNumber(index)) {
-				return next(null, 0);
-			}
-			next(null, parseInt(index, 10) + 1);
-		},
-	], callback);
+Posts.getPidIndex = async function (pid, tid, topicPostSort) {
+	const set = topicPostSort === 'most_votes' ? 'tid:' + tid + ':posts:votes' : 'tid:' + tid + ':posts';
+	const reverse = topicPostSort === 'newest_to_oldest' || topicPostSort === 'most_votes';
+	const index = await db[reverse ? 'sortedSetRevRank' : 'sortedSetRank'](set, pid);
+	if (!utils.isNumber(index)) {
+		return 0;
+	}
+	return utils.isNumber(index) ? parseInt(index, 10) + 1 : 0;
 };
 
-Posts.getPostIndices = function (posts, uid, callback) {
+Posts.getPostIndices = async function (posts, uid) {
 	if (!Array.isArray(posts) || !posts.length) {
-		return callback(null, []);
+		return [];
+	}
+	const settings = await user.getSettings(uid);
+
+	const byVotes = settings.topicPostSort === 'most_votes';
+	let sets = posts.map(p => (byVotes ? 'tid:' + p.tid + ':posts:votes' : 'tid:' + p.tid + ':posts'));
+	const reverse = settings.topicPostSort === 'newest_to_oldest' || settings.topicPostSort === 'most_votes';
+
+	const uniqueSets = _.uniq(sets);
+	let method = reverse ? 'sortedSetsRevRanks' : 'sortedSetsRanks';
+	if (uniqueSets.length === 1) {
+		method = reverse ? 'sortedSetRevRanks' : 'sortedSetRanks';
+		sets = uniqueSets[0];
 	}
 
-	async.waterfall([
-		function (next) {
-			user.getSettings(uid, next);
-		},
-		function (settings, next) {
-			var byVotes = settings.topicPostSort === 'most_votes';
-			var sets = posts.map(p => (byVotes ? 'tid:' + p.tid + ':posts:votes' : 'tid:' + p.tid + ':posts'));
-			const reverse = settings.topicPostSort === 'newest_to_oldest' || settings.topicPostSort === 'most_votes';
-
-			var uniqueSets = _.uniq(sets);
-			var method = reverse ? 'sortedSetsRevRanks' : 'sortedSetsRanks';
-			if (uniqueSets.length === 1) {
-				method = reverse ? 'sortedSetRevRanks' : 'sortedSetRanks';
-				sets = uniqueSets[0];
-			}
-
-			const pids = posts.map(post => post.pid);
-			db[method](sets, pids, next);
-		},
-		function (indices, next) {
-			for (var i = 0; i < indices.length; i += 1) {
-				indices[i] = utils.isNumber(indices[i]) ? parseInt(indices[i], 10) + 1 : 0;
-			}
-
-			next(null, indices);
-		},
-	], callback);
-};
-
-Posts.updatePostVoteCount = function (postData, callback) {
-	if (!postData || !postData.pid || !postData.tid) {
-		return callback();
-	}
-	async.parallel([
-		function (next) {
-			let cid;
-			async.waterfall([
-				function (next) {
-					topics.getTopicFields(postData.tid, ['mainPid', 'cid', 'pinned'], next);
-				},
-				function (topicData, next) {
-					cid = topicData.cid;
-					if (parseInt(topicData.mainPid, 10) !== parseInt(postData.pid, 10)) {
-						return db.sortedSetAdd('tid:' + postData.tid + ':posts:votes', postData.votes, postData.pid, next);
-					}
-					async.parallel([
-						function (next) {
-							topics.setTopicFields(postData.tid, {
-								upvotes: postData.upvotes,
-								downvotes: postData.downvotes,
-							}, next);
-						},
-						function (next) {
-							db.sortedSetAdd('topics:votes', postData.votes, postData.tid, next);
-						},
-						function (next) {
-							if (!topicData.pinned) {
-								db.sortedSetAdd('cid:' + topicData.cid + ':tids:votes', postData.votes, postData.tid, next);
-							} else {
-								next();
-							}
-						},
-					], function (err) {
-						next(err);
-					});
-				},
-				function (next) {
-					if (postData.uid) {
-						if (postData.votes > 0) {
-							db.sortedSetAdd('cid:' + cid + ':uid:' + postData.uid + ':pids:votes', postData.votes, postData.pid, next);
-						} else {
-							db.sortedSetRemove('cid:' + cid + ':uid:' + postData.uid + ':pids:votes', postData.pid, next);
-						}
-					} else {
-						next();
-					}
-				},
-			], next);
-		},
-		function (next) {
-			db.sortedSetAdd('posts:votes', postData.votes, postData.pid, next);
-		},
-		function (next) {
-			Posts.setPostFields(postData.pid, {
-				upvotes: postData.upvotes,
-				downvotes: postData.downvotes,
-			}, next);
-		},
-	], function (err) {
-		callback(err);
-	});
+	const pids = posts.map(post => post.pid);
+	const indices = await db[method](sets, pids);
+	return indices.map(index => (utils.isNumber(index) ? parseInt(index, 10) + 1 : 0));
 };
 
 Posts.modifyPostByPrivilege = function (post, privileges) {

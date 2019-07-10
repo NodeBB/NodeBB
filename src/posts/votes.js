@@ -5,6 +5,7 @@ var async = require('async');
 var meta = require('../meta');
 var db = require('../database');
 var user = require('../user');
+var topics = require('../topics');
 var plugins = require('../plugins');
 var privileges = require('../privileges');
 
@@ -302,5 +303,46 @@ module.exports = function (Posts) {
 				Posts.updatePostVoteCount(postData, next);
 			},
 		], callback);
+	}
+
+	Posts.updatePostVoteCount = async function (postData) {
+		if (!postData || !postData.pid || !postData.tid) {
+			return;
+		}
+		await Promise.all([
+			updateTopicVoteCount(postData),
+			db.sortedSetAdd('posts:votes', postData.votes, postData.pid),
+			Posts.setPostFields(postData.pid, {
+				upvotes: postData.upvotes,
+				downvotes: postData.downvotes,
+			}),
+		]);
+	};
+
+	async function updateTopicVoteCount(postData) {
+		const topicData = await topics.getTopicFields(postData.tid, ['mainPid', 'cid', 'pinned']);
+
+		if (postData.uid) {
+			if (postData.votes > 0) {
+				await db.sortedSetAdd('cid:' + topicData.cid + ':uid:' + postData.uid + ':pids:votes', postData.votes, postData.pid);
+			} else {
+				await db.sortedSetRemove('cid:' + topicData.cid + ':uid:' + postData.uid + ':pids:votes', postData.pid);
+			}
+		}
+
+		if (parseInt(topicData.mainPid, 10) !== parseInt(postData.pid, 10)) {
+			return await db.sortedSetAdd('tid:' + postData.tid + ':posts:votes', postData.votes, postData.pid);
+		}
+		const promises = [
+			topics.setTopicFields(postData.tid, {
+				upvotes: postData.upvotes,
+				downvotes: postData.downvotes,
+			}),
+			db.sortedSetAdd('topics:votes', postData.votes, postData.tid),
+		];
+		if (!topicData.pinned) {
+			promises.push(db.sortedSetAdd('cid:' + topicData.cid + ':tids:votes', postData.votes, postData.tid));
+		}
+		await Promise.all(promises);
 	}
 };
