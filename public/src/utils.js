@@ -474,6 +474,19 @@
 			return object && typeof object.then === 'function';
 		},
 
+		promiseParallel: function (obj) {
+			var keys = Object.keys(obj);
+			return Promise.all(
+				keys.map(function (k) { return obj[k]; })
+			).then(function (results) {
+				var data = {};
+				keys.forEach(function (k, i) {
+					data[k] = results[i];
+				});
+				return data;
+			});
+		},
+
 		isRelativeUrl: function (url) {
 			var firstChar = String(url || '').charAt(0);
 			return (firstChar === '.' || firstChar === '/');

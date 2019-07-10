@@ -4,7 +4,7 @@
 var assert = require('assert');
 var JSDOM = require('jsdom').JSDOM;
 var utils = require('./../public/src/utils.js');
-
+const db = require('./mocks/databasemock');
 
 describe('Utility Methods', function () {
 	// https://gist.github.com/robballou/9ee108758dc5e0e2d028
@@ -406,5 +406,18 @@ describe('Utility Methods', function () {
 			process.profile('it took', st);
 			done();
 		}, 500);
+	});
+
+	it('should return object with data', async function () {
+		const user = require('../src/user');
+		const uid1 = await user.create({ username: 'promise1' });
+		const uid2 = await user.create({ username: 'promise2' });
+		const result = await utils.promiseParallel({
+			user1: user.getUserData(uid1),
+			user2: user.getUserData(uid2),
+		});
+		assert(result.hasOwnProperty('user1') && result.hasOwnProperty('user2'));
+		assert.strictEqual(result.user1.uid, uid1);
+		assert.strictEqual(result.user2.uid, uid2);
 	});
 });
