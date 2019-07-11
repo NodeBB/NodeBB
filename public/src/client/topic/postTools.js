@@ -207,6 +207,13 @@ define('forum/topic/postTools', [
 			});
 		});
 
+		postContainer.on('click', '[component="post/change-owner"]', function () {
+			var btn = $(this);
+			require(['forum/topic/change-owner'], function (changeOwner) {
+				changeOwner.init(btn.parents('[data-pid]'));
+			});
+		});
+
 		postContainer.on('click', '[component="post/ban-ip"]', function () {
 			var ip = $(this).attr('data-ip');
 			socket.emit('blacklist.addRule', ip, function (err) {

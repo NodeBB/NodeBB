@@ -7,9 +7,13 @@ define('postSelect', ['components'], function (components) {
 
 	PostSelect.pids = [];
 
-	PostSelect.init = function (_onSelect) {
+	var allowMainPostSelect = false;
+
+	PostSelect.init = function (_onSelect, options) {
 		PostSelect.pids.length = 0;
 		onSelect = _onSelect;
+		options = options || {};
+		allowMainPostSelect = options.allowMainPostSelect || false;
 		$('#content').on('click', '[component="topic"] [component="post"]', onPostClicked);
 		disableClicksOnPosts();
 	};
@@ -30,7 +34,7 @@ define('postSelect', ['components'], function (components) {
 	PostSelect.togglePostSelection = function (post) {
 		var newPid = post.attr('data-pid');
 
-		if (parseInt(post.attr('data-index'), 10) === 0) {
+		if (!allowMainPostSelect && parseInt(post.attr('data-index'), 10) === 0) {
 			return;
 		}
 

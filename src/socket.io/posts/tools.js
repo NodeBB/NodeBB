@@ -248,4 +248,16 @@ module.exports = function (SocketPosts) {
 			},
 		}, callback);
 	}
+
+	SocketPosts.changeOwner = async function (socket, data) {
+		if (!data || !Array.isArray(data.pids) || !data.toUid) {
+			throw new Error('[[error:invalid-data]]');
+		}
+		const isAdminOrGlobalMod = user.isAdminOrGlobalMod(socket.uid);
+		if (!isAdminOrGlobalMod) {
+			throw new Error('[[error:no-privileges]]');
+		}
+
+		await posts.changeOwner(data.pids, data.toUid);
+	};
 };

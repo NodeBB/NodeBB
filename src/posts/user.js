@@ -125,6 +125,10 @@ module.exports = function (Posts) {
 	};
 
 	Posts.changeOwner = async function (pids, toUid) {
+		const exists = user.exists(toUid);
+		if (!exists) {
+			throw new Error('[[error:no-user]]');
+		}
 		const postData = await Posts.getPostsFields(pids, ['pid', 'tid', 'uid', 'timestamp', 'upvotes', 'downvotes']);
 		pids = postData.filter(p => p.pid && p.uid !== parseInt(toUid, 10))
 			.map(p => p.pid);
@@ -164,8 +168,7 @@ module.exports = function (Posts) {
 	};
 
 	async function reduceCounters(postsByUser) {
-		await async.eachSeries(Object.keys(postsByUser), async function (uid) {
-			const posts = postsByUser[uid];
+		await async.eachOfSeries(postsByUser, async function (posts, uid) {
 			const repChange = posts.reduce((acc, val) => acc + val.votes, 0);
 			await Promise.all([
 				user.incrementUserPostCountBy(uid, -posts.length),
@@ -175,9 +178,13 @@ module.exports = function (Posts) {
 	}
 
 	async function updateTopicPosters(postData, toUid) {
-		await async.eachSeries(postData, async function (post) {
-			await db.sortedSetIncrBy('tid:' + post.tid + ':posters', 1, toUid);
-			await db.sortedSetIncrBy('tid:' + post.tid + ':posters', -1, post.uid);
+		const postsByTopic = _.groupBy(postData, p => parseInt(p.tid, 10));
+		await async.eachOf(postsByTopic, async function (posts, tid) {
+			const postsByUser = _.groupBy(posts, p => parseInt(p.uid, 10));
+			await db.sortedSetIncrBy('tid:' + tid + ':posters', posts.length, toUid);
+			await async.eachOf(postsByUser, async function (posts, uid) {
+				await db.sortedSetIncrBy('tid:' + tid + ':posters', -posts.length, uid);
+			});
 		});
 	}
 
