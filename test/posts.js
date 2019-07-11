@@ -81,7 +81,11 @@ describe('Post\'s', function () {
 		const pid1 = postResult.postData.pid;
 		const pid2 = postData.pid;
 
+		assert.deepStrictEqual(await db.sortedSetScores('tid:' + postResult.topicData.tid + ':posters', [oldUid, newUid]), [2, null]);
+
 		await posts.changeOwner([pid1, pid2], newUid);
+
+		assert.deepStrictEqual(await db.sortedSetScores('tid:' + postResult.topicData.tid + ':posters', [oldUid, newUid]), [0, 2]);
 
 		assert.deepStrictEqual(await posts.isOwner([pid1, pid2], oldUid), [false, false]);
 		assert.deepStrictEqual(await posts.isOwner([pid1, pid2], newUid), [true, true]);

@@ -159,6 +159,7 @@ module.exports = function (Posts) {
 			updateReputation(toUid, repChange),
 			handleMainPidOwnerChange(postData, toUid),
 			reduceCounters(postsByUser),
+			updateTopicPosters(postData, toUid),
 		]);
 	};
 
@@ -170,6 +171,13 @@ module.exports = function (Posts) {
 				user.incrementUserPostCountBy(uid, -posts.length),
 				updateReputation(uid, -repChange),
 			]);
+		});
+	}
+
+	async function updateTopicPosters(postData, toUid) {
+		await async.eachSeries(postData, async function (post) {
+			await db.sortedSetIncrBy('tid:' + post.tid + ':posters', 1, toUid);
+			await db.sortedSetIncrBy('tid:' + post.tid + ':posters', -1, post.uid);
 		});
 	}
 
