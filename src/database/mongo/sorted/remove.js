@@ -49,4 +49,13 @@ module.exports = function (db, module) {
 
 		await db.collection('objects').deleteMany(query);
 	};
+
+	module.sortedSetRemoveBulk = async function (data) {
+		if (!Array.isArray(data) || !data.length) {
+			return;
+		}
+		var bulk = db.collection('objects').initializeUnorderedBulkOp();
+		data.forEach(item => bulk.find({ _key: item[0], value: String(item[1]) }).remove());
+		await bulk.execute();
+	};
 };
