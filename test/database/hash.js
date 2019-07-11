@@ -25,6 +25,14 @@ describe('Hash methods', function () {
 			});
 		});
 
+		it('should set two objects to same data', async function () {
+			const data = { foo: 'baz', test: '1' };
+			await db.setObject(['multiObject1', 'multiObject2'], data);
+			const result = await db.getObjects(['multiObject1', 'multiObject2']);
+			assert.deepStrictEqual(result[0], data);
+			assert.deepStrictEqual(result[1], data);
+		});
+
 		it('should do nothing if key is falsy', function (done) {
 			db.setObject('', { foo: 1, derp: 2 }, function (err) {
 				assert.ifError(err);
@@ -80,6 +88,14 @@ describe('Hash methods', function () {
 				assert(arguments.length < 2);
 				done();
 			});
+		});
+
+		it('should set two objects fields to same data', async function () {
+			const data = { foo: 'baz', test: '1' };
+			await db.setObjectField(['multiObject1', 'multiObject2'], 'myField', '2');
+			const result = await db.getObjects(['multiObject1', 'multiObject2']);
+			assert.deepStrictEqual(result[0].myField, '2');
+			assert.deepStrictEqual(result[1].myField, '2');
 		});
 
 		it('should work for field names with "." in them', function (done) {
