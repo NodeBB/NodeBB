@@ -82,7 +82,7 @@ profileController.get = function (req, res, callback) {
 			userData.aboutme = translator.escape(results.aboutme);
 			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username }]);
 			userData.title = userData.username;
-			userData.allowCoverPicture = !userData.isSelf || userData.reputation >= (meta.config['min:rep:cover-picture'] || 0);
+			userData.allowCoverPicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:cover-picture'];
 
 			if (!userData.profileviews) {
 				userData.profileviews = 1;

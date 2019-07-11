@@ -265,7 +265,7 @@ Flags.validate = function (payload, callback) {
 				}
 
 				// Check if reporter meets rep threshold (or can edit the target post, in which case threshold does not apply)
-				if (!editable.flag && data.reporter.reputation < meta.config['min:rep:flag']) {
+				if (!editable.flag && !meta.config['reputation:disabled'] && data.reporter.reputation < meta.config['min:rep:flag']) {
 					return callback(new Error('[[error:not-enough-reputation-to-flag]]'));
 				}
 
@@ -280,7 +280,7 @@ Flags.validate = function (payload, callback) {
 				}
 
 				// Check if reporter meets rep threshold (or can edit the target user, in which case threshold does not apply)
-				if (!editable && data.reporter.reputation < meta.config['min:rep:flag']) {
+				if (!editable && !meta.config['reputation:disabled'] && data.reporter.reputation < meta.config['min:rep:flag']) {
 					return callback(new Error('[[error:not-enough-reputation-to-flag]]'));
 				}
 

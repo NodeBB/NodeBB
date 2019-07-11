@@ -34,14 +34,14 @@ editController.get = function (req, res, callback) {
 			userData.maximumSignatureLength = meta.config.maximumSignatureLength;
 			userData.maximumAboutMeLength = meta.config.maximumAboutMeLength;
 			userData.maximumProfileImageSize = meta.config.maximumProfileImageSize;
-			userData.allowProfilePicture = !userData.isSelf || userData.reputation >= meta.config['min:rep:profile-picture'];
-			userData.allowCoverPicture = !userData.isSelf || userData.reputation >= meta.config['min:rep:cover-picture'];
+			userData.allowProfilePicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:profile-picture'];
+			userData.allowCoverPicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:cover-picture'];
 			userData.allowProfileImageUploads = meta.config.allowProfileImageUploads;
 			userData.allowMultipleBadges = meta.config.allowMultipleBadges === 1;
 			userData.allowAccountDelete = meta.config.allowAccountDelete === 1;
-			userData.allowWebsite = !userData.isSelf || userData.reputation >= meta.config['min:rep:website'];
-			userData.allowAboutMe = !userData.isSelf || userData.reputation >= meta.config['min:rep:aboutme'];
-			userData.allowSignature = results.canUseSignature && (!userData.isSelf || userData.reputation >= meta.config['min:rep:signature']);
+			userData.allowWebsite = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:website'];
+			userData.allowAboutMe = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:aboutme'];
+			userData.allowSignature = results.canUseSignature && (!userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:signature']);
 			userData.profileImageDimension = meta.config.profileImageDimension;
 			userData.defaultAvatar = user.getDefaultAvatar();
 
