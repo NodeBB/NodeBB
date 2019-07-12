@@ -133,7 +133,7 @@
     "devDependencies": {
         "@commitlint/cli": "8.0.0",
         "@commitlint/config-angular": "8.0.0",
-        "coveralls": "3.0.4",
+        "coveralls": "3.0.5",
         "eslint": "6.0.1",
         "eslint-config-airbnb-base": "13.2.0",
         "eslint-plugin-import": "2.18.0",
