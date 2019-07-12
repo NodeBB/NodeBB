@@ -14,17 +14,24 @@ module.exports = function (db, module) {
 
 		await module.transaction(async function (client) {
 			var query = client.query.bind(client);
-
-			await helpers.ensureLegacyObjectType(client, key, 'hash');
-			await query({
-				name: 'setObject',
-				text: `
-INSERT INTO "legacy_hash" ("_key", "data")
-VALUES ($1::TEXT, $2::TEXT::JSONB)
-ON CONFLICT ("_key")
-DO UPDATE SET "data" = "legacy_hash"."data" || $2::TEXT::JSONB`,
-				values: [key, JSON.stringify(data)],
-			});
+			const dataString = JSON.stringify(data);
+			async function setOne(key) {
+				await helpers.ensureLegacyObjectType(client, key, 'hash');
+				await query({
+					name: 'setObject',
+					text: `
+	INSERT INTO "legacy_hash" ("_key", "data")
+	VALUES ($1::TEXT, $2::TEXT::JSONB)
+	ON CONFLICT ("_key")
+	DO UPDATE SET "data" = "legacy_hash"."data" || $2::TEXT::JSONB`,
+					values: [key, dataString],
+				});
+			}
+			if (Array.isArray(key)) {
+				await Promise.all(key.map(k => setOne(k)));
+			} else {
+				await setOne(key);
+			}
 		});
 	};
 
@@ -35,16 +42,25 @@ DO UPDATE SET "data" = "legacy_hash"."data" || $2::TEXT::JSONB`,
 
 		await module.transaction(async function (client) {
 			var query = client.query.bind(client);
-			await helpers.ensureLegacyObjectType(client, key, 'hash');
-			await query({
-				name: 'setObjectField',
-				text: `
-INSERT INTO "legacy_hash" ("_key", "data")
-VALUES ($1::TEXT, jsonb_build_object($2::TEXT, $3::TEXT::JSONB))
-ON CONFLICT ("_key")
-DO UPDATE SET "data" = jsonb_set("legacy_hash"."data", ARRAY[$2::TEXT], $3::TEXT::JSONB)`,
-				values: [key, field, JSON.stringify(value)],
-			});
+			const valueString = JSON.stringify(value);
+			async function setOne(key) {
+				await helpers.ensureLegacyObjectType(client, key, 'hash');
+				await query({
+					name: 'setObjectField',
+					text: `
+	INSERT INTO "legacy_hash" ("_key", "data")
+	VALUES ($1::TEXT, jsonb_build_object($2::TEXT, $3::TEXT::JSONB))
+	ON CONFLICT ("_key")
+	DO UPDATE SET "data" = jsonb_set("legacy_hash"."data", ARRAY[$2::TEXT], $3::TEXT::JSONB)`,
+					values: [key, field, valueString],
+				});
+			}
+
+			if (Array.isArray(key)) {
+				await Promise.all(key.map(k => setOne(k)));
+			} else {
+				await setOne(key);
+			}
 		});
 	};
 

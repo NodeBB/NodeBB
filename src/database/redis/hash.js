@@ -27,7 +27,14 @@ module.exports = function (redisClient, module) {
 		if (!Object.keys(data).length) {
 			return;
 		}
-		await redisClient.async.hmset(key, data);
+		if (Array.isArray(key)) {
+			const batch = redisClient.batch();
+			key.forEach(k => batch.hmset(k, data));
+			await helpers.execBatch(batch);
+		} else {
+			await redisClient.async.hmset(key, data);
+		}
+
 		cache.delObjectCache(key);
 	};
 
@@ -35,7 +42,14 @@ module.exports = function (redisClient, module) {
 		if (!field) {
 			return;
 		}
-		await redisClient.async.hset(key, field, value);
+		if (Array.isArray(key)) {
+			const batch = redisClient.batch();
+			key.forEach(k => batch.hset(k, field, value));
+			await helpers.execBatch(batch);
+		} else {
+			await redisClient.async.hset(key, field, value);
+		}
+
 		cache.delObjectCache(key);
 	};
 

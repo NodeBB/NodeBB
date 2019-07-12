@@ -73,6 +73,36 @@ describe('Post\'s', function () {
 		});
 	});
 
+	it('should change owner of post and topic properly', async function () {
+		const oldUid = await user.create({ username: 'olduser' });
+		const newUid = await user.create({ username: 'newuser' });
+		const postResult = await topics.post({ uid: oldUid, cid: cid, title: 'change owner', content: 'original post' });
+		const postData = await topics.reply({ uid: oldUid, tid: postResult.topicData.tid, content: 'firstReply' });
+		const pid1 = postResult.postData.pid;
+		const pid2 = postData.pid;
+
+		assert.deepStrictEqual(await db.sortedSetScores('tid:' + postResult.topicData.tid + ':posters', [oldUid, newUid]), [2, null]);
+
+		await posts.changeOwner([pid1, pid2], newUid);
+
+		assert.deepStrictEqual(await db.sortedSetScores('tid:' + postResult.topicData.tid + ':posters', [oldUid, newUid]), [0, 2]);
+
+		assert.deepStrictEqual(await posts.isOwner([pid1, pid2], oldUid), [false, false]);
+		assert.deepStrictEqual(await posts.isOwner([pid1, pid2], newUid), [true, true]);
+
+		assert.strictEqual(await user.getUserField(oldUid, 'postcount'), 0);
+		assert.strictEqual(await user.getUserField(newUid, 'postcount'), 2);
+
+		assert.strictEqual(await user.getUserField(oldUid, 'topiccount'), 0);
+		assert.strictEqual(await user.getUserField(newUid, 'topiccount'), 1);
+
+		assert.strictEqual(await db.sortedSetScore('users:postcount', oldUid), 0);
+		assert.strictEqual(await db.sortedSetScore('users:postcount', newUid), 2);
+
+		assert.strictEqual(await topics.isOwner(postResult.topicData.tid, oldUid), false);
+		assert.strictEqual(await topics.isOwner(postResult.topicData.tid, newUid), true);
+	});
+
 	it('should return falsy if post does not exist', function (done) {
 		posts.getPostData(9999, function (err, postData) {
 			assert.ifError(err);

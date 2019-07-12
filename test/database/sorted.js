@@ -978,6 +978,21 @@ describe('Sorted Set methods', function () {
 				});
 			});
 		});
+
+		it('should do a bulk remove', async function () {
+			await db.sortedSetAddBulk([
+				['bulkRemove1', 1, 'value1'],
+				['bulkRemove1', 2, 'value2'],
+				['bulkRemove2', 3, 'value2'],
+			]);
+			await db.sortedSetRemoveBulk([
+				['bulkRemove1', 'value1'],
+				['bulkRemove1', 'value2'],
+				['bulkRemove2', 'value2'],
+			]);
+			const members = await db.getSortedSetsMembers(['bulkRemove1', 'bulkRemove2']);
+			assert.deepStrictEqual(members, [[], []]);
+		});
 	});
 
 	describe('sortedSetsRemove()', function () {

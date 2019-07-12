@@ -14,7 +14,14 @@ module.exports = function (db, module) {
 		}
 
 		const writeData = helpers.serializeData(data);
-		await db.collection('objects').updateOne({ _key: key }, { $set: writeData }, { upsert: true, w: 1 });
+		if (Array.isArray(key)) {
+			var bulk = db.collection('objects').initializeUnorderedBulkOp();
+			key.forEach(key => bulk.find({ _key: key }).upsert().updateOne({ $set: writeData }));
+			await bulk.execute();
+		} else {
+			await db.collection('objects').updateOne({ _key: key }, { $set: writeData }, { upsert: true, w: 1 });
+		}
+
 		cache.delObjectCache(key);
 	};
 

@@ -34,4 +34,13 @@ module.exports = function (redisClient, module) {
 		keys.forEach(k => batch.zremrangebyscore(k, min, max));
 		await helpers.execBatch(batch);
 	};
+
+	module.sortedSetRemoveBulk = async function (data) {
+		if (!Array.isArray(data) || !data.length) {
+			return;
+		}
+		const batch = redisClient.batch();
+		data.forEach(item => batch.zrem(item[0], item[1]));
+		await helpers.execBatch(batch);
+	};
 };

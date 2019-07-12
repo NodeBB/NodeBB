@@ -69,4 +69,27 @@ DELETE FROM "legacy_zset"
 			values: [keys, min, max],
 		});
 	};
+
+	module.sortedSetRemoveBulk = async function (data) {
+		// const keys = [];
+		// const values = [];
+
+		// data.forEach(function (item) {
+		// 	keys.push(item[0]);
+		// 	values.push(item[1]);
+		// });
+
+		const promises = data.map(item => module.sortedSetRemove(item[0], item[1]));
+		await Promise.all(promises);
+
+		// TODO
+		// 		await query({
+		// 			name: 'sortedSetRemoveBulk',
+		// 			text: `
+		// DELETE FROM "legacy_zset"
+		// SELECT k, v
+		// FROM UNNEST($1::TEXT[], $2::TEXT[]) vs(k, v)`,
+		// 			values: [keys, values],
+		// 		});
+	};
 };
