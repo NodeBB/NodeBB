@@ -71,13 +71,17 @@ DELETE FROM "legacy_zset"
 	};
 
 	module.sortedSetRemoveBulk = async function (data) {
-		const keys = [];
-		const values = [];
+		// const keys = [];
+		// const values = [];
 
-		data.forEach(function (item) {
-			keys.push(item[0]);
-			values.push(item[2]);
-		});
+		// data.forEach(function (item) {
+		// 	keys.push(item[0]);
+		// 	values.push(item[1]);
+		// });
+
+		const promises = data.map(item => module.sortedSetRemove(item[0], item[1]));
+		await Promise.all(promises);
+
 		// TODO
 		// 		await query({
 		// 			name: 'sortedSetRemoveBulk',
