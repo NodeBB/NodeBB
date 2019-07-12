@@ -391,6 +391,11 @@ $(document).ready(function () {
 				return;
 			}
 
+			// Default behaviour for sitemap
+			if (internalLink && $(this).attr('href') && String(_self.pathname).startsWith(config.relative_path + '/sitemap') && $(this).attr('href').endsWith('.xml')) {
+				return;
+			}
+
 			// Default behaviour for uploads and direct links to API urls
 			if (internalLink && ['/uploads', '/assets/uploads/', '/api/'].some(function (prefix) {
 				return String(_self.pathname).startsWith(config.relative_path + prefix);
