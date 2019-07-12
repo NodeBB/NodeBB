@@ -30,7 +30,7 @@ module.exports = function (db, module) {
 			if (Array.isArray(key)) {
 				await Promise.all(key.map(k => setOne(k)));
 			} else {
-				setOne(key);
+				await setOne(key);
 			}
 		});
 	};
