@@ -37,7 +37,7 @@ var app;
 
 var viewsDir = nconf.get('views_dir');
 
-Emailer.getTemplates = function (config, cb) {
+Emailer.getTemplates = function (config, callback) {
 	var emailsPath = path.join(viewsDir, 'emails');
 	async.waterfall([
 		function (next) {
@@ -71,7 +71,7 @@ Emailer.getTemplates = function (config, cb) {
 				], next);
 			}, next);
 		},
-	], cb);
+	], callback);
 };
 
 Emailer.listServices = function (callback) {
@@ -407,3 +407,5 @@ function getHostname() {
 
 	return parsed.hostname;
 }
+
+require('./promisify')(Emailer, ['transports']);

@@ -320,6 +320,9 @@ function pushToUids(uids, notification, callback) {
 
 Notifications.pushGroup = function (notification, groupName, callback) {
 	callback = callback || function () {};
+	if (!notification) {
+		return callback();
+	}
 	async.waterfall([
 		function (next) {
 			groups.getMembers(groupName, 0, -1, next);
@@ -332,6 +335,9 @@ Notifications.pushGroup = function (notification, groupName, callback) {
 
 Notifications.pushGroups = function (notification, groupNames, callback) {
 	callback = callback || function () {};
+	if (!notification) {
+		return callback();
+	}
 	async.waterfall([
 		function (next) {
 			groups.getMembersOfGroups(groupNames, next);
