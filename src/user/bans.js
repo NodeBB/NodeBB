@@ -1,33 +1,26 @@
 'use strict';
 
 const util = require('util');
-const async = require('async');
 const db = require('../database');
 
 module.exports = function (User) {
 	User.bans = {};
 
-	User.bans.ban = function (uid, until, reason, callback) {
+	User.bans.ban = async function (uid, until, reason) {
 		// "until" (optional) is unix timestamp in milliseconds
 		// "reason" (optional) is a string
-		if (!callback && typeof until === 'function') {
-			callback = until;
-			until = 0;
-			reason = '';
-		} else if (!callback && typeof reason === 'function') {
-			callback = reason;
-			reason = '';
-		}
+		until = until || 0;
+		reason = reason || '';
 
-		var now = Date.now();
+		const now = Date.now();
 
 		until = parseInt(until, 10);
 		if (isNaN(until)) {
-			return callback(new Error('[[error:ban-expiry-missing]]'));
+			throw new Error('[[error:ban-expiry-missing]]');
 		}
 
 		const banKey = 'uid:' + uid + ':ban:' + now;
-		var banData = {
+		const banData = {
 			uid: uid,
 			timestamp: now,
 			expire: until > now ? until : 0,
@@ -35,47 +28,31 @@ module.exports = function (User) {
 		if (reason) {
 			banData.reason = reason;
 		}
-		var tasks = [
-			async.apply(User.setUserField, uid, 'banned', 1),
-			async.apply(db.sortedSetAdd, 'users:banned', now, uid),
-			async.apply(db.sortedSetAdd, 'uid:' + uid + ':bans:timestamp', now, banKey),
-			async.apply(db.setObject, banKey, banData),
-		];
 
+		await User.setUserField(uid, 'banned', 1);
+		await db.sortedSetAdd('users:banned', now, uid);
+		await db.sortedSetAdd('uid:' + uid + ':bans:timestamp', now, banKey);
+		await db.setObject(banKey, banData);
+		await User.setUserField(uid, 'banned:expire', banData.expire);
 		if (until > now) {
-			tasks.push(async.apply(db.sortedSetAdd, 'users:banned:expire', until, uid));
-			tasks.push(async.apply(User.setUserField, uid, 'banned:expire', until));
+			await db.sortedSetAdd('users:banned:expire', until, uid);
 		} else {
-			tasks.push(async.apply(db.sortedSetRemove, 'users:banned:expire', uid));
-			tasks.push(async.apply(User.setUserField, uid, 'banned:expire', 0));
+			await db.sortedSetRemove('users:banned:expire', uid);
 		}
-
-		async.series(tasks, function (err) {
-			callback(err, banData);
-		});
+		return banData;
 	};
 
-	User.bans.unban = function (uid, callback) {
-		async.waterfall([
-			function (next) {
-				User.setUserFields(uid, { banned: 0, 'banned:expire': 0 }, next);
-			},
-			function (next) {
-				db.sortedSetsRemove(['users:banned', 'users:banned:expire'], uid, next);
-			},
-		], callback);
+	User.bans.unban = async function (uid) {
+		await User.setUserFields(uid, { banned: 0, 'banned:expire': 0 });
+		await db.sortedSetsRemove(['users:banned', 'users:banned:expire'], uid);
 	};
 
-	User.bans.getBannedAndExpired = function (uid, callback) {
+	User.bans.getBannedAndExpired = async function (uid) {
 		if (parseInt(uid, 10) <= 0) {
-			return setImmediate(callback, null, false);
+			return false;
 		}
-		User.getUserFields(uid, ['banned', 'banned:expire'], function (err, userData) {
-			if (err) {
-				return callback(err);
-			}
-			callback(null, User.bans.calcExpiredFromUserData(userData));
-		});
+		const userData = await User.getUserFields(uid, ['banned', 'banned:expire']);
+		return User.bans.calcExpiredFromUserData(userData);
 	};
 
 	User.bans.calcExpiredFromUserData = function (userData) {
@@ -86,47 +63,33 @@ module.exports = function (User) {
 		};
 	};
 
-	User.bans.unbanIfExpired = function (uid, callback) {
-		User.bans.getBannedAndExpired(uid, function (err, result) {
-			if (err) {
-				return callback(err);
-			}
-			if (result.banned && result.banExpired) {
-				return User.bans.unban(uid, function (err) {
-					callback(err, { banned: false, banExpired: true, 'banned:expire': 0 });
-				});
-			}
-			callback(null, result);
-		});
+	User.bans.unbanIfExpired = async function (uid) {
+		const result = await User.bans.getBannedAndExpired(uid);
+		if (result.banned && result.banExpired) {
+			await User.bans.unban(uid);
+			return { banned: false, banExpired: true, 'banned:expire': 0 };
+		}
+		return result;
 	};
 
-	User.bans.isBanned = function (uid, callback) {
+	User.bans.isBanned = async function (uid) {
 		if (parseInt(uid, 10) <= 0) {
-			return setImmediate(callback, null, false);
+			return false;
 		}
-		User.bans.unbanIfExpired(uid, function (err, result) {
-			callback(err, result.banned);
-		});
+		const result = await User.bans.unbanIfExpired(uid);
+		return result.banned;
 	};
 
-	User.bans.getReason = function (uid, callback) {
+	User.bans.getReason = async function (uid) {
 		if (parseInt(uid, 10) <= 0) {
-			return setImmediate(callback, null, '');
+			return '';
 		}
-		async.waterfall([
-			function (next) {
-				db.getSortedSetRevRange('uid:' + uid + ':bans:timestamp', 0, 0, next);
-			},
-			function (keys, next) {
-				if (!keys.length) {
-					return callback(null, '');
-				}
-				db.getObject(keys[0], next);
-			},
-			function (banObj, next) {
-				next(null, banObj && banObj.reason ? banObj.reason : '');
-			},
-		], callback);
+		const keys = await db.getSortedSetRevRange('uid:' + uid + ':bans:timestamp', 0, 0);
+		if (!keys.length) {
+			return '';
+		}
+		const banObj = await db.getObject(keys[0]);
+		return banObj && banObj.reason ? banObj.reason : '';
 	};
 
 	// TODO Remove in v1.13.0
