@@ -272,12 +272,11 @@ define('forum/topic/posts', [
 			if (diff >= necroThreshold) {
 				var ago = $.timeago.settings.strings.suffixAgo;
 				$.timeago.settings.strings.suffixAgo = '';
-				$('<aside>').addClass('necro-post')
-					.append($('<span>').translateText('[[topic:timeago_later,' + $.timeago.inWords(diff) + ']]'))
-					.append($('<hr>'))
-					.prependTo(post);
-
+				var translationText = '[[topic:timeago_later,' + $.timeago.inWords(diff) + ']]';
 				$.timeago.settings.strings.suffixAgo = ago;
+				app.parseAndTranslate('partials/topic/necro-post', { text: translationText }, function (html) {
+					html.prependTo(post);
+				});
 			}
 		});
 	}
