@@ -560,6 +560,15 @@ describe('Controllers', function () {
 		});
 	});
 
+	it('should load client.css', function (done) {
+		request(nconf.get('url') + '/assets/client.css', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
 	it('should load admin.css', function (done) {
 		request(nconf.get('url') + '/assets/admin.css', function (err, res, body) {
 			assert.ifError(err);

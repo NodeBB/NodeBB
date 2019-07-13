@@ -97,4 +97,12 @@ describe('file', function () {
 			});
 		});
 	});
+
+	it('should walk directory', function (done) {
+		file.walk(__dirname, function (err, data) {
+			assert.ifError(err);
+			assert(Array.isArray(data));
+			done();
+		});
+	});
 });
