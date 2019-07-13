@@ -34,18 +34,12 @@ Notifications.privilegedTypes = [
 	'notificationType_new-user-flag',
 ];
 
-Notifications.getAllNotificationTypes = function (callback) {
-	async.waterfall([
-		function (next) {
-			plugins.fireHook('filter:user.notificationTypes', {
-				types: Notifications.baseTypes.slice(),
-				privilegedTypes: Notifications.privilegedTypes.slice(),
-			}, next);
-		},
-		function (results, next) {
-			next(null, results.types.concat(results.privilegedTypes));
-		},
-	], callback);
+Notifications.getAllNotificationTypes = async function () {
+	const results = await plugins.fireHook('filter:user.notificationTypes', {
+		types: Notifications.baseTypes.slice(),
+		privilegedTypes: Notifications.privilegedTypes.slice(),
+	});
+	return results.types.concat(results.privilegedTypes);
 };
 
 Notifications.startJobs = function () {
@@ -53,133 +47,85 @@ Notifications.startJobs = function () {
 	new cron('*/30 * * * *', Notifications.prune, null, true);
 };
 
-Notifications.get = function (nid, callback) {
-	Notifications.getMultiple([nid], function (err, notifications) {
-		callback(err, Array.isArray(notifications) && notifications.length ? notifications[0] : null);
-	});
+Notifications.get = async function (nid) {
+	const notifications = await Notifications.getMultiple([nid]);
+	return Array.isArray(notifications) && notifications.length ? notifications[0] : null;
 };
 
-Notifications.getMultiple = function (nids, callback) {
+Notifications.getMultiple = async function (nids) {
 	if (!Array.isArray(nids) || !nids.length) {
-		return setImmediate(callback, null, []);
+		return [];
 	}
 
-	var notifications;
+	const keys = nids.map(nid => 'notifications:' + nid);
+	const notifications = await db.getObjects(keys);
 
-	async.waterfall([
-		function (next) {
-			const keys = nids.map(nid => 'notifications:' + nid);
-			db.getObjects(keys, next);
-		},
-		function (_notifications, next) {
-			notifications = _notifications;
+	const userKeys = notifications.map(n => n && n.from);
+	const usersData = await User.getUsersFields(userKeys, ['username', 'userslug', 'picture']);
 
-			const userKeys = notifications.map(n => n && n.from);
-			User.getUsersFields(userKeys, ['username', 'userslug', 'picture'], next);
-		},
-		function (usersData, next) {
-			notifications.forEach(function (notification, index) {
-				if (notification) {
-					notification.datetimeISO = utils.toISOString(notification.datetime);
+	notifications.forEach(function (notification, index) {
+		if (notification) {
+			notification.datetimeISO = utils.toISOString(notification.datetime);
 
-					if (notification.bodyLong) {
-						notification.bodyLong = utils.escapeHTML(notification.bodyLong);
-					}
+			if (notification.bodyLong) {
+				notification.bodyLong = utils.escapeHTML(notification.bodyLong);
+			}
 
-					notification.user = usersData[index];
-					if (notification.user) {
-						notification.image = notification.user.picture || null;
-						if (notification.user.username === '[[global:guest]]') {
-							notification.bodyShort = notification.bodyShort.replace(/([\s\S]*?),[\s\S]*?,([\s\S]*?)/, '$1, [[global:guest]], $2');
-						}
-					} else if (notification.image === 'brand:logo' || !notification.image) {
-						notification.image = meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png';
-					}
+			notification.user = usersData[index];
+			if (notification.user) {
+				notification.image = notification.user.picture || null;
+				if (notification.user.username === '[[global:guest]]') {
+					notification.bodyShort = notification.bodyShort.replace(/([\s\S]*?),[\s\S]*?,([\s\S]*?)/, '$1, [[global:guest]], $2');
 				}
-			});
-			next(null, notifications);
-		},
-	], callback);
+			} else if (notification.image === 'brand:logo' || !notification.image) {
+				notification.image = meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png';
+			}
+		}
+	});
+	return notifications;
 };
 
-Notifications.filterExists = function (nids, callback) {
-	async.waterfall([
-		function (next) {
-			db.isSortedSetMembers('notifications', nids, next);
-		},
-		function (exists, next) {
-			nids = nids.filter((notifId, idx) => exists[idx]);
-			next(null, nids);
-		},
-	], callback);
+Notifications.filterExists = async function (nids) {
+	const exists = await db.isSortedSetMembers('notifications', nids);
+	return nids.filter((nid, idx) => exists[idx]);
 };
 
-Notifications.findRelated = function (mergeIds, set, callback) {
+Notifications.findRelated = async function (mergeIds, set) {
 	// A related notification is one in a zset that has the same mergeId
-	var nids;
+	const nids = await db.getSortedSetRevRange(set, 0, -1);
 
-	async.waterfall([
-		async.apply(db.getSortedSetRevRange, set, 0, -1),
-		function (_nids, next) {
-			nids = _nids;
-
-			var keys = nids.map(nid => 'notifications:' + nid);
-			db.getObjectsFields(keys, ['mergeId'], next);
-		},
-		function (sets, next) {
-			sets = sets.map(set => String(set.mergeId));
-			var mergeSet = new Set(mergeIds.map(id => String(id)));
-			next(null, nids.filter((nid, idx) => mergeSet.has(sets[idx])));
-		},
-	], callback);
+	const keys = nids.map(nid => 'notifications:' + nid);
+	let sets = await db.getObjectsFields(keys, ['mergeId']);
+	sets = sets.map(set => String(set.mergeId));
+	var mergeSet = new Set(mergeIds.map(id => String(id)));
+	return nids.filter((nid, idx) => mergeSet.has(sets[idx]));
 };
 
-Notifications.create = function (data, callback) {
+Notifications.create = async function (data) {
 	if (!data.nid) {
-		return callback(new Error('[[error:no-notification-id]]'));
+		throw new Error('[[error:no-notification-id]]');
 	}
 	data.importance = data.importance || 5;
-	async.waterfall([
-		function (next) {
-			db.getObject('notifications:' + data.nid, next);
-		},
-		function (oldNotification, next) {
-			if (oldNotification) {
-				if (parseInt(oldNotification.pid, 10) === parseInt(data.pid, 10) && parseInt(oldNotification.importance, 10) > parseInt(data.importance, 10)) {
-					return callback(null, null);
-				}
-			}
-			var now = Date.now();
-			data.datetime = now;
-			async.parallel([
-				function (next) {
-					db.sortedSetAdd('notifications', now, data.nid, next);
-				},
-				function (next) {
-					db.setObject('notifications:' + data.nid, data, next);
-				},
-			], function (err) {
-				next(err, data);
-			});
-		},
-	], callback);
+	const oldNotif = await db.getObject('notifications:' + data.nid);
+	if (oldNotif && parseInt(oldNotif.pid, 10) === parseInt(data.pid, 10) && parseInt(oldNotif.importance, 10) > parseInt(data.importance, 10)) {
+		return null;
+	}
+	const now = Date.now();
+	data.datetime = now;
+	await Promise.all([
+		db.sortedSetAdd('notifications', now, data.nid),
+		db.setObject('notifications:' + data.nid, data),
+	]);
+	return data;
 };
 
-Notifications.push = function (notification, uids, callback) {
-	callback = callback || function () {};
-
+Notifications.push = async function (notification, uids) {
 	if (!notification || !notification.nid) {
-		return callback();
+		return;
 	}
-
-	if (!Array.isArray(uids)) {
-		uids = [uids];
-	}
-
-	uids = _.uniq(uids);
-
+	uids = Array.isArray(uids) ? _.uniq(uids) : [uids];
 	if (!uids.length) {
-		return callback();
+		return;
 	}
 
 	setTimeout(function () {
@@ -191,55 +137,35 @@ Notifications.push = function (notification, uids, callback) {
 			}
 		});
 	}, 1000);
-
-	callback();
 };
 
-function pushToUids(uids, notification, callback) {
-	function sendNotification(uids, callback) {
+async function pushToUids(uids, notification) {
+	async function sendNotification(uids) {
 		if (!uids.length) {
-			return callback();
+			return;
 		}
-		var oneWeekAgo = Date.now() - 604800000;
-		var unreadKeys = [];
-		var readKeys = [];
-		async.waterfall([
-			function (next) {
-				uids.forEach(function (uid) {
-					unreadKeys.push('uid:' + uid + ':notifications:unread');
-					readKeys.push('uid:' + uid + ':notifications:read');
-				});
-
-				db.sortedSetsAdd(unreadKeys, notification.datetime, notification.nid, next);
-			},
-			function (next) {
-				db.sortedSetsRemove(readKeys, notification.nid, next);
-			},
-			function (next) {
-				db.sortedSetsRemoveRangeByScore(unreadKeys, '-inf', oneWeekAgo, next);
-			},
-			function (next) {
-				db.sortedSetsRemoveRangeByScore(readKeys, '-inf', oneWeekAgo, next);
-			},
-			function (next) {
-				var websockets = require('./socket.io');
-				if (websockets.server) {
-					uids.forEach(function (uid) {
-						websockets.in('uid_' + uid).emit('event:new_notification', notification);
-					});
-				}
-				next();
-			},
-		], callback);
+		const oneWeekAgo = Date.now() - 604800000;
+		const unreadKeys = uids.map(uid => 'uid:' + uid + ':notifications:unread');
+		const readKeys = uids.map(uid => 'uid:' + uid + ':notifications:read');
+		await db.sortedSetsAdd(unreadKeys, notification.datetime, notification.nid);
+		await db.sortedSetsRemove(readKeys, notification.nid);
+		await db.sortedSetsRemoveRangeByScore(unreadKeys, '-inf', oneWeekAgo);
+		await db.sortedSetsRemoveRangeByScore(readKeys, '-inf', oneWeekAgo);
+		const websockets = require('./socket.io');
+		if (websockets.server) {
+			uids.forEach(function (uid) {
+				websockets.in('uid_' + uid).emit('event:new_notification', notification);
+			});
+		}
 	}
 
-	function sendEmail(uids, callback) {
+	async function sendEmail(uids) {
 		// Update CTA messaging (as not all notification types need custom text)
 		if (['new-reply', 'new-chat'].includes(notification.type)) {
 			notification['cta-type'] = notification.type;
 		}
 
-		async.eachLimit(uids, 3, function (uid, next) {
+		await async.eachLimit(uids, 3, function (uid, next) {
 			emailer.send('notification', uid, {
 				path: notification.path,
 				subject: utils.stripHTMLTags(notification.subject || '[[notifications:new_notification]]'),
@@ -248,237 +174,148 @@ function pushToUids(uids, notification, callback) {
 				notification: notification,
 				showUnsubscribe: true,
 			}, next);
-		}, callback);
+		});
 	}
 
-	function getUidsBySettings(uids, callback) {
-		var uidsToNotify = [];
-		var uidsToEmail = [];
-		async.waterfall([
-			function (next) {
-				User.getMultipleUserSettings(uids, next);
-			},
-			function (usersSettings, next) {
-				usersSettings.forEach(function (userSettings) {
-					var setting = userSettings['notificationType_' + notification.type] || 'notification';
+	async function getUidsBySettings(uids) {
+		const uidsToNotify = [];
+		const uidsToEmail = [];
+		const usersSettings = await User.getMultipleUserSettings(uids);
+		usersSettings.forEach(function (userSettings) {
+			const setting = userSettings['notificationType_' + notification.type] || 'notification';
 
-					if (setting === 'notification' || setting === 'notificationemail') {
-						uidsToNotify.push(userSettings.uid);
-					}
+			if (setting === 'notification' || setting === 'notificationemail') {
+				uidsToNotify.push(userSettings.uid);
+			}
 
-					if (setting === 'email' || setting === 'notificationemail') {
-						uidsToEmail.push(userSettings.uid);
-					}
-				});
-				next(null, { uidsToNotify: uidsToNotify, uidsToEmail: uidsToEmail });
-			},
-		], callback);
+			if (setting === 'email' || setting === 'notificationemail') {
+				uidsToEmail.push(userSettings.uid);
+			}
+		});
+		return { uidsToNotify: uidsToNotify, uidsToEmail: uidsToEmail };
 	}
 
-	async.waterfall([
-		function (next) {
-			// Remove uid from recipients list if they have blocked the user triggering the notification
-			User.blocks.filterUids(notification.from, uids, next);
-		},
-		function (uids, next) {
-			plugins.fireHook('filter:notification.push', { notification: notification, uids: uids }, next);
-		},
-		function (data, next) {
-			if (!data || !data.notification || !data.uids || !data.uids.length) {
-				return callback();
-			}
-			notification = data.notification;
-			if (notification.type) {
-				getUidsBySettings(data.uids, next);
-			} else {
-				next(null, { uidsToNotify: data.uids, uidsToEmail: [] });
-			}
-		},
-		function (results, next) {
-			async.parallel([
-				function (next) {
-					sendNotification(results.uidsToNotify, next);
-				},
-				function (next) {
-					sendEmail(results.uidsToEmail, next);
-				},
-			], function (err) {
-				next(err, results);
-			});
-		},
-		function (results, next) {
-			plugins.fireHook('action:notification.pushed', {
-				notification: notification,
-				uids: results.uidsToNotify,
-				uidsNotified: results.uidsToNotify,
-				uidsEmailed: results.uidsToEmail,
-			});
-			next();
-		},
-	], callback);
+	// Remove uid from recipients list if they have blocked the user triggering the notification
+	uids = await User.blocks.filterUids(notification.from, uids);
+	const data = await plugins.fireHook('filter:notification.push', { notification: notification, uids: uids });
+	if (!data || !data.notification || !data.uids || !data.uids.length) {
+		return;
+	}
+
+	notification = data.notification;
+	let results = { uidsToNotify: data.uids, uidsToEmail: [] };
+	if (notification.type) {
+		results = await getUidsBySettings(data.uids);
+	}
+	await Promise.all([
+		sendNotification(results.uidsToNotify),
+		sendEmail(results.uidsToEmail),
+	]);
+	plugins.fireHook('action:notification.pushed', {
+		notification: notification,
+		uids: results.uidsToNotify,
+		uidsNotified: results.uidsToNotify,
+		uidsEmailed: results.uidsToEmail,
+	});
 }
 
-Notifications.pushGroup = function (notification, groupName, callback) {
-	callback = callback || function () {};
+Notifications.pushGroup = async function (notification, groupName) {
 	if (!notification) {
-		return callback();
+		return;
 	}
-	async.waterfall([
-		function (next) {
-			groups.getMembers(groupName, 0, -1, next);
-		},
-		function (members, next) {
-			Notifications.push(notification, members, next);
-		},
-	], callback);
+	const members = await groups.getMembers(groupName, 0, -1);
+	await Notifications.push(notification, members);
 };
 
-Notifications.pushGroups = function (notification, groupNames, callback) {
-	callback = callback || function () {};
+Notifications.pushGroups = async function (notification, groupNames) {
 	if (!notification) {
-		return callback();
+		return;
 	}
-	async.waterfall([
-		function (next) {
-			groups.getMembersOfGroups(groupNames, next);
-		},
-		function (groupMembers, next) {
-			var members = _.uniq(_.flatten(groupMembers));
-			Notifications.push(notification, members, next);
-		},
-	], callback);
+	let groupMembers = await groups.getMembersOfGroups(groupNames);
+	groupMembers = _.uniq(_.flatten(groupMembers));
+	await Notifications.push(notification, groupMembers);
 };
 
-Notifications.rescind = function (nid, callback) {
-	callback = callback || function () {};
-
-	async.parallel([
-		async.apply(db.sortedSetRemove, 'notifications', nid),
-		async.apply(db.delete, 'notifications:' + nid),
-	], function (err) {
-		callback(err);
-	});
+Notifications.rescind = async function (nid) {
+	await Promise.all([
+		db.sortedSetRemove('notifications', nid),
+		db.delete('notifications:' + nid),
+	]);
 };
 
-Notifications.markRead = function (nid, uid, callback) {
-	callback = callback || function () {};
+Notifications.markRead = async function (nid, uid) {
 	if (parseInt(uid, 10) <= 0 || !nid) {
-		return setImmediate(callback);
+		return;
 	}
-	Notifications.markReadMultiple([nid], uid, callback);
+	await Notifications.markReadMultiple([nid], uid);
 };
 
-Notifications.markUnread = function (nid, uid, callback) {
-	callback = callback || function () {};
+Notifications.markUnread = async function (nid, uid) {
 	if (parseInt(uid, 10) <= 0 || !nid) {
-		return setImmediate(callback);
+		return;
 	}
-	async.waterfall([
-		function (next) {
-			db.getObject('notifications:' + nid, next);
-		},
-		function (notification, next) {
-			if (!notification) {
-				return callback(new Error('[[error:no-notification]]'));
-			}
-			notification.datetime = notification.datetime || Date.now();
+	const notification = await db.getObject('notifications:' + nid);
+	if (!notification) {
+		throw new Error('[[error:no-notification]]');
+	}
+	notification.datetime = notification.datetime || Date.now();
 
-			async.parallel([
-				async.apply(db.sortedSetRemove, 'uid:' + uid + ':notifications:read', nid),
-				async.apply(db.sortedSetAdd, 'uid:' + uid + ':notifications:unread', notification.datetime, nid),
-			], next);
-		},
-	], function (err) {
-		callback(err);
-	});
+	await Promise.all([
+		db.sortedSetRemove('uid:' + uid + ':notifications:read', nid),
+		db.sortedSetAdd('uid:' + uid + ':notifications:unread', notification.datetime, nid),
+	]);
 };
 
-Notifications.markReadMultiple = function (nids, uid, callback) {
-	callback = callback || function () {};
+Notifications.markReadMultiple = async function (nids, uid) {
 	nids = nids.filter(Boolean);
 	if (!Array.isArray(nids) || !nids.length) {
-		return callback();
+		return;
 	}
 
 	let notificationKeys = nids.map(nid => 'notifications:' + nid);
+	let mergeIds = await db.getObjectsFields(notificationKeys, ['mergeId']);
+	// Isolate mergeIds and find related notifications
+	mergeIds = _.uniq(mergeIds.map(set => set.mergeId));
 
-	async.waterfall([
-		async.apply(db.getObjectsFields, notificationKeys, ['mergeId']),
-		function (mergeIds, next) {
-			// Isolate mergeIds and find related notifications
-			mergeIds = _.uniq(mergeIds.map(set => set.mergeId));
+	const relatedNids = await Notifications.findRelated(mergeIds, 'uid:' + uid + ':notifications:unread');
+	notificationKeys = _.union(nids, relatedNids).map(nid => 'notifications:' + nid);
 
-			Notifications.findRelated(mergeIds, 'uid:' + uid + ':notifications:unread', next);
-		},
-		function (relatedNids, next) {
-			notificationKeys = _.union(nids, relatedNids).map(nid => 'notifications:' + nid);
+	let notificationData = await db.getObjectsFields(notificationKeys, ['nid', 'datetime']);
+	notificationData = notificationData.filter(n => n && n.nid);
 
-			db.getObjectsFields(notificationKeys, ['nid', 'datetime'], next);
-		},
-		function (notificationData, next) {
-			notificationData = notificationData.filter(n => n && n.nid);
-
-			nids = notificationData.map(n => n.nid);
-
-			async.parallel([
-				function (next) {
-					db.sortedSetRemove('uid:' + uid + ':notifications:unread', nids, next);
-				},
-				function (next) {
-					const datetimes = notificationData.map(n => (n && n.datetime) || Date.now());
-					db.sortedSetAdd('uid:' + uid + ':notifications:read', datetimes, nids, next);
-				},
-			], next);
-		},
-	], function (err) {
-		callback(err);
-	});
+	nids = notificationData.map(n => n.nid);
+	const datetimes = notificationData.map(n => (n && n.datetime) || Date.now());
+	await Promise.all([
+		db.sortedSetRemove('uid:' + uid + ':notifications:unread', nids),
+		db.sortedSetAdd('uid:' + uid + ':notifications:read', datetimes, nids),
+	]);
 };
 
-Notifications.markAllRead = function (uid, callback) {
-	async.waterfall([
-		function (next) {
-			db.getSortedSetRevRange('uid:' + uid + ':notifications:unread', 0, 99, next);
-		},
-		function (nids, next) {
-			Notifications.markReadMultiple(nids, uid, next);
-		},
-	], callback);
+Notifications.markAllRead = async function (uid) {
+	const nids = await db.getSortedSetRevRange('uid:' + uid + ':notifications:unread', 0, 99);
+	await Notifications.markReadMultiple(nids, uid);
 };
 
-Notifications.prune = function (callback) {
-	callback = callback || function () {};
-
-	async.waterfall([
-		function (next) {
-			const week = 604800000;
-			const cutoffTime = Date.now() - week;
-			db.getSortedSetRangeByScore('notifications', 0, 500, '-inf', cutoffTime, next);
-		},
-		function (nids, next) {
-			if (!nids.length) {
-				return callback();
-			}
-
-			async.parallel([
-				function (next) {
-					db.sortedSetRemove('notifications', nids, next);
-				},
-				function (next) {
-					const keys = nids.map(nid => 'notifications:' + nid);
-					db.deleteAll(keys, next);
-				},
-			], next);
-		},
-	], function (err) {
+Notifications.prune = async function () {
+	const week = 604800000;
+	const cutoffTime = Date.now() - week;
+	const nids = await db.getSortedSetRangeByScore('notifications', 0, 500, '-inf', cutoffTime);
+	if (!nids.length) {
+		return;
+	}
+	try {
+		await Promise.all([
+			db.sortedSetRemove('notifications', nids),
+			db.deleteAll(nids.map(nid => 'notifications:' + nid)),
+		]);
+	} catch (err) {
 		if (err) {
 			winston.error('Encountered error pruning notifications', err);
 		}
-		callback(err);
-	});
+	}
 };
 
-Notifications.merge = function (notifications, callback) {
+Notifications.merge = async function (notifications) {
 	// When passed a set of notification objects, merge any that can be merged
 	var mergeIds = [
 		'notifications:upvoted_your_post_in',
@@ -575,11 +412,10 @@ Notifications.merge = function (notifications, callback) {
 		return notifications;
 	}, notifications);
 
-	plugins.fireHook('filter:notifications.merge', {
+	const data = await plugins.fireHook('filter:notifications.merge', {
 		notifications: notifications,
-	}, function (err, data) {
-		callback(err, data.notifications);
 	});
+	return data && data.notifications;
 };
 
 Notifications.async = require('./promisify')(Notifications);
