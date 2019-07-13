@@ -1,89 +1,64 @@
 'use strict';
 
-const async = require('async');
 const _ = require('lodash');
 
 const db = require('../database');
 const categories = require('../categories');
 
 module.exports = function (User) {
-	User.setCategoryWatchState = function (uid, cid, state, callback) {
+	User.setCategoryWatchState = async function (uid, cid, state) {
 		if (!(parseInt(uid, 10) > 0)) {
-			return setImmediate(callback);
+			return;
 		}
-		const isStateValid = Object.keys(categories.watchStates).some(key => categories.watchStates[key] === parseInt(state, 10));
+		const isStateValid = Object.values(categories.watchStates).includes(parseInt(state, 10));
 		if (!isStateValid) {
-			return setImmediate(callback, new Error('[[error:invalid-watch-state]]'));
+			throw new Error('[[error:invalid-watch-state]]');
 		}
-		async.waterfall([
-			function (next) {
-				categories.exists(cid, next);
-			},
-			function (exists, next) {
-				if (!exists) {
-					return next(new Error('[[error:no-category]]'));
-				}
-
-				db.sortedSetAdd('cid:' + cid + ':uid:watch:state', state, uid, next);
-			},
-		], callback);
+		const exists = await categories.exists(cid);
+		if (!exists) {
+			throw new Error('[[error:no-category]]');
+		}
+		await db.sortedSetAdd('cid:' + cid + ':uid:watch:state', state, uid);
 	};
 
-	User.getCategoryWatchState = function (uid, callback) {
-		if (parseInt(uid, 10) <= 0) {
-			return setImmediate(callback, null, {});
-		}
-
-		let cids;
-		async.waterfall([
-			function (next) {
-				categories.getAllCidsFromSet('categories:cid', next);
-			},
-			function (_cids, next) {
-				cids = _cids;
-				categories.getWatchState(cids, uid, next);
-			},
-			function (states, next) {
-				next(null, _.zipObject(cids, states));
-			},
-		], callback);
-	};
-
-	User.getIgnoredCategories = function (uid, callback) {
-		if (parseInt(uid, 10) <= 0) {
-			return setImmediate(callback, null, []);
-		}
-		User.getCategoriesByStates(uid, [categories.watchStates.ignoring], callback);
-	};
-
-	User.getWatchedCategories = function (uid, callback) {
-		if (parseInt(uid, 10) <= 0) {
-			return setImmediate(callback, null, []);
-		}
-		User.getCategoriesByStates(uid, [categories.watchStates.watching], callback);
-	};
-
-	User.getCategoriesByStates = function (uid, states, callback) {
+	User.getCategoryWatchState = async function (uid) {
 		if (!(parseInt(uid, 10) > 0)) {
-			return categories.getAllCidsFromSet('categories:cid', callback);
+			return {};
 		}
 
-		async.waterfall([
-			function (next) {
-				User.getCategoryWatchState(uid, next);
-			},
-			function (userState, next) {
-				const cids = Object.keys(userState);
-				next(null, cids.filter(cid => states.includes(userState[cid])));
-			},
-		], callback);
+		const cids = await categories.getAllCidsFromSet('categories:cid');
+		const states = await categories.getWatchState(cids, uid);
+		return _.zipObject(cids, states);
 	};
 
-	User.ignoreCategory = function (uid, cid, callback) {
-		User.setCategoryWatchState(uid, cid, categories.watchStates.ignoring, callback);
+	User.getIgnoredCategories = async function (uid) {
+		if (!(parseInt(uid, 10) > 0)) {
+			return [];
+		}
+		return await User.getCategoriesByStates(uid, [categories.watchStates.ignoring]);
 	};
 
-	User.watchCategory = function (uid, cid, callback) {
-		User.setCategoryWatchState(uid, cid, categories.watchStates.watching, callback);
+	User.getWatchedCategories = async function (uid) {
+		if (!(parseInt(uid, 10) > 0)) {
+			return [];
+		}
+		return await User.getCategoriesByStates(uid, [categories.watchStates.watching]);
+	};
+
+	User.getCategoriesByStates = async function (uid, states) {
+		if (!(parseInt(uid, 10) > 0)) {
+			return await categories.getAllCidsFromSet('categories:cid');
+		}
+		const userState = await User.getCategoryWatchState(uid);
+		const cids = Object.keys(userState);
+		return cids.filter(cid => states.includes(userState[cid]));
+	};
+
+	User.ignoreCategory = async function (uid, cid) {
+		await User.setCategoryWatchState(uid, cid, categories.watchStates.ignoring);
+	};
+
+	User.watchCategory = async function (uid, cid) {
+		await User.setCategoryWatchState(uid, cid, categories.watchStates.watching);
 	};
 };
