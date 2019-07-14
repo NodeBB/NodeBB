@@ -68,6 +68,7 @@ module.exports = function (SocketPosts) {
 				posts.display_flag_tools = socket.uid && !posts.selfPost && results.canFlag.flag;
 				posts.display_moderator_tools = posts.display_edit_tools || posts.display_delete_tools;
 				posts.display_move_tools = results.isAdmin || results.isModerator;
+				posts.display_change_owner_tools = results.isAdmin || results.isModerator;
 				posts.display_ip_ban = (results.isAdmin || results.isGlobalMod) && !posts.selfPost;
 				posts.display_history = results.history;
 				posts.toolsVisible = posts.tools.length || posts.display_moderator_tools;
