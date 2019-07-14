@@ -65,24 +65,22 @@ Digest.getSubscribers = function (interval, callback) {
 						user.getMultipleUserSettings(uids, next);
 					},
 					function (settings, next) {
+						const subUids = [];
 						settings.forEach(function (hash) {
 							if (hash.dailyDigestFreq === interval) {
-								subs.push(hash.uid);
+								subUids.push(hash.uid);
 							}
 						});
+						user.bans.filterBanned(subUids, next);
+					},
+					function (uids, next) {
+						subs = subs.concat(uids);
 						next();
 					},
 				], next);
 			}, { interval: 1000 }, function (err) {
 				next(err, subs);
 			});
-		},
-		function (subscribers, next) {
-			async.filter(subscribers, function (uid, next) {
-				user.bans.isBanned(uid, function (err, banned) {
-					next(err, !banned);
-				});
-			}, next);
 		},
 		function (subscribers, next) {
 			plugins.fireHook('filter:digest.subscribers', {

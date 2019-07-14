@@ -1,6 +1,5 @@
 'use strict';
 
-const util = require('util');
 const db = require('../database');
 
 module.exports = function (User) {
@@ -42,42 +41,45 @@ module.exports = function (User) {
 		return banData;
 	};
 
-	User.bans.unban = async function (uid) {
-		await User.setUserFields(uid, { banned: 0, 'banned:expire': 0 });
-		await db.sortedSetsRemove(['users:banned', 'users:banned:expire'], uid);
+	User.bans.unban = async function (uids) {
+		if (Array.isArray(uids)) {
+			await db.setObject(uids.map(uid => 'user:' + uid), { banned: 0, 'banned:expire': 0 });
+		} else {
+			await User.setUserFields(uids, { banned: 0, 'banned:expire': 0 });
+		}
+
+		await db.sortedSetRemove(['users:banned', 'users:banned:expire'], uids);
 	};
 
-	User.bans.getBannedAndExpired = async function (uid) {
-		if (parseInt(uid, 10) <= 0) {
-			return false;
-		}
-		const userData = await User.getUserFields(uid, ['banned', 'banned:expire']);
+	User.bans.isBanned = async function (uids) {
+		const isArray = Array.isArray(uids);
+		uids = isArray ? uids : [uids];
+		const result = await User.bans.unbanIfExpired(uids);
+		return isArray ? result.map(r => r.banned) : result[0].banned;
+	};
+
+	User.bans.unbanIfExpired = async function (uids) {
+		// loading user data will unban if it has expired -barisu
+		const userData = await User.getUsersFields(uids, ['banned', 'banned:expire']);
 		return User.bans.calcExpiredFromUserData(userData);
 	};
 
 	User.bans.calcExpiredFromUserData = function (userData) {
-		return {
-			banned: !!userData.banned,
-			'banned:expire': userData['banned:expire'],
-			banExpired: userData['banned:expire'] <= Date.now() && userData['banned:expire'] !== 0,
-		};
+		const isArray = Array.isArray(userData);
+		userData = isArray ? userData : [userData];
+		userData = userData.map(function (userData) {
+			return {
+				banned: userData && !!userData.banned,
+				'banned:expire': userData && userData['banned:expire'],
+				banExpired: userData && userData['banned:expire'] <= Date.now() && userData['banned:expire'] !== 0,
+			};
+		});
+		return isArray ? userData : userData[0];
 	};
 
-	User.bans.unbanIfExpired = async function (uid) {
-		const result = await User.bans.getBannedAndExpired(uid);
-		if (result.banned && result.banExpired) {
-			await User.bans.unban(uid);
-			return { banned: false, banExpired: true, 'banned:expire': 0 };
-		}
-		return result;
-	};
-
-	User.bans.isBanned = async function (uid) {
-		if (parseInt(uid, 10) <= 0) {
-			return false;
-		}
-		const result = await User.bans.unbanIfExpired(uid);
-		return result.banned;
+	User.bans.filterBanned = async function (uids) {
+		const isBanned = User.bans.isBanned(uids);
+		return uids.filter((uid, index) => !isBanned[index]);
 	};
 
 	User.bans.getReason = async function (uid) {
@@ -91,14 +93,4 @@ module.exports = function (User) {
 		const banObj = await db.getObject(keys[0]);
 		return banObj && banObj.reason ? banObj.reason : '';
 	};
-
-	// TODO Remove in v1.13.0
-	const deprecatedMessage = (oldPath, newPath) => `function ${oldPath} is deprecated, please use ${newPath} instead`;
-	User.ban = util.deprecate(User.bans.ban, deprecatedMessage('User.ban', 'User.bans.ban'));
-	User.unban = util.deprecate(User.bans.unban, deprecatedMessage('User.unban', 'User.bans.unban'));
-	User.getBannedAndExpired = util.deprecate(User.bans.getBannedAndExpired, deprecatedMessage('User.getBannedAndExpired', 'User.bans.getBannedAndExpired'));
-	User.calcBanExpiredFromUserData = util.deprecate(User.bans.calcExpiredFromUserData, deprecatedMessage('User.calcBanExpiredFromUserData', 'User.bans.calcExpiredFromUserData'));
-	User.unbanIfBanExpired = util.deprecate(User.bans.unbanIfExpired, deprecatedMessage('User.unbanIfBanExpired', 'User.bans.unbanIfExpired'));
-	User.isBanned = util.deprecate(User.bans.isBanned, deprecatedMessage('User.isBanned', 'User.bans.isBanned'));
-	User.getBannedReason = util.deprecate(User.bans.getReason, deprecatedMessage('User.getBannedReason', 'User.bans.getReason'));
 };
