@@ -37,7 +37,7 @@ Topics.exists = async function (tid) {
 };
 
 Topics.getTopicsFromSet = async function (set, uid, start, stop) {
-	const tids = await db.getSortedSetRange(set, start, stop);
+	const tids = await db.getSortedSetRevRange(set, start, stop);
 	const topics = await Topics.getTopics(tids, uid);
 	Topics.calculateTopicIndices(topics, start);
 	return { topics: topics, nextStart: stop + 1 };
