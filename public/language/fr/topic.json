@@ -54,7 +54,7 @@
     "ignoring": "Ignoré",
     "watching.description": "Me notifier les nouvelles réponses.<br/>Afficher le sujet dans l'onglet \"Non lu\".",
     "not-watching.description": "Ne pas me notifier les nouvelles réponses.<br/>Afficher le sujet dans l'onglet \"Non lu\" si la catégorie n'est pas ignorée.",
-    "ignoring.description": "Ne pas me notifier les nouvelle réponses.<br/>Ne pas afficher ce sujet dans l'onglet \"Non lu\".",
+    "ignoring.description": "Ne pas me notifier les nouvelles réponses.<br/>Ne pas afficher ce sujet dans l'onglet \"Non lu\".",
     "thread_tools.title": "Outils pour sujets",
     "thread_tools.markAsUnreadForAll": "Marquer non lu pour tous",
     "thread_tools.pin": "Épingler le sujet",
