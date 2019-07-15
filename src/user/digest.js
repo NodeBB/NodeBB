@@ -14,182 +14,122 @@ var utils = require('../utils');
 
 var Digest = module.exports;
 
-Digest.execute = function (payload, callback) {
-	callback = callback || function () {};
-
-	var digestsDisabled = meta.config.disableEmailSubscriptions === 1;
+Digest.execute = async function (payload) {
+	const digestsDisabled = meta.config.disableEmailSubscriptions === 1;
 	if (digestsDisabled) {
 		winston.info('[user/jobs] Did not send digests (' + payload.interval + ') because subscription system is disabled.');
-		return callback();
+		return;
 	}
+	let subscribers = payload.subscribers;
+	if (!subscribers) {
+		subscribers = await Digest.getSubscribers(payload.interval);
+	}
+	if (!subscribers.length) {
+		return;
+	}
+	try {
+		const count = await Digest.send({
+			interval: payload.interval,
+			subscribers: subscribers,
+		});
+		winston.info('[user/jobs] Digest (' + payload.interval + ') scheduling completed. ' + count + ' email(s) sent.');
+	} catch (err) {
+		winston.error('[user/jobs] Could not send digests (' + payload.interval + ')', err);
+		throw err;
+	}
+};
 
-	async.waterfall([
-		function (next) {
-			if (payload.subscribers) {
-				setImmediate(next, undefined, payload.subscribers);
-			} else {
-				Digest.getSubscribers(payload.interval, next);
+Digest.getSubscribers = async function (interval) {
+	var subscribers = [];
+
+	await batch.processSortedSet('users:joindate', async function (uids) {
+		const settings = await user.getMultipleUserSettings(uids);
+		let subUids = [];
+		settings.forEach(function (hash) {
+			if (hash.dailyDigestFreq === interval) {
+				subUids.push(hash.uid);
 			}
-		},
-		function (subscribers, next) {
-			if (!subscribers.length) {
-				return callback();
-			}
+		});
+		subUids = await user.bans.filterBanned(subUids);
+		subscribers = subscribers.concat(subUids);
+	}, { interval: 1000 });
 
-			var data = {
-				interval: payload.interval,
-				subscribers: subscribers,
-			};
-
-			Digest.send(data, next);
-		},
-	], function (err, count) {
-		if (err) {
-			winston.error('[user/jobs] Could not send digests (' + payload.interval + ')', err);
-		} else {
-			winston.info('[user/jobs] Digest (' + payload.interval + ') scheduling completed. ' + count + ' email(s) sent.');
-		}
-
-		callback(err);
+	const results = await plugins.fireHook('filter:digest.subscribers', {
+		interval: interval,
+		subscribers: subscribers,
 	});
+	return results.subscribers;
 };
 
-Digest.getSubscribers = function (interval, callback) {
-	async.waterfall([
-		function (next) {
-			var subs = [];
-
-			batch.processSortedSet('users:joindate', function (uids, next) {
-				async.waterfall([
-					function (next) {
-						user.getMultipleUserSettings(uids, next);
-					},
-					function (settings, next) {
-						const subUids = [];
-						settings.forEach(function (hash) {
-							if (hash.dailyDigestFreq === interval) {
-								subUids.push(hash.uid);
-							}
-						});
-						user.bans.filterBanned(subUids, next);
-					},
-					function (uids, next) {
-						subs = subs.concat(uids);
-						next();
-					},
-				], next);
-			}, { interval: 1000 }, function (err) {
-				next(err, subs);
-			});
-		},
-		function (subscribers, next) {
-			plugins.fireHook('filter:digest.subscribers', {
-				interval: interval,
-				subscribers: subscribers,
-			}, next);
-		},
-		function (results, next) {
-			next(null, results.subscribers);
-		},
-	], callback);
-};
-
-Digest.send = function (data, callback) {
+Digest.send = async function (data) {
 	var emailsSent = 0;
 	if (!data || !data.subscribers || !data.subscribers.length) {
-		return callback(null, emailsSent);
+		return emailsSent;
 	}
-	var now = new Date();
+	const now = new Date();
 
-	async.waterfall([
-		function (next) {
-			user.getUsersFields(data.subscribers, ['uid', 'username', 'userslug', 'lastonline'], next);
-		},
-		function (users, next) {
-			async.eachLimit(users, 100, function (userObj, next) {
-				async.waterfall([
-					function (next) {
-						async.parallel({
-							notifications: async.apply(user.notifications.getDailyUnread, userObj.uid),
-							topics: async.apply(getTermTopics, data.interval, userObj.uid, 0, 9),
-						}, next);
-					},
-					function (data, next) {
-						var notifications = data.notifications.filter(Boolean);
+	const users = await user.getUsersFields(data.subscribers, ['uid', 'username', 'userslug', 'lastonline']);
 
-						// If there are no notifications and no new topics, don't bother sending a digest
-						if (!notifications.length && !data.topics.length) {
-							return next();
-						}
+	async.eachLimit(users, 100, async function (userObj) {
+		let [notifications, topics] = await Promise.all([
+			user.notifications.getDailyUnread(userObj.uid),
+			getTermTopics(data.interval, userObj.uid, 0, 9),
+		]);
+		notifications = notifications.filter(Boolean);
+		// If there are no notifications and no new topics, don't bother sending a digest
+		if (!notifications.length && !topics.length) {
+			return;
+		}
 
-						notifications.forEach(function (notification) {
-							if (notification.image && !notification.image.startsWith('http')) {
-								notification.image = nconf.get('url') + notification.image;
-							}
-						});
+		notifications.forEach(function (notification) {
+			if (notification.image && !notification.image.startsWith('http')) {
+				notification.image = nconf.get('url') + notification.image;
+			}
+		});
 
-						// Fix relative paths in topic data
-						data.topics = data.topics.map(function (topicObj) {
-							var user = topicObj.hasOwnProperty('teaser') && topicObj.teaser !== undefined ? topicObj.teaser.user : topicObj.user;
-							if (user && user.picture && utils.isRelativeUrl(user.picture)) {
-								user.picture = nconf.get('base_url') + user.picture;
-							}
-
-							return topicObj;
-						});
-						emailsSent += 1;
-						emailer.send('digest', userObj.uid, {
-							subject: '[[email:digest.subject, ' + (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()) + ']]',
-							username: userObj.username,
-							userslug: userObj.userslug,
-							notifications: notifications,
-							recent: data.topics,
-							interval: data.interval,
-							showUnsubscribe: true,
-						}, function (err) {
-							if (err) {
-								winston.error('[user/jobs] Could not send digest email', err);
-							}
-						});
-						next();
-					},
-				], next);
-			}, next);
-		},
-	], function (err) {
-		callback(err, emailsSent);
+		// Fix relative paths in topic data
+		topics = topics.map(function (topicObj) {
+			const user = topicObj.hasOwnProperty('teaser') && topicObj.teaser !== undefined ? topicObj.teaser.user : topicObj.user;
+			if (user && user.picture && utils.isRelativeUrl(user.picture)) {
+				user.picture = nconf.get('base_url') + user.picture;
+			}
+			return topicObj;
+		});
+		emailsSent += 1;
+		emailer.send('digest', userObj.uid, {
+			subject: '[[email:digest.subject, ' + (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()) + ']]',
+			username: userObj.username,
+			userslug: userObj.userslug,
+			notifications: notifications,
+			recent: data.topics,
+			interval: data.interval,
+			showUnsubscribe: true,
+		}, function (err) {
+			if (err) {
+				winston.error('[user/jobs] Could not send digest email', err);
+			}
+		});
 	});
-
-	function getTermTopics(term, uid, start, stop, callback) {
-		const options = {
-			uid: uid,
-			start: start,
-			stop: stop,
-			term: term,
-			sort: 'posts',
-			teaserPost: 'last-post',
-		};
-
-		async.waterfall([
-			function (next) {
-				topics.getSortedTopics(options, next);
-			},
-			function (data, next) {
-				if (!data.topics.length) {
-					topics.getLatestTopics(options, next);
-				} else {
-					next(null, data);
-				}
-			},
-			(data, next) => {
-				data.topics.forEach(function (topicObj) {
-					if (topicObj && topicObj.teaser && topicObj.teaser.content && topicObj.teaser.content.length > 255) {
-						topicObj.teaser.content = topicObj.teaser.content.slice(0, 255) + '...';
-					}
-				});
-
-				next(null, data.topics);
-			},
-		], callback);
-	}
+	return emailsSent;
 };
+
+async function getTermTopics(term, uid, start, stop) {
+	const options = {
+		uid: uid,
+		start: start,
+		stop: stop,
+		term: term,
+		sort: 'posts',
+		teaserPost: 'last-post',
+	};
+	let data = await topics.getSortedTopics(options);
+	if (!data.topics.length) {
+		data = await topics.getLatestTopics(options);
+	}
+	data.topics.forEach(function (topicObj) {
+		if (topicObj && topicObj.teaser && topicObj.teaser.content && topicObj.teaser.content.length > 255) {
+			topicObj.teaser.content = topicObj.teaser.content.slice(0, 255) + '...';
+		}
+	});
+	return data.topics;
+}
