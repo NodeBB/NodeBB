@@ -344,13 +344,6 @@ Messaging.canMessageRoom = function (uid, roomId, callback) {
 				return next(new Error('[[error:not-in-room]]'));
 			}
 
-			Messaging.getUserCountInRoom(roomId, next);
-		},
-		function (count, next) {
-			if (count < 2) {
-				return next(new Error('[[error:no-users-in-room]]'));
-			}
-
 			user.getUserFields(uid, ['banned', 'email:confirmed'], next);
 		},
 		function (userData, next) {
