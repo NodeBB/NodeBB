@@ -35,7 +35,7 @@
     "user_posted_to_dual": "<strong>%1</strong> oraz <strong>%2</strong> dodali odpowiedzi do <strong>%3</strong>",
     "user_posted_to_multiple": "<strong>%1</strong> oraz %2 innych dodali odpowiedzi do <strong>%3</strong>",
     "user_posted_topic": "<strong>%1</strong> stworzył nowy temat: <strong>%2</strong>",
-    "user_started_following_you": "<string>%1</strong> zaczął Cię obserwować.",
+    "user_started_following_you": "<strong>%1</strong> zaczął Cię obserwować.",
     "user_started_following_you_dual": "<strong>%1</strong> oraz <strong>%2</strong> zaczęli Cię obserwować.",
     "user_started_following_you_multiple": "<strong>%1</strong> oraz %2 innych obserwują Cię.",
     "new_register": "<strong>%1</strong> wysłał(-a) żądanie rejestracji.",
