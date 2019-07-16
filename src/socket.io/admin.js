@@ -26,6 +26,7 @@ var utils = require('../../public/src/utils');
 var SocketAdmin = {
 	user: require('./admin/user'),
 	categories: require('./admin/categories'),
+	settings: require('./admin/settings'),
 	groups: require('./admin/groups'),
 	tags: require('./admin/tags'),
 	rewards: require('./admin/rewards'),
@@ -36,7 +37,6 @@ var SocketAdmin = {
 	plugins: {},
 	widgets: {},
 	config: {},
-	settings: {},
 	email: {},
 	analytics: {},
 	logs: {},
@@ -219,31 +219,6 @@ SocketAdmin.config.setMultiple = function (socket, data, callback) {
 
 SocketAdmin.config.remove = function (socket, key, callback) {
 	meta.configs.remove(key, callback);
-};
-
-SocketAdmin.settings.get = function (socket, data, callback) {
-	meta.settings.get(data.hash, callback);
-};
-
-SocketAdmin.settings.set = function (socket, data, callback) {
-	async.waterfall([
-		function (next) {
-			meta.settings.set(data.hash, data.values, next);
-		},
-		function (next) {
-			var eventData = data.values;
-			eventData.type = 'settings-change';
-			eventData.uid = socket.uid;
-			eventData.ip = socket.ip;
-			eventData.hash = data.hash;
-			events.log(eventData, next);
-		},
-	], callback);
-};
-
-SocketAdmin.settings.clearSitemapCache = function (socket, data, callback) {
-	require('../sitemap').clearCache();
-	callback();
 };
 
 SocketAdmin.email.test = function (socket, data, callback) {
