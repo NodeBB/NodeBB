@@ -1891,10 +1891,8 @@ describe('User', function () {
 
 	describe('user jobs', function () {
 		it('should start user jobs', function (done) {
-			User.startJobs(function (err) {
-				assert.ifError(err);
-				done();
-			});
+			User.startJobs();
+			done();
 		});
 
 		it('should stop user jobs', function (done) {

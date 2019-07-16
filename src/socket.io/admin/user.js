@@ -260,5 +260,6 @@ User.search = function (socket, data, callback) {
 };
 
 User.restartJobs = function (socket, data, callback) {
-	user.startJobs(callback);
+	user.startJobs();
+	callback();
 };
