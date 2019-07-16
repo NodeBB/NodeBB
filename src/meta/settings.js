@@ -9,65 +9,45 @@ var pubsub = require('../pubsub');
 
 var Settings = module.exports;
 
-Settings.get = function (hash, callback) {
-	db.getObject('settings:' + hash, function (err, settings) {
-		callback(err, settings || {});
+Settings.get = async function (hash) {
+	return await db.getObject('settings:' + hash) || {};
+};
+
+Settings.getOne = async function (hash, field) {
+	return await db.getObjectField('settings:' + hash, field);
+};
+
+Settings.set = async function (hash, values, quiet) {
+	quiet = quiet || false;
+
+	await db.setObject('settings:' + hash, values);
+
+	plugins.fireHook('action:settings.set', {
+		plugin: hash,
+		settings: values,
 	});
+
+	pubsub.publish('action:settings.set.' + hash, values);
+	Meta.reloadRequired = !quiet;
 };
 
-Settings.getOne = function (hash, field, callback) {
-	db.getObjectField('settings:' + hash, field, callback);
-};
-
-Settings.set = function (hash, values, quiet, callback) {
-	if (!callback && typeof quiet === 'function') {
-		callback = quiet;
-		quiet = false;
-	} else {
-		quiet = quiet || false;
-	}
-
-	async.waterfall([
-		function (next) {
-			db.setObject('settings:' + hash, values, next);
-		},
-		function (next) {
-			plugins.fireHook('action:settings.set', {
-				plugin: hash,
-				settings: values,
-			});
-			pubsub.publish('action:settings.set.' + hash, values);
-			Meta.reloadRequired = !quiet;
-			next();
-		},
-	], callback);
-};
-
-Settings.setOne = function (hash, field, value, callback) {
-	var data = {};
+Settings.setOne = async function (hash, field, value) {
+	const data = {};
 	data[field] = value;
-	Settings.set(hash, data, callback);
+	return await Settings.set(hash, data);
 };
 
-Settings.setOnEmpty = function (hash, values, callback) {
-	async.waterfall([
-		function (next) {
-			db.getObject('settings:' + hash, next);
-		},
-		function (settings, next) {
-			settings = settings || {};
-			var empty = {};
-			Object.keys(values).forEach(function (key) {
-				if (!settings.hasOwnProperty(key)) {
-					empty[key] = values[key];
-				}
-			});
+Settings.setOnEmpty = async function (hash, values) {
+	const settings = await db.getObject('settings:' + hash) || {};
+	var empty = {};
 
-			if (Object.keys(empty).length) {
-				Settings.set(hash, empty, next);
-			} else {
-				next();
-			}
-		},
-	], callback);
+	Object.keys(values).forEach(function (key) {
+		if (!settings.hasOwnProperty(key)) {
+			empty[key] = values[key];
+		}
+	});
+
+	if (Object.keys(empty).length) {
+		return await Settings.set(hash, empty);
+	}
 };
