@@ -94,11 +94,19 @@ define('forum/chats/messages', ['components', 'sounds', 'translator', 'benchpres
 
 
 	messages.parseMessage = function (data, callback) {
-		Benchpress.parse('partials/chats/message' + (Array.isArray(data) ? 's' : ''), {
-			messages: data,
-		}, function (html) {
+		function done(html) {
 			translator.translate(html, callback);
-		});
+		}
+
+		if (Array.isArray(data)) {
+			Benchpress.parse('partials/chats/message' + (Array.isArray(data) ? 's' : ''), {
+				messages: data,
+			}, done);
+		} else {
+			Benchpress.parse('partials/chats/' + (data.system ? 'system-message' : 'message'), {
+				messages: data,
+			}, done);
+		}
 	};
 
 

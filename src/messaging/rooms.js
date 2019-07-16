@@ -140,6 +140,19 @@ module.exports = function (Messaging) {
 				}
 				next();
 			},
+			(next) => {
+				setImmediate(next);
+
+				uids.forEach(async (uid) => {
+					const message = await Messaging.addMessage({
+						content: 'user-join',
+						uid: uid,
+						roomId: roomId,
+						system: 1,
+					});
+					Messaging.notifyUsersInRoom(uid, roomId, message);
+				});
+			},
 		], callback);
 	};
 
@@ -179,6 +192,16 @@ module.exports = function (Messaging) {
 			},
 			function (next) {
 				updateOwner(roomId, next);
+
+				uids.forEach(async (uid) => {
+					const message = await Messaging.addMessage({
+						content: 'user-leave',
+						uid: uid,
+						roomId: roomId,
+						system: 1,
+					});
+					Messaging.notifyUsersInRoom(uid, roomId, message);
+				});
 			},
 		], callback);
 	};
@@ -197,6 +220,16 @@ module.exports = function (Messaging) {
 			},
 			function (next) {
 				async.eachSeries(roomIds, updateOwner, next);
+
+				roomIds.forEach(async (roomId) => {
+					const message = await Messaging.addMessage({
+						content: 'user-leave',
+						uid: uid,
+						roomId: roomId,
+						system: 1,
+					});
+					Messaging.notifyUsersInRoom(uid, roomId, message);
+				});
 			},
 		], callback);
 	};
@@ -260,6 +293,16 @@ module.exports = function (Messaging) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				db.setObjectField('chat:room:' + roomId, 'roomName', newName, next);
+
+				(async () => {
+					const message = await Messaging.addMessage({
+						content: 'room-rename, ' + newName.replace(',', '%2C'),
+						uid: uid,
+						roomId: roomId,
+						system: 1,
+					});
+					Messaging.notifyUsersInRoom(uid, roomId, message);
+				})();
 			},
 			async.apply(plugins.fireHook, 'action:chat.renameRoom', {
 				roomId: roomId,

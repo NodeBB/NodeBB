@@ -259,11 +259,11 @@ Messaging.getLatestUndeletedMessage = function (uid, roomId, callback) {
 						done = true;
 						return next();
 					}
-					Messaging.getMessageField(mids[0], 'deleted', _next);
+					Messaging.getMessageFields(mids[0], ['deleted', 'system'], _next);
 				},
-				function (deleted, _next) {
-					done = !deleted;
-					if (!deleted) {
+				function (states, _next) {
+					done = !states.deleted && !states.system;
+					if (done) {
 						latestMid = mids[0];
 					}
 					index += 1;
