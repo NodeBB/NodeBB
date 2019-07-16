@@ -56,9 +56,6 @@ module.exports = function (Messaging) {
 
 		async.waterfall([
 			function (next) {
-				Messaging.checkContent(data.content, next);
-			},
-			function (next) {
 				db.incrObjectField('global', 'nextMid', next);
 			},
 			function (_mid, next) {
