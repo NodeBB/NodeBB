@@ -9,12 +9,13 @@ module.exports = function (db, module) {
 	module.objectCache = cache;
 
 	module.setObject = async function (key, data) {
-		if (!key || !data) {
+		const isArray = Array.isArray(key);
+		if (!key || !data || (isArray && !key.length)) {
 			return;
 		}
 
 		const writeData = helpers.serializeData(data);
-		if (Array.isArray(key)) {
+		if (isArray) {
 			var bulk = db.collection('objects').initializeUnorderedBulkOp();
 			key.forEach(key => bulk.find({ _key: key }).upsert().updateOne({ $set: writeData }));
 			await bulk.execute();
