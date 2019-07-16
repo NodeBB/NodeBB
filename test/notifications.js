@@ -442,7 +442,7 @@ describe('Notifications', function () {
 					user.notifications.getAll(uid, '', function (err, data) {
 						meta.config.welcomeNotification = '';
 						assert.ifError(err);
-						assert.notEqual(data.indexOf('welcome_' + uid), -1);
+						assert(data.includes('welcome_' + uid));
 						done();
 					});
 				}, 1100);
