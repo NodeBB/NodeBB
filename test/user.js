@@ -899,7 +899,7 @@ describe('User', function () {
 		it('should return error if profile image uploads disabled', function (done) {
 			meta.config.allowProfileImageUploads = 0;
 			var picture = {
-				path: path.join(nconf.get('base_dir'), 'test/files/test.png'),
+				path: path.join(nconf.get('base_dir'), 'test/files/test_copy.png'),
 				size: 7189,
 				name: 'test.png',
 				type: 'image/png',
@@ -916,7 +916,7 @@ describe('User', function () {
 		it('should return error if profile image is too big', function (done) {
 			meta.config.allowProfileImageUploads = 1;
 			var picture = {
-				path: path.join(nconf.get('base_dir'), 'test/files/test.png'),
+				path: path.join(nconf.get('base_dir'), 'test/files/test_copy.png'),
 				size: 265000,
 				name: 'test.png',
 				type: 'image/png',
@@ -933,7 +933,7 @@ describe('User', function () {
 
 		it('should return error if profile image has no mime type', function (done) {
 			var picture = {
-				path: path.join(nconf.get('base_dir'), 'test/files/test.png'),
+				path: path.join(nconf.get('base_dir'), 'test/files/test_copy.png'),
 				size: 7189,
 				name: 'test',
 			};

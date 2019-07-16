@@ -1,52 +1,39 @@
 'use strict';
 
-var async = require('async');
-var nconf = require('nconf');
 
-var db = require('../database');
-var Password = require('../password');
+const nconf = require('nconf');
+
+const db = require('../database');
+const Password = require('../password');
 
 module.exports = function (User) {
-	User.hashPassword = function (password, callback) {
+	User.hashPassword = async function (password) {
 		if (!password) {
-			return callback(null, password);
+			return password;
 		}
 
-		Password.hash(nconf.get('bcrypt_rounds') || 12, password, callback);
+		return await Password.hash(nconf.get('bcrypt_rounds') || 12, password);
 	};
 
-	User.isPasswordCorrect = function (uid, password, ip, callback) {
+	User.isPasswordCorrect = async function (uid, password, ip) {
 		password = password || '';
-		var hashedPassword;
-		async.waterfall([
-			function (next) {
-				db.getObjectField('user:' + uid, 'password', next);
-			},
-			function (_hashedPassword, next) {
-				hashedPassword = _hashedPassword;
-				if (!hashedPassword) {
-					// Non-existant user, submit fake hash for comparison
-					hashedPassword = '';
-				}
+		var hashedPassword = await db.getObjectField('user:' + uid, 'password');
+		if (!hashedPassword) {
+			// Non-existant user, submit fake hash for comparison
+			hashedPassword = '';
+		}
 
-				User.isPasswordValid(password, 0, next);
-			},
-			async.apply(User.auth.logAttempt, uid, ip),
-			function (next) {
-				Password.compare(password, hashedPassword, next);
-			},
-			function (ok, next) {
-				if (ok) {
-					User.auth.clearLoginAttempts(uid);
-				}
-				next(null, ok);
-			},
-		], callback);
+		await User.isPasswordValid(password, 0);
+		await User.auth.logAttempt(uid, ip);
+		const ok = await Password.compare(password, hashedPassword);
+		if (ok) {
+			User.auth.clearLoginAttempts(uid);
+		}
+		return ok;
 	};
 
-	User.hasPassword = function (uid, callback) {
-		db.getObjectField('user:' + uid, 'password', function (err, hashedPassword) {
-			callback(err, !!hashedPassword);
-		});
+	User.hasPassword = async function (uid) {
+		const hashedPassword = await db.getObjectField('user:' + uid, 'password');
+		return !!hashedPassword;
 	};
 };

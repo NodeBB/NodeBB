@@ -69,3 +69,6 @@ function done(err, result) {
 	process.send(err ? { err: err.message } : { result: result });
 	process.disconnect();
 }
+
+
+require('./promisify')(exports);
