@@ -10,350 +10,246 @@ var groups = require('../groups');
 var plugins = require('../plugins');
 
 module.exports = function (User) {
-	User.updateProfile = function (uid, data, callback) {
+	User.updateProfile = async function (uid, data) {
 		var fields = ['username', 'email', 'fullname', 'website', 'location',
 			'groupTitle', 'birthday', 'signature', 'aboutme'];
 
 		var updateUid = data.uid;
-		var oldData;
 
-		async.waterfall([
-			function (next) {
-				plugins.fireHook('filter:user.updateProfile', { uid: uid, data: data, fields: fields }, next);
-			},
-			function (data, next) {
-				fields = data.fields;
-				data = data.data;
+		const result = await plugins.fireHook('filter:user.updateProfile', { uid: uid, data: data, fields: fields });
+		fields = result.fields;
+		data = result.data;
 
-				validateData(uid, data, next);
-			},
-			function (next) {
-				User.getUserFields(updateUid, fields, next);
-			},
-			function (_oldData, next) {
-				oldData = _oldData;
-				async.each(fields, function (field, next) {
-					if (!(data[field] !== undefined && typeof data[field] === 'string')) {
-						return next();
-					}
+		await validateData(uid, data);
 
-					data[field] = data[field].trim();
+		const oldData = await User.getUserFields(updateUid, fields);
 
-					if (field === 'email') {
-						return updateEmail(updateUid, data.email, next);
-					} else if (field === 'username') {
-						return updateUsername(updateUid, data.username, next);
-					} else if (field === 'fullname') {
-						return updateFullname(updateUid, data.fullname, next);
-					}
+		await async.each(fields, async function (field) {
+			if (!(data[field] !== undefined && typeof data[field] === 'string')) {
+				return;
+			}
 
-					User.setUserField(updateUid, field, data[field], next);
-				}, next);
-			},
-			function (next) {
-				plugins.fireHook('action:user.updateProfile', { uid: uid, data: data, fields: fields, oldData: oldData });
-				User.getUserFields(updateUid, ['email', 'username', 'userslug', 'picture', 'icon:text', 'icon:bgColor'], next);
-			},
-		], callback);
+			data[field] = data[field].trim();
+
+			if (field === 'email') {
+				return await updateEmail(updateUid, data.email);
+			} else if (field === 'username') {
+				return await updateUsername(updateUid, data.username);
+			} else if (field === 'fullname') {
+				return await updateFullname(updateUid, data.fullname);
+			}
+
+			await User.setUserField(updateUid, field, data[field]);
+		});
+		plugins.fireHook('action:user.updateProfile', { uid: uid, data: data, fields: fields, oldData: oldData });
+		return await User.getUserFields(updateUid, ['email', 'username', 'userslug', 'picture', 'icon:text', 'icon:bgColor']);
 	};
 
-	function validateData(callerUid, data, callback) {
-		async.series([
-			async.apply(isEmailAvailable, data, data.uid),
-			async.apply(isUsernameAvailable, data, data.uid),
-			async.apply(isGroupTitleValid, data),
-			async.apply(isWebsiteValid, callerUid, data),
-			async.apply(isAboutMeValid, callerUid, data),
-			async.apply(isSignatureValid, callerUid, data),
-		], function (err) {
-			callback(err);
-		});
+	async function validateData(callerUid, data) {
+		await isEmailAvailable(data, data.uid);
+		await isUsernameAvailable(data, data.uid);
+		await isWebsiteValid(callerUid, data);
+		await isAboutMeValid(callerUid, data);
+		await isSignatureValid(callerUid, data);
+		isGroupTitleValid(data);
 	}
 
-	function isEmailAvailable(data, uid, callback) {
+	async function isEmailAvailable(data, uid) {
 		if (!data.email) {
-			return callback();
+			return;
 		}
 
 		if (!utils.isEmailValid(data.email)) {
-			return callback(new Error('[[error:invalid-email]]'));
+			throw new Error('[[error:invalid-email]]');
 		}
-
-		async.waterfall([
-			function (next) {
-				User.getUserField(uid, 'email', next);
-			},
-			function (email, next) {
-				if (email === data.email) {
-					return callback();
-				}
-				User.email.available(data.email, next);
-			},
-			function (available, next) {
-				next(!available ? new Error('[[error:email-taken]]') : null);
-			},
-		], callback);
+		const email = await User.getUserField(uid, 'email');
+		if (email === data.email) {
+			return;
+		}
+		const available = await User.email.available(data.email);
+		if (!available) {
+			throw new Error('[[error:email-taken]]');
+		}
 	}
 
-	function isUsernameAvailable(data, uid, callback) {
+	async function isUsernameAvailable(data, uid) {
 		if (!data.username) {
-			return callback();
+			return;
 		}
 		data.username = data.username.trim();
-		async.waterfall([
-			function (next) {
-				User.getUserFields(uid, ['username', 'userslug'], next);
-			},
-			function (userData, next) {
-				var userslug = utils.slugify(data.username);
+		const userData = await User.getUserFields(uid, ['username', 'userslug']);
+		var userslug = utils.slugify(data.username);
 
-				if (data.username.length < meta.config.minimumUsernameLength) {
-					return next(new Error('[[error:username-too-short]]'));
-				}
+		if (data.username.length < meta.config.minimumUsernameLength) {
+			throw new Error('[[error:username-too-short]]');
+		}
 
-				if (data.username.length > meta.config.maximumUsernameLength) {
-					return next(new Error('[[error:username-too-long]]'));
-				}
+		if (data.username.length > meta.config.maximumUsernameLength) {
+			throw new Error('[[error:username-too-long]]');
+		}
 
-				if (!utils.isUserNameValid(data.username) || !userslug) {
-					return next(new Error('[[error:invalid-username]]'));
-				}
+		if (!utils.isUserNameValid(data.username) || !userslug) {
+			throw new Error('[[error:invalid-username]]');
+		}
 
-				if (userslug === userData.userslug) {
-					return callback();
-				}
-				User.existsBySlug(userslug, next);
-			},
-			function (exists, next) {
-				next(exists ? new Error('[[error:username-taken]]') : null);
-			},
-		], callback);
+		if (userslug === userData.userslug) {
+			return;
+		}
+		const exists = await User.existsBySlug(userslug);
+		if (exists) {
+			throw new Error('[[error:username-taken]]');
+		}
 	}
 
-	function isGroupTitleValid(data, callback) {
+	function isGroupTitleValid(data) {
 		if (data.groupTitle === 'registered-users' || groups.isPrivilegeGroup(data.groupTitle)) {
-			callback(new Error('[[error:invalid-group-title]]'));
-		} else {
-			callback();
+			throw new Error('[[error:invalid-group-title]]');
 		}
 	}
 
-	function isWebsiteValid(callerUid, data, callback) {
+	async function isWebsiteValid(callerUid, data) {
 		if (!data.website) {
-			return setImmediate(callback);
+			return;
 		}
-		User.checkMinReputation(callerUid, data.uid, 'min:rep:website', callback);
+		await User.checkMinReputation(callerUid, data.uid, 'min:rep:website');
 	}
 
-	function isAboutMeValid(callerUid, data, callback) {
+	async function isAboutMeValid(callerUid, data) {
 		if (!data.aboutme) {
-			return setImmediate(callback);
+			return;
 		}
 		if (data.aboutme !== undefined && data.aboutme.length > meta.config.maximumAboutMeLength) {
-			return callback(new Error('[[error:about-me-too-long, ' + meta.config.maximumAboutMeLength + ']]'));
+			throw new Error('[[error:about-me-too-long, ' + meta.config.maximumAboutMeLength + ']]');
 		}
 
-		User.checkMinReputation(callerUid, data.uid, 'min:rep:aboutme', callback);
+		await User.checkMinReputation(callerUid, data.uid, 'min:rep:aboutme');
 	}
 
-	function isSignatureValid(callerUid, data, callback) {
+	async function isSignatureValid(callerUid, data) {
 		if (!data.signature) {
-			return setImmediate(callback);
+			return;
 		}
 		if (data.signature !== undefined && data.signature.length > meta.config.maximumSignatureLength) {
-			return callback(new Error('[[error:signature-too-long, ' + meta.config.maximumSignatureLength + ']]'));
+			throw new Error('[[error:signature-too-long, ' + meta.config.maximumSignatureLength + ']]');
 		}
-		User.checkMinReputation(callerUid, data.uid, 'min:rep:signature', callback);
+		await User.checkMinReputation(callerUid, data.uid, 'min:rep:signature');
 	}
 
-	User.checkMinReputation = function (callerUid, uid, setting, callback) {
+	User.checkMinReputation = async function (callerUid, uid, setting) {
 		var isSelf = parseInt(callerUid, 10) === parseInt(uid, 10);
 		if (!isSelf || meta.config['reputation:disabled']) {
-			return setImmediate(callback);
+			return;
 		}
-		async.waterfall([
-			function (next) {
-				User.getUserField(uid, 'reputation', next);
-			},
-			function (reputation, next) {
-				if (reputation < meta.config[setting]) {
-					return next(new Error('[[error:not-enough-reputation-' + setting.replace(/:/g, '-') + ']]'));
-				}
-				next();
-			},
-		], callback);
+		const reputation = await User.getUserField(uid, 'reputation');
+		if (reputation < meta.config[setting]) {
+			throw new Error('[[error:not-enough-reputation-' + setting.replace(/:/g, '-') + ']]');
+		}
 	};
 
-	function updateEmail(uid, newEmail, callback) {
-		async.waterfall([
-			function (next) {
-				User.getUserField(uid, 'email', next);
-			},
-			function (oldEmail, next) {
-				oldEmail = oldEmail || '';
+	async function updateEmail(uid, newEmail) {
+		let oldEmail = await User.getUserField(uid, 'email');
+		oldEmail = oldEmail || '';
+		if (oldEmail === newEmail) {
+			return;
+		}
 
-				if (oldEmail === newEmail) {
-					return callback();
-				}
-				async.series([
-					async.apply(db.sortedSetRemove, 'email:uid', oldEmail.toLowerCase()),
-					async.apply(db.sortedSetRemove, 'email:sorted', oldEmail.toLowerCase() + ':' + uid),
-					async.apply(User.auth.revokeAllSessions, uid),
-				], function (err) {
-					next(err);
-				});
-			},
-			function (next) {
-				async.parallel([
-					function (next) {
-						db.sortedSetAddBulk([
-							['email:uid', uid, newEmail.toLowerCase()],
-							['email:sorted', 0, newEmail.toLowerCase() + ':' + uid],
-							['user:' + uid + ':emails', Date.now(), newEmail + ':' + Date.now()],
-							['users:notvalidated', Date.now(), uid],
-						], next);
-					},
-					function (next) {
-						User.setUserField(uid, 'email', newEmail, next);
-					},
-					function (next) {
-						if (meta.config.requireEmailConfirmation && newEmail) {
-							User.email.sendValidationEmail(uid, {
-								email: newEmail,
-								subject: '[[email:email.verify-your-email.subject]]',
-								template: 'verify_email',
-							});
-						}
-						User.setUserField(uid, 'email:confirmed', 0, next);
-					},
-					function (next) {
-						User.reset.cleanByUid(uid, next);
-					},
-				], function (err) {
-					next(err);
-				});
-			},
-		], callback);
+		await db.sortedSetRemove('email:uid', oldEmail.toLowerCase());
+		await db.sortedSetRemove('email:sorted', oldEmail.toLowerCase() + ':' + uid);
+		await User.auth.revokeAllSessions(uid);
+
+		await Promise.all([
+			db.sortedSetAddBulk([
+				['email:uid', uid, newEmail.toLowerCase()],
+				['email:sorted', 0, newEmail.toLowerCase() + ':' + uid],
+				['user:' + uid + ':emails', Date.now(), newEmail + ':' + Date.now()],
+				['users:notvalidated', Date.now(), uid],
+			]),
+			User.setUserFields(uid, { email: newEmail, 'email:confirmed': 0 }),
+			User.reset.cleanByUid(uid),
+		]);
+
+		if (meta.config.requireEmailConfirmation && newEmail) {
+			User.email.sendValidationEmail(uid, {
+				email: newEmail,
+				subject: '[[email:email.verify-your-email.subject]]',
+				template: 'verify_email',
+			});
+		}
 	}
 
-	function updateUsername(uid, newUsername, callback) {
+	async function updateUsername(uid, newUsername) {
 		if (!newUsername) {
-			return setImmediate(callback);
+			return;
 		}
-
-		async.waterfall([
-			function (next) {
-				User.getUserFields(uid, ['username', 'userslug'], next);
-			},
-			function (userData, next) {
-				if (userData.username === newUsername) {
-					return callback();
-				}
-				async.parallel([
-					function (next) {
-						updateUidMapping('username', uid, newUsername, userData.username, next);
-					},
-					function (next) {
-						var newUserslug = utils.slugify(newUsername);
-						updateUidMapping('userslug', uid, newUserslug, userData.userslug, next);
-					},
-					function (next) {
-						var now = Date.now();
-						async.series([
-							async.apply(db.sortedSetRemove, 'username:sorted', userData.username.toLowerCase() + ':' + uid),
-							async.apply(db.sortedSetAdd, 'username:sorted', 0, newUsername.toLowerCase() + ':' + uid),
-							async.apply(db.sortedSetAdd, 'user:' + uid + ':usernames', now, newUsername + ':' + now),
-						], next);
-					},
-				], next);
-			},
-		], function (err) {
-			callback(err);
-		});
+		const userData = await User.getUserFields(uid, ['username', 'userslug']);
+		if (userData.username === newUsername) {
+			return;
+		}
+		const newUserslug = utils.slugify(newUsername);
+		const now = Date.now();
+		await Promise.all([
+			updateUidMapping('username', uid, newUsername, userData.username),
+			updateUidMapping('userslug', uid, newUserslug, userData.userslug),
+			db.sortedSetAdd('user:' + uid + ':usernames', now, newUsername + ':' + now),
+		]);
+		await db.sortedSetRemove('username:sorted', userData.username.toLowerCase() + ':' + uid);
+		await db.sortedSetAdd('username:sorted', 0, newUsername.toLowerCase() + ':' + uid);
 	}
 
-	function updateUidMapping(field, uid, value, oldValue, callback) {
+	async function updateUidMapping(field, uid, value, oldValue) {
 		if (value === oldValue) {
-			return callback();
+			return;
 		}
-
-		async.series([
-			function (next) {
-				db.sortedSetRemove(field + ':uid', oldValue, next);
-			},
-			function (next) {
-				User.setUserField(uid, field, value, next);
-			},
-			function (next) {
-				if (value) {
-					db.sortedSetAdd(field + ':uid', uid, value, next);
-				} else {
-					next();
-				}
-			},
-		], callback);
+		await db.sortedSetRemove(field + ':uid', oldValue);
+		await User.setUserField(uid, field, value);
+		if (value) {
+			await db.sortedSetAdd(field + ':uid', uid, value);
+		}
 	}
 
-	function updateFullname(uid, newFullname, callback) {
-		async.waterfall([
-			function (next) {
-				User.getUserField(uid, 'fullname', next);
-			},
-			function (fullname, next) {
-				updateUidMapping('fullname', uid, newFullname, fullname, next);
-			},
-		], callback);
+	async function updateFullname(uid, newFullname) {
+		const fullname = await User.getUserField(uid, 'fullname');
+		await updateUidMapping('fullname', uid, newFullname, fullname);
 	}
 
-	User.changePassword = function (uid, data, callback) {
+	User.changePassword = async function (uid, data) {
 		if (uid <= 0 || !data || !data.uid) {
-			return callback(new Error('[[error:invalid-uid]]'));
+			throw new Error('[[error:invalid-uid]]');
+		}
+		await User.isPasswordValid(data.newPassword);
+		const [isAdmin, hasPassword] = await Promise.all([
+			User.isAdministrator(uid),
+			User.hasPassword(uid),
+		]);
+
+		if (meta.config['password:disableEdit'] && !isAdmin) {
+			throw new Error('[[error:no-privileges]]');
+		}
+		let isAdminOrPasswordMatch = false;
+		const isSelf = parseInt(uid, 10) === parseInt(data.uid, 10);
+		if (
+			(isAdmin && !isSelf) || // Admins ok
+			(!hasPassword && isSelf)	// Initial password set ok
+		) {
+			isAdminOrPasswordMatch = true;
+		} else {
+			isAdminOrPasswordMatch = await User.isPasswordCorrect(uid, data.currentPassword, data.ip);
 		}
 
-		async.waterfall([
-			function (next) {
-				User.isPasswordValid(data.newPassword, next);
-			},
-			function (next) {
-				async.parallel({
-					isAdmin: async.apply(User.isAdministrator, uid),
-					hasPassword: async.apply(User.hasPassword, uid),
-				}, next);
-			},
-			function (checks, next) {
-				if (meta.config['password:disableEdit'] && !checks.isAdmin) {
-					return next(new Error('[[error:no-privileges]]'));
-				}
+		if (!isAdminOrPasswordMatch) {
+			throw new Error('[[user:change_password_error_wrong_current]]');
+		}
 
-				if (
-					(checks.isAdmin && parseInt(uid, 10) !== parseInt(data.uid, 10)) ||		// Admins ok
-					(!checks.hasPassword && parseInt(uid, 10) === parseInt(data.uid, 10))	// Initial password set ok
-				) {
-					return next(null, true);
-				}
+		const hashedPassword = await User.hashPassword(data.newPassword);
+		await Promise.all([
+			User.setUserFields(data.uid, {
+				password: hashedPassword,
+				rss_token: utils.generateUUID(),
+			}),
+			User.reset.updateExpiry(data.uid),
+			User.auth.revokeAllSessions(data.uid),
+		]);
 
-				User.isPasswordCorrect(uid, data.currentPassword, data.ip, next);
-			},
-			function (isAdminOrPasswordMatch, next) {
-				if (!isAdminOrPasswordMatch) {
-					return next(new Error('[[user:change_password_error_wrong_current]]'));
-				}
-
-				User.hashPassword(data.newPassword, next);
-			},
-			function (hashedPassword, next) {
-				async.parallel([
-					async.apply(User.setUserFields, data.uid, {
-						password: hashedPassword,
-						rss_token: utils.generateUUID(),
-					}),
-					async.apply(User.reset.updateExpiry, data.uid),
-					async.apply(User.auth.revokeAllSessions, data.uid),
-					async.apply(plugins.fireHook, 'action:password.change', { uid: uid }),
-				], function (err) {
-					next(err);
-				});
-			},
-		], callback);
+		plugins.fireHook('action:password.change', { uid: uid });
 	};
 };
