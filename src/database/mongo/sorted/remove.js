@@ -38,7 +38,9 @@ module.exports = function (db, module) {
 			return;
 		}
 		var query = { _key: { $in: keys } };
-
+		if (keys.length === 1) {
+			query._key = keys[0];
+		}
 		if (min !== '-inf') {
 			query.score = { $gte: parseFloat(min) };
 		}

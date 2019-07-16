@@ -1,6 +1,5 @@
 'use strict';
 
-var async = require('async');
 var validator = require('validator');
 
 var db = require('../database');
@@ -11,64 +10,51 @@ const intFields = [
 ];
 
 module.exports = function (Categories) {
-	Categories.getCategoriesFields = function (cids, fields, callback) {
+	Categories.getCategoriesFields = async function (cids, fields) {
 		if (!Array.isArray(cids) || !cids.length) {
-			return setImmediate(callback, null, []);
+			return [];
 		}
-
-		async.waterfall([
-			function (next) {
-				const keys = cids.map(cid => 'category:' + cid);
-				if (fields.length) {
-					db.getObjectsFields(keys, fields, next);
-				} else {
-					db.getObjects(keys, next);
-				}
-			},
-			function (categories, next) {
-				categories.forEach(category => modifyCategory(category, fields));
-				next(null, categories);
-			},
-		], callback);
+		let categories;
+		const keys = cids.map(cid => 'category:' + cid);
+		if (fields.length) {
+			categories = await db.getObjectsFields(keys, fields);
+		} else {
+			categories = await db.getObjects(keys);
+		}
+		categories.forEach(category => modifyCategory(category, fields));
+		return categories;
 	};
 
-	Categories.getCategoryData = function (cid, callback) {
-		Categories.getCategoriesFields([cid], [], function (err, categories) {
-			callback(err, categories && categories.length ? categories[0] : null);
-		});
+	Categories.getCategoryData = async function (cid) {
+		const categories = await Categories.getCategoriesFields([cid], []);
+		return categories && categories.length ? categories[0] : null;
 	};
 
-	Categories.getCategoriesData = function (cids, callback) {
-		Categories.getCategoriesFields(cids, [], callback);
+	Categories.getCategoriesData = async function (cids) {
+		return await Categories.getCategoriesFields(cids, []);
 	};
 
-	Categories.getCategoryField = function (cid, field, callback) {
-		Categories.getCategoryFields(cid, [field], function (err, category) {
-			callback(err, category ? category[field] : null);
-		});
+	Categories.getCategoryField = async function (cid, field) {
+		const category = await Categories.getCategoryFields(cid, [field]);
+		return category ? category[field] : null;
 	};
 
-	Categories.getCategoryFields = function (cid, fields, callback) {
-		Categories.getCategoriesFields([cid], fields, function (err, categories) {
-			callback(err, categories ? categories[0] : null);
-		});
+	Categories.getCategoryFields = async function (cid, fields) {
+		const categories = await Categories.getCategoriesFields([cid], fields);
+		return categories ? categories[0] : null;
 	};
 
-	Categories.getAllCategoryFields = function (fields, callback) {
-		async.waterfall([
-			async.apply(Categories.getAllCidsFromSet, 'categories:cid'),
-			function (cids, next) {
-				Categories.getCategoriesFields(cids, fields, next);
-			},
-		], callback);
+	Categories.getAllCategoryFields = async function (fields) {
+		const cids = await Categories.getAllCidsFromSet('categories:cid');
+		return await Categories.getCategoriesFields(cids, fields);
 	};
 
-	Categories.setCategoryField = function (cid, field, value, callback) {
-		db.setObjectField('category:' + cid, field, value, callback);
+	Categories.setCategoryField = async function (cid, field, value) {
+		await db.setObjectField('category:' + cid, field, value);
 	};
 
-	Categories.incrementCategoryFieldBy = function (cid, field, value, callback) {
-		db.incrObjectFieldBy('category:' + cid, field, value, callback);
+	Categories.incrementCategoryFieldBy = async function (cid, field, value) {
+		await db.incrObjectFieldBy('category:' + cid, field, value);
 	};
 };
 

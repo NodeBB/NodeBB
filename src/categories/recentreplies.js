@@ -1,7 +1,6 @@
 
 'use strict';
 
-var async = require('async');
 var _ = require('lodash');
 
 var db = require('../database');
@@ -11,143 +10,88 @@ var privileges = require('../privileges');
 var batch = require('../batch');
 
 module.exports = function (Categories) {
-	Categories.getRecentReplies = function (cid, uid, count, callback) {
+	Categories.getRecentReplies = async function (cid, uid, count) {
 		if (!parseInt(count, 10)) {
-			return callback(null, []);
+			return [];
 		}
-
-		async.waterfall([
-			function (next) {
-				db.getSortedSetRevRange('cid:' + cid + ':pids', 0, count - 1, next);
-			},
-			function (pids, next) {
-				privileges.posts.filter('topics:read', pids, uid, next);
-			},
-			function (pids, next) {
-				posts.getPostSummaryByPids(pids, uid, { stripTags: true }, next);
-			},
-		], callback);
+		let pids = await db.getSortedSetRevRange('cid:' + cid + ':pids', 0, count - 1);
+		pids = await privileges.posts.filter('topics:read', pids, uid);
+		return await posts.getPostSummaryByPids(pids, uid, { stripTags: true });
 	};
 
-	Categories.updateRecentTid = function (cid, tid, callback) {
-		async.waterfall([
-			function (next) {
-				async.parallel({
-					count: function (next) {
-						db.sortedSetCard('cid:' + cid + ':recent_tids', next);
-					},
-					numRecentReplies: function (next) {
-						db.getObjectField('category:' + cid, 'numRecentReplies', next);
-					},
-				}, next);
-			},
-			function (results, next) {
-				if (results.count < results.numRecentReplies) {
-					return db.sortedSetAdd('cid:' + cid + ':recent_tids', Date.now(), tid, callback);
-				}
-				db.getSortedSetRangeWithScores('cid:' + cid + ':recent_tids', 0, results.count - results.numRecentReplies, next);
-			},
-			function (data, next) {
-				if (!data.length) {
-					return next();
-				}
-				db.sortedSetsRemoveRangeByScore(['cid:' + cid + ':recent_tids'], '-inf', data[data.length - 1].score, next);
-			},
-			function (next) {
-				db.sortedSetAdd('cid:' + cid + ':recent_tids', Date.now(), tid, next);
-			},
-		], callback);
+	Categories.updateRecentTid = async function (cid, tid) {
+		const [count, numRecentReplies] = await Promise.all([
+			db.sortedSetCard('cid:' + cid + ':recent_tids'),
+			db.getObjectField('category:' + cid, 'numRecentReplies'),
+		]);
+
+		if (count < numRecentReplies) {
+			return await db.sortedSetAdd('cid:' + cid + ':recent_tids', Date.now(), tid);
+		}
+		const data = await db.getSortedSetRangeWithScores('cid:' + cid + ':recent_tids', 0, count - numRecentReplies);
+		if (data.length) {
+			await db.sortedSetsRemoveRangeByScore(['cid:' + cid + ':recent_tids'], '-inf', data[data.length - 1].score);
+		}
+		await db.sortedSetAdd('cid:' + cid + ':recent_tids', Date.now(), tid);
 	};
 
-	Categories.updateRecentTidForCid = function (cid, callback) {
-		async.waterfall([
-			function (next) {
-				db.getSortedSetRevRange('cid:' + cid + ':pids', 0, 0, next);
-			},
-			function (pid, next) {
-				pid = pid[0];
-				posts.getPostField(pid, 'tid', next);
-			},
-			function (tid, next) {
-				if (!tid) {
-					return next();
-				}
-
-				Categories.updateRecentTid(cid, tid, next);
-			},
-		], callback);
+	Categories.updateRecentTidForCid = async function (cid) {
+		const pids = await db.getSortedSetRevRange('cid:' + cid + ':pids', 0, 0);
+		if (!pids.length) {
+			return;
+		}
+		const tid = await posts.getPostField(pids[0], 'tid');
+		if (!tid) {
+			return;
+		}
+		await Categories.updateRecentTid(cid, tid);
 	};
 
-	Categories.getRecentTopicReplies = function (categoryData, uid, callback) {
+	Categories.getRecentTopicReplies = async function (categoryData, uid) {
 		if (!Array.isArray(categoryData) || !categoryData.length) {
-			return callback();
+			return;
 		}
+		const categoriesToLoad = categoryData.filter(category => category && category.numRecentReplies && parseInt(category.numRecentReplies, 10) > 0);
+		const keys = categoriesToLoad.map(category => 'cid:' + category.cid + ':recent_tids');
+		const results = await db.getSortedSetsMembers(keys);
+		let tids = _.uniq(_.flatten(results).filter(Boolean));
 
-		async.waterfall([
-			function (next) {
-				const categoriesToLoad = categoryData.filter(category => category && category.numRecentReplies && parseInt(category.numRecentReplies, 10) > 0);
-				const keys = categoriesToLoad.map(category => 'cid:' + category.cid + ':recent_tids');
-				db.getSortedSetsMembers(keys, next);
-			},
-			function (results, next) {
-				var tids = _.uniq(_.flatten(results).filter(Boolean));
+		tids = await privileges.topics.filterTids('topics:read', tids, uid);
+		const topics = await getTopics(tids, uid);
+		assignTopicsToCategories(categoryData, topics);
 
-				privileges.topics.filterTids('topics:read', tids, uid, next);
-			},
-			function (tids, next) {
-				getTopics(tids, uid, next);
-			},
-			function (topics, next) {
-				assignTopicsToCategories(categoryData, topics);
-
-				bubbleUpChildrenPosts(categoryData);
-
-				next();
-			},
-		], callback);
+		bubbleUpChildrenPosts(categoryData);
 	};
 
-	function getTopics(tids, uid, callback) {
-		var topicData;
-		async.waterfall([
-			function (next) {
-				topics.getTopicsFields(tids, ['tid', 'mainPid', 'slug', 'title', 'teaserPid', 'cid', 'postcount'], next);
-			},
-			function (_topicData, next) {
-				topicData = _topicData;
-				topicData.forEach(function (topic) {
-					if (topic) {
-						topic.teaserPid = topic.teaserPid || topic.mainPid;
-					}
-				});
-				var cids = _.uniq(topicData.map(topic => topic && topic.cid).filter(cid => parseInt(cid, 10)));
-
-				async.parallel({
-					categoryData: async.apply(Categories.getCategoriesFields, cids, ['cid', 'parentCid']),
-					teasers: async.apply(topics.getTeasers, _topicData, uid),
-				}, next);
-			},
-			function (results, next) {
-				var parentCids = {};
-				results.categoryData.forEach(function (category) {
-					parentCids[category.cid] = category.parentCid;
-				});
-				results.teasers.forEach(function (teaser, index) {
-					if (teaser) {
-						teaser.cid = topicData[index].cid;
-						teaser.parentCid = parseInt(parentCids[teaser.cid], 10) || 0;
-						teaser.tid = undefined;
-						teaser.uid = undefined;
-						teaser.topic = {
-							slug: topicData[index].slug,
-							title: topicData[index].title,
-						};
-					}
-				});
-				results.teasers = results.teasers.filter(Boolean);
-				next(null, results.teasers);
-			},
-		], callback);
+	async function getTopics(tids, uid) {
+		const topicData = await topics.getTopicsFields(tids, ['tid', 'mainPid', 'slug', 'title', 'teaserPid', 'cid', 'postcount']);
+		topicData.forEach(function (topic) {
+			if (topic) {
+				topic.teaserPid = topic.teaserPid || topic.mainPid;
+			}
+		});
+		var cids = _.uniq(topicData.map(topic => topic && topic.cid).filter(cid => parseInt(cid, 10)));
+		const [categoryData, teasers] = await Promise.all([
+			Categories.getCategoriesFields(cids, ['cid', 'parentCid']),
+			topics.getTeasers(topicData, uid),
+		]);
+		var parentCids = {};
+		categoryData.forEach(function (category) {
+			parentCids[category.cid] = category.parentCid;
+		});
+		teasers.forEach(function (teaser, index) {
+			if (teaser) {
+				teaser.cid = topicData[index].cid;
+				teaser.parentCid = parseInt(parentCids[teaser.cid], 10) || 0;
+				teaser.tid = undefined;
+				teaser.uid = undefined;
+				teaser.topic = {
+					slug: topicData[index].slug,
+					title: topicData[index].title,
+				};
+			}
+		});
+		return teasers.filter(Boolean);
 	}
 
 	function assignTopicsToCategories(categories, topics) {
@@ -188,80 +132,43 @@ module.exports = function (Categories) {
 			getPostsRecursive(child, posts);
 		});
 	}
+	// terrible name, should be topics.moveTopicPosts
+	Categories.moveRecentReplies = async function (tid, oldCid, cid) {
+		await updatePostCount(tid, oldCid, cid);
+		const pids = await topics.getPids(tid);
 
-	Categories.moveRecentReplies = function (tid, oldCid, cid, callback) {
-		callback = callback || function () {};
+		await batch.processArray(pids, async function (pids) {
+			const postData = await posts.getPostsFields(pids, ['pid', 'uid', 'timestamp', 'upvotes', 'downvotes']);
+			const timestamps = postData.map(p => p && p.timestamp);
+			const bulkRemove = [];
+			const bulkAdd = [];
+			postData.forEach((post) => {
+				bulkRemove.push(['cid:' + oldCid + ':uid:' + post.uid + ':pids', post.pid]);
+				bulkRemove.push(['cid:' + oldCid + ':uid:' + post.uid + ':pids:votes', post.pid]);
+				bulkAdd.push(['cid:' + cid + ':uid:' + post.uid + ':pids', post.timestamp, post.pid]);
+				if (post.votes > 0) {
+					bulkAdd.push(['cid:' + cid + ':uid:' + post.uid + ':pids:votes', post.votes, post.pid]);
+				}
+			});
 
-		async.waterfall([
-			function (next) {
-				updatePostCount(tid, oldCid, cid, next);
-			},
-			function (next) {
-				topics.getPids(tid, next);
-			},
-			function (pids, next) {
-				batch.processArray(pids, function (pids, next) {
-					async.waterfall([
-						function (next) {
-							posts.getPostsFields(pids, ['pid', 'uid', 'timestamp', 'upvotes', 'downvotes'], next);
-						},
-						function (postData, next) {
-							var timestamps = postData.map(p => p && p.timestamp);
-
-							async.parallel([
-								function (next) {
-									db.sortedSetRemove('cid:' + oldCid + ':pids', pids, next);
-								},
-								function (next) {
-									db.sortedSetAdd('cid:' + cid + ':pids', timestamps, pids, next);
-								},
-								function (next) {
-									async.each(postData, function (post, next) {
-										db.sortedSetRemove([
-											'cid:' + oldCid + ':uid:' + post.uid + ':pids',
-											'cid:' + oldCid + ':uid:' + post.uid + ':pids:votes',
-										], post.pid, next);
-									}, next);
-								},
-								function (next) {
-									async.each(postData, function (post, next) {
-										const keys = ['cid:' + cid + ':uid:' + post.uid + ':pids'];
-										const scores = [post.timestamp];
-										if (post.votes > 0) {
-											keys.push('cid:' + cid + ':uid:' + post.uid + ':pids:votes');
-											scores.push(post.votes);
-										}
-										db.sortedSetsAdd(keys, scores, post.pid, next);
-									}, next);
-								},
-							], next);
-						},
-					], next);
-				}, next);
-			},
-		], callback);
+			await Promise.all([
+				db.sortedSetRemove('cid:' + oldCid + ':pids', pids),
+				db.sortedSetAdd('cid:' + cid + ':pids', timestamps, pids),
+				db.sortedSetRemoveBulk(bulkRemove),
+				db.sortedSetAddBulk(bulkAdd),
+			]);
+		}, { batch: 500 });
 	};
 
-	function updatePostCount(tid, oldCid, newCid, callback) {
-		async.waterfall([
-			function (next) {
-				topics.getTopicField(tid, 'postcount', next);
-			},
-			function (postCount, next) {
-				if (!postCount) {
-					return callback();
-				}
-				async.parallel([
-					function (next) {
-						db.incrObjectFieldBy('category:' + oldCid, 'post_count', -postCount, next);
-					},
-					function (next) {
-						db.incrObjectFieldBy('category:' + newCid, 'post_count', postCount, next);
-					},
-				], function (err) {
-					next(err);
-				});
-			},
-		], callback);
+	async function updatePostCount(tid, oldCid, newCid) {
+		const postCount = await topics.getTopicField(tid, 'postcount');
+		if (!postCount) {
+			return;
+		}
+
+		await Promise.all([
+			db.incrObjectFieldBy('category:' + oldCid, 'post_count', -postCount),
+			db.incrObjectFieldBy('category:' + newCid, 'post_count', postCount),
+		]);
 	}
 };

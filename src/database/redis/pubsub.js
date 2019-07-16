@@ -13,7 +13,7 @@ var PubSub = function () {
 	var subClient = db.connect();
 	this.pubClient = db.connect();
 
-	channelName = 'db:' + nconf.get('redis:database') + 'pubsub_channel';
+	channelName = 'db:' + nconf.get('redis:database') + ':pubsub_channel';
 	subClient.subscribe(channelName);
 
 	subClient.on('message', function (channel, message) {

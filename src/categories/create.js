@@ -11,125 +11,102 @@ var utils = require('../utils');
 var cache = require('../cache');
 
 module.exports = function (Categories) {
-	Categories.create = function (data, callback) {
-		var category;
-		var parentCid = data.parentCid ? data.parentCid : 0;
+	Categories.create = async function (data) {
+		const parentCid = data.parentCid ? data.parentCid : 0;
+		const cid = await db.incrObjectField('global', 'nextCid');
 
-		async.waterfall([
-			function (next) {
-				db.incrObjectField('global', 'nextCid', next);
-			},
-			function (cid, next) {
-				data.name = data.name || 'Category ' + cid;
-				var slug = cid + '/' + utils.slugify(data.name);
-				var order = data.order || cid;	// If no order provided, place it at the end
-				var colours = Categories.assignColours();
+		data.name = data.name || 'Category ' + cid;
+		const slug = cid + '/' + utils.slugify(data.name);
+		const order = data.order || cid;	// If no order provided, place it at the end
+		const colours = Categories.assignColours();
 
-				category = {
-					cid: cid,
-					name: data.name,
-					description: data.description ? data.description : '',
-					descriptionParsed: data.descriptionParsed ? data.descriptionParsed : '',
-					icon: data.icon ? data.icon : '',
-					bgColor: data.bgColor || colours[0],
-					color: data.color || colours[1],
-					slug: slug,
-					parentCid: parentCid,
-					topic_count: 0,
-					post_count: 0,
-					disabled: data.disabled ? 1 : 0,
-					order: order,
-					link: data.link || '',
-					numRecentReplies: 1,
-					class: (data.class ? data.class : 'col-md-3 col-xs-6'),
-					imageClass: 'cover',
-					isSection: 0,
-				};
+		let category = {
+			cid: cid,
+			name: data.name,
+			description: data.description ? data.description : '',
+			descriptionParsed: data.descriptionParsed ? data.descriptionParsed : '',
+			icon: data.icon ? data.icon : '',
+			bgColor: data.bgColor || colours[0],
+			color: data.color || colours[1],
+			slug: slug,
+			parentCid: parentCid,
+			topic_count: 0,
+			post_count: 0,
+			disabled: data.disabled ? 1 : 0,
+			order: order,
+			link: data.link || '',
+			numRecentReplies: 1,
+			class: (data.class ? data.class : 'col-md-3 col-xs-6'),
+			imageClass: 'cover',
+			isSection: 0,
+		};
 
-				if (data.backgroundImage) {
-					category.backgroundImage = data.backgroundImage;
-				}
+		if (data.backgroundImage) {
+			category.backgroundImage = data.backgroundImage;
+		}
 
-				plugins.fireHook('filter:category.create', { category: category, data: data }, next);
-			},
-			function (data, next) {
-				category = data.category;
+		const result = await plugins.fireHook('filter:category.create', { category: category, data: data });
+		category = result.category;
 
-				var defaultPrivileges = [
-					'find',
-					'read',
-					'topics:read',
-					'topics:create',
-					'topics:reply',
-					'topics:tag',
-					'posts:edit',
-					'posts:history',
-					'posts:delete',
-					'posts:upvote',
-					'posts:downvote',
-					'topics:delete',
-				];
-				const modPrivileges = defaultPrivileges.concat([
-					'posts:view_deleted',
-					'purge',
-				]);
+		const defaultPrivileges = [
+			'find',
+			'read',
+			'topics:read',
+			'topics:create',
+			'topics:reply',
+			'topics:tag',
+			'posts:edit',
+			'posts:history',
+			'posts:delete',
+			'posts:upvote',
+			'posts:downvote',
+			'topics:delete',
+		];
+		const modPrivileges = defaultPrivileges.concat([
+			'posts:view_deleted',
+			'purge',
+		]);
 
-				async.series([
-					async.apply(db.setObject, 'category:' + category.cid, category),
-					function (next) {
-						if (category.descriptionParsed) {
-							return next();
-						}
-						Categories.parseDescription(category.cid, category.description, next);
-					},
-					async.apply(db.sortedSetsAdd, ['categories:cid', 'cid:' + parentCid + ':children'], category.order, category.cid),
-					async.apply(privileges.categories.give, defaultPrivileges, category.cid, 'registered-users'),
-					async.apply(privileges.categories.give, modPrivileges, category.cid, ['administrators', 'Global Moderators']),
-					async.apply(privileges.categories.give, ['find', 'read', 'topics:read'], category.cid, ['guests', 'spiders']),
-				], next);
-			},
-			function (results, next) {
-				cache.del(['categories:cid', 'cid:' + parentCid + ':children']);
-				if (data.cloneFromCid && parseInt(data.cloneFromCid, 10)) {
-					return Categories.copySettingsFrom(data.cloneFromCid, category.cid, !data.parentCid, next);
-				}
+		await db.setObject('category:' + category.cid, category);
+		if (!category.descriptionParsed) {
+			await Categories.parseDescription(category.cid, category.description);
+		}
+		await db.sortedSetsAdd(['categories:cid', 'cid:' + parentCid + ':children'], category.order, category.cid);
+		await privileges.categories.give(defaultPrivileges, category.cid, 'registered-users');
+		await privileges.categories.give(modPrivileges, category.cid, ['administrators', 'Global Moderators']);
+		await privileges.categories.give(['find', 'read', 'topics:read'], category.cid, ['guests', 'spiders']);
 
-				next(null, category);
-			},
-			function (_category, next) {
-				category = _category;
-				if (data.cloneChildren) {
-					return duplicateCategoriesChildren(category.cid, data.cloneFromCid, data.uid, next);
-				}
+		cache.del(['categories:cid', 'cid:' + parentCid + ':children']);
+		if (data.cloneFromCid && parseInt(data.cloneFromCid, 10)) {
+			category = await Categories.copySettingsFrom(data.cloneFromCid, category.cid, !data.parentCid);
+		}
 
-				next();
-			},
-			function (next) {
-				plugins.fireHook('action:category.create', { category: category });
-				next(null, category);
-			},
-		], callback);
+		if (data.cloneChildren) {
+			await duplicateCategoriesChildren(category.cid, data.cloneFromCid, data.uid);
+		}
+
+		plugins.fireHook('action:category.create', { category: category });
+		return category;
 	};
 
-	function duplicateCategoriesChildren(parentCid, cid, uid, callback) {
-		Categories.getChildren([cid], uid, function (err, children) {
-			if (err || !children.length) {
-				return callback(err);
-			}
+	async function duplicateCategoriesChildren(parentCid, cid, uid) {
+		let children = await Categories.getChildren([cid], uid);
+		if (!children.length) {
+			return;
+		}
 
-			children = children[0];
+		children = children[0];
 
-			children.forEach(function (child) {
-				child.parentCid = parentCid;
-				child.cloneFromCid = child.cid;
-				child.cloneChildren = true;
-				child.name = utils.decodeHTMLEntities(child.name);
-				child.description = utils.decodeHTMLEntities(child.description);
-				child.uid = uid;
-			});
-
-			async.each(children, Categories.create, callback);
+		children.forEach(function (child) {
+			child.parentCid = parentCid;
+			child.cloneFromCid = child.cid;
+			child.cloneChildren = true;
+			child.name = utils.decodeHTMLEntities(child.name);
+			child.description = utils.decodeHTMLEntities(child.description);
+			child.uid = uid;
 		});
+
+		await async.each(children, Categories.create);
 	}
 
 	Categories.assignColours = function () {
@@ -140,136 +117,89 @@ module.exports = function (Categories) {
 		return [backgrounds[index], text[index]];
 	};
 
-	Categories.copySettingsFrom = function (fromCid, toCid, copyParent, callback) {
-		var destination;
-		async.waterfall([
-			function (next) {
-				async.parallel({
-					source: async.apply(db.getObject, 'category:' + fromCid),
-					destination: async.apply(db.getObject, 'category:' + toCid),
-				}, next);
-			},
-			function (results, next) {
-				if (!results.source) {
-					return next(new Error('[[error:invalid-cid]]'));
-				}
-				destination = results.destination;
-
-				var tasks = [];
-
-				const oldParent = parseInt(destination.parentCid, 10) || 0;
-				const newParent = parseInt(results.source.parentCid, 10) || 0;
-				if (copyParent && newParent !== parseInt(toCid, 10)) {
-					tasks.push(async.apply(db.sortedSetRemove, 'cid:' + oldParent + ':children', toCid));
-					tasks.push(async.apply(db.sortedSetAdd, 'cid:' + newParent + ':children', results.source.order, toCid));
-					tasks.push(function (next) {
-						cache.del(['cid:' + oldParent + ':children', 'cid:' + newParent + ':children']);
-						setImmediate(next);
-					});
-				}
-
-				destination.description = results.source.description;
-				destination.descriptionParsed = results.source.descriptionParsed;
-				destination.icon = results.source.icon;
-				destination.bgColor = results.source.bgColor;
-				destination.color = results.source.color;
-				destination.link = results.source.link;
-				destination.numRecentReplies = results.source.numRecentReplies;
-				destination.class = results.source.class;
-				destination.image = results.source.image;
-				destination.imageClass = results.source.imageClass;
-
-				if (copyParent) {
-					destination.parentCid = results.source.parentCid || 0;
-				}
-
-				tasks.push(async.apply(db.setObject, 'category:' + toCid, destination));
-
-				async.series(tasks, next);
-			},
-			function (results, next) {
-				copyTagWhitelist(fromCid, toCid, next);
-			},
-			function (next) {
-				Categories.copyPrivilegesFrom(fromCid, toCid, next);
-			},
-		], function (err) {
-			callback(err, destination);
-		});
-	};
-
-	function copyTagWhitelist(fromCid, toCid, callback) {
-		var data;
-		async.waterfall([
-			function (next) {
-				db.getSortedSetRangeWithScores('cid:' + fromCid + ':tag:whitelist', 0, -1, next);
-			},
-			function (_data, next) {
-				data = _data;
-				db.delete('cid:' + toCid + ':tag:whitelist', next);
-			},
-			function (next) {
-				db.sortedSetAdd('cid:' + toCid + ':tag:whitelist', data.map(item => item.score), data.map(item => item.value), next);
-			},
-		], callback);
-	}
-
-	Categories.copyPrivilegesFrom = function (fromCid, toCid, group, callback) {
-		if (typeof group === 'function') {
-			callback = group;
-			group = '';
+	Categories.copySettingsFrom = async function (fromCid, toCid, copyParent) {
+		const [source, destination] = await Promise.all([
+			db.getObject('category:' + fromCid),
+			db.getObject('category:' + toCid),
+		]);
+		if (!source) {
+			throw new Error('[[error:invalid-cid]]');
 		}
 
-		async.waterfall([
-			function (next) {
-				plugins.fireHook('filter:categories.copyPrivilegesFrom', {
-					privileges: group ? privileges.groupPrivilegeList.slice() : privileges.privilegeList.slice(),
-					fromCid: fromCid,
-					toCid: toCid,
-					group: group,
-				}, next);
-			},
-			function (data, next) {
-				if (group) {
-					copyPrivilegesByGroup(data.privileges, data.fromCid, data.toCid, group, next);
-				} else {
-					copyPrivileges(data.privileges, data.fromCid, data.toCid, next);
-				}
-			},
-		], callback);
+		const oldParent = parseInt(destination.parentCid, 10) || 0;
+		const newParent = parseInt(source.parentCid, 10) || 0;
+		if (copyParent && newParent !== parseInt(toCid, 10)) {
+			await db.sortedSetRemove('cid:' + oldParent + ':children', toCid);
+			await db.sortedSetAdd('cid:' + newParent + ':children', source.order, toCid);
+			cache.del(['cid:' + oldParent + ':children', 'cid:' + newParent + ':children']);
+		}
+
+		destination.description = source.description;
+		destination.descriptionParsed = source.descriptionParsed;
+		destination.icon = source.icon;
+		destination.bgColor = source.bgColor;
+		destination.color = source.color;
+		destination.link = source.link;
+		destination.numRecentReplies = source.numRecentReplies;
+		destination.class = source.class;
+		destination.image = source.image;
+		destination.imageClass = source.imageClass;
+
+		if (copyParent) {
+			destination.parentCid = source.parentCid || 0;
+		}
+
+		await db.setObject('category:' + toCid, destination);
+
+		await copyTagWhitelist(fromCid, toCid);
+
+		await Categories.copyPrivilegesFrom(fromCid, toCid);
+
+		return destination;
 	};
 
-	function copyPrivileges(privileges, fromCid, toCid, callback) {
-		const toGroups = privileges.map(privilege => 'group:cid:' + toCid + ':privileges:' + privilege + ':members');
-		const fromGroups = privileges.map(privilege => 'group:cid:' + fromCid + ':privileges:' + privilege + ':members');
-		async.waterfall([
-			function (next) {
-				db.getSortedSetsMembers(toGroups.concat(fromGroups), next);
-			},
-			function (currentMembers, next) {
-				const copyGroups = _.uniq(_.flatten(currentMembers));
-				async.each(copyGroups, function (group, next) {
-					copyPrivilegesByGroup(privileges, fromCid, toCid, group, next);
-				}, next);
-			},
-		], callback);
+	async function copyTagWhitelist(fromCid, toCid) {
+		const data = await db.getSortedSetRangeWithScores('cid:' + fromCid + ':tag:whitelist', 0, -1);
+		await db.delete('cid:' + toCid + ':tag:whitelist');
+		await db.sortedSetAdd('cid:' + toCid + ':tag:whitelist', data.map(item => item.score), data.map(item => item.value));
+		cache.del('cid:' + toCid + ':tag:whitelist');
 	}
 
-	function copyPrivilegesByGroup(privileges, fromCid, toCid, group, callback) {
-		async.waterfall([
-			function (next) {
-				const leaveGroups = privileges.map(privilege => 'cid:' + toCid + ':privileges:' + privilege);
-				groups.leave(leaveGroups, group, next);
-			},
-			function (next) {
-				const checkGroups = privileges.map(privilege => 'group:cid:' + fromCid + ':privileges:' + privilege + ':members');
-				db.isMemberOfSortedSets(checkGroups, group, next);
-			},
-			function (isMembers, next) {
-				privileges = privileges.filter((priv, index) => isMembers[index]);
-				const joinGroups = privileges.map(privilege => 'cid:' + toCid + ':privileges:' + privilege);
-				groups.join(joinGroups, group, next);
-			},
-		], callback);
+	Categories.copyPrivilegesFrom = async function (fromCid, toCid, group) {
+		group = group || '';
+
+		const data = await plugins.fireHook('filter:categories.copyPrivilegesFrom', {
+			privileges: group ? privileges.groupPrivilegeList.slice() : privileges.privilegeList.slice(),
+			fromCid: fromCid,
+			toCid: toCid,
+			group: group,
+		});
+		if (group) {
+			await copyPrivilegesByGroup(data.privileges, data.fromCid, data.toCid, group);
+		} else {
+			await copyPrivileges(data.privileges, data.fromCid, data.toCid);
+		}
+	};
+
+	async function copyPrivileges(privileges, fromCid, toCid) {
+		const toGroups = privileges.map(privilege => 'group:cid:' + toCid + ':privileges:' + privilege + ':members');
+		const fromGroups = privileges.map(privilege => 'group:cid:' + fromCid + ':privileges:' + privilege + ':members');
+
+		const currentMembers = await db.getSortedSetsMembers(toGroups.concat(fromGroups));
+		const copyGroups = _.uniq(_.flatten(currentMembers));
+		await async.each(copyGroups, async function (group) {
+			await copyPrivilegesByGroup(privileges, fromCid, toCid, group);
+		});
+	}
+
+	async function copyPrivilegesByGroup(privileges, fromCid, toCid, group) {
+		const leaveGroups = privileges.map(privilege => 'cid:' + toCid + ':privileges:' + privilege);
+		await groups.leave(leaveGroups, group);
+
+		const checkGroups = privileges.map(privilege => 'group:cid:' + fromCid + ':privileges:' + privilege + ':members');
+		const isMembers = await db.isMemberOfSortedSets(checkGroups, group);
+		privileges = privileges.filter((priv, index) => isMembers[index]);
+		const joinGroups = privileges.map(privilege => 'cid:' + toCid + ':privileges:' + privilege);
+		await groups.join(joinGroups, group);
 	}
 };

@@ -1,7 +1,6 @@
 
 'use strict';
 
-var async = require('async');
 var _ = require('lodash');
 
 var db = require('../database');
@@ -23,195 +22,128 @@ require('./recentreplies')(Categories);
 require('./update')(Categories);
 require('./watch')(Categories);
 
-Categories.exists = function (cid, callback) {
-	db.exists('category:' + cid, callback);
+Categories.exists = async function (cid) {
+	return await db.exists('category:' + cid);
 };
 
-Categories.getCategoryById = function (data, callback) {
-	var category;
-	async.waterfall([
-		function (next) {
-			Categories.getCategories([data.cid], data.uid, next);
-		},
-		function (categories, next) {
-			if (!categories[0]) {
-				return callback(null, null);
-			}
-			category = categories[0];
-			data.category = category;
-			async.parallel({
-				topics: function (next) {
-					Categories.getCategoryTopics(data, next);
-				},
-				topicCount: function (next) {
-					Categories.getTopicCount(data, next);
-				},
-				watchState: function (next) {
-					Categories.getWatchState([data.cid], data.uid, next);
-				},
-				parent: function (next) {
-					if (category.parentCid) {
-						Categories.getCategoryData(category.parentCid, next);
-					} else {
-						next();
-					}
-				},
-				children: function (next) {
-					getChildrenTree(category, data.uid, next);
-				},
-			}, next);
-		},
-		function (results, next) {
-			category.topics = results.topics.topics;
-			category.nextStart = results.topics.nextStart;
-			category.topic_count = results.topicCount;
-			category.isWatched = results.watchState[0] === Categories.watchStates.watching;
-			category.isNotWatched = results.watchState[0] === Categories.watchStates.notwatching;
-			category.isIgnored = results.watchState[0] === Categories.watchStates.ignoring;
-			category.parent = results.parent;
+Categories.getCategoryById = async function (data) {
+	const categories = await Categories.getCategories([data.cid], data.uid);
+	if (!categories[0]) {
+		return null;
+	}
+	const category = categories[0];
+	data.category = category;
 
-			calculateTopicPostCount(category);
-			plugins.fireHook('filter:category.get', { category: category, uid: data.uid }, next);
-		},
-		function (data, next) {
-			next(null, data.category);
-		},
-	], callback);
+	const promises = [
+		Categories.getCategoryTopics(data),
+		Categories.getTopicCount(data),
+		Categories.getWatchState([data.cid], data.uid),
+		getChildrenTree(category, data.uid),
+	];
+
+	if (category.parentCid) {
+		promises.push(Categories.getCategoryData(category.parentCid));
+	}
+	const [topics, topicCount, watchState, , parent] = await Promise.all(promises);
+
+	category.topics = topics.topics;
+	category.nextStart = topics.nextStart;
+	category.topic_count = topicCount;
+	category.isWatched = watchState[0] === Categories.watchStates.watching;
+	category.isNotWatched = watchState[0] === Categories.watchStates.notwatching;
+	category.isIgnored = watchState[0] === Categories.watchStates.ignoring;
+	category.parent = parent;
+
+
+	calculateTopicPostCount(category);
+	const result = await plugins.fireHook('filter:category.get', { category: category, uid: data.uid });
+	return result.category;
 };
 
-Categories.getAllCidsFromSet = function (key, callback) {
-	const cids = cache.get(key);
+Categories.getAllCidsFromSet = async function (key) {
+	let cids = cache.get(key);
 	if (cids) {
-		return setImmediate(callback, null, cids.slice());
+		return cids.slice();
 	}
 
-	db.getSortedSetRange(key, 0, -1, function (err, cids) {
-		if (err) {
-			return callback(err);
+	cids = await db.getSortedSetRange(key, 0, -1);
+	cache.set(key, cids);
+	return cids.slice();
+};
+
+Categories.getAllCategories = async function (uid) {
+	const cids = await Categories.getAllCidsFromSet('categories:cid');
+	return await Categories.getCategories(cids, uid);
+};
+
+Categories.getCidsByPrivilege = async function (set, uid, privilege) {
+	const cids = await Categories.getAllCidsFromSet('categories:cid');
+	return await privileges.categories.filterCids(privilege, cids, uid);
+};
+
+Categories.getCategoriesByPrivilege = async function (set, uid, privilege) {
+	const cids = await Categories.getCidsByPrivilege(set, uid, privilege);
+	return await Categories.getCategories(cids, uid);
+};
+
+Categories.getModerators = async function (cid) {
+	const uids = await Categories.getModeratorUids([cid]);
+	return await user.getUsersFields(uids[0], ['uid', 'username', 'userslug', 'picture']);
+};
+
+Categories.getModeratorUids = async function (cids) {
+	const groupNames = cids.reduce(function (memo, cid) {
+		memo.push('cid:' + cid + ':privileges:moderate');
+		memo.push('cid:' + cid + ':privileges:groups:moderate');
+		return memo;
+	}, []);
+
+	const memberSets = await groups.getMembersOfGroups(groupNames);
+	// Every other set is actually a list of user groups, not uids, so convert those to members
+	const sets = memberSets.reduce(function (memo, set, idx) {
+		if (idx % 2) {
+			memo.groupNames.push(set);
+		} else {
+			memo.uids.push(set);
 		}
-		cache.set(key, cids);
-		callback(null, cids.slice());
+
+		return memo;
+	}, { groupNames: [], uids: [] });
+
+	const uniqGroups = _.uniq(_.flatten(sets.groupNames));
+	const groupUids = await groups.getMembersOfGroups(uniqGroups);
+	const map = _.zipObject(uniqGroups, groupUids);
+	const moderatorUids = cids.map(function (cid, index) {
+		return _.uniq(sets.uids[index].concat(_.flatten(sets.groupNames[index].map(g => map[g]))));
 	});
+	return moderatorUids;
 };
 
-Categories.getAllCategories = function (uid, callback) {
-	async.waterfall([
-		function (next) {
-			Categories.getAllCidsFromSet('categories:cid', next);
-		},
-		function (cids, next) {
-			Categories.getCategories(cids, uid, next);
-		},
-	], callback);
-};
-
-Categories.getCidsByPrivilege = function (set, uid, privilege, callback) {
-	async.waterfall([
-		function (next) {
-			Categories.getAllCidsFromSet(set, next);
-		},
-		function (cids, next) {
-			privileges.categories.filterCids(privilege, cids, uid, next);
-		},
-	], callback);
-};
-
-Categories.getCategoriesByPrivilege = function (set, uid, privilege, callback) {
-	async.waterfall([
-		function (next) {
-			Categories.getCidsByPrivilege(set, uid, privilege, next);
-		},
-		function (cids, next) {
-			Categories.getCategories(cids, uid, next);
-		},
-	], callback);
-};
-
-Categories.getModerators = function (cid, callback) {
-	async.waterfall([
-		function (next) {
-			Categories.getModeratorUids([cid], next);
-		},
-		function (uids, next) {
-			user.getUsersFields(uids[0], ['uid', 'username', 'userslug', 'picture'], next);
-		},
-	], callback);
-};
-
-Categories.getModeratorUids = function (cids, callback) {
-	var sets;
-	var uniqGroups;
-	async.waterfall([
-		function (next) {
-			var groupNames = cids.reduce(function (memo, cid) {
-				memo.push('cid:' + cid + ':privileges:moderate');
-				memo.push('cid:' + cid + ':privileges:groups:moderate');
-				return memo;
-			}, []);
-
-			groups.getMembersOfGroups(groupNames, next);
-		},
-		function (memberSets, next) {
-			// Every other set is actually a list of user groups, not uids, so convert those to members
-			sets = memberSets.reduce(function (memo, set, idx) {
-				if (idx % 2) {
-					memo.groupNames.push(set);
-				} else {
-					memo.uids.push(set);
-				}
-
-				return memo;
-			}, { groupNames: [], uids: [] });
-
-			uniqGroups = _.uniq(_.flatten(sets.groupNames));
-			groups.getMembersOfGroups(uniqGroups, next);
-		},
-		function (groupUids, next) {
-			var map = _.zipObject(uniqGroups, groupUids);
-			const moderatorUids = cids.map(function (cid, index) {
-				return _.uniq(sets.uids[index].concat(_.flatten(sets.groupNames[index].map(g => map[g]))));
-			});
-			next(null, moderatorUids);
-		},
-	], callback);
-};
-
-Categories.getCategories = function (cids, uid, callback) {
+Categories.getCategories = async function (cids, uid) {
 	if (!Array.isArray(cids)) {
-		return callback(new Error('[[error:invalid-cid]]'));
+		throw new Error('[[error:invalid-cid]]');
 	}
 
 	if (!cids.length) {
-		return callback(null, []);
+		return [];
 	}
 	uid = parseInt(uid, 10);
-	async.waterfall([
-		function (next) {
-			async.parallel({
-				categories: function (next) {
-					Categories.getCategoriesData(cids, next);
-				},
-				tagWhitelist: function (next) {
-					Categories.getTagWhitelist(cids, next);
-				},
-				hasRead: function (next) {
-					Categories.hasReadCategories(cids, uid, next);
-				},
-			}, next);
-		},
-		function (results, next) {
-			results.categories.forEach(function (category, i) {
-				if (category) {
-					category.tagWhitelist = results.tagWhitelist[i];
-					category['unread-class'] = (category.topic_count === 0 || (results.hasRead[i] && uid !== 0)) ? '' : 'unread';
-				}
-			});
-			next(null, results.categories);
-		},
-	], callback);
+
+	const [categories, tagWhitelist, hasRead] = await Promise.all([
+		Categories.getCategoriesData(cids),
+		Categories.getTagWhitelist(cids),
+		Categories.hasReadCategories(cids, uid),
+	]);
+	categories.forEach(function (category, i) {
+		if (category) {
+			category.tagWhitelist = tagWhitelist[i];
+			category['unread-class'] = (category.topic_count === 0 || (hasRead[i] && uid !== 0)) ? '' : 'unread';
+		}
+	});
+	return categories;
 };
 
-Categories.getTagWhitelist = function (cids, callback) {
+Categories.getTagWhitelist = async function (cids) {
 	const cachedData = {};
 
 	const nonCachedCids = cids.filter((cid) => {
@@ -224,20 +156,17 @@ Categories.getTagWhitelist = function (cids, callback) {
 	});
 
 	if (!nonCachedCids.length) {
-		return setImmediate(callback, null, _.clone(cids.map(cid => cachedData[cid])));
+		return _.clone(cids.map(cid => cachedData[cid]));
 	}
 
 	const keys = nonCachedCids.map(cid => 'cid:' + cid + ':tag:whitelist');
-	db.getSortedSetsMembers(keys, function (err, data) {
-		if (err) {
-			return callback(err);
-		}
-		nonCachedCids.forEach((cid, index) => {
-			cachedData[cid] = data[index];
-			cache.set('cid:' + cid + ':tag:whitelist', data[index]);
-		});
-		callback(null, _.clone(cids.map(cid => cachedData[cid])));
+	const data = await db.getSortedSetsMembers(keys);
+
+	nonCachedCids.forEach((cid, index) => {
+		cachedData[cid] = data[index];
+		cache.set('cid:' + cid + ':tag:whitelist', data[index]);
 	});
+	return _.clone(cids.map(cid => cachedData[cid]));
 };
 
 function calculateTopicPostCount(category) {
@@ -263,114 +192,65 @@ function calculateTopicPostCount(category) {
 	category.totalTopicCount = topicCount;
 }
 
-Categories.getParents = function (cids, callback) {
-	var categoriesData;
-	var parentCids;
-	async.waterfall([
-		function (next) {
-			Categories.getCategoriesFields(cids, ['parentCid'], next);
-		},
-		function (_categoriesData, next) {
-			categoriesData = _categoriesData;
-
-			parentCids = categoriesData.filter(c => c && c.parentCid).map(c => c.parentCid);
-
-			if (!parentCids.length) {
-				return callback(null, cids.map(() => null));
-			}
-
-			Categories.getCategoriesData(parentCids, next);
-		},
-		function (parentData, next) {
-			const cidToParent = _.zipObject(parentCids, parentData);
-			parentData = categoriesData.map(category => cidToParent[category.parentCid]);
-			next(null, parentData);
-		},
-	], callback);
+Categories.getParents = async function (cids) {
+	const categoriesData = await Categories.getCategoriesFields(cids, ['parentCid']);
+	const parentCids = categoriesData.filter(c => c && c.parentCid).map(c => c.parentCid);
+	if (!parentCids.length) {
+		return cids.map(() => null);
+	}
+	const parentData = await Categories.getCategoriesData(parentCids);
+	const cidToParent = _.zipObject(parentCids, parentData);
+	return categoriesData.map(category => cidToParent[category.parentCid]);
 };
 
-Categories.getChildren = function (cids, uid, callback) {
-	var categories;
-	async.waterfall([
-		function (next) {
-			Categories.getCategoriesFields(cids, ['parentCid'], next);
-		},
-		function (categoryData, next) {
-			categories = categoryData.map((category, index) => ({ cid: cids[index], parentCid: category.parentCid }));
-			async.each(categories, function (category, next) {
-				getChildrenTree(category, uid, next);
-			}, next);
-		},
-		function (next) {
-			next(null, categories.map(c => c && c.children));
-		},
-	], callback);
+Categories.getChildren = async function (cids, uid) {
+	const categoryData = await Categories.getCategoriesFields(cids, ['parentCid']);
+	const categories = categoryData.map((category, index) => ({ cid: cids[index], parentCid: category.parentCid }));
+	await Promise.all(categories.map(c => getChildrenTree(c, uid)));
+	return categories.map(c => c && c.children);
 };
 
-function getChildrenTree(category, uid, callback) {
-	let children;
-	async.waterfall([
-		function (next) {
-			Categories.getChildrenCids(category.cid, next);
-		},
-		function (children, next) {
-			privileges.categories.filterCids('find', children, uid, next);
-		},
-		function (children, next) {
-			children = children.filter(cid => parseInt(category.cid, 10) !== parseInt(cid, 10));
-			if (!children.length) {
-				category.children = [];
-				return callback();
-			}
-			Categories.getCategoriesData(children, next);
-		},
-		function (_children, next) {
-			children = _children.filter(Boolean);
-
-			const cids = children.map(child => child.cid);
-			Categories.hasReadCategories(cids, uid, next);
-		},
-		function (hasRead, next) {
-			hasRead.forEach(function (read, i) {
-				const child = children[i];
-				child['unread-class'] = (child.topic_count === 0 || (read && uid !== 0)) ? '' : 'unread';
-			});
-			Categories.getTree([category].concat(children), category.parentCid);
-			next();
-		},
-	], callback);
+async function getChildrenTree(category, uid) {
+	let childrenCids = await Categories.getChildrenCids(category.cid);
+	childrenCids = await privileges.categories.filterCids('find', childrenCids, uid);
+	childrenCids = childrenCids.filter(cid => parseInt(category.cid, 10) !== parseInt(cid, 10));
+	if (!childrenCids.length) {
+		category.children = [];
+		return;
+	}
+	let childrenData = await Categories.getCategoriesData(childrenCids);
+	childrenData = childrenData.filter(Boolean);
+	childrenCids = childrenData.map(child => child.cid);
+	const hasRead = await Categories.hasReadCategories(childrenCids, uid);
+	childrenData.forEach(function (child, i) {
+		child['unread-class'] = (child.topic_count === 0 || (hasRead[i] && uid !== 0)) ? '' : 'unread';
+	});
+	Categories.getTree([category].concat(childrenData), category.parentCid);
 }
 
-Categories.getChildrenCids = function (rootCid, callback) {
+Categories.getChildrenCids = async function (rootCid) {
 	let allCids = [];
-	function recursive(keys, callback) {
-		db.getSortedSetRange(keys, 0, -1, function (err, childrenCids) {
-			if (err) {
-				return callback(err);
-			}
-			childrenCids = childrenCids.filter(cid => !allCids.includes(parseInt(cid, 10)));
-			if (!childrenCids.length) {
-				return callback();
-			}
-			const keys = childrenCids.map(cid => 'cid:' + cid + ':children');
-			childrenCids.forEach(cid => allCids.push(parseInt(cid, 10)));
-			recursive(keys, callback);
-		});
+	async function recursive(keys) {
+		let childrenCids = await db.getSortedSetRange(keys, 0, -1);
+
+		childrenCids = childrenCids.filter(cid => !allCids.includes(parseInt(cid, 10)));
+		if (!childrenCids.length) {
+			return;
+		}
+		keys = childrenCids.map(cid => 'cid:' + cid + ':children');
+		childrenCids.forEach(cid => allCids.push(parseInt(cid, 10)));
+		recursive(keys);
 	}
 	const key = 'cid:' + rootCid + ':children';
 	const childrenCids = cache.get(key);
 	if (childrenCids) {
-		return setImmediate(callback, null, childrenCids.slice());
+		return childrenCids.slice();
 	}
 
-	recursive(key, function (err) {
-		if (err) {
-			return callback(err);
-		}
-		allCids = _.uniq(allCids);
-		cache.set(key, allCids);
-		callback(null, allCids.slice());
-	});
+	await recursive(key);
+	allCids = _.uniq(allCids);
+	cache.set(key, allCids);
+	return allCids.slice();
 };
 
 Categories.flattenCategories = function (allCategories, categoryData) {
@@ -440,19 +320,13 @@ Categories.getTree = function (categories, parentCid) {
 	return tree;
 };
 
-Categories.buildForSelect = function (uid, privilege, callback) {
-	async.waterfall([
-		function (next) {
-			Categories.getCategoriesByPrivilege('categories:cid', uid, privilege, next);
-		},
-		function (categories, next) {
-			categories = Categories.getTree(categories);
-			Categories.buildForSelectCategories(categories, next);
-		},
-	], callback);
+Categories.buildForSelect = async function (uid, privilege) {
+	let categories = await Categories.getCategoriesByPrivilege('categories:cid', uid, privilege);
+	categories = Categories.getTree(categories);
+	return await Categories.buildForSelectCategories(categories);
 };
 
-Categories.buildForSelectCategories = function (categories, callback) {
+Categories.buildForSelectCategories = async function (categories) {
 	function recursive(category, categoriesData, level, depth) {
 		var bullet = level ? '&bull; ' : '';
 		category.value = category.cid;
@@ -474,7 +348,7 @@ Categories.buildForSelectCategories = function (categories, callback) {
 	categories.forEach(function (category) {
 		recursive(category, categoriesData, '', 0);
 	});
-	callback(null, categoriesData);
+	return categoriesData;
 };
 
 Categories.async = require('../promisify')(Categories);

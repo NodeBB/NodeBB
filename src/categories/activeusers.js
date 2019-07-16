@@ -1,28 +1,17 @@
 'use strict';
 
-var async = require('async');
-var _ = require('lodash');
+const _ = require('lodash');
 
-var posts = require('../posts');
-var db = require('../database');
+const posts = require('../posts');
+const db = require('../database');
 
 module.exports = function (Categories) {
-	Categories.getActiveUsers = function (cids, callback) {
+	Categories.getActiveUsers = async function (cids) {
 		if (!Array.isArray(cids)) {
 			cids = [cids];
 		}
-		async.waterfall([
-			function (next) {
-				db.getSortedSetRevRange(cids.map(cid => 'cid:' + cid + ':pids'), 0, 24, next);
-			},
-			function (pids, next) {
-				posts.getPostsFields(pids, ['uid'], next);
-			},
-			function (posts, next) {
-				var uids = _.uniq(posts.map(post => post.uid).filter(uid => uid));
-
-				next(null, uids);
-			},
-		], callback);
+		const pids = await db.getSortedSetRevRange(cids.map(cid => 'cid:' + cid + ':pids'), 0, 24);
+		const postData = await posts.getPostsFields(pids, ['uid']);
+		return _.uniq(postData.map(post => post.uid).filter(uid => uid));
 	};
 };

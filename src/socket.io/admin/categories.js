@@ -123,7 +123,7 @@ function copyPrivilegesToChildrenRecursive(parentCid, category, group, callback)
 		},
 		function (next) {
 			async.eachSeries(category.children, function (child, next) {
-				copyPrivilegesToChildrenRecursive(parentCid, child, next);
+				copyPrivilegesToChildrenRecursive(parentCid, child, group, next);
 			}, next);
 		},
 	], callback);
