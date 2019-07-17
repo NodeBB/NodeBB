@@ -330,7 +330,8 @@ describe('Messaging Library', function () {
 					myRoomId = _roomId;
 					assert.ifError(err);
 					assert(myRoomId);
-					socketModules.chats.getRaw({ uid: bazUid }, { mid: 1 }, function (err) {
+					socketModules.chats.getRaw({ uid: bazUid }, { mid: 2 }, function (err) {
+						assert(err);
 						assert.equal(err.message, '[[error:not-allowed]]');
 						socketModules.chats.send({ uid: bazUid }, { roomId: myRoomId, message: 'admin will see this' }, function (err, message) {
 							assert.ifError(err);
@@ -392,8 +393,8 @@ describe('Messaging Library', function () {
 			}, function (err, messages) {
 				assert.ifError(err);
 				assert(Array.isArray(messages));
-				assert.equal(messages[0].roomId, roomId);
-				assert.equal(messages[0].fromuid, fooUid);
+				assert.equal(messages[4].roomId, roomId);
+				assert.equal(messages[4].fromuid, fooUid);
 				done();
 			});
 		});

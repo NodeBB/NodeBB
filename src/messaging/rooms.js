@@ -143,14 +143,8 @@ module.exports = function (Messaging) {
 			(next) => {
 				setImmediate(next);
 
-				uids.forEach(async (uid) => {
-					const message = await Messaging.addMessage({
-						content: 'user-join',
-						uid: uid,
-						roomId: roomId,
-						system: 1,
-					});
-					Messaging.notifyUsersInRoom(uid, roomId, message);
+				uids.forEach((uid) => {
+					Messaging.addSystemMessage('user-join', uid, roomId);
 				});
 			},
 		], callback);
@@ -193,14 +187,8 @@ module.exports = function (Messaging) {
 			function (next) {
 				updateOwner(roomId, next);
 
-				uids.forEach(async (uid) => {
-					const message = await Messaging.addMessage({
-						content: 'user-leave',
-						uid: uid,
-						roomId: roomId,
-						system: 1,
-					});
-					Messaging.notifyUsersInRoom(uid, roomId, message);
+				uids.forEach((uid) => {
+					Messaging.addSystemMessage('user-leave', uid, roomId);
 				});
 			},
 		], callback);
@@ -221,14 +209,8 @@ module.exports = function (Messaging) {
 			function (next) {
 				async.eachSeries(roomIds, updateOwner, next);
 
-				roomIds.forEach(async (roomId) => {
-					const message = await Messaging.addMessage({
-						content: 'user-leave',
-						uid: uid,
-						roomId: roomId,
-						system: 1,
-					});
-					Messaging.notifyUsersInRoom(uid, roomId, message);
+				roomIds.forEach((roomId) => {
+					Messaging.addSystemMessage('user-leave', uid, roomId);
 				});
 			},
 		], callback);
@@ -293,16 +275,7 @@ module.exports = function (Messaging) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				db.setObjectField('chat:room:' + roomId, 'roomName', newName, next);
-
-				(async () => {
-					const message = await Messaging.addMessage({
-						content: 'room-rename, ' + newName.replace(',', '%2C'),
-						uid: uid,
-						roomId: roomId,
-						system: 1,
-					});
-					Messaging.notifyUsersInRoom(uid, roomId, message);
-				})();
+				Messaging.addSystemMessage('room-rename, ' + newName.replace(',', '%2C'), uid, roomId);
 			},
 			async.apply(plugins.fireHook, 'action:chat.renameRoom', {
 				roomId: roomId,

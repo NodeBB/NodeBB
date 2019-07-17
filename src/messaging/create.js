@@ -120,6 +120,16 @@ module.exports = function (Messaging) {
 		], callback);
 	};
 
+	Messaging.addSystemMessage = async (content, uid, roomId) => {
+		const message = await Messaging.addMessage({
+			content: content,
+			uid: uid,
+			roomId: roomId,
+			system: 1,
+		});
+		Messaging.notifyUsersInRoom(uid, roomId, message);
+	};
+
 	Messaging.addRoomToUsers = function (roomId, uids, timestamp, callback) {
 		if (!uids.length) {
 			return callback();
