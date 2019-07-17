@@ -129,8 +129,8 @@ Notifications.push = async function (notification, uids) {
 	}
 
 	setTimeout(function () {
-		batch.processArray(uids, function (uids, next) {
-			pushToUids(uids, notification, next);
+		batch.processArray(uids, async function (uids) {
+			await pushToUids(uids, notification);
 		}, { interval: 1000 }, function (err) {
 			if (err) {
 				winston.error(err.stack);
