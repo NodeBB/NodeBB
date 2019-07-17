@@ -1,99 +1,68 @@
 'use strict';
 
-var async = require('async');
-
-var db = require('../database');
-var plugins = require('../plugins');
+const db = require('../database');
+const plugins = require('../plugins');
 
 module.exports = function (Posts) {
-	Posts.bookmark = function (pid, uid, callback) {
-		toggleBookmark('bookmark', pid, uid, callback);
+	Posts.bookmark = async function (pid, uid) {
+		return await toggleBookmark('bookmark', pid, uid);
 	};
 
-	Posts.unbookmark = function (pid, uid, callback) {
-		toggleBookmark('unbookmark', pid, uid, callback);
+	Posts.unbookmark = async function (pid, uid) {
+		return await toggleBookmark('unbookmark', pid, uid);
 	};
 
-	function toggleBookmark(type, pid, uid, callback) {
+	async function toggleBookmark(type, pid, uid) {
 		if (parseInt(uid, 10) <= 0) {
-			return callback(new Error('[[error:not-logged-in]]'));
+			throw new Error('[[error:not-logged-in]]');
 		}
 
-		var isBookmarking = type === 'bookmark';
-		var postData;
-		var hasBookmarked;
-		var owner;
-		async.waterfall([
-			function (next) {
-				async.parallel({
-					owner: function (next) {
-						Posts.getPostField(pid, 'uid', next);
-					},
-					postData: function (next) {
-						Posts.getPostFields(pid, ['pid', 'uid'], next);
-					},
-					hasBookmarked: function (next) {
-						Posts.hasBookmarked(pid, uid, next);
-					},
-				}, next);
-			},
-			function (results, next) {
-				owner = results.owner;
-				postData = results.postData;
-				hasBookmarked = results.hasBookmarked;
+		const isBookmarking = type === 'bookmark';
 
-				if (isBookmarking && hasBookmarked) {
-					return callback(new Error('[[error:already-bookmarked]]'));
-				}
+		const [postData, hasBookmarked] = await Promise.all([
+			Posts.getPostFields(pid, ['pid', 'uid']),
+			Posts.hasBookmarked(pid, uid),
+		]);
 
-				if (!isBookmarking && !hasBookmarked) {
-					return callback(new Error('[[error:already-unbookmarked]]'));
-				}
+		if (isBookmarking && hasBookmarked) {
+			throw new Error('[[error:already-bookmarked]]');
+		}
 
-				if (isBookmarking) {
-					db.sortedSetAdd('uid:' + uid + ':bookmarks', Date.now(), pid, next);
-				} else {
-					db.sortedSetRemove('uid:' + uid + ':bookmarks', pid, next);
-				}
-			},
-			function (next) {
-				db[isBookmarking ? 'setAdd' : 'setRemove']('pid:' + pid + ':users_bookmarked', uid, next);
-			},
-			function (next) {
-				db.setCount('pid:' + pid + ':users_bookmarked', next);
-			},
-			function (count, next) {
-				postData.bookmarks = count;
-				Posts.setPostField(pid, 'bookmarks', count, next);
-			},
-			function (next) {
-				var current = hasBookmarked ? 'bookmarked' : 'unbookmarked';
+		if (!isBookmarking && !hasBookmarked) {
+			throw new Error('[[error:already-unbookmarked]]');
+		}
 
-				plugins.fireHook('action:post.' + type, {
-					pid: pid,
-					uid: uid,
-					owner: owner,
-					current: current,
-				});
+		if (isBookmarking) {
+			await db.sortedSetAdd('uid:' + uid + ':bookmarks', Date.now(), pid);
+		} else {
+			await db.sortedSetRemove('uid:' + uid + ':bookmarks', pid);
+		}
+		await db[isBookmarking ? 'setAdd' : 'setRemove']('pid:' + pid + ':users_bookmarked', uid);
+		postData.bookmarks = await db.setCount('pid:' + pid + ':users_bookmarked');
+		await Posts.setPostField(pid, 'bookmarks', postData.bookmarks);
 
-				next(null, {
-					post: postData,
-					isBookmarked: isBookmarking,
-				});
-			},
-		], callback);
+		plugins.fireHook('action:post.' + type, {
+			pid: pid,
+			uid: uid,
+			owner: postData.uid,
+			current: hasBookmarked ? 'bookmarked' : 'unbookmarked',
+		});
+
+		return {
+			post: postData,
+			isBookmarked: isBookmarking,
+		};
 	}
 
-	Posts.hasBookmarked = function (pid, uid, callback) {
+	Posts.hasBookmarked = async function (pid, uid) {
 		if (parseInt(uid, 10) <= 0) {
-			return callback(null, Array.isArray(pid) ? pid.map(() => false) : false);
+			return Array.isArray(pid) ? pid.map(() => false) : false;
 		}
 
 		if (Array.isArray(pid)) {
-			var sets = pid.map(pid => 'pid:' + pid + ':users_bookmarked');
-			db.isMemberOfSets(sets, uid, callback);
-		} else {
-			db.isSetMember('pid:' + pid + ':users_bookmarked', uid, callback);
+			const sets = pid.map(pid => 'pid:' + pid + ':users_bookmarked');
+			return await db.isMemberOfSets(sets, uid);
 		}
+		return await db.isSetMember('pid:' + pid + ':users_bookmarked', uid);
 	};
 };

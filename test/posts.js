@@ -901,6 +901,14 @@ describe('Post\'s', function () {
 				done();
 			});
 		});
+
+		it('should filter pids by multiple cids', function (done) {
+			posts.filterPidsByCid([postData.pid, 100, 101], [cid], function (err, pids) {
+				assert.ifError(err);
+				assert.deepEqual([postData.pid], pids);
+				done();
+			});
+		});
 	});
 
 	it('should error if user does not exist', function (done) {

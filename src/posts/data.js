@@ -1,10 +1,8 @@
 'use strict';
 
-var async = require('async');
-
-var db = require('../database');
-var plugins = require('../plugins');
-var utils = require('../utils');
+const db = require('../database');
+const plugins = require('../plugins');
+const utils = require('../utils');
 
 const intFields = [
 	'uid', 'pid', 'tid', 'deleted', 'timestamp',
@@ -12,67 +10,49 @@ const intFields = [
 ];
 
 module.exports = function (Posts) {
-	Posts.getPostsFields = function (pids, fields, callback) {
+	Posts.getPostsFields = async function (pids, fields) {
 		if (!Array.isArray(pids) || !pids.length) {
-			return callback(null, []);
+			return [];
 		}
-
-		async.waterfall([
-			function (next) {
-				const keys = pids.map(pid => 'post:' + pid);
-				if (fields.length) {
-					db.getObjectsFields(keys, fields, next);
-				} else {
-					db.getObjects(keys, next);
-				}
-			},
-			function (posts, next) {
-				plugins.fireHook('filter:post.getFields', { posts: posts, fields: fields }, next);
-			},
-			function (data, next) {
-				data.posts.forEach(post => modifyPost(post, fields));
-				next(null, Array.isArray(data.posts) ? data.posts : null);
-			},
-		], callback);
+		const keys = pids.map(pid => 'post:' + pid);
+		let postData;
+		if (fields.length) {
+			postData = await db.getObjectsFields(keys, fields);
+		} else {
+			postData = await db.getObjects(keys);
+		}
+		const result = await plugins.fireHook('filter:post.getFields', { posts: postData, fields: fields });
+		result.posts.forEach(post => modifyPost(post, fields));
+		return Array.isArray(result.posts) ? result.posts : null;
 	};
 
-	Posts.getPostData = function (pid, callback) {
-		Posts.getPostsFields([pid], [], function (err, posts) {
-			callback(err, posts && posts.length ? posts[0] : null);
-		});
+	Posts.getPostData = async function (pid) {
+		const posts = await Posts.getPostsFields([pid], []);
+		return posts && posts.length ? posts[0] : null;
 	};
 
-	Posts.getPostsData = function (pids, callback) {
-		Posts.getPostsFields(pids, [], callback);
+	Posts.getPostsData = async function (pids) {
+		return await Posts.getPostsFields(pids, []);
 	};
 
-	Posts.getPostField = function (pid, field, callback) {
-		Posts.getPostFields(pid, [field], function (err, post) {
-			callback(err, post ? post[field] : null);
-		});
+	Posts.getPostField = async function (pid, field) {
+		const post = await Posts.getPostFields(pid, [field]);
+		return post ? post[field] : null;
 	};
 
-	Posts.getPostFields = function (pid, fields, callback) {
-		Posts.getPostsFields([pid], fields, function (err, posts) {
-			callback(err, posts ? posts[0] : null);
-		});
+	Posts.getPostFields = async function (pid, fields) {
+		const posts = await Posts.getPostsFields([pid], fields);
+		return posts ? posts[0] : null;
 	};
 
-	Posts.setPostField = function (pid, field, value, callback) {
-		Posts.setPostFields(pid, { [field]: value }, callback);
+	Posts.setPostField = async function (pid, field, value) {
+		await Posts.setPostFields(pid, { [field]: value });
 	};
 
-	Posts.setPostFields = function (pid, data, callback) {
-		async.waterfall([
-			function (next) {
-				db.setObject('post:' + pid, data, next);
-			},
-			function (next) {
-				data.pid = pid;
-				plugins.fireHook('action:post.setFields', { data: data });
-				next();
-			},
-		], callback);
+	Posts.setPostFields = async function (pid, data) {
+		await db.setObject('post:' + pid, data);
+		data.pid = pid;
+		plugins.fireHook('action:post.setFields', { data: data });
 	};
 };
 

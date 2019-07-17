@@ -1,212 +1,132 @@
 'use strict';
 
-var async = require('async');
-var _ = require('lodash');
+const _ = require('lodash');
 
-var db = require('../database');
-var topics = require('../topics');
-var user = require('../user');
-var groups = require('../groups');
-var notifications = require('../notifications');
-var plugins = require('../plugins');
+const db = require('../database');
+const topics = require('../topics');
+const categories = require('../categories');
+const user = require('../user');
+const groups = require('../groups');
+const notifications = require('../notifications');
+const plugins = require('../plugins');
 
 module.exports = function (Posts) {
-	Posts.delete = function (pid, uid, callback) {
-		deleteOrRestore('delete', pid, uid, callback);
+	Posts.delete = async function (pid, uid) {
+		return await deleteOrRestore('delete', pid, uid);
 	};
 
-	Posts.restore = function (pid, uid, callback) {
-		deleteOrRestore('restore', pid, uid, callback);
+	Posts.restore = async function (pid, uid) {
+		return await deleteOrRestore('restore', pid, uid);
 	};
 
-	function deleteOrRestore(type, pid, uid, callback) {
-		var postData;
+	async function deleteOrRestore(type, pid, uid) {
 		const isDeleting = type === 'delete';
-		async.waterfall([
-			function (next) {
-				plugins.fireHook('filter:post.' + type, { pid: pid, uid: uid }, next);
-			},
-			function (data, next) {
-				Posts.setPostFields(pid, {
-					deleted: isDeleting ? 1 : 0,
-					deleterUid: isDeleting ? uid : 0,
-				}, next);
-			},
-			function (next) {
-				Posts.getPostFields(pid, ['pid', 'tid', 'uid', 'content', 'timestamp'], next);
-			},
-			function (_post, next) {
-				postData = _post;
-				topics.getTopicFields(_post.tid, ['tid', 'cid', 'pinned'], next);
-			},
-			function (topicData, next) {
-				postData.cid = topicData.cid;
-				async.parallel([
-					function (next) {
-						topics.updateLastPostTimeFromLastPid(postData.tid, next);
-					},
-					function (next) {
-						if (isDeleting) {
-							db.sortedSetRemove('cid:' + topicData.cid + ':pids', pid, next);
-						} else {
-							db.sortedSetAdd('cid:' + topicData.cid + ':pids', postData.timestamp, pid, next);
-						}
-					},
-					function (next) {
-						topics.updateTeaser(postData.tid, next);
-					},
-				], next);
-			},
-			function (results, next) {
-				plugins.fireHook('action:post.' + type, { post: _.clone(postData), uid: uid });
-				next(null, postData);
-			},
-		], callback);
+		await plugins.fireHook('filter:post.' + type, { pid: pid, uid: uid });
+		await Posts.setPostFields(pid, {
+			deleted: isDeleting ? 1 : 0,
+			deleterUid: isDeleting ? uid : 0,
+		});
+		const postData = await Posts.getPostFields(pid, ['pid', 'tid', 'uid', 'content', 'timestamp']);
+		const topicData = await topics.getTopicFields(postData.tid, ['tid', 'cid', 'pinned']);
+		postData.cid = topicData.cid;
+		await Promise.all([
+			topics.updateLastPostTimeFromLastPid(postData.tid),
+			topics.updateTeaser(postData.tid),
+			isDeleting ?
+				db.sortedSetRemove('cid:' + topicData.cid + ':pids', pid) :
+				db.sortedSetAdd('cid:' + topicData.cid + ':pids', postData.timestamp, pid),
+		]);
+		plugins.fireHook('action:post.' + type, { post: _.clone(postData), uid: uid });
+		return postData;
 	}
 
-	Posts.purge = function (pid, uid, callback) {
-		let postData;
-		async.waterfall([
-			function (next) {
-				Posts.getPostData(pid, next);
-			},
-			function (_postData, next) {
-				postData = _postData;
-				if (!postData) {
-					return callback();
-				}
-				plugins.fireHook('filter:post.purge', { post: postData, pid: pid, uid: uid }, next);
-			},
-			function (data, next) {
-				async.parallel([
-					async.apply(deletePostFromTopicUserNotification, postData),
-					async.apply(deletePostFromCategoryRecentPosts, pid),
-					async.apply(deletePostFromUsersBookmarks, pid),
-					async.apply(deletePostFromUsersVotes, pid),
-					async.apply(deletePostFromReplies, postData),
-					async.apply(deletePostFromGroups, postData),
-					async.apply(db.sortedSetsRemove, ['posts:pid', 'posts:votes', 'posts:flagged'], pid),
-				], err => next(err));
-			},
-			function (next) {
-				plugins.fireHook('action:post.purge', { post: postData, uid: uid });
-				db.delete('post:' + pid, next);
-			},
-		], callback);
+	Posts.purge = async function (pid, uid) {
+		const postData = await Posts.getPostData(pid);
+		if (!postData) {
+			return;
+		}
+
+		await plugins.fireHook('filter:post.purge', { post: postData, pid: pid, uid: uid });
+		await Promise.all([
+			deletePostFromTopicUserNotification(postData),
+			deletePostFromCategoryRecentPosts(pid),
+			deletePostFromUsersBookmarks(pid),
+			deletePostFromUsersVotes(pid),
+			deletePostFromReplies(postData),
+			deletePostFromGroups(postData),
+			db.sortedSetsRemove(['posts:pid', 'posts:votes', 'posts:flagged'], pid),
+		]);
+		plugins.fireHook('action:post.purge', { post: postData, uid: uid });
+		await db.delete('post:' + pid);
 	};
 
-	function deletePostFromTopicUserNotification(postData, callback) {
-		async.waterfall([
-			function (next) {
-				db.sortedSetsRemove([
-					'tid:' + postData.tid + ':posts',
-					'tid:' + postData.tid + ':posts:votes',
-					'uid:' + postData.uid + ':posts',
-				], postData.pid, next);
-			},
-			function (next) {
-				topics.getTopicFields(postData.tid, ['tid', 'cid', 'pinned'], next);
-			},
-			function (topicData, next) {
-				const tasks = [
-					async.apply(db.decrObjectField, 'global', 'postCount'),
-					async.apply(db.decrObjectField, 'category:' + topicData.cid, 'post_count'),
-					async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':uid:' + postData.uid + ':pids', postData.pid),
-					async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':uid:' + postData.uid + ':pids:votes', postData.pid),
-					async.apply(topics.decreasePostCount, postData.tid),
-					async.apply(topics.updateTeaser, postData.tid),
-					async.apply(topics.updateLastPostTimeFromLastPid, postData.tid),
-					async.apply(db.sortedSetIncrBy, 'tid:' + postData.tid + ':posters', -1, postData.uid),
-					async.apply(user.incrementUserPostCountBy, postData.uid, -1),
-					async.apply(notifications.rescind, 'new_post:tid:' + postData.tid + ':pid:' + postData.pid + ':uid:' + postData.uid),
-				];
-				if (!topicData.pinned) {
-					tasks.push(async.apply(db.sortedSetIncrBy, 'cid:' + topicData.cid + ':tids:posts', -1, postData.tid));
-				}
-				async.parallel(tasks, next);
-			},
-		], function (err) {
-			callback(err);
-		});
+	async function deletePostFromTopicUserNotification(postData) {
+		await db.sortedSetsRemove([
+			'tid:' + postData.tid + ':posts',
+			'tid:' + postData.tid + ':posts:votes',
+			'uid:' + postData.uid + ':posts',
+		], postData.pid);
+		const topicData = await topics.getTopicFields(postData.tid, ['tid', 'cid', 'pinned']);
+		const tasks = [
+			db.decrObjectField('global', 'postCount'),
+			db.decrObjectField('category:' + topicData.cid, 'post_count'),
+			db.sortedSetRemove('cid:' + topicData.cid + ':uid:' + postData.uid + ':pids', postData.pid),
+			db.sortedSetRemove('cid:' + topicData.cid + ':uid:' + postData.uid + ':pids:votes', postData.pid),
+			topics.decreasePostCount(postData.tid),
+			topics.updateTeaser(postData.tid),
+			topics.updateLastPostTimeFromLastPid(postData.tid),
+			db.sortedSetIncrBy('tid:' + postData.tid + ':posters', -1, postData.uid),
+			user.incrementUserPostCountBy(postData.uid, -1),
+			notifications.rescind('new_post:tid:' + postData.tid + ':pid:' + postData.pid + ':uid:' + postData.uid),
+		];
+		if (!topicData.pinned) {
+			tasks.push(db.sortedSetIncrBy, 'cid:' + topicData.cid + ':tids:posts', -1, postData.tid);
+		}
+		await Promise.all(tasks);
 	}
 
-	function deletePostFromCategoryRecentPosts(pid, callback) {
-		async.waterfall([
-			function (next) {
-				db.getSortedSetRange('categories:cid', 0, -1, next);
-			},
-			function (cids, next) {
-				const sets = cids.map(cid => 'cid:' + cid + ':pids');
-				db.sortedSetsRemove(sets, pid, next);
-			},
-		], callback);
+	async function deletePostFromCategoryRecentPosts(pid) {
+		const cids = await categories.getAllCidsFromSet('categories:cid');
+		const sets = cids.map(cid => 'cid:' + cid + ':pids');
+		await db.sortedSetsRemove(sets, pid);
 	}
 
-	function deletePostFromUsersBookmarks(pid, callback) {
-		async.waterfall([
-			function (next) {
-				db.getSetMembers('pid:' + pid + ':users_bookmarked', next);
-			},
-			function (uids, next) {
-				const sets = uids.map(uid => 'uid:' + uid + ':bookmarks');
-				db.sortedSetsRemove(sets, pid, next);
-			},
-			function (next) {
-				db.delete('pid:' + pid + ':users_bookmarked', next);
-			},
-		], callback);
+	async function deletePostFromUsersBookmarks(pid) {
+		const uids = await db.getSetMembers('pid:' + pid + ':users_bookmarked');
+		const sets = uids.map(uid => 'uid:' + uid + ':bookmarks');
+		await db.sortedSetsRemove(sets, pid);
+		await db.delete('pid:' + pid + ':users_bookmarked');
 	}
 
-	function deletePostFromUsersVotes(pid, callback) {
-		async.waterfall([
-			function (next) {
-				async.parallel({
-					upvoters: function (next) {
-						db.getSetMembers('pid:' + pid + ':upvote', next);
-					},
-					downvoters: function (next) {
-						db.getSetMembers('pid:' + pid + ':downvote', next);
-					},
-				}, next);
-			},
-			function (results, next) {
-				async.parallel([
-					function (next) {
-						const upvoterSets = results.upvoters.map(uid => 'uid:' + uid + ':upvote');
-						const downvoterSets = results.downvoters.map(uid => 'uid:' + uid + ':downvote');
-						db.sortedSetsRemove(upvoterSets.concat(downvoterSets), pid, next);
-					},
-					function (next) {
-						db.deleteAll(['pid:' + pid + ':upvote', 'pid:' + pid + ':downvote'], next);
-					},
-				], next);
-			},
-		], callback);
+	async function deletePostFromUsersVotes(pid) {
+		const [upvoters, downvoters] = await Promise.all([
+			db.getSetMembers('pid:' + pid + ':upvote'),
+			db.getSetMembers('pid:' + pid + ':downvote'),
+		]);
+		const upvoterSets = upvoters.map(uid => 'uid:' + uid + ':upvote');
+		const downvoterSets = downvoters.map(uid => 'uid:' + uid + ':downvote');
+		await Promise.all([
+			db.sortedSetsRemove(upvoterSets.concat(downvoterSets), pid),
+			db.deleteAll(['pid:' + pid + ':upvote', 'pid:' + pid + ':downvote']),
+		]);
 	}
 
-	function deletePostFromReplies(postData, callback) {
+	async function deletePostFromReplies(postData) {
 		if (!parseInt(postData.toPid, 10)) {
-			return setImmediate(callback);
+			return;
 		}
-		async.parallel([
-			async.apply(db.sortedSetRemove, 'pid:' + postData.toPid + ':replies', postData.pid),
-			async.apply(db.decrObjectField, 'post:' + postData.toPid, 'replies'),
-		], callback);
+		await Promise.all([
+			db.sortedSetRemove('pid:' + postData.toPid + ':replies', postData.pid),
+			db.decrObjectField('post:' + postData.toPid, 'replies'),
+		]);
 	}
 
-	function deletePostFromGroups(postData, callback) {
+	async function deletePostFromGroups(postData) {
 		if (!parseInt(postData.uid, 10)) {
-			return setImmediate(callback);
+			return;
 		}
-		async.waterfall([
-			function (next) {
-				groups.getUserGroupMembership('groups:visible:createtime', [postData.uid], next);
-			},
-			function (groupNames, next) {
-				groupNames = groupNames[0];
-				const keys = groupNames.map(groupName => 'group:' + groupName + ':member:pids');
-				db.sortedSetsRemove(keys, postData.pid, next);
-			},
-		], callback);
+		const groupNames = await groups.getUserGroupMembership('groups:visible:createtime', [postData.uid]);
+		const keys = groupNames[0].map(groupName => 'group:' + groupName + ':member:pids');
+		await db.sortedSetsRemove(keys, postData.pid);
 	}
 };
