@@ -9,6 +9,7 @@
 
 	"plugin-search": "การค้นหาปลั๊กอิน",
 	"plugin-search-placeholder": "ค้นหาปลั๊กอิน...",
+	"submit-anonymous-usage": "Submit anonymous plugin usage data.",
 	"reorder-plugins": "เรียงลำดับปลั๊กอินใหม่",
 	"order-active": "ลำดับการทำงานของปลั๊กอิน",
 	"dev-interested": "คุณสนใจที่จะสร้างปลั๊กอินสำหรับ NodeBB หรือไม่?",
@@ -29,6 +30,8 @@
 	"plugin-item.more-info": "ข้อมูลเพิ่มเติม:",
 	"plugin-item.unknown": "ไม่ทราบ",
 	"plugin-item.unknown-explanation": "สถานะของปลั๊กอินนี้ไม่สามารถระบุได้ซึ่งอาจเกิดจากข้อผิดพลาดในการกำหนดค่าผิดพลาด",
+	"plugin-item.compatible": "This plugin works on NodeBB %1",
+	"plugin-item.not-compatible": "This plugin has no compatibility data, make sure it works before installing on your production environment.",
 
 	"alert.enabled": "เปิดใช้งานปลั๊กอินแล้ว",
 	"alert.disabled": "ปิดใช้งานปลั๊กอินแล้ว",

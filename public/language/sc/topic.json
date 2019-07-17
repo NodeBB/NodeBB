@@ -23,6 +23,7 @@
     "purge": "Purge",
     "restore": "Torra",
     "move": "Move",
+    "change-owner": "Change Owner",
     "fork": "Partzi",
     "link": "Acàpiu",
     "share": "Cumpartzi",
@@ -64,6 +65,7 @@
     "thread_tools.move": "Move Arresonada",
     "thread_tools.move-posts": "Move Posts",
     "thread_tools.move_all": "Move All",
+    "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "Select Category",
     "thread_tools.fork": "Partzi Arresonada",
     "thread_tools.delete": "Cantzella Arresonada",
@@ -98,6 +100,7 @@
     "delete_posts_instruction": "Click the posts you want to delete/purge",
     "merge_topics_instruction": "Click the topics you want to merge",
     "move_posts_instruction": "Click the posts you want to move",
+    "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Pone su tìtulu de s'arresonada inoghe...",
     "composer.handle_placeholder": "Name",
     "composer.discard": "Lassa a Pèrdere",
@@ -129,5 +132,6 @@
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
     "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
     "diffs.current-revision": "current revision",
-    "diffs.original-revision": "original revision"
+    "diffs.original-revision": "original revision",
+    "timeago_later": "%1 later"
 }

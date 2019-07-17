@@ -144,7 +144,6 @@
     "invite-maximum-met": "Du har bjudit in det maximala antalet användare (%1 av %2)",
     "no-session-found": "Ingen login-session hittades!",
     "not-in-room": "Användaren finns inte i rummet",
-    "no-users-in-room": "Inga användare i det här rummet",
     "cant-kick-self": "Du kan inte sparka ut dig själv från gruppen",
     "no-users-selected": "Ingen användare vald(a)",
     "invalid-home-page-route": "Ogiltig sidsökväg",

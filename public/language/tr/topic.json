@@ -23,6 +23,7 @@
     "purge": "Temizle",
     "restore": "Geri Getir",
     "move": "Taşı",
+    "change-owner": "Change Owner",
     "fork": "Ayır",
     "link": "Bağlantı",
     "share": "Paylaş",
@@ -64,6 +65,7 @@
     "thread_tools.move": "Konuyu Taşı",
     "thread_tools.move-posts": "İletiyi Taşı",
     "thread_tools.move_all": "Hepsini Taşı",
+    "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "Kategori Seç",
     "thread_tools.fork": "Konuyu Ayır",
     "thread_tools.delete": "Konuyu Sil",
@@ -98,6 +100,7 @@
     "delete_posts_instruction": "Silmek/temizlemek istediğiniz iletilere tıklayın.",
     "merge_topics_instruction": "Birleştirmek istediğiniz konulara tıklayın",
     "move_posts_instruction": "Taşımak istediğin iletilere tıklayın",
+    "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Konu ismini buraya girin...",
     "composer.handle_placeholder": "İsim",
     "composer.discard": "Vazgeç",
@@ -129,5 +132,6 @@
     "diffs.description": "Bu iletinin <strong>%1</strong>revizyonu var. Zaman içerisinde ileti içeriğinin tamamını görmek için aşağıdaki düzeltmelerden birine tıklayın.",
     "diffs.no-revisions-description": "Bu iletinin <strong>%1</strong> revizyonu var.",
     "diffs.current-revision": "mevcut revizyon",
-    "diffs.original-revision": "orijinal revizyon"
+    "diffs.original-revision": "orijinal revizyon",
+    "timeago_later": "%1 later"
 }

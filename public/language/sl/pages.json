@@ -43,6 +43,7 @@
     "account/following": "Ljudje, ki jim sledi oseba %1",
     "account/followers": "Ljudje, ki sledijo osebi %1",
     "account/posts": "Objave uporabnika %1",
+    "account/latest-posts": "Latest posts made by %1",
     "account/topics": "Teme, ki jih je ustvaril uporabnik %1",
     "account/groups": "Skupine uporabnika %1",
     "account/watched_categories": "%1's Watched Categories",

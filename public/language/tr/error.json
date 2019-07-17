@@ -144,7 +144,6 @@
     "invite-maximum-met": "Sen maksimum miktarda insanı davet ettin (%2 üzerinden %1).",
     "no-session-found": "Giriş yapılmış bir oturum bulunamadı!",
     "not-in-room": "Odada kullanıcı yok",
-    "no-users-in-room": "Bu odada kullanıcı yok",
     "cant-kick-self": "Kendinizi gruptan atamazsınız.",
     "no-users-selected": "Seçili kullanıcı(s) bulunamadı",
     "invalid-home-page-route": "Geçersiz anasayfa yolu",

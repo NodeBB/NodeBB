@@ -23,6 +23,7 @@
     "purge": "Kustuta",
     "restore": "Taasta",
     "move": "Liiguta",
+    "change-owner": "Change Owner",
     "fork": "Fork",
     "link": "Ühenda",
     "share": "Jaga",
@@ -64,6 +65,7 @@
     "thread_tools.move": "Liiguta teema",
     "thread_tools.move-posts": "Move Posts",
     "thread_tools.move_all": "Liiguta kõik",
+    "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "Select Category",
     "thread_tools.fork": "Fork Topic",
     "thread_tools.delete": "Kustuta teema",
@@ -98,6 +100,7 @@
     "delete_posts_instruction": "Klikka postitustel, mida tahad kustutada/puhastada",
     "merge_topics_instruction": "Click the topics you want to merge",
     "move_posts_instruction": "Click the posts you want to move",
+    "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Sisesta teema pealkiri siia...",
     "composer.handle_placeholder": "Nimi",
     "composer.discard": "Katkesta",
@@ -129,5 +132,6 @@
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
     "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
     "diffs.current-revision": "current revision",
-    "diffs.original-revision": "original revision"
+    "diffs.original-revision": "original revision",
+    "timeago_later": "%1 later"
 }

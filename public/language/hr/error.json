@@ -144,7 +144,6 @@
     "invite-maximum-met": "Pozvali ste maksimalan broj ljudi (%1 od %2).",
     "no-session-found": "Nije pronađena sesija prijave!",
     "not-in-room": "Korisnik nije u sobi",
-    "no-users-in-room": "Nema korisnika u sobi",
     "cant-kick-self": "Ne možete sebe izbaciti iz grupe",
     "no-users-selected": "Korisnici nisu odabrani",
     "invalid-home-page-route": "Netočna putanja naslovnice",

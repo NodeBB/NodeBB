@@ -23,6 +23,7 @@
     "purge": "Εκκαθάριση",
     "restore": "Επαναφορά",
     "move": "Μετακίνηση",
+    "change-owner": "Change Owner",
     "fork": "Διαχωρισμός",
     "link": "Σύνδεσμος",
     "share": "Μοιράσου το",
@@ -64,6 +65,7 @@
     "thread_tools.move": "Μετακίνηση Θέματος",
     "thread_tools.move-posts": "Move Posts",
     "thread_tools.move_all": "Μετακίνηση Όλων",
+    "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "Select Category",
     "thread_tools.fork": "Διαχωρισμός Θέματος",
     "thread_tools.delete": "Διαγραφή Θέματος",
@@ -98,6 +100,7 @@
     "delete_posts_instruction": "Click the posts you want to delete/purge",
     "merge_topics_instruction": "Click the topics you want to merge",
     "move_posts_instruction": "Click the posts you want to move",
+    "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Εισαγωγή του τίτλου του θέματος εδώ...",
     "composer.handle_placeholder": "Name",
     "composer.discard": "Πέταγμα",
@@ -129,5 +132,6 @@
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
     "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
     "diffs.current-revision": "current revision",
-    "diffs.original-revision": "original revision"
+    "diffs.original-revision": "original revision",
+    "timeago_later": "%1 later"
 }

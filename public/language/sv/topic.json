@@ -23,6 +23,7 @@
     "purge": "Rensa",
     "restore": "Återställ",
     "move": "Flytta",
+    "change-owner": "Change Owner",
     "fork": "Grena",
     "link": "Länk",
     "share": "Dela",
@@ -64,6 +65,7 @@
     "thread_tools.move": "Flytta ämne",
     "thread_tools.move-posts": "Flytta inlägg",
     "thread_tools.move_all": "Flytta alla",
+    "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "Välj kategori",
     "thread_tools.fork": "Grena ämne",
     "thread_tools.delete": "Ta bort ämne",
@@ -98,6 +100,7 @@
     "delete_posts_instruction": "Klicka på inläggen du vill radera/rensa bort",
     "merge_topics_instruction": "Klicka på de ämnen du vill slå samman",
     "move_posts_instruction": "Klicka på de inlägg du vill flytta",
+    "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Skriv in ämnets titel här...",
     "composer.handle_placeholder": "Namn",
     "composer.discard": "Avbryt",
@@ -129,5 +132,6 @@
     "diffs.description": "Detta inlägg har <strong>%1</strong> revisioner. Klicka på en av revisionerna nedan för att se det dåvarande innehållet i inlägget.",
     "diffs.no-revisions-description": "Detta inlägg har <strong>%1</strong> revisioner.",
     "diffs.current-revision": "Nuvarande revision",
-    "diffs.original-revision": "Ursprunglig revision"
+    "diffs.original-revision": "Ursprunglig revision",
+    "timeago_later": "%1 later"
 }

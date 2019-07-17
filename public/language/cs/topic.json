@@ -23,6 +23,7 @@
     "purge": "Vypráznit",
     "restore": "Obnovit",
     "move": "Přesunout",
+    "change-owner": "Change Owner",
     "fork": "Rozdělit",
     "link": "Odkaz",
     "share": "Sdílet",
@@ -64,6 +65,7 @@
     "thread_tools.move": "Přesunout téma",
     "thread_tools.move-posts": "Přesunout příspěvky",
     "thread_tools.move_all": "Přesunout vše",
+    "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "Vybrat kategorii",
     "thread_tools.fork": "Větvit téma",
     "thread_tools.delete": "Odstranit téma",
@@ -98,6 +100,7 @@
     "delete_posts_instruction": "Klikněte na příspěvek, který chcete odstranit/vyčistit",
     "merge_topics_instruction": "Pro sloučení témat, klikněte na ně",
     "move_posts_instruction": "Klikněte na příspěvek/y, který chcete přesunout",
+    "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Zadejte název tématu…",
     "composer.handle_placeholder": "Jméno",
     "composer.discard": "Zrušit",
@@ -129,5 +132,6 @@
     "diffs.description": "Tento příspěvek má <strong>%1</strong> změn. Pro zobrazení obsahu příspěvku platného v daný čas, klikněte níže na jednu ze změn.",
     "diffs.no-revisions-description": "Tento příspěvek má <strong>%1</strong> změn.",
     "diffs.current-revision": "aktuální revize",
-    "diffs.original-revision": "originální revize"
+    "diffs.original-revision": "originální revize",
+    "timeago_later": "%1 later"
 }

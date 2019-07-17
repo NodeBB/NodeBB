@@ -23,6 +23,7 @@
     "purge": "מחק לצמיתות",
     "restore": "שחזר",
     "move": "הזז",
+    "change-owner": "Change Owner",
     "fork": "פורק",
     "link": "לינק",
     "share": "שתף",
@@ -64,6 +65,7 @@
     "thread_tools.move": "הזז נושא",
     "thread_tools.move-posts": "הזז פוסטים",
     "thread_tools.move_all": "הזז הכל",
+    "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "בחר קטגוריה",
     "thread_tools.fork": "שכפל נושא",
     "thread_tools.delete": "מחק נושא",
@@ -98,6 +100,7 @@
     "delete_posts_instruction": "לחץ על הפוסטים שברצונך למחוק",
     "merge_topics_instruction": "לחץ על הנושאים שתרצה למזג",
     "move_posts_instruction": "לחץ על הפוסטים שאתה רוצה להזיז",
+    "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "הכנס את כותרת הנושא כאן...",
     "composer.handle_placeholder": "שם",
     "composer.discard": "ביטול",
@@ -129,5 +132,6 @@
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
     "diffs.no-revisions-description": "לפוסט זה יש <strong>%1</strong>גרסאות",
     "diffs.current-revision": "current revision",
-    "diffs.original-revision": "original revision"
+    "diffs.original-revision": "original revision",
+    "timeago_later": "%1 later"
 }

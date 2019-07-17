@@ -23,6 +23,7 @@
     "purge": "Xóa hẳn",
     "restore": "Phục hồi",
     "move": "Chuyển đi",
+    "change-owner": "Change Owner",
     "fork": "Tạo bản sao",
     "link": "Đường dẫn",
     "share": "Chia sẻ",
@@ -64,6 +65,7 @@
     "thread_tools.move": "Chuyển chủ đề",
     "thread_tools.move-posts": "Di chuyển các bài viết",
     "thread_tools.move_all": "Chuyển tất cả",
+    "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "Chọn chuyện mục",
     "thread_tools.fork": "Tạo bản sao chủ đề",
     "thread_tools.delete": "Xóa chủ đề",
@@ -98,6 +100,7 @@
     "delete_posts_instruction": "Chọn những bài viết bạn muốn xoá",
     "merge_topics_instruction": "Click vào các chủ đề bạn muốn xác nhập",
     "move_posts_instruction": "Nhấp chuột vào bài viết bạn muốn di chuyển",
+    "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Nhập tiêu đề cho chủ đề của bạn tại đây...",
     "composer.handle_placeholder": "Tên",
     "composer.discard": "Huỷ bỏ",
@@ -129,5 +132,6 @@
     "diffs.description": "Bài viết này có <strong>%1</strong> sửa đổi. Chọn một trong các thời điểm dưới đây để xem nội dung bài viết",
     "diffs.no-revisions-description": "Bài viết này có <strong>%1</strong> sửa đổi",
     "diffs.current-revision": "Bản sao lưu hiện tại",
-    "diffs.original-revision": "Bản sao lưu gốc"
+    "diffs.original-revision": "Bản sao lưu gốc",
+    "timeago_later": "%1 later"
 }

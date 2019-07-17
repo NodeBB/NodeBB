@@ -43,6 +43,7 @@
     "account/following": "Ljudi %1 prati",
     "account/followers": "Ljudi koji prate %1",
     "account/posts": "Objavio %1",
+    "account/latest-posts": "Latest posts made by %1",
     "account/topics": "Teme od %1",
     "account/groups": "%1 grupe",
     "account/watched_categories": "%1's Watched Categories",

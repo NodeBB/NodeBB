@@ -144,7 +144,6 @@
     "invite-maximum-met": "您已達到可邀請人數的上限 (%1人, 共%2人)。",
     "no-session-found": "沒有找到登入的連線階段!",
     "not-in-room": "使用者沒有在聊天室中",
-    "no-users-in-room": "沒有使用者在聊天室中",
     "cant-kick-self": "你不能把自己從群組中踢出",
     "no-users-selected": "沒有選定使用者",
     "invalid-home-page-route": "無效的首頁路徑",

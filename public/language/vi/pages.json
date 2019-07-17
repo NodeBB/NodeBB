@@ -43,6 +43,7 @@
     "account/following": "Thành viên %1 đang theo dõi",
     "account/followers": "Thành viên đang theo dõi %1",
     "account/posts": "Bài viết được đăng bởi %1",
+    "account/latest-posts": "Latest posts made by %1",
     "account/topics": "Chủ đề được tạo bởi %1",
     "account/groups": "Nhóm của %1",
     "account/watched_categories": "%1's Watched Categories",

@@ -23,6 +23,7 @@
     "purge": "切り離し",
     "restore": "リストア",
     "move": "移動",
+    "change-owner": "Change Owner",
     "fork": "フォーク",
     "link": "リンク",
     "share": "シェア",
@@ -64,6 +65,7 @@
     "thread_tools.move": "スレッドを移動",
     "thread_tools.move-posts": "投稿を移動",
     "thread_tools.move_all": "すべてを移動",
+    "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "カテゴリを選択",
     "thread_tools.fork": "スレッドをフォーク",
     "thread_tools.delete": "スレッドを削除",
@@ -98,6 +100,7 @@
     "delete_posts_instruction": "削除または切り離するには、当てはまる投稿を押してください",
     "merge_topics_instruction": "結合したいトピックをクリック",
     "move_posts_instruction": "移動したい投稿をクリック",
+    "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "スレッドのタイトルを入力...",
     "composer.handle_placeholder": "名前",
     "composer.discard": "破棄する",
@@ -129,5 +132,6 @@
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
     "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
     "diffs.current-revision": "現在のリビジョン",
-    "diffs.original-revision": "元のリビジョン"
+    "diffs.original-revision": "元のリビジョン",
+    "timeago_later": "%1 later"
 }

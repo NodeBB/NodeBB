@@ -43,6 +43,7 @@
     "account/following": "Gente que sigue %1",
     "account/followers": "Seguidores de %1",
     "account/posts": "Publicados por %1",
+    "account/latest-posts": "Latest posts made by %1",
     "account/topics": "Temas creados por %1",
     "account/groups": "Grupos de %1",
     "account/watched_categories": "%1 Categorías seguidas",

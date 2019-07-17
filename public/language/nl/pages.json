@@ -43,6 +43,7 @@
     "account/following": "Door %1 gevolgd",
     "account/followers": "Die %1 volgen",
     "account/posts": "Berichten geplaatst door %1",
+    "account/latest-posts": "Latest posts made by %1",
     "account/topics": "Onderwerpen begonnen door %1",
     "account/groups": "%1's groepen",
     "account/watched_categories": "Gevolgde Categorieën van %1",

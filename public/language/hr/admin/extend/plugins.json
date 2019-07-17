@@ -9,6 +9,7 @@
 
 	"plugin-search": "Pretraga dodataka",
 	"plugin-search-placeholder": "Pretraži za dodatak ...",
+	"submit-anonymous-usage": "Submit anonymous plugin usage data.",
 	"reorder-plugins": "Promjenite redosljed dodataka",
 	"order-active": "Posloži aktivne dodatke",
 	"dev-interested": "Interesira vas pisanje dodataka za NodeBB?",
@@ -29,6 +30,8 @@
 	"plugin-item.more-info": "Za više informacija:",
 	"plugin-item.unknown": "Nepoznato",
 	"plugin-item.unknown-explanation": "Stanje ovog dodatka se nemože utvrditi, vjerovatno zbog greške u konfiguraciji.",
+	"plugin-item.compatible": "This plugin works on NodeBB %1",
+	"plugin-item.not-compatible": "This plugin has no compatibility data, make sure it works before installing on your production environment.",
 
 	"alert.enabled": "Dodatak omogućen",
 	"alert.disabled": "Dodatak onemogućen",

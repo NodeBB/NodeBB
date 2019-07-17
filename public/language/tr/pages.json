@@ -43,6 +43,7 @@
     "account/following": "%1 tarafından takip edilenler",
     "account/followers": "%1 takip edenler",
     "account/posts": "%1 tarafından gönderilen iletiler",
+    "account/latest-posts": "Latest posts made by %1",
     "account/topics": "%1 tarafından gönderilen başlıklar",
     "account/groups": "%1 Kişisine Ait Gruplar",
     "account/watched_categories": "%1's Takip Edilen Kategori",

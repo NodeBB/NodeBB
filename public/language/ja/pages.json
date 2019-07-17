@@ -43,6 +43,7 @@
     "account/following": "%1がフォロー中",
     "account/followers": "%1のフォロワー",
     "account/posts": "%1さんの投稿",
+    "account/latest-posts": "Latest posts made by %1",
     "account/topics": "%1がスレッドを作成しました",
     "account/groups": "%1 グループ",
     "account/watched_categories": "%1's Watched Categories",

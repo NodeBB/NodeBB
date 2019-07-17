@@ -23,6 +23,7 @@
     "purge": "Purge",
     "restore": "Palauta",
     "move": "Siirrä",
+    "change-owner": "Change Owner",
     "fork": "Haaroita",
     "link": "Linkitä",
     "share": "Jaa",
@@ -64,6 +65,7 @@
     "thread_tools.move": "Siirrä aihe",
     "thread_tools.move-posts": "Move Posts",
     "thread_tools.move_all": "Siirrä kaikki",
+    "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "Select Category",
     "thread_tools.fork": "Haaroita aihe",
     "thread_tools.delete": "Poista aihe",
@@ -98,6 +100,7 @@
     "delete_posts_instruction": "Click the posts you want to delete/purge",
     "merge_topics_instruction": "Click the topics you want to merge",
     "move_posts_instruction": "Click the posts you want to move",
+    "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Syötä aiheesi otsikko tähän...",
     "composer.handle_placeholder": "Name",
     "composer.discard": "Hylkää",
@@ -129,5 +132,6 @@
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
     "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
     "diffs.current-revision": "current revision",
-    "diffs.original-revision": "original revision"
+    "diffs.original-revision": "original revision",
+    "timeago_later": "%1 later"
 }

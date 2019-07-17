@@ -144,7 +144,6 @@
     "invite-maximum-met": "Již jste pozval/a maximálně možný počet lidí (%1 z %2).",
     "no-session-found": "Nebyla nalezena relace s přihlášením.",
     "not-in-room": "Uživatel není přítomen v místnosti",
-    "no-users-in-room": "Žádní uživatelé v této místnosti",
     "cant-kick-self": "Nemůžete vyhodit sami sebe ze skupiny",
     "no-users-selected": "Žádný uživatel/é nebyl/y vybrán/i",
     "invalid-home-page-route": "Neplatná cesta k domovské stránkce",

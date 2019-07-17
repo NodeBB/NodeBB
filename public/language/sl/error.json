@@ -144,7 +144,6 @@
     "invite-maximum-met": "Povabili ste največje dovoljeno število ljudi (%1 od %2).",
     "no-session-found": "Prijavne seje ni mogoče najti!",
     "not-in-room": "Uporabnika ni v sobi.",
-    "no-users-in-room": "V tej sobi ni uporabnikov.",
     "cant-kick-self": "Sebe ne morete umakniti iz skupine.",
     "no-users-selected": "Ni izbranih uporabnikov.",
     "invalid-home-page-route": "Napačna pot do domače strani.",

@@ -9,6 +9,7 @@
 
 	"plugin-search": "Beépülő keresés",
 	"plugin-search-placeholder": "Beépülő keresése...",
+	"submit-anonymous-usage": "Submit anonymous plugin usage data.",
 	"reorder-plugins": "Beépülők átrendezése",
 	"order-active": "Aktív beépülők elrendezése",
 	"dev-interested": "Szeretnél beépülő modulokat írni a NodeBB-hez?",
@@ -29,6 +30,8 @@
 	"plugin-item.more-info": "További információért:",
 	"plugin-item.unknown": "Ismeretlen",
 	"plugin-item.unknown-explanation": "A beépülő állapotát nem lehet meghatározni, valószínűleg egy konfigurációs hiba következtében.",
+	"plugin-item.compatible": "This plugin works on NodeBB %1",
+	"plugin-item.not-compatible": "This plugin has no compatibility data, make sure it works before installing on your production environment.",
 
 	"alert.enabled": "Beépülő engedélyezve",
 	"alert.disabled": "Beépülő letiltva",

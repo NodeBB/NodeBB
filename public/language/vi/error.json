@@ -144,7 +144,6 @@
     "invite-maximum-met": "Bạn đã sử dụng hết số lượng lời mời bạn có thể gửi (%1 đã gửi trên tổng số %2 được cho phép)",
     "no-session-found": "Không tìm thấy phiên đăng nhập!",
     "not-in-room": "Thành viên không có trong phòng",
-    "no-users-in-room": "Không có ai trong phòng này",
     "cant-kick-self": "Bạn không thể kick chính bạn ra khỏi nhóm",
     "no-users-selected": "Chưa có người dùng(s) nào",
     "invalid-home-page-route": "Đường dẫn trang chủ không hợp lệ",

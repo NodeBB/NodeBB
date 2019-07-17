@@ -9,6 +9,7 @@
 
 	"plugin-search": "Meklēt spraudņus",
 	"plugin-search-placeholder": "Meklēt spraudni...",
+	"submit-anonymous-usage": "Submit anonymous plugin usage data.",
 	"reorder-plugins": "Pārkārtot spraudņus",
 	"order-active": "Kārtot aktīvos spraudņus",
 	"dev-interested": "Vai esi ieinteresēts(-ēta) rakstīt spraudņus NodeBB?",
@@ -29,6 +30,8 @@
 	"plugin-item.more-info": "Lai iegūtu vairāk informācijas:",
 	"plugin-item.unknown": "Nezināmie",
 	"plugin-item.unknown-explanation": "Šī spraudņa stāvokli nevarēja noteikt, iespējams, iestatījumu kļūdas dēļ.",
+	"plugin-item.compatible": "This plugin works on NodeBB %1",
+	"plugin-item.not-compatible": "This plugin has no compatibility data, make sure it works before installing on your production environment.",
 
 	"alert.enabled": "Spraudnis iespējots",
 	"alert.disabled": "Spraudnis atspējots",

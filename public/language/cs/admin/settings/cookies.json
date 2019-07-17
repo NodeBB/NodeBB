@@ -4,6 +4,7 @@
 	"consent.message": "Potvrzovací zpráva",
 	"consent.acceptance": "Zpráva o příjmutí",
 	"consent.link-text": "Odkaz na text",
+	"consent.link-url": "Policy Link URL",
 	"consent.blank-localised-default": "Pro použití výchozího textu NodeBB, zanechte prázdné",
 	"settings": "Nastavení",
 	"cookie-domain": "Doména relace cookies",

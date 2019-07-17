@@ -23,6 +23,7 @@
     "purge": "Стереть",
     "restore": "Восстановить",
     "move": "Перенести",
+    "change-owner": "Change Owner",
     "fork": "Ответвление",
     "link": "Ссылка",
     "share": "Поделиться",
@@ -64,6 +65,7 @@
     "thread_tools.move": "Переместить тему",
     "thread_tools.move-posts": "Переместить пост",
     "thread_tools.move_all": "Переместить всё",
+    "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "Выберите категорию",
     "thread_tools.fork": "Создать дополнительную ветвь дискуссии",
     "thread_tools.delete": "Удалить тему",
@@ -98,6 +100,7 @@
     "delete_posts_instruction": "Отметьте записи, которые вы хотите удалить",
     "merge_topics_instruction": "Выберите темы которые вы хотите объединить",
     "move_posts_instruction": "Нажмите на сообщения, которые вы хотите переместить",
+    "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Введите название темы...",
     "composer.handle_placeholder": "Название",
     "composer.discard": "Отменить",
@@ -129,5 +132,6 @@
     "diffs.description": "У этого поста есть <strong>%1</strong> изменений. Нажмите один из приведенных ниже изменений, чтобы просмотреть содержимое сообщения в тот момент.",
     "diffs.no-revisions-description": "У этого поста <strong>%1</strong>изменений",
     "diffs.current-revision": "текущая ревизия",
-    "diffs.original-revision": "оригинальная ревизия"
+    "diffs.original-revision": "оригинальная ревизия",
+    "timeago_later": "%1 later"
 }

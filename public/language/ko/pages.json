@@ -43,6 +43,7 @@
     "account/following": "%1 님이 팔로우 하는 사용자",
     "account/followers": "%1 님을 팔로우 하는 사용자",
     "account/posts": "%1 님이 작성한 포스트",
+    "account/latest-posts": "Latest posts made by %1",
     "account/topics": "%1 님이 생성한 게시물",
     "account/groups": "%1 님의 그룹",
     "account/watched_categories": "%1 님이 주시중인 카테고리",

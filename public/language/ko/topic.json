@@ -23,6 +23,7 @@
     "purge": "폐기",
     "restore": "복원",
     "move": "이동",
+    "change-owner": "Change Owner",
     "fork": "분리",
     "link": "바로가기",
     "share": "공유",
@@ -64,6 +65,7 @@
     "thread_tools.move": "이동",
     "thread_tools.move-posts": "글 이동",
     "thread_tools.move_all": "모두 이동",
+    "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "게시판 선택",
     "thread_tools.fork": "주제 분리",
     "thread_tools.delete": "삭제",
@@ -98,6 +100,7 @@
     "delete_posts_instruction": "삭제할 포스트를 선택하세요.",
     "merge_topics_instruction": "병합할 게시물을 클릭하세요",
     "move_posts_instruction": "Click the posts you want to move",
+    "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "게시물 제목을 입력하세요.",
     "composer.handle_placeholder": "이름",
     "composer.discard": "취소",
@@ -129,5 +132,6 @@
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
     "diffs.no-revisions-description": "이 게시글에는 <strong>%1</strong>번의 수정이 있습니다.",
     "diffs.current-revision": "현재 리비젼",
-    "diffs.original-revision": "원래의 리비젼"
+    "diffs.original-revision": "원래의 리비젼",
+    "timeago_later": "%1 later"
 }

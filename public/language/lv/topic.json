@@ -23,6 +23,7 @@
     "purge": "Iztīrīt",
     "restore": "Atjaunot",
     "move": "Pārvietot",
+    "change-owner": "Change Owner",
     "fork": "Nozarot",
     "link": "Saistīt",
     "share": "Kopīgot",
@@ -64,6 +65,7 @@
     "thread_tools.move": "Pārvietot tematu",
     "thread_tools.move-posts": "Pārvietot rakstus",
     "thread_tools.move_all": "Pārvietot visus",
+    "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "Atlasīt kategoriju",
     "thread_tools.fork": "Nozarot tematu",
     "thread_tools.delete": "Izdzēst tematu",
@@ -98,6 +100,7 @@
     "delete_posts_instruction": "Noklikšķini uz rakstiem, kurus notīrīt/iztīrīt",
     "merge_topics_instruction": "Noklikšķini uz tematiem, kurus apvienot",
     "move_posts_instruction": "Noklikšķini uz rakstiem, kurus pārvietot",
+    "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Ievadīt temata virsrakstu...",
     "composer.handle_placeholder": "Nosaukums",
     "composer.discard": "Atmest",
@@ -129,5 +132,6 @@
     "diffs.description": "Šim rakstam ir <strong>%1</strong> versijas. Noklikšķināt zemāk uz vienas no versijām, lai redzētu to raksta versiju.",
     "diffs.no-revisions-description": "Šim rakstam ir %1 versijas.",
     "diffs.current-revision": "pašreizējā versija",
-    "diffs.original-revision": "sākotnējā versija"
+    "diffs.original-revision": "sākotnējā versija",
+    "timeago_later": "%1 later"
 }

@@ -43,6 +43,7 @@
     "account/following": "Kasutaja %1 jälgib",
     "account/followers": "Kasutajad, kes jälgivad %1",
     "account/posts": "Postitused, mis on tehtud kasutaja %1 poolt",
+    "account/latest-posts": "Latest posts made by %1",
     "account/topics": "Teemad on kirjutanud %1",
     "account/groups": "Kasutaja %1 grupid",
     "account/watched_categories": "%1's Watched Categories",

@@ -43,6 +43,7 @@
     "account/following": "Люди за котрими стежить %1",
     "account/followers": "Люди котрі стежать за %1",
     "account/posts": "Пости написані %1",
+    "account/latest-posts": "Latest posts made by %1",
     "account/topics": "Теми створені %1",
     "account/groups": "Групи %1",
     "account/watched_categories": "%1's Watched Categories",

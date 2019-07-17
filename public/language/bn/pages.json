@@ -43,6 +43,7 @@
     "account/following": "People %1 follows",
     "account/followers": "People who follow %1",
     "account/posts": "Posts made by %1",
+    "account/latest-posts": "Latest posts made by %1",
     "account/topics": "Topics created by %1",
     "account/groups": "%1's Groups",
     "account/watched_categories": "%1's Watched Categories",

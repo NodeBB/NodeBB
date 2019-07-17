@@ -4,6 +4,7 @@
 	"consent.message": "Poruka obavijesti",
 	"consent.acceptance": "Poruka prihvaćanja",
 	"consent.link-text": "Odrednice Poveznice Tekst",
+	"consent.link-url": "Policy Link URL",
 	"consent.blank-localised-default": "Pusti prazno za zadanu NodeBB lokalizaciju",
 	"settings": "Postavke",
 	"cookie-domain": "Sesija kolačić domene",

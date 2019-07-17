@@ -144,7 +144,6 @@
     "invite-maximum-met": "Sa oled kutsunud maksimaalse lubatud inimeste arvu (%1 %2 'st).",
     "no-session-found": "Sisse logimis sessiooni ei leitud!",
     "not-in-room": "Kasutaja pole ruumis",
-    "no-users-in-room": "Ühtegi kasutajat ei leidu siit ruumist",
     "cant-kick-self": "Sa ei saa ennast ära visata gruppist",
     "no-users-selected": "Ühtki kasutajat pole valitud",
     "invalid-home-page-route": "Vigane avalehe suunamine",

@@ -23,6 +23,7 @@
     "purge": "Supprimer définitivement",
     "restore": "Restaurer",
     "move": "Déplacer",
+    "change-owner": "Change Owner",
     "fork": "Scinder",
     "link": "Lien",
     "share": "Partager",
@@ -64,6 +65,7 @@
     "thread_tools.move": "Déplacer le sujet",
     "thread_tools.move-posts": "Déplacer les messages",
     "thread_tools.move_all": "Déplacer tout",
+    "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "Sélectionner une catégorie",
     "thread_tools.fork": "Scinder le sujet",
     "thread_tools.delete": "Supprimer le sujet",
@@ -98,6 +100,7 @@
     "delete_posts_instruction": "Sélectionnez les messages que vous souhaitez supprimer/vider",
     "merge_topics_instruction": "Cliquez sur les sujets que vous voulez fusionner",
     "move_posts_instruction": "Cliquez sur les messages que vous souhaitez déplacer",
+    "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Entrer le titre du sujet ici…",
     "composer.handle_placeholder": "Nom",
     "composer.discard": "Abandonner",
@@ -129,5 +132,6 @@
     "diffs.description": "Cet article a <strong>%1</strong> révisions. Cliquez sur l'une des révisions ci-dessous pour voir le contenu du message.",
     "diffs.no-revisions-description": "Cet article a <strong>%1</strong> révisions.",
     "diffs.current-revision": "Révision en cours",
-    "diffs.original-revision": "Révision originale"
+    "diffs.original-revision": "Révision originale",
+    "timeago_later": "%1 later"
 }

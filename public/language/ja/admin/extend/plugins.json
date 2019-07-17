@@ -9,6 +9,7 @@
 
 	"plugin-search": "プラグインの検索",
 	"plugin-search-placeholder": "プラグインを検索します...",
+	"submit-anonymous-usage": "Submit anonymous plugin usage data.",
 	"reorder-plugins": "プラグインの並び替え",
 	"order-active": "アクティブなプラグインの並び替え",
 	"dev-interested": "NodeBBのプラグインの作成に興味がありますか？",
@@ -29,6 +30,8 @@
 	"plugin-item.more-info": "より詳細な情報:",
 	"plugin-item.unknown": "不明",
 	"plugin-item.unknown-explanation": "このプラグインの状態を判断できませんでした。設定にミスがある可能性があります。",
+	"plugin-item.compatible": "This plugin works on NodeBB %1",
+	"plugin-item.not-compatible": "This plugin has no compatibility data, make sure it works before installing on your production environment.",
 
 	"alert.enabled": "プラグインは有効化されました",
 	"alert.disabled": "プラグインは無効化されました",

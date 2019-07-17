@@ -23,6 +23,7 @@
     "purge": "Singkirkan",
     "restore": "Pulihkan",
     "move": "Pindahkan",
+    "change-owner": "Change Owner",
     "fork": "Fork",
     "link": "Pautan",
     "share": "Kongsi",
@@ -64,6 +65,7 @@
     "thread_tools.move": "Pindahkan topik",
     "thread_tools.move-posts": "Move Posts",
     "thread_tools.move_all": "Pindahkan Semua",
+    "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "Select Category",
     "thread_tools.fork": "Fork topik",
     "thread_tools.delete": "Padamkan topik",
@@ -98,6 +100,7 @@
     "delete_posts_instruction": "Click the posts you want to delete/purge",
     "merge_topics_instruction": "Click the topics you want to merge",
     "move_posts_instruction": "Click the posts you want to move",
+    "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Masukkan tajuk topik disini",
     "composer.handle_placeholder": "Nama",
     "composer.discard": "Abaikan",
@@ -129,5 +132,6 @@
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
     "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
     "diffs.current-revision": "current revision",
-    "diffs.original-revision": "original revision"
+    "diffs.original-revision": "original revision",
+    "timeago_later": "%1 later"
 }

@@ -144,7 +144,6 @@
     "invite-maximum-met": "您的邀请人数超出了上限 (%1 超过了 %2)。",
     "no-session-found": "未登录!",
     "not-in-room": "用户已不在聊天室中",
-    "no-users-in-room": "这个聊天室中没有用户",
     "cant-kick-self": "您不能把自己踢出群组",
     "no-users-selected": "尚未选择用户",
     "invalid-home-page-route": "无效的首页路径",

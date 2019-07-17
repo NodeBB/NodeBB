@@ -144,7 +144,6 @@
     "invite-maximum-met": "Jūs pakvietėte maksimalų skaičių žmonių (%1 iš %2).",
     "no-session-found": "Prisijungimo sesija nerasta!",
     "not-in-room": "Vartotojas ne svetainėje",
-    "no-users-in-room": "Šioje svetainėje nėra vartotojų",
     "cant-kick-self": "Negalite išmesti savęs iš grupės",
     "no-users-selected": "Nepasirinktas joks vartotojas",
     "invalid-home-page-route": "Blogas kelias į pagrindinį puslapį",

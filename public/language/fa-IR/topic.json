@@ -23,6 +23,7 @@
     "purge": "پاک کردن",
     "restore": "برگرداندن",
     "move": "جابه‌جا کردن",
+    "change-owner": "Change Owner",
     "fork": "شاخه ساختن",
     "link": "پیوند",
     "share": "اشتراک‌گذاری",
@@ -64,6 +65,7 @@
     "thread_tools.move": "جابجا کردن موضوع",
     "thread_tools.move-posts": "انتقال پست ها",
     "thread_tools.move_all": "جابجایی همه",
+    "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "انتخاب دسته",
     "thread_tools.fork": "شاخه ساختن از موضوع",
     "thread_tools.delete": "پاک کردن موضوع",
@@ -98,6 +100,7 @@
     "delete_posts_instruction": "با کلیک بر روی پست شما می خواهید به حذف/پاکسازی",
     "merge_topics_instruction": "بر روی عنوان موضوعاتی که می خواهید ادغام کنید کلیک کنید",
     "move_posts_instruction": "بر روی پستی که می خواهید انتقال دهید کلیک کنید",
+    "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "عنوان موضوعتان را اینجا بنویسید...",
     "composer.handle_placeholder": "نام",
     "composer.discard": "دور بیانداز",
@@ -129,5 +132,6 @@
     "diffs.description": "این پست %1 نسخه دارد. بر روی یکی از نسخه ها کلیک کنید تا محتوای پست در آن زمان را ببینید.",
     "diffs.no-revisions-description": "این پست %1 نسخه دارد.",
     "diffs.current-revision": "نسخه فعلی",
-    "diffs.original-revision": "نسخه اصلی"
+    "diffs.original-revision": "نسخه اصلی",
+    "timeago_later": "%1 later"
 }

@@ -144,7 +144,6 @@
     "invite-maximum-met": "لقد قمت بدعوة الحد الأقصى من الأشخاص (%1 من %2)",
     "no-session-found": "لم دخول مسجل!",
     "not-in-room": "المستخدم غير موجود في الغرفة.",
-    "no-users-in-room": "لا يوجد مستخدمين في الغرفة.",
     "cant-kick-self": "لا يمكنك طرد نفسك من المجموعة.",
     "no-users-selected": "لا يوجد مستخدم محدد.",
     "invalid-home-page-route": "Invalid home page route",

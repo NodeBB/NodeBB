@@ -4,6 +4,7 @@
 	"consent.message": "Съобщение за известие",
 	"consent.acceptance": "Съобщение за приемане",
 	"consent.link-text": "Връзка към текста на политиката",
+	"consent.link-url": "Policy Link URL",
 	"consent.blank-localised-default": "Оставете това празно, за да използвате данните по подразбиране на NodeBB, които са преведени",
 	"settings": "Настройки",
 	"cookie-domain": "Домейн на бисквитката за сесията",

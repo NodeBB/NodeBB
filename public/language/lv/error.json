@@ -144,7 +144,6 @@
     "invite-maximum-met": "Tu esi uzaicinājis maksimālo cilvēku skaitu (%1 no %2).",
     "no-session-found": "Aktīvo sesiju nevarēja atrast!",
     "not-in-room": "Lietotājs nav tērzētavā",
-    "no-users-in-room": "Nav dalībnieku tērzētavā",
     "cant-kick-self": "Nevar sevi izslēgt no grupas",
     "no-users-selected": "Nav atlasīts neviens lietotājs(-i)",
     "invalid-home-page-route": "Nederīgs sākumlapas ceļš",

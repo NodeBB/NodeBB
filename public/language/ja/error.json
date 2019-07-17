@@ -144,7 +144,6 @@
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
     "no-session-found": "No login session found!",
     "not-in-room": "ユーザーが部屋にいません",
-    "no-users-in-room": "この部屋にユーザーはいません",
     "cant-kick-self": "あなたは、グループから自分自身をキックすることが出来ません",
     "no-users-selected": "ユーザー(s)が選択されていません",
     "invalid-home-page-route": "ホームページのルートが無効",

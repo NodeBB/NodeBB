@@ -43,6 +43,7 @@
     "account/following": "Tagok, akiket %1 követ",
     "account/followers": "Tagok, akik %1 felhasználót követik",
     "account/posts": "%1 által írt hozzászólások",
+    "account/latest-posts": "Latest posts made by %1",
     "account/topics": "%1 által létrehozott témakörök",
     "account/groups": "%1 csoportjai",
     "account/watched_categories": "%1's Watched Categories",

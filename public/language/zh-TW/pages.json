@@ -43,6 +43,7 @@
     "account/following": "使用者 %1 跟隨",
     "account/followers": "跟隨 %1 的使用者",
     "account/posts": "由 %1 發表的張貼",
+    "account/latest-posts": "Latest posts made by %1",
     "account/topics": "由 %1 建立的主題",
     "account/groups": "%1 的群組",
     "account/watched_categories": "%1 觀看的類別",

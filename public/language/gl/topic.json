@@ -23,6 +23,7 @@
     "purge": "Purgar",
     "restore": "Restaurar",
     "move": "Mover",
+    "change-owner": "Change Owner",
     "fork": "Dividir",
     "link": "Ligazón",
     "share": "Compartir",
@@ -64,6 +65,7 @@
     "thread_tools.move": "Mover Tema",
     "thread_tools.move-posts": "Move Posts",
     "thread_tools.move_all": "Mover todo",
+    "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "Select Category",
     "thread_tools.fork": "Dividir Tema",
     "thread_tools.delete": "Borrar Tema",
@@ -98,6 +100,7 @@
     "delete_posts_instruction": "Fai clic nas mensaxes que queres eliminar/limpar",
     "merge_topics_instruction": "Click the topics you want to merge",
     "move_posts_instruction": "Click the posts you want to move",
+    "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Introduce o título do teu tema",
     "composer.handle_placeholder": "Nome",
     "composer.discard": "Descartar",
@@ -129,5 +132,6 @@
     "diffs.description": "This post has <strong>%1</strong> revisions. Click one of the revisions below to see the post content at that point in time.",
     "diffs.no-revisions-description": "This post has <strong>%1</strong> revisions.",
     "diffs.current-revision": "current revision",
-    "diffs.original-revision": "original revision"
+    "diffs.original-revision": "original revision",
+    "timeago_later": "%1 later"
 }

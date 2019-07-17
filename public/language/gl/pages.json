@@ -43,6 +43,7 @@
     "account/following": "Xente %1 seguindo",
     "account/followers": "Xente a quen segues %1",
     "account/posts": "Publicación de %1",
+    "account/latest-posts": "Latest posts made by %1",
     "account/topics": "Temas de %1",
     "account/groups": "%1's Grupos",
     "account/watched_categories": "%1's Watched Categories",

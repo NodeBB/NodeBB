@@ -23,6 +23,7 @@
     "purge": "Vyčistiť",
     "restore": "Obnoviť",
     "move": "Presunúť",
+    "change-owner": "Change Owner",
     "fork": "Rozdeliť",
     "link": "Odkaz",
     "share": "Zdieľať",
@@ -64,6 +65,7 @@
     "thread_tools.move": "Presunúť tému",
     "thread_tools.move-posts": "Presunúť príspevky",
     "thread_tools.move_all": "Presunúť všetko",
+    "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "Vybrať kategóriu",
     "thread_tools.fork": "Rozvetviť tému",
     "thread_tools.delete": "Odstrániť tému",
@@ -98,6 +100,7 @@
     "delete_posts_instruction": "Kliknite na príspevky, ktoré chcete odstrániť/očistiť",
     "merge_topics_instruction": "K zlúčeniu tém, kliknite na nich",
     "move_posts_instruction": "Kliknite na príspevky, ktoré chcete presunúť",
+    "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Sem zadajte názov témy...",
     "composer.handle_placeholder": "Meno",
     "composer.discard": "Zahodiť",
@@ -129,5 +132,6 @@
     "diffs.description": "Tento príspevok má <strong>%1</strong> zmien. Pre zobrazenie obsahu príspevku platného v určitý čas, kliknite nižšie na jednu zo zmien.",
     "diffs.no-revisions-description": "Tento príspevok má <strong>%1</strong> zmien.",
     "diffs.current-revision": "aktuálna revízia",
-    "diffs.original-revision": "originálna revízia"
+    "diffs.original-revision": "originálna revízia",
+    "timeago_later": "%1 later"
 }

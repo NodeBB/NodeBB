@@ -9,6 +9,7 @@
 
 	"plugin-search": "חיפוש תוספים",
 	"plugin-search-placeholder": "חפש תוספים...",
+	"submit-anonymous-usage": "Submit anonymous plugin usage data.",
 	"reorder-plugins": "סדר מחדש תוספים",
 	"order-active": "הזמן תוסף פעיל",
 	"dev-interested": "מתעניין בכתיבת תוספים לNodeBB?",
@@ -29,6 +30,8 @@
 	"plugin-item.more-info": "מידע נוסף:",
 	"plugin-item.unknown": "לא ידוע",
 	"plugin-item.unknown-explanation": "The state of this plugin could not be determined, possibly due to a misconfiguration error.",
+	"plugin-item.compatible": "This plugin works on NodeBB %1",
+	"plugin-item.not-compatible": "This plugin has no compatibility data, make sure it works before installing on your production environment.",
 
 	"alert.enabled": "תוסף מופעל",
 	"alert.disabled": "Plugin Disabled",

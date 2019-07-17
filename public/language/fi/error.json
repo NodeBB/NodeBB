@@ -144,7 +144,6 @@
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
     "no-session-found": "No login session found!",
     "not-in-room": "Käyttäjä ei ole huoneessa",
-    "no-users-in-room": "Ei käyttäjiä tässä huoneessa",
     "cant-kick-self": "You can't kick yourself from the group",
     "no-users-selected": "No user(s) selected",
     "invalid-home-page-route": "Invalid home page route",

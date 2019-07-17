@@ -43,6 +43,7 @@
     "account/following": "Les personnes auxquelles %1 est abonné",
     "account/followers": "Les personnes abonnées à %1",
     "account/posts": "Messages postés par %1",
+    "account/latest-posts": "Latest posts made by %1",
     "account/topics": "Sujets créés par %1",
     "account/groups": "Groupes auxquels appartient %1",
     "account/watched_categories": "%1's Catégories surveillées",

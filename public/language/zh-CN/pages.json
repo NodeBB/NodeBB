@@ -43,6 +43,7 @@
     "account/following": "%1 关注",
     "account/followers": "关注 %1 的人",
     "account/posts": "%1 发布的帖子",
+    "account/latest-posts": "%1 发布的最新帖子",
     "account/topics": "%1 创建的主题",
     "account/groups": "%1 的群组",
     "account/watched_categories": "%1 关注的版块",

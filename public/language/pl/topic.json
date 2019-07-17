@@ -23,6 +23,7 @@
     "purge": "Wymaż",
     "restore": "Przywróć",
     "move": "Przenieś",
+    "change-owner": "Change Owner",
     "fork": "Skopiuj",
     "link": "Odnośnik",
     "share": "Udostępnij",
@@ -64,6 +65,7 @@
     "thread_tools.move": "Przenieś temat",
     "thread_tools.move-posts": "Przenieś posty",
     "thread_tools.move_all": "Przenieś wszystko",
+    "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "Wybierz kategorię",
     "thread_tools.fork": "Skopiuj temat",
     "thread_tools.delete": "Usuń temat",
@@ -98,6 +100,7 @@
     "delete_posts_instruction": "Zaznacz posty, które chcesz usunąć/wyczyścić",
     "merge_topics_instruction": "Zaznacz tematy, które chcesz połączyć",
     "move_posts_instruction": "Zaznacz posty, które chcesz przenieść",
+    "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Tutaj wpisz tytuł tematu...",
     "composer.handle_placeholder": "Nazwa",
     "composer.discard": "Odrzuć",
@@ -129,5 +132,6 @@
     "diffs.description": "Ten post zawiera <strong>%1</strong> zmian. Kliknij w którąś ze zmian poniżej, aby zobaczyć treść postu w momencie jej dokonania.",
     "diffs.no-revisions-description": "Ten post zawiera <strong>%1</strong> zmian.",
     "diffs.current-revision": "wersja obecna",
-    "diffs.original-revision": "pierwsza zmiana"
+    "diffs.original-revision": "pierwsza zmiana",
+    "timeago_later": "%1 later"
 }

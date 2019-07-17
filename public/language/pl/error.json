@@ -144,7 +144,6 @@
     "invite-maximum-met": "Zaprosiłeś maksymalną liczbę osób (%1 z %2).",
     "no-session-found": "Nie znaleziono sesji logowania",
     "not-in-room": "Użytkownika nie ma w pokoju",
-    "no-users-in-room": "Brak użytkowników w pokoju",
     "cant-kick-self": "Nie możesz wyrzucić samego siebie z grupy",
     "no-users-selected": "Nie wybrano żadnych użytkowników",
     "invalid-home-page-route": "Niepoprawny odnośnik strony domowej",

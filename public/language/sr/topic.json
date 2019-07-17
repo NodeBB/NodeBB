@@ -23,6 +23,7 @@
     "purge": "Очисти",
     "restore": "Обнови",
     "move": "Премести",
+    "change-owner": "Change Owner",
     "fork": "Рачвање",
     "link": "Веза",
     "share": "Дели",
@@ -64,6 +65,7 @@
     "thread_tools.move": "Премести тему",
     "thread_tools.move-posts": "Премести поруке",
     "thread_tools.move_all": "Премести све",
+    "thread_tools.change_owner": "Change Owner",
     "thread_tools.select_category": "Изаберите категорију",
     "thread_tools.fork": "Рачвај тему",
     "thread_tools.delete": "Избриши тему",
@@ -98,6 +100,7 @@
     "delete_posts_instruction": "Кликните на поруке које желите да избришете/очистите",
     "merge_topics_instruction": "Кликните на теме које желите да спојите",
     "move_posts_instruction": "Кликните на поруке које желите да преместите",
+    "change_owner_instruction": "Click the posts you want to assign to another user",
     "composer.title_placeholder": "Овде унесите назив теме...",
     "composer.handle_placeholder": "Име",
     "composer.discard": "Одбаци",
@@ -129,5 +132,6 @@
     "diffs.description": "Ова порука има <strong>%1</strong> корекција. Кликните на једну од корекција да бисте видели садржај поруке у том тренутку.",
     "diffs.no-revisions-description": "Ова порука има %1 корекција.",
     "diffs.current-revision": "тренутна корекција",
-    "diffs.original-revision": "оригинална корекција"
+    "diffs.original-revision": "оригинална корекција",
+    "timeago_later": "%1 later"
 }

@@ -144,7 +144,6 @@
     "invite-maximum-met": "ظرفیت دعوت شما تکمیل شده است (%1 از %2)",
     "no-session-found": "هیچ session ورودی یافت نشد!",
     "not-in-room": "هیچ کاربری در این گفتگو نیست",
-    "no-users-in-room": "هیچ کاربری در این گفتگو نیست",
     "cant-kick-self": "شما نمی توانید خودتان را از گروه کیک کنید",
     "no-users-selected": "هیچ کاربر(های) انتخاب نشده",
     "invalid-home-page-route": "مسیر صفحه اصلی نامعتبر است",

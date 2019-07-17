@@ -9,6 +9,7 @@
 
 	"plugin-search": "搜尋外掛",
 	"plugin-search-placeholder": "搜尋想找的外掛...",
+	"submit-anonymous-usage": "Submit anonymous plugin usage data.",
 	"reorder-plugins": "重新排序",
 	"order-active": "排序已啟用的外掛",
 	"dev-interested": "對開發NodeBB的外掛有興趣嗎？",
@@ -29,6 +30,8 @@
 	"plugin-item.more-info": "更多資訊：",
 	"plugin-item.unknown": "未知",
 	"plugin-item.unknown-explanation": "無法取得此外掛的狀態，可能是由於設置錯誤。",
+	"plugin-item.compatible": "This plugin works on NodeBB %1",
+	"plugin-item.not-compatible": "This plugin has no compatibility data, make sure it works before installing on your production environment.",
 
 	"alert.enabled": "外掛已啟用",
 	"alert.disabled": "外掛已停用",

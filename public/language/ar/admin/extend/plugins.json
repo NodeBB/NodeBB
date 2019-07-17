@@ -9,6 +9,7 @@
 
 	"plugin-search": "البحث عن الإضافات",
 	"plugin-search-placeholder": "جاري البحث عن الإضافات...",
+	"submit-anonymous-usage": "Submit anonymous plugin usage data.",
 	"reorder-plugins": "إعادة ترتيب الإضافات",
 	"order-active": "ترتيب الإضافات المفعلة",
 	"dev-interested": "هل انته مهتم ببرمجة إضافات لـNodeBB؟",
@@ -29,6 +30,8 @@
 	"plugin-item.more-info": "لمزيد من المعلومات:",
 	"plugin-item.unknown": "غير معروف",
 	"plugin-item.unknown-explanation": "تعذر تحديد حالة هذه الإضافة، ربما بسبب خطأ في الإعدادات.",
+	"plugin-item.compatible": "This plugin works on NodeBB %1",
+	"plugin-item.not-compatible": "This plugin has no compatibility data, make sure it works before installing on your production environment.",
 
 	"alert.enabled": "الإضافة مفعلة",
 	"alert.disabled": "الإضافة معطلة",
