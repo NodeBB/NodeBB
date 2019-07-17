@@ -1022,7 +1022,7 @@ describe('Post\'s', function () {
 
 		it('should not crash if id does not exist', function (done) {
 			socketPosts.reject({ uid: globalModUid }, { id: '123123123' }, function (err) {
-				assert.ifError(err);
+				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
 		});

@@ -1,6 +1,5 @@
 'use strict';
 
-var async = require('async');
 var nconf = require('nconf');
 var url = require('url');
 var winston = require('winston');
@@ -21,37 +20,31 @@ module.exports = function (Posts) {
 		length: 5,
 	};
 
-	Posts.parsePost = function (postData, callback) {
+	Posts.parsePost = async function (postData) {
 		if (!postData) {
-			return setImmediate(callback, null, postData);
+			return postData;
 		}
 		postData.content = String(postData.content || '');
-		var cache = require('./cache');
-		if (postData.pid && cache.has(String(postData.pid))) {
-			postData.content = cache.get(String(postData.pid));
+		const cache = require('./cache');
+		const pid = String(postData.pid);
+		const cachedContent = cache.get(pid);
+		if (postData.pid && cachedContent !== undefined) {
+			postData.content = cachedContent;
 			cache.hits += 1;
-			return callback(null, postData);
+			return postData;
 		}
 		cache.misses += 1;
-
-		async.waterfall([
-			function (next) {
-				plugins.fireHook('filter:parse.post', { postData: postData }, next);
-			},
-			function (data, next) {
-				data.postData.content = translator.escape(data.postData.content);
-
-				if (global.env === 'production' && data.postData.pid) {
-					cache.set(String(data.postData.pid), data.postData.content);
-				}
-				next(null, data.postData);
-			},
-		], callback);
+		const data = await plugins.fireHook('filter:parse.post', { postData: postData });
+		data.postData.content = translator.escape(data.postData.content);
+		if (global.env === 'production' && data.postData.pid) {
+			cache.set(pid, data.postData.content);
+		}
+		return data.postData;
 	};
 
-	Posts.parseSignature = function (userData, uid, callback) {
+	Posts.parseSignature = async function (userData, uid) {
 		userData.signature = sanitizeSignature(userData.signature || '');
-		plugins.fireHook('filter:parse.signature', { userData: userData, uid: uid }, callback);
+		return await plugins.fireHook('filter:parse.signature', { userData: userData, uid: uid });
 	};
 
 	Posts.relativeToAbsolute = function (content, regex) {

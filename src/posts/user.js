@@ -20,7 +20,56 @@ module.exports = function (Posts) {
 			privileges.global.can('signature', uid),
 		]);
 
-		var groupTitles = _.uniq(_.flatten(userData.map(u => u && u.groupTitleArray)));
+		const groupsMap = await getGroupsMap(userData);
+
+		userData.forEach(function (userData, index) {
+			userData.signature = validator.escape(String(userData.signature || ''));
+			userData.fullname = userSettings[index].showfullname ? validator.escape(String(userData.fullname || '')) : undefined;
+			userData.selectedGroups = [];
+
+			if (meta.config.hideFullname) {
+				userData.fullname = undefined;
+			}
+		});
+
+		return await Promise.all(userData.map(async function (userData) {
+			const [isMemberOfGroups, signature, customProfileInfo] = await Promise.all([
+				checkGroupMembership(userData.uid, userData.groupTitleArray),
+				parseSignature(userData, uid, canUseSignature),
+				plugins.fireHook('filter:posts.custom_profile_info', { profile: [], uid: userData.uid }),
+			]);
+
+			if (isMemberOfGroups && userData.groupTitleArray) {
+				userData.groupTitleArray.forEach(function (userGroup, index) {
+					if (isMemberOfGroups[index] && groupsMap[userGroup]) {
+						userData.selectedGroups.push(groupsMap[userGroup]);
+					}
+				});
+			}
+			userData.signature = signature;
+			userData.custom_profile_info = customProfileInfo.profile;
+
+			return await plugins.fireHook('filter:posts.modifyUserInfo', userData);
+		}));
+	};
+
+	async function checkGroupMembership(uid, groupTitleArray) {
+		if (!Array.isArray(groupTitleArray) || !groupTitleArray.length) {
+			return null;
+		}
+		return await groups.isMemberOfGroups(uid, groupTitleArray);
+	}
+
+	async function parseSignature(userData, uid, canUseSignature) {
+		if (!userData.signature || !canUseSignature || meta.config.disableSignatures) {
+			return '';
+		}
+		const result = await Posts.parseSignature(userData, uid);
+		return result.userData.signature;
+	}
+
+	async function getGroupsMap(userData) {
+		const groupTitles = _.uniq(_.flatten(userData.map(u => u && u.groupTitleArray)));
 		const groupsMap = {};
 		const groupsData = await groups.getGroupsData(groupTitles);
 		groupsData.forEach(function (group) {
@@ -35,59 +84,8 @@ module.exports = function (Posts) {
 				};
 			}
 		});
-
-		userData.forEach(function (userData, index) {
-			userData.uid = userData.uid || 0;
-			userData.username = userData.username || '[[global:guest]]';
-			userData.userslug = userData.userslug || '';
-			userData.reputation = userData.reputation || 0;
-			userData.postcount = userData.postcount || 0;
-			userData.banned = userData.banned === 1;
-			userData.picture = userData.picture || '';
-			userData.status = user.getStatus(userData);
-			userData.signature = validator.escape(String(userData.signature || ''));
-			userData.fullname = userSettings[index].showfullname ? validator.escape(String(userData.fullname || '')) : undefined;
-			userData.selectedGroups = [];
-
-			if (meta.config.hideFullname) {
-				userData.fullname = undefined;
-			}
-		});
-
-		return await async.map(userData, async function (userData) {
-			const results = await async.parallel({
-				isMemberOfGroups: function (next) {
-					if (!Array.isArray(userData.groupTitleArray) || !userData.groupTitleArray.length) {
-						return next();
-					}
-					groups.isMemberOfGroups(userData.uid, userData.groupTitleArray, next);
-				},
-				signature: function (next) {
-					if (!userData.signature || !canUseSignature || meta.config.disableSignatures) {
-						userData.signature = '';
-						return next();
-					}
-					Posts.parseSignature(userData, uid, next);
-				},
-				customProfileInfo: function (next) {
-					plugins.fireHook('filter:posts.custom_profile_info', { profile: [], uid: userData.uid }, next);
-				},
-			});
-
-			if (results.isMemberOfGroups && userData.groupTitleArray) {
-				userData.groupTitleArray.forEach(function (userGroup, index) {
-					if (results.isMemberOfGroups[index] && groupsMap[userGroup]) {
-						userData.selectedGroups.push(groupsMap[userGroup]);
-					}
-				});
-			}
-
-			userData.custom_profile_info = results.customProfileInfo.profile;
-
-			const result = await plugins.fireHook('filter:posts.modifyUserInfo', userData);
-			return result;
-		});
-	};
+		return groupsMap;
+	}
 
 	async function getUserData(uids, uid) {
 		const fields = [

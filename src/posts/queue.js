@@ -1,6 +1,5 @@
 'use strict';
 
-var async = require('async');
 const _ = require('lodash');
 
 var db = require('../database');
@@ -15,296 +14,169 @@ var plugins = require('../plugins');
 var socketHelpers = require('../socket.io/helpers');
 
 module.exports = function (Posts) {
-	Posts.shouldQueue = function (uid, data, callback) {
-		async.waterfall([
-			function (next) {
-				user.getUserFields(uid, ['uid', 'reputation', 'postcount'], next);
-			},
-			function (userData, next) {
-				const shouldQueue = meta.config.postQueue && (!userData.uid || userData.reputation < meta.config.newbiePostDelayThreshold || userData.postcount <= 0);
-				plugins.fireHook('filter:post.shouldQueue', {
-					shouldQueue: shouldQueue,
-					uid: uid,
-					data: data,
-				}, next);
-			},
-			function (result, next) {
-				next(null, result.shouldQueue);
-			},
-		], callback);
+	Posts.shouldQueue = async function (uid, data) {
+		const userData = await user.getUserFields(uid, ['uid', 'reputation', 'postcount']);
+		const shouldQueue = meta.config.postQueue && (!userData.uid || userData.reputation < meta.config.newbiePostDelayThreshold || userData.postcount <= 0);
+		const result = await plugins.fireHook('filter:post.shouldQueue', {
+			shouldQueue: !!shouldQueue,
+			uid: uid,
+			data: data,
+		});
+		return result.shouldQueue;
 	};
 
-	function removeQueueNotification(id, callback) {
-		async.waterfall([
-			function (next) {
-				notifications.rescind('post-queue-' + id, next);
-			},
-			function (next) {
-				getParsedObject(id, next);
-			},
-			function (data, next) {
-				if (!data) {
-					return callback();
-				}
-				getCid(data.type, data, next);
-			},
-			function (cid, next) {
-				getNotificationUids(cid, next);
-			},
-			function (uids, next) {
-				uids.forEach(uid => user.notifications.pushCount(uid));
-				next();
-			},
-		], callback);
+	async function removeQueueNotification(id) {
+		await notifications.rescind('post-queue-' + id);
+		const data = await getParsedObject(id);
+		if (!data) {
+			return;
+		}
+		const cid = await getCid(data.type, data);
+		const uids = await getNotificationUids(cid);
+		uids.forEach(uid => user.notifications.pushCount(uid));
 	}
 
-	function getNotificationUids(cid, callback) {
-		async.waterfall([
-			function (next) {
-				async.parallel([
-					async.apply(groups.getMembersOfGroups, ['administrators', 'Global Moderators']),
-					async.apply(categories.getModeratorUids, [cid]),
-				], next);
-			},
-			function (results, next) {
-				next(null, _.uniq(_.flattenDeep(results)));
-			},
-		], callback);
+	async function getNotificationUids(cid) {
+		const results = await Promise.all([
+			groups.getMembersOfGroups(['administrators', 'Global Moderators']),
+			categories.getModeratorUids([cid]),
+		]);
+		return _.uniq(_.flattenDeep(results));
 	}
 
-	Posts.addToQueue = function (data, callback) {
-		var type = data.title ? 'topic' : 'reply';
-		var id = type + '-' + Date.now();
-		async.waterfall([
-			function (next) {
-				canPost(type, data, next);
-			},
-			function (next) {
-				db.sortedSetAdd('post:queue', Date.now(), id, next);
-			},
-			function (next) {
-				db.setObject('post:queue:' + id, {
-					id: id,
-					uid: data.uid,
-					type: type,
-					data: JSON.stringify(data),
-				}, next);
-			},
-			function (next) {
-				user.setUserField(data.uid, 'lastqueuetime', Date.now(), next);
-			},
-			function (next) {
-				async.parallel({
-					notification: function (next) {
-						notifications.create({
-							type: 'post-queue',
-							nid: 'post-queue-' + id,
-							mergeId: 'post-queue',
-							bodyShort: '[[notifications:post_awaiting_review]]',
-							bodyLong: data.content,
-							path: '/post-queue',
-						}, next);
-					},
-					uids: function (next) {
-						async.waterfall([
-							function (next) {
-								getCid(type, data, next);
-							},
-							function (cid, next) {
-								getNotificationUids(cid, next);
-							},
-						], next);
-					},
-				}, next);
-			},
-			function (results, next) {
-				if (results.notification) {
-					notifications.push(results.notification, results.uids, next);
-				} else {
-					next();
-				}
-			},
-			function (next) {
-				next(null, {
-					id: id,
-					type: type,
-					queued: true,
-					message: '[[success:post-queued]]',
-				});
-			},
-		], callback);
+	Posts.addToQueue = async function (data) {
+		const type = data.title ? 'topic' : 'reply';
+		const now = Date.now();
+		const id = type + '-' + now;
+		await canPost(type, data);
+		await db.sortedSetAdd('post:queue', now, id);
+		await db.setObject('post:queue:' + id, {
+			id: id,
+			uid: data.uid,
+			type: type,
+			data: JSON.stringify(data),
+		});
+		await user.setUserField(data.uid, 'lastqueuetime', now);
+
+		const cid = await getCid(type, data);
+		const uids = await getNotificationUids(cid);
+		const notifObj = await notifications.create({
+			type: 'post-queue',
+			nid: 'post-queue-' + id,
+			mergeId: 'post-queue',
+			bodyShort: '[[notifications:post_awaiting_review]]',
+			bodyLong: data.content,
+			path: '/post-queue',
+		});
+		await notifications.push(notifObj, uids);
+		return {
+			id: id,
+			type: type,
+			queued: true,
+			message: '[[success:post-queued]]',
+		};
 	};
 
-	function getCid(type, data, callback) {
+	async function getCid(type, data) {
 		if (type === 'topic') {
-			return setImmediate(callback, null, data.cid);
+			return data.cid;
 		} else if (type === 'reply') {
-			topics.getTopicField(data.tid, 'cid', callback);
-		} else {
-			return setImmediate(callback, null, null);
+			return await topics.getTopicField(data.tid, 'cid');
+		}
+		return null;
+	}
+
+	async function canPost(type, data) {
+		const cid = await getCid(type, data);
+		const typeToPrivilege = {
+			topic: 'topics:create',
+			reply: 'topics:reply',
+		};
+
+		const [canPost] = await Promise.all([
+			privileges.categories.can(typeToPrivilege[type], cid, data.uid),
+			user.isReadyToQueue(data.uid, cid),
+		]);
+		if (!canPost) {
+			throw new Error('[[error:no-privileges]]');
 		}
 	}
 
-	function canPost(type, data, callback) {
-		async.waterfall([
-			function (next) {
-				getCid(type, data, next);
-			},
-			function (cid, next) {
-				async.parallel({
-					canPost: function (next) {
-						if (type === 'topic') {
-							privileges.categories.can('topics:create', cid, data.uid, next);
-						} else if (type === 'reply') {
-							privileges.categories.can('topics:reply', cid, data.uid, next);
-						}
-					},
-					isReadyToQueue: function (next) {
-						user.isReadyToQueue(data.uid, cid, next);
-					},
-				}, next);
-			},
-			function (results, next) {
-				if (!results.canPost) {
-					return next(new Error('[[error:no-privileges]]'));
-				}
-				next();
-			},
-		], callback);
-	}
-
-	Posts.removeFromQueue = function (id, callback) {
-		async.waterfall([
-			function (next) {
-				removeQueueNotification(id, next);
-			},
-			function (next) {
-				db.sortedSetRemove('post:queue', id, next);
-			},
-			function (next) {
-				db.delete('post:queue:' + id, next);
-			},
-		], callback);
+	Posts.removeFromQueue = async function (id) {
+		await removeQueueNotification(id);
+		await db.sortedSetRemove('post:queue', id);
+		await db.delete('post:queue:' + id);
 	};
 
-	Posts.submitFromQueue = function (id, callback) {
-		async.waterfall([
-			function (next) {
-				getParsedObject(id, next);
-			},
-			function (data, next) {
-				if (!data) {
-					return callback();
-				}
-				if (data.type === 'topic') {
-					createTopic(data.data, next);
-				} else if (data.type === 'reply') {
-					createReply(data.data, next);
-				}
-			},
-			function (next) {
-				Posts.removeFromQueue(id, next);
-			},
-		], callback);
+	Posts.submitFromQueue = async function (id) {
+		const data = await getParsedObject(id);
+		if (!data) {
+			return;
+		}
+		if (data.type === 'topic') {
+			await createTopic(data.data);
+		} else if (data.type === 'reply') {
+			await createReply(data.data);
+		}
+		await Posts.removeFromQueue(id);
 	};
 
-	function getParsedObject(id, callback) {
-		async.waterfall([
-			function (next) {
-				db.getObject('post:queue:' + id, next);
-			},
-			function (data, next) {
-				if (!data) {
-					return callback(null, null);
-				}
-				try {
-					data.data = JSON.parse(data.data);
-				} catch (err) {
-					return next(err);
-				}
-				next(null, data);
-			},
-		], callback);
+	async function getParsedObject(id) {
+		const data = await db.getObject('post:queue:' + id);
+		if (!data) {
+			return null;
+		}
+		data.data = JSON.parse(data.data);
+		return data;
 	}
 
-	function createTopic(data, callback) {
-		async.waterfall([
-			function (next) {
-				topics.post(data, next);
-			},
-			function (result, next) {
-				socketHelpers.notifyNew(data.uid, 'newTopic', { posts: [result.postData], topic: result.topicData });
-				next();
-			},
-		], callback);
+	async function createTopic(data) {
+		const result = await topics.post(data);
+		socketHelpers.notifyNew(data.uid, 'newTopic', { posts: [result.postData], topic: result.topicData });
 	}
 
-	function createReply(data, callback) {
-		async.waterfall([
-			function (next) {
-				topics.reply(data, next);
-			},
-			function (postData, next) {
-				var result = {
-					posts: [postData],
-					'reputation:disabled': !!meta.config['reputation:disabled'],
-					'downvote:disabled': !!meta.config['downvote:disabled'],
-				};
-				socketHelpers.notifyNew(data.uid, 'newPost', result);
-				next();
-			},
-		], callback);
+	async function createReply(data) {
+		const postData = await topics.reply(data);
+		const result = {
+			posts: [postData],
+			'reputation:disabled': !!meta.config['reputation:disabled'],
+			'downvote:disabled': !!meta.config['downvote:disabled'],
+		};
+		socketHelpers.notifyNew(data.uid, 'newPost', result);
 	}
 
-	Posts.editQueuedContent = function (uid, id, content, callback) {
-		async.waterfall([
-			function (next) {
-				Posts.canEditQueue(uid, id, next);
-			},
-			function (canEditQueue, next) {
-				if (!canEditQueue) {
-					return callback(new Error('[[error:no-privileges]]'));
-				}
-				getParsedObject(id, next);
-			},
-			function (data, next) {
-				if (!data) {
-					return callback();
-				}
-				data.data.content = content;
-				db.setObjectField('post:queue:' + id, 'data', JSON.stringify(data.data), next);
-			},
-		], callback);
+	Posts.editQueuedContent = async function (uid, id, content) {
+		const canEditQueue = await Posts.canEditQueue(uid, id);
+		if (!canEditQueue) {
+			throw new Error('[[error:no-privileges]]');
+		}
+		const data = await getParsedObject(id);
+		if (!data) {
+			return;
+		}
+		data.data.content = content;
+		await db.setObjectField('post:queue:' + id, 'data', JSON.stringify(data.data));
 	};
 
-	Posts.canEditQueue = function (uid, id, callback) {
-		async.waterfall([
-			function (next) {
-				async.parallel({
-					isAdminOrGlobalMod: function (next) {
-						user.isAdminOrGlobalMod(uid, next);
-					},
-					data: function (next) {
-						getParsedObject(id, next);
-					},
-				}, next);
-			},
-			function (results, next) {
-				if (results.isAdminOrGlobalMod) {
-					return callback(null, true);
-				}
-				if (!results.data) {
-					return callback(null, false);
-				}
-				if (results.data.type === 'topic') {
-					next(null, results.data.data.cid);
-				} else if (results.data.type === 'reply') {
-					topics.getTopicField(results.data.data.tid, 'cid', next);
-				}
-			},
-			function (cid, next) {
-				user.isModerator(uid, cid, next);
-			},
-		], callback);
+	Posts.canEditQueue = async function (uid, id) {
+		const [isAdminOrGlobalMod, data] = await Promise.all([
+			user.isAdminOrGlobalMod(uid),
+			getParsedObject(id),
+		]);
+		if (!data) {
+			return false;
+		}
+
+		if (isAdminOrGlobalMod) {
+			return true;
+		}
+
+		let cid;
+		if (data.type === 'topic') {
+			cid = data.data.cid;
+		} else if (data.type === 'reply') {
+			cid = await topics.getTopicField(data.data.tid, 'cid');
+		}
+		return await user.isModerator(uid, cid);
 	};
 };

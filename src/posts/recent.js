@@ -1,53 +1,33 @@
 'use strict';
 
-var async = require('async');
-var _ = require('lodash');
+const _ = require('lodash');
 
-var db = require('../database');
-var privileges = require('../privileges');
+const db = require('../database');
+const privileges = require('../privileges');
 
 
 module.exports = function (Posts) {
-	var terms = {
+	const terms = {
 		day: 86400000,
 		week: 604800000,
 		month: 2592000000,
 	};
 
-	Posts.getRecentPosts = function (uid, start, stop, term, callback) {
-		var min = 0;
+	Posts.getRecentPosts = async function (uid, start, stop, term) {
+		let min = 0;
 		if (terms[term]) {
 			min = Date.now() - terms[term];
 		}
 
-		var count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
-
-		async.waterfall([
-			function (next) {
-				db.getSortedSetRevRangeByScore('posts:pid', start, count, '+inf', min, next);
-			},
-			function (pids, next) {
-				privileges.posts.filter('topics:read', pids, uid, next);
-			},
-			function (pids, next) {
-				Posts.getPostSummaryByPids(pids, uid, { stripTags: true }, next);
-			},
-		], callback);
+		const count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
+		let pids = await db.getSortedSetRevRangeByScore('posts:pid', start, count, '+inf', min);
+		pids = await privileges.posts.filter('topics:read', pids, uid);
+		return await Posts.getPostSummaryByPids(pids, uid, { stripTags: true });
 	};
 
-	Posts.getRecentPosterUids = function (start, stop, callback) {
-		async.waterfall([
-			function (next) {
-				db.getSortedSetRevRange('posts:pid', start, stop, next);
-			},
-			function (pids, next) {
-				Posts.getPostsFields(pids, ['uid'], next);
-			},
-			function (postData, next) {
-				var uids = _.uniq(postData.map(post => post && post.uid).filter(uid => parseInt(uid, 10)));
-
-				next(null, uids);
-			},
-		], callback);
+	Posts.getRecentPosterUids = async function (start, stop) {
+		const pids = await db.getSortedSetRevRange('posts:pid', start, stop);
+		const postData = await Posts.getPostsFields(pids, ['uid']);
+		return _.uniq(postData.map(p => p && p.uid).filter(uid => parseInt(uid, 10)));
 	};
 };

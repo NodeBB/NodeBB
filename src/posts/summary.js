@@ -1,123 +1,83 @@
 
 'use strict';
 
-var async = require('async');
-var validator = require('validator');
-var _ = require('lodash');
+const validator = require('validator');
+const _ = require('lodash');
 
-var topics = require('../topics');
-var user = require('../user');
-var plugins = require('../plugins');
-var categories = require('../categories');
-var utils = require('../utils');
+const topics = require('../topics');
+const user = require('../user');
+const plugins = require('../plugins');
+const categories = require('../categories');
+const utils = require('../utils');
 
 module.exports = function (Posts) {
-	Posts.getPostSummaryByPids = function (pids, uid, options, callback) {
+	Posts.getPostSummaryByPids = async function (pids, uid, options) {
 		if (!Array.isArray(pids) || !pids.length) {
-			return callback(null, []);
+			return [];
 		}
 
 		options.stripTags = options.hasOwnProperty('stripTags') ? options.stripTags : false;
 		options.parse = options.hasOwnProperty('parse') ? options.parse : true;
 		options.extraFields = options.hasOwnProperty('extraFields') ? options.extraFields : [];
 
-		var fields = ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted', 'upvotes', 'downvotes'].concat(options.extraFields);
+		const fields = ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted', 'upvotes', 'downvotes'].concat(options.extraFields);
 
-		var posts;
-		async.waterfall([
-			function (next) {
-				Posts.getPostsFields(pids, fields, next);
-			},
-			function (_posts, next) {
-				posts = _posts.filter(Boolean);
-				user.blocks.filter(uid, posts, next);
-			},
-			function (_posts, next) {
-				posts = _posts;
-				var uids = {};
-				var topicKeys = {};
+		let posts = await Posts.getPostsFields(pids, fields);
+		posts = posts.filter(Boolean);
+		posts = await user.blocks.filter(uid, posts);
 
-				posts.forEach(function (post) {
-					uids[post.uid] = 1;
-					topicKeys[post.tid] = 1;
-				});
-				async.parallel({
-					users: function (next) {
-						user.getUsersFields(Object.keys(uids), ['uid', 'username', 'userslug', 'picture', 'status'], next);
-					},
-					topicsAndCategories: function (next) {
-						getTopicAndCategories(Object.keys(topicKeys), next);
-					},
-				}, next);
-			},
-			function (results, next) {
-				results.users = toObject('uid', results.users);
-				results.topics = toObject('tid', results.topicsAndCategories.topics);
-				results.categories = toObject('cid', results.topicsAndCategories.categories);
+		const uids = _.uniq(posts.map(p => p && p.uid));
+		const tids = _.uniq(posts.map(p => p && p.tid));
 
-				posts.forEach(function (post) {
-					// If the post author isn't represented in the retrieved users' data, then it means they were deleted, assume guest.
-					if (!results.users.hasOwnProperty(post.uid)) {
-						post.uid = 0;
-					}
-					post.user = results.users[post.uid];
-					post.topic = results.topics[post.tid];
-					post.category = post.topic && results.categories[post.topic.cid];
-					post.isMainPost = post.topic && post.pid === post.topic.mainPid;
-					post.deleted = post.deleted === 1;
-					post.timestampISO = utils.toISOString(post.timestamp);
-				});
+		const [users, topicsAndCategories] = await Promise.all([
+			user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status']),
+			getTopicAndCategories(tids),
+		]);
 
-				posts = posts.filter(function (post) {
-					return results.topics[post.tid];
-				});
+		const uidToUser = toObject('uid', users);
+		const tidToTopic = toObject('tid', topicsAndCategories.topics);
+		const cidToCategory = toObject('cid', topicsAndCategories.categories);
 
-				parsePosts(posts, options, next);
-			},
-			function (posts, next) {
-				plugins.fireHook('filter:post.getPostSummaryByPids', { posts: posts, uid: uid }, next);
-			},
-			function (data, next) {
-				next(null, data.posts);
-			},
-		], callback);
+		posts.forEach(function (post) {
+			// If the post author isn't represented in the retrieved users' data, then it means they were deleted, assume guest.
+			if (!uidToUser.hasOwnProperty(post.uid)) {
+				post.uid = 0;
+			}
+			post.user = uidToUser[post.uid];
+			post.topic = tidToTopic[post.tid];
+			post.category = post.topic && cidToCategory[post.topic.cid];
+			post.isMainPost = post.topic && post.pid === post.topic.mainPid;
+			post.deleted = post.deleted === 1;
+			post.timestampISO = utils.toISOString(post.timestamp);
+		});
+
+		posts = posts.filter(post => tidToTopic[post.tid]);
+
+		posts = await parsePosts(posts, options);
+		const result = await plugins.fireHook('filter:post.getPostSummaryByPids', { posts: posts, uid: uid });
+		return result.posts;
 	};
 
-	function parsePosts(posts, options, callback) {
-		async.map(posts, function (post, next) {
-			async.waterfall([
-				function (next) {
-					if (!post.content || !options.parse) {
-						post.content = post.content ? validator.escape(String(post.content)) : post.content;
-						return next(null, post);
-					}
-					Posts.parsePost(post, next);
-				},
-				function (post, next) {
-					if (options.stripTags) {
-						post.content = stripTags(post.content);
-					}
-					next(null, post);
-				},
-			], next);
-		}, callback);
+	async function parsePosts(posts, options) {
+		async function parse(post) {
+			if (!post.content || !options.parse) {
+				post.content = post.content ? validator.escape(String(post.content)) : post.content;
+				return post;
+			}
+			post = await Posts.parsePost(post);
+			if (options.stripTags) {
+				post.content = stripTags(post.content);
+			}
+			return post;
+		}
+		return await Promise.all(posts.map(p => parse(p)));
 	}
 
-	function getTopicAndCategories(tids, callback) {
-		var topicsData;
-		async.waterfall([
-			function (next) {
-				topics.getTopicsFields(tids, ['uid', 'tid', 'title', 'cid', 'slug', 'deleted', 'postcount', 'mainPid'], next);
-			},
-			function (_topicsData, next) {
-				topicsData = _topicsData;
-				var cids = _.uniq(topicsData.map(topic => topic && topic.cid));
-				categories.getCategoriesFields(cids, ['cid', 'name', 'icon', 'slug', 'parentCid', 'bgColor', 'color'], next);
-			},
-			function (categoriesData, next) {
-				next(null, { topics: topicsData, categories: categoriesData });
-			},
-		], callback);
+	async function getTopicAndCategories(tids) {
+		const topicsData = await topics.getTopicsFields(tids, ['uid', 'tid', 'title', 'cid', 'slug', 'deleted', 'postcount', 'mainPid']);
+		const cids = _.uniq(topicsData.map(topic => topic && topic.cid));
+		const categoriesData = await categories.getCategoriesFields(cids, ['cid', 'name', 'icon', 'slug', 'parentCid', 'bgColor', 'color']);
+		return { topics: topicsData, categories: categoriesData };
 	}
 
 	function toObject(key, data) {
