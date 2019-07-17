@@ -35,6 +35,6 @@ module.exports = function (User) {
 			});
 
 			setImmediate(next);
-		});
+		}, { batch: 100 });
 	};
 };
