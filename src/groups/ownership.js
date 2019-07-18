@@ -1,58 +1,40 @@
 'use strict';
 
-var async = require('async');
-var db = require('../database');
-var plugins = require('../plugins');
+const db = require('../database');
+const plugins = require('../plugins');
 
 module.exports = function (Groups) {
 	Groups.ownership = {};
 
-	Groups.ownership.isOwner = function (uid, groupName, callback) {
+	Groups.ownership.isOwner = async function (uid, groupName) {
 		if (!(parseInt(uid, 10) > 0)) {
-			return setImmediate(callback, null, false);
+			return false;
 		}
-		db.isSetMember('group:' + groupName + ':owners', uid, callback);
+		return await db.isSetMember('group:' + groupName + ':owners', uid);
 	};
 
-	Groups.ownership.isOwners = function (uids, groupName, callback) {
+	Groups.ownership.isOwners = async function (uids, groupName) {
 		if (!Array.isArray(uids)) {
-			return setImmediate(callback, null, []);
+			return [];
 		}
 
-		db.isSetMembers('group:' + groupName + ':owners', uids, callback);
+		return await db.isSetMembers('group:' + groupName + ':owners', uids);
 	};
 
-	Groups.ownership.grant = function (toUid, groupName, callback) {
+	Groups.ownership.grant = async function (toUid, groupName) {
 		// Note: No ownership checking is done here on purpose!
-		async.waterfall([
-			function (next) {
-				db.setAdd('group:' + groupName + ':owners', toUid, next);
-			},
-			function (next) {
-				plugins.fireHook('action:group.grantOwnership', { uid: toUid, groupName: groupName });
-				next();
-			},
-		], callback);
+		await db.setAdd('group:' + groupName + ':owners', toUid);
+		plugins.fireHook('action:group.grantOwnership', { uid: toUid, groupName: groupName });
 	};
 
-	Groups.ownership.rescind = function (toUid, groupName, callback) {
+	Groups.ownership.rescind = async function (toUid, groupName) {
 		// Note: No ownership checking is done here on purpose!
-
 		// If the owners set only contains one member, error out!
-		async.waterfall([
-			function (next) {
-				db.setCount('group:' + groupName + ':owners', next);
-			},
-			function (numOwners, next) {
-				if (numOwners <= 1) {
-					return next(new Error('[[error:group-needs-owner]]'));
-				}
-				db.setRemove('group:' + groupName + ':owners', toUid, next);
-			},
-			function (next) {
-				plugins.fireHook('action:group.rescindOwnership', { uid: toUid, groupName: groupName });
-				next();
-			},
-		], callback);
+		const numOwners = await db.setCount('group:' + groupName + ':owners');
+		if (numOwners <= 1) {
+			throw new Error('[[error:group-needs-owner]]');
+		}
+		db.setRemove('group:' + groupName + ':owners', toUid);
+		plugins.fireHook('action:group.rescindOwnership', { uid: toUid, groupName: groupName });
 	};
 };
