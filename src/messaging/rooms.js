@@ -51,6 +51,8 @@ module.exports = function (Messaging) {
 		await Promise.all([
 			db.setObject('chat:room:' + roomId, room),
 			db.sortedSetAdd('chat:room:' + roomId + ':uids', now, uid),
+		]);
+		await Promise.all([
 			Messaging.addUsersToRoom(uid, toUids, roomId),
 			Messaging.addRoomToUsers(roomId, [uid].concat(toUids), now),
 		]);
