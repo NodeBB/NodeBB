@@ -1,13 +1,11 @@
 'use strict';
 
-var async = require('async');
+const user = require('../user');
+const db = require('../database');
+const plugins = require('../plugins');
+const utils = require('../utils');
 
-var user = require('../user');
-var db = require('../database');
-var plugins = require('../plugins');
-var utils = require('../utils');
-
-var Groups = module.exports;
+const Groups = module.exports;
 
 require('./data')(Groups);
 require('./create')(Groups);
@@ -52,237 +50,146 @@ Groups.isPrivilegeGroup = function (groupName) {
 	return isPrivilegeGroupRegex.test(groupName);
 };
 
-Groups.getGroupsFromSet = function (set, uid, start, stop, callback) {
-	async.waterfall([
-		function (next) {
-			if (set === 'groups:visible:name') {
-				db.getSortedSetRangeByLex(set, '-', '+', start, stop - start + 1, next);
-			} else {
-				db.getSortedSetRevRange(set, start, stop, next);
-			}
-		},
-		function (groupNames, next) {
-			if (set === 'groups:visible:name') {
-				groupNames = groupNames.map(function (name) {
-					return name.split(':')[1];
-				});
-			}
-
-			Groups.getGroupsAndMembers(groupNames, next);
-		},
-	], callback);
-};
-
-Groups.getNonPrivilegeGroups = function (set, start, stop, callback) {
-	async.waterfall([
-		function (next) {
-			db.getSortedSetRevRange(set, start, stop, next);
-		},
-		function (groupNames, next) {
-			groupNames = groupNames.concat(Groups.ephemeralGroups).filter(groupName => !Groups.isPrivilegeGroup(groupName));
-			Groups.getGroupsData(groupNames, next);
-		},
-	], callback);
-};
-
-Groups.getGroups = function (set, start, stop, callback) {
-	db.getSortedSetRevRange(set, start, stop, callback);
-};
-
-Groups.getGroupsAndMembers = function (groupNames, callback) {
-	async.waterfall([
-		function (next) {
-			async.parallel({
-				groups: function (next) {
-					Groups.getGroupsData(groupNames, next);
-				},
-				members: function (next) {
-					Groups.getMemberUsers(groupNames, 0, 3, next);
-				},
-			}, next);
-		},
-		function (data, next) {
-			data.groups.forEach(function (group, index) {
-				if (group) {
-					group.members = data.members[index] || [];
-					group.truncated = group.memberCount > group.members.length;
-				}
-			});
-			next(null, data.groups);
-		},
-	], callback);
-};
-
-Groups.get = function (groupName, options, callback) {
-	if (!groupName) {
-		return callback(new Error('[[error:invalid-group]]'));
+Groups.getGroupsFromSet = async function (set, uid, start, stop) {
+	let groupNames;
+	if (set === 'groups:visible:name') {
+		groupNames = await db.getSortedSetRangeByLex(set, '-', '+', start, stop - start + 1);
+	} else {
+		groupNames = await db.getSortedSetRevRange(set, start, stop);
+	}
+	if (set === 'groups:visible:name') {
+		groupNames = groupNames.map(name => name.split(':')[1]);
 	}
 
-	var stop = -1;
-
-	var results;
-	async.waterfall([
-		function (next) {
-			async.parallel({
-				base: function (next) {
-					Groups.getGroupData(groupName, next);
-				},
-				members: function (next) {
-					if (options.truncateUserList) {
-						stop = (parseInt(options.userListCount, 10) || 4) - 1;
-					}
-
-					Groups.getOwnersAndMembers(groupName, options.uid, 0, stop, next);
-				},
-				pending: function (next) {
-					Groups.getUsersFromSet('group:' + groupName + ':pending', ['username', 'userslug', 'picture'], next);
-				},
-				invited: function (next) {
-					Groups.getUsersFromSet('group:' + groupName + ':invited', ['username', 'userslug', 'picture'], next);
-				},
-				isMember: async.apply(Groups.isMember, options.uid, groupName),
-				isPending: async.apply(Groups.isPending, options.uid, groupName),
-				isInvited: async.apply(Groups.isInvited, options.uid, groupName),
-				isOwner: async.apply(Groups.ownership.isOwner, options.uid, groupName),
-			}, next);
-		},
-		function (_results, next) {
-			results = _results;
-			if (!results.base) {
-				return callback(null, null);
-			}
-			plugins.fireHook('filter:parse.raw', results.base.description, next);
-		},
-		function (descriptionParsed, next) {
-			var groupData = results.base;
-
-			groupData.descriptionParsed = descriptionParsed;
-			groupData.members = results.members;
-			groupData.membersNextStart = stop + 1;
-			groupData.pending = results.pending.filter(Boolean);
-			groupData.invited = results.invited.filter(Boolean);
-
-			groupData.isMember = results.isMember;
-			groupData.isPending = results.isPending;
-			groupData.isInvited = results.isInvited;
-			groupData.isOwner = results.isOwner;
-
-			plugins.fireHook('filter:group.get', { group: groupData }, next);
-		},
-		function (results, next) {
-			next(null, results.group);
-		},
-	], callback);
+	return await Groups.getGroupsAndMembers(groupNames);
 };
 
-Groups.getOwners = function (groupName, callback) {
-	db.getSetMembers('group:' + groupName + ':owners', callback);
+Groups.getNonPrivilegeGroups = async function (set, start, stop) {
+	let groupNames = await db.getSortedSetRevRange(set, start, stop);
+	groupNames = groupNames.concat(Groups.ephemeralGroups).filter(groupName => !Groups.isPrivilegeGroup(groupName));
+	return await Groups.getGroupsData(groupNames);
 };
 
-Groups.getOwnersAndMembers = function (groupName, uid, start, stop, callback) {
-	async.waterfall([
-		function (next) {
-			async.parallel({
-				owners: function (next) {
-					async.waterfall([
-						function (next) {
-							db.getSetMembers('group:' + groupName + ':owners', next);
-						},
-						function (uids, next) {
-							user.getUsers(uids, uid, next);
-						},
-					], next);
-				},
-				members: function (next) {
-					user.getUsersFromSet('group:' + groupName + ':members', uid, start, stop, next);
-				},
-			}, next);
-		},
-		function (results, next) {
-			var ownerUids = [];
-			results.owners.forEach(function (user) {
-				if (user) {
-					user.isOwner = true;
-					ownerUids.push(user.uid.toString());
-				}
-			});
-
-			results.members = results.members.filter(function (user) {
-				return user && user.uid && !ownerUids.includes(user.uid.toString());
-			});
-			results.members = results.owners.concat(results.members);
-
-			next(null, results.members);
-		},
-	], callback);
+Groups.getGroups = async function (set, start, stop) {
+	return await db.getSortedSetRevRange(set, start, stop);
 };
 
-Groups.getByGroupslug = function (slug, options, callback) {
-	async.waterfall([
-		function (next) {
-			db.getObjectField('groupslug:groupname', slug, next);
-		},
-		function (groupName, next) {
-			if (!groupName) {
-				return next(new Error('[[error:no-group]]'));
-			}
-			Groups.get(groupName, options, next);
-		},
-	], callback);
+Groups.getGroupsAndMembers = async function (groupNames) {
+	const [groups, members] = await Promise.all([
+		Groups.getGroupsData(groupNames),
+		Groups.getMemberUsers(groupNames, 0, 3),
+	]);
+	groups.forEach(function (group, index) {
+		if (group) {
+			group.members = members[index] || [];
+			group.truncated = group.memberCount > group.members.length;
+		}
+	});
+	return groups;
 };
 
-Groups.getGroupNameByGroupSlug = function (slug, callback) {
-	db.getObjectField('groupslug:groupname', slug, callback);
+Groups.get = async function (groupName, options) {
+	if (!groupName) {
+		throw new Error('[[error:invalid-group]]');
+	}
+
+	let stop = -1;
+
+	if (options.truncateUserList) {
+		stop = (parseInt(options.userListCount, 10) || 4) - 1;
+	}
+
+	const [groupData, members, pending, invited, isMember, isPending, isInvited, isOwner] = await Promise.all([
+		Groups.getGroupData(groupName),
+		Groups.getOwnersAndMembers(groupName, options.uid, 0, stop),
+		Groups.getUsersFromSet('group:' + groupName + ':pending', ['username', 'userslug', 'picture']),
+		Groups.getUsersFromSet('group:' + groupName + ':invited', ['username', 'userslug', 'picture']),
+		Groups.isMember(options.uid, groupName),
+		Groups.isPending(options.uid, groupName),
+		Groups.isInvited(options.uid, groupName),
+		Groups.ownership.isOwner(options.uid, groupName),
+	]);
+
+	if (!groupData) {
+		return null;
+	}
+	const descriptionParsed = await plugins.fireHook('filter:parse.raw', groupData.description);
+	groupData.descriptionParsed = descriptionParsed;
+	groupData.members = members;
+	groupData.membersNextStart = stop + 1;
+	groupData.pending = pending.filter(Boolean);
+	groupData.invited = invited.filter(Boolean);
+	groupData.isMember = isMember;
+	groupData.isPending = isPending;
+	groupData.isInvited = isInvited;
+	groupData.isOwner = isOwner;
+	const results = await plugins.fireHook('filter:group.get', { group: groupData });
+	return results.group;
 };
 
-Groups.isPrivate = function (groupName, callback) {
-	isFieldOn(groupName, 'private', callback);
+Groups.getOwners = async function (groupName) {
+	return await db.getSetMembers('group:' + groupName + ':owners');
 };
 
-Groups.isHidden = function (groupName, callback) {
-	isFieldOn(groupName, 'hidden', callback);
+Groups.getOwnersAndMembers = async function (groupName, uid, start, stop) {
+	const ownerUids = await db.getSetMembers('group:' + groupName + ':owners');
+	const [owners, members] = await Promise.all([
+		user.getUsers(ownerUids, uid),
+		user.getUsersFromSet('group:' + groupName + ':members', uid, start, stop),
+	]);
+	owners.forEach(function (user) {
+		if (user) {
+			user.isOwner = true;
+		}
+	});
+
+	const nonOwners = members.filter(user => user && user.uid && !ownerUids.includes(user.uid.toString()));
+	return owners.concat(nonOwners);
 };
 
-function isFieldOn(groupName, field, callback) {
-	async.waterfall([
-		function (next) {
-			db.getObjectField('group:' + groupName, field, next);
-		},
-		function (value, next) {
-			next(null, parseInt(value, 10) === 1);
-		},
-	], callback);
+Groups.getByGroupslug = async function (slug, options) {
+	const groupName = await db.getObjectField('groupslug:groupname', slug);
+	if (!groupName) {
+		throw new Error('[[error:no-group]]');
+	}
+	return await Groups.get(groupName, options);
+};
+
+Groups.getGroupNameByGroupSlug = async function (slug) {
+	return await db.getObjectField('groupslug:groupname', slug);
+};
+
+Groups.isPrivate = async function (groupName) {
+	return await isFieldOn(groupName, 'private');
+};
+
+Groups.isHidden = async function (groupName) {
+	return await isFieldOn(groupName, 'hidden');
+};
+
+async function isFieldOn(groupName, field) {
+	const value = await db.getObjectField('group:' + groupName, field);
+	return parseInt(value, 10) === 1;
 }
 
-Groups.exists = function (name, callback) {
+Groups.exists = async function (name) {
 	if (Array.isArray(name)) {
-		var slugs = name.map(groupName => utils.slugify(groupName));
-		async.waterfall([
-			async.apply(db.isSortedSetMembers, 'groups:createtime', name),
-			function (isMembersOfRealGroups, next) {
-				const isMembersOfEphemeralGroups = slugs.map(slug => Groups.ephemeralGroups.includes(slug));
-				const exists = name.map((n, index) => isMembersOfRealGroups[index] || isMembersOfEphemeralGroups[index]);
-				next(null, exists);
-			},
-		], callback);
-	} else {
-		var slug = utils.slugify(name);
-		async.waterfall([
-			async.apply(db.isSortedSetMember, 'groups:createtime', name),
-			function (isMemberOfRealGroups, next) {
-				const isMemberOfEphemeralGroups = Groups.ephemeralGroups.includes(slug);
-				next(null, isMemberOfRealGroups || isMemberOfEphemeralGroups);
-			},
-		], callback);
+		const slugs = name.map(groupName => utils.slugify(groupName));
+		const isMembersOfRealGroups = await db.isSortedSetMembers('groups:createtime', name);
+		const isMembersOfEphemeralGroups = slugs.map(slug => Groups.ephemeralGroups.includes(slug));
+		return name.map((n, index) => isMembersOfRealGroups[index] || isMembersOfEphemeralGroups[index]);
 	}
+	const slug = utils.slugify(name);
+	const isMemberOfRealGroups = await db.isSortedSetMember('groups:createtime', name);
+	const isMemberOfEphemeralGroups = Groups.ephemeralGroups.includes(slug);
+	return isMemberOfRealGroups || isMemberOfEphemeralGroups;
 };
 
-Groups.existsBySlug = function (slug, callback) {
+Groups.existsBySlug = async function (slug) {
 	if (Array.isArray(slug)) {
-		db.isObjectFields('groupslug:groupname', slug, callback);
-	} else {
-		db.isObjectField('groupslug:groupname', slug, callback);
+		return await db.isObjectFields('groupslug:groupname', slug);
 	}
+	return await db.isObjectField('groupslug:groupname', slug);
 };
 
 Groups.async = require('../promisify')(Groups);
