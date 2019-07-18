@@ -34,7 +34,7 @@ module.exports = function (Groups) {
 		if (numOwners <= 1) {
 			throw new Error('[[error:group-needs-owner]]');
 		}
-		db.setRemove('group:' + groupName + ':owners', toUid);
+		await db.setRemove('group:' + groupName + ':owners', toUid);
 		plugins.fireHook('action:group.rescindOwnership', { uid: toUid, groupName: groupName });
 	};
 };
