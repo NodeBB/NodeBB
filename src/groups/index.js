@@ -11,6 +11,7 @@ require('./data')(Groups);
 require('./create')(Groups);
 require('./delete')(Groups);
 require('./update')(Groups);
+require('./invite')(Groups);
 require('./membership')(Groups);
 require('./ownership')(Groups);
 require('./search')(Groups);
