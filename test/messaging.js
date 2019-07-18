@@ -113,6 +113,16 @@ describe('Messaging Library', function () {
 			});
 		});
 
+		it('should send a user-join system message when a chat room is created', (done) => {
+			socketModules.chats.getMessages({ uid: fooUid }, { uid: fooUid, roomId: roomId, start: 0 }, function (err, messages) {
+				assert.ifError(err);
+				assert.equal(1, messages.length);
+				assert.strictEqual(true, messages[0].system);
+				assert.strictEqual('user-join', messages[0].content);
+				done();
+			});
+		});
+
 		it('should fail to add user to room with invalid data', function (done) {
 			socketModules.chats.addUserToRoom({ uid: fooUid }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
@@ -182,6 +192,17 @@ describe('Messaging Library', function () {
 						done();
 					});
 				});
+			});
+		});
+
+		it('should send a user-leave message when a user leaves the chat room', (done) => {
+			socketModules.chats.getMessages({ uid: fooUid }, { uid: fooUid, roomId: roomId, start: 0 }, function (err, messages) {
+				assert.ifError(err);
+				assert.equal(3, messages.length);
+				const message = messages.pop();
+				assert.strictEqual(true, message.system);
+				assert.strictEqual('user-leave', message.content);
+				done();
 			});
 		});
 
@@ -446,6 +467,16 @@ describe('Messaging Library', function () {
 		it('should rename room', function (done) {
 			socketModules.chats.renameRoom({ uid: fooUid }, { roomId: roomId, newName: 'new room name' }, function (err) {
 				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should send a room-rename system message when a rom is renamed', (done) => {
+			socketModules.chats.getMessages({ uid: fooUid }, { uid: fooUid, roomId: roomId, start: 0 }, function (err, messages) {
+				assert.ifError(err);
+				const message = messages.pop();
+				assert.strictEqual(true, message.system);
+				assert.strictEqual('room-rename, new room name', message.content);
 				done();
 			});
 		});
