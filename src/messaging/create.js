@@ -54,9 +54,6 @@ module.exports = function (Messaging) {
 		var message;
 		var isNewSet;
 		const timestamp = data.timestamp || new Date().getTime();
-		if (!callback) {
-			callback = function () {};
-		}
 
 		async.waterfall([
 			function (next) {

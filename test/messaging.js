@@ -116,9 +116,9 @@ describe('Messaging Library', function () {
 		it('should send a user-join system message when a chat room is created', (done) => {
 			socketModules.chats.getMessages({ uid: fooUid }, { uid: fooUid, roomId: roomId, start: 0 }, function (err, messages) {
 				assert.ifError(err);
-				assert.equal(1, messages.length);
-				assert.strictEqual(true, messages[0].system);
-				assert.strictEqual('user-join', messages[0].content);
+				assert.equal(messages.length, 1);
+				assert.strictEqual(messages[0].system, true);
+				assert.strictEqual(messages[0].content, 'user-join');
 				done();
 			});
 		});
@@ -195,13 +195,13 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should send a user-leave message when a user leaves the chat room', (done) => {
+		it('should send a user-leave system message when a user leaves the chat room', (done) => {
 			socketModules.chats.getMessages({ uid: fooUid }, { uid: fooUid, roomId: roomId, start: 0 }, function (err, messages) {
 				assert.ifError(err);
-				assert.equal(3, messages.length);
+				assert.equal(messages.length, 3);
 				const message = messages.pop();
-				assert.strictEqual(true, message.system);
-				assert.strictEqual('user-leave', message.content);
+				assert.strictEqual(message.system, true);
+				assert.strictEqual(message.content, 'user-leave');
 				done();
 			});
 		});
@@ -471,12 +471,12 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should send a room-rename system message when a rom is renamed', (done) => {
+		it('should send a room-rename system message when a room is renamed', (done) => {
 			socketModules.chats.getMessages({ uid: fooUid }, { uid: fooUid, roomId: roomId, start: 0 }, function (err, messages) {
 				assert.ifError(err);
 				const message = messages.pop();
-				assert.strictEqual(true, message.system);
-				assert.strictEqual('room-rename, new room name', message.content);
+				assert.strictEqual(message.system, true);
+				assert.strictEqual(message.content, 'room-rename, new room name');
 				done();
 			});
 		});
