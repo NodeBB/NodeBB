@@ -203,4 +203,30 @@ module.exports = function (db, module) {
 		cache.delObjectCache(key);
 		return result && result.value ? result.value[field] : null;
 	};
+
+	module.decrObjectFieldBy = async function (key, field, value) {
+		value = parseInt(value, 10);
+		if (!key || isNaN(value)) {
+			return null;
+		}
+
+		var increment = {};
+		field = helpers.fieldToString(field);
+		increment[field] = -value;
+
+		if (Array.isArray(key)) {
+			var bulk = db.collection('objects').initializeUnorderedBulkOp();
+			key.forEach(function (key) {
+				bulk.find({ _key: key }).upsert().update({ $inc: increment });
+			});
+			await bulk.execute();
+			cache.delObjectCache(key);
+			const result = await module.getObjectsFields(key, [field]);
+			return result.map(data => data && data[field]);
+		}
+
+		const result = await db.collection('objects').findOneAndUpdate({ _key: key }, { $inc: increment }, { returnOriginal: false, upsert: true });
+		cache.delObjectCache(key);
+		return result && result.value ? result.value[field] : null;
+	};
 };

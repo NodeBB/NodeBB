@@ -166,6 +166,23 @@ module.exports = function (redisClient, module) {
 		return await module.incrObjectFieldBy(key, field, -1);
 	};
 
+	module.decrObjectFieldBy = async function (key, field, value) {
+		value = parseInt(value, 10);
+		if (!key || isNaN(value)) {
+			return null;
+		}
+		let result;
+		if (Array.isArray(key)) {
+			var batch = redisClient.batch();
+			key.forEach(k => batch.hdecrby(k, field, value));
+			result = await helpers.execBatch(batch);
+		} else {
+			result = await redisClient.async.hdecrby(key, field, value);
+		}
+		cache.delObjectCache(key);
+		return Array.isArray(result) ? result.map(value => parseInt(value, 10)) : parseInt(result, 10);
+	};
+
 	module.incrObjectFieldBy = async function (key, field, value) {
 		value = parseInt(value, 10);
 		if (!key || isNaN(value)) {

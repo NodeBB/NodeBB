@@ -310,4 +310,42 @@ RETURNING ("data"->>$2::TEXT)::NUMERIC v`,
 			return Array.isArray(key) ? res.rows.map(r => parseFloat(r.v)) : parseFloat(res.rows[0].v);
 		});
 	};
+
+	module.incrObjectFieldBy = async function (key, field, value) {
+		value = parseInt(value, 10);
+
+		if (!key || isNaN(value)) {
+			return null;
+		}
+
+		return await module.transaction(async function (client) {
+			var query = client.query.bind(client);
+			if (Array.isArray(key)) {
+				await helpers.ensureLegacyObjectsType(client, key, 'hash');
+			} else {
+				await helpers.ensureLegacyObjectType(client, key, 'hash');
+			}
+
+			const res = await query(Array.isArray(key) ? {
+				name: 'decrObjectFieldByMulti',
+				text: `
+INSERT INTO "legacy_hash" ("_key", "data")
+SELECT UNNEST($1::TEXT[]), jsonb_build_object($2::TEXT, $3::NUMERIC)
+ON CONFLICT ("_key")
+DO UPDATE SET "data" = jsonb_set("legacy_hash"."data", ARRAY[$2::TEXT], to_jsonb(COALESCE(("legacy_hash"."data"->>$2::TEXT)::NUMERIC, 0) + $3::NUMERIC))
+RETURNING ("data"->>$2::TEXT)::NUMERIC v`,
+				values: [key, field, value],
+			} : {
+				name: 'decrObjectFieldBy',
+				text: `
+INSERT INTO "legacy_hash" ("_key", "data")
+VALUES ($1::TEXT, jsonb_build_object($2::TEXT, $3::NUMERIC))
+ON CONFLICT ("_key")
+DO UPDATE SET "data" = jsonb_set("legacy_hash"."data", ARRAY[$2::TEXT], to_jsonb(COALESCE(("legacy_hash"."data"->>$2::TEXT)::NUMERIC, 0) + $3::NUMERIC))
+RETURNING ("data"->>$2::TEXT)::NUMERIC v`,
+				values: [key, field, value],
+			});
+			return Array.isArray(key) ? res.rows.map(r => parseFloat(r.v)) : parseFloat(res.rows[0].v);
+		});
+	};
 };
