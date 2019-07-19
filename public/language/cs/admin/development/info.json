@@ -7,8 +7,8 @@
 	"online": "připojen",
 	"git": "git",
 	"memory": "paměť",
-	"load": "system load",
-	"cpu-usage": "cpu usage",
+	"load": "zatížení systému",
+	"cpu-usage": "využití CPU",
 	"uptime": "čas spuštění",
 
 	"registered": "Registrován",
