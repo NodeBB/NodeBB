@@ -38,7 +38,8 @@ SocketGroups.join = function (socket, data, callback) {
 			}
 
 			if (!meta.config.allowPrivateGroups) {
-				return groups.join(data.groupName, socket.uid, callback);
+				groups.join(data.groupName, socket.uid, callback);
+				return;
 			}
 
 			async.parallel({

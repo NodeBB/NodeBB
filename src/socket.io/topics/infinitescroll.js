@@ -93,7 +93,8 @@ module.exports = function (SocketTopics) {
 		};
 		if (data.sort === 'unread') {
 			params.cid = data.cid;
-			return topics.getUnreadTopics(params, callback);
+			topics.getUnreadTopics(params, callback);
+			return;
 		}
 		params.cids = data.cid;
 		params.sort = data.sort;

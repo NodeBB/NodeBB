@@ -127,7 +127,7 @@ describe('socket.io', function () {
 	it('should get more unread topics', function (done) {
 		io.emit('topics.loadMoreSortedTopics', { after: 0, count: 10, direction: 1, sort: 'unread' }, function (err, result) {
 			assert.ifError(err);
-			console.log(result);
+			assert(Array.isArray(result.topics));
 			done();
 		});
 	});

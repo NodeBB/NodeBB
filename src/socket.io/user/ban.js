@@ -130,13 +130,12 @@ module.exports = function (SocketUser) {
 				db.setObjectField('uid:' + uid + ':ban:' + banData.timestamp, 'fromUid', callerUid, next);
 			},
 			function (next) {
-				if (!reason) {
-					return translator.translate('[[user:info.banned-no-reason]]', function (translated) {
-						next(null, translated);
-					});
+				if (reason) {
+					return next(null, reason);
 				}
-
-				next(null, reason);
+				translator.translate('[[user:info.banned-no-reason]]', function (translated) {
+					next(null, translated);
+				});
 			},
 			function (_reason, next) {
 				websockets.in('uid_' + uid).emit('event:banned', {
