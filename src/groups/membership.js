@@ -164,20 +164,20 @@ module.exports = function (Groups) {
 			const groupMembers = cache.get('group:' + groupName + ':members');
 			const isInCache = groupMembers !== undefined;
 			if (isInCache) {
-				cachedData['group:' + groupName + ':members'] = groupMembers;
+				cachedData[groupName] = groupMembers;
 			}
 			return !isInCache;
 		});
 
 		if (!nonCachedKeys.length) {
-			return isArray ? keys.map(groupName => cachedData['group:' + groupName + ':members']) : cachedData['group:' + keys[0] + ':members'];
+			return isArray ? keys.map(groupName => cachedData[groupName]) : cachedData[keys[0]];
 		}
 		const groupMembers = await db.getSortedSetsMembers(nonCachedKeys.map(name => 'group:' + name + ':members'));
 
 		nonCachedKeys.forEach(function (groupName, index) {
-			cachedData['group:' + groupName + ':members'] = groupMembers[index];
+			cachedData[groupName] = groupMembers[index];
 			cache.set('group:' + groupName + ':members', groupMembers[index]);
 		});
-		return isArray ? keys.map(groupName => cachedData['group:' + groupName + ':members']) : cachedData['group:' + keys[0] + ':members'];
+		return isArray ? keys.map(groupName => cachedData[groupName]) : cachedData[keys[0]];
 	}
 };
