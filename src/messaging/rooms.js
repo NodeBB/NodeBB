@@ -126,8 +126,8 @@ module.exports = function (Messaging) {
 			db.sortedSetsRemove(keys, roomId),
 		]);
 
-		await updateOwner(roomId);
 		await Promise.all(uids.map(uid => Messaging.addSystemMessage('user-leave', uid, roomId)));
+		await updateOwner(roomId);
 	};
 
 	Messaging.leaveRooms = async (uid, roomIds) => {
