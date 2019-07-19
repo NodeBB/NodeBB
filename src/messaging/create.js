@@ -53,6 +53,7 @@ module.exports = function (Messaging) {
 		var mid;
 		var message;
 		var isNewSet;
+		const timestamp = data.timestamp || new Date().getTime();
 
 		async.waterfall([
 			function (next) {
@@ -65,10 +66,11 @@ module.exports = function (Messaging) {
 				mid = _mid;
 				message = {
 					content: String(data.content),
-					timestamp: data.timestamp,
+					timestamp: timestamp,
 					fromuid: data.uid,
 					roomId: data.roomId,
 					deleted: 0,
+					system: data.system || 0,
 				};
 				if (data.ip) {
 					message.ip = data.ip;
@@ -80,7 +82,7 @@ module.exports = function (Messaging) {
 				db.setObject('message:' + mid, message, next);
 			},
 			function (next) {
-				Messaging.isNewSet(data.uid, data.roomId, data.timestamp, next);
+				Messaging.isNewSet(data.uid, data.roomId, timestamp, next);
 			},
 			function (_isNewSet, next) {
 				isNewSet = _isNewSet;
@@ -91,8 +93,8 @@ module.exports = function (Messaging) {
 			},
 			function (uids, next) {
 				async.parallel([
-					async.apply(Messaging.addRoomToUsers, data.roomId, uids, data.timestamp),
-					async.apply(Messaging.addMessageToUsers, data.roomId, uids, mid, data.timestamp),
+					async.apply(Messaging.addRoomToUsers, data.roomId, uids, timestamp),
+					async.apply(Messaging.addMessageToUsers, data.roomId, uids, mid, timestamp),
 					async.apply(Messaging.markUnread, uids, data.roomId),
 				], next);
 			},
@@ -113,6 +115,16 @@ module.exports = function (Messaging) {
 				next(null, results.messages[0]);
 			},
 		], callback);
+	};
+
+	Messaging.addSystemMessage = async (content, uid, roomId) => {
+		const message = await Messaging.addMessage({
+			content: content,
+			uid: uid,
+			roomId: roomId,
+			system: 1,
+		});
+		Messaging.notifyUsersInRoom(uid, roomId, message);
 	};
 
 	Messaging.addRoomToUsers = function (roomId, uids, timestamp, callback) {

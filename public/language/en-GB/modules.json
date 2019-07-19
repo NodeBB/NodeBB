@@ -35,6 +35,10 @@
 	"chat.show-ip": "Show IP",
 	"chat.owner": "Room Owner",
 
+	"chat.system.user-join": "%1 has joined the room",
+	"chat.system.user-leave": "%1 has left the room",
+	"chat.system.room-rename": "%2 has renamed this room: %1",
+
 	"composer.compose": "Compose",
 	"composer.show_preview": "Show Preview",
 	"composer.hide_preview": "Hide Preview",

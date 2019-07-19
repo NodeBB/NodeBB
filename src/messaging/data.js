@@ -7,7 +7,7 @@ var user = require('../user');
 var utils = require('../utils');
 var plugins = require('../plugins');
 
-const intFields = ['timestamp', 'edited', 'fromuid', 'roomId', 'deleted'];
+const intFields = ['timestamp', 'edited', 'fromuid', 'roomId', 'deleted', 'system'];
 
 module.exports = function (Messaging) {
 	Messaging.newMessageCutoff = 1000 * 60 * 3;
@@ -86,9 +86,14 @@ module.exports = function (Messaging) {
 					message.newSet = false;
 					message.roomId = String(message.roomId || roomId);
 					message.deleted = !!message.deleted;
+					message.system = !!message.system;
 				});
 
 				async.map(messages, function (message, next) {
+					if (message.system) {
+						return setImmediate(next, null, message);
+					}
+
 					Messaging.parse(message.content, message.fromuid, uid, roomId, isNew, function (err, result) {
 						if (err) {
 							return next(err);
