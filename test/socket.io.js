@@ -124,6 +124,14 @@ describe('socket.io', function () {
 		});
 	});
 
+	it('should get more unread topics', function (done) {
+		io.emit('topics.loadMoreSortedTopics', { after: 0, count: 10, direction: 1, sort: 'unread' }, function (err, result) {
+			assert.ifError(err);
+			console.log(result);
+			done();
+		});
+	});
+
 	it('should ban a user', function (done) {
 		var socketUser = require('../src/socket.io/user');
 		socketUser.banUsers({ uid: adminUid }, { uids: [regularUid], reason: 'spammer' }, function (err) {
@@ -182,7 +190,7 @@ describe('socket.io', function () {
 		});
 	});
 
-	describe('create/delete', function () {
+	describe('user create/delete', function () {
 		var uid;
 		it('should create a user', function (done) {
 			socketAdmin.user.createUser({ uid: adminUid }, { username: 'foo1' }, function (err, _uid) {
