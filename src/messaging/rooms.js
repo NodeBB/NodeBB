@@ -109,7 +109,7 @@ module.exports = function (Messaging) {
 			throw new Error('[[error:cant-remove-last-user]]');
 		}
 
-		Messaging.leaveRoom(uids, roomId);
+		await Messaging.leaveRoom(uids, roomId);
 	};
 
 	Messaging.leaveRoom = async (uids, roomId) => {
