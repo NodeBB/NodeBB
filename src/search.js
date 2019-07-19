@@ -1,248 +1,200 @@
 'use strict';
 
-var async = require('async');
-var _ = require('lodash');
+const _ = require('lodash');
 
-var db = require('./database');
-var posts = require('./posts');
-var topics = require('./topics');
-var categories = require('./categories');
-var user = require('./user');
-var plugins = require('./plugins');
-var privileges = require('./privileges');
-var utils = require('./utils');
+const db = require('./database');
+const posts = require('./posts');
+const topics = require('./topics');
+const categories = require('./categories');
+const user = require('./user');
+const plugins = require('./plugins');
+const privileges = require('./privileges');
+const utils = require('./utils');
 
-var search = module.exports;
+const search = module.exports;
 
-search.search = function (data, callback) {
-	var start = process.hrtime();
+search.search = async function (data) {
+	const start = process.hrtime();
 	data.searchIn = data.searchIn || 'titlesposts';
 	data.sortBy = data.sortBy || 'relevance';
-	async.waterfall([
-		function (next) {
-			if (data.searchIn === 'posts' || data.searchIn === 'titles' || data.searchIn === 'titlesposts') {
-				searchInContent(data, next);
-			} else if (data.searchIn === 'users') {
-				user.search(data, next);
-			} else if (data.searchIn === 'tags') {
-				topics.searchAndLoadTags(data, next);
-			} else {
-				next(new Error('[[error:unknown-search-filter]]'));
-			}
-		},
-		function (result, next) {
-			result.time = (process.elapsedTimeSince(start) / 1000).toFixed(2);
-			next(null, result);
-		},
-	], callback);
+
+	let result;
+	if (data.searchIn === 'posts' || data.searchIn === 'titles' || data.searchIn === 'titlesposts') {
+		result = await searchInContent(data);
+	} else if (data.searchIn === 'users') {
+		result = await user.search(data);
+	} else if (data.searchIn === 'tags') {
+		result = await topics.searchAndLoadTags(data);
+	} else {
+		throw new Error('[[error:unknown-search-filter]]');
+	}
+
+	result.time = (process.elapsedTimeSince(start) / 1000).toFixed(2);
+	return result;
 };
 
-function searchInContent(data, callback) {
+async function searchInContent(data) {
 	data.uid = data.uid || 0;
-	var pids;
-	var metadata;
-	var itemsPerPage = Math.min(data.itemsPerPage || 10, 100);
+
+	const itemsPerPage = Math.min(data.itemsPerPage || 10, 100);
 	const returnData = {
 		posts: [],
 		matchCount: 0,
 		pageCount: 1,
 	};
-	async.waterfall([
-		function (next) {
-			async.parallel({
-				searchCids: async.apply(getSearchCids, data),
-				searchUids: async.apply(getSearchUids, data),
-			}, next);
-		},
-		function (results, next) {
-			function doSearch(type, searchIn, next) {
-				if (searchIn.includes(data.searchIn)) {
-					plugins.fireHook('filter:search.query', {
-						index: type,
-						content: data.query,
-						matchWords: data.matchWords || 'all',
-						cid: results.searchCids,
-						uid: results.searchUids,
-						searchData: data,
-					}, next);
-				} else {
-					next(null, []);
-				}
-			}
-			async.parallel({
-				pids: async.apply(doSearch, 'post', ['posts', 'titlesposts']),
-				tids: async.apply(doSearch, 'topic', ['titles', 'titlesposts']),
-			}, next);
-		},
-		function (results, next) {
-			pids = results.pids;
 
-			if (data.returnIds) {
-				return callback(null, results);
-			}
+	const [searchCids, searchUids] = await Promise.all([
+		getSearchCids(data),
+		getSearchUids(data),
+	]);
 
-			if (!results.pids.length && !results.tids.length) {
-				return callback(null, returnData);
-			}
+	async function doSearch(type, searchIn) {
+		if (searchIn.includes(data.searchIn)) {
+			return await plugins.fireHook('filter:search.query', {
+				index: type,
+				content: data.query,
+				matchWords: data.matchWords || 'all',
+				cid: searchCids,
+				uid: searchUids,
+				searchData: data,
+			});
+		}
+		return [];
+	}
+	const [pids, tids] = await Promise.all([
+		doSearch('post', ['posts', 'titlesposts']),
+		doSearch('topic', ['titles', 'titlesposts']),
+	]);
 
-			topics.getMainPids(results.tids, next);
-		},
-		function (mainPids, next) {
-			pids = mainPids.concat(pids).filter(Boolean);
-
-			privileges.posts.filter('topics:read', pids, data.uid, next);
-		},
-		function (pids, next) {
-			filterAndSort(pids, data, next);
-		},
-		function (pids, next) {
-			plugins.fireHook('filter:search.inContent', {
-				pids: pids,
-			}, next);
-		},
-		function (_metadata, next) {
-			metadata = _metadata;
-			returnData.matchCount = metadata.pids.length;
-			returnData.pageCount = Math.max(1, Math.ceil(parseInt(returnData.matchCount, 10) / itemsPerPage));
-
-			if (data.page) {
-				const start = Math.max(0, (data.page - 1)) * itemsPerPage;
-				metadata.pids = metadata.pids.slice(start, start + itemsPerPage);
-			}
-
-			posts.getPostSummaryByPids(metadata.pids, data.uid, {}, next);
-		},
-		function (posts, next) {
-			returnData.posts = posts;
-			// Append metadata to returned payload (without pids)
-			delete metadata.pids;
-			next(null, Object.assign(returnData, metadata));
-		},
-	], callback);
-}
-
-function filterAndSort(pids, data, callback) {
-	if (data.sortBy === 'relevance' && !data.replies && !data.timeRange && !data.hasTags) {
-		return setImmediate(callback, null, pids);
+	if (data.returnIds) {
+		return { pids: pids, tids: tids };
+	}
+	if (!pids.length && !tids.length) {
+		return returnData;
 	}
 
-	async.waterfall([
-		function (next) {
-			getMatchedPosts(pids, data, next);
-		},
-		function (posts, next) {
-			if (!posts.length) {
-				return callback(null, pids);
-			}
-			posts = posts.filter(Boolean);
+	const mainPids = await topics.getMainPids(tids);
 
-			posts = filterByPostcount(posts, data.replies, data.repliesFilter);
-			posts = filterByTimerange(posts, data.timeRange, data.timeFilter);
-			posts = filterByTags(posts, data.hasTags);
+	let allPids = mainPids.concat(pids).filter(Boolean);
 
-			sortPosts(posts, data);
+	allPids = await privileges.posts.filter('topics:read', allPids, data.uid);
+	allPids = await filterAndSort(allPids, data);
 
-			plugins.fireHook('filter:search.filterAndSort', { pids: pids, posts: posts, data: data }, next);
-		},
-		function (result, next) {
-			pids = result.posts.map(post => post && post.pid);
-			next(null, pids);
-		},
-	], callback);
+	const metadata = await plugins.fireHook('filter:search.inContent', {
+		pids: allPids,
+	});
+
+	returnData.matchCount = metadata.pids.length;
+	returnData.pageCount = Math.max(1, Math.ceil(parseInt(returnData.matchCount, 10) / itemsPerPage));
+
+	if (data.page) {
+		const start = Math.max(0, (data.page - 1)) * itemsPerPage;
+		metadata.pids = metadata.pids.slice(start, start + itemsPerPage);
+	}
+
+	returnData.posts = await posts.getPostSummaryByPids(metadata.pids, data.uid, {});
+	delete metadata.pids;
+	return Object.assign(returnData, metadata);
 }
 
-function getMatchedPosts(pids, data, callback) {
-	var postFields = ['pid', 'uid', 'tid', 'timestamp', 'deleted', 'upvotes', 'downvotes'];
-	var categoryFields = [];
+async function filterAndSort(pids, data) {
+	if (data.sortBy === 'relevance' && !data.replies && !data.timeRange && !data.hasTags) {
+		return pids;
+	}
+	let postsData = await getMatchedPosts(pids, data);
+	if (!postsData.length) {
+		return pids;
+	}
+	postsData = postsData.filter(Boolean);
+
+	postsData = filterByPostcount(postsData, data.replies, data.repliesFilter);
+	postsData = filterByTimerange(postsData, data.timeRange, data.timeFilter);
+	postsData = filterByTags(postsData, data.hasTags);
+
+	sortPosts(postsData, data);
+
+	const result = await plugins.fireHook('filter:search.filterAndSort', { pids: pids, posts: postsData, data: data });
+
+	return result.posts.map(post => post && post.pid);
+}
+
+async function getMatchedPosts(pids, data) {
+	const postFields = ['pid', 'uid', 'tid', 'timestamp', 'deleted', 'upvotes', 'downvotes'];
+
+	let postsData = await posts.getPostsFields(pids, postFields);
+	postsData = postsData.filter(post => post && !post.deleted);
+	const uids = _.uniq(postsData.map(post => post.uid));
+	const tids = _.uniq(postsData.map(post => post.tid));
+
+	const [users, topics] = await Promise.all([
+		getUsers(uids, data),
+		getTopics(tids, data),
+	]);
+
+	const tidToTopic = _.zipObject(tids, topics);
+	const uidToUser = _.zipObject(uids, users);
+	postsData.forEach(function (post) {
+		if (topics && tidToTopic[post.tid]) {
+			post.topic = tidToTopic[post.tid];
+			if (post.topic && post.topic.category) {
+				post.category = post.topic.category;
+			}
+		}
+
+		if (uidToUser[post.uid]) {
+			post.user = uidToUser[post.uid];
+		}
+	});
+
+	return postsData.filter(post => post && post.topic && !post.topic.deleted);
+}
+
+async function getUsers(uids, data) {
+	if (data.sortBy.startsWith('user')) {
+		return user.getUsersFields(uids, ['username']);
+	}
+	return [];
+}
+
+async function getTopics(tids, data) {
+	const topicsData = await topics.getTopicsData(tids);
+	const cids = _.uniq(topicsData.map(topic => topic && topic.cid));
+	const [categories, tags] = await Promise.all([
+		getCategories(topicsData, data),
+		getTags(tids, data),
+	]);
+
+	const cidToCategory = _.zipObject(cids, categories);
+	topicsData.forEach(function (topic, index) {
+		if (topic && categories && cidToCategory[topic.cid]) {
+			topic.category = cidToCategory[topic.cid];
+		}
+		if (topic && tags && tags[index]) {
+			topic.tags = tags[index];
+		}
+	});
+
+	return topicsData;
+}
+
+async function getCategories(cids, data) {
+	const categoryFields = [];
 
 	if (data.sortBy.startsWith('category.')) {
 		categoryFields.push(data.sortBy.split('.')[1]);
 	}
+	if (!categoryFields.length) {
+		return null;
+	}
 
-	var postsData;
-	let tids;
-	let uids;
-	async.waterfall([
-		function (next) {
-			posts.getPostsFields(pids, postFields, next);
-		},
-		function (_postsData, next) {
-			postsData = _postsData.filter(post => post && !post.deleted);
+	return await db.getObjectsFields(cids.map(cid => 'category:' + cid), categoryFields);
+}
 
-			async.parallel({
-				users: function (next) {
-					if (data.sortBy.startsWith('user')) {
-						uids = _.uniq(postsData.map(post => post.uid));
-						user.getUsersFields(uids, ['username'], next);
-					} else {
-						next();
-					}
-				},
-				topics: function (next) {
-					var topicsData;
-					tids = _.uniq(postsData.map(post => post.tid));
-					let cids;
-					async.waterfall([
-						function (next) {
-							topics.getTopicsData(tids, next);
-						},
-						function (_topics, next) {
-							topicsData = _topics;
-							async.parallel({
-								categories: function (next) {
-									if (!categoryFields.length) {
-										return next();
-									}
-
-									cids = _.uniq(topicsData.map(topic => topic && topic.cid));
-									db.getObjectsFields(cids.map(cid => 'category:' + cid), categoryFields, next);
-								},
-								tags: function (next) {
-									if (Array.isArray(data.hasTags) && data.hasTags.length) {
-										topics.getTopicsTags(tids, next);
-									} else {
-										setImmediate(next);
-									}
-								},
-							}, next);
-						},
-						function (results, next) {
-							const cidToCategory = _.zipObject(cids, results.categories);
-							topicsData.forEach(function (topic, index) {
-								if (topic && results.categories && cidToCategory[topic.cid]) {
-									topic.category = cidToCategory[topic.cid];
-								}
-								if (topic && results.tags && results.tags[index]) {
-									topic.tags = results.tags[index];
-								}
-							});
-
-							next(null, topicsData);
-						},
-					], next);
-				},
-			}, next);
-		},
-		function (results, next) {
-			const tidToTopic = _.zipObject(tids, results.topics);
-			const uidToUser = _.zipObject(uids, results.users);
-			postsData.forEach(function (post) {
-				if (results.topics && tidToTopic[post.tid]) {
-					post.topic = tidToTopic[post.tid];
-					if (post.topic && post.topic.category) {
-						post.category = post.topic.category;
-					}
-				}
-
-				if (uidToUser[post.uid]) {
-					post.user = uidToUser[post.uid];
-				}
-			});
-
-			postsData = postsData.filter(post => post && post.topic && !post.topic.deleted);
-			next(null, postsData);
-		},
-	], callback);
+async function getTags(tids, data) {
+	if (Array.isArray(data.hasTags) && data.hasTags.length) {
+		return await topics.getTopicsTags(tids);
+	}
+	return null;
 }
 
 function filterByPostcount(posts, postCount, repliesFilter) {
@@ -316,58 +268,42 @@ function sortPosts(posts, data) {
 	}
 }
 
-function getSearchCids(data, callback) {
+async function getSearchCids(data) {
 	if (!Array.isArray(data.categories) || !data.categories.length) {
-		return callback(null, []);
+		return [];
 	}
 
 	if (data.categories.includes('all')) {
-		return categories.getCidsByPrivilege('categories:cid', data.uid, 'read', callback);
+		return await categories.getCidsByPrivilege('categories:cid', data.uid, 'read');
 	}
 
-	async.waterfall([
-		function (next) {
-			async.parallel({
-				watchedCids: function (next) {
-					if (data.categories.includes('watched')) {
-						user.getCategoriesByStates(data.uid, [categories.watchStates.watching], next);
-					} else {
-						setImmediate(next, null, []);
-					}
-				},
-				childrenCids: function (next) {
-					if (data.searchChildren) {
-						getChildrenCids(data.categories, data.uid, next);
-					} else {
-						setImmediate(next, null, []);
-					}
-				},
-			}, next);
-		},
-		function (results, next) {
-			const cids = _.uniq(results.watchedCids.concat(results.childrenCids).concat(data.categories).filter(Boolean));
-			next(null, cids);
-		},
-	], callback);
+	const [watchedCids, childrenCids] = await Promise.all([
+		getWatchedCids(data),
+		getChildrenCids(data),
+	]);
+	return _.uniq(watchedCids.concat(childrenCids).concat(data.categories).filter(Boolean));
 }
 
-function getChildrenCids(cids, uid, callback) {
-	async.waterfall([
-		function (next) {
-			async.map(cids, categories.getChildrenCids, next);
-		},
-		function (childrenCids, next) {
-			privileges.categories.filterCids('find', _.uniq(_.flatten(childrenCids)), uid, next);
-		},
-	], callback);
-}
-
-function getSearchUids(data, callback) {
-	if (data.postedBy) {
-		user.getUidsByUsernames(Array.isArray(data.postedBy) ? data.postedBy : [data.postedBy], callback);
-	} else {
-		setImmediate(callback, null, []);
+async function getWatchedCids(data) {
+	if (!data.categories.includes('watched')) {
+		return [];
 	}
+	return await user.getCategoriesByStates(data.uid, [categories.watchStates.watching]);
+}
+
+async function getChildrenCids(data) {
+	if (!data.searchChildren) {
+		return [];
+	}
+	const childrenCids = await Promise.all(data.categories.map(cid => categories.getChildrenCids(cid)));
+	return await privileges.categories.filterCids('find', _.uniq(_.flatten(childrenCids)), data.uid);
+}
+
+async function getSearchUids(data) {
+	if (!data.postedBy) {
+		return [];
+	}
+	return await user.getUidsByUsernames(Array.isArray(data.postedBy) ? data.postedBy : [data.postedBy]);
 }
 
 search.async = require('./promisify')(search);
