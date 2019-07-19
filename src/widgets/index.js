@@ -269,3 +269,5 @@ widgets.resetTemplate = function (template, callback) {
 widgets.resetTemplates = function (templates, callback) {
 	async.eachSeries(templates, widgets.resetTemplate, callback);
 };
+
+require('../promisify')(widgets);

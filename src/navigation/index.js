@@ -38,3 +38,5 @@ navigation.get = function (uid, callback) {
 		},
 	], callback);
 };
+
+require('../promisify')(navigation);

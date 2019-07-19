@@ -115,3 +115,5 @@ function buildTemplatesFromAreas(areas) {
 	});
 	return templates;
 }
+
+require('../promisify')(admin);

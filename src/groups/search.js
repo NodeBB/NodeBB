@@ -1,118 +1,85 @@
 'use strict';
 
-var async = require('async');
-
-var user = require('../user');
-var db = require('./../database');
-
+const user = require('../user');
+const db = require('./../database');
 
 module.exports = function (Groups) {
-	Groups.search = function (query, options, callback) {
+	Groups.search = async function (query, options) {
 		if (!query) {
-			return callback(null, []);
+			return [];
 		}
-		query = query.toLowerCase();
-		async.waterfall([
-			async.apply(db.getSortedSetRange, 'groups:createtime', 0, -1),
-			function (groupNames, next) {
-				if (!options.hideEphemeralGroups) {
-					groupNames = Groups.ephemeralGroups.concat(groupNames);
-				}
-				groupNames = groupNames.filter(function (name) {
-					return name.toLowerCase().includes(query) && name !== 'administrators' && !Groups.isPrivilegeGroup(name);
-				});
-				groupNames = groupNames.slice(0, 100);
-				if (options.showMembers) {
-					Groups.getGroupsAndMembers(groupNames, next);
-				} else {
-					Groups.getGroupsData(groupNames, next);
-				}
-			},
-			function (groupsData, next) {
-				groupsData = groupsData.filter(Boolean);
-				if (options.filterHidden) {
-					groupsData = groupsData.filter(group => !group.hidden);
-				}
+		query = String(query).toLowerCase();
+		let groupNames = await db.getSortedSetRange('groups:createtime', 0, -1);
+		if (!options.hideEphemeralGroups) {
+			groupNames = Groups.ephemeralGroups.concat(groupNames);
+		}
+		groupNames = groupNames.filter(name => name.toLowerCase().includes(query) && name !== 'administrators' && !Groups.isPrivilegeGroup(name));
+		groupNames = groupNames.slice(0, 100);
 
-				Groups.sort(options.sort, groupsData, next);
-			},
-		], callback);
+		let groupsData;
+		if (options.showMembers) {
+			groupsData = await Groups.getGroupsAndMembers(groupNames);
+		} else {
+			groupsData = await Groups.getGroupsData(groupNames);
+		}
+		groupsData = groupsData.filter(Boolean);
+		if (options.filterHidden) {
+			groupsData = groupsData.filter(group => !group.hidden);
+		}
+		return Groups.sort(options.sort, groupsData);
 	};
 
-	Groups.sort = function (strategy, groups, next) {
+	Groups.sort = function (strategy, groups) {
 		switch (strategy) {
 		case 'count':
-			groups = groups.sort(function (a, b) {
-				return a.slug > b.slug;
-			}).sort(function (a, b) {
-				return b.memberCount - a.memberCount;
-			});
+			groups.sort((a, b) => a.slug > b.slug)
+				.sort((a, b) => b.memberCount - a.memberCount);
 			break;
 
 		case 'date':
-			groups = groups.sort(function (a, b) {
-				return b.createtime - a.createtime;
-			});
+			groups.sort((a, b) => b.createtime - a.createtime);
 			break;
 
 		case 'alpha':	// intentional fall-through
 		default:
-			groups = groups.sort(function (a, b) {
-				return a.slug > b.slug ? 1 : -1;
-			});
+			groups.sort((a, b) => (a.slug > b.slug ? 1 : -1));
 		}
 
-		next(null, groups);
+		return groups;
 	};
 
-	Groups.searchMembers = function (data, callback) {
+	Groups.searchMembers = async function (data) {
 		if (!data.query) {
-			Groups.getOwnersAndMembers(data.groupName, data.uid, 0, 19, function (err, users) {
-				callback(err, { users: users });
-			});
-			return;
+			const users = await Groups.getOwnersAndMembers(data.groupName, data.uid, 0, 19);
+			return { users: users };
 		}
 
-		var results;
-		async.waterfall([
-			function (next) {
-				data.paginate = false;
-				user.search(data, next);
-			},
-			function (_results, next) {
-				results = _results;
-				var uids = results.users.map(function (user) {
-					return user && user.uid;
-				});
 
-				Groups.isMembers(uids, data.groupName, next);
-			},
-			function (isMembers, next) {
-				results.users = results.users.filter(function (user, index) {
-					return isMembers[index];
-				});
-				var uids = results.users.map(function (user) {
-					return user && user.uid;
-				});
-				Groups.ownership.isOwners(uids, data.groupName, next);
-			},
-			function (isOwners, next) {
-				results.users.forEach(function (user, index) {
-					if (user) {
-						user.isOwner = isOwners[index];
-					}
-				});
+		data.paginate = false;
+		const results = await user.search(data);
 
-				results.users.sort(function (a, b) {
-					if (a.isOwner && !b.isOwner) {
-						return -1;
-					} else if (!a.isOwner && b.isOwner) {
-						return 1;
-					}
-					return 0;
-				});
-				next(null, results);
-			},
-		], callback);
+		let uids = results.users.map(user => user && user.uid);
+		const isMembers = await Groups.isMembers(uids, data.groupName);
+
+		results.users = results.users.filter((user, index) => isMembers[index]);
+
+		uids = results.users.map(user => user && user.uid);
+		const isOwners = await Groups.ownership.isOwners(uids, data.groupName);
+
+		results.users.forEach(function (user, index) {
+			if (user) {
+				user.isOwner = isOwners[index];
+			}
+		});
+
+		results.users.sort(function (a, b) {
+			if (a.isOwner && !b.isOwner) {
+				return -1;
+			} else if (!a.isOwner && b.isOwner) {
+				return 1;
+			}
+			return 0;
+		});
+		return results;
 	};
 };

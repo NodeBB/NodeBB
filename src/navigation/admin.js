@@ -78,3 +78,5 @@ function getAvailable(callback) {
 
 	plugins.fireHook('filter:navigation.available', core, callback);
 }
+
+require('../promisify')(admin);
