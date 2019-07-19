@@ -278,7 +278,7 @@ SocketModules.chats.delete = function (socket, data, callback) {
 			Messaging.canDelete(data.messageId, socket.uid, next);
 		},
 		function (next) {
-			Messaging.deleteMessage(data.messageId, data.roomId, next);
+			Messaging.deleteMessage(data.messageId, next);
 		},
 	], callback);
 };
@@ -293,7 +293,7 @@ SocketModules.chats.restore = function (socket, data, callback) {
 			Messaging.canDelete(data.messageId, socket.uid, next);
 		},
 		function (next) {
-			Messaging.restoreMessage(data.messageId, data.roomId, next);
+			Messaging.restoreMessage(data.messageId, next);
 		},
 	], callback);
 };
