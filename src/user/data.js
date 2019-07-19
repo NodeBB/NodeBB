@@ -169,7 +169,7 @@ module.exports = function (User) {
 				user.picture = User.getDefaultAvatar();
 			}
 
-			if (user.hasOwnProperty('status') && user.lastonline) {
+			if (user.hasOwnProperty('status') && user.hasOwnProperty('lastonline')) {
 				user.status = User.getStatus(user);
 			}
 
@@ -215,6 +215,7 @@ module.exports = function (User) {
 			if (user.groupTitle) {
 				user.groupTitleArray = [user.groupTitle];
 			} else {
+				user.groupTitle = '';
 				user.groupTitleArray = [];
 			}
 		}
