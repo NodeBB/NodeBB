@@ -1,7 +1,5 @@
 'use strict';
 
-/* global bootbox, utils */
-
 define('settings/sorted-list', ['benchpress', 'jqueryui'], function (benchpress) {
 	var SortedList;
 	var Settings;
@@ -113,7 +111,7 @@ define('settings/sorted-list', ['benchpress', 'jqueryui'], function (benchpress)
 				}
 			});
 
-			$element.sortable();
+			$element.sortable().addClass('pointer');
 		},
 	};
 
