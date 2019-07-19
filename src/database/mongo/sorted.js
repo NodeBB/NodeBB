@@ -330,7 +330,10 @@ module.exports = function (db, module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return [];
 		}
-		const data = await db.collection('objects').find({ _key: { $in: keys } }, { projection: { _id: 0, score: 0 } }).sort({ score: 1 }).toArray();
+
+		const data = await db.collection('objects').find({
+			_key: keys.length === 1 ? keys[0] : { $in: keys },
+		}, { projection: { _id: 0, score: 0 } }).sort({ score: 1 }).toArray();
 
 		var sets = {};
 		data.forEach(function (set) {

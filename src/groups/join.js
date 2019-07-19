@@ -6,6 +6,7 @@ const winston = require('winston');
 const db = require('../database');
 const user = require('../user');
 const plugins = require('../plugins');
+const cache = require('../cache');
 
 module.exports = function (Groups) {
 	Groups.join = async function (groupNames, uid) {
@@ -48,6 +49,7 @@ module.exports = function (Groups) {
 		await Promise.all(promises);
 
 		Groups.clearCache(uid, groupsToJoin);
+		cache.del(groupsToJoin.map(name => 'group:' + name + ':members'));
 
 		const groupData = await Groups.getGroupsFields(groupsToJoin, ['name', 'hidden', 'memberCount']);
 		const visibleGroups = groupData.filter(groupData => groupData && !groupData.hidden);

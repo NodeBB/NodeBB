@@ -5,6 +5,8 @@ const _ = require('lodash');
 const db = require('../database');
 const user = require('../user');
 
+const cache = require('../cache');
+
 module.exports = function (Groups) {
 	Groups.getMembers = async function (groupName, start, stop) {
 		return await db.getSortedSetRevRange('group:' + groupName + ':members', start, stop);
@@ -109,7 +111,7 @@ module.exports = function (Groups) {
 	};
 
 	Groups.isMemberOfGroupList = async function (uid, groupListKey) {
-		let groupNames = await db.getSortedSetRange('group:' + groupListKey + ':members', 0, -1);
+		let groupNames = await getGroupNames(groupListKey);
 		groupNames = Groups.removeEphemeralGroups(groupNames);
 		if (!groupNames.length) {
 			return false;
@@ -120,8 +122,7 @@ module.exports = function (Groups) {
 	};
 
 	Groups.isMemberOfGroupsList = async function (uid, groupListKeys) {
-		const sets = groupListKeys.map(groupName => 'group:' + groupName + ':members');
-		const members = await db.getSortedSetsMembers(sets);
+		const members = await getGroupNames(groupListKeys);
 
 		let uniqueGroups = _.uniq(_.flatten(members));
 		uniqueGroups = Groups.removeEphemeralGroups(uniqueGroups);
@@ -137,7 +138,7 @@ module.exports = function (Groups) {
 	Groups.isMembersOfGroupList = async function (uids, groupListKey) {
 		const results = uids.map(() => false);
 
-		let groupNames = await db.getSortedSetRange('group:' + groupListKey + ':members', 0, -1);
+		let groupNames = await getGroupNames(groupListKey);
 		groupNames = Groups.removeEphemeralGroups(groupNames);
 		if (!groupNames.length) {
 			return results;
@@ -153,4 +154,30 @@ module.exports = function (Groups) {
 		});
 		return results;
 	};
+
+	async function getGroupNames(keys) {
+		const isArray = Array.isArray(keys);
+		keys = isArray ? keys : [keys];
+
+		const cachedData = {};
+		const nonCachedKeys = keys.filter(function (groupName) {
+			const groupMembers = cache.get('group:' + groupName + ':members');
+			const isInCache = groupMembers !== undefined;
+			if (isInCache) {
+				cachedData['group:' + groupName + ':members'] = groupMembers;
+			}
+			return !isInCache;
+		});
+
+		if (!nonCachedKeys.length) {
+			return isArray ? keys.map(groupName => cachedData['group:' + groupName + ':members']) : cachedData['group:' + keys[0] + ':members'];
+		}
+		const groupMembers = await db.getSortedSetsMembers(nonCachedKeys.map(name => 'group:' + name + ':members'));
+
+		nonCachedKeys.forEach(function (groupName, index) {
+			cachedData['group:' + groupName + ':members'] = groupMembers[index];
+			cache.set('group:' + groupName + ':members', groupMembers[index]);
+		});
+		return isArray ? keys.map(groupName => cachedData['group:' + groupName + ':members']) : cachedData['group:' + keys[0] + ':members'];
+	}
 };
