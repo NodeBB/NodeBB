@@ -1,6 +1,6 @@
 {
 	"authentication": "Аутентификация",
-	"require-email-confirmation": "Требуется подтверждение по электронной почте",
+	"require-email-confirmation": "Запрашивать подтверждение по Email",
 	"email-confirm-interval": "Пользователь не может повторно отправить письмо с подтверждением до",
 	"email-confirm-email2": "минут прошло",
 	"allow-login-with": "Разрешить вход с",
