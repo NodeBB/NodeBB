@@ -1,15 +1,14 @@
 'use strict';
 
-var async = require('async');
-var _ = require('lodash');
+const _ = require('lodash');
 
-var db = require('../database');
-var utils = require('../utils');
-var user = require('../user');
-var privileges = require('../privileges');
-var plugins = require('../plugins');
+const db = require('../database');
+const utils = require('../utils');
+const user = require('../user');
+const privileges = require('../privileges');
+const plugins = require('../plugins');
 
-var Posts = module.exports;
+const Posts = module.exports;
 
 require('./data')(Posts);
 require('./create')(Posts);
@@ -47,7 +46,7 @@ Posts.getPostsByPids = async function (pids, uid) {
 		return [];
 	}
 	let posts = await Posts.getPostsData(pids);
-	posts = await async.map(posts, Posts.parsePost);
+	posts = await Promise.all(posts.map(p => Posts.parsePost(p)));
 	posts = await user.blocks.filter(uid, posts);
 	const data = await plugins.fireHook('filter:post.getPosts', { posts: posts, uid: uid });
 	if (!data || !Array.isArray(data.posts)) {
