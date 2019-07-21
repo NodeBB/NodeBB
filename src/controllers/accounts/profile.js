@@ -12,7 +12,6 @@ var meta = require('../../meta');
 var accountHelpers = require('./helpers');
 var helpers = require('../helpers');
 var messaging = require('../../messaging');
-var translator = require('../../translator');
 var utils = require('../../utils');
 
 var profileController = module.exports;
@@ -61,13 +60,6 @@ profileController.get = function (req, res, callback) {
 				signature: function (next) {
 					posts.parseSignature(userData, req.uid, next);
 				},
-				aboutme: function (next) {
-					if (userData.aboutme) {
-						plugins.fireHook('filter:parse.aboutme', userData.aboutme, next);
-					} else {
-						next();
-					}
-				},
 			}, next);
 		},
 		function (results, next) {
@@ -79,7 +71,6 @@ profileController.get = function (req, res, callback) {
 			userData.latestPosts = results.latestPosts;
 			userData.bestPosts = results.bestPosts;
 			userData.hasPrivateChat = results.hasPrivateChat;
-			userData.aboutme = translator.escape(results.aboutme);
 			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username }]);
 			userData.title = userData.username;
 			userData.allowCoverPicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:cover-picture'];

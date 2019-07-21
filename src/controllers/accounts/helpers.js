@@ -12,10 +12,12 @@ var plugins = require('../../plugins');
 var meta = require('../../meta');
 var utils = require('../../utils');
 var privileges = require('../../privileges');
+const translator = require('../../translator');
 
 var helpers = module.exports;
 
 helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
+	let results;
 	async.waterfall([
 		function (next) {
 			user.getUidByUserslug(userslug, next);
@@ -113,11 +115,14 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 				},
 			}, next);
 		},
-		function (results, next) {
+		function (_results, next) {
+			results = _results;
 			if (!results.userData) {
 				return callback(new Error('[[error:invalid-uid]]'));
 			}
-
+			parseAboutMe(results.userData, next);
+		},
+		function (next) {
 			var userData = results.userData;
 			var userSettings = results.userSettings;
 			var isAdmin = results.isAdmin;
@@ -192,7 +197,6 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 			userData.fullname = validator.escape(String(userData.fullname || ''));
 			userData.location = validator.escape(String(userData.location || ''));
 			userData.signature = validator.escape(String(userData.signature || ''));
-			userData.aboutme = validator.escape(String(userData.aboutme || ''));
 			userData.birthday = validator.escape(String(userData.birthday || ''));
 			userData.moderationNote = validator.escape(String(userData.moderationNote || ''));
 
@@ -210,6 +214,22 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 		},
 	], callback);
 };
+
+function parseAboutMe(userData, callback) {
+	if (!userData.aboutme) {
+		return callback();
+	}
+	userData.aboutme = validator.escape(String(userData.aboutme || ''));
+	async.waterfall([
+		function (next) {
+			plugins.fireHook('filter:parse.aboutme', userData.aboutme, next);
+		},
+		function (aboutme, next) {
+			userData.aboutmeParsed = translator.escape(aboutme);
+			next();
+		},
+	], callback);
+}
 
 function filterLinks(links, states) {
 	return links.filter(function (link, index) {
