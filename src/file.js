@@ -218,41 +218,41 @@ file.typeToExtension = function (type) {
 };
 
 // Adapted from http://stackoverflow.com/questions/5827612/node-js-fs-readdir-recursive-directory-search
-file.walk = function (dir, done) {
+file.walk = function (dir, callback) {
 	var results = [];
 
 	fs.readdir(dir, function (err, list) {
 		if (err) {
-			return done(err);
+			return callback(err);
 		}
 		var pending = list.length;
 		if (!pending) {
-			return done(null, results);
+			return callback(null, results);
 		}
 		list.forEach(function (filename) {
 			filename = dir + '/' + filename;
 			fs.stat(filename, function (err, stat) {
 				if (err) {
-					return done(err);
+					return callback(err);
 				}
 
 				if (stat && stat.isDirectory()) {
 					file.walk(filename, function (err, res) {
 						if (err) {
-							return done(err);
+							return callback(err);
 						}
 
 						results = results.concat(res);
 						pending -= 1;
 						if (!pending) {
-							done(null, results);
+							callback(null, results);
 						}
 					});
 				} else {
 					results.push(filename);
 					pending -= 1;
 					if (!pending) {
-						done(null, results);
+						callback(null, results);
 					}
 				}
 			});
