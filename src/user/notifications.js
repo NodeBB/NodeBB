@@ -103,10 +103,23 @@ UserNotifications.getNotifications = async function (nids, uid) {
 	return result && result.notifications;
 };
 
-UserNotifications.getDailyUnread = async function (uid) {
-	const yesterday = Date.now() - (1000 * 60 * 60 * 24);	// Approximate, can be more or less depending on time changes, makes no difference really.
-	const nids = await db.getSortedSetRevRangeByScore('uid:' + uid + ':notifications:unread', 0, 20, '+inf', yesterday);
+UserNotifications.getUnreadInterval = async function (uid, interval) {
+	const dayInMs = 1000 * 60 * 60 * 24;
+	const times = {
+		day: dayInMs,
+		week: 7 * dayInMs,
+		month: 30 * dayInMs,
+	};
+	if (!times[interval]) {
+		return [];
+	}
+	const min = Date.now() - times[interval];
+	const nids = await db.getSortedSetRevRangeByScore('uid:' + uid + ':notifications:unread', 0, 20, '+inf', min);
 	return await UserNotifications.getNotifications(nids, uid);
+};
+
+UserNotifications.getDailyUnread = async function (uid) {
+	return await UserNotifications.getUnreadInterval(uid, 'day');
 };
 
 UserNotifications.getUnreadCount = async function (uid) {

@@ -72,7 +72,7 @@ Digest.send = async function (data) {
 
 	async.eachLimit(users, 100, async function (userObj) {
 		let [notifications, topics] = await Promise.all([
-			user.notifications.getDailyUnread(userObj.uid),
+			user.notifications.getUnreadInterval(userObj.uid, data.interval),
 			getTermTopics(data.interval, userObj.uid, 0, 9),
 		]);
 		notifications = notifications.filter(Boolean);
