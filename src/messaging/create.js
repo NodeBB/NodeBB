@@ -82,7 +82,7 @@ module.exports = function (Messaging) {
 			roomId: roomId,
 			system: 1,
 		});
-		await Messaging.notifyUsersInRoom(uid, roomId, message);
+		Messaging.notifyUsersInRoom(uid, roomId, message);
 	};
 
 	Messaging.addRoomToUsers = async (roomId, uids, timestamp) => {
