@@ -205,12 +205,12 @@ Messaging.canMessageUser = async (uid, toUid) => {
 		throw new Error('[[error:cant-chat-with-yourself');
 	}
 
-	const exists = user.exists(toUid);
+	const exists = await user.exists(toUid);
 	if (!exists) {
 		throw new Error('[[error:no-user]]');
 	}
 
-	const userData = user.getUserFields(uid, ['banned', 'email:confirmed']);
+	const userData = await user.getUserFields(uid, ['banned', 'email:confirmed']);
 	if (userData.banned) {
 		throw new Error('[[error:user-banned]]');
 	}
@@ -241,12 +241,12 @@ Messaging.canMessageRoom = async (uid, roomId) => {
 		throw new Error('[[error:chat-disabled]]');
 	}
 
-	const inRoom = Messaging.isUserInRoom(uid, roomId);
+	const inRoom = await Messaging.isUserInRoom(uid, roomId);
 	if (!inRoom) {
 		throw new Error('[[error:not-in-room]]');
 	}
 
-	const userData = user.getUserFields(uid, ['banned', 'email:confirmed']);
+	const userData = await user.getUserFields(uid, ['banned', 'email:confirmed']);
 	if (userData.banned) {
 		throw new Error('[[error:user-banned]]');
 	}

@@ -105,9 +105,9 @@ module.exports = function (Messaging) {
 		} else if (messages.length === 1) {
 			// For single messages, we don't know the context, so look up the previous message and compare
 			var key = 'uid:' + uid + ':chat:room:' + roomId + ':mids';
-			const index = db.sortedSetRank(key, messages[0].messageId);
+			const index = await db.sortedSetRank(key, messages[0].messageId);
 			if (index > 0) {
-				const mid = db.getSortedSetRange(key, index - 1, index - 1);
+				const mid = await db.getSortedSetRange(key, index - 1, index - 1);
 				const fields = await Messaging.getMessageFields(mid, ['fromuid', 'timestamp']);
 				if ((messages[0].timestamp > fields.timestamp + Messaging.newMessageCutoff) ||
 					(messages[0].fromuid !== fields.fromuid)) {
