@@ -11,19 +11,19 @@ const Meta = module.exports;
 
 Meta.reloadRequired = false;
 
-Meta.blacklist = require('./blacklist');
 Meta.configs = require('./configs');
-Meta.css = require('./css');
-Meta.dependencies = require('./dependencies');
-Meta.errors = require('./errors');
-Meta.js = require('./js');
-Meta.languages = require('./languages');
-Meta.logs = require('./logs');
-Meta.settings = require('./settings');
-Meta.sounds = require('./sounds');
-Meta.tags = require('./tags');
-Meta.templates = require('./templates');
 Meta.themes = require('./themes');
+Meta.js = require('./js');
+Meta.css = require('./css');
+Meta.sounds = require('./sounds');
+Meta.settings = require('./settings');
+Meta.logs = require('./logs');
+Meta.errors = require('./errors');
+Meta.tags = require('./tags');
+Meta.dependencies = require('./dependencies');
+Meta.templates = require('./templates');
+Meta.blacklist = require('./blacklist');
+Meta.languages = require('./languages');
 
 
 /* Assorted */
