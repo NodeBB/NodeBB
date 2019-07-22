@@ -10,7 +10,8 @@ var events = require('../events');
 var SocketBlacklist = module.exports;
 
 SocketBlacklist.validate = function (socket, data, callback) {
-	meta.blacklist.validate(data.rules, callback);
+	const rules = meta.blacklist.validate(data.rules);
+	callback(null, rules);
 };
 
 SocketBlacklist.save = function (socket, rules, callback) {

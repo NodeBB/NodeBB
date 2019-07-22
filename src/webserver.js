@@ -123,8 +123,12 @@ function initializeNodeBB(callback) {
 			routes(app, middleware, next);
 		},
 		meta.sounds.addUploads,
-		meta.blacklist.load,
-		flags.init,
+		function (next) {
+			meta.blacklist.load(next);
+		},
+		function (next) {
+			flags.init(next);
+		},
 	], function (err) {
 		callback(err);
 	});
