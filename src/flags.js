@@ -761,3 +761,5 @@ Flags.notify = function (flagObj, uid, callback) {
 		break;
 	}
 };
+
+require('./promisify')(Flags);

@@ -125,9 +125,9 @@ Plugins.reload = async function () {
 	});
 };
 
-Plugins.reloadRoutes = async function (router) {
+Plugins.reloadRoutes = async function (params) {
 	var controllers = require('../controllers');
-	await Plugins.fireHook('static:app.load', { app: app, router: router, middleware: middleware, controllers: controllers });
+	await Plugins.fireHook('static:app.load', { app: app, router: params.router, middleware: middleware, controllers: controllers });
 	winston.verbose('[plugins] All plugins reloaded and rerouted');
 };
 

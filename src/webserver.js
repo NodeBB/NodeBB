@@ -2,6 +2,7 @@
 'use strict';
 
 var fs = require('fs');
+const util = require('util');
 var path = require('path');
 var os = require('os');
 var nconf = require('nconf');
@@ -65,7 +66,7 @@ server.on('connection', function (conn) {
 	});
 });
 
-module.exports.destroy = function (callback) {
+exports.destroy = function (callback) {
 	server.close(callback);
 	for (var key in connections) {
 		if (connections.hasOwnProperty(key)) {
@@ -74,76 +75,45 @@ module.exports.destroy = function (callback) {
 	}
 };
 
-module.exports.listen = function (callback) {
-	callback = callback || function () { };
+exports.listen = async function () {
 	emailer.registerApp(app);
+	setupExpressApp(app);
+	helpers.register();
+	logger.init(app);
+	await initializeNodeBB();
+	winston.info('NodeBB Ready');
 
-	async.waterfall([
-		function (next) {
-			setupExpressApp(app, next);
-		},
-		function (next) {
-			helpers.register();
+	require('./socket.io').server.emit('event:nodebb.ready', {
+		'cache-buster': meta.config['cache-buster'],
+		hostname: os.hostname(),
+	});
 
-			logger.init(app);
+	plugins.fireHook('action:nodebb.ready');
 
-			initializeNodeBB(next);
-		},
-		function (next) {
-			winston.info('NodeBB Ready');
-
-			require('./socket.io').server.emit('event:nodebb.ready', {
-				'cache-buster': meta.config['cache-buster'],
-				hostname: os.hostname(),
-			});
-
-			plugins.fireHook('action:nodebb.ready');
-
-			listen(next);
-		},
-	], callback);
+	await util.promisify(listen)();
 };
 
-function initializeNodeBB(callback) {
-	var middleware = require('./middleware');
-
-	async.waterfall([
-		function (next) {
-			meta.themes.setupPaths(next);
-		},
-		function (next) {
-			plugins.init(app, middleware, next);
-		},
-		async.apply(plugins.fireHook, 'static:assets.prepare', {}),
-		function (next) {
-			plugins.fireHook('static:app.preload', {
-				app: app,
-				middleware: middleware,
-			}, next);
-		},
-		function (next) {
-			routes(app, middleware, next);
-		},
-		function (next) {
-			meta.sounds.addUploads(next);
-		},
-		function (next) {
-			meta.blacklist.load(next);
-		},
-		function (next) {
-			flags.init(next);
-		},
-	], function (err) {
-		callback(err);
+async function initializeNodeBB() {
+	const middleware = require('./middleware');
+	await meta.themes.setupPaths();
+	await plugins.init(app, middleware);
+	await plugins.fireHook('static:assets.prepare', {});
+	await plugins.fireHook('static:app.preload', {
+		app: app,
+		middleware: middleware,
 	});
+	await routes(app, middleware);
+	await meta.sounds.addUploads();
+	await meta.blacklist.load();
+	await flags.init();
 }
 
-function setupExpressApp(app, callback) {
-	var middleware = require('./middleware');
-	var pingController = require('./controllers/ping');
+function setupExpressApp(app) {
+	const middleware = require('./middleware');
+	const pingController = require('./controllers/ping');
 
-	var relativePath = nconf.get('relative_path');
-	var viewsDir = nconf.get('views_dir');
+	const relativePath = nconf.get('relative_path');
+	const viewsDir = nconf.get('views_dir');
 
 	app.engine('tpl', function (filepath, data, next) {
 		filepath = filepath.replace(/\.tpl$/, '.js');
@@ -210,8 +180,6 @@ function setupExpressApp(app, callback) {
 	var toobusy = require('toobusy-js');
 	toobusy.maxLag(meta.config.eventLoopLagThreshold);
 	toobusy.interval(meta.config.eventLoopInterval);
-
-	callback();
 }
 
 function setupFavicon(app) {
@@ -308,7 +276,7 @@ function listen(callback) {
 	}
 }
 
-module.exports.testSocket = function (socketPath, callback) {
+exports.testSocket = function (socketPath, callback) {
 	if (typeof socketPath !== 'string') {
 		return callback(new Error('invalid socket path : ' + socketPath));
 	}
@@ -337,3 +305,5 @@ module.exports.testSocket = function (socketPath, callback) {
 		async.apply(fs.unlink, socketPath),	// The socket was stale, kick it out of the way
 	], callback);
 };
+
+require('./promisify')(exports);

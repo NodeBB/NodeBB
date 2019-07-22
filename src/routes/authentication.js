@@ -46,98 +46,89 @@ Auth.getLoginStrategies = function () {
 	return loginStrategies;
 };
 
-Auth.reloadRoutes = function (router, callback) {
+Auth.reloadRoutes = async function (params) {
 	loginStrategies.length = 0;
-
+	const router = params.router;
 	if (plugins.hasListeners('action:auth.overrideLogin')) {
 		winston.warn('[authentication] Login override detected, skipping local login strategy.');
 		plugins.fireHook('action:auth.overrideLogin');
 	} else {
 		passport.use(new passportLocal({ passReqToCallback: true }, controllers.authentication.localLogin));
 	}
+	try {
+		loginStrategies = await plugins.fireHook('filter:auth.init', loginStrategies);
+	} catch (err) {
+		winston.error('[authentication] ' + err.stack);
+	}
 
-	async.waterfall([
-		function (next) {
-			plugins.fireHook('filter:auth.init', loginStrategies, function (err) {
-				if (err) {
-					winston.error('[authentication] ' + err.stack);
-				}
-				next(null, loginStrategies);
+	loginStrategies = loginStrategies || [];
+	loginStrategies.forEach(function (strategy) {
+		if (strategy.url) {
+			router.get(strategy.url, Auth.middleware.applyCSRF, function (req, res, next) {
+				req.session.ssoState = req.csrfToken();
+				passport.authenticate(strategy.name, {
+					scope: strategy.scope,
+					prompt: strategy.prompt || undefined,
+					state: req.session.ssoState,
+				})(req, res, next);
 			});
-		},
-		function (loginStrategies, next) {
-			loginStrategies = loginStrategies || [];
-			loginStrategies.forEach(function (strategy) {
-				if (strategy.url) {
-					router.get(strategy.url, Auth.middleware.applyCSRF, function (req, res, next) {
-						req.session.ssoState = req.csrfToken();
-						passport.authenticate(strategy.name, {
-							scope: strategy.scope,
-							prompt: strategy.prompt || undefined,
-							state: req.session.ssoState,
-						})(req, res, next);
-					});
-				}
+		}
 
-				router[strategy.callbackMethod || 'get'](strategy.callbackURL, function (req, res, next) {
-					// Ensure the passed-back state value is identical to the saved ssoState (unless explicitly skipped)
-					if (strategy.checkState === false) {
-						return next();
-					}
+		router[strategy.callbackMethod || 'get'](strategy.callbackURL, function (req, res, next) {
+			// Ensure the passed-back state value is identical to the saved ssoState (unless explicitly skipped)
+			if (strategy.checkState === false) {
+				return next();
+			}
 
-					next(req.query.state !== req.session.ssoState ? new Error('[[error:csrf-invalid]]') : null);
-				}, function (req, res, next) {
-					// Trigger registration interstitial checks
-					req.session.registration = req.session.registration || {};
-					// save returnTo for later usage in /register/complete
-					// passport seems to remove `req.session.returnTo` after it redirects
-					req.session.registration.returnTo = req.session.returnTo;
-					next();
-				}, function (req, res, next) {
-					passport.authenticate(strategy.name, function (err, user) {
-						if (err) {
-							delete req.session.registration;
-							return next(err);
-						}
-
-						if (!user) {
-							delete req.session.registration;
-							return helpers.redirect(res, strategy.failureUrl !== undefined ? strategy.failureUrl : '/login');
-						}
-
-						res.locals.user = user;
-						res.locals.strategy = strategy;
-						next();
-					})(req, res, next);
-				},
-				Auth.middleware.validateAuth,
-				(req, res, next) => {
-					async.waterfall([
-						async.apply(req.login.bind(req), res.locals.user),
-						async.apply(controllers.authentication.onSuccessfulLogin, req, req.uid),
-					], function (err) {
-						if (err) {
-							return next(err);
-						}
-
-						helpers.redirect(res, strategy.successUrl !== undefined ? strategy.successUrl : '/');
-					});
-				});
-			});
-
-			var multipart = require('connect-multiparty');
-			var multipartMiddleware = multipart();
-			var middlewares = [multipartMiddleware, Auth.middleware.applyCSRF, Auth.middleware.applyBlacklist];
-
-			router.post('/register', middlewares, controllers.authentication.register);
-			router.post('/register/complete', middlewares, controllers.authentication.registerComplete);
-			router.post('/register/abort', controllers.authentication.registerAbort);
-			router.post('/login', Auth.middleware.applyCSRF, Auth.middleware.applyBlacklist, controllers.authentication.login);
-			router.post('/logout', Auth.middleware.applyCSRF, controllers.authentication.logout);
-
+			next(req.query.state !== req.session.ssoState ? new Error('[[error:csrf-invalid]]') : null);
+		}, function (req, res, next) {
+			// Trigger registration interstitial checks
+			req.session.registration = req.session.registration || {};
+			// save returnTo for later usage in /register/complete
+			// passport seems to remove `req.session.returnTo` after it redirects
+			req.session.registration.returnTo = req.session.returnTo;
 			next();
+		}, function (req, res, next) {
+			passport.authenticate(strategy.name, function (err, user) {
+				if (err) {
+					delete req.session.registration;
+					return next(err);
+				}
+
+				if (!user) {
+					delete req.session.registration;
+					return helpers.redirect(res, strategy.failureUrl !== undefined ? strategy.failureUrl : '/login');
+				}
+
+				res.locals.user = user;
+				res.locals.strategy = strategy;
+				next();
+			})(req, res, next);
 		},
-	], callback);
+		Auth.middleware.validateAuth,
+		(req, res, next) => {
+			async.waterfall([
+				async.apply(req.login.bind(req), res.locals.user),
+				async.apply(controllers.authentication.onSuccessfulLogin, req, req.uid),
+			], function (err) {
+				if (err) {
+					return next(err);
+				}
+
+				helpers.redirect(res, strategy.successUrl !== undefined ? strategy.successUrl : '/');
+			});
+		});
+	});
+
+	var multipart = require('connect-multiparty');
+	var multipartMiddleware = multipart();
+	var middlewares = [multipartMiddleware, Auth.middleware.applyCSRF, Auth.middleware.applyBlacklist];
+
+	router.post('/register', middlewares, controllers.authentication.register);
+	router.post('/register/complete', middlewares, controllers.authentication.registerComplete);
+	router.post('/register/abort', controllers.authentication.registerAbort);
+	router.post('/login', Auth.middleware.applyCSRF, Auth.middleware.applyBlacklist, controllers.authentication.login);
+	router.post('/logout', Auth.middleware.applyCSRF, controllers.authentication.logout);
 };
 
 passport.serializeUser(function (user, done) {
