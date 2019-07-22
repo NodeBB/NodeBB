@@ -1,15 +1,15 @@
 
 'use strict';
 
-var async = require('async');
-var nconf = require('nconf');
-var path = require('path');
-var winston = require('winston');
+const nconf = require('nconf');
+const path = require('path');
+const winston = require('winston');
+const util = require('util');
 
-var db = require('../database');
-var pubsub = require('../pubsub');
-var Meta = require('../meta');
-var cacheBuster = require('./cacheBuster');
+const db = require('../database');
+const pubsub = require('../pubsub');
+const Meta = require('../meta');
+const cacheBuster = require('./cacheBuster');
 const defaults = require('../../install/data/defaults');
 
 var Configs = module.exports;
@@ -48,152 +48,114 @@ function deserialize(config) {
 
 Configs.deserialize = deserialize;
 
-Configs.init = function (callback) {
-	var config;
-	async.waterfall([
-		function (next) {
-			Configs.list(next);
-		},
-		function (_config, next) {
-			config = _config;
-			cacheBuster.read(next);
-		},
-		function (buster, next) {
-			config['cache-buster'] = 'v=' + (buster || Date.now());
-			Meta.config = config;
-			next();
-		},
-	], callback);
+Configs.init = async function () {
+	const config = await Configs.list();
+	const buster = await cacheBuster.read();
+	config['cache-buster'] = 'v=' + (buster || Date.now());
+	Meta.config = config;
 };
 
-Configs.list = function (callback) {
-	Configs.getFields([], callback);
+Configs.list = async function () {
+	return await Configs.getFields([]);
 };
 
-Configs.get = function (field, callback) {
-	Configs.getFields([field], function (err, values) {
-		callback(err, values ? values[field] : null);
-	});
+Configs.get = async function (field) {
+	const values = await Configs.getFields([field]);
+	return (values.hasOwnProperty(field) && values[field] !== undefined) ? values[field] : null;
 };
 
-Configs.getFields = function (fields, callback) {
-	async.waterfall([
-		function (next) {
-			if (fields.length) {
-				db.getObjectFields('config', fields, next);
-			} else {
-				db.getObject('config', next);
-			}
-		},
-		function (values, next) {
-			try {
-				values = Object.assign({}, defaults, values ? deserialize(values) : {});
-			} catch (err) {
-				return next(err);
-			}
-			if (!fields.length) {
-				values.version = nconf.get('version');
-				values.registry = nconf.get('registry');
-			}
-			next(null, values);
-		},
-	], callback);
-};
-
-Configs.set = function (field, value, callback) {
-	callback = callback || function () {};
-	if (!field) {
-		return callback(new Error('[[error:invalid-data]]'));
+Configs.getFields = async function (fields) {
+	let values;
+	if (fields.length) {
+		values = await db.getObjectFields('config', fields);
+	} else {
+		values = await db.getObject('config');
 	}
 
-	Configs.setMultiple({
+	values = Object.assign({}, defaults, values ? deserialize(values) : {});
+
+	if (!fields.length) {
+		values.version = nconf.get('version');
+		values.registry = nconf.get('registry');
+	}
+	return values;
+};
+
+Configs.set = async function (field, value) {
+	if (!field) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
+	await Configs.setMultiple({
 		[field]: value,
-	}, callback);
-};
-
-// data comes from client-side
-Configs.setMultiple = function (data, callback) {
-	data = deserialize(data);
-
-	async.waterfall([
-		function (next) {
-			processConfig(data, next);
-		},
-		function (next) {
-			db.setObject('config', data, next);
-		},
-		function (next) {
-			updateConfig(data);
-			setImmediate(next);
-		},
-	], callback);
-};
-
-Configs.setOnEmpty = function (values, callback) {
-	async.waterfall([
-		function (next) {
-			db.getObject('config', next);
-		},
-		function (data, next) {
-			var config = Object.assign({}, values, data ? deserialize(data) : {});
-			db.setObject('config', config, next);
-		},
-	], callback);
-};
-
-Configs.remove = function (field, callback) {
-	db.deleteObjectField('config', field, callback);
-};
-
-function processConfig(data, callback) {
-	async.parallel([
-		async.apply(saveRenderedCss, data),
-		function (next) {
-			var image = require('../image');
-			if (data['brand:logo']) {
-				image.size(path.join(nconf.get('upload_path'), 'system', 'site-logo-x50.png'), function (err, size) {
-					if (err && err.code === 'ENOENT') {
-						// For whatever reason the x50 logo wasn't generated, gracefully error out
-						winston.warn('[logo] The email-safe logo doesn\'t seem to have been created, please re-upload your site logo.');
-						size = {
-							height: 0,
-							width: 0,
-						};
-					} else if (err) {
-						return next(err);
-					}
-
-					data['brand:emailLogo'] = nconf.get('url') + path.join(nconf.get('upload_url'), 'system', 'site-logo-x50.png');
-					data['brand:emailLogo:height'] = size.height;
-					data['brand:emailLogo:width'] = size.width;
-					next();
-				});
-			} else {
-				setImmediate(next);
-			}
-		},
-	], function (err) {
-		callback(err);
 	});
+};
+
+Configs.setMultiple = async function (data) {
+	data = deserialize(data);
+	await processConfig(data);
+	await db.setObject('config', data);
+	updateConfig(data);
+};
+
+Configs.setOnEmpty = async function (values) {
+	const data = await db.getObject('config');
+	const config = Object.assign({}, values, data ? deserialize(data) : {});
+	await db.setObject('config', config);
+};
+
+Configs.remove = async function (field) {
+	await db.deleteObjectField('config', field);
+};
+
+async function processConfig(data) {
+	await Promise.all([
+		saveRenderedCss(data),
+		getLogoSize(data),
+	]);
 }
 
-function saveRenderedCss(data, callback) {
+function lessRender(string, callback) {
+	var less = require('less');
+	less.render(string, {
+		compress: true,
+	}, callback);
+}
+
+const lessRenderAsync = util.promisify(lessRender);
+
+async function saveRenderedCss(data) {
 	if (!data.customCSS) {
-		return setImmediate(callback);
+		return;
 	}
 
-	var less = require('less');
-	async.waterfall([
-		function (next) {
-			less.render(data.customCSS, {
-				compress: true,
-			}, next);
-		},
-		function (lessObject, next) {
-			data.renderedCustomCSS = lessObject.css;
-			setImmediate(next);
-		},
-	], callback);
+	const lessObject = await lessRenderAsync(data.customCSS);
+	data.renderedCustomCSS = lessObject.css;
+}
+
+async function getLogoSize(data) {
+	var image = require('../image');
+	if (!data['brand:logo']) {
+		return;
+	}
+	let size;
+	try {
+		size = await image.size(path.join(nconf.get('upload_path'), 'system', 'site-logo-x50.png'));
+	} catch (err) {
+		if (err.code === 'ENOENT') {
+			// For whatever reason the x50 logo wasn't generated, gracefully error out
+			winston.warn('[logo] The email-safe logo doesn\'t seem to have been created, please re-upload your site logo.');
+			size = {
+				height: 0,
+				width: 0,
+			};
+		} else {
+			throw err;
+		}
+	}
+	data['brand:emailLogo'] = nconf.get('url') + path.join(nconf.get('upload_url'), 'system', 'site-logo-x50.png');
+	data['brand:emailLogo:height'] = size.height;
+	data['brand:emailLogo:width'] = size.width;
 }
 
 function updateConfig(config) {
