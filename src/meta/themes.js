@@ -93,12 +93,12 @@ Themes.set = async (data) => {
 		'theme:templates': '',
 		'theme:src': '',
 	};
-	const current = await Meta.configs.get('theme:id');
-	let config = await fsReadfile(path.join(nconf.get('themes_path'), data.id, 'theme.json'), 'utf8');
-	config = JSON.parse(config);
 
 	switch (data.type) {
-	case 'local':
+	case 'local': {
+		const current = await Meta.configs.get('theme:id');
+		var config = await fsReadfile(path.join(nconf.get('themes_path'), data.id, 'theme.json'), 'utf8');
+		config = JSON.parse(config);
 		await db.sortedSetRemove('plugins:active', current);
 		await db.sortedSetAdd('plugins:active', 0, data.id);
 
@@ -120,6 +120,7 @@ Themes.set = async (data) => {
 
 		Meta.reloadRequired = true;
 		break;
+	}
 	case 'bootswatch':
 		await Meta.configs.setMultiple({
 			'theme:src': data.src,
