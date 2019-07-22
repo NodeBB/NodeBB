@@ -1,22 +1,20 @@
 'use strict';
 
+const nconf = require('nconf');
+const winston = require('winston');
 
-var async = require('async');
-var nconf = require('nconf');
-var winston = require('winston');
+const user = require('../user');
+const meta = require('../meta');
+const topics = require('../topics');
+const posts = require('../posts');
+const privileges = require('../privileges');
+const plugins = require('../plugins');
+const helpers = require('./helpers');
+const pagination = require('../pagination');
+const utils = require('../utils');
+const analytics = require('../analytics');
 
-var user = require('../user');
-var meta = require('../meta');
-var topics = require('../topics');
-var posts = require('../posts');
-var privileges = require('../privileges');
-var plugins = require('../plugins');
-var helpers = require('./helpers');
-var pagination = require('../pagination');
-var utils = require('../utils');
-var analytics = require('../analytics');
-
-var topicsController = module.exports;
+const topicsController = module.exports;
 
 topicsController.get = async function getTopic(req, res, callback) {
 	const tid = req.params.topic_id;
@@ -37,7 +35,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 		user.auth.getFeedToken(req.uid),
 	]);
 
-	var currentPage = parseInt(req.query.page, 10) || 1;
+	let currentPage = parseInt(req.query.page, 10) || 1;
 	const pageCount = Math.max(1, Math.ceil((topicData && topicData.postcount) / settings.postsPerPage));
 	if (!topicData || userPrivileges.disabled || (settings.usePagination && (currentPage < 1 || currentPage > pageCount))) {
 		return callback();
@@ -113,7 +111,7 @@ function calculatePageFromIndex(postIndex, settings) {
 }
 
 function calculateStartStop(page, postIndex, settings) {
-	var startSkip = 0;
+	let startSkip = 0;
 
 	if (!settings.usePagination) {
 		if (postIndex !== 0) {
@@ -152,7 +150,7 @@ function markAsRead(req, tid) {
 }
 
 async function buildBreadcrumbs(topicData) {
-	var breadcrumbs = [
+	const breadcrumbs = [
 		{
 			text: topicData.category.name,
 			url: nconf.get('relative_path') + '/category/' + topicData.category.slug,
@@ -287,67 +285,55 @@ function addOGImageTag(res, image) {
 	}
 }
 
-topicsController.teaser = function (req, res, next) {
-	var tid = req.params.topic_id;
-
+topicsController.teaser = async function (req, res, next) {
+	const tid = req.params.topic_id;
 	if (!utils.isNumber(tid)) {
 		return next();
 	}
-
-	async.waterfall([
-		function (next) {
-			privileges.topics.can('topics:read', tid, req.uid, next);
-		},
-		function (canRead, next) {
-			if (!canRead) {
-				return res.status(403).json('[[error:no-privileges]]');
-			}
-			topics.getLatestUndeletedPid(tid, next);
-		},
-		function (pid, next) {
-			if (!pid) {
-				return res.status(404).json('not-found');
-			}
-			posts.getPostSummaryByPids([pid], req.uid, { stripTags: false }, next);
-		},
-		function (posts) {
-			if (!posts.length) {
-				return res.status(404).json('not-found');
-			}
-			res.json(posts[0]);
-		},
-	], next);
+	const canRead = await privileges.topics.can('topics:read', tid, req.uid);
+	if (!canRead) {
+		return res.status(403).json('[[error:no-privileges]]');
+	}
+	const pid = await topics.getLatestUndeletedPid(tid);
+	if (!pid) {
+		return res.status(404).json('not-found');
+	}
+	const postData = await posts.getPostSummaryByPids([pid], req.uid, { stripTags: false });
+	if (!postData.length) {
+		return res.status(404).json('not-found');
+	}
+	res.json(postData[0]);
 };
 
-topicsController.pagination = function (req, res, callback) {
-	var tid = req.params.topic_id;
-	var currentPage = parseInt(req.query.page, 10) || 1;
+topicsController.pagination = async function (req, res, callback) {
+	const tid = req.params.topic_id;
+	const currentPage = parseInt(req.query.page, 10) || 1;
 
 	if (!utils.isNumber(tid)) {
 		return callback();
 	}
 
-	async.parallel({
-		privileges: async.apply(privileges.topics.get, tid, req.uid),
-		settings: async.apply(user.getSettings, req.uid),
-		topic: async.apply(topics.getTopicData, tid),
-	}, function (err, results) {
-		if (err || !results.topic) {
-			return callback(err);
-		}
+	const [userPrivileges, settings, topic] = await Promise.all([
+		privileges.topics.get(tid, req.uid),
+		user.getSettings(req.uid),
+		topics.getTopicData(tid),
+	]);
 
-		if (!results.privileges.read || (results.topic.deleted && !results.privileges.view_deleted)) {
-			return helpers.notAllowed(req, res);
-		}
+	if (!topic) {
+		return callback();
+	}
 
-		var postCount = results.topic.postcount;
-		var pageCount = Math.max(1, Math.ceil(postCount / results.settings.postsPerPage));
+	if (!userPrivileges.read || (topic.deleted && !userPrivileges.view_deleted)) {
+		return helpers.notAllowed(req, res);
+	}
 
-		var paginationData = pagination.create(currentPage, pageCount);
-		paginationData.rel.forEach(function (rel) {
-			rel.href = nconf.get('url') + '/topic/' + results.topic.slug + rel.href;
-		});
+	var postCount = topic.postcount;
+	var pageCount = Math.max(1, Math.ceil(postCount / settings.postsPerPage));
 
-		res.json(paginationData);
+	var paginationData = pagination.create(currentPage, pageCount);
+	paginationData.rel.forEach(function (rel) {
+		rel.href = nconf.get('url') + '/topic/' + topic.slug + rel.href;
 	});
+
+	res.json(paginationData);
 };
