@@ -213,3 +213,5 @@ events.output = function (numEvents) {
 		process.exit(0);
 	});
 };
+
+require('./promisify')(events);

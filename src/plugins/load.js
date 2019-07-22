@@ -1,21 +1,21 @@
 'use strict';
 
-var path = require('path');
-var semver = require('semver');
-var async = require('async');
-var winston = require('winston');
-var nconf = require('nconf');
-var _ = require('lodash');
+const path = require('path');
+const semver = require('semver');
+const async = require('async');
+const winston = require('winston');
+const nconf = require('nconf');
+const _ = require('lodash');
 
-var meta = require('../meta');
+const meta = require('../meta');
 
 module.exports = function (Plugins) {
-	function registerPluginAssets(pluginData, fields, callback) {
+	async function registerPluginAssets(pluginData, fields) {
 		function add(dest, arr) {
 			dest.push.apply(dest, arr || []);
 		}
 
-		var handlers = {
+		const handlers = {
 			staticDirs: function (next) {
 				Plugins.data.getStaticDirectories(pluginData, next);
 			},
@@ -45,43 +45,36 @@ module.exports = function (Plugins) {
 			},
 		};
 
-		var methods;
+		var methods = {};
 		if (Array.isArray(fields)) {
-			methods = fields.reduce(function (prev, field) {
-				prev[field] = handlers[field];
-				return prev;
-			}, {});
+			fields.forEach(function (field) {
+				methods[field] = handlers[field];
+			});
 		} else {
 			methods = handlers;
 		}
 
-		async.parallel(methods, function (err, results) {
-			if (err) {
-				return callback(err);
-			}
+		const results = await async.parallel(methods);
 
-			Object.assign(Plugins.staticDirs, results.staticDirs || {});
-			add(Plugins.cssFiles, results.cssFiles);
-			add(Plugins.lessFiles, results.lessFiles);
-			add(Plugins.acpLessFiles, results.acpLessFiles);
-			add(Plugins.clientScripts, results.clientScripts);
-			add(Plugins.acpScripts, results.acpScripts);
-			Object.assign(meta.js.scripts.modules, results.modules || {});
-			if (results.soundpack) {
-				Plugins.soundpacks.push(results.soundpack);
-			}
-			if (results.languageData) {
-				Plugins.languageData.languages = _.union(Plugins.languageData.languages, results.languageData.languages);
-				Plugins.languageData.namespaces = _.union(Plugins.languageData.namespaces, results.languageData.namespaces);
-			}
-			Plugins.pluginsData[pluginData.id] = pluginData;
-
-			callback();
-		});
+		Object.assign(Plugins.staticDirs, results.staticDirs || {});
+		add(Plugins.cssFiles, results.cssFiles);
+		add(Plugins.lessFiles, results.lessFiles);
+		add(Plugins.acpLessFiles, results.acpLessFiles);
+		add(Plugins.clientScripts, results.clientScripts);
+		add(Plugins.acpScripts, results.acpScripts);
+		Object.assign(meta.js.scripts.modules, results.modules || {});
+		if (results.soundpack) {
+			Plugins.soundpacks.push(results.soundpack);
+		}
+		if (results.languageData) {
+			Plugins.languageData.languages = _.union(Plugins.languageData.languages, results.languageData.languages);
+			Plugins.languageData.namespaces = _.union(Plugins.languageData.namespaces, results.languageData.namespaces);
+		}
+		Plugins.pluginsData[pluginData.id] = pluginData;
 	}
 
-	Plugins.prepareForBuild = function (targets, callback) {
-		var map = {
+	Plugins.prepareForBuild = async function (targets) {
+		const map = {
 			'plugin static dirs': ['staticDirs'],
 			'requirejs modules': ['modules'],
 			'client js bundle': ['clientScripts'],
@@ -92,7 +85,7 @@ module.exports = function (Plugins) {
 			languages: ['languageData'],
 		};
 
-		var fields = _.uniq(_.flatMap(targets, target => map[target] || []));
+		const fields = _.uniq(_.flatMap(targets, target => map[target] || []));
 
 		// clear old data before build
 		fields.forEach((field) => {
@@ -116,56 +109,44 @@ module.exports = function (Plugins) {
 		});
 
 		winston.verbose('[plugins] loading the following fields from plugin data: ' + fields.join(', '));
-
-		async.waterfall([
-			Plugins.data.getActive,
-			function (plugins, next) {
-				async.each(plugins, function (pluginData, next) {
-					registerPluginAssets(pluginData, fields, next);
-				}, next);
-			},
-		], callback);
+		const plugins = await Plugins.data.getActive();
+		await Promise.all(plugins.map(p => registerPluginAssets(p, fields)));
 	};
 
-	var themeNamePattern = /(@.*?\/)?nodebb-theme-.*$/;
+	const themeNamePattern = /(@.*?\/)?nodebb-theme-.*$/;
 
-	Plugins.loadPlugin = function (pluginPath, callback) {
-		Plugins.data.loadPluginInfo(pluginPath, function (err, pluginData) {
-			if (err) {
-				if (err.message === '[[error:parse-error]]') {
-					return callback();
-				}
-
-				return callback(themeNamePattern.test(pluginPath) ? null : err);
+	Plugins.loadPlugin = async function (pluginPath) {
+		let pluginData;
+		try {
+			pluginData = await Plugins.data.loadPluginInfo(pluginPath);
+		} catch (err) {
+			if (err.message === '[[error:parse-error]]') {
+				return;
 			}
+			if (!themeNamePattern.test(pluginPath)) {
+				throw err;
+			}
+			return;
+		}
+		checkVersion(pluginData);
 
-			checkVersion(pluginData);
+		try {
+			registerHooks(pluginData);
+			await registerPluginAssets(pluginData, ['soundpack']);
+		} catch (err) {
+			winston.error(err.stack);
+			winston.verbose('[plugins] Could not load plugin : ' + pluginData.id);
+			return;
+		}
 
-			async.parallel([
-				function (next) {
-					registerHooks(pluginData, next);
-				},
-				function (next) {
-					registerPluginAssets(pluginData, ['soundpack'], next);
-				},
-			], function (err) {
-				if (err) {
-					winston.error(err.stack);
-					winston.verbose('[plugins] Could not load plugin : ' + pluginData.id);
-					return callback();
-				}
-
-				if (!pluginData.private) {
-					Plugins.loadedPlugins.push({
-						id: pluginData.id,
-						version: pluginData.version,
-					});
-				}
-
-				winston.verbose('[plugins] Loaded plugin: ' + pluginData.id);
-				callback();
+		if (!pluginData.private) {
+			Plugins.loadedPlugins.push({
+				id: pluginData.id,
+				version: pluginData.version,
 			});
-		});
+		}
+
+		winston.verbose('[plugins] Loaded plugin: ' + pluginData.id);
 	};
 
 	function checkVersion(pluginData) {
@@ -184,28 +165,24 @@ module.exports = function (Plugins) {
 		}
 	}
 
-	function registerHooks(pluginData, callback) {
+	function registerHooks(pluginData) {
 		if (!pluginData.library) {
-			return callback();
+			return;
 		}
 
-		var libraryPath = path.join(pluginData.path, pluginData.library);
+		const libraryPath = path.join(pluginData.path, pluginData.library);
 
 		try {
 			if (!Plugins.libraries[pluginData.id]) {
 				Plugins.requireLibrary(pluginData.id, libraryPath);
 			}
 
-			if (Array.isArray(pluginData.hooks) && pluginData.hooks.length > 0) {
-				async.each(pluginData.hooks, function (hook, next) {
-					Plugins.registerHook(pluginData.id, hook, next);
-				}, callback);
-			} else {
-				callback();
+			if (Array.isArray(pluginData.hooks)) {
+				pluginData.hooks.forEach(hook => Plugins.registerHook(pluginData.id, hook));
 			}
 		} catch (err) {
 			winston.warn('[plugins] Unable to parse library for: ' + pluginData.id);
-			callback(err);
+			throw err;
 		}
 	}
 };

@@ -216,7 +216,7 @@ Data.getModules = async function getModules(pluginData) {
 	await Promise.all(Object.keys(pluginModules).map(key => processModule(key)));
 
 	const len = Object.keys(modules).length;
-	winston.info('[plugins] Found ' + len + ' AMD-style module(s) for plugin ' + pluginData.id);
+	winston.verbose('[plugins] Found ' + len + ' AMD-style module(s) for plugin ' + pluginData.id);
 	return modules;
 };
 
