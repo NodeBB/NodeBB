@@ -1,42 +1,41 @@
 'use strict';
 
-var async = require('async');
-var winston = require('winston');
-var os = require('os');
-var nconf = require('nconf');
+const winston = require('winston');
+const os = require('os');
+const nconf = require('nconf');
 
-var pubsub = require('../pubsub');
-var utils = require('../utils');
+const pubsub = require('../pubsub');
+const utils = require('../utils');
 
-var Meta = module.exports;
+const Meta = module.exports;
 
 Meta.reloadRequired = false;
 
-Meta.configs = require('./configs');
-Meta.themes = require('./themes');
-Meta.js = require('./js');
-Meta.css = require('./css');
-Meta.sounds = require('./sounds');
-Meta.settings = require('./settings');
-Meta.logs = require('./logs');
-Meta.errors = require('./errors');
-Meta.tags = require('./tags');
-Meta.dependencies = require('./dependencies');
-Meta.templates = require('./templates');
 Meta.blacklist = require('./blacklist');
+Meta.configs = require('./configs');
+Meta.css = require('./css');
+Meta.dependencies = require('./dependencies');
+Meta.errors = require('./errors');
+Meta.js = require('./js');
 Meta.languages = require('./languages');
+Meta.logs = require('./logs');
+Meta.settings = require('./settings');
+Meta.sounds = require('./sounds');
+Meta.tags = require('./tags');
+Meta.templates = require('./templates');
+Meta.themes = require('./themes');
+
 
 /* Assorted */
-Meta.userOrGroupExists = function (slug, callback) {
-	var user = require('../user');
-	var groups = require('../groups');
+Meta.userOrGroupExists = async function (slug) {
+	const user = require('../user');
+	const groups = require('../groups');
 	slug = utils.slugify(slug);
-	async.parallel([
-		async.apply(user.existsBySlug, slug),
-		async.apply(groups.existsBySlug, slug),
-	], function (err, results) {
-		callback(err, results ? results.some(function (result) { return result; }) : false);
-	});
+	const [userExists, groupExists] = await Promise.all([
+		user.existsBySlug(slug),
+		groups.existsBySlug(slug),
+	]);
+	return userExists || groupExists;
 };
 
 if (nconf.get('isPrimary') === 'true') {
