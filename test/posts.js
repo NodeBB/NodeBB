@@ -74,13 +74,12 @@ describe('Post\'s', function () {
 	});
 
 	it('should update category teaser properly', async function () {
-		async function getCategories(callback) {
+		const util = require('util');
+		const getCategoriesAsync = util.promisify(async function getCategories(callback) {
 			request(nconf.get('url') + '/api/categories', { json: true }, function (err, res, body) {
 				callback(err, body);
 			});
-		}
-		const util = require('util');
-		const getCategoriesAsync = util.promisify(getCategories);
+		});
 
 		const postResult = await topics.post({ uid: globalModUid, cid: cid, title: 'topic title', content: '123456789' });
 
