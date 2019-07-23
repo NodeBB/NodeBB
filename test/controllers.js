@@ -103,14 +103,14 @@ describe('Controllers', function () {
 		var name = 'custom.tpl';
 		var tplPath = path.join(nconf.get('views_dir'), name);
 
-		before(function (done) {
+		before(async () => {
 			plugins.registerHook('myTestPlugin', {
 				hook: 'action:homepage.get:custom',
 				method: hookMethod,
 			});
 
 			fs.writeFileSync(tplPath, message);
-			meta.templates.compileTemplate(name, message, done);
+			await meta.templates.compileTemplate(name, message);
 		});
 
 		it('should load default', function (done) {
