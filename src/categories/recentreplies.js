@@ -29,8 +29,8 @@ module.exports = function (Categories) {
 			return await db.sortedSetAdd('cid:' + cid + ':recent_tids', Date.now(), tid);
 		}
 		const data = await db.getSortedSetRangeWithScores('cid:' + cid + ':recent_tids', 0, count - numRecentReplies);
-		if (data.length) {
-			console.log('removing old one', data);
+		const shouldRemove = !(data.length === 1 && count === 1 && data[0].value === String(tid));
+		if (data.length && shouldRemove) {
 			await db.sortedSetsRemoveRangeByScore(['cid:' + cid + ':recent_tids'], '-inf', data[data.length - 1].score);
 		}
 		await db.sortedSetAdd('cid:' + cid + ':recent_tids', Date.now(), tid);
@@ -38,12 +38,10 @@ module.exports = function (Categories) {
 
 	Categories.updateRecentTidForCid = async function (cid) {
 		const pids = await db.getSortedSetRevRange('cid:' + cid + ':pids', 0, 0);
-
 		if (!pids.length) {
 			return;
 		}
 		const tid = await posts.getPostField(pids[0], 'tid');
-		console.log('cid', cid, pids, tid);
 		if (!tid) {
 			return;
 		}
