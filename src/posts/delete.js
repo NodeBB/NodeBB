@@ -36,6 +36,7 @@ module.exports = function (Posts) {
 				db.sortedSetRemove('cid:' + topicData.cid + ':pids', pid) :
 				db.sortedSetAdd('cid:' + topicData.cid + ':pids', postData.timestamp, pid),
 		]);
+		await categories.updateRecentTidForCid(postData.cid);
 		plugins.fireHook('action:post.' + type, { post: _.clone(postData), uid: uid });
 		return postData;
 	}
@@ -45,11 +46,12 @@ module.exports = function (Posts) {
 		if (!postData) {
 			return;
 		}
-
+		const topicData = await topics.getTopicFields(postData.tid, ['tid', 'cid', 'pinned']);
+		postData.cid = topicData.cid;
 		await plugins.fireHook('filter:post.purge', { post: postData, pid: pid, uid: uid });
 		await Promise.all([
-			deletePostFromTopicUserNotification(postData),
-			deletePostFromCategoryRecentPosts(pid),
+			deletePostFromTopicUserNotification(postData, topicData),
+			deletePostFromCategoryRecentPosts(postData),
 			deletePostFromUsersBookmarks(pid),
 			deletePostFromUsersVotes(pid),
 			deletePostFromReplies(postData),
@@ -60,13 +62,13 @@ module.exports = function (Posts) {
 		await db.delete('post:' + pid);
 	};
 
-	async function deletePostFromTopicUserNotification(postData) {
+	async function deletePostFromTopicUserNotification(postData, topicData) {
 		await db.sortedSetsRemove([
 			'tid:' + postData.tid + ':posts',
 			'tid:' + postData.tid + ':posts:votes',
 			'uid:' + postData.uid + ':posts',
 		], postData.pid);
-		const topicData = await topics.getTopicFields(postData.tid, ['tid', 'cid', 'pinned']);
+
 		const tasks = [
 			db.decrObjectField('global', 'postCount'),
 			db.decrObjectField('category:' + topicData.cid, 'post_count'),
@@ -79,16 +81,18 @@ module.exports = function (Posts) {
 			user.incrementUserPostCountBy(postData.uid, -1),
 			notifications.rescind('new_post:tid:' + postData.tid + ':pid:' + postData.pid + ':uid:' + postData.uid),
 		];
+
 		if (!topicData.pinned) {
-			tasks.push(db.sortedSetIncrBy, 'cid:' + topicData.cid + ':tids:posts', -1, postData.tid);
+			tasks.push(db.sortedSetIncrBy('cid:' + topicData.cid + ':tids:posts', -1, postData.tid));
 		}
 		await Promise.all(tasks);
 	}
 
-	async function deletePostFromCategoryRecentPosts(pid) {
+	async function deletePostFromCategoryRecentPosts(postData) {
 		const cids = await categories.getAllCidsFromSet('categories:cid');
 		const sets = cids.map(cid => 'cid:' + cid + ':pids');
-		await db.sortedSetsRemove(sets, pid);
+		await db.sortedSetsRemove(sets, postData.pid);
+		await categories.updateRecentTidForCid(postData.cid);
 	}
 
 	async function deletePostFromUsersBookmarks(pid) {
