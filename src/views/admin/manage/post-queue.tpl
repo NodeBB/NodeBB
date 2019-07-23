@@ -28,7 +28,7 @@
 						<tr data-id="{posts.id}">
 							<td class="col-md-1">
 								<!-- IF posts.user.userslug -->
-								<a href="/uid/{posts.user.uid}">{posts.user.username}</a>
+								<a href="{config.relative_path}/uid/{posts.user.uid}">{posts.user.username}</a>
 								<!-- ELSE -->
 								{posts.user.username}
 								<!-- ENDIF posts.user.userslug -->

@@ -62,7 +62,7 @@
 								<!-- ELSE -->
 								<div class="user-img avatar avatar-sm" style="background-color: {users.ipMatch.icon:bgColor};">{users.ipMatch.icon:text}</div>
 								<!-- ENDIF users.ipMatch.picture -->
-								<a href="/uid/{users.ipMatch.uid}">{users.ipMatch.username}</a>
+								<a href="{config.relative_path}/uid/{users.ipMatch.uid}">{users.ipMatch.username}</a>
 								<!-- END users.ipMatch -->
 							</td>
 							<td class="hidden-xs">

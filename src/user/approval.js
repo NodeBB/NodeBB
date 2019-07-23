@@ -137,7 +137,6 @@ module.exports = function (User) {
 
 	async function getIPMatchedUsers(user) {
 		const uids = await User.getUidsFromSet('ip:' + user.ip + ':uid', 0, -1);
-		const data = User.getUsersFields(uids, ['uid', 'username', 'picture']);
-		user.ipMatch = data;
+		user.ipMatch = await User.getUsersFields(uids, ['uid', 'username', 'picture']);
 	}
 };
