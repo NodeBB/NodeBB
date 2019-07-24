@@ -1,17 +1,15 @@
 
 'use strict';
 
-var async = require('async');
-var validator = require('validator');
-var winston = require('winston');
-var _ = require('lodash');
+const validator = require('validator');
+const _ = require('lodash');
 
-var db = require('./database');
-var batch = require('./batch');
-var user = require('./user');
-var utils = require('./utils');
+const db = require('./database');
+const batch = require('./batch');
+const user = require('./user');
+const utils = require('./utils');
 
-var events = module.exports;
+const events = module.exports;
 
 events.types = [
 	'plugin-activate',
@@ -55,163 +53,92 @@ events.types = [
  * Useful options in data: type, uid, ip, targetUid
  * Everything else gets stringified and shown as pretty JSON string
  */
-events.log = function (data, callback) {
-	callback = callback || function () {};
+events.log = async function (data) {
+	const eid = await db.incrObjectField('global', 'nextEid');
+	data.timestamp = Date.now();
+	data.eid = eid;
 
-	async.waterfall([
-		function (next) {
-			db.incrObjectField('global', 'nextEid', next);
-		},
-		function (eid, next) {
-			data.timestamp = Date.now();
-			data.eid = eid;
-
-			async.parallel([
-				function (next) {
-					db.sortedSetsAdd([
-						'events:time',
-						'events:time:' + data.type,
-					], data.timestamp, eid, next);
-				},
-				function (next) {
-					db.setObject('event:' + eid, data, next);
-				},
-			], next);
-		},
-	], function (err) {
-		callback(err);
-	});
+	await Promise.all([
+		db.sortedSetsAdd([
+			'events:time',
+			'events:time:' + data.type,
+		], data.timestamp, eid),
+		db.setObject('event:' + eid, data),
+	]);
 };
 
-events.getEvents = function (filter, start, stop, from, to, callback) {
+events.getEvents = async function (filter, start, stop, from, to) {
 	// from/to optional
-	if (typeof from === 'function' && !to && !callback) {
-		callback = from;
+	if (from === undefined) {
 		from = 0;
+	}
+	if (to === undefined) {
 		to = Date.now();
 	}
 
-	async.waterfall([
-		function (next) {
-			db.getSortedSetRevRangeByScore('events:time' + (filter ? ':' + filter : ''), start, stop - start + 1, to, from, next);
-		},
-		function (eids, next) {
-			db.getObjects(eids.map(eid => 'event:' + eid), next);
-		},
-		function (eventsData, next) {
-			eventsData = eventsData.filter(Boolean);
-			addUserData(eventsData, 'uid', 'user', next);
-		},
-		function (eventsData, next) {
-			addUserData(eventsData, 'targetUid', 'targetUser', next);
-		},
-		function (eventsData, next) {
-			eventsData.forEach(function (event) {
-				Object.keys(event).forEach(function (key) {
-					if (typeof event[key] === 'string') {
-						event[key] = validator.escape(String(event[key] || ''));
-					}
-				});
-				var e = utils.merge(event);
-				e.eid = undefined;
-				e.uid = undefined;
-				e.type = undefined;
-				e.ip = undefined;
-				e.user = undefined;
-				event.jsonString = JSON.stringify(e, null, 4);
-				event.timestampISO = new Date(parseInt(event.timestamp, 10)).toUTCString();
-			});
-			next(null, eventsData);
-		},
-	], callback);
+	const eids = await db.getSortedSetRevRangeByScore('events:time' + (filter ? ':' + filter : ''), start, stop - start + 1, to, from);
+	let eventsData = await db.getObjects(eids.map(eid => 'event:' + eid));
+	eventsData = eventsData.filter(Boolean);
+	await addUserData(eventsData, 'uid', 'user');
+	await addUserData(eventsData, 'targetUid', 'targetUser');
+	eventsData.forEach(function (event) {
+		Object.keys(event).forEach(function (key) {
+			if (typeof event[key] === 'string') {
+				event[key] = validator.escape(String(event[key] || ''));
+			}
+		});
+		var e = utils.merge(event);
+		e.eid = undefined;
+		e.uid = undefined;
+		e.type = undefined;
+		e.ip = undefined;
+		e.user = undefined;
+		event.jsonString = JSON.stringify(e, null, 4);
+		event.timestampISO = new Date(parseInt(event.timestamp, 10)).toUTCString();
+	});
+	return eventsData;
 };
 
-function addUserData(eventsData, field, objectName, callback) {
-	var uids = _.uniq(eventsData.map(event => event && event[field]));
+async function addUserData(eventsData, field, objectName) {
+	const uids = _.uniq(eventsData.map(event => event && event[field]));
 
 	if (!uids.length) {
-		return callback(null, eventsData);
+		return eventsData;
 	}
 
-	async.waterfall([
-		function (next) {
-			async.parallel({
-				isAdmin: function (next) {
-					user.isAdministrator(uids, next);
-				},
-				userData: function (next) {
-					user.getUsersFields(uids, ['username', 'userslug', 'picture'], next);
-				},
-			}, next);
-		},
-		function (results, next) {
-			var userData = results.userData;
+	const [isAdmin, userData] = await Promise.all([
+		user.isAdministrator(uids),
+		user.getUsersFields(uids, ['username', 'userslug', 'picture']),
+	]);
 
-			var map = {};
-			userData.forEach(function (user, index) {
-				user.isAdmin = results.isAdmin[index];
-				map[user.uid] = user;
-			});
+	const map = {};
+	userData.forEach(function (user, index) {
+		user.isAdmin = isAdmin[index];
+		map[user.uid] = user;
+	});
 
-			eventsData.forEach(function (event) {
-				if (map[event[field]]) {
-					event[objectName] = map[event[field]];
-				}
-			});
-			next(null, eventsData);
-		},
-	], callback);
+	eventsData.forEach(function (event) {
+		if (map[event[field]]) {
+			event[objectName] = map[event[field]];
+		}
+	});
+	return eventsData;
 }
 
-events.deleteEvents = function (eids, callback) {
-	callback = callback || function () {};
-	var keys;
-	async.waterfall([
-		function (next) {
-			keys = eids.map(eid => 'event:' + eid);
-			db.getObjectsFields(keys, ['type'], next);
-		},
-		function (eventData, next) {
-			var sets = _.uniq(['events:time'].concat(eventData.map(e => 'events:time:' + e.type)));
-			async.parallel([
-				function (next) {
-					db.deleteAll(keys, next);
-				},
-				function (next) {
-					db.sortedSetRemove(sets, eids, next);
-				},
-			], next);
-		},
-	], callback);
+events.deleteEvents = async function (eids) {
+	const keys = eids.map(eid => 'event:' + eid);
+	const eventData = await db.getObjectsFields(keys, ['type']);
+	const sets = _.uniq(['events:time'].concat(eventData.map(e => 'events:time:' + e.type)));
+	await Promise.all([
+		db.deleteAll(keys),
+		db.sortedSetRemove(sets, eids),
+	]);
 };
 
-events.deleteAll = function (callback) {
-	callback = callback || function () {};
-
-	batch.processSortedSet('events:time', function (eids, next) {
-		events.deleteEvents(eids, next);
-	}, { alwaysStartAt: 0 }, callback);
-};
-
-events.output = function (numEvents) {
-	numEvents = parseInt(numEvents, 10);
-	if (isNaN(numEvents)) {
-		numEvents = 10;
-	}
-
-	console.log(('\nDisplaying last ' + numEvents + ' administrative events...').bold);
-	events.getEvents('', 0, numEvents - 1, function (err, events) {
-		if (err) {
-			winston.error('Error fetching events', err);
-			throw err;
-		}
-
-		events.forEach(function (event) {
-			console.log('  * ' + String(event.timestampISO).green + ' ' + String(event.type).yellow + (event.text ? ' ' + event.text : '') + ' (uid: '.reset + (event.uid ? event.uid : 0) + ')');
-		});
-
-		process.exit(0);
-	});
+events.deleteAll = async function () {
+	await batch.processSortedSet('events:time', async function (eids) {
+		await events.deleteEvents(eids);
+	}, { alwaysStartAt: 0, batch: 500 });
 };
 
 require('./promisify')(events);

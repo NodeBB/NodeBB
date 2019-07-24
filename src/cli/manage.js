@@ -98,10 +98,19 @@ function listPlugins() {
 }
 
 function listEvents(count) {
-	async.series([
+	async.waterfall([
 		db.init,
-		async.apply(events.output, count),
-	]);
+		async.apply(events.getEvents, '', 0, (count || 10) - 1),
+		function (eventData) {
+			console.log(('\nDisplaying last ' + count + ' administrative events...').bold);
+			eventData.forEach(function (event) {
+				console.log('  * ' + String(event.timestampISO).green + ' ' + String(event.type).yellow + (event.text ? ' ' + event.text : '') + ' (uid: '.reset + (event.uid ? event.uid : 0) + ')');
+			});
+			process.exit();
+		},
+	], function (err) {
+		throw err;
+	});
 }
 
 function info() {
