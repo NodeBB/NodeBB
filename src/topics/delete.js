@@ -5,6 +5,7 @@ var db = require('../database');
 
 var user = require('../user');
 var posts = require('../posts');
+const categories = require('../categories');
 var plugins = require('../plugins');
 var batch = require('../batch');
 
@@ -33,6 +34,7 @@ module.exports = function (Topics) {
 			Topics.getPids(tid),
 		]);
 		await db.sortedSetRemove('cid:' + cid + ':pids', pids);
+		await categories.updateRecentTidForCid(cid);
 	}
 
 	async function addTopicPidsToCid(tid) {
@@ -49,6 +51,7 @@ module.exports = function (Topics) {
 			scores.push(post.timestamp);
 		});
 		await db.sortedSetAdd('cid:' + cid + ':pids', scores, pidsToAdd);
+		await categories.updateRecentTidForCid(cid);
 	}
 
 	Topics.restore = async function (tid) {
@@ -137,6 +140,7 @@ module.exports = function (Topics) {
 			], tid),
 			user.decrementUserFieldBy(topicData.uid, 'topiccount', 1),
 		]);
+		await categories.updateRecentTidForCid(topicData.cid);
 	}
 
 	async function reduceCounters(tid) {

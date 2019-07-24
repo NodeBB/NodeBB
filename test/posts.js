@@ -73,6 +73,37 @@ describe('Post\'s', function () {
 		});
 	});
 
+	it('should update category teaser properly', async function () {
+		const util = require('util');
+		const getCategoriesAsync = util.promisify(async function getCategories(callback) {
+			request(nconf.get('url') + '/api/categories', { json: true }, function (err, res, body) {
+				callback(err, body);
+			});
+		});
+
+		const postResult = await topics.post({ uid: globalModUid, cid: cid, title: 'topic title', content: '123456789' });
+
+		let data = await getCategoriesAsync();
+		assert.equal(data.categories[0].teaser.pid, postResult.postData.pid);
+		assert.equal(data.categories[0].posts[0].content, '123456789');
+		assert.equal(data.categories[0].posts[0].pid, postResult.postData.pid);
+
+		const newUid = await user.create({ username: 'teaserdelete' });
+		const newPostResult = await topics.post({ uid: newUid, cid: cid, title: 'topic title', content: 'xxxxxxxx' });
+
+		data = await getCategoriesAsync();
+		assert.equal(data.categories[0].teaser.pid, newPostResult.postData.pid);
+		assert.equal(data.categories[0].posts[0].content, 'xxxxxxxx');
+		assert.equal(data.categories[0].posts[0].pid, newPostResult.postData.pid);
+
+		await user.delete(1, newUid);
+
+		data = await getCategoriesAsync();
+		assert.equal(data.categories[0].teaser.pid, postResult.postData.pid);
+		assert.equal(data.categories[0].posts[0].content, '123456789');
+		assert.equal(data.categories[0].posts[0].pid, postResult.postData.pid);
+	});
+
 	it('should change owner of post and topic properly', async function () {
 		const oldUid = await user.create({ username: 'olduser' });
 		const newUid = await user.create({ username: 'newuser' });

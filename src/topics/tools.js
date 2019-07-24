@@ -43,7 +43,6 @@ module.exports = function (Topics) {
 		} else {
 			await Topics.restore(tid);
 		}
-		await categories.updateRecentTidForCid(topicData.cid);
 
 		topicData.deleted = isDelete ? 1 : 0;
 

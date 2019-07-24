@@ -29,7 +29,8 @@ module.exports = function (Categories) {
 			return await db.sortedSetAdd('cid:' + cid + ':recent_tids', Date.now(), tid);
 		}
 		const data = await db.getSortedSetRangeWithScores('cid:' + cid + ':recent_tids', 0, count - numRecentReplies);
-		if (data.length) {
+		const shouldRemove = !(data.length === 1 && count === 1 && data[0].value === String(tid));
+		if (data.length && shouldRemove) {
 			await db.sortedSetsRemoveRangeByScore(['cid:' + cid + ':recent_tids'], '-inf', data[data.length - 1].score);
 		}
 		await db.sortedSetAdd('cid:' + cid + ':recent_tids', Date.now(), tid);
