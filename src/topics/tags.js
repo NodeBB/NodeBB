@@ -129,7 +129,10 @@ module.exports = function (Topics) {
 
 	Topics.getTags = async function (start, stop) {
 		const tags = await db.getSortedSetRevRangeWithScores('tags:topic:count', start, stop);
-		return await Topics.getTagData(tags);
+		const payload = await plugins.fireHook('filter:tags.getAll', {
+			tags: tags,
+		});
+		return await Topics.getTagData(payload.tags);
 	};
 
 	Topics.getTagData = async function (tags) {
