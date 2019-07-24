@@ -1,17 +1,16 @@
 'use strict';
 
-var async = require('async');
-var _ = require('lodash');
+const _ = require('lodash');
 
-var db = require('../database');
-var categories = require('../categories');
-var user = require('../user');
-var plugins = require('../plugins');
-var privileges = require('../privileges');
+const db = require('../database');
+const categories = require('../categories');
+const user = require('../user');
+const plugins = require('../plugins');
+const privileges = require('../privileges');
 
 
 module.exports = function (Topics) {
-	var topicTools = {};
+	const topicTools = {};
 	Topics.tools = topicTools;
 
 	topicTools.delete = async function (tid, uid) {
@@ -161,12 +160,10 @@ module.exports = function (Topics) {
 			throw new Error('[[error:no-privileges]]');
 		}
 
-		await async.eachSeries(data, async function (topicData) {
-			const isPinned = await db.isSortedSetMember('cid:' + cid + ':tids:pinned', topicData.tid);
-			if (isPinned) {
-				await db.sortedSetAdd('cid:' + cid + ':tids:pinned', topicData.order, topicData.tid);
-			}
-		});
+		const isPinned = await db.isSortedSetMembers('cid:' + cid + ':tids:pinned', tids);
+		data = data.filter((topicData, index) => isPinned[index]);
+		const bulk = data.map(topicData => ['cid:' + cid + ':tids:pinned', topicData.order, topicData.tid]);
+		await db.sortedSetAddBulk(bulk);
 	};
 
 	topicTools.move = async function (tid, data) {
