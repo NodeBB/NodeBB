@@ -80,7 +80,7 @@
         "mubsub-nbb": "^1.5.1",
         "nconf": "^0.10.0",
         "nodebb-plugin-composer-default": "6.3.6",
-        "nodebb-plugin-dbsearch": "3.0.7",
+        "nodebb-plugin-dbsearch": "3.0.8",
         "nodebb-plugin-emoji": "^3.0.0",
         "nodebb-plugin-emoji-android": "2.0.0",
         "nodebb-plugin-markdown": "8.10.2",
