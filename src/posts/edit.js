@@ -109,18 +109,18 @@ module.exports = function (Posts) {
 		await topics.updateTopicTags(tid, data.tags);
 		const tags = await topics.getTopicTagsObjects(tid);
 
-		topicData.tags = data.tags;
-		topicData.oldTitle = topicData.title;
-		topicData.timestamp = topicData.timestamp;
+		newTopicData.tags = data.tags;
+		newTopicData.oldTitle = topicData.title;
+		newTopicData.timestamp = topicData.timestamp;
 		const renamed = translator.escape(validator.escape(String(title))) !== topicData.title;
-		plugins.fireHook('action:topic.edit', { topic: topicData, uid: data.uid });
+		plugins.fireHook('action:topic.edit', { topic: newTopicData, uid: data.uid });
 		return {
 			tid: tid,
-			cid: topicData.cid,
+			cid: newTopicData.cid,
 			uid: postData.uid,
 			title: validator.escape(String(title)),
 			oldTitle: topicData.title,
-			slug: topicData.slug,
+			slug: newTopicData.slug,
 			isMainPost: true,
 			renamed: renamed,
 			tags: tags,
