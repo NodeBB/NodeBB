@@ -207,7 +207,7 @@ module.exports = function (Topics) {
 		await Promise.all([
 			categories.incrementCategoryFieldBy(oldCid, 'topic_count', -1),
 			categories.incrementCategoryFieldBy(cid, 'topic_count', 1),
-			categories.updateRecentTid(cid, tid),
+			categories.updateRecentTidForCid(cid),
 			categories.updateRecentTidForCid(oldCid),
 			Topics.setTopicFields(tid, {
 				cid: cid,

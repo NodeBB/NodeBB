@@ -37,7 +37,7 @@ module.exports = function (Categories) {
 	};
 
 	Categories.updateRecentTidForCid = async function (cid) {
-		let recentTid;
+		let postData;
 		let topicData;
 		let index = 0;
 		do {
@@ -46,16 +46,16 @@ module.exports = function (Categories) {
 			if (!pids.length) {
 				return;
 			}
-			recentTid = await posts.getPostField(pids[0], 'tid');
-			if (!recentTid) {
-				return;
+			postData = await posts.getPostFields(pids[0], ['tid', 'deleted']);
+
+			if (postData && postData.tid && !postData.deleted) {
+				topicData = await topics.getTopicData(postData.tid);
 			}
-			topicData = await topics.getTopicData(recentTid);
 			index += 1;
 		} while (!topicData || topicData.deleted);
 
-		if (recentTid) {
-			await Categories.updateRecentTid(cid, recentTid);
+		if (postData && postData.tid) {
+			await Categories.updateRecentTid(cid, postData.tid);
 		}
 	};
 

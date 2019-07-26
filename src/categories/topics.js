@@ -169,11 +169,11 @@ module.exports = function (Categories) {
 		const promises = [
 			db.sortedSetAdd('cid:' + cid + ':pids', postData.timestamp, postData.pid),
 			db.incrObjectField('category:' + cid, 'post_count'),
-			Categories.updateRecentTid(cid, postData.tid),
 		];
 		if (!pinned) {
 			promises.push(db.sortedSetIncrBy('cid:' + cid + ':tids:posts', 1, postData.tid));
 		}
 		await Promise.all(promises);
+		await Categories.updateRecentTidForCid(cid);
 	};
 };
