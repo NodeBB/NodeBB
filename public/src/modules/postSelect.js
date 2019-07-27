@@ -18,8 +18,14 @@ define('postSelect', ['components'], function (components) {
 		disableClicksOnPosts();
 	};
 
-	function onPostClicked() {
-		PostSelect.togglePostSelection($(this));
+	function onPostClicked(ev) {
+		ev.stopPropagation();
+		var pidClicked = $(this).attr('data-pid');
+		var postEls = $('[component="topic"] [data-pid="' + pidClicked + '"]');
+		if (!allowMainPostSelect && parseInt($(this).attr('data-index'), 10) === 0) {
+			return;
+		}
+		PostSelect.togglePostSelection(postEls, pidClicked);
 	}
 
 	PostSelect.disable = function () {
@@ -31,21 +37,15 @@ define('postSelect', ['components'], function (components) {
 		enableClicksOnPosts();
 	};
 
-	PostSelect.togglePostSelection = function (post) {
-		var newPid = post.attr('data-pid');
-
-		if (!allowMainPostSelect && parseInt(post.attr('data-index'), 10) === 0) {
-			return;
-		}
-
-		if (newPid) {
-			var index = PostSelect.pids.indexOf(newPid);
+	PostSelect.togglePostSelection = function (postEls, pid) {
+		if (pid) {
+			var index = PostSelect.pids.indexOf(pid);
 			if (index === -1) {
-				PostSelect.pids.push(newPid);
-				post.toggleClass('bg-success', true);
+				PostSelect.pids.push(pid);
+				postEls.toggleClass('bg-success', true);
 			} else {
 				PostSelect.pids.splice(index, 1);
-				post.toggleClass('bg-success', false);
+				postEls.toggleClass('bg-success', false);
 			}
 
 			if (PostSelect.pids.length) {
@@ -56,7 +56,6 @@ define('postSelect', ['components'], function (components) {
 			}
 		}
 	};
-
 
 	function disableClicks() {
 		return false;
