@@ -886,14 +886,11 @@ describe('Controllers', function () {
 						widgets: [
 							{
 								widget: 'html',
-								data: [{
-									widget: 'html',
-									data: {
-										html: 'test',
-										title: '',
-										container: '',
-									},
-								}],
+								data: {
+									html: 'test',
+									title: '',
+									container: '',
+								},
 							},
 						],
 					};
@@ -920,6 +917,7 @@ describe('Controllers', function () {
 				assert.equal(res.statusCode, 200);
 				assert(body.widgets);
 				assert(body.widgets.sidebar);
+				assert.equal(body.widgets.sidebar[0].html, 'test');
 				done();
 			});
 		});
