@@ -8,8 +8,6 @@ const path = require('path');
 const nconf = require('nconf');
 const benchpress = require('benchpressjs');
 
-const compileParseAsync = util.promisify(benchpress.compileParse);
-
 const plugins = require('../plugins');
 const groups = require('../groups');
 const index = require('./index');
@@ -66,7 +64,7 @@ async function renderAdminTemplate() {
 		groups.getNonPrivilegeGroups('groups:createtime', 0, -1),
 	]);
 	groupsData.sort((a, b) => b.system - a.system);
-	return await compileParseAsync(source, { groups: groupsData });
+	return await benchpress.compileRender(source, { groups: groupsData });
 }
 
 async function getSource() {
@@ -75,8 +73,8 @@ async function getSource() {
 
 function buildTemplatesFromAreas(areas) {
 	const templates = [];
-	var list = {};
-	var index = 0;
+	const list = {};
+	let index = 0;
 
 	areas.forEach(function (area) {
 		if (typeof list[area.template] === 'undefined') {
