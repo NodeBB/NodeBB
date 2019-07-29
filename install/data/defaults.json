@@ -20,6 +20,7 @@
     "chatDeleteDuration": 0,
     "chatMessageDelay": 200,
     "newbiePostDelayThreshold": 3,
+    "postQueueReputationThreshold": 0,
     "minimumPostLength": 8,
     "maximumPostLength": 32767,
     "minimumTagsPerTopic": 0,

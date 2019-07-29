@@ -7,7 +7,7 @@
 
 			<!-- IF !posts.length -->
 			<p class="panel-body">
-				[[admin/manage/post-queue:description, {config.relative_path}/admin/settings/post#posting-restrictions]]
+				[[admin/manage/post-queue:description, {config.relative_path}/admin/settings/post#post-queue]]
 			</p>
 			<!-- ENDIF !posts.length -->
 
