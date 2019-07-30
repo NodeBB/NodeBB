@@ -9,7 +9,6 @@ var meta = require('../meta');
 var topics = require('../topics');
 const categories = require('../categories');
 var user = require('../user');
-var websockets = require('./index');
 var socketHelpers = require('./helpers');
 var utils = require('../utils');
 
@@ -29,9 +28,7 @@ SocketPosts.reply = function (socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	data.uid = socket.uid;
-	data.req = websockets.reqFromSocket(socket);
-	data.timestamp = Date.now();
+	socketHelpers.setDefaultPostData(data, socket);
 
 	async.waterfall([
 		function (next) {
