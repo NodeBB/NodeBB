@@ -4,7 +4,6 @@ var async = require('async');
 
 var topics = require('../topics');
 var posts = require('../posts');
-var websockets = require('./index');
 var user = require('../user');
 var meta = require('../meta');
 var apiController = require('../controllers/api');
@@ -25,9 +24,7 @@ SocketTopics.post = function (socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	data.uid = socket.uid;
-	data.req = websockets.reqFromSocket(socket);
-	data.timestamp = Date.now();
+	socketHelpers.setDefaultPostData(data, socket);
 
 	async.waterfall([
 		function (next) {

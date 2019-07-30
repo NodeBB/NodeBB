@@ -518,7 +518,7 @@ describe('Post\'s', function () {
 			setTimeout(function () {
 				socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content again', title: 'edited title again', tags: ['edited-twice'] }, function (err, data) {
 					assert.equal(err.message, '[[error:post-edit-duration-expired, 1]]');
-					meta.config.newbiePostEditDuration = 3600000;
+					meta.config.newbiePostEditDuration = 3600;
 					done();
 				});
 			}, 1000);

@@ -88,7 +88,9 @@ module.exports = function (Topics) {
 		}
 
 		await guestHandleValid(data);
-		await user.isReadyToPost(data.uid, data.cid);
+		if (!data.fromQueue) {
+			await user.isReadyToPost(data.uid, data.cid);
+		}
 		const filteredData = await plugins.fireHook('filter:topic.post', data);
 		data = filteredData;
 		const tid = await Topics.create(data);
@@ -159,7 +161,9 @@ module.exports = function (Topics) {
 		}
 
 		await guestHandleValid(data);
-		await user.isReadyToPost(uid, data.cid);
+		if (!data.fromQueue) {
+			await user.isReadyToPost(uid, data.cid);
+		}
 		await plugins.fireHook('filter:topic.reply', data);
 		if (data.content) {
 			data.content = utils.rtrim(data.content);

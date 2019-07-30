@@ -18,6 +18,13 @@ var batch = require('../batch');
 
 var SocketHelpers = module.exports;
 
+SocketHelpers.setDefaultPostData = function (data, socket) {
+	data.uid = socket.uid;
+	data.req = websockets.reqFromSocket(socket);
+	data.timestamp = Date.now();
+	data.fromQueue = false;
+};
+
 SocketHelpers.notifyNew = function (uid, type, result) {
 	async.waterfall([
 		function (next) {

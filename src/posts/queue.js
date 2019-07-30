@@ -127,6 +127,7 @@ module.exports = function (Posts) {
 			return null;
 		}
 		data.data = JSON.parse(data.data);
+		data.data.fromQueue = true;
 		return data;
 	}
 
