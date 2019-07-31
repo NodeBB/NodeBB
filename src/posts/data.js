@@ -21,7 +21,11 @@ module.exports = function (Posts) {
 		} else {
 			postData = await db.getObjects(keys);
 		}
-		const result = await plugins.fireHook('filter:post.getFields', { posts: postData, fields: fields });
+		const result = await plugins.fireHook('filter:post.getFields', {
+			pids: pids,
+			posts: postData,
+			fields: fields,
+		});
 		result.posts.forEach(post => modifyPost(post, fields));
 		return Array.isArray(result.posts) ? result.posts : null;
 	};
