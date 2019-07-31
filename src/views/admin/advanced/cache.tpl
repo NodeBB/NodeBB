@@ -6,12 +6,6 @@
 				<div class="panel panel-default">
 					<div class="panel-heading"><i class="fa fa-calendar-o"></i> [[admin/advanced/cache:post-cache]]</div>
 					<div class="panel-body">
-						<label>[[admin/advanced/cache:posts-in-cache]]</label><br/>
-						<span>{postCache.itemCount}</span><br/>
-
-						<label>[[admin/advanced/cache:average-post-size]]</label><br/>
-						<span>{postCache.avgPostSize}</span><br/>
-
 						<label>[[admin/advanced/cache:length-to-max]]</label><br/>
 						<span>{postCache.length} / {postCache.max}</span><br/>
 
@@ -24,6 +18,14 @@
 						<label>Hits:</label> <span>{postCache.hits}</span><br/>
 						<label>Misses:</label> <span>{postCache.misses}</span><br/>
 						<label>Hit Ratio:</label> <span>{postCache.hitRatio}</span><br/>
+
+						<hr/>
+
+						<label>[[admin/advanced/cache:posts-in-cache]]</label><br/>
+						<span>{postCache.itemCount}</span><br/>
+
+						<label>[[admin/advanced/cache:average-post-size]]</label><br/>
+						<span>{postCache.avgPostSize}</span><br/>
 
 						<div class="form-group">
 							<label for="postCacheSize">[[admin/advanced/cache:post-cache-size]]</label>
