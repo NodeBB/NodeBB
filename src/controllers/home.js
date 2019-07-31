@@ -1,66 +1,52 @@
 'use strict';
 
-var async = require('async');
-var url = require('url');
+const url = require('url');
 
-var plugins = require('../plugins');
-var meta = require('../meta');
-var user = require('../user');
+const plugins = require('../plugins');
+const meta = require('../meta');
+const user = require('../user');
 
 function adminHomePageRoute() {
 	return (meta.config.homePageRoute || meta.config.homePageCustom || '').replace(/^\/+/, '') || 'categories';
 }
 
-function getUserHomeRoute(uid, callback) {
-	async.waterfall([
-		function (next) {
-			user.getSettings(uid, next);
-		},
-		function (settings, next) {
-			var route = adminHomePageRoute();
+async function getUserHomeRoute(uid) {
+	const settings = await user.getSettings(uid);
+	let route = adminHomePageRoute();
 
-			if (settings.homePageRoute !== 'undefined' && settings.homePageRoute !== 'none') {
-				route = (settings.homePageRoute || route).replace(/^\/+/, '');
-			}
+	if (settings.homePageRoute !== 'undefined' && settings.homePageRoute !== 'none') {
+		route = (settings.homePageRoute || route).replace(/^\/+/, '');
+	}
 
-			next(null, route);
-		},
-	], callback);
+	return route;
 }
 
-function rewrite(req, res, next) {
+async function rewrite(req, res, next) {
 	if (req.path !== '/' && req.path !== '/api/' && req.path !== '/api') {
 		return next();
 	}
+	let route = adminHomePageRoute();
+	if (meta.config.allowUserHomePage) {
+		route = await getUserHomeRoute(req.uid, next);
+	}
 
-	async.waterfall([
-		function (next) {
-			if (meta.config.allowUserHomePage) {
-				getUserHomeRoute(req.uid, next);
-			} else {
-				next(null, adminHomePageRoute());
-			}
-		},
-		function (route, next) {
-			var parsedUrl;
-			try {
-				parsedUrl = url.parse(route, true);
-			} catch (err) {
-				return next(err);
-			}
+	let parsedUrl;
+	try {
+		parsedUrl = url.parse(route, true);
+	} catch (err) {
+		return next(err);
+	}
 
-			var pathname = parsedUrl.pathname;
-			var hook = 'action:homepage.get:' + pathname;
-			if (!plugins.hasListeners(hook)) {
-				req.url = req.path + (!req.path.endsWith('/') ? '/' : '') + pathname;
-			} else {
-				res.locals.homePageRoute = pathname;
-			}
-			req.query = Object.assign(parsedUrl.query, req.query);
+	const pathname = parsedUrl.pathname;
+	const hook = 'action:homepage.get:' + pathname;
+	if (!plugins.hasListeners(hook)) {
+		req.url = req.path + (!req.path.endsWith('/') ? '/' : '') + pathname;
+	} else {
+		res.locals.homePageRoute = pathname;
+	}
+	req.query = Object.assign(parsedUrl.query, req.query);
 
-			next();
-		},
-	], next);
+	next();
 }
 
 exports.rewrite = rewrite;
