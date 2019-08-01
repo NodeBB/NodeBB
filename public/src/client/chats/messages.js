@@ -64,6 +64,9 @@ define('forum/chats/messages', ['components', 'sounds', 'translator', 'benchpres
 		var element = parent.find('[component="chat/input"]');
 		parent.find('[component="chat/message/length"]').text(element.val().length);
 		parent.find('[component="chat/message/remaining"]').text(config.maximumChatMessageLength - element.val().length);
+		$(window).trigger('action:chat.updateRemainingLength', {
+			parent: parent,
+		});
 	};
 
 	messages.appendChatMessage = function (chatContentEl, data) {
