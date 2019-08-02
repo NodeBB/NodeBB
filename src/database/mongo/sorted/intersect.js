@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (db, module) {
+module.exports = function (module) {
 	module.sortedSetIntersectCard = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return 0;
@@ -13,7 +13,7 @@ module.exports = function (db, module) {
 			{ $group: { _id: null, count: { $sum: 1 } } },
 		];
 
-		const data = await db.collection('objects').aggregate(pipeline).toArray();
+		const data = await module.client.collection('objects').aggregate(pipeline).toArray();
 		return Array.isArray(data) && data.length ? data[0].count : 0;
 	};
 
@@ -87,7 +87,7 @@ module.exports = function (db, module) {
 		}
 		pipeline.push({ $project: project });
 
-		let data = await db.collection('objects').aggregate(pipeline).toArray();
+		let data = await module.client.collection('objects').aggregate(pipeline).toArray();
 
 		if (!params.withScores) {
 			data = data.map(item => item.value);

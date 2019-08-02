@@ -2,15 +2,15 @@
 
 var utils = require('../../utils');
 
-module.exports = function (db, module) {
+module.exports = function (module) {
 	var helpers = require('./helpers');
 	const util = require('util');
 	const sleep = util.promisify(setTimeout);
 
-	require('./sorted/add')(db, module);
-	require('./sorted/remove')(db, module);
-	require('./sorted/union')(db, module);
-	require('./sorted/intersect')(db, module);
+	require('./sorted/add')(module);
+	require('./sorted/remove')(module);
+	require('./sorted/union')(module);
+	require('./sorted/intersect')(module);
 
 	module.getSortedSetRange = async function (key, start, stop) {
 		return await getSortedSetRange(key, start, stop, '-inf', '+inf', 1, false);
@@ -81,7 +81,7 @@ module.exports = function (db, module) {
 			limit = 0;
 		}
 
-		let data = await db.collection('objects').find(query, { projection: fields })
+		let data = await module.client.collection('objects').find(query, { projection: fields })
 			.sort({ score: sort })
 			.skip(start)
 			.limit(limit)
@@ -135,7 +135,7 @@ module.exports = function (db, module) {
 			query.score.$lte = max;
 		}
 
-		const count = await db.collection('objects').countDocuments(query);
+		const count = await module.client.collection('objects').countDocuments(query);
 		return count || 0;
 	};
 
@@ -143,7 +143,7 @@ module.exports = function (db, module) {
 		if (!key) {
 			return 0;
 		}
-		const count = await db.collection('objects').countDocuments({ _key: key });
+		const count = await module.client.collection('objects').countDocuments({ _key: key });
 		return parseInt(count, 10) || 0;
 	};
 
@@ -160,7 +160,7 @@ module.exports = function (db, module) {
 			return 0;
 		}
 
-		const count = await db.collection('objects').countDocuments({ _key: Array.isArray(keys) ? { $in: keys } : keys });
+		const count = await module.client.collection('objects').countDocuments({ _key: Array.isArray(keys) ? { $in: keys } : keys });
 		return parseInt(count, 10) || 0;
 	};
 
@@ -182,7 +182,7 @@ module.exports = function (db, module) {
 			return null;
 		}
 
-		return await db.collection('objects').countDocuments({
+		return await module.client.collection('objects').countDocuments({
 			$or: [
 				{
 					_key: key,
@@ -243,7 +243,7 @@ module.exports = function (db, module) {
 			return null;
 		}
 		value = helpers.valueToString(value);
-		const result = await db.collection('objects').findOne({ _key: key, value: value }, { projection: { _id: 0, _key: 0, value: 0 } });
+		const result = await module.client.collection('objects').findOne({ _key: key, value: value }, { projection: { _id: 0, _key: 0, value: 0 } });
 		return result ? result.score : null;
 	};
 
@@ -252,7 +252,7 @@ module.exports = function (db, module) {
 			return [];
 		}
 		value = helpers.valueToString(value);
-		const result = await db.collection('objects').find({ _key: { $in: keys }, value: value }, { projection: { _id: 0, value: 0 } }).toArray();
+		const result = await module.client.collection('objects').find({ _key: { $in: keys }, value: value }, { projection: { _id: 0, value: 0 } }).toArray();
 		var map = {};
 		result.forEach(function (item) {
 			if (item) {
@@ -271,7 +271,7 @@ module.exports = function (db, module) {
 			return [];
 		}
 		values = values.map(helpers.valueToString);
-		const result = await db.collection('objects').find({ _key: key, value: { $in: values } }, { projection: { _id: 0, _key: 0 } }).toArray();
+		const result = await module.client.collection('objects').find({ _key: key, value: { $in: values } }, { projection: { _id: 0, _key: 0 } }).toArray();
 
 		var valueToScore = {};
 		result.forEach(function (item) {
@@ -288,7 +288,7 @@ module.exports = function (db, module) {
 			return;
 		}
 		value = helpers.valueToString(value);
-		const result = await db.collection('objects').findOne({ _key: key, value: value }, { projection: { _id: 0, _key: 0, score: 0 } });
+		const result = await module.client.collection('objects').findOne({ _key: key, value: value }, { projection: { _id: 0, _key: 0, score: 0 } });
 		return !!result;
 	};
 
@@ -297,7 +297,7 @@ module.exports = function (db, module) {
 			return;
 		}
 		values = values.map(helpers.valueToString);
-		const results = await db.collection('objects').find({ _key: key, value: { $in: values } }, { projection: { _id: 0, _key: 0, score: 0 } }).toArray();
+		const results = await module.client.collection('objects').find({ _key: key, value: { $in: values } }, { projection: { _id: 0, _key: 0, score: 0 } }).toArray();
 
 		var isMember = {};
 		results.forEach(function (item) {
@@ -314,7 +314,7 @@ module.exports = function (db, module) {
 			return [];
 		}
 		value = helpers.valueToString(value);
-		const results = await db.collection('objects').find({ _key: { $in: keys }, value: value }, { projection: { _id: 0, score: 0 } }).toArray();
+		const results = await module.client.collection('objects').find({ _key: { $in: keys }, value: value }, { projection: { _id: 0, score: 0 } }).toArray();
 
 		var isMember = {};
 		results.forEach(function (item) {
@@ -331,7 +331,7 @@ module.exports = function (db, module) {
 			return [];
 		}
 
-		const data = await db.collection('objects').find({
+		const data = await module.client.collection('objects').find({
 			_key: keys.length === 1 ? keys[0] : { $in: keys },
 		}, { projection: { _id: 0, score: 0 } }).sort({ score: 1 }).toArray();
 
@@ -353,7 +353,7 @@ module.exports = function (db, module) {
 		data.score = parseFloat(increment);
 
 		try {
-			const result = await db.collection('objects').findOneAndUpdate({ _key: key, value: value }, { $inc: data }, { returnOriginal: false, upsert: true });
+			const result = await module.client.collection('objects').findOneAndUpdate({ _key: key, value: value }, { $inc: data }, { returnOriginal: false, upsert: true });
 			return result && result.value ? result.value.score : null;
 		} catch (err) {
 			// if there is duplicate key error retry the upsert
@@ -386,7 +386,7 @@ module.exports = function (db, module) {
 		count = count !== undefined ? count : 0;
 		buildLexQuery(query, min, max);
 
-		const data = await db.collection('objects').find(query, { projection: { _id: 0, _key: 0, score: 0 } })
+		const data = await module.client.collection('objects').find(query, { projection: { _id: 0, _key: 0, score: 0 } })
 			.sort({ value: sort })
 			.skip(start)
 			.limit(count === -1 ? 0 : count)
@@ -399,7 +399,7 @@ module.exports = function (db, module) {
 		var query = { _key: key };
 		buildLexQuery(query, min, max);
 
-		await db.collection('objects').deleteMany(query);
+		await module.client.collection('objects').deleteMany(query);
 	};
 
 	function buildLexQuery(query, min, max) {
@@ -432,7 +432,7 @@ module.exports = function (db, module) {
 		if (!options.withScores) {
 			project.score = 0;
 		}
-		var cursor = await db.collection('objects').find({ _key: setKey }, { projection: project })
+		var cursor = await module.client.collection('objects').find({ _key: setKey }, { projection: project })
 			.sort({ score: 1 })
 			.batchSize(options.batch);
 

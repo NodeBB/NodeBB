@@ -9,13 +9,6 @@ var semver = require('semver');
 
 var postgresModule = module.exports;
 
-require('./postgres/main')(postgresModule);
-require('./postgres/hash')(postgresModule);
-require('./postgres/sets')(postgresModule);
-require('./postgres/sorted')(postgresModule);
-require('./postgres/list')(postgresModule);
-require('./postgres/transaction')(postgresModule);
-
 postgresModule.questions = [
 	{
 		name: 'postgres:host',
@@ -436,5 +429,12 @@ postgresModule.socketAdapter = function () {
 		pubClient: postgresModule.pool,
 	});
 };
+
+require('./postgres/main')(postgresModule);
+require('./postgres/hash')(postgresModule);
+require('./postgres/sets')(postgresModule);
+require('./postgres/sorted')(postgresModule);
+require('./postgres/list')(postgresModule);
+require('./postgres/transaction')(postgresModule);
 
 postgresModule.async = require('../promisify')(postgresModule, ['client', 'sessionStore', 'pool', 'transaction']);
