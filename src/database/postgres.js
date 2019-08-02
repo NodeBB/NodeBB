@@ -81,12 +81,7 @@ postgresModule.init = function (callback) {
 		}
 
 		postgresModule.pool = db;
-		Object.defineProperty(postgresModule, 'client', {
-			get: function () {
-				return db;
-			},
-			configurable: true,
-		});
+		postgresModule.client = db;
 
 		var wrappedDB = {
 			connect: function () {
