@@ -1,7 +1,7 @@
 
 'use strict';
 
-module.exports = function (redisClient, module) {
+module.exports = function (module) {
 	var helpers = require('../helpers');
 
 	module.sortedSetRemove = async function (key, value) {
@@ -17,11 +17,11 @@ module.exports = function (redisClient, module) {
 		}
 
 		if (Array.isArray(key)) {
-			const batch = redisClient.batch();
+			const batch = module.client.batch();
 			key.forEach(k => batch.zrem(k, value));
 			await helpers.execBatch(batch);
 		} else {
-			await redisClient.async.zrem(key, value);
+			await module.client.async.zrem(key, value);
 		}
 	};
 
@@ -30,7 +30,7 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.sortedSetsRemoveRangeByScore = async function (keys, min, max) {
-		var batch = redisClient.batch();
+		var batch = module.client.batch();
 		keys.forEach(k => batch.zremrangebyscore(k, min, max));
 		await helpers.execBatch(batch);
 	};
@@ -39,7 +39,7 @@ module.exports = function (redisClient, module) {
 		if (!Array.isArray(data) || !data.length) {
 			return;
 		}
-		const batch = redisClient.batch();
+		const batch = module.client.batch();
 		data.forEach(item => batch.zrem(item[0], item[1]));
 		await helpers.execBatch(batch);
 	};

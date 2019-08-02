@@ -7,7 +7,6 @@ var nconf = require('nconf');
 var semver = require('semver');
 var session = require('express-session');
 var redis = require('redis');
-var redisClient;
 
 var redisModule = module.exports;
 
@@ -49,23 +48,14 @@ redisModule.getConnectionOptions = function (redis) {
 
 redisModule.init = function (callback) {
 	callback = callback || function () { };
-	redisClient = redisModule.connect(nconf.get('redis'), function (err) {
+	redisModule.client = redisModule.connect(nconf.get('redis'), function (err) {
 		if (err) {
 			winston.error('NodeBB could not connect to your Redis database. Redis returned the following error', err);
 			return callback(err);
 		}
-		redisModule.client = redisClient;
 
-		require('./redis/promisify')(redisClient);
+		require('./redis/promisify')(redisModule.client);
 
-		require('./redis/main')(redisClient, redisModule);
-		require('./redis/hash')(redisClient, redisModule);
-		require('./redis/sets')(redisClient, redisModule);
-		require('./redis/sorted')(redisClient, redisModule);
-		require('./redis/list')(redisClient, redisModule);
-		require('./redis/transaction')(redisClient, redisModule);
-
-		redisModule.async = require('../promisify')(redisModule, ['client', 'sessionStore', 'connect']);
 		callback();
 	});
 };
@@ -161,7 +151,7 @@ redisModule.checkCompatibilityVersion = function (version, callback) {
 
 redisModule.close = function (callback) {
 	callback = callback || function () {};
-	redisClient.quit(function (err) {
+	redisModule.client.quit(function (err) {
 		callback(err);
 	});
 };
@@ -221,3 +211,12 @@ redisModule.socketAdapter = function () {
 		subClient: sub,
 	});
 };
+
+require('./redis/main')(redisModule);
+require('./redis/hash')(redisModule);
+require('./redis/sets')(redisModule);
+require('./redis/sorted')(redisModule);
+require('./redis/list')(redisModule);
+require('./redis/transaction')(redisModule);
+
+redisModule.async = require('../promisify')(redisModule, ['client', 'sessionStore', 'connect']);

@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (redisClient, module) {
+module.exports = function (module) {
 	const helpers = require('../helpers');
 	const utils = require('../../../utils');
 
@@ -14,7 +14,7 @@ module.exports = function (redisClient, module) {
 		if (!utils.isNumber(score)) {
 			throw new Error('[[error:invalid-score, ' + score + ']]');
 		}
-		await redisClient.async.zadd(key, score, String(value));
+		await module.client.async.zadd(key, score, String(value));
 	};
 
 	async function sortedSetAddMulti(key, scores, values) {
@@ -34,7 +34,7 @@ module.exports = function (redisClient, module) {
 		for (var i = 0; i < scores.length; i += 1) {
 			args.push(scores[i], String(values[i]));
 		}
-		await redisClient.async.zadd(args);
+		await module.client.async.zadd(args);
 	}
 
 	module.sortedSetsAdd = async function (keys, scores, value) {
@@ -50,7 +50,7 @@ module.exports = function (redisClient, module) {
 			throw new Error('[[error:invalid-data]]');
 		}
 
-		var batch = redisClient.batch();
+		var batch = module.client.batch();
 		for (var i = 0; i < keys.length; i += 1) {
 			if (keys[i]) {
 				batch.zadd(keys[i], isArrayOfScores ? scores[i] : scores, String(value));
@@ -63,7 +63,7 @@ module.exports = function (redisClient, module) {
 		if (!Array.isArray(data) || !data.length) {
 			return;
 		}
-		var batch = redisClient.batch();
+		var batch = module.client.batch();
 		data.forEach(function (item) {
 			batch.zadd(item[0], item[1], item[2]);
 		});

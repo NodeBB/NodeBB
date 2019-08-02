@@ -1,14 +1,14 @@
 
 'use strict';
 
-module.exports = function (redisClient, module) {
+module.exports = function (module) {
 	const helpers = require('../helpers');
 	module.sortedSetUnionCard = async function (keys) {
 		var tempSetName = 'temp_' + Date.now();
 		if (!keys.length) {
 			return 0;
 		}
-		var multi = redisClient.multi();
+		var multi = module.client.multi();
 		multi.zunionstore([tempSetName, keys.length].concat(keys));
 		multi.zcard(tempSetName);
 		multi.del(tempSetName);
@@ -38,7 +38,7 @@ module.exports = function (redisClient, module) {
 			rangeParams.push('WITHSCORES');
 		}
 
-		var multi = redisClient.multi();
+		var multi = module.client.multi();
 		multi.zunionstore([tempSetName, params.sets.length].concat(params.sets));
 		multi[params.method](rangeParams);
 		multi.del(tempSetName);
