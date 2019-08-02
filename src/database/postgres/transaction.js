@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (db, module) {
+module.exports = function (module) {
 	module.transaction = async function (perform, txClient) {
 		let res;
 		if (txClient) {
@@ -15,7 +15,7 @@ module.exports = function (db, module) {
 			return res;
 		}
 		// see https://node-postgres.com/features/transactions#a-pooled-client-with-async-await
-		const client = await db.connect();
+		const client = await module.pool.connect();
 
 		try {
 			await client.query('BEGIN');

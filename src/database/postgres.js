@@ -9,6 +9,13 @@ var semver = require('semver');
 
 var postgresModule = module.exports;
 
+require('./postgres/main')(postgresModule);
+require('./postgres/hash')(postgresModule);
+require('./postgres/sets')(postgresModule);
+require('./postgres/sorted')(postgresModule);
+require('./postgres/list')(postgresModule);
+require('./postgres/transaction')(postgresModule);
+
 postgresModule.questions = [
 	{
 		name: 'postgres:host',
@@ -83,30 +90,9 @@ postgresModule.init = function (callback) {
 		postgresModule.pool = db;
 		postgresModule.client = db;
 
-		var wrappedDB = {
-			connect: function () {
-				return postgresModule.pool.connect.apply(postgresModule.pool, arguments);
-			},
-			query: function () {
-				return postgresModule.client.query.apply(postgresModule.client, arguments);
-			},
-		};
-
 		checkUpgrade(client, function (err) {
 			release();
-			if (err) {
-				return callback(err);
-			}
-
-			require('./postgres/main')(wrappedDB, postgresModule);
-			require('./postgres/hash')(wrappedDB, postgresModule);
-			require('./postgres/sets')(wrappedDB, postgresModule);
-			require('./postgres/sorted')(wrappedDB, postgresModule);
-			require('./postgres/list')(wrappedDB, postgresModule);
-			require('./postgres/transaction')(db, postgresModule);
-
-			postgresModule.async = require('../promisify')(postgresModule, ['client', 'sessionStore', 'pool', 'transaction']);
-			callback();
+			callback(err);
 		});
 	});
 };
@@ -450,3 +436,5 @@ postgresModule.socketAdapter = function () {
 		pubClient: postgresModule.pool,
 	});
 };
+
+postgresModule.async = require('../promisify')(postgresModule, ['client', 'sessionStore', 'pool', 'transaction']);

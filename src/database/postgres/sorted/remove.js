@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (db, module) {
+module.exports = function (module) {
 	var helpers = require('../helpers');
 
 	module.sortedSetRemove = async function (key, value) {
@@ -20,7 +20,7 @@ module.exports = function (db, module) {
 			value = [value];
 		}
 		value = value.map(helpers.valueToString);
-		await db.query({
+		await module.pool.query({
 			name: 'sortedSetRemove',
 			text: `
 DELETE FROM "legacy_zset"
@@ -37,7 +37,7 @@ DELETE FROM "legacy_zset"
 
 		value = helpers.valueToString(value);
 
-		await db.query({
+		await module.pool.query({
 			name: 'sortedSetsRemove',
 			text: `
 DELETE FROM "legacy_zset"
@@ -59,7 +59,7 @@ DELETE FROM "legacy_zset"
 			max = null;
 		}
 
-		await db.query({
+		await module.pool.query({
 			name: 'sortedSetsRemoveRangeByScore',
 			text: `
 DELETE FROM "legacy_zset"

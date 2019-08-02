@@ -1,12 +1,12 @@
 'use strict';
 
-module.exports = function (db, module) {
+module.exports = function (module) {
 	module.sortedSetIntersectCard = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return 0;
 		}
 
-		const res = await db.query({
+		const res = await module.pool.query({
 			name: 'sortedSetIntersectCard',
 			text: `
 WITH A AS (SELECT z."value" v,
@@ -55,7 +55,7 @@ SELECT COUNT(*) c
 			limit = null;
 		}
 
-		const res = await db.query({
+		const res = await module.pool.query({
 			name: 'getSortedSetIntersect' + aggregate + (params.sort > 0 ? 'Asc' : 'Desc') + 'WithScores',
 			text: `
 WITH A AS (SELECT z."value",

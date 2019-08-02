@@ -2,7 +2,7 @@
 
 var _ = require('lodash');
 
-module.exports = function (db, module) {
+module.exports = function (module) {
 	var helpers = require('./helpers');
 
 	module.setAdd = async function (key, value) {
@@ -11,9 +11,8 @@ module.exports = function (db, module) {
 		}
 
 		await module.transaction(async function (client) {
-			var query = client.query.bind(client);
 			await helpers.ensureLegacyObjectType(client, key, 'set');
-			await query({
+			await client.query({
 				name: 'setAdd',
 				text: `
 INSERT INTO "legacy_set" ("_key", "member")
@@ -38,9 +37,8 @@ DO NOTHING`,
 		keys = _.uniq(keys);
 
 		await module.transaction(async function (client) {
-			var query = client.query.bind(client);
 			await helpers.ensureLegacyObjectsType(client, keys, 'set');
-			await query({
+			await client.query({
 				name: 'setsAdd',
 				text: `
 INSERT INTO "legacy_set" ("_key", "member")
@@ -63,7 +61,7 @@ DO NOTHING`,
 			value = [value];
 		}
 
-		await db.query({
+		await module.pool.query({
 			name: 'setRemove',
 			text: `
 DELETE FROM "legacy_set"
@@ -78,7 +76,7 @@ DELETE FROM "legacy_set"
 			return;
 		}
 
-		await db.query({
+		await module.pool.query({
 			name: 'setsRemove',
 			text: `
 DELETE FROM "legacy_set"
@@ -93,7 +91,7 @@ DELETE FROM "legacy_set"
 			return false;
 		}
 
-		const res = await db.query({
+		const res = await module.pool.query({
 			name: 'isSetMember',
 			text: `
 SELECT 1
@@ -116,7 +114,7 @@ SELECT 1
 
 		values = values.map(helpers.valueToString);
 
-		const res = await db.query({
+		const res = await module.pool.query({
 			name: 'isSetMembers',
 			text: `
 SELECT s."member" m
@@ -141,7 +139,7 @@ SELECT s."member" m
 
 		value = helpers.valueToString(value);
 
-		const res = await db.query({
+		const res = await module.pool.query({
 			name: 'isMemberOfSets',
 			text: `
 SELECT o."_key" k
@@ -164,7 +162,7 @@ SELECT o."_key" k
 			return [];
 		}
 
-		const res = await db.query({
+		const res = await module.pool.query({
 			name: 'getSetMembers',
 			text: `
 SELECT s."member" m
@@ -184,7 +182,7 @@ SELECT s."member" m
 			return [];
 		}
 
-		const res = await db.query({
+		const res = await module.pool.query({
 			name: 'getSetsMembers',
 			text: `
 SELECT o."_key" k,
@@ -208,7 +206,7 @@ SELECT o."_key" k,
 			return 0;
 		}
 
-		const res = await db.query({
+		const res = await module.pool.query({
 			name: 'setCount',
 			text: `
 SELECT COUNT(*) c
@@ -224,7 +222,7 @@ SELECT COUNT(*) c
 	};
 
 	module.setsCount = async function (keys) {
-		const res = await db.query({
+		const res = await module.pool.query({
 			name: 'setsCount',
 			text: `
 SELECT o."_key" k,
@@ -244,7 +242,7 @@ SELECT o."_key" k,
 	};
 
 	module.setRemoveRandom = async function (key) {
-		const res = await db.query({
+		const res = await module.pool.query({
 			name: 'setRemoveRandom',
 			text: `
 WITH A AS (

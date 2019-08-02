@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (db, module) {
+module.exports = function (module) {
 	var helpers = require('../helpers');
 	var utils = require('../../../utils');
 
@@ -19,10 +19,8 @@ module.exports = function (db, module) {
 		score = parseFloat(score);
 
 		await module.transaction(async function (client) {
-			var query = client.query.bind(client);
-
 			await helpers.ensureLegacyObjectType(client, key, 'zset');
-			await query({
+			await client.query({
 				name: 'sortedSetAdd',
 				text: `
 	INSERT INTO "legacy_zset" ("_key", "value", "score")
@@ -52,9 +50,8 @@ module.exports = function (db, module) {
 		helpers.removeDuplicateValues(values, scores);
 
 		await module.transaction(async function (client) {
-			var query = client.query.bind(client);
 			await helpers.ensureLegacyObjectType(client, key, 'zset');
-			await query({
+			await client.query({
 				name: 'sortedSetAddBulk',
 				text: `
 INSERT INTO "legacy_zset" ("_key", "value", "score")
@@ -84,9 +81,8 @@ DO UPDATE SET "score" = EXCLUDED."score"`,
 		scores = isArrayOfScores ? scores.map(score => parseFloat(score)) : parseFloat(scores);
 
 		await module.transaction(async function (client) {
-			var query = client.query.bind(client);
 			await helpers.ensureLegacyObjectsType(client, keys, 'zset');
-			await query({
+			await client.query({
 				name: isArrayOfScores ? 'sortedSetsAddScores' : 'sortedSetsAdd',
 				text: isArrayOfScores ? `
 INSERT INTO "legacy_zset" ("_key", "value", "score")
@@ -117,9 +113,8 @@ INSERT INTO "legacy_zset" ("_key", "value", "score")
 			values.push(item[2]);
 		});
 		await module.transaction(async function (client) {
-			var query = client.query.bind(client);
 			await helpers.ensureLegacyObjectsType(client, keys, 'zset');
-			await query({
+			await client.query({
 				name: 'sortedSetAddBulk2',
 				text: `
 INSERT INTO "legacy_zset" ("_key", "value", "score")
