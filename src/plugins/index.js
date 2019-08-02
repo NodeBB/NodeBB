@@ -8,6 +8,8 @@ const semver = require('semver');
 const nconf = require('nconf');
 const util = require('util');
 
+const user = require('../user');
+
 const readdirAsync = util.promisify(fs.readdir);
 
 var app;
@@ -103,6 +105,8 @@ Plugins.reload = async function () {
 	Plugins.acpScripts.length = 0;
 	Plugins.libraryPaths.length = 0;
 	Plugins.loadedPlugins.length = 0;
+
+	await user.addInterstitials();
 
 	const paths = await Plugins.getPluginPaths();
 	for (const path of paths) {

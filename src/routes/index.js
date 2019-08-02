@@ -8,7 +8,6 @@ var express = require('express');
 var meta = require('../meta');
 var controllers = require('../controllers');
 var plugins = require('../plugins');
-var user = require('../user');
 
 var accountRoutes = require('./accounts');
 var metaRoutes = require('./meta');
@@ -111,7 +110,6 @@ module.exports = async function (app, middleware) {
 	await plugins.reloadRoutes({ router: router });
 	await authRoutes.reloadRoutes({ router: router });
 	addCoreRoutes(app, router, middleware);
-	await user.addInterstitials();
 
 	winston.info('Routes added');
 };
