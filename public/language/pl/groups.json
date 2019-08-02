@@ -13,7 +13,7 @@
     "invited.uninvite": "Cofnij zaproszenie",
     "invited.search": "Wyszukaj użytkownika, aby zaprosić go do tej grupy",
     "invited.notification_title": "Otrzymano zaproszenie do dołączenia do <strong>%1</strong>",
-    "request.notification_title": "Żądanie członkostwa w grupie od <strong>%1</strong>",
+    "request.notification_title": "Podanie o członkostwo w grupie od <strong>%1</strong>",
     "request.notification_text": "<strong>%1</strong> chce zostać członkiem <strong>%2</strong>",
     "cover-save": "Zapisz",
     "cover-saving": "Zapisuję",
