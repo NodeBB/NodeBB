@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (db, module) {
+module.exports = function (module) {
 	var helpers = require('./helpers');
 
 	module.listPrepend = async function (key, value) {
@@ -9,9 +9,8 @@ module.exports = function (db, module) {
 		}
 
 		await module.transaction(async function (client) {
-			var query = client.query.bind(client);
 			await helpers.ensureLegacyObjectType(client, key, 'list');
-			await query({
+			await client.query({
 				name: 'listPrepend',
 				text: `
 INSERT INTO "legacy_list" ("_key", "array")
@@ -29,9 +28,8 @@ DO UPDATE SET "array" = ARRAY[$2::TEXT] || "legacy_list"."array"`,
 		}
 
 		await module.transaction(async function (client) {
-			var query = client.query.bind(client);
 			await helpers.ensureLegacyObjectType(client, key, 'list');
-			await query({
+			await client.query({
 				name: 'listAppend',
 				text: `
 INSERT INTO "legacy_list" ("_key", "array")
@@ -48,7 +46,7 @@ DO UPDATE SET "array" = "legacy_list"."array" || ARRAY[$2::TEXT]`,
 			return;
 		}
 
-		const res = await db.query({
+		const res = await module.pool.query({
 			name: 'listRemoveLast',
 			text: `
 WITH A AS (
@@ -75,7 +73,7 @@ RETURNING A."array"[array_length(A."array", 1)] v`,
 			return;
 		}
 
-		await db.query({
+		await module.pool.query({
 			name: 'listRemoveAll',
 			text: `
 UPDATE "legacy_list" l
@@ -95,7 +93,7 @@ UPDATE "legacy_list" l
 
 		stop += 1;
 
-		await db.query(stop > 0 ? {
+		await module.pool.query(stop > 0 ? {
 			name: 'listTrim',
 			text: `
 UPDATE "legacy_list" l
@@ -133,7 +131,7 @@ UPDATE "legacy_list" l
 
 		stop += 1;
 
-		const res = await db.query(stop > 0 ? {
+		const res = await module.pool.query(stop > 0 ? {
 			name: 'getListRange',
 			text: `
 SELECT ARRAY(SELECT m.m
@@ -167,7 +165,7 @@ SELECT ARRAY(SELECT m.m
 	};
 
 	module.listLength = async function (key) {
-		const res = await db.query({
+		const res = await module.pool.query({
 			name: 'listLength',
 			text: `
 SELECT array_length(l."array", 1) l

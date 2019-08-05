@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (db, module) {
+module.exports = function (module) {
 	var helpers = require('../helpers');
 	var utils = require('../../../utils');
 
@@ -17,7 +17,7 @@ module.exports = function (db, module) {
 		value = helpers.valueToString(value);
 
 		try {
-			await db.collection('objects').updateOne({ _key: key, value: value }, { $set: { score: parseFloat(score) } }, { upsert: true, w: 1 });
+			await module.client.collection('objects').updateOne({ _key: key, value: value }, { $set: { score: parseFloat(score) } }, { upsert: true, w: 1 });
 		} catch (err) {
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
 				return await module.sortedSetAdd(key, score, value);
@@ -40,7 +40,7 @@ module.exports = function (db, module) {
 		}
 		values = values.map(helpers.valueToString);
 
-		var bulk = db.collection('objects').initializeUnorderedBulkOp();
+		var bulk = module.client.collection('objects').initializeUnorderedBulkOp();
 		for (var i = 0; i < scores.length; i += 1) {
 			bulk.find({ _key: key, value: values[i] }).upsert().updateOne({ $set: { score: parseFloat(scores[i]) } });
 		}
@@ -62,7 +62,7 @@ module.exports = function (db, module) {
 
 		value = helpers.valueToString(value);
 
-		var bulk = db.collection('objects').initializeUnorderedBulkOp();
+		var bulk = module.client.collection('objects').initializeUnorderedBulkOp();
 		for (var i = 0; i < keys.length; i += 1) {
 			bulk.find({ _key: keys[i], value: value }).upsert().updateOne({ $set: { score: parseFloat(isArrayOfScores ? scores[i] : scores) } });
 		}
@@ -73,7 +73,7 @@ module.exports = function (db, module) {
 		if (!Array.isArray(data) || !data.length) {
 			return;
 		}
-		var bulk = db.collection('objects').initializeUnorderedBulkOp();
+		var bulk = module.client.collection('objects').initializeUnorderedBulkOp();
 		data.forEach(function (item) {
 			bulk.find({ _key: item[0], value: String(item[2]) }).upsert().updateOne({ $set: { score: parseFloat(item[1]) } });
 		});

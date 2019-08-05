@@ -1,10 +1,10 @@
 'use strict';
 
-module.exports = function (redisClient, module) {
+module.exports = function (module) {
 	var helpers = require('./helpers');
 
 	module.flushdb = async function () {
-		await redisClient.async.send_command('flushdb', []);
+		await module.client.async.send_command('flushdb', []);
 	};
 
 	module.emptydb = async function () {
@@ -14,17 +14,17 @@ module.exports = function (redisClient, module) {
 
 	module.exists = async function (key) {
 		if (Array.isArray(key)) {
-			const batch = redisClient.batch();
+			const batch = module.client.batch();
 			key.forEach(key => batch.exists(key));
 			const data = await helpers.execBatch(batch);
 			return data.map(exists => exists === 1);
 		}
-		const exists = await redisClient.async.exists(key);
+		const exists = await module.client.async.exists(key);
 		return exists === 1;
 	};
 
 	module.delete = async function (key) {
-		await redisClient.async.del(key);
+		await module.client.async.del(key);
 		module.objectCache.delObjectCache(key);
 	};
 
@@ -32,25 +32,25 @@ module.exports = function (redisClient, module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return;
 		}
-		await redisClient.async.del(keys);
+		await module.client.async.del(keys);
 		module.objectCache.delObjectCache(keys);
 	};
 
 	module.get = async function (key) {
-		return await redisClient.async.get(key);
+		return await module.client.async.get(key);
 	};
 
 	module.set = async function (key, value) {
-		await redisClient.async.set(key, value);
+		await module.client.async.set(key, value);
 	};
 
 	module.increment = async function (key) {
-		return await redisClient.async.incr(key);
+		return await module.client.async.incr(key);
 	};
 
 	module.rename = async function (oldKey, newKey) {
 		try {
-			await redisClient.async.rename(oldKey, newKey);
+			await module.client.async.rename(oldKey, newKey);
 		} catch (err) {
 			if (err && err.message !== 'ERR no such key') {
 				throw err;
@@ -61,23 +61,23 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.type = async function (key) {
-		const type = await redisClient.async.type(key);
+		const type = await module.client.async.type(key);
 		return type !== 'none' ? type : null;
 	};
 
 	module.expire = async function (key, seconds) {
-		await redisClient.async.expire(key, seconds);
+		await module.client.async.expire(key, seconds);
 	};
 
 	module.expireAt = async function (key, timestamp) {
-		await redisClient.async.expireat(key, timestamp);
+		await module.client.async.expireat(key, timestamp);
 	};
 
 	module.pexpire = async function (key, ms) {
-		await redisClient.async.pexpire(key, ms);
+		await module.client.async.pexpire(key, ms);
 	};
 
 	module.pexpireAt = async function (key, timestamp) {
-		await redisClient.async.pexpireat(key, timestamp);
+		await module.client.async.pexpireat(key, timestamp);
 	};
 };

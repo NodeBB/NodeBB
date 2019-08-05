@@ -1,18 +1,16 @@
 'use strict';
 
-module.exports = function (db, module) {
+module.exports = function (module) {
 	var helpers = require('./helpers');
 	const util = require('util');
 	var Cursor = require('pg-cursor');
 	Cursor.prototype.readAsync = util.promisify(Cursor.prototype.read);
 	const sleep = util.promisify(setTimeout);
 
-	var query = db.query.bind(db);
-
-	require('./sorted/add')(db, module);
-	require('./sorted/remove')(db, module);
-	require('./sorted/union')(db, module);
-	require('./sorted/intersect')(db, module);
+	require('./sorted/add')(module);
+	require('./sorted/remove')(module);
+	require('./sorted/union')(module);
+	require('./sorted/intersect')(module);
 
 	module.getSortedSetRange = async function (key, start, stop) {
 		return await getSortedSetRange(key, start, stop, 1, false);
@@ -60,7 +58,7 @@ module.exports = function (db, module) {
 			limit = null;
 		}
 
-		const res = await query({
+		const res = await module.pool.query({
 			name: 'getSortedSetRangeWithScores' + (sort > 0 ? 'Asc' : 'Desc'),
 			text: `
 SELECT z."value",
@@ -125,7 +123,7 @@ OFFSET $2::INTEGER`,
 			max = null;
 		}
 
-		const res = await query({
+		const res = await module.pool.query({
 			name: 'getSortedSetRangeByScoreWithScores' + (sort > 0 ? 'Asc' : 'Desc'),
 			text: `
 SELECT z."value",
@@ -164,7 +162,7 @@ OFFSET $2::INTEGER`,
 			max = null;
 		}
 
-		const res = await query({
+		const res = await module.pool.query({
 			name: 'sortedSetCount',
 			text: `
 SELECT COUNT(*) c
@@ -186,7 +184,7 @@ SELECT COUNT(*) c
 			return 0;
 		}
 
-		const res = await query({
+		const res = await module.pool.query({
 			name: 'sortedSetCard',
 			text: `
 SELECT COUNT(*) c
@@ -206,7 +204,7 @@ SELECT COUNT(*) c
 			return [];
 		}
 
-		const res = await query({
+		const res = await module.pool.query({
 			name: 'sortedSetsCard',
 			text: `
 SELECT o."_key" k,
@@ -249,7 +247,7 @@ SELECT o."_key" k,
 
 	async function getSortedSetRank(sort, keys, values) {
 		values = values.map(helpers.valueToString);
-		const res = await query({
+		const res = await module.pool.query({
 			name: 'getSortedSetRank' + sort,
 			text: `
 SELECT (SELECT r
@@ -310,7 +308,7 @@ SELECT (SELECT r
 
 		value = helpers.valueToString(value);
 
-		const res = await query({
+		const res = await module.pool.query({
 			name: 'sortedSetScore',
 			text: `
 SELECT z."score" s
@@ -335,7 +333,7 @@ SELECT z."score" s
 
 		value = helpers.valueToString(value);
 
-		const res = await query({
+		const res = await module.pool.query({
 			name: 'sortedSetsScore',
 			text: `
 SELECT o."_key" k,
@@ -364,7 +362,7 @@ SELECT o."_key" k,
 		}
 		values = values.map(helpers.valueToString);
 
-		const res = await query({
+		const res = await module.pool.query({
 			name: 'sortedSetScores',
 			text: `
 SELECT z."value" v,
@@ -391,7 +389,7 @@ SELECT z."value" v,
 
 		value = helpers.valueToString(value);
 
-		const res = await query({
+		const res = await module.pool.query({
 			name: 'isSortedSetMember',
 			text: `
 SELECT 1
@@ -414,7 +412,7 @@ SELECT 1
 
 		values = values.map(helpers.valueToString);
 
-		const res = await query({
+		const res = await module.pool.query({
 			name: 'isSortedSetMembers',
 			text: `
 SELECT z."value" v
@@ -439,7 +437,7 @@ SELECT z."value" v
 
 		value = helpers.valueToString(value);
 
-		const res = await query({
+		const res = await module.pool.query({
 			name: 'isMemberOfSortedSets',
 			text: `
 SELECT o."_key" k
@@ -462,7 +460,7 @@ SELECT o."_key" k
 			return [];
 		}
 
-		const res = await query({
+		const res = await module.pool.query({
 			name: 'getSortedSetsMembers',
 			text: `
 SELECT o."_key" k,
@@ -490,9 +488,8 @@ SELECT o."_key" k,
 		increment = parseFloat(increment);
 
 		return await module.transaction(async function (client) {
-			var query = client.query.bind(client);
 			await helpers.ensureLegacyObjectType(client, key, 'zset');
-			const res = await query({
+			const res = await client.query({
 				name: 'sortedSetIncrBy',
 				text: `
 INSERT INTO "legacy_zset" ("_key", "value", "score")
@@ -517,7 +514,7 @@ RETURNING "score" s`,
 	module.sortedSetLexCount = async function (key, min, max) {
 		var q = buildLexQuery(key, min, max);
 
-		const res = await query({
+		const res = await module.pool.query({
 			name: 'sortedSetLexCount' + q.suffix,
 			text: `
 SELECT COUNT(*) c
@@ -539,7 +536,7 @@ SELECT COUNT(*) c
 		var q = buildLexQuery(key, min, max);
 		q.values.push(start);
 		q.values.push(count <= 0 ? null : count);
-		const res = await query({
+		const res = await module.pool.query({
 			name: 'sortedSetLex' + (sort > 0 ? 'Asc' : 'Desc') + q.suffix,
 			text: `
 SELECT z."value" v
@@ -559,7 +556,7 @@ OFFSET $` + (q.values.length - 1) + `::INTEGER`,
 
 	module.sortedSetRemoveRangeByLex = async function (key, min, max) {
 		var q = buildLexQuery(key, min, max);
-		await query({
+		await module.pool.query({
 			name: 'sortedSetRemoveRangeByLex' + q.suffix,
 			text: `
 DELETE FROM "legacy_zset" z
@@ -614,7 +611,7 @@ DELETE FROM "legacy_zset" z
 	}
 
 	module.processSortedSet = async function (setKey, process, options) {
-		const client = await db.connect();
+		const client = await module.pool.connect();
 		var batchSize = (options || {}).batch || 100;
 		var cursor = client.query(new Cursor(`
 SELECT z."value", z."score"
@@ -645,7 +642,7 @@ SELECT z."value", z."score"
 			try {
 				await process(rows);
 			} catch (err) {
-				await query.close();
+				await client.release();
 				throw err;
 			}
 			if (options.interval) {

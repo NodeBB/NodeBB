@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (db, module) {
+module.exports = function (module) {
 	var helpers = require('./helpers');
 
 	var _ = require('lodash');
@@ -16,11 +16,11 @@ module.exports = function (db, module) {
 
 		const writeData = helpers.serializeData(data);
 		if (isArray) {
-			var bulk = db.collection('objects').initializeUnorderedBulkOp();
+			var bulk = module.client.collection('objects').initializeUnorderedBulkOp();
 			key.forEach(key => bulk.find({ _key: key }).upsert().updateOne({ $set: writeData }));
 			await bulk.execute();
 		} else {
-			await db.collection('objects').updateOne({ _key: key }, { $set: writeData }, { upsert: true, w: 1 });
+			await module.client.collection('objects').updateOne({ _key: key }, { $set: writeData }, { upsert: true, w: 1 });
 		}
 
 		cache.delObjectCache(key);
@@ -58,7 +58,7 @@ module.exports = function (db, module) {
 			return cachedData[key].hasOwnProperty(field) ? cachedData[key][field] : null;
 		}
 		field = helpers.fieldToString(field);
-		const item = await db.collection('objects').findOne({ _key: key }, { projection: { _id: 0, [field]: 1 } });
+		const item = await module.client.collection('objects').findOne({ _key: key }, { projection: { _id: 0, [field]: 1 } });
 		if (!item) {
 			return null;
 		}
@@ -104,7 +104,7 @@ module.exports = function (db, module) {
 		if (unCachedKeys.length === 1) {
 			query._key = unCachedKeys[0];
 		}
-		let data = await db.collection('objects').find(query, { projection: { _id: 0 } }).toArray();
+		let data = await module.client.collection('objects').find(query, { projection: { _id: 0 } }).toArray();
 
 		data = data.map(helpers.deserializeData);
 		var map = helpers.toMap(data);
@@ -142,7 +142,7 @@ module.exports = function (db, module) {
 			data[field] = 1;
 		});
 
-		const item = await db.collection('objects').findOne({ _key: key }, { projection: data });
+		const item = await module.client.collection('objects').findOne({ _key: key }, { projection: data });
 		const results = fields.map(f => !!item && item[f] !== undefined && item[f] !== null);
 		return results;
 	};
@@ -166,7 +166,7 @@ module.exports = function (db, module) {
 			data[field] = '';
 		});
 
-		await db.collection('objects').updateOne({ _key: key }, { $unset: data });
+		await module.client.collection('objects').updateOne({ _key: key }, { $unset: data });
 		cache.delObjectCache(key);
 	};
 
@@ -189,7 +189,7 @@ module.exports = function (db, module) {
 		increment[field] = value;
 
 		if (Array.isArray(key)) {
-			var bulk = db.collection('objects').initializeUnorderedBulkOp();
+			var bulk = module.client.collection('objects').initializeUnorderedBulkOp();
 			key.forEach(function (key) {
 				bulk.find({ _key: key }).upsert().update({ $inc: increment });
 			});
@@ -199,7 +199,7 @@ module.exports = function (db, module) {
 			return result.map(data => data && data[field]);
 		}
 
-		const result = await db.collection('objects').findOneAndUpdate({ _key: key }, { $inc: increment }, { returnOriginal: false, upsert: true });
+		const result = await module.client.collection('objects').findOneAndUpdate({ _key: key }, { $inc: increment }, { returnOriginal: false, upsert: true });
 		cache.delObjectCache(key);
 		return result && result.value ? result.value[field] : null;
 	};

@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (db, module) {
+module.exports = function (module) {
 	var helpers = require('../helpers');
 
 	module.sortedSetRemove = async function (key, value) {
@@ -18,7 +18,7 @@ module.exports = function (db, module) {
 			value = helpers.valueToString(value);
 		}
 
-		await db.collection('objects').deleteMany({
+		await module.client.collection('objects').deleteMany({
 			_key: Array.isArray(key) ? { $in: key } : key,
 			value: isValueArray ? { $in: value } : value,
 		});
@@ -30,7 +30,7 @@ module.exports = function (db, module) {
 		}
 		value = helpers.valueToString(value);
 
-		await db.collection('objects').deleteMany({ _key: { $in: keys }, value: value });
+		await module.client.collection('objects').deleteMany({ _key: { $in: keys }, value: value });
 	};
 
 	module.sortedSetsRemoveRangeByScore = async function (keys, min, max) {
@@ -49,14 +49,14 @@ module.exports = function (db, module) {
 			query.score.$lte = parseFloat(max);
 		}
 
-		await db.collection('objects').deleteMany(query);
+		await module.client.collection('objects').deleteMany(query);
 	};
 
 	module.sortedSetRemoveBulk = async function (data) {
 		if (!Array.isArray(data) || !data.length) {
 			return;
 		}
-		var bulk = db.collection('objects').initializeUnorderedBulkOp();
+		var bulk = module.client.collection('objects').initializeUnorderedBulkOp();
 		data.forEach(item => bulk.find({ _key: item[0], value: String(item[1]) }).remove());
 		await bulk.execute();
 	};

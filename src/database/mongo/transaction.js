@@ -1,8 +1,8 @@
 'use strict';
 
-module.exports = function (db, module) {
+module.exports = function (module) {
 	// TODO
 	module.transaction = function (perform, callback) {
-		perform(db, callback);
+		perform(module.client, callback);
 	};
 };

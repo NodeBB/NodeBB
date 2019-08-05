@@ -1,14 +1,14 @@
 'use strict';
 
-module.exports = function (redisClient, module) {
+module.exports = function (module) {
 	var _ = require('lodash');
 	var utils = require('../../utils');
 	var helpers = require('./helpers');
 
-	require('./sorted/add')(redisClient, module);
-	require('./sorted/remove')(redisClient, module);
-	require('./sorted/union')(redisClient, module);
-	require('./sorted/intersect')(redisClient, module);
+	require('./sorted/add')(module);
+	require('./sorted/remove')(module);
+	require('./sorted/union')(module);
+	require('./sorted/intersect')(module);
 
 	module.getSortedSetRange = async function (key, start, stop) {
 		return await sortedSetRange('zrange', key, start, stop, false);
@@ -31,7 +31,7 @@ module.exports = function (redisClient, module) {
 			if (!key.length) {
 				return [];
 			}
-			const batch = redisClient.batch();
+			const batch = module.client.batch();
 			key.forEach((key) => {
 				batch[method]([key, start, stop, 'WITHSCORES']);
 			});
@@ -59,7 +59,7 @@ module.exports = function (redisClient, module) {
 			params.push('WITHSCORES');
 		}
 
-		const data = await redisClient.async[method](params);
+		const data = await module.client.async[method](params);
 		if (!withScores) {
 			return data;
 		}
@@ -71,11 +71,11 @@ module.exports = function (redisClient, module) {
 	}
 
 	module.getSortedSetRangeByScore = async function (key, start, count, min, max) {
-		return await redisClient.async.zrangebyscore([key, min, max, 'LIMIT', start, count]);
+		return await module.client.async.zrangebyscore([key, min, max, 'LIMIT', start, count]);
 	};
 
 	module.getSortedSetRevRangeByScore = async function (key, start, count, max, min) {
-		return await redisClient.async.zrevrangebyscore([key, max, min, 'LIMIT', start, count]);
+		return await module.client.async.zrevrangebyscore([key, max, min, 'LIMIT', start, count]);
 	};
 
 	module.getSortedSetRangeByScoreWithScores = async function (key, start, count, min, max) {
@@ -87,7 +87,7 @@ module.exports = function (redisClient, module) {
 	};
 
 	async function sortedSetRangeByScoreWithScores(method, key, start, count, min, max) {
-		const data = await redisClient.async[method]([key, min, max, 'WITHSCORES', 'LIMIT', start, count]);
+		const data = await module.client.async[method]([key, min, max, 'WITHSCORES', 'LIMIT', start, count]);
 		const objects = [];
 		for (var i = 0; i < data.length; i += 2) {
 			objects.push({ value: data[i], score: parseFloat(data[i + 1]) });
@@ -96,18 +96,18 @@ module.exports = function (redisClient, module) {
 	}
 
 	module.sortedSetCount = async function (key, min, max) {
-		return await redisClient.async.zcount(key, min, max);
+		return await module.client.async.zcount(key, min, max);
 	};
 
 	module.sortedSetCard = async function (key) {
-		return await redisClient.async.zcard(key);
+		return await module.client.async.zcard(key);
 	};
 
 	module.sortedSetsCard = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return [];
 		}
-		var batch = redisClient.batch();
+		var batch = module.client.batch();
 		keys.forEach(k => batch.zcard(String(k)));
 		return await helpers.execBatch(batch);
 	};
@@ -125,15 +125,15 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.sortedSetRank = async function (key, value) {
-		return await redisClient.async.zrank(key, value);
+		return await module.client.async.zrank(key, value);
 	};
 
 	module.sortedSetRevRank = async function (key, value) {
-		return await redisClient.async.zrevrank(key, value);
+		return await module.client.async.zrevrank(key, value);
 	};
 
 	module.sortedSetsRanks = async function (keys, values) {
-		const batch = redisClient.batch();
+		const batch = module.client.batch();
 		for (var i = 0; i < values.length; i += 1) {
 			batch.zrank(keys[i], String(values[i]));
 		}
@@ -141,7 +141,7 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.sortedSetsRevRanks = async function (keys, values) {
-		const batch = redisClient.batch();
+		const batch = module.client.batch();
 		for (var i = 0; i < values.length; i += 1) {
 			batch.zrevrank(keys[i], String(values[i]));
 		}
@@ -149,7 +149,7 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.sortedSetRanks = async function (key, values) {
-		const batch = redisClient.batch();
+		const batch = module.client.batch();
 		for (var i = 0; i < values.length; i += 1) {
 			batch.zrank(key, String(values[i]));
 		}
@@ -157,7 +157,7 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.sortedSetRevRanks = async function (key, values) {
-		const batch = redisClient.batch();
+		const batch = module.client.batch();
 		for (var i = 0; i < values.length; i += 1) {
 			batch.zrevrank(key, String(values[i]));
 		}
@@ -169,7 +169,7 @@ module.exports = function (redisClient, module) {
 			return null;
 		}
 
-		const score = await redisClient.async.zscore(key, value);
+		const score = await module.client.async.zscore(key, value);
 		return score === null ? score : parseFloat(score);
 	};
 
@@ -177,7 +177,7 @@ module.exports = function (redisClient, module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return [];
 		}
-		const batch = redisClient.batch();
+		const batch = module.client.batch();
 		keys.forEach(key => batch.zscore(String(key), String(value)));
 		const scores = await helpers.execBatch(batch);
 		return scores.map(d => (d === null ? d : parseFloat(d)));
@@ -187,7 +187,7 @@ module.exports = function (redisClient, module) {
 		if (!values.length) {
 			return [];
 		}
-		const batch = redisClient.batch();
+		const batch = module.client.batch();
 		values.forEach(value => batch.zscore(String(key), String(value)));
 		const scores = await helpers.execBatch(batch);
 		return scores.map(d => (d === null ? d : parseFloat(d)));
@@ -199,7 +199,7 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.isSortedSetMembers = async function (key, values) {
-		const batch = redisClient.batch();
+		const batch = module.client.batch();
 		values.forEach(v => batch.zscore(key, String(v)));
 		const results = await helpers.execBatch(batch);
 		return results.map(utils.isNumber);
@@ -209,7 +209,7 @@ module.exports = function (redisClient, module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return [];
 		}
-		const batch = redisClient.batch();
+		const batch = module.client.batch();
 		keys.forEach(k => batch.zscore(k, String(value)));
 		const results = await helpers.execBatch(batch);
 		return results.map(utils.isNumber);
@@ -219,13 +219,13 @@ module.exports = function (redisClient, module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return [];
 		}
-		var batch = redisClient.batch();
+		var batch = module.client.batch();
 		keys.forEach(k => batch.zrange(k, 0, -1));
 		return await helpers.execBatch(batch);
 	};
 
 	module.sortedSetIncrBy = async function (key, increment, value) {
-		const newValue = await redisClient.async.zincrby(key, increment, value);
+		const newValue = await module.client.async.zincrby(key, increment, value);
 		return parseFloat(newValue);
 	};
 
@@ -266,6 +266,6 @@ module.exports = function (redisClient, module) {
 		if (count) {
 			args.push('LIMIT', start, count);
 		}
-		return await redisClient.async[method](args);
+		return await module.client.async[method](args);
 	}
 };

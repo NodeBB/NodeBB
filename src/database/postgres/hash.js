@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (db, module) {
+module.exports = function (module) {
 	var helpers = require('./helpers');
 
 	module.setObject = async function (key, data) {
@@ -13,11 +13,10 @@ module.exports = function (db, module) {
 		}
 
 		await module.transaction(async function (client) {
-			var query = client.query.bind(client);
 			const dataString = JSON.stringify(data);
 			async function setOne(key) {
 				await helpers.ensureLegacyObjectType(client, key, 'hash');
-				await query({
+				await client.query({
 					name: 'setObject',
 					text: `
 	INSERT INTO "legacy_hash" ("_key", "data")
@@ -41,11 +40,10 @@ module.exports = function (db, module) {
 		}
 
 		await module.transaction(async function (client) {
-			var query = client.query.bind(client);
 			const valueString = JSON.stringify(value);
 			async function setOne(key) {
 				await helpers.ensureLegacyObjectType(client, key, 'hash');
-				await query({
+				await client.query({
 					name: 'setObjectField',
 					text: `
 	INSERT INTO "legacy_hash" ("_key", "data")
@@ -69,7 +67,7 @@ module.exports = function (db, module) {
 			return null;
 		}
 
-		const res = await db.query({
+		const res = await module.pool.query({
 			name: 'getObject',
 			text: `
 SELECT h."data"
@@ -90,7 +88,7 @@ SELECT h."data"
 			return [];
 		}
 
-		const res = await db.query({
+		const res = await module.pool.query({
 			name: 'getObjects',
 			text: `
 SELECT h."data"
@@ -112,7 +110,7 @@ SELECT h."data"
 			return null;
 		}
 
-		const res = await db.query({
+		const res = await module.pool.query({
 			name: 'getObjectField',
 			text: `
 SELECT h."data"->>$2::TEXT f
@@ -133,7 +131,7 @@ SELECT h."data"->>$2::TEXT f
 			return null;
 		}
 
-		const res = await db.query({
+		const res = await module.pool.query({
 			name: 'getObjectFields',
 			text: `
 SELECT (SELECT jsonb_object_agg(f, d."value")
@@ -165,7 +163,7 @@ SELECT (SELECT jsonb_object_agg(f, d."value")
 			return [];
 		}
 
-		const res = await db.query({
+		const res = await module.pool.query({
 			name: 'getObjectsFields',
 			text: `
 SELECT (SELECT jsonb_object_agg(f, d."value")
@@ -190,7 +188,7 @@ SELECT (SELECT jsonb_object_agg(f, d."value")
 			return;
 		}
 
-		const res = await db.query({
+		const res = await module.pool.query({
 			name: 'getObjectKeys',
 			text: `
 SELECT ARRAY(SELECT jsonb_object_keys(h."data")) k
@@ -216,7 +214,7 @@ SELECT ARRAY(SELECT jsonb_object_keys(h."data")) k
 			return;
 		}
 
-		const res = await db.query({
+		const res = await module.pool.query({
 			name: 'isObjectField',
 			text: `
 SELECT (h."data" ? $2::TEXT AND h."data"->>$2::TEXT IS NOT NULL) b
@@ -253,7 +251,7 @@ SELECT (h."data" ? $2::TEXT AND h."data"->>$2::TEXT IS NOT NULL) b
 			return;
 		}
 
-		await db.query({
+		await module.pool.query({
 			name: 'deleteObjectFields',
 			text: `
 UPDATE "legacy_hash"
@@ -281,14 +279,13 @@ UPDATE "legacy_hash"
 		}
 
 		return await module.transaction(async function (client) {
-			var query = client.query.bind(client);
 			if (Array.isArray(key)) {
 				await helpers.ensureLegacyObjectsType(client, key, 'hash');
 			} else {
 				await helpers.ensureLegacyObjectType(client, key, 'hash');
 			}
 
-			const res = await query(Array.isArray(key) ? {
+			const res = await client.query(Array.isArray(key) ? {
 				name: 'incrObjectFieldByMulti',
 				text: `
 INSERT INTO "legacy_hash" ("_key", "data")

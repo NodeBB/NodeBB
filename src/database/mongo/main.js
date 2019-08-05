@@ -1,12 +1,12 @@
 'use strict';
 
-module.exports = function (db, module) {
+module.exports = function (module) {
 	module.flushdb = async function () {
-		await db.dropDatabase();
+		await module.client.dropDatabase();
 	};
 
 	module.emptydb = async function () {
-		await db.collection('objects').deleteMany({});
+		await module.client.collection('objects').deleteMany({});
 		module.objectCache.resetObjectCache();
 	};
 
@@ -15,7 +15,7 @@ module.exports = function (db, module) {
 			return;
 		}
 		if (Array.isArray(key)) {
-			const data = await db.collection('objects').find({ _key: { $in: key } }).toArray();
+			const data = await module.client.collection('objects').find({ _key: { $in: key } }).toArray();
 			var map = {};
 			data.forEach(function (item) {
 				map[item._key] = true;
@@ -23,7 +23,7 @@ module.exports = function (db, module) {
 
 			return key.map(key => !!map[key]);
 		}
-		const item = await db.collection('objects').findOne({ _key: key });
+		const item = await module.client.collection('objects').findOne({ _key: key });
 		return item !== undefined && item !== null;
 	};
 
@@ -31,7 +31,7 @@ module.exports = function (db, module) {
 		if (!key) {
 			return;
 		}
-		await db.collection('objects').deleteMany({ _key: key });
+		await module.client.collection('objects').deleteMany({ _key: key });
 		module.objectCache.delObjectCache(key);
 	};
 
@@ -39,7 +39,7 @@ module.exports = function (db, module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return;
 		}
-		await db.collection('objects').deleteMany({ _key: { $in: keys } });
+		await module.client.collection('objects').deleteMany({ _key: { $in: keys } });
 		module.objectCache.delObjectCache(keys);
 	};
 
@@ -48,7 +48,7 @@ module.exports = function (db, module) {
 			return;
 		}
 
-		const objectData = await db.collection('objects').findOne({ _key: key }, { projection: { _id: 0 } });
+		const objectData = await module.client.collection('objects').findOne({ _key: key }, { projection: { _id: 0 } });
 
 		// fallback to old field name 'value' for backwards compatibility #6340
 		var value = null;
@@ -74,17 +74,17 @@ module.exports = function (db, module) {
 		if (!key) {
 			return;
 		}
-		const result = await db.collection('objects').findOneAndUpdate({ _key: key }, { $inc: { data: 1 } }, { returnOriginal: false, upsert: true });
+		const result = await module.client.collection('objects').findOneAndUpdate({ _key: key }, { $inc: { data: 1 } }, { returnOriginal: false, upsert: true });
 		return result && result.value ? result.value.data : null;
 	};
 
 	module.rename = async function (oldKey, newKey) {
-		await db.collection('objects').updateMany({ _key: oldKey }, { $set: { _key: newKey } });
+		await module.client.collection('objects').updateMany({ _key: oldKey }, { $set: { _key: newKey } });
 		module.objectCache.delObjectCache([oldKey, newKey]);
 	};
 
 	module.type = async function (key) {
-		const data = await db.collection('objects').findOne({ _key: key });
+		const data = await module.client.collection('objects').findOne({ _key: key });
 		if (!data) {
 			return null;
 		}

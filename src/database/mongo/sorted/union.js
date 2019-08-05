@@ -1,12 +1,12 @@
 'use strict';
 
-module.exports = function (db, module) {
+module.exports = function (module) {
 	module.sortedSetUnionCard = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return 0;
 		}
 
-		const data = await db.collection('objects').aggregate([
+		const data = await module.client.collection('objects').aggregate([
 			{ $match: { _key: { $in: keys } } },
 			{ $group: { _id: { value: '$value' } } },
 			{ $group: { _id: null, count: { $sum: 1 } } },
@@ -61,7 +61,7 @@ module.exports = function (db, module) {
 		}
 		pipeline.push({	$project: project });
 
-		let data = await db.collection('objects').aggregate(pipeline).toArray();
+		let data = await module.client.collection('objects').aggregate(pipeline).toArray();
 		if (!params.withScores) {
 			data = data.map(item => item.value);
 		}

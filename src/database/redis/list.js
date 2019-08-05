@@ -1,49 +1,49 @@
 'use strict';
 
-module.exports = function (redisClient, module) {
+module.exports = function (module) {
 	module.listPrepend = async function (key, value) {
 		if (!key) {
 			return;
 		}
-		await redisClient.async.lpush(key, value);
+		await module.client.async.lpush(key, value);
 	};
 
 	module.listAppend = async function (key, value) {
 		if (!key) {
 			return;
 		}
-		await redisClient.async.rpush(key, value);
+		await module.client.async.rpush(key, value);
 	};
 
 	module.listRemoveLast = async function (key) {
 		if (!key) {
 			return;
 		}
-		return await redisClient.async.rpop(key);
+		return await module.client.async.rpop(key);
 	};
 
 	module.listRemoveAll = async function (key, value) {
 		if (!key) {
 			return;
 		}
-		await redisClient.async.lrem(key, 0, value);
+		await module.client.async.lrem(key, 0, value);
 	};
 
 	module.listTrim = async function (key, start, stop) {
 		if (!key) {
 			return;
 		}
-		await redisClient.async.ltrim(key, start, stop);
+		await module.client.async.ltrim(key, start, stop);
 	};
 
 	module.getListRange = async function (key, start, stop) {
 		if (!key) {
 			return;
 		}
-		return await redisClient.async.lrange(key, start, stop);
+		return await module.client.async.lrange(key, start, stop);
 	};
 
 	module.listLength = async function (key) {
-		return await redisClient.async.llen(key);
+		return await module.client.async.llen(key);
 	};
 };

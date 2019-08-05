@@ -1,17 +1,15 @@
 'use strict';
 
-module.exports = function (db, module) {
-	var helpers = require('./helpers');
-
-	var query = db.query.bind(db);
+module.exports = function (module) {
+	const helpers = require('./helpers');
 
 	module.flushdb = async function () {
-		await query(`DROP SCHEMA "public" CASCADE`);
-		await query(`CREATE SCHEMA "public"`);
+		await module.pool.query(`DROP SCHEMA "public" CASCADE`);
+		await module.pool.query(`CREATE SCHEMA "public"`);
 	};
 
 	module.emptydb = async function () {
-		await query(`DELETE FROM "legacy_object"`);
+		await module.pool.query(`DELETE FROM "legacy_object"`);
 	};
 
 	module.exists = async function (key) {
@@ -20,7 +18,7 @@ module.exports = function (db, module) {
 		}
 
 		if (Array.isArray(key)) {
-			const res = await query({
+			const res = await module.pool.query({
 				name: 'existsArray',
 				text: `
 				SELECT o."_key" k
@@ -32,7 +30,7 @@ module.exports = function (db, module) {
 				return res.rows.some(r => r.k === k);
 			});
 		}
-		const res =	await query({
+		const res =	await module.pool.query({
 			name: 'exists',
 			text: `
 			SELECT EXISTS(SELECT *
@@ -49,7 +47,7 @@ module.exports = function (db, module) {
 			return;
 		}
 
-		await query({
+		await module.pool.query({
 			name: 'delete',
 			text: `
 DELETE FROM "legacy_object"
@@ -63,7 +61,7 @@ DELETE FROM "legacy_object"
 			return;
 		}
 
-		await query({
+		await module.pool.query({
 			name: 'deleteAll',
 			text: `
 DELETE FROM "legacy_object"
@@ -77,7 +75,7 @@ DELETE FROM "legacy_object"
 			return;
 		}
 
-		const res = await query({
+		const res = await module.pool.query({
 			name: 'get',
 			text: `
 SELECT s."data" t
@@ -99,9 +97,8 @@ SELECT s."data" t
 		}
 
 		await module.transaction(async function (client) {
-			var query = client.query.bind(client);
 			await helpers.ensureLegacyObjectType(client, key, 'string');
-			await query({
+			await client.query({
 				name: 'set',
 				text: `
 INSERT INTO "legacy_string" ("_key", "data")
@@ -119,9 +116,8 @@ DO UPDATE SET "data" = $2::TEXT`,
 		}
 
 		return await module.transaction(async function (client) {
-			var query = client.query.bind(client);
 			await helpers.ensureLegacyObjectType(client, key, 'string');
-			const res = await query({
+			const res = await client.query({
 				name: 'increment',
 				text: `
 INSERT INTO "legacy_string" ("_key", "data")
@@ -137,15 +133,14 @@ RETURNING "data" d`,
 
 	module.rename = async function (oldKey, newKey) {
 		await module.transaction(async function (client) {
-			var query = client.query.bind(client);
-			await query({
+			await client.query({
 				name: 'deleteRename',
 				text: `
 	DELETE FROM "legacy_object"
 	 WHERE "_key" = $1::TEXT`,
 				values: [newKey],
 			});
-			await query({
+			await client.query({
 				name: 'rename',
 				text: `
 UPDATE "legacy_object"
@@ -157,7 +152,7 @@ WHERE "_key" = $1::TEXT`,
 	};
 
 	module.type = async function (key) {
-		const res = await query({
+		const res = await module.pool.query({
 			name: 'type',
 			text: `
 SELECT "type"::TEXT t
@@ -171,7 +166,7 @@ SELECT "type"::TEXT t
 	};
 
 	async function doExpire(key, date) {
-		await query({
+		await module.pool.query({
 			name: 'expire',
 			text: `
 UPDATE "legacy_object"

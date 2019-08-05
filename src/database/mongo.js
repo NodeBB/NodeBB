@@ -10,7 +10,6 @@ var _ = require('lodash');
 var semver = require('semver');
 var prompt = require('prompt');
 var utils = require('../utils');
-var client;
 
 var mongoModule = module.exports;
 
@@ -110,23 +109,13 @@ mongoModule.getConnectionOptions = function (mongo) {
 mongoModule.init = function (callback) {
 	callback = callback || function () { };
 
-	mongoModule.connect(nconf.get('mongo'), function (err, _client) {
+	mongoModule.connect(nconf.get('mongo'), function (err, client) {
 		if (err) {
 			winston.error('NodeBB could not connect to your Mongo database. Mongo returned the following error', err);
 			return callback(err);
 		}
-		client = _client;
-		var db = client.db();
-		mongoModule.client = db;
 
-		require('./mongo/main')(db, mongoModule);
-		require('./mongo/hash')(db, mongoModule);
-		require('./mongo/sets')(db, mongoModule);
-		require('./mongo/sorted')(db, mongoModule);
-		require('./mongo/list')(db, mongoModule);
-		require('./mongo/transaction')(db, mongoModule);
-
-		mongoModule.async = require('../promisify')(mongoModule, ['client', 'sessionStore']);
+		mongoModule.client = client.db();
 		callback();
 	});
 };
@@ -280,7 +269,7 @@ function getCollectionStats(db, callback) {
 
 mongoModule.close = function (callback) {
 	callback = callback || function () {};
-	client.close(function (err) {
+	mongoModule.client.close(function (err) {
 		callback(err);
 	});
 };
@@ -289,3 +278,12 @@ mongoModule.socketAdapter = function () {
 	var mongoAdapter = require('socket.io-adapter-mongo');
 	return mongoAdapter(mongoModule.getConnectionString());
 };
+
+require('./mongo/main')(mongoModule);
+require('./mongo/hash')(mongoModule);
+require('./mongo/sets')(mongoModule);
+require('./mongo/sorted')(mongoModule);
+require('./mongo/list')(mongoModule);
+require('./mongo/transaction')(mongoModule);
+
+mongoModule.async = require('../promisify')(mongoModule, ['client', 'sessionStore']);

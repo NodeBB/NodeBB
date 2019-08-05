@@ -1,7 +1,7 @@
 
 'use strict';
 
-module.exports = function (redisClient, module) {
+module.exports = function (module) {
 	const helpers = require('../helpers');
 	module.sortedSetIntersectCard = async function (keys) {
 		if (!Array.isArray(keys) || !keys.length) {
@@ -11,7 +11,7 @@ module.exports = function (redisClient, module) {
 
 		var interParams = [tempSetName, keys.length].concat(keys);
 
-		var multi = redisClient.multi();
+		var multi = module.client.multi();
 		multi.zinterstore(interParams);
 		multi.zcard(tempSetName);
 		multi.del(tempSetName);
@@ -51,7 +51,7 @@ module.exports = function (redisClient, module) {
 			rangeParams.push('WITHSCORES');
 		}
 
-		var multi = redisClient.multi();
+		var multi = module.client.multi();
 		multi.zinterstore(interParams);
 		multi[params.method](rangeParams);
 		multi.del(tempSetName);

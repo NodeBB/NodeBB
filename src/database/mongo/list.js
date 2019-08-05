@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (db, module) {
+module.exports = function (module) {
 	var helpers = require('./helpers');
 
 	module.listPrepend = async function (key, value) {
@@ -12,7 +12,7 @@ module.exports = function (db, module) {
 
 		const exists = await module.isObjectField(key, 'array');
 		if (exists) {
-			await db.collection('objects').updateOne({ _key: key }, { $push: { array: { $each: [value], $position: 0 } } }, { upsert: true, w: 1 });
+			await module.client.collection('objects').updateOne({ _key: key }, { $push: { array: { $each: [value], $position: 0 } } }, { upsert: true, w: 1 });
 		} else {
 			await module.listAppend(key, value);
 		}
@@ -23,7 +23,7 @@ module.exports = function (db, module) {
 			return;
 		}
 		value = helpers.valueToString(value);
-		await db.collection('objects').updateOne({ _key: key }, { $push: { array: value } }, { upsert: true, w: 1 });
+		await module.client.collection('objects').updateOne({ _key: key }, { $push: { array: value } }, { upsert: true, w: 1 });
 	};
 
 	module.listRemoveLast = async function (key) {
@@ -31,7 +31,7 @@ module.exports = function (db, module) {
 			return;
 		}
 		const value = await module.getListRange(key, -1, -1);
-		db.collection('objects').updateOne({ _key: key }, { $pop: { array: 1 } });
+		module.client.collection('objects').updateOne({ _key: key }, { $pop: { array: 1 } });
 		return (value && value.length) ? value[0] : null;
 	};
 
@@ -41,7 +41,7 @@ module.exports = function (db, module) {
 		}
 		value = helpers.valueToString(value);
 
-		await db.collection('objects').updateOne({ _key: key }, { $pull: { array: value } });
+		await module.client.collection('objects').updateOne({ _key: key }, { $pull: { array: value } });
 	};
 
 	module.listTrim = async function (key, start, stop) {
@@ -49,7 +49,7 @@ module.exports = function (db, module) {
 			return;
 		}
 		const value = await module.getListRange(key, start, stop);
-		await db.collection('objects').updateOne({ _key: key }, { $set: { array: value } });
+		await module.client.collection('objects').updateOne({ _key: key }, { $set: { array: value } });
 	};
 
 	module.getListRange = async function (key, start, stop) {
@@ -57,7 +57,7 @@ module.exports = function (db, module) {
 			return;
 		}
 
-		const data = await db.collection('objects').findOne({ _key: key }, { array: 1 });
+		const data = await module.client.collection('objects').findOne({ _key: key }, { array: 1 });
 		if (!(data && data.array)) {
 			return [];
 		}
@@ -66,7 +66,7 @@ module.exports = function (db, module) {
 	};
 
 	module.listLength = async function (key) {
-		const result = await db.collection('objects').aggregate([
+		const result = await module.client.collection('objects').aggregate([
 			{ $match: { _key: key } },
 			{ $project: { count: { $size: '$array' } } },
 		]).toArray();
