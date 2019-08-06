@@ -309,8 +309,10 @@ Controllers.manifest = function (req, res) {
 			density: 4.0,
 		});
 	}
+	plugins.fireHook('filter:manifest.build', manifest, function (err, manifest) {
+                res.status(200).json(manifest);
+        });
 
-	res.status(200).json(manifest);
 };
 
 Controllers.outgoing = function (req, res, next) {
