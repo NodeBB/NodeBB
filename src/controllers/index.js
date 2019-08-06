@@ -267,7 +267,7 @@ Controllers.robots = function (req, res) {
 	}
 };
 
-Controllers.manifest = function (req, res) {
+Controllers.manifest = function (req, res, next) {
 	var manifest = {
 		name: meta.config.title || 'NodeBB',
 		start_url: nconf.get('relative_path') + '/',
@@ -311,7 +311,7 @@ Controllers.manifest = function (req, res) {
 	}
 	plugins.fireHook('filter:manifest.build', manifest, function (err, manifest) {
 		if (err) {
-		     return next(err);
+			return next(err);
 		}
 		res.status(200).json(manifest);
 	});
