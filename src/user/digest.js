@@ -1,18 +1,18 @@
 'use strict';
 
-var async = require('async');
-var winston = require('winston');
-var nconf = require('nconf');
+const async = require('async');
+const winston = require('winston');
+const nconf = require('nconf');
 
-var batch = require('../batch');
-var meta = require('../meta');
-var user = require('../user');
-var topics = require('../topics');
-var plugins = require('../plugins');
-var emailer = require('../emailer');
-var utils = require('../utils');
+const batch = require('../batch');
+const meta = require('../meta');
+const user = require('../user');
+const topics = require('../topics');
+const plugins = require('../plugins');
+const emailer = require('../emailer');
+const utils = require('../utils');
 
-var Digest = module.exports;
+const Digest = module.exports;
 
 Digest.execute = async function (payload) {
 	const digestsDisabled = meta.config.disableEmailSubscriptions === 1;
@@ -71,13 +71,13 @@ Digest.send = async function (data) {
 	const users = await user.getUsersFields(data.subscribers, ['uid', 'username', 'userslug', 'lastonline']);
 
 	async.eachLimit(users, 100, async function (userObj) {
-		let [notifications, topics] = await Promise.all([
+		let [notifications, topicsData] = await Promise.all([
 			user.notifications.getUnreadInterval(userObj.uid, data.interval),
 			getTermTopics(data.interval, userObj.uid, 0, 9),
 		]);
 		notifications = notifications.filter(Boolean);
 		// If there are no notifications and no new topics, don't bother sending a digest
-		if (!notifications.length && !topics.length) {
+		if (!notifications.length && !topicsData.length) {
 			return;
 		}
 
@@ -88,7 +88,7 @@ Digest.send = async function (data) {
 		});
 
 		// Fix relative paths in topic data
-		topics = topics.map(function (topicObj) {
+		topicsData = topicsData.map(function (topicObj) {
 			const user = topicObj.hasOwnProperty('teaser') && topicObj.teaser !== undefined ? topicObj.teaser.user : topicObj.user;
 			if (user && user.picture && utils.isRelativeUrl(user.picture)) {
 				user.picture = nconf.get('base_url') + user.picture;
@@ -101,7 +101,7 @@ Digest.send = async function (data) {
 			username: userObj.username,
 			userslug: userObj.userslug,
 			notifications: notifications,
-			recent: data.topics,
+			recent: topicsData,
 			interval: data.interval,
 			showUnsubscribe: true,
 		}, function (err) {
