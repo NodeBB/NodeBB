@@ -125,6 +125,9 @@ define('chat', [
 		var modal = module.getModal(data.roomId);
 		modal.find('[component="chat/room/name"]').text(newTitle);
 		taskbar.updateTitle('chat', modal.attr('data-uuid'), newTitle);
+		$(window).trigger('action:chat.renamed', Object.assign(data, {
+			modal: modal,
+		}));
 	};
 
 	module.getModal = function (roomId) {
@@ -262,15 +265,21 @@ define('chat', [
 	};
 
 	module.close = function (chatModal) {
+		var uuid = chatModal.attr('data-uuid');
 		clearInterval(chatModal.attr('intervalId'));
 		chatModal.attr('intervalId', 0);
 		chatModal.remove();
 		chatModal.data('modal', null);
-		taskbar.discard('chat', chatModal.attr('data-uuid'));
+		taskbar.discard('chat', uuid);
 
 		if (chatModal.attr('data-mobile')) {
 			module.disableMobileBehaviour(chatModal);
 		}
+
+		$(window).trigger('action:chat.closed', {
+			uuid: uuid,
+			modal: chatModal,
+		});
 	};
 
 	// TODO: see taskbar.js:44
@@ -344,6 +353,10 @@ define('chat', [
 		taskbar.minimize('chat', uuid);
 		clearInterval(chatModal.attr('intervalId'));
 		chatModal.attr('intervalId', 0);
+		$(window).trigger('action:chat.minimized', {
+			uuid: uuid,
+			modal: chatModal,
+		});
 	};
 
 	module.toggleNew = taskbar.toggleNew;
