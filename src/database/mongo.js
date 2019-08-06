@@ -11,6 +11,8 @@ var semver = require('semver');
 var prompt = require('prompt');
 var utils = require('../utils');
 
+let client;
+
 var mongoModule = module.exports;
 
 function isUriNotSpecified() {
@@ -109,12 +111,12 @@ mongoModule.getConnectionOptions = function (mongo) {
 mongoModule.init = function (callback) {
 	callback = callback || function () { };
 
-	mongoModule.connect(nconf.get('mongo'), function (err, client) {
+	mongoModule.connect(nconf.get('mongo'), function (err, _client) {
 		if (err) {
 			winston.error('NodeBB could not connect to your Mongo database. Mongo returned the following error', err);
 			return callback(err);
 		}
-
+		client = _client;
 		mongoModule.client = client.db();
 		callback();
 	});
@@ -269,7 +271,7 @@ function getCollectionStats(db, callback) {
 
 mongoModule.close = function (callback) {
 	callback = callback || function () {};
-	mongoModule.client.close(function (err) {
+	client.close(function (err) {
 		callback(err);
 	});
 };
