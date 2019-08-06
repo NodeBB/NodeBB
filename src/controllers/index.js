@@ -310,9 +310,11 @@ Controllers.manifest = function (req, res) {
 		});
 	}
 	plugins.fireHook('filter:manifest.build', manifest, function (err, manifest) {
-                res.status(200).json(manifest);
-        });
-
+		if (err) {
+		     return next(err);
+		}
+		res.status(200).json(manifest);
+	});
 };
 
 Controllers.outgoing = function (req, res, next) {
