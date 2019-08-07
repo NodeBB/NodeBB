@@ -309,11 +309,11 @@ Controllers.manifest = function (req, res, next) {
 			density: 4.0,
 		});
 	}
-	plugins.fireHook('filter:manifest.build', manifest, function (err, manifest) {
+	plugins.fireHook('filter:manifest.build',  { req: req, res: res, manifest: manifest }, function (err, data) {
 		if (err) {
 			return next(err);
 		}
-		res.status(200).json(manifest);
+		res.status(200).json(data.manifest);
 	});
 };
 
