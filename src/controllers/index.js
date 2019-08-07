@@ -309,7 +309,7 @@ Controllers.manifest = function (req, res, next) {
 			density: 4.0,
 		});
 	}
-	plugins.fireHook('filter:manifest.build',  { req: req, res: res, manifest: manifest }, function (err, data) {
+	plugins.fireHook('filter:manifest.build', { req: req, res: res, manifest: manifest }, function (err, data) {
 		if (err) {
 			return next(err);
 		}
