@@ -85,9 +85,20 @@ SocketPosts.getRawPost = function (socket, pid, callback) {
 			if (postData.deleted) {
 				return next(new Error('[[error:no-post]]'));
 			}
-			next(null, postData.content);
+			next(null, postData);
 		},
-	], callback);
+		function (postData, next) {
+			plugins.fireHook('filter:post.getRawPost', Object.assign(postData, {
+				pid: pid,
+			}), next);
+		},
+	], function (err, postData) {
+		if (err) {
+			return callback(err);
+		}
+
+		callback(null, postData.content);
+	});
 };
 
 SocketPosts.getTimestampByIndex = function (socket, data, callback) {
