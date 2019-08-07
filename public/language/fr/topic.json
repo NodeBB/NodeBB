@@ -133,5 +133,5 @@
     "diffs.no-revisions-description": "Cet article a <strong>%1</strong> révisions.",
     "diffs.current-revision": "Révision en cours",
     "diffs.original-revision": "Révision originale",
-    "timeago_later": "plus de %1"
+    "timeago_later": "%1"
 }

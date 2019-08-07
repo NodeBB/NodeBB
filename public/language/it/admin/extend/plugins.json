@@ -9,7 +9,7 @@
 
 	"plugin-search": "Ricerca Plugin",
 	"plugin-search-placeholder": "Ricerca per plugin...",
-	"submit-anonymous-usage": "Submit anonymous plugin usage data.",
+	"submit-anonymous-usage": "Invia dati anonimi sull'utilizzo dei plugin.",
 	"reorder-plugins": "Riordina Plugin",
 	"order-active": "Ordina Plugin attivi",
 	"dev-interested": "Sei interessato a scrivere plugin per NodeBB?",
@@ -30,8 +30,8 @@
 	"plugin-item.more-info": "Per ulteriori informazioni:",
 	"plugin-item.unknown": "Sconosciuto",
 	"plugin-item.unknown-explanation": "Lo stato di questo plugin non può essere determinato, forse a causa di un errore di configurazione.",
-	"plugin-item.compatible": "This plugin works on NodeBB %1",
-	"plugin-item.not-compatible": "This plugin has no compatibility data, make sure it works before installing on your production environment.",
+	"plugin-item.compatible": "Questo plugin funziona su NodeBB %1",
+	"plugin-item.not-compatible": "Questo plugin non ha dati di compatibilità, assicuratevi che funzioni prima di installarlo sul vostro ambiente di produzione.",
 
 	"alert.enabled": "Plugin abilitato",
 	"alert.disabled": "Plugin disabilitato",

@@ -23,7 +23,7 @@
     "purge": "Elimina definitivamente",
     "restore": "Ripristina",
     "move": "Muovi",
-    "change-owner": "Change Owner",
+    "change-owner": "Cambia proprietario",
     "fork": "Dividi",
     "link": "Collegamento",
     "share": "Condividi",
@@ -65,7 +65,7 @@
     "thread_tools.move": "Sposta Discussione",
     "thread_tools.move-posts": "Sposta Post",
     "thread_tools.move_all": "Sposta Tutto",
-    "thread_tools.change_owner": "Change Owner",
+    "thread_tools.change_owner": "Cambia proprietario",
     "thread_tools.select_category": "Seleziona Categoria",
     "thread_tools.fork": "Dividi Discussione",
     "thread_tools.delete": "Elimina Discussione",
@@ -100,7 +100,7 @@
     "delete_posts_instruction": "Clicca sui post che vuoi eliminare/eliminare definitivamente",
     "merge_topics_instruction": "Clicca sulle discussioni che vuoi unire",
     "move_posts_instruction": "Clicca sui post che vuoi spostare",
-    "change_owner_instruction": "Click the posts you want to assign to another user",
+    "change_owner_instruction": "Clicca sui post che vuoi assegnare ad un altro utente",
     "composer.title_placeholder": "Inserisci qui il titolo della discussione...",
     "composer.handle_placeholder": "Nome",
     "composer.discard": "Annulla",
@@ -133,5 +133,5 @@
     "diffs.no-revisions-description": "Questo post ha <strong>%1</strong> revisioni.",
     "diffs.current-revision": "revisione corrente",
     "diffs.original-revision": "revisione originale",
-    "timeago_later": "%1 later"
+    "timeago_later": "%1 successivo"
 }
