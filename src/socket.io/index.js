@@ -113,7 +113,7 @@ function onMessage(socket, payload) {
 		return null;
 	}, Namespaces);
 
-	if (!methodToCall) {
+	if (!methodToCall || typeof methodToCall !== 'function') {
 		if (process.env.NODE_ENV === 'development') {
 			winston.warn('[socket.io] Unrecognized message: ' + eventName);
 		}
@@ -146,17 +146,19 @@ function onMessage(socket, payload) {
 			}
 		},
 		function (next) {
-			let callbackCalled = false;
-			function nextOnce(err, res) {
-				if (callbackCalled) { return; }
-				callbackCalled = true;
-				next(err, res);
+			async function tryAsyncFunc(done) {
+				try {
+					const result = await methodToCall(socket, params);
+					done(null, result);
+				} catch (err) {
+					done(err);
+				}
 			}
-			const returned = methodToCall(socket, params, nextOnce);
-			if (returned && typeof returned.then === 'function') {
-				returned.then((payload) => {
-					nextOnce(null, payload);
-				}, next);
+
+			if (methodToCall.constructor && methodToCall.constructor.name === 'AsyncFunction') {
+				tryAsyncFunc(next);
+			} else {
+				methodToCall(socket, params, next);
 			}
 		},
 	], function (err, result) {

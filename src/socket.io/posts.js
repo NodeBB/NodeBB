@@ -70,35 +70,19 @@ function postReply(socket, data, callback) {
 	], callback);
 }
 
-SocketPosts.getRawPost = function (socket, pid, callback) {
-	async.waterfall([
-		function (next) {
-			privileges.posts.can('topics:read', pid, socket.uid, next);
-		},
-		function (canRead, next) {
-			if (!canRead) {
-				return next(new Error('[[error:no-privileges]]'));
-			}
-			posts.getPostFields(pid, ['content', 'deleted'], next);
-		},
-		function (postData, next) {
-			if (postData.deleted) {
-				return next(new Error('[[error:no-post]]'));
-			}
-			next(null, postData);
-		},
-		function (postData, next) {
-			plugins.fireHook('filter:post.getRawPost', Object.assign(postData, {
-				pid: pid,
-			}), next);
-		},
-	], function (err, postData) {
-		if (err) {
-			return callback(err);
-		}
+SocketPosts.getRawPost = async function (socket, pid) {
+	const canRead = await privileges.posts.can('topics:read', pid, socket.uid);
+	if (!canRead) {
+		throw new Error('[[error:no-privileges]]');
+	}
 
-		callback(null, postData.content);
-	});
+	const postData = await posts.getPostFields(pid, ['content', 'deleted']);
+	if (postData.deleted) {
+		throw new Error('[[error:no-post]]');
+	}
+	postData.pid = pid;
+	const result = await plugins.fireHook('filter:post.getRawPost', { uid: socket.uid, postData: postData });
+	return result.postData.content;
 };
 
 SocketPosts.getTimestampByIndex = function (socket, data, callback) {
@@ -269,3 +253,5 @@ function acceptOrReject(method, socket, data, callback) {
 		},
 	], callback);
 }
+
+require('../promisify')(SocketPosts);
