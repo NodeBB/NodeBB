@@ -147,11 +147,14 @@ module.exports = function (Categories) {
 	// terrible name, should be topics.moveTopicPosts
 	Categories.moveRecentReplies = async function (tid, oldCid, cid) {
 		await updatePostCount(tid, oldCid, cid);
-		const pids = await topics.getPids(tid);
+		const [pids, topicDeleted] = await Promise.all([
+			topics.getPids(tid),
+			topics.getTopicField(tid, 'deleted'),
+		]);
 
 		await batch.processArray(pids, async function (pids) {
-			const postData = await posts.getPostsFields(pids, ['pid', 'uid', 'timestamp', 'upvotes', 'downvotes']);
-			const timestamps = postData.map(p => p && p.timestamp);
+			const postData = await posts.getPostsFields(pids, ['pid', 'deleted', 'uid', 'timestamp', 'upvotes', 'downvotes']);
+
 			const bulkRemove = [];
 			const bulkAdd = [];
 			postData.forEach((post) => {
@@ -163,9 +166,11 @@ module.exports = function (Categories) {
 				}
 			});
 
+			const postsToReAdd = postData.filter(p => !p.deleted && !topicDeleted);
+			const timestamps = postsToReAdd.map(p => p && p.timestamp);
 			await Promise.all([
 				db.sortedSetRemove('cid:' + oldCid + ':pids', pids),
-				db.sortedSetAdd('cid:' + cid + ':pids', timestamps, pids),
+				db.sortedSetAdd('cid:' + cid + ':pids', timestamps, postsToReAdd.map(p => p.pid)),
 				db.sortedSetRemoveBulk(bulkRemove),
 				db.sortedSetAddBulk(bulkAdd),
 			]);
