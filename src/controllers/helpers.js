@@ -273,7 +273,7 @@ function getCategoryData(cids, uid, selectedCid, callback) {
 	}
 	async.waterfall([
 		function (next) {
-			categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'link', 'color', 'bgColor', 'parentCid', 'image', 'imageClass'], next);
+			categories.getCategoriesFields(cids, ['cid', 'order', 'name', 'slug', 'icon', 'link', 'color', 'bgColor', 'parentCid', 'image', 'imageClass'], next);
 		},
 		function (categoryData, next) {
 			categoryData = categoryData.filter(category => category && !category.link);

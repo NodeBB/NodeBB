@@ -49,9 +49,9 @@ module.exports = function (User) {
 		if (!(parseInt(uid, 10) > 0)) {
 			return await categories.getAllCidsFromSet('categories:cid');
 		}
-		const userState = await User.getCategoryWatchState(uid);
-		const cids = Object.keys(userState);
-		return cids.filter(cid => states.includes(userState[cid]));
+		const cids = await categories.getAllCidsFromSet('categories:cid');
+		const userState = await categories.getWatchState(cids, uid);
+		return cids.filter((cid, index) => states.includes(userState[index]));
 	};
 
 	User.ignoreCategory = async function (uid, cid) {
