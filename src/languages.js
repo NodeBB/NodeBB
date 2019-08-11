@@ -13,13 +13,8 @@ const files = fs.readdirSync(path.join(__dirname, '../public/vendor/jquery/timea
 Languages.timeagoCodes = files.filter(f => f.startsWith('jquery.timeago')).map(f => f.split('.')[2]);
 
 Languages.get = async function (language, namespace) {
-	let data = await readFileAsync(path.join(languagesPath, language, namespace + '.json'), 'utf8');
-	try {
-		data = JSON.parse(data) || {};
-	} catch (err) {
-		throw err;
-	}
-	return data;
+	const data = await readFileAsync(path.join(languagesPath, language, namespace + '.json'), 'utf8');
+	return JSON.parse(data) || {};
 };
 
 let codeCache = null;

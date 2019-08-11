@@ -134,11 +134,7 @@ widgets.getArea = async function (template, location) {
 	if (!result) {
 		return [];
 	}
-	try {
-		return parseWidgetData(result);
-	} catch (err) {
-		throw err;
-	}
+	return parseWidgetData(result);
 };
 
 function parseWidgetData(data) {
