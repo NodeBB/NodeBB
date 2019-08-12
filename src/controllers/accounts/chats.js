@@ -1,85 +1,62 @@
 'use strict';
 
-var async = require('async');
+const messaging = require('../../messaging');
+const meta = require('../../meta');
+const user = require('../../user');
+const privileges = require('../../privileges');
+const helpers = require('../helpers');
 
-var messaging = require('../../messaging');
-var meta = require('../../meta');
-var user = require('../../user');
-var privileges = require('../../privileges');
-var helpers = require('../helpers');
+const chatsController = module.exports;
 
-var chatsController = module.exports;
-
-chatsController.get = function (req, res, callback) {
+chatsController.get = async function (req, res, next) {
 	if (meta.config.disableChat) {
-		return callback();
+		return next();
 	}
 
-	var uid;
-	var recentChats;
+	const uid = await user.getUidByUserslug(req.params.userslug);
+	if (!uid) {
+		return next();
+	}
+	const canChat = await privileges.global.can('chat', req.uid);
+	if (!canChat) {
+		return next(new Error('[[error:no-privileges]]'));
+	}
+	const recentChats = await messaging.getRecentChats(req.uid, uid, 0, 19);
+	if (!recentChats) {
+		return next();
+	}
 
-	async.waterfall([
-		function (next) {
-			user.getUidByUserslug(req.params.userslug, next);
-		},
-		function (_uid, next) {
-			uid = _uid;
-			if (!uid) {
-				return callback();
-			}
-			privileges.global.can('chat', req.uid, next);
-		},
-		function (canChat, next) {
-			if (!canChat) {
-				return next(new Error('[[error:no-privileges]]'));
-			}
-			messaging.getRecentChats(req.uid, uid, 0, 19, next);
-		},
-		function (_recentChats, next) {
-			recentChats = _recentChats;
-			if (!recentChats) {
-				return callback();
-			}
-			if (!req.params.roomid) {
-				return res.render('chats', {
-					rooms: recentChats.rooms,
-					uid: uid,
-					userslug: req.params.userslug,
-					nextStart: recentChats.nextStart,
-					allowed: true,
-					title: '[[pages:chats]]',
-				});
-			}
-			messaging.loadRoom(req.uid, { uid: uid, roomId: req.params.roomid }, next);
-		},
-		function (room) {
-			if (!room) {
-				return callback();
-			}
-			room.rooms = recentChats.rooms;
-			room.nextStart = recentChats.nextStart;
-			room.title = room.roomName || room.usernames || '[[pages:chats]]';
-			room.uid = uid;
-			room.userslug = req.params.userslug;
-			res.render('chats', room);
-		},
-	], callback);
+	if (!req.params.roomid) {
+		return res.render('chats', {
+			rooms: recentChats.rooms,
+			uid: uid,
+			userslug: req.params.userslug,
+			nextStart: recentChats.nextStart,
+			allowed: true,
+			title: '[[pages:chats]]',
+		});
+	}
+	const room = await messaging.loadRoom(req.uid, { uid: uid, roomId: req.params.roomid });
+	if (!room) {
+		return next();
+	}
+
+	room.rooms = recentChats.rooms;
+	room.nextStart = recentChats.nextStart;
+	room.title = room.roomName || room.usernames || '[[pages:chats]]';
+	room.uid = uid;
+	room.userslug = req.params.userslug;
+	res.render('chats', room);
 };
 
-chatsController.redirectToChat = function (req, res, next) {
-	var roomid = parseInt(req.params.roomid, 10);
+chatsController.redirectToChat = async function (req, res, next) {
 	if (!req.loggedIn) {
 		return next();
 	}
-	async.waterfall([
-		function (next) {
-			user.getUserField(req.uid, 'userslug', next);
-		},
-		function (userslug, next) {
-			if (!userslug) {
-				return next();
-			}
-			helpers.redirect(res, '/user/' + userslug + '/chats' + (roomid ? '/' + roomid : ''));
-		},
-	], next);
+	const userslug = await user.getUserField(req.uid, 'userslug');
+	if (!userslug) {
+		return next();
+	}
+	const roomid = parseInt(req.params.roomid, 10);
+	helpers.redirect(res, '/user/' + userslug + '/chats' + (roomid ? '/' + roomid : ''));
 };
