@@ -1,55 +1,39 @@
 'use strict';
 
-var async = require('async');
+const helpers = require('../helpers');
+const accountHelpers = require('./helpers');
+const pagination = require('../../pagination');
+const user = require('../../user');
+const plugins = require('../../plugins');
 
-var helpers = require('../helpers');
-var accountHelpers = require('./helpers');
-var pagination = require('../../pagination');
-var user = require('../../user');
-var plugins = require('../../plugins');
+const blocksController = module.exports;
 
-var blocksController = module.exports;
+blocksController.getBlocks = async function (req, res, next) {
+	const page = parseInt(req.query.page, 10) || 1;
+	const resultsPerPage = 50;
+	const start = Math.max(0, page - 1) * resultsPerPage;
+	const stop = start + resultsPerPage - 1;
 
-blocksController.getBlocks = function (req, res, callback) {
-	var userData;
+	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid);
+	if (!userData) {
+		return next();
+	}
+	const uids = await user.blocks.list(userData.uid);
+	const data = await plugins.fireHook('filter:user.getBlocks', {
+		uids: uids,
+		uid: userData.uid,
+		start: start,
+		stop: stop,
+	});
 
-	var page = parseInt(req.query.page, 10) || 1;
-	var resultsPerPage = 50;
-	var start = Math.max(0, page - 1) * resultsPerPage;
-	var stop = start + resultsPerPage - 1;
+	data.uids = data.uids.slice(start, stop + 1);
+	userData.users = await user.getUsers(data.uids, req.uid);
+	userData.title = '[[pages:account/blocks, ' + userData.username + ']]';
 
-	async.waterfall([
-		function (next) {
-			accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, next);
-		},
-		function (_userData, next) {
-			userData = _userData;
-			if (!userData) {
-				return callback();
-			}
+	const pageCount = Math.ceil(userData.blocksCount / resultsPerPage);
+	userData.pagination = pagination.create(page, pageCount);
 
-			user.blocks.list(res.locals.uid, next);
-		},
-		function (uids, next) {
-			plugins.fireHook('filter:user.getBlocks', {
-				uids: uids,
-				uid: res.locals.uid,
-				start: start,
-				stop: stop,
-			}, next);
-		},
-		function (data, next) {
-			user.getUsers(data.uids, res.locals.uid, next);
-		},
-		function (users) {
-			userData.users = users;
-			userData.title = '[[pages:account/blocks, ' + userData.username + ']]';
-			var count = userData.blocksCount;
-			var pageCount = Math.ceil(count / resultsPerPage);
-			userData.pagination = pagination.create(page, pageCount);
-			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[user:blocks]]' }]);
+	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[user:blocks]]' }]);
 
-			res.render('account/blocks', userData);
-		},
-	], callback);
+	res.render('account/blocks', userData);
 };
