@@ -1,23 +1,23 @@
 'use strict';
 
-var cacheController = module.exports;
+const cacheController = module.exports;
 
-var utils = require('../../utils');
+const utils = require('../../utils');
 
 cacheController.get = function (req, res) {
-	var postCache = require('../../posts/cache');
-	var groupCache = require('../../groups').cache;
-	var objectCache = require('../../database').objectCache;
-	var localCache = require('../../cache');
+	const postCache = require('../../posts/cache');
+	const groupCache = require('../../groups').cache;
+	const objectCache = require('../../database').objectCache;
+	const localCache = require('../../cache');
 
-	var avgPostSize = 0;
-	var percentFull = 0;
+	let avgPostSize = 0;
+	let percentFull = 0;
 	if (postCache.itemCount > 0) {
 		avgPostSize = parseInt((postCache.length / postCache.itemCount), 10);
 		percentFull = ((postCache.length / postCache.max) * 100).toFixed(2);
 	}
 
-	var data = {
+	const data = {
 		postCache: {
 			length: postCache.length,
 			max: postCache.max,

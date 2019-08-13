@@ -1,22 +1,18 @@
 'use strict';
 
-var async = require('async');
-var meta = require('../../meta');
-var analytics = require('../../analytics');
+const meta = require('../../meta');
+const analytics = require('../../analytics');
 
-var blacklistController = module.exports;
+const blacklistController = module.exports;
 
-blacklistController.get = function (req, res, next) {
-	async.parallel({
-		rules: async.apply(meta.blacklist.get),
-		analytics: async.apply(analytics.getBlacklistAnalytics),
-	}, function (err, data) {
-		if (err) {
-			return next(err);
-		}
-
-		res.render('admin/manage/ip-blacklist', Object.assign(data, {
-			title: '[[pages:ip-blacklist]]',
-		}));
+blacklistController.get = async function (req, res) {
+	const [rules, analyticsData] = await Promise.all([
+		meta.blacklist.get(),
+		analytics.getBlacklistAnalytics(),
+	]);
+	res.render('admin/manage/ip-blacklist', {
+		title: '[[pages:ip-blacklist]]',
+		rules: rules,
+		analytics: analyticsData,
 	});
 };
