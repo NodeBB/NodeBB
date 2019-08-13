@@ -9,7 +9,7 @@ var privileges = require('../privileges');
 var meta = require('../meta');
 
 module.exports = function (Messaging) {
-	Messaging.getRoomData = async (roomId) => {
+	Messaging.getRoomData = async roomId => {
 		const data = await db.getObject('chat:room:' + roomId);
 		if (!data) {
 			throw new Error('[[error:no-chat-room]]');
@@ -19,7 +19,7 @@ module.exports = function (Messaging) {
 		return data;
 	};
 
-	Messaging.getRoomsData = async (roomIds) => {
+	Messaging.getRoomsData = async roomIds => {
 		const roomData = await db.getObjects(roomIds.map(function (roomId) {
 			return 'chat:room:' + roomId;
 		}));

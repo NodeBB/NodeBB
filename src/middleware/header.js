@@ -238,7 +238,7 @@ module.exports = function (middleware) {
 			function (data, next) {
 				async.parallel({
 					scripts: async.apply(plugins.fireHook, 'filter:scripts.get', []),
-					timeagoLocale: (next) => {
+					timeagoLocale: next => {
 						async.waterfall([
 							async.apply(languages.listCodes),
 							(languageCodes, next) => {

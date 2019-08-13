@@ -148,8 +148,8 @@ helpers.giveOrRescind = async function (method, privileges, cids, groupNames) {
 	cids = Array.isArray(cids) ? cids : [cids];
 	for (const groupName of groupNames) {
 		const groupKeys = [];
-		cids.forEach((cid) => {
-			privileges.forEach((privilege) => {
+		cids.forEach(cid => {
+			privileges.forEach(privilege => {
 				groupKeys.push('cid:' + cid + ':privileges:groups:' + privilege);
 			});
 		});

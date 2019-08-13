@@ -12,7 +12,7 @@ if (!databaseName) {
 var primaryDB = require('./' + databaseName);
 
 primaryDB.parseIntFields = function (data, intFields, requestedFields) {
-	intFields.forEach((field) => {
+	intFields.forEach(field => {
 		if (!requestedFields.length || requestedFields.includes(field)) {
 			data[field] = parseInt(data[field], 10) || 0;
 		}

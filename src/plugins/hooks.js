@@ -54,7 +54,7 @@ module.exports = function (Plugins) {
 		if (Array.isArray(data.method) && data.method.every(method => typeof method === 'function' || typeof method === 'string')) {
 			// Go go gadget recursion!
 			data.method.forEach(function (method) {
-				const singularData = Object.assign({}, data, { method: method });
+				const singularData = { ...data, method: method };
 				Plugins.registerHook(id, singularData);
 			});
 		} else if (typeof data.method === 'string' && data.method.length > 0) {
@@ -157,7 +157,7 @@ module.exports = function (Plugins) {
 					next();
 				}, 5000);
 
-				const onError = (err) => {
+				const onError = err => {
 					winston.error('[plugins] Error executing \'' + hook + '\' in plugin \'' + hookObj.id + '\'');
 					winston.error(err);
 					clearTimeout(timeoutId);

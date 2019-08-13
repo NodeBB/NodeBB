@@ -202,7 +202,7 @@ authenticationController.registerComplete = function (req, res, next) {
 				delete payload.uid;
 				delete payload.returnTo;
 
-				Object.keys(payload).forEach((prop) => {
+				Object.keys(payload).forEach(prop => {
 					if (typeof payload[prop] === 'boolean') {
 						payload[prop] = payload[prop] ? 1 : 0;
 					}

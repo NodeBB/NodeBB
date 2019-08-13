@@ -24,7 +24,7 @@ unreadController.get = function (req, res, next) {
 
 	async.waterfall([
 		function (next) {
-			plugins.fireHook('filter:unread.getValidFilters', { filters: Object.assign({}, helpers.validFilters) }, next);
+			plugins.fireHook('filter:unread.getValidFilters', { filters: { ...helpers.validFilters } }, next);
 		},
 		function (data, _next) {
 			if (!data.filters[filter]) {
@@ -98,7 +98,7 @@ unreadController.unreadTotal = function (req, res, next) {
 
 	async.waterfall([
 		function (next) {
-			plugins.fireHook('filter:unread.getValidFilters', { filters: Object.assign({}, helpers.validFilters) }, next);
+			plugins.fireHook('filter:unread.getValidFilters', { filters: { ...helpers.validFilters } }, next);
 		},
 		function (data, _next) {
 			if (!data.filters[filter]) {

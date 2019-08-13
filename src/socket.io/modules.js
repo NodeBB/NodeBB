@@ -166,7 +166,7 @@ SocketModules.chats.getUsersInRoom = function (socket, data, callback) {
 			return callback(err);
 		}
 
-		payload.users = payload.users.map((user) => {
+		payload.users = payload.users.map(user => {
 			user.canKick = (parseInt(user.uid, 10) !== parseInt(socket.uid, 10)) && payload.isOwner;
 			return user;
 		});

@@ -207,7 +207,7 @@ module.exports = function (Posts) {
 		const bulkAdd = [];
 		const bulkRemove = [];
 		const postsByUser = {};
-		mainPosts.forEach((post) => {
+		mainPosts.forEach(post => {
 			bulkRemove.push(['cid:' + post.cid + ':uid:' + post.uid + ':tids', post.tid]);
 			bulkRemove.push(['uid:' + post.uid + ':topics', post.tid]);
 
