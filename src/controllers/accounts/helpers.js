@@ -197,13 +197,12 @@ function filterLinks(links, states) {
 		}
 
 		// Default visibility
-		link.visibility = Object.assign({
-			self: true,
+		link.visibility = { self: true,
 			other: true,
 			moderator: true,
 			globalMod: true,
 			admin: true,
-		}, link.visibility);
+			...link.visibility };
 
 		var permit = Object.keys(states).some(function (state) {
 			return states[state] && link.visibility[state];

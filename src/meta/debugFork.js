@@ -30,9 +30,7 @@ function debugFork(modulePath, args, options) {
 	}
 
 	options = options || {};
-	options = Object.assign({}, options, {
-		execArgv: execArgv,
-	});
+	options = { ...options, execArgv: execArgv };
 
 	return fork(modulePath, args, options);
 }

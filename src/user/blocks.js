@@ -98,7 +98,7 @@ module.exports = function (User) {
 			property = 'uid';
 		}
 
-		if (!Array.isArray(set) || !set.length || !set.every((item) => {
+		if (!Array.isArray(set) || !set.length || !set.every(item => {
 			if (!item) {
 				return false;
 			}

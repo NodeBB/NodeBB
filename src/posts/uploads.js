@@ -108,7 +108,7 @@ module.exports = function (Posts) {
 		]);
 	};
 
-	Posts.uploads.saveSize = async (filePaths) => {
+	Posts.uploads.saveSize = async filePaths => {
 		await Promise.all(filePaths.map(async function (fileName) {
 			try {
 				const size = await image.size(path.join(pathPrefix, fileName));

@@ -194,7 +194,7 @@ Emailer.send = function (template, uid, params, callback) {
 	}
 
 	// Combined passed-in payload with default values
-	params = Object.assign({}, Emailer._defaultPayload, params);
+	params = { ...Emailer._defaultPayload, ...params };
 
 	async.waterfall([
 		function (next) {
@@ -228,10 +228,9 @@ Emailer.sendToEmail = function (template, email, language, params, callback) {
 	var lang = language || meta.config.defaultLang || 'en-GB';
 
 	// Add some default email headers based on local configuration
-	params.headers = Object.assign({
-		'List-Id': '<' + [template, params.uid, getHostname()].join('.') + '>',
+	params.headers = { 'List-Id': '<' + [template, params.uid, getHostname()].join('.') + '>',
 		'List-Unsubscribe': '<' + [nconf.get('url'), 'uid', params.uid, 'settings'].join('/') + '>',
-	}, params.headers);
+		...params.headers };
 
 	// Digests and notifications can be one-click unsubbed
 	let payload = {

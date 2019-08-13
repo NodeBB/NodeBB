@@ -72,7 +72,7 @@ Configs.getFields = async function (fields) {
 		values = await db.getObject('config');
 	}
 
-	values = Object.assign({}, defaults, values ? deserialize(values) : {});
+	values = { ...defaults, ...(values ? deserialize(values) : {}) };
 
 	if (!fields.length) {
 		values.version = nconf.get('version');
@@ -100,7 +100,7 @@ Configs.setMultiple = async function (data) {
 
 Configs.setOnEmpty = async function (values) {
 	const data = await db.getObject('config');
-	const config = Object.assign({}, values, data ? deserialize(data) : {});
+	const config = { ...values, ...(data ? deserialize(data) : {}) };
 	await db.setObject('config', config);
 };
 

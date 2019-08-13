@@ -77,7 +77,7 @@ module.exports = function (Messaging) {
 			message.system = !!message.system;
 		});
 
-		messages = await Promise.all(messages.map(async (message) => {
+		messages = await Promise.all(messages.map(async message => {
 			if (message.system) {
 				return message;
 			}
