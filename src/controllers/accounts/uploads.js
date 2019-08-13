@@ -1,57 +1,40 @@
 'use strict';
 
+const nconf = require('nconf');
 
-var async = require('async');
-var nconf = require('nconf');
+const db = require('../../database');
+const helpers = require('../helpers');
+const meta = require('../../meta');
+const pagination = require('../../pagination');
+const accountHelpers = require('./helpers');
 
-var db = require('../../database');
-var helpers = require('../helpers');
-var meta = require('../../meta');
-var pagination = require('../../pagination');
-var accountHelpers = require('./helpers');
+const uploadsController = module.exports;
 
-var uploadsController = module.exports;
+uploadsController.get = async function (req, res, next) {
+	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid);
+	if (!userData) {
+		return next();
+	}
 
-uploadsController.get = function (req, res, callback) {
-	var userData;
+	const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+	const itemsPerPage = 25;
+	const start = (page - 1) * itemsPerPage;
+	const stop = start + itemsPerPage - 1;
+	const [itemCount, uploadNames] = await Promise.all([
+		db.sortedSetCard('uid:' + userData.uid + ':uploads'),
+		db.getSortedSetRevRange('uid:' + userData.uid + ':uploads', start, stop),
+	]);
 
-	var page = Math.max(1, parseInt(req.query.page, 10) || 1);
-	var itemsPerPage = 25;
-
-	async.waterfall([
-		function (next) {
-			accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, next);
-		},
-		function (_userData, next) {
-			userData = _userData;
-			if (!userData) {
-				return callback();
-			}
-
-			var start = (page - 1) * itemsPerPage;
-			var stop = start + itemsPerPage - 1;
-			async.parallel({
-				itemCount: function (next) {
-					db.sortedSetCard('uid:' + userData.uid + ':uploads', next);
-				},
-				uploadNames: function (next) {
-					db.getSortedSetRevRange('uid:' + userData.uid + ':uploads', start, stop, next);
-				},
-			}, next);
-		},
-		function (results) {
-			userData.uploads = results.uploadNames.map(function (uploadName) {
-				return {
-					name: uploadName,
-					url: nconf.get('upload_url') + uploadName,
-				};
-			});
-			var pageCount = Math.ceil(results.itemCount / itemsPerPage);
-			userData.pagination = pagination.create(page, pageCount, req.query);
-			userData.privateUploads = meta.config.privateUploads === 1;
-			userData.title = '[[pages:account/uploads, ' + userData.username + ']]';
-			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[global:uploads]]' }]);
-			res.render('account/uploads', userData);
-		},
-	], callback);
+	userData.uploads = uploadNames.map(function (uploadName) {
+		return {
+			name: uploadName,
+			url: nconf.get('upload_url') + uploadName,
+		};
+	});
+	const pageCount = Math.ceil(itemCount / itemsPerPage);
+	userData.pagination = pagination.create(page, pageCount, req.query);
+	userData.privateUploads = meta.config.privateUploads === 1;
+	userData.title = '[[pages:account/uploads, ' + userData.username + ']]';
+	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[global:uploads]]' }]);
+	res.render('account/uploads', userData);
 };

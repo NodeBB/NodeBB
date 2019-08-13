@@ -1,23 +1,22 @@
 'use strict';
 
-var nconf = require('nconf');
-var async = require('async');
+const nconf = require('nconf');
 
 const db = require('../../database');
-var user = require('../../user');
-var posts = require('../../posts');
+const user = require('../../user');
+const posts = require('../../posts');
 const categories = require('../../categories');
-var plugins = require('../../plugins');
-var meta = require('../../meta');
-var accountHelpers = require('./helpers');
-var helpers = require('../helpers');
-var messaging = require('../../messaging');
-var utils = require('../../utils');
+const plugins = require('../../plugins');
+const meta = require('../../meta');
+const accountHelpers = require('./helpers');
+const helpers = require('../helpers');
+const messaging = require('../../messaging');
+const utils = require('../../utils');
 
-var profileController = module.exports;
+const profileController = module.exports;
 
-profileController.get = function (req, res, callback) {
-	var lowercaseSlug = req.params.userslug.toLowerCase();
+profileController.get = async function (req, res, next) {
+	const lowercaseSlug = req.params.userslug.toLowerCase();
 
 	if (req.params.userslug !== lowercaseSlug) {
 		if (res.locals.isAPI) {
@@ -27,97 +26,71 @@ profileController.get = function (req, res, callback) {
 		}
 	}
 
-	var userData;
-	async.waterfall([
-		function (next) {
-			accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, next);
-		},
-		function (_userData, next) {
-			if (!_userData) {
-				return callback();
-			}
-			userData = _userData;
+	const userData = await accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid);
+	if (!userData) {
+		return next();
+	}
 
-			if (req.uid >= 0) {
-				req.session.uids_viewed = req.session.uids_viewed || {};
+	await incrementProfileViews(req, userData);
 
-				if (req.uid !== userData.uid && (!req.session.uids_viewed[userData.uid] || req.session.uids_viewed[userData.uid] < Date.now() - 3600000)) {
-					user.incrementUserFieldBy(userData.uid, 'profileviews', 1);
-					req.session.uids_viewed[userData.uid] = Date.now();
-				}
-			}
+	const [hasPrivateChat, latestPosts, bestPosts] = await Promise.all([
+		messaging.hasPrivateChat(req.uid, userData.uid),
+		getLatestPosts(req.uid, userData),
+		getBestPosts(req.uid, userData),
+		posts.parseSignature(userData, req.uid),
+	]);
 
-			async.parallel({
-				hasPrivateChat: function (next) {
-					messaging.hasPrivateChat(req.uid, userData.uid, next);
-				},
-				latestPosts: function (next) {
-					getLatestPosts(req.uid, userData, next);
-				},
-				bestPosts: function (next) {
-					getBestPosts(req.uid, userData, next);
-				},
-				signature: function (next) {
-					posts.parseSignature(userData, req.uid, next);
-				},
-			}, next);
-		},
-		function (results, next) {
-			if (meta.config['reputation:disabled']) {
-				delete userData.reputation;
-			}
+	if (meta.config['reputation:disabled']) {
+		delete userData.reputation;
+	}
 
-			userData.posts = results.latestPosts; // for backwards compat.
-			userData.latestPosts = results.latestPosts;
-			userData.bestPosts = results.bestPosts;
-			userData.hasPrivateChat = results.hasPrivateChat;
-			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username }]);
-			userData.title = userData.username;
-			userData.allowCoverPicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:cover-picture'];
+	userData.posts = latestPosts; // for backwards compat.
+	userData.latestPosts = latestPosts;
+	userData.bestPosts = bestPosts;
+	userData.hasPrivateChat = hasPrivateChat;
+	userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username }]);
+	userData.title = userData.username;
+	userData.allowCoverPicture = !userData.isSelf || !!meta.config['reputation:disabled'] || userData.reputation >= meta.config['min:rep:cover-picture'];
 
-			if (!userData.profileviews) {
-				userData.profileviews = 1;
-			}
+	if (!userData.profileviews) {
+		userData.profileviews = 1;
+	}
 
-			addMetaTags(res, userData);
+	addMetaTags(res, userData);
 
-			userData.selectedGroup = userData.groups.filter(function (group) {
-				return group && userData.groupTitleArray.includes(group.name);
-			});
+	userData.selectedGroup = userData.groups.filter(function (group) {
+		return group && userData.groupTitleArray.includes(group.name);
+	});
 
-			plugins.fireHook('filter:user.account', { userData: userData, uid: req.uid }, next);
-		},
-		function (results) {
-			res.render('account/profile', results.userData);
-		},
-	], callback);
+	const results = await plugins.fireHook('filter:user.account', { userData: userData, uid: req.uid });
+	res.render('account/profile', results.userData);
 };
 
-function getLatestPosts(callerUid, userData, callback) {
-	getPosts(callerUid, userData, 'pids', callback);
+async function incrementProfileViews(req, userData) {
+	if (req.uid >= 0) {
+		req.session.uids_viewed = req.session.uids_viewed || {};
+
+		if (req.uid !== userData.uid && (!req.session.uids_viewed[userData.uid] || req.session.uids_viewed[userData.uid] < Date.now() - 3600000)) {
+			await user.incrementUserFieldBy(userData.uid, 'profileviews', 1);
+			req.session.uids_viewed[userData.uid] = Date.now();
+		}
+	}
 }
 
-function getBestPosts(callerUid, userData, callback) {
-	getPosts(callerUid, userData, 'pids:votes', callback);
+async function getLatestPosts(callerUid, userData) {
+	return await getPosts(callerUid, userData, 'pids');
 }
 
-function getPosts(callerUid, userData, setSuffix, callback) {
-	async.waterfall([
-		function (next) {
-			categories.getCidsByPrivilege('categories:cid', callerUid, 'topics:read', next);
-		},
-		function (cids, next) {
-			const keys = cids.map(c => 'cid:' + c + ':uid:' + userData.uid + ':' + setSuffix);
-			db.getSortedSetRevRange(keys, 0, 9, next);
-		},
-		function (pids, next) {
-			posts.getPostSummaryByPids(pids, callerUid, { stripTags: false }, next);
-		},
-		function (posts, next) {
-			posts = posts.filter(p => p && !p.deleted);
-			next(null, posts);
-		},
-	], callback);
+async function getBestPosts(callerUid, userData) {
+	return await getPosts(callerUid, userData, 'pids:votes');
+}
+
+async function getPosts(callerUid, userData, setSuffix) {
+	const cids = await categories.getCidsByPrivilege('categories:cid', callerUid, 'topics:read');
+	const keys = cids.map(c => 'cid:' + c + ':uid:' + userData.uid + ':' + setSuffix);
+	const pids = await db.getSortedSetRevRange(keys, 0, 9);
+	const postData = await posts.getPostSummaryByPids(pids, callerUid, { stripTags: false });
+	return postData.filter(p => p && !p.deleted);
 }
 
 function addMetaTags(res, userData) {
