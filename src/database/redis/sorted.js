@@ -32,7 +32,7 @@ module.exports = function (module) {
 				return [];
 			}
 			const batch = module.client.batch();
-			key.forEach(key => {
+			key.forEach((key) => {
 				batch[method]([key, start, stop, 'WITHSCORES']);
 			});
 			let data = await helpers.execBatch(batch);

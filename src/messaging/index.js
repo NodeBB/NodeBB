@@ -20,7 +20,7 @@ require('./unread')(Messaging);
 require('./notifications')(Messaging);
 
 
-Messaging.getMessages = async params => {
+Messaging.getMessages = async (params) => {
 	const isNew = params.isNew || false;
 	const start = params.hasOwnProperty('start') ? params.start : 0;
 	const stop = parseInt(start, 10) + ((params.count || 50) - 1);
@@ -98,7 +98,7 @@ Messaging.getRecentChats = async (callerUid, uid, start, stop) => {
 	const results = await utils.promiseParallel({
 		roomData: Messaging.getRoomsData(roomIds),
 		unread: db.isSortedSetMembers('uid:' + uid + ':chat:rooms:unread', roomIds),
-		users: Promise.all(roomIds.map(async roomId => {
+		users: Promise.all(roomIds.map(async (roomId) => {
 			let uids = await db.getSortedSetRevRange('chat:room:' + roomId + ':uids', 0, 9);
 			uids = uids.filter(function (value) {
 				return value && parseInt(value, 10) !== parseInt(uid, 10);

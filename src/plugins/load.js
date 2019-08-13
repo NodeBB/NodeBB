@@ -88,7 +88,7 @@ module.exports = function (Plugins) {
 		const fields = _.uniq(_.flatMap(targets, target => map[target] || []));
 
 		// clear old data before build
-		fields.forEach(field => {
+		fields.forEach((field) => {
 			switch (field) {
 			case 'clientScripts':
 			case 'acpScripts':

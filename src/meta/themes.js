@@ -30,7 +30,7 @@ Themes.get = async () => {
 
 	let themes = await getThemes(themePath);
 	themes = _.flatten(themes).filter(Boolean);
-	themes = await Promise.all(themes.map(async theme => {
+	themes = await Promise.all(themes.map(async (theme) => {
 		const config = path.join(themePath, theme, 'theme.json');
 		try {
 			const file = await fsReadfile(config, 'utf8');
@@ -61,7 +61,7 @@ Themes.get = async () => {
 async function getThemes(themePath) {
 	let dirs = await fsReaddir(themePath);
 	dirs = dirs.filter(dir => themeNamePattern.test(dir) || dir.startsWith('@'));
-	return await Promise.all(dirs.map(async dir => {
+	return await Promise.all(dirs.map(async (dir) => {
 		try {
 			const dirpath = path.join(themePath, dir);
 			const stat = await fsStat(dirpath);
@@ -85,7 +85,7 @@ async function getThemes(themePath) {
 	}));
 }
 
-Themes.set = async data => {
+Themes.set = async (data) => {
 	const themeData = {
 		'theme:type': data.type,
 		'theme:id': data.id,
