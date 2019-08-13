@@ -23,6 +23,7 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 		handleEmailConfirm();
 		updateSignature();
 		updateAboutMe();
+		handleGroupSort();
 	};
 
 	function updateProfile() {
@@ -329,6 +330,28 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 		});
 	}
 
+	function handleGroupSort() {
+		function move(direction) {
+			var selected = $('#groupTitle').val();
+			if (!ajaxify.data.allowMultipleBadges || (Array.isArray(selected) && selected.length > 1)) {
+				return;
+			}
+			var el = $('#groupTitle').find(':selected');
+			if (el.length && el.val()) {
+				if (direction > 0) {
+					el.insertAfter(el.next());
+				} else if (el.prev().val()) {
+					el.insertBefore(el.prev());
+				}
+			}
+		}
+		$('[component="group/order/up"]').on('click', function () {
+			move(-1);
+		});
+		$('[component="group/order/down"]').on('click', function () {
+			move(1);
+		});
+	}
 
 	return AccountEdit;
 });
