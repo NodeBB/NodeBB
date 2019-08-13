@@ -157,7 +157,7 @@ module.exports = function (Categories) {
 
 			const bulkRemove = [];
 			const bulkAdd = [];
-			postData.forEach(post => {
+			postData.forEach((post) => {
 				bulkRemove.push(['cid:' + oldCid + ':uid:' + post.uid + ':pids', post.pid]);
 				bulkRemove.push(['cid:' + oldCid + ':uid:' + post.uid + ':pids:votes', post.pid]);
 				bulkAdd.push(['cid:' + cid + ':uid:' + post.uid + ':pids', post.timestamp, post.pid]);

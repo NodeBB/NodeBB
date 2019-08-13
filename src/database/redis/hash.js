@@ -117,7 +117,7 @@ module.exports = function (module) {
 
 			const item = cachedData[key] || {};
 			const result = {};
-			fields.forEach(field => {
+			fields.forEach((field) => {
 				result[field] = item[field] !== undefined ? item[field] : null;
 			});
 			return result;

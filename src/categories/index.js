@@ -146,7 +146,7 @@ Categories.getCategories = async function (cids, uid) {
 Categories.getTagWhitelist = async function (cids) {
 	const cachedData = {};
 
-	const nonCachedCids = cids.filter(cid => {
+	const nonCachedCids = cids.filter((cid) => {
 		const data = cache.get('cid:' + cid + ':tag:whitelist');
 		const isInCache = data !== undefined;
 		if (isInCache) {

@@ -90,7 +90,7 @@ module.exports = function (Topics) {
 			return tids.map(() => ({ following: false, ignoring: false }));
 		}
 		const keys = [];
-		tids.forEach(tid => {
+		tids.forEach((tid) => {
 			keys.push('tid:' + tid + ':followers', 'tid:' + tid + ':ignorers');
 		});
 

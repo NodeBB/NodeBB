@@ -83,7 +83,7 @@ async function getTemplateDirs(activePlugins) {
 }
 
 async function getTemplateFiles(dirs) {
-	const buckets = await Promise.all(dirs.map(async dir => {
+	const buckets = await Promise.all(dirs.map(async (dir) => {
 		let files = await file.walk(dir);
 		files = files.filter(function (path) {
 			return path.endsWith('.tpl');
@@ -132,7 +132,7 @@ async function compile() {
 	files = await getTemplateDirs(files);
 	files = await getTemplateFiles(files);
 
-	await Promise.all(Object.keys(files).map(async name => {
+	await Promise.all(Object.keys(files).map(async (name) => {
 		const filePath = files[name];
 		let imported = await fsReadFile(filePath, 'utf8');
 		imported = await processImports(files, name, imported);

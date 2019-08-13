@@ -157,7 +157,7 @@ module.exports = function (Plugins) {
 					next();
 				}, 5000);
 
-				const onError = err => {
+				const onError = (err) => {
 					winston.error('[plugins] Error executing \'' + hook + '\' in plugin \'' + hookObj.id + '\'');
 					winston.error(err);
 					clearTimeout(timeoutId);
