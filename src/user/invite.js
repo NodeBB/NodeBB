@@ -64,7 +64,7 @@ module.exports = function (User) {
 		};
 
 		// Append default data to this email payload
-		data = Object.assign({}, emailer._defaultPayload, data);
+		data = { ...emailer._defaultPayload, ...data };
 
 		await emailer.sendToEmail('invitation', email, meta.config.defaultLang, data);
 	};

@@ -238,7 +238,7 @@ async function addTags(topicData, req, res) {
 
 async function addOGImageTags(res, topicData, postAtIndex) {
 	const uploads = postAtIndex ? await posts.uploads.listWithSizes(postAtIndex.pid) : [];
-	const images = uploads.map((upload) => {
+	const images = uploads.map(upload => {
 		upload.name = nconf.get('url') + nconf.get('upload_url') + '/files/' + upload.name;
 		return upload;
 	});

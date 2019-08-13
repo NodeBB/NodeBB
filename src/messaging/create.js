@@ -6,7 +6,7 @@ var db = require('../database');
 var user = require('../user');
 
 module.exports = function (Messaging) {
-	Messaging.sendMessage = async (data) => {
+	Messaging.sendMessage = async data => {
 		await Messaging.checkContent(data.content);
 		const inRoom = await Messaging.isUserInRoom(data.uid, data.roomId);
 		if (!inRoom) {
@@ -16,7 +16,7 @@ module.exports = function (Messaging) {
 		return await Messaging.addMessage(data);
 	};
 
-	Messaging.checkContent = async (content) => {
+	Messaging.checkContent = async content => {
 		if (!content) {
 			throw new Error('[[error:invalid-chat-message]]');
 		}
@@ -32,7 +32,7 @@ module.exports = function (Messaging) {
 		}
 	};
 
-	Messaging.addMessage = async (data) => {
+	Messaging.addMessage = async data => {
 		const mid = await db.incrObjectField('global', 'nextMid');
 		const timestamp = data.timestamp || new Date().getTime();
 		let message = {

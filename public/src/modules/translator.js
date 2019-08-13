@@ -579,6 +579,7 @@
 		},
 
 		toggleTimeagoShorthand: function toggleTimeagoShorthand(callback) {
+			/* eslint "prefer-object-spread": "off" */
 			function toggle() {
 				var tmp = assign({}, jQuery.timeago.settings.strings);
 				jQuery.timeago.settings.strings = assign({}, adaptor.timeagoShort);
