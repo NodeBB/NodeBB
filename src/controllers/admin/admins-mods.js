@@ -1,52 +1,31 @@
 'use strict';
 
-var async = require('async');
+const groups = require('../../groups');
+const categories = require('../../categories');
+const privileges = require('../../privileges');
 
-var groups = require('../../groups');
-var categories = require('../../categories');
-var privileges = require('../../privileges');
+const AdminsMods = module.exports;
 
-var AdminsMods = module.exports;
+AdminsMods.get = async function (req, res) {
+	const [admins, globalMods, categories] = await Promise.all([
+		groups.get('administrators', { uid: req.uid }),
+		groups.get('Global Moderators', { uid: req.uid }),
+		getModeratorsOfCategories(req.uid),
+	]);
 
-AdminsMods.get = function (req, res, next) {
-	async.waterfall([
-		function (next) {
-			async.parallel({
-				admins: function (next) {
-					groups.get('administrators', { uid: req.uid }, next);
-				},
-				globalMods: function (next) {
-					groups.get('Global Moderators', { uid: req.uid }, next);
-				},
-				categories: function (next) {
-					getModeratorsOfCategories(req.uid, next);
-				},
-			}, next);
-		},
-		function (results) {
-			results.allPrivileges = privileges.userPrivilegeList;
-			res.render('admin/manage/admins-mods', results);
-		},
-	], next);
+	res.render('admin/manage/admins-mods', {
+		admins: admins,
+		globalMods: globalMods,
+		categories: categories,
+		allPrivileges: privileges.userPrivilegeList,
+	});
 };
 
-function getModeratorsOfCategories(uid, callback) {
-	async.waterfall([
-		function (next) {
-			categories.buildForSelect(uid, 'find', next);
-		},
-		function (categoryData, next) {
-			async.map(categoryData, function (category, next) {
-				async.waterfall([
-					function (next) {
-						categories.getModerators(category.cid, next);
-					},
-					function (moderators, next) {
-						category.moderators = moderators;
-						next(null, category);
-					},
-				], next);
-			}, next);
-		},
-	], callback);
+async function getModeratorsOfCategories(uid) {
+	const categoryData = await categories.buildForSelect(uid, 'find');
+	const moderators = await Promise.all(categoryData.map(c => categories.getModerators(c.cid)));
+	categoryData.forEach((c, index) => {
+		c.moderators = moderators[index];
+	});
+	return categoryData;
 }
