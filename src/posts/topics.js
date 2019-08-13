@@ -38,8 +38,8 @@ module.exports = function (Posts) {
 		]);
 
 		const paths = pids.map(function (pid, index) {
-			var slug = topicData[index] ? topicData[index].slug : null;
-			var postIndex = utils.isNumber(indices[index]) ? parseInt(indices[index], 10) + 1 : null;
+			const slug = topicData[index] ? topicData[index].slug : null;
+			const postIndex = utils.isNumber(indices[index]) ? parseInt(indices[index], 10) + 1 : null;
 
 			if (slug && postIndex) {
 				return '/topic/' + slug + '/' + postIndex;
