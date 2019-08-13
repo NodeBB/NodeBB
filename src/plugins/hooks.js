@@ -7,6 +7,9 @@ const utils = require('../utils');
 module.exports = function (Plugins) {
 	Plugins.deprecatedHooks = {
 		'filter:controllers.topic.get': 'filter:topic.build',
+		'filter:user.account': 'filter:account/profile.build',
+		'filter:user.account.edit': 'filter:account/edit.build',
+		'filter:notifications.get': 'filter:notifications.build',
 	};
 
 	Plugins.internals = {
