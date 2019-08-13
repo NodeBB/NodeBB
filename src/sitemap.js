@@ -1,7 +1,7 @@
 'use strict';
 
 var async = require('async');
-var sm = require('sitemap');
+const { Sitemap } = require('sitemap');
 var nconf = require('nconf');
 
 var db = require('./database');
@@ -45,7 +45,7 @@ sitemap.getPages = function (callback) {
 		sitemap.maps.pages &&
 		Date.now() < parseInt(sitemap.maps.pages.cacheSetTimestamp, 10) + parseInt(sitemap.maps.pages.cacheResetPeriod, 10)
 	) {
-		return sitemap.maps.pages.toXML(callback);
+		return callback(null, sitemap.maps.pages.toXML());
 	}
 
 	var urls = [{
@@ -70,13 +70,13 @@ sitemap.getPages = function (callback) {
 		if (err) {
 			return callback(err);
 		}
-		sitemap.maps.pages = sm.createSitemap({
+		sitemap.maps.pages = new Sitemap({
 			hostname: nconf.get('url'),
 			cacheTime: 1000 * 60 * 60 * 24,	// Cached for 24 hours
 			urls: data.urls,
 		});
 
-		sitemap.maps.pages.toXML(callback);
+		callback(null, sitemap.maps.pages.toXML());
 	});
 };
 
@@ -85,7 +85,7 @@ sitemap.getCategories = function (callback) {
 		sitemap.maps.categories &&
 		Date.now() < parseInt(sitemap.maps.categories.cacheSetTimestamp, 10) + parseInt(sitemap.maps.categories.cacheResetPeriod, 10)
 	) {
-		return sitemap.maps.categories.toXML(callback);
+		return callback(null, sitemap.maps.categories.toXML());
 	}
 
 	var categoryUrls = [];
@@ -104,13 +104,13 @@ sitemap.getCategories = function (callback) {
 			}
 		});
 
-		sitemap.maps.categories = sm.createSitemap({
+		sitemap.maps.categories = new Sitemap({
 			hostname: nconf.get('url'),
 			cacheTime: 1000 * 60 * 60 * 24,	// Cached for 24 hours
 			urls: categoryUrls,
 		});
 
-		sitemap.maps.categories.toXML(callback);
+		callback(null, sitemap.maps.categories.toXML());
 	});
 };
 
@@ -127,7 +127,7 @@ sitemap.getTopicPage = function (page, callback) {
 		sitemap.maps.topics[page - 1] &&
 		Date.now() < parseInt(sitemap.maps.topics[page - 1].cacheSetTimestamp, 10) + parseInt(sitemap.maps.topics[page - 1].cacheResetPeriod, 10)
 	) {
-		return sitemap.maps.topics[page - 1].toXML(callback);
+		return callback(null, sitemap.maps.topics[page - 1].toXML());
 	}
 
 	var topicUrls = [];
@@ -158,13 +158,13 @@ sitemap.getTopicPage = function (page, callback) {
 			}
 		});
 
-		sitemap.maps.topics[page - 1] = sm.createSitemap({
+		sitemap.maps.topics[page - 1] = new Sitemap({
 			hostname: nconf.get('url'),
 			cacheTime: 1000 * 60 * 60,	// Cached for 1 hour
 			urls: topicUrls,
 		});
 
-		sitemap.maps.topics[page - 1].toXML(callback);
+		callback(null, sitemap.maps.topics[page - 1].toXML());
 	});
 };
 
