@@ -11,7 +11,6 @@ const util = require('util');
 const db = require('../database');
 const meta = require('../meta');
 const pubsub = require('../pubsub');
-const events = require('../events');
 
 const statAsync = util.promisify(fs.stat);
 
@@ -57,10 +56,6 @@ module.exports = function (Plugins) {
 		}
 		meta.reloadRequired = true;
 		Plugins.fireHook(isActive ? 'action:plugin.deactivate' : 'action:plugin.activate', { id: id });
-		await events.log({
-			type: 'plugin-' + (isActive ? 'deactivate' : 'activate'),
-			text: id,
-		});
 		return { id: id, active: !isActive };
 	};
 

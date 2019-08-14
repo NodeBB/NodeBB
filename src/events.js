@@ -14,6 +14,8 @@ const events = module.exports;
 events.types = [
 	'plugin-activate',
 	'plugin-deactivate',
+	'plugin-install',
+	'plugin-uninstall',
 	'restart',
 	'build',
 	'config-change',

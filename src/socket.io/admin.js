@@ -129,14 +129,27 @@ SocketAdmin.themes.set = function (socket, data, callback) {
 	], callback);
 };
 
-SocketAdmin.plugins.toggleActive = function (socket, plugin_id, callback) {
+SocketAdmin.plugins.toggleActive = async function (socket, plugin_id) {
 	require('../posts/cache').reset();
-	plugins.toggleActive(plugin_id, callback);
+	const data = await plugins.toggleActive(plugin_id);
+	await events.log({
+		type: 'plugin-' + (data.active ? 'activate' : 'deactivate'),
+		text: plugin_id,
+		uid: socket.uid,
+	});
+	return data;
 };
 
-SocketAdmin.plugins.toggleInstall = function (socket, data, callback) {
+SocketAdmin.plugins.toggleInstall = async function (socket, data) {
 	require('../posts/cache').reset();
-	plugins.toggleInstall(data.id, data.version, callback);
+	const pluginData = await plugins.toggleInstall(data.id, data.version);
+	await events.log({
+		type: 'plugin-' + (pluginData.installed ? 'install' : 'uninstall'),
+		text: data.id,
+		version: data.version,
+		uid: socket.uid,
+	});
+	return pluginData;
 };
 
 SocketAdmin.plugins.getActive = function (socket, data, callback) {
@@ -398,3 +411,5 @@ SocketAdmin.uploads.delete = function (socket, pathToFile, callback) {
 };
 
 module.exports = SocketAdmin;
+
+require('../promisify')(SocketAdmin);
