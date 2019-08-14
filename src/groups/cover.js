@@ -55,8 +55,6 @@ module.exports = function (Groups) {
 	};
 
 	Groups.removeCover = async function (data) {
-		console.log('in removeCover', data);
 		await db.deleteObjectFields('group:' + data.groupName, ['cover:url', 'cover:thumb:url', 'cover:position']);
-		console.log('field deleted');
 	};
 };

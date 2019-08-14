@@ -329,7 +329,6 @@ SocketGroups.cover.remove = async (socket, data) => {
 	}
 
 	await canModifyGroup(socket.uid, data.groupName);
-	console.log('calling groups.removeCover');
 	await groups.removeCover(data);
 };
 
