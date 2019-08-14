@@ -189,3 +189,5 @@ groupsController.uploadCover = function (req, res, next) {
 		res.json([{ url: image.url }]);
 	});
 };
+
+require('../promisify')(groupsController);
