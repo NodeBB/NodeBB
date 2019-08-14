@@ -1,27 +1,24 @@
 'use strict';
 
-var async = require('async');
-var os = require('os');
-var winston = require('winston');
-var nconf = require('nconf');
-var exec = require('child_process').exec;
+const os = require('os');
+const winston = require('winston');
+const nconf = require('nconf');
+const exec = require('child_process').exec;
 
-var pubsub = require('../../pubsub');
-var rooms = require('../../socket.io/admin/rooms');
+const pubsub = require('../../pubsub');
+const rooms = require('../../socket.io/admin/rooms');
 
-var infoController = module.exports;
+const infoController = module.exports;
 
-var info = {};
+let info = {};
 
 infoController.get = function (req, res) {
 	info = {};
 	pubsub.publish('sync:node:info:start');
-	var timeoutMS = 1000;
+	const timeoutMS = 1000;
 	setTimeout(function () {
-		var data = [];
-		Object.keys(info).forEach(function (key) {
-			data.push(info[key]);
-		});
+		const data = [];
+		Object.keys(info).forEach(key => data.push(info[key]));
 		data.sort(function (a, b) {
 			if (a.id < b.id) {
 				return -1;
@@ -42,22 +39,22 @@ infoController.get = function (req, res) {
 	}, timeoutMS);
 };
 
-pubsub.on('sync:node:info:start', function () {
-	getNodeInfo(function (err, data) {
-		if (err) {
-			return winston.error(err);
-		}
+pubsub.on('sync:node:info:start', async function () {
+	try {
+		const data = await getNodeInfo();
 		data.id = os.hostname() + ':' + nconf.get('port');
 		pubsub.publish('sync:node:info:end', { data: data, id: data.id });
-	});
+	} catch (err) {
+		winston.error(err);
+	}
 });
 
 pubsub.on('sync:node:info:end', function (data) {
 	info[data.id] = data.data;
 });
 
-function getNodeInfo(callback) {
-	var data = {
+async function getNodeInfo() {
+	const data = {
 		process: {
 			port: nconf.get('port'),
 			pid: process.pid,
@@ -82,26 +79,16 @@ function getNodeInfo(callback) {
 	data.process.cpuUsage.system = data.process.cpuUsage.system.toFixed(2);
 	data.process.memoryUsage.humanReadable = (data.process.memoryUsage.rss / (1024 * 1024)).toFixed(2);
 
-	async.waterfall([
-		function (next) {
-			async.parallel({
-				stats: function (next) {
-					rooms.getLocalStats(next);
-				},
-				gitInfo: function (next) {
-					getGitInfo(next);
-				},
-			}, next);
-		},
-		function (results, next) {
-			data.git = results.gitInfo;
-			data.stats = results.stats;
-			next(null, data);
-		},
-	], callback);
+	const [stats, gitInfo] = await Promise.all([
+		rooms.getLocalStats(),
+		getGitInfo(),
+	]);
+	data.git = gitInfo;
+	data.stats = stats;
+	return data;
 }
 
-function getGitInfo(callback) {
+async function getGitInfo() {
 	function get(cmd, callback) {
 		exec(cmd, function (err, stdout) {
 			if (err) {
@@ -110,12 +97,10 @@ function getGitInfo(callback) {
 			callback(null, stdout ? stdout.replace(/\n$/, '') : 'no-git-info');
 		});
 	}
-	async.parallel({
-		hash: function (next) {
-			get('git rev-parse HEAD', next);
-		},
-		branch: function (next) {
-			get('git rev-parse --abbrev-ref HEAD', next);
-		},
-	}, callback);
+	const getAsync = require('util').promisify(get);
+	const [hash, branch] = await Promise.all([
+		getAsync('git rev-parse HEAD'),
+		getAsync('git rev-parse --abbrev-ref HEAD'),
+	]);
+	return { hash: hash, branch: branch };
 }

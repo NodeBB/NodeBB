@@ -323,4 +323,46 @@ function recursive(category, categoriesData, level) {
 	}
 }
 
+helpers.getHomePageRoutes = async function (uid) {
+	let cids = await categories.getAllCidsFromSet('categories:cid');
+	cids = await privileges.categories.filterCids('find', cids, uid);
+	const categoryData = await categories.getCategoriesFields(cids, ['name', 'slug']);
+
+	const categoryRoutes = categoryData.map(function (category) {
+		return {
+			route: 'category/' + category.slug,
+			name: 'Category: ' + category.name,
+		};
+	});
+	const routes = [
+		{
+			route: 'categories',
+			name: 'Categories',
+		},
+		{
+			route: 'unread',
+			name: 'Unread',
+		},
+		{
+			route: 'recent',
+			name: 'Recent',
+		},
+		{
+			route: 'top',
+			name: 'Top',
+		},
+		{
+			route: 'popular',
+			name: 'Popular',
+		},
+	].concat(categoryRoutes, [
+		{
+			route: 'custom',
+			name: 'Custom',
+		},
+	]);
+	const data = await plugins.fireHook('filter:homepage.get', { routes: routes });
+	return data.routes;
+};
+
 helpers.async = require('../promisify')(helpers);

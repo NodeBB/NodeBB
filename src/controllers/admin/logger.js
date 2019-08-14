@@ -1,6 +1,6 @@
 'use strict';
 
-var loggerController = module.exports;
+const loggerController = module.exports;
 
 loggerController.get = function (req, res) {
 	res.render('admin/development/logger', {});

@@ -1,24 +1,20 @@
 'use strict';
 
-var async = require('async');
-var validator = require('validator');
+const validator = require('validator');
+const winston = require('winston');
 
-var meta = require('../../meta');
+const meta = require('../../meta');
 
-var logsController = module.exports;
+const logsController = module.exports;
 
-logsController.get = function (req, res, next) {
-	async.waterfall([
-		function (next) {
-			meta.logs.get(next);
-		},
-		function (logs) {
-			res.render('admin/advanced/logs', {
-				data: validator.escape(logs),
-			});
-		},
-	], next);
+logsController.get = async function (req, res) {
+	let logs = '';
+	try {
+		logs = await meta.logs.get();
+	} catch (err) {
+		winston.error(err);
+	}
+	res.render('admin/advanced/logs', {
+		data: validator.escape(logs),
+	});
 };
-
-
-module.exports = logsController;

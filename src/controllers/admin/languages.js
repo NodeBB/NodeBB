@@ -1,26 +1,18 @@
 'use strict';
 
-var async = require('async');
+const languages = require('../../languages');
+const meta = require('../../meta');
 
-var languages = require('../../languages');
-var meta = require('../../meta');
+const languagesController = module.exports;
 
-var languagesController = module.exports;
+languagesController.get = async function (req, res) {
+	const languageData = await languages.list();
+	languageData.forEach(function (language) {
+		language.selected = language.code === meta.config.defaultLang;
+	});
 
-languagesController.get = function (req, res, next) {
-	async.waterfall([
-		function (next) {
-			languages.list(next);
-		},
-		function (languages) {
-			languages.forEach(function (language) {
-				language.selected = language.code === meta.config.defaultLang;
-			});
-
-			res.render('admin/general/languages', {
-				languages: languages,
-				autoDetectLang: meta.config.autoDetectLang,
-			});
-		},
-	], next);
+	res.render('admin/general/languages', {
+		languages: languageData,
+		autoDetectLang: meta.config.autoDetectLang,
+	});
 };

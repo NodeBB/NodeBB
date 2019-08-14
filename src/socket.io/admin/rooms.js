@@ -179,3 +179,5 @@ SocketRooms.getLocalStats = function (callback) {
 
 	callback(null, socketData);
 };
+
+require('../../promisify')(SocketRooms);

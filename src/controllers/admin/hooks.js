@@ -1,14 +1,14 @@
 'use strict';
 
 const validator = require('validator');
-var plugins = require('../../plugins');
+const plugins = require('../../plugins');
 
-var hooksController = module.exports;
+const hooksController = module.exports;
 
 hooksController.get = function (req, res) {
-	var hooks = [];
+	const hooks = [];
 	Object.keys(plugins.loadedHooks).forEach(function (key, hookIndex) {
-		var current = {
+		const current = {
 			hookName: key,
 			methods: [],
 			index: 'hook-' + hookIndex,

@@ -10,8 +10,6 @@ const user = require('../../user');
 const languages = require('../../languages');
 const meta = require('../../meta');
 const plugins = require('../../plugins');
-const privileges = require('../../privileges');
-const categories = require('../../categories');
 const notifications = require('../../notifications');
 const db = require('../../database');
 const helpers = require('../helpers');
@@ -241,49 +239,12 @@ async function getNotificationSettings(userData) {
 }
 
 async function getHomePageRoutes(userData) {
-	let cids = await categories.getAllCidsFromSet('cid:0:children');
-	cids = await privileges.categories.filterCids('find', cids, userData.uid);
-	let categoryData = await categories.getCategoriesFields(cids, ['name', 'slug']);
-
-	categoryData = categoryData.map(function (category) {
-		return {
-			route: 'category/' + category.slug,
-			name: 'Category: ' + category.name,
-		};
-	});
-
-	const data = await plugins.fireHook('filter:homepage.get', { routes: [
-		{
-			route: 'categories',
-			name: 'Categories',
-		},
-		{
-			route: 'unread',
-			name: 'Unread',
-		},
-		{
-			route: 'recent',
-			name: 'Recent',
-		},
-		{
-			route: 'top',
-			name: 'Top',
-		},
-		{
-			route: 'popular',
-			name: 'Popular',
-		},
-	].concat(categoryData, [
-		{
-			route: 'custom',
-			name: 'Custom',
-		},
-	]) });
+	let routes = await helpers.getHomePageRoutes(userData.uid);
 
 	// Set selected for each route
 	var customIdx;
 	var hasSelected = false;
-	data.routes = data.routes.map(function (route, idx) {
+	routes = routes.map(function (route, idx) {
 		if (route.route === userData.settings.homePageRoute) {
 			route.selected = true;
 			hasSelected = true;
@@ -299,8 +260,8 @@ async function getHomePageRoutes(userData) {
 	});
 
 	if (!hasSelected && customIdx && userData.settings.homePageRoute !== 'none') {
-		data.routes[customIdx].selected = true;
+		routes[customIdx].selected = true;
 	}
 
-	return data.routes;
+	return routes;
 }

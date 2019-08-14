@@ -1,91 +1,62 @@
 'use strict';
 
-var async = require('async');
-var validator = require('validator');
+const validator = require('validator');
 
-var db = require('../../database');
-var groups = require('../../groups');
-var meta = require('../../meta');
-var pagination = require('../../pagination');
+const db = require('../../database');
+const groups = require('../../groups');
+const meta = require('../../meta');
+const pagination = require('../../pagination');
 
-var groupsController = module.exports;
+const groupsController = module.exports;
 
-groupsController.list = function (req, res, next) {
-	var page = parseInt(req.query.page, 10) || 1;
-	var groupsPerPage = 20;
-	var pageCount = 0;
+groupsController.list = async function (req, res) {
+	const page = parseInt(req.query.page, 10) || 1;
+	const groupsPerPage = 20;
 
-	async.waterfall([
-		function (next) {
-			getGroupNames(next);
-		},
-		function (groupNames, next) {
-			pageCount = Math.ceil(groupNames.length / groupsPerPage);
+	let groupNames = await getGroupNames();
+	const pageCount = Math.ceil(groupNames.length / groupsPerPage);
+	const start = (page - 1) * groupsPerPage;
+	const stop = start + groupsPerPage - 1;
 
-			var start = (page - 1) * groupsPerPage;
-			var stop = start + groupsPerPage - 1;
-
-			groupNames = groupNames.slice(start, stop + 1);
-			groups.getGroupsData(groupNames, next);
-		},
-		function (groupData) {
-			res.render('admin/manage/groups', {
-				groups: groupData,
-				pagination: pagination.create(page, pageCount),
-				yourid: req.uid,
-			});
-		},
-	], next);
+	groupNames = groupNames.slice(start, stop + 1);
+	const groupData = await groups.getGroupsData(groupNames);
+	res.render('admin/manage/groups', {
+		groups: groupData,
+		pagination: pagination.create(page, pageCount),
+		yourid: req.uid,
+	});
 };
 
-groupsController.get = function (req, res, callback) {
-	var groupName = req.params.name;
-	async.waterfall([
-		function (next) {
-			async.parallel({
-				groupNames: function (next) {
-					getGroupNames(next);
-				},
-				group: function (next) {
-					groups.get(groupName, { uid: req.uid, truncateUserList: true, userListCount: 20 }, next);
-				},
-			}, next);
-		},
-		function (result) {
-			if (!result.group) {
-				return callback();
-			}
-			result.group.isOwner = true;
+groupsController.get = async function (req, res, next) {
+	const groupName = req.params.name;
+	const [groupNames, group] = await Promise.all([
+		getGroupNames(),
+		groups.get(groupName, { uid: req.uid, truncateUserList: true, userListCount: 20 }),
+	]);
 
-			result.groupNames = result.groupNames.map(function (name) {
-				return {
-					encodedName: encodeURIComponent(name),
-					displayName: validator.escape(String(name)),
-					selected: name === groupName,
-				};
-			});
+	if (!group) {
+		return next();
+	}
+	group.isOwner = true;
 
-			res.render('admin/manage/group', {
-				group: result.group,
-				groupNames: result.groupNames,
-				allowPrivateGroups: meta.config.allowPrivateGroups,
-				maximumGroupNameLength: meta.config.maximumGroupNameLength,
-				maximumGroupTitleLength: meta.config.maximumGroupTitleLength,
-			});
-		},
-	], callback);
+	const groupNameData = groupNames.map(function (name) {
+		return {
+			encodedName: encodeURIComponent(name),
+			displayName: validator.escape(String(name)),
+			selected: name === groupName,
+		};
+	});
+
+	res.render('admin/manage/group', {
+		group: group,
+		groupNames: groupNameData,
+		allowPrivateGroups: meta.config.allowPrivateGroups,
+		maximumGroupNameLength: meta.config.maximumGroupNameLength,
+		maximumGroupTitleLength: meta.config.maximumGroupTitleLength,
+	});
 };
 
-function getGroupNames(callback) {
-	async.waterfall([
-		function (next) {
-			db.getSortedSetRange('groups:createtime', 0, -1, next);
-		},
-		function (groupNames, next) {
-			groupNames = groupNames.filter(function (name) {
-				return name !== 'registered-users' && !groups.isPrivilegeGroup(name);
-			});
-			next(null, groupNames);
-		},
-	], callback);
+async function getGroupNames() {
+	const groupNames = await db.getSortedSetRange('groups:createtime', 0, -1);
+	return groupNames.filter(name => name !== 'registered-users' && !groups.isPrivilegeGroup(name));
 }
