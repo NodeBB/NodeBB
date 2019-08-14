@@ -28,6 +28,14 @@ module.exports = function (Groups) {
 	Groups.acceptMembership = async function (groupName, uid) {
 		await db.setsRemove(['group:' + groupName + ':pending', 'group:' + groupName + ':invited'], uid);
 		await Groups.join(groupName, uid);
+
+		const notification = await notifications.create({
+			type: 'group-invite',
+			bodyShort: '[[groups:membership.accept.notification_title, ' + groupName + ']]',
+			nid: 'group:' + groupName + ':uid:' + uid + ':invite-accepted',
+			path: '/groups/' + utils.slugify(groupName),
+		});
+		await notifications.push(notification, [uid]);
 	};
 
 	Groups.rejectMembership = async function (groupNames, uid) {

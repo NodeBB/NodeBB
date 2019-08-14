@@ -55,6 +55,7 @@
 	"event.deleted": "The group \"%1\" has been deleted",
 
 	"membership.accept-invitation": "Accept Invitation",
+	"membership.accept.notification_title": "You are now a member of <strong>%1</strong>",
 	"membership.invitation-pending": "Invitation Pending",
 	"membership.join-group": "Join Group",
 	"membership.leave-group": "Leave Group",
