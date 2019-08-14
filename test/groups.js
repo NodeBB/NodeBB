@@ -127,6 +127,7 @@ describe('Groups', function () {
 
 		it('should return the "Test" group when searched for', function (done) {
 			socketGroups.search({ uid: adminUid }, { query: 'test' }, function (err, groups) {
+				console.log(groups);
 				assert.ifError(err);
 				assert.equal(2, groups.length);
 				assert.strictEqual('Test', groups[0].name);
@@ -1377,6 +1378,7 @@ describe('Groups', function () {
 			socketGroups.cover.remove({ uid: adminUid }, { groupName: 'Test' }, function (err) {
 				assert.ifError(err);
 				db.getObjectFields('group:Test', ['cover:url'], function (err, groupData) {
+					console.log('checking value', groupData);
 					assert.ifError(err);
 					assert(!groupData['cover:url']);
 					done();

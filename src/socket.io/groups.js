@@ -155,8 +155,8 @@ SocketGroups.rejectAll = async (socket, data) => {
 };
 
 async function acceptRejectAll(method, socket, data) {
-	const uids = groups.getPending(data.groupName);
-	await new Promise(uids.forEach(async (uid) => {
+	const uids = await groups.getPending(data.groupName);
+	await Promise.all(uids.map(async (uid) => {
 		await method(socket, { groupName: data.groupName, toUid: uid });
 	}));
 }
@@ -249,10 +249,12 @@ SocketGroups.create = async (socket, data) => {
 		throw new Error('[[error:no-privileges]]');
 	}
 	data.ownerUid = socket.uid;
-	await groups.create(data);
+	const groupData = await groups.create(data);
 	logGroupEvent(socket, 'group-create', {
 		groupName: data.name,
 	});
+
+	return groupData;
 };
 
 SocketGroups.delete = async (socket, data) => {
@@ -279,7 +281,7 @@ SocketGroups.search = async (socket, data) => {
 		return groups.groups;
 	}
 
-	await groups.search(data.query, data.options);
+	return await groups.search(data.query, data.options);
 };
 
 SocketGroups.loadMore = async (socket, data) => {
@@ -290,12 +292,12 @@ SocketGroups.loadMore = async (socket, data) => {
 	var groupsPerPage = 9;
 	var start = parseInt(data.after, 10);
 	var stop = start + groupsPerPage - 1;
-	await groupsController.getGroupsFromSet(socket.uid, data.sort, start, stop);
+	return await groupsController.getGroupsFromSet(socket.uid, data.sort, start, stop);
 };
 
 SocketGroups.searchMembers = async (socket, data) => {
 	data.uid = socket.uid;
-	await groups.searchMembers(data);
+	return await groups.searchMembers(data);
 };
 
 SocketGroups.loadMoreMembers = async (socket, data) => {
@@ -303,7 +305,7 @@ SocketGroups.loadMoreMembers = async (socket, data) => {
 		throw new Error('[[error:invalid-data]]');
 	}
 	data.after = parseInt(data.after, 10);
-	const users = user.getUsersFromSet('group:' + data.groupName + ':members', socket.uid, data.after, data.after + 9);
+	const users = await user.getUsersFromSet('group:' + data.groupName + ':members', socket.uid, data.after, data.after + 9);
 	return {
 		users: users,
 		nextStart: data.after + 10,
@@ -318,7 +320,7 @@ SocketGroups.cover.update = async (socket, data) => {
 	}
 
 	await canModifyGroup(socket.uid, data.groupName);
-	await groups.updateCover(socket.uid, data);
+	return await groups.updateCover(socket.uid, data);
 };
 
 SocketGroups.cover.remove = async (socket, data) => {
@@ -327,7 +329,8 @@ SocketGroups.cover.remove = async (socket, data) => {
 	}
 
 	await canModifyGroup(socket.uid, data.groupName);
-	await groups.removeCover(socket.uid, data);
+	console.log('calling groups.removeCover');
+	await groups.removeCover(data);
 };
 
 async function canModifyGroup(uid, groupName) {
