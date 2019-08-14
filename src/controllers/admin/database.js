@@ -5,7 +5,7 @@ const nconf = require('nconf');
 const databaseController = module.exports;
 
 databaseController.get = async function (req, res) {
-	const result = {};
+	const results = {};
 	try {
 		if (nconf.get('redis')) {
 			const rdb = require('../../database/redis');
