@@ -34,6 +34,7 @@ categoriesController.get = async function (req, res, next) {
 		allCategories: allCategories,
 	});
 	data.category.name = translator.escape(String(data.category.name));
+	data.category.description = translator.escape(String(data.category.description));
 
 	res.render('admin/manage/category', {
 		category: data.category,
