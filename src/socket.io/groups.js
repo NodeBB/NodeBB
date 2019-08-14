@@ -32,6 +32,9 @@ SocketGroups.join = async (socket, data) => {
 
 	if (!meta.config.allowPrivateGroups) {
 		await groups.join(data.groupName, socket.uid);
+		logGroupEvent(socket, 'group-join', {
+			groupName: data.groupName,
+		});
 		return;
 	}
 
@@ -46,8 +49,14 @@ SocketGroups.join = async (socket, data) => {
 
 	if (!results.groupData.private || results.isAdmin) {
 		await groups.join(data.groupName, socket.uid);
+		logGroupEvent(socket, 'group-join', {
+			groupName: data.groupName,
+		});
 	} else {
 		await groups.requestMembership(data.groupName, socket.uid);
+		logGroupEvent(socket, 'group-request-membership', {
+			groupName: data.groupName,
+		});
 	}
 };
 
@@ -61,6 +70,9 @@ SocketGroups.leave = async (socket, data) => {
 	}
 
 	await groups.leave(data.groupName, socket.uid);
+	logGroupEvent(socket, 'group-leave', {
+		groupName: data.groupName,
+	});
 };
 
 SocketGroups.addMember = async (socket, data) => {
@@ -69,6 +81,10 @@ SocketGroups.addMember = async (socket, data) => {
 		throw new Error('[[error:not-allowed]]');
 	}
 	await groups.join(data.groupName, data.uid);
+	logGroupEvent(socket, 'group-add-member', {
+		groupName: data.groupName,
+		targetUid: data.uid,
+	});
 };
 
 async function isOwner(socket, data) {
@@ -95,20 +111,25 @@ async function isInvited(socket, data) {
 SocketGroups.grant = async (socket, data) => {
 	await isOwner(socket, data);
 	await groups.ownership.grant(data.toUid, data.groupName);
+	logGroupEvent(socket, 'group-owner-grant', {
+		groupName: data.groupName,
+		targetUid: data.toUid,
+	});
 };
 
 SocketGroups.rescind = async (socket, data) => {
 	await isOwner(socket, data);
 	await groups.ownership.rescind(data.toUid, data.groupName);
+	logGroupEvent(socket, 'group-owner-rescind', {
+		groupName: data.groupName,
+		targetUid: data.toUid,
+	});
 };
 
 SocketGroups.accept = async (socket, data) => {
 	await isOwner(socket, data);
 	await groups.acceptMembership(data.groupName, data.toUid);
-	events.log({
-		type: 'accept-membership',
-		uid: socket.uid,
-		ip: socket.ip,
+	logGroupEvent(socket, 'group-accept-membership', {
 		groupName: data.groupName,
 		targetUid: data.toUid,
 	});
@@ -117,10 +138,7 @@ SocketGroups.accept = async (socket, data) => {
 SocketGroups.reject = async (socket, data) => {
 	await isOwner(socket, data);
 	await groups.rejectMembership(data.groupName, data.toUid);
-	events.log({
-		type: 'reject-membership',
-		uid: socket.uid,
-		ip: socket.ip,
+	logGroupEvent(socket, 'group-reject-membership', {
 		groupName: data.groupName,
 		targetUid: data.toUid,
 	});
@@ -146,6 +164,10 @@ async function acceptRejectAll(method, socket, data) {
 SocketGroups.issueInvite = async (socket, data) => {
 	await isOwner(socket, data);
 	await groups.invite(data.groupName, data.toUid);
+	logGroupEvent(socket, 'group-invite', {
+		groupName: data.groupName,
+		targetUid: data.toUid,
+	});
 };
 
 SocketGroups.issueMassInvite = async (socket, data) => {
@@ -167,6 +189,10 @@ SocketGroups.issueMassInvite = async (socket, data) => {
 	for (const i in uids) {
 		// eslint-disable-next-line no-await-in-loop
 		await groups.invite(data.groupName, uids[i]);
+		logGroupEvent(socket, 'group-invite', {
+			groupName: data.groupName,
+			targetUid: data.toUid,
+		});
 	}
 };
 
@@ -178,11 +204,17 @@ SocketGroups.rescindInvite = async (socket, data) => {
 SocketGroups.acceptInvite = async (socket, data) => {
 	await isInvited(socket, data);
 	await groups.acceptMembership(data.groupName, socket.uid);
+	logGroupEvent(socket, 'group-invite-accept', {
+		groupName: data.groupName,
+	});
 };
 
 SocketGroups.rejectInvite = async (socket, data) => {
 	await isInvited(socket, data);
 	await groups.rejectMembership(data.groupName, socket.uid);
+	logGroupEvent(socket, 'group-invite-reject', {
+		groupName: data.groupName,
+	});
 };
 
 SocketGroups.update = async (socket, data) => {
@@ -199,6 +231,10 @@ SocketGroups.kick = async (socket, data) => {
 
 	const isOwnerBit = await groups.ownership.isOwner(data.uid, data.groupName);
 	await groups.kick(data.uid, data.groupName, isOwnerBit);
+	logGroupEvent(socket, 'group-kick', {
+		groupName: data.groupName,
+		targetUid: data.uid,
+	});
 };
 
 SocketGroups.create = async (socket, data) => {
@@ -214,6 +250,9 @@ SocketGroups.create = async (socket, data) => {
 	}
 	data.ownerUid = socket.uid;
 	await groups.create(data);
+	logGroupEvent(socket, 'group-create', {
+		groupName: data.name,
+	});
 };
 
 SocketGroups.delete = async (socket, data) => {
@@ -226,6 +265,9 @@ SocketGroups.delete = async (socket, data) => {
 	}
 
 	await groups.destroy(data.groupName);
+	logGroupEvent(socket, 'group-delete', {
+		groupName: data.groupName,
+	});
 };
 
 SocketGroups.search = async (socket, data) => {
@@ -297,6 +339,15 @@ async function canModifyGroup(uid, groupName) {
 	if (!results.isOwner && !results.isAdminOrGlobalMod) {
 		throw new Error('[[error:no-privileges]]');
 	}
+}
+
+function logGroupEvent(socket, event, additional) {
+	events.log({
+		type: event,
+		uid: socket.uid,
+		ip: socket.ip,
+		...additional,
+	});
 }
 
 require('../promisify')(SocketGroups);
