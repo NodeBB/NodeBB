@@ -7,10 +7,10 @@ define('admin/manage/users', ['translator', 'benchpress'], function (translator,
 	Users.init = function () {
 		var navPills = $('.nav-pills li');
 		var pathname = window.location.pathname;
-		if (!navPills.find('a[href="' + pathname + '"]').length) {
+		if (!navPills.find('a[href^="' + pathname + '"]').length) {
 			pathname = config.relative_path + '/admin/manage/users/latest';
 		}
-		navPills.removeClass('active').find('a[href="' + pathname + '"]').parent().addClass('active');
+		navPills.removeClass('active').find('a[href^="' + pathname + '"]').parent().addClass('active');
 
 		$('#results-per-page').val(ajaxify.data.resultsPerPage).on('change', function () {
 			var query = utils.params();

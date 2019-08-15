@@ -1,64 +1,47 @@
 'use strict';
 
-var async = require('async');
+const meta = require('../../meta');
+const emailer = require('../../emailer');
+const notifications = require('../../notifications');
 
-var meta = require('../../meta');
-var emailer = require('../../emailer');
-var notifications = require('../../notifications');
+const settingsController = module.exports;
 
-var settingsController = module.exports;
+settingsController.get = async function (req, res, next) {
+	const term = req.params.term ? req.params.term : 'general';
 
-settingsController.get = function (req, res, next) {
-	var term = req.params.term ? req.params.term : 'general';
-
-	switch (req.params.term) {
-	case 'email':
-		renderEmail(req, res, next);
-		break;
-	case 'user':
-		renderUser(req, res, next);
-		break;
-	default:
+	if (term === 'email') {
+		await renderEmail(req, res, next);
+	} else if (term === 'user') {
+		await renderUser(req, res, next);
+	} else {
 		res.render('admin/settings/' + term);
 	}
 };
 
 
-function renderEmail(req, res, next) {
-	async.waterfall([
-		function (next) {
-			async.parallel({
-				emails: async.apply(emailer.getTemplates, meta.config),
-				services: emailer.listServices,
-			}, next);
-		},
-		function (results) {
-			res.render('admin/settings/email', {
-				emails: results.emails,
-				sendable: results.emails.filter(function (email) {
-					return !email.path.includes('_plaintext') && !email.path.includes('partials');
-				}),
-				services: results.services,
-			});
-		},
-	], next);
+async function renderEmail(req, res) {
+	const [emails, services] = await Promise.all([
+		emailer.getTemplates(meta.config),
+		emailer.listServices(),
+	]);
+	res.render('admin/settings/email', {
+		emails: emails,
+		sendable: emails.filter(function (email) {
+			return !email.path.includes('_plaintext') && !email.path.includes('partials');
+		}),
+		services: services,
+	});
 }
 
-function renderUser(req, res, next) {
-	async.waterfall([
-		function (next) {
-			notifications.getAllNotificationTypes(next);
-		},
-		function (notificationTypes) {
-			var notificationSettings = notificationTypes.map(function (type) {
-				return {
-					name: type,
-					label: '[[notifications:' + type + ']]',
-				};
-			});
-			res.render('admin/settings/user', {
-				notificationSettings: notificationSettings,
-			});
-		},
-	], next);
+async function renderUser(req, res) {
+	const notificationTypes = await notifications.getAllNotificationTypes();
+	const notificationSettings = notificationTypes.map(function (type) {
+		return {
+			name: type,
+			label: '[[notifications:' + type + ']]',
+		};
+	});
+	res.render('admin/settings/user', {
+		notificationSettings: notificationSettings,
+	});
 }

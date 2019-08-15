@@ -1,18 +1,10 @@
 'use strict';
 
-var async = require('async');
+const topics = require('../../topics');
 
-var topics = require('../../topics');
+const tagsController = module.exports;
 
-var tagsController = module.exports;
-
-tagsController.get = function (req, res, next) {
-	async.waterfall([
-		function (next) {
-			topics.getTags(0, 199, next);
-		},
-		function (tags) {
-			res.render('admin/manage/tags', { tags: tags });
-		},
-	], next);
+tagsController.get = async function (req, res) {
+	const tags = await topics.getTags(0, 199);
+	res.render('admin/manage/tags', { tags: tags });
 };

@@ -1,48 +1,38 @@
 'use strict';
 
-var async = require('async');
+const plugins = require('../../plugins');
+const meta = require('../../meta');
 
-var plugins = require('../../plugins');
-var meta = require('../../meta');
+const soundsController = module.exports;
 
-var soundsController = module.exports;
-
-soundsController.get = function (req, res, next) {
-	var types = [
+soundsController.get = async function (req, res) {
+	const types = [
 		'notification',
 		'chat-incoming',
 		'chat-outgoing',
 	];
-	async.waterfall([
-		function (next) {
-			meta.configs.getFields(types, next);
-		},
-		function (settings) {
-			settings = settings || {};
+	const settings = await meta.configs.getFields(types) || {};
+	var output = {};
 
-			var output = {};
-
-			types.forEach(function (type) {
-				var soundpacks = plugins.soundpacks.map(function (pack) {
-					var sounds = Object.keys(pack.sounds).map(function (soundName) {
-						var value = pack.name + ' | ' + soundName;
-						return {
-							name: soundName,
-							value: value,
-							selected: value === settings[type],
-						};
-					});
-
-					return {
-						name: pack.name,
-						sounds: sounds,
-					};
-				});
-
-				output[type + '-sound'] = soundpacks;
+	types.forEach(function (type) {
+		var soundpacks = plugins.soundpacks.map(function (pack) {
+			var sounds = Object.keys(pack.sounds).map(function (soundName) {
+				var value = pack.name + ' | ' + soundName;
+				return {
+					name: soundName,
+					value: value,
+					selected: value === settings[type],
+				};
 			});
 
-			res.render('admin/general/sounds', output);
-		},
-	], next);
+			return {
+				name: pack.name,
+				sounds: sounds,
+			};
+		});
+
+		output[type + '-sound'] = soundpacks;
+	});
+
+	res.render('admin/general/sounds', output);
 };

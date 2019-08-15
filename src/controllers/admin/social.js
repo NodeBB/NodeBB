@@ -1,20 +1,12 @@
 'use strict';
 
-var async = require('async');
+const social = require('../../social');
 
-var social = require('../../social');
+const socialController = module.exports;
 
-var socialController = module.exports;
-
-socialController.get = function (req, res, next) {
-	async.waterfall([
-		function (next) {
-			social.getPostSharing(next);
-		},
-		function (posts) {
-			res.render('admin/general/social', {
-				posts: posts,
-			});
-		},
-	], next);
+socialController.get = async function (req, res) {
+	const posts = await social.getPostSharing();
+	res.render('admin/general/social', {
+		posts: posts,
+	});
 };

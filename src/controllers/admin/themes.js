@@ -1,48 +1,32 @@
 'use strict';
 
-var path = require('path');
-var fs = require('fs');
-var async = require('async');
+const path = require('path');
+const fs = require('fs');
+const util = require('util');
+const readFileAsync = util.promisify(fs.readFile);
 
-var file = require('../../file');
+const file = require('../../file');
 
-var themesController = module.exports;
+const themesController = module.exports;
 
-var defaultScreenshotPath = path.join(__dirname, '../../../public/images/themes/default.png');
+const defaultScreenshotPath = path.join(__dirname, '../../../public/images/themes/default.png');
 
-themesController.get = function (req, res, next) {
-	var themeDir = path.join(__dirname, '../../../node_modules', req.params.theme);
-	var themeConfigPath = path.join(themeDir, 'theme.json');
-	var screenshotPath;
-	async.waterfall([
-		function (next) {
-			fs.readFile(themeConfigPath, 'utf8', function (err, config) {
-				if (err) {
-					if (err.code === 'ENOENT') {
-						return next(Error('invalid-data'));
-					}
+themesController.get = async function (req, res, next) {
+	const themeDir = path.join(__dirname, '../../../node_modules', req.params.theme);
+	const themeConfigPath = path.join(themeDir, 'theme.json');
 
-					return next(err);
-				}
+	let themeConfig;
+	try {
+		themeConfig = await readFileAsync(themeConfigPath, 'utf8');
+		themeConfig = JSON.parse(themeConfig);
+	} catch (err) {
+		if (err.code === 'ENOENT') {
+			return next(Error('invalid-data'));
+		}
+		return next(err);
+	}
 
-				return next(null, config);
-			});
-		},
-		function (themeConfig, next) {
-			try {
-				themeConfig = JSON.parse(themeConfig);
-			} catch (e) {
-				return next(e);
-			}
-
-			next(null, themeConfig.screenshot ? path.join(themeDir, themeConfig.screenshot) : defaultScreenshotPath);
-		},
-		function (_screenshotPath, next) {
-			screenshotPath = _screenshotPath;
-			file.exists(screenshotPath, next);
-		},
-		function (exists) {
-			res.sendFile(exists ? screenshotPath : defaultScreenshotPath);
-		},
-	], next);
+	const screenshotPath = themeConfig.screenshot ? path.join(themeDir, themeConfig.screenshot) : defaultScreenshotPath;
+	const exists = await file.exists(screenshotPath);
+	res.sendFile(exists ? screenshotPath : defaultScreenshotPath);
 };

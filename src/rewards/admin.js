@@ -139,3 +139,5 @@ function getActiveRewards(callback) {
 		});
 	});
 }
+
+require('../promisify')(rewards);
