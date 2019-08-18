@@ -28,7 +28,7 @@ module.exports = function (middleware) {
 
 		async.waterfall([
 			function (next) {
-				controllers.api.getConfig(req, res, next);
+				controllers.api.loadConfig(req, next);
 			},
 			function (config, next) {
 				res.locals.config = config;

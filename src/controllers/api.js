@@ -1,227 +1,179 @@
 'use strict';
 
-var async = require('async');
-var validator = require('validator');
-var nconf = require('nconf');
+const validator = require('validator');
+const nconf = require('nconf');
 
-var meta = require('../meta');
-var user = require('../user');
-var posts = require('../posts');
-var topics = require('../topics');
-var categories = require('../categories');
-var privileges = require('../privileges');
-var plugins = require('../plugins');
-var translator = require('../translator');
-var languages = require('../languages');
+const meta = require('../meta');
+const user = require('../user');
+const posts = require('../posts');
+const topics = require('../topics');
+const categories = require('../categories');
+const privileges = require('../privileges');
+const plugins = require('../plugins');
+const translator = require('../translator');
+const languages = require('../languages');
 
-var apiController = module.exports;
+const apiController = module.exports;
 
-apiController.loadConfig = function (req, callback) {
-	var config = {};
-	config.relative_path = nconf.get('relative_path');
-	config.upload_url = nconf.get('upload_url');
-	config.siteTitle = validator.escape(String(meta.config.title || meta.config.browserTitle || 'NodeBB'));
-	config.browserTitle = validator.escape(String(meta.config.browserTitle || meta.config.title || 'NodeBB'));
-	config.titleLayout = (meta.config.titleLayout || '{pageTitle} | {browserTitle}').replace(/{/g, '&#123;').replace(/}/g, '&#125;');
-	config.showSiteTitle = meta.config.showSiteTitle === 1;
-	config.minimumTitleLength = meta.config.minimumTitleLength;
-	config.maximumTitleLength = meta.config.maximumTitleLength;
-	config.minimumPostLength = meta.config.minimumPostLength;
-	config.maximumPostLength = meta.config.maximumPostLength;
-	config.minimumTagsPerTopic = meta.config.minimumTagsPerTopic || 0;
-	config.maximumTagsPerTopic = meta.config.maximumTagsPerTopic || 5;
-	config.minimumTagLength = meta.config.minimumTagLength || 3;
-	config.maximumTagLength = meta.config.maximumTagLength || 15;
-	config.useOutgoingLinksPage = meta.config.useOutgoingLinksPage === 1;
-	config.allowGuestHandles = meta.config.allowGuestHandles === 1;
-	config.allowFileUploads = meta.config.allowFileUploads === 1;
-	config.allowTopicsThumbnail = meta.config.allowTopicsThumbnail === 1;
-	config.usePagination = meta.config.usePagination === 1;
-	config.disableChat = meta.config.disableChat === 1;
-	config.disableChatMessageEditing = meta.config.disableChatMessageEditing === 1;
-	config.maximumChatMessageLength = meta.config.maximumChatMessageLength || 1000;
-	config.socketioTransports = nconf.get('socket.io:transports') || ['polling', 'websocket'];
-	config.socketioOrigins = nconf.get('socket.io:origins');
-	config.websocketAddress = nconf.get('socket.io:address') || '';
-	config.maxReconnectionAttempts = meta.config.maxReconnectionAttempts || 5;
-	config.reconnectionDelay = meta.config.reconnectionDelay || 1500;
-	config.topicsPerPage = meta.config.topicsPerPage || 20;
-	config.postsPerPage = meta.config.postsPerPage || 20;
-	config.maximumFileSize = meta.config.maximumFileSize;
-	config['theme:id'] = meta.config['theme:id'];
-	config['theme:src'] = meta.config['theme:src'];
-	config.defaultLang = meta.config.defaultLang || 'en-GB';
-	config.userLang = req.query.lang ? validator.escape(String(req.query.lang)) : config.defaultLang;
-	config.loggedIn = !!req.user;
-	config.uid = req.uid;
-	config['cache-buster'] = meta.config['cache-buster'] || '';
-	config.requireEmailConfirmation = meta.config.requireEmailConfirmation === 1;
-	config.topicPostSort = meta.config.topicPostSort || 'oldest_to_newest';
-	config.categoryTopicSort = meta.config.categoryTopicSort || 'newest_to_oldest';
-	config.csrf_token = req.uid >= 0 && req.csrfToken && req.csrfToken();
-	config.searchEnabled = plugins.hasListeners('filter:search.query');
-	config.bootswatchSkin = meta.config.bootswatchSkin || '';
-	config.enablePostHistory = (meta.config.enablePostHistory || 1) === 1;
-	config.notificationAlertTimeout = meta.config.notificationAlertTimeout || 5000;
-	config.timeagoCodes = languages.timeagoCodes;
-
-	if (config.useOutgoingLinksPage) {
-		config.outgoingLinksWhitelist = meta.config['outgoingLinks:whitelist'];
-	}
-
-	var timeagoCutoff = meta.config.timeagoCutoff === undefined ? 30 : meta.config.timeagoCutoff;
-	config.timeagoCutoff = timeagoCutoff !== '' ? Math.max(0, parseInt(timeagoCutoff, 10)) : timeagoCutoff;
-
-	config.cookies = {
-		enabled: meta.config.cookieConsentEnabled === 1,
-		message: translator.escape(validator.escape(meta.config.cookieConsentMessage || '[[global:cookies.message]]')).replace(/\\/g, '\\\\'),
-		dismiss: translator.escape(validator.escape(meta.config.cookieConsentDismiss || '[[global:cookies.accept]]')).replace(/\\/g, '\\\\'),
-		link: translator.escape(validator.escape(meta.config.cookieConsentLink || '[[global:cookies.learn_more]]')).replace(/\\/g, '\\\\'),
-		link_url: translator.escape(validator.escape(meta.config.cookieConsentLinkUrl || 'https://www.cookiesandyou.com')).replace(/\\/g, '\\\\'),
+apiController.loadConfig = async function (req) {
+	let config = {
+		relative_path: nconf.get('relative_path'),
+		upload_url: nconf.get('upload_url'),
+		siteTitle: validator.escape(String(meta.config.title || meta.config.browserTitle || 'NodeBB')),
+		browserTitle: validator.escape(String(meta.config.browserTitle || meta.config.title || 'NodeBB')),
+		titleLayout: (meta.config.titleLayout || '{pageTitle} | {browserTitle}').replace(/{/g, '&#123;').replace(/}/g, '&#125;'),
+		showSiteTitle: meta.config.showSiteTitle === 1,
+		minimumTitleLength: meta.config.minimumTitleLength,
+		maximumTitleLength: meta.config.maximumTitleLength,
+		minimumPostLength: meta.config.minimumPostLength,
+		maximumPostLength: meta.config.maximumPostLength,
+		minimumTagsPerTopic: meta.config.minimumTagsPerTopic || 0,
+		maximumTagsPerTopic: meta.config.maximumTagsPerTopic || 5,
+		minimumTagLength: meta.config.minimumTagLength || 3,
+		maximumTagLength: meta.config.maximumTagLength || 15,
+		useOutgoingLinksPage: meta.config.useOutgoingLinksPage === 1,
+		outgoingLinksWhitelist: meta.config.useOutgoingLinksPage === 1 ? meta.config['outgoingLinks:whitelist'] : undefined,
+		allowGuestHandles: meta.config.allowGuestHandles === 1,
+		allowFileUploads: meta.config.allowFileUploads === 1,
+		allowTopicsThumbnail: meta.config.allowTopicsThumbnail === 1,
+		usePagination: meta.config.usePagination === 1,
+		disableChat: meta.config.disableChat === 1,
+		disableChatMessageEditing: meta.config.disableChatMessageEditing === 1,
+		maximumChatMessageLength: meta.config.maximumChatMessageLength || 1000,
+		socketioTransports: nconf.get('socket.io:transports') || ['polling', 'websocket'],
+		socketioOrigins: nconf.get('socket.io:origins'),
+		websocketAddress: nconf.get('socket.io:address') || '',
+		maxReconnectionAttempts: meta.config.maxReconnectionAttempts || 5,
+		reconnectionDelay: meta.config.reconnectionDelay || 1500,
+		topicsPerPage: meta.config.topicsPerPage || 20,
+		postsPerPage: meta.config.postsPerPage || 20,
+		maximumFileSize: meta.config.maximumFileSize,
+		'theme:id': meta.config['theme:id'],
+		'theme:src': meta.config['theme:src'],
+		defaultLang: meta.config.defaultLang || 'en-GB',
+		userLang: req.query.lang ? validator.escape(String(req.query.lang)) : (meta.config.defaultLang || 'en-GB'),
+		loggedIn: !!req.user,
+		uid: req.uid,
+		'cache-buster': meta.config['cache-buster'] || '',
+		requireEmailConfirmation: meta.config.requireEmailConfirmation === 1,
+		topicPostSort: meta.config.topicPostSort || 'oldest_to_newest',
+		categoryTopicSort: meta.config.categoryTopicSort || 'newest_to_oldest',
+		csrf_token: req.uid >= 0 && req.csrfToken && req.csrfToken(),
+		searchEnabled: plugins.hasListeners('filter:search.query'),
+		bootswatchSkin: meta.config.bootswatchSkin || '',
+		enablePostHistory: meta.config.enablePostHistory === 1,
+		notificationAlertTimeout: meta.config.notificationAlertTimeout || 5000,
+		timeagoCutoff: meta.config.timeagoCutoff !== '' ? Math.max(0, parseInt(meta.config.timeagoCutoff, 10)) : meta.config.timeagoCutoff,
+		timeagoCodes: languages.timeagoCodes,
+		cookies: {
+			enabled: meta.config.cookieConsentEnabled === 1,
+			message: translator.escape(validator.escape(meta.config.cookieConsentMessage || '[[global:cookies.message]]')).replace(/\\/g, '\\\\'),
+			dismiss: translator.escape(validator.escape(meta.config.cookieConsentDismiss || '[[global:cookies.accept]]')).replace(/\\/g, '\\\\'),
+			link: translator.escape(validator.escape(meta.config.cookieConsentLink || '[[global:cookies.learn_more]]')).replace(/\\/g, '\\\\'),
+			link_url: translator.escape(validator.escape(meta.config.cookieConsentLinkUrl || 'https://www.cookiesandyou.com')).replace(/\\/g, '\\\\'),
+		},
 	};
 
-	async.waterfall([
-		function (next) {
-			if (!req.loggedIn) {
-				return next(null, config);
-			}
-			user.getSettings(req.uid, next);
-		},
-		function (settings, next) {
-			// Handle old skin configs
-			const oldSkins = ['noskin', 'default'];
-			settings.bootswatchSkin = oldSkins.includes(settings.bootswatchSkin) ? '' : settings.bootswatchSkin;
+	let settings = config;
+	if (req.loggedIn) {
+		settings = await user.getSettings(req.uid);
+	}
 
-			config.usePagination = settings.usePagination;
-			config.topicsPerPage = settings.topicsPerPage;
-			config.postsPerPage = settings.postsPerPage;
-			config.userLang = (req.query.lang ? validator.escape(String(req.query.lang)) : null) || settings.userLang || config.defaultLang;
-			config.acpLang = (req.query.lang ? validator.escape(String(req.query.lang)) : null) || settings.acpLang;
-			config.openOutgoingLinksInNewTab = settings.openOutgoingLinksInNewTab;
-			config.topicPostSort = settings.topicPostSort || config.topicPostSort;
-			config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
-			config.topicSearchEnabled = settings.topicSearchEnabled || false;
-			config.bootswatchSkin = (meta.config.disableCustomUserSkins !== 1 && settings.bootswatchSkin && settings.bootswatchSkin !== '') ? settings.bootswatchSkin : '';
-			plugins.fireHook('filter:config.get', config, next);
-		},
-		function (config, next) {
-			req.res.locals.config = config;
-			process.nextTick(next, null, config);
-		},
-	], callback);
+	// Handle old skin configs
+	const oldSkins = ['noskin', 'default'];
+	settings.bootswatchSkin = oldSkins.includes(settings.bootswatchSkin) ? '' : settings.bootswatchSkin;
+
+	config.usePagination = settings.usePagination;
+	config.topicsPerPage = settings.topicsPerPage;
+	config.postsPerPage = settings.postsPerPage;
+	config.userLang = (req.query.lang ? validator.escape(String(req.query.lang)) : null) || settings.userLang || config.defaultLang;
+	config.acpLang = (req.query.lang ? validator.escape(String(req.query.lang)) : null) || settings.acpLang;
+	config.openOutgoingLinksInNewTab = settings.openOutgoingLinksInNewTab;
+	config.topicPostSort = settings.topicPostSort || config.topicPostSort;
+	config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
+	config.topicSearchEnabled = settings.topicSearchEnabled || false;
+	config.bootswatchSkin = (meta.config.disableCustomUserSkins !== 1 && settings.bootswatchSkin && settings.bootswatchSkin !== '') ? settings.bootswatchSkin : '';
+	config = await plugins.fireHook('filter:config.get', config);
+	req.res.locals.config = config;
+	return config;
 };
 
-apiController.getConfig = function (req, res, next) {
-	async.waterfall([
-		function (next) {
-			apiController.loadConfig(req, next);
-		},
-		function (config, next) {
-			if (res.locals.isAPI) {
-				res.json(config);
-			} else {
-				next(null, config);
-			}
-		},
-	], next);
+apiController.getConfig = async function (req, res) {
+	const config = await apiController.loadConfig(req);
+	res.json(config);
 };
 
-apiController.getPostData = function (pid, uid, callback) {
-	async.parallel({
-		privileges: function (next) {
-			privileges.posts.get([pid], uid, next);
-		},
-		post: function (next) {
-			posts.getPostData(pid, next);
-		},
-		voted: async.apply(posts.hasVoted, pid, uid),
-	}, function (err, results) {
-		if (err || !results.post) {
-			return callback(err);
-		}
+apiController.getPostData = async function (pid, uid) {
+	const [userPrivileges, post, voted] = await Promise.all([
+		privileges.posts.get([pid], uid),
+		posts.getPostData(pid),
+		posts.hasVoted(pid, uid),
+	]);
+	if (!post) {
+		return null;
+	}
+	Object.assign(post, voted);
 
-		var post = results.post;
-		Object.assign(post, results.voted);
+	const userPrivilege = userPrivileges[0];
+	if (!userPrivilege.read || !userPrivilege['topics:read']) {
+		return null;
+	}
 
-		var privileges = results.privileges[0];
-		if (!privileges.read || !privileges['topics:read']) {
-			return callback();
-		}
-
-		post.ip = privileges.isAdminOrMod ? post.ip : undefined;
-		var selfPost = uid && uid === parseInt(post.uid, 10);
-		if (post.deleted && !(privileges.isAdminOrMod || selfPost)) {
-			post.content = '[[topic:post_is_deleted]]';
-		}
-		callback(null, post);
-	});
+	post.ip = userPrivilege.isAdminOrMod ? post.ip : undefined;
+	const selfPost = uid && uid === parseInt(post.uid, 10);
+	if (post.deleted && !(userPrivilege.isAdminOrMod || selfPost)) {
+		post.content = '[[topic:post_is_deleted]]';
+	}
+	return post;
 };
 
-apiController.getTopicData = function (tid, uid, callback) {
-	async.parallel({
-		privileges: function (next) {
-			privileges.topics.get(tid, uid, next);
-		},
-		topic: function (next) {
-			topics.getTopicData(tid, next);
-		},
-	}, function (err, results) {
-		if (err || !results.topic) {
-			return callback(err);
-		}
-
-		if (!results.privileges.read || !results.privileges['topics:read'] || (results.topic.deleted && !results.privileges.view_deleted)) {
-			return callback();
-		}
-		callback(null, results.topic);
-	});
+apiController.getTopicData = async function (tid, uid) {
+	const [userPrivileges, topic] = await Promise.all([
+		privileges.topics.get(tid, uid),
+		topics.getTopicData(tid),
+	]);
+	if (!topic || !userPrivileges.read || !userPrivileges['topics:read'] || (topic.deleted && !userPrivileges.view_deleted)) {
+		return null;
+	}
+	return topic;
 };
 
-apiController.getCategoryData = function (cid, uid, callback) {
-	async.parallel({
-		privileges: function (next) {
-			privileges.categories.get(cid, uid, next);
-		},
-		category: function (next) {
-			categories.getCategoryData(cid, next);
-		},
-	}, function (err, results) {
-		if (err || !results.category) {
-			return callback(err);
-		}
-
-		if (!results.privileges.read) {
-			return callback();
-		}
-		callback(null, results.category);
-	});
+apiController.getCategoryData = async function (cid, uid) {
+	const [userPrivileges, category] = await Promise.all([
+		privileges.categories.get(cid, uid),
+		categories.getCategoryData(cid),
+	]);
+	if (!category || !userPrivileges.read) {
+		return null;
+	}
+	return category;
 };
 
-
-apiController.getObject = function (req, res, next) {
-	var methods = {
+apiController.getObject = async function (req, res, next) {
+	const methods = {
 		post: apiController.getPostData,
 		topic: apiController.getTopicData,
 		category: apiController.getCategoryData,
 	};
-	var method = methods[req.params.type];
+	const method = methods[req.params.type];
 	if (!method) {
 		return next();
 	}
-	method(req.params.id, req.uid, function (err, result) {
-		if (err || !result) {
-			return next(err);
+	try {
+		const result = await method(req.params.id, req.uid);
+		if (!result) {
+			return next();
 		}
 
 		res.json(result);
-	});
+	} catch (err) {
+		next(err);
+	}
 };
 
-apiController.getModerators = function (req, res, next) {
-	categories.getModerators(req.params.cid, function (err, moderators) {
-		if (err) {
-			return next(err);
-		}
-		res.json({ moderators: moderators });
-	});
+apiController.getModerators = async function (req, res) {
+	const moderators = await categories.getModerators(req.params.cid);
+	res.json({ moderators: moderators });
 };
+
+require('../promisify')(apiController, ['getConfig', 'getObject', 'getModerators']);

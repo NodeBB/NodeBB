@@ -37,7 +37,7 @@ module.exports = function (middleware) {
 			function (next) {
 				async.parallel({
 					config: function (next) {
-						controllers.api.getConfig(req, res, next);
+						controllers.api.loadConfig(req, next);
 					},
 					plugins: function (next) {
 						plugins.fireHook('filter:middleware.buildHeader', { req: req, locals: res.locals }, next);
