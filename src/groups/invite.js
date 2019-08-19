@@ -1,5 +1,7 @@
 'use strict';
 
+const _ = require('lodash');
+
 const db = require('../database');
 const user = require('../user');
 const utils = require('../utils');
@@ -90,19 +92,22 @@ module.exports = function (Groups) {
 		});
 	}
 
-	Groups.isInvited = async function (uid, groupName) {
-		if (!(parseInt(uid, 10) > 0)) {
-			return false;
-		}
-		return await db.isSetMember('group:' + groupName + ':invited', uid);
+	Groups.isInvited = async function (uids, groupName) {
+		return await checkInvitePending(uids, 'group:' + groupName + ':invited');
 	};
 
-	Groups.isPending = async function (uid, groupName) {
-		if (!(parseInt(uid, 10) > 0)) {
-			return false;
-		}
-		return await db.isSetMember('group:' + groupName + ':pending', uid);
+	Groups.isPending = async function (uids, groupName) {
+		return await checkInvitePending(uids, 'group:' + groupName + ':pending');
 	};
+
+	async function checkInvitePending(uids, set) {
+		const isArray = Array.isArray(uids);
+		uids = isArray ? uids : [uids];
+		const checkUids = uids.filter(uid => parseInt(uid, 10) > 0);
+		const isMembers = await db.isSetMembers(set, checkUids);
+		const map = _.zipObject(checkUids, isMembers);
+		return isArray ? uids.map(uid => !!map[uid]) : !!map[uids[0]];
+	}
 
 	Groups.getPending = async function (groupName) {
 		if (!groupName) {

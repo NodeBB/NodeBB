@@ -870,9 +870,9 @@ describe('Groups', function () {
 				assert.ifError(err);
 				socketGroups.issueMassInvite({ uid: adminUid }, { groupName: 'PrivateCanJoin', usernames: 'invite1, invite2' }, function (err) {
 					assert.ifError(err);
-					Groups.isInvited(uid, 'PrivateCanJoin', function (err, isInvited) {
+					Groups.isInvited([adminUid, uid], 'PrivateCanJoin', function (err, isInvited) {
 						assert.ifError(err);
-						assert(isInvited);
+						assert.deepStrictEqual(isInvited, [false, true]);
 						done();
 					});
 				});
