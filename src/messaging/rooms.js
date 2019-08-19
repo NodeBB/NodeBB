@@ -114,12 +114,8 @@ module.exports = function (Messaging) {
 
 	Messaging.leaveRoom = async (uids, roomId) => {
 		const keys = uids
-			.map(function (uid) {
-				return 'uid:' + uid + ':chat:rooms';
-			})
-			.concat(uids.map(function (uid) {
-				return 'uid:' + uid + ':chat:rooms:unread';
-			}));
+			.map(uid => 'uid:' + uid + ':chat:rooms')
+			.concat(uids.map(uid => 'uid:' + uid + ':chat:rooms:unread'));
 
 		await Promise.all([
 			db.sortedSetRemove('chat:room:' + roomId + ':uids', uids),

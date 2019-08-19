@@ -69,8 +69,6 @@ module.exports = function (Messaging) {
 		});
 
 		delete Messaging.notifyQueue[fromuid + ':' + roomId];
-		if (notification) {
-			notifications.push(notification, uids);
-		}
+		notifications.push(notification, uids);
 	}
 };
