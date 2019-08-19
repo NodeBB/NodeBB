@@ -175,23 +175,18 @@ SocketGroups.issueMassInvite = async (socket, data) => {
 	if (!data || !data.usernames || !data.groupName) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	var usernames = String(data.usernames).split(',');
-	usernames = usernames.map(function (username) {
-		return username && username.trim();
-	});
+	let usernames = String(data.usernames).split(',');
+	usernames = usernames.map(username => username && username.trim());
 
 	let uids = await user.getUidsByUsernames(usernames);
-	uids = uids.filter(function (uid) {
-		return !!uid && parseInt(uid, 10);
-	});
+	uids = uids.filter(uid => !!uid && parseInt(uid, 10));
 
-	// eslint-disable-next-line guard-for-in
-	for (const i in uids) {
-		// eslint-disable-next-line no-await-in-loop
-		await groups.invite(data.groupName, uids[i]);
+	await groups.invite(data.groupName, uids);
+
+	for (const uid of uids) {
 		logGroupEvent(socket, 'group-invite', {
 			groupName: data.groupName,
-			targetUid: data.toUid,
+			targetUid: uid,
 		});
 	}
 };

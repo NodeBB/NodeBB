@@ -9,7 +9,9 @@ module.exports = function (module) {
 		if (!Array.isArray(value)) {
 			value = [value];
 		}
-
+		if (!value.length) {
+			return;
+		}
 		await module.transaction(async function (client) {
 			await helpers.ensureLegacyObjectType(client, key, 'set');
 			await client.query({

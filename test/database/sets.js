@@ -22,6 +22,14 @@ describe('Set methods', function () {
 				done();
 			});
 		});
+
+		it('should not do anything if values array is empty', async function () {
+			await db.setAdd('emptyArraySet', []);
+			const members = await db.getSetMembers('emptyArraySet');
+			const exists = await db.exists('emptyArraySet');
+			assert.deepStrictEqual(members, []);
+			assert(!exists);
+		});
 	});
 
 	describe('getSetMembers()', function () {

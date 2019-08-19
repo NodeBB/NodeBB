@@ -7,7 +7,9 @@ module.exports = function (module) {
 		if (!Array.isArray(value)) {
 			value = [value];
 		}
-
+		if (!value.length) {
+			return;
+		}
 		value = value.map(v => helpers.valueToString(v));
 
 		await module.client.collection('objects').updateOne({
