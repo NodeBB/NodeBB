@@ -1,178 +1,133 @@
 'use strict';
 
 
-var async = require('async');
-var nconf = require('nconf');
+const nconf = require('nconf');
 
-var db = require('../database');
-var privileges = require('../privileges');
-var user = require('../user');
-var categories = require('../categories');
-var meta = require('../meta');
-var pagination = require('../pagination');
-var helpers = require('./helpers');
-var utils = require('../utils');
-var translator = require('../translator');
-var analytics = require('../analytics');
+const db = require('../database');
+const privileges = require('../privileges');
+const user = require('../user');
+const categories = require('../categories');
+const meta = require('../meta');
+const pagination = require('../pagination');
+const helpers = require('./helpers');
+const utils = require('../utils');
+const translator = require('../translator');
+const analytics = require('../analytics');
 
-var categoryController = module.exports;
+const categoryController = module.exports;
 
-categoryController.get = function (req, res, callback) {
-	var cid = req.params.category_id;
-	var currentPage = parseInt(req.query.page, 10) || 1;
-	var pageCount = 1;
-	var userPrivileges;
-	var settings;
-	var rssToken;
+categoryController.get = async function (req, res, next) {
+	const cid = req.params.category_id;
 
 	if ((req.params.topic_index && !utils.isNumber(req.params.topic_index)) || !utils.isNumber(cid)) {
-		return callback();
+		return next();
 	}
 
-	var topicIndex = utils.isNumber(req.params.topic_index) ? parseInt(req.params.topic_index, 10) - 1 : 0;
+	const [categoryFields, userPrivileges, userSettings, rssToken] = await Promise.all([
+		categories.getCategoryFields(cid, ['slug', 'disabled', 'topic_count']),
+		privileges.categories.get(cid, req.uid),
+		user.getSettings(req.uid),
+		user.auth.getFeedToken(req.uid),
+	]);
 
-	async.waterfall([
-		function (next) {
-			async.parallel({
-				categoryData: function (next) {
-					categories.getCategoryFields(cid, ['slug', 'disabled', 'topic_count'], next);
-				},
-				privileges: function (next) {
-					privileges.categories.get(cid, req.uid, next);
-				},
-				userSettings: function (next) {
-					user.getSettings(req.uid, next);
-				},
-				rssToken: function (next) {
-					user.auth.getFeedToken(req.uid, next);
-				},
-			}, next);
-		},
-		function (results, next) {
-			userPrivileges = results.privileges;
-			rssToken = results.rssToken;
+	if (!categoryFields.slug || (categoryFields && categoryFields.disabled)) {
+		return next();
+	}
 
-			if (!results.categoryData.slug || (results.categoryData && results.categoryData.disabled)) {
-				return callback();
-			}
+	if (!userPrivileges.read) {
+		return helpers.notAllowed(req, res);
+	}
 
-			if (!results.privileges.read) {
-				return helpers.notAllowed(req, res);
-			}
+	if (!res.locals.isAPI && (!req.params.slug || categoryFields.slug !== cid + '/' + req.params.slug) && (categoryFields.slug && categoryFields.slug !== cid + '/')) {
+		return helpers.redirect(res, '/category/' + categoryFields.slug);
+	}
 
-			if (!res.locals.isAPI && (!req.params.slug || results.categoryData.slug !== cid + '/' + req.params.slug) && (results.categoryData.slug && results.categoryData.slug !== cid + '/')) {
-				return helpers.redirect(res, '/category/' + results.categoryData.slug);
-			}
+	const topicCount = categoryFields.topic_count;
+	let topicIndex = utils.isNumber(req.params.topic_index) ? parseInt(req.params.topic_index, 10) - 1 : 0;
+	if (topicIndex < 0 || topicIndex > Math.max(topicCount - 1, 0)) {
+		return helpers.redirect(res, '/category/' + cid + '/' + req.params.slug + (topicIndex > topicCount ? '/' + topicCount : ''));
+	}
+	const pageCount = Math.max(1, Math.ceil(topicCount / userSettings.topicsPerPage));
+	let currentPage = parseInt(req.query.page, 10) || 1;
+	if (userSettings.usePagination && (currentPage < 1 || currentPage > pageCount)) {
+		return next();
+	}
 
-			settings = results.userSettings;
+	if (!userSettings.usePagination) {
+		topicIndex = Math.max(0, topicIndex - (Math.ceil(userSettings.topicsPerPage / 2) - 1));
+	} else if (!req.query.page) {
+		const index = Math.max(parseInt((topicIndex || 0), 10), 0);
+		currentPage = Math.ceil((index + 1) / userSettings.topicsPerPage);
+		topicIndex = 0;
+	}
 
-			var topicCount = results.categoryData.topic_count;
-			pageCount = Math.max(1, Math.ceil(topicCount / settings.topicsPerPage));
+	const targetUid = await user.getUidByUserslug(req.query.author);
+	const start = ((currentPage - 1) * userSettings.topicsPerPage) + topicIndex;
+	const stop = start + userSettings.topicsPerPage - 1;
 
-			if (topicIndex < 0 || topicIndex > Math.max(topicCount - 1, 0)) {
-				return helpers.redirect(res, '/category/' + cid + '/' + req.params.slug + (topicIndex > topicCount ? '/' + topicCount : ''));
-			}
+	const categoryData = await categories.getCategoryById({
+		uid: req.uid,
+		cid: cid,
+		start: start,
+		stop: stop,
+		sort: req.query.sort || userSettings.categoryTopicSort,
+		settings: userSettings,
+		query: req.query,
+		tag: req.query.tag,
+		targetUid: targetUid,
+	});
+	if (!categoryData) {
+		return next();
+	}
+	categories.modifyTopicsByPrivilege(categoryData.topics, userPrivileges);
+	if (categoryData.link) {
+		await db.incrObjectField('category:' + categoryData.cid, 'timesClicked');
+		return helpers.redirect(res, categoryData.link);
+	}
+	await buildBreadcrumbs(req, categoryData);
+	if (categoryData.children.length) {
+		const allCategories = [];
+		categories.flattenCategories(allCategories, categoryData.children);
+		await categories.getRecentTopicReplies(allCategories, req.uid);
+	}
 
-			if (settings.usePagination && (currentPage < 1 || currentPage > pageCount)) {
-				return callback();
-			}
+	categoryData.title = translator.escape(categoryData.name);
+	categoryData.description = translator.escape(categoryData.description);
+	categoryData.privileges = userPrivileges;
+	categoryData.showSelect = userPrivileges.editable;
+	categoryData.rssFeedUrl = nconf.get('url') + '/category/' + categoryData.cid + '.rss';
+	if (parseInt(req.uid, 10)) {
+		categories.markAsRead([cid], req.uid);
+		categoryData.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
+	}
 
-			if (!settings.usePagination) {
-				topicIndex = Math.max(0, topicIndex - (Math.ceil(settings.topicsPerPage / 2) - 1));
-			} else if (!req.query.page) {
-				var index = Math.max(parseInt((topicIndex || 0), 10), 0);
-				currentPage = Math.ceil((index + 1) / settings.topicsPerPage);
-				topicIndex = 0;
-			}
+	addTags(categoryData, res);
 
-			user.getUidByUserslug(req.query.author, next);
-		},
-		function (targetUid, next) {
-			var start = ((currentPage - 1) * settings.topicsPerPage) + topicIndex;
-			var stop = start + settings.topicsPerPage - 1;
-			categories.getCategoryById({
-				uid: req.uid,
-				cid: cid,
-				start: start,
-				stop: stop,
-				sort: req.query.sort || settings.categoryTopicSort,
-				settings: settings,
-				query: req.query,
-				tag: req.query.tag,
-				targetUid: targetUid,
-			}, next);
-		},
-		function (categoryData, next) {
-			if (!categoryData) {
-				return callback();
-			}
-			categories.modifyTopicsByPrivilege(categoryData.topics, userPrivileges);
+	categoryData['feeds:disableRSS'] = meta.config['feeds:disableRSS'];
+	categoryData['reputation:disabled'] = meta.config['reputation:disabled'];
 
-			if (categoryData.link) {
-				db.incrObjectField('category:' + categoryData.cid, 'timesClicked');
-				return helpers.redirect(res, categoryData.link);
-			}
+	categoryData.pagination = pagination.create(currentPage, pageCount, req.query);
+	categoryData.pagination.rel.forEach(function (rel) {
+		rel.href = nconf.get('url') + '/category/' + categoryData.slug + rel.href;
+		res.locals.linkTags.push(rel);
+	});
 
-			buildBreadcrumbs(req, categoryData, next);
-		},
-		function (categoryData, next) {
-			if (!categoryData.children.length) {
-				return next(null, categoryData);
-			}
+	analytics.increment(['pageviews:byCid:' + categoryData.cid]);
 
-			var allCategories = [];
-			categories.flattenCategories(allCategories, categoryData.children);
-			categories.getRecentTopicReplies(allCategories, req.uid, function (err) {
-				next(err, categoryData);
-			});
-		},
-		function (categoryData) {
-			categoryData.description = translator.escape(categoryData.description);
-			categoryData.privileges = userPrivileges;
-			categoryData.showSelect = categoryData.privileges.editable;
-			categoryData.rssFeedUrl = nconf.get('url') + '/category/' + categoryData.cid + '.rss';
-			if (parseInt(req.uid, 10)) {
-				categories.markAsRead([cid], req.uid);
-				categoryData.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;
-			}
-
-			addTags(categoryData, res);
-
-			categoryData['feeds:disableRSS'] = meta.config['feeds:disableRSS'];
-			categoryData['reputation:disabled'] = meta.config['reputation:disabled'];
-			categoryData.title = translator.escape(categoryData.name);
-			pageCount = Math.max(1, Math.ceil(categoryData.topic_count / settings.topicsPerPage));
-			categoryData.pagination = pagination.create(currentPage, pageCount, req.query);
-			categoryData.pagination.rel.forEach(function (rel) {
-				rel.href = nconf.get('url') + '/category/' + categoryData.slug + rel.href;
-				res.locals.linkTags.push(rel);
-			});
-
-			analytics.increment(['pageviews:byCid:' + categoryData.cid]);
-
-			res.render('category', categoryData);
-		},
-	], callback);
+	res.render('category', categoryData);
 };
 
-function buildBreadcrumbs(req, categoryData, callback) {
-	var breadcrumbs = [
+async function buildBreadcrumbs(req, categoryData) {
+	const breadcrumbs = [
 		{
 			text: categoryData.name,
 			url: nconf.get('relative_path') + '/category/' + categoryData.slug,
 		},
 	];
-	async.waterfall([
-		function (next) {
-			helpers.buildCategoryBreadcrumbs(categoryData.parentCid, next);
-		},
-		function (crumbs, next) {
-			if (req.originalUrl.startsWith(nconf.get('relative_path') + '/api/category') || req.originalUrl.startsWith(nconf.get('relative_path') + '/category')) {
-				categoryData.breadcrumbs = crumbs.concat(breadcrumbs);
-			}
-			next(null, categoryData);
-		},
-	], callback);
+	const crumbs = await helpers.buildCategoryBreadcrumbs(categoryData.parentCid);
+	if (req.originalUrl.startsWith(nconf.get('relative_path') + '/api/category') || req.originalUrl.startsWith(nconf.get('relative_path') + '/category')) {
+		categoryData.breadcrumbs = crumbs.concat(breadcrumbs);
+	}
 }
 
 function addTags(categoryData, res) {
