@@ -1,28 +1,27 @@
 'use strict';
 
-var nconf = require('nconf');
-var async = require('async');
-var validator = require('validator');
-var winston = require('winston');
-var querystring = require('querystring');
+const nconf = require('nconf');
+const validator = require('validator');
+const winston = require('winston');
+const querystring = require('querystring');
 
-var user = require('../user');
-var privileges = require('../privileges');
-var categories = require('../categories');
-var plugins = require('../plugins');
-var meta = require('../meta');
-var middleware = require('../middleware');
-var utils = require('../utils');
+const user = require('../user');
+const privileges = require('../privileges');
+const categories = require('../categories');
+const plugins = require('../plugins');
+const meta = require('../meta');
+const middleware = require('../middleware');
+const utils = require('../utils');
 
-var helpers = module.exports;
+const helpers = module.exports;
 
 helpers.noScriptErrors = function (req, res, error, httpStatus) {
 	if (req.body.noscript !== 'true') {
 		return res.status(httpStatus).send(error);
 	}
 
-	var middleware = require('../middleware');
-	var httpStatusString = httpStatus.toString();
+	const middleware = require('../middleware');
+	const httpStatusString = httpStatus.toString();
 	middleware.buildHeader(req, res, function () {
 		res.status(httpStatus).render(httpStatusString, {
 			path: req.path,
@@ -43,7 +42,7 @@ helpers.terms = {
 };
 
 helpers.buildQueryString = function (cid, filter, term) {
-	var qs = {};
+	const qs = {};
 	if (cid) {
 		qs.cid = cid;
 	}
@@ -54,10 +53,7 @@ helpers.buildQueryString = function (cid, filter, term) {
 		qs.term = term;
 	}
 
-	if (Object.keys(qs).length) {
-		return '?' + querystring.stringify(qs);
-	}
-	return '';
+	return Object.keys(qs).length ? '?' + querystring.stringify(qs) : '';
 };
 
 helpers.buildFilters = function (url, filter, query) {
@@ -153,50 +149,37 @@ helpers.redirect = function (res, url) {
 	}
 };
 
-helpers.buildCategoryBreadcrumbs = function (cid, callback) {
-	var breadcrumbs = [];
+helpers.buildCategoryBreadcrumbs = async function (cid) {
+	const breadcrumbs = [];
 
-	async.whilst(function (next) {
-		next(null, parseInt(cid, 10));
-	}, function (next) {
-		categories.getCategoryFields(cid, ['name', 'slug', 'parentCid', 'disabled', 'isSection'], function (err, data) {
-			if (err) {
-				return next(err);
-			}
-
-			if (!data.disabled && !data.isSection) {
-				breadcrumbs.unshift({
-					text: String(data.name),
-					url: nconf.get('relative_path') + '/category/' + data.slug,
-				});
-			}
-
-			cid = data.parentCid;
-			next();
-		});
-	}, function (err) {
-		if (err) {
-			return callback(err);
-		}
-
-		if (meta.config.homePageRoute && meta.config.homePageRoute !== 'categories') {
+	while (parseInt(cid, 10)) {
+		/* eslint-disable no-await-in-loop */
+		const data = await categories.getCategoryFields(cid, ['name', 'slug', 'parentCid', 'disabled', 'isSection']);
+		if (!data.disabled && !data.isSection) {
 			breadcrumbs.unshift({
-				text: '[[global:header.categories]]',
-				url: nconf.get('relative_path') + '/categories',
+				text: String(data.name),
+				url: nconf.get('relative_path') + '/category/' + data.slug,
 			});
 		}
-
+		cid = data.parentCid;
+	}
+	if (meta.config.homePageRoute && meta.config.homePageRoute !== 'categories') {
 		breadcrumbs.unshift({
-			text: '[[global:home]]',
-			url: nconf.get('relative_path') + '/',
+			text: '[[global:header.categories]]',
+			url: nconf.get('relative_path') + '/categories',
 		});
+	}
 
-		callback(null, breadcrumbs);
+	breadcrumbs.unshift({
+		text: '[[global:home]]',
+		url: nconf.get('relative_path') + '/',
 	});
+
+	return breadcrumbs;
 };
 
 helpers.buildBreadcrumbs = function (crumbs) {
-	var breadcrumbs = [
+	const breadcrumbs = [
 		{
 			text: '[[global:home]]',
 			url: nconf.get('relative_path') + '/',
@@ -216,101 +199,68 @@ helpers.buildBreadcrumbs = function (crumbs) {
 };
 
 helpers.buildTitle = function (pageTitle) {
-	var titleLayout = meta.config.titleLayout || '{pageTitle} | {browserTitle}';
+	const titleLayout = meta.config.titleLayout || '{pageTitle} | {browserTitle}';
 
-	var browserTitle = validator.escape(String(meta.config.browserTitle || meta.config.title || 'NodeBB'));
+	const browserTitle = validator.escape(String(meta.config.browserTitle || meta.config.title || 'NodeBB'));
 	pageTitle = pageTitle || '';
-	var title = titleLayout.replace('{pageTitle}', function () {
-		return pageTitle;
-	}).replace('{browserTitle}', function () {
-		return browserTitle;
-	});
+	const title = titleLayout.replace('{pageTitle}', () => pageTitle).replace('{browserTitle}', () => browserTitle);
 	return title;
 };
 
-helpers.getCategories = function (set, uid, privilege, selectedCid, callback) {
-	async.waterfall([
-		function (next) {
-			categories.getCidsByPrivilege(set, uid, privilege, next);
-		},
-		function (cids, next) {
-			getCategoryData(cids, uid, selectedCid, next);
-		},
-	], callback);
+helpers.getCategories = async function (set, uid, privilege, selectedCid) {
+	const cids = await categories.getCidsByPrivilege(set, uid, privilege);
+	return await getCategoryData(cids, uid, selectedCid);
 };
 
-helpers.getCategoriesByStates = function (uid, selectedCid, states, callback) {
-	async.waterfall([
-		function (next) {
-			user.getCategoriesByStates(uid, states, next);
-		},
-		function (cids, next) {
-			privileges.categories.filterCids('read', cids, uid, next);
-		},
-		function (cids, next) {
-			getCategoryData(cids, uid, selectedCid, next);
-		},
-	], callback);
+helpers.getCategoriesByStates = async function (uid, selectedCid, states) {
+	let cids = await user.getCategoriesByStates(uid, states);
+	cids = await privileges.categories.filterCids('read', cids, uid);
+	return await getCategoryData(cids, uid, selectedCid);
 };
 
-helpers.getWatchedCategories = function (uid, selectedCid, callback) {
-	async.waterfall([
-		function (next) {
-			user.getWatchedCategories(uid, next);
-		},
-		function (cids, next) {
-			privileges.categories.filterCids('read', cids, uid, next);
-		},
-		function (cids, next) {
-			getCategoryData(cids, uid, selectedCid, next);
-		},
-	], callback);
+helpers.getWatchedCategories = async function (uid, selectedCid) {
+	let cids = await user.getWatchedCategories(uid);
+	cids = await privileges.categories.filterCids('read', cids, uid);
+	return await getCategoryData(cids, uid, selectedCid);
 };
 
-function getCategoryData(cids, uid, selectedCid, callback) {
+async function getCategoryData(cids, uid, selectedCid) {
 	if (selectedCid && !Array.isArray(selectedCid)) {
 		selectedCid = [selectedCid];
 	}
-	async.waterfall([
-		function (next) {
-			categories.getCategoriesFields(cids, ['cid', 'order', 'name', 'slug', 'icon', 'link', 'color', 'bgColor', 'parentCid', 'image', 'imageClass'], next);
-		},
-		function (categoryData, next) {
-			categoryData = categoryData.filter(category => category && !category.link);
-			var selectedCategory = [];
-			var selectedCids = [];
-			categoryData.forEach(function (category) {
-				category.selected = selectedCid ? selectedCid.includes(String(category.cid)) : false;
-				category.parentCid = category.hasOwnProperty('parentCid') && utils.isNumber(category.parentCid) ? category.parentCid : 0;
-				if (category.selected) {
-					selectedCategory.push(category);
-					selectedCids.push(category.cid);
-				}
-			});
-			selectedCids.sort((a, b) => a - b);
+	let categoryData = await categories.getCategoriesFields(cids, ['cid', 'order', 'name', 'slug', 'icon', 'link', 'color', 'bgColor', 'parentCid', 'image', 'imageClass']);
+	categoryData = categoryData.filter(category => category && !category.link);
 
-			if (selectedCategory.length > 1) {
-				selectedCategory = {
-					icon: 'fa-plus',
-					name: '[[unread:multiple-categories-selected]]',
-					bgColor: '#ddd',
-				};
-			} else if (selectedCategory.length === 1) {
-				selectedCategory = selectedCategory[0];
-			} else {
-				selectedCategory = undefined;
-			}
+	let selectedCategory = [];
+	const selectedCids = [];
+	categoryData.forEach(function (category) {
+		category.selected = selectedCid ? selectedCid.includes(String(category.cid)) : false;
+		category.parentCid = category.hasOwnProperty('parentCid') && utils.isNumber(category.parentCid) ? category.parentCid : 0;
+		if (category.selected) {
+			selectedCategory.push(category);
+			selectedCids.push(category.cid);
+		}
+	});
+	selectedCids.sort((a, b) => a - b);
 
-			var categoriesData = [];
-			var tree = categories.getTree(categoryData);
+	if (selectedCategory.length > 1) {
+		selectedCategory = {
+			icon: 'fa-plus',
+			name: '[[unread:multiple-categories-selected]]',
+			bgColor: '#ddd',
+		};
+	} else if (selectedCategory.length === 1) {
+		selectedCategory = selectedCategory[0];
+	} else {
+		selectedCategory = undefined;
+	}
 
-			tree.forEach(function (category) {
-				recursive(category, categoriesData, '');
-			});
+	const categoriesData = [];
+	const tree = categories.getTree(categoryData);
 
-			next(null, { categories: categoriesData, selectedCategory: selectedCategory, selectedCids: selectedCids });
-		},
-	], callback);
+	tree.forEach(category => recursive(category, categoriesData, ''));
+
+	return { categories: categoriesData, selectedCategory: selectedCategory, selectedCids: selectedCids };
 }
 
 function recursive(category, categoriesData, level) {
@@ -365,4 +315,4 @@ helpers.getHomePageRoutes = async function (uid) {
 	return data.routes;
 };
 
-helpers.async = require('../promisify')(helpers);
+require('../promisify')(helpers);

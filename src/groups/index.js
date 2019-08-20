@@ -51,7 +51,7 @@ Groups.isPrivilegeGroup = function (groupName) {
 	return isPrivilegeGroupRegex.test(groupName);
 };
 
-Groups.getGroupsFromSet = async function (set, uid, start, stop) {
+Groups.getGroupsFromSet = async function (set, start, stop) {
 	let groupNames;
 	if (set === 'groups:visible:name') {
 		groupNames = await db.getSortedSetRangeByLex(set, '-', '+', start, stop - start + 1);
@@ -63,6 +63,16 @@ Groups.getGroupsFromSet = async function (set, uid, start, stop) {
 	}
 
 	return await Groups.getGroupsAndMembers(groupNames);
+};
+
+Groups.getGroupsBySort = async function (sort, start, stop) {
+	let set = 'groups:visible:name';
+	if (sort === 'count') {
+		set = 'groups:visible:memberCount';
+	} else if (sort === 'date') {
+		set = 'groups:visible:createtime';
+	}
+	return await Groups.getGroupsFromSet(set, start, stop);
 };
 
 Groups.getNonPrivilegeGroups = async function (set, start, stop) {

@@ -1,14 +1,13 @@
 'use strict';
 
-var groups = require('../groups');
-var meta = require('../meta');
-var user = require('../user');
-var utils = require('../utils');
-var groupsController = require('../controllers/groups');
-var events = require('../events');
-var privileges = require('../privileges');
+const groups = require('../groups');
+const meta = require('../meta');
+const user = require('../user');
+const utils = require('../utils');
+const events = require('../events');
+const privileges = require('../privileges');
 
-var SocketGroups = module.exports;
+const SocketGroups = module.exports;
 
 SocketGroups.before = async (socket, method, data) => {
 	if (!data) {
@@ -271,9 +270,9 @@ SocketGroups.search = async (socket, data) => {
 	data.options = data.options || {};
 
 	if (!data.query) {
-		var groupsPerPage = 15;
-		const groups = await groupsController.getGroupsFromSet(socket.uid, data.options.sort, 0, groupsPerPage - 1);
-		return groups.groups;
+		const groupsPerPage = 15;
+		const groupData = await groups.getGroupsBySort(data.options.sort, 0, groupsPerPage - 1);
+		return groupData;
 	}
 
 	return await groups.search(data.query, data.options);
@@ -284,10 +283,11 @@ SocketGroups.loadMore = async (socket, data) => {
 		throw new Error('[[error:invalid-data]]');
 	}
 
-	var groupsPerPage = 9;
-	var start = parseInt(data.after, 10);
-	var stop = start + groupsPerPage - 1;
-	return await groupsController.getGroupsFromSet(socket.uid, data.sort, start, stop);
+	const groupsPerPage = 10;
+	const start = parseInt(data.after, 10);
+	const stop = start + groupsPerPage - 1;
+	const groupData = await groups.getGroupsBySort(data.sort, start, stop);
+	return { groups: groupData, nextStart: stop + 1 };
 };
 
 SocketGroups.searchMembers = async (socket, data) => {

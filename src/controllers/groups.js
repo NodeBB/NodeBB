@@ -14,28 +14,18 @@ const groupsController = module.exports;
 groupsController.list = async function (req, res) {
 	const sort = req.query.sort || 'alpha';
 
-	const data = await groupsController.getGroupsFromSet(req.uid, sort, 0, 14);
-	data.title = '[[pages:groups]]';
-	data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[pages:groups]]' }]);
-	res.render('groups/list', data);
-};
-
-groupsController.getGroupsFromSet = async function (uid, sort, start, stop) {
-	let set = 'groups:visible:name';
-	if (sort === 'count') {
-		set = 'groups:visible:memberCount';
-	} else if (sort === 'date') {
-		set = 'groups:visible:createtime';
-	}
-	const [groupsData, allowGroupCreation] = await Promise.all([
-		groups.getGroupsFromSet(set, uid, start, stop),
-		privileges.global.can('group:create', uid),
+	const [groupData, allowGroupCreation] = await Promise.all([
+		groups.getGroupsBySort(sort, 0, 14),
+		privileges.global.can('group:create', req.uid),
 	]);
-	return {
-		groups: groupsData,
+
+	res.render('groups/list', {
+		groups: groupData,
 		allowGroupCreation: allowGroupCreation,
-		nextStart: stop + 1,
-	};
+		nextStart: 15,
+		title: '[[pages:groups]]',
+		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[pages:groups]]' }]),
+	});
 };
 
 groupsController.details = async function (req, res, next) {
@@ -73,7 +63,8 @@ groupsController.details = async function (req, res, next) {
 		return next();
 	}
 	groupData.isOwner = groupData.isOwner || isAdmin || (isGlobalMod && !groupData.system);
-	const results = {
+
+	res.render('groups/details', {
 		title: '[[pages:group, ' + groupData.displayName + ']]',
 		group: groupData,
 		posts: posts,
@@ -81,9 +72,7 @@ groupsController.details = async function (req, res, next) {
 		isGlobalMod: isGlobalMod,
 		allowPrivateGroups: meta.config.allowPrivateGroups,
 		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[pages:groups]]', url: '/groups' }, { text: groupData.displayName }]),
-	};
-
-	res.render('groups/details', results);
+	});
 };
 
 groupsController.members = async function (req, res, next) {
@@ -138,5 +127,3 @@ groupsController.uploadCover = async function (req, res, next) {
 		next(err);
 	}
 };
-
-require('../promisify')(groupsController, ['list', 'details', 'members', 'uploadCover']);
