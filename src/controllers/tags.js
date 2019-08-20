@@ -1,106 +1,72 @@
 'use strict';
 
-var async = require('async');
-var validator = require('validator');
+const validator = require('validator');
 
-var user = require('../user');
-var categories = require('../categories');
-var topics = require('../topics');
-var privileges = require('../privileges');
-var pagination = require('../pagination');
-var helpers = require('./helpers');
+const user = require('../user');
+const categories = require('../categories');
+const topics = require('../topics');
+const privileges = require('../privileges');
+const pagination = require('../pagination');
+const helpers = require('./helpers');
 
-var tagsController = module.exports;
+const tagsController = module.exports;
 
-tagsController.getTag = function (req, res, next) {
-	var tag = validator.escape(String(req.params.tag));
-	var page = parseInt(req.query.page, 10) || 1;
+tagsController.getTag = async function (req, res) {
+	const tag = validator.escape(String(req.params.tag));
+	const page = parseInt(req.query.page, 10) || 1;
 
-	var templateData = {
+	const templateData = {
 		topics: [],
 		tag: tag,
 		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[tags:tags]]', url: '/tags' }, { text: tag }]),
 		title: '[[pages:tag, ' + tag + ']]',
 	};
-	var settings;
-	var topicCount = 0;
-	var start;
+	const settings = await user.getSettings(req.uid);
+	const start = Math.max(0, (page - 1) * settings.topicsPerPage);
+	const stop = start + settings.topicsPerPage - 1;
+	const states = [categories.watchStates.watching, categories.watchStates.notwatching, categories.watchStates.ignoring];
+	const [topicCount, tids, categoriesData] = await Promise.all([
+		topics.getTagTopicCount(req.params.tag),
+		topics.getTagTids(req.params.tag, start, stop),
+		helpers.getCategoriesByStates(req.uid, '', states),
+	]);
 
-	async.waterfall([
-		function (next) {
-			user.getSettings(req.uid, next);
+	if (Array.isArray(tids) && !tids.length) {
+		return res.render('tag', templateData);
+	}
+
+	templateData.categories = categoriesData.categories;
+
+	templateData.topics = await topics.getTopics(tids, req.uid);
+	topics.calculateTopicIndices(templateData.topics, start);
+	res.locals.metaTags = [
+		{
+			name: 'title',
+			content: tag,
 		},
-		function (_settings, next) {
-			settings = _settings;
-			start = Math.max(0, (page - 1) * settings.topicsPerPage);
-			var stop = start + settings.topicsPerPage - 1;
-			async.parallel({
-				topicCount: function (next) {
-					topics.getTagTopicCount(req.params.tag, next);
-				},
-				tids: function (next) {
-					topics.getTagTids(req.params.tag, start, stop, next);
-				},
-				categories: function (next) {
-					const states = [categories.watchStates.watching, categories.watchStates.notwatching, categories.watchStates.ignoring];
-					helpers.getCategoriesByStates(req.uid, '', states, next);
-				},
-			}, next);
+		{
+			property: 'og:title',
+			content: tag,
 		},
-		function (results, next) {
-			if (Array.isArray(results.tids) && !results.tids.length) {
-				return res.render('tag', templateData);
-			}
+	];
 
-			templateData.categories = results.categories.categories;
+	const pageCount = Math.max(1, Math.ceil(topicCount / settings.topicsPerPage));
+	templateData.pagination = pagination.create(page, pageCount);
 
-			topicCount = results.topicCount;
-			topics.getTopics(results.tids, req.uid, next);
-		},
-		function (topicsData) {
-			topics.calculateTopicIndices(topicsData, start);
-			res.locals.metaTags = [
-				{
-					name: 'title',
-					content: tag,
-				},
-				{
-					property: 'og:title',
-					content: tag,
-				},
-			];
-			templateData.topics = topicsData;
-
-			var pageCount =	Math.max(1, Math.ceil(topicCount / settings.topicsPerPage));
-			templateData.pagination = pagination.create(page, pageCount);
-
-			res.render('tag', templateData);
-		},
-	], next);
+	res.render('tag', templateData);
 };
 
-tagsController.getTags = function (req, res, next) {
-	async.waterfall([
-		function (next) {
-			async.parallel({
-				canSearch: function (next) {
-					privileges.global.can('search:tags', req.uid, next);
-				},
-				tags: function (next) {
-					topics.getTags(0, 99, next);
-				},
-			}, next);
-		},
-		function (results) {
-			results.tags = results.tags.filter(Boolean);
-			var data = {
-				tags: results.tags,
-				displayTagSearch: results.canSearch,
-				nextStart: 100,
-				breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[tags:tags]]' }]),
-				title: '[[pages:tags]]',
-			};
-			res.render('tags', data);
-		},
-	], next);
+tagsController.getTags = async function (req, res) {
+	const [canSearch, tags] = await Promise.all([
+		privileges.global.can('search:tags', req.uid),
+		topics.getTags(0, 99),
+	]);
+
+	res.render('tags', {
+		tags: tags.filter(Boolean),
+		displayTagSearch: canSearch,
+		nextStart: 100,
+		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[tags:tags]]' }]),
+		title: '[[pages:tags]]',
+	});
 };
