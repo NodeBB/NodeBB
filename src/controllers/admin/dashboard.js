@@ -129,12 +129,38 @@ async function getStatsForSet(set, field) {
 	};
 
 	const now = Date.now();
-	return await utils.promiseParallel({
-		day: db.sortedSetCount(set, now - terms.day, '+inf'),
-		week: db.sortedSetCount(set, now - terms.week, '+inf'),
-		month: db.sortedSetCount(set, now - terms.month, '+inf'),
+	const results = await utils.promiseParallel({
+		yesterday: db.sortedSetCount(set, now - (terms.day * 2), now - terms.day),
+		today: db.sortedSetCount(set, now - terms.day, '+inf'),
+		lastweek: db.sortedSetCount(set, now - (terms.week * 2), now - terms.week),
+		thisweek: db.sortedSetCount(set, now - terms.week, '+inf'),
+		lastmonth: db.sortedSetCount(set, now - (terms.month * 2), now - terms.month),
+		thismonth: db.sortedSetCount(set, now - terms.month, '+inf'),
 		alltime: getGlobalField(field),
 	});
+	function textClass(num) {
+		if (num > 0) {
+			return 'text-success';
+		} else if (num < 0) {
+			return 'text-danger';
+		}
+		return 'text-warning';
+	}
+
+	function increasePercent(last, now) {
+		const percent = last ? (now - last) / last * 100 : 0;
+		return percent.toFixed(1);
+	}
+	results.dayIncrease = increasePercent(results.yesterday, results.today);
+	results.dayTextClass = textClass(results.dayIncrease);
+
+	results.weekIncrease = increasePercent(results.lastweek, results.thisweek);
+	results.weekTextClass = textClass(results.weekIncrease);
+
+	results.monthIncrease = increasePercent(results.lastmonth, results.thismonth);
+	results.monthTextClass = textClass(results.monthIncrease);
+
+	return results;
 }
 
 async function getGlobalField(field) {
