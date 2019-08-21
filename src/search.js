@@ -93,12 +93,13 @@ async function searchInContent(data) {
 	}
 
 	returnData.posts = await posts.getPostSummaryByPids(metadata.pids, data.uid, {});
+	await plugins.fireHook('filter:search.getPosts', { posts: returnData.posts });
 	delete metadata.pids;
 	return Object.assign(returnData, metadata);
 }
 
 async function filterAndSort(pids, data) {
-	if (data.sortBy === 'relevance' && !data.replies && !data.timeRange && !data.hasTags) {
+	if (data.sortBy === 'relevance' && !data.replies && !data.timeRange && !data.hasTags && !plugins.hasListeners('filter:search.filterAndSort')) {
 		return pids;
 	}
 	let postsData = await getMatchedPosts(pids, data);
@@ -114,7 +115,6 @@ async function filterAndSort(pids, data) {
 	sortPosts(postsData, data);
 
 	const result = await plugins.fireHook('filter:search.filterAndSort', { pids: pids, posts: postsData, data: data });
-
 	return result.posts.map(post => post && post.pid);
 }
 
@@ -241,18 +241,18 @@ function sortPosts(posts, data) {
 	}
 
 	data.sortDirection = data.sortDirection || 'desc';
-	var direction = data.sortDirection === 'desc' ? 1 : -1;
+	const direction = data.sortDirection === 'desc' ? 1 : -1;
 	const fields = data.sortBy.split('.');
 	if (fields.length === 1) {
 		return posts.sort((p1, p2) => direction * (p2[fields[0]] - p1[fields[0]]));
 	}
 
-	var firstPost = posts[0];
+	const firstPost = posts[0];
 	if (!fields || fields.length !== 2 || !firstPost[fields[0]] || !firstPost[fields[0]][fields[1]]) {
 		return;
 	}
 
-	var isNumeric = utils.isNumber(firstPost[fields[0]][fields[1]]);
+	const isNumeric = utils.isNumber(firstPost[fields[0]][fields[1]]);
 
 	if (isNumeric) {
 		posts.sort((p1, p2) => direction * (p2[fields[0]][fields[1]] - p1[fields[0]][fields[1]]));
