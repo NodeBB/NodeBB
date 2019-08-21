@@ -108,6 +108,12 @@ dashboardController.getAnalytics = async (req, res, next) => {
 };
 
 async function getStats() {
+	const cache = require('../../cache');
+	const cachedStats = cache.get('admin:stats');
+	if (cachedStats !== undefined) {
+		return cachedStats;
+	}
+
 	const results = await Promise.all([
 		getStatsForSet('ip:recent', 'uniqueIPCount'),
 		getStatsForSet('users:joindate', 'userCount'),
@@ -118,6 +124,7 @@ async function getStats() {
 	results[1].name = '[[admin/general/dashboard:users]]';
 	results[2].name = '[[admin/general/dashboard:posts]]';
 	results[3].name = '[[admin/general/dashboard:topics]]';
+	cache.set('admin:stats', results, 600000);
 	return results;
 }
 
@@ -138,6 +145,7 @@ async function getStatsForSet(set, field) {
 		thismonth: db.sortedSetCount(set, now - terms.month, '+inf'),
 		alltime: getGlobalField(field),
 	});
+
 	function textClass(num) {
 		if (num > 0) {
 			return 'text-success';
