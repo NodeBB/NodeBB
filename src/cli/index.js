@@ -246,11 +246,7 @@ resetCommand
 				return process.exit(1);
 			}
 
-			require('../meta/build').buildAll(function (err) {
-				if (err) { throw err; }
-
-				process.exit();
-			});
+			process.exit(0);
 		});
 	});
 
