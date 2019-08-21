@@ -73,7 +73,7 @@ module.exports = function (SocketPosts) {
 				posts.display_history = results.history;
 				posts.toolsVisible = posts.tools.length || posts.display_moderator_tools;
 
-				if (!results.isAdmin && !results.isGlobalMod && !results.isModerator) {
+				if (!results.isAdmin && !results.isGlobalMod) {
 					posts.ip = undefined;
 				}
 				next(null, results);
