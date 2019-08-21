@@ -137,11 +137,11 @@ async function getStatsForSet(set, field) {
 
 	const now = Date.now();
 	const results = await utils.promiseParallel({
-		yesterday: db.sortedSetCount(set, now - (terms.day * 2), now - terms.day),
+		yesterday: db.sortedSetCount(set, now - (terms.day * 2), '+inf'),
 		today: db.sortedSetCount(set, now - terms.day, '+inf'),
-		lastweek: db.sortedSetCount(set, now - (terms.week * 2), now - terms.week),
+		lastweek: db.sortedSetCount(set, now - (terms.week * 2), '+inf'),
 		thisweek: db.sortedSetCount(set, now - terms.week, '+inf'),
-		lastmonth: db.sortedSetCount(set, now - (terms.month * 2), now - terms.month),
+		lastmonth: db.sortedSetCount(set, now - (terms.month * 2), '+inf'),
 		thismonth: db.sortedSetCount(set, now - terms.month, '+inf'),
 		alltime: getGlobalField(field),
 	});
@@ -159,12 +159,15 @@ async function getStatsForSet(set, field) {
 		const percent = last ? (now - last) / last * 100 : 0;
 		return percent.toFixed(1);
 	}
+	results.yesterday -= results.today;
 	results.dayIncrease = increasePercent(results.yesterday, results.today);
 	results.dayTextClass = textClass(results.dayIncrease);
 
+	results.lastweek -= results.thisweek;
 	results.weekIncrease = increasePercent(results.lastweek, results.thisweek);
 	results.weekTextClass = textClass(results.weekIncrease);
 
+	results.lastmonth -= results.thismonth;
 	results.monthIncrease = increasePercent(results.lastmonth, results.thismonth);
 	results.monthTextClass = textClass(results.monthIncrease);
 
