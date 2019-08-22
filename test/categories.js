@@ -767,6 +767,7 @@ describe('Categories', function () {
 					'search:content': false,
 					'search:users': false,
 					'search:tags': false,
+					'view:users:info': false,
 					'upload:post:image': false,
 					'upload:post:file': false,
 					signature: false,
