@@ -24,6 +24,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID) {
 	if (!results.userData) {
 		throw new Error('[[error:invalid-uid]]');
 	}
+	const canViewInfo = await privileges.global.can('view:users:info', callerUID);
 	await parseAboutMe(results.userData);
 
 	const userData = results.userData;
@@ -86,6 +87,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID) {
 		moderator: isModerator,
 		globalMod: isGlobalModerator,
 		admin: isAdmin,
+		canViewInfo: canViewInfo
 	});
 
 	userData.sso = results.sso.associations;
@@ -140,9 +142,10 @@ async function getProfileMenu(uid, callerUID) {
 		visibility: {
 			self: false,
 			other: false,
-			moderator: true,
+			moderator: false,
 			globalMod: true,
 			admin: true,
+			canViewInfo: true,
 		},
 	}, {
 		id: 'sessions',
@@ -154,6 +157,7 @@ async function getProfileMenu(uid, callerUID) {
 			moderator: false,
 			globalMod: false,
 			admin: false,
+			canViewInfo: false
 		},
 	}];
 
@@ -168,6 +172,7 @@ async function getProfileMenu(uid, callerUID) {
 				moderator: false,
 				globalMod: false,
 				admin: false,
+				canViewInfo: false,
 			},
 		});
 	}
@@ -202,6 +207,7 @@ function filterLinks(links, states) {
 			moderator: true,
 			globalMod: true,
 			admin: true,
+			canViewInfo: true,
 			...link.visibility };
 
 		var permit = Object.keys(states).some(function (state) {
