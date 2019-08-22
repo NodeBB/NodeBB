@@ -26,7 +26,7 @@ module.exports = function (privileges) {
 		{ name: '[[admin/manage/privileges:view-groups]]' },
 		{ name: '[[admin/manage/privileges:allow-local-login]]' },
 		{ name: '[[admin/manage/privileges:allow-group-creation]]' },
-		{ name: '[[admin/manage/privileges:view-users-info]]' }
+		{ name: '[[admin/manage/privileges:view-users-info]]' },
 	];
 
 	privileges.global.userPrivilegeList = [
