@@ -817,6 +817,7 @@ describe('Categories', function () {
 					'groups:search:users': true,
 					'groups:search:tags': true,
 					'groups:view:users': true,
+					'groups:view:users:info': false,
 					'groups:view:tags': true,
 					'groups:view:groups': true,
 					'groups:upload:post:image': true,
