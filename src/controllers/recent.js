@@ -91,3 +91,5 @@ async function canPostTopic(uid) {
 	cids = await privileges.categories.filterCids('topics:create', cids, uid);
 	return cids.length > 0;
 }
+
+require('../promisify')(recentController, ['get']);
