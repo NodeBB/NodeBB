@@ -24,7 +24,6 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID) {
 	if (!results.userData) {
 		throw new Error('[[error:invalid-uid]]');
 	}
-	const canViewInfo = await privileges.global.can('view:users:info', callerUID);
 	await parseAboutMe(results.userData);
 
 	const userData = results.userData;
@@ -32,6 +31,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID) {
 	const isAdmin = results.isAdmin;
 	const isGlobalModerator = results.isGlobalModerator;
 	const isModerator = results.isModerator;
+	const canViewInfo = results.canViewInfo;
 	const isSelf = parseInt(callerUID, 10) === parseInt(userData.uid, 10);
 
 	userData.age = Math.max(0, userData.birthday ? Math.floor((new Date().getTime() - new Date(userData.birthday).getTime()) / 31536000000) : 0);
@@ -87,7 +87,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID) {
 		moderator: isModerator,
 		globalMod: isGlobalModerator,
 		admin: isAdmin,
-		canViewInfo: canViewInfo
+		canViewInfo: canViewInfo,
 	});
 
 	userData.sso = results.sso.associations;
@@ -131,6 +131,7 @@ async function getAllData(uid, callerUID) {
 		canEdit: privileges.users.canEdit(callerUID, uid),
 		canBanUser: privileges.users.canBanUser(callerUID, uid),
 		isBlocked: user.blocks.is(uid, callerUID),
+		canViewInfo: privileges.global.can('view:users:info', callerUID),
 	});
 }
 
