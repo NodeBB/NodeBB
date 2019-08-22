@@ -54,6 +54,9 @@ module.exports = function (SocketPosts) {
 					postSharing: function (next) {
 						social.getActivePostSharing(next);
 					},
+					canViewInfo: function (next) {
+						privileges.global.can('view:users:info', socket.uid, next);
+					},
 					history: async.apply(posts.diffs.exists, data.pid),
 				}, next);
 			},
@@ -73,7 +76,7 @@ module.exports = function (SocketPosts) {
 				posts.display_history = results.history;
 				posts.toolsVisible = posts.tools.length || posts.display_moderator_tools;
 
-				if (!results.isAdmin && !results.isGlobalMod) {
+				if (!results.isAdmin && !results.canViewInfo) {
 					posts.ip = undefined;
 				}
 				next(null, results);
