@@ -144,7 +144,7 @@ async function getProfileMenu(uid, callerUID) {
 			self: false,
 			other: false,
 			moderator: false,
-			globalMod: true,
+			globalMod: false,
 			admin: true,
 			canViewInfo: true,
 		},
