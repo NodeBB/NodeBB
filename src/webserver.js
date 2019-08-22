@@ -115,6 +115,8 @@ function setupExpressApp(app) {
 	const relativePath = nconf.get('relative_path');
 	const viewsDir = nconf.get('views_dir');
 
+	app.renderAsync = util.promisify((tpl, data, callback) => app.render(tpl, data, callback));
+
 	app.engine('tpl', function (filepath, data, next) {
 		filepath = filepath.replace(/\.tpl$/, '.js');
 

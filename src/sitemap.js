@@ -12,10 +12,9 @@ var meta = require('./meta');
 var plugins = require('./plugins');
 var utils = require('./utils');
 
-var sitemap = {
-	maps: {
-		topics: [],
-	},
+var sitemap = module.exports;
+sitemap.maps = {
+	topics: [],
 };
 
 sitemap.render = function (callback) {
@@ -174,4 +173,4 @@ sitemap.clearCache = function () {
 	}
 };
 
-module.exports = sitemap;
+require('./promisify')(sitemap);
