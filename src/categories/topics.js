@@ -72,8 +72,7 @@ module.exports = function (Categories) {
 			normalTids = await db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop);
 		}
 		normalTids = normalTids.filter(tid => !pinnedTids.includes(tid));
-
-		return pinnedTids.concat(normalTids);
+		return pinnedTidsOnPage.concat(normalTids);
 	};
 
 	Categories.getTopicCount = async function (data) {
