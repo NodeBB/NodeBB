@@ -1,12 +1,12 @@
 'use strict';
 
-var _ = require('lodash');
+const _ = require('lodash');
 
-var db = require('../database');
-var topics = require('../topics');
-var plugins = require('../plugins');
-var meta = require('../meta');
-var user = require('../user');
+const db = require('../database');
+const topics = require('../topics');
+const plugins = require('../plugins');
+const meta = require('../meta');
+const user = require('../user');
 
 module.exports = function (Categories) {
 	Categories.getCategoryTopics = async function (data) {
@@ -91,9 +91,9 @@ module.exports = function (Categories) {
 	};
 
 	Categories.buildTopicsSortedSet = async function (data) {
-		var cid = data.cid;
-		var set = 'cid:' + cid + ':tids';
-		var sort = data.sort || (data.settings && data.settings.categoryTopicSort) || meta.config.categoryTopicSort || 'newest_to_oldest';
+		const cid = data.cid;
+		let set = 'cid:' + cid + ':tids';
+		const sort = data.sort || (data.settings && data.settings.categoryTopicSort) || meta.config.categoryTopicSort || 'newest_to_oldest';
 
 		if (sort === 'most_posts') {
 			set = 'cid:' + cid + ':tids:posts';
@@ -121,7 +121,7 @@ module.exports = function (Categories) {
 
 	Categories.getSortedSetRangeDirection = async function (sort) {
 		sort = sort || 'newest_to_oldest';
-		var direction = sort === 'newest_to_oldest' || sort === 'most_posts' || sort === 'most_votes' ? 'highest-to-lowest' : 'lowest-to-highest';
+		const direction = sort === 'newest_to_oldest' || sort === 'most_posts' || sort === 'most_votes' ? 'highest-to-lowest' : 'lowest-to-highest';
 		const result = await plugins.fireHook('filter:categories.getSortedSetRangeDirection', {
 			sort: sort,
 			direction: direction,
