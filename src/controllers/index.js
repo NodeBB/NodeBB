@@ -123,6 +123,7 @@ Controllers.login = function (req, res, next) {
 	data.error = req.flash('error')[0] || errorText;
 	data.title = '[[pages:login]]';
 	data.allowPasswordReset = !meta.config['password:disableEdit'];
+	data.loginFormEntry = [];
 
 	privileges.global.canGroup('local:login', 'registered-users', function (err, hasLoginPrivilege) {
 		if (err) {
