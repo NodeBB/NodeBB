@@ -96,7 +96,7 @@ Controllers.reset = function (req, res, next) {
 };
 
 Controllers.login = function (req, res, next) {
-	var data = {};
+	var data = { loginFormEntry: [] };
 	var loginStrategies = require('../routes/authentication').getLoginStrategies();
 	var registrationType = meta.config.registrationType || 'normal';
 	var allowLoginWith = (meta.config.allowLoginWith || 'username-email');
@@ -123,7 +123,6 @@ Controllers.login = function (req, res, next) {
 	data.error = req.flash('error')[0] || errorText;
 	data.title = '[[pages:login]]';
 	data.allowPasswordReset = !meta.config['password:disableEdit'];
-	data.loginFormEntry = [];
 
 	privileges.global.canGroup('local:login', 'registered-users', function (err, hasLoginPrivilege) {
 		if (err) {
