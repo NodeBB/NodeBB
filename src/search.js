@@ -36,13 +36,6 @@ search.search = async function (data) {
 async function searchInContent(data) {
 	data.uid = data.uid || 0;
 
-	const itemsPerPage = Math.min(data.itemsPerPage || 10, 100);
-	const returnData = {
-		posts: [],
-		matchCount: 0,
-		pageCount: 1,
-	};
-
 	const [searchCids, searchUids] = await Promise.all([
 		getSearchCids(data),
 		getSearchUids(data),
@@ -69,9 +62,6 @@ async function searchInContent(data) {
 	if (data.returnIds) {
 		return { pids: pids, tids: tids };
 	}
-	if (!pids.length && !tids.length) {
-		return returnData;
-	}
 
 	const mainPids = await topics.getMainPids(tids);
 
@@ -84,8 +74,12 @@ async function searchInContent(data) {
 		pids: allPids,
 	});
 
-	returnData.matchCount = metadata.pids.length;
-	returnData.pageCount = Math.max(1, Math.ceil(parseInt(returnData.matchCount, 10) / itemsPerPage));
+	const itemsPerPage = Math.min(data.itemsPerPage || 10, 100);
+	const returnData = {
+		posts: [],
+		matchCount: metadata.pids.length,
+		pageCount: Math.max(1, Math.ceil(parseInt(metadata.pids.length, 10) / itemsPerPage)),
+	};
 
 	if (data.page) {
 		const start = Math.max(0, (data.page - 1)) * itemsPerPage;
@@ -93,7 +87,8 @@ async function searchInContent(data) {
 	}
 
 	returnData.posts = await posts.getPostSummaryByPids(metadata.pids, data.uid, {});
-	await plugins.fireHook('filter:search.getPosts', { posts: returnData.posts });
+	const result = await plugins.fireHook('filter:search.contentGetResult', { result: returnData, data: data });
+	returnData.posts = result.result.posts;
 	delete metadata.pids;
 	return Object.assign(returnData, metadata);
 }
