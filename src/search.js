@@ -87,8 +87,7 @@ async function searchInContent(data) {
 	}
 
 	returnData.posts = await posts.getPostSummaryByPids(metadata.pids, data.uid, {});
-	const result = await plugins.fireHook('filter:search.contentGetResult', { result: returnData, data: data });
-	returnData.posts = result.result.posts;
+	await plugins.fireHook('filter:search.contentGetResult', { result: returnData, data: data });
 	delete metadata.pids;
 	return Object.assign(returnData, metadata);
 }
