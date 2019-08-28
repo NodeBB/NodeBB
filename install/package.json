@@ -67,7 +67,7 @@
         "jsesc": "2.5.2",
         "json-2-csv": "^3.0.0",
         "jsonwebtoken": "^8.4.0",
-        "less": "^2.7.3",
+        "less": "^3.10.3",
         "lodash": "^4.17.15",
         "logrotate-stream": "^0.2.5",
         "lru-cache": "5.1.1",
