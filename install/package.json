@@ -113,7 +113,7 @@
         "sitemap": "^4.0.0",
         "socket.io": "2.2.0",
         "socket.io-adapter-cluster": "^1.0.1",
-        "socket.io-adapter-mongo": "^2.0.1",
+        "socket.io-adapter-mongo": "^2.0.4",
         "socket.io-adapter-postgres": "^1.2.1",
         "socket.io-client": "2.2.0",
         "socket.io-redis": "5.2.0",
