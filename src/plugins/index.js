@@ -9,6 +9,7 @@ const nconf = require('nconf');
 const util = require('util');
 
 const user = require('../user');
+const posts = require('../posts');
 
 const readdirAsync = util.promisify(fs.readdir);
 
@@ -124,6 +125,33 @@ Plugins.reload = async function () {
 		console.log('');
 	}
 
+	Plugins.registerHook('core', {
+		hook: 'filter:parse.post',
+		method: async (data) => {
+			data.postData.content = posts.sanitize(data.postData.content);
+			return data;
+		},
+	});
+
+	Plugins.registerHook('core', {
+		hook: 'filter:parse.raw',
+		method: async content => posts.sanitize(content),
+	});
+
+	Plugins.registerHook('core', {
+		hook: 'filter:parse.aboutme',
+		method: async content => posts.sanitize(content),
+	});
+
+	Plugins.registerHook('core', {
+		hook: 'filter:parse.signature',
+		method: async (data) => {
+			data.userData.signature = posts.sanitize(data.userData.signature);
+			return data;
+		},
+	});
+
+	// Lower priority runs earlier
 	Object.keys(Plugins.loadedHooks).forEach(function (hook) {
 		Plugins.loadedHooks[hook].sort((a, b) => a.priority - b.priority);
 	});
