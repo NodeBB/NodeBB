@@ -183,7 +183,7 @@ module.exports = function (Messaging) {
 		}
 
 		await db.setObjectField('chat:room:' + payload.roomId, 'roomName', payload.newName);
-		await Messaging.addSystemMessage('room-rename, ' + payload.newName.replace(',', '%2C'), payload.uid, payload.roomId);
+		await Messaging.addSystemMessage('room-rename, ' + payload.newName.replace(',', '&#44;'), payload.uid, payload.roomId);
 
 		plugins.fireHook('action:chat.renameRoom', {
 			roomId: payload.roomId,
