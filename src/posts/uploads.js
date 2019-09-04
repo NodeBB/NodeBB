@@ -108,6 +108,11 @@ module.exports = function (Posts) {
 		]);
 	};
 
+	Posts.uploads.dissociateAll = async (pid) => {
+		const current = await Posts.uploads.list(pid);
+		await Promise.all(current.map(async path => await Posts.uploads.dissociate(pid, path)));
+	};
+
 	Posts.uploads.saveSize = async (filePaths) => {
 		await Promise.all(filePaths.map(async function (fileName) {
 			try {
