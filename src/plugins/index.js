@@ -155,6 +155,9 @@ Plugins.reload = async function () {
 	Object.keys(Plugins.loadedHooks).forEach(function (hook) {
 		Plugins.loadedHooks[hook].sort((a, b) => a.priority - b.priority);
 	});
+
+	// Post-reload actions
+	await posts.configureSanitize();
 };
 
 Plugins.reloadRoutes = async function (params) {

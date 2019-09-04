@@ -35,16 +35,6 @@ let sanitizeConfig = {
 	],
 };
 
-process.nextTick(async () => {
-	// Each allowed tags should have some common global attributes...
-	sanitizeConfig.allowedTags.forEach((tag) => {
-		sanitizeConfig.allowedAttributes[tag] = _.union(sanitizeConfig.allowedAttributes[tag], sanitizeConfig.globalAttributes);
-	});
-
-	// Some plugins might need to adjust or whitelist their own tags...
-	sanitizeConfig = await plugins.fireHook('filter:sanitize.config', sanitizeConfig);
-});
-
 module.exports = function (Posts) {
 	Posts.urlRegex = {
 		regex: /href="([^"]+)"/g,
@@ -117,6 +107,15 @@ module.exports = function (Posts) {
 		return sanitize(content, {
 			allowedTags: sanitizeConfig.allowedTags, allowedAttributes: sanitizeConfig.allowedAttributes,
 		});
+	};
+
+	Posts.configureSanitize = async () => {
+		// Each allowed tags should have some common global attributes...
+		sanitizeConfig.allowedTags.forEach((tag) => {
+			sanitizeConfig.allowedAttributes[tag] = _.union(sanitizeConfig.allowedAttributes[tag], sanitizeConfig.globalAttributes);
+		});
+
+		sanitizeConfig = await plugins.fireHook('filter:sanitize.config', sanitizeConfig);
 	};
 
 	function sanitizeSignature(signature) {
