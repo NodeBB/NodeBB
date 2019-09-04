@@ -115,6 +115,7 @@ module.exports = function (Posts) {
 			sanitizeConfig.allowedAttributes[tag] = _.union(sanitizeConfig.allowedAttributes[tag], sanitizeConfig.globalAttributes);
 		});
 
+		// Some plugins might need to adjust or whitelist their own tags...
 		sanitizeConfig = await plugins.fireHook('filter:sanitize.config', sanitizeConfig);
 	};
 
