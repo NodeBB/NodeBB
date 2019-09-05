@@ -49,6 +49,10 @@ module.exports = function (Groups) {
 			payload.disableJoinRequests = values.disableJoinRequests ? '1' : '0';
 		}
 
+		if (values.hasOwnProperty('disableLeave')) {
+			payload.disableLeave = values.disableLeave ? '1' : '0';
+		}
+
 		await checkNameChange(groupName, values.name);
 		if (values.hasOwnProperty('private')) {
 			await updatePrivacy(groupName, values.private);
