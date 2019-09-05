@@ -98,7 +98,7 @@
         "passport-local": "1.0.0",
         "pg": "^7.4.0",
         "pg-cursor": "^2.0.0",
-        "postcss": "7.0.17",
+        "postcss": "7.0.18",
         "postcss-clean": "1.1.0",
         "promise-polyfill": "^8.0.0",
         "prompt": "^1.0.0",
