@@ -19,22 +19,17 @@ Groups.create = function (socket, data, callback) {
 	}, callback);
 };
 
-Groups.join = function (socket, data, callback) {
+Groups.join = async (socket, data) => {
 	if (!data) {
-		return callback(new Error('[[error:invalid-data]]'));
+		throw new Error('[[error:invalid-data]]');
 	}
 
-	async.waterfall([
-		function (next) {
-			groups.isMember(data.uid, data.groupName, next);
-		},
-		function (isMember, next) {
-			if (isMember) {
-				return next(new Error('[[error:group-already-member]]'));
-			}
-			groups.join(data.groupName, data.uid, next);
-		},
-	], callback);
+	const isMember = await groups.isMember(data.uid, data.groupName);
+	if (isMember) {
+		throw new Error('[[error:group-already-member]]');
+	}
+
+	return await groups.join(data.groupName, data.uid);
 };
 
 Groups.leave = function (socket, data, callback) {
