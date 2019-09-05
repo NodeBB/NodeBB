@@ -86,39 +86,37 @@ async function getThemes(themePath) {
 }
 
 Themes.set = async (data) => {
-	const themeData = {
-		'theme:type': data.type,
-		'theme:id': data.id,
-		'theme:staticDir': '',
-		'theme:templates': '',
-		'theme:src': '',
-	};
-
 	switch (data.type) {
 	case 'local': {
 		const current = await Meta.configs.get('theme:id');
-		var config = await fsReadfile(path.join(nconf.get('themes_path'), data.id, 'theme.json'), 'utf8');
-		config = JSON.parse(config);
-		await db.sortedSetRemove('plugins:active', current);
-		await db.sortedSetAdd('plugins:active', 0, data.id);
+		if (current !== data.id) {
+			let config = await fsReadfile(path.join(nconf.get('themes_path'), data.id, 'theme.json'), 'utf8');
+			config = JSON.parse(config);
 
-		// Re-set the themes path (for when NodeBB is reloaded)
-		Themes.setPath(config);
+			await db.sortedSetRemove('plugins:active', current);
+			const numPlugins = await db.sortedSetCard('plugins:active');
+			await db.sortedSetAdd('plugins:active', numPlugins, data.id);
+			// Re-set the themes path (for when NodeBB is reloaded)
+			Themes.setPath(config);
 
-		themeData['theme:staticDir'] = config.staticDir ? config.staticDir : '';
-		themeData['theme:templates'] = config.templates ? config.templates : '';
-		themeData['theme:src'] = '';
-		themeData.bootswatchSkin = '';
+			await Meta.configs.setMultiple({
+				'theme:type': data.type,
+				'theme:id': data.id,
+				'theme:staticDir': config.staticDir ? config.staticDir : '',
+				'theme:templates': config.templates ? config.templates : '',
+				'theme:src': '',
+				bootswatchSkin: '',
+			});
 
-		await Meta.configs.setMultiple(themeData);
-		await events.log({
-			type: 'theme-set',
-			uid: parseInt(data.uid, 10) || 0,
-			ip: data.ip || '127.0.0.1',
-			text: data.id,
-		});
+			await events.log({
+				type: 'theme-set',
+				uid: parseInt(data.uid, 10) || 0,
+				ip: data.ip || '127.0.0.1',
+				text: data.id,
+			});
 
-		Meta.reloadRequired = true;
+			Meta.reloadRequired = true;
+		}
 		break;
 	}
 	case 'bootswatch':

@@ -106,27 +106,18 @@ SocketAdmin.themes.getInstalled = function (socket, data, callback) {
 	meta.themes.get(callback);
 };
 
-SocketAdmin.themes.set = function (socket, data, callback) {
+SocketAdmin.themes.set = async function (socket, data) {
 	if (!data) {
-		return callback(new Error('[[error:invalid-data]]'));
+		throw new Error('[[error:invalid-data]]');
+	}
+	if (data.type === 'local') {
+		await widgets.reset();
 	}
 
-	async.waterfall([
-		function (next) {
-			if (data.type === 'bootswatch') {
-				setImmediate(next);
-			} else {
-				widgets.reset(next);
-			}
-		},
-		function (next) {
-			// Add uid and ip data
-			data.ip = socket.ip;
-			data.uid = socket.uid;
+	data.ip = socket.ip;
+	data.uid = socket.uid;
 
-			meta.themes.set(data, next);
-		},
-	], callback);
+	await meta.themes.set(data);
 };
 
 SocketAdmin.plugins.toggleActive = async function (socket, plugin_id) {
