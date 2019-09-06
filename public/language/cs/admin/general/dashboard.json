@@ -14,9 +14,12 @@
 	"page-views-custom-help": "Zadejte rozsah data zobrazení stránek, které chcete vidět. Není-li datum nastaveno, výchozí formát je <code>YYYY-MM-DD</code>",
 	"page-views-custom-error": "Zadejte správný rozsah ve formátu <code>YYYY-MM-DD</code>",
 
-	"stats.day": "Den",
-	"stats.week": "Týden",
-	"stats.month": "Měsíc",
+	"stats.yesterday": "Yesterday",
+	"stats.today": "Today",
+	"stats.last-week": "Last Week",
+	"stats.this-week": "This Week",
+	"stats.last-month": "Last Month",
+	"stats.this-month": "This Month",
 	"stats.all": "Všechny časy",
 
 	"updates": "Aktualizace",

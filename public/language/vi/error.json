@@ -99,6 +99,8 @@
     "group-needs-owner": "Nhóm này phải có tối thiểu một chủ sỡ hữu",
     "group-already-invited": "Thành viên này đã được mời",
     "group-already-requested": "Yêu cầu tham gia của bạn đã được gửi.",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "Bài viết này đã bị xóa",
     "post-already-restored": "Bài viết này đã được phục hồi",
     "topic-already-deleted": "Chủ đề này đã bị xóa",

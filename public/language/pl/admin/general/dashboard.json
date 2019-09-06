@@ -14,9 +14,12 @@
 	"page-views-custom-help": "Wprowadź zakres dat dla wyświetleń strony, które chcesz zobaczyć. Jeśli nie ma możliwości wyboru daty, obowiązuje format <code>RRRR-MM-DD</code>",
 	"page-views-custom-error": "Proszę wprowadzić poprawny zakres dat w formacie <code>YYYY-MM-DD</code>",
 
-	"stats.day": "Dzień",
-	"stats.week": "Tydzień",
-	"stats.month": "Miesiąc",
+	"stats.yesterday": "Yesterday",
+	"stats.today": "Today",
+	"stats.last-week": "Last Week",
+	"stats.this-week": "This Week",
+	"stats.last-month": "Last Month",
+	"stats.this-month": "This Month",
 	"stats.all": "Cały czas",
 
 	"updates": "Aktualizacje",

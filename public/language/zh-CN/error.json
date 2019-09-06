@@ -99,6 +99,8 @@
     "group-needs-owner": "群组需要指定至少一名群组所有者",
     "group-already-invited": "您已邀请该用户",
     "group-already-requested": "已提交您的请求",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "此帖已被删除",
     "post-already-restored": "此帖已经恢复",
     "topic-already-deleted": "此主题已被删除",

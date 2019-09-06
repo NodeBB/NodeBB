@@ -1,7 +1,8 @@
 {
 	"global": "כללי",
 	"global.no-users": "אין הרשאות כלליות למשתמשים מסויימים",
-
+	"group-privileges": "Group Privileges",
+	"user-privileges": "User Privileges",
 	"chat": "צ'אט",
 	"upload-images": "העלאת תמונות",
 	"upload-files": "העלאת קבצים",

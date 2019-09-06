@@ -1,7 +1,8 @@
 {
 	"global": "Глобальні",
 	"global.no-users": "Відсутні глобальні права, що стосуються користувача.",
-
+	"group-privileges": "Group Privileges",
+	"user-privileges": "User Privileges",
 	"chat": "Чат",
 	"upload-images": "Завантаження Зображень",
 	"upload-files": "Завантаження Файлів",

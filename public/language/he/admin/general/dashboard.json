@@ -14,9 +14,12 @@
 	"page-views-custom-help": "הכנס טווח תאריך עבור התקופה שבה תרצה לצפות בצפיות העמודים. הפורמט הנדרש הוא <code>YYYY-MM-DD</code>",
 	"page-views-custom-error": "נא הזן טווח תאריכים תקין כלהלן <code>YYYY-MM-DD</code>",
 
-	"stats.day": "יום",
-	"stats.week": "שבוע",
-	"stats.month": "חודש",
+	"stats.yesterday": "Yesterday",
+	"stats.today": "Today",
+	"stats.last-week": "Last Week",
+	"stats.this-week": "This Week",
+	"stats.last-month": "Last Month",
+	"stats.this-month": "This Month",
 	"stats.all": "כל הזמנים",
 
 	"updates": "עדכונים",

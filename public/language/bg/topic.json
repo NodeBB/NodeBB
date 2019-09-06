@@ -133,5 +133,6 @@
     "diffs.no-revisions-description": "Тази публикация има <strong>%1</strong> варианта.",
     "diffs.current-revision": "текуща версия",
     "diffs.original-revision": "оригинална версия",
-    "timeago_later": "%1 later"
+    "timeago_later": "%1 later",
+    "timeago_earlier": "%1 earlier"
 }

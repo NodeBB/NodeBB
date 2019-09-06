@@ -1,7 +1,8 @@
 {
 	"global": "Глобальные",
 	"global.no-users": "Глобальные права не привязанные в участнику",
-
+	"group-privileges": "Group Privileges",
+	"user-privileges": "User Privileges",
 	"chat": "Чат",
 	"upload-images": "Загрузка изображений",
 	"upload-files": "Загрузка файлов",

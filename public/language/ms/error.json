@@ -99,6 +99,8 @@
     "group-needs-owner": "Kumpulan ini memerlukan sekurang-kurangnya seorang pemilik",
     "group-already-invited": "Pengguna ini telah pun dijemput",
     "group-already-requested": "Permintaan anda untuk menjadi telah pun dihantar",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "Kiriman ini telah dipadam",
     "post-already-restored": "Kiriman ini telah dipulihkan",
     "topic-already-deleted": "Topik ini telah dipadam",

@@ -14,9 +14,12 @@
 	"page-views-custom-help": "Insere um intervalo entre datas de visualizações de página que gostarias de visualizar. Se o selecionador de datas não estiver disponível, o formato aceitável é <code>AAAA-MM-DD</code>",
 	"page-views-custom-error": "Por favor, insere um intervalo entre datas no formato <code>AAAA-MM-DD</code>",
 
-	"stats.day": "Dia",
-	"stats.week": "Semana",
-	"stats.month": "Mês",
+	"stats.yesterday": "Yesterday",
+	"stats.today": "Today",
+	"stats.last-week": "Last Week",
+	"stats.this-week": "This Week",
+	"stats.last-month": "Last Month",
+	"stats.this-month": "This Month",
 	"stats.all": "Desde sempre",
 
 	"updates": "Atualizações",

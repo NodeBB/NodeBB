@@ -133,5 +133,6 @@
     "diffs.no-revisions-description": "Tento príspevok má <strong>%1</strong> zmien.",
     "diffs.current-revision": "aktuálna revízia",
     "diffs.original-revision": "originálna revízia",
-    "timeago_later": "%1 later"
+    "timeago_later": "%1 later",
+    "timeago_earlier": "%1 earlier"
 }

@@ -99,6 +99,8 @@
     "group-needs-owner": "Ta grupa musi mieć przynajmniej jednego właściciela",
     "group-already-invited": "Ten użytkownik został już zaproszony",
     "group-already-requested": "Twoje podanie o członkostwo zostało już wysłane",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "Ten post został już skasowany",
     "post-already-restored": "Ten post został już przywrócony",
     "topic-already-deleted": "Ten temat został już skasowany",

@@ -99,6 +99,8 @@
     "group-needs-owner": "Questo gruppo richiede almeno un proprietario.",
     "group-already-invited": "Questo utente è già stato invitato",
     "group-already-requested": "La tua richiesta di partecipazione è già stata inviata",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "Questo post è già stato eliminato",
     "post-already-restored": "Questo Post è già stato ripristinato",
     "topic-already-deleted": "Questo topic è già stato eliminato",

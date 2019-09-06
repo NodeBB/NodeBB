@@ -99,6 +99,8 @@
     "group-needs-owner": "Este grupo require polo menos de un propietario",
     "group-already-invited": "Este usuario xa foi convidado",
     "group-already-requested": "A túa petición de membresía foi enviada",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "A publicación foi eliminada",
     "post-already-restored": "A publicación foi restaurada",
     "topic-already-deleted": "O tema foi borrado",

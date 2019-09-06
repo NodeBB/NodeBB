@@ -1,7 +1,8 @@
 {
 	"global": "グローバル",
 	"global.no-users": "ユーザー固有のグローバル特権はありません。",
-
+	"group-privileges": "Group Privileges",
+	"user-privileges": "User Privileges",
 	"chat": "チャット",
 	"upload-images": "画像をアップロード",
 	"upload-files": "ファイルをアップロード",

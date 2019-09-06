@@ -14,9 +14,12 @@
 	"page-views-custom-help": "表示したいページビューの日付範囲を入力します。日付選択ツールが使用できない場合、受け入れ可能な形式は次のとおりです。<code>YYYY-MM-DD</code>",
 	"page-views-custom-error": "有効な期間をフォーマットで入力してください<code>YYYY-MM-DD</code>",
 
-	"stats.day": "日",
-	"stats.week": "週",
-	"stats.month": "月",
+	"stats.yesterday": "Yesterday",
+	"stats.today": "Today",
+	"stats.last-week": "Last Week",
+	"stats.this-week": "This Week",
+	"stats.last-month": "Last Month",
+	"stats.this-month": "This Month",
 	"stats.all": "全て",
 
 	"updates": "更新",

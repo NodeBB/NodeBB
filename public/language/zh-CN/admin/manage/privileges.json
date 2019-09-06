@@ -1,7 +1,8 @@
 {
 	"global": "全局",
 	"global.no-users": "没有用户已分配全局权限。",
-
+	"group-privileges": "Group Privileges",
+	"user-privileges": "User Privileges",
 	"chat": "聊天",
 	"upload-images": "上传图片",
 	"upload-files": "上传文件",
