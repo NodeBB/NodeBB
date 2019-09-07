@@ -134,5 +134,5 @@
     "diffs.current-revision": "Révision en cours",
     "diffs.original-revision": "Révision originale",
     "timeago_later": "%1",
-    "timeago_earlier": "%1 earlier"
+    "timeago_earlier": "il y a %1"
 }

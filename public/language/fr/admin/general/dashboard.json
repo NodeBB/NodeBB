@@ -14,12 +14,12 @@
 	"page-views-custom-help": "Entrez une plage de date pour les vues que vous souhaitez afficher. Si aucun sélecteur de date n'est disponible, le format de date accepté est <code>YYYY-MM-DD</code>.",
 	"page-views-custom-error": "Veuillez entrer une plage de date valide dans le format suivant : <code>YYYY-MM-DD</code>",
 
-	"stats.yesterday": "Yesterday",
-	"stats.today": "Today",
-	"stats.last-week": "Last Week",
-	"stats.this-week": "This Week",
-	"stats.last-month": "Last Month",
-	"stats.this-month": "This Month",
+	"stats.yesterday": "Hier",
+	"stats.today": "Aujourd'hui",
+	"stats.last-week": "Semaine dernière",
+	"stats.this-week": "Cette semaine",
+	"stats.last-month": "Mois dernier",
+	"stats.this-month": "Ce mois",
 	"stats.all": "Tous les temps",
 
 	"updates": "Mises à jour",

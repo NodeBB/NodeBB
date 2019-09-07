@@ -1,8 +1,8 @@
 {
 	"global": "Global",
 	"global.no-users": "Aucun privilège global spécifique à l'utilisateur.",
-	"group-privileges": "Group Privileges",
-	"user-privileges": "User Privileges",
+	"group-privileges": "Privilèges de groupe",
+	"user-privileges": "Privilèges d'utilisateur",
 	"chat": "Chat",
 	"upload-images": "Images envoyées",
 	"upload-files": "Fichiers envoyés",

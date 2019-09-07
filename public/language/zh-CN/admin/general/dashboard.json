@@ -14,12 +14,12 @@
 	"page-views-custom-help": "输入你要查看的网页浏览日期范围。 如果没有日期选择器可用，则接受的格式是 <code>YYYY-MM-DD</code>",
 	"page-views-custom-error": "请输入 <code>YYYY-MM-DD</code>格式的有效日期范围 ",
 
-	"stats.yesterday": "Yesterday",
-	"stats.today": "Today",
-	"stats.last-week": "Last Week",
-	"stats.this-week": "This Week",
-	"stats.last-month": "Last Month",
-	"stats.this-month": "This Month",
+	"stats.yesterday": "昨天",
+	"stats.today": "今天",
+	"stats.last-week": "上一周",
+	"stats.this-week": "本周",
+	"stats.last-month": "上一月",
+	"stats.this-month": "本月",
 	"stats.all": "总计",
 
 	"updates": "更新",

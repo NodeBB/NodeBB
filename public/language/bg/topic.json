@@ -23,7 +23,7 @@
     "purge": "Изчистване",
     "restore": "Възстановяване",
     "move": "Преместване",
-    "change-owner": "Change Owner",
+    "change-owner": "Промяна на собственика",
     "fork": "Разделяне",
     "link": "Връзка",
     "share": "Споделяне",
@@ -65,7 +65,7 @@
     "thread_tools.move": "Преместване на темата",
     "thread_tools.move-posts": "Преместване на публикациите",
     "thread_tools.move_all": "Преместване на всички",
-    "thread_tools.change_owner": "Change Owner",
+    "thread_tools.change_owner": "Промяна на собственика",
     "thread_tools.select_category": "Избиране на категория",
     "thread_tools.fork": "Разделяне на темата",
     "thread_tools.delete": "Изтриване на темата",
@@ -100,7 +100,7 @@
     "delete_posts_instruction": "Натиснете публикациите, които искате да изтриете/изчистите",
     "merge_topics_instruction": "Натиснете темите, които искате да слеете",
     "move_posts_instruction": "Натиснете публикациите, които искате да преместите",
-    "change_owner_instruction": "Click the posts you want to assign to another user",
+    "change_owner_instruction": "Натиснете публикациите, които искате да прехвърлите на друг потребител",
     "composer.title_placeholder": "Въведете заглавието на темата си тук...",
     "composer.handle_placeholder": "Име",
     "composer.discard": "Отхвърляне",
@@ -133,6 +133,6 @@
     "diffs.no-revisions-description": "Тази публикация има <strong>%1</strong> варианта.",
     "diffs.current-revision": "текуща версия",
     "diffs.original-revision": "оригинална версия",
-    "timeago_later": "%1 later",
-    "timeago_earlier": "%1 earlier"
+    "timeago_later": "%1 по-късно",
+    "timeago_earlier": "%1 по-рано"
 }
