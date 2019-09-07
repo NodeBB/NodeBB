@@ -1,22 +1,21 @@
 'use strict';
 
-var async = require('async');
-var groups = require('../../groups');
+const groups = require('../../groups');
 
-var Groups = module.exports;
+const Groups = module.exports;
 
-Groups.create = function (socket, data, callback) {
+Groups.create = async function (socket, data) {
 	if (!data) {
-		return callback(new Error('[[error:invalid-data]]'));
+		throw new Error('[[error:invalid-data]]');
 	} else if (groups.isPrivilegeGroup(data.name)) {
-		return callback(new Error('[[error:invalid-group-name]]'));
+		throw new Error('[[error:invalid-group-name]]');
 	}
 
-	groups.create({
+	return await groups.create({
 		name: data.name,
 		description: data.description,
 		ownerUid: socket.uid,
-	}, callback);
+	});
 };
 
 Groups.join = async (socket, data) => {
@@ -32,32 +31,25 @@ Groups.join = async (socket, data) => {
 	return await groups.join(data.groupName, data.uid);
 };
 
-Groups.leave = function (socket, data, callback) {
+Groups.leave = async function (socket, data) {
 	if (!data) {
-		return callback(new Error('[[error:invalid-data]]'));
+		throw new Error('[[error:invalid-data]]');
 	}
 
 	if (socket.uid === parseInt(data.uid, 10) && data.groupName === 'administrators') {
-		return callback(new Error('[[error:cant-remove-self-as-admin]]'));
+		throw new Error('[[error:cant-remove-self-as-admin]]');
 	}
-
-	async.waterfall([
-		function (next) {
-			groups.isMember(data.uid, data.groupName, next);
-		},
-		function (isMember, next) {
-			if (!isMember) {
-				return next(new Error('[[error:group-not-member]]'));
-			}
-			groups.leave(data.groupName, data.uid, next);
-		},
-	], callback);
+	const isMember = await groups.isMember(data.uid, data.groupName);
+	if (!isMember) {
+		throw new Error('[[error:group-not-member]]');
+	}
+	await groups.leave(data.groupName, data.uid);
 };
 
-Groups.update = function (socket, data, callback) {
+Groups.update = async function (socket, data) {
 	if (!data) {
-		return callback(new Error('[[error:invalid-data]]'));
+		throw new Error('[[error:invalid-data]]');
 	}
 
-	groups.update(data.groupName, data.values, callback);
+	await groups.update(data.groupName, data.values);
 };
