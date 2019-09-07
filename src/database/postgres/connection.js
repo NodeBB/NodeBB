@@ -27,6 +27,7 @@ connection.getConnectionOptions = function (postgres) {
 		user: postgres.username,
 		password: postgres.password,
 		database: postgres.database,
+		ssl: postgres.ssl,
 	};
 
 	return _.merge(connOptions, postgres.options || {});
