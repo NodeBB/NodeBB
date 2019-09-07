@@ -83,6 +83,7 @@ function saveDatabaseConfig(config, databaseConfig, callback) {
 			username: databaseConfig['postgres:username'],
 			password: databaseConfig['postgres:password'],
 			database: databaseConfig['postgres:database'],
+			ssl: databaseConfig['postgres:ssl'],
 		};
 	} else {
 		return callback(new Error('unknown database : ' + config.database));
