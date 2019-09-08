@@ -99,6 +99,8 @@
     "group-needs-owner": "See grupp nõuab vähemalt ühte omanikku",
     "group-already-invited": "Antud kasutaja on juba kutsutud.",
     "group-already-requested": "Teie liikmetaotlus on juba saadetud.",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "Postitus on juba kustutatud",
     "post-already-restored": "Postitus on juba taastatud",
     "topic-already-deleted": "Teema on juba kustutatud",

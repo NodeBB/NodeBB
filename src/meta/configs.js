@@ -119,6 +119,7 @@ function lessRender(string, callback) {
 	var less = require('less');
 	less.render(string, {
 		compress: true,
+		javascriptEnabled: true,
 	}, callback);
 }
 

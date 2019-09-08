@@ -1,7 +1,8 @@
 {
 	"global": "Global",
 	"global.no-users": "Não existem privilégios globais específicos para utilizadores.",
-
+	"group-privileges": "Group Privileges",
+	"user-privileges": "User Privileges",
 	"chat": "Conversa",
 	"upload-images": "Enviar Imagens",
 	"upload-files": "Enviar Ficheiros",

@@ -133,5 +133,6 @@
     "diffs.no-revisions-description": "У этого поста <strong>%1</strong>изменений",
     "diffs.current-revision": "текущая ревизия",
     "diffs.original-revision": "оригинальная ревизия",
-    "timeago_later": "%1 later"
+    "timeago_later": "%1 later",
+    "timeago_earlier": "%1 earlier"
 }

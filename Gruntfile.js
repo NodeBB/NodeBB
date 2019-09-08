@@ -116,6 +116,10 @@ module.exports = function (grunt) {
 					plugins.push('nodebb-plugin-composer-default');
 				}
 
+				if (process.argv.includes('--core')) {
+					plugins = [];
+				}
+
 				const lessUpdated_Client = plugins.map(p => 'node_modules/' + p + '/**/*.less');
 				const lessUpdated_Admin = plugins.map(p => 'node_modules/' + p + '/**/*.less');
 				const clientUpdated = plugins.map(p => 'node_modules/' + p + '/**/*.js');

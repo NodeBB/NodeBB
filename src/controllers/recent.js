@@ -55,6 +55,7 @@ recentController.getData = async function (req, url, sort) {
 		filter: filter,
 		term: term,
 		sort: sort,
+		floatPinned: req.query.pinned,
 		query: req.query,
 	});
 
@@ -91,3 +92,5 @@ async function canPostTopic(uid) {
 	cids = await privileges.categories.filterCids('topics:create', cids, uid);
 	return cids.length > 0;
 }
+
+require('../promisify')(recentController, ['get']);

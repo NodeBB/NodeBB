@@ -99,6 +99,8 @@
     "group-needs-owner": "Šai grupai ir nepieciešams vismaz viens īpašnieks",
     "group-already-invited": "Šis lietotājs jau ir uzaicināts",
     "group-already-requested": "Tavs biedru pieteikums jau ir iesniegts",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "Raksts jau ir izdzēsts",
     "post-already-restored": "Raksts jau ir atjaunots",
     "topic-already-deleted": "Temats jau ir izdzēsts",

@@ -1,30 +1,23 @@
 'use strict';
 
+const os = require('os');
+const nconf = require('nconf');
 
-var async = require('async');
-var os = require('os');
-var nconf = require('nconf');
-var winston = require('winston');
+const topics = require('../../topics');
+const pubsub = require('../../pubsub');
+const utils = require('../../utils');
 
-var topics = require('../../topics');
-var pubsub = require('../../pubsub');
-var utils = require('../../utils');
+const stats = {};
+const totals = {};
 
-var stats = {};
-var totals = {};
-
-var SocketRooms = module.exports;
+const SocketRooms = module.exports;
 
 SocketRooms.stats = stats;
 SocketRooms.totals = totals;
 
 pubsub.on('sync:stats:start', function () {
-	SocketRooms.getLocalStats(function (err, stats) {
-		if (err) {
-			return winston.error(err);
-		}
-		pubsub.publish('sync:stats:end', { stats: stats, id: os.hostname() + ':' + nconf.get('port') });
-	});
+	const stats = SocketRooms.getLocalStats();
+	pubsub.publish('sync:stats:end', { stats: stats, id: os.hostname() + ':' + nconf.get('port') });
 });
 
 pubsub.on('sync:stats:end', function (data) {
@@ -54,7 +47,7 @@ SocketRooms.getTotalGuestCount = function (callback) {
 };
 
 
-SocketRooms.getAll = function (socket, data, callback) {
+SocketRooms.getAll = async function () {
 	pubsub.publish('sync:stats:start');
 
 	totals.onlineGuestCount = 0;
@@ -92,27 +85,16 @@ SocketRooms.getAll = function (socket, data, callback) {
 		topTenTopics.push({ tid: tid, count: totals.topics[tid].count || 0 });
 	});
 
-	topTenTopics = topTenTopics.sort(function (a, b) {
-		return b.count - a.count;
-	}).slice(0, 10);
+	topTenTopics = topTenTopics.sort((a, b) => b.count - a.count).slice(0, 10);
 
-	var topTenTids = topTenTopics.map(function (topic) {
-		return topic.tid;
+	var topTenTids = topTenTopics.map(topic => topic.tid);
+
+	const titles = await topics.getTopicsFields(topTenTids, ['title']);
+	totals.topTenTopics = topTenTopics.map(function (topic, index) {
+		topic.title = titles[index].title;
+		return topic;
 	});
-
-	async.waterfall([
-		function (next) {
-			topics.getTopicsFields(topTenTids, ['title'], next);
-		},
-		function (titles, next) {
-			totals.topTenTopics = topTenTopics.map(function (topic, index) {
-				topic.title = titles[index].title;
-				return topic;
-			});
-
-			next(null, totals);
-		},
-	], callback);
+	return totals;
 };
 
 SocketRooms.getOnlineUserCount = function (io) {
@@ -129,7 +111,7 @@ SocketRooms.getOnlineUserCount = function (io) {
 	return count;
 };
 
-SocketRooms.getLocalStats = function (callback) {
+SocketRooms.getLocalStats = function () {
 	var io = require('../index').server;
 
 	var socketData = {
@@ -170,14 +152,11 @@ SocketRooms.getLocalStats = function (callback) {
 			}
 		}
 
-		topTenTopics = topTenTopics.sort(function (a, b) {
-			return b.count - a.count;
-		}).slice(0, 10);
-
+		topTenTopics = topTenTopics.sort((a, b) => b.count - a.count).slice(0, 10);
 		socketData.topics = topTenTopics;
 	}
 
-	callback(null, socketData);
+	return socketData;
 };
 
 require('../../promisify')(SocketRooms);

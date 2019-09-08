@@ -14,9 +14,12 @@
 	"page-views-custom-help": "Immettere un intervallo di date, delle pagine viste, che si desidera visualizzare. Se non è disponibile un selezionatore di date, il formato accettato è il seguente <code>YYYY-MM-DD</code>",
 	"page-views-custom-error": "Si prega di inserire un intervallo di date valido nel formato <code>YYYY-MM-DD</code>",
 
-	"stats.day": "Giorno",
-	"stats.week": "Settimana",
-	"stats.month": "Mese",
+	"stats.yesterday": "Yesterday",
+	"stats.today": "Today",
+	"stats.last-week": "Last Week",
+	"stats.this-week": "This Week",
+	"stats.last-month": "Last Month",
+	"stats.this-month": "This Month",
 	"stats.all": "Sempre",
 
 	"updates": "Aggiornamenti",

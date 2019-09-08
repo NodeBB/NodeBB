@@ -99,6 +99,8 @@
     "group-needs-owner": "קבוצה זו חייבת לפחות מנהל אחד",
     "group-already-invited": "משתמש זה כבר הוזמן",
     "group-already-requested": "בקשת החברות שלך כבר נשלחה",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "פוסט זה כבר נמחק",
     "post-already-restored": "פוסט זה כבר שוחזר",
     "topic-already-deleted": "נושא זה כבר נמחק",

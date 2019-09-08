@@ -133,5 +133,6 @@
     "diffs.no-revisions-description": "โพสนี้มี <strong>%1</strong>การแก้ไข",
     "diffs.current-revision": "current revision",
     "diffs.original-revision": "original revision",
-    "timeago_later": "%1 later"
+    "timeago_later": "%1 later",
+    "timeago_earlier": "%1 earlier"
 }

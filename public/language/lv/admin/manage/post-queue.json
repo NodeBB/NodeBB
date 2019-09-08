@@ -1,6 +1,6 @@
 {
 	"post-queue": "Rakstu apstiprināšanas rinda",
-	"description": "Apstiprināšanas rinda ir tukša. <br>Lai iespējotu šo funkciju, dodies uz <a href=\"%1\">Iestatījumi &rarr; Raksti &rarr; Jauno lietotāju ierobežojumi</a> un <strong>Iespējo rakstu apstiprināšanas rindu</strong>.",
+	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
 	"user": "Lietotājs",
 	"category": "Kategorija",
 	"title": "Virsraksts",

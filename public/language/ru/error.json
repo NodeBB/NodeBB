@@ -99,6 +99,8 @@
     "group-needs-owner": "У группы должен быть как минимум один владелец",
     "group-already-invited": "Этот участник уже был приглашён в группу",
     "group-already-requested": "Запрос на вступление в группу уже отправлен",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "Это сообщение уже удалено",
     "post-already-restored": "Это сообщение уже восстановлено",
     "topic-already-deleted": "Тема уже удалена",

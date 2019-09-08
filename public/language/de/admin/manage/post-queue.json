@@ -1,6 +1,6 @@
 {
 	"post-queue": "Beitragswarteschlange",
-	"description": "Es sind keine Beiträge in der Warteschlange.<br> Bitte gehe zu <a href=\"%1\">Einstellungen &rarr; Beiträge &rarr; Posting Beschränkungen</a> und aktiviere <strong>Beitragswarteschlange</strong> für diese Funktion.",
+	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
 	"user": "Benutzer",
 	"category": "Kategorie",
 	"title": "Titel",

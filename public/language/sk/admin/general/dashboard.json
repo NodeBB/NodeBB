@@ -14,9 +14,12 @@
 	"page-views-custom-help": "Zadajte rozsah obdobia zobrazenia stránok, ktoré chcete vidieť. Ak nie je obdobie nastavené, predvolený formát je <code>YYYY-MM-DD</code>",
 	"page-views-custom-error": "Zadajte správny rozsah vo formáte <code>YYYY-MM-DD</code>",
 
-	"stats.day": "Deň",
-	"stats.week": "Týždeň",
-	"stats.month": "Mesiac",
+	"stats.yesterday": "Yesterday",
+	"stats.today": "Today",
+	"stats.last-week": "Last Week",
+	"stats.this-week": "This Week",
+	"stats.last-month": "Last Month",
+	"stats.this-month": "This Month",
 	"stats.all": "Celé obdobie",
 
 	"updates": "Aktualizácie",

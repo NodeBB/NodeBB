@@ -14,9 +14,12 @@
 	"page-views-custom-help": "Ievadīt datumu diapazonu, kā lapu skatījumu skaitu vēlies redzēt. Ja datumu atlasītājs nav pieejams, lietot formātu <code>YYYY-MM-DD</code>",
 	"page-views-custom-error": "Lūdzu, ievadīt derīgu datumu diapazonu formatā <code>YYYY-MM-DD</code>",
 
-	"stats.day": "Šodien",
-	"stats.week": "Šonedēļ",
-	"stats.month": "Šomēnes",
+	"stats.yesterday": "Yesterday",
+	"stats.today": "Today",
+	"stats.last-week": "Last Week",
+	"stats.this-week": "This Week",
+	"stats.last-month": "Last Month",
+	"stats.this-month": "This Month",
 	"stats.all": "Visu laiku",
 
 	"updates": "Atjauninājumi",

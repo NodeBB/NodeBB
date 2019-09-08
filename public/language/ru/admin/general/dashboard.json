@@ -14,9 +14,12 @@
 	"page-views-custom-help": "Введите диапазон дат, за который вы хотите увидеть количество просмотров. Если выбор даты не доступен, то принимает можете указать дату в формате <code>ГГГГ-ММ-ДД </code>",
 	"page-views-custom-error": "Пожалуйста, укажите правильный диапазон дат в формате <code>ГГГГ-ММ-ДД</code>",
 
-	"stats.day": "День",
-	"stats.week": "Неделя",
-	"stats.month": "Месяц",
+	"stats.yesterday": "Yesterday",
+	"stats.today": "Today",
+	"stats.last-week": "Last Week",
+	"stats.this-week": "This Week",
+	"stats.last-month": "Last Month",
+	"stats.this-month": "This Month",
 	"stats.all": "Всё время",
 
 	"updates": "Обновления",

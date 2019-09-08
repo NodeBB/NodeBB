@@ -99,6 +99,8 @@
     "group-needs-owner": "De groep vereist ten minste 1 eigenaar",
     "group-already-invited": "Deze gebruiker is al uitgenodigt",
     "group-already-requested": "Uw lidmaatschap aanvraag is al verstuurd",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "Dit bericht is al verwijderd",
     "post-already-restored": "Dit bericht is al hersteld",
     "topic-already-deleted": "Dit onderwerp is al verwijderd",

@@ -99,6 +99,8 @@
     "group-needs-owner": "Denne gruppen krever minst en eier",
     "group-already-invited": "Denne brukeren har allerede blitt invitert",
     "group-already-requested": "Forespørsel om medlemskap er allerede innsendt",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "Dette innlegget har blitt slettet",
     "post-already-restored": "Dette innlegget har allerede blitt gjenopprettet",
     "topic-already-deleted": "Dette emnet har allerede blitt slettet",

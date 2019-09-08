@@ -1,37 +1,37 @@
 'use strict';
 
-var topics = require('../../topics');
+const topics = require('../../topics');
 
-var Tags = module.exports;
+const Tags = module.exports;
 
-Tags.create = function (socket, data, callback) {
+Tags.create = async function (socket, data) {
 	if (!data) {
-		return callback(new Error('[[error:invalid-data]]'));
+		throw new Error('[[error:invalid-data]]');
 	}
 
-	topics.createEmptyTag(data.tag, callback);
+	await topics.createEmptyTag(data.tag);
 };
 
-Tags.update = function (socket, data, callback) {
+Tags.update = async function (socket, data) {
 	if (!Array.isArray(data)) {
-		return callback(new Error('[[error:invalid-data]]'));
+		throw new Error('[[error:invalid-data]]');
 	}
 
-	topics.updateTags(data, callback);
+	await topics.updateTags(data);
 };
 
-Tags.rename = function (socket, data, callback) {
+Tags.rename = async function (socket, data) {
 	if (!Array.isArray(data)) {
-		return callback(new Error('[[error:invalid-data]]'));
+		throw new Error('[[error:invalid-data]]');
 	}
 
-	topics.renameTags(data, callback);
+	await topics.renameTags(data);
 };
 
-Tags.deleteTags = function (socket, data, callback) {
+Tags.deleteTags = async function (socket, data) {
 	if (!data) {
-		return callback(new Error('[[error:invalid-data]]'));
+		throw new Error('[[error:invalid-data]]');
 	}
 
-	topics.deleteTags(data.tags, callback);
+	await topics.deleteTags(data.tags);
 };

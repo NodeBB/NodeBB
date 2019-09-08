@@ -1,16 +1,15 @@
 'use strict';
 
-var async = require('async');
-var nconf = require('nconf');
-var validator = require('validator');
+const nconf = require('nconf');
+const validator = require('validator');
 
-var meta = require('../meta');
-var user = require('../user');
-var plugins = require('../plugins');
-var privileges = require('../privileges');
-var helpers = require('./helpers');
+const meta = require('../meta');
+const user = require('../user');
+const plugins = require('../plugins');
+const privileges = require('../privileges');
+const helpers = require('./helpers');
 
-var Controllers = module.exports;
+const Controllers = module.exports;
 
 Controllers.ping = require('./ping');
 Controllers.home = require('./home');
@@ -154,94 +153,77 @@ Controllers.login = function (req, res, next) {
 	});
 };
 
-Controllers.register = function (req, res, next) {
-	var registrationType = meta.config.registrationType || 'normal';
+Controllers.register = async function (req, res, next) {
+	const registrationType = meta.config.registrationType || 'normal';
 
 	if (registrationType === 'disabled') {
 		return setImmediate(next);
 	}
 
-	var errorText;
+	let errorText;
 	if (req.query.error === 'csrf-invalid') {
 		errorText = '[[error:csrf-invalid]]';
 	}
+	try {
+		if (registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
+			await user.verifyInvitation(req.query);
+		}
+		const termsOfUse = await plugins.fireHook('filter:parse.post', {
+			postData: {
+				content: meta.config.termsOfUse || '',
+			},
+		});
+		const loginStrategies = require('../routes/authentication').getLoginStrategies();
+		res.render('register', {
+			'register_window:spansize': loginStrategies.length ? 'col-md-6' : 'col-md-12',
+			alternate_logins: !!loginStrategies.length,
+			authentication: loginStrategies,
 
-	async.waterfall([
-		function (next) {
-			if (registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
-				user.verifyInvitation(req.query, next);
-			} else {
-				next();
-			}
-		},
-		function (next) {
-			plugins.fireHook('filter:parse.post', {
-				postData: {
-					content: meta.config.termsOfUse || '',
-				},
-			}, next);
-		},
-		function (termsOfUse) {
-			var loginStrategies = require('../routes/authentication').getLoginStrategies();
-			var data = {
-				'register_window:spansize': loginStrategies.length ? 'col-md-6' : 'col-md-12',
-				alternate_logins: !!loginStrategies.length,
-			};
-
-			data.authentication = loginStrategies;
-
-			data.minimumUsernameLength = meta.config.minimumUsernameLength;
-			data.maximumUsernameLength = meta.config.maximumUsernameLength;
-			data.minimumPasswordLength = meta.config.minimumPasswordLength;
-			data.minimumPasswordStrength = meta.config.minimumPasswordStrength;
-			data.termsOfUse = termsOfUse.postData.content;
-			data.breadcrumbs = helpers.buildBreadcrumbs([{
+			minimumUsernameLength: meta.config.minimumUsernameLength,
+			maximumUsernameLength: meta.config.maximumUsernameLength,
+			minimumPasswordLength: meta.config.minimumPasswordLength,
+			minimumPasswordStrength: meta.config.minimumPasswordStrength,
+			termsOfUse: termsOfUse.postData.content,
+			breadcrumbs: helpers.buildBreadcrumbs([{
 				text: '[[register:register]]',
-			}]);
-			data.regFormEntry = [];
-			data.error = req.flash('error')[0] || errorText;
-			data.title = '[[pages:register]]';
-
-			res.render('register', data);
-		},
-	], next);
+			}]),
+			regFormEntry: [],
+			error: req.flash('error')[0] || errorText,
+			title: '[[pages:register]]',
+		});
+	} catch (err) {
+		next(err);
+	}
 };
 
-Controllers.registerInterstitial = function (req, res, next) {
+Controllers.registerInterstitial = async function (req, res, next) {
 	if (!req.session.hasOwnProperty('registration')) {
 		return res.redirect(nconf.get('relative_path') + '/register');
 	}
+	try {
+		const data = await plugins.fireHook('filter:register.interstitial', {
+			userData: req.session.registration,
+			interstitials: [],
+		});
 
-	async.waterfall([
-		function (next) {
-			plugins.fireHook('filter:register.interstitial', {
-				userData: req.session.registration,
-				interstitials: [],
-			}, next);
-		},
-		function (data, next) {
-			if (!data.interstitials.length) {
-				// No interstitials, redirect to home
-				const returnTo = req.session.returnTo || req.session.registration.returnTo;
-				delete req.session.registration;
-				return helpers.redirect(res, returnTo || '/');
-			}
-			var renders = data.interstitials.map(function (interstitial) {
-				return async.apply(req.app.render.bind(req.app), interstitial.template, interstitial.data || {});
-			});
+		if (!data.interstitials.length) {
+			// No interstitials, redirect to home
+			const returnTo = req.session.returnTo || req.session.registration.returnTo;
+			delete req.session.registration;
+			return helpers.redirect(res, returnTo || '/');
+		}
 
+		const renders = data.interstitials.map(interstitial => req.app.renderAsync(interstitial.template, interstitial.data || {}));
+		const sections = await Promise.all(renders);
 
-			async.parallel(renders, next);
-		},
-		function (sections) {
-			var errors = req.flash('errors');
-			res.render('registerComplete', {
-				title: '[[pages:registration-complete]]',
-				errors: errors,
-				sections: sections,
-			});
-		},
-	], next);
+		res.render('registerComplete', {
+			title: '[[pages:registration-complete]]',
+			errors: req.flash('errors'),
+			sections: sections,
+		});
+	} catch (err) {
+		next(err);
+	}
 };
 
 Controllers.confirmEmail = function (req, res) {

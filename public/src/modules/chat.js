@@ -124,7 +124,9 @@ define('chat', [
 		var newTitle = $('<div/>').html(data.newName).text();
 		var modal = module.getModal(data.roomId);
 		modal.find('[component="chat/room/name"]').text(newTitle);
-		taskbar.updateTitle('chat', modal.attr('data-uuid'), newTitle);
+		taskbar.update('chat', modal.attr('data-uuid'), {
+			title: newTitle,
+		});
 		$(window).trigger('action:chat.renamed', Object.assign(data, {
 			modal: modal,
 		}));

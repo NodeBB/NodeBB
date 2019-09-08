@@ -183,7 +183,11 @@ describe('Build', function (done) {
 			var filename = path.join(__dirname, '../build/public/admin.css');
 			assert(file.existsSync(filename));
 			var adminCSS = fs.readFileSync(filename).toString();
-			assert(adminCSS.startsWith('@charset "UTF-8";') || adminCSS.startsWith('@import url'));
+			if (global.env === 'production') {
+				assert(adminCSS.startsWith('@charset "UTF-8";') || adminCSS.startsWith('@import url'));
+			} else {
+				assert(adminCSS.startsWith('.recent-replies'));
+			}
 			done();
 		});
 	});

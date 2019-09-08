@@ -133,5 +133,6 @@
     "diffs.no-revisions-description": "Šim rakstam ir %1 versijas.",
     "diffs.current-revision": "pašreizējā versija",
     "diffs.original-revision": "sākotnējā versija",
-    "timeago_later": "%1 later"
+    "timeago_later": "%1 later",
+    "timeago_earlier": "%1 earlier"
 }

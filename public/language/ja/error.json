@@ -99,6 +99,8 @@
     "group-needs-owner": "このグループには少なくとも一人のオーナーが必要です",
     "group-already-invited": "このユーザーが既に招待されました",
     "group-already-requested": "あなたのメンバーシップの要求が既に提出されました",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "この投稿が既に削除されました",
     "post-already-restored": "この投稿が既に復元されました",
     "topic-already-deleted": "このスレッドは既に削除されました",

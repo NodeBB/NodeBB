@@ -129,12 +129,14 @@ Upgrade.runParticular = function (names, callback) {
 	console.log('\nParsing upgrade scripts... ');
 
 	async.waterfall([
-		async.apply(file.walk, path.join(__dirname, './upgrades')),
+		function (next) {
+			file.walk(path.join(__dirname, './upgrades'), next);
+		},
 		function (files, next) {
-			var upgrades = files.filter(function (file) {
-				return names.includes(path.basename(file, '.js'));
-			});
-
+			Upgrade.appendPluginScripts(files, next);
+		},
+		function (files, next) {
+			const upgrades = files.filter(file => names.includes(path.basename(file, '.js')));
 			Upgrade.process(upgrades, 0, next);
 		},
 	], callback);

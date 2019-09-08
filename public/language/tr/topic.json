@@ -133,5 +133,6 @@
     "diffs.no-revisions-description": "Bu iletinin <strong>%1</strong> revizyonu var.",
     "diffs.current-revision": "mevcut revizyon",
     "diffs.original-revision": "orijinal revizyon",
-    "timeago_later": "%1 later"
+    "timeago_later": "%1 later",
+    "timeago_earlier": "%1 earlier"
 }

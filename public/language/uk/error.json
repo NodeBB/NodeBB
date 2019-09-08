@@ -99,6 +99,8 @@
     "group-needs-owner": "Ця група потребує щонайменше одного власника",
     "group-already-invited": "Користувача вже було запрошено",
     "group-already-requested": "Ваша заявка на вступ вже подана",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "Цей пост вже видалено",
     "post-already-restored": "Цей пост вже відновлено",
     "topic-already-deleted": "Ця тема вже була видалена",

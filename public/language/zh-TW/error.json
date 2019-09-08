@@ -99,6 +99,8 @@
     "group-needs-owner": "這個群組至少要有一個主持人。",
     "group-already-invited": "這位使用者已經被邀請",
     "group-already-requested": "你的會員申請已經送出",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "此文章已經被刪除",
     "post-already-restored": "此文章已還原",
     "topic-already-deleted": "此主題已經被刪除",

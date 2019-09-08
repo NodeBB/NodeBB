@@ -99,6 +99,8 @@
     "group-needs-owner": "Iri tsinda risaba kugira nibura umuyobozi umwe",
     "group-already-invited": "Uyu muntu yari yaramaze gutumirwa",
     "group-already-requested": "Ubusabe bwo kuba mu itsinda bwari bwaramaze koherezwa",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "Ibi byari byarakuweho",
     "post-already-restored": "Ibi byari byaragaruwe",
     "topic-already-deleted": "Iki kiganiro cyari cyarakuweho",

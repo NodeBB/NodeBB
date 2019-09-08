@@ -99,6 +99,8 @@
     "group-needs-owner": "Неопходан је најмање један власник ове групе",
     "group-already-invited": "Овај корисник је већ позван",
     "group-already-requested": "Ваш захтев за чланство је већ поднесен",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "Ова порука је већ избрисана",
     "post-already-restored": "Ова порука је већ обновљена",
     "topic-already-deleted": "Ова тема је већ избрисана",

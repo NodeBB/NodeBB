@@ -99,6 +99,8 @@
     "group-needs-owner": "Bu grubu en az bir kişi sahiplenmesi gerekiyor",
     "group-already-invited": "Bu kullanıcı zaten davet edilmiş",
     "group-already-requested": "Üyelik isteğiniz zaten gönderildi",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "İleti zaten silinmiş",
     "post-already-restored": "İleti zaten geri getirilmiş",
     "topic-already-deleted": "Başlık zaten silinmiş",

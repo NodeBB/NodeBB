@@ -124,9 +124,13 @@ module.exports = function (User) {
 		]);
 	};
 
-	User.auth.revokeAllSessions = async function (uid) {
-		const sids = await db.getSortedSetRange('uid:' + uid + ':sessions', 0, -1);
-		const promises = sids.map(s => User.auth.revokeSession(s, uid));
+	User.auth.revokeAllSessions = async function (uids) {
+		uids = Array.isArray(uids) ? uids : [uids];
+		const sids = await db.getSortedSetsMembers(uids.map(uid => 'uid:' + uid + ':sessions'));
+		const promises = [];
+		uids.forEach((uid, index) => {
+			promises.push(sids[index].map(s => User.auth.revokeSession(s, uid)));
+		});
 		await Promise.all(promises);
 	};
 

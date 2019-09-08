@@ -14,9 +14,12 @@
 	"page-views-custom-help": "Görüntülemek istediğiniz sayfa için görüntüleme tarih aralığı girin. Hiçbir tarih seçici yoksa, kabul edilebilir format <code>YYYY-AA-GG</code>'dir",
 	"page-views-custom-error": "Lütfen tarih aralığını geçerli formatta girin <code>YYYY-MM-DD</code>",
 
-	"stats.day": "Gün",
-	"stats.week": "Hafta",
-	"stats.month": "Ay",
+	"stats.yesterday": "Yesterday",
+	"stats.today": "Today",
+	"stats.last-week": "Last Week",
+	"stats.this-week": "This Week",
+	"stats.last-month": "Last Month",
+	"stats.this-month": "This Month",
 	"stats.all": "Tüm Zamanlar",
 
 	"updates": "Güncellemeler",

@@ -42,7 +42,7 @@ module.exports = function (Topics) {
 		} else {
 			tids = await Topics.getLatestTidsFromSet('topics:tid', 0, -1, params.term);
 		}
-		if (params.term !== 'alltime' || (params.cids && params.sort !== 'recent')) {
+		if (params.term !== 'alltime' || params.cids || params.floatPinned) {
 			tids = await sortTids(tids, params);
 		}
 		return await filterTids(tids, params);
@@ -53,10 +53,10 @@ module.exports = function (Topics) {
 		const pinnedSets = [];
 		cids.forEach(function (cid) {
 			if (sort === 'recent') {
-				sets.push('cid:' + cid + ':tids:lastposttime');
-				return;
+				sets.push('cid:' + cid + ':tids');
+			} else {
+				sets.push('cid:' + cid + ':tids' + (sort ? ':' + sort : ''));
 			}
-			sets.push('cid:' + cid + ':tids' + (sort ? ':' + sort : ''));
 			pinnedSets.push('cid:' + cid + ':tids:pinned');
 		});
 		const [tids, pinnedTids] = await Promise.all([
@@ -67,15 +67,30 @@ module.exports = function (Topics) {
 	}
 
 	async function sortTids(tids, params) {
-		const topicData = await Topics.getTopicsFields(tids, ['tid', 'lastposttime', 'upvotes', 'downvotes', 'postcount']);
-		var sortFn = sortRecent;
+		const topicData = await Topics.getTopicsFields(tids, ['tid', 'lastposttime', 'upvotes', 'downvotes', 'postcount', 'pinned']);
+		let sortFn = sortRecent;
 		if (params.sort === 'posts') {
 			sortFn = sortPopular;
 		} else if (params.sort === 'votes') {
 			sortFn = sortVotes;
 		}
-		tids = topicData.sort(sortFn).map(topic => topic && topic.tid);
-		return tids;
+
+		if (params.floatPinned) {
+			floatPinned(topicData, sortFn);
+		} else {
+			topicData.sort(sortFn);
+		}
+
+		return topicData.map(topic => topic && topic.tid);
+	}
+
+	function floatPinned(topicData, sortFn) {
+		topicData.sort((a, b) => {
+			if (a.pinned !== b.pinned) {
+				return b.pinned - a.pinned;
+			}
+			return sortFn(a, b);
+		});
 	}
 
 	function sortRecent(a, b) {

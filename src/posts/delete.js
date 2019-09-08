@@ -57,6 +57,7 @@ module.exports = function (Posts) {
 			deletePostFromReplies(postData),
 			deletePostFromGroups(postData),
 			db.sortedSetsRemove(['posts:pid', 'posts:votes', 'posts:flagged'], pid),
+			Posts.uploads.dissociateAll(pid),
 		]);
 		plugins.fireHook('action:post.purge', { post: postData, uid: uid });
 		await db.delete('post:' + pid);

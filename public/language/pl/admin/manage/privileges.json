@@ -1,7 +1,8 @@
 {
 	"global": "Globalny",
 	"global.no-users": "Brak globalnych uprawnień zdefiniowanych dla użytkownika",
-
+	"group-privileges": "Group Privileges",
+	"user-privileges": "User Privileges",
 	"chat": "Dostęp do czatu",
 	"upload-images": "Przesyłanie zdjęć",
 	"upload-files": "Przesyłanie plików",

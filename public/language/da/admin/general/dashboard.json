@@ -14,9 +14,12 @@
 	"page-views-custom-help": "Enter a date range of page views you would like to view. If no date picker is available, the accepted format is <code>YYYY-MM-DD</code>",
 	"page-views-custom-error": "Please enter a valid date range in the format <code>YYYY-MM-DD</code>",
 
-	"stats.day": "Dag",
-	"stats.week": "Uge",
-	"stats.month": "Måned",
+	"stats.yesterday": "Yesterday",
+	"stats.today": "Today",
+	"stats.last-week": "Last Week",
+	"stats.this-week": "This Week",
+	"stats.last-month": "Last Month",
+	"stats.this-month": "This Month",
 	"stats.all": "All Time",
 
 	"updates": "Opdateringer",
