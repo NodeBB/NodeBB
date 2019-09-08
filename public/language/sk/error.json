@@ -99,6 +99,8 @@
     "group-needs-owner": "Táto skupina vyžaduje aspoň jedného vlastníka",
     "group-already-invited": "Tento užívateľ už bol pozvaný",
     "group-already-requested": "Vaša požiadavka na členstvo už bola predložená",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "Tento príspevok bol odstránený",
     "post-already-restored": "Tento príspevok bol obnovený",
     "topic-already-deleted": "Táto téma bola odstránená",

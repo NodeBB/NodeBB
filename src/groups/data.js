@@ -9,7 +9,7 @@ const utils = require('../utils');
 
 const intFields = [
 	'createtime', 'memberCount', 'hidden', 'system', 'private',
-	'userTitleEnabled', 'disableJoinRequests',
+	'userTitleEnabled', 'disableJoinRequests', 'disableLeave',
 ];
 
 module.exports = function (Groups) {

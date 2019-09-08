@@ -63,9 +63,19 @@ function activate(plugin) {
 			if (!isInstalled) {
 				return next(new Error('plugin not installed'));
 			}
+			plugins.isActive(plugin, next);
+		},
+		function (isActive, next) {
+			if (isActive) {
+				winston.info('Plugin `%s` already active', plugin);
+				process.exit(0);
+			}
 
+			db.sortetSetCard('plugins:active', next);
+		},
+		function (numPlugins, next) {
 			winston.info('Activating plugin `%s`', plugin);
-			db.sortedSetAdd('plugins:active', 0, plugin, next);
+			db.sortedSetAdd('plugins:active', numPlugins, plugin, next);
 		},
 		function (next) {
 			events.log({

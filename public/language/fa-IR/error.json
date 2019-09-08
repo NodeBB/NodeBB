@@ -99,6 +99,8 @@
     "group-needs-owner": "این گروه حداقل یک مالک باید داشته باشد",
     "group-already-invited": "این کاربر قبلا به گروه دعوت شده است",
     "group-already-requested": "درخواست عضویت شما قبلا تایید شده است",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "این پست قبلا پاک شده است",
     "post-already-restored": "پست قبلا بازگردانی شده است.",
     "topic-already-deleted": "موضوع قبلا حذف شده است",

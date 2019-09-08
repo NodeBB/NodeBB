@@ -133,5 +133,6 @@
     "diffs.no-revisions-description": "此文章有 <strong>%1</strong> 個版本.",
     "diffs.current-revision": "目前版本",
     "diffs.original-revision": "原始版本",
-    "timeago_later": "%1 later"
+    "timeago_later": "%1 later",
+    "timeago_earlier": "%1 earlier"
 }

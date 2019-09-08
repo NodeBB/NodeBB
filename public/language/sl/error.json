@@ -99,6 +99,8 @@
     "group-needs-owner": "Ta skupina potrebuje vsaj enega skrbnika.",
     "group-already-invited": "Ta uporabnik je že bil povabljen.",
     "group-already-requested": "Vaša prošnja za članstvo je že bila sprejeta.",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "Ta objava je že bila izbrisana.",
     "post-already-restored": "Ta objava je že bila obnovljena.",
     "topic-already-deleted": "Ta tema je že bila izbrisana.",

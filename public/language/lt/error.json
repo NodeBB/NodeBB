@@ -99,6 +99,8 @@
     "group-needs-owner": "Ši grupė reikalauja mažiausiai vieno savininko",
     "group-already-invited": "Šis vartotojas jau buvo pakviestas",
     "group-already-requested": "Jūsų prašymas dėl narystes jau buvo pateiktas",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "Šis įrašas jau buvo ištrintas",
     "post-already-restored": "Šis įrašas jau atstatytas",
     "topic-already-deleted": "Ši tema jau ištrinta",

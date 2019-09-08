@@ -133,5 +133,6 @@
     "diffs.no-revisions-description": "Detta inlägg har <strong>%1</strong> revisioner.",
     "diffs.current-revision": "Nuvarande revision",
     "diffs.original-revision": "Ursprunglig revision",
-    "timeago_later": "%1 later"
+    "timeago_later": "%1 later",
+    "timeago_earlier": "%1 earlier"
 }

@@ -133,5 +133,6 @@
     "diffs.no-revisions-description": "Цей пост має <strong>%1</strong> версій.",
     "diffs.current-revision": "поточна ревізія",
     "diffs.original-revision": "початкова ревізія",
-    "timeago_later": "%1 later"
+    "timeago_later": "%1 later",
+    "timeago_earlier": "%1 earlier"
 }

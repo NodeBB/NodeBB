@@ -17,7 +17,8 @@ define('sort', ['components'], function (components) {
 					return app.alertError(err.message);
 				}
 				config[field] = newSetting;
-				ajaxify.go(gotoOnSave);
+				var qs = decodeURIComponent($.param(utils.params()));
+				ajaxify.go(gotoOnSave + (qs ? '?' + qs : ''));
 			});
 		});
 	};

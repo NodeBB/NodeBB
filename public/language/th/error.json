@@ -99,6 +99,8 @@
     "group-needs-owner": "กลุ่มนี้ต้องการเจ้าของอย่างน้อย 1 คน",
     "group-already-invited": "ผู้ใช้นี้ถูกเชิญแล้ว",
     "group-already-requested": "คำร้องขอเป็นสมาชิกถูกส่งแล้ว",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "โพสต์นี้ได้ถูกลบไปแล้ว",
     "post-already-restored": "โพสต์นี้ถูกกู้คืนเรียบร้อยแล้ว",
     "topic-already-deleted": "กระทู้นี้ถูกลบไปแล้ว",

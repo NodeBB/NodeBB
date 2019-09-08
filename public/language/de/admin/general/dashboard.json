@@ -14,9 +14,12 @@
 	"page-views-custom-help": "Gib eine Zeitspanne an, in dem du die Besichtigungszahlen ansehen willst. Sollte keine Kalenderauswahl verfügbar sein ist das akzeptierte format <code>YYYY-MM-DD</code>",
 	"page-views-custom-error": "Bitte gib eine gültige Zeitspanne im Format <code>YYYY-MM-DD</code> an",
 
-	"stats.day": "Diesen Tag",
-	"stats.week": "Diese Woche",
-	"stats.month": "Diesen Monat",
+	"stats.yesterday": "Yesterday",
+	"stats.today": "Today",
+	"stats.last-week": "Last Week",
+	"stats.this-week": "This Week",
+	"stats.last-month": "Last Month",
+	"stats.this-month": "This Month",
 	"stats.all": "Alle",
 
 	"updates": "Updates",

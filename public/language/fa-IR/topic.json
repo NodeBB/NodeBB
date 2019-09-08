@@ -133,5 +133,6 @@
     "diffs.no-revisions-description": "این پست %1 نسخه دارد.",
     "diffs.current-revision": "نسخه فعلی",
     "diffs.original-revision": "نسخه اصلی",
-    "timeago_later": "%1 later"
+    "timeago_later": "%1 later",
+    "timeago_earlier": "%1 earlier"
 }

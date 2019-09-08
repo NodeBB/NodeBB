@@ -14,9 +14,12 @@
 	"page-views-custom-help": "أدخل نطاقا زمنيا لمرات مشاهدة الصفحات التي ترغب في عرضها. إذا لم يظهر منتقي التاريخ، فإن التنسيق المقبول هو <code>YYYY-MM-DD</code>",
 	"page-views-custom-error": "الرجاء إدخال نطاق تاريخ صالح بالتنسيق <code>YYYY-MM-DD</code>",
 
-	"stats.day": "يوم",
-	"stats.week": "إسبوع",
-	"stats.month": "شهر",
+	"stats.yesterday": "Yesterday",
+	"stats.today": "Today",
+	"stats.last-week": "Last Week",
+	"stats.this-week": "This Week",
+	"stats.last-month": "Last Month",
+	"stats.this-month": "This Month",
 	"stats.all": "كل الوقت",
 
 	"updates": "تحديثات",

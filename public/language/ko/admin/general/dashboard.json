@@ -14,9 +14,12 @@
 	"page-views-custom-help": "페이지 뷰를 확인하고 싶은 기간을 입력하세요. 만약 데이트 피커를 사용할 수 없다면, YYYY-MM-DD 포맷으로 입력해주세요.",
 	"page-views-custom-error": "유효한 기간을 다음과 같은 포맷으로 입력하세요 <code>YYYY-MM-DD</code>",
 
-	"stats.day": "일",
-	"stats.week": "주",
-	"stats.month": "월",
+	"stats.yesterday": "Yesterday",
+	"stats.today": "Today",
+	"stats.last-week": "Last Week",
+	"stats.this-week": "This Week",
+	"stats.last-month": "Last Month",
+	"stats.this-month": "This Month",
 	"stats.all": "항상",
 
 	"updates": "업데이트",

@@ -47,7 +47,7 @@ categoryController.get = async function (req, res, next) {
 	if (topicIndex < 0 || topicIndex > Math.max(topicCount - 1, 0)) {
 		return helpers.redirect(res, '/category/' + cid + '/' + req.params.slug + (topicIndex > topicCount ? '/' + topicCount : ''));
 	}
-	const pageCount = Math.max(1, Math.ceil(topicCount / userSettings.topicsPerPage));
+	let pageCount = Math.max(1, Math.ceil(topicCount / userSettings.topicsPerPage));
 	let currentPage = parseInt(req.query.page, 10) || 1;
 	if (userSettings.usePagination && (currentPage < 1 || currentPage > pageCount)) {
 		return next();
@@ -105,7 +105,7 @@ categoryController.get = async function (req, res, next) {
 
 	categoryData['feeds:disableRSS'] = meta.config['feeds:disableRSS'];
 	categoryData['reputation:disabled'] = meta.config['reputation:disabled'];
-
+	pageCount = Math.max(1, Math.ceil(categoryData.topic_count / userSettings.topicsPerPage));
 	categoryData.pagination = pagination.create(currentPage, pageCount, req.query);
 	categoryData.pagination.rel.forEach(function (rel) {
 		rel.href = nconf.get('url') + '/category/' + categoryData.slug + rel.href;

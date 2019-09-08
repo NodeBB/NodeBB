@@ -133,5 +133,6 @@
     "diffs.no-revisions-description": "Bài viết này có <strong>%1</strong> sửa đổi",
     "diffs.current-revision": "Bản sao lưu hiện tại",
     "diffs.original-revision": "Bản sao lưu gốc",
-    "timeago_later": "%1 sau"
+    "timeago_later": "%1 sau",
+    "timeago_earlier": "%1 earlier"
 }

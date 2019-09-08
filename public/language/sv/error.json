@@ -99,6 +99,8 @@
     "group-needs-owner": "Gruppen kräver minst en ägare",
     "group-already-invited": "Användaren har redan bjudits in",
     "group-already-requested": "Din medlemsskapsförfrågan har redan skickats",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "Inlägget är redan raderat",
     "post-already-restored": "Inlägget är redan återställt",
     "topic-already-deleted": "Ämnet är redan raderat",

@@ -14,9 +14,12 @@
 	"page-views-custom-help": "Adj meg egy dátum tartományt a kívánt oldal megtekintések megtekintéséhez. Ha nem áll rendelkezésre dátumválasztó, az elfogadott formátum <code>ÉÉÉÉ-HH-NN</code>",
 	"page-views-custom-error": "Kérlek, érvényes dátum tartományt adj meg <code>ÉÉÉÉ-HH-NN</code> formátumban.",
 
-	"stats.day": "Naponta",
-	"stats.week": "Hetente",
-	"stats.month": "Havonta",
+	"stats.yesterday": "Yesterday",
+	"stats.today": "Today",
+	"stats.last-week": "Last Week",
+	"stats.this-week": "This Week",
+	"stats.last-month": "Last Month",
+	"stats.this-month": "This Month",
 	"stats.all": "Mindenkori",
 
 	"updates": "Frissítések",

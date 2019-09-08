@@ -99,6 +99,8 @@
     "group-needs-owner": "هذه المجموعة تتطلب مالك واحد على اﻷقل",
     "group-already-invited": "المستخدم سبق وأن تمت دعوته",
     "group-already-requested": "سبق وتم تسجيل طلب العضوية",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "سبق وتم حذف هذا الرد",
     "post-already-restored": "سبق وتم إلغاء حذف هذا الرد",
     "topic-already-deleted": "سبق وتم حذف هذا الموضوع",

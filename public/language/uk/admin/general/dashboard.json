@@ -14,9 +14,12 @@
 	"page-views-custom-help": "Вкажіть календарний період, за який ви хочете побачити переглянуті сторінки. Якщо ви не можете використати селектор дат, допустимий формат дати <code>YYYY-MM-DD</code>",
 	"page-views-custom-error": "Будь-ласка вкажіть календарний період у форматі <code>YYYY-MM-DD</code>",
 
-	"stats.day": "День",
-	"stats.week": "Тиждень",
-	"stats.month": "Місяць",
+	"stats.yesterday": "Yesterday",
+	"stats.today": "Today",
+	"stats.last-week": "Last Week",
+	"stats.this-week": "This Week",
+	"stats.last-month": "Last Month",
+	"stats.this-month": "This Month",
 	"stats.all": "Увесь час",
 
 	"updates": "Оновлень",

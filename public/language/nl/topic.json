@@ -133,5 +133,6 @@
     "diffs.no-revisions-description": "Dit bericht heeft <strong>%1</strong> revisies.",
     "diffs.current-revision": "Huidige revisie",
     "diffs.original-revision": "Oorspronkelijke revisie",
-    "timeago_later": "%1 later"
+    "timeago_later": "%1 later",
+    "timeago_earlier": "%1 earlier"
 }

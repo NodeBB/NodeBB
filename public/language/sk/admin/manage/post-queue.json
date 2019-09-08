@@ -1,6 +1,6 @@
 {
 	"post-queue": "Príspevky vo fronte",
-	"description": "Vo fronte nie sú žiadne príspevky. <a href=\"%1\"> Pre povolenie tejto vlastnosti, prejdite do <strong> Nastavení - Príspevok - Obmedzenie príspevkov </strong> a povoľte <strong> Fronta príspevkov</strong>.",
+	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
 	"user": "Používateľ",
 	"category": "Kategórie",
 	"title": "Názov",

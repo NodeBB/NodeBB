@@ -14,9 +14,12 @@
 	"page-views-custom-help": "Introduce un rango de fechas para las vistas de página que deseas ver. Si no hay ningún selector de fechas disponible, el formato aceptado es <code>AAAA-MM-DD</code>",
 	"page-views-custom-error": "Por favor, introduce un rango de fechas válido en el formato <code>AAAA-MM-DD</code>",
 
-	"stats.day": "Día",
-	"stats.week": "Semana",
-	"stats.month": "Mes",
+	"stats.yesterday": "Yesterday",
+	"stats.today": "Today",
+	"stats.last-week": "Last Week",
+	"stats.this-week": "This Week",
+	"stats.last-month": "Last Month",
+	"stats.this-month": "This Month",
 	"stats.all": "Todos los Tiempos",
 
 	"updates": "Actualizaciones",

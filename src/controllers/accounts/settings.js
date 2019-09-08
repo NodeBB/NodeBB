@@ -26,7 +26,6 @@ settingsController.get = async function (req, res, next) {
 		user.getSettings(userData.uid),
 		languages.list(),
 		meta.sounds.getUserSoundMap(userData.uid),
-
 	]);
 
 	userData.settings = settings;

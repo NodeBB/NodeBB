@@ -99,6 +99,8 @@
     "group-needs-owner": "이 그룹은 적어도 한 명의 소유자가 필요합니다.",
     "group-already-invited": "이 사용자는 이미 초대됐습니다.",
     "group-already-requested": "회원 요청이 이미 제출되었습니다.",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "이미 삭제된 포스트 입니다.",
     "post-already-restored": "이미 복원된 포스트 입니다.",
     "topic-already-deleted": "이미 삭제된 게시물 입니다.",

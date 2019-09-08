@@ -160,7 +160,7 @@
 	// Groups helpers
 	function membershipBtn(groupObj) {
 		if (groupObj.isMember && groupObj.name !== 'administrators') {
-			return '<button class="btn btn-danger" data-action="leave" data-group="' + groupObj.displayName + '"><i class="fa fa-times"></i> [[groups:membership.leave-group]]</button>';
+			return '<button class="btn btn-danger" data-action="leave" data-group="' + groupObj.displayName + '"' + (groupObj.disableLeave ? ' disabled' : '') + '><i class="fa fa-times"></i> [[groups:membership.leave-group]]</button>';
 		}
 
 		if (groupObj.isPending && groupObj.name !== 'administrators') {

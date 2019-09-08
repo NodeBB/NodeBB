@@ -43,7 +43,7 @@ SocketGroups.join = async (socket, data) => {
 	});
 
 	if (results.groupData.private && results.groupData.disableJoinRequests) {
-		throw new Error('[[error:join-requests-disabled]]');
+		throw new Error('[[error:group-join-disabled]]');
 	}
 
 	if (!results.groupData.private || results.isAdmin) {
@@ -66,6 +66,11 @@ SocketGroups.leave = async (socket, data) => {
 
 	if (data.groupName === 'administrators') {
 		throw new Error('[[error:cant-remove-self-as-admin]]');
+	}
+
+	const groupData = await groups.getGroupData(data.groupName);
+	if (groupData.disableLeave) {
+		throw new Error('[[error:group-leave-disabled]]');
 	}
 
 	await groups.leave(data.groupName, socket.uid);

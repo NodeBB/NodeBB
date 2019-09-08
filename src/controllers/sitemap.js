@@ -1,28 +1,18 @@
 'use strict';
 
-var async = require('async');
+const sitemap = require('../sitemap');
+const meta = require('../meta');
 
-var sitemap = require('../sitemap');
-var meta = require('../meta');
+const sitemapController = module.exports;
 
-var sitemapController = module.exports;
-
-sitemapController.render = function (req, res, next) {
+sitemapController.render = async function (req, res, next) {
 	if (meta.config['feeds:disableSitemap']) {
 		return setImmediate(next);
 	}
-	async.waterfall([
-		function (next) {
-			sitemap.render(next);
-		},
-		function (tplData, next) {
-			req.app.render('sitemap', tplData, next);
-		},
-		function (xml) {
-			res.header('Content-Type', 'application/xml');
-			res.send(xml);
-		},
-	], next);
+	const tplData = await sitemap.render();
+	const xml = await req.app.renderAsync('sitemap', tplData);
+	res.header('Content-Type', 'application/xml');
+	res.send(xml);
 };
 
 sitemapController.getPages = function (req, res, next) {
@@ -34,26 +24,19 @@ sitemapController.getCategories = function (req, res, next) {
 };
 
 sitemapController.getTopicPage = function (req, res, next) {
-	sendSitemap(function (callback) {
-		sitemap.getTopicPage(parseInt(req.params[0], 10), callback);
+	sendSitemap(async function () {
+		return await sitemap.getTopicPage(parseInt(req.params[0], 10));
 	}, res, next);
 };
 
-function sendSitemap(method, res, callback) {
+async function sendSitemap(method, res, callback) {
 	if (meta.config['feeds:disableSitemap']) {
 		return setImmediate(callback);
 	}
-	async.waterfall([
-		function (next) {
-			method(next);
-		},
-		function (xml) {
-			if (!xml) {
-				return callback();
-			}
-
-			res.header('Content-Type', 'application/xml');
-			res.send(xml);
-		},
-	], callback);
+	const xml = await method();
+	if (!xml) {
+		return callback();
+	}
+	res.header('Content-Type', 'application/xml');
+	res.send(xml);
 }

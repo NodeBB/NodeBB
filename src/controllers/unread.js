@@ -1,113 +1,91 @@
 
 'use strict';
 
-var async = require('async');
-var nconf = require('nconf');
-var querystring = require('querystring');
+const nconf = require('nconf');
+const querystring = require('querystring');
 
-var meta = require('../meta');
-var pagination = require('../pagination');
-var user = require('../user');
-var categories = require('../categories');
-var topics = require('../topics');
-var plugins = require('../plugins');
-var helpers = require('./helpers');
+const meta = require('../meta');
+const pagination = require('../pagination');
+const user = require('../user');
+const categories = require('../categories');
+const topics = require('../topics');
+const plugins = require('../plugins');
+const helpers = require('./helpers');
 
-var unreadController = module.exports;
+const unreadController = module.exports;
 
-unreadController.get = function (req, res, next) {
-	var page = parseInt(req.query.page, 10) || 1;
-	var results;
-	var cid = req.query.cid;
-	var filter = req.query.filter || '';
-	var settings;
+unreadController.get = async function (req, res, next) {
+	const cid = req.query.cid;
+	const filter = req.query.filter || '';
 
-	async.waterfall([
-		function (next) {
-			plugins.fireHook('filter:unread.getValidFilters', { filters: { ...helpers.validFilters } }, next);
-		},
-		function (data, _next) {
-			if (!data.filters[filter]) {
-				return next();
-			}
+	const filterData = await plugins.fireHook('filter:unread.getValidFilters', { filters: { ...helpers.validFilters } });
+	if (!filterData.filters[filter]) {
+		return next();
+	}
+	const [watchedCategories, userSettings] = await Promise.all([
+		getWatchedCategories(req.uid, cid, filter),
+		user.getSettings(req.uid),
+	]);
 
-			async.parallel({
-				watchedCategories: function (next) {
-					if (plugins.hasListeners('filter:unread.categories')) {
-						plugins.fireHook('filter:unread.categories', { uid: req.uid, cid: cid }, next);
-					} else {
-						const states = [categories.watchStates.watching];
-						if (filter === 'watched') {
-							states.push(categories.watchStates.notwatching, categories.watchStates.ignoring);
-						}
-						helpers.getCategoriesByStates(req.uid, cid, states, next);
-					}
-				},
-				settings: function (next) {
-					user.getSettings(req.uid, next);
-				},
-			}, _next);
-		},
-		function (_results, next) {
-			results = _results;
-			settings = results.settings;
-			var start = Math.max(0, (page - 1) * settings.topicsPerPage);
-			var stop = start + settings.topicsPerPage - 1;
-			var cutoff = req.session.unreadCutoff ? req.session.unreadCutoff : topics.unreadCutoff();
-			topics.getUnreadTopics({
-				cid: cid,
-				uid: req.uid,
-				start: start,
-				stop: stop,
-				filter: filter,
-				cutoff: cutoff,
-			}, next);
-		},
-		function (data) {
-			data.title = meta.config.homePageTitle || '[[pages:home]]';
-			data.pageCount = Math.max(1, Math.ceil(data.topicCount / settings.topicsPerPage));
-			data.pagination = pagination.create(page, data.pageCount, req.query);
+	const page = parseInt(req.query.page, 10) || 1;
+	const start = Math.max(0, (page - 1) * userSettings.topicsPerPage);
+	const stop = start + userSettings.topicsPerPage - 1;
+	const cutoff = req.session.unreadCutoff ? req.session.unreadCutoff : topics.unreadCutoff();
+	const data = await topics.getUnreadTopics({
+		cid: cid,
+		uid: req.uid,
+		start: start,
+		stop: stop,
+		filter: filter,
+		cutoff: cutoff,
+	});
 
-			if (settings.usePagination && (page < 1 || page > data.pageCount)) {
-				req.query.page = Math.max(1, Math.min(data.pageCount, page));
-				return helpers.redirect(res, '/unread?' + querystring.stringify(req.query));
-			}
+	data.title = meta.config.homePageTitle || '[[pages:home]]';
+	data.pageCount = Math.max(1, Math.ceil(data.topicCount / userSettings.topicsPerPage));
+	data.pagination = pagination.create(page, data.pageCount, req.query);
 
-			data.categories = results.watchedCategories.categories;
-			data.allCategoriesUrl = 'unread' + helpers.buildQueryString('', filter, '');
-			data.selectedCategory = results.watchedCategories.selectedCategory;
-			data.selectedCids = results.watchedCategories.selectedCids;
-			if (req.originalUrl.startsWith(nconf.get('relative_path') + '/api/unread') || req.originalUrl.startsWith(nconf.get('relative_path') + '/unread')) {
-				data.title = '[[pages:unread]]';
-				data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[unread:title]]' }]);
-			}
+	if (userSettings.usePagination && (page < 1 || page > data.pageCount)) {
+		req.query.page = Math.max(1, Math.min(data.pageCount, page));
+		return helpers.redirect(res, '/unread?' + querystring.stringify(req.query));
+	}
 
-			data.filters = helpers.buildFilters('unread', filter, req.query);
+	data.categories = watchedCategories.categories;
+	data.allCategoriesUrl = 'unread' + helpers.buildQueryString('', filter, '');
+	data.selectedCategory = watchedCategories.selectedCategory;
+	data.selectedCids = watchedCategories.selectedCids;
+	if (req.originalUrl.startsWith(nconf.get('relative_path') + '/api/unread') || req.originalUrl.startsWith(nconf.get('relative_path') + '/unread')) {
+		data.title = '[[pages:unread]]';
+		data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[unread:title]]' }]);
+	}
 
-			data.selectedFilter = data.filters.find(function (filter) {
-				return filter && filter.selected;
-			});
+	data.filters = helpers.buildFilters('unread', filter, req.query);
 
-			res.render('unread', data);
-		},
-	], next);
+	data.selectedFilter = data.filters.find(filter => filter && filter.selected);
+
+	res.render('unread', data);
 };
 
-unreadController.unreadTotal = function (req, res, next) {
-	var filter = req.query.filter || '';
+async function getWatchedCategories(uid, cid, filter) {
+	if (plugins.hasListeners('filter:unread.categories')) {
+		return await plugins.fireHook('filter:unread.categories', { uid: uid, cid: cid });
+	}
+	const states = [categories.watchStates.watching];
+	if (filter === 'watched') {
+		states.push(categories.watchStates.notwatching, categories.watchStates.ignoring);
+	}
+	return await helpers.getCategoriesByStates(uid, cid, states);
+}
 
-	async.waterfall([
-		function (next) {
-			plugins.fireHook('filter:unread.getValidFilters', { filters: { ...helpers.validFilters } }, next);
-		},
-		function (data, _next) {
-			if (!data.filters[filter]) {
-				return next();
-			}
-			topics.getTotalUnread(req.uid, filter, _next);
-		},
-		function (data) {
-			res.json(data);
-		},
-	], next);
+unreadController.unreadTotal = async function (req, res, next) {
+	const filter = req.query.filter || '';
+	try {
+		const data = await plugins.fireHook('filter:unread.getValidFilters', { filters: { ...helpers.validFilters } });
+		if (!data.filters[filter]) {
+			return next();
+		}
+		const unreadCount = await topics.getTotalUnread(req.uid, filter);
+		res.json(unreadCount);
+	} catch (err) {
+		next(err);
+	}
 };

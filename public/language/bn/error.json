@@ -99,6 +99,8 @@
     "group-needs-owner": "This group requires at least one owner",
     "group-already-invited": "This user has already been invited",
     "group-already-requested": "Your membership request has already been submitted",
+    "group-join-disabled": "You are not able to join this group at this time",
+    "group-leave-disabled": "You are not able to leave this group at this time",
     "post-already-deleted": "এই পোস্টটি ইতিমধ্যে ডিলিট করা হয়ে গিয়েছে",
     "post-already-restored": "এই পোষ্টটি ইতিমধ্যে পুনরোদ্ধার করা হয়েছে",
     "topic-already-deleted": "এই টপিকটি ইতিমধ্যে ডিলিট করা হয়েছে",

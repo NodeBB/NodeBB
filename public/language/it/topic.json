@@ -133,5 +133,6 @@
     "diffs.no-revisions-description": "Questo post ha <strong>%1</strong> revisioni.",
     "diffs.current-revision": "revisione corrente",
     "diffs.original-revision": "revisione originale",
-    "timeago_later": "%1 successivo"
+    "timeago_later": "%1 successivo",
+    "timeago_earlier": "%1 earlier"
 }
