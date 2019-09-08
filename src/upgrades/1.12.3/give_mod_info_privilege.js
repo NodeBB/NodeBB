@@ -31,7 +31,7 @@ module.exports = {
 		], callback);
 		function givePrivsToModerators(cid, groupPrefix, callback) {
 			async.waterfall([
-				function (next) { 
+				function (next) {
 					db.getSortedSetRevRange('group:cid:' + cid + ':privileges:' + groupPrefix + 'moderate:members', 0, -1, next);
 				},
 				function (members, next) {
@@ -42,4 +42,4 @@ module.exports = {
 			], callback);
 		}
 	},
-}
+};
