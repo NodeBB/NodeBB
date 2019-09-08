@@ -1,22 +1,19 @@
 'use strict';
+var async = require('async');
 
 var db = require('../../database');
 var privileges = require('../../privileges');
 var groups = require('../../groups');
-var async = require('async');
-var winston = require('winston');
 
 module.exports = {
-	name: 'give mod info privilege',
-
-	timestamp: Date.UTC(2019, 9, 8),
-	method: function (callback) {
-        
+    name: 'give mod info privilege',
+    timestamp: Date.UTC(2019, 9, 8),
+    method: function (callback) {
         async.waterfall([
             function (next) {
-				db.getSortedSetRevRange('categories:cid', 0, -1, next);
-			},
-			function (cids, next) {
+                db.getSortedSetRevRange('categories:cid', 0, -1, next);
+            },
+            function (cids, next) {
                 async.eachSeries(cids, function (cid, next) {
                     async.waterfall([
                         function (next) {
@@ -25,12 +22,12 @@ module.exports = {
                         function (next) {
                             givePrivsToModerators(cid, 'groups:', next);
                         },
-                    ], next)
-                }, next)
+                    ], next);
+                }, next);
             },
             function (next) {
-				privileges.global.give(['view:users:info'], 'Global Moderators', next);
-			},
+                privileges.global.give(['view:users:info'], 'Global Moderators', next);
+            },
         ], callback);
         function givePrivsToModerators(cid, groupPrefix, callback) {
             async.waterfall([
@@ -44,5 +41,5 @@ module.exports = {
                 },
             ], callback)
         };
-	},
-};
+    },
+}
