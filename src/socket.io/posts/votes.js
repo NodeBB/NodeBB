@@ -1,103 +1,74 @@
 'use strict';
 
-var async = require('async');
-
-var db = require('../../database');
-var user = require('../../user');
-var posts = require('../../posts');
-var privileges = require('../../privileges');
-var meta = require('../../meta');
-var helpers = require('./helpers');
+const db = require('../../database');
+const user = require('../../user');
+const posts = require('../../posts');
+const privileges = require('../../privileges');
+const meta = require('../../meta');
+const helpers = require('./helpers');
 
 module.exports = function (SocketPosts) {
-	SocketPosts.getVoters = function (socket, data, callback) {
+	SocketPosts.getVoters = async function (socket, data) {
 		if (!data || !data.pid || !data.cid) {
-			return callback(new Error('[[error:invalid-data]]'));
+			throw new Error('[[error:invalid-data]]');
 		}
 		const showDownvotes = !meta.config['downvote:disabled'];
-		async.waterfall([
-			function (next) {
-				if (meta.config.votesArePublic) {
-					return next(null, true);
-				}
-				privileges.categories.isAdminOrMod(data.cid, socket.uid, next);
-			},
-			function (isAdminOrMod, next) {
-				if (!isAdminOrMod) {
-					return next(new Error('[[error:no-privileges]]'));
-				}
+		const canSeeVotes = meta.config.votesArePublic || await privileges.categories.isAdminOrMod(data.cid, socket.uid);
+		if (!canSeeVotes) {
+			throw new Error('[[error:no-privileges]]');
+		}
+		const [upvoteUids, downvoteUids] = await Promise.all([
+			db.getSetMembers('pid:' + data.pid + ':upvote'),
+			showDownvotes ? db.getSetMembers('pid:' + data.pid + ':downvote') : [],
+		]);
 
-				async.parallel({
-					upvoteUids: function (next) {
-						db.getSetMembers('pid:' + data.pid + ':upvote', next);
-					},
-					downvoteUids: function (next) {
-						if (!showDownvotes) {
-							return setImmediate(next, null, []);
-						}
-						db.getSetMembers('pid:' + data.pid + ':downvote', next);
-					},
-				}, next);
-			},
-			function (results, next) {
-				async.parallel({
-					upvoters: function (next) {
-						user.getUsersFields(results.upvoteUids, ['username', 'userslug', 'picture'], next);
-					},
-					downvoters: function (next) {
-						user.getUsersFields(results.downvoteUids, ['username', 'userslug', 'picture'], next);
-					},
-				}, next);
-			},
-			function (results, next) {
-				results.upvoteCount = results.upvoters.length;
-				results.downvoteCount = results.downvoters.length;
-				results.showDownvotes = showDownvotes;
-				next(null, results);
-			},
-		], callback);
+		const [upvoters, downvoters] = await Promise.all([
+			user.getUsersFields(upvoteUids, ['username', 'userslug', 'picture']),
+			user.getUsersFields(downvoteUids, ['username', 'userslug', 'picture']),
+		]);
+
+		return {
+			upvoteCount: upvoters.length,
+			downvoteCount: downvoters.length,
+			showDownvotes: showDownvotes,
+			upvoters: upvoters,
+			downvoters: downvoters,
+		};
 	};
 
-	SocketPosts.getUpvoters = function (socket, pids, callback) {
+	SocketPosts.getUpvoters = async function (socket, pids) {
 		if (!Array.isArray(pids)) {
-			return callback(new Error('[[error:invalid-data]]'));
+			throw new Error('[[error:invalid-data]]');
+		}
+		const data = await posts.getUpvotedUidsByPids(pids);
+		if (!data.length) {
+			return [];
 		}
 
-		async.waterfall([
-			function (next) {
-				posts.getUpvotedUidsByPids(pids, next);
-			},
-			function (data, next) {
-				if (!data.length) {
-					return callback(null, []);
-				}
-
-				async.map(data, function (uids, next) {
-					var otherCount = 0;
-					if (uids.length > 6) {
-						otherCount = uids.length - 5;
-						uids = uids.slice(0, 5);
-					}
-					user.getUsernamesByUids(uids, function (err, usernames) {
-						next(err, {
-							otherCount: otherCount,
-							usernames: usernames,
-						});
-					});
-				}, next);
-			},
-		], callback);
+		const result = await Promise.all(data.map(async function (uids) {
+			let otherCount = 0;
+			if (uids.length > 6) {
+				otherCount = uids.length - 5;
+				uids = uids.slice(0, 5);
+			}
+			const usernames = await user.getUsernamesByUids(uids);
+			return {
+				otherCount: otherCount,
+				usernames: usernames,
+			};
+		}));
+		return result;
 	};
 
-	SocketPosts.upvote = function (socket, data, callback) {
-		helpers.postCommand(socket, 'upvote', 'voted', 'notifications:upvoted_your_post_in', data, callback);
+	SocketPosts.upvote = async function (socket, data) {
+		return await helpers.postCommand(socket, 'upvote', 'voted', 'notifications:upvoted_your_post_in', data);
 	};
 
-	SocketPosts.downvote = function (socket, data, callback) {
-		helpers.postCommand(socket, 'downvote', 'voted', '', data, callback);
+	SocketPosts.downvote = async function (socket, data) {
+		return await helpers.postCommand(socket, 'downvote', 'voted', '', data);
 	};
 
-	SocketPosts.unvote = function (socket, data, callback) {
-		helpers.postCommand(socket, 'unvote', 'voted', '', data, callback);
+	SocketPosts.unvote = async function (socket, data) {
+		return await helpers.postCommand(socket, 'unvote', 'voted', '', data);
 	};
 };

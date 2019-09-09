@@ -143,3 +143,5 @@ SocketTopics.isModerator = function (socket, tid, callback) {
 SocketTopics.getTopic = function (socket, tid, callback) {
 	apiController.getTopicData(tid, socket.uid, callback);
 };
+
+require('../promisify')(SocketTopics);

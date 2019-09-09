@@ -1,20 +1,19 @@
 'use strict';
 
-var async = require('async');
-
-var posts = require('../posts');
-var privileges = require('../privileges');
-var plugins = require('../plugins');
-var meta = require('../meta');
-var topics = require('../topics');
+const db = require('../database');
+const posts = require('../posts');
+const privileges = require('../privileges');
+const plugins = require('../plugins');
+const meta = require('../meta');
+const topics = require('../topics');
 const categories = require('../categories');
-var user = require('../user');
-var socketHelpers = require('./helpers');
-var utils = require('../utils');
+const user = require('../user');
+const socketHelpers = require('./helpers');
+const utils = require('../utils');
 
-var apiController = require('../controllers/api');
+const apiController = require('../controllers/api');
 
-var SocketPosts = module.exports;
+const SocketPosts = module.exports;
 
 require('./posts/edit')(SocketPosts);
 require('./posts/move')(SocketPosts);
@@ -23,51 +22,35 @@ require('./posts/bookmarks')(SocketPosts);
 require('./posts/tools')(SocketPosts);
 require('./posts/diffs')(SocketPosts);
 
-SocketPosts.reply = function (socket, data, callback) {
+SocketPosts.reply = async function (socket, data) {
 	if (!data || !data.tid || (meta.config.minimumPostLength !== 0 && !data.content)) {
-		return callback(new Error('[[error:invalid-data]]'));
+		throw new Error('[[error:invalid-data]]');
 	}
 
 	socketHelpers.setDefaultPostData(data, socket);
-
-	async.waterfall([
-		function (next) {
-			meta.blacklist.test(data.req.ip, next);
-		},
-		function (next) {
-			posts.shouldQueue(socket.uid, data, next);
-		},
-		function (shouldQueue, next) {
-			if (shouldQueue) {
-				posts.addToQueue(data, next);
-			} else {
-				postReply(socket, data, next);
-			}
-		},
-	], callback);
+	await meta.blacklist.test(data.req.ip);
+	const shouldQueue = await posts.shouldQueue(socket.uid, data);
+	if (shouldQueue) {
+		return await posts.addToQueue(data);
+	}
+	return await postReply(socket, data);
 };
 
-function postReply(socket, data, callback) {
-	async.waterfall([
-		function (next) {
-			topics.reply(data, next);
-		},
-		function (postData, next) {
-			var result = {
-				posts: [postData],
-				'reputation:disabled': meta.config['reputation:disabled'] === 1,
-				'downvote:disabled': meta.config['downvote:disabled'] === 1,
-			};
+async function postReply(socket, data) {
+	const postData = await topics.reply(data);
+	const result = {
+		posts: [postData],
+		'reputation:disabled': meta.config['reputation:disabled'] === 1,
+		'downvote:disabled': meta.config['downvote:disabled'] === 1,
+	};
 
-			next(null, postData);
+	socket.emit('event:new_post', result);
 
-			socket.emit('event:new_post', result);
+	user.updateOnlineUsers(socket.uid);
 
-			user.updateOnlineUsers(socket.uid);
+	socketHelpers.notifyNew(socket.uid, 'newPost', result);
 
-			socketHelpers.notifyNew(socket.uid, 'newPost', result);
-		},
-	], callback);
+	return postData;
 }
 
 SocketPosts.getRawPost = async function (socket, pid) {
@@ -85,173 +68,117 @@ SocketPosts.getRawPost = async function (socket, pid) {
 	return result.postData.content;
 };
 
-SocketPosts.getTimestampByIndex = function (socket, data, callback) {
-	var pid;
-	var db = require('../database');
+SocketPosts.getTimestampByIndex = async function (socket, data) {
+	if (data.index < 0) {
+		data.index = 0;
+	}
+	let pid;
+	if (data.index === 0) {
+		pid = topics.getTopicField(data.tid, 'mainPid');
+	} else {
+		pid = db.getSortedSetRange('tid:' + data.tid + ':posts', data.index - 1, data.index - 1);
+	}
+	pid = Array.isArray(pid) ? pid[0] : pid;
+	if (!pid) {
+		return 0;
+	}
 
-	async.waterfall([
-		function (next) {
-			if (data.index < 0) {
-				data.index = 0;
-			}
-			if (data.index === 0) {
-				topics.getTopicField(data.tid, 'mainPid', next);
-			} else {
-				db.getSortedSetRange('tid:' + data.tid + ':posts', data.index - 1, data.index - 1, next);
-			}
-		},
-		function (_pid, next) {
-			pid = Array.isArray(_pid) ? _pid[0] : _pid;
-			if (!pid) {
-				return callback(null, 0);
-			}
-			privileges.posts.can('topics:read', pid, socket.uid, next);
-		},
-		function (canRead, next) {
-			if (!canRead) {
-				return next(new Error('[[error:no-privileges]]'));
-			}
-			posts.getPostFields(pid, ['timestamp'], next);
-		},
-		function (postData, next) {
-			next(null, postData.timestamp);
-		},
-	], callback);
+	const canRead = await privileges.posts.can('topics:read', pid, socket.uid);
+	if (!canRead) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	return await posts.getPostField(pid, 'timestamp');
 };
 
-SocketPosts.getPost = function (socket, pid, callback) {
-	apiController.getPostData(pid, socket.uid, callback);
+SocketPosts.getPost = async function (socket, pid) {
+	return await apiController.getPostData(pid, socket.uid);
 };
 
-SocketPosts.loadMoreBookmarks = function (socket, data, callback) {
-	loadMorePosts('uid:' + data.uid + ':bookmarks', socket.uid, data, callback);
+SocketPosts.loadMoreBookmarks = async function (socket, data) {
+	return await loadMorePosts('uid:' + data.uid + ':bookmarks', socket.uid, data);
 };
 
-SocketPosts.loadMoreUserPosts = function (socket, data, callback) {
-	async.waterfall([
-		function (next) {
-			categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read', next);
-		},
-		function (cids, next) {
-			const keys = cids.map(c => 'cid:' + c + ':uid:' + data.uid + ':pids');
-			loadMorePosts(keys, socket.uid, data, next);
-		},
-	], callback);
+SocketPosts.loadMoreUserPosts = async function (socket, data) {
+	const cids = await categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read');
+	const keys = cids.map(c => 'cid:' + c + ':uid:' + data.uid + ':pids');
+	return await loadMorePosts(keys, socket.uid, data);
 };
 
-SocketPosts.loadMoreBestPosts = function (socket, data, callback) {
-	async.waterfall([
-		function (next) {
-			categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read', next);
-		},
-		function (cids, next) {
-			const keys = cids.map(c => 'cid:' + c + ':uid:' + data.uid + ':pids:votes');
-			loadMorePosts(keys, socket.uid, data, next);
-		},
-	], callback);
+SocketPosts.loadMoreBestPosts = async function (socket, data) {
+	const cids = await categories.getCidsByPrivilege('categories:cid', socket.uid, 'topics:read');
+	const keys = cids.map(c => 'cid:' + c + ':uid:' + data.uid + ':pids:votes');
+	return await loadMorePosts(keys, socket.uid, data);
 };
 
-SocketPosts.loadMoreUpVotedPosts = function (socket, data, callback) {
-	loadMorePosts('uid:' + data.uid + ':upvote', socket.uid, data, callback);
+SocketPosts.loadMoreUpVotedPosts = async function (socket, data) {
+	return await loadMorePosts('uid:' + data.uid + ':upvote', socket.uid, data);
 };
 
-SocketPosts.loadMoreDownVotedPosts = function (socket, data, callback) {
-	loadMorePosts('uid:' + data.uid + ':downvote', socket.uid, data, callback);
+SocketPosts.loadMoreDownVotedPosts = async function (socket, data) {
+	return await loadMorePosts('uid:' + data.uid + ':downvote', socket.uid, data);
 };
 
-function loadMorePosts(set, uid, data, callback) {
+async function loadMorePosts(set, uid, data) {
 	if (!data || !utils.isNumber(data.uid) || !utils.isNumber(data.after)) {
-		return callback(new Error('[[error:invalid-data]]'));
+		throw new Error('[[error:invalid-data]]');
 	}
 
-	var start = Math.max(0, parseInt(data.after, 10));
-	var stop = start + 9;
+	const start = Math.max(0, parseInt(data.after, 10));
+	const stop = start + 9;
 
-	posts.getPostSummariesFromSet(set, uid, start, stop, callback);
+	return await posts.getPostSummariesFromSet(set, uid, start, stop);
 }
 
-SocketPosts.getCategory = function (socket, pid, callback) {
-	posts.getCidByPid(pid, callback);
+SocketPosts.getCategory = async function (socket, pid) {
+	return await posts.getCidByPid(pid);
 };
 
-SocketPosts.getPidIndex = function (socket, data, callback) {
+SocketPosts.getPidIndex = async function (socket, data) {
 	if (!data) {
-		return callback(new Error('[[error:invalid-data]]'));
+		throw new Error('[[error:invalid-data]]');
 	}
-	posts.getPidIndex(data.pid, data.tid, data.topicPostSort, callback);
+	return await posts.getPidIndex(data.pid, data.tid, data.topicPostSort);
 };
 
-SocketPosts.getReplies = function (socket, pid, callback) {
+SocketPosts.getReplies = async function (socket, pid) {
 	if (!utils.isNumber(pid)) {
-		return callback(new Error('[[error:invalid-data]]'));
+		throw new Error('[[error:invalid-data]]');
 	}
-	var postPrivileges;
-	async.waterfall([
-		function (next) {
-			posts.getPidsFromSet('pid:' + pid + ':replies', 0, -1, false, next);
-		},
-		function (pids, next) {
-			async.parallel({
-				posts: function (next) {
-					posts.getPostsByPids(pids, socket.uid, next);
-				},
-				privileges: function (next) {
-					privileges.posts.get(pids, socket.uid, next);
-				},
-			}, next);
-		},
-		function (results, next) {
-			postPrivileges = results.privileges;
 
-			topics.addPostData(results.posts, socket.uid, next);
-		},
-		function (postData, next) {
-			postData.forEach(function (postData, index) {
-				posts.modifyPostByPrivilege(postData, postPrivileges[index]);
-			});
-			postData = postData.filter(function (postData, index) {
-				return postData && postPrivileges[index].read;
-			});
-			next(null, postData);
-		},
-	], callback);
+	const pids = await posts.getPidsFromSet('pid:' + pid + ':replies', 0, -1, false);
+
+	var [postData, postPrivileges] = await Promise.all([
+		posts.getPostsByPids(pids, socket.uid),
+		privileges.posts.get(pids, socket.uid),
+	]);
+	postData = await topics.addPostData(postData, socket.uid);
+	postData.forEach((postData, index) => posts.modifyPostByPrivilege(postData, postPrivileges[index]));
+	postData = postData.filter((postData, index) => postData && postPrivileges[index].read);
+	return postData;
 };
 
-SocketPosts.accept = function (socket, data, callback) {
-	acceptOrReject(posts.submitFromQueue, socket, data, callback);
+SocketPosts.accept = async function (socket, data) {
+	await acceptOrReject(posts.submitFromQueue, socket, data);
 };
 
-SocketPosts.reject = function (socket, data, callback) {
-	acceptOrReject(posts.removeFromQueue, socket, data, callback);
+SocketPosts.reject = async function (socket, data) {
+	await acceptOrReject(posts.removeFromQueue, socket, data);
 };
 
-SocketPosts.editQueuedContent = function (socket, data, callback) {
-	if (!data || !data.id || !data.content) {
-		return callback(new Error('[[error:invalid-data]]'));
+async function acceptOrReject(method, socket, data) {
+	const canEditQueue = await posts.canEditQueue(socket.uid, data.id);
+	if (!canEditQueue) {
+		throw new Error('[[error:no-privileges]]');
 	}
-	async.waterfall([
-		function (next) {
-			posts.editQueuedContent(socket.uid, data.id, data.content, next);
-		},
-		function (next) {
-			plugins.fireHook('filter:parse.post', { postData: data }, next);
-		},
-	], callback);
-};
-
-function acceptOrReject(method, socket, data, callback) {
-	async.waterfall([
-		function (next) {
-			posts.canEditQueue(socket.uid, data.id, next);
-		},
-		function (canEditQueue, next) {
-			if (!canEditQueue) {
-				return callback(new Error('[[error:no-privileges]]'));
-			}
-
-			method(data.id, next);
-		},
-	], callback);
+	await method(data.id);
 }
+
+SocketPosts.editQueuedContent = async function (socket, data) {
+	if (!data || !data.id || !data.content) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	await posts.editQueuedContent(socket.uid, data.id, data.content);
+	return await plugins.fireHook('filter:parse.post', { postData: data });
+};
 
 require('../promisify')(SocketPosts);
