@@ -81,11 +81,11 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 			}
 
 			app.alertSuccess('[[success:settings-saved]]');
-			var requireReload = false;
+			var languageChanged = false;
 			for (var key in newSettings) {
 				if (newSettings.hasOwnProperty(key)) {
 					if (key === 'userLang' && config.userLang !== newSettings.userLang) {
-						requireReload = true;
+						languageChanged = true;
 					}
 					if (config.hasOwnProperty(key)) {
 						config[key] = newSettings[key];
@@ -95,13 +95,16 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 
 			sounds.loadMap();
 
-			if (requireReload && parseInt(app.user.uid, 10) === parseInt(ajaxify.data.theirid, 10)) {
+			if (languageChanged && parseInt(app.user.uid, 10) === parseInt(ajaxify.data.theirid, 10)) {
 				translator.translate('[[language:dir]]', config.userLang, function (translated) {
 					var htmlEl = $('html');
 					htmlEl.attr('data-dir', translated);
 					htmlEl.css('direction', translated);
 				});
-				ajaxify.refresh();
+				$.getScript(config.relative_path + '/assets/vendor/jquery/timeago/locales/jquery.timeago.' + utils.userLangToTimeagoCode(config.userLang) + '.js', function () {
+					overrides.overrideTimeago();
+					ajaxify.refresh();
+				});
 			}
 		});
 	}
