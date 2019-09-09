@@ -55,71 +55,64 @@ module.exports = function (SocketPosts) {
 	};
 
 	SocketPosts.delete = async function (socket, data) {
-		if (!data || !data.pid) {
-			throw new Error('[[error:invalid-data]]');
-		}
-		const postData = await posts.tools.delete(socket.uid, data.pid);
-		const results = await isMainAndLastPost(data.pid);
-		if (results.isMain && results.isLast) {
-			await deleteOrRestoreTopicOf('delete', data.pid, socket);
-		}
-
-		websockets.in('topic_' + data.tid).emit('event:post_deleted', postData);
-
-		await events.log({
+		await deleteOrRestore(socket, data, {
+			command: 'delete',
+			event: 'event:post_deleted',
 			type: 'post-delete',
-			uid: socket.uid,
-			pid: data.pid,
-			tid: postData.tid,
-			ip: socket.ip,
 		});
 	};
 
 	SocketPosts.restore = async function (socket, data) {
+		await deleteOrRestore(socket, data, {
+			command: 'restore',
+			event: 'event:post_restored',
+			type: 'post-restore',
+		});
+	};
+
+	async function deleteOrRestore(socket, data, params) {
 		if (!data || !data.pid) {
 			throw new Error('[[error:invalid-data]]');
 		}
-		const postData = await posts.tools.restore(socket.uid, data.pid);
+		const postData = await posts.tools[params.command](socket.uid, data.pid);
 		const results = await isMainAndLastPost(data.pid);
 		if (results.isMain && results.isLast) {
-			await deleteOrRestoreTopicOf('restore', data.pid, socket);
+			await deleteOrRestoreTopicOf(params.command, data.pid, socket);
 		}
-		websockets.in('topic_' + data.tid).emit('event:post_restored', postData);
+
+		websockets.in('topic_' + data.tid).emit(params.event, postData);
 
 		await events.log({
-			type: 'post-restore',
+			type: params.type,
 			uid: socket.uid,
 			pid: data.pid,
 			tid: postData.tid,
 			ip: socket.ip,
 		});
-	};
+	}
 
 	SocketPosts.deletePosts = async function (socket, data) {
-		if (!data || !Array.isArray(data.pids)) {
-			throw new Error('[[error:invalid-data]]');
-		}
-		for (const pid of data.pids) {
-			/* eslint-disable no-await-in-loop */
-			await SocketPosts.delete(socket, { pid: pid, tid: data.tid });
-		}
+		await deletePurgePosts(socket, data, 'delete');
 	};
 
 	SocketPosts.purgePosts = async function (socket, data) {
+		await deletePurgePosts(socket, data, 'purge');
+	};
+
+	async function deletePurgePosts(socket, data, command) {
 		if (!data || !Array.isArray(data.pids)) {
 			throw new Error('[[error:invalid-data]]');
 		}
 		for (const pid of data.pids) {
 			/* eslint-disable no-await-in-loop */
-			await SocketPosts.purge(socket, { pid: pid, tid: data.tid });
+			await SocketPosts[command](socket, { pid: pid, tid: data.tid });
 		}
-	};
+	}
 
 	SocketPosts.purge = async function (socket, data) {
 		if (!data || !parseInt(data.pid, 10)) {
 			throw new Error('[[error:invalid-data]]');
 		}
-
 
 		const results = await isMainAndLastPost(data.pid);
 		if (results.isMain && !results.isLast) {
