@@ -301,7 +301,7 @@ define('forum/topic/posts', [
 	}
 
 	function handlePrivateUploads(posts) {
-		if (app.user.uid) {
+		if (app.user.uid || !ajaxify.data.privateUploads) {
 			return;
 		}
 
