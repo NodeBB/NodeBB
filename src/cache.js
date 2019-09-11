@@ -1,10 +1,10 @@
 'use strict';
 
-var LRU = require('lru-cache');
-var pubsub = require('./pubsub');
+const LRU = require('lru-cache');
+const pubsub = require('./pubsub');
 
-var cache = new LRU({
-	max: 1000,
+const cache = new LRU({
+	max: 4000,
 	maxAge: 0,
 });
 cache.hits = 0;

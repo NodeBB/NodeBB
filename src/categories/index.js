@@ -1,16 +1,16 @@
 
 'use strict';
 
-var _ = require('lodash');
+const _ = require('lodash');
 
-var db = require('../database');
-var user = require('../user');
-var groups = require('../groups');
-var plugins = require('../plugins');
-var privileges = require('../privileges');
+const db = require('../database');
+const user = require('../user');
+const groups = require('../groups');
+const plugins = require('../plugins');
+const privileges = require('../privileges');
 const cache = require('../cache');
 
-var Categories = module.exports;
+const Categories = module.exports;
 
 require('./data')(Categories);
 require('./create')(Categories);
