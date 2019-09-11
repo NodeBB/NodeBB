@@ -4,6 +4,7 @@
 const meta = require('../meta');
 const plugins = require('../plugins');
 const db = require('../database');
+const utils = require('../utils');
 
 module.exports = function (User) {
 	User.search = async function (data) {
@@ -108,7 +109,11 @@ module.exports = function (User) {
 	}
 
 	function sortUsers(userData, sortBy) {
-		if (sortBy === 'joindate' || sortBy === 'postcount' || sortBy === 'reputation') {
+		if (!userData || !userData.length) {
+			return;
+		}
+		const isNumeric = utils.isNumber(userData[0][sortBy]);
+		if (isNumeric) {
 			userData.sort((u1, u2) => u2[sortBy] - u1[sortBy]);
 		} else {
 			userData.sort(function (u1, u2) {
