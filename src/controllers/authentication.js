@@ -21,59 +21,42 @@ const sockets = require('../socket.io');
 
 const authenticationController = module.exports;
 
-function registerAndLoginUser(req, res, userData, callback) {
-	var uid;
-	async.waterfall([
-		function (next) {
-			plugins.fireHook('filter:register.interstitial', {
-				userData: userData,
-				interstitials: [],
-			}, next);
-		},
-		function (data, next) {
-			// If interstitials are found, save registration attempt into session and abort
-			var deferRegistration = data.interstitials.length;
+async function registerAndLoginUser(req, res, userData) {
+	const data = await plugins.fireHook('filter:register.interstitial', {
+		userData: userData,
+		interstitials: [],
+	});
 
-			if (!deferRegistration) {
-				return next();
-			}
-			userData.register = true;
-			req.session.registration = userData;
+	// If interstitials are found, save registration attempt into session and abort
+	const deferRegistration = data.interstitials.length;
 
-			if (req.body.noscript === 'true') {
-				return res.redirect(nconf.get('relative_path') + '/register/complete');
-			}
-			return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
-		},
-		function (next) {
-			user.shouldQueueUser(req.ip, next);
-		},
-		function (queue, next) {
-			plugins.fireHook('filter:register.shouldQueue', { req: req, res: res, userData: userData, queue: queue }, next);
-		},
-		function (data, next) {
-			if (data.queue) {
-				addToApprovalQueue(req, userData, callback);
-			} else {
-				user.create(userData, next);
-			}
-		},
-		function (_uid, next) {
-			uid = _uid;
-			if (res.locals.processLogin) {
-				authenticationController.doLogin(req, uid, next);
-			} else {
-				next();
-			}
-		},
-		function (next) {
-			user.deleteInvitationKey(userData.email);
-			plugins.fireHook('filter:register.complete', { uid: uid, referrer: req.body.referrer || nconf.get('relative_path') + '/' }, next);
-		},
-	], callback);
+	if (deferRegistration) {
+		userData.register = true;
+		req.session.registration = userData;
+
+		if (req.body.noscript === 'true') {
+			res.redirect(nconf.get('relative_path') + '/register/complete');
+			return;
+		}
+		res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
+		return;
+	}
+	const queue = await user.shouldQueueUser(req.ip);
+	const result = await plugins.fireHook('filter:register.shouldQueue', { req: req, res: res, userData: userData, queue: queue });
+	if (result.queue) {
+		return await addToApprovalQueue(req, userData);
+	}
+
+	const uid = await user.create(userData);
+	if (res.locals.processLogin) {
+		await authenticationController.doLogin(req, uid);
+	}
+
+	user.deleteInvitationKey(userData.email);
+	return await plugins.fireHook('filter:register.complete', { uid: uid, referrer: req.body.referrer || nconf.get('relative_path') + '/' });
 }
 
-const registerAndLoginUserAsync = util.promisify(registerAndLoginUser);
+const registerAndLoginUserCallback = util.callbackify(registerAndLoginUser);
 
 
 authenticationController.register = async function (req, res) {
@@ -83,7 +66,7 @@ authenticationController.register = async function (req, res) {
 		return res.sendStatus(403);
 	}
 
-	var userData = req.body;
+	const userData = req.body;
 	try {
 		if (registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
 			await user.verifyInvitation(userData);
@@ -110,28 +93,22 @@ authenticationController.register = async function (req, res) {
 		res.locals.processLogin = true;	// set it to false in plugin if you wish to just register only
 		await plugins.fireHook('filter:register.check', { req: req, res: res, userData: userData });
 
-		const data = await registerAndLoginUserAsync(req, res, userData);
-
-		if (data.uid && req.body.userLang) {
-			user.setSetting(data.uid, 'userLang', req.body.userLang);
+		const data = await registerAndLoginUser(req, res, userData);
+		if (data) {
+			if (data.uid && req.body.userLang) {
+				await user.setSetting(data.uid, 'userLang', req.body.userLang);
+			}
+			res.json(data);
 		}
-
-		res.json(data);
 	} catch (err) {
 		helpers.noScriptErrors(req, res, err.message, 400);
 	}
 };
 
-function addToApprovalQueue(req, userData, callback) {
-	async.waterfall([
-		function (next) {
-			userData.ip = req.ip;
-			user.addToApprovalQueue(userData, next);
-		},
-		function (next) {
-			next(null, { message: '[[register:registration-added-to-queue]]' });
-		},
-	], callback);
+async function addToApprovalQueue(req, userData) {
+	userData.ip = req.ip;
+	await user.addToApprovalQueue(userData);
+	return { message: '[[register:registration-added-to-queue]]' };
 }
 
 authenticationController.registerComplete = function (req, res, next) {
@@ -188,7 +165,7 @@ authenticationController.registerComplete = function (req, res, next) {
 
 			if (req.session.registration.register === true) {
 				res.locals.processLogin = true;
-				registerAndLoginUser(req, res, req.session.registration, done);
+				registerAndLoginUserCallback(req, res, req.session.registration, done);
 			} else {
 				// Update user hash, clear registration data in session
 				const payload = req.session.registration;
@@ -202,7 +179,7 @@ authenticationController.registerComplete = function (req, res, next) {
 					}
 				});
 
-				await user.async.setUserFields(uid, payload);
+				await user.setUserFields(uid, payload);
 				done();
 			}
 		});
@@ -320,107 +297,64 @@ function continueLogin(req, res, next) {
 	})(req, res, next);
 }
 
-authenticationController.doLogin = function (req, uid, callback) {
+authenticationController.doLogin = async function (req, uid) {
 	if (!uid) {
-		return callback();
+		return;
 	}
-	async.waterfall([
-		function (next) {
-			req.login({ uid: uid }, next);
-		},
-		function (next) {
-			authenticationController.onSuccessfulLogin(req, uid, next);
-		},
-	], callback);
+	const loginAsync = util.promisify(req.login).bind(req);
+	await loginAsync({ uid: uid });
+	await authenticationController.onSuccessfulLogin(req, uid);
 };
 
-authenticationController.onSuccessfulLogin = function (req, uid, callback) {
+authenticationController.onSuccessfulLogin = async function (req, uid) {
 	// If already called once, return prematurely
 	if (req.res.locals.user) {
-		if (typeof callback === 'function') {
-			return setImmediate(callback);
-		}
-
 		return true;
 	}
 
-	var uuid = utils.generateUUID();
+	try {
+		const uuid = utils.generateUUID();
 
-	req.uid = uid;
-	req.loggedIn = true;
+		req.uid = uid;
+		req.loggedIn = true;
+		await meta.blacklist.test(req.ip);
+		await user.logIP(uid, req.ip);
 
-	async.waterfall([
-		function (next) {
-			meta.blacklist.test(req.ip, next);
-		},
-		function (next) {
-			user.logIP(uid, req.ip, next);
-		},
-		function (next) {
-			req.session.meta = {};
+		req.session.meta = {};
 
-			delete req.session.forceLogin;
-			// Associate IP used during login with user account
-			req.session.meta.ip = req.ip;
+		delete req.session.forceLogin;
+		// Associate IP used during login with user account
+		req.session.meta.ip = req.ip;
 
-			// Associate metadata retrieved via user-agent
-			req.session.meta = _.extend(req.session.meta, {
-				uuid: uuid,
-				datetime: Date.now(),
-				platform: req.useragent.platform,
-				browser: req.useragent.browser,
-				version: req.useragent.version,
-			});
+		// Associate metadata retrieved via user-agent
+		req.session.meta = _.extend(req.session.meta, {
+			uuid: uuid,
+			datetime: Date.now(),
+			platform: req.useragent.platform,
+			browser: req.useragent.browser,
+			version: req.useragent.version,
+		});
+		await Promise.all([
+			user.auth.addSession(uid, req.sessionID),
+			(uid > 0) ?	db.setObjectField('uid:' + uid + ':sessionUUID:sessionId', uuid, req.sessionID) : null,
+			user.updateLastOnlineTime(uid),
+			user.updateOnlineUsers(uid),
+		]);
 
-			async.parallel([
-				function (next) {
-					user.auth.addSession(uid, req.sessionID, next);
-				},
-				function (next) {
-					if (uid > 0) {
-						db.setObjectField('uid:' + uid + ':sessionUUID:sessionId', uuid, req.sessionID, next);
-					} else {
-						next();
-					}
-				},
-				function (next) {
-					user.updateLastOnlineTime(uid, next);
-				},
-				function (next) {
-					user.updateOnlineUsers(uid, next);
-				},
-			], function (err) {
-				next(err);
-			});
-		},
-		function (next) {
-			// Force session check for all connected socket.io clients with the same session id
-			sockets.in('sess_' + req.sessionID).emit('checkSession', uid);
+		// Force session check for all connected socket.io clients with the same session id
+		sockets.in('sess_' + req.sessionID).emit('checkSession', uid);
 
-			plugins.fireHook('action:user.loggedIn', { uid: uid, req: req });
-			next();
-		},
-	], function (err) {
-		if (err) {
-			req.session.destroy();
-		}
-
-		if (typeof callback === 'function') {
-			callback(err);
-		} else {
-			return !!err;
-		}
-	});
+		plugins.fireHook('action:user.loggedIn', { uid: uid, req: req });
+	} catch (err) {
+		req.session.destroy();
+		throw err;
+	}
 };
 
-authenticationController.localLogin = function (req, username, password, next) {
+authenticationController.localLogin = async function (req, username, password, next) {
 	if (!username) {
 		return next(new Error('[[error:invalid-username]]'));
 	}
-
-	var userslug = utils.slugify(username);
-	var uid;
-	var userData = {};
 
 	if (!password || !utils.isPasswordValid(password)) {
 		return next(new Error('[[error:invalid-password]]'));
@@ -430,132 +364,99 @@ authenticationController.localLogin = function (req, username, password, next) {
 		return next(new Error('[[error:password-too-long]]'));
 	}
 
-	async.waterfall([
-		function (next) {
-			user.getUidByUserslug(userslug, next);
-		},
-		function (_uid, next) {
-			uid = _uid;
+	const userslug = utils.slugify(username);
+	const uid = await user.getUidByUserslug(userslug);
+	try {
+		const [userData, isAdminOrGlobalMod, banned, hasLoginPrivilege] = await Promise.all([
+			db.getObjectFields('user:' + uid, ['uid', 'passwordExpiry']),
+			user.isAdminOrGlobalMod(uid),
+			user.bans.isBanned(uid),
+			privileges.global.can('local:login', uid),
+		]);
 
-			async.parallel({
-				userData: async.apply(db.getObjectFields, 'user:' + uid, ['passwordExpiry']),
-				isAdminOrGlobalMod: function (next) {
-					user.isAdminOrGlobalMod(uid, next);
-				},
-				banned: function (next) {
-					user.bans.isBanned(uid, next);
-				},
-				hasLoginPrivilege: function (next) {
-					privileges.global.can('local:login', uid, next);
-				},
-			}, next);
-		},
-		function (result, next) {
-			userData = Object.assign(result.userData, {
-				uid: uid,
-				isAdminOrGlobalMod: result.isAdminOrGlobalMod,
-			});
+		userData.isAdminOrGlobalMod = isAdminOrGlobalMod;
 
-			if (parseInt(uid, 10) && !result.hasLoginPrivilege) {
-				return next(new Error('[[error:local-login-disabled]]'));
-			}
+		if (parseInt(uid, 10) && !hasLoginPrivilege) {
+			return next(new Error('[[error:local-login-disabled]]'));
+		}
 
-			if (result.banned) {
-				return getBanInfo(uid, next);
-			}
+		if (banned) {
+			const banMesage = await getBanInfo(uid);
+			return next(new Error(banMesage));
+		}
 
-			user.isPasswordCorrect(uid, password, req.ip, next);
-		},
-		function (passwordMatch, next) {
-			if (!passwordMatch) {
-				return next(new Error('[[error:invalid-login-credentials]]'));
-			}
+		const passwordMatch = await user.isPasswordCorrect(uid, password, req.ip);
+		if (!passwordMatch) {
+			return next(new Error('[[error:invalid-login-credentials]]'));
+		}
 
-			next(null, userData, '[[success:authentication-successful]]');
-		},
-	], next);
+		next(null, userData, '[[success:authentication-successful]]');
+	} catch (err) {
+		next(err);
+	}
 };
 
-authenticationController.logout = function (req, res, next) {
+const regenerateAsync = util.promisify((req, callback) => req.session.regenerate(callback));
+
+authenticationController.logout = async function (req, res, next) {
 	if (!req.loggedIn || !req.sessionID) {
 		return res.status(200).send('not-logged-in');
 	}
 	const uid = req.uid;
 	const sessionID = req.sessionID;
-	async.waterfall([
-		function (next) {
-			user.auth.revokeSession(sessionID, uid, next);
-		},
-		function (next) {
-			req.logout();
-			req.session.regenerate(function (err) {
-				req.uid = 0;
-				req.headers['x-csrf-token'] = req.csrfToken();
-				next(err);
-			});
-		},
-		function (next) {
-			user.setUserField(uid, 'lastonline', Date.now() - (meta.config.onlineCutoff * 60000), next);
-		},
-		function (next) {
-			db.sortedSetAdd('users:online', Date.now() - (meta.config.onlineCutoff * 60000), uid, next);
-		},
-		function (next) {
-			plugins.fireHook('static:user.loggedOut', { req: req, res: res, uid: uid, sessionID: sessionID }, next);
-		},
-		async.apply(middleware.autoLocale, req, res),
-		function () {
-			// Force session check for all connected socket.io clients with the same session id
-			sockets.in('sess_' + sessionID).emit('checkSession', 0);
-			if (req.body.noscript === 'true') {
-				res.redirect(nconf.get('relative_path') + '/');
-			} else {
-				async.series({
-					buildHeader: async.apply(middleware.buildHeader, req, res),
-					header: async.apply(middleware.generateHeader, req, res, {}),
-				}, function (err, payload) {
-					if (err) {
-						return res.status(500);
-					}
 
-					payload = {
-						header: payload.header,
-						config: res.locals.config,
-					};
-					plugins.fireHook('filter:user.logout', payload);
-					res.status(200).send(payload);
-				});
-			}
-		},
-	], next);
+	try {
+		await user.auth.revokeSession(sessionID, uid);
+		req.logout();
+
+		await regenerateAsync(req);
+		req.uid = 0;
+		req.headers['x-csrf-token'] = req.csrfToken();
+
+		await user.setUserField(uid, 'lastonline', Date.now() - (meta.config.onlineCutoff * 60000));
+		await db.sortedSetAdd('users:online', Date.now() - (meta.config.onlineCutoff * 60000), uid);
+		await plugins.fireHook('static:user.loggedOut', { req: req, res: res, uid: uid, sessionID: sessionID });
+
+		const autoLocaleAsync = util.promisify(middleware.autoLocale);
+		await autoLocaleAsync(req, res);
+
+		// Force session check for all connected socket.io clients with the same session id
+		sockets.in('sess_' + sessionID).emit('checkSession', 0);
+		if (req.body.noscript === 'true') {
+			return res.redirect(nconf.get('relative_path') + '/');
+		}
+		const buildHeaderAsync = util.promisify(middleware.buildHeader);
+		const generateHeaderAsync = util.promisify(middleware.generateHeader);
+
+		await buildHeaderAsync(req, res);
+		const header = await generateHeaderAsync(req, res, {});
+		const payload = {
+			header: header,
+			config: res.locals.config,
+		};
+		plugins.fireHook('filter:user.logout', payload);
+		res.status(200).send(payload);
+	} catch (err) {
+		next(err);
+	}
 };
 
-function getBanInfo(uid, callback) {
-	var banInfo;
-	async.waterfall([
-		function (next) {
-			user.getLatestBanInfo(uid, next);
-		},
-		function (_banInfo, next) {
-			banInfo = _banInfo;
-			if (banInfo.reason) {
-				return next();
-			}
+async function getBanInfo(uid) {
+	try {
+		const banInfo = await user.getLatestBanInfo(uid);
 
-			translator.translate('[[user:info.banned-no-reason]]', function (translated) {
-				banInfo.reason = translated;
-				next();
-			});
-		},
-		function (next) {
-			next(new Error(banInfo.banned_until ? '[[error:user-banned-reason-until, ' + banInfo.banned_until_readable + ', ' + banInfo.reason + ']]' : '[[error:user-banned-reason, ' + banInfo.reason + ']]'));
-		},
-	], function (err) {
-		if (err) {
-			if (err.message === 'no-ban-info') {
-				err.message = '[[error:user-banned]]';
-			}
+		if (!banInfo.reason) {
+			banInfo.reason = await translator.translate('[[user:info.banned-no-reason]]');
 		}
-		callback(err);
-	});
+		return banInfo.banned_until ?
+			'[[error:user-banned-reason-until, ' + banInfo.banned_until_readable + ', ' + banInfo.reason + ']]' :
+			'[[error:user-banned-reason, ' + banInfo.reason + ']]';
+	} catch (err) {
+		if (err.message === 'no-ban-info') {
+			return '[[error:user-banned]]';
+		}
+		throw err;
+	}
 }
+
+require('../promisify')(authenticationController, ['register', 'registerComplete', 'registerAbort', 'login', 'localLogin', 'logout']);
