@@ -323,12 +323,18 @@ Categories.getTree = function (categories, parentCid) {
 Categories.buildForSelect = async function (uid, privilege) {
 	let categories = await Categories.getCategoriesByPrivilege('categories:cid', uid, privilege);
 	categories = Categories.getTree(categories);
-	return await Categories.buildForSelectCategories(categories);
+	return Categories.buildForSelectCategories(categories);
 };
 
-Categories.buildForSelectCategories = async function (categories) {
+Categories.buildForSelectAll = async function (uid) {
+	const categoryData = await Categories.getAllCategories(uid);
+	const tree = Categories.getTree(categoryData);
+	return Categories.buildForSelectCategories(tree);
+};
+
+Categories.buildForSelectCategories = function (categories) {
 	function recursive(category, categoriesData, level, depth) {
-		var bullet = level ? '&bull; ' : '';
+		const bullet = level ? '&bull; ' : '';
 		category.value = category.cid;
 		category.level = level;
 		category.text = level + bullet + category.name;
@@ -341,7 +347,7 @@ Categories.buildForSelectCategories = async function (categories) {
 		}
 	}
 
-	var categoriesData = [];
+	const categoriesData = [];
 
 	categories = categories.filter(category => category && !category.parentCid);
 
