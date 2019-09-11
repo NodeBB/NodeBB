@@ -1,80 +1,25 @@
 'use strict';
 
-var async = require('async');
-var winston = require('winston');
-var passport = require('passport');
-var nconf = require('nconf');
-var validator = require('validator');
-var _ = require('lodash');
+const async = require('async');
+const winston = require('winston');
+const passport = require('passport');
+const nconf = require('nconf');
+const validator = require('validator');
+const _ = require('lodash');
+const util = require('util');
 
-var db = require('../database');
-var meta = require('../meta');
-var user = require('../user');
-var plugins = require('../plugins');
-var utils = require('../utils');
-var translator = require('../translator');
-var helpers = require('./helpers');
-var middleware = require('../middleware');
-var privileges = require('../privileges');
-var sockets = require('../socket.io');
+const db = require('../database');
+const meta = require('../meta');
+const user = require('../user');
+const plugins = require('../plugins');
+const utils = require('../utils');
+const translator = require('../translator');
+const helpers = require('./helpers');
+const middleware = require('../middleware');
+const privileges = require('../privileges');
+const sockets = require('../socket.io');
 
-var authenticationController = module.exports;
-
-authenticationController.register = function (req, res) {
-	var registrationType = meta.config.registrationType || 'normal';
-
-	if (registrationType === 'disabled') {
-		return res.sendStatus(403);
-	}
-
-	var userData = req.body;
-
-	async.waterfall([
-		function (next) {
-			if (registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
-				user.verifyInvitation(userData, next);
-			} else {
-				next();
-			}
-		},
-		function (next) {
-			if (!userData.email) {
-				return next(new Error('[[error:invalid-email]]'));
-			}
-
-			if (!userData.username || userData.username.length < meta.config.minimumUsernameLength || utils.slugify(userData.username).length < meta.config.minimumUsernameLength) {
-				return next(new Error('[[error:username-too-short]]'));
-			}
-
-			if (userData.username.length > meta.config.maximumUsernameLength) {
-				return next(new Error('[[error:username-too-long]]'));
-			}
-
-			if (userData.password !== userData['password-confirm']) {
-				return next(new Error('[[user:change_password_error_match]]'));
-			}
-
-			user.isPasswordValid(userData.password, next);
-		},
-		function (next) {
-			res.locals.processLogin = true;	// set it to false in plugin if you wish to just register only
-			plugins.fireHook('filter:register.check', { req: req, res: res, userData: userData }, next);
-		},
-		function (result, next) {
-			registerAndLoginUser(req, res, userData, next);
-		},
-	], function (err, data) {
-		if (err) {
-			return helpers.noScriptErrors(req, res, err.message, 400);
-		}
-
-		if (data.uid && req.body.userLang) {
-			user.setSetting(data.uid, 'userLang', req.body.userLang);
-		}
-
-		res.json(data);
-	});
-};
+const authenticationController = module.exports;
 
 function registerAndLoginUser(req, res, userData, callback) {
 	var uid;
@@ -127,6 +72,55 @@ function registerAndLoginUser(req, res, userData, callback) {
 		},
 	], callback);
 }
+
+const registerAndLoginUserAsync = util.promisify(registerAndLoginUser);
+
+
+authenticationController.register = async function (req, res) {
+	const registrationType = meta.config.registrationType || 'normal';
+
+	if (registrationType === 'disabled') {
+		return res.sendStatus(403);
+	}
+
+	var userData = req.body;
+	try {
+		if (registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
+			await user.verifyInvitation(userData);
+		}
+
+		if (!userData.email) {
+			throw new Error('[[error:invalid-email]]');
+		}
+
+		if (!userData.username || userData.username.length < meta.config.minimumUsernameLength || utils.slugify(userData.username).length < meta.config.minimumUsernameLength) {
+			throw new Error('[[error:username-too-short]]');
+		}
+
+		if (userData.username.length > meta.config.maximumUsernameLength) {
+			throw new Error('[[error:username-too-long]]');
+		}
+
+		if (userData.password !== userData['password-confirm']) {
+			throw new Error('[[user:change_password_error_match]]');
+		}
+
+		user.isPasswordValid(userData.password);
+
+		res.locals.processLogin = true;	// set it to false in plugin if you wish to just register only
+		await plugins.fireHook('filter:register.check', { req: req, res: res, userData: userData });
+
+		const data = await registerAndLoginUserAsync(req, res, userData);
+
+		if (data.uid && req.body.userLang) {
+			user.setSetting(data.uid, 'userLang', req.body.userLang);
+		}
+
+		res.json(data);
+	} catch (err) {
+		helpers.noScriptErrors(req, res, err.message, 400);
+	}
+};
 
 function addToApprovalQueue(req, userData, callback) {
 	async.waterfall([

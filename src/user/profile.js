@@ -216,7 +216,7 @@ module.exports = function (User) {
 		if (uid <= 0 || !data || !data.uid) {
 			throw new Error('[[error:invalid-uid]]');
 		}
-		await User.isPasswordValid(data.newPassword);
+		User.isPasswordValid(data.newPassword);
 		const [isAdmin, hasPassword] = await Promise.all([
 			User.isAdministrator(uid),
 			User.hasPassword(uid),
