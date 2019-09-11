@@ -30,9 +30,6 @@ module.exports = function (User) {
 			return userSettings;
 		});
 		return await Promise.all(settings.map(s => onSettingsLoaded(s.uid, s)));
-		// async.map(settings, function (userSettings, next) {
-		// 	onSettingsLoaded(userSettings.uid, userSettings, next);
-		// }, next);
 	};
 
 	async function onSettingsLoaded(uid, settings) {
