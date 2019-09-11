@@ -71,7 +71,7 @@ function activate(plugin) {
 				process.exit(0);
 			}
 
-			db.sortetSetCard('plugins:active', next);
+			db.sortedSetCard('plugins:active', next);
 		},
 		function (numPlugins, next) {
 			winston.info('Activating plugin `%s`', plugin);
