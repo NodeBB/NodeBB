@@ -1,21 +1,22 @@
 'use strict';
 
-var path = require('path');
-var async = require('async');
-var nconf = require('nconf');
-var validator = require('validator');
+const path = require('path');
+const nconf = require('nconf');
+const validator = require('validator');
+const winston = require('winston');
+const util = require('util');
 
-var db = require('../database');
-var meta = require('../meta');
-var file = require('../file');
-var plugins = require('../plugins');
-var image = require('../image');
-var privileges = require('../privileges');
+const db = require('../database');
+const meta = require('../meta');
+const file = require('../file');
+const plugins = require('../plugins');
+const image = require('../image');
+const privileges = require('../privileges');
 
-var uploadsController = module.exports;
+const uploadsController = module.exports;
 
-uploadsController.upload = function (req, res, filesIterator) {
-	var files = req.files.files;
+uploadsController.upload = async function (req, res, filesIterator) {
+	let files = req.files.files;
 
 	if (!Array.isArray(files)) {
 		return res.status(500).json('invalid files');
@@ -25,210 +26,166 @@ uploadsController.upload = function (req, res, filesIterator) {
 		files = files[0];
 	}
 
-	async.mapSeries(files, filesIterator, function (err, images) {
-		deleteTempFiles(files);
+	// backwards compatibility
+	if (filesIterator.constructor && filesIterator.constructor.name !== 'AsyncFunction') {
+		winston.warn('[deprecated] uploadsController.upload, use an async function as iterator');
+		filesIterator = util.promisify(filesIterator);
+	}
 
-		if (err) {
-			return res.status(500).json({ path: req.path, error: err.message });
-		}
-
+	try {
+		const images = await Promise.all(files.map(fileObj => filesIterator(fileObj)));
 		res.status(200).json(images);
+	} catch (err) {
+		res.status(500).json({ path: req.path, error: err.message });
+	} finally {
+		deleteTempFiles(files);
+	}
+};
+
+uploadsController.uploadPost = async function (req, res) {
+	await uploadsController.upload(req, res, async function (uploadedFile) {
+		const isImage = uploadedFile.type.match(/image./);
+		if (isImage) {
+			return await uploadAsImage(req, uploadedFile);
+		}
+		return await uploadAsFile(req, uploadedFile);
 	});
 };
 
-uploadsController.uploadPost = function (req, res, next) {
-	uploadsController.upload(req, res, function (uploadedFile, next) {
-		var isImage = uploadedFile.type.match(/image./);
-		if (isImage) {
-			uploadAsImage(req, uploadedFile, next);
-		} else {
-			uploadAsFile(req, uploadedFile, next);
-		}
-	}, next);
-};
+async function uploadAsImage(req, uploadedFile) {
+	const canUpload = await privileges.global.can('upload:post:image', req.uid);
+	if (!canUpload) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	await image.checkDimensions(uploadedFile.path);
+	await image.stripEXIF(uploadedFile.path);
 
-function uploadAsImage(req, uploadedFile, callback) {
-	async.waterfall([
-		function (next) {
-			privileges.global.can('upload:post:image', req.uid, next);
-		},
-		function (canUpload, next) {
-			if (!canUpload) {
-				return next(new Error('[[error:no-privileges]]'));
-			}
-			image.checkDimensions(uploadedFile.path, next);
-		},
-		function (next) {
-			image.stripEXIF(uploadedFile.path, next);
-		},
-		function (next) {
-			if (plugins.hasListeners('filter:uploadImage')) {
-				return plugins.fireHook('filter:uploadImage', {
-					image: uploadedFile,
-					uid: req.uid,
-				}, callback);
-			}
-			file.isFileTypeAllowed(uploadedFile.path, next);
-		},
-		function (next) {
-			uploadsController.uploadFile(req.uid, uploadedFile, next);
-		},
-		function (fileObj, next) {
-			if (meta.config.resizeImageWidth === 0 || meta.config.resizeImageWidthThreshold === 0) {
-				return next(null, fileObj);
-			}
+	if (plugins.hasListeners('filter:uploadImage')) {
+		return await plugins.fireHook('filter:uploadImage', {
+			image: uploadedFile,
+			uid: req.uid,
+		});
+	}
+	await file.isFileTypeAllowed(uploadedFile.path);
 
-			resizeImage(fileObj, next);
-		},
-		function (fileObj, next) {
-			next(null, { url: fileObj.url });
-		},
-	], callback);
+	let fileObj = await uploadsController.uploadFile(req.uid, uploadedFile);
+
+	if (meta.config.resizeImageWidth === 0 || meta.config.resizeImageWidthThreshold === 0) {
+		return fileObj;
+	}
+
+	fileObj = await resizeImage(fileObj);
+	return { url: fileObj.url };
 }
 
-function uploadAsFile(req, uploadedFile, callback) {
-	async.waterfall([
-		function (next) {
-			privileges.global.can('upload:post:file', req.uid, next);
-		},
-		function (canUpload, next) {
-			if (!canUpload) {
-				return next(new Error('[[error:no-privileges]]'));
-			}
-			if (!meta.config.allowFileUploads) {
-				return next(new Error('[[error:uploads-are-disabled]]'));
-			}
-			uploadsController.uploadFile(req.uid, uploadedFile, next);
-		},
-		function (fileObj, next) {
-			next(null, {
-				url: fileObj.url,
-				name: fileObj.name,
-			});
-		},
-	], callback);
+async function uploadAsFile(req, uploadedFile) {
+	const canUpload = await privileges.global.can('upload:post:file', req.uid);
+	if (!canUpload) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	if (!meta.config.allowFileUploads) {
+		throw new Error('[[error:uploads-are-disabled]]');
+	}
+
+	const fileObj = await uploadsController.uploadFile(req.uid, uploadedFile);
+	return {
+		url: fileObj.url,
+		name: fileObj.name,
+	};
 }
 
-function resizeImage(fileObj, callback) {
-	async.waterfall([
-		function (next) {
-			image.size(fileObj.path, next);
-		},
-		function (imageData, next) {
-			if (imageData.width < meta.config.resizeImageWidthThreshold || meta.config.resizeImageWidth > meta.config.resizeImageWidthThreshold) {
-				return callback(null, fileObj);
-			}
+async function resizeImage(fileObj) {
+	const imageData = await image.size(fileObj.path);
+	if (imageData.width < meta.config.resizeImageWidthThreshold || meta.config.resizeImageWidth > meta.config.resizeImageWidthThreshold) {
+		return fileObj;
+	}
 
-			image.resizeImage({
-				path: fileObj.path,
-				target: file.appendToFileName(fileObj.path, '-resized'),
-				width: meta.config.resizeImageWidth,
-				quality: meta.config.resizeImageQuality,
-			}, next);
-		},
-		function (next) {
-			// Return the resized version to the composer/postData
-			fileObj.url = file.appendToFileName(fileObj.url, '-resized');
+	await image.resizeImage({
+		path: fileObj.path,
+		target: file.appendToFileName(fileObj.path, '-resized'),
+		width: meta.config.resizeImageWidth,
+		quality: meta.config.resizeImageQuality,
+	});
+	// Return the resized version to the composer/postData
+	fileObj.url = file.appendToFileName(fileObj.url, '-resized');
 
-			next(null, fileObj);
-		},
-	], callback);
+	return fileObj;
 }
 
-uploadsController.uploadThumb = function (req, res, next) {
+uploadsController.uploadThumb = async function (req, res, next) {
 	if (!meta.config.allowTopicsThumbnail) {
 		deleteTempFiles(req.files.files);
 		return next(new Error('[[error:topic-thumbnails-are-disabled]]'));
 	}
 
-	uploadsController.upload(req, res, function (uploadedFile, next) {
-		async.waterfall([
-			function (next) {
-				if (!uploadedFile.type.match(/image./)) {
-					return next(new Error('[[error:invalid-file]]'));
-				}
+	await uploadsController.upload(req, res, async function (uploadedFile) {
+		if (!uploadedFile.type.match(/image./)) {
+			throw new Error('[[error:invalid-file]]');
+		}
+		await file.isFileTypeAllowed(uploadedFile.path);
+		await image.resizeImage({
+			path: uploadedFile.path,
+			width: meta.config.topicThumbSize,
+			height: meta.config.topicThumbSize,
+		});
+		if (plugins.hasListeners('filter:uploadImage')) {
+			return await plugins.fireHook('filter:uploadImage', {
+				image: uploadedFile,
+				uid: req.uid,
+			});
+		}
 
-				file.isFileTypeAllowed(uploadedFile.path, next);
-			},
-			function (next) {
-				image.resizeImage({
-					path: uploadedFile.path,
-					width: meta.config.topicThumbSize,
-					height: meta.config.topicThumbSize,
-				}, next);
-			},
-			function (next) {
-				if (plugins.hasListeners('filter:uploadImage')) {
-					return plugins.fireHook('filter:uploadImage', {
-						image: uploadedFile,
-						uid: req.uid,
-					}, next);
-				}
-
-				uploadsController.uploadFile(req.uid, uploadedFile, next);
-			},
-		], next);
-	}, next);
+		return await uploadsController.uploadFile(req.uid, uploadedFile);
+	});
 };
 
-uploadsController.uploadFile = function (uid, uploadedFile, callback) {
+uploadsController.uploadFile = async function (uid, uploadedFile) {
 	if (plugins.hasListeners('filter:uploadFile')) {
-		return plugins.fireHook('filter:uploadFile', {
+		return await plugins.fireHook('filter:uploadFile', {
 			file: uploadedFile,
 			uid: uid,
-		}, callback);
+		});
 	}
 
 	if (!uploadedFile) {
-		return callback(new Error('[[error:invalid-file]]'));
+		throw new Error('[[error:invalid-file]]');
 	}
 
 	if (uploadedFile.size > meta.config.maximumFileSize * 1024) {
-		return callback(new Error('[[error:file-too-big, ' + meta.config.maximumFileSize + ']]'));
+		throw new Error('[[error:file-too-big, ' + meta.config.maximumFileSize + ']]');
 	}
 
-	var allowed = file.allowedExtensions();
+	const allowed = file.allowedExtensions();
 
-	var extension = path.extname(uploadedFile.name).toLowerCase();
+	const extension = path.extname(uploadedFile.name).toLowerCase();
 	if (allowed.length > 0 && (!extension || extension === '.' || !allowed.includes(extension))) {
-		return callback(new Error('[[error:invalid-file-type, ' + allowed.join('&#44; ') + ']]'));
+		throw new Error('[[error:invalid-file-type, ' + allowed.join('&#44; ') + ']]');
 	}
 
-	saveFileToLocal(uid, uploadedFile, callback);
+	return await saveFileToLocal(uid, uploadedFile);
 };
 
-function saveFileToLocal(uid, uploadedFile, callback) {
-	var filename = uploadedFile.name || 'upload';
-	var extension = path.extname(filename) || '';
+async function saveFileToLocal(uid, uploadedFile) {
+	const name = uploadedFile.name || 'upload';
+	const extension = path.extname(name) || '';
 
-	filename = Date.now() + '-' + validator.escape(filename.substr(0, filename.length - extension.length)).substr(0, 255) + extension;
-	var storedFile;
-	async.waterfall([
-		function (next) {
-			file.saveFileToLocal(filename, 'files', uploadedFile.path, next);
-		},
-		function (upload, next) {
-			storedFile = {
-				url: nconf.get('relative_path') + upload.url,
-				path: upload.path,
-				name: uploadedFile.name,
-			};
+	const filename = Date.now() + '-' + validator.escape(name.substr(0, name.length - extension.length)).substr(0, 255) + extension;
 
-			var fileKey = upload.url.replace(nconf.get('upload_url'), '');
-			db.sortedSetAdd('uid:' + uid + ':uploads', Date.now(), fileKey, next);
-		},
-		function (next) {
-			plugins.fireHook('filter:uploadStored', { uid: uid, uploadedFile: uploadedFile, storedFile: storedFile }, next);
-		},
-		function (data, next) {
-			next(null, data.storedFile);
-		},
-	], callback);
+	const upload = await file.saveFileToLocal(filename, 'files', uploadedFile.path);
+	const storedFile = {
+		url: nconf.get('relative_path') + upload.url,
+		path: upload.path,
+		name: uploadedFile.name,
+	};
+	const fileKey = upload.url.replace(nconf.get('upload_url'), '');
+	await db.sortedSetAdd('uid:' + uid + ':uploads', Date.now(), fileKey);
+	const data = await plugins.fireHook('filter:uploadStored', { uid: uid, uploadedFile: uploadedFile, storedFile: storedFile });
+	return data.storedFile;
 }
 
 function deleteTempFiles(files) {
-	async.each(files, function (fileObj, next) {
-		file.delete(fileObj.path);
-		next();
-	});
+	files.forEach(fileObj => file.delete(fileObj.path));
 }
+
+require('../promisify')(uploadsController, ['upload', 'uploadPost', 'uploadThumb']);
