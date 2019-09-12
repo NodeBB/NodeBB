@@ -8,7 +8,8 @@ define('forum/topic/posts', [
 	'forum/topic/images',
 	'navigator',
 	'components',
-], function (pagination, infinitescroll, postTools, images, navigator, components) {
+	'translator',
+], function (pagination, infinitescroll, postTools, images, navigator, components, translator) {
 	var Posts = { };
 
 	Posts.onNewPost = function (data) {
@@ -309,14 +310,16 @@ define('forum/topic/posts', [
 		var loginEl = document.createElement('a');
 		loginEl.className = 'login-required';
 		loginEl.href = config.relative_path + '/login';
-		loginEl.appendChild(document.createTextNode('🔒 Log in to view'));
 
-		posts.each(function (idx, postEl) {
-			$(postEl).find('[component="post/content"] img').each(function (idx, imgEl) {
-				imgEl = $(imgEl);
-				if (imgEl.attr('src').startsWith(config.relative_path + config.upload_url)) {
-					imgEl.replaceWith(loginEl.cloneNode(true));
-				}
+		translator.translate('[[topic:login-to-view]]', function (translated) {
+			loginEl.appendChild(document.createTextNode(translated));
+			posts.each(function (idx, postEl) {
+				$(postEl).find('[component="post/content"] img').each(function (idx, imgEl) {
+					imgEl = $(imgEl);
+					if (imgEl.attr('src').startsWith(config.relative_path + config.upload_url)) {
+						imgEl.replaceWith(loginEl.cloneNode(true));
+					}
+				});
 			});
 		});
 	}
