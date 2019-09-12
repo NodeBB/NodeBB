@@ -1,152 +1,110 @@
 'use strict';
 
-var async = require('async');
-var path = require('path');
-var fs = require('fs');
-var winston = require('winston');
-var converter = require('json-2-csv');
-var archiver = require('archiver');
+const path = require('path');
+const fs = require('fs');
+const winston = require('winston');
+const converter = require('json-2-csv');
+const archiver = require('archiver');
+const util = require('util');
 
-var db = require('../database');
-var user = require('../user');
-var meta = require('../meta');
-var posts = require('../posts');
-var batch = require('../batch');
-var events = require('../events');
-var privileges = require('../privileges');
-var accountHelpers = require('./accounts/helpers');
+const db = require('../database');
+const user = require('../user');
+const meta = require('../meta');
+const posts = require('../posts');
+const batch = require('../batch');
+const events = require('../events');
+const privileges = require('../privileges');
+const accountHelpers = require('./accounts/helpers');
 
-var userController = module.exports;
+const userController = module.exports;
 
-userController.getCurrentUser = function (req, res, next) {
+userController.getCurrentUser = async function (req, res) {
 	if (!req.loggedIn) {
 		return res.status(401).json('not-authorized');
 	}
-	async.waterfall([
-		function (next) {
-			user.getUserField(req.uid, 'userslug', next);
-		},
-		function (userslug, next) {
-			accountHelpers.getUserDataByUserSlug(userslug, req.uid, next);
-		},
-		function (userData) {
-			res.json(userData);
-		},
-	], next);
+	const userslug = await user.getUserField(req.uid, 'userslug');
+	const userData = await accountHelpers.getUserDataByUserSlug(userslug, req.uid);
+	res.json(userData);
 };
 
-
-userController.getUserByUID = function (req, res, next) {
-	byType('uid', req, res, next);
+userController.getUserByUID = async function (req, res, next) {
+	await byType('uid', req, res, next);
 };
 
-userController.getUserByUsername = function (req, res, next) {
-	byType('username', req, res, next);
+userController.getUserByUsername = async function (req, res, next) {
+	await byType('username', req, res, next);
 };
 
-userController.getUserByEmail = function (req, res, next) {
-	byType('email', req, res, next);
+userController.getUserByEmail = async function (req, res, next) {
+	await byType('email', req, res, next);
 };
 
-function byType(type, req, res, next) {
-	async.waterfall([
-		function (next) {
-			userController.getUserDataByField(req.uid, type, req.params[type], next);
-		},
-		function (data, next) {
-			if (!data) {
-				return next();
-			}
-			res.json(data);
-		},
-	], next);
+async function byType(type, req, res, next) {
+	const userData = await userController.getUserDataByField(req.uid, type, req.params[type]);
+	if (!userData) {
+		return next();
+	}
+	res.json(userData);
 }
 
-userController.getUserDataByField = function (callerUid, field, fieldValue, callback) {
-	async.waterfall([
-		function (next) {
-			if (field === 'uid') {
-				next(null, fieldValue);
-			} else if (field === 'username') {
-				user.getUidByUsername(fieldValue, next);
-			} else if (field === 'email') {
-				user.getUidByEmail(fieldValue, next);
-			} else {
-				next(null, null);
-			}
-		},
-		function (uid, next) {
-			if (!uid) {
-				return next(null, null);
-			}
-			userController.getUserDataByUID(callerUid, uid, next);
-		},
-	], callback);
-};
-
-userController.getUserDataByUID = function (callerUid, uid, callback) {
-	if (!parseInt(uid, 10)) {
-		return callback(new Error('[[error:no-user]]'));
+userController.getUserDataByField = async function (callerUid, field, fieldValue) {
+	let uid = null;
+	if (field === 'uid') {
+		uid = fieldValue;
+	} else if (field === 'username') {
+		uid = await user.getUidByUsername(fieldValue);
+	} else if (field === 'email') {
+		uid = await user.getUidByEmail(fieldValue);
 	}
-	async.waterfall([
-		function (next) {
-			privileges.global.can('view:users', callerUid, next);
-		},
-		function (canView, next) {
-			if (!canView) {
-				return next(new Error('[[error:no-privileges]]'));
-			}
-			async.parallel({
-				userData: async.apply(user.getUserData, uid),
-				settings: async.apply(user.getSettings, uid),
-			}, next);
-		},
-		function (results, next) {
-			if (!results.userData) {
-				return next(new Error('[[error:no-user]]'));
-			}
-
-			results.userData.email = results.settings.showemail && !meta.config.hideEmail ? results.userData.email : undefined;
-			results.userData.fullname = results.settings.showfullname && !meta.config.hideFullname ? results.userData.fullname : undefined;
-
-			next(null, results.userData);
-		},
-	], callback);
+	if (!uid) {
+		return null;
+	}
+	return await userController.getUserDataByUID(callerUid, uid);
 };
 
-userController.exportPosts = function (req, res, next) {
-	async.waterfall([
-		function (next) {
-			var payload = [];
-			batch.processSortedSet('uid:' + res.locals.uid + ':posts', function (pids, next) {
-				posts.getPostsData(pids, function (err, posts) {
-					if (err) {
-						return next(err);
-					}
+userController.getUserDataByUID = async function (callerUid, uid) {
+	if (!parseInt(uid, 10)) {
+		throw new Error('[[error:no-user]]');
+	}
+	const canView = await privileges.global.can('view:users', callerUid);
+	if (!canView) {
+		throw new Error('[[error:no-privileges]]');
+	}
+	const [userData, settings] = await Promise.all([
+		user.getUserData(uid),
+		user.getSettings(uid),
+	]);
 
-					// Remove empty post references and convert newlines in content
-					posts = posts.filter(Boolean).map(function (post) {
-						post.content = '"' + post.content.replace(/\n/g, '\\n').replace(/"/g, '\\"') + '"';
-						return post;
-					});
+	if (!userData) {
+		throw new Error('[[error:no-user]]');
+	}
 
-					payload = payload.concat(posts);
-					next();
-				});
-			}, function (err) {
-				next(err, payload);
-			});
-		},
-		function (payload, next) {
-			converter.json2csv(payload, next, {
-				checkSchemaDifferences: false,
-				emptyFieldValue: '',
-			});
-		},
-		function (csv) {
-			res.set('Content-Type', 'text/csv').set('Content-Disposition', 'attachment; filename="' + req.params.uid + '_posts.csv"').send(csv);
-		},
-	], next);
+	userData.email = settings.showemail && !meta.config.hideEmail ? userData.email : undefined;
+	userData.fullname = settings.showfullname && !meta.config.hideFullname ? userData.fullname : undefined;
+
+	return userData;
+};
+
+const json2csv = util.promisify(function (payload, options, callback) {
+	converter.json2csv(payload, callback, options);
+});
+
+userController.exportPosts = async function (req, res) {
+	var payload = [];
+	await batch.processSortedSet('uid:' + res.locals.uid + ':posts', async function (pids) {
+		let postData = await posts.getPostsData(pids);
+		// Remove empty post references and convert newlines in content
+		postData = postData.filter(Boolean).map(function (post) {
+			post.content = '"' + post.content.replace(/\n/g, '\\n').replace(/"/g, '\\"') + '"';
+			return post;
+		});
+		payload = payload.concat(postData);
+	});
+	const csv = await json2csv(payload, {
+		checkSchemaDifferences: false,
+		emptyFieldValue: '',
+	});
+	res.set('Content-Type', 'text/csv').set('Content-Disposition', 'attachment; filename="' + req.params.uid + '_posts.csv"').send(csv);
 };
 
 userController.exportUploads = function (req, res, next) {
@@ -230,18 +188,17 @@ userController.exportUploads = function (req, res, next) {
 	});
 };
 
-userController.exportProfile = function (req, res, next) {
+userController.exportProfile = async function (req, res) {
 	const targetUid = res.locals.uid;
-	async.waterfall([
-		async.apply(db.getObjects.bind(db), ['user:' + targetUid, 'user:' + targetUid + ':settings']),
-		function (objects, next) {
-			Object.assign(objects[0], objects[1]);
-			delete objects[0].password;
+	const objects = await db.getObjects(['user:' + targetUid, 'user:' + targetUid + ':settings']);
+	Object.assign(objects[0], objects[1]);
+	delete objects[0].password;
 
-			converter.json2csv(objects[0], next);
-		},
-		function (csv) {
-			res.set('Content-Type', 'text/csv').set('Content-Disposition', 'attachment; filename="' + targetUid + '_profile.csv"').send(csv);
-		},
-	], next);
+	const csv = await json2csv(objects[0], {});
+	res.set('Content-Type', 'text/csv').set('Content-Disposition', 'attachment; filename="' + targetUid + '_profile.csv"').send(csv);
 };
+
+require('../promisify')(userController, [
+	'getCurrentUser', 'getUserByUID', 'getUserByUsername', 'getUserByEmail',
+	'exportPosts', 'exportUploads', 'exportProfile',
+]);
