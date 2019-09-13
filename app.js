@@ -83,7 +83,7 @@ if (nconf.get('setup') || nconf.get('install')) {
 } else if (nconf.get('plugins')) {
 	require('./src/cli/manage').listPlugins();
 } else if (nconf.get('build')) {
-	require('./src/meta/build').build(nconf.get('build'));
+	require('./src/cli/manage').build(nconf.get('build'));
 } else if (nconf.get('events')) {
 	require('./src/cli/manage').listEvents();
 } else {

@@ -192,7 +192,17 @@ function info() {
 	});
 }
 
-exports.build = build.build;
+function buildWrapper(targets, options) {
+	build.build(targets, options, function (err) {
+		if (err) {
+			winston.error(err);
+			process.exit(1);
+		}
+		process.exit(0);
+	});
+}
+
+exports.build = buildWrapper;
 exports.buildTargets = buildTargets;
 exports.activate = activate;
 exports.listPlugins = listPlugins;
