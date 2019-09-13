@@ -1,27 +1,17 @@
 'use strict';
 
-var async = require('async');
-var topics = require('../../topics');
-var privileges = require('../../privileges');
+const topics = require('../../topics');
+const privileges = require('../../privileges');
 
 module.exports = function (SocketTopics) {
-	SocketTopics.merge = function (socket, tids, callback) {
+	SocketTopics.merge = async function (socket, tids) {
 		if (!Array.isArray(tids)) {
-			return callback(new Error('[[error:invalid-data]]'));
+			throw new Error('[[error:invalid-data]]');
 		}
-
-		async.waterfall([
-			function (next) {
-				async.map(tids, function (tid, next) {
-					privileges.topics.isAdminOrMod(tid, socket.uid, next);
-				}, next);
-			},
-			function (allowed, next) {
-				if (allowed.includes(false)) {
-					return next(new Error('[[error:no-privileges]]'));
-				}
-				topics.merge(tids, socket.uid, next);
-			},
-		], callback);
+		const allowed = await Promise.all(tids.map(tid => privileges.topics.isAdminOrMod(tid, socket.uid)));
+		if (allowed.includes(false)) {
+			throw new Error('[[error:no-privileges]]');
+		}
+		await topics.merge(tids, socket.uid);
 	};
 };
