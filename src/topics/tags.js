@@ -1,16 +1,17 @@
 
 'use strict';
 
-var async = require('async');
-var validator = require('validator');
+const async = require('async');
+const validator = require('validator');
+const _ = require('lodash');
 
-var _ = require('lodash');
-var db = require('../database');
-var meta = require('../meta');
-var categories = require('../categories');
-var plugins = require('../plugins');
-var utils = require('../utils');
-var batch = require('../batch');
+const db = require('../database');
+const meta = require('../meta');
+const categories = require('../categories');
+const plugins = require('../plugins');
+const utils = require('../utils');
+const batch = require('../batch');
+const cache = require('../cache');
 
 module.exports = function (Topics) {
 	Topics.createTags = async function (tags, tid, timestamp) {
@@ -53,6 +54,7 @@ module.exports = function (Topics) {
 		const isMember = await db.isSortedSetMember('tags:topic:count', tag);
 		if (!isMember) {
 			await db.sortedSetAdd('tags:topic:count', 0, tag);
+			cache.del('tags:topic:count');
 		}
 	};
 
@@ -91,6 +93,7 @@ module.exports = function (Topics) {
 	async function updateTagCount(tag) {
 		const count = await Topics.getTagTopicCount(tag);
 		await db.sortedSetAdd('tags:topic:count', count || 0, tag);
+		cache.del('tags:topic:count');
 	}
 
 	Topics.getTagTids = async function (tag, start, stop) {
@@ -109,6 +112,7 @@ module.exports = function (Topics) {
 		const keys = tags.map(tag => 'tag:' + tag + ':topics');
 		await db.deleteAll(keys);
 		await db.sortedSetRemove('tags:topic:count', tags);
+		cache.del('tags:topic:count');
 		await db.deleteAll(tags.map(tag => 'tag:' + tag));
 	};
 
@@ -166,7 +170,7 @@ module.exports = function (Topics) {
 		const topicTags = await Topics.getTopicsTags(tids);
 		const uniqueTopicTags = _.uniq(_.flatten(topicTags));
 
-		var tags = uniqueTopicTags.map(tag => ({ value: tag }));
+		const tags = uniqueTopicTags.map(tag => ({ value: tag }));
 
 		const [tagData, counts] = await Promise.all([
 			Topics.getTagData(tags),
@@ -177,7 +181,7 @@ module.exports = function (Topics) {
 			tag.score = counts[index] ? counts[index] : 0;
 		});
 
-		var tagDataMap = _.zipObject(uniqueTopicTags, tagData);
+		const tagDataMap = _.zipObject(uniqueTopicTags, tagData);
 
 		topicTags.forEach(function (tags, index) {
 			if (Array.isArray(tags)) {
@@ -230,6 +234,14 @@ module.exports = function (Topics) {
 		return result.matches;
 	};
 
+	async function getAllTags() {
+		const cached = cache.get('tags:topic:count');
+		if (cached !== undefined) {
+			return cached;
+		}
+		return await db.getSortedSetRevRange('tags:topic:count', 0, -1);
+	}
+
 	async function findMatches(query, cid) {
 		let tagWhitelist = [];
 		if (parseInt(cid, 10)) {
@@ -239,13 +251,13 @@ module.exports = function (Topics) {
 		if (Array.isArray(tagWhitelist[0]) && tagWhitelist[0].length) {
 			tags = tagWhitelist[0];
 		} else {
-			tags = await db.getSortedSetRevRange('tags:topic:count', 0, -1);
+			tags = await getAllTags();
 		}
 
 		query = query.toLowerCase();
 
-		var matches = [];
-		for (var i = 0; i < tags.length; i += 1) {
+		const matches = [];
+		for (let i = 0; i < tags.length; i += 1) {
 			if (tags[i].toLowerCase().startsWith(query)) {
 				matches.push(tags[i]);
 				if (matches.length > 19) {
@@ -259,7 +271,7 @@ module.exports = function (Topics) {
 	}
 
 	Topics.searchAndLoadTags = async function (data) {
-		var searchResult = {
+		const searchResult = {
 			tags: [],
 			matchCount: 0,
 			pageCount: 1,
@@ -288,15 +300,13 @@ module.exports = function (Topics) {
 			return await plugins.fireHook('filter:topic.getRelatedTopics', { topic: topicData, uid: uid });
 		}
 
-		var maximumTopics = meta.config.maximumRelatedTopics;
+		let maximumTopics = meta.config.maximumRelatedTopics;
 		if (maximumTopics === 0 || !topicData.tags || !topicData.tags.length) {
 			return [];
 		}
 
 		maximumTopics = maximumTopics || 5;
-		let tids = await async.map(topicData.tags, async function (tag) {
-			return await Topics.getTagTids(tag.value, 0, 5);
-		});
+		let tids = await Promise.all(topicData.tags.map(tag => Topics.getTagTids(tag.value, 0, 5)));
 		tids = _.shuffle(_.uniq(_.flatten(tids))).slice(0, maximumTopics);
 		const topics = await Topics.getTopics(tids, uid);
 		return topics.filter(t => t && !t.deleted && parseInt(t.uid, 10) !== parseInt(uid, 10));
