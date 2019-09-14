@@ -239,7 +239,9 @@ module.exports = function (Topics) {
 		if (cached !== undefined) {
 			return cached;
 		}
-		return await db.getSortedSetRevRange('tags:topic:count', 0, -1);
+		const tags = await db.getSortedSetRevRange('tags:topic:count', 0, -1);
+		cache.set('tags:topic:count', tags);
+		return tags;
 	}
 
 	async function findMatches(query, cid) {
