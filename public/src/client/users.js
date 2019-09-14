@@ -39,7 +39,7 @@ define('forum/users', ['translator', 'benchpress'], function (translator, Benchp
 				searchTimeoutID = 0;
 			}
 
-			searchTimeoutID = setTimeout(doSearch, 150);
+			searchTimeoutID = setTimeout(doSearch, 250);
 		});
 
 		$('.search select, .search input[type="checkbox"]').on('change', function () {

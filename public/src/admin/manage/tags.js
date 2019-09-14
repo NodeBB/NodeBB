@@ -79,7 +79,7 @@ define('admin/manage/tags', [
 						selectable.enable('.tag-management', '.tag-row');
 					});
 				});
-			}, 100);
+			}, 250);
 		});
 	}
 
