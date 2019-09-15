@@ -1,13 +1,13 @@
 
 'use strict';
 
-var async = require('async');
+const async = require('async');
 
-var utils = require('../utils');
-var meta = require('../meta');
-var db = require('../database');
-var groups = require('../groups');
-var plugins = require('../plugins');
+const utils = require('../utils');
+const meta = require('../meta');
+const db = require('../database');
+const groups = require('../groups');
+const plugins = require('../plugins');
 
 module.exports = function (User) {
 	User.updateProfile = async function (uid, data) {
@@ -136,7 +136,7 @@ module.exports = function (User) {
 	}
 
 	User.checkMinReputation = async function (callerUid, uid, setting) {
-		var isSelf = parseInt(callerUid, 10) === parseInt(uid, 10);
+		const isSelf = parseInt(callerUid, 10) === parseInt(uid, 10);
 		if (!isSelf || meta.config['reputation:disabled']) {
 			return;
 		}

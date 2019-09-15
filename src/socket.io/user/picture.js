@@ -1,110 +1,82 @@
 'use strict';
 
-var async = require('async');
-var path = require('path');
-var nconf = require('nconf');
+const path = require('path');
+const nconf = require('nconf');
 
-var user = require('../../user');
-var plugins = require('../../plugins');
-var file = require('../../file');
+const user = require('../../user');
+const plugins = require('../../plugins');
+const file = require('../../file');
 
 module.exports = function (SocketUser) {
-	SocketUser.changePicture = function (socket, data, callback) {
+	SocketUser.changePicture = async function (socket, data) {
 		if (!socket.uid) {
-			return callback(new Error('[[error:invalid-uid]]'));
+			throw new Error('[[error:invalid-uid]]');
 		}
 
 		if (!data) {
-			return callback(new Error('[[error:invalid-data]]'));
+			throw new Error('[[error:invalid-data]]');
 		}
 
-		var type = data.type;
+		const type = data.type;
+		let picture = '';
+		await user.isAdminOrGlobalModOrSelf(socket.uid, data.uid);
+		if (type === 'default') {
+			picture = '';
+		} else if (type === 'uploaded') {
+			picture = await user.getUserField(data.uid, 'uploadedpicture');
+		} else {
+			const returnData = await plugins.fireHook('filter:user.getPicture', {
+				uid: socket.uid,
+				type: type,
+				picture: undefined,
+			});
+			picture = returnData && returnData.picture;
+		}
 
-		async.waterfall([
-			function (next) {
-				user.isAdminOrGlobalModOrSelf(socket.uid, data.uid, next);
-			},
-			function (next) {
-				switch (type) {
-				case 'default':
-					next(null, '');
-					break;
-				case 'uploaded':
-					user.getUserField(data.uid, 'uploadedpicture', next);
-					break;
-				default:
-					plugins.fireHook('filter:user.getPicture', {
-						uid: socket.uid,
-						type: type,
-						picture: undefined,
-					}, function (err, returnData) {
-						next(err, returnData && returnData.picture);
-					});
-					break;
-				}
-			},
-			function (picture, next) {
-				user.setUserField(data.uid, 'picture', picture, next);
-			},
-		], callback);
+		await user.setUserField(data.uid, 'picture', picture);
 	};
 
-	SocketUser.removeUploadedPicture = function (socket, data, callback) {
+	SocketUser.removeUploadedPicture = async function (socket, data) {
 		if (!socket.uid || !data || !data.uid) {
-			return callback(new Error('[[error:invalid-data]]'));
+			throw new Error('[[error:invalid-data]]');
 		}
-
-		async.waterfall([
-			function (next) {
-				user.isAdminOrSelf(socket.uid, data.uid, next);
-			},
-			function (next) {
-				user.getUserFields(data.uid, ['uploadedpicture', 'picture'], next);
-			},
-			function (userData, next) {
-				if (userData.uploadedpicture && !userData.uploadedpicture.startsWith('http')) {
-					var pathToFile = path.join(nconf.get('base_dir'), 'public', userData.uploadedpicture);
-					if (pathToFile.startsWith(nconf.get('upload_path'))) {
-						file.delete(pathToFile);
-					}
-				}
-
-				user.setUserFields(data.uid, {
-					uploadedpicture: '',
-					picture: userData.uploadedpicture === userData.picture ? '' : userData.picture,	// if current picture is uploaded picture, reset to user icon
-				}, next);
-			},
-			function (next) {
-				plugins.fireHook('action:user.removeUploadedPicture', { callerUid: socket.uid, uid: data.uid }, next);
-			},
-		], callback);
+		await user.isAdminOrSelf(socket.uid, data.uid);
+		const userData = await user.getUserFields(data.uid, ['uploadedpicture', 'picture']);
+		if (userData.uploadedpicture && !userData.uploadedpicture.startsWith('http')) {
+			const pathToFile = path.join(nconf.get('base_dir'), 'public', userData.uploadedpicture);
+			if (pathToFile.startsWith(nconf.get('upload_path'))) {
+				file.delete(pathToFile);
+			}
+		}
+		await user.setUserFields(data.uid, {
+			uploadedpicture: '',
+			// if current picture is uploaded picture, reset to user icon
+			picture: userData.uploadedpicture === userData.picture ? '' : userData.picture,
+		});
+		plugins.fireHook('action:user.removeUploadedPicture', { callerUid: socket.uid, uid: data.uid });
 	};
 
-	SocketUser.getProfilePictures = function (socket, data, callback) {
+	SocketUser.getProfilePictures = async function (socket, data) {
 		if (!data || !data.uid) {
-			return callback(new Error('[[error:invalid-data]]'));
+			throw new Error('[[error:invalid-data]]');
 		}
-		async.waterfall([
-			function (next) {
-				async.parallel({
-					list: async.apply(plugins.fireHook, 'filter:user.listPictures', {
-						uid: data.uid,
-						pictures: [],
-					}),
-					uploaded: async.apply(user.getUserField, data.uid, 'uploadedpicture'),
-				}, next);
-			},
-			function (data, next) {
-				if (data.uploaded) {
-					data.list.pictures.push({
-						type: 'uploaded',
-						url: data.uploaded,
-						text: '[[user:uploaded_picture]]',
-					});
-				}
 
-				next(null, data.list.pictures);
-			},
-		], callback);
+		const [list, uploaded] = await Promise.all([
+			plugins.fireHook('filter:user.listPictures', {
+				uid: data.uid,
+				pictures: [],
+			}),
+			user.getUserField(data.uid, 'uploadedpicture'),
+		]);
+
+		if (uploaded) {
+			list.pictures.push({
+				type: 'uploaded',
+				url: data.uploaded,
+				text: '[[user:uploaded_picture]]',
+			});
+		}
+
+		return list.pictures;
 	};
 };

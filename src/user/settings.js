@@ -77,7 +77,7 @@ module.exports = function (User) {
 	}
 
 	User.saveSettings = async function (uid, data) {
-		var maxPostsPerPage = meta.config.maxPostsPerPage || 20;
+		const maxPostsPerPage = meta.config.maxPostsPerPage || 20;
 		if (!data.postsPerPage || parseInt(data.postsPerPage, 10) <= 1 || parseInt(data.postsPerPage, 10) > maxPostsPerPage) {
 			throw new Error('[[error:invalid-pagination-value, 2, ' + maxPostsPerPage + ']]');
 		}

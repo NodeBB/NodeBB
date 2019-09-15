@@ -1,12 +1,12 @@
 'use strict';
 
-var path = require('path');
-var nconf = require('nconf');
-var winston = require('winston');
+const path = require('path');
+const nconf = require('nconf');
+const winston = require('winston');
 
-var db = require('../database');
-var file = require('../file');
-var batch = require('../batch');
+const db = require('../database');
+const file = require('../file');
+const batch = require('../batch');
 
 module.exports = function (User) {
 	User.deleteUpload = async function (callerUid, uid, uploadName) {
