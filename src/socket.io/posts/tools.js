@@ -17,7 +17,7 @@ module.exports = function (SocketPosts) {
 		if (!data || !data.pid || !data.cid) {
 			throw new Error('[[error:invalid-data]]');
 		}
-    
+
 		const results = await utils.promiseParallel({
 			posts: posts.getPostFields(data.pid, ['deleted', 'bookmarks', 'uid', 'ip']),
 			isAdmin: user.isAdministrator(socket.uid),
@@ -31,7 +31,7 @@ module.exports = function (SocketPosts) {
 			tools: plugins.fireHook('filter:post.tools', { pid: data.pid, uid: socket.uid, tools: [] }),
 			postSharing: social.getActivePostSharing(),
 			history: posts.diffs.exists(data.pid),
-      canViewInfo: privileges.global.can('view:users:info', socket.uid),
+			canViewInfo: privileges.global.can('view:users:info', socket.uid),
 		});
 
 		const postData = results.posts;
