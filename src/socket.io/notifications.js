@@ -1,63 +1,41 @@
 'use strict';
 
-var async = require('async');
+const user = require('../user');
+const notifications = require('../notifications');
+const SocketNotifs = module.exports;
 
-var user = require('../user');
-var notifications = require('../notifications');
-var SocketNotifs = module.exports;
-
-SocketNotifs.get = function (socket, data, callback) {
+SocketNotifs.get = async function (socket, data) {
 	if (data && Array.isArray(data.nids) && socket.uid) {
-		user.notifications.getNotifications(data.nids, socket.uid, callback);
-	} else {
-		user.notifications.get(socket.uid, callback);
+		return await user.notifications.getNotifications(data.nids, socket.uid);
 	}
+	return await user.notifications.get(socket.uid);
 };
 
-SocketNotifs.getCount = function (socket, data, callback) {
-	user.notifications.getUnreadCount(socket.uid, callback);
+SocketNotifs.getCount = async function (socket) {
+	return await user.notifications.getUnreadCount(socket.uid);
 };
 
-SocketNotifs.deleteAll = function (socket, data, callback) {
+SocketNotifs.deleteAll = async function (socket) {
 	if (!socket.uid) {
-		return callback(new Error('[[error:no-privileges]]'));
+		throw new Error('[[error:no-privileges]]');
 	}
 
-	user.notifications.deleteAll(socket.uid, callback);
+	await user.notifications.deleteAll(socket.uid);
 };
 
-SocketNotifs.markRead = function (socket, nid, callback) {
-	async.waterfall([
-		function (next) {
-			notifications.markRead(nid, socket.uid, next);
-		},
-		function (next) {
-			user.notifications.pushCount(socket.uid);
-			next();
-		},
-	], callback);
+SocketNotifs.markRead = async function (socket, nid) {
+	await notifications.markRead(nid, socket.uid);
+	user.notifications.pushCount(socket.uid);
 };
 
-SocketNotifs.markUnread = function (socket, nid, callback) {
-	async.waterfall([
-		function (next) {
-			notifications.markUnread(nid, socket.uid, next);
-		},
-		function (next) {
-			user.notifications.pushCount(socket.uid);
-			next();
-		},
-	], callback);
+SocketNotifs.markUnread = async function (socket, nid) {
+	await notifications.markUnread(nid, socket.uid);
+	user.notifications.pushCount(socket.uid);
 };
 
-SocketNotifs.markAllRead = function (socket, data, callback) {
-	async.waterfall([
-		function (next) {
-			notifications.markAllRead(socket.uid, next);
-		},
-		function (next) {
-			user.notifications.pushCount(socket.uid);
-			next();
-		},
-	], callback);
+SocketNotifs.markAllRead = async function (socket) {
+	await notifications.markAllRead(socket.uid);
+	user.notifications.pushCount(socket.uid);
 };
+
+require('../promisify')(SocketNotifs);

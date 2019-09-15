@@ -1,59 +1,40 @@
 'use strict';
 
-var async = require('async');
-
-var user = require('../../user');
-var websockets = require('../index');
+const user = require('../../user');
+const websockets = require('../index');
 
 module.exports = function (SocketUser) {
-	SocketUser.checkStatus = function (socket, uid, callback) {
+	SocketUser.checkStatus = async function (socket, uid) {
 		if (!socket.uid) {
-			return callback(new Error('[[error:invalid-uid]]'));
+			throw new Error('[[error:invalid-uid]]');
 		}
-		async.waterfall([
-			function (next) {
-				user.getUserFields(uid, ['lastonline', 'status'], next);
-			},
-			function (userData, next) {
-				next(null, user.getStatus(userData));
-			},
-		], callback);
+		const userData = await user.getUserFields(uid, ['lastonline', 'status']);
+		return user.getStatus(userData);
 	};
 
-	SocketUser.setStatus = function (socket, status, callback) {
+	SocketUser.setStatus = async function (socket, status) {
 		if (socket.uid <= 0) {
-			return callback(new Error('[[error:invalid-uid]]'));
+			throw new Error('[[error:invalid-uid]]');
 		}
 
-		var allowedStatus = ['online', 'offline', 'dnd', 'away'];
+		const allowedStatus = ['online', 'offline', 'dnd', 'away'];
 		if (!allowedStatus.includes(status)) {
-			return callback(new Error('[[error:invalid-user-status]]'));
+			throw new Error('[[error:invalid-user-status]]');
 		}
 
-		var data = { status: status };
+		const userData = { status: status };
 		if (status !== 'offline') {
-			data.lastonline = Date.now();
+			userData.lastonline = Date.now();
 		}
-
-		async.waterfall([
-			function (next) {
-				user.setUserFields(socket.uid, data, next);
-			},
-			function (next) {
-				if (status !== 'offline') {
-					user.updateOnlineUsers(socket.uid, next);
-				} else {
-					next();
-				}
-			},
-			function (next) {
-				var data = {
-					uid: socket.uid,
-					status: status,
-				};
-				websockets.server.emit('event:user_status_change', data);
-				next(null, data);
-			},
-		], callback);
+		await user.setUserFields(socket.uid, userData);
+		if (status !== 'offline') {
+			await user.updateOnlineUsers(socket.uid);
+		}
+		const eventData = {
+			uid: socket.uid,
+			status: status,
+		};
+		websockets.server.emit('event:user_status_change', eventData);
+		return eventData;
 	};
 };

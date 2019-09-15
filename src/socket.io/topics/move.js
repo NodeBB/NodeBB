@@ -1,70 +1,46 @@
 'use strict';
 
-var async = require('async');
-var topics = require('../../topics');
-var categories = require('../../categories');
-var privileges = require('../../privileges');
-var socketHelpers = require('../helpers');
+const async = require('async');
+const topics = require('../../topics');
+const categories = require('../../categories');
+const privileges = require('../../privileges');
+const socketHelpers = require('../helpers');
 
 module.exports = function (SocketTopics) {
-	SocketTopics.move = function (socket, data, callback) {
+	SocketTopics.move = async function (socket, data) {
 		if (!data || !Array.isArray(data.tids) || !data.cid) {
-			return callback(new Error('[[error:invalid-data]]'));
+			throw new Error('[[error:invalid-data]]');
 		}
 
-		async.eachLimit(data.tids, 10, function (tid, next) {
-			var topicData;
-			async.waterfall([
-				function (next) {
-					privileges.topics.isAdminOrMod(tid, socket.uid, next);
-				},
-				function (canMove, next) {
-					if (!canMove) {
-						return next(new Error('[[error:no-privileges]]'));
-					}
+		await async.eachLimit(data.tids, 10, async function (tid) {
+			const canMove = await privileges.topics.isAdminOrMod(tid, socket.uid);
+			if (!canMove) {
+				throw new Error('[[error:no-privileges]]');
+			}
+			const topicData = await topics.getTopicFields(tid, ['tid', 'cid', 'slug']);
+			data.uid = socket.uid;
+			await topics.tools.move(tid, data);
 
-					topics.getTopicFields(tid, ['cid', 'slug'], next);
-				},
-				function (_topicData, next) {
-					topicData = _topicData;
-					topicData.tid = tid;
-					data.uid = socket.uid;
-					topics.tools.move(tid, data, next);
-				},
-				function (next) {
-					socketHelpers.emitToTopicAndCategory('event:topic_moved', topicData);
+			socketHelpers.emitToTopicAndCategory('event:topic_moved', topicData);
 
-					socketHelpers.sendNotificationToTopicOwner(tid, socket.uid, 'move', 'notifications:moved_your_topic');
-
-					next();
-				},
-			], next);
-		}, callback);
+			socketHelpers.sendNotificationToTopicOwner(tid, socket.uid, 'move', 'notifications:moved_your_topic');
+		});
 	};
 
 
-	SocketTopics.moveAll = function (socket, data, callback) {
+	SocketTopics.moveAll = async function (socket, data) {
 		if (!data || !data.cid || !data.currentCid) {
-			return callback(new Error('[[error:invalid-data]]'));
+			throw new Error('[[error:invalid-data]]');
+		}
+		const canMove = await privileges.categories.canMoveAllTopics(data.currentCid, data.cid, socket.uid);
+		if (!canMove) {
+			throw new Error('[[error:no-privileges]]');
 		}
 
-		async.waterfall([
-			function (next) {
-				privileges.categories.canMoveAllTopics(data.currentCid, data.cid, socket.uid, next);
-			},
-			function (canMove, next) {
-				if (!canMove) {
-					return callback(new Error('[[error:no-privileges]]'));
-				}
-
-				categories.getAllTopicIds(data.currentCid, 0, -1, next);
-			},
-			function (tids, next) {
-				data.uid = socket.uid;
-				async.eachLimit(tids, 50, function (tid, next) {
-					topics.tools.move(tid, data, next);
-				}, next);
-			},
-		], callback);
+		const tids = await categories.getAllTopicIds(data.currentCid, 0, -1);
+		data.uid = socket.uid;
+		await async.eachLimit(tids, 50, async function (tid) {
+			await topics.tools.move(tid, data);
+		});
 	};
 };

@@ -1,14 +1,14 @@
 'use strict';
 
 
-var helpers = require('./helpers');
+const helpers = require('./helpers');
 
 module.exports = function (SocketPosts) {
-	SocketPosts.bookmark = function (socket, data, callback) {
-		helpers.postCommand(socket, 'bookmark', 'bookmarked', '', data, callback);
+	SocketPosts.bookmark = async function (socket, data) {
+		return await helpers.postCommand(socket, 'bookmark', 'bookmarked', '', data);
 	};
 
-	SocketPosts.unbookmark = function (socket, data, callback) {
-		helpers.postCommand(socket, 'unbookmark', 'bookmarked', '', data, callback);
+	SocketPosts.unbookmark = async function (socket, data) {
+		return await helpers.postCommand(socket, 'unbookmark', 'bookmarked', '', data);
 	};
 };

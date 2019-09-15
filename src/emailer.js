@@ -218,7 +218,7 @@ Emailer.send = function (template, uid, params, callback) {
 			});
 		},
 	], function (err) {
-		return callback(err);
+		callback(err);
 	});
 };
 

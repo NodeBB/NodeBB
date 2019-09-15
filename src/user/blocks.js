@@ -39,7 +39,7 @@ module.exports = function (User) {
 			throw new Error('[[error:cannot-block-privileged]]');
 		}
 		if (parseInt(callerUid, 10) !== parseInt(blockerUid, 10) && !isCallerAdminOrMod) {
-			throw new Error();
+			throw new Error('[[error:no-privileges]]');
 		}
 	};
 

@@ -11,7 +11,7 @@ categoriesController.get = async function (req, res, next) {
 	const [categoryData, parent, allCategories] = await Promise.all([
 		categories.getCategories([req.params.category_id], req.uid),
 		categories.getParents([req.params.category_id]),
-		getAllCategories(req.uid),
+		categories.buildForSelectAll(req.uid),
 	]);
 
 	const category = categoryData[0];
@@ -42,13 +42,6 @@ categoriesController.get = async function (req, res, next) {
 		customClasses: data.customClasses,
 	});
 };
-
-async function getAllCategories(uid) {
-	const cids = await categories.getAllCidsFromSet('categories:cid');
-	const categoryData = await categories.getCategories(cids, uid);
-	const tree = categories.getTree(categoryData);
-	return await categories.buildForSelectCategories(tree);
-}
 
 categoriesController.getAll = function (req, res) {
 	// Categories list will be rendered on client side with recursion, etc.

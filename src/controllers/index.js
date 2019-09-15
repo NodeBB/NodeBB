@@ -168,11 +168,7 @@ Controllers.register = async function (req, res, next) {
 		if (registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
 			await user.verifyInvitation(req.query);
 		}
-		const termsOfUse = await plugins.fireHook('filter:parse.post', {
-			postData: {
-				content: meta.config.termsOfUse || '',
-			},
-		});
+
 		const loginStrategies = require('../routes/authentication').getLoginStrategies();
 		res.render('register', {
 			'register_window:spansize': loginStrategies.length ? 'col-md-6' : 'col-md-12',
@@ -183,7 +179,6 @@ Controllers.register = async function (req, res, next) {
 			maximumUsernameLength: meta.config.maximumUsernameLength,
 			minimumPasswordLength: meta.config.minimumPasswordLength,
 			minimumPasswordStrength: meta.config.minimumPasswordStrength,
-			termsOfUse: termsOfUse.postData.content,
 			breadcrumbs: helpers.buildBreadcrumbs([{
 				text: '[[register:register]]',
 			}]),
@@ -317,11 +312,16 @@ Controllers.outgoing = function (req, res, next) {
 	});
 };
 
-Controllers.termsOfUse = function (req, res, next) {
+Controllers.termsOfUse = async function (req, res, next) {
 	if (!meta.config.termsOfUse) {
 		return next();
 	}
+	const termsOfUse = await plugins.fireHook('filter:parse.post', {
+		postData: {
+			content: meta.config.termsOfUse || '',
+		},
+	});
 	res.render('tos', {
-		termsOfUse: meta.config.termsOfUse,
+		termsOfUse: termsOfUse.postData.content,
 	});
 };

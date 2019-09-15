@@ -85,6 +85,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 	topicData.postDeleteDuration = meta.config.postDeleteDuration;
 	topicData.scrollToMyPost = settings.scrollToMyPost;
 	topicData.allowMultipleBadges = meta.config.allowMultipleBadges === 1;
+	topicData.privateUploads = meta.config.privateUploads === 1;
 	topicData.rssFeedUrl = nconf.get('relative_path') + '/topic/' + topicData.tid + '.rss';
 	if (req.loggedIn) {
 		topicData.rssFeedUrl += '?uid=' + req.uid + '&token=' + rssToken;

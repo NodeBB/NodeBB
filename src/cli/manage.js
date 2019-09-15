@@ -71,7 +71,7 @@ function activate(plugin) {
 				process.exit(0);
 			}
 
-			db.sortetSetCard('plugins:active', next);
+			db.sortedSetCard('plugins:active', next);
 		},
 		function (numPlugins, next) {
 			winston.info('Activating plugin `%s`', plugin);
@@ -192,7 +192,17 @@ function info() {
 	});
 }
 
-exports.build = build.build;
+function buildWrapper(targets, options) {
+	build.build(targets, options, function (err) {
+		if (err) {
+			winston.error(err);
+			process.exit(1);
+		}
+		process.exit(0);
+	});
+}
+
+exports.build = buildWrapper;
 exports.buildTargets = buildTargets;
 exports.activate = activate;
 exports.listPlugins = listPlugins;

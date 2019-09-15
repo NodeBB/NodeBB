@@ -1,13 +1,13 @@
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
-var async = require('async');
-var sanitizeHTML = require('sanitize-html');
-var nconf = require('nconf');
+const fs = require('fs');
+const path = require('path');
+const async = require('async');
+const sanitizeHTML = require('sanitize-html');
+const nconf = require('nconf');
 
-var file = require('../file');
-var Translator = require('../translator').Translator;
+const file = require('../file');
+const Translator = require('../translator').Translator;
 
 function filterDirectories(directories) {
 	return directories.map(function (dir) {
@@ -204,3 +204,5 @@ module.exports.getDictionary = getDictionary;
 module.exports.filterDirectories = filterDirectories;
 module.exports.simplify = simplify;
 module.exports.sanitize = sanitize;
+
+require('../promisify')(module.exports);
