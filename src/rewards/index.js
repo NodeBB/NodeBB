@@ -1,123 +1,78 @@
 'use strict';
 
+const util = require('util');
 
-var async = require('async');
-var db = require('../database');
-var plugins = require('../plugins');
+const db = require('../database');
+const plugins = require('../plugins');
 
-var rewards = module.exports;
+const rewards = module.exports;
 
-rewards.checkConditionAndRewardUser = function (uid, condition, method, callback) {
-	callback = callback || function () {};
-
-	async.waterfall([
-		function (next) {
-			isConditionActive(condition, next);
-		},
-		function (isActive, next) {
-			if (!isActive) {
-				return callback();
-			}
-			getIDsByCondition(condition, next);
-		},
-		function (ids, next) {
-			getRewardDataByIDs(ids, next);
-		},
-		function (rewards, next) {
-			filterCompletedRewards(uid, rewards, next);
-		},
-		function (rewards, next) {
-			if (!rewards || !rewards.length) {
-				return callback();
-			}
-
-			async.filter(rewards, function (reward, next) {
-				if (!reward) {
-					return next(null, false);
-				}
-
-				checkCondition(reward, method, next);
-			}, function (err, eligible) {
-				if (err || !eligible) {
-					return next(false);
-				}
-
-				giveRewards(uid, eligible, next);
-			});
-		},
-	], callback);
+rewards.checkConditionAndRewardUser = async function (uid, condition, method) {
+	const isActive = await isConditionActive(condition);
+	if (!isActive) {
+		return;
+	}
+	const ids = await getIDsByCondition(condition);
+	let rewardData = await getRewardDataByIDs(ids);
+	rewardData = await filterCompletedRewards(uid, rewardData);
+	rewardData = rewardData.filter(Boolean);
+	if (!rewardData || !rewardData.length) {
+		return;
+	}
+	const eligible = await Promise.all(rewardData.map(reward => checkCondition(reward, method)));
+	const eligibleRewards = rewardData.filter((reward, index) => eligible[index]);
+	await giveRewards(uid, eligibleRewards);
 };
 
-function isConditionActive(condition, callback) {
-	db.isSetMember('conditions:active', condition, callback);
+async function isConditionActive(condition) {
+	return await db.isSetMember('conditions:active', condition);
 }
 
-function getIDsByCondition(condition, callback) {
-	db.getSetMembers('condition:' + condition + ':rewards', callback);
+async function getIDsByCondition(condition) {
+	return await db.getSetMembers('condition:' + condition + ':rewards');
 }
 
-function filterCompletedRewards(uid, rewards, callback) {
-	async.waterfall([
-		function (next) {
-			db.getSortedSetRangeByScoreWithScores('uid:' + uid + ':rewards', 0, -1, 1, '+inf', next);
-		},
-		function (data, next) {
-			var userRewards = {};
+async function filterCompletedRewards(uid, rewards) {
+	const data = await db.getSortedSetRangeByScoreWithScores('uid:' + uid + ':rewards', 0, -1, 1, '+inf');
+	const userRewards = {};
 
-			data.forEach(function (obj) {
-				userRewards[obj.value] = parseInt(obj.score, 10);
-			});
+	data.forEach(function (obj) {
+		userRewards[obj.value] = parseInt(obj.score, 10);
+	});
 
-			rewards = rewards.filter(function (reward) {
-				if (!reward) {
-					return false;
-				}
+	return rewards.filter(function (reward) {
+		if (!reward) {
+			return false;
+		}
 
-				var claimable = parseInt(reward.claimable, 10);
-				return claimable === 0 || (!userRewards[reward.id] || userRewards[reward.id] < reward.claimable);
-			});
-
-			next(null, rewards);
-		},
-	], callback);
+		const claimable = parseInt(reward.claimable, 10);
+		return claimable === 0 || (!userRewards[reward.id] || userRewards[reward.id] < reward.claimable);
+	});
 }
 
-function getRewardDataByIDs(ids, callback) {
-	db.getObjects(ids.map(function (id) {
-		return 'rewards:id:' + id;
-	}), callback);
+async function getRewardDataByIDs(ids) {
+	return await db.getObjects(ids.map(id => 'rewards:id:' + id));
 }
 
-function getRewardsByRewardData(rewards, callback) {
-	db.getObjects(rewards.map(function (reward) {
-		return 'rewards:id:' + reward.id + ':rewards';
-	}), callback);
+async function getRewardsByRewardData(rewards) {
+	return await db.getObjects(rewards.map(reward => 'rewards:id:' + reward.id + ':rewards'));
 }
 
-function checkCondition(reward, method, callback) {
-	async.waterfall([
-		function (next) {
-			method(next);
-		},
-		function (value, next) {
-			plugins.fireHook('filter:rewards.checkConditional:' + reward.conditional, { left: value, right: reward.value }, next);
-		},
-		function (bool, next) {
-			next(null, bool);
-		},
-	], callback);
+async function checkCondition(reward, method) {
+	if (method.constructor && method.constructor.name !== 'AsyncFunction') {
+		method = util.promisify(method);
+	}
+	const value = await method();
+	const bool = await plugins.fireHook('filter:rewards.checkConditional:' + reward.conditional, { left: value, right: reward.value });
+	return bool;
 }
 
-function giveRewards(uid, rewards, callback) {
-	async.waterfall([
-		function (next) {
-			getRewardsByRewardData(rewards, next);
-		},
-		function (rewardData, next) {
-			async.each(rewards, function (reward, next) {
-				plugins.fireHook('action:rewards.award:' + reward.rid, { uid: uid, reward: rewardData[rewards.indexOf(reward)] });
-				db.sortedSetIncrBy('uid:' + uid + ':rewards', 1, reward.id, next);
-			}, next);
-		},
-	], callback);
+async function giveRewards(uid, rewards) {
+	const rewardData = await getRewardsByRewardData(rewards);
+	await Promise.all(rewards.map(async function (reward) {
+		plugins.fireHook('action:rewards.award:' + reward.rid, { uid: uid, reward: rewardData[rewards.indexOf(reward)] });
+		await db.sortedSetIncrBy('uid:' + uid + ':rewards', 1, reward.id);
+	}));
 }
+
+require('../promisify')(rewards);

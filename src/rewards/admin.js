@@ -1,143 +1,80 @@
 'use strict';
 
-var async = require('async');
-var plugins = require('../plugins');
-var db = require('../database');
+const plugins = require('../plugins');
+const db = require('../database');
+const utils = require('../utils');
 
-var rewards = module.exports;
+const rewards = module.exports;
 
-rewards.save = function (data, callback) {
-	async.each(data, function save(data, next) {
+rewards.save = async function (data) {
+	async function save(data) {
 		if (!Object.keys(data.rewards).length) {
-			return next();
+			return;
 		}
-
-		var rewardsData = data.rewards;
+		const rewardsData = data.rewards;
 		delete data.rewards;
-
-		async.waterfall([
-			function (next) {
-				if (!parseInt(data.id, 10)) {
-					db.incrObjectField('global', 'rewards:id', next);
-				} else {
-					next(null, data.id);
-				}
-			},
-			function (rid, next) {
-				data.id = rid;
-
-				async.series([
-					function (next) {
-						rewards.delete(data, next);
-					},
-					function (next) {
-						db.setAdd('rewards:list', data.id, next);
-					},
-					function (next) {
-						db.setObject('rewards:id:' + data.id, data, next);
-					},
-					function (next) {
-						db.setObject('rewards:id:' + data.id + ':rewards', rewardsData, next);
-					},
-				], next);
-			},
-		], next);
-	}, function (err) {
-		if (err) {
-			return callback(err);
+		if (!parseInt(data.id, 10)) {
+			data.id = await db.incrObjectField('global', 'rewards:id');
 		}
-
-		saveConditions(data, callback);
-	});
-};
-
-rewards.delete = function (data, callback) {
-	async.parallel([
-		function (next) {
-			db.setRemove('rewards:list', data.id, next);
-		},
-		function (next) {
-			db.delete('rewards:id:' + data.id, next);
-		},
-		function (next) {
-			db.delete('rewards:id:' + data.id + ':rewards', next);
-		},
-	], callback);
-};
-
-rewards.get = function (callback) {
-	async.parallel({
-		active: getActiveRewards,
-		conditions: function (next) {
-			plugins.fireHook('filter:rewards.conditions', [], next);
-		},
-		conditionals: function (next) {
-			plugins.fireHook('filter:rewards.conditionals', [], next);
-		},
-		rewards: function (next) {
-			plugins.fireHook('filter:rewards.rewards', [], next);
-		},
-	}, callback);
-};
-
-function saveConditions(data, callback) {
-	var rewardsPerCondition = {};
-	async.waterfall([
-		function (next) {
-			db.delete('conditions:active', next);
-		},
-		function (next) {
-			var conditions = [];
-
-			data.forEach(function (reward) {
-				conditions.push(reward.condition);
-				rewardsPerCondition[reward.condition] = rewardsPerCondition[reward.condition] || [];
-				rewardsPerCondition[reward.condition].push(reward.id);
-			});
-
-			db.setAdd('conditions:active', conditions, next);
-		},
-		function (next) {
-			async.each(Object.keys(rewardsPerCondition), function (condition, next) {
-				db.setAdd('condition:' + condition + ':rewards', rewardsPerCondition[condition], next);
-			}, next);
-		},
-	], function (err) {
-		callback(err);
-	});
-}
-
-function getActiveRewards(callback) {
-	var activeRewards = [];
-
-	function load(id, next) {
-		async.parallel({
-			main: function (next) {
-				db.getObject('rewards:id:' + id, next);
-			},
-			rewards: function (next) {
-				db.getObject('rewards:id:' + id + ':rewards', next);
-			},
-		}, function (err, data) {
-			if (data.main) {
-				data.main.disabled = data.main.disabled === 'true';
-				data.main.rewards = data.rewards;
-				activeRewards.push(data.main);
-			}
-
-			next(err);
-		});
+		await rewards.delete(data);
+		await db.setAdd('rewards:list', data.id);
+		await db.setObject('rewards:id:' + data.id, data);
+		await db.setObject('rewards:id:' + data.id + ':rewards', rewardsData);
 	}
 
-	db.getSetMembers('rewards:list', function (err, rewards) {
-		if (err) {
-			return callback(err);
-		}
+	await Promise.all(data.map(data => save(data)));
+	await saveConditions(data);
+};
 
-		async.eachSeries(rewards, load, function (err) {
-			callback(err, activeRewards);
-		});
+rewards.delete = async function (data) {
+	await Promise.all([
+		db.setRemove('rewards:list', data.id),
+		db.delete('rewards:id:' + data.id),
+		db.delete('rewards:id:' + data.id + ':rewards'),
+	]);
+};
+
+rewards.get = async function () {
+	return await utils.promiseParallel({
+		active: getActiveRewards,
+		conditions: plugins.fireHook('filter:rewards.conditions', []),
+		conditionals: plugins.fireHook('filter:rewards.conditionals', []),
+		rewards: plugins.fireHook('filter:rewards.rewards', []),
 	});
+};
+
+async function saveConditions(data) {
+	const rewardsPerCondition = {};
+	await db.delete('conditions:active');
+	const conditions = [];
+
+	data.forEach(function (reward) {
+		conditions.push(reward.condition);
+		rewardsPerCondition[reward.condition] = rewardsPerCondition[reward.condition] || [];
+		rewardsPerCondition[reward.condition].push(reward.id);
+	});
+
+	await db.setAdd('conditions:active', conditions);
+
+	await Promise.all(Object.keys(rewardsPerCondition).map(c => db.setAdd('condition:' + c + ':rewards', rewardsPerCondition[c])));
+}
+
+async function getActiveRewards() {
+	async function load(id) {
+		const [main, rewards] = await Promise.all([
+			db.getObject('rewards:id:' + id),
+			db.getObject('rewards:id:' + id + ':rewards'),
+		]);
+		if (main) {
+			main.disabled = main.disabled === 'true';
+			main.rewards = rewards;
+		}
+		return main;
+	}
+
+	const rewardsList = await db.getSetMembers('rewards:list');
+	const rewardData = await Promise.all(rewardsList.map(id => load(id)));
+	return rewardData.filter(Boolean);
 }
 
 require('../promisify')(rewards);
