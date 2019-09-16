@@ -143,8 +143,8 @@ function setupExpressApp(app) {
 
 	app.use(relativePath + '/apple-touch-icon', middleware.routeTouchIcon);
 
-	app.use(bodyParser.urlencoded({ extended: true }));
-	app.use(bodyParser.json());
+	configureBodyParser(app);
+
 	app.use(cookieParser());
 	const userAgentMiddleware = useragent.express();
 	app.use(function userAgent(req, res, next) {
@@ -190,6 +190,17 @@ function setupFavicon(app) {
 	if (file.existsSync(faviconPath)) {
 		app.use(nconf.get('relative_path'), favicon(faviconPath));
 	}
+}
+
+function configureBodyParser(app) {
+	const urlencodedOpts = nconf.get('bodyParser:urlencoded') || {};
+	if (!urlencodedOpts.hasOwnProperty('extended')) {
+		urlencodedOpts.extended = true;
+	}
+	app.use(bodyParser.urlencoded(urlencodedOpts));
+
+	const jsonOpts = nconf.get('bodyParser:json') || {};
+	app.use(bodyParser.json(jsonOpts));
 }
 
 function setupCookie() {
