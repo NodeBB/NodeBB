@@ -8,11 +8,27 @@
 <br/>
 <label>Groups:</label>
 <div>
-    <select name="groups" class="form-control" multiple size="10">
-        <!-- BEGIN groups -->
-        <option value="{groups.displayName}">{groups.displayName}</option>
-        <!-- END groups -->
-    </select>
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active"><a href="#showto" aria-controls="showto" role="tab" data-toggle="tab">Show to</a></li>
+      <li role="presentation"><a href="#hidefrom" aria-controls="hidefrom" role="tab" data-toggle="tab">Hide from</a></li>
+    </ul>
+
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="showto">
+        <select name="groups" class="form-control" multiple size="10">
+            <!-- BEGIN groups -->
+            <option value="{groups.displayName}">{groups.displayName}</option>
+            <!-- END groups -->
+        </select>
+      </div>
+      <div role="tabpanel" class="tab-pane" id="hidefrom">
+        <select name="groupsHideFrom" class="form-control" multiple size="10">
+            <!-- BEGIN groups -->
+            <option value="{groups.displayName}">{groups.displayName}</option>
+            <!-- END groups -->
+        </select>
+      </div>
+    </div>
 </div>
 
 <div class="checkbox">
