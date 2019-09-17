@@ -280,7 +280,7 @@ SocketModules.chats.getMessages = async function (socket, data) {
 };
 
 SocketModules.chats.getIP = async function (socket, mid) {
-	const allowed = await user.isAdminOrGlobalMod(socket.uid);
+	const allowed = await privileges.global.can('view:users:info', socket.uid);
 	if (!allowed) {
 		throw new Error('[[error:no-privilege]]');
 	}

@@ -31,6 +31,7 @@ module.exports = function (SocketPosts) {
 			tools: plugins.fireHook('filter:post.tools', { pid: data.pid, uid: socket.uid, tools: [] }),
 			postSharing: social.getActivePostSharing(),
 			history: posts.diffs.exists(data.pid),
+			canViewInfo: privileges.global.can('view:users:info', socket.uid),
 		});
 
 		const postData = results.posts;
@@ -48,7 +49,7 @@ module.exports = function (SocketPosts) {
 		postData.display_history = results.history;
 		postData.toolsVisible = postData.tools.length || postData.display_moderator_tools;
 
-		if (!results.isAdmin && !results.isGlobalMod && !results.isModerator) {
+		if (!results.isAdmin && !results.canViewInfo) {
 			postData.ip = undefined;
 		}
 		return results;

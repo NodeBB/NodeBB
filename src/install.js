@@ -411,7 +411,7 @@ function giveGlobalPrivileges(next) {
 			privileges.global.give(defaultPrivileges, 'registered-users', next);
 		},
 		function (next) {
-			privileges.global.give(defaultPrivileges.concat(['ban', 'upload:post:file']), 'Global Moderators', next);
+			privileges.global.give(defaultPrivileges.concat(['ban', 'upload:post:file', 'view:users:info']), 'Global Moderators', next);
 		},
 		function (next) {
 			privileges.global.give(['view:users', 'view:tags', 'view:groups'], 'guests', next);

@@ -26,6 +26,7 @@ module.exports = function (privileges) {
 		{ name: '[[admin/manage/privileges:view-groups]]' },
 		{ name: '[[admin/manage/privileges:allow-local-login]]' },
 		{ name: '[[admin/manage/privileges:allow-group-creation]]' },
+		{ name: '[[admin/manage/privileges:view-users-info]]' },
 	];
 
 	privileges.global.userPrivilegeList = [
@@ -42,6 +43,7 @@ module.exports = function (privileges) {
 		'view:groups',
 		'local:login',
 		'group:create',
+		'view:users:info',
 	];
 
 	privileges.global.groupPrivilegeList = privileges.global.userPrivilegeList.map(privilege => 'groups:' + privilege);
@@ -81,6 +83,7 @@ module.exports = function (privileges) {
 			'view:users': privData['view:users'] || isAdministrator,
 			'view:tags': privData['view:tags'] || isAdministrator,
 			'view:groups': privData['view:groups'] || isAdministrator,
+			'view:users:info': privData['view:users:info'] || isAdministrator,
 		});
 	};
 
