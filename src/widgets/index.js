@@ -1,6 +1,5 @@
 'use strict';
 
-const async = require('async');
 const winston = require('winston');
 const _ = require('lodash');
 const Benchpress = require('benchpressjs');
@@ -201,7 +200,6 @@ widgets.resetTemplate = async function (template) {
 };
 
 widgets.resetTemplates = async function (templates) {
-	async.eachSeries(templates, widgets.resetTemplate);
 	for (const template of templates) {
 		/* eslint-disable no-await-in-loop */
 		await widgets.resetTemplate(template);
