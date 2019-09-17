@@ -7,7 +7,8 @@ const plugins = require('../plugins');
 
 const rewards = module.exports;
 
-rewards.checkConditionAndRewardUser = async function (uid, condition, method) {
+rewards.checkConditionAndRewardUser = async function (params) {
+	const { uid, condition, method } = params;
 	const isActive = await isConditionActive(condition);
 	if (!isActive) {
 		return;
