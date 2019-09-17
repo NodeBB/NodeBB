@@ -292,7 +292,7 @@
 		classNames = classNames || '';
 
 		// Validate sizes, handle integers, otherwise fall back to `avatar-sm`
-		if (['xs', 'sm', 'md', 'lg', 'xl'].includes(size)) {
+		if (['xs', 'sm', 'sm2x', 'md', 'lg', 'xl'].includes(size)) {
 			classNames += ' avatar-' + size;
 		} else if (!isNaN(parseInt(size, 10))) {
 			styles.push('width: ' + size + 'px;', 'height: ' + size + 'px;', 'line-height: ' + size + 'px;', 'font-size: ' + (parseInt(size, 10) / 16) + 'rem;');
