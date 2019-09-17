@@ -48,7 +48,7 @@ helpers.getUserDataByUserSlug = async function (userslug, callerUID) {
 		userData.fullname = '';
 	}
 
-	if (isAdmin || isSelf || ((isGlobalModerator || isModerator) && !results.isTargetAdmin)) {
+	if (isAdmin || isSelf || (canViewInfo && !results.isTargetAdmin)) {
 		userData.ips = results.ips;
 	}
 
