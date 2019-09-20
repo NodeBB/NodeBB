@@ -350,7 +350,13 @@ Categories.buildForSelectCategories = function (categories) {
 	categories = categories.filter(category => category && !category.parentCid);
 
 	categories.forEach(category => recursive(category, categoriesData, '', 0));
-	return categoriesData;
+	const pickFields = [
+		'name', 'level', 'disabledClass', 'icon', 'value', 'text',
+		'cid', 'parentCid', 'color', 'bgColor', 'backgroundImage', 'imageClass',
+		'disabled', 'depth',
+	];
+
+	return categoriesData.map(category => _.pick(category, pickFields));
 };
 
 Categories.async = require('../promisify')(Categories);

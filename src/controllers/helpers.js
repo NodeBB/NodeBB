@@ -4,7 +4,6 @@ const nconf = require('nconf');
 const validator = require('validator');
 const winston = require('winston');
 const querystring = require('querystring');
-const _ = require('lodash');
 
 const user = require('../user');
 const privileges = require('../privileges');
@@ -12,7 +11,6 @@ const categories = require('../categories');
 const plugins = require('../plugins');
 const meta = require('../meta');
 const middleware = require('../middleware');
-const utils = require('../utils');
 
 const helpers = module.exports;
 
@@ -233,11 +231,13 @@ async function getCategoryData(cids, uid, selectedCid) {
 	let categoryData = await categories.getCategoriesFields(cids, categoryFields);
 	categoryData = categoryData.filter(category => category && !category.link);
 
+	categories.getTree(categoryData);
+	const categoriesData = categories.buildForSelectCategories(categoryData);
+
 	let selectedCategory = [];
 	const selectedCids = [];
-	categoryData.forEach(function (category) {
+	categoriesData.forEach(function (category) {
 		category.selected = selectedCid ? selectedCid.includes(String(category.cid)) : false;
-		category.parentCid = category.hasOwnProperty('parentCid') && utils.isNumber(category.parentCid) ? category.parentCid : 0;
 		if (category.selected) {
 			selectedCategory.push(category);
 			selectedCids.push(category.cid);
@@ -257,14 +257,8 @@ async function getCategoryData(cids, uid, selectedCid) {
 		selectedCategory = undefined;
 	}
 
-
-	categories.getTree(categoryData);
-	const categoriesData = categories.buildForSelectCategories(categoryData);
-
 	return {
-		categories: categoriesData.map(category => _.pick(category, [
-			'cid', 'name', 'icon', 'color', 'bgColor', 'parentCid', 'backgroundImage', 'imageClass', 'selected', 'level',
-		])),
+		categories: categoriesData,
 		selectedCategory: selectedCategory,
 		selectedCids: selectedCids,
 	};
