@@ -84,8 +84,14 @@ async function buildCategories(uid, searchOnly) {
 	if (searchOnly) {
 		return [];
 	}
-	let categoriesData = await categories.buildForSelect(uid, 'read');
-	categoriesData = categoriesData.filter(category => category && !category.link);
+
+	const cids = await categories.getCidsByPrivilege('categories:cid', uid, 'read');
+	let categoriesData = await categories.getCategoriesData(cids);
+	categoriesData = categories.getTree(categoriesData);
+	categoriesData = categories.buildForSelectCategories(categoriesData);
+
+	categoriesData = categoriesData.filter(category => category && !category.link)
+		.map(category => ({ value: category.value, text: category.text }));
 	return [
 		{ value: 'all', text: '[[unread:all_categories]]' },
 		{ value: 'watched', text: '[[category:watched-categories]]' },

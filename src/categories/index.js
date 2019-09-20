@@ -341,9 +341,7 @@ Categories.buildForSelectCategories = function (categories) {
 		category.depth = depth;
 		categoriesData.push(category);
 		if (Array.isArray(category.children)) {
-			category.children.forEach(function (child) {
-				recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level, depth + 1);
-			});
+			category.children.forEach(child => recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level, depth + 1));
 		}
 	}
 
@@ -351,9 +349,7 @@ Categories.buildForSelectCategories = function (categories) {
 
 	categories = categories.filter(category => category && !category.parentCid);
 
-	categories.forEach(function (category) {
-		recursive(category, categoriesData, '', 0);
-	});
+	categories.forEach(category => recursive(category, categoriesData, '', 0));
 	return categoriesData;
 };
 
