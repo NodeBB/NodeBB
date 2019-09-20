@@ -53,7 +53,7 @@ topicsController.get = async function getTopic(req, res, callback) {
 		postIndex = await topics.getUserBookmark(tid, req.uid);
 	}
 
-	if (utils.isNumber(postIndex) && (postIndex < 1 || postIndex > topicData.postcount)) {
+	if (utils.isNumber(postIndex) && topicData.postcount > 0 && (postIndex < 1 || postIndex > topicData.postcount)) {
 		return helpers.redirect(res, '/topic/' + req.params.topic_id + '/' + req.params.slug + (postIndex > topicData.postcount ? '/' + topicData.postcount : ''));
 	}
 	postIndex = Math.max(1, postIndex);

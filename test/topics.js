@@ -1,54 +1,44 @@
 'use strict';
 
-var async = require('async');
-var assert = require('assert');
-var validator = require('validator');
-var nconf = require('nconf');
+const async = require('async');
+const assert = require('assert');
+const validator = require('validator');
+const nconf = require('nconf');
+const request = require('request');
 
-var db = require('./mocks/databasemock');
-var topics = require('../src/topics');
-var posts = require('../src/posts');
-var categories = require('../src/categories');
-var privileges = require('../src/privileges');
-var meta = require('../src/meta');
-var User = require('../src/user');
-var groups = require('../src/groups');
-var helpers = require('./helpers');
-var socketPosts = require('../src/socket.io/posts');
-var socketTopics = require('../src/socket.io/topics');
+const db = require('./mocks/databasemock');
+const topics = require('../src/topics');
+const posts = require('../src/posts');
+const categories = require('../src/categories');
+const privileges = require('../src/privileges');
+const meta = require('../src/meta');
+const User = require('../src/user');
+const groups = require('../src/groups');
+const helpers = require('./helpers');
+const socketPosts = require('../src/socket.io/posts');
+const socketTopics = require('../src/socket.io/topics');
 
 describe('Topic\'s', function () {
 	var topic;
 	var categoryObj;
 	var adminUid;
+	var adminJar;
 
-	before(function (done) {
-		User.create({ username: 'admin', password: '123456' }, function (err, uid) {
-			if (err) {
-				return done(err);
-			}
+	before(async function () {
+		adminUid = await User.create({ username: 'admin', password: '123456' });
+		await groups.join('administrators', adminUid);
+		adminJar = await helpers.loginUser('admin', '123456');
 
-			adminUid = uid;
-
-			categories.create({
-				name: 'Test Category',
-				description: 'Test category created by testing script',
-			}, function (err, category) {
-				if (err) {
-					return done(err);
-				}
-
-				categoryObj = category;
-
-				topic = {
-					userId: uid,
-					categoryId: categoryObj.cid,
-					title: 'Test Topic Title',
-					content: 'The content of test topic',
-				};
-				done();
-			});
+		categoryObj = await categories.create({
+			name: 'Test Category',
+			description: 'Test category created by testing script',
 		});
+		topic = {
+			userId: adminUid,
+			categoryId: categoryObj.cid,
+			title: 'Test Topic Title',
+			content: 'The content of test topic',
+		};
 	});
 
 	describe('.post', function () {
@@ -309,9 +299,6 @@ describe('Topic\'s', function () {
 
 		before(function (done) {
 			async.waterfall([
-				function (next) {
-					groups.join('administrators', adminUid, next);
-				},
 				function (next) {
 					topics.post({ uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId }, function (err, result) {
 						assert.ifError(err);
@@ -905,7 +892,6 @@ describe('Topic\'s', function () {
 	});
 
 	describe('controller', function () {
-		var request = require('request');
 		var topicData;
 
 		before(function (done) {
@@ -991,18 +977,15 @@ describe('Topic\'s', function () {
 		});
 
 		it('should mark topic read', function (done) {
-			helpers.loginUser('admin', '123456', function (err, jar) {
+			request(nconf.get('url') + '/topic/' + topicData.slug, {
+				jar: adminJar,
+			}, function (err, res) {
 				assert.ifError(err);
-				request(nconf.get('url') + '/topic/' + topicData.slug, {
-					jar: jar,
-				}, function (err, res) {
+				assert.equal(res.statusCode, 200);
+				topics.hasReadTopics([topicData.tid], adminUid, function (err, hasRead) {
 					assert.ifError(err);
-					assert.equal(res.statusCode, 200);
-					topics.hasReadTopics([topicData.tid], adminUid, function (err, hasRead) {
-						assert.ifError(err);
-						assert.equal(hasRead[0], true);
-						done();
-					});
+					assert.equal(hasRead[0], true);
+					done();
 				});
 			});
 		});
@@ -2070,47 +2053,35 @@ describe('Topic\'s', function () {
 			});
 		});
 
-		it('should merge 2 topics', function (done) {
-			async.waterfall([
-				function (next) {
-					socketTopics.merge({ uid: adminUid }, [topic2Data.tid, topic1Data.tid], next);
-				},
-				function (next) {
-					async.parallel({
-						topic1: function (next) {
-							async.waterfall([
-								function (next) {
-									topics.getTopicData(topic1Data.tid, next);
-								},
-								function (topicData, next) {
-									topics.getTopicWithPosts(topicData, 'tid:' + topicData.tid + ':posts', adminUid, 0, 19, false, next);
-								},
-							], next);
-						},
-						topic2: function (next) {
-							async.waterfall([
-								function (next) {
-									topics.getTopicData(topic2Data.tid, next);
-								},
-								function (topicData, next) {
-									topics.getTopicWithPosts(topicData, 'tid:' + topicData.tid + ':posts', adminUid, 0, 19, false, next);
-								},
-							], next);
-						},
-					}, next);
-				},
-				function (results, next) {
-					assert.equal(results.topic1.posts.length, 4);
-					assert.equal(results.topic2.posts.length, 0);
-					assert.equal(results.topic2.deleted, true);
+		it('should merge 2 topics', async function () {
+			await socketTopics.merge({ uid: adminUid }, [topic2Data.tid, topic1Data.tid]);
+			async function getTopic(tid) {
+				const topicData = await topics.getTopicData(tid);
+				return await topics.getTopicWithPosts(topicData, 'tid:' + topicData.tid + ':posts', adminUid, 0, 19, false);
+			}
+			const [topic1, topic2] = await Promise.all([
+				getTopic(topic1Data.tid),
+				getTopic(topic2Data.tid),
+			]);
 
-					assert.equal(results.topic1.posts[0].content, 'topic 1 OP');
-					assert.equal(results.topic1.posts[1].content, 'topic 2 OP');
-					assert.equal(results.topic1.posts[2].content, 'topic 1 reply');
-					assert.equal(results.topic1.posts[3].content, 'topic 2 reply');
-					next();
-				},
-			], done);
+			assert.equal(topic1.posts.length, 4);
+			assert.equal(topic2.posts.length, 0);
+			assert.equal(topic2.deleted, true);
+
+			assert.equal(topic1.posts[0].content, 'topic 1 OP');
+			assert.equal(topic1.posts[1].content, 'topic 2 OP');
+			assert.equal(topic1.posts[2].content, 'topic 1 reply');
+			assert.equal(topic1.posts[3].content, 'topic 2 reply');
+		});
+
+		it('should return properly for merged topic', function (done) {
+			request(nconf.get('url') + '/api/topic/' + topic2Data.slug, { jar: adminJar, json: true }, function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(response.statusCode, 200);
+				assert(body);
+				assert.deepStrictEqual(body.posts, []);
+				done();
+			});
 		});
 	});
 
