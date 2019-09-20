@@ -4,6 +4,7 @@ const nconf = require('nconf');
 const validator = require('validator');
 const winston = require('winston');
 const querystring = require('querystring');
+const _ = require('lodash');
 
 const user = require('../user');
 const privileges = require('../privileges');
@@ -228,7 +229,8 @@ async function getCategoryData(cids, uid, selectedCid) {
 	if (selectedCid && !Array.isArray(selectedCid)) {
 		selectedCid = [selectedCid];
 	}
-	let categoryData = await categories.getCategoriesFields(cids, ['cid', 'order', 'name', 'slug', 'icon', 'link', 'color', 'bgColor', 'parentCid', 'image', 'imageClass']);
+	const categoryFields = ['cid', 'order', 'name', 'slug', 'icon', 'link', 'color', 'bgColor', 'parentCid', 'image', 'imageClass'];
+	let categoryData = await categories.getCategoriesFields(cids, categoryFields);
 	categoryData = categoryData.filter(category => category && !category.link);
 
 	let selectedCategory = [];
@@ -255,22 +257,17 @@ async function getCategoryData(cids, uid, selectedCid) {
 		selectedCategory = undefined;
 	}
 
-	const categoriesData = [];
-	const tree = categories.getTree(categoryData);
 
-	tree.forEach(category => recursive(category, categoriesData, ''));
+	categories.getTree(categoryData);
+	const categoriesData = categories.buildForSelectCategories(categoryData);
 
-	return { categories: categoriesData, selectedCategory: selectedCategory, selectedCids: selectedCids };
-}
-
-function recursive(category, categoriesData, level) {
-	category.level = level;
-	categoriesData.push(category);
-	if (Array.isArray(category.children)) {
-		category.children.forEach(function (child) {
-			recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level);
-		});
-	}
+	return {
+		categories: categoriesData.map(category => _.pick(category, [
+			'cid', 'name', 'icon', 'color', 'bgColor', 'parentCid', 'backgroundImage', 'imageClass', 'selected', 'level',
+		])),
+		selectedCategory: selectedCategory,
+		selectedCids: selectedCids,
+	};
 }
 
 helpers.getHomePageRoutes = async function (uid) {
