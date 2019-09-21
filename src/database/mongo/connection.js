@@ -50,6 +50,7 @@ connection.getConnectionOptions = function (mongo) {
 		autoReconnect: true,
 		connectTimeoutMS: 90000,
 		useNewUrlParser: true,
+		useUnifiedTopology: true,
 	};
 
 	return _.merge(connOptions, mongo.options || {});
