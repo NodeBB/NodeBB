@@ -272,8 +272,7 @@ async function generateTopicsFeed(feedOptions, feedTopics) {
 		feed.pubDate = new Date(feedTopics[0].lastposttime).toUTCString();
 	}
 
-	for (const topicData of feedTopics) {
-		/* eslint-disable no-await-in-loop */
+	async function addFeedItem(topicData) {
 		const feedItem = {
 			title: utils.stripHTMLTags(topicData.title, utils.tags),
 			url: nconf.get('url') + '/topic/' + topicData.slug,
@@ -295,6 +294,11 @@ async function generateTopicsFeed(feedOptions, feedTopics) {
 		feedItem.description = mainPost.content;
 		feedItem.author = mainPost.user && mainPost.user.username;
 		feed.item(feedItem);
+	}
+
+	for (const topicData of feedTopics) {
+		/* eslint-disable no-await-in-loop */
+		await addFeedItem(topicData);
 	}
 	return feed;
 }
