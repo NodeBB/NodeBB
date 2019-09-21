@@ -1,6 +1,7 @@
 'use strict';
 
 const validator = require('validator');
+const nconf = require('nconf');
 
 const user = require('../user');
 const categories = require('../categories');
@@ -52,7 +53,7 @@ tagsController.getTag = async function (req, res) {
 
 	const pageCount = Math.max(1, Math.ceil(topicCount / settings.topicsPerPage));
 	templateData.pagination = pagination.create(page, pageCount);
-
+	templateData.rssFeedUrl = nconf.get('relative_path') + '/tags/' + tag + '.rss';
 	res.render('tag', templateData);
 };
 
