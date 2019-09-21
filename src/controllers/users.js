@@ -159,7 +159,7 @@ usersController.getUsers = async function (set, uid, query) {
 usersController.getUsersAndCount = async function (set, uid, start, stop) {
 	async function getCount() {
 		if (set === 'users:online') {
-			return await db.sortedSetCount('users:online', Date.now() - 300000, '+inf');
+			return await db.sortedSetCount('users:online', Date.now() - (meta.config.onlineCutoff * 60000), '+inf');
 		} else if (set === 'users:banned' || set === 'users:flags') {
 			return await db.sortedSetCard(set);
 		}
