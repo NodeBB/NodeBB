@@ -1,11 +1,11 @@
 {
 	"post-queue": "发布队列",
-	"description": "There are no posts in the post queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; Post &rarr; Post Queue</a> and enable <strong>Post Queue</strong>.",
+	"description": "发布队列中暂无新帖。启用此特性，请前往设置&rarr;发布&rarr;发布队列，然后启用发布队列。",
 	"user": "用户",
 	"category": "版块",
 	"title": "标题",
 	"content": "内容",
 	"posted": "发布",
 	"reply-to": "回复\"%1\"",
-	"content-editable": "发布之前，您可以点击内容进行编辑。"
+	"content-editable": "发帖前，您可以点击内容进行编辑。"
 }
