@@ -89,8 +89,7 @@ async function buildCategories(uid, searchOnly) {
 	let categoriesData = await categories.getCategoriesData(cids);
 	categoriesData = categoriesData.filter(category => category && !category.link);
 	categoriesData = categories.getTree(categoriesData);
-	categoriesData = categories.buildForSelectCategories(categoriesData);
-	categoriesData = categoriesData.map(category => ({ value: category.value, text: category.text }));
+	categoriesData = categories.buildForSelectCategories(categoriesData, ['text', 'value']);
 
 	return [
 		{ value: 'all', text: '[[unread:all_categories]]' },

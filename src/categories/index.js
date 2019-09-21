@@ -320,19 +320,23 @@ Categories.getTree = function (categories, parentCid) {
 	return tree;
 };
 
-Categories.buildForSelect = async function (uid, privilege) {
-	let categories = await Categories.getCategoriesByPrivilege('categories:cid', uid, privilege);
-	categories = Categories.getTree(categories);
-	return Categories.buildForSelectCategories(categories);
+Categories.buildForSelect = async function (uid, privilege, fields) {
+	const cids = await Categories.getCidsByPrivilege('categories:cid', uid, privilege);
+	return await getSelectData(cids, fields);
 };
 
-Categories.buildForSelectAll = async function (uid) {
-	const categoryData = await Categories.getAllCategories(uid);
+Categories.buildForSelectAll = async function (fields) {
+	const cids = await Categories.getAllCidsFromSet('categories:cid');
+	return await getSelectData(cids, fields);
+};
+
+async function getSelectData(cids, fields) {
+	const categoryData = await Categories.getCategoriesData(cids);
 	const tree = Categories.getTree(categoryData);
-	return Categories.buildForSelectCategories(tree);
-};
+	return Categories.buildForSelectCategories(tree, fields);
+}
 
-Categories.buildForSelectCategories = function (categories) {
+Categories.buildForSelectCategories = function (categories, fields) {
 	function recursive(category, categoriesData, level, depth) {
 		const bullet = level ? '&bull; ' : '';
 		category.value = category.cid;
@@ -347,14 +351,21 @@ Categories.buildForSelectCategories = function (categories) {
 
 	const categoriesData = [];
 
-	categories = categories.filter(category => category && !category.parentCid);
+	const rootCategories = categories.filter(category => category && !category.parentCid);
 
-	categories.forEach(category => recursive(category, categoriesData, '', 0));
+	rootCategories.forEach(category => recursive(category, categoriesData, '', 0));
+
 	const pickFields = [
-		'name', 'level', 'disabledClass', 'icon', 'value', 'text',
-		'cid', 'parentCid', 'color', 'bgColor', 'backgroundImage', 'imageClass',
-		'disabled', 'depth',
+		'cid', 'name', 'level', 'icon',	'parentCid',
+		'color', 'bgColor', 'backgroundImage', 'imageClass',
 	];
+	fields = fields || [];
+	if (fields.includes('text') && fields.includes('value')) {
+		return categoriesData.map(category => _.pick(category, fields));
+	}
+	if (fields.length) {
+		pickFields.push(...fields);
+	}
 
 	return categoriesData.map(category => _.pick(category, pickFields));
 };

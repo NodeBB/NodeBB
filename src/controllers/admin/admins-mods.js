@@ -22,7 +22,7 @@ AdminsMods.get = async function (req, res) {
 };
 
 async function getModeratorsOfCategories(uid) {
-	const categoryData = await categories.buildForSelect(uid, 'find');
+	const categoryData = await categories.buildForSelect(uid, 'find', ['depth']);
 	const moderators = await Promise.all(categoryData.map(c => categories.getModerators(c.cid)));
 	categoryData.forEach((c, index) => {
 		c.moderators = moderators[index];

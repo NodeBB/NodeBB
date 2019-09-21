@@ -96,7 +96,7 @@ SocketCategories.getMoveCategories = async function (socket, data) {
 SocketCategories.getSelectCategories = async function (socket) {
 	const [isAdmin, categoriesData] = await Promise.all([
 		user.isAdministrator(socket.uid),
-		categories.buildForSelect(socket.uid, 'find'),
+		categories.buildForSelect(socket.uid, 'find', ['disabled', 'link']),
 	]);
 	return categoriesData.filter(category => category && (!category.disabled || isAdmin) && !category.link);
 };

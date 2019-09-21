@@ -11,7 +11,7 @@ categoriesController.get = async function (req, res, next) {
 	const [categoryData, parent, allCategories] = await Promise.all([
 		categories.getCategories([req.params.category_id], req.uid),
 		categories.getParents([req.params.category_id]),
-		categories.buildForSelectAll(req.uid),
+		categories.buildForSelectAll(['text', 'value']),
 	]);
 
 	const category = categoryData[0];
@@ -22,7 +22,7 @@ categoriesController.get = async function (req, res, next) {
 	category.parent = parent[0];
 	allCategories.forEach(function (category) {
 		if (category) {
-			category.selected = parseInt(category.cid, 10) === parseInt(req.params.category_id, 10);
+			category.selected = parseInt(category.value, 10) === parseInt(req.params.category_id, 10);
 		}
 	});
 

@@ -13,7 +13,7 @@ categoriesController.get = async function (req, res, next) {
 	}
 	const [states, categoriesData] = await Promise.all([
 		user.getCategoryWatchState(userData.uid),
-		categories.buildForSelect(userData.uid, 'find'),
+		categories.buildForSelect(userData.uid, 'find', ['descriptionParsed', 'depth']),
 	]);
 
 	categoriesData.forEach(function (category) {

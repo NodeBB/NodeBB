@@ -9,7 +9,7 @@ privilegesController.get = async function (req, res) {
 	const cid = req.params.cid ? parseInt(req.params.cid, 10) : 0;
 	const [privilegesData, categoriesData] = await Promise.all([
 		cid ? privileges.categories.list(cid) : privileges.global.list(),
-		categories.buildForSelectAll(req.uid),
+		categories.buildForSelectAll(),
 	]);
 
 	categoriesData.unshift({
