@@ -121,7 +121,7 @@ async function getStats() {
 		getStatsForSet('topics:tid', 'topicCount'),
 	]);
 	results[0].name = '[[admin/general/dashboard:unique-visitors]]';
-	results[1].name = '[[admin/general/dashboard:users]]';
+	results[1].name = '[[admin/general/dashboard:new-users]]';
 	results[2].name = '[[admin/general/dashboard:posts]]';
 	results[3].name = '[[admin/general/dashboard:topics]]';
 	cache.set('admin:stats', results, 600000);
