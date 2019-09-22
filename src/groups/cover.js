@@ -7,6 +7,7 @@ const image = require('../image');
 const file = require('../file');
 
 module.exports = function (Groups) {
+	const allowedTypes = ['image/png', 'image/jpeg', 'image/bmp'];
 	Groups.updateCoverPosition = async function (groupName, position) {
 		if (!groupName) {
 			throw new Error('[[error:invalid-data]]');
@@ -15,15 +16,21 @@ module.exports = function (Groups) {
 	};
 
 	Groups.updateCover = async function (uid, data) {
-		let tempPath = data.file ? data.file : '';
+		let tempPath = data.file ? data.file.path : '';
 		try {
 			// Position only? That's fine
 			if (!data.imageData && !data.file && data.position) {
 				return await Groups.updateCoverPosition(data.groupName, data.position);
 			}
+			const type = data.file ? data.file.type : image.mimeFromBase64(data.imageData);
+			if (!type || !allowedTypes.includes(type)) {
+				throw new Error('[[error:invalid-image]]');
+			}
+
 			if (!tempPath) {
 				tempPath = await image.writeImageDataToTempFile(data.imageData);
 			}
+
 			const filename = 'groupCover-' + data.groupName + path.extname(tempPath);
 			const uploadData = await image.uploadImage(filename, 'files', {
 				path: tempPath,

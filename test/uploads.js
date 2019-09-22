@@ -215,8 +215,22 @@ describe('Upload Controllers', function () {
 			});
 		});
 
+		it('should not allow svg uploads', function (done) {
+			socketUser.updateCover({ uid: 1 }, { uid: 1, imageData: 'data:image/svg;base64,PHN2Zy9vbmxvYWQ9YWxlcnQoMik+' }, function (err) {
+				assert.equal(err.message, '[[error:invalid-image]]');
+				done();
+			});
+		});
+
 		it('should not allow non image uploads', function (done) {
 			socketUser.uploadCroppedPicture({ uid: 1 }, { uid: 1, imageData: 'data:text/html;base64,PHN2Zy9vbmxvYWQ9YWxlcnQoMik+' }, function (err) {
+				assert.equal(err.message, '[[error:invalid-image]]');
+				done();
+			});
+		});
+
+		it('should not allow svg uploads', function (done) {
+			socketUser.uploadCroppedPicture({ uid: 1 }, { uid: 1, imageData: 'data:image/svg;base64,PHN2Zy9vbmxvYWQ9YWxlcnQoMik+' }, function (err) {
 				assert.equal(err.message, '[[error:invalid-image]]');
 				done();
 			});
