@@ -1,11 +1,11 @@
 'use strict';
 
-var winston = require('winston');
+const winston = require('winston');
 
-var file = require('../file');
-var image = require('../image');
-var meta = require('../meta');
-var db = require('../database');
+const db = require('../database');
+const file = require('../file');
+const image = require('../image');
+const meta = require('../meta');
 
 module.exports = function (User) {
 	User.updateCoverPosition = async function (uid, position) {
@@ -124,7 +124,7 @@ module.exports = function (User) {
 	};
 
 	async function convertToPNG(path, extension) {
-		var convertToPNG = meta.config['profile:convertProfileImageToPNG'] === 1;
+		const convertToPNG = meta.config['profile:convertProfileImageToPNG'] === 1;
 		if (!convertToPNG) {
 			return path;
 		}
@@ -134,8 +134,8 @@ module.exports = function (User) {
 	}
 
 	function generateProfileImageFilename(uid, type, extension) {
-		var keepAllVersions = meta.config['profile:keepAllUserImages'] === 1;
-		var convertToPNG = meta.config['profile:convertProfileImageToPNG'] === 1;
+		const keepAllVersions = meta.config['profile:keepAllUserImages'] === 1;
+		const convertToPNG = meta.config['profile:convertProfileImageToPNG'] === 1;
 		return uid + '-' + type + (keepAllVersions ? '-' + Date.now() : '') + (convertToPNG ? '.png' : extension);
 	}
 
