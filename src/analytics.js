@@ -1,25 +1,26 @@
 'use strict';
 
-var cronJob = require('cron').CronJob;
-var async = require('async');
-var winston = require('winston');
-var nconf = require('nconf');
-var crypto = require('crypto');
-var LRU = require('lru-cache');
+const cronJob = require('cron').CronJob;
+const winston = require('winston');
+const nconf = require('nconf');
+const crypto = require('crypto');
+const LRU = require('lru-cache');
 
-var db = require('./database');
-var plugins = require('./plugins');
 
-var Analytics = module.exports;
+const db = require('./database');
+const utils = require('./utils');
+const plugins = require('./plugins');
 
-var counters = {};
+const Analytics = module.exports;
 
-var pageViews = 0;
-var pageViewsRegistered = 0;
-var pageViewsGuest = 0;
-var pageViewsBot = 0;
-var uniqueIPCount = 0;
-var uniquevisitors = 0;
+const counters = {};
+
+let pageViews = 0;
+let pageViewsRegistered = 0;
+let pageViewsGuest = 0;
+let pageViewsBot = 0;
+let uniqueIPCount = 0;
+let uniquevisitors = 0;
 
 /**
  * TODO: allow the cache's max value to be configurable. On high-traffic installs,
@@ -87,177 +88,148 @@ Analytics.pageView = function (payload) {
 	}
 };
 
-Analytics.writeData = function (callback) {
-	callback = callback || function () {};
-	var today = new Date();
-	var month = new Date();
-	var dbQueue = [];
+Analytics.writeData = async function () {
+	const today = new Date();
+	const month = new Date();
+	const dbQueue = [];
 
 	today.setHours(today.getHours(), 0, 0, 0);
 	month.setMonth(month.getMonth(), 1);
 	month.setHours(0, 0, 0, 0);
 
 	if (pageViews > 0) {
-		dbQueue.push(async.apply(db.sortedSetIncrBy, 'analytics:pageviews', pageViews, today.getTime()));
-		dbQueue.push(async.apply(db.sortedSetIncrBy, 'analytics:pageviews:month', pageViews, month.getTime()));
+		dbQueue.push(db.sortedSetIncrBy('analytics:pageviews', pageViews, today.getTime()));
+		dbQueue.push(db.sortedSetIncrBy('analytics:pageviews:month', pageViews, month.getTime()));
 		pageViews = 0;
 	}
 
 	if (pageViewsRegistered > 0) {
-		dbQueue.push(async.apply(db.sortedSetIncrBy, 'analytics:pageviews:registered', pageViewsRegistered, today.getTime()));
-		dbQueue.push(async.apply(db.sortedSetIncrBy, 'analytics:pageviews:month:registered', pageViewsRegistered, month.getTime()));
+		dbQueue.push(db.sortedSetIncrBy('analytics:pageviews:registered', pageViewsRegistered, today.getTime()));
+		dbQueue.push(db.sortedSetIncrBy('analytics:pageviews:month:registered', pageViewsRegistered, month.getTime()));
 		pageViewsRegistered = 0;
 	}
 
 	if (pageViewsGuest > 0) {
-		dbQueue.push(async.apply(db.sortedSetIncrBy, 'analytics:pageviews:guest', pageViewsGuest, today.getTime()));
-		dbQueue.push(async.apply(db.sortedSetIncrBy, 'analytics:pageviews:month:guest', pageViewsGuest, month.getTime()));
+		dbQueue.push(db.sortedSetIncrBy('analytics:pageviews:guest', pageViewsGuest, today.getTime()));
+		dbQueue.push(db.sortedSetIncrBy('analytics:pageviews:month:guest', pageViewsGuest, month.getTime()));
 		pageViewsGuest = 0;
 	}
 
 	if (pageViewsBot > 0) {
-		dbQueue.push(async.apply(db.sortedSetIncrBy, 'analytics:pageviews:bot', pageViewsBot, today.getTime()));
-		dbQueue.push(async.apply(db.sortedSetIncrBy, 'analytics:pageviews:month:bot', pageViewsBot, month.getTime()));
+		dbQueue.push(db.sortedSetIncrBy('analytics:pageviews:bot', pageViewsBot, today.getTime()));
+		dbQueue.push(db.sortedSetIncrBy('analytics:pageviews:month:bot', pageViewsBot, month.getTime()));
 		pageViewsBot = 0;
 	}
 
 	if (uniquevisitors > 0) {
-		dbQueue.push(async.apply(db.sortedSetIncrBy, 'analytics:uniquevisitors', uniquevisitors, today.getTime()));
+		dbQueue.push(db.sortedSetIncrBy('analytics:uniquevisitors', uniquevisitors, today.getTime()));
 		uniquevisitors = 0;
 	}
 
 	if (uniqueIPCount > 0) {
-		dbQueue.push(async.apply(db.incrObjectFieldBy, 'global', 'uniqueIPCount', uniqueIPCount));
+		dbQueue.push(db.incrObjectFieldBy('global', 'uniqueIPCount', uniqueIPCount));
 		uniqueIPCount = 0;
 	}
 
 	if (Object.keys(counters).length > 0) {
-		for (var key in counters) {
+		for (const key in counters) {
 			if (counters.hasOwnProperty(key)) {
-				dbQueue.push(async.apply(db.sortedSetIncrBy, 'analytics:' + key, counters[key], today.getTime()));
+				dbQueue.push(db.sortedSetIncrBy('analytics:' + key, counters[key], today.getTime()));
 				delete counters[key];
 			}
 		}
 	}
-
-	async.parallel(dbQueue, function (err) {
-		if (err) {
-			winston.error('[analytics] Encountered error while writing analytics to data store', err);
-		}
-		callback(err);
-	});
+	try {
+		await Promise.all(dbQueue);
+	} catch (err) {
+		winston.error('[analytics] Encountered error while writing analytics to data store', err);
+		throw err;
+	}
 };
 
-Analytics.getHourlyStatsForSet = function (set, hour, numHours, callback) {
-	var terms = {};
-	var hoursArr = [];
+Analytics.getHourlyStatsForSet = async function (set, hour, numHours) {
+	const terms = {};
+	const hoursArr = [];
 
 	hour = new Date(hour);
 	hour.setHours(hour.getHours(), 0, 0, 0);
 
-	for (var i = 0, ii = numHours; i < ii; i += 1) {
+	for (let i = 0, ii = numHours; i < ii; i += 1) {
 		hoursArr.push(hour.getTime());
 		hour.setHours(hour.getHours() - 1, 0, 0, 0);
 	}
 
-	db.sortedSetScores(set, hoursArr, function (err, counts) {
-		if (err) {
-			return callback(err);
-		}
+	const counts = await db.sortedSetScores(set, hoursArr);
 
-		hoursArr.forEach(function (term, index) {
-			terms[term] = parseInt(counts[index], 10) || 0;
-		});
-
-		var termsArr = [];
-
-		hoursArr.reverse();
-		hoursArr.forEach(function (hour) {
-			termsArr.push(terms[hour]);
-		});
-
-		callback(null, termsArr);
+	hoursArr.forEach(function (term, index) {
+		terms[term] = parseInt(counts[index], 10) || 0;
 	});
+
+	const termsArr = [];
+
+	hoursArr.reverse();
+	hoursArr.forEach(function (hour) {
+		termsArr.push(terms[hour]);
+	});
+
+	return termsArr;
 };
 
-Analytics.getDailyStatsForSet = function (set, day, numDays, callback) {
-	var daysArr = [];
-
+Analytics.getDailyStatsForSet = async function (set, day, numDays) {
+	const daysArr = [];
 	day = new Date(day);
 	day.setDate(day.getDate() + 1);	// set the date to tomorrow, because getHourlyStatsForSet steps *backwards* 24 hours to sum up the values
 	day.setHours(0, 0, 0, 0);
 
-	async.whilst(function (next) {
+	while (numDays > 0) {
+		/* eslint-disable no-await-in-loop */
+		const dayData = await Analytics.getHourlyStatsForSet(set, day.getTime() - (1000 * 60 * 60 * 24 * numDays), 24);
+		daysArr.push(dayData.reduce((cur, next) => cur + next));
 		numDays -= 1;
-		next(null, numDays + 1);
-	}, function (next) {
-		Analytics.getHourlyStatsForSet(set, day.getTime() - (1000 * 60 * 60 * 24 * numDays), 24, function (err, day) {
-			if (err) {
-				return next(err);
-			}
-
-			daysArr.push(day.reduce(function (cur, next) {
-				return cur + next;
-			}));
-			next();
-		});
-	}, function (err) {
-		callback(err, daysArr);
-	});
+	}
+	return daysArr;
 };
 
 Analytics.getUnwrittenPageviews = function () {
 	return pageViews;
 };
 
-Analytics.getSummary = function (callback) {
-	var today = new Date();
+Analytics.getSummary = async function () {
+	const today = new Date();
 	today.setHours(0, 0, 0, 0);
 
-	async.parallel({
-		seven: async.apply(Analytics.getDailyStatsForSet, 'analytics:pageviews', today, 7),
-		thirty: async.apply(Analytics.getDailyStatsForSet, 'analytics:pageviews', today, 30),
-	}, function (err, scores) {
-		if (err) {
-			return callback(null, {
-				seven: 0,
-				thirty: 0,
-			});
-		}
-		callback(null, {
-			seven: scores.seven.reduce(function (sum, cur) {
-				sum += cur;
-				return sum;
-			}, 0),
-			thirty: scores.thirty.reduce(function (sum, cur) {
-				sum += cur;
-				return sum;
-			}, 0),
-		});
+	const [seven, thirty] = await Promise.all([
+		Analytics.getDailyStatsForSet('analytics:pageviews', today, 7),
+		Analytics.getDailyStatsForSet('analytics:pageviews', today, 30),
+	]);
+
+	return {
+		seven: seven.reduce((sum, cur) => sum + cur, 0),
+		thirty: thirty.reduce((sum, cur) => sum + cur, 0),
+	};
+};
+
+Analytics.getCategoryAnalytics = async function (cid) {
+	return await utils.promiseParallel({
+		'pageviews:hourly': Analytics.getHourlyStatsForSet('analytics:pageviews:byCid:' + cid, Date.now(), 24),
+		'pageviews:daily': Analytics.getDailyStatsForSet('analytics:pageviews:byCid:' + cid, Date.now(), 30),
+		'topics:daily': Analytics.getDailyStatsForSet('analytics:topics:byCid:' + cid, Date.now(), 7),
+		'posts:daily': Analytics.getDailyStatsForSet('analytics:posts:byCid:' + cid, Date.now(), 7),
 	});
 };
 
-Analytics.getCategoryAnalytics = function (cid, callback) {
-	async.parallel({
-		'pageviews:hourly': async.apply(Analytics.getHourlyStatsForSet, 'analytics:pageviews:byCid:' + cid, Date.now(), 24),
-		'pageviews:daily': async.apply(Analytics.getDailyStatsForSet, 'analytics:pageviews:byCid:' + cid, Date.now(), 30),
-		'topics:daily': async.apply(Analytics.getDailyStatsForSet, 'analytics:topics:byCid:' + cid, Date.now(), 7),
-		'posts:daily': async.apply(Analytics.getDailyStatsForSet, 'analytics:posts:byCid:' + cid, Date.now(), 7),
-	}, callback);
+Analytics.getErrorAnalytics = async function () {
+	return await utils.promiseParallel({
+		'not-found': Analytics.getDailyStatsForSet('analytics:errors:404', Date.now(), 7),
+		toobusy: Analytics.getDailyStatsForSet('analytics:errors:503', Date.now(), 7),
+	});
 };
 
-Analytics.getErrorAnalytics = function (callback) {
-	async.parallel({
-		'not-found': async.apply(Analytics.getDailyStatsForSet, 'analytics:errors:404', Date.now(), 7),
-		toobusy: async.apply(Analytics.getDailyStatsForSet, 'analytics:errors:503', Date.now(), 7),
-	}, callback);
-};
-
-Analytics.getBlacklistAnalytics = function (callback) {
-	async.parallel({
-		daily: async.apply(Analytics.getDailyStatsForSet, 'analytics:blacklist', Date.now(), 7),
-		hourly: async.apply(Analytics.getHourlyStatsForSet, 'analytics:blacklist', Date.now(), 24),
-	}, callback);
+Analytics.getBlacklistAnalytics = async function () {
+	return await utils.promiseParallel({
+		daily: Analytics.getDailyStatsForSet('analytics:blacklist', Date.now(), 7),
+		hourly: Analytics.getHourlyStatsForSet('analytics:blacklist', Date.now(), 24),
+	});
 };
 
 Analytics.async = require('./promisify')(Analytics);
