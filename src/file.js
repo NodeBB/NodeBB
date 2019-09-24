@@ -165,8 +165,7 @@ file.walk = async function (dir) {
 		const res = path.resolve(dir, subdir);
 		return (await statAsync(res)).isDirectory() ? file.walk(res) : res;
 	}));
-	var result = files.reduce((a, f) => a.concat(f), []);
-	return result;
+	return files.reduce((a, f) => a.concat(f), []);
 };
 
 require('./promisify')(file);
