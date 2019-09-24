@@ -12,7 +12,8 @@ const Translator = require('../translator').Translator;
 function filterDirectories(directories) {
 	return directories.map(function (dir) {
 		// get the relative path
-		return dir.replace(/^.*(admin.*?).tpl$/, '$1');
+		// convert dir to use forward slashes
+		return dir.replace(/^.*(admin.*?).tpl$/, '$1').split(path.sep).join('/');
 	}).filter(function (dir) {
 		// exclude .js files
 		// exclude partials
