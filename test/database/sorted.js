@@ -244,6 +244,13 @@ describe('Sorted Set methods', function () {
 				},
 			], done);
 		});
+
+		it('should return correct number of elements', async function () {
+			await db.sortedSetAdd('dupezset3', [1, 2, 3], ['value 1', 'value 2', 'value3']);
+			await db.sortedSetAdd('dupezset4', [0, 5], ['value 0', 'value5']);
+			const data = await db.getSortedSetRevRange(['dupezset3', 'dupezset4'], 0, 1);
+			assert.deepStrictEqual(data, ['value5', 'value3']);
+		});
 	});
 
 	describe('getSortedSetRevRange()', function () {
