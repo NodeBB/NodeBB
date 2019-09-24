@@ -445,7 +445,7 @@ Flags.getTargetCid = async function (type, id) {
 	if (type === 'post') {
 		return await posts.getCidByPid(id);
 	}
-	return id;
+	return null;
 };
 
 Flags.update = function (flagId, uid, changeset, callback) {
