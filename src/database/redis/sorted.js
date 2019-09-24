@@ -1,9 +1,8 @@
 'use strict';
 
 module.exports = function (module) {
-	var _ = require('lodash');
-	var utils = require('../../utils');
-	var helpers = require('./helpers');
+	const utils = require('../../utils');
+	const helpers = require('./helpers');
 
 	require('./sorted/add')(module);
 	require('./sorted/remove')(module);
@@ -27,27 +26,40 @@ module.exports = function (module) {
 	};
 
 	async function sortedSetRange(method, key, start, stop, withScores) {
+		function getFirst(mapped) {
+			let selectedArray = mapped[0];
+			for (let i = 1; i < mapped.length; i++) {
+				if (mapped[i].length && (
+					!selectedArray.length ||
+					(method === 'zrange' && mapped[i][0].score < selectedArray[0].score) ||
+					(method === 'zrevrange' && mapped[i][0].score > selectedArray[0].score)
+				)) {
+					selectedArray = mapped[i];
+				}
+			}
+			return selectedArray.length ? selectedArray.shift() : null;
+		}
+
 		if (Array.isArray(key)) {
 			if (!key.length) {
 				return [];
 			}
 			const batch = module.client.batch();
-			key.forEach((key) => {
-				batch[method]([key, start, stop, 'WITHSCORES']);
-			});
-			let data = await helpers.execBatch(batch);
-			data = _.flatten(data);
-			let objects = [];
-			for (let i = 0; i < data.length; i += 2) {
-				objects.push({ value: data[i], score: parseFloat(data[i + 1]) });
-			}
+			key.forEach(key => batch[method]([key, start, stop, 'WITHSCORES']));
+			const data = await helpers.execBatch(batch);
 
-			objects.sort((a, b) => {
-				if (method === 'zrange') {
-					return a.score - b.score;
+			const mapped = data.map(setData => helpers.zsetToObjectArray(setData));
+
+			let objects = [];
+			const count = stop - start + 1;
+			let item = null;
+			do {
+				item = getFirst(mapped);
+				if (item) {
+					objects.push(item);
 				}
-				return b.score - a.score;
-			});
+			} while (item && (objects.length < count || stop === -1));
+
 			if (!withScores) {
 				objects = objects.map(item => item.value);
 			}
@@ -63,10 +75,7 @@ module.exports = function (module) {
 		if (!withScores) {
 			return data;
 		}
-		const objects = [];
-		for (var i = 0; i < data.length; i += 2) {
-			objects.push({ value: data[i], score: parseFloat(data[i + 1]) });
-		}
+		const objects = helpers.zsetToObjectArray(data);
 		return objects;
 	}
 
@@ -88,11 +97,7 @@ module.exports = function (module) {
 
 	async function sortedSetRangeByScoreWithScores(method, key, start, count, min, max) {
 		const data = await module.client.async[method]([key, min, max, 'WITHSCORES', 'LIMIT', start, count]);
-		const objects = [];
-		for (var i = 0; i < data.length; i += 2) {
-			objects.push({ value: data[i], score: parseFloat(data[i + 1]) });
-		}
-		return objects;
+		return helpers.zsetToObjectArray(data);
 	}
 
 	module.sortedSetCount = async function (key, min, max) {

@@ -61,10 +61,6 @@ module.exports = function (module) {
 			return results ? results[1] : null;
 		}
 		results = results[1] || [];
-		var objects = [];
-		for (var i = 0; i < results.length; i += 2) {
-			objects.push({ value: results[i], score: parseFloat(results[i + 1]) });
-		}
-		return objects;
+		return helpers.zsetToObjectArray(results);
 	}
 };
