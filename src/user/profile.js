@@ -136,19 +136,13 @@ module.exports = function (User) {
 	}
 
 	function isFullnameValid(data) {
-		if (!data.fullname) {
-			return;
-		}
-		if (validator.isURL(data.fullname)) {
+		if (data.fullname && validator.isURL(data.fullname)) {
 			throw new Error('[[error:invalid-fullname]]');
 		}
 	}
 
 	function isLocationValid(data) {
-		if (!data.location) {
-			return;
-		}
-		if (validator.isURL(data.location)) {
+		if (data.location && validator.isURL(data.location)) {
 			throw new Error('[[error:invalid-location]]');
 		}
 	}
@@ -158,12 +152,8 @@ module.exports = function (User) {
 			return;
 		}
 
-		try {
-			const result = new Date(data.birthday);
-			if (result && result.toString() === 'Invalid Date') {
-				throw new Error('[[error:invalid-birthday]]');
-			}
-		} catch (err) {
+		const result = new Date(data.birthday);
+		if (result && result.toString() === 'Invalid Date') {
 			throw new Error('[[error:invalid-birthday]]');
 		}
 	}
