@@ -379,8 +379,7 @@ Flags.create = function (type, id, uid, reason, timestamp, callback) {
 			if (targetUid) {
 				tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byTargetUid:' + targetUid, timestamp, flagId));	// by target uid
 			}
-			console.log('type/id', type, id);
-			console.log('targetUid/cid', targetUid, targetCid);
+
 			if (targetCid) {
 				tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byCid:' + targetCid, timestamp, flagId));	// by target cid
 			}
