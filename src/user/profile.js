@@ -2,6 +2,7 @@
 'use strict';
 
 const async = require('async');
+const validator = require('validator');
 
 const utils = require('../utils');
 const meta = require('../meta');
@@ -11,10 +12,12 @@ const plugins = require('../plugins');
 
 module.exports = function (User) {
 	User.updateProfile = async function (uid, data) {
-		var fields = ['username', 'email', 'fullname', 'website', 'location',
-			'groupTitle', 'birthday', 'signature', 'aboutme'];
+		let fields = [
+			'username', 'email', 'fullname', 'website', 'location',
+			'groupTitle', 'birthday', 'signature', 'aboutme',
+		];
 
-		var updateUid = data.uid;
+		const updateUid = data.uid;
 
 		const result = await plugins.fireHook('filter:user.updateProfile', { uid: uid, data: data, fields: fields });
 		fields = result.fields;
@@ -51,6 +54,9 @@ module.exports = function (User) {
 		await isWebsiteValid(callerUid, data);
 		await isAboutMeValid(callerUid, data);
 		await isSignatureValid(callerUid, data);
+		isFullnameValid(data);
+		isLocationValid(data);
+		isBirthdayValid(data);
 		isGroupTitleValid(data);
 	}
 
@@ -101,12 +107,6 @@ module.exports = function (User) {
 		}
 	}
 
-	function isGroupTitleValid(data) {
-		if (data.groupTitle === 'registered-users' || groups.isPrivilegeGroup(data.groupTitle)) {
-			throw new Error('[[error:invalid-group-title]]');
-		}
-	}
-
 	async function isWebsiteValid(callerUid, data) {
 		if (!data.website) {
 			return;
@@ -133,6 +133,45 @@ module.exports = function (User) {
 			throw new Error('[[error:signature-too-long, ' + meta.config.maximumSignatureLength + ']]');
 		}
 		await User.checkMinReputation(callerUid, data.uid, 'min:rep:signature');
+	}
+
+	function isFullnameValid(data) {
+		if (!data.fullname) {
+			return;
+		}
+		if (validator.isURL(data.fullname)) {
+			throw new Error('[[error:invalid-fullname]]');
+		}
+	}
+
+	function isLocationValid(data) {
+		if (!data.location) {
+			return;
+		}
+		if (validator.isURL(data.location)) {
+			throw new Error('[[error:invalid-location]]');
+		}
+	}
+
+	function isBirthdayValid(data) {
+		if (!data.birthday) {
+			return;
+		}
+
+		try {
+			const result = new Date(data.birthday);
+			if (result && result.toString() === 'Invalid Date') {
+				throw new Error('[[error:invalid-birthday]]');
+			}
+		} catch (err) {
+			throw new Error('[[error:invalid-birthday]]');
+		}
+	}
+
+	function isGroupTitleValid(data) {
+		if (data.groupTitle === 'registered-users' || groups.isPrivilegeGroup(data.groupTitle)) {
+			throw new Error('[[error:invalid-group-title]]');
+		}
 	}
 
 	User.checkMinReputation = async function (callerUid, uid, setting) {
