@@ -1,37 +1,35 @@
 'use strict';
 
-var async = require('async');
-var _ = require('lodash');
-var winston = require('winston');
-var validator = require('validator');
+const async = require('async');
+const _ = require('lodash');
+const winston = require('winston');
+const validator = require('validator');
 
-var db = require('./database');
-var user = require('./user');
-var groups = require('./groups');
-var meta = require('./meta');
-var notifications = require('./notifications');
-var analytics = require('./analytics');
-var topics = require('./topics');
-var posts = require('./posts');
-var privileges = require('./privileges');
-var plugins = require('./plugins');
-var utils = require('../public/src/utils');
+const db = require('./database');
+const user = require('./user');
+const groups = require('./groups');
+const meta = require('./meta');
+const notifications = require('./notifications');
+const analytics = require('./analytics');
+const topics = require('./topics');
+const posts = require('./posts');
+const privileges = require('./privileges');
+const plugins = require('./plugins');
+const utils = require('../public/src/utils');
 
-var Flags = module.exports;
+const Flags = module.exports;
 
-Flags.init = function (callback) {
+Flags.init = async function () {
 	// Query plugins for custom filter strategies and merge into core filter strategies
-	var prepareSets = function (sets, orSets, prefix, value) {
+	function prepareSets(sets, orSets, prefix, value) {
 		if (!Array.isArray(value)) {
 			sets.push(prefix + value);
 		} else if (value.length) {
-			value.forEach(function (x) {
-				orSets.push(prefix + x);
-			});
+			value.forEach(x => orSets.push(prefix + x));
 		}
-	};
+	}
 
-	plugins.fireHook('filter:flags.getFilters', {
+	const hookData = {
 		filters: {
 			type: function (sets, orSets, key) {
 				prepareSets(sets, orSets, 'flags:byType:', key);
@@ -64,54 +62,47 @@ Flags.init = function (callback) {
 		helpers: {
 			prepareSets: prepareSets,
 		},
-	}, function (err, data) {
-		if (err) {
-			winston.error('[flags/init] Could not retrieve filters', err);
-			data.filters = {};
-		}
+	};
 
+	try {
+		const data = await plugins.fireHook('filter:flags.getFilters', hookData);
 		Flags._filters = data.filters;
-		callback();
-	});
+	} catch (err) {
+		winston.error('[flags/init] Could not retrieve filters', err);
+		Flags._filters = {};
+	}
 };
 
-Flags.get = function (flagId, callback) {
-	async.waterfall([
-		// First stage
-		async.apply(async.parallel, {
-			base: async.apply(db.getObject.bind(db), 'flag:' + flagId),
-			history: async.apply(Flags.getHistory, flagId),
-			notes: async.apply(Flags.getNotes, flagId),
-		}),
-		function (data, next) {
-			if (!data.base) {
-				return callback();
-			}
-			// Second stage
-			async.parallel({
-				userObj: async.apply(user.getUserFields, data.base.uid, ['username', 'userslug', 'picture', 'reputation']),
-				targetObj: async.apply(Flags.getTarget, data.base.type, data.base.targetId, 0),
-			}, function (err, payload) {
-				// Final object return construction
-				next(err, { state: 'open',
-					...data.base,
-					description: validator.escape(data.base.description),
-					datetimeISO: utils.toISOString(data.base.datetime),
-					target_readable: data.base.type.charAt(0).toUpperCase() + data.base.type.slice(1) + ' ' + data.base.targetId,
-					target: payload.targetObj,
-					history: data.history,
-					notes: data.notes,
-					reporter: payload.userObj });
-			});
-		},
-		function (flagObj, next) {
-			plugins.fireHook('filter:flags.get', {
-				flag: flagObj,
-			}, function (err, data) {
-				next(err, data.flag);
-			});
-		},
-	], callback);
+Flags.get = async function (flagId) {
+	const [base, history, notes] = await Promise.all([
+		db.getObject('flag:' + flagId),
+		Flags.getHistory(flagId),
+		Flags.getNotes(flagId),
+	]);
+	if (!base) {
+		return;
+	}
+
+	const [userObj, targetObj] = await Promise.all([
+		user.getUserFields(base.uid, ['username', 'userslug', 'picture', 'reputation']),
+		Flags.getTarget(base.type, base.targetId, 0),
+	]);
+
+	const flagObj = {
+		state: 'open',
+		...base,
+		description: validator.escape(base.description),
+		datetimeISO: utils.toISOString(base.datetime),
+		target_readable: base.type.charAt(0).toUpperCase() + base.type.slice(1) + ' ' + base.targetId,
+		target: targetObj,
+		history: history,
+		notes: notes,
+		reporter: userObj,
+	};
+	const data = await plugins.fireHook('filter:flags.get', {
+		flag: flagObj,
+	});
+	return data.flag;
 };
 
 Flags.list = function (filters, uid, callback) {
@@ -388,7 +379,8 @@ Flags.create = function (type, id, uid, reason, timestamp, callback) {
 			if (targetUid) {
 				tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byTargetUid:' + targetUid, timestamp, flagId));	// by target uid
 			}
-
+			console.log('type/id', type, id);
+			console.log('targetUid/cid', targetUid, targetCid);
 			if (targetCid) {
 				tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byCid:' + targetCid, timestamp, flagId));	// by target cid
 			}
@@ -413,88 +405,48 @@ Flags.create = function (type, id, uid, reason, timestamp, callback) {
 	], callback);
 };
 
-Flags.exists = function (type, id, uid, callback) {
-	db.isSortedSetMember('flags:hash', [type, id, uid].join(':'), callback);
+Flags.exists = async function (type, id, uid) {
+	return await db.isSortedSetMember('flags:hash', [type, id, uid].join(':'));
 };
 
-Flags.getTarget = function (type, id, uid, callback) {
-	async.waterfall([
-		async.apply(Flags.targetExists, type, id),
-		function (exists, next) {
-			if (exists) {
-				switch (type) {
-				case 'post':
-					async.waterfall([
-						async.apply(posts.getPostsData, [id]),
-						function (postData, next) {
-							async.map(postData, posts.parsePost, next);
-						},
-						function (postData, next) {
-							postData = postData.filter(Boolean);
-							topics.addPostData(postData, uid, next);
-						},
-						function (postData, next) {
-							next(null, postData[0]);
-						},
-					], callback);
-					break;
-
-				case 'user':
-					user.getUsersData([id], function (err, users) {
-						next(err, users ? users[0] : undefined);
-					});
-					break;
-
-				default:
-					next(new Error('[[error:invalid-data]]'));
-					break;
-				}
-			} else {
-				// Target used to exist (otherwise flag creation'd fail), but no longer
-				next(null, {});
-			}
-		},
-	], callback);
-};
-
-Flags.targetExists = function (type, id, callback) {
-	switch (type) {
-	case 'post':
-		posts.exists(id, callback);
-		break;
-
-	case 'user':
-		user.exists(id, callback);
-		break;
-
-	default:
-		callback(new Error('[[error:invalid-data]]'));
-		break;
+Flags.getTarget = async function (type, id, uid) {
+	if (type === 'user') {
+		const userData = await user.getUserData(id);
+		return userData && userData.uid ? userData : {};
 	}
+	if (type === 'post') {
+		let postData = await posts.getPostData(id);
+		if (!postData) {
+			return {};
+		}
+		postData = await posts.parsePost(postData);
+		postData = await topics.addPostData([postData], uid);
+		return postData[0];
+	}
+	throw new Error('[[error:invalid-data]]');
 };
 
-Flags.getTargetUid = function (type, id, callback) {
-	switch (type) {
-	case 'post':
-		posts.getPostField(id, 'uid', callback);
-		break;
-
-	default:
-		setImmediate(callback, null, id);
-		break;
+Flags.targetExists = async function (type, id) {
+	if (type === 'post') {
+		return await posts.exists(id);
+	} else if (type === 'user') {
+		return await user.exists(id);
 	}
+	throw new Error('[[error:invalid-data]]');
 };
 
-Flags.getTargetCid = function (type, id, callback) {
-	switch (type) {
-	case 'post':
-		posts.getCidByPid(id, callback);
-		break;
-
-	default:
-		setImmediate(callback, null, id);
-		break;
+Flags.getTargetUid = async function (type, id) {
+	if (type === 'post') {
+		return await posts.getPostField(id, 'uid');
 	}
+	return id;
+};
+
+Flags.getTargetCid = async function (type, id) {
+	if (type === 'post') {
+		return await posts.getCidByPid(id);
+	}
+	return id;
 };
 
 Flags.update = function (flagId, uid, changeset, callback) {
