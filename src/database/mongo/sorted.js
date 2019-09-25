@@ -36,16 +36,14 @@ module.exports = function (module) {
 		if ((start < 0 && start > stop) || (isArray && !key.length)) {
 			return [];
 		}
-
+		const query = { _key: key };
 		if (isArray) {
 			if (key.length > 1) {
-				key = { $in: key };
+				query._key = { $in: key };
 			} else {
-				key = key[0];
+				query._key = key[0];
 			}
 		}
-
-		var query = { _key: key };
 
 		if (min !== '-inf') {
 			query.score = { $gte: min };
