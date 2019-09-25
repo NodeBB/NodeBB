@@ -95,11 +95,9 @@ module.exports = function (module) {
 			const batch = require('../../batch');
 			const batchSize = Math.ceil(key.length / Math.ceil(key.length / 100));
 			await batch.processArray(key, async currentBatch => batches.push(currentBatch), { batch: batchSize });
-			// console.log('skip - limit', 0, stop + 1, batches);
 			const batchData = await Promise.all(batches.map(batch => doQuery({ $in: batch }, { _id: 0, _key: 0 }, 0, stop + 1)));
 			result = dbHelpers.mergeBatch(batchData, 0, stop, sort);
 			if (start > 0) {
-				// console.log(result);
 				result = result.slice(start, stop !== -1 ? stop + 1 : undefined);
 			}
 		} else {
