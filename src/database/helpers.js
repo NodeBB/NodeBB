@@ -18,14 +18,11 @@ helpers.mergeBatch = function (batchData, start, stop, sort) {
 	}
 	let item = null;
 	const result = [];
-	var st = process.hrtime();
 	do {
 		item = getFirst(batchData);
 		if (item) {
 			result.push(item);
 		}
 	} while (item && (result.length < (stop - start + 1) || stop === -1));
-	process.profile('meeerge', st);
-
 	return result;
 };
