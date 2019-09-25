@@ -3,6 +3,7 @@
 module.exports = function (module) {
 	const utils = require('../../utils');
 	const helpers = require('./helpers');
+	const dbHelpers = require('../helpers');
 
 	require('./sorted/add')(module);
 	require('./sorted/remove')(module);
@@ -26,20 +27,6 @@ module.exports = function (module) {
 	};
 
 	async function sortedSetRange(method, key, start, stop, withScores) {
-		function getFirst(mapped) {
-			let selectedArray = mapped[0];
-			for (let i = 1; i < mapped.length; i++) {
-				if (mapped[i].length && (
-					!selectedArray.length ||
-					(method === 'zrange' && mapped[i][0].score < selectedArray[0].score) ||
-					(method === 'zrevrange' && mapped[i][0].score > selectedArray[0].score)
-				)) {
-					selectedArray = mapped[i];
-				}
-			}
-			return selectedArray.length ? selectedArray.shift() : null;
-		}
-
 		if (Array.isArray(key)) {
 			if (!key.length) {
 				return [];
@@ -48,17 +35,9 @@ module.exports = function (module) {
 			key.forEach(key => batch[method]([key, start, stop, 'WITHSCORES']));
 			const data = await helpers.execBatch(batch);
 
-			const mapped = data.map(setData => helpers.zsetToObjectArray(setData));
+			const batchData = data.map(setData => helpers.zsetToObjectArray(setData));
 
-			let objects = [];
-			const count = stop - start + 1;
-			let item = null;
-			do {
-				item = getFirst(mapped);
-				if (item) {
-					objects.push(item);
-				}
-			} while (item && (objects.length < count || stop === -1));
+			let objects = dbHelpers.mergeBatch(batchData, start, stop, method === 'zrange' ? 1 : -1);
 
 			if (!withScores) {
 				objects = objects.map(item => item.value);

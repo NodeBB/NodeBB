@@ -251,6 +251,35 @@ describe('Sorted Set methods', function () {
 			const data = await db.getSortedSetRevRange(['dupezset3', 'dupezset4'], 0, 1);
 			assert.deepStrictEqual(data, ['value5', 'value3']);
 		});
+
+		it('should work with big arrays (length > 100) ', async function () {
+			for (let i = 0; i < 400; i++) {
+				/* eslint-disable no-await-in-loop */
+				const bulkAdd = [];
+				for (let k = 0; k < 100; k++) {
+					bulkAdd.push(['testzset' + i, 1000000 + k + (i * 100), k + (i * 100)]);
+				}
+				await db.sortedSetAddBulk(bulkAdd);
+			}
+			const keys = [];
+			for (let i = 0; i < 400; i++) {
+				keys.push('testzset' + i);
+			}
+
+			let data = await db.getSortedSetRevRange(keys, 0, 3);
+			assert.deepStrictEqual(data, ['39999', '39998', '39997', '39996']);
+
+			data = await db.getSortedSetRevRangeWithScores(keys, 0, 3);
+			assert.deepStrictEqual(data, [
+				{ value: '39999', score: 1039999 },
+				{ value: '39998', score: 1039998 },
+				{ value: '39997', score: 1039997 },
+				{ value: '39996', score: 1039996 },
+			]);
+
+			data = await db.getSortedSetRevRange(keys, 0, -1);
+			assert.equal(data.length, 40000);
+		});
 	});
 
 	describe('getSortedSetRevRange()', function () {
