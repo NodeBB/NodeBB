@@ -2,7 +2,7 @@
 	"forum-traffic": "论坛流量",
 	"page-views": "页面浏览量",
 	"unique-visitors": "单一访客",
-	"new-users": "New Users",
+	"new-users": "新用户",
 	"posts": "发帖",
 	"topics": "主题",
 	"page-views-seven": "最近7天",
@@ -11,7 +11,7 @@
 	"page-views-custom": "自定义日期范围",
 	"page-views-custom-start": "范围开始",
 	"page-views-custom-end": "范围结束",
-	"page-views-custom-help": "输入你要查看的网页浏览日期范围。 如果没有日期选择器可用，则接受的格式是 <code>YYYY-MM-DD</code>",
+	"page-views-custom-help": "输入您要查看的网页浏览日期范围。 如果没有日期选择器可用，则接受的格式是 <code>YYYY-MM-DD</code>",
 	"page-views-custom-error": "请输入 <code>YYYY-MM-DD</code>格式的有效日期范围 ",
 
 	"stats.yesterday": "昨天",
@@ -23,7 +23,7 @@
 	"stats.all": "总计",
 
 	"updates": "更新",
-	"running-version": "您正在使用 <strong>NodeBB v<span id=\"version\">%1</span> </strong>.",
+	"running-version": "您正在运行 <strong>NodeBB v<span id=\"version\">%1</span> </strong>.",
 	"keep-updated": "请确保您已及时更新 NodeBB 以获得最新的安全补丁与 Bug 修复。",
 	"up-to-date": "<p>正在使用 <strong>最新版本</strong> <i class=\"fa fa-check\"></i></p>",
 	"upgrade-available": "<p>新的版本 (v%1) 已经发布。建议您 <a href=\"https://docs.nodebb.org/configuring/upgrade/\" target=\"_blank\">升级 NodeBB</a>。</p>",
