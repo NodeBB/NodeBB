@@ -82,8 +82,8 @@ module.exports = function (module) {
 		}
 
 		let result = [];
-		async function doQuery(fields) {
-			return await module.client.collection('objects').find(query, { projection: fields })
+		async function doQuery(_key, fields) {
+			return await module.client.collection('objects').find({ ...query, ...{ _key: _key } }, { projection: fields })
 				.sort({ score: sort })
 				.skip(start)
 				.limit(limit)
@@ -94,14 +94,10 @@ module.exports = function (module) {
 			const batches = [];
 			const batch = require('../../batch');
 			await batch.processArray(key, async currentBatch => batches.push(currentBatch), { batch: 100 });
-			const batchData = await Promise.all(batches.map(async (batch) => {
-				query._key = { $in: batch };
-				return await doQuery({ _id: 0, _key: 0 });
-			}));
-
+			const batchData = await Promise.all(batches.map(batch => doQuery({ $in: batch }, { _id: 0, _key: 0 })));
 			result = dbHelpers.mergeBatch(batchData, start, stop, sort);
 		} else {
-			result = await doQuery(fields);
+			result = await doQuery(query._key, fields);
 		}
 
 		if (reverse) {
