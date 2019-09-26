@@ -7,6 +7,7 @@ var db = require('../database');
 var categories = require('../categories');
 var utils = require('../utils');
 var translator = require('../translator');
+var plugins = require('../plugins');
 
 const intFields = [
 	'tid', 'cid', 'uid', 'mainPid', 'postcount',
@@ -30,8 +31,11 @@ module.exports = function (Topics) {
 				}
 			},
 			function (topics, next) {
-				topics.forEach(topic => modifyTopic(topic, fields));
-				next(null, topics);
+				plugins.fireHook('filter:topic.getFields', { topics: topics, fields: fields }, next);
+			},
+			function (data, next) {
+				data.topics.forEach(topic => modifyTopic(topic, fields));
+				next(null, Array.isArray(data.topics) ? data.topics : null);
 			},
 		], callback);
 	};
