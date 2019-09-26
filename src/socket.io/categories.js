@@ -105,17 +105,17 @@ SocketCategories.setWatchState = async function (socket, data) {
 	if (!data || !data.cid || !data.state) {
 		throw new Error('[[error:invalid-data]]');
 	}
-	await ignoreOrWatch(async function (uid, cid) {
+	return await ignoreOrWatch(async function (uid, cid) {
 		await user.setCategoryWatchState(uid, cid, categories.watchStates[data.state]);
 	}, socket, data);
 };
 
 SocketCategories.watch = async function (socket, data) {
-	await ignoreOrWatch(user.watchCategory, socket, data);
+	return await ignoreOrWatch(user.watchCategory, socket, data);
 };
 
 SocketCategories.ignore = async function (socket, data) {
-	await ignoreOrWatch(user.ignoreCategory, socket, data);
+	return await ignoreOrWatch(user.ignoreCategory, socket, data);
 };
 
 async function ignoreOrWatch(fn, socket, data) {
