@@ -405,6 +405,15 @@ describe('Sorted Set methods', function () {
 				done();
 			});
 		});
+
+		it('should work with an array of keys', async function () {
+			await db.sortedSetAddBulk([
+				['byScoreWithScoresKeys1', 1, 'value1'],
+				['byScoreWithScoresKeys2', 2, 'value2'],
+			]);
+			const data = await db.getSortedSetRevRangeByScoreWithScores(['byScoreWithScoresKeys1', 'byScoreWithScoresKeys2'], 0, -1, 5, -5);
+			assert.deepStrictEqual(data, [{ value: 'value2', score: 2 }, { value: 'value1', score: 1 }]);
+		});
 	});
 
 	describe('sortedSetCount()', function () {
