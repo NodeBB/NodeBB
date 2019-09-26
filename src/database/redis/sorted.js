@@ -32,13 +32,16 @@ module.exports = function (module) {
 				return [];
 			}
 			const batch = module.client.batch();
-			key.forEach(key => batch[method]([key, start, stop, 'WITHSCORES']));
+			key.forEach(key => batch[method]([key, 0, stop, 'WITHSCORES']));
 			const data = await helpers.execBatch(batch);
 
 			const batchData = data.map(setData => helpers.zsetToObjectArray(setData));
 
-			let objects = dbHelpers.mergeBatch(batchData, start, stop, method === 'zrange' ? 1 : -1);
+			let objects = dbHelpers.mergeBatch(batchData, 0, stop, method === 'zrange' ? 1 : -1);
 
+			if (start > 0) {
+				objects = objects.slice(start, stop !== -1 ? stop + 1 : undefined);
+			}
 			if (!withScores) {
 				objects = objects.map(item => item.value);
 			}

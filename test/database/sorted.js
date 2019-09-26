@@ -279,6 +279,9 @@ describe('Sorted Set methods', function () {
 
 			data = await db.getSortedSetRevRange(keys, 0, -1);
 			assert.equal(data.length, 40000);
+
+			data = await db.getSortedSetRange(keys, 9998, 10002);
+			assert.deepStrictEqual(data, ['9998', '9999', '10000', '10001', '10002']);
 		});
 	});
 
