@@ -691,6 +691,7 @@
 		},
 
 		urlToLocation: function (url) {
+			url = encodeURI(url);
 			return $('<a href="' + url + '" />')[0];
 		},
 
