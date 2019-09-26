@@ -213,7 +213,7 @@ helpers.getCategories = async function (set, uid, privilege, selectedCid) {
 
 helpers.getCategoriesByStates = async function (uid, selectedCid, states) {
 	let cids = await user.getCategoriesByStates(uid, states);
-	cids = await privileges.categories.filterCids('read', cids, uid);
+	cids = await privileges.categories.filterCids('topics:read', cids, uid);
 	return await getCategoryData(cids, uid, selectedCid);
 };
 
