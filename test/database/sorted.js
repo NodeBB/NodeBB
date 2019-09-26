@@ -227,22 +227,11 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return duplicates if two sets have same elements', function (done) {
-			async.waterfall([
-				function (next) {
-					db.sortedSetAdd('dupezset1', [1, 2], ['value 1', 'value 2'], next);
-				},
-				function (next) {
-					db.sortedSetAdd('dupezset2', [2, 3], ['value 2', 'value 3'], next);
-				},
-				function (next) {
-					db.getSortedSetRange(['dupezset1', 'dupezset2'], 0, -1, next);
-				},
-				function (data, next) {
-					assert.deepStrictEqual(data, ['value 1', 'value 2', 'value 2', 'value 3']);
-					next();
-				},
-			], done);
+		it('should return duplicates if two sets have same elements', async function () {
+			await db.sortedSetAdd('dupezset1', [1, 2], ['value 1', 'value 2']);
+			await db.sortedSetAdd('dupezset2', [2, 3], ['value 2', 'value 3']);
+			const data = await db.getSortedSetRange(['dupezset1', 'dupezset2'], 0, -1);
+			assert.deepStrictEqual(data, ['value 1', 'value 2', 'value 2', 'value 3']);
 		});
 
 		it('should return correct number of elements', async function () {
