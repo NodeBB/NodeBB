@@ -71,10 +71,7 @@ module.exports = function (privileges) {
 		let cids = _.uniq(topicsData.map(topic => topic.cid));
 		const results = await privileges.categories.getBase(privilege, cids, uid);
 
-		cids = cids.filter(function (cid, index) {
-			return !results.categories[index].disabled &&
-				(results.allowedTo[index] || results.isAdmin);
-		});
+		cids = cids.filter((cid, index) => !results.categories[index].disabled && (results.allowedTo[index] || results.isAdmin));
 
 		const cidsSet = new Set(cids);
 
