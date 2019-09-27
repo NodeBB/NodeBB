@@ -35,6 +35,9 @@ module.exports = function (Topics) {
 		let tids = [];
 		if (params.term !== 'alltime') {
 			tids = await Topics.getLatestTidsFromSet('topics:tid', 0, -1, params.term);
+			if (params.filter === 'watched') {
+				tids = await Topics.filterWatchedTids(tids, params.uid);
+			}
 		} else if (params.filter === 'watched') {
 			tids = await db.getSortedSetRevRange('uid:' + params.uid + ':followed_tids', 0, -1);
 		} else if (params.cids) {
