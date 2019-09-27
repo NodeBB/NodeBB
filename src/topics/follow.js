@@ -134,8 +134,7 @@ module.exports = function (Topics) {
 			return [];
 		}
 		const scores = await db.sortedSetScores('uid:' + uid + ':followed_tids', tids);
-		tids = tids.filter((tid, index) => tid && !!scores[index]);
-		return tids;
+		return tids.filter((tid, index) => tid && !!scores[index]);
 	};
 
 	Topics.filterNotIgnoredTids = async function (tids, uid) {
@@ -143,8 +142,7 @@ module.exports = function (Topics) {
 			return tids;
 		}
 		const scores = await db.sortedSetScores('uid:' + uid + ':ignored_tids', tids);
-		tids = tids.filter((tid, index) => tid && !scores[index]);
-		return tids;
+		return tids.filter((tid, index) => tid && !scores[index]);
 	};
 
 	Topics.notifyFollowers = async function (postData, exceptUid) {

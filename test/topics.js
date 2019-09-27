@@ -1190,14 +1190,14 @@ describe('Topic\'s', function () {
 				topic: function (next) {
 					topics.post({ uid: topic.userId, title: 'unread topic', content: 'unread topic content', cid: topic.categoryId }, next);
 				},
-				user: function (next) {
+				joeUid: function (next) {
 					User.create({ username: 'regularJoe' }, next);
 				},
 			}, function (err, results) {
 				assert.ifError(err);
 				tid = results.topic.topicData.tid;
 				mainPid = results.topic.postData.pid;
-				uid = results.user;
+				uid = results.joeUid;
 				done();
 			});
 		});
@@ -1385,7 +1385,7 @@ describe('Topic\'s', function () {
 				},
 				function (category, next) {
 					privateCid = category.cid;
-					privileges.categories.rescind(['read'], category.cid, 'registered-users', next);
+					privileges.categories.rescind(['topics:read'], category.cid, 'registered-users', next);
 				},
 				function (next) {
 					topics.post({ uid: adminUid, title: 'topic in private category', content: 'registered-users cant see this', cid: privateCid }, next);
@@ -1414,7 +1414,7 @@ describe('Topic\'s', function () {
 				},
 				function (category, next) {
 					ignoredCid = category.cid;
-					privileges.categories.rescind(['read'], category.cid, 'registered-users', next);
+					privileges.categories.rescind(['topics:read'], category.cid, 'registered-users', next);
 				},
 				function (next) {
 					topics.post({ uid: adminUid, title: 'topic in private category', content: 'registered-users cant see this', cid: ignoredCid }, next);

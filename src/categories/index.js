@@ -77,7 +77,7 @@ Categories.getAllCategories = async function (uid) {
 };
 
 Categories.getCidsByPrivilege = async function (set, uid, privilege) {
-	const cids = await Categories.getAllCidsFromSet('categories:cid');
+	const cids = await Categories.getAllCidsFromSet(set);
 	return await privileges.categories.filterCids(privilege, cids, uid);
 };
 

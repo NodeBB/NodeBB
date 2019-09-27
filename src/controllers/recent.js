@@ -48,7 +48,7 @@ recentController.getData = async function (req, url, sort) {
 	const stop = start + settings.topicsPerPage - 1;
 
 	const data = await topics.getSortedTopics({
-		cids: cid,
+		cids: cid || categoryData.categories.map(c => c.cid),
 		uid: req.uid,
 		start: start,
 		stop: stop,

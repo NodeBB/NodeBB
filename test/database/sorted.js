@@ -227,22 +227,11 @@ describe('Sorted Set methods', function () {
 			});
 		});
 
-		it('should return duplicates if two sets have same elements', function (done) {
-			async.waterfall([
-				function (next) {
-					db.sortedSetAdd('dupezset1', [1, 2], ['value 1', 'value 2'], next);
-				},
-				function (next) {
-					db.sortedSetAdd('dupezset2', [2, 3], ['value 2', 'value 3'], next);
-				},
-				function (next) {
-					db.getSortedSetRange(['dupezset1', 'dupezset2'], 0, -1, next);
-				},
-				function (data, next) {
-					assert.deepStrictEqual(data, ['value 1', 'value 2', 'value 2', 'value 3']);
-					next();
-				},
-			], done);
+		it('should return duplicates if two sets have same elements', async function () {
+			await db.sortedSetAdd('dupezset1', [1, 2], ['value 1', 'value 2']);
+			await db.sortedSetAdd('dupezset2', [2, 3], ['value 2', 'value 3']);
+			const data = await db.getSortedSetRange(['dupezset1', 'dupezset2'], 0, -1);
+			assert.deepStrictEqual(data, ['value 1', 'value 2', 'value 2', 'value 3']);
 		});
 
 		it('should return correct number of elements', async function () {
@@ -404,6 +393,15 @@ describe('Sorted Set methods', function () {
 				assert.deepEqual(values, [{ value: 'value3', score: 1.3 }, { value: 'value2', score: 1.2 }]);
 				done();
 			});
+		});
+
+		it('should work with an array of keys', async function () {
+			await db.sortedSetAddBulk([
+				['byScoreWithScoresKeys1', 1, 'value1'],
+				['byScoreWithScoresKeys2', 2, 'value2'],
+			]);
+			const data = await db.getSortedSetRevRangeByScoreWithScores(['byScoreWithScoresKeys1', 'byScoreWithScoresKeys2'], 0, -1, 5, -5);
+			assert.deepStrictEqual(data, [{ value: 'value2', score: 2 }, { value: 'value1', score: 1 }]);
 		});
 	});
 

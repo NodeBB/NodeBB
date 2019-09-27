@@ -11,28 +11,28 @@ module.exports = function (module) {
 	require('./sorted/intersect')(module);
 
 	module.getSortedSetRange = async function (key, start, stop) {
-		return await sortedSetRange('zrange', key, start, stop, false);
+		return await sortedSetRange('zrange', key, start, stop, '-inf', '+inf', false);
 	};
 
 	module.getSortedSetRevRange = async function (key, start, stop) {
-		return await sortedSetRange('zrevrange', key, start, stop, false);
+		return await sortedSetRange('zrevrange', key, start, stop, '-inf', '+inf', false);
 	};
 
 	module.getSortedSetRangeWithScores = async function (key, start, stop) {
-		return await sortedSetRange('zrange', key, start, stop, true);
+		return await sortedSetRange('zrange', key, start, stop, '-inf', '+inf', true);
 	};
 
 	module.getSortedSetRevRangeWithScores = async function (key, start, stop) {
-		return await sortedSetRange('zrevrange', key, start, stop, true);
+		return await sortedSetRange('zrevrange', key, start, stop, '-inf', '+inf', true);
 	};
 
-	async function sortedSetRange(method, key, start, stop, withScores) {
+	async function sortedSetRange(method, key, start, stop, min, max, withScores) {
 		if (Array.isArray(key)) {
 			if (!key.length) {
 				return [];
 			}
 			const batch = module.client.batch();
-			key.forEach(key => batch[method]([key, 0, stop, 'WITHSCORES']));
+			key.forEach(key => batch[method](genParams(method, key, 0, stop, min, max, true)));
 			const data = await helpers.execBatch(batch);
 
 			const batchData = data.map(setData => helpers.zsetToObjectArray(setData));
@@ -48,11 +48,7 @@ module.exports = function (module) {
 			return objects;
 		}
 
-		var params = [key, start, stop];
-		if (withScores) {
-			params.push('WITHSCORES');
-		}
-
+		const params = genParams(method, key, start, stop, min, max, withScores);
 		const data = await module.client.async[method](params);
 		if (!withScores) {
 			return data;
@@ -61,25 +57,46 @@ module.exports = function (module) {
 		return objects;
 	}
 
+	function genParams(method, key, start, stop, min, max, withScores) {
+		const params = {
+			zrevrange: [key, start, stop],
+			zrange: [key, start, stop],
+			zrangebyscore: [key, min, max],
+			zrevrangebyscore: [key, max, min],
+		};
+		if (withScores) {
+			params[method].push('WITHSCORES');
+		}
+
+		if (method === 'zrangebyscore' || method === 'zrevrangebyscore') {
+			const count = stop !== -1 ? stop - start + 1 : stop;
+			params[method].push('LIMIT', start, count);
+		}
+		return params[method];
+	}
+
 	module.getSortedSetRangeByScore = async function (key, start, count, min, max) {
-		return await module.client.async.zrangebyscore([key, min, max, 'LIMIT', start, count]);
+		return await sortedSetRangeByScore('zrangebyscore', key, start, count, min, max, false);
 	};
 
 	module.getSortedSetRevRangeByScore = async function (key, start, count, max, min) {
-		return await module.client.async.zrevrangebyscore([key, max, min, 'LIMIT', start, count]);
+		return await sortedSetRangeByScore('zrevrangebyscore', key, start, count, min, max, false);
 	};
 
 	module.getSortedSetRangeByScoreWithScores = async function (key, start, count, min, max) {
-		return await sortedSetRangeByScoreWithScores('zrangebyscore', key, start, count, min, max);
+		return await sortedSetRangeByScore('zrangebyscore', key, start, count, min, max, true);
 	};
 
 	module.getSortedSetRevRangeByScoreWithScores = async function (key, start, count, max, min) {
-		return await sortedSetRangeByScoreWithScores('zrevrangebyscore', key, start, count, max, min);
+		return await sortedSetRangeByScore('zrevrangebyscore', key, start, count, min, max, true);
 	};
 
-	async function sortedSetRangeByScoreWithScores(method, key, start, count, min, max) {
-		const data = await module.client.async[method]([key, min, max, 'WITHSCORES', 'LIMIT', start, count]);
-		return helpers.zsetToObjectArray(data);
+	async function sortedSetRangeByScore(method, key, start, count, min, max, withScores) {
+		if (parseInt(count, 10) === 0) {
+			return [];
+		}
+		const stop = (parseInt(count, 10) === -1) ? -1 : (start + count - 1);
+		return await sortedSetRange(method, key, start, stop, min, max, withScores);
 	}
 
 	module.sortedSetCount = async function (key, min, max) {
