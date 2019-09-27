@@ -12,7 +12,7 @@ const plugins = require('../plugins');
 
 module.exports = function (Topics) {
 	Topics.getSortedTopics = async function (params) {
-		var data = {
+		const data = {
 			nextStart: 0,
 			topicCount: 0,
 			topics: [],

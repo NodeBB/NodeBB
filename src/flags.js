@@ -105,14 +105,11 @@ Flags.get = async function (flagId) {
 	return data.flag;
 };
 
-Flags.list = function (filters, uid, callback) {
-	if (typeof filters === 'function' && !uid && !callback) {
-		callback = filters;
-		filters = {};
-	}
+Flags.list = async function (filters, uid) {
+	filters = filters || {};
 
-	var sets = [];
-	var orSets = [];
+	let sets = [];
+	const orSets = [];
 
 	// Default filter
 	filters.page = filters.hasOwnProperty('page') ? Math.abs(parseInt(filters.page, 10) || 1) : 1;
@@ -129,279 +126,177 @@ Flags.list = function (filters, uid, callback) {
 	}
 	sets = (sets.length || orSets.length) ? sets : ['flags:datetime'];	// No filter default
 
-	async.waterfall([
-		function (next) {
-			if (sets.length === 1) {
-				db.getSortedSetRevRange(sets[0], 0, -1, next);
-			} else if (sets.length > 1) {
-				db.getSortedSetRevIntersect({ sets: sets, start: 0, stop: -1, aggregate: 'MAX' }, next);
-			} else {
-				next(null, []);
-			}
-		},
-		function (flagIds, next) {
-			// Find flags according to "or" rules, if any
-			if (orSets.length) {
-				db.getSortedSetRevUnion({ sets: orSets, start: 0, stop: -1, aggregate: 'MAX' }, function (err, _flagIds) {
-					if (err) {
-						return next(err);
-					}
+	let flagIds = [];
+	if (sets.length === 1) {
+		flagIds = await db.getSortedSetRevRange(sets[0], 0, -1);
+	} else if (sets.length > 1) {
+		flagIds = await db.getSortedSetRevIntersect({ sets: sets, start: 0, stop: -1, aggregate: 'MAX' });
+	}
 
-					if (sets.length) {
-						// If flag ids are already present, return a subset of flags that are in both sets
-						next(null, _.intersection(flagIds, _flagIds));
-					} else {
-						// Otherwise, return all flags returned via orSets
-						next(null, _.union(flagIds, _flagIds));
-					}
-				});
-			} else {
-				setImmediate(next, null, flagIds);
-			}
-		},
-		function (flagIds, next) {
-			// Create subset for parsing based on page number (n=20)
-			const flagsPerPage = Math.abs(parseInt(filters.perPage, 10) || 1);
-			const pageCount = Math.ceil(flagIds.length / flagsPerPage);
-			flagIds = flagIds.slice((filters.page - 1) * flagsPerPage, filters.page * flagsPerPage);
+	if (orSets.length) {
+		const _flagIds = await db.getSortedSetRevUnion({ sets: orSets, start: 0, stop: -1, aggregate: 'MAX' });
+		if (sets.length) {
+			// If flag ids are already present, return a subset of flags that are in both sets
+			flagIds = _.intersection(flagIds, _flagIds);
+		} else {
+			// Otherwise, return all flags returned via orSets
+			flagIds = _.union(flagIds, _flagIds);
+		}
+	}
 
-			async.map(flagIds, function (flagId, next) {
-				async.waterfall([
-					async.apply(db.getObject, 'flag:' + flagId),
-					function (flagObj, next) {
-						user.getUserFields(flagObj.uid, ['username', 'picture'], function (err, userObj) {
-							next(err, { state: 'open',
-								...flagObj,
-								reporter: {
-									username: userObj.username,
-									picture: userObj.picture,
-									'icon:bgColor': userObj['icon:bgColor'],
-									'icon:text': userObj['icon:text'],
-								} });
-						});
-					},
-				], function (err, flagObj) {
-					if (err) {
-						return next(err);
-					}
+	// Create subset for parsing based on page number (n=20)
+	const flagsPerPage = Math.abs(parseInt(filters.perPage, 10) || 1);
+	const pageCount = Math.ceil(flagIds.length / flagsPerPage);
+	flagIds = flagIds.slice((filters.page - 1) * flagsPerPage, filters.page * flagsPerPage);
 
-					switch (flagObj.state) {
-					case 'open':
-						flagObj.labelClass = 'info';
-						break;
-					case 'wip':
-						flagObj.labelClass = 'warning';
-						break;
-					case 'resolved':
-						flagObj.labelClass = 'success';
-						break;
-					case 'rejected':
-						flagObj.labelClass = 'danger';
-						break;
-					}
+	const flags = await Promise.all(flagIds.map(async (flagId) => {
+		let flagObj = await db.getObject('flag:' + flagId);
+		const userObj = await user.getUserFields(flagObj.uid, ['username', 'picture']);
+		flagObj = {
+			state: 'open',
+			...flagObj,
+			reporter: {
+				username: userObj.username,
+				picture: userObj.picture,
+				'icon:bgColor': userObj['icon:bgColor'],
+				'icon:text': userObj['icon:text'],
+			},
+		};
+		const stateToLabel = {
+			open: 'info',
+			wip: 'warning',
+			resolved: 'success',
+			rejected: 'danger',
+		};
+		flagObj.labelClass = stateToLabel[flagObj.state];
 
-					next(null, Object.assign(flagObj, {
-						description: validator.escape(String(flagObj.description)),
-						target_readable: flagObj.type.charAt(0).toUpperCase() + flagObj.type.slice(1) + ' ' + flagObj.targetId,
-						datetimeISO: utils.toISOString(flagObj.datetime),
-					}));
-				});
-			}, function (err, flags) {
-				next(err, flags, pageCount);
-			});
-		},
-		function (flags, pageCount, next) {
-			plugins.fireHook('filter:flags.list', {
-				flags: flags,
-				page: filters.page,
-			}, function (err, data) {
-				next(err, {
-					flags: data.flags,
-					page: data.page,
-					pageCount: pageCount,
-				});
-			});
-		},
-	], callback);
+		return Object.assign(flagObj, {
+			description: validator.escape(String(flagObj.description)),
+			target_readable: flagObj.type.charAt(0).toUpperCase() + flagObj.type.slice(1) + ' ' + flagObj.targetId,
+			datetimeISO: utils.toISOString(flagObj.datetime),
+		});
+	}));
+
+	const data = await plugins.fireHook('filter:flags.list', {
+		flags: flags,
+		page: filters.page,
+	});
+
+	return {
+		flags: data.flags,
+		page: data.page,
+		pageCount: pageCount,
+	};
 };
 
-Flags.validate = function (payload, callback) {
-	async.parallel({
-		target: async.apply(Flags.getTarget, payload.type, payload.id, payload.uid),
-		reporter: async.apply(user.getUserData, payload.uid),
-	}, function (err, data) {
-		if (err) {
-			return callback(err);
+Flags.validate = async function (payload) {
+	const [target, reporter] = await Promise.all([
+		Flags.getTarget(payload.type, payload.id, payload.uid),
+		user.getUserData(payload.uid),
+	]);
+
+	if (!target) {
+		throw new Error('[[error:invalid-data]]');
+	} else if (target.deleted) {
+		throw new Error('[[error:post-deleted]]');
+	} else if (!reporter || !reporter.userslug) {
+		throw new Error('[[error:no-user]]');
+	} else if (reporter.banned) {
+		throw new Error('[[error:user-banned]]');
+	}
+
+	if (payload.type === 'post') {
+		const editable = await privileges.posts.canEdit(payload.id, payload.uid);
+		if (!editable.flag && !meta.config['reputation:disabled'] && reporter.reputation < meta.config['min:rep:flag']) {
+			throw new Error('[[error:not-enough-reputation-to-flag]]');
 		}
-
-		if (!data.target) {
-			return callback(new Error('[[error:invalid-data]]'));
-		} else if (data.target.deleted) {
-			return callback(new Error('[[error:post-deleted]]'));
-		} else if (!data.reporter || !data.reporter.userslug) {
-			return callback(new Error('[[error:no-user]]'));
-		} else if (data.reporter.banned) {
-			return callback(new Error('[[error:user-banned]]'));
+	} else if (payload.type === 'user') {
+		const editable = await privileges.users.canEdit(payload.uid, payload.id);
+		if (!editable && !meta.config['reputation:disabled'] && reporter.reputation < meta.config['min:rep:flag']) {
+			throw new Error('[[error:not-enough-reputation-to-flag]]');
 		}
+	} else {
+		throw new Error('[[error:invalid-data]]');
+	}
+};
 
-		switch (payload.type) {
-		case 'post':
-			privileges.posts.canEdit(payload.id, payload.uid, function (err, editable) {
-				if (err) {
-					return callback(err);
-				}
-
-				// Check if reporter meets rep threshold (or can edit the target post, in which case threshold does not apply)
-				if (!editable.flag && !meta.config['reputation:disabled'] && data.reporter.reputation < meta.config['min:rep:flag']) {
-					return callback(new Error('[[error:not-enough-reputation-to-flag]]'));
-				}
-
-				callback();
-			});
-			break;
-
-		case 'user':
-			privileges.users.canEdit(payload.uid, payload.id, function (err, editable) {
-				if (err) {
-					return callback(err);
-				}
-
-				// Check if reporter meets rep threshold (or can edit the target user, in which case threshold does not apply)
-				if (!editable && !meta.config['reputation:disabled'] && data.reporter.reputation < meta.config['min:rep:flag']) {
-					return callback(new Error('[[error:not-enough-reputation-to-flag]]'));
-				}
-
-				callback();
-			});
-			break;
-
-		default:
-			callback(new Error('[[error:invalid-data]]'));
-			break;
-		}
+Flags.getNotes = async function (flagId) {
+	let notes = await db.getSortedSetRevRangeWithScores('flag:' + flagId + ':notes', 0, -1);
+	const uids = [];
+	notes = notes.map(function (note) {
+		const noteObj = JSON.parse(note.value);
+		uids.push(noteObj[0]);
+		return {
+			uid: noteObj[0],
+			content: noteObj[1],
+			datetime: note.score,
+			datetimeISO: utils.toISOString(note.score),
+		};
+	});
+	const userData = await user.getUsersFields(uids, ['username', 'userslug', 'picture']);
+	return notes.map(function (note, idx) {
+		note.user = userData[idx];
+		note.content = validator.escape(note.content);
+		return note;
 	});
 };
 
-Flags.getNotes = function (flagId, callback) {
-	async.waterfall([
-		async.apply(db.getSortedSetRevRangeWithScores.bind(db), 'flag:' + flagId + ':notes', 0, -1),
-		function (notes, next) {
-			var uids = [];
-			var noteObj;
-			notes = notes.map(function (note) {
-				try {
-					noteObj = JSON.parse(note.value);
-					uids.push(noteObj[0]);
-					return {
-						uid: noteObj[0],
-						content: noteObj[1],
-						datetime: note.score,
-						datetimeISO: utils.toISOString(note.score),
-					};
-				} catch (e) {
-					return next(e);
-				}
-			});
-			next(null, notes, uids);
-		},
-		function (notes, uids, next) {
-			user.getUsersFields(uids, ['username', 'userslug', 'picture'], function (err, users) {
-				if (err) {
-					return next(err);
-				}
-
-				next(null, notes.map(function (note, idx) {
-					note.user = users[idx];
-					note.content = validator.escape(note.content);
-					return note;
-				}));
-			});
-		},
-	], callback);
-};
-
-Flags.create = function (type, id, uid, reason, timestamp, callback) {
-	var targetUid;
-	var targetCid;
-	var doHistoryAppend = false;
-
-	// timestamp is optional
-	if (typeof timestamp === 'function' && !callback) {
-		callback = timestamp;
+Flags.create = async function (type, id, uid, reason, timestamp) {
+	let doHistoryAppend = false;
+	if (!timestamp) {
 		timestamp = Date.now();
 		doHistoryAppend = true;
 	}
+	const [exists, targetExists, targetUid, targetCid] = await Promise.all([
+		// Sanity checks
+		Flags.exists(type, id, uid),
+		Flags.targetExists(type, id),
+		// Extra data for zset insertion
+		Flags.getTargetUid(type, id),
+		Flags.getTargetCid(type, id),
+	]);
+	if (exists) {
+		throw new Error('[[error:already-flagged]]');
+	} else if (!targetExists) {
+		throw new Error('[[error:invalid-data]]');
+	}
+	const flagId = await db.incrObjectField('global', 'nextFlagId');
 
-	async.waterfall([
-		function (next) {
-			async.parallel([
-				// Sanity checks
-				async.apply(Flags.exists, type, id, uid),
-				async.apply(Flags.targetExists, type, id),
+	await db.setObject('flag:' + flagId, {
+		flagId: flagId,
+		type: type,
+		targetId: id,
+		description: reason,
+		uid: uid,
+		datetime: timestamp,
+	});
+	await db.sortedSetAdd('flags:datetime', timestamp, flagId); // by time, the default
+	await db.sortedSetAdd('flags:byReporter:' + uid, timestamp, flagId); // by reporter
+	await db.sortedSetAdd('flags:byType:' + type, timestamp, flagId);	// by flag type
+	await db.sortedSetAdd('flags:hash', flagId, [type, id, uid].join(':')); // save zset for duplicate checking
+	await analytics.increment('flags'); // some fancy analytics
 
-				// Extra data for zset insertion
-				async.apply(Flags.getTargetUid, type, id),
-				async.apply(Flags.getTargetCid, type, id),
-			], function (err, checks) {
-				if (err) {
-					return next(err);
-				}
+	if (targetUid) {
+		await db.sortedSetAdd('flags:byTargetUid:' + targetUid, timestamp, flagId); // by target uid
+	}
 
-				targetUid = checks[2] || null;
-				targetCid = checks[3] || null;
+	if (targetCid) {
+		await db.sortedSetAdd('flags:byCid:' + targetCid, timestamp, flagId); // by target cid
+	}
 
-				if (checks[0]) {
-					return next(new Error('[[error:already-flagged]]'));
-				} else if (!checks[1]) {
-					return next(new Error('[[error:invalid-data]]'));
-				}
-				next();
-			});
-		},
-		async.apply(db.incrObjectField, 'global', 'nextFlagId'),
-		function (flagId, next) {
-			var tasks = [
-				async.apply(db.setObject.bind(db), 'flag:' + flagId, {
-					flagId: flagId,
-					type: type,
-					targetId: id,
-					description: reason,
-					uid: uid,
-					datetime: timestamp,
-				}),
-				async.apply(db.sortedSetAdd.bind(db), 'flags:datetime', timestamp, flagId),	// by time, the default
-				async.apply(db.sortedSetAdd.bind(db), 'flags:byReporter:' + uid, timestamp, flagId),	// by reporter
-				async.apply(db.sortedSetAdd.bind(db), 'flags:byType:' + type, timestamp, flagId),	// by flag type
-				async.apply(db.sortedSetAdd.bind(db), 'flags:hash', flagId, [type, id, uid].join(':')),	// save zset for duplicate checking
-				async.apply(analytics.increment, 'flags'),	// some fancy analytics
-			];
+	if (type === 'post') {
+		await db.sortedSetAdd('flags:byPid:' + id, timestamp, flagId);	// by target pid
+		if (targetUid) {
+			await db.sortedSetIncrBy('users:flags', 1, targetUid);
+			await user.incrementUserFieldBy(targetUid, 'flags', 1);
+		}
+	}
 
-			if (targetUid) {
-				tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byTargetUid:' + targetUid, timestamp, flagId));	// by target uid
-			}
+	if (doHistoryAppend) {
+		await Flags.update(flagId, uid, { state: 'open' });
+	}
 
-			if (targetCid) {
-				tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byCid:' + targetCid, timestamp, flagId));	// by target cid
-			}
-
-			if (type === 'post') {
-				tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byPid:' + id, timestamp, flagId));	// by target pid
-				if (targetUid) {
-					tasks.push(async.apply(db.sortedSetIncrBy.bind(db), 'users:flags', 1, targetUid));
-					tasks.push(async.apply(user.incrementUserFieldBy, targetUid, 'flags', 1));
-				}
-			}
-
-			if (doHistoryAppend) {
-				tasks.push(async.apply(Flags.update, flagId, uid, { state: 'open' }));
-			}
-
-			async.series(tasks, function (err) {
-				next(err, flagId);
-			});
-		},
-		async.apply(Flags.get),
-	], callback);
+	return await Flags.get(flagId);
 };
 
 Flags.exists = async function (type, id, uid) {
