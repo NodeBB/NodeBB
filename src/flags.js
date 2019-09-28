@@ -1,6 +1,5 @@
 'use strict';
 
-const async = require('async');
 const _ = require('lodash');
 const winston = require('winston');
 const validator = require('validator');
@@ -11,6 +10,7 @@ const groups = require('./groups');
 const meta = require('./meta');
 const notifications = require('./notifications');
 const analytics = require('./analytics');
+const categories = require('./categories');
 const topics = require('./topics');
 const posts = require('./posts');
 const privileges = require('./privileges');
@@ -343,265 +343,141 @@ Flags.getTargetCid = async function (type, id) {
 	return null;
 };
 
-Flags.update = function (flagId, uid, changeset, callback) {
-	// Retrieve existing flag data to compare for history-saving purposes
-	var fields = ['state', 'assignee'];
-	var tasks = [];
-	var now = changeset.datetime || Date.now();
-	var notifyAssignee = function (assigneeId, next) {
+Flags.update = async function (flagId, uid, changeset) {
+	const now = changeset.datetime || Date.now();
+	const notifyAssignee = async function (assigneeId) {
 		if (assigneeId === '' || parseInt(uid, 10) === parseInt(assigneeId, 10)) {
-			// Do nothing
-			return next();
+			return;
 		}
-		// Notify assignee of this update
-		notifications.create({
+		const notifObj = await notifications.create({
 			type: 'my-flags',
 			bodyShort: '[[notifications:flag_assigned_to_you, ' + flagId + ']]',
 			bodyLong: '',
 			path: '/flags/' + flagId,
 			nid: 'flags:assign:' + flagId + ':uid:' + assigneeId,
 			from: uid,
-		}, function (err, notification) {
-			if (err || !notification) {
-				return next(err);
-			}
-
-			notifications.push(notification, [assigneeId], next);
 		});
+		await notifications.push(notifObj, [assigneeId]);
 	};
 
-	async.waterfall([
-		async.apply(db.getObjectFields.bind(db), 'flag:' + flagId, fields),
-		function (current, next) {
-			for (var prop in changeset) {
-				if (changeset.hasOwnProperty(prop)) {
-					if (current[prop] === changeset[prop]) {
-						delete changeset[prop];
-					} else {
-						// Add tasks as necessary
-						switch (prop) {
-						case 'state':
-							tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byState:' + changeset[prop], now, flagId));
-							tasks.push(async.apply(db.sortedSetRemove.bind(db), 'flags:byState:' + current[prop], flagId));
-							break;
-
-						case 'assignee':
-							tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byAssignee:' + changeset[prop], now, flagId));
-							tasks.push(async.apply(notifyAssignee, changeset[prop]));
-							break;
-						}
-					}
-				}
+	// Retrieve existing flag data to compare for history-saving purposes
+	const current = await db.getObjectFields('flag:' + flagId, ['state', 'assignee']);
+	const tasks = [];
+	for (var prop in changeset) {
+		if (changeset.hasOwnProperty(prop)) {
+			if (current[prop] === changeset[prop]) {
+				delete changeset[prop];
+			} else if (prop === 'state') {
+				tasks.push(db.sortedSetAdd('flags:byState:' + changeset[prop], now, flagId));
+				tasks.push(db.sortedSetRemove('flags:byState:' + current[prop], flagId));
+			} else if (prop === 'assignee') {
+				tasks.push(db.sortedSetAdd('flags:byAssignee:' + changeset[prop], now, flagId));
+				tasks.push(notifyAssignee(changeset[prop]));
 			}
+		}
+	}
 
-			if (!Object.keys(changeset).length) {
-				// No changes
-				return next();
-			}
+	if (!Object.keys(changeset).length) {
+		return;
+	}
 
-			// Save new object to db (upsert)
-			tasks.push(async.apply(db.setObject, 'flag:' + flagId, changeset));
-
-			// Append history
-			tasks.push(async.apply(Flags.appendHistory, flagId, uid, changeset));
-
-			// Fire plugin hook
-			tasks.push(async.apply(plugins.fireHook, 'action:flags.update', { flagId: flagId, changeset: changeset, uid: uid }));
-
-			async.parallel(tasks, function (err) {
-				return next(err);
-			});
-		},
-	], callback);
+	tasks.push(db.setObject('flag:' + flagId, changeset));
+	tasks.push(Flags.appendHistory(flagId, uid, changeset));
+	tasks.push(plugins.fireHook('action:flags.update', { flagId: flagId, changeset: changeset, uid: uid }));
+	await Promise.all(tasks);
 };
 
-Flags.getHistory = function (flagId, callback) {
-	var history;
-	var uids = [];
-	async.waterfall([
-		async.apply(db.getSortedSetRevRangeWithScores.bind(db), 'flag:' + flagId + ':history', 0, -1),
-		function (_history, next) {
-			history = _history.map(function (entry) {
-				try {
-					entry.value = JSON.parse(entry.value);
-				} catch (e) {
-					return callback(e);
-				}
+Flags.getHistory = async function (flagId) {
+	const uids = [];
+	let history = await db.getSortedSetRevRangeWithScores('flag:' + flagId + ':history', 0, -1);
 
-				uids.push(entry.value[0]);
+	history = history.map(function (entry) {
+		entry.value = JSON.parse(entry.value);
 
-				// Deserialise changeset
-				var changeset = entry.value[1];
-				if (changeset.hasOwnProperty('state')) {
-					changeset.state = changeset.state === undefined ? '' : '[[flags:state-' + changeset.state + ']]';
-				}
+		uids.push(entry.value[0]);
 
-				return {
-					uid: entry.value[0],
-					fields: changeset,
-					datetime: entry.score,
-					datetimeISO: utils.toISOString(entry.score),
-				};
-			});
+		// Deserialise changeset
+		const changeset = entry.value[1];
+		if (changeset.hasOwnProperty('state')) {
+			changeset.state = changeset.state === undefined ? '' : '[[flags:state-' + changeset.state + ']]';
+		}
 
-			user.getUsersFields(uids, ['username', 'userslug', 'picture'], next);
-		},
-		function (users, next) {
-			// Append user data to each history event
-			history = history.map(function (event, idx) {
-				event.user = users[idx];
-				return event;
-			});
-
-			next(null, history);
-		},
-	], callback);
+		return {
+			uid: entry.value[0],
+			fields: changeset,
+			datetime: entry.score,
+			datetimeISO: utils.toISOString(entry.score),
+		};
+	});
+	const userData = await user.getUsersFields(uids, ['username', 'userslug', 'picture']);
+	history.forEach((event, idx) => { event.user = userData[idx]; });
+	return history;
 };
 
-Flags.appendHistory = function (flagId, uid, changeset, callback) {
-	var payload;
-	var datetime = changeset.datetime || Date.now();
+Flags.appendHistory = async function (flagId, uid, changeset) {
+	const datetime = changeset.datetime || Date.now();
 	delete changeset.datetime;
-
-	try {
-		payload = JSON.stringify([uid, changeset, datetime]);
-	} catch (e) {
-		return callback(e);
-	}
-
-	db.sortedSetAdd('flag:' + flagId + ':history', datetime, payload, callback);
+	const payload = JSON.stringify([uid, changeset, datetime]);
+	await db.sortedSetAdd('flag:' + flagId + ':history', datetime, payload);
 };
 
-Flags.appendNote = function (flagId, uid, note, datetime, callback) {
-	if (typeof datetime === 'function' && !callback) {
-		callback = datetime;
-		datetime = Date.now();
-	}
-
-	var payload;
-	try {
-		payload = JSON.stringify([uid, note]);
-	} catch (e) {
-		return callback(e);
-	}
-
-	async.waterfall([
-		async.apply(db.sortedSetAdd, 'flag:' + flagId + ':notes', datetime, payload),
-		async.apply(Flags.appendHistory, flagId, uid, {
-			notes: null,
-			datetime: datetime,
-		}),
-	], callback);
+Flags.appendNote = async function (flagId, uid, note, datetime) {
+	datetime = datetime || Date.now();
+	const payload = JSON.stringify([uid, note]);
+	await db.sortedSetAdd('flag:' + flagId + ':notes', datetime, payload);
+	Flags.appendHistory(flagId, uid, {
+		notes: null,
+		datetime: datetime,
+	});
 };
 
-Flags.notify = function (flagObj, uid, callback) {
-	// Notify administrators, mods, and other associated people
-	if (!callback) {
-		callback = function () {};
+Flags.notify = async function (flagObj, uid) {
+	const [admins, globalMods] = await Promise.all([
+		groups.getMembers('administrators', 0, -1),
+		groups.getMembers('Global Moderators', 0, -1),
+	]);
+	let uids = admins.concat(globalMods);
+	let notifObj = null;
+	if (flagObj.type === 'post') {
+		const [title, cid] = await Promise.all([
+			topics.getTitleByPid(flagObj.targetId),
+			posts.getCidByPid(flagObj.targetId),
+		]);
+
+		const modUids = await categories.getModeratorUids([cid]);
+		const titleEscaped = utils.decodeHTMLEntities(title).replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+
+		notifObj = await notifications.create({
+			type: 'new-post-flag',
+			bodyShort: '[[notifications:user_flagged_post_in, ' + flagObj.reporter.username + ', ' + titleEscaped + ']]',
+			bodyLong: flagObj.description,
+			pid: flagObj.targetId,
+			path: '/flags/' + flagObj.flagId,
+			nid: 'flag:post:' + flagObj.targetId + ':uid:' + uid,
+			from: uid,
+			mergeId: 'notifications:user_flagged_post_in|' + flagObj.targetId,
+			topicTitle: title,
+		});
+		uids = uids.concat(modUids[0]);
+	} else if (flagObj.type === 'user') {
+		notifObj = await notifications.create({
+			type: 'new-user-flag',
+			bodyShort: '[[notifications:user_flagged_user, ' + flagObj.reporter.username + ', ' + flagObj.target.username + ']]',
+			bodyLong: flagObj.description,
+			path: '/flags/' + flagObj.flagId,
+			nid: 'flag:user:' + flagObj.targetId + ':uid:' + uid,
+			from: uid,
+			mergeId: 'notifications:user_flagged_user|' + flagObj.targetId,
+		});
+	} else {
+		throw new Error('[[error:invalid-data]]');
 	}
 
-	switch (flagObj.type) {
-	case 'post':
-		async.parallel({
-			post: function (next) {
-				async.waterfall([
-					async.apply(posts.getPostData, flagObj.targetId),
-					async.apply(posts.parsePost),
-				], next);
-			},
-			title: async.apply(topics.getTitleByPid, flagObj.targetId),
-			admins: async.apply(groups.getMembers, 'administrators', 0, -1),
-			globalMods: async.apply(groups.getMembers, 'Global Moderators', 0, -1),
-			moderators: function (next) {
-				var cid;
-				async.waterfall([
-					async.apply(posts.getCidByPid, flagObj.targetId),
-					function (_cid, next) {
-						cid = _cid;
-						groups.getMembers('cid:' + cid + ':privileges:groups:moderate', 0, -1, next);
-					},
-					function (moderatorGroups, next) {
-						groups.getMembersOfGroups(moderatorGroups.concat(['cid:' + cid + ':privileges:moderate']), next);
-					},
-					function (members, next) {
-						next(null, _.flatten(members));
-					},
-				], next);
-			},
-		}, function (err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			var title = utils.decodeHTMLEntities(results.title);
-			var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
-
-			notifications.create({
-				type: 'new-post-flag',
-				bodyShort: '[[notifications:user_flagged_post_in, ' + flagObj.reporter.username + ', ' + titleEscaped + ']]',
-				bodyLong: flagObj.description,
-				pid: flagObj.targetId,
-				path: '/flags/' + flagObj.flagId,
-				nid: 'flag:post:' + flagObj.targetId + ':uid:' + uid,
-				from: uid,
-				mergeId: 'notifications:user_flagged_post_in|' + flagObj.targetId,
-				topicTitle: results.title,
-			}, function (err, notification) {
-				if (err || !notification) {
-					return callback(err);
-				}
-
-				plugins.fireHook('action:flags.create', {
-					flag: flagObj,
-				});
-
-				var uids = results.admins.concat(results.moderators).concat(results.globalMods);
-				uids = uids.filter(function (_uid) {
-					return parseInt(_uid, 10) !== parseInt(uid, 10);
-				});
-
-				notifications.push(notification, uids, callback);
-			});
-		});
-		break;
-
-	case 'user':
-		async.parallel({
-			admins: async.apply(groups.getMembers, 'administrators', 0, -1),
-			globalMods: async.apply(groups.getMembers, 'Global Moderators', 0, -1),
-		}, function (err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			notifications.create({
-				type: 'new-user-flag',
-				bodyShort: '[[notifications:user_flagged_user, ' + flagObj.reporter.username + ', ' + flagObj.target.username + ']]',
-				bodyLong: flagObj.description,
-				path: '/flags/' + flagObj.flagId,
-				nid: 'flag:user:' + flagObj.targetId + ':uid:' + uid,
-				from: uid,
-				mergeId: 'notifications:user_flagged_user|' + flagObj.targetId,
-			}, function (err, notification) {
-				if (err || !notification) {
-					return callback(err);
-				}
-
-				plugins.fireHook('action:flag.create', {
-					flag: flagObj,
-				});	// delete @ NodeBB v1.6.0
-				plugins.fireHook('action:flags.create', {
-					flag: flagObj,
-				});
-				notifications.push(notification, results.admins.concat(results.globalMods), callback);
-			});
-		});
-		break;
-
-	default:
-		callback(new Error('[[error:invalid-data]]'));
-		break;
-	}
+	plugins.fireHook('action:flags.create', {
+		flag: flagObj,
+	});
+	uids = uids.filter(_uid => parseInt(_uid, 10) !== parseInt(uid, 10));
+	await notifications.push(notifObj, uids);
 };
 
 require('./promisify')(Flags);
