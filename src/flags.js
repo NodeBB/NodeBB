@@ -425,7 +425,7 @@ Flags.appendNote = async function (flagId, uid, note, datetime) {
 	datetime = datetime || Date.now();
 	const payload = JSON.stringify([uid, note]);
 	await db.sortedSetAdd('flag:' + flagId + ':notes', datetime, payload);
-	Flags.appendHistory(flagId, uid, {
+	await Flags.appendHistory(flagId, uid, {
 		notes: null,
 		datetime: datetime,
 	});
