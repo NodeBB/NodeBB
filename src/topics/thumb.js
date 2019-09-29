@@ -44,7 +44,7 @@ module.exports = function (Topics) {
 
 			await pipeToFileAsync(data.thumb, pathToUpload);
 
-			await file.isFileTypeAllowed(pathToUpload);
+			await image.isFileTypeAllowed(pathToUpload);
 
 			await image.resizeImage({
 				path: pathToUpload,

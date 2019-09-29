@@ -66,7 +66,7 @@ async function uploadAsImage(req, uploadedFile) {
 			uid: req.uid,
 		});
 	}
-	await file.isFileTypeAllowed(uploadedFile.path);
+	await image.isFileTypeAllowed(uploadedFile.path);
 
 	let fileObj = await uploadsController.uploadFile(req.uid, uploadedFile);
 
@@ -123,7 +123,7 @@ uploadsController.uploadThumb = async function (req, res, next) {
 		if (!uploadedFile.type.match(/image./)) {
 			throw new Error('[[error:invalid-file]]');
 		}
-		await file.isFileTypeAllowed(uploadedFile.path);
+		await image.isFileTypeAllowed(uploadedFile.path);
 		await image.resizeImage({
 			path: uploadedFile.path,
 			width: meta.config.topicThumbSize,

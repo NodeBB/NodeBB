@@ -52,14 +52,8 @@ file.base64ToLocal = async function (imageData, uploadPath) {
 };
 
 file.isFileTypeAllowed = async function (path) {
-	var plugins = require('./plugins');
-	if (plugins.hasListeners('filter:file.isFileTypeAllowed')) {
-		return await plugins.fireHook('filter:file.isFileTypeAllowed', path);
-	}
-	const sharp = require('sharp');
-	await sharp(path, {
-		failOnError: true,
-	}).metadata();
+	winston.warn('[deprecated] file.isFileTypeAllowed is deprecated, use image.isFileTypeAllowed');
+	await require('./image').isFileTypeAllowed(path);
 };
 
 // https://stackoverflow.com/a/31205878/583363

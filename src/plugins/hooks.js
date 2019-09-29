@@ -10,6 +10,7 @@ module.exports = function (Plugins) {
 		'filter:user.account': 'filter:account/profile.build',
 		'filter:user.account.edit': 'filter:account/edit.build',
 		'filter:notifications.get': 'filter:notifications.build',
+		'filter:file.isFileTypeAllowed': 'filter:image.isFileTypeAllowed',
 	};
 
 	Plugins.internals = {
