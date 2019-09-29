@@ -53,6 +53,7 @@
     "membership.invitation-pending": "Invitație in așteptare",
     "membership.join-group": "Alăture-te grupului",
     "membership.leave-group": "Părăsește grupul",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "Respinge",
     "new-group.group_name": "Numele grupului:",
     "upload-group-cover": "Încarcă coperta de grup",

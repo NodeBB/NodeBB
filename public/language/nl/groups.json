@@ -53,6 +53,7 @@
     "membership.invitation-pending": "Openstaande uitnodiging",
     "membership.join-group": "Deelnemen aan groep",
     "membership.leave-group": "Verlaat groep",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "Afwijzen",
     "new-group.group_name": "Groepsnaam:",
     "upload-group-cover": "Upload groepscover",

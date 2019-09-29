@@ -53,6 +53,7 @@
     "membership.invitation-pending": "Ubutumire Buracyategereje",
     "membership.join-group": "Injira mu Itsinda",
     "membership.leave-group": "Va mu Itsinda",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "Hakanira",
     "new-group.group_name": "Izina ry'Itsinda:",
     "upload-group-cover": "Shyiraho ifoto yo hejuru iranga itsinda",

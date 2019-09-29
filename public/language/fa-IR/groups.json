@@ -53,6 +53,7 @@
     "membership.invitation-pending": "در انتظار تایید",
     "membership.join-group": "ورود به گروه",
     "membership.leave-group": "خروج از گروه",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "رد",
     "new-group.group_name": "نام گروه:",
     "upload-group-cover": "آپلود کاور گروه",

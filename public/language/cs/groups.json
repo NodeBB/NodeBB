@@ -53,6 +53,7 @@
     "membership.invitation-pending": "Čekající pozvání",
     "membership.join-group": "Vstoupit do skupiny",
     "membership.leave-group": "Opustit skupinu",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "Odmítnout",
     "new-group.group_name": "Název skupiny:",
     "upload-group-cover": "Nahrát titulní obrázek skupiny",

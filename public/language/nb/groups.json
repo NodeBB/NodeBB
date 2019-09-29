@@ -53,6 +53,7 @@
     "membership.invitation-pending": "Invitasjon venter",
     "membership.join-group": "Bli med i gruppe",
     "membership.leave-group": "Forlat gruppe",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "Avslå",
     "new-group.group_name": "Gruppenavn:",
     "upload-group-cover": "Upload group cover",

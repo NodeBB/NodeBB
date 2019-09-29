@@ -53,6 +53,7 @@
     "membership.invitation-pending": "Inbjudan väntar på svar",
     "membership.join-group": "Gå med i grupp",
     "membership.leave-group": "Lämna grupp",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "Neka",
     "new-group.group_name": "Gruppnamn:",
     "upload-group-cover": "Ladda upp omslagsbild för grupp",

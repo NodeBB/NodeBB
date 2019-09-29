@@ -53,6 +53,7 @@
     "membership.invitation-pending": "Convite em espera",
     "membership.join-group": "Aderir ao grupo",
     "membership.leave-group": "Sair do grupo",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "Rejeitar",
     "new-group.group_name": "Nome do grupo:",
     "upload-group-cover": "Carregar capa do grupo",

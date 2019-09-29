@@ -53,6 +53,7 @@
     "membership.invitation-pending": "招待を保留",
     "membership.join-group": "グループへ参加",
     "membership.leave-group": "グループから離脱",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "拒否",
     "new-group.group_name": "グループ名:",
     "upload-group-cover": "グループのカバーをアップロード",

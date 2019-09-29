@@ -53,6 +53,7 @@
     "membership.invitation-pending": "Invitación Pendiente",
     "membership.join-group": "Unirse al grupo",
     "membership.leave-group": "Dejar el grupo",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "Rechazar",
     "new-group.group_name": "Nombre de Grupo:",
     "upload-group-cover": "Cargar foto para el grupo",

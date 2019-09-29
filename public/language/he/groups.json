@@ -53,6 +53,7 @@
     "membership.invitation-pending": "הזמנה ממתינה",
     "membership.join-group": "הצטרף לקבוצה",
     "membership.leave-group": "עזוב קבוצה",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "דחה",
     "new-group.group_name": "שם קבוצה",
     "upload-group-cover": "העלה תמונת נושא לקבוצה",

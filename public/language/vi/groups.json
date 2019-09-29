@@ -53,6 +53,7 @@
     "membership.invitation-pending": "Lời mời đang chờ trả lời",
     "membership.join-group": "Tham gia nhóm",
     "membership.leave-group": "Rời khỏi nhóm",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "Từ chối",
     "new-group.group_name": "Tên nhóm",
     "upload-group-cover": "Tải ảnh bìa lên cho nhóm",

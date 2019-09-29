@@ -53,6 +53,7 @@
     "membership.invitation-pending": "邀請等待中",
     "membership.join-group": "加入群組",
     "membership.leave-group": "離開群組",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "拒絕",
     "new-group.group_name": "群組名稱:",
     "upload-group-cover": "上傳群組封面圖",

@@ -53,6 +53,7 @@
     "membership.invitation-pending": "Afventende Invitationer",
     "membership.join-group": "Bliv medlem af gruppe",
     "membership.leave-group": "Forlad Gruppe",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "Afvis",
     "new-group.group_name": "Gruppe Navn:",
     "upload-group-cover": "Upload Gruppe coverbillede",

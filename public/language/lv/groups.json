@@ -53,6 +53,7 @@
     "membership.invitation-pending": "Neapstiprināts ielūgums",
     "membership.join-group": "Pievienoties grupai",
     "membership.leave-group": "Atstāt grupu",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "Noraidīt",
     "new-group.group_name": "Grupas nosaukums",
     "upload-group-cover": "Augšupielādēt grupas galvenes bildi",

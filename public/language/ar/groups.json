@@ -53,6 +53,7 @@
     "membership.invitation-pending": "الدعوة بانتظار القبول",
     "membership.join-group": "انظم للمجموعة",
     "membership.leave-group": "غادر المجموعة",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "رفض",
     "new-group.group_name": "اسم المجموعة",
     "upload-group-cover": "Upload group cover",

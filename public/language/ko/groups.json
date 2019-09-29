@@ -53,6 +53,7 @@
     "membership.invitation-pending": "보류중인 초대 수락",
     "membership.join-group": "그룹 들어가기",
     "membership.leave-group": "그룹 나가기",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "거절",
     "new-group.group_name": "그룹명:",
     "upload-group-cover": "그룹 커버 사진 업로드",

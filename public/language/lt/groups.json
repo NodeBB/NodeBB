@@ -53,6 +53,7 @@
     "membership.invitation-pending": "Pakvietimas Laukiamas",
     "membership.join-group": "Prisijungti Prie Grupės",
     "membership.leave-group": "Palikti Grupę",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "Atšaukti",
     "new-group.group_name": "Grupės pavadinimas:",
     "upload-group-cover": "Upload group cover",

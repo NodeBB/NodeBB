@@ -53,6 +53,7 @@
     "membership.invitation-pending": "คำเชิญที่รอการอนุมัติ",
     "membership.join-group": "เข้าร่วมกลุ่ม",
     "membership.leave-group": "ออกจากกลุ่ม",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "ปฏิเสธ",
     "new-group.group_name": "ชื่อกลุ่ม:",
     "upload-group-cover": "อัพโหลดหน้าปกกลุ่ม",

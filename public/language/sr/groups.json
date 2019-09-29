@@ -53,6 +53,7 @@
     "membership.invitation-pending": "Позиви на чекању",
     "membership.join-group": "Придружите се групи",
     "membership.leave-group": "Напусти групу",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "Одбаци",
     "new-group.group_name": "Име групе:",
     "upload-group-cover": "Отпреми насловницу групе",

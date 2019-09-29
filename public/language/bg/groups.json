@@ -53,6 +53,7 @@
     "membership.invitation-pending": "Чакаща покана",
     "membership.join-group": "Присъединяване към групата",
     "membership.leave-group": "Напускане на групата",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "Отхвърляне",
     "new-group.group_name": "Име на групата:",
     "upload-group-cover": "Качване на снимка за показване на групата",

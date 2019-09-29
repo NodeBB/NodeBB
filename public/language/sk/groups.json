@@ -53,6 +53,7 @@
     "membership.invitation-pending": "Pozvánka čakajúca na vybavenie",
     "membership.join-group": "Pripojiť do skupiny",
     "membership.leave-group": "Opustiť skupinu",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "Odmietnuť",
     "new-group.group_name": "Názov skupiny:",
     "upload-group-cover": "Nahrať obrázok skupiny",

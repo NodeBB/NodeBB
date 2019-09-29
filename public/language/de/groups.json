@@ -53,6 +53,7 @@
     "membership.invitation-pending": "Einladung ausstehend",
     "membership.join-group": "Gruppe beitreten",
     "membership.leave-group": "Gruppe verlassen",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "Ablehnen",
     "new-group.group_name": "Gruppenname:",
     "upload-group-cover": "Gruppentitelbild hochladen",

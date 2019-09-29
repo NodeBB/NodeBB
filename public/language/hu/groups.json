@@ -53,6 +53,7 @@
     "membership.invitation-pending": "Függőben levő meghívás",
     "membership.join-group": "Csoporthoz csatlakozás",
     "membership.leave-group": "Csoport elhagyása",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "Elutasítás",
     "new-group.group_name": "Csoport neve:",
     "upload-group-cover": "Csoport fedőkép feltöltése",

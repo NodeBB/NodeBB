@@ -53,6 +53,7 @@
     "membership.invitation-pending": "Заявка на рассмотрении",
     "membership.join-group": "Вступить",
     "membership.leave-group": "Покинуть",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "Отклонить",
     "new-group.group_name": "Название группы:",
     "upload-group-cover": "Загрузить обложку группы",

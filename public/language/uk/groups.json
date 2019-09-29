@@ -53,6 +53,7 @@
     "membership.invitation-pending": "Запрошення в черзі",
     "membership.join-group": "Приєднатися до групи",
     "membership.leave-group": "Покинути групу",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "Відхилити",
     "new-group.group_name": "Назва групи:",
     "upload-group-cover": "Завантажити обкладинку групи",

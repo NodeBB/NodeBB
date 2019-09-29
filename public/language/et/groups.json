@@ -53,6 +53,7 @@
     "membership.invitation-pending": "Kutse ootel",
     "membership.join-group": "Liitu grupiga",
     "membership.leave-group": "Lahku grupist",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "Lükka tagasi",
     "new-group.group_name": "Grupi nimi:",
     "upload-group-cover": "Lae gruppi pilt üles",

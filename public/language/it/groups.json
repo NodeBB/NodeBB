@@ -53,6 +53,7 @@
     "membership.invitation-pending": "Invito in sospeso",
     "membership.join-group": "Unisciti al Gruppo",
     "membership.leave-group": "Lascia il Gruppo",
+    "membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
     "membership.reject": "Rifiuta",
     "new-group.group_name": "Nome Gruppo:",
     "upload-group-cover": "Carica copertina gruppo",
