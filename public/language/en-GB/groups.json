@@ -60,6 +60,7 @@
 	"membership.invitation-pending": "Invitation Pending",
 	"membership.join-group": "Join Group",
 	"membership.leave-group": "Leave Group",
+	"membership.leave.notification_title": "<strong>%1</strong> has left group <strong>%2</strong>",
 	"membership.reject": "Reject",
 
 	"new-group.group_name": "Group Name:",

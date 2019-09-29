@@ -45,9 +45,7 @@ module.exports = function (Groups) {
 			groupNames = [groupNames];
 		}
 		const sets = [];
-		groupNames.forEach(function (groupName) {
-			sets.push('group:' + groupName + ':pending', 'group:' + groupName + ':invited');
-		});
+		groupNames.forEach(groupName =>	sets.push('group:' + groupName + ':pending', 'group:' + groupName + ':invited'));
 		await db.setsRemove(sets, uid);
 	};
 
