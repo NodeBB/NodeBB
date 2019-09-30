@@ -25,6 +25,8 @@ module.exports = function (Topics) {
 			params.cids = [params.cids];
 		}
 		data.tids = await getTids(params);
+		data.tids = await sortTids(data.tids, params);
+		data.tids = await filterTids(data.tids.slice(0, 200), params);
 		data.topicCount = data.tids.length;
 		data.topics = await getTopics(data.tids, params);
 		data.nextStart = params.stop + 1;
@@ -32,6 +34,10 @@ module.exports = function (Topics) {
 	};
 
 	async function getTids(params) {
+		if (plugins.hasListeners('filter:topics.getSortedTids')) {
+			const result = await plugins.fireHook('filter:topics.getSortedTids', { params: params, tids: [] });
+			return result.tids;
+		}
 		let tids = [];
 		if (params.term !== 'alltime') {
 			tids = await Topics.getLatestTidsFromSet('topics:tid', 0, -1, params.term);
@@ -45,10 +51,8 @@ module.exports = function (Topics) {
 		} else {
 			tids = await db.getSortedSetRevRange('topics:' + params.sort, 0, 199);
 		}
-		if (params.term !== 'alltime' || params.cids || params.filter === 'watched' || params.floatPinned) {
-			tids = await sortTids(tids, params);
-		}
-		return await filterTids(tids.slice(0, 200), params);
+
+		return tids;
 	}
 
 	async function getCidTids(params) {
@@ -70,6 +74,9 @@ module.exports = function (Topics) {
 	}
 
 	async function sortTids(tids, params) {
+		if (params.term === 'alltime' && !params.cids && params.filter !== 'watched' && !params.floatPinned) {
+			return;
+		}
 		const topicData = await Topics.getTopicsFields(tids, ['tid', 'lastposttime', 'upvotes', 'downvotes', 'postcount', 'pinned']);
 		let sortFn = sortRecent;
 		if (params.sort === 'posts') {
