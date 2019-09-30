@@ -18,6 +18,11 @@ define('pictureCropper', ['cropper'], function (Cropper) {
 				uploadModal.remove();
 			});
 
+			var uploadForm = uploadModal.find('#uploadForm');
+			if (data.route) {
+				uploadForm.attr('action', data.route);
+			}
+
 			uploadModal.find('#fileUploadSubmitBtn').on('click', function () {
 				$(this).addClass('disabled');
 				data.uploadModal = uploadModal;
@@ -170,21 +175,27 @@ define('pictureCropper', ['cropper'], function (Cropper) {
 		}
 
 		var file = fileInput[0].files[0];
-		var reader = new FileReader();
-		var imageUrl;
-		var imageType = file.type;
 		var fileSize = data.hasOwnProperty('fileSize') && data.fileSize !== undefined ? parseInt(data.fileSize, 10) : false;
 		if (fileSize && file.size > fileSize * 1024) {
 			return app.alertError('[[error:file-too-big, ' + fileSize + ']]');
 		}
+
+		if (file.name.endsWith('.gif')) {
+			require(['uploader'], function (uploader) {
+				uploader.ajaxSubmit(data.uploadModal, callback);
+			});
+			return;
+		}
+
+		var reader = new FileReader();
 		reader.addEventListener('load', function () {
-			imageUrl = reader.result;
+			var imageUrl = reader.result;
 
 			data.uploadModal.modal('hide');
 
 			module.handleImageCrop({
 				url: imageUrl,
-				imageType: imageType,
+				imageType: file.type,
 				socketMethod: data.socketMethod,
 				aspectRatio: data.aspectRatio,
 				allowSkippingCrop: data.allowSkippingCrop,

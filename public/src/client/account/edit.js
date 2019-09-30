@@ -228,6 +228,7 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 
 			pictureCropper.show({
 				socketMethod: 'user.uploadCroppedPicture',
+				route: config.relative_path + '/api/user/' + ajaxify.data.userslug + '/uploadpicture',
 				aspectRatio: 1 / 1,
 				paramName: 'uid',
 				paramValue: ajaxify.data.theirid,
@@ -235,7 +236,7 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 				allowSkippingCrop: false,
 				title: '[[user:upload_picture]]',
 				description: '[[user:upload_a_picture]]',
-				accept: '.png,.jpg,.bmp',
+				accept: ajaxify.data.allowedProfileImageExtensios,
 			}, function (url) {
 				onUploadComplete(url);
 			});

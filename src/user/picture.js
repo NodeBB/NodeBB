@@ -1,14 +1,27 @@
 'use strict';
 
 const winston = require('winston');
+const mime = require('mime');
 
 const db = require('../database');
 const file = require('../file');
 const image = require('../image');
 const meta = require('../meta');
+const plugins = require('../plugins');
 
 module.exports = function (User) {
-	const allowedTypes = ['image/png', 'image/jpeg', 'image/bmp'];
+	User.getAllowedProfileImageExtensions = function () {
+		return User.getAllowedImageTypes().map(type => mime.getExtension(type));
+	};
+
+	User.getAllowedImageTypes = function () {
+		const allowedTypes = ['image/png', 'image/jpeg', 'image/bmp'];
+		if (plugins.hasListeners('filter:image.isFileTypeAllowed')) {
+			allowedTypes.push('image/gif');
+		}
+		return allowedTypes;
+	};
+
 	User.updateCoverPosition = async function (uid, position) {
 		// Reject anything that isn't two percentages
 		if (!/^[\d.]+%\s[\d.]+%$/.test(position)) {
@@ -30,7 +43,7 @@ module.exports = function (User) {
 				return await User.updateCoverPosition(data.uid, data.position);
 			}
 
-			validateUpload(data, meta.config.maximumCoverImageSize);
+			validateUpload(data, meta.config.maximumCoverImageSize, ['image/png', 'image/jpeg', 'image/bmp']);
 
 			picture.path = await getTempPath(data);
 
@@ -63,7 +76,7 @@ module.exports = function (User) {
 				throw new Error('[[error:profile-image-uploads-disabled]]');
 			}
 
-			validateUpload(data, meta.config.maximumProfileImageSize);
+			validateUpload(data, meta.config.maximumProfileImageSize, User.getAllowedImageTypes());
 
 			const extension = file.typeToExtension(getMimeType(data));
 			if (!extension) {
@@ -92,7 +105,7 @@ module.exports = function (User) {
 		}
 	};
 
-	function validateUpload(data, maxSize) {
+	function validateUpload(data, maxSize, allowedTypes) {
 		if (!data.imageData && !data.file) {
 			throw new Error('[[error:invalid-data]]');
 		}
