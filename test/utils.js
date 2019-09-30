@@ -240,6 +240,7 @@ describe('Utility Methods', function () {
 	});
 
 	it('should get empty object for url params', function (done) {
+		global.document = window.document;
 		var params = utils.params();
 		assert.equal(Object.keys(params), 0);
 		done();
