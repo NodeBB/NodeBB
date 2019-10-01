@@ -24,7 +24,7 @@ module.exports = function (Groups) {
 		}
 
 		const memberCount = data.hasOwnProperty('ownerUid') ? 1 : 0;
-		const isPrivate = data.hasOwnProperty('private') ? parseInt(data.private, 10) : 1;
+		const isPrivate = data.hasOwnProperty('private') && data.private !== undefined ? parseInt(data.private, 10) === 1 : true;
 		const groupData = {
 			name: data.name,
 			slug: utils.slugify(data.name),
@@ -35,7 +35,7 @@ module.exports = function (Groups) {
 			memberCount: memberCount,
 			hidden: isHidden ? 1 : 0,
 			system: isSystem ? 1 : 0,
-			private: isPrivate,
+			private: isPrivate ? 1 : 0,
 			disableJoinRequests: disableJoinRequests,
 			disableLeave: disableLeave,
 		};
