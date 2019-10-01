@@ -139,7 +139,7 @@
         "sortablejs": "1.10.2",
         "spdx-license-list": "^6.1.0",
         "spider-detector": "2.0.0",
-        "textcomplete": "^0.17.1",
+        "textcomplete": "^0.18.0",
         "textcomplete.contenteditable": "^0.1.1",
         "timeago": "^1.6.7",
         "tinycon": "0.6.8",
