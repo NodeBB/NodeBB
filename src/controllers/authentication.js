@@ -201,22 +201,27 @@ authenticationController.login = function (req, res, next) {
 	var loginWith = meta.config.allowLoginWith || 'username-email';
 	req.body.username = req.body.username.trim();
 
-	if (req.body.username && utils.isEmailValid(req.body.username) && loginWith.includes('email')) {
-		async.waterfall([
-			function (next) {
-				user.getUsernameByEmail(req.body.username, next);
-			},
-			function (username, next) {
-				req.body.username = username || req.body.username;
-				continueLogin(req, res, next);
-			},
-		], next);
-	} else if (loginWith.includes('username') && !validator.isEmail(req.body.username)) {
-		continueLogin(req, res, next);
-	} else {
-		var err = '[[error:wrong-login-type-' + loginWith + ']]';
-		helpers.noScriptErrors(req, res, err, 500);
-	}
+	plugins.fireHook('filter:login.check', { req: req, res: res, userData: req.body }, (err) => {
+		if (err) {
+			return helpers.noScriptErrors(req, res, err.message, 403);
+		}
+		if (req.body.username && utils.isEmailValid(req.body.username) && loginWith.includes('email')) {
+			async.waterfall([
+				function (next) {
+					user.getUsernameByEmail(req.body.username, next);
+				},
+				function (username, next) {
+					req.body.username = username || req.body.username;
+					continueLogin(req, res, next);
+				},
+			], next);
+		} else if (loginWith.includes('username') && !validator.isEmail(req.body.username)) {
+			continueLogin(req, res, next);
+		} else {
+			err = '[[error:wrong-login-type-' + loginWith + ']]';
+			helpers.noScriptErrors(req, res, err, 500);
+		}
+	});
 };
 
 function continueLogin(req, res, next) {
